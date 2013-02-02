@@ -1,0 +1,166 @@
+\documentclass[iutinfo, cadre]{ens-ustl}
+
+%---------------------------------------------------------------------
+% Packages pour inclure des images postscipt
+\usepackage{epsfig}
+%\usepackage[all]{xy}
+
+%---------------------------------------------------------------------
+%
+%\SetUnicodeOption
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage[french]{babel}
+
+%---------------------------------------------------------------------
+%
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{theorem}
+
+%---------------------------------------------------------------------
+%
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+%\usepackage{epsfig}
+
+\usepackage{url}
+\urlstyle{sf}
+
+%---------------------------------------------------------------------
+%
+\renewcommand {\algorithmiccomment}[1]{/*\textit{ #1 }*/}
+\renewcommand {\algorithmicrequire}{\textbf{Input:}}
+\renewcommand {\algorithmicensure}{\textbf{Output:}}
+
+%---------------------------------------------------------------------
+%
+\newcommand {\Z}{\mathbb{Z}} %% integers
+\newcommand {\Q}{\mathbb{Q}} %% rationals
+\newcommand {\C}{\mathbb{C}} %% complex
+\newcommand {\D}{\mathbb{D}} %% unit disc
+\newcommand {\T}{\mathbb{T}} %% unit circle
+\newcommand {\F}{\mathbb{F}} %% Free group
+\newcommand {\N}{\mathbb{N}}
+\newcommand {\R}{\mathbb{R}}
+
+%---------------------------------------------------------------------
+%
+\newcommand{\Ker}{\mathrm{Ker}} %% noyau
+\renewcommand{\Im}{\mathrm{Im}} %% image
+
+\titre{Specifications for the Mixture Composer Library}
+\enseignant{S. Iovleff \\ P. Bathia \\ C. Biernacki}
+
+\begin{document}
+\maketitle
+
+\section{Coding conventions}
+
+For the coding we use the java coding convention. All data members
+are defined with an underscore at the end of their name, like \verb+data_+.
+
+Data members referring to pointer start with \verb+p_+
+
+All alternatives should be enclosed in \verb+enum+.
+
+The notations proposed in this document can be modified if needed
+or enclosed in namespace in order to avoid name collision.
+
+
+\section{Components of the library}
+\subsection{Algorithms}
+
+The algorithms will be:
+\begin{verbatim}
+enum Algo
+{
+  em_,
+  cem_,
+  sem_,
+  mcem_,
+  exact_
+}
+\end{verbatim}
+
+The priority is to implement the \verb+*em+ versions, the \verb+exact_+ is just there in case of, but
+should not be implemented. Should we add stochastic minimization algorithms ?
+
+\subsection{Stopping criteria}
+
+The stopping criteria will be:
+\begin{verbatim}
+enum StopCriteria
+{
+  deltaLnLikelihood_,
+  deltaPostProbabilities_,
+  deltaParameters_,
+  nbIterMax_
+}
+\end{verbatim}
+It should be possible to mix different criteria, for example
+\verb+deltaLnLikelihood_|nbIterMax_+ mean that we want to stop the iteration when one
+of the criteria is true.
+
+\subsection{Data initialization}
+
+The initialization of the algorithm will be:
+\begin{verbatim}
+enum Initialization
+{
+  randomPartition_,
+  randomParameters_,
+  givenPartition_,
+  givenPosteriorProbabiblity_,
+  givenParameters_
+}
+\end{verbatim}
+
+Did i forget a method for initialization ? The random cases are the priority.
+In case of heterogeneous distributions it will be difficult to find a way for initialization with
+given parameters.
+
+\subsection{Strategies}
+
+A strategy is composed of three parts:
+\begin{enumerate}
+  \item multiple initializations,
+  \item for each initialization a short run,
+  \item A long run.
+\end{enumerate}
+
+\subsubsection{short runs}
+
+A short run will be an arbitrary number of sequence \verb+(Algo_, StopCriteria)+. For example:
+\begin{verbatim}
+{(sem_, 1000), (cem_, 0.01|1000)}, {(em, 0.01)}
+\end{verbatim}
+mean that in a short run, there is 1000 iterations of the SEM algorithm, and at most 1000 iterations
+of CEM that will be stopped  if some other criterion have a delta less than 0.01 and finally iterations of the EM
+until the delta of some criteria is less than 0.01.
+
+\subsubsection{long run}
+
+A long run is initialized with the better of the short run and a StopCriteria.
+If there is no short run, with an initialization.
+
+\subsection{Model Selection Criteria}
+The model criteria will be:
+\begin{verbatim}
+enum Criteria
+{
+  aic_,
+  bic_,
+  icl_,
+  cv_,
+  penExtern_
+}
+\end{verbatim}
+It should be possible to let an user to define its own penalization criteria (\verb+penExtern_+ option).
+Should we add cross-validation ?
+
+\section{Plugin specifications (Parmeet) }
+
+
+\end{document}
