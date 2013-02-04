@@ -1,0 +1,93 @@
+/*----------------------------------------------------------------------*/
+/*     Copyright (C) 2004  Serge Iovleff
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this program; if not, write to the
+    Free Software Foundation, Inc.,
+    59 Temple Place,
+    Suite 330,
+    Boston, MA 02111-1307
+    USA
+
+    Contact : Serge.Iovleff@stkpp.org                                   */
+/*----------------------------------------------------------------------*/
+/* $ID$
+ *
+ * Project:  Analysis
+ * Purpose:  compute the Stirling coefficient of the ln Gamma function
+ * Author:   Serge Iovleff, serge.iovleff@stkpp.org
+ *
+ * $LOG$
+ *
+ **/
+/*----------------------------------------------------------------------*/
+
+
+scale = 63
+
+
+/* factorial function at x */
+define fact(x) {
+  if (x<= 1) return(1);
+  return(fact(x-1)*x);
+}
+
+define power(x, n) {
+r = 1;
+for (i=1; i<=n; ++i) {
+  r *= x;
+}
+return(r);
+}
+
+define coeflngamma(l) {
+  auto sum, b[];
+  b[0] =                       1.0;
+  b[1] =                       1.0/6.0;
+  b[2] =                      -1.0/30.0;
+  b[3] =                       1.0/42.0;
+  b[4] =                      -1.0/30.0;
+  b[5] =                       5.0/66.0;
+  b[6] =                    -691.0/2730.0;
+  b[7] =                       7.0/6.0;
+  b[8] =                   -3617.0/510.0;
+  b[9] =                   43867.0/798.0;
+  b[10] =                -174611.0/330.0;
+  b[11] =                 854513.0/138.0;
+  b[12] =             -236364091.0/2730.0;
+  b[13] =                8553103.0/6.0;
+  b[14] =           -23749461059.0/870.0;
+  b[15] =          8615841276005.0/14322.0;
+  b[16] =         -7709321041217.0/510.0;
+  b[17] =          2577687858367.0/6.0;
+  b[18] =  -26315271553053477373.0/1919190.0;
+  b[19] =       2929993913841559.0/6.0;
+  b[20] = -261082718496449122051.0/13530.0;
+  sum =0;
+  for (k=0; k<=l; ++k) {
+    sum += ( (2*l-2*k) * (2- power(2,2*k)) * b[k])/( fact(2*l-2*k+1)*fact(2*k) );
+  }
+  return(sum);
+}
+
+
+/* compute the Stirling coefficients */
+for (l=1; l<=20; ++l) {
+  coef = fact(2*l-2)*coeflngamma(l)/power(2,2*l);
+  print coef;
+  print ", // ";
+  print l, "\n";
+  print 1/coef;
+  print ", // ";
+  print l, "\n";
+}

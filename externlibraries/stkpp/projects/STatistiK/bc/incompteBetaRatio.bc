@@ -1,0 +1,90 @@
+/*----------------------------------------------------------------------*/
+/*     Copyright (C) 2004-2012  Serge Iovleff
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this program; if not, write to the
+    Free Software Foundation, Inc.,
+    59 Temple Place,
+    Suite 330,
+    Boston, MA 02111-1307
+    USA
+
+    Contact : Serge.Iovleff@stkpp.org                                   */
+
+/*
+ * Project:  Funct
+ * Purpose:  Compute the Incomplete Beta Ratio function using its serie 
+ * Author:   Serge Iovleff, serge.iovleff@stkpp.org
+ **/
+
+ 
+/* Set the scale of the computations. */
+scale = 128
+epsilon = e(-32)
+
+/* beta function */
+define beta(a,b) {
+auto acoef, coef, sum, n;
+
+coef = 1/a;
+sum = coef;
+n= 0;
+acoef = 1/a;
+
+while ( (acoef > epsilon) ) {
+ n+=1;
+ coef *= ((n-b)/(n+a))*((a+n-1)/n);
+ sum += coef;
+ acoef = coef;
+ if (coef < 0) {acoef = -acoef;}
+}
+
+return sum;
+}
+
+/* factorial function at x */
+define fact(x) {
+  if (x<= 1) return(1);
+  return(fact(x-1)*x);
+}
+
+define pochhammer(b, n) {
+auto prod;
+
+prod = 1;
+for(i=1; i<- n; ++i) {
+prod *= (i-b);
+}
+
+return prod;
+}
+/* incomplete beta ratio function */
+define i(x,a,b) {
+auto acoef, coef, sum, n;
+
+coef = e(a*l(x))/(beta(a,b)*a);
+sum = coef;
+n= 0;
+acoef = 1/a;
+
+while ( (acoef > epsilon) ) {
+ n+=1;
+ coef *= x*((n-b)/(n+a))*((a+n-1)/n);
+ sum += coef;
+ acoef = coef;
+ if (coef < 0) {acoef = -acoef;}
+}
+
+return sum;
+}
+

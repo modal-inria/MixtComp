@@ -1,0 +1,85 @@
+/*----------------------------------------------------------------------*/
+/*     Copyright (C) 2004  Serge Iovleff
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this program; if not, write to the
+    Free Software Foundation, Inc.,
+    59 Temple Place,
+    Suite 330,
+    Boston, MA 02111-1307
+    USA
+
+    Contact : Serge.Iovleff@stkpp.org                                   */
+/*----------------------------------------------------------------------*/
+/* ln_stirl_error.bc,v 1.1 2006/10/11 20:08:53 siovleff Exp
+ *
+ * Project:  Analysis
+ * Purpose:  compute the stirling error for n= 0.5, 1.0, 1.5, ..., 11, 11.5, ...
+ * Author:   Serge Iovleff, serge.iovleff@stkpp.org
+ *
+ * ln_stirl_error.bc,v
+ * Revision 1.1  2006/10/11 20:08:53  siovleff
+ * computing exact error using bc for the gamma function
+ *
+ **/
+/*----------------------------------------------------------------------*/
+
+/* factorial function at x */
+define fact(x) {
+  if (x<= 1) return(1);
+  return(fact(x-1)*x);
+}
+
+/* double factorial function at x */
+define dfact(x) {
+  if (x<= 1) return(1);
+  return(dfact(x-2)*x);
+}
+
+/* log stirling approximation at z */
+define ln_stirling(z) {
+  return(l(8*a(1))/2 + (z-0.5)*l(z) - z);
+}
+
+/* log stirling error at z for z integer */
+define ln_stirling_error(z) {
+  return( l(fact(z-1)) - (l(8*a(1))/2 + (z-0.5)*l(z) - z) );
+}
+
+/* log stirling error at z for z integer and half */
+define ln_half_stirling_error(z) {
+  n = z- 0.5;
+  return( l(dfact(2*n-1))-n*l(2)+l(4*a(1))/2 - (l(8*a(1))/2 + n*l(z) - z) );
+}
+
+scale = 63
+
+/* compute the error for n integer */
+z=1.0
+for (i=1; i<=100; ++i)
+{
+  print ln_stirling_error(z);
+  print ", // ";
+  print z, "\n";
+  z +=1.0;
+}
+
+/* compute the error for n integer and halves */
+z=0.5
+for (i=1; i<=100; ++i)
+{
+  print ln_half_stirling_error(z);
+  print ", // ";
+  print z, "\n";
+  z +=1.0;
+}

@@ -1,0 +1,59 @@
+#-----------------------------------------------------------------------
+# makevars
+# author: Serge Iovleff
+#-----------------------------------------------------------------------
+#
+# This file have to be include in all makefile of the projects.
+#
+#-----------------------------------------------------------------------
+#
+#   HASRMATH 't' if your system has libRmath
+HASRMATH = f
+
+LIB_RMATH_A = /usr/lib/libRmath.a
+R_FLAGS = -DMATHLIB_STANDALONE
+
+#-----------------------------------------------------------------------
+# make program
+# MAKE  = make
+
+#-----------------------------------------------------------------------
+#   Macro       Significance
+#								
+#   CC			   C compiler
+#   CXX			   C++ compiler
+#
+#-----------------------------------------------------------------------
+# The defaults below are for GNU g++.
+#-----------------------------------------------------------------------
+# compilers
+CC 		= gcc
+CXX		= g++
+
+#-----------------------------------------------------------------------
+# specific C flags used by the CXX compiler 
+# long long are available
+CFLAGS   = -Wno-long-long 
+
+#-----------------------------------------------------------------------
+# specific C++ compilation flags used by the CXX compiler 
+# Uncomment the next line if you want a release binary
+#CXXFLAGS   = -ansi -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
+# Comment the next line if you want a release binary
+CXXFLAGS   = -ansi -pedantic -Wall -g -Os
+
+#-----------------------------------------------------------------------
+# specific STK++ flags. Uncomment the next line if you want to use wchar set
+# (will not work).
+# STK_FLAGS	= -DSTK_UNICODE
+
+# specific STK++ flags. Comment the next line if you want to have 1 based arrays 
+# (like in fortran)
+#STK_FLAGS = -DSTKBASEARRAYS=0
+
+#STK_FLAGS = -DSTK_BOUNDS_CHECK  -DSTK_DEBUG  -DSTK_VERBOSE -DSTKBASEARRAYS=0
+STK_FLAGS = -DSTK_BOUNDS_CHECK  -DSTK_DEBUG  -DSTK_VERBOSE
+
+#-----------------------------------------------------------------------
+# Name of the STK++ library
+LIB_STKPP_A = libSTKpp.a

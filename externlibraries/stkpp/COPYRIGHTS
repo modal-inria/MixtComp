@@ -1,0 +1,17 @@
+COPYRIGHT STATUS
+
+This code is copyright by members of or all of the STKpp
+Development Core Team.
+
+See the file COPYING for the exact conditions under which you may
+redistribute it.
+
+The file Rmath.h is copyright by:
+Copyright (C) 1998-2003  The R Development Core Team
+Copyright (C) 2004       The R Foundation
+
+The file MersenneTwister.h is copyright by:
+Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
+Copyright (C) 2000 - 2003, Richard J. Wagner
+Copyright (C) 2005 - 2012, Serge Iovleff
+
