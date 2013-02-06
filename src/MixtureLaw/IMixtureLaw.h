@@ -3,16 +3,19 @@
 /**@file IMixtureLaw.h
  * @brief
  */
-#include "util/util.h"
 class IMixtureLaw
 {
   public:
     IMixtureLaw();
-    virtual IMixtureLaw * Clone() const = 0;
-    virtual double GetPdf(int sample_num,int Cluster_num)  const = 0;
-    virtual void GetAllPdf(MatrixReal&) = 0;
+    virtual void InitializeStep() = 0;
+    virtual void ImputationStep() {};
+    virtual void GibbsSampling() = 0;
+    virtual void UpdateParameters(double** ) = 0;
+    virtual void FinalizeStep() {};
+    virtual double GetProbabilty(int sample_num,int Cluster_num) = 0;
+    virtual double** GetAllProbabilties();
     virtual double GetLikelihood() const = 0;
-    virtual void Mstep() = 0;
+    virtual int GetFreeParameters() const = 0;
     virtual ~IMixtureLaw();
 };
 

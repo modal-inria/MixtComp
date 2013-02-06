@@ -15,3 +15,18 @@ void Model::Mstep()
 {
   p_MixtureLaw_->Mstep();
 }
+
+void Model::Estep()
+{
+  p_MixtureLaw_->Estep();
+}
+
+void Model::Initialize()
+{
+  p_MixtureLaw_->InitializeStep();
+}
+
+void Model::Finalize()
+{
+  p_MixtureLaw_->FinalizeStep();
+}
