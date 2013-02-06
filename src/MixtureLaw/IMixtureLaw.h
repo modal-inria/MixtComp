@@ -10,8 +10,9 @@ class IMixtureLaw
     IMixtureLaw();
     virtual IMixtureLaw * Clone() const = 0;
     virtual double GetPdf(int sample_num,int Cluster_num)  const = 0;
-    virtual MatrixReal GetAllPdf() const = 0;
+    virtual void GetAllPdf(MatrixReal&) = 0;
     virtual double GetLikelihood() const = 0;
+    virtual void Mstep() = 0;
     virtual ~IMixtureLaw();
 };
 

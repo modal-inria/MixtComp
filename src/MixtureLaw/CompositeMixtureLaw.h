@@ -14,8 +14,8 @@ class CompositeMixtureLaw: public IMixtureLaw
     //Actual constructor
     CompositeMixtureLaw(std::vector<IMixtureLaw *>);
     virtual CompositeMixtureLaw * Clone() const;
-    virtual double GetPdf(int sample_num,int Cluster_num)  const;
-    virtual MatrixReal GetAllPdf() const;
+    virtual double GetPdf(int sample_num,int Cluster_num) const;
+    virtual void GetAllPdf(MatrixReal&);
     virtual double GetLikelihood() const;
     virtual ~CompositeMixtureLaw();
   protected:
