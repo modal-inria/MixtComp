@@ -13,11 +13,22 @@ class CompositeMixtureLaw: public IMixtureLaw
     CompositeMixtureLaw(const CompositeMixtureLaw *);
     //Actual constructor
     CompositeMixtureLaw(std::vector<IMixtureLaw *>);
-    virtual CompositeMixtureLaw * Clone() const;
-    virtual double GetPdf(int sample_num,int Cluster_num) const;
-    virtual void GetAllPdf(MatrixReal&);
-    virtual double GetLikelihood() const;
-    virtual ~CompositeMixtureLaw();
+
+    //Interface functions for Mixture law
+    virtual void initializeStep();
+    virtual void imputationStep(double* );
+    virtual void samplingStep(double* );
+    virtual void paramUpdateStep(double** );
+    virtual void finalizeStep();
+    virtual double posteriorProbabilty(int sample_num,int Cluster_num);
+    virtual double** allPosteriorProbabilties();
+    virtual double logLikelihood() const;
+    virtual int freeParameters() const;
+
+    //Interface functions for data IO handling
+    virtual void extractData(std::vector<std::vector<std::string> >) = 0;
+    virtual bool readDataFromFile() {return false;}
+    virtual void writeParameters(std::ostream&) = 0;
   protected:
     std::vector<IMixtureLaw*> v_MixtureComponent_;/**Vector of Mixture Laws*/
 };

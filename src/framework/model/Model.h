@@ -5,12 +5,14 @@ class Model
 {
   public:
     Model();
-    virtual void Initialize();
-    virtual void Estep();
-    virtual void UpdateLabels();
-    virtual void Mstep();
-    virtual void Finalize();
-    virtual ~Model();
+    void Initialize();
+    void eStep(){/* throw exception*/};
+    void seStep();
+    void ceStep(){/* throw exception*/};
+    void updateLabels();
+    void mStep();
+    void finalize();
+    ~Model();
   protected:
     IMixtureLaw *p_MixtureLaw_;
     double **m_Tik_, **m_Zik;
