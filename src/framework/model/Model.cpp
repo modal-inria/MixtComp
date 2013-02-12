@@ -11,22 +11,28 @@ Model::~Model()
   // TODO Auto-generated destructor stub
 }
 
-void Model::Mstep()
+void Model::mStep()
 {
-  p_MixtureLaw_->Mstep();
+  p_developer_->paramUpdateStep(m_Zik);
 }
 
-void Model::Estep()
+void Model::seStep()
 {
-  p_MixtureLaw_->Estep();
+  p_developer_->imputationStep(v_Pie);
+  p_developer_->samplingStep(v_Pie,m_Zik);
+  updateLabels();
+}
+void Model::initializeModel()
+{
+  p_developer_->initializeStep();
 }
 
-void Model::Initialize()
+void Model::finalize()
 {
-  p_MixtureLaw_->InitializeStep();
+  p_developer_->finalizeStep();
 }
 
-void Model::Finalize()
+void Model::updateLabels()
 {
-  p_MixtureLaw_->FinalizeStep();
+  // TODO
 }

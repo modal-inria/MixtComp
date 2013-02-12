@@ -1,11 +1,11 @@
 #ifndef MODEL_H_
 #define MODEL_H_
-#include "MixtureLaw/IMixtureLaw.h"
+#include "DeveloperInterface/IDeveloper.h"
 class Model
 {
   public:
     Model();
-    void Initialize();
+    void initializeModel();
     void eStep(){/* throw exception*/};
     void seStep();
     void ceStep(){/* throw exception*/};
@@ -14,7 +14,7 @@ class Model
     void finalize();
     ~Model();
   protected:
-    IMixtureLaw *p_MixtureLaw_;
+    IDeveloper *p_developer_;
     double **m_Tik_, **m_Zik;
     double *v_Pie;
 };
