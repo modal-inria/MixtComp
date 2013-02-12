@@ -6,11 +6,8 @@
 class CompositeDeveloper: public IDeveloper
 {
   public:
-    //default constructor
     CompositeDeveloper();
-    //copy constructor
     CompositeDeveloper(const CompositeDeveloper *);
-    //Actual constructor
     CompositeDeveloper(std::vector<IDeveloper *>);
     virtual void initializeStep();
     virtual void imputationStep(double* );
@@ -21,10 +18,11 @@ class CompositeDeveloper: public IDeveloper
     virtual double** allPosteriorProbabilties();
     virtual double logLikelihood() const;
     virtual int freeParameters() const;
-    virtual void extractData(std::vector<std::vector<std::string> >);
+    virtual void extractData(std::vector<std::vector<std::string> >,char id);
+    virtual void setDataFromFile(std::string filename);
     virtual void writeParameters(std::ostream&);
   protected:
-    std::vector<IDeveloper*> v_Developer_;/**vector of developers*/
+    std::vector<IDeveloper*> v_Developer_;
 };
 
 #endif /* CompositeDeveloper_H_ */

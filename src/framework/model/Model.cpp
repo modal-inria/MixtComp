@@ -27,7 +27,7 @@ void Model::initializeModel()
   p_developer_->initializeStep();
 }
 
-void Model::finalize()
+void Model::finalizeModel()
 {
   p_developer_->finalizeStep();
 }

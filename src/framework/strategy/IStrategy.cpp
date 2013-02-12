@@ -1,12 +1,12 @@
-#include "Runner.h"
+#include "IStrategy.h"
 
-Runner::Runner()
+IStrategy::IStrategy()
 {
   // TODO Auto-generated constructor stub
 
 }
 
-Runner::~Runner()
+IStrategy::~IStrategy()
 {
   // TODO Auto-generated destructor stub
 }

@@ -10,8 +10,10 @@ class Model
     void seStep();
     void ceStep(){/* throw exception*/};
     void updateLabels();
+    void initializeLabels();
     void mStep();
-    void finalize();
+    void finalizeModel();
+    void setDeveloper(IDeveloper *);
     ~Model();
   protected:
     IDeveloper *p_developer_;
@@ -19,4 +21,9 @@ class Model
     double *v_Pie;
 };
 
+
+inline void Model::setDeveloper(IDeveloper * developer)
+{
+  p_developer_ = developer;
+}
 #endif /* MODEL_H_ */
