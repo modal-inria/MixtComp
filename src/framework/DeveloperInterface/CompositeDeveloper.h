@@ -8,11 +8,11 @@ class CompositeDeveloper: public IDeveloper
   public:
     CompositeDeveloper();
     CompositeDeveloper(const CompositeDeveloper *);
-    CompositeDeveloper(std::vector<IDeveloper *>);
+    CompositeDeveloper(std::vector<IDeveloper*>);
     virtual void initializeStep();
-    virtual void imputationStep(double* );
+    virtual void imputationStep(double*,double** );
     virtual void samplingStep(double*, double**);
-    virtual void paramUpdateStep(double** );
+    virtual void paramUpdateStep(double*, double** );
     virtual void finalizeStep();
     virtual double posteriorProbabilty(int sample_num,int Cluster_num);
     virtual double** allPosteriorProbabilties();

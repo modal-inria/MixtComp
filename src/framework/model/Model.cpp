@@ -18,8 +18,8 @@ void Model::mStep()
 
 void Model::seStep()
 {
-  p_developer_->imputationStep(v_Pie);
-  p_developer_->samplingStep(v_Pie,m_Zik);
+  p_developer_->imputationStep(m_Zik_);
+  p_developer_->samplingStep(m_Zik_);
   updateLabels();
 }
 void Model::initializeModel()

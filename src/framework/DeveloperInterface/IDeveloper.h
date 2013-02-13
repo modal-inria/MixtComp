@@ -10,9 +10,9 @@ class IDeveloper
   public:
     IDeveloper();
     virtual void initializeStep(double** ) = 0;
-    virtual void imputationStep(double* ) {/**Do nothing by default*/}
+    virtual void imputationStep(double*, double** ) {/**Do nothing by default*/}
     virtual void samplingStep(double*, double**) = 0;
-    virtual void paramUpdateStep(double** ) = 0;
+    virtual void paramUpdateStep(double*,double** ) = 0;
     virtual void finalizeStep() {/**Do nothing by default*/}
     virtual double posteriorProbabilty(int sample_num,int Cluster_num) = 0;
     virtual double** allPosteriorProbabilties();

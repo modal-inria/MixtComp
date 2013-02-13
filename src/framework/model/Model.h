@@ -17,8 +17,8 @@ class Model
     ~Model();
   protected:
     IDeveloper *p_developer_;
-    double **m_Tik_, **m_Zik;
-    double *v_Pie;
+    double **m_Tik_, **m_Zik_;
+    double *v_Piek_;
 };
 
 

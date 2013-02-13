@@ -27,10 +27,28 @@ MixtCompFacade::~MixtCompFacade()
     delete p_developer_;
     p_developer_ = NULL;
   }
+
+  for (int i = 0; i < v_developer_.size(); ++i) {
+    if(v_developer_[i]) {
+      delete v_developer_[i];
+      v_developer_[i] = NULL;
+    }
+  }
 }
 
 void MixtCompFacade::instantiateFramework(){
-  //TODO creation of p_developer_
+  //TODO creation of v_developer_
+  for(MixtureLaw law: info.mixturelawlist_){
+    switch (law) {
+      case multinomial_:
+
+        break;
+      default:
+        break;
+    }
+  }
+
+  p_developer_ = new CompositeDeveloper(v_developer_);
   //create model
   p_model_ = new Model();
   //create algorithm

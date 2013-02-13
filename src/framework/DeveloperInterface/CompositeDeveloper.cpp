@@ -1,13 +1,14 @@
 #include "CompositeDeveloper.h"
 
-CompositeDeveloper::CompositeDeveloper()
-{
+CompositeDeveloper::CompositeDeveloper() {
   // TODO Auto-generated constructor stub
 }
 
+CompositeDeveloper::CompositeDeveloper(std::vector<IDeveloper*> developerlist) {
+  v_Developer_ = developerlist;
+}
 
-CompositeDeveloper::~CompositeDeveloper()
-{
+CompositeDeveloper::~CompositeDeveloper() {
   // TODO Auto-generated constructor stub
 }
 
@@ -21,10 +22,10 @@ void CompositeDeveloper::initializeStep() {
   }
 }
 
-void CompositeDeveloper::imputationStep()
+void CompositeDeveloper::imputationStep(double *pie,double **cond_prob)
 {
   for (int i = 0; i < v_Developer_.size(); ++i) {
-    v_Developer_[i]->imputationStep();
+    v_Developer_[i]->imputationStep(pie,cond_prob);
   }
 }
 
@@ -35,10 +36,10 @@ void CompositeDeveloper::samplingStep(double *pie,double **cond_prob)
   }
 }
 
-void CompositeDeveloper::paramUpdateStep()
+void CompositeDeveloper::paramUpdateStep(double *pie,double **cond_prob)
 {
   for (int i = 0; i < v_Developer_.size(); ++i) {
-    v_Developer_[i]->paramUpdateStep();
+    v_Developer_[i]->paramUpdateStep(pie,cond_prob);
   }
 }
 

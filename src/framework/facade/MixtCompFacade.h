@@ -40,6 +40,7 @@ class MixtCompFacade
     ~MixtCompFacade();
   protected:
     IDeveloper *p_developer_ = NULL;
+    std::vector<IDeveloper*> v_developer_;
     IAlgo *p_algo_ = NULL;
     Model *p_model_ = NULL;
     IStrategy *p_strategy_ = NULL;
