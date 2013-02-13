@@ -10,44 +10,192 @@
 \tableofcontents
 
 \begin{abstract}
-This is a mini-report for global architecture of MixComp. We will make use of two terms "framework" and "developer". The framework provides a unified development environment Whereas developer will refer to the coding part that will make use of the framework (without modifying the framework) to realize new mixture laws. In practice, this is just a separation of Interface (framework) and Implementation (developer).  
+This is a mini-report for global architecture of MixComp. We will make use of two terms
+"framework" and "developer". The framework provides a unified development
+environment Whereas developer will refer to the coding part that will make use of
+the framework (without modifying the framework) to realize new mixture laws. In
+practice, this is just a separation of Interface (framework) and Implementation (developer).
 \end{abstract}
 \section{Framework Introduction}
-The idea of unified framework is to integrate the existing and future clustering models. The things that can be expected from the framework are:
+The idea of unified framework is to integrate the existing and future clustering models.
+The things that can be expected from the framework are:
 \begin{enumerate}
 \item Unified environment for composite mixture model based on the independence assumption.
-\item Abstract(Interface) plug-in class that must be derived by developer to develop a new mixture law and data handling.
+\item Abstract(Interface) plug-in class that must be derived by developer to develop a
+new mixture law and data handling.
 \item Facilitate creation of Rpackage, Web Interface, GUI and other High level functionalities.
 \item Facilitate parallelization using distributed and shared memory models.
 \item Take input from user and run the whole software.
 \end{enumerate}
 
-The developer is not expected to change the functionalities provided by this framework but can only provide concrete behavior to these functionalities. Any new functionalities should be first introduced in the framework. Hence the framework is expected to evolve with time. The developer is only expected to provide all the low level implementations needed by the framework without worrying about how these functionalities will be brought together to realize a composite mixture model. Hence in short, the developer can concentrate on development of existing and new mixture laws without worrying about how to run them in integrated(composite) environment. The developer is free to chose it's development environment (including numerical libraries for example STK++, Eigen, Lapack or anything more suitable to developer needs) and in no way will be restricted by framework. For example, a developer can re-factor their existing codes and fit them into the framework (Quentin existing codes will be a good test for it) or one can re-implement from scratch  using this framework (development of simple models including Bernoulli and Gaussian(with diagonal co-variance matrix) with Serge on STK++ platform will be a good test for it). This is the most interesting feature of this architecture as it will allow to independently develop new models. 
+The developer is not expected to change the functionalities provided by this framework
+but can only provide concrete behavior to these functionalities. Any new functionalities
+should be first introduced in the framework. Hence the framework is expected to evolve
+with time. The developer is only expected to provide all the low level implementations
+needed by the framework without worrying about how these functionalities will be
+brought together to realize a composite mixture model. Hence in short, the developer
+can concentrate on development of existing and new mixture laws without worrying
+about how to run them in integrated(composite) environment. The developer is free
+to chose it's development environment (including numerical libraries for example
+STK++, Eigen, Lapack or anything more suitable to developer needs) and in no way
+will be restricted by framework. For example, a developer can re-factor their
+existing codes and fit them into the framework (Quentin existing codes will be
+a good test for it) or one can re-implement from scratch  using this framework
+(development of simple models including Bernoulli and Gaussian(with diagonal
+co-variance matrix) with Serge on STK++ platform will be a good test for it).
+This is the most interesting feature of this architecture as it will allow to
+independently develop new models.
 
 \section{Plug-in Specification}
 
-Below are the Interface methods that will (hopefully) allow to develop all the kinds of existing and new mixture laws that are based on SEM-gibbs algorithm. The functions ending with "() = 0" must be defined by the developer of new mixture law. The functions ending with "() \{\}" do nothing by default and the functions ending with "()" will be implemented in framework (the developer can of-course overwrite them in some cases for performance reasons.)
+Below are the Interface methods that will (hopefully) allow to develop all the
+kinds of existing and new mixture laws that are based on SEM-gibbs algorithm.
+The functions ending with "() = 0" must be defined by the developer of new mixture
+law. The functions ending with "() \{\}" do nothing by default and the functions
+ending with "()" will be implemented in framework (the developer can of-course
+overwrite them in some cases for performance reasons.)
 \begin{itemize}
 \item {\bf virtual void initializeStep(double** ) = 0} \\
-This function must be use for initialization stuffs including initialize of all the parameters. The function accepts one argument for randomly initialized class labels. This method will be called only once in the very beginning. 
+This function must be use for initialization stuffs including initialize of all
+the parameters. The function accepts one argument for randomly initialized class
+labels. This method will be called only once in the very beginning.
 \item {\bf virtual void imputationStep(double* ) \{\}}\\
 This function should be used for Imputation of data. The function accepts one argument for proportions.
 \item {\bf virtual void samplingStep(double*,double**) = 0} \\
-This function must be used for simulation of all the latent variables and/or missing data  excluding class labels. The class labels will be simulated by the framework itself because to do so we have to take into account all the mixture laws. The function accepts two arguments, one for proportions and one for class labels (or conditional probabilities).
+This function must be used for simulation of all the latent variables and/or missing data
+excluding class labels. The class labels will be simulated by the framework itself because to do so
+we have to take into account all the mixture laws. The function accepts two arguments, one for
+proportions and one for class labels (or conditional probabilities).
 \item {\bf virtual void paramUpdateStep(double**) = 0}\\
-This function is equivalent to Mstep. The function accepts one argument for class labels (or conditional probabilities). This function must be defined by developer to update parameters. 
+This function is equivalent to Mstep. The function accepts one argument for class labels
+(or conditional probabilities). This function must be defined by developer to update parameters.
 \item {\bf virtual void finalizeStep() \{\}}\\
-This step can be used by developer to finalize any thing. It will be called only once after we finish running the SEM-gibbs algorithm.
+This step can be used by developer to finalize any thing. It will be called only once after we
+finish running the SEM-gibbs algorithm.
 \item {\bf virtual double posteriorProbability(int sample\_num,int Cluster\_num) = 0}\\
-This function must be defined by developer to return the probability for corresponding sample and cluster. 
+This function must be defined by developer to return the probability for corresponding sample and cluster.
 \item {\bf virtual double** allPosteriorProbabilties()}\\
-This function will be defined in framework using {\bf posteriorProbability} function, but developer can override this function for performance reasons.
+This function will be defined in framework using {\bf posteriorProbability} function, but developer
+can override this function for performance reasons.
 \item {\bf virtual double logLikelihood() const = 0}\\
 This will return the likelihood value to be used by selection criteria.
 \item {\bf virtual int freeParameters() const = 0}\\
 This will be used to return number of free parameters to be used by selection criteria.
 \end{itemize}
 
-I have intentionally excluded the notion of Estep, Mstep, Sstep and Cstep to avoid any misunderstandings for the developer.  These names will be used inside the framework to make it generic enough to expand for future.    
-   
-\end{document}          
+I have intentionally excluded the notion of Estep, Mstep, Sstep and Cstep to avoid any
+misunderstandings for the developer.  These names will be used inside the framework to make
+it generic enough to expand for future.
+
+\section{stk++ Statistical Models}
+
+A (multivariate) statistical model in stk++ is a
+
+
+\appendix
+
+\section{Coding conventions}
+
+For the coding we use the java coding convention. All data members
+are defined with an underscore at the end of their name, like \verb+data_+.
+
+Data members referring to pointer start with \verb+p_+
+
+All alternatives should be enclosed in \verb+enum+.
+
+The notations proposed in this document can be modified if needed
+or enclosed in namespace in order to avoid name collision.
+
+
+\section{Components behaviors}
+\subsection{Algorithms}
+
+The algorithms will be:
+\begin{verbatim}
+enum Algo
+{
+  em_,
+  cem_,
+  sem_,
+  mcem_,
+  exact_
+}
+\end{verbatim}
+
+The priority is to implement the \verb+*em+ versions, the \verb+exact_+ is just there in case of, but
+should not be implemented. Should we add stochastic minimization algorithms ?
+
+\subsection{Stopping criteria}
+
+The stopping criteria will be:
+\begin{verbatim}
+enum StopCriteria
+{
+  deltaLnLikelihood_,
+  deltaPostProbabilities_,
+  deltaParameters_,
+  nbIterMax_
+}
+\end{verbatim}
+It should be possible to mix different criteria, for example
+\verb+deltaLnLikelihood_|nbIterMax_+ mean that we want to stop the iteration when one
+of the criteria is true.
+
+\subsection{Data initialization}
+
+The initialization of the algorithm will be:
+\begin{verbatim}
+enum Initialization
+{
+  randomPartition_,
+  randomParameters_,
+  givenPartition_,
+  givenPosteriorProbabiblity_,
+  givenParameters_
+}
+\end{verbatim}
+
+Did i forget a method for initialization ? The random cases are the priority.
+In case of heterogeneous distributions it will be difficult to find a way for initialization with
+given parameters.
+
+\subsection{Strategies}
+
+A strategy is composed of three parts:
+\begin{enumerate}
+  \item multiple initializations,
+  \item for each initialization a short run,
+  \item A long run.
+\end{enumerate}
+
+\subsubsection{short runs}
+
+A short run will be an arbitrary number of sequence \verb+(Algo_, StopCriteria)+. For example:
+\begin{verbatim}
+{(sem_, 1000), (cem_, 0.01|1000)}, {(em, 0.01)}
+\end{verbatim}
+mean that in a short run, there is 1000 iterations of the SEM algorithm, and at most 1000 iterations
+of CEM that will be stopped  if some other criterion have a delta less than 0.01 and finally iterations of the EM
+until the delta of some criteria is less than 0.01.
+
+\subsubsection{long run}
+
+A long run is initialized with the better of the short run and a StopCriteria.
+If there is no short run, with an initialization.
+
+\subsection{Model Selection Criteria}
+The model criteria will be:
+\begin{verbatim}
+enum Criteria
+{
+  aic_,
+  bic_,
+  icl_,
+  cv_,
+  penExtern_
+}
+\end{verbatim}
+It should be possible to let an user to define its own penalization criteria (\verb+penExtern_+ option).
+Should we add cross-validation ?
+
+\end{document}
