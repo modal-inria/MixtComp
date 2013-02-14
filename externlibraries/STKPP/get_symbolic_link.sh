@@ -25,7 +25,13 @@ for project in ${projects[@]}
 do
 make_symbolic_link_for_projects ../../../stkpp/projects/$project/include $project
 make_symbolic_link_for_projects ../../../stkpp/projects/$project/src $project
+#symbolic link for cmakefiles inside project
+ln -s ../../../../../stkpp/projects/$project/CMakeLists.txt ./projects/$project/CMakeLists.txt
 done
 
 #create symbolic link for headers
 make_symbolic_link_for_include ../../../stkpp/include
+
+#create symbolic link for other cmakefiles
+ln -s ../../../../stkpp/projects/CMakeLists.txt ./projects/CMakeLists.txt
+ln -s ../../../stkpp/CMakeLists.txt CMakeLists.txt
