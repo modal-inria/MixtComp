@@ -1,0 +1,1 @@
+../../../../../../stkpp/projects/STatistiK/include/STK_Law_IMultiLaw.h
