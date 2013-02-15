@@ -33,5 +33,22 @@ done
 make_symbolic_link_for_include ../../../stkpp/include
 
 #create symbolic link for other cmakefiles
-ln -s ../../../../stkpp/projects/CMakeLists.txt ./projects/CMakeLists.txt
-ln -s ../../../stkpp/CMakeLists.txt CMakeLists.txt
+#ln -s ../../../../stkpp/projects/CMakeLists.txt ./projects/CMakeLists.txt
+#ln -s ../../../stkpp/CMakeLists.txt CMakeLists.txt
+
+
+
+#create symbolic link for operators and product inside Arrays project
+
+function make_symbolic_link_for_others_in_arrays
+{
+# loop over th files
+for file in $1/*
+do 
+link=./projects/Arrays/include/$(basename $1)/$(basename $file)
+ln -s ../../../../$file $link
+done
+}
+
+make_symbolic_link_for_others_in_arrays ../../../stkpp/projects/Arrays/include/operators
+make_symbolic_link_for_others_in_arrays ../../../stkpp/projects/Arrays/include/product
