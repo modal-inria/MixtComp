@@ -30,7 +30,7 @@ class MixtureBridge: public IDeveloper
     virtual void imputationStep(double*, double** )
     {/**Do nothing by default*/}
 
-    virtual void samplingStep(double*, double**) = 0;
+    virtual void samplingStep(double*, double**) {}
     virtual void paramUpdateStep(double* p_prop, double** p_tik)
     {
       STK::CArray<double, STK::Arrays::vector_, STK::UnknownSize, 1>  prop(p_prop, nbCluster_);
