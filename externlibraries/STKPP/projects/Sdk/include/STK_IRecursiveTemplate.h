@@ -1,1 +1,0 @@
-../../../../../../stkpp/projects/Sdk/include/STK_IRecursiveTemplate.h
