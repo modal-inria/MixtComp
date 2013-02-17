@@ -1,1 +1,0 @@
-../../../../../../stkpp/projects/STatistiK/include/STK_Law_IUnivLaw.h

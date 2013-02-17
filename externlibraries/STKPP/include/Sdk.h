@@ -1,1 +1,0 @@
-../../../../stkpp/include/Sdk.h

@@ -1,1 +1,0 @@
-../../../../../stkpp/projects/Reduct/CMakeLists.txt

@@ -1,1 +1,0 @@
-../../../../../../stkpp/projects/StatModels/include/STK_JointBernoulliModel.h

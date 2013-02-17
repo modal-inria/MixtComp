@@ -1,1 +1,0 @@
-../../../../../stkpp/projects/STatistiK/CMakeLists.txt

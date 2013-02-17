@@ -1,1 +1,0 @@
-../../../../../../stkpp/projects/STKernel/include/STK_Binary.h

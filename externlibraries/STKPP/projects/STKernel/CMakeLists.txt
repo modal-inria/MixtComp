@@ -1,1 +1,0 @@
-../../../../../stkpp/projects/STKernel/CMakeLists.txt

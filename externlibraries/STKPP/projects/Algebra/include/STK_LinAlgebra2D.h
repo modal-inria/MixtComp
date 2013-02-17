@@ -1,1 +1,0 @@
-../../../../../../stkpp/projects/Algebra/include/STK_LinAlgebra2D.h

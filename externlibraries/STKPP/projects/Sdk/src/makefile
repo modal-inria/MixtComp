@@ -1,1 +1,0 @@
-../../../../../../stkpp/projects/Sdk/src/makefile

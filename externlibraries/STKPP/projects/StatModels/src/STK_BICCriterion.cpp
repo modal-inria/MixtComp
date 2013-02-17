@@ -1,1 +1,0 @@
-../../../../../../stkpp/projects/StatModels/src/STK_BICCriterion.cpp

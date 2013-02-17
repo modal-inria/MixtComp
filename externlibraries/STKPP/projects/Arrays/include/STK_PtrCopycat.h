@@ -1,1 +1,0 @@
-../../../../../../stkpp/projects/Arrays/include/STK_PtrCopycat.h
