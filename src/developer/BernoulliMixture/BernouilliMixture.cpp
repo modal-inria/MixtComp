@@ -6,5 +6,4 @@
 
 void BernouilliMixture::writeParameters(std::ostream& os)
 {
-    ;
 }

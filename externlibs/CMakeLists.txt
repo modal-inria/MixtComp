@@ -1,2 +1,2 @@
 #Build STKPP library
-add_subdirectory(STKPP)
+add_subdirectory(stkpp)

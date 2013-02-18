@@ -8,6 +8,7 @@
 /** @brief
  *
  */
+#include "StkppBridge/MixtureBridge.h"
 class BernouilliMixture: public MixtureBridge<STK::JointBernoulliModel<STK::Array2D<STK::Binary> > >
 {
   public:
