@@ -14,6 +14,7 @@
  *  For mixture models not using stk++ the developer will get direct access to
  *  the data  using the @c p_data() method]
  */
+#include "framework/DeveloperInterface/IDeveloper.h"
 template<class MultiStatModel>
 class MixtureBridge: public IDeveloper
 {
