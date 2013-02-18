@@ -1,6 +1,8 @@
 #ifndef MODEL_H_
 #define MODEL_H_
-#include "DeveloperInterface/IDeveloper.h"
+#include "framework/DeveloperInterface/IDeveloper.h"
+class IDeveloper;
+
 class Model
 {
   public:
@@ -13,12 +15,18 @@ class Model
     void initializeLabels();
     void mStep();
     void finalizeModel();
-    void setDeveloper(IDeveloper *);
+    void setDeveloper(IDeveloper*);
+    inline int nbCluster() const {return nbcluster_;}
+    inline double** conditionalProbabilities(){return m_Tik_;}
+    inline int* classLabels(){return v_Zi_;}
+    inline double* proportions(){return v_Pie_;}
     ~Model();
   protected:
     IDeveloper *p_developer_;
-    double **m_Tik_, **m_Zik_;
-    double *v_Piek_;
+    double **m_Tik_;
+    int* v_Zi_;
+    double *v_Pie_;
+    int nbcluster_;
 };
 
 

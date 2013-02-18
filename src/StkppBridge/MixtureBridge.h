@@ -15,12 +15,13 @@
  *  the data  using the @c p_data() method]
  */
 #include "framework/DeveloperInterface/IDeveloper.h"
+#include "stkpp/include/STKpp.h"
 template<class MultiStatModel>
 class MixtureBridge: public IDeveloper
 {
   public:
-    MixtureBridge() : nbCluster_(this->nbCluster())
-    { mixture_ = new MultiStatModel[this->nbCluster()];}
+    MixtureBridge() : nbCluster_(nbCluster())
+    { mixture_ = new MultiStatModel[nbCluster()];}
 
     virtual ~MixtureBridge()
     { if (mixture_) delete[] mixture_; }
@@ -38,17 +39,14 @@ class MixtureBridge: public IDeveloper
     /** Sample missing values */
     virtual void samplingStep(double*, double**) {/**Do nothing by default*/}
 
-<<<<<<< .mine
     /** M step. [TODO: remove ptr on mixture proportions p_prop].
      *  For each mixture component we estimate the parameters using
      *  the t_ik/z_ik as weights.
      **/
-=======
     virtual void imputationStep(double*, double** )
     {/**Do nothing by default*/}
 
     virtual void samplingStep(double*, double**) {}
->>>>>>> .r26
     virtual void paramUpdateStep(double* p_prop, double** p_tik)
     {
       // build a Wrapper around the t_ik/z_ik

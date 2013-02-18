@@ -5,6 +5,7 @@
  */
 #include <fstream>
 #include <vector>
+#include "framework/model/Model.h"
 class IDeveloper
 {
   public:
@@ -22,7 +23,13 @@ class IDeveloper
     virtual void setDataFromFile(std::string filename){/*TODO Throw exception by default*/}
     virtual void writeParameters(std::ostream&) = 0;
     static std::vector<std::vector<std::string> > readDataFromFile(std::string filename,char sep);
+    int nbCluster() const {return p_model_->nbCluster();}
+    double** conditionalProbabilities(){return p_model_->conditionalProbabilities();}
+    int* classLabels(){return p_model_->classLabels();}
+    double* proportions(){return p_model_->proportions();}
     virtual ~IDeveloper();
+  private:
+    Model * p_model_;
 };
 
 #endif /* IDeveloper_H_ */

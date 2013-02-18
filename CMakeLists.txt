@@ -14,6 +14,7 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/binaries)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 include_directories(src)
+include_directories(externlibs)
 add_subdirectory(externlibs)
 add_subdirectory(src)
 #add_subdirectory(examples)
