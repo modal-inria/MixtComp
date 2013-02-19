@@ -54,10 +54,10 @@ void MixtCompFacade::instantiateFramework(){
   //create algorithm
   switch (Algo) {
     case semgibbs_:
-      p_algo_ = new SEMGibbs();
+      p_algo_ = new SEMGibbs(info_.nbiterations_,info_.nbtry_);
       break;
     default:
-      p_algo_ = new SEMGibbs();
+      p_algo_ = new SEMGibbs(info_.nbiterations_,info_.nbtry_);
       break;
   }
   //create strategy

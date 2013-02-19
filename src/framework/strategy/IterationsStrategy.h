@@ -7,11 +7,11 @@
 class IterationsStrategy : public IStrategy
 {
   public:
-    IterationsStrategy(int);
+    IterationsStrategy(int,int);
     virtual void run();
     virtual ~IterationsStrategy();
   protected:
-    int iterations_;
+    int iterations_,nbtry_;
 };
 
 #endif /* ITERATIONSSTRATEGY_H_ */

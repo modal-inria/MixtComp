@@ -22,24 +22,24 @@ void CompositeDeveloper::initializeStep() {
   }
 }
 
-void CompositeDeveloper::imputationStep(double *pie,double **cond_prob)
+void CompositeDeveloper::imputationStep()
 {
   for (int i = 0; i < v_Developer_.size(); ++i) {
-    v_Developer_[i]->imputationStep(pie,cond_prob);
+    v_Developer_[i]->imputationStep();
   }
 }
 
-void CompositeDeveloper::samplingStep(double *pie,double **cond_prob)
+void CompositeDeveloper::samplingStep()
 {
   for (int i = 0; i < v_Developer_.size(); ++i) {
-    v_Developer_[i]->samplingStep(pie,cond_prob);
+    v_Developer_[i]->samplingStep();
   }
 }
 
-void CompositeDeveloper::paramUpdateStep(double *pie,double **cond_prob)
+void CompositeDeveloper::paramUpdateStep()
 {
   for (int i = 0; i < v_Developer_.size(); ++i) {
-    v_Developer_[i]->paramUpdateStep(pie,cond_prob);
+    v_Developer_[i]->paramUpdateStep();
   }
 }
 

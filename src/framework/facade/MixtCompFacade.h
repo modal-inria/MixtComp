@@ -28,7 +28,8 @@ struct FrameworkInfo{
   std::initializer_list<MixtureLaw> mixturelawlist_;
   Algo algorithm_;
   strategy strategy_;
-  int iterations_;
+  int nbiterations_;
+  int nbtry_;
 };
 
 class MixtCompFacade
@@ -48,15 +49,10 @@ class MixtCompFacade
 };
 
 inline void MixtCompFacade::run(){
-  //Prepare and initialize the statistical model
-  p_model_->initializeModel();
   //Run the algorithm using strategy on statistical model
   p_strategy_->run();
-  //Finalize the statistical model
-  p_model_->finalize();
   //p_developer_ now have all the estimated parameters and result
   /*************************************************************/
-
   //print parameters to console
   p_developer_->writeParameters(std::cout);
 }

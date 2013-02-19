@@ -20,7 +20,7 @@ template<class MultiStatModel>
 class MixtureBridge: public IDeveloper
 {
   public:
-    MixtureBridge() : nbCluster_(nbCluster())
+    MixtureBridge()
     { mixture_ = new MultiStatModel[nbCluster()];}
 
     virtual ~MixtureBridge()
@@ -28,29 +28,25 @@ class MixtureBridge: public IDeveloper
     /** Initialization step. In this implementation, perform a
      *  M step using the inial t_ik/ziK.
      **/
-    virtual void initializeStep(double** p_tik)
+    virtual void initializeStep()
     {
-      STK::Array2D<double>  tik(p_tik, STK::Range(nbSample_), STK::Range(nbCluster_));
+      STK::Array2D<double>  tik(conditionalProbabilities(), STK::Range(nbSample_), STK::Range(nbCluster()));
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
       { mixture_[k].run(tik.col(k));}
     }
     /** impute missing values */
-    virtual void imputationStep(double*, double** ) {/**Do nothing by default*/}
+    virtual void imputationStep() {/**Do nothing by default*/}
     /** Sample missing values */
-    virtual void samplingStep(double*, double**) {/**Do nothing by default*/}
+    virtual void samplingStep() {/**Do nothing by default*/}
 
     /** M step. [TODO: remove ptr on mixture proportions p_prop].
      *  For each mixture component we estimate the parameters using
      *  the t_ik/z_ik as weights.
      **/
-    virtual void imputationStep(double*, double** )
-    {/**Do nothing by default*/}
-
-    virtual void samplingStep(double*, double**) {}
-    virtual void paramUpdateStep(double* p_prop, double** p_tik)
+    virtual void paramUpdateStep()
     {
       // build a Wrapper around the t_ik/z_ik
-      STK::Array2D<double>  tik(p_tik, STK::Range(0,nbSample_-1, true), STK::Range(0,nbCluster_-1, true));
+      STK::Array2D<double>  tik(conditionalProbabilities(), STK::Range(0,nbSample_-1, true), STK::Range(0,nbCluster()-1, true));
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
       { mixture_[k].run(tik.col(k));}
     }
@@ -68,7 +64,7 @@ class MixtureBridge: public IDeveloper
     virtual double logLikelihood() const
     {
       double sum=0;
-      for (int k= 0; k < nbCluster_; ++k)
+      for (int k= 0; k < nbCluster(); ++k)
       { sum+=mixture_[k].lnLikelihood();}
       return sum;
     }
@@ -77,7 +73,7 @@ class MixtureBridge: public IDeveloper
     virtual int freeParameters() const
     {
       int sum=0;
-      for (int k= 0; k < nbCluster_; ++k)
+      for (int k= 0; k < nbCluster(); ++k)
       { sum+=mixture_[k].nbFreeParameters();}
       return sum;
     }
@@ -85,9 +81,6 @@ class MixtureBridge: public IDeveloper
   protected:
     MultiStatModel* mixture_;
 
-  private:
-    int nbCluster_;
-    int nbSample_;
 };
 
 #endif /* MIXTUREBRIDGE_H_ */
