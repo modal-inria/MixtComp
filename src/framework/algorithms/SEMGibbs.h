@@ -3,12 +3,12 @@
 /**@file SEMGibbs.h
  * @brief 
  */
-class IAlgo;
+#include "IAlgo.h"
 class SEMGibbs : public IAlgo
 {
   public:
     SEMGibbs();
-    virtual void run();
+    virtual void run(Model*);
     virtual ~SEMGibbs();
 };
 

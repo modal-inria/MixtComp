@@ -9,10 +9,10 @@ class IStrategy
 {
   public:
     IStrategy();
-    void run() = 0;
+    virtual void run() = 0;
     void setAlgo(IAlgo*);
     void setModel(Model*);
-    ~IStrategy();
+    virtual ~IStrategy();
   protected:
     IAlgo *p_algo_;
     Model *p_model_;

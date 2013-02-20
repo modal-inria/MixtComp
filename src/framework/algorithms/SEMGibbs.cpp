@@ -11,8 +11,8 @@ SEMGibbs::~SEMGibbs()
   // TODO Auto-generated destructor stub
 }
 
-void SEMGibbs::run()
+void SEMGibbs::run(Model* p_model)
 {
-  p_model_->seStep();
-  p_model_->mStep();
+  p_model->seStep();
+  p_model->mStep();
 }

@@ -8,11 +8,8 @@ CompositeDeveloper::CompositeDeveloper(std::vector<IDeveloper*> developerlist) {
   v_Developer_ = developerlist;
 }
 
-CompositeDeveloper::~CompositeDeveloper() {
-  // TODO Auto-generated constructor stub
-}
 
-CompositeDeveloper * CompositeDeveloper::clone() const {
+CompositeDeveloper * CompositeDeveloper::clone() {
   return new CompositeDeveloper(this);
 }
 
@@ -49,9 +46,9 @@ void CompositeDeveloper::finalizeStep() {
   }
 }
 
-double CompositeDeveloper::posteriorProbability(int sample_num,int cluster_num) const {
+double CompositeDeveloper::posteriorProbability(int sample_num,int cluster_num) {
   double pdfval = 1.0;
-  for (i = 0; i < v_Developer_.size(); ++i) {
+  for (int i = 0; i < v_Developer_.size(); ++i) {
     pdfval*= v_Developer_[i]->posteriorProbability(sample_num,cluster_num);
   }
   return pdfval;
@@ -70,10 +67,15 @@ double CompositeDeveloper::logLikelihood() const {
   for (int i = 0; i < v_Developer_.size(); ++i) {
     val+= v_Developer_[i]->logLikelihood();
   }
-  return freeparam;
+  return val;
 }
 
-void CompositeDeveloper::writeParameters(std::ostream & out) {
+void CompositeDeveloper::setData() {
+  for (int i = 0; i < v_Developer_.size(); ++i) {
+    v_Developer_[i]->setData();
+  }
+}
+void CompositeDeveloper::writeParameters(std::ostream & out) const {
   for (int i = 0; i < v_Developer_.size(); ++i) {
     v_Developer_[i]->writeParameters(out);
     out<<"*****************************************************\n\n";

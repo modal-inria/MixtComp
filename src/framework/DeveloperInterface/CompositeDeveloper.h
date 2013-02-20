@@ -9,18 +9,18 @@ class CompositeDeveloper: public IDeveloper
     CompositeDeveloper();
     CompositeDeveloper(const CompositeDeveloper *);
     CompositeDeveloper(std::vector<IDeveloper*>);
+    virtual  CompositeDeveloper* clone();
     virtual void initializeStep();
     virtual void imputationStep();
     virtual void samplingStep();
     virtual void paramUpdateStep();
     virtual void finalizeStep();
-    virtual double posteriorProbabilty(int sample_num,int Cluster_num);
+    virtual double posteriorProbability(int sample_num,int Cluster_num);
     virtual double** allPosteriorProbabilties();
     virtual double logLikelihood() const;
     virtual int freeParameters() const;
-    virtual void extractData(std::vector<std::vector<std::string> >,char id);
-    virtual void setDataFromFile(std::string filename);
-    virtual void writeParameters(std::ostream&);
+    virtual void setData();
+    virtual void writeParameters(std::ostream&) const;
   protected:
     std::vector<IDeveloper*> v_Developer_;
 };

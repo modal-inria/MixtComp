@@ -12,16 +12,19 @@ Model::~Model()
   // TODO Auto-generated destructor stub
 }
 
+Model* Model::clone(){
+  // TODO
+}
 void Model::mStep()
 {
-  p_developer_->paramUpdateStep(m_Zik);
+  p_developer_->paramUpdateStep();
 }
 
 void Model::seStep()
 {
-  p_developer_->imputationStep(m_Zik_);
-  p_developer_->samplingStep(m_Zik_);
-  updateLabels();
+  p_developer_->imputationStep();
+  p_developer_->samplingStep();
+  updateModelParameters();
 }
 void Model::initializeModel()
 {
@@ -34,7 +37,7 @@ void Model::finalizeModel()
   p_developer_->finalizeStep();
 }
 
-void Model::updateModalParameters()
+void Model::updateModelParameters()
 {
   // TODO
 }

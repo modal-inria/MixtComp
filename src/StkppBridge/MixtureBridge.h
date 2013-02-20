@@ -57,7 +57,7 @@ class MixtureBridge: public IDeveloper
      *  mixture component and by passing the ith row of the data set stored
      *  in the kth component.
      **/
-    virtual double posteriorProbabilty(int iSample, int kCluster)
+    virtual double posteriorProbability(int iSample, int kCluster)
     { return mixture_[kCluster].law().pdf(mixture_[kCluster].p_data()->row(iSample));}
     /** Compute the logLikelihood by summing the logLikelihood
      *  of the components of the mixture [TODO: ponder by mixing proportions].*/
@@ -77,6 +77,10 @@ class MixtureBridge: public IDeveloper
       { sum+=mixture_[k].nbFreeParameters();}
       return sum;
     }
+
+    virtual void writeParameters(std::ostream& os);
+
+    virtual void setData();
 
   protected:
     MultiStatModel* mixture_;

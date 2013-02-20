@@ -6,6 +6,7 @@ class Model
   public:
     Model();
     void initializeModel();
+    Model* clone();
     void eStep(){/* throw exception*/};
     void seStep();
     void ceStep(){/* throw exception*/};

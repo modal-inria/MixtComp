@@ -1,6 +1,6 @@
 #include "MixtCompFacade.h"
 
-MixtCompFacade::MixtCompFacade()
+MixtCompFacade::MixtCompFacade(FrameworkInfo)
 {
   // TODO Auto-generated constructor stub
 
@@ -38,7 +38,7 @@ MixtCompFacade::~MixtCompFacade()
 
 void MixtCompFacade::instantiateFramework(){
   //TODO creation of v_developer_
-  for(MixtureLaw law: info.mixturelawlist_){
+  for(MixtureLaw law: info_.mixturelawlist_){
     switch (law) {
       case multinomial_:
 
@@ -52,25 +52,25 @@ void MixtCompFacade::instantiateFramework(){
   //create model
   p_model_ = new Model();
   //create algorithm
-  switch (Algo) {
+  switch (info_.algorithm_) {
     case semgibbs_:
-      p_algo_ = new SEMGibbs(info_.nbiterations_,info_.nbtry_);
+      p_algo_ = new SEMGibbs();
       break;
     default:
-      p_algo_ = new SEMGibbs(info_.nbiterations_,info_.nbtry_);
+      p_algo_ = new SEMGibbs();
       break;
   }
   //create strategy
-  switch (strategy) {
+  switch (info_.strategy_) {
     case iterations_:
-      p_strategy_ = new IterationsStrategy();
+      p_strategy_ = new IterationsStrategy(info_.nbiterations_,info_.nbtry_);
       break;
     default:
-      p_strategy_ = new IterationsStrategy();
+      p_strategy_ = new IterationsStrategy(info_.nbiterations_,info_.nbtry_);
       break;
   }
 
   //set various links
-  p_algo_->setModel(p_model_);
   p_strategy_->setAlgo(p_algo_);
+  p_strategy_->setModel(p_model_);
 }

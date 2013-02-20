@@ -1,9 +1,10 @@
 \documentclass[a4paper,11pt]{article}
 \usepackage[utf8x]{inputenc}
 \usepackage{fullpage}
+\usepackage{hyperref}
 
 % Title Page
-\title{Framework Specification: Internals and Externals}
+\title{MixComp Specification: Framework and Developer}
 
 \begin{document}
 \maketitle
@@ -12,17 +13,17 @@
 \begin{abstract}
 This is a mini-report for global architecture of MixComp. We will make use of two terms
 "framework" and "developer". The framework provides a unified development
-environment Whereas developer will refer to the coding part that will make use of
+environment whereas developer will refer to the coding part that will make use of
 the framework (without modifying the framework) to realize new mixture laws. In
-practice, this is just a separation of Interface (framework) and Implementation (developer).
+practice, this is just a separation of Interface (framework) and Implementation (developer). 
 \end{abstract}
 \section{Framework Introduction}
 The idea of unified framework is to integrate the existing and future clustering models.
 The things that can be expected from the framework are:
 \begin{enumerate}
-\item Unified environment for composite mixture model based on the independence assumption.
+\item Unified environment for composite mixture model based on the independence assumption (amongst different mixture models).
 \item Abstract(Interface) plug-in class that must be derived by developer to develop a
-new mixture law and data handling.
+new mixture law.
 \item Facilitate creation of Rpackage, Web Interface, GUI and other High level functionalities.
 \item Facilitate parallelization using distributed and shared memory models.
 \item Take input from user and run the whole software.
@@ -48,27 +49,27 @@ independently develop new models.
 
 \section{Plug-in Specification}
 
-Below are the Interface methods that will (hopefully) allow to develop all the
-kinds of existing and new mixture laws that are based on SEM-gibbs algorithm.
-The functions ending with "() = 0" must be defined by the developer of new mixture
-law. The functions ending with "() \{\}" do nothing by default and the functions
-ending with "()" will be implemented in framework (the developer can of-course
-overwrite them in some cases for performance reasons.)
+The Plug-in specification includes description on how to define a new mixture law using the framework.
+To create a new mixture law, the developer 
+must create a new class inherited from IDeveloper class. The IDeveloper class contains Interface methods that 
+are mostly based on SEM-gibbs algorithm to allow generalization. Most of these methods are abstract, hence the developer must provide
+concrete implementation in the derived class for them.
+The functions ending with "() = 0" are abstract. The functions ending with "() \{\}" do nothing by default and the functions
+ending with "()" are already implemented in framework (the developer can of-course
+overwrite them in some cases for performance reasons.) The following interface functions are available:
 \begin{itemize}
-\item {\bf virtual void initializeStep(double** ) = 0} \\
+\item {\bf virtual void initializeStep() = 0} \\
 This function must be use for initialization stuffs including initialize of all
 the parameters. The function accepts one argument for randomly initialized class
 labels. This method will be called only once in the very beginning.
-\item {\bf virtual void imputationStep(double* ) \{\}}\\
-This function should be used for Imputation of data. The function accepts one argument for proportions.
-\item {\bf virtual void samplingStep(double*,double**) = 0} \\
+\item {\bf virtual void imputationStep() \{\}}\\
+This function should be used for Imputation of data.
+\item {\bf virtual void samplingStep() = 0} \\
 This function must be used for simulation of all the latent variables and/or missing data
 excluding class labels. The class labels will be simulated by the framework itself because to do so
-we have to take into account all the mixture laws. The function accepts two arguments, one for
-proportions and one for class labels (or conditional probabilities).
-\item {\bf virtual void paramUpdateStep(double**) = 0}\\
-This function is equivalent to Mstep. The function accepts one argument for class labels
-(or conditional probabilities). This function must be defined by developer to update parameters.
+we have to take into account all the mixture laws. 
+\item {\bf virtual void paramUpdateStep() = 0}\\
+This function is equivalent to Mstep. This function must be defined by developer to update parameters.
 \item {\bf virtual void finalizeStep() \{\}}\\
 This step can be used by developer to finalize any thing. It will be called only once after we
 finish running the SEM-gibbs algorithm.
@@ -78,15 +79,33 @@ This function must be defined by developer to return the probability for corresp
 This function will be defined in framework using {\bf posteriorProbability} function, but developer
 can override this function for performance reasons.
 \item {\bf virtual double logLikelihood() const = 0}\\
-This will return the likelihood value to be used by selection criteria.
+This should be defined to return the log-likelihood value to be used by selection criteria.
 \item {\bf virtual int freeParameters() const = 0}\\
-This will be used to return number of free parameters to be used by selection criteria.
+This should be used to return the number of free parameters to be used by selection criteria.
+\item {\bf virtual void setData() = 0}\\
+This function must be defined to set the data into your data containers. To facilitate data handling, framework provide templated functions,
+that can be called directly to get the user data. This is defined in more details in section \ref{datahandling}.
 \end{itemize}
 
-I have intentionally excluded the notion of Estep, Mstep, Sstep and Cstep to avoid any
-misunderstandings for the developer.  These names will be used inside the framework to make
-it generic enough to expand for future.
+There is no notion of Estep, Mstep, Sstep and Cstep in the plug-in part. These names will be used inside the framework to make
+it generic enough to expand for future. There are certain functions that are already defined in the IDeveloper 
+class and hence can be called directly inside the inherited class. 
+They are enumerated below:
+\begin{itemize}
+ \item {\bf int nbCluster()}\\
+You should call this function to get the number of clusters.
+\item {\bf double** conditionalProbabilities()}\\
+\item {\bf int* classLabels()}\\
+\item {\bf double* proportions()}\\
+\end{itemize}
 
+The IDeveloper class also contained following member variables, hence you must not redefine/redeclare them inside your inherited class.
+\begin{itemize}
+ \item 
+\end{itemize}
+
+\subsection{Data Handling}
+\label{datahandling}
 \section{stk++ Statistical Models}
 
 A (multivariate) statistical model in stk++ is a

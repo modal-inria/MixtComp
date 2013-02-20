@@ -16,16 +16,18 @@ class IDeveloper
     virtual void samplingStep() = 0;
     virtual void paramUpdateStep() = 0;
     virtual void finalizeStep() {/**Do nothing by default*/}
-    virtual double posteriorProbabilty(int sample_num,int Cluster_num) = 0;
+    virtual double posteriorProbability(int sample_num,int Cluster_num) = 0;
     virtual double** allPosteriorProbabilties();
     virtual double logLikelihood() const = 0;
     virtual int freeParameters() const = 0;
     virtual void setData() = 0;
-    virtual void writeParameters(std::ostream&) = 0;
+    virtual void writeParameters(std::ostream&) const = 0;
+    void setID(char id);
     virtual ~IDeveloper();
   protected:
     int nbSample_,nbVariable_;
-    char id;
+    char ID_;
+
     //protected functions
     int nbCluster() const;
     double** conditionalProbabilities() const;
@@ -35,4 +37,7 @@ class IDeveloper
     Model * p_model_;
 };
 
+inline void IDeveloper::setID(char id){
+  ID_ = id;
+}
 #endif /* IDeveloper_H_ */
