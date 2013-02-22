@@ -80,7 +80,7 @@ class Data{
 template<>
 class Data<double>{
   public:
-    double** getData(char id){
+    double** getData(char id,int& variables_){
       DataHandler* p_datahandler = DataHandler::getInstance();
       std::vector<int> colindex = p_datahandler->colIndex(id);
       samples_ = p_datahandler->nbSamples();
@@ -104,7 +104,7 @@ class Data<double>{
     }
   protected:
     double** data_;
-    int samples_,variables_;
+    int samples_;
 };
 
 
@@ -112,7 +112,7 @@ class Data<double>{
 template<>
 class Data<int>{
   public:
-    int** getData(char id){
+    int** getData(char id,int& variables_){
       DataHandler* p_datahandler = DataHandler::getInstance();
       std::vector<int> colindex = p_datahandler->colIndex(id);
       samples_ = p_datahandler->nbSamples();
@@ -135,13 +135,13 @@ class Data<int>{
     }
   protected:
     int** data_;
-    int samples_,variables_;
+    int samples_;
 };
 
 template<>
 class Data<bool>{
   public:
-    bool** getData(char id){
+    bool** getData(char id,int& variables_){
       DataHandler* p_datahandler = DataHandler::getInstance();
       std::vector<int> colindex = p_datahandler->colIndex(id);
       samples_ = p_datahandler->nbSamples();
@@ -165,13 +165,13 @@ class Data<bool>{
     }
   protected:
     bool** data_;
-    int samples_,variables_;
+    int samples_;
 };
 
 template<>
 class Data<std::string>{
   public:
-    std::string** getData(char id){
+    std::string** getData(char id,int& variables_){
       DataHandler* p_datahandler = DataHandler::getInstance();
       std::vector<int> colindex = p_datahandler->colIndex(id);
       samples_ = p_datahandler->nbSamples();
@@ -195,5 +195,5 @@ class Data<std::string>{
     }
   protected:
     std::string** data_;
-    int samples_,variables_;
+    int samples_;
 };

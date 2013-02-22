@@ -2,6 +2,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage{fullpage}
 \usepackage{hyperref}
+\usepackage{listings}
 
 % Title Page
 \title{MixComp Specification: Framework and Developer}
@@ -51,19 +52,43 @@ independently develop new models.
 
 The Plug-in specification includes description on how to define a new mixture law using the framework.
 To create a new mixture law, the developer 
-must create a new class inherited from IDeveloper class. The IDeveloper class contains Interface methods that 
-are mostly based on SEM-gibbs algorithm to allow generalization. Most of these methods are abstract, hence the developer must provide
-concrete implementation in the derived class for them.
-The functions ending with "() = 0" are abstract. The functions ending with "() \{\}" do nothing by default and the functions
+must create a new class inherited from {\bf IDeveloper} class.
+There are certain functions that are already defined in the {\bf IDeveloper} 
+class and hence can be called directly inside the inherited class. These functions are {\bf protected} and hence cannot be called from outside (publicly). 
+They are enumerated below:
+\begin{itemize}
+ \item {\bf int nbCluster()}\\
+This function will return the number of clusters.
+\item {\bf double** conditionalProbabilities()}\\
+This function will return the conditional probabilities. 
+\item {\bf int* classLabels()}\\
+This function will return the class labels.
+\item {\bf double* proportions()}\\
+This function will return the class proportions.
+\end{itemize}
+
+The above functions must be called whenever you need above variables. This will ensure that all the mixture laws in composite environment should have the same
+values for all the above variables.
+
+The {\bf IDeveloper} class also contained following member variables, hence you must not redefine/redeclare them inside your inherited class as you will inherited these members automatically.
+\begin{itemize}
+ \item {\bf int nbSample\_ : }Number of samples. This value will be automatically set by framework.
+\item {\bf int nbVariable\_ : }Number of variables. This value will be set inside the setData() function as explained in section \ref{datahandling}. 
+\item {\bf char id\_ : }Identification character. This value will be automatically set by framework. 
+\end{itemize}
+
+The {\bf IDeveloper} class contains Interface methods that 
+are mostly based on SEM-gibbs algorithm to allow for generalization. Most of these methods are abstract, hence the developer must provide
+concrete implementation for them in the derived class. The functions ending with "() = 0" are abstract. The functions ending with "() \{\}" do nothing by default and the functions
 ending with "()" are already implemented in framework (the developer can of-course
 overwrite them in some cases for performance reasons.) The following interface functions are available:
 \begin{itemize}
 \item {\bf virtual void initializeStep() = 0} \\
 This function must be use for initialization stuffs including initialize of all
-the parameters. The function accepts one argument for randomly initialized class
-labels. This method will be called only once in the very beginning.
+the parameters. You should call classLabels() function to get the class labels needed to initialize your mixture law parameters.
+This method will be called only once in the very beginning.
 \item {\bf virtual void imputationStep() \{\}}\\
-This function should be used for Imputation of data.
+This function should be used for Imputation of data. 
 \item {\bf virtual void samplingStep() = 0} \\
 This function must be used for simulation of all the latent variables and/or missing data
 excluding class labels. The class labels will be simulated by the framework itself because to do so
@@ -88,28 +113,26 @@ that can be called directly to get the user data. This is defined in more detail
 \end{itemize}
 
 There is no notion of Estep, Mstep, Sstep and Cstep in the plug-in part. These names will be used inside the framework to make
-it generic enough to expand for future. There are certain functions that are already defined in the IDeveloper 
-class and hence can be called directly inside the inherited class. 
-They are enumerated below:
-\begin{itemize}
- \item {\bf int nbCluster()}\\
-You should call this function to get the number of clusters.
-\item {\bf double** conditionalProbabilities()}\\
-\item {\bf int* classLabels()}\\
-\item {\bf double* proportions()}\\
-\end{itemize}
-
-The IDeveloper class also contained following member variables, hence you must not redefine/redeclare them inside your inherited class.
-\begin{itemize}
- \item 
-\end{itemize}
+it generic enough to expand for future. 
 
 \subsection{Data Handling}
+As briefed in previous part, data must be set inside the virtual function {\bf setData()}. The framework provides templated classes for data handling. The 
+psedo code for {\bf setData()} is given below:
+\begin{lstlisting}
+virtual void setData()
+{
+  Data<type> mydatahandler;
+  type** data = mydatahandler.getData(id_,nbVariable_);
+  // Fill up your data container using data pointer
+}
+\end{lstlisting}
+You should replace "type" in above pseudo code with you own data-type which can be {"double", "int", "bool" or "string"}. You don't have to worry about the 
+{\bf id\_} variable as it will be set by framework. Also this function will set the variable {\bf nbVariable\_} as it is passed by reference.
+
 \label{datahandling}
 \section{stk++ Statistical Models}
 
-A (multivariate) statistical model in stk++ is a
-
+{\bf TODO}
 
 \appendix
 
@@ -117,11 +140,9 @@ A (multivariate) statistical model in stk++ is a
 
 For the coding we use the java coding convention. All data members
 are defined with an underscore at the end of their name, like \verb+data_+.
-
-Data members referring to pointer start with \verb+p_+
-
+Data members referring to pointer start with \verb+p_+.
+Data members that are vector should start with \verb+v_+ and that are matrices should begin with \verb+m_+.
 All alternatives should be enclosed in \verb+enum+.
-
 The notations proposed in this document can be modified if needed
 or enclosed in namespace in order to avoid name collision.
 
@@ -129,92 +150,23 @@ or enclosed in namespace in order to avoid name collision.
 \section{Components behaviors}
 \subsection{Algorithms}
 
-The algorithms will be:
+The currently available algorithms are:
 \begin{verbatim}
 enum Algo
 {
-  em_,
-  cem_,
-  sem_,
-  mcem_,
-  exact_
+  semgibbs_
 }
 \end{verbatim}
-
-The priority is to implement the \verb+*em+ versions, the \verb+exact_+ is just there in case of, but
-should not be implemented. Should we add stochastic minimization algorithms ?
-
-\subsection{Stopping criteria}
-
-The stopping criteria will be:
-\begin{verbatim}
-enum StopCriteria
-{
-  deltaLnLikelihood_,
-  deltaPostProbabilities_,
-  deltaParameters_,
-  nbIterMax_
-}
-\end{verbatim}
-It should be possible to mix different criteria, for example
-\verb+deltaLnLikelihood_|nbIterMax_+ mean that we want to stop the iteration when one
-of the criteria is true.
-
-\subsection{Data initialization}
-
-The initialization of the algorithm will be:
-\begin{verbatim}
-enum Initialization
-{
-  randomPartition_,
-  randomParameters_,
-  givenPartition_,
-  givenPosteriorProbabiblity_,
-  givenParameters_
-}
-\end{verbatim}
-
-Did i forget a method for initialization ? The random cases are the priority.
-In case of heterogeneous distributions it will be difficult to find a way for initialization with
-given parameters.
-
-\subsection{Strategies}
-
-A strategy is composed of three parts:
-\begin{enumerate}
-  \item multiple initializations,
-  \item for each initialization a short run,
-  \item A long run.
-\end{enumerate}
-
-\subsubsection{short runs}
-
-A short run will be an arbitrary number of sequence \verb+(Algo_, StopCriteria)+. For example:
-\begin{verbatim}
-{(sem_, 1000), (cem_, 0.01|1000)}, {(em, 0.01)}
-\end{verbatim}
-mean that in a short run, there is 1000 iterations of the SEM algorithm, and at most 1000 iterations
-of CEM that will be stopped  if some other criterion have a delta less than 0.01 and finally iterations of the EM
-until the delta of some criteria is less than 0.01.
-
-\subsubsection{long run}
-
-A long run is initialized with the better of the short run and a StopCriteria.
-If there is no short run, with an initialization.
 
 \subsection{Model Selection Criteria}
-The model criteria will be:
+The model selection criteria are:
 \begin{verbatim}
 enum Criteria
 {
   aic_,
   bic_,
-  icl_,
-  cv_,
-  penExtern_
+  icl_
 }
 \end{verbatim}
-It should be possible to let an user to define its own penalization criteria (\verb+penExtern_+ option).
-Should we add cross-validation ?
 
 \end{document}

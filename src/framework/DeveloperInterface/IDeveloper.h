@@ -26,7 +26,7 @@ class IDeveloper
     virtual ~IDeveloper();
   protected:
     int nbSample_,nbVariable_;
-    char ID_;
+    char id_;
 
     //protected functions
     int nbCluster() const;
@@ -38,6 +38,6 @@ class IDeveloper
 };
 
 inline void IDeveloper::setID(char id){
-  ID_ = id;
+  id_ = id;
 }
 #endif /* IDeveloper_H_ */
