@@ -8,19 +8,19 @@ RankCluster::~RankCluster() {
   // TODO
 }
 
-void RankCluster::initializeStep(double** Zik) {
+void RankCluster::initializeStep() {
   // TODO
 }
 
-void RankCluster::imputationStep(double* Pk, double** Zik) {
+void RankCluster::imputationStep() {
   // TODO
 }
 
-void RankCluster::samplingStep(double* Pk, double** Zik) {
+void RankCluster::samplingStep() {
   // TODO
 }
 
-void RankCluster::paramUpdateStep(double* Pk, double** Zik) {
+void RankCluster::paramUpdateStep() {
   // TODO
 }
 
@@ -28,7 +28,7 @@ void RankCluster::finalizeStep(){
   // TODO
 }
 
-double RankCluster::posteriorProbabilty(int sample_num,int Cluster_num) {
+double RankCluster::posteriorProbabilty() {
   // TODO
 }
 
@@ -41,5 +41,13 @@ double RankCluster::logLikelihood() const {
 }
 
 int RankCluster::freeParameters() const {
+  // TODO
+}
+
+void RankCluster::setData(){
+  // TODO
+}
+
+void RankCluster::writeParameters(ostream& out) const {
   // TODO
 }

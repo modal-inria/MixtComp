@@ -16,16 +16,17 @@ class RankCluster : public IDeveloper
 {
   public:
     RankCluster();
-    virtual void initializeStep(double** Zik);
-    virtual void imputationStep(double* Pk, double** Zik);
-    virtual void samplingStep(double* Pk, double** Zik);
-    virtual void paramUpdateStep(double* Pk, double** Zik);
+    virtual void initializeStep();
+    virtual void imputationStep();
+    virtual void samplingStep();
+    virtual void paramUpdateStep();
     virtual void finalizeStep();
-    virtual double posteriorProbabilty(int sample_num,int Cluster_num);
+    virtual double posteriorProbabilty();
     virtual double** allPosteriorProbabilties();
     virtual double logLikelihood() const;
     virtual int freeParameters() const;
-    virtual void setDataFromFile(std::string filename);
+    virtual void writeParameters(std::ostream&) const;
+    virtual void setData();
     virtual ~RankCluster();
   protected: //or private
     //you can write here function for your own
