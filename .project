@@ -75,4 +75,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>externlibs/stkpp</name>
+			<type>2</type>
+			<location>/home/iovleff/Developpement/workspace/stkpp</location>
+		</link>
+	</linkedResources>
 </projectDescription>
