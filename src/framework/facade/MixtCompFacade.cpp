@@ -51,6 +51,7 @@ void MixtCompFacade::instantiateFramework(){
   p_developer_ = new CompositeDeveloper(v_developer_);
   //create model
   p_model_ = new Model();
+  p_model_->setDeveloper(p_developer_);
   //create algorithm
   switch (info_.algorithm_) {
     case semgibbs_:

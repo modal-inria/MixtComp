@@ -1,4 +1,4 @@
-#include <vector>S
+#include <vector>
 #include "IDeveloper.h"
 
 #ifndef CompositeDeveloper_H_

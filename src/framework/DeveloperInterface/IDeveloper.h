@@ -22,6 +22,7 @@ class IDeveloper
     virtual int freeParameters() const = 0;
     virtual void setData() = 0;
     virtual void writeParameters(std::ostream&) const = 0;
+
     void setID(char id);
     virtual ~IDeveloper();
   protected:

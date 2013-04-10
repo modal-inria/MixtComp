@@ -4,7 +4,10 @@
 Model::Model()
 {
   // TODO Auto-generated constructor stub
+}
 
+Model::Model(const Model& other){
+  // TODO
 }
 
 Model::~Model()
@@ -12,9 +15,6 @@ Model::~Model()
   // TODO Auto-generated destructor stub
 }
 
-Model* Model::clone(){
-  // TODO
-}
 void Model::mStep()
 {
   p_developer_->paramUpdateStep();

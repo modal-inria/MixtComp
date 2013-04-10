@@ -109,7 +109,7 @@ This should be defined to return the log-likelihood value to be used by selectio
 This should be used to return the number of free parameters to be used by selection criteria.
 \item {\bf virtual void setData() = 0}\\
 This function must be defined to set the data into your data containers. To facilitate data handling, framework provide templated functions,
-that can be called directly to get the user data. This is defined in more details in section \ref{datahandling}.
+that can be called directly to get the user data. Data-Handling is explained in more details in section \ref{datahandling}.
 \end{itemize}
 
 There is no notion of Estep, Mstep, Sstep and Cstep in the plug-in part. These names will be used inside the framework to make

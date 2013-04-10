@@ -6,7 +6,7 @@ class Model
   public:
     Model();
     void initializeModel();
-    Model* clone();
+    Model(const Model&);
     void eStep(){/* throw exception*/};
     void seStep();
     void ceStep(){/* throw exception*/};
@@ -18,6 +18,8 @@ class Model
     double** conditionalProbabilities(){return m_Tik_;}
     int* classLabels(){return v_Zi_;}
     double* proportions(){return v_Pie_;}
+    //overload assignment operator
+    Model operator=(const Model& other);
     ~Model();
   protected:
     IDeveloper *p_developer_;
