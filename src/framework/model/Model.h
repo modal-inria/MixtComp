@@ -4,9 +4,9 @@ class IDeveloper;
 class Model
 {
   public:
-    Model();
+    Model(IDeveloper* developer,int nbsample,int nbcluster);
+    Model(const Model*);
     void initializeModel();
-    Model(const Model&);
     void eStep(){/* throw exception*/};
     void seStep();
     void ceStep(){/* throw exception*/};
@@ -14,19 +14,20 @@ class Model
     void finalizeModel();
     void setDeveloper(IDeveloper*);
     double logLikelihood() const;
-    int nbCluster() const {return nbcluster_;}
+    int nbCluster() const {return nbCluster_;}
     double** conditionalProbabilities(){return m_Tik_;}
     int* classLabels(){return v_Zi_;}
     double* proportions(){return v_Pie_;}
-    //overload assignment operator
-    Model operator=(const Model& other);
+    /** overloaded assignment operator*/
+    Model& operator=(const Model&);
     ~Model();
   protected:
     IDeveloper *p_developer_;
     double **m_Tik_;
     int* v_Zi_;
-    double *v_Pie_;
-    int nbcluster_;
+    double* v_Pie_;
+    int nbCluster_;
+    int nbSample_;
     //protected member functions
     void updateModelParameters();
     void randomInitialization();

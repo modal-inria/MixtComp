@@ -10,7 +10,7 @@ IterationsStrategy::~IterationsStrategy() {
 
 void IterationsStrategy::run() {
   double likelihood = -RealMax;
-  Model * currentmodel = new Model(*p_model_);
+  Model * currentmodel = new Model(p_model_);
   for (int i = 0; i < nbtry_; ++i) {
     currentmodel->initializeModel();
     for (int i = 0; i < iterations_; ++i) {

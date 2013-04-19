@@ -11,7 +11,9 @@ class IDeveloper
 {
   public:
     IDeveloper();
+
     virtual void initializeStep() = 0;
+    virtual IDeveloper* clone() = 0;
     virtual void imputationStep() {/**Do nothing by default*/}
     virtual void samplingStep() = 0;
     virtual void paramUpdateStep() = 0;
