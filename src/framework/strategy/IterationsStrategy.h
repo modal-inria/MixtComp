@@ -7,11 +7,11 @@
 class IterationsStrategy : public IStrategy
 {
   public:
-    IterationsStrategy(int,int);
-    virtual void run();
+    IterationsStrategy(int,int,int);
+    virtual void run(IAlgo*,Model*);
     virtual ~IterationsStrategy();
   protected:
-    int iterations_,nbtry_;
+    int iterations_,burnin_,nbtry_;
 };
 
 #endif /* ITERATIONSSTRATEGY_H_ */

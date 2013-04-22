@@ -1,9 +1,7 @@
 #include "framework/model/Model.h"
 #include "IDeveloper.h"
-IDeveloper::IDeveloper()
+IDeveloper::IDeveloper(char id): id_(id)
 {
-  // TODO Auto-generated constructor stub
-
 }
 
 IDeveloper::~IDeveloper()
@@ -11,10 +9,6 @@ IDeveloper::~IDeveloper()
   // TODO Auto-generated destructor stub
 }
 
-
-int IDeveloper::nbCluster() const {
-  return p_model_->nbCluster();
-}
 
 double** IDeveloper::conditionalProbabilities() const {
   return p_model_->conditionalProbabilities();
@@ -25,4 +19,12 @@ int* IDeveloper::classLabels() const {
 
 double* IDeveloper::proportions() const {return
   p_model_->proportions();
+}
+
+int IDeveloper::nbCluster() const {
+  return p_model_->nbCluster();
+}
+
+int IDeveloper::nbSample() const {
+  return p_model_->nbSample();
 }

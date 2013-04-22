@@ -11,10 +11,12 @@ class Model
     void seStep();
     void ceStep(){/* throw exception*/};
     void mStep();
+    void storeIntermediateResults(int iteration);
     void finalizeModel();
     void setDeveloper(IDeveloper*);
     double logLikelihood() const;
     int nbCluster() const {return nbCluster_;}
+    int nbSample() const {return nbSample_;}
     double** conditionalProbabilities(){return m_Tik_;}
     int* classLabels(){return v_Zi_;}
     double* proportions(){return v_Pie_;}
@@ -26,8 +28,9 @@ class Model
     double **m_Tik_;
     int* v_Zi_;
     double* v_Pie_;
-    int nbCluster_;
     int nbSample_;
+    int nbCluster_;
+
     //protected member functions
     void updateModelParameters();
     void randomInitialization();

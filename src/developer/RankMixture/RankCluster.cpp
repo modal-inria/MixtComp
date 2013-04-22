@@ -1,5 +1,4 @@
 #include "RankCluster.h"
-
 #include <cstdlib>
 #include <algorithm>
 #include <string>
@@ -12,14 +11,14 @@
 using namespace std;
 using namespace Eigen;
 
-RankCluster::RankCluster(ArrayXXd const& X,int g, vector<int> const& m, SEMparameters const& param)
+RankCluster::RankCluster(ArrayXXd const& X,int g, vector<int> const& m, SEMparameters const& param,char id)
 	: m_(m),n_(X.rows()),d_(m.size()),g_(g),
       data_(d_,vector<PartialRank> (n_)),
 	  z_(n_),
 	  p_(d_,vector<double>(g_)),
 	  proportion_(g),
 	  mu_(d_,vector<vector<int> > (g_)),
-	  parameter_(param)
+	  parameter_(param),IDeveloper(id)
 {
 	partial_=false;
 	for(int dim(0);dim<d_;dim++)
@@ -38,7 +37,13 @@ RankCluster::RankCluster(ArrayXXd const& X,int g, vector<int> const& m, SEMparam
 
 	conversion2data(X);
 
-
+	//objet pour stocker les resultats des itérations
+  indrang=vector<int>(g_);
+  resP=vector<vector<vector<double> > >(parameter_.maxIt-parameter_.burnAlgo,vector<vector<double> >(d_,vector<double> (g_)));
+  resProp=vector<vector<double> >(parameter_.maxIt-parameter_.burnAlgo,(vector<double> (g_)));
+  resZ=vector<vector<int> >(parameter_.maxIt-parameter_.burnAlgo,vector<int> (n_));
+  resMu=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,mu_);
+  resDonneesPartiel=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,output_.initialPartialRank);
 }
 
 RankCluster::~RankCluster()
@@ -46,7 +51,7 @@ RankCluster::~RankCluster()
   // TODO
 }
 
-void RankCluster::conversion2data(ArrayXXd const& X)
+void RankCluster::conversion2data(vector<vector<int> > const& X)
 {
 	vector<int> indM(d_+1,0);//size of a row of X
 	for(int i(0);i<d_;i++)
@@ -73,7 +78,7 @@ void RankCluster::conversion2data(ArrayXXd const& X)
 
 	        for(int i(indM[dim]);i<indM[dim+1];i++)
 	        {
-	        	data_[dim][j].rank[indiceElement]=X(j,i);
+	        	data_[dim][j].rank[indiceElement]=X[j][i];
 	            if(data_[dim][j].rank[indiceElement]==0)
 	            {
 	            	data_[dim][j].isPartial=true;
@@ -1032,16 +1037,6 @@ void RankCluster::run()
 	if(parameter_.detail)
 		cout<<"Initialization computing time: "<<(double) (t1-t0)/CLOCKS_PER_SEC<<"s"<<endl;
 
-
-	//objet pour stocker les resultats des itérations
-    vector<int> indrang(g_);
-    vector<vector<vector<double> > > resP(parameter_.maxIt-parameter_.burnAlgo,vector<vector<double> >(d_,vector<double> (g_)));
-    vector<vector<double> > resProp(parameter_.maxIt-parameter_.burnAlgo,(vector<double> (g_)));
-    vector<vector<int> > resZ(parameter_.maxIt-parameter_.burnAlgo,vector<int> (n_));
-    vector<vector<vector<vector<int> > > > resMu(parameter_.maxIt-parameter_.burnAlgo,mu_);
-	vector<vector<vector<vector<int> > > > resDonneesPartiel(parameter_.maxIt-parameter_.burnAlgo,output_.initialPartialRank);
-
-
     //algorithme
 	if(parameter_.detail)
 		cout<<"Algorithm"<<endl<<"Iteration"<<endl;
@@ -1148,6 +1143,68 @@ cout<<"compute icl"<<endl;
             }
         }
 
+}
 
+// implementation of interfacing functions
+
+void RankCluster::initializeStep(){
+  initialization();
+}
+
+void RankCluster::samplingStep(){
+  SEstep();
+}
+void RankCluster::paramUpdateStep(){
+  Mstep();
+}
+void RankCluster::storeIntermediateResults(int iteration){
+  resZ[iteration]=z_;
+        for(int l(0);l<d_;l++)
+            for(int k(0);k<g_;k++)
+            {
+                if(p_[l][k]<0.5)
+                {
+                    p_[l][k]=1-p_[l][k];
+                    inverseRang(mu_[l][k]);
+                }
+            }
+
+        for(int k(0);k<g_;k++)
+            indrang[k]=rank2index(mu_[0][k],tab_factorial(m_[0]));
+
+        tri_insertionMulti(indrang,proportion_,p_,mu_,g_,d_);//tri selon les mu pour que 2 3=3 2
+        resP[iteration]=p_;
+        resProp[iteration]=proportion_;
+        resMu[iteration]=mu_;
+
+      for(int dim(0);dim<d_;dim++)
+      {
+        int compteur(0);
+        for(vector<int>::iterator it=indexPartialData_[dim].begin();it!=indexPartialData_[dim].end();it++)
+        {
+          resDonneesPartiel[iteration][dim][compteur]=data_[dim][*it].rank;
+          compteur++;
+        }
+      }
+}
+double RankCluster::posteriorProbability(int sample_num,int Cluster_num){
 
 }
+double** RankCluster::allPosteriorProbabilties(){
+
+}
+double RankCluster::logLikelihood() const{
+
+}
+int RankCluster::freeParameters() const{
+
+}
+void RankCluster::setData(){
+  Data<int> mydatahandler;
+  vector<vector<int> > data = mydatahandler.getData(id_,nbVariable_);
+  conversion2data(data);
+}
+void RankCluster::writeParameters(std::ostream&) const{
+
+}
+

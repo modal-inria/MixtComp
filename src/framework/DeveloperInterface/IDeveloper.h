@@ -10,13 +10,14 @@ class Model;
 class IDeveloper
 {
   public:
-    IDeveloper();
-
+    IDeveloper(){};
+    IDeveloper(char id);
     virtual void initializeStep() = 0;
     virtual IDeveloper* clone() = 0;
     virtual void imputationStep() {/**Do nothing by default*/}
     virtual void samplingStep() = 0;
     virtual void paramUpdateStep() = 0;
+    virtual void storeIntermediateResults(int iteration) {/**Do nothing by default*/}
     virtual void finalizeStep() {/**Do nothing by default*/}
     virtual double posteriorProbability(int sample_num,int Cluster_num) = 0;
     virtual double** allPosteriorProbabilties();
@@ -28,11 +29,12 @@ class IDeveloper
     void setID(char id);
     virtual ~IDeveloper();
   protected:
-    int nbSample_,nbVariable_;
+    int nbVariable_;
     char id_;
 
     //protected functions
     int nbCluster() const;
+    int nbSample() const;
     double** conditionalProbabilities() const;
     int* classLabels() const;
     double* proportions() const;
@@ -43,4 +45,5 @@ class IDeveloper
 inline void IDeveloper::setID(char id){
   id_ = id;
 }
+
 #endif /* IDeveloper_H_ */

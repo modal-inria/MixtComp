@@ -9,20 +9,7 @@ class IStrategy
 {
   public:
     IStrategy();
-    virtual void run() = 0;
-    void setAlgo(IAlgo*);
-    void setModel(Model*);
+    virtual void run(IAlgo*,Model*) = 0;
     virtual ~IStrategy();
-  protected:
-    IAlgo *p_algo_;
-    Model *p_model_;
 };
-
-inline void IStrategy::setAlgo(IAlgo *algo){
-  p_algo_ = algo;
-}
-
-inline void IStrategy::setModel(Model *model){
-  p_model_ = model;
-}
 #endif /* ISTRATEGY_H_ */

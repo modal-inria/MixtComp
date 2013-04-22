@@ -1,9 +1,7 @@
 #include "MixtCompFacade.h"
 
-MixtCompFacade::MixtCompFacade(FrameworkInfo)
+MixtCompFacade::MixtCompFacade(FrameworkInfo& info): info_(info)
 {
-  // TODO Auto-generated constructor stub
-
 }
 
 MixtCompFacade::~MixtCompFacade()
@@ -50,8 +48,7 @@ void MixtCompFacade::instantiateFramework(){
 
   p_developer_ = new CompositeDeveloper(v_developer_);
   //create model
-  p_model_ = new Model();
-  p_model_->setDeveloper(p_developer_);
+  p_model_ = new Model(p_developer_,info_.nbSample_,info_.nbCluster_);
   //create algorithm
   switch (info_.algorithm_) {
     case semgibbs_:
@@ -64,14 +61,10 @@ void MixtCompFacade::instantiateFramework(){
   //create strategy
   switch (info_.strategy_) {
     case iterations_:
-      p_strategy_ = new IterationsStrategy(info_.nbiterations_,info_.nbtry_);
+      p_strategy_ = new IterationsStrategy(info_.nbIterations_,info_.burnin_,info_.nbtry_);
       break;
     default:
-      p_strategy_ = new IterationsStrategy(info_.nbiterations_,info_.nbtry_);
+      p_strategy_ = new IterationsStrategy(info_.nbIterations_,info_.burnin_,info_.nbtry_);
       break;
   }
-
-  //set various links
-  p_strategy_->setAlgo(p_algo_);
-  p_strategy_->setModel(p_model_);
 }

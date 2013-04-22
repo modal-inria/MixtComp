@@ -8,9 +8,10 @@
 #include <set>
 #include <Eigen/Eigen/Dense>
 #include "framework/DeveloperInterface/IDeveloper.h"
+#include "framework/DataHandling/DataHandler.h"
 
 #include "functions.h"
-
+using namespace std;
 // create your own data structures
 struct PartialRank
 {
@@ -59,11 +60,12 @@ struct OutParameters
 class RankCluster: public IDeveloper
 {
 	public:
-		RankCluster(Eigen::ArrayXXd const& X,int g, std::vector<int> const& m, SEMparameters const& param);
+		RankCluster(Eigen::ArrayXXd const& X,int g, std::vector<int> const& m, SEMparameters const& param,char id);
     virtual void initializeStep();
     virtual void imputationStep() {/**Do nothing by default*/}
     virtual void samplingStep();
     virtual void paramUpdateStep();
+    virtual void storeIntermediateResults(int iteration);
     virtual void finalizeStep() {/**Do nothing by default*/}
     virtual double posteriorProbability(int sample_num,int Cluster_num);
     virtual double** allPosteriorProbabilties();
@@ -75,7 +77,7 @@ class RankCluster: public IDeveloper
 		void run();
 
 	protected: //or private
-		void conversion2data(Eigen::ArrayXXd const& X);
+		void conversion2data(vector<vector<int> >const& X);
 		void initialization();
 		void SEstep();
 		void gibbsY(int indexDim);
@@ -93,7 +95,7 @@ class RankCluster: public IDeveloper
 				std::vector<std::vector<std::vector<std::vector<int> > > > const& resMu,std::vector<std::vector<int> > const& resZ,
 				std::vector<std::vector<std::vector<std::vector<int> > > > const& resDonneesPartiel);
 
-	public:
+		//parameters
 		std::vector<int> m_;//contains the size of rank for each dim
 		int n_;//number of individuals
 		int d_;//number of dimension
@@ -107,6 +109,16 @@ class RankCluster: public IDeveloper
 		OutParameters output_;
 		bool partial_;//true if there is partial rank in the data
 		std::vector<std::vector<int> > indexPartialData_;//index of partial data
+
+	  //objet pour stocker les resultats des itérations
+	  vector<int> indrang;
+	  vector<vector<vector<double> > > resP;
+	  vector<vector<double> > resProp;
+	  vector<vector<int> > resZ;
+	  vector<vector<vector<vector<int> > > > resMu;
+	  vector<vector<vector<vector<int> > > > resDonneesPartiel;
+
+
 };
 
 #endif /* RANKCLUSTER_H_ */

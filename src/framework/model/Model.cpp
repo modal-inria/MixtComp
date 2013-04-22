@@ -1,7 +1,8 @@
 #include "framework/DeveloperInterface/IDeveloper.h"
 #include "Model.h"
 
-Model::Model(IDeveloper* developer,int nbsample,int nbcluster) : nbSample_(nbsample),nbCluster_(nbcluster)
+Model::Model(IDeveloper* developer,int nbsample,int nbcluster) : nbSample_(nbsample),
+                                                                 nbCluster_(nbcluster)
 {
   //Allocate memory for developer
   p_developer_ = developer->clone();
@@ -25,12 +26,12 @@ Model::Model(const Model* other){
   nbCluster_ = other->nbCluster_;
 
   //Allocate memory for developer
-  p_developer_ = other->developer->clone();
+  p_developer_ = other->p_developer_->clone();
 
   //Allocate memory for conditional probabilities and copy values
-  m_Tik_ = new double*[nbsample];
-  for (int i = 0; i < nbsample; ++i) {
-    m_Tik_[i] = new double[nbcluster];
+  m_Tik_ = new double*[nbSample_];
+  for (int i = 0; i < nbSample_; ++i) {
+    m_Tik_[i] = new double[nbCluster_];
   }
 
   for (int i = 0; i < nbSample_; ++i) {
@@ -40,13 +41,13 @@ Model::Model(const Model* other){
   }
 
   //Allocate memory for class labels and copy values
-  v_Zi_  = new int[nbsample];
+  v_Zi_  = new int[nbSample_];
 
   for (int i = 0; i < nbSample_; ++i) {
     v_Zi_[i] = other->v_Zi_[i];
   }
   //Allocate memory for row proportions and copy values
-  v_Pie_ = new double[nbcluster];
+  v_Pie_ = new double[nbCluster_];
 
   for (int j = 0; j < nbCluster_; ++j) {
     v_Pie_[j] = other->v_Pie_[j];
@@ -71,6 +72,9 @@ void Model::mStep()
   p_developer_->paramUpdateStep();
 }
 
+void Model::storeIntermediateResults(int iteration){
+  p_developer_->storeIntermediateResults(iteration);
+}
 void Model::seStep()
 {
   p_developer_->imputationStep();
@@ -107,17 +111,17 @@ Model& Model::operator=(const Model& other){
   //copy values for conditional probabilities
   for (int i = 0; i < nbSample_; ++i) {
     for (int j = 0; j < nbCluster_; ++j) {
-      m_Tik_[i][j] = other->m_Tik_[i][j];
+      m_Tik_[i][j] = other.m_Tik_[i][j];
     }
   }
 
   //copy values for class labels
   for (int i = 0; i < nbSample_; ++i) {
-    v_Zi_[i] = other->v_Zi_[i];
+    v_Zi_[i] = other.v_Zi_[i];
   }
   //copy values for row proportions
   for (int j = 0; j < nbCluster_; ++j) {
-    v_Pie_[j] = other->v_Pie_[j];
+    v_Pie_[j] = other.v_Pie_[j];
   }
 
   return *this;
