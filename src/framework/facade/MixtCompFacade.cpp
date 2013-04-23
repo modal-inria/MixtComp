@@ -38,8 +38,8 @@ void MixtCompFacade::instantiateFramework(){
   //TODO creation of v_developer_
   for(MixtureLaw law: info_.mixturelawlist_){
     switch (law) {
-      case multinomial_:
-
+      case rank_:
+        v_developer_.push_back(new RankCluster('R'));
         break;
       default:
         break;

@@ -1,16 +1,31 @@
 #include "CompositeDeveloper.h"
 
 CompositeDeveloper::CompositeDeveloper() {
-  // TODO Auto-generated constructor stub
 }
 
 CompositeDeveloper::CompositeDeveloper(std::vector<IDeveloper*> developerlist) {
-  v_Developer_ = developerlist;
+  for (int i = 0; i < developerlist.size(); ++i) {
+    v_Developer_.push_back(developerlist[i]->clone());
+  }
+}
+
+CompositeDeveloper::~CompositeDeveloper(){
+  for (int i = 0; i < v_Developer_.size(); ++i) {
+    if(v_Developer_[i]!=NULL)
+    {
+      delete v_Developer_[i];
+      v_Developer_[i] = NULL;
+    }
+  }
 }
 
 
 CompositeDeveloper * CompositeDeveloper::clone() {
-  return new CompositeDeveloper(this);
+  CompositeDeveloper* temp = new CompositeDeveloper();
+  for (int i = 0; i < this->v_Developer_.size(); ++i) {
+    temp->v_Developer_.push_back(this->v_Developer_[i]->clone());
+  }
+  return temp;
 }
 
 void CompositeDeveloper::initializeStep() {

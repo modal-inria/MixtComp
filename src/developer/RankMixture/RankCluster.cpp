@@ -1,4 +1,3 @@
-#include "RankCluster.h"
 #include <cstdlib>
 #include <algorithm>
 #include <string>
@@ -6,45 +5,15 @@
 #include <cmath>
 #include <map>
 #include <iostream>
-#include <ctime>
+#include "RankCluster.h"
+//#include "framework/DataHandling/DataHandler.h"
 
 using namespace std;
 using namespace Eigen;
 
-RankCluster::RankCluster(ArrayXXd const& X,int g, vector<int> const& m, SEMparameters const& param,char id)
-	: m_(m),n_(X.rows()),d_(m.size()),g_(g),
-      data_(d_,vector<PartialRank> (n_)),
-	  z_(n_),
-	  p_(d_,vector<double>(g_)),
-	  proportion_(g),
-	  mu_(d_,vector<vector<int> > (g_)),
-	  parameter_(param),IDeveloper(id)
-{
-	partial_=false;
-	for(int dim(0);dim<d_;dim++)
-	{
-		for(int ind(0);ind<n_;ind++)
-		{
-			if(data_[dim][ind].isPartial)
-			{
-				partial_=true;
-				break;
-			}
-		}
-		if(partial_)
-			break;
-	}
-
-	conversion2data(X);
-
-	//objet pour stocker les resultats des itérations
-  indrang=vector<int>(g_);
-  resP=vector<vector<vector<double> > >(parameter_.maxIt-parameter_.burnAlgo,vector<vector<double> >(d_,vector<double> (g_)));
-  resProp=vector<vector<double> >(parameter_.maxIt-parameter_.burnAlgo,(vector<double> (g_)));
-  resZ=vector<vector<int> >(parameter_.maxIt-parameter_.burnAlgo,vector<int> (n_));
-  resMu=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,mu_);
-  resDonneesPartiel=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,output_.initialPartialRank);
-}
+RankCluster::RankCluster(char id)
+	:IDeveloper(id)
+{}
 
 RankCluster::~RankCluster()
 {
@@ -1151,6 +1120,10 @@ void RankCluster::initializeStep(){
   initialization();
 }
 
+RankCluster* RankCluster::clone(){
+  //TODO
+}
+
 void RankCluster::samplingStep(){
   SEstep();
 }
@@ -1200,9 +1173,43 @@ int RankCluster::freeParameters() const{
 
 }
 void RankCluster::setData(){
+
   Data<int> mydatahandler;
   vector<vector<int> > data = mydatahandler.getData(id_,nbVariable_);
+  m_ = mydatahandler.getModality(id_);
+  n_ = data.size();
+  d_ = m_.size();
+  g_ = nbCluster();
+  data_ = vector<vector<PartialRank> >(d_,vector<PartialRank> (n_));
+  z_ = vector<int>(n_);
+  p_ = vector<vector<double> >(d_,vector<double>(g_));
+  proportion_ = vector<double>(g_);
+  mu_ = vector<vector<vector<int> > >(d_,vector<vector<int> > (g_));
+  partial_=false;
+  for(int dim(0);dim<d_;dim++)
+  {
+    for(int ind(0);ind<n_;ind++)
+    {
+      if(data_[dim][ind].isPartial)
+      {
+        partial_=true;
+        break;
+      }
+    }
+    if(partial_)
+      break;
+  }
+
   conversion2data(data);
+
+  //objet pour stocker les resultats des itérations
+  indrang=vector<int>(g_);
+  resP=vector<vector<vector<double> > >(parameter_.maxIt-parameter_.burnAlgo,vector<vector<double> >(d_,vector<double> (g_)));
+  resProp=vector<vector<double> >(parameter_.maxIt-parameter_.burnAlgo,(vector<double> (g_)));
+  resZ=vector<vector<int> >(parameter_.maxIt-parameter_.burnAlgo,vector<int> (n_));
+  resMu=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,mu_);
+  resDonneesPartiel=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,output_.initialPartialRank);
+
 }
 void RankCluster::writeParameters(std::ostream&) const{
 

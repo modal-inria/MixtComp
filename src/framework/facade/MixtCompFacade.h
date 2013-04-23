@@ -12,6 +12,8 @@
 #include "framework/algorithms/SEMGibbs.h"
 #include "framework/strategy/IStrategy.h"
 #include "framework/strategy/IterationsStrategy.h"
+//include various clustering laws available
+#include "developer/RankMixture/RankCluster.h"
 
 enum MixtureLaw{
     gaussian_,

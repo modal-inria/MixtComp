@@ -12,6 +12,7 @@ class IDeveloper
   public:
     IDeveloper(){};
     IDeveloper(char id);
+    void setModel(Model*);
     virtual void initializeStep() = 0;
     virtual IDeveloper* clone() = 0;
     virtual void imputationStep() {/**Do nothing by default*/}
@@ -44,6 +45,10 @@ class IDeveloper
 
 inline void IDeveloper::setID(char id){
   id_ = id;
+}
+
+inline void IDeveloper::setModel(Model* model){
+  p_model_ = model;
 }
 
 #endif /* IDeveloper_H_ */

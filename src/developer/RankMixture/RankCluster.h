@@ -8,7 +8,6 @@
 #include <set>
 #include <Eigen/Eigen/Dense>
 #include "framework/DeveloperInterface/IDeveloper.h"
-#include "framework/DataHandling/DataHandler.h"
 
 #include "functions.h"
 using namespace std;
@@ -60,8 +59,9 @@ struct OutParameters
 class RankCluster: public IDeveloper
 {
 	public:
-		RankCluster(Eigen::ArrayXXd const& X,int g, std::vector<int> const& m, SEMparameters const& param,char id);
-    virtual void initializeStep();
+		RankCluster(char id);
+		virtual RankCluster* clone();
+		virtual void initializeStep();
     virtual void imputationStep() {/**Do nothing by default*/}
     virtual void samplingStep();
     virtual void paramUpdateStep();

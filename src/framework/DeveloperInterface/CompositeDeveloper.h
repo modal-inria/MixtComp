@@ -21,6 +21,7 @@ class CompositeDeveloper: public IDeveloper
     virtual int freeParameters() const;
     virtual void setData();
     virtual void writeParameters(std::ostream&) const;
+    ~CompositeDeveloper();
   protected:
     std::vector<IDeveloper*> v_Developer_;
 };
