@@ -1,2 +1,2 @@
-add_subdirectory(developer)
-add_subdirectory(framework)
+FILE( GLOB_RECURSE src_files *.cpp)
+add_library(MixComp ${src_files})

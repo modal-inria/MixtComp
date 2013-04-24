@@ -10,7 +10,7 @@ class Model;
 class IDeveloper
 {
   public:
-    IDeveloper(){};
+    IDeveloper();
     IDeveloper(char id);
     void setModel(Model*);
     virtual void initializeStep() = 0;
@@ -21,14 +21,13 @@ class IDeveloper
     virtual void storeIntermediateResults(int iteration) {/**Do nothing by default*/}
     virtual void finalizeStep() {/**Do nothing by default*/}
     virtual double posteriorProbability(int sample_num,int Cluster_num) = 0;
-    virtual double** allPosteriorProbabilties();
     virtual double logLikelihood() const = 0;
     virtual int freeParameters() const = 0;
     virtual void setData() = 0;
     virtual void writeParameters(std::ostream&) const = 0;
 
     void setID(char id);
-    virtual ~IDeveloper();
+    virtual ~IDeveloper(){};
   protected:
     int nbVariable_;
     char id_;

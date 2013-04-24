@@ -16,7 +16,6 @@ class CompositeDeveloper: public IDeveloper
     virtual void paramUpdateStep();
     virtual void finalizeStep();
     virtual double posteriorProbability(int sample_num,int Cluster_num);
-    virtual double** allPosteriorProbabilties();
     virtual double logLikelihood() const;
     virtual int freeParameters() const;
     virtual void setData();

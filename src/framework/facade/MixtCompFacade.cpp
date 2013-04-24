@@ -1,8 +1,7 @@
 #include "MixtCompFacade.h"
 
 MixtCompFacade::MixtCompFacade(FrameworkInfo& info): info_(info)
-{
-}
+{}
 
 MixtCompFacade::~MixtCompFacade()
 {
@@ -67,4 +66,13 @@ void MixtCompFacade::instantiateFramework(){
       p_strategy_ = new IterationsStrategy(info_.nbIterations_,info_.burnin_,info_.nbtry_);
       break;
   }
+}
+
+void MixtCompFacade::run(){
+  //Run the algorithm using strategy on statistical model
+  p_strategy_->run(p_algo_,p_model_);
+  //p_developer_ now have all the estimated parameters and result
+  /*************************************************************/
+  //print parameters to console
+  p_developer_->writeParameters(std::cout);
 }

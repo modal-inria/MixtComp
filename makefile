@@ -1,4 +1,4 @@
-.PHONY: cmake_debug cmake_release cclean
+.PHONY: cmake_debug cmake_release clean
 
 cmake_debug:
 	cd build/debug/; cmake ../../ -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=debug
@@ -9,8 +9,8 @@ cmake_release:
 	cd build/release/; $(MAKE) VERBOSE=1
 
 cclean:
-	cd Build/debug/; $(MAKE) clean VERBOSE=1
-	cd Build/release/; $(MAKE) clean VERBOSE=1
+	cd build/debug/; $(MAKE) clean VERBOSE=1
+	cd build/release/; $(MAKE) clean VERBOSE=1
 
 all: cmake_debug
 clean: cclean		

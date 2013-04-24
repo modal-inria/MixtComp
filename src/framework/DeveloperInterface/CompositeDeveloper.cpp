@@ -19,7 +19,6 @@ CompositeDeveloper::~CompositeDeveloper(){
   }
 }
 
-
 CompositeDeveloper * CompositeDeveloper::clone() {
   CompositeDeveloper* temp = new CompositeDeveloper();
   for (int i = 0; i < this->v_Developer_.size(); ++i) {

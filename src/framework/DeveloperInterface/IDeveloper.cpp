@@ -1,13 +1,11 @@
 #include "framework/model/Model.h"
 #include "IDeveloper.h"
-IDeveloper::IDeveloper(char id): id_(id)
-{
-}
 
-IDeveloper::~IDeveloper()
-{
-  // TODO Auto-generated destructor stub
-}
+IDeveloper::IDeveloper()
+{}
+
+IDeveloper::IDeveloper(char id): id_(id)
+{}
 
 
 double** IDeveloper::conditionalProbabilities() const {
