@@ -222,29 +222,29 @@ void RankCluster::gibbsY(int indexDim)
 void RankCluster::zSimulation()
 {
     double alea(0),sumTik(0);
-    vector<double> lim(g_+1,0),tik(g_);
+    vector<double> lim(g_+1,0);
 
     for(int ind(0);ind<n_;ind++)
     {
         //computation of the probability to belong to each cluster
         for(int k(0);k<g_;k++)
-            tik[k]=1;
+            output_.tik(ind,k)=1;
 
         sumTik=0;
         for(int k(0);k<g_;k++)
         {
             for(int l(0);l<d_;l++)
-                tik[k]*=probaCond(data_[l][ind].rank,data_[l][ind].y,mu_[l][k],p_[l][k]);
-            tik[k]*=proportion_[k];
-            sumTik+=tik[k];
+              output_.tik(ind,k)*=probaCond(data_[l][ind].rank,data_[l][ind].y,mu_[l][k],p_[l][k]);
+            output_.tik(ind,k)*=proportion_[k];
+            sumTik+=output_.tik(ind,k);
         }
 
         for(int i(0);i<g_;i++)
-            tik[i]/=sumTik;
+          output_.tik(ind,i)/=sumTik;
 
         //z follow a multinomial law of parameter tik
         for(int k(1);k<g_+1;k++)
-            lim[k]=lim[k-1]+tik[k-1];
+            lim[k]=lim[k-1]+output_.tik(ind,k-1);
 
         alea=(double) rand()/RAND_MAX;
 
@@ -1161,7 +1161,7 @@ void RankCluster::storeIntermediateResults(int iteration){
       }
 }
 double RankCluster::posteriorProbability(int sample_num,int Cluster_num){
-
+  return output_.tik(sample_num,Cluster_num);
 }
 double** RankCluster::allPosteriorProbabilties(){
 
@@ -1174,9 +1174,12 @@ int RankCluster::freeParameters() const{
 }
 void RankCluster::setData(){
 
+
   Data<int> mydatahandler;
   vector<vector<int> > data = mydatahandler.getData(id_,nbVariable_);
   m_ = mydatahandler.getModality(id_);
+  conversion2data(data);
+
   n_ = data.size();
   d_ = m_.size();
   g_ = nbCluster();
@@ -1200,7 +1203,7 @@ void RankCluster::setData(){
       break;
   }
 
-  conversion2data(data);
+
 
   //objet pour stocker les resultats des itérations
   indrang=vector<int>(g_);

@@ -77,7 +77,7 @@ class RankCluster: public IDeveloper
 		void run();
 
 	protected: //or private
-		void conversion2data(vector<vector<int> >const& X);
+		void conversion2data(std::vector<std::vector<int> >const& X);
 		void initialization();
 		void SEstep();
 		void gibbsY(int indexDim);
