@@ -37,7 +37,19 @@ class Data<double>{
 template<>
 class Data<int>{
   public:
-      std::vector<int> getModality(char id){;
+      std::vector<int> getModality(char id){
+        DataHandler* p_datahandler = DataHandler::getInstance();
+        std::vector<std::vector<std::string> > allmodalities = p_datahandler->allModalities();
+        for (int i = 0; i < allmodalities.size(); ++i) {
+          if(*allmodalities[i][0].c_str() == id){
+            std::vector<int> modality(allmodalities[i].size()-1);
+            for (int k = 1; k <= modality.size(); ++k) {
+              modality[k-1] = atoi(allmodalities[i][k].c_str());
+            }
+            return modality;
+          }
+        }
+
       }
 
       std::vector<std::vector<int> >& getData(char id,int& variables_){
@@ -46,10 +58,10 @@ class Data<int>{
       samples_ = p_datahandler->nbSamples();
       variables_ = colindex.size();
       std::vector<std::vector<std::string> > completedata = p_datahandler->completeData();
-      data_ = std::vector<std::vector<int> >(samples_,std::vector<int>(variables_));;
-      for (int i = 0; i < samples_; ++i) {
+      data_ = std::vector<std::vector<int> >(samples_,std::vector<int>(variables_));
+      for (int i = 1; i <= samples_; ++i) {
         for (int k : colindex) {
-          data_[i][k] = atoi(completedata[i][k].c_str());
+          data_[i-1][k] = atoi(completedata[i][k].c_str());
         }
       }
       return data_;

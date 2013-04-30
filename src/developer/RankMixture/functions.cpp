@@ -9,6 +9,7 @@
 #include <fstream>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 #include "functions.h"
 
@@ -19,7 +20,6 @@ using namespace std;
 int positionRank(vector<int> const& x,int const& i)
 {
     int j(0);
-
     while(x[j]!=i)
         j++;
 

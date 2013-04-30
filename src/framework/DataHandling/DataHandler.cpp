@@ -1,4 +1,6 @@
+#include <iostream>
 #include "DataHandler.h"
+
 
 DataHandler* DataHandler::p_instance_ = NULL;
 
@@ -16,7 +18,12 @@ DataHandler* DataHandler::getInstance(){
 }
 
 std::vector<int> DataHandler::colIndex(char id){
-  //TODO
+  std::vector<int> colindex;
+  for (int i = 0; i < completedata_[0].size(); ++i) {
+    if(*completedata_[0][i].c_str()==id)
+      colindex.push_back(i);
+  }
+  return colindex;
 }
 void DataHandler::readDataFromFile(std::string filename,char sep)
 {

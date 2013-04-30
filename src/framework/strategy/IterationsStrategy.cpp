@@ -16,7 +16,7 @@ void IterationsStrategy::run(IAlgo* p_algo_,Model* p_model_) {
     currentmodel->initializeModel();
     for (int i = 0; i < iterations_; ++i) {
       p_algo_->run(currentmodel);
-      if (i>burnin_) {
+      if (i>=burnin_) {
         p_model_->storeIntermediateResults(i-burnin_);
       }
     }

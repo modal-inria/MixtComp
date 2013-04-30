@@ -1,4 +1,5 @@
 #include "CompositeDeveloper.h"
+#include <iostream>
 
 CompositeDeveloper::CompositeDeveloper() {
 }
@@ -27,6 +28,11 @@ CompositeDeveloper * CompositeDeveloper::clone() {
   return temp;
 }
 
+void CompositeDeveloper::setModel(Model* model) {
+  for (int i = 0; i < v_Developer_.size(); ++i) {
+      v_Developer_[i]->setModel(model);
+    }
+}
 void CompositeDeveloper::initializeStep() {
   for (int i = 0; i < v_Developer_.size(); ++i) {
     v_Developer_[i]->initializeStep();
@@ -54,6 +60,11 @@ void CompositeDeveloper::paramUpdateStep()
   }
 }
 
+void CompositeDeveloper::storeIntermediateResults(int iteration){
+  for (int i = 0; i < v_Developer_.size(); ++i) {
+    v_Developer_[i]->storeIntermediateResults(iteration);
+  }
+}
 void CompositeDeveloper::finalizeStep() {
   for (int i = 0; i < v_Developer_.size(); ++i) {
     v_Developer_[i]->finalizeStep();
@@ -76,7 +87,7 @@ int CompositeDeveloper::freeParameters() const {
   return freeparam;
 }
 
-double CompositeDeveloper::logLikelihood() const {
+double CompositeDeveloper::logLikelihood() {
   double val = 0;
   for (int i = 0; i < v_Developer_.size(); ++i) {
     val+= v_Developer_[i]->logLikelihood();

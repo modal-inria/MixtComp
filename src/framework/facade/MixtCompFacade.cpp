@@ -1,3 +1,4 @@
+#include "framework/DataHandling/DataHandler.h"
 #include "MixtCompFacade.h"
 
 MixtCompFacade::MixtCompFacade(FrameworkInfo& info): info_(info)
@@ -34,11 +35,18 @@ MixtCompFacade::~MixtCompFacade()
 }
 
 void MixtCompFacade::instantiateFramework(){
+  //read data and set number of samples
+  DataHandler* datainstance = DataHandler::getInstance();
+  datainstance->readDataFromFile(info_.datafilename_,' ');
+  datainstance->readModalityFromFile(info_.modalitiesfilename_,' ');
+  info_.nbSample_ = datainstance->nbSamples();
+  //TODO getting information from data which models to instantiate
+
   //TODO creation of v_developer_
   for(MixtureLaw law: info_.mixturelawlist_){
     switch (law) {
       case rank_:
-        v_developer_.push_back(new RankCluster('R'));
+        v_developer_.push_back(new RankCluster('R',info_.nbIterations_,info_.burnin_));
         break;
       default:
         break;
@@ -48,6 +56,7 @@ void MixtCompFacade::instantiateFramework(){
   p_developer_ = new CompositeDeveloper(v_developer_);
   //create model
   p_model_ = new Model(p_developer_,info_.nbSample_,info_.nbCluster_);
+
   //create algorithm
   switch (info_.algorithm_) {
     case semgibbs_:
@@ -74,5 +83,5 @@ void MixtCompFacade::run(){
   //p_developer_ now have all the estimated parameters and result
   /*************************************************************/
   //print parameters to console
-  p_developer_->writeParameters(std::cout);
+  //p_developer_->writeParameters(std::cout);
 }

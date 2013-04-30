@@ -61,7 +61,7 @@ class MixtureBridge: public IDeveloper
     { return mixture_[kCluster].law().pdf(mixture_[kCluster].p_data()->row(iSample));}
     /** Compute the logLikelihood by summing the logLikelihood
      *  of the components of the mixture [TODO: ponder by mixing proportions].*/
-    virtual double logLikelihood() const
+    virtual double logLikelihood()
     {
       double sum=0;
       for (int k= 0; k < nbCluster(); ++k)

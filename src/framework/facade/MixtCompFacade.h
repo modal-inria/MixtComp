@@ -31,14 +31,16 @@ enum strategy{
 };
 
 struct FrameworkInfo{
-  std::initializer_list<MixtureLaw> mixturelawlist_;
-  Algo algorithm_;
-  strategy strategy_;
-  int nbIterations_;
-  int burnin_;
-  int nbtry_;
-  int nbSample_;
-  int nbCluster_;
+    std::string datafilename_;
+    std::string modalitiesfilename_;
+    std::initializer_list<MixtureLaw> mixturelawlist_;
+    Algo algorithm_;
+    strategy strategy_;
+    int nbIterations_;
+    int burnin_;
+    int nbtry_;
+    int nbSample_;
+    int nbCluster_;
 };
 
 class MixtCompFacade

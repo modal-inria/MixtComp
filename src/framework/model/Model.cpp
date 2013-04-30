@@ -1,12 +1,11 @@
+#include <iostream>
+#include <math.h>
 #include "framework/DeveloperInterface/IDeveloper.h"
 #include "Model.h"
 
 Model::Model(IDeveloper* developer,int nbsample,int nbcluster) : nbSample_(nbsample),
                                                                  nbCluster_(nbcluster)
 {
-  //Allocate memory for developer
-  p_developer_ = developer->clone();
-
   //Allocate memory for conditional probabilities
   m_Tik_ = new double*[nbsample];
   for (int i = 0; i < nbsample; ++i) {
@@ -19,14 +18,17 @@ Model::Model(IDeveloper* developer,int nbsample,int nbcluster) : nbSample_(nbsam
   //Allocate memory for row proportions
   v_Pie_ = new double[nbcluster];
 
+  //Allocate memory for developer
+  p_developer_ = developer->clone();
+  //set this pointer
+  p_developer_->setModel(this);
+  //set data for developer
+  p_developer_->setData();
 }
 
 Model::Model(const Model* other){
   nbSample_ = other->nbSample_;
   nbCluster_ = other->nbCluster_;
-
-  //Allocate memory for developer
-  p_developer_ = other->p_developer_->clone();
 
   //Allocate memory for conditional probabilities and copy values
   m_Tik_ = new double*[nbSample_];
@@ -52,6 +54,13 @@ Model::Model(const Model* other){
   for (int j = 0; j < nbCluster_; ++j) {
     v_Pie_[j] = other->v_Pie_[j];
   }
+
+  //Allocate memory for developer
+  p_developer_ = other->p_developer_->clone();
+  //set this pointer
+  p_developer_->setModel(this);
+  //set data for developer
+  p_developer_->setData();
 
 }
 
@@ -98,7 +107,24 @@ void Model::updateModelParameters()
 }
 
 void Model::randomInitialization(){
-  // TODO
+  //generate random numbers
+  std::vector<float> randnumbers(nbSample_);
+  for ( int i = 0; i < nbSample_; ++i) {
+    randnumbers[i] = float(std::rand())/float(RAND_MAX);
+  }
+
+  for (int k = 0; k < nbCluster_; ++k) {
+    v_Pie_[k] = 0.0;
+  }
+
+  for (int i = 0; i < nbSample_; ++i) {
+    v_Zi_[i] = floor(nbCluster_*randnumbers[i]);
+    v_Pie_[v_Zi_[i]]+=1.0;
+  }
+
+  for (int k = 0; k < nbCluster_; ++k) {
+    v_Pie_[k]/=nbSample_;
+  }
 }
 double Model::logLikelihood() const {
   return p_developer_->logLikelihood();

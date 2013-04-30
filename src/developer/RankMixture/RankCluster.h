@@ -52,14 +52,14 @@ struct OutParameters
 	std::vector<std::vector<std::vector<double> > > distP;
 	std::vector<std::vector<std::vector<int> > > distMu;
 	std::vector<double> distZ;
-	std::vector<std::vector<std::vector<int> > > distRangPartiel;
+	std::vector<std::vector<std::vector<int> > > distPartialRank;
 
 };
 
 class RankCluster: public IDeveloper
 {
 	public:
-		RankCluster(char id);
+		RankCluster(char id,int iterations,int burnin);
 		virtual RankCluster* clone();
 		virtual void initializeStep();
     virtual void imputationStep() {/**Do nothing by default*/}
@@ -68,8 +68,7 @@ class RankCluster: public IDeveloper
     virtual void storeIntermediateResults(int iteration);
     virtual void finalizeStep() {/**Do nothing by default*/}
     virtual double posteriorProbability(int sample_num,int Cluster_num);
-    virtual double** allPosteriorProbabilties();
-    virtual double logLikelihood() const;
+    virtual double logLikelihood();
     virtual int freeParameters() const;
     virtual void setData();
     virtual void writeParameters(std::ostream&) const;
@@ -90,7 +89,6 @@ class RankCluster: public IDeveloper
 		double computeLikelihood(std::vector<std::vector<std::vector<int> > > const& mu,std::vector<std::vector<double> > const& p,
 				std::vector<double> const& proportion,Eigen::ArrayXXd &tik,std::vector<std::vector<std::vector<int> > > &Y,
 				std::vector<std::vector<std::vector<int> > > &xTemp);
-		Eigen::ArrayXd computeProbabilities();
 		void computeDistance(std::vector<std::vector<double> > const& resProp,std::vector<std::vector<std::vector<double> > > const& resP,
 				std::vector<std::vector<std::vector<std::vector<int> > > > const& resMu,std::vector<std::vector<int> > const& resZ,
 				std::vector<std::vector<std::vector<std::vector<int> > > > const& resDonneesPartiel);

@@ -12,7 +12,7 @@ class IDeveloper
   public:
     IDeveloper();
     IDeveloper(char id);
-    void setModel(Model*);
+    virtual void setModel(Model*);
     virtual void initializeStep() = 0;
     virtual IDeveloper* clone() = 0;
     virtual void imputationStep() {/**Do nothing by default*/}
@@ -21,7 +21,7 @@ class IDeveloper
     virtual void storeIntermediateResults(int iteration) {/**Do nothing by default*/}
     virtual void finalizeStep() {/**Do nothing by default*/}
     virtual double posteriorProbability(int sample_num,int Cluster_num) = 0;
-    virtual double logLikelihood() const = 0;
+    virtual double logLikelihood() = 0;
     virtual int freeParameters() const = 0;
     virtual void setData() = 0;
     virtual void writeParameters(std::ostream&) const = 0;
@@ -29,6 +29,7 @@ class IDeveloper
     void setID(char id);
     virtual ~IDeveloper(){};
   protected:
+    Model * p_model_;
     int nbVariable_;
     char id_;
 
@@ -38,8 +39,7 @@ class IDeveloper
     double** conditionalProbabilities() const;
     int* classLabels() const;
     double* proportions() const;
-  private:
-    Model * p_model_;
+
 };
 
 inline void IDeveloper::setID(char id){

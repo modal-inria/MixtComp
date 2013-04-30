@@ -1,6 +1,7 @@
 #ifndef MODEL_H_
 #define MODEL_H_
 class IDeveloper;
+#include <iostream>
 class Model
 {
   public:
@@ -17,9 +18,9 @@ class Model
     double logLikelihood() const;
     int nbCluster() const {return nbCluster_;}
     int nbSample() const {return nbSample_;}
-    double** conditionalProbabilities(){return m_Tik_;}
-    int* classLabels(){return v_Zi_;}
-    double* proportions(){return v_Pie_;}
+    double** conditionalProbabilities() const {return m_Tik_;}
+    int* classLabels() const {return v_Zi_;}
+    double* proportions() const {return v_Pie_;}
     /** overloaded assignment operator*/
     Model& operator=(const Model&);
     ~Model();

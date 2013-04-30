@@ -10,13 +10,15 @@ class CompositeDeveloper: public IDeveloper
     CompositeDeveloper(const CompositeDeveloper *);
     CompositeDeveloper(std::vector<IDeveloper*>);
     virtual  CompositeDeveloper* clone();
+    virtual void setModel(Model*);
     virtual void initializeStep();
     virtual void imputationStep();
     virtual void samplingStep();
     virtual void paramUpdateStep();
+    virtual void storeIntermediateResults(int iteration);
     virtual void finalizeStep();
     virtual double posteriorProbability(int sample_num,int Cluster_num);
-    virtual double logLikelihood() const;
+    virtual double logLikelihood();
     virtual int freeParameters() const;
     virtual void setData();
     virtual void writeParameters(std::ostream&) const;

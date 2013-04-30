@@ -11,9 +11,15 @@
 using namespace std;
 using namespace Eigen;
 
-RankCluster::RankCluster(char id)
+RankCluster::RankCluster(char id,int iterations,int burnin)
 	:IDeveloper(id)
-{}
+{
+  parameter_.burnAlgo = burnin;
+  parameter_.maxIt = iterations;
+  parameter_.detail = false;
+  parameter_.nGibbsL = 500;
+  parameter_.burnL = 50;
+}
 
 RankCluster::~RankCluster()
 {
@@ -35,6 +41,8 @@ void RankCluster::conversion2data(vector<vector<int> > const& X)
 	for(int i(0);i<d_;i++)
 		for(int j(0);j<n_;j++)
 	    	data_[i][j].rank.resize(m_[i]);
+
+
 
 	int indiceElement(0);
 	for(int j(0);j<n_;j++)
@@ -67,19 +75,12 @@ void RankCluster::conversion2data(vector<vector<int> > const& X)
 void RankCluster::initialization()
 {
     double alea;
-
     //zik initialization
+    int * classlabels = classLabels();
     for(int i(0);i<n_;i++)
     {
-        alea=(double) rand()/RAND_MAX;
-        for(int j(0);j<g_;j++)
-            if((alea>(double) j/g_) & (alea<(double) (j+1)/g_))
-            {
-                z_[i]=j;
-                break;
-            }
+      z_[i] = classlabels[i];
     }
-
     //mu & p  initialization
     for(int k(0);k<d_;k++)
         for(int i(0);i<g_;i++)
@@ -96,11 +97,9 @@ void RankCluster::initialization()
 
 
     //proportion initialization
-    for(int i(0);i<n_;i++)
-    	proportion_[z_[i]]++;
-
+    double* prop = proportions();
     for(int i(0);i<g_;i++)
-    	proportion_[i]/=(double) n_;
+    	proportion_[i] = prop[i];
 
 
     //partial data and order of presentation initialization
@@ -224,6 +223,7 @@ void RankCluster::zSimulation()
     double alea(0),sumTik(0);
     vector<double> lim(g_+1,0);
 
+    output_.tik = ArrayXXd(n_,g_);
     for(int ind(0);ind<n_;ind++)
     {
         //computation of the probability to belong to each cluster
@@ -334,7 +334,6 @@ void RankCluster::simuM(int indexDim,int indCl)
     long double p1(0),p2(0),alea(0),lnp1(0),lnp2(0),lnp1Plusp2(0);
     double s1(0),lim(-numeric_limits<double>::max());
     vector<int> tabFact(m_[indexDim]),comp(2);
-
     tabFact=tab_factorial(m_[indexDim]);
 
     vector<vector<int> > MU(parameter_.nGibbsM[indexDim]);
@@ -515,7 +514,7 @@ void RankCluster::likelihood(vector<vector<vector<vector<int> > > > &listeMu,vec
     bool continuer(true),egaliteRang;
 
 
-    ListeMu*headMu=new ListeMu;
+  ListeMu*headMu=new ListeMu;
 	ListeMu*currMu=headMu;
 	ListeMu*next=0;
 	currMu->compteur=1;
@@ -868,40 +867,6 @@ cout<<"mean "<<tik.row(ind)<<"   "<<testtest<<"   "<<div<<endl;
 
 
 
-ArrayXd RankCluster::computeProbabilities()
-{
-	ArrayXd prob(n_);
-
-	if(g_>1)
-	{//calcul partition
-		double max;
-		for(int ind(0);ind<n_;ind++)
-		{
-			max=output_.tik(ind,0);
-			for(int k(1);k<g_;k++)
-			{
-				if(output_.tik(ind,k)>max)
-				{
-					max=output_.tik(ind,k);
-					z_[ind]=k;
-				}
-			}
-		}
-	}
-
-
-	//proba de tt les rangs
-	for(int ind(0);ind<n_;ind++)
-	{
-		prob(ind)=1;
-
-		for(int dim(0);dim<d_;dim++)
-			prob(ind)*=probaCond(data_[dim][ind].rank,data_[dim][ind].y,mu_[dim][z_[ind]],p_[dim][z_[ind]]);
-
-	}
-	return prob;
-}
-
 
 void RankCluster::computeDistance(vector<vector<double> > const& resProp,vector<vector<vector<double> > > const& resP,
 		vector<vector<vector<vector<int> > > > const& resMu,vector<vector<int> > const& resZ,
@@ -962,7 +927,7 @@ void RankCluster::computeDistance(vector<vector<double> > const& resProp,vector<
 	//on mets 0 pouts les rangs non partiels
 	vector<int> compteurElemPartiel(d_,0);
 	//vector<vector<vector<int> > > distRangPartielFin(resDonneesPartiel.size());
-	output_.distRangPartiel=vector<vector<vector<int> > > (resDonneesPartiel.size());
+	output_.distPartialRank=vector<vector<vector<int> > > (resDonneesPartiel.size());
 	vector<int> rangTemp(d_);
 	bool partiel=false;
 	for(int iter(0);iter<distRangPartiel.size();iter++)
@@ -983,7 +948,7 @@ void RankCluster::computeDistance(vector<vector<double> > const& resProp,vector<
 			}
 
 			if(partiel)
-				output_.distRangPartiel[iter].push_back(rangTemp);
+				output_.distPartialRank[iter].push_back(rangTemp);
 		}
 	}
 }
@@ -1072,7 +1037,6 @@ void RankCluster::run()
 cout<<"compute proba"<<endl;
     //calcul des proba
     ArrayXd proba(n_);
-	proba=computeProbabilities();
 cout<<"compute dist"<<endl;
 	//calcul distance
 	computeDistance(resProp,resP,resMu,resZ,resDonneesPartiel);
@@ -1121,7 +1085,8 @@ void RankCluster::initializeStep(){
 }
 
 RankCluster* RankCluster::clone(){
-  //TODO
+  RankCluster* temp = new RankCluster(this->id_,this->parameter_.maxIt,this->parameter_.burnAlgo);
+  return temp;
 }
 
 void RankCluster::samplingStep(){
@@ -1163,23 +1128,25 @@ void RankCluster::storeIntermediateResults(int iteration){
 double RankCluster::posteriorProbability(int sample_num,int Cluster_num){
   return output_.tik(sample_num,Cluster_num);
 }
-double** RankCluster::allPosteriorProbabilties(){
 
+double RankCluster::logLikelihood(){
+  likelihood(resMu,resP,resProp);
+  return output_.L;
 }
-double RankCluster::logLikelihood() const{
 
-}
 int RankCluster::freeParameters() const{
-
+  return 2*g_*d_+g_-1;
 }
 void RankCluster::setData(){
-
-
   Data<int> mydatahandler;
-  vector<vector<int> > data = mydatahandler.getData(id_,nbVariable_);
+  std::vector<std::vector<int> > data = mydatahandler.getData(id_,nbVariable_);
   m_ = mydatahandler.getModality(id_);
-  conversion2data(data);
-
+  std::vector<int> temp(m_.size());
+  for (int i = 0; i < temp.size(); ++i) {
+    temp[i] = m_[i]*(m_[i]-1)/2;
+  }
+  parameter_.nGibbsM = temp;
+  parameter_.nGibbsSE = temp;
   n_ = data.size();
   d_ = m_.size();
   g_ = nbCluster();
@@ -1188,6 +1155,7 @@ void RankCluster::setData(){
   p_ = vector<vector<double> >(d_,vector<double>(g_));
   proportion_ = vector<double>(g_);
   mu_ = vector<vector<vector<int> > >(d_,vector<vector<int> > (g_));
+  conversion2data(data);
   partial_=false;
   for(int dim(0);dim<d_;dim++)
   {
@@ -1202,9 +1170,6 @@ void RankCluster::setData(){
     if(partial_)
       break;
   }
-
-
-
   //objet pour stocker les resultats des itérations
   indrang=vector<int>(g_);
   resP=vector<vector<vector<double> > >(parameter_.maxIt-parameter_.burnAlgo,vector<vector<double> >(d_,vector<double> (g_)));
@@ -1212,7 +1177,6 @@ void RankCluster::setData(){
   resZ=vector<vector<int> >(parameter_.maxIt-parameter_.burnAlgo,vector<int> (n_));
   resMu=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,mu_);
   resDonneesPartiel=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,output_.initialPartialRank);
-
 }
 void RankCluster::writeParameters(std::ostream&) const{
 
