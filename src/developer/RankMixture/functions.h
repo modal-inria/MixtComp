@@ -108,18 +108,19 @@ std::vector<int> order2rank(std::vector<int> const& x,int const& m);
 int distanceKendall(std::vector<int> const& x,std::vector<int> const& y);
 
 /**
- * sort the parameters in order that the first cluster is the cluster with the more little ndex of mu
- * @param mu index of the rank of listeMu
+ * sort the parameters in order that the first cluster is the cluster with the more little index of mu
+ * @param mu index of the rank of the first dimension of listeMu
  * @param p parameter of the ISR
  * @param prop proportion of the mixture model
  * @param listeMu reference rank
+ * @param z partition
  * @param g number of cluster
  * @param d number of dimension
- *
- * listeMu, p et prop sont modifié si necessaires
+ * @param n number of individual
+ * listeMu, p, prop and z are modify if necessary
  *
  */
 void tri_insertionMulti(std::vector<int> &mu,std::vector<double> &prop,std::vector<std::vector<double> > &p,
-		std::vector<std::vector<std::vector<int> > > &listeMu,int const& g,int const& d);
+        std::vector<std::vector<std::vector<int> > > &listeMu,std::vector<int> &z,int const& g,int const& d,int const& n);
 
 #endif /* FUNCTIONS_H_ */

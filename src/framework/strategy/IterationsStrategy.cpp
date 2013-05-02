@@ -1,3 +1,4 @@
+#include <iostream>
 #include "IterationsStrategy.h"
 #include "framework/util/util.h"
 
@@ -11,22 +12,22 @@ IterationsStrategy::~IterationsStrategy() {
 
 void IterationsStrategy::run(IAlgo* p_algo_,Model* p_model_) {
   double likelihood = -RealMax;
-  Model * currentmodel = new Model(p_model_);
   for (int i = 0; i < nbtry_; ++i) {
+    std::cout<<"try: "<<i<<"\n";
+    Model * currentmodel = new Model(p_model_);
     currentmodel->initializeModel();
-    for (int i = 0; i < iterations_; ++i) {
+    for (int itr = 0; itr < iterations_; ++itr) {
       p_algo_->run(currentmodel);
-      if (i>=burnin_) {
-        p_model_->storeIntermediateResults(i-burnin_);
+      if (itr>=burnin_) {
+        currentmodel->storeIntermediateResults(itr-burnin_);
       }
     }
     currentmodel->finalizeModel();
     if(currentmodel->logLikelihood()>likelihood){
       *p_model_ = *currentmodel;
       likelihood = currentmodel->logLikelihood();
+      //std::cout<<"likelihood: "<<likelihood<<"\n";
     }
+    delete currentmodel;
   }
-
-  //release memory
-  delete currentmodel;
 }

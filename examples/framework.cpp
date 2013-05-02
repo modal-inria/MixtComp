@@ -9,7 +9,7 @@ int main(){
   myinfo.mixturelawlist_ = {rank_};
   myinfo.nbIterations_ = 100;
   myinfo.burnin_ = 20;
-  myinfo.nbtry_ = 1;
+  myinfo.nbtry_ = 5;
   myinfo.nbCluster_ = 2;
   myinfo.strategy_ = iterations_;
   myinfo.datafilename_ = "../../../data/words_rank.txt";

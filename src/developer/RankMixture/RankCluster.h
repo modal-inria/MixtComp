@@ -73,7 +73,6 @@ class RankCluster: public IDeveloper
     virtual void setData();
     virtual void writeParameters(std::ostream&) const;
 		virtual ~RankCluster();
-		void run();
 
 	protected: //or private
 		void conversion2data(std::vector<std::vector<int> >const& X);

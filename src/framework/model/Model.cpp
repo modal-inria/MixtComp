@@ -108,6 +108,7 @@ void Model::updateModelParameters()
 
 void Model::randomInitialization(){
   //generate random numbers
+  srand(time(0));
   std::vector<float> randnumbers(nbSample_);
   for ( int i = 0; i < nbSample_; ++i) {
     randnumbers[i] = float(std::rand())/float(RAND_MAX);

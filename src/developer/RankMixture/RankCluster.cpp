@@ -749,7 +749,7 @@ double RankCluster::computeLikelihood(vector<vector<vector<int> > > const& mu,ve
 
         p1=(long double) (propb*proba1.colwise().prod()).sum();
         proba2=proba1;
-int testtest(0);
+
         for(int iter(0);iter<parameter_.nGibbsL;iter++)
         {
             /**simulation des y*/
@@ -825,7 +825,7 @@ int testtest(0);
 
             }
             if(iter>=parameter_.burnL)
-            {testtest++;
+            {
                 ArrayXd calculInter(g_);
                 for(int cl(0);cl<g_;cl++)
                 {
@@ -837,8 +837,7 @@ int testtest(0);
 
                 double den(calculInter.sum());
                 tik.row(ind)+=(calculInter/den);
-cout<<calculInter.transpose()<<endl;
-cout<<(calculInter/den).transpose()<<endl;
+
                 li+=(long double) 1/den;
             }
 
@@ -846,7 +845,7 @@ cout<<(calculInter/den).transpose()<<endl;
         l+=log(1/(li*div));
 
         tik.row(ind)*=div;
-cout<<"mean "<<tik.row(ind)<<"   "<<testtest<<"   "<<div<<endl;
+
         //sauvegarde des nouveau y et x
         for(int j(0);j<d_;j++)
         {
@@ -953,131 +952,6 @@ void RankCluster::computeDistance(vector<vector<double> > const& resProp,vector<
 	}
 }
 
-
-void RankCluster::run()
-{
-    double t0,t1,t2,t3,tM(0),tSE(0);
-
-	cout<<"##########################################################"<<endl;
-    cout<<"#  SEM-Gibbs Algorithm for multivariate partial ranking  #"<<endl;
-    cout<<"##########################################################"<<endl;
-	if(parameter_.detail)
-        cout<<"Initialization of order of presentation and partial rank."<<endl;
-
-    t0=clock();
-    initialization();
-    t1=clock();
-
-	if(parameter_.detail)
-		cout<<"Initialization computing time: "<<(double) (t1-t0)/CLOCKS_PER_SEC<<"s"<<endl;
-
-    //algorithme
-	if(parameter_.detail)
-		cout<<"Algorithm"<<endl<<"Iteration"<<endl;
-    for(int iter(0);iter<parameter_.maxIt;iter++)
-    {
-        cout<<"*";
-        t2=clock();
-        SEstep();
-        t3=clock();
-        tSE+=t3-t2;
-
-        t2=clock();
-        Mstep();
-        t3=clock();
-        tM+=t3-t2;
-
-        //on impose que la composante 1 soit celle avec le + petit indice
-        if(iter>=parameter_.burnAlgo)
-        {
-			resZ[iter-parameter_.burnAlgo]=z_;
-            for(int l(0);l<d_;l++)
-                for(int k(0);k<g_;k++)
-                {
-                    if(p_[l][k]<0.5)
-                    {
-                        p_[l][k]=1-p_[l][k];
-                        inverseRang(mu_[l][k]);
-                    }
-                }
-
-            for(int k(0);k<g_;k++)
-                indrang[k]=rank2index(mu_[0][k],tab_factorial(m_[0]));
-
-            //---------------------------------fonction � modif
-            tri_insertionMulti(indrang,proportion_,p_,mu_,g_,d_);//tri selon les mu pour que 2 3=3 2
-
-            resP[iter-parameter_.burnAlgo]=p_;
-            resProp[iter-parameter_.burnAlgo]=proportion_;
-            resMu[iter-parameter_.burnAlgo]=mu_;
-
-        	for(int dim(0);dim<d_;dim++)
-        	{
-        		int compteur(0);
-        		for(vector<int>::iterator it=indexPartialData_[dim].begin();it!=indexPartialData_[dim].end();it++)
-        		{
-        			resDonneesPartiel[iter-parameter_.burnAlgo][dim][compteur]=data_[dim][*it].rank;
-        			compteur++;
-        		}
-        	}
-
-        }//fin enregistrement des données
-
-    }//fin SEM
-
-    cout<<endl;
-
-	if(parameter_.detail)
-		cout<<endl<<"Loglikelihood estimation"<<endl;
-    t2=clock();
-
-	//calcul logvraisemblance
-    likelihood(resMu,resP,resProp);
-    t3=clock();
-cout<<"compute proba"<<endl;
-    //calcul des proba
-    ArrayXd proba(n_);
-cout<<"compute dist"<<endl;
-	//calcul distance
-	computeDistance(resProp,resP,resMu,resZ,resDonneesPartiel);
-cout<<"compute icl"<<endl;
-	output_.bic=BIC(output_.L,n_,2*g_*d_+g_-1);
-	output_.icl=output_.bic;
-
-	output_.entropy=ArrayXd(n_);
-	for(int i(0);i<n_;i++)
-	{
-		output_.entropy(i)=0;
-		for(int j(0);j<g_;j++)
-		{
-			if(output_.tik(i,j)!=0)
-				output_.entropy(i)-=2*output_.tik(i,j)*log(output_.tik(i,j));
-		}
-		output_.icl+=output_.entropy(i);
-	}
-
-
-	if(parameter_.detail)
-	{
-    	cout<<"Total computing time for SE step: "<<(double) tSE/CLOCKS_PER_SEC<<"s . for one step: "<<(double) tSE/CLOCKS_PER_SEC/parameter_.maxIt<<"s"<<endl;
-   	 	cout<<"Total computing time for M step: "<<(double) tM/CLOCKS_PER_SEC<<"s . for one step: "<<(double) tM/CLOCKS_PER_SEC/parameter_.maxIt<<"s"<<endl;
-    	cout<<"Total computing time for log-likelihood computation: "<<(double) (t3-t0)/CLOCKS_PER_SEC<<"s"<<endl;
-	}
-
-
-    //if the p<0.5, we invert the associate mu and put p=1-p
-    for(int j(0);j<d_;j++)
-        for(int k(0);k<g_;k++)
-        {
-            if(p_[j][k]<0.5)
-            {
-                p_[j][k]=1-p_[j][k];
-                inverseRang(mu_[j][k]);
-            }
-        }
-
-}
-
 // implementation of interfacing functions
 
 void RankCluster::initializeStep(){
@@ -1110,7 +984,7 @@ void RankCluster::storeIntermediateResults(int iteration){
         for(int k(0);k<g_;k++)
             indrang[k]=rank2index(mu_[0][k],tab_factorial(m_[0]));
 
-        tri_insertionMulti(indrang,proportion_,p_,mu_,g_,d_);//tri selon les mu pour que 2 3=3 2
+        tri_insertionMulti(indrang,proportion_,p_,mu_,z_,g_,d_,n_);//tri selon les mu pour que 2 3=3 2
         resP[iteration]=p_;
         resProp[iteration]=proportion_;
         resMu[iteration]=mu_;

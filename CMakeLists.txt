@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.6)
 
 project (MixtComp) 
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g -ftest-coverage -fprofile-arcs -Wall -std=c++0x")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -std=c++0x")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -DNDEBUG")
 
 SET(CMAKE_DEFAULT_BUILD_TYPE "DEBUG")

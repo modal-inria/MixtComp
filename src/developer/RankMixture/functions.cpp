@@ -235,39 +235,59 @@ int distanceKendall(vector<int> const& x, vector<int> const& y)
 
 // mu: index des eleme de la 1 ere dim
 //listeMu: listMu[dim][composante][elem]
-void tri_insertionMulti(vector<int>&mu,vector<double> &prop,vector<vector<double> > &p,vector<vector<vector<int> > > &listeMu,int const& g,int const& d)
+void tri_insertionMulti(vector<int>&mu,vector<double> &prop,vector<vector<double> > &p,vector<vector<vector<int> > > &listeMu,vector<int> &z, int const& g,int const& d, int const& n)
 {
     int i,j,elem;
     double elemprop;
     vector<double> elemp(d);
     vector<vector<int> > elemmu(d);
+    vector<int> order(g);
+    for(int l=0; l<g; l++)
+        order[l]=l;
+    int elemorder;
 
+    //sort algorithm
+    //we sort the cluster of the first dim and make changement for all dim
     for(i=1;i<g;++i)
     {
         elem=mu[i];
-        for(int k(0);k<d;k++)
-        	elemp[k]=p[k][i];
+        for(int l(0);l<d;l++)
+            elemp[l]=p[l][i];
         elemprop=prop[i];
-        for(int k(0);k<d;k++)
-            elemmu[k]=listeMu[k][i];
-
+        for(int l(0);l<d;l++)
+            elemmu[l]=listeMu[l][i];
+        elemorder=order[i];
 
         for(j=i;j>0 && mu[j-1]>elem;j--)
         {
+            order[j]=order[j-1];
             mu[j]=mu[j-1];
             prop[j]=prop[j-1];
-            for(int k(0);k<d;k++)
-            	p[k][j]=p[k][j-1];
-            for(int k(0);k<d;k++)
-                listeMu[k][j]=listeMu[k][j-1];
+            for(int l(0);l<d;l++)
+                p[l][j]=p[l][j-1];
+            for(int l(0);l<d;l++)
+                listeMu[l][j]=listeMu[l][j-1];
         }
-
+        order[j]=elemorder;
         mu[j]=elem;
-        for(int k(0);k<d;k++)
-        	p[k][j]=elemp[k];
+        for(int l(0);l<d;l++)
+            p[l][j]=elemp[l];
         prop[j]=elemprop;
 
-        for(int k(0);k<d;k++)
-            listeMu[k][j]=elemmu[k];
+        for(int l(0);l<d;l++)
+            listeMu[l][j]=elemmu[l];
+    }
+
+    //re order the z
+    for(int l=0; l<n; l++)
+    {
+        for(int k=0;k<g;k++)
+        {
+            if(z[l]==order[k])
+            {
+                z[l]=k;
+                break;
+            }
+        }
     }
 }
