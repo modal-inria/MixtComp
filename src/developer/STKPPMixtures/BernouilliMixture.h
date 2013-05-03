@@ -10,10 +10,9 @@
  */
 #include "StkppBridge/MixtureBridge.h"
 typedef STK::JointBernoulliModel<STK::Array2D<STK::Binary> > JointBernouilli;
-typedef  MixtureBridge< JointBernouilli> BernouilliMixture;
 
 template<>
-void MixtureBridge< JointBernouilli>::writeParameters(std::ostream& os)
+void MixtureBridge< JointBernouilli>::writeParameters(std::ostream& os) const
 {
 
 }

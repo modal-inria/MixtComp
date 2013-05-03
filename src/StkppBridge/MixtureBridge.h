@@ -23,6 +23,7 @@ class MixtureBridge: public IDeveloper
     MixtureBridge()
     { mixture_ = new MultiStatModel[nbCluster()];}
 
+    virtual MixtureBridge<MultiStatModel>* clone();
     virtual ~MixtureBridge()
     { if (mixture_) delete[] mixture_; }
     /** Initialization step. In this implementation, perform a
@@ -30,7 +31,7 @@ class MixtureBridge: public IDeveloper
      **/
     virtual void initializeStep()
     {
-      STK::Array2D<double>  tik(conditionalProbabilities(), STK::Range(nbSample_), STK::Range(nbCluster()));
+      STK::Array2D<double>  tik(conditionalProbabilities(), STK::Range(nbSample()), STK::Range(nbCluster()));
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
       { mixture_[k].run(tik.col(k));}
     }
@@ -46,7 +47,7 @@ class MixtureBridge: public IDeveloper
     virtual void paramUpdateStep()
     {
       // build a Wrapper around the t_ik/z_ik
-      STK::Array2D<double>  tik(conditionalProbabilities(), STK::Range(0,nbSample_-1, true), STK::Range(0,nbCluster()-1, true));
+      STK::Array2D<double>  tik(conditionalProbabilities(), STK::Range(0,nbSample()-1, true), STK::Range(0,nbCluster()-1, true));
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
       { mixture_[k].run(tik.col(k));}
     }
@@ -58,7 +59,7 @@ class MixtureBridge: public IDeveloper
      *  in the kth component.
      **/
     virtual double posteriorProbability(int iSample, int kCluster)
-    { return mixture_[kCluster].law().pdf(mixture_[kCluster].p_data()->row(iSample));}
+    { return std::exp( mixture_[kCluster].lnLikelihood(mixture_[kCluster].p_data()->row(iSample)));}
     /** Compute the logLikelihood by summing the logLikelihood
      *  of the components of the mixture [TODO: ponder by mixing proportions].*/
     virtual double logLikelihood()
@@ -74,11 +75,11 @@ class MixtureBridge: public IDeveloper
     {
       int sum=0;
       for (int k= 0; k < nbCluster(); ++k)
-      { sum+=mixture_[k].nbFreeParameters();}
+      { sum+=mixture_[k].computeNbFreeParameters();}
       return sum;
     }
 
-    virtual void writeParameters(std::ostream& os);
+    virtual void writeParameters(std::ostream& os) const;
 
     virtual void setData();
 
