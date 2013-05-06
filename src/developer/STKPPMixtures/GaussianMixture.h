@@ -6,7 +6,7 @@
 
 #include "StkppBridge/MixtureBridge.h"
 
-typedef STK::JointGaussianModel<STK::Array2D<double> > JointGaussian;
+typedef STK::JointGaussianModel<STK::Array2D<double>, STK::Array2DVector<double> > JointGaussian;
 
 template<>
 void MixtureBridge<JointGaussian>::writeParameters(std::ostream& os) const

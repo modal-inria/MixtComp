@@ -6,7 +6,7 @@
  */
 #include <vector>
 #include <set>
-#include <Eigen/Eigen/Dense>
+#include "../../../../Eigen/Eigen/Dense"
 #include "framework/DeveloperInterface/IDeveloper.h"
 
 #include "functions.h"

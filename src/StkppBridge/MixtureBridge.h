@@ -16,6 +16,7 @@
  */
 #include "framework/DeveloperInterface/IDeveloper.h"
 #include "stkpp/include/STKpp.h"
+
 template<class MultiStatModel>
 class MixtureBridge: public IDeveloper
 {
