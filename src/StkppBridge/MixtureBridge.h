@@ -59,7 +59,7 @@ class MixtureBridge: public IDeveloper
      *  in the kth component.
      **/
     virtual double posteriorProbability(int iSample, int kCluster)
-    { return std::exp( mixture_[kCluster].lnLikelihood(mixture_[kCluster].p_data()->row(iSample)));}
+    { return std::exp( mixture_[kCluster].computeLnLikelihood(mixture_[kCluster].p_data()->row(iSample)));}
     /** Compute the logLikelihood by summing the logLikelihood
      *  of the components of the mixture [TODO: ponder by mixing proportions].*/
     virtual double logLikelihood()
