@@ -16,15 +16,12 @@
  */
 #include "framework/DeveloperInterface/IDeveloper.h"
 #include "stkpp/include/STKpp.h"
-
 template<class MultiStatModel>
 class MixtureBridge: public IDeveloper
 {
   public:
     MixtureBridge()
     { mixture_ = new MultiStatModel[nbCluster()];}
-
-    virtual MixtureBridge<MultiStatModel>* clone();
     virtual ~MixtureBridge()
     { if (mixture_) delete[] mixture_; }
     /** Initialization step. In this implementation, perform a
@@ -79,10 +76,6 @@ class MixtureBridge: public IDeveloper
       { sum+=mixture_[k].computeNbFreeParameters();}
       return sum;
     }
-
-    virtual void writeParameters(std::ostream& os) const;
-
-    virtual void setData();
 
   protected:
     MultiStatModel* mixture_;

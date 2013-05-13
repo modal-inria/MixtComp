@@ -9,17 +9,14 @@
  *
  */
 #include "StkppBridge/MixtureBridge.h"
-typedef STK::JointBernoulliModel<STK::Array2D<STK::Binary> > JointBernouilli;
 
-template<>
-void MixtureBridge< JointBernouilli>::writeParameters(std::ostream& os) const
+typedef STK::JointBernoulliModel<STK::Array2DVector<STK::Binary> > JointBernouilli;
+
+class bernouilliMixture : public MixtureBridge<JointBernouilli>
 {
-
-}
-
-template<>
-void MixtureBridge< JointBernouilli>::setData()
-{
-
-}
+public:
+  virtual void writeParameters(std::ostream& os) const;
+  virtual void setData();
+  virtual bernouilliMixture* clone();
+};
 #endif /* BERNOUILLIMIXTURE_H_ */

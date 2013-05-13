@@ -12,15 +12,9 @@ typedef STK::JointGaussianModel<STK::Array2D<double>, STK::Array2DVector<double>
 class gaussianMixture : public MixtureBridge<JointGaussian>
 {
 public:
-  virtual void writeParameters(std::ostream& os) const
-  {
-
-  }
-
-  virtual void setData()
-  {
-
-  }
+  virtual void writeParameters(std::ostream& os) const;
+  virtual void setData();
+  virtual gaussianMixture* clone();
 };
 
 #endif /* GAUSSIANMIXTURE_H_ */
