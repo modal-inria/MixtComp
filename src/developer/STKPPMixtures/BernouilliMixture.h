@@ -10,7 +10,7 @@
  */
 #include "StkppBridge/MixtureBridge.h"
 
-typedef STK::JointBernoulliModel<STK::Array2DVector<STK::Binary> > JointBernouilli;
+typedef STK::JointBernoulliModel<STK::Array2DVector<STK::Binary>, STK::Array2DVector<double> > JointBernouilli;
 
 class bernouilliMixture : public MixtureBridge<JointBernouilli>
 {
