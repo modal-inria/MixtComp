@@ -452,7 +452,6 @@ void RankCluster::simuM(int indexDim,int indCl)
 
             if((P[iter]!=0) & (P[iter]!=1))
             {
-                //L[iter]+=(G[i]*log(P[iter])+A_G[i]*log(1-P[iter]));
                 L[iter]=somG*log(P[iter])+somA_G*log(1-P[iter]);
             }
             else
@@ -467,10 +466,7 @@ void RankCluster::simuM(int indexDim,int indCl)
                         L[iter]=lim;
                 }
             }
-            /*vector<double> stock(3);
-            stock[0]=somG;
-            stock[1]=somA_G;
-            stock[2]=s1;*/
+
             vector<double> stock(2);
             stock[0]=P[iter];
             stock[1]=L[iter];
@@ -633,8 +629,12 @@ void RankCluster::likelihood(vector<vector<vector<vector<int> > > > &listeMu,vec
             	for(int ind(0);ind<n_;ind++)
             		data_[dim][ind].y=Y[dim][ind];
 
-            	for(vector<int>::iterator it=indexPartialData_[dim].begin();it!=indexPartialData_[dim].end();it++)
-        			data_[dim][*it].rank=xPartialTemp[dim][*it];
+              int compteur(0);
+              for(vector<int>::iterator it=indexPartialData_[dim].begin();it!=indexPartialData_[dim].end();it++)
+              {
+                data_[dim][*it].rank=xPartialTemp[dim][compteur];
+                compteur++;
+              }
 
             }
 
@@ -681,8 +681,12 @@ void RankCluster::likelihood(vector<vector<vector<vector<int> > > > &listeMu,vec
         	for(int ind(0);ind<n_;ind++)
         		data_[dim][ind].y=Y[dim][ind];
 
-        	for(vector<int>::iterator it=indexPartialData_[dim].begin();it!=indexPartialData_[dim].end();it++)
-    			data_[dim][*it].rank=xPartialTemp[dim][*it];
+          int compteur(0);
+          for(vector<int>::iterator it=indexPartialData_[dim].begin();it!=indexPartialData_[dim].end();it++)
+          {
+            data_[dim][*it].rank=xPartialTemp[dim][compteur];
+            compteur++;
+          }
 
         }
     }
@@ -873,7 +877,7 @@ void RankCluster::computeDistance(vector<vector<double> > const& resProp,vector<
 {
 	int const iterTotal(parameter_.maxIt-parameter_.burnAlgo);
 
-	//initialization of caontainer
+	//initialization of container
 	output_.distProp=vector<vector<double> >(iterTotal,vector<double> (g_));
 	output_.distP=vector<vector<vector<double> > >(iterTotal,vector<vector<double> > (d_,vector<double> (g_)));
 	output_.distMu=vector<vector<vector<int> > >(iterTotal,vector<vector<int> > (d_,vector<int> (g_)));
@@ -911,7 +915,6 @@ void RankCluster::computeDistance(vector<vector<double> > const& resProp,vector<
 			for(int dim(0);dim<d_;dim++)
 			{
 				int compteur(0);
-				//for(int k(0);k<resDonneesPartiel[i][dim].size();k++)
 				for(vector<int>::iterator it=indexPartialData_[dim].begin();it!=indexPartialData_[dim].end();it++)
 				{
 					distRangPartiel[i][dim].push_back(distanceKendall(data_[dim][*it].rank,resDonneesPartiel[i][dim][compteur]));
@@ -922,34 +925,30 @@ void RankCluster::computeDistance(vector<vector<double> > const& resProp,vector<
 	}
 
 	//changement de format
-	//1 ligne = 1 individu qui a au moins 1 de ces rangs qui est partiels
-	//on mets 0 pouts les rangs non partiels
-	vector<int> compteurElemPartiel(d_,0);
-	//vector<vector<vector<int> > > distRangPartielFin(resDonneesPartiel.size());
-	output_.distPartialRank=vector<vector<vector<int> > > (resDonneesPartiel.size());
-	vector<int> rangTemp(d_);
-	bool partiel=false;
-	for(int iter(0);iter<distRangPartiel.size();iter++)
-	{
-		for(int ind(0);ind<n_;ind++)
-		{
-			partiel=false;
-			for(int dim(0);dim<d_;dim++)
-			{
-				if(data_[dim][ind].isPartial)
-				{
-					partiel=true;
-					rangTemp[dim]=distRangPartiel[iter][dim][compteurElemPartiel[dim]];
-					compteurElemPartiel[dim]++;
-				}
-				else
-					rangTemp[dim]=0;
-			}
+  vector<int> compteurElemPartiel(d_,0);
+  output_.distPartialRank=vector<vector<vector<int> > > (resDonneesPartiel.size());
+  vector<int> rangTemp(d_);
 
-			if(partiel)
-				output_.distPartialRank[iter].push_back(rangTemp);
-		}
-	}
+  for(int iter(0);iter<distRangPartiel.size();iter++)
+  {
+    for(int dim(0);dim<d_;dim++)
+      compteurElemPartiel[dim]=0;
+
+    for(int ind(0);ind<n_;ind++)
+    {
+      for(int dim(0);dim<d_;dim++)
+      {
+        if(data_[dim][ind].isPartial)
+        {
+          rangTemp[dim]=distRangPartiel[iter][dim][compteurElemPartiel[dim]];
+          compteurElemPartiel[dim]++;
+        }
+        else
+          rangTemp[dim]=0;
+      }
+      output_.distPartialRank[iter].push_back(rangTemp);
+    }
+  }
 }
 
 // implementation of interfacing functions
