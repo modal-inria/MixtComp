@@ -118,4 +118,12 @@ class RankCluster: public IDeveloper
 
 };
 
+template <typename T>
+std::ostream& operator<<( std::ostream &flux, std::vector<T> vect)
+{
+    for (unsigned int i(0);i<vect.size();i++)
+        flux << vect[i]<< " ";
+    flux<<std::endl;
+    return flux;
+}
 #endif /* RANKCLUSTER_H_ */

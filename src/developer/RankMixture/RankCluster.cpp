@@ -1051,7 +1051,24 @@ void RankCluster::setData(){
   resMu=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,mu_);
   resDonneesPartiel=vector<vector<vector<vector<int> > > >(parameter_.maxIt-parameter_.burnAlgo,output_.initialPartialRank);
 }
-void RankCluster::writeParameters(std::ostream&) const{
+void RankCluster::writeParameters(std::ostream& out) const{
 
+  out<<"************ RESULTS ************"<<endl;
+  out<<"** Number of clusters: "<<g_<<endl;
+  out<<"** Loglikelihood: "<<output_.L<<endl;
+  out<<endl<<"** Estimated parameters:"<<endl;
+  out<<"* Proportion: "<<endl;
+  out<<proportion_;
+  out<<"* Pi: "<<endl;
+  for(int i(0);i<d_;i++)
+    out<<"Dim "<<i+1<<": "<<p_[i];
+
+  out<<"* Reference Rank: "<<endl;
+  for(int i(0);i<d_;i++)
+  {
+    out<<"Dim "<<i+1<<":"<<endl;
+    out<<mu_[i];
+  }
+  out<<"*********************************"<<endl;
 }
 
