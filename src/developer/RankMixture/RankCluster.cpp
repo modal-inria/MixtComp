@@ -21,6 +21,11 @@ RankCluster::RankCluster(char id,int iterations,int burnin)
   parameter_.burnL = 50;
 }
 
+RankCluster::RankCluster(const RankCluster* other) :IDeveloper(other->id_)
+{
+  *this = *other;
+}
+
 RankCluster::~RankCluster()
 {
   // TODO
@@ -958,8 +963,7 @@ void RankCluster::initializeStep(){
 }
 
 RankCluster* RankCluster::clone(){
-  RankCluster* temp = new RankCluster(this->id_,this->parameter_.maxIt,this->parameter_.burnAlgo);
-  return temp;
+  return new RankCluster(this);
 }
 
 void RankCluster::samplingStep(){
@@ -1060,6 +1064,7 @@ void RankCluster::writeParameters(std::ostream& out) const{
   out<<"* Proportion: "<<endl;
   out<<proportion_;
   out<<"* Pi: "<<endl;
+
   for(int i(0);i<d_;i++)
     out<<"Dim "<<i+1<<": "<<p_[i];
 

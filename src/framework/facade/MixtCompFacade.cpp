@@ -47,6 +47,7 @@ void MixtCompFacade::instantiateFramework(){
     switch (law) {
       case rank_:
         v_developer_.push_back(new RankCluster('R',info_.nbIterations_,info_.burnin_));
+        break;
       case gaussian_:
         v_developer_.push_back(new gaussianMixture());
         break;
@@ -85,5 +86,5 @@ void MixtCompFacade::run(){
   //p_developer_ now have all the estimated parameters and result
   /*************************************************************/
   //print parameters to console
-  //p_developer_->writeParameters(std::cout);
+  p_developer_->writeParameters(std::cout);
 }

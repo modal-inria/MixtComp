@@ -59,6 +59,8 @@ They are enumerated below:
 \begin{itemize}
  \item {\bf int nbCluster()}\\
 This function will return the number of clusters.
+ \item {\bf int nbSample()}\\
+This function will return the number of samples.
 \item {\bf double** conditionalProbabilities()}\\
 This function will return the conditional probabilities. 
 \item {\bf int* classLabels()}\\
@@ -72,11 +74,10 @@ values for all the above variables.
 
 The {\bf IDeveloper} class also contained following member variables, hence you must not redefine/redeclare them inside your inherited class as you will inherited these members automatically.
 \begin{itemize}
- \item {\bf int nbSample\_ : }Number of samples. This value will be automatically set by framework.
 \item {\bf int nbVariable\_ : }Number of variables. This value will be set inside the setData() function as explained in section \ref{datahandling}. 
 \item {\bf char id\_ : }Identification character. This value will be automatically set by framework. 
 \end{itemize}
-
+\subsection{Interface specification}
 The {\bf IDeveloper} class contains Interface methods that 
 are mostly based on SEM-gibbs algorithm to allow for generalization. Most of these methods are abstract, hence the developer must provide
 concrete implementation for them in the derived class. The functions ending with "() = 0" are abstract. The functions ending with "() \{\}" do nothing by default and the functions
@@ -87,29 +88,35 @@ overwrite them in some cases for performance reasons.) The following interface f
 This function must be use for initialization stuffs including initialize of all
 the parameters. You should call classLabels() function to get the class labels needed to initialize your mixture law parameters.
 This method will be called only once in the very beginning.
+\item {\bf virtual IDeveloper* clone() = 0} \\
+This is a standard clone function in usual sense. It must provide a new object of your class with values of various parameters equal to the values of calling
+object. In other words, this is equivalent to polymorphic copy constructor. 
 \item {\bf virtual void imputationStep() \{\}}\\
-This function should be used for Imputation of data. 
+This function should be used for Imputation of data. The default implementation (in the base class) is to do nothing.
 \item {\bf virtual void samplingStep() = 0} \\
 This function must be used for simulation of all the latent variables and/or missing data
 excluding class labels. The class labels will be simulated by the framework itself because to do so
 we have to take into account all the mixture laws. 
 \item {\bf virtual void paramUpdateStep() = 0}\\
 This function is equivalent to Mstep. This function must be defined by developer to update parameters.
+\item {\bf virtual void storeIntermediateResults(int iteration) \{\}}\\
+This function should be used to store any intermediate results during various iterations after the burn-in period. The {\bf iteration} argument gives the 
+iteration number beginning after the burn-in period.
 \item {\bf virtual void finalizeStep() \{\}}\\
 This step can be used by developer to finalize any thing. It will be called only once after we
 finish running the SEM-gibbs algorithm.
 \item {\bf virtual double posteriorProbability(int sample\_num,int Cluster\_num) = 0}\\
-This function must be defined by developer to return the probability for corresponding sample and cluster.
-\item {\bf virtual double** allPosteriorProbabilties()}\\
-This function will be defined in framework using {\bf posteriorProbability} function, but developer
-can override this function for performance reasons.
+This function must be defined by developer to return the posterior probability (PDF) for corresponding sample and cluster.
 \item {\bf virtual double logLikelihood() const = 0}\\
-This should be defined to return the log-likelihood value to be used by selection criteria.
+This should be defined to return the current log-likelihood.
 \item {\bf virtual int freeParameters() const = 0}\\
-This should be used to return the number of free parameters to be used by selection criteria.
+This should be used to return the number of free parameters.
 \item {\bf virtual void setData() = 0}\\
 This function must be defined to set the data into your data containers. To facilitate data handling, framework provide templated functions,
-that can be called directly to get the user data. Data-Handling is explained in more details in section \ref{datahandling}.
+that can be called directly to get the data. Data-Handling is explained in more details in section \ref{datahandling}.
+\item {\bf virtual void writeParameters(std::ostream\&) const \{\}}\\
+This function can be used to write summary of parameters on to the output stream. This is useful for debugging purposes but need not be defined necessarily. The
+default implementation is to do nothing.
 \end{itemize}
 
 There is no notion of Estep, Mstep, Sstep and Cstep in the plug-in part. These names will be used inside the framework to make
@@ -151,12 +158,17 @@ or enclosed in namespace in order to avoid name collision.
 \subsection{Algorithms}
 
 The currently available algorithms are:
-\begin{verbatim}
-enum Algo
-{
-  semgibbs_
-}
-\end{verbatim}
+
+\begin{enumerate}
+ \item {\bf semgibbs\_:} This perform operations based on SEMGibbs algorithm and is run on model (passed as argument) as shown in the following pseudo code.
+\end{enumerate}
+
+\subsection{Strategy}
+
+The currently available strategies are:
+\begin{enumerate}
+ \item {\bf iterations\_:} This is a simple strategy based on number of iterations. The algorithm will be ran on model for given maximum number of iterations. This will be repeated for given number of times (tries) and the best model will be selected at the end based on log-likelihood.
+\end{enumerate}
 
 \subsection{Model Selection Criteria}
 The model selection criteria are:

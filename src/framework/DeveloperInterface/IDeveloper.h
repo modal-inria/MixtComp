@@ -24,7 +24,7 @@ class IDeveloper
     virtual double logLikelihood() = 0;
     virtual int freeParameters() const = 0;
     virtual void setData() = 0;
-    virtual void writeParameters(std::ostream&) const = 0;
+    virtual void writeParameters(std::ostream&) const {};
 
     void setID(char id);
     virtual ~IDeveloper(){};

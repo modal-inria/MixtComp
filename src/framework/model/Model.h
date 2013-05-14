@@ -2,11 +2,13 @@
 #define MODEL_H_
 class IDeveloper;
 #include <iostream>
+#include "stkpp/include/STKpp.h"
 class Model
 {
   public:
     Model(IDeveloper* developer,int nbsample,int nbcluster);
     Model(const Model*);
+    Model* clone();
     void initializeModel();
     void eStep(){/* throw exception*/};
     void seStep();

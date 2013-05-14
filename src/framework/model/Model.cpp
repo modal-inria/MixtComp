@@ -64,6 +64,9 @@ Model::Model(const Model* other){
 
 }
 
+Model* Model::clone(){
+  return new Model(this);
+}
 Model::~Model()
 {
   //release various memories
@@ -103,7 +106,46 @@ void Model::finalizeModel()
 
 void Model::updateModelParameters()
 {
-  // TODO
+  // update t_ik
+  for (int i = 0; i < nbSample_; ++i) {
+    double sum = 0;
+    for (int k = 0; k < nbCluster_; ++k) {
+      sum+=p_developer_->posteriorProbability(i,k);
+    }
+
+    for (int k = 0; k < nbCluster_; ++k) {
+      m_Tik_[i][k] = p_developer_->posteriorProbability(i,k)/sum;
+    }
+  }
+
+  // update z_i
+
+  srand(time(0));
+  for (int i = 0; i < nbSample_; ++i) {
+    double randval = float(std::rand())/float(RAND_MAX);
+    double cumsum = m_Tik_[i][0];
+    for (int k = 1; k < nbCluster_; ++k) {
+      if(randval<=cumsum)
+      {
+        v_Zi_[i] = k-1;
+        break;
+      }
+      cumsum+=m_Tik_[i][k];
+    }
+  }
+  // update pie
+
+  for (int k = 0; k < nbCluster_; ++k) {
+    v_Pie_[k] = 0.0;
+  }
+  for (int i = 0; i < nbSample_; ++i) {
+    v_Pie_[v_Zi_[i]]+=1.0;
+  }
+
+  for (int k = 0; k < nbCluster_; ++k) {
+    v_Pie_[k]/=nbSample_;
+  }
+
 }
 
 void Model::randomInitialization(){
