@@ -59,7 +59,7 @@ struct OutParameters
 class RankCluster: public IDeveloper
 {
 	public:
-    RankCluster(const RankCluster*);
+    RankCluster();
 		RankCluster(char id,int iterations,int burnin);
 		virtual RankCluster* clone();
 		virtual void initializeStep();

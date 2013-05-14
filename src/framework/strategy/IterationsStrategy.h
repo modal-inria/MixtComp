@@ -8,7 +8,7 @@ class IterationsStrategy : public IStrategy
 {
   public:
     IterationsStrategy(int,int,int);
-    virtual void run(IAlgo*,Model*);
+    virtual void run(IAlgo*,Model*&);
     virtual ~IterationsStrategy();
   protected:
     int iterations_,burnin_,nbtry_;

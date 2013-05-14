@@ -26,9 +26,9 @@ Model::Model(IDeveloper* developer,int nbsample,int nbcluster) : nbSample_(nbsam
   p_developer_->setData();
 }
 
-Model::Model(const Model* other){
-  nbSample_ = other->nbSample_;
-  nbCluster_ = other->nbCluster_;
+Model::Model(const Model& other){
+  nbSample_ = other.nbSample_;
+  nbCluster_ = other.nbCluster_;
 
   //Allocate memory for conditional probabilities and copy values
   m_Tik_ = new double*[nbSample_];
@@ -38,7 +38,7 @@ Model::Model(const Model* other){
 
   for (int i = 0; i < nbSample_; ++i) {
     for (int j = 0; j < nbCluster_; ++j) {
-      m_Tik_[i][j] = other->m_Tik_[i][j];
+      m_Tik_[i][j] = other.m_Tik_[i][j];
     }
   }
 
@@ -46,26 +46,24 @@ Model::Model(const Model* other){
   v_Zi_  = new int[nbSample_];
 
   for (int i = 0; i < nbSample_; ++i) {
-    v_Zi_[i] = other->v_Zi_[i];
+    v_Zi_[i] = other.v_Zi_[i];
   }
   //Allocate memory for row proportions and copy values
   v_Pie_ = new double[nbCluster_];
 
   for (int j = 0; j < nbCluster_; ++j) {
-    v_Pie_[j] = other->v_Pie_[j];
+    v_Pie_[j] = other.v_Pie_[j];
   }
 
   //Allocate memory for developer
-  p_developer_ = other->p_developer_->clone();
+  p_developer_ = other.p_developer_->clone();
   //set this pointer
   p_developer_->setModel(this);
-  //set data for developer
-  p_developer_->setData();
 
 }
 
 Model* Model::clone(){
-  return new Model(this);
+  return new Model(*this);
 }
 Model::~Model()
 {
@@ -194,4 +192,8 @@ Model& Model::operator=(const Model& other){
   }
 
   return *this;
+}
+
+void Model::writeParameters(std::ostream&out) const{
+  p_developer_->writeParameters(out);
 }

@@ -86,5 +86,5 @@ void MixtCompFacade::run(){
   //p_developer_ now have all the estimated parameters and result
   /*************************************************************/
   //print parameters to console
-  p_developer_->writeParameters(std::cout);
+  p_model_->writeParameters(std::cout);
 }

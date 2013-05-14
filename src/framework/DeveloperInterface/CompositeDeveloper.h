@@ -7,8 +7,8 @@ class CompositeDeveloper: public IDeveloper
 {
   public:
     CompositeDeveloper();
-    CompositeDeveloper(const CompositeDeveloper *);
-    CompositeDeveloper(std::vector<IDeveloper*>);
+    CompositeDeveloper(const CompositeDeveloper&);
+    CompositeDeveloper(const std::vector<IDeveloper*>&);
     virtual  CompositeDeveloper* clone();
     virtual void setModel(Model*);
     virtual void initializeStep();

@@ -9,7 +9,7 @@ class IStrategy
 {
   public:
     IStrategy();
-    virtual void run(IAlgo*,Model*) = 0;
+    virtual void run(IAlgo*,Model*&) = 0;
     virtual ~IStrategy();
 };
 #endif /* ISTRATEGY_H_ */

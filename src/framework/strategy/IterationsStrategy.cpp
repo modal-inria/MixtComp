@@ -10,7 +10,7 @@ IterationsStrategy::IterationsStrategy(int iterations,int burnin, int nbtry):ite
 IterationsStrategy::~IterationsStrategy() {
 }
 
-void IterationsStrategy::run(IAlgo* p_algo_,Model* p_model_) {
+void IterationsStrategy::run(IAlgo* p_algo_,Model*& p_model_) {
   double likelihood = -RealMax;
   for (int i = 0; i < nbtry_; ++i) {
     std::cout<<"try: "<<i<<"\n";

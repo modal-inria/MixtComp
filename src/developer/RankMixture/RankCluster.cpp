@@ -11,6 +11,9 @@
 using namespace std;
 using namespace Eigen;
 
+RankCluster::RankCluster(){
+
+}
 RankCluster::RankCluster(char id,int iterations,int burnin)
 	:IDeveloper(id)
 {
@@ -21,10 +24,6 @@ RankCluster::RankCluster(char id,int iterations,int burnin)
   parameter_.burnL = 50;
 }
 
-RankCluster::RankCluster(const RankCluster* other) :IDeveloper(other->id_)
-{
-  *this = *other;
-}
 
 RankCluster::~RankCluster()
 {
@@ -963,7 +962,9 @@ void RankCluster::initializeStep(){
 }
 
 RankCluster* RankCluster::clone(){
-  return new RankCluster(this);
+  RankCluster* temp = new RankCluster();
+  *temp = *this;
+  return temp;
 }
 
 void RankCluster::samplingStep(){
@@ -1058,6 +1059,7 @@ void RankCluster::setData(){
 void RankCluster::writeParameters(std::ostream& out) const{
 
   out<<"************ RESULTS ************"<<endl;
+  out<<this<<endl;
   out<<"** Number of clusters: "<<g_<<endl;
   out<<"** Loglikelihood: "<<output_.L<<endl;
   out<<endl<<"** Estimated parameters:"<<endl;

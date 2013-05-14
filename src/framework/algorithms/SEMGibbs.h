@@ -8,7 +8,7 @@ class SEMGibbs : public IAlgo
 {
   public:
     SEMGibbs();
-    virtual void run(Model*);
+    virtual void run(Model*&);
     virtual ~SEMGibbs();
 };
 

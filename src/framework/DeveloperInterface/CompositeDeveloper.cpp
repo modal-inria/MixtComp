@@ -4,7 +4,13 @@
 CompositeDeveloper::CompositeDeveloper() {
 }
 
-CompositeDeveloper::CompositeDeveloper(std::vector<IDeveloper*> developerlist) {
+CompositeDeveloper::CompositeDeveloper(const CompositeDeveloper& other){
+  for (int i = 0; i < other.v_Developer_.size(); ++i) {
+    this->v_Developer_.push_back(other.v_Developer_[i]->clone());
+  }
+}
+
+CompositeDeveloper::CompositeDeveloper(const std::vector<IDeveloper*>& developerlist) {
   for (int i = 0; i < developerlist.size(); ++i) {
     v_Developer_.push_back(developerlist[i]->clone());
   }
@@ -33,6 +39,7 @@ void CompositeDeveloper::setModel(Model* model) {
       v_Developer_[i]->setModel(model);
     }
 }
+
 void CompositeDeveloper::initializeStep() {
   for (int i = 0; i < v_Developer_.size(); ++i) {
     v_Developer_[i]->initializeStep();

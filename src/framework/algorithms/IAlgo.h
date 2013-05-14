@@ -8,7 +8,7 @@ class IAlgo
 {
   public:
     IAlgo();
-    virtual void run(Model *) = 0;
+    virtual void run(Model*&) = 0;
     virtual ~IAlgo();
 };
 
