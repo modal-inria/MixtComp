@@ -80,10 +80,23 @@ void RankCluster::initialization()
 {
     double alea;
     //zik initialization
-    int * classlabels = classLabels();
-    for(int i(0);i<n_;i++)
-    {
-      z_[i] = classlabels[i];
+    srand(time(0));
+    std::vector<float> randnumbers(nbSample());
+    for ( int i = 0; i < nbSample(); ++i) {
+      randnumbers[i] = float(std::rand())/float(RAND_MAX);
+    }
+
+    for (int k = 0; k < nbCluster(); ++k) {
+      proportion_[k] = 0.0;
+    }
+
+    for (int i = 0; i < nbSample(); ++i) {
+      z_[i] = floor(nbCluster()*randnumbers[i]);
+      proportion_[z_[i]]+=1.0;
+    }
+
+    for (int k = 0; k < nbCluster(); ++k) {
+      proportion_[k]/=nbSample();
     }
     //mu & p  initialization
     for(int k(0);k<d_;k++)
@@ -98,12 +111,6 @@ void RankCluster::initialization()
                 mu_[k][i][j]=j+1;
             random_shuffle(mu_[k][i].begin(),mu_[k][i].end());
         }
-
-
-    //proportion initialization
-    double* prop = proportions();
-    for(int i(0);i<g_;i++)
-    	proportion_[i] = prop[i];
 
 
     //partial data and order of presentation initialization
@@ -165,9 +172,6 @@ void RankCluster::SEstep()
         gibbsY(dim);
 
     zSimulation();
-
-    for(int dim(0);dim<d_;dim++)
-        gibbsX(dim);
 }
 
 void RankCluster::gibbsY(int indexDim)
@@ -245,19 +249,6 @@ void RankCluster::zSimulation()
 
         for(int i(0);i<g_;i++)
           output_.tik(ind,i)/=sumTik;
-
-        //z follow a multinomial law of parameter tik
-        for(int k(1);k<g_+1;k++)
-            lim[k]=lim[k-1]+output_.tik(ind,k-1);
-
-        alea=(double) rand()/RAND_MAX;
-
-        for(int j(0);j<g_;j++)
-            if((lim[j]<=alea)&&(alea<=lim[j+1]))
-            {
-                z_[ind]=j;
-                break;
-            }
     }
 
 }
@@ -971,6 +962,15 @@ void RankCluster::samplingStep(){
   SEstep();
 }
 void RankCluster::paramUpdateStep(){
+
+  int * z = classLabels();
+  for (int i = 0; i < nbSample(); ++i) {
+    z_[i] = z[i];
+  }
+
+  for(int dim(0);dim<d_;dim++)
+      gibbsX(dim);
+
   Mstep();
 }
 void RankCluster::storeIntermediateResults(int iteration){
@@ -1059,7 +1059,6 @@ void RankCluster::setData(){
 void RankCluster::writeParameters(std::ostream& out) const{
 
   out<<"************ RESULTS ************"<<endl;
-  out<<this<<endl;
   out<<"** Number of clusters: "<<g_<<endl;
   out<<"** Loglikelihood: "<<output_.L<<endl;
   out<<endl<<"** Estimated parameters:"<<endl;

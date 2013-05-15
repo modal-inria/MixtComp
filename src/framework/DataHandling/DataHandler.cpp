@@ -5,9 +5,6 @@
 DataHandler* DataHandler::p_instance_ = NULL;
 
 DataHandler::~DataHandler(){
-  if(p_instance_!=NULL)
-  delete p_instance_;
-  p_instance_ = NULL;
 }
 
 DataHandler* DataHandler::getInstance(){

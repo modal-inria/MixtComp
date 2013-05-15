@@ -93,7 +93,7 @@ void Model::seStep()
 }
 void Model::initializeModel()
 {
-  randomInitialization();
+  //randomInitialization();
   p_developer_->initializeStep();
 }
 
@@ -120,17 +120,19 @@ void Model::updateModelParameters()
 
   srand(time(0));
   for (int i = 0; i < nbSample_; ++i) {
-    double randval = float(std::rand())/float(RAND_MAX);
-    double cumsum = m_Tik_[i][0];
-    for (int k = 1; k < nbCluster_; ++k) {
+    float randval = float(std::rand())/float(RAND_MAX);
+    float cumsum = m_Tik_[i][0];
+    for (int k = 0; k < nbCluster_; ++k) {
       if(randval<=cumsum)
       {
-        v_Zi_[i] = k-1;
+        v_Zi_[i] = k;
         break;
       }
-      cumsum+=m_Tik_[i][k];
+      //we can safely use k+1 here as the loop bound to break at last index.
+      cumsum+=m_Tik_[i][k+1];
     }
   }
+
   // update pie
 
   for (int k = 0; k < nbCluster_; ++k) {

@@ -32,6 +32,10 @@ MixtCompFacade::~MixtCompFacade()
       v_developer_[i] = NULL;
     }
   }
+
+  //Release memory of data handler
+  DataHandler* p_datahandler = DataHandler::getInstance();
+  if(p_datahandler!=NULL) delete p_datahandler;
 }
 
 void MixtCompFacade::instantiateFramework(){

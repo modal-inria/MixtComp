@@ -20,7 +20,9 @@ class DataHandler{
     std::vector<std::vector<std::string> >& allModalities(){return allmodalities_;}
     ~DataHandler();
   protected:
-    DataHandler(){};
+    DataHandler(){
+      p_instance_ = NULL;
+    };
     std::vector<std::vector<std::string> > completedata_;
     std::vector<std::vector<std::string> > allmodalities_;
     static DataHandler* p_instance_;

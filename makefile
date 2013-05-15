@@ -1,4 +1,4 @@
-.PHONY: cmake_debug cmake_release clean
+.PHONY: cmake_debug cmake_release cclean
 
 cmake_debug:
 	cd build/debug/; cmake ../../ -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=debug

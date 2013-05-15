@@ -11,9 +11,7 @@ class Model
     Model(const Model&);
     Model* clone();
     void initializeModel();
-    void eStep(){/* throw exception*/};
     void seStep();
-    void ceStep(){/* throw exception*/};
     void mStep();
     void storeIntermediateResults(int iteration);
     void finalizeModel();
