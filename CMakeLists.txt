@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.6)
 
 project (MixtComp) 
 
+set(ZERO_BASED_ARRAYS "ON")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -std=c++0x")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -DNDEBUG")
 
@@ -18,4 +19,3 @@ include_directories(externlibs)
 add_subdirectory(externlibs)
 add_subdirectory(src)
 add_subdirectory(examples)
-#add_subdirectory(examples)

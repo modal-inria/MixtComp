@@ -7,10 +7,7 @@ Model::Model(IDeveloper* developer,int nbsample,int nbcluster) : nbSample_(nbsam
                                                                  nbCluster_(nbcluster)
 {
   //Allocate memory for conditional probabilities
-  m_Tik_ = new double*[nbsample];
-  for (int i = 0; i < nbsample; ++i) {
-    m_Tik_[i] = new double[nbcluster];
-  }
+  m_Tik_ = STK::Array2D<double>(nbSample_,nbCluster_);
 
   //Allocate memory for class labels
   v_Zi_  = new int[nbsample];
@@ -31,14 +28,16 @@ Model::Model(const Model& other){
   nbCluster_ = other.nbCluster_;
 
   //Allocate memory for conditional probabilities and copy values
-  m_Tik_ = new double*[nbSample_];
-  for (int i = 0; i < nbSample_; ++i) {
-    m_Tik_[i] = new double[nbCluster_];
-  }
+  m_Tik_ = STK::Array2D<double>(nbSample_,nbCluster_);
+
+  //for checking
+  m_Tik_(0,1) = 1;
+  //following line gives seg. fault
+  m_Tik_(0,0) = 1;
 
   for (int i = 0; i < nbSample_; ++i) {
     for (int j = 0; j < nbCluster_; ++j) {
-      m_Tik_[i][j] = other.m_Tik_[i][j];
+      m_Tik_(i,j) = other.m_Tik_(i,j);
     }
   }
 
@@ -71,10 +70,6 @@ Model::~Model()
   delete p_developer_;
   delete[] v_Pie_;
   delete[] v_Zi_;
-  for (int i = 0; i < nbSample_; ++i) {
-    delete[] m_Tik_[i];
-  }
-  delete[] m_Tik_;
 }
 
 void Model::mStep()
@@ -112,7 +107,7 @@ void Model::updateModelParameters()
     }
 
     for (int k = 0; k < nbCluster_; ++k) {
-      m_Tik_[i][k] = p_developer_->posteriorProbability(i,k)/sum;
+      m_Tik_(i,k) = p_developer_->posteriorProbability(i,k)/sum;
     }
   }
 
@@ -121,7 +116,7 @@ void Model::updateModelParameters()
   srand(time(0));
   for (int i = 0; i < nbSample_; ++i) {
     float randval = float(std::rand())/float(RAND_MAX);
-    float cumsum = m_Tik_[i][0];
+    float cumsum = m_Tik_(i,0);
     for (int k = 0; k < nbCluster_; ++k) {
       if(randval<=cumsum)
       {
@@ -129,7 +124,7 @@ void Model::updateModelParameters()
         break;
       }
       //we can safely use k+1 here as the loop bound to break at last index.
-      cumsum+=m_Tik_[i][k+1];
+      cumsum+=m_Tik_(i,k+1);
     }
   }
 
@@ -180,7 +175,7 @@ Model& Model::operator=(const Model& other){
   //copy values for conditional probabilities
   for (int i = 0; i < nbSample_; ++i) {
     for (int j = 0; j < nbCluster_; ++j) {
-      m_Tik_[i][j] = other.m_Tik_[i][j];
+      m_Tik_(i,j) = other.m_Tik_(i,j);
     }
   }
 
