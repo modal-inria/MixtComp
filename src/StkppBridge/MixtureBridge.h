@@ -14,10 +14,10 @@
  *  For mixture models not using stk++ the developer will get direct access to
  *  the data  using the @c p_data() method]
  */
-#include "framework/DeveloperInterface/IDeveloper.h"
+#include "framework/MixtureInterface/IMixture.h"
 #include "stkpp/include/STKpp.h"
 template<class MultiStatModel>
-class MixtureBridge: public IDeveloper
+class MixtureBridge: public IMixure
 {
   public:
     MixtureBridge()
@@ -29,7 +29,19 @@ class MixtureBridge: public IDeveloper
      **/
     virtual void initializeStep()
     {
-      STK::Array2D<double>  tik(conditionalProbabilities(), STK::Range(nbSample()), STK::Range(nbCluster()));
+      STK::Array2D<double>  tik(nbSample(),nbCluster());
+
+      //Random initialization of tik
+      srand(time(0));
+      std::vector<float> randnumbers(nbSample());
+      for ( int i = 0; i < nbSample(); ++i) {
+        randnumbers[i] = float(std::rand())/float(RAND_MAX);
+      }
+
+      for (int i = 0; i < nbSample(); ++i) {
+        tik(i,std::floor(nbCluster()*randnumbers[i])) = 1.0;
+      }
+
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
       { mixture_[k].run(tik.col(k));}
     }
@@ -45,7 +57,10 @@ class MixtureBridge: public IDeveloper
     virtual void paramUpdateStep()
     {
       // build a Wrapper around the t_ik/z_ik
-      STK::Array2D<double>  tik(conditionalProbabilities(), STK::Range(0,nbSample()-1, true), STK::Range(0,nbCluster()-1, true));
+      STK::Array2D<double>  tik(nbSample(),nbCluster());
+      for (int i = 0; i < nbSample(); ++i) {
+        tik(i,classLabels()[i]) = 1.0;
+      }
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
       { mixture_[k].run(tik.col(k));}
     }

@@ -5,17 +5,17 @@
  */
 #include <initializer_list>
 #include <iostream>
-#include "framework/DeveloperInterface/IDeveloper.h"
-#include "framework/DeveloperInterface/CompositeDeveloper.h"
+#include "framework/MixtureInterface/IMixture.h"
+#include "framework/MixtureInterface/CompositeMixture.h"
 #include "framework/model/Model.h"
 #include "framework/algorithms/IAlgo.h"
 #include "framework/algorithms/SEMGibbs.h"
 #include "framework/strategy/IStrategy.h"
 #include "framework/strategy/IterationsStrategy.h"
 //include various clustering laws available
-#include "developer/RankMixture/RankCluster.h"
-#include "developer/STKPPMixtures/GaussianMixture.h"
-#include "developer/STKPPMixtures/BernouilliMixture.h"
+#include "mixtures/RankMixture/RankCluster.h"
+#include "mixtures/STKPPMixtures/GaussianMixture.h"
+#include "mixtures/STKPPMixtures/BernouilliMixture.h"
 
 enum MixtureLaw{
     gaussian_,
@@ -53,8 +53,8 @@ class MixtCompFacade
     void instantiateFramework();
     ~MixtCompFacade();
   protected:
-    IDeveloper *p_developer_;
-    std::vector<IDeveloper*> v_developer_;
+    IMixure *p_mixture_;
+    std::vector<IMixure*> v_mixture_;
     IAlgo *p_algo_;
     Model *p_model_;
     IStrategy *p_strategy_;

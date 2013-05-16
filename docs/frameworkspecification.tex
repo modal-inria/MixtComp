@@ -85,8 +85,7 @@ ending with "()" are already implemented in framework (the developer can of-cour
 overwrite them in some cases for performance reasons.) The following interface functions are available:
 \begin{itemize}
 \item {\bf virtual void initializeStep() = 0} \\
-This function must be use for initialization stuffs including initialize of all
-the parameters. You should call classLabels() function to get the class labels needed to initialize your mixture law parameters.
+This function must be use for initialization of mixture parameters.
 This method will be called only once in the very beginning.
 \item {\bf virtual IDeveloper* clone() = 0} \\
 This is a standard clone function in usual sense. It must provide a new object of your class with values of various parameters equal to the values of calling
@@ -98,7 +97,7 @@ This function must be used for simulation of all the latent variables and/or mis
 excluding class labels. The class labels will be simulated by the framework itself because to do so
 we have to take into account all the mixture laws. 
 \item {\bf virtual void paramUpdateStep() = 0}\\
-This function is equivalent to Mstep. This function must be defined by developer to update parameters.
+This function is equivalent to Mstep and must be defined to update parameters.
 \item {\bf virtual void storeIntermediateResults(int iteration) \{\}}\\
 This function should be used to store any intermediate results during various iterations after the burn-in period. The {\bf iteration} argument gives the 
 iteration number beginning after the burn-in period.
@@ -106,11 +105,11 @@ iteration number beginning after the burn-in period.
 This step can be used by developer to finalize any thing. It will be called only once after we
 finish running the SEM-gibbs algorithm.
 \item {\bf virtual double posteriorProbability(int sample\_num,int Cluster\_num) = 0}\\
-This function must be defined by developer to return the posterior probability (PDF) for corresponding sample and cluster.
+This function must be defined to return the posterior probability (PDF) for corresponding sample and cluster.
 \item {\bf virtual double logLikelihood() const = 0}\\
-This should be defined to return the current log-likelihood.
+This must be defined to return the current log-likelihood.
 \item {\bf virtual int freeParameters() const = 0}\\
-This should be used to return the number of free parameters.
+This function must return the number of free parameters.
 \item {\bf virtual void setData() = 0}\\
 This function must be defined to set the data into your data containers. To facilitate data handling, framework provide templated functions,
 that can be called directly to get the data. Data-Handling is explained in more details in section \ref{datahandling}.

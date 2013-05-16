@@ -1,13 +1,13 @@
 #include <iostream>
 #include <math.h>
-#include "framework/DeveloperInterface/IDeveloper.h"
+#include "framework/MixtureInterface/IMixture.h"
 #include "Model.h"
 
-Model::Model(IDeveloper* developer,int nbsample,int nbcluster) : nbSample_(nbsample),
-                                                                 nbCluster_(nbcluster)
+Model::Model(IMixure* developer,int nbsample,int nbcluster) : nbSample_(nbsample),
+                                                              nbCluster_(nbcluster)
 {
   //Allocate memory for conditional probabilities
-  m_Tik_ = STK::Array2D<double>(nbSample_,nbCluster_);
+  m_Tik_.resize(nbSample_,nbCluster_);
 
   //Allocate memory for class labels
   v_Zi_  = new int[nbsample];
@@ -28,12 +28,7 @@ Model::Model(const Model& other){
   nbCluster_ = other.nbCluster_;
 
   //Allocate memory for conditional probabilities and copy values
-  m_Tik_ = STK::Array2D<double>(nbSample_,nbCluster_);
-
-  //for checking
-  m_Tik_(0,1) = 1;
-  //following line gives seg. fault
-  m_Tik_(0,0) = 1;
+  m_Tik_.resize(nbSample_,nbCluster_);
 
   for (int i = 0; i < nbSample_; ++i) {
     for (int j = 0; j < nbCluster_; ++j) {
@@ -64,6 +59,7 @@ Model::Model(const Model& other){
 Model* Model::clone(){
   return new Model(*this);
 }
+
 Model::~Model()
 {
   //release various memories

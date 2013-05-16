@@ -1,15 +1,15 @@
 #include <vector>
-#include "IDeveloper.h"
+#include "IMixture.h"
 
-#ifndef CompositeDeveloper_H_
-#define CompositeDeveloper_H_
-class CompositeDeveloper: public IDeveloper
+#ifndef CompositeMixture_H_
+#define CompositeMixture_H_
+class CompositeMixture: public IMixure
 {
   public:
-    CompositeDeveloper();
-    CompositeDeveloper(const CompositeDeveloper&);
-    CompositeDeveloper(const std::vector<IDeveloper*>&);
-    virtual  CompositeDeveloper* clone();
+    CompositeMixture();
+    CompositeMixture(const CompositeMixture&);
+    CompositeMixture(const std::vector<IMixure*>&);
+    virtual  CompositeMixture* clone();
     virtual void setModel(Model*);
     virtual void initializeStep();
     virtual void imputationStep();
@@ -22,9 +22,9 @@ class CompositeDeveloper: public IDeveloper
     virtual int freeParameters() const;
     virtual void setData();
     virtual void writeParameters(std::ostream&) const;
-    ~CompositeDeveloper();
+    ~CompositeMixture();
   protected:
-    std::vector<IDeveloper*> v_Developer_;
+    std::vector<IMixure*> v_Mixture_;
 };
 
-#endif /* CompositeDeveloper_H_ */
+#endif /* CompositeMixture_H_ */

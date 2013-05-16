@@ -15,7 +15,7 @@ RankCluster::RankCluster(){
 
 }
 RankCluster::RankCluster(char id,int iterations,int burnin)
-	:IDeveloper(id)
+	:IMixure(id)
 {
   parameter_.burnAlgo = burnin;
   parameter_.maxIt = iterations;

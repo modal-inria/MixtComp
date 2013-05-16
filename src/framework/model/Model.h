@@ -1,13 +1,13 @@
 #ifndef MODEL_H_
 #define MODEL_H_
-class IDeveloper;
+class IMixure;
 #include <iostream>
 #include "stkpp/include/STKpp.h"
 #undef Real
 class Model
 {
   public:
-    Model(IDeveloper* developer,int nbsample,int nbcluster);
+    Model(IMixure* developer,int nbsample,int nbcluster);
     Model(const Model&);
     Model* clone();
     void initializeModel();
@@ -26,7 +26,7 @@ class Model
     void writeParameters(std::ostream&) const;
     ~Model();
   protected:
-    IDeveloper *p_developer_;
+    IMixure *p_developer_;
     STK::Array2D<double> m_Tik_;
     int* v_Zi_;
     double* v_Pie_;
@@ -39,6 +39,6 @@ class Model
 };
 
 inline double** Model::conditionalProbabilities() const{
-  m_Tik_.allocator().p_data();
+  return m_Tik_.allocator().p_data();
 }
 #endif /* MODEL_H_ */

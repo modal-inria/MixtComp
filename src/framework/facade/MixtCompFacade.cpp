@@ -21,15 +21,15 @@ MixtCompFacade::~MixtCompFacade()
     p_strategy_ = NULL;
   }
 
-  if(p_developer_){
-    delete p_developer_;
-    p_developer_ = NULL;
+  if(p_mixture_){
+    delete p_mixture_;
+    p_mixture_ = NULL;
   }
 
-  for (int i = 0; i < v_developer_.size(); ++i) {
-    if(v_developer_[i]) {
-      delete v_developer_[i];
-      v_developer_[i] = NULL;
+  for (int i = 0; i < v_mixture_.size(); ++i) {
+    if(v_mixture_[i]) {
+      delete v_mixture_[i];
+      v_mixture_[i] = NULL;
     }
   }
 
@@ -46,23 +46,23 @@ void MixtCompFacade::instantiateFramework(){
   info_.nbSample_ = datainstance->nbSamples();
   //TODO getting information from data which models to instantiate
 
-  //TODO creation of v_developer_
+  //TODO creation of v_mixture_
   for(MixtureLaw law: info_.mixturelawlist_){
     switch (law) {
       case rank_:
-        v_developer_.push_back(new RankCluster('R',info_.nbIterations_,info_.burnin_));
+        v_mixture_.push_back(new RankCluster('R',info_.nbIterations_,info_.burnin_));
         break;
       case gaussian_:
-        v_developer_.push_back(new gaussianMixture());
+        v_mixture_.push_back(new gaussianMixture());
         break;
       default:
         break;
     }
   }
 
-  p_developer_ = new CompositeDeveloper(v_developer_);
+  p_mixture_ = new CompositeMixture(v_mixture_);
   //create model
-  p_model_ = new Model(p_developer_,info_.nbSample_,info_.nbCluster_);
+  p_model_ = new Model(p_mixture_,info_.nbSample_,info_.nbCluster_);
 
   //create algorithm
   switch (info_.algorithm_) {
@@ -87,7 +87,7 @@ void MixtCompFacade::instantiateFramework(){
 void MixtCompFacade::run(){
   //Run the algorithm using strategy on statistical model
   p_strategy_->run(p_algo_,p_model_);
-  //p_developer_ now have all the estimated parameters and result
+  //p_mixture_ now have all the estimated parameters and result
   /*************************************************************/
   //print parameters to console
   p_model_->writeParameters(std::cout);

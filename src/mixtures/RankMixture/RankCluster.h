@@ -7,7 +7,7 @@
 #include <vector>
 #include <set>
 #include "../../../../Eigen/Eigen/Dense"
-#include "framework/DeveloperInterface/IDeveloper.h"
+#include "framework/MixtureInterface/IMixture.h"
 
 #include "functions.h"
 using namespace std;
@@ -56,7 +56,7 @@ struct OutParameters
 
 };
 
-class RankCluster: public IDeveloper
+class RankCluster: public IMixure
 {
 	public:
     RankCluster();
