@@ -15,6 +15,7 @@ void IterationsStrategy::run(IAlgo* p_algo_,Model*& p_model_) {
   for (int i = 0; i < nbtry_; ++i) {
     std::cout<<"try: "<<i<<"\n";
     Model * currentmodel = p_model_->clone();
+    currentmodel->setData();
     currentmodel->initializeModel();
     for (int itr = 0; itr < iterations_; ++itr) {
       p_algo_->run(currentmodel);

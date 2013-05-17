@@ -6,13 +6,13 @@ int main(){
   FrameworkInfo myinfo;
   //set framework information
   myinfo.algorithm_= semgibbs_;
-  myinfo.mixturelawlist_ = {rank_};
+  myinfo.mixturelawlist_ = {gaussian_};
   myinfo.nbIterations_ = 100;
   myinfo.burnin_ = 20;
   myinfo.nbtry_ = 1;
   myinfo.nbCluster_ = 2;
   myinfo.strategy_ = iterations_;
-  myinfo.datafilename_ = "../../../data/words_rank.txt";
+  myinfo.datafilename_ = "../../../data/gaussiandata.txt";
   myinfo.modalitiesfilename_ = "../../../data/words_modality.txt";
   //create object of framework facade
   MixtCompFacade myfacade(myinfo);

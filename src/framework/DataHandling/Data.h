@@ -5,6 +5,7 @@
 */
 
 #include "DataHandler.h"
+namespace MIXCOMP{
 template<class type>
 class Data{
 };
@@ -125,5 +126,5 @@ class Data<std::string>{
     std::string** data_;
     int samples_;
 };
-
+}
 #endif /* DATA_H_ */

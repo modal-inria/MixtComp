@@ -1016,7 +1016,7 @@ int RankCluster::freeParameters() const{
   return 2*g_*d_+g_-1;
 }
 void RankCluster::setData(){
-  Data<int> mydatahandler;
+  MIXCOMP::Data<int> mydatahandler;
   std::vector<std::vector<int> > data = mydatahandler.getData(id_,nbVariable_);
   m_ = mydatahandler.getModality(id_);
   std::vector<int> temp(m_.size());

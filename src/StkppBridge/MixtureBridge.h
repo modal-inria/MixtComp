@@ -20,8 +20,7 @@ template<class MultiStatModel>
 class MixtureBridge: public IMixure
 {
   public:
-    MixtureBridge()
-    { mixture_ = new MultiStatModel[nbCluster()];}
+    MixtureBridge(){ }
     virtual ~MixtureBridge()
     { if (mixture_) delete[] mixture_; }
     /** Initialization step. In this implementation, perform a
@@ -43,7 +42,9 @@ class MixtureBridge: public IMixure
       }
 
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
-      { mixture_[k].run(tik.col(k));}
+      {
+        mixture_[k].run(tik.col(k));
+      }
     }
     /** impute missing values */
     virtual void imputationStep() {/**Do nothing by default*/}

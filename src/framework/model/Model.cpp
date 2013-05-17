@@ -19,8 +19,7 @@ Model::Model(IMixure* developer,int nbsample,int nbcluster) : nbSample_(nbsample
   p_developer_ = developer->clone();
   //set this pointer
   p_developer_->setModel(this);
-  //set data for developer
-  p_developer_->setData();
+
 }
 
 Model::Model(const Model& other){
@@ -189,4 +188,10 @@ Model& Model::operator=(const Model& other){
 
 void Model::writeParameters(std::ostream&out) const{
   p_developer_->writeParameters(out);
+}
+
+
+void Model::setData()
+{
+  p_developer_->setData();
 }

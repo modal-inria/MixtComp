@@ -53,7 +53,7 @@ void MixtCompFacade::instantiateFramework(){
         v_mixture_.push_back(new RankCluster('R',info_.nbIterations_,info_.burnin_));
         break;
       case gaussian_:
-        v_mixture_.push_back(new gaussianMixture());
+        v_mixture_.push_back(new gaussianMixture('G'));
         break;
       default:
         break;

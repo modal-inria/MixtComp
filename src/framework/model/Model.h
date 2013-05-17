@@ -13,6 +13,7 @@ class Model
     void initializeModel();
     void seStep();
     void mStep();
+    void setData();
     void storeIntermediateResults(int iteration);
     void finalizeModel();
     double logLikelihood() const;
@@ -41,4 +42,5 @@ class Model
 inline double** Model::conditionalProbabilities() const{
   return m_Tik_.allocator().p_data();
 }
+
 #endif /* MODEL_H_ */
