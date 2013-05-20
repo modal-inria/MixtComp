@@ -3,7 +3,7 @@
 #include "framework/MixtureInterface/IMixture.h"
 #include "Model.h"
 
-Model::Model(IMixure* developer,int nbsample,int nbcluster) : nbSample_(nbsample),
+Model::Model(IMixture* developer,int nbsample,int nbcluster) : nbSample_(nbsample),
                                                               nbCluster_(nbcluster)
 {
   //Allocate memory for conditional probabilities

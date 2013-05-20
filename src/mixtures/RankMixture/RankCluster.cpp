@@ -15,7 +15,7 @@ RankCluster::RankCluster(){
 
 }
 RankCluster::RankCluster(char id,int iterations,int burnin)
-	:IMixure(id)
+	:IMixture(id)
 {
   parameter_.burnAlgo = burnin;
   parameter_.maxIt = iterations;
@@ -30,7 +30,7 @@ RankCluster::~RankCluster()
   // TODO
 }
 
-void RankCluster::conversion2data(vector<vector<int> > const& X)
+void RankCluster::conversion2data(STK::Array2D<int> const& X)
 {
 	vector<int> indM(d_+1,0);//size of a row of X
 	for(int i(0);i<d_;i++)
@@ -59,7 +59,7 @@ void RankCluster::conversion2data(vector<vector<int> > const& X)
 
 	        for(int i(indM[dim]);i<indM[dim+1];i++)
 	        {
-	        	data_[dim][j].rank[indiceElement]=X[j][i];
+	        	data_[dim][j].rank[indiceElement]=X(j,i);
 	            if(data_[dim][j].rank[indiceElement]==0)
 	            {
 	            	data_[dim][j].isPartial=true;
@@ -1016,8 +1016,8 @@ int RankCluster::freeParameters() const{
   return 2*g_*d_+g_-1;
 }
 void RankCluster::setData(){
-  MIXCOMP::Data<int> mydatahandler;
-  std::vector<std::vector<int> > data = mydatahandler.getData(id_,nbVariable_);
+  MC::Data<int> mydatahandler;
+  STK::Array2D<int> data = mydatahandler.getData(id_,nbVariable_);
   m_ = mydatahandler.getModality(id_);
   std::vector<int> temp(m_.size());
   for (int i = 0; i < temp.size(); ++i) {
@@ -1025,7 +1025,7 @@ void RankCluster::setData(){
   }
   parameter_.nGibbsM = temp;
   parameter_.nGibbsSE = temp;
-  n_ = data.size();
+  n_ = data.sizeRows();
   d_ = m_.size();
   g_ = nbCluster();
   data_ = vector<vector<PartialRank> >(d_,vector<PartialRank> (n_));

@@ -10,7 +10,7 @@ CompositeMixture::CompositeMixture(const CompositeMixture& other){
   }
 }
 
-CompositeMixture::CompositeMixture(const std::vector<IMixure*>& Mixturelist) {
+CompositeMixture::CompositeMixture(const std::vector<IMixture*>& Mixturelist) {
   for (int i = 0; i < Mixturelist.size(); ++i) {
     v_Mixture_.push_back(Mixturelist[i]->clone());
   }

@@ -53,8 +53,8 @@ class MixtCompFacade
     void instantiateFramework();
     ~MixtCompFacade();
   protected:
-    IMixure *p_mixture_;
-    std::vector<IMixure*> v_mixture_;
+    IMixture *p_mixture_;
+    std::vector<IMixture*> v_mixture_;
     IAlgo *p_algo_;
     Model *p_model_;
     IStrategy *p_strategy_;

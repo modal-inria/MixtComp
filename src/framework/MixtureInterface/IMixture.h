@@ -1,29 +1,25 @@
 #ifndef IMixture_H_
 #define IMixture_H_
-/**@file IMixure.h
+/**@file IMixture.h
  * @brief
  */
 #include <fstream>
 #include <vector>
 #include "framework/DataHandling/DataHandler.h"
 class Model;
-class IMixure
+class IMixture
 {
   public:
-    /**
-     * Default Constructor
-     * @return
-     */
-    IMixure();
-    /**
-     * Constructor with identification character
+    /**Default Constructor */
+    IMixture();
+    /**Constructor with identification character
      * @param id Identification character of Mixture allocated by framework.
-     * @return
      */
-    IMixure(char id);
-    /**
-     * Setter function: Can be used to set IMixure::p_model_ member  variable.
-     * @param p_model Pointer to the Model being set for IMixure.
+    IMixture(char id);
+    /**copy constructor */
+    IMixture(IMixture const& mixture);
+    /** Setter function: Can be used to set IMixture::p_model_ member  variable.
+     *  @param p_model Pointer to the Model being set for IMixture.
      */
     virtual void setModel(Model* p_model);
     /**
@@ -36,7 +32,7 @@ class IMixure
      * In other words, this is equivalent to polymorphic copy constructor.
      * @return New instance of class as that of calling object.
      */
-    virtual IMixure* clone() = 0;
+    virtual IMixture* clone() = 0;
     /**
      * This function should be used for Imputation of data.
      * The default implementation (in the base class) is to do nothing.
@@ -94,18 +90,19 @@ class IMixure
     virtual void writeParameters(std::ostream& out) const {};
 
     /**
-     * This function is used  to set IMixure::id_.
+     * This function is used  to set IMixture::id_.
      * @param id Identification character.
      */
     void setID(char id);
     /**
      * Virtual destructor.
      */
-    virtual ~IMixure(){};
+    virtual ~IMixture(){};
+
   protected:
-    Model * p_model_;
     int nbVariable_;
     char id_;
+    Model * p_model_;
 
     //protected functions
     /**
@@ -131,11 +128,11 @@ class IMixure
 
 };
 
-inline void IMixure::setID(char id){
+inline void IMixture::setID(char id){
   id_ = id;
 }
 
-inline void IMixure::setModel(Model* model){
+inline void IMixture::setModel(Model* model){
   p_model_ = model;
 }
 

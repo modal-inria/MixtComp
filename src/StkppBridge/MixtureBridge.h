@@ -17,34 +17,36 @@
 #include "framework/MixtureInterface/IMixture.h"
 #include "stkpp/include/STKpp.h"
 template<class MultiStatModel>
-class MixtureBridge: public IMixure
+class MixtureBridge: public IMixture
 {
   public:
-    MixtureBridge(){ }
-    virtual ~MixtureBridge()
-    { if (mixture_) delete[] mixture_; }
+    /** constructor. @param id id of the mixture */
+    MixtureBridge(char id ) : IMixture(id), models_() {}
+    /** copy constructor. @param mixture the mixture to copy */
+    MixtureBridge( MixtureBridge const& mixture)
+                 : IMixture(mixture), models_(mixture.models_)
+    {
+      for (int k=models_.firstIdx(); k<= models_.lastIdx(); k++)
+      { models_[k] = mixture.models_[k]->clone();}
+    }
+    /** constructor. @param id id of the mixture */
+    virtual ~MixtureBridge() {}
     /** Initialization step. In this implementation, perform a
      *  M step using the inial t_ik/ziK.
      **/
     virtual void initializeStep()
     {
-      STK::Array2D<double>  tik(nbSample(),nbCluster());
+      STK::Array2D<double> tik(nbSample(),nbCluster());
 
-      //Random initialization of tik
-      srand(time(0));
-      std::vector<float> randnumbers(nbSample());
-      for ( int i = 0; i < nbSample(); ++i) {
-        randnumbers[i] = float(std::rand())/float(RAND_MAX);
-      }
-
-      for (int i = 0; i < nbSample(); ++i) {
-        tik(i,std::floor(nbCluster()*randnumbers[i])) = 1.0;
-      }
+      //Random initialization of tik;
+      STK::RandBase gener;
+      STK::Array2DVector<double> randnumbers(nbSample());
+      gener.randUnif(randnumbers);
+      for (int i = 0; i < nbSample(); ++i)
+      { tik(i,std::floor(nbCluster()*randnumbers[i])) = 1.0;}
 
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
-      {
-        mixture_[k].run(tik.col(k));
-      }
+      { models_[k]->run(tik.col(k));}
     }
     /** impute missing values */
     virtual void imputationStep() {/**Do nothing by default*/}
@@ -58,12 +60,13 @@ class MixtureBridge: public IMixure
     virtual void paramUpdateStep()
     {
       // build a Wrapper around the t_ik/z_ik
-      STK::Array2D<double>  tik(nbSample(),nbCluster());
-      for (int i = 0; i < nbSample(); ++i) {
+      STK::Array2D<double>  tik(nbSample(),nbCluster(), 0.);
+      for (int i = 0; i < nbSample(); ++i)
+      {
         tik(i,classLabels()[i]) = 1.0;
       }
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
-      { mixture_[k].run(tik.col(k));}
+      { models_[k]->run(tik.col(k));}
     }
     /** Perform any operation needed after E/C/S-M step */
     virtual void finalizeStep() {/**Do nothing by default*/}
@@ -73,14 +76,16 @@ class MixtureBridge: public IMixure
      *  in the kth component.
      **/
     virtual double posteriorProbability(int iSample, int kCluster)
-    { return std::exp( mixture_[kCluster].computeLnLikelihood(mixture_[kCluster].p_data()->row(iSample)));}
+    {
+      return std::exp( models_[kCluster]->computeLnLikelihood(models_[kCluster]->p_data()->row(iSample)));
+    }
     /** Compute the logLikelihood by summing the logLikelihood
      *  of the components of the mixture [TODO: ponder by mixing proportions].*/
     virtual double logLikelihood()
     {
       double sum=0;
       for (int k= 0; k < nbCluster(); ++k)
-      { sum+=mixture_[k].lnLikelihood();}
+      { sum+=models_[k]->lnLikelihood();}
       return sum;
     }
     /** Compute the number of free parameters by summing the number of free
@@ -89,12 +94,12 @@ class MixtureBridge: public IMixure
     {
       int sum=0;
       for (int k= 0; k < nbCluster(); ++k)
-      { sum+=mixture_[k].computeNbFreeParameters();}
+      { sum+=models_[k]->computeNbFreeParameters();}
       return sum;
     }
 
   protected:
-    MultiStatModel* mixture_;
+    STK::Array2DPoint<MultiStatModel*> models_;
 
 };
 

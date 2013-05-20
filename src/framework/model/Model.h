@@ -1,13 +1,13 @@
 #ifndef MODEL_H_
 #define MODEL_H_
-class IMixure;
+class IMixture;
 #include <iostream>
 #include "stkpp/include/STKpp.h"
 #undef Real
 class Model
 {
   public:
-    Model(IMixure* developer,int nbsample,int nbcluster);
+    Model(IMixture* developer,int nbsample,int nbcluster);
     Model(const Model&);
     Model* clone();
     void initializeModel();
@@ -27,7 +27,7 @@ class Model
     void writeParameters(std::ostream&) const;
     ~Model();
   protected:
-    IMixure *p_developer_;
+    IMixture *p_developer_;
     STK::Array2D<double> m_Tik_;
     int* v_Zi_;
     double* v_Pie_;

@@ -3,12 +3,12 @@
 
 #ifndef CompositeMixture_H_
 #define CompositeMixture_H_
-class CompositeMixture: public IMixure
+class CompositeMixture: public IMixture
 {
   public:
     CompositeMixture();
     CompositeMixture(const CompositeMixture&);
-    CompositeMixture(const std::vector<IMixure*>&);
+    CompositeMixture(const std::vector<IMixture*>&);
     virtual  CompositeMixture* clone();
     virtual void setModel(Model*);
     virtual void initializeStep();
@@ -24,7 +24,7 @@ class CompositeMixture: public IMixure
     virtual void writeParameters(std::ostream&) const;
     ~CompositeMixture();
   protected:
-    std::vector<IMixure*> v_Mixture_;
+    std::vector<IMixture*> v_Mixture_;
 };
 
 #endif /* CompositeMixture_H_ */

@@ -41,7 +41,7 @@ MixtCompFacade::~MixtCompFacade()
 void MixtCompFacade::instantiateFramework(){
   //read data and set number of samples
   DataHandler* datainstance = DataHandler::getInstance();
-  datainstance->readDataFromFile(info_.datafilename_,' ');
+  datainstance->readDataFromFile(info_.datafilename_,',');
   datainstance->readModalityFromFile(info_.modalitiesfilename_,' ');
   info_.nbSample_ = datainstance->nbSamples();
   //TODO getting information from data which models to instantiate

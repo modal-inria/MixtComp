@@ -8,6 +8,8 @@
 #include <set>
 #include "../../../../Eigen/Eigen/Dense"
 #include "framework/MixtureInterface/IMixture.h"
+#include "stkpp/include/STKpp.h"
+
 
 #include "functions.h"
 using namespace std;
@@ -56,7 +58,7 @@ struct OutParameters
 
 };
 
-class RankCluster: public IMixure
+class RankCluster: public IMixture
 {
 	public:
     RankCluster();
@@ -76,7 +78,7 @@ class RankCluster: public IMixure
 		virtual ~RankCluster();
 
 	protected: //or private
-		void conversion2data(std::vector<std::vector<int> >const& X);
+		void conversion2data(STK::Array2D<int> const& X);
 		void initialization();
 		void SEstep();
 		void gibbsY(int indexDim);
