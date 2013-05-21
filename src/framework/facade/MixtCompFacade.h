@@ -35,6 +35,7 @@ enum strategy{
 struct FrameworkInfo{
     std::string datafilename_;
     std::string modalitiesfilename_;
+    char filesep_;
     std::initializer_list<MixtureLaw> mixturelawlist_;
     Algo algorithm_;
     strategy strategy_;
@@ -50,7 +51,7 @@ class MixtCompFacade
   public:
     MixtCompFacade(FrameworkInfo& info);
     void run();
-    void instantiateFramework();
+    bool instantiateFramework();
     ~MixtCompFacade();
   protected:
     IMixture *p_mixture_;

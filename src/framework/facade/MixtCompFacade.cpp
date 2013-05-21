@@ -38,11 +38,19 @@ MixtCompFacade::~MixtCompFacade()
   if(p_datahandler!=NULL) delete p_datahandler;
 }
 
-void MixtCompFacade::instantiateFramework(){
+bool MixtCompFacade::instantiateFramework(){
   //read data and set number of samples
   DataHandler* datainstance = DataHandler::getInstance();
-  datainstance->readDataFromFile(info_.datafilename_,',');
-  datainstance->readModalityFromFile(info_.modalitiesfilename_,' ');
+
+  if(!datainstance->readDataFromFile(info_.datafilename_,info_.filesep_))
+  {
+    return false;
+  }
+
+  if(!datainstance->readModalityFromFile(info_.modalitiesfilename_,info_.filesep_)){
+    return false;
+  }
+
   info_.nbSample_ = datainstance->nbSamples();
   //TODO getting information from data which models to instantiate
 
@@ -82,6 +90,8 @@ void MixtCompFacade::instantiateFramework(){
       p_strategy_ = new IterationsStrategy(info_.nbIterations_,info_.burnin_,info_.nbtry_);
       break;
   }
+
+  return true;
 }
 
 void MixtCompFacade::run(){

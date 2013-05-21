@@ -51,17 +51,21 @@ class Data<int>
     {
       DataHandler* p_datahandler = DataHandler::getInstance();
       std::vector<std::vector<std::string> > allmodalities = p_datahandler->allModalities();
+      std::vector<int> modality;
+      std::cout<<allmodalities[0][1]<<"\n";
       for (int i = 0; i < allmodalities.size(); ++i)
       {
         if(*allmodalities[i][0].c_str() == id)
         {
-          std::vector<int> modality(allmodalities[i].size()-1);
+          modality.resize(allmodalities[i].size()-1);
           for (int k = 0; k < modality.size(); ++k)
-          { modality[k] = atoi(allmodalities[i][k].c_str());}
-          return modality;
+          {
+            modality[k] = atoi(allmodalities[i][k+1].c_str());
+          }
+          break;
         }
       }
-      return std::vector<int>();
+      return modality;
     }
 
     STK::Array2D<int>& getData(char id,int& nbVar)

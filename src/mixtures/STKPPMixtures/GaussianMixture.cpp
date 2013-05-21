@@ -33,9 +33,9 @@ void gaussianMixture::writeParameters(std::ostream& os) const
     //TODO
     if (models_[k]->p_param())
     {
-      os << "mu = " << models_[k]->p_param()->mu() << "\n";
-      os  << "sigma = " << models_[k]->p_param()->sigma() << "\n";
-      os << "ln likelihood = " << models_[k]->lnLikelihood() << "\n";
+     // os << "mu = " << models_[k]->p_param()->mu() << "\n";
+     // os  << "sigma = " << models_[k]->p_param()->sigma() << "\n";
+     // os << "ln likelihood = " << models_[k]->lnLikelihood() << "\n";
     }
     else
       os << "Parameters not created\n";

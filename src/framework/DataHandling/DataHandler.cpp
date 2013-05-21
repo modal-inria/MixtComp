@@ -25,16 +25,17 @@ std::vector<int> DataHandler::colIndex(char id)
   }
   return colindex;
 }
-void DataHandler::readDataFromFile(std::string filename,char sep)
+bool DataHandler::readDataFromFile(std::string filename,char sep)
 {
   STK::ReadWriteCsv rw(filename, true, STK::String(1,sep));
   if (!rw.read())
   {
-    // TODO : throw exception
-    std::cerr << rw.error();
+    std::cerr << rw.error()<<"bad";
+    return false;
   }
   completedata_ += rw;
   nbSample_ = completedata_.rows().size();
+
 
 //  fstream file;STK::String(1,sep)
 //  file.open(filename.c_str());
@@ -71,14 +72,17 @@ void DataHandler::readDataFromFile(std::string filename,char sep)
 //    }
 //    temprows++;
 //  }
+
+  return true;
 }
 
-void DataHandler::readModalityFromFile(std::string filename,char sep)
+bool DataHandler::readModalityFromFile(std::string filename,char sep)
 {
   fstream file;
   file.open(filename.c_str());
   if (!file.is_open()) {
-    // TODO : throw exception
+    std::cerr<<"Cannot open Modality file\n";
+    return false;
   }
   string dataline,dataval;
   int temprows = 0, tempcols = 0;
@@ -109,4 +113,6 @@ void DataHandler::readModalityFromFile(std::string filename,char sep)
     }
     temprows++;
   }
+
+  return true;
 }

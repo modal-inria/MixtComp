@@ -12,13 +12,19 @@ int main(){
   myinfo.nbtry_ = 1;
   myinfo.nbCluster_ = 2;
   myinfo.strategy_ = iterations_;
-  myinfo.datafilename_ = "./data/gaussiandata.csv";
+  myinfo.filesep_ = ',';
+  myinfo.datafilename_ = "../../../data/gaussiandata.csv";
   myinfo.modalitiesfilename_ = "../../../data/words_modality.txt";
 
   //create object of framework facade
   MixtCompFacade myfacade(myinfo);
   //instantiate framework
-  myfacade.instantiateFramework();
+  if(!myfacade.instantiateFramework())
+  {
+    std::cerr<<"Cannot instantiate framework.\n";
+    exit(0);
+  }
+
   //run the facade
   myfacade.run();
   return 0;

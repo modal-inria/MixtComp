@@ -15,8 +15,8 @@ class DataHandler
 {
   public:
     static DataHandler* getInstance();
-    void readDataFromFile(std::string filename,char sep);
-    void readModalityFromFile(std::string filename,char sep);
+    bool readDataFromFile(std::string filename,char sep);
+    bool readModalityFromFile(std::string filename,char sep);
     std::vector<int> colIndex(char id);
     int nbSamples() const {return nbSample_;}
     /** get complete data set.*/

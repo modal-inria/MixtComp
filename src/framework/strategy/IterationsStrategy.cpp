@@ -15,7 +15,7 @@ void IterationsStrategy::run(IAlgo* p_algo_,Model*& p_model_)
   double likelihood = -RealMax;
   for (int i = 0; i < nbtry_; ++i)
   {
-    std::cout<<"try: "<<i<<"\n";
+    std::cout<<"Try: "<<i<<"\n";
     Model * currentmodel = p_model_->clone();
     currentmodel->setData();
     currentmodel->initializeModel();

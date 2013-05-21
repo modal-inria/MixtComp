@@ -1019,6 +1019,7 @@ void RankCluster::setData(){
   MC::Data<int> mydatahandler;
   STK::Array2D<int> data = mydatahandler.getData(id_,nbVariable_);
   m_ = mydatahandler.getModality(id_);
+  cout<<m_[0]<<endl;
   std::vector<int> temp(m_.size());
   for (int i = 0; i < temp.size(); ++i) {
     temp[i] = m_[i]*(m_[i]-1)/2;
