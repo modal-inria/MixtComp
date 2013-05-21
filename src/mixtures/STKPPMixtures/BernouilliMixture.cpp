@@ -17,9 +17,9 @@ void bernouilliMixture::writeParameters(std::ostream& os) const{
 
 void bernouilliMixture::setData()
 {
-  models_.resize(nbCluster());
+  components_.resize(nbCluster());
 //  Data<Binary> mydatahandler;
 //  data_.move(mydatahandler.getData(id_,nbVariable_));
   for (int k = 0; k < nbCluster(); ++k)
-  { models_[k]->setData(data_);}
+  { components_[k]->setData(data_);}
 }

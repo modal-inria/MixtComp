@@ -21,13 +21,15 @@ class MixtureBridge: public IMixture
 {
   public:
     /** constructor. @param id id of the mixture */
-    MixtureBridge(char id ) : IMixture(id), models_() {}
+    MixtureBridge(char id ) : IMixture(id), components_() {}
     /** copy constructor. @param mixture the mixture to copy */
     MixtureBridge( MixtureBridge const& mixture)
-                 : IMixture(mixture), models_(mixture.models_)
+                 : IMixture(mixture), components_(mixture.components_)
     {
-      for (int k=models_.firstIdx(); k<= models_.lastIdx(); k++)
-      { models_[k] = mixture.models_[k]->clone();}
+      std::cout << "Mixture bridge copy constructor : components_.size() =" << mixture.components_.size() <<"\n";
+      std::cout << "Mixture bridge copy constructor : components_.size() =" << components_.size() <<"\n";
+      for (int k=components_.firstIdx(); k<= components_.lastIdx(); k++)
+      { components_[k] = mixture.components_[k]->clone();}
     }
     /** constructor. @param id id of the mixture */
     virtual ~MixtureBridge() {}
@@ -46,7 +48,7 @@ class MixtureBridge: public IMixture
       { tik(i,std::floor(nbCluster()*randnumbers[i])) = 1.0;}
 
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
-      { models_[k]->run(tik.col(k));}
+      { components_[k]->run(tik.col(k));}
     }
     /** impute missing values */
     virtual void imputationStep() {/**Do nothing by default*/}
@@ -66,7 +68,11 @@ class MixtureBridge: public IMixture
         tik(i,classLabels()[i]) = 1.0;
       }
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
-      { models_[k]->run(tik.col(k));}
+      { if (!components_[k]->run(tik.col(k)))
+        {
+          // TODO throw excception
+        }
+      }
     }
     /** Perform any operation needed after E/C/S-M step */
     virtual void finalizeStep() {/**Do nothing by default*/}
@@ -77,7 +83,7 @@ class MixtureBridge: public IMixture
      **/
     virtual double posteriorProbability(int iSample, int kCluster)
     {
-      return std::exp( models_[kCluster]->computeLnLikelihood(models_[kCluster]->p_data()->row(iSample)));
+      return std::exp( components_[kCluster]->computeLnLikelihood(components_[kCluster]->p_data()->row(iSample)));
     }
     /** Compute the logLikelihood by summing the logLikelihood
      *  of the components of the mixture [TODO: ponder by mixing proportions].*/
@@ -85,7 +91,7 @@ class MixtureBridge: public IMixture
     {
       double sum=0;
       for (int k= 0; k < nbCluster(); ++k)
-      { sum+=models_[k]->lnLikelihood();}
+      { sum+=components_[k]->lnLikelihood();}
       return sum;
     }
     /** Compute the number of free parameters by summing the number of free
@@ -94,12 +100,12 @@ class MixtureBridge: public IMixture
     {
       int sum=0;
       for (int k= 0; k < nbCluster(); ++k)
-      { sum+=models_[k]->computeNbFreeParameters();}
+      { sum+=components_[k]->computeNbFreeParameters();}
       return sum;
     }
 
   protected:
-    STK::Array2DPoint<MultiStatModel*> models_;
+    STK::Array2DPoint<MultiStatModel*> components_;
 
 };
 

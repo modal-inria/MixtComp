@@ -1,6 +1,9 @@
 #include "GaussianMixture.h"
 #include "framework/DataHandling/Data.h"
-STK::RandBase STK::Law::ILawBase::generator;
+
+using namespace STK;
+
+RandBase Law::ILawBase::generator;
 
 
 gaussianMixture::gaussianMixture(char id) : Base(id) {}
@@ -13,8 +16,8 @@ gaussianMixture::gaussianMixture( gaussianMixture const& mixture)
 /* destructor */
 gaussianMixture::~gaussianMixture()
 {
-  for (int k = models_.firstIdx(); k <= models_.lastIdx(); ++k)
-  { if (models_[k]) delete models_[k];}
+  for (int k = components_.firstIdx(); k <= components_.lastIdx(); ++k)
+  { if (components_[k]) delete components_[k];}
 }
 
 gaussianMixture* gaussianMixture::clone()
@@ -22,7 +25,7 @@ gaussianMixture* gaussianMixture::clone()
 
 void gaussianMixture::writeParameters(std::ostream& os) const
 {
-  if (models_.size() == 0)
+  if (components_.size() == 0)
   {
     os <<"Warning: You request writeParameters of an empty gaussianMixture\n";
     return;
@@ -31,11 +34,11 @@ void gaussianMixture::writeParameters(std::ostream& os) const
   {
     os <<"Parameters of "<<k<<"th component\n*******************************\n";
     //TODO
-    if (models_[k]->p_param())
+    if (components_[k]->p_param())
     {
-     // os << "mu = " << models_[k]->p_param()->mu() << "\n";
-     // os  << "sigma = " << models_[k]->p_param()->sigma() << "\n";
-     // os << "ln likelihood = " << models_[k]->lnLikelihood() << "\n";
+       os << "mu = " << components_[k]->p_param()->mu() << "\n";
+       os  << "sigma = " << components_[k]->p_param()->sigma() << "\n";
+       os << "ln likelihood = " << components_[k]->lnLikelihood() << "\n";
     }
     else
       os << "Parameters not created\n";
@@ -44,12 +47,19 @@ void gaussianMixture::writeParameters(std::ostream& os) const
 
 void gaussianMixture::setData()
 {
-  models_.resize(nbCluster());
   MC::Data<double> mydatahandler;
-
   data_.move(mydatahandler.getData(id_,nbVariable_));
 
-  models_.resize(nbCluster());
-  for (int k = 0; k < nbCluster(); ++k)
-  { models_[k] = new JointGaussian(data_);}
+  components_.resize(nbCluster());
+  if (components_.size() == 0)
+  {
+    std::cout <<"Warning in setData: You request writeParameters of an empty gaussianMixture\n";
+    return;
+  }
+
+  for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
+  {
+    components_[k] = new JointGaussian(data_);
+    components_[k]->setParameters(new JointGaussianParameters(data_.cols()));
+  }
 }

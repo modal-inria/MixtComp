@@ -13,8 +13,8 @@ int main(){
   myinfo.nbCluster_ = 2;
   myinfo.strategy_ = iterations_;
   myinfo.filesep_ = ',';
-  myinfo.datafilename_ = "../../../data/gaussiandata.csv";
-  myinfo.modalitiesfilename_ = "../../../data/words_modality.txt";
+  myinfo.datafilename_ = "./data/gaussiandata.csv";
+  myinfo.modalitiesfilename_ = "./data/words_modality.txt";
 
   //create object of framework facade
   MixtCompFacade myfacade(myinfo);
