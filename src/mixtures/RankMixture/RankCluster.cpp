@@ -163,6 +163,9 @@ void RankCluster::initialization()
 	output_.initialP=p_;
 	output_.initialZ=z_;
 	output_.initialMu=mu_;
+
+	output_.tik = STK::Array2D(n_,g_);
+
 }
 
 
@@ -231,7 +234,7 @@ void RankCluster::zSimulation()
     double alea(0),sumTik(0);
     vector<double> lim(g_+1,0);
 
-    output_.tik = ArrayXXd(n_,g_);
+
     for(int ind(0);ind<n_;ind++)
     {
         //computation of the probability to belong to each cluster
@@ -586,7 +589,7 @@ void RankCluster::likelihood(vector<vector<vector<vector<int> > > > &listeMu,vec
 
     //Now, we have the list of all the different Mu
     currMu=headMu;
-    ArrayXXd tik(n_,g_);
+    STK::Array2D tik(n_,g_);
 
     //for each mu, we will compute the associate log likelihood
     while(currMu->suivant!=0)
@@ -697,20 +700,20 @@ void RankCluster::likelihood(vector<vector<vector<vector<int> > > > &listeMu,vec
 
 //LL gibbs
 double RankCluster::computeLikelihood(vector<vector<vector<int> > > const& mu,vector<vector<double> > const& p,
-		vector<double> const& proportion,ArrayXXd &tik,vector<vector<vector<int> > > &Y,vector<vector<vector<int> > > &xTemp)
+		vector<double> const& proportion,STK::Array2D &tik,vector<vector<vector<int> > > &Y,vector<vector<vector<int> > > &xTemp)
 {
     long double p1(0),p2(0),p1x(0),p2x(0),alea(0),l(0),li(0),div((long double) 1/(parameter_.nGibbsL-parameter_.burnL));
 	vector<int> compteur(d_,0);
     vector<int> x1,x2;
 
     //objet pour stockage de calcul pour éviter répétition
-    ArrayXXd proba1(d_,g_),proba2(d_,g_);
-    ArrayXd proba1X(g_),proba2X(g_);
+    STK::Array2D proba1(d_,g_),proba2(d_,g_);
+    STK::Array2DVector proba1X(g_),proba2X(g_);
 
-    ArrayXd prop(g_);
+    STK::Array2DVector prop(g_);
     for(int i(0);i<g_;i++)
     	prop(i)=proportion[i];
-    ArrayXXd propb(1,g_);
+    STK::Array2D propb(1,g_);
     propb=prop.transpose();
 
     //génération rang 1 2 3 ..m par dimension
@@ -741,9 +744,9 @@ double RankCluster::computeLikelihood(vector<vector<vector<int> > > const& mu,ve
 
         for(int k(0);k<g_;k++)
         {
-			tik(ind,k)=0;
-            for(int j(0);j<d_;j++)
-            	proba1(j,k)=probaCond(x[j],y1[j],mu[j][k],p[j][k]);
+          tik(ind,k)=0;
+          for(int j(0);j<d_;j++)
+            proba1(j,k)=probaCond(x[j],y1[j],mu[j][k],p[j][k]);
         }
 
         p1=(long double) (propb*proba1.colwise().prod()).sum();
@@ -825,7 +828,7 @@ double RankCluster::computeLikelihood(vector<vector<vector<int> > > const& mu,ve
             }
             if(iter>=parameter_.burnL)
             {
-                ArrayXd calculInter(g_);
+                STK::Array2DVector calculInter(g_);
                 for(int cl(0);cl<g_;cl++)
                 {
                     calculInter(cl)=1;

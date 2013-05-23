@@ -6,7 +6,7 @@
  */
 #include <vector>
 #include <set>
-#include "../../../../Eigen/Eigen/Dense"
+//#include "../../../../Eigen/Eigen/Dense"
 #include "framework/MixtureInterface/IMixture.h"
 #include "stkpp/include/STKpp.h"
 
@@ -40,8 +40,7 @@ struct OutParameters
 	double L;
 	double bic;
 	double icl;
-	Eigen::ArrayXXd tik;
-	Eigen::ArrayXd entropy;
+	STK::Array2D tik;
 
 	//algorithm initialization
 	std::vector<std::vector<std::vector<int> > > initialPartialRank;
@@ -89,7 +88,7 @@ class RankCluster: public IMixture
 		void likelihood(std::vector<std::vector<std::vector<std::vector<int> > > > &listeMu,std::vector<std::vector<std::vector<double> > > &resP,
 						std::vector<std::vector<double> > &resProp);
 		double computeLikelihood(std::vector<std::vector<std::vector<int> > > const& mu,std::vector<std::vector<double> > const& p,
-				std::vector<double> const& proportion,Eigen::ArrayXXd &tik,std::vector<std::vector<std::vector<int> > > &Y,
+				std::vector<double> const& proportion,STK::Array2D &tik,std::vector<std::vector<std::vector<int> > > &Y,
 				std::vector<std::vector<std::vector<int> > > &xTemp);
 		void computeDistance(std::vector<std::vector<double> > const& resProp,std::vector<std::vector<std::vector<double> > > const& resP,
 				std::vector<std::vector<std::vector<std::vector<int> > > > const& resMu,std::vector<std::vector<int> > const& resZ,
