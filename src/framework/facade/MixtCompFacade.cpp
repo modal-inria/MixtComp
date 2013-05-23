@@ -55,7 +55,7 @@ bool MixtCompFacade::instantiateFramework(){
   //TODO getting information from data which models to instantiate
 
   //TODO creation of v_mixture_
-  for(MixtureLaw law: info_.mixturelawlist_){
+  for(auto const& law: info_.mixturelawlist_){
     switch (law) {
       case rank_:
         v_mixture_.push_back(new RankCluster('R',info_.nbIterations_,info_.burnin_));

@@ -30,7 +30,6 @@ bool DataHandler::readDataFromFile(std::string filename,char sep)
   STK::ReadWriteCsv rw(filename, true, STK::String(1,sep));
   if (!rw.read())
   {
-    std::cerr << rw.error()<<"bad";
     return false;
   }
   completedata_ += rw;

@@ -6,14 +6,14 @@ int main(){
   FrameworkInfo myinfo;
   //set framework information
   myinfo.algorithm_= semgibbs_;
-  myinfo.mixturelawlist_ = {gaussian_};
+  myinfo.mixturelawlist_ = {rank_};
   myinfo.nbIterations_ = 100;
   myinfo.burnin_ = 20;
   myinfo.nbtry_ = 1;
   myinfo.nbCluster_ = 2;
   myinfo.strategy_ = iterations_;
-  myinfo.filesep_ = ',';
-  myinfo.datafilename_ = "./data/gaussiandata.csv";
+  myinfo.filesep_ = ' ';
+  myinfo.datafilename_ = "./data/words_rank.txt";
   myinfo.modalitiesfilename_ = "./data/words_modality.txt";
 
   //create object of framework facade
@@ -21,7 +21,7 @@ int main(){
   //instantiate framework
   if(!myfacade.instantiateFramework())
   {
-    std::cerr<<"Cannot instantiate framework.\n";
+    std::cerr<<"\n\nCannot instantiate framework.\n";
     exit(0);
   }
 

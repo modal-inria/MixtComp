@@ -26,8 +26,6 @@ class MixtureBridge: public IMixture
     MixtureBridge( MixtureBridge const& mixture)
                  : IMixture(mixture), components_(mixture.components_)
     {
-      std::cout << "Mixture bridge copy constructor : components_.size() =" << mixture.components_.size() <<"\n";
-      std::cout << "Mixture bridge copy constructor : components_.size() =" << components_.size() <<"\n";
       for (int k=components_.firstIdx(); k<= components_.lastIdx(); k++)
       { components_[k] = mixture.components_[k]->clone();}
     }

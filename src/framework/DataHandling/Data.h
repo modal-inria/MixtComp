@@ -4,7 +4,7 @@
 * @brief 
 */
 
-#include "DataHandler.h"
+#include "stkpp/include/DManager.h"
 #include "stkpp/include/STKpp.h"
 
 namespace MC
@@ -52,7 +52,6 @@ class Data<int>
       DataHandler* p_datahandler = DataHandler::getInstance();
       std::vector<std::vector<std::string> > allmodalities = p_datahandler->allModalities();
       std::vector<int> modality;
-      std::cout<<allmodalities[0][1]<<"\n";
       for (int i = 0; i < allmodalities.size(); ++i)
       {
         if(*allmodalities[i][0].c_str() == id)

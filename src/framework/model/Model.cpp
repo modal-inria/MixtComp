@@ -3,7 +3,7 @@
 #include "framework/MixtureInterface/IMixture.h"
 #include "Model.h"
 
-Model::Model(IMixture* developer,int nbsample,int nbcluster) : nbSample_(nbsample),
+Model::Model(IMixture* mixture,int nbsample,int nbcluster) : nbSample_(nbsample),
                                                               nbCluster_(nbcluster)
 {
   //Allocate memory for conditional probabilities
@@ -15,11 +15,24 @@ Model::Model(IMixture* developer,int nbsample,int nbcluster) : nbSample_(nbsampl
   //Allocate memory for row proportions
   v_Pie_ = new double[nbcluster];
 
-  //Allocate memory for developer
-  p_developer_ = developer->clone();
+  //Allocate memory for mixture
+  p_Mixture_ = mixture->clone();
   //set this pointer
-  p_developer_->setModel(this);
+  p_Mixture_->setModel(this);
 
+}
+
+Model::Model(int nbsample,int nbcluster) : nbSample_(nbsample),
+                                           nbCluster_(nbcluster)
+{
+  //Allocate memory for conditional probabilities
+  m_Tik_.resize(nbSample_,nbCluster_);
+
+  //Allocate memory for class labels
+  v_Zi_  = new int[nbsample];
+
+  //Allocate memory for row proportions
+  v_Pie_ = new double[nbcluster];
 }
 
 Model::Model(const Model& other){
@@ -49,9 +62,9 @@ Model::Model(const Model& other){
   }
 
   //Allocate memory for developer
-  p_developer_ = other.p_developer_->clone();
+  p_Mixture_ = other.p_Mixture_->clone();
   //set this pointer
-  p_developer_->setModel(this);
+  p_Mixture_->setModel(this);
 
 }
 
@@ -62,34 +75,39 @@ Model* Model::clone(){
 Model::~Model()
 {
   //release various memories
-  delete p_developer_;
+  delete p_Mixture_;
   delete[] v_Pie_;
   delete[] v_Zi_;
 }
 
 void Model::mStep()
 {
-  p_developer_->paramUpdateStep();
+  p_Mixture_->paramUpdateStep();
 }
 
 void Model::storeIntermediateResults(int iteration){
-  p_developer_->storeIntermediateResults(iteration);
+  p_Mixture_->storeIntermediateResults(iteration);
 }
 void Model::seStep()
 {
-  p_developer_->imputationStep();
-  p_developer_->samplingStep();
+  p_Mixture_->imputationStep();
+  p_Mixture_->samplingStep();
   updateModelParameters();
 }
 void Model::initializeModel()
 {
   //randomInitialization();
-  p_developer_->initializeStep();
+  p_Mixture_->initializeStep();
 }
 
 void Model::finalizeModel()
 {
-  p_developer_->finalizeStep();
+  p_Mixture_->finalizeStep();
+}
+
+void Model::setMixture(IMixture* Mixture)
+{
+  p_Mixture_ = Mixture->clone();
 }
 
 void Model::updateModelParameters()
@@ -98,11 +116,11 @@ void Model::updateModelParameters()
   for (int i = 0; i < nbSample_; ++i) {
     double sum = 0;
     for (int k = 0; k < nbCluster_; ++k) {
-      sum+=p_developer_->posteriorProbability(i,k);
+      sum+=p_Mixture_->posteriorProbability(i,k);
     }
 
     for (int k = 0; k < nbCluster_; ++k) {
-      m_Tik_(i,k) = p_developer_->posteriorProbability(i,k)/sum;
+      m_Tik_(i,k) = p_Mixture_->posteriorProbability(i,k)/sum;
     }
   }
 
@@ -160,12 +178,12 @@ void Model::randomInitialization(){
   }
 }
 double Model::logLikelihood() const {
-  return p_developer_->logLikelihood();
+  return p_Mixture_->logLikelihood();
 }
 
 Model& Model::operator=(const Model& other){
   //copy developer
-  *p_developer_ = *other.p_developer_;
+  *p_Mixture_ = *other.p_Mixture_;
 
   //copy values for conditional probabilities
   for (int i = 0; i < nbSample_; ++i) {
@@ -187,11 +205,11 @@ Model& Model::operator=(const Model& other){
 }
 
 void Model::writeParameters(std::ostream&out) const{
-  p_developer_->writeParameters(out);
+  p_Mixture_->writeParameters(out);
 }
 
 
 void Model::setData()
 {
-  p_developer_->setData();
+  p_Mixture_->setData();
 }
