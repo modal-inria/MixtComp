@@ -14,8 +14,8 @@
 #include "framework/strategy/IterationsStrategy.h"
 //include various clustering laws available
 #include "mixtures/RankMixture/RankCluster.h"
-#include "mixtures/STKPPMixtures/GaussianMixture.h"
-#include "mixtures/STKPPMixtures/BernouilliMixture.h"
+#include "mixtures/StkppMixtures/GaussianMixture.h"
+#include "mixtures/StkppMixtures/BernouilliMixture.h"
 
 enum MixtureLaw{
     gaussian_,

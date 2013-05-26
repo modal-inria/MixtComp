@@ -41,7 +41,7 @@ void gaussianMixture::writeParameters(std::ostream& os) const
        os << "ln likelihood = " << components_[k]->lnLikelihood() << "\n";
     }
     else
-      os << "Parameters not created\n";
+      os << "Parameters of component " << k << " not created\n";
   }
 }
 

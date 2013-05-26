@@ -35,18 +35,14 @@ Model::Model(int nbsample,int nbcluster) : nbSample_(nbsample),
   v_Pie_ = new double[nbcluster];
 }
 
-Model::Model(const Model& other){
+Model::Model(const Model& other)
+{
   nbSample_ = other.nbSample_;
   nbCluster_ = other.nbCluster_;
 
   //Allocate memory for conditional probabilities and copy values
   m_Tik_.resize(nbSample_,nbCluster_);
-
-  for (int i = 0; i < nbSample_; ++i) {
-    for (int j = 0; j < nbCluster_; ++j) {
-      m_Tik_(i,j) = other.m_Tik_(i,j);
-    }
-  }
+  m_Tik_ = other.m_Tik_;
 
   //Allocate memory for class labels and copy values
   v_Zi_  = new int[nbSample_];
