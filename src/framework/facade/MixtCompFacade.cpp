@@ -41,7 +41,6 @@ MixtCompFacade::~MixtCompFacade()
 bool MixtCompFacade::instantiateFramework(){
   //read data and set number of samples
   DataHandler* datainstance = DataHandler::getInstance();
-
   if(!datainstance->readDataFromFile(info_.datafilename_,info_.filesep_))
   {
     return false;
@@ -52,46 +51,23 @@ bool MixtCompFacade::instantiateFramework(){
   }
 
   info_.nbSample_ = datainstance->nbSamples();
-  //TODO getting information from data which models to instantiate
-
-  //TODO creation of v_mixture_
-  for(auto const& law: info_.mixturelawlist_){
-    switch (law) {
-      case rank_:
-        v_mixture_.push_back(new RankCluster('R',info_.nbIterations_,info_.burnin_));
-        break;
-      case gaussian_:
-        v_mixture_.push_back(new gaussianMixture('G'));
-        break;
-      default:
-        break;
-    }
-  }
 
   p_mixture_ = new CompositeMixture(v_mixture_);
+
   //create model
   p_model_ = new Model(p_mixture_,info_.nbSample_,info_.nbCluster_);
 
   //create algorithm
-  switch (info_.algorithm_) {
-    case semgibbs_:
-      p_algo_ = new SEMGibbs();
-      break;
-    default:
-      p_algo_ = new SEMGibbs();
-      break;
-  }
+  p_algo_ = new SEMGibbs();
+
   //create strategy
-  switch (info_.strategy_) {
-    case iterations_:
-      p_strategy_ = new IterationsStrategy(info_.nbIterations_,info_.burnin_,info_.nbtry_);
-      break;
-    default:
-      p_strategy_ = new IterationsStrategy(info_.nbIterations_,info_.burnin_,info_.nbtry_);
-      break;
-  }
+  p_strategy_ = new IterationsStrategy(info_.nbIterations_,info_.burnin_,info_.nbtry_);
 
   return true;
+}
+
+bool MixtCompFacade::registerLaw(IMixture& mixture){
+  v_mixture_.push_back(&mixture);
 }
 
 void MixtCompFacade::run(){

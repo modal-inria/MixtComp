@@ -61,21 +61,19 @@ They are enumerated below:
 This function will return the number of clusters.
  \item {\bf int nbSample()}\\
 This function will return the number of samples.
-\item {\bf double** conditionalProbabilities()}\\
-This function will return the conditional probabilities. 
 \item {\bf int* classLabels()}\\
 This function will return the class labels.
 \item {\bf double* proportions()}\\
 This function will return the class proportions.
 \end{itemize}
-
-The above functions must be called whenever you need above variables. This will ensure that all the mixture laws in composite environment should have the same
+{\bf Important Notes:} The functions {\bf nbCluster()} and {\bf nbSample()} are not defined inside the constructor of your derived class and hence should
+never be called inside constructor. The above functions must be called whenever you need above variables. This will ensure that all the mixture laws in composite environment should have the same
 values for all the above variables.
-
 The {\bf IDeveloper} class also contained following member variables, hence you must not redefine/redeclare them inside your inherited class as you will inherited these members automatically.
 \begin{itemize}
 \item {\bf int nbVariable\_ : }Number of variables. This value will be set inside the setData() function as explained in section \ref{datahandling}. 
-\item {\bf char id\_ : }Identification character. This value will be automatically set by framework. 
+\item {\bf char id\_ : }Identification character. You must set this value inside the constructor. This value must match with the value of various corresponding columns name characters
+in your data file.
 \end{itemize}
 \subsection{Interface specification}
 The {\bf IDeveloper} class contains Interface methods that 
@@ -122,6 +120,7 @@ There is no notion of Estep, Mstep, Sstep and Cstep in the plug-in part. These n
 it generic enough to expand for future. 
 
 \subsection{Data Handling}
+\label{datahandling}
 As briefed in previous part, data must be set inside the virtual function {\bf setData()}. The framework provides templated classes for data handling. The 
 psedo code for {\bf setData()} is given below:
 \begin{lstlisting}
@@ -132,10 +131,10 @@ virtual void setData()
   // Fill up your data container using data pointer
 }
 \end{lstlisting}
-You should replace "type" in above pseudo code with you own data-type which can be {"double", "int", "bool" or "string"}. You don't have to worry about the 
-{\bf id\_} variable as it will be set by framework. Also this function will set the variable {\bf nbVariable\_} as it is passed by reference.
+You should replace "type" in above pseudo code with you own data-type which can be {"double", "int", "bool" or "string"}. Also this function will set the variable {\bf nbVariable\_} as it is passed by reference.
 
-\label{datahandling}
+\section{Writing your main function}
+
 \section{stk++ Statistical Models}
 
 {\bf TODO}
@@ -153,31 +152,31 @@ The notations proposed in this document can be modified if needed
 or enclosed in namespace in order to avoid name collision.
 
 
-\section{Components behaviors}
-\subsection{Algorithms}
-
-The currently available algorithms are:
-
-\begin{enumerate}
- \item {\bf semgibbs\_:} This perform operations based on SEMGibbs algorithm and is run on model (passed as argument) as shown in the following pseudo code.
-\end{enumerate}
-
-\subsection{Strategy}
-
-The currently available strategies are:
-\begin{enumerate}
- \item {\bf iterations\_:} This is a simple strategy based on number of iterations. The algorithm will be ran on model for given maximum number of iterations. This will be repeated for given number of times (tries) and the best model will be selected at the end based on log-likelihood.
-\end{enumerate}
-
-\subsection{Model Selection Criteria}
-The model selection criteria are:
-\begin{verbatim}
-enum Criteria
-{
-  aic_,
-  bic_,
-  icl_
-}
-\end{verbatim}
+% \section{Components behaviors}
+% \subsection{Algorithms}
+% 
+% The currently available algorithms are:
+% 
+% \begin{enumerate}
+%  \item {\bf semgibbs\_:} This perform operations based on SEMGibbs algorithm and is run on model (passed as argument) as shown in the following pseudo code.
+% \end{enumerate}
+% 
+% \subsection{Strategy}
+% 
+% The currently available strategies are:
+% \begin{enumerate}
+%  \item {\bf iterations\_:} This is a simple strategy based on number of iterations. The algorithm will be ran on model for given maximum number of iterations. This will be repeated for given number of times (tries) and the best model will be selected at the end based on log-likelihood.
+% \end{enumerate}
+% 
+% \subsection{Model Selection Criteria}
+% The model selection criteria are:
+% \begin{verbatim}
+% enum Criteria
+% {
+%   aic_,
+%   bic_,
+%   icl_
+% }
+% \end{verbatim}
 
 \end{document}

@@ -12,10 +12,6 @@
 #include "framework/algorithms/SEMGibbs.h"
 #include "framework/strategy/IStrategy.h"
 #include "framework/strategy/IterationsStrategy.h"
-//include various clustering laws available
-#include "mixtures/RankMixture/RankCluster.h"
-#include "mixtures/StkppMixtures/GaussianMixture.h"
-#include "mixtures/StkppMixtures/BernouilliMixture.h"
 
 enum MixtureLaw{
     gaussian_,
@@ -36,9 +32,6 @@ struct FrameworkInfo{
     std::string datafilename_;
     std::string modalitiesfilename_;
     char filesep_;
-    std::initializer_list<MixtureLaw> mixturelawlist_;
-    Algo algorithm_;
-    strategy strategy_;
     int nbIterations_;
     int burnin_;
     int nbtry_;
@@ -50,8 +43,9 @@ class MixtCompFacade
 {
   public:
     MixtCompFacade(FrameworkInfo& info);
-    void run();
+    bool registerLaw(IMixture& mixture);
     bool instantiateFramework();
+    void run();
     ~MixtCompFacade();
   protected:
     IMixture *p_mixture_;
