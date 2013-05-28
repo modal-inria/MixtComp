@@ -29,9 +29,10 @@ class Data<double>
       data_.resize(nbSample_, nbVar);
       for (int i = 0; i < nbSample_; ++i)
       {
-        for (int k : colindex)
-        { data_(i,k) = STK::stringToType<double>(p_datahandler->completeData()(i,k));}
-      }
+        for (auto k : colindex)
+        {
+          data_(i,k) = STK::stringToType<double>(p_datahandler->completeData()(i,k));}
+        }
       return data_;
     }
 

@@ -71,7 +71,11 @@ Model* Model::clone(){
 Model::~Model()
 {
   //release various memories
-  delete p_Mixture_;
+  if(p_Mixture_!=NULL){
+    delete p_Mixture_;
+    p_Mixture_ = NULL;
+  }
+
   delete[] v_Pie_;
   delete[] v_Zi_;
 }
@@ -179,7 +183,7 @@ double Model::logLikelihood() const {
 
 Model& Model::operator=(const Model& other){
   //copy developer
-  *p_Mixture_ = *other.p_Mixture_;
+  p_Mixture_->copy(*other.p_Mixture_);
 
   //copy values for conditional probabilities
   for (int i = 0; i < nbSample_; ++i) {

@@ -24,6 +24,7 @@ class bernouilliMixture : public MixtureBridge<JointBernouilli>
   virtual void writeParameters(std::ostream& os) const;
   virtual void setData();
   virtual bernouilliMixture* clone();
+  virtual void copy(const IMixture&);
  protected:
   STK::Array2D<STK::Binary> data_;
 

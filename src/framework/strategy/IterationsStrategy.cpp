@@ -13,11 +13,11 @@ IterationsStrategy::~IterationsStrategy() {
 void IterationsStrategy::run(IAlgo* p_algo_,Model*& p_model_)
 {
   double likelihood = -RealMax;
+  Model * currentmodel = p_model_->clone();
+  currentmodel->setData();
   for (int i = 0; i < nbtry_; ++i)
   {
     std::cout<<"Try: "<<i<<"\n";
-    Model * currentmodel = p_model_->clone();
-    currentmodel->setData();
     currentmodel->initializeModel();
     for (int itr = 0; itr < iterations_; ++itr) {
       p_algo_->run(currentmodel);
@@ -27,10 +27,9 @@ void IterationsStrategy::run(IAlgo* p_algo_,Model*& p_model_)
     }
     currentmodel->finalizeModel();
     if(currentmodel->logLikelihood()>likelihood){
-      if(p_model_!=NULL) delete p_model_;
-      p_model_ = currentmodel->clone();
+      *p_model_ = *currentmodel;
       likelihood = currentmodel->logLikelihood();
     }
-    delete currentmodel;
   }
+  delete currentmodel;
 }

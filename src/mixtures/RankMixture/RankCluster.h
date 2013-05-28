@@ -63,6 +63,7 @@ class RankCluster: public IMixture
     RankCluster();
     RankCluster(char id,int iterations,int burnin);
     virtual RankCluster* clone();
+    virtual void copy(const IMixture&);
     virtual void initializeStep();
     virtual void imputationStep() {/**Do nothing by default*/}
     virtual void samplingStep();

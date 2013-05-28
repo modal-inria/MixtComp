@@ -979,6 +979,10 @@ RankCluster* RankCluster::clone(){
   return temp;
 }
 
+void RankCluster::copy(const IMixture& other){
+  *this = static_cast<const RankCluster&>(other);
+}
+
 void RankCluster::samplingStep(){
   SEstep();
 }

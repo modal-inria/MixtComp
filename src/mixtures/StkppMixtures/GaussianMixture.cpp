@@ -21,7 +21,13 @@ gaussianMixture::~gaussianMixture()
 }
 
 gaussianMixture* gaussianMixture::clone()
-{ return new gaussianMixture(*this); }
+{
+  return new gaussianMixture(*this);
+}
+
+void gaussianMixture::copy(const IMixture& other){
+  *this = static_cast<const gaussianMixture&>(other);
+}
 
 void gaussianMixture::writeParameters(std::ostream& os) const
 {
@@ -63,3 +69,5 @@ void gaussianMixture::setData()
     components_[k]->setParameters(new JointGaussianParameters(data_.cols()));
   }
 }
+
+

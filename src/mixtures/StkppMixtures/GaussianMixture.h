@@ -23,6 +23,7 @@ class gaussianMixture : public MixtureBridge<JointGaussian>
     virtual void writeParameters(std::ostream& os) const;
     virtual void setData();
     virtual gaussianMixture* clone();
+    virtual void copy(const IMixture&);
 
   protected:
     STK::Array2D<double> data_;

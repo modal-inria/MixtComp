@@ -25,6 +25,7 @@ class Model
     double** conditionalProbabilities() const;
     int* classLabels() const {return v_Zi_;}
     double* proportions() const {return v_Pie_;}
+    const IMixture& getMixture() {return *p_Mixture_;}
     /** overloaded assignment operator*/
     Model& operator=(const Model&);
     void writeParameters(std::ostream&) const;

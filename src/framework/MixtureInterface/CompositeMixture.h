@@ -10,6 +10,7 @@ class CompositeMixture: public IMixture
     CompositeMixture(const CompositeMixture&);
     CompositeMixture(const std::vector<IMixture*>&);
     virtual  CompositeMixture* clone();
+    virtual void copy(const IMixture&);
     virtual void setModel(Model*);
     virtual void initializeStep();
     virtual void imputationStep();
@@ -22,6 +23,7 @@ class CompositeMixture: public IMixture
     virtual int freeParameters() const;
     virtual void setData();
     virtual void writeParameters(std::ostream&) const;
+    const std::vector<IMixture*> & getComponents() const {return v_Mixture_;}
     ~CompositeMixture();
   protected:
     std::vector<IMixture*> v_Mixture_;

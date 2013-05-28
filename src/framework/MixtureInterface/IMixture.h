@@ -33,6 +33,12 @@ class IMixture
      * @return New instance of class as that of calling object.
      */
     virtual IMixture* clone() = 0;
+
+    /**
+     * This function must be defined in derived class to provide copy semantics.
+     * @param other Constant reference to the object that is being copied.
+     */
+    virtual void copy(const IMixture& other) = 0;
     /**
      * This function should be used for Imputation of data.
      * The default implementation (in the base class) is to do nothing.

@@ -13,21 +13,6 @@
 #include "framework/strategy/IStrategy.h"
 #include "framework/strategy/IterationsStrategy.h"
 
-enum MixtureLaw{
-    gaussian_,
-    binary_,
-    multinomial_,
-    rank_
-};
-
-enum Algo{
-    semgibbs_
-};
-
-enum strategy{
-    iterations_
-};
-
 struct FrameworkInfo{
     std::string datafilename_;
     std::string modalitiesfilename_;
@@ -43,7 +28,7 @@ class MixtCompFacade
 {
   public:
     MixtCompFacade(FrameworkInfo& info);
-    bool registerLaw(IMixture& mixture);
+    bool registerMixture(IMixture& mixture);
     bool instantiateFramework();
     void run();
     ~MixtCompFacade();

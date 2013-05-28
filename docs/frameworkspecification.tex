@@ -66,13 +66,17 @@ This function will return the class labels.
 \item {\bf double* proportions()}\\
 This function will return the class proportions.
 \end{itemize}
-{\bf Important Notes:} The functions {\bf nbCluster()} and {\bf nbSample()} are not defined inside the constructor of your derived class and hence should
-never be called inside constructor. The above functions must be called whenever you need above variables. This will ensure that all the mixture laws in composite environment should have the same
+{\bf Important Notes:} None of the above functions are defined inside the constructor of your derived class and hence should
+never be called inside constructor. They are only functional after you register the object of your class as elaborated in 
+section ~\ref{mainfunction}. These functions must be called whenever you need above variables. This will ensure that 
+all the mixture laws in composite environment should have the same
 values for all the above variables.
-The {\bf IDeveloper} class also contained following member variables, hence you must not redefine/redeclare them inside your inherited class as you will inherited these members automatically.
+The {\bf IDeveloper} class also contained following member variables, hence you must not redefine/redeclare them 
+inside your inherited class as you will inherited these members automatically.
 \begin{itemize}
 \item {\bf int nbVariable\_ : }Number of variables. This value will be set inside the setData() function as explained in section \ref{datahandling}. 
-\item {\bf char id\_ : }Identification character. You must set this value inside the constructor. This value must match with the value of various corresponding columns name characters
+\item {\bf char id\_ : }Identification character. You must set this value inside the constructor. This value 
+must match with the value of various corresponding columns name characters
 in your data file.
 \end{itemize}
 \subsection{Interface specification}
@@ -88,6 +92,8 @@ This method will be called only once in the very beginning.
 \item {\bf virtual IDeveloper* clone() = 0} \\
 This is a standard clone function in usual sense. It must provide a new object of your class with values of various parameters equal to the values of calling
 object. In other words, this is equivalent to polymorphic copy constructor. 
+\item {\bf virtual void copy(const IMixture\&) = 0} \\
+This function must be defined in derived class to provide with copy semantics. 
 \item {\bf virtual void imputationStep() \{\}}\\
 This function should be used for Imputation of data. The default implementation (in the base class) is to do nothing.
 \item {\bf virtual void samplingStep() = 0} \\
@@ -127,13 +133,27 @@ psedo code for {\bf setData()} is given below:
 virtual void setData()
 {
   Data<type> mydatahandler;
-  type** data = mydatahandler.getData(id_,nbVariable_);
-  // Fill up your data container using data pointer
+  STK::Array2D<type> data = mydatahandler.getData(id_,nbVariable_);
+  // Fill up your data container using data 
 }
 \end{lstlisting}
-You should replace "type" in above pseudo code with you own data-type which can be {"double", "int", "bool" or "string"}. Also this function will set the variable {\bf nbVariable\_} as it is passed by reference.
+You should replace "type" in above pseudo code with you own data-type which can be {"double", "int" or "bool"}. Also this function will set 
+the variable {\bf nbVariable\_} as it is passed by reference.
 
 \section{Writing your main function}
+\label{mainfunction}
+This section explains how to write your main function to use the library. Also for illustration, refer to the example file 
+{\bf framework.cpp} in the source codes. 
+
+\begin{enumerate}
+\item {\bf Framework information:} Create an object of struct {\bf FrameworkInfo} and fill in various input values.
+\item {\bf Create framework:} Create an object of class {\bf MixtCompFacade} by passing {\bf FrameworkInfo} object into it's constructor.
+\item {\bf Instantiate mixtures:} Create objects of all the mixtures.
+\item {\bf Register mixtures:} Register all the objects of your mixtures with Framework using it's member function {\bf registerMixture(IMixture\&)}.
+\item {\bf Instantiate framework:} Instantiate framework by calling it's member function {\bf instantiateFramework()}.
+\item {\bf Run the framework:} Finally run the framework by calling it's {\bf run()} member function.
+\end{enumerate}
+
 
 \section{stk++ Statistical Models}
 

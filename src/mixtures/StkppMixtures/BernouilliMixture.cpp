@@ -11,6 +11,9 @@ bernouilliMixture* bernouilliMixture::bernouilliMixture::clone()
   return new bernouilliMixture(*this);
 }
 
+void bernouilliMixture::copy(const IMixture& other){
+  *this = static_cast<const bernouilliMixture&>(other);
+}
 void bernouilliMixture::writeParameters(std::ostream& os) const{
   //TODO
 }

@@ -34,6 +34,13 @@ CompositeMixture * CompositeMixture::clone() {
   return temp;
 }
 
+void CompositeMixture::copy(const IMixture& other){
+  const CompositeMixture& temp = static_cast<const CompositeMixture&>(other);
+  for (int i = 0; i < this->v_Mixture_.size(); ++i) {
+    this->v_Mixture_[i]->copy(*(temp.v_Mixture_[i]));
+  }
+}
+
 void CompositeMixture::setModel(Model* model) {
   for (int i = 0; i < v_Mixture_.size(); ++i) {
       v_Mixture_[i]->setModel(model);

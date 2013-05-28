@@ -1,8 +1,8 @@
 #include <iostream>
 #include "framework/facade/MixtCompFacade.h"
 #include "mixtures/RankMixture/RankCluster.h"
-#include "mixtures/STKPPMixtures/GaussianMixture.h"
-#include "mixtures/STKPPMixtures/BernouilliMixture.h"
+//#include "mixtures/StkppMixtures/GaussianMixture.h"
+//#include "mixtures/StkppMixtures/BernouilliMixture.h"
 using namespace std;
 
 int main(){
@@ -16,14 +16,14 @@ int main(){
   myinfo.datafilename_ = "./data/words_rank.txt";
   myinfo.modalitiesfilename_ = "./data/words_modality.txt";
 
-  //create various mixtures
-  IMixture* rank = new RankCluster('R',myinfo.nbIterations_,myinfo.burnin_);
-
   //create object of framework facade
   MixtCompFacade myfacade(myinfo);
 
+  //create various mixtures
+  IMixture* rank = new RankCluster('R',myinfo.nbIterations_,myinfo.burnin_);
+
   //Register various mixtures
-  myfacade.registerLaw(*rank);
+  myfacade.registerMixture(*rank);
 
   //instantiate framework
   if(!myfacade.instantiateFramework())
@@ -34,5 +34,10 @@ int main(){
 
   //run the facade
   myfacade.run();
+
+  rank->writeParameters(std::cout);
+
+  delete rank;
+  rank = NULL;
   return 0;
 }

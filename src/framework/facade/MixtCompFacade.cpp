@@ -6,17 +6,17 @@ MixtCompFacade::MixtCompFacade(FrameworkInfo& info): info_(info)
 
 MixtCompFacade::~MixtCompFacade()
 {
-  if(p_model_) {
+  if(p_model_!=NULL) {
     delete p_model_;
     p_model_ = NULL;
   }
 
-  if(p_algo_){
+  if(p_algo_!=NULL){
     delete p_algo_;
     p_algo_ = NULL;
   }
 
-  if(p_strategy_){
+  if(p_strategy_!=NULL){
     delete p_strategy_;
     p_strategy_ = NULL;
   }
@@ -24,13 +24,6 @@ MixtCompFacade::~MixtCompFacade()
   if(p_mixture_){
     delete p_mixture_;
     p_mixture_ = NULL;
-  }
-
-  for (int i = 0; i < v_mixture_.size(); ++i) {
-    if(v_mixture_[i]) {
-      delete v_mixture_[i];
-      v_mixture_[i] = NULL;
-    }
   }
 
   //Release memory of data handler
@@ -66,15 +59,18 @@ bool MixtCompFacade::instantiateFramework(){
   return true;
 }
 
-bool MixtCompFacade::registerLaw(IMixture& mixture){
+bool MixtCompFacade::registerMixture(IMixture& mixture){
   v_mixture_.push_back(&mixture);
 }
 
 void MixtCompFacade::run(){
   //Run the algorithm using strategy on statistical model
   p_strategy_->run(p_algo_,p_model_);
-  //p_mixture_ now have all the estimated parameters and result
-  /*************************************************************/
-  //print parameters to console
-  p_model_->writeParameters(std::cout);
+
+  //copy parameters
+  p_mixture_->copy(p_model_->getMixture());
+  const CompositeMixture* temp = static_cast<const CompositeMixture*>(p_mixture_);
+  for (int i = 0; i < v_mixture_.size(); ++i) {
+    v_mixture_[i]->copy(*temp->getComponents()[i]);
+  }
 }
