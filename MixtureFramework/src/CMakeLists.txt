@@ -1,3 +1,2 @@
-FILE( GLOB src_files initialization/*.cpp models/*.cpp algorithms/*.cpp
-strategy/*.cpp facade/*.cpp)
+FILE( GLOB_RECURSE src_files *.cpp)
 add_library(emframework ${src_files})

@@ -14,17 +14,15 @@
  *  For mixture models not using stk++ the developer will get direct access to
  *  the data  using the @c p_data() method]
  */
-#include "../../model/IModel.h"
+#include "model/IModel.h"
 #include "stkpp/include/STKpp.h"
 template<class MultiStatModel>
 class MixtureBridge: public IModel
 {
   public:
-    /** constructor. @param id id of the mixture */
-    MixtureBridge(char id ) : IMixture(id), components_() {}
     /** copy constructor. @param mixture the mixture to copy */
     MixtureBridge( MixtureBridge const& mixture)
-                 : IMixture(mixture), components_(mixture.components_)
+                 : IModel(mixture), components_(mixture.components_)
     {
       for (int k=components_.firstIdx(); k<= components_.lastIdx(); k++)
       { components_[k] = mixture.components_[k]->clone();}
@@ -36,14 +34,14 @@ class MixtureBridge: public IModel
      **/
     virtual void randomInit()
     {
-      STK::Array2D<double> tik(nbSample(),nbCluster());
+      STK::Array2D<double> tik(baseparameter_.nbSample_,baseparameter_.nbCluster_);
 
       //Random initialization of tik;
       STK::RandBase gener;
-      STK::Array2DVector<double> randnumbers(nbSample());
+      STK::Array2DVector<double> randnumbers(baseparameter_.nbSample_);
       gener.randUnif(randnumbers);
-      for (int i = 0; i < nbSample(); ++i)
-      { tik(i,std::floor(nbCluster()*randnumbers[i])) = 1.0;}
+      for (int i = 0; i < baseparameter_.nbSample_; ++i)
+      { tik(i,std::floor(baseparameter_.nbCluster_*randnumbers[i])) = 1.0;}
 
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
       { components_[k]->run(tik.col(k));}
@@ -80,7 +78,7 @@ class MixtureBridge: public IModel
     virtual double lnLikelihood()
     {
       double sum=0;
-      for (int k= 0; k < nbCluster(); ++k)
+      for (int k= 0; k < baseparameter_.nbCluster_; ++k)
       { sum+=components_[k]->lnLikelihood();}
       return sum;
     }
@@ -89,7 +87,7 @@ class MixtureBridge: public IModel
     virtual int freeParameters() const
     {
       int sum=0;
-      for (int k= 0; k < nbCluster(); ++k)
+      for (int k= 0; k < baseparameter_.nbCluster_; ++k)
       { sum+=components_[k]->computeNbFreeParameters();}
       return sum;
     }

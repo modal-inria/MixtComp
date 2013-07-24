@@ -4,6 +4,7 @@
  * @brief 
  */
 #include "IAlgo.h"
+#include "model/IModel.h"
 class CEMAlgo:public IAlgo
 {
   public:

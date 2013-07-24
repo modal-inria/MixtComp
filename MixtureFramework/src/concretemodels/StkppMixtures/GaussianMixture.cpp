@@ -1,33 +1,28 @@
 #include "GaussianMixture.h"
-#include "framework/DataHandling/Data.h"
 
 using namespace STK;
 
 RandBase Law::ILawBase::generator;
 
+gaussianMixture::gaussianMixture(const STK::Array2D<double>& data):data_(data)
+{}
 
-gaussianMixture::gaussianMixture(char id) : Base(id) {}
 /** copy constructor */
 gaussianMixture::gaussianMixture( gaussianMixture const& mixture)
                                 : Base(mixture)
                                 , data_(mixture.data_)
 { }
 
-/* destructor */
-gaussianMixture::~gaussianMixture()
-{
-  for (int k = components_.firstIdx(); k <= components_.lastIdx(); ++k)
-  { if (components_[k]) delete components_[k];}
-}
-
 gaussianMixture* gaussianMixture::clone()
 {
   return new gaussianMixture(*this);
 }
 
-void gaussianMixture::copy(const IMixture& other){
-  *this = static_cast<const gaussianMixture&>(other);
+gaussianMixture* gaussianMixture::create()
+{
+  return new gaussianMixture(this->data_);
 }
+
 
 void gaussianMixture::writeParameters(std::ostream& os) const
 {
@@ -70,4 +65,8 @@ void gaussianMixture::setData()
   }
 }
 
-
+gaussianMixture::~gaussianMixture()
+{
+  for (int k = components_.firstIdx(); k <= components_.lastIdx(); ++k)
+  { if (components_[k]) delete components_[k];}
+}

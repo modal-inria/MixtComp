@@ -4,9 +4,9 @@
  * @brief 
  */
 #include "IStrategy.h"
-#include "../model/IModel.h"
-#include "../algorithm/IAlgo.h"
-#include "../initialization/IInit.h"
+#include "model/IModel.h"
+#include "algorithm/IAlgo.h"
+#include "initialization/IInit.h"
 
 struct SimpleStratParam{
     int nbTry_;

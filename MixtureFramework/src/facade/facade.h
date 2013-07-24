@@ -3,7 +3,7 @@
 /**@file facade.h
  * @brief 
  */
-#include "../strategy/IStrategy.h"
+#include "strategy/IStrategy.h"
 class IModel;
 class IAlgo;
 class IInit;

@@ -4,7 +4,6 @@
  * @brief 
  */
 #include "IInit.h"
-
 class CEMInit:public IInit
 {
   public:

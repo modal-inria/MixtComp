@@ -4,6 +4,8 @@
  * @brief 
  */
 #include "IAlgo.h"
+#include "model/IModel.h"
+
 class SEMAlgo:public IAlgo
 {
   public:

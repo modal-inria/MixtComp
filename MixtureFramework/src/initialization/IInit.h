@@ -3,7 +3,7 @@
 /**@file IInit.h
  * @brief 
  */
-#include "../model/IModel.h"
+#include "model/IModel.h"
 class IInit
 {
   public:

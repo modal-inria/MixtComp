@@ -13,4 +13,7 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/binaries)
 
 SET(CMAKE_VERBOSE_MAKEFILE ON)
 
+include_directories(src)
+include_directories(../)
+link_directories(../stkpp/lib)
 add_subdirectory(src)
