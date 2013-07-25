@@ -13,10 +13,11 @@ class gaussianMixture : public MixtureBridge<JointGaussian>
 {
     typedef MixtureBridge<JointGaussian> Base;
   public:
-    gaussianMixture(const STK::Array2D<double>& data);
-    gaussianMixture(gaussianMixture const& mixture);
+    gaussianMixture(const STK::Array2D<double>& data,int nbcluster);
+    gaussianMixture(const gaussianMixture& mixture);
     virtual gaussianMixture* clone();
     virtual gaussianMixture* create();
+    virtual gaussianMixture& operator=(const IModel&);
     void writeParameters(std::ostream& os) const;
     ~gaussianMixture();
 

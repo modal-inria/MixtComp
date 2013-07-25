@@ -20,6 +20,7 @@ template<class MultiStatModel>
 class MixtureBridge: public IModel
 {
   public:
+  MixtureBridge(){}
     /** copy constructor. @param mixture the mixture to copy */
     MixtureBridge( MixtureBridge const& mixture)
                  : IModel(mixture), components_(mixture.components_)
@@ -32,25 +33,23 @@ class MixtureBridge: public IModel
     /** Initialization step. In this implementation, perform a
      *  M step using the inial t_ik/ziK.
      **/
-    virtual void randomInit()
+    virtual bool randomInit()
     {
-      STK::Array2D<double> tik(baseparameter_.nbSample_,baseparameter_.nbCluster_);
-
       //Random initialization of tik;
       STK::RandBase gener;
-      STK::Array2DVector<double> randnumbers(baseparameter_.nbSample_);
+      STK::Array2DVector<double> randnumbers(baseparameters_.nbSample_);
       gener.randUnif(randnumbers);
-      for (int i = 0; i < baseparameter_.nbSample_; ++i)
-      { tik(i,std::floor(baseparameter_.nbCluster_*randnumbers[i])) = 1.0;}
+      for (int i = 0; i < baseparameters_.nbSample_; ++i)
+      { baseparameters_.tik_(i,std::floor(baseparameters_.nbCluster_*randnumbers[i])) = 1.0;}
 
-      for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
-      { components_[k]->run(tik.col(k));}
+      for (int k= baseparameters_.tik_.firstIdxCols(); k <= baseparameters_.tik_.lastIdxCols(); ++k)
+      { components_[k]->run(baseparameters_.tik_.col(k));}
     }
 
     virtual void eStep(){
-      for (int i = 0; i < baseparameter_.nbSample_; ++i) {
-        for (int k = 0; k < baseparameter_.nbCluster_; ++k) {
-          baseparameter_.tik_[i][k] = std::exp( components_[k]->computeLnLikelihood(components_[k]->p_data()->row(i)));
+      for (int i = 0; i < baseparameters_.nbSample_; ++i) {
+        for (int k = 0; k < baseparameters_.nbCluster_; ++k) {
+          baseparameters_.tik_(i,k) = std::exp( components_[k]->computeLnLikelihood(components_[k]->p_data()->row(i)));
         }
       }
     }
@@ -65,8 +64,8 @@ class MixtureBridge: public IModel
 
     virtual void mStep()
     {
-      for (int k= baseparameter_.tik_.firstIdxCols(); k <= baseparameter_.tik_.lastIdxCols(); ++k)
-      { if (!components_[k]->run(baseparameter_.tik_.col(k)))
+      for (int k= baseparameters_.tik_.firstIdxCols(); k <= baseparameters_.tik_.lastIdxCols(); ++k)
+      { if (!components_[k]->run(baseparameters_.tik_.col(k)))
         {
           // TODO throw excception
         }
@@ -78,7 +77,7 @@ class MixtureBridge: public IModel
     virtual double lnLikelihood()
     {
       double sum=0;
-      for (int k= 0; k < baseparameter_.nbCluster_; ++k)
+      for (int k= 0; k < baseparameters_.nbCluster_; ++k)
       { sum+=components_[k]->lnLikelihood();}
       return sum;
     }
@@ -87,7 +86,7 @@ class MixtureBridge: public IModel
     virtual int freeParameters() const
     {
       int sum=0;
-      for (int k= 0; k < baseparameter_.nbCluster_; ++k)
+      for (int k= 0; k < baseparameters_.nbCluster_; ++k)
       { sum+=components_[k]->computeNbFreeParameters();}
       return sum;
     }
