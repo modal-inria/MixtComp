@@ -33,10 +33,6 @@ gaussianMixture* gaussianMixture::create()
   return new gaussianMixture(this->data_,this->baseparameters_.nbCluster_);
 }
 
-gaussianMixture::gaussianMixture& operator=(const IModel& model){
-  //TODO
-}
-
 void gaussianMixture::writeParameters(std::ostream& os) const
 {
   if (components_.size() == 0)

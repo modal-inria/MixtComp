@@ -19,7 +19,7 @@ class IModel
     IModel();
     virtual IModel* create() = 0;
     virtual IModel* clone() = 0;
-    virtual IModel& operator=(const IModel&) = 0;
+    virtual IModel& operator=(const IModel&);
     virtual void eStep() = 0;
     virtual void ceStep() = 0;
     virtual void seStep() = 0;

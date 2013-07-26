@@ -91,6 +91,13 @@ class MixtureBridge: public IModel
       return sum;
     }
 
+    virtual MixtureBridge& operator=(const IModel& other){
+      const MixtureBridge& other_temp = dynamic_cast<const MixtureBridge&>(other);
+      for (int i = 0; i < baseparameters_.nbCluster_; ++i) {
+        components_[i] = other_temp.components_[i];
+      }
+    }
+
   protected:
     STK::Array2DPoint<MultiStatModel*> components_;
 
