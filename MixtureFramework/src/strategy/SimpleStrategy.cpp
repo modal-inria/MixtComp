@@ -2,16 +2,11 @@
 #include <cmath>
 #include "SimpleStrategy.h"
 
-SimpleStrategy::SimpleStrategy()
-{
-  // TODO Auto-generated constructor stub
-
-}
+SimpleStrategy::SimpleStrategy(SimpleStratParam& param):param_(param)
+{}
 
 SimpleStrategy::~SimpleStrategy()
-{
-  // TODO Auto-generated destructor stub
-}
+{}
 
 
 void SimpleStrategy::run(IModel*& p_model,IAlgo*& p_algo,IInit*& p_init){

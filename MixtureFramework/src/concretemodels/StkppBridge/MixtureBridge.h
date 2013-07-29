@@ -16,6 +16,8 @@
  */
 #include "model/IModel.h"
 #include "stkpp/include/STKpp.h"
+#include <iostream>
+using namespace std;
 template<class MultiStatModel>
 class MixtureBridge: public IModel
 {
@@ -37,13 +39,18 @@ class MixtureBridge: public IModel
     {
       //Random initialization of tik;
       STK::RandBase gener;
-      STK::Array2DVector<double> randnumbers(baseparameters_.nbSample_);
+      STK::Array1D<double> randnumbers(baseparameters_.nbSample_);
       gener.randUnif(randnumbers);
       for (int i = 0; i < baseparameters_.nbSample_; ++i)
-      { baseparameters_.tik_(i,std::floor(baseparameters_.nbCluster_*randnumbers[i])) = 1.0;}
+      {
+        baseparameters_.tik_(i,std::floor(baseparameters_.nbCluster_*randnumbers[i])) = 1.0;
+      }
 
-      for (int k= baseparameters_.tik_.firstIdxCols(); k <= baseparameters_.tik_.lastIdxCols(); ++k)
+      cout<<components_.size()<<endl;
+      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
       { components_[k]->run(baseparameters_.tik_.col(k));}
+
+      return true;
     }
 
     virtual void eStep(){
@@ -64,7 +71,7 @@ class MixtureBridge: public IModel
 
     virtual void mStep()
     {
-      for (int k= baseparameters_.tik_.firstIdxCols(); k <= baseparameters_.tik_.lastIdxCols(); ++k)
+      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
       { if (!components_[k]->run(baseparameters_.tik_.col(k)))
         {
           // TODO throw excception

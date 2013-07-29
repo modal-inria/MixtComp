@@ -9,6 +9,7 @@ gaussianMixture::gaussianMixture(const STK::Array2D<double>& data,int nbcluster)
   baseparameters_.nbCluster_ = nbcluster;
   baseparameters_.nbSample_ = data.sizeRowsImpl();
   baseparameters_.nbVariable_ = data.sizeColsImpl();
+  baseparameters_.tik_.resize(baseparameters_.nbSample_,baseparameters_.nbVariable_);
   components_.resize(nbcluster);
   for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
   {

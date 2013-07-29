@@ -12,7 +12,7 @@ int main(int argc,char** argv){
     exit(1);
   }
 
-  int nbsamples = rw.size();
+  int nbsamples = rw.rows().size();
   int nbvariables = rw.sizeCol();
   STK::Array2D<double>  data(nbsamples,nbvariables);
   for (int i = 0; i < nbsamples; ++i) {
@@ -21,12 +21,31 @@ int main(int argc,char** argv){
     }
   }
 
-  IModel* p_model = gaussianMixture(data,2);
-  IAlgo* p_algo = EMAlgo();
-  IInit* p_init = RandomInit();
-  IStrategy* p_stragey = SimpleStrategy();
+  //model
+  IModel* p_model = new gaussianMixture(data,2);
+  //algorithm
+  IAlgo* p_algo = new EMAlgo();
+  //initialization
+  IInit* p_init = new RandomInit();
+  //strategy parameters
+  SimpleStratParam param;
+  param.epsilon_ = .0001;
+  param.nbIterations_ = 200;
+  param.nbTry_ = 5;
+  //strategy
+  IStrategy* p_strategy = new SimpleStrategy(param);
+  //facade
+  facade facade_obj(p_model,p_algo,p_init,p_strategy);
 
+  //run
+  facade_obj.run();
 
+  //display results
+  dynamic_cast<gaussianMixture*>(p_model)->writeParameters(std::cout);
 
+  return 0;
 
 }
+
+
+

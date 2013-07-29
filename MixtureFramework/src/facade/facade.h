@@ -11,6 +11,7 @@ class facade
 {
   public:
     facade();
+    facade(IModel*&,IAlgo*&,IInit*&,IStrategy*&);
     void run();
     inline void setAlgo(IAlgo*& algo) {p_Algo_ = algo;}
     inline void setModel(IModel*& model) {p_Model_ = model;}

@@ -18,7 +18,7 @@ struct SimpleStratParam{
 class SimpleStrategy:public IStrategy
 {
   public:
-    SimpleStrategy();
+    SimpleStrategy(SimpleStratParam&);
     virtual void run(IModel*&,IAlgo*&,IInit*&);
     virtual ~SimpleStrategy();
   protected:

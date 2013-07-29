@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 2.8.8)
 
 project (EMFramework) 
-
-set(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -std=c++0x")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -Wall")
+set(ZERO_BASED_ARRAYS "ON")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -std=c++0x -DSTKBASEARRAYS=0")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -std=c++0x -Wall -DNDEBUG -DSTKBASEARRAYS=0")
 
 SET(CMAKE_DEFAULT_BUILD_TYPE "DEBUG")
 
