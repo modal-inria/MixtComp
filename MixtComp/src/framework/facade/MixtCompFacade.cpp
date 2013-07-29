@@ -39,8 +39,10 @@ bool MixtCompFacade::instantiateFramework(){
     return false;
   }
 
-  if(!datainstance->readModalityFromFile(info_.modalitiesfilename_,info_.filesep_)){
-    return false;
+  if(info_.modalitiesfilename_.size()!=0){
+    if(!datainstance->readModalityFromFile(info_.modalitiesfilename_,info_.filesep_)){
+      return false;
+    }
   }
 
   info_.nbSample_ = datainstance->nbSamples();

@@ -9,8 +9,8 @@ cmake_release:
 	cd build/release/; $(MAKE) VERBOSE=1
 
 cclean:
-	cd build/debug/; $(MAKE) clean
-	cd build/release/; $(MAKE) clean
+	cd build/debug/; $(MAKE) clean VERBOSE=1
+	cd build/release/; $(MAKE) clean VERBOSE=1
 
 all: cmake_debug
 clean: cclean		
