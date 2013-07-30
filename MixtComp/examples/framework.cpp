@@ -10,9 +10,9 @@ int main(){
   FrameworkInfo myinfo;
   myinfo.nbIterations_ = 100;
   myinfo.burnin_ = 20;
-  myinfo.nbtry_ = 5;
+  myinfo.nbtry_ = 2;
   myinfo.nbCluster_ = 2;
-  myinfo.filesep_ = ' ';
+  myinfo.filesep_ = ',';
   myinfo.datafilename_ = "./data/gaussiandata.csv";
   myinfo.modalitiesfilename_ = "";
 

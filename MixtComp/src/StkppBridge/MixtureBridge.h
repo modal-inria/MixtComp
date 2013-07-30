@@ -16,6 +16,8 @@
  */
 #include "framework/MixtureInterface/IMixture.h"
 #include "stkpp/include/STKpp.h"
+#include <iostream>
+using namespace std;
 template<class MultiStatModel>
 class MixtureBridge: public IMixture
 {
@@ -43,10 +45,14 @@ class MixtureBridge: public IMixture
       STK::Array2DVector<double> randnumbers(nbSample());
       gener.randUnif(randnumbers);
       for (int i = 0; i < nbSample(); ++i)
-      { tik(i,std::floor(nbCluster()*randnumbers[i])) = 1.0;}
+      {
+        tik(i,std::floor(nbCluster()*randnumbers[i])) = 1.0;}
 
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
-      { components_[k]->run(tik.col(k));}
+      {
+        components_[k]->run(tik.col(k));
+
+      }
     }
     /** impute missing values */
     virtual void imputationStep() {/**Do nothing by default*/}
@@ -66,7 +72,8 @@ class MixtureBridge: public IMixture
         tik(i,classLabels()[i]) = 1.0;
       }
       for (int k= tik.firstIdxCols(); k <= tik.lastIdxCols(); ++k)
-      { if (!components_[k]->run(tik.col(k)))
+      {
+        if (!components_[k]->run(tik.col(k)))
         {
           // TODO throw excception
         }
@@ -89,7 +96,9 @@ class MixtureBridge: public IMixture
     {
       double sum=0;
       for (int k= 0; k < nbCluster(); ++k)
-      { sum+=components_[k]->lnLikelihood();}
+      {
+        sum+=components_[k]->lnLikelihood();
+      }
       return sum;
     }
     /** Compute the number of free parameters by summing the number of free

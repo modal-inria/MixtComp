@@ -35,7 +35,6 @@ bool DataHandler::readDataFromFile(std::string filename,char sep)
   completedata_ += rw;
   nbSample_ = completedata_.rows().size();
 
-
 //  fstream file;STK::String(1,sep)
 //  file.open(filename.c_str());
 //  if (!file.is_open()) {

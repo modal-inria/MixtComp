@@ -1,5 +1,7 @@
 #include "GaussianMixture.h"
 #include "framework/DataHandling/Data.h"
+#include <iostream>
+using namespace std;
 
 using namespace STK;
 
@@ -15,10 +17,7 @@ gaussianMixture::gaussianMixture( gaussianMixture const& mixture)
 
 /* destructor */
 gaussianMixture::~gaussianMixture()
-{
-  for (int k = components_.firstIdx(); k <= components_.lastIdx(); ++k)
-  { if (components_[k]) delete components_[k];}
-}
+{}
 
 gaussianMixture* gaussianMixture::clone()
 {
