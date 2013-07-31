@@ -31,7 +31,7 @@ int main(int argc,char** argv){
   SimpleStratParam param;
   param.epsilon_ = .0001;
   param.nbIterations_ = 200;
-  param.nbTry_ = 5;
+  param.nbTry_ = 1;
   //strategy
   IStrategy* p_strategy = new SimpleStrategy(param);
   //facade
