@@ -22,7 +22,7 @@ template<class MultiStatModel>
 class MixtureBridge: public IModel
 {
   public:
-  MixtureBridge(){}
+    MixtureBridge(){}
     /** copy constructor. @param mixture the mixture to copy */
     MixtureBridge( MixtureBridge const& mixture)
                  : IModel(mixture), components_(mixture.components_)
@@ -30,7 +30,7 @@ class MixtureBridge: public IModel
       for (int k=components_.firstIdx(); k<= components_.lastIdx(); k++)
       { components_[k] = mixture.components_[k]->clone();}
     }
-    /** constructor. @param id id of the mixture */
+    /** destructor */
     virtual ~MixtureBridge() {}
     /** Initialization step. In this implementation, perform a
      *  M step using the inial t_ik/ziK.
@@ -39,7 +39,7 @@ class MixtureBridge: public IModel
     {
       //Random initialization of tik;
       STK::RandBase gener;
-      STK::Array1D<double> randnumbers(baseparameters_.nbSample_);
+      STK::Array2DVector<double> randnumbers(baseparameters_.nbSample_);
       gener.randUnif(randnumbers);
       for (int i = 0; i < baseparameters_.nbSample_; ++i)
       {
@@ -52,8 +52,10 @@ class MixtureBridge: public IModel
     }
 
     virtual void eStep(){
-      for (int i = 0; i < baseparameters_.nbSample_; ++i) {
-        for (int k = 0; k < baseparameters_.nbCluster_; ++k) {
+      for (int i = 0; i < baseparameters_.nbSample_; ++i)
+      {
+        for (int k = 0; k < baseparameters_.nbCluster_; ++k)
+        {
           baseparameters_.tik_(i,k) = std::exp( components_[k]->computeLnLikelihood(components_[k]->p_data()->row(i)));
         }
       }
@@ -96,11 +98,13 @@ class MixtureBridge: public IModel
       return sum;
     }
 
-    virtual MixtureBridge& operator=(const IModel& other){
+    virtual MixtureBridge& operator=(const IModel& other)
+    {
       const MixtureBridge& other_temp = dynamic_cast<const MixtureBridge&>(other);
       for (int i = 0; i < baseparameters_.nbCluster_; ++i) {
         components_[i] = other_temp.components_[i];
       }
+      return *this;
     }
 
   protected:

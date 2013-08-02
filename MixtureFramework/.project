@@ -3,6 +3,7 @@
 	<name>MixtureFramework</name>
 	<comment></comment>
 	<projects>
+		<project>stkpp</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

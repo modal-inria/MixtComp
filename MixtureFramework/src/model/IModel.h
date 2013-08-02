@@ -24,9 +24,9 @@ class IModel
     virtual void ceStep() = 0;
     virtual void seStep() = 0;
     virtual void mStep() = 0;
-    virtual bool cemInit(){};
-    virtual bool fuzzycemInit(){};
-    virtual bool randomInit(){};
+    virtual bool cemInit(){ return true;};
+    virtual bool fuzzycemInit(){ return true;};
+    virtual bool randomInit(){ return true;};
     virtual double lnLikelihood() = 0;
     virtual int freeParameters() const = 0;
     STK::Array2D<double> condProbabilities() const {return baseparameters_.tik_;}
