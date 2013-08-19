@@ -17,7 +17,7 @@ class gaussianMixture : public MixtureBridge<JointGaussian>
     gaussianMixture(const gaussianMixture& mixture);
     virtual gaussianMixture* clone();
     virtual gaussianMixture* create();
-    void writeParameters(std::ostream& os) const;
+    virtual void writeParameters(std::ostream& os) const;
     ~gaussianMixture();
 
   protected:

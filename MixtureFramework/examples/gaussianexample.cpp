@@ -41,7 +41,7 @@ int main(int argc,char** argv){
   facade_obj.run();
 
   //display results
-  dynamic_cast<gaussianMixture*>(p_model)->writeParameters(std::cout);
+  p_model->writeParameters(std::cout);
 
   return 0;
 

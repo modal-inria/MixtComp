@@ -29,6 +29,7 @@ class IModel
     virtual bool randomInit(){ return true;};
     virtual double lnLikelihood() = 0;
     virtual int freeParameters() const = 0;
+    virtual void writeParameters(std::ostream& os) const{};
     STK::Array2D<double> condProbabilities() const {return baseparameters_.tik_;}
     STK::Array1D<double> rowProportions() const {return baseparameters_.rowproportions_;}
     virtual ~IModel();

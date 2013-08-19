@@ -15,8 +15,6 @@ void SimpleStrategy::run(IModel*& p_model,IAlgo*& p_algo,IInit*& p_init)
   double bestlikelihood =  -STK::Arithmetic<double>::infinity();
   for (int nbtry = 0; nbtry < param_.nbTry_; ++nbtry)
   {
-//    double currentlikelihood = std::numeric_limits<double>::min();
-//    double currentbestlikelihood = std::numeric_limits<double>::min();
       double currentlikelihood = -STK::Arithmetic<double>::infinity();
       double currentbestlikelihood =  -STK::Arithmetic<double>::infinity();
     p_init->run(currentmodel);
@@ -31,8 +29,11 @@ void SimpleStrategy::run(IModel*& p_model,IAlgo*& p_algo,IInit*& p_init)
     }
     if(bestlikelihood<currentlikelihood)
     {
-     *p_model = *currentmodel;
-     bestlikelihood = currentlikelihood;
+      delete p_model;
+      p_model = currentmodel->clone();
+      //TODO implementation of virtual assignment operator on STKPP side to avoid cloning
+      //*p_model = *currentmodel;
+      bestlikelihood = currentlikelihood;
     }
   }
 
