@@ -12,11 +12,13 @@ SimpleStrategy::~SimpleStrategy()
 void SimpleStrategy::run(IModel*& p_model,IAlgo*& p_algo,IInit*& p_init)
 {
   IModel* currentmodel = p_model->create();
-  double bestlikelihood = std::numeric_limits<double>::min();
+  double bestlikelihood =  -STK::Arithmetic<double>::infinity();
   for (int nbtry = 0; nbtry < param_.nbTry_; ++nbtry)
   {
-    double currentlikelihood = std::numeric_limits<double>::min();
-    double currentbestlikelihood = std::numeric_limits<double>::min();
+//    double currentlikelihood = std::numeric_limits<double>::min();
+//    double currentbestlikelihood = std::numeric_limits<double>::min();
+      double currentlikelihood = -STK::Arithmetic<double>::infinity();
+      double currentbestlikelihood =  -STK::Arithmetic<double>::infinity();
     p_init->run(currentmodel);
     for (int itr = 0; itr < param_.nbIterations_; ++itr)
     {
