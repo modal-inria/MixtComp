@@ -11,12 +11,12 @@ class facade
 {
   public:
     facade();
-    facade(IModel*&,IAlgo*&,IInit*&,IStrategy*&);
+    facade(IModel&,IAlgo&,IInit&,IStrategy&);
     void run();
-    inline void setAlgo(IAlgo*& algo) {p_Algo_ = algo;}
-    inline void setModel(IModel*& model) {p_Model_ = model;}
-    inline void setStratgy(IStrategy*& strategy) {p_Strategy_ = strategy;}
-    inline void setInit(IInit*& init) {p_Init_ = init;}
+    inline void setAlgo(IAlgo& algo) {p_Algo_ = &algo;}
+    inline void setModel(IModel& model) {p_Model_ = &model;}
+    inline void setStratgy(IStrategy& strategy) {p_Strategy_ = &strategy;}
+    inline void setInit(IInit& init) {p_Init_ = &init;}
     virtual ~facade();
   protected:
     IModel* p_Model_;

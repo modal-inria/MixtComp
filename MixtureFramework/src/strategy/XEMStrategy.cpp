@@ -14,8 +14,10 @@ void XEMStrategy::run(IModel*& p_model,IAlgo*& p_algo,IInit*& p_init){
   IModel* currentmodellong = p_model->create();
 
   double bestlikelihood = std::numeric_limits<double>::min();
+
   for (int nblongrun = 0; nblongrun < param_.nbLongruns_; ++nblongrun) {
     double currentlikelihoodlong = std::numeric_limits<double>::min();
+
     for (int nbshortrun = 0; nbshortrun < param_.nbShortruns_; ++nbshortrun) {
       double currentlikelihoodshort = std::numeric_limits<double>::min();
       double currentbestlikelihoodshort = std::numeric_limits<double>::min();
@@ -28,10 +30,12 @@ void XEMStrategy::run(IModel*& p_model,IAlgo*& p_algo,IInit*& p_init){
       }
 
       if(currentlikelihoodlong<currentlikelihoodshort){
-        *currentmodellong = *currentmodelshort;
+        delete currentmodellong;
+        currentmodellong = currentmodelshort->clone();
         currentlikelihoodlong = currentlikelihoodlong;
       }
     }
+
     double currentbestlikelihoodlong = currentlikelihoodlong;
     for (int itr = 0; itr < param_.nbLongIterations_; ++itr) {
       p_algo->run(currentmodellong);
@@ -41,8 +45,12 @@ void XEMStrategy::run(IModel*& p_model,IAlgo*& p_algo,IInit*& p_init){
     }
 
     if(bestlikelihood<currentlikelihoodlong){
-      *p_model = *currentmodellong;
+      delete p_model;
+      p_model = currentmodellong->clone();
       bestlikelihood = currentlikelihoodlong;
     }
   }
+
+  delete currentmodellong;
+  delete currentmodelshort;
 }
