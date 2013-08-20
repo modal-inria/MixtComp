@@ -10,8 +10,8 @@ class IInit;
 class facade
 {
   public:
-    facade();
-    facade(IModel&,IAlgo&,IInit&,IStrategy&);
+    //facade();
+    facade(IModel*&,IAlgo*&,IInit*&,IStrategy*&);
     void run();
     inline void setAlgo(IAlgo& algo) {p_Algo_ = &algo;}
     inline void setModel(IModel& model) {p_Model_ = &model;}
@@ -19,10 +19,10 @@ class facade
     inline void setInit(IInit& init) {p_Init_ = &init;}
     virtual ~facade();
   protected:
-    IModel* p_Model_;
-    IStrategy* p_Strategy_;
-    IAlgo* p_Algo_;
-    IInit* p_Init_;
+    IModel*& p_Model_;
+    IAlgo*& p_Algo_;
+    IInit*& p_Init_;
+    IStrategy*& p_Strategy_;
 };
 
 inline void facade::run(){

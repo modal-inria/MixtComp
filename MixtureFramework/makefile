@@ -8,9 +8,10 @@ cmake_release:
 	cd build/release/; cmake ../../ -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=release
 	cd build/release/; $(MAKE) VERBOSE=1
 
-cclean:
+cclean_debug:
 	cd build/debug/; $(MAKE) clean VERBOSE=1
+cclean_release:
 	cd build/release/; $(MAKE) clean VERBOSE=1
 
 all: cmake_debug
-clean: cclean		
+clean: cclean_debug

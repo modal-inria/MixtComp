@@ -35,7 +35,7 @@ int main(int argc,char** argv){
   //strategy
   IStrategy* p_strategy = new SimpleStrategy(param);
   //facade
-  facade facade_obj(*p_model,*p_algo,*p_init,*p_strategy);
+  facade facade_obj(p_model,p_algo,p_init,p_strategy);
 
   //run
   facade_obj.run();
