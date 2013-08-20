@@ -12,21 +12,21 @@ int main(){
   myinfo.burnin_ = 20;
   myinfo.nbtry_ = 2;
   myinfo.nbCluster_ = 2;
-  myinfo.filesep_ = ',';
-  myinfo.datafilename_ = "./data/gaussiandata.csv";
-  myinfo.modalitiesfilename_ = "";
+  myinfo.filesep_ = ' ';
+  myinfo.datafilename_ = "./data/words_rank.txt";
+  myinfo.modalitiesfilename_ = "./data/words_modality.txt";
 
   //create object of framework facade
   MixtCompFacade myfacade(myinfo);
 
   //create various mixtures
-  //IMixture* rank = new RankCluster('R',myinfo.nbIterations_,myinfo.burnin_);
+  IMixture* rank = new RankCluster('R',myinfo.nbIterations_,myinfo.burnin_);
 
-  IMixture* gaussian = new gaussianMixture('G');
+  //IMixture* gaussian = new gaussianMixture('G');
 
   //Register various mixtures
-  //myfacade.registerMixture(*rank);
-  myfacade.registerMixture(*gaussian);
+  myfacade.registerMixture(*rank);
+  //myfacade.registerMixture(*gaussian);
   //instantiate framework
   if(!myfacade.instantiateFramework())
   {
@@ -37,12 +37,12 @@ int main(){
   //run the facade
   myfacade.run();
 
-  //rank->writeParameters(std::cout);
-  gaussian->writeParameters(std::cout);
+  rank->writeParameters(std::cout);
+  //gaussian->writeParameters(std::cout);
 
-  //delete rank;
-  //rank = NULL;
-  delete gaussian;
-  gaussian = NULL;
+  delete rank;
+  rank = NULL;
+  //delete gaussian;
+  //gaussian = NULL;
   return 0;
 }

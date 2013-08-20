@@ -116,11 +116,11 @@ void Model::updateModelParameters()
   for (int i = 0; i < nbSample_; ++i) {
     double sum = 0;
     for (int k = 0; k < nbCluster_; ++k) {
-      sum+=p_Mixture_->posteriorProbability(i,k);
+      sum+=v_Pie_[k]*p_Mixture_->posteriorProbability(i,k);
     }
 
     for (int k = 0; k < nbCluster_; ++k) {
-      m_Tik_(i,k) = p_Mixture_->posteriorProbability(i,k)/sum;
+      m_Tik_(i,k) = v_Pie_[k]*p_Mixture_->posteriorProbability(i,k)/sum;
     }
   }
 
