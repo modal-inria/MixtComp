@@ -41,6 +41,7 @@ class MixtureBridge: public IModel
       STK::RandBase gener;
       STK::Array2DVector<double> randnumbers(baseparameters_.nbSample_);
       gener.randUnif(randnumbers);
+      baseparameters_.tik_ = 0.;
       for (int i = 0; i < baseparameters_.nbSample_; ++i)
       {
         baseparameters_.tik_(i,std::floor(baseparameters_.nbCluster_*randnumbers[i])) = 1.0;
