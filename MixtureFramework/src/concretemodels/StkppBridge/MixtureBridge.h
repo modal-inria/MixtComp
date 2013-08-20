@@ -58,6 +58,7 @@ class MixtureBridge: public IModel
         {
           baseparameters_.tik_(i,k) = std::exp( components_[k]->computeLnLikelihood(components_[k]->p_data()->row(i)));
         }
+        baseparameters_.tik_.row(i) /= baseparameters_.tik_.row(i).sum();
       }
     }
 
