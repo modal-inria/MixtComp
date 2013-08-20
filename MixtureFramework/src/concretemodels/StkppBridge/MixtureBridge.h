@@ -57,7 +57,7 @@ class MixtureBridge: public IModel
       {
         for (int k = 0; k < baseparameters_.nbCluster_; ++k)
         {
-          baseparameters_.tik_(i,k) = std::exp( components_[k]->computeLnLikelihood(components_[k]->p_data()->row(i)));
+          baseparameters_.tik_(i,k) = baseparameters_.rowproportions_[k]*std::exp( components_[k]->computeLnLikelihood(components_[k]->p_data()->row(i)));
         }
         baseparameters_.tik_.row(i) /= baseparameters_.tik_.row(i).sum();
       }
@@ -73,6 +73,12 @@ class MixtureBridge: public IModel
 
     virtual void mStep()
     {
+      //update row proportions
+      for (int k = 0; k < baseparameters_.nbCluster_; ++k) {
+        baseparameters_.rowproportions_[k] = baseparameters_.tik_.col(k).sum()/baseparameters_.nbSample_;
+      }
+
+      //update component parameters
       for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
       { if (!components_[k]->run(baseparameters_.tik_.col(k)))
         {
