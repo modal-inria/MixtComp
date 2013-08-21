@@ -46,6 +46,11 @@ class MixtureBridge: public IModel
       {
         baseparameters_.tik_(i,std::floor(baseparameters_.nbCluster_*randnumbers[i])) = 1.0;
       }
+
+      for (int k = 0; k < baseparameters_.nbCluster_; ++k) {
+        baseparameters_.rowproportions_[k] = baseparameters_.tik_.col(k).sum()/baseparameters_.nbSample_;
+      }
+
       for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
       { components_[k]->run(baseparameters_.tik_.col(k));}
 
