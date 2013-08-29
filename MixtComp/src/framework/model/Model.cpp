@@ -97,6 +97,9 @@ void Model::seStep()
 void Model::initializeModel()
 {
   //randomInitialization();
+  for (int k = 0; k < nbCluster_; ++k) {
+    v_Pie_[k] = 1.0/nbCluster_;
+  }
   p_Mixture_->initializeStep();
 }
 

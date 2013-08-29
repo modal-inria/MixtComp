@@ -5,6 +5,7 @@
  */
 #include <fstream>
 #include <vector>
+#include <iostream>
 #include "framework/DataHandling/DataHandler.h"
 class Model;
 class IMixture
@@ -93,7 +94,10 @@ class IMixture
      * This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
-    virtual void writeParameters(std::ostream& out) const {};
+    virtual void writeParameters(std::ostream& out) const
+    {
+     std::cout<<"You need to override this method in your mixture!";
+    }
 
     /**
      * This function is used  to set IMixture::id_.

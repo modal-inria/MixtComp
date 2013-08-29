@@ -74,5 +74,6 @@ void MixtCompFacade::run(){
   const CompositeMixture* temp = static_cast<const CompositeMixture*>(p_mixture_);
   for (int i = 0; i < v_mixture_.size(); ++i) {
     v_mixture_[i]->copy(*temp->getComponents()[i]);
+    v_mixture_[i]->setModel(p_model_);
   }
 }

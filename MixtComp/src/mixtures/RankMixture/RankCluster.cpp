@@ -1029,7 +1029,7 @@ void RankCluster::storeIntermediateResults(int iteration){
       }
 }
 double RankCluster::posteriorProbability(int sample_num,int Cluster_num){
-  return output_.tik(sample_num,Cluster_num);
+  return output_.tik(sample_num,Cluster_num)/proportions()[Cluster_num];
 }
 
 double RankCluster::logLikelihood(){
