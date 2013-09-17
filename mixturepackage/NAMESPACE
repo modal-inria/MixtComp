@@ -1,2 +1,0 @@
-useDynLib(mixturepackage)
-exportPattern("^[[:alpha:]]+")
