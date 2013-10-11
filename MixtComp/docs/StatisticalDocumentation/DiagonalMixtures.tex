@@ -1,0 +1,362 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+%------------------------------------------------
+\usepackage{amsfonts,amstext,amsmath,amssymb}
+
+\usepackage[table]{xcolor}
+
+%------------------------------------------------
+% Sets
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rp}{{\mathbb{R}^p}}
+\newcommand{\Rd}{{\mathbb{R}^d}}
+
+
+% Lettre en gras
+\newcommand{\ba}{\mathbf{a}}
+\newcommand{\bb}{\mathbf{b}}
+\newcommand{\bc}{\mathbf{c}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\be}{\mathbf{e}}
+\newcommand{\bp}{\mathbf{p}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bZ}{\mathbf{Z}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\bt}{\mathbf{t}}
+\newcommand{\by}{\mathbf{y}}
+
+% Lettre grecque en gras % requiert \usepackage{amsbsy}
+\newcommand{\balpha}{\boldsymbol{\alpha}}
+\newcommand{\bbeta}{\boldsymbol{\beta}}
+\newcommand{\bsigma}{\boldsymbol{\sigma}}
+\newcommand{\bDelta}{\boldsymbol{\Delta}}
+\newcommand{\bepsilon}{\boldsymbol{\epsilon}}
+\newcommand{\bGamma}{\boldsymbol{\Gamma}}
+\newcommand{\blambda}{\boldsymbol{\lambda}}
+\newcommand{\bmu}{\boldsymbol{\mu}}
+\newcommand{\bpi}{\boldsymbol{\pi}}
+\newcommand{\bphi}{\boldsymbol{\phi}}
+\newcommand{\brho}{\boldsymbol{\rho}}
+\newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bTheta}{\boldsymbol{\Theta}}
+\newcommand{\bvarepsilon}{\boldsymbol{\varepsilon}}
+
+%opening
+\title{Multivariate "Diagonal" Mixture Models}
+\author{Serge Iovleff}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document resume the different "diagonal" mixture models that should be implemented
+in the stk++ Clustering project and used in the MixtComp project.
+\end{abstract}
+
+
+\section{A Short Course on Mixture Modeling}
+Let ${\bx}=\{ {\bx}_1,...,{\bx}_n\}$ be $n$ independent vectors in $\Rd$ such that each
+${\bx}_i$ arises from a probability distribution with density
+\begin{equation}
+  f({\bx}_i|\theta) = \sum_{k=1}^K p_k h({\bx}_{i}| \blambda_{k},\balpha)
+\end{equation}
+where the $p_k$'s are the mixing proportions ($0<p_k<1$ for all $k=1,...,K$ and
+$p_1+...+p_K=1$), $h(\cdot| \blambda_{k},\balpha)$ denotes a $d$-dimensional distribution parameterized
+by $\blambda_k$ and $\balpha$. The parameters $\balpha$ do not depend from $k$ and is common
+to all the components of the mixture.
+The vector parameter to be estimated is $\theta=(p_1,\ldots,p_K,\blambda_1,\ldots,\blambda_K, \balpha)$
+and is chosen to maximize the observed log-likelihood
+\begin{equation}
+  \label{eq:vraisemblance}
+  L(\theta|\bx_1,\ldots,\bx_n)=\sum_{i=1}^n \ln \left(\sum_{k=1}^K p_k h(\bx_i,\blambda_k, \balpha)\right).
+\end{equation}
+
+It is well known that for a mixture distribution, a sample of indicator vectors or {\em labels}
+${\bz}=\{ {\bz}_1,...,{\bz}_n\}$, with ${\bz}_i=(z_{i1},\ldots,z_{iK})$,
+$z_{ik}=1$ or 0, according to the fact that ${\bx}_i$ is arising from the $k$th mixture
+component or not, is associated to the observed data ${\bx}$. The sample ${\bz}$ is {\em unknown}
+so that the maximum likelihood estimation of mixture models is performed via the EM algorithm
+\cite{Dempster97} or by a stochastic version of EM called SEM (see \cite{McLachlanPeel00}), or by
+a k-means like algorithm called CEM.
+
+\subsection{The algorithms}
+\subsubsection{The EM algorithm}
+
+Starting from an initial arbitrary parameter $\theta^0$, the $m$th iteration of the EM
+algorithm consists of repeating the following E and M steps.
+\begin{itemize}
+\item {\bf E step:} The current conditional probabilities that $z_{ik}=1$ for $i=1,\ldots,n$
+  and $k=1,\ldots,K$ are computed using the current value $\theta^{m-1}$ of the parameter:
+  \begin{equation}
+    \label{eq:condi}
+    t^m_{ik}=t^m_k(\bx_i|\theta^{m-1})=\frac{ p^{m-1}_kh (\bx_i|{\blambda^{m-1}_k},\balpha )}
+    {\sum_{l=1}^K  p^{m-1}_l h(\bx_i|\blambda^{m-1}_l,\balpha)}.
+  \end{equation}
+\item {\bf M step:} The m.l. estimate $\theta^m$ of $\theta$ is updated using the conditional
+  probabilities $t^m_{ik}$ as conditional mixing weights. It leads to maximize
+  \begin{equation} \label{eq:mStepEM}
+    L(\theta| {\bx}_{1},\ldots,{\bx}_{n}, {\bt}^m)
+      =\sum_{i=1}^{n}\sum_{k=1}^{K} t_{ik}^m \ln \left [p_{k} h({\bf x}_{i}|\blambda_{k},\balpha)\right],
+  \end{equation}
+  where ${\bt}^m=(t_{ik}^m, i=1,\ldots,n, k=1,\ldots,K)$. Updated expression of mixture
+  proportions are, for $k=1,\ldots,K$,
+  \begin{equation}
+    p_k^m=\frac{\sum_{i=1}^n t^m_{ik}}{n}.
+  \end{equation}
+  Detailed formula for the updating of the $\blambda_k$'s and $\balpha$ are depending of the component
+  parameterization and will be detailed in the next section.
+\end{itemize}
+The EM algorithm may converge to a local maximum of the observed data likelihood function, depending on starting
+values.
+
+\subsubsection{The SEM algorithm}
+The SEM algorithm is a stochastic version of EM incorporating between the E and M steps a
+restoration of the unknown component labels $\bz_i$, $i=1,\ldots,n,$ by drawing them at random
+from their current conditional distribution. Starting from an initial parameter $\theta^0$, an
+iteration of SEM consists of three steps.
+\begin{itemize}
+\item {\bf E step:} The conditional probabilities $t^m_{ik}$ $(1 \leq i \leq n, 1 \leq k \leq
+  K)$ are computed for the current value of $\theta$ as done in the E step of EM.
+\item {\bf S step:} Generate labels ${\bz}^m=\{ {\bz}^m_1,...,{\bz}^m_n\}$
+  by assigning each point ${\bx}_i$ at random to one of the mixture
+  components according to the categorical distribution with parameter $(t^m_{ik}, 1 \leq k \leq K)$.
+\item {\bf M step:} The m.l. estimate of $\theta$ is updated using the generated labels
+  by maximizing
+\begin{equation} \label{eq:mStepSEM}
+  L(\theta| {\bx}_{1},\ldots,{\bx}_{n}, {\bt}^m)
+    =\sum_{i=1}^{n}\sum_{k=1}^{K} z_{ik}^m \ln \left [p_{k} h({\bf x}_{i}|\blambda_{k},\balpha)\right],
+\end{equation}
+
+\end{itemize}
+
+SEM does not converge point wise.  It generates a Markov chain whose stationary distribution is
+more or less concentrated around the m.l. parameter estimator. A natural parameter estimate from
+a SEM sequence $(\theta^r)_{r=1, \ldots,R}$ is the mean $\sum_{r=b+1}^R \theta^r/(R-b)$ of the
+iterates values where the first $b$ burn-in iterates have been discarded when computing this
+mean.  An alternative estimate is to consider the parameter value leading to the highest
+likelihood in a SEM sequence.
+
+\subsubsection{The CEM algorithm}
+This algorithm incorporates a classification step between the E and M steps of EM. Starting
+from an initial parameter $\theta^0$, an iteration of CEM consists of three steps.
+\begin{itemize}
+\item {\bf E step:} The conditional probabilities $t^m_{ik}$ $(1 \leq i \leq n, 1 \leq k \leq
+  K)$ are computed for the current value of $\theta$ as done in the E step of EM.
+\item {\bf C step:} Generate labels ${\bz}^m=\{ {\bz}^m_1,...,{\bz}^m_n\}$ by assigning each
+  point ${\mathbf x}_i$ to the component maximizing the conditional probability
+  $(t^m_{ik}, 1 \leq k \leq K)$.
+\item {\bf M step:} The m.l. estimate of $\theta$ are computed as done in the M step of SEM.
+\end{itemize}
+CEM is a {\em K-means}-like algorithm and contrary to EM, it converges in a finite number of
+iterations. CEM is not maximizing the observed log-likelihood $L$ (\ref{eq:vraisemblance}) but
+is maximizing in $\theta$ and $\bz_{1},\ldots,\bz_{n}$ the complete data log-likelihood
+\begin{equation} \label{cl}
+  CL(\theta, {\bf z}_{1},\ldots,{\bf z}_{n}|{\bf
+    x}_{1},\ldots,{\bf x}_{n}) = \sum_{i=1}^n\sum_{k=1}^{K}
+  z_{ik}\ln[p_{k} h({\bf x}_i|\blambda_k)].
+\end{equation}
+where the missing component indicator vector $\bz_i$ of each sample point is
+included in the data set. As a consequence, CEM is not expected to converge to the m.l.
+estimate of $\theta$ and yields inconsistent estimates of the parameters especially when the
+mixture components are overlapping or are in disparate proportions (see \cite{McLachlanPeel00}
+, Section 2.21).
+
+\subsection{The strategies}
+
+\section{Multivariate Gaussian Mixture Models}
+
+A Gaussian density on $\R_+$ is a density of the form:
+\begin{equation}\label{law::gaussian-density}
+f(x;\mu,\sigma) = \frac{1}{\sqrt{2\pi} \sigma} \exp\left\{- \frac{(x-\mu)^2}{2\sigma^2}\right\} \quad \sigma>0.
+\end{equation}
+A joint gaussian density on $\Rd_+$ is a density of the form:
+\begin{equation}\label{law::joint-gaussian-density}
+h(\bx;\bmu,\bsigma) = \prod_{j=1}^d f(x^j;\mu^j,\sigma^j) \quad \sigma^j>0.
+\end{equation}
+The parameters $\bmu=(\mu^1,\ldots,\mu^d)$ are the position parameters and the parameters $\bsigma=(\sigma^1,\ldots,sigma^d)$
+are the scale parameters. Assumptions on the position and shape parameters among the variables and the components
+lead to define four families of mixture model. Let us write a multidimensional Gaussian mixture model in the from \verb+f_s*+
+with \verb+b*+, the different ways to parametrize the scale parameters of a Gaussian mixture:
+\begin{itemize}
+\item \verb+sjk+ means that we have one scale parameter for each variable and for each component,
+\item \verb+sk+ means that the scale parameters are the same for all the variables inside a component,
+\item \verb+sj+ means that the scale parameters are different for each variable but are equals between the components,
+\item and finally \verb+s+ means that the scale parameters are all equals.
+\end{itemize}
+
+\section{Multivariate Gamma Mixture Models}
+
+A gamma density on $\R_+$ is a density of the form:
+\begin{equation}\label{law::gamma-density}
+g(x;a,b) = \frac{ \left(x\right)^{a-1} e^{-x/b}}{\Gamma(a) \left(b\right)^{a}} \quad a>0, \quad b>0.
+\end{equation}
+A joint gamma density on $\Rd_+$ is a density of the form:
+\begin{equation}\label{law::joint-gamma-density}
+h(\bx;\ba,\bb) = \prod_{j=1}^d g(x^j;a^j,b^j) \quad a^j>0, \quad b^j>0.
+\end{equation}
+The parameters $\ba=(a^1,\ldots,a^d)$ are the shape parameters and the parameters $\bb=(b^1,\ldots,b^d)$ are the
+scale parameters. Assumptions on the scale and shape parameters among the variables and the components
+lead to define twelve families of mixture model. Let us write a multidimensional gamma mixture model in the from \verb+g_a*_b*+
+with \verb+a*+ (resp. \verb+b*+), the different ways to parametrize the shape (resp. scale) parameters of a gamma mixture:
+\begin{itemize}
+\item \verb+ajk+ (resp. \verb+bjk+) means that we have one shape (resp. scale) parameter for each variable and for each component,
+\item \verb+ak+ (resp. \verb+bk+) means that the shape (resp. scale) parameters are the same for all the variables inside a component,
+\item \verb+aj+ (resp. \verb+bj+)) means that the shape (resp. scale) parameters are different for each variable but are equals between the components,
+\item and finally \verb+a+ (resp. \verb+b+) means that the shape (resp. scale) parameters are the same for all the variables and all the components.
+\end{itemize}
+The models we can build in this way are summarized in the table \ref{tab:gammamodels}, in parenthesis we give the number of
+parameters of each models. The tested and implemented model we present in this article are in the gray cells.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{lllll}
+           &  ajk                 &  ak          &  aj           &  a \\
+bjk & {\color{gray} \verb+g_ajk_bjk+} (2dK)  & \verb+g_ak_bjk+ (dK + K)& {\color{gray} \verb+g_aj_bjk+} (dK+d) & \verb+g_a_bjk+ (dK+1)\\
+bk  & {\color{gray} \verb+g_ajk_bk+}  (dK+K) & \verb+g_ak_bk+ (2K)     & {\color{gray} \verb+g_aj_bk+} (K+d) & \verb+g_a_bk+ (K+1) \\
+bj  & {\color{gray} \verb+g_ajk_bj+}  (dK+d) & \verb+g_ak_bj+ (K+d)    & NA  & NA  \\
+b   & {\color{gray} \verb+g_ajk_b+}   (dK+1) & \verb+g_ak_b+ (K+1)     & NA & NA \\
+\end{tabular}
+\end{center}
+\caption{The twelve multidimensional gamma mixture models. In parenthesis the number of parameter of each model. In gray the
+interesting models.}
+\label{tab:gammamodels}
+\end{table}
+
+The \verb+g_ajk_bjk+ model is the most general and have a density function of the form
+\begin{equation}\label{eq:g_ajk_bjk}
+  f({\bx}_i|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d g(x^j_{i}| a^j_{k},b^j_{k}).
+\end{equation}
+All the other models can be derived from this model by dropping the indexes in $j$ and/or $k$
+from the expression (\ref{eq:g_ajk_bjk}). For example the mixture model $\verb+g_aj_bk+$ have a density
+function of the form
+\begin{equation}\label{eq:g_aj_bk}
+  f({\bx}_i|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d g(x^j_{i}| a^j,b^{k}).
+\end{equation}
+
+\section{Multivariate  of The Beta Mixture Models}
+
+A beta density on $(0,1)$ is a density of the form:
+\begin{equation}\label{law::beta-density}
+b(x;\alpha,\beta) = \frac{x^{\alpha-1}(1-x)^{\beta-1}} {\mathrm{B}(\alpha,\beta)} \quad \alpha>0, \quad \beta>0.
+\end{equation}
+A joint beta density on $(0,1)^d$ is a density of the form:
+\begin{equation}\label{law::joint-beta-density}
+h(\bx;\balpha,\bbeta) = \prod_{j=1}^d b(x^j;\alpha^j,\beta^j) \quad \alpha^j>0, \quad \beta^j>0.
+\end{equation}
+The parameters $\balpha=(\alpha^1,\ldots,\alpha^d)$ and the parameters $\bbeta=(\beta^1,\ldots,\beta^d)$ are the
+shape parameters. Assumptions on these parameters among the variables and the components
+lead to define twelve families of mixture models. Let us write a multidimensional beta mixture model in the form
+\verb+beta_a*_b*+ with \verb+a*+ (resp. \verb+b*+).
+The models we can build are summarized in the table \ref{tab:betamodels} below
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{lllll}
+    &  ajk                    &  ak                     &  aj           &  a \\
+bjk & \verb+b_ajk_bjk+  & \verb+b_ak_bjk+ & \verb+b_aj_bjk+ & \verb+b_a_bjk+\\
+bk  & \verb+b_ajk_bk+   & \verb+b_ak_bk+  & \verb+b_aj_bk+  & \verb+b_a_bk+  \\
+bj  & \verb+b_ajk_bj+   & \verb+b_ak_bj+  & NA  & NA  \\
+b   & \verb+b_ajk_b+    & \verb+b_ak_b+   & NA  & NA \\
+\end{tabular}
+\end{center}
+\caption{The twelve multidimensional beta mixture models}
+\label{tab:betamodels}
+\end{table}
+
+The \verb+b_ajk_bjk+ model is the most general and has a density function of the form
+\begin{equation}\label{eq:b_ajk_bjk}
+  f({\bx}_i|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d b(x^j_{i}| \alpha^j_{k},\beta^j_{k}).
+\end{equation}
+All the other models can be derived from this model by dropping the indexes in $j$ and/or $k$
+from the expression (\ref{eq:b_ajk_bjk}). For example the mixture model $\verb+g_aj_bk+$ has a density
+function of the form
+\begin{equation}\label{eq:b_aj_bk}
+  f({\bx}_i|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d b(x^j_{i}| \alpha^j,\beta^{k}).
+\end{equation}
+
+\bibliographystyle{apalike}
+\bibliography{mixture-doc}
+
+\appendix
+
+\section{M step computation}
+In this section, given the array $\bt$ of conditional probabilities, we will write
+$t_{.k} = \sum_{i=1}^n$, for $k=1,\ldots,K$ and we will denote
+$$
+\bar{x}^j_k = \frac{1}{t_{.k}} \sum_{i=1}^n t_{ik} x^j_i,
+$$
+the $k$-th pondered mean of the $j$-th observation, and by
+$$
+(\overline{\log(x)})^j_k = \frac{1}{t_{.k}} \sum_{i=1}^n t_{ik} \log(x^j_i),
+$$
+the $k$-th pondered $\log$-mean of the $j$-th observation.
+
+\subsection{M Step of the gamma\_ajk\_bjk model}
+Replacing $h$ by its expression in the equation (\ref{eq:mStepEM}) and summing in $i$, we see that we have to maximize in
+$(a^j_k,b^j_k)$, for $j=1,\ldots d$ and $k=1,\ldots, K$
+\begin{equation}\label{eq:mStep_ajk_bjk}
+l = t_{.k} \left( (a^j_k-1)(\overline{\log(x)})^j_k - \frac{\bar{x}^j_k}{b^j_k} - \log(\Gamma(a^j_k)) - a^j_k \log(b^j_k) \right),
+\end{equation}
+which is the weighted version of the usual log-likelihood of the gamma distribution. The maximum likelihood for $b^j_k$ is
+easily found to be
+\begin{equation}\label{eq:mStep_ajk_bjk_for_bk}
+\hat{b}^j_k = \frac{\bar{x}^j_k}{a^j_k}.
+\end{equation}
+Deriving in $a^j_k$ and using (\ref{eq:mStep_ajk_bjk_for_bk}) gives $a^j_k$ solution in $a$ of the
+following equation
+\begin{equation}\label{eq:mStep_ajk_bjk_zero}
+  (\overline{\log(x)})^j_k - \Psi(a) - \log(\bar{x}^j_k) + \log(a) =0
+\end{equation}
+whom solution can be found using Brent's method \cite{Brent1973}.
+
+\subsection{M Step of the gamma\_ajk\_bj model}
+Replacing $h$ by its expression in the equation (\ref{eq:mStepEM}) and summing in $i$, we see that we have to maximize in
+$(a^j_1,\ldots, a^j_K, b^j)$, for $j=1,\ldots d$,
+\begin{equation}\label{eq:mStep_ajk_bj}
+L =\sum_{k=1}^{K} t_{.k} \left( (a^j_k-1)(\overline{\log(x)})^j_k - \frac{\bar{x}^j_k}{b^j} - \log(\Gamma(a^j_k)) - a^j_k \log(b^j) \right).
+\end{equation}
+
+Deriving in $a^j_k$ and $b^j$ and equaling the derivative to zero, we get the following set of equations
+\begin{equation}\label{eq:mStep_ajk_bj_for_ak_b}
+\left\lbrace
+\begin{array}{lcl}
+  \Psi(a^j_k) & = & (\overline{\log(x)})^j_k  - \log(b^j), \quad k=1,\ldots, K \\
+  b^j         & = & \frac{\sum_{k=1}^K t_{.k} \bar{x}^j_k}{\sum_{k=1}^K t_{.k} a^j_k}
+\end{array}
+\right.
+\end{equation}
+This set of non-linear equation can be solved using an iterative algorithm:
+\begin{itemize}
+\item {\bf Initialization:} Compute an initial estimator of the $\ba_k$, $k=1,\ldots K$ and $\bb$
+using moment estimators.
+\item {\bf Repeat until convergence :}
+\begin{itemize}
+\item {\bf a step:} For fixed $b^j$ solve for each $a^j_k$, the equation:
+\begin{equation*}
+  \Psi(a) - (\overline{\log(x)})^j_k + \log(b^j) = 0.
+\end{equation*}
+\item {\bf b step:} Update $b^j$ using equation (\ref{eq:mStep_ajk_bj_for_ak_b}).
+\end{itemize}
+\end{itemize}
+
+This algorithm minimize alternatively the log-likelihood in $\ba_k$, $k=1,\ldots n$ and in
+$\bb$ and converge in few iterations.
+
+\subsection{M Step of the gamma\_aj\_bjk model}
+Replacing $h$ by its expression in the equation (\ref{eq:mStepEM}) and summing in $i$, we see that we have to maximize in
+$(a^j,\ldots, a^j, b^j_k)$, for $j=1,\ldots d$,
+
+\begin{equation}\label{eq:mStep_aj_bjk}
+L =\sum_{k=1}^{K} t_{.k} \left( (a^j-1)(\overline{\log(x)})^j_k - \frac{\bar{x}^j_k}{b^j_k} - \log(\Gamma(a^j)) - a^j_k \log(b^j_k) \right).
+\end{equation}
+ The maximum likelihood for $b^j_k$ is
+easily found to be
+\begin{equation}\label{eq:mStep_aj_bjk_for_bjk}
+\hat{b}^j_k = \frac{\bar{x}^j_k}{a^j}.
+\end{equation}
+
+\end{document}
