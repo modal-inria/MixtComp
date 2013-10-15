@@ -4,21 +4,19 @@
 * @brief 
 */
 
-#include "StkppBridge/MixtureBridge.h"
-
-typedef STK::JointGaussianModel<STK::Array2D<double>, STK::Array2DVector<double> > JointGaussian;
+#include "MixtureBridge.h"
 
 
-class gaussianMixture : public MixtureBridge<JointGaussian>
+class gaussianMixture : public MixtureBridge<STK::Gamma_pk_ajk_bj>
 {
-    typedef MixtureBridge<JointGaussian> Base;
+  typedef MixtureBridge<STK::Gamma_pk_ajk_bj> Base;
   public:
     /** default constructor. @param id the id of the gaussianMixture model */
     gaussianMixture(char id);
     /** copy constructor */
     gaussianMixture(gaussianMixture const& mixture);
     /** destructor */
-    ~gaussianMixture();
+    virtual ~gaussianMixture();
     /** Write the parameters of the gaussain mixture */
     virtual void writeParameters(std::ostream& os) const;
     virtual void setData();
