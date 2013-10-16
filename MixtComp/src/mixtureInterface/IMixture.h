@@ -1,13 +1,44 @@
-#ifndef IMixture_H_
-#define IMixture_H_
+/*--------------------------------------------------------------------*/
+/*     Copyright (C) 2004-2013  Serge Iovleff
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public
+    License along with this program; if not, write to the
+    Free Software Foundation, Inc.,
+    59 Temple Place,
+    Suite 330,
+    Boston, MA 02111-1307
+    USA
+
+    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
+*/
+
+/*
+ * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
+ * Originally created by Parmeet Bhatia <b..._DOT_p..._AT_gmail_Dot_com>
+ **/
+
+#ifndef IMIXTURE_H
+#define IMIXTURE_H
+
 /**@file IMixture.h
- * @brief
+ * @brief define the main interface for linking specific mixturre model to the
+ * composer.
  */
-#include <fstream>
-#include <vector>
+
 #include <iostream>
 
-#include "DataHandler.h"
+#include "../framework/DataHandler.h"
+#include "../stkpp/include/Arrays.h"
 
 namespace mixt
 {
@@ -107,23 +138,11 @@ class IMixture
      * @param out Stream where you want to write the summary of parameters.
      */
     virtual void writeParameters(std::ostream& out) const
-    {
-     std::cout<<"You need to override this method in your mixture!";
-    }
-
-    /**
-     * This function is used  to set IMixture::id_.
-     * @param id Identification character.
-     */
-    void setID(char id);
-    /**
-     * Virtual destructor.
-     */
+    { std::cout<<"You need to override this method in your mixture!";}
+    /** Virtual destructor. */
     virtual ~IMixture(){};
 
   protected:
-    /**Default Constructor */
-    IMixture();
     /**
      * This function can be used in derived classes to get number of samples.
      * @return Number of samples.
@@ -152,24 +171,26 @@ class IMixture
      * This function can be used in derived classes to get proportions from the framework.
      * @return Pointer to proportions.
      */
-    STK::CArrayPoint<STK::Real> const* const p_prop() const;
+    STK::CArrayPoint<STK::Real> const* p_prop() const;
     /**
      * This function can be used in derived classes to get posterior probabilities from the framework.
      * @return Pointer to tik.
      */
-    STK::Array2D<STK::Real> const* const p_tik() const;
+    STK::Array2D<STK::Real> const* p_tik() const;
     /**
      * This function can be used in derived classes to get class labels from the framework.
      * @return Pointer to zi.
      */
-    STK::CArrayVector<int> const* const p_zi() const;
+    STK::CArrayVector<int> const* p_zi() const;
 
   private:
+    /** Default Constructor not allowed */
+    IMixture();
     int nbVariable_;
     char id_;
-
-    mixt::CompositeMixtureModel * p_model_;
+    /** pointer on the main composer model */
+    mixt::CompositeMixtureModel * p_compositeModel_;
 };
 
 
-#endif /* IMixture_H_ */
+#endif /* IMIXTURE_H */

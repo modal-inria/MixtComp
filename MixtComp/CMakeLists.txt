@@ -16,7 +16,7 @@ SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 include_directories(src)
 include_directories(../)
-link_directories(../stkpp/lib)
+link_directories(./src/stkpp/lib)
 #add_subdirectory(externlibs)
 add_subdirectory(src)
 add_subdirectory(examples)

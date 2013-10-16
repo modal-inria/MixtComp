@@ -71,8 +71,8 @@ class RankCluster: public IMixture
     virtual void storeIntermediateResults(int iteration);
     virtual void finalizeStep() {/**Do nothing by default*/}
     virtual double posteriorProbability(int sample_num,int Cluster_num);
-    virtual double logLikelihood();
-    virtual int freeParameters() const;
+    virtual double lnLikelihood();
+    virtual int nbFreeParameters() const;
     virtual void setData();
     virtual void writeParameters(std::ostream&) const;
     virtual ~RankCluster();

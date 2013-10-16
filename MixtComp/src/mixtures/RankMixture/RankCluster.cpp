@@ -1032,12 +1032,12 @@ double RankCluster::posteriorProbability(int sample_num,int Cluster_num){
   return output_.tik(sample_num,Cluster_num)/proportions()[Cluster_num];
 }
 
-double RankCluster::logLikelihood(){
+double RankCluster::lnLikelihood(){
   likelihood(resMu,resP,resProp);
   return output_.L;
 }
 
-int RankCluster::freeParameters() const{
+int RankCluster::nbFreeParameters() const{
   return 2*g_*d_+g_-1;
 }
 void RankCluster::setData(){
