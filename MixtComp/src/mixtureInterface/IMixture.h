@@ -26,9 +26,17 @@ class IMixture
     /** Setter function: Can be used to set IMixture::p_model_ member  variable.
      *  @param p_model Pointer to the Model being set for IMixture.
      */
-    virtual void setModel(Model* p_model);
+    virtual void setModel(mixt::CompositeMixtureModel* p_model);
+    /** @brief Initialize the model before at its first use. Will be called after
+     *  setData().
+     *  This method should create any container needed by the model and/or resize
+     *  them. */
+    virtual void initializeModel() =0;
     /**
-     * This function must be defined in derived class for initialization of mixture parameters.
+     * @brief This function must be defined in derived class for initialization
+     * of the ingredient parameters.
+     * This function will be called once the model is created, data is set and
+     * model initialized.
      */
     virtual void initializeStep() = 0;
     /**
@@ -54,7 +62,7 @@ class IMixture
      * excluding class labels. The class labels will be simulated by the framework itself because to do so
      * we have to take into account all the mixture laws.
      */
-    virtual void samplingStep() = 0;
+    virtual void samplingStep() {/**Do nothing by default*/};
     /**
      * This function is equivalent to Mstep and must be defined to update parameters.
      */
@@ -82,12 +90,12 @@ class IMixture
      * This must be defined to return the current log-likelihood.
      * @return Current log-likelihood.
      */
-    virtual double logLikelihood() = 0;
+    virtual double lnLikelihood() = 0;
     /**
      * This function must return the number of free parameters.
      * @return Number of free parameters
      */
-    virtual int freeParameters() const = 0;
+    virtual int nbFreeParameters() const = 0;
     /**
      * This function must be defined to set the data into your data containers.
      * To facilitate data handling, framework provide templated functions,
@@ -126,22 +134,25 @@ class IMixture
      * @return Pointer to class labels.
      */
     int const* classLabels() const;
-    /**
-     * This function can be used in derived classes to get proportions from the framework.
-     * @return Pointer to proportions.
+    /** This function can be used in derived classes to get proportions from the framework.
+     *  @return Pointer to proportions.
      */
     double const* proportions() const;
+    /** This function can be used in derived classes to get the posterior probabilities
+     *  from the framework.
+     *  @return Pointer to tik.
+     */
+    double const** posteriorProbabilities() const;
 
-    /**
-     * This function can be used in derived classes to get class labels from the framework.
-     * @return Pointer to class labels.
+    /** This function can be used in derived classes to get class labels from the framework.
+     *  @return Pointer to class labels.
      */
     int const* classLabels() const;
     /**
      * This function can be used in derived classes to get proportions from the framework.
      * @return Pointer to proportions.
      */
-    STK::Array2DPoint<STK::Real> const* const p_prop() const;
+    STK::CArrayPoint<STK::Real> const* const p_prop() const;
     /**
      * This function can be used in derived classes to get posterior probabilities from the framework.
      * @return Pointer to tik.
@@ -151,7 +162,7 @@ class IMixture
      * This function can be used in derived classes to get class labels from the framework.
      * @return Pointer to zi.
      */
-    STK::Array2DVector<int> const* const p_zi() const;
+    STK::CArrayVector<int> const* const p_zi() const;
 
   private:
     int nbVariable_;
@@ -160,12 +171,5 @@ class IMixture
     mixt::CompositeMixtureModel * p_model_;
 };
 
-inline void IMixture::setID(char id){
-  id_ = id;
-}
-
-inline void IMixture::setModel(Model* model){
-  p_model_ = model;
-}
 
 #endif /* IMixture_H_ */

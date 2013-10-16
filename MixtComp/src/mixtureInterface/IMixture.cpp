@@ -7,9 +7,9 @@ IMixture::IMixture() {}
 
 /* copy constructor */
 IMixture::IMixture( IMixture const& mixture)
-                  : nbVariable_(mixture.nbVariable_)
-                  , id_(mixture.id_)
-                  , p_model_(mixture.p_model_)
+                    : nbVariable_(mixture.nbVariable_)
+                    , id_(mixture.id_)
+                    , p_model_(mixture.p_model_)
 {}
 
 IMixture::IMixture( char id, int nbCluster, mixt::CompositeMixtureModel const* const p_model)
@@ -17,23 +17,31 @@ IMixture::IMixture( char id, int nbCluster, mixt::CompositeMixtureModel const* c
 {}
 
 
-int* IMixture::classLabels() const {
-  return p_model_->classLabels();
+int const* IMixture::classLabels() const
+{
+  return p_model_->p_zi()->p_data();
 }
 
-double* IMixture::proportions() const {return
-  p_model_->proportions();
+double const* IMixture::proportions() const
+{
+  return p_model_->p_prop()->p_data();
 }
 
-int IMixture::nbSample() const {
+int IMixture::nbSample() const
+{
   return p_model_->nbSample();
+}
+
+void IMixture::setModel(mixt::CompositeMixtureModel* model)
+{
+  p_model_ = model;
 }
 
 /*
  * This function can be used in derived classes to get proportions from the framework.
  * @return Pointer to proportions.
  */
-STK::Array2DPoint<STK::Real> const* const IMixture::p_prop() const
+STK::CArrayPoint<STK::Real> const* const IMixture::p_prop() const
 { return p_model_->p_prop(); }
 
 /*
@@ -47,5 +55,5 @@ STK::Array2D<STK::Real> const* const IMixture::p_tik() const
  * This function can be used in derived classes to get proportions from the framework.
  * @return Pointer to proportions.
  */
-STK::Array2DVector<int> const* const IMixture::p_zi() const
+STK::CArrayVector<int> const* const IMixture::p_zi() const
 { return p_model_->p_zi(); }
