@@ -58,7 +58,7 @@ class IMixture
      *  @param p_model Pointer to the Model being set for IMixture.
      */
     virtual void setModel(mixt::CompositeMixtureModel* p_model);
-    /** @brief Initialize the model before at its first use. Will be called after
+    /** @brief Initialize the model before its first use. Will be called after
      *  setData().
      *  This method should create any container needed by the model and/or resize
      *  them. */
@@ -70,21 +70,23 @@ class IMixture
      * model initialized.
      */
     virtual void initializeStep() = 0;
-    /**
-     * This is a standard clone function in usual sense. It must be defined to provide new object of your class
-     * with values of various parameters equal to the values of calling object.
-     * In other words, this is equivalent to polymorphic copy constructor.
+    /**This is a standard clone function in usual sense. It must be defined to
+     * provide new object of your class with values of various parameters equal
+     * to the values of calling object. In other words, this is equivalent to
+     * polymorphic copy constructor.
      * @return New instance of class as that of calling object.
      */
     virtual IMixture* clone() = 0;
 
-    /**
-     * This function must be defined in derived class to provide copy semantics.
-     * @param other Constant reference to the object that is being copied.
+    /**This is a standard create function in usual sense. It must be defined to
+     * provide new object of your class with correct
+     * . In other words, this is equivalent to
+     * virtual constructor.
+     * @return New instance of class as that of calling object.
      */
-    virtual void copy(const IMixture& other) = 0;
-    /**
-     * This function should be used for Imputation of data.
+    virtual IMixture* create() = 0;
+
+    /** This function should be used for Imputation of data.
      * The default implementation (in the base class) is to do nothing.
      */
     virtual void imputationStep() {/**Do nothing by default*/}
