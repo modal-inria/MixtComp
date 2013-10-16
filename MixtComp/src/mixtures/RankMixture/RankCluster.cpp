@@ -6,7 +6,7 @@
 #include <map>
 #include <iostream>
 #include "RankCluster.h"
-#include "framework/DataHandling/Data.h"
+#include "Data.h"
 
 using namespace std;
 

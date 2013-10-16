@@ -96,7 +96,6 @@ class MixtureBridge: public IMixture
 
   protected:
     MixtureModel model_;
-
 };
 
 #endif /* MIXTUREBRIDGE_H */

@@ -6,17 +6,21 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
-#include "framework/DataHandling/DataHandler.h"
-class Model;
+
+#include "DataHandler.h"
+
+namespace mixt
+{
+class CompositeMixtureModel;
+}
+
 class IMixture
 {
   public:
-    /**Default Constructor */
-    IMixture();
     /**Constructor with identification character
      * @param id Identification character of Mixture allocated by framework.
      */
-    IMixture(char id);
+    IMixture(char id, int nbCluster, mixt::CompositeMixtureModel const* const p_model);
     /**copy constructor */
     IMixture(IMixture const& mixture);
     /** Setter function: Can be used to set IMixture::p_model_ member  variable.
@@ -73,7 +77,7 @@ class IMixture
      * @param Cluster_num Cluster number
      * @return
      */
-    virtual double posteriorProbability(int sample_num,int Cluster_num) = 0;
+    virtual double logComponentProbability(int sample_num,int Cluster_num) = 0;
     /**
      * This must be defined to return the current log-likelihood.
      * @return Current log-likelihood.
@@ -110,16 +114,8 @@ class IMixture
     virtual ~IMixture(){};
 
   protected:
-    int nbVariable_;
-    char id_;
-    Model * p_model_;
-
-    //protected functions
-    /**
-     * This function can be used in derived classes to get number of clusters.
-     * @return Number of clusters.
-     */
-    int nbCluster() const;
+    /**Default Constructor */
+    IMixture();
     /**
      * This function can be used in derived classes to get number of samples.
      * @return Number of samples.
@@ -129,13 +125,39 @@ class IMixture
      * This function can be used in derived classes to get class labels from the framework.
      * @return Pointer to class labels.
      */
-    int* classLabels() const;
+    int const* classLabels() const;
     /**
      * This function can be used in derived classes to get proportions from the framework.
      * @return Pointer to proportions.
      */
-    double* proportions() const;
+    double const* proportions() const;
 
+    /**
+     * This function can be used in derived classes to get class labels from the framework.
+     * @return Pointer to class labels.
+     */
+    int const* classLabels() const;
+    /**
+     * This function can be used in derived classes to get proportions from the framework.
+     * @return Pointer to proportions.
+     */
+    STK::Array2DPoint<STK::Real> const* const p_prop() const;
+    /**
+     * This function can be used in derived classes to get posterior probabilities from the framework.
+     * @return Pointer to tik.
+     */
+    STK::Array2D<STK::Real> const* const p_tik() const;
+    /**
+     * This function can be used in derived classes to get class labels from the framework.
+     * @return Pointer to zi.
+     */
+    STK::Array2DVector<int> const* const p_zi() const;
+
+  private:
+    int nbVariable_;
+    char id_;
+
+    mixt::CompositeMixtureModel * p_model_;
 };
 
 inline void IMixture::setID(char id){
