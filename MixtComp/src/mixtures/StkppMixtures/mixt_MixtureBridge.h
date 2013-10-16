@@ -8,18 +8,39 @@
 #include "../mixtureInterface/IMixture.h"
 #include "../stkpp/include/STKpp.h"
 
+namespace mixt
+{
 /** @brief Implementation of the IMixture interface for stk++ mixtures.
+ * The pure virtual function inherited from IMixture and to implement are
+ * @code
+ *  virtual IMixture* clone() = 0;
+ *  virtual IMixture* create() = 0;
+ * @endcode
+ *
  * @tparam MixtureModel is any model deriving from the STK::IMixtureModelBase class
  */
 template<class MixtureModel>
 class MixtureBridge: public IMixture
 {
   public:
+    // get the Type of the data
+    typedef typename MixtureModel::Base::Array::Type Type;
     /** constructor. @param id id of the mixture */
     MixtureBridge( char id, int nbCluster, mixt::CompositeMixtureModel const* p_model )
                    : IMixture(id, nbCluster, p_model)
                    , model_(nbCluster)
-    {}
+    { model_.setMixtureParameters( p_prop(), p_tik(), p_zi());}
+
+
+    /** This function must be defined to set the data into your data containers.
+     *  To facilitate data handling, framework provide templated functions,
+     *  that can be called directly to get the data.
+     */
+    virtual void setData()
+    {
+      MC::Data<Type> mydatahandler;
+      data_.move(mydatahandler.getData(id_,nbVariable_));
+    }
 
     /** @brief Initialize the model before at its first use. */
     virtual void initializeModel()
@@ -30,17 +51,13 @@ class MixtureBridge: public IMixture
     virtual void initializeStep()
     { model_.initializeStep();}
     /**
-     * This is a standard clone function in usual sense. It must be defined to provide new object of your class
+     * This is a standard clone function in usual sense. It must be defined to
+     * provide new object of your class
      * with values of various parameters equal to the values of calling object.
      * In other words, this is equivalent to polymorphic copy constructor.
      * @return New instance of class as that of calling object.
      */
     virtual IMixture* clone() = 0;
-
-    /** This function must be defined in derived class to provide copy semantics.
-     * @param other Constant reference to the object that is being copied.
-     */
-    virtual void copy(const IMixture& other) = 0;
     /** This function should be used for imputation of data.
      *  The default implementation (in the base class) is to do nothing.
      */
@@ -52,7 +69,8 @@ class MixtureBridge: public IMixture
      * simulated by the framework itself because to do so we have to take into
      * account all the mixture laws. do nothing by default.
      */
-    virtual void samplingStep() {}
+    virtual void samplingStep()
+    {model_.samplingStep();}
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
     virtual void paramUpdateStep()
@@ -78,7 +96,6 @@ class MixtureBridge: public IMixture
      */
     virtual double lnComponentProbability(int sample_num,int cluster_num)
     { return model_.lnComponentProbability(sample_num, cluster_num);}
-
     /** This must be defined to return the current log-likelihood.
      * @return Current log-likelihood.
      */
@@ -89,12 +106,6 @@ class MixtureBridge: public IMixture
      */
     virtual int nbFreeParameters() const
     { return model_.nbFreeParameters();}
-    /** This function must be defined to set the data into your data containers.
-     *  To facilitate data handling, framework provide templated functions,
-     *  that can be called directly to get the data.
-     */
-    virtual void setData() = 0;
-
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
@@ -103,6 +114,9 @@ class MixtureBridge: public IMixture
 
   protected:
     MixtureModel model_;
+    STK::Array2D<Type> data_;
 };
+
+} // namespace mixt
 
 #endif /* MIXTUREBRIDGE_H */

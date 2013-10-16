@@ -16,7 +16,9 @@ namespace mixt
 class Gamma_ajk_bjkMixture: public MixtureBridge<Gamma_ajk_bjkMixture>
 {
   public:
-    Gamma_ajk_bjkMixture(int nbCluster);
+    typedef MixtureBridge<Gamma_ajk_bjkMixture> Base;
+    Gamma_ajk_bjkMixture( char id, int nbCluster, mixt::CompositeMixtureModel const* p_model );
+
     virtual ~Gamma_ajk_bjkMixture();
 };
 
