@@ -20,21 +20,26 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
     CompositeMixtureModel(int nbCluster);
     virtual ~CompositeMixtureModel();
 
-    virtual IMixtureModelBase* create() const = 0;
-    virtual IMixtureModelBase* clone() const = 0;
-    virtual bool randomInit() =0;
-    virtual void mStep() = 0;
+    /** Create a clone of the current model, but reinitialize the ingredients parameters. */
+    virtual IMixtureModelBase* create();
+    /** Create a clone of the current model, with ingredients parameters preserved. */
+    virtual IMixtureModelBase* clone();
+
+    virtual void mStep();
     virtual STK::Real lnComponentProbability(int i, int k);
 
     virtual void writeParameters(std::ostream& os) const;
     virtual void initializeModel();
     virtual void initializeStep();
-    virtual void inputationStep();
-    virtual void computeProportions();
+    virtual void imputationStep();
     virtual void finalizeStep();
 
   private:
     std::vector<*IMixture> v_mixtures_;
+    /** randomInit is currently disabled and hidden, pending future developments */
+    virtual bool randomInit();
+    /** In which case should the proportions computed differently, considering a composite mixture ? */
+    virtual void computeProportions();
 };
 
 } /* namespace mixt */

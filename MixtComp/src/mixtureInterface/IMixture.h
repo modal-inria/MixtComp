@@ -61,7 +61,9 @@ class IMixture
     /** @brief Initialize the model before its first use. Will be called after
      *  setData().
      *  This method should create any container needed by the model and/or resize
-     *  them. */
+     *  them.
+     *  Since this method can be used when create is called(), its main purpose should
+     *  be to reset the mixture parameters, while leaving the data unchanged. */
     virtual void initializeModel() =0;
     /**
      * @brief This function must be defined in derived class for initialization
