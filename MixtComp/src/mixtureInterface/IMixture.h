@@ -37,8 +37,8 @@
 
 #include <iostream>
 
-#include "../framework/DataHandler.h"
-#include "../stkpp/include/Arrays.h"
+#include "framework/DataHandler.h"
+#include "stkpp/include/Arrays.h"
 
 namespace mixt
 {
@@ -166,11 +166,6 @@ class IMixture
      *  @return Pointer to tik.
      */
     double const** posteriorProbabilities() const;
-
-    /** This function can be used in derived classes to get class labels from the framework.
-     *  @return Pointer to class labels.
-     */
-    int const* classLabels() const;
     /**
      * This function can be used in derived classes to get proportions from the framework.
      * @return Pointer to proportions.

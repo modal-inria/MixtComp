@@ -1,5 +1,5 @@
 
-#include "../framework/mixt_CompositeMixtureModel.h"
+#include "framework/mixt_CompositeMixtureModel.h"
 #include "IMixture.h"
 
 /* default constructor */

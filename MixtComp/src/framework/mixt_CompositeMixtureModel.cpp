@@ -18,8 +18,8 @@ CompositeMixtureModel::CompositeMixtureModel(int nbCluster)
 }
 
 CompositeMixtureModel::CompositeMixtureModel(CompositeMixtureModel const& model)
-                                            : STK::IMixtureModelBase(model)
-                                             ,v_mixtures_(model.v_mixtures_)
+                           : STK::IMixtureModelBase(model)
+                           , v_mixtures_(model.v_mixtures_)
 {
 
 }
@@ -29,10 +29,10 @@ CompositeMixtureModel::~CompositeMixtureModel()
   // TODO Auto-generated destructor stub
 }
 
-virtual STK::IMixtureModelBase* CompositeMixtureModel::create()
+CompositeMixtureModel* CompositeMixtureModel::create() const
 {
   CompositeMixtureModel* newComp =  new CompositeMixtureModel(*this);
-  for (int l = 0; l < v_mixtures_.end(); ++l)
+  for (int l = 0; l < v_mixtures_.size(); ++l)
   {
     newComp->v_mixtures_[l] = (v_mixtures_[l]->clone());
     newComp->v_mixtures_[l]->initializeModel();
@@ -40,77 +40,80 @@ virtual STK::IMixtureModelBase* CompositeMixtureModel::create()
   return newComp;
 }
 
-virtual STK::IMixtureModelBase* CompositeMixtureModel::clone()
+CompositeMixtureModel* CompositeMixtureModel::clone() const
 {
   CompositeMixtureModel* newComp =  new CompositeMixtureModel(*this);
-  for (int l = 0; l < v_mixtures_.end(); ++l)
+  for (int l = 0; l < v_mixtures_.size(); ++l)
   {
     newComp->v_mixtures_[l] = (v_mixtures_[l]->clone());
   }
   return newComp;
 }
 
-virtual STK::Real CompositeMixtureModel::lnComponentProbability(int i, int k)
+STK::Real CompositeMixtureModel::lnComponentProbability(int i, int k)
 {
   STK::Real sum=0.0;
-  for (int l = 0; l < v_mixtures_.end(); ++l)
+  for (int l = 0; l < v_mixtures_.size(); ++l)
   {
-    sum += v_mixtures_[l]->lnComponentProbability(i,k);
+    sum += v_mixtures_[l]->logComponentProbability(i,k);
   }
   return sum;
 }
 
-virtual void CompositeMixtureModel::mStep()
+void CompositeMixtureModel::mStep()
 {
-  for (int l = 0; l < v_mixtures_.end(); ++l)
+  for (int l = 0; l < v_mixtures_.size(); ++l)
   {
     v_mixtures_[l]->paramUpdateStep();
   }
 }
 
-virtual void CompositeMixtureModel::writeParameters(std::ostream& os) const
+void CompositeMixtureModel::writeParameters(std::ostream& os) const
 {
-  for (int l = 0; l < v_mixtures_.end(); ++l)
+  for (int l = 0; l < v_mixtures_.size(); ++l)
   {
-    v_mixtures_[l]->writeParameters(std::ostream& os);
+    v_mixtures_[l]->writeParameters(os);
   }
 }
 
-virtual void CompositeMixtureModel::initializeModel()
+void CompositeMixtureModel::initializeModel()
 {
-  for (int l = 0; l < v_mixtures_.end(); ++l)
+  for (int l = 0; l < v_mixtures_.size(); ++l)
   {
     v_mixtures_[l]->initializeModel();
   }
 }
 
-virtual void CompositeMixtureModel::initializeStep()
+void CompositeMixtureModel::initializeStep()
 {
-  for (int l = 0; l < v_mixtures_.end(); ++l)
+  for (int l = 0; l < v_mixtures_.size(); ++l)
   {
     v_mixtures_[l]->initializeStep();
   }
 }
 
-virtual bool CompositeMixtureModel::randomInit()
-{
-  return true;
-}
-
-virtual void CompositeMixtureModel::computeProportions()
+void CompositeMixtureModel::randomInit()
 {}
 
-virtual void CompositeMixtureModel::imputationStep()
+void CompositeMixtureModel::computeProportions()
+{}
+
+int CompositeMixtureModel::computeNbFreeParameters() const
 {
-  for (int l = 0; l < v_mixtures_.end(); ++l)
+  return 0;
+}
+
+void CompositeMixtureModel::imputationStep()
+{
+  for (int l = 0; l < v_mixtures_.size(); ++l)
   {
-    v_mixtures_[l]->imputationStep(); // no coupling between ingredients for the imputation step ?
+    v_mixtures_[l]->imputationStep();
   }
 }
 
-virtual void CompositeMixtureModel::finalizeStep()
+void CompositeMixtureModel::finalizeStep()
 {
-  for (int l = 0; l < v_mixtures_.end(); ++l)
+  for (int l = 0; l < v_mixtures_.size(); ++l)
   {
     v_mixtures_[l]->finalizeStep();
   }
