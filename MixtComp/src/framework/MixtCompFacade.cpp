@@ -1,4 +1,4 @@
-#include "framework/DataHandling/DataHandler.h"
+#include "framework/DataHandler.h"
 #include "MixtCompFacade.h"
 
 MixtCompFacade::MixtCompFacade(FrameworkInfo& info): info_(info)

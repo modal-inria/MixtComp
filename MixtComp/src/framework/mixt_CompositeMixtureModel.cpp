@@ -98,6 +98,7 @@ void CompositeMixtureModel::randomInit()
 void CompositeMixtureModel::computeProportions()
 {}
 
+// TODO implement computeNbFreeParameters
 int CompositeMixtureModel::computeNbFreeParameters() const
 {
   return 0;

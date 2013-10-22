@@ -9,11 +9,11 @@ IMixture::IMixture() {}
 IMixture::IMixture( IMixture const& mixture)
                     : nbVariable_(mixture.nbVariable_)
                     , id_(mixture.id_)
-                    , p_model_(mixture.p_model_)
+                    , p_compositeModel_(mixture.p_compositeModel_)
 {}
 
 IMixture::IMixture( char id, int nbCluster, mixt::CompositeMixtureModel const* const p_model)
-                     : nbVariable_(0), id_(id), p_model_(p_model)
+                     : nbVariable_(0), id_(id), p_compositeModel_(p_compositeModel_)
 {}
 
 

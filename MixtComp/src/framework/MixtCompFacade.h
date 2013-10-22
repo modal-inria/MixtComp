@@ -5,8 +5,8 @@
  */
 #include <initializer_list>
 #include <iostream>
-#include "framework/MixtureInterface/IMixture.h"
-#include "framework/MixtureInterface/CompositeMixture.h"
+#include "mixtureInterface/IMixture.h"
+#include "framework/mixt_CompositeMixtureModel.h"
 #include "framework/model/Model.h"
 #include "framework/algorithms/IAlgo.h"
 #include "framework/algorithms/SEMGibbs.h"
