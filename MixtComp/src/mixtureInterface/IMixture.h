@@ -37,8 +37,8 @@
 
 #include <iostream>
 
-#include "framework/DataHandler.h"
-#include "stkpp/include/Arrays.h"
+#include "../framework/DataHandler.h"
+#include "../stkpp/include/Arrays.h"
 
 namespace mixt
 {

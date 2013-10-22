@@ -1,2 +1,11 @@
-FILE( GLOB_RECURSE src_files *.cpp)
-add_library(MixComp ${src_files})
+add_subdirectory(mixtures)
+add_subdirectory(framework)
+
+# create mixtcomp library
+ADD_LIBRARY(${LIBRARY_NAME}
+ $<TARGET_OBJECTS:Mixtures>
+ $<TARGET_OBJECTS:Framework>
+)
+
+SET_TARGET_PROPERTIES(${LIBRARY_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+INSTALL(TARGETS ${LIBRARY_NAME} ARCHIVE DESTINATION ${LIBRARY_OUTPUT_PATH})
