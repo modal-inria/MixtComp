@@ -94,8 +94,8 @@ algorithm consists of repeating the following E and M steps.
   and $k=1,\ldots,K$ are computed using the current value $\theta^{m-1}$ of the parameter:
   \begin{equation}
     \label{eq:condi}
-    t^m_{ik}=t^m_k(\bx_i|\theta^{m-1})=\frac{ p^{m-1}_kh (\bx_i|{\blambda^{m-1}_k},\balpha )}
-    {\sum_{l=1}^K  p^{m-1}_l h(\bx_i|\blambda^{m-1}_l,\balpha)}.
+    t^m_{ik}=t^m_k(\bx_i|\theta^{m-1})=\frac{ p^{m-1}_kh (\bx_i|{\blambda^{m-1}_k},\balpha^{m-1} )}
+    {\sum_{l=1}^K  p^{m-1}_l h(\bx_i|\blambda^{m-1}_l,\balpha^{m-1})}.
   \end{equation}
 \item {\bf M step:} The m.l. estimate $\theta^m$ of $\theta$ is updated using the conditional
   probabilities $t^m_{ik}$ as conditional mixing weights. It leads to maximize
@@ -163,10 +163,9 @@ is maximizing in $\theta$ and $\bz_{1},\ldots,\bz_{n}$ the complete data log-lik
 where the missing component indicator vector $\bz_i$ of each sample point is
 included in the data set. As a consequence, CEM is not expected to converge to the m.l.
 estimate of $\theta$ and yields inconsistent estimates of the parameters especially when the
-mixture components are overlapping or are in disparate proportions (see \cite{McLachlanPeel00}
-, Section 2.21).
+mixture components are overlapping or are in disparate proportions (see \cite{McLachlanPeel00}, Section 2.21).
 
-\subsection{The strategies}
+%\subsection{The strategies}
 
 \section{Multivariate Gaussian Mixture Models}
 
@@ -174,20 +173,27 @@ A Gaussian density on $\R_+$ is a density of the form:
 \begin{equation}\label{law::gaussian-density}
 f(x;\mu,\sigma) = \frac{1}{\sqrt{2\pi} \sigma} \exp\left\{- \frac{(x-\mu)^2}{2\sigma^2}\right\} \quad \sigma>0.
 \end{equation}
-A joint gaussian density on $\Rd_+$ is a density of the form:
+A joint Gaussian density on $\Rd_+$ is a density of the form:
 \begin{equation}\label{law::joint-gaussian-density}
 h(\bx;\bmu,\bsigma) = \prod_{j=1}^d f(x^j;\mu^j,\sigma^j) \quad \sigma^j>0.
 \end{equation}
-The parameters $\bmu=(\mu^1,\ldots,\mu^d)$ are the position parameters and the parameters $\bsigma=(\sigma^1,\ldots,sigma^d)$
-are the scale parameters. Assumptions on the position and shape parameters among the variables and the components
-lead to define four families of mixture model. Let us write a multidimensional Gaussian mixture model in the from \verb+f_s*+
-with \verb+b*+, the different ways to parametrize the scale parameters of a Gaussian mixture:
+The parameters $\bmu=(\mu^1,\ldots,\mu^d)$ are the position parameters and the parameters $\bsigma=(\sigma^1,\ldots,\sigma^d)$
+are the standard-deviation parameters. Assumptions on the position and standard-deviation parameters among the variables and the components
+lead to define four families of mixture model.
+
+Let us write a multidimensional Gaussian mixture model in the from \verb+f_s*+
+with \verb+b*+, the different ways to parametrize the standard-deviation parameters of a Gaussian mixture:
 \begin{itemize}
-\item \verb+sjk+ means that we have one scale parameter for each variable and for each component,
-\item \verb+sk+ means that the scale parameters are the same for all the variables inside a component,
-\item \verb+sj+ means that the scale parameters are different for each variable but are equals between the components,
-\item and finally \verb+s+ means that the scale parameters are all equals.
+\item \verb+sjk+ means that we have one standard-deviation parameter for each variable and for each component,
+\item \verb+sk+ means that the standard-deviation parameters are the same for all the variables inside a component,
+\item \verb+sj+ means that the standard-deviation parameters are different for each variable but are equals between the components,
+\item and finally \verb+s+ means that the standard-deviation parameters are all equals.
 \end{itemize}
+
+The \verb+f_sjk+ model is the most general model and have a density function of the form
+\begin{equation}\label{eq:g_ajk_bjk}
+  f({\bx}_i|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d g(x^j_{i}| \mu^j_{k}, \sigma^j_{k}).
+\end{equation}
 
 \section{Multivariate Gamma Mixture Models}
 
@@ -206,12 +212,12 @@ with \verb+a*+ (resp. \verb+b*+), the different ways to parametrize the shape (r
 \begin{itemize}
 \item \verb+ajk+ (resp. \verb+bjk+) means that we have one shape (resp. scale) parameter for each variable and for each component,
 \item \verb+ak+ (resp. \verb+bk+) means that the shape (resp. scale) parameters are the same for all the variables inside a component,
-\item \verb+aj+ (resp. \verb+bj+)) means that the shape (resp. scale) parameters are different for each variable but are equals between the components,
+\item \verb+aj+ (resp. \verb+bj+) means that the shape (resp. scale) parameters are different for each variable but are equals between the components,
 \item and finally \verb+a+ (resp. \verb+b+) means that the shape (resp. scale) parameters are the same for all the variables and all the components.
 \end{itemize}
+
 The models we can build in this way are summarized in the table \ref{tab:gammamodels}, in parenthesis we give the number of
 parameters of each models. The tested and implemented model we present in this article are in the gray cells.
-
 \begin{table}
 \begin{center}
 \begin{tabular}{lllll}
@@ -238,7 +244,7 @@ function of the form
   f({\bx}_i|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d g(x^j_{i}| a^j,b^{k}).
 \end{equation}
 
-\section{Multivariate  of The Beta Mixture Models}
+\section{Multivariate Beta Mixture Models}
 
 A beta density on $(0,1)$ is a density of the form:
 \begin{equation}\label{law::beta-density}
