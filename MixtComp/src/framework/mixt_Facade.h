@@ -34,9 +34,15 @@
 #ifndef MIXT_FACADE_H_
 #define MIXT_FACADE_H_
 
+#include "mixtureInterface/IMixture.h"
 #include "stkpp/projects/Clustering/include/STK_Clust_Util.h"
 #include "stkpp/projects/Clustering/include/STK_IMixtureModelBase.h"
 #include "stkpp/projects/Clustering/include/STK_MixtureFacade.h"
+
+class CompositeMixtureModel;
+class STK::StrategyFacade;
+
+#include <vector>
 
 namespace mixt
 {

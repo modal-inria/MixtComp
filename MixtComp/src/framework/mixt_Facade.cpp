@@ -31,6 +31,7 @@
  *  @brief In this file 
  **/
 
+#include "mixt_CompositeMixtureModel.h"
 #include "mixt_Facade.h"
 
 namespace mixt
