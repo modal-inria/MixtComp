@@ -3,7 +3,7 @@
 # author: Serge Iovleff
 #-----------------------------------------------------------------------
 #
-# This file have to be include in all makefile of the projects.
+# This file has to be included in all makefile of the projects.
 #
 #-----------------------------------------------------------------------
 #
@@ -18,21 +18,9 @@ R_FLAGS = -DMATHLIB_STANDALONE
 # MAKE  = make
 
 #-----------------------------------------------------------------------
-#   Macro       Significance
-#               
-#   CC         C compiler
-#   CXX        C++ compiler
-#
-#-----------------------------------------------------------------------
-# The defaults below are for GNU g++.
-#-----------------------------------------------------------------------
 # compilers
 CC    = gcc
 CXX   = g++
-
-#-----------------------------------------------------------------------
-# Name of the STK++ library
-LIB_STKPP_A = libSTKpp.a
 
 #-----------------------------------------------------------------------
 # specific C flags
@@ -40,25 +28,9 @@ LIB_STKPP_A = libSTKpp.a
 CFLAGS   = -Wno-long-long
 
 #-----------------------------------------------------------------------
-# R packages (comment CXXFLAGS and STK_FLAGS in Debug and Release section) 
-# include $(R_HOME)/etc${R_ARCH}/Makeconf
-# STK_FLAGS = ${CPICFLAGS} -ansi -pedantic -Wall
-
-#-----------------------------------------------------------------------
 # flags in Debug mode 
-CXXFLAGS   = -ansi -pedantic -Wall -g -Os
-STK_FLAGS = -DSTK_BOUNDS_CHECK  -DSTK_DEBUG  -DSTK_VERBOSE
+CXXFLAGS_DEBUG  = "-ansi -pedantic -Wall -g -Os"
 
 #-----------------------------------------------------------------------
 # flags in Release mode 
-# CXXFLAGS   = -ansi -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
-
-#-----------------------------------------------------------------------
-# Uncomment the next line if you want to have 0 based arrays 
-# STK_FLAGS += -DSTKBASEARRAYS=0
-
-#-----------------------------------------------------------------------
-# Uncomment the next line if you want to use wchar set
-# (will not work).
-# STK_FLAGS = -DSTK_UNICODE
-
+CXXFLAGS_RELEASE = "-ansi -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops"

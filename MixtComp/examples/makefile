@@ -22,48 +22,24 @@
 #    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
+#
 # Purpose:  Generic makefile.
 # Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
-# Macro definitions
-#
+
+#-----------------------------------------------------------------------
+# include makevars file, as defined in the MAKEVAR environment variable
 include $(MAKEVARS)
-
-#-----------------------------------------------------------------------
-# Paths
-#
-INC_DIR = ../include/
-BIN_DIR = ../../../bin/
-
-#-----------------------------------------------------------------------
-# header files
-#
-CXX_INCS	= $(wildcard $(INC_DIR)*.h)
-
-#-----------------------------------------------------------------------
-# source files
-#
-CPP_SRCS = $(wildcard *.cpp)
-
-#-----------------------------------------------------------------------
-# binary files
-#
-CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
 
 #-----------------------------------------------------------------------
 # Compilation rules
 #
-$(BIN_DIR)%.o: $(INC_DIR)%.h makefile
-$(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
+.PHONY: all
 
-#-----------------------------------------------------------------------
-# creating objects files
-#
-obj: $(CPP_OBJS)
+$(info $(BIN_DIR))
+$(info $(wildcard $(BIN_DIR)/*.o))
+$(info $(LIB_STK))
 
-#-----------------------------------------------------------------------
-# Targets
-#
-all: obj
+all:
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -o $(BIN_DIR)/hello.bin $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) hello.cpp

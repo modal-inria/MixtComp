@@ -30,39 +30,51 @@
 
 #-----------------------------------------------------------------------
 # Macros and definitions are in MAKEVARS, they can be overloaded by up call
-RELATIVEMAKEVARS = ./makevars
-MAKEVARS = $(realpath $(RELATIVEMAKEVARS))
-export MAKEVARS
+MAKEVARS = $(realpath ./makevars)
 include $(MAKEVARS)
 
 #-----------------------------------------------------------------------
 # paths
 
 # build paths
-
-BIN_RELEASE_DIR = ${CURDIR}/bin/release
-BIN_DEBUG_DIR   = ${CURDIR}/bin/debug
+BIN_RELEASE_DIR = $(realpath ./bin/release)
+BIN_DEBUG_DIR   = $(realpath ./bin/debug)
 
 # sources paths
-SRC_FRAMEWORK_DIR         = $(realpath ./src/framework/)
-SRC_MIXTURE_INTERFACE_DIR = $(realpath ./src/mixtureInterface/)
-SRC_MIXTURES_DIR          = $(realpath ./src/mixtures/)
+SRC_FRAMEWORK_DIR         := $(realpath ./src/framework/)
+SRC_MIXTURE_INTERFACE_DIR := $(realpath ./src/mixtureInterface/)
+SRC_MIXTURES_DIR          := $(realpath ./src/mixtures/)
+
+# examples path
+EXAMPLES_DIR              := $(realpath ./examples/)
+
+#STK build path
+LIB_STK := $(realpath ./src/stkpp/lib/libSTKpp.a)
+
+#-----------------------------------------------------------------------
+# export variables, build paths and compile flags, to share them with sub-makefiles
+export MAKEVARS
+export LIB_STK
 
 #-----------------------------------------------------------------------
 # build rules
 
 # phony prerequisites are executed unconditionally
-.PHONY: release debug clean
+.PHONY: release debug clean examples
 
 release:
-	$(MAKE) -C $(SRC_FRAMEWORK_DIR) BIN_DIR="$(BIN_RELEASE_DIR)"
-	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR) BIN_DIR="$(BIN_RELEASE_DIR)"
-	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)"
+	$(MAKE) -C $(SRC_FRAMEWORK_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
+	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
+	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
 
 debug:
-	$(MAKE) -C $(SRC_FRAMEWORK_DIR) BIN_DIR="$(BIN_DEBUG_DIR)"
-	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR) BIN_DIR="$(BIN_DEBUG_DIR)"
-	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_DEBUG_DIR)"
+	$(MAKE) -C $(SRC_FRAMEWORK_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
+	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
+	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
+
+examples:
+	$(MAKE) -C $(EXAMPLES_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
+	$(MAKE) -C $(EXAMPLES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
 
 clean:
 	$(RM) $(wildcard $(BIN_RELEASE_DIR)/*)
