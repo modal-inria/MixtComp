@@ -188,7 +188,7 @@ class IMixture
     int nbVariable_;
     char id_;
     /** pointer on the main composer model */
-    mixt::CompositeMixtureModel * p_compositeModel_;
+    const mixt::CompositeMixtureModel * p_compositeModel_;
 };
 
 

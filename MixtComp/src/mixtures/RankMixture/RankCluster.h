@@ -7,8 +7,8 @@
 #include <vector>
 #include <set>
 //#include "../../../../Eigen/Eigen/Dense"
-#include "framework/MixtureInterface/IMixture.h"
-#include "stkpp/include/STKpp.h"
+#include "../../mixtureInterface/IMixture.h"
+#include "../../stkpp/include/STKpp.h"
 
 
 #include "functions.h"

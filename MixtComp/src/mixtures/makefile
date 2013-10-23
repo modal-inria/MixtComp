@@ -29,23 +29,10 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
-# include makevars file, as defined in the MAKEVAR environment variable
-include $(MAKEVARS)
-
-#-----------------------------------------------------------------------
-# header, source and binary files
-#
-CXX_INCS = $(wildcard *.h)
-CPP_SRCS = $(wildcard *.cpp)
-CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)/%.o)
-
-#-----------------------------------------------------------------------
 # Compilation rules
 #
 
-all: obj
+.PHONY: all
 
-obj: $(CPP_OBJS)
-
-$(BIN_DIR)/%.o: %.cpp %.h makefile
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
+all:
+#	$(MAKE) -C RankMixture BIN_DIR="$(BIN_DIR)"

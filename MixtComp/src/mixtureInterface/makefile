@@ -22,48 +22,30 @@
 #    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
+#
 # Purpose:  Generic makefile.
 # Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
-# Macro definitions
-#
+
+#-----------------------------------------------------------------------
+# include makevars file, as defined in the MAKEVAR environment variable
 include $(MAKEVARS)
 
 #-----------------------------------------------------------------------
-# Paths
+# header, source and binary files
 #
-INC_DIR = ../include/
-BIN_DIR = ../../../bin/
-
-#-----------------------------------------------------------------------
-# header files
-#
-CXX_INCS	= $(wildcard $(INC_DIR)*.h)
-
-#-----------------------------------------------------------------------
-# source files
-#
+CXX_INCS = $(wildcard *.h)
 CPP_SRCS = $(wildcard *.cpp)
-
-#-----------------------------------------------------------------------
-# binary files
-#
-CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
+CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)/%.o)
 
 #-----------------------------------------------------------------------
 # Compilation rules
 #
-$(BIN_DIR)%.o: $(INC_DIR)%.h makefile
-$(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
 
-#-----------------------------------------------------------------------
-# creating objects files
-#
+all: obj
+
 obj: $(CPP_OBJS)
 
-#-----------------------------------------------------------------------
-# Targets
-#
-all: obj
+$(BIN_DIR)/%.o: %.cpp %.h makefile
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<

@@ -40,7 +40,6 @@
 #include "../stkpp/projects/Clustering/include/STK_MixtureFacade.h"
 
 class CompositeMixtureModel;
-class STK::StrategyFacade;
 
 #include <vector>
 

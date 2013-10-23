@@ -4,8 +4,8 @@
 * @brief 
 */
 
-#include "stkpp/include/DManager.h"
-#include "stkpp/include/STKpp.h"
+#include "../stkpp/include/DManager.h"
+#include "../stkpp/include/STKpp.h"
 
 namespace MC
 {

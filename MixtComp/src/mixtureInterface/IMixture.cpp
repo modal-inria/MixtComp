@@ -1,5 +1,5 @@
 
-#include "framework/mixt_CompositeMixtureModel.h"
+#include "../framework/mixt_CompositeMixtureModel.h"
 #include "IMixture.h"
 
 /* default constructor */
@@ -13,7 +13,7 @@ IMixture::IMixture( IMixture const& mixture)
 {}
 
 IMixture::IMixture( char id, int nbCluster, mixt::CompositeMixtureModel const* const p_model)
-                     : nbVariable_(0), id_(id), p_compositeModel_(p_compositeModel_)
+                     : nbVariable_(0), id_(id), p_compositeModel_(p_model)
 {}
 
 

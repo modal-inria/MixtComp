@@ -44,9 +44,9 @@ BIN_RELEASE_DIR = ${CURDIR}/bin/release
 BIN_DEBUG_DIR   = ${CURDIR}/bin/debug
 
 # sources paths
-SRC_FRAMEWORK_DIR         = ./src/framework/
-SRC_MIXTURE_INTERFACE_DIR = ./src/mixtureInterface/
-SRC_MIXTURES_DIR          = ./src/mixtures/
+SRC_FRAMEWORK_DIR         = $(realpath ./src/framework/)
+SRC_MIXTURE_INTERFACE_DIR = $(realpath ./src/mixtureInterface/)
+SRC_MIXTURES_DIR          = $(realpath ./src/mixtures/)
 
 #-----------------------------------------------------------------------
 # build rules
@@ -54,15 +54,15 @@ SRC_MIXTURES_DIR          = ./src/mixtures/
 # phony prerequisites are executed unconditionally
 .PHONY: release debug clean
 
-release: 
-	$(MAKE) -C $(SRC_FRAMEWORK_DIR) BIN_DIR="$(BIN_DEBUG_DIR)"
-#	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR)
-#	$(MAKE) -C $(SRC_MIXTURES_DIR)
+release:
+	$(MAKE) -C $(SRC_FRAMEWORK_DIR) BIN_DIR="$(BIN_RELEASE_DIR)"
+	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR) BIN_DIR="$(BIN_RELEASE_DIR)"
+	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)"
 
 debug:
 	$(MAKE) -C $(SRC_FRAMEWORK_DIR) BIN_DIR="$(BIN_DEBUG_DIR)"
-#	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR)
-#	$(MAKE) -C $(SRC_MIXTURES_DIR)
+	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR) BIN_DIR="$(BIN_DEBUG_DIR)"
+	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_DEBUG_DIR)"
 
 clean:
 	$(RM) $(wildcard $(BIN_RELEASE_DIR)/*)
