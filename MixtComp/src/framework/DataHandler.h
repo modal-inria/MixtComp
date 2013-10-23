@@ -8,7 +8,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "stkpp/include/DManager.h"
+#include "../stkpp/include/DManager.h"
 
 //Data Handler using singleton design pattern
 class DataHandler

@@ -10,7 +10,7 @@
 
 #include <vector>
 #include "../stkpp/include/Clustering.h"
-#include "mixtureInterface/IMixture.h"
+#include "../mixtureInterface/IMixture.h"
 
 namespace mixt
 {
@@ -35,6 +35,7 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
     virtual void initializeStep();
     virtual void imputationStep();
     virtual void finalizeStep();
+    virtual void registerMixture(IMixture& mixture);
 
   private:
     std::vector<IMixture*> v_mixtures_;

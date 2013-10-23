@@ -120,4 +120,10 @@ void CompositeMixtureModel::finalizeStep()
   }
 }
 
+void CompositeMixtureModel::registerMixture(IMixture& mixture)
+{
+  v_mixtures_.push_back(&mixture);
+}
+
+
 } /* namespace mixt */

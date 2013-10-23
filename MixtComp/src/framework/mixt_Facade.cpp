@@ -50,7 +50,7 @@ bool Facade::createComposerModel(int nbClusters)
 
 bool Facade::registerMixture(IMixture& mixture)
 {
-  composerModel_->v_mixtures_.push_back(&mixture);
+  composerModel_->registerMixture(mixture);
   return true;
 }
 

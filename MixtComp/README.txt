@@ -1,0 +1,1 @@
+The makefile does not currently handle all kinds of dependencies. If a header is modified, only the source files bearing the same name will be recompiled. A "make clean" might be useful in more complex cases.
