@@ -120,9 +120,9 @@ void CompositeMixtureModel::finalizeStep()
   }
 }
 
-void CompositeMixtureModel::registerMixture(IMixture& mixture)
+void CompositeMixtureModel::registerMixture(IMixture* mixture)
 {
-  v_mixtures_.push_back(&mixture);
+  v_mixtures_.push_back(mixture);
 }
 
 
