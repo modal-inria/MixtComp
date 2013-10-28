@@ -7,9 +7,9 @@ int main()
 {
   int nbClusters = 2;
 
-  // creation of the composer model and associated pointer
+  // creation of the composer model and associated base-type pointer
   mixt::CompositeMixtureModel composerModel(nbClusters);
-  mixt::CompositeMixtureModel* p_composerModel = &composerModel;
+  STK::IMixtureModelBase* p_composerModel = &composerModel;
 
   // manage Gaussian data
   int nbVar;
@@ -23,7 +23,7 @@ int main()
   composerModel.registerMixture(gamma);
 
   // create the strategy
-  STK::StrategyFacade strategy(*p_composerModel);
+  STK::StrategyFacade strategy(p_composerModel);
   strategy.createSemStrategy( STK::Clust::randomInit_ // init type
                             , 2 // number of initialization trials
                             , 20 // number of burn-in iterations
