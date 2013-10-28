@@ -180,12 +180,12 @@ class IMixture
      * @return Pointer to zi.
      */
     STK::CArrayVector<int> const* p_zi() const;
-
+  protected:
+    int nbVariable_;
+    char id_;
   private:
     /** Default Constructor not allowed */
     IMixture();
-    int nbVariable_;
-    char id_;
     /** pointer on the main composer model */
     const mixt::CompositeMixtureModel * p_compositeModel_;
 };
