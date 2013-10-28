@@ -29,8 +29,8 @@ CFLAGS   = -Wno-long-long
 
 #-----------------------------------------------------------------------
 # flags in Debug mode 
-CXXFLAGS_DEBUG  = "-ansi -pedantic -Wall -g -Os"
+CXXFLAGS_DEBUG  = "-ansi -std=c++11 -pedantic -Wall -g -Os"
 
 #-----------------------------------------------------------------------
 # flags in Release mode 
-CXXFLAGS_RELEASE = "-ansi -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops"
+CXXFLAGS_RELEASE = "-ansi -std=c++11 -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops"

@@ -37,13 +37,12 @@
 
 #include <iostream>
 
-#include "../framework/DataHandler.h"
+#include "../framework/mixt_DataHandler.h"
 #include "../stkpp/include/Arrays.h"
 
 namespace mixt
 {
 class CompositeMixtureModel;
-}
 
 class IMixture
 {
@@ -120,7 +119,7 @@ class IMixture
      * @param Cluster_num Cluster number
      * @return
      */
-    virtual double logComponentProbability(int sample_num,int Cluster_num) = 0;
+    virtual double lnComponentProbability(int sample_num,int Cluster_num) = 0;
     /**
      * This must be defined to return the current log-likelihood.
      * @return Current log-likelihood.
@@ -136,7 +135,7 @@ class IMixture
      * To facilitate data handling, framework provide templated functions,
      * that can be called directly to get the data.
      */
-    virtual void setData() = 0;
+    virtual void setData(DataHandler dataHandler) = 0;
     /**
      * This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
@@ -191,5 +190,6 @@ class IMixture
     const mixt::CompositeMixtureModel * p_compositeModel_;
 };
 
+} // namespace mixt
 
 #endif /* IMIXTURE_H */

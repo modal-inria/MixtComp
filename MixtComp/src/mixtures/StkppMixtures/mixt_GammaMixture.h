@@ -36,8 +36,8 @@ namespace mixt
 
 typedef MixtureBridge<STK::Gamma_pk_ajk_bjk<STK::Array2D<STK::Real> > > Gamma_pk_ajk_bjk;
 typedef MixtureBridge<STK::Gamma_p_ajk_bjk<STK::Array2D<STK::Real> > > Gamma_p_ajk_bjk;
-typedef MixtureBridge<STK::Gamma_pk_ajk_bj<STK::Array2D<STK::Real> > > Gamma_pk_ajk_bj;
-typedef MixtureBridge<STK::Gamma_p_ajk_bj<STK::Array2D<STK::Real> > > Gamma_p_ajk_bj;
+// typedef MixtureBridge<STK::Gamma_pk_ajk_bj<STK::Array2D<STK::Real> > > Gamma_pk_ajk_bj;
+// typedef MixtureBridge<STK::Gamma_p_ajk_bj<STK::Array2D<STK::Real> > > Gamma_p_ajk_bj;
 
 } /* namespace mixt */
 

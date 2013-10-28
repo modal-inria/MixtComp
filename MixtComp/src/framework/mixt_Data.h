@@ -7,31 +7,29 @@
 #include "../stkpp/include/DManager.h"
 #include "../stkpp/include/STKpp.h"
 
-namespace MC
+namespace mixt
 {
 
 //
 template<class type>
 class Data {};
 
-
 // specialization for double
 template<>
 class Data<double>
 {
   public:
-    STK::Array2D<double>& getData(char id, int& nbVar)
+    STK::Array2D<double>& getData(DataHandler& p_datahandler,char id, int& nbVar)
     {
-      DataHandler* p_datahandler = DataHandler::getInstance();
-      std::vector<int> colindex = p_datahandler->colIndex(id);
-      nbSample_ = p_datahandler->nbSamples();
+      std::vector<int> colindex = p_datahandler.colIndex(id);
+      nbSample_ = p_datahandler.nbSamples();
       nbVar = colindex.size();
       data_.resize(nbSample_, nbVar);
       for (int i = 0; i < nbSample_; ++i)
       {
         for (auto k : colindex)
         {
-          data_(i,k) = STK::stringToType<double>(p_datahandler->completeData()(i,k));}
+          data_(i,k) = STK::stringToType<double>(p_datahandler.completeData()(i,k));}
         }
       return data_;
     }
@@ -42,16 +40,13 @@ class Data<double>
     int nbSample_;
 };
 
-
-
 template<>
 class Data<int>
 {
   public:
-    std::vector<int> getModality(char id) const
+    std::vector<int> getModality(DataHandler& p_datahandler, char id) const
     {
-      DataHandler* p_datahandler = DataHandler::getInstance();
-      std::vector<std::vector<std::string> > allmodalities = p_datahandler->allModalities();
+      std::vector<std::vector<std::string> > allmodalities = p_datahandler.allModalities();
       std::vector<int> modality;
       for (int i = 0; i < allmodalities.size(); ++i)
       {
@@ -68,17 +63,16 @@ class Data<int>
       return modality;
     }
 
-    STK::Array2D<int>& getData(char id,int& nbVar)
+    STK::Array2D<int>& getData(DataHandler& p_datahandler, char id,int& nbVar)
     {
-      DataHandler* p_datahandler = DataHandler::getInstance();
-      std::vector<int> colindex = p_datahandler->colIndex(id);
-      nbSamples_ = p_datahandler->nbSamples();
+      std::vector<int> colindex = p_datahandler.colIndex(id);
+      nbSamples_ = p_datahandler.nbSamples();
       nbVar = colindex.size();
       data_.resize(nbSamples_,nbVar);
       for (int i = 0; i < nbSamples_; ++i)
       {
         for (int k : colindex)
-        { data_(i,k) = STK::stringToType<int>(p_datahandler->completeData()(i,k));}
+        { data_(i,k) = STK::stringToType<int>(p_datahandler.completeData()(i,k));}
       }
       return data_;
     }
@@ -92,17 +86,16 @@ template<>
 class Data<bool>
 {
   public:
-    STK::Array2D<bool>& getData(char id,int& nbVar)
+    STK::Array2D<bool>& getData(DataHandler& p_datahandler, char id, int& nbVar)
     {
-      DataHandler* p_datahandler = DataHandler::getInstance();
-      std::vector<int> colindex = p_datahandler->colIndex(id);
-      nbSamples_ = p_datahandler->nbSamples();
+      std::vector<int> colindex = p_datahandler.colIndex(id);
+      nbSamples_ = p_datahandler.nbSamples();
       nbVar = colindex.size();
       data_.resize(nbSamples_,nbVar);
       for (int i = 0; i < nbSamples_; ++i)
       {
         for (int k : colindex)
-        { data_(i,k) = STK::stringToType<bool>(p_datahandler->completeData()(i,k));}
+        { data_(i,k) = STK::stringToType<bool>(p_datahandler.completeData()(i,k));}
       }
       return data_;
     }
@@ -117,11 +110,10 @@ template<>
 class Data<std::string>
 {
   public:
-    std::string** getData(char id,int& nbVar)
+    std::string** getData(DataHandler& p_datahandler, char id, int& nbVar)
     {
-      DataHandler* p_datahandler = DataHandler::getInstance();
-      std::vector<int> colindex = p_datahandler->colIndex(id);
-      nbSamples_ = p_datahandler->nbSamples();
+      std::vector<int> colindex = p_datahandler.colIndex(id);
+      nbSamples_ = p_datahandler.nbSamples();
       nbVar = colindex.size();
       data_ = new std::string*[nbSamples_];
       for (int i = 0; i < nbSamples_; ++i)
@@ -129,7 +121,7 @@ class Data<std::string>
         data_[i] = new std::string[nbVar];
         for (int k : colindex)
         {
-          data_[i][k] = p_datahandler->completeData()(i,k);
+          data_[i][k] = p_datahandler.completeData()(i,k);
         }
       }
       return data_;
@@ -146,6 +138,6 @@ class Data<std::string>
     int nbSamples_;
 };
 
-}
+} // namespace mixt
 
 #endif /* DATA_H_ */

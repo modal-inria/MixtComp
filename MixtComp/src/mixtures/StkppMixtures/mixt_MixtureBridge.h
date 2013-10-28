@@ -34,8 +34,8 @@
 #ifndef MIXTUREBRIDGE_H
 #define MIXTUREBRIDGE_H
 
-#include "../mixtureInterface/IMixture.h"
-#include "../stkpp/include/STKpp.h"
+#include "../../mixtureInterface/IMixture.h"
+#include "../../stkpp/include/STKpp.h"
 
 namespace mixt
 {
@@ -65,10 +65,10 @@ class MixtureBridge: public IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    virtual void setData()
+    virtual void setData(DataHandler& dataHandler)
     {
-      MC::Data<Type> mydatahandler;
-      data_.move(mydatahandler.getData(id_,nbVariable_));
+      Data<Type> data;
+      data_.move(data.getData(dataHandler,id_,nbVariable_));
     }
 
     /** @brief Initialize the model before at its first use. */
@@ -86,13 +86,13 @@ class MixtureBridge: public IMixture
      * In other words, this is equivalent to polymorphic copy constructor.
      * @return New instance of class as that of calling object.
      */
-    virtual MixtureModel* clone() { return model_.clone();}
+    virtual IMixture* clone() { return model_.clone();}
     /** This is a standard create function in usual sense. It must be defined to
      *  provide new object of your class with correct dimensions and state.
      *  In other words, this is equivalent to virtual constructor.
      * @return New instance of class as that of calling object.
      */
-    virtual MixtureModel* create() { return model_.create();}
+    virtual IMixture* create() { return model_.create();}
     /** This function should be used for imputation of data.
      *  The default implementation (in the base class) is to do nothing.
      */

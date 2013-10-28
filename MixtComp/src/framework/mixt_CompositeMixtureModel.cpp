@@ -55,7 +55,7 @@ STK::Real CompositeMixtureModel::lnComponentProbability(int i, int k)
   STK::Real sum=0.0;
   for (int l = 0; l < v_mixtures_.size(); ++l)
   {
-    sum += v_mixtures_[l]->logComponentProbability(i,k);
+    sum += v_mixtures_[l]->lnComponentProbability(i,k);
   }
   return sum;
 }

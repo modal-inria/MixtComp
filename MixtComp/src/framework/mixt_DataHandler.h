@@ -10,11 +10,14 @@
 
 #include "../stkpp/include/DManager.h"
 
+namespace mixt
+{
+
 //Data Handler using singleton design pattern
 class DataHandler
 {
   public:
-    static DataHandler* getInstance();
+    DataHandler();
     bool readDataFromFile(std::string filename,char sep);
     bool readModalityFromFile(std::string filename,char sep);
     std::vector<int> colIndex(char id);
@@ -24,13 +27,12 @@ class DataHandler
     std::vector<std::vector<std::string> >& allModalities(){return allmodalities_;}
     ~DataHandler();
   protected:
-    DataHandler(){
-      p_instance_ = NULL;
-    };
     STK::ReadWriteCsv completedata_;
     std::vector<std::vector<std::string> > allmodalities_;
     static DataHandler* p_instance_;
     int nbSample_;
 };
+
+} // namespace mixt
 
 #endif /* DATAHANDLER_H_ */

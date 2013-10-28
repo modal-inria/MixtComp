@@ -1,6 +1,8 @@
-
 #include "../framework/mixt_CompositeMixtureModel.h"
 #include "IMixture.h"
+
+namespace mixt
+{
 
 /* default constructor */
 IMixture::IMixture() {}
@@ -19,7 +21,7 @@ IMixture::IMixture( char id, int nbCluster, mixt::CompositeMixtureModel const* c
 
 int const* IMixture::classLabels() const
 {
-  return p_compositeModel_->p_zi()->p_data();
+  return p_compositeModel_->p_zi();
 }
 
 double const* IMixture::proportions() const
@@ -57,3 +59,5 @@ STK::Array2D<STK::Real> const* IMixture::p_tik() const
  */
 STK::CArrayVector<int> const* IMixture::p_zi() const
 { return p_compositeModel_->p_zi(); }
+
+} // namespace mixt
