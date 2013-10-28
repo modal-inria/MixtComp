@@ -65,10 +65,13 @@ class MixtureBridge: public IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    virtual void setData(DataHandler& dataHandler)
+    virtual void setData(DataHandler* dataHandler)
     {
-      Data<Type> data;
-      data_.move(data.getData(dataHandler,id_,nbVariable_));
+      if (dataHandler)
+      {
+        Data<Type> data(*dataHandler);
+        data_.move(data.getData(id_,nbVariable_));
+      }
     }
 
     /** @brief Initialize the model before at its first use. */

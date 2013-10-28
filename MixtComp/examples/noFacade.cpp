@@ -13,10 +13,10 @@ int main()
 
   // manage Gaussian data
   int nbVar;
-  mixt::Data<double> data;
   mixt::DataHandler dataHandler;
   dataHandler.readDataFromFile(std::string("./data/gaussiandata.csv"),',');
-  data.getData(dataHandler,'G',nbVar);
+  mixt::Data<double> data(dataHandler);
+  data.getData('G',nbVar);
 
   // create and register mixtures
   mixt::IMixture* gamma = new mixt::Gamma_pk_ajk_bjk ('G', nbClusters, &composerModel);

@@ -135,7 +135,7 @@ class IMixture
      * To facilitate data handling, framework provide templated functions,
      * that can be called directly to get the data.
      */
-    virtual void setData(DataHandler& dataHandler) = 0;
+    virtual void setData(DataHandler* dataHandler = NULL) = 0;
     /**
      * This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
