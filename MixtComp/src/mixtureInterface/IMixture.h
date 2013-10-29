@@ -63,7 +63,7 @@ class IMixture
      *  them.
      *  Since this method can be used when create is called(), its main purpose should
      *  be to reset the mixture parameters, while leaving the data unchanged. */
-    virtual void initializeModel() =0;
+    virtual void initializeModel() = 0;
     /**
      * @brief This function must be defined in derived class for initialization
      * of the ingredient parameters.
@@ -119,7 +119,7 @@ class IMixture
      * @param Cluster_num Cluster number
      * @return
      */
-    virtual double lnComponentProbability(int sample_num,int Cluster_num) = 0;
+    virtual double lnComponentProbability(int sample_num, int Cluster_num) = 0;
     /**
      * This must be defined to return the current log-likelihood.
      * @return Current log-likelihood.

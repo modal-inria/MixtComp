@@ -20,6 +20,12 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
   public:
     CompositeMixtureModel(int nbCluster);
     CompositeMixtureModel(CompositeMixtureModel const& model);
+
+    /**
+     * Note that the CompositeMixtureModel destructor does not destroy the
+     * individual IMixture objets pointed to by v_mixtures_ .
+     * Manual destruction is therefore expected to avoid memory leaks.
+     */
     virtual ~CompositeMixtureModel();
 
     /** Create a clone of the current model, but reinitialize the ingredients parameters. */

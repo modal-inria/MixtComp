@@ -11,15 +11,13 @@ int main()
   mixt::CompositeMixtureModel composerModel(nbClusters);
   STK::IMixtureModelBase* p_composerModel = &composerModel;
 
-  // manage Gaussian data
-  int nbVar;
+  // DataHandler creation and initialization
   mixt::DataHandler dataHandler;
   dataHandler.readDataFromFile(std::string("./data/gaussiandata.csv"),',');
-  mixt::Data<double> data(dataHandler);
-  data.getData('G',nbVar);
 
   // create and register mixtures
   mixt::IMixture* gamma = new mixt::Gamma_pk_ajk_bjk ('G', nbClusters, &composerModel);
+  gamma->setData(&dataHandler);
   composerModel.registerMixture(gamma);
 
   // create the strategy
@@ -34,6 +32,7 @@ int main()
 
   gamma->writeParameters(std::cout);
 
+  // delete individual mixtures
   delete gamma;
 
   return 0;

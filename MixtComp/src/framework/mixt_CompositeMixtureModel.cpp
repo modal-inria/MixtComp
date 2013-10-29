@@ -25,9 +25,7 @@ CompositeMixtureModel::CompositeMixtureModel(CompositeMixtureModel const& model)
 }
 
 CompositeMixtureModel::~CompositeMixtureModel()
-{
-  // TODO Auto-generated destructor stub
-}
+{}
 
 CompositeMixtureModel* CompositeMixtureModel::create() const
 {
