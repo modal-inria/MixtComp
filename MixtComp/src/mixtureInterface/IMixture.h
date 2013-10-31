@@ -85,7 +85,7 @@ class IMixture
      * virtual constructor.
      * @return New instance of class as that of calling object.
      */
-    virtual IMixture* create() = 0;
+//    virtual IMixture* create() = 0;
 
     /** This function should be used for Imputation of data.
      * The default implementation (in the base class) is to do nothing.

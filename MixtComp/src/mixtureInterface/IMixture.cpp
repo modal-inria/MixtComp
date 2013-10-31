@@ -21,7 +21,7 @@ IMixture::IMixture( char id, int nbCluster, mixt::CompositeMixtureModel const* c
 
 int const* IMixture::classLabels() const
 {
-  return p_compositeModel_->p_zi();
+  return p_compositeModel_->p_zi()->p_data();
 }
 
 double const* IMixture::proportions() const

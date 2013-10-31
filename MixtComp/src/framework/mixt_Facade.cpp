@@ -48,7 +48,7 @@ bool Facade::createComposerModel(int nbClusters)
   return true;
 }
 
-bool Facade::registerMixture(IMixture& mixture)
+bool Facade::registerMixture(IMixture* mixture)
 {
   composerModel_->registerMixture(mixture);
   return true;

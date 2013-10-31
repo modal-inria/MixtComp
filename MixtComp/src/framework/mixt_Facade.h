@@ -59,7 +59,7 @@ class Facade
     Facade();
     virtual ~Facade();
     bool createComposerModel(int nbClusters);
-    bool registerMixture(IMixture& mixture);
+    bool registerMixture(IMixture* mixture);
     bool setAlgo(std::vector<s_algo> algoList);
     bool createSimpleStrategy( STK::Clust::initType init, int nbTrialInInit
                              , int nbTry);

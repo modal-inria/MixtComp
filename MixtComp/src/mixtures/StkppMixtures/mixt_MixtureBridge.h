@@ -59,14 +59,6 @@ class MixtureBridge: public IMixture
                    : IMixture(id, nbCluster, p_model)
                    , model_(nbCluster)
     { model_.setMixtureParameters( p_prop(), p_tik(), p_zi());}
-
-    /** "Components" constructor,
-     * used for example in the clone() and create() methods */
-    MixtureBridge( MixtureModel* model, STK::Array2D<Type> data )
-                 : model_(*model)
-                 , data_(data)
-    {}
-
     /** This function must be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
@@ -95,21 +87,19 @@ class MixtureBridge: public IMixture
      * In other words, this is equivalent to polymorphic copy constructor.
      * @return New instance of class as that of calling object.
      */
-    virtual IMixture* clone()
+    virtual MixtureBridge* clone()
     {
-      IMixture* clone = new MixtureBridge(model_.clone(),data_);
-      return clone;
+      return new MixtureBridge(*this);
     }
     /** This is a standard create function in usual sense. It must be defined to
      *  provide new object of your class with correct dimensions and state.
      *  In other words, this is equivalent to virtual constructor.
      * @return New instance of class as that of calling object.
      */
-    virtual IMixture* create()
-    {
-      IMixture* create = new MixtureBridge(model_.create(),data_);
-      return create;
-    }
+//    virtual MixtureBridge* create()
+//    {
+//      return new MixtureBridge();
+//    }
     /** This function should be used for imputation of data.
      *  The default implementation (in the base class) is to do nothing.
      */

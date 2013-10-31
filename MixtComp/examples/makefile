@@ -42,5 +42,5 @@ $(info $(wildcard $(BIN_DIR)/*.o))
 $(info $(LIB_STK))
 
 all:
-#	$(CXX) $(CFLAGS) $(CXXFLAGS) -o $(BIN_DIR)/hello.bin $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) framework.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -o $(BIN_DIR)/hello.bin $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) noFacade.cpp
+#	$(CXX) $(CFLAGS) $(CXXFLAGS) framework.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/framework
+	$(CXX) $(CFLAGS) $(CXXFLAGS) noFacade.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
