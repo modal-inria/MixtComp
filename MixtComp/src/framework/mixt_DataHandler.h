@@ -13,7 +13,6 @@
 namespace mixt
 {
 
-//Data Handler using singleton design pattern
 class DataHandler
 {
   public:
@@ -29,7 +28,6 @@ class DataHandler
   protected:
     STK::ReadWriteCsv completedata_;
     std::vector<std::vector<std::string> > allmodalities_;
-    static DataHandler* p_instance_;
     int nbSample_;
 };
 

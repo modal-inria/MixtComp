@@ -67,7 +67,7 @@ class MixtureBridge: public IMixture
     {
       if (dataHandler)
       {
-        Data<Type> data(*dataHandler);
+        Data<Type> data(dataHandler);
         data_.move(data.getData(id_,nbVariable_));
       }
     }

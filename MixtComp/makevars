@@ -29,7 +29,7 @@ CFLAGS   = -Wno-long-long
 
 #-----------------------------------------------------------------------
 # flags in Debug mode 
-CXXFLAGS_DEBUG  = "-ansi -std=c++11 -pedantic -Wall -g -Os"
+CXXFLAGS_DEBUG  = "-ansi -std=c++11 -pedantic -Wall -g -O0"
 
 #-----------------------------------------------------------------------
 # flags in Release mode 

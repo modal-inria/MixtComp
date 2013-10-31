@@ -5,7 +5,7 @@
 
 int main()
 {
-  int nbClusters = 2;
+  int nbClusters = 3;
 
   // creation of the composer model and associated base-type pointer
   mixt::CompositeMixtureModel composerModel(nbClusters);
@@ -13,7 +13,7 @@ int main()
 
   // DataHandler creation and initialization
   mixt::DataHandler dataHandler;
-  dataHandler.readDataFromFile(std::string("./data/gaussiandata.csv"),',');
+  dataHandler.readDataFromFile(std::string("./data/gammadata.csv"),',');
 
   // create and register mixtures
   mixt::IMixture* gamma = new mixt::Gamma_pk_ajk_bjk ('G', nbClusters, &composerModel);
