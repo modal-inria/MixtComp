@@ -28,9 +28,15 @@ CXX   = g++
 CFLAGS   = -Wno-long-long
 
 #-----------------------------------------------------------------------
-# flags in Debug mode 
-CXXFLAGS_DEBUG  = "-ansi -std=c++11 -pedantic -Wall -g -O0"
+# STK 0 based adressing by default
+STK_FLAGS = -DSTKBASEARRAYS=0
 
 #-----------------------------------------------------------------------
-# flags in Release mode 
-CXXFLAGS_RELEASE = "-ansi -std=c++11 -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops"
+# flags in Debug mode
+STK_FLAGS_DEBUG = $(STK_FLAGS) -DSTK_BOUNDS_CHECK -DSTK_DEBUG -DSTK_VERBOSE
+CXXFLAGS_DEBUG  = "-ansi -std=c++11 -pedantic -Wall -g -O0 $(STK_FLAGS_DEBUG)"
+
+#-----------------------------------------------------------------------
+# flags in Release mode
+#STK_FLAGS_RELEASE = $(STK_FLAGS)
+CXXFLAGS_RELEASE = "-ansi -std=c++11 -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops $(STK_FLAGS_RELEASE)"
