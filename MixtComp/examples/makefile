@@ -37,11 +37,11 @@ include $(MAKEVARS)
 #
 .PHONY: all
 
-$(info $(BIN_DIR))
-$(info $(wildcard $(BIN_DIR)/*.o))
-$(info $(LIB_STK))
+#$(info $(BIN_DIR))
+#$(info $(wildcard $(BIN_DIR)/*.o))
+#$(info $(LIB_STK))
 
 all:
 #	$(CXX) $(CFLAGS) $(CXXFLAGS) framework.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/framework
-# 	$(CXX) $(CFLAGS) $(CXXFLAGS) noFacade.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
-	$(CXX) $(CFLAGS) $(CXXFLAGS) sandbox.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
+	$(CXX) $(CFLAGS) $(CXXFLAGS) noFacade.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
+#	$(CXX) $(CFLAGS) $(CXXFLAGS) sandbox.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade

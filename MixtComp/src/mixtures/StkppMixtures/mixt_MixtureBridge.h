@@ -69,6 +69,7 @@ class MixtureBridge: public IMixture
       {
         Data<Type> data(dataHandler);
         data_.move(data.getData(id_,nbVariable_));
+        model_.setData(data_);
       }
     }
 
