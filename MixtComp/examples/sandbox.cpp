@@ -5,7 +5,6 @@
 
 int main()
 {
-  int nbVar = 0;
 
   mixt::DataHandler dataHandler;
 //  dataHandler.readDataFromFile(std::string("./data/gammadata.csv"),',');
@@ -13,7 +12,12 @@ int main()
   mixt::Data<double> data(&dataHandler);
 
   STK::Array2D<double> array;
-  array.move(data.getData('G',nbVar));
+
+  // check raw read values
+  std::cout << dataHandler.completeData().var(0).name() << std::endl;
+  std::cout << dataHandler.completeData().var(1).name() << std::endl;
+
+  // array.move(data.getData('G',nbVar));
 
   return 0;
 }

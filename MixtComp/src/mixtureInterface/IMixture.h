@@ -31,7 +31,7 @@
 #define IMIXTURE_H
 
 /**@file IMixture.h
- * @brief define the main interface for linking specific mixturre model to the
+ * @brief define the main interface for linking specific mixture model to the
  * composer.
  */
 
