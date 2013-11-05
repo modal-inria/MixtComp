@@ -66,7 +66,7 @@ class MixtureBridge: public IMixture
     /** copy constructor */
     MixtureBridge(MixtureBridge const& original)
     : IMixture(original)
-    , model_(*static_cast<MixtureModel const*>(original.model_.clone()))
+    , model_(original.model_)
     , data_(original.data_)
     {
 
