@@ -63,6 +63,14 @@ class MixtureBridge: public IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
+    /** copy constructor */
+    MixtureBridge(MixtureBridge const& original)
+    : IMixture(original)
+    , model_(*static_cast<MixtureModel const*>(original.model_.clone()))
+    , data_(original.data_)
+    {
+
+    }
     virtual void setData(DataHandler* dataHandler)
     {
       if (dataHandler)
