@@ -9,6 +9,7 @@ int main()
 
   // creation of the composer model and associated base-type pointer
   mixt::CompositeMixtureModel composerModel(nbClusters);
+  composerModel.createMixtureParameters();
   STK::IMixtureModelBase* p_composerModel = &composerModel;
 
   // DataHandler creation and initialization
