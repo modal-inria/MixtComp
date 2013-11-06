@@ -3,26 +3,30 @@
 #include "../src/framework/mixt_Data.h"
 #include "../src/mixtures/StkppMixtures/mixt_GammaMixture.h"
 
+using namespace mixt;
+
 int main()
 {
   int nbClusters = 3;
 
-  // creation of the composer model and associated base-type pointer
-  mixt::CompositeMixtureModel composerModel(nbClusters);
-  composerModel.createMixtureParameters();
-  STK::IMixtureModelBase* p_composerModel = &composerModel;
-
   // DataHandler creation and initialization
-  mixt::DataHandler dataHandler;
+  DataHandler dataHandler;
   dataHandler.readDataFromFile(std::string("./data/gammadata.csv"),',');
 
+  // creation of the composer model and associated base-type pointer
+  CompositeMixtureModel* p_composerModel = new CompositeMixtureModel(nbClusters);
+  p_composerModel->createMixtureParameters();
+  p_composerModel->setDataHandler(&dataHandler);
+
   // create and register mixtures
-  mixt::IMixture* gamma = new mixt::Gamma_pk_ajk_bjk ('G', nbClusters, &composerModel);
+  IMixture* gamma = new Gamma_pk_ajk_bjk ('G', nbClusters, p_composerModel);
   gamma->setData(&dataHandler);
-  composerModel.registerMixture(gamma);
+  p_composerModel->registerMixture(gamma);
+  p_composerModel->initializeModel();
 
   // create the strategy
-  STK::StrategyFacade strategy(p_composerModel);
+  STK::IMixtureModelBase* p_base = p_composerModel;
+  STK::StrategyFacade strategy(p_base);
   strategy.createSemStrategy( STK::Clust::randomInit_ // init type
                             , 2 // number of initialization trials
                             , 20 // number of burn-in iterations
@@ -35,6 +39,7 @@ int main()
 
   // delete individual mixtures
   delete gamma;
-
+  // delete composer
+  delete p_composerModel;
   return 0;
 }
