@@ -13,13 +13,13 @@ namespace mixt
 CompositeMixtureModel::CompositeMixtureModel(int nbCluster)
                            : STK::IMixtureModelBase(nbCluster)
 {
-
+  createMixtureParameters();
 }
 
 CompositeMixtureModel::CompositeMixtureModel(int nbCluster, int nbSamples)
                            : STK::IMixtureModelBase(nbCluster,nbSamples)
 {
-
+  createMixtureParameters();
 }
 
 CompositeMixtureModel::CompositeMixtureModel(CompositeMixtureModel const& model)
