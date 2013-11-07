@@ -77,5 +77,5 @@ examples:
 #	$(MAKE) -C $(EXAMPLES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
 
 clean:
-	$(RM) $(wildcard $(BIN_RELEASE_DIR)/*)
-	$(RM) $(wildcard $(BIN_DEBUG_DIR)/*)
+	$(RM) ./bin/debug/*
+	$(RM) ./bin/release/*
