@@ -58,7 +58,7 @@ class MixtureBridge: public IMixture
     MixtureBridge( char id, int nbCluster, mixt::CompositeMixtureModel const* p_model )
                    : IMixture(id, nbCluster, p_model)
                    , model_(nbCluster)
-    {}
+    { model_.setMixtureParameters( p_prop(), p_tik(), p_zi());}
     /** This function must be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
@@ -83,9 +83,7 @@ class MixtureBridge: public IMixture
 
     /** @brief Initialize the model before at its first use. */
     virtual void initializeModel()
-    { model_.setMixtureParameters( p_prop(), p_tik(), p_zi());
-      model_.initializeModel();
-    };
+    { model_.initializeModel();};
 
     /** This function must be defined in derived class for initialization of mixture parameters.
      */

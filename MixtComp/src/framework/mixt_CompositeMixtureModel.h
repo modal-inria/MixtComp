@@ -21,9 +21,6 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
     CompositeMixtureModel(int nbCluster);
     CompositeMixtureModel(CompositeMixtureModel const& model);
 
-    /** set the DataHandler to the composite miuxture Model */
-   inline void setDataHandler(DataHandler const* handler)
-   {handler_ = handler;}
     /**
      * Note that the CompositeMixtureModel destructor does not destroy the
      * individual IMixture objets pointed to by v_mixtures_ .
@@ -47,7 +44,6 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
     virtual void registerMixture(IMixture* mixture);
 
   private:
-    DataHandler const* handler_;
     std::vector<IMixture*> v_mixtures_;
     /** randomInit is currently disabled and hidden, pending future developments */
     virtual void randomInit();

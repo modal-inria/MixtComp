@@ -76,12 +76,10 @@ void CompositeMixtureModel::writeParameters(std::ostream& os) const
 
 void CompositeMixtureModel::initializeModel()
 {
-  initialize(handler_->nbSamples(), 0);
   for (int l = 0; l < v_mixtures_.size(); ++l)
   {
     v_mixtures_[l]->initializeModel();
   }
-  STK::IMixtureModelBase::initializeModel();
 }
 
 void CompositeMixtureModel::initializeStep()
