@@ -73,6 +73,7 @@ void CompositeMixtureModel::mStep()
 
 void CompositeMixtureModel::writeParameters(std::ostream& os) const
 {
+  std::cout << "Composer lnLikelihood = " << lnLikelihood() << std::endl;
   for (int l = 0; l < v_mixtures_.size(); ++l)
   {
     v_mixtures_[l]->writeParameters(os);
