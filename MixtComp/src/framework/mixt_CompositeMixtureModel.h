@@ -19,6 +19,7 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
 {
   public:
     CompositeMixtureModel(int nbCluster);
+    CompositeMixtureModel(int nbCluster, int nbSamples);
     CompositeMixtureModel(CompositeMixtureModel const& model);
 
     /**

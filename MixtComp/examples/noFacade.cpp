@@ -7,14 +7,14 @@ int main()
 {
   int nbClusters = 3;
 
-  // creation of the composer model and associated base-type pointer
-  mixt::CompositeMixtureModel composerModel(nbClusters);
-  composerModel.createMixtureParameters();
-  STK::IMixtureModelBase* p_composerModel = &composerModel;
-
   // DataHandler creation and initialization
   mixt::DataHandler dataHandler;
   dataHandler.readDataFromFile(std::string("./data/gammadata.csv"),',');
+
+  // creation of the composer model and associated base-type pointer
+  mixt::CompositeMixtureModel composerModel(nbClusters,dataHandler.nbSamples());
+  composerModel.createMixtureParameters();
+  STK::IMixtureModelBase* p_composerModel = &composerModel;
 
   // create and register mixtures
   mixt::IMixture* gamma = new mixt::Gamma_pk_ajk_bjk ('G', nbClusters, &composerModel);

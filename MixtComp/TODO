@@ -1,3 +1,4 @@
 Short term
 	Differenciate headers for Gaussian and Gamma data
 Long Term
+	nbFreeParameters to be computed correctly, enabling BIC criteria and such
