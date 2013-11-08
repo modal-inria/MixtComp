@@ -46,8 +46,7 @@ class Gamma_pk_ajk_bjk : MixtureBridge<STK::Gamma_pk_ajk_bjk<dataType>>
 
   virtual void setData()
   {
-    p_compositeModel_->getData<dataType>();
-      //data_.move();
+    data_.move(p_compositeModel_->getData<dataType>());
   }
 };
 
