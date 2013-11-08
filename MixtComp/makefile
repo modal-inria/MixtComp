@@ -30,7 +30,14 @@
 
 #-----------------------------------------------------------------------
 # Macros and definitions are in MAKEVARS, they can be overloaded by up call
+ifeq ($(wildcard ./makevars.local),) 
+RELATIVEMAKEVARS = ./makevars
+else 
+RELATIVEMAKEVARS = ./makevars.local
+endif
+
 MAKEVARS = $(realpath ./makevars)
+
 include $(MAKEVARS)
 
 #-----------------------------------------------------------------------

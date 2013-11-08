@@ -33,7 +33,7 @@ STK_FLAGS = -DSTKBASEARRAYS=0
 
 #-----------------------------------------------------------------------
 # flags in Debug mode
-STK_FLAGS_DEBUG = $(STK_FLAGS) -DSTK_BOUNDS_CHECK -DSTK_DEBUG -DSTK_VERBOSE -DSTK_MIXTURE_VERY_VERBOSE
+STK_FLAGS_DEBUG = $(STK_FLAGS) -DSTK_BOUNDS_CHECK -DSTK_DEBUG -DSTK_VERBOSE
 CXXFLAGS_DEBUG  = "-ansi -std=c++11 -pedantic -Wall -g -O0 $(STK_FLAGS_DEBUG)"
 
 #-----------------------------------------------------------------------
