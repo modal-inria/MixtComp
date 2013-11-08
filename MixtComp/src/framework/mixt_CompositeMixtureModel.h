@@ -18,9 +18,9 @@ namespace mixt
 class CompositeMixtureModel : public STK::IMixtureModelBase
 {
   public:
-    CompositeMixtureModel(int nbCluster);
-    CompositeMixtureModel(int nbCluster, int nbSamples);
-    CompositeMixtureModel(CompositeMixtureModel const& model);
+    CompositeMixtureModel(DataHandler* p_dataHandler, int nbCluster);
+    CompositeMixtureModel(DataHandler* p_dataHandler, int nbCluster, int nbSamples);
+    CompositeMixtureModel(DataHandler* p_dataHandler, CompositeMixtureModel const& model);
 
     /**
      * Note that the CompositeMixtureModel destructor does not destroy the
@@ -43,9 +43,13 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
     virtual void imputationStep();
     virtual void finalizeStep();
     virtual void registerMixture(IMixture* mixture);
+    template<typename dataType> dataType getData();
 
   private:
+    /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
+    /** pointer to the dataHandler */
+    DataHandler const* p_dataHandler_;
     /** randomInit is currently disabled and hidden, pending future developments */
     virtual void randomInit();
     /** In which case should the proportions be computed differently, considering a composite mixture ? */

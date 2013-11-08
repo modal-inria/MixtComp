@@ -135,7 +135,7 @@ class IMixture
      * To facilitate data handling, framework provide templated functions,
      * that can be called directly to get the data.
      */
-    virtual void setData(DataHandler* dataHandler = NULL) = 0;
+    virtual void setData() = 0;
     /**
      * This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
@@ -183,11 +183,11 @@ class IMixture
   protected:
     int nbVariable_;
     char id_;
+    /** pointer on the main composer model */
+    const mixt::CompositeMixtureModel* p_compositeModel_;
   private:
     /** Default Constructor not allowed */
     IMixture();
-    /** pointer on the main composer model */
-    const mixt::CompositeMixtureModel * p_compositeModel_;
 };
 
 } // namespace mixt

@@ -34,10 +34,22 @@
 namespace mixt
 {
 
-typedef MixtureBridge<STK::Gamma_pk_ajk_bjk<STK::Array2D<STK::Real> > > Gamma_pk_ajk_bjk;
-typedef MixtureBridge<STK::Gamma_p_ajk_bjk<STK::Array2D<STK::Real> > > Gamma_p_ajk_bjk;
-// typedef MixtureBridge<STK::Gamma_pk_ajk_bj<STK::Array2D<STK::Real> > > Gamma_pk_ajk_bj;
-// typedef MixtureBridge<STK::Gamma_p_ajk_bj<STK::Array2D<STK::Real> > > Gamma_p_ajk_bj;
+// get the Type of the data
+typedef STK::Array2D<STK::Real> dataType;
+
+class Gamma_pk_ajk_bjk : MixtureBridge<STK::Gamma_pk_ajk_bjk<dataType>>
+{
+  virtual Gamma_pk_ajk_bjk* clone()
+  {
+    return new Gamma_pk_ajk_bjk(*this);
+  }
+
+  virtual void setData()
+  {
+    p_compositeModel_->getData<dataType>();
+      //data_.move();
+  }
+};
 
 } /* namespace mixt */
 

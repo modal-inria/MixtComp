@@ -24,6 +24,7 @@ class DataHandler
     /** get complete data set.*/
     STK::ReadWriteCsv const& completeData() const {return completedata_;}
     std::vector<std::vector<std::string> >& allModalities(){return allmodalities_;}
+    template<typename dataType> dataType getData();
     ~DataHandler();
   protected:
     STK::ReadWriteCsv completedata_;

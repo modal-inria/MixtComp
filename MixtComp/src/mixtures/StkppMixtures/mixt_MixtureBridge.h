@@ -39,12 +39,8 @@
 
 namespace mixt
 {
-/** @brief Implementation of the IMixture interface for stk++ mixtures.
- * The pure virtual function inherited from IMixture and to implement are
- * @code
- *  virtual IMixture* clone() = 0;
- *  virtual IMixture* create() = 0;
- * @endcode
+/** @brief Partial implementation of the Imixture interface, for the members shared among all the stkpp bridged models.
+ * This class has to be derived for each model used, to provide specific function like clone, create and setData.
  *
  * @tparam MixtureModel is any model deriving from the STK::IMixtureModelBase class
  */
@@ -71,15 +67,8 @@ class MixtureBridge: public IMixture
     {
 
     }
-    virtual void setData(DataHandler* dataHandler)
-    {
-      if (dataHandler)
-      {
-        Data<Type> data(dataHandler);
-        data_.move(data.getData(id_,nbVariable_));
-        model_.setData(data_);
-      }
-    }
+
+    virtual void setData() = 0;
 
     /** @brief Initialize the model before at its first use. */
     virtual void initializeModel()
@@ -96,10 +85,8 @@ class MixtureBridge: public IMixture
      * In other words, this is equivalent to polymorphic copy constructor.
      * @return New instance of class as that of calling object.
      */
-    virtual MixtureBridge* clone()
-    {
-      return new MixtureBridge(*this);
-    }
+    virtual MixtureBridge* clone() = 0;
+
     /** This is a standard create function in usual sense. It must be defined to
      *  provide new object of your class with correct dimensions and state.
      *  In other words, this is equivalent to virtual constructor.

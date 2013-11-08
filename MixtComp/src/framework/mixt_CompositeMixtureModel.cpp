@@ -10,20 +10,23 @@
 namespace mixt
 {
 
-CompositeMixtureModel::CompositeMixtureModel(int nbCluster)
+CompositeMixtureModel::CompositeMixtureModel(DataHandler* p_dataHandler, int nbCluster)
                            : STK::IMixtureModelBase(nbCluster)
+                           , p_dataHandler_(p_dataHandler)
 {
   createMixtureParameters();
 }
 
-CompositeMixtureModel::CompositeMixtureModel(int nbCluster, int nbSamples)
+CompositeMixtureModel::CompositeMixtureModel(DataHandler* p_dataHandler, int nbCluster, int nbSamples)
                            : STK::IMixtureModelBase(nbCluster,nbSamples)
+                           , p_dataHandler_(p_dataHandler)
 {
   createMixtureParameters();
 }
 
-CompositeMixtureModel::CompositeMixtureModel(CompositeMixtureModel const& model)
+CompositeMixtureModel::CompositeMixtureModel(DataHandler* p_dataHandler, CompositeMixtureModel const& model)
                            : STK::IMixtureModelBase(model)
+                           , p_dataHandler_(p_dataHandler)
                            , v_mixtures_(model.v_mixtures_)
 {
 
@@ -129,5 +132,9 @@ void CompositeMixtureModel::registerMixture(IMixture* mixture)
   v_mixtures_.push_back(mixture);
 }
 
+template<typename dataType> dataType CompositeMixtureModel::getData()
+{
+  return p_dataHandler_->getData<dataType>();
+}
 
 } /* namespace mixt */

@@ -75,4 +75,9 @@ bool DataHandler::readModalityFromFile(std::string filename,char sep)
   return true;
 }
 
+template<typename dataType> dataType DataHandler::getData()
+{
+
+}
+
 } // namespace mixt
