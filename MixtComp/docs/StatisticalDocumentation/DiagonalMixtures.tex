@@ -191,7 +191,7 @@ with \verb+b*+, the different ways to parametrize the standard-deviation paramet
 \end{itemize}
 
 The \verb+f_sjk+ model is the most general model and have a density function of the form
-\begin{equation}\label{eq:g_ajk_bjk}
+\begin{equation}\label{eq:f_sjk}
   f({\bx}_i|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d g(x^j_{i}| \mu^j_{k}, \sigma^j_{k}).
 \end{equation}
 
@@ -289,7 +289,29 @@ function of the form
 
 \appendix
 
-\section{M step computation}
+\section{M step computation for the Gaussian models}
+
+For all the M Step, the mean will be updated by the following formula
+$$
+\bar{\bx}_k = \frac{1}{t_{.k}} \sum_{i=1}^n t_{ik} \bx_i,
+$$
+with $t_{.k} = \sum_{i=1}^n$, for $k=1,\ldots,K$.
+
+\subsection{M Step of the gaussian\_sjk model}
+
+For this model, the variance is updated using the formula:
+$$
+(\hat{\sigma}^j_k)^2 = \frac{1}{t_{.k}} \sum_{i=1}^n t_{ik} (x^j_i-\mu^j_k)^2.
+$$
+
+\subsection{M Step of the gaussian\_s model}
+
+For this model, the variance is updated using the formula:
+$$
+\hat{\sigma}^2 = \frac{1}{nd} \sum_{i=1}^n \sum_{k=1}^K t_{ik} \|\bx_i-\bmu_k\|^2.
+$$
+
+\section{M step computation for the Gamma models}
 In this section, given the array $\bt$ of conditional probabilities, we will write
 $t_{.k} = \sum_{i=1}^n$, for $k=1,\ldots,K$ and we will denote
 $$
