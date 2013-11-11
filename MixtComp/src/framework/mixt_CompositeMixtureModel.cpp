@@ -132,9 +132,9 @@ void CompositeMixtureModel::registerMixture(IMixture* mixture)
   v_mixtures_.push_back(mixture);
 }
 
-template<typename dataType> dataType CompositeMixtureModel::getData() const
+template<typename Data> Data CompositeMixtureModel::getData() const
 {
-  return p_dataHandler_->getData<dataType>();
+  return p_dataHandler_->getData<Data>();
 }
 
 } /* namespace mixt */

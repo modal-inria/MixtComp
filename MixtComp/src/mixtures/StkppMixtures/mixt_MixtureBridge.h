@@ -55,29 +55,17 @@ class MixtureBridge: public IMixture
                    : IMixture(id, nbCluster, p_model)
                    , model_(nbCluster)
     { model_.setMixtureParameters( p_prop(), p_tik(), p_zi());}
-    /** This function must be defined to set the data into your data containers.
-     *  To facilitate data handling, framework provide templated functions,
-     *  that can be called directly to get the data.
-     */
     /** copy constructor */
-    MixtureBridge(MixtureBridge const& original)
-    : IMixture(original)
-    , model_(original.model_)
-    , data_(original.data_)
-    {
-
-    }
-
-    virtual void setData() = 0;
-
+    MixtureBridge( MixtureBridge const& original)
+                   : IMixture(original)
+                   , model_(original.model_)
+                   , data_(original.data_)
+    {}
     /** @brief Initialize the model before at its first use. */
-    virtual void initializeModel()
-    { model_.initializeModel();};
+    virtual void initializeModel() { model_.initializeModel();};
 
-    /** This function must be defined in derived class for initialization of mixture parameters.
-     */
-    virtual void initializeStep()
-    { model_.initializeStep();}
+    /** This function must be defined in derived class for initialization of mixture parameters. */
+    virtual void initializeStep() { model_.initializeStep();}
     /**
      * This is a standard clone function in usual sense. It must be defined to
      * provide new object of your class

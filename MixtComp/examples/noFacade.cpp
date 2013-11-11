@@ -16,7 +16,7 @@ int main()
   STK::IMixtureModelBase* p_composerModel = composerModel;
 
   // create and register mixtures
-  mixt::IMixture* gamma = new mixt::Gamma_pk_ajk_bjk ('G', nbClusters, composerModel);
+  mixt::IMixture* gamma = new mixt::Gamma_ajk_bjk ('G', nbClusters, composerModel);
   gamma->setData(&dataHandler);
   composerModel->registerMixture(gamma);
 

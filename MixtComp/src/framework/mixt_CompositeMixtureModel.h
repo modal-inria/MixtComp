@@ -43,7 +43,7 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
     virtual void imputationStep();
     virtual void finalizeStep();
     virtual void registerMixture(IMixture* mixture);
-    template<typename dataType> dataType getData() const;
+    template<typename Data> Data getData() const;
 
   private:
     /** vector of pointers to the mixtures components */

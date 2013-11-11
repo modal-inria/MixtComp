@@ -29,25 +29,45 @@
 #ifndef MIXT_GAMMAMIXTURE_H
 #define MIXT_GAMMAMIXTURE_H
 
+#include "../../mixtureInterface/mixt_Traits.h"
 #include "mixt_MixtureBridge.h"
 
 namespace mixt
 {
 
-// get the Type of the data
-typedef STK::Array2D<STK::Real> dataType;
-
-class Gamma_pk_ajk_bjk : MixtureBridge<STK::Gamma_pk_ajk_bjk<dataType>>
+/** Given the Id of a mixture model, the struct Traits allow to get
+ *  type of the input data and of the parameters.
+ **/
+template<>
+struct Traits<'G'>
 {
-  virtual Gamma_pk_ajk_bjk* clone()
-  {
-    return new Gamma_pk_ajk_bjk(*this);
-  }
+   /** */
+   typedef STK::Array2D<STK::Real> Data;
+   typedef STK::Array2D<STK::Real> Param;
+};
 
-  virtual void setData()
-  {
-    data_.move(p_compositeModel_->getData<dataType>());
-  }
+class Gamma_ajk_bjk : MixtureBridge<STK::Gamma_pk_ajk_bjk<typename Traits<'G'>::Data> >
+{
+  public:
+    // get the Type of the data
+    typedef MixtureBridge<STK::Gamma_pk_ajk_bjk<typename Traits<'G'>::Data> > Base;
+    /** constructor. @param id id of the mixture */
+    Gamma_ajk_bjk( char id, int nbCluster, mixt::CompositeMixtureModel const* p_model )
+                   : Base(id, nbCluster, p_model)
+    {}
+    /** copy constructor */
+    Gamma_ajk_bjk( MixtureBridge const& original)
+                   : Base(original)
+    {}
+    virtual Gamma_ajk_bjk* clone()
+    {
+      return new Gamma_ajk_bjk(*this);
+    }
+
+    virtual void setData()
+    {
+      data_.move(p_compositeModel_->getData<Data>());
+    }
 };
 
 } /* namespace mixt */
