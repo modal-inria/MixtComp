@@ -31,6 +31,7 @@
 
 #include "../../mixtureInterface/mixt_Traits.h"
 #include "mixt_MixtureBridge.h"
+#include "../../stkpp/projects/Clustering/include/GammaMixtureModels/STK_Gamma_ajk_bjk.h"
 
 namespace mixt
 {
@@ -41,34 +42,46 @@ namespace mixt
 template<>
 struct Traits<'G'>
 {
-   /** */
+   /** Type of the data set to used as input */
    typedef STK::Array2D<STK::Real> Data;
+   /** Type of the parameter set to used as output */
    typedef STK::Array2D<STK::Real> Param;
+   /** Type of the Data */
+   typedef typename Data::Type Type;
+   /** Type of the mixture model */
+   typedef STK::Gamma_pk_ajk_bjk<Data> MixtureModel;
 };
 
-class Gamma_ajk_bjk : MixtureBridge<STK::Gamma_pk_ajk_bjk<typename Traits<'G'>::Data> >
-{
-  public:
-    // get the Type of the data
-    typedef MixtureBridge<STK::Gamma_pk_ajk_bjk<typename Traits<'G'>::Data> > Base;
-    /** constructor. @param id id of the mixture */
-    Gamma_ajk_bjk( char id, int nbCluster, mixt::CompositeMixtureModel const* p_model )
-                   : Base(id, nbCluster, p_model)
-    {}
-    /** copy constructor */
-    Gamma_ajk_bjk( MixtureBridge const& original)
-                   : Base(original)
-    {}
-    virtual Gamma_ajk_bjk* clone()
-    {
-      return new Gamma_ajk_bjk(*this);
-    }
+typedef typename Traits<'G'>::Data Array;
+typedef MixtureBridge<'G'> Gamma_ajk_bjk;
 
-    virtual void setData()
-    {
-      data_.move(p_compositeModel_->getData<Data>());
-    }
-};
+//class Gamma_ajk_bjk : MixtureBridge<'G'>
+//{
+//  public:
+//    enum
+//    {
+//      id_ = 'G'
+//    };
+//    // get the Type of the data
+//    typedef MixtureBridge<STK::Gamma_pk_ajk_bjk<typename Traits<'G'>::Data> > Base;
+//    /** constructor. @param id id of the mixture */
+//    Gamma_ajk_bjk( char id, int nbCluster, mixt::CompositeMixtureModel const* p_model )
+//                   : Base(id, nbCluster, p_model)
+//    {}
+//    /** copy constructor */
+//    Gamma_ajk_bjk( MixtureBridge const& original)
+//                   : Base(original)
+//    {}
+//    virtual Gamma_ajk_bjk* clone()
+//    {
+//      return new Gamma_ajk_bjk(*this);
+//    }
+//
+//    virtual void setData()
+//    {
+//      data_.move(p_compositeModel_->getData<Data>());
+//    }
+//};
 
 } /* namespace mixt */
 

@@ -11,6 +11,7 @@
 #include <vector>
 #include "../stkpp/include/Clustering.h"
 #include "../mixtureInterface/IMixture.h"
+#include "../dataHandling/mixt_DataHandler.h"
 
 namespace mixt
 {
@@ -43,13 +44,14 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
     virtual void imputationStep();
     virtual void finalizeStep();
     virtual void registerMixture(IMixture* mixture);
-    template<typename Data> Data getData() const;
+    template<typename Data>
+    inline void getData(Data& data) const { p_dataHandler_->getData<Data>(data);}
 
   private:
-    /** vector of pointers to the mixtures components */
-    std::vector<IMixture*> v_mixtures_;
     /** pointer to the dataHandler */
     DataHandler const* p_dataHandler_;
+    /** vector of pointers to the mixtures components */
+    std::vector<IMixture*> v_mixtures_;
     /** randomInit is currently disabled and hidden, pending future developments */
     virtual void randomInit();
     /** In which case should the proportions be computed differently, considering a composite mixture ? */

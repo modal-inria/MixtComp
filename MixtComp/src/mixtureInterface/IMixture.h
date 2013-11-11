@@ -37,7 +37,7 @@
 
 #include <iostream>
 
-#include "../framework/mixt_DataHandler.h"
+#include "../framework/mixt_CompositeMixtureModel.h"
 #include "../stkpp/include/Arrays.h"
 
 namespace mixt

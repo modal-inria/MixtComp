@@ -17,6 +17,8 @@ class DataHandler
 {
   public:
     DataHandler();
+    ~DataHandler();
+
     bool readDataFromFile(std::string filename,char sep);
     bool readModalityFromFile(std::string filename,char sep);
     std::vector<int> colIndex(char id);
@@ -24,8 +26,12 @@ class DataHandler
     /** get complete data set.*/
     STK::ReadWriteCsv const& completeData() const {return completedata_;}
     std::vector<std::vector<std::string> >& allModalities(){return allmodalities_;}
-    template<typename Data> Data getData();
-    ~DataHandler();
+
+    template<typename Data> void getData(Data& data) const
+    {
+
+    }
+
   protected:
     STK::ReadWriteCsv completedata_;
     std::vector<std::vector<std::string> > allmodalities_;

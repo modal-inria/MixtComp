@@ -39,17 +39,26 @@
 
 namespace mixt
 {
-/** @brief Partial implementation of the Imixture interface, for the members shared among all the stkpp bridged models.
- * This class has to be derived for each model used, to provide specific function like clone, create and setData.
+/** @brief Partial implementation of the Imixture interface, for the members
+ * shared among all the stkpp bridged models.
+ * This class has to be derived for each model used, to provide specific
+ * function like clone, create and setData.
  *
  * @tparam MixtureModel is any model deriving from the STK::IMixtureModelBase class
  */
-template<class MixtureModel>
+template<int Id>
 class MixtureBridge: public IMixture
 {
   public:
-    // get the Type of the data
-    typedef typename MixtureModel::Base::Array::Type Type;
+    // type of Mixture
+    typedef typename Traits<Id>::MixtureModel MixtureModel;
+    // data type to set
+    typedef typename Traits<Id>::Data Data;
+    // parameters type to get
+    typedef typename Traits<Id>::Param Param;
+    // type of the data
+    typedef typename Traits<Id>::Type Type;
+
     /** constructor. @param id id of the mixture */
     MixtureBridge( char id, int nbCluster, mixt::CompositeMixtureModel const* p_model )
                    : IMixture(id, nbCluster, p_model)
@@ -73,7 +82,8 @@ class MixtureBridge: public IMixture
      * In other words, this is equivalent to polymorphic copy constructor.
      * @return New instance of class as that of calling object.
      */
-    virtual MixtureBridge* clone() = 0;
+    virtual MixtureBridge* clone()  { return new MixtureBridge(*this);
+    }
 
     /** This is a standard create function in usual sense. It must be defined to
      *  provide new object of your class with correct dimensions and state.
@@ -84,6 +94,8 @@ class MixtureBridge: public IMixture
 //    {
 //      return new MixtureBridge();
 //    }
+    virtual void setData() { p_compositeModel_->getData<Data>(data_);}
+
     /** This function should be used for imputation of data.
      *  The default implementation (in the base class) is to do nothing.
      */
@@ -140,7 +152,7 @@ class MixtureBridge: public IMixture
 
   protected:
     MixtureModel model_;
-    STK::Array2D<Type> data_;
+    Data data_;
 };
 
 } // namespace mixt

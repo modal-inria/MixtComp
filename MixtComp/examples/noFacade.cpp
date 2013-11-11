@@ -1,6 +1,6 @@
 #include <iostream>
 #include "../src/framework/mixt_CompositeMixtureModel.h"
-#include "../src/framework/mixt_Data.h"
+#include "../src/dataHandling/mixt_Data.h"
 #include "../src/mixtures/StkppMixtures/mixt_GammaMixture.h"
 
 int main()
@@ -12,12 +12,12 @@ int main()
   dataHandler.readDataFromFile(std::string("./data/gammadata.csv"),',');
 
   // creation of the composer model and associated base-type pointer
-  mixt::CompositeMixtureModel* composerModel = new mixt::CompositeMixtureModel(nbClusters,dataHandler.nbSamples());
+  mixt::CompositeMixtureModel* composerModel = new mixt::CompositeMixtureModel(&dataHandler, nbClusters,dataHandler.nbSamples());
   STK::IMixtureModelBase* p_composerModel = composerModel;
 
   // create and register mixtures
   mixt::IMixture* gamma = new mixt::Gamma_ajk_bjk ('G', nbClusters, composerModel);
-  gamma->setData(&dataHandler);
+  gamma->setData();
   composerModel->registerMixture(gamma);
 
   // create the strategy
