@@ -12,11 +12,11 @@ int main()
   std::cout << "nb variables = " << mixtureParams.size() << std::endl;
   for (int i = 0 ; i<mixtureParams.size() ; i++)
   {
-    std::cout << mixtureParams[i].mixtureType
+    std::cout << mixtureParams[i].mixtureType_
               << " "
-              << mixtureParams[i].firstIndex
+              << mixtureParams[i].firstIndex_
               << " "
-              << mixtureParams[i].lastIndex
+              << mixtureParams[i].lastIndex_
               << std::endl;
   }
 

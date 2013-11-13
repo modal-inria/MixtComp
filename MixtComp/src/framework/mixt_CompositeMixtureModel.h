@@ -43,15 +43,19 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
     virtual void initializeStep();
     virtual void imputationStep();
     virtual void finalizeStep();
-    virtual void registerMixture(IMixture* mixture);
+    void registerMixture(IMixture* mixture);
+    void createMixtures(std::string filename, char sep);
     template<typename Data>
     inline void getData(Data& data, int firstIndex, int lastIndex) const { p_dataHandler_->getData<Data>(data, firstIndex, lastIndex);}
+    void setData();
 
   private:
     /** pointer to the dataHandler */
     DataHandler const* p_dataHandler_;
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
+    /** number of clusters */
+    int nbClusters_;
     /** randomInit is currently disabled and hidden, pending future developments */
     virtual void randomInit();
     /** In which case should the proportions be computed differently, considering a composite mixture ? */

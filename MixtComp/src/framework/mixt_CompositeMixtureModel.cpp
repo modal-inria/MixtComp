@@ -6,6 +6,7 @@
  */
 
 #include "mixt_CompositeMixtureModel.h"
+#include "../mixtures/StkppMixtures/mixt_GammaMixture.h"
 
 namespace mixt
 {
@@ -13,6 +14,7 @@ namespace mixt
 CompositeMixtureModel::CompositeMixtureModel(DataHandler* p_dataHandler, int nbCluster)
                            : STK::IMixtureModelBase(nbCluster)
                            , p_dataHandler_(p_dataHandler)
+                           , nbClusters_(nbCluster)
 {
   createMixtureParameters();
 }
@@ -20,6 +22,7 @@ CompositeMixtureModel::CompositeMixtureModel(DataHandler* p_dataHandler, int nbC
 CompositeMixtureModel::CompositeMixtureModel(DataHandler* p_dataHandler, int nbCluster, int nbSamples)
                            : STK::IMixtureModelBase(nbCluster,nbSamples)
                            , p_dataHandler_(p_dataHandler)
+                           , nbClusters_(nbCluster)
 {
   createMixtureParameters();
 }
@@ -28,12 +31,16 @@ CompositeMixtureModel::CompositeMixtureModel(CompositeMixtureModel const& model)
                            : STK::IMixtureModelBase(model)
                            , p_dataHandler_(model.p_dataHandler_)
                            , v_mixtures_(model.v_mixtures_)
+                           , nbClusters_(model.nbClusters_)
 {
 
 }
 
 CompositeMixtureModel::~CompositeMixtureModel()
-{}
+{
+  for (int i = 0 ; i < v_mixtures_.size() ; i++)
+    delete v_mixtures_[i];
+}
 
 CompositeMixtureModel* CompositeMixtureModel::create() const
 {
@@ -132,5 +139,25 @@ void CompositeMixtureModel::registerMixture(IMixture* mixture)
   v_mixtures_.push_back(mixture);
 }
 
+void CompositeMixtureModel::createMixtures(std::string filename, char sep)
+{
+  std::vector<MixtureParam> v_Mixture_Param = p_dataHandler_->readMixtureParam(filename, sep);
+  v_mixtures_.resize(v_Mixture_Param.size());
+
+  for (int l = 0 ; l < v_Mixture_Param.size() ; ++l)
+  {
+    if (v_Mixture_Param[l].mixtureType_ == "Gamma_ajk_bjk")
+      v_mixtures_[l] = new Gamma_ajk_bjk ( v_Mixture_Param[l].firstIndex_
+                                         , v_Mixture_Param[l].lastIndex_
+                                         , nbClusters_
+                                         , this);
+  }
+}
+
+void CompositeMixtureModel::setData()
+{
+  for (int l = 0; l < v_mixtures_.size(); ++l)
+    v_mixtures_[l]->setData();
+}
 
 } /* namespace mixt */

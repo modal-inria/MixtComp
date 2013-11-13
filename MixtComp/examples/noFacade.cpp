@@ -12,13 +12,12 @@ int main()
   dataHandler.readDataFromFile(std::string("./data/gammadata.csv"),',');
 
   // creation of the composer model and associated base-type pointer
-  mixt::CompositeMixtureModel* composerModel = new mixt::CompositeMixtureModel(&dataHandler, nbClusters,dataHandler.nbSamples());
+  mixt::CompositeMixtureModel* composerModel = new mixt::CompositeMixtureModel(&dataHandler, nbClusters, dataHandler.nbSamples());
   STK::IMixtureModelBase* p_composerModel = composerModel;
 
-  // create and register mixtures
-  mixt::IMixture* gamma = new mixt::Gamma_ajk_bjk (nbClusters, composerModel);
-  gamma->setData();
-  composerModel->registerMixture(gamma);
+  // populate the composer
+  composerModel->createMixtures(std::string("./data/dataDesc.csv"),',');
+  composerModel->setData();
 
   // create the strategy
   STK::StrategyFacade strategy(p_composerModel);
@@ -27,13 +26,13 @@ int main()
                             , 20 // number of burn-in iterations
                             , 100 ); // number of iterations
 
-  //run the facade
+  // run the facade
   strategy.run();
-  composerModel->writeParameters(std::cout);
-  //gamma->writeParameters(std::cout);
 
-  // delete individual mixtures
-  delete gamma;
+  // write the results
+  composerModel->writeParameters(std::cout);
+
+  // delete composer
   delete composerModel;
   return 0;
 }

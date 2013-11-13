@@ -42,9 +42,9 @@ enum Mixture
 
 struct MixtureParam
 {
-    std::string mixtureType;
-    int firstIndex;
-    int lastIndex;
+    std::string mixtureType_;
+    int firstIndex_;
+    int lastIndex_;
 };
 
 /** @ingroup Reduct

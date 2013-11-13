@@ -24,7 +24,7 @@ class DataHandler
 
     bool readDataFromFile(std::string filename,char sep);
     bool readModalityFromFile(std::string filename,char sep);
-    std::vector<MixtureParam> readMixtureParam(std::string filename,char sep);
+    std::vector<MixtureParam> readMixtureParam (std::string filename,char sep) const;
     std::vector<int> colIndex(char id) const;
     int nbSamples() const {return nbSample_;}
     /** get complete data set.*/
@@ -39,16 +39,15 @@ class DataHandler
     int nbSample_;
 };
 
-// specialization for STK::Array2D<STK::Real>
 template<typename Data>
 void DataHandler::getData(Data& data, int firstIndex, int lastIndex) const
 {
   data.resize(nbSample_, lastIndex+1-firstIndex);
   for (int i = 0; i < nbSample_; ++i)
   {
-    for (int k = firstIndex ; k < lastIndex+1 ; k++)
+    for (int k = firstIndex ; k < lastIndex+1 ; ++k)
     {
-      data(i,k) = STK::stringToType<double>(completeData()(i,k));
+      data(i,k-firstIndex) = STK::stringToType<double>(completeData()(i,k));
     }
   }
 }

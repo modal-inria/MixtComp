@@ -77,7 +77,7 @@ bool DataHandler::readModalityFromFile(std::string filename,char sep)
   return true;
 }
 
-std::vector<MixtureParam> DataHandler::readMixtureParam(std::string filename,char sep)
+std::vector<MixtureParam> DataHandler::readMixtureParam(std::string filename,char sep) const
 {
   std::vector<MixtureParam> mixtureParam;
   std::ifstream file;
@@ -94,7 +94,7 @@ std::vector<MixtureParam> DataHandler::readMixtureParam(std::string filename,cha
     currCol++;
   }
 
-  mixtureParam.back().mixtureType.pop_back(); // remove trailing character
+  mixtureParam.back().mixtureType_.pop_back(); // remove trailing character
 
   return mixtureParam;
 }
