@@ -24,9 +24,9 @@ CompositeMixtureModel::CompositeMixtureModel(DataHandler* p_dataHandler, int nbC
   createMixtureParameters();
 }
 
-CompositeMixtureModel::CompositeMixtureModel(DataHandler* p_dataHandler, CompositeMixtureModel const& model)
+CompositeMixtureModel::CompositeMixtureModel(CompositeMixtureModel const& model)
                            : STK::IMixtureModelBase(model)
-                           , p_dataHandler_(p_dataHandler)
+                           , p_dataHandler_(model.p_dataHandler_)
                            , v_mixtures_(model.v_mixtures_)
 {
 

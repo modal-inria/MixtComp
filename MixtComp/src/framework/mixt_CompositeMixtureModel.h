@@ -21,7 +21,7 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
   public:
     CompositeMixtureModel(DataHandler* p_dataHandler, int nbCluster);
     CompositeMixtureModel(DataHandler* p_dataHandler, int nbCluster, int nbSamples);
-    CompositeMixtureModel(DataHandler* p_dataHandler, CompositeMixtureModel const& model);
+    CompositeMixtureModel(CompositeMixtureModel const& model);
 
     /**
      * Note that the CompositeMixtureModel destructor does not destroy the
