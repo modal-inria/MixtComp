@@ -77,4 +77,29 @@ bool DataHandler::readModalityFromFile(std::string filename,char sep)
   return true;
 }
 
+std::vector<MixtureParam> DataHandler::readMixtureParam(std::string filename,char sep)
+{
+  std::vector<MixtureParam> mixtureParam;
+  std::fstream file;
+  std::string temp;
+  int currCol = 0;
+
+  file.open(filename.c_str());
+
+
+  while(getline(file,temp,sep))
+  {
+    mixtureParam.push_back(MixtureParam{ StringToTypeReduction(temp)
+                                       , currCol
+                                       , currCol});
+    currCol++;
+  }
+
+  mixtureParam.push_back(MixtureParam{ StringToTypeReduction(temp)
+                                     , currCol
+                                     , currCol});
+
+  return mixtureParam;
+}
+
 } // namespace mixt

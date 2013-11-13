@@ -1,18 +1,20 @@
-#ifndef DATAHANDLER_H_
-#define DATAHANDLER_H_
 /**@file DataHandler.h
 * @brief 
 */
+
+#ifndef DATAHANDLER_H_
+#define DATAHANDLER_H_
+
 #include <vector>
 #include <string>
 #include <fstream>
 #include <sstream>
 
 #include "../stkpp/include/DManager.h"
+#include "../mixtureInterface/mixt_MixtureParam.h"
 
 namespace mixt
 {
-
 
 class DataHandler
 {
@@ -22,6 +24,7 @@ class DataHandler
 
     bool readDataFromFile(std::string filename,char sep);
     bool readModalityFromFile(std::string filename,char sep);
+    std::vector<MixtureParam> readMixtureParam(std::string filename,char sep);
     std::vector<int> colIndex(char id) const;
     int nbSamples() const {return nbSample_;}
     /** get complete data set.*/
