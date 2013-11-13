@@ -45,7 +45,7 @@ class CompositeMixtureModel : public STK::IMixtureModelBase
     virtual void finalizeStep();
     virtual void registerMixture(IMixture* mixture);
     template<typename Data>
-    inline void getData(Data& data) const { p_dataHandler_->getData<Data>(data);}
+    inline void getData(Data& data, char id) const { p_dataHandler_->getData<Data>(data, id);}
 
   private:
     /** pointer to the dataHandler */

@@ -94,7 +94,7 @@ class MixtureBridge: public IMixture
 //    {
 //      return new MixtureBridge();
 //    }
-    virtual void setData() { p_compositeModel_->getData<Data>(data_);}
+    virtual void setData() { p_compositeModel_->getData<Data>(data_, this->id_);}
 
     /** This function should be used for imputation of data.
      *  The default implementation (in the base class) is to do nothing.

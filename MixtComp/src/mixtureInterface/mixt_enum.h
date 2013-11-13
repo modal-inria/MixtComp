@@ -28,7 +28,7 @@
 namespace mixt
 {
 
-  enum
+  enum Mixture
   {
     rankCluster_,
     Gamma_ajk_bjk_ = 'G', // to REMOVE
@@ -36,6 +36,23 @@ namespace mixt
     Gaussian_sjk_,
     Gaussian_s_
   };
+
+
+  /** @ingroup Reduct
+   *  convert a String to a TypeReduction.
+   *  @param type the String we want to convert
+   *  @return the TypeReduction represented by the String @c type. if the string
+   *  does not match any known name, the @c unknown_ type is returned.
+   **/
+  Mixture StringToTypeReduction( std::string const& type);
+
+  /** @ingroup Reduct
+   *  convert a TypeReduction to a String.
+   *  @param type the type of reduction we want to convert
+   *  @return the string associated to this type.
+   **/
+  std::string TypeReductionToString( Mixture const& type);
+
 
 } // namespace mixt
 

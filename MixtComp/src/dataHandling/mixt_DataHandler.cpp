@@ -10,7 +10,7 @@ DataHandler::DataHandler(){
 DataHandler::~DataHandler(){
 }
 
-std::vector<int> DataHandler::colIndex(char id)
+std::vector<int> DataHandler::colIndex(char id) const
 {
   std::vector<int> colindex;
   for (int i = 0; i < completedata_.size(); ++i)
