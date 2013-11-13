@@ -40,8 +40,8 @@ class DataHandler
 };
 
 // specialization for STK::Array2D<STK::Real>
-template<>
-void DataHandler::getData<STK::Array2D<STK::Real>>(STK::Array2D<STK::Real>& data, int firstIndex, int lastIndex) const
+template<typename Data>
+void DataHandler::getData(Data& data, int firstIndex, int lastIndex) const
 {
   data.resize(nbSample_, lastIndex+1-firstIndex);
   for (int i = 0; i < nbSample_; ++i)
@@ -52,6 +52,20 @@ void DataHandler::getData<STK::Array2D<STK::Real>>(STK::Array2D<STK::Real>& data
     }
   }
 }
+
+//// specialization for STK::Array2D<STK::Real>
+//template<>
+//void DataHandler::getData<STK::Array2D<STK::Real> >(STK::Array2D<STK::Real>& data, int firstIndex, int lastIndex) const
+//{
+//  data.resize(nbSample_, lastIndex+1-firstIndex);
+//  for (int i = 0; i < nbSample_; ++i)
+//  {
+//    for (int k = firstIndex ; k < lastIndex+1 ; k++)
+//    {
+//      data(i,k) = STK::stringToType<double>(completeData()(i,k));
+//    }
+//  }
+//}
 
 } // namespace mixt
 

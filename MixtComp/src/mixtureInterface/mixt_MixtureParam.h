@@ -42,7 +42,7 @@ enum Mixture
 
 struct MixtureParam
 {
-    Mixture mixtureType;
+    std::string mixtureType;
     int firstIndex;
     int lastIndex;
 };

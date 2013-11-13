@@ -45,4 +45,4 @@ all:
 #	$(CXX) $(CFLAGS) $(CXXFLAGS) framework.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/framework
 #	$(CXX) $(CFLAGS) $(CXXFLAGS) noFacade.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
 #	$(CXX) $(CFLAGS) $(CXXFLAGS) sandbox.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
-	$(CXX) $(CFLAGS) $(CXXFLAGS) readColumnDesc.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/example
+	$(CXX) $(CFLAGS) $(CXXFLAGS) readColumnDesc.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
