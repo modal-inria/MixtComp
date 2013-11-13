@@ -34,7 +34,8 @@ namespace mixt
     Gamma_ajk_bjk_,
     Gamma_ajk_bj_,
     Gaussian_sjk_,
-    Gaussian_s_
+    Gaussian_s_,
+    unknown_mixture_
   };
 
 
@@ -44,14 +45,40 @@ namespace mixt
    *  @return the TypeReduction represented by the String @c type. if the string
    *  does not match any known name, the @c unknown_ type is returned.
    **/
-  Mixture StringToTypeReduction( std::string const& type);
+  Mixture StringToTypeReduction( std::string const& type)
+  {
+    if (type == "rankCluster")
+      return rankCluster_;
+    if (type == "Gamma_ajk_bjk")
+      return Gamma_ajk_bjk_;
+    if (type == "Gamma_ajk_bj")
+      return Gamma_ajk_bj_;
+    if (type == "Gaussian_sjk")
+      return Gaussian_sjk_;
+    if (type == "Gaussian_s")
+      return Gaussian_s_;
+    return unknown_mixture_;
+  }
 
   /** @ingroup Reduct
    *  convert a TypeReduction to a String.
    *  @param type the type of reduction we want to convert
    *  @return the string associated to this type.
    **/
-  std::string TypeReductionToString( Mixture const& type);
+  std::string TypeReductionToString( Mixture const& type)
+  {
+    if (type == rankCluster_)
+      return "rankCluster";
+    if (type == Gamma_ajk_bjk_)
+      return "Gamma_ajk_bjk";
+    if (type == Gamma_ajk_bj_)
+      return "Gamma_ajk_bj";
+    if (type == Gaussian_sjk_)
+      return "Gaussian_sjk";
+    if (type == Gaussian_s_)
+      return "Gaussian_s";
+    return "unknown_mixture";
+  }
 
 
 } // namespace mixt
