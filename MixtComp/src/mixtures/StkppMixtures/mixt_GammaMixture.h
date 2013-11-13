@@ -40,7 +40,7 @@ namespace mixt
  *  type of the input data and of the parameters.
  **/
 template<>
-struct Traits<'G'>
+struct Traits<Gamma_ajk_bjk_>
 {
    /** Type of the data set to used as input */
    typedef STK::Array2D<STK::Real> Data;
@@ -52,36 +52,8 @@ struct Traits<'G'>
    typedef STK::Gamma_pk_ajk_bjk<Data> MixtureModel;
 };
 
-typedef typename Traits<'G'>::Data Array;
-typedef MixtureBridge<'G'> Gamma_ajk_bjk;
-
-//class Gamma_ajk_bjk : MixtureBridge<'G'>
-//{
-//  public:
-//    enum
-//    {
-//      id_ = 'G'
-//    };
-//    // get the Type of the data
-//    typedef MixtureBridge<STK::Gamma_pk_ajk_bjk<typename Traits<'G'>::Data> > Base;
-//    /** constructor. @param id id of the mixture */
-//    Gamma_ajk_bjk( char id, int nbCluster, mixt::CompositeMixtureModel const* p_model )
-//                   : Base(id, nbCluster, p_model)
-//    {}
-//    /** copy constructor */
-//    Gamma_ajk_bjk( MixtureBridge const& original)
-//                   : Base(original)
-//    {}
-//    virtual Gamma_ajk_bjk* clone()
-//    {
-//      return new Gamma_ajk_bjk(*this);
-//    }
-//
-//    virtual void setData()
-//    {
-//      data_.move(p_compositeModel_->getData<Data>());
-//    }
-//};
+typedef typename Traits<Gamma_ajk_bjk_>::Data Array;
+typedef MixtureBridge<Gamma_ajk_bjk_> Gamma_ajk_bjk;
 
 } /* namespace mixt */
 

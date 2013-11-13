@@ -28,7 +28,7 @@ class DataHandler
     STK::ReadWriteCsv const& completeData() const {return completedata_;}
     std::vector<std::vector<std::string> >& allModalities(){return allmodalities_;}
 
-    template<typename Data> void getData(Data& data, char id) const;
+    template<typename Data> void getData(Data& data, int firstIndex, int lastIndex) const;
 
   protected:
     STK::ReadWriteCsv completedata_;
@@ -38,13 +38,12 @@ class DataHandler
 
 // specialization for STK::Array2D<STK::Real>
 template<>
-void DataHandler::getData<STK::Array2D<STK::Real>>(STK::Array2D<STK::Real>& data, char id) const
+void DataHandler::getData<STK::Array2D<STK::Real>>(STK::Array2D<STK::Real>& data, int firstIndex, int lastIndex) const
 {
-  std::vector<int> colindex = colIndex(id);
-  data.resize(nbSample_, colindex.size());
+  data.resize(nbSample_, lastIndex+1-firstIndex);
   for (int i = 0; i < nbSample_; ++i)
   {
-    for (auto k : colindex)
+    for (int k = firstIndex ; k < lastIndex+1 ; k++)
     {
       data(i,k) = STK::stringToType<double>(completeData()(i,k));
     }

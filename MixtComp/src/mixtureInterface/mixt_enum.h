@@ -31,7 +31,7 @@ namespace mixt
   enum Mixture
   {
     rankCluster_,
-    Gamma_ajk_bjk_ = 'G', // to REMOVE
+    Gamma_ajk_bjk_,
     Gamma_ajk_bj_,
     Gaussian_sjk_,
     Gaussian_s_

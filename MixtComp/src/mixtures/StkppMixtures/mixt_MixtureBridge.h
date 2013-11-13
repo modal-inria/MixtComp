@@ -60,8 +60,8 @@ class MixtureBridge: public IMixture
     typedef typename Traits<Id>::Type Type;
 
     /** constructor. @param id id of the mixture */
-    MixtureBridge( char id, int nbCluster, mixt::CompositeMixtureModel const* p_model )
-                   : IMixture(id, nbCluster, p_model)
+    MixtureBridge( int firstIndex, int lastIndex, int nbCluster, mixt::CompositeMixtureModel const* p_model )
+                   : IMixture(firstIndex, lastIndex, nbCluster, p_model)
                    , model_(nbCluster)
     { model_.setMixtureParameters( p_prop(), p_tik(), p_zi());}
     /** copy constructor */
@@ -94,7 +94,7 @@ class MixtureBridge: public IMixture
 //    {
 //      return new MixtureBridge();
 //    }
-    virtual void setData() { p_compositeModel_->getData<Data>(data_, this->id_);}
+    virtual void setData() { p_compositeModel_->getData<Data>(data_, this->firstIndex_, this->lastIndex_);}
 
     /** This function should be used for imputation of data.
      *  The default implementation (in the base class) is to do nothing.

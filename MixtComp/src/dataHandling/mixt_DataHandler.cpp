@@ -4,7 +4,9 @@
 namespace mixt
 {
 
-DataHandler::DataHandler(){
+DataHandler::DataHandler()
+  :nbSample_(0)
+{
 }
 
 DataHandler::~DataHandler(){

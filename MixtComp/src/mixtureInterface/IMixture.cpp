@@ -10,12 +10,18 @@ IMixture::IMixture() {}
 /* copy constructor */
 IMixture::IMixture( IMixture const& mixture)
                     : nbVariable_(mixture.nbVariable_)
-                    , id_(mixture.id_)
+                    , firstIndex_(mixture.firstIndex_)
+                    , lastIndex_(mixture.lastIndex_)
                     , p_compositeModel_(mixture.p_compositeModel_)
 {}
 
-IMixture::IMixture( char id, int nbCluster, mixt::CompositeMixtureModel const* const p_model)
-                     : nbVariable_(0), id_(id), p_compositeModel_(p_model)
+IMixture::IMixture( int firstIndex
+                  , int lastIndex
+                  , int nbCluster
+                  , mixt::CompositeMixtureModel const* const p_model)
+                    : firstIndex_(firstIndex)
+                    , lastIndex_(lastIndex)
+                    , p_compositeModel_(p_model)
 {}
 
 

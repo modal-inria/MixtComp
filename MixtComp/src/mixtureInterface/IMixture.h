@@ -50,7 +50,7 @@ class IMixture
     /**Constructor with identification character
      * @param id Identification character of Mixture allocated by framework.
      */
-    IMixture(char id, int nbCluster, mixt::CompositeMixtureModel const* const p_model);
+    IMixture(int firstIndex, int lastIndex, int nbCluster, mixt::CompositeMixtureModel const* const p_model);
     /**copy constructor */
     IMixture(IMixture const& mixture);
     /** Setter function: Can be used to set IMixture::p_model_ member  variable.
@@ -182,7 +182,8 @@ class IMixture
     STK::CArrayVector<int> const* p_zi() const;
   protected:
     int nbVariable_;
-    char id_;
+    int firstIndex_;
+    int lastIndex_;
     /** pointer on the main composer model */
     const mixt::CompositeMixtureModel* p_compositeModel_;
   private:
