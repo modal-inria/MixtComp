@@ -147,7 +147,7 @@ class MixtureBridge: public IMixture
      *  @return Number of free parameters
      */
     virtual int nbFreeParameters() const
-    { return model_.nbFreeParameters();}
+    { return model_.nbFreeParameter();}
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
