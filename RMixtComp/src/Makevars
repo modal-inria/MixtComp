@@ -24,7 +24,7 @@
 # the stk++ paths.
 #
 
-PKGNAME = RMixtComp # add the name of the directory with the source of your package
+PKGNAME = MixtComp # add the name of the directory with the source of your package
 
 PKGDIR = ./$(PKGNAME)
 PKGLIBDIR = $(PKGDIR)/lib
@@ -35,7 +35,8 @@ STKPPLIBDIR = $(STKPPDIR)/lib
 STKPPLIB = $(STKPPLIBDIR)/libSTKpp.a
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(PKGLIB) $(STKPPLIB)
+# PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(PKGLIB) $(STKPPLIB)
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(STKPPLIB)
 
 .PHONY: all pkglib
 
