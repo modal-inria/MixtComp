@@ -56,6 +56,8 @@ class DataHandlerR: public STK::IDataHandler
 
     /** @return the number of samples (the number of rows of the data) */
     inline virtual int nbSample() const { return nbSamples_;}
+        /** @return the number of variables (the number of columns of the data) */
+    inline virtual int nbVariable() const {return nbVariables_;};
 
     /** read a data file and its companion description file. */
     bool readDataFromRList(Rcpp::List);
@@ -68,6 +70,7 @@ class DataHandlerR: public STK::IDataHandler
     virtual void getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const;
   private:
     int nbSamples_;
+    int nbVariables_;
     DataMap dataMap_;
 };
 

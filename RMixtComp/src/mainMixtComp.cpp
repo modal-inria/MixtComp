@@ -23,7 +23,7 @@
 
 /*
  * Project:  MixtComp
- * created on: Nov 21, 2013
+ * created on: Nov 22, 2013
  * Author:   Vincent KUBICKI
  **/
 
@@ -33,49 +33,9 @@
 
 #include "mixt_DataHandlerR.h"
 
-namespace mixt
+// [[Rcpp::export]]
+void mainMixtComp(Rcpp::List rList)
 {
-
-DataHandlerR::DataHandlerR()
-{
-  // TODO Auto-generated constructor stub
+  mixt::DataHandlerR dataHandlerR;
+  dataHandlerR.readDataFromRList(rList);
 }
-
-DataHandlerR::~DataHandlerR()
-{
-  // TODO Auto-generated destructor stub
-}
-
-bool DataHandlerR::readDataFromRList(Rcpp::List rList)
-{
-  for (int i = 0; i < rList.size(); i++)
-  {
-    Rcpp::S4 s4 = rList[i];
-    std::string modelname = s4.slot("model");
-    Rcpp::NumericMatrix nm = s4.slot("data");
-    std::cout << modelname << std::endl;
-    std::cout << nm.ncol() << std::endl;
-    for (int j = 0; j < nm.ncol(); j++)
-    {
-      ++nbVariables_;
-    }
-  }
-  return true;
-}
-
-void DataHandlerR::getData(std::string const& idData, STK::Array2D<int>& data, int& nbVariable) const
-{
-
-}
-
-void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const
-{
-
-}
-
-void DataHandlerR::getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const
-{
-
-}
-
-} /* namespace mixt */
