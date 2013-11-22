@@ -1,0 +1,60 @@
+#-----------------------------------------------------------------------
+#     Copyright (C) 2004-2013  Serge Iovleff
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU Lesser General Public License as
+#    published by the Free Software Foundation; either version 2 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Lesser General Public License for more details.
+#
+#    You should have received a copy of the GNU Lesser General Public
+#    License along with this program; if not, write to the
+#    Free Software Foundation, Inc.,
+#    59 Temple Place,
+#    Suite 330,
+#    Boston, MA 02111-1307
+#    USA
+#
+#    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
+#
+#-----------------------------------------------------------------------
+#
+# Purpose:  makevars to used in order to compile STK++ in a R package
+#
+# Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
+#
+#-----------------------------------------------------------------------
+#
+# This file will be include in all makefile of the projects
+# and have to be copyed in the top directory of the STK++ project
+# as ./stkpp/makevars in replacement of the original makevars.
+#
+#-----------------------------------------------------------------------
+# compilers
+CC 		= gcc
+CXX		= g++
+
+#-----------------------------------------------------------------------
+# Name of the STK++ library
+LIB_STKPP_A = libSTKpp.a
+
+#-----------------------------------------------------------------------
+# specific flags for R packages
+include $(R_HOME)/etc${R_ARCH}/Makeconf
+STK_FLAGS = $(CPICFLAGS) -ansi
+
+#-----------------------------------------------------------------------
+# Uncomment the next line if you want to have 0 based arrays 
+# STK_FLAGS += -DSTKBASEARRAYS=0
+
+#-----------------------------------------------------------------------
+# specific C flags
+# long long are available
+CFLAGS   = -Wno-long-long
+
+
+

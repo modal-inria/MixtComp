@@ -23,7 +23,7 @@
 # the stk++ paths.
 #
 
-PKGNAME = RMixtComp # add the name of the directory with the source of your package
+PKGNAME = # add the name of the directory with the source of your package
 
 PKGDIR = ./$(PKGNAME)
 PKGLIBDIR = $(PKGDIR)/lib

@@ -12,9 +12,10 @@
 # >man
 # >R
 # >src
-#      >rtkpp
-#            >bin
-#            >lib
+#      >stkpp
+#            >bin      // can be a symbolic link to the stk++ bin directory
+#            >include  // can be a symbolic link to the stk++ include directory
+#            >lib      // can be a symbolic link to the stk++ lib directory
 #            >projects // can be a symbolic link to the stk++ projects directory
 #      >PKGNAME
 #            >lib
@@ -23,7 +24,7 @@
 # the stk++ paths.
 #
 
-PKGNAME = RMixtComp # add the name of the directory with the source of your package
+PKGNAME = # add the name of the directory with the source of your package
 
 PKGDIR = ./$(PKGNAME)
 PKGLIBDIR = $(PKGDIR)/lib
@@ -47,5 +48,5 @@ all: $(SHLIB)
 $(SHLIB): pkglib
 
 pkglib:
-  (cd $(STKPPDIR) && $(MAKE) all)
-  (cd $(PKGDIR) && $(MAKE) all)
+	(cd $(STKPPDIR) && $(MAKE) all)
+	(cd $(PKGDIR) && $(MAKE) all)
