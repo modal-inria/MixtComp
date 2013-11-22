@@ -31,8 +31,7 @@ CFLAGS   = -Wno-long-long
 # STK 0 based adressing by default
 STK_FLAGS = -DSTKBASEARRAYS=0
 
-RCPP_INC_LINK = -I/home/modal/R/x86_64-pc-linux-gnu-library/3.0/Rcpp/include -I/usr/share/R/include
-CXXFLAGS_ALL = -ansi -std=c++11 -pedantic -Wall $(RCPP_INC_LINK)
+CXXFLAGS_ALL = -ansi -std=c++11 -pedantic -Wall
 
 #-----------------------------------------------------------------------
 # flags in Debug mode
