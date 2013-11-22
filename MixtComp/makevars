@@ -31,12 +31,15 @@ CFLAGS   = -Wno-long-long
 # STK 0 based adressing by default
 STK_FLAGS = -DSTKBASEARRAYS=0
 
+RCPP_INC_LINK = -I/home/modal/R/x86_64-pc-linux-gnu-library/3.0/Rcpp/include -I/usr/share/R/include
+CXXFLAGS_ALL = -ansi -std=c++11 -pedantic -Wall $(RCPP_INC_LINK)
+
 #-----------------------------------------------------------------------
 # flags in Debug mode
 STK_FLAGS_DEBUG = $(STK_FLAGS) -DSTK_BOUNDS_CHECK -DSTK_DEBUG -DSTK_VERBOSE
-CXXFLAGS_DEBUG  = "-ansi -std=c++11 -pedantic -Wall -g -O0 $(STK_FLAGS_DEBUG)"
+CXXFLAGS_DEBUG  = "$(CXXFLAGS_ALL) -g -O0 $(STK_FLAGS_DEBUG)"
 
 #-----------------------------------------------------------------------
 # flags in Release mode
 #STK_FLAGS_RELEASE = $(STK_FLAGS)
-CXXFLAGS_RELEASE = "-ansi -std=c++11 -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops $(STK_FLAGS_RELEASE)"
+CXXFLAGS_RELEASE = "$(CXXFLAGS_ALL) -O3 -ftree-vectorize -march=native -funroll-loops $(STK_FLAGS_RELEASE)"

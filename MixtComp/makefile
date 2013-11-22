@@ -60,10 +60,14 @@ EXAMPLES_DIR              := $(realpath ./examples/)
 #STK build path
 LIB_STK := $(realpath ./src/stkpp/lib/libSTKpp.a)
 
+#Rcpp build path
+LIB_RCPP := $(realpath ./src/Rcpp/lib/libRcpp.a)
+
 #-----------------------------------------------------------------------
 # export variables, build paths and compile flags, to share them with sub-makefiles
 export MAKEVARS
 export LIB_STK
+export LIB_RCPP
 
 #-----------------------------------------------------------------------
 # build rules
