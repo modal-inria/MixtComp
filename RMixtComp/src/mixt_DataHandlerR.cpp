@@ -50,7 +50,8 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
 {
   for (int i = 0; i < rList.size(); ++i)
   {
-    Rcpp::S4 s4 = rList[i];
+    rList_ = rList;
+    Rcpp::S4 s4 = rList_[i];
     std::string objType = s4.slot("type");
     std::string modelname = s4.slot("model");
     if (objType == "num")
@@ -60,35 +61,35 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
       for (int j = 0; j < nm.ncol(); ++j)
       {
         std::string id;
-        addInfo(id,modelname);
+        addInfo(id, modelname);
         std::vector<DataPos>& v_pos = dataMap_[id];
-        v_pos.push_back(DataPos(i,j));
+        v_pos.push_back(DataPos(i, j));
         ++nbVariables_;
       }
     }
     else if (objType == "int")
     {
-      Rcpp::NumericMatrix nm = s4.slot("data");
+      Rcpp::IntegerMatrix nm = s4.slot("data");
       nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
       for (int j = 0; j < nm.ncol(); ++j)
       {
         std::string id;
-        addInfo(id,modelname);
+        addInfo(id, modelname);
         std::vector<DataPos>& v_pos = dataMap_[id];
-        v_pos.push_back(DataPos(i,j));
+        v_pos.push_back(DataPos(i, j));
         ++nbVariables_;
       }
     }
     else if (objType == "str")
     {
-      Rcpp::NumericMatrix nm = s4.slot("data");
+      Rcpp::CharacterMatrix nm = s4.slot("data");
       nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
       for (int j = 0; j < nm.ncol(); ++j)
       {
         std::string id;
-        addInfo(id,modelname);
+        addInfo(id, modelname);
         std::vector<DataPos>& v_pos = dataMap_[id];
-        v_pos.push_back(DataPos(i,j));
+        v_pos.push_back(DataPos(i, j));
         ++nbVariables_;
       }
     }
@@ -103,7 +104,19 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<int>& data, i
 
 void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const
 {
-
+  std::vector<DataPos> const& v_pos = dataMap_.at(idData);
+  nbVariable = v_pos.size();
+  data.resize(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
+  int j = data.firstIdxCols();
+  for (std::vector<DataPos>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j)
+  {
+    Rcpp::S4 s4 = rList_[(*it).first];
+    Rcpp::NumericMatrix nm = s4.slot("data");
+    for (int i = 0; i < nbSamples_; ++i)
+    {
+      data(i, j) = nm(i, (*it).second);
+    }
+  }
 }
 
 void DataHandlerR::getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const

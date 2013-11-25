@@ -72,6 +72,7 @@ class DataHandlerR: public STK::IDataHandler
     int nbSamples_;
     int nbVariables_;
     DataMap dataMap_;
+    Rcpp::List rList_;
 };
 
 } /* namespace mixt */
