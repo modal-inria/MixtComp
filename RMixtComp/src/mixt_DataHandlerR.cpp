@@ -48,15 +48,19 @@ DataHandlerR::~DataHandlerR()
 
 bool DataHandlerR::readDataFromRList(Rcpp::List rList)
 {
-  for (int i = 0; i < rList.size(); i++)
+  for (int i = 0; i < rList.size(); ++i)
   {
     Rcpp::S4 s4 = rList[i];
     std::string modelname = s4.slot("model");
     Rcpp::NumericMatrix nm = s4.slot("data");
-    std::cout << modelname << std::endl;
-    std::cout << nm.ncol() << std::endl;
-    for (int j = 0; j < nm.ncol(); j++)
+
+    nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
+    for (int j = 0; j < nm.ncol(); ++j)
     {
+      std::string id;
+      addInfo(id,modelname);
+      std::vector<DataPos>& v_pos = dataMap_[id];
+      v_pos.push_back(DataPos(i,j));
       ++nbVariables_;
     }
   }

@@ -46,7 +46,7 @@ class DataHandlerR: public STK::IDataHandler
   public:
     /** first: list index, second: dataframe index */
     typedef std::pair<int, int> DataPos;
-    /** vector to map list of positions to an Id (string of characters)*/
+    /** map: id -> vector of positions */
     typedef std::map<std::string, std::vector<DataPos> > DataMap;
 
     /** default constructor */
