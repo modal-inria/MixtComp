@@ -51,17 +51,46 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
   for (int i = 0; i < rList.size(); ++i)
   {
     Rcpp::S4 s4 = rList[i];
+    std::string objType = s4.slot("type");
     std::string modelname = s4.slot("model");
-    Rcpp::NumericMatrix nm = s4.slot("data");
-
-    nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
-    for (int j = 0; j < nm.ncol(); ++j)
+    if (objType == "num")
     {
-      std::string id;
-      addInfo(id,modelname);
-      std::vector<DataPos>& v_pos = dataMap_[id];
-      v_pos.push_back(DataPos(i,j));
-      ++nbVariables_;
+      Rcpp::NumericMatrix nm = s4.slot("data");
+      nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
+      for (int j = 0; j < nm.ncol(); ++j)
+      {
+        std::string id;
+        addInfo(id,modelname);
+        std::vector<DataPos>& v_pos = dataMap_[id];
+        v_pos.push_back(DataPos(i,j));
+        ++nbVariables_;
+      }
+    }
+    else if (objType == "int")
+    {
+      Rcpp::NumericMatrix nm = s4.slot("data");
+      nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
+      for (int j = 0; j < nm.ncol(); ++j)
+      {
+        std::string id;
+        addInfo(id,modelname);
+        std::vector<DataPos>& v_pos = dataMap_[id];
+        v_pos.push_back(DataPos(i,j));
+        ++nbVariables_;
+      }
+    }
+    else if (objType == "str")
+    {
+      Rcpp::NumericMatrix nm = s4.slot("data");
+      nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
+      for (int j = 0; j < nm.ncol(); ++j)
+      {
+        std::string id;
+        addInfo(id,modelname);
+        std::vector<DataPos>& v_pos = dataMap_[id];
+        v_pos.push_back(DataPos(i,j));
+        ++nbVariables_;
+      }
     }
   }
   return true;
@@ -69,7 +98,7 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
 
 void DataHandlerR::getData(std::string const& idData, STK::Array2D<int>& data, int& nbVariable) const
 {
-
+  
 }
 
 void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const
