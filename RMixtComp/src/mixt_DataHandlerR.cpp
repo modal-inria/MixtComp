@@ -54,39 +54,39 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
     Rcpp::S4 s4 = rList_[i];
     std::string objType = s4.slot("type");
     std::string modelname = s4.slot("model");
-    if (objType == "num")
+    if (objType == "double")
     {
       Rcpp::NumericMatrix nm = s4.slot("data");
       nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
       for (int j = 0; j < nm.ncol(); ++j)
       {
-        std::string id;
+        std::string id(STK::typeToString(j));
         addInfo(id, modelname);
         std::vector<DataPos>& v_pos = dataMap_[id];
         v_pos.push_back(DataPos(i, j));
         ++nbVariables_;
       }
     }
-    else if (objType == "int")
+    else if (objType == "integer")
     {
       Rcpp::IntegerMatrix nm = s4.slot("data");
       nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
       for (int j = 0; j < nm.ncol(); ++j)
       {
-        std::string id;
+        std::string id(STK::typeToString(j));
         addInfo(id, modelname);
         std::vector<DataPos>& v_pos = dataMap_[id];
         v_pos.push_back(DataPos(i, j));
         ++nbVariables_;
       }
     }
-    else if (objType == "str")
+    else if (objType == "character")
     {
       Rcpp::CharacterMatrix nm = s4.slot("data");
       nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
       for (int j = 0; j < nm.ncol(); ++j)
       {
-        std::string id;
+        std::string id(STK::typeToString(j));
         addInfo(id, modelname);
         std::vector<DataPos>& v_pos = dataMap_[id];
         v_pos.push_back(DataPos(i, j));

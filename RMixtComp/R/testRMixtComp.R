@@ -1,8 +1,10 @@
 testRMixtComp <- function (){
-  mm1 <- new("MixtureModel", matrix(c(1.,2.,3.,4.,5.,6.),2), "Gaussian", "num")
-  mm2 <- new("MixtureModel", matrix(c(1.,2.,3.,4.,5.,6.),2), "Gaussian", "num")
+  data(composite1)
+  data(composite2)
+  lm <- list()
   
-  listMixtureModel <- list(mm1,mm2)
-  
-  mainMixtComp(listMixtureModel)
+  lm <- addIngredient(lm, composite1$var1, "Gamma_ajk_bjk")
+  lm <- addIngredient(lm, composite1$var2, "Gaussian_sjk")
+ 
+  mixtCompCluster(lm)
 }
