@@ -46,10 +46,10 @@ setMethod(
   function(object){
     cat("****************************************\n")
     cat("*** MixtComp Strategy:\n")
-    cat("* initialization method             = ", x@initMethod, "\n")
-    cat("* number of tries in initialization = ", x@nbTrialInInit, "\n")
-    cat("* number of iterations in burn-in   = ", x@nbBurnInIter, "\n")
-    cat("* number of iterations              = ", x@nbIter, "\n")
+    cat("* initialization method             = ", object@initMethod, "\n")
+    cat("* number of tries in initialization = ", object@nbTrialInInit, "\n")
+    cat("* number of iterations in burn-in   = ", object@nbBurnInIter, "\n")
+    cat("* number of iterations              = ", object@nbIter, "\n")
     cat("****************************************\n")
   }
 )

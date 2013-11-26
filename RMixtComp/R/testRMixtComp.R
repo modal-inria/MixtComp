@@ -8,6 +8,10 @@ testRMixtComp <- function (){
   lm <- addIngredient(lm, composite1$var2, "Gaussian_sjk")
  
   mcStrategy <- new("Strategy","randomInit", 2, 20, 100)
+  mcResults <- new("Results")
   
-  mixtCompCluster(lm, mcStrategy, 3)
+  mcCluster <- new("MixtCompCluster", mcStrategy, mcResults)
+  
+  mixtCompCluster(lm, mcCluster, 3)
+  return(mcCluster)
 }

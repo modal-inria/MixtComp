@@ -35,10 +35,14 @@
 #include "stkpp/include/STKpp.h"
 
 // [[Rcpp::export]]
-int mixtCompCluster(Rcpp::List rList, Rcpp::S4 RStrategy, int nbClusters)
+void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
 {
+  Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
+  std::cout << "top" << std::endl;
+  Rcpp::S4 mcResults = mcClusters.slot("results");
+  
   mixt::DataHandlerR handler;
-  if (!handler.readDataFromRList(rList)) return -1;
+  handler.readDataFromRList(rList);
   handler.writeInfo(std::cout);
   handler.writeDataMap();
   
@@ -52,7 +56,7 @@ int mixtCompCluster(Rcpp::List rList, Rcpp::S4 RStrategy, int nbClusters)
   STK::StrategyFacade strategy(p_composer);
   
   STK::Clust::initType initMethod;
-  std::string s_initMethod = RStrategy.slot("initMethod");
+  std::string s_initMethod = mcStrategy.slot("initMethod");
   if      (s_initMethod == std::string("randomInit"      ))
     initMethod = STK::Clust::randomInit_     ;
   else if (s_initMethod == std::string("randomClassInit_"))
@@ -62,9 +66,9 @@ int mixtCompCluster(Rcpp::List rList, Rcpp::S4 RStrategy, int nbClusters)
   std::cout << s_initMethod << std::endl;
   
   strategy.createSemStrategy( initMethod // init type
-                            , RStrategy.slot("nbTrialInInit") // number of initialization trials
-                            , RStrategy.slot("nbBurnInIter") // number of burn-in iterations
-                            , RStrategy.slot("nbIter")
+                            , mcStrategy.slot("nbTrialInInit") // number of initialization trials
+                            , mcStrategy.slot("nbBurnInIter") // number of burn-in iterations
+                            , mcStrategy.slot("nbIter")
                             ); // number of iterations
 
   // run the facade
@@ -72,5 +76,6 @@ int mixtCompCluster(Rcpp::List rList, Rcpp::S4 RStrategy, int nbClusters)
 
   // write the results
   composer.writeParameters(std::cout);
-  return 0;
+  
+  mcResults.slot("lnlikelihood") = composer.lnLikelihood();
 }
