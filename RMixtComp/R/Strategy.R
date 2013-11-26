@@ -27,20 +27,6 @@ setMethod(
 )
 
 setMethod(
-  f="print",
-  signature=c("Strategy"),
-  function(x,...){
-    cat("****************************************\n")
-    cat("*** MixtComp Strategy:\n")
-    cat("* initialization method             = ", x@initMethod, "\n")
-    cat("* number of tries in initialization = ", x@nbTrialInInit, "\n")
-    cat("* number of iterations in burn-in   = ", x@nbBurnInIter, "\n")
-    cat("* number of iterations              = ", x@nbIter, "\n")
-    cat("****************************************\n")
-  }
-)
-
-setMethod(
   f="show",
   signature=c("Strategy"),
   function(object){

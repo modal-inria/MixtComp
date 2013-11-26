@@ -77,5 +77,23 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   // write the results
   composer.writeParameters(std::cout);
   
+  // export the results  
+  mcResults.slot("nbCluster") = nbClusters;
   mcResults.slot("lnlikelihood") = composer.lnLikelihood();
+  
+  Rcpp::NumericVector proportions(nbClusters);
+  for (int k = 0; k < nbClusters; ++k)
+    proportions[k] = composer.p_prop()->elt(k+1);
+  mcResults.slot("proportions") = proportions;
+  
+  Rcpp::NumericVector partition(handler.nbSample());
+  for (int i = 0; i < handler.nbSample(); ++i)
+    partition[i] = composer.p_zi()->elt(i+1);
+  mcResults.slot("partition") = partition;
+  
+  Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
+  for (int i = 0; i < handler.nbSample(); ++i)
+    for (int k = 0; k < nbClusters; ++k)
+      proba[i,k] = composer.p_tik()->elt(i+1, k+1);
+  mcResults.slot("proba") = proba;
 }
