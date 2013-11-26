@@ -48,6 +48,7 @@ DataHandlerR::~DataHandlerR()
 
 bool DataHandlerR::readDataFromRList(Rcpp::List rList)
 {
+  int k = 0;
   for (int i = 0; i < rList.size(); ++i)
   {
     rList_ = rList;
@@ -58,40 +59,22 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
     {
       Rcpp::NumericMatrix nm = s4.slot("data");
       nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
-      for (int j = 0; j < nm.ncol(); ++j)
+      for (int j = 0; j < nm.ncol(); ++j, ++k) // each column is assigned to a model (temporary)
       {
-        std::string id(STK::typeToString(j));
+        std::string id(STK::typeToString(k));
         addInfo(id, modelname);
-        std::vector<DataPos>& v_pos = dataMap_[id];
+        std::vector<DataPos>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
         v_pos.push_back(DataPos(i, j));
         ++nbVariables_;
       }
     }
     else if (objType == "integer")
     {
-      Rcpp::IntegerMatrix nm = s4.slot("data");
-      nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
-      for (int j = 0; j < nm.ncol(); ++j)
-      {
-        std::string id(STK::typeToString(j));
-        addInfo(id, modelname);
-        std::vector<DataPos>& v_pos = dataMap_[id];
-        v_pos.push_back(DataPos(i, j));
-        ++nbVariables_;
-      }
+      // to be udated when "double" is working
     }
     else if (objType == "character")
     {
-      Rcpp::CharacterMatrix nm = s4.slot("data");
-      nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
-      for (int j = 0; j < nm.ncol(); ++j)
-      {
-        std::string id(STK::typeToString(j));
-        addInfo(id, modelname);
-        std::vector<DataPos>& v_pos = dataMap_[id];
-        v_pos.push_back(DataPos(i, j));
-        ++nbVariables_;
-      }
+      // to be udated when "double" is working
     }
   }
   return true;
