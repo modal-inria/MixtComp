@@ -94,6 +94,6 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
   for (int i = 0; i < handler.nbSample(); ++i)
     for (int k = 0; k < nbClusters; ++k)
-      proba[i,k] = composer.p_tik()->elt(i+1, k+1);
+      proba(i, k) = composer.p_tik()->elt(i+1, k+1);
   mcResults.slot("proba") = proba;
 }
