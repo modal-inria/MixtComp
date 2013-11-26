@@ -97,7 +97,7 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& d
     Rcpp::NumericMatrix nm = s4.slot("data");
     for (int i = 0; i < nbSamples_; ++i)
     {
-      data(i+1, j) = nm(i, (*it).second); // i+1 because STKPP is 1-based by default
+      data(i+1, j) = nm(i, (*it).second); // i+1 because STKPP arrays are 1-based by default
     }
   }
 }

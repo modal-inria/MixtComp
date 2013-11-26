@@ -42,58 +42,23 @@ int mixtCompCluster(Rcpp::List rList)
   handler.writeInfo(std::cout);
   handler.writeDataMap();
   
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ Create composer and setDataHandler                +\n");
   STK::MixtureComposer composer(3);
+  STK::IMixtureModelBase* p_composer = &composer;
   composer.setDataHandler(&handler);
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ CreateIngredients and setData                     +\n");
   composer.createIngredients();
   composer.setData();
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ initializeModel                                   +\n");
   composer.initializeModel();
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ composer                                          +\n");
-  composer.writeParameters(stk_cout);
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ randomClassInit                                   +\n");
-  composer.randomClassInit();
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ composer                                          +\n");
-  composer.writeParameters(stk_cout);
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ 20 sem iterations                                  +\n");
-  for (int i=0; i< 20; i++)
-  {
-    composer.mStep();
-    composer.sStep();
-    composer.eStep();
-    stk_cout << _T("i= ") << i
-             << _T(", lnLikelihood =") << composer.lnLikelihood() << _T("\n");
-  }
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ 50 em iterations                                  +\n");
-  for (int i=0; i< 50; i++)
-  {
-    composer.mStep();
-    composer.eStep();
-    stk_cout << _T("i= ") << i
-             << _T(", lnLikelihood =") << composer.lnLikelihood() << _T("\n");
-  }
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ composer                                          +\n");
-  composer.writeParameters(stk_cout);
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ End of test composer : no error detected          +\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+
+  STK::StrategyFacade strategy(p_composer);
+  strategy.createSemStrategy( STK::Clust::randomInit_ // init type
+                            , 2 // number of initialization trials
+                            , 20 // number of burn-in iterations
+                            , 100 ); // number of iterations
+
+  // run the facade
+  strategy.run(); 
+
+  // write the results
+  composer.writeParameters(std::cout);
   return 0;
 }
