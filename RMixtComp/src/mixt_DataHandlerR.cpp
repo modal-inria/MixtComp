@@ -97,7 +97,7 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& d
     Rcpp::NumericMatrix nm = s4.slot("data");
     for (int i = 0; i < nbSamples_; ++i)
     {
-      data(i, j) = nm(i, (*it).second);
+      data(i+1, j) = nm(i, (*it).second); // i+1 because STKPP is 1-based by default
     }
   }
 }
@@ -105,6 +105,16 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& d
 void DataHandlerR::getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const
 {
 
+}
+
+void DataHandlerR::writeDataMap() const
+{
+  for (DataMap::const_iterator it_id = dataMap_.begin(); it_id != dataMap_.end(); ++it_id)
+  {
+    stk_cout << "id: " << (*it_id).first << "\n";
+    for (std::vector<DataPos>::const_iterator it_dp = (*it_id).second.begin(); it_dp != (*it_id).second.end(); ++it_dp)
+      stk_cout << "\trList_ position: " << (*it_dp).first << ", column: " << (*it_dp).second << "\n";
+  }
 }
 
 } /* namespace mixt */

@@ -68,6 +68,9 @@ class DataHandlerR: public STK::IDataHandler
     virtual void getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const;
     /** return in an Array2D<std::string> the data with the given idData */
     virtual void getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const;
+    
+    /** write information on the localization of data in the rList */
+    void writeDataMap() const;
   private:
     int nbSamples_;
     int nbVariables_;

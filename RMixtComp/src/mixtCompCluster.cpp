@@ -39,9 +39,10 @@ int mixtCompCluster(Rcpp::List rList)
 {
   mixt::DataHandlerR handler;
   if (!handler.readDataFromRList(rList)) return -1;
-
   handler.writeInfo(std::cout);
-/*  stk_cout << _T("\n\n");
+  handler.writeDataMap();
+  
+  stk_cout << _T("\n\n");
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   stk_cout << _T("+ Create composer and setDataHandler                +\n");
   STK::MixtureComposer composer(3);
@@ -94,5 +95,5 @@ int mixtCompCluster(Rcpp::List rList)
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   stk_cout << _T("+ End of test composer : no error detected          +\n");
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  return 0; */
+  return 0;
 }
