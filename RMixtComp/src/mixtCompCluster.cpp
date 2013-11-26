@@ -35,14 +35,14 @@
 #include "stkpp/include/STKpp.h"
 
 // [[Rcpp::export]]
-int mixtCompCluster(Rcpp::List rList)
+int mixtCompCluster(Rcpp::List rList, Rcpp::S4 RStrategy, int nbClusters)
 {
   mixt::DataHandlerR handler;
   if (!handler.readDataFromRList(rList)) return -1;
   handler.writeInfo(std::cout);
   handler.writeDataMap();
   
-  STK::MixtureComposer composer(3);
+  STK::MixtureComposer composer(nbClusters);
   STK::IMixtureModelBase* p_composer = &composer;
   composer.setDataHandler(&handler);
   composer.createIngredients();
@@ -50,10 +50,22 @@ int mixtCompCluster(Rcpp::List rList)
   composer.initializeModel();
 
   STK::StrategyFacade strategy(p_composer);
-  strategy.createSemStrategy( STK::Clust::randomInit_ // init type
-                            , 2 // number of initialization trials
-                            , 20 // number of burn-in iterations
-                            , 100 ); // number of iterations
+  
+  STK::Clust::initType initMethod;
+  std::string s_initMethod = RStrategy.slot("initMethod");
+  if      (s_initMethod == std::string("randomInit"      ))
+    initMethod = STK::Clust::randomInit_     ;
+  else if (s_initMethod == std::string("randomClassInit_"))
+    initMethod = STK::Clust::randomClassInit_;
+  else if (s_initMethod == std::string("randomFuzzyInit_"))
+    initMethod = STK::Clust::randomFuzzyInit_;
+  std::cout << s_initMethod << std::endl;
+  
+  strategy.createSemStrategy( initMethod // init type
+                            , RStrategy.slot("nbTrialInInit") // number of initialization trials
+                            , RStrategy.slot("nbBurnInIter") // number of burn-in iterations
+                            , RStrategy.slot("nbIter")
+                            ); // number of iterations
 
   // run the facade
   strategy.run(); 

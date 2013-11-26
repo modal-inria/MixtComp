@@ -109,11 +109,12 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<std::string>&
 
 void DataHandlerR::writeDataMap() const
 {
+  stk_cout << "Position of data in input: \n";
   for (DataMap::const_iterator it_id = dataMap_.begin(); it_id != dataMap_.end(); ++it_id)
   {
-    stk_cout << "id: " << (*it_id).first << "\n";
+    stk_cout << "\tname: " << (*it_id).first << "\n";
     for (std::vector<DataPos>::const_iterator it_dp = (*it_id).second.begin(); it_dp != (*it_id).second.end(); ++it_dp)
-      stk_cout << "\trList_ position: " << (*it_dp).first << ", column: " << (*it_dp).second << "\n";
+      stk_cout << "\t\trList_ position: " << (*it_dp).first << ", column: " << (*it_dp).second << "\n";
   }
 }
 

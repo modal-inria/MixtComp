@@ -14,7 +14,6 @@ setMethod(
     .Object@data<-data
     .Object@model<-model
     .Object@type<-type
-#    validObject(.this)
     return(.Object)
   }
 )
