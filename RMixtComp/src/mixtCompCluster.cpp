@@ -37,22 +37,27 @@
 // [[Rcpp::export]]
 void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
 {
+  // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
   Rcpp::S4 mcResults = mcClusters.slot("results");
   
+  // map the data structure
   mixt::DataHandlerR handler;
   handler.readDataFromRList(rList);
   handler.writeInfo(std::cout);
   handler.writeDataMap();
   
+  // prepare the composer
   STK::MixtureComposer composer(nbClusters);
   STK::IMixtureModelBase* p_composer = &composer;
   composer.setDataHandler(&handler);
-  composer.createIngredients();
+  composer.createIngredients(); // add non stkpp models
   composer.setData();
   composer.initializeModel();
-
+  
+  // instantiate the strategy facade
   STK::StrategyFacade strategy(p_composer);
+  
   
   STK::Clust::initType initMethod;
   std::string s_initMethod = mcStrategy.slot("initMethod");
@@ -62,37 +67,37 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
     initMethod = STK::Clust::randomClassInit_;
   else if (s_initMethod == std::string("randomFuzzyInit_"))
     initMethod = STK::Clust::randomFuzzyInit_;
-  std::cout << s_initMethod << std::endl;
   
+  // create the apropriate strategy and transmit the parameters
   strategy.createSemStrategy( initMethod // init type
                             , mcStrategy.slot("nbTrialInInit") // number of initialization trials
                             , mcStrategy.slot("nbBurnInIter") // number of burn-in iterations
                             , mcStrategy.slot("nbIter")
                             ); // number of iterations
 
-  // run the facade
+  // run the strategy facade
   strategy.run(); 
 
-  // write the results
+  // output the results
   composer.writeParameters(std::cout);
   
-  // export the results  
+  // export the composer results to R through modifications of mcResults
   mcResults.slot("nbCluster") = nbClusters;
   mcResults.slot("lnlikelihood") = composer.lnLikelihood();
   
   Rcpp::NumericVector proportions(nbClusters);
-  for (int k = 0; k < nbClusters; ++k)
-    proportions[k] = composer.p_prop()->elt(k+1);
+  for (int kS = composer.p_prop()->firstIdxRows(), kR = 0; kR < nbClusters; ++kS, ++kR)
+    proportions[kR] = composer.p_prop()->elt(kS);
   mcResults.slot("proportions") = proportions;
   
   Rcpp::NumericVector partition(handler.nbSample());
-  for (int i = 0; i < handler.nbSample(); ++i)
-    partition[i] = composer.p_zi()->elt(i+1);
+  for (int iS = composer.p_zi()->firstIdxRows(), iR = 0; iR < handler.nbSample(); ++iS, ++iR)
+    partition[iR] = composer.p_zi()->elt(iS);
   mcResults.slot("partition") = partition;
   
   Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
-  for (int i = 0; i < handler.nbSample(); ++i)
-    for (int k = 0; k < nbClusters; ++k)
-      proba(i, k) = composer.p_tik()->elt(i+1, k+1);
+  for (int iS = composer.p_tik()->firstIdxRows(), iR = 0; iR < handler.nbSample(); ++iS, ++iR)
+    for (int kS = composer.p_tik()->firstIdxRows(), kR = 0; kR < nbClusters; ++kS, ++kR)
+      proba(iR, kR) = composer.p_tik()->elt(iS, kS);
   mcResults.slot("proba") = proba;
 }

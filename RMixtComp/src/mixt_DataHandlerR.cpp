@@ -95,9 +95,9 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& d
   {
     Rcpp::S4 s4 = rList_[(*it).first];
     Rcpp::NumericMatrix nm = s4.slot("data");
-    for (int i = 0; i < nbSamples_; ++i)
+    for (int iS = data.firstIdxRows(), iR = 0; iR < nbSamples_; ++iS, ++iR)
     {
-      data(i+1, j) = nm(i, (*it).second); // i+1 because STKPP arrays are 1-based by default
+      data(iS, j) = nm(iR, (*it).second);
     }
   }
 }
