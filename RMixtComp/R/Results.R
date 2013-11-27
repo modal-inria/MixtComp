@@ -1,3 +1,8 @@
+mixtCompResults <- function(){
+  # create a new instance of Results
+  new("Results")
+}
+
 setClass(
   Class="Results",
   representation=representation(
