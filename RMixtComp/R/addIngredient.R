@@ -1,8 +1,3 @@
-listModels <- c( "Gamma_ajk_bjk"
-               , "Gamma_ajk_bj"
-               , "Gaussian_sjk"
-               , "Gaussian_s")
-
 addIngredient <- function (lm, data, model){
   if (!is.na(match(model,listModels)))
   {

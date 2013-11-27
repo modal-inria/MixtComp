@@ -63,9 +63,9 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   std::string s_initMethod = mcStrategy.slot("initMethod");
   if      (s_initMethod == std::string("randomInit"      ))
     initMethod = STK::Clust::randomInit_     ;
-  else if (s_initMethod == std::string("randomClassInit_"))
+  else if (s_initMethod == std::string("randomClassInit"))
     initMethod = STK::Clust::randomClassInit_;
-  else if (s_initMethod == std::string("randomFuzzyInit_"))
+  else if (s_initMethod == std::string("randomFuzzyInit"))
     initMethod = STK::Clust::randomFuzzyInit_;
   
   // create the apropriate strategy and transmit the parameters

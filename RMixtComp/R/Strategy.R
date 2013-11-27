@@ -16,7 +16,36 @@ setClass(
     nbTrialInInit = 2,
     nbBurnInIter = 20,
     nbIter = 100
-  )
+  ),
+  # validity function
+  validity=function(object){
+    # for 'initMethod'
+    if(!is.na(match(object@initMethod,listModels))){
+      stop("initMethod unknown.")
+    }
+    # for 'nbTrialInInit'
+    if (!is.wholenumber(object@nbTrialInInit)){
+      stop("nbTrialInInit must be an integer.")
+    }
+    if (object@nbTrialInInit < 1){
+      stop("nbTrialInInit must be positive.")
+    }
+    # for 'nbBurnInIter'
+    if (!is.wholenumber(object@nbBurnInIter)){
+      stop("nbBurnInIter must be an integer.")
+    }
+    if (object@nbBurnInIter < 1){
+      stop("nbBurnInIter must be positive.")
+    }
+    # for 'nbIter'
+    if (!is.wholenumber(object@nbIter)){
+      stop("nbIter must be an integer.")
+    }
+    if (object@nbIter < 1){
+      stop("nbIter must be positive.")
+    }
+    return(TRUE)
+  }
 )
 
 setMethod(
@@ -27,6 +56,7 @@ setMethod(
     .Object@nbTrialInInit<-nbTrialInInit
     .Object@nbBurnInIter<-nbBurnInIter
     .Object@nbIter<-nbIter
+    validObject(.Object)
     return(.Object)
   }
 )
