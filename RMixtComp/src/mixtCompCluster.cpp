@@ -38,7 +38,6 @@
 void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
 {
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
-  std::cout << "top" << std::endl;
   Rcpp::S4 mcResults = mcClusters.slot("results");
   
   mixt::DataHandlerR handler;
