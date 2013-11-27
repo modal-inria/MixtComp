@@ -36,6 +36,7 @@
 namespace mixt
 {
 
+
 DataHandlerR::DataHandlerR()
 {
   // TODO Auto-generated constructor stub
@@ -54,27 +55,17 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
     rList_ = rList;
     Rcpp::S4 s4 = rList_[i];
     std::string objType = s4.slot("type");
-    std::string modelname = s4.slot("model");
     if (objType == "double")
     {
-      Rcpp::NumericMatrix nm = s4.slot("data");
-      nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
-      for (int j = 0; j < nm.ncol(); ++j, ++k) // each column is assigned to a model (temporary)
-      {
-        std::string id(STK::typeToString(k));
-        addInfo(id, modelname);
-        std::vector<DataPos>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
-        v_pos.push_back(DataPos(i, j));
-        ++nbVariables_;
-      }
+      readDataFromRListHelper<Rcpp::NumericMatrix>(i, k, s4);
     }
     else if (objType == "integer")
     {
-      // to be udated when "double" is working
+      readDataFromRListHelper<Rcpp::IntegerMatrix>(i, k, s4);
     }
     else if (objType == "character")
     {
-      // to be udated when "double" is working
+      readDataFromRListHelper<Rcpp::CharacterMatrix>(i, k, s4);
     }
   }
   return true;

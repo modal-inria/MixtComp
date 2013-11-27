@@ -4,7 +4,6 @@ testRMixtComp <- function (){
   
   lm <- list()
   
-  lm <- addIngredient(lm, composite1$var1, "toto")
   lm <- addIngredient(lm, composite1$var1, "Gamma_ajk_bjk")
   lm <- addIngredient(lm, composite1$var2, "Gaussian_sjk")
  

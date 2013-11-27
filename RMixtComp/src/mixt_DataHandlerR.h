@@ -44,7 +44,7 @@ namespace mixt
 class DataHandlerR: public STK::IDataHandler
 {
   public:
-    /** first: list index, second: dataframe index */
+    /** first: list index, second: matrix column number */
     typedef std::pair<int, int> DataPos;
     /** map: id -> vector of positions */
     typedef std::map<std::string, std::vector<DataPos> > DataMap;
@@ -76,7 +76,27 @@ class DataHandlerR: public STK::IDataHandler
     int nbVariables_;
     DataMap dataMap_;
     Rcpp::List rList_;
+    
+    /** read data structure independently of the type (integer, numeric, character) */
+    template<class RcppClass>
+    void readDataFromRListHelper(int i, int k, Rcpp::S4 s4);
 };
+
+template<class RcppClass>
+void DataHandlerR::readDataFromRListHelper(int i, int k, Rcpp::S4 s4)
+{
+  std::string modelname = s4.slot("model");
+  RcppClass nm = s4.slot("data");
+  nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
+  for (int j = 0; j < nm.ncol(); ++j, ++k) // each column is assigned to a model (temporary)
+  {
+    std::string id(STK::typeToString(k));
+    addInfo(id, modelname);
+    std::vector<DataPos>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
+    v_pos.push_back(DataPos(i, j));
+    ++nbVariables_;
+  }
+}
 
 } /* namespace mixt */
 #endif /* MIXT_DATAHANDLERR_H_ */
