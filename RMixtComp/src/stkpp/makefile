@@ -57,6 +57,7 @@ STATMODELS_DIR= $(PROJECTS_DIR)StatModels/
 AAMODELS_DIR  = $(PROJECTS_DIR)AAModels/
 REGRESS_DIR   = $(PROJECTS_DIR)Regress/
 REDUCT_DIR    = $(PROJECTS_DIR)Reduct/
+CLUSTERING_DIR= $(PROJECTS_DIR)Clustering/
 
 SRC_STKERNEL_DIR  = $(STKERNEL_DIR)src/
 SRC_ARRAYS_DIR    = $(ARRAYS_DIR)src/
@@ -69,20 +70,22 @@ SRC_STATMODELS_DIR= $(STATMODELS_DIR)src/
 SRC_REGRESS_DIR   = $(REGRESS_DIR)src/
 SRC_REDUCT_DIR    = $(REDUCT_DIR)src/
 SRC_AAMODELS_DIR  = $(AAMODELS_DIR)src/
+SRC_CLUSTERING_DIR= $(CLUSTERING_DIR)src/
 
 #-----------------------------------------------------------------------
 # projects binaries
-STKERNEL_OBJS = $(patsubst $(SRC_STKERNEL_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_STKERNEL_DIR)/*.cpp))
-ARRAYS_OBJS   = $(patsubst $(SRC_ARRAYS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_ARRAYS_DIR)/*.cpp))
-SDK_OBJS      = $(patsubst $(SRC_SDK_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_SDK_DIR)/*.cpp))
-ALGEBRA_OBJS  = $(patsubst $(SRC_ALGEBRA_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_ALGEBRA_DIR)/*.cpp))
-ANALYSIS_OBJS = $(patsubst $(SRC_ANALYSIS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_ANALYSIS_DIR)/*.cpp))
-DMANAGER_OBJS = $(patsubst $(SRC_DMANAGER_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_DMANAGER_DIR)/*.cpp))
-STATISTIK_OBJS= $(patsubst $(SRC_STATISTIK_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_STATISTIK_DIR)/*.cpp))
+STKERNEL_OBJS  = $(patsubst $(SRC_STKERNEL_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_STKERNEL_DIR)/*.cpp))
+ARRAYS_OBJS    = $(patsubst $(SRC_ARRAYS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_ARRAYS_DIR)/*.cpp))
+SDK_OBJS       = $(patsubst $(SRC_SDK_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_SDK_DIR)/*.cpp))
+ALGEBRA_OBJS   = $(patsubst $(SRC_ALGEBRA_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_ALGEBRA_DIR)/*.cpp))
+ANALYSIS_OBJS  = $(patsubst $(SRC_ANALYSIS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_ANALYSIS_DIR)/*.cpp))
+DMANAGER_OBJS  = $(patsubst $(SRC_DMANAGER_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_DMANAGER_DIR)/*.cpp))
+STATISTIK_OBJS = $(patsubst $(SRC_STATISTIK_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_STATISTIK_DIR)/*.cpp))
 STATMODELS_OBJS= $(patsubst $(SRC_STATMODELS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_STATMODELS_DIR)/*.cpp))
-REGRESS_OBJS  = $(patsubst $(SRC_REGRESS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_REGRESS_DIR)/*.cpp))
-REDUCT_OBJS   = $(patsubst $(SRC_REDUCT_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_REDUCT_DIR)/*.cpp))
-AAMODELS_OBJS = $(patsubst $(SRC_AAMODELS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_AAMODELS_DIR)/*.cpp))
+REGRESS_OBJS   = $(patsubst $(SRC_REGRESS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_REGRESS_DIR)/*.cpp))
+REDUCT_OBJS    = $(patsubst $(SRC_REDUCT_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_REDUCT_DIR)/*.cpp))
+AAMODELS_OBJS  = $(patsubst $(SRC_AAMODELS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_AAMODELS_DIR)/*.cpp))
+CLUSTERING_OBJS= $(patsubst $(SRC_CLUSTERING_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_CLUSTERING_DIR)/*.cpp))
 
 #-----------------------------------------------------------------------
 # COMMENT or UNCOMMENT the projects you need for your package
@@ -95,7 +98,8 @@ CPP_OBJS = \
   $(ALGEBRA_OBJS) \
   $(ANALYSIS_OBJS) \
   $(STATISTIK_OBJS) \
-  $(STATMODELS_OBJS) #\
+  $(STATMODELS_OBJS) \
+  $(CLUSTERING_OBJS) #\
 #  $(REGRESS_OBJS) \
 #  $(REDUCT_OBJS) \
 #  $(AAMODELS_OBJS)
@@ -126,6 +130,8 @@ reduct:
 	$(MAKE) -C $(SRC_REDUCT_DIR)
 statmodel:
 	$(MAKE) -C $(SRC_STATMODELS_DIR)
+clustering:
+	$(MAKE) -C $(SRC_CLUSTERING_DIR)
 
 #-----------------------------------------------------------------------
 # all compiles the objects and create the library, no tests are build
@@ -137,7 +143,7 @@ all: lib
 lib: obj $(STK_LIB)
 
 # obj compiles the objects of the projects you need
-obj: stkernel sdk dmanager arrays algebra analysis statistik statmodel #\
+obj: stkernel sdk dmanager arrays algebra analysis statistik statmodel clustering #\
 #     aamodels regress reduct
 
 #-----------------------------------------------------------------------
@@ -149,7 +155,7 @@ $(STK_LIB): $(CPP_OBJS)
 # rules for cleaning objects
 .PHONY: clean_lib clean_obj clean clean_stkernel clean_arrays clean_sdk \
   clean_dmanager clean_algebra clean_analysis clean_statistik clean_statmodel \
-  clean_clustering  clean_aamodels clean_regress clean_reduct
+  clean_clustering clean_aamodels clean_regress clean_reduct
 
 clean: clean_lib clean_obj
 

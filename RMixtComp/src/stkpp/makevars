@@ -49,12 +49,9 @@ STK_FLAGS = $(CPICFLAGS) -ansi
 
 #-----------------------------------------------------------------------
 # Uncomment the next line if you want to have 0 based arrays 
-# STK_FLAGS += -DSTKBASEARRAYS=0
+#STK_FLAGS += -DSTKBASEARRAYS=0
 
 #-----------------------------------------------------------------------
 # specific C flags
 # long long are available
 CFLAGS   = -Wno-long-long
-
-
-
