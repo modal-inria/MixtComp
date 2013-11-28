@@ -34,8 +34,8 @@
 #ifndef DUMMYCLUSTER_H_
 #define DUMMYCLUSTER_H_
 
-#include "Clustering.h"
-// #include "/home/modal/workspace/stk/stkpp/projects/Clustering/include/STK_IIngredient.h"
+// #include "Clustering.h"
+#include "/home/modal/workspace/stk/stkpp/projects/Clustering/include/STK_IIngredient.h"
 
 namespace mixt
 {
