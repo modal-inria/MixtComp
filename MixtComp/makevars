@@ -29,9 +29,15 @@ CFLAGS   = -Wno-long-long
 
 #-----------------------------------------------------------------------
 # STK 0 based adressing by default
-STK_FLAGS = -DSTKBASEARRAYS=0
+#STK_FLAGS = -DSTKBASEARRAYS=0
 
-CXXFLAGS_ALL = -ansi -std=c++11 -pedantic -Wall
+#-----------------------------------------------------------------------
+# path to stkpp sources
+STK_DIR = ../../stk/stkpp
+
+#-----------------------------------------------------------------------
+# common compile flags
+CXXFLAGS_ALL = -ansi -std=c++11 -pedantic -Wall -I$(realpath $(STK_DIR)/include)
 
 #-----------------------------------------------------------------------
 # flags in Debug mode
@@ -40,5 +46,5 @@ CXXFLAGS_DEBUG  = "$(CXXFLAGS_ALL) -g -O0 $(STK_FLAGS_DEBUG)"
 
 #-----------------------------------------------------------------------
 # flags in Release mode
-#STK_FLAGS_RELEASE = $(STK_FLAGS)
+STK_FLAGS_RELEASE = $(STK_FLAGS)
 CXXFLAGS_RELEASE = "$(CXXFLAGS_ALL) -O3 -ftree-vectorize -march=native -funroll-loops $(STK_FLAGS_RELEASE)"

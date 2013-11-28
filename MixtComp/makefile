@@ -48,9 +48,6 @@ BIN_RELEASE_DIR = $(realpath ./bin/release)
 BIN_DEBUG_DIR   = $(realpath ./bin/debug)
 
 # sources paths
-SRC_FRAMEWORK_DIR         := $(realpath ./src/framework/)
-SRC_DATAHANDLING_DIR      := $(realpath ./src/dataHandling/)
-SRC_MIXTURE_INTERFACE_DIR := $(realpath ./src/mixtureInterface/)
 SRC_MIXTURES_DIR          := $(realpath ./src/mixtures/)
 SRC_TESTS_DIR             := $(realpath ./tests/)
 
@@ -58,7 +55,7 @@ SRC_TESTS_DIR             := $(realpath ./tests/)
 EXAMPLES_DIR              := $(realpath ./examples/)
 
 #STK build path
-LIB_STK := $(realpath ./src/stkpp/lib/libSTKpp.a)
+LIB_STK := $(realpath $(STK_DIR)/lib/libSTKpp.a)
 
 #-----------------------------------------------------------------------
 # export variables, build paths and compile flags, to share them with sub-makefiles
@@ -72,22 +69,16 @@ export LIB_STK
 .PHONY: release debug clean examples
 
 release:
-	$(MAKE) -C $(SRC_FRAMEWORK_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
-	$(MAKE) -C $(SRC_DATAHANDLING_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
-	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
 	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
 	$(MAKE) -C $(SRC_TESTS_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
 
 debug:
-	$(MAKE) -C $(SRC_FRAMEWORK_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
-	$(MAKE) -C $(SRC_DATAHANDLING_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
-	$(MAKE) -C $(SRC_MIXTURE_INTERFACE_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
 	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
 	$(MAKE) -C $(SRC_TESTS_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
 
 examples:
 	$(MAKE) -C $(EXAMPLES_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
-#	$(MAKE) -C $(EXAMPLES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
+	$(MAKE) -C $(EXAMPLES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
 
 clean:
 	$(RM) ./bin/debug/*

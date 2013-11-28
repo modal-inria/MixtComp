@@ -31,7 +31,7 @@
 /** @file simulComposite.cpp
  *  @brief In this file we simulate a composed mixture model.
  **/
-#include "../src/stkpp/include/STKpp.h"
+#include "STKpp.h"
 
 using namespace STK;
 
