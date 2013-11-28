@@ -54,7 +54,7 @@ SRC_TESTS_DIR    = $(realpath ./tests/)
 
 # build path
 LIB_STK = $(realpath $(STK_DIR)/lib/libSTKpp.a)
-LIB_MC = $(realpath ./lib)/libMC.a
+LIB_MC = $(realpath ./lib)/libMixtComp.a
 
 #-----------------------------------------------------------------------
 # export variables, build paths and compile flags, to share them with sub-makefiles
@@ -66,6 +66,8 @@ export LIB_STK
 
 # phony prerequisites are executed unconditionally
 .PHONY: lib release debug tests clean
+
+all: lib
 
 release:
 	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
