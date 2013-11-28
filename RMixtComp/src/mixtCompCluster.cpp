@@ -101,3 +101,25 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
       proba(iR, kR) = composer.p_tik()->elt(iS, kS);
   mcResults.slot("proba") = proba;
 }
+
+// [[Rcpp::export]]
+void dummyMixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
+{
+  // parse the S4 argument into input and output
+  Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
+  Rcpp::S4 mcResults = mcClusters.slot("results");
+  
+  // map the data structure
+  mixt::DataHandlerR handler;
+  handler.readDataFromRList(rList);
+  handler.writeInfo(std::cout);
+  handler.writeDataMap();
+  
+  // prepare the composer
+  STK::MixtureComposer composer(nbClusters);
+  STK::IMixtureModelBase* p_composer = &composer;
+  composer.setDataHandler(&handler);
+  composer.createIngredients(); // add non stkpp models
+  composer.setData();
+  composer.initializeModel();
+}

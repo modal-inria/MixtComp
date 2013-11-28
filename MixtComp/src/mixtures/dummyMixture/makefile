@@ -33,16 +33,19 @@
 include $(MAKEVARS)
 
 #-----------------------------------------------------------------------
+# header, source and binary files
+#
+CXX_INCS = $(wildcard *.h)
+CPP_SRCS = $(wildcard *.cpp)
+CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)/%.o)
+
+#-----------------------------------------------------------------------
 # Compilation rules
 #
-.PHONY: all
 
-#$(info $(BIN_DIR))
-#$(info $(wildcard $(BIN_DIR)/*.o))
-#$(info $(LIB_STK))
+all: obj
 
-all:
-#	$(CXX) $(CFLAGS) $(CXXFLAGS) framework.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/framework
-#	$(CXX) $(CFLAGS) $(CXXFLAGS) noFacade.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
-#	$(CXX) $(CFLAGS) $(CXXFLAGS) sandbox.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
-#	$(CXX) $(CFLAGS) $(CXXFLAGS) readColumnDesc.cpp $(wildcard $(BIN_DIR)/*.o) $(LIB_STK) -o $(BIN_DIR)/noFacade
+obj: $(CPP_OBJS)
+
+$(BIN_DIR)/%.o: %.cpp %.h makefile
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<

@@ -35,4 +35,4 @@
 .PHONY: all
 
 all:
-#	$(MAKE) -C RankMixture BIN_DIR="$(BIN_DIR)"
+	$(MAKE) -C dummyMixture BIN_DIR="$(BIN_DIR)"

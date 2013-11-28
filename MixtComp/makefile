@@ -51,9 +51,6 @@ BIN_DEBUG_DIR   = $(realpath ./bin/debug)
 SRC_MIXTURES_DIR          := $(realpath ./src/mixtures/)
 SRC_TESTS_DIR             := $(realpath ./tests/)
 
-# examples path
-EXAMPLES_DIR              := $(realpath ./examples/)
-
 #STK build path
 LIB_STK := $(realpath $(STK_DIR)/lib/libSTKpp.a)
 
@@ -66,19 +63,17 @@ export LIB_STK
 # build rules
 
 # phony prerequisites are executed unconditionally
-.PHONY: release debug clean examples
+.PHONY: release debug tests clean
 
 release:
 	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
-	$(MAKE) -C $(SRC_TESTS_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
 
 debug:
 	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
-	$(MAKE) -C $(SRC_TESTS_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
 
-examples:
-	$(MAKE) -C $(EXAMPLES_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
-	$(MAKE) -C $(EXAMPLES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
+tests:
+	$(MAKE) -C $(SRC_TESTS_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
+	$(MAKE) -C $(SRC_TESTS_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
 
 clean:
 	$(RM) ./bin/debug/*
