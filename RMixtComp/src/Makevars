@@ -39,8 +39,8 @@ STKPPLIB = $(STKPPLIBDIR)/libSTKpp.a
 PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"`
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(PKGLIB) $(STKPPLIB)
-# PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(STKPPLIB)
+# PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(PKGLIB) $(STKPPLIB)
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(STKPPLIB)
 
 .PHONY: all pkglib
 
