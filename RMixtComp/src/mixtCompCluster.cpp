@@ -33,6 +33,7 @@
 
 #include "mixt_DataHandlerR.h"
 #include "stkpp/include/STKpp.h"
+#include "MixtComp/src/mixtures/DummyMixture/DummyMixture.h"
 
 // [[Rcpp::export]]
 void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
