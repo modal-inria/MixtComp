@@ -30,10 +30,10 @@
 
 #-----------------------------------------------------------------------
 # Macros and definitions are in MAKEVARS, they can be overloaded by up call
-ifeq ($(wildcard ./makevars.local),) 
-RELATIVEMAKEVARS = ./makevars
-else 
+ifneq ($(wildcard ./makevars.local),) 
 RELATIVEMAKEVARS = ./makevars.local
+else 
+RELATIVEMAKEVARS = ./makevars
 endif
 
 MAKEVARS = $(realpath ./makevars)
