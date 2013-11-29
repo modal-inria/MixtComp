@@ -1,3 +1,8 @@
+getMixtCompCluster <- function(strategy){
+  # create a new MixtCompCluster
+  new("MixtCompCluster", strategy, new("Results"))
+}
+
 setClass(
   Class="MixtCompCluster",
   representation=representation(
