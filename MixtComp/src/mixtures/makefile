@@ -35,4 +35,4 @@
 .PHONY: all
 
 all:
-	$(MAKE) -C dummyMixture BIN_DIR="$(BIN_DIR)"
+	$(MAKE) -C DummyMixture BIN_DIR="$(BIN_DIR)"

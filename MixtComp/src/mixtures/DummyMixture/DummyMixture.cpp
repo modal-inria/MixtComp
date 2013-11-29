@@ -31,7 +31,7 @@
  *  @brief In this file 
  **/
 
-#include "DummyCluster.h"
+#include "DummyMixture.h"
 
 namespace mixt
 {
