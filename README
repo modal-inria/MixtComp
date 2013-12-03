@@ -1,0 +1,7 @@
+Before developping for MixtComp, the firectory structure must be created. In particular, symbolic links to the stkpp install directory must be created.
+
+The following command must be run from the root directory of MixtComp:
+
+STKPP_PATH=/home/modal/workspace/stk/stkpp ./createStruct.sh
+
+Where the value assigned to STKPP_PATH has been replaced by the path to the stkpp directory (which must contains the directories bin, include, lib and projects).
