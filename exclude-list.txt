@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Rbuildignore
+.git
+.gitignore
+*.o
+*.so
+*.a
+*.tar.gz
+bin
+lib
