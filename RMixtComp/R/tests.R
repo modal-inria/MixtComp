@@ -13,3 +13,7 @@ testRMixtComp <- function (){
   mixtCompCluster(lm, mcCluster, 3)
   return(mcCluster)
 }
+
+testParseCsv <- function (){
+   parseCsv("data/missValues.csv")
+}
