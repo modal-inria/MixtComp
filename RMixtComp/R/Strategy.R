@@ -1,6 +1,6 @@
-mixtCompSemStrategy <- function( initMethod="randomInit", nbTrialInInit=2, nbBurnInIter=20, nbIter=100 ){
+mixtCompSemStrategy <- function( nbTrialInInit = 2, nbBurnInIter = 20, nbIter = 100 ){
   # create a new instance of SEM strategy
-  new("Strategy", "randomInit", nbTrialInInit, nbBurnInIter, nbIter)
+  return(new("Strategy", "randomInit", nbTrialInInit, nbBurnInIter, nbIter))
 }
 
 setClass(

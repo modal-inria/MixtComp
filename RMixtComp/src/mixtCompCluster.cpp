@@ -58,7 +58,6 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   // instantiate the strategy facade
   STK::StrategyFacade strategy(p_composer);
   
-  
   STK::Clust::initType initMethod;
   std::string s_initMethod = mcStrategy.slot("initMethod");
   if      (s_initMethod == std::string("randomInit"      ))

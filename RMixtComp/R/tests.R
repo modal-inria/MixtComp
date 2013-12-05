@@ -1,17 +1,13 @@
 testRMixtComp <- function (){
-  data(composite1)
-  data(composite2)
+  lm <- getData("data/composite1.csv", "data/descriptor1.csv")
   
-  lm <- list()
-  
-  lm <- addIngredient(lm, composite1$var1, "Gamma_ajk_bjk")
-  lm <- addIngredient(lm, composite1$var2, "Gaussian_sjk")
- 
-  mcStrategy <- mixtCompSemStrategy(2, 20, 100)
-  mcCluster <- getMixtCompCluster(mcStrategy)
-  
+  mcCluster <- getMixtCompCluster(2, 20, 100)
   mixtCompCluster(lm, mcCluster, 3)
   return(mcCluster)
+}
+
+testGetData <- function(){
+  data <- getData("data/composite1.csv", "data/descriptor1.csv")
 }
 
 testParseCsv <- function (){

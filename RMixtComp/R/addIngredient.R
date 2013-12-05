@@ -1,3 +1,27 @@
+getData <- function(dataFile, descriptorFile){
+  lm <- list()
+  data <- read.table(file = dataFile,
+                         header = TRUE,
+                         sep = ";",
+                         quote = "\"",
+                         dec = ".",
+                         fill = FALSE,
+                         comment.char = "",
+                         stringsAsFactors = FALSE)
+  descriptors <- read.table(file = descriptorFile,
+                            header = FALSE,
+                            sep = ";",
+                            quote = "\"",
+                            dec = ".",
+                            fill = FALSE,
+                            comment.char = "",
+                            stringsAsFactors = FALSE)
+    for (i in 1:length(data)){
+      lm <- addIngredient(lm, data[i], descriptors[1,i])
+    }
+  return(lm)
+}
+
 addIngredient <- function (lm, data, model){
   if (!is.na(match(model,listModels)))
   {

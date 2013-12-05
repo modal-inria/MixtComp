@@ -90,7 +90,6 @@ void DataHandlerR::readDataFromRListHelper(int i, int& k, Rcpp::S4 s4)
   nbSamples_ = nm.nrow(); // overwritten, because check has already been performed on the R side
   for (int j = 0; j < nm.ncol(); ++j, ++k) // each column is assigned to a model (temporary)
   {
-    std::cout << k << std::endl;
     std::string id(STK::typeToString(k));
     addInfo(id, modelname);
     std::vector<DataPos>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
