@@ -1,15 +1,8 @@
 testRMixtComp <- function (){
-  lm <- getData("data/composite1.csv", "data/descriptor1.csv")
+  lm <- getData(c("data/composite1.csv", "data/descriptor1.csv"),
+                c("data/composite2.csv", "data/descriptor2.csv"))
   
   mcCluster <- getMixtCompCluster(2, 20, 100)
   mixtCompCluster(lm, mcCluster, 3)
   return(mcCluster)
-}
-
-testGetData <- function(){
-  data <- getData("data/composite1.csv", "data/descriptor1.csv")
-}
-
-testParseCsv <- function (){
-   parseCsv("data/missValues.csv")
 }
