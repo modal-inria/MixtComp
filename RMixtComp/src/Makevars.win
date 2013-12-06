@@ -12,9 +12,10 @@
 # >man
 # >R
 # >src
-#      >rtkpp
-#            >bin
-#            >lib
+#      >stkpp
+#            >bin      // can be a symbolic link to the stk++ bin directory
+#            >include  // can be a symbolic link to the stk++ include directory
+#            >lib      // can be a symbolic link to the stk++ lib directory
 #            >projects // can be a symbolic link to the stk++ projects directory
 #      >PKGNAME
 #            >lib
@@ -23,7 +24,8 @@
 # the stk++ paths.
 #
 
-PKGNAME = RMixtComp # add the name of the directory with the source of your package
+# add the name of the directory with the source of your package
+PKGNAME =MixtComp
 
 PKGDIR = ./$(PKGNAME)
 PKGLIBDIR = $(PKGDIR)/lib
@@ -33,8 +35,12 @@ STKPPDIR = ./stkpp
 STKPPLIBDIR = $(STKPPDIR)/lib
 STKPPLIB = $(STKPPLIBDIR)/libSTKpp.a
 
+# Flags for the cpp files at the root, i.e.
+PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"`
+
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(PKGLIB) $(STKPPLIB)
+# PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(PKGLIB) $(STKPPLIB)
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(STKPPLIB)
 
 .PHONY: all pkglib
 
@@ -47,5 +53,5 @@ all: $(SHLIB)
 $(SHLIB): pkglib
 
 pkglib:
-  (cd $(STKPPDIR) && $(MAKE) all)
-  (cd $(PKGDIR) && $(MAKE) all)
+	(cd $(STKPPDIR) && $(MAKE) all)
+	(cd $(PKGDIR) && $(MAKE) all)

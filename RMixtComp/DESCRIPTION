@@ -1,11 +1,14 @@
-Package: RMixtComp
+Package: MixtComp
 Type: Package
-Title: What the package does (short line)
+Title: Mixture Composer
 Version: 1.0
-Date: 2013-11-18
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What Licence is it under ?
+Date: 2013-12-06
+Author: Vincent KUBICKI, Serge Iovleff
+Copyright: Authors, and specific copyright notice for stkpp library at inst/COPYRIGHTS
+Maintainer: Vincent KUBICKI vincent.kubicki@inria.fr
+Description: Mixture Composer is a project to build mixture models with heterogeneous data
+sets using the conditional independance property in order to compose all
+these data set in a single mixture model.
+License: GPLv2
 Depends: Rcpp (>= 0.10.6)
 LinkingTo: Rcpp

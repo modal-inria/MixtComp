@@ -1,5 +1,5 @@
 # rsync --dry-run --delete -av --exclude-from 'exclude-list.txt' ./ ../MixtCompExport
-rsync -av -L --delete --delete-excluded --exclude-from 'exclude-list.txt' ./RMixtComp/ ../RMixtCompExport
+rsync -av -L --delete --delete-excluded --exclude-from 'exclude-list.txt' ./RMixtComp/ ../MixtCompRForge/pkg/
 
 mkdir -p ../RMixtCompExport/src/MixtComp/bin/debug
 touch ../RMixtCompExport/src/MixtComp/bin/debug/empty
