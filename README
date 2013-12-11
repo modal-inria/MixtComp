@@ -13,5 +13,3 @@ Exporting the working directory
 ---
 
 Project tracking platforms, like the CRAN or r-forge, need a self-contained repository. This repository must contain everything that is needed to build the package. Hence the symbolic links must be resolved before the export. The script XXX does just that, by exporting a list of directories and eliminating all the temporary files.
-
-
