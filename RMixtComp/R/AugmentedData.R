@@ -2,55 +2,76 @@ setClass(
   Class="AugmentedData",
   representation=representation(
     data = "matrix",
-    listValues = "list",
-    listIntervals = "list",
-    listRanges = "list"
+    listMissing = "list",
+    listFiniteValues = "list",
+    listIntervals = "list"
   ),
   prototype = prototype(
     data = matrix(0),
-    listValues = list(),
-    listIntervals = list(),
-    listRanges = list()
+    listMissing = list(),
+    listFiniteValues = list(),
+    listIntervals = list()
   )
 )
 
 setMethod(
   f = "initialize",
   signature = c("AugmentedData"),
-  definition = function(.Object, stringData){  
+  definition = function(.Object, stringData){
+    nbrStr <- "[0-9.]+"
+    nRows <- nrow(stringData)
+    # [] and # :
+    .Object@listIntervals <- list()
+    
     # []
-    .Object@listRanges <- list()
     rangeList <- grep("\\[.*\\]", myData)
     for (i in 1:length(rangeList) )
     {
-      m <- gregexpr("[0-9.]+", myData[rangeList[i]])
-      # couple containing the index and the values is added to lv
-      .Object@listRanges[[length(.Object@listRanges) + 1]] <- c(rangeList[i], regmatches(myData[rangeList[i]], m))
+      nbrList <- str_match_all(myData[rangeList[i]], nbrStr)
+      nbrList <- as.numeric(nbrList[[1]])
+      .Object@listIntervals[[length(.Object@listIntervals) + 1]] <- list(c((rangeList[i] - 1) %%  nRows,
+                                                                           (rangeList[i] - 1) %/% nRows),
+                                                                         nbrList)
+      myData[rangeList[i]] <- NA
+    }
+    
+    # :
+    rangeList <- grep(".*:.*", myData)
+    for (i in 1:length(rangeList) )
+    {
+      nbrList <- str_match_all(myData[rangeList[i]], nbrStr)
+      nbrList <- as.numeric(nbrList[[1]])
+      .Object@listIntervals[[length(.Object@listIntervals) + 1]] <- list(c((rangeList[i] - 1) %%  nRows,
+                                                                           (rangeList[i] - 1) %/% nRows),
+                                                                         nbrList)
       myData[rangeList[i]] <- NA
     }
     
     # {}
-    .Object@listIntervals <- list()
+    .Object@listFiniteValues <- list()
     rangeList <- grep("\\{.*\\}", myData)
     for (i in 1:length(rangeList) )
     {
-      m <- gregexpr("[0-9.]+", myData[rangeList[i]])
-      # couple containing the index and the values is added to lv
-      .Object@listValues[[length(.Object@listValues) + 1]] <- c(rangeList[i], regmatches(myData[rangeList[i]], m))
+      nbrList <- str_match_all(myData[rangeList[i]], nbrStr)
+      nbrList <- as.numeric(nbrList[[1]])
+      .Object@listFiniteValues[[length(.Object@listFiniteValues) + 1]] <- list(c((rangeList[i] - 1) %%  nRows,
+                                                                                 (rangeList[i] - 1) %/% nRows),
+                                                                               nbrList)
       myData[rangeList[i]] <- NA
     }
 
     # ?
-    lm <- list()
+    .Object@listMissing <- list()
     rangeList <- grep("\\?", myData)
     for (i in 1:length(rangeList) )
     {
-      # couple containing the index and the values is added to lv
-      lm[[length(lm) + 1]] <- rangeList[i]
+      .Object@listMissing[[length(.Object@listMissing) + 1]] <- c((rangeList[i] - 1) %%  nRows,
+                                                                  (rangeList[i] - 1) %/% nRows)
       myData[rangeList[i]] <- NA
     }
     
-    .Object@data = as.numeric(myData)
+    show(myData)
+    .Object@data = matrix(as.numeric(myData), nrow = nrow(myData))
     
     return(.Object)
   }
