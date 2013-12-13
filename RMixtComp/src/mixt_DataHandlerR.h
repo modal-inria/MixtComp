@@ -41,6 +41,17 @@
 namespace mixt
 {
 
+template <class DataType>
+struct AugmentedData
+{
+  typedef typename DataType::Type Type;
+  typedef std::pair<int, int> pos;
+  DataType myData; // le tableau originel que l’on utilise jusqu’à maintenant, DataType étant une STK::Array2D<STK::Real> par exemple
+  std::vector<          pos                          > v_missing_;             // data that is completely unknown
+  std::vector<std::pair<pos, std::vector<Type>     > > v_missingFiniteValues_; // data to be selected among a finite number of enunciated values
+  std::vector<std::pair<pos, std::pair<Type, Type> > > v_missingIntervals_;    // data restricted to an interval
+};
+
 class DataHandlerR: public STK::IDataHandler
 {
   public:
@@ -68,6 +79,9 @@ class DataHandlerR: public STK::IDataHandler
     virtual void getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const;
     /** return in an Array2D<std::string> the data with the given idData */
     virtual void getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const;
+    
+    /** return in an AugmentedData<STK::Array2D<STK::Real> >& the data with the given idData */
+    void getAugmentedData(std::string const& idData, AugmentedData<STK::Array2D<STK::Real> >& data, int& nbVariable) const;
     
     /** write information on the localization of data in the rList */
     void writeDataMap() const;
