@@ -45,17 +45,22 @@ template <class DataType>
 struct AugmentedData
 {
   typedef typename DataType::Type Type;
+  /** combination of a sample number and column number to identify a value */
   typedef std::pair<int, int> pos;
-  DataType myData; // le tableau originel que l’on utilise jusqu’à maintenant, DataType étant une STK::Array2D<STK::Real> par exemple
-  std::vector<          pos                          > v_missing_;             // data that is completely unknown
-  std::vector<std::pair<pos, std::vector<Type>     > > v_missingFiniteValues_; // data to be selected among a finite number of enunciated values
-  std::vector<std::pair<pos, std::pair<Type, Type> > > v_missingIntervals_;    // data restricted to an interval
+  /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
+  DataType myData;
+  /** vector of completely unknown values */
+  std::vector<          pos                          > v_missing_;
+  /** vector of values to be selected among a finite number of possibilities */
+  std::vector<std::pair<pos, std::vector<Type>     > > v_missingFiniteValues_;
+  /** vector of values restricted to an interval */
+  std::vector<std::pair<pos, std::pair<Type, Type> > > v_missingIntervals_;
 };
 
 class DataHandlerR: public STK::IDataHandler
 {
   public:
-    /** first: list index, second: matrix column number */
+    /** first: list index, second: matrix column number. A DataPos only corresponds to a single column */
     typedef std::pair<int, int> DataPos;
     /** map: id -> vector of positions */
     typedef std::map<std::string, std::vector<DataPos> > DataMap;
@@ -70,7 +75,9 @@ class DataHandlerR: public STK::IDataHandler
         /** @return the number of variables (the number of columns of the data) */
     inline virtual int nbVariable() const {return nbVariables_;};
 
-    /** read a data file and its companion description file. */
+    /** read a data file and its companion description file,
+      and fill the infoMap_ (id -> model) and dataMap_ (id -> vector of positions)
+      members */
     bool readDataFromRList(Rcpp::List);
 
     /** return in an Array2D<int> the data with the given idData */
@@ -81,14 +88,16 @@ class DataHandlerR: public STK::IDataHandler
     virtual void getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const;
     
     /** return in an AugmentedData<STK::Array2D<STK::Real> >& the data with the given idData */
-    void getAugmentedData(std::string const& idData, AugmentedData<STK::Array2D<STK::Real> >& data, int& nbVariable) const;
+    void getAugmentedData(std::string const& idData, AugmentedData<STK::Array2D<STK::Real> >& augData, int& nbVariable) const;
     
     /** write information on the localization of data in the rList */
     void writeDataMap() const;
   private:
     int nbSamples_;
     int nbVariables_;
+    /** map: id -> vector of positions in rList_, as typedef-ed above */
     DataMap dataMap_;
+    /** A list of the ingredients transmitted by R, as s4 objects */
     Rcpp::List rList_;
     
     /** read data structure independently of the type (integer, numeric, character) */

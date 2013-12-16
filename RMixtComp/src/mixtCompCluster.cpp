@@ -51,7 +51,7 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   STK::MixtureComposer composer(nbClusters);
   STK::IMixtureModelBase* p_composer = &composer;
   composer.setDataHandler(&handler);
-  composer.createIngredients(); // add non stkpp models
+  composer.createIngredients(); // add stkpp ingredients
   composer.setData();
   composer.initializeModel();
   

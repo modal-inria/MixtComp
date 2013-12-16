@@ -73,7 +73,7 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
 
 void DataHandlerR::getData(std::string const& idData, STK::Array2D<int>& data, int& nbVariable) const
 {
-  
+
 }
 
 void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const
@@ -96,6 +96,14 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& d
 void DataHandlerR::getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const
 {
 
+}
+
+void DataHandlerR::getAugmentedData(std::string const& idData, AugmentedData<STK::Array2D<STK::Real> >& augData, int& nbVariable) const
+{
+/*  for(int i = 0; i < augData.; ++i)
+  {
+    
+  } */
 }
 
 void DataHandlerR::writeDataMap() const

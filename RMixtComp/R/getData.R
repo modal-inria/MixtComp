@@ -23,7 +23,7 @@ getData <- function(...){
                               comment.char = "",
                               stringsAsFactors = FALSE)
     for (i in 1:length(data)){
-      lm <- addIngredient(lm, data[i], descriptors[1,i])
+      lm <- addModel(lm, as.matrix(data[[i]]), descriptors[1, i])
     }
   }
 

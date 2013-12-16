@@ -1,14 +1,14 @@
-addIngredient <- function (lm, data, model){
+addModel <- function (lm, data, model){
   if (!is.na(match(model, listModels)))
   {
     augData <- new("AugmentedData", data)
     if (length(lm) == 0)
     {
-      lm[1] <- new("MixtureModel", augData, model, "double")
+      lm[[1]] <- new("MixtureModel", augData, model, "double")
     }
     else
     {
-      if (nrow(lm[[1]]@data) == nrow(data))
+      if (nrow(lm[[1]]@augData@data) == nrow(data))
       {
         lm[[length(lm)+1]] <- new("MixtureModel", augData, model, "double")
       }

@@ -24,55 +24,65 @@ setMethod(
     .Object@listIntervals <- list()
     
     # []
-    rangeList <- grep("\\[.*\\]", myData)
-    for (i in 1:length(rangeList) )
+    rangeList <- grep("\\[.*\\]", stringData)
+    if (length(rangeList) > 0)
     {
-      nbrList <- str_match_all(myData[rangeList[i]], nbrStr)
-      nbrList <- as.numeric(nbrList[[1]])
-      .Object@listIntervals[[length(.Object@listIntervals) + 1]] <- list(c((rangeList[i] - 1) %%  nRows,
-                                                                           (rangeList[i] - 1) %/% nRows),
-                                                                         nbrList)
-      myData[rangeList[i]] <- NA
+      for (i in 1:length(rangeList) )
+      {
+        nbrList <- str_match_all(stringData[rangeList[i]], nbrStr)
+        nbrList <- as.numeric(nbrList[[1]])
+        .Object@listIntervals[[length(.Object@listIntervals) + 1]] <- list(c((rangeList[i] - 1) %%  nRows,
+                                                                             (rangeList[i] - 1) %/% nRows),
+                                                                           nbrList)
+        myData[rangeList[i]] <- "NA"
+      }
     }
     
     # :
-    rangeList <- grep(".*:.*", myData)
-    for (i in 1:length(rangeList) )
+    rangeList <- grep(".*:.*", stringData)
+    if (length(rangeList) > 0)
     {
-      nbrList <- str_match_all(myData[rangeList[i]], nbrStr)
-      nbrList <- as.numeric(nbrList[[1]])
-      .Object@listIntervals[[length(.Object@listIntervals) + 1]] <- list(c((rangeList[i] - 1) %%  nRows,
-                                                                           (rangeList[i] - 1) %/% nRows),
-                                                                         nbrList)
-      myData[rangeList[i]] <- NA
+      for (i in 1:length(rangeList) )
+      {
+        nbrList <- str_match_all(stringData[rangeList[i]], nbrStr)
+        nbrList <- as.numeric(nbrList[[1]])
+        .Object@listIntervals[[length(.Object@listIntervals) + 1]] <- list(c((rangeList[i] - 1) %%  nRows,
+                                                                             (rangeList[i] - 1) %/% nRows),
+                                                                           nbrList)
+        myData[rangeList[i]] <- "NA"
+      }
     }
     
     # {}
     .Object@listFiniteValues <- list()
-    rangeList <- grep("\\{.*\\}", myData)
-    for (i in 1:length(rangeList) )
+    rangeList <- grep("\\{.*\\}", stringData)
+    if (length(rangeList) > 0)
     {
-      nbrList <- str_match_all(myData[rangeList[i]], nbrStr)
-      nbrList <- as.numeric(nbrList[[1]])
-      .Object@listFiniteValues[[length(.Object@listFiniteValues) + 1]] <- list(c((rangeList[i] - 1) %%  nRows,
-                                                                                 (rangeList[i] - 1) %/% nRows),
-                                                                               nbrList)
-      myData[rangeList[i]] <- NA
+      for (i in 1:length(rangeList) )
+      {
+        nbrList <- str_match_all(stringData[rangeList[i]], nbrStr)
+        nbrList <- as.numeric(nbrList[[1]])
+        .Object@listFiniteValues[[length(.Object@listFiniteValues) + 1]] <- list(c((rangeList[i] - 1) %%  nRows,
+                                                                                   (rangeList[i] - 1) %/% nRows),
+                                                                                 nbrList)
+        myData[rangeList[i]] <- "NA"
+      }
     }
 
     # ?
     .Object@listMissing <- list()
-    rangeList <- grep("\\?", myData)
-    for (i in 1:length(rangeList) )
+    rangeList <- grep("\\?", stringData)
+    if (length(rangeList) > 0)
     {
-      .Object@listMissing[[length(.Object@listMissing) + 1]] <- c((rangeList[i] - 1) %%  nRows,
-                                                                  (rangeList[i] - 1) %/% nRows)
-      myData[rangeList[i]] <- NA
+      for (i in 1:length(rangeList) )
+      {
+        .Object@listMissing[[length(.Object@listMissing) + 1]] <- c((rangeList[i] - 1) %%  nRows,
+                                                                    (rangeList[i] - 1) %/% nRows)
+        myData[rangeList[i]] <- "NA"
+      }
     }
-    
-    show(myData)
-    .Object@data = matrix(as.numeric(myData), nrow = nrow(myData))
-    
+
+    .Object@data = matrix(as.numeric(stringData), nrow = nrow(stringData))
     return(.Object)
   }
 )
