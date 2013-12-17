@@ -1,16 +1,16 @@
 addIngredient <- function (lm, data, model){
-  if (!is.na(match(model,listModels)))
+  if (!is.na(match(model, listModels)))
   {
-    data = as.matrix(data)
+    augData <- new("AugmentedData", data)
     if (length(lm) == 0)
     {
-      lm[1] <- new("MixtureModel", data, model, typeof(data))
+      lm[1] <- new("MixtureModel", augData, model, "double")
     }
     else
     {
       if (nrow(lm[[1]]@data) == nrow(data))
       {
-        lm[length(lm)+1] <- new("MixtureModel", data, model, typeof(data))
+        lm[[length(lm)+1]] <- new("MixtureModel", augData, model, "double")
       }
       else
       {
