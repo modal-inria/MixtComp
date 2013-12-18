@@ -91,25 +91,24 @@ Starting from an initial arbitrary parameter $\theta^0$, the $m$th iteration of 
 algorithm consists of repeating the following E and M steps.
 \begin{itemize}
 \item {\bf E step:} The current conditional probabilities that $z_{ik}=1$ for $i=1,\ldots,n$
-  and $k=1,\ldots,K$ are computed using the current value $\theta^{m-1}$ of the parameter:
-  \begin{equation}
-    \label{eq:condi}
-    t^m_{ik}=t^m_k(\bx_i|\theta^{m-1})=\frac{ p^{m-1}_kh (\bx_i|{\blambda^{m-1}_k},\balpha^{m-1} )}
-    {\sum_{l=1}^K  p^{m-1}_l h(\bx_i|\blambda^{m-1}_l,\balpha^{m-1})}.
-  \end{equation}
+and $k=1,\ldots,K$ are computed using the current value $\theta^{m-1}$ of the parameter:
+\begin{equation}\label{eq:condi}
+t^m_{ik}=t^m_k(\bx_i|\theta^{m-1})=\frac{ p^{m-1}_kh (\bx_i|{\blambda^{m-1}_k},\balpha^{m-1} )}
+{\sum_{l=1}^K  p^{m-1}_l h(\bx_i|\blambda^{m-1}_l,\balpha^{m-1})}.
+\end{equation}
 \item {\bf M step:} The m.l. estimate $\theta^m$ of $\theta$ is updated using the conditional
-  probabilities $t^m_{ik}$ as conditional mixing weights. It leads to maximize
-  \begin{equation} \label{eq:mStepEM}
-    L(\theta| {\bx}_{1},\ldots,{\bx}_{n}, {\bt}^m)
-      =\sum_{i=1}^{n}\sum_{k=1}^{K} t_{ik}^m \ln \left [p_{k} h({\bf x}_{i}|\blambda_{k},\balpha)\right],
-  \end{equation}
-  where ${\bt}^m=(t_{ik}^m, i=1,\ldots,n, k=1,\ldots,K)$. Updated expression of mixture
-  proportions are, for $k=1,\ldots,K$,
-  \begin{equation}
-    p_k^m=\frac{\sum_{i=1}^n t^m_{ik}}{n}.
-  \end{equation}
-  Detailed formula for the updating of the $\blambda_k$'s and $\balpha$ are depending of the component
-  parameterization and will be detailed in the next section.
+probabilities $t^m_{ik}$ as conditional mixing weights. It leads to maximize
+\begin{equation} \label{eq:mStepEM}
+L(\theta| {\bx}_{1},\ldots,{\bx}_{n}, {\bt}^m)
+=\sum_{i=1}^{n}\sum_{k=1}^{K} t_{ik}^m \ln \left [p_{k} h({\bf x}_{i}|\blambda_{k},\balpha)\right],
+\end{equation}
+where ${\bt}^m=(t_{ik}^m, i=1,\ldots,n, k=1,\ldots,K)$. Updated expression of mixture
+proportions are, for $k=1,\ldots,K$,
+\begin{equation}
+p_k^m=\frac{\sum_{i=1}^n t^m_{ik}}{n}.
+\end{equation}
+Detailed formula for the updating of the $\blambda_k$'s and $\balpha$ are depending of the component
+parameterization and will be detailed in the next section.
 \end{itemize}
 The EM algorithm may converge to a local maximum of the observed data likelihood function, depending on starting
 values.
@@ -181,8 +180,8 @@ The parameters $\bmu=(\mu^1,\ldots,\mu^d)$ are the position parameters and the p
 are the standard-deviation parameters. Assumptions on the position and standard-deviation parameters among the variables and the components
 lead to define four families of mixture model.
 
-Let us write a multidimensional Gaussian mixture model in the from \verb+f_s*+
-with \verb+b*+, the different ways to parametrize the standard-deviation parameters of a Gaussian mixture:
+Let us write a multidimensional Gaussian mixture model in the from \verb+gaussian_s*+
+with \verb+s*+, the different ways to parametrize the standard-deviation parameters of a Gaussian mixture:
 \begin{itemize}
 \item \verb+sjk+ means that we have one standard-deviation parameter for each variable and for each component,
 \item \verb+sk+ means that the standard-deviation parameters are the same for all the variables inside a component,
@@ -190,7 +189,7 @@ with \verb+b*+, the different ways to parametrize the standard-deviation paramet
 \item and finally \verb+s+ means that the standard-deviation parameters are all equals.
 \end{itemize}
 
-The \verb+f_sjk+ model is the most general model and have a density function of the form
+The \verb+gaussian_sjk+ model is the most general model and have a density function of the form
 \begin{equation}\label{eq:f_sjk}
   f({\bx}_i|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d g(x^j_{i}| \mu^j_{k}, \sigma^j_{k}).
 \end{equation}
@@ -291,17 +290,39 @@ function of the form
 
 \section{M step computation for the Gaussian models}
 
-For all the M Step, the mean will be updated by the following formula
+For all the M Step, the mean is updated using the following formula
 $$
 \bar{\bx}_k = \frac{1}{t_{.k}} \sum_{i=1}^n t_{ik} \bx_i,
 $$
-with $t_{.k} = \sum_{i=1}^n$, for $k=1,\ldots,K$.
+with $t_{.k} = \sum_{i=1}^n t_{ik}$, for $k=1,\ldots,K$.
+
 
 \subsection{M Step of the gaussian\_sjk model}
 
+Using the equation (\ref{eq:mStepEM}) and dropping the constant, we obtain that we have to
+maximize in $\bsigma = (\sigma_j^k)^2$, for $j=1,\ldots,d$ and $k=1,\ldots,K$ the expression
+\begin{equation} \label{eq:gaussian_sjk}
+l(\bsigma | {\bx}_{1},\ldots,{\bx}_{n}, {\bt}^m) = \sum_{i=1}^{n} \sum_{k=1}^{K} t_{ik}^m
+     \sum_{j=1}^d \left[ - \frac{1}{(\sigma_j^k)^2} (x_i^j - \hat{\mu}_j^k)^2 - \log((\sigma_j^k)^2) \right].
+\end{equation}
+
 For this model, the variance is updated using the formula:
 $$
-(\hat{\sigma}^j_k)^2 = \frac{1}{t_{.k}} \sum_{i=1}^n t_{ik} (x^j_i-\mu^j_k)^2.
+(\hat{\sigma}^j_k)^2 = \frac{1}{t_{.k}} \sum_{i=1}^n t_{ik} (x^j_i-\hat{\mu}^j_k)^2.
+$$
+
+\subsection{M Step of the gaussian\_sk model}
+
+For this model, the variance is updated using the formula:
+$$
+(\hat{\sigma}_k)^2 = \frac{1}{d t_{.k}} \sum_{j=1}^d\sum_{i=1}^n t_{ik} (x^j_i-\hat{\mu}^j_k)^2.
+$$
+
+\subsection{M Step of the gaussian\_sj model}
+
+For this model, the variance is updated using the formula:
+$$
+(\hat{\sigma}^j)^2 =  t_{ik} (x^j_i-\mu^j_k)^2.
 $$
 
 \subsection{M Step of the gaussian\_s model}
