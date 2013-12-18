@@ -49,7 +49,7 @@ DataHandlerR::~DataHandlerR()
 
 bool DataHandlerR::readDataFromRList(Rcpp::List rList)
 {
-  int k = 0;
+  int k = 0; // 
   for (int i = 0; i < rList.size(); ++i)
   {
     rList_ = rList;
@@ -57,15 +57,15 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
     std::string objType = s4.slot("type");
     if (objType == "double")
     {
-      readDataFromRListHelper<Rcpp::NumericMatrix>(i, k, s4);
+      readDataFromRListHelper<Rcpp::NumericMatrix>(i, s4);
     }
     else if (objType == "integer")
     {
-      readDataFromRListHelper<Rcpp::IntegerMatrix>(i, k, s4);
+      readDataFromRListHelper<Rcpp::IntegerMatrix>(i, s4);
     }
     else if (objType == "character")
     {
-      readDataFromRListHelper<Rcpp::CharacterMatrix>(i, k, s4);
+      readDataFromRListHelper<Rcpp::CharacterMatrix>(i, s4);
     }
   }
   return true;
@@ -78,17 +78,18 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<int>& data, i
 
 void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const
 {
-  std::vector<DataPos> const& v_pos = dataMap_.at(idData);
+  std::vector<int> const& v_pos = dataMap_.at(idData);
   nbVariable = v_pos.size();
   data.resize(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
   int j = data.firstIdxCols();
-  for (std::vector<DataPos>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j)
+  for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j)
   {
-    Rcpp::S4 s4 = rList_[(*it).first];
-    Rcpp::NumericMatrix nm = s4.slot("data");
+    Rcpp::S4 s4 = rList_[(*it)];
+    Rcpp::List ls = s4.slot("augData");
+    Rcpp::NumericVector nv = ls["data"];
     for (int iS = data.firstIdxRows(), iR = 0; iR < nbSamples_; ++iS, ++iR)
     {
-      data(iS, j) = nm(iR, (*it).second);
+      data(iS, j) = nv(iR);
     }
   }
 }
@@ -112,8 +113,8 @@ void DataHandlerR::writeDataMap() const
   for (DataMap::const_iterator it_id = dataMap_.begin(); it_id != dataMap_.end(); ++it_id)
   {
     stk_cout << "\tname: " << (*it_id).first << "\n";
-    for (std::vector<DataPos>::const_iterator it_dp = (*it_id).second.begin(); it_dp != (*it_id).second.end(); ++it_dp)
-      stk_cout << "\t\trList_ position: " << (*it_dp).first << ", column: " << (*it_dp).second << "\n";
+    for (std::vector<int>::const_iterator it_dp = (*it_id).second.begin(); it_dp != (*it_id).second.end(); ++it_dp)
+      stk_cout << "\t\trList_ position: " << (*it_dp) << "\n";
   }
 }
 

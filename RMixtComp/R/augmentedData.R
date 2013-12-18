@@ -58,9 +58,9 @@ augmentedData <- function(stringData) # stringData is a vector of strings
   }
   
   currList <- list(data             = as.numeric(stringData) ,
-                   listIntervals    = listIntervals               ,
-                   listFiniteValues = listFiniteValues            ,
-                   listMissing      = listMissing                 )
+                   listIntervals    = listIntervals          ,
+                   listFiniteValues = listFiniteValues       ,
+                   listMissing      = listMissing            )
   
   return(currList)
 }

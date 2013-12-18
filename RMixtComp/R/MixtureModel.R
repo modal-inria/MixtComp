@@ -3,6 +3,7 @@ setClass(
   representation = representation(
   augData = "list",
   model = "character",
+  id = "character",
   type = "character"
   )
 )
@@ -10,10 +11,11 @@ setClass(
 setMethod(
   f = "initialize",
   signature = c("MixtureModel"),
-  definition = function(.Object, augData, model, type){ 
+  definition = function(.Object, augData, model, id, type){ 
     .Object@augData <- augData
-    .Object@model <- model
-    .Object@type <- type
+    .Object@model   <- model
+    .Object@id      <- id
+    .Object@type    <- type
     return(.Object)
   }
 )

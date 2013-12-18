@@ -24,7 +24,10 @@ getData <- function(...){
                               stringsAsFactors = FALSE)
     for (i in 1:length(data))
     {
-      lm <- addModel(lm, data[[i]], descriptors[1, i]) # data is sent as a dataframe
+      lm <- addVariable(lm,
+                        data[[i]],
+                        descriptors[1, i],
+                        descriptors[2, i]) # data is sent as a dataframe
     }
   }
 
