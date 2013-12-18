@@ -107,11 +107,11 @@ template<class RcppClass>
 void DataHandlerR::readDataFromRListHelper(int i, Rcpp::S4 s4)
 {
   std::string modelname = s4.slot("model");
+  std::string id = s4.slot("id");
   Rcpp::List ls = s4.slot("augData");
   Rcpp::NumericVector nv = ls["data"];
+  
   nbSamples_ = nv.size(); // overwritten, because check has already been performed on the R side
-
-  std::string id(STK::typeToString(i)); // a new model is created for each MixtureModel input -> univariate hypothesis
   addInfo(id, modelname);
   std::vector<int>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
   v_pos.push_back(i);
