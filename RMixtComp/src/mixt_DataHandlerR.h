@@ -41,21 +41,8 @@
 namespace mixt
 {
 
-template <class DataType>
-struct AugmentedData
-{
-  typedef typename DataType::Type Type;
-  /** combination of a sample number and column number to identify a value */
-  typedef std::pair<int, int> pos;
-  /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
-  DataType myData;
-  /** vector of completely unknown values */
-  std::vector<          pos                          > v_missing_;
-  /** vector of values to be selected among a finite number of possibilities */
-  std::vector<std::pair<pos, std::vector<Type>     > > v_missingFiniteValues_;
-  /** vector of values restricted to an interval */
-  std::vector<std::pair<pos, std::pair<Type, Type> > > v_missingIntervals_;
-};
+/** combination of a sample number and column number to identify a value */
+typedef std::pair<int, int> pos;
 
 class DataHandlerR: public STK::IDataHandler
 {
@@ -85,8 +72,13 @@ class DataHandlerR: public STK::IDataHandler
     /** return in an Array2D<std::string> the data with the given idData */
     virtual void getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const;
     
-    /** return in an AugmentedData<STK::Array2D<STK::Real> >& the data with the given idData */
-    void getAugmentedData(std::string const& idData, AugmentedData<STK::Array2D<STK::Real> >& augData, int& nbVariable) const;
+    /** return in an Array2D<int> the data with the given idData, as well as the missing values of various types */
+    void getAugmentedData(std::string const&                                              idData,
+                          STK::Array2D<STK::Real>&                                        data,
+                          std::vector<pos>&                                               v_missing,
+                          std::vector<std::pair<pos, std::vector<STK::Real> > >&          v_missingFiniteValues,
+                          std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >& v_missingIntervals,
+                          int& nbVariable) const;
     
     /** write information on the localization of data in the rList */
     void writeDataMap() const;
