@@ -1,23 +1,25 @@
 addModel <- function (lm, data, model){
   if (!is.na(match(model, listModels)))
   {
-    augData <- new("AugmentedData", data)
+    augData <- augmentedData(data)
     if (length(lm) == 0)
     {
+      show("lm = 0")
       lm[[1]] <- new("MixtureModel", augData, model, "double")
     }
     else
     {
       if (nrow(lm[[1]]@augData@data) == nrow(data))
       {
+        show("lm > 0")
         lm[[length(lm)+1]] <- new("MixtureModel", augData, model, "double")
       }
       else
       {
         message( "New ingredient has "
-               , nrow(data)
+               , length(data)
                , " samples while the data currently in the mixture has "
-               , nrow(lm[[1]]@data)
+               , length(lm[[1]]["data"]) # comparison with the size of the data in the first model, first column
                , " samples. New ingredient has not been added.")
       }
     }

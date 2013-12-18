@@ -1,7 +1,7 @@
 setClass(
   Class ="MixtureModel",
   representation = representation(
-  augData = "AugmentedData",
+  augData = "list",
   model = "character",
   type = "character"
   )

@@ -22,8 +22,9 @@ getData <- function(...){
                               fill = FALSE,
                               comment.char = "",
                               stringsAsFactors = FALSE)
-    for (i in 1:length(data)){
-      lm <- addModel(lm, as.matrix(data[[i]]), descriptors[1, i])
+    for (i in 1:length(data))
+    {
+      lm <- addModel(lm, data[[i]], descriptors[1, i]) # data is sent as a dataframe
     }
   }
 
