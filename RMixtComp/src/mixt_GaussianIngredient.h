@@ -37,8 +37,22 @@
 namespace mixt
 {
 
-typedef MixtureBridge<STK::Clust::Gaussian_sjk_> IngredientGaussian_sjk;
-typedef MixtureBridge<STK::Clust::Gaussian_s_> IngredientGaussian_s;
+template<>
+struct IngredientTraits<Gaussian_sjk_>
+{
+   /** Type of the data set to be used as input */
+   typedef STK::Array2D<STK::Real> Data;
+   /** Type of the data set to be used as input */
+   typedef AugmentedData<Data> AugData;
+   /** Type of the parameter set to be used as output */
+   typedef STK::Array2D<STK::Real> Param;
+   /** Type of the Data */
+   typedef typename Data::Type Type;
+   /** Type of the mixture model */
+   typedef STK::Gaussian_sjk<Data> Ingredient;
+};
+
+typedef MixtureBridge<Gaussian_sjk_> IngredientGaussian_sjk;
 
 } /* namespace mixt */
 

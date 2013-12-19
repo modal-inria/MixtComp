@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*     Copyright (C) 2004-2013 Vincent KUBICKI
+/*     Copyright (C) 2004-2013  Serge Iovleff
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as
@@ -24,21 +24,35 @@
 
 /*
  * Project:  MixtComp
- * created on: 15 nov. 2013
+ * created on: 7 sept. 2013
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
-#ifndef MIXT_GAMMAINGREDIENT_H
-#define MIXT_GAMMAINGREDIENT_H
+/** @file mixt_IngredientTraits.h
+ *  @brief In this file
+ **/
 
-#include "mixt_MixtureBridge.h"
+
+#ifndef MIXT_INGREDIENT_TRAITS_H
+#define MIXT_INGREDIENT_TRAITS_H
 
 namespace mixt
 {
 
-typedef MixtureBridge<Gamma_ajk_bjk_> IngredientGamma_ajk_bjk;
-typedef MixtureBridge<Gamma_ajk_bj_> IngredientGamma_ajk_bj;
+enum Ingredient
+{
+  Gamma_ajk_bjk_,
+  Gamma_ajk_bj_,
+  Gaussian_sjk_,
+  Gaussian_s_,
+  unknown_mixture_
+};
 
-} /* namespace STK */
+/** Given the Id of a mixture model, the struct Traits allow to get
+ *  type of the input and output data of the parameters.
+ **/
+template<int Id> struct IngredientTraits;
 
-#endif /* MIXT_GAMMAINGREDIENT_H */
+}  // namespace mixt
+
+#endif // MIXT_INGREDIENT_TRAITS_H

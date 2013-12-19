@@ -36,28 +36,26 @@
 #ifndef MIXT_MIXTUREBRIDGE_H
 #define MIXT_MIXTUREBRIDGE_H
 
+#include "mixt_IngredientTraits.h"
+#include "mixt_AugmentedData.h"
+
 namespace mixt
 {
 
-/** @ingroup Clustering
- *  @brief Templated implementation of the IMixture interface allowing
- *  to bridge a stk++ ingredient with an Ingredient.
- *
- * @tparam Id is any name of a concrete model deriving from the
- * STK::IMixtureIngredeintBase class
- */
 template<int Id>
 class MixtureBridge: public STK::IMixture
 {
   public:
-    // type of Mixture
-    typedef typename STK::Clust::IngredientTraits<Id>::Ingredient Ingredient;
-    // data type to set
-    typedef typename STK::Clust::IngredientTraits<Id>::Data Data;
-    // parameters type to get
-    typedef typename STK::Clust::IngredientTraits<Id>::Param Param;
+    // data type
+    typedef typename IngredientTraits<Id>::Data Data;
+    // augmented data type
+    typedef typename IngredientTraits<Id>::AugData AugData;
+        // parameters type to get
+    typedef typename IngredientTraits<Id>::Param Param;
     // type of the data
-    typedef typename STK::Clust::IngredientTraits<Id>::Type Type;
+    typedef typename IngredientTraits<Id>::Type Type;
+    // type of Mixture
+    typedef typename IngredientTraits<Id>::Ingredient Ingredient;
 
     /** constructor.
      *  @param idName id name of the mixture
@@ -73,7 +71,6 @@ class MixtureBridge: public STK::IMixture
                  , ingredient_(mixture.ingredient_)
                  , m_dataij_(mixture.m_dataij_)
                  , nbVariable_(mixture.nbVariable_)
-                 , v_missing_(mixture.v_missing_)
     { ingredient_.setData(m_dataij_);}
     /** This is a standard clone function in usual sense. It must be defined to
      *  provide new object of your class with values of various parameters
@@ -93,7 +90,6 @@ class MixtureBridge: public STK::IMixture
       MixtureBridge* p_mixture = new MixtureBridge( idName(), nbCluster());
       p_mixture->m_dataij_ = m_dataij_;
       p_mixture->nbVariable_ = nbVariable_;
-      p_mixture->v_missing_ = v_missing_;
       // Bug Fix: set the correct data set
       p_mixture->ingredient_.setData(p_mixture->m_dataij_);
       return p_mixture;
@@ -133,8 +129,8 @@ class MixtureBridge: public STK::IMixture
      */
     virtual void imputationStep()
     {
-      for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
-      { m_dataij_(it->first, it->second) = ingredient_.impute(it->first, it->second);}
+      /* for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
+      { m_dataij_(it->first, it->second) = ingredient_.impute(it->first, it->second);} */
     }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
@@ -143,8 +139,8 @@ class MixtureBridge: public STK::IMixture
      */
     virtual void samplingStep()
     {
-      for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
-      { m_dataij_(it->first, it->second) = ingredient_.sample(it->first, it->second);}
+      /* for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
+      { m_dataij_(it->first, it->second) = ingredient_.sample(it->first, it->second);} */
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
@@ -184,29 +180,28 @@ class MixtureBridge: public STK::IMixture
   protected:
     /** The ingredient to bridge with the composer */
     Ingredient ingredient_;
-    /** The data set */
-    Data m_dataij_;
-    /** vector with the coordinates of the missing values */
-    std::vector<std::pair<int,int> > v_missing_;
+    /** The augmented data set */
+    AugData m_dataij_;
     /** number of variables in the data set */
     int nbVariable_;
+    
   private:
     typedef std::vector<std::pair<int,int> >::const_iterator ConstIterator;
     /** utility function for lookup the data set and find missing values
      *  coordinates. */
     void findMissing()
-    {
+    { /*
       for (int j=m_dataij_.firstIdxCols(); j<= m_dataij_.lastIdxCols(); ++j)
         for (int i=m_dataij_.firstIdxRows(); i<= m_dataij_.lastIdxRows(); ++i)
         {
           if (STK::Arithmetic<Type>::isNA(m_dataij_(i,j)))
           { v_missing_.push_back(std::pair<int,int>(i,j));}
-        }
+        } */
     }
     /** utility function for lookup the data set and remove missing values
      *  coordinates. */
     void removeMissing()
-    {
+    { /*
       STK::Real mean;
       int j, old_j = STK::UnknownSize;
       for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
@@ -214,7 +209,7 @@ class MixtureBridge: public STK::IMixture
          j = it->second; // get column
          if (j!=old_j) { mean = m_dataij_.col(j).meanSafe(); old_j =j;}
          m_dataij_(it->first, it->second) = mean;
-       }
+       } */
     }
 };
 

@@ -28,17 +28,28 @@
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
-#ifndef MIXT_GAMMAINGREDIENT_H
-#define MIXT_GAMMAINGREDIENT_H
-
-#include "mixt_MixtureBridge.h"
+#ifndef MIXT_AUGMENTEDDATA_H
+#define MIXT_AUGMENTEDDATA_H
 
 namespace mixt
 {
 
-typedef MixtureBridge<Gamma_ajk_bjk_> IngredientGamma_ajk_bjk;
-typedef MixtureBridge<Gamma_ajk_bj_> IngredientGamma_ajk_bj;
+template <class DataType>
+struct AugmentedData
+{
+  typedef typename DataType::Type Type;
+  /** combination of a sample number and a column number to identify a value */
+  typedef std::pair<int, int> pos;
+  /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
+  DataType myData;
+  /** vector of completely unknown values */
+  std::vector<          pos                          > v_missing_;
+  /** vector of values to be selected among a finite number of possibilities */
+  std::vector<std::pair<pos, std::vector<Type>     > > v_missingFiniteValues_;
+  /** vector of values restricted to an interval */
+  std::vector<std::pair<pos, std::pair<Type, Type> > > v_missingIntervals_;
+};
 
-} /* namespace STK */
+} // namespace mixt
 
-#endif /* MIXT_GAMMAINGREDIENT_H */
+#endif // MIXT_AUGMENTEDDATA_H
