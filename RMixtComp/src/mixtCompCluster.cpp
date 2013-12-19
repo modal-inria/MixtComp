@@ -33,6 +33,9 @@
 
 #include "mixt_DataHandlerR.h"
 #include "stkpp/include/STKpp.h"
+#include "mixt_GaussianIngredient.h"
+#include "mixt_GammaIngredient.h"
+// #include "mixt_Gamma_ajk_bjk.h"
 
 // [[Rcpp::export]]
 void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
