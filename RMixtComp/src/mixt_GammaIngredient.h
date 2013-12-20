@@ -36,8 +36,8 @@
 namespace mixt
 {
 
-typedef MixtureBridge<Gamma_ajk_bjk_> IngredientGamma_ajk_bjk;
-typedef MixtureBridge<Gamma_ajk_bj_> IngredientGamma_ajk_bj;
+typedef MixtureBridge<STK::Clust::Gamma_ajk_bjk_> IngredientGamma_ajk_bjk;
+typedef MixtureBridge<STK::Clust::Gamma_ajk_bj_> IngredientGamma_ajk_bj;
 
 } /* namespace STK */
 

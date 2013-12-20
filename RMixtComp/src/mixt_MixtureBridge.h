@@ -36,7 +36,6 @@
 #ifndef MIXT_MIXTUREBRIDGE_H
 #define MIXT_MIXTUREBRIDGE_H
 
-#include "mixt_IngredientTraits.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
@@ -47,15 +46,13 @@ class MixtureBridge: public STK::IMixture
 {
   public:
     // data type
-    typedef typename IngredientTraits<Id>::Data Data;
-    // augmented data type
-    typedef typename IngredientTraits<Id>::AugData AugData;
+    typedef typename STK::Clust::IngredientTraits<Id>::Data Data;
         // parameters type to get
-    typedef typename IngredientTraits<Id>::Param Param;
+    typedef typename STK::Clust::IngredientTraits<Id>::Param Param;
     // type of the data
-    typedef typename IngredientTraits<Id>::Type Type;
+    typedef typename STK::Clust::IngredientTraits<Id>::Type Type;
     // type of Mixture
-    typedef typename IngredientTraits<Id>::Ingredient Ingredient;
+    typedef typename STK::Clust::IngredientTraits<Id>::Ingredient Ingredient;
 
     /** constructor.
      *  @param idName id name of the mixture
@@ -63,15 +60,15 @@ class MixtureBridge: public STK::IMixture
      **/
     MixtureBridge( std::string const& idName, int nbCluster)
                  : IMixture( idName, nbCluster)
-                 , ingredient_(nbCluster), m_dataij_(), nbVariable_(0)
-    { ingredient_.setData(m_dataij_);}
+                 , ingredient_(nbCluster), m_augDataij_(), nbVariable_(0)
+    { ingredient_.setData(m_augDataij_.data);}
     /** copy constructor */
     MixtureBridge( MixtureBridge const& mixture)
                  : IMixture(mixture)
                  , ingredient_(mixture.ingredient_)
-                 , m_dataij_(mixture.m_dataij_)
+                 , m_augDataij_(mixture.m_augDataij_)
                  , nbVariable_(mixture.nbVariable_)
-    { ingredient_.setData(m_dataij_);}
+    { ingredient_.setData(m_augDataij_.data);}
     /** This is a standard clone function in usual sense. It must be defined to
      *  provide new object of your class with values of various parameters
      *  equal to the values of calling object. In other words, this is
@@ -88,10 +85,10 @@ class MixtureBridge: public STK::IMixture
     virtual MixtureBridge* create() const
     {
       MixtureBridge* p_mixture = new MixtureBridge( idName(), nbCluster());
-      p_mixture->m_dataij_ = m_dataij_;
+      p_mixture->m_augDataij_ = m_augDataij_;
       p_mixture->nbVariable_ = nbVariable_;
       // Bug Fix: set the correct data set
-      p_mixture->ingredient_.setData(p_mixture->m_dataij_);
+      p_mixture->ingredient_.setData(p_mixture->m_augDataij_.data);
       return p_mixture;
     }
     /** @brief Initialize the model before its use by the composer.
@@ -113,10 +110,10 @@ class MixtureBridge: public STK::IMixture
     */
     virtual void setData()
     {
-      IMixture::getData<Data>(m_dataij_, nbVariable_ );
+      IMixture::getData<AugmentedData>(m_augDataij_, nbVariable_);
       findMissing();
       removeMissing();
-      ingredient_.setData(m_dataij_);
+      ingredient_.setData(m_augDataij_.data);
     }
     /** This function must be defined in derived class for initialization of mixture parameters. */
     virtual void initializeStep() { ingredient_.initializeStep();}
@@ -181,7 +178,7 @@ class MixtureBridge: public STK::IMixture
     /** The ingredient to bridge with the composer */
     Ingredient ingredient_;
     /** The augmented data set */
-    AugData m_dataij_;
+    AugmentedData<Data> m_augDataij_;
     /** number of variables in the data set */
     int nbVariable_;
     

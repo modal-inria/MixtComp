@@ -36,6 +36,8 @@
 
 #include "stkpp/include/Clustering.h"
 #include "mixt_DataHandlerR.h"
+#include "mixt_MixtureBridge.h"
+#include "mixt_AugmentedData.h"
 
 namespace mixt
 {
@@ -71,12 +73,23 @@ class MixtureComposer : public STK::MixtureComposer
     /** Create a clone of the current model, with ingredients parameters preserved. */
     virtual MixtureComposer* clone() const;
     
-    inline void getAugmentedData(std::string const& idData, AugmentedData<STK::Array2D<STK::Real> >& augData, int& nbVariable) const
-              {p_DataHandlerR()->getAugmentedData(idData, augData, nbVariable);};
+    inline void getAugmentedData(std::string const&                       idData,
+                                 AugmentedData<STK::Array2D<STK::Real> >& AugData,
+                                 int& nbVariable) const
+    {
+      p_DataHandlerR()->getAugmentedData(idData,
+                                         data,
+                                         v_missing,
+                                         v_missingFiniteValues,
+                                         v_missingIntervals,
+                                         nbVariable);
+    };
     
   private:
     inline DataHandlerR const* p_DataHandlerR() const
-              {return static_cast<DataHandlerR const*>(this->p_handler());};
+    {
+      return static_cast<DataHandlerR const*>(this->p_handler());
+    };
 };
 
 } /* namespace mixt */
