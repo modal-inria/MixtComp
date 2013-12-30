@@ -37,6 +37,7 @@
 #include <vector>
 #include <Rcpp.h>
 #include "stkpp/projects/DManager/include/STK_IDataHandler.h"
+#include "mixt_AugmentedData.h"
 
 namespace mixt
 {
@@ -72,13 +73,10 @@ class DataHandlerR: public STK::IDataHandler
     /** return in an Array2D<std::string> the data with the given idData */
     virtual void getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const;
     
-    /** return in an Array2D<int> the data with the given idData, as well as the missing values of various types */
-    void getAugmentedData(std::string const&                                              idData,
-                          STK::Array2D<STK::Real>&                                        data,
-                          std::vector<pos>&                                               v_missing,
-                          std::vector<std::pair<pos, std::vector<STK::Real> > >&          v_missingFiniteValues,
-                          std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >& v_missingIntervals,
-                          int& nbVariable) const;
+    /** return in an AugmentedData object the missing values of various types */
+    void getData(std::string const& idData,
+                 AugmentedData<STK::Array2D<STK::Real> >& data,
+                 int& nbVariable) const;
     
     /** write information on the localization of data in the rList */
     void writeDataMap() const;

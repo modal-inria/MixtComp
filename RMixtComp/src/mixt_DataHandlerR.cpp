@@ -99,14 +99,11 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<std::string>&
 
 }
 
-void DataHandlerR::getAugmentedData(std::string const&                                              idData,
-                                    STK::Array2D<STK::Real>&                                        data,
-                                    std::vector<pos>&                                               v_missing,
-                                    std::vector<std::pair<pos, std::vector<STK::Real> > >&          v_missingFiniteValues,
-                                    std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >& v_missingIntervals,
-                                    int& nbVariable) const
+void DataHandlerR::getData(std::string const& idData,
+                           AugmentedData<STK::Array2D<STK::Real> >& data,
+                           int& nbVariable) const
 {
-  getData(idData, data, nbVariable);
+
 }
 
 void DataHandlerR::writeDataMap() const

@@ -73,17 +73,9 @@ class MixtureComposer : public STK::MixtureComposer
     /** Create a clone of the current model, with ingredients parameters preserved. */
     virtual MixtureComposer* clone() const;
     
-    inline void getAugmentedData(std::string const&                       idData,
-                                 AugmentedData<STK::Array2D<STK::Real> >& AugData,
-                                 int& nbVariable) const
-    {
-      p_DataHandlerR()->getAugmentedData(idData,
-                                         data,
-                                         v_missing,
-                                         v_missingFiniteValues,
-                                         v_missingIntervals,
-                                         nbVariable);
-    };
+  template<typename Data>
+  inline void getData(std::string const& id, Data& data, int& nbVariable) const
+  {p_handler()->getData(id, data, nbVariable);}
     
   private:
     inline DataHandlerR const* p_DataHandlerR() const

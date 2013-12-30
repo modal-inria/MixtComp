@@ -36,13 +36,14 @@
 #ifndef MIXT_MIXTUREBRIDGE_H
 #define MIXT_MIXTUREBRIDGE_H
 
+#include "mixt_IMixture.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
 {
 
 template<int Id>
-class MixtureBridge: public STK::IMixture
+class MixtureBridge: public IMixture
 {
   public:
     // data type
@@ -111,7 +112,7 @@ class MixtureBridge: public STK::IMixture
     virtual void setData()
     {
       IMixture::getData<AugmentedData>(m_augDataij_, nbVariable_);
-      findMissing();
+//      findMissing();
       removeMissing();
       ingredient_.setData(m_augDataij_.data);
     }
@@ -183,22 +184,11 @@ class MixtureBridge: public STK::IMixture
     int nbVariable_;
     
   private:
-    typedef std::vector<std::pair<int,int> >::const_iterator ConstIterator;
-    /** utility function for lookup the data set and find missing values
-     *  coordinates. */
-    void findMissing()
-    { /*
-      for (int j=m_dataij_.firstIdxCols(); j<= m_dataij_.lastIdxCols(); ++j)
-        for (int i=m_dataij_.firstIdxRows(); i<= m_dataij_.lastIdxRows(); ++i)
-        {
-          if (STK::Arithmetic<Type>::isNA(m_dataij_(i,j)))
-          { v_missing_.push_back(std::pair<int,int>(i,j));}
-        } */
-    }
+    typedef std::vector<std::pair<int, int> >::const_iterator ConstIterator;
     /** utility function for lookup the data set and remove missing values
      *  coordinates. */
     void removeMissing()
-    { /*
+    { /* Implement a new version which uses the augmentedData members information, but still uses meanSafe
       STK::Real mean;
       int j, old_j = STK::UnknownSize;
       for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
@@ -212,4 +202,4 @@ class MixtureBridge: public STK::IMixture
 
 } // namespace mixt
 
-#endif /* MIXTUREBRIDGE_H */
+#endif /* MIXT_MIXTUREBRIDGE_H */
