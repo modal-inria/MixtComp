@@ -103,7 +103,7 @@ void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<STK::Array2D<STK::Real> >& data,
                            int& nbVariable) const
 {
-
+  getData(idData, data.data, nbVariable);
 }
 
 void DataHandlerR::writeDataMap() const
