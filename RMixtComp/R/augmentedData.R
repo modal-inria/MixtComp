@@ -13,7 +13,7 @@ augmentedData <- function(stringData) # stringData is a vector of strings
     {
       nbrList <- str_match_all(stringData[rangeList[i]], nbrStr)
       nbrList <- as.numeric(nbrList[[1]])
-      listIntervals[[length(listIntervals) + 1]] <- list(rangeList[i], nbrList)
+      listIntervals[[length(listIntervals) + 1]] <- list(pos=rangeList[i], listvals=nbrList)
       stringData[rangeList[i]] <- "NA"
     }
   }
@@ -26,7 +26,7 @@ augmentedData <- function(stringData) # stringData is a vector of strings
     {
       nbrList <- str_match_all(stringData[rangeList[i]], nbrStr)
       nbrList <- as.numeric(nbrList[[1]])
-      listIntervals[[length(listIntervals) + 1]] <- list(rangeList[i], nbrList)
+      listIntervals[[length(listIntervals) + 1]] <- list(pos=rangeList[i], listvals=nbrList)
       stringData[rangeList[i]] <- "NA"
     }
   }
@@ -40,7 +40,7 @@ augmentedData <- function(stringData) # stringData is a vector of strings
     {
       nbrList <- str_match_all(stringData[rangeList[i]], nbrStr)
       nbrList <- as.numeric(nbrList[[1]])
-      listFiniteValues[[length(listFiniteValues) + 1]] <- list(rangeList[i], nbrList)
+      listFiniteValues[[length(listFiniteValues) + 1]] <- list(pos=rangeList[i], listvals=nbrList)
       stringData[rangeList[i]] <- "NA"
     }
   }
