@@ -23,39 +23,40 @@
 
 /*
  * Project:  MixtComp
- * created on: Dec 31, 2013
+ * created on: Jan 3, 2014
  * Author:   Vincent KUBICKI
  **/
 
-/** @file mixt_Clust_Util.cpp
+/** @file mixt_MixtureComposer.cpp
  *  @brief In this file 
  **/
 
-#include "mixt_Clust_Util.h"
-#include "mixt_GaussianIngredient.h"
-#include "mixt_GammaIngredient.h"
+#include "mixt_MixtureComposer.h"
 #include "mixt_IMixture.h"
 
 namespace mixt
 {
-namespace Clust
+
+/* create ingredients using info from p_dataHandler */
+void MixtureComposer::createMixtCompIngredients()
 {
-IMixture* createMixtCompIngredient(STK::Clust::Ingredient model, std::string const& id, int nbCluster)
-{
-  switch (model)
+  if (!p_DataHandlerR())
+//        STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createIngredients,data handler is not set);
+  for (InfoMap::const_iterator it=p_DataHandlerR()->info().begin(); it!=p_DataHandlerR()->info().end(); ++it)
   {
-    case STK::Clust::Gamma_ajk_bjk_:
-      return new IngredientGamma_ajk_bjk_m(id, nbCluster);
-      break;
-    case STK::Clust::Gaussian_sjk_:
-      return new IngredientGaussian_sjk_m(id, nbCluster);
-      break;
-    default:
-      return 0;
-      break;
+    std::string name = it->first;
+    std::string model= it->second;
+    STK::Clust::Ingredient idModel = STK::Clust::stringToIngredient(model);
+#ifdef DSTK_MIXTURE_DEBUG
+    stk_cout << _T("model = ") << model << _T("\n");
+    stk_cout << _T("name = ") << name << _T("\n");
+    stk_cout << _T("Ingredient = ") << idModel << _T("\n");
+#endif
+    if (idModel != STK::Clust::unknown_mixture_)
+    {
+      registerIngredient(Clust::createMixtCompIngredient(idModel, name, nbCluster_));
+    }
   }
-  // avoid warning
-  return 0;
 }
-} // namespace Clust
-} // namespace mixt
+
+} /* namespace mixt */

@@ -34,18 +34,22 @@
 #ifndef MIXT_CLUST_UTIL_H_
 #define MIXT_CLUST_UTIL_H_
 
-#include "mixt_IMixture.h"
+#include "stkpp/projects/Clustering/include/STK_Clust_Util.h"
 
 namespace mixt
 {
   
+class IMixture;
+
+namespace Clust
+{
 /** utility function for creating an Ingredient.
 *  @param id of the ingredient to create
 *  @param model ingredient to create
 *  @param nbCluster number of cluster
 **/
 IMixture* createMixtCompIngredient(STK::Clust::Ingredient model, std::string const& id, int nbCluster);
-
+} // namespace Clust
 } // namespace mixt
 
 #endif /* MIXT_CLUST_UTIL_H_ */

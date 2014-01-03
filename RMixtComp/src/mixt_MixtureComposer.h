@@ -37,6 +37,7 @@
 #include "stkpp/projects/Clustering/include/STK_MixtureComposer.h"
 #include "mixt_AugmentedData.h"
 #include "mixt_DataHandlerR.h"
+#include "mixt_Clust_Util.h"
 
 namespace mixt
 {
@@ -71,7 +72,10 @@ class MixtureComposer : public STK::MixtureComposer
     
     /** Create a clone of the current model, with ingredients parameters preserved. */
     virtual MixtureComposer* clone() const;
-    
+
+    /** create ingredients using info from p_dataHandler */
+    void createMixtCompIngredients();
+
     template<typename Data>
     inline void getData(std::string const& id, Data& data, int& nbVariable) const
     {p_DataHandlerR()->getData(id, data, nbVariable);}

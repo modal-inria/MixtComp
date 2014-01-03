@@ -32,6 +32,7 @@
  **/
 
 #include "mixt_DataHandlerR.h"
+#include "mixt_MixtureComposer.h"
 #include "stkpp/include/STKpp.h"
 
 // [[Rcpp::export]]
@@ -48,10 +49,10 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   handler.writeDataMap();
   
   // prepare the composer
-  STK::MixtureComposer composer(nbClusters);
+  mixt::MixtureComposer composer(nbClusters);
   STK::IMixtureModelBase* p_composer = &composer;
   composer.setDataHandler(&handler);
-  composer.createIngredients(); // add stkpp ingredients
+  composer.createMixtCompIngredients();
   composer.setData();
   composer.initializeModel();
   
