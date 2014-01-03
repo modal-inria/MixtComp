@@ -34,14 +34,13 @@
 #ifndef MIXT_MIXTURECOMPOSER_H_
 #define MIXT_MIXTURECOMPOSER_H_
 
-#include "stkpp/include/Clustering.h"
-#include "mixt_DataHandlerR.h"
-#include "mixt_MixtureBridge.h"
+#include "stkpp/projects/Clustering/include/STK_MixtureComposer.h"
 #include "mixt_AugmentedData.h"
+#include "mixt_DataHandlerR.h"
 
 namespace mixt
 {
-  
+
 class MixtureComposer : public STK::MixtureComposer
 {
   public:    
@@ -73,9 +72,9 @@ class MixtureComposer : public STK::MixtureComposer
     /** Create a clone of the current model, with ingredients parameters preserved. */
     virtual MixtureComposer* clone() const;
     
-  template<typename Data>
-  inline void getData(std::string const& id, Data& data, int& nbVariable) const
-  {p_handler()->getData(id, data, nbVariable);}
+    template<typename Data>
+    inline void getData(std::string const& id, Data& data, int& nbVariable) const
+    {p_DataHandlerR()->getData(id, data, nbVariable);}
     
   private:
     inline DataHandlerR const* p_DataHandlerR() const

@@ -38,18 +38,33 @@
 
 #include "mixt_AugmentedData.h"
 #include "mixt_MixtureComposer.h"
+#include "stkpp/projects/Clustering/include/STK_IMixture.h"
 
 namespace mixt
 {
 
-class IMixture: public STK::IMixture
+class IMixture : public STK::IMixture
 {
-  template<typename Data>
-  inline void getData(Data& data, int& nbVariable)
-  {p_composer()->getData<Data>(idName_, data, nbVariable);}
-  
-  inline MixtureComposer const* p_composer()
-  {return static_cast<MixtureComposer const*>(STK::IMixture::p_composer());}
+  public:
+    /* constructor */
+    IMixture( std::string const& idName, int nbCluster)
+                            : STK::IMixture(idName, nbCluster)
+    {}
+    
+    /* copy constructor */
+    IMixture(IMixture const& ingredient)
+                            : STK::IMixture(ingredient)
+    {}
+    
+    /* Virtual destructor. */
+    ~IMixture(){}
+    
+    template<typename Data>
+    inline void getData(Data& data, int& nbVariable)
+    {p_composer()->getData<Data>(STK::IMixture::idName(), data, nbVariable);}
+
+    inline MixtureComposer const* p_composer()
+    {return static_cast<MixtureComposer const*>(STK::IMixture::p_composer());}
 };
 
 } // namespace mixt

@@ -28,16 +28,16 @@
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
-
 #ifndef MIXT_GAUSSIANINGREDIENT_H
 #define MIXT_GAUSSIANINGREDIENT_H
 
 #include "mixt_MixtureBridge.h"
+#include "stkpp/projects/Clustering/include/ingredients/STK_GaussianIngredient.h"
 
 namespace mixt
 {
 
-typedef MixtureBridge<STK::Clust::Gaussian_sjk_> IngredientGaussian_sjk;
+typedef MixtureBridge<STK::Clust::Gaussian_sjk_> IngredientGaussian_sjk_m;
 
 } /* namespace mixt */
 

@@ -36,6 +36,7 @@
 #ifndef MIXT_MIXTUREBRIDGE_H
 #define MIXT_MIXTUREBRIDGE_H
 
+#include "stkpp/projects/Clustering/include/STK_Clust_Traits.h"
 #include "mixt_IMixture.h"
 #include "mixt_AugmentedData.h"
 
@@ -43,12 +44,12 @@ namespace mixt
 {
 
 template<int Id>
-class MixtureBridge: public IMixture
+class MixtureBridge : public IMixture
 {
   public:
     // data type
     typedef typename STK::Clust::IngredientTraits<Id>::Data Data;
-        // parameters type to get
+    // parameters type to get
     typedef typename STK::Clust::IngredientTraits<Id>::Param Param;
     // type of the data
     typedef typename STK::Clust::IngredientTraits<Id>::Type Type;
@@ -111,8 +112,7 @@ class MixtureBridge: public IMixture
     */
     virtual void setData()
     {
-      IMixture::getData<AugmentedData>(m_augDataij_, nbVariable_);
-//      findMissing();
+      IMixture::getData<AugmentedData<Data> >(m_augDataij_, nbVariable_);
       removeMissing();
       ingredient_.setData(m_augDataij_.data);
     }

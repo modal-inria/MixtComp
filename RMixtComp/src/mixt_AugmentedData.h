@@ -31,6 +31,9 @@
 #ifndef MIXT_AUGMENTEDDATA_H
 #define MIXT_AUGMENTEDDATA_H
 
+#include<utility>
+#include<vector>
+
 namespace mixt
 {
 
