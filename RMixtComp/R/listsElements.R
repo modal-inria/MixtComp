@@ -4,9 +4,7 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5){
 
 
 listModels <- c( "Gamma_ajk_bjk"
-               , "Gamma_ajk_bj"
-               , "Gaussian_sjk"
-               , "Gaussian_s")
+               , "Gaussian_sjk")
 
 listInit <- c( "randomInit"
              , "randomClassInit"
