@@ -1,0 +1,71 @@
+/*----------------------------------------------------------------------*/
+/*     Copyright (C) 2004  Serge Iovleff
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this program; if not, write to the
+    Free Software Foundation, Inc.,
+    59 Temple Place,
+    Suite 330,
+    Boston, MA 02111-1307
+    USA
+
+    Contact : Serge.Iovleff@stkpp.org                                   */
+/*----------------------------------------------------------------------*/
+/* $ID$
+ *
+ * Project:  Analysis
+ * Purpose:  compute the gamma functionn for n = 0.5, 1.5, ..., 99.5
+ * Author:   Serge Iovleff, serge.iovleff@stkpp.org
+ *
+ * $LOG$
+ *
+ **/
+/*----------------------------------------------------------------------*/
+
+/* double factorial function at x */
+define dfact(x) {
+  if (x<= 1) return(1);
+  return(dfact(x-2)*x);
+}
+
+define power(x, n) {
+r = 1;
+for (i=1; i<=n; ++i) {
+  r *= x;
+}
+return(r);
+}
+
+scale = 61
+sp = sqrt(4*a(1))
+z=0.5
+/* compute the gamma function for n integer and halves */
+
+for (i=1; i<=50; ++i)
+{
+  n=z-0.5;
+  print (dfact(2*n-1)/power(2,n)) * sp;
+  print ", // ";
+  print z, "\n";
+  z +=1.0;
+}
+z=0.5
+/* compute the gamma function for n integer and halves */
+for (i=1; i<=50; ++i)
+{
+  n=z-0.5;
+  print l((dfact(2*n-1)/power(2,n)) * sp);
+  print ", // ";
+  print z, "\n";
+  z +=1.0;
+}

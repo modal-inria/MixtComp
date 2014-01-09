@@ -1,0 +1,57 @@
+/*----------------------------------------------------------------------*/
+/*     Copyright (C) 2004  Serge Iovleff
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this program; if not, write to the
+    Free Software Foundation, Inc.,
+    59 Temple Place,
+    Suite 330,
+    Boston, MA 02111-1307
+    USA
+
+    Contact : Serge.Iovleff@stkpp.org                                   */
+/*----------------------------------------------------------------------*/
+/* fact.bc,v 1.1 2006/10/11 20:08:53 siovleff Exp
+ *
+ * Project:  Analysis
+ * Purpose:  compute the factorial numbers
+ * Author:   Serge Iovleff, serge.iovleff@stkpp.org
+ *
+ * fact.bc,v
+ * Revision 1.1  2006/10/11 20:08:53  siovleff
+ * computing exact error using bc for the gamma function
+ *
+ **/
+/*----------------------------------------------------------------------*/
+
+/* factorial function at x */
+define fact(x) {
+  if (x<= 1) return(1);
+  return(fact(x-1)*x);
+}
+
+scale = 61
+
+for (i=1; i<=50; ++i)
+{
+     print fact(i);
+     print ", // ";
+     print i,"\n";
+}
+
+for (i=1; i<=50; ++i)
+{
+     print l(fact(i));
+     print ", // ";
+     print i,"\n";
+}

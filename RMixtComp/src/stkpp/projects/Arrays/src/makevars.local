@@ -1,0 +1,9 @@
+#-----------------------------------------------------------------------
+# makevars.local
+# author: Serge Iovleff
+#-----------------------------------------------------------------------
+# This file allow to activate the Verbose and Debug flag
+#-----------------------------------------------------------------------
+# flags in Debug mode 
+STK_PROJECT_FLAGS = -DSTK_ARRAYS_VERBOSE -DSTK_ARRAYS_DEBUG  -DSTK_ARRAYS_VERY_VERBOSE
+

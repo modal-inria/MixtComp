@@ -1,0 +1,9 @@
+#-----------------------------------------------------------------------
+# makevars
+# author: Serge Iovleff
+#-----------------------------------------------------------------------
+# This file allow to activate the Verbose and Debug flag
+#-----------------------------------------------------------------------
+# flags in Debug mode 
+# STK_PROJECT_FLAGS = -DSTK_MIXTURE_DEBUG -DSTK_MIXTURE_VERBOSE -DSTK_MIXTURE_VERY_VERBOSE
+

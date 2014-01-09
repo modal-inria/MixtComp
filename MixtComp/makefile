@@ -36,29 +36,26 @@ else
 RELATIVEMAKEVARS = ./makevars
 endif
 
-MAKEVARS = $(realpath ./makevars)
-
-include $(MAKEVARS)
+include $(RELATIVEMAKEVARS)
 
 #-----------------------------------------------------------------------
 # paths
 
 # build paths
-BIN_RELEASE_DIR = $(realpath ./bin/release)
-BIN_DEBUG_DIR   = $(realpath ./bin/debug)
+BIN_RELEASE_DIR = ./bin/release
+BIN_DEBUG_DIR   = ./bin/debug
 LIB_DIR = ./lib/
 
 # sources paths
-SRC_MIXTURES_DIR = $(realpath ./src/mixtures/)
-SRC_TESTS_DIR    = $(realpath ./tests/)
+SRC_MIXTURES_DIR = ./src/mixtures/
+SRC_TESTS_DIR    = ./tests/
 
 # build path
-LIB_STK = $(realpath $(STK_DIR)/lib/libSTKpp.a)
-LIB_MC = $(realpath ./lib)/libMixtComp.a
+LIB_STK = $(STK_DIR)/lib/libSTKpp.a
+LIB_MC = ./lib/libMixtComp.a
 
 #-----------------------------------------------------------------------
 # export variables, build paths and compile flags, to share them with sub-makefiles
-export MAKEVARS
 export LIB_STK
 
 #-----------------------------------------------------------------------

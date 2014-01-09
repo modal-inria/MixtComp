@@ -29,10 +29,10 @@
 #-----------------------------------------------------------------------
 # Macros and definitions
 RELATIVEMAKEVARS = ./makevars
-MAKEVARS = $(realpath $(RELATIVEMAKEVARS))
-export MAKEVARS
 
-include $(MAKEVARS)
+include $(RELATIVEMAKEVARS)
+
+export RELATIVEMAKEVARS
 
 #-----------------------------------------------------------------------
 # main Paths

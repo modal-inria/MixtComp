@@ -5,10 +5,6 @@
 *.so
 *.a
 *.tar.gz
-RMixtComp/src/stkpp/bin
-RMixtComp/src/stkpp/include
-RMixtComp/src/stkpp/lib
-RMixtComp/src/stkpp/projects
 RMixtComp/.Rbuildignore
 RMixtComp/R/RcppExports.R
 RMixtComp/src/RcppExports.cpp
