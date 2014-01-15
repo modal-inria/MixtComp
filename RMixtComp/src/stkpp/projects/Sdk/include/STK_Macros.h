@@ -88,29 +88,29 @@
   STKERROR_3ARG2(Where, Arg1, Arg2, Arg3, Error)
 
 /** @ingroup STKernel
- *  throw an out_of_range exception with one arguments. Error message have the form :
+ *  throw an STK::out_of_range exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
 #define STKOUT_OF_RANGE_1ARG2(Where, Arg, Error) \
-  throw out_of_range(STKERROR_1ARG2(Where, Arg, Error))
+  throw STK::out_of_range(STKERROR_1ARG2(Where, Arg, Error))
 #define STKOUT_OF_RANGE_1ARG(Where, Arg, Error) \
     STKOUT_OF_RANGE_1ARG2(Where, Arg, Error)
 
 /**  @ingroup STKernel
- * throw an out_of_range exception with one arguments. Error message have the form :
+ * throw an STK::out_of_range exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
 #define STKOUT_OF_RANGE_2ARG2(Where, Arg1, Arg2, Error) \
-  throw out_of_range(STKERROR_2ARG2(Where, Arg1, Arg2, Error))
+  throw STK::out_of_range(STKERROR_2ARG2(Where, Arg1, Arg2, Error))
 #define STKOUT_OF_RANGE_2ARG(Where, Arg1, Arg2, Error) \
     STKOUT_OF_RANGE_2ARG2(Where, Arg1, Arg2, Error)
 
 /**  @ingroup STKernel
- * throw an out_of_range exception with one arguments. Error message have the form :
+ * throw an STK::out_of_range exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
 #define STKOUT_OF_RANGE_3ARG2(Where, Arg1, Arg2, Arg3, Error) \
-  throw out_of_range(STKERROR_3ARG2(Where, Arg1, Arg2, Arg3, Error))
+  throw STK::out_of_range(STKERROR_3ARG2(Where, Arg1, Arg2, Arg3, Error))
 #define STKOUT_OF_RANGE_3ARG(Where, Arg1, Arg2, Arg3, Error) \
     STKOUT_OF_RANGE_3ARG2(Where, Arg1, Arg2, Arg3, Error)
 
@@ -119,7 +119,7 @@
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
 #define STKRUNTIME_ERROR_2ARG2(Where, Arg1, Arg2, Error) \
-  throw runtime_error(STKERROR_2ARG2(Where, Arg1, Arg2, Error))
+  throw STK::runtime_error(STKERROR_2ARG2(Where, Arg1, Arg2, Error))
 #define STKRUNTIME_ERROR_2ARG(Where, Arg1, Arg2, Error) \
     STKRUNTIME_ERROR_2ARG2(Where, Arg1, Arg2, Error)
 
@@ -128,7 +128,7 @@
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
 #define STKRUNTIME_ERROR_1ARG2(Where, Arg, Error) \
-  throw runtime_error(STKERROR_1ARG2(Where, Arg, Error))
+  throw STK::runtime_error(STKERROR_1ARG2(Where, Arg, Error))
 #define STKRUNTIME_ERROR_1ARG(Where, Arg, Error) \
     STKRUNTIME_ERROR_1ARG2(Where, Arg, Error)
 
@@ -137,7 +137,7 @@
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
 #define STKRUNTIME_ERROR_NO_ARG2(Where, Error) \
-  throw runtime_error(STKERROR_NO_ARG2(Where, Error))
+  throw STK::runtime_error(STKERROR_NO_ARG2(Where, Error))
 #define STKRUNTIME_ERROR_NO_ARG(Where, Error) \
     STKRUNTIME_ERROR_NO_ARG2(Where, Error)
 
@@ -146,7 +146,7 @@
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
 #define STKDOMAIN_ERROR_2ARG2(Where, Arg1, Arg2, Error) \
-  throw domain_error(STKERROR_2ARG2(Where, Arg1, Arg2, Error))
+  throw STK::domain_error(STKERROR_2ARG2(Where, Arg1, Arg2, Error))
 #define STKDOMAIN_ERROR_2ARG(Where, Arg1, Arg2, Error) \
     STKDOMAIN_ERROR_2ARG2(Where, Arg1, Arg2, Error)
 
@@ -155,7 +155,7 @@
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
 #define STKDOMAIN_ERROR_1ARG2(Where, Arg, Error) \
-  throw domain_error(STKERROR_1ARG2(Where, Arg, Error))
+  throw STK::domain_error(STKERROR_1ARG2(Where, Arg, Error))
 #define STKDOMAIN_ERROR_1ARG(Where, Arg, Error) \
     STKDOMAIN_ERROR_1ARG2(Where, Arg, Error)
 
@@ -164,7 +164,7 @@
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
 #define STKDOMAIN_ERROR_NO_ARG2(Where, Error) \
-  throw domain_error(STKERROR_NO_ARG2(Where, Error))
+  throw STK::domain_error(STKERROR_NO_ARG2(Where, Error))
 #define STKDOMAIN_ERROR_NO_ARG(Where, Error) \
     STKDOMAIN_ERROR_NO_ARG2(Where, Error)
 
@@ -173,7 +173,7 @@
  * "Error in classname::methodname(arg1, arg2)\nWhat: error message."
  **/
 #define STKINVALIDARGUMENT_ERROR_2ARG2(Where, Arg1, Arg2, Error) \
-  throw invalid_argument(STKERROR_2ARG2(Where, Arg1, Arg2, Error))
+  throw STK::invalid_argument(STKERROR_2ARG2(Where, Arg1, Arg2, Error))
 #define STKINVALIDARGUMENT_ERROR_2ARG(Where, Arg1, Arg2, Error) \
     STKINVALIDARGUMENT_ERROR_2ARG2(Where, Arg1, Arg2, Error)
 
@@ -182,7 +182,7 @@
  * "Error in classname::methodname(arg1)\nWhat: error message."
  **/
 #define STKINVALIDARGUMENT_ERROR_1ARG2(Where, Arg1, Error) \
-  throw invalid_argument(STKERROR_1RG2(Where, Arg1, Error))
+  throw STK::invalid_argument(STKERROR_1RG2(Where, Arg1, Error))
 #define STKINVALIDARGUMENT_ERROR_1ARG(Where, Arg1, Error) \
     STKINVALIDARGUMENT_ERROR_1ARG2(Where, Arg1, Error)
 
@@ -191,7 +191,7 @@
  * "Error in classname::methodname(arg1)\nWhat: error message."
  **/
 #define STKINVALIDARGUMENT_ERROR_NO_ARG2(Where, Error) \
-  throw invalid_argument(STKERROR_NO_ARG2(Where, Error))
+  throw STK::invalid_argument(STKERROR_NO_ARG2(Where, Error))
 #define STKINVALIDARGUMENT_ERROR_NO_ARG(Where, Error) \
     STKINVALIDARGUMENT_ERROR_NO_ARG2(Where, Error)
 

@@ -44,7 +44,7 @@
 namespace STK
 {
 // forward declarations
-class IMixtureModelBase;
+class IMixtureComposerBase;
 class IMixtureAlgo;
 class IMixtureInit;
 
@@ -56,7 +56,7 @@ class IMixtureStrategy : public IRunnerBase
     /** default constructor.
      *  @param p_model the model to estimate
      **/
-    inline IMixtureStrategy( IMixtureModelBase*& p_model)
+    inline IMixtureStrategy( IMixtureComposerBase*& p_model)
                               : IRunnerBase(), p_model_(p_model), p_init_(0)
     {}
     /** copy constructor
@@ -71,7 +71,7 @@ class IMixtureStrategy : public IRunnerBase
 
   protected:
     /** reference on the main model */
-    IMixtureModelBase*& p_model_;
+    IMixtureComposerBase*& p_model_;
     /** initialization method */
     IMixtureInit* p_init_;
 };
@@ -100,7 +100,7 @@ class SimpleStrategy : public IMixtureStrategy
     /** default constructor.
      * @param p_model a reference pointer on the model to estimate
      **/
-    inline SimpleStrategy( IMixtureModelBase*& p_model) : IMixtureStrategy(p_model), p_param_(0)
+    inline SimpleStrategy( IMixtureComposerBase*& p_model) : IMixtureStrategy(p_model), p_param_(0)
     {}
     /** copy constructor.
      *  @param strategy the strategy to copy
@@ -155,7 +155,7 @@ class XemStrategy: public IMixtureStrategy
     /** default constructor.
      * @param p_model a reference pointer on the model to estimate
      **/
-    inline XemStrategy( IMixtureModelBase*& p_model) : IMixtureStrategy(p_model), p_param_()
+    inline XemStrategy( IMixtureComposerBase*& p_model) : IMixtureStrategy(p_model), p_param_()
     {}
     /** copy constructor.
      *  @param strategy the strategy to copy
@@ -206,7 +206,7 @@ class SemStrategy : public IMixtureStrategy
     /** default constructor.
      * @param p_model a reference pointer on the model to estimate
      **/
-    inline SemStrategy( IMixtureModelBase*& p_model) : IMixtureStrategy(p_model), p_param_()
+    inline SemStrategy( IMixtureComposerBase*& p_model) : IMixtureStrategy(p_model), p_param_()
     {}
     /** copy constructor.
      *  @param strategy the strategy to copy

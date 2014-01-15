@@ -27,12 +27,12 @@
  * Author:   Serge Iovleff
  **/
 
-/** @file STK_Gaussian_sImpl.h
- *  @brief In this file we implement the methods needed by the Gaussian_s model.
+/** @file STK_Gaussian_sjImpl.h
+ *  @brief In this file we implement the methods needed by the Gaussian_sj models.
  **/
 
-#ifndef STK_GAUSSIAN_SIMPL_H
-#define STK_GAUSSIAN_SIMPL_H
+#ifndef STK_GAUSSIAN_SJIMPL_H
+#define STK_GAUSSIAN_SJIMPL_H
 
 #include "STK_DiagGaussianComponent.h"
 #include "STK_GaussianUtil.h"
@@ -41,13 +41,13 @@ namespace STK
 {
 
 /** @ingroup Clustering
- *  Implementation of mStep and randomInit methods for Gaussian_s models
+ *  Implementation of the methods needed by the Gaussian_sj models
  **/
 template<class Array>
-struct MixtureModelImpl< Array, Gaussian_s_Parameters >
+struct MixtureModelImpl< Array, Gaussian_sj_Parameters >
 {
-  typedef DiagGaussianComponent<Array, Gaussian_s_Parameters> Component;
-  typedef Gaussian_s_Parameters Parameters;
+  typedef DiagGaussianComponent<Array, Gaussian_sj_Parameters> Component;
+  typedef Gaussian_sj_Parameters Parameters;
   typedef typename Array::Col ColVector;
   /** Initialize the parameters using mStep.
    *  @param components the components with the parameters to initialize
@@ -114,4 +114,4 @@ struct MixtureModelImpl< Array, Gaussian_s_Parameters >
 
 } // namespace STK
 
-#endif /* STK_GAUSSIAN_SIMPL_H */
+#endif /* STK_GAUSSIAN_SJIMPL_H */

@@ -40,14 +40,14 @@ namespace STK
 
 /* constructor */
 IMixture::IMixture( std::string const& idName, int nbCluster)
-                        : p_composer_(0), idName_(idName), nbCluster_(nbCluster)
+                  : p_composer_(0), idName_(idName), nbCluster_(nbCluster)
 {}
 
 /* copy constructor */
 IMixture::IMixture( IMixture const& ingredient)
-                        : p_composer_(0)
-                        , idName_(ingredient.idName_)
-                        , nbCluster_(ingredient.nbCluster_)
+                  : p_composer_(0)
+                  , idName_(ingredient.idName_)
+                  , nbCluster_(ingredient.nbCluster_)
 {}
 /* Virtual destructor. */
 IMixture::~IMixture(){}

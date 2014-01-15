@@ -110,19 +110,15 @@ class IMixtureComponent
      *  @param rowData the data
      **/
     virtual Real computeLnLikelihood( RowVector const& rowData) const =0;
-
     /** Set the data of the component.
      *  @param p_data the pointer on the data set
      **/
     inline void setData(Array const* p_data)
-    {
-      p_data_ = p_data;
-      if ( p_data_) { p_param_->resize(p_data_->cols());}
-    }
+    { p_data_ = p_data;}
     /** Write the parameters of the component.
      *  @param os the output stream for the parameters
      **/
-     inline void writeParameters(ostream &os) { p_param_->print(os);}
+    inline void writeParameters(ostream &os) { p_param_->print(os);}
 
   protected:
     /** Pointer on the data set. */

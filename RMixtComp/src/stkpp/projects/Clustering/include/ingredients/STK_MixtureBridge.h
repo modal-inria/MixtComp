@@ -47,7 +47,7 @@ namespace STK
  *  to bridge a stk++ ingredient with an Ingredient.
  *
  * @tparam Id is any name of a concrete model deriving from the
- * STK::IMixtureIngredeintBase class
+ * STK::IMixtureModelBase class
  */
 template<int Id>
 class MixtureBridge: public IMixture
@@ -69,6 +69,7 @@ class MixtureBridge: public IMixture
     MixtureBridge( std::string const& idName, int nbCluster)
                  : IMixture( idName, nbCluster)
                  , ingredient_(nbCluster), m_dataij_(), nbVariable_(0)
+                 , v_missing_()
     { ingredient_.setData(m_dataij_);}
     /** copy constructor */
     MixtureBridge( MixtureBridge const& mixture)
@@ -195,10 +196,10 @@ class MixtureBridge: public IMixture
     Ingredient ingredient_;
     /** The data set */
     Data m_dataij_;
-    /** vector with the coordinates of the missing values */
-    std::vector<std::pair<int,int> > v_missing_;
     /** number of variables in the data set */
     int nbVariable_;
+    /** vector with the coordinates of the missing values */
+    std::vector<std::pair<int,int> > v_missing_;
   private:
     typedef std::vector<std::pair<int,int> >::const_iterator ConstIterator;
     /** utility function for lookup the data set and find missing values

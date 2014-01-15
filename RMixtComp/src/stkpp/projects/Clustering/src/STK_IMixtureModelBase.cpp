@@ -29,231 +29,56 @@
  * Originally created by Parmeet Bhatia <b..._DOT_p..._AT_gmail_Dot_com>
  **/
 
-/** @file STK_IMixtureModelBase.h
- *  @brief In this file we implement the abstract base class for mixture models.
+/** @file STK_IMixtureModelBase.cpp
+ *  @brief In this file we implement the interface base class for ingredient models.
  **/
 
-#include <cmath>
-#ifdef STK_MIXTURE_DEBUG
-#include "../../Arrays/include/STK_Display.h"
-#endif
 #include "../include/STK_IMixtureModelBase.h"
-#include "../../STatistiK/include/STK_Law_Categorical.h"
-#include "../../STatistiK/include/STK_Stat_Functors.h"
 
 namespace STK
 {
+
+
 /* default constructor */
-IMixtureModelBase::IMixtureModelBase( int nbCluster) : IModelBase()
-                                    , nbCluster_(nbCluster)
-                                    , p_prop_(0), p_tik_(0), p_zi_(0)
-                                    , state_(Clust::modelCreated_)
-{ createMixtureParameters();}
-
-/* copy constructor */
-IMixtureModelBase::IMixtureModelBase( IMixtureModelBase const& model)
-                                    : IModelBase(model)
-                                    , nbCluster_(model.nbCluster_)
-                                    , p_prop_(model.p_prop_->clone())
-                                    , p_tik_(model.p_tik_->clone())
-                                    , p_zi_(model.p_zi_->clone())
-                                    , state_(model.state_)
+IMixtureModelBase::IMixtureModelBase( int nbCluster)
+                                : p_prop_(0), p_tik_(0), p_zi_(0)
+                                , nbCluster_(nbCluster)
+                                , nbSample_(0)
+                                , nbVariable_(0)
 {}
+/* copy constructor. If the pointer on the mixture parameters are not zero
+ *  then they are cloned.
+ *  @note if the model have not created the parameters, then the pointer are
+ *  initialized to 0.
+ *  @param model the model to clone
+ **/
+IMixtureModelBase::IMixtureModelBase( IMixtureModelBase const& model)
+                                : p_prop_(0)
+                                , p_tik_(0)
+                                , p_zi_(0)
+                                , nbCluster_(model.nbCluster_)
+                                , nbSample_(model.nbSample_)
+                                , nbVariable_(model.nbVariable_)
+{}
+
 /* destructor */
-IMixtureModelBase::~IMixtureModelBase()
-{ deleteMixtureParameters();}
-
-/* This function can be overloaded in derived class for initialization of
- *  the mixture parameters.
- **/
-void IMixtureModelBase::initializeModel()
+IMixtureModelBase::~IMixtureModelBase() {}
+/* set the parameters of the  mixture model using external
+ * proportions, tik and zi.
+ *  @param p_prop pointer on the proportions of the mixture model
+ *  @param p_tik pointer on the posterior probabilities
+ *  @param p_zi pointer on the class labels
+ * */
+void IMixtureModelBase::setMixtureParameters( CArrayPoint<Real> const* p_prop
+                                          , Array2D<Real> const* p_tik
+                                          , CArrayVector<int> const* p_zi
+                                          )
 {
-  // resize model
-  resizeModel();
-  // compute number of free parameters
-  this->setNbFreeParameter(computeNbFreeParameters());
-  state_ = Clust::modelInitialized_;
-}
-
-/* First initialization of the parameters of the model.
- *  This method is called in order to initialize the parameters. The
- *  default implementation call mStep() but
- *  this behavior can be overloaded in derived class if an initial value
- *  is needed by the mStep.
- *  @sa IMixtureModel
- **/
-void IMixtureModelBase::initializeStep() { mStep();}
-
-/* initialize randomly the labels zi of the model */
-void IMixtureModelBase::randomClassInit()
-{
-#ifdef STK_MIXTURE_VERY_VERBOSE
-  stk_cout << _T("Entering IMixtureModelBase::randomClassInit()\n");
-#endif
-  if (!p_prop_) return;
-  *p_prop_ = 1./Real(nbCluster_);
-  Law::Categorical law(*p_prop_);
-  for (int i = p_zi_->firstIdx(); i<= p_zi_->lastIdx(); ++i)
-  { p_zi_->elt(i) = law.rand();}
-  cStep();
-  initializeStep();
-  eStep();
+  p_prop_ = p_prop;
+  p_tik_ = p_tik;
+  p_zi_ = p_zi;
 }
 
-/* initialize randomly the posterior probabilities tik of the model */
-void IMixtureModelBase::randomFuzzyInit()
-{
-#ifdef STK_MIXTURE_VERY_VERBOSE
-  stk_cout << _T("Entering IMixtureModelBase::randomFuzzyInit()\n");
-#endif
-  if (!p_prop_) return;
-  *p_prop_ = 1./Real(nbCluster_);
-  RandBase generator;
-  for (int i = p_tik_->firstIdxRows(); i<= p_tik_->lastIdxRows(); ++i)
-  {
-    // create a reference on the i-th row
-    Array2DPoint<Real> tikRowi(p_tik_->row(i), true);
-    generator.randUnif(tikRowi);
-    tikRowi = tikRowi * (*p_prop_);
-    tikRowi /= tikRowi.sum();
-  }
-  initializeStep();
-  eStep();
-}
 
-/* cStep */
-void IMixtureModelBase::cStep()
-{
-  (*p_tik_) = 0.;
-  for (int i=p_tik_->firstIdxRows(); i<= p_tik_->lastIdxRows(); i++)
-  { p_tik_->elt(i, p_zi_->elt(i)) = 1.;}
-  // check if all label are presents
-  Array2DPoint<Real> s;
-  s.move(Stat::sum(*p_tik_));
-  for (int j = s.firstIdx(); j<= s.lastIdx(); j++)
-  { if (s[j] == 0) throw Clust::cStepFail_;}
-}
+} // namespace STK
 
-/* simulate zi  */
-void IMixtureModelBase::sStep()
-{
-  // simulate zi
-  for (int i = p_zi_->firstIdx(); i<= p_zi_->lastIdx(); ++i)
-  { p_zi_->elt(i) = Law::Categorical::rand(p_tik_->row(i));}
-  // hard classification
-  cStep();
-}
-/* compute Tik, default implementation. */
-void IMixtureModelBase::eStep()
-{
-  Real sum = 0.;
-  for (int i = p_tik_->firstIdxRows(); i<= p_tik_->lastIdxRows(); ++i)
-  {
-    Array2DPoint<Real> lnComp(p_tik_->cols());
-    for (int k=p_tik_->firstIdxCols(); k<= p_tik_->lastIdxCols(); k++)
-    { lnComp[k] = lnComponentProbability(i,k);}
-    int kmax;
-    Real max = lnComp.maxElt(kmax);
-    p_zi_->elt(i) = kmax;
-    // compute sum_k pk exp{lnCom_k - lnComp_kmax}
-    Real sum2 =  (lnComp -= max).exp().dot(*p_prop_);
-    // compute likelihood of each sample for each component
-    p_tik_->row(i) = (*p_prop_ * lnComp.exp())/sum2;
-    // compute lnLikelihood
-    sum += max + std::log(sum2);
-  }
-  setLnLikelihood(sum);
-}
-/* estimate the proportions and the parameters of the components of the
- *  model given the current tik/zi mixture parameters values.
- **/
-void IMixtureModelBase::mStep()
-{ pStep();
-  /* implement specific parameters estimation in concrete class. */
-}
-
-/* Compute prop using the ML estimator, default implementation. */
-void IMixtureModelBase::pStep()
-{ *p_prop_ = Stat::mean(*p_tik_);}
-
-/* Compute Zi using the Map estimator, default implementation. */
-void IMixtureModelBase::mapStep()
-{
-  for (int i = p_zi_->firstIdx(); i<= p_zi_->lastIdx(); ++i)
-  {
-    int k;
-    p_tik_->row(i).maxElt(k);
-    p_zi_->elt(i) = k;
-  }
-}
-
-/* Create the parameters of the  mixture model. */
-void IMixtureModelBase::createMixtureParameters()
-{
-  createProp();
-  createTik();
-  createZi();
-}
-
-/* delete  the mixture model parameters. */
-void IMixtureModelBase::deleteMixtureParameters()
-{
-  if (p_prop_) delete p_prop_;  p_prop_ = 0;
-  if (p_tik_) delete p_tik_;  p_tik_ = 0;
-  if (p_zi_) delete p_zi_;  p_zi_ = 0;
-}
-
-/* create the proportions */
-void IMixtureModelBase::createProp()
-{
-  if (!p_prop_)
-  { p_prop_ = new CArrayPoint<Real>(nbCluster_, 1./(Real)nbCluster_);}
-}
-/* create the tik probabilities */
-void IMixtureModelBase::createTik()
-{
-  if (!p_tik_)
-  { p_tik_ = new Array2D<Real>(nbSample(), nbCluster_,1./(Real)nbCluster_);}
-}
-/* create the zi labels */
-void IMixtureModelBase::createZi()
-{
-  if (!p_zi_)
-  { p_zi_ = new CArrayVector<int>(nbSample(), STKBASEARRAYS);}
-}
-
-/* create the proportions */
-void IMixtureModelBase::resizeModel()
-{
-  resizeProp();
-  resizeTik();
-  resizeZi();
-}
-
-/* create the proportions */
-void IMixtureModelBase::resizeProp()
-{
-  if (p_prop_->size() != nbCluster_)
-  {
-    p_prop_->resize(nbCluster_);
-    p_prop_->setValue(1./(Real)nbCluster_);
-  }
-}
-/* create the tik probabilities */
-void IMixtureModelBase::resizeTik()
-{
-  if (p_tik_->sizeRows() != nbSample() || p_tik_->sizeRows() != nbCluster_)
-  {
-    p_tik_->resize(nbSample(), nbCluster_);
-    p_tik_->setValue(1./(Real)nbCluster_);
-  }
-}
-/* create the zi labels */
-void IMixtureModelBase::resizeZi()
-{
-  if (p_zi_->size() != nbSample())
-  { p_zi_->resize(nbSample());
-    p_zi_->setValue(STKBASEARRAYS);
-  }
-}
-} // namespace SDTK

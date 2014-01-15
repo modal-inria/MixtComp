@@ -35,7 +35,7 @@
 #include "../include/STK_MixtureFacade.h"
 #include "../include/STK_MixtureStrategy.h"
 #include "../include/STK_MixtureInit.h"
-#include "../include/STK_IMixtureModelBase.h"
+#include "../include/STK_IMixtureComposerBase.h"
 
 namespace STK
 {
@@ -92,6 +92,7 @@ void StrategyFacade::run()
   {
     p_model_->initializeModel();
     p_strategy_->run();
+    p_model_->finalizeStep();
   }
 }
 

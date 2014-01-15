@@ -43,7 +43,7 @@
 namespace STK
 {
 // forward declaration
-class IMixtureModelBase;
+class IMixtureComposerBase;
 class IMixtureAlgo;
 
 /** @ingroup Clustering
@@ -72,7 +72,7 @@ class IMixtureInit : public IRunnerBase
     /** set a the number of try */
     inline void setNbTrials(int nbTry) { nbTry_ = nbTry; }
     /** set a new model */
-    inline void setModel(IMixtureModelBase* p_model) { p_model_ = p_model; }
+    inline void setModel(IMixtureComposerBase* p_model) { p_model_ = p_model; }
     /** set the initial algorithm  */
     inline void setInitAlgo(IMixtureAlgo* p_initAlgo) { p_initAlgo_ = p_initAlgo; }
 
@@ -80,7 +80,7 @@ class IMixtureInit : public IRunnerBase
     /** number of retry in initialization */
     int nbTry_;
     /** pointer on the mixture model */
-    IMixtureModelBase* p_model_;
+    IMixtureComposerBase* p_model_;
     /** algorithm to use in the initialization */
     IMixtureAlgo* p_initAlgo_;
     /** launch the initialization algorithm.

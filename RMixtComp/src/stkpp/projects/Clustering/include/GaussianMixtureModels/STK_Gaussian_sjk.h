@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*     Copyright (C) 2004-2013 Vincent KUBICKI
+/*     Copyright (C) 2004-2013 Serge Iovleff
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as
@@ -25,11 +25,11 @@
 /*
  * Project:  stkpp::Clustering
  * created on: Oct 24, 2013
- * Author:   Vincent KUBICKI
+ * Author:   Serge Iovleff
  **/
 
 /** @file STK_Gaussian_sjk.h
- *  @brief In this file we implement the Gaussian_sjk and Gaussian_p_sjk classes
+ *  @brief In this file we implement the Gaussian_sjk class
  **/
 
 #ifndef STK_GAUSSIAN_SJK_H
@@ -43,7 +43,6 @@ namespace STK
 
 //forward declaration, to allow for recursive template
 template<class Array>class Gaussian_sjk;
-template<class Array>class Gaussian_p_sjk;
 
 namespace Clust
 {

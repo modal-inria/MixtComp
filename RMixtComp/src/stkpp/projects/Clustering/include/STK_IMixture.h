@@ -57,7 +57,8 @@ class IMixture
      */
     IMixture( std::string const& idName, int nbCluster);
     /**copy constructor.
-     * @note The composer is not copied and is set to 0. It have to be set again.
+     * @note The pointer on the composer is not copied and is set to 0: it have
+     * to be set again.
      * @param mixture the mixture to copy */
     IMixture( IMixture const& mixture);
     /** Virtual destructor. */
@@ -201,7 +202,7 @@ class IMixture
     const MixtureComposer* p_composer_;
     /** Id name of the ingredient */
     std::string idName_;
-    /** number of variable */
+    /** number of cluster */
     int nbCluster_;
 };
 

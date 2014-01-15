@@ -38,7 +38,7 @@
 #define STK_IMIXTUREMODEL_H
 
 #include "../../Sdk/include/STK_IRecursiveTemplate.h"
-#include "STK_IMixtureIngredientBase.h"
+#include "STK_IMixtureModelBase.h"
 #include "STK_Clust_Traits.h"
 #include "../../Arrays/include/STK_Array1D.h"
 
@@ -58,20 +58,20 @@ namespace STK
  * @sa IMixtureComponent, IMultiStatModel, IMultiParameters
  **/
 template<class Derived>
-class IMixtureModel : public IRecursiveTemplate<Derived>, public IIngredientBase
+class IMixtureModel : public IRecursiveTemplate<Derived>, public IMixtureModelBase
 {
   public:
     typedef typename Clust::MixtureTraits<Derived>::Array Array;
     typedef typename Clust::MixtureTraits<Derived>::Component Component;
     typedef typename Clust::MixtureTraits<Derived>::Parameters Parameters;
-    using IIngredientBase::p_tik;
+    using IMixtureModelBase::p_tik;
 
   protected:
     /** Default constructor.
      * Set the number of cluster and create components with zero pointer on data.
      **/
     IMixtureModel( int nbCluster)
-                 : IIngredientBase(nbCluster), p_data_(0), components_(nbCluster, 0)
+                 : IMixtureModelBase(nbCluster), p_data_(0), components_(nbCluster, 0)
     {
       for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
       { components_[k] = new Component();}
@@ -83,7 +83,7 @@ class IMixtureModel : public IRecursiveTemplate<Derived>, public IIngredientBase
      *  @param model the model to copy
      **/
     IMixtureModel( IMixtureModel const& model)
-                 : IIngredientBase(model)
+                 : IMixtureModelBase(model)
                  , p_data_(model.p_data_)
                  , components_(model.components_)
     {
@@ -113,13 +113,18 @@ class IMixtureModel : public IRecursiveTemplate<Derived>, public IIngredientBase
      *  the class. In this interface, the @c initializeModel() method
      *  - set the number of variables of the mixture model
      *  - set the range of the samples in the base class
+     *  - resize the parameters of each component
      **/
     void initializeModel()
     {
       if (!p_data_)
         STKRUNTIME_ERROR_NO_ARG(IMixtureModel::initializeModel,p_data is not set);
+      // set dimensions
       this->setNbSample(p_data_->rows().size());
       this->setNbVariable(p_data_->cols().size());
+      // initialize the parameters
+      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
+      { components_[k]->p_param()->resize(p_data_->cols());}
     }
     /** @brief This function must be defined in derived class for initialization
      *  of the ingredient parameters.
@@ -173,48 +178,6 @@ class IMixtureModel : public IRecursiveTemplate<Derived>, public IIngredientBase
     Array const* p_data_;
     /** Array of the components of the mixture model */
     Array1D< Component* > components_;
-};
-
-/**@ingroup Clustering
- * Utility interface class for mixture models with fixed proportions.
- * In this class we overload the pStep() method
- * defined in the Interface base class IIngredientBase and let them
- * unchanged.
- **/
-template <class Derived>
-class IMixtureModelFixedProp : public IMixtureModel<Derived >
-{
-  protected:
-    typedef typename Clust::MixtureTraits<Derived>::Array Array;
-    typedef IMixtureModel<Derived> Base;
-    /** Default constructor */
-    IMixtureModelFixedProp( int nbCluster): Base(nbCluster) {}
-    /** Constructor with data set.
-     *  @param nbCluster the number of cluster
-     *  @param data a reference on the data set
-     **/
-    IMixtureModelFixedProp( int nbCluster, Array const& data)
-                          : Base(nbCluster, data)
-    {}
-    /** Constructor with pointer on the data set.
-     *  @param nbCluster the number of clusters
-     *  @param p_data a pointer on the data set
-     **/
-    IMixtureModelFixedProp( int nbCluster, Array const* p_data)
-                          : Base(nbCluster, p_data)
-    { }
-    /** copy constructor.
-     *  Call the clone method of the Components class.
-     *  @param model the model to copy
-     **/
-    IMixtureModelFixedProp( IMixtureModelFixedProp const& model)
-                          : Base(model)
-    {}
-    /** destructor */
-    ~IMixtureModelFixedProp() {}
-    /** overloading of the computePropotions() method.
-     * Let them initialized to 1/K. */
-    virtual void pStep() {}
 };
 
 } // namespace STK

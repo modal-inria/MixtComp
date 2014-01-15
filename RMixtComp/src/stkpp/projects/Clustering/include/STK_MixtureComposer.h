@@ -35,7 +35,7 @@
 
 #include <vector>
 
-#include "STK_IMixtureModelBase.h"
+#include "STK_IMixtureComposerBase.h"
 #include "../../DManager/include/STK_IDataHandler.h"
 
 namespace STK
@@ -46,7 +46,7 @@ class IMixture;
 /**
  *
  */
-class MixtureComposer : public IMixtureModelBase
+class MixtureComposer : public IMixtureComposerBase
 {
   public:
     typedef IDataHandler::InfoMap InfoMap;

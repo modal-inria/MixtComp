@@ -36,7 +36,7 @@
 #include "../include/STK_MixtureStrategy.h"
 #include "../include/STK_MixtureInit.h"
 #include "../include/STK_MixtureAlgo.h"
-#include "../include/STK_IMixtureModelBase.h"
+#include "../include/STK_IMixtureComposerBase.h"
 
 namespace STK
 {
@@ -86,7 +86,7 @@ bool SimpleStrategy::run()
     // find best of the shortModel and save it in p_currentmodellong
     for (int iTry = 0; iTry < p_param_->nbTry_; ++iTry)
     {
-      IMixtureModelBase* p_currentModel = p_model_->create();
+      IMixtureComposerBase* p_currentModel = p_model_->create();
       // intialize current model
       p_init_->setModel(p_currentModel);
       if (p_init_->run())
@@ -153,7 +153,7 @@ bool XemStrategy::run()
            << _T("nbShortRun_ = ") << p_param_->nbShortRun_ << _T("\n");
 #endif
   // initialize bestModel likelihood
-  IMixtureModelBase* p_currentBestModel = p_model_->create();
+  IMixtureComposerBase* p_currentBestModel = p_model_->create();
   Real bestLikelihood = - STK::Arithmetic<Real>::max();
   for (int iTry = 0; iTry < p_param_->nbTry_; ++iTry)
   {
@@ -164,7 +164,7 @@ bool XemStrategy::run()
 ;
 #endif
     // create the current model : it will be used nbShortRun
-    IMixtureModelBase* p_currentModel = p_model_->create();
+    IMixtureComposerBase* p_currentModel = p_model_->create();
     Real currentBestlikelihood = - STK::Arithmetic<Real>::max();
     // find best of the shortModel and save it in p_currentBestModel
     for (int iShortRun = 0; iShortRun < p_param_->nbShortRun_; ++iShortRun)

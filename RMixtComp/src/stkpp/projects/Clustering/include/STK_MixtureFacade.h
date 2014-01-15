@@ -42,7 +42,7 @@
 namespace STK
 {
 
-class IMixtureModelBase;
+class IMixtureComposerBase;
 class IMixtureStrategy;
 
 /** facade design pattern.
@@ -55,13 +55,13 @@ class StrategyFacade
     /** constructor.
      * @param p_model a reference on the current model
      **/
-    inline StrategyFacade( IMixtureModelBase*& p_model)
+    inline StrategyFacade( IMixtureComposerBase*& p_model)
                         : p_model_(p_model), p_strategy_(0)
     {}
     /** destructor. */
     ~StrategyFacade();
     /** set model in case it is needed after construction */
-    inline void setModel(IMixtureModelBase* p_model) {p_model_ = p_model;};
+    inline void setModel(IMixtureComposerBase* p_model) {p_model_ = p_model;};
     /** create a SimpleStrategy */
     void createSimpleStrategy( Clust::initType init, int nbTrialInInit, Clust::algoType initAlgo, int nbInitIter, Real initEpsilon
                              , int nbTry
@@ -80,7 +80,7 @@ class StrategyFacade
 
   protected:
     /** the mixture model to estimate */
-    IMixtureModelBase*& p_model_;
+    IMixtureComposerBase*& p_model_;
     /** the strategy to use in order to estimate the mixture model */
     IMixtureStrategy* p_strategy_;
 };

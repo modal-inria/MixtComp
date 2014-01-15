@@ -44,7 +44,7 @@ namespace STK
  *  the random initialization of the parameters.
  *
  *  The MixtureModelImpl struct must be specialized for any
- *  models deriving from the IMixtureModel and IMixtureModelFixedProp
+ *  models deriving from the IMixtureModel
  *  interfaces by implementing the following methods:
  *  @code
  *    static void randomInit(Array1D< Component* >& components);

@@ -94,7 +94,7 @@ class Gamma_ajk_bj : public GammaBase<Gamma_ajk_bj<Array> >
     /** Initialize the component of the model.
      *  This function have to be called prior to any used of the class.
      *  In this interface, the @c initializeModel() method call the base
-     *  class IMixtureModelBase::initializeModel() and for all the
+     *  class IMixtureModel::initializeModel() and for all the
      *  components create the parameters.
      **/
     void initializeModel()

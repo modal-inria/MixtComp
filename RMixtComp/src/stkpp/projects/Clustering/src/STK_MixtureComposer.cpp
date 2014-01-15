@@ -12,12 +12,12 @@ namespace STK
 {
 
 MixtureComposer::MixtureComposer( int nbCluster)
-                                : IMixtureModelBase(nbCluster)
+                                : IMixtureComposerBase(nbCluster)
                                 , p_handler_(0)
 {}
 
 MixtureComposer::MixtureComposer( MixtureComposer const& composer)
-                                : IMixtureModelBase(composer)
+                                : IMixtureComposerBase(composer)
                                 , p_handler_(composer.p_handler_)
                                 , v_mixtures_(composer.v_mixtures_)
 {
@@ -30,7 +30,7 @@ MixtureComposer::MixtureComposer( MixtureComposer const& composer)
     v_mixtures_[l]->setMixtureComposer(this);
     v_mixtures_[l]->initializeModel();
   }
-  // no need to call IMixtureModelBase::initializeModel as all mixture parameters
+  // no need to call IMixtureComposerBase::initializeModel as all mixture parameters
   // have been yet copied by the copy constructor in base class
 }
 
@@ -75,7 +75,7 @@ void MixtureComposer::initializeModel()
   }
   // create mixture parameters in base class, to call after mixtures initilaization
   // as we need to know the number of free parameters when computing nbFreeParameters
-  IMixtureModelBase::initializeModel();
+  IMixtureComposerBase::initializeModel();
 }
 
 /* set the data handler */
@@ -97,7 +97,7 @@ void MixtureComposer::createComposer(IDataHandler const* p_handler, std::vector<
     v_mixtures_[l]->setMixtureComposer(this);
     v_mixtures_[l]->initializeModel();
   }
-  IMixtureModelBase::initializeModel();
+  IMixtureComposerBase::initializeModel();
 }
 
 Real MixtureComposer::lnComponentProbability(int i, int k)

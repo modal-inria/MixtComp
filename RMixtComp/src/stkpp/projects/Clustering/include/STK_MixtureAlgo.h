@@ -44,7 +44,7 @@
 namespace STK
 {
 // forward declaration
-class IMixtureModelBase;
+class IMixtureComposerBase;
 
 /** @ingroup Clustering
  * Interface base class for the algorithms.
@@ -69,7 +69,7 @@ class IMixtureAlgo : public IRunnerBase
     /** destructor */
     inline virtual ~IMixtureAlgo() {}
     /** set a new model */
-    inline void setModel(IMixtureModelBase* p_model) { p_model_ = p_model; }
+    inline void setModel(IMixtureComposerBase* p_model) { p_model_ = p_model; }
     /** set the maximal number of iterations */
     inline void setNbIterMax(int nbIterMax) { nbIterMax_ = nbIterMax; }
     /** set the tolerance value */
@@ -77,7 +77,7 @@ class IMixtureAlgo : public IRunnerBase
 
   protected:
     /** pointer on the mixture model */
-    IMixtureModelBase* p_model_;
+    IMixtureComposerBase* p_model_;
     /** number of iterations of the algorithm */
     int nbIterMax_;
     /** tolerance of the algorithm. */
