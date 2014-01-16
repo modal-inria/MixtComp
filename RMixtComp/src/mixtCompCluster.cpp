@@ -33,7 +33,7 @@
 
 #include "mixt_DataHandlerR.h"
 #include "mixt_MixtureComposer.h"
-#include "stkpp/include/STKpp.h"
+#include "mixt_SemStrategy.h"
 
 // [[Rcpp::export]]
 void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
@@ -56,9 +56,7 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   composer.setData();
   composer.initializeModel();
   
-  // instantiate the strategy facade
-  STK::StrategyFacade strategy(p_composer);
-  
+  // instantiate the SemStrategy
   STK::Clust::initType initMethod;
   std::string s_initMethod = mcStrategy.slot("initMethod");
   if      (s_initMethod == std::string("randomInit"      ))
@@ -69,7 +67,8 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
     initMethod = STK::Clust::randomFuzzyInit_;
   
   // create the apropriate strategy and transmit the parameters
-  strategy.createSemStrategy( initMethod // init type
+  mixt::SemStrategy strategy( p_composer
+                            , initMethod // init type
                             , mcStrategy.slot("nbTrialInInit") // number of initialization trials
                             , mcStrategy.slot("nbBurnInIter") // number of burn-in iterations
                             , mcStrategy.slot("nbIter")
