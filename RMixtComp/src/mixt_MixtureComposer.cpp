@@ -40,8 +40,8 @@ namespace mixt
 /** Create a composer, but reinitialize the ingredients parameters. */
 MixtureComposer* MixtureComposer::create() const
 {
-  if (!p_DataHandlerR()){};
-//    STKRUNTIME_ERROR_NO_ARG(MixtureComposer::create,data handler is not set);
+  if (!p_DataHandlerR()) {STKRUNTIME_ERROR_NO_ARG(MixtureComposer::create,data handler is not set);};
+ 
   // set dimensions
   MixtureComposer* p_composer = new MixtureComposer(nbCluster_);
   p_composer->createComposer(p_DataHandlerR(), v_mixtures());
@@ -51,16 +51,14 @@ MixtureComposer* MixtureComposer::create() const
 /** Create a clone of the current model, with ingredients parameters preserved. */
 MixtureComposer* MixtureComposer::clone() const
 {
-  if (!p_DataHandlerR()){};
-//    STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createIngredients,data handler is not set);
+  if (!p_DataHandlerR()) {STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createIngredients,data handler is not set);};
   return new MixtureComposer(*this);
 }
 
 /* create ingredients using info from p_dataHandler */
 void MixtureComposer::createMixtCompIngredients()
 {
-  if (!p_DataHandlerR()){};
-//        STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createIngredients,data handler is not set);
+  if (!p_DataHandlerR()) {STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createIngredients,data handler is not set);};
   for (InfoMap::const_iterator it=p_DataHandlerR()->info().begin(); it!=p_DataHandlerR()->info().end(); ++it)
   {
     std::string name = it->first;

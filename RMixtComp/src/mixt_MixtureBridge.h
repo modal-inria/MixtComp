@@ -102,7 +102,7 @@ class MixtureBridge : public IMixture
     virtual void initializeModel()
     {
       if (!p_composer()){};
-//        STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);
+      STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);
       ingredient_.setMixtureParameters( p_prop(), p_tik(), p_zi());
       ingredient_.initializeModel();
     }
