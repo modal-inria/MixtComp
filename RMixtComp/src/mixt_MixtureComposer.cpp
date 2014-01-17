@@ -64,11 +64,6 @@ void MixtureComposer::createMixtCompIngredients()
     std::string name = it->first;
     std::string model= it->second;
     STK::Clust::Ingredient idModel = STK::Clust::stringToIngredient(model);
-#ifdef DSTK_MIXTURE_DEBUG
-    stk_cout << _T("model = ") << model << _T("\n");
-    stk_cout << _T("name = ") << name << _T("\n");
-    stk_cout << _T("Ingredient = ") << idModel << _T("\n");
-#endif
     if (idModel != STK::Clust::unknown_mixture_)
     {
       registerIngredient(Clust::createMixtCompIngredient(idModel, name, nbCluster_));
