@@ -35,8 +35,8 @@
 #ifndef STK_GAUSSIAN_S_H
 #define STK_GAUSSIAN_S_H
 
-#include "STK_Gaussian_sImpl.h"
 #include "STK_DiagGaussianBase.h"
+#include "STK_GaussianUtil.h"
 
 namespace STK
 {
@@ -46,17 +46,17 @@ template<class Array>class Gaussian_s;
 
 namespace Clust
 {
-/** @ingroup hidden
+/** @ingroup Clust
  *  Traits class for the Gaussian_s traits policy. */
 template<class _Array>
-struct MixtureTraits< Gaussian_s<_Array> >
+struct MixtureModelTraits< Gaussian_s<_Array> >
 {
   typedef _Array Array;
   typedef DiagGaussianComponent<_Array, Gaussian_s_Parameters> Component;
   typedef Gaussian_s_Parameters        Parameters;
 };
 
-} // namespace hidden
+} // namespace Clust
 
 /** @ingroup Clustering
  *  The diagonal Gaussian_s mixture model have a density function of the form
@@ -70,21 +70,24 @@ class Gaussian_s : public DiagGaussianBase<Gaussian_s<Array> >
 {
   public:
     typedef DiagGaussianBase<Gaussian_s<Array> > Base;
-    using Base::p_data_;
-    using Base::components_;
+    typedef typename Clust::MixtureModelTraits< Gaussian_s<Array> >::Component Component;
+    typedef typename Clust::MixtureModelTraits< Gaussian_s<Array> >::Parameters Parameters;
+
+    using Base::p_tik;
+    using Base::p_data;
+    using Base::p_param;
+    using Base::components;
 
     /** default constructor
      * @param nbCluster number of cluster in the model
      **/
-    Gaussian_s( int nbCluster) : Base(nbCluster), sigma_(1) {}
+    inline Gaussian_s( int nbCluster) : Base(nbCluster), sigma_(1) {}
     /** copy constructor
      *  @param model The model to copy
      **/
-    Gaussian_s( Gaussian_s const& model)
-              : Base(model), sigma_(model.sigma_)
-    {}
+    inline Gaussian_s( Gaussian_s const& model): Base(model), sigma_(model.sigma_) {}
     /** destructor */
-    ~Gaussian_s() {}
+    inline ~Gaussian_s() {}
     /** Initialize the component of the model.
      *  This function have to be called prior to any used of the class.
      *  In this interface, the @c initializeModel() method call the base
@@ -94,16 +97,25 @@ class Gaussian_s : public DiagGaussianBase<Gaussian_s<Array> >
     void initializeModel()
     {
       Base::initializeModel();
-      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
-      { components_[k]->p_param()->p_sigma_ = &sigma_;}
+      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+      { components()[k]->p_param()->p_sigma_ = &sigma_;}
     }
+    /** Compute the inital weighted mean and the initial common variance. */
+    void initializeStep();
+    /** Initialize randomly the parameters of the Gaussian mixture. The centers
+     *  will be selected randomly among the data set and the standard-deviation
+     *  will be set to 1.
+     */
+    void randomInit();
+    /** Compute the weighted mean and the common variance. */
+    void mStep();
     /** Write the parameters*/
     void writeParameters(ostream& os) const
     {
-      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
+      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       {
         stk_cout << _T("---> Component ") << k << _T("\n";);
-        stk_cout << _T("mean_ = ") << components_[k]->p_param()->mean_;
+        stk_cout << _T("mean_ = ") << p_param(k)->mean_;
         stk_cout << _T("sigma_ = ") << sigma_ * Const::Point<Real>(this->nbVariable());
       }
     }
@@ -114,6 +126,52 @@ class Gaussian_s : public DiagGaussianBase<Gaussian_s<Array> >
   protected:
     Real sigma_;
 };
+
+/* Compute the inital weighted mean and the initial common variance. */
+template<class Array>
+void Gaussian_s<Array>::initializeStep()
+{
+  GaussianUtil<Component>::initialMean(components(), p_tik());
+  Real variance = 0.0;
+  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  {
+    variance += ( p_tik()->col(k).transpose()
+                 *(*p_data() - (Const::Vector<Real>(p_data()->rows()) * p_param(k)->mean_)
+                  ).square()
+                ).sum();
+  }
+  if ((variance<=0)||Arithmetic<Real>::isNA(variance)) throw Clust::initializeStepFail_;
+  sigma_ = std::sqrt(variance/(this->nbSample()*this->nbVariable()));
+}
+
+/* Initialize randomly the parameters of the Gaussian mixture. The centers
+ *  will be selected randomly among the data set and the standard-deviation
+ *  will be set to 1.
+ */
+template<class Array>
+void Gaussian_s<Array>::randomInit()
+{
+  GaussianUtil<Component>::randomMean(components());
+  sigma_ = 1.;
+}
+
+/* Compute the weighted mean and the common variance. */
+template<class Array>
+void Gaussian_s<Array>::mStep()
+{
+  // compute the means
+  GaussianUtil<Component>::updateMean(components(), p_tik());
+  Real variance = 0.0;
+  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  {
+    variance += ( p_tik()->col(k).transpose()
+                 * (*p_data() - (Const::Vector<Real>(p_data()->rows()) * p_param(k)->mean_)
+                   ).square()
+                ).sum();
+  }
+  if ((variance<=0)||Arithmetic<Real>::isNA(variance)) throw Clust::mStepFail_;
+  sigma_ = std::sqrt(variance/(this->nbSample()*this->nbVariable()));
+}
 
 } // namespace STK
 

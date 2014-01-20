@@ -124,7 +124,7 @@ class ExprBase : public ITContainer<Derived, hidden::Traits<Derived>::structure_
     void visit(Visitor& visitor) const;
 
     /** @return the number of available values in the array (not count NA values).*/
-    int const nbValues() const;
+    int const nbAvailableValues() const;
     /** @return the minimum of all elements of this using a Visitor
       * and puts in (row, col) its location.
       * @sa maxElt(int,int), visitor(), minElt()
@@ -199,17 +199,6 @@ class ExprBase : public ITContainer<Derived, hidden::Traits<Derived>::structure_
     /** @return the variance of all the elements of this using a Visitor*/
     inline Type const variance() const;
 
-    /** @return the sum of all the elements of this using a Visitor*/
-    inline Type const sumSafe() const;
-    /** @return the norm of this*/
-    inline Type const normSafe() const;
-    /** @return the square norm of this*/
-    inline Type const norm2Safe() const;
-    /** @return the mean of all the elements of this using a safe Visitor*/
-    inline Type const meanSafe() const;
-    /** @return the variance of all the elements of this using a safe Visitor*/
-    inline Type const varianceSafe() const;
-
     /** @return the weighted sum of all the elements of this using a Visitor
      *  @note will only work with row-vectors or col-vectors
      **/
@@ -246,21 +235,6 @@ class ExprBase : public ITContainer<Derived, hidden::Traits<Derived>::structure_
      **/
     template<typename Rhs>
     inline Type const wnormSafe(ExprBase<Rhs> const& weights) const;
-    /** @return the weighted square norm of this
-     *  @note will only work with row-vectors or col-vectors
-     **/
-    template<typename Rhs>
-    inline Type const wnorm2Safe(ExprBase<Rhs> const& weights) const;
-    /** @return the weighted mean of all the elements of this using a Visitor
-     *  @note will only work with row-vectors or col-vectors
-     **/
-    template<typename Rhs>
-    inline Type const wmeanSafe(ExprBase<Rhs> const& weights) const;
-    /** @return the weighted variance of all the elements of this using a Visitor
-     *  @note will only work with row-vectors or col-vectors
-     **/
-    template<typename Rhs>
-    inline Type const wvarianceSafe(ExprBase<Rhs> const& weights) const;
 
     /** @return an expression from the difference of this and  other. */
     MAKE_BINARY_OPERATOR(operator-,DifferenceOp)

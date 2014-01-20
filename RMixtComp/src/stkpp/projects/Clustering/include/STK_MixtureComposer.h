@@ -110,17 +110,17 @@ class MixtureComposer : public IMixtureComposerBase
      **/
     virtual void finalizeStep();
     /** create the ingredients using DataHandler info.
-     * @note if the idModel is not a Clust::Ingredient, it is not an error as
+     * @note if the idModel is not a Clust::Mixture, it is not an error as
      * other ingredients with other id can have been implemented outside stk++.
-     * @sa Clust::Ingredient */
-    void createIngredients();
+     * @sa Clust::Mixture */
+    void createMixtures();
     /** create a specific ingredient.
      *  @param idModel the id of the ingredient we want to create
      *  @param idName the name of the ingredient
      **/
-    void createIngredient(Clust::Ingredient idModel, String const& idName);
+    void createMixture(Clust::Mixture idModel, String const& idName);
     /** add an ingredient to the composer */
-    void registerIngredient(IMixture* mixture);
+    void registerMixture(IMixture* mixture);
     /** call setData for all ingredients */
     void setData();
     /** get data from DataHandler  */
@@ -139,8 +139,6 @@ class MixtureComposer : public IMixtureComposerBase
      * @sa MixtureComposerFixedProp
      **/
     void createComposer(IDataHandler const* p_handler, std::vector<IMixture*> const& v_mixtures_);
-
-  private:
     /** pointer to the dataHandler */
     IDataHandler const* p_handler_;
     /** vector of pointers to the mixtures components */

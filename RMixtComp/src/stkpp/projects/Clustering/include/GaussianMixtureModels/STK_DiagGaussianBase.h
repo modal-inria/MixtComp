@@ -36,6 +36,7 @@
 #define STK_DIAGGAUSSIANBASE_H
 
 #include "../STK_IMixtureModel.h"
+#include "STK_DiagGaussianComponent.h"
 
 namespace STK
 {
@@ -61,9 +62,9 @@ class DiagGaussianBase : public IMixtureModel<Derived >
      **/
     inline DiagGaussianBase( DiagGaussianBase const& model) : Base(model) {}
     /** destructor */
-    ~DiagGaussianBase() {}
+    inline ~DiagGaussianBase() {}
     /** @return an imputation value for the jth variable of the ith sample*/
-    inline Real impute(int i, int j) const
+    Real impute(int i, int j) const
     {
       Real sum = 0.;
       for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
@@ -71,13 +72,16 @@ class DiagGaussianBase : public IMixtureModel<Derived >
       return sum;
     }
     /** @return an simulated value for the jth variable of the ith sample*/
-    inline Real sample(int i, int j) const
+    Real sample(int i, int j) const
     {
       Real sum = 0.;
       for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
       { sum += p_tik()->elt(i,k) * Law::Normal::rand(components_[k]->p_param()->mean(j),components_[k]->p_param()->sigma(j));}
       return sum;
     }
+    /** @return a safe value for the jth variable */
+    inline Real safeValue(int j) const
+    { return this->p_data()->col(j).safe().mean();}
 };
 
 } // namespace STK

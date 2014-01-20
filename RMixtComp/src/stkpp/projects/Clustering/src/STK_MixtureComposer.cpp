@@ -44,7 +44,7 @@ MixtureComposer::~MixtureComposer()
 MixtureComposer* MixtureComposer::clone() const
 {
   if (!p_handler_)
-    STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createIngredients,data handler is not set);
+    STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createMixtures,data handler is not set);
   return new MixtureComposer(*this);
 }
 
@@ -173,33 +173,34 @@ void MixtureComposer::finalizeStep()
 }
 
 /* create ingredients using info from p_dataHandler */
-void MixtureComposer::createIngredients()
+void MixtureComposer::createMixtures()
 {
   if (!p_handler_)
-    STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createIngredients,data handler is not set);
+    STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createMixtures,data handler is not set);
   for (InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
   {
     std::string name = it->first;
     std::string model= it->second;
-    Clust::Ingredient idModel = Clust::stringToIngredient(model);
+    Clust::Mixture idModel = Clust::stringToMixture(model);
 #ifdef DSTK_MIXTURE_DEBUG
      stk_cout << _T("model = ") << model << _T("\n");
      stk_cout << _T("name = ") << name << _T("\n");
-     stk_cout << _T("Ingredient = ") << idModel << _T("\n");
+     stk_cout << _T("Mixture = ") << idModel << _T("\n");
 #endif
     if (idModel != Clust::unknown_mixture_)
-    { registerIngredient(Clust::createIngredient(idModel, name, nbCluster_ ));}
+    { registerMixture(Clust::createMixture(idModel, name, nbCluster_ ));}
   }
 }
 
 /* create ingredients using specific idModel and */
-void MixtureComposer::createIngredient(Clust::Ingredient idModel, String const& idName)
+void MixtureComposer::createMixture(Clust::Mixture idModel, String const& idName)
 {
-  if (idModel == Clust::unknown_mixture_) return;
-  registerIngredient(Clust::createIngredient(idModel, idName, nbCluster_ ));
+  IMixture* p_mixture = Clust::createMixture(idModel, idName, nbCluster_ );
+  if (!p_mixture) return;
+  registerMixture(p_mixture);
 }
 
-void MixtureComposer::registerIngredient(IMixture* mixture)
+void MixtureComposer::registerMixture(IMixture* mixture)
 {
   v_mixtures_.push_back(mixture);
   v_mixtures_.back()->setMixtureComposer(this);

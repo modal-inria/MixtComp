@@ -46,7 +46,7 @@ namespace STK
 {
 
 /** @ingroup Clustering
- *  @brief Base class for Ingredient model.
+ *  @brief Base class for Mixture model.
  *
  * All mixture parameters: proportions, Tik, Zi and components are accessed by
  * pointer and set to this class  using the method

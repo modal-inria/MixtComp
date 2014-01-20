@@ -29,14 +29,14 @@
  **/
 
 /** @file STK_Gaussian_sj.h
- *  @brief In this file we implement the Gaussian_s class
+ *  @brief In this file we define and implement the Gaussian_sj class
  **/
 
 #ifndef STK_GAUSSIAN_SJ_H
 #define STK_GAUSSIAN_SJ_H
 
-#include "STK_Gaussian_sjImpl.h"
 #include "STK_DiagGaussianBase.h"
+#include "STK_GaussianUtil.h"
 
 namespace STK
 {
@@ -49,7 +49,7 @@ namespace Clust
 /** @ingroup hidden
  *  Traits class for the Gaussian_s traits policy. */
 template<class _Array>
-struct MixtureTraits< Gaussian_sj<_Array> >
+struct MixtureModelTraits< Gaussian_sj<_Array> >
 {
   typedef _Array Array;
   typedef DiagGaussianComponent<_Array, Gaussian_sj_Parameters> Component;
@@ -71,21 +71,24 @@ class Gaussian_sj : public DiagGaussianBase<Gaussian_sj<Array> >
 {
   public:
     typedef DiagGaussianBase<Gaussian_sj<Array> > Base;
-    using Base::p_data_;
-    using Base::components_;
+    typedef typename Clust::MixtureModelTraits< Gaussian_sj<Array> >::Component Component;
+    typedef typename Clust::MixtureModelTraits< Gaussian_sj<Array> >::Parameters Parameters;
+
+    using Base::p_tik;
+    using Base::p_data;
+    using Base::p_param;
+    using Base::components;
 
     /** default constructor
      * @param nbCluster number of cluster in the model
      **/
-    Gaussian_sj( int nbCluster) : Base(nbCluster), sigma_(1) {}
+    inline Gaussian_sj( int nbCluster) : Base(nbCluster), sigma_() {}
     /** copy constructor
      *  @param model The model to copy
      **/
-    Gaussian_sj( Gaussian_sj const& model)
-               : Base(model), sigma_(model.sigma_)
-    {}
+    inline Gaussian_sj( Gaussian_sj const& model): Base(model), sigma_(model.sigma_) {}
     /** destructor */
-    ~Gaussian_sj() {}
+    inline ~Gaussian_sj() {}
     /** Initialize the component of the model.
      *  This function have to be called prior to any used of the class.
      *  In this interface, the @c initializeModel() method call the base
@@ -95,16 +98,26 @@ class Gaussian_sj : public DiagGaussianBase<Gaussian_sj<Array> >
     void initializeModel()
     {
       Base::initializeModel();
-      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
-      { components_[k]->p_param()->p_sigma_ = &sigma_;}
+      sigma_.resize(this->nbVariable());
+      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+      { p_param(k)->p_sigma_ = &sigma_;}
     }
+    /** Compute the inital weighted mean and the initial common variance. */
+    void initializeStep();
+    /** Initialize randomly the parameters of the Gaussian mixture. The centers
+     *  will be selected randomly among the data set and the standard-deviation
+     *  will be set to 1.
+     */
+    void randomInit();
+    /** Compute the weighted mean and the common variance. */
+    void mStep();
     /** Write the parameters*/
     void writeParameters(ostream& os) const
     {
-      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
+      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       {
         stk_cout << _T("---> Component ") << k << _T("\n";);
-        stk_cout << _T("mean_ = ") << components_[k]->p_param()->mean_;
+        stk_cout << _T("mean_ = ") << components()[k]->p_param()->mean_;
         stk_cout << _T("sigma_ = ") << sigma_;
       }
     }
@@ -115,6 +128,44 @@ class Gaussian_sj : public DiagGaussianBase<Gaussian_sj<Array> >
   protected:
     Array2DPoint<Real> sigma_;
 };
+
+/* Initialize the parameters using mStep. */
+template<class Array>
+void Gaussian_sj<Array>::initializeStep()
+{ GaussianUtil<Component>::initialMean(components(), p_tik());
+  sigma_ = 1.;
+}
+
+/* Initialize randomly the parameters of the Gaussian mixture. The centers
+ *  will be selected randomly among the data set and the standard-deviation
+ *  will be set to 1.
+ */
+template<class Array>
+void Gaussian_sj<Array>::randomInit()
+{
+    GaussianUtil<Component>::randomMean(components());
+    sigma_ = 1.;
+}
+
+/* Compute the weighted mean and the common variance. */
+template<class Array>
+void Gaussian_sj<Array>::mStep()
+{
+  // compute the means
+  GaussianUtil<Component>::updateMean(components(), p_tik());
+  Array2DPoint<Real> variance(p_data()->cols(), 0.);
+  for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+  {
+    variance += p_tik()->col(k).transpose()
+               *(*p_data() - (Const::Vector<Real>(p_data()->rows()) * p_param(k)->mean_)
+                ).square()
+                ;
+  }
+  if (variance.nbAvailableValues() != this->nbVariable()) throw Clust::mStepFail_;
+  if ((variance > 0.).template cast<int>().sum() != this->nbVariable()) throw Clust::mStepFail_;
+  // compute the standard deviation
+  sigma_ = (variance /= this->nbSample()).sqrt();
+}
 
 } // namespace STK
 

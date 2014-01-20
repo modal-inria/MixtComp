@@ -53,17 +53,18 @@ namespace STK
 namespace hidden
 {
 
-/** Functor computing the lnLikelihood of a gamma_ajk_bj model */
+/** @ingroup hidden
+ *  Functor computing the lnLikelihood of a gamma_ajk_bj model
+ **/
 class dlgamma_ajk_bj : public IFunction<dlgamma_ajk_bj >
 {
   public:
-  dlgamma_ajk_bj( Real b, Real meanLog)
-                  : delta_(meanLog - std::log(b)) {}
+    /** initialize delta_ */
+    inline dlgamma_ajk_bj( Real b, Real meanLog): delta_(meanLog - std::log(b)) {}
     /** @return the value of the function at a
      * @param a a positive real value
      **/
-    inline Real fImpl(Real a) const
-    { return (delta_ - Funct::psi_raw(a));}
+    inline Real fImpl(Real a) const { return (delta_ - Funct::psi_raw(a));}
     /** @return the minimal value of the function at x */
     inline Real xminImpl() const { return 0;}
   private:
@@ -83,58 +84,9 @@ struct MixtureModelImpl<  Array, Gamma_ajk_bj_Parameters >
   typedef Gamma_ajk_bj_Parameters Parameters;
   typedef typename Array::Col ColVector;
 
-  /** Initialize the parameters with the moment estimators.
-   *  @param components the components with the parameters to initialize
-   *  @param p_tik the tik
-   **/
-  static void initializeStep(Array1D< Component* >& components, Array2D<Real> const* p_tik)
-  {
-    if (components.size() <= 0) return;
-    // estimate the moments
-    try
-    { GammaUtil<Component>::initialMoments(components, p_tik);}
-    catch (Clust::exceptions const & e)
-    { throw Clust::initializeStepFail_;}
-    // estimate ajk and bj
-    for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
-    {
-      Gamma_ajk_bj_Parameters* paramk = components[k]->p_param();
-      Array const* p_data = components[k]->p_data();
-      ColVector tik(p_tik->col(k), true); // create a reference
-
-      for (int j=p_data->firstIdxCols(); j<=p_data->lastIdxCols(); ++j)
-      {
-        // set a values
-        Real a = paramk->mean_[j]*paramk->mean_[j]/paramk->variance_[j];
-        if ((a<=0)||Arithmetic<Real>::isNA(a)) throw Clust::initializeStepFail_;
-        paramk->shape_[j] = a;
-      }
-    }
-    // compute bj
-    Array const* p_data = components.front()->p_data();
-    Gamma_ajk_bj_Parameters* paramk = components.front()->p_param();
-    for (int j=p_data->firstIdxCols(); j<=p_data->lastIdxCols(); ++j)
-    {
-      Array2DPoint<Real> meank(p_tik->cols()), ak(p_tik->cols()), tk(p_tik->cols());
-      for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
-      {
-        tk[k]    = p_tik->col(k).sum();
-        ak[k]    = components[k]->p_param()->shape_[j];
-        meank[k] = components[k]->p_param()->mean_[j];
-      }
-      paramk->p_scale_->elt(j) = tk.dot(meank)/tk.dot(ak);
-    }
-  }
-
   // run mStep
   static void mStep(Array1D< Component* >& components, Array2D<Real> const* p_tik)
   {
-    if (components.size() <= 0) return;
-    // estimate the moments
-    try
-    { GammaUtil<Component>::moments(components, p_tik);}
-    catch (Clust::exceptions const & e)
-    { throw Clust::mStepFail_;}
     // start estimations of the ajk and bj
     Real delta;
     int iter = 0;
@@ -202,36 +154,6 @@ stk_cout << "f(start2) =" << funct(start2) << _T("\n";);
   /** random initialization of the parameters. */
   static void randomInit(Array1D< Component* >& components)
   {
-    if (components.size() <= 0) return;
-    Array const* p_data = components[components.firstIdx()]->p_data();
-
-    for (int j=p_data->firstIdxCols(); j<=p_data->lastIdxCols(); ++j)
-    {
-      Real mean = p_data->col(j).meanSafe();
-      if ((mean <=0.) || (Arithmetic<Real>::isNA(mean))) throw Clust::randomInitFail_;
-      Real variance = p_data->col(j).varianceSafe();
-      if ((variance <=0.) || (Arithmetic<Real>::isNA(variance))) throw Clust::randomInitFail_;
-
-      for (int k= components.firstIdx(); k <= components.lastIdx(); ++k)
-      {
-        Parameters* paramk = components[k]->p_param();
-        // generate values
-        Real a = STK::Law::Exponential::rand(mean*mean/variance);
-        paramk->shape_[j] = a;
-      }
-      Real b = STK::Law::Exponential::rand(variance/mean);
-      components.front()->p_param()->p_scale_->elt(j) = b;
-    }
-#ifdef STK_MIXTURE_VERY_VERBOSE
-    stk_cout << _T("MixtureModelImpl< Array, Gamma_ajk_bj_Component<Array> >::randomInit done\n");
-    for (int k= components.firstIdx(); k <= components.lastIdx(); ++k)
-    {
-      Parameters* paramk = components[k]->p_param();
-      stk_cout << _T("Component no ") << k << _T("\n");
-      stk_cout << paramk->shape_;
-      stk_cout << *paramk->p_scale_;
-    }
-#endif
   }
 
 };

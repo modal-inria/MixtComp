@@ -29,7 +29,7 @@
  **/
 
 /** @file STK_Clust_Util.cpp
- *  @brief In this file we implement the utilties functions of the Clustering project.
+ *  @brief In this file we implement the utilities functions of the Clustering project.
  **/
 
 #include "../../STKernel/include/STK_String_Util.h"
@@ -37,7 +37,7 @@
 #include "../include/STK_Clust_Util.h"
 #include "../include/STK_MixtureAlgo.h"
 #include "../include/STK_MixtureInit.h"
-#include "../include/ingredients/STK_Ingredients.h"
+#include "../include/Mixtures/STK_Mixtures.h"
 
 namespace STK
 {
@@ -63,53 +63,63 @@ String exceptionToString( exceptions const& type)
 }
 
 /* @ingroup Clustering
- *  convert a String to an Ingredient.
+ *  convert a String to an Mixture.
  *  @param type the String we want to convert
- *  @return the Ingredient represented by the String @c type. if the string
+ *  @return the Mixture represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_mixture_ type is returned.
  **/
-Ingredient stringToIngredient( std::string const& type)
+Mixture stringToMixture( std::string const& type)
 {
   if (toUpperString(type) == toUpperString(_T("Gamma_ajk_bjk"))) return Gamma_ajk_bjk_;
   if (toUpperString(type) == toUpperString(_T("Gamma_ajk_bj"))) return Gamma_ajk_bj_;
   if (toUpperString(type) == toUpperString(_T("Gaussian_sjk"))) return Gaussian_sjk_;
+  if (toUpperString(type) == toUpperString(_T("Gaussian_sk"))) return Gaussian_sk_;
+  if (toUpperString(type) == toUpperString(_T("Gaussian_sj"))) return Gaussian_sj_;
   if (toUpperString(type) == toUpperString(_T("Gaussian_s"))) return Gaussian_s_;
   return unknown_mixture_;
 }
 
 /* @ingroup Clustering
- *  convert a Ingredient to a String.
- *  @param type the type of Ingredient we want to convert
+ *  convert a Mixture to a String.
+ *  @param type the type of Mixture we want to convert
  *  @return the string associated to this type.
  **/
-std::string ingredientToString( Ingredient const& type)
+std::string ingredientToString( Mixture const& type)
 {
   if (type == Gamma_ajk_bjk_) return String(_T("Gamma_ajk_bjk"));
   if (type == Gamma_ajk_bj_) return String(_T("Gamma_ajk_bj"));
   if (type == Gaussian_sjk_) return String(_T("Gaussian_sjk"));
+  if (type == Gaussian_sk_) return String(_T("Gaussian_sk"));
+  if (type == Gaussian_sj_) return String(_T("Gaussian_sj"));
   if (type == Gaussian_s_) return String(_T("Gaussian_s"));
   return String(_T("unknown"));
 }
 
 /** @ingroup Clustering
- *  utility function for creating an Ingredient.
+ *  utility function for creating an Mixture.
  *  @param model ingredient to create
  **/
-IMixture* createIngredient(Ingredient model, std::string const& id, int nbCluster)
+IMixture* createMixture(Mixture model, std::string const& id, int nbCluster)
 {
   switch (model)
   {
     case Gamma_ajk_bjk_:
-      return new IngredientGamma_ajk_bjk(id, nbCluster);
+      return new MixtureGamma_ajk_bjk(id, nbCluster);
       break;
     case Gamma_ajk_bj_:
-      return new IngredientGamma_ajk_bj(id, nbCluster);
+      return new MixtureGamma_ajk_bj(id, nbCluster);
       break;
     case Gaussian_sjk_:
-      return new IngredientGaussian_sjk(id, nbCluster);
+      return new MixtureGaussian_sjk(id, nbCluster);
+      break;
+    case Gaussian_sk_:
+      return new MixtureGaussian_sk(id, nbCluster);
+      break;
+    case Gaussian_sj_:
+      return new MixtureGaussian_sj(id, nbCluster);
       break;
     case Gaussian_s_:
-      return new IngredientGaussian_s(id, nbCluster);
+      return new MixtureGaussian_s(id, nbCluster);
       break;
     default:
       return 0;

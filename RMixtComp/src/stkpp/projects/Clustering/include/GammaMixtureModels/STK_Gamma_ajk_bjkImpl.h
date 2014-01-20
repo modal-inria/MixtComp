@@ -50,13 +50,13 @@ namespace STK
 namespace hidden
 {
 
-/** @ingroup Clustering
+/** @ingroup hidden
  *  Functor computing the derivative of the lnLikelihood of a gamma_ajk_bjk model */
 class dlgamma_ajk_bjk : public IFunction<dlgamma_ajk_bjk >
 {
   public:
-  dlgamma_ajk_bjk( Real const& mean, Real const& meanLog)
-                  : mean_(mean), meanLog_(meanLog)  {}
+    inline dlgamma_ajk_bjk( Real const& mean, Real const& meanLog)
+                          : mean_(mean), meanLog_(meanLog)  {}
     /** @return the value of the function at a
      * @param a a positive real value
      **/
@@ -78,37 +78,10 @@ class dlgamma_ajk_bjk : public IFunction<dlgamma_ajk_bjk >
 template<class Array>
 struct MixtureModelImpl< Array, Gamma_ajk_bjk_Parameters >
 {
-  typedef GammaComponent<Array, Gamma_ajk_bjk_Parameters> Component;
   typedef Gamma_ajk_bjk_Parameters Parameters;
+  typedef GammaComponent<Array, Parameters> Component;
   typedef typename Array::Col ColVector;
 
-  /** Initialize the parameters with the moment estimators.
-   *  @param components the components with the parameters to initialize
-   *  @param p_tik the tik
-   **/
-  static void initializeStep(Array1D< Component* >& components, Array2D<Real> const* p_tik)
-  {
-    if (components.size() <= 0) return;
-    // estimate the moments
-    try
-    { GammaUtil<Component>::initialMoments(components, p_tik);}
-    catch (Clust::exceptions const & e)
-    { throw e;}
-    // estimate a and b
-    for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
-    {
-      Gamma_ajk_bjk_Parameters* paramk = components[k]->p_param();
-      Array const* p_data = components[k]->p_data();
-      for (int j=p_data->firstIdxCols(); j<=p_data->lastIdxCols(); ++j)
-      {
-        Real a = paramk->mean_[j]*paramk->mean_[j]/paramk->variance_[j];
-        if ((a<=0)||Arithmetic<Real>::isNA(a)) throw Clust::initializeStepFail_;
-
-        paramk->shape_[j] = a;
-        paramk->scale_[j] = paramk->mean_[j]/a;
-      }
-    }
-  }
   /** run mStep */
   static void mStep(Array1D< Component* >& components, Array2D<Real> const* p_tik)
   {
@@ -153,35 +126,7 @@ stk_cout << "f(start2) =" << funct(start2) << _T("\n";);
   }
   /** compute the random initialization of the parameters */
   static void randomInit(Array1D< Component* >& components_)
-  {
-    if (components_.size() <= 0) return;
-    Array const* p_data = components_[components_.firstIdx()]->p_data();
-
-    for (int j=p_data->firstIdxCols(); j<=p_data->lastIdxCols(); ++j)
-    {
-      Real mean = p_data->col(j).meanSafe();
-      Real variance = p_data->col(j).varianceSafe();
-      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
-      {
-        Parameters* paramk = components_[k]->p_param();
-        // generate values
-        Real a = STK::Law::Exponential::rand(mean*mean/variance);
-        Real b = STK::Law::Exponential::rand(variance/mean);
-        paramk->shape_[j] = a;
-        paramk->scale_[j] = b;
-      }
-    }
-#ifdef STK_MIXTURE_VERY_VERBOSE
-    stk_cout << _T("MixtureModelImpl< Array, Gamma_ajk_bjk_Component<Array> >::randomInit() done\n");
-    for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
-    {
-      Parameters* paramk = components_[k]->p_param();
-      stk_cout << _T("Component no ") << k << _T("\n");
-      stk_cout << paramk->shape_;
-      stk_cout << paramk->scale_;
-    }
-#endif
-  }
+  {}
 };
 
 }  // namespace STK

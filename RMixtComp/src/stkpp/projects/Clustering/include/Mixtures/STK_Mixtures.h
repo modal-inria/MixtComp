@@ -28,15 +28,15 @@
  * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  **/
 
-/** @file STK_Ingredients.h
+/** @file STK_Mixtures.h
  *  @brief In this file we summarize the ingredients of the Clustering project.
  **/
 
 
-#ifndef STK_INGREDIENTS_H
-#define STK_INGREDIENTS_H
+#ifndef STK_MIXTURES_H
+#define STK_MIXTURES_H
 
-#include "STK_GammaIngredient.h"
-#include "STK_GaussianIngredient.h"
+#include "STK_GammaMixtures.h"
+#include "STK_GaussianMixtures.h"
 
-#endif /* STK_INGREDIENTS_H */
+#endif /* STK_MIXTURES_H */

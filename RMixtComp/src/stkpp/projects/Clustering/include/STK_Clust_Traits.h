@@ -23,13 +23,14 @@
 */
 
 /*
- * Project:  stkpp::
+ * Project:  stkpp::Clustering
  * created on: 7 sept. 2013
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
 /** @file STK_Clust_Traits.h
- *  @brief In this file we define the MixtureModelImpl class and the MixtureTraits class.
+ *  @brief In this file we define the MixtureModelImpl, the MixtureModelTraits
+ *  and the MixtureTraits classes.
  **/
 
 
@@ -45,7 +46,7 @@ namespace STK
  *
  *  The MixtureModelImpl struct must be specialized for any
  *  models deriving from the IMixtureModel
- *  interfaces by implementing the following methods:
+ *  interface by implementing the following methods:
  *  @code
  *    static void randomInit(Array1D< Component* >& components);
  *    static void mStep(Array1D< Component* >& components, Array2D<Real> const* p_tik);
@@ -57,15 +58,15 @@ struct MixtureModelImpl;
 namespace Clust
 {
 /** Main class for the mixtures traits policy.
- *  The traits struct MixtureTraits must be specialized for any
+ *  The traits struct MixtureModelTraits must be specialized for any
  *  components deriving from the Interface IMixtureComponents.
  **/
-template <class Mixture> struct MixtureTraits;
+template <class Mixture> struct MixtureModelTraits;
 
 /** Given the Id of a mixture model, the struct Traits allow to get
  *  type of the input and output data of the parameters.
  **/
-template<int id> struct IngredientTraits;
+template<int id> struct MixtureTraits;
 
 } // namespace hidden
 

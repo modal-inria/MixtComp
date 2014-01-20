@@ -88,7 +88,7 @@ class IDataHandler
     /** Store the informations  of the ingredients in the form (idData, idModel) with
      * - idData: an arbitrary idData for a model
      * - model: a string which can be converted intp an existing model
-     * @sa stringToIngredient */
+     * @sa stringToMixture */
     InfoMap info_;
 };
 

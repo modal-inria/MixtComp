@@ -50,7 +50,7 @@ namespace Clust
  * Traits class for the Gamma_ajk_bjk traits policy
  **/
 template<class _Array>
-struct MixtureTraits< Gamma_ajk_bjk<_Array> >
+struct MixtureModelTraits< Gamma_ajk_bjk<_Array> >
 {
   typedef _Array Array;
   typedef GammaComponent<_Array, Gamma_ajk_bjk_Parameters> Component;
@@ -72,41 +72,114 @@ template<class Array>
 class Gamma_ajk_bjk : public GammaBase< Gamma_ajk_bjk<Array> >
 {
   public:
-    typedef typename Clust::MixtureTraits< Gamma_ajk_bjk<Array> >::Component Component;
-    typedef typename Clust::MixtureTraits< Gamma_ajk_bjk<Array> >::Parameters Parameters;
+    typedef typename Clust::MixtureModelTraits< Gamma_ajk_bjk<Array> >::Component Component;
+    typedef typename Clust::MixtureModelTraits< Gamma_ajk_bjk<Array> >::Parameters Parameters;
     typedef GammaBase< Gamma_ajk_bjk<Array> > Base;
+
+    using Base::p_tik;
     using Base::p_data;
-    using Base::components_;
+    using Base::p_param;
+    using Base::components;
 
     /** default constructor
      * @param nbCluster number of cluster in the model
      **/
-    Gamma_ajk_bjk( int nbCluster) : Base(nbCluster) {}
+    inline Gamma_ajk_bjk( int nbCluster) : Base(nbCluster) {}
     /** copy constructor
      *  @param model The model to copy
      **/
-    Gamma_ajk_bjk( Gamma_ajk_bjk const& model) : Base(model) {}
+    inline Gamma_ajk_bjk( Gamma_ajk_bjk const& model) : Base(model) {}
     /** destructor */
-    ~Gamma_ajk_bjk() {}
-    /** use the default static method initializeStep() for a first initialization
-     *  of the parameters using tik values.
-     **/
-    void initializeStep()
-    { MixtureModelImpl< Array, Parameters >::initializeStep(components_,  this->p_tik());}
+    inline ~Gamma_ajk_bjk() {}
+    /** initialize shape and scale parameters using weighted moment estimators.*/
+    void initializeStep();
+    /** Initialize randomly the parameters of the Gaussian mixture. The centers
+     *  will be selected randomly among the data set and the standard-deviation
+     *  will be set to 1.
+     */
+    void randomInit();
+    /** Compute the weighted mean and the common variance. */
+    void mStep();
     /** Write the parameters*/
     void writeParameters(ostream& os) const
     {
-      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
+      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       {
         stk_cout << "---> Component " << k << _T("\n";);
-        stk_cout << "shape_ = " << components_[k]->p_param()->shape_;
-        stk_cout << "scale_ = " << components_[k]->p_param()->scale_;
+        stk_cout << "shape_ = " << p_param(k)->shape_;
+        stk_cout << "scale_ = " << p_param(k)->scale_;
       }
     }
     /** @return the number of free parameters of the model */
     inline int computeNbFreeParameters() const
     { return 2*this->nbCluster()*this->nbVariable();}
 };
+
+/* Initialize the parameters using moment estimators. */
+template<class Array>
+void Gamma_ajk_bjk<Array>::initializeStep()
+{
+    try
+    { GammaUtil<Component>::initialMoments(components(), p_tik());}
+    catch (Clust::exceptions const & e)
+    { throw e;}
+    // estimate a and b
+    for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+    {
+      for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
+      {
+        Real a = p_param(k)->mean_[j]*p_param(k)->mean_[j]/p_param(k)->variance_[j];
+        if ((a<=0)||Arithmetic<Real>::isNA(a)) throw Clust::initializeStepFail_;
+
+        p_param(k)->shape_[j] = a;
+        p_param(k)->scale_[j] = p_param(k)->mean_[j]/a;
+      }
+    }
+}
+
+/* Initialize randomly the parameters of the Gaussian mixture. The centers
+ *  will be selected randomly among the data set and the standard-deviation
+ *  will be set to 1.
+ */
+template<class Array>
+void Gamma_ajk_bjk<Array>::randomInit()
+{
+  for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
+  {
+    Real mean = p_data()->col(j).mean();
+    Real variance = p_data()->col(j).variance();
+    for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+    {
+      // generate values
+      Real a = STK::Law::Exponential::rand(mean*mean/variance);
+      Real b = STK::Law::Exponential::rand(variance/mean);
+      p_param(k)->shape_[j] = a;
+      p_param(k)->scale_[j] = b;
+    }
+  }
+#ifdef STK_MIXTURE_VERY_VERBOSE
+  stk_cout << _T("MixtureModelImpl< Array, Gamma_ajk_bjk_Component<Array> >::randomInit() done\n");
+  for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+  {
+    stk_cout << _T("Component no ") << k << _T("\n");
+    stk_cout << p_param(k)->shape_ << _T("\n");
+    stk_cout << p_param(k)->scale_ << _T("\n");
+  }
+#endif
+}
+
+/* Compute the weighted mean and the common variance. */
+template<class Array>
+void Gamma_ajk_bjk<Array>::mStep()
+{
+    try
+    { GammaUtil<Component>::moments(components(), p_tik());}
+    catch (Clust::exceptions const & e)
+    { throw Clust::mStepFail_;}
+
+    MixtureModelImpl<  Array, Gamma_ajk_bjk_Parameters >::mStep(components(), p_tik());
+
+}
 
 }  // namespace STK
 

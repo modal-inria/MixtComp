@@ -28,58 +28,64 @@
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
+/** @file STK_GammaMixtures.h
+ *  @brief In this file we define the gamma mixtures of the Clustering project.
+ **/
 
-#ifndef STK_GAUSSIANINGREDIENT_H
-#define STK_GAUSSIANINGREDIENT_H
+
+#ifndef STK_GAMMAMIXTURES_H
+#define STK_GAMMAMIXTURES_H
 
 #include "STK_MixtureBridge.h"
 
-#include "../GaussianMixtureModels/STK_Gaussian_sjk.h"
-#include "../GaussianMixtureModels/STK_Gaussian_s.h"
+#include "../GammaMixtureModels/STK_Gamma_ajk_bjk.h"
+#include "../GammaMixtureModels/STK_Gamma_ajk_bj.h"
 
 namespace STK
 {
 
 namespace Clust
 {
-/** @ingroup Clustering
- *  specialization of the IngredientTraits for the gaussian_sjk_ model
+/** @ingroup Clust
+ *  Given the Id of a mixture model, the struct MixtureTraits allow to get
+ *  type of the input and output.
  **/
 template<>
-struct IngredientTraits<Clust::Gaussian_sjk_>
+struct MixtureTraits<Clust::Gamma_ajk_bjk_>
 {
    /** Type of the data set to used as input */
-   typedef Array2D<STK::Real> Data;
+   typedef STK::Array2D<STK::Real> Data;
    /** Type of the parameter set to used as output */
-   typedef Array2D<STK::Real> Param;
+   typedef STK::Array2D<STK::Real> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */
-   typedef Gaussian_sjk<Data> Ingredient;
+   typedef STK::Gamma_ajk_bjk<Data> Mixture;
 };
 
 
-/** @ingroup Clustering
- *  specialization of the IngredientTraits for the gaussian_s_ model
+/** @ingroup Clust
+ *  Given the Id of a mixture model, the struct MixtureTraits allow to get
+ *  type of the input and output.
  **/
 template<>
-struct IngredientTraits<Clust::Gaussian_s_>
+struct MixtureTraits<Clust::Gamma_ajk_bj_>
 {
    /** Type of the data set to used as input */
-   typedef Array2D<STK::Real> Data;
+   typedef STK::Array2D<STK::Real> Data;
    /** Type of the parameter set to used as output */
-   typedef Array2D<STK::Real> Param;
+   typedef STK::Array2D<STK::Real> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */
-   typedef Gaussian_s<Data> Ingredient;
+   typedef STK::Gamma_ajk_bj<Data> Mixture;
 };
 
 } // namespace Clust
 
-typedef MixtureBridge<Clust::Gaussian_sjk_> IngredientGaussian_sjk;
-typedef MixtureBridge<Clust::Gaussian_s_> IngredientGaussian_s;
+typedef MixtureBridge<Clust::Gamma_ajk_bjk_> MixtureGamma_ajk_bjk;
+typedef MixtureBridge<Clust::Gamma_ajk_bj_> MixtureGamma_ajk_bj;
 
 } /* namespace STK */
 
-#endif /* STK_GAUSSIANINGREDIENT_H */
+#endif /* STK_GAMMAMIXTURES_H */

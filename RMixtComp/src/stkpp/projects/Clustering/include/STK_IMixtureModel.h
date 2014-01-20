@@ -61,9 +61,9 @@ template<class Derived>
 class IMixtureModel : public IRecursiveTemplate<Derived>, public IMixtureModelBase
 {
   public:
-    typedef typename Clust::MixtureTraits<Derived>::Array Array;
-    typedef typename Clust::MixtureTraits<Derived>::Component Component;
-    typedef typename Clust::MixtureTraits<Derived>::Parameters Parameters;
+    typedef typename Clust::MixtureModelTraits<Derived>::Array Array;
+    typedef typename Clust::MixtureModelTraits<Derived>::Component Component;
+    typedef typename Clust::MixtureModelTraits<Derived>::Parameters Parameters;
     using IMixtureModelBase::p_tik;
 
   protected:
@@ -106,7 +106,9 @@ class IMixtureModel : public IRecursiveTemplate<Derived>, public IMixtureModelBa
     /** @return the array with the components */
     Array1D< Component* > const& components() const { return components_;}
     /** @return a constant reference on the k-th component */
-    Component* const& components(int k) const { return components_[k];}
+    Component const* components(int k) const { return components_[k];}
+    /** @return a constant reference on the k-th parameter */
+    Parameters const* p_param(int k) const { return components_[k]->p_param();}
     /** @brief Initialize the model before its first use.
      *  This function can be overloaded in derived class for initialization of
      *  the specific model parameters. It should be called prior to any used of
@@ -126,14 +128,6 @@ class IMixtureModel : public IRecursiveTemplate<Derived>, public IMixtureModelBa
       for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
       { components_[k]->p_param()->resize(p_data_->cols());}
     }
-    /** @brief This function must be defined in derived class for initialization
-     *  of the ingredient parameters.
-     *  This function will be called once the model is created, data is set and
-     *  model initialized.
-     */
-    void initializeStep()
-    { MixtureModelImpl< Array, Parameters>::initializeStep(components_, p_tik());}
-
     /** set a new data set.
      *  @param data the data set to set*/
     void setData(Array const& data)
@@ -149,31 +143,13 @@ class IMixtureModel : public IRecursiveTemplate<Derived>, public IMixtureModelBa
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    Real lnComponentProbability(int i, int k)
+    inline Real lnComponentProbability(int i, int k)
     { return components_[k]->computeLnLikelihood(p_data_->row(i));}
-
-    /** Call static method mStep() implemented by end-user */
-    void mStep()
-    { MixtureModelImpl< Array, Parameters>::mStep(components_, p_tik());}
-    /** use the default static method randomInit() implemented by end-users
-     *  get an initial value of the parameters and compute tik and zi.
-     **/
-    void randomInit()
-    { MixtureModelImpl< Array, Parameters>::randomInit(components_);}
-    /** Utility function to use in mode debug in order to test that the
-     *  model is well initialized. */
-    int checkModel() const
-    {
-      if (!p_data_) { return 1;}
-      if ((!this->p_prop_)||(!this->p_tik_)||(!this->p_zi_)) { return 2;}
-      if (this->nbSample() != p_data_->sizeRows()) { return 3;}
-      if (this->nbVar() != p_data_->sizeCols()) { return 4;}
-      if (this->nbSample() != p_tik_->sizeRows()) { return 5;}
-      if (this->nbCluster() != p_tik_->sizeCols()) { return 6;}
-      return 0;
-    }
-
   protected:
+    /** @return the array with the components */
+    Array1D<Component*>& components() { return components_;}
+    /** @return a pointer reference on the k-th parameter */
+    Parameters* p_param(int k) { return components_[k]->p_param();}
     /** pointer on the data set */
     Array const* p_data_;
     /** Array of the components of the mixture model */

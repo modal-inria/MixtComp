@@ -55,7 +55,6 @@ struct GammaUtil
    **/
   static void moments(Array1D< Component* >& components, Array2D<Real> const* p_tik)
   {
-    if (components.size() <= 0) return;
     for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
     {
       Parameters* paramk = components[k]->p_param();
@@ -63,44 +62,31 @@ struct GammaUtil
       ColVector tik(p_tik->col(k), true); // create a reference
 
       paramk->mean_ = Stat::mean(*p_data, tik);
-      if (  (paramk->mean_.nbValues() != paramk->mean_.size())
+      if (  (paramk->mean_.nbAvailableValues() != paramk->mean_.size())
          || (paramk->mean_ <= 0).template cast<int>().sum() > 0)
       {
 #ifdef STK_MIXTURE_DEBUG
-        stk_cout << _T("In GammaUtil::moments. k=")<< k << _T("mean = ") << paramk->mean_;
+        stk_cout << _T("Error in GammaUtil::moments. k=")<< k << _T("mean = ") << paramk->mean_;
 #endif
         throw Clust::estimFail_;
       }
       paramk->meanLog_ = Stat::mean(p_data->log(), tik);
-      if (paramk->meanLog_.nbValues() != paramk->meanLog_.size())
+      if (paramk->meanLog_.nbAvailableValues() != paramk->meanLog_.size())
       {
 #ifdef STK_MIXTURE_DEBUG
-        stk_cout << _T("In GammaUtil::moments. k=")<< k << _T("meanLog = ") << paramk->meanLog_;
+        stk_cout << _T("Error in GammaUtil::moments. k=")<< k << _T("meanLog = ") << paramk->meanLog_;
 #endif
         throw Clust::estimFail_;
       }
-      paramk->variance_ = Stat::varianceWithFixedMean(*p_data,tik, paramk->mean_, true);
-      if (  (paramk->variance_.nbValues() != paramk->variance_.size())
+      paramk->variance_ = Stat::varianceWithFixedMean(*p_data, tik, paramk->mean_, true);
+      if (  (paramk->variance_.nbAvailableValues() != paramk->variance_.size())
          || (paramk->variance_ <= 0).template cast<int>().sum() > 0)
       {
 #ifdef STK_MIXTURE_DEBUG
-        stk_cout << _T("In GammaUtil::moments. k=")<< k << _T("meanLog = ") << paramk->meanLog_;
+        stk_cout << _T("Error in GammaUtil::moments. k=")<< k << _T("meanLog = ") << paramk->meanLog_;
 #endif
         throw Clust::estimFail_;
       }
-//
-//      for (int j=p_data->firstIdxCols(); j<=p_data->lastIdxCols(); ++j)
-//      {
-//        Real mean =  p_data->col(j).wmean(tik);
-//        if ((mean<=0)||Arithmetic<Real>::isNA(mean)) { throw Clust::estimFail_;}
-//        paramk->mean_[j] = mean;
-//        Real meanLog =  p_data->col(j).log().wmean(tik);
-//        if (Arithmetic<Real>::isNA(meanLog)) throw Clust::estimFail_;
-//        paramk->meanLog_[j] = meanLog;
-//        Real variance =  p_data->col(j).wvariance(tik);
-//        if ((variance<=0)||Arithmetic<Real>::isNA(variance)) throw Clust::estimFail_;
-//        paramk->variance_[j] = variance;
-//      }
     }
   }
   /** compute safely the weighted moments of a gamma mixture.

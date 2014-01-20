@@ -64,21 +64,29 @@ class GammaBase : public IMixtureModel<Derived >
     /** destructor */
     ~GammaBase() {}
     /** @return an imputation value for the jth variable of the ith sample*/
-    inline Real impute(int i, int j) const
+    Real impute(int i, int j) const
     {
       Real sum = 0.;
       for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
       { sum += p_tik()->elt(i,k) * components_[k]->p_param()->shape(j) * components_[k]->p_param()->scale(j);}
       return sum;
     }
-    /** @return an simulated value for the jth variable of the ith sample*/
-    inline Real sample(int i, int j) const
+    /** @return a simulated value for the jth variable of the ith sample
+     *  @param i,j indexes of the value to sample
+     **/
+    Real sample(int i, int j) const
     {
       Real sum = 0.;
       for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
       { sum += p_tik()->elt(i,k) * Law::Gamma::rand(components_[k]->p_param()->shape(j),components_[k]->p_param()->scale(j));}
       return sum;
     }
+    /** @brief compute a safe value for the column j, missing values are replaced by 1.
+     *  @return a safe value for the jth variable
+     *  @param j the index of the column with a missing value
+     * */
+    inline Real safeValue(int j) const
+    { return this->p_data()->col(j).safe(1.).mean();}
 };
 
 } // namespace STK

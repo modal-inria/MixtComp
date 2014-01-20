@@ -29,7 +29,7 @@
  **/
 
 /** @file STK_GaussianUtil.h
- *  @brief In this file we implement some functionalities used in all Gaussian models.
+ *  @brief In this file we implement functions used by all Gaussian models.
  **/
 
 #ifndef STK_GAUSSIANUTIL_H
@@ -51,9 +51,12 @@ struct GaussianUtil
   typedef typename Array::Col ColVector;
   typedef typename Array::Row RowVector;
 
+  /** sample randomly the mean of each component by sampling randomly a row
+   *  of the data set.
+   *  @param components the components with the parameters to initialize randomly
+   **/
   static void randomMean(Array1D< Component* >& components)
   {
-    if (components.size() <= 0) return;
     for (int k= components.firstIdx(); k <= components.lastIdx(); ++k)
     {
       Parameters* paramk = components[k]->p_param();
@@ -63,14 +66,12 @@ struct GaussianUtil
       paramk->mean_.copy(p_data->row(i));
     }
   }
-
-  /** compute the weighted mean of a Gaussian mixture.
+  /** compute the initial weighted mean of a Gaussian mixture.
    *  @param components the components with the parameters to initialize
    *  @param p_tik the tik
    **/
-  static void updateMean(Array1D< Component* >& components, Array2D<Real> const* p_tik)
+  static void initialMean(Array1D< Component* >& components, Array2D<Real> const* p_tik)
   {
-    if (components.size() <= 0) return;
     for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
     {
       Parameters* paramk = components[k]->p_param();
@@ -78,24 +79,23 @@ struct GaussianUtil
       ColVector tik(p_tik->col(k), true); // create a reference
 
       paramk->mean_ = Stat::mean(*p_data, tik);
-      if (paramk->mean_.nbValues() != paramk->mean_.size()) throw Clust::mStepFail_;
+      if (paramk->mean_.nbAvailableValues() != paramk->mean_.size()) throw Clust::initializeStepFail_;
     }
   }
-  /** compute the initial weighted mean of a Gaussian mixture.
+  /** compute the weighted mean of a Gaussian mixture.
    *  @param components the components with the parameters to initialize
    *  @param p_tik the tik
    **/
-  static void initialMean(Array1D< Component* >& components, Array2D<Real> const* p_tik)
+  static void updateMean(Array1D< Component* >& components, Array2D<Real> const* p_tik)
   {
-    if (components.size() <= 0) return;
     for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
     {
       Parameters* paramk = components[k]->p_param();
       Array const* p_data = components[k]->p_data();
       ColVector tik(p_tik->col(k), true); // create a reference
 
-      paramk->mean_ = Stat::meanSafe(*p_data, tik);
-      if (paramk->mean_.nbValues() != paramk->mean_.size()) throw Clust::mStepFail_;
+      paramk->mean_ = Stat::mean(*p_data, tik);
+      if (paramk->mean_.nbAvailableValues() != paramk->mean_.size()) throw Clust::mStepFail_;
     }
   }
 };

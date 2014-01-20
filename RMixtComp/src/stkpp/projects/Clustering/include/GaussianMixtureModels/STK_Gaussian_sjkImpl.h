@@ -58,17 +58,7 @@ struct MixtureModelImpl< Array, Gaussian_sjk_Parameters >
    *  @param p_tik the tik
    **/
   static void initializeStep(Array1D< Component* >& components, Array2D<Real> const* p_tik)
-  { GaussianUtil<Component>::initialMean(components, p_tik);
-    for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
-    {
-      Parameters* paramk = components[k]->p_param();
-      Array const* p_data = components[k]->p_data();
-      ColVector tik(p_tik->col(k), true); // create a reference
-
-      paramk->sigma_ = Stat::varianceWithFixedMeanSafe(*p_data, tik, paramk->mean_, false).sqrt();
-      if (paramk->sigma_.nbValues() != paramk->sigma_.size()) throw Clust::mStepFail_;
-    }
-  }
+  {}
   /** Initialize randomly the parameters of the Gaussian mixture. The centers will
    *  be selected randomly among the data set and the standard-deviations will
    *  be set to 1.
@@ -76,13 +66,6 @@ struct MixtureModelImpl< Array, Gaussian_sjk_Parameters >
    */
   static void randomInit(Array1D< Component* >& components)
   {
-    if (components.size() <= 0) return;
-    GaussianUtil<Component>::randomMean(components);
-    for (int k= components.firstIdx(); k <= components.lastIdx(); ++k)
-    {
-      Parameters* paramk = components[k]->p_param();
-      paramk->sigma_ = 1.;
-    }
   }
   /** Compute the weighted means and the weighted variances.
    *  @param components the vector of the components of the mixture
@@ -90,18 +73,6 @@ struct MixtureModelImpl< Array, Gaussian_sjk_Parameters >
    */
   static void mStep(Array1D< Component* >& components, Array2D<Real> const* p_tik)
   {
-    if (components.size() <= 0) return;
-    // compute the means
-    GaussianUtil<Component>::updateMean(components, p_tik);
-    for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
-    {
-      Parameters* paramk = components[k]->p_param();
-      Array const* p_data = components[k]->p_data();
-      ColVector tik(p_tik->col(k), true); // create a reference
-
-      paramk->sigma_ = Stat::varianceWithFixedMean(*p_data, tik, paramk->mean_, false).sqrt();
-      if (paramk->sigma_.nbValues() != paramk->sigma_.size()) throw Clust::mStepFail_;
-    }
   }
 
 };

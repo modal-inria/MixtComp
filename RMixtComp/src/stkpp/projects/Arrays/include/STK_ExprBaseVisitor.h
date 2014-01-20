@@ -210,36 +210,6 @@ typename hidden::Traits<Derived>::Type const ExprBase<Derived>::variance() const
    ((*this-mean()).square().sum()/Type(this->sizeArray())) : Arithmetic<Type>::NA();
 }
 
-/* sum the values of all the array */
-template<typename Derived>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::sumSafe() const
-{
-  hidden::SumSafeVisitor<Type> visitor;
-  visit(visitor);
-  return visitor.res_;
-}
-template<typename Derived>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::normSafe() const
-{ return Type(std::sqrt(norm2Safe()));}
-/* @return the square norm of this*/
-template<typename Derived>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::norm2Safe() const
-{ return square().sumSafe();}
-/* sum the values of all the array */
-template<typename Derived>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::meanSafe() const
-{
-  int size = nbValues();
-  return (size>0) ? sumSafe()/Type(size) : Arithmetic<Type>::NA();
-}
-template<typename Derived>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::varianceSafe() const
-{
-  int size = nbValues();
-  return (size >0) ?
-    ((*this - (sumSafe()/Type(size))).square().sumSafe()/Type(size)) : Arithmetic<Type>::NA();
-}
-
 
 /* @return the weighted sum of all the elements of this using a Visitor*/
 template<typename Derived>
@@ -271,43 +241,10 @@ typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wvariance(ExprBa
     ((*this-(wsum(weights)/size)).square().wsum(weights)/size) : Arithmetic<Type>::NA();;
 }
 
-/* @return the weighted sum of all the elements of this using a Visitor*/
-template<typename Derived>
-template<typename Rhs>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wsumSafe(ExprBase<Rhs> const& weights) const
-{ return dotSafe(weights);}
-/* @return the norm of this*/
-template<typename Derived>
-template<typename Rhs>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wnormSafe(ExprBase<Rhs> const& weights) const
-{ return Type(std::sqrt(wnorm2Safe(weights)));}
-/* @return the square norm of this*/
-template<typename Derived>
-template<typename Rhs>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wnorm2Safe(ExprBase<Rhs> const& weights) const
-{ return (square().dotSafe(weights));}
-/* @return the mean of all the elements of this using a Visitor*/
-template<typename Derived>
-template<typename Rhs>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wmeanSafe(ExprBase<Rhs> const& weights) const
-{
-  Type size = weights.sum();
-  return (size > 0) ? wsum(weights)/size : Arithmetic<Type>::NA();
-}
-/* @return the variance of all the elements of this using a Visitor*/
-template<typename Derived>
-template<typename Rhs>
-typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wvarianceSafe(ExprBase<Rhs> const& weights) const
-{
-  Type size = weights.sum();
-  return (size > 0) ?
-    ((*this-(wsumSafe(weights)/size)).square().wsumSafe(weights)/size) : Arithmetic<Type>::NA();
-}
-
 
 /* count the number values in the array */
 template<typename Derived>
-int const ExprBase<Derived>::nbValues() const
+int const ExprBase<Derived>::nbAvailableValues() const
 { return isFinite().template cast<int>().sum();}
 
 

@@ -35,8 +35,8 @@
 #ifndef STK_GAUSSIAN_SJK_H
 #define STK_GAUSSIAN_SJK_H
 
-#include "STK_Gaussian_sjkImpl.h"
 #include "STK_DiagGaussianBase.h"
+#include "STK_GaussianUtil.h"
 
 namespace STK
 {
@@ -49,7 +49,7 @@ namespace Clust
 /** @ingroup Clustering
  *  Traits class for the Gaussian_sjk traits policy. */
 template<class _Array>
-struct MixtureTraits< Gaussian_sjk<_Array> >
+struct MixtureModelTraits< Gaussian_sjk<_Array> >
 {
   typedef _Array Array;
   typedef DiagGaussianComponent<_Array, Gaussian_sjk_Parameters> Component;
@@ -72,8 +72,14 @@ class Gaussian_sjk : public DiagGaussianBase<Gaussian_sjk<Array> >
 {
   public:
     typedef DiagGaussianBase<Gaussian_sjk<Array> > Base;
-    using Base::p_data_;
-    using Base::components_;
+    typedef typename Clust::MixtureModelTraits< Gaussian_sjk<Array> >::Component Component;
+    typedef typename Clust::MixtureModelTraits< Gaussian_sjk<Array> >::Parameters Parameters;
+    typedef typename Array::Col ColVector;
+
+    using Base::p_tik;
+    using Base::p_data;
+    using Base::p_param;
+    using Base::components;
 
     /** default constructor
      * @param nbCluster number of cluster in the model
@@ -85,20 +91,68 @@ class Gaussian_sjk : public DiagGaussianBase<Gaussian_sjk<Array> >
     Gaussian_sjk( Gaussian_sjk const& model) : Base(model) {}
     /** destructor */
     ~Gaussian_sjk() {}
+    /** Compute the inital weighted mean and the initial common variance. */
+    void initializeStep();
+    /** Initialize randomly the parameters of the Gaussian mixture. The centers
+     *  will be selected randomly among the data set and the standard-deviation
+     *  will be set to 1.
+     */
+    void randomInit();
+    /** Compute the weighted mean and the common variance. */
+    void mStep();
     /** Write the parameters*/
     void writeParameters(ostream& os) const
     {
-      for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
+      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       {
         stk_cout << _T("---> Component ") << k << _T("\n");
-        stk_cout << _T("mean_ = ") << components_[k]->p_param()->mean_;
-        stk_cout << _T("sigma_ = ")<< components_[k]->p_param()->sigma_;
+        stk_cout << _T("mean_ = ") << components()[k]->p_param()->mean_;
+        stk_cout << _T("sigma_ = ")<< components()[k]->p_param()->sigma_;
       }
     }
     /** @return the number of free parameters of the model */
     inline int computeNbFreeParameters() const
     { return 2*this->nbCluster()*this->nbVariable();}
 };
+/* Initialize the parameters using mStep. */
+template<class Array>
+void Gaussian_sjk<Array>::initializeStep()
+{
+  GaussianUtil<Component>::initialMean(components(), p_tik());
+  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  {
+    ColVector tik(p_tik()->col(k), true); // create a reference
+    p_param(k)->sigma_ = Stat::varianceWithFixedMeanSafe(*p_data(), tik, p_param(k)->mean_, false).sqrt();
+    if (p_param(k)->sigma_.nbAvailableValues() != p_param(k)->sigma_.size()) throw Clust::mStepFail_;
+  }
+
+}
+
+/* Initialize randomly the parameters of the Gaussian mixture. The centers
+ *  will be selected randomly among the data set and the standard-deviation
+ *  will be set to 1.
+ */
+template<class Array>
+void Gaussian_sjk<Array>::randomInit()
+{
+  GaussianUtil<Component>::randomMean(components());
+  for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+  { p_param(k)->sigma_ = 1.;}
+}
+
+/* Compute the weighted means and the weighted variances. */
+template<class Array>
+void Gaussian_sjk<Array>::mStep()
+{
+    // compute the means
+    GaussianUtil<Component>::updateMean(components(), p_tik());
+    for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+    {
+      ColVector tik(p_tik()->col(k), true); // create a reference
+      p_param(k)->sigma_ = Stat::varianceWithFixedMean(*p_data(), tik, p_param(k)->mean_, false).sqrt();
+      if (p_param(k)->sigma_.nbAvailableValues() != p_param(k)->sigma_.size()) throw Clust::mStepFail_;
+    }
+}
 
 } // namespace STK
 
