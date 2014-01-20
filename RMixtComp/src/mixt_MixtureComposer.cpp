@@ -71,4 +71,9 @@ void MixtureComposer::createMixtCompIngredients()
   }
 }
 
+void MixtureComposer::setDataHandler(DataHandlerR const* p_handler)
+{
+  STK::MixtureComposer::setDataHandler(p_handler);
+}
+
 } /* namespace mixt */
