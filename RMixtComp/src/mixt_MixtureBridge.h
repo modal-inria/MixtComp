@@ -63,14 +63,18 @@ class MixtureBridge : public IMixture
     MixtureBridge( std::string const& idName, int nbCluster)
                  : IMixture( idName, nbCluster)
                  , mixture_(nbCluster), m_augDataij_(), nbVariable_(0)
-    { mixture_.setData(m_augDataij_.data);}
+    {
+      mixture_.setData(m_augDataij_.data_);
+    }
     /** copy constructor */
     MixtureBridge( MixtureBridge const& mixture)
                  : IMixture(mixture)
                  , mixture_(mixture.mixture_)
                  , m_augDataij_(mixture.m_augDataij_)
                  , nbVariable_(mixture.nbVariable_)
-    { mixture_.setData(m_augDataij_.data);}
+    {
+      mixture_.setData(m_augDataij_.data_);
+    }
     /** This is a standard clone function in usual sense. It must be defined to
      *  provide new object of your class with values of various parameters
      *  equal to the values of calling object. In other words, this is
@@ -78,7 +82,9 @@ class MixtureBridge : public IMixture
      *  @return New instance of class as that of calling object.
      */
     virtual MixtureBridge* clone() const
-    { return new MixtureBridge(*this);}
+    {
+      return new MixtureBridge(*this);
+    }
     /** This is a standard create function in usual sense. It must be defined to
      *  provide new object of your class with correct dimensions and state.
      *  In other words, this is equivalent to virtual constructor.
@@ -90,7 +96,7 @@ class MixtureBridge : public IMixture
       p_mixture->m_augDataij_ = m_augDataij_;
       p_mixture->nbVariable_ = nbVariable_;
       // Bug Fix: set the correct data set
-      p_mixture->mixture_.setData(p_mixture->m_augDataij_.data);
+      p_mixture->mixture_.setData(p_mixture->m_augDataij_.data_);
       return p_mixture;
     }
     /** @brief Initialize the model before its use by the composer.
@@ -113,7 +119,7 @@ class MixtureBridge : public IMixture
     {
       IMixture::getData<AugmentedData<Data> >(m_augDataij_, nbVariable_);
       removeMissing();
-      mixture_.setData(m_augDataij_.data);
+      mixture_.setData(m_augDataij_.data_);
     }
     /** This function must be defined in derived class for initialization of mixture parameters. */
     virtual void initializeStep() { mixture_.initializeStep();}

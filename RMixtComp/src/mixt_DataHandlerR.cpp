@@ -105,7 +105,7 @@ void DataHandlerR::getData(std::string const& idData,
 {
   typedef AugmentedData<STK::Array2D<STK::Real> >::pos pos;
   
-  getData(idData, augData.data, nbVariable); // data array filling is not affected by the augmented data
+  getData(idData, augData.data_, nbVariable); // data array filling is not affected by the augmented data
   
   std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
 
@@ -130,7 +130,7 @@ void DataHandlerR::getData(std::string const& idData,
   augData.v_missingFiniteValues_.resize(missingFiniteValuesSize);
   augData.v_missingIntervals_   .resize(missingIntervalsSize   );
   
-  int j = augData.data.firstIdxCols();
+  int j = augData.data_.firstIdxCols();
   for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j)
   {
     Rcpp::S4 s4 = rList_[(*it)];

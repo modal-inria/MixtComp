@@ -37,7 +37,7 @@
 
 // [[Rcpp::export]]
 void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
-{
+{  
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
   Rcpp::S4 mcResults = mcClusters.slot("results");

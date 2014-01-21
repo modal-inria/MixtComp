@@ -44,7 +44,7 @@ struct AugmentedData
   /** combination of a sample number and a column number to identify a value */
   typedef std::pair<int, int> pos;
   /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
-  DataType data;
+  DataType data_;
   /** vector of completely unknown values */
   std::vector<          pos                          > v_missing_;
   /** vector of values to be selected among a finite number of possibilities */
