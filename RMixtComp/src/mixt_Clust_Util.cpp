@@ -32,23 +32,23 @@
  **/
 
 #include "mixt_Clust_Util.h"
-#include "mixt_GaussianIngredient.h"
-#include "mixt_GammaIngredient.h"
+#include "mixt_GaussianMixture.h"
+#include "mixt_GammaMixture.h"
 #include "mixt_IMixture.h"
 
 namespace mixt
 {
 namespace Clust
 {
-IMixture* createMixtCompIngredient(STK::Clust::Ingredient model, std::string const& id, int nbCluster)
+IMixture* createMixtCompMixture(STK::Clust::Mixture model, std::string const& id, int nbCluster)
 {
   switch (model)
   {
     case STK::Clust::Gamma_ajk_bjk_:
-      return new IngredientGamma_ajk_bjk_m(id, nbCluster);
+      return new MixtureGamma_ajk_bjk_m(id, nbCluster);
       break;
     case STK::Clust::Gaussian_sjk_:
-      return new IngredientGaussian_sjk_m(id, nbCluster);
+      return new MixtureGaussian_sjk_m(id, nbCluster);
       break;
     default:
       return 0;

@@ -48,13 +48,13 @@ class MixtureBridge : public IMixture
 {
   public:
     // data type
-    typedef typename STK::Clust::IngredientTraits<Id>::Data Data;
+    typedef typename STK::Clust::MixtureTraits<Id>::Data Data;
     // parameters type to get
-    typedef typename STK::Clust::IngredientTraits<Id>::Param Param;
+    typedef typename STK::Clust::MixtureTraits<Id>::Param Param;
     // type of the data
-    typedef typename STK::Clust::IngredientTraits<Id>::Type Type;
+    typedef typename STK::Clust::MixtureTraits<Id>::Type Type;
     // type of Mixture
-    typedef typename STK::Clust::IngredientTraits<Id>::Ingredient Ingredient;
+    typedef typename STK::Clust::MixtureTraits<Id>::Mixture Mixture;
 
     /** constructor.
      *  @param idName id name of the mixture
@@ -62,15 +62,15 @@ class MixtureBridge : public IMixture
      **/
     MixtureBridge( std::string const& idName, int nbCluster)
                  : IMixture( idName, nbCluster)
-                 , ingredient_(nbCluster), m_augDataij_(), nbVariable_(0)
-    { ingredient_.setData(m_augDataij_.data);}
+                 , mixture_(nbCluster), m_augDataij_(), nbVariable_(0)
+    { mixture_.setData(m_augDataij_.data);}
     /** copy constructor */
     MixtureBridge( MixtureBridge const& mixture)
                  : IMixture(mixture)
-                 , ingredient_(mixture.ingredient_)
+                 , mixture_(mixture.mixture_)
                  , m_augDataij_(mixture.m_augDataij_)
                  , nbVariable_(mixture.nbVariable_)
-    { ingredient_.setData(m_augDataij_.data);}
+    { mixture_.setData(m_augDataij_.data);}
     /** This is a standard clone function in usual sense. It must be defined to
      *  provide new object of your class with values of various parameters
      *  equal to the values of calling object. In other words, this is
@@ -90,11 +90,11 @@ class MixtureBridge : public IMixture
       p_mixture->m_augDataij_ = m_augDataij_;
       p_mixture->nbVariable_ = nbVariable_;
       // Bug Fix: set the correct data set
-      p_mixture->ingredient_.setData(p_mixture->m_augDataij_.data);
+      p_mixture->mixture_.setData(p_mixture->m_augDataij_.data);
       return p_mixture;
     }
     /** @brief Initialize the model before its use by the composer.
-     *  The parameters values are set to its default values if the ingredient_ is
+     *  The parameters values are set to its default values if the mixture_ is
      *  newly created. if MixtureBridge::initializeModel is used during a
      *  cloning, model class have to take care of the existing values of the
      *  parameters.
@@ -102,8 +102,8 @@ class MixtureBridge : public IMixture
     virtual void initializeModel()
     {
       if (!p_composer()){STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);};
-      ingredient_.setMixtureParameters( p_prop(), p_tik(), p_zi());
-      ingredient_.initializeModel();
+      mixture_.setMixtureParameters( p_prop(), p_tik(), p_zi());
+      mixture_.initializeModel();
     }
    /** This function will be defined to set the data into your data containers.
     *  To facilitate data handling, framework provide templated functions,
@@ -113,21 +113,21 @@ class MixtureBridge : public IMixture
     {
       IMixture::getData<AugmentedData<Data> >(m_augDataij_, nbVariable_);
       removeMissing();
-      ingredient_.setData(m_augDataij_.data);
+      mixture_.setData(m_augDataij_.data);
     }
     /** This function must be defined in derived class for initialization of mixture parameters. */
-    virtual void initializeStep() { ingredient_.initializeStep();}
+    virtual void initializeStep() { mixture_.initializeStep();}
     /** @brief This function should be used in order to initialize randomly the
      *  parameters of the ingredient.
      */
-    virtual void randomInit() { ingredient_.randomInit();};
+    virtual void randomInit() { mixture_.randomInit();};
     /** This function should be used for imputation of data.
      *  The default implementation (in the base class) is to do nothing.
      */
     virtual void imputationStep()
     {
       /* for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
-      { m_dataij_(it->first, it->second) = ingredient_.impute(it->first, it->second);} */
+      { m_dataij_(it->first, it->second) = mixture_.impute(it->first, it->second);} */
     }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
@@ -137,11 +137,11 @@ class MixtureBridge : public IMixture
     virtual void samplingStep()
     {
       /* for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
-      { m_dataij_(it->first, it->second) = ingredient_.sample(it->first, it->second);} */
+      { m_dataij_(it->first, it->second) = mixture_.sample(it->first, it->second);} */
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
-    virtual void paramUpdateStep() { ingredient_.mStep();}
+    virtual void paramUpdateStep() { mixture_.mStep();}
     /** This function should be used to store any intermediate results during
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
@@ -160,23 +160,23 @@ class MixtureBridge : public IMixture
      * @return the log-component probability
      */
     virtual double lnComponentProbability(int i, int k)
-    { return ingredient_.lnComponentProbability(i, k);}
+    { return mixture_.lnComponentProbability(i, k);}
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
-    virtual int nbFreeParameter() const { return ingredient_.computeNbFreeParameters();}
+    virtual int nbFreeParameter() const { return mixture_.computeNbFreeParameters();}
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
     virtual void writeParameters(std::ostream& out) const
-    { ingredient_.writeParameters(out);}
+    { mixture_.writeParameters(out);}
     /** Utility function to use in mode debug in order to test that the
      *  model is well initialized. */
-    int checkModel() const { return ingredient_.checkModel();}
+    int checkModel() const { return mixture_.checkModel();}
 
   protected:
     /** The ingredient to bridge with the composer */
-    Ingredient ingredient_;
+    Mixture mixture_;
     /** The augmented data set */
     AugmentedData<Data> m_augDataij_;
     /** number of variables in the data set */

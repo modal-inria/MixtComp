@@ -32,12 +32,12 @@
 #define MIXT_GAMMAINGREDIENT_H
 
 #include "mixt_MixtureBridge.h"
-#include "stkpp/projects/Clustering/include/ingredients/STK_GammaIngredient.h"
+#include "stkpp/projects/Clustering/include/Mixtures/STK_GammaMixtures.h"
 
 namespace mixt
 {
 
-typedef MixtureBridge<STK::Clust::Gamma_ajk_bjk_> IngredientGamma_ajk_bjk_m;
+typedef MixtureBridge<STK::Clust::Gamma_ajk_bjk_> MixtureGamma_ajk_bjk_m;
 
 } /* namespace mixt */
 

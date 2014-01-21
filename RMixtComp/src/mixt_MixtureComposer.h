@@ -64,17 +64,17 @@ class MixtureComposer : public STK::MixtureComposer
     inline MixtureComposer(STK::MixtureComposer const& model)
                                    : STK::MixtureComposer(model) {}
                                    
-    /** The individual ingredient will be deleted there.*/
+    /** The individual mixture will be deleted there.*/
     virtual ~MixtureComposer() {}
     
-    /** Create a composer, but reinitialize the ingredients parameters. */
+    /** Create a composer, but reinitialize the mixtures parameters. */
     virtual MixtureComposer* create() const;
     
-    /** Create a clone of the current model, with ingredients parameters preserved. */
+    /** Create a clone of the current model, with mixtures parameters preserved. */
     virtual MixtureComposer* clone() const;
 
-    /** create ingredients using info from p_dataHandler */
-    void createMixtCompIngredients();
+    /** create mixtures using info from p_dataHandler */
+    void createMixtCompMixtures();
 
     template<typename Data>
     inline void getData(std::string const& id, Data& data, int& nbVariable) const

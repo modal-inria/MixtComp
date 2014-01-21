@@ -52,8 +52,8 @@ class IMixture : public STK::IMixture
     {}
     
     /* copy constructor */
-    IMixture(IMixture const& ingredient)
-                            : STK::IMixture(ingredient)
+    IMixture(IMixture const& mixture)
+                            : STK::IMixture(mixture)
     {}
     
     /* Virtual destructor. */

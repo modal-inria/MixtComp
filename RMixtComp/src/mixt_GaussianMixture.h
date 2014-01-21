@@ -32,12 +32,12 @@
 #define MIXT_GAUSSIANINGREDIENT_H
 
 #include "mixt_MixtureBridge.h"
-#include "stkpp/projects/Clustering/include/ingredients/STK_GaussianIngredient.h"
+#include "stkpp/projects/Clustering/include/Mixtures/STK_GaussianMixtures.h"
 
 namespace mixt
 {
 
-typedef MixtureBridge<STK::Clust::Gaussian_sjk_> IngredientGaussian_sjk_m;
+typedef MixtureBridge<STK::Clust::Gaussian_sjk_> MixtureGaussian_sjk_m;
 
 } /* namespace mixt */
 

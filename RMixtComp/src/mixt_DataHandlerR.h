@@ -85,7 +85,7 @@ class DataHandlerR: public STK::IDataHandler
     int nbVariables_;
     /** map: id -> vector of positions in rList_, as typedef-ed above */
     DataMap dataMap_;
-    /** A list of the ingredients transmitted by R, as s4 objects */
+    /** A list of the mixtures transmitted by R, as s4 objects */
     Rcpp::List rList_;
     
     /** read data structure independently of the type (integer, numeric, character) */

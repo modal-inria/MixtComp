@@ -43,12 +43,12 @@ class IMixture;
 
 namespace Clust
 {
-/** utility function for creating an Ingredient.
-*  @param id of the ingredient to create
-*  @param model ingredient to create
+/** utility function for creating a Mixture.
+*  @param id of the mixture to create
+*  @param model mixture to create
 *  @param nbCluster number of cluster
 **/
-IMixture* createMixtCompIngredient(STK::Clust::Ingredient model, std::string const& id, int nbCluster);
+IMixture* createMixtCompMixture(STK::Clust::Mixture model, std::string const& id, int nbCluster);
 } // namespace Clust
 } // namespace mixt
 
