@@ -51,6 +51,10 @@ struct AugmentedData
   std::vector<std::pair<pos, std::vector<Type>     > > v_missingFiniteValues_;
   /** vector of values restricted to an interval */
   std::vector<std::pair<pos, std::pair<Type, Type> > > v_missingIntervals_;
+  /** vector of values restricted to a left unbounded interval [- inf, a] */
+  std::vector<std::pair<pos,           Type        > > v_missingLUIntervals_;
+  /** vector of values restricted to a right unbounded interval [a, +inf] */
+  std::vector<std::pair<pos,           Type        > > v_missingRUIntervals_;
 };
 
 } // namespace mixt

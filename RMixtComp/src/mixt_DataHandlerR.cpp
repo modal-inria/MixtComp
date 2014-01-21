@@ -109,26 +109,39 @@ void DataHandlerR::getData(std::string const& idData,
   
   std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
 
-  int index, missingSize = 0, missingFiniteValuesSize = 0, missingIntervalsSize = 0;
-  Rcpp::NumericVector nv_listVals;
+  int index;
+  int missingSize = 0;
+  int missingFiniteValuesSize = 0;
+  int missingIntervalsSize = 0;
+  int missingLUIntervalsSize = 0;
+  int missingRUIntervalsSize = 0;
   
+  Rcpp::NumericVector nv_listVals;
   
   // resizing the augData containers to avoid push_back slowdown
   for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it)
   {
     Rcpp::S4 s4 = rList_[(*it)];
     Rcpp::List ls_augData = s4.slot("augData");
+    
     Rcpp::List ls_listMissing      = ls_augData["listMissing"        ];
     Rcpp::List ls_listFiniteValues = ls_augData["listFiniteValues"   ];
-    Rcpp::List ls_listIntervals    = ls_augData["listIntervals"];
+    Rcpp::List ls_listIntervals    = ls_augData["listIntervals"      ];
+    Rcpp::List ls_listLUIntervals  = ls_augData["listLUIntervals"    ];
+    Rcpp::List ls_listRUIntervals  = ls_augData["listRUIntervals"    ];
     
     missingSize             += ls_listMissing     .size();
     missingFiniteValuesSize += ls_listFiniteValues.size();
     missingIntervalsSize    += ls_listIntervals   .size();
+    missingLUIntervalsSize  += ls_listLUIntervals .size();
+    missingRUIntervalsSize  += ls_listRUIntervals .size();
   }
+  
   augData.v_missing_            .resize(missingSize            );
   augData.v_missingFiniteValues_.resize(missingFiniteValuesSize);
   augData.v_missingIntervals_   .resize(missingIntervalsSize   );
+  augData.v_missingLUIntervals_ .resize(missingLUIntervalsSize );
+  augData.v_missingRUIntervals_ .resize(missingRUIntervalsSize );
   
   int j = augData.data_.firstIdxCols();
   for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j)
@@ -160,12 +173,38 @@ void DataHandlerR::getData(std::string const& idData,
     Rcpp::List ls_listIntervals = ls_augData["listIntervals"];
     for (int i = 0; i < ls_listIntervals.size(); ++i)
     {
-      Rcpp::List ls_posVal = ls_listFiniteValues[i];
+      Rcpp::List ls_posVal = ls_listIntervals[i];
       index = ls_posVal["pos"];
       nv_listVals = ls_posVal["listvals"];
       augData.v_missingIntervals_.push_back(
         std::pair<pos, std::pair<STK::Real, STK::Real> >(pos(index, j),
                                                          std::pair<STK::Real, STK::Real>(nv_listVals[0], nv_listVals[1]))
+      );
+    }
+    
+    // filling v_missingLUIntervals_
+    Rcpp::List ls_listLUIntervals = ls_augData["listLUIntervals"];
+    for (int i = 0; i < ls_listLUIntervals.size(); ++i)
+    {
+      Rcpp::List ls_posVal = ls_listLUIntervals[i];
+      index = ls_posVal["pos"];
+      STK::Real val = ls_posVal["val"];
+      augData.v_missingLUIntervals_.push_back(
+        std::pair<pos, STK::Real>(pos(index, j),
+                                  val)
+      );
+    }
+    
+    // filling v_missingRUIntervals_
+    Rcpp::List ls_listRUIntervals = ls_augData["listRUIntervals"];
+    for (int i = 0; i < ls_listRUIntervals.size(); ++i)
+    {
+      Rcpp::List ls_posVal = ls_listRUIntervals[i];
+      index = ls_posVal["pos"];
+      STK::Real val = ls_posVal["val"];
+      augData.v_missingRUIntervals_.push_back(
+        std::pair<pos, STK::Real>(pos(index, j),
+                                  val)
       );
     }
   }
