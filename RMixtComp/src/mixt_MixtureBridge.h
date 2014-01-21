@@ -39,6 +39,7 @@
 #include "stkpp/projects/Clustering/include/STK_Clust_Traits.h"
 #include "mixt_IMixture.h"
 #include "mixt_AugmentedData.h"
+#include "mixt_Imputer.h"
 
 namespace mixt
 {
@@ -190,18 +191,21 @@ class MixtureBridge : public IMixture
     
   private:
     typedef std::vector<std::pair<int, int> >::const_iterator ConstIterator;
+    /** Imputer used to generate initial values randomly */
+    Imputer<Type> imputer_;
     /** utility function for lookup the data set and remove missing values
      *  coordinates. */
     void removeMissing()
-    { /* Implement a new version which uses the augmentedData members information, but still uses meanSafe
-      STK::Real mean;
-      int j, old_j = STK::UnknownSize;
-      for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
+    { 
+      // missing values with interval
+      for (typename std::vector<std::pair<pos, std::pair<Type, Type> > >::iterator it = m_augDataij_.v_missingIntervals_.begin();
+           it != m_augDataij_.v_missingIntervals_.end();
+           ++it)
       {
-         j = it->second; // get column
-         if (j!=old_j) { mean = m_dataij_.col(j).meanSafe(); old_j =j;}
-         m_dataij_(it->first, it->second) = mean;
-       } */
+        m_augDataij_.data_((*it).first.first,
+                           (*it).first.second) = imputer_.sampleRange((*it).second.first,
+                                                                      (*it).second.second);
+      }
     }
 };
 
