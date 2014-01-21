@@ -82,6 +82,8 @@ class MixtureComposer : public STK::MixtureComposer
     
     void setDataHandler(DataHandlerR const* p_handler);
     
+    void registerMixture(IMixture* mixture);
+    
   private:
     inline DataHandlerR const* p_DataHandlerR() const
     {

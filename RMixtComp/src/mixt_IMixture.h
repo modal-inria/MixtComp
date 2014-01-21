@@ -65,6 +65,11 @@ class IMixture : public STK::IMixture
 
     inline MixtureComposer const* p_composer()
     {return static_cast<MixtureComposer const*>(STK::IMixture::p_composer());}
+    
+    void setMixtureComposer(MixtureComposer const* p_composer)
+    {
+      STK::IMixture::setMixtureComposer(p_composer);
+    }
 };
 
 } // namespace mixt

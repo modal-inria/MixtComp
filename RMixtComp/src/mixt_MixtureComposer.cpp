@@ -71,6 +71,12 @@ void MixtureComposer::createMixtCompMixtures()
   }
 }
 
+void MixtureComposer::registerMixture(IMixture* mixture)
+{
+  v_mixtures_.push_back(mixture);
+  v_mixtures_.back()->setMixtureComposer(this);
+}
+
 void MixtureComposer::setDataHandler(DataHandlerR const* p_handler)
 {
   STK::MixtureComposer::setDataHandler(p_handler);
