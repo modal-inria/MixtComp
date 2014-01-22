@@ -53,8 +53,6 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   STK::IMixtureComposerBase* p_composer = &composer;
   composer.setDataHandler(&handler);
   composer.createMixtCompMixtures();
-  composer.setData();
-  composer.initializeModel();
   
   // instantiate the SemStrategy
   STK::Clust::initType initMethod;
