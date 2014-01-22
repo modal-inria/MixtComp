@@ -197,7 +197,17 @@ class MixtureBridge : public IMixture
      *  coordinates. */
     void removeMissing()
     { 
-      // missing values with interval
+      // missing value [-inf,+inf] or ?
+      for (typename std::vector<pos>::iterator it = m_augDataij_.v_missing_.begin();
+           it != m_augDataij_.v_missing_.end();
+           ++it)
+      {
+        m_augDataij_.data_((*it).first,
+                           (*it).second) = imputer_.sampleRange(m_augDataij_.dataRanges_[(*it).second].first,
+                                                                m_augDataij_.dataRanges_[(*it).second].second);
+      }
+      
+      // missing values [a,b]
       for (typename std::vector<std::pair<pos, std::pair<Type, Type> > >::iterator it = m_augDataij_.v_missingIntervals_.begin();
            it != m_augDataij_.v_missingIntervals_.end();
            ++it)
@@ -205,6 +215,26 @@ class MixtureBridge : public IMixture
         m_augDataij_.data_((*it).first.first,
                            (*it).first.second) = imputer_.sampleRange((*it).second.first,
                                                                       (*it).second.second);
+      }
+      
+      // missing values [-inf,b]
+      for (typename std::vector<std::pair<pos, Type> >::iterator it = m_augDataij_.v_missingLUIntervals_.begin();
+           it != m_augDataij_.v_missingLUIntervals_.end();
+           ++it)
+      {
+        m_augDataij_.data_((*it).first.first,
+                           (*it).first.second) = imputer_.sampleRange(m_augDataij_.dataRanges_[(*it).second].first,
+                                                                      (*it).second);
+      }
+      
+      // missing values [a,+inf]
+      for (typename std::vector<std::pair<pos, Type> >::iterator it = m_augDataij_.v_missingRUIntervals_.begin();
+           it != m_augDataij_.v_missingRUIntervals_.end();
+           ++it)
+      {
+        m_augDataij_.data_((*it).first.first,
+                           (*it).first.second) = imputer_.sampleRange((*it).second,
+                                                                      m_augDataij_.dataRanges_[(*it).second].second);
       }
     }
 };
