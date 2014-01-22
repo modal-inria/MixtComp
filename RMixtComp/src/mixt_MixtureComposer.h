@@ -78,7 +78,9 @@ class MixtureComposer : public STK::MixtureComposer
 
     template<typename Data>
     inline void getData(std::string const& id, Data& data, int& nbVariable) const
-    {p_DataHandlerR()->getData(id, data, nbVariable);}
+    {
+      p_DataHandlerR()->getData(id, data, nbVariable);
+    }
     
     void setDataHandler(DataHandlerR const* p_handler);
     

@@ -36,7 +36,6 @@
 namespace mixt
 {
 
-
 DataHandlerR::DataHandlerR()
 {
   // TODO Auto-generated constructor stub
@@ -108,7 +107,7 @@ void DataHandlerR::getData(std::string const& idData,
   getData(idData, augData.data_, nbVariable); // data array filling is not affected by the augmented data
   
   std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
-
+  
   int index;
   int missingSize = 0;
   int missingFiniteValuesSize = 0;
@@ -117,6 +116,17 @@ void DataHandlerR::getData(std::string const& idData,
   int missingRUIntervalsSize = 0;
   
   Rcpp::NumericVector nv_listVals;
+  
+  // data range filling
+  for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it)
+  {
+    Rcpp::S4 s4 = rList_[(*it)];
+    Rcpp::List ls_augData = s4.slot("augData");
+    
+    nv_listVals = ls_augData["dataRange"];
+    
+    augData.dataRanges_.push_back(std::pair<STK::Real, STK::Real>(nv_listVals[0], nv_listVals[1]));
+  }
   
   // resizing the augData containers to avoid push_back slowdown
   for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it)

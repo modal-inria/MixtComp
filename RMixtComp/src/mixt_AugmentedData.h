@@ -45,6 +45,8 @@ struct AugmentedData
   typedef std::pair<int, int> pos;
   /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
   DataType data_;
+  /** available data ranges, one pair per data column */
+  std::vector<std::pair<Type, Type> > dataRanges_;
   /** vector of completely unknown values */
   std::vector<          pos                          > v_missing_;
   /** vector of values to be selected among a finite number of possibilities */
