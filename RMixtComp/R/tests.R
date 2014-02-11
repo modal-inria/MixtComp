@@ -1,3 +1,5 @@
+library(truncnorm)
+
 testRMC <- function (){
   lm <- getData(c("data/composite1.csv", "data/descriptor1.csv"),
                 c("data/composite2.csv", "data/descriptor2.csv"))
@@ -28,11 +30,11 @@ testRMixtCompDev <- function ()
 
 testSimpleSampler <- function()
 {
-  nbSamples <- 10000
+  nbSamples <- 1000
   resLine <- 1000
-  meanVal <- -4.
+  meanVal <- -3.
   lower <- 0.
-  upper <- -3.
+  upper <- 5.
   
   samples <- numeric(nbSamples)
   
@@ -42,7 +44,7 @@ testSimpleSampler <- function()
                                 1.,  # sd
                                 lower, # infBound
                                 upper, # supBound
-                                F,   # lb
+                                T,   # lb
                                 T)
   }
   

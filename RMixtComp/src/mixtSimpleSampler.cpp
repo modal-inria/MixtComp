@@ -27,9 +27,10 @@
 #include "stkpp/projects/STatistiK/include/STK_Law_Uniform.h"
 #include "stkpp/projects/STatistiK/include/STK_Law_Normal.h"
 
-double luSampler(double lower)
+// left unbounded sampler
+double luSampler(double lower, double alpha)
 {
-  double z, alpha, u, rho;
+  double z, u, rho;
   if (lower < 0)
   {
     do
@@ -42,13 +43,35 @@ double luSampler(double lower)
   {
     do
     {
-      alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
       z = STK::Law::Exponential::rand(1./alpha) + lower;
       rho = exp(-pow((z - alpha), 2) / 2.);
       u = STK::Law::Uniform::rand(0., 1.);
     }
     while (u > rho);
   }
+  return z;
+}
+
+// left and right bounded sampler
+double lrbSampler(double lower, double upper)
+{
+  double z, u, rho;
+
+  do
+  {
+    z = STK::Law::Uniform::rand(lower, upper);
+    
+    if (lower < 0. && 0. < upper)
+      rho = exp(-pow(z, 2));
+    else if (upper < 0.)
+      rho = exp((pow(upper, 2)-pow(z, 2))/2);
+    else if (0. < lower)
+      rho = exp((pow(lower, 2)-pow(z, 2))/2);
+      
+    u = STK::Law::Uniform::rand(0., 1.);
+  }
+  while(u > rho);
+  
   return z;
 }
 
@@ -60,16 +83,33 @@ double simpleSampler(double mean,
                      bool lb,
                      bool rb)
 {
-  double lower, upper;
-  lower = (infBound - mean) / sd;
-  upper = (supBound - mean) / sd;
+  double z;
+  double lower = (infBound - mean) / sd;
+  double upper = (supBound - mean) / sd;
+  double alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
 
+  if (lb && rb)
+  {
+    if (alpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(lower / 2) / (upper - lower))
+    {
+      do
+      {
+        z = luSampler(lower, alpha);
+      }
+      while(upper < z);
+    }
+    else
+    {
+      z = lrbSampler(lower, upper);
+    }
+  }
   if (lb && !rb)
   {
-    return luSampler(lower) * sd + mean;
+    z = luSampler(lower, alpha);
   }
   else if (!lb && rb)
   {
-    return -luSampler(-upper) * sd + mean;
+    z = -luSampler(-upper, alpha);
   }
+  return z * sd + mean;
 }
