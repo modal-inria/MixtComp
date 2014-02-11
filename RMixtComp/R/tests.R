@@ -25,3 +25,38 @@ testRMixtCompDev <- function ()
 #   mixtCompCluster(lm, mcCluster, 3)
 #   return(mcCluster)
 }
+
+testSimpleSampler <- function()
+{
+  nbSamples <- 10000
+  resLine <- 1000
+  
+  samples <- numeric(nbSamples)
+  
+  for (i in 1:nbSamples)
+  {
+    samples[i] <- simpleSampler(-4.,  # mean,
+                                1.,  # sd
+                                0., # infBound
+                                2., # supBound
+                                T,   # lb
+                                F)
+  }
+  
+  hist(samples,
+       freq = F,
+       nclass = 20)
+  
+  lowBound <- min(samples)
+  highBound <- max(samples)
+  
+  xVals <- seq(from = lowBound,
+               to = highBound,
+               length = 1000)
+  yVals <- dtruncnorm(x = xVals,
+                      a = lowBound,
+                      b = highBound,
+                      mean = -4.,
+                      sd = 1.)
+  points(xVals,yVals,type="l")  
+}
