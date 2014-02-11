@@ -27,6 +27,31 @@
 #include "stkpp/projects/STatistiK/include/STK_Law_Uniform.h"
 #include "stkpp/projects/STatistiK/include/STK_Law_Normal.h"
 
+double luSampler(double lower)
+{
+  double z, alpha, u, rho;
+  if (lower < 0)
+  {
+    do
+    {
+      z = STK::Law::Normal::rand(0, 1);
+    }
+    while (z < lower);
+  }
+  else
+  {
+    do
+    {
+      alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
+      z = STK::Law::Exponential::rand(1./alpha) + lower;
+      rho = exp(-pow((z - alpha), 2) / 2.);
+      u = STK::Law::Uniform::rand(0., 1.);
+    }
+    while (u > rho);
+  }
+  return z;
+}
+
 // [[Rcpp::export]]
 double simpleSampler(double mean,
                      double sd,
@@ -35,35 +60,16 @@ double simpleSampler(double mean,
                      bool lb,
                      bool rb)
 {
-  STK::Real lower, upper, alpha, z, u, rho;
-
+  double lower, upper;
   lower = (infBound - mean) / sd;
   upper = (supBound - mean) / sd;
 
   if (lb && !rb)
   {
-    if (lower < 0)
-    {
-      do
-      {
-        z = STK::Law::Normal::rand(0, 1);
-      }
-      while (z < lower);
-    }
-    else
-    {
-      do
-      {
-        alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
-        z = STK::Law::Exponential::rand(1./alpha) + lower;
-        rho = exp(-pow((z - alpha), 2) / 2.);
-        u = STK::Law::Uniform::rand(0., 1.);
-//        std::cout<<alpha<<" "<<z<<" "<<rho<<" "<<u<<std::endl;
-      }
-      while (u > rho);
-    }
-    return z * sd + mean;
+    return luSampler(lower) * sd + mean;
   }
-
-  return -46534354211347657464354.;
+  else if (!lb && rb)
+  {
+    return -luSampler(-upper) * sd + mean;
+  }
 }

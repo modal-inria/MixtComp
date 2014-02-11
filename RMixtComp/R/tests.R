@@ -30,17 +30,20 @@ testSimpleSampler <- function()
 {
   nbSamples <- 10000
   resLine <- 1000
+  meanVal <- -4.
+  lower <- 0.
+  upper <- -3.
   
   samples <- numeric(nbSamples)
   
   for (i in 1:nbSamples)
   {
-    samples[i] <- simpleSampler(-4.,  # mean,
+    samples[i] <- simpleSampler(meanVal,  # mean,
                                 1.,  # sd
-                                0., # infBound
-                                2., # supBound
-                                T,   # lb
-                                F)
+                                lower, # infBound
+                                upper, # supBound
+                                F,   # lb
+                                T)
   }
   
   hist(samples,
@@ -56,7 +59,9 @@ testSimpleSampler <- function()
   yVals <- dtruncnorm(x = xVals,
                       a = lowBound,
                       b = highBound,
-                      mean = -4.,
+                      mean = meanVal,
                       sd = 1.)
-  points(xVals,yVals,type="l")  
+  points(xVals,
+         yVals,
+         type="l")
 }
