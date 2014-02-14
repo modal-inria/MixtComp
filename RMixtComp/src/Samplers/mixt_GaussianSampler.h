@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2013-2014
+/*  Copyright (C) Inria 2014
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,33 +17,24 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: 15 nov. 2013
+ *  Created on: 14 feb. 2014
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  *              iovleff, serge.iovleff@stkpp.org
  **/
 
-#ifndef MIXT_GAUSSIANINGREDIENT_H
-#define MIXT_GAUSSIANINGREDIENT_H
-
-#include "Samplers/mixt_GaussianSampler.h"
-#include "mixt_MixtureBridge.h"
-#include "stkpp/projects/Clustering/include/Mixtures/STK_GaussianMixtures.h"
+#ifndef MIXT_GAUSSIANSAMPLER_H
+#define MIXT_GAUSSIANSAMPLER_H
 
 namespace mixt
 {
 
-/**
- *  Specialization of the SamplerTraits for the Gaussian_sjk_ model
- **/
-template<>
-struct SamplerTraits<STK::Clust::Gaussian_sjk_>
+class GaussianSampler
 {
-   /** Sampler to be used for this specific mixture model */
-   typedef GaussianSampler Sampler;
+  public:
+
+
 };
 
-typedef MixtureBridge<STK::Clust::Gaussian_sjk_> MixtureGaussian_sjk_m;
+} // namespace mixt
 
-} /* namespace mixt */
-
-#endif /* STK_GAUSSIANINGREDIENT_H */
+#endif /* MIXT_GAUSSIANSAMPLER_H */

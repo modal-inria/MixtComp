@@ -44,9 +44,9 @@ IMixture* createMixtCompMixture(STK::Clust::Mixture model, std::string const& id
 {
   switch (model)
   {
-    case STK::Clust::Gamma_ajk_bjk_:
-      return new MixtureGamma_ajk_bjk_m(id, nbCluster);
-      break;
+//    case STK::Clust::Gamma_ajk_bjk_:
+//      return new MixtureGamma_ajk_bjk_m(id, nbCluster);
+//      break;
     case STK::Clust::Gaussian_sjk_:
       return new MixtureGaussian_sjk_m(id, nbCluster);
       break;

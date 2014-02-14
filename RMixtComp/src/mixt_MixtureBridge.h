@@ -34,6 +34,7 @@
 #include "mixt_IMixture.h"
 #include "mixt_AugmentedData.h"
 #include "mixt_Imputer.h"
+#include "Samplers/mixt_SamplerTraits.h"
 
 namespace mixt
 {
@@ -50,6 +51,8 @@ class MixtureBridge : public IMixture
     typedef typename STK::Clust::MixtureTraits<Id>::Type Type;
     // type of Mixture
     typedef typename STK::Clust::MixtureTraits<Id>::Mixture Mixture;
+    // type of Sampler
+    typedef typename SamplerTraits<Id>::Sampler Sampler;
 
     /** constructor.
      *  @param idName id name of the mixture
@@ -185,9 +188,14 @@ class MixtureBridge : public IMixture
     
   private:
     typedef std::vector<std::pair<int, int> >::const_iterator ConstIterator;
+
     /** Imputer used to generate initial values randomly */
     Imputer<Type> imputer_;
-    /** utility function for lookup the data set and remove missing values
+
+    /** Sampler to generate values */
+    Sampler sampler_;
+
+    /** Utility function to lookup the data set and remove missing values
      *  coordinates. */
     void removeMissing()
     { 
