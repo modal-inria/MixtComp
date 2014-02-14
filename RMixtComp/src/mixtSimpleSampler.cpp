@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*     Copyright (C) Inria 2014
+/*  Copyright (C) Inria 2014
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
 */
 
 /*
- * Project:  MixtComp
- * created on: Feb 7, 2014
- * Author:   Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Project:    MixtComp
+ *  Created on: Feb 7, 2014
+ *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
 #include <cmath>
