@@ -33,15 +33,16 @@ testSimpleSampler <- function()
   nbSamples <- 1000
   resLine <- 1000
   meanVal <- -3.
-  lower <- 0.
-  upper <- 5.
+  sdVal <- 1.
+  lower <- 10.
+  upper <- 15.
   
   samples <- numeric(nbSamples)
   
   for (i in 1:nbSamples)
   {
     samples[i] <- simpleSampler(meanVal,  # mean,
-                                1.,  # sd
+                                sdVal,  # sd
                                 lower, # infBound
                                 upper, # supBound
                                 T,   # lb
@@ -62,8 +63,9 @@ testSimpleSampler <- function()
                       a = lowBound,
                       b = highBound,
                       mean = meanVal,
-                      sd = 1.)
+                      sd = sdVal)
   points(xVals,
          yVals,
          type="l")
+  cat(yVals)
 }

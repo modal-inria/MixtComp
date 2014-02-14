@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*     Copyright (C) Inria 2013-2014
+/*  Copyright (C) Inria 2013-2014
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,12 +16,11 @@
 */
 
 /*
- * Project:  MixtComp
- * created on: 15 nov. 2013
- * Authors:   Vincent KUBICKI <vincent.kubicki@inria.fr>,
- *            iovleff <S..._Dot_I..._At_stkpp_Dot_org> (see copyright for ...),
- *              
- * Originally created by Parmeet Bhatia <b..._DOT_p..._AT_gmail_Dot_com>
+ *  Project:    MixtComp
+ *  Created on: 15 nov. 2013
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
+ *              iovleff <S..._Dot_I..._At_stkpp_Dot_org> (see copyright for ...),
+ *              Parmeet Bhatia <b..._DOT_p..._AT_gmail_Dot_com>
  **/
 
 /** @file mixt_MixtureBridge.h
