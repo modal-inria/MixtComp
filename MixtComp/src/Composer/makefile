@@ -16,31 +16,37 @@
 #------------------------------------------------------------------------
 #   Project:    MixtComp
 #   Created on: Feb 17, 2014
-#   Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
-#               Serge IOVLEFF <serge.iovleff@stkpp.org>
+#   Authors:     Vincent KUBICKI <vincent.kubicki@inria.fr>,
+#                Serge IOVLEFF <serge.iovleff@stkpp.org>
 #------------------------------------------------------------------------
 
-STKPPDIR = ./stkpp
-STKPPLIB = ./stkpp/lib/libSTKpp.a
-MCDIR = ./MixtComp
-MCLIB = ./MixtComp/lib/libMixtComp.a
+#-----------------------------------------------------------------------
+# set directories and include makevars file
 
-# Flags for the cpp files at the root, i.e.
-PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I.
+ROOT_DIR = ../..
+BIN_DIR = $(ROOT_DIR)/bin
 
-## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB)
+ifneq ($(wildcard $(ROOT_DIR)/makevars.local),) 
+RELATIVEMAKEVARS = $(ROOT_DIR)/makevars.local
+else 
+RELATIVEMAKEVARS = $(ROOT_DIR)/makevars
+endif
 
-.PHONY: all pkglib
+include $(RELATIVEMAKEVARS)
 
-## $(SHLIB) is the usual default target that is built automatically from all source 
-## files in this directory. pkglib is an additional target for the libraries
-## that will be installed in $(STKPPDIR) and $(PKGLIB) and which users can link against.
+#-----------------------------------------------------------------------
+# header, source and binary files
 
+CXX_INCS = $(wildcard *.h)
+CPP_SRCS = $(wildcard *.cpp)
+CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)/%.o)
 
-all: $(SHLIB)
-$(SHLIB): pkglib
+#-----------------------------------------------------------------------
+# Compilation rules
 
-pkglib:
-	(cd $(MCDIR) && $(MAKE) all)
-	(cd $(STKPPDIR) && $(MAKE) all)
+all: obj
+
+obj: $(CPP_OBJS)
+
+$(BIN_DIR)/%.o: %.cpp %.h makefile
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(ROOT_DIR)/.. -c -o $@ $<

@@ -21,9 +21,9 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_DataHandlerR.h"
-#include "mixt_MixtureComposer.h"
-#include "mixt_SemStrategy.h"
+#include "MixtComp/src/Data/mixt_DataHandlerR.h"
+#include "MixtComp/src/Composer/mixt_MixtureComposer.h"
+#include "MixtComp/src/Strategy/mixt_SemStrategy.h"
 
 // [[Rcpp::export]]
 void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)

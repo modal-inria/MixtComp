@@ -29,9 +29,9 @@
 #define MIXT_MIXTURECOMPOSER_H_
 
 #include "stkpp/projects/Clustering/include/STK_MixtureComposer.h"
-#include "mixt_AugmentedData.h"
-#include "mixt_DataHandlerR.h"
-#include "mixt_Clust_Util.h"
+#include "../Data/mixt_AugmentedData.h"
+#include "../Data/mixt_DataHandlerR.h"
+#include "../Mixture/StkppMixture/mixt_Clust_Util.h"
 
 namespace mixt
 {

@@ -1,12 +1,25 @@
-#-----------------------------------------------------------------------
-# makevars
-# author: Serge Iovleff
-#-----------------------------------------------------------------------
+#------------------------------------------------------------------------
+#   Copyright (C) Inria 2014
 #
-# This file has to be included in all makefile of the projects.
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
 #
-#-----------------------------------------------------------------------
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
 #
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#------------------------------------------------------------------------
+#   Project:    MixtComp
+#   Created on: Feb 17, 2014
+#   Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
+#               Serge IOVLEFF <serge.iovleff@stkpp.org>
+#------------------------------------------------------------------------
+
 #   HASRMATH 't' if your system has libRmath
 HASRMATH = t
 
@@ -33,20 +46,17 @@ CFLAGS   = -Wno-long-long
 STK_FLAGS =
 
 #-----------------------------------------------------------------------
-# path to stkpp sources
-#when compiling from the root of MixtComp
-STK_DIR = ../stkpp
-
-#-----------------------------------------------------------------------
 # common compile flags
-CXXFLAGS_ALL = -ansi -std=c++11 -pedantic -Wall -I$(realpath $(STK_DIR)/include)
+CXXFLAGS_ALL = -ansi -fPIC -std=c++11 -pedantic -Wall -I.. -I/usr/share/R/include/ `Rscript -e "Rcpp:::CxxFlags()"`
 
 #-----------------------------------------------------------------------
 # flags in Debug mode
 STK_FLAGS_DEBUG = $(STK_FLAGS) -DSTK_BOUNDS_CHECK -DSTK_DEBUG -DSTK_VERBOSE
-CXXFLAGS_DEBUG  = "$(CXXFLAGS_ALL) -g -O0 $(STK_FLAGS_DEBUG)"
+CXXFLAGS_DEBUG  = $(CXXFLAGS_ALL) -g -O0 $(STK_FLAGS_DEBUG)
 
 #-----------------------------------------------------------------------
 # flags in Release mode
 STK_FLAGS_RELEASE = $(STK_FLAGS)
-CXXFLAGS_RELEASE = "$(CXXFLAGS_ALL) -O3 -ftree-vectorize -march=native -funroll-loops $(STK_FLAGS_RELEASE)"
+CXXFLAGS_RELEASE = $(CXXFLAGS_ALL) -O3 -ftree-vectorize -march=native -funroll-loops $(STK_FLAGS_RELEASE)
+
+CXXFLAGS = $(CXXFLAGS_DEBUG)

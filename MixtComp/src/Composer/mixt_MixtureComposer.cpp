@@ -26,7 +26,7 @@
  **/
 
 #include "mixt_MixtureComposer.h"
-#include "mixt_IMixture.h"
+#include "../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {

@@ -29,8 +29,8 @@
 #ifndef MIXT_IMIXTURE_H
 #define MIXT_IMIXTURE_H
 
-#include "mixt_AugmentedData.h"
-#include "mixt_MixtureComposer.h"
+#include "../Data/mixt_AugmentedData.h"
+#include "../Composer/mixt_MixtureComposer.h"
 #include "stkpp/projects/Clustering/include/STK_IMixture.h"
 
 namespace mixt

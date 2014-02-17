@@ -1,87 +1,41 @@
-#-----------------------------------------------------------------------
-#     Copyright (C) 2004-2007  Serge Iovleff
+#------------------------------------------------------------------------
+#   Copyright (C) Inria 2014
 #
-#    This program is free software; you can redistribute it and/or modify
-#    it under the terms of the GNU Lesser General Public License as
-#    published by the Free Software Foundation; either version 2 of the
-#    License, or (at your option) any later version.
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
 #
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Lesser General Public License for more details.
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
 #
-#    You should have received a copy of the GNU Lesser General Public
-#    License along with this program; if not, write to the
-#    Free Software Foundation, Inc.,
-#    59 Temple Place,
-#    Suite 330,
-#    Boston, MA 02111-1307
-#    USA
-#
-#    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
-#
-#-----------------------------------------------------------------------
-#
-# Purpose:  Main makefile of MixtComp
-# Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
-#
-#-----------------------------------------------------------------------
-
-#-----------------------------------------------------------------------
-# Macros and definitions are in MAKEVARS, they can be overloaded by up call
-ifneq ($(wildcard ./makevars.local),) 
-RELATIVEMAKEVARS = ./makevars.local
-else 
-RELATIVEMAKEVARS = ./makevars
-endif
-
-include $(RELATIVEMAKEVARS)
-
-#-----------------------------------------------------------------------
-# paths
-
-# build paths
-BIN_RELEASE_DIR = ./bin/release
-BIN_DEBUG_DIR   = ./bin/debug
-LIB_DIR = ./lib/
-
-# sources paths
-SRC_MIXTURES_DIR = ./src/mixtures/
-SRC_TESTS_DIR    = ./tests/
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#------------------------------------------------------------------------
+#   Project:    MixtComp
+#   Created on: Feb 17, 2014
+#   Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+#------------------------------------------------------------------------
 
 # build path
-LIB_STK = $(STK_DIR)/lib/libSTKpp.a
 LIB_MC = ./lib/libMixtComp.a
-
-#-----------------------------------------------------------------------
-# export variables, build paths and compile flags, to share them with sub-makefiles
-export LIB_STK
 
 #-----------------------------------------------------------------------
 # build rules
 
 # phony prerequisites are executed unconditionally
-.PHONY: lib release debug tests clean
+.PHONY: all lib clean
 
 all: lib
 
-release:
-	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
-
-debug:
-	$(MAKE) -C $(SRC_MIXTURES_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
-
-tests:
-	$(MAKE) -C $(SRC_TESTS_DIR) BIN_DIR="$(BIN_RELEASE_DIR)" CXXFLAGS=$(CXXFLAGS_RELEASE)
-	$(MAKE) -C $(SRC_TESTS_DIR) BIN_DIR="$(BIN_DEBUG_DIR)" CXXFLAGS=$(CXXFLAGS_DEBUG)
-
-lib: release $(LIB_MC)
+lib: $(LIB_MC)
 
 $(LIB_MC):
-	$(AR) $(ARFLAGS) $@ $(wildcard $(BIN_RELEASE_DIR)/*.o)
+	$(MAKE) -C ./src/Composer
+	$(AR) $(ARFLAGS) $@ $(wildcard $(BIN_DIR)/*.o)
 
 clean:
-	$(RM) ./bin/debug/*
-	$(RM) ./bin/release/*
+	$(RM) ./bin/*
 	$(RM) ./lib/*
