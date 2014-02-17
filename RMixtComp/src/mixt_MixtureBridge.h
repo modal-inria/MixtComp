@@ -34,7 +34,7 @@
 #include "mixt_IMixture.h"
 #include "mixt_AugmentedData.h"
 #include "mixt_Imputer.h"
-#include "Samplers/mixt_SamplerTraits.h"
+#include "MixtComp/src/Sampler/mixt_SamplerTraits.h"
 
 namespace mixt
 {
