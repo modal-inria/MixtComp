@@ -1,0 +1,608 @@
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Test composer                                     +
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Read first file                                   +
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Read second file                                   +
+name: model1, model: Gamma_ajk_bjk
+name: model2, model: Gaussian_s
+name: model3, model: Gamma_ajk_bj
+name: model4, model: Gaussian_sjk
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ composer(), setDataHandler()                      +
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Create composers and setDataHandler               +
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ CreateIngredients(), setData(), initializeModel() +
++ composer:                                         +
+Composer lnLikelihood = -inf
+Composer nbFreeParameter = 29
+Composer proportions = 0.333333 0.333333 0.333333
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 1
+scale_ = 1
+---> Component 2
+shape_ = 1
+scale_ = 1
+---> Component 3
+shape_ = 1
+scale_ = 1
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 0 0
+sigma_ = 1 1
+---> Component 2
+mean_ = 0 0
+sigma_ = 1 1
+---> Component 3
+mean_ = 0 0
+sigma_ = 1 1
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 1 1
+scale_ = 1 1
+---> Component 2
+shape_ = 1 1
+scale_ = 1 1
+---> Component 3
+shape_ = 1 1
+scale_ = 1 1
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 0
+sigma_ = 1
+---> Component 2
+mean_ = 0
+sigma_ = 1
+---> Component 3
+mean_ = 0
+sigma_ = 1
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ test randomClassInit(). composer:                 +
+Composer lnLikelihood = -2365.61
+Composer nbFreeParameter = 29
+Composer proportions = 0.346667 0.333333 0.32
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 3.39177
+scale_ = 2.59791
+---> Component 2
+shape_ = 2.78753
+scale_ = 2.61019
+---> Component 3
+shape_ = 2.32344
+scale_ = 2.67226
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 3.39486 3.29076
+sigma_ = 2.5054 2.5054
+---> Component 2
+mean_ = 2.94796 3.00606
+sigma_ = 2.5054 2.5054
+---> Component 3
+mean_ = 2.81944 2.42243
+sigma_ = 2.5054 2.5054
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 3.49829 2.75483
+scale_ = 2.75673 2.76081
+---> Component 2
+shape_ = 1.68692 2.76348
+scale_ = 2.75673 2.76081
+---> Component 3
+shape_ = 3.43743 2.91645
+scale_ = 2.75673 2.76081
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 3.35969
+sigma_ = 2.80822
+---> Component 2
+mean_ = 3.31619
+sigma_ = 2.93556
+---> Component 3
+mean_ = 2.45219
+sigma_ = 2.51765
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ sem iterations. composer:                         +
+Composer lnLikelihood = -2297.43
+Composer nbFreeParameter = 29
+Composer proportions = 0.346667 0.333333 0.32
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 4.04395
+scale_ = 2.30466
+---> Component 2
+shape_ = 1.9619
+scale_ = 3.36538
+---> Component 3
+shape_ = 1.94288
+scale_ = 3.10884
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 4.17823 4.07188
+sigma_ = 2.35664 2.35664
+---> Component 2
+mean_ = 2.50736 2.42997
+sigma_ = 2.35664 2.35664
+---> Component 3
+mean_ = 2.24007 1.98108
+sigma_ = 2.35664 2.35664
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 3.6683 2.92183
+scale_ = 2.67466 3.13622
+---> Component 2
+shape_ = 1.75117 2.13458
+scale_ = 2.67466 3.13622
+---> Component 3
+shape_ = 3.26674 2.25718
+scale_ = 2.67466 3.13622
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 4.34231
+sigma_ = 2.3571
+---> Component 2
+mean_ = 2.44266
+sigma_ = 2.9714
+---> Component 3
+mean_ = 2.08623
+sigma_ = 2.49663
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ em iterations. composer:                           +
+Composer lnLikelihood = -2204.29
+Composer nbFreeParameter = 29
+Composer proportions = 0.346667 0.333333 0.32
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 4.55682
+scale_ = 2.06681
+---> Component 2
+shape_ = 1.72759
+scale_ = 3.18049
+---> Component 3
+shape_ = 1.98865
+scale_ = 2.8886
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 4.78552 4.70838
+sigma_ = 1.85964 1.85964
+---> Component 2
+mean_ = 1.35769 1.23249
+sigma_ = 1.85964 1.85964
+---> Component 3
+mean_ = 1.48773 1.24034
+sigma_ = 1.85964 1.85964
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 3.70781 4.01111
+scale_ = 2.6006 2.504
+---> Component 2
+shape_ = 1.63786 2.12977
+scale_ = 2.6006 2.504
+---> Component 3
+shape_ = 3.16554 2.32309
+scale_ = 2.6006 2.504
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 5.03231
+sigma_ = 1.81772
+---> Component 2
+mean_ = 1.07535
+sigma_ = 2.31581
+---> Component 3
+mean_ = 1.27148
+sigma_ = 2.07908
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Testing strategies                                  +
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ CreateIngredients(), setData(), initializeModel() +
++ composer:                                         +
+Composer lnLikelihood = -inf
+Composer nbFreeParameter = 29
+Composer proportions = 0.333333 0.333333 0.333333
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 1
+scale_ = 1
+---> Component 2
+shape_ = 1
+scale_ = 1
+---> Component 3
+shape_ = 1
+scale_ = 1
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 0 0
+sigma_ = 1 1
+---> Component 2
+mean_ = 0 0
+sigma_ = 1 1
+---> Component 3
+mean_ = 0 0
+sigma_ = 1 1
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 1 1
+scale_ = 1 1
+---> Component 2
+shape_ = 1 1
+scale_ = 1 1
+---> Component 3
+shape_ = 1 1
+scale_ = 1 1
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 0
+sigma_ = 1
+---> Component 2
+mean_ = 0
+sigma_ = 1
+---> Component 3
+mean_ = 0
+sigma_ = 1
+Composer lnLikelihood = -inf
+Composer nbFreeParameter = 27
+Composer proportions = 0.333333 0.333333 0.333333
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 1
+scale_ = 1
+---> Component 2
+shape_ = 1
+scale_ = 1
+---> Component 3
+shape_ = 1
+scale_ = 1
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 0 0
+sigma_ = 1 1
+---> Component 2
+mean_ = 0 0
+sigma_ = 1 1
+---> Component 3
+mean_ = 0 0
+sigma_ = 1 1
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 1 1
+scale_ = 1 1
+---> Component 2
+shape_ = 1 1
+scale_ = 1 1
+---> Component 3
+shape_ = 1 1
+scale_ = 1 1
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 0
+sigma_ = 1
+---> Component 2
+mean_ = 0
+sigma_ = 1
+---> Component 3
+mean_ = 0
+sigma_ = 1
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ testSemStrategy: composer1                        +
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ SemStrategy terminated. Results:                  +
+Composer lnLikelihood = -1982.54
+Composer nbFreeParameter = 29
+Composer proportions = 0.333333 0.346667 0.32
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 2.1149
+scale_ = 1.9652
+---> Component 2
+shape_ = 4.80075
+scale_ = 2.06829
+---> Component 3
+shape_ = 3.20189
+scale_ = 2.57587
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 0.18031 -0.0189964
+sigma_ = 0.943616 0.943616
+---> Component 2
+mean_ = 3.13743 3.08565
+sigma_ = 0.943616 0.943616
+---> Component 3
+mean_ = 5.93432 5.84164
+sigma_ = 0.943616 0.943616
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 1.78687 2.16062
+scale_ = 2.59377 1.73519
+---> Component 2
+shape_ = 4.09611 6.02448
+scale_ = 2.59377 1.73519
+---> Component 3
+shape_ = 3.26486 5.11939
+scale_ = 2.59377 1.73519
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = -0.240162
+sigma_ = 0.932914
+---> Component 2
+mean_ = 3.20338
+sigma_ = 0.956593
+---> Component 3
+mean_ = 6.25064
+sigma_ = 1.10549
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ testSemStrategy: composerFixed1                   +
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ SemStrategy terminated. Results:                  +
+Composer lnLikelihood = -1978.96
+Composer nbFreeParameter = 27
+Composer proportions = 0.333333 0.333333 0.333333
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 4.8618
+scale_ = 2.06166
+---> Component 2
+shape_ = 2.1149
+scale_ = 1.9652
+---> Component 3
+shape_ = 3.22834
+scale_ = 2.53507
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 3.10353 3.06066
+sigma_ = 0.941861 0.941861
+---> Component 2
+mean_ = 0.150655 -0.0189964
+sigma_ = 0.941861 0.941861
+---> Component 3
+mean_ = 5.91252 5.80938
+sigma_ = 0.941861 0.941861
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 4.23447 5.97955
+scale_ = 2.51351 1.74659
+---> Component 2
+shape_ = 1.74626 2.13695
+scale_ = 2.51351 1.74659
+---> Component 3
+shape_ = 3.35113 5.11359
+scale_ = 2.51351 1.74659
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 3.17445
+sigma_ = 0.943131
+---> Component 2
+mean_ = -0.232135
+sigma_ = 0.931806
+---> Component 3
+mean_ = 6.21856
+sigma_ = 1.11649
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ testSimpleStrategy: composer1                     +
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ SimpleStrategy terminated. Results:               +
+Composer lnLikelihood = -1978.29
+Composer nbFreeParameter = 29
+Composer proportions = 0.350988 0.331068 0.317944
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 4.81715
+scale_ = 2.05706
+---> Component 2
+shape_ = 2.10147
+scale_ = 1.97711
+---> Component 3
+shape_ = 3.1761
+scale_ = 2.58786
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 3.14944 3.05828
+sigma_ = 0.955264 0.955264
+---> Component 2
+mean_ = 0.163782 -0.0302115
+sigma_ = 0.955264 0.955264
+---> Component 3
+mean_ = 5.9218 5.83625
+sigma_ = 0.955264 0.955264
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 4.39134 6.05164
+scale_ = 2.4334 1.72564
+---> Component 2
+shape_ = 1.86237 2.18732
+scale_ = 2.4334 1.72564
+---> Component 3
+shape_ = 3.39856 5.1303
+scale_ = 2.4334 1.72564
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 3.18183
+sigma_ = 0.955571
+---> Component 2
+mean_ = -0.247256
+sigma_ = 0.920576
+---> Component 3
+mean_ = 6.28366
+sigma_ = 1.04513
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ testSimpleStrategy: composerFixed1                +
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ SimpleStrategy terminated. Results:               +
+Composer lnLikelihood = -1978.41
+Composer nbFreeParameter = 27
+Composer proportions = 0.333333 0.333333 0.333333
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 3.17735
+scale_ = 2.58685
+---> Component 2
+shape_ = 4.81956
+scale_ = 2.05669
+---> Component 3
+shape_ = 2.10202
+scale_ = 1.97663
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 5.92002 5.83471
+sigma_ = 0.955239 0.955239
+---> Component 2
+mean_ = 3.14885 3.05723
+sigma_ = 0.955239 0.955239
+---> Component 3
+mean_ = 0.163944 -0.029748
+sigma_ = 0.955239 0.955239
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 3.39804 5.13118
+scale_ = 2.43354 1.72622
+---> Component 2
+shape_ = 4.39265 6.04872
+scale_ = 2.43354 1.72622
+---> Component 3
+shape_ = 1.86275 2.18713
+scale_ = 2.43354 1.72622
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 6.2822
+sigma_ = 1.04592
+---> Component 2
+mean_ = 3.18036
+sigma_ = 0.953676
+---> Component 3
+mean_ = -0.246692
+sigma_ = 0.921042
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ testXemStrategy: composer1                        +
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ XemStrategy terminated. Results:                  +
+Composer lnLikelihood = -1978.29
+Composer nbFreeParameter = 29
+Composer proportions = 0.350989 0.331068 0.317943
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 4.81715
+scale_ = 2.05706
+---> Component 2
+shape_ = 2.10147
+scale_ = 1.97711
+---> Component 3
+shape_ = 3.1761
+scale_ = 2.58786
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 3.14944 3.05829
+sigma_ = 0.955263 0.955263
+---> Component 2
+mean_ = 0.163783 -0.0302105
+sigma_ = 0.955263 0.955263
+---> Component 3
+mean_ = 5.92181 5.83625
+sigma_ = 0.955263 0.955263
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 4.39133 6.05164
+scale_ = 2.4334 1.72564
+---> Component 2
+shape_ = 1.86237 2.18732
+scale_ = 2.4334 1.72564
+---> Component 3
+shape_ = 3.39856 5.1303
+scale_ = 2.4334 1.72564
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 3.18183
+sigma_ = 0.955574
+---> Component 2
+mean_ = -0.247254
+sigma_ = 0.920577
+---> Component 3
+mean_ = 6.28366
+sigma_ = 1.04513
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ testXemStrategy: composerFixed1                   +
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ XemStrategy terminated. Results:                  +
+Composer lnLikelihood = -1978.41
+Composer nbFreeParameter = 27
+Composer proportions = 0.333333 0.333333 0.333333
+
+Parameters of the ingredient:model1
+---> Component 1
+shape_ = 3.17735
+scale_ = 2.58685
+---> Component 2
+shape_ = 2.10202
+scale_ = 1.97663
+---> Component 3
+shape_ = 4.81956
+scale_ = 2.05669
+Parameters of the ingredient:model2
+---> Component 1
+mean_ = 5.92002 5.83471
+sigma_ = 0.955239 0.955239
+---> Component 2
+mean_ = 0.163944 -0.029748
+sigma_ = 0.955239 0.955239
+---> Component 3
+mean_ = 3.14885 3.05723
+sigma_ = 0.955239 0.955239
+Parameters of the ingredient:model3
+---> Component 1
+shape_ = 3.39804 5.13118
+scale_ = 2.43354 1.72622
+---> Component 2
+shape_ = 1.86275 2.18713
+scale_ = 2.43354 1.72622
+---> Component 3
+shape_ = 4.39265 6.04872
+scale_ = 2.43354 1.72622
+Parameters of the ingredient:model4
+---> Component 1
+mean_ = 6.2822
+sigma_ = 1.04592
+---> Component 2
+mean_ = -0.246692
+sigma_ = 0.921042
+---> Component 3
+mean_ = 3.18036
+sigma_ = 0.953676
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ End of test composer : no error detected          +
++++++++++++++++++++++++++++++++++++++++++++++++++++++

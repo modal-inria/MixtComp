@@ -1,0 +1,30 @@
+Authors of STK++.
+
+STK++ Team
+----------
+The Statistical ToolKit Project is developped by:
+Serge Iovleff      <serge DOT iovl... AT stkpp DOT org>
+Quentin Grimonprez <Quentin DOT Grim... AT inria DOT fr>
+Parmeet Bhatia     <bhatia DOT parm... AT gmail DOT com>
+Vincent Kubicki     <Vincent DOT Kubi... AT gmail DOT com>
+
+The first version of the CMakeLists.txt files have been released by Rémi Lebret
+<Remi DOT Leb... AT gmail DOT com>
+
+The first version of the Clustering project have been written by Parmeet Bhatia
+
+
+Mersenne Twister
+----------------
+The random number generator "Mersenne Twister" was developed and originally
+coded in C by:
+Makoto Matsumoto   <matumoto AT math.keio.ac.jp>
+Takuji Nishimura   <nisimura AT math.keio.ac.jp>
+
+The C++ port, which is used by STK++, is written by:
+Shawn Cokus        <Cokus AT math.washington.edu>
+Richard J. Wagner  <rjwagner AT writeme.com>
+
+
+
+
