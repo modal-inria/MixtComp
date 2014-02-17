@@ -1,6 +1,0 @@
-FILE( GLOB source_files *.cpp)
-foreach(filename ${source_files})
-get_filename_component(varname ${filename} NAME_WE)
-add_executable(${varname}_exe ${filename})
-TARGET_LINK_LIBRARIES(${varname}_exe emframework STKpp)
-endforeach()
