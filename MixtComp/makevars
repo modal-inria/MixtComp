@@ -30,18 +30,12 @@ CFLAGS   = -Wno-long-long
 #-----------------------------------------------------------------------
 # STK 0 based adressing by default
 #STK_FLAGS = -DSTKBASEARRAYS=0
+STK_FLAGS =
 
 #-----------------------------------------------------------------------
 # path to stkpp sources
 #when compiling from the root of MixtComp
-ifneq ($(wildcard ../../stk/stkpp),)
-STK_DIR = ../../stk/stkpp
-else
 STK_DIR = ../stkpp
-endif
-
-#automatic detection override should stkpp be located somewhere else
-#STK_DIR = kigbigb
 
 #-----------------------------------------------------------------------
 # common compile flags
