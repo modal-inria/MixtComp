@@ -140,8 +140,9 @@ class MixtureBridge : public IMixture
      */
     virtual void samplingStep()
     {
-      /* for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
-      { m_dataij_(it->first, it->second) = mixture_.sample(it->first, it->second);} */
+      typedef typename Sampler::const_iterator it;
+      std::vector<pos, Type> values;
+      p_sampler_->sample(values);
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
