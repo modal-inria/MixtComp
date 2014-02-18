@@ -15,32 +15,38 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #------------------------------------------------------------------------
 #   Project:    MixtComp
-#   Created on: Feb 17, 2014
-#   Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+#   Created on: Feb 18, 2014
+#   Authors:     Vincent KUBICKI <vincent.kubicki@inria.fr>,
+#                Serge IOVLEFF <serge.iovleff@stkpp.org>
 #------------------------------------------------------------------------
 
-# build path
-LIB_MC = ./lib/libMixtComp.a
-BIN_DIR = ./bin
+#-----------------------------------------------------------------------
+# set directories and include makevars file
+
+ROOT_DIR = ../../..
+BIN_DIR = $(ROOT_DIR)/bin
+
+ifneq ($(wildcard $(ROOT_DIR)/makevars.local),) 
+RELATIVEMAKEVARS = $(ROOT_DIR)/makevars.local
+else 
+RELATIVEMAKEVARS = $(ROOT_DIR)/makevars
+endif
+
+include $(RELATIVEMAKEVARS)
 
 #-----------------------------------------------------------------------
-# build rules
+# header, source and binary files
 
-# phony prerequisites are executed unconditionally
-.PHONY: all lib clean
+CXX_INCS = $(wildcard *.h)
+CPP_SRCS = $(wildcard *.cpp)
+CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)/%.o)
 
-all: lib
+#-----------------------------------------------------------------------
+# Compilation rules
 
-lib: $(LIB_MC)
+all: obj
 
-$(LIB_MC):
-	$(MAKE) -C ./src/Composer
-	$(MAKE) -C ./src/Data
-	$(MAKE) -C ./src/Mixture
-	$(MAKE) -C ./src/Sampler
-	$(MAKE) -C ./src/Strategy
-	$(AR) $(ARFLAGS) $@ $(BIN_DIR)/*.o
+obj: $(CPP_OBJS)
 
-clean:
-	$(RM) ./bin/*
-	$(RM) ./lib/*
+$(BIN_DIR)/%.o: %.cpp %.h makefile
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(ROOT_DIR)/.. -c -o $@ $<

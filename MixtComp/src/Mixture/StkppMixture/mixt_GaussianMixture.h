@@ -25,7 +25,7 @@
 #ifndef MIXT_GAUSSIANINGREDIENT_H
 #define MIXT_GAUSSIANINGREDIENT_H
 
-#include "MixtComp/src/Sampler/mixt_GaussianSampler.h"
+#include "../Sampler/mixt_GaussianSampler.h"
 #include "mixt_MixtureBridge.h"
 #include "stkpp/projects/Clustering/include/Mixtures/STK_GaussianMixtures.h"
 
