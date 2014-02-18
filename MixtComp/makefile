@@ -21,6 +21,7 @@
 
 # build path
 LIB_MC = ./lib/libMixtComp.a
+BIN_DIR = ./bin
 
 #-----------------------------------------------------------------------
 # build rules
@@ -34,7 +35,7 @@ lib: $(LIB_MC)
 
 $(LIB_MC):
 	$(MAKE) -C ./src/Composer
-	$(AR) $(ARFLAGS) $@ $(wildcard $(BIN_DIR)/*.o)
+	$(AR) $(ARFLAGS) $@ $(BIN_DIR)/*.o
 
 clean:
 	$(RM) ./bin/*

@@ -9,4 +9,6 @@ RMixtComp/.Rbuildignore
 RMixtComp/R/RcppExports.R
 RMixtComp/src/RcppExports.cpp
 nohup.out
+bin
+lib
 
