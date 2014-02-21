@@ -58,18 +58,20 @@ class MixtureBridge : public IMixture
      *  @param idName id name of the mixture
      *  @param nbCluster number of cluster
      **/
-    MixtureBridge( std::string const& idName, int nbCluster)
-                 : IMixture( idName, nbCluster)
-                 , mixture_(nbCluster), m_augDataij_(), nbVariable_(0)
+    MixtureBridge(std::string const& idName, int nbCluster) :
+      IMixture(idName, nbCluster),
+      mixture_(nbCluster),
+      m_augDataij_(),
+      nbVariable_(0)
     {
       mixture_.setData(m_augDataij_.data_);
     }
     /** copy constructor */
-    MixtureBridge( MixtureBridge const& mixture)
-                 : IMixture(mixture)
-                 , mixture_(mixture.mixture_)
-                 , m_augDataij_(mixture.m_augDataij_)
-                 , nbVariable_(mixture.nbVariable_)
+    MixtureBridge(MixtureBridge const& mixture) :
+      IMixture(mixture),
+      mixture_(mixture.mixture_),
+      m_augDataij_(mixture.m_augDataij_),
+      nbVariable_(mixture.nbVariable_)
     {
       mixture_.setData(m_augDataij_.data_);
     }
@@ -140,9 +142,9 @@ class MixtureBridge : public IMixture
      */
     virtual void samplingStep()
     {
-      typedef typename Sampler::const_iterator it;
-      std::vector<pos, Type> values;
-      p_sampler_->sample(values);
+//      typedef typename Sampler::iterator it;
+//      std::vector<pos, Type> values;
+//      p_sampler_->sample(values);
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
@@ -165,7 +167,7 @@ class MixtureBridge : public IMixture
      * @return the log-component probability
      */
     virtual double lnComponentProbability(int i, int k)
-    { return mixture_.lnComponentProbability(i, k);}
+    {return mixture_.lnComponentProbability(i, k);}
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
@@ -174,10 +176,10 @@ class MixtureBridge : public IMixture
      * @param out Stream where you want to write the summary of parameters.
      */
     virtual void writeParameters(std::ostream& out) const
-    { mixture_.writeParameters(out);}
+    {mixture_.writeParameters(out);}
     /** Utility function to use in mode debug in order to test that the
      *  model is well initialized. */
-    int checkModel() const { return mixture_.checkModel();}
+    int checkModel() const {return mixture_.checkModel();}
 
   protected:
     /** The ingredient to bridge with the composer */
@@ -188,13 +190,11 @@ class MixtureBridge : public IMixture
     int nbVariable_;
     
   private:
-    typedef std::vector<std::pair<int, int> >::const_iterator ConstIterator;
-
     /** Imputer used to generate initial values randomly */
     Imputer<Type> imputer_;
 
     /** Sampler to generate values */
-    Sampler sampler_;
+//    Sampler sampler_;
 
     /** Utility function to lookup the data set and remove missing values
      *  coordinates. */

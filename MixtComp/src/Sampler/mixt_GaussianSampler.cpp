@@ -17,36 +17,14 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: 14 feb. 2014
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
- *              iovleff, serge.iovleff@stkpp.org
+ *  Created on: Feb 18, 2014
+ *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_GAUSSIANSAMPLER_H
-#define MIXT_GAUSSIANSAMPLER_H
-
-#include "stkpp/projects/STatistiK/include/STK_Law_Exponential.h"
-#include "stkpp/projects/STatistiK/include/STK_Law_Uniform.h"
-#include "stkpp/projects/STatistiK/include/STK_Law_Normal.h"
-
-#include "../Data/mixt_AugmentedData.h"
 #include "mixt_GaussianSamplerIterator.h"
+#include "mixt_GaussianSampler.h"
 
 namespace mixt
 {
 
-class GaussianSampler
-{
-  public:
-    GaussianSampler(AugmentedData<STK::Real>* pm_augDataij);
-    GaussianSampler(GaussianSampler& sampler);
-    ~GaussianSampler();
-    GaussianSamplerIterator begin();
-    GaussianSamplerIterator end();
-  private:
-    const AugmentedData<STK::Real>* pm_augDataij_;
-};
-
 } // namespace mixt
-
-#endif /* MIXT_GAUSSIANSAMPLER_H */
