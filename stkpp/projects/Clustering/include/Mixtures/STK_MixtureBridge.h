@@ -44,7 +44,7 @@ namespace STK
 
 /** @ingroup Clustering
  *  @brief Templated implementation of the IMixture interface allowing
- *  to bridge a stk++ ingredient with the composer.
+ *  to bridge a stk++ mixture with the composer.
  *
  * @tparam Id is any name of a concrete model deriving from the
  * STK::IMixtureModelBase class
@@ -103,9 +103,9 @@ class MixtureBridge: public IMixture
       return p_mixture;
     }
     /** @brief Initialize the model before its use by the composer.
-     *  The parameters values are set to its default values if the mixture_ is
+     *  The parameters values are set to their default values if the mixture_ is
      *  newly created. if MixtureBridge::initializeModel is used during a
-     *  cloning, model class have to take care of the existing values of the
+     *  cloning, mixture class have to take care of the existing values of the
      *  parameters.
      **/
     virtual void initializeModel()
@@ -147,7 +147,7 @@ class MixtureBridge: public IMixture
      */
     virtual void paramUpdateStep() { mixture_.mStep();}
     /** @brief This function should be used in order to initialize randomly the
-     *  parameters of the ingredient.
+     *  parameters of the mixture.
      */
     virtual void randomInit() { mixture_.randomInit();};
     /** This function should be used for imputation of data.
@@ -177,9 +177,15 @@ class MixtureBridge: public IMixture
      */
     virtual void writeParameters(std::ostream& out) const
     { mixture_.writeParameters(out);}
+    /** This function can be used in order to the values of the parameters
+     *  in an Array2D.
+     *  @param param the array with the parameters of the mixture.
+     */
+    void getParameters(Param& param) const
+    { mixture_.getParameters(param);}
 
   protected:
-    /** The ingredient to bridge with the composer */
+    /** The Mixture to bridge with the composer */
     Mixture mixture_;
     /** The data set */
     Data m_dataij_;

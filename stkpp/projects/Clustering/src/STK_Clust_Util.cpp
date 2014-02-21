@@ -84,7 +84,7 @@ Mixture stringToMixture( std::string const& type)
  *  @param type the type of Mixture we want to convert
  *  @return the string associated to this type.
  **/
-std::string ingredientToString( Mixture const& type)
+std::string mixtureToString( Mixture const& type)
 {
   if (type == Gamma_ajk_bjk_) return String(_T("Gamma_ajk_bjk"));
   if (type == Gamma_ajk_bj_) return String(_T("Gamma_ajk_bj"));
@@ -97,7 +97,7 @@ std::string ingredientToString( Mixture const& type)
 
 /** @ingroup Clustering
  *  utility function for creating an Mixture.
- *  @param model ingredient to create
+ *  @param model mixture to create
  **/
 IMixture* createMixture(Mixture model, std::string const& id, int nbCluster)
 {

@@ -107,62 +107,47 @@ int main(int argc, char *argv[])
 
     stk_cout << _T("\n\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("+ CreateMixtures and setData                     +\n");
+    stk_cout << _T("+ CreateMixtures                                    +\n");
     p_composer_sjk->createMixture(Clust::Gaussian_sjk_, _T("model4"));
-    p_composer_sjk->setData();
-
     p_composer_s->createMixture(Clust::Gaussian_s_, _T("model2"));
-    p_composer_s->setData();
-
     p_composer_sj->createMixture(Clust::Gaussian_sj_, _T("model_sj"));
-    p_composer_sj->setData();
-
     p_composer_sk->createMixture(Clust::Gaussian_sk_, _T("model_sk"));
-    p_composer_sk->setData();
-
     p_composerFixed_sjk->createMixture(Clust::Gaussian_sjk_, _T("model4"));
-    p_composerFixed_sjk->setData();
-
     p_composerFixed_s->createMixture(Clust::Gaussian_s_, _T("model2"));
-    p_composerFixed_s->setData();
-
     p_composerFixed_sj->createMixture(Clust::Gaussian_sj_, _T("model_sj"));
-    p_composerFixed_sj->setData();
-
     p_composerFixed_sk->createMixture(Clust::Gaussian_sk_, _T("model_sk"));
-    p_composerFixed_sk->setData();
 
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSemStrategy: composer_sjk                        +\n");
+//    stk_cout << _T("+ testSemStrategy: composer_sjk                     +\n");
 //    testSemStrategy((composer_sjk));
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSemStrategy: composer_s                        +\n");
+//    stk_cout << _T("+ testSemStrategy: composer_s                       +\n");
 //    testSemStrategy((composer_s));
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSemStrategy: p_composerFixed_sk                   +\n");
+//    stk_cout << _T("+ testSemStrategy: p_composerFixed_sk               +\n");
 //    testSemStrategy((p_composerFixed_sk));
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSemStrategy: p_composerFixed_s                   +\n");
+//    stk_cout << _T("+ testSemStrategy: p_composerFixed_s                +\n");
 //    testSemStrategy((p_composerFixed_s));
 //
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSimpleStrategy: composer_sjk                     +\n");
+//    stk_cout << _T("+ testSimpleStrategy: composer_sjk                  +\n");
 //    testSimpleStrategy((composer_sjk));
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSimpleStrategy: composer_s                     +\n");
+//    stk_cout << _T("+ testSimpleStrategy: composer_s                    +\n");
 //    testSimpleStrategy((composer_s));
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 //    stk_cout << _T("+ testSimpleStrategy: p_composerFixed_sk                +\n");
 //    testSimpleStrategy((p_composerFixed_sk));
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSimpleStrategy: p_composerFixed_s                +\n");
+//    stk_cout << _T("+ testSimpleStrategy: p_composerFixed_s             +\n");
 //    testSimpleStrategy((p_composerFixed_s));
 
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("+ testXemStrategy: composer_sjk                        +\n");
+    stk_cout << _T("+ testXemStrategy: composer_sjk                     +\n");
     testXemStrategy(composer_sjk);
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("+ testXemStrategy: composer_s                        +\n");
+    stk_cout << _T("+ testXemStrategy: composer_s                       +\n");
     testXemStrategy(composer_s);
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("+ testXemStrategy: composer_sk                      +\n");
@@ -172,13 +157,13 @@ int main(int argc, char *argv[])
     testXemStrategy(composer_sj);
 
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testXemStrategy: p_composerFixed_sk                   +\n");
+//    stk_cout << _T("+ testXemStrategy: p_composerFixed_sk               +\n");
 //    testXemStrategy((p_composerFixed_sk));
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testXemStrategy: p_composerFixed_s                   +\n");
+//    stk_cout << _T("+ testXemStrategy: p_composerFixed_s                +\n");
 //    testSemStrategy((p_composerFixed_s));
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testXemStrategy: p_composerFixed_sk                   +\n");
+//    stk_cout << _T("+ testXemStrategy: p_composerFixed_sk               +\n");
 //    testXemStrategy((p_composerFixed_sk));
 
     delete composer_sjk;

@@ -36,8 +36,10 @@
 #define STK_GAMMA_AJK_BJK_H
 
 #include "STK_GammaBase.h"
+#include "STK_GammaUtil.h"
 
-#include "STK_GammaComponent.h"
+#include "../../../STatistiK/include/STK_Law_Exponential.h"
+
 #include "STK_Gamma_ajk_bjkImpl.h"
 
 namespace STK
@@ -100,16 +102,6 @@ class Gamma_ajk_bjk : public GammaBase< Gamma_ajk_bjk<Array> >
     void randomInit();
     /** Compute the weighted mean and the common variance. */
     void mStep();
-    /** Write the parameters*/
-    void writeParameters(ostream& os) const
-    {
-      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
-      {
-        stk_cout << "---> Component " << k << _T("\n";);
-        stk_cout << "shape_ = " << p_param(k)->shape_;
-        stk_cout << "scale_ = " << p_param(k)->scale_;
-      }
-    }
     /** @return the number of free parameters of the model */
     inline int computeNbFreeParameters() const
     { return 2*this->nbCluster()*this->nbVariable();}
@@ -176,9 +168,8 @@ void Gamma_ajk_bjk<Array>::mStep()
     { GammaUtil<Component>::moments(components(), p_tik());}
     catch (Clust::exceptions const & e)
     { throw Clust::mStepFail_;}
-
+    // call mStep implementation
     MixtureModelImpl<  Array, Gamma_ajk_bjk_Parameters >::mStep(components(), p_tik());
-
 }
 
 }  // namespace STK

@@ -33,19 +33,15 @@
  **/
 
 
-#ifndef STK_GAUSSIANMIXTURE_H
-#define STK_GAUSSIANMIXTURE_H
+#ifndef STK_GAUSSIANMIXTURES_H
+#define STK_GAUSSIANMIXTURES_H
 
 #include "STK_MixtureBridge.h"
 
 #include "../GaussianMixtureModels/STK_Gaussian_sjk.h"
-#include "../GaussianMixtureModels/STK_Gaussian_sjkImpl.h"
 #include "../GaussianMixtureModels/STK_Gaussian_sk.h"
-#include "../GaussianMixtureModels/STK_Gaussian_skImpl.h"
 #include "../GaussianMixtureModels/STK_Gaussian_sj.h"
-#include "../GaussianMixtureModels/STK_Gaussian_sjImpl.h"
 #include "../GaussianMixtureModels/STK_Gaussian_s.h"
-#include "../GaussianMixtureModels/STK_Gaussian_sImpl.h"
 
 namespace STK
 {
@@ -122,4 +118,4 @@ typedef MixtureBridge<Clust::Gaussian_s_> MixtureGaussian_s;
 
 } /* namespace STK */
 
-#endif /* STK_GAUSSIANINGREDIENT_H */
+#endif /* STK_GAUSSIANMIXTURES_H */

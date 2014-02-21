@@ -119,7 +119,7 @@ enum modelState
 };
 
 /** @ingroup Clustering
- * list of the ingredient that can be used by the composer
+ * list of the mixtures that can be used by the composer
  **/
 enum Mixture
 {
@@ -134,8 +134,8 @@ enum Mixture
 
 /** @ingroup Clustering
  *  utility function for creating an Mixture.
- *  @param id of the ingredient to create
- *  @param model ingredient to create
+ *  @param id of the mixture to create
+ *  @param model mixture to create
  *  @param nbCluster number of cluster
  **/
 IMixture* createMixture(Mixture model, std::string const& id, int nbCluster);
@@ -153,8 +153,7 @@ Mixture stringToMixture( std::string const& type);
  *  @param type the type of Mixture we want to convert
  *  @return the string associated to this type.
  **/
-std::string ingredientToString( Mixture const& type);
-
+std::string mixtureToString( Mixture const& type);
 
 /** @ingroup Clustering
  * Default number of trial in an initialization */

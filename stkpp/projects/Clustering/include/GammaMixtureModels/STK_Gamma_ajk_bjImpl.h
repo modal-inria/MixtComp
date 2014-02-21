@@ -35,12 +35,6 @@
 #ifndef STK_GAMMA_AJK_BJIMPL_H
 #define STK_GAMMA_AJK_BJIMPL_H
 
-#include "STK_GammaComponent.h"
-#include "STK_GammaUtil.h"
-
-#include "../../../Arrays/include/STK_Array2DPoint.h"
-
-#include "../../../STatistiK/include/STK_Law_Exponential.h"
 #include "../../../STatistiK/include/STK_Stat_UnivariateReal.h"
 #include "../../../Analysis/include/STK_Algo_FindZero.h"
 #include "../../../Analysis/include/STK_Funct_raw.h"

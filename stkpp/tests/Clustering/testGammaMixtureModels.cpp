@@ -82,15 +82,11 @@ int main(int argc, char *argv[])
     p_composerFixed_bj->setDataHandler(&handler);
     stk_cout << _T("\n\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("+ CreateMixtures and setData                     +\n");
+    stk_cout << _T("+ CreateMixtures                                    +\n");
     p_composer_bjk->createMixture(Clust::Gamma_ajk_bjk_, _T("model1"));
     p_composer_bj->createMixture(Clust::Gamma_ajk_bj_, _T("model3"));
     p_composerFixed_bjk->createMixture(Clust::Gamma_ajk_bjk_, _T("model1"));
     p_composerFixed_bj->createMixture(Clust::Gamma_ajk_bj_, _T("model3"));
-    p_composer_bjk->setData();
-    p_composer_bj->setData();
-    p_composerFixed_bjk->setData();
-    p_composerFixed_bj->setData();
 
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 //    stk_cout << _T("+ testSemStrategy: composer_bjk                        +\n");

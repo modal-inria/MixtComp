@@ -36,13 +36,8 @@
 #ifndef GAMMA_AJK_BJKIMPL_H
 #define GAMMA_AJK_BJKIMPL_H
 
-#include "STK_GammaComponent.h"
-#include "STK_GammaUtil.h"
-
-#include "../../../STatistiK/include/STK_Law_Exponential.h"
 #include "../../../Analysis/include/STK_Algo_FindZero.h"
 #include "../../../Analysis/include/STK_Funct_raw.h"
-
 
 namespace STK
 {

@@ -289,7 +289,7 @@ struct LessThanOp
   inline LessThanOp(const LessThanOp& other) : other_(other.other_) { }
   inline LessThanOp(Type other) : other_(other) { }
   inline result_type const operator() (param1_type a) const { return a < other_; }
-  const result_type other_;
+  const Type other_;
 };
 /** @ingroup Functors
   * @brief Template functor to test if a number is less or equal than a fixed number
@@ -301,10 +301,13 @@ struct LeqThanOp
   typedef bool result_type;
   typedef Type param1_type ;
 
-  inline LeqThanOp(const LeqThanOp& other) : other_(other.other_) { }
-  inline LeqThanOp(Type other) : other_(other) { }
-  inline result_type const operator() (param1_type a) const { return a <= other_; }
-  const result_type other_;
+  inline LeqThanOp(LeqThanOp const& other) : other_(other.other_)
+  {}
+  inline LeqThanOp(Type other) : other_(other)
+  {}
+  inline result_type const operator() (param1_type a) const
+  { return (a <= other_); }
+  const Type other_;
 };
 /** @ingroup Functors
   * @brief Template functor to test if a number is greater than a fixed number
@@ -319,7 +322,7 @@ struct GreaterThanOp
   inline GreaterThanOp(const GreaterThanOp& other) : other_(other.other_) { }
   inline GreaterThanOp(Type other) : other_(other) { }
   inline result_type const operator() (param1_type a) const { return a > other_; }
-  const result_type other_;
+  const Type other_;
 };
 /** @ingroup Functors
   * @brief Template functor to test if a number is greater or equal than a fixed number
@@ -334,7 +337,7 @@ struct GeqThanOp
   inline GeqThanOp(const GeqThanOp& other) : other_(other.other_) { }
   inline GeqThanOp(Type other) : other_(other) { }
   inline result_type const operator() (param1_type a) const { return a >= other_; }
-  const result_type other_;
+  const Type other_;
 };
 /** @ingroup Functors
   * @brief Template functor to test if a number is equal to a fixed number
@@ -349,7 +352,7 @@ struct EqualThanOp
   inline EqualThanOp(const EqualThanOp& other) : other_(other.other_) { }
   inline EqualThanOp(Type other) : other_(other) { }
   inline result_type const operator() (param1_type a) const { return a == other_; }
-  const result_type other_;
+  const Type other_;
 };
 /** @ingroup Functors
   * @brief Template functor to test if a number is different than a fixed number
@@ -364,7 +367,7 @@ struct NotEqualThanOp
   inline NotEqualThanOp(const NotEqualThanOp& other) : other_(other.other_) { }
   inline NotEqualThanOp(Type other) : other_(other) { }
   inline result_type const operator() (param1_type a) const { return a != other_; }
-  const result_type other_;
+  const Type other_;
 };
 /** @ingroup Functors
   * @brief Template functor testing if a number is a NA value

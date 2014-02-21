@@ -30,7 +30,7 @@
  **/
 
 /** @file STK_IMixtureModelBase.cpp
- *  @brief In this file we implement the interface base class for ingredient models.
+ *  @brief In this file we implement the interface base class IMixtureModelBase
  **/
 
 #include "../include/STK_IMixtureModelBase.h"

@@ -29,6 +29,9 @@
  * Originally created by Parmeet Bhatia <b..._DOT_p..._AT_gmail_Dot_com>
  **/
 
+/** @file STK_MixtureComposer.h
+ *  @brief In this file we define the class MixtureComposer.
+ **/
 
 #ifndef STK_MIXTURECOMPOSITER_H
 #define STK_MIXTURECOMPOSITER_H
@@ -43,9 +46,7 @@ namespace STK
 
 class IMixture;
 
-/**
- *
- */
+/** Main class handling the mixture model in a single class. */
 class MixtureComposer : public IMixtureComposerBase
 {
   public:
@@ -65,11 +66,15 @@ class MixtureComposer : public IMixtureComposerBase
      *  @param composer the composer to copy
      */
     MixtureComposer(MixtureComposer const& composer);
-    /** The individual ingredient will be deleted there.*/
+    /** The registered mixtures will be deleted there.*/
     virtual ~MixtureComposer();
-    /** Create a composer, but reinitialize the ingredients parameters. */
+
+    /** @return a constant reference on the vector of mixture */
+    inline std::vector<IMixture*> const& v_mixtures() const { return v_mixtures_;}
+
+    /** Create a composer, but reinitialize the mixtures parameters. */
     virtual MixtureComposer* create() const;
-    /** Create a clone of the current model, with ingredients parameters preserved. */
+    /** Create a clone of the current model, with mixtures parameters preserved. */
     virtual MixtureComposer* clone() const;
 
     /** @param p_handler the DataHandler to set */
@@ -88,7 +93,7 @@ class MixtureComposer : public IMixtureComposerBase
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(ostream& os) const;
     /** @brief compute the number of free parameters of the model.
-     *  lookup on the ingredients and sum the nbFreeParameter.
+     *  lookup on the mixtures and sum the nbFreeParameter.
      **/
     virtual int computeNbFreeParameters() const;
     /** @brief Initialize the model before its first use. */
@@ -109,19 +114,19 @@ class MixtureComposer : public IMixtureComposerBase
      *  be called only once after we finish running the estimation algorithm.
      **/
     virtual void finalizeStep();
-    /** create the ingredients using DataHandler info.
+    /** create the mixtures using DataHandler info.
      * @note if the idModel is not a Clust::Mixture, it is not an error as
-     * other ingredients with other id can have been implemented outside stk++.
+     * other mixtures with other id can have been implemented outside stk++.
      * @sa Clust::Mixture */
     void createMixtures();
-    /** create a specific ingredient.
-     *  @param idModel the id of the ingredient we want to create
-     *  @param idName the name of the ingredient
+    /** create a specific mixture.
+     *  @param idModel the id of the mixture we want to create
+     *  @param idName the name of the mixture
      **/
     void createMixture(Clust::Mixture idModel, String const& idName);
-    /** add an ingredient to the composer */
+    /** register a mixture to the composer */
     void registerMixture(IMixture* mixture);
-    /** call setData for all ingredients */
+    /** call setData for all mixtures */
     void setData();
     /** get data from DataHandler  */
     template<typename Data>
@@ -131,9 +136,7 @@ class MixtureComposer : public IMixtureComposerBase
   protected:
     /** @return a constant pointer on the data handler */
     inline IDataHandler const* p_handler() const { return p_handler_;}
-    /** @return a constant reference on the array of mixture */
-    inline std::vector<IMixture*> const& v_mixtures() const { return v_mixtures_;}
-    /** @brief Create the composer using existing data handler and ingredients.
+    /** @brief Create the composer using existing data handler and mixtures.
      * This method is essentially used by the create() method and can be
      * reused in derived classes.
      * @sa MixtureComposerFixedProp
@@ -165,11 +168,11 @@ class MixtureComposerFixedProp : public MixtureComposer
      */
     inline MixtureComposerFixedProp( MixtureComposer const& model)
                                    : MixtureComposer(model) {}
-    /** The individual ingredient will be deleted there.*/
-    virtual ~MixtureComposerFixedProp() {}
-    /** Create a composer, but reinitialize the ingredients parameters. */
+    /** destructor */
+    inline virtual ~MixtureComposerFixedProp() {}
+    /** Create a composer, but reinitialize the mixtures parameters. */
     virtual MixtureComposerFixedProp* create() const;
-    /** Create a clone of the current model, with ingredients parameters preserved. */
+    /** Create a clone of the current model, with mixtures parameters preserved. */
     virtual MixtureComposerFixedProp* clone() const;
     /** @return the number of free parameters of the mixture */
     int computeNbFreeParameters() const;

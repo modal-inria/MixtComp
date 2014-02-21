@@ -1,9 +1,37 @@
+/*--------------------------------------------------------------------*/
+/*     Copyright (C) 2004-2012  Serge Iovleff
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this program; if not, write to the
+    Free Software Foundation, Inc.,
+    59 Temple Place,
+    Suite 330,
+    Boston, MA 02111-1307
+    USA
+
+    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
+*/
+
 /*
- * mixt_CompositeMixture.cpp
- *
- *  Created on: 16 oct. 2013
- *      Author: iovleff
- */
+ * Project:  stkpp::Clustering
+ * created on: 14 nov. 2013
+ * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
+ * Originally created by Parmeet Bhatia <b..._DOT_p..._AT_gmail_Dot_com>
+ **/
+
+/** @file STK_MixtureComposer.cpp
+ *  @brief In this file we implement the class MixtureComposer.
+ **/
 
 #include "../include/STK_IMixture.h"
 #include "../../Arrays/include/STK_Display.h"
@@ -23,7 +51,7 @@ MixtureComposer::MixtureComposer( MixtureComposer const& composer)
 {
   if (!p_handler_)
     STKRUNTIME_ERROR_NO_ARG(MixtureComposer::MixtureComposer,data handler is not set);
-  // clone ingredients
+  // clone mixtures
   for (size_t l = 0; l < v_mixtures_.size(); ++l)
   {
     v_mixtures_[l] = composer.v_mixtures_[l]->clone();
@@ -66,7 +94,7 @@ void MixtureComposer::initializeModel()
   // set dimensions
   this->setNbSample(p_handler_->nbSample());
   this->setNbVariable(p_handler_->nbVariable());
-  // initialize all ingredients
+  // initialize all mixtures
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
     (*it)->setMixtureComposer(this);
@@ -122,7 +150,7 @@ void MixtureComposer::writeParameters(std::ostream& os) const
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    stk_cout << _T("Parameters of the ingredient:") << (*it)->idName() << _T("\n");
+    stk_cout << _T("Parameters of the mixtures:") << (*it)->idName() << _T("\n");
     (*it)->writeParameters(os);
   }
 }

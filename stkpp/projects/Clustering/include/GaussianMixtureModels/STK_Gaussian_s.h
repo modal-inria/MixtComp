@@ -52,8 +52,8 @@ template<class _Array>
 struct MixtureModelTraits< Gaussian_s<_Array> >
 {
   typedef _Array Array;
-  typedef DiagGaussianComponent<_Array, Gaussian_s_Parameters> Component;
-  typedef Gaussian_s_Parameters        Parameters;
+  typedef Gaussian_s_Parameters Parameters;
+  typedef DiagGaussianComponent<_Array, Parameters> Component;
 };
 
 } // namespace Clust
@@ -109,16 +109,6 @@ class Gaussian_s : public DiagGaussianBase<Gaussian_s<Array> >
     void randomInit();
     /** Compute the weighted mean and the common variance. */
     void mStep();
-    /** Write the parameters*/
-    void writeParameters(ostream& os) const
-    {
-      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
-      {
-        stk_cout << _T("---> Component ") << k << _T("\n";);
-        stk_cout << _T("mean_ = ") << p_param(k)->mean_;
-        stk_cout << _T("sigma_ = ") << sigma_ * Const::Point<Real>(this->nbVariable());
-      }
-    }
     /** @return the number of free parameters of the model */
     inline int computeNbFreeParameters() const
     { return this->nbCluster()*this->nbVariable()+1;}

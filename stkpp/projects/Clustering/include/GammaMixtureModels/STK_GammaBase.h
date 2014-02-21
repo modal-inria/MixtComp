@@ -36,6 +36,8 @@
 #define STK_GAMMABASE_H
 
 #include "../STK_IMixtureModel.h"
+#include "STK_GammaComponent.h"
+
 #include "../../../STatistiK/include/STK_Law_Gamma.h"
 
 namespace STK
@@ -50,8 +52,11 @@ class GammaBase : public IMixtureModel<Derived >
 {
   public:
     typedef IMixtureModel<Derived > Base;
-    using Base::components_;
+
     using Base::p_tik;
+    using Base::p_data;
+    using Base::p_param;
+    using Base::components;
 
     /** default constructor
      * @param nbCluster number of cluster in the model
@@ -68,7 +73,7 @@ class GammaBase : public IMixtureModel<Derived >
     {
       Real sum = 0.;
       for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-      { sum += p_tik()->elt(i,k) * components_[k]->p_param()->shape(j) * components_[k]->p_param()->scale(j);}
+      { sum += p_tik()->elt(i,k) * p_param(k)->shape(j) * p_param(k)->scale(j);}
       return sum;
     }
     /** @return a simulated value for the jth variable of the ith sample
@@ -78,7 +83,7 @@ class GammaBase : public IMixtureModel<Derived >
     {
       Real sum = 0.;
       for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-      { sum += p_tik()->elt(i,k) * Law::Gamma::rand(components_[k]->p_param()->shape(j),components_[k]->p_param()->scale(j));}
+      { sum += p_tik()->elt(i,k) * Law::Gamma::rand(p_param(k)->shape(j),p_param(k)->scale(j));}
       return sum;
     }
     /** @brief compute a safe value for the column j, missing values are replaced by 1.
@@ -87,6 +92,38 @@ class GammaBase : public IMixtureModel<Derived >
      * */
     inline Real safeValue(int j) const
     { return this->p_data()->col(j).safe(1.).mean();}
+    /** get the parameters of the model
+     *  @param params the parameters of the model
+     **/
+    void getParameters(Array2D<Real>& params) const
+    {
+      params.resize(2*this->nbCluster(), p_data()->cols());
+      for (int k= params.firstIdxRows(); k <= params.lastIdxRows(); k+=2)
+      {
+        for (int j=  p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
+        {
+          params(k, j) = p_param(k)->shape(j);
+          params(k+1, j) = p_param(k)->scale(j);
+        }
+      }
+    }
+    /** Write the parameters on the output stream os */
+    void writeParameters(ostream& os) const
+    {
+      Array2DPoint<Real> shape(p_data()->cols()), scale(p_data()->cols());
+      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+      {
+        // store shape and scale values in an array for a nice output
+        for (int j= p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
+        {
+          shape[j] = p_param(k)->shape(j);
+          scale[j] = p_param(k)->scale(j);
+        }
+        stk_cout << _T("---> Component ") << k << _T("\n");
+        stk_cout << _T("shape = ") << shape;
+        stk_cout << _T("scale = ") << scale;
+      }
+    }
 };
 
 } // namespace STK

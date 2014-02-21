@@ -85,9 +85,9 @@ class IDataHandler
     virtual void getData(std::string const& idData, Array2D<std::string>& data, int& nbVariable) const =0;
 
   private:
-    /** Store the informations  of the ingredients in the form (idData, idModel) with
+    /** Store the informations  of the mixtures in the form (idData, idModel) with
      * - idData: an arbitrary idData for a model
-     * - model: a string which can be converted intp an existing model
+     * - model: a string which can be converted in an existing model
      * @sa stringToMixture */
     InfoMap info_;
 };

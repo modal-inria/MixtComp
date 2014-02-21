@@ -29,7 +29,7 @@
  **/
 
 /** @file STK_Mixtures.h
- *  @brief In this file we summarize the ingredients of the Clustering project.
+ *  @brief In this file we summarize the mixtures of the Clustering project.
  **/
 
 

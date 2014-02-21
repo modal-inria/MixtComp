@@ -128,9 +128,9 @@ class JointGammaModel : public IMultiStatModel<Array, WColVector, JointGammaPara
     {
       for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
       {
-        mean()[j] =  p_data()->col(j).meanSafe();
-        meanLog()[j] = p_data()->col(j).log().meanSafe();
-        variance()[j] = p_data()->col(j).varianceSafe();
+        mean()[j] =  p_data()->col(j).safe().mean();
+        meanLog()[j] = p_data()->col(j).safe(1.).log().mean();
+        variance()[j] = p_data()->col(j).safe().variance();
         Real start1 = (mean()[j]*mean()[j]) / variance()[j];
         Real start2 = 0.9*start1 +  0.05/(mean()[j] - meanLog()[j]);
         dloglikelihood funct(mean()[j], meanLog()[j]);
@@ -146,9 +146,9 @@ class JointGammaModel : public IMultiStatModel<Array, WColVector, JointGammaPara
     {
       for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
       {
-        mean()[j] =  p_data()->col(j).wmeanSafe(weights);
-        meanLog()[j] = p_data()->col(j).log().wmeanSafe(weights);
-        variance()[j] = p_data()->col(j).wvarianceSafe(weights);
+        mean()[j] =  p_data()->col(j).safe().wmean(weights);
+        meanLog()[j] = p_data()->col(j).safe(1).log().wmean(weights);
+        variance()[j] = p_data()->col(j).safe().wvariance(weights);
         Real start1 = (mean()[j]*mean()[j]) / variance()[j];
         Real start2 = 0.9*start1 +  0.05/(mean()[j] - meanLog()[j]);
         dloglikelihood funct(mean()[j], meanLog()[j]);

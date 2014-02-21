@@ -30,8 +30,8 @@
  **/
 
 
-#ifndef STK_IINGREDIENT_H
-#define STK_IINGREDIENT_H
+#ifndef STK_IMIXTURE_H
+#define STK_IMIXTURE_H
 
 /**@file STK_IMixture.h
  * @brief define the main interface for linking specific mixture model to the
@@ -71,7 +71,7 @@ class IMixture
     /** @return Number of cluster. */
     inline MixtureComposer const* const p_composer() const { return p_composer_;}
 
-    /** set the mixture composer to the ingredient */
+    /** set the mixture composer to the mixture */
     void setMixtureComposer( MixtureComposer const* p_model);
 
     /**This is a standard clone function in usual sense. It must be defined to
@@ -95,13 +95,13 @@ class IMixture
      *  be to reset the mixture parameters, while leaving the data unchanged. */
     virtual void initializeModel() = 0;
     /** @brief This function must be defined in derived class for initialization
-     *  of the ingredient parameters.
+     *  of the mixture parameters.
      *  This function will be called once the model is created, data is set and
      *  model initialized.
      */
     virtual void initializeStep() = 0;
     /** @brief This function should be used in order to initialize randomly the
-     *  parameters of the ingredient.
+     *  parameters of the mixture.
      */
     virtual void randomInit() = 0;
     /** @brief This function should be used for Imputation of data.
@@ -200,7 +200,7 @@ class IMixture
   private:
     /** pointer on the main composer model */
     const MixtureComposer* p_composer_;
-    /** Id name of the ingredient */
+    /** Id name of the mixture */
     std::string idName_;
     /** number of cluster */
     int nbCluster_;
@@ -208,4 +208,4 @@ class IMixture
 
 } // namespace STK
 
-#endif /* STK_IINGREDIENT_H */
+#endif /* STK_IMIXTURE_H */

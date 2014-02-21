@@ -44,11 +44,10 @@ namespace STK
  *  Main class for the maximization step implementation and for
  *  the random initialization of the parameters.
  *
- *  The MixtureModelImpl struct must be specialized for any
- *  models deriving from the IMixtureModel
- *  interface by implementing the following methods:
+ *  The MixtureModelImpl struct can be specialized for any
+ *  models deriving from the IMixtureModel. Typically, it can be used
+ *  for implementing the following method
  *  @code
- *    static void randomInit(Array1D< Component* >& components);
  *    static void mStep(Array1D< Component* >& components, Array2D<Real> const* p_tik);
  *  @endcode
  **/

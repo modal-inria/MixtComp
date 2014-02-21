@@ -100,20 +100,11 @@ class Gaussian_sjk : public DiagGaussianBase<Gaussian_sjk<Array> >
     void randomInit();
     /** Compute the weighted mean and the common variance. */
     void mStep();
-    /** Write the parameters*/
-    void writeParameters(ostream& os) const
-    {
-      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
-      {
-        stk_cout << _T("---> Component ") << k << _T("\n");
-        stk_cout << _T("mean_ = ") << components()[k]->p_param()->mean_;
-        stk_cout << _T("sigma_ = ")<< components()[k]->p_param()->sigma_;
-      }
-    }
     /** @return the number of free parameters of the model */
     inline int computeNbFreeParameters() const
     { return 2*this->nbCluster()*this->nbVariable();}
 };
+
 /* Initialize the parameters using mStep. */
 template<class Array>
 void Gaussian_sjk<Array>::initializeStep()

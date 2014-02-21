@@ -30,7 +30,7 @@
  **/
 
 /** @file STK_IMixture.cpp
- *  @brief In this file we implement the abstract base class for mixture ingredient.
+ *  @brief In this file we implement the abstract base class IMixture.
  **/
 
 #include "../include/STK_IMixture.h"
@@ -44,15 +44,15 @@ IMixture::IMixture( std::string const& idName, int nbCluster)
 {}
 
 /* copy constructor */
-IMixture::IMixture( IMixture const& ingredient)
+IMixture::IMixture( IMixture const& mixture)
                   : p_composer_(0)
-                  , idName_(ingredient.idName_)
-                  , nbCluster_(ingredient.nbCluster_)
+                  , idName_(mixture.idName_)
+                  , nbCluster_(mixture.nbCluster_)
 {}
 /* Virtual destructor. */
 IMixture::~IMixture(){}
 
-/* set the mixture composer to the ingredient */
+/* set the mixture composer to the mixture */
 void IMixture::setMixtureComposer( MixtureComposer const* p_composer)
 { p_composer_ = p_composer;}
 

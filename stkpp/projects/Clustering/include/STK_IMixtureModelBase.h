@@ -30,7 +30,7 @@
  **/
 
 /** @file STK_IMixtureModelBase.h
- *  @brief In this file we define the interface base class for ingredient models.
+ *  @brief In this file we define the interface base class for mixture models.
  **/
 
 #ifndef STK_IMIXTUREMODELBASE_H
