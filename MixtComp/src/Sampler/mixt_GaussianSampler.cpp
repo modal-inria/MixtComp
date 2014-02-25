@@ -26,5 +26,53 @@
 
 namespace mixt
 {
+GaussianSampler::GaussianSampler(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
+                                 const STK::Array2D<STK::Real>* p_param,
+                                 const STK::CArrayVector<int>* p_zi) :
+    pm_augDataij_(pm_augDataij),
+    p_param_(p_param),
+    p_zi_(p_zi)
+{}
 
+GaussianSampler::GaussianSampler(const GaussianSampler& sampler) :
+    pm_augDataij_(sampler.pm_augDataij_),
+    p_param_(sampler.p_param_),
+    p_zi_(sampler.p_zi_)
+{}
+
+GaussianSampler::~GaussianSampler()
+{}
+
+GaussianSamplerIterator GaussianSampler::begin()
+{
+  GaussianSamplerIterator iterator(p_param_,
+                                   p_zi_,
+                                   pm_augDataij_->v_missing_.begin(),
+                                   pm_augDataij_->v_missing_.end(),
+                                   pm_augDataij_->v_missingFiniteValues_.begin(),
+                                   pm_augDataij_->v_missingFiniteValues_.end(),
+                                   pm_augDataij_->v_missingIntervals_.begin(),
+                                   pm_augDataij_->v_missingIntervals_.end(),
+                                   pm_augDataij_->v_missingLUIntervals_.begin(),
+                                   pm_augDataij_->v_missingLUIntervals_.end(),
+                                   pm_augDataij_->v_missingRUIntervals_.begin(),
+                                   pm_augDataij_->v_missingRUIntervals_.end());
+  return iterator;
+}
+GaussianSamplerIterator GaussianSampler::end()
+{
+  GaussianSamplerIterator iterator(p_param_,
+                                   p_zi_,
+                                   pm_augDataij_->v_missing_.end(),
+                                   pm_augDataij_->v_missing_.end(),
+                                   pm_augDataij_->v_missingFiniteValues_.end(),
+                                   pm_augDataij_->v_missingFiniteValues_.end(),
+                                   pm_augDataij_->v_missingIntervals_.end(),
+                                   pm_augDataij_->v_missingIntervals_.end(),
+                                   pm_augDataij_->v_missingLUIntervals_.end(),
+                                   pm_augDataij_->v_missingLUIntervals_.end(),
+                                   pm_augDataij_->v_missingRUIntervals_.end(),
+                                   pm_augDataij_->v_missingRUIntervals_.end());
+  return iterator;
+}
 } // namespace mixt

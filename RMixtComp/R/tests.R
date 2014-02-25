@@ -30,12 +30,12 @@ testRMixtCompDev <- function ()
 
 testSimpleSampler <- function()
 {
-  nbSamples <- 1000
+  nbSamples <- 100000
   resLine <- 1000
   meanVal <- -3.
   sdVal <- 1.
-  lower <- 10.
-  upper <- 15.
+  lower <- 5.
+  upper <- 10.
   
   samples <- numeric(nbSamples)
   
@@ -46,7 +46,7 @@ testSimpleSampler <- function()
                                 lower, # infBound
                                 upper, # supBound
                                 T,   # lb
-                                T)
+                                F)
   }
   
   hist(samples,

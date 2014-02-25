@@ -26,6 +26,7 @@
 #define MIXT_GAUSSIANINGREDIENT_H
 
 #include "../Sampler/mixt_GaussianSampler.h"
+#include "../Sampler/mixt_GaussianSamplerIterator.h"
 #include "mixt_MixtureBridge.h"
 #include "stkpp/projects/Clustering/include/Mixtures/STK_GaussianMixtures.h"
 
@@ -40,6 +41,8 @@ struct SamplerTraits<STK::Clust::Gaussian_sjk_>
 {
    /** Sampler to be used for this specific mixture model */
    typedef GaussianSampler Sampler;
+   /** Corresponding sampler iterator */
+   typedef GaussianSamplerIterator SamplerIterator;
 };
 
 typedef MixtureBridge<STK::Clust::Gaussian_sjk_> MixtureGaussian_sjk_m;

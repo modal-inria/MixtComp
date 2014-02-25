@@ -22,16 +22,18 @@
  **/
 
 #include <cmath>
+#include "stkpp/projects/Arrays/include/STK_Array2D.h"
 #include "stkpp/projects/STatistiK/include/STK_Law_Exponential.h"
 #include "stkpp/projects/STatistiK/include/STK_Law_Uniform.h"
 #include "stkpp/projects/STatistiK/include/STK_Law_Normal.h"
-
 #include "mixt_GaussianSamplerIterator.h"
 
 namespace mixt
 {
 
-GaussianSamplerIterator::GaussianSamplerIterator(iv_missing missing,
+GaussianSamplerIterator::GaussianSamplerIterator(const STK::Array2D<STK::Real>* p_param,
+                                                 const STK::CArrayVector<int>* p_zi,
+                                                 iv_missing missing,
                                                  iv_missing missingEnd,
                                                  iv_missingFiniteValues missingFiniteValues,
                                                  iv_missingFiniteValues missingFiniteValuesEnd,
@@ -41,6 +43,8 @@ GaussianSamplerIterator::GaussianSamplerIterator(iv_missing missing,
                                                  iv_missingLUIntervals missingLUIntervalsEnd,
                                                  iv_missingRUIntervals missingRUIntervals,
                                                  iv_missingRUIntervals missingRUIntervalsEnd) :
+  p_param_(p_param),
+  p_zi_(p_zi),
   iv_missing_(missing),
   iv_missingEnd_(missingEnd),
   iv_missingFiniteValues_(missingFiniteValues),
@@ -54,6 +58,8 @@ GaussianSamplerIterator::GaussianSamplerIterator(iv_missing missing,
 {}
 
 GaussianSamplerIterator::GaussianSamplerIterator(const GaussianSamplerIterator& mit) :
+  p_param_(mit.p_param_),
+  p_zi_(mit.p_zi_),
   iv_missing_(mit.iv_missing_),
   iv_missingEnd_(mit.iv_missingEnd_),
   iv_missingFiniteValues_(mit.iv_missingFiniteValues_),
@@ -132,28 +138,88 @@ bool GaussianSamplerIterator::operator!=(const GaussianSamplerIterator& rhs)
   return ! operator==(rhs);
 }
 
-int GaussianSamplerIterator::operator*()
+RetValue GaussianSamplerIterator::operator*()
 {
+  STK::Real z = 0.;
+  pos currPos(std::pair<int, int>(0, 0));
+
   switch(currVec_)
   {
-    case 0:
+    case 0: // missing
+    {
+      int firstRow = p_param_->firstIdxRows();
+      currPos = *iv_missing_;
+      STK::Real mean  = p_param_->elt(p_zi_->elt(currPos.first) - 1 + firstRow, currPos.second);
+      STK::Real sd    = p_param_->elt(p_zi_->elt(currPos.first)     + firstRow, currPos.second);
+      return RetValue(currPos, STK::Law::Normal::rand(mean, sd));
+    }
       break;
-    case 1:
+
+    case 1: // missingFiniteValues
+      // no missingFiniteValues in gaussian data
       break;
-    case 2:
+
+    case 2: // missingIntervals
+    {
+      int firstRow = p_param_->firstIdxRows();
+      currPos = iv_missingIntervals_->first;
+      STK::Real infBound(iv_missingIntervals_->second.first);
+      STK::Real supBound(iv_missingIntervals_->second.second);
+      STK::Real mean  = p_param_->elt(2*(p_zi_->elt(currPos.first))     - firstRow, currPos.second);
+      STK::Real sd    = p_param_->elt(2*(p_zi_->elt(currPos.first)) + 1 - firstRow, currPos.second);
+      STK::Real lower = (infBound - mean) / sd;
+      STK::Real upper = (supBound - mean) / sd;
+      STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
+
+      if (alpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(lower / 2) / (upper - lower))
+      {
+        do
+        {
+          z = luSampler(lower, alpha);
+        }
+        while(upper < z);
+      }
+      else
+      {
+        z = lrbSampler(lower, upper);
+      }
+    }
       break;
-    case 3:
+
+    case 3: // missingLUIntervals
+    {
+      int firstRow = p_param_->firstIdxRows();
+      currPos = iv_missingIntervals_->first;
+      STK::Real supBound(iv_missingLUIntervals_->second);
+      STK::Real mean  = p_param_->elt(2*(p_zi_->elt(currPos.first))     - firstRow, currPos.second);
+      STK::Real sd    = p_param_->elt(2*(p_zi_->elt(currPos.first)) + 1 - firstRow, currPos.second);
+      STK::Real upper = (supBound - mean) / sd;
+      STK::Real alpha = (upper + sqrt(pow(upper, 2) + 4.))/2.;
+
+      z = -luSampler(-upper, alpha);
+    }
       break;
-    case 4:
+
+    case 4: // missingRUIntervals
+    {
+      int firstRow = p_param_->firstIdxRows();
+      currPos = iv_missingIntervals_->first;
+      STK::Real infBound(iv_missingRUIntervals_->second);
+      STK::Real mean  = p_param_->elt(2*(p_zi_->elt(currPos.first))     - firstRow, currPos.second);
+      STK::Real sd    = p_param_->elt(2*(p_zi_->elt(currPos.first)) + 1 - firstRow, currPos.second);
+      STK::Real lower = (infBound - mean) / sd;
+      STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
+      z = luSampler(lower, alpha);
+    }
       break;
   }
-  return 0;
+  return RetValue(currPos, z);
 }
 
 // left unbounded sampler
-double GaussianSamplerIterator::luSampler(double lower, double alpha)
+STK::Real GaussianSamplerIterator::luSampler(STK::Real lower, STK::Real alpha)
 {
-  double z, u, rho;
+  STK::Real z, u, rho;
   if (lower < 0)
   {
     do
@@ -176,9 +242,9 @@ double GaussianSamplerIterator::luSampler(double lower, double alpha)
 }
 
 // left and right bounded sampler
-double GaussianSamplerIterator::lrbSampler(double lower, double upper)
+STK::Real GaussianSamplerIterator::lrbSampler(STK::Real lower, STK::Real upper)
 {
-  double z, u, rho;
+  STK::Real z, u, rho;
 
   do
   {

@@ -53,6 +53,8 @@ class MixtureBridge : public IMixture
     typedef typename STK::Clust::MixtureTraits<Id>::Mixture Mixture;
     // type of Sampler
     typedef typename SamplerTraits<Id>::Sampler Sampler;
+    // type of Sample Iterator
+    typedef typename SamplerTraits<Id>::SamplerIterator SamplerIterator;
 
     /** constructor.
      *  @param idName id name of the mixture
@@ -62,7 +64,10 @@ class MixtureBridge : public IMixture
       IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
-      nbVariable_(0)
+      nbVariable_(0),
+      sampler_(getData(),
+               getParam(),
+               p_zi())
     {
       mixture_.setData(m_augDataij_.data_);
     }
@@ -71,7 +76,8 @@ class MixtureBridge : public IMixture
       IMixture(mixture),
       mixture_(mixture.mixture_),
       m_augDataij_(mixture.m_augDataij_),
-      nbVariable_(mixture.nbVariable_)
+      nbVariable_(mixture.nbVariable_),
+      sampler_(mixture.sampler_)
     {
       mixture_.setData(m_augDataij_.data_);
     }
@@ -92,7 +98,7 @@ class MixtureBridge : public IMixture
      */
     virtual MixtureBridge* create() const
     {
-      MixtureBridge* p_mixture = new MixtureBridge( idName(), nbCluster());
+      MixtureBridge* p_mixture = new MixtureBridge(idName(), nbCluster());
       p_mixture->m_augDataij_ = m_augDataij_;
       p_mixture->nbVariable_ = nbVariable_;
       // Bug Fix: set the correct data set
@@ -142,9 +148,13 @@ class MixtureBridge : public IMixture
      */
     virtual void samplingStep()
     {
-//      typedef typename Sampler::iterator it;
-//      std::vector<pos, Type> values;
-//      p_sampler_->sample(values);
+      mixture_.getParameters(param_); // update the parameters (use by the Sampler)
+      SamplerIterator endIt(sampler_.end());
+      for (SamplerIterator it = sampler_.begin(); it != endIt; ++it)
+      {
+        std::pair<std::pair<int, int>, Type> retValue(*it);
+        m_augDataij_.data_(retValue.first.first, retValue.first.second) = retValue.second;
+      }
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
@@ -181,11 +191,22 @@ class MixtureBridge : public IMixture
      *  model is well initialized. */
     int checkModel() const {return mixture_.checkModel();}
 
+    virtual Mixture const* getMixture() const
+    {return &mixture_;}
+
+    virtual AugmentedData<Data> const* getData() const
+    {return &m_augDataij_;}
+
+    virtual Param const* getParam() const
+    {return &param_;}
+
   protected:
-    /** The ingredient to bridge with the composer */
+    /** The stkpp mixture to bridge with the composer */
     Mixture mixture_;
     /** The augmented data set */
     AugmentedData<Data> m_augDataij_;
+    /** Current parameters of the STK Mixture */
+    Param param_;
     /** number of variables in the data set */
     int nbVariable_;
     
@@ -194,7 +215,7 @@ class MixtureBridge : public IMixture
     Imputer<Type> imputer_;
 
     /** Sampler to generate values */
-//    Sampler sampler_;
+    Sampler sampler_;
 
     /** Utility function to lookup the data set and remove missing values
      *  coordinates. */

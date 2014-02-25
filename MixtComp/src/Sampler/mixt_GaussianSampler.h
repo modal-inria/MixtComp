@@ -25,6 +25,8 @@
 #ifndef MIXT_GAUSSIANSAMPLER_H
 #define MIXT_GAUSSIANSAMPLER_H
 
+#include "stkpp/projects/Arrays/include/STK_Array2D.h"
+
 #include "stkpp/projects/STatistiK/include/STK_Law_Exponential.h"
 #include "stkpp/projects/STatistiK/include/STK_Law_Uniform.h"
 #include "stkpp/projects/STatistiK/include/STK_Law_Normal.h"
@@ -38,13 +40,17 @@ namespace mixt
 class GaussianSampler
 {
   public:
-    GaussianSampler(AugmentedData<STK::Real>* pm_augDataij);
-    GaussianSampler(GaussianSampler& sampler);
+    GaussianSampler(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
+                    const STK::Array2D<STK::Real>* p_param,
+                    const STK::CArrayVector<int>* p_zi);
+    GaussianSampler(const GaussianSampler& sampler);
     ~GaussianSampler();
     GaussianSamplerIterator begin();
     GaussianSamplerIterator end();
   private:
-    const AugmentedData<STK::Real>* pm_augDataij_;
+    const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij_;
+    const STK::Array2D<STK::Real>* p_param_;
+    const STK::CArrayVector<int>* p_zi_;
 };
 
 } // namespace mixt

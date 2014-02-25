@@ -24,23 +24,27 @@
 #ifndef MIXT_GAUSSIANSAMPLERITERATOR_H
 #define MIXT_GAUSSIANSAMPLERITERATOR_H
 
+#include "stkpp/projects/Arrays/include/STK_Array2D.h"
+#include "stkpp/projects/Arrays/include/STK_CArrayVector.h"
 #include "../Data/mixt_AugmentedData.h"
 
 namespace mixt
 {
 
 typedef std::pair<int, int> pos;
-
-typedef typename std::vector<          pos                              >::const_iterator iv_missing;
-typedef typename std::vector<std::pair<pos, std::vector<double>       > >::const_iterator iv_missingFiniteValues;
-typedef typename std::vector<std::pair<pos, std::pair<double, double> > >::const_iterator iv_missingIntervals;
-typedef typename std::vector<std::pair<pos,           double          > >::const_iterator iv_missingLUIntervals;
-typedef typename std::vector<std::pair<pos,           double          > >::const_iterator iv_missingRUIntervals;
+typedef typename std::vector<          pos                                    >::const_iterator iv_missing;
+typedef typename std::vector<std::pair<pos, std::vector<STK::Real>          > >::const_iterator iv_missingFiniteValues;
+typedef typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::const_iterator iv_missingIntervals;
+typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingLUIntervals;
+typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingRUIntervals;
+typedef typename std::pair<pos, STK::Real> RetValue;
 
 class GaussianSamplerIterator
 {
   public:
-    GaussianSamplerIterator(iv_missing missing,
+    GaussianSamplerIterator(const STK::Array2D<STK::Real>* p_param,
+                            const STK::CArrayVector<int>* p_zi,
+                            iv_missing missing,
                             iv_missing missingEnd,
                             iv_missingFiniteValues missingFiniteValues,
                             iv_missingFiniteValues missingFiniteValuesEnd,
@@ -55,11 +59,13 @@ class GaussianSamplerIterator
     GaussianSamplerIterator operator++(int);
     bool operator==(const GaussianSamplerIterator& rhs);
     bool operator!=(const GaussianSamplerIterator& rhs);
-    int operator*();
-    double luSampler(double lower, double alpha);
-    double lrbSampler(double lower, double upper);
+    RetValue operator*();
+    double luSampler(STK::Real lower, STK::Real alpha);
+    double lrbSampler(STK::Real lower, STK::Real upper);
 
   private:
+    const STK::Array2D<STK::Real>* p_param_;
+    const STK::CArrayVector<int>* p_zi_;
     iv_missing iv_missing_;
     iv_missing iv_missingEnd_;
     iv_missingFiniteValues iv_missingFiniteValues_;

@@ -84,12 +84,12 @@ double simpleSampler(double mean,
                      bool rb)
 {
   double z;
-  double lower = (infBound - mean) / sd;
-  double upper = (supBound - mean) / sd;
-  double alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
 
   if (lb && rb)
   {
+    double lower = (infBound - mean) / sd;
+    double upper = (supBound - mean) / sd;
+    double alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
     if (alpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(lower / 2) / (upper - lower))
     {
       do
@@ -105,10 +105,14 @@ double simpleSampler(double mean,
   }
   if (lb && !rb)
   {
+    double lower = (infBound - mean) / sd;
+    double alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
     z = luSampler(lower, alpha);
   }
   else if (!lb && rb)
   {
+    double upper = (supBound - mean) / sd;
+    double alpha = (upper + sqrt(pow(upper, 2) + 4.))/2.;
     z = -luSampler(-upper, alpha);
   }
   return z * sd + mean;
