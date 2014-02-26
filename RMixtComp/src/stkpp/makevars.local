@@ -47,7 +47,7 @@ CFLAGS   = -Wno-long-long
 #-----------------------------------------------------------------------
 # flags in Debug mode 
 #CXXFLAGS   = -std=c++11 -ansi -pedantic -Wall -g -O0
-#CXXFLAGS   = -ansi -pedantic -Wall -g -O0
+CXXFLAGS   = -ansi -pedantic -Wall -g -O0 -fPIC
 # STK_FLAGS = -DSTK_BOUNDS_CHECK  -DSTK_DEBUG
 
 LDFLAGS =
@@ -56,7 +56,7 @@ LDLIBS = -lm
 #-----------------------------------------------------------------------
 # flags in Release mode 
 #CXXFLAGS   = -std=c++11 -ansi -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
-CXXFLAGS   = -ansi -fPIC -pedantic -Wall -O3 -march=native -funroll-loops
+#CXXFLAGS   = -ansi -fPIC -pedantic -Wall -O3 -march=native -funroll-loops
 
 #-----------------------------------------------------------------------
 # Uncomment the next line if you want to have 0 based arrays 

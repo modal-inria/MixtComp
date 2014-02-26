@@ -158,7 +158,7 @@ class MixtureBridge : public IMixture
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
-    virtual void paramUpdateStep() { mixture_.mStep();}
+    virtual void paramUpdateStep() {mixture_.mStep();}
     /** This function should be used to store any intermediate results during
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
@@ -181,7 +181,7 @@ class MixtureBridge : public IMixture
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
-    virtual int nbFreeParameter() const { return mixture_.computeNbFreeParameters();}
+    virtual int nbFreeParameter() const {return mixture_.computeNbFreeParameters();}
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
