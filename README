@@ -8,3 +8,8 @@ From the commande line:
 From Rstudio:
   open the project file RMixtComp/RMixtComp.Rproj
   press control + shift + b
+  
+Debug
+---
+
+When using the command-line make, a test program is created in RMixtComp/src/test . Executing it through gdb (via Eclipse for example) allows for easy debugging of RMixtComp.

@@ -42,7 +42,6 @@ DataHandlerR::~DataHandlerR()
 
 bool DataHandlerR::readDataFromRList(Rcpp::List rList)
 {
-  int k = 0; // 
   for (int i = 0; i < rList.size(); ++i)
   {
     rList_ = rList;
