@@ -42,5 +42,5 @@ $(LIB_MC):
 	$(AR) $(ARFLAGS) $@ $(BIN_DIR)/*.o
 
 clean:
-	$(RM) ./bin/*
-	$(RM) ./lib/*
+	$(RM) ./bin/*.o
+	$(RM) ./lib/*.a

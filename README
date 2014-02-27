@@ -1,15 +1,4 @@
-Preparing the structure
+Build and install in R
 ---
 
-Before developping for MixtComp, the directory structure must be created. Symbolic links to the stkpp install directory must be created.
-
-The following command must be run from the root directory of MixtComp:
-
-STKPP_PATH=/home/modal/workspace/stk/stkpp ./createStruct.sh
-
-Where the value assigned to the envirronment variable STKPP_PATH is the path to the stkpp directory (which must contains the directories bin, include, lib and projects).
-
-Exporting the working directory
----
-
-Project tracking platforms, like the CRAN or r-forge, need a self-contained repository. This repository must contain everything that is needed to build the package. Hence the symbolic links must be resolved before the export. The script XXX does just that, by exporting a list of directories and eliminating all the temporary files.
+Go to RMixtComp, execute make
