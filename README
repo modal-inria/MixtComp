@@ -1,4 +1,10 @@
 Build and install in R
 ---
 
-Go to RMixtComp, execute make
+From the commande line:
+  go to RMixtComp
+  execute make
+
+From Rstudio:
+  open the project file RMixtComp/RMixtComp.Rproj
+  press control + shift + b
