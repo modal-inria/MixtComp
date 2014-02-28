@@ -47,7 +47,7 @@ STK_FLAGS =
 
 #-----------------------------------------------------------------------
 # common compile flags
-CXXFLAGS_ALL = -ansi -fPIC -std=c++11 -pedantic -Wall -I.. -I/usr/share/R/include/ `Rscript -e "Rcpp:::CxxFlags()"`
+CXXFLAGS_ALL = -ansi -fPIC -pedantic -Wall -MD -MP -I.. -I/usr/share/R/include/ `Rscript -e "Rcpp:::CxxFlags()"`
 
 #-----------------------------------------------------------------------
 # flags in Debug mode
