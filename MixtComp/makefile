@@ -27,20 +27,22 @@ BIN_DIR = ./bin
 # build rules
 
 # phony prerequisites are executed unconditionally
-.PHONY: all lib clean
+.PHONY: all clean
 
-all: lib
+lib: obj $(LIB_MC)
 
-lib: $(LIB_MC)
-
-$(LIB_MC):
+obj:
 	$(MAKE) -C ./src/Composer
 	$(MAKE) -C ./src/Data
 	$(MAKE) -C ./src/Mixture
 	$(MAKE) -C ./src/Sampler
 	$(MAKE) -C ./src/Strategy
+
+$(LIB_MC): $(wildcard $(BIN_DIR)/*.o)
 	$(AR) $(ARFLAGS) $@ $(BIN_DIR)/*.o
 
 clean:
-	$(RM) ./bin/*.o
-	$(RM) ./lib/*.a
+	find -L . -type f -name "*.o" -exec rm -f {} \;
+	find -L . -type f -name "*.d" -exec rm -f {} \;
+	find -L . -type f -name "*.a" -exec rm -f {} \;
+	find -L . -type f -name "*.so" -exec rm -f {} \;

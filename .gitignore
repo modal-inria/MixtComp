@@ -5,6 +5,7 @@
 *.so
 *.a
 *.tar.gz
+*.d
 RMixtComp/.Rbuildignore
 RMixtComp/R/RcppExports.R
 RMixtComp/src/RcppExports.cpp

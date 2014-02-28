@@ -37,10 +37,9 @@ PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB)
 ## files in this directory. pkglib is an additional target for the libraries
 ## that will be installed in $(STKPPDIR) and $(PKGLIB) and which users can link against.
 
-
 all: $(SHLIB)
 $(SHLIB): pkglib
 
 pkglib:
-	(cd $(MCDIR) && $(MAKE) all)
+	(cd $(MCDIR) && $(MAKE) lib)
 	(cd $(STKPPDIR) && $(MAKE) all)

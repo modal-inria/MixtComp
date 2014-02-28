@@ -34,19 +34,14 @@ endif
 
 include $(RELATIVEMAKEVARS)
 
-#-----------------------------------------------------------------------
-# header, source and binary files
+CXXFLAGS += -I$(ROOT_DIR)/..
 
-CXX_INCS = $(wildcard *.h)
-CPP_SRCS = $(wildcard *.cpp)
-CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)/%.o)
+SRC = $(wildcard *.cpp)
+DIST_O = $(SRC:%.cpp=$(BIN_DIR)/%.o)
 
-#-----------------------------------------------------------------------
-# Compilation rules
+all: $(DIST_O)
 
-all: obj
+$(DIST_O): $(BIN_DIR)/%.o : %.o
+	cp $< $@
 
-obj: $(CPP_OBJS)
-
-$(BIN_DIR)/%.o: %.cpp %.h makefile
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(ROOT_DIR)/.. -c -o $@ $<
+-include $(SRC:%.cpp=%.d)
