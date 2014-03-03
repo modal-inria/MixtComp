@@ -66,8 +66,7 @@ class MixtureBridge : public IMixture
       m_augDataij_(),
       nbVariable_(0),
       sampler_(getData(),
-               getParam(),
-               p_zi())
+               getParam())
     {
       mixture_.setData(m_augDataij_.data_);
     }
@@ -116,6 +115,7 @@ class MixtureBridge : public IMixture
       if (!p_composer()){STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);};
       mixture_.setMixtureParameters( p_prop(), p_tik(), p_zi());
       mixture_.initializeModel();
+      sampler_.setZi(p_zi());
     }
    /** This function will be defined to set the data into your data containers.
     *  To facilitate data handling, framework provide templated functions,
@@ -128,7 +128,10 @@ class MixtureBridge : public IMixture
       mixture_.setData(m_augDataij_.data_);
     }
     /** This function must be defined in derived class for initialization of mixture parameters. */
-    virtual void initializeStep() { mixture_.initializeStep();}
+    virtual void initializeStep()
+    {
+      mixture_.initializeStep();
+    }
     /** @brief This function should be used in order to initialize randomly the
      *  parameters of the ingredient.
      */
@@ -148,7 +151,7 @@ class MixtureBridge : public IMixture
      */
     virtual void samplingStep()
     {
-      mixture_.getParameters(param_); // update the parameters (use by the Sampler)
+      mixture_.getParameters(param_); // update the parameters (used by the Sampler)
       SamplerIterator endIt(sampler_.end());
       for (SamplerIterator it = sampler_.begin(); it != endIt; ++it)
       {

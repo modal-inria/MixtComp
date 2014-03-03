@@ -27,11 +27,9 @@
 namespace mixt
 {
 GaussianSampler::GaussianSampler(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
-                                 const STK::Array2D<STK::Real>* p_param,
-                                 const STK::CArrayVector<int>* p_zi) :
+                                 const STK::Array2D<STK::Real>* p_param) :
     pm_augDataij_(pm_augDataij),
-    p_param_(p_param),
-    p_zi_(p_zi)
+    p_param_(p_param)
 {}
 
 GaussianSampler::GaussianSampler(const GaussianSampler& sampler) :
@@ -74,5 +72,10 @@ GaussianSamplerIterator GaussianSampler::end()
                                    pm_augDataij_->v_missingRUIntervals_.end(),
                                    pm_augDataij_->v_missingRUIntervals_.end());
   return iterator;
+}
+
+void GaussianSampler::setZi(const STK::CArrayVector<int>* p_zi)
+{
+  p_zi_ = p_zi;
 }
 } // namespace mixt

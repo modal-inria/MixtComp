@@ -41,12 +41,12 @@ class GaussianSampler
 {
   public:
     GaussianSampler(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
-                    const STK::Array2D<STK::Real>* p_param,
-                    const STK::CArrayVector<int>* p_zi);
+                    const STK::Array2D<STK::Real>* p_param);
     GaussianSampler(const GaussianSampler& sampler);
     ~GaussianSampler();
     GaussianSamplerIterator begin();
     GaussianSamplerIterator end();
+    void setZi(const STK::CArrayVector<int>* p_zi);
   private:
     const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij_;
     const STK::Array2D<STK::Real>* p_param_;
