@@ -57,11 +57,11 @@ class GaussianSamplerIterator
     GaussianSamplerIterator(const GaussianSamplerIterator& iterator);
     GaussianSamplerIterator& operator++();
     GaussianSamplerIterator operator++(int);
-    bool operator==(const GaussianSamplerIterator& rhs);
-    bool operator!=(const GaussianSamplerIterator& rhs);
-    RetValue operator*();
-    double luSampler(STK::Real lower, STK::Real alpha);
-    double lrbSampler(STK::Real lower, STK::Real upper);
+    bool operator==(const GaussianSamplerIterator& rhs) const;
+    bool operator!=(const GaussianSamplerIterator& rhs) const;
+    RetValue operator*() const;
+    double luSampler(STK::Real lower, STK::Real alpha) const;
+    double lrbSampler(STK::Real lower, STK::Real upper) const;
 
   private:
     const STK::Array2D<STK::Real>* p_param_;

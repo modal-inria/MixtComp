@@ -110,7 +110,7 @@ GaussianSamplerIterator GaussianSamplerIterator::operator++(int)
   return tmp;
 }
 
-bool GaussianSamplerIterator::operator==(const GaussianSamplerIterator& rhs)
+bool GaussianSamplerIterator::operator==(const GaussianSamplerIterator& rhs) const
 {
   switch(currVec_)
   {
@@ -133,12 +133,12 @@ bool GaussianSamplerIterator::operator==(const GaussianSamplerIterator& rhs)
   return 0;
 }
 
-bool GaussianSamplerIterator::operator!=(const GaussianSamplerIterator& rhs)
+bool GaussianSamplerIterator::operator!=(const GaussianSamplerIterator& rhs) const
 {
   return ! operator==(rhs);
 }
 
-RetValue GaussianSamplerIterator::operator*()
+RetValue GaussianSamplerIterator::operator*() const
 {
   STK::Real z = 0.;
   pos currPos(std::pair<int, int>(0, 0));
@@ -217,7 +217,7 @@ RetValue GaussianSamplerIterator::operator*()
 }
 
 // left unbounded sampler
-STK::Real GaussianSamplerIterator::luSampler(STK::Real lower, STK::Real alpha)
+STK::Real GaussianSamplerIterator::luSampler(STK::Real lower, STK::Real alpha) const
 {
   STK::Real z, u, rho;
   if (lower < 0)
@@ -242,7 +242,7 @@ STK::Real GaussianSamplerIterator::luSampler(STK::Real lower, STK::Real alpha)
 }
 
 // left and right bounded sampler
-STK::Real GaussianSamplerIterator::lrbSampler(STK::Real lower, STK::Real upper)
+STK::Real GaussianSamplerIterator::lrbSampler(STK::Real lower, STK::Real upper) const
 {
   STK::Real z, u, rho;
 

@@ -41,7 +41,7 @@ GaussianSampler::GaussianSampler(const GaussianSampler& sampler) :
 GaussianSampler::~GaussianSampler()
 {}
 
-GaussianSamplerIterator GaussianSampler::begin()
+GaussianSamplerIterator GaussianSampler::begin() const
 {
   GaussianSamplerIterator iterator(p_param_,
                                    p_zi_,
@@ -57,7 +57,7 @@ GaussianSamplerIterator GaussianSampler::begin()
                                    pm_augDataij_->v_missingRUIntervals_.end());
   return iterator;
 }
-GaussianSamplerIterator GaussianSampler::end()
+GaussianSamplerIterator GaussianSampler::end() const
 {
   GaussianSamplerIterator iterator(p_param_,
                                    p_zi_,
