@@ -1,6 +1,6 @@
 getMixtCompCluster <- function(nbTrialInInit, nbBurnInIter, nbIter){
   # create a new Sem Strategy
-  mcStrategy <- new("Strategy", "randomInit", nbTrialInInit, nbBurnInIter, nbIter)
+  mcStrategy <- new("Strategy", "randomClassInit", nbTrialInInit, nbBurnInIter, nbIter)
   # create a new MixtCompCluster
   return(new("MixtCompCluster", mcStrategy, new("Results")))
 }
