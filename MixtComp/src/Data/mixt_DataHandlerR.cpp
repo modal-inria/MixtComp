@@ -140,11 +140,11 @@ void DataHandlerR::getData(std::string const& idData,
     missingRUIntervalsSize  += ls_listRUIntervals .size();
   }
   
-  augData.v_missing_            .resize(missingSize            );
-  augData.v_missingFiniteValues_.resize(missingFiniteValuesSize);
-  augData.v_missingIntervals_   .resize(missingIntervalsSize   );
-  augData.v_missingLUIntervals_ .resize(missingLUIntervalsSize );
-  augData.v_missingRUIntervals_ .resize(missingRUIntervalsSize );
+  augData.v_missing_            .reserve(missingSize            );
+  augData.v_missingFiniteValues_.reserve(missingFiniteValuesSize);
+  augData.v_missingIntervals_   .reserve(missingIntervalsSize   );
+  augData.v_missingLUIntervals_ .reserve(missingLUIntervalsSize );
+  augData.v_missingRUIntervals_ .reserve(missingRUIntervalsSize );
   
   int j = augData.data_.firstIdxCols();
   for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j)
