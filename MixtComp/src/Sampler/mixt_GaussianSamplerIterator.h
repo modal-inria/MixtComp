@@ -62,6 +62,7 @@ class GaussianSamplerIterator
     RetValue operator*() const;
     double luSampler(STK::Real lower, STK::Real alpha) const;
     double lrbSampler(STK::Real lower, STK::Real upper) const;
+    void findNonEmpty();
 
   private:
     const STK::Array2D<STK::Real>* p_param_;

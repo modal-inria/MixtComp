@@ -21,6 +21,13 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+// List of fields:
+// iv_missing_
+// iv_missingFiniteValues
+// iv_missingIntervals
+// iv_missingLUIntervals
+// iv_missingRUIntervals
+
 #include <cmath>
 #include "stkpp/projects/Arrays/include/STK_Array2D.h"
 #include "stkpp/projects/STatistiK/include/STK_Law_Exponential.h"
@@ -54,8 +61,11 @@ GaussianSamplerIterator::GaussianSamplerIterator(const STK::Array2D<STK::Real>* 
   iv_missingLUIntervals_(missingLUIntervals),
   iv_missingLUIntervalsEnd_(missingLUIntervalsEnd),
   iv_missingRUIntervals_(missingRUIntervals),
-  iv_missingRUIntervalsEnd_(missingRUIntervalsEnd)
-{}
+  iv_missingRUIntervalsEnd_(missingRUIntervalsEnd),
+  currVec_(0)
+{
+  findNonEmpty();
+}
 
 GaussianSamplerIterator::GaussianSamplerIterator(const GaussianSamplerIterator& mit) :
   p_param_(mit.p_param_),
@@ -69,7 +79,8 @@ GaussianSamplerIterator::GaussianSamplerIterator(const GaussianSamplerIterator& 
   iv_missingLUIntervals_(mit.iv_missingLUIntervals_),
   iv_missingLUIntervalsEnd_(mit.iv_missingLUIntervalsEnd_),
   iv_missingRUIntervals_(mit.iv_missingRUIntervals_),
-  iv_missingRUIntervalsEnd_(mit.iv_missingRUIntervalsEnd_)
+  iv_missingRUIntervalsEnd_(mit.iv_missingRUIntervalsEnd_),
+  currVec_(mit.currVec_)
 {}
 
 GaussianSamplerIterator& GaussianSamplerIterator::operator++()
@@ -77,28 +88,44 @@ GaussianSamplerIterator& GaussianSamplerIterator::operator++()
   switch(currVec_)
   {
     case 0:
+    {
       ++iv_missing_;
+      findNonEmpty();
       if (iv_missing_ == iv_missingEnd_)
         ++currVec_;
-      break;
+    }
+    break;
+
     case 1:
+    {
       ++iv_missingFiniteValues_;
+      findNonEmpty();
       if (iv_missingFiniteValues_ == iv_missingFiniteValuesEnd_)
         ++currVec_;
-      break;
+    }
+    break;
+
     case 2:
+    {
       ++iv_missingIntervals_;
+      findNonEmpty();
       if (iv_missingIntervals_ == iv_missingIntervalsEnd_)
         ++currVec_;
-      break;
+    }
+    break;
+
     case 3:
+    {
       ++iv_missingLUIntervals_;
+      findNonEmpty();
       if (iv_missingLUIntervals_ == iv_missingLUIntervalsEnd_)
         ++currVec_;
-      break;
+    }
+    break;
+
     case 4:
       ++iv_missingRUIntervals_;
-      break;
+    break;
   }
   return *this;
 }
@@ -112,25 +139,13 @@ GaussianSamplerIterator GaussianSamplerIterator::operator++(int)
 
 bool GaussianSamplerIterator::operator==(const GaussianSamplerIterator& rhs) const
 {
-  switch(currVec_)
-  {
-    case 0:
-      return (iv_missing_ == rhs.iv_missing_);
-      break;
-    case 1:
-      return (iv_missingFiniteValues_ == rhs.iv_missingFiniteValues_);
-      break;
-    case 2:
-      return (iv_missingIntervals_ == rhs.iv_missingIntervals_);
-      break;
-    case 3:
-      return (iv_missingLUIntervals_ == rhs.iv_missingLUIntervals_);
-      break;
-    case 4:
-      return (iv_missingRUIntervals_ == rhs.iv_missingRUIntervals_);
-      break;
-  }
-  return 0;
+  if ((iv_missing_             == rhs.iv_missing_            ) &&
+      (iv_missingFiniteValues_ == rhs.iv_missingFiniteValues_) &&
+      (iv_missingIntervals_    == rhs.iv_missingIntervals_   ) &&
+      (iv_missingLUIntervals_  == rhs.iv_missingLUIntervals_ ) &&
+      (iv_missingRUIntervals_  == rhs.iv_missingRUIntervals_ ))
+    return true;
+  return false;
 }
 
 bool GaussianSamplerIterator::operator!=(const GaussianSamplerIterator& rhs) const
@@ -153,11 +168,11 @@ RetValue GaussianSamplerIterator::operator*() const
       STK::Real sd    = p_param_->elt(p_zi_->elt(currPos.first)     + firstRow, currPos.second);
       return RetValue(currPos, STK::Law::Normal::rand(mean, sd));
     }
-      break;
+    break;
 
     case 1: // missingFiniteValues
       // no missingFiniteValues in gaussian data
-      break;
+    break;
 
     case 2: // missingIntervals
     {
@@ -184,7 +199,7 @@ RetValue GaussianSamplerIterator::operator*() const
         z = lrbSampler(lower, upper);
       }
     }
-      break;
+    break;
 
     case 3: // missingLUIntervals
     {
@@ -198,7 +213,7 @@ RetValue GaussianSamplerIterator::operator*() const
 
       z = -luSampler(-upper, alpha);
     }
-      break;
+    break;
 
     case 4: // missingRUIntervals
     {
@@ -211,7 +226,7 @@ RetValue GaussianSamplerIterator::operator*() const
       STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
       z = luSampler(lower, alpha);
     }
-      break;
+    break;
   }
   return RetValue(currPos, z);
 }
@@ -262,6 +277,68 @@ STK::Real GaussianSamplerIterator::lrbSampler(STK::Real lower, STK::Real upper) 
   while(u > rho);
 
   return z;
+}
+
+void GaussianSamplerIterator::findNonEmpty()
+{
+  bool found = false;
+  while(currVec_ < 5 && found == false)
+  {
+    // List of fields:
+    // iv_missing_
+    // iv_missingFiniteValues
+    // iv_missingIntervals
+    // iv_missingLUIntervals
+    // iv_missingRUIntervals
+
+    switch(currVec_)
+    {
+      case 0:
+      {
+        if (iv_missing_ == iv_missingEnd_)
+          ++currVec_;
+        else
+          found = true;
+      }
+      break;
+
+      case 1:
+      {
+        if (iv_missingFiniteValues_ == iv_missingFiniteValuesEnd_)
+          ++currVec_;
+        else
+          found = true;
+      }
+      break;
+
+      case 2:
+      {
+        if (iv_missingIntervals_ == iv_missingIntervalsEnd_)
+          ++currVec_;
+        else
+          found = true;
+      }
+      break;
+
+      case 3:
+      {
+        if (iv_missingLUIntervals_ == iv_missingLUIntervalsEnd_)
+          ++currVec_;
+        else
+          found = true;
+      }
+      break;
+
+      case 4:
+      {
+        if (iv_missingRUIntervals_ == iv_missingRUIntervalsEnd_)
+          ++currVec_;
+        else
+          found = true;
+      }
+      break;
+    }
+  }
 }
 
 } // namespace mixt
