@@ -165,12 +165,6 @@ int main(int argc, char *argv[])
   p_composerFixed1->setData();
   p_composerFixed1->initializeModel();
   p_composerFixed1->writeParameters(stk_cout);
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ testSemStrategy: composer1                        +\n");
-  testSemStrategy((composer1));
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ testSemStrategy: composerFixed1                   +\n");
-  testSemStrategy((composerFixed1));
 
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   stk_cout << _T("+ testSimpleStrategy: composer1                     +\n");

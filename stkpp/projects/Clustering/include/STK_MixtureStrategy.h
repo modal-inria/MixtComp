@@ -57,7 +57,7 @@ class IMixtureStrategy : public IRunnerBase
      *  @param p_model the model to estimate
      **/
     inline IMixtureStrategy( IMixtureComposerBase*& p_model)
-                              : IRunnerBase(), p_model_(p_model), p_init_(0)
+                           : IRunnerBase(), nbTry_(1), p_model_(p_model), p_init_(0)
     {}
     /** copy constructor
      *  @param strategy the strategy to copy
@@ -65,11 +65,16 @@ class IMixtureStrategy : public IRunnerBase
     IMixtureStrategy( IMixtureStrategy const& strategy);
     /** destructor */
     virtual ~IMixtureStrategy();
+    /** set the number of tries of each strategies.
+     * @param nbTry the number of tries to set */
+    void setNbTry(int nbTry) { nbTry_ = nbTry;}
     /** set the initialization method to use
      * @param  p_init the initialization method to use */
     void setMixtureInit(IMixtureInit* p_init) { p_init_ = p_init;}
 
   protected:
+    /** number of tries of each strategies (1 by default) */
+    int nbTry_;
     /** reference on the main model */
     IMixtureComposerBase*& p_model_;
     /** initialization method */
@@ -82,11 +87,9 @@ class IMixtureStrategy : public IRunnerBase
 struct SimpleStrategyParam
 {
   /** Constructor. Set default values */
-  inline SimpleStrategyParam() : nbTry_(0), p_algo_(0) {}
+  inline SimpleStrategyParam() : p_algo_(0) {}
   /** destructor */
   virtual ~SimpleStrategyParam();
-  /** number of estimation to try */
-  int nbTry_;
   /** number of iterations in the Initialization */
   IMixtureAlgo* p_algo_;
 };
@@ -113,7 +116,7 @@ class SimpleStrategy : public IMixtureStrategy
     inline virtual SimpleStrategy* clone() const { return new SimpleStrategy(*this);}
     /** set the parameters of the strategy
      * @param  p_param  the parameters of the strategy */
-    void setParam(SimpleStrategyParam* p_param) { p_param_ = p_param;}
+    inline void setParam(SimpleStrategyParam* p_param) { p_param_ = p_param;}
 
     /** run the strategy */
     virtual bool run();
@@ -127,13 +130,10 @@ class SimpleStrategy : public IMixtureStrategy
  **/
 struct XemStrategyParam
 {  /** Constructor. Set default values */
-    XemStrategyParam() : nbTry_(0), nbShortRun_(0)
-                       , p_shortAlgo_(0) , p_longAlgo_(0)
+    inline XemStrategyParam() : nbShortRun_(0), p_shortAlgo_(0) , p_longAlgo_(0)
     {}
     /** destructor */
     virtual ~XemStrategyParam();
-    /** number of estimation to try */
-    int nbTry_;
     /** number of short run to perform */
     int nbShortRun_;
     /** algorithm to use in short runs  */
@@ -176,57 +176,6 @@ class XemStrategy: public IMixtureStrategy
 
   protected:
     XemStrategyParam* p_param_;
-};
-
-/** @ingroup Clustering
- *  helper structure encapsulating the parameters of the Sem strategy
- **/
-struct SemStrategyParam
-{  /** Constructor. Set default values */
-    SemStrategyParam() : nbTry_(0), p_burnInAlgo_(0), p_longAlgo_(0)
-    {}
-    /** destructor */
-    virtual ~SemStrategyParam();
-    /** number of estimation to try */
-    int nbTry_;
-    /** algorithm for burn-in */
-    IMixtureAlgo* p_burnInAlgo_;
-    /** algorithm for subsequent long run */
-    IMixtureAlgo* p_longAlgo_;
-};
-
-/** @ingroup Clustering
- *  A SemStrategy is based on the following paradigm:
- *  - perform nbBurnIn iterations of the algo
- *  - perform a long run
- **/
-class SemStrategy : public IMixtureStrategy
-{
-  public:
-    /** default constructor.
-     * @param p_model a reference pointer on the model to estimate
-     **/
-    inline SemStrategy( IMixtureComposerBase*& p_model) : IMixtureStrategy(p_model), p_param_()
-    {}
-    /** copy constructor.
-     *  @param strategy the strategy to copy
-     **/
-    inline SemStrategy( SemStrategy const& strategy) : IMixtureStrategy(strategy), p_param_(0)
-    {}
-    /** destructor */
-    inline virtual ~SemStrategy() { if (p_param_) delete p_param_;}
-    /** clone pattern */
-    inline virtual SemStrategy* clone() const { return new SemStrategy(*this);}
-    /** set the parameters of the strategy
-     * @param  p_param  the parameters of the Xem strategy
-     **/
-    void setParam(SemStrategyParam * p_param) { p_param_ = p_param;}
-
-    /** run the strategy */
-    virtual bool run();
-
-  protected:
-    SemStrategyParam* p_param_;
 };
 
 }  // namespace STK

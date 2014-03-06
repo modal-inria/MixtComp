@@ -53,7 +53,11 @@ bool CEMAlgo::run()
     Real currentLnLikelihood =  p_model_->lnLikelihood();
     for (int iter = 0; iter < nbIterMax_; iter++)
     {
-      p_model_->cStep();
+      if (!p_model_->cStep())
+      {
+        msg_error_ = STKERROR_NO_ARG(CEMAlgo::run,No more individuals in a class);
+        return false;
+      }
       p_model_->pStep();
       p_model_->imputationStep();
       p_model_->mStep();
@@ -135,7 +139,11 @@ bool SEMAlgo::run()
   {
     for (int iter = 0; iter < this->nbIterMax_; ++iter)
     {
-      p_model_->sStep();
+      if (!p_model_->sStep())
+      {
+        msg_error_ = STKERROR_NO_ARG(SEMAlgo::run,No more individuals in a class);
+        return false;
+      }
       p_model_->pStep();
       p_model_->samplingStep();
       p_model_->mStep();

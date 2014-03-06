@@ -91,7 +91,8 @@ class Gaussian_sjk : public DiagGaussianBase<Gaussian_sjk<Array> >
     Gaussian_sjk( Gaussian_sjk const& model) : Base(model) {}
     /** destructor */
     ~Gaussian_sjk() {}
-    /** Compute the inital weighted mean and the initial common variance. */
+    /** Compute the initial weighted means and the initial weighted variances
+     *  of the mixture */
     void initializeStep();
     /** Initialize randomly the parameters of the Gaussian mixture. The centers
      *  will be selected randomly among the data set and the standard-deviation
@@ -113,10 +114,9 @@ void Gaussian_sjk<Array>::initializeStep()
   for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
   {
     ColVector tik(p_tik()->col(k), true); // create a reference
-    p_param(k)->sigma_ = Stat::varianceWithFixedMeanSafe(*p_data(), tik, p_param(k)->mean_, false).sqrt();
-    if (p_param(k)->sigma_.nbAvailableValues() != p_param(k)->sigma_.size()) throw Clust::mStepFail_;
+    p_param(k)->sigma_ = Stat::varianceWithFixedMean(*p_data(), tik, p_param(k)->mean_, false).sqrt();
+    if (p_param(k)->sigma_.nbAvailableValues() != p_param(k)->sigma_.size()) throw Clust::initializeStepFail_;
   }
-
 }
 
 /* Initialize randomly the parameters of the Gaussian mixture. The centers
@@ -135,14 +135,14 @@ void Gaussian_sjk<Array>::randomInit()
 template<class Array>
 void Gaussian_sjk<Array>::mStep()
 {
-    // compute the means
-    GaussianUtil<Component>::updateMean(components(), p_tik());
-    for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-    {
-      ColVector tik(p_tik()->col(k), true); // create a reference
-      p_param(k)->sigma_ = Stat::varianceWithFixedMean(*p_data(), tik, p_param(k)->mean_, false).sqrt();
-      if (p_param(k)->sigma_.nbAvailableValues() != p_param(k)->sigma_.size()) throw Clust::mStepFail_;
-    }
+  // compute the means
+  GaussianUtil<Component>::updateMean(components(), p_tik());
+  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  {
+    ColVector tik(p_tik()->col(k), true); // create a reference
+    p_param(k)->sigma_ = Stat::varianceWithFixedMean(*p_data(), tik, p_param(k)->mean_, false).sqrt();
+    if (p_param(k)->sigma_.nbAvailableValues() != p_param(k)->sigma_.size()) throw Clust::mStepFail_;
+  }
 }
 
 } // namespace STK

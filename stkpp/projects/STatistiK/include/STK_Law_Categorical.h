@@ -130,8 +130,16 @@ class Categorical: public IUnivLaw<int>
         if (u<=cum) return k;
       }
       return k;
-
     }
+    /** @brief compute the log probability distribution function
+     *  Give the value of the log-pdf at the point x.
+     *  @param x the value to compute the lpdf.
+     *  @return the value of the log-pdf
+     **/
+    template<class OtherArray>
+    static Real lpdf(int const& x, OtherArray const& prob)
+    { return (prob[x] == 0) ? -Arithmetic<Real>::infinity() : std::log(prob[x]);}
+
   protected:
     /** probabilities in a Categorical trial */
     Array2DVector<Real> prob_;

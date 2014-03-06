@@ -71,10 +71,6 @@ class StrategyFacade
                           , int nbTry, int nbShortRun
                           , Clust::algoType shortAlgo, int nbShortIter, Real shortEpsilon
                           , Clust::algoType longAlgo, int nblongIter, Real longEpsilon);
-    /** create a SemStrategy */
-    void createSemStrategy( Clust::initType init, int nbTrialInInit
-                            , int nbBurnInIter
-                            , int nbIter);
     /** run the strategy */
     void run();
 

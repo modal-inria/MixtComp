@@ -99,6 +99,7 @@ class Gaussian_sj : public DiagGaussianBase<Gaussian_sj<Array> >
     {
       Base::initializeModel();
       sigma_.resize(this->nbVariable());
+      sigma_ = 1.;
       for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       { p_param(k)->p_sigma_ = &sigma_;}
     }

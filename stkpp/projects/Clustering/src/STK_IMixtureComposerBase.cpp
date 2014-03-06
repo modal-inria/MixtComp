@@ -122,26 +122,24 @@ void IMixtureComposerBase::randomFuzzyInit()
 }
 
 /* cStep */
-void IMixtureComposerBase::cStep()
+int IMixtureComposerBase::cStep()
 {
   (*p_tik_) = 0.;
   for (int i=p_tik_->firstIdxRows(); i<= p_tik_->lastIdxRows(); i++)
   { p_tik_->elt(i, p_zi_->elt(i)) = 1.;}
   // check if all label are presents
-  Array2DPoint<Real> s;
-  s.move(Stat::sum(*p_tik_));
-  for (int j = s.firstIdx(); j<= s.lastIdx(); j++)
-  { if (s[j] == 0) throw Clust::cStepFail_;}
+  return (Stat::sum(*p_tik_).minElt());
 }
 
 /* simulate zi  */
-void IMixtureComposerBase::sStep()
+int IMixtureComposerBase::sStep()
 {
   // simulate zi
   for (int i = p_zi_->firstIdx(); i<= p_zi_->lastIdx(); ++i)
   { p_zi_->elt(i) = Law::Categorical::rand(p_tik_->row(i));}
-  // hard classification
-  cStep();
+  // hard classification, throw an exception if there is no more individuals
+  // in a class
+  return cStep();
 }
 /* compute Tik, default implementation. */
 void IMixtureComposerBase::eStep()
@@ -257,3 +255,4 @@ void IMixtureComposerBase::resizeZi()
   }
 }
 } // namespace SDTK
+

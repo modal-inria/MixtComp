@@ -46,10 +46,10 @@ void StrategyFacade::createSimpleStrategy( Clust::initType init, int nbTrialInIn
                                         , int nbTry, Clust::algoType algo, int nbIter, Real epsilon)
 {
   SimpleStrategyParam* p_param = new SimpleStrategyParam();
-  p_param->nbTry_ = nbTry;
   p_param->p_algo_ = Clust::createAlgo(algo, nbIter, epsilon);
 
   SimpleStrategy* p_strategy = new SimpleStrategy(p_model_);
+  p_strategy->setNbTry(nbTry);
   p_strategy->setParam(p_param);
   p_strategy_ = p_strategy;
   p_strategy_->setMixtureInit(Clust::createInit(init, nbTrialInInit, initAlgo, nbInitIter, initEpsilon));
@@ -60,30 +60,15 @@ void StrategyFacade::createXemStrategy( Clust::initType init, int nbTrialInInit,
                                      , Clust::algoType longAlgo, int nblongIter, Real longEpsilon)
 {
   XemStrategyParam* p_param = new XemStrategyParam();
-  p_param->nbTry_ = nbTry;
   p_param->nbShortRun_ = nbShortRun;
   p_param->p_shortAlgo_ = Clust::createAlgo(shortAlgo, nbShortIter, shortEpsilon);
   p_param->p_longAlgo_ = Clust::createAlgo(longAlgo, nblongIter, longEpsilon);
 
   XemStrategy* p_strategy = new XemStrategy(p_model_);
+  p_strategy->setNbTry(nbTry);
   p_strategy->setParam(p_param);
   p_strategy_ = p_strategy;
   p_strategy_->setMixtureInit(Clust::createInit(init, nbTrialInInit, initAlgo, nbInitIter, initEpsilon));
-}
-
-void StrategyFacade::createSemStrategy( Clust::initType init, int nbTrialInInit
-                                        , int nbBurnInIter
-                                        , int nbIter )
-{
-  SemStrategyParam* p_param = new SemStrategyParam();
-  p_param->nbTry_ = 1;
-  p_param->p_burnInAlgo_ = Clust::createAlgo(Clust::semAlgo_, nbBurnInIter, 0.);
-  p_param->p_longAlgo_   = Clust::createAlgo(Clust::semAlgo_, nbIter      , 0.);
-
-  SemStrategy* p_strategy= new SemStrategy(p_model_);
-  p_strategy->setParam(p_param);
-  p_strategy_ = p_strategy;
-  p_strategy_->setMixtureInit(Clust::createInit(init, nbTrialInInit, Clust::semAlgo_, 0, 0.));
 }
 
 void StrategyFacade::run()

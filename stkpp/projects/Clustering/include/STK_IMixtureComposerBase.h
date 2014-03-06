@@ -210,10 +210,14 @@ class IMixtureComposerBase : public IModelBase
      *  Initialize the model parameters and compute the tik.
      **/
     void randomFuzzyInit();
-    /** replace tik by zik. */
-    void cStep();
-    /** Simulate zi accordingly to tik and replace tik by zik by calling cStep(). */
-    void sStep();
+    /** Replace tik by zik
+     *  @return the minimal value of the nk
+     **/
+    int cStep();
+    /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
+     *  @return the minimal value of the nk
+     **/
+    int sStep();
     /** compute the zi and the lnLikelihodd of the current estimators (pk and paramk)
      *  and the next value of the tik.
      **/
@@ -257,3 +261,4 @@ class IMixtureComposerBase : public IModelBase
 } // namespace STK
 
 #endif /* IMODEL_H_ */
+

@@ -68,14 +68,3 @@ void testXemStrategy( IMixtureComposerBase*& p_composer)
   p_composer->writeParameters(stk_cout);
 }
 
-void testSemStrategy( IMixtureComposerBase*& p_composer)
-{
-  StrategyFacade facade(p_composer);
-  facade.createSemStrategy( Clust::randomClassInit_, 3, 20, 100);
-  facade.run();
-  stk_cout << _T("\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ SemStrategy terminated. Results:                  +\n");
-  p_composer->writeParameters(stk_cout);
-}
-

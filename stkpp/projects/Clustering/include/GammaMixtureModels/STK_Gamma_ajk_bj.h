@@ -104,6 +104,7 @@ class Gamma_ajk_bj : public GammaBase<Gamma_ajk_bj<Array> >
     {
       Base::initializeModel();
       scale_.resize(this->nbVariable());
+      scale_ = 1.;
       for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       { p_param(k)->p_scale_ = &scale_;}
     }

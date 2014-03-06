@@ -28,27 +28,27 @@
  * Authors: Serge Iovleff, Vincent KUBICKI
  **/
 
-/** @file STK_GammaBase.h
- *  @brief In this file we implement the base class for the gamma models
+/** @file STK_CategoricalBase.h
+ *  @brief In this file we implement the base class for the Categorical
+ *  diagonal models
  **/
 
-#ifndef STK_GAMMABASE_H
-#define STK_GAMMABASE_H
+#ifndef STK_CATEGORICALBASE_H
+#define STK_CATEGORICALBASE_H
 
 #include "../STK_IMixtureModel.h"
-#include "STK_GammaComponent.h"
+#include "STK_CategoricalComponent.h"
 
-#include "../../../STatistiK/include/STK_Law_Gamma.h"
+#include "../../../STatistiK/include/STK_Law_Categorical.h"
 
 namespace STK
 {
 
-
 /** @ingroup Clustering
- *  Base class for the gamma models
+ *  Base class for the Categorical models
  **/
 template<class Derived>
-class GammaBase : public IMixtureModel<Derived >
+class CategoricalBase : public IMixtureModel<Derived >
 {
   public:
     typedef IMixtureModel<Derived > Base;
@@ -61,75 +61,64 @@ class GammaBase : public IMixtureModel<Derived >
     /** default constructor
      * @param nbCluster number of cluster in the model
      **/
-    inline GammaBase( int nbCluster) : Base(nbCluster) {}
+    inline CategoricalBase( int nbCluster) : Base(nbCluster) {}
     /** copy constructor
      *  @param model The model to copy
      **/
-    inline GammaBase( GammaBase const& model) : Base(model) {}
+    inline CategoricalBase( CategoricalBase const& model) : Base(model) {}
     /** destructor */
-    ~GammaBase() {}
-    /** @return an imputation value for the jth variable of the ith sample*/
-    Real impute(int i, int j) const
+    inline ~CategoricalBase() {}
+    /** @return an imputation value for the jth variable of the ith sample
+     *  @param i,j indexes of the data to impute */
+    int impute(int i, int j) const
     {
       Real sum = 0.;
       for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-      { sum += p_tik()->elt(i,k) * p_param(k)->shape(j) * p_param(k)->scale(j);}
-      return sum;
+      { sum += p_tik()->elt(i,k) * p_param(k)->proba(j);}
+      return std::round(sum);
     }
     /** @return a simulated value for the jth variable of the ith sample
-     *  @param i,j indexes of the value to sample
-     **/
-    Real sample(int i, int j) const
+     * @param i,j indexes of the data to simulate*/
+    int sample(int i, int j) const
     {
       Real sum = 0.;
       for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-      { sum += p_tik()->elt(i,k) * Law::Gamma::rand(p_param(k)->shape(j),p_param(k)->scale(j));}
+      { sum += p_tik()->elt(i,k) * Law::Normal::rand(p_param(k)->mean(j), p_param(k)->sigma(j));}
       return sum;
     }
-    /** @brief compute a safe value for the column j, missing values are replaced by 1.
-     *  @return a safe value for the jth variable
-     *  @param j the index of the column with a missing value
-     * */
+    /** @return a safe value for the jth variable
+     *  @param j index of the column with the safe value needed
+     **/
     inline Real safeValue(int j) const
-    { return this->p_data()->col(j).safe(1.).mean();}
+    { return this->p_data()->col(j).safe().mean();}
     /** get the parameters of the model
      *  @param params the parameters of the model
      **/
     void getParameters(Array2D<Real>& params) const
     {
-      int firstId = params.firstIdxRows();
-      int nbClust = this->nbCluster();
-
-      params.resize(2*nbClust, p_data()->cols());
-
-      for (int k= 0; k < nbClust; ++k)
+      params.resize(this->nbCluster(), p_data()->cols());
+      for (int k= params.firstIdxRows(); k <= params.lastIdxRows(); ++k)
       {
         for (int j=  p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
-        {
-          params(2*k+  firstId, j) = p_param(k+firstId)->shape(j);
-          params(2*k+1+firstId, j) = p_param(k+firstId)->scale(j);
-        }
+        { params(k, j) = p_param(k)->proba(j);}
       }
+
     }
     /** Write the parameters on the output stream os */
     void writeParameters(ostream& os) const
     {
-      Array2DPoint<Real> shape(p_data()->cols()), scale(p_data()->cols());
+      Array2DPoint<Real> proba(p_data()->cols());
       for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       {
-        // store shape and scale values in an array for a nice output
-        for (int j= p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
-        {
-          shape[j] = p_param(k)->shape(j);
-          scale[j] = p_param(k)->scale(j);
-        }
+        // store proba values in an array for a nice output
+        for (int j= proba.firstIdx();  j <= proba.lastIdx(); ++j)
+        { proba[j] = p_param(k)->proba(j);}
         stk_cout << _T("---> Component ") << k << _T("\n");
-        stk_cout << _T("shape = ") << shape;
-        stk_cout << _T("scale = ") << scale;
+        stk_cout << _T("proba = ")<< proba;
       }
     }
 };
 
 } // namespace STK
 
-#endif /* STK_GAMMABASE_H */
+#endif /* STK_DIAGGAUSSIANBASE_H */

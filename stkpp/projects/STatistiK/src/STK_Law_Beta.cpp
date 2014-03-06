@@ -49,7 +49,7 @@ Beta::Beta( const Real& alpha, const Real& beta)
 {
   // check parameters
   if (  Arithmetic<Real>::isNA(alpha) || Arithmetic<Real>::isNA(beta)
-     || alpha <= 0.0 || alpha >=1 || beta <= 0.0 || beta >= 1
+     || alpha <= 0.0 || beta <= 0.0
      )
   STKDOMAIN_ERROR_2ARG("Beta::Beta",alpha,beta,"argument error");
 }
@@ -83,8 +83,7 @@ Real Beta::rand( const Real& a, const Real& b)
      || a <= 0.0
      || b <= 0.0
      )
-    throw domain_error("Beta::rand(a, b) "
-                       "argument error");
+    STKDOMAIN_ERROR_2ARG("Beta::rand",a,b,"argument error");
   // trivial case 
   if (!Arithmetic<Real>::isFinite(a)) return 1.0;
   if (!Arithmetic<Real>::isFinite(b)) return 0.0;
@@ -146,8 +145,8 @@ Real Beta::icdf( const Real& p) const
     throw domain_error("Beta::icdf(p) "
                        "argument error");
  // trivial cases
- if (p == 0.)  return -Arithmetic<Real>::infinity();
- if (p == 1.)  return  Arithmetic<Real>::infinity();
+ if (p == 0.) return 0.;
+ if (p == 1.) return 1.;
 
   // result 
   return 0.;

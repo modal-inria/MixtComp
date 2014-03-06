@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*     Copyright (C) 2004-2013 Vincent KUBICKI
+/*     Copyright (C) 2004-2014 Serge IOVLEFF, Inria
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as
@@ -25,7 +25,7 @@
 /*
  * Project:  stkpp::Clustering
  * created on: Dec 4, 2013
- * Author: Serge Iovleff
+ * Authors: Serge Iovleff, Vincent KUBICKI
  **/
 
 /** @file STK_DiagGaussianBase.h
@@ -96,16 +96,19 @@ class DiagGaussianBase : public IMixtureModel<Derived >
      **/
     void getParameters(Array2D<Real>& params) const
     {
-      params.resize(2*this->nbCluster(), p_data()->cols());
-      for (int k= params.firstIdxRows(); k <= params.lastIdxRows(); k+=2)
+      int firstId = params.firstIdxRows();
+      int nbClust = this->nbCluster();
+
+      params.resize(2*nbClust, p_data()->cols());
+
+      for (int k= 0; k < nbClust; ++k)
       {
         for (int j=  p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
         {
-          params(k, j) = p_param(k)->mean(j);
-          params(k+1, j) = p_param(k)->sigma(j);
+          params(2*k+  firstId, j) = p_param(k+firstId)->mean(j);
+          params(2*k+1+firstId, j) = p_param(k+firstId)->sigma(j);
         }
       }
-
     }
     /** Write the parameters on the output stream os */
     void writeParameters(ostream& os) const

@@ -41,16 +41,17 @@
 namespace STK
 {
 
-/* destructor */
-IMixtureStrategy::~IMixtureStrategy() { if (p_init_) delete p_init_;}
-
-/** copy constructor
+/* copy constructor
  *  @param strategy the strategy to copy
  **/
 IMixtureStrategy::IMixtureStrategy( IMixtureStrategy const& strategy)
-                                       : IRunnerBase(strategy), p_model_(strategy.p_model_)
-                                       , p_init_(strategy.p_init_->clone())
+                                  : IRunnerBase(strategy), nbTry_(strategy.nbTry_)
+                                  , p_model_(strategy.p_model_)
+                                  , p_init_(strategy.p_init_->clone())
 {}
+
+/* destructor */
+IMixtureStrategy::~IMixtureStrategy() { if (p_init_) delete p_init_;}
 
 /* destructor */
 SimpleStrategyParam::~SimpleStrategyParam()
@@ -63,30 +64,22 @@ XemStrategyParam::~XemStrategyParam()
   if (p_longAlgo_) delete p_longAlgo_;
 }
 
-/* destructor */
-SemStrategyParam::~SemStrategyParam()
-{
-  if (p_burnInAlgo_) delete p_burnInAlgo_;
-  if (p_longAlgo_) delete p_longAlgo_;
-}
-
 /* run the simple strategy */
 bool SimpleStrategy::run()
 {
 #ifdef STK_MIXTURE_VERBOSE
   stk_cout << _T("-----------------------------------------------\n");
   stk_cout << _T("Entering SimpleStrategy::run() with:\n")
-           << _T("nbTry_ = ") << p_param_->nbTry_ << _T("\n\n");
+           << _T("nbTry_ = ") << this->nbTry_ << _T("\n\n");
 #endif
-
+  // initialize bestLikelihood
+  Real bestLikelihood = -STK::Arithmetic<Real>::max();
   try
   {
-    // initialize bestModel likelihood
-    Real bestlikelihood = -STK::Arithmetic<Real>::max();
+    IMixtureComposerBase* p_currentModel = p_model_->create();
     // find best of the shortModel and save it in p_currentmodellong
-    for (int iTry = 0; iTry < p_param_->nbTry_; ++iTry)
+    for (int iTry = 0; iTry < this->nbTry_; ++iTry)
     {
-      IMixtureComposerBase* p_currentModel = p_model_->create();
       // intialize current model
       p_init_->setModel(p_currentModel);
       if (p_init_->run())
@@ -106,32 +99,22 @@ bool SimpleStrategy::run()
             stk_cout << _T("\n\n");
 #endif
           // Check if we get a better result
-          if(bestlikelihood < p_currentModel->lnLikelihood())
+          if(bestLikelihood < p_currentModel->lnLikelihood())
           {
-            delete p_model_;
-            p_model_ = p_currentModel;
-            bestlikelihood = p_currentModel->lnLikelihood();
+            std::swap(p_currentModel, p_model_);
+            bestLikelihood = p_model_->lnLikelihood();
+            bestLikelihood = p_currentModel->lnLikelihood();
 #ifdef STK_MIXTURE_VERBOSE
             stk_cout << "In SimpleStrategy::run(), model overwritten. Model is:\n";
-            stk_cout << "bestlikelihood =" << bestlikelihood << "\n";
+            stk_cout << "bestlikelihood =" << bestLikelihood << "\n";
             p_model_->writeParameters(stk_cout);
             stk_cout << _T("\n\n");
 #endif
           }
-          else
-          { delete p_currentModel;}
-        }
-        else // otherwise delete the current instance
-        { delete p_currentModel; }
-      }
-      else
-      {
-#ifdef STK_MIXTURE_VERY_VERBOSE
-        stk_cout << "In SimpleStrategy::run(), All Init step failed.\n";
-#endif
-        delete p_currentModel;
-      }
+        }  // algo step
+      } // init step
     } // iTry
+    delete p_currentModel;
   } catch (Exception const& e)
   {
     msg_error_ = e.error();
@@ -142,26 +125,33 @@ bool SimpleStrategy::run()
   p_model_->writeParameters(stk_cout);
   stk_cout << "-----------------------------------------------\n";
 #endif
+  if (bestLikelihood == -STK::Arithmetic<Real>::max())
+  {
+    msg_error_ = STKERROR_NO_ARG(In SimpleStrategy::run,All trials failed);
+    return false;
+  }
   return true;
 }
 
+/* run the xem strategy */
 bool XemStrategy::run()
 {
 #ifdef STK_MIXTURE_VERY_VERBOSE
   stk_cout << _T("Entering XemStrategy::run() with:\n")
-           << _T("nbTry_ = ") << p_param_->nbTry_ << _T("\n")
+           << _T("nbTry_ = ") << this->nbTry_ << _T("\n")
            << _T("nbShortRun_ = ") << p_param_->nbShortRun_ << _T("\n");
 #endif
-  // initialize bestModel likelihood
-  IMixtureComposerBase* p_currentBestModel = p_model_->create();
+  // initialize bestModel and bestLikelihood
   Real bestLikelihood = - STK::Arithmetic<Real>::max();
-  for (int iTry = 0; iTry < p_param_->nbTry_; ++iTry)
+  try
+  {
+    IMixtureComposerBase* p_currentBestModel = p_model_->create();
+  for (int iTry = 0; iTry < this->nbTry_; ++iTry)
   {
 #ifdef STK_MIXTURE_VERY_VERBOSE
   stk_cout << _T("-------------------------------\n")
            << _T("try number = ") << iTry << _T("\n")
            << _T("-------------------------------\n");
-;
 #endif
     // create the current model : it will be used nbShortRun
     IMixtureComposerBase* p_currentModel = p_model_->create();
@@ -191,13 +181,15 @@ bool XemStrategy::run()
           std::swap(p_currentModel, p_currentBestModel);
           currentBestlikelihood = p_currentBestModel->lnLikelihood();
         }
-      }
+      } // initialization
 #ifdef STK_MIXTURE_VERY_VERBOSE
       else
         stk_cout << _T("short run failed.") << _T("\n");
 #endif
     } // iShortRun
-    // in case there is no short runs successful (or nbShortRun_==0)
+    // we don't use any more the current model
+    delete p_currentModel;
+    // in case there is no short runs successful or nbShortRun_==0
     // try to initialize bestCurrentModel, otherwise go to a next try
     if (currentBestlikelihood == - STK::Arithmetic<Real>::max())
     {
@@ -213,8 +205,6 @@ bool XemStrategy::run()
          continue;
       }
     }
-    // we don't use any more the current model
-    delete p_currentModel;
 #ifdef STK_MIXTURE_VERBOSE
         stk_cout << _T("iTry =") << iTry
                  << _T(". In XemStrategy::run(), short run terminated. best model:\n");
@@ -246,64 +236,21 @@ bool XemStrategy::run()
 #endif
   } // end iTry
   delete p_currentBestModel;
+  } catch (Exception const& e)
+  {
+    msg_error_ = e.error();
+    return false;
+  }
 #ifdef STK_MIXTURE_VERBOSE
   stk_cout << "XemStrategy::run() terminated. current model\n";
   p_model_->writeParameters(stk_cout);
   stk_cout << "-----------------------------------------------\n";
 #endif
-  return (bestLikelihood == - STK::Arithmetic<Real>::max()) ? false : true;
-}
-
-bool SemStrategy::run()
-{
-#ifdef STK_MIXTURE_VERY_VERBOSE
-  stk_cout << _T("Entering SemStrategy::run() with:\n")
-           << _T("nbTry_ = ") << p_param_->nbTry_ << _T("\n");
-#endif
-  for (int iTry = 0; iTry < p_param_->nbTry_; ++iTry)
+  if (bestLikelihood == -STK::Arithmetic<Real>::max())
   {
-#ifdef STK_MIXTURE_VERY_VERBOSE
-  stk_cout << _T("-------------------------------\n")
-           << _T("try number = ") << iTry << _T("\n")
-           << _T("-------------------------------\n");
-;
-#endif
-
-    // initialize current model
-    p_init_->setModel(p_model_);
-    p_model_->setState(STK::Clust::modelInitialized_);
-    if (p_init_->run())
-    {
-      p_param_->p_burnInAlgo_->setModel(p_model_);
-      p_param_->p_burnInAlgo_->run();
-      p_model_->setState(STK::Clust::shortRun_);
-#ifdef STK_MIXTURE_VERBOSE
-      stk_cout << _T("iTry =") << iTry << ". In SemStrategy::run(), burn-in terminated. current model\n";
-          p_model_->writeParameters(stk_cout);
-          stk_cout << _T("\n\n");
-#endif
-    }
-#ifdef STK_MIXTURE_VERY_VERBOSE
-    else
-      stk_cout << _T("burn in failed.") << _T("\n");
-#endif
-    p_param_->p_longAlgo_->setModel(p_model_);
-    if (p_param_->p_longAlgo_->run())
-    {
-      p_model_->setState(STK::Clust::longRun_);
-#ifdef STK_MIXTURE_VERBOSE
-        stk_cout << _T("iTry =") << iTry
-                 << _T(". In SemStrategy::run(), Long run terminated. Current model:\n");
-        p_model_->writeParameters(stk_cout);
-        stk_cout << _T("\n\n");
-#endif
-    }
-  } // end iTry
-#ifdef STK_MIXTURE_VERBOSE
-  stk_cout << "SemStrategy::run() terminated. current model\n";
-  p_model_->writeParameters(stk_cout);
-  stk_cout << "-----------------------------------------------\n";
-#endif
+    msg_error_ = STKERROR_NO_ARG(In XemStrategy::run,All trials failed);
+    return false;
+  }
   return true;
 }
 
