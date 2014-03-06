@@ -121,7 +121,7 @@ void DataHandlerR::getData(std::string const& idData,
     augData.dataRanges_.push_back(std::pair<STK::Real, STK::Real>(nv_listVals[0], nv_listVals[1]));
   }
   
-  // resizing the augData containers to avoid push_back slowdown
+  // reserving the augData containers to avoid push_back slowdown
   for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it)
   {
     Rcpp::S4 s4 = rList_[(*it)];
@@ -191,7 +191,7 @@ void DataHandlerR::getData(std::string const& idData,
     {
       Rcpp::List ls_posVal = ls_listLUIntervals[i];
       index = ls_posVal["pos"];
-      STK::Real val = ls_posVal["val"];
+      STK::Real val = ls_posVal["listvals"];
       augData.v_missingLUIntervals_.push_back(
         std::pair<pos, STK::Real>(pos(index, j),
                                   val)
@@ -204,7 +204,7 @@ void DataHandlerR::getData(std::string const& idData,
     {
       Rcpp::List ls_posVal = ls_listRUIntervals[i];
       index = ls_posVal["pos"];
-      STK::Real val = ls_posVal["val"];
+      STK::Real val = ls_posVal["listvals"];
       augData.v_missingRUIntervals_.push_back(
         std::pair<pos, STK::Real>(pos(index, j),
                                   val)
