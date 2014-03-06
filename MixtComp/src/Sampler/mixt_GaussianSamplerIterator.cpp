@@ -91,8 +91,6 @@ GaussianSamplerIterator& GaussianSamplerIterator::operator++()
     {
       ++iv_missing_;
       findNonEmpty();
-      if (iv_missing_ == iv_missingEnd_)
-        ++currVec_;
     }
     break;
 
@@ -100,8 +98,6 @@ GaussianSamplerIterator& GaussianSamplerIterator::operator++()
     {
       ++iv_missingFiniteValues_;
       findNonEmpty();
-      if (iv_missingFiniteValues_ == iv_missingFiniteValuesEnd_)
-        ++currVec_;
     }
     break;
 
@@ -109,8 +105,6 @@ GaussianSamplerIterator& GaussianSamplerIterator::operator++()
     {
       ++iv_missingIntervals_;
       findNonEmpty();
-      if (iv_missingIntervals_ == iv_missingIntervalsEnd_)
-        ++currVec_;
     }
     break;
 
@@ -118,8 +112,6 @@ GaussianSamplerIterator& GaussianSamplerIterator::operator++()
     {
       ++iv_missingLUIntervals_;
       findNonEmpty();
-      if (iv_missingLUIntervals_ == iv_missingLUIntervalsEnd_)
-        ++currVec_;
     }
     break;
 
@@ -155,7 +147,7 @@ bool GaussianSamplerIterator::operator!=(const GaussianSamplerIterator& rhs) con
 
 RetValue GaussianSamplerIterator::operator*() const
 {
-  STK::Real z = 0.;
+  STK::Real mean, sd, z;
   pos currPos(std::pair<int, int>(0, 0));
 
   switch(currVec_)
@@ -164,9 +156,9 @@ RetValue GaussianSamplerIterator::operator*() const
     {
       int firstRow = p_param_->firstIdxRows();
       currPos = *iv_missing_;
-      STK::Real mean  = p_param_->elt(p_zi_->elt(currPos.first) - 1 + firstRow, currPos.second);
-      STK::Real sd    = p_param_->elt(p_zi_->elt(currPos.first)     + firstRow, currPos.second);
-      return RetValue(currPos, STK::Law::Normal::rand(mean, sd));
+      mean  = p_param_->elt(p_zi_->elt(currPos.first) - 1 + firstRow, currPos.second);
+      sd    = p_param_->elt(p_zi_->elt(currPos.first)     + firstRow, currPos.second);
+      z = STK::Law::Normal::rand(0., 1.);
     }
     break;
 
@@ -180,8 +172,8 @@ RetValue GaussianSamplerIterator::operator*() const
       currPos = iv_missingIntervals_->first;
       STK::Real infBound(iv_missingIntervals_->second.first);
       STK::Real supBound(iv_missingIntervals_->second.second);
-      STK::Real mean  = p_param_->elt(2*(p_zi_->elt(currPos.first))     - firstRow, currPos.second);
-      STK::Real sd    = p_param_->elt(2*(p_zi_->elt(currPos.first)) + 1 - firstRow, currPos.second);
+      mean  = p_param_->elt(2*(p_zi_->elt(currPos.first))     - firstRow, currPos.second);
+      sd    = p_param_->elt(2*(p_zi_->elt(currPos.first)) + 1 - firstRow, currPos.second);
       STK::Real lower = (infBound - mean) / sd;
       STK::Real upper = (supBound - mean) / sd;
       STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
@@ -204,10 +196,10 @@ RetValue GaussianSamplerIterator::operator*() const
     case 3: // missingLUIntervals
     {
       int firstRow = p_param_->firstIdxRows();
-      currPos = iv_missingIntervals_->first;
+      currPos = iv_missingLUIntervals_->first;
       STK::Real supBound(iv_missingLUIntervals_->second);
-      STK::Real mean  = p_param_->elt(2*(p_zi_->elt(currPos.first))     - firstRow, currPos.second);
-      STK::Real sd    = p_param_->elt(2*(p_zi_->elt(currPos.first)) + 1 - firstRow, currPos.second);
+      mean  = p_param_->elt(2*(p_zi_->elt(currPos.first))     - firstRow, currPos.second);
+      sd    = p_param_->elt(2*(p_zi_->elt(currPos.first)) + 1 - firstRow, currPos.second);
       STK::Real upper = (supBound - mean) / sd;
       STK::Real alpha = (upper + sqrt(pow(upper, 2) + 4.))/2.;
 
@@ -218,17 +210,20 @@ RetValue GaussianSamplerIterator::operator*() const
     case 4: // missingRUIntervals
     {
       int firstRow = p_param_->firstIdxRows();
-      currPos = iv_missingIntervals_->first;
+      currPos = iv_missingRUIntervals_->first;
       STK::Real infBound(iv_missingRUIntervals_->second);
-      STK::Real mean  = p_param_->elt(2*(p_zi_->elt(currPos.first))     - firstRow, currPos.second);
-      STK::Real sd    = p_param_->elt(2*(p_zi_->elt(currPos.first)) + 1 - firstRow, currPos.second);
+      mean  = p_param_->elt(2*(p_zi_->elt(currPos.first))     - firstRow, currPos.second);
+      sd    = p_param_->elt(2*(p_zi_->elt(currPos.first)) + 1 - firstRow, currPos.second);
       STK::Real lower = (infBound - mean) / sd;
       STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
       z = luSampler(lower, alpha);
     }
     break;
   }
-  return RetValue(currPos, z);
+  std::cout << "sampled value: " << currPos.first << std::endl;
+  std::cout << "line: " << currPos.second << std::endl;
+  std::cout << "col: " << z * sd + mean << std::endl;
+  return RetValue(currPos, z * sd + mean);
 }
 
 // left unbounded sampler
