@@ -38,7 +38,9 @@ namespace mixt
 
 class MixtureComposer : public STK::MixtureComposer
 {
-  public:    
+  public:
+    typedef std::vector<STK::IMixture*>::const_iterator ConstMixtIterator;
+    typedef std::vector<STK::IMixture*>::iterator MixtIterator;
     /** Constructor.
      * @param nbCluster number of cluster
      */
@@ -80,6 +82,8 @@ class MixtureComposer : public STK::MixtureComposer
     
     void registerMixture(IMixture* mixture);
     
+    void storeIntermediateResults(int iteration);
+
   private:
     inline DataHandlerR const* p_DataHandlerR() const
     {

@@ -16,34 +16,32 @@
 #------------------------------------------------------------------------
 #   Project:    MixtComp
 #   Created on: Feb 17, 2014
-#   Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+#   Authors:     Vincent KUBICKI <vincent.kubicki@inria.fr>,
+#                Serge IOVLEFF <serge.iovleff@stkpp.org>
 #------------------------------------------------------------------------
 
-# build path
-LIB_MC = ./lib/libMixtComp.a
-BIN_DIR = ./bin
-
 #-----------------------------------------------------------------------
-# build rules
+# set directories and include makevars file
 
-# phony prerequisites are executed unconditionally
-.PHONY: all clean
+ROOT_DIR = ../..
+BIN_DIR = $(ROOT_DIR)/bin
 
-lib: obj $(LIB_MC)
+ifneq ($(wildcard $(ROOT_DIR)/makevars.local),) 
+RELATIVEMAKEVARS = $(ROOT_DIR)/makevars.local
+else 
+RELATIVEMAKEVARS = $(ROOT_DIR)/makevars
+endif
 
-obj:
-	$(MAKE) -C ./src/Algo
-	$(MAKE) -C ./src/Composer
-	$(MAKE) -C ./src/Data
-	$(MAKE) -C ./src/Mixture
-	$(MAKE) -C ./src/Sampler
-	$(MAKE) -C ./src/Strategy
+include $(RELATIVEMAKEVARS)
 
-$(LIB_MC): $(wildcard $(BIN_DIR)/*.o)
-	$(AR) $(ARFLAGS) $@ $(BIN_DIR)/*.o
+CXXFLAGS += -I$(ROOT_DIR)/..
 
-clean:
-	find -L . -type f -name "*.o" -exec rm -f {} \;
-	find -L . -type f -name "*.d" -exec rm -f {} \;
-	find -L . -type f -name "*.a" -exec rm -f {} \;
-	find -L . -type f -name "*.so" -exec rm -f {} \;
+SRC = $(wildcard *.cpp)
+DIST_O = $(SRC:%.cpp=$(BIN_DIR)/%.o)
+
+all: $(DIST_O)
+
+$(DIST_O): $(BIN_DIR)/%.o : %.o
+	cp $< $@
+
+-include $(SRC:%.cpp=%.d)

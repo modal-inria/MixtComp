@@ -26,39 +26,39 @@
  *  @brief In this file we implement the strategies for estimating mixture model.
  **/
 
-#include "stkpp/projects/Clustering/include/STK_IMixtureComposerBase.h"
-#include "stkpp/projects/Clustering/include/STK_MixtureAlgo.h"
-#include "stkpp/projects/Clustering/include/STK_MixtureInit.h"
-#include "mixt_SemStrategy.h"
+#include "mixt_SEMStrategy.h"
 
 namespace mixt
 {
 
 /** default constructor */
-SemStrategy::SemStrategy(STK::IMixtureComposerBase*& p_composer,
+SemStrategy::SemStrategy(MixtureComposer*& p_composer,
                          STK::Clust::initType init,
+                         int nbTry,
                          int nbTrialInInit,
                          int nbBurnInIter,
-                         int nbIter)
-        : p_composer_(p_composer),
-        nbTry_(1)
+                         int nbIter,
+                         int zMin,
+                         int nbSamplingAttempts) :
+    p_composer_(p_composer),
+    nbTry_(nbTry)
 {
   p_init_ = STK::Clust::createInit(init,
                                    nbTrialInInit,
                                    STK::Clust::semAlgo_,
                                    0,
                                    0.);
-  p_burnInAlgo_ = STK::Clust::createAlgo(STK::Clust::semAlgo_, nbBurnInIter, 0.);
-  p_longAlgo_   = STK::Clust::createAlgo(STK::Clust::semAlgo_, nbIter      , 0.);
+  p_burnInAlgo_ = new SEMAlgo(nbBurnInIter, zMin, nbSamplingAttempts);
+  p_longAlgo_   = new SEMAlgo(nbIter      , zMin, nbSamplingAttempts);
 }
 
 /** copy constructor */
-SemStrategy::SemStrategy(SemStrategy const& strategy)
-        : p_composer_(strategy.p_composer_),
-        p_init_(strategy.p_init_->clone()),
-        nbTry_(0),
-        p_burnInAlgo_(0),
-        p_longAlgo_(0)
+SemStrategy::SemStrategy(SemStrategy const& strategy) :
+    p_composer_(strategy.p_composer_),
+    p_init_(strategy.p_init_->clone()),
+    nbTry_(strategy.nbTry_),
+    p_burnInAlgo_(strategy.p_burnInAlgo_),
+    p_longAlgo_(strategy.p_longAlgo_)
 {}
 
 /** destructor */

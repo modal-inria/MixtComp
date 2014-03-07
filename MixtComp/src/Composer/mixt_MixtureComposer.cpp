@@ -76,4 +76,12 @@ void MixtureComposer::setDataHandler(DataHandlerR const* p_handler)
   STK::MixtureComposer::setDataHandler(p_handler);
 }
 
+void MixtureComposer::storeIntermediateResults(int iteration)
+{
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->storeIntermediateResults(iteration);
+  }
+}
+
 } /* namespace mixt */

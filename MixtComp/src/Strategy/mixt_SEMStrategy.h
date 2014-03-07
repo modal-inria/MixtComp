@@ -31,7 +31,9 @@
 #ifndef MIXT_MIXTURESTRATEGY_H
 #define MIXT_MIXTURESTRATEGY_H
 
-#include "stkpp/projects/Clustering/include/STK_Clust_Util.h"
+#include "../Composer/mixt_MixtureComposer.h"
+#include "stkpp/projects/Clustering/include/STK_MixtureInit.h"
+#include "../Algo/mixt_SEMAlgo.h"
 
 namespace mixt
 {
@@ -46,11 +48,14 @@ class SemStrategy
     /** default constructor.
      *  @param p_composer the model to estimate
      **/
-    SemStrategy(STK::IMixtureComposerBase*& p_composer,
+    SemStrategy(MixtureComposer*& p_composer,
                 STK::Clust::initType init,
+                int nbTry,
                 int nbTrialInInit,
                 int nbBurnInIter,
-                int nbIter);
+                int nbIter,
+                int zMin,
+                int nbSamplingAttempts);
 
     /** copy constructor
      *  @param strategy the strategy to copy
@@ -65,16 +70,16 @@ class SemStrategy
     
   protected:
      /** reference on the main model */
-    STK::IMixtureComposerBase*& p_composer_;
+    MixtureComposer*& p_composer_;
     /** initialization method */
     STK::IMixtureInit* p_init_;
     
     /** number of estimation to try */
     int nbTry_;
     /** algorithm for burn-in */
-    STK::IMixtureAlgo* p_burnInAlgo_;
+    SEMAlgo* p_burnInAlgo_;
     /** algorithm for subsequent long run */
-    STK::IMixtureAlgo* p_longAlgo_;
+    SEMAlgo* p_longAlgo_;
 };
 
 }  // namespace mixt
