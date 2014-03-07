@@ -78,22 +78,28 @@ bool SemStrategy::run()
     // initialize current model
     p_init_->setModel(p_composer_);
     p_composer_->setState(STK::Clust::modelInitialized_);
-    if (p_init_->run())
-    {
-      p_burnInAlgo_->setModel(p_composer_);
-      p_burnInAlgo_->run();
-      p_composer_->setState(STK::Clust::shortRun_);
-    }
-    
+    if (!p_init_->run())
+      continue;
+
+    // short run
+    p_burnInAlgo_->setModel(p_composer_);
+    if (!p_burnInAlgo_->run())
+      continue;
+    p_composer_->setState(STK::Clust::shortRun_);
+
+    // long run
     p_longAlgo_->setModel(p_composer_);
-    if (p_longAlgo_->run())
+    if (!p_longAlgo_->run())
+      continue;
+    else
     {
       p_composer_->setState(STK::Clust::longRun_);
+      break;
     }
   }
   
   p_composer_->finalizeStep();
-    
+
   return true;
 }
 
