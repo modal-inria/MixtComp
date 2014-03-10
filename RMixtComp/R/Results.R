@@ -10,14 +10,16 @@ setClass(
     lnlikelihood = "numeric",
     proportions = "numeric",
     partition = "integer",
-    proba = "matrix"
+    proba = "matrix",
+    runOK = "logical"
   ),
   prototype=prototype(
     nbCluster = numeric(0),
     lnlikelihood = numeric(0),
     proportions = numeric(0),
     partition = integer(0),
-    proba = matrix(nrow=0,ncol=0)
+    proba = matrix(nrow=0,ncol=0),
+    runOK = F
   )
 )
 

@@ -79,7 +79,7 @@ bool SemStrategy::run()
     p_init_->setModel(p_composer_);
     p_composer_->setState(STK::Clust::modelInitialized_);
     if (!p_init_->run())
-      continue;
+      continue; // make another try
 
     // short run
     p_burnInAlgo_->setModel(p_composer_);
@@ -94,7 +94,7 @@ bool SemStrategy::run()
     else
     {
       p_composer_->setState(STK::Clust::longRun_);
-      break;
+      break; // no need to further try if a run is complete
     }
   }
   
