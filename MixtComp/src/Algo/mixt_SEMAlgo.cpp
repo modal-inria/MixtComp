@@ -40,7 +40,7 @@ SEMAlgo::SEMAlgo(SEMAlgo const& algo) :
     nbIterMax_(algo.nbIterMax_),
     zMin_(algo.zMin_),
     nbSamplingAttempts_(algo.nbSamplingAttempts_)
-   {}
+{}
 
 void SEMAlgo::setModel(MixtureComposer* p_model)
 {

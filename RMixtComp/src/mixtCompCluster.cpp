@@ -23,7 +23,7 @@
 
 #include "MixtComp/src/Data/mixt_DataHandlerR.h"
 #include "MixtComp/src/Composer/mixt_MixtureComposer.h"
-#include "MixtComp/src/Strategy/mixt_SemStrategy.h"
+#include "MixtComp/src/Strategy/mixt_SEMStrategy.h"
 
 // [[Rcpp::export]]
 void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
@@ -40,11 +40,11 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   
   // prepare the composer
   mixt::MixtureComposer composer(nbClusters);
-  STK::IMixtureComposerBase* p_composer = &composer;
+  mixt::MixtureComposer* p_composer(&composer);
   composer.setDataHandler(&handler);
   composer.createMixtCompMixtures();
   
-  // instantiate the SemStrategy
+  // instantiate the SEMStrategy
   STK::Clust::initType initMethod;
   std::string s_initMethod = mcStrategy.slot("initMethod");
   if      (s_initMethod == std::string("randomInit"      ))
@@ -53,16 +53,18 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
     initMethod = STK::Clust::randomClassInit_;
   else if (s_initMethod == std::string("randomFuzzyInit"))
     initMethod = STK::Clust::randomFuzzyInit_;
-  
-  // create the apropriate strategy and transmit the parameters
-  mixt::SemStrategy strategy( p_composer
-                            , initMethod // init type
-                            , mcStrategy.slot("nbTrialInInit") // number of initialization trials
-                            , mcStrategy.slot("nbBurnInIter") // number of burn-in iterations
-                            , mcStrategy.slot("nbIter")
-                            ); // number of iterations
 
-  // run the strategy facade
+  // create the appropriate strategy and transmit the parameters
+  mixt::SemStrategy strategy(p_composer,
+                             initMethod, // init type
+                             3, // number of trials of the complete chain
+                             mcStrategy.slot("nbTrialInInit"), // number of initialization trials
+                             mcStrategy.slot("nbBurnInIter"), // number of burn-in iterations
+                             mcStrategy.slot("nbIter"), // number of iterations
+                             3, // minimal number of element per class
+                             10); // number of sampling attempts for lowly populated classes
+
+  // run the strategy
   strategy.run(); 
 
   // output the results

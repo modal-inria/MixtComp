@@ -30,17 +30,7 @@
 
 namespace mixt
 {
-// forward declaration
-class IMixtureComposerBase;
 
-/** @ingroup Clustering
- * Interface base class for the algorithms.
- * All algorithms are runners applying on a model instance given by pointer
- * and have to implement the run method.
- *
- * All algorithms start with an mStep(), so user have to provide an instance of
- * the model with initial parameters values.
- **/
 class SEMAlgo
 {
   public:
@@ -50,11 +40,12 @@ class SEMAlgo
      *  @param algo the algorithm to copy */
     SEMAlgo(SEMAlgo const& algo);
     /** destructor */
-    virtual ~SEMAlgo();
+    virtual ~SEMAlgo(){};
     /** set a new model */
     void setModel(MixtureComposer* p_model);
     /** run the algorithm */
     bool run();
+
   private:
     /** pointer on the mixture model */
     MixtureComposer* p_model_;
@@ -65,7 +56,6 @@ class SEMAlgo
     /** number of attempts before giving up on sampling */
     int nbSamplingAttempts_;
 };
-
 } // namespace mixt
 
 #endif /* MIXT_MIXTUREALGO_H */
