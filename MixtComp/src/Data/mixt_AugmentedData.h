@@ -34,11 +34,12 @@ namespace mixt
 template <class DataType>
 struct AugmentedData
 {
+  /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
+  DataType data_;
+  /** base type of the table */
   typedef typename DataType::Type Type;
   /** combination of a sample number and a column number to identify a value */
   typedef std::pair<int, int> pos;
-  /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
-  DataType data_;
   /** available data ranges, one pair per data column */
   std::vector<std::pair<Type, Type> > dataRanges_;
   /** vector of completely unknown values */
