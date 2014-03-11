@@ -135,7 +135,7 @@ void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<STK::Array2D<std::string> >& augData,
                            int& nbVariable) const
 {
-//  getDataHelper<std::string, Rcpp::StringVector>(idData, augData, nbVariable);
+  getDataHelper<std::string, Rcpp::StringVector>(idData, augData, nbVariable);
 }
 
 void DataHandlerR::writeDataMap() const

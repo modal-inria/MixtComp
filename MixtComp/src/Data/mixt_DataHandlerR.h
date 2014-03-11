@@ -143,8 +143,8 @@ void DataHandlerR::getDataHelper(std::string const& idData,
 
     nv_listVals = ls_augData["dataRange"];
 
-    augData.dataRanges_.push_back(std::pair<Type, Type>(nv_listVals[0],
-                                                        nv_listVals[1]));
+    augData.dataRanges_.push_back(std::pair<Type, Type>(Type(nv_listVals[0]),
+                                                        Type(nv_listVals[1])));
   }
 
   // reserving the augData containers to avoid push_back slowdown
@@ -207,7 +207,8 @@ void DataHandlerR::getDataHelper(std::string const& idData,
       nv_listVals = ls_posVal["listvals"];
       augData.v_missingIntervals_.push_back(
         std::pair<pos, std::pair<Type, Type> >(pos(index, j),
-                                               std::pair<Type, Type>(nv_listVals[0], nv_listVals[1]))
+                                               std::pair<Type, Type>(Type(nv_listVals[0]),
+                                                                     Type(nv_listVals[1])))
       );
     }
 
