@@ -51,8 +51,6 @@ namespace Funct
 {
 
 /** @ingroup Analysis
- *  @brief Compute the continued fraction of the beta function.
- *
  *  Compute the continued fraction:
  * \f[
  *    \frac{a_1}{b_1+}\frac{a_2}{b_2+}\frac{a_3}{b_3+}\ldots
@@ -71,13 +69,13 @@ namespace Funct
  *  @return the value of the beta ratio function using the continued fraction
  *  method
  */
-static Real betaRatio_cf( Real const& a
-                        , Real const& b
-                        , Real const& x
-                        , bool lower_tail = true
-                        , int const& iterMax = 1000
+Real betaRatio_cf( Real const& a, Real const& b, Real const& x
+                        , bool lower_tail, int const& iterMax
                         )
 {
+#ifdef STK_BETARATIO_DEBUG
+  stk_cout << _T("BetaRatio_cf(") << a << _T(", ") << b << _T(", ") << x << _T(")\n");
+#endif
   // Constants
   Real sum = a+b, y = (0.5 -x) + 0.5;
   /* Compute the Function:
@@ -246,13 +244,14 @@ static Real betaRatio_cf( Real const& a
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  *  @return the value of the beta ratio function using its asymptotic expansion
  **/
-static inline Real betaRatio_ae( Real const& a
-                               , Real const& b
-                               , Real const& x
-                               , bool xm1
-                               , bool lower_tail
-                               )
+static Real betaRatio_ae( Real const& a, Real const& b, Real const& x
+                        , bool xm1
+                        , bool lower_tail
+                        )
 {
+#ifdef STK_BETARATIO_DEBUG
+  stk_cout << _T("BetaRatio_ae(") << a << _T(", ") << b << _T(", ") << x << _T(")\n");
+#endif
   // Compute b-1
   Real bm1 = b-1;
   // compute \nu = a+(b-1)/2
@@ -348,11 +347,7 @@ static inline Real betaRatio_ae( Real const& a
  *  @param x value to evaluate the function
  *  @param n number of step
  **/
-static inline Real serie_up( Real const& s
-                           , Real const& a
-                           , Real const& x
-                           , int const& n
-                           )
+static Real serie_up( Real const& s, Real const& a, Real const& x, int const& n)
 {
   // initilize d0 and sum
   Real sum = 1./a;
@@ -377,13 +372,14 @@ static inline Real serie_up( Real const& s
  *  @param xm1 true if we want to evaluate the function at 1-x
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  **/
-static inline Real betaRatio_up( Real const& a
-                               , Real const& b
-                               , Real const& x
+static Real betaRatio_up( Real const& a, Real const& b, Real const& x
                                , bool xm1
                                , bool lower_tail
                                )
 {
+#ifdef STK_BETARATIO_DEBUG
+  stk_cout << _T("BetaRatio_up(") << a << _T(", ") << b << _T(", ") << x << _T(")\n");
+#endif
   // number of iterations
   int n = int(a);
   // compute residual
@@ -425,7 +421,7 @@ static inline Real betaRatio_up( Real const& a
  *  using its series representation.
  *
  * Compute the incomplete beta function ratio I_x(a,b)
- * using it's serie representation.
+ * using it's series representation.
  * \f[
  * \frac{x^a}{B(a,b)}
  * \left(  \frac{1}{a}
@@ -438,12 +434,13 @@ static inline Real betaRatio_up( Real const& a
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  *  @return the value of the beta ratio function using its series representation
  **/
-static Real betaRatio_sr( Real const& a
-                        , Real const& b
-                        , Real const& x
+static Real betaRatio_sr( Real const& a, Real const& b, Real const& x
                         , bool lower_tail
                         )
 {
+#ifdef STK_BETARATIO_DEBUG
+  stk_cout << _T("BetaRatio_sr(") << a << _T(", ") << b << _T(", ") << x << _T(")\n");
+#endif
   // Constant
   Real sum = a+b;
   // compute B(a,b,x,y) = \frac{\Gamma(a+b)}{\Gamma(a) \Gamma(b)} x^{a}
@@ -473,43 +470,33 @@ static Real betaRatio_sr( Real const& a
 }
 
 /** @ingroup Analysis
- *  @brief compute the odd coefs of the beta Ratio function
- *  serie expansion.
+ *  @brief compute the odd coefficients of the beta Ratio function
+ *  asymptotic expansion.
  *
- *  Given the 2t first coefs, compute and return the (2t+1)-th
+ *  Given the 2t first coefficients, compute and return the (2t+1)-th
  *  coefficient. The value is stored to the back of the Vector.
  *
- *  @param A vector of dimension 1:n, n>=2, of the coefs
- *  @param std the binomial standard deviation \f$ \sqrt{pq} \f$
- *  @param qmp the difference q-p
+ *  @param A vector of dimension 0:n, n=4,6,8,... of the coefficients
+ *  @return the (n+1)-th coefficient
  */
-static Real coefs_odd_se( Real const& std, Real const& qmp, std::vector<Real> &A)
+static Real coefs_odd_se(std::vector<Real> &A)
 {
-  // get the number of exising coefs (should be even)
-  int n = A.size();
-  int t = n/2;
-  // know case
-  if (t==1)
-  {
-    // compute result
-    Real res = (qmp/3+std)*(qmp/3-std)/(4*std);
-    // save it in A
-    A.push_back(res);
-    // and return it
-    return res;
-  }
+  // get the index of the current coefficient (should be n = 2 * l with l>=1)
+  int n = A.size()-1;
+  int l = n/2;
+
   // initialize the sums
-  Real res, sum1 =0, sum2 =0;
-  // update sum
-  for (int k=1, k1=0; k<t; k++, k1++)
+  Real U2lp1 =A[1]*A[n-1], T2lp1 =0;
+  for (int k=2; k<l; k++)
   {
-    sum1 += A[k] *A[n+k];
-    sum2 += A[k1]*A[n-k1];
+    U2lp1 += A[k] * A[n-k];
+    T2lp1 += A[k+1]*A[n+1-k];
   }
   // compute the result
-  res = ( ((qmp*A[n-1] - A[t-1]*A[t-1])/2 - sum2)/(t+1)
-          - sum1- A[t]*A[t]/2
-        )/std;
+  Real res = -( A[2]*A[n]*(n-1.)
+              + 2* U2lp1 + (n+2.) * T2lp1
+              + A[l]*A[l] + (l+1.) * A[l+1]*A[l+1]
+              ) / ((n+2.) * A[1]);
   // save it in A
   A.push_back(res);
   // and return it
@@ -517,169 +504,128 @@ static Real coefs_odd_se( Real const& std, Real const& qmp, std::vector<Real> &A
 }
 
 /** @ingroup Analysis
- *  @brief compute the even coefs of the beta Ratio function
- *  serie expansion.
+ *  @brief compute the even coefficients of the beta Ratio function
+ *  asymptotic expansion.
  *
- *  Given the 2t+1 first coefs, compute and return the (2t+2)-th
+ *  Given the n=2l-1 first coefficients, compute and return the (2l)-th
  *  coefficient. The value is stored to the back of the Vector.
  *
- *  @param A vector of dimension 1:n, n>=3, of the coefs
- *  @param std the binomial standard deviation \f$ \sqrt{pq} \f$
- *  @param qmp the difference q-p
+ *  @param A vector of dimension 0:n, n=5,7,... of the coefficients
+ *  @return the (n+1)-th coefficient
  */
-static Real coefs_even_se( Real const& std, Real const& qmp, std::vector<Real> &A)
+static Real coefs_even_se( std::vector<Real> &A)
 {
-  // get the number of exising coefs (should be odd)
-  int n = A.size();
-  int t = n/2;
-  // know case
-  if (t==1)
-  {
-    // compute result
-    Real res = -qmp*(1+A[2]/std)*2/15;
-    // save it in A
-    A.push_back(res);
-    // and return it
-    return res;
-  }
+  // get the current coefficient (should be n = 2 * l - 1 with l>=1)
+  int n = A.size()-1;
+  int l = (n+1)/2;
   // initialize the sums
-  Real res, sum1 =0, sum2 =0;
+  Real U2l =A[1]*A[n-1], T2l =0;
   // update sum
-  for (int k=1, k1=0; k<=t; k++, k1++)
+  for (int k=2; k<l; k++)
   {
-    sum1 += A[k]*A[n-k];
-    sum2 += A[k1] *A[n-k1];
+    U2l += A[k]*A[n-k];
+    T2l += A[k+1] *A[n+1-k];
   }
   // compute the result
-  res = ( (qmp*A[n-1] - 2*sum2)/(n+2) - sum1)/std;
+  Real res = -(A[2]*A[n]*(n-1.) + 2.*U2l + (n+2.) * T2l ) / ((n+2.) * A[1]);
   // save it in A
   A.push_back(res);
   // and return it
   return res;
 }
+
+/** @ingroup Analysis
+ *  @brief compute the even coefficients of the beta Ratio function
+ *  asymptotic expansion.
+ *
+ *  Given the n=2l+1 first coefficients, compute and return the (2l+2)-th
+ *  coefficient. The value is stored to the back of the Vector.
+ *
+ *  @param A vector of dimension 0:n, n=5,7,... of the coefficients
+ *  @return the (n+1)-th coefficient
+ */
+//static Real coefs_se( std::vector<Real> &A)
+//{
+//  // get the number of existing coefficient
+//  int n = A.size();
+//  // sum
+//  Real Sn =2*A[1]*A[n-2];
+//  for (int k=2; k<=n-3; k++)
+//  { Sn += (k+1) * A[k+1]*A[n-k] + A[k] * A[n-1-k];}
+//  // compute the result
+//  Real res = -((n-2.)*A[2]*A[n-1]/A[1] + Sn/A[1]) / (n+1.);
+//  // save it in A
+//  A.push_back(res);
+//  // and return it
+//  return res;
+//}
 
 /** @ingroup Analysis
  *  @brief Compute the incomplete beta function ratio I_x(a,b)
- *  using its serie expansion.
+ *  using its series expansion.
  *
  * Compute the incomplete beta function ratio I_x(a,b)
- * using it's serie expansion.
+ * using it's series expansion.
  *  @param a first parameter, must be >0
  *  @param b second parameter, must be >0
  *  @param x value to evaluate the function
- *  @param xm1 @c true if x is in [q,p], @c false otherwise
+ *  @param xm1 @c true if we want 1-x value, @c false otherwise
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  *  @param iterMax Maximal number of iteration (default is 20)
  **/
-static Real betaRatio_se( Real const& a
-                        , Real const& b
-                        , Real const& x
+static Real betaRatio_se( Real const& a, Real const& b, Real const& x
                         , bool xm1
                         , bool lower_tail
-                        , int const& iterMax = 20
+                        , int const& iterMax = 1
                         )
 {
+#ifdef STK_BETARATIO_DEBUG
+  stk_cout << _T("BetaRatio_se(") << a << _T(", ") << b << _T(", ") << x << _T(")\n");
+#endif
   // parameters
-  Real s  = a+b;
-  Real p  = a/s, q  = b/s;
-  Real sx = s*x;
-  Real sy = s-sx;
-  //Real D  = a*log(x/p)+b*log(y/q);
-  Real D  = (xm1 ? dev0(a, sy)+dev0(b, sx) : dev0(a, sx)+dev0(b, sy));
-
-  Real z2 = 2 * D;
-  Real z  = (((x<p)&&!xm1)||((x>q)&&xm1)) ? -sqrt(z2) : sqrt(z2);
+  Real s  = a+b, p  = a/s, q  = b/s;
+  Real sx = s*x, sy = s-sx;
+  //Real D2  = (a+b) * (p*log(x/p)+q*log(y/q));
+  Real D2  = (xm1 ? dev0(a, sy)+dev0(b, sx) : dev0(a, sx)+dev0(b, sy));
+  //Real z2  = 2 * (a+b) (p*log(x/p)+q*log(y/q));
+  Real z2 = 2 * D2;
+  Real z  = (((x<p)&&!xm1)||((x>q)&&xm1)) ? -std::sqrt(z2) : std::sqrt(z2);
 
   //  Compute normal cdf
   Real pnorm = lower_tail ?  normal_cdf_raw( z) : normal_cdf_raw(-z);
   //  Compute normal pdf
-  Real dnorm = Const::_1_SQRT2PI_ * exp(-D);
+  Real dnorm = Const::_1_SQRT2PI_ * exp(-D2);
   // check large values of z
-  if (!dnorm) return pnorm;
-  // epsilon value for the serie
-  Real eps = Arithmetic<Real>::epsilon()*pnorm;
+  if (dnorm < Arithmetic<Real>::epsilon()) return pnorm;
 
   // auxiliary variables
-  Real std = sqrt(a)*sqrt(b)/s, qmp = q - p;
+  Real a1 = std::sqrt(a)*std::sqrt(b)/s, a2 = (q - p)/3, a2_a1 = a2/a1
+     , sqrts = std::sqrt(s);
 
-  // serie coefs
-  std::vector<Real> A(2);
-  A.reserve(iterMax); // reserve enough space
-  A[0] = std;
-  A[1] = qmp/3;
-  // variables for the series
-  Real odd_term  = 1;
-  Real even_term = 2/sqrt(s);
-
-  Real sum1_term = z, sum1 = z;
-  Real sum2_term = 1, sum2 = 1;
-
-  // variables for the numerator and the denominator
-  Real num = qmp*even_term/3; // = A[1]*even_term;
-  Real den = std;             // = A[0];
+  // series coefs
+  std::vector<Real> A, B;
+  A.reserve(10); // reserve enough space
+  A.push_back(p); // a0
+  A.push_back(a1); // a1
+  A.push_back(a2); // a2
+  A.push_back(a1 * (a2_a1/2.+0.5) * (a2_a1/2.-0.5)); //a3
+  A.push_back(-0.4*a2*((a2_a1/2.+0.5) * (a2_a1/2.-0.5)+1.)); // a4
+  // compute the numerator and the denominator
+  Real num = (a2 * 2.
+             + (A[3] * 3. * z
+               + (A[4] * 4. * (2+ z2)
+                 + (coefs_odd_se(A) * 5. * z * (3 + z2)
+                   + (coefs_even_se(A) * 6. * (2*4 + z2 * (4. + z2))
+                     + (coefs_odd_se(A) * 7. * z *(5*3 + z2*(5 + z2))
+                       + (coefs_even_se(A) * 8. * (2*4*6 + z2 * (4*6 + z2 *(6 + z2)))
+                         + (coefs_odd_se(A) * 9. * z * (7*5*3 + z2 * (7*5*3 + z2 * (7+z2)))
+              )/sqrts)/sqrts)/sqrts)/sqrts)/sqrts)/sqrts)/sqrts)/sqrts;
+  Real den = a1 + (A[3] + (A[5] + (A[7] + A[9] * 9./s)*7./s)*5./s)*3./s;
 
   // compute ratio
-  Real res = num/den;
-
-  // computation
-  for (int k=1; k<iterMax; k++)
-  {
-    // odd_term : (2k+1)!!/(a+b)^k
-    odd_term *= (2*k+1)/s;
-    // even_term (2*k)!!/(a+b)^{k+1/2}
-    even_term *= 2*(k+1)/s;
-
-    // compute a_{2k+1}
-    Real a_n = coefs_odd_se(std, qmp, A);
-    // check result
-    if (Arithmetic<Real>::isFinite(a_n))
-    {
-      // denominator \sum_0^k (2j+1)!!a_{2j+1}/(a+b)^j
-      den += odd_term * a_n;
-      // num+=\sum_1^k (2k+1)!!a_{2k+1}/(a+b)^k (\sum_1^k z^{2j-1}/(2j-1)!!)
-      num += odd_term * a_n * sum1;
-
-      // compute a_{2k+2}
-      a_n = coefs_even_se(std, qmp, A);
-      // check result
-      if (Arithmetic<Real>::isFinite(a_n))
-      {
-        // update sum2_term = z^{2k}/(2k)!!
-        // update sum2      = \sum_0^k z^{2j}/(2j)!!
-        sum2 += (sum2_term *= z2/(2*k));
-        // num+=\sum_0^k (2k+2)!!a_{2k+2}/(a+b)^k (\sum_1^k z^{2j}/(2j)!!)
-        num += even_term * a_n * sum2;
-      }
-    }
-    // test cv
-    Real old_res = res;
-    res = num/den;
-    if (std::abs(old_res - res)*dnorm < eps)
-    { break;}
-
-    // update sum1_term = z^{2k+1}/(2k+1)!!
-    // update sum1      = \sum_1^{k+1} z^{2j-1}/(2j-1)!!
-    sum1 += (sum1_term *= z2/(2*k+1));
-  }
-#ifdef STK_DEBUG
+  Real ratio = num/den;
   // result
-  Real result = lower_tail ? pnorm - res * dnorm
-                           : pnorm + res * dnorm;
-  if (!Arithmetic<Real>::isFinite(result))
-  {
-    std::cout << "Error in betRatio_se\n"
-              << "pnorm = " << pnorm
-              << " res = " << res
-              << " dnorm  = " << dnorm
-              << "lt =  " << lower_tail
-              << _T("\n";);
-  }
-  return result;
-#else
-  // result
-    return lower_tail ? pnorm - res * dnorm
-                      : pnorm + res * dnorm;
-#endif
+  return lower_tail ? pnorm - ratio * dnorm : pnorm + ratio * dnorm;
 }
 
 /** @ingroup Analysis
@@ -694,8 +640,7 @@ static Real betaRatio_se( Real const& a
  *  @param x value to evaluate the function
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  **/
-Real betaRatio( Real const& a, Real const& b, Real const& x
-              , bool lower_tail)
+Real betaRatio( Real const& a, Real const& b, Real const& x, bool lower_tail)
 {
   // Check if a and x are available
   if (  Arithmetic<Real>::isNA(a)
@@ -704,8 +649,7 @@ Real betaRatio( Real const& a, Real const& b, Real const& x
      ) return Arithmetic<Real>::NA();
   // Negative parameter not allowed
   if ((a<=0)||(b<=0))
-    throw domain_error("Funct::betaRatio(a,b,x) "
-                            "Negative parameter a or b");
+    STKDOMAIN_ERROR_2ARG(Funct::betaRatio,a,b,negative parameter);
   // trivial case
   if (x<=0) return lower_tail ? 0. : 1.;
   if (x>=1) return lower_tail ? 1. : 0.;
@@ -724,25 +668,18 @@ Real betaRatio( Real const& a, Real const& b, Real const& x
     return (x<=0.5) ? betaRatio_sr(a, b, x, lower_tail)
                     : betaRatio_sr(b, a, y, !lower_tail);
   }
-  // (1<a<=80) and (1<b<=80)
-  if (std::max(a,b)<=120)
+  // (1<a<=100) and (1<b<=100)
+  if (std::max(a,b)<=100)
   {
     // general case
     return (x < p) ? betaRatio_cf(a, b, x,  lower_tail)
                    : betaRatio_cf(b, a, y, !lower_tail);
   }
-  // ((1<a<=15) and (120<b)) or ((120<a) and (1<b<=15))
+  // ((1<a<=15) and (100<b)) or ((100<a) and (1<b<=15))
   if (std::min(a,b)<=15)
   {
     return (a<=15) ? betaRatio_up(a, b, x, false, lower_tail)
                    : betaRatio_up(b, a, x, true, !lower_tail);
-  }
-  // ()
-  if ((std::min(a,b)<=120)&& (std::max(a,b)<=200))
-  {
-    // general case
-    return (x < p) ? betaRatio_cf(a, b, x,  lower_tail)
-                   : betaRatio_cf(b, a, y, !lower_tail);
   }
   // other cases
   return (a<b) ? betaRatio_se(a-1, b-1, x, false, lower_tail)

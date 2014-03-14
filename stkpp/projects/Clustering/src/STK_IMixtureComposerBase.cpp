@@ -90,7 +90,6 @@ void IMixtureComposerBase::randomClassInit()
 #ifdef STK_MIXTURE_VERY_VERBOSE
   stk_cout << _T("Entering IMixtureComposerBase::randomClassInit()\n");
 #endif
-  if (!p_prop_) return;
   *p_prop_ = 1./Real(nbCluster_);
   Law::Categorical law(*p_prop_);
   for (int i = p_zi_->firstIdx(); i<= p_zi_->lastIdx(); ++i)
@@ -106,7 +105,6 @@ void IMixtureComposerBase::randomFuzzyInit()
 #ifdef STK_MIXTURE_VERY_VERBOSE
   stk_cout << _T("Entering IMixtureComposerBase::randomFuzzyInit()\n");
 #endif
-  if (!p_prop_) return;
   *p_prop_ = 1./Real(nbCluster_);
   RandBase generator;
   for (int i = p_tik_->firstIdxRows(); i<= p_tik_->lastIdxRows(); ++i)

@@ -42,73 +42,6 @@
 
 using namespace STK;
 
-const int nbTry = 1000;
-
-static void printBetaRatio( CArrayVector<double, nbTry> stkRes
-                          , CArrayVector<double, nbTry> rRes
-                          , CArrayVector<double, nbTry> a
-                          , CArrayVector<double, nbTry> b
-                          , CArrayVector<double, nbTry> x
-                          , Real rTime
-                          , Real stkTime
-                          )
-{
-  int k; Real max = (stkRes - rRes).abs().maxElt(k);
-  stk_cout << _T("max =") << max << _T(" With a =")
-           << a[k]  << _T(", b =") << b[k] << _T(" and x =") << x[k]
-           << _T("\n");
-//  stk_cout << _T("mean =") << (stkRes - rRes).abs().mean()  << _T("\n");
-//  stk_cout << _T("R Elapsed time =") << rTime  << _T(" and ");
-//  stk_cout << _T("stk++ Elapsed time =") << stkTime  << _T("\n");
-//  stk_cout << _T("\n");
-}
-
-
-/**test the beta Ratio function */
-static void testFunctBetaRatio()
-{
-  const double abmax = 200.;
-  CArrayVector<double, nbTry> stkRes, rRes, a, b, x;
-  RandBase generator;
-
-  try
-  {
-    for (double ainf = 0., asup =4.61 ; ainf<abmax; ainf+=4.61, asup+=4.61)
-    {
-      Law::Uniform lawa(ainf, asup);
-      for (double binf = 0., bsup =4.61 ; binf<abmax; binf+=4.61, bsup+=4.61)
-      {
-        Law::Uniform lawb(binf, bsup);
-        for (int iTry = 0, i = rRes.firstIdx(); iTry < nbTry; iTry++, i++)
-        {
-          a[i] = lawa.rand();
-          b[i] = lawb.rand();
-          x[i] = generator.randUnif();
-        }
-        // start R computation
-        Chrono::start();
-        for (int iTry = 0, i = rRes.firstIdx(); iTry < nbTry; iTry++, i++)
-        { rRes[i] = pbeta(x[i], a[i], b[i], true, false);}
-        Real rTime = Chrono::elapsed();
-        // start computation
-        Chrono::start();
-        for (int iTry = 0, i = rRes.firstIdx(); iTry < nbTry; iTry++, i++)
-        { stkRes[i] = Funct::betaRatio(a[i],b[i],x[i],true);}
-        Real stkTime = Chrono::elapsed();
-
-        printBetaRatio(stkRes, rRes, a, b, x, rTime, stkTime);
-      }
-    }
-  }
-  catch (Exception & error)
-  {
-    std::cerr << _T("An error occured : ") << error.error() << _T("\n");
-    return;
-  }
-  return;
-}
-
-// Main
 int main(int argc, char *argv[])
 {
   try
@@ -117,8 +50,25 @@ int main(int argc, char *argv[])
     stk_cout << _T("+ Test betaRatio function                        +\n");
     stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("\n\n");
-
-    testFunctBetaRatio();
+    std::string rawInput;
+    Real a, b, x;
+    if (argc >=4)
+    {
+      a = atof(argv[1]);
+      b = atof(argv[2]);
+      x = atof(argv[3]);
+    }
+    else
+    {
+      Law::Uniform lawb(0, 10000);
+      a = lawb.rand();
+      b = lawb.rand();
+      x = std::abs(Law::Normal::rand(a/(a+b), 0.001)),1.;
+    }
+    // write results
+    std::cout << "a = " << a << "; b = " << b << "; x = " << x << std::endl;
+    Real res = Funct::betaRatio(a,b,x,true);
+    stk_cout << _T("Res =") << res << _T("\n");
 
     stk_cout << _T("\n\n");
     stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -131,10 +81,8 @@ int main(int argc, char *argv[])
   {
     stk_cerr << _T("An error occured : ") << error.error() << _T("\n");
   }
-  return 0;
+return 0;
 }
-
-
 
 
 

@@ -31,7 +31,8 @@
  **/
 
 /** @file STK_CategoricalParameters.h
- *  @brief In this file we define the parameters class for the Gaussian mixture models
+ *  @brief In this file we define the parameters class for the Categorical
+ *  mixture models.
  **/
 
 #ifndef STK_CATEGORICALPARAMETERS_H
@@ -56,22 +57,19 @@ class CategoricalParametersBase : public IMultiParameters<Parameters>
   protected:
     typedef IMultiParameters<Parameters> Base;
     /** default constructor.*/
-    inline CategoricalParametersBase() : Base(), proba_() {}
+    inline CategoricalParametersBase() : Base() {}
     /** constructor with specified range
      *  @param range the range of the variables
      **/
-    inline CategoricalParametersBase( Range const& range): Base(range), proba_(range, 0.)
-    {}
+    inline CategoricalParametersBase( Range const& range): Base(range) {}
     /** copy constructor.*/
-    inline CategoricalParametersBase( CategoricalParametersBase const& param)
-                                     : Base(param), proba_(param.mean_)
-    {}
+    inline CategoricalParametersBase( CategoricalParametersBase const& param): Base(param) {}
     /** destructor */
     inline ~CategoricalParametersBase() {}
 
   public:
-    /** @return the j-th probability value */
-    inline Real proba(int j) const {return this->asDerived().probaImpl(j);}
+    /** @return the j-th probability value of the l-th modality */
+    inline Real proba(int j, int l) const {return this->asDerived().probaImpl(j, l);}
 };
 
 /** @ingroup Clustering
@@ -98,7 +96,7 @@ class Categorical_pjkParameters: public CategoricalParametersBase<Categorical_pj
     /** destructor */
     inline ~Categorical_pjkParameters() {}
     /** @return the j-th sigma value */
-    inline Real probaImpl(int j) const {return proba_[j];}
+    inline Real probaImpl(int j, int l) const {return proba_[j][l];}
     /** resize the set of parameter
      *  @param range range of the parameters
      **/
@@ -108,8 +106,8 @@ class Categorical_pjkParameters: public CategoricalParametersBase<Categorical_pj
      *  @param os the output stream for the parameters
      **/
     inline void printImpl(ostream &os) { os << proba_ << _T("\n");}
-    /** vector of the probabilities */
-    Array2DPoint<Real> proba_;
+    /** Array of the probabilities */
+    Array2DPoint< Array2DVector<Real>> proba_;
 };
 
 /** @ingroup Clustering
@@ -135,19 +133,18 @@ class Categorical_pkParameters: public CategoricalParametersBase<Categorical_pkP
     {}
     /** destructor */
     inline ~Categorical_pkParameters() {}
-    /** @return the j-th sigma value */
-    inline Real probaImpl(int j) const {return proba_;}
+    /** @return the j-th proba value */
+    inline Real probaImpl(int j, int l) const {return proba_[l];}
     /** resize the set of parameter
      *  @param range range of the parameters
      **/
-    inline void resizeImpl(Range const& range)
-    { if (range.size()>0) proba_ = 1./Real(range.size());}
+    inline void resizeImpl(Range const& range) {}
     /** print the parameters.
      *  @param os the output stream for the parameters
      **/
     inline void printImpl(ostream &os) { os << proba_ << _T("\n");}
     /** probability of each model */
-    Real proba_;
+    Array2DVector<Real> proba_;
 };
 
 } // namespace STK

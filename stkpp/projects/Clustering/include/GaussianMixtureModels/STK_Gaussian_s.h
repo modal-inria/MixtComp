@@ -97,6 +97,7 @@ class Gaussian_s : public DiagGaussianBase<Gaussian_s<Array> >
     void initializeModel()
     {
       Base::initializeModel();
+      sigma_ = 1.0;
       for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       { components()[k]->p_param()->p_sigma_ = &sigma_;}
     }

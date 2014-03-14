@@ -79,8 +79,7 @@ class CategoricalComponent : public IMixtureComponent< _Array, _Parameters >
     {
       Real sum =0.;
       for (Integer j= rowData.firstIdx(); j <= rowData.lastIdx(); ++j)
-      { sum += (p_param->proba(rowData[j]) == 0) ? -Arithmetic<Real>::infinity()
-                                                 : p_param->proba(rowData[j]);
+      {;
       }
       return sum;
     }

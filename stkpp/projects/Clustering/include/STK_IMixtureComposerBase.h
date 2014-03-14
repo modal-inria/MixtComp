@@ -47,7 +47,7 @@ namespace STK
 {
 
 /** @ingroup Clustering
- *  @brief Base class for Mixture model.
+ *  @brief Base class for Mixture (composed) model.
  *
  * In statistics, a mixture model is a probabilistic model for representing
  * the presence of sub-populations within an overall population, without
@@ -69,18 +69,13 @@ namespace STK
  *
  * In this interface we assume there is an underline generative model that will
  * be estimated using either an EM, SEM or CEM algorithm.
- *
  * All mixture parameters: proportions, Tik, Zi and components are accessed by
- * pointer and can be set to this class  using the method
- * @code
- *   void setMixtureParameters(CArrayPoint<Real>* p_prop, Array2D<Real>* p_tik, CArrayVector<int>* p_zi);
- * @endcode
- * so that they can be used in a composed model.
- *
- * The mixture parameters also can be created using the method
+ * pointer. These parameters are created using the method
  * @code
  *   void createMixtureParameters();
  * @endcode
+ * in the constructor. They can be accessed from the mixtures using constant
+ * accessors.
  *
  * The pure virtual function to implement in derived class are
  * @code
@@ -97,9 +92,9 @@ namespace STK
  *   virtual void writeParameters(std::ostream& os) const;
  *   virtual void initializeModel();
  *   virtual void initializeStep();
+ *   virtual void pStep();
  *   virtual void inputationStep();
  *   virtual void samplingStep();
- *   virtual void pStep();
  *   virtual void finalizeStep();
  * @endcode
  *
@@ -187,10 +182,6 @@ class IMixtureComposerBase : public IModelBase
      *  as virtual in case we impose fixed proportions in derived model.
      **/
     virtual void pStep();
-    /** @brief Finalize the estimation of the model.
-     * The default behavior is "do nothing".
-     **/
-    inline virtual void finalizeStep() {}
     /** @brief Impute the missing values.
      *  Default behavior is "do nothing".
      **/
@@ -199,6 +190,10 @@ class IMixtureComposerBase : public IModelBase
      *  excluding class labels. Default behavior is "do nothing".
      */
     virtual void samplingStep() {};
+    /** @brief Finalize the estimation of the model.
+     * The default behavior is "do nothing".
+     **/
+    inline virtual void finalizeStep() {}
 
     // not virtual
     /** Initialize randomly the labels zi of the model.

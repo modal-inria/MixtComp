@@ -28,39 +28,38 @@
  * Author:   Serge Iovleff
  **/
 
-/** @file STK_Gaussian_sk.h
- *  @brief In this file we define the Gaussian_sk model
+/** @file STK_Categorical_pk.h
+ *  @brief In this file we define the Categorical_pk model
  **/
 
-#ifndef STK_GAUSSIAN_SK_H
-#define STK_GAUSSIAN_SK_H
+#ifndef STK_CATEGORICAL_SK_H
+#define STK_CATEGORICAL_SK_H
 
-#include "STK_DiagGaussianBase.h"
-#include "STK_GaussianUtil.h"
+#include "STK_CategoricalBase.h"
 
 namespace STK
 {
 
 //forward declaration, to allow for recursive template
-template<class Array>class Gaussian_sk;
+template<class Array>class Categorical_pk;
 
 namespace Clust
 {
 /** @ingroup Clustering
- *  Traits class for the Gaussian_sk traits policy. */
+ *  Traits class for the Categorical_pk traits policy. */
 template<class _Array>
-struct MixtureModelTraits< Gaussian_sk<_Array> >
+struct MixtureModelTraits< Categorical_pk<_Array> >
 {
   typedef _Array Array;
-  typedef Gaussian_sk_Parameters Parameters;
-  typedef DiagGaussianComponent<_Array, Parameters> Component;
+  typedef Categorical_pkParameters Parameters;
+  typedef CategoricalComponent<_Array, Parameters> Component;
 };
 
 } // namespace hidden
 
 /** @ingroup Clustering
- *  The diagonal Gaussian mixture model @c Gaussian_sk is
- *  the most general diagonal Gaussian model and have a density function of the
+ *  The diagonal Categorical mixture model @c Categorical_pk is
+ *  the most general diagonal Categorical model and have a density function of the
  *  form
  * \f[
  *  f(\mathbf{x}|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d
@@ -68,12 +67,12 @@ struct MixtureModelTraits< Gaussian_sk<_Array> >
  * \f]
  **/
 template<class Array>
-class Gaussian_sk : public DiagGaussianBase<Gaussian_sk<Array> >
+class Categorical_pk : public CategoricalBase<Categorical_pk<Array> >
 {
   public:
-    typedef DiagGaussianBase<Gaussian_sk<Array> > Base;
-    typedef typename Clust::MixtureModelTraits< Gaussian_sk<Array> >::Component Component;
-    typedef typename Clust::MixtureModelTraits< Gaussian_sk<Array> >::Parameters Parameters;
+    typedef CategoricalBase<Categorical_pk<Array> > Base;
+    typedef typename Clust::MixtureModelTraits< Categorical_pk<Array> >::Component Component;
+    typedef typename Clust::MixtureModelTraits< Categorical_pk<Array> >::Parameters Parameters;
     typedef typename Array::Col ColVector;
 
     using Base::p_tik;
@@ -84,16 +83,16 @@ class Gaussian_sk : public DiagGaussianBase<Gaussian_sk<Array> >
     /** default constructor
      * @param nbCluster number of cluster in the model
      **/
-    inline Gaussian_sk( int nbCluster) : Base(nbCluster) {}
+    inline Categorical_pk( int nbCluster) : Base(nbCluster) {}
     /** copy constructor
      *  @param model The model to copy
      **/
-    inline Gaussian_sk( Gaussian_sk const& model) : Base(model) {}
+    inline Categorical_pk( Categorical_pk const& model) : Base(model) {}
     /** destructor */
-    inline ~Gaussian_sk() {}
+    inline ~Categorical_pk() {}
     /** Compute the inital weighted mean and the initial common variances. */
     void initializeStep();
-    /** Initialize randomly the parameters of the Gaussian mixture. The centers
+    /** Initialize randomly the parameters of the Categorical mixture. The centers
      *  will be selected randomly among the data set and the standard-deviations
      *  will be set to 1.
      */
@@ -107,50 +106,22 @@ class Gaussian_sk : public DiagGaussianBase<Gaussian_sk<Array> >
 
 /** Initialize the parameters using mStep. */
 template<class Array>
-void Gaussian_sk<Array>::initializeStep()
-{ GaussianUtil<Component>::initialMean(components(), p_tik());
-  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-  {
-    p_param(k)->sigma_
-    = std::sqrt( (p_tik()->col(k).transpose()
-                *(*p_data() - (Const::Vector<Real>(p_data()->rows()) * p_param(k)->mean_)).square()).sum()
-        /(this->nbVariable()*p_tik()->col(k).sum())
-       );
-    if (p_param(k)->sigma_ <= 0.) throw Clust::initializeStepFail_;
-  }
-}
+void Categorical_pk<Array>::initializeStep()
+{}
 
-/* Initialize randomly the parameters of the Gaussian mixture. The centers
+/* Initialize randomly the parameters of the Categorical mixture. The centers
  *  will be selected randomly among the data set and the standard-deviation
  *  will be set to 1.
  */
 template<class Array>
-void Gaussian_sk<Array>::randomInit()
-{
-  GaussianUtil<Component>::randomMean(components());
-  for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
-  { p_param(k)->sigma_ = 1.;}
-}
+void Categorical_pk<Array>::randomInit()
+{}
 
 /* Compute the weighted mean and the common variance. */
 template<class Array>
-void Gaussian_sk<Array>::mStep()
-{
-  // compute the means
-  GaussianUtil<Component>::updateMean(components(), p_tik());
-  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-  {
-    p_param(k)->sigma_
-    = sqrt( ( p_tik()->col(k).transpose()
-             *(*p_data() - (Const::Vector<Real>(p_data()->rows()) * p_param(k)->mean_)
-              ).square()
-            ).sum()
-           /(p_data()->sizeCols()*p_tik()->col(k).sum())
-          );
-    if (p_param(k)->sigma_ <= 0.) throw Clust::mStepFail_;
-  }
-}
+void Categorical_pk<Array>::mStep()
+{}
 
 } // namespace STK
 
-#endif /* STK_GAUSSIAN_SJK_H */
+#endif /* STK_CATEGORICAL_SJK_H */

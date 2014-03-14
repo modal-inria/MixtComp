@@ -45,11 +45,16 @@ namespace STK
 namespace Funct
 {
 /** @ingroup Analysis
+ *  @brief Compute the incomplete beta function ratio using the continued
+ *  fraction method.
+ **/
+Real betaRatio_cf( Real const& a, Real const& b, Real const& x
+                 , bool lower_tail = true, int const& iterMax = 1000
+                 );
+/** @ingroup Analysis
  *  @brief Compute the incomplete beta function ratio
  **/
-Real betaRatio( Real const& a, Real const& b, Real const& x
-              , bool lower_tail = true
-              );
+Real betaRatio( Real const& a, Real const& b, Real const& x, bool lower_tail = true);
 
 } // namespace Funct
 

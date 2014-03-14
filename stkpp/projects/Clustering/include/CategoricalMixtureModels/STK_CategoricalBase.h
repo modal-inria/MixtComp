@@ -50,9 +50,8 @@ namespace STK
 template<class Derived>
 class CategoricalBase : public IMixtureModel<Derived >
 {
-  public:
+  protected:
     typedef IMixtureModel<Derived > Base;
-
     using Base::p_tik;
     using Base::p_data;
     using Base::p_param;
@@ -68,29 +67,30 @@ class CategoricalBase : public IMixtureModel<Derived >
     inline CategoricalBase( CategoricalBase const& model) : Base(model) {}
     /** destructor */
     inline ~CategoricalBase() {}
+
+  public:
     /** @return an imputation value for the jth variable of the ith sample
      *  @param i,j indexes of the data to impute */
     int impute(int i, int j) const
     {
-      Real sum = 0.;
-      for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-      { sum += p_tik()->elt(i,k) * p_param(k)->proba(j);}
-      return std::round(sum);
+      // compute argmax ??
+      return 0.;
     }
     /** @return a simulated value for the jth variable of the ith sample
      * @param i,j indexes of the data to simulate*/
     int sample(int i, int j) const
     {
-      Real sum = 0.;
-      for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-      { sum += p_tik()->elt(i,k) * Law::Normal::rand(p_param(k)->mean(j), p_param(k)->sigma(j));}
-      return sum;
+      // simulate
+      return 0.;
     }
     /** @return a safe value for the jth variable
      *  @param j index of the column with the safe value needed
      **/
-    inline Real safeValue(int j) const
-    { return this->p_data()->col(j).safe().mean();}
+    inline int safeValue(int j) const
+    {
+      // compute arg max ??
+      return 0;
+    }
     /** get the parameters of the model
      *  @param params the parameters of the model
      **/
@@ -100,7 +100,9 @@ class CategoricalBase : public IMixtureModel<Derived >
       for (int k= params.firstIdxRows(); k <= params.lastIdxRows(); ++k)
       {
         for (int j=  p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
-        { params(k, j) = p_param(k)->proba(j);}
+        {
+          params(k, j) = p_param(k)->proba(j);
+        }
       }
 
     }
@@ -117,6 +119,14 @@ class CategoricalBase : public IMixtureModel<Derived >
         stk_cout << _T("proba = ")<< proba;
       }
     }
+    /** Set the range of the modalities
+     * @param modalities the range of the modalities
+     **/
+    inline void setModalities( Range const& modalities) { modalities_ = modalities;}
+
+  protected:
+    /** range of the modalities */
+    Range modalities_;
 };
 
 } // namespace STK
