@@ -64,6 +64,7 @@
 #include "../projects/Clustering/include/STK_Clust_Util.h"
 #include "../projects/Clustering/include/STK_MixtureFacade.h"
 
+#include "../projects/Clustering/include/STK_MixtureManager.h"
 #include "../projects/Clustering/include/STK_MixtureComposer.h"
 #include "../projects/Clustering/include/STK_IMixture.h"
 

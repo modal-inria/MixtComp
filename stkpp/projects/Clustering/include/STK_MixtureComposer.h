@@ -33,35 +33,41 @@
  *  @brief In this file we define the class MixtureComposer.
  **/
 
-#ifndef STK_MIXTURECOMPOSITER_H
-#define STK_MIXTURECOMPOSITER_H
+#ifndef STK_MIXTURECOMPOSER_H
+#define STK_MIXTURECOMPOSER_H
 
 #include <vector>
-
 #include "STK_IMixtureComposerBase.h"
-#include "../../DManager/include/STK_IDataHandler.h"
 
 namespace STK
 {
 
 class IMixture;
 
-/** Main class handling the mixture model in a single class. */
+/** @ingroup Clustering
+ *  Main class for handling composed mixture models.
+ *  A composed mixture model on some composed space
+ *  \f$  \mathbb{X} = \subset \mathcal{X}^1\times \ldots  \times \mathcal{X}^L \f$
+ *  is a density of the form
+ * \f[
+ *     f(\mathbf{x}|\boldsymbol{\theta})
+ *     = \sum_{k=1}^K p_k \prod_{l=1}^L f^l(\mathbf{x}^l;\boldsymbol{\lambda}^l_k,\boldsymbol{\alpha}^l)
+ *     \quad \mathbf{x} \in \mathbb{X}.
+ * \f]
+ * The \f$ p_k > 0\f$ with  \f$ \sum_{k=1}^K p_k =1\f$ are the mixing proportions.
+ * The density \e f is called the component of the model. The parameters
+ * \f$\boldsymbol{\lambda}^l_k, \, k=1,\ldots K \f$ are the cluster specific parameters
+ * and the parameters \f$ \boldsymbol{\alpha}^l \f$ are the shared parameters.
+ * */
 class MixtureComposer : public IMixtureComposerBase
 {
   public:
-    typedef IDataHandler::InfoMap InfoMap;
     typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
     typedef std::vector<IMixture*>::iterator MixtIterator;
     /** Constructor.
-     * @param nbCluster number of cluster
+     * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      */
-    MixtureComposer( int nbCluster);
-    /** Constructor.
-     * @param nbCluster number of cluster
-     * @param nbSample number of sample
-     */
-    MixtureComposer( int nbCluster, int nbSample);
+    MixtureComposer( int nbSample, int nbVariable, int nbCluster);
     /** copy constructor.
      *  @param composer the composer to copy
      */
@@ -77,8 +83,6 @@ class MixtureComposer : public IMixtureComposerBase
     /** Create a clone of the current model, with mixtures parameters preserved. */
     virtual MixtureComposer* clone() const;
 
-    /** @param p_handler the DataHandler to set */
-    void setDataHandler(IDataHandler const* p_handler);
     /** initialize randomly the parameters of the components of the model */
     virtual void randomInit();
     /** Compute the proportions and the model parameters given the current tik
@@ -96,13 +100,17 @@ class MixtureComposer : public IMixtureComposerBase
      *  lookup on the mixtures and sum the nbFreeParameter.
      **/
     virtual int computeNbFreeParameters() const;
-    /** @brief Initialize the model before its first use. */
-    virtual void initializeModel();
     /**@brief This step can be used by developer to initialize any thing which
-     * is not the model. It will be called just before running the estimation
-     * algorithm.
+     * is not the model. It will be called before running the estimation
+     * algorithm. In this class, the @c initializeSterp method
+     *  - set the number of free parameters using the pure virtual function @¢ computeNbFreeParameters()
+     *  - Compute the
+     *  - call the initializeStep() of all the mixtures,
+     *  First initialization of the parameters of the model.
+     *  This method is called in order to initialize the parameters.
+     *
      **/
-    void initializeStep();
+    virtual void initializeStep();
     /** @brief Impute the missing values.
      **/
     virtual void imputationStep();
@@ -114,36 +122,38 @@ class MixtureComposer : public IMixtureComposerBase
      *  be called only once after we finish running the estimation algorithm.
      **/
     virtual void finalizeStep();
-    /** create the mixtures using DataHandler info.
-     * @note if the idModel is not a Clust::Mixture, it is not an error as
-     * other mixtures with other id can have been implemented outside stk++.
-     * @sa Clust::Mixture */
-    void createMixtures();
-    /** create a specific mixture.
+    /** register a mixture to the composer.
+     *  When a mixture is registered, the composer:
+     *  - assign composer pointer (itself) to the mixture
+     *  - add it to v_mixtures_
+     *  @note the mixture is not initialized, so don't forget to call
+     **/
+    void registerMixture(IMixture* mixture);
+    /** Utility method allowing to create all the mixtures using the DataHandler
+     *  info of the manager.
+     **/
+    template<class MixtureManager>
+    void createMixtures(MixtureManager& manager)
+    { manager.createMixtures(*this, nbCluster());}
+    /** Create a specific mixture and register it.
+     *  @param manager the manger with the responsibility of the creation
      *  @param idModel the id of the mixture we want to create
      *  @param idName the name of the mixture
      **/
-    void createMixture(Clust::Mixture idModel, String const& idName);
-    /** register a mixture to the composer */
-    void registerMixture(IMixture* mixture);
-    /** call setData for all mixtures */
-    void setData();
-    /** get data from DataHandler  */
-    template<typename Data>
-    inline void getData(std::string const& id, Data& data, int& nbVariable) const
-    { p_handler_->getData(id, data, nbVariable);}
+    template<class MixtureManager>
+    void createMixture(MixtureManager& manager, Clust::Mixture idModel, String const& idName)
+    {
+      IMixture* p_mixture = manager.createMixture(idModel, idName, nbCluster_);
+      if (p_mixture) registerMixture(p_mixture);
+    }
 
   protected:
-    /** @return a constant pointer on the data handler */
-    inline IDataHandler const* p_handler() const { return p_handler_;}
     /** @brief Create the composer using existing data handler and mixtures.
      * This method is essentially used by the create() method and can be
      * reused in derived classes.
      * @sa MixtureComposerFixedProp
      **/
-    void createComposer(IDataHandler const* p_handler, std::vector<IMixture*> const& v_mixtures_);
-    /** pointer to the dataHandler */
-    IDataHandler const* p_handler_;
+    void createComposer( std::vector<IMixture*> const& v_mixtures_);
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
 };
@@ -154,15 +164,10 @@ class MixtureComposerFixedProp : public MixtureComposer
 {
   public:
     /** Constructor.
-     * @param nbCluster number of cluster
+     * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      */
-    inline MixtureComposerFixedProp( int nbCluster) :MixtureComposer(nbCluster) {}
-    /** Constructor.
-     * @param nbCluster number of cluster
-     * @param nbSample number of sample
-     */
-    inline MixtureComposerFixedProp( int nbCluster, int nbSample)
-                                   : MixtureComposer(nbCluster, nbSample) {}
+    inline MixtureComposerFixedProp( int nbSample, int nbVariable, int nbCluster)
+                                   : MixtureComposer( nbSample, nbVariable, nbCluster) {}
     /** copy constructor.
      *  @param model the model to copy
      */
@@ -183,4 +188,4 @@ class MixtureComposerFixedProp : public MixtureComposer
 
 } /* namespace STK */
 
-#endif /* STK_MIXTURECOMPOSITER_H */
+#endif /* STK_MIXTURECOMPOSER_H */

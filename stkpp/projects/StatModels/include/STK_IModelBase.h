@@ -80,7 +80,7 @@ class IModelBase
     inline Real lnNbSample() const
     { return (nbSample_ <= 0) ? -Arithmetic<Real>::infinity() : std::log((Real)nbSample_);}
     /** @return the total available observations*/
-    inline int const& nbVar() const { return nbVar_;}
+    inline int const& nbVariable() const { return nbVar_;}
     /** @return The ln-likelihood */
     inline Real lnLikelihood() const { return lnLikelihood_;}
     /** @return The likelihood */

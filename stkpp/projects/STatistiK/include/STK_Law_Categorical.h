@@ -122,18 +122,18 @@ class Categorical: public IUnivLaw<int>
     template<class OtherArray>
     static int rand(OtherArray const& prob)
     {
-      Real u = Law::generator.randUnif();
-      int k; Real cum = 0.;
-      for(k = prob.firstIdx(); k< prob.lastIdx(); k++)
+      Real u = Law::generator.randUnif(), cum = 0.;
+      for(int k = prob.firstIdx(); k< prob.lastIdx(); k++)
       {
         cum += prob[k];
         if (u<=cum) return k;
       }
-      return k;
+      return prob.lastIdx();
     }
     /** @brief compute the log probability distribution function
      *  Give the value of the log-pdf at the point x.
      *  @param x the value to compute the lpdf.
+     *  @param prob the probability of each value
      *  @return the value of the log-pdf
      **/
     template<class OtherArray>

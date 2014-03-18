@@ -160,24 +160,7 @@ Real betaRatio_cf( Real const& a, Real const& b, Real const& x
       { break;}
     }
   }
-#ifdef STK_DEBUG
-  // result
-  Real res = lower_tail ? bt*cf/a : 1-bt*cf/a;
-  if (!Arithmetic<Real>::isFinite(res))
-  {
-    stk_cout << _T("in cf : bt= ") << bt
-              << _T(" cf = ") << cf
-              << _T(" a  = ") << a
-              << _T(" b  = ") << b
-              << _T(" x  = ") << x
-              << _T("lt =  ") << lower_tail
-              << _T("\n");
-  }
-  return res;
-#else
   return lower_tail ? bt*cf/a : 1-bt*cf/a;
-#endif
-
 }
 
 /* @ingroup Analysis
@@ -353,8 +336,13 @@ static Real serie_up( Real const& s, Real const& a, Real const& x, int const& n)
   Real sum = 1./a;
   Real di  = 1./a;
   // compute \sum_{i=0}^{n-1} \frac{d_i x^i}{a}
-  for (int i=1; i<n; i++)
-    sum += (di *= x*(s-1+i)/(a+i));
+  for (int i=1; i<n; i++) sum += (di *= x*(s-1+i)/(a+i));
+  stk_cout << "sum = " << sum << "\n";
+  Real sum2 = 1./a;
+  di  = 1.;
+  // compute \sum_{i=0}^{n-1} \frac{d_i x^i}{a}
+  for (int i=1; i<n; i++) sum2 += (di *= x*(s-1+i)/(a+i));
+  stk_cout << "sum2 = " << sum2 << "\n";
   // return result
   return sum;
 }
@@ -373,9 +361,8 @@ static Real serie_up( Real const& s, Real const& a, Real const& x, int const& n)
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  **/
 static Real betaRatio_up( Real const& a, Real const& b, Real const& x
-                               , bool xm1
-                               , bool lower_tail
-                               )
+                        , bool xm1, bool lower_tail
+                        )
 {
 #ifdef STK_BETARATIO_DEBUG
   stk_cout << _T("BetaRatio_up(") << a << _T(", ") << b << _T(", ") << x << _T(")\n");
@@ -406,6 +393,7 @@ static Real betaRatio_up( Real const& a, Real const& b, Real const& x
                    -(dev0(a0, s*x0) + dev0(b, y*s))
                  )
             );
+  stk_cout << "bt = " << bt << "\n";
   // check trivial case
   if (!bt)
     return betaRatio_ae(b, a0, x, !xm1, !lower_tail);
@@ -465,8 +453,7 @@ static Real betaRatio_sr( Real const& a, Real const& b, Real const& x
   }
   while (std::abs(term) > std::abs(sum) * Arithmetic<Real>::epsilon());
   // return result
-  return lower_tail ? bt*(1/a + sum)
-                    : (1-bt/a)-(bt*sum);
+  return lower_tail ? bt*(1/a + sum) : (1-bt/a)-(bt*sum);
 }
 
 /** @ingroup Analysis
@@ -534,7 +521,7 @@ static Real coefs_even_se( std::vector<Real> &A)
   return res;
 }
 
-/** @ingroup Analysis
+/* @ingroup Analysis
  *  @brief compute the even coefficients of the beta Ratio function
  *  asymptotic expansion.
  *
@@ -657,9 +644,12 @@ Real betaRatio( Real const& a, Real const& b, Real const& x, bool lower_tail)
   Real y = (0.5 - x) + 0.5;
   // parameters
   Real p=a/(a+b);
+  std::cout << "Entering" << std::endl;
   // small a or b
   if (std::min(a,b)<=1)
   {
+    std::cout << "case 1" << std::endl;
+
     // case b<=1 and a>=15
     if (a>=15) return betaRatio_ae(a, b, x, false, lower_tail);
     // case a<=1 and b>=15
@@ -668,19 +658,23 @@ Real betaRatio( Real const& a, Real const& b, Real const& x, bool lower_tail)
     return (x<=0.5) ? betaRatio_sr(a, b, x, lower_tail)
                     : betaRatio_sr(b, a, y, !lower_tail);
   }
+
   // (1<a<=100) and (1<b<=100)
   if (std::max(a,b)<=100)
   {
+    std::cout << "case 2" << std::endl;
     // general case
     return (x < p) ? betaRatio_cf(a, b, x,  lower_tail)
                    : betaRatio_cf(b, a, y, !lower_tail);
   }
-  // ((1<a<=15) and (100<b)) or ((100<a) and (1<b<=15))
-  if (std::min(a,b)<=15)
+  // ((1<a<=40) and (100<b)) or ((100<a) and (1<b<=40))
+  if (std::min(a,b)<=40)
   {
-    return (a<=15) ? betaRatio_up(a, b, x, false, lower_tail)
+    std::cout << "case 3" << std::endl;
+    return (a<=40) ? betaRatio_up(a, b, x, false, lower_tail)
                    : betaRatio_up(b, a, x, true, !lower_tail);
   }
+  std::cout << "case 4" << std::endl;
   // other cases
   return (a<b) ? betaRatio_se(a-1, b-1, x, false, lower_tail)
                : betaRatio_se(b-1, a-1, x, true, !lower_tail);

@@ -75,7 +75,8 @@ void StrategyFacade::run()
 {
   if (p_strategy_)
   {
-    p_model_->initializeModel();
+    if (p_model_->state() == Clust::modelCreated_)
+      p_model_->initializeStep();
     p_strategy_->run();
     p_model_->finalizeStep();
   }

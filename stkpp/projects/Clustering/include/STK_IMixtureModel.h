@@ -64,6 +64,7 @@ class IMixtureModel : public IRecursiveTemplate<Derived>, public IMixtureModelBa
     typedef typename Clust::MixtureModelTraits<Derived>::Array Array;
     typedef typename Clust::MixtureModelTraits<Derived>::Component Component;
     typedef typename Clust::MixtureModelTraits<Derived>::Parameters Parameters;
+    // typedef typename Clust::MixtureModelTraits<Derived>::ParamInfo ParamInfo;
     using IMixtureModelBase::p_tik;
 
   protected:

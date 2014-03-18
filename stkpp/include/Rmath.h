@@ -418,8 +418,8 @@ double	bessel_y(double, double);
 	/* General Support Functions */
 
 double 	pythag(double, double);
-double  expm1(double); /* = exp(x)-1 {care for small x} */
-double  log1p(double); /* = log(1+x) {care for small x} */
+//double  expm1(double); /* = exp(x)-1 {care for small x} */
+//double  log1p(double); /* = log(1+x) {care for small x} */
 int	imax2(int, int);
 int	imin2(int, int);
 double	fmax2(double, double);

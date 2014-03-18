@@ -87,17 +87,14 @@ class IMixture
      * @return New instance of class as that of calling object.
      */
     virtual IMixture* create() const  = 0;
-    /** @brief Initialize the model before its first use. Will be called after
-     *  setData().
-     *  This method should create any container needed by the model and/or resize
-     *  them.
-     *  Since this method can be used when create is called(), its main purpose should
-     *  be to reset the mixture parameters, while leaving the data unchanged. */
-    virtual void initializeModel() = 0;
     /** @brief This function must be defined in derived class for initialization
      *  of the mixture parameters.
-     *  This function will be called once the model is created, data is set and
-     *  model initialized.
+     *  This method should create any container needed by the model, resize
+     *  them and initialize them.
+     *  Since this method can be used when create is called, its main
+     *  purpose should be to reset the mixture parameters, while leaving the
+     *  data unchanged.
+     *  This function will be called once the model is created and data is set.
      */
     virtual void initializeStep() = 0;
     /** @brief This function should be used in order to initialize randomly the
@@ -139,6 +136,10 @@ class IMixture
      *  @return Number of free parameters
      */
     virtual int nbFreeParameter() const = 0;
+    /** This function must return the number of variables (columns).
+     *  @return Number of variables
+     */
+    virtual int nbVariable() const = 0;
     /** This function can be used to write summary of parameters on to the output stream.
      *  @param out Stream where you want to write the summary of parameters.
      */
@@ -148,25 +149,8 @@ class IMixture
     stk_cout<< _T("You need to override this method in your mixture!");
 #endif
     }
-    /** This function will be defined to set the data into your data containers.
-     *  To facilitate data handling, framework provide templated functions,
-     *  that can be called directly to get the data.
-     */
-    virtual void setData() = 0;
 
   protected:
-    /** This function is to be used in order to implement the setData pure
-     *  virtual function. You have just to copy and past the following piece of
-     *  code
-     *  @code
-     *    void setData()
-     *    { IMixture::getData<Data>( Data& data, int& nbVariable);}
-     *  @endcode
-     *  with Data the correct type.
-     */
-    template<typename Data>
-    inline void getData( Data& data, int& nbVariable)
-    { p_composer_->getData<Data>(idName_, data, nbVariable);}
     /** This function can be used in derived classes to get number of samples.
      *  @return Number of samples.
      */

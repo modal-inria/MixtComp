@@ -54,6 +54,7 @@ struct MixtureModelTraits< Gaussian_s<_Array> >
   typedef _Array Array;
   typedef Gaussian_s_Parameters Parameters;
   typedef DiagGaussianComponent<_Array, Parameters> Component;
+  typedef Real ParamInfo;
 };
 
 } // namespace Clust

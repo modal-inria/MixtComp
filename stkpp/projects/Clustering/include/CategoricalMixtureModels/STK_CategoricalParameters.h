@@ -85,13 +85,12 @@ class Categorical_pjkParameters: public CategoricalParametersBase<Categorical_pj
      *  @param range the range of the variables
      **/
     inline Categorical_pjkParameters( Range const& range)
-                                : Base(range), proba_(range, 1./Real(range.size()))
-    {}
+                                    : Base(range), proba_(range, 1./Real(range.size())) {}
     /** copy constructor.
      * @param param the parameters to copy.
      **/
     inline Categorical_pjkParameters( Categorical_pjkParameters const& param)
-                                : Base(param), proba_(param.proba_)
+                                    : Base(param), proba_(param.proba_)
     {}
     /** destructor */
     inline ~Categorical_pjkParameters() {}
@@ -107,7 +106,7 @@ class Categorical_pjkParameters: public CategoricalParametersBase<Categorical_pj
      **/
     inline void printImpl(ostream &os) { os << proba_ << _T("\n");}
     /** Array of the probabilities */
-    Array2DPoint< Array2DVector<Real>> proba_;
+    Array2DPoint< Array2DVector<Real> > proba_;
 };
 
 /** @ingroup Clustering
@@ -129,12 +128,12 @@ class Categorical_pkParameters: public CategoricalParametersBase<Categorical_pkP
      * @param param the parameters to copy.
      **/
     inline Categorical_pkParameters( Categorical_pkParameters const& param)
-                                : Base(param), proba_(param.proba_)
+                                   : Base(param), proba_(param.proba_)
     {}
     /** destructor */
     inline ~Categorical_pkParameters() {}
     /** @return the j-th proba value */
-    inline Real probaImpl(int j, int l) const {return proba_[l];}
+    inline Real probaImpl(int j, int l) const { return proba_[l];}
     /** resize the set of parameter
      *  @param range range of the parameters
      **/

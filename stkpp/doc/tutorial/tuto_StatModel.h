@@ -54,7 +54,7 @@
  *  @code
  *    int const& nbSample() const;
  *    Real lnNbSample() const;
- *    int const& nbVar() const;
+ *    int const& nbVariable() const;
  *    Real lnLikelihood() const;
  *    Real likelihood() const;
  *    int const& nbFreeParameter();

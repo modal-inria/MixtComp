@@ -46,8 +46,9 @@ namespace STK
  *  @brief Templated implementation of the IMixture interface allowing
  *  to bridge a stk++ mixture with the composer.
  *
- * @tparam Id is any name of a concrete model deriving from the
- * STK::IMixtureModelBase class
+ * @tparam Id is any identifier of a concrete model deriving from the
+ * interface STK::IMixtureModel class.
+ *
  */
 template<int Id>
 class MixtureBridge: public IMixture
@@ -85,8 +86,7 @@ class MixtureBridge: public IMixture
      *  equivalent to polymorphic copy constructor.
      *  @return New instance of class as that of calling object.
      */
-    virtual MixtureBridge* clone() const
-    { return new MixtureBridge(*this);}
+    virtual MixtureBridge* clone() const { return new MixtureBridge(*this);}
     /** This is a standard create function in usual sense. It must be defined to
      *  provide new object of your class with correct dimensions and state.
      *  In other words, this is equivalent to virtual constructor.
@@ -108,32 +108,32 @@ class MixtureBridge: public IMixture
      *  cloning, mixture class have to take care of the existing values of the
      *  parameters.
      **/
-    virtual void initializeModel()
+    virtual void initializeStep()
     {
       if (!p_composer())
         STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);
       mixture_.setMixtureParameters( p_prop(), p_tik(), p_zi());
       mixture_.initializeModel();
+      mixture_.initializeStep();
     }
-   /** This function will be defined to set the data into your data containers.
-    *  To facilitate data handling, framework provide templated functions,
-    *  that can be called directly to get the data.
-    */
-    virtual void setData()
-    {
-      IMixture::getData<Data>(m_dataij_, nbVariable_ );
-      findMissing();
-      removeMissing();
-      mixture_.setData(m_dataij_);
+    /** This function will be defined to set the data into your data containers.
+     *  To facilitate data handling, framework provide templated functions,
+     *  that can be called directly to get the data.
+     */
+     template<class MixtureManager>
+     void setData(MixtureManager const* p_manager)
+     {
+       p_manager->getData(idName(), m_dataij_, nbVariable_ );
+       findMissing();
+       removeMissing();
+       mixture_.setData(m_dataij_);
 #ifdef STK_MIXTURE_DEBUG
       stk_cout << "Mixture name= " << this->idName() << "\n";
       stk_cout << "m_dataij_.rows() =" << m_dataij_.rows()<< "\n";
       stk_cout << "m_dataij_.cols() =" << m_dataij_.cols()<< "\n";
 //      stk_cout << "m_dataij_ =" << m_dataij_<< "\n";
 #endif
-    }
-    /** This function must be defined in derived class for initialization of mixture parameters. */
-    virtual void initializeStep() { mixture_.initializeStep();}
+     }
     /** This function must be defined to return the component probability (PDF)
      *  for corresponding sample i and cluster k.
      * @param i Sample number
@@ -172,6 +172,10 @@ class MixtureBridge: public IMixture
      *  @return Number of free parameters
      */
     virtual int nbFreeParameter() const { return mixture_.computeNbFreeParameters();}
+    /** This function must return the number of free parameters.
+     *  @return Number of free parameters
+     */
+    virtual int nbVariable() const { return mixture_.nbVariable();}
     /** This function can be used to write summary of parameters to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
@@ -219,7 +223,6 @@ class MixtureBridge: public IMixture
          if (j!=old_j)
          {
            value = mixture_.safeValue(j);
-         //  mean = m_dataij_.col(j).safe().mean();
            old_j =j;
          }
          m_dataij_(it->first, it->second) = value;
@@ -227,6 +230,6 @@ class MixtureBridge: public IMixture
     }
 };
 
-} // namespace mixt
+} // namespace STK
 
 #endif /* MIXTUREBRIDGE_H */

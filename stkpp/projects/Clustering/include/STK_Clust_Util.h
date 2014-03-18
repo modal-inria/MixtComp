@@ -43,6 +43,7 @@
 
 namespace STK
 {
+
 // forward declaration
 class IMixtureAlgo;
 class IMixtureInit;
@@ -129,16 +130,10 @@ enum Mixture
   Gaussian_sk_,
   Gaussian_sj_,
   Gaussian_s_,
+  Categorical_pjk_,
+  Categorical_pk_,
   unknown_mixture_
 };
-
-/** @ingroup Clustering
- *  utility function for creating an Mixture.
- *  @param id of the mixture to create
- *  @param model mixture to create
- *  @param nbCluster number of cluster
- **/
-IMixture* createMixture(Mixture model, std::string const& id, int nbCluster);
 
 /** @ingroup Clustering
  *  convert a String to an Mixture.

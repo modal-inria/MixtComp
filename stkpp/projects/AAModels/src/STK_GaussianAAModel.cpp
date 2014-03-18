@@ -153,7 +153,7 @@ void GaussianAAModel::computeResidualLnLikelihood()
 #endif
   // compute constant part and determinant part of the log-likelihood
   residualLnLikelihood_ = ( Const::_LNSQRT2PI_ + 0.5*std::log(residualVariance_ ))
-                          * (dim() - nbVar()) * nbSample();
+                          * (dim() - nbVariable()) * nbSample();
   // compute second part of the log-likelihood
   const int firstSample = p_residuals_->firstIdxRows(), lastSample= p_residuals_->lastIdxRows();
   for (int i=firstSample; i<=lastSample; i++)
@@ -189,7 +189,7 @@ void GaussianAAModel::computeResidualCovariance()
   stk_cout << _T("in GaussianAAModel::computeResidualCovariance().\n");
 #endif
   Stat::covariance(*p_residuals_, residualCovariance_);
-  residualVariance_ = trace(residualCovariance_)/Real(nbVar()-dim());
+  residualVariance_ = trace(residualCovariance_)/Real(nbVariable()-dim());
 #ifdef STK_AAMODELS_VERBOSE
   stk_cout << _T("GaussianAAModel::computeResidualCovariance() done.\n");
   stk_cout << _T("residualVariance_ = ") << residualVariance_ << _T("\n");

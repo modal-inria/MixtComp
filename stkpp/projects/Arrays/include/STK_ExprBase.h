@@ -354,12 +354,15 @@ class ExprBase : public ITContainer<Derived, hidden::Traits<Derived>::structure_
     inline TransposeOperator<Derived> transpose() const
     { return TransposeOperator<Derived> (this->asDerived());}
 
-    /** @return the i-th row of this. */
+    /** @return the j-th column of this. */
     inline ColOperator<Derived> col(int j) const
     { return ColOperator<Derived> (this->asDerived(), j);}
-    /** @return the j-th column of this. */
+    /** @return the i-th row of this. */
     inline RowOperator<Derived> row(int i) const
     { return RowOperator<Derived> (this->asDerived(), i);}
+    /** @return the i-th row of this. */
+    inline SubOperator<Derived> sub(Range I) const
+    { return SubOperator<Derived> (this->asDerived(), I);}
 
     /** @returns the dot product of this with other.
       * @sa squaredNorm(), norm(), DotProduct

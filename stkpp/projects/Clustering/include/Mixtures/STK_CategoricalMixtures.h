@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*     Copyright (C) 2004-2013 Vincent KUBICKI
+/*     Copyright (C) 2004-2013 Serge Iovleff
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as
@@ -28,64 +28,59 @@
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
-/** @file STK_GammaMixtures.h
- *  @brief In this file we define the gamma mixtures of the Clustering project.
+/** @file STK_GaussianMixtures.h
+ *  @brief In this file we define the Gaussian mixtures of the Clustering project.
  **/
 
 
-#ifndef STK_GAMMAMIXTURES_H
-#define STK_GAMMAMIXTURES_H
+#ifndef STK_CATEGORICALMIXTURES_H
+#define STK_CATEGORICALMIXTURES_H
 
-#include "STK_MixtureBridge.h"
 
-#include "../GammaMixtureModels/STK_Gamma_ajk_bjk.h"
-#include "../GammaMixtureModels/STK_Gamma_ajk_bj.h"
+#include "../CategoricalMixtureModels/STK_Categorical_pjk.h"
+#include "../CategoricalMixtureModels/STK_Categorical_pk.h"
 
 namespace STK
 {
 
 namespace Clust
 {
-/** @ingroup Clust
- *  Given the Id of a mixture model, the struct MixtureTraits allow to get
- *  type of the input and output.
+/** @ingroup Clustering
+ *  specialization of the MixtureTraits for the Categorical_pjk model
  **/
 template<>
-struct MixtureTraits<Clust::Gamma_ajk_bjk_>
+struct MixtureTraits<Clust::Categorical_pjk_>
 {
    /** Type of the data set to used as input */
-   typedef STK::Array2D<Real> Data;
+   typedef Array2D<int> Data;
    /** Type of the parameter set to used as output */
-   typedef STK::Array2D<Real> Param;
+   typedef Array2D<int> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */
-   typedef STK::Gamma_ajk_bjk<Data> Mixture;
+   typedef Categorical_pjk<Data> Mixture;
 };
-
-
-/** @ingroup Clust
- *  Given the Id of a mixture model, the struct MixtureTraits allow to get
- *  type of the input and output.
+/** @ingroup Clustering
+ *  specialization of the MixtureTraits for the Categorical_pk model
  **/
 template<>
-struct MixtureTraits<Clust::Gamma_ajk_bj_>
+struct MixtureTraits<Clust::Categorical_pk_>
 {
    /** Type of the data set to used as input */
-   typedef STK::Array2D<Real> Data;
+   typedef Array2D<int> Data;
    /** Type of the parameter set to used as output */
-   typedef STK::Array2D<Real> Param;
+   typedef Array2D<int> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */
-   typedef STK::Gamma_ajk_bj<Data> Mixture;
+   typedef Categorical_pk<Data> Mixture;
 };
 
 } // namespace Clust
 
-typedef MixtureBridge<Clust::Gamma_ajk_bjk_> MixtureGamma_ajk_bjk;
-typedef MixtureBridge<Clust::Gamma_ajk_bj_> MixtureGamma_ajk_bj;
+typedef MixtureBridge<Clust::Categorical_pjk_> MixtureCategorical_pjk;
+typedef MixtureBridge<Clust::Categorical_pk_> MixtureCategorical_pk;
 
 } /* namespace STK */
 
-#endif /* STK_GAMMAMIXTURES_H */
+#endif /* STK_CATEGORICALMIXTURES_H */

@@ -23,9 +23,9 @@
 */
 
 /*
- * Project:  stkpp::Model
- * created on: 22 juil. 2011
- * Purpose: define the class IUnivStatModel.
+ * Project:  stkpp::Clustering
+ * created on: 14 mars 2014
+ * Purpose: define the class CategoricalComponent.
  * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  *
  **/
@@ -34,21 +34,19 @@
  *  @brief In this file we define the component for the Categorical mixture models.
  **/
 
-#ifndef STK_DIAGGAUSSIANCOMPONENT_H
-#define STK_DIAGGAUSSIANCOMPONENT_H
+#ifndef STK_CATEGORICALCOMPONENT_H
+#define STK_CATEGORICALCOMPONENT_H
 
 #include <cmath>
 
 #include "STK_CategoricalParameters.h"
 #include "../STK_IMixtureComponent.h"
 
-#include "../../../STatistiK/include/STK_Law_Categorical.h"
-
 namespace STK
 {
 
 /** @ingroup Clustering
- *  Base class for the Categorical components.
+ *  Final class for the Categorical components.
  *  Provide the virtual computeLnLikelihood() method required by base class.
  *
  *  @note The _Parameters class have to derive from CategoricalParametersBase.
@@ -79,7 +77,10 @@ class CategoricalComponent : public IMixtureComponent< _Array, _Parameters >
     {
       Real sum =0.;
       for (Integer j= rowData.firstIdx(); j <= rowData.lastIdx(); ++j)
-      {;
+      {
+        Real prob = p_param()->proba(j, rowData[j]);
+        if (prob <= 0.) return -Arithmetic<Real>::infinity();
+        sum += std::log(prob);
       }
       return sum;
     }
@@ -87,4 +88,4 @@ class CategoricalComponent : public IMixtureComponent< _Array, _Parameters >
 
 } // namespace STK
 
-#endif /* STK_DIAGGAUSSIANCOMPONENT_H */
+#endif /* STK_CATEGORICALCOMPONENT_H */

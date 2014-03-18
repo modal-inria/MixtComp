@@ -161,7 +161,6 @@ void Gamma_ajk_bj<Array>::initializeStep()
     scale_[j] = b;
   }
 }
-//MixtureModelImpl< Array, Parameters >::initializeStep(components_,  this->p_tik());}
 
 /* Initialize randomly the parameters of the Gaussian mixture. The centers
  *  will be selected randomly among the data set and the standard-deviation
@@ -183,7 +182,7 @@ void Gamma_ajk_bj<Array>::randomInit()
     scale_[j] = STK::Law::Exponential::rand(variance/mean);
   }
 #ifdef STK_MIXTURE_VERY_VERBOSE
-  stk_cout << _T("MixtureModelImpl< Array, Gamma_ajk_bj_Component<Array> >::randomInit done\n");
+  stk_cout << _T("Gamma_ajk_bj<Array>::randomInit done\n");
   for (int k= components.firstIdx(); k <= components.lastIdx(); ++k)
   {
     stk_cout << _T("Component no ") << k << _T("\n");

@@ -94,7 +94,7 @@ class Categorical_pjk : public CategoricalBase<Categorical_pjk<Array> >
     void initializeModel()
     {
       Base::initializeModel();
-      // resize vectors of probilities
+      // resize vectors of probabilities
     }
 
     /** Compute the initial weighted probabilitiesof the mixture */

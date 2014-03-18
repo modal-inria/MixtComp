@@ -39,6 +39,7 @@
 #include "STK_DiagGaussianComponent.h"
 
 #include "../../../STatistiK/include/STK_Law_Normal.h"
+#include "../../../STatistiK/include/STK_Law_Categorical.h"
 
 namespace STK
 {
@@ -81,10 +82,8 @@ class DiagGaussianBase : public IMixtureModel<Derived >
      * @param i,j indexes of the data to simulate*/
     Real sample(int i, int j) const
     {
-      Real sum = 0.;
-      for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-      { sum += p_tik()->elt(i,k) * Law::Normal::rand(p_param(k)->mean(j), p_param(k)->sigma(j));}
-      return sum;
+      int k = Law::Categorical::rand(p_tik()->row(i));
+      return Law::Normal::rand(p_param(k)->mean(j), p_param(k)->sigma(j));
     }
     /** @return a safe value for the jth variable
      *  @param j index of the column with the safe value needed

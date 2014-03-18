@@ -60,7 +60,7 @@ class DataHandler : public IDataHandler
 
     /** @return the number of sample (the number of rows of the data) */
     inline virtual int nbSample() const { return data_.rows().size();}
-    /** @return the number of sample (the number of rows of the data) */
+    /** @return the number of sample (the number of columns of the data) */
     inline virtual int nbVariable() const { return data_.size();}
     /** get the whole data set */
     inline ReadWriteCsv const& data() const { return data_;}

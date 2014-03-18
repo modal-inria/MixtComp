@@ -95,40 +95,6 @@ std::string mixtureToString( Mixture const& type)
   return String(_T("unknown"));
 }
 
-/** @ingroup Clustering
- *  utility function for creating an Mixture.
- *  @param model mixture to create
- **/
-IMixture* createMixture(Mixture model, std::string const& id, int nbCluster)
-{
-  switch (model)
-  {
-    case Gamma_ajk_bjk_:
-      return new MixtureGamma_ajk_bjk(id, nbCluster);
-      break;
-    case Gamma_ajk_bj_:
-      return new MixtureGamma_ajk_bj(id, nbCluster);
-      break;
-    case Gaussian_sjk_:
-      return new MixtureGaussian_sjk(id, nbCluster);
-      break;
-    case Gaussian_sk_:
-      return new MixtureGaussian_sk(id, nbCluster);
-      break;
-    case Gaussian_sj_:
-      return new MixtureGaussian_sj(id, nbCluster);
-      break;
-    case Gaussian_s_:
-      return new MixtureGaussian_s(id, nbCluster);
-      break;
-    default:
-      return 0;
-      break;
-  }
-  // avoid warning
-  return 0;
-}
-
 /* utility function for creating an estimation algorithm
  *  @param algo the algorithm to create
  *  @param nbIterMax the maximal number of iteration of the algorithm

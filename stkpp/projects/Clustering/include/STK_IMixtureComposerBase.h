@@ -72,7 +72,7 @@ namespace STK
  * All mixture parameters: proportions, Tik, Zi and components are accessed by
  * pointer. These parameters are created using the method
  * @code
- *   void createMixtureParameters();
+ *   void intializeMixtureParameters();
  * @endcode
  * in the constructor. They can be accessed from the mixtures using constant
  * accessors.
@@ -90,7 +90,6 @@ namespace STK
  * specific behavior are:
  * @code
  *   virtual void writeParameters(std::ostream& os) const;
- *   virtual void initializeModel();
  *   virtual void initializeStep();
  *   virtual void pStep();
  *   virtual void inputationStep();
@@ -98,17 +97,17 @@ namespace STK
  *   virtual void finalizeStep();
  * @endcode
  *
- * @note the virtual method @c IMixtureComposerBase::initializeModel have to be
+ * @note the virtual method @c IMixtureComposerBase::initializeStep have to be
  * called before any use of the class as it will create/resize the arrays
- * and initialize the constants of the model. If using external arrays, they
- * should be set by using the IMixtureComposerBase::setMixtureParameters before
- * the call to IMixtureComposerBase::initializeModel.
+ * and initialize the constants of the model.
  */
 class IMixtureComposerBase : public IModelBase
 {
   protected:
-    /** default constructor */
-    IMixtureComposerBase(int nbCluster);
+    /** Constructor.
+     * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
+     **/
+    IMixtureComposerBase( int nbSample, int nbVariable, int nbCluster);
     /** copy constructor. If the pointer on the mixture parameters are not zero
      *  then they are cloned.
      *  @note if the model have not created the parameters, then the pointer are
@@ -126,11 +125,11 @@ class IMixtureComposerBase : public IModelBase
     /** @return the state of the model*/
     inline Clust::modelState state() const { return state_;}
     /** @return the proportions of each mixtures */
-    inline CArrayPoint<Real> const* p_prop() const { return p_prop_;};
+    inline CArrayPoint<Real> const* p_prop() const { return &prop_;};
     /** @return the tik probabilities */
-    inline Array2D<Real> const* p_tik() const { return p_tik_;};
+    inline Array2D<Real> const* p_tik() const { return &tik_;};
     /** @return  the zi class label */
-    inline CArrayVector<int> const* p_zi() const { return p_zi_;};
+    inline CArrayVector<int> const* p_zi() const { return &zi_;};
 
     /** set the state of the model : should be used by any strategy*/
     inline void setState(Clust::modelState state) { state_ = state;}
@@ -156,7 +155,7 @@ class IMixtureComposerBase : public IModelBase
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(ostream& os) const {};
     /** compute the number of free parameters of the model.
-     *  This method is used in IMixtureComposerBase::initializeModel
+     *  This method is used in IMixtureComposerBase::initializeStep
      *  in order to give a value to IModelBase::nbFreeParameter_.
      *  @return the number of free parameters
      **/
@@ -164,19 +163,10 @@ class IMixtureComposerBase : public IModelBase
     /** @brief Initialize the model before at its first use.
      *  This function can be overloaded in derived class for initialization of
      *  the specific model parameters. It should be called prior to any used of
-     *  the class. In this interface, the @c initializeModel method
-     *  - check if the mixture parameters have been created and, if not, create them,
-     *  - set the number of free parameters using the pure virtual function @¢ computeNbFreeParameters()
+     *  the class.
+     *  @sa IMixture,MixtureBridge
      **/
-    virtual void initializeModel();
-    /** First initialization of the parameters of the model.
-     *  This method is called in order to initialize the parameters. The
-     *  default implementation compute the proportions and call mStep() but
-     *  this behavior can be overloaded in derived class if an initial value
-     *  is needed by the mStep.
-     *  @sa IMixtureModel
-     **/
-    virtual void initializeStep();
+    virtual void initializeStep() =0;
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model.
@@ -206,11 +196,11 @@ class IMixtureComposerBase : public IModelBase
      **/
     void randomFuzzyInit();
     /** Replace tik by zik
-     *  @return the minimal value of the nk
+     *  @return the minimal value of individuals in a class
      **/
     int cStep();
     /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
-     *  @return the minimal value of the nk
+     *  @return the minimal value of individuals in a class
      **/
     int sStep();
     /** compute the zi and the lnLikelihodd of the current estimators (pk and paramk)
@@ -224,33 +214,17 @@ class IMixtureComposerBase : public IModelBase
     /** number of cluster. */
     int nbCluster_;
     /** The proportions of each mixtures */
-    CArrayPoint<Real>* p_prop_;
+    CArrayPoint<Real> prop_;
     /** The tik probabilities */
-    Array2D<Real>* p_tik_;
+    Array2D<Real> tik_;
     /** The zik class label */
-    CArrayVector<int>* p_zi_;
+    CArrayVector<int> zi_;
     /** Create the mixture model parameters. */
-    void createMixtureParameters();
-    /** delete  the mixture model parameters. */
-    void deleteMixtureParameters();
+    void intializeMixtureParameters();
 
   private:
     /** state of the model*/
     Clust::modelState state_;
-    /** create the proportions p_prop_ */
-    void createProp();
-    /** create the p_tik_ probabilities array*/
-    void createTik();
-    /** create the p_zi_ labels array */
-    void createZi();
-    /** resize p_prop_, p_zi and p_tik_ and initialize them */
-    void resizeModel();
-    /** resize the proportions and initialize them with equal values*/
-    void resizeProp();
-    /** resize the tik probabilities array and initialize them with equal values*/
-    void resizeTik();
-    /** resize the zi labels array and initialize them with equal values */
-    void resizeZi();
 };
 
 } // namespace STK

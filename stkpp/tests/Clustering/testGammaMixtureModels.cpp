@@ -63,12 +63,14 @@ int main(int argc, char *argv[])
                                     , "./tests/Clustering/data/descriptor2.csv"))
     { return -1;}
     handler.writeInfo(std::cout);
+    MixtureManager<DataHandler> manager(handler);
+
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("+ Create composers and setDataHandler               +\n");
-    IMixtureComposerBase* composer_bjk = new MixtureComposer(3);
-    IMixtureComposerBase* composer_bj = new MixtureComposer(3);
-    IMixtureComposerBase* composerFixed_bjk = new MixtureComposerFixedProp(3);
-    IMixtureComposerBase* composerFixed_bj = new MixtureComposerFixedProp(3);
+    IMixtureComposerBase* composer_bjk = new MixtureComposer(handler.nbSample(), handler.nbVariable(),3);
+    IMixtureComposerBase* composer_bj = new MixtureComposer(handler.nbSample(), handler.nbVariable(),3);
+    IMixtureComposerBase* composerFixed_bjk = new MixtureComposerFixedProp(handler.nbSample(), handler.nbVariable(),3);
+    IMixtureComposerBase* composerFixed_bj = new MixtureComposerFixedProp(handler.nbSample(), handler.nbVariable(),3);
 
     MixtureComposer* p_composer_bjk = static_cast<MixtureComposer*>(composer_bjk);
     MixtureComposer* p_composer_bj = static_cast<MixtureComposer*>(composer_bj);
@@ -76,17 +78,13 @@ int main(int argc, char *argv[])
     MixtureComposerFixedProp* p_composerFixed_bj = static_cast<MixtureComposerFixedProp*>(composerFixed_bj);
 
 
-    p_composer_bjk->setDataHandler(&handler);
-    p_composer_bj->setDataHandler(&handler);
-    p_composerFixed_bjk->setDataHandler(&handler);
-    p_composerFixed_bj->setDataHandler(&handler);
     stk_cout << _T("\n\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("+ CreateMixtures                                    +\n");
-    p_composer_bjk->createMixture(Clust::Gamma_ajk_bjk_, _T("model1"));
-    p_composer_bj->createMixture(Clust::Gamma_ajk_bj_, _T("model3"));
-    p_composerFixed_bjk->createMixture(Clust::Gamma_ajk_bjk_, _T("model1"));
-    p_composerFixed_bj->createMixture(Clust::Gamma_ajk_bj_, _T("model3"));
+    p_composer_bjk->createMixture(manager,Clust::Gamma_ajk_bjk_, _T("model1"));
+    p_composer_bj->createMixture(manager, Clust::Gamma_ajk_bj_, _T("model3"));
+    p_composerFixed_bjk->createMixture(manager, Clust::Gamma_ajk_bjk_, _T("model1"));
+    p_composerFixed_bj->createMixture(manager, Clust::Gamma_ajk_bj_, _T("model3"));
 
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 //    stk_cout << _T("+ testSemStrategy: composer_bjk                        +\n");

@@ -73,17 +73,19 @@ int main(int argc, char *argv[])
                                     , "./tests/Clustering/data/descriptor4.csv"))
     { return -1;}
     handler.writeInfo(std::cout);
+    MixtureManager<DataHandler> manager(handler);
+
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("+ Create composers and setDataHandler               +\n");
-    IMixtureComposerBase* composer_sjk = new MixtureComposer(3); // Gaussian_sjk
-    IMixtureComposerBase* composer_s   = new MixtureComposer(3); // Gaussian_s
-    IMixtureComposerBase* composer_sj  = new MixtureComposer(3); // Gaussian_sj
-    IMixtureComposerBase* composer_sk  = new MixtureComposer(3); // Gaussian_sk
+    IMixtureComposerBase* composer_sjk = new MixtureComposer(handler.nbSample(), handler.nbVariable(),3); // Gaussian_sjk
+    IMixtureComposerBase* composer_s   = new MixtureComposer(handler.nbSample(), handler.nbVariable(),3); // Gaussian_s
+    IMixtureComposerBase* composer_sj  = new MixtureComposer(handler.nbSample(), handler.nbVariable(),3); // Gaussian_sj
+    IMixtureComposerBase* composer_sk  = new MixtureComposer(handler.nbSample(), handler.nbVariable(),3); // Gaussian_sk
 
-    IMixtureComposerBase* composerFixed_sjk = new MixtureComposerFixedProp(3);
-    IMixtureComposerBase* composerFixed_s   = new MixtureComposerFixedProp(3);
-    IMixtureComposerBase* composerFixed_sj  = new MixtureComposerFixedProp(3);
-    IMixtureComposerBase* composerFixed_sk  = new MixtureComposerFixedProp(3);
+    IMixtureComposerBase* composerFixed_sjk = new MixtureComposerFixedProp(handler.nbSample(), handler.nbVariable(),3);
+    IMixtureComposerBase* composerFixed_s   = new MixtureComposerFixedProp(handler.nbSample(), handler.nbVariable(),3);
+    IMixtureComposerBase* composerFixed_sj  = new MixtureComposerFixedProp(handler.nbSample(), handler.nbVariable(),3);
+    IMixtureComposerBase* composerFixed_sk  = new MixtureComposerFixedProp(handler.nbSample(), handler.nbVariable(),3);
 
     MixtureComposer* p_composer_sjk = static_cast<MixtureComposer*>(composer_sjk);
     MixtureComposer* p_composer_s   = static_cast<MixtureComposer*>(composer_s);
@@ -95,41 +97,18 @@ int main(int argc, char *argv[])
     MixtureComposerFixedProp* p_composerFixed_sj  = static_cast<MixtureComposerFixedProp*>(composerFixed_sj);
     MixtureComposerFixedProp* p_composerFixed_sk  = static_cast<MixtureComposerFixedProp*>(composerFixed_sk);
 
-    p_composer_sjk->setDataHandler(&handler);
-    p_composer_s->setDataHandler(&handler);
-    p_composer_sj->setDataHandler(&handler);
-    p_composer_sk->setDataHandler(&handler);
-
-    p_composerFixed_sjk->setDataHandler(&handler);
-    p_composerFixed_s->setDataHandler(&handler);
-    p_composerFixed_sj->setDataHandler(&handler);
-    p_composerFixed_sk->setDataHandler(&handler);
-
     stk_cout << _T("\n\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("+ CreateMixtures                                    +\n");
-    p_composer_sjk->createMixture(Clust::Gaussian_sjk_, _T("model4"));
-    p_composer_s->createMixture(Clust::Gaussian_s_, _T("model2"));
-    p_composer_sj->createMixture(Clust::Gaussian_sj_, _T("model_sj"));
-    p_composer_sk->createMixture(Clust::Gaussian_sk_, _T("model_sk"));
-    p_composerFixed_sjk->createMixture(Clust::Gaussian_sjk_, _T("model4"));
-    p_composerFixed_s->createMixture(Clust::Gaussian_s_, _T("model2"));
-    p_composerFixed_sj->createMixture(Clust::Gaussian_sj_, _T("model_sj"));
-    p_composerFixed_sk->createMixture(Clust::Gaussian_sk_, _T("model_sk"));
+    p_composer_sjk->createMixture(manager, Clust::Gaussian_sjk_, _T("model4"));
+    p_composer_s->createMixture(manager, Clust::Gaussian_s_, _T("model2"));
+    p_composer_sj->createMixture(manager, Clust::Gaussian_sj_, _T("model_sj"));
+    p_composer_sk->createMixture(manager, Clust::Gaussian_sk_, _T("model_sk"));
+    p_composerFixed_sjk->createMixture(manager, Clust::Gaussian_sjk_, _T("model4"));
+    p_composerFixed_s->createMixture(manager, Clust::Gaussian_s_, _T("model2"));
+    p_composerFixed_sj->createMixture(manager, Clust::Gaussian_sj_, _T("model_sj"));
+    p_composerFixed_sk->createMixture(manager, Clust::Gaussian_sk_, _T("model_sk"));
 
-//    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSemStrategy: composer_sjk                     +\n");
-//    testSemStrategy((composer_sjk));
-//    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSemStrategy: composer_s                       +\n");
-//    testSemStrategy((composer_s));
-//    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSemStrategy: p_composerFixed_sk               +\n");
-//    testSemStrategy((p_composerFixed_sk));
-//    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//    stk_cout << _T("+ testSemStrategy: p_composerFixed_s                +\n");
-//    testSemStrategy((p_composerFixed_s));
-//
 //    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 //    stk_cout << _T("+ testSimpleStrategy: composer_sjk                  +\n");
 //    testSimpleStrategy((composer_sjk));

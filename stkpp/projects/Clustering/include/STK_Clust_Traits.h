@@ -58,16 +58,18 @@ namespace Clust
 {
 /** Main class for the mixtures traits policy.
  *  The traits struct MixtureModelTraits must be specialized for any
- *  components deriving from the Interface IMixtureComponents.
+ *  Mixture deriving from the Interface IMixtureModel.
  **/
 template <class Mixture> struct MixtureModelTraits;
 
 /** Given the Id of a mixture model, the struct Traits allow to get
- *  type of the input and output data of the parameters.
- **/
+ *  type of the input and output data of the parameters. This Traits class is
+ *  used by the Bridge classes.
+ *  @sa MixtureBridge
+ *   **/
 template<int id> struct MixtureTraits;
 
-} // namespace hidden
+} // namespace Clust
 
 
 }  // namespace STK

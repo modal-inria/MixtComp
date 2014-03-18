@@ -150,7 +150,7 @@ void Gamma_ajk_bjk<Array>::randomInit()
     }
   }
 #ifdef STK_MIXTURE_VERY_VERBOSE
-  stk_cout << _T("MixtureModelImpl< Array, Gamma_ajk_bjk_Component<Array> >::randomInit() done\n");
+  stk_cout << _T("Gamma_ajk_bjk<Array>::randomInit() done\n");
   for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
   {
     stk_cout << _T("Component no ") << k << _T("\n");

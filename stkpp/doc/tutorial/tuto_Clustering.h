@@ -93,7 +93,7 @@
  *   void printImpl(ostream &os);
  * @endcode
  *
- * The method @c resizeImpl have to resize the containers for the shared parameters
+ * The method @c resizeImpl have to resize the containers of the parameters
  * in order to match the range of the variables.
  *
  * The method @c printImpl have to print the whole parameters.
@@ -273,8 +273,8 @@
  * };
  * @endcode
  *
- * @warning When there is shared parameters in the model, you have to share them
- * between the parameters components.
+ * @warning When there is shared parameters in the model, the model have to share
+ * them between the parameters components.
  *
  * @sa STK_Gaussian_s.h
  *
@@ -288,7 +288,7 @@
  * @sa STK_MixtureComposer.h
  *
  * In the file STK_Clust_Util.h, the enum Mixture have to be completed.
- * and the function createMixtru
+ * and the function createMixture modified
  * @code
  * IMixture* createMixture(Mixture model, std::string const& id, int nbCluster)
  * @endcode

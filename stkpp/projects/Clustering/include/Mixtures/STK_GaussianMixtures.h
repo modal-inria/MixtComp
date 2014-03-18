@@ -36,8 +36,6 @@
 #ifndef STK_GAUSSIANMIXTURES_H
 #define STK_GAUSSIANMIXTURES_H
 
-#include "STK_MixtureBridge.h"
-
 #include "../GaussianMixtureModels/STK_Gaussian_sjk.h"
 #include "../GaussianMixtureModels/STK_Gaussian_sk.h"
 #include "../GaussianMixtureModels/STK_Gaussian_sj.h"
@@ -55,9 +53,9 @@ template<>
 struct MixtureTraits<Clust::Gaussian_sjk_>
 {
    /** Type of the data set to used as input */
-   typedef Array2D<STK::Real> Data;
+   typedef Array2D<Real> Data;
    /** Type of the parameter set to used as output */
-   typedef Array2D<STK::Real> Param;
+   typedef Array2D<Real> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */
@@ -70,9 +68,9 @@ template<>
 struct MixtureTraits<Clust::Gaussian_sk_>
 {
    /** Type of the data set to used as input */
-   typedef Array2D<STK::Real> Data;
+   typedef Array2D<Real> Data;
    /** Type of the parameter set to used as output */
-   typedef Array2D<STK::Real> Param;
+   typedef Array2D<Real> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */
@@ -85,9 +83,9 @@ template<>
 struct MixtureTraits<Clust::Gaussian_sj_>
 {
    /** Type of the data set to used as input */
-   typedef Array2D<STK::Real> Data;
+   typedef Array2D<Real> Data;
    /** Type of the parameter set to used as output */
-   typedef Array2D<STK::Real> Param;
+   typedef Array2D<Real> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */
@@ -100,9 +98,9 @@ template<>
 struct MixtureTraits<Clust::Gaussian_s_>
 {
    /** Type of the data set to used as input */
-   typedef Array2D<STK::Real> Data;
+   typedef Array2D<Real> Data;
    /** Type of the parameter set to used as output */
-   typedef Array2D<STK::Real> Param;
+   typedef Array2D<Real> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */

@@ -84,7 +84,7 @@ class Multivariate : public IRunnerUnsupervised< Array, WColVector>
     /** @return the number of samples in the data set (the number of rows) */
     inline int const& nbSamples() const {return nbSamples_;}
     /** @return the number of variables in the data set (the number of columns) */
-    inline int const& nbVar() const {return nbVar_;}
+    inline int const& nbVariable() const {return nbVar_;}
     /** Number of missing values
      *  @return An array with the number of missing values for each variables
      *  of the data set

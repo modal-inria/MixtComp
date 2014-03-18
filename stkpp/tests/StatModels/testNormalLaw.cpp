@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
   statmodel.run();
 
   stk_cout << _T("nbSample = ") << statmodel.nbSample() << _T("\n");
-  stk_cout << _T("nbVar = ") << statmodel.nbVar() << _T("\n");
+  stk_cout << _T("nbVar = ") << statmodel.nbVariable() << _T("\n");
   stk_cout << _T("mean =\n") << statmodel.mean() << _T("\n");
   stk_cout << _T("covariance =\n") << statmodel.covariance() << _T("\n");
 
@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
   statmodel.setData(data);
   statmodel.run();
   stk_cout << _T("nbSample = ") << statmodel.nbSample() << _T("\n");
-  stk_cout << _T("nbVar = ") << statmodel.nbVar() << _T("\n");
+  stk_cout << _T("nbVar = ") << statmodel.nbVariable() << _T("\n");
   stk_cout << _T("lnNbSample = ") << statmodel.lnNbSample() << _T("\n");
   stk_cout << _T("nbFreeParameter = ") << statmodel.nbFreeParameter() << _T("\n");
   stk_cout << _T("likelihood = ") << statmodel.likelihood() << _T("\n");
@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
   stk_cout << _T("Run(3)\n");
   stk_cout << _T("++++++\n");
   stk_cout << _T("nbSample = ") << stat2model.nbSample() << _T("\n");
-  stk_cout << _T("nbVar = ") << stat2model.nbVar() << _T("\n");
+  stk_cout << _T("nbVar = ") << stat2model.nbVariable() << _T("\n");
   stk_cout << _T("lnNbSample = ") << stat2model.lnNbSample() << _T("\n");
   stk_cout << _T("nbFreeParameter = ") << stat2model.nbFreeParameter() << _T("\n");
   stk_cout << _T("likelihood = ") << stat2model.likelihood() << _T("\n");
@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
   stk_cout << _T("Run(2)\n");
   stk_cout << _T("++++++\n");
   stk_cout << _T("nbSample = ") << stat2model.nbSample() << _T("\n");
-  stk_cout << _T("nbVar = ") << stat2model.nbVar() << _T("\n");
+  stk_cout << _T("nbVar = ") << stat2model.nbVariable() << _T("\n");
   stk_cout << _T("lnNbSample = ") << stat2model.lnNbSample() << _T("\n");
   stk_cout << _T("nbFreeParameter = ") << stat2model.nbFreeParameter() << _T("\n");
   stk_cout << _T("likelihood = ") << stat2model.likelihood() << _T("\n");
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
   stk_cout << _T("Run(1)\n");
   stk_cout << _T("++++++\n");
   stk_cout << _T("nbSample = ") << stat2model.nbSample() << _T("\n");
-  stk_cout << _T("nbVar = ") << stat2model.nbVar() << _T("\n");
+  stk_cout << _T("nbVar = ") << stat2model.nbVariable() << _T("\n");
   stk_cout << _T("lnNbSample = ") << stat2model.lnNbSample() << _T("\n");
   stk_cout << _T("nbFreeParameter = ") << stat2model.nbFreeParameter() << _T("\n");
   stk_cout << _T("likelihood = ") << stat2model.likelihood() << _T("\n");

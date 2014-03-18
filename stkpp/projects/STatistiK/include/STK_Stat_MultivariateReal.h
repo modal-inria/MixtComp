@@ -120,7 +120,7 @@ class Multivariate<Array, Real> : public IRunnerUnsupervised< Array, typename Ar
     inline virtual Multivariate* clone() const { return new Multivariate(*this);}
 
     /** @return the number of variables in the p_data_ set (the number of columns) */
-    inline int const& nbVar() const {return nbVar_;}
+    inline int const& nbVariable() const {return nbVar_;}
     /** @return the number of samples in the p_data_ set (the number of rows) */
     inline int const& nbSamples() const {return nbSamples_;}
     /** @return the minimal values of the variables in a RowVector */
