@@ -25,28 +25,36 @@
 #ifndef MIXT_GAUSSIANINGREDIENT_H
 #define MIXT_GAUSSIANINGREDIENT_H
 
-#include "../Sampler/mixt_GaussianSampler.h"
-#include "../Sampler/mixt_GaussianSamplerIterator.h"
+#include "stkpp/projects/Clustering/include/GaussianMixtureModels/STK_Gaussian_sjk.h"
+#include "../../Sampler/mixt_GaussianSampler.h"
+#include "../../Sampler/mixt_GaussianSamplerIterator.h"
 #include "mixt_MixtureBridge.h"
-#include "stkpp/projects/Clustering/include/Mixtures/STK_GaussianMixtures.h"
 
 namespace mixt
 {
 
 /**
- *  Specialization of the SamplerTraits for the Gaussian_sjk_ model
+ *  Specialization of the MixtureTraits for the Gaussian_sjk_ model
  **/
 template<>
-struct SamplerTraits<STK::Clust::Gaussian_sjk_>
+struct MixtureTraits<STK::Clust::Gaussian_sjk_>
 {
-   /** Sampler to be used for this specific mixture model */
-   typedef GaussianSampler Sampler;
-   /** Corresponding sampler iterator */
-   typedef GaussianSamplerIterator SamplerIterator;
+    /** Type of the data set to be used as input */
+    typedef STK::Array2D<STK::Real> Data;
+    /** Type of the parameter set to be used as output */
+    typedef STK::Array2D<STK::Real> Param;
+    /** Type of the Data */
+    typedef Data::Type Type;
+    /** Type of the mixture model */
+    typedef STK::Gaussian_sjk<Data> Mixture;
+    /** Sampler to be used for this specific mixture model */
+    typedef GaussianSampler Sampler;
+    /** Corresponding sampler iterator */
+    typedef GaussianSamplerIterator SamplerIterator;
 };
 
 typedef MixtureBridge<STK::Clust::Gaussian_sjk_> MixtureGaussian_sjk_m;
 
 } /* namespace mixt */
 
-#endif /* STK_GAUSSIANINGREDIENT_H */
+#endif /* MIXT_GAUSSIANINGREDIENT_H */

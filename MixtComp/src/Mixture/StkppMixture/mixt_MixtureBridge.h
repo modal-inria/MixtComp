@@ -30,38 +30,36 @@
 #ifndef MIXT_MIXTUREBRIDGE_H
 #define MIXT_MIXTUREBRIDGE_H
 
-#include "stkpp/projects/Clustering/include/STK_Clust_Traits.h"
-#include "mixt_IMixture.h"
-#include "../Data/mixt_AugmentedData.h"
-#include "../Sampler/mixt_Imputer.h"
-#include "../Sampler/mixt_SamplerTraits.h"
+#include "mixt_Clust_Traits.h"
+#include "../../Data/mixt_AugmentedData.h"
+#include "../../Sampler/mixt_Imputer.h"
 
 namespace mixt
 {
 
 template<int Id>
-class MixtureBridge : public IMixture
+class MixtureBridge : public STK::IMixture
 {
   public:
     // data type
-    typedef typename STK::Clust::MixtureTraits<Id>::Data Data;
+    typedef typename MixtureTraits<Id>::Data Data;
     // parameters type to get
-    typedef typename STK::Clust::MixtureTraits<Id>::Param Param;
+    typedef typename MixtureTraits<Id>::Param Param;
     // type of the data
-    typedef typename STK::Clust::MixtureTraits<Id>::Type Type;
+    typedef typename MixtureTraits<Id>::Type Type;
     // type of Mixture
-    typedef typename STK::Clust::MixtureTraits<Id>::Mixture Mixture;
+    typedef typename MixtureTraits<Id>::Mixture Mixture;
     // type of Sampler
-    typedef typename SamplerTraits<Id>::Sampler Sampler;
+    typedef typename MixtureTraits<Id>::Sampler Sampler;
     // type of Sample Iterator
-    typedef typename SamplerTraits<Id>::SamplerIterator SamplerIterator;
+    typedef typename MixtureTraits<Id>::SamplerIterator SamplerIterator;
 
     /** constructor.
      *  @param idName id name of the mixture
      *  @param nbCluster number of cluster
      **/
     MixtureBridge(std::string const& idName, int nbCluster) :
-      IMixture(idName, nbCluster),
+      STK::IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
       nbVariable_(0),
@@ -72,7 +70,7 @@ class MixtureBridge : public IMixture
     }
     /** copy constructor */
     MixtureBridge(MixtureBridge const& mixture) :
-      IMixture(mixture),
+      STK::IMixture(mixture),
       mixture_(mixture.mixture_),
       m_augDataij_(mixture.m_augDataij_),
       nbVariable_(mixture.nbVariable_),
@@ -105,33 +103,31 @@ class MixtureBridge : public IMixture
       return p_mixture;
     }
     /** @brief Initialize the model before its use by the composer.
-     *  The parameters values are set to its default values if the mixture_ is
+     *  The parameters values are set to their default values if the mixture_ is
      *  newly created. if MixtureBridge::initializeModel is used during a
-     *  cloning, model class have to take care of the existing values of the
+     *  cloning, mixture class have to take care of the existing values of the
      *  parameters.
      **/
-    virtual void initializeModel()
-    {
-      if (!p_composer()){STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);};
-      mixture_.setMixtureParameters( p_prop(), p_tik(), p_zi());
-      mixture_.initializeModel();
-      sampler_.setZi(p_zi());
-    }
-   /** This function will be defined to set the data into your data containers.
-    *  To facilitate data handling, framework provide templated functions,
-    *  that can be called directly to get the data.
-    */
-    virtual void setData()
-    {
-      IMixture::getData<AugmentedData<Data> >(m_augDataij_, nbVariable_);
-      removeMissing();
-      mixture_.setData(m_augDataij_.data_);
-    }
-    /** This function must be defined in derived class for initialization of mixture parameters. */
     virtual void initializeStep()
     {
+      if (!p_composer())
+        STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);
+      mixture_.setMixtureParameters( p_prop(), p_tik(), p_zi());
+      mixture_.initializeModel();
       mixture_.initializeStep();
+      sampler_.setZi(p_zi());
     }
+    /** This function will be defined to set the data into your data containers.
+     *  To facilitate data handling, framework provide templated functions,
+     *  that can be called directly to get the data.
+     */
+     template<class MixtureManager>
+     void setData(MixtureManager const* p_manager)
+     {
+       p_manager->getData(idName(), m_augDataij_, nbVariable_ );
+       removeMissing();
+       mixture_.setData(m_augDataij_.data_);
+     }
     /** @brief This function should be used in order to initialize randomly the
      *  parameters of the ingredient.
      */
@@ -188,6 +184,10 @@ class MixtureBridge : public IMixture
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
+    /** This function must return the number of variables.
+     *  @return Number of variables
+     */
+    virtual int nbVariable() const { return mixture_.nbVariable();}
     virtual void writeParameters(std::ostream& out) const
     {mixture_.writeParameters(out);}
     /** Utility function to use in mode debug in order to test that the
@@ -215,7 +215,7 @@ class MixtureBridge : public IMixture
     
   private:
     /** Imputer used to generate initial values randomly */
-    Imputer<Type> imputer_;
+    Imputer imputer_;
 
     /** Sampler to generate values */
     Sampler sampler_;

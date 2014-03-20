@@ -71,8 +71,6 @@ SemStrategy::~SemStrategy()
 
 bool SemStrategy::run()
 {
-  p_composer_->initializeModel();
-
   for (int iTry = 0; iTry < nbTry_; ++iTry)
   {
     // initialize current model

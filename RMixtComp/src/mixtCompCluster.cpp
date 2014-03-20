@@ -23,6 +23,7 @@
 
 #include "MixtComp/src/Data/mixt_DataHandlerR.h"
 #include "MixtComp/src/Composer/mixt_MixtureComposer.h"
+#include "MixtComp/src/Manager/mixt_MixtureManager.h"
 #include "MixtComp/src/Strategy/mixt_SEMStrategy.h"
 
 // [[Rcpp::export]]
@@ -38,11 +39,13 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   handler.writeInfo(std::cout);
   handler.writeDataMap();
   
+  // create the mixture manager
+  mixt::MixtureManager<mixt::DataHandlerR> manager(handler);
+
   // prepare the composer
-  mixt::MixtureComposer composer(nbClusters);
+  mixt::MixtureComposer composer(handler.nbSample(), handler.nbVariable(), nbClusters);
   mixt::MixtureComposer* p_composer(&composer);
-  composer.setDataHandler(&handler);
-  composer.createMixtCompMixtures();
+  composer.createMixtures(manager);
   
   // instantiate the SEMStrategy
   STK::Clust::initType initMethod;

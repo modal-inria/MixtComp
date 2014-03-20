@@ -7,3 +7,4 @@ clean:
 	find -L . -type f -name "*.d" -exec rm -f {} \;
 	find -L . -type f -name "*.a" -exec rm -f {} \;
 	find -L . -type f -name "*.so" -exec rm -f {} \;
+	

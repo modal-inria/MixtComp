@@ -17,33 +17,26 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Dec 31, 2013
- *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: Mar 19, 2014
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
+ *              iovleff <S..._Dot_I..._At_stkpp_Dot_org> (see copyright for ...),
+ *              Parmeet Bhatia <b..._DOT_p..._AT_gmail_Dot_com>
  **/
 
-/** @file mixt_Clust_Util.h
- *  @brief In this file 
- **/
 
-#ifndef MIXT_CLUST_UTIL_H_
-#define MIXT_CLUST_UTIL_H_
-
-#include "stkpp/projects/Clustering/include/STK_Clust_Util.h"
+#ifndef MIXT_CLUST_TRAITS_H
+#define MIXT_CLUST_TRAITS_H
 
 namespace mixt
 {
-  
-class IMixture;
 
-namespace Clust
-{
-/** utility function for creating a Mixture.
-*  @param id of the mixture to create
-*  @param model mixture to create
-*  @param nbCluster number of cluster
-**/
-IMixture* createMixtCompMixture(STK::Clust::Mixture model, std::string const& id, int nbCluster);
-} // namespace Clust
-} // namespace mixt
+/** Given the Id of a mixture model, the struct Traits allow to get
+ *  type of the input and output data of the parameters. This Traits class is
+ *  used by the Bridge classes.
+ *  @sa MixtureBridge
+ *   **/
+template<int id> struct MixtureTraits;
 
-#endif /* MIXT_CLUST_UTIL_H_ */
+}  // namespace mixt
+
+#endif /* MIXT_CLUST_TRAITS_H */

@@ -17,18 +17,23 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: 14 Feb. 2014
+ *  Created on: Mar 19, 2014
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_SAMPLERSTRAITS_H_
-#define MIXT_SAMPLERSTRAITS_H_
+#include "mixt_Imputer.h"
 
 namespace mixt
 {
 
-template<int Id> struct SamplerTraits;
+STK::Real Imputer::sampleRange(STK::Real infVal, STK::Real supVal)
+{
+  return mtrand_.randExc(supVal - infVal) + infVal;
+}
 
-} // namespace mixt
+int Imputer::sampleRange(int infVal, int supVal)
+{
+  return mtrand_.randInt(supVal - infVal) + infVal;
+}
 
-#endif /* MIXT_SAMPLERSTRAITS_H_ */
+} /* namespace mixt */

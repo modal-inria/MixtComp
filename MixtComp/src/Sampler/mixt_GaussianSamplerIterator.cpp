@@ -220,9 +220,9 @@ RetValue GaussianSamplerIterator::operator*() const
     }
     break;
   }
-  std::cout << "sampled value: " << currPos.first << std::endl;
-  std::cout << "line: " << currPos.second << std::endl;
-  std::cout << "col: " << z * sd + mean << std::endl;
+  std::cout << "line: " << currPos.first << std::endl;
+  std::cout << "col: " << currPos.second << std::endl;
+  std::cout << "sampled value: " << z * sd + mean << std::endl;
   return RetValue(currPos, z * sd + mean);
 }
 
@@ -279,13 +279,6 @@ void GaussianSamplerIterator::findNonEmpty()
   bool found = false;
   while(currVec_ < 5 && found == false)
   {
-    // List of fields:
-    // iv_missing_
-    // iv_missingFiniteValues
-    // iv_missingIntervals
-    // iv_missingLUIntervals
-    // iv_missingRUIntervals
-
     switch(currVec_)
     {
       case 0:

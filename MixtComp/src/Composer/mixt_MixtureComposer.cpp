@@ -26,7 +26,6 @@
  **/
 
 #include "mixt_MixtureComposer.h"
-#include "../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {
@@ -34,46 +33,15 @@ namespace mixt
 /** Create a composer, but reinitialize the mixtures parameters. */
 MixtureComposer* MixtureComposer::create() const
 {
-  if (!p_DataHandlerR()) {STKRUNTIME_ERROR_NO_ARG(MixtureComposer::create,data handler is not set);};
- 
-  // set dimensions
-  MixtureComposer* p_composer = new MixtureComposer(nbCluster_);
-  p_composer->createComposer(p_DataHandlerR(), v_mixtures());
+  MixtureComposer* p_composer = new MixtureComposer(nbSample(), nbVariable(), nbCluster());
+  p_composer->createComposer(v_mixtures());
   return p_composer;
 }
 
 /** Create a clone of the current model, with mixtures parameters preserved. */
 MixtureComposer* MixtureComposer::clone() const
 {
-  if (!p_DataHandlerR()) {STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createmixtures,data handler is not set);};
   return new MixtureComposer(*this);
-}
-
-/* create mixtures using info from p_dataHandler */
-void MixtureComposer::createMixtCompMixtures()
-{
-  if (!p_DataHandlerR()) {STKRUNTIME_ERROR_NO_ARG(MixtureComposer::createmixtures,data handler is not set);};
-  for (InfoMap::const_iterator it=p_DataHandlerR()->info().begin(); it!=p_DataHandlerR()->info().end(); ++it)
-  {
-    std::string name = it->first;
-    std::string model= it->second;
-    STK::Clust::Mixture idModel = STK::Clust::stringToMixture(model);
-    if (idModel != STK::Clust::unknown_mixture_)
-    {
-      registerMixture(Clust::createMixtCompMixture(idModel, name, nbCluster_));
-    }
-  }
-}
-
-void MixtureComposer::registerMixture(IMixture* mixture)
-{
-  v_mixtures_.push_back(mixture);
-  v_mixtures_.back()->setMixtureComposer(this);
-}
-
-void MixtureComposer::setDataHandler(DataHandlerR const* p_handler)
-{
-  STK::MixtureComposer::setDataHandler(p_handler);
 }
 
 void MixtureComposer::storeIntermediateResults(int iteration)

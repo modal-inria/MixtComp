@@ -33,29 +33,18 @@
 namespace mixt
 {
 
-template <typename DataType>
 class Imputer
 {
   public:
     /** sample uniformly from a closed range [infVal, supVal] */
-    DataType sampleRange(DataType infVal, DataType supVal);
-    /** sample uniformly from a list of values */
-    DataType sampleVals(std::vector<DataType> listVals);
+    STK::Real sampleRange(STK::Real infVal, STK::Real supVal);
+    int sampleRange(int infVal, int supVal);
+
+//    /** sample uniformly from a list of values */
+//    DataType sampleVals(std::vector<DataType> listVals);
   private:
     MTRand mtrand_;
 };
-
-template<>
-STK::Real Imputer<STK::Real>::sampleRange(STK::Real infVal, STK::Real supVal)
-{
-  return mtrand_.randExc(supVal - infVal) + infVal;
-}
-
-template<>
-int Imputer<int>::sampleRange(int infVal, int supVal)
-{
-  return mtrand_.randInt(supVal - infVal) + infVal;
-}
 
 } /* namespace mixt */
 
