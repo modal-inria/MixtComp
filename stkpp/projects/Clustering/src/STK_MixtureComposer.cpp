@@ -146,6 +146,13 @@ void MixtureComposer::samplingStep()
   { (*it)->samplingStep();}
 }
 
+void MixtureComposer::storeIntermediateResults(int iteration)
+{
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->storeIntermediateResults(iteration);
+  }
+}
 
 void MixtureComposer::finalizeStep()
 {

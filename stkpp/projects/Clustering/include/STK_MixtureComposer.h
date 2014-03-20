@@ -118,6 +118,10 @@ class MixtureComposer : public IMixtureComposerBase
      *  excluding class labels.
      */
     virtual void samplingStep();
+    /**@brief This step can be used to signal to the mixtures that they must
+     * store results. This is usually called after a burn-in phase.
+     **/
+    virtual void storeIntermediateResults(int iteration);
     /**@brief This step can be used by developer to finalize any thing. It will
      *  be called only once after we finish running the estimation algorithm.
      **/
