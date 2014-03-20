@@ -31,7 +31,7 @@
 #ifndef MIXT_MIXTURESTRATEGY_H
 #define MIXT_MIXTURESTRATEGY_H
 
-#include "../Composer/mixt_MixtureComposer.h"
+#include "stkpp/projects/Clustering/include/STK_MixtureComposer.h"
 #include "stkpp/projects/Clustering/include/STK_MixtureInit.h"
 #include "../Algo/mixt_SEMAlgo.h"
 
@@ -48,7 +48,7 @@ class SemStrategy
     /** default constructor.
      *  @param p_composer the model to estimate
      **/
-    SemStrategy(MixtureComposer*& p_composer,
+    SemStrategy(STK::MixtureComposer*& p_composer,
                 STK::Clust::initType init,
                 int nbTry,
                 int nbTrialInInit,
@@ -70,7 +70,7 @@ class SemStrategy
     
   protected:
      /** reference on the main model */
-    MixtureComposer*& p_composer_;
+    STK::MixtureComposer*& p_composer_;
     /** initialization method */
     STK::IMixtureInit* p_init_;
     

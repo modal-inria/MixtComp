@@ -33,7 +33,6 @@ lib: obj $(LIB_MC)
 
 obj:
 	$(MAKE) -C ./src/Algo
-	$(MAKE) -C ./src/Composer
 	$(MAKE) -C ./src/Data
 	$(MAKE) -C ./src/Mixture
 	$(MAKE) -C ./src/Sampler

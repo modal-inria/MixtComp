@@ -33,6 +33,7 @@
 #include "mixt_Clust_Traits.h"
 #include "../../Data/mixt_AugmentedData.h"
 #include "../../Sampler/mixt_Imputer.h"
+#include "stkpp/projects/Clustering/include/STK_IMixture.h"
 
 namespace mixt
 {

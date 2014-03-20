@@ -32,7 +32,7 @@ namespace mixt
 {
 
 /** default constructor */
-SemStrategy::SemStrategy(MixtureComposer*& p_composer,
+SemStrategy::SemStrategy(STK::MixtureComposer*& p_composer,
                          STK::Clust::initType init,
                          int nbTry,
                          int nbTrialInInit,
