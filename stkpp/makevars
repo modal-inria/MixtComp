@@ -67,3 +67,4 @@ CXXFLAGS   = -ansi -pedantic -Wall -O3 -march=native -funroll-loops
 # (will not work).
 # STK_FLAGS = -DSTK_UNICODE
 
+-include ~/.R/Makevars
