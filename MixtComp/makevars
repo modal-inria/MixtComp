@@ -20,43 +20,13 @@
 #               Serge IOVLEFF <serge.iovleff@stkpp.org>
 #------------------------------------------------------------------------
 
-#   HASRMATH 't' if your system has libRmath
-HASRMATH = t
-
-LIB_RMATH_A = /usr/lib/libRmath.a
-R_FLAGS = -DMATHLIB_STANDALONE
-
-#-----------------------------------------------------------------------
-# make program
-# MAKE  = make
-
-#-----------------------------------------------------------------------
-# compilers
-CC    = gcc
-CXX   = g++
-
-#-----------------------------------------------------------------------
-# specific C flags
-# long long are available
-CFLAGS   = -Wno-long-long
-
-#-----------------------------------------------------------------------
-# STK 0 based adressing by default
-#STK_FLAGS = -DSTKBASEARRAYS=0
-STK_FLAGS =
-
 #-----------------------------------------------------------------------
 # common compile flags
-CXXFLAGS_ALL = -ansi -fPIC -pedantic -Wall -MD -MP -I.. -I/usr/share/R/include/ `Rscript -e "Rcpp:::CxxFlags()"`
+CXXFLAGS = -ansi -fPIC -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
+PKG_CXXFLAGS = -MD -MP -I.. -I/usr/share/R/include/ `Rscript -e "Rcpp:::CxxFlags()"`
+STK_FLAGS =
 
-#-----------------------------------------------------------------------
-# flags in Debug mode
-STK_FLAGS_DEBUG = $(STK_FLAGS) -DSTK_BOUNDS_CHECK -DSTK_DEBUG -DSTK_VERBOSE
-CXXFLAGS_DEBUG  = $(CXXFLAGS_ALL) -g -O0 $(STK_FLAGS_DEBUG)
+# R related compiler options overrides
+-include ~/.R/Makevars
 
-#-----------------------------------------------------------------------
-# flags in Release mode
-STK_FLAGS_RELEASE = $(STK_FLAGS)
-CXXFLAGS_RELEASE = $(CXXFLAGS_ALL) -O3 -ftree-vectorize -march=native -funroll-loops $(STK_FLAGS_RELEASE)
-
-CXXFLAGS = $(CXXFLAGS_DEBUG)
+CXXFLAGS += $(PKG_CXXFLAGS) $(STK_FLAGS)
