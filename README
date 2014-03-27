@@ -1,11 +1,7 @@
 Prerequisite
 ---
 
-The following packages should be installed in R:
-  Rcpp
-  RInside
-  truncnorm
-  stringr
+The following packages should be installed in R: Rcpp RInside truncnorm stringr
 
 Build and install in R
 ---
