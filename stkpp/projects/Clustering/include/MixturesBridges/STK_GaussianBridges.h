@@ -28,13 +28,13 @@
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
-/** @file STK_GaussianMixtures.h
- *  @brief In this file we define the Gaussian mixtures of the Clustering project.
+/** @file STK_GaussianBridges.h
+ *  @brief In this file we define the Gaussian bridges of the Clustering project.
  **/
 
 
-#ifndef STK_GAUSSIANMIXTURES_H
-#define STK_GAUSSIANMIXTURES_H
+#ifndef STK_GAUSSIANBRIDGES_H
+#define STK_GAUSSIANBRIDGES_H
 
 #include "../GaussianMixtureModels/STK_Gaussian_sjk.h"
 #include "../GaussianMixtureModels/STK_Gaussian_sk.h"
@@ -109,11 +109,11 @@ struct MixtureTraits<Clust::Gaussian_s_>
 
 } // namespace Clust
 
-typedef MixtureBridge<Clust::Gaussian_sjk_> MixtureGaussian_sjk;
-typedef MixtureBridge<Clust::Gaussian_sk_> MixtureGaussian_sk;
-typedef MixtureBridge<Clust::Gaussian_sj_> MixtureGaussian_sj;
-typedef MixtureBridge<Clust::Gaussian_s_> MixtureGaussian_s;
+typedef MixtureBridge<Clust::Gaussian_sjk_> GaussianBridge_sjk;
+typedef MixtureBridge<Clust::Gaussian_sk_> GaussianBridge_sk;
+typedef MixtureBridge<Clust::Gaussian_sj_> GaussianBridge_sj;
+typedef MixtureBridge<Clust::Gaussian_s_> GaussianBridge_s;
 
 } /* namespace STK */
 
-#endif /* STK_GAUSSIANMIXTURES_H */
+#endif /* STK_GAUSSIANBRIDGES_H */

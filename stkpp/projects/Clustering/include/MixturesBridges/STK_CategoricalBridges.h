@@ -28,13 +28,13 @@
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
-/** @file STK_GaussianMixtures.h
- *  @brief In this file we define the Gaussian mixtures of the Clustering project.
+/** @file STK_CategoricalBridges.h
+ *  @brief In this file we define the Gaussian bridges of the Clustering project.
  **/
 
 
-#ifndef STK_CATEGORICALMIXTURES_H
-#define STK_CATEGORICALMIXTURES_H
+#ifndef STK_CATEGORICALBRIDGES_H
+#define STK_CATEGORICALBRIDGES_H
 
 
 #include "../CategoricalMixtureModels/STK_Categorical_pjk.h"
@@ -78,9 +78,9 @@ struct MixtureTraits<Clust::Categorical_pk_>
 
 } // namespace Clust
 
-typedef MixtureBridge<Clust::Categorical_pjk_> MixtureCategorical_pjk;
-typedef MixtureBridge<Clust::Categorical_pk_> MixtureCategorical_pk;
+typedef MixtureBridge<Clust::Categorical_pjk_> CategoricalBridge_pjk;
+typedef MixtureBridge<Clust::Categorical_pk_> CategoricalBridge_pk;
 
 } /* namespace STK */
 
-#endif /* STK_CATEGORICALMIXTURES_H */
+#endif /* STK_CATEGORICALBRIDGES_H */

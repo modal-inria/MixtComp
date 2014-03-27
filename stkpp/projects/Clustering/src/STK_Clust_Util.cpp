@@ -37,7 +37,6 @@
 #include "../include/STK_Clust_Util.h"
 #include "../include/STK_MixtureAlgo.h"
 #include "../include/STK_MixtureInit.h"
-#include "../include/Mixtures/STK_Mixtures.h"
 
 namespace STK
 {

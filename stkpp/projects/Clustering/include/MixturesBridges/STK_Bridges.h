@@ -28,15 +28,16 @@
  * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  **/
 
-/** @file STK_Mixtures.h
- *  @brief In this file we summarize the mixtures of the Clustering project.
+/** @file STK_Bridges.h
+ *  @brief In this file we summarize the bridges of the Clustering project.
  **/
 
 
-#ifndef STK_MIXTURES_H
-#define STK_MIXTURES_H
+#ifndef STK_BRIDGES_H
+#define STK_BRIDGES_H
 
-#include "STK_GammaMixtures.h"
-#include "STK_GaussianMixtures.h"
+#include "STK_GammaBridges.h"
+#include "STK_GaussianBridges.h"
+#include "STK_CategoricalBridges.h"
 
-#endif /* STK_MIXTURES_H */
+#endif /* STK_BRIDGES_H */

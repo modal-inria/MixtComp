@@ -28,13 +28,13 @@
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
-/** @file STK_GammaMixtures.h
- *  @brief In this file we define the gamma mixtures of the Clustering project.
+/** @file STK_GammaBridges.h
+ *  @brief In this file we define the gamma bridges of the Clustering project.
  **/
 
 
-#ifndef STK_GAMMAMIXTURES_H
-#define STK_GAMMAMIXTURES_H
+#ifndef STK_GAMMABRIDGES_H
+#define STK_GAMMABRIDGES_H
 
 #include "STK_MixtureBridge.h"
 
@@ -83,9 +83,9 @@ struct MixtureTraits<Clust::Gamma_ajk_bj_>
 
 } // namespace Clust
 
-typedef MixtureBridge<Clust::Gamma_ajk_bjk_> MixtureGamma_ajk_bjk;
-typedef MixtureBridge<Clust::Gamma_ajk_bj_> MixtureGamma_ajk_bj;
+typedef MixtureBridge<Clust::Gamma_ajk_bjk_> GammaBridge_ajk_bjk;
+typedef MixtureBridge<Clust::Gamma_ajk_bj_> GammaBridge_ajk_bj;
 
 } /* namespace STK */
 
-#endif /* STK_GAMMAMIXTURES_H */
+#endif /* STK_GAMMABRIDGES_H */

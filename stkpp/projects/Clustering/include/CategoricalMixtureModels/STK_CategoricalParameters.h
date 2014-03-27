@@ -94,13 +94,13 @@ class Categorical_pjkParameters: public CategoricalParametersBase<Categorical_pj
     {}
     /** destructor */
     inline ~Categorical_pjkParameters() {}
-    /** @return the j-th sigma value */
+    /** @return the j-th probability value */
     inline Real probaImpl(int j, int l) const {return proba_[j][l];}
     /** resize the set of parameter
      *  @param range range of the parameters
      **/
     inline void resizeImpl(Range const& range)
-    { proba_.resize(range); if (range.size()>0) proba_ = 1./Real(range.size());}
+    { proba_.resize(range);}
     /** print the parameters.
      *  @param os the output stream for the parameters
      **/

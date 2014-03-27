@@ -81,6 +81,7 @@ namespace STK
  * @code
  *   virtual IMixtureComposerBase* create() const = 0;
  *   virtual IMixtureComposerBase* clone() const = 0;
+ *   virtual void initializeStep() =0;
  *   virtual bool randomInit() =0;
  *   virtual void mStep() = 0;
  *   virtual Real lnComponentProbability(int i, int k) = 0;
@@ -90,7 +91,6 @@ namespace STK
  * specific behavior are:
  * @code
  *   virtual void writeParameters(std::ostream& os) const;
- *   virtual void initializeStep();
  *   virtual void pStep();
  *   virtual void inputationStep();
  *   virtual void samplingStep();

@@ -97,26 +97,27 @@ class CategoricalBase : public IMixtureModel<Derived >
     void getParameters(Array2D<Real>& params) const
     {
       params.resize(this->nbCluster(), p_data()->cols());
-      for (int k= params.firstIdxRows(); k <= params.lastIdxRows(); ++k)
-      {
-        for (int j=  p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
-        {
-          params(k, j) = p_param(k)->proba(j);
-        }
-      }
-
+//      for (int k= params.firstIdxRows(); k <= params.lastIdxRows(); ++k)
+//      {
+//        for (int j=  p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
+//        {
+//          params(k, j) = p_param(k)->proba(j);
+//        }
+//      }
     }
     /** Write the parameters on the output stream os */
     void writeParameters(ostream& os) const
     {
-      Array2DPoint<Real> proba(p_data()->cols());
+      Array2D<Real> proba(modalities_, p_data()->cols());
       for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       {
         // store proba values in an array for a nice output
-        for (int j= proba.firstIdx();  j <= proba.lastIdx(); ++j)
-        { proba[j] = p_param(k)->proba(j);}
+        for (int j= proba.firstIdxRows();  j <= proba.lastIdxRows(); ++j)
+        {
+          for (int l= modalities_.firstIdx(); l <= modalities_.lastIdx(); ++l)
+          { proba(l, j) = p_param(k)->proba(j,l);}}
         stk_cout << _T("---> Component ") << k << _T("\n");
-        stk_cout << _T("proba = ")<< proba;
+        stk_cout << _T("Probabilities = ")<< proba;
       }
     }
     /** Set the range of the modalities

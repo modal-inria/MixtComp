@@ -30,7 +30,7 @@
  **/
 
 /** @file STK_MixtureBridge.h
- *  @brief In this file we define the bridge between the mixtures and the composer.
+ *  @brief In this file we define the bridge class between the mixtures and the composer.
  **/
 
 #ifndef STK_MIXTUREBRIDGE_H
@@ -134,6 +134,14 @@ class MixtureBridge: public IMixture
 //      stk_cout << "m_dataij_ =" << m_dataij_<< "\n";
 #endif
      }
+     /** This function will be defined to initialize the mixture model using
+      *  informations stored by the MixtureManager.
+      */
+      template<class MixtureManager>
+      void initializeMixture(MixtureManager const* p_manager)
+      {
+          p_manager->initializeMixture( mixture_);
+      }
     /** This function must be defined to return the component probability (PDF)
      *  for corresponding sample i and cluster k.
      * @param i Sample number

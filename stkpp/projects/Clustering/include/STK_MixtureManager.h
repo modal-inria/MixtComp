@@ -37,7 +37,7 @@
 #define STK_MIXTUREMANAGER_H
 
 #include "STK_Clust_Util.h"
-#include "Mixtures/STK_Mixtures.h"
+#include "./MixturesBridges/STK_Bridges.h"
 
 
 namespace STK
@@ -47,7 +47,7 @@ template<class DataHandler>
 class MixtureManager
 {
   public:
-    typedef IDataHandler::InfoMap InfoMap;
+    typedef typename DataHandler::InfoMap InfoMap;
     typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
     typedef std::vector<IMixture*>::iterator MixtIterator;
    /** */
@@ -55,7 +55,7 @@ class MixtureManager
     /** */
     void createMixtures(MixtureComposer& composer, int nbCluster)
     {
-      for (InfoMap::const_iterator it=handler_.info().begin(); it!=handler_.info().end(); ++it)
+      for (typename InfoMap::const_iterator it=handler_.info().begin(); it!=handler_.info().end(); ++it)
       {
         std::string idName = it->first;
         std::string model= it->second;
@@ -77,52 +77,75 @@ class MixtureManager
         // gamma_ajk_bjk_ model
         case Clust::Gamma_ajk_bjk_:
         {
-          MixtureGamma_ajk_bjk* p_mixture = new MixtureGamma_ajk_bjk(idName, nbCluster);
+          GammaBridge_ajk_bjk* p_mixture = new GammaBridge_ajk_bjk(idName, nbCluster);
           p_mixture->setData(this);
+          p_mixture->initializeMixture(this);
           return p_mixture;
         }
         break;
         // gamma_ajk_bj_ model
         case Clust::Gamma_ajk_bj_:
         {
-          MixtureGamma_ajk_bj* p_mixture = new MixtureGamma_ajk_bj(idName, nbCluster);
+          GammaBridge_ajk_bj* p_mixture = new GammaBridge_ajk_bj(idName, nbCluster);
           p_mixture->setData(this);
+          p_mixture->initializeMixture(this);
           return p_mixture;
         }
         break;
         // Gaussian_sjk_ model
         case Clust::Gaussian_sjk_:
         {
-          MixtureGaussian_sjk* p_mixture = new MixtureGaussian_sjk(idName, nbCluster);
+          GaussianBridge_sjk* p_mixture = new GaussianBridge_sjk(idName, nbCluster);
           p_mixture->setData(this);
+          p_mixture->initializeMixture(this);
           return p_mixture;
         }
         break;
         // Gaussian_sk_ model
         case Clust::Gaussian_sk_:
         {
-          MixtureGaussian_sk* p_mixture = new MixtureGaussian_sk(idName, nbCluster);
+          GaussianBridge_sk* p_mixture = new GaussianBridge_sk(idName, nbCluster);
           p_mixture->setData(this);
+          p_mixture->initializeMixture(this);
           return p_mixture;
         }
         break;
         // Gaussian_sj_ model
         case Clust::Gaussian_sj_:
         {
-          MixtureGaussian_sk* p_mixture = new MixtureGaussian_sk(idName, nbCluster);
+          GaussianBridge_sj* p_mixture = new GaussianBridge_sj(idName, nbCluster);
           p_mixture->setData(this);
+          p_mixture->initializeMixture(this);
           return p_mixture;
         }
         break;
         // Gaussian_s_ model
         case Clust::Gaussian_s_:
         {
-          MixtureGaussian_s* p_mixture = new MixtureGaussian_s(idName, nbCluster);
+          GaussianBridge_s* p_mixture = new GaussianBridge_s(idName, nbCluster);
           p_mixture->setData(this);
+          p_mixture->initializeMixture(this);
+          return p_mixture;
+        }
+        // Categorical_pjk_ model
+        case Clust::Categorical_pjk_:
+        {
+          CategoricalBridge_pjk* p_mixture = new CategoricalBridge_pjk(idName, nbCluster);
+          p_mixture->setData(this);
+          p_mixture->initializeMixture(this);
+          return p_mixture;
+        }
+        // Categorical_pjk_ model
+        case Clust::Categorical_pk_:
+        {
+          CategoricalBridge_pk* p_mixture = new CategoricalBridge_pk(idName, nbCluster);
+          p_mixture->setData(this);
+          p_mixture->initializeMixture(this);
           return p_mixture;
         }
         break;
         default:
+          return 0; // 0 if idModel is not implemented
           break;
       }
       return 0; // 0 if idModel is not a stk++ model
@@ -135,6 +158,47 @@ class MixtureManager
     template<typename Data>
     inline void getData(std::string const& idName, Data& data, int& nbVariable) const
     { handler_.getData(idName, data, nbVariable);}
+
+    /** initialize Gamma_ajk_bjk_ mixture.
+     *  @param mixture the Gamma_ajk_bjk_ mixture to initialize
+     **/
+    inline void initializeMixture( Clust::MixtureTraits<Clust::Gamma_ajk_bjk_>::Mixture& mixture) const
+    {}
+    /** initialize Gamma_ajk_bj mixture.
+     *  @param mixture the Gamma_ajk_bj mixture to initialize
+     **/
+    inline void initializeMixture(Clust::MixtureTraits<Clust::Gamma_ajk_bj_>::Mixture& mixture) const
+    {}
+    /** initialize Gaussian_sjk_ mixture.
+     *  @param mixture the Gaussian_sjk_ mixture to initialize
+     **/
+    inline void initializeMixture(Clust::MixtureTraits<Clust::Gaussian_sjk_>::Mixture& mixture) const
+    {}
+    /** initialize Gaussian_sj_ mixture.
+     *  @param mixture the Gaussian_sj_ mixture to initialize
+     **/
+    inline void initializeMixture(Clust::MixtureTraits<Clust::Gaussian_sj_>::Mixture& mixture) const
+    {}
+    /** initialize Gaussian_sk_ mixture.
+     *  @param mixture the Gaussian_sk_ mixture to initialize
+     **/
+    inline void initializeMixture(Clust::MixtureTraits<Clust::Gaussian_sk_>::Mixture& mixture) const
+    {}
+    /** initialize Gaussian_s_ mixture.
+     *  @param mixture the Gaussian_s_ mixture to initialize
+     **/
+    inline void initializeMixture(Clust::MixtureTraits<Clust::Gaussian_s_>::Mixture& mixture) const
+    {}
+    /** initialize Categorical_pjk_ mixture.
+     *  @param mixture the Categorical_pjk_ mixture to initialize
+     **/
+    inline void initializeMixture(Clust::MixtureTraits<Clust::Categorical_pjk_>::Mixture& mixture) const
+    {}
+    /** initialize Categorical_pk_ mixture.
+     *  @param mixture the Categorical_pk_ mixture to initialize
+     **/
+    inline void initializeMixture(Clust::MixtureTraits<Clust::Categorical_pk_>::Mixture& mixture) const
+    {}
 
   private:
     /** pointer to the dataHandler */
