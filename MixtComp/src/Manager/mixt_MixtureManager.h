@@ -25,7 +25,7 @@
 #ifndef MIXT_MIXTUREMANAGER_H
 #define MIXT_MIXTUREMANAGER_H
 
-#include "../Mixture/StkppMixture/mixt_GaussianMixture.h"
+#include "../Mixture/StkppMixture/mixt_GaussianBridge.h"
 
 namespace mixt
 {
@@ -34,7 +34,7 @@ template<class DataHandler>
 class MixtureManager
 {
   public:
-    typedef STK::IDataHandler::InfoMap InfoMap;
+    typedef typename DataHandler::InfoMap InfoMap;
     typedef std::vector<STK::IMixture*>::const_iterator ConstMixtIterator;
     typedef std::vector<STK::IMixture*>::iterator MixtIterator;
 
@@ -42,7 +42,7 @@ class MixtureManager
 
     void createMixtures(STK::MixtureComposer& composer, int nbCluster)
     {
-      for (InfoMap::const_iterator it=handler_.info().begin(); it!=handler_.info().end(); ++it)
+      for (typename InfoMap::const_iterator it=handler_.info().begin(); it!=handler_.info().end(); ++it)
       {
         std::string idName = it->first;
         std::string model= it->second;
@@ -64,8 +64,9 @@ class MixtureManager
       {
         case STK::Clust::Gaussian_sjk_:
         {
-          MixtureGaussian_sjk_m* p_mixture = new MixtureGaussian_sjk_m(idName, nbCluster);
+          GaussianBridge_sjk_m* p_mixture = new GaussianBridge_sjk_m(idName, nbCluster);
           p_mixture->setData(this);
+          p_mixture->initializeMixture(this);
           return p_mixture;
         }
         break;
@@ -84,6 +85,12 @@ class MixtureManager
     template<typename Data>
     inline void getData(std::string const& idName, Data& data, int& nbVariable) const
     {handler_.getData(idName, data, nbVariable);}
+
+    /** initialize Gaussian_sjk_ mixture.
+     *  @param mixture the Gaussian_sjk_ mixture to initialize
+     **/
+    inline void initializeMixture(GaussianBridge_sjk_m::Mixture& mixture) const
+    {}
 
   private:
     /** pointer to the dataHandler */

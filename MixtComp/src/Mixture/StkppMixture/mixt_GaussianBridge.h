@@ -22,8 +22,8 @@
  *              iovleff, serge.iovleff@stkpp.org
  **/
 
-#ifndef MIXT_GAUSSIANINGREDIENT_H
-#define MIXT_GAUSSIANINGREDIENT_H
+#ifndef MIXT_GAUSSIANBRIDGE_H
+#define MIXT_GAUSSIANBRIDGE_H
 
 #include "stkpp/projects/Clustering/include/GaussianMixtureModels/STK_Gaussian_sjk.h"
 #include "../../Sampler/mixt_GaussianSampler.h"
@@ -53,8 +53,8 @@ struct MixtureTraits<STK::Clust::Gaussian_sjk_>
     typedef GaussianSamplerIterator SamplerIterator;
 };
 
-typedef MixtureBridge<STK::Clust::Gaussian_sjk_> MixtureGaussian_sjk_m;
+typedef MixtureBridge<STK::Clust::Gaussian_sjk_> GaussianBridge_sjk_m;
 
 } /* namespace mixt */
 
-#endif /* MIXT_GAUSSIANINGREDIENT_H */
+#endif /* MIXT_GAUSSIANBRIDGE_H */

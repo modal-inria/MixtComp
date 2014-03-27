@@ -122,13 +122,23 @@ class MixtureBridge : public STK::IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-     template<class MixtureManager>
-     void setData(MixtureManager const* p_manager)
-     {
-       p_manager->getData(idName(), m_augDataij_, nbVariable_ );
-       removeMissing();
-       mixture_.setData(m_augDataij_.data_);
-     }
+    template<class MixtureManager>
+    void setData(MixtureManager const* p_manager)
+    {
+      p_manager->getData(idName(), m_augDataij_, nbVariable_ );
+      removeMissing();
+      mixture_.setData(m_augDataij_.data_);
+    }
+
+    /** This function will be defined to initialize the mixture model using
+     *  informations stored by the MixtureManager.
+     */
+    template<class MixtureManager>
+    void initializeMixture(MixtureManager const* p_manager)
+    {
+      p_manager->initializeMixture( mixture_);
+    }
+
     /** @brief This function should be used in order to initialize randomly the
      *  parameters of the ingredient.
      */
