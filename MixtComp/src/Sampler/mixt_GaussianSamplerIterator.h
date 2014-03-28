@@ -24,16 +24,15 @@
 #ifndef MIXT_GAUSSIANSAMPLERITERATOR_H
 #define MIXT_GAUSSIANSAMPLERITERATOR_H
 
+#include <vector>
 #include "stkpp/projects/Arrays/include/STK_Array2D.h"
 #include "stkpp/projects/Arrays/include/STK_CArrayVector.h"
-#include "../Data/mixt_AugmentedData.h"
 
 namespace mixt
 {
 
 typedef std::pair<int, int> pos;
 typedef typename std::vector<          pos                                    >::const_iterator iv_missing;
-typedef typename std::vector<std::pair<pos, std::vector<STK::Real>          > >::const_iterator iv_missingFiniteValues;
 typedef typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::const_iterator iv_missingIntervals;
 typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingLUIntervals;
 typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingRUIntervals;
@@ -46,8 +45,6 @@ class GaussianSamplerIterator
                             const STK::CArrayVector<int>* p_zi,
                             iv_missing missing,
                             iv_missing missingEnd,
-                            iv_missingFiniteValues missingFiniteValues,
-                            iv_missingFiniteValues missingFiniteValuesEnd,
                             iv_missingIntervals missingIntervals,
                             iv_missingIntervals missingIntervalsEnd,
                             iv_missingLUIntervals missingLUIntervals,
@@ -69,14 +66,13 @@ class GaussianSamplerIterator
     const STK::CArrayVector<int>* p_zi_;
     iv_missing iv_missing_;
     iv_missing iv_missingEnd_;
-    iv_missingFiniteValues iv_missingFiniteValues_;
-    iv_missingFiniteValues iv_missingFiniteValuesEnd_;
     iv_missingIntervals iv_missingIntervals_;
     iv_missingIntervals iv_missingIntervalsEnd_;
     iv_missingLUIntervals iv_missingLUIntervals_;
     iv_missingLUIntervals iv_missingLUIntervalsEnd_;
     iv_missingRUIntervals iv_missingRUIntervals_;
     iv_missingRUIntervals iv_missingRUIntervalsEnd_;
+    /** Index of currently traversed vector in AugmentedData */
     int currVec_;
 };
 

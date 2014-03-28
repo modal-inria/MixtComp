@@ -27,4 +27,4 @@
 .PHONY: all
 
 all:
-	$(MAKE) -C StkppMixture
+	$(MAKE) -C StkppMixturesBridges

@@ -21,7 +21,6 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_GaussianSamplerIterator.h"
 #include "mixt_GaussianSampler.h"
 
 namespace mixt
@@ -47,8 +46,6 @@ GaussianSamplerIterator GaussianSampler::begin() const
                                    p_zi_,
                                    pm_augDataij_->v_missing_.begin(),
                                    pm_augDataij_->v_missing_.end(),
-                                   pm_augDataij_->v_missingFiniteValues_.begin(),
-                                   pm_augDataij_->v_missingFiniteValues_.end(),
                                    pm_augDataij_->v_missingIntervals_.begin(),
                                    pm_augDataij_->v_missingIntervals_.end(),
                                    pm_augDataij_->v_missingLUIntervals_.begin(),
@@ -63,8 +60,6 @@ GaussianSamplerIterator GaussianSampler::end() const
                                    p_zi_,
                                    pm_augDataij_->v_missing_.end(),
                                    pm_augDataij_->v_missing_.end(),
-                                   pm_augDataij_->v_missingFiniteValues_.end(),
-                                   pm_augDataij_->v_missingFiniteValues_.end(),
                                    pm_augDataij_->v_missingIntervals_.end(),
                                    pm_augDataij_->v_missingIntervals_.end(),
                                    pm_augDataij_->v_missingLUIntervals_.end(),

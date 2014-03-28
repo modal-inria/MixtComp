@@ -25,7 +25,7 @@
 #ifndef MIXT_MIXTUREMANAGER_H
 #define MIXT_MIXTUREMANAGER_H
 
-#include "../Mixture/StkppMixture/mixt_GaussianBridge.h"
+#include "../Mixture/StkppMixturesBridges/mixt_GaussianBridges.h"
 
 namespace mixt
 {
@@ -84,7 +84,9 @@ class MixtureManager
      **/
     template<typename Data>
     inline void getData(std::string const& idName, Data& data, int& nbVariable) const
-    {handler_.getData(idName, data, nbVariable);}
+    {
+      handler_.getData(idName, data, nbVariable);
+    }
 
     /** initialize Gaussian_sjk_ mixture.
      *  @param mixture the Gaussian_sjk_ mixture to initialize
