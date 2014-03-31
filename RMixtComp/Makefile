@@ -14,7 +14,7 @@ cleanRMC:
 	rm -f src/RcppExports.o
 	rm -f src/RMixtComp.so
 	rm -f src/test/test
-	find -L . -type f -name "src/MixtComp/*.o" -exec rm -f {} \;
-	find -L . -type f -name "src/MixtComp/*.d" -exec rm -f {} \;
-	find -L . -type f -name "src/MixtComp/*.a" -exec rm -f {} \;
-	find -L . -type f -name "src/MixtComp/*.so" -exec rm -f {} \;
+	find -L . -type f -wholename "./src/MixtComp/*.o" -exec rm -f {} \;
+	find -L . -type f -wholename "./src/MixtComp/*.d" -exec rm -f {} \;
+	find -L . -type f -wholename "./src/MixtComp/*.a" -exec rm -f {} \;
+	find -L . -type f -wholename "./src/MixtComp/*.so" -exec rm -f {} \;
