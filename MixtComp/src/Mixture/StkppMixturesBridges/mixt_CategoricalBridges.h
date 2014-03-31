@@ -22,12 +22,12 @@
  *              iovleff, serge.iovleff@stkpp.org
  **/
 
-#ifndef MIXT_GAUSSIANBRIDGE_H
-#define MIXT_GAUSSIANBRIDGE_H
+#ifndef MIXT_CATEGORICALBRIDGES_H
+#define MIXT_CATEGORICALBRIDGES_H
 
 #include "stkpp/projects/Clustering/include/CategoricalMixtureModels/STK_Categorical_pjk.h"
-#include "../../Sampler/mixt_GaussianSampler.h"
-#include "../../Sampler/mixt_GaussianSamplerIterator.h"
+#include "../../Sampler/mixt_CategoricalSampler.h"
+#include "../../Sampler/mixt_CategoricalSamplerIterator.h"
 #include "mixt_MixtureBridge.h"
 
 namespace mixt
@@ -37,24 +37,24 @@ namespace mixt
  *  Specialization of the MixtureTraits for the Gaussian_sjk_ model
  **/
 template<>
-struct MixtureTraits<STK::Clust::Gaussian_sjk_>
+struct MixtureTraits<STK::Clust::Categorical_pjk_>
 {
     /** Type of the data set to be used as input */
-    typedef STK::Array2D<STK::Real> Data;
+    typedef STK::Array2D<int> Data;
     /** Type of the parameter set to be used as output */
     typedef STK::Array2D<STK::Real> Param;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */
-    typedef STK::Gaussian_sjk<Data> Mixture;
+    typedef STK::Categorical_pjk<Data> Mixture;
     /** Sampler to be used for this specific mixture model */
-    typedef GaussianSampler Sampler;
+    typedef CategoricalSampler Sampler;
     /** Corresponding sampler iterator */
-    typedef GaussianSamplerIterator SamplerIterator;
+    typedef CategoricalSamplerIterator SamplerIterator;
 };
 
-typedef MixtureBridge<STK::Clust::Gaussian_sjk_> GaussianBridge_sjk_m;
+typedef MixtureBridge<STK::Clust::Categorical_pjk_> CategoricalBridge_pjk_m;
 
 } /* namespace mixt */
 
-#endif /* MIXT_GAUSSIANBRIDGE_H */
+#endif /* MIXT_CATEGORICALBRIDGES_H */

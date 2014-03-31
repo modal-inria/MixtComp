@@ -105,7 +105,7 @@ bool CategoricalSamplerIterator::operator!=(const CategoricalSamplerIterator& rh
   return ! operator==(rhs);
 }
 
-RetValue CategoricalSamplerIterator::operator*() const
+CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() const
 {
   int sampleVal;
   pos currPos(std::pair<int, int>(0, 0));

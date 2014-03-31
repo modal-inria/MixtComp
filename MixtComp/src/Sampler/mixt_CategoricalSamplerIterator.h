@@ -21,8 +21,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_GAUSSIANSAMPLERITERATOR_H
-#define MIXT_GAUSSIANSAMPLERITERATOR_H
+#ifndef MIXT_CATEGORICALSAMPLERITERATOR_H
+#define MIXT_CATEGORICALSAMPLERITERATOR_H
 
 #include "stkpp/projects/Arrays/include/STK_Array2D.h"
 #include "stkpp/projects/Arrays/include/STK_CArrayVector.h"
@@ -31,13 +31,14 @@
 namespace mixt
 {
 
-typedef std::pair<int, int> pos;
-typedef typename std::vector<          pos                        >::const_iterator iv_missing;
-typedef typename std::vector<std::pair<pos, std::vector<int>    > >::const_iterator iv_missingFiniteValues;
-typedef typename std::pair<pos, int> RetValue;
-
 class CategoricalSamplerIterator
 {
+
+  typedef std::pair<int, int> pos;
+  typedef typename std::vector<          pos                        >::const_iterator iv_missing;
+  typedef typename std::vector<std::pair<pos, std::vector<int>    > >::const_iterator iv_missingFiniteValues;
+  typedef typename std::pair<pos, int> RetValue;
+
   public:
     CategoricalSamplerIterator(const STK::Array2D<int>* p_param,
                                const STK::CArrayVector<int>* p_zi,
@@ -71,4 +72,4 @@ class CategoricalSamplerIterator
 
 } // namespace mixt
 
-#endif /* MIXT_GAUSSIANSAMPLERITERATOR_H */
+#endif /* MIXT_CATEGORICALSAMPLERITERATOR_H */

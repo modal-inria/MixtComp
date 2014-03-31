@@ -26,6 +26,7 @@
 #define MIXT_MIXTUREMANAGER_H
 
 #include "../Mixture/StkppMixturesBridges/mixt_GaussianBridges.h"
+#include "../Mixture/StkppMixturesBridges/mixt_CategoricalBridges.h"
 
 namespace mixt
 {
@@ -64,12 +65,22 @@ class MixtureManager
       {
         case STK::Clust::Gaussian_sjk_:
         {
-          GaussianBridge_sjk_m* p_mixture = new GaussianBridge_sjk_m(idName, nbCluster);
-          p_mixture->setData(this);
-          p_mixture->initializeMixture(this);
-          return p_mixture;
+          GaussianBridge_sjk_m* p_bridge = new GaussianBridge_sjk_m(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture(this);
+          return p_bridge;
         }
         break;
+
+        case STK::Clust::Categorical_pjk_:
+        {
+          CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture(this);
+          return p_bridge;
+        }
+        break;
+
         default:
           return 0;
         break;
@@ -93,6 +104,14 @@ class MixtureManager
      **/
     inline void initializeMixture(GaussianBridge_sjk_m::Mixture& mixture) const
     {}
+
+    /** initialize Gaussian_sjk_ mixture.
+     *  @param mixture the Gaussian_sjk_ mixture to initialize
+     **/
+    inline void initializeMixture(CategoricalBridge_pjk_m::Mixture& mixture, STK::Range modalities) const
+    {
+      mixture.setModalities(modalities);
+    }
 
   private:
     /** pointer to the dataHandler */

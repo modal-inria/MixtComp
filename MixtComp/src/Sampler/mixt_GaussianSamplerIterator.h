@@ -31,15 +31,16 @@
 namespace mixt
 {
 
-typedef std::pair<int, int> pos;
-typedef typename std::vector<          pos                                    >::const_iterator iv_missing;
-typedef typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::const_iterator iv_missingIntervals;
-typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingLUIntervals;
-typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingRUIntervals;
-typedef typename std::pair<pos, STK::Real> RetValue;
-
 class GaussianSamplerIterator
 {
+
+  typedef std::pair<int, int> pos;
+  typedef typename std::vector<          pos                                    >::const_iterator iv_missing;
+  typedef typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::const_iterator iv_missingIntervals;
+  typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingLUIntervals;
+  typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingRUIntervals;
+  typedef typename std::pair<pos, STK::Real> RetValue;
+
   public:
     GaussianSamplerIterator(const STK::Array2D<STK::Real>* p_param,
                             const STK::CArrayVector<int>* p_zi,

@@ -130,7 +130,7 @@ bool GaussianSamplerIterator::operator!=(const GaussianSamplerIterator& rhs) con
   return ! operator==(rhs);
 }
 
-RetValue GaussianSamplerIterator::operator*() const
+GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
 {
   STK::Real mean, sd, z;
   pos currPos(std::pair<int, int>(0, 0));

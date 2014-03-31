@@ -27,10 +27,6 @@
 
 #include "stkpp/projects/Arrays/include/STK_Array2D.h"
 
-#include "stkpp/projects/STatistiK/include/STK_Law_Exponential.h"
-#include "stkpp/projects/STatistiK/include/STK_Law_Uniform.h"
-#include "stkpp/projects/STatistiK/include/STK_Law_Normal.h"
-
 #include "../Data/mixt_AugmentedData.h"
 #include "mixt_CategoricalSamplerIterator.h"
 
