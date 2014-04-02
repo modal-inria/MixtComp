@@ -26,7 +26,7 @@
 namespace mixt
 {
 CategoricalSampler::CategoricalSampler(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                                 const STK::Array2D<int>* p_param) :
+                                       const STK::Array2D<int>* p_param) :
     pm_augDataij_(pm_augDataij),
     p_param_(p_param)
 {}

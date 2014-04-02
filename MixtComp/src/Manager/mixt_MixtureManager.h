@@ -65,21 +65,24 @@ class MixtureManager
       {
         case STK::Clust::Gaussian_sjk_:
         {
+          MixtureTraits<STK::Clust::Gaussian_sjk_>::Mixture* mixture = new MixtureTraits<STK::Clust::Gaussian_sjk_>::Mixture(nbCluster);
           GaussianBridge_sjk_m* p_bridge = new GaussianBridge_sjk_m(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture(this);
+          p_bridge->setMixture(mixture);
           return p_bridge;
         }
         break;
 
-        case STK::Clust::Categorical_pjk_:
-        {
-          CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
-          p_bridge->setData(this);
-          p_bridge->initializeMixture(this);
-          return p_bridge;
-        }
-        break;
+//        case STK::Clust::Categorical_pjk_:
+//        {
+//          MixtureTraits<STK::Clust::Categorical_pjk_>::Mixture* mixture = new MixtureTraits<STK::Clust::Categorical_pjk_>::Mixture(nbCluster);
+////          mixture.setModalities();
+//          CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
+//          p_bridge->setData(this);
+////          p_bridge->getData()
+//          return p_bridge;
+//        }
+//        break;
 
         default:
           return 0;

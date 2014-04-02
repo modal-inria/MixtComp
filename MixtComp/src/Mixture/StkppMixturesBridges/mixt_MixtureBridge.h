@@ -61,23 +61,27 @@ class MixtureBridge : public STK::IMixture
      **/
     MixtureBridge(std::string const& idName, int nbCluster) :
       STK::IMixture(idName, nbCluster),
-      mixture_(nbCluster),
       m_augDataij_(),
       nbVariable_(0),
       sampler_(getData(),
                getParam())
     {
-      mixture_.setData(m_augDataij_.data_);
+      mixture_->setData(m_augDataij_.data_);
     }
     /** copy constructor */
-    MixtureBridge(MixtureBridge const& mixture) :
-      STK::IMixture(mixture),
-      mixture_(mixture.mixture_),
-      m_augDataij_(mixture.m_augDataij_),
-      nbVariable_(mixture.nbVariable_),
-      sampler_(mixture.sampler_)
+    MixtureBridge(MixtureBridge const& bridge) :
+      STK::IMixture(bridge),
+      m_augDataij_(bridge.m_augDataij_),
+      nbVariable_(bridge.nbVariable_),
+      sampler_(bridge.sampler_)
     {
-      mixture_.setData(m_augDataij_.data_);
+      mixture_ = new Mixture(*bridge.mixture_);
+      mixture_->setData(m_augDataij_.data_);
+    }
+    /** destructor */
+    ~MixtureBridge()
+    {
+      delete mixture_;
     }
     /** This is a standard clone function in usual sense. It must be defined to
      *  provide new object of your class with values of various parameters
@@ -100,8 +104,13 @@ class MixtureBridge : public STK::IMixture
       p_mixture->m_augDataij_ = m_augDataij_;
       p_mixture->nbVariable_ = nbVariable_;
       // Bug Fix: set the correct data set
-      p_mixture->mixture_.setData(p_mixture->m_augDataij_.data_);
+      p_mixture->mixture_->setData(p_mixture->m_augDataij_.data_);
       return p_mixture;
+    }
+    /** setMixture */
+    virtual void setMixture(Mixture* mixture)
+    {
+      mixture_ = mixture;
     }
     /** @brief Initialize the model before its use by the composer.
      *  The parameters values are set to their default values if the mixture_ is
@@ -113,9 +122,9 @@ class MixtureBridge : public STK::IMixture
     {
       if (!p_composer())
         STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);
-      mixture_.setMixtureParameters( p_prop(), p_tik(), p_zi());
-      mixture_.initializeModel();
-      mixture_.initializeStep();
+      mixture_->setMixtureParameters( p_prop(), p_tik(), p_zi());
+      mixture_->initializeModel();
+      mixture_->initializeStep();
       sampler_.setZi(p_zi());
     }
     /** This function will be defined to set the data into your data containers.
@@ -127,22 +136,13 @@ class MixtureBridge : public STK::IMixture
     {
       p_manager->getData(idName(), m_augDataij_, nbVariable_ );
       removeMissing();
-      mixture_.setData(m_augDataij_.data_);
-    }
-
-    /** This function will be defined to initialize the mixture model using
-     *  informations stored by the MixtureManager.
-     */
-    template<class MixtureManager>
-    void initializeMixture(MixtureManager const* p_manager)
-    {
-      p_manager->initializeMixture( mixture_);
+      mixture_->setData(m_augDataij_.data_);
     }
 
     /** @brief This function should be used in order to initialize randomly the
      *  parameters of the ingredient.
      */
-    virtual void randomInit() { mixture_.randomInit();};
+    virtual void randomInit() { mixture_->randomInit();};
     /** This function should be used for imputation of data.
      *  The default implementation (in the base class) is to do nothing.
      */
@@ -158,7 +158,7 @@ class MixtureBridge : public STK::IMixture
      */
     virtual void samplingStep()
     {
-      mixture_.getParameters(param_); // update the parameters (used by the Sampler)
+      mixture_->getParameters(param_); // update the parameters (used by the Sampler)
       SamplerIterator endIt(sampler_.end());
       for (SamplerIterator it = sampler_.begin(); it != endIt; ++it)
       {
@@ -168,7 +168,7 @@ class MixtureBridge : public STK::IMixture
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
-    virtual void paramUpdateStep() {mixture_.mStep();}
+    virtual void paramUpdateStep() {mixture_->mStep();}
     /** This function should be used to store any intermediate results during
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
@@ -187,26 +187,26 @@ class MixtureBridge : public STK::IMixture
      * @return the log-component probability
      */
     virtual double lnComponentProbability(int i, int k)
-    {return mixture_.lnComponentProbability(i, k);}
+    {return mixture_->lnComponentProbability(i, k);}
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
-    virtual int nbFreeParameter() const {return mixture_.computeNbFreeParameters();}
+    virtual int nbFreeParameter() const {return mixture_->computeNbFreeParameters();}
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
     /** This function must return the number of variables.
      *  @return Number of variables
      */
-    virtual int nbVariable() const { return mixture_.nbVariable();}
+    virtual int nbVariable() const { return mixture_->nbVariable();}
     virtual void writeParameters(std::ostream& out) const
-    {mixture_.writeParameters(out);}
+    {mixture_->writeParameters(out);}
     /** Utility function to use in mode debug in order to test that the
      *  model is well initialized. */
-    int checkModel() const {return mixture_.checkModel();}
+    int checkModel() const {return mixture_->checkModel();}
 
     virtual Mixture const* getMixture() const
-    {return &mixture_;}
+    {return mixture_;}
 
     virtual AugmentedData<Data> const* getData() const
     {return &m_augDataij_;}
@@ -216,7 +216,7 @@ class MixtureBridge : public STK::IMixture
 
   protected:
     /** The stkpp mixture to bridge with the composer */
-    Mixture mixture_;
+    Mixture* mixture_;
     /** The augmented data set */
     AugmentedData<Data> m_augDataij_;
     /** Current parameters of the STK Mixture */
