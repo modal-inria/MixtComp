@@ -40,7 +40,7 @@ class CategoricalSamplerIterator
   typedef typename std::pair<pos, int> RetValue;
 
   public:
-    CategoricalSamplerIterator(const STK::Array2D<int>* p_param,
+    CategoricalSamplerIterator(const STK::Array2D<STK::Real>* p_param,
                                const STK::CArrayVector<int>* p_zi,
                                const std::vector<std::pair<int, int> >& dataRange,
                                iv_missing missing,
@@ -58,7 +58,7 @@ class CategoricalSamplerIterator
     void findNonEmpty();
 
   private:
-    const STK::Array2D<int>* p_param_;
+    const STK::Array2D<STK::Real>* p_param_;
     const STK::CArrayVector<int>* p_zi_;
     iv_missing iv_missing_;
     iv_missing iv_missingEnd_;

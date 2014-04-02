@@ -37,7 +37,7 @@ class CategoricalSampler
 {
   public:
     CategoricalSampler(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                       const STK::Array2D<int>* p_param);
+                       const STK::Array2D<STK::Real>* p_param);
     CategoricalSampler(const CategoricalSampler& sampler);
     ~CategoricalSampler();
     CategoricalSamplerIterator begin() const;
@@ -45,7 +45,7 @@ class CategoricalSampler
     void setZi(const STK::CArrayVector<int>* p_zi);
   private:
     const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
-    const STK::Array2D<int>* p_param_;
+    const STK::Array2D<STK::Real>* p_param_;
     const STK::CArrayVector<int>* p_zi_;
 };
 

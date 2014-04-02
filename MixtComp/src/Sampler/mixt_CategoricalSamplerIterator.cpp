@@ -34,7 +34,7 @@
 namespace mixt
 {
 
-CategoricalSamplerIterator::CategoricalSamplerIterator(const STK::Array2D<int>* p_param,
+CategoricalSamplerIterator::CategoricalSamplerIterator(const STK::Array2D<STK::Real>* p_param,
                                                        const STK::CArrayVector<int>* p_zi,
                                                        const std::vector<std::pair<int, int> >& dataRange,
                                                        iv_missing missing,
@@ -117,7 +117,7 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
       currPos = *iv_missing_;
       int nbModalities = dataRange_[currPos.second].second;
       int z_i = p_zi_->elt(currPos.first);
-      STK::Array2DVector<int> modalities = (*p_param_)(STK::Range((z_i - 1) * nbModalities + 1,
+      STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range((z_i - 1) * nbModalities + 1,
                                                                    z_i      * nbModalities),
                                                        currPos.second);
       sampleVal = STK::Law::Categorical::rand(modalities);
