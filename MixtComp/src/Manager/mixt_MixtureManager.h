@@ -73,16 +73,21 @@ class MixtureManager
         }
         break;
 
-//        case STK::Clust::Categorical_pjk_:
-//        {
-//          MixtureTraits<STK::Clust::Categorical_pjk_>::Mixture* mixture = new MixtureTraits<STK::Clust::Categorical_pjk_>::Mixture(nbCluster);
-////          mixture.setModalities();
-//          CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
-//          p_bridge->setData(this);
-////          p_bridge->getData()
-//          return p_bridge;
-//        }
-//        break;
+        case STK::Clust::Categorical_pjk_:
+        {
+          MixtureTraits<STK::Clust::Categorical_pjk_>::Mixture* mixture = new MixtureTraits<STK::Clust::Categorical_pjk_>::Mixture(nbCluster);
+
+          CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
+          p_bridge->setData(this);
+
+          // get / set number or modalities
+          STK::Range dataRange(p_bridge->getData()->dataRanges_[0].second);
+          mixture->setModalities(dataRange);
+          p_bridge->setMixture(mixture);
+
+          return p_bridge;
+        }
+        break;
 
         default:
           return 0;
