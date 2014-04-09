@@ -38,7 +38,6 @@
 #include "../STK_IMixtureModel.h"
 #include "STK_DiagGaussianComponent.h"
 
-#include "../../../STatistiK/include/STK_Law_Normal.h"
 #include "../../../STatistiK/include/STK_Law_Categorical.h"
 
 namespace STK
@@ -95,10 +94,9 @@ class DiagGaussianBase : public IMixtureModel<Derived >
      **/
     void getParameters(Array2D<Real>& params) const
     {
-      int firstId = params.firstIdxRows();
       int nbClust = this->nbCluster();
-
       params.resize(2*nbClust, p_data()->cols());
+      int firstId = params.firstIdxRows();
 
       for (int k= 0; k < nbClust; ++k)
       {

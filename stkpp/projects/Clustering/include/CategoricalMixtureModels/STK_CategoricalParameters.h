@@ -107,6 +107,15 @@ class Categorical_pjkParameters: public CategoricalParametersBase<Categorical_pj
     inline void printImpl(ostream &os) { os << proba_ << _T("\n");}
     /** Array of the probabilities */
     Array2DPoint< Array2DVector<Real> > proba_;
+    /** utility fonction allowing to resize the probability vector with with a
+     *  given Range for the modalities.
+     *  @param rangeMod the range of the modalities of the categorical distribution
+     **/
+    inline void initializeParameters(Range const& rangeMod)
+    {
+      for(int j=proba_.firstIdx(); j<= proba_.lastIdx(); j++)
+      { proba_[j].resize(rangeMod);}
+    }
 };
 
 /** @ingroup Clustering
@@ -144,6 +153,12 @@ class Categorical_pkParameters: public CategoricalParametersBase<Categorical_pkP
     inline void printImpl(ostream &os) { os << proba_ << _T("\n");}
     /** probability of each model */
     Array2DVector<Real> proba_;
+    /** utility fonction allowing to resize the probability vector with a
+     *  given Range for the modalities.
+     *  @param rangeMod the range of the modalities of the categorical distribution
+     **/
+    inline void initializeParameters(Range const& rangeMod)
+    { proba_.resize(rangeMod);}
 };
 
 } // namespace STK

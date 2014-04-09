@@ -44,13 +44,16 @@
 namespace STK
 {
 
+// forward declaration
+template<int Id> class MixtureBridge;
+
 namespace Clust
 {
 /** @ingroup Clustering
- *  specialization of the MixtureTraits for the Gaussian_sjk model
+ *  specialization of the BridgeTraits for the Gaussian_sjk model
  **/
 template<>
-struct MixtureTraits<Clust::Gaussian_sjk_>
+struct BridgeTraits<Clust::Gaussian_sjk_>
 {
    /** Type of the data set to used as input */
    typedef Array2D<Real> Data;
@@ -62,10 +65,10 @@ struct MixtureTraits<Clust::Gaussian_sjk_>
    typedef Gaussian_sjk<Data> Mixture;
 };
 /** @ingroup Clustering
- *  specialization of the MixtureTraits for the Gaussian_sk model
+ *  specialization of the BridgeTraits for the Gaussian_sk model
  **/
 template<>
-struct MixtureTraits<Clust::Gaussian_sk_>
+struct BridgeTraits<Clust::Gaussian_sk_>
 {
    /** Type of the data set to used as input */
    typedef Array2D<Real> Data;
@@ -77,10 +80,10 @@ struct MixtureTraits<Clust::Gaussian_sk_>
    typedef Gaussian_sk<Data> Mixture;
 };
 /** @ingroup Clustering
- *  specialization of the MixtureTraits for the Gaussian_sj model
+ *  specialization of the BridgeTraits for the Gaussian_sj model
  **/
 template<>
-struct MixtureTraits<Clust::Gaussian_sj_>
+struct BridgeTraits<Clust::Gaussian_sj_>
 {
    /** Type of the data set to used as input */
    typedef Array2D<Real> Data;
@@ -92,10 +95,10 @@ struct MixtureTraits<Clust::Gaussian_sj_>
    typedef Gaussian_sj<Data> Mixture;
 };
 /** @ingroup Clustering
- *  specialization of the MixtureTraits for the Gaussian_s model
+ *  specialization of the BridgeTraits for the Gaussian_s model
  **/
 template<>
-struct MixtureTraits<Clust::Gaussian_s_>
+struct BridgeTraits<Clust::Gaussian_s_>
 {
    /** Type of the data set to used as input */
    typedef Array2D<Real> Data;

@@ -284,21 +284,20 @@
  * Currently, it is not possible to define directly a mixture model using the
  * implemented model. It is necessary to used a STK::MixtureComposer
  * which compose STK::MixtureBridge deriving from the Interface STK::IMixture.
+ * @sa STK_MixtureComposer.h, STK_MixtureBridge.h
  *
- * @sa STK_MixtureComposer.h
- *
- * In the file STK_Clust_Util.h, the enum Mixture have to be completed.
- * and the function createMixture modified
+ * In the file STK_Clust_Util.h, the enum Mixture have to be completed
+ * and at least the function
  * @code
- * IMixture* createMixture(Mixture model, std::string const& id, int nbCluster)
+ * MixtureManager::createMixture
  * @endcode
- * have to be modified accordingly.
+ * in the class MixtureManager have to be modified accordingly.
  *
- * @sa STK_Clust_Util.h
+ * @sa STK_Clust_Util.h, STK::MixtureManager
  *
- * In the directory Mixtures, the STK::Clust::MixtureTraits class have to be
+ * In the directory Bridges, the STK::Clust::BridgeTraits class have to be
  * specialized.
  *
- * @sa STK_GaussianMixtures.h
+ * @sa STK_GaussianBridges.h
  *
  **/

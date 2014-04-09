@@ -68,7 +68,7 @@ class DiagGaussianComponent : public IMixtureComponent< _Array, _Parameters >
     /** default constructor. */
     inline DiagGaussianComponent() : Base() {}
     /** Copy constructor. */
-    inline DiagGaussianComponent( DiagGaussianComponent const& model): Base(model) {}
+    inline DiagGaussianComponent( DiagGaussianComponent const& component): Base(component) {}
     /** destructor */
     inline virtual ~DiagGaussianComponent() {}
     /** clone pattern */

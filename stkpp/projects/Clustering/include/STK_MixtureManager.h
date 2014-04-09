@@ -29,7 +29,7 @@
  **/
 
 /** @file STK_MixtureManager.h
- *  @brief In this file .
+ *  @brief In this file we define the MixtureManager class.
  **/
 
 
@@ -37,35 +37,49 @@
 #define STK_MIXTUREMANAGER_H
 
 #include "STK_Clust_Util.h"
+#include "STK_MixtureComposer.h"
+
 #include "./MixturesBridges/STK_Bridges.h"
+#include "./MixturesBridges/STK_MixtureBridge.h"
 
 
 namespace STK
 {
 
+/** @ingroup Clustering
+ *  @brief A mixture manager is a factory class for injection dependency in the
+ *  stk++ derived class of the IMixture interface
+ *  (aka: the MixtureBridge<id> classes).
+ *
+ *  It handle all the creation and initialization stuff needed by the
+ *  mixture models of the stkpp library.
+ */
 template<class DataHandler>
 class MixtureManager
 {
   public:
+    /** InfoMap is a map of pairs (name, type) */
     typedef typename DataHandler::InfoMap InfoMap;
     typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
     typedef std::vector<IMixture*>::iterator MixtIterator;
-   /** */
+
+    /** Default constructor, need an instance of a DataHandler.  */
     MixtureManager(DataHandler const& handler) : handler_(handler) {}
-    /** */
+    /** Utility function allowing to create and register all the stk++ mixtures
+     *  defined in the hanlder.
+     **/
     void createMixtures(MixtureComposer& composer, int nbCluster)
     {
       for (typename InfoMap::const_iterator it=handler_.info().begin(); it!=handler_.info().end(); ++it)
       {
         std::string idName = it->first;
-        std::string model= it->second;
-        Clust::Mixture idModel = Clust::stringToMixture(model);
-        // get a mixture fully
-        IMixture* p_mixture = createMixture(idModel, idName, nbCluster);
-        if (p_mixture) composer.registerMixture(p_mixture);
+        Clust::Mixture idModel = Clust::stringToMixture(it->second);
+        // get a mixture
+        IMixture* p_bridge = createMixture(idModel, idName, nbCluster);
+        if (p_bridge) composer.registerMixture(p_bridge);
       }
     }
-    /** create a mixture and initialize it*
+    /** create a mixture and initialize it.
      *  @param idModel id of the model
      *  @param idName name of the model
      *  @param nbCluster number of cluster of the model
@@ -77,71 +91,71 @@ class MixtureManager
         // gamma_ajk_bjk_ model
         case Clust::Gamma_ajk_bjk_:
         {
-          GammaBridge_ajk_bjk* p_mixture = new GammaBridge_ajk_bjk(idName, nbCluster);
-          p_mixture->setData(this);
-          p_mixture->initializeMixture(this);
-          return p_mixture;
+          GammaBridge_ajk_bjk* p_bridge = new GammaBridge_ajk_bjk(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture();
+          return p_bridge;
         }
         break;
         // gamma_ajk_bj_ model
         case Clust::Gamma_ajk_bj_:
         {
-          GammaBridge_ajk_bj* p_mixture = new GammaBridge_ajk_bj(idName, nbCluster);
-          p_mixture->setData(this);
-          p_mixture->initializeMixture(this);
-          return p_mixture;
+          GammaBridge_ajk_bj* p_bridge = new GammaBridge_ajk_bj(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture();
+          return p_bridge;
         }
         break;
         // Gaussian_sjk_ model
         case Clust::Gaussian_sjk_:
         {
-          GaussianBridge_sjk* p_mixture = new GaussianBridge_sjk(idName, nbCluster);
-          p_mixture->setData(this);
-          p_mixture->initializeMixture(this);
-          return p_mixture;
+          GaussianBridge_sjk* p_bridge = new GaussianBridge_sjk(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture();
+          return p_bridge;
         }
         break;
         // Gaussian_sk_ model
         case Clust::Gaussian_sk_:
         {
-          GaussianBridge_sk* p_mixture = new GaussianBridge_sk(idName, nbCluster);
-          p_mixture->setData(this);
-          p_mixture->initializeMixture(this);
-          return p_mixture;
+          GaussianBridge_sk* p_bridge = new GaussianBridge_sk(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture();
+          return p_bridge;
         }
         break;
         // Gaussian_sj_ model
         case Clust::Gaussian_sj_:
         {
-          GaussianBridge_sj* p_mixture = new GaussianBridge_sj(idName, nbCluster);
-          p_mixture->setData(this);
-          p_mixture->initializeMixture(this);
-          return p_mixture;
+          GaussianBridge_sj* p_bridge = new GaussianBridge_sj(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture();
+          return p_bridge;
         }
         break;
         // Gaussian_s_ model
         case Clust::Gaussian_s_:
         {
-          GaussianBridge_s* p_mixture = new GaussianBridge_s(idName, nbCluster);
-          p_mixture->setData(this);
-          p_mixture->initializeMixture(this);
-          return p_mixture;
+          GaussianBridge_s* p_bridge = new GaussianBridge_s(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture();
+          return p_bridge;
         }
         // Categorical_pjk_ model
         case Clust::Categorical_pjk_:
         {
-          CategoricalBridge_pjk* p_mixture = new CategoricalBridge_pjk(idName, nbCluster);
-          p_mixture->setData(this);
-          p_mixture->initializeMixture(this);
-          return p_mixture;
+          CategoricalBridge_pjk* p_bridge = new CategoricalBridge_pjk(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture();
+          return p_bridge;
         }
         // Categorical_pjk_ model
         case Clust::Categorical_pk_:
         {
-          CategoricalBridge_pk* p_mixture = new CategoricalBridge_pk(idName, nbCluster);
-          p_mixture->setData(this);
-          p_mixture->initializeMixture(this);
-          return p_mixture;
+          CategoricalBridge_pk* p_bridge = new CategoricalBridge_pk(idName, nbCluster);
+          p_bridge->setData(this);
+          p_bridge->initializeMixture();
+          return p_bridge;
         }
         break;
         default:
@@ -159,51 +173,11 @@ class MixtureManager
     inline void getData(std::string const& idName, Data& data, int& nbVariable) const
     { handler_.getData(idName, data, nbVariable);}
 
-    /** initialize Gamma_ajk_bjk_ mixture.
-     *  @param mixture the Gamma_ajk_bjk_ mixture to initialize
-     **/
-    inline void initializeMixture( Clust::MixtureTraits<Clust::Gamma_ajk_bjk_>::Mixture& mixture) const
-    {}
-    /** initialize Gamma_ajk_bj mixture.
-     *  @param mixture the Gamma_ajk_bj mixture to initialize
-     **/
-    inline void initializeMixture(Clust::MixtureTraits<Clust::Gamma_ajk_bj_>::Mixture& mixture) const
-    {}
-    /** initialize Gaussian_sjk_ mixture.
-     *  @param mixture the Gaussian_sjk_ mixture to initialize
-     **/
-    inline void initializeMixture(Clust::MixtureTraits<Clust::Gaussian_sjk_>::Mixture& mixture) const
-    {}
-    /** initialize Gaussian_sj_ mixture.
-     *  @param mixture the Gaussian_sj_ mixture to initialize
-     **/
-    inline void initializeMixture(Clust::MixtureTraits<Clust::Gaussian_sj_>::Mixture& mixture) const
-    {}
-    /** initialize Gaussian_sk_ mixture.
-     *  @param mixture the Gaussian_sk_ mixture to initialize
-     **/
-    inline void initializeMixture(Clust::MixtureTraits<Clust::Gaussian_sk_>::Mixture& mixture) const
-    {}
-    /** initialize Gaussian_s_ mixture.
-     *  @param mixture the Gaussian_s_ mixture to initialize
-     **/
-    inline void initializeMixture(Clust::MixtureTraits<Clust::Gaussian_s_>::Mixture& mixture) const
-    {}
-    /** initialize Categorical_pjk_ mixture.
-     *  @param mixture the Categorical_pjk_ mixture to initialize
-     **/
-    inline void initializeMixture(Clust::MixtureTraits<Clust::Categorical_pjk_>::Mixture& mixture) const
-    {}
-    /** initialize Categorical_pk_ mixture.
-     *  @param mixture the Categorical_pk_ mixture to initialize
-     **/
-    inline void initializeMixture(Clust::MixtureTraits<Clust::Categorical_pk_>::Mixture& mixture) const
-    {}
-
   private:
     /** pointer to the dataHandler */
     DataHandler const& handler_;
 };
+
 
 } // namespace STK
 

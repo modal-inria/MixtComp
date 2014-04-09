@@ -91,15 +91,6 @@ inline bool isEven(int const& x)
 
 /** @ingroup Base
  *
- *  Computation of round off : return an int value
- *  @param x the value to round
- *  @return the rouded value of x
- **/
-inline int round(Real const& x)
-{ return( x < 0.0 ? int(x-0.5) : int(x+0.5));}
-
-/** @ingroup Base
- *
  *  Computation of sqrt(x^2 + y^2) without underflow or overflow.
  *  @param x first value
  *  @param y second value

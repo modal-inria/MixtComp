@@ -43,13 +43,16 @@
 namespace STK
 {
 
+// forward declaration
+template<int Id> class MixtureBridge;
+
 namespace Clust
 {
 /** @ingroup Clustering
- *  specialization of the MixtureTraits for the Categorical_pjk model
+ *  specialization of the BridgeTraits for the Categorical_pjk model
  **/
 template<>
-struct MixtureTraits<Clust::Categorical_pjk_>
+struct BridgeTraits<Clust::Categorical_pjk_>
 {
    /** Type of the data set to used as input */
    typedef Array2D<int> Data;
@@ -61,10 +64,10 @@ struct MixtureTraits<Clust::Categorical_pjk_>
    typedef Categorical_pjk<Data> Mixture;
 };
 /** @ingroup Clustering
- *  specialization of the MixtureTraits for the Categorical_pk model
+ *  specialization of the BridgeTraits for the Categorical_pk model
  **/
 template<>
-struct MixtureTraits<Clust::Categorical_pk_>
+struct BridgeTraits<Clust::Categorical_pk_>
 {
    /** Type of the data set to used as input */
    typedef Array2D<int> Data;

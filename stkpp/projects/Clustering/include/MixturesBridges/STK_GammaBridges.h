@@ -36,49 +36,50 @@
 #ifndef STK_GAMMABRIDGES_H
 #define STK_GAMMABRIDGES_H
 
-#include "STK_MixtureBridge.h"
-
 #include "../GammaMixtureModels/STK_Gamma_ajk_bjk.h"
 #include "../GammaMixtureModels/STK_Gamma_ajk_bj.h"
 
 namespace STK
 {
 
+// forward declaration
+template<int Id> class MixtureBridge;
+
 namespace Clust
 {
 /** @ingroup Clust
- *  Given the Id of a mixture model, the struct MixtureTraits allow to get
+ *  Given the Id of a mixture model, the struct BridgeTraits allow to get
  *  type of the input and output.
  **/
 template<>
-struct MixtureTraits<Clust::Gamma_ajk_bjk_>
+struct BridgeTraits<Clust::Gamma_ajk_bjk_>
 {
    /** Type of the data set to used as input */
-   typedef STK::Array2D<Real> Data;
+   typedef Array2D<Real> Data;
    /** Type of the parameter set to used as output */
-   typedef STK::Array2D<Real> Param;
+   typedef Array2D<Real> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */
-   typedef STK::Gamma_ajk_bjk<Data> Mixture;
+   typedef Gamma_ajk_bjk<Data> Mixture;
 };
 
 
 /** @ingroup Clust
- *  Given the Id of a mixture model, the struct MixtureTraits allow to get
+ *  Given the Id of a mixture model, the struct BridgeTraits allow to get
  *  type of the input and output.
  **/
 template<>
-struct MixtureTraits<Clust::Gamma_ajk_bj_>
+struct BridgeTraits<Clust::Gamma_ajk_bj_>
 {
    /** Type of the data set to used as input */
-   typedef STK::Array2D<Real> Data;
+   typedef Array2D<Real> Data;
    /** Type of the parameter set to used as output */
-   typedef STK::Array2D<Real> Param;
+   typedef Array2D<Real> Param;
    /** Type of the Data */
    typedef typename Data::Type Type;
    /** Type of the mixture model */
-   typedef STK::Gamma_ajk_bj<Data> Mixture;
+   typedef Gamma_ajk_bj<Data> Mixture;
 };
 
 } // namespace Clust

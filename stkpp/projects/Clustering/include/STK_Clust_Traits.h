@@ -30,7 +30,7 @@
 
 /** @file STK_Clust_Traits.h
  *  @brief In this file we define the MixtureModelImpl, the MixtureModelTraits
- *  and the MixtureTraits classes.
+ *  and the BridgeTraits classes.
  **/
 
 
@@ -67,10 +67,10 @@ template <class Mixture> struct MixtureModelTraits;
  *  used by the Bridge classes.
  *  @sa MixtureBridge
  *   **/
-template<int id> struct MixtureTraits;
+template<int id> struct BridgeTraits;
 
 } // namespace Clust
 
 
 }  // namespace STK
-#endif /* STK_MIXTURETRAITS_H */
+#endif /* STK_BridgeTraits_H */

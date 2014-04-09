@@ -32,8 +32,8 @@
  *  @brief In this file we define the Categorical_pk model
  **/
 
-#ifndef STK_CATEGORICAL_SK_H
-#define STK_CATEGORICAL_SK_H
+#ifndef STK_CATEGORICAL_PK_H
+#define STK_CATEGORICAL_PK_H
 
 #include "STK_CategoricalBase.h"
 
@@ -124,4 +124,4 @@ void Categorical_pk<Array>::mStep()
 
 } // namespace STK
 
-#endif /* STK_CATEGORICAL_SJK_H */
+#endif /* STK_CATEGORICAL_PK_H */

@@ -38,7 +38,7 @@
 #include "../STK_IMixtureModel.h"
 #include "STK_GammaComponent.h"
 
-#include "../../../STatistiK/include/STK_Law_Gamma.h"
+#include "../../../STatistiK/include/STK_Law_Categorical.h"
 
 namespace STK
 {
@@ -81,10 +81,8 @@ class GammaBase : public IMixtureModel<Derived >
      **/
     Real sample(int i, int j) const
     {
-      Real sum = 0.;
-      for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
-      { sum += p_tik()->elt(i,k) * Law::Gamma::rand(p_param(k)->shape(j),p_param(k)->scale(j));}
-      return sum;
+      int k = Law::Categorical::rand(p_tik()->row(i));
+      return Law::Gamma::rand(p_param(k)->shape(j),p_param(k)->scale(j));
     }
     /** @brief compute a safe value for the column j, missing values are replaced by 1.
      *  @return a safe value for the jth variable
@@ -97,10 +95,9 @@ class GammaBase : public IMixtureModel<Derived >
      **/
     void getParameters(Array2D<Real>& params) const
     {
-      int firstId = params.firstIdxRows();
       int nbClust = this->nbCluster();
-
       params.resize(2*nbClust, p_data()->cols());
+      int firstId = params.firstIdxRows();
 
       for (int k= 0; k < nbClust; ++k)
       {

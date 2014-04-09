@@ -71,39 +71,42 @@ class CategoricalBase : public IMixtureModel<Derived >
   public:
     /** @return an imputation value for the jth variable of the ith sample
      *  @param i,j indexes of the data to impute */
-    int impute(int i, int j) const
-    {
-      // compute argmax ??
-      return 0.;
-    }
+    int impute(int i, int j) const;
     /** @return a simulated value for the jth variable of the ith sample
      * @param i,j indexes of the data to simulate*/
-    int sample(int i, int j) const
-    {
-      // simulate
-      return 0.;
-    }
+    int sample(int i, int j) const;
     /** @return a safe value for the jth variable
      *  @param j index of the column with the safe value needed
      **/
-    inline int safeValue(int j) const
+    inline int safeValue(int j) const;
+    /** */
+    void initializeModel()
     {
-      // compute arg max ??
-      return 0;
+      Base::initializeModel();
+      // resize vectors of probabilities
+      for(int k=components().firstIdx(); k<= components().lastIdx(); ++k)
+      { components(k)->p_param()->initializeParameters(modalities_);}
     }
     /** get the parameters of the model
      *  @param params the parameters of the model
      **/
     void getParameters(Array2D<Real>& params) const
     {
-      params.resize(this->nbCluster(), p_data()->cols());
-//      for (int k= params.firstIdxRows(); k <= params.lastIdxRows(); ++k)
-//      {
-//        for (int j=  p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
-//        {
-//          params(k, j) = p_param(k)->proba(j);
-//        }
-//      }
+      int firstId = params.firstIdxRows();
+      int nbClust = this->nbCluster();
+      int nbModalities = modalities_.size();
+
+      params.resize(nbModalities * nbClust, p_data()->cols());
+      for (int k = 0; k <= nbClust; ++k)
+      {
+        for (int j = p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
+        {
+          for (int l = 0; l < nbModalities; ++l)
+          {
+            params(k * nbModalities + l + firstId, j) = p_param(k)->proba(j, l);
+          }
+        }
+      }
     }
     /** Write the parameters on the output stream os */
     void writeParameters(ostream& os) const
@@ -129,6 +132,27 @@ class CategoricalBase : public IMixtureModel<Derived >
     /** range of the modalities */
     Range modalities_;
 };
+
+/* Implementation  */
+template<class Derived>
+int CategoricalBase<Derived>::impute(int i, int j) const
+{
+      // compute argmax ??
+      return 0;
+}
+
+/* Implementation  */
+template<class Derived>
+int CategoricalBase<Derived>::sample(int i, int j) const
+{
+   return 0;
+}
+/* Implementation  */
+template<class Derived>
+int CategoricalBase<Derived>::safeValue(int j) const
+{
+   return 0;
+}
 
 } // namespace STK
 

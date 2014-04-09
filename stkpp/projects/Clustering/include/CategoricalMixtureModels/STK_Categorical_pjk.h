@@ -32,8 +32,8 @@
  *  @brief In this file we implement the Categorical_pjk class
  **/
 
-#ifndef STK_CATEGORICAL_SJK_H
-#define STK_CATEGORICAL_SJK_H
+#ifndef STK_CATEGORICAL_PJK_H
+#define STK_CATEGORICAL_PJK_H
 
 #include "STK_CategoricalBase.h"
 
@@ -90,14 +90,7 @@ class Categorical_pjk : public CategoricalBase<Categorical_pjk<Array> >
     Categorical_pjk( Categorical_pjk const& model) : Base(model) {}
     /** destructor */
     ~Categorical_pjk() {}
-    /** */
-    void initializeModel()
-    {
-      Base::initializeModel();
-      // resize vectors of probabilities
-    }
-
-    /** Compute the initial weighted probabilitiesof the mixture */
+    /** Compute the initial weighted probabilities of the mixture */
     void initializeStep();
     /** Initialize randomly the parameters of the Categorical mixture. */
     void randomInit();
@@ -111,7 +104,7 @@ class Categorical_pjk : public CategoricalBase<Categorical_pjk<Array> >
 /* Initialize the parameters using mStep. */
 template<class Array>
 void Categorical_pjk<Array>::initializeStep()
-{}
+{mStep();}
 
 /* Initialize randomly the parameters of the Categorical mixture. The centers
  *  will be selected randomly among the data set and the standard-deviation
@@ -121,11 +114,25 @@ template<class Array>
 void Categorical_pjk<Array>::randomInit()
 {}
 
-/* Compute the weighted means and the weighted variances. */
+/* Compute the modalities probabilities */
 template<class Array>
 void Categorical_pjk<Array>::mStep()
-{}
+{
+    for (int k = p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+    {
+      for (int j = p_param(k)->proba_.firstIdxRows();
+           j <= p_param(k)->proba_.lastIdxRows();
+           ++j)
+      {
+        for (int i = p_tik()->firstIdxRows(); i <= p_tik()->lastIdxRows(); ++i)
+        {
+          p_param(k)->proba_(j, (*p_data())(i, j)) += (*p_tik())(i, k);
+        }
+        (p_param(k)->proba_[j]) *=  1./Real(p_tik()->sizeRows());
+      }
+    }
+}
 
 } // namespace STK
 
-#endif /* STK_CATEGORICAL_SJK_H */
+#endif /* STK_CATEGORICAL_PJK_H */

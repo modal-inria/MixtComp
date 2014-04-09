@@ -75,6 +75,8 @@ Mixture stringToMixture( std::string const& type)
   if (toUpperString(type) == toUpperString(_T("Gaussian_sk"))) return Gaussian_sk_;
   if (toUpperString(type) == toUpperString(_T("Gaussian_sj"))) return Gaussian_sj_;
   if (toUpperString(type) == toUpperString(_T("Gaussian_s"))) return Gaussian_s_;
+  if (toUpperString(type) == toUpperString(_T("Categorical_pjk"))) return Categorical_pjk_;
+  if (toUpperString(type) == toUpperString(_T("Categorical_pk"))) return Categorical_pk_;
   return unknown_mixture_;
 }
 
@@ -91,6 +93,8 @@ std::string mixtureToString( Mixture const& type)
   if (type == Gaussian_sk_) return String(_T("Gaussian_sk"));
   if (type == Gaussian_sj_) return String(_T("Gaussian_sj"));
   if (type == Gaussian_s_) return String(_T("Gaussian_s"));
+  if (type == Categorical_pjk_) return String(_T("Categorical_pjk"));
+  if (type == Categorical_pk_) return String(_T("Categorical_pk"));
   return String(_T("unknown"));
 }
 

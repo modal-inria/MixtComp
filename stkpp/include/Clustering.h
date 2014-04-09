@@ -64,14 +64,18 @@
 #include "../projects/Clustering/include/STK_Clust_Util.h"
 #include "../projects/Clustering/include/STK_MixtureFacade.h"
 
-#include "../projects/Clustering/include/STK_MixtureManager.h"
-#include "../projects/Clustering/include/STK_MixtureComposer.h"
-#include "../projects/Clustering/include/STK_IMixture.h"
 
 #include "../projects/Clustering/include/GammaMixtureModels/STK_Gamma_ajk_bjk.h"
 #include "../projects/Clustering/include/GammaMixtureModels/STK_Gamma_ajk_bj.h"
 
 #include "../projects/Clustering/include/GaussianMixtureModels/STK_Gaussian_s.h"
 #include "../projects/Clustering/include/GaussianMixtureModels/STK_Gaussian_sjk.h"
+
+#include "../projects/Clustering/include/CategoricalMixtureModels/STK_Categorical_pjk.h"
+#include "../projects/Clustering/include/CategoricalMixtureModels/STK_Categorical_pk.h"
+
+#include "../projects/Clustering/include/STK_MixtureManager.h"
+#include "../projects/Clustering/include/STK_MixtureComposer.h"
+//#include "../projects/Clustering/include/STK_IMixture.h"
 
 #endif // CLUSTERING_H
