@@ -34,6 +34,7 @@
 #include "../../Data/mixt_AugmentedData.h"
 #include "../../Sampler/mixt_Imputer.h"
 #include "stkpp/projects/Clustering/include/STK_IMixture.h"
+#include "mixt_InitializeMixtureImpl.h"
 
 namespace mixt
 {
@@ -43,17 +44,19 @@ class MixtureBridge : public STK::IMixture
 {
   public:
     // data type
-    typedef typename MixtureTraits<Id>::Data Data;
+    typedef typename BridgeTraits<Id>::Data Data;
+    // augmented data type
+    typedef typename BridgeTraits<Id>::AugData AugData;
     // parameters type to get
-    typedef typename MixtureTraits<Id>::Param Param;
+    typedef typename BridgeTraits<Id>::Param Param;
     // type of the data
-    typedef typename MixtureTraits<Id>::Type Type;
+    typedef typename BridgeTraits<Id>::Type Type;
     // type of Mixture
-    typedef typename MixtureTraits<Id>::Mixture Mixture;
+    typedef typename BridgeTraits<Id>::Mixture Mixture;
     // type of Sampler
-    typedef typename MixtureTraits<Id>::Sampler Sampler;
+    typedef typename BridgeTraits<Id>::Sampler Sampler;
     // type of Sample Iterator
-    typedef typename MixtureTraits<Id>::SamplerIterator SamplerIterator;
+    typedef typename BridgeTraits<Id>::SamplerIterator SamplerIterator;
 
     /** constructor.
      *  @param idName id name of the mixture
@@ -61,27 +64,22 @@ class MixtureBridge : public STK::IMixture
      **/
     MixtureBridge(std::string const& idName, int nbCluster) :
       STK::IMixture(idName, nbCluster),
+      mixture_(nbCluster),
       m_augDataij_(),
       nbVariable_(0),
       sampler_(getData(),
                getParam())
-    {
-      mixture_->setData(m_augDataij_.data_);
-    }
+    {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
       STK::IMixture(bridge),
+      mixture_(bridge.mixture_),
       m_augDataij_(bridge.m_augDataij_),
       nbVariable_(bridge.nbVariable_),
       sampler_(bridge.sampler_)
     {
-      mixture_ = new Mixture(*bridge.mixture_);
-      mixture_->setData(m_augDataij_.data_);
-    }
-    /** destructor */
-    ~MixtureBridge()
-    {
-      delete mixture_;
+      mixture_.setData(m_augDataij_.data_);
+      mixture_.initializeModel();
     }
     /** This is a standard clone function in usual sense. It must be defined to
      *  provide new object of your class with values of various parameters
@@ -100,17 +98,13 @@ class MixtureBridge : public STK::IMixture
      */
     virtual MixtureBridge* create() const
     {
-      MixtureBridge* p_mixture = new MixtureBridge(idName(), nbCluster());
-      p_mixture->m_augDataij_ = m_augDataij_;
-      p_mixture->nbVariable_ = nbVariable_;
+      MixtureBridge* p_bridge = new MixtureBridge(mixture_, idName(), nbCluster());
+      p_bridge->m_augDataij_ = m_augDataij_;
+      p_bridge->nbVariable_ = nbVariable_;
       // Bug Fix: set the correct data set
-      p_mixture->mixture_->setData(p_mixture->m_augDataij_.data_);
-      return p_mixture;
-    }
-    /** setMixture */
-    virtual void setMixture(Mixture* mixture)
-    {
-      mixture_ = mixture;
+      p_bridge->mixture_.setData(p_bridge->m_augDataij_.data_);
+      p_bridge->mixture_.initializeModel();
+      return p_bridge;
     }
     /** @brief Initialize the model before its use by the composer.
      *  The parameters values are set to their default values if the mixture_ is
@@ -122,10 +116,9 @@ class MixtureBridge : public STK::IMixture
     {
       if (!p_composer())
         STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);
-      mixture_->setMixtureParameters( p_prop(), p_tik(), p_zi());
-      mixture_->initializeModel();
-      mixture_->initializeStep();
-      sampler_.setZi(p_zi());
+      mixture_.setMixtureParameters( p_prop(), p_tik(), p_zi());
+      mixture_.initializeStep();
+      sampler_.setZi(p_zi()); // at this point the bridge has been registered on the composer and p_zi is valid
     }
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -136,39 +129,39 @@ class MixtureBridge : public STK::IMixture
     {
       p_manager->getData(idName(), m_augDataij_, nbVariable_ );
       removeMissing();
-      mixture_->setData(m_augDataij_.data_);
     }
-
+    /** This function will be defined to initialize the mixture model using
+     *  informations stored by the MixtureManager and the data container.
+     */
+     void initializeMixture()
+     {
+       InitializeMixtureImpl<Id>::run(mixture_, m_augDataij_);
+     }
     /** @brief This function should be used in order to initialize randomly the
      *  parameters of the ingredient.
      */
-    virtual void randomInit() { mixture_->randomInit();};
+    virtual void randomInit()
+    {
+      mixture_.randomInit();
+    }
     /** This function should be used for imputation of data.
      *  The default implementation (in the base class) is to do nothing.
      */
     virtual void imputationStep()
-    {
-      /* for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
-      { m_dataij_(it->first, it->second) = mixture_.impute(it->first, it->second);} */
-    }
+    {}
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
      * simulated by the framework itself because to do so we have to take into
      * account all the mixture laws. do nothing by default.
      */
     virtual void samplingStep()
-    {
-      mixture_->getParameters(param_); // update the parameters (used by the Sampler)
-      SamplerIterator endIt(sampler_.end());
-      for (SamplerIterator it = sampler_.begin(); it != endIt; ++it)
-      {
-        std::pair<std::pair<int, int>, Type> retValue(*it);
-        m_augDataij_.data_(retValue.first.first, retValue.first.second) = retValue.second;
-      }
-    }
+    {}
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
-    virtual void paramUpdateStep() {mixture_->mStep();}
+    virtual void paramUpdateStep()
+    {
+      mixture_.mStep();
+    }
     /** This function should be used to store any intermediate results during
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
@@ -187,44 +180,71 @@ class MixtureBridge : public STK::IMixture
      * @return the log-component probability
      */
     virtual double lnComponentProbability(int i, int k)
-    {return mixture_->lnComponentProbability(i, k);}
+    {
+      return mixture_.lnComponentProbability(i, k);
+    }
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
-    virtual int nbFreeParameter() const {return mixture_->computeNbFreeParameters();}
+    virtual int nbFreeParameter() const
+    {
+      return mixture_.computeNbFreeParameters();
+    }
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
     /** This function must return the number of variables.
      *  @return Number of variables
      */
-    virtual int nbVariable() const { return mixture_->nbVariable();}
+    virtual int nbVariable() const
+    {
+      return mixture_.nbVariable();
+    }
     virtual void writeParameters(std::ostream& out) const
-    {mixture_->writeParameters(out);}
+    {
+      mixture_.writeParameters(out);
+    }
     /** Utility function to use in mode debug in order to test that the
      *  model is well initialized. */
-    int checkModel() const {return mixture_->checkModel();}
-
-    virtual Mixture const* getMixture() const
-    {return mixture_;}
+    int checkModel() const
+    {
+      return mixture_.checkModel();
+    }
 
     virtual AugmentedData<Data> const* getData() const
-    {return &m_augDataij_;}
+    {
+      return &m_augDataij_;
+    }
 
     virtual Param const* getParam() const
-    {return &param_;}
+    {
+      return &param_;
+    }
 
   protected:
     /** The stkpp mixture to bridge with the composer */
-    Mixture* mixture_;
+    Mixture mixture_;
     /** The augmented data set */
-    AugmentedData<Data> m_augDataij_;
+    AugData m_augDataij_;
     /** Current parameters of the STK Mixture */
     Param param_;
     /** number of variables in the data set */
     int nbVariable_;
     
   private:
+    /** protected constructor to use in order to create a bridge.
+     *  @param mixture the mixture to copy
+     *  @param idName id name of the mixture
+     *  @param nbCluster number of cluster
+     **/
+    MixtureBridge(Mixture const& mixture, std::string const& idName, int nbCluster) :
+      IMixture( idName, nbCluster),
+      mixture_(mixture),
+      m_augDataij_(),
+      sampler_(getData(),
+               getParam())
+    {}
+
     /** Imputer used to generate initial values randomly */
     Imputer imputer_;
 

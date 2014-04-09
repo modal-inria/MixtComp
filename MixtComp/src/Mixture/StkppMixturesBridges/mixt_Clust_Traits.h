@@ -35,7 +35,7 @@ namespace mixt
  *  used by the Bridge classes.
  *  @sa MixtureBridge
  *   **/
-template<int id> struct MixtureTraits;
+template<int id> struct BridgeTraits;
 
 }  // namespace mixt
 

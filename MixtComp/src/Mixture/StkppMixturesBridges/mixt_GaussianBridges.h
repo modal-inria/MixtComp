@@ -37,10 +37,12 @@ namespace mixt
  *  Specialization of the MixtureTraits for the Gaussian_sjk_ model
  **/
 template<>
-struct MixtureTraits<STK::Clust::Gaussian_sjk_>
+struct BridgeTraits<STK::Clust::Gaussian_sjk_>
 {
     /** Type of the data set to be used as input */
     typedef STK::Array2D<STK::Real> Data;
+    /** Type of the AugmentedData*/
+    typedef AugmentedData<Data> AugData;
     /** Type of the parameter set to be used as output */
     typedef STK::Array2D<STK::Real> Param;
     /** Type of the Data */

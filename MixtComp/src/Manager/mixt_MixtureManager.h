@@ -65,26 +65,18 @@ class MixtureManager
       {
         case STK::Clust::Gaussian_sjk_:
         {
-          MixtureTraits<STK::Clust::Gaussian_sjk_>::Mixture* mixture = new MixtureTraits<STK::Clust::Gaussian_sjk_>::Mixture(nbCluster);
           GaussianBridge_sjk_m* p_bridge = new GaussianBridge_sjk_m(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->setMixture(mixture);
+          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;
 
         case STK::Clust::Categorical_pjk_:
         {
-          MixtureTraits<STK::Clust::Categorical_pjk_>::Mixture* mixture = new MixtureTraits<STK::Clust::Categorical_pjk_>::Mixture(nbCluster);
-
           CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
           p_bridge->setData(this);
-
-          // get / set number or modalities
-          STK::Range dataRange(p_bridge->getData()->dataRanges_[0].second);
-          mixture->setModalities(dataRange);
-          p_bridge->setMixture(mixture);
-
+          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;
@@ -105,20 +97,6 @@ class MixtureManager
     inline void getData(std::string const& idName, Data& data, int& nbVariable) const
     {
       handler_.getData(idName, data, nbVariable);
-    }
-
-    /** initialize Gaussian_sjk_ mixture.
-     *  @param mixture the Gaussian_sjk_ mixture to initialize
-     **/
-    inline void initializeMixture(GaussianBridge_sjk_m::Mixture& mixture) const
-    {}
-
-    /** initialize Gaussian_sjk_ mixture.
-     *  @param mixture the Gaussian_sjk_ mixture to initialize
-     **/
-    inline void initializeMixture(CategoricalBridge_pjk_m::Mixture& mixture, STK::Range modalities) const
-    {
-      mixture.setModalities(modalities);
     }
 
   private:
