@@ -10,5 +10,6 @@ Description: Mixture Composer is a project to build mixture models with heteroge
     sets. The conditional independence property enable composing all the
     data sets in a single mixture model.
 License: GPL (>= 2)
-Depends: Rcpp, stringr, truncnorm, RInside
+Depends:
+Imports: stringr, truncnorm, RInside
 LinkingTo: Rcpp

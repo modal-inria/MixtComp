@@ -1,2 +1,3 @@
 useDynLib(RMixtComp)
 exportPattern("^[[:alpha:]]+")
+import(Rcpp)
