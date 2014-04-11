@@ -29,10 +29,11 @@
 #ifndef MIXT_INITIALIZEMIXTUREIMPL_H
 #define MIXT_INITIALIZEMIXTUREIMPL_H
 
+#include "mixt_Clust_Traits.h"
+#include "mixt_CategoricalBridges.h"
+
 namespace mixt
 {
-
-#include "mixt_Clust_Traits.h"
 
 /** Initialize mixture, default implementation */
 template<int Id>
@@ -47,43 +48,22 @@ struct InitializeMixtureImpl
   }
 };
 
-// STK::Range dataRange(p_bridge->getData()->dataRanges_[0].second);
-
-///** Initialize mixture, specialization for Categorical_pjk models
-// **/
-//template<>
-//struct InitializeMixtureImpl<Clust::Categorical_pjk_>
-//{
-//  typedef typename Clust::BridgeTraits<Clust::Categorical_pjk_>::Mixture Mixture;
-//  typedef DataBridge<Clust::Categorical_pjk_> Data;
-//  static void run( Mixture& mixture, Data& data)
-//  {
-//    mixture.setData(data.m_dataij());
-//    int min = data.m_dataij().minElt();
-//    int max = data.m_dataij().maxElt();
-//    mixture.setModalities(Range(min, max));
-//    // TODO: resize proba_ in initializeModel
-//    mixture.initializeModel();}
-//};
-//
-///** Initialize mixture, specialization for Categorical_pk models
-// **/
-//template<>
-//struct InitializeMixtureImpl<Clust::Categorical_pk_>
-//{
-//  typedef typename Clust::BridgeTraits<Clust::Categorical_pk_>::Mixture Mixture;
-//  typedef typename Clust::BridgeTraits<Clust::Categorical_pk_>::Type Type;
-//  typedef DataBridge<Clust::Categorical_pk_> Data;
-//  static void run( Mixture& mixture, Data& data)
-//  {
-//    mixture.setData(data.m_dataij());
-//    int min = data.m_dataij().minElt();
-//    int max = data.m_dataij().maxElt();
-//    mixture.setModalities(Range(min, max));
-//    // TODO: resize proba_ in initializeModel
-//    mixture.initializeModel();
-//  }
-//};
+/** Initialize mixture, specialization for Categorical_pjk models
+ **/
+template<>
+struct InitializeMixtureImpl<STK::Clust::Categorical_pjk_>
+{
+  typedef typename BridgeTraits<STK::Clust::Categorical_pjk_>::Mixture Mixture;
+  typedef typename BridgeTraits<STK::Clust::Categorical_pjk_>::AugData AugData;
+  static void run(Mixture& mixture, AugData& augData)
+  {
+    mixture.setData(augData.data_);
+    int min = augData.dataRanges_.at(0).first;
+    int max = augData.dataRanges_.at(0).second;
+    mixture.setModalities(STK::Range(min, max));
+    // TODO: resize proba_ in initializeModel
+    mixture.initializeModel();}
+};
 
 } // namespace mixt
 
