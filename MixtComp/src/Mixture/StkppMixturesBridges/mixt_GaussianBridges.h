@@ -28,10 +28,12 @@
 #include "stkpp/projects/Clustering/include/GaussianMixtureModels/STK_Gaussian_sjk.h"
 #include "../../Sampler/mixt_GaussianSampler.h"
 #include "../../Sampler/mixt_GaussianSamplerIterator.h"
-#include "mixt_MixtureBridge.h"
 
 namespace mixt
 {
+
+// forward declaration
+template<int Id> class MixtureBridge;
 
 /**
  *  Specialization of the MixtureTraits for the Gaussian_sjk_ model

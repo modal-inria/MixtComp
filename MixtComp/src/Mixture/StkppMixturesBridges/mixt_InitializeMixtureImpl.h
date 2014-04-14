@@ -29,9 +29,6 @@
 #ifndef MIXT_INITIALIZEMIXTUREIMPL_H
 #define MIXT_INITIALIZEMIXTUREIMPL_H
 
-#include "mixt_Clust_Traits.h"
-#include "mixt_CategoricalBridges.h"
-
 namespace mixt
 {
 

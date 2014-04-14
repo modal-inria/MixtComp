@@ -17,17 +17,18 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Feb 25, 2014
- *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: Apr 14, 2014
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <RInside.h>                    // for the embedded R via RInside
+#ifndef MIXT_MIXTCOMP_H
+#define MIXT_MIXTCOMP_H
 
-int main(int argc, char *argv[])
-{
-    RInside R(argc, argv);              // create an embedded R instance
-    R.parseEvalQ("library(RMixtComp)");
-//    R.parseEvalQ("testRMC()");
-    R.parseEvalQ("testGenData()");
-    exit(0);
-}
+#include "stkpp/include/Clustering.h"
+
+#include "Data/mixt_DataHandlerR.h"
+#include "Mixture/StkppMixturesBridges/mixt_Clust_Traits.h"
+#include "Manager/mixt_MixtureManager.h"
+#include "Strategy/mixt_SEMStrategy.h"
+
+#endif /* MIXT_MIXTCOMP_H */

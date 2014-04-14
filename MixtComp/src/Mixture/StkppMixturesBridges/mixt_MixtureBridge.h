@@ -30,10 +30,11 @@
 #ifndef MIXT_MIXTUREBRIDGE_H
 #define MIXT_MIXTUREBRIDGE_H
 
-#include "mixt_Clust_Traits.h"
+#include "stkpp/projects/Clustering/include/STK_IMixture.h"
 #include "../../Data/mixt_AugmentedData.h"
 #include "../../Sampler/mixt_Imputer.h"
-#include "stkpp/projects/Clustering/include/STK_IMixture.h"
+#include "mixt_GaussianBridges.h"
+#include "mixt_CategoricalBridges.h"
 #include "mixt_InitializeMixtureImpl.h"
 
 namespace mixt

@@ -25,8 +25,7 @@
 #ifndef MIXT_MIXTUREMANAGER_H
 #define MIXT_MIXTUREMANAGER_H
 
-#include "../Mixture/StkppMixturesBridges/mixt_GaussianBridges.h"
-#include "../Mixture/StkppMixturesBridges/mixt_CategoricalBridges.h"
+#include "../Mixture/StkppMixturesBridges/mixt_MixtureBridge.h"
 
 namespace mixt
 {
