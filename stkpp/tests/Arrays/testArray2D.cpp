@@ -248,23 +248,11 @@ void TestArray2D( int M, int N, Range I, Range J, bool output)
     { print(A, "A"); print(B, "B");}
 
     //
-    if (output) stk_cout << _T("Testing D(A), D = 2, and A.append(D) \n");
+    if (output) stk_cout << _T("Testing D(A); D = 2; \n");
     Array2D<Type> D(A);
     D=Type(2);
     if (output)
     { print(A, "A"); print(D, "D");}
-
-    //
-    if (output) stk_cout << _T("Testing A.merge(D) \n");
-    A.merge(D);
-    if (output)
-    { print(A, "A"); print(D, "D");}
-
-    Array1D<Type> V(A.rows(), Type(1));
-    if (output) stk_cout << _T("Testing A.merge(V) \n");
-    A.merge(V);
-    if (output)
-    { print(A, "A");}
 }
 
 

@@ -46,7 +46,7 @@ LIB_DIR = ../../lib/
 #-----------------------------------------------------------------------
 # source files
 #
-CPP_SRCS = \
+TEST_SRCS = \
 	testAnalysis.cpp \
 	testBetaRatio.cpp \
 	testPsi.cpp \
@@ -59,42 +59,36 @@ CXX_LIB = $(LIB_DIR)/$(LIB_STKPP_A)
 # binary files
 #
 CXX_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
+TEST_OBJS = $(TEST_SRCS:%.cpp=$(BIN_DIR)%.o)
 
 #-----------------------------------------------------------------------
 # program files
-#
-CXX_PROGS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%)
+TEST_PROGS = $(TEST_SRCS:%.cpp=$(BIN_DIR)%)
 
 #-----------------------------------------------------------------------
 # Targets
 #
-.PHONY: all obj
+.PHONY: all obj testCsv
 all: obj progs
 
-obj: $(CXX_OBJS) $(CPP_SRCS) 
-progs: $(CXX_PROGS)
+obj: $(CXX_OBJS) $(CXX_SRCS)  $(TEST_SRCS)
+progs: $(TEST_PROGS)
 
 #-----------------------------------------------------------------------
 # test files depending from Rmath
 # test testAnalysis.o object file 
 # test testBetaRatio.o object file 
-$(BIN_DIR)testAnalysis.o: testAnalysis.cpp makefile
+$(BIN_DIR)testAnalysis.o: testAnalysis.cpp makefile $(CXX_LIB)
 	@ case x$(HASRMATH) in xt ) \
 	echo $(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 esac
 
-$(BIN_DIR)testBetaRatio.o: testBetaRatio.cpp makefile
+$(BIN_DIR)testBetaRatio.o: testBetaRatio.cpp makefile $(CXX_LIB)
 	@ case x$(HASRMATH) in xt ) \
 	echo 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 esac
-
-#-----------------------------------------------------------------------
-# other object files 
-$(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
-
 
 #-----------------------------------------------------------------------
 # rule for compiling the testAnalysis program
@@ -111,12 +105,21 @@ $(BIN_DIR)testBetaRatio: $(BIN_DIR)testBetaRatio.o testBetaRatio.cpp $(CXX_LIB)
 esac
 
 #-----------------------------------------------------------------------
-# other programs compilation rule
+# Objects compilation rules
+#
+$(BIN_DIR)%.o: %.cpp
+	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
+
+#-----------------------------------------------------------------------
+# program compilation rules
+#
 $(BIN_DIR)test%: makefile
-$(BIN_DIR)test%: $(BIN_DIR)test%.o $(CXX_LIB)
-	$(CXX) $< $(CXX_LIB) -o $@  $(LDLIBS)
+$(BIN_DIR)test%: $(BIN_DIR)test%.o $(CXX_LIB) $(CXX_OBJS) $(CXX_SRCS)  $(TEST_SRCS)
+	$(CXX)  $< $(LDFLAGS) $(CXX_OBJS) $(CXX_LIB) $(LDLIBS) -o $@ 
+
 
 #-----------------------------------------------------------------------
 # clean test programs 
 clean:
 	$(RM) $(BIN_DIR)test*
+

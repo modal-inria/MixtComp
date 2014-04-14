@@ -243,24 +243,23 @@ class IArray2D : public IArray2DBase< typename hidden::Traits<Derived>::Type*, D
       // check again if there is something to do
       if ((this->rows() == I) && (this->cols() == J)) return this->asDerived();
       // number of rows and columns to delete or add
-     int rinc = I.lastIdx() - this->lastIdxRows();
-     int cinc = J.lastIdx() - this->lastIdxCols();
+      int rinc = I.lastIdx() - this->lastIdxRows();
+      int cinc = J.lastIdx() - this->lastIdxCols();
+
       // check if we add columns
-      if (cinc >=0)   // work first on rows as we add columns
+      if ((cinc >=0)) // work first on rows as we add columns
       {
         if (rinc < 0)
-        {
-           this->popBackRows(-rinc); // less rows
-        }
-        else  this->pushBackRows(rinc); // more rows
+        { this->popBackRows(-rinc);}  // less rows
+        else
+        { this->pushBackRows(rinc);} // more rows
         this->pushBackCols(cinc); // add columns
+        return this->asDerived();
       }
-      else // work first on columns as we remove column
-      {
-        this->popBackCols(-cinc); // remove columns
-        if (rinc < 0) this->popBackRows(-rinc); // less rows
-        else          this->pushBackRows(rinc); // more rows
-      }
+      // work first on columns as we remove column
+      this->popBackCols(-cinc); // remove columns
+      if (rinc < 0) this->popBackRows(-rinc); // less rows
+      else          this->pushBackRows(rinc); // more rows
       return this->asDerived();
     }
     /** New first index for the object.
@@ -430,59 +429,6 @@ class IArray2D : public IArray2DBase< typename hidden::Traits<Derived>::Type*, D
       }
       else // else insert to the end of the container
       { insertCols(this->lastIdxCols()+1, n);}
-    }
-
-    /** push back (by value) the container V at the end of this.
-     *  @param V the values to add to the end of the container
-     **/
-    template<class Container>
-    void pushBackCols(ITContainer<Container> const& V)
-    {
-      // check if the container is empty
-      if (this->empty())
-      {
-        this->resize(V.rows(), V.cols());
-        for (int j= V.firstIdxCols(); j <= V.lastIdxCols(); ++j)
-          for (int i=V.firstIdxRows(); i<=V.lastIdxRows(); i++)
-            (*this)(i, j) = V(i,j);
-        return;
-      }
-      // this is not empty
-      if (V.rows() != this->rows())
-      { STKRUNTIME_ERROR_NO_ARG(TContainer2D::pushBackCols(V),V.rows() != rows());}
-      // if the container is not empty we add the column and copy V inside
-     int size = V.cols().size(), first = this->lastIdxCols()+1;
-      pushBackCols(size);
-      for (int j0= first, j1= V.firstIdxCols(); j1 <= V.lastIdxCols(); ++j0, ++j1)
-      {
-        for (int i=V.firstIdxRows(); i<=V.lastIdxRows(); i++)
-          (*this)(i, j0) = V(i,j1);
-      }
-    }
-    /** Specialization for vector_. push back (by value) the container V at the
-     *  end of this.
-     *  @param V the values to add to the end of the container
-     **/
-    template<class Container>
-    void pushBackCols(ITContainer<Container, Arrays::vector_> const& V)
-    {
-      // check if the container is empty
-      if (this->empty())
-      {
-        this->resize(V.rows(), V.cols());
-        int j = this->firstIdxCols();
-        for (int i=V.firstIdxRows(); i<=V.lastIdxRows(); i++)
-          (*this)(i, j) = V[i];
-        return;
-      }
-      // this is not empty
-      if (V.rows() != this->rows())
-      { STKRUNTIME_ERROR_NO_ARG(TContainer2D::pushBackCols(V),V.rows() != rows());}
-      // if the container is not empty we add the column and copy V inside
-      int size = V.cols().size(), first = this->lastIdxCols()+1;
-      pushBackCols(size);
-      for (int i=V.firstIdxRows(); i<=V.lastIdxRows(); i++)
-        (*this)(i, first) = V[i];
     }
     /** Insert n Columns at the index pos to the container.
      *  @param pos the position of the inserted Cols
@@ -660,14 +606,89 @@ class IArray2D : public IArray2DBase< typename hidden::Traits<Derived>::Type*, D
 
       return this->asDerived();
     }
+    /** merge (by value) the container other with this.
+     *  @param other the container to merge to this
+     **/
+    template<class Other>
+    void pushBackCols(ExprBase<Other> const& other)
+    {
+      // check if the container is empty
+      if (this->empty())
+      {
+        this->asDerived() = other.asDerived();
+        return;
+      }
+      // this is not empty
+      if (other.rows() != this->rows())
+      { STKRUNTIME_ERROR_NO_ARG(TContainer2D::pushBackCols,range of the rows are different);}
+      // if the container is not empty we add the column and copy other inside
+     int size = other.cols().size(), first = this->lastIdxCols()+1;
+      pushBackCols(size);
+      for (int j0= first, j1= other.firstIdxCols(); j1 <= other.lastIdxCols(); ++j0, ++j1)
+      {
+        for (int i=other.firstIdxRows(); i<=other.lastIdxRows(); i++)
+          (*this)(i, j0) = other(i,j1);
+      }
+    }
+    /** Specialization for Array1D. merge (by value) the container other with this
+     *  @param other the column to add to this
+     **/
+    template<class Other>
+    void pushBackCols(ITContainer1D<Other> const& other)
+    {
+      // check if the container is empty
+      if (this->empty())
+      {
+        resize(other.rows(),1);
+        for (int i=other.firstIdx(); i<=other.lastIdx(); i++)
+          (*this)(i, STKBASEARRAYS) = other[i];
+        return;
+      }
+      // not empty
+      if (other.rows() != this->rows())
+      { STKRUNTIME_ERROR_NO_ARG(TContainer2D::pushBackCols(other),other.rows() != rows());}
+      // if the container is not empty we add the column and copy other inside
+      int size = other.cols().size(), first = this->lastIdxCols()+1;
+      pushBackCols(size);
+      for (int i=other.firstIdx(); i<=other.lastIdx(); i++)
+        (*this)(i, first) = other[i];
+    }
+    /** set other at the end of this (concatenate). Perform a copy of the
+     *  values stored in other to this.
+     *  @param other the container to add back
+     *  @note the size and the type have to match
+     **/
+    template<class Other>
+    void pushBackRows(ExprBase<Other> const& other)
+    {
+      // check if the container is empty
+      if (this->empty())
+      {
+        this->asDerived() = other.asDerived();
+        return;
+      }
+      // not empty
+      if (other.cols() != this->cols())
+        STKRUNTIME_ERROR_NO_ARG(Iarrya2D::pushBackRows,range of the columns are different);
+      // add nbRow to existing rows
+      int nbRow = other.sizeRows();
+      pushBackRows(nbRow);
+      for (int j=this->firstIdxCols(); j<= this->lastIdxCols(); ++j)
+      {
+        // start from the end in order to avoid
+        for (int i=this->lastIdxRows(), iOther= other.lastIdxRows(); iOther>=other.firstIdxRows(); --i, --iOther)
+        { this->elt(i,j) = other.elt(iOther,j);}
+      }
+    }
+
   protected:
     /** copy forward the column @c srcCol of @c src in the column @c dstCol of this. */
     void copyColumnForward(IArray2D const& src, int jDst, int jSrc)
     {
       Type *dp =this->data(jDst), *sp =src.data(jSrc);
       const int tfirst(this->rangeCols_[jDst].firstIdx())
-                  , sfirst(src.rangeCols_[jSrc].firstIdx())
-                  , slast (src.rangeCols_[jSrc].lastIdx());
+              , sfirst(src.rangeCols_[jSrc].firstIdx())
+              , slast (src.rangeCols_[jSrc].lastIdx());
       for ( int it=tfirst, is=sfirst; is<=slast; it++, is++) dp[it] = sp[is];
     }
     /** copy backward the column @c jSrc of @c src in the column @c jDst of this. */

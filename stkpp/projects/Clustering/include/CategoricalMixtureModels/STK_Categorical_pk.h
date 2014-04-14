@@ -92,9 +92,8 @@ class Categorical_pk : public CategoricalBase<Categorical_pk<Array> >
     inline ~Categorical_pk() {}
     /** Compute the inital weighted mean and the initial common variances. */
     void initializeStep();
-    /** Initialize randomly the parameters of the Categorical mixture. The centers
-     *  will be selected randomly among the data set and the standard-deviations
-     *  will be set to 1.
+    /** Initialize randomly the parameters of the Categorical mixture.
+     *  Probabilities will be choosen uniformly.
      */
     void randomInit();
     /** Compute the weighted mean and the common variance. */
@@ -115,7 +114,15 @@ void Categorical_pk<Array>::initializeStep()
  */
 template<class Array>
 void Categorical_pk<Array>::randomInit()
-{}
+{
+  for (int k = p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  {
+    for (int l=p_param(k)->proba_.firstIdx(); l<=p_param(k)->proba_.lastIdx(); ++l)
+    { p_param(k)->proba_[l] = Law::Uniform::rand(0.,1.);}
+    // normalize to 1
+    p_param(k)->proba_ /= p_param(k)->proba_.sum();
+  }
+}
 
 /* Compute the weighted mean and the common variance. */
 template<class Array>

@@ -2,6 +2,7 @@
 SET( TESTS_FILES
     testArray1D
     testArray2D
+    testArray2DMergeSet
     testCAllocator
     testCArrays
     testConstArrays

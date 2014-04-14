@@ -215,8 +215,8 @@ class MixtureBridge: public IMixture
          j = it->second; // get column
          if (j!=old_j)
          {
-           value = mixture_.safeValue(j);
            old_j =j;
+           value = mixture_.safeValue(j);
          }
          data_.m_dataij_(it->first, it->second) = value;
        }

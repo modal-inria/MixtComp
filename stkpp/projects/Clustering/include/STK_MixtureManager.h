@@ -36,10 +36,6 @@
 #ifndef STK_MIXTUREMANAGER_H
 #define STK_MIXTUREMANAGER_H
 
-#include "STK_Clust_Util.h"
-#include "STK_MixtureComposer.h"
-
-#include "./MixturesBridges/STK_Bridges.h"
 #include "./MixturesBridges/STK_MixtureBridge.h"
 
 

@@ -51,6 +51,7 @@ ARRAYS_INC_DIR = ../../projects/Arrays/include/
 CPP_SRCS = \
 	testArray1D.cpp \
 	testArray2D.cpp \
+	testArray2DMergeSet.cpp \
 	testArray2DDiagonal.cpp \
 	testArray2DResize.cpp \
 	testCAllocator.cpp \

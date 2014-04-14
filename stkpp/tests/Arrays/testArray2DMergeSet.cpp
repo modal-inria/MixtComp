@@ -28,7 +28,7 @@
  * Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  */
 
-/** @file testArray2DResize.cpp
+/** @file testArray2D.cpp
  *  @brief In this file we test the TContainer 2D classes.
  **/
 
@@ -90,62 +90,52 @@ void print(Array2D<Type> const& A, String const& name)
 }
 
 template< class Type>
-void TestArray2D(Range I, Range J, bool output)
+void TestArray2DMergeSet( int M, int N, Range I, Range J, bool output)
 {
-    Range R=I, S =J;
-    //
-    if (output) stk_cout << _T("Test constructor B \n");
-    Array2D<Type> B;
-    if (output) { print(B,"B");}
-    //
-    if (output)
-      stk_cout << _T("Testing B.resize(R,S); B=1\n");
-    B.resize(R, S); B = Type(1);
-    if (output)
-    { stk_cout << _T("R=") << R << _T("\n");
-      stk_cout << _T("S=") << S << _T("\n");
-      print(B, "B");
-    }
-    //
-    R.incLast(I.size()); S.decLast(J.size()/2);
-    if (output)
-      stk_cout << _T("R.incLast(I.size()); S.decLast(J.size()/2). Testing B.resize(R,S); B=3\n");
-    B.resize(R, S); B = Type(3);
-    if (output)
-    { stk_cout << _T("R=") << R << _T("\n");
-      stk_cout << _T("S=") << S << _T("\n");
-      print(B, "B");
-    }
-    //
-    R.incLast(I.size()); S.incLast(J.size());
-    if (output)
-      stk_cout << _T("R.incLast(I.size()); S.incLast(J.size()). Testing B.resize(R,S); B=2\n");
-    B.resize(R, S); B = Type(2);
-    if (output)
-    { stk_cout << _T("R=") << R << _T("\n");
-      stk_cout << _T("S=") << S << _T("\n");
-      print(B, "B");
-    }
-    //
-    R.decLast(I.size()); S.incLast(J.size());
-    if (output)
-      stk_cout << _T("R.decLast(I.size()); S.incLast(J.size()). Testing B.resize(R,S); B=4\n");
-    B.resize(R, S); B = Type(4);
-    if (output)
-    { stk_cout << _T("R=") << R << _T("\n");
-      stk_cout << _T("S=") << S << _T("\n");
-      print(B, "B");
-    }
-    //
-    if (output)
-      stk_cout << _T("R.decLast(I.size()); S.decLast(J.size()); B.resize(R,S); B=5\n");
-    R.decLast(I.size()); S.decLast(J.size());
-    B.resize(R, S); B = Type(5);
-    if (output)
-    { stk_cout << _T("R=") << R << _T("\n");
-      stk_cout << _T("S=") << S << _T("\n");
-      print(B, "B");
-    }
+//  //
+  if (output) stk_cout << _T("Array2D<Type>  A(M,N); numbering(A);\n");
+  Array2D<Type> A(M,N);
+  numbering(A);
+  if (output) { print(A, _T("A"));}
+
+  //
+  if (output) stk_cout << _T("Array2D<Type> D(A); D=2; A.merge(D); \n");
+  Array2D<Type> D(A);
+  D=Type(2);
+  A.merge(D);
+  if (output) { print(A, _T("A")); print(D, _T("D"));}
+
+  //
+  if (output) stk_cout << _T("Array1D<Type> V(A.rows(), Type(1)); A.merge(V); \n");
+  Array1D<Type> V(A.rows(), Type(1));
+  A.merge(V);
+  if (output) { print(A, _T("A"));}
+  if (output) { stk_cout << _T("V=") << V;}
+
+  //
+  if (output) stk_cout << _T("A.pushBackCols(V); \n");
+  A.pushBackCols(V);
+  if (output) { print(A, _T("A"));}
+
+  //
+  if (output) stk_cout << _T("Array2D<Type> C(A, true); A.pushBackRows(C); \n");
+  Array2D<Type> C(A, true);
+  A.pushBackRows(C);
+  if (output) { print(A, _T("A"));}
+
+  //
+  if (output)
+    stk_cout << _T("Array2D<Type> B; B.set(C); \n");
+  Array2D<Type> B;
+  B.pushBackRows(C);
+  if (output) { print(B, _T("B"));}
+
+  if (output)
+    stk_cout << _T("Array1D<Type> W(A.rows(), Type(2)); Array2D<Type> E; E.pushBackCols(V); \n");
+  Array1D<Type> W(A.rows(), Type(2));
+  Array2D<Type> E;
+  E.pushBackCols(W);
+  if (output)   { print(E, _T("E"));}
 }
 
 
@@ -155,67 +145,73 @@ int main(int argc, char *argv[])
 {
   try
   {
-    int Istart, Jstart, Iend, Jend, output;
-    if (argc < 4)
+    int M, N, Istart, Jstart, Iend, Jend, output, iter;
+    if (argc < 7)
     {
       // 12 15 3 4 10 12 1 2
-      Istart = 0;
-      Jstart = 1;
+      M      = 11;
+      N      = 12;
+      Istart = 2;
+      Jstart = 3;
       Iend   = 8;
       Jend   = 9;
       output = true;
+      iter = 1;
+
     }
     else
     {
       // dimensions
-      Istart = atoi(argv[1]);
-      Jstart = atoi(argv[2]);
-      Iend   = atoi(argv[3]);
-      Jend   = atoi(argv[4]);
+      M      = atoi(argv[1]);
+      N      = atoi(argv[2]);
+      Istart = atoi(argv[3]);
+      Jstart = atoi(argv[4]);
+      Iend   = atoi(argv[5]);
+      Jend   = atoi(argv[6]);
       // output
       output = true;
-      if (argc >=5 ) output = atoi(argv[5]);
+      if (argc >7 ) output = atoi(argv[7]);
+      // number of test
+      iter =1;
+      if (argc >8 ) iter = atoi(argv[8]);
     }
     // ranges
     Range I(Istart, Iend, 0);
     Range J(Jstart, Jend, 0);
     
-    stk_cout << _T("\n\n");
-    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("+ Test STK::Arrays                                    +\n");
-    stk_cout << _T("+ Using: \n");
-    stk_cout << _T(", I = ") << I << _T(", J = ") << J << _T("\n");
-    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    for( int i=1; i<=iter; i++)
+    {
+      stk_cout << _T("\n\n");
+      stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+      stk_cout << _T("+ Test merge and set using: \n");
+      stk_cout << _T("M = ") << M << _T(", N = ") << N
+               << _T(", I = ") << I << _T(", J = ") << J << _T("\n");
+      stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 
-    stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("TestArray2D<Real> : \n");
-    stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    // time variables
-    Chrono::start();
-    TestArray2D<Real>(I, J, output);
-    Real test_time = Chrono::elapsed();
-    stk_cout << _T("\n");
-    stk_cout << _T("Time used : ") << test_time << _T("\n");
-    stk_cout << _T("\n\n");
+      stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+      stk_cout << _T(" TestArray2DMergeSet<Real> : \n");
+      stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+      // time variables
+      Chrono::start();
+      TestArray2DMergeSet<Real>(M, N, I, J, output);
+      Real test_time = Chrono::elapsed();
+      stk_cout << _T("\n");
+      stk_cout << _T("Time used : ") << test_time << _T("\n");
+      stk_cout << _T("\n\n");
+      
+//      stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+//      stk_cout << _T(" TestArray2DMergeSet<int> : \n");
+//      stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+//      // time variables
+//      Chrono::start();
+//      TestArray2DMergeSet<int>(M, N, I, J, output);
+//      test_time = Chrono::elapsed();
+//      stk_cout << _T("\n");
+//      stk_cout << _T("Time used : ") << test_time << _T("\n");
+//      stk_cout << _T("\n\n");
 
-    stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("TestArray2D<int> : \n");
-    stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    // time variables
-    Chrono::start();
-    TestArray2D<int>(I, J, output);
-    test_time = Chrono::elapsed();
-    stk_cout << _T("\n");
-    stk_cout << _T("Time used : ") << test_time << _T("\n");
-    stk_cout << _T("\n\n");
-
-    stk_cout << _T("\n\n");
-    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("+ Successful completion of testing for STK::Array2D   +\n");
-    stk_cout << _T("+ No errors detected.                                 +\n");
-    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("\n\n");
-
+      M *=2; N *=2; Istart *= 2; Jstart *= 2;  Iend   *= 2;  Jend   *= 2;
+    }
   }
   catch (Exception const& error)
   {

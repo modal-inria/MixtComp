@@ -75,7 +75,5 @@
 #include "../projects/Clustering/include/CategoricalMixtureModels/STK_Categorical_pk.h"
 
 #include "../projects/Clustering/include/STK_MixtureManager.h"
-#include "../projects/Clustering/include/STK_MixtureComposer.h"
-//#include "../projects/Clustering/include/STK_IMixture.h"
 
 #endif // CLUSTERING_H

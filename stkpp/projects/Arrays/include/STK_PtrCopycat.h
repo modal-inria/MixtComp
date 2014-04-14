@@ -46,12 +46,12 @@ namespace hidden
 {
 
 /** @ingroup hidden
- * @breif allows to select the kind of Copŷcat to use at compile time.*/
+ * @brief allows to select the kind of Copŷcat to use at compile time.*/
 template < typename Derived, typename Rhs, int TStructure_, int RhsStructure_>
 struct BasedCopyCat;
 
 /** @ingroup hidden
- * @breif allows to select the kind of BasedCopŷcat to use at compile time.*/
+ * @brief allows to select the kind of BasedCopŷcat to use at compile time.*/
 template < typename Derived, typename Rhs, int TOrient_>
 struct BasedCopyCatSelector;
 
