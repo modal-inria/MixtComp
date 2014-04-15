@@ -115,7 +115,7 @@ class CategoricalBase : public IMixtureModel<Derived >
       for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
       {
         // store proba values in an array for a nice output
-        for (int j= proba.firstIdxRows();  j <= proba.lastIdxRows(); ++j)
+        for (int j= proba.firstIdxCols();  j <= proba.lastIdxCols(); ++j)
         {
           for (int l= modalities_.firstIdx(); l <= modalities_.lastIdx(); ++l)
           { proba(l, j) = p_param(k)->proba(j,l);}}

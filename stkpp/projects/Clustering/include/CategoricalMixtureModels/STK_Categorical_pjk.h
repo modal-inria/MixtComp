@@ -126,9 +126,9 @@ void Categorical_pjk<Array>::mStep()
       {
         for (int i = p_tik()->firstIdxRows(); i <= p_tik()->lastIdxRows(); ++i)
         {
-          p_param(k)->proba_(j, (*p_data())(i, j)) += (*p_tik())(i, k);
+          p_param(k)->proba_[j][(*p_data())(i, j)] += (*p_tik())(i, k);
         }
-        (p_param(k)->proba_[j]) *=  1./Real(p_tik()->sizeRows());
+        p_param(k)->proba_[j] *=  1./p_param(k)->proba_[j].sum();
       }
     }
 }
