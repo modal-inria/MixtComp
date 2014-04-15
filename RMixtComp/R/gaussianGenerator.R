@@ -45,7 +45,6 @@ gaussianGenerator <- function(nbSamples,
     vals <- rep(0, nbVariables)
     for (j in 1:nbVariables)
     {
-      cat(params[2*z[i]-1, j], params[2*z[i]  , j])
       vals[j] <- rnorm(1,
                        mean = params[2*z[i]-1, j],
                        sd   = params[2*z[i]  , j])

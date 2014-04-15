@@ -1,6 +1,6 @@
 dataGenerator <- function()
 {
-  nbSamples <- 500
+  nbSamples <- 5000
   
   nbVariables <- 2
   nbModalities <- 2
