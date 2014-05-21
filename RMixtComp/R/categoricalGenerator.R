@@ -50,7 +50,7 @@ categoricalGenerator <- function(nbSamples,
                               1,
                               params[(nbModalities * (z[i] - 1) + 1) :
                                      (nbModalities *  z[i]         ) , j])
-      vals[j] <- match(1, sampleVals)
+      vals[j] <- match(1, sampleVals) - 1
     }
     cat(vals,
         sep = ";",

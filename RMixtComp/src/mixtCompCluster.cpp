@@ -79,18 +79,18 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   mcResults.slot("lnlikelihood") = composer.lnLikelihood();
 
   Rcpp::NumericVector proportions(nbClusters);
-  for (int kS = composer.p_prop()->firstIdxRows(), kR = 0; kR < nbClusters; ++kS, ++kR)
+  for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
     proportions[kR] = composer.p_prop()->elt(kS);
   mcResults.slot("proportions") = proportions;
 
   Rcpp::NumericVector partition(handler.nbSample());
-  for (int iS = composer.p_zi()->firstIdxRows(), iR = 0; iR < handler.nbSample(); ++iS, ++iR)
+  for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
     partition[iR] = composer.p_zi()->elt(iS);
   mcResults.slot("partition") = partition;
 
   Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
-  for (int iS = composer.p_tik()->firstIdxRows(), iR = 0; iR < handler.nbSample(); ++iS, ++iR)
-    for (int kS = composer.p_tik()->firstIdxRows(), kR = 0; kR < nbClusters; ++kS, ++kR)
+  for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
+    for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
       proba(iR, kR) = composer.p_tik()->elt(iS, kS);
   mcResults.slot("proba") = proba;
 }

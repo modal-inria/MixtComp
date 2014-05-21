@@ -115,11 +115,11 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
     case 0: // missing
     {
       currPos = *iv_missing_;
-      int nbModalities = dataRange_[currPos.second].second;
+      int nbModalities = dataRange_[currPos.second].second + 1;
       int z_i = p_zi_->elt(currPos.first);
-      STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range((z_i - 1) * nbModalities + 1,
-                                                                   z_i      * nbModalities),
-                                                       currPos.second);
+      STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range( z_i      * nbModalities,
+                                                                        (z_i + 1) * nbModalities),
+                                                             currPos.second);
       sampleVal = STK::Law::Categorical::rand(modalities);
     }
     break;
@@ -127,14 +127,14 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
     case 1: // missingFiniteValues
     {
       currPos = iv_missingFiniteValues_->first;
-      int nbModalities = dataRange_[currPos.second].second;
+      int nbModalities = dataRange_[currPos.second].second + 1;
       int z_i = p_zi_->elt(currPos.first);
-      STK::Array2DVector<int> modalities(STK::Range(nbModalities), 0);
+      STK::Array2DVector<int> modalities(STK::Range(0, dataRange_[currPos.second].second), 0);
       for(std::vector<int>::const_iterator currMod = iv_missingFiniteValues_->second.begin();
           currMod != iv_missingFiniteValues_->second.end();
           ++currMod)
       {
-        modalities[*currMod] = (*p_param_)((z_i - 1) * nbModalities + *currMod,
+        modalities[*currMod] = (*p_param_)(z_i * nbModalities + *currMod,
                                            currPos.second);
       }
       modalities = modalities / modalities.sum();

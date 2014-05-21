@@ -74,7 +74,7 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<int>& data, i
     Rcpp::S4 s4 = rList_[(*it)];
     Rcpp::List ls = s4.slot("augData");
     Rcpp::IntegerVector nv = ls["data"];
-    for (int iS = 1, iR = 0; iR < nbSamples_; ++iS, ++iR)
+    for (int iS = 0, iR = 0; iR < nbSamples_; ++iS, ++iR)
     {
       data(iS, j) = nv(iR);
     }
@@ -92,7 +92,7 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& d
     Rcpp::S4 s4 = rList_[(*it)];
     Rcpp::List ls = s4.slot("augData");
     Rcpp::NumericVector nv = ls["data"];
-    for (int iS = 1, iR = 0; iR < nbSamples_; ++iS, ++iR)
+    for (int iS = 0, iR = 0; iR < nbSamples_; ++iS, ++iR)
     {
       data(iS, j) = nv(iR);
     }
@@ -110,7 +110,7 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<std::string>&
     Rcpp::S4 s4 = rList_[(*it)];
     Rcpp::List ls = s4.slot("augData");
     Rcpp::StringVector nv = ls["data"];
-    for (int iS = 1, iR = 0; iR < nbSamples_; ++iS, ++iR)
+    for (int iS = 0, iR = 0; iR < nbSamples_; ++iS, ++iR)
     {
       data(iS, j) = nv(iR);
     }
