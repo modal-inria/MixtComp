@@ -13,3 +13,4 @@ nohup.out
 bin
 lib
 test/test
+.metadata/*
