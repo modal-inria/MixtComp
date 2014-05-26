@@ -12,6 +12,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Rp}{{\mathbb{R}^p}}
 \newcommand{\Rd}{{\mathbb{R}^d}}
+\newcommand{\Xd}{{\mathcal{X}^d}}
 
 
 % Lettre en gras
@@ -172,6 +173,7 @@ A Gaussian density on $\R_+$ is a density of the form:
 \begin{equation}\label{law::gaussian-density}
 f(x;\mu,\sigma) = \frac{1}{\sqrt{2\pi} \sigma} \exp\left\{- \frac{(x-\mu)^2}{2\sigma^2}\right\} \quad \sigma>0.
 \end{equation}
+
 A joint Gaussian density on $\Rd_+$ is a density of the form:
 \begin{equation}\label{law::joint-gaussian-density}
 h(\bx;\bmu,\bsigma) = \prod_{j=1}^d f(x^j;\mu^j,\sigma^j) \quad \sigma^j>0.
@@ -193,6 +195,24 @@ The \verb+gaussian_sjk+ model is the most general model and have a density funct
 \begin{equation}\label{eq:f_sjk}
   f({\bx}_i|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d g(x^j_{i}| \mu^j_{k}, \sigma^j_{k}).
 \end{equation}
+
+
+\section{Multivariate categorical Mixture Models}
+
+A Categorical probability distribution on a finite space $\cal C = \{1,\ldots,L\}$ is a probability distribution of the form:
+\begin{equation}\label{law::categorical}
+P(x=l) = p_l \quad p_l>0,\, l\in \cal C,
+\end{equation}
+with the constraint $p_1+\ldots+p_L = 1.$
+
+A joint Categorical probability distribution on $\Xd$ is a probability distribution of the form:
+\begin{equation}\label{law::joint-gaussian-density}
+P(\bx=(x_1,\ldots,x_d)) = \prod_{j=1}^d p^j_{x_j}
+\end{equation}
+The parameters $\bmu=(\mu^1,\ldots,\mu^d)$ are the position parameters and the parameters $\bsigma=(\sigma^1,\ldots,\sigma^d)$
+are the standard-deviation parameters. Assumptions on the position and standard-deviation parameters among the variables and the components
+lead to define four families of mixture model.
+
 
 \section{Multivariate Gamma Mixture Models}
 
