@@ -117,7 +117,7 @@ class MixtureBridge : public STK::IMixture
     {
       if (!p_composer())
         STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);
-      mixture_.setMixtureParameters( p_prop(), p_tik(), p_zi());
+      mixture_.setMixtureParameters(p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
       sampler_.setZi(p_zi()); // at this point the bridge has been registered on the composer and p_zi is valid
     }
@@ -149,14 +149,25 @@ class MixtureBridge : public STK::IMixture
      *  The default implementation (in the base class) is to do nothing.
      */
     virtual void imputationStep()
-    {}
+    {
+      // imputation based on mean values in classes is not general enough for MixtComp,
+      // samplingStep is used instead
+    }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
      * simulated by the framework itself because to do so we have to take into
      * account all the mixture laws. do nothing by default.
      */
     virtual void samplingStep()
-    {}
+    {
+      mixture_.getParameters(param_); // update the parameters (used by the Sampler)
+      SamplerIterator endIt(sampler_.end());
+      for (SamplerIterator it = sampler_.begin(); it != endIt; ++it)
+      {
+        std::pair<std::pair<int, int>, Type> retValue(*it);
+        m_augDataij_.data_(retValue.first.first, retValue.first.second) = retValue.second;
+      }
+    }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
     virtual void paramUpdateStep()

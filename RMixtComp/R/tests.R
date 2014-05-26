@@ -9,12 +9,12 @@ testRMC <- function (){
 
 testGenData <- function()
 {
-#  lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
-  lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
-                c("categoricalData.csv", "categoricalDescriptor.csv"))
+  lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
+#  lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
+#                c("categoricalData.csv", "categoricalDescriptor.csv"))
   
   mcCluster <- getMixtCompCluster(2, 20, 100)
-  mixtCompCluster(lm, mcCluster, 3)
+  mixtCompCluster(lm, mcCluster, 2)
   return(mcCluster)
 }
 

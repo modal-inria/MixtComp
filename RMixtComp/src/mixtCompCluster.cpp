@@ -80,7 +80,7 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
 
   Rcpp::NumericVector proportions(nbClusters);
   for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-    proportions[kR] = composer.p_prop()->elt(kS);
+    proportions[kR] = composer.p_pk()->elt(kS);
   mcResults.slot("proportions") = proportions;
 
   Rcpp::NumericVector partition(handler.nbSample());

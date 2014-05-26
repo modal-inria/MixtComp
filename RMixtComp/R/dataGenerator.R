@@ -2,20 +2,18 @@ dataGenerator <- function()
 {
   nbSamples <- 5000
   
-  nbVariables <- 2
+  nbVariablesCat <- 6
+  nbVariablesGauss <- 2
   nbModalities <- 2
-  nbClasses <- 3
+  nbClasses <- 2
   
-  categoricalParams <- matrix(data = c(0.5,0.1,
-                                       0.5,0.9,
+  categoricalParams <- matrix(data = c(0.3,0.3,0.3,0.3,0.3,0.3,
+                                       0.7,0.7,0.7,0.7,0.7,0.7,
                                        
-                                       0.1,0.4,
-                                       0.9,0.6,
-                                       
-                                       0.6,0.2,
-                                       0.4,0.8),
+                                       0.7,0.7,0.7,0.7,0.7,0.7,
+                                       0.3,0.3,0.3,0.3,0.3,0.3),
                               nrow = nbModalities * nbClasses,
-                              ncol = nbVariables,
+                              ncol = nbVariablesCat,
                               byrow = TRUE)
   
   gaussianParams <- matrix(data = c(100.,200.,
@@ -27,10 +25,10 @@ dataGenerator <- function()
                                     -100.,-350.,
                                     0.2,5.),
                            nrow = 2 * nbClasses,
-                           ncol = nbVariables,
+                           ncol = nbVariablesGauss,
                            byrow = TRUE)
   
-  proportions <- c(0.2, 0.7, 0.1)
+  proportions <- c(0.5, 0.5)
   
   zDis <- rmultinom(nbSamples,
                     1,
@@ -42,11 +40,11 @@ dataGenerator <- function()
   }
   
   gaussianGenerator(nbSamples,
-                    nbVariables,
+                    nbVariablesGauss,
                     z,
                     gaussianParams)
   categoricalGenerator(nbSamples,
-                       nbVariables,
+                       nbVariablesCat,
                        nbModalities,
                        z,
                        categoricalParams)  

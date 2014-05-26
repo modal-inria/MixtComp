@@ -57,7 +57,7 @@ struct InitializeMixtureImpl<STK::Clust::Categorical_pjk_>
     mixture.setData(augData.data_);
     int min = augData.dataRanges_.at(0).first;
     int max = augData.dataRanges_.at(0).second;
-    mixture.setModalities(STK::Range(min, max));
+    mixture.setModalities(STK::Range(min, max - min +1));
     // TODO: resize proba_ in initializeModel
     mixture.initializeModel();}
 };
