@@ -130,14 +130,8 @@ class MixtureBridge : public STK::IMixture
     {
       p_manager->getData(idName(), m_augDataij_, nbVariable_ );
       removeMissing();
+      initializeMixture();
     }
-    /** This function will be defined to initialize the mixture model using
-     *  informations stored by the MixtureManager and the data container.
-     */
-     void initializeMixture()
-     {
-       InitializeMixtureImpl<Id>::run(mixture_, m_augDataij_);
-     }
     /** @brief This function should be used in order to initialize randomly the
      *  parameters of the ingredient.
      */
@@ -244,6 +238,11 @@ class MixtureBridge : public STK::IMixture
     int nbVariable_;
     
   private:
+    /** This function will be used in order to initialize the mixture model
+     *  using informations stored by the data_ container.
+     **/
+     void initializeMixture()
+     { InitializeMixtureImpl<Id>::run(mixture_, m_augDataij_);}
     /** protected constructor to use in order to create a bridge.
      *  @param mixture the mixture to copy
      *  @param idName id name of the mixture

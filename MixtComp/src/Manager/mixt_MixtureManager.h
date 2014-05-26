@@ -66,7 +66,6 @@ class MixtureManager
         {
           GaussianBridge_sjk_m* p_bridge = new GaussianBridge_sjk_m(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;
@@ -75,7 +74,6 @@ class MixtureManager
         {
           CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;
