@@ -32,17 +32,15 @@
  *  @brief In this file we define the CAllocator templated class.
  **/
 
-#ifndef STK_ALLOCATORCARRAY_H
-#define STK_ALLOCATORCARRAY_H
+#ifndef STK_CALLOCATOR_H
+#define STK_CALLOCATOR_H
 
 #include "../../Sdk/include/STK_StaticAssert.h"
-#include "../../STKernel/include/STK_Constants.h"
-#include "../../Sdk/include/STK_MetaTemplate.h"
+
 #include "../../Arrays/include/STK_Traits.h"
 
 #include "STK_ITContainer2D.h"
 #include "STK_AllocatorBase.h"
-#include "STK_Arrays_Util.h"
 
 namespace STK
 {
@@ -1002,4 +1000,4 @@ ostream& operator<<(ostream& s, const CAllocator<Type, Structure_, SizeRows_, Si
 
 } // namespace STK
 
-#endif /* STK_ALLOCATORCARRAY_H */
+#endif /* STK_CALLOCATOR_H */

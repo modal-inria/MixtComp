@@ -180,7 +180,7 @@ int SymEigen::syevr( char jobz, char range, char uplo
                    )
 {
   int info = 1;
-#ifdef STK_USELAPACK
+#ifdef STKUSELAPACK
 #ifdef STKREALAREFLOAT
   ssyevr_(&jobz, &range, &uplo, &n, a, &lda, &vl, &vu, &il,
           &iu, &abstol, m, w, z, &ldz, isuppz, work,

@@ -33,14 +33,11 @@
   * @brief A Array2DPoint is a one dimensional horizontal container
  **/
 
-#ifndef STK_ARRAYHO_H
-#define STK_ARRAYHO_H
+#ifndef STK_ARRAY2DPOINT_H
+#define STK_ARRAY2DPOINT_H
 
-#include "../../STKernel/include/STK_Real.h"
-#include "../../Arrays/include/STK_Traits.h"
-
-#include "STK_Arrays_Util.h"
 #include "STK_IArray2D.h"
+#include "STK_Display.h"
 
 namespace STK
 {
@@ -209,4 +206,4 @@ class Array2DPoint : public IArray2D< Array2DPoint<Type> >
 
 } // namespace STK
 
-#endif // STK_ARRAYHO_H
+#endif // STK_ARRAY2DPOINT_H

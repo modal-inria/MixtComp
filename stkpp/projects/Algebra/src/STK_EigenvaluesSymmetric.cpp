@@ -165,7 +165,7 @@ bool EigenvaluesSymmetric::run()
     rank_ = 0;
     det_ = 0.;
     // tridiagonalize P_
-#ifdef STK_VERBSTK_ALGEBRA_VERBOSEOSE
+#ifdef STK_ALGEBRA_VERBOSE
     stk_cout << _T("calling EigenvaluesSymmetric::tridiagonalize()\n");
 #endif
     tridiagonalize();
@@ -304,10 +304,15 @@ void EigenvaluesSymmetric::tridiagonalize()
       {
         // Computation of p_i = beta * P_ v using the lower part of P_
         // save p_i in the unusued part of D_ and compute p'v
-        aux1 += ( D_[i] = beta* (M1[i] + P_.row(i,Range(iter2,i,0)).dot(v.sub(Range(iter2,i,0)))
-                                       + P_.col(Range(i+1,last_,0),i).dot(v.sub(Range(i+1,last_,0)))
-                                )
-                ) * v[i];
+        Real aux = M1[i] /* *1.0 */;
+        for (int j=iter2; j<=i;    j++)  { aux += P_(i,j)*v[j];}
+        for (int j=i+1;   j<=last_; j++) { aux += P_(j,i)*v[j];}
+        // save p_i in the unusued part of D_ and compute p'v
+        aux1 += (D_[i] = beta*aux) * v[i];
+        //aux1 += ( D_[i] = beta* (M1[i] + P_.row(i,Range(iter2,i,0)).dot(v.sub(Range(iter2,i,0)))
+        //                               + P_.col(Range(i+1,last_,0),i).dot(v.sub(Range(i+1,last_,0)))
+        //                        )
+        //        ) * v[i];
       }
       // update diagonal element M_ii+= 2 v_i * q_i = 2* q_i (i=iter1)
       // aux = q_iter1 and aux1 = beta*<p,v>/2 (we don't save aux in D_)
@@ -472,7 +477,7 @@ void EigenvaluesSymmetric::diagonalize()
 void EigenvaluesSymmetric::compEstimates()
 {
   // compute 2-norm_
-  norm_ = std::abs(D_[1]);
+  norm_ = std::max(std::abs(D_[first_]),std::abs(D_[last_]));
   det_ = 1;
   // trivial case
   if (norm_ < Arithmetic<Real>::epsilon())

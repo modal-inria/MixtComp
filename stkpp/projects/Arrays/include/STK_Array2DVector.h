@@ -36,14 +36,14 @@
   * It's a one dimensional horizontal container.
  **/
 
-#ifndef STK_ARRAYVE_H
-#define STK_ARRAYVE_H
+#ifndef STK_ARRAY2DVECTOR_H
+#define STK_ARRAY2DVECTOR_H
 
 #include "../../STKernel/include/STK_Real.h"
-#include "../../Arrays/include/STK_Traits.h"
 
-#include "STK_Arrays_Util.h"
+
 #include "STK_IArray2D.h"
+#include "STK_Display.h"
 
 namespace STK
 {
@@ -217,4 +217,4 @@ class Array2DVector : public IArray2D< Array2DVector<Type> >
 
 } // namespace STK
 
-#endif // STK_ARRAYVE_H
+#endif // STK_ARRAY2DVECTOR_H

@@ -34,11 +34,8 @@
 #ifndef STK_ARRAY2D_H
 #define STK_ARRAY2D_H
 
-#include "../../Arrays/include/STK_Traits.h"
-#include "STK_IArray2D.h"
 #include "STK_Array2DVector.h"
 #include "STK_Array2DPoint.h"
-
 
 namespace STK
 {

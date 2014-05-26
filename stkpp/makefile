@@ -172,7 +172,7 @@ $(STK_LIB): $(CPP_OBJS)
 clean: clean_lib clean_obj
 
 clean_lib:
-	$(RM) $(LIB_DIR)$(LIB_STKPP_A)
+	$(RM) $(STK_LIB)
 
 clean_obj: \
   clean_stkernel \
@@ -219,11 +219,11 @@ clean_reduct:
 .PHONY: cmake cclean cdoc ctest
 
 cmake_debug: #./build/Makefile
-	cd build/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true
+	cd build/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=off
 	$(MAKE) -C build  VERBOSE=1
 
 cmake_release: #./build/Makefile
-	cd build/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=Release
+	cd build/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true  -DZERO_BASED_ARRAYS=off -DCMAKE_BUILD_TYPE=Release
 	$(MAKE) -C build  VERBOSE=1
 
 cmake_debug_0: #./build/Makefile
@@ -239,14 +239,7 @@ cmake_release_0: #./build/Makefile
 
 cmake_clean:
 	@- cd build/; $(MAKE) clean  VERBOSE=1
-	@- $(RM) ./build/Makefile
-	@- $(RM) ./build/src
-	@- $(RM) ./build/test
-	@- $(RM) ./build/CMake*
-	@- $(RM) ./build/cmake.*
-	@- $(RM) ./build/*.cmake
-	@- $(RM) ./build/*.txt
-	@- $(RM) ./build/Doxyfile
+	@- $(RM) -rf ./build/*
 	
 cmake_doc:
 	cd build/; $(MAKE) doc
@@ -273,7 +266,7 @@ TESTS_CLUSTERING_DIR = $(TESTS_DIR)Clustering/
 #-----------------------------------------------------------------------
 # rule if we want to compile test programs
 .PHONY: testsAAModels testsCsv testArrays testAlgebra testDManager testsStatModels \
-testRegress testsSTatistiK testsPages alltests testClustering clean_tests
+testRegress testsSTatistiK testsPages alltests testClustering cleantests
 
 testsSTKernel: obj lib
 	cd $(TESTS_STKERNEL_DIR); $(MAKE) all

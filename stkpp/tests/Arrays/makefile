@@ -63,6 +63,7 @@ CPP_SRCS = \
 	testSliceOperators.cpp \
 	testProducts.cpp \
 	testVisitors.cpp \
+	testVisitorsUnrolled.cpp \
 	testBiProducts.cpp \
 	testBiSum.cpp
 
@@ -99,7 +100,7 @@ $(BIN_DIR)testArray2D.o: $(ARRAYS_INC_DIR)STK_Array2DVector.h \
                          $(ARRAYS_INC_DIR)STK_Array2DDiagonal.h \
                          $(ARRAYS_INC_DIR)STK_IArray2D.h
 
-$(BIN_DIR)%.o: %.cpp makefile
+$(BIN_DIR)%.o: %.cpp makefile $(CXX_LIB)
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
 
 
@@ -107,7 +108,7 @@ $(BIN_DIR)%.o: %.cpp makefile
 # program compilation rules
 #
 $(BIN_DIR)test%: makefile
-$(BIN_DIR)test%: $(BIN_DIR)test%.o $(CXX_LIB)
+$(BIN_DIR)test%: $(BIN_DIR)test%.o
 	$(CXX) $(LDFLAGS) $< $(CXX_LIB) $(LDLIBS) -o $@ 
 
 #-----------------------------------------------------------------------

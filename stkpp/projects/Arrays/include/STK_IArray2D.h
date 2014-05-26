@@ -30,7 +30,12 @@
  **/
 
 /** @file STK_IArray2D.h
- *  @brief In this file we define the interface class IArray2D.
+ *  @brief Interface base class for the Array1D, this is an internal header file,
+ *  included by other Containers library headers.
+ *
+ *  You should not attempt to use it directly but rather used one of the
+ *  derived class like Array2D, except if you want to create your own
+ *  Container Class.
  **/
 
 #ifndef STK_IARRAY2D_H
@@ -43,7 +48,7 @@ namespace STK
 {
 
 /** @ingroup Arrays
-  * @brief Templated interface base class for two-dimensional arrays.
+  * @brief Interface base class for two-dimensional arrays.
   *
   * A IArray2D is a specialized interface class for two-dimensional
   * containers stored in columns. All derived class from @c IArray2D
@@ -641,7 +646,7 @@ class IArray2D : public IArray2DBase< typename hidden::Traits<Derived>::Type*, D
       {
         resize(other.rows(),1);
         for (int i=other.firstIdx(); i<=other.lastIdx(); i++)
-          (*this)(i, STKBASEARRAYS) = other[i];
+          (*this)(i, baseIdx) = other[i];
         return;
       }
       // not empty

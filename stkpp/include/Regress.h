@@ -69,10 +69,6 @@
  * data. Nonparametric regression refers to techniques that allow the regression
  * function to lie in a specified set of functions, which may be
  * infinite-dimensional.
- *
- * * @namespace Regress This is the namespace for the regression project.
- * It will enclose all variables and constant specific to the Regress project.
- *
  **/
 
 

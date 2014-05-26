@@ -61,23 +61,11 @@ template<class Derived, class Rhs> struct  ProductReturnType;
 template<class Derived> class  ArrayInitializer;
 } // namespace STK
 
-#include "../../Arrays/include/STK_Traits.h"
-
-#include "../../Sdk/include/STK_MetaTemplate.h"
 #include "../../STKernel/include/STK_Functors.h"
-#include "../../Sdk/include/STK_Macros.h"
-#include "../../Sdk/include/STK_StaticAssert.h"
-#include "../../STKernel/include/STK_Exceptions.h"
-#include "../../STKernel/include/STK_Range.h"
-
-#include "STK_Arrays_Util.h"
-#include "STK_ITContainer2D.h"
-#include "STK_IContainerRef.h"
 
 #include "./products/STK_ProductOperators.h"
 
 #include "./operators/STK_TransposeOperator.h"
-#include "./operators/STK_SliceOperators.h"
 #include "./operators/STK_UnaryOperators.h"
 #include "./operators/STK_BinaryOperators.h"
 #include "./operators/STK_DotOperators.h"
@@ -125,6 +113,8 @@ class ExprBase : public ITContainer<Derived, hidden::Traits<Derived>::structure_
 
     /** @return the number of available values in the array (not count NA values).*/
     int const nbAvailableValues() const;
+    /** @return the number of non-zero element in the expression.*/
+    int const count() const;
     /** @return the minimum of all elements of this using a Visitor
       * and puts in (row, col) its location.
       * @sa maxElt(int,int), visitor(), minElt()

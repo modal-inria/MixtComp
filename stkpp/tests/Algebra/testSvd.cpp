@@ -39,29 +39,22 @@ using namespace STK;
 
 void writeResult(const Svd& s)
 {
-  // compute D
-  Array2DDiagonal<Real> D(s.getD().range(), 0.0);
-  D=s.getD();
-
-  //for (int i=1; i<=s.ncolD(); i++) {D(i,i)=s.getD()[i];}
-
-  Matrix Res2;
-  // UD
-  Res2.move(mult(s.getU(),D));
-  // v'
-  MatrixSquare Vt;
-  transpose(s.getV(), Vt);
-  // UDV'
-  Matrix Res;
-  Res.move(mult(Res2, Vt));
   // write result
   stk_cout << _T(" U=\n");
   stk_cout << s.getU() << _T("\n");
   stk_cout << _T(" D=\n");
-  stk_cout << D << _T("\n");
+  stk_cout << s.getD() << _T("\n");
   stk_cout << _T(" V=\n");
   stk_cout << s.getV() << _T("\n");
   stk_cout << _T(" UDV'=\n");
+  // compute D
+  Array2DDiagonal<Real> D(s.getU().cols(), 0.0);
+  for (int i= s.getD().firstIdx(); i<= s.getD().lastIdx(); ++i)
+  { D[i]=s.getD()[i];}
+
+  // UDV'
+  Matrix Res;
+  Res = s.getU() * D * s.getV().transpose();
   stk_cout << Res << _T("\n");
 }
 

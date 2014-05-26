@@ -29,17 +29,22 @@
  **/
 
 /** @file STK_ICArray.h
- *  @brief In this file we define the ICArray templated class.
+ *  @brief Interface base class for the CArray, this is an internal header file,
+ *  included by other Containers library headers.
+ *
+ *  You should not attempt to use it directly but rather used one of the
+ *  derived class like CArray, except if you want to create your own
+ *  Container Class.
  **/
 
 #ifndef STK_DENSEARRAYBASE_H
 #define STK_DENSEARRAYBASE_H
 
-#include "STK_ArrayBase.h"
 #include "STK_ExprBaseVisitor.h"
 #include "STK_ExprBaseDot.h"
 #include "STK_ExprBaseProduct.h"
-#include "STK_ArrayBaseVisitor.h"
+
+#include "STK_ArrayBaseApplier.h"
 #include "STK_ArrayBaseAssign.h"
 #include "STK_ArrayBaseInitializer.h"
 

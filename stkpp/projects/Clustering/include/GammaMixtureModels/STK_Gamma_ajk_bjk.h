@@ -36,7 +36,6 @@
 #define STK_GAMMA_AJK_BJK_H
 
 #include "STK_GammaBase.h"
-#include "STK_GammaUtil.h"
 
 #include "../../../STatistiK/include/STK_Law_Exponential.h"
 
@@ -55,7 +54,7 @@ template<class _Array>
 struct MixtureModelTraits< Gamma_ajk_bjk<_Array> >
 {
   typedef _Array Array;
-  typedef GammaComponent<_Array, Gamma_ajk_bjk_Parameters> Component;
+  typedef MixtureComponent<_Array, Gamma_ajk_bjk_Parameters> Component;
   typedef Gamma_ajk_bjk_Parameters        Parameters;
 };
 
@@ -112,11 +111,11 @@ template<class Array>
 void Gamma_ajk_bjk<Array>::initializeStep()
 {
     try
-    { GammaUtil<Component>::initialMoments(components(), p_tik());}
+    { this->initialMoments();}
     catch (Clust::exceptions const & e)
     { throw e;}
     // estimate a and b
-    for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+    for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
     {
       for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
       {
@@ -140,7 +139,7 @@ void Gamma_ajk_bjk<Array>::randomInit()
   {
     Real mean = p_data()->col(j).mean();
     Real variance = p_data()->col(j).variance();
-    for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+    for (int k= baseIdx; k <= components().lastIdx(); ++k)
     {
       // generate values
       Real a = STK::Law::Exponential::rand(mean*mean/variance);
@@ -151,7 +150,7 @@ void Gamma_ajk_bjk<Array>::randomInit()
   }
 #ifdef STK_MIXTURE_VERY_VERBOSE
   stk_cout << _T("Gamma_ajk_bjk<Array>::randomInit() done\n");
-  for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+  for (int k= baseIdx; k <= components().lastIdx(); ++k)
   {
     stk_cout << _T("Component no ") << k << _T("\n");
     stk_cout << p_param(k)->shape_ << _T("\n");
@@ -165,11 +164,11 @@ template<class Array>
 void Gamma_ajk_bjk<Array>::mStep()
 {
     try
-    { GammaUtil<Component>::moments(components(), p_tik());}
+    { this->moments();}
     catch (Clust::exceptions const & e)
     { throw Clust::mStepFail_;}
     // call mStep implementation
-    MixtureModelImpl<  Array, Gamma_ajk_bjk_Parameters >::mStep(components(), p_tik());
+    MixtureModelImpl<  Array, Gamma_ajk_bjk_Parameters >::mStep(components(), p_tik(), p_data());
 }
 
 }  // namespace STK

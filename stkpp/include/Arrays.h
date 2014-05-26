@@ -59,13 +59,6 @@
 #define ARRAYS_H
 
 
-/* Traits classes */
-#include "../projects/Arrays/include/STK_Traits.h"
-
-/* Allocators */
-#include "../projects/Arrays/include/STK_AllocatorBase.h"
-#include "../projects/Arrays/include/STK_CAllocator.h"
-
 /* Uni-dimensionnal Array. */
 #include "../projects/Arrays/include/STK_Array1D.h"
 
@@ -77,6 +70,8 @@
 #include "../projects/Arrays/include/STK_Array2DDiagonal.h"
 #include "../projects/Arrays/include/STK_Array2DUpperTriangular.h"
 #include "../projects/Arrays/include/STK_Array2DLowerTriangular.h"
+
+/* Functors applied to  Array2D */
 #include "../projects/Arrays/include/STK_Array2D_Functors.h"
 
 /* CArray */

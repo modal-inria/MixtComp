@@ -41,11 +41,16 @@
 /** This value means that the default range for a vector or the rows/columns of
  *  a matrix is the value given by this constant.
  **/
-#define STKBASEARRAYS 1
+#define STKBASEARRAYS 0
 #endif
 
 namespace STK
 {
+/** @ingroup STKernel
+ *  This value represents the base index of the containers created in stk++.
+ **/
+const int baseIdx = STKBASEARRAYS;
+
 /** @ingroup STKernel
  *  This value means that an integer is not known at compile-time, and that
  *  instead the value is stored in some runtime variable. This is the same value
@@ -60,7 +65,7 @@ const int MaxUnroll = 100;
 
 /** @ingroup STKernel
  * This value means that when we unroll loops we go until MaxUnrollSquareRoot */
-const int MaxUnrollSquareRoot = 20;
+const int MaxUnrollSquareRoot = 10;
 
 } // namespace STK
 

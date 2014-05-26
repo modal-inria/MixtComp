@@ -41,6 +41,5 @@
 
 void testSimpleStrategy( STK::IMixtureComposerBase*& p_composer);
 void testXemStrategy( STK::IMixtureComposerBase*& p_composer);
-void testSemStrategy( STK::IMixtureComposerBase*& p_composer);
 
 #endif

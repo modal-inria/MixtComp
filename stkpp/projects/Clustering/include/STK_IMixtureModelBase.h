@@ -48,12 +48,13 @@ namespace STK
 /** @ingroup Clustering
  *  @brief Base class for Mixture model.
  *
- * All mixture parameters: proportions, Tik, Zi and components are accessed by
- * pointer and set to this class  using the method
+ * All the mixture parameters: pk, tik and zi are accessed by pointer and set
+ * to this class using the method
  * @code
- *   void setMixtureParameters(CArrayPoint<Real>* p_prop, Array2D<Real>* p_tik, CArrayVector<int>* p_zi);
+ *   void setMixtureParameters(CArrayPoint<Real>* p_pk, Array2D<Real>* p_tik, CArrayVector<int>* p_zi);
  * @endcode
  * so that they can be used in a composed model.
+ * @sa MixtureComposer
  */
 class IMixtureModelBase
 {
@@ -77,28 +78,28 @@ class IMixtureModelBase
     /** @return the Log of the total available observations */
     inline Real lnNbSample() const
     { return (nbSample_ <= 0) ? -Arithmetic<Real>::infinity() : std::log((Real)nbSample_);}
-    /** @return the total available observations*/
+    /** @return the total available variables */
     inline int nbVariable() const { return nbVariable_;}
 
     /** @return the proportions of each mixtures */
-    inline CArrayPoint<Real> const* p_prop() const { return p_prop_;};
+    inline CArrayPoint<Real> const* p_pk() const { return p_pk_;};
     /** @return the tik probabilities */
     inline Array2D<Real> const* p_tik() const { return p_tik_;};
     /** @return  the zi class label */
     inline CArrayVector<int> const* p_zi() const { return p_zi_;};
     /** Set the parameters of the  mixture model using external prop, tik and zi.
-     *  @param p_prop pointer on the proportions of the mixture model
+     *  @param p_pk pointer on the proportions of the mixture model
      *  @param p_tik pointer on the posterior probabilities
      *  @param p_zi pointer on the class labels
      * */
-    void setMixtureParameters( CArrayPoint<Real> const* p_prop
+    void setMixtureParameters( CArrayPoint<Real> const* p_pk
                              , Array2D<Real> const* p_tik
                              , CArrayVector<int> const* p_zi
                              );
 
   protected:
     /** The proportions of each mixtures */
-    CArrayPoint<Real> const* p_prop_;
+    CArrayPoint<Real> const* p_pk_;
     /** The tik probabilities */
     Array2D<Real> const* p_tik_;
     /** The zik class label */
@@ -108,9 +109,9 @@ class IMixtureModelBase
      * */
     inline void setNbSample( int nbSample) { nbSample_ = nbSample;}
     /** Set the number of variables of the model
-     *  @param nbVar number of variables of the model
+     *  @param nbVariable number of variables of the model
      * */
-    inline void setNbVariable( int nbVar) { nbVariable_ = nbVar;}
+    inline void setNbVariable( int nbVariable) { nbVariable_ = nbVariable;}
 
   private:
     /** number of cluster. */

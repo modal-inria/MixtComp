@@ -31,7 +31,10 @@
  **/
 
 /** @file STK_Regress_Util.h
- *  @brief In this file we declare the main .
+ *  @brief In this file we declare the utilities methods for the Regress project.
+ *
+ * @namespace STK::Regress This is the namespace for the regression project.
+ * It will enclose all variables and constant specific to the Regress project.
  **/
 
 

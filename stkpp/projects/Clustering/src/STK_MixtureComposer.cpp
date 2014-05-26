@@ -93,7 +93,7 @@ void MixtureComposer::writeParameters(std::ostream& os) const
 {
   stk_cout << _T("Composer lnLikelihood = ") << lnLikelihood() << std::endl;
   stk_cout << _T("Composer nbFreeParameter = ") << this->nbFreeParameter() << std::endl;
-  stk_cout << _T("Composer proportions = ") << *(this->p_prop()) << std::endl;
+  stk_cout << _T("Composer proportions = ") << *(this->p_pk()) << std::endl;
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {

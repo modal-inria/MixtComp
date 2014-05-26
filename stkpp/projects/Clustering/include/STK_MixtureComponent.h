@@ -25,23 +25,21 @@
 /*
  * Project:  stkpp::Model
  * created on: 22 juil. 2011
- * Purpose: define the class IMixtureComponent.
+ * Purpose: define the class MixtureComponent.
  * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  *
  **/
 
-/** @file STK_IMixtureComponent.h
- *  @brief In this file we define the class IMixtureComponent.
+/** @file STK_MixtureComponent.h
+ *  @brief In this file we define the class MixtureComponent.
  **/
 
-#ifndef STK_IMIXTURECOMPONENT_H
-#define STK_IMIXTURECOMPONENT_H
+#ifndef STK_MIXTURECOMPONENT_H
+#define STK_MIXTURECOMPONENT_H
 
 #include <cmath>
 
-#include "../../Sdk/include/STK_IRecursiveTemplate.h"
 #include "../../StatModels/include/STK_IMultiParameters.h"
-#include "../../Sdk/include/STK_Macros.h"
 
 namespace STK
 {
@@ -52,81 +50,57 @@ namespace STK
  *  From a computational point of view a Component is defined with
  *  the help of two elements
  *  - A data set where the number of samples is the number of rows and the number
- *  of variable is the number of columns. This data set is accessed via
- *  a pointer of type @c Array const*.
+ *  of variable is the number of columns.
  *  - A set of parameters stored in a class of type @c Parameters. The type
  *  Parameters have to derive from IMultiParameters. The parameters are created
  *  at the instantiation of the component and deleted at its destruction.
  *
- *  DerivedComponent implementations of this interface have to implement the
- *  virtual methods:
- *  @code
- *    IMixtureComponent* clone() const;
- *    Real computeLnLikelihood( RowVector const& rowData) const;
- *  @endcode
- *
+ *  @sa GammaParametersBase, GaussianParametersBase, CategoricalParametersBase
  *  @note This class is a "kitchen" providing tools but does not propose any
  *  estimation method.
  **/
 template <class Array, class Parameters>
-class IMixtureComponent
+class MixtureComponent
 {
   public:
     /** Type of the row vector of the container */
     typedef typename  Array::Row RowVector;
 
-  protected:
     /** default constructor. */
-    IMixtureComponent() : p_data_(0), p_param_(new Parameters) {}
+    inline MixtureComponent() : p_param_(new Parameters) {}
     /** Copy constructor.
      *  @param component the component to copy
      **/
-    IMixtureComponent( IMixtureComponent const& component)
-                     : p_data_(component.p_data_)
-                     , p_param_(component.p_param_->clone())
+    inline MixtureComponent( MixtureComponent const& component)
+                           : p_param_(component.p_param_->clone())
     {}
     /** destructor */
-    virtual ~IMixtureComponent()
+    inline ~MixtureComponent()
     { if (p_param_) { delete p_param_->asPtrDerived();} }
-
-  public:
-    /** clone pattern */
-    virtual IMixtureComponent*  clone() const =0 ;
-    /** @return the pointer on the data set */
-    inline Array const*  p_data() const { return(p_data_);}
+    /** clone pattern. */
+    inline MixtureComponent*  clone() const
+    { return new MixtureComponent(*this);};
     /** @return the pointer on the parameters */
     inline Parameters* const p_param() const
     { return (p_param_) ? p_param_->asPtrDerived() : 0;}
 
-    /** compute the log Likelihood of the component. */
-    Real computeLnLikelihood() const
-    {
-      Real sum = 0.0;
-      for (int i= p_data_->firstIdxRows(); i<= p_data_->lastIdxRows(); i++)
-      { sum += computeLnLikelihood(p_data_->row(i));}
-      return(sum);
-    }
     /** compute the log Likelihood of an observation.
+     *  The computation is delegated to the parameter class.
      *  @param rowData the data
      **/
-    virtual Real computeLnLikelihood( RowVector const& rowData) const =0;
-    /** Set the data of the component.
-     *  @param p_data the pointer on the data set
-     **/
-    inline void setData(Array const* p_data)
-    { p_data_ = p_data;}
+    inline Real computeLnLikelihood( RowVector const& rowData) const
+    { return p_param()->computeLnLikelihood(rowData);}
+
     /** Write the parameters of the component.
      *  @param os the output stream for the parameters
      **/
     inline void writeParameters(ostream &os) { p_param_->print(os);}
 
-  protected:
-    /** Pointer on the data set. */
-    Array const* p_data_;
+  private:
     /** Pointer on the parameters of the model. */
     IMultiParameters<Parameters>* p_param_;
 };
 
 } // namespace STK
 
-#endif /* STK_IMIXTURECOMPONENT_H */
+#endif /* STK_MIXTURECOMPONENT_H */

@@ -79,7 +79,7 @@ class MixtureBridge: public IMixture
                  : IMixture(mixture)
                  , mixture_(mixture.mixture_)
                  , data_(mixture.data_)
-    {  mixture_.setData(data_.m_dataij()); mixture_.initializeModel();}
+    {  mixture_.setData(data_.m_dataij()); mixture_.initializeModel();} /* default implementation of initializeMixture*/
     /** This is a standard clone function in usual sense. It must be defined to
      *  provide new object of your class with values of various parameters
      *  equal to the values of calling object. In other words, this is
@@ -112,27 +112,19 @@ class MixtureBridge: public IMixture
     {
       if (!p_composer())
         STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeStep,composer is not set);
-      mixture_.setMixtureParameters( p_prop(), p_tik(), p_zi());
+      mixture_.setMixtureParameters( p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
     }
-    /** This function will be defined to set the data into your data containers.
-     *  To facilitate data handling, framework provide templated functions,
-     *  that can be called directly to get the data.
+    /** This function will be defined to set the data into your data container
+     *  (aka DataBridge<Id>). To facilitate data handling, framework provide
+     *  templated functions, that can be called directly to get the data.
      **/
-     template<class MixtureManager>
-     void setData(MixtureManager const* p_manager)
-     {
-       data_.setData(p_manager, idName());
-       data_.findMissing();
-       removeMissing();
-     }
-     /** This function will be defined to initialize the mixture model using
-      *  informations stored by the MixtureManager and the data container.
-      */
-      void initializeMixture()
-      { InitializeMixtureImpl<Id>::run(mixture_, data_);}
-
-    /** This function must be defined to return the component probability (PDF)
+    template<class MixtureManager>
+    void setData(MixtureManager const* p_manager)
+    { data_.setData(p_manager, idName());
+      initializeMixture();
+    }
+     /** This function must be defined to return the component probability (PDF)
      *  for corresponding sample i and cluster k.
      * @param i,k Sample and Cluster numbers
      * @return the log-component probability
@@ -189,6 +181,11 @@ class MixtureBridge: public IMixture
 
 
   private:
+    /** This function will be used in order to initialize the mixture model
+     *  using informations stored by the data_ container.
+     **/
+     void initializeMixture()
+     { InitializeMixtureImpl<Id>::run(mixture_, data_);}
     /** protected constructor to use in order to create a bridge.
      *  @param mixture the mixture to copy
      *  @param idName id name of the mixture
@@ -203,24 +200,6 @@ class MixtureBridge: public IMixture
     Mixture mixture_;
     /** Bridge for the data */
     DataBridge<Id> data_;
-    /** utility function for lookup the data set and remove missing values
-     *  coordinates. */
-    void removeMissing()
-    {
-      typedef std::vector<std::pair<int,int> >::const_iterator ConstIterator;
-      Type value;
-      int j, old_j = UnknownSize;
-      for(ConstIterator it = data_.v_missing().begin(); it!= data_.v_missing().end(); ++it)
-      {
-         j = it->second; // get column
-         if (j!=old_j)
-         {
-           old_j =j;
-           value = mixture_.safeValue(j);
-         }
-         data_.m_dataij_(it->first, it->second) = value;
-       }
-    }
 };
 
 } // namespace STK

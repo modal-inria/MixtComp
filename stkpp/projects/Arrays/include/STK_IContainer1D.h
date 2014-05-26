@@ -30,7 +30,12 @@
  **/
 
 /** @file STK_IContainer1D.h
- *  @brief Interface Base class for 1D Containers.
+ *  @brief Interface base class for the 1D containers, this is an internal
+ *  header file, included by other Containers library headers.
+ *
+ *  You should not attempt to use it directly but rather used one of the
+ *  derived class like Array1D, except if you want to create your own
+ *  Container Class.
  **/
 
 #ifndef STK_ICONTAINER1D_H

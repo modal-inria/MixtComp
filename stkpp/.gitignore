@@ -2,4 +2,3 @@
 *.a
 nohup.out
 bin/*
-makevars.local

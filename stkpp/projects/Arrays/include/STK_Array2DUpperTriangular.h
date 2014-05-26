@@ -36,15 +36,10 @@
 #ifndef STK_MATRIXUPPERTRIANGULAR_H
 #define STK_MATRIXUPPERTRIANGULAR_H
 
-#include "STK_Arrays_Util.h"
+
 
 #include "STK_Array2DVector.h"
 #include "STK_Array2DPoint.h"
-
-#include "STK_IArray2D.h"
-#include "STK_Display.h"
-
-#include "../../Arrays/include/STK_Traits.h"
 
 namespace STK
 {

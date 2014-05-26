@@ -35,6 +35,10 @@
 #include "../../include/Algebra.h"
 
 using namespace STK;
+
+// only if lapack is installed
+#ifdef STKUSELAPACK
+
 using namespace STK::lapack;
 
 template <typename Type>
@@ -51,7 +55,7 @@ void numbering(ArrayBase<Container2D>& matrix)
 {
   typedef typename hidden::Traits<Container2D>::Type Type;
   numberingVisitor<Type> visitor;
-  ArrayBaseVisitor<Container2D, numberingVisitor<Type> > arrayVisitor(matrix.asDerived());
+  ArrayBaseApplier<Container2D, numberingVisitor<Type> > arrayVisitor(matrix.asDerived());
   arrayVisitor.apply(visitor);
 }
 
@@ -105,17 +109,18 @@ bool testSymmEigen(int N)
 
   stk_cout << _T("\n\n");
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ Test EigenvaluesSymmetric                         +\n");
+  stk_cout << _T("+ Test SymEigen                                     +\n");
   stk_cout << _T("\n\n");
-  // ---------------- First test --------------------
+
+  stk_cout << _T("++++++++++++++\n");
+  stk_cout << _T("+ First test +\n");
+  stk_cout << _T("++++++++++++++\n");
   A = 0.0;
   for (int i=A.firstIdx(); i<=A.lastIdx(); i++) { A(i,i)  = 1.0;}
   for (int i=A.firstIdx(); i<A.lastIdx(); i++) { A(i,i+1) = 2.0; A(i+1, i) = 2.0;}
-  if (A.lastIdx()>=2) A(2,2) = 0.0;
-
-  stk_cout << _T("++++++++++++\n");
-  stk_cout << _T("+First test+\n");
-  stk_cout << _T("++++++++++++\n");
+  if (A.range().isContaining(2)) A(2,2) = 0.0;
+  stk_cout << _T("A = \n");
+  stk_cout << A << _T("\n");
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
   // run test
@@ -125,13 +130,16 @@ bool testSymmEigen(int N)
   delete eigen;
 
   // ---------------- Second test --------------------
-  numbering(A);
-  symmetrize(A);
-  if (A.lastIdx()>=2) A(2,2) = 0.0;
-
   stk_cout << _T("+++++++++++++\n");
   stk_cout << _T("+Second test+\n");
   stk_cout << _T("+++++++++++++\n");
+  for (int i=baseIdx, k=1; i<=A.lastIdx(); i++)
+    for (int j=i; j<=A.lastIdx(); j++)
+    { A(i,j) = N*N-k++; A(j,i) = A(i,j);}
+
+  for (int i=baseIdx; i<=A.lastIdx(); i++) { A(i,i) = 1.0;}
+  for (int i=baseIdx; i<A.lastIdx(); i++) { A(i,i+1) = 2.0; A(i+1, i) = 2.0;}
+  if (A.range().isContaining(2)) A(2,2) = 0.0;
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
 
@@ -141,22 +149,32 @@ bool testSymmEigen(int N)
   delete eigen;
 
   // ---------------- Third test --------------------
-  A.col(A.firstIdx()) = 0.0; A.row(A.firstIdx()) = 0.0;
-  if (A.lastIdx()>=2) A(2,2) = 0.0;
-  
   stk_cout << _T("+++++++++++++++++++++++++\n");
   stk_cout << _T("+Third test : A singular+\n");
   stk_cout << _T("+++++++++++++++++++++++++\n");
+  for (int i=baseIdx, k=1; i<=A.lastIdx(); i++)
+    for (int j=i; j<=A.lastIdx(); j++)
+    { A(i,j) = N*N-k++;
+      A(j,i) = A(i,j);
+    }
+  for (int i=baseIdx; i<=A.lastIdx(); i++) { A(i,i) = 1.0;}
+  for (int i=baseIdx; i<A.lastIdx(); i++) { A(i,i+1) = 2.0; A(i+1, i) = 2.0;}
+  if (A.range().isContaining(2)) A(2,2) = 0.0;
+  A.col(baseIdx) = 0.0;
+  A.row(baseIdx+1) = 0.0;
+
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
   print(A, _T("A"));
   eigen = new SymEigen(A);
-  if (!eigen->run()) { delete eigen; return false;}
+  if (!eigen->run())
+  { delete eigen; return false;}
   writeResult(*eigen);
   delete eigen;
   return true;
 }
 
+#endif
 // Main
 int main(int argc, char *argv[])
 {
@@ -176,11 +194,14 @@ int main(int argc, char *argv[])
 
     stk_cout << _T("\n\n");
 
-    if (!testSymmEigen(N)) return -1;
-
+#ifdef STKUSELAPACK
+    if (!testSymmEigen(N)) { return -1;}
+#else
+    stk_cout << _T("Warning STK++ has been compiled without lapack\n");
+#endif
     stk_cout << _T("\n\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("+ Successful completion of testing for STK::EigneValues +\n");
+    stk_cout << _T("+ Successful test for STK::lapack::SymmEigen            +\n");
     stk_cout << _T("+ No errors detected.                                   +\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("\n\n");

@@ -37,8 +37,6 @@
  * @brief define the main interface for linking specific mixture model to the
  * composer.
  */
-#include <string>
-#include "../../STKernel/include/STK_Real.h"
 #include "../include/STK_MixtureComposer.h"
 
 namespace STK
@@ -171,7 +169,7 @@ class IMixture
     /** This function can be used in derived classes to get proportions from the framework.
      *  @return Pointer to proportions.
      */
-    CArrayPoint<Real> const* p_prop() const;
+    CArrayPoint<Real> const* p_pk() const;
     /** This function can be used in derived classes to get posterior probabilities from the framework.
      *  @return Pointer to tik.
      */

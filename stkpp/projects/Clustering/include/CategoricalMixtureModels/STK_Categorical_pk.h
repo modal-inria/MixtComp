@@ -52,7 +52,7 @@ struct MixtureModelTraits< Categorical_pk<_Array> >
 {
   typedef _Array Array;
   typedef Categorical_pkParameters Parameters;
-  typedef CategoricalComponent<_Array, Parameters> Component;
+  typedef MixtureComponent<_Array, Parameters> Component;
 };
 
 } // namespace hidden
@@ -63,7 +63,7 @@ struct MixtureModelTraits< Categorical_pk<_Array> >
  *  form
  * \f[
  *  f(\mathbf{x}|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d
- *    \frac{1}{\sqrt{2\pi}\sigma^j_{k}} \exp\left\{-\frac{(x^j-\mu^j_k)^2}{2(\sigma^j_{k})^2}\right\}.
+ *   .
  * \f]
  **/
 template<class Array>
@@ -96,11 +96,15 @@ class Categorical_pk : public CategoricalBase<Categorical_pk<Array> >
      *  Probabilities will be choosen uniformly.
      */
     void randomInit();
-    /** Compute the weighted mean and the common variance. */
+    /** Compute the weighted proportions of each class. */
     void mStep();
+    /** get the parameters of the model
+     *  @param params An Array2D with the parameters of the model
+     **/
+    void getParameters(Array2D<Real>& params) const;
     /** @return the number of free parameters of the model */
     inline int computeNbFreeParameters() const
-    { return this->nbCluster()*this->nbVariable() + this->nbCluster();}
+    { return this->nbCluster()*(this->modalities_.size()-1);}
 };
 
 /** Initialize the parameters using mStep. */
@@ -115,11 +119,9 @@ void Categorical_pk<Array>::initializeStep()
 template<class Array>
 void Categorical_pk<Array>::randomInit()
 {
-  for (int k = p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  for (int k = baseIdx; k <= p_tik()->lastIdxCols(); ++k)
   {
-    for (int l=p_param(k)->proba_.firstIdx(); l<=p_param(k)->proba_.lastIdx(); ++l)
-    { p_param(k)->proba_[l] = Law::Uniform::rand(0.,1.);}
-    // normalize to 1
+    p_param(k)->proba_.randUnif();
     p_param(k)->proba_ /= p_param(k)->proba_.sum();
   }
 }
@@ -127,7 +129,44 @@ void Categorical_pk<Array>::randomInit()
 /* Compute the weighted mean and the common variance. */
 template<class Array>
 void Categorical_pk<Array>::mStep()
-{}
+{
+  for (int k = baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+  {
+    for (int j = p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
+    {
+      for (int i = p_tik()->firstIdxRows(); i <= p_tik()->lastIdxRows(); ++i)
+      {
+        p_param(k)->proba_[(*p_data())(i, j)] += (*p_tik())(i, k);
+      }
+    }
+    p_param(k)->proba_ /=  p_param(k)->proba_.sum();
+  }
+}
+
+/** get the parameters of the model
+ *  @param params the parameters of the model
+ **/
+template<class Array>
+void Categorical_pk<Array>::getParameters(Array2D<Real>& params) const
+{
+  for (int k = baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+    params.pushBackRows(p_param(k)->proba_*Const::Point<Real>(this->nbCluster()));
+//  int firstId = params.firstIdxRows();
+//  int nbClust = this->nbCluster();
+//  int nbModalities = modalities_.size();
+//
+//  params.resize(nbModalities * nbClust, p_data()->cols());
+//  for (int k = 0; k <= nbClust; ++k)
+//  {
+//    for (int j = p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
+//    {
+//      for (int l = 0; l < nbModalities; ++l)
+//      {
+//        params(k * nbModalities + l + firstId, j) = p_param(k)->proba(j, l);
+//      }
+//    }
+//  }
+}
 
 } // namespace STK
 

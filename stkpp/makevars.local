@@ -7,13 +7,11 @@
 #
 #-----------------------------------------------------------------------
 #
-# HASRMATH 't' if your system has libRmath.
-# Note: If HASRMATH = t, you have to add the lines
-# LIB_RMATH_A = /usr/[local/]lib/libRmath.a   # check the path on your system
-# R_FLAGS = -DMATHLIB_STANDALONE
-#
+#   HASRMATH 't' if your system has libRmath
+HASRMATH = t
 
-HASRMATH = f
+LIB_RMATH_A = /usr/lib/libRmath.a
+R_FLAGS = -DMATHLIB_STANDALONE
 
 #-----------------------------------------------------------------------
 # make program
@@ -68,3 +66,5 @@ CXXFLAGS   = -ansi -pedantic -Wall -O3 -march=native -funroll-loops
 # Uncomment the next line if you want to use wchar set
 # (will not work).
 # STK_FLAGS = -DSTK_UNICODE
+
+-include ~/.R/Makevars

@@ -28,11 +28,12 @@
  **/
 
 /** @file STK_IArray1D.h
-  * @brief Pre-Implementation of the interface IArray1D.
-  * 
-  * An IArray1D is a non-oriented templated one dimensional Array
-  * which is not final and can be used by any sub-class that need to be
-  * a final class.
+ *  @brief Interface base class for the Array1D, this is an internal header file,
+ *  included by other Containers library headers.
+ *
+ *  You should not attempt to use it directly but rather used one of the
+ *  derived class like Array1D, except if you want to create your own
+ *  Container Class.
  **/
 
 #ifndef STK_IARRAY1D_H
@@ -47,8 +48,8 @@ namespace STK
 /** @ingroup Arrays
  *  @brief Templated one dimensional Array.
  * 
- * An IArray1D is a templated non-oriented container implementing the interface
- * base class IArray1D. It contains objects of the type @c Type.
+ * An IArray1D is a templated one column container implementing the interface
+ * base class ITContainer1D.
  **/
 template<class Derived >
 class IArray1D  : public ITContainer1D<Derived>
@@ -176,7 +177,7 @@ class IArray1D  : public ITContainer1D<Derived>
       this->setCapacity(size);
     }
     /** Clear the object. Memory is liberated and the
-     *  range of the Container is set to 0:-1 or 1:0 (@see STKBASEARRAYS).
+     *  range of the Container is set to 0:-1 or 1:0 (@see baseIdx).
      **/
     void clear()
     {

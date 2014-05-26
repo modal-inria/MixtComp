@@ -47,6 +47,7 @@
 #include "../../Arrays/include/STK_Array2DLowerTriangular.h"
 #include "../../Arrays/include/STK_Array2DUpperTriangular.h"
 #include "../../Arrays/include/STK_Array2D_Functors.h"
+#include "../../Arrays/include/STK_Const_Arrays.h"
 
 #include "../../Algebra/include/STK_EigenvaluesSymmetric.h"
 #include "../../Algebra/include/STK_LinAlgebra2D.h"
@@ -90,16 +91,16 @@ namespace Law
  *  \Sigma = [\mathrm{Cov}(X_i, X_j)]_{i=1,2,\ldots,p;\ j=1,2,\ldots,p}
  *  \f]
  */
-template <class Container1D>
-class MultiNormal: public IMultiLaw<Container1D>
+template <class RowVector>
+class MultiNormal: public IMultiLaw<RowVector>
 {
   public:
     /** Constructor.
      *  @param mu mean of the Normal distribution
      *  @param sigma covariance matrix of the Normal distribution
      **/
-    MultiNormal( Container1D const& mu, MatrixSquare const& sigma)
-               : IMultiLaw<Container1D>(_T("MultiNormal"))
+    MultiNormal( RowVector const& mu, MatrixSquare const& sigma)
+               : IMultiLaw<RowVector>(_T("MultiNormal"))
                , mu_()
                , sigma_()
                , decomp_(0)
@@ -108,7 +109,7 @@ class MultiNormal: public IMultiLaw<Container1D>
     /** destructor. */
     virtual ~MultiNormal() {}
     /** @@return the location parameter */
-    inline Container1D const& mu() const { return mu_;}
+    inline RowVector const& mu() const { return mu_;}
     /** @@return the variance-covariance matrix */
     inline MatrixSquare const& sigma() const { return sigma_;}
     /** @@return the square root of the variance-covariance matrix */
@@ -116,7 +117,7 @@ class MultiNormal: public IMultiLaw<Container1D>
     /** @@return the eigenvalue decomposition */
     inline EigenvaluesSymmetric const& decomp() const { return decomp_;}
     /** update the parameters specific to the law. */
-    void setParameters( Container1D const& mu, MatrixSquare const& sigma)
+    void setParameters( RowVector const& mu, MatrixSquare const& sigma)
     {
       // check dimensions
       if (mu.range() != sigma.range())
@@ -135,13 +136,9 @@ class MultiNormal: public IMultiLaw<Container1D>
       int rank = decomp_.rank(), last = mu_.firstIdx() + rank -1;
       for (int j=mu_.firstIdx(); j<= last; j++)
       { invEigenvalues_[j] = 1./decomp_.eigenvalues()[j];}
-      for (int j=last+1; j<= mu_.lastIdx(); j++)
-      { invEigenvalues_[j] = 0.;}
+      for (int j=last+1; j<= mu_.lastIdx(); j++) { invEigenvalues_[j] = 0.;}
 
-      // FixeMe: operator [j] does not work; }
       squareroot_ = (decomp_.rotation() * decomp_.eigenvalues().sqrt()).transpose();
-//      for (int j=mu_.firstIdx(); j<= mu_.lastIdx(); ++j)
-//      { squareroot_.row(j) = decomp_.rotation().col(j) * decomp_.eigenvalues().sqrt().elt(j);}
     }
     /** @brief compute the probability distribution function (density) of the
      * multivariate normal law
@@ -153,7 +150,7 @@ class MultiNormal: public IMultiLaw<Container1D>
      *  @param x the multivariate value to compute the pdf.
      *  @return the value of the pdf
      **/
-    virtual Real pdf( Container1D const& x) const
+    virtual Real pdf( RowVector const& x) const
     {
       // check determinant is not 0
       if (decomp_.det() == 0.)
@@ -170,19 +167,13 @@ class MultiNormal: public IMultiLaw<Container1D>
      *  @param x the multivariate value to compute the lpdf.
      *  @return the value of the log-pdf
      **/
-    Real lpdf( Container1D const& x) const
+    Real lpdf( RowVector const& x) const
     {
       // check ranges
       if (x.range() != mu_.range() )
       { STKRUNTIME_ERROR_NO_ARG(MultiNormal::lpdf(x),x.range() != mu_.range());}
-      // compute x - mu
-      Container1D xbar; //= x - mu_;
-      xbar = x - mu_;
-      // compute P'(x-mu)P
-      Container1D xrot;
-      xrot.move(mult(xbar, decomp_.rotation()));
-      // compute pdf using (x-mu)'PD^{-1}P'(x-mu)
-      Real res = 0.5 * xrot.wnorm2(invEigenvalues_)
+      // compute pdf using ||(x-mu)'P||_{D^{-1}}^2
+      Real res = 0.5 * ((x - mu_) * decomp_.rotation()).wnorm2(invEigenvalues_)
                + invEigenvalues_.size() * Const::_LNSQRT2PI_
                + 0.5 * log((double)decomp_.det());
       return -res;
@@ -199,19 +190,13 @@ class MultiNormal: public IMultiLaw<Container1D>
       // check ranges
       if (data.cols() != mu_.range() )
       { STKRUNTIME_ERROR_NO_ARG(MultiNormal::lnLikelihood(x),data.cols() != mu_.range());}
-      // compute x - mu
-      Point xres(mu_.range()), xrot(mu_.range());
       // get dimensions of the samples and sum over all ln-likelihood values
       const int first = data.firstIdxRows(), last = data.lastIdxRows();
       Real sum = 0.0;
       for (int i=first; i<= last; i++)
       {
-        // compute residual
-        xres = data.row(i) - mu_;
-        // compute xrot <- (xres-mu)*P and store result in xrot
-        xrot.move(mult(xres, decomp_.rotation()));
-        // compute lpdf using (x-mu)'P D^{-1} P'(x-mu)
-        Real res = 0.5 * xrot.wnorm2(invEigenvalues_) ;
+        // compute lpdf using \sum_i ||(x_i-mu)'P||_{D^{-1}}^2
+        Real res = 0.5 * ((data.row(i) - mu_) * decomp_.rotation()).wnorm2(invEigenvalues_) ;
         sum += res;
       }
       sum += data.sizeRows()*( invEigenvalues_.size() * Const::_LNSQRT2PI_
@@ -224,17 +209,15 @@ class MultiNormal: public IMultiLaw<Container1D>
      *  store the result in x.
      *  @param[out] x the simulated value.
      **/
-    virtual void rand( Container1D& x) const
+    virtual void rand( RowVector& x) const
     {
       // fill it with iid N(0,1) variates
       Normal(0., 1.).randArray(x);
-      // rotate with squareroot_
-      x.move(mult(x, squareroot_));
-      // translate with mu_
-      x += mu_;
+      // rotate with squareroot_ and translate with mu_
+      x = x * squareroot_ + mu_;
     }
     /** @brief simulate a realization of the Multivariate Law and store the
-     *  result in x (using a reference vector). The class Container1D have
+     *  result in x (using a reference vector). The class RowVector have
      *  to derive from IContainerRef.
      *  @param[out] x the simulated value.
      **/
@@ -243,16 +226,13 @@ class MultiNormal: public IMultiLaw<Container1D>
     {
       // fill it with iid N(0,1) variates
       Normal(0., 1.).randArray(x.asDerived());
-      // rotate with squareroot_
-      x.asDerived().move(mult(x.asDerived(), squareroot_));
-      // translate with mu_
-      for (int i= x.firstIdxRows(); i<= x.lastIdxRows(); i++)
-        x.asDerived().row(i) += mu_;
+      // rotate with squareroot_ and translate with mu_
+      x.asDerived() = x.asDerived() * squareroot_ + Const::Vector<Real>(x.rows()) * mu_;
     }
 
   protected:
     /** The position parameter. **/
-    Container1D mu_;
+    RowVector mu_;
     /** The covariance parameter. **/
     MatrixSquare sigma_;
     /** the decomposition in eigenvalues of the covariance matrix*/

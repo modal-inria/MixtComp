@@ -29,7 +29,7 @@
  *
  **/
 
-/** @file STK_Array2DSquare.h
+/** @file STK_Array2DDiagonal.h
   * @brief In this file, we define Array2DDiagonal class.
  **/
 

@@ -55,7 +55,7 @@ void numbering(Derived& matrix)
 {
   typedef typename hidden::Traits<Derived>::Type Type;
   numberingVisitor<Type> visitor;
-  ArrayBaseVisitor<Derived, numberingVisitor<Type> > arrayVisitor(matrix);
+  ArrayBaseApplier<Derived, numberingVisitor<Type> > arrayVisitor(matrix);
   arrayVisitor.apply(visitor);
 }
 
@@ -375,9 +375,9 @@ int main(int argc, char *argv[])
       // 12 15 3 4 10 12 1 2
       M      = 5;
       N      = 6;
-      Istart = STKBASEARRAYS+1;
+      Istart = baseIdx+1;
       Iend   = Istart+2;
-      Jstart = STKBASEARRAYS+2;
+      Jstart = baseIdx+2;
       Jend   = Jstart+3;
       output = true;
       iter = 1;

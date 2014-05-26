@@ -24,20 +24,16 @@
 
 /*
  * Project:  stkpp::tests
- * created on: 8 août 2011
- * Purpose:  test the Normal and MultiNormal classes.
+ * Purpose:  test the Composer
  * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  *
  **/
 
 /** @file testComposer.cpp
- *  @brief In this file we test the composer->
+ *  @brief In this file we test the composer
  **/
 #include "StrategiesUtil.h"
-
-#include "../../include/Clustering.h"
 #include "../../include/DManager.h"
-#include "../../projects/Clustering/include/STK_MixtureManager.h"
 
 using namespace STK;
 
@@ -80,36 +76,36 @@ int main(int argc, char *argv[])
   stk_cout << _T("+ CreateMixtures() and initializeStep()            +\n");
   stk_cout << _T("+ composer:                                         +\n");
   composer->createMixtures(manager);
-  composer->initializeStep();
-  composer->writeParameters(stk_cout);
-
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ test randomClassInit(). composer:                 +\n");
-  composer->randomClassInit();
-  composer->writeParameters(stk_cout);
-
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ sem iterations. composer:                         +\n");
-  composer->samplingStep();
-  composer->mStep();
-  composer->sStep();
-  composer->eStep();
-  composer->writeParameters(stk_cout);
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ em iterations. composer:                           +\n");
-  composer->imputationStep();
-  composer->mStep();
-  composer->eStep();
-  composer->writeParameters(stk_cout);
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ cem iterations. composer:                           +\n");
-  composer->imputationStep();
-  composer->cStep();
-  composer->eStep();
-  composer->writeParameters(stk_cout);
+//  composer->initializeStep();
+//  composer->writeParameters(stk_cout);
+//
+//  stk_cout << _T("\n\n");
+//  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+//  stk_cout << _T("+ test randomClassInit(). composer:                 +\n");
+//  composer->randomClassInit();
+//  composer->writeParameters(stk_cout);
+//
+//  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+//  stk_cout << _T("+ sem iterations. composer:                         +\n");
+//  composer->samplingStep();
+//  composer->mStep();
+//  composer->sStep();
+//  composer->eStep();
+//  composer->writeParameters(stk_cout);
+//  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+//  stk_cout << _T("+ em iterations. composer:                           +\n");
+//  composer->imputationStep();
+//  composer->mStep();
+//  composer->eStep();
+//  composer->writeParameters(stk_cout);
+//  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+//  stk_cout << _T("+ cem iterations. composer:                           +\n");
+//  composer->imputationStep();
+//  composer->cStep();
+//  composer->eStep();
+//  composer->writeParameters(stk_cout);
   delete composer;
-
+//
   //
   stk_cout << _T("\n\n");
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");

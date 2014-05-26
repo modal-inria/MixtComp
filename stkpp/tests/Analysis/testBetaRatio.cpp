@@ -52,24 +52,41 @@ int main(int argc, char *argv[])
     stk_cout << _T("\n\n");
     std::string rawInput;
     Real a, b, x;
+    bool lower_tail = true;
     if (argc >=4)
     {
       a = atof(argv[1]);
       b = atof(argv[2]);
       x = atof(argv[3]);
+      if (argc >=5) lower_tail = atoi(argv[4]);
     }
     else
     {
       Law::Uniform lawb(0, 10000);
       a = lawb.rand();
       b = lawb.rand();
-      x = std::abs(Law::Normal::rand(a/(a+b), 0.001)),1.;
+      x = std::abs(Law::Normal::rand(a/(a+b), 0.001));
     }
     // write results
     std::cout << "a = " << a << "; b = " << b << "; x = " << x << std::endl;
-    Real res = Funct::betaRatio(a,b,x,true);
+
+    Real res = Funct::betaRatio(a,b,x,lower_tail);
     stk_cout << _T("Res =") << res << _T("\n");
 
+    Real res_se = Funct::betaRatio_se(a-1,b-1,x, false, true);
+    stk_cout << _T("Res_se =") << res_se << _T("\n");
+
+    Real res_ae;
+    res_ae = (a<b) ? Funct::betaRatio_ae(a, b, x, false, true)
+                   : Funct::betaRatio_ae(b, b, x, true, false);
+    stk_cout << _T("Res_ae =") << res_ae << _T("\n");
+
+    Real res2 = pbeta(x, a, b, lower_tail, false);
+    stk_cout << _T("Res_R =") << res2 << _T("\n");
+
+    stk_cout << _T("diff =") << std::abs(res2-res) << _T("\n");
+    stk_cout << _T("diff se=") << std::abs(res_se-res2) << _T("\n");
+    stk_cout << _T("diff ae=") << std::abs(res_ae-res2) << _T("\n");
     stk_cout << _T("\n\n");
     stk_cout << _T("++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("+ Successful completion of testing betaRatio.    +\n");

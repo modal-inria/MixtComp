@@ -59,95 +59,76 @@ void writeResult( EigenvaluesSymmetric const& s)
   stk_cout << "s.rank()=" << s.rank()<< _T("\n");
   stk_cout << "s.det()=" << s.det()<< _T("\n");
   stk_cout << "s.norm()=" << s.norm()<< _T("\n");
-  Range range(s.firstIdx(), s.lastIdx(), 0);
   // D
   print(s.eigenvalues(), _T("D"));
   // P
   print(s.rotation(), _T("P"));
-  // P'
-  MatrixSquare Pt;
-  transpose(s.rotation(), Pt);
   // PP'
-  MatrixSquare Res1;
-  Res1.move(mult(Pt, s.rotation()));
-  print(Res1, _T("P'P"));
+  MatrixSquare R;
+  R = s.rotation().transpose() * s.rotation();
+  print(R, _T("P'P"));
   // PP'
-  Res1.move(mult(s.rotation(), Pt));
-  print(Res1, _T("PP'"));
+  R =  s.rotation() * s.rotation().transpose();
+  print(R, _T("PP'"));
   // PDP'
-  Res1.move(mult(s.rotation(), mult(s.eigenvalues(), Pt)));
-  print(Res1, _T("PDP'"));
+  R =  s.rotation() * s.eigenvalues() * s.rotation().transpose();
+  print(R, _T("PDP'"));
 }
 
 
 /* test_svd.                                                                                                                                */
 void test_diagsym(int N)
 {
-  MatrixSquare A(N), id2;
-
   stk_cout << _T("\n\n");
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   stk_cout << _T("+ Test EigenvaluesSymmetric                         +\n");
   stk_cout << _T("\n\n");
-  // ---------------- First test --------------------
+  if (N<2)
+  {
+    stk_cout << _T("N =") << N << _T("\n");
+    stk_cout << _T("Nothing to do\n");
+    stk_cout << _T("\n\n");
+    return;
+  }
+  MatrixSquare A(N), id2;
+
+  stk_cout << _T("+++++++++++++\n");
+  stk_cout << _T("+ First test+\n");
+  stk_cout << _T("+++++++++++++\n");
   A = 0.0;
   for (int i=A.firstIdx(); i<=A.lastIdx(); i++) { A(i,i)  = 1.0;}
   for (int i=A.firstIdx(); i<A.lastIdx(); i++) { A(i,i+1) = 2.0; A(i+1, i) = 2.0;}
-  if (A.lastIdx()>=2) A(2,2) = 0.0;
-
-  stk_cout << _T("++++++++++++\n");
-  stk_cout << _T("+First test+\n");
-  stk_cout << _T("++++++++++++\n");
+  if (A.range().isContaining(2)) A(2,2) = 0.0;
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
   // run test
   EigenvaluesSymmetric* eigen = new EigenvaluesSymmetric(&A);
   eigen->run();
   writeResult(*eigen);
-
-  //  ginv test
-  MatrixSquare* Ainv = eigen->ginv();
-  stk_cout << _T("ginv() Done\n");
-  stk_cout << _T("A^-1 =\n");
-  stk_cout << (*Ainv) << _T("\n");
-
-  id2.move(mult(*Ainv, A));
-  print(id2,_T("A^-1*A"));
-
-  delete Ainv;
   delete eigen;
 
-  // ---------------- Second test --------------------
+  stk_cout << _T("+++++++++++++\n");
+  stk_cout << _T("+Second test+\n");
+  stk_cout << _T("+++++++++++++\n");
   for (int i=A.firstIdx(), k=1; i<=A.lastIdx(); i++)
     for (int j=i; j<=A.lastIdx(); j++)
     { A(i,j) = N*N-k++; A(j,i) = A(i,j);}
 
   for (int i=A.firstIdx(); i<=A.lastIdx(); i++) { A(i,i) = 1.0;}
   for (int i=A.firstIdx(); i<A.lastIdx(); i++) { A(i,i+1) = 2.0; A(i+1, i) = 2.0;}
-  if (A.lastIdx()>=2) A(2,2) = 0.0;
+  if (A.range().isContaining(2)) A(2,2) = 0.0;
 
-  stk_cout << _T("+++++++++++++\n");
-  stk_cout << _T("+Second test+\n");
-  stk_cout << _T("+++++++++++++\n");
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
 
   eigen = new EigenvaluesSymmetric(&A);
   eigen->run();
   writeResult(*eigen);
-
-  //  ginv test
-  Ainv = eigen->ginv();
-  stk_cout << _T("ginv() Done\n");
-  print((*Ainv), _T("A^-1"));
-
-  id2.move(mult(*Ainv, A));
-  print(id2, _T("A^-1*A"));
-
-  delete Ainv;
   delete eigen;
 
-  // ---------------- Third test --------------------
+  stk_cout << _T("+++++++++++++++++++++++++\n");
+  stk_cout << _T("+Third test : A singular+\n");
+  stk_cout << _T("+++++++++++++++++++++++++\n");
   for (int i=A.firstIdx(), k=1; i<=A.lastIdx(); i++)
     for (int j=i; j<=A.lastIdx(); j++)
     { A(i,j) = N*N-k++;
@@ -155,12 +136,10 @@ void test_diagsym(int N)
     }
   for (int i=A.firstIdx(); i<=A.lastIdx(); i++) { A(i,i) = 1.0;}
   for (int i=A.firstIdx(); i<A.lastIdx(); i++) { A(i,i+1) = 2.0; A(i+1, i) = 2.0;}
-  if (A.lastIdx()>=2) A(2,2) = 0.0;
-  A.col(A.firstIdx()) = 0.0; A.row(A.firstIdx()+1) = 0.0;
-  
-  stk_cout << _T("+++++++++++++++++++++++++\n");
-  stk_cout << _T("+Third test : A singular+\n");
-  stk_cout << _T("+++++++++++++++++++++++++\n");
+  if (A.range().isContaining(2)) A(2,2) = 0.0;
+  A.col(A.firstIdx()+1) = 0.0;
+  A.row(A.firstIdx()+1) = 0.0;
+
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
   print(A, _T("A"));
@@ -168,18 +147,6 @@ void test_diagsym(int N)
   eigen = new EigenvaluesSymmetric(&A);
   eigen->run();
   writeResult(*eigen);
-
-  // test ginv
-  Ainv = eigen->ginv();
-  stk_cout << _T("eigen->ginv() Done\n");
-  //
-  print(*Ainv, _T("A^-1"));
-  // A^-1 * A
-  id2.move(mult(A, *Ainv));
-  print(id2, _T("A*A^-1"));
-  id2.move(mult(*Ainv, A));
-  print(id2, _T("A^-1*A"));
-  delete Ainv;
   delete eigen;
 
   // ---------------- Fourth test --------------------
@@ -191,19 +158,6 @@ void test_diagsym(int N)
   eigen = new EigenvaluesSymmetric(&A);
   eigen->run();
   writeResult(*eigen);
-
-  // test ginv
-  Ainv = eigen->ginv();
-  stk_cout << _T("Test eigen->ginv() Done\n");
-  print(*Ainv, _T("A^-1"));
-
-  // A^-1 * A
-  id2.move(mult(A, *Ainv));
-  print(id2, _T("A*A^-1"));
-
-  id2.move(mult(*Ainv, A));
-  print(id2, _T("A^-1*A"));
-  delete Ainv;
   delete eigen;
 }
 

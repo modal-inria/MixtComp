@@ -47,7 +47,7 @@ namespace STK
  *  stk++ derived class of the IMixture interface
  *  (aka: the MixtureBridge<id> classes).
  *
- *  It handle all the creation and initialization stuff needed by the
+ *  It handles all the creation and initialization stuff needed by the
  *  mixture models of the stkpp library.
  */
 template<class DataHandler>
@@ -89,7 +89,6 @@ class MixtureManager
         {
           GammaBridge_ajk_bjk* p_bridge = new GammaBridge_ajk_bjk(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;
@@ -98,7 +97,6 @@ class MixtureManager
         {
           GammaBridge_ajk_bj* p_bridge = new GammaBridge_ajk_bj(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;
@@ -107,7 +105,6 @@ class MixtureManager
         {
           GaussianBridge_sjk* p_bridge = new GaussianBridge_sjk(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;
@@ -116,7 +113,6 @@ class MixtureManager
         {
           GaussianBridge_sk* p_bridge = new GaussianBridge_sk(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;
@@ -125,7 +121,6 @@ class MixtureManager
         {
           GaussianBridge_sj* p_bridge = new GaussianBridge_sj(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;
@@ -134,7 +129,6 @@ class MixtureManager
         {
           GaussianBridge_s* p_bridge = new GaussianBridge_s(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         // Categorical_pjk_ model
@@ -142,7 +136,6 @@ class MixtureManager
         {
           CategoricalBridge_pjk* p_bridge = new CategoricalBridge_pjk(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         // Categorical_pjk_ model
@@ -150,7 +143,6 @@ class MixtureManager
         {
           CategoricalBridge_pk* p_bridge = new CategoricalBridge_pk(idName, nbCluster);
           p_bridge->setData(this);
-          p_bridge->initializeMixture();
           return p_bridge;
         }
         break;

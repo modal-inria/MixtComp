@@ -36,13 +36,7 @@
 #define STK_CARRAYSQUARE_H
 
 #include "../../STKernel/include/STK_Constants.h"
-#include "../../Sdk/include/STK_MetaTemplate.h"
-#include "../..//Sdk/include/STK_StaticAssert.h"
 
-#include "../../Arrays/include/STK_Traits.h"
-
-#include "STK_Arrays_Util.h"
-#include "STK_CAllocator.h"
 #include "STK_ICArray.h"
 
 namespace STK

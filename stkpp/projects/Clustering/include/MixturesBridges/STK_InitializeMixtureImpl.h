@@ -38,7 +38,8 @@
 namespace STK
 {
 
-/** Initialize mixture, default implementation */
+/** @ingroup Clustering
+ *  Initialize mixture, default implementation */
 template<int Id>
 struct InitializeMixtureImpl
 {
@@ -48,7 +49,8 @@ struct InitializeMixtureImpl
   { mixture.setData(data.m_dataij()); mixture.initializeModel();}
 };
 
-/** Initialize mixture, specialization for Categorical_pjk models
+/** @ingroup Clustering
+ *  Initialize mixture, specialization for Categorical_pjk models
  **/
 template<>
 struct InitializeMixtureImpl<Clust::Categorical_pjk_>
@@ -60,12 +62,13 @@ struct InitializeMixtureImpl<Clust::Categorical_pjk_>
     mixture.setData(data.m_dataij());
     int min = data.m_dataij().minElt();
     int max = data.m_dataij().maxElt();
-    mixture.setModalities(Range(min, max));
-    // TODO: resize proba_ in initializeModel
-    mixture.initializeModel();}
+    mixture.setModalities(Range(min, max, 0));
+    mixture.initializeModel();
+  }
 };
 
-/** Initialize mixture, specialization for Categorical_pk models
+/** @ingroup Clustering
+ *  Initialize mixture, specialization for Categorical_pk models
  **/
 template<>
 struct InitializeMixtureImpl<Clust::Categorical_pk_>
@@ -78,8 +81,7 @@ struct InitializeMixtureImpl<Clust::Categorical_pk_>
     mixture.setData(data.m_dataij());
     int min = data.m_dataij().minElt();
     int max = data.m_dataij().maxElt();
-    mixture.setModalities(Range(min, max));
-    // TODO: resize proba_ in initializeModel
+    mixture.setModalities(Range(min, max, 0));
     mixture.initializeModel();
   }
 };

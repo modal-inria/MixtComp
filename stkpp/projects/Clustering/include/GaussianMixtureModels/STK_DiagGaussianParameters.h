@@ -42,6 +42,7 @@
 #include "../../../Arrays/include/STK_Const_Arrays.h"
 #include "../../../Arrays/include/STK_Display.h"
 #include "../../../StatModels/include/STK_IMultiParameters.h"
+#include "../../../STatistiK/include/STK_Law_Normal.h"
 
 namespace STK
 {
@@ -76,6 +77,17 @@ class DiagGaussianParametersBase : public IMultiParameters<Parameters>
     inline Real sigma(int j) const {return this->asDerived().sigmaImpl(j);}
     /** vector of the mean */
     Array2DPoint<Real> mean_;
+    /** compute the log Likelihood of an observation.
+     *  @param rowData the observation
+     **/
+    template<class RowVector>
+    Real computeLnLikelihood( RowVector const& rowData) const
+    {
+      Real sum =0.;
+      for (Integer j= rowData.firstIdx(); j <= rowData.lastIdx(); ++j)
+      { sum += Law::Normal::lpdf(rowData[j], mean(j), sigma(j));}
+      return sum;
+    }
 };
 
 

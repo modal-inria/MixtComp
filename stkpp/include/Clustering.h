@@ -61,7 +61,6 @@
 #ifndef CLUSTERING_H
 #define CLUSTERING_H
 
-#include "../projects/Clustering/include/STK_Clust_Util.h"
 #include "../projects/Clustering/include/STK_MixtureFacade.h"
 
 

@@ -116,7 +116,7 @@ void ILinearReduct::projection()
   // check if p_reduced exists
   if (!p_reduced_) p_reduced_ = new Matrix;
   // compute matrix multiplication
-  p_reduced_->move(mult( *p_data_, axis_));
+  *p_reduced_ =   (*p_data_) * axis_;
 }
 
 } // namespace STK

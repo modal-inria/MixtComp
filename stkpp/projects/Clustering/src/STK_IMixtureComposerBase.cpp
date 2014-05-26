@@ -164,7 +164,7 @@ void IMixtureComposerBase::intializeMixtureParameters()
 {
   prop_ = 1./(Real)nbCluster_;
   tik_  = 1./(Real)nbCluster_;
-  zi_   = STKBASEARRAYS;
+  zi_   = baseIdx;
 }
 
 

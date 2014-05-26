@@ -29,7 +29,7 @@
  **/
 
 /** @file STK_DataHandler.h
- *  @brief In this file we define the data handler.
+ *  @brief In this file we define the DataHandler class.
  **/
 
 
@@ -69,6 +69,16 @@ class DataHandler : public IDataHandler
 
     /** read a data file and its companion description file. */
     bool readDataFromCsvFile(std::string const& datafile, std::string descriptorfile);
+    /** @brief read a data set from an array.
+     * This method should be essentially used:
+     * - for testing the method as the data  will be converted in a String format.
+     * - if the data are already stored in a String format.
+     * @param data the data set
+     * @param idMixture the id of the Mixture Model
+     * @param idModel an id identifying uniquely the model
+     **/
+    template<typename Type>
+    bool readDataFromArray2D(Array2D<Type> const& data, std::string const& idMixture, std::string const& idModel);
 
     /** return in an Array2D<int> the data with the given idData */
     virtual void getData(std::string const& idData, Array2D<int>& data, int& nbVariable) const;
@@ -91,6 +101,26 @@ class DataHandler : public IDataHandler
     ReadWriteCsv descriptor_;
 };
 
+
+template<typename Type>
+bool DataHandler::readDataFromArray2D(Array2D<Type> const& data, std::string const& idMixture, std::string const& idModel)
+{
+  // add descriptor
+  Variable<std::string> desc(2);
+  desc[baseIdx] = idMixture; desc[baseIdx+1] = idModel;
+  if (!addInfo(idMixture, idModel)) return false;
+  // store data at the end of the ReadWriteCsv array in a string format
+  for (int j=data.firstIdxCols(); j<= data.lastIdxCols(); ++j)
+  {
+    data_.push_back();
+    data_.back().resize(data.rows());
+    for (int i= data.firstIdxRows(); i <= data.lastIdxRows(); ++i)
+    { data_.back()[i] = typeToString(data(i,j), std::scientific);}
+    // store descriptor : this is the same for all the columns added
+    descriptor_.push_back(desc);
+  }
+  return true;
+}
 
 } // namespace STK
 

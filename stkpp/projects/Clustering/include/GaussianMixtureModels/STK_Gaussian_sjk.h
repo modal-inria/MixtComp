@@ -36,7 +36,6 @@
 #define STK_GAUSSIAN_SJK_H
 
 #include "STK_DiagGaussianBase.h"
-#include "STK_GaussianUtil.h"
 
 namespace STK
 {
@@ -52,7 +51,7 @@ template<class _Array>
 struct MixtureModelTraits< Gaussian_sjk<_Array> >
 {
   typedef _Array Array;
-  typedef DiagGaussianComponent<_Array, Gaussian_sjk_Parameters> Component;
+  typedef MixtureComponent<_Array, Gaussian_sjk_Parameters> Component;
   typedef Gaussian_sjk_Parameters        Parameters;
 };
 
@@ -110,8 +109,8 @@ class Gaussian_sjk : public DiagGaussianBase<Gaussian_sjk<Array> >
 template<class Array>
 void Gaussian_sjk<Array>::initializeStep()
 {
-  GaussianUtil<Component>::initialMean(components(), p_tik());
-  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  this->initialMean();
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
   {
     ColVector tik(p_tik()->col(k), true); // create a reference
     p_param(k)->sigma_ = Stat::varianceWithFixedMean(*p_data(), tik, p_param(k)->mean_, false).sqrt();
@@ -126,8 +125,8 @@ void Gaussian_sjk<Array>::initializeStep()
 template<class Array>
 void Gaussian_sjk<Array>::randomInit()
 {
-  GaussianUtil<Component>::randomMean(components());
-  for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+  this->randomMean();
+  for (int k= baseIdx; k <= components().lastIdx(); ++k)
   { p_param(k)->sigma_ = 1.;}
 }
 
@@ -136,8 +135,8 @@ template<class Array>
 void Gaussian_sjk<Array>::mStep()
 {
   // compute the means
-  GaussianUtil<Component>::updateMean(components(), p_tik());
-  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  this->updateMean();
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
   {
     ColVector tik(p_tik()->col(k), true); // create a reference
     p_param(k)->sigma_ = Stat::varianceWithFixedMean(*p_data(), tik, p_param(k)->mean_, false).sqrt();

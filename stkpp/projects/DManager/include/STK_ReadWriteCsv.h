@@ -114,6 +114,9 @@ class TReadWriteCsv
                            , delimiters_(Csv::DEFAULT_DELIMITER)
                            , reserve_(Csv::DEFAULT_RESERVE)
                            , msg_error_()
+                           , nbVars_(0)
+                           , nbRows_(0)
+
     {}
     /** Constructor with a specified file name.
      *  Instantiates an instance of TReadWriteCsv with the specified read flags.
@@ -133,6 +136,8 @@ class TReadWriteCsv
                         , delimiters_(delimiters)
                         , reserve_(Csv::DEFAULT_RESERVE)
                         , msg_error_()
+                        , nbVars_(0)
+                        , nbRows_(0)
     {}
     /** Copy constructor. Instantiates an instance of TReadWriteCsv with
      *  the contents of another TReadWriteCsv.
@@ -151,13 +156,13 @@ class TReadWriteCsv
       delimiters_   = Csv::DEFAULT_DELIMITER;
       reserve_      = Csv::DEFAULT_RESERVE;
     }
-    /**  @return the index of the first variable (should be STKBASEARRAYS). */
+    /**  @return the index of the first variable (should be baseIdx). */
     inline int firstIdx() const { return str_data_.firstIdx(); }
     /** @return the index of the last variable */
     inline int lastIdx() const { return str_data_.lastIdx(); }
     /**@return The current number of variables of the TReadWriteCsv */
     inline int size() const { return str_data_.size(); }
-    /**  @return the index of the first variable (should be STKBASEARRAYS). */
+    /**  @return the index of the first variable (should be baseIdx). */
     inline int firstIdxCols() const { return str_data_.firstIdx(); }
     /** @return the index of the last variable */
     inline int lastIdxCols() const { return str_data_.lastIdx(); }
@@ -180,7 +185,7 @@ class TReadWriteCsv
     /** @return the first index of the samples. */
     int firstIdxRows() const
     {
-      if (size()<= 0) return STKBASEARRAYS;
+      if (size()<= 0) return baseIdx;
       int retVal = firstRow(firstIdx());
       for (int i=firstIdx()+1; i<=lastIdx(); i++)
       { retVal = std::min(retVal, firstRow(i));}
@@ -189,7 +194,7 @@ class TReadWriteCsv
     /** @return the last index of the samples. */
     int lastIdxRows() const
     {
-      if (size()<= 0) return STKBASEARRAYS-1;
+      if (size()<= 0) return baseIdx-1;
       int retVal = lastRow(firstIdx());
       for (int i=firstIdx()+1; i<=lastIdx(); i++)
       { retVal = std::max(retVal, lastRow(i));}
@@ -294,7 +299,7 @@ class TReadWriteCsv
      *  @param data the column to push back
      *  @return @c true if successful, @c false if an error is encountered.
      **/
-    bool push_back( Var const& data)
+    bool push_back( Var const& data = Var())
     {
       try
       {
@@ -310,7 +315,7 @@ class TReadWriteCsv
      *  @param data the column to push front
      *  @return @c true if successful, @c false if an error is encountered.
      **/
-    bool push_front( Var const& data)
+    bool push_front( Var const& data = Var())
     {
       try
       {

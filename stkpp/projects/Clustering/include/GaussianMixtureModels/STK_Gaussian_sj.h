@@ -36,7 +36,6 @@
 #define STK_GAUSSIAN_SJ_H
 
 #include "STK_DiagGaussianBase.h"
-#include "STK_GaussianUtil.h"
 
 namespace STK
 {
@@ -53,7 +52,7 @@ struct MixtureModelTraits< Gaussian_sj<_Array> >
 {
   typedef _Array Array;
   typedef Gaussian_sj_Parameters Parameters;
-  typedef DiagGaussianComponent<_Array, Parameters> Component;
+  typedef MixtureComponent<_Array, Parameters> Component;
 };
 
 } // namespace hidden
@@ -100,7 +99,7 @@ class Gaussian_sj : public DiagGaussianBase<Gaussian_sj<Array> >
       Base::initializeModel();
       sigma_.resize(this->nbVariable());
       sigma_ = 1.;
-      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+      for (int k= baseIdx; k <= components().lastIdx(); ++k)
       { p_param(k)->p_sigma_ = &sigma_;}
     }
     /** Compute the inital weighted mean and the initial common variance. */
@@ -123,7 +122,7 @@ class Gaussian_sj : public DiagGaussianBase<Gaussian_sj<Array> >
 /* Initialize the parameters using mStep. */
 template<class Array>
 void Gaussian_sj<Array>::initializeStep()
-{ GaussianUtil<Component>::initialMean(components(), p_tik());
+{ this->initialMean();
   sigma_ = 1.;
 }
 
@@ -134,8 +133,8 @@ void Gaussian_sj<Array>::initializeStep()
 template<class Array>
 void Gaussian_sj<Array>::randomInit()
 {
-    GaussianUtil<Component>::randomMean(components());
-    sigma_ = 1.;
+    this->randomMean();
+  sigma_ = 1.;
 }
 
 /* Compute the weighted mean and the common variance. */
@@ -143,9 +142,9 @@ template<class Array>
 void Gaussian_sj<Array>::mStep()
 {
   // compute the means
-  GaussianUtil<Component>::updateMean(components(), p_tik());
+  this->updateMean();
   Array2DPoint<Real> variance(p_data()->cols(), 0.);
-  for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+  for (int k= baseIdx; k <= components().lastIdx(); ++k)
   {
     variance += p_tik()->col(k).transpose()
                *(*p_data() - (Const::Vector<Real>(p_data()->rows()) * p_param(k)->mean_)

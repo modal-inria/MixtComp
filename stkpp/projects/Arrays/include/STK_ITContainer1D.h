@@ -36,11 +36,11 @@
 #ifndef STK_ITContainer2D1D_H
 #define STK_ITContainer2D1D_H
 
-#include "../../Arrays/include/STK_Traits.h"
-#include "../../Sdk/include/STK_IRecursiveTemplate.h"
 
+#include "../../Sdk/include/STK_IRecursiveTemplate.h"
 #include "../../Sdk/include/STK_Macros.h"
 
+#include "STK_Traits.h"
 #include "STK_IContainer1D.h"
 
 namespace STK
@@ -50,14 +50,16 @@ namespace STK
  *
  * The ITContainer1D class is the templated base class for all
  * homogeneous one-dimensional containers containing element of type @c Type
- * where Type is note necessarily a scalar.
+ * where Type is note necessarily a scalar. Even if it is essentially a
+ * not oriented (row or column) container, it have been defined as a container
+ * with one column and many columns.
  *
  * Implement the curious recursive template paradigm : the template
  * parameter @c Derived is the name of the class that
  * implements @c ITContainer1D. For example
  * <code>
  * template<class Type>
- * class Derived : public ITContainer1D<Type, Derived<Type> >
+ * class Derived : public ITContainer1D< Derived<Type> >
  * {...}
  * </code>
  *
@@ -74,11 +76,9 @@ namespace STK
  *
  * @note The constant getter elt(pos) have to return a reference as we are using
  * derived class for storing any kind of data.
- *
  **/
 template <class Derived>
-class ITContainer1D : protected IContainer1D
-                    , public IRecursiveTemplate<Derived>
+class ITContainer1D : public IContainer1D, public IRecursiveTemplate<Derived>
 {
   protected:
     typedef typename hidden::Traits<Derived>::Type Type;
@@ -102,19 +102,18 @@ class ITContainer1D : protected IContainer1D
     inline Range cols() const { return Range(1);};
     /** @return the Vertical range*/
     inline Range rows() const { return IContainer1D::range();}
-    /** @return the first element */
-    /**  @return the index of the first element */
-    inline int firstIdx() const { return IContainer1D::firstIdx();}
-    /**  @return the index of the last element*/
-    inline int lastIdx() const  { return IContainer1D::lastIdx();}
-    /** @return the size of the container */
-    inline int size() const  { return IContainer1D::size();};
+//    /**  @return the index of the first element */
+//    inline int firstIdx() const { return IContainer1D::firstIdx();}
+//    /**  @return the index of the last element*/
+//    inline int lastIdx() const  { return IContainer1D::lastIdx();}
+//    /** @return the size of the container */
+//    inline int size() const  { return IContainer1D::size();};
     /** @return the size of the container in number of columns */
     inline int sizeCols() const  { return 1;};
     /** @return the size of the container in number of rows */
     inline int sizeRows() const  { return IContainer1D::size();};
-    /** @return the range of the container */
-    inline Range const& range() const  { return IContainer1D::range();}
+//    /** @return the range of the container */
+//    inline Range const& range() const  { return IContainer1D::range();}
     /** @return @c true if the container is empty, @c false otherwise */
     inline bool empty() const { return range().empty();}
     /** @return the ith element for vector_, point_ and diagonal_ containers

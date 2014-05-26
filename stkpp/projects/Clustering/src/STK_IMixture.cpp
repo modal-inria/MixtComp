@@ -62,7 +62,7 @@ int const* IMixture::classLabels() const
 
 /* @return the proportions of the composer */
 double const* IMixture::proportions() const
-{ return p_composer_->p_prop()->p_data();}
+{ return p_composer_->p_pk()->p_data();}
 
 /* @return the number of sample */
 int IMixture::nbSample() const
@@ -71,8 +71,8 @@ int IMixture::nbSample() const
 /* This function can be used in derived classes to get proportions from the framework.
  * @return Pointer to proportions.
  */
-CArrayPoint<STK::Real> const* IMixture::p_prop() const
-{ return p_composer_->p_prop(); }
+CArrayPoint<STK::Real> const* IMixture::p_pk() const
+{ return p_composer_->p_pk(); }
 
 /* This function can be used in derived classes to get proportions from the framework.
  * @return Pointer to proportions.

@@ -41,8 +41,6 @@
 #ifndef STK_ICONTAINERREF_H
 #define STK_ICONTAINERREF_H
 
-#include <algorithm>
-
 namespace STK
 {
 /** @ingroup Arrays
@@ -70,12 +68,6 @@ struct TRef<1>
 template <>
 struct TRef<-1>
 {
-  private:
-    /** Is it a "true" container or a wrapper ?
-     *  ref_ should be @c false if this own its own data, @c true otherwise.
-     **/
-    mutable bool ref_;
-
   protected:
     /** Default constructor We have to specify the member ref_.
      *  @param ref : false if this own its own data.
@@ -97,6 +89,12 @@ struct TRef<-1>
      *  @param ref : false if this own its own data.
      **/
     inline void setRef(bool ref) const { ref_ = ref;}
+
+  private:
+    /** Is it a "true" container or a wrapper ?
+     *  ref_ should be @c false if this own its own data, @c true otherwise.
+     **/
+    mutable bool ref_;
 };
 
 /** @ingroup Arrays backward compatibility */

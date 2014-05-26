@@ -34,7 +34,7 @@
  *  @brief In this file we test the Normal and MultiNormal classes.
  **/
 
-#include "../include/STKpp.h"
+#include "../../include/STKpp.h"
 
 using namespace STK;
 

@@ -70,6 +70,24 @@ class CategoricalParametersBase : public IMultiParameters<Parameters>
   public:
     /** @return the j-th probability value of the l-th modality */
     inline Real proba(int j, int l) const {return this->asDerived().probaImpl(j, l);}
+    /** @return the j-th probability distribution */
+    inline Array2DVector<Real> const& proba(int j) const {return this->asDerived().probaImpl(j);}
+
+    /** compute the log Likelihood of an observation.
+     *  @param rowData the observation
+     **/
+    template<class RowVector>
+    Real computeLnLikelihood( RowVector const& rowData) const
+    {
+      Real sum =0.;
+      for (Integer j= rowData.firstIdx(); j <= rowData.lastIdx(); ++j)
+      {
+        Real prob = proba(j, rowData[j]);
+        if (prob <= 0.) return -Arithmetic<Real>::infinity();
+        sum += std::log(prob);
+      }
+      return sum;
+    }
 };
 
 /** @ingroup Clustering
@@ -84,8 +102,7 @@ class Categorical_pjkParameters: public CategoricalParametersBase<Categorical_pj
     /** constructor with specified range
      *  @param range the range of the variables
      **/
-    inline Categorical_pjkParameters( Range const& range)
-                                    : Base(range), proba_(range, 1./Real(range.size())) {}
+    inline Categorical_pjkParameters( Range const& range): Base(range), proba_(range) {}
     /** copy constructor.
      * @param param the parameters to copy.
      **/
@@ -94,27 +111,28 @@ class Categorical_pjkParameters: public CategoricalParametersBase<Categorical_pj
     {}
     /** destructor */
     inline ~Categorical_pjkParameters() {}
-    /** @return the j-th probability value */
+    /** @return the j-th probability value of the l-th modality */
     inline Real probaImpl(int j, int l) const {return proba_[j][l];}
+    /** @return the j-th probability distribution */
+    inline Array2DVector<Real> const& probaImpl(int j) const { return proba_[j];}
     /** resize the set of parameter
      *  @param range range of the parameters
      **/
-    inline void resizeImpl(Range const& range)
-    { proba_.resize(range);}
+    inline void resizeImpl(Range const& range) { proba_.resize(range);}
     /** print the parameters.
      *  @param os the output stream for the parameters
      **/
     inline void printImpl(ostream &os) { os << proba_ << _T("\n");}
     /** Array of the probabilities */
-    Array2DPoint< Array2DVector<Real> > proba_;
-    /** utility fonction allowing to resize the probability vector with with a
+    Array1D< Array2DVector<Real> > proba_;
+    /** utility fonction allowing to resize the probability vector with a
      *  given Range for the modalities.
      *  @param rangeMod the range of the modalities of the categorical distribution
      **/
     inline void initializeParameters(Range const& rangeMod)
     {
       for(int j=proba_.firstIdx(); j<= proba_.lastIdx(); j++)
-      { proba_[j].resize(rangeMod);}
+      { proba_[j].resize(rangeMod); proba_[j] = 1./rangeMod.size();}
     }
 };
 
@@ -130,9 +148,7 @@ class Categorical_pkParameters: public CategoricalParametersBase<Categorical_pkP
     /** constructor with specified range
      *  @param range the range of the variables
      **/
-    inline Categorical_pkParameters( Range const& range)
-                                   : Base(range), proba_(1./Real(range.size()))
-    {}
+    inline Categorical_pkParameters( Range const& range): Base(range), proba_(){}
     /** copy constructor.
      * @param param the parameters to copy.
      **/
@@ -141,8 +157,10 @@ class Categorical_pkParameters: public CategoricalParametersBase<Categorical_pkP
     {}
     /** destructor */
     inline ~Categorical_pkParameters() {}
-    /** @return the j-th proba value */
+    /** @return the j-th probability value of the l-th modality (does not depend of j) */
     inline Real probaImpl(int j, int l) const { return proba_[l];}
+    /** @return the j-th probability distribution (does not depend of j) */
+    inline Array2DVector<Real> const& probaImpl(int j) const {return proba_;}
     /** resize the set of parameter
      *  @param range range of the parameters
      **/
@@ -151,14 +169,14 @@ class Categorical_pkParameters: public CategoricalParametersBase<Categorical_pkP
      *  @param os the output stream for the parameters
      **/
     inline void printImpl(ostream &os) { os << proba_ << _T("\n");}
-    /** probability of each model */
+    /** probabilities of each modalities */
     Array2DVector<Real> proba_;
     /** utility fonction allowing to resize the probability vector with a
      *  given Range for the modalities.
-     *  @param rangeMod the range of the modalities of the categorical distribution
+     *  @param rangeMod the range of modalities of the categorical distribution
      **/
     inline void initializeParameters(Range const& rangeMod)
-    { proba_.resize(rangeMod);}
+    { proba_.resize(rangeMod); proba_ = 1./rangeMod.size();}
 };
 
 } // namespace STK

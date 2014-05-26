@@ -37,7 +37,6 @@
 #define STK_ALLOCATORBASE_H
 
 #include "../../STKernel/include/STK_Range.h"
-#include "../../STKernel/include/STK_Exceptions.h"
 
 #include "../../Sdk/include/STK_Macros.h"
 

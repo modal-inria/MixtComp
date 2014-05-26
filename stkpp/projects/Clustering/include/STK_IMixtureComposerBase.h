@@ -125,7 +125,7 @@ class IMixtureComposerBase : public IModelBase
     /** @return the state of the model*/
     inline Clust::modelState state() const { return state_;}
     /** @return the proportions of each mixtures */
-    inline CArrayPoint<Real> const* p_prop() const { return &prop_;};
+    inline CArrayPoint<Real> const* p_pk() const { return &prop_;};
     /** @return the tik probabilities */
     inline Array2D<Real> const* p_tik() const { return &tik_;};
     /** @return  the zi class label */

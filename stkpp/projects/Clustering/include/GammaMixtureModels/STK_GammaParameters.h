@@ -42,7 +42,7 @@
 #include "../../../Arrays/include/STK_Const_Arrays.h"
 #include "../../../Arrays/include/STK_Display.h"
 #include "../../../StatModels/include/STK_IMultiParameters.h"
-#include "../../../StatModels/include/STK_JointGammaParameters.h"
+#include "../../../STatistiK/include/STK_Law_Gamma.h"
 
 namespace STK
 {
@@ -54,8 +54,7 @@ template<class Parameters>
 class GammaParametersBase : public IMultiParameters<Parameters>
 {
   protected:
-  typedef IMultiParameters<Parameters> Base;
-
+    typedef IMultiParameters<Parameters> Base;
     /** default constructor.*/
     inline GammaParametersBase(): Base() {}
     /** constructor with specified range
@@ -70,7 +69,6 @@ class GammaParametersBase : public IMultiParameters<Parameters>
     {}
     /** Declassor */
     inline ~GammaParametersBase() {}
-
   public:
     /** @return the j-th shape value */
     inline Real shape(int j) const {return this->asDerived().shapeImpl(j);}
@@ -82,6 +80,17 @@ class GammaParametersBase : public IMultiParameters<Parameters>
     Array2DPoint<Real> meanLog_;
     /** vector of the variance of the observations */
     Array2DPoint<Real> variance_;
+    /** compute the log Likelihood of an observation.
+     *  @param rowData the observation
+     **/
+    template<class RowVector>
+    Real computeLnLikelihood( RowVector const& rowData) const
+    {
+      Real sum =0.;
+      for (Integer j= rowData.firstIdx(); j <= rowData.lastIdx(); ++j)
+      { sum += Law::Gamma::lpdf(rowData[j], shape(j), scale(j));}
+      return sum;
+    }
 };
 
 

@@ -81,17 +81,6 @@ struct DataBridge
   int const& nbVariable() const { return nbVariable_;}
   /** getter. @return the coordinates of the missing values in the data set */
   std::vector<std::pair<int,int> > const& v_missing() const { return v_missing_;}
-  /** utility function for lookup the data set and find missing values
-   *  coordinates. */
-  void findMissing()
-  {
-    for (int j=m_dataij_.firstIdxCols(); j<= m_dataij_.lastIdxCols(); ++j)
-      for (int i=m_dataij_.firstIdxRows(); i<= m_dataij_.lastIdxRows(); ++i)
-      {
-        if (Arithmetic<Type>::isNA(m_dataij_(i,j)))
-        { v_missing_.push_back(std::pair<int,int>(i,j));}
-      }
-  }
 
   /** This function will be defined to set the data into the data containers.
    *  To facilitate data handling, framework provide a MixtureManager and
@@ -102,16 +91,89 @@ struct DataBridge
    {
      p_manager->getData(idName, m_dataij_, nbVariable_ );
      findMissing();
+     removeMissing();
    }
    /** data set */
    Data m_dataij_;
 
   private:
-    /** number of variables in the data set */
-    int nbVariable_;
-    /** vector with the coordinates of the missing values */
-    std::vector<std::pair<int,int> > v_missing_;
+   /** utility function for lookup the data set and find missing values
+    *  coordinates. */
+   void findMissing()
+   {
+     for (int j=m_dataij_.firstIdxCols(); j<= m_dataij_.lastIdxCols(); ++j)
+       for (int i=m_dataij_.firstIdxRows(); i<= m_dataij_.lastIdxRows(); ++i)
+       {
+         if (Arithmetic<Type>::isNA(m_dataij_(i,j)))
+         { v_missing_.push_back(std::pair<int,int>(i,j));}
+       }
+   }
+   /** utility function for lookup the data set and remove the missing values.*/
+   void removeMissing()
+   {
+     typedef std::vector<std::pair<int,int> >::const_iterator ConstIterator;
+     Type value = Type();
+     int j, old_j = UnknownSize;
+     for(ConstIterator it = v_missing_.begin(); it!= v_missing_.end(); ++it)
+     {
+        j = it->second; // get column
+        if (j!=old_j)
+        {
+          old_j =j;
+          value = safeValue(j);
+        }
+        m_dataij_(it->first, it->second) = value;
+      }
+   }
+   /** number of variables in the data set */
+   int nbVariable_;
+   /** vector with the coordinates of the missing values */
+   std::vector<std::pair<int,int> > v_missing_;
+   /** @return a safe value for the jth variable
+    *  @param j index of the column with the safe value needed
+    **/
+   inline Real safeValue( int j) const;
+
 };
+
+template<int Id>
+inline Real DataBridge<Id>::safeValue( int j) const
+{ return m_dataij_.col(j).safe().mean();}
+
+template<>
+inline Real DataBridge<Clust::Gamma_ajk_bj_>::safeValue( int j) const
+{ return m_dataij_.col(j).safe(1).mean();}
+
+template<>
+inline Real DataBridge<Clust::Gamma_ajk_bjk_>::safeValue( int j) const
+{ return m_dataij_.col(j).safe(1).mean();}
+template<>
+inline Real DataBridge<Clust::Categorical_pjk_>::safeValue( int j) const
+{
+ int lmin = m_dataij_.col(j).safe().minElt(), lmax = m_dataij_.col(j).safe().maxElt();
+ Array2DVector<int> count(Range(lmin, lmax, 0), 0);
+ for (int i= m_dataij_.firstIdxRows(); i <= m_dataij_.lastIdxRows(); ++i)
+ {
+   if (Arithmetic<int>::isFinite(m_dataij_(i,j)))
+     count[m_dataij_(i,j)]++;
+ }
+ int l; count.maxElt(l);
+ return l;
+}
+template<>
+inline Real DataBridge<Clust::Categorical_pk_>::safeValue( int j) const
+{
+ int lmin = m_dataij_.col(j).safe().minElt(), lmax = m_dataij_.col(j).safe().maxElt();
+ Array2DVector<int> count(Range(lmin, lmax, 0), 0);
+ for (int i= m_dataij_.firstIdxRows(); i <= m_dataij_.lastIdxRows(); ++i)
+ {
+   if (Arithmetic<int>::isFinite(m_dataij_(i,j)))
+     count[m_dataij_(i,j)]++;
+ }
+ int l; count.maxElt(l);
+ return l;
+}
+
 
 } // namespace STK
 

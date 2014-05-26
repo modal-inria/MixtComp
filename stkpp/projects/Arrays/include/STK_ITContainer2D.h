@@ -29,7 +29,12 @@
  **/
 
 /** @file STK_ITContainer2D.h
- *  @brief In this file we define the Interface classes ITContainer.
+ *  @brief This is an internal header file, included by other
+ *  Containers library headers.
+ *
+ *  You should not attempt to use it directly but rather used one of the
+ *  derived class like Array2D, except if you want to create your own
+ *  Container Class.
  **/
 
 #ifndef STK_ITCONTAINER2D_H
@@ -37,8 +42,6 @@
 
 #include "../../Sdk/include/STK_Macros.h"
 #include "../../Sdk/include/STK_IRecursiveTemplate.h"
-
-#include "../../STKernel/include/STK_Range.h"
 
 #include "STK_Traits.h"
 

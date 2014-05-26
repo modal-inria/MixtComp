@@ -35,11 +35,6 @@
  **/
 
 #include "StrategiesUtil.h"
-#include "../../include/StatModels.h"
-#include "../../include/STatistiK.h"
-#include "../../include/DManager.h"
-
-#include "../../projects/Clustering/include/STK_MixtureInit.h"
 
 using namespace STK;
 

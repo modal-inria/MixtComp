@@ -36,6 +36,7 @@
 #define STK_GAMMA_AJK_BJIMPL_H
 
 #include "../../../STatistiK/include/STK_Stat_UnivariateReal.h"
+#include "../../../STatistiK/include/STK_Stat_Functors.h"
 #include "../../../Analysis/include/STK_Algo_FindZero.h"
 #include "../../../Analysis/include/STK_Funct_raw.h"
 
@@ -74,12 +75,12 @@ class dlgamma_ajk_bj : public IFunction<dlgamma_ajk_bj >
 template<class Array>
 struct MixtureModelImpl<  Array, Gamma_ajk_bj_Parameters >
 {
-  typedef GammaComponent<Array, Gamma_ajk_bj_Parameters> Component;
+  typedef MixtureComponent<Array, Gamma_ajk_bj_Parameters> Component;
   typedef Gamma_ajk_bj_Parameters Parameters;
   typedef typename Array::Col ColVector;
 
   // run mStep
-  static void mStep(Array1D< Component* >& components, Array2D<Real> const* p_tik)
+  static void mStep(Array1D< Component* >& components, Array2D<Real> const* p_tik, Array const* p_dataij)
   {
     // start estimations of the ajk and bj
     Real delta;
@@ -88,11 +89,11 @@ struct MixtureModelImpl<  Array, Gamma_ajk_bj_Parameters >
     {
       delta = 0.; iter++;
       // compute ajk
-      for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
+      for (int k= baseIdx; k <= p_tik->lastIdxCols(); ++k)
       {
-        Gamma_ajk_bj_Parameters* paramk = components[k]->p_param();
-        Array const* p_data = components[k]->p_data();
-        for (int j=p_data->firstIdxCols(); j<=p_data->lastIdxCols(); ++j)
+        Parameters* paramk = components[k]->p_param();
+        //Array const* p_dataij = components[k]->p_dataij();
+        for (int j=p_dataij->firstIdxCols(); j<=p_dataij->lastIdxCols(); ++j)
         {
           Real start1 = (paramk->mean_[j]*paramk->mean_[j]) / paramk->variance_[j]; // moment estimator
           if ((start1 <=0.) || (Arithmetic<Real>::isNA(start1))) throw Clust::mStepFail_;
@@ -103,11 +104,11 @@ struct MixtureModelImpl<  Array, Gamma_ajk_bj_Parameters >
           if (!Arithmetic<Real>::isFinite(a))
           {
 #ifdef STK_MIXTURE_DEBUG
-stk_cout << "ML estimation failed in MixtureModelImpl< Array, Gamma_ajk_bj_Parameters >::mStep()\n";
-stk_cout << "start1 =" << start1 << _T("\n";);
-stk_cout << "f(start1) =" << funct(start1) << _T("\n";);
-stk_cout << "start2 =" << start2 << _T("\n";);
-stk_cout << "f(start2) =" << funct(start2) << _T("\n";);
+  stk_cout << _T("ML estimation failed in MixtureModelImpl< Array, Gamma_ajk_bj_Parameters >::mStep()\n");
+  stk_cout << "start1 =" << start1 << _T("\n";);
+  stk_cout << "f(start1) =" << funct(start1) << _T("\n";);
+  stk_cout << "start2 =" << start2 << _T("\n";);
+  stk_cout << "f(start2) =" << funct(start2) << _T("\n";);
 #endif
               paramk->shape_[j] = start1; // use moment estimator
           }
@@ -115,23 +116,20 @@ stk_cout << "f(start2) =" << funct(start2) << _T("\n";);
         }
       }
       // compute bj
-      Array2DPoint<Real> tk(p_tik->cols());
-      for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
-      { tk[k]    = p_tik->col(k).sum();}
-      Array const* p_data = components.front()->p_data();
-      Gamma_ajk_bj_Parameters* paramk = components.front()->p_param();
-      for (int j=p_data->firstIdxCols(); j<=p_data->lastIdxCols(); ++j)
+      Array2DPoint<Real> tk = Stat::sum(*p_tik);
+      Array2DPoint<Real>* p_scale = components.front()->p_param()->p_scale_;
+      for (int j=p_dataij->firstIdxCols(); j<=p_dataij->lastIdxCols(); ++j)
       {
         Array2DPoint<Real> meank(p_tik->cols()), ak(p_tik->cols());
-        for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
+        for (int k= baseIdx; k <= p_tik->lastIdxCols(); ++k)
         {
           ak[k]    = components[k]->p_param()->shape_[j];
           meank[k] = components[k]->p_param()->mean_[j];
         }
         Real b = tk.dot(meank)/tk.dot(ak);
         if (!Arithmetic<Real>::isFinite(b)) { throw Clust::mStepFail_;}
-        delta = std::max(delta, std::abs(b - paramk->p_scale_->elt(j)));
-        paramk->p_scale_->elt(j) = b;
+        delta = std::max(delta, std::abs(b - p_scale->elt(j)));
+        p_scale->elt(j) = b;
       }
     }
     while((delta > 1.e-08) && (iter < MAXITER));
@@ -144,12 +142,6 @@ stk_cout << "f(start2) =" << funct(start2) << _T("\n";);
     }
 #endif
   }
-
-  /** random initialization of the parameters. */
-  static void randomInit(Array1D< Component* >& components)
-  {
-  }
-
 };
 
 }  // namespace STK

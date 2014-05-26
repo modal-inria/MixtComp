@@ -48,12 +48,14 @@ LIB_DIR = ../../lib/
 # source files
 #
 CPP_SRCS = \
+	SimulUtil.cpp \
 	StrategiesUtil.cpp
 
 TEST_SRCS = \
 	testDataHandler.cpp \
 	testGammaMixtureModels.cpp \
 	testGaussianMixtureModels.cpp \
+	testCategoricalMixtureModels.cpp \
 	testComposer.cpp
 
 ## library name
@@ -72,27 +74,27 @@ TEST_PROGS = $(TEST_SRCS:%.cpp=$(BIN_DIR)%)
 #-----------------------------------------------------------------------
 # Targets
 #
-.PHONY: all obj testCsv
+.PHONY: all obj progs
 all: obj progs
 
-obj: $(CXX_OBJS) $(CXX_SRCS)  $(TEST_SRCS)
+obj: $(CXX_OBJS) $(CXX_SRCS) $(TEST_SRCS)
 progs: $(TEST_PROGS)
 
 #-----------------------------------------------------------------------
 # Objects compilation rules
 #
-$(BIN_DIR)%.o: %.cpp
+$(BIN_DIR)%.o: %.cpp 
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # program compilation rules
 #
-$(BIN_DIR)test%: makefile
-$(BIN_DIR)test%: $(BIN_DIR)test%.o $(CXX_LIB) $(CXX_OBJS) $(CXX_SRCS)  $(TEST_SRCS)
+$(BIN_DIR)test%: $(BIN_DIR)test%.o test%.cpp $(CXX_LIB) makefile
 	$(CXX)  $< $(LDFLAGS) $(CXX_OBJS) $(CXX_LIB) $(LDLIBS) -o $@ 
 
 #-----------------------------------------------------------------------
 # clean test programs 
+.PHONY: clean
 clean:
 	$(RM) $(BIN_DIR)test*
 

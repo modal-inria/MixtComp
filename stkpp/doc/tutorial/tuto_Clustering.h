@@ -57,8 +57,8 @@
  *
  * @section ClusterImplementation Classes and static functions to implement
  *
- * When implementing a mixture model, there is imperatively three classes
- * (the Parameter, the Component and the %Model) to implement. In a model, it is
+ * When implementing a mixture model, there is imperatively two classes
+ * (the Parameter and the %Model) to implement. In a model, it is
  * required to implement the following methods:
  * @code
  *  void initializeStep();
@@ -66,7 +66,6 @@
  *  void mStep();
  *  Real impute(int i, int j) const;
  *  Real sample(int i, int j) const;
- *  Real safeValue(int j) const;
  *  void getParameters(Array2D<Real>& params) const;
  *  void writeParameters(ostream& os) const;
  *  int computeNbFreeParameters() const;
@@ -91,6 +90,11 @@
  * @code
  *   void resizeImpl(Range const& range);
  *   void printImpl(ostream &os);
+ * @endcode
+ * and by the @c STK::MixutureComponent class it implements the templated method
+ * @code
+ *  template<class RowVector>
+ *  Real computeLnLikelihood( RowVector const& rowData) const
  * @endcode
  *
  * The method @c resizeImpl have to resize the containers of the parameters
@@ -170,44 +174,9 @@
  * will experiment an unexpected behavior.
  *
  *
- * @section ComponentClass Implementing the Component class
- *
- * The second mandatory class to create is a Component class deriving from
- * @ref STK::IMixtureComponent. There is a Component object created for the @e K
- * components of the model. The Component have only to implement the pure virtual
- * function
- * @code
- *   virtual Real computeLnLikelihood( RowVector const& rowData) const;
- * @endcode
- * and should be independent of the way the parameters are stored. Remember that
- * a component is essentially a multidimensional density.
- *
- * For all the diagonal Gaussian models, we have a single component class
- * @code
- * template <class _Array, class _Parameters>
- * class DiagGaussianComponent : public IMixtureComponent< _Array, _Parameters >
- * {
- *   ...
- *     inline DiagGaussianComponent* clone() const { return new DiagGaussianComponent(*this);};
- *     virtual Real computeLnLikelihood( RowVector const& rowData) const
- *     {
- *       Real sum =0.;
- *       for (Integer j= rowData.firstIdx(); j <= rowData.lastIdx(); ++j)
- *       { sum += Law::Normal::lpdf(rowData[j], p_param()->mean(j), p_param()->sigma(j));}
- *       return sum;
- *     }
- * };
- * @endcode
- *
- * @note the component does not need to know the underlying model. It uses only the
- * base class methods @c mean(j) and @c sigma(j).
- *
- * @sa STK_DiagGaussianComponent.h
- *
- *
  * @section ModelClass Implementing the Model class
  *
- * The third mandatory class to implement is the Model class itself. It have to
+ * The second mandatory class to implement is the Model class itself. It have to
  * derive (recursively) from the @ref STK::IMixtureModel class.
  *
  * At an intermediary step, we create the base class STK::DiagGaussianBase
@@ -221,7 +190,6 @@
  * @code
  *  Real impute(int i, int j) const;
  *  Real sample(int i, int j) const;
- *  Real safeValue(int j) const;
  *  void getParameters(Array2D<Real>& params) const;
  *  void writeParameters(ostream& os) const;
  * @endcode
@@ -259,7 +227,7 @@
  *   virtual void initializeModel()
  *   {
  *     Base::initializeModel();
- *     for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+ *     for (int k= baseIdx; k <= components().lastIdx(); ++k)
  *     { components()[k]->p_param()->p_sigma_ = &sigma_;}
  *   }
  *   void initializeStep();
@@ -274,7 +242,7 @@
  * @endcode
  *
  * @warning When there is shared parameters in the model, the model have to share
- * them between the parameters components.
+ * them between the parameters.
  *
  * @sa STK_Gaussian_s.h
  *

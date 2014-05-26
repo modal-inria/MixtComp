@@ -74,23 +74,17 @@ template<class Array>
 struct MixtureModelImpl< Array, Gamma_ajk_bjk_Parameters >
 {
   typedef Gamma_ajk_bjk_Parameters Parameters;
-  typedef GammaComponent<Array, Parameters> Component;
+  typedef MixtureComponent<Array, Parameters> Component;
   typedef typename Array::Col ColVector;
 
   /** run mStep */
-  static void mStep(Array1D< Component* >& components, Array2D<Real> const* p_tik)
+  static void mStep(Array1D< Component* >& components, Array2D<Real> const* p_tik, Array const* p_data)
   {
-    if (components.size() <= 0) return;
-    // estimate the moments
-    try
-    { GammaUtil<Component>::moments(components, p_tik);}
-    catch (Clust::exceptions const & e)
-    { throw e;}
     // estimate a and b
-    for (int k= p_tik->firstIdxCols(); k <= p_tik->lastIdxCols(); ++k)
+    for (int k= baseIdx; k <= p_tik->lastIdxCols(); ++k)
     {
       Gamma_ajk_bjk_Parameters* paramk = components[k]->p_param();
-      Array const* p_data = components[k]->p_data();
+      //Array const* p_data = components[k]->p_data();
       ColVector tik(p_tik->col(k), true); // create a reference
 
       for (int j=p_data->firstIdxCols(); j<=p_data->lastIdxCols(); ++j)
@@ -104,11 +98,11 @@ struct MixtureModelImpl< Array, Gamma_ajk_bjk_Parameters >
         if (!Arithmetic<Real>::isFinite(a))
         {
 #ifdef STK_MIXTURE_DEBUG
-stk_cout << "ML estimation failed in MixtureModelImpl< Array, Gamma_ajk_bjk_Parameters >::mStep()\n";
-stk_cout << "start1 =" << start1 << _T("\n";);
-stk_cout << "f(start1) =" << funct(start1) << _T("\n";);
-stk_cout << "start2 =" << start2 << _T("\n";);
-stk_cout << "f(start2) =" << funct(start2) << _T("\n";);
+  stk_cout << "ML estimation failed in MixtureModelImpl< Array, Gamma_ajk_bjk_Parameters >::mStep()\n";
+  stk_cout << "start1 =" << start1 << _T("\n";);
+  stk_cout << "f(start1) =" << funct(start1) << _T("\n";);
+  stk_cout << "start2 =" << start2 << _T("\n";);
+  stk_cout << "f(start2) =" << funct(start2) << _T("\n";);
 #endif
           a = start1; // use moment estimator
         }
@@ -119,9 +113,6 @@ stk_cout << "f(start2) =" << funct(start2) << _T("\n";);
       }
     }
   }
-  /** compute the random initialization of the parameters */
-  static void randomInit(Array1D< Component* >& components_)
-  {}
 };
 
 }  // namespace STK

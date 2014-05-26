@@ -33,14 +33,11 @@
  **/
 
 //  Matrix QtQ, Qt;
-//  transpose(qr3.Q(), Qt);
 //  QtQ.resize(qr3.Q().cols(), qr3.Q().cols());
-//  mult(QtQ, Qt, qr3.Q());
 //  stk_cout << _T(" Q'Q= \n");
 //  stk_cout << QtQ << _T("\n" ;
 //
 //  QtQ.resize(qr3.Q().rows(), qr3.Q().rows());
-//  mult(QtQ, qr3.Q(), Qt);
 //  stk_cout << _T(" QQ'= \n");
 //  stk_cout << QtQ << _T("\n" ;
 
@@ -79,7 +76,7 @@ void writeResult( const Qr& q, bool verbose = false)
   //q.compQ();
   if (q.isCompQ())
   { // Q is formed, we can compute QR directly
-    QxR.move(mult(q.Q(), q.R()));
+    QxR = q.Q() * q.R();
   }
   else
   { // apply leftHousolder transformation to R

@@ -78,7 +78,6 @@ bool DataHandler::readDataFromCsvFile(std::string const& datafile, std::string d
     return false;
   }
   // parse descriptor file
-  std::pair<InfoMap::iterator,bool> ret;
   int firstRow = rwdesc.firstIdxRows();
   for (int j=rwdesc.firstIdxCols(); j<= rwdesc.lastIdxCols(); j++)
   {

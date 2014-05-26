@@ -14,8 +14,8 @@ int main(int argc, char** argv)
   std::cout << "a=\n" << a;
   // create a matrix of Real of fixed size (3,4)
   CArray<Real, 3, 4> c; c << 1.,2.,3.,4.
-                                            , 1.,2.,3.,4.
-                                            , 1.,1.,1.,1.;
+                           , 1.,2.,3.,4.
+                           , 1.,1.,1.,1.;
   // create a reference
   CArrayVector<Real, 3> d(c.col(1), true);
   d = -1.;

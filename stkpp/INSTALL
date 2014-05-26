@@ -29,13 +29,12 @@ Configure options
    ./configure -DCMAKE_BUILD_TYPE=Debug
 
  * stkpp options:
-   ./configure -DZERO_BASED_ARRAYS=ON : the first index of the arrays will start at 0 (default is 1 like in Fortran)
+   ./configure -DZERO_BASED_ARRAYS=OFF : the first index of the arrays will not start at 0 (the default)
    ./configure -DREAL_ARE_FLOAT=ON : will use float rather than double as real representation
 
-example: build a Release version with 0 based Arrays
+example: build a Release version with 1 based Arrays
 -------
-
-./configure -DSTKBASEARRAYS=0 -DCMAKE_BUILD_TYPE=Release
+./configure -DZERO_BASED_ARRAYS=OFF -DCMAKE_BUILD_TYPE=Release
 make
 make cdoc
 make ctest
@@ -79,6 +78,20 @@ if you want to make the manual, issue the following command:
 	doxygen Doxyfile
 
 The documentation can be browse in the directory doc/html.
+
+Linking to stkpp:
+-----------------
+
+The directory lib/ contain the library libSTKpp. You can also include
+all the headers using the directive
+#include "stkpp/include/STKpp.h"
+
+You can also, at your convenience, add only the headers of the projects you
+need to use.
+
+Allmost of the class in STK++ are templated thus, use the same macro in your
+project. In particular the flag -DSTKBASEARRAYS=1 if you disable the ZERO_BASE_ARRAY
+option and -DSTKREALAREFLOAT if you compile stk++ in float.
 
  
 == PREREQUISITIES ==

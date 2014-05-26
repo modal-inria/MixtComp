@@ -235,7 +235,7 @@ class Variable : public IVariable
     }
     /** encode values as ints. Not used yet. */
     void encode()
-    { int code = STKBASEARRAYS;
+    { int code = baseIdx;
       std::pair< typename std::map<Type, int>::iterator, bool> ret;
       for (int i=this->firstIdx(); i<= this->lastIdx(); i++)
       { ret=coding_.insert(std::pair<Type, int>(this->elt(i), i));

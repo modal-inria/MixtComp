@@ -36,7 +36,6 @@
 #define STK_GAUSSIAN_S_H
 
 #include "STK_DiagGaussianBase.h"
-#include "STK_GaussianUtil.h"
 
 namespace STK
 {
@@ -53,7 +52,7 @@ struct MixtureModelTraits< Gaussian_s<_Array> >
 {
   typedef _Array Array;
   typedef Gaussian_s_Parameters Parameters;
-  typedef DiagGaussianComponent<_Array, Parameters> Component;
+  typedef MixtureComponent<_Array, Parameters> Component;
   typedef Real ParamInfo;
 };
 
@@ -99,7 +98,7 @@ class Gaussian_s : public DiagGaussianBase<Gaussian_s<Array> >
     {
       Base::initializeModel();
       sigma_ = 1.0;
-      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+      for (int k= baseIdx; k <= components().lastIdx(); ++k)
       { components()[k]->p_param()->p_sigma_ = &sigma_;}
     }
     /** Compute the inital weighted mean and the initial common variance. */
@@ -123,9 +122,9 @@ class Gaussian_s : public DiagGaussianBase<Gaussian_s<Array> >
 template<class Array>
 void Gaussian_s<Array>::initializeStep()
 {
-  GaussianUtil<Component>::initialMean(components(), p_tik());
+    this->initialMean();
   Real variance = 0.0;
-  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
   {
     variance += ( p_tik()->col(k).transpose()
                  *(*p_data() - (Const::Vector<Real>(p_data()->rows()) * p_param(k)->mean_)
@@ -143,7 +142,7 @@ void Gaussian_s<Array>::initializeStep()
 template<class Array>
 void Gaussian_s<Array>::randomInit()
 {
-  GaussianUtil<Component>::randomMean(components());
+  this->randomMean();
   sigma_ = 1.;
 }
 
@@ -152,9 +151,9 @@ template<class Array>
 void Gaussian_s<Array>::mStep()
 {
   // compute the means
-  GaussianUtil<Component>::updateMean(components(), p_tik());
+  this->updateMean();
   Real variance = 0.0;
-  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
   {
     variance += ( p_tik()->col(k).transpose()
                  * (*p_data() - (Const::Vector<Real>(p_data()->rows()) * p_param(k)->mean_)

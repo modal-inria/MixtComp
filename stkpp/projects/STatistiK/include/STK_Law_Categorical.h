@@ -70,7 +70,15 @@ class Categorical: public IUnivLaw<int>
 {
   public:
     typedef IUnivLaw<int> Base;
-    /** Default constructor.
+    /** Default constructor. Only one category */
+    inline Categorical() : Base(_T("Categorical")), prob_(1,1) { computeCumProb();}
+    /** constructor with given probabilities.
+     *  The probabilities will be normalized in order to have an overall sum of 1
+     *  @param prob probabilities of success in a Categorical trial
+     **/
+    Categorical(Array2DVector<Real> const& prob) : Base(_T("Categorical")), prob_(prob)
+    { computeCumProb();}
+    /** constructor with given probabilities.
      *  The probabilities will be normalized in order to have an overall sum of 1
      *  @param prob probabilities of success in a Categorical trial
      **/

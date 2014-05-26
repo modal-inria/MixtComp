@@ -77,7 +77,7 @@
 #include "../projects/Algebra/include/STK_GinvSymmetric.h"
 
 // the lapack classes
-#ifdef STK_USELAPACK
+#ifdef STKUSELAPACK
 #include "../projects/Algebra/include/STK_lapack_SymEigen.h"
 #endif
 #endif /*Algebra_H*/

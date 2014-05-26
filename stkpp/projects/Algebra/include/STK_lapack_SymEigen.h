@@ -43,7 +43,7 @@
 #include "../../Arrays/include/STK_CArraySquare.h"
 #include "../../Arrays/include/STK_CArrayVector.h"
 
-#ifdef STK_USELAPACK
+#ifdef STKUSELAPACK
 
 extern "C"
 {
@@ -60,7 +60,7 @@ extern void dsyevr_( char *, char *, char *, int *, double *, int *, double *,
 #endif
 }
 
-#endif // STK_USELAPACK
+#endif // STKUSELAPACK
 
 namespace STK
 {

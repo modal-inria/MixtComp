@@ -855,10 +855,10 @@ maxSafeByRow(Derived const& A, ExprBase<Weights> const& w)
 
 /** @ingroup StatDesc
  *  Compute the sum of A. If A is a row-vector or a
- *  column-vector then the function will return the usual mean of the vector.
+ *  column-vector then the function will return the usual sum of the vector.
  *  If A is a two-dimensional array, the function will return (by value) an
- *  Array2DPoint with the mean values of each columns.
- *  @sa STK::Stat::mean, STK::Stat::max, STK::Stat::variance, STK::Stat::varianceWithFixedMean, STK::Stat::min, STK::Stat::sum.
+ *  Array2DPoint with the sum of each columns.
+ *  @sa STK::Stat::mean, STK::Stat::max, STK::Stat::variance, STK::Stat::varianceWithFixedMean, STK::Stat::min
  *  @param A the data
  *  @return the mean(s) or NA if there is no available value
  **/
@@ -868,7 +868,7 @@ sum(Derived const& A)
 { return typename hidden::ApplyFunctorSelector<Derived, SumOp>::ColOp(A)();}
 template< class Derived>
 typename hidden::ApplyFunctorSelector<Derived, SumOp >::resultByRowType
-meanByRow(Derived const& A)
+sumByRow(Derived const& A)
 { return typename hidden::ApplyFunctorSelector<Derived, SumOp>::RowOp(A)();}
 
 /** @ingroup StatDesc

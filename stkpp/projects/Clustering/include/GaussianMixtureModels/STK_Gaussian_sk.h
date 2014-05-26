@@ -36,7 +36,6 @@
 #define STK_GAUSSIAN_SK_H
 
 #include "STK_DiagGaussianBase.h"
-#include "STK_GaussianUtil.h"
 
 namespace STK
 {
@@ -53,7 +52,7 @@ struct MixtureModelTraits< Gaussian_sk<_Array> >
 {
   typedef _Array Array;
   typedef Gaussian_sk_Parameters Parameters;
-  typedef DiagGaussianComponent<_Array, Parameters> Component;
+  typedef MixtureComponent<_Array, Parameters> Component;
 };
 
 } // namespace hidden
@@ -108,8 +107,8 @@ class Gaussian_sk : public DiagGaussianBase<Gaussian_sk<Array> >
 /** Initialize the parameters using mStep. */
 template<class Array>
 void Gaussian_sk<Array>::initializeStep()
-{ GaussianUtil<Component>::initialMean(components(), p_tik());
-  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+{ this->initialMean();
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
   {
     p_param(k)->sigma_
     = std::sqrt( (p_tik()->col(k).transpose()
@@ -127,8 +126,8 @@ void Gaussian_sk<Array>::initializeStep()
 template<class Array>
 void Gaussian_sk<Array>::randomInit()
 {
-  GaussianUtil<Component>::randomMean(components());
-  for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+  this->randomMean();
+  for (int k= baseIdx; k <= components().lastIdx(); ++k)
   { p_param(k)->sigma_ = 1.;}
 }
 
@@ -137,8 +136,8 @@ template<class Array>
 void Gaussian_sk<Array>::mStep()
 {
   // compute the means
-  GaussianUtil<Component>::updateMean(components(), p_tik());
-  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  this->updateMean();
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
   {
     p_param(k)->sigma_
     = sqrt( ( p_tik()->col(k).transpose()

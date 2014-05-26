@@ -36,9 +36,10 @@
 #define STK_DIAGGAUSSIANBASE_H
 
 #include "../STK_IMixtureModel.h"
-#include "STK_DiagGaussianComponent.h"
+#include "STK_DiagGaussianParameters.h"
 
 #include "../../../STatistiK/include/STK_Law_Categorical.h"
+#include "../../../STatistiK/include/STK_Law_Uniform.h"
 
 namespace STK
 {
@@ -52,6 +53,7 @@ class DiagGaussianBase : public IMixtureModel<Derived >
 {
   public:
     typedef IMixtureModel<Derived > Base;
+    typedef Array2D<Real>::Col ColVector;
 
     using Base::p_tik;
     using Base::p_data;
@@ -73,7 +75,7 @@ class DiagGaussianBase : public IMixtureModel<Derived >
     Real impute(int i, int j) const
     {
       Real sum = 0.;
-      for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+      for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
       { sum += p_tik()->elt(i,k) * p_param(k)->mean(j);}
       return sum;
     }
@@ -84,11 +86,6 @@ class DiagGaussianBase : public IMixtureModel<Derived >
       int k = Law::Categorical::rand(p_tik()->row(i));
       return Law::Normal::rand(p_param(k)->mean(j), p_param(k)->sigma(j));
     }
-    /** @return a safe value for the jth variable
-     *  @param j index of the column with the safe value needed
-     **/
-    inline Real safeValue(int j) const
-    { return this->p_data()->col(j).safe().mean();}
     /** get the parameters of the model
      *  @param params the parameters of the model
      **/
@@ -96,14 +93,13 @@ class DiagGaussianBase : public IMixtureModel<Derived >
     {
       int nbClust = this->nbCluster();
       params.resize(2*nbClust, p_data()->cols());
-      int firstId = params.firstIdxRows();
 
       for (int k= 0; k < nbClust; ++k)
       {
         for (int j=  p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
         {
-          params(2*k+  firstId, j) = p_param(k+firstId)->mean(j);
-          params(2*k+1+firstId, j) = p_param(k+firstId)->sigma(j);
+          params(2*k+  baseIdx, j) = p_param(k+baseIdx)->mean(j);
+          params(2*k+1+baseIdx, j) = p_param(k+baseIdx)->sigma(j);
         }
       }
     }
@@ -111,7 +107,7 @@ class DiagGaussianBase : public IMixtureModel<Derived >
     void writeParameters(ostream& os) const
     {
       Array2DPoint<Real> sigma(p_data()->cols());
-      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+      for (int k= baseIdx; k <= components().lastIdx(); ++k)
       {
         // store sigma values in an array for a nice output
         for (int j= sigma.firstIdx();  j <= sigma.lastIdx(); ++j)
@@ -121,8 +117,50 @@ class DiagGaussianBase : public IMixtureModel<Derived >
         stk_cout << _T("sigma = ")<< sigma;
       }
     }
+
+  protected:
+    /** sample randomly the mean of each component by sampling randomly a row
+     *  of the data set.
+     **/
+    void randomMean();
+    /** compute the initial weighted mean of a Gaussian mixture. */
+    void initialMean();
+    /** compute the weighted mean of a Gaussian mixture. */
+    void updateMean();
 };
 
+template<class Derived>
+void DiagGaussianBase<Derived>::randomMean()
+{
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+  {
+    // random number in [0, size[
+    int i = p_data()->firstIdxRows() + std::floor(Law::Uniform::rand(0.,1.)*this->nbSample());
+    p_param(k)->mean_.copy(p_data()->row(i));
+  }
+}
+
+template<class Derived>
+void DiagGaussianBase<Derived>::initialMean()
+{
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+  {
+    ColVector tik(p_tik()->col(k), true); // create a reference
+    p_param(k)->mean_ = Stat::mean(*p_data(), p_tik()->col(k));
+    if (p_param(k)->mean_.nbAvailableValues() != p_param(k)->mean_.size()) throw Clust::initializeStepFail_;
+  }
+}
+
+template<class Derived>
+void DiagGaussianBase<Derived>::updateMean()
+{
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+  {
+    ColVector tik(p_tik()->col(k), true); // create a reference
+    p_param(k)->mean_ = Stat::mean(*p_data(), tik);
+    if (p_param(k)->mean_.nbAvailableValues() != p_param(k)->mean_.size()) throw Clust::mStepFail_;
+  }
+}
 } // namespace STK
 
 #endif /* STK_DIAGGAUSSIANBASE_H */

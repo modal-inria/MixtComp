@@ -102,12 +102,10 @@ Type stringToType( String const& s)
  *  @see http://c.developpez.com/faq/cpp/?page=strings#STRINGS_convertform
  *
  *  @param t The value to convert to String
- *  @param f flags
+ *  @param f flag, by default write every number in decimal
  **/
 template <class Type>
-String typeToString( Type const& t
-                   , std::ios_base& (*f)(std::ios_base&) = std::dec
-                   )
+String typeToString( Type const& t, std::ios_base& (*f)(std::ios_base&) = std::dec)
 {
   ostringstream oss;
   oss << f << Proxy<Type>(t);

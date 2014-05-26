@@ -1,16 +1,18 @@
 # This variable has names of the tests source files without extension
 SET( TESTS_FILES
     testGammaMixtureModels
+    testCategoricalMixtureModels
     testGaussianMixtureModels
 )
 
 FILE( GLOB Util_Files
   StrategiesUtil.cpp
+  SimulUtil.cpp
  )
  
- ADD_LIBRARY(TestUtil OBJECT ${Util_Files})
+ADD_LIBRARY(TestUtil OBJECT ${Util_Files})
  
- # create sstktest library
+ # create stktest library
 ADD_LIBRARY(${LIBRARY_TEST}
 $<TARGET_OBJECTS:TestUtil>)
  

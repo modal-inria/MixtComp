@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
   R =  *(a_reg_unif.p_predicted()) - Y;
   Point mu;
 
-  mu.move(Stat::mean(R));
+  mu = (Stat::mean(R));
   stk_cout << "Mean of the predicted values - extrapolated values = \n";
   stk_cout << mu << _T("\n";);
   //
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
   Y.move(a_reg_period.extrapolate(x));
   R = *a_reg_period.p_predicted() - Y;
 
-  mu.move(Stat::mean(R));
+  mu = Stat::mean(R);
   //
   statResiduals.setData(*(a_reg_period.p_residuals()));
   statResiduals.run();
@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
    // test extrapolate
    Y.move(reg_unif.extrapolate(B));
    R = (*(reg_unif.p_predicted())) - Y;
-   mu.move(Stat::mean(R));
+   mu = Stat::mean(R);
    stk_cout << "Mean of the predicted values - extrapolated values = \n";
    stk_cout << mu << _T("\n";);
 
@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
    Y.move(reg_period.extrapolate(B));
    R = (*(reg_period.p_predicted())) - Y;
 
-   mu.move(Stat::mean(R));
+   mu = Stat::mean(R);
    stk_cout << "Mean of the predicted values - extrapolated values = \n";
    stk_cout << mu << _T("\n";);
 

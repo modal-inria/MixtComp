@@ -224,7 +224,7 @@ void LinearAAModel::simul( const Law::IUnivLaw<Real>& law
   stk_cout << _T("proj =") << proj;
 #endif
   // compute data
-  data.move(mult(data, multRightTranspose(proj)));
+  data = data * (proj * proj.transpose());
 
   // add noise to the model
   for (int j= data.firstIdxCols(); j<= data.lastIdxCols(); j++)

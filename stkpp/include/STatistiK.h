@@ -71,7 +71,10 @@
 // namespace Law
 // probabilities laws
 #include "../projects/STatistiK/include/STK_Law_Util.h"
+
 #include "../projects/STatistiK/include/STK_Law_Bernoulli.h"
+#include "../projects/STatistiK/include/STK_Law_Categorical.h"
+
 #include "../projects/STatistiK/include/STK_Law_Beta.h"
 #include "../projects/STatistiK/include/STK_Law_Cauchy.h"
 #include "../projects/STatistiK/include/STK_Law_Exponential.h"

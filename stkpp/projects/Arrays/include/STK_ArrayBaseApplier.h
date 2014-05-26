@@ -28,16 +28,14 @@
  * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  **/
 
-/** @file STK_ArrayBaseVisitor.h
- *  @brief In this file we define the ArrayBaseVisitor classes.
+/** @file STK_ArrayBaseApplier.h
+ *  @brief In this file we define the ArrayBaseApplier classes.
  **/
 
-#ifndef STK_ARRAYBASEVISITOR_H
-#define STK_ARRAYBASEVISITOR_H
+#ifndef STK_ARRAYBASEAPPLYER_H
+#define STK_ARRAYBASEAPPLYER_H
 
 #include "../../Sdk/include/STK_MetaTemplate.h"
-#include "../../STatistiK/include/STK_RandBase.h"
-#include "STK_Arrays_Util.h"
 
 #include "./visitors/STK_Visitors.h"
 
@@ -62,7 +60,7 @@ template<typename Derived>
 template<typename Visitor>
 void ArrayBase<Derived>::apply(Visitor& visitor)
 {
-  typedef hidden::ApplySelector<Visitor, Derived, structure_, sizeRows_, sizeCols_> Impl;
+  typedef typename hidden::VisitorSelector<Visitor, Derived>::Impl Impl;
   Impl::apply(this->asDerived(), visitor);
 }
 
@@ -111,19 +109,16 @@ void ArrayBase<Derived>::randGauss()
 
 
 /** @ingroup Arrays
- *  @brief Applies the visitor \a visitor to the whole elements of the matrix or
+ *  @brief Applies the visitor @a visitor to the whole elements of the matrix or
  *  vector.
   *
-  * The template parameter \a Visitor is the type of the visitor and provides
+  * The template parameter @a Visitor is the type of the visitor and provides
   * the following interface:
   * @code
   * struct MyVisitor {
   *   // called for all elements
   *   void operator() (Type& value, int i, int j);
   * };
-  * struct MyVisitor1D {
-  *   // called for all elements
-  *   void operator() (Type& value, int j);
   * };
   * @endcode
   * The value is modified by the Visitor.
@@ -132,22 +127,19 @@ void ArrayBase<Derived>::randGauss()
   * unrolling for small fixed size matrix.
   */
 template< typename Derived, typename Visitor>
-class ArrayBaseVisitor
+class ArrayBaseApplier
 {
   private:
     Derived& array_;
   public:
-    typedef typename hidden::ApplySelector< Visitor, Derived
-                                        , (Arrays::Structure)hidden::Traits<Derived>::structure_
-                                        , hidden::Traits<Derived>::sizeRows_
-                                        , hidden::Traits<Derived>::sizeCols_> Impl;
+    typedef typename hidden::VisitorSelector<Visitor, Derived>::Impl Impl;
 
-    ArrayBaseVisitor( Derived& T) : array_(T) { }
-    ~ArrayBaseVisitor() { }
+    ArrayBaseApplier( Derived& T) : array_(T) { }
+    ~ArrayBaseApplier() { }
     inline void apply(Visitor& funct) { Impl::apply(array_, funct);}
 };
 
 
 } // namespace STK
 
-#endif /* STK_ARRAYBASEVISITOR_H */
+#endif /* STK_ARRAYBASEAPPLYER_H */

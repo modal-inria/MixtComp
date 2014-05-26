@@ -511,7 +511,7 @@ bool Svd::diag( Point& D
         // Output : d1 contient F[k],
         //          d2 contient D[k+1],
         //          y  contient D[k]
-        Real cosinus, sinus;
+        Real cosinus=1., sinus=0.;
         Real d2 = D[k1];
         F[k-1] = (aux = norm(y,z));                            // F[k-1]
        // arbitrary rotation if y = z = 0.0

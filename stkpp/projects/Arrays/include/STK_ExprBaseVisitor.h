@@ -36,8 +36,7 @@
 #define STK_EXPRBASEVISITOR_H
 
 #include "../../Sdk/include/STK_MetaTemplate.h"
-#include "../../STatistiK/include/STK_RandBase.h"
-#include "STK_Arrays_Util.h"
+
 #include "./visitors/STK_Visitors.h"
 
 namespace STK
@@ -61,9 +60,23 @@ template<typename Derived>
 template<typename Visitor>
 void ExprBase<Derived>::visit(Visitor& visitor) const
 {
-  typedef hidden::VisitorSelector<Visitor, Derived, structure_, sizeRows_, sizeCols_> Impl;
+  typedef typename hidden::VisitorSelector<Visitor, Derived>::Impl Impl;
   Impl::run(this->asDerived(), visitor);
 }
+
+/* count the number of not-zero values in the expression */
+template<typename Derived>
+int const ExprBase<Derived>::count() const
+{
+  hidden::CountVisitor<Type> visitor;
+  visit(visitor);
+  return visitor.res_;
+}
+
+/* count the number values in the expression */
+template<typename Derived>
+int const ExprBase<Derived>::nbAvailableValues() const
+{ return isFinite().template cast<int>().sum();}
 
 
 template<typename Derived>
@@ -177,7 +190,6 @@ typename hidden::Traits<Derived>::Type const ExprBase<Derived>::maxEltSafe() con
 }
 
 
-
 /* sum the values of all the array */
 template<typename Derived>
 typename hidden::Traits<Derived>::Type const ExprBase<Derived>::sum() const
@@ -240,14 +252,6 @@ typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wvariance(ExprBa
   return (size >0) ?
     ((*this-(wsum(weights)/size)).square().wsum(weights)/size) : Arithmetic<Type>::NA();;
 }
-
-
-/* count the number values in the array */
-template<typename Derived>
-int const ExprBase<Derived>::nbAvailableValues() const
-{ return isFinite().template cast<int>().sum();}
-
-
 
 } // namespace STK
 

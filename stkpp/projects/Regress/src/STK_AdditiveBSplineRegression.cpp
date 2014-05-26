@@ -89,13 +89,8 @@ void AdditiveBSplineRegression::regression()
   // compute (X'X)^{-1}
   GinvSymmetric inv;
   inv(prod);
-
-  // compute X'Y
-  Matrix temp;
-  temp.move(multLeftTranspose(coefs_.coefficients(), p_y_->asDerived()));
-
   // compute (X'X)^{-1}X'Y
-  controlPoints_.move(mult(prod, temp));
+  controlPoints_ = prod * (coefs_.coefficients().transpose() *p_y_->asDerived()) ;
 }
 
 
@@ -116,7 +111,7 @@ void AdditiveBSplineRegression::regression(Vector const& weights)
   temp.move(wmultLeftTranspose(coefs_.coefficients(), p_y_->asDerived(), weights));
 
   // compute (X'X)^{-1}X'Y
-  controlPoints_.move(mult(prod, temp));
+  controlPoints_ = prod * temp;
 }
 
 /* Compute the predicted outputs by the regression function. */
@@ -125,7 +120,7 @@ void AdditiveBSplineRegression::prediction()
   // remove existing predictions if any (should not be the case)
   if (!p_predicted_) p_predicted_ = new Matrix;
   // compute predictions
-  p_predicted_->move(mult(coefs_.coefficients(), controlPoints_));
+  *p_predicted_ = coefs_.coefficients() * controlPoints_;
 }
 
 

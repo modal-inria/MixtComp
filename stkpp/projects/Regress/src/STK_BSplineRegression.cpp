@@ -70,12 +70,8 @@ void BSplineRegression::regression()
   GinvSymmetric inv;
   inv(prod);
 
-  // compute X'Y
-  Matrix temp;
-  temp.move(multLeftTranspose(coefs_.coefficients(), p_y_->asDerived()));
-
   // compute (X'X)^{-1}X'Y
-  controlPoints_.move(mult(prod, temp));
+  controlPoints_ = prod * (coefs_.coefficients().transpose() * p_y_->asDerived());
 }
 
 /* compute the regression function. */

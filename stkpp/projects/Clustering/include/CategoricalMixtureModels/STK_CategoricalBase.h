@@ -37,7 +37,7 @@
 #define STK_CATEGORICALBASE_H
 
 #include "../STK_IMixtureModel.h"
-#include "STK_CategoricalComponent.h"
+#include "STK_CategoricalParameters.h"
 
 #include "../../../STatistiK/include/STK_Law_Categorical.h"
 
@@ -52,19 +52,21 @@ class CategoricalBase : public IMixtureModel<Derived >
 {
   protected:
     typedef IMixtureModel<Derived > Base;
+    using Base::p_pk;
     using Base::p_tik;
     using Base::p_data;
     using Base::p_param;
     using Base::components;
 
     /** default constructor
-     * @param nbCluster number of cluster in the model
+     *  @param nbCluster number of cluster in the model
      **/
     inline CategoricalBase( int nbCluster) : Base(nbCluster) {}
     /** copy constructor
      *  @param model The model to copy
      **/
-    inline CategoricalBase( CategoricalBase const& model) : Base(model) {}
+    inline CategoricalBase( CategoricalBase const& model)
+                          : Base(model), modalities_(model.modalities_) {}
     /** destructor */
     inline ~CategoricalBase() {}
 
@@ -75,56 +77,33 @@ class CategoricalBase : public IMixtureModel<Derived >
     /** @return a simulated value for the jth variable of the ith sample
      * @param i,j indexes of the data to simulate*/
     int sample(int i, int j) const;
-    /** @return a safe value for the jth variable
-     *  @param j index of the column with the safe value needed
-     **/
-    inline int safeValue(int j) const;
-    /** */
+    /** Initialize the model. Resize the array of probabilities for each
+     *  component.*/
     void initializeModel()
     {
       Base::initializeModel();
       // resize vectors of probabilities
-      for(int k=components().firstIdx(); k<= components().lastIdx(); ++k)
-      { components(k)->p_param()->initializeParameters(modalities_);}
-    }
-    /** get the parameters of the model
-     *  @param params the parameters of the model
-     **/
-    void getParameters(Array2D<Real>& params) const
-    {
-      int firstId = params.firstIdxRows();
-      int nbClust = this->nbCluster();
-      int nbModalities = modalities_.size();
-
-      params.resize(nbModalities * nbClust, p_data()->cols());
-      for (int k = 0; k <= nbClust; ++k)
-      {
-        for (int j = p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
-        {
-          for (int l = 0; l < nbModalities; ++l)
-          {
-            params(k * nbModalities + l + firstId, j) = p_param(k)->proba(j, l);
-          }
-        }
-      }
+      for(int k=baseIdx; k<= components().lastIdx(); ++k)
+      { p_param(k)->initializeParameters(modalities_);}
     }
     /** Write the parameters on the output stream os */
     void writeParameters(ostream& os) const
     {
       Array2D<Real> proba(modalities_, p_data()->cols());
-      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+      for (int k= baseIdx; k <= components().lastIdx(); ++k)
       {
         // store proba values in an array for a nice output
-        for (int j= proba.firstIdxCols();  j <= proba.lastIdxCols(); ++j)
+        for (int j= baseIdx;  j <= proba.lastIdxCols(); ++j)
         {
           for (int l= modalities_.firstIdx(); l <= modalities_.lastIdx(); ++l)
-          { proba(l, j) = p_param(k)->proba(j,l);}}
+          { proba(l, j) = p_param(k)->proba(j,l);}
+        }
         stk_cout << _T("---> Component ") << k << _T("\n");
-        stk_cout << _T("Probabilities = ")<< proba;
+        stk_cout << _T("Probabilities =\n")<< proba;
       }
     }
     /** Set the range of the modalities
-     * @param modalities the range of the modalities
+     *  @param modalities the range of the modalities
      **/
     inline void setModalities( Range const& modalities) { modalities_ = modalities;}
 
@@ -137,23 +116,31 @@ class CategoricalBase : public IMixtureModel<Derived >
 template<class Derived>
 int CategoricalBase<Derived>::impute(int i, int j) const
 {
-      // compute argmax ??
-      return 0;
+  int lmax = modalities_.firstIdx();
+  Real pmax = -Arithmetic<Real>::max();
+  // compute for each modality the pondered probability of occurrence
+  for (int l=modalities_.firstIdx(); l<= modalities_.lastIdx(); ++l)
+  {
+    Real proba = 0.;
+    for (int k= p_pk()->firstIdx(); k <= p_pk()->lastIdx(); ++k)
+    { proba += p_tik()->elt(i,k) * p_param(k)->proba(j, l);}
+
+    if (pmax < proba) { pmax = proba; lmax = l;}
+  }
+  //Stat::sumByRow(proba(j) * ptik()->row(i)).maxElt(lmax);
+  return lmax;
 }
 
 /* Implementation  */
 template<class Derived>
 int CategoricalBase<Derived>::sample(int i, int j) const
 {
-   return 0;
-}
-/* Implementation  */
-template<class Derived>
-int CategoricalBase<Derived>::safeValue(int j) const
-{
-   return 0;
+  // sample class
+  int k = Law::Categorical::rand(p_tik()->row(i));
+  // sample from conditional probability
+  return Law::Categorical::rand(p_param(k)->proba(j));
 }
 
 } // namespace STK
 
-#endif /* STK_DIAGGAUSSIANBASE_H */
+#endif /* STK_CATEGORICALBASE_H */

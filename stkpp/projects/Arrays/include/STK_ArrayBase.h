@@ -73,7 +73,7 @@ class ArrayBase : public ExprBase<Derived>
     inline ~ArrayBase() {}
 
   public:
-    /** Visit the container using a visitor. @sa ArrayBaseVisitor
+    /** Visit the container using a visitor. @sa ArrayBaseApplier
      *  @param visitor the visitor to apply
      **/
     template<typename Visitor>

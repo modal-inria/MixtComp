@@ -58,7 +58,7 @@ void numbering(Derived& matrix)
 {
   typedef typename hidden::Traits<Derived>::Type Type;
   numberingVisitor<Type> visitor;
-  ArrayBaseVisitor<Derived, numberingVisitor<Type> > arrayVisitor(matrix);
+  ArrayBaseApplier<Derived, numberingVisitor<Type> > arrayVisitor(matrix);
   arrayVisitor.apply(visitor);
 }
 

@@ -46,8 +46,7 @@
  **/
 
 /** @defgroup hidden Hidden implementation details
- * @namespace hidden Hidden objects.
- * @brief The hidden namespace enclose the classes and method
+ * @namespace STK::hidden The hidden namespace enclose the classes and methods
  * which are used internally by the STK++ classes. They are hidden to the
  * end-user of theses classes.
  **/

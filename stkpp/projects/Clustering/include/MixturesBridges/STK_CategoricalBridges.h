@@ -84,6 +84,7 @@ struct BridgeTraits<Clust::Categorical_pk_>
 typedef MixtureBridge<Clust::Categorical_pjk_> CategoricalBridge_pjk;
 typedef MixtureBridge<Clust::Categorical_pk_> CategoricalBridge_pk;
 
+
 } /* namespace STK */
 
 #endif /* STK_CATEGORICALBRIDGES_H */

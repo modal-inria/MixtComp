@@ -69,7 +69,7 @@ template <class Visitor> struct GetIdx<Visitor, Arrays::diagonal_>
 template <typename Type>
 struct EltVisitor2DBase
 {
-  EltVisitor2DBase() : row_(STKBASEARRAYS), col_(STKBASEARRAYS), res_(Arithmetic<Type>::NA()) {};
+  EltVisitor2DBase() : row_(baseIdx), col_(baseIdx), res_(Arithmetic<Type>::NA()) {};
   int row_, col_;
   Type res_;
 };
@@ -156,20 +156,26 @@ struct SumVisitor
   inline void operator() ( Type const& value, int i)
   { res_ += value;}
 };
-
 /** @ingroup hidden
- *  @brief Visitor computing the sum of all the coefficients of the Array
- * @sa ExprBase::sum(), ExprBase::sumSafe()
+ *  @brief Visitor counting the number of not-zero element in an array
+ *  This visitor can be used in conjunction with the comparison operators
+ *  in order to get the number of element matching a condition. For example:
+ *  @code
+ *    // get in c the number of element of A equal to 2
+ *    int c = (A == 2).count()
+ *  @endcode
+ *
+ *  @sa ExprBase::sum()
  */
 template <typename Type>
-struct SumSafeVisitor
+struct CountVisitor
 {
-  Type res_;
-  SumSafeVisitor(): res_(Type(0)) {}
+  int res_;
+  CountVisitor(): res_(0) {}
   inline void operator() ( Type const& value, int i, int j)
-  { if (Arithmetic<Type>::isFinite(value)) res_ += value;}
+  { if (value) ++res_;}
   inline void operator() ( Type const& value, int i)
-  { if (Arithmetic<Type>::isFinite(value)) res_ += value;}
+  { if (value) ++res_;}
 };
 
 /** @ingroup hidden

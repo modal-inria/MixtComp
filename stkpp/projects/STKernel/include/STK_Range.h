@@ -72,13 +72,13 @@ class TRange<UnknownSize>
 
   public:
     /** Default constructor. Null range.*/
-    inline TRange() : first_(STKBASEARRAYS), last_(STKBASEARRAYS-1), size_(0) {}
-    /** constructor. The first index is defined by the STKBASEARRAYS macro.
+    inline TRange() : first_(baseIdx), last_(baseIdx-1), size_(0) {}
+    /** constructor. The first index is defined by the baseIdx macro.
      *  @param size the size of the range
      **/
     inline TRange( int size)
-                : first_(STKBASEARRAYS)
-                , last_(size+STKBASEARRAYS-1)
+                : first_(baseIdx)
+                , last_(size+baseIdx-1)
                 , size_(size) {}
     /** Complete constructor. Give the beginning and the size of the sub-region.
      *  @param first is the beginning of the sub-region
@@ -263,10 +263,10 @@ class TRange
 
   public:
     /** Default constructor. Null range.*/
-    inline TRange() : first_(STKBASEARRAYS) {}
-    /** constructor. The first index is defined by the STKBASEARRAYS macro.
+    inline TRange() : first_(baseIdx) {}
+    /** constructor. The first index is defined by the baseIdx macro.
      **/
-    inline TRange( int) : first_(STKBASEARRAYS) {}
+    inline TRange( int) : first_(baseIdx) {}
     /** Complete constructor. Give the beginning and the size of the sub-region.
      *  @param first is the beginning of the sub-region
      **/

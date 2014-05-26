@@ -61,9 +61,6 @@
  * (which uses diffusion distances in the data space), t-SNE (which minimizes
  * the divergence between distributions over pairs of points), and curvilinear
  * component analysis.
- *
- * @namespace Reduct This is the namespace for the reduction dimension project.
- * It will enclose all variables and constant specific to the Reduct project.
  **/
 
 

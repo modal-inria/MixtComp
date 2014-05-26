@@ -30,8 +30,8 @@
  **/
 
 /** @file STK_IArray2DBase.h
- *  @brief This is an internal header file, included by other
- *  Containers library headers.
+ *  @brief Interface base class for the Array2D classes, this is an internal
+ *  header file, included by other containers library headers.
  *
  *  You should not attempt to use it directly but rather used one of the
  *  derived class like Array2D, except if you want to create your own
@@ -41,16 +41,15 @@
 #ifndef STK_IARRAY2DBASE_H
 #define STK_IARRAY2DBASE_H
 
-#include "STK_ArrayBase.h"
 #include "STK_ExprBaseVisitor.h"
-#include "STK_ArrayBaseVisitor.h"
-#include "STK_ArrayBaseAssign.h"
 #include "STK_ExprBaseDot.h"
 #include "STK_ExprBaseProduct.h"
+
 #include "STK_ArrayBaseInitializer.h"
+#include "STK_ArrayBaseApplier.h"
+#include "STK_ArrayBaseAssign.h"
 
 #include "STK_Array1D.h"
-#include "STK_AllocatorBase.h"
 
 namespace STK
 {

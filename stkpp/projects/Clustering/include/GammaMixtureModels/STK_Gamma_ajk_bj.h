@@ -36,11 +36,9 @@
 #define STK_GAMMA_AJK_BJ_H
 
 #include "STK_GammaBase.h"
-#include "STK_GammaUtil.h"
+#include "STK_Gamma_ajk_bjImpl.h"
 
 #include "../../../STatistiK/include/STK_Law_Exponential.h"
-
-#include "STK_Gamma_ajk_bjImpl.h"
 
 
 namespace STK
@@ -56,7 +54,7 @@ struct MixtureModelTraits< Gamma_ajk_bj<_Array> >
 {
   typedef _Array Array;
   typedef Gamma_ajk_bj_Parameters Parameters;
-  typedef GammaComponent<_Array, Parameters> Component;
+  typedef MixtureComponent<_Array, Parameters> Component;
 };
 
 } // namespace Clust
@@ -105,7 +103,7 @@ class Gamma_ajk_bj : public GammaBase<Gamma_ajk_bj<Array> >
       Base::initializeModel();
       scale_.resize(this->nbVariable());
       scale_ = 1.;
-      for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+      for (int k= baseIdx; k <= components().lastIdx(); ++k)
       { p_param(k)->p_scale_ = &scale_;}
     }
     /** use the default static method initializeStep() for a first initialization
@@ -133,11 +131,11 @@ template<class Array>
 void Gamma_ajk_bj<Array>::initializeStep()
 {
   try
-  { GammaUtil<Component>::initialMoments(components(), p_tik());}
+  { this->initialMoments();}
   catch (Clust::exceptions const & e)
   { throw Clust::initializeStepFail_;}
   // estimate ajk and bj
-  for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
   {
     for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
     {
@@ -150,7 +148,7 @@ void Gamma_ajk_bj<Array>::initializeStep()
   for (int j=scale_.firstIdx(); j<=scale_.lastIdx(); ++j)
   {
     Array2DPoint<Real> meank(p_tik()->cols()), ak(p_tik()->cols()), tk(p_tik()->cols());
-    for (int k= p_tik()->firstIdxCols(); k <= p_tik()->lastIdxCols(); ++k)
+    for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
     {
       tk[k]    = p_tik()->col(k).sum();
       ak[k]    = p_param(k)->shape_[j];
@@ -176,7 +174,7 @@ void Gamma_ajk_bj<Array>::randomInit()
     Real variance = p_data()->col(j).variance();
     if ((variance <=0.) || (Arithmetic<Real>::isNA(variance))) throw Clust::randomInitFail_;
     // random shape for each cluster
-    for (int k= components().firstIdx(); k <= components().lastIdx(); ++k)
+    for (int k= baseIdx; k <= components().lastIdx(); ++k)
     { p_param(k)->shape_[j] = STK::Law::Exponential::rand(mean*mean/variance);}
     // random scale
     scale_[j] = STK::Law::Exponential::rand(variance/mean);
@@ -197,11 +195,11 @@ template<class Array>
 void Gamma_ajk_bj<Array>::mStep()
 {
   try
-  { GammaUtil<Component>::moments(components(), p_tik());}
+  { this->moments();}
   catch (Clust::exceptions const & e)
   { throw Clust::mStepFail_;}
 
-  MixtureModelImpl<  Array, Gamma_ajk_bj_Parameters >::mStep(components(), p_tik());
+  MixtureModelImpl<  Array, Gamma_ajk_bj_Parameters >::mStep(components(), p_tik(), p_data());
 }
 
 

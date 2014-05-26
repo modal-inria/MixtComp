@@ -58,16 +58,16 @@ istream& operator>> (istream& is, Range& I)
   // check if the istream is exhausted
   if (is.eof())
   {
-    I.first_ = STKBASEARRAYS;
-    if (!stringToType(I.last_, num)) I.last_ =STKBASEARRAYS-1;
+    I.first_ = baseIdx;
+    if (!stringToType(I.last_, num)) I.last_ =baseIdx-1;
     return is;
   }
   // otherwise we encounter a ":", thus skip the current char
-  if (!stringToType(I.first_, num)) I.first_ =STKBASEARRAYS;
+  if (!stringToType(I.first_, num)) I.first_ =baseIdx;
   is.peek();
   if ((is >> I.last_).fail())
   {
-    I.first_ =STKBASEARRAYS; I.last_ =STKBASEARRAYS-1;
+    I.first_ =baseIdx; I.last_ =baseIdx-1;
   }
   return is;
 }
