@@ -197,9 +197,6 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
     }
     break;
   }
-  std::cout << "line: " << currPos.first << std::endl;
-  std::cout << "col: " << currPos.second << std::endl;
-  std::cout << "sampled value: " << z * sd + mean << std::endl;
   return RetValue(currPos, z * sd + mean);
 }
 

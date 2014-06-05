@@ -182,7 +182,7 @@ void DataHandlerR::getDataHelper(std::string const& idData,
     Rcpp::List ls_listMissing = ls_augData["listMissing"];
     for (int i = 0; i < ls_listMissing.size(); ++i)
     {
-      augData.v_missing_.push_back(pos(ls_listMissing[i], j));
+      augData.v_missing_.push_back(pos(ls_listMissing[i] - 1, j));
     }
 
     // filling v_missingFiniteValues_
@@ -193,7 +193,7 @@ void DataHandlerR::getDataHelper(std::string const& idData,
       index = ls_posVal["pos"];
       nv_listVals = ls_posVal["listvals"];
       augData.v_missingFiniteValues_.push_back(
-        std::pair<pos, std::vector<Type> >(pos(index, j),
+        std::pair<pos, std::vector<Type> >(pos(index - 1, j),
                                            Rcpp::as<std::vector<Type> >(nv_listVals))
       );
     }
@@ -206,7 +206,7 @@ void DataHandlerR::getDataHelper(std::string const& idData,
       index = ls_posVal["pos"];
       nv_listVals = ls_posVal["listvals"];
       augData.v_missingIntervals_.push_back(
-        std::pair<pos, std::pair<Type, Type> >(pos(index, j),
+        std::pair<pos, std::pair<Type, Type> >(pos(index - 1, j),
                                                std::pair<Type, Type>(Type(nv_listVals[0]),
                                                                      Type(nv_listVals[1])))
       );
@@ -220,7 +220,7 @@ void DataHandlerR::getDataHelper(std::string const& idData,
       index = ls_posVal["pos"];
       Type val = ls_posVal["listvals"];
       augData.v_missingLUIntervals_.push_back(
-        std::pair<pos, Type>(pos(index, j),
+        std::pair<pos, Type>(pos(index - 1, j),
                              val)
       );
     }
@@ -233,7 +233,7 @@ void DataHandlerR::getDataHelper(std::string const& idData,
       index = ls_posVal["pos"];
       Type val = ls_posVal["listvals"];
       augData.v_missingRUIntervals_.push_back(
-        std::pair<pos, Type>(pos(index, j),
+        std::pair<pos, Type>(pos(index - 1, j),
                              val)
       );
     }

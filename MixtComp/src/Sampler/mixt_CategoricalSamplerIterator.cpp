@@ -142,9 +142,6 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
     }
     break;
   }
-  std::cout << "line: " << currPos.first << std::endl;
-  std::cout << "col: " << currPos.second << std::endl;
-  std::cout << "sampled value: " << sampleVal << std::endl;
   return RetValue(currPos, sampleVal);
 }
 
