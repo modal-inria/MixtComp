@@ -1,46 +1,35 @@
-#-----------------------------------------------------------------------
+#------------------------------------------------------------------------
+#   Copyright (C) Inria 2014
 #
-# Purpose:  Makevar for the R packages using stk++
-# Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
 #
-#-----------------------------------------------------------------------
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
 #
-# This file have to be copied in the src directory of your R package.
-# The following directory structure is assumed:
-#
-# >data
-# >man
-# >R
-# >src
-#      >stkpp
-#            >bin      // can be a symbolic link to the stk++ bin directory
-#            >include  // can be a symbolic link to the stk++ include directory
-#            >lib      // can be a symbolic link to the stk++ lib directory
-#            >projects // can be a symbolic link to the stk++ projects directory
-#      >PKGNAME
-#            >lib
-#
-# You can modify the paths for your PKG at your convenience, but let unmodified
-# the stk++ paths.
-#
-
-# add the name of the directory with the source of your package
-PKGNAME =MixtComp
-
-PKGDIR = ./$(PKGNAME)
-PKGLIBDIR = $(PKGDIR)/lib
-PKGLIB = $(PKGLIBDIR)/lib$(PKGNAME).a
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#------------------------------------------------------------------------
+#   Project:    MixtComp
+#   Created on: Feb 17, 2014
+#   Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
+#               Serge IOVLEFF <serge.iovleff@stkpp.org>
+#------------------------------------------------------------------------
 
 STKPPDIR = ./stkpp
-STKPPLIBDIR = $(STKPPDIR)/lib
-STKPPLIB = $(STKPPLIBDIR)/libSTKpp.a
+STKPPLIB = ./stkpp/lib/libSTKpp.a
+MCDIR = ./MixtComp
+MCLIB = ./MixtComp/lib/libMixtComp.a
 
 # Flags for the cpp files at the root, i.e.
-PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"`
+PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I.
 
 ## Use the R_HOME indirection to support installations of multiple R version
-# PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(PKGLIB) $(STKPPLIB)
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(STKPPLIB)
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB)
 
 .PHONY: all pkglib
 
@@ -48,10 +37,9 @@ PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(STKPPLIB)
 ## files in this directory. pkglib is an additional target for the libraries
 ## that will be installed in $(STKPPDIR) and $(PKGLIB) and which users can link against.
 
-
 all: $(SHLIB)
 $(SHLIB): pkglib
 
 pkglib:
+	(cd $(MCDIR) && $(MAKE) lib)
 	(cd $(STKPPDIR) && $(MAKE) all)
-	(cd $(PKGDIR) && $(MAKE) all)
