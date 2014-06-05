@@ -20,15 +20,12 @@ dataGenerator <- function()
                                     0.5,10.,
                                     
                                     0.,12.,
-                                    0.1,30.,
-                                    
-                                    -100.,-350.,
-                                    0.2,5.),
+                                    0.1,30.),
                            nrow = 2 * nbClasses,
                            ncol = nbVariablesGauss,
                            byrow = TRUE)
   
-  proportions <- c(0.5, 0.5)
+  proportions <- c(0.3, 0.7)
   
   zDis <- rmultinom(nbSamples,
                     1,
@@ -38,6 +35,8 @@ dataGenerator <- function()
   {
     z[i] <- match(1, zDis[, i])
   }
+  
+  cat(z)
   
   gaussianGenerator(nbSamples,
                     nbVariablesGauss,

@@ -28,6 +28,6 @@ int main(int argc, char *argv[])
     RInside R(argc, argv);              // create an embedded R instance
     R.parseEvalQ("library(RMixtComp)");
 //    R.parseEvalQ("testRMC()");
-    R.parseEvalQ("testGenData()");
+    R.parseEvalQ("testRMC()");
     exit(0);
 }
