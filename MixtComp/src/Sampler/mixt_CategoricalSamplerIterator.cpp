@@ -30,6 +30,7 @@
 
 #include "stkpp/projects/STatistiK/include/STK_Law_Categorical.h"
 #include "mixt_CategoricalSamplerIterator.h"
+#include "../Various/mixt_Logs.h"
 
 namespace mixt
 {
@@ -137,6 +138,9 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
         modalities[*currMod] = (*p_param_)(z_i * nbModalities + *currMod,
                                            currPos.second);
       }
+#ifdef MC_DEBUG
+      writeLog("sampler.log", modalities);
+#endif
       modalities = modalities / modalities.sum();
       sampleVal = STK::Law::Categorical::rand(modalities);
     }

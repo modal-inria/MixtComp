@@ -29,4 +29,4 @@ STK_FLAGS = -DSTKBASEARRAYS=0
 # R related compiler options overrides
 -include ~/.R/Makevars
 
-CXXFLAGS += $(PKG_CXXFLAGS) $(STK_FLAGS)
+CXXFLAGS += $(PKG_CXXFLAGS) $(STK_FLAGS) $(MC_FLAGS)
