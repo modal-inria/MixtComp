@@ -32,10 +32,10 @@
 
 #include "stkpp/projects/Clustering/include/STK_IMixture.h"
 #include "../../Data/mixt_AugmentedData.h"
-#include "../../Sampler/mixt_Imputer.h"
 #include "mixt_GaussianBridges.h"
 #include "mixt_CategoricalBridges.h"
 #include "mixt_InitializeMixtureImpl.h"
+#include "mixt_RemoveMissing.h"
 
 namespace mixt
 {
@@ -129,7 +129,7 @@ class MixtureBridge : public STK::IMixture
     void setData(MixtureManager const* p_manager)
     {
       p_manager->getData(idName(), m_augDataij_, nbVariable_ );
-      removeMissing();
+      removeMissing(m_augDataij_);
       initializeMixture();
     }
     /** @brief This function should be used in order to initialize randomly the
@@ -256,56 +256,8 @@ class MixtureBridge : public STK::IMixture
                getParam())
     {}
 
-    /** Imputer used to generate initial values randomly */
-    Imputer imputer_;
-
     /** Sampler to generate values */
     Sampler sampler_;
-
-    /** Utility function to lookup the data set and remove missing values
-     *  coordinates. */
-    void removeMissing()
-    { 
-      // missing value [-inf,+inf] or ?
-      for (typename std::vector<pos>::iterator it = m_augDataij_.v_missing_.begin();
-           it != m_augDataij_.v_missing_.end();
-           ++it)
-      {
-        m_augDataij_.data_((*it).first,
-                           (*it).second) = imputer_.sampleRange(m_augDataij_.dataRanges_[(*it).second].first,
-                                                                m_augDataij_.dataRanges_[(*it).second].second);
-      }
-      
-      // missing values [a,b]
-      for (typename std::vector<std::pair<pos, std::pair<Type, Type> > >::iterator it = m_augDataij_.v_missingIntervals_.begin();
-           it != m_augDataij_.v_missingIntervals_.end();
-           ++it)
-      {
-        m_augDataij_.data_((*it).first.first,
-                           (*it).first.second) = imputer_.sampleRange((*it).second.first,
-                                                                      (*it).second.second);
-      }
-      
-      // missing values [-inf,b]
-      for (typename std::vector<std::pair<pos, Type> >::iterator it = m_augDataij_.v_missingLUIntervals_.begin();
-           it != m_augDataij_.v_missingLUIntervals_.end();
-           ++it)
-      {
-        m_augDataij_.data_((*it).first.first,
-                           (*it).first.second) = imputer_.sampleRange(m_augDataij_.dataRanges_[(*it).second].first,
-                                                                      (*it).second);
-      }
-      
-      // missing values [a,+inf]
-      for (typename std::vector<std::pair<pos, Type> >::iterator it = m_augDataij_.v_missingRUIntervals_.begin();
-           it != m_augDataij_.v_missingRUIntervals_.end();
-           ++it)
-      {
-        m_augDataij_.data_((*it).first.first,
-                           (*it).first.second) = imputer_.sampleRange((*it).second,
-                                                                      m_augDataij_.dataRanges_[(*it).second].second);
-      }
-    }
 };
 
 } // namespace mixt
