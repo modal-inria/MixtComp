@@ -22,12 +22,16 @@
  **/
 
 #include <RInside.h>                    // for the embedded R via RInside
+#include <fstream>
 
 int main(int argc, char *argv[])
 {
-    RInside R(argc, argv);              // create an embedded R instance
-    R.parseEvalQ("library(RMixtComp)");
+  std::ofstream logfile("sampler.log");
+  logfile.close();
+
+  RInside R(argc, argv);              // create an embedded R instance
+  R.parseEvalQ("library(RMixtComp)");
 //    R.parseEvalQ("testRMC()");
-    R.parseEvalQ("testRMC()");
-    exit(0);
+  R.parseEvalQ("testRMC()");
+  exit(0);
 }
