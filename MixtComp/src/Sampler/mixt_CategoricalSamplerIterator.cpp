@@ -130,22 +130,23 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
       currPos = iv_missingFiniteValues_->first;
       int nbModalities = dataRange_[currPos.second].second + 1;
       int z_i = p_zi_->elt(currPos.first);
-      STK::Array2DVector<int> modalities(STK::Range(0, dataRange_[currPos.second].second), 0);
+      STK::Array2DVector<STK::Real> modalities(STK::Range(0, nbModalities), 0);
       for(std::vector<int>::const_iterator currMod = iv_missingFiniteValues_->second.begin();
           currMod != iv_missingFiniteValues_->second.end();
           ++currMod)
       {
-        modalities[*currMod] = (*p_param_)(z_i * nbModalities + *currMod,
+        modalities.elt(*currMod) = (*p_param_)(z_i * nbModalities + *currMod,
                                            currPos.second);
       }
-#ifdef MC_DEBUG
-      writeLog("sampler.log", modalities);
-#endif
+
       modalities = modalities / modalities.sum();
       sampleVal = STK::Law::Categorical::rand(modalities);
     }
     break;
   }
+#ifdef MC_DEBUG
+      writeLog("sampler.log", sampleVal);
+#endif
   return RetValue(currPos, sampleVal);
 }
 
