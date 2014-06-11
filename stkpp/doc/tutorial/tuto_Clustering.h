@@ -12,7 +12,7 @@
  *
  * This tutorial will show you how to add a new mixture model to stk++.
  * The design of the Clustering model have been think with in mind less
- * effort for the programmer who need to add a mixture model.
+ * efforts for the programmer who need to add a mixture model.
  *
  * A mixture model on some subset \f$ J\subset \mathbb{R}^d \f$ is a density of
  * the form

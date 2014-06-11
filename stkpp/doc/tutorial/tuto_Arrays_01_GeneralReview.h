@@ -15,21 +15,19 @@
  * Before explaining the usage and differences between the different arrays,
  * we first introduce some vocabulary.
  * The terminology used in STK++ project for the arrays are the following:
- * @li An array is often ca lled a matrix.
- * @li In the case where a matrix have 1 column, such matrix is called column-vectors,
- * often abbreviated just as @em vectors,
- * @li in the other case, where a matrix have 1 row, it is called row-vectors, often
- * abbreviated just as @em points.
+ * @li An array is often called a matrix.
+ * @li In the case where a matrix have 1 column, such matrix is called column-vector,
+ * often abbreviated just as @em vector,
+ * @li in the other case, where a matrix have 1 row, it is called row-vector, often
+ * abbreviated just as @em point.
  *
- * The word @em points is borrowed from the statistical vocabulary where a row
+ * The word @em point is borrowed from the statistical vocabulary where a row
  * of a data array is often named a point.
  *
  * The %Array2D classes are very flexible if you need to add, insert, remove, resize,...
- * quickly rows or columns to your container. On the other hand the %CArray classes
- * allow you to perform fast and inlined operations (whenever possible) on matrices
- * and vectors. Moreover, the storing scheme allow you to interface them easily
- * to other linear algebra libraries (e.g. Lapack, Blas, ...).
- *
+ * quickly rows or columns to your container. On the other hand, the storing
+ * scheme of the the %CArray classes allow you to used them easily with other
+ * linear algebra libraries (e.g. Lapack, Blas, ...).
  *
  * @section IntroExample Introductory Example
  * Let us give you an introductory example:

@@ -35,9 +35,7 @@
 #ifndef STK_EXPRBASEVISITOR_H
 #define STK_EXPRBASEVISITOR_H
 
-#include "../../Sdk/include/STK_MetaTemplate.h"
-
-#include "./visitors/STK_Visitors.h"
+#include "visitors/STK_Visitors.h"
 
 namespace STK
 {

@@ -5,7 +5,7 @@
  *
  * Constructors depends of the structure of the array you want to obtain. In
  * this tutorial we will review all the existing arrays and the different way
- * to create them. We are
+ * to create them.
  *
  * @section AllArray2DConstructors Constructors for the Array2D family containers
  *
@@ -17,12 +17,14 @@
  * <tr>
  * <td>
  * @code
- * template<class Type> Array2D;
+ * template<typename Type> Array2D;
+ * template< typename Type, int SizeRows_ = UnknownSize, int SizeCols_ = UnknownSize, bool Orient_ = Arrays::by_col_>
+ * class CArray;
  * @endcode
  * </td>
  * <td>
- * The @ref STK::Array2D class is the most general class for storing scalars.
- * The values are strored in an array of range
+ * The @ref STK::Array2D and @ref STK::CArray classes are the most general
+ * classes for storing scalars. The values are stored in array of range
  * (firstIdxRows:lastIdxRows)x(firstIdxCols:lastIdxCols).
  * </td>
  * </tr>
@@ -30,21 +32,27 @@
  * <tr>
  * <td>
  * @code
- * template<class Type> Array2DVector;
- * template<class Type> Array2DPoint;
+ * template<typename Type> Array2DVector;
+ * template<typename Type> Array2DPoint;
+ * template< typename Type, int SizeRows_=UnknownSize, bool Orient_ = Arrays::by_col_>
+ * class CArrayVector;
+ * template< typename Type, int SizeCols_=UnknownSize, bool Orient_ = Arrays::by_row_>
+ * class CArrayPoint;
  * @endcode
  * </td>
  * <td>
- * The @ref STK::Array2DVector and @ref STK::Array2DVector classes allow to store scalars
- * in respectively a column and a row vector.
- * The values are stored in an array of range (firstIdx:lastIdx).
+ * The @ref STK::Array2DVector, @ref STK::Array2DPoint, @ref STK::CArrayVector
+ * and @ref STK::CArrayPoint classes allow to store scalars in column and row
+ * vectors. The values are stored in arrays of range (firstIdx:lastIdx).
  * </td>
  * </tr>
  *
  * <tr>
  * <td>
  * @code
- * template<class Type> Array2DSquare;
+ * template<typename Type> Array2DSquare;
+ * template< typename Type_, int Size_ = UnknownSize, bool Orient_ = Arrays::by_col_>
+ * class CArraySquare;
  * @endcode
  * </td>
  * <td>
@@ -57,7 +65,7 @@
  * <tr>
  * <td>
  * @code
- * template<class Type> Array2DDiagonal;
+ * template<typename Type> Array2DDiagonal;
  * @endcode
  * </td>
  * <td>
@@ -72,8 +80,8 @@
  * <tr>
  * <td>
  * @code
- * template<class Type> Array2DUpperTriangular;
- * template<class Type> Array2DLowerTriangular;
+ * template<typename Type> Array2DUpperTriangular;
+ * template<typename Type> Array2DLowerTriangular;
  * @endcode
  * </td>
  * <td>

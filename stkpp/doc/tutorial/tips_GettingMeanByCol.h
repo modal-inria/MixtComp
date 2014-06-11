@@ -12,7 +12,7 @@
  * @endcode
  *
  * In some cases you may want to get the mean for each column of the array
- * with (possibly) missing values. You can obtain them using the code
+ * with (possibly) missing values. You can get them using the code
  * @code
  *   Array2DPoint<Real> m;
  *   m = Stat::mean(A.safe()); // or m.move(mean(A.safe()));
@@ -20,8 +20,8 @@
  *
  * The method @c A.safe() will replace any missing (or NaN) values by zero.
  * In some cases it's not sufficient, Suppose you know your data are all
- * positive and you want to compute the log-mean of your data. In this case, use
- * rather
+ * positive and you want to compute the log-mean of your data. In this case,
+ * you will rather use
  * @code
  *   m = Stat::mean(A.safe(1.).log());
  * @endcode
@@ -31,5 +31,5 @@
  * each row, you will have to use the functor meanByRow. In this latter case,
  * you will get an Array2DVector as a result.
  *
- * @sa Stat::meanSafe, Stat::variance, Stat::varianceWithFixedMean
+ * @sa Stat::mean, Stat::meanByRow, Stat::variance, Stat::varianceByRow, Stat::varianceWithFixedMean
  **/

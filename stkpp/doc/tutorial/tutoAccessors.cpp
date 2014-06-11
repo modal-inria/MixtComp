@@ -1,6 +1,5 @@
 #include "../../include/STKpp.h"
 using namespace STK;
-/** @ingroup tutorial */
 int main(int argc, char** argv)
 {
   // create a matrix of Real of dynamic size (3,5)
