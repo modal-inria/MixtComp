@@ -20,13 +20,13 @@
 #               Serge IOVLEFF <serge.iovleff@stkpp.org>
 #------------------------------------------------------------------------
 
-STKPPDIR = ./stkpp
-STKPPLIB = ./stkpp/lib/libSTKpp.a
-MCDIR = ./MixtComp
-MCLIB = ./MixtComp/lib/libMixtComp.a
+STKPPDIR = ../../stkpp
+STKPPLIB = ../../stkpp/lib/libSTKpp.a
+MCDIR = ../../MixtComp
+MCLIB = ../../MixtComp/lib/libMixtComp.a
 
 # Flags for the cpp files at the root, i.e.
-PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I.
+PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../..
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB)
@@ -43,3 +43,4 @@ $(SHLIB): pkglib
 pkglib:
 	(cd $(MCDIR) && $(MAKE) lib)
 	(cd $(STKPPDIR) && $(MAKE) all)
+
