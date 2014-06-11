@@ -31,6 +31,7 @@
 #include <vector>
 #include <Rcpp.h>
 #include "stkpp/projects/DManager/include/STK_IDataHandler.h"
+#include "stkpp/projects/STatistiK/include/STK_Stat_Functors.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
@@ -64,8 +65,6 @@ class DataHandlerR: public STK::IDataHandler
     virtual void getData(std::string const& idData, STK::Array2D<int>& data, int& nbVariable) const;
     /** return in an Array2D<Real> the data with the given idData */
     virtual void getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const;
-    /** return in an Array2D<std::string> the data with the given idData */
-    virtual void getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const;
 
     void getData(std::string const& idData,
                  AugmentedData<STK::Array2D<int> >& augData,
@@ -136,15 +135,10 @@ void DataHandlerR::getDataHelper(std::string const& idData,
   Vector nv_listVals;
 
   // data range filling
-  for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it)
+  for (int currVar = 0; currVar < augData.data_.sizeCols(); ++currVar)
   {
-    Rcpp::S4 s4 = rList_[(*it)];
-    Rcpp::List ls_augData = s4.slot("augData");
-
-    nv_listVals = ls_augData["dataRange"];
-
-    augData.dataRanges_.push_back(std::pair<Type, Type>(Type(nv_listVals[0]),
-                                                        Type(nv_listVals[1])));
+    augData.dataRanges_.push_back(std::pair<Type, Type>(STK::Stat::minSafe(augData.data_.col(currVar)),
+                                                        STK::Stat::maxSafe(augData.data_.col(currVar))));
   }
 
   // reserving the augData containers to avoid push_back slowdown
