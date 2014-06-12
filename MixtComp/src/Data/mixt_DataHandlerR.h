@@ -31,7 +31,6 @@
 #include <vector>
 #include <Rcpp.h>
 #include "stkpp/projects/DManager/include/STK_IDataHandler.h"
-#include "stkpp/projects/STatistiK/include/STK_Stat_Functors.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
@@ -139,13 +138,6 @@ void DataHandlerR::getDataHelper(std::string const& idData,
   int missingRUIntervalsSize = 0;
 
   Vector nv_listVals;
-
-  // data range filling
-  for (int currVar = 0; currVar < augData.data_.sizeCols(); ++currVar)
-  {
-    augData.dataRanges_.push_back(std::pair<Type, Type>(STK::Stat::minSafe(augData.data_.col(currVar)),
-                                                        STK::Stat::maxSafe(augData.data_.col(currVar))));
-  }
 
   // reserving the augData containers to avoid push_back slowdown
   for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it)

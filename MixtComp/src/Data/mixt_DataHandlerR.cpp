@@ -150,10 +150,10 @@ void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<STK::Array2D<std::string> >& augData,
                            int& nbVariable) const
 {
-// do nothing until the dataRange management has been moved to MixtureBridge
 #ifdef MC_DEBUG
   std::cout << "DataHandlerR::getData, AugmentedData<STK::Array2D<std::string> >&" << std::endl;
 #endif
+  getDataHelper<std::string, Rcpp::CharacterVector>(idData, augData, nbVariable);
 }
 
 void DataHandlerR::writeDataMap() const

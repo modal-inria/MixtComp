@@ -129,6 +129,18 @@ class MixtureBridge : public STK::IMixture
     void setData(MixtureManager const* p_manager)
     {
       p_manager->getData(idName(), m_augDataij_, nbVariable_ );
+
+      // data range filling
+      for (int currVar = 0; currVar < m_augDataij_.data_.sizeCols(); ++currVar)
+      {
+        m_augDataij_.dataRanges_.push_back(std::pair<Type, Type>(STK::Stat::minSafe(m_augDataij_.data_.col(currVar)),
+                                                                 STK::Stat::maxSafe(m_augDataij_.data_.col(currVar))));
+#ifdef MC_DEBUG
+      std::cout << "min, " << m_augDataij_.dataRanges_.at(currVar).first << std::endl;
+      std::cout << "max, " << m_augDataij_.dataRanges_.at(currVar).second << std::endl;
+#endif
+      }
+
       removeMissing(m_augDataij_);
 #ifdef MC_DEBUG
       std::cout << "After removeMissing, " << idName() << std::endl;
