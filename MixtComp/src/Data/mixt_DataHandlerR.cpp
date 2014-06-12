@@ -47,7 +47,10 @@ bool DataHandlerR::readDataFromRList(Rcpp::List rList)
     rList_ = rList;
     Rcpp::S4 s4 = rList_[i];
     std::string objType = s4.slot("type");
-    if (objType == "double")
+#ifdef MC_DEBUG
+    std::cout << "DataHandlerR::readDataFromRList, " << objType << std::endl;
+#endif
+    if (objType == "numeric")
     {
       readDataFromRListHelper<Rcpp::NumericVector>(i, s4);
     }

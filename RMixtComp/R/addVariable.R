@@ -1,7 +1,8 @@
 addVariable <- function (lm, data, model, id){
   if (!is.na(match(model, listModels)))
   {
-    augData <- augmentedData(data)
+    currDataType <- dataType(model)
+    augData <- augmentedData(data, currDataType)
     if (length(lm) == 0)
     {
       show("lm = 0")
@@ -9,7 +10,7 @@ addVariable <- function (lm, data, model, id){
                      augData,
                      model,
                      id,
-                     "double")
+                     currDataType)
     }
     else
     {
@@ -20,7 +21,7 @@ addVariable <- function (lm, data, model, id){
                                   augData,
                                   model,
                                   id,
-                                  "double")
+                                  currDataType)
       }
       else
       {

@@ -1,4 +1,4 @@
-augmentedData <- function(stringData) # stringData is a vector of strings
+augmentedData <- function(stringData, intDataType) # stringData is a vector of strings
 {
   nbrStr <- "-*[0-9.]+"
   
@@ -71,15 +71,21 @@ augmentedData <- function(stringData) # stringData is a vector of strings
       stringData[rangeList[i]] <- "NA"
     }
   }
-  
-#  data = as.numeric(stringData)
-  
-  currList <- list(data             = data                    ,
-                   listFiniteValues = listFiniteValues        ,
-                   listMissing      = listMissing             ,
-                   listIntervals    = listIntervals           ,
-                   listRUIntervals  = listRUIntervals         ,
-                   listLUIntervals  = listLUIntervals         )
+
+  if (intDataType == "numeric")
+    return(list(data             = as.numeric(stringData)  ,
+                listFiniteValues = listFiniteValues        ,
+                listMissing      = listMissing             ,
+                listIntervals    = listIntervals           ,
+                listRUIntervals  = listRUIntervals         ,
+                listLUIntervals  = listLUIntervals         ))
+  if (intDataType == "integer")
+    return(list(data             = as.integer(stringData)  ,
+                listFiniteValues = listFiniteValues        ,
+                listMissing      = listMissing             ,
+                listIntervals    = listIntervals           ,
+                listRUIntervals  = listRUIntervals         ,
+                listLUIntervals  = listLUIntervals         ))
   
   return(currList)
 }
