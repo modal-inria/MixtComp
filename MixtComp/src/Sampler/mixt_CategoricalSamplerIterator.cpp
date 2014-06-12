@@ -30,7 +30,6 @@
 
 #include "stkpp/projects/STatistiK/include/STK_Law_Categorical.h"
 #include "mixt_CategoricalSamplerIterator.h"
-#include "../Various/mixt_Logs.h"
 
 namespace mixt
 {
@@ -145,7 +144,7 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
     break;
   }
 #ifdef MC_DEBUG
-      writeLog("sampler.log", sampleVal);
+  std::cout << sampleVal << std::endl;
 #endif
   return RetValue(currPos, sampleVal);
 }

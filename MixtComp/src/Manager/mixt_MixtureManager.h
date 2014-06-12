@@ -45,7 +45,10 @@ class MixtureManager
       for (typename InfoMap::const_iterator it=handler_.info().begin(); it!=handler_.info().end(); ++it)
       {
         std::string idName = it->first;
-        std::string model= it->second;
+        std::string model = it->second;
+#ifdef MC_DEBUG
+        std::cout << "MixtureManager::createMixtures, " << idName << ", " << model << std::endl;
+#endif
         STK::Clust::Mixture idModel = STK::Clust::stringToMixture(model);
         // get a mixture fully
         STK::IMixture* p_mixture = createMixture(idModel, idName, nbCluster);

@@ -79,7 +79,10 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<int>& data, i
     Rcpp::IntegerVector nv = ls["data"];
     for (int iS = 0, iR = 0; iR < nbSamples_; ++iS, ++iR)
     {
-      data(iS, j) = nv(iR);
+      if (nv(iR) == Rcpp::NA)
+        data(iS, j) = STK::Arithmetic<int>::NA();
+      else
+        data(iS, j) = nv(iR);
     }
   }
 }
@@ -97,7 +100,10 @@ void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& d
     Rcpp::NumericVector nv = ls["data"];
     for (int iS = 0, iR = 0; iR < nbSamples_; ++iS, ++iR)
     {
-      data(iS, j) = nv(iR);
+      if (nv(iR) == Rcpp::NA)
+        data(iS, j) = STK::Arithmetic<STK::Real>::NA();
+      else
+        data(iS, j) = nv(iR);
     }
   }
 }
@@ -124,6 +130,9 @@ void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<STK::Array2D<int> >& augData,
                            int& nbVariable) const
 {
+#ifdef MC_DEBUG
+  std::cout << "DataHandlerR::getData, AugmentedData<STK::Array2D<int> >&" << std::endl;
+#endif
   getDataHelper<int, Rcpp::IntegerVector>(idData, augData, nbVariable);
 }
 
@@ -131,6 +140,9 @@ void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<STK::Array2D<STK::Real> >& augData,
                            int& nbVariable) const
 {
+#ifdef MC_DEBUG
+  std::cout << "DataHandlerR::getData, AugmentedData<STK::Array2D<STK::Real> >&" << std::endl;
+#endif
   getDataHelper<STK::Real, Rcpp::NumericVector>(idData, augData, nbVariable);
 }
 
@@ -138,7 +150,10 @@ void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<STK::Array2D<std::string> >& augData,
                            int& nbVariable) const
 {
-  getDataHelper<std::string, Rcpp::StringVector>(idData, augData, nbVariable);
+// do nothing until the dataRange management has been moved to MixtureBridge
+#ifdef MC_DEBUG
+  std::cout << "DataHandlerR::getData, AugmentedData<STK::Array2D<std::string> >&" << std::endl;
+#endif
 }
 
 void DataHandlerR::writeDataMap() const

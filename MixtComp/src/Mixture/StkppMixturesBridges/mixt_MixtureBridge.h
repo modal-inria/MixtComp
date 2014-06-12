@@ -130,6 +130,10 @@ class MixtureBridge : public STK::IMixture
     {
       p_manager->getData(idName(), m_augDataij_, nbVariable_ );
       removeMissing(m_augDataij_);
+#ifdef MC_DEBUG
+      std::cout << "After removeMissing, " << idName() << std::endl;
+      std::cout << m_augDataij_.data_ << std::endl;
+#endif
       initializeMixture();
     }
     /** @brief This function should be used in order to initialize randomly the

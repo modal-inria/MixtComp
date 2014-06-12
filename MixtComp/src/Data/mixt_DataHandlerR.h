@@ -65,6 +65,8 @@ class DataHandlerR: public STK::IDataHandler
     virtual void getData(std::string const& idData, STK::Array2D<int>& data, int& nbVariable) const;
     /** return in an Array2D<Real> the data with the given idData */
     virtual void getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const;
+    /** return in an Array2D<string> the data with the given idData */
+    virtual void getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const;
 
     void getData(std::string const& idData,
                  AugmentedData<STK::Array2D<int> >& augData,
@@ -122,6 +124,10 @@ void DataHandlerR::getDataHelper(std::string const& idData,
   typedef typename AugmentedData<STK::Array2D<Type> >::pos pos;
 
   getData(idData, augData.data_, nbVariable); // data array filling is not affected by the augmented data
+
+#ifdef MC_DEBUG
+  std::cout << augData.data_ << std::endl;
+#endif
 
   std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
 
