@@ -35,7 +35,6 @@
 #ifndef STK_VISITORS_H
 #define STK_VISITORS_H
 
-#include "../../../Sdk/include/STK_MetaTemplate.h"
 #include "../../../STatistiK/include/STK_Law_Util.h"
 #include "../STK_Arrays_Util.h"
 

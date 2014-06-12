@@ -35,10 +35,7 @@
 #ifndef STK_EXPRBASEFUNCTORS_H
 #define STK_EXPRBASEFUNCTORS_H
 
-#include "../../Sdk/include/STK_StaticAssert.h"
 #include "../../Arrays/include/STK_ExprBase.h"
-
-
 
 namespace STK
 {

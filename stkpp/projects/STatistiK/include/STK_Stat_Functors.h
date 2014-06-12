@@ -35,9 +35,6 @@
 #ifndef STK_STAT_FUNCTORS_H
 #define STK_STAT_FUNCTORS_H
 
-#include "../../Sdk/include/STK_MetaTemplate.h"
-#include "../../Sdk/include/STK_StaticAssert.h"
-
 #include "../../Arrays/include/STK_ExprBaseFunctors.h"
 
 

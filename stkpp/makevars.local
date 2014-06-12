@@ -7,11 +7,13 @@
 #
 #-----------------------------------------------------------------------
 #
-#   HASRMATH 't' if your system has libRmath
-HASRMATH = t
+# HASRMATH 't' if your system has libRmath.
+# Note: If HASRMATH = t, you have to add the lines
+# LIB_RMATH_A = /usr/[local/]lib/libRmath.a   # check the path on your system
+# R_FLAGS = -DMATHLIB_STANDALONE
+#
 
-LIB_RMATH_A = /usr/lib/libRmath.a
-R_FLAGS = -DMATHLIB_STANDALONE
+HASRMATH = f
 
 #-----------------------------------------------------------------------
 # make program
