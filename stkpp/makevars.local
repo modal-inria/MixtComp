@@ -55,18 +55,4 @@ CFLAGS   = -Wno-long-long
 LDFLAGS =
 LDLIBS = -lm
 
-#-----------------------------------------------------------------------
-# flags in Release mode 
-#CXXFLAGS   = -std=c++11 -ansi -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
-CXXFLAGS   = -ansi -pedantic -Wall -O3 -march=native -funroll-loops
-
-#-----------------------------------------------------------------------
-# Uncomment the next line if you want to have 0 based arrays 
-#STK_FLAGS += -DSTKBASEARRAYS=0
-
-#-----------------------------------------------------------------------
-# Uncomment the next line if you want to use wchar set
-# (will not work).
-# STK_FLAGS = -DSTK_UNICODE
-
--include ~/.R/Makevars
+include $(R_HOME)/etc${R_ARCH}/Makeconf

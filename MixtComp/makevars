@@ -25,9 +25,10 @@
 # CXXFLAGS = -ansi -fPIC -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
 
 # CXXFLAGS = -ansi -fPIC -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
-CXXFLAGS = -m64 -O2 -Wall -std=gnu99 -mtune=core2
+CXXFLAGS = -m64 -O2 -Wall -mtune=core2
+# include $(R_HOME)/etc$(R_ARCH)/Makeconf
 
 # R related compiler options overrides
 # -include ~/.R/Makevars
 
-CXXFLAGS += -MD -MP -I..
+CXXFLAGS += -MD -MP
