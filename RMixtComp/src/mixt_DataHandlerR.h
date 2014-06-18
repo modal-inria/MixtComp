@@ -31,7 +31,7 @@
 #include <vector>
 #include <Rcpp.h>
 #include "stkpp/projects/DManager/include/STK_IDataHandler.h"
-#include "mixt_AugmentedData.h"
+#include "MixtComp/src/Data/mixt_AugmentedData.h"
 
 namespace mixt
 {
@@ -174,7 +174,7 @@ void DataHandlerR::getDataHelper(std::string const& idData,
     Rcpp::List ls_listMissing = ls_augData["listMissing"];
     for (int i = 0; i < ls_listMissing.size(); ++i)
     {
-      augData.v_missing_.push_back(pos(ls_listMissing[i] - 1, j));
+      augData.v_missing_.push_back(pos(int(ls_listMissing[i]) - 1, j));
     }
 
     // filling v_missingFiniteValues_

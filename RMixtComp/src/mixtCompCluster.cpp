@@ -21,7 +21,7 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-
+#include "mixt_DataHandlerR.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 
 // [[Rcpp::export]]

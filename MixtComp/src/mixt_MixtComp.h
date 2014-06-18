@@ -26,7 +26,6 @@
 
 #include "stkpp/include/Clustering.h"
 
-#include "Data/mixt_DataHandlerR.h"
 #include "Mixture/StkppMixturesBridges/mixt_Clust_Traits.h"
 #include "Manager/mixt_MixtureManager.h"
 #include "Strategy/mixt_SEMStrategy.h"

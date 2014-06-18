@@ -26,7 +26,7 @@ MCDIR = ../../MixtComp
 MCLIB = ../../MixtComp/lib/libMixtComp.a
 
 # Flags for the cpp files at the root, i.e.
-PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -MD -MP -I../..
+PKG_CXXFLAGS=-I${R_HOME}/include -I\include `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` `Rscript -e "Rcpp:::CxxFlags()"` -I../.. -MD -MP
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB)
