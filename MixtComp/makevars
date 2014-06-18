@@ -22,9 +22,12 @@
 
 #-----------------------------------------------------------------------
 # common compile flags
-CXXFLAGS = -ansi -fPIC -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
+# CXXFLAGS = -ansi -fPIC -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
+
+# CXXFLAGS = -ansi -fPIC -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
+CXXFLAGS = -m64 -O2 -Wall -std=gnu99 -mtune=core2
 
 # R related compiler options overrides
--include ~/.R/Makevars
+# -include ~/.R/Makevars
 
 CXXFLAGS += -MD -MP -I..
