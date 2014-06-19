@@ -36,9 +36,9 @@
 #ifndef STK_ALLOCATORBASE_H
 #define STK_ALLOCATORBASE_H
 
-#include "../../STKernel/include/STK_Range.h"
+#include "STKernel/include/STK_Range.h"
 
-#include "../../Sdk/include/STK_Macros.h"
+#include "Sdk/include/STK_Macros.h"
 
 #include "STK_IContainerRef.h"
 

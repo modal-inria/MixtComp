@@ -36,7 +36,6 @@
 #ifndef STK_STAT_UNIVARIATEREAL_H
 #define STK_STAT_UNIVARIATEREAL_H
 
-#include "../../Arrays/include/STK_ITContainer2D.h"
 #include "../../DManager/include/STK_HeapSort.h"
 #include "../../DManager/include/STK_Variable.h"
 

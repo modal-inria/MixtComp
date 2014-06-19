@@ -29,7 +29,7 @@
  **/
 
 /** @file STK_Law_Util.h
- *  @brief In this file we define the utilities constant and method for the law
+ *  @brief In this file we define the utilities constant and method for the Law
  *  namespace.
  **/
 

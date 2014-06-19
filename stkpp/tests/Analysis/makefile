@@ -80,13 +80,13 @@ progs: $(TEST_PROGS)
 # test testBetaRatio.o object file 
 $(BIN_DIR)testAnalysis.o: testAnalysis.cpp makefile $(CXX_LIB)
 	@ case x$(HASRMATH) in xt ) \
-	echo $(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
+	echo $(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 esac
 
 $(BIN_DIR)testBetaRatio.o: testBetaRatio.cpp makefile $(CXX_LIB)
 	@ case x$(HASRMATH) in xt ) \
-	echo 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
+	echo 	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 esac
 
@@ -108,7 +108,7 @@ esac
 # Objects compilation rules
 #
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # program compilation rules

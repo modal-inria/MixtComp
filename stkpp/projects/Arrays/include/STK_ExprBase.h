@@ -61,14 +61,14 @@ template<class Derived, class Rhs> struct  ProductReturnType;
 template<class Derived> class  ArrayInitializer;
 } // namespace STK
 
-#include "../../STKernel/include/STK_Functors.h"
+#include "STKernel/include/STK_Functors.h"
 
-#include "./products/STK_ProductOperators.h"
+#include "Arrays/include/products/STK_ProductOperators.h"
 
-#include "./operators/STK_TransposeOperator.h"
-#include "./operators/STK_UnaryOperators.h"
-#include "./operators/STK_BinaryOperators.h"
-#include "./operators/STK_DotOperators.h"
+#include "Arrays/include/operators/STK_TransposeOperator.h"
+#include "Arrays/include/operators/STK_UnaryOperators.h"
+#include "Arrays/include/operators/STK_BinaryOperators.h"
+#include "Arrays/include/operators/STK_DotOperators.h"
 
 namespace STK
 {

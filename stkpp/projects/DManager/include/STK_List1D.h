@@ -36,8 +36,6 @@
 #ifndef STK_LIST_H
 #define STK_LIST_H
 
-#include "../../Arrays/include/STK_Traits.h"
-
 #include "../../Arrays/include/STK_Arrays_Util.h"
 #include "../../Arrays/include/STK_IContainerRef.h"
 #include "../../Arrays/include/STK_ITContainer1D.h"
@@ -116,7 +114,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
     List1D( Range const& I, Type const& v)
           : ITContainer1D<List1D >(I), IContainerRef(false)
     { initialize(I);
-      Cell* p1  = p_first_;
+      Cell* p1  = p_begin_;
       for ( int j=this->firstIdx(); j<=this->lastIdx(); j++)
       { (*p1) = v;             // overwrite the value of the current cell
         p1    = p1->getRight();   // Goto Right place
@@ -130,8 +128,8 @@ class List1D : public ITContainer1D< List1D<Type_> >
       // initialize container
       initialize(T.range());
       // copy the container
-      Cell* p1  = p_first_;
-      Cell* pt1 = T.p_first_;
+      Cell* p1  = p_begin_;
+      Cell* pt1 = T.p_begin_;
       for (int j=T.firstIdx(); j<=T.lastIdx(); j++)
       { (*p1) = pt1->data();   // write the value of the current cell
         p1    = p1->getRight();   // Goto Right
@@ -150,7 +148,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
      **/
     List1D( Cell* const & p_first, Cell* const & p_last, Range const& J)
           : Base(J), IContainerRef(true)
-          , p_first_(p_first)
+          , p_begin_(p_first)
           , p_last_(p_last)
     {
       currentPosition_  = this->firstIdx();
@@ -160,7 +158,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
     /** destructor. */
     ~List1D() { if (!this->isRef()) freeMem();}
     /** @return the pointer on the first cell of the list */
-    Cell const* const p_firstIdx() const { return p_first_;}
+    Cell const* const p_firstIdx() const { return p_begin_;}
     /** @return the pointer on the last cell of the list */
     Cell const* const p_lastIdx() const { return p_last_;}
     /** access to one element.
@@ -253,15 +251,15 @@ class List1D : public ITContainer1D< List1D<Type_> >
               p1 = p2;                   // iterate
             }
             // set the original right side of cend
-            p_last_->setRight(p_first_);
+            p_last_->setRight(p_begin_);
             STKRUNTIME_ERROR_1ARG(List1D::pushBack,n,memory allocation failed);
           } // end catch
           // if no error
           p1->setRight(p2);  // Set the right cell of the current cell
           p1 = p2;           // Set the current cell to the the next cell
         }
-        p1->setRight(p_first_);    // the last cell point on the first cell
-        p_first_->setLeft(p1);     // the first cell point on the last cell
+        p1->setRight(p_begin_);    // the last cell point on the first cell
+        p_begin_->setLeft(p1);     // the first cell point on the last cell
         p_last_ = p1;              // the last cell adress
         this->incLast(n);          // Update size of the container
       }
@@ -294,11 +292,11 @@ class List1D : public ITContainer1D< List1D<Type_> >
       Range range(this->range());
 
       // merge
-      otherRef.p_first_->setLeft(p_last_);
-      otherRef.p_last_->setRight(p_first_);
-      p_last_->setRight(otherRef.p_first_);
+      otherRef.p_begin_->setLeft(p_last_);
+      otherRef.p_last_->setRight(p_begin_);
+      p_last_->setRight(otherRef.p_begin_);
       p_last_ = otherRef.p_last_;
-      p_first_->setLeft(p_last_);
+      p_begin_->setLeft(p_last_);
 
       // compute first index of the first column added
       const int first = range.lastIdx() + 1;
@@ -308,7 +306,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
 
       // reset p_current_ to first position
       otherRef.currentPosition_ = first;
-      otherRef.p_current_ = otherRef.p_first_;
+      otherRef.p_current_ = otherRef.p_begin_;
     }
     /** Insert n elts at the position pos of the container.
      *  @param pos index where to insert elements
@@ -351,7 +349,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
       p1->setRight(p_current_);     // the last cell point on the first cell
       p_current_->setLeft(p1);      // the first cell point on the last cell
       if ( pos==this->firstIdx() )     // if the beginning was modified
-      { p_first_ = p0->getRight();} // set new beginning
+      { p_begin_ = p0->getRight();} // set new beginning
       this->incLast(n);             // Update the size of the container
       currentPosition_ +=n;         // Update the current position
     }
@@ -411,7 +409,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
         p_current_->setRight(p2);       // p_current_ is on j-1 cell
         // If the first column has been erased
         if (pos == this->firstIdx())
-        { p_first_  = p2;   // Set the new beg cell
+        { p_begin_  = p2;   // Set the new beg cell
           p_current_ = p2;   // p_current_
           currentPosition_++;       // and current position
         }
@@ -457,7 +455,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
 
       /* copy without ovelapping.                                     */
       if (this->firstIdx() < T.firstIdx())
-      { Cell *p1 = p_first_, *pt1 = T.p_first_;
+      { Cell *p1 = p_begin_, *pt1 = T.p_begin_;
         for (int j=1; j<=this->size(); j++)
         { (*p1) = pt1->data();   // overwrite the value
           p1    = p1->getRight();   // Goto Right for this
@@ -500,7 +498,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
      **/
     List1D<Type>& operator=(Type const& v)
     {
-      Cell* p1 = p_first_;
+      Cell* p1 = p_begin_;
       for (int j=1; j<=this->size(); j++)
       { p1->setData(v);      // overwrite the value of the current cell
         p1    = p1->getRight(); // Goto Right
@@ -508,7 +506,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
       return *this;
     }
   protected:
-    Cell *p_first_;       ///< First Element of the List
+    Cell *p_begin_;       ///< First Element of the List
     Cell *p_last_;        ///< Last Element of the List
     /** Protected function for initialization. */
     void initialize(Range const& I)
@@ -523,7 +521,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
       Cell *p1, *p2;        // Auxiliary pointer for cells
 
       p1 = new Cell();        // pointer on the first cell
-      p_first_ = p1;                     // set the first cell
+      p_begin_ = p1;                     // set the first cell
       // main loop for the other cells
       for (int j=this->firstIdx()+1; j<=this->lastIdx(); j++)
       { try
@@ -545,16 +543,16 @@ class List1D : public ITContainer1D< List1D<Type_> >
         p1 = p2;               // and iterate
       }
       p_last_ = p1;              // Set the last cell
-      p_last_->setRight(p_first_);  // the last cell point on the first cell
-      p_first_->setLeft(p_last_);   // the first cell point on the last cell
+      p_last_->setRight(p_begin_);  // the last cell point on the first cell
+      p_begin_->setLeft(p_last_);   // the first cell point on the last cell
       currentPosition_  = this->firstIdx();    // current position is first position
-      p_current_ = p_first_;            // CurrentPositionent cell is first cell
+      p_current_ = p_begin_;            // CurrentPositionent cell is first cell
     }
     /** Protected function for deallocation.*/
     void freeMem()
     {
       if (this->isRef()) return;   // Nothing to do for ref
-      Cell *p2, *p1 =p_first_;   // Auxiliary pointers for cells
+      Cell *p2, *p1 =p_begin_;   // Auxiliary pointers for cells
       // for all cells
       for (int j=this->firstIdx(); j<=this->lastIdx(); j++)
       { p2 = p1->getRight();               // get the right cell
@@ -572,7 +570,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
 
     /** set members values to default. */
     void setDefault()
-    { p_first_  = 0;
+    { p_begin_  = 0;
       p_last_  = 0;
       p_current_ = 0;
       currentPosition_  = this->firstIdx();
@@ -608,7 +606,7 @@ class List1D : public ITContainer1D< List1D<Type_> >
         if ((currentPosition_-pos) <= (pos-this->firstIdx()))
           for( ;currentPosition_!=pos; ) moveCurrentPositionLeft();
         else // else start from the beginning
-          for( currentPosition_ = this->firstIdx(), p_current_ = p_first_; currentPosition_!=pos; )
+          for( currentPosition_ = this->firstIdx(), p_current_ = p_begin_; currentPosition_!=pos; )
             moveCurrentPositionRight();
       }
     }

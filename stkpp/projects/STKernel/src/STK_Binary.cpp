@@ -34,6 +34,7 @@
  **/
 
 #include "../include/STK_Binary.h"
+#include "../include/STK_Integer.h"
 
 namespace STK
 {
@@ -52,39 +53,20 @@ ostream& operator << (ostream& os, const Binary& output)
 /*  Overloading of the istream >> for the type Binary. */
 istream& operator >> (istream& is, Binary& input)
 {
-  // get current file position
-  std::ios::pos_type pos = is.tellg();
-  // try to read a discrete value
+  // try to read an integer
   int buff;
-  // failed to read a discrete value
-  if ((is >> buff).fail())
+  streamToInt(is, buff);
+  switch (buff)
   {
-    is.seekg(pos);
-    // clear failbit and eofbit state if necessary
-    is.clear(is.rdstate() & ~std::ios::failbit);
-    if (is.eof()) is.clear(is.rdstate() & ~std::ios::eofbit);
-    // Try to read a NA value, in all case input is a NA object
-    input = Arithmetic<Binary>::NA();
-    Char* buffer = new Char[stringNaSize()+1];
-    is.getline(buffer, stringNaSize()+1);
-    // if we don't get a NA String, rewind stream
-    if (!(stringNa.compare(buffer) == 0)) { is.seekg(pos); }
-    delete[] buffer;
-  }
-  else
-  {
-    switch (buff)
-    {
-      case 0:
-        input = zero_;
-        break;
-      case 1:
-        input = one_;
-        break;
-      default:
-        input = binaryNA_;
-        break;
-    }
+    case 0:
+      input = zero_;
+      break;
+    case 1:
+      input = one_;
+      break;
+    default:
+      input = binaryNA_;
+      break;
   }
   return is;
 }

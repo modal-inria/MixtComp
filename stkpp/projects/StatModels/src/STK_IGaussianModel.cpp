@@ -38,7 +38,6 @@
 
 #include "../include/STK_IGaussianModel.h"
 
-#include "../../STatistiK/include/STK_Stat_UnivariateReal.h"
 #include "../../STKernel/include/STK_Arithmetic.h"
 
 namespace STK

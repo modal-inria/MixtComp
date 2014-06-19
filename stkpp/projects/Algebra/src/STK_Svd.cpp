@@ -211,19 +211,19 @@ Real Svd::bidiag(const Matrix& M, Point& D, Vector& F)
   // norm of the matrix M
   Real norm  = 0.0;
   // compute the number of iteration
-  int first_iter = M.firstIdxCols();
+  int begin_iter = M.firstIdxCols();
   int last_iter  = M.firstIdxCols() + std::min(M.sizeCols(), M.sizeRows()) -1;
   // Diagonal values
-  D.resize(Range(first_iter, last_iter, 0));
+  D.resize(Range(begin_iter, last_iter, 0));
   // Upper diagonal values
-  F.resize(Range(first_iter-1, last_iter, 0));
+  F.resize(Range(begin_iter-1, last_iter, 0));
   F.front() = 0.0;
   // Bidiagonalisation of M
   // loop on the cols and rows
   Range rowRange0(M.rows())
     , rowRange1(Range(M.firstIdxRows()+1, M.lastIdxRows(), 0))
     , colRange1(Range(M.firstIdxCols()+1, M.lastIdxCols(), 0));
-  for ( int iter=first_iter ; iter<=last_iter
+  for ( int iter=begin_iter ; iter<=last_iter
       ; iter++
       , rowRange0.incFirst(1)
       , rowRange1.incFirst(1)

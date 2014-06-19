@@ -39,10 +39,6 @@
 #ifndef STK_ARRAY2DVECTOR_H
 #define STK_ARRAY2DVECTOR_H
 
-#include "../../STKernel/include/STK_Real.h"
-
-
-#include "STK_IArray2D.h"
 #include "STK_Display.h"
 
 namespace STK

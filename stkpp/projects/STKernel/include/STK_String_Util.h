@@ -30,14 +30,12 @@
  **/
 
 /** @file STK_String_Util.h
- *  @brief In this file we define miscellaneous utilities
- *  functions for Strings and the global String used for handling the NA values.
+ *  @brief In this file we define miscellaneous utilities functions for Strings.
  **/
 
 #ifndef STK_STRING_UTIL_H
 #define STK_STRING_UTIL_H
 
-#include "STK_String.h"
 #include "STK_Proxy.h"
 
 namespace STK
@@ -45,15 +43,14 @@ namespace STK
 /** @ingroup Base
  *  @brief convert a String to Type
  *
- *  This method return true if the String s could be converted into
+ *  This method return true if the String @c s could be converted into
  *  a correct Type t.
  *  http://www.codeguru.com/forum/showpost.php?p=678440&postcount=1
  *  http://c.developpez.com/faq/cpp/?page=strings#STRINGS_is_type
  *
- *  The conversion is successful if it does not remain
- *  Char inside the String.
- *  The operator >> have been overloaded for each base type in order to
- *  return a NA value if fail.
+ *  The conversion is successful if it does not remain @c Char inside the String.
+ *  The operator >> have been overloaded for each stk++ base type in order to
+ *  return a NA value if the conversion fail.
  *
  *  @param t The value to get from the String
  *  @param s the String to convert
@@ -75,7 +72,7 @@ bool stringToType( Type  &t, String const& s
 /** @ingroup Base
  *  @brief convert a String to Type
  *
- *  This method return the String s converted into a correct Type t
+ *  This method return the String @c s converted into a correct Type t
  *  without, formatting.
  *  http://www.codeguru.com/forum/showpost.php?p=678440&postcount=1
  *  http://c.developpez.com/faq/cpp/?page=strings#STRINGS_is_type
@@ -124,7 +121,7 @@ String& toUpperString( String& s);
  *  @brief convert the characters of the String to upper case
  *
  *  @param s The String to convert
- *  @return a String in upper case
+ *  @return a copy of @c s in upper case
  **/
 String toUpperString( String const& s);
 

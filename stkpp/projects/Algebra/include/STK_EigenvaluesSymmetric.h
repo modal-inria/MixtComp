@@ -122,7 +122,7 @@ class EigenvaluesSymmetric : public IRunnerUnsupervised<MatrixSquare, Vector>
     /** get the first index of the rows/columns
      *  @return the index of the first row/column
      **/
-    inline int const& firstIdx() const{ return first_;}
+    inline int const& firstIdx() const{ return begin_;}
     /** get last index of the rows/columns
      *  @return the index of the last row/column
      **/
@@ -149,7 +149,7 @@ class EigenvaluesSymmetric : public IRunnerUnsupervised<MatrixSquare, Vector>
     /// Array of the eigenvalues
     MatrixDiagonal D_;
     /// first row/col of P_
-    int first_;
+    int begin_;
     /// last row/col of P_
     int last_;
     /// norm of the matrix

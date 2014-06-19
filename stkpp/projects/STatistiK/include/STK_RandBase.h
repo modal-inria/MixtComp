@@ -40,8 +40,6 @@
 #define STK_RANDBASE_H
 
 #include "../../STKernel/include/STK_Misc.h"
-#include "../../STKernel/include/STK_Integer.h"
-#include "../../STKernel/include/STK_Real.h"
 
 #include "../../Arrays/include/STK_ArrayBase.h"
 

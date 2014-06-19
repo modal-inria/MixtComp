@@ -39,7 +39,6 @@
 #include "STK_String_Util.h"
 #include <map>
 
-
 namespace STK
 {
 
@@ -48,11 +47,11 @@ namespace STK
  *
  *  The type Binary is a representation of dichotomic variables.
  **/
- enum Binary
- { zero_ =0, ///< 0 value
-   one_  =1, ///< 1 value
-   binaryNA_=__INT_MAX__ ///< Not Available value
- };
+enum Binary
+{ zero_ =0, ///< 0 value
+  one_  =1, ///< 1 value
+  binaryNA_=__INT_MAX__ ///< Not Available value
+};
 
  /** @ingroup Arithmetic
   *  @brief Specialization for Binary.
@@ -136,6 +135,24 @@ String binaryToString( Binary const& type);
  *  @return the string associated to this type.
  **/
 String binaryToString( Binary const& type, std::map<Binary, String> mapping);
+
+/** @ingroup Base
+ *  @brief specialization for Binary
+ *  @param s the String to convert
+ *  @return The value to get from the String
+ **/
+template<>
+inline Binary stringToType<Binary>( String const& s)
+{ return stringToBinary(s);}
+
+/** @ingroup Base
+ *  @brief specialization for Binary
+ *  @param t The Binary to convert to String
+ *  @param f flag, by default write every number in decimal
+ **/
+template<>
+inline String typeToString<Binary>( Binary const& t, std::ios_base& (*f)(std::ios_base&))
+{ return binaryToString(t);}
 
 } // namespace STK
 

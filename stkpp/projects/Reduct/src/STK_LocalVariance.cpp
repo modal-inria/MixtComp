@@ -213,19 +213,19 @@ void LocalVariance::computeCovarianceMatrices()
   covariance_ = p_dataStatistics_->covariance();
 
   // constants
-  const int first_ind = p_data_->firstIdxRows();
+  const int begin_ind = p_data_->firstIdxRows();
   const int last_ind  = p_data_->lastIdxRows();
-  const int first_var = p_data_->firstIdxCols();
+  const int begin_var = p_data_->firstIdxCols();
   const int last_var  = p_data_->lastIdxCols();
   const Real pond = 2* nbNeighbor_ * p_data_->sizeRows();
 
   // compute local covariance matrix
-  for (int j=first_var; j<=last_var; j++)
+  for (int j=begin_var; j<=last_var; j++)
   {
-    for (int k=first_var; k<=last_var; k++)
+    for (int k=begin_var; k<=last_var; k++)
     {
       Real sum = 0.0;
-      for (int i=first_ind; i<=last_ind; i++)
+      for (int i=begin_ind; i<=last_ind; i++)
       {
         for (int l = 1; l <= nbNeighbor_; ++l)
         {
@@ -247,19 +247,19 @@ void LocalVariance::computeCovarianceMatrices( Vector const& weights)
   covariance_ = p_dataStatistics_->covariance();
 
   // get dimensions
-  const int first_ind = p_data_->firstIdxRows();
+  const int begin_ind = p_data_->firstIdxRows();
   const int last_ind  = p_data_->lastIdxRows();
-  const int first_var = p_data_->firstIdxCols();
+  const int begin_var = p_data_->firstIdxCols();
   const int last_var  = p_data_->lastIdxCols();
   const Real pond = 2* nbNeighbor_ * p_data_->sizeRows() ;
   // compute weighted local covariance matrix
-  for (int i=first_var; i<=last_var; i++)
+  for (int i=begin_var; i<=last_var; i++)
   {
     // compute the local covariance matrix
-    for (int j=first_var; j<=last_var; j++)
+    for (int j=begin_var; j<=last_var; j++)
     {
       Real sum = 0.0;
-      for (int k=first_ind; k<=last_ind; k++)
+      for (int k=begin_ind; k<=last_ind; k++)
       {
         for (int l = 1; l <= nbNeighbor_; ++l)
         {
@@ -311,35 +311,35 @@ void LocalVariance::computeAxis()
 void LocalVariance::prim()
 {
   // get dimensions
-  const int first_ind = p_data_->firstIdxRows();
+  const int begin_ind = p_data_->firstIdxRows();
   const int last_ind = p_data_->lastIdxRows();
   /* value vector : store the minimal value. */
   Vector value(p_data_->rows(), Arithmetic<Real>::max());
   /* position of the points */
   Array1D<int> ipos(p_data_->rows());
   // Initialization the position array
-  for (int i=first_ind; i<=last_ind; i++) ipos[i] = i;
+  for (int i=begin_ind; i<=last_ind; i++) ipos[i] = i;
 
   // start Prim algorithm
   //Initialization of the root
-  value[first_ind] = 0.0;               // the root have value 0.0
-  neighbors_(first_ind, 1) = first_ind;          // and have itself as predecessor
-  int imin = first_ind;             // the index of the current minimal value
+  value[begin_ind] = 0.0;               // the root have value 0.0
+  neighbors_(begin_ind, 1) = begin_ind;          // and have itself as predecessor
+  int imin = begin_ind;             // the index of the current minimal value
   Real    kmin = 0.0;                   // the current minimal value
   // begin iterations
-  for (int iter = last_ind; iter>=first_ind; iter--)
+  for (int iter = last_ind; iter>=begin_ind; iter--)
   {
     // put the minimal key at the end of the array key_
     value.swap(imin, iter);  // put the minimal value to the end
     ipos.swap(imin, iter);   // update the position of current minimal point
     // Update the value for the neighbors points and find minimal value
-    imin = first_ind;
-    kmin = value[first_ind];
+    imin = begin_ind;
+    kmin = value[begin_ind];
     // ref on the current point
     int icur = ipos[iter];
     Point P(p_data_->row(icur), true);
     // update distance of the neighbors point
-    for (int i=first_ind; i<iter; i++)
+    for (int i=begin_ind; i<iter; i++)
     {
       // check if we have a better distance for the neighbors
       Real d=dist(P, p_data_->row(ipos[i]));
@@ -359,10 +359,10 @@ void LocalVariance::minimalDistance()
   dist_.resize(p_data_->rows(), Range(1,nbNeighbor_));
   dist_ = Arithmetic<Real>::max();
   // get dimensions
-  const int first_ind = p_data_->firstIdxRows();
+  const int begin_ind = p_data_->firstIdxRows();
   const int last_ind = p_data_->lastIdxRows();
   // start minimal distance algorithm
-  for (int j = first_ind; j<last_ind; j++)
+  for (int j = begin_ind; j<last_ind; j++)
   {
     // ref on the current point
     Point curPoint(p_data_->row(j), true);

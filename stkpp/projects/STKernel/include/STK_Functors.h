@@ -37,9 +37,8 @@
 #define STK_FUNCTORS_H
 
 #include <cmath>
-#include "../../Sdk/include/STK_MetaTemplate.h"
+#include "Sdk/include/STK_MetaTemplate.h"
 
-#include "STK_Char.h"
 #include "STK_Integer.h"
 
 namespace STK

@@ -36,7 +36,7 @@
 #ifndef STK_MIXTUREMANAGER_H
 #define STK_MIXTUREMANAGER_H
 
-#include "./MixturesBridges/STK_MixtureBridge.h"
+#include "MixturesBridges/STK_MixtureBridge.h"
 
 
 namespace STK

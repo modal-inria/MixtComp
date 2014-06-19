@@ -41,7 +41,6 @@
 
 #include "../../Arrays/include/STK_Array2DSquare.h"
 
-#include "STK_Stat_UnivariateReal.h"
 #include "STK_Stat_BivariateRealReal.h"
 #include "STK_Stat_Multivariate.h"
 #include "STK_Stat_Functors.h"

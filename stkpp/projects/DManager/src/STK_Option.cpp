@@ -34,10 +34,7 @@
  *  @brief In this file we implement the Option class.
  **/
 
-#include "../include/STK_Option.h"
 #include "../include/STK_IPage.h"
-
-#include "../../STKernel/include/STK_String_Util.h"
 #include "../../STKernel/include/STK_Exceptions.h"
 
 namespace STK

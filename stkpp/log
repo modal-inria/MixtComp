@@ -1,0 +1,20 @@
+testCG.cpp:1:0: warning: -fPIC ignored for target (all code is position independent) [enabled by default]
+In file included from ../../include/../projects/Algebra/include/../../Arrays/include/visitors/../../../STatistiK/include/../../Arrays/include/./products/../STK_ITContainer2D.h:43:0,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/visitors/../../../STatistiK/include/../../Arrays/include/./products/../STK_CAllocator.h:42,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/visitors/../../../STatistiK/include/../../Arrays/include/./products/STK_ProductOperators.h:41,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/visitors/../../../STatistiK/include/../../Arrays/include/STK_ExprBase.h:66,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/visitors/../../../STatistiK/include/../../Arrays/include/STK_ArrayBase.h:38,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/visitors/../../../STatistiK/include/STK_RandBase.h:46,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/visitors/../../../STatistiK/include/STK_Law_Util.h:40,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/visitors/STK_Visitors.h:38,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/STK_ExprBaseVisitor.h:38,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/STK_IArray2DBase.h:44,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/STK_IArray2D.h:45,
+                 from ../../include/../projects/Algebra/include/../../Arrays/include/STK_Array2DPoint.h:39,
+                 from ../../include/../projects/Algebra/include/STK_LinAlgebra2D.h:41,
+                 from ../../include/Algebra.h:65,
+                 from testCG.cpp:35:
+../../include/../projects/Algebra/include/../../Arrays/include/visitors/../../../STatistiK/include/../../Arrays/include/./products/../../../Sdk/include/STK_Macros.h:41:52: fatal error: ../../STKernel/include/STK_String_Util.h: No such file or directory
+compilation terminated.
+make[1]: *** [../../bin/testCG.o] Error 1
+make: *** [testsAlgebra] Error 2

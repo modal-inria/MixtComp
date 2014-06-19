@@ -77,7 +77,7 @@ progs: $(CXX_PROGS)
 #
 $(BIN_DIR)%.o: makefile
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $< -c -o $@
 
 
 #-----------------------------------------------------------------------

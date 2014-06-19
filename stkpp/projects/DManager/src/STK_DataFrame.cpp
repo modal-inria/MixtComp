@@ -33,7 +33,6 @@
  *  @brief In this file we implement the DataFrame (Table) class.
  **/
 
-#include "../include/STK_DataFrame.h"
 #include "../include/STK_ExportToCsv.h"
 
 namespace STK

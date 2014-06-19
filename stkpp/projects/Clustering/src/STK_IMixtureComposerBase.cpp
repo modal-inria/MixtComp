@@ -102,7 +102,7 @@ int IMixtureComposerBase::cStep()
 {
   tik_ = 0.;
   for (int i=tik_.firstIdxRows(); i<= tik_.lastIdxRows(); i++)
-  { tik_.elt(i, zi_.elt(i)) = 1.;}
+  { tik_.elt(i, zi_[i]) = 1.;}
   // count the minimal number of individuals in a class
   return (Stat::sum(tik_).minElt());
 }

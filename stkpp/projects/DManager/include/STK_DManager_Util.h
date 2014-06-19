@@ -40,9 +40,6 @@
 
 #include <list>
 
-#include "../../STKernel/include/STK_Char.h"
-#include "../../STKernel/include/STK_String_Util.h"
-#include "../../STKernel/include/STK_Stream.h"
 #include "../../STKernel/include/STK_Integer.h"
 
 namespace STK

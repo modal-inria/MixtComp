@@ -36,8 +36,8 @@
 #ifndef STK_INTEGER_H
 #define STK_INTEGER_H
 
-#include "STK_Arithmetic.h"
-#include "STK_IdTypeImpl.h"
+#include "STK_String_Util.h"
+#include <map>
 
 namespace STK
 {
@@ -91,7 +91,66 @@ struct IdTypeImpl<Integer>
   /** Give the IdType of the type int. */
   static IdType returnType() { return(integer_);}
 };
-  
+
+/** @ingroup Base
+ *  extract an int from an input stream. If the extraction failed, value is
+ *  set to a NA value.
+ *  @param is the stream
+ *  @param value the value extracted from the stream.
+ *  @return the current stream. If the extraction failed, the stream is unmodified.
+ **/
+istream& streamToInt(istream& is, int& value);
+
+/** @ingroup Base
+ *  Convert a String to an int.
+ *  @param type the String we want to convert
+ *  @return the int represented by the String @c type. if the string
+ *  does not match any known name, the @c unknown_ type is returned.
+ **/
+int stringToInt( String const& type);
+
+/** @ingroup Base
+ *  Convert a String to an int using a map.
+ *  @param type the String we want to convert
+ *  @param mapping the mapping between the string and the Int
+ *  @return the Int represented by the String @c type. if the string
+ *  does not match any known name, the @c unknown_ type is returned.
+ **/
+int stringToInt( String const& type, std::map<String, int> const& mapping);
+
+/** @ingroup Base
+ *  Convert a Int to a String.
+ *  @param type the type of int we want to convert
+ *  @return the string associated to this type.
+ **/
+String intToString( int const& type);
+
+/** @ingroup Base
+ *  Convert an int to a String.
+ *  @param type the type of int we want to convert
+ *  @param mapping the mapping between the Int and the String
+ *  @return the string associated to this type.
+ **/
+String intToString( int const& type, std::map<int, String> mapping);
+
+/** @ingroup Base
+ *  @brief specialization for int
+ *  @param s the String to convert
+ *  @return The value to get from the String
+ **/
+template<>
+inline int stringToType<int>( String const& s)
+{ return stringToInt(s);}
+
+/** @ingroup Base
+ *  @brief specialization for int
+ *  @param t The Int to convert to String
+ *  @param f flag, by default write every number in decimal
+ **/
+template<>
+inline String typeToString<int>( int const& t, std::ios_base& (*f)(std::ios_base&))
+{ return intToString(t);}
+
 } // namespace STK
 
 #endif /*STK_INTEGER_H*/

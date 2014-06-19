@@ -85,7 +85,7 @@ $(BIN_DIR)%.o: makefile
 $(BIN_DIR)testList1D.o: $(DMANAGER_INC_DIR)STK_List1D.h
 
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $< -c -o $@
 
 
 #-----------------------------------------------------------------------

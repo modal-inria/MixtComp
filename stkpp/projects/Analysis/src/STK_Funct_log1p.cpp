@@ -35,12 +35,9 @@
 #include <cmath>
 
 #include "../../STKernel/include/STK_Exceptions.h"
-#include "../../STKernel/include/STK_Integer.h"
-#include "../../STKernel/include/STK_Real.h"
-#include "../../STKernel/include/STK_Misc.h"
 
-#include "../include/STK_ISerie.h"
 #include "../include/STK_Algo.h"
+#include "../include/STK_ISerie.h"
 #include "../include/STK_Funct_util.h"
 
 namespace STK

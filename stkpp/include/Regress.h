@@ -78,8 +78,6 @@
 
 #include "../projects/Regress/include/STK_Regress_Util.h"
 
-#include "../projects/Regress/include/STK_IRegression.h"
-
 #include "../projects/Regress/include/STK_MultidimRegression.h"
 
 #include "../projects/Regress/include/STK_BSplineCoefficients.h"

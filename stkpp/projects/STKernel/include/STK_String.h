@@ -40,9 +40,6 @@
 #include <string>
 
 // STK headers
-#include "STK_Char.h"
-#include "STK_Arithmetic.h"
-#include "STK_IdTypeImpl.h"
 #include "STK_Stream.h"
 
 namespace STK

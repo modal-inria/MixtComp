@@ -36,7 +36,6 @@
 #ifndef STK_DISPLAY_H
 #define STK_DISPLAY_H
 
-#include "../../STKernel/include/STK_Integer.h"
 #include "../../STKernel/include/STK_Real.h"
 
 #include "../../DManager/include/STK_ExportToCsv.h"

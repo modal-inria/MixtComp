@@ -35,8 +35,6 @@
 
 #include <cmath>
 
-#include "../../STKernel/include/STK_Integer.h"
-#include "../../STKernel/include/STK_Real.h"
 #include "../../STKernel/include/STK_Misc.h"
 #include "../../STKernel/include/STK_Exceptions.h"
 

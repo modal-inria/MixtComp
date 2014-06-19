@@ -43,8 +43,6 @@
 #include <cmath>
 
 // for int and Real
-#include "../../STKernel/include/STK_Integer.h"
-#include "../../STKernel/include/STK_Real.h"
 #include "../../STKernel/include/STK_Misc.h"
 
 #include "../include/STK_Const_Math.h"

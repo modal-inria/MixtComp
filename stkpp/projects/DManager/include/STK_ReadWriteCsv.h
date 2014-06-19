@@ -35,12 +35,10 @@
  *  This class allow to handle csv files in various ways.
  **/
 
-#ifndef READWRITECSV_H
-#define READWRITECSV_H
+#ifndef STK_READWRITECSV_H
+#define STK_READWRITECSV_H
 
 #include <iomanip>
-#include "../../STKernel/include/STK_Stream.h"
-#include "STK_DManager_Util.h"
 #include "STK_Variable.h"
 
 namespace STK
@@ -746,4 +744,4 @@ void TReadWriteCsv<Type>::writeSelection( ostream& os, int top, int bottom, int 
 
 } // namespace STK
 
-#endif // READWRITECSV_H
+#endif // STK_READWRITECSV_H

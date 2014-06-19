@@ -39,7 +39,7 @@
 #ifndef STK_CONST_MATH_H
 #define STK_CONST_MATH_H
 
-#include "../../STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Real.h"
 
 namespace STK
 {

@@ -35,8 +35,6 @@
 #ifndef STK_STAT_BIVARIATE_H
 #define STK_STAT_BIVARIATE_H
 
-#include "../../Arrays/include/STK_ITContainer2D.h"
-
 #include "../include/STK_Stat_UnivariateReal.h"
 
 namespace STK

@@ -35,7 +35,7 @@
 #ifndef STK_ARRAYBASEAPPLYER_H
 #define STK_ARRAYBASEAPPLYER_H
 
-#include "./visitors/STK_Visitors.h"
+#include "visitors/STK_Visitors.h"
 
 namespace STK
 {

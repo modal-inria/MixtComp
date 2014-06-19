@@ -35,8 +35,6 @@
 #ifndef STK_VISITORSELECTOR_H
 #define STK_VISITORSELECTOR_H
 
-#include "STK_VisitorsImpl.h"
-
 namespace STK
 {
 

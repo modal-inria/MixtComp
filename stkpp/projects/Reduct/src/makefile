@@ -58,7 +58,7 @@ CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
 # Compilation rules
 $(BIN_DIR)%.o: $(INC_DIR)%.h makefile
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../.. $(STK_FLAGS) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # creating objects files

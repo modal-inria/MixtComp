@@ -78,12 +78,12 @@ progs: $(CXX_PROGS)
 $(BIN_DIR)testGamma.o: testGamma.cpp makefile
 	@ case x$(HASRMATH) in xt ) \
 	echo compiling $@; \
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 esac
 
 # other object files 
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $< -c -o $@
 
 
 #-----------------------------------------------------------------------

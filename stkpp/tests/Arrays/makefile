@@ -101,7 +101,7 @@ $(BIN_DIR)testArray2D.o: $(ARRAYS_INC_DIR)STK_Array2DVector.h \
                          $(ARRAYS_INC_DIR)STK_IArray2D.h
 
 $(BIN_DIR)%.o: %.cpp makefile $(CXX_LIB)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $< -c -o $@
 
 
 #-----------------------------------------------------------------------

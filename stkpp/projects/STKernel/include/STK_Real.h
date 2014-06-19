@@ -36,8 +36,6 @@
 #ifndef STK_REAL_H
 #define STK_REAL_H
 
-#include "STK_Arithmetic.h"
-#include "STK_IdTypeImpl.h"
 #include "STK_Proxy.h"
 
 namespace STK
@@ -49,7 +47,7 @@ namespace STK
   *
   *  The type Real is defined for the numerical computation and the
   *  internal representation of the continuous variables. By default it is the
-  *  double type, but it can be overridden at compile-time by enabling
+  *  @c double, but it can be overridden at compile-time by enabling
   *  the STKREALAREFLOAT macro.
   **/
 typedef  float Real;

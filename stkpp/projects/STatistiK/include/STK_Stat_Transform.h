@@ -38,8 +38,6 @@
 #include "../../STKernel/include/STK_Arithmetic.h"
 #include "../../STKernel/include/STK_Misc.h"
 
-#include "../../Arrays/include/STK_ITContainer2D.h"
-
 #include "STK_Stat_UnivariateReal.h"
 #include "STK_Stat_Functors.h"
 

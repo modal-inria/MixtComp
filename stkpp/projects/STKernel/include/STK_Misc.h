@@ -37,26 +37,23 @@
 #ifndef STK_MISC_H
 #define STK_MISC_H
 
-#include <cmath>
+#include <cmath> // for sqrt
 #include <cstdlib> // for rand
 
-#include "STK_String.h"
 #include "STK_Integer.h"
 #include "STK_Real.h"
-#include "STK_Stream.h"
-#include "STK_Proxy.h"
 
 namespace STK
 {
 /** @ingroup Base
  *
  *  templated sign value sign(x) * y:
- *  TYPE should be int , long, float or Real
+ *  Type should be an integral type
  *  @param x the sign value
  *  @param y the signed value to return
  **/
-template<class TYPE>
-inline TYPE sign(TYPE const& x, TYPE const& y = 1)
+template<typename Type>
+inline Type sign(Type const& x, Type const& y = Type(1))
 { return( (x<0) ? -y : y); }
 
 /** @ingroup Base
@@ -99,14 +96,9 @@ inline bool isEven(int const& x)
 inline Real norm(Real const& x, Real const& y)
 {
   Real absx = std::abs(x), absy = std::abs(y);
-  if (absx > absy)
-  {
-    return(absx * sqrt(double(1.0+(absy/absx)*(absy/absx))));
-  }
-  else
-  {
-    return(absy == 0.0 ? 0.0 : absy * sqrt(double(1.0+(absx/absy)*(absx/absy))));
-  }
+  return (absx > absy) ?
+    (absx * std::sqrt(Real(1.0+(absy/absx)*(absy/absx))))
+  : (absy == 0.0 ? 0.0 : absy * std::sqrt(Real(1.0+(absx/absy)*(absx/absy))));
 }
 
 } // namespace STK

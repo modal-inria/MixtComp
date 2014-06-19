@@ -87,12 +87,12 @@ void ProjectedVariance::computeAxis()
 
   // compute the number of axis
   Range range(p_data_->firstIdxCols(), std::min(p_data_->firstIdxCols()+dim_-1, p_data_->lastIdxCols()), 0);
-  const int first_axis = range.firstIdx();
+  const int begin_axis = range.firstIdx();
   const int last_axis = range.lastIdx();
   // copy axis and index values
   axis_.resize(p_data_->cols(), range);
   idx_values_.resize(range);
-  for (int j=first_axis; j<=last_axis; j++)
+  for (int j=begin_axis; j<=last_axis; j++)
   {
     axis_.col(j) = eigen.rotation().col(j);
     idx_values_[j] = eigen.eigenvalues()[j];

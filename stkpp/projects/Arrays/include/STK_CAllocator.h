@@ -35,9 +35,7 @@
 #ifndef STK_CALLOCATOR_H
 #define STK_CALLOCATOR_H
 
-#include "../../Sdk/include/STK_StaticAssert.h"
-
-#include "../../Arrays/include/STK_Traits.h"
+#include "Sdk/include/STK_StaticAssert.h"
 
 #include "STK_ITContainer2D.h"
 #include "STK_AllocatorBase.h"

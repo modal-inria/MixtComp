@@ -36,10 +36,10 @@
 #define STK_VISITORS_H
 
 #include "../../../STatistiK/include/STK_Law_Util.h"
-#include "../STK_Arrays_Util.h"
 
 #include "STK_VisitorsImpl.h"
 #include "STK_VisitorSelector.h"
+
 
 namespace STK
 {

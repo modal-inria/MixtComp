@@ -37,10 +37,8 @@
 
 // STK headers
 #include "../include/STK_IPage.h"
-#include "../include/STK_DManager_Util.h"
 
 #include "../../STKernel/include/STK_Exceptions.h"
-#include "../../STKernel/include/STK_String_Util.h"
 
 namespace STK
 {

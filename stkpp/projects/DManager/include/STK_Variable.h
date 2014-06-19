@@ -35,8 +35,6 @@
 #ifndef STK_VARIABLE_H
 #define STK_VARIABLE_H
 
-#include <map>
-
 #include "../../Arrays/include/STK_Traits.h"
 #include "../../Arrays/include/STK_IArray2D.h"
 #include "STK_IVariable.h"

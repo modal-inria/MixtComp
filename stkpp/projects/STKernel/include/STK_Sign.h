@@ -137,6 +137,25 @@ String signToString( Sign const& type);
  **/
 String signToString( Sign const& type, std::map<Sign, String> mapping);
 
+/** @ingroup Base
+ *  @brief specialization for Sign
+ *  @param s the String to convert
+ *  @return The value to get from the String
+ **/
+template<>
+inline Sign stringToType<Sign>( String const& s)
+{ return stringToSign(s);}
+
+/** @ingroup Base
+ *  @brief specialization for Sign
+ *  @param t The Sign to convert to String
+ *  @param f flag, by default write every number in decimal
+ **/
+template<>
+inline String typeToString<Sign>( Sign const& t, std::ios_base& (*f)(std::ios_base&))
+{ return signToString(t);}
+
+
 } // namespace STK
 
 #endif /*STK_SIGN_H*/
