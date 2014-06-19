@@ -25,8 +25,8 @@
 #define MIXT_GAUSSIANSAMPLERITERATOR_H
 
 #include <vector>
-#include "stkpp/projects/Arrays/include/STK_Array2D.h"
-#include "stkpp/projects/Arrays/include/STK_CArrayVector.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_CArrayVector.h"
 
 namespace mixt
 {

@@ -26,7 +26,7 @@
 #ifndef MIXT_MIXTUREALGO_H
 #define MIXT_MIXTUREALGO_H
 
-#include "stkpp/projects/Clustering/include/STK_MixtureComposer.h"
+#include "Clustering/include/STK_MixtureComposer.h"
 
 namespace mixt
 {

@@ -28,7 +28,7 @@
 // iv_missingLUIntervals
 // iv_missingRUIntervals
 
-#include "stkpp/projects/STatistiK/include/STK_Law_Categorical.h"
+#include "STatistiK/include/STK_Law_Categorical.h"
 #include "mixt_CategoricalSamplerIterator.h"
 
 namespace mixt

@@ -4,7 +4,7 @@ all:
 
 allWin:
 	Rcmd.exe INSTALL --no-multiarch --with-keep.source .
-	g++ -I/usr/share/R/include `Rscript -e "Rcpp:::CxxFlags()"` `Rscript -e "RInside:::CxxFlags()"` -O0 -pipe -g -Wall src/test/test.cpp -L/usr/lib/R/lib -lR -lblas -llapack `Rscript -e "RInside:::LdFlags()"` -o src/test/test
+	g++ -I/usr/share/R/include `Rscript -e "Rcpp:::CxxFlags()"` `Rscript -e "RInside:::CxxFlags()"` -O0 -pipe -g -Wall `Rscript -e "RInside:::LdFlags()"` src/test/test.cpp -L/usr/lib/R/lib -lR -lblas -llapack -o src/test/test
 	
 cleanAll:
 	find .. -type f -path  "*.o" -exec rm -f {} \;

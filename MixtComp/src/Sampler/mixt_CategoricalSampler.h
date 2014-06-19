@@ -25,7 +25,7 @@
 #ifndef MIXT_CATEGORICALSAMPLER_H
 #define MIXT_CATEGORICALSAMPLER_H
 
-#include "stkpp/projects/Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2D.h"
 
 #include "../Data/mixt_AugmentedData.h"
 #include "mixt_CategoricalSamplerIterator.h"

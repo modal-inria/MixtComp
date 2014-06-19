@@ -34,7 +34,7 @@ endif
 
 include $(RELATIVEMAKEVARS)
 
-CXXFLAGS += -I$(ROOT_DIR)/..
+CXXFLAGS += -I$(ROOT_DIR)/../stkpp/projects
 
 SRC = $(wildcard *.cpp)
 DIST_O = $(SRC:%.cpp=$(BIN_DIR)/%.o)

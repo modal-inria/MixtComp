@@ -31,8 +31,8 @@
 #ifndef MIXT_MIXTURESTRATEGY_H
 #define MIXT_MIXTURESTRATEGY_H
 
-#include "stkpp/projects/Clustering/include/STK_MixtureComposer.h"
-#include "stkpp/projects/Clustering/include/STK_MixtureInit.h"
+#include "Clustering/include/STK_MixtureComposer.h"
+#include "Clustering/include/STK_MixtureInit.h"
 #include "../Algo/mixt_SEMAlgo.h"
 
 namespace mixt

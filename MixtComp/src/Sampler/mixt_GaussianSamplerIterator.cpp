@@ -29,9 +29,9 @@
 // iv_missingRUIntervals
 
 #include <cmath>
-#include "stkpp/projects/STatistiK/include/STK_Law_Exponential.h"
-#include "stkpp/projects/STatistiK/include/STK_Law_Uniform.h"
-#include "stkpp/projects/STatistiK/include/STK_Law_Normal.h"
+#include "STatistiK/include/STK_Law_Exponential.h"
+#include "STatistiK/include/STK_Law_Uniform.h"
+#include "STatistiK/include/STK_Law_Normal.h"
 #include "mixt_GaussianSamplerIterator.h"
 
 namespace mixt
