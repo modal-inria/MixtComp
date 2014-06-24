@@ -98,13 +98,23 @@ void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
        it != m_augDataij.v_missingFiniteValues_.end();
        ++it)
   {
-    int nbModalities = m_augDataij.dataRanges_[(*it).first.second].second;
+    int nbModalities = m_augDataij.dataRanges_[(*it).first.second].second + 1;
     STK::Real proba = 1. / (*it).second.size();
     STK::Array2DVector<STK::Real> modalities(STK::Range(0, nbModalities), 0.);
     for(std::vector<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2)
       modalities.elt((*it2)) = proba;
+    int sampledValue = STK::Law::Categorical::rand(modalities);
     m_augDataij.data_((*it).first.first,
-                      (*it).first.second) = STK::Law::Categorical::rand(modalities);
+                      (*it).first.second) = sampledValue;
+#ifdef MC_DEBUG
+    std::cout << "removeMissing, int, v_missingFiniteValues_" << std::endl;
+    std::cout << "pos: " << (*it).first.first << " " << (*it).first.second << std::endl;
+    std::cout << "number of present values: " << (*it).second.size() << std::endl;
+    std::cout << "nbModalities: " << nbModalities << std::endl;
+    std::cout << "modalities: " << std::endl;
+    std::cout << modalities;
+    std::cout << "sampled value: " << sampledValue << std::endl;
+#endif
   }
 }
 

@@ -43,4 +43,3 @@ $(SHLIB): pkglib
 pkglib:
 	(cd $(MCDIR) && $(MAKE) lib)
 	(cd $(STKPPDIR) && $(MAKE) all)
-

@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
   logfile.close();
 
   RInside R(argc, argv);              // create an embedded R instance
+  R.parseEvalQ("library(methods)");
   R.parseEvalQ("library(RMixtComp)");
 //    R.parseEvalQ("testRMC()");
   R.parseEvalQ("testRMC()");

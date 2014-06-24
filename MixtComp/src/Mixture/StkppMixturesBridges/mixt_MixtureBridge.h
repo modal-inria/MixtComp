@@ -140,9 +140,11 @@ class MixtureBridge : public STK::IMixture
       std::cout << "max, " << m_augDataij_.dataRanges_.at(currVar).second << std::endl;
 #endif
       }
-
       removeMissing(m_augDataij_);
 #ifdef MC_DEBUG
+      std::cout << "v_missing_.size(): " << m_augDataij_.v_missing_.size() << std::endl;
+      std::cout << "v_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl;
+      std::cout << "v_missingIntervals_.size(): " << m_augDataij_.v_missingIntervals_.size() << std::endl;
       std::cout << "After removeMissing, " << idName() << std::endl;
       std::cout << m_augDataij_.data_ << std::endl;
 #endif
