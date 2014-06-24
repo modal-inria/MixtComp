@@ -40,8 +40,8 @@
 #include <cmath>
 
 #include "STK_IUnivStatModel.h"
-#include "../../STatistiK/include/STK_Law_Bernoulli.h"
-#include "../../Arrays/include/STK_CArrayVector.h"
+#include "STatistiK/include/STK_Law_Bernoulli.h"
+#include "Arrays/include/STK_CArrayVector.h"
 
 namespace STK
 {

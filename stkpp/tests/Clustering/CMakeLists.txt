@@ -10,6 +10,8 @@ FILE( GLOB Util_Files
   SimulUtil.cpp
  )
  
+INCLUDE_DIRECTORIES("../../projects")
+ 
 ADD_LIBRARY(TestUtil OBJECT ${Util_Files})
  
  # create stktest library

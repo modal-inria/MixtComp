@@ -35,8 +35,8 @@
 #ifndef STK_ISERIE_H
 #define STK_ISERIE_H
 
-#include "../../STKernel/include/STK_Real.h"
-#include "../../Sdk/include/STK_IRecursiveTemplate.h"
+#include "STKernel/include/STK_Real.h"
+#include "Sdk/include/STK_IRecursiveTemplate.h"
 
 namespace STK
 {

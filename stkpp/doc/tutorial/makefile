@@ -36,6 +36,8 @@ include ../../makevars
 #
 BIN_DIR = ../../bin/
 LIB_DIR = ../../lib/
+INC_DIR = ../../include/
+PROJECTS_DIR = ../../projects/
 
 #-----------------------------------------------------------------------
 # source files
@@ -75,8 +77,7 @@ tutoprograms: $(CXX_PROGS)
 $(BIN_DIR)%.o: makefile
 
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $< -c -o $@
-
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(INC_DIR) -I$(PROJECTS_DIR) $(STK_FLAGS) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # program compilation rules

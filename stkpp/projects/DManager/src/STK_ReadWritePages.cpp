@@ -35,8 +35,8 @@
  **/
 
 #include "../include/STK_ReadWritePages.h"
-#include "../../STKernel/include/STK_Stream.h"
-#include "../../STKernel/include/STK_Exceptions.h"
+#include "STKernel/include/STK_Stream.h"
+#include "STKernel/include/STK_Exceptions.h"
 
 namespace STK
 {

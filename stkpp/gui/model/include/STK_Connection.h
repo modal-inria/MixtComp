@@ -36,7 +36,7 @@
 #ifndef STK_CONNECTION_H
 #define STK_CONNECTION_H
 
-#include "../../../projects/STKernel/include/STK_String.h"
+#include "../projects/STKernel/include/STK_String.h"
 
 #include "STK_IPropertySource.h"
 

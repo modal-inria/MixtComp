@@ -39,7 +39,7 @@
 #ifndef STK_ARRAY_UTIL_H
 #define STK_ARRAY_UTIL_H
 
-#include "../../STKernel/include/STK_Range.h"
+#include "STKernel/include/STK_Range.h"
 
 namespace STK
 {

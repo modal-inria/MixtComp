@@ -42,7 +42,7 @@
 #ifndef STK_TOOL_H_
 #define STK_TOOL_H_
 
-#include "../../../projects/STKernel/include/STK_String.h"
+#include "../projects/STKernel/include/STK_String.h"
 
 /** @brief
  *

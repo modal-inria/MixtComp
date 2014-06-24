@@ -32,7 +32,7 @@
  *  @brief In this file we test the distribution law Gamma
  **/
 
-#include "../../include/STKpp.h"
+#include "STKpp.h"
 
 //#include <cmath>
 #include <iomanip>

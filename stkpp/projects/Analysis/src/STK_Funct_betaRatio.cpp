@@ -42,8 +42,8 @@
 #include "../include/STK_Funct_poisson_raw.h"
 #include "../include/STK_Funct_raw.h"
 
-#include "../../Arrays/include/STK_Array2DVector.h"
-#include "../../STKernel/include/STK_Real.h"
+#include "Arrays/include/STK_Array2DVector.h"
+#include "STKernel/include/STK_Real.h"
 
 #define d1(z) (0.5)
 #define d2(z) (z/8. - 0.05)

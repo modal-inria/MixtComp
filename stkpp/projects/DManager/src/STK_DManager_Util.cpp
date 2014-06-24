@@ -35,7 +35,7 @@
  *  strings and i/o streams in the DManager project.
  **/
 #include "../include/STK_DManager_Util.h"
-#include "../../STKernel/include/STK_Functors.h"
+#include "STKernel/include/STK_Functors.h"
 
 #include <algorithm>
 

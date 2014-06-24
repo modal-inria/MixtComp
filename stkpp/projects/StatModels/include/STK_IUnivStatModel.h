@@ -38,7 +38,7 @@
 #define STK_IUNIVSTATMODEL_H
 
 #include "STK_IModelBase.h"
-#include "../../Sdk/include/STK_IRunner.h"
+#include "Sdk/include/STK_IRunner.h"
 
 namespace STK
 {

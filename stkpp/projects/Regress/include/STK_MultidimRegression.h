@@ -37,7 +37,7 @@
 #ifndef MULTIDIMREGRESSION_H
 #define MULTIDIMREGRESSION_H
 
-#include "../../Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2D.h"
 
 #include "STK_IRegression.h"
 

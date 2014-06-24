@@ -35,10 +35,10 @@
 
 #include "../include/STK_AdditiveBSplineRegression.h"
 
-#include "../../Arrays/include/STK_Array2D_Functors.h"
-#include "../../Algebra/include/STK_LinAlgebra2D.h"
-//#include "../../Algebra/include/STK_LinAlgebra3D.h"
-#include "../../Algebra/include/STK_GinvSymmetric.h"
+#include "Arrays/include/STK_Array2D_Functors.h"
+#include "Algebra/include/STK_LinAlgebra2D.h"
+//#include "Algebra/include/STK_LinAlgebra3D.h"
+#include "Algebra/include/STK_GinvSymmetric.h"
 
 namespace STK
 {

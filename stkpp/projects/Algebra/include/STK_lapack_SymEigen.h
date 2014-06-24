@@ -36,12 +36,12 @@
 #ifndef STK_LAPACK_SYMEIGEN_H
 #define STK_LAPACK_SYMEIGEN_H
 
-#include "../../STKernel/include/STK_Real.h"
-#include "../../Sdk/include/STK_IRunner.h"
+#include "STKernel/include/STK_Real.h"
+#include "Sdk/include/STK_IRunner.h"
 
-#include "../../Arrays/include/STK_Array2DSquare.h"
-#include "../../Arrays/include/STK_CArraySquare.h"
-#include "../../Arrays/include/STK_CArrayVector.h"
+#include "Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_CArraySquare.h"
+#include "Arrays/include/STK_CArrayVector.h"
 
 #ifdef STKUSELAPACK
 

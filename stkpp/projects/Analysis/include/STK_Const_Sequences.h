@@ -36,7 +36,7 @@
 #ifndef STK_CONST_SEQUENCES_H
 #define STK_CONST_SEQUENCES_H
 
-#include "../../STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Real.h"
 
 namespace STK
 {

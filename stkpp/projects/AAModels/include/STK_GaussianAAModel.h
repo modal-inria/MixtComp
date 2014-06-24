@@ -38,7 +38,7 @@
 #define STK_GAUSSIANAAMODEL_H
 
 #include "STK_IAAModel.h"
-#include "../../StatModels/include/STK_StatisticalModel.h"
+#include "StatModels/include/STK_StatisticalModel.h"
 #include "../../../include/Arrays.h"
 
 namespace STK

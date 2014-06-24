@@ -37,8 +37,8 @@
 
 #include "STK_ILinearReduct.h"
 
-#include "../../Arrays/include/STK_Array2DSquare.h"
-#include "../../STatistiK/include/STK_Stat_MultivariateReal.h"
+#include "Arrays/include/STK_Array2DSquare.h"
+#include "STatistiK/include/STK_Stat_MultivariateReal.h"
 
 namespace STK
 {

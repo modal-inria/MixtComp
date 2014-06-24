@@ -50,7 +50,7 @@
 
 #include <list>
 
-#include "../../../projects/STKernel/include/STK_String.h"
+#include "../projects/STKernel/include/STK_String.h"
 
 #include "STK_PropertyDescriptor.h"
 

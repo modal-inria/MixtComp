@@ -36,8 +36,8 @@
 #ifndef STK_QR_H
 #define STK_QR_H
 
-#include "../../Arrays/include/STK_Array2D.h"
-#include "../../Arrays/include/STK_Array2DUpperTriangular.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DUpperTriangular.h"
 
 namespace STK
 {

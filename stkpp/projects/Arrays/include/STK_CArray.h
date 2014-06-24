@@ -35,7 +35,7 @@
 #ifndef STK_CARRAY_H
 #define STK_CARRAY_H
 
-#include "../../STKernel/include/STK_Constants.h"
+#include "STKernel/include/STK_Constants.h"
 
 #include "STK_ICArray.h"
 #include "STK_Display.h"

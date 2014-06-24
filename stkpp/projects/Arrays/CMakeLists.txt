@@ -4,8 +4,7 @@ FILE( GLOB Arrays_files
   include/*.h
   )
   
+INCLUDE_DIRECTORIES("..")
+
 # Add Arrays files to STKArrays library
 ADD_LIBRARY(STKArrays OBJECT ${Arrays_files})
-
-
-# TARGET_LINK_LIBRARIES(STKArrays STKpp)

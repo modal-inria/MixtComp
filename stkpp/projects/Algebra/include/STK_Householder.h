@@ -37,7 +37,7 @@
 #define STK_HOUSEHOLDER_H
 
 // Matrix class
-#include "../../Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2D.h"
 
 namespace STK
 {

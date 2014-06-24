@@ -39,7 +39,7 @@
 #include <map>
 #include <string>
 
-#include "../../Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2D.h"
 
 namespace STK
 {

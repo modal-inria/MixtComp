@@ -35,9 +35,9 @@
 
 #include "../include/STK_Svd.h"
 
-#include "../../Arrays/include/STK_Array2DLowerTriangular.h"
-#include "../../Arrays/include/STK_Array2DUpperTriangular.h"
-#include "../../Arrays/include/STK_Array2D_Functors.h"
+#include "Arrays/include/STK_Array2DLowerTriangular.h"
+#include "Arrays/include/STK_Array2DUpperTriangular.h"
+#include "Arrays/include/STK_Array2D_Functors.h"
 
 
 #include "../include/STK_Householder.h"

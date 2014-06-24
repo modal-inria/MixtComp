@@ -35,7 +35,7 @@
  **/
 
 #include "../include/STK_IPage.h"
-#include "../../STKernel/include/STK_Exceptions.h"
+#include "STKernel/include/STK_Exceptions.h"
 
 namespace STK
 {

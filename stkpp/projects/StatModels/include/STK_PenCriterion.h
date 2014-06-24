@@ -37,7 +37,7 @@
 #ifndef STK_PENCRITERION_H
 #define STK_PENCRITERION_H
 
-#include "../../Sdk/include/STK_IRunner.h"
+#include "Sdk/include/STK_IRunner.h"
 #include "STK_IModelBase.h"
 
 namespace STK

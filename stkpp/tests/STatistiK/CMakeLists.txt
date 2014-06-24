@@ -4,6 +4,8 @@ SET( TESTS_FILES
     testStatFunctors
 )
 
+INCLUDE_DIRECTORIES("../../projects")
+
 # loop over files
 FOREACH(test ${TESTS_FILES})
   # Compile and link our test

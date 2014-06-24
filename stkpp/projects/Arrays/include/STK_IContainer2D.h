@@ -41,7 +41,7 @@
 #ifndef STK_ICONTAINER2D_H
 #define STK_ICONTAINER2D_H
 
-#include "../../STKernel/include/STK_Range.h"
+#include "STKernel/include/STK_Range.h"
 
 namespace STK
 {

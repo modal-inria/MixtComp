@@ -35,9 +35,9 @@
  
 #include "../include/STK_Qr.h"
 
-#include "../../Arrays/include/STK_Array2DSquare.h"
-#include "../../Arrays/include/STK_Array2DLowerTriangular.h"
-#include "../../Arrays/include/STK_Array2D_Functors.h"
+#include "Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DLowerTriangular.h"
+#include "Arrays/include/STK_Array2D_Functors.h"
 
 #include "../include/STK_Householder.h"
 #include "../include/STK_Givens.h"

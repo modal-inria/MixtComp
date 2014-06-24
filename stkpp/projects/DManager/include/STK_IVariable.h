@@ -38,7 +38,7 @@
 
 #include "STK_DManager_Util.h"
 
-#include "../../Arrays/include/STK_IContainer1D.h"
+#include "Arrays/include/STK_IContainer1D.h"
 
 namespace STK
 {

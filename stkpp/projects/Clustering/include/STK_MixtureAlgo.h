@@ -38,8 +38,8 @@
 
 #include "STK_Clust_Util.h"
 
-#include "../../Sdk/include/STK_IRunner.h"
-#include "../../STKernel/include/STK_Real.h"
+#include "Sdk/include/STK_IRunner.h"
+#include "STKernel/include/STK_Real.h"
 
 namespace STK
 {

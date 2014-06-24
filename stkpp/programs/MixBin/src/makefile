@@ -38,6 +38,7 @@ BIN_DIR = ../bin/
 STKPP_DIR = ../../../
 STKPP_LIB_DIR = $(STKPP_DIR)lib/
 STKPP_INC_DIR = $(STKPP_DIR)include/
+STKPP_PROJECTS_DIR = $(STKPP_DIR)projects/
 
 STKPP_LIB = $(STKPP_LIB_DIR)$(LIB_STKPP_A)
 
@@ -61,7 +62,7 @@ CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
 #
 $(BIN_DIR)%.o: $(INC_DIR)%.h makefile
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(STKPP_INC_DIR) $(AAM_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(STKPP_INC_DIR)  -I$(STKPP_PROJECTS_DIR) $(AAM_FLAGS) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # rule for compiling the aam program

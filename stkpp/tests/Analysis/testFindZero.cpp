@@ -32,7 +32,7 @@
  *  @brief In this file we test the the zero finding algorithm.
  **/
 
-#include "../../include/Analysis.h"
+#include "Analysis.h"
 
 
 using namespace STK;

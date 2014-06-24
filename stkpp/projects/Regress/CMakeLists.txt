@@ -3,8 +3,8 @@ FILE( GLOB Regress_files
   src/*.cpp
   include/*.h
   )
+
+INCLUDE_DIRECTORIES("..")
+
 # Add Regress files to STKRegress library
 ADD_LIBRARY(STKRegress OBJECT ${Regress_files})
-
-
-# TARGET_LINK_LIBRARIES(STKRegress STKpp)

@@ -33,7 +33,7 @@
  **/
 
 #include "SimulUtil.h"
-#include "../../include/STatistiK.h"
+#include "STatistiK.h"
 
 using namespace STK;
 using namespace STK::Law;

@@ -37,7 +37,7 @@
 #ifndef STK_IRUNNER_H
 #define STK_IRUNNER_H
 
-#include "../../STKernel/include/STK_String.h"
+#include "STKernel/include/STK_String.h"
 
 namespace STK
 {

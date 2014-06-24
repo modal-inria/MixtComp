@@ -38,11 +38,11 @@ ifneq ($(wildcard ./makevars.local),)
 endif
 
 #-----------------------------------------------------------------------
-# overide Paths BIN and LIB
-#
+# Paths to bin, lib, include and projects
 BIN_DIR = ../../bin/
 LIB_DIR = ../../lib/
-DMANAGER_INC_DIR = ../../projects/DManager/include/
+INC_DIR = ../../include/
+PROJECTS_DIR = ../../projects/
 
 #-----------------------------------------------------------------------
 # source files
@@ -82,10 +82,8 @@ testPages: $(BIN_DIR)testPages
 # Objects compilation rules
 #
 $(BIN_DIR)%.o: makefile
-$(BIN_DIR)testList1D.o: $(DMANAGER_INC_DIR)STK_List1D.h
-
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $< -c -o $@
 
 
 #-----------------------------------------------------------------------

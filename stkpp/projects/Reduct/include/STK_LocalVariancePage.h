@@ -37,7 +37,7 @@
 #ifndef STK_LOCALVARIANCEPAGE_H
 #define STK_LOCALVARIANCEPAGE_H
 
-#include "../../DManager/include/STK_IPage.h"
+#include "DManager/include/STK_IPage.h"
 #include "STK_LocalVariance.h"
 
 namespace STK

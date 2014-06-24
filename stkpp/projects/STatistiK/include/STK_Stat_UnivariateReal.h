@@ -36,8 +36,8 @@
 #ifndef STK_STAT_UNIVARIATEREAL_H
 #define STK_STAT_UNIVARIATEREAL_H
 
-#include "../../DManager/include/STK_HeapSort.h"
-#include "../../DManager/include/STK_Variable.h"
+#include "DManager/include/STK_HeapSort.h"
+#include "DManager/include/STK_Variable.h"
 
 namespace STK
 {

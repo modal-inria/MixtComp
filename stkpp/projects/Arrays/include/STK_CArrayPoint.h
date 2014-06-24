@@ -35,7 +35,7 @@
 #ifndef STK_CARRAY2DPOINT_H
 #define STK_CARRAY2DPOINT_H
 
-#include "../../STKernel/include/STK_Constants.h"
+#include "STKernel/include/STK_Constants.h"
 
 #include "STK_ICArray.h"
 

@@ -35,8 +35,8 @@
 #define STK_LINEARAAMODEL_H
 
 #include "STK_GaussianAAModel.h"
-#include "../../Sdk/include/STK_IRunner.h"
-#include "../../Reduct/include/STK_ILinearReduct.h"
+#include "Sdk/include/STK_IRunner.h"
+#include "Reduct/include/STK_ILinearReduct.h"
 
 namespace STK
 {

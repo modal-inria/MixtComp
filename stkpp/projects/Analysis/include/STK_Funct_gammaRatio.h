@@ -36,8 +36,8 @@
 #ifndef STK_FUNCT_GAMMARATIO_H
 #define STK_FUNCT_GAMMARATIO_H
 
-#include "../../STKernel/include/STK_Integer.h"
-#include "../../STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Integer.h"
+#include "STKernel/include/STK_Real.h"
 
 namespace STK
 {

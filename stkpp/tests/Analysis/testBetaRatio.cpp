@@ -32,10 +32,10 @@
  *  @brief In this file we test the betaRatio function.
  **/
 
-#include "../../include/Analysis.h"
-#include "../../include/STatistiK.h"
-#include "../../include/Arrays.h"
-#include "../../include/STKernel.h"
+#include "Analysis.h"
+#include "STatistiK.h"
+#include "Arrays.h"
+#include "STKernel.h"
 
 #include <iomanip>
 #include <Rmath.h>

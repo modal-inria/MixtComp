@@ -6,5 +6,6 @@ FILE( GLOB Analysis_files
 # Add STatistiK files to STKSTatistiK library
 ADD_LIBRARY(STKAnalysis OBJECT ${Analysis_files})
 
+INCLUDE_DIRECTORIES("..")
 
 # TARGET_LINK_LIBRARIES(STKAnalysis STKpp)

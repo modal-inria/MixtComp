@@ -34,7 +34,7 @@
 
 #include "../include/STK_Law_Beta.h"
 #include "../include/STK_Law_Gamma.h"
-#include "../../Analysis/include/STK_Funct_betaRatio.h"
+#include "Analysis/include/STK_Funct_betaRatio.h"
 
 namespace STK
 {

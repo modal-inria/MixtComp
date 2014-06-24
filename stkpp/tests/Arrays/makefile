@@ -38,10 +38,11 @@ ifneq ($(wildcard ./makevars.local),)
 endif
 
 #-----------------------------------------------------------------------
-# overide Paths BIN and LIB
-#
+# Paths to bin, lib, include and projects
 BIN_DIR = ../../bin/
 LIB_DIR = ../../lib/
+INC_DIR = ../../include/
+PROJECTS_DIR = ../../projects/
 
 ARRAYS_INC_DIR = ../../projects/Arrays/include/
 
@@ -101,7 +102,7 @@ $(BIN_DIR)testArray2D.o: $(ARRAYS_INC_DIR)STK_Array2DVector.h \
                          $(ARRAYS_INC_DIR)STK_IArray2D.h
 
 $(BIN_DIR)%.o: %.cpp makefile $(CXX_LIB)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $< -c -o $@
 
 
 #-----------------------------------------------------------------------

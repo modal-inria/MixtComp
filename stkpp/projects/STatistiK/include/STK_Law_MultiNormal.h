@@ -40,17 +40,17 @@
 #include "STK_Law_IMultiLaw.h"
 #include "STK_Law_Normal.h"
 
-#include "../../Analysis/include/STK_Const_Math.h"
+#include "Analysis/include/STK_Const_Math.h"
 
-#include "../../Arrays/include/STK_Array2D.h"
-#include "../../Arrays/include/STK_Array2DSquare.h"
-#include "../../Arrays/include/STK_Array2DLowerTriangular.h"
-#include "../../Arrays/include/STK_Array2DUpperTriangular.h"
-#include "../../Arrays/include/STK_Array2D_Functors.h"
-#include "../../Arrays/include/STK_Const_Arrays.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DLowerTriangular.h"
+#include "Arrays/include/STK_Array2DUpperTriangular.h"
+#include "Arrays/include/STK_Array2D_Functors.h"
+#include "Arrays/include/STK_Const_Arrays.h"
 
-#include "../../Algebra/include/STK_EigenvaluesSymmetric.h"
-#include "../../Algebra/include/STK_LinAlgebra2D.h"
+#include "Algebra/include/STK_EigenvaluesSymmetric.h"
+#include "Algebra/include/STK_LinAlgebra2D.h"
 
 namespace STK
 {

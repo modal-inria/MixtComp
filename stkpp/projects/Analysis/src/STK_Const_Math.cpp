@@ -33,8 +33,8 @@
  *  constants.
  **/
 
-#include "../../STKernel/include/STK_Integer.h"
-#include "../../STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Integer.h"
+#include "STKernel/include/STK_Real.h"
 #include "../include/STK_Const_Math.h"
 #include "../include/STK_ISerie.h"
 #include "../include/STK_Algo.h"

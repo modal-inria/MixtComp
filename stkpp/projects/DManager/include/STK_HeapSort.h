@@ -37,7 +37,7 @@
 #ifndef STK_HEAPSORT_H
 #define STK_HEAPSORT_H
 
-#include "../../Arrays/include/STK_ITContainer2D.h"
+#include "Arrays/include/STK_ITContainer2D.h"
 
 namespace STK
 {

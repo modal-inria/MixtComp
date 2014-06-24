@@ -40,7 +40,7 @@
 #include "STK_IMixtureModelBase.h"
 #include "STK_Clust_Traits.h"
 #include "STK_MixtureComponent.h"
-#include "../../Arrays/include/STK_Array1D.h"
+#include "Arrays/include/STK_Array1D.h"
 
 namespace STK
 {

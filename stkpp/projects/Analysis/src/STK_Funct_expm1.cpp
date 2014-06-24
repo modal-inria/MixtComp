@@ -31,7 +31,7 @@
 
 #include <cmath>
 // for int and Real
-#include "../../STKernel/include/STK_Misc.h"
+#include "STKernel/include/STK_Misc.h"
 
 #include "../include/STK_Funct_util.h"
 // for _LN2_

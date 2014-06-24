@@ -4,8 +4,7 @@ FILE( GLOB DManager_files
   include/*.h
   )
 
+INCLUDE_DIRECTORIES("..")
+
 # Add DManager files to STKDManager library
 ADD_LIBRARY(STKDManager OBJECT ${DManager_files})
-
-
-# TARGET_LINK_LIBRARIES(STKDManager STKpp)

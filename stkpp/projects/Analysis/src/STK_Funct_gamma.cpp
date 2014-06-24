@@ -35,8 +35,8 @@
 
 #include <cmath>
 
-#include "../../STKernel/include/STK_Misc.h"
-#include "../../STKernel/include/STK_Exceptions.h"
+#include "STKernel/include/STK_Misc.h"
+#include "STKernel/include/STK_Exceptions.h"
 
 #include "../include/STK_Const_Math.h"
 #include "../include/STK_Const_Sequences.h"

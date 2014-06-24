@@ -28,21 +28,21 @@
  *
  **/
 
-#include "../../Arrays/include/STK_Array2D.h"
-#include "../../Arrays/include/STK_Array2DSquare.h"
-#include "../../Arrays/include/STK_Array2DLowerTriangular.h"
-#include "../../Arrays/include/STK_Array2DUpperTriangular.h"
-#include "../../Arrays/include/STK_Array2D_Functors.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DLowerTriangular.h"
+#include "Arrays/include/STK_Array2DUpperTriangular.h"
+#include "Arrays/include/STK_Array2D_Functors.h"
 
-#include "../../Arrays/include/STK_Display.h"
+#include "Arrays/include/STK_Display.h"
 
-#include "../../Algebra/include/STK_LinAlgebra2D.h"
-#include "../../Algebra/include/STK_GramSchmidt.h"
+#include "Algebra/include/STK_LinAlgebra2D.h"
+#include "Algebra/include/STK_GramSchmidt.h"
 
-#include "../../STatistiK/include/STK_Law_IUnivLaw.h"
-#include "../../STatistiK/include/STK_Law_Normal.h"
+#include "STatistiK/include/STK_Law_IUnivLaw.h"
+#include "STatistiK/include/STK_Law_Normal.h"
 
-#include "../../Regress/include/STK_MultidimRegression.h"
+#include "Regress/include/STK_MultidimRegression.h"
 
 #include "../include/STK_LinearAAModel.h"
 

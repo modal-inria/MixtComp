@@ -42,7 +42,7 @@
 #ifndef STK_REDUCT_UTIL_H_
 #define STK_REDUCT_UTIL_H_
 
-#include "../../STKernel/include/STK_String.h"
+#include "STKernel/include/STK_String.h"
 
 namespace STK
 {

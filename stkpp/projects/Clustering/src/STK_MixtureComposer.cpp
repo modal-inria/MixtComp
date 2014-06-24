@@ -34,7 +34,7 @@
  **/
 
 #include "../include/STK_IMixture.h"
-#include "../../Arrays/include/STK_Display.h"
+#include "Arrays/include/STK_Display.h"
 
 namespace STK
 {

@@ -15,6 +15,7 @@ SET( TESTS_FILES
     testBinaryOperators
 )
 
+INCLUDE_DIRECTORIES("../../projects")
 
 # loop over files
 FOREACH(test ${TESTS_FILES})

@@ -33,7 +33,7 @@
  **/
 
 
-#include "../../include/STKpp.h"
+#include "STKpp.h"
 
 using namespace STK;
 using namespace STK::Stat;

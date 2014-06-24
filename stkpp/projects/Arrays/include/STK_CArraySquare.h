@@ -35,7 +35,7 @@
 #ifndef STK_CARRAYSQUARE_H
 #define STK_CARRAYSQUARE_H
 
-#include "../../STKernel/include/STK_Constants.h"
+#include "STKernel/include/STK_Constants.h"
 
 #include "STK_ICArray.h"
 

@@ -38,10 +38,11 @@ ifneq ($(wildcard ./makevars.local),)
 endif
 
 #-----------------------------------------------------------------------
-# overide Paths BIN and LIB
-#
+# Paths to bin, lib, include and projects
 BIN_DIR = ../../bin/
 LIB_DIR = ../../lib/
+INC_DIR = ../../include/
+PROJECTS_DIR = ../../projects/
 
 #-----------------------------------------------------------------------
 # source files
@@ -80,15 +81,20 @@ progs: $(TEST_PROGS)
 # test testBetaRatio.o object file 
 $(BIN_DIR)testAnalysis.o: testAnalysis.cpp makefile $(CXX_LIB)
 	@ case x$(HASRMATH) in xt ) \
-	echo $(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
+	echo $(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 esac
 
 $(BIN_DIR)testBetaRatio.o: testBetaRatio.cpp makefile $(CXX_LIB)
 	@ case x$(HASRMATH) in xt ) \
-	echo 	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
+	echo 	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 esac
+
+#-----------------------------------------------------------------------
+# Objects compilation rules
+$(BIN_DIR)%.o: %.cpp
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # rule for compiling the testAnalysis program
@@ -105,18 +111,10 @@ $(BIN_DIR)testBetaRatio: $(BIN_DIR)testBetaRatio.o testBetaRatio.cpp $(CXX_LIB)
 esac
 
 #-----------------------------------------------------------------------
-# Objects compilation rules
-#
-$(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
-
-#-----------------------------------------------------------------------
 # program compilation rules
-#
 $(BIN_DIR)test%: makefile
 $(BIN_DIR)test%: $(BIN_DIR)test%.o $(CXX_LIB) $(CXX_OBJS) $(CXX_SRCS)  $(TEST_SRCS)
 	$(CXX)  $< $(LDFLAGS) $(CXX_OBJS) $(CXX_LIB) $(LDLIBS) -o $@ 
-
 
 #-----------------------------------------------------------------------
 # clean test programs 

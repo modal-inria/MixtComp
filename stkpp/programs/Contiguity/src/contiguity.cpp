@@ -42,6 +42,7 @@
 
 
 using namespace STK;
+using namespace tuto;
 
 /* main. */
 int main(int argc, char *argv[])

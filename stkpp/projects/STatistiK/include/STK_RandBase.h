@@ -39,9 +39,9 @@
 #ifndef STK_RANDBASE_H
 #define STK_RANDBASE_H
 
-#include "../../STKernel/include/STK_Misc.h"
+#include "STKernel/include/STK_Misc.h"
 
-#include "../../Arrays/include/STK_ArrayBase.h"
+#include "Arrays/include/STK_ArrayBase.h"
 
 // MersenneTwister header.
 #include "MersenneTwister.h"

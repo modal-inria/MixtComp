@@ -1,4 +1,4 @@
-#include "../../include/STKpp.h"
+#include "STKpp.h"
 using namespace STK;
 /** @ingroup tutorial */
 int main(int argc, char** argv)

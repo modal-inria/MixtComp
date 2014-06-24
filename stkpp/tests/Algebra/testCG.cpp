@@ -32,8 +32,8 @@
  *  @brief In this file we test the Conjugate Gradient algorithm.
  **/
 
-#include "../../include/Algebra.h"
-#include "../../include/Arrays.h"
+#include "Algebra.h"
+#include "Arrays.h"
 using namespace STK;
 
 

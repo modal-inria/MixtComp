@@ -36,10 +36,10 @@
 #ifndef STK_EIGENVALUESSYMMETRIC_H
 #define STK_EIGENVALUESSYMMETRIC_H
 
-#include "../../Sdk/include/STK_IRunner.h"
+#include "Sdk/include/STK_IRunner.h"
 
-#include "../../Arrays/include/STK_Array2DSquare.h"
-#include "../../Arrays/include/STK_Array2DDiagonal.h"
+#include "Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DDiagonal.h"
 
 namespace STK
 {

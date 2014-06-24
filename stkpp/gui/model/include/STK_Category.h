@@ -36,8 +36,8 @@
 #ifndef CATEGORY_H
 #define CATEGORY_H
 
-#include "../../../projects/STKernel/include/STK_String.h"
-#include "../../../projects/DManager/include/STK_List1D.h"
+#include "../projects/STKernel/include/STK_String.h"
+#include "../projects/DManager/include/STK_List1D.h"
 
 #include "STK_Tool.h"
 

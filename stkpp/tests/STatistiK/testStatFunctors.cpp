@@ -32,7 +32,7 @@
  *  @brief In this file we test the statistical functors classes.
  **/
 
-#include "../../include/STKpp.h"
+#include "STKpp.h"
 
 using namespace STK;
 using namespace STK::Stat;

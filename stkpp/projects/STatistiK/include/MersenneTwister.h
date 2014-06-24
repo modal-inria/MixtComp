@@ -57,7 +57,7 @@
 #include <time.h>
 #include <math.h>
 
-#include "../../Analysis/include/STK_Const_Math.h" // for _2PI_
+#include "Analysis/include/STK_Const_Math.h" // for _2PI_
 
 /** @brief Generate unsigner 32 bits random number using the
  *  Merdsenne Twister Algorithm.

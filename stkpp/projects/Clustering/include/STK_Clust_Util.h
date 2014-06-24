@@ -38,7 +38,7 @@
 #ifndef STK_CLUST_UTIL_H
 #define STK_CLUST_UTIL_H
 
-#include "../../STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Real.h"
 
 
 namespace STK

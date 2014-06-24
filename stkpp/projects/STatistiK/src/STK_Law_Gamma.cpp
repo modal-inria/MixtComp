@@ -36,8 +36,8 @@
 #include "../include/STK_Law_Exponential.h"
 #include "../include/STK_Law_Util.h"
 
-#include "../../Analysis/include/STK_Funct_poisson_raw.h"
-#include "../../Analysis/include/STK_Funct_gammaRatio.h"
+#include "Analysis/include/STK_Funct_poisson_raw.h"
+#include "Analysis/include/STK_Funct_gammaRatio.h"
 
 namespace STK
 {

@@ -32,8 +32,8 @@
  *  @brief In this file we test the the zero finding algorithm.
  **/
 
-#include "../../include/Analysis.h"
-#include "../../include/STatistiK.h"
+#include "Analysis.h"
+#include "STatistiK.h"
 
 
 using namespace STK;

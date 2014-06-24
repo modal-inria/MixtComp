@@ -36,16 +36,16 @@
 
 #include "../include/STK_GaussianAAModel.h"
 
-#include "../../Reduct/include/STK_IReduct.h"
-#include "../../Regress/include/STK_IRegression.h"
+#include "Reduct/include/STK_IReduct.h"
+#include "Regress/include/STK_IRegression.h"
 
-#include "../../STatistiK/include/STK_Stat_Transform.h"
-#include "../../STatistiK/include/STK_Stat_MultivariateReal.h"
+#include "STatistiK/include/STK_Stat_Transform.h"
+#include "STatistiK/include/STK_Stat_MultivariateReal.h"
 
-#include "../../STatistiK/include/STK_Law_MultiNormal.h"
+#include "STatistiK/include/STK_Law_MultiNormal.h"
 
 #ifdef STK_AAMODELS_VERBOSE
-#include "../../Arrays/include/STK_Display.h"
+#include "Arrays/include/STK_Display.h"
 #endif
 
 namespace STK

@@ -36,10 +36,10 @@
 #ifndef STK_STAT_MULTIVARIATEREAL_H
 #define STK_STAT_MULTIVARIATEREAL_H
 
-#include "../../STKernel/include/STK_Arithmetic.h"
-#include "../../STKernel/include/STK_Misc.h"
+#include "STKernel/include/STK_Arithmetic.h"
+#include "STKernel/include/STK_Misc.h"
 
-#include "../../Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DSquare.h"
 
 #include "STK_Stat_BivariateRealReal.h"
 #include "STK_Stat_Multivariate.h"

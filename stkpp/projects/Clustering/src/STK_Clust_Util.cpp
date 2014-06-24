@@ -32,7 +32,7 @@
  *  @brief In this file we implement the utilities functions of the Clustering project.
  **/
 
-#include "../../STKernel/include/STK_String_Util.h"
+#include "STKernel/include/STK_String_Util.h"
 
 #include "../include/STK_Clust_Util.h"
 #include "../include/STK_MixtureAlgo.h"

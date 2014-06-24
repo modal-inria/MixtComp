@@ -38,8 +38,8 @@
 #ifndef STK_MIXTURESTRATEGY_H
 #define STK_MIXTURESTRATEGY_H
 
-#include "../../Sdk/include/STK_IRunner.h"
-#include "../../STKernel/include/STK_Real.h"
+#include "Sdk/include/STK_IRunner.h"
+#include "STKernel/include/STK_Real.h"
 
 namespace STK
 {

@@ -40,7 +40,7 @@
 #include <cmath>
 
 #include "STK_IMultiStatModel.h"
-#include "../../STatistiK/include/STK_Law_Bernoulli.h"
+#include "STatistiK/include/STK_Law_Bernoulli.h"
 
 namespace STK
 {

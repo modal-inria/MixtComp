@@ -27,8 +27,8 @@
  * Author  : Serge Iovleff
 */
 
-#include "../../include/STatistiK.h"
-#include "../../include/DManager.h"
+#include "STatistiK.h"
+#include "DManager.h"
 
 using namespace STK;
 

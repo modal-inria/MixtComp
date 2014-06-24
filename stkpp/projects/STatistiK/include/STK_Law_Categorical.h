@@ -37,7 +37,7 @@
 
 #include "STK_Law_IUnivLaw.h"
 #include "../include/STK_Law_Util.h"
-#include "../../Arrays/include/STK_Array2DVector.h"
+#include "Arrays/include/STK_Array2DVector.h"
 
 namespace STK
 {

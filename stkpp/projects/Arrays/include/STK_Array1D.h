@@ -36,7 +36,7 @@
 #define STK_ARRAY1D_H
 
 
-#include "../../Arrays/include/STK_Arrays_Util.h"
+#include "Arrays/include/STK_Arrays_Util.h"
 
 #include "STK_IArray1D.h"
 

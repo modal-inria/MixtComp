@@ -32,7 +32,7 @@
  *  @brief In this file we test the EigenvaluesSymmetric class.
  **/
 
-#include "../../include/STKpp.h"
+#include "STKpp.h"
 
 using namespace STK;
 

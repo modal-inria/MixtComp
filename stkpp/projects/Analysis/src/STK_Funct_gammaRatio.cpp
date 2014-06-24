@@ -42,7 +42,7 @@
 #include "../include/STK_Funct_poisson_raw.h"
 #include "../include/STK_Funct_raw.h"
 
-#include "../../STKernel/include/STK_Exceptions.h"
+#include "STKernel/include/STK_Exceptions.h"
 
 namespace STK
 {

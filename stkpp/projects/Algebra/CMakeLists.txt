@@ -3,8 +3,9 @@ FILE( GLOB Algebra_files
   src/*.cpp
   include/*.h
   )
+
+INCLUDE_DIRECTORIES("..")
+
 # Add Algebra files to STKAlgebra library
 ADD_LIBRARY(STKAlgebra OBJECT ${Algebra_files})
 
-
-# TARGET_LINK_LIBRARIES(STKAlgebra STKpp)

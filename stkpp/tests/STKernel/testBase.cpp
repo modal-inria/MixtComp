@@ -32,7 +32,7 @@
  *  @brief In this file we test the classes of the STKernel::Base subproject.
  **/
 
-#include "../../include/STKernel.h"
+#include "STKernel.h"
 
 using namespace STK;
 

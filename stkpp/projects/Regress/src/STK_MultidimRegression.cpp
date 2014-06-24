@@ -33,9 +33,9 @@
  *  @brief In this file we implement the class MultidimRegression.
  **/
 
-#include "../../Algebra/include/STK_LinAlgebra2D.h"
-//#include "../../Algebra/include/STK_LinAlgebra3D.h"
-#include "../../Algebra/include/STK_GinvSymmetric.h"
+#include "Algebra/include/STK_LinAlgebra2D.h"
+//#include "Algebra/include/STK_LinAlgebra3D.h"
+#include "Algebra/include/STK_GinvSymmetric.h"
 
 #include "../include/STK_MultidimRegression.h"
 

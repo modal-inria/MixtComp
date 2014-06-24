@@ -34,7 +34,7 @@
 
 #include <cmath>
 
-#include "../../STKernel/include/STK_Exceptions.h"
+#include "STKernel/include/STK_Exceptions.h"
 
 #include "../include/STK_Algo.h"
 #include "../include/STK_ISerie.h"

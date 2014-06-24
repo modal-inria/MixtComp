@@ -32,7 +32,7 @@
  *  @brief In this file we test the list1D class.
  **/
 
-#include "../../include/DManager.h"
+#include "DManager.h"
 
 using namespace STK;
 

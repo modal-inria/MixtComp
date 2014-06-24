@@ -32,7 +32,7 @@
  *  @brief In this file we test the Functors.
  **/
 
-#include "../../include/STKernel.h"
+#include "STKernel.h"
 
 using namespace STK;
 

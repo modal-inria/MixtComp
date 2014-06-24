@@ -34,11 +34,11 @@
  **/
 
 #include "../include/STK_BSplineCoefficients.h"
-#include "../../DManager/include/STK_HeapSort.h"
-#include "../../STKernel/include/STK_String_Util.h"
+#include "DManager/include/STK_HeapSort.h"
+#include "STKernel/include/STK_String_Util.h"
 
 #ifdef STK_REGRESS_VERBOSE
-#include "../../Arrays/include/STK_Display.h"
+#include "Arrays/include/STK_Display.h"
 #endif
 
 

@@ -36,8 +36,8 @@
 #ifndef STK_BSPLINECOEFFICIENTS_H
 #define STK_BSPLINECOEFFICIENTS_H
 
-#include "../../Sdk/include/STK_IRunner.h"
-#include "../../Arrays/include/STK_Array2D.h"
+#include "Sdk/include/STK_IRunner.h"
+#include "Arrays/include/STK_Array2D.h"
 
 namespace STK
 {

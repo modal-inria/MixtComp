@@ -40,8 +40,8 @@
 #include <cmath>
 
 #include "STK_IMultiStatModel.h"
-#include "../../STatistiK/include/STK_Law_Normal.h"
-#include "../../STatistiK/include/STK_Stat_Functors.h"
+#include "STatistiK/include/STK_Law_Normal.h"
+#include "STatistiK/include/STK_Stat_Functors.h"
 
 namespace STK
 {

@@ -32,8 +32,8 @@
  *  @brief In this file we test the CArray* classes.
  **/
 
-#include "../../include/STKernel.h"
-#include "../../include/Arrays.h"
+#include "STKernel.h"
+#include "Arrays.h"
 
 using namespace STK;
 

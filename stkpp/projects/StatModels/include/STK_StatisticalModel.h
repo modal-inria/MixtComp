@@ -40,8 +40,8 @@
 #include <cmath>
 
 #include "STK_IModelBase.h"
-#include "../../Sdk/include/STK_Macros.h"
-#include "../../STatistiK/include/STK_Law_IMultiLaw.h"
+#include "Sdk/include/STK_Macros.h"
+#include "STatistiK/include/STK_Law_IMultiLaw.h"
 
 namespace STK
 {

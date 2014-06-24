@@ -37,8 +37,8 @@
 #define STK_ITContainer2D1D_H
 
 
-#include "../../Sdk/include/STK_IRecursiveTemplate.h"
-#include "../../Sdk/include/STK_Macros.h"
+#include "Sdk/include/STK_IRecursiveTemplate.h"
+#include "Sdk/include/STK_Macros.h"
 
 #include "STK_Traits.h"
 #include "STK_IContainer1D.h"

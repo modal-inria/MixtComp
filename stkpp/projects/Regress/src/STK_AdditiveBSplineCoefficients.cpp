@@ -38,7 +38,7 @@
 #include "../include/STK_AdditiveBSplineCoefficients.h"
 
 #ifdef STK_REGRESS_VERBOSE
-#include "../../Arrays/include/STK_Display.h"
+#include "Arrays/include/STK_Display.h"
 #endif
 
 namespace STK

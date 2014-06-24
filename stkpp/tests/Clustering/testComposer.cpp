@@ -33,7 +33,7 @@
  *  @brief In this file we test the composer
  **/
 #include "StrategiesUtil.h"
-#include "../../include/DManager.h"
+#include "DManager.h"
 
 using namespace STK;
 

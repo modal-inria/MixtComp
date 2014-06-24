@@ -34,7 +34,7 @@
 #include "StrategiesUtil.h"
 #include "SimulUtil.h"
 
-#include "../../include/DManager.h"
+#include "DManager.h"
 
 
 using namespace STK;

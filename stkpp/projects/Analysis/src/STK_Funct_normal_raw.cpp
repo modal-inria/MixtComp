@@ -39,7 +39,7 @@
  * cephes Math Library.
  **/
 #include <cmath>
-#include "../../STKernel/include/STK_Misc.h"
+#include "STKernel/include/STK_Misc.h"
 
 #include "../include/STK_Const_Math.h"
 #include "../include/STK_Funct_raw.h"

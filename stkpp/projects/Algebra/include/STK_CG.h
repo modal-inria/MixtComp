@@ -36,8 +36,8 @@
 #ifndef STK_CG_H
 #define STK_CG_H
 
-#include "../../Sdk/include/STK_Macros.h"
-#include "../../Sdk/include/STK_IRunner.h"
+#include "Sdk/include/STK_Macros.h"
+#include "Sdk/include/STK_IRunner.h"
 
 #define MAXITER 100
 namespace STK

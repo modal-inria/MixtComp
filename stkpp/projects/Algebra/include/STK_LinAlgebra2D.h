@@ -38,7 +38,7 @@
 #define STK_LINALGEBRA2D_H
 
 // Point and Vector classes
-#include "../../Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DSquare.h"
 
 namespace STK
 {

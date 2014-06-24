@@ -36,7 +36,7 @@
 #define STK_LAW_UNIFORM_H
 
 #include "STK_Law_IUnivLaw.h"
-#include "../../STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Real.h"
 
 namespace STK
 {

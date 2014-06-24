@@ -40,8 +40,8 @@
 #ifndef STK_ITCONTAINER2D_H
 #define STK_ITCONTAINER2D_H
 
-#include "../../Sdk/include/STK_Macros.h"
-#include "../../Sdk/include/STK_IRecursiveTemplate.h"
+#include "Sdk/include/STK_Macros.h"
+#include "Sdk/include/STK_IRecursiveTemplate.h"
 
 #include "STK_Traits.h"
 

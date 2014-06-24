@@ -36,18 +36,18 @@
 
 #include "../include/STK_IAAModel.h"
 
-#include "../../Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DSquare.h"
 
-#include "../../Algebra/include/STK_LinAlgebra2D.h"
+#include "Algebra/include/STK_LinAlgebra2D.h"
 
-#include "../../STatistiK/include/STK_Stat_Transform.h"
-#include "../../STatistiK/include/STK_Stat_MultivariateReal.h"
+#include "STatistiK/include/STK_Stat_Transform.h"
+#include "STatistiK/include/STK_Stat_MultivariateReal.h"
 
-#include "../../Reduct/include/STK_IReduct.h"
-#include "../../Regress/include/STK_IRegression.h"
+#include "Reduct/include/STK_IReduct.h"
+#include "Regress/include/STK_IRegression.h"
 
 #ifdef STK_AAMODELS_VERBOSE
-#include "../../Arrays/include/STK_Display.h"
+#include "Arrays/include/STK_Display.h"
 #endif
 
 namespace STK

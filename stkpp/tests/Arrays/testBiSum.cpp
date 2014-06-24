@@ -32,7 +32,7 @@
  *  @brief In this file we test the behavior of the all bi-sum operators.
  **/
 
-#include "../../include/Arrays.h"
+#include "Arrays.h"
 
 using namespace STK;
 

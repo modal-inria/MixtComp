@@ -38,10 +38,11 @@ ifneq ($(wildcard ./makevars.local),)
 endif
 
 #-----------------------------------------------------------------------
-# overide Paths BIN and LIB
-#
+# Paths to bin, lib, include and projects
 BIN_DIR = ../../bin/
 LIB_DIR = ../../lib/
+INC_DIR = ../../include/
+PROJECTS_DIR = ../../projects/
 
 #-----------------------------------------------------------------------
 # source files
@@ -79,7 +80,7 @@ progs: $(TEST_PROGS)
 # Objects compilation rules
 #
 $(BIN_DIR)%.o: %.cpp 
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # program compilation rules

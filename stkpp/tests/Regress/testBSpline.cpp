@@ -29,26 +29,26 @@
 */
 
 /** @file testBSpline.cpp test programm for the additive BSpline regression */
-#include "../../projects/Arrays/include/STK_Array2D.h"
-#include "../../projects/Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DSquare.h"
 
-#include "../../projects/DManager/include/STK_ExportToCsv.h"
+#include "DManager/include/STK_ExportToCsv.h"
 
-#include "../../projects/Arrays/include/STK_Display.h"
+#include "Arrays/include/STK_Display.h"
 
 
-#include "../../projects/Regress/include/STK_BSplineCoefficients.h"
-#include "../../projects/Regress/include/STK_BSplineRegression.h"
+#include "Regress/include/STK_BSplineCoefficients.h"
+#include "Regress/include/STK_BSplineRegression.h"
 
-#include "../../projects/Regress/include/STK_AdditiveBSplineCoefficients.h"
-#include "../../projects/Regress/include/STK_AdditiveBSplineRegression.h"
+#include "Regress/include/STK_AdditiveBSplineCoefficients.h"
+#include "Regress/include/STK_AdditiveBSplineRegression.h"
 
-#include "../../projects/Analysis/include/STK_Const_Math.h"
+#include "Analysis/include/STK_Const_Math.h"
 
-#include "../../projects/STatistiK/include/STK_Law_Normal.h"
-#include "../../projects/STatistiK/include/STK_Law_Util.h"
+#include "STatistiK/include/STK_Law_Normal.h"
+#include "STatistiK/include/STK_Law_Util.h"
 
-#include "../../projects/STatistiK/include/STK_Stat_MultivariateReal.h"
+#include "STatistiK/include/STK_Stat_MultivariateReal.h"
 
 
 using namespace STK;

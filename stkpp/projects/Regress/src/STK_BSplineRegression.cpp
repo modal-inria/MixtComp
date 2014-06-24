@@ -34,8 +34,8 @@
  **/
 
 
-#include "../../Algebra/include/STK_LinAlgebra2D.h"
-#include "../../Algebra/include/STK_GinvSymmetric.h"
+#include "Algebra/include/STK_LinAlgebra2D.h"
+#include "Algebra/include/STK_GinvSymmetric.h"
 
 #include "../include/STK_BSplineRegression.h"
 

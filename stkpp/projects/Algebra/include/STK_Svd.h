@@ -36,8 +36,8 @@
 #ifndef STK_SVD_H
 #define STK_SVD_H
 
-#include "../../Arrays/include/STK_Array2D.h"
-#include "../../Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DSquare.h"
 
 namespace STK
 {

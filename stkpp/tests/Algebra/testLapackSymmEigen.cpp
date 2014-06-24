@@ -32,7 +32,7 @@
  *  @brief In this file we test the EigenvaluesSymmetric class.
  **/
 
-#include "../../include/Algebra.h"
+#include "Algebra.h"
 
 using namespace STK;
 

@@ -36,7 +36,7 @@
 #ifndef STK_EXPORTCSV_H
 #define STK_EXPORTCSV_H
 
-#include "../../Arrays/include/STK_ITContainer2D.h"
+#include "Arrays/include/STK_ITContainer2D.h"
 
 #include "STK_DataFrame.h"
 #include "STK_ReadWriteCsv.h"

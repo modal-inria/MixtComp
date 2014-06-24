@@ -32,7 +32,7 @@
  *  @brief In this file we test the behavior of the visitors when they are unrolled.
  **/
 
-#include "../../include/Arrays.h"
+#include "Arrays.h"
 
 using namespace STK;
 

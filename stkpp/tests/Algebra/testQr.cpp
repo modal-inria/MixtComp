@@ -41,7 +41,7 @@
 //  stk_cout << _T(" QQ'= \n");
 //  stk_cout << QtQ << _T("\n" ;
 
-#include "../../include/STKpp.h"
+#include "STKpp.h"
 
 using namespace STK;
 

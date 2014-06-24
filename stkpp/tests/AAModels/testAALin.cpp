@@ -27,17 +27,19 @@
  * Author  : Serge Iovleff
 */
 
-#include "../../projects/AAModels/include/STK_LinearAAModel.h"
-#include "../../projects/Reduct/include/STK_LocalVariance.h"
-
-#include "../../projects/Analysis/include/STK_Const_Math.h"
-
-#include "../../projects/STatistiK/include/STK_Law_Cauchy.h"
-#include "../../projects/STatistiK/include/STK_Law_Normal.h"
-#include "../../projects/STatistiK/include/STK_Stat_MultivariateReal.h"
-
-#include "../../projects/DManager/include/STK_ExportToCsv.h"
-//#include "../include/STKpp.h"
+//#include "AAModels/include/STK_LinearAAModel.h"
+//#include "Reduct/include/STK_LocalVariance.h"
+//
+//#include "Analysis/include/STK_Const_Math.h"
+//
+//#include "STatistiK/include/STK_Law_Cauchy.h"
+//#include "STatistiK/include/STK_Law_Normal.h"
+//#include "STatistiK/include/STK_Stat_MultivariateReal.h"
+//
+//#include "DManager/include/STK_ExportToCsv.h"
+#include "AAModels.h"
+#include "Reduct.h"
+#include "STatistiK.h"
 
 
 using namespace STK;

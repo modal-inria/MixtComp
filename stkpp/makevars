@@ -12,12 +12,12 @@
 # LIB_RMATH_A = /usr/[local/]lib/libRmath.a   # check the path on your system
 # R_FLAGS = -DMATHLIB_STANDALONE
 #
-
 HASRMATH = f
 
 #-----------------------------------------------------------------------
-# make program
-# MAKE  = make
+# Using stkpp in an R packages (comment CXXFLAGS and STK_FLAGS in Debug and Release section) 
+# include $(R_HOME)/etc${R_ARCH}/Makeconf
+# STK_FLAGS = ${CPICFLAGS} -ansi -pedantic -Wall
 
 #-----------------------------------------------------------------------
 #   Macro       Significance
@@ -33,6 +33,11 @@ CC    = gcc
 CXX   = g++
 
 #-----------------------------------------------------------------------
+# make program
+# MAKE  = make
+
+
+#-----------------------------------------------------------------------
 # Name of the STK++ library
 LIB_STKPP_A = libSTKpp.a
 
@@ -40,11 +45,6 @@ LIB_STKPP_A = libSTKpp.a
 # specific C flags
 # long long are available
 CFLAGS   = -Wno-long-long
-
-#-----------------------------------------------------------------------
-# R packages (comment CXXFLAGS and STK_FLAGS in Debug and Release section) 
-# include $(R_HOME)/etc${R_ARCH}/Makeconf
-# STK_FLAGS = ${CPICFLAGS} -ansi -pedantic -Wall
 
 #-----------------------------------------------------------------------
 # flags in Debug mode 
@@ -61,8 +61,8 @@ LDLIBS = -lm
 CXXFLAGS   = -ansi -pedantic -Wall -O3 -march=native -funroll-loops
 
 #-----------------------------------------------------------------------
-# Uncomment the next line if you want to have 0 based arrays 
-#STK_FLAGS += -DSTKBASEARRAYS=0
+# Uncomment the next line if you want to have 1 based arrays 
+#STK_FLAGS += -DSTKBASEARRAYS=1
 
 #-----------------------------------------------------------------------
 # Uncomment the next line if you want to use wchar set

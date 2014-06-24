@@ -33,7 +33,7 @@
  *  @brief In this file we implement the run method of the mixture algorithms.
  **/
 
-#include "../../STKernel/include/STK_Exceptions.h"
+#include "STKernel/include/STK_Exceptions.h"
 #include "../include/STK_MixtureAlgo.h"
 #include "../include/STK_IMixtureComposerBase.h"
 

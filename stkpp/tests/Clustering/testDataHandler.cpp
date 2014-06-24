@@ -34,7 +34,7 @@
  *  @brief In this file we test the joint Statistical models.
  **/
 
-#include "../../include/DManager.h"
+#include "DManager.h"
 
 using namespace STK;
 

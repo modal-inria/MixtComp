@@ -37,8 +37,8 @@
 #ifndef STK_GIVENS_H
 #define STK_GIVENS_H
 
-#include "../../STKernel/include/STK_Real.h"
-#include "../../Arrays/include/STK_ArrayBase.h"
+#include "STKernel/include/STK_Real.h"
+#include "Arrays/include/STK_ArrayBase.h"
 
 namespace STK
 {

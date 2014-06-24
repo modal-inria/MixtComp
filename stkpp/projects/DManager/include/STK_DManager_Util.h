@@ -40,7 +40,7 @@
 
 #include <list>
 
-#include "../../STKernel/include/STK_Integer.h"
+#include "STKernel/include/STK_Integer.h"
 
 namespace STK
 {

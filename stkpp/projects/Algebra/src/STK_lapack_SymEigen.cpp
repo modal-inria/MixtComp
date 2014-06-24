@@ -35,7 +35,7 @@
 #include<cmath>
 
 #include "../include/STK_lapack_SymEigen.h"
-#include "../../STKernel/include/STK_Misc.h"
+#include "STKernel/include/STK_Misc.h"
 
 namespace STK
 {

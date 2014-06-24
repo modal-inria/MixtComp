@@ -34,10 +34,10 @@
  *  @brief In this file we test the joint Statistical models.
  **/
 
-#include "../../include/STatistiK.h"
-#include "../../projects/STatistiK/include/STK_Law_Util.h"
+#include "STatistiK.h"
+#include "STatistiK/include/STK_Law_Util.h"
 
-#include "../../include/StatModels.h"
+#include "StatModels.h"
 
 using namespace STK;
 

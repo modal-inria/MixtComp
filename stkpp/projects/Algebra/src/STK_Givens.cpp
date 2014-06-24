@@ -35,7 +35,7 @@
  **/
 
 #include "../include/STK_Givens.h"
-#include "../../STKernel/include/STK_Misc.h"
+#include "STKernel/include/STK_Misc.h"
 
 namespace STK
 {

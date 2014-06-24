@@ -41,7 +41,6 @@
 #ifndef STK_IARRAY2D_H
 #define STK_IARRAY2D_H
 
-#include "../../STKernel/include/STK_Range.h"
 #include "STK_IArray2DBase.h"
 
 namespace STK

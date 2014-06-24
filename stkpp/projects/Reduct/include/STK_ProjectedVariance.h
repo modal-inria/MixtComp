@@ -33,7 +33,7 @@
 #define STK_PROJECTEDVARIANCE_H
 
 #include "STK_ILinearReduct.h"
-#include "../../Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DSquare.h"
 
 namespace STK
 {

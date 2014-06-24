@@ -38,8 +38,8 @@
 
 #include <vector>
 
-#include "../../STKernel/include/STK_Integer.h"
-#include "../../STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Integer.h"
+#include "STKernel/include/STK_Real.h"
 
 namespace STK
 {

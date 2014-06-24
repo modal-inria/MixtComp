@@ -32,7 +32,7 @@
  *  @brief In this file we test the TContainer 1D classes.
  **/
 
-#include "../../include/Arrays.h"
+#include "Arrays.h"
 
 using namespace STK;
 

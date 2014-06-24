@@ -32,7 +32,7 @@
  *  @brief In this file we test the Analysis classes (special functions).
  **/
 
-#include "../../include/STKpp.h"
+#include "STKpp.h"
 
 //#include <cmath>
 #include <iomanip>

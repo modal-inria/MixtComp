@@ -34,8 +34,9 @@
 
 #include "ContigPage.h"
 
-namespace STK
-{
+using namespace tuto;
+using namespace STK;
+
 /* @ingroup tutorial
  *  @brief Implement the IPage interface for the Contiguity analysis page.*/
     /** constructor. */
@@ -71,6 +72,5 @@ bool ContigPage::validate()
   return true;
 }
 
-} // namespace STK
 
 

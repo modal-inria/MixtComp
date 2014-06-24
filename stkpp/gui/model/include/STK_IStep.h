@@ -53,8 +53,8 @@
 
 #include <list>
 
-#include "../../../projects/STKernel/include/STK_String.h"
-#include "../../../projects/STKernel/include/STK_Real.h"
+#include "../projects/STKernel/include/STK_String.h"
+#include "../projects/STKernel/include/STK_Real.h"
 
 #include "STK_IPropertySource.h"
 

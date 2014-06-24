@@ -30,8 +30,8 @@
  **/
 
 #include "../include/STK_ProjectedVariance.h"
-#include "../../STatistiK/include/STK_Stat_MultivariateReal.h"
-#include "../../Algebra/include/STK_EigenvaluesSymmetric.h"
+#include "STatistiK/include/STK_Stat_MultivariateReal.h"
+#include "Algebra/include/STK_EigenvaluesSymmetric.h"
 
 namespace STK
 {

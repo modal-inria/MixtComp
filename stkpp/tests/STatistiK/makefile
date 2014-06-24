@@ -38,10 +38,11 @@ ifneq ($(wildcard ./makevars.local),)
 endif
 
 #-----------------------------------------------------------------------
-# overide Paths BIN and LIB
-#
+# Paths to bin, lib, include and projects
 BIN_DIR = ../../bin/
 LIB_DIR = ../../lib/
+INC_DIR = ../../include/
+PROJECTS_DIR = ../../projects/
 
 #-----------------------------------------------------------------------
 # source files
@@ -52,7 +53,7 @@ CPP_SRCS = \
 	testLawGamma.cpp
 
 ## library name
-CXX_LIB = $(LIB_DIR)/$(LIB_STKPP_A)
+CXX_LIB = $(LIB_DIR)$(LIB_STKPP_A)
 
 #-----------------------------------------------------------------------
 # binary files
@@ -78,12 +79,12 @@ progs: $(CXX_PROGS)
 $(BIN_DIR)testGamma.o: testGamma.cpp makefile
 	@ case x$(HASRMATH) in xt ) \
 	echo compiling $@; \
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
 esac
 
 # other object files 
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I../../projects $(STK_FLAGS) $< -c -o $@
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $< -c -o $@
 
 
 #-----------------------------------------------------------------------

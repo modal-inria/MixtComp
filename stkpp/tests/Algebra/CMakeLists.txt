@@ -5,6 +5,8 @@ SET( TESTS_FILES
     testSvd
 )
 
+INCLUDE_DIRECTORIES("../../projects")
+
 # loop over files
 FOREACH(test ${TESTS_FILES})
   # Compile and link our test

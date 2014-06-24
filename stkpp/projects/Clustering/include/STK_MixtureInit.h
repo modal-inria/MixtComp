@@ -37,7 +37,7 @@
 #ifndef STK_MIXTUREINIT_H
 #define STK_MIXTUREINIT_H
 
-#include "../../Sdk/include/STK_IRunner.h"
+#include "Sdk/include/STK_IRunner.h"
 #include "STK_Clust_Util.h"
 
 namespace STK

@@ -12,7 +12,7 @@ namespace tuto
 {
 /** @ingroup tutorial
  *  @brief Implement the IPage interface for the Contiguity analysis page.*/
-class ContigPage: public IPage
+class ContigPage: public STK::IPage
 {
   public:
     /** constructor. */
@@ -24,11 +24,11 @@ class ContigPage: public IPage
     /** destructor */
     inline virtual ~ContigPage() {}
     /** @return the file name with the data */
-    inline String const& inputFileName() const { return inputFileName_;}
+    inline STK::String const& inputFileName() const { return inputFileName_;}
     /** @return the file name with the project data */
-    inline String const& outputFileName() const { return outputFileName_;}
+    inline STK::String const& outputFileName() const { return outputFileName_;}
     /** @return the file name with the project data */
-    inline String const& graphFileName() const { return graphFileName_;}
+    inline STK::String const& graphFileName() const { return graphFileName_;}
     /** @return the file name with the project data */
     inline int const& dimension() const { return dim_;}
     /** validate the options. */

@@ -38,8 +38,8 @@
 #ifndef STK_MACROS_H
 #define STK_MACROS_H
 
-#include "../../STKernel/include/STK_String_Util.h"
-#include "../../STKernel/include/STK_Exceptions.h"
+#include "STKernel/include/STK_String_Util.h"
+#include "STKernel/include/STK_Exceptions.h"
 
 /** @ingroup STKernel
  * generate an Error message with no argument. All Error message have the form :

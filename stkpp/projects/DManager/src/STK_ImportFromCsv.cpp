@@ -33,10 +33,10 @@
  *  @brief In this file we implement the classes ImportFromCsv.
  **/
 
-#include "../../STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Real.h"
 
 #include "../include/STK_ImportFromCsv.h"
-#include "../../STKernel/include/STK_Exceptions.h"
+#include "STKernel/include/STK_Exceptions.h"
 
 namespace STK
 {

@@ -41,9 +41,9 @@
 
 #include "STK_IMultiStatModel.h"
 #include "STK_JointGammaParameters.h"
-#include "../../STatistiK/include/STK_Law_Gamma.h"
-#include "../../Analysis/include/STK_Algo_FindZero.h"
-#include "../../Analysis/include/STK_Funct_raw.h"
+#include "STatistiK/include/STK_Law_Gamma.h"
+#include "Analysis/include/STK_Algo_FindZero.h"
+#include "Analysis/include/STK_Funct_raw.h"
 
 namespace STK
 {

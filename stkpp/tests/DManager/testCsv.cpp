@@ -28,8 +28,8 @@
  **/
 
 
-#include "../../include/DManager.h"
-#include "../../include/STKernel.h"
+#include "DManager.h"
+#include "STKernel.h"
 
 using namespace STK;
 

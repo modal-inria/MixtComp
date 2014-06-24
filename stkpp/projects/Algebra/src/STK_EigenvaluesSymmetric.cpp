@@ -33,7 +33,7 @@
  *  @brief In this file we implement the EigenvaluesSymmetric class.
  **/
 
-#include "../../Arrays/include/STK_Array2DVector.h"
+#include "Arrays/include/STK_Array2DVector.h"
 
 #include "../include/STK_Householder.h"
 #include "../include/STK_Givens.h"
@@ -42,7 +42,7 @@
 
 
 #ifdef STK_ALGEBRA_VERBOSE
-#include "../../Arrays/include/STK_Display.h"
+#include "Arrays/include/STK_Display.h"
 #endif
 
 #define MAXITER 100

@@ -26,7 +26,7 @@
  * Author  : Serge Iovleff
 */
 
-#include "../../include/DManager.h"
+#include "DManager.h"
 
 using namespace STK;
 

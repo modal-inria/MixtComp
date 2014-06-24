@@ -36,8 +36,8 @@
 #ifndef STK_PROPERTYDESCRIPTOR_H
 #define STK_PROPERTYDESCRIPTOR_H
 
-#include "../../../projects/STKernel/include/STK_String.h"
-#include "../../../projects/STKernel/include/STK_String_Util.h"
+#include "../projects/STKernel/include/STK_String.h"
+#include "../projects/STKernel/include/STK_String_Util.h"
 
 namespace STK
 {

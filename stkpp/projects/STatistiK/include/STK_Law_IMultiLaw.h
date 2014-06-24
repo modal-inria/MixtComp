@@ -38,8 +38,8 @@
 #ifndef STK_ITMULTILAW_H
 #define STK_ITMULTILAW_H
 
-#include "../../STKernel/include/STK_Real.h"
-#include "../../Arrays/include/STK_Array2DPoint.h"
+#include "STKernel/include/STK_Real.h"
+#include "Arrays/include/STK_Array2DPoint.h"
 #include "STK_Law_ILawBase.h"
 
 namespace STK

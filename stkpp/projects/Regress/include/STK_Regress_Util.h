@@ -41,7 +41,7 @@
 #ifndef STK_REGRESS_UTIL_H_
 #define STK_REGRESS_UTIL_H_
 
-#include "../../STKernel/include/STK_String.h"
+#include "STKernel/include/STK_String.h"
 
 namespace STK
 {

@@ -32,9 +32,9 @@
  *  @brief In this file the CAllocator class.
  **/
 
-#include "../../include/STKernel.h"
-#include "../../projects/Arrays/include/STK_CAllocator.h"
-#include "../../projects/Arrays/include/STK_Display.h"
+#include "STKernel.h"
+#include "Arrays/include/STK_CAllocator.h"
+#include "Arrays/include/STK_Display.h"
 
 using namespace STK;
 

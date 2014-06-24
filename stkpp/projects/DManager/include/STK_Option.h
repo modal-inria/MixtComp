@@ -41,10 +41,10 @@
 #include <list>
 
 // STK+ headers
-#include "../../STKernel/include/STK_String.h"
-#include "../../STKernel/include/STK_Real.h"
-#include "../../STKernel/include/STK_Range.h"
-#include "../../STKernel/include/STK_Stream.h"
+#include "STKernel/include/STK_String.h"
+#include "STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Range.h"
+#include "STKernel/include/STK_Stream.h"
 
 #include "../include/STK_DManager_Util.h"
 

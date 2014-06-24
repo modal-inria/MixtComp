@@ -39,7 +39,7 @@
 
 #include <cmath>
 
-#include "../../StatModels/include/STK_IMultiParameters.h"
+#include "StatModels/include/STK_IMultiParameters.h"
 
 namespace STK
 {

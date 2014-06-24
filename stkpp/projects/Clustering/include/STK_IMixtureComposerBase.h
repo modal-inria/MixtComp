@@ -36,12 +36,12 @@
 #ifndef STK_IMODELMIXTUREBASE_H
 #define STK_IMODELMIXTUREBASE_H
 
-#include "../../STKernel/include/STK_Range.h"
-#include "../../StatModels/include/STK_IModelBase.h"
+#include "STKernel/include/STK_Range.h"
+#include "StatModels/include/STK_IModelBase.h"
 #include "STK_Clust_Util.h"
-#include "../../Arrays/include/STK_CArrayPoint.h"
-#include "../../Arrays/include/STK_CArrayVector.h"
-#include "../../Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_CArrayPoint.h"
+#include "Arrays/include/STK_CArrayVector.h"
+#include "Arrays/include/STK_Array2D.h"
 
 namespace STK
 {

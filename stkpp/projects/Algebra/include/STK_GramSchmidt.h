@@ -38,7 +38,7 @@
 #define STK_GRAMSCHMIDT_H
 
 // Container classes
-#include "../../Arrays/include/STK_ArrayBase.h"
+#include "Arrays/include/STK_ArrayBase.h"
 
 namespace STK
 {

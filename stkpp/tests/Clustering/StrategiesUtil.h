@@ -37,7 +37,7 @@
 #ifndef STRATEGIESUTIL_H
 #define STRATEGIESUTIL_H
 
-#include "../../include/Clustering.h"
+#include "Clustering.h"
 
 void testSimpleStrategy( STK::IMixtureComposerBase*& p_composer);
 void testXemStrategy( STK::IMixtureComposerBase*& p_composer);

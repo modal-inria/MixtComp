@@ -40,7 +40,7 @@
 #include <cmath>
 
 #include "STK_IMultiParameters.h"
-#include "../../Arrays/include/STK_Array2DPoint.h"
+#include "Arrays/include/STK_Array2DPoint.h"
 
 namespace STK
 {

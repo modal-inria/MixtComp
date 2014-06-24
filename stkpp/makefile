@@ -216,36 +216,33 @@ clean_reduct:
 #-----------------------------------------------------------------------
 # wrapper for cmake
 #-----------------------------------------------------------------------
-.PHONY: cmake cclean cdoc ctest
+.PHONY: cmake_debug cmake_release cmake_debug_0 cmake_release_0 cmake_clean cmake_doc cmake_test
 
 cmake_debug: #./build/Makefile
-	cd build/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=off
-	$(MAKE) -C build  VERBOSE=1
+	cd cmakedir/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=off
+	$(MAKE) -C cmakedir  VERBOSE=1
 
 cmake_release: #./build/Makefile
-	cd build/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true  -DZERO_BASED_ARRAYS=off -DCMAKE_BUILD_TYPE=Release
-	$(MAKE) -C build  VERBOSE=1
+	cd cmakedir/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true  -DZERO_BASED_ARRAYS=off -DCMAKE_BUILD_TYPE=Release
+	$(MAKE) -C cmakedir  VERBOSE=1
 
 cmake_debug_0: #./build/Makefile
-	cd build/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=on
-	$(MAKE) -C build  VERBOSE=1
+	cd cmakedir/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=on
+	$(MAKE) -C cmakedir  VERBOSE=1
 
 cmake_release_0: #./build/Makefile
-	cd build/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=on -DCMAKE_BUILD_TYPE=Release
-	$(MAKE) -C build  VERBOSE=1
-
-#./build/Makefile:
-#	cd build/ >/dev/null 2>&1 && cmake .. -DCMAKE_VERBOSE_MAKEFILE=true
+	cd cmakedir/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=on -DCMAKE_BUILD_TYPE=Release
+	$(MAKE) -C cmakedir  VERBOSE=1
 
 cmake_clean:
-	@- cd build/; $(MAKE) clean  VERBOSE=1
-	@- $(RM) -rf ./build/*
+	@- cd cmakedir/; $(MAKE) clean  VERBOSE=1
+	@- $(RM) -rf ./cmakedir/*
 	
 cmake_doc:
-	cd build/; $(MAKE) doc
+	cd cmakedir/; $(MAKE) doc
 
 cmake_test:
-	cd build/; $(MAKE) test
+	cd cmakedir/; $(MAKE) test
 
 #-----------------------------------------------------------------------
 # Tests
@@ -329,7 +326,6 @@ cleancontiguity:
 	cd $(CONTIGUITY_DIR); $(MAKE) clean
 
 
-#-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
 # gui project (to remove)
 .PHONY: qt guimodel gui

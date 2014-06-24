@@ -36,7 +36,7 @@
  **/
 
 #include "../include/STK_Model_Util.h"
-#include "../../STKernel/include/STK_String_Util.h"
+#include "STKernel/include/STK_String_Util.h"
 
 namespace STK
 {

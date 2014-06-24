@@ -36,9 +36,9 @@
 #ifndef STK_LIST_H
 #define STK_LIST_H
 
-#include "../../Arrays/include/STK_Arrays_Util.h"
-#include "../../Arrays/include/STK_IContainerRef.h"
-#include "../../Arrays/include/STK_ITContainer1D.h"
+#include "Arrays/include/STK_Arrays_Util.h"
+#include "Arrays/include/STK_IContainerRef.h"
+#include "Arrays/include/STK_ITContainer1D.h"
 
 #include "STK_Cell.h"
 

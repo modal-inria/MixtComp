@@ -36,7 +36,7 @@
 #ifndef SIMULUTIL_H
 #define SIMULUTIL_H
 
-#include "../../include/Arrays.h"
+#include "Arrays.h"
 
 typedef STK::Array1D< STK::Array2DVector<STK::Real> > Array_pkProba; // Categorical
 typedef STK::Array1D< STK::CArrayVector<STK::Real, 2> > Array_sParam; // Gaussian

@@ -37,7 +37,7 @@
 #ifndef STK_ADDITIVEBSPLINEREGRESSIONPAGE_H
 #define STK_ADDITIVEBSPLINEREGRESSIONPAGE_H
 
-#include "../../DManager/include/STK_IPage.h"
+#include "DManager/include/STK_IPage.h"
 #include "STK_BSplineCoefficients.h"
 
 namespace STK

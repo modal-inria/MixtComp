@@ -35,7 +35,7 @@
 #ifndef STK_STAT_FUNCTORS_H
 #define STK_STAT_FUNCTORS_H
 
-#include "../../Arrays/include/STK_ExprBaseFunctors.h"
+#include "Arrays/include/STK_ExprBaseFunctors.h"
 
 
 namespace STK

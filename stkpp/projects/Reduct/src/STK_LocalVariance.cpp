@@ -34,10 +34,10 @@
 
 #include "../include/STK_LocalVariance.h"
 
-#include "../../Algebra/include/STK_EigenvaluesSymmetric.h"
-#include "../../Algebra/include/STK_LinAlgebra2D.h"
+#include "Algebra/include/STK_EigenvaluesSymmetric.h"
+#include "Algebra/include/STK_LinAlgebra2D.h"
 
-#include "../../STKernel/include/STK_String_Util.h"
+#include "STKernel/include/STK_String_Util.h"
 
 namespace STK
 {
