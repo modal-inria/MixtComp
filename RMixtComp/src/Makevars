@@ -31,6 +31,8 @@ PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` `Rscript -e "Rcpp:::
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB)
 
+export
+
 .PHONY: all pkglib
 
 ## $(SHLIB) is the usual default target that is built automatically from all source 

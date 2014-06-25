@@ -13,11 +13,11 @@
 # R_FLAGS = -DMATHLIB_STANDALONE
 #
 
-HASRMATH = f
+# HASRMATH = f
 
 #-----------------------------------------------------------------------
 # make program
-MAKE  = make
+# MAKE  = make
 
 #-----------------------------------------------------------------------
 #   Macro       Significance
@@ -29,8 +29,8 @@ MAKE  = make
 # The defaults below are for GNU g++.
 #-----------------------------------------------------------------------
 # compilers
-CC    = gcc
-CXX   = g++
+# CC    = gcc
+# CXX   = g++
 
 #-----------------------------------------------------------------------
 # Name of the STK++ library
@@ -39,7 +39,7 @@ LIB_STKPP_A = libSTKpp.a
 #-----------------------------------------------------------------------
 # specific C flags
 # long long are available
-CFLAGS   = -Wno-long-long
+# CFLAGS   = -Wno-long-long
 
 #-----------------------------------------------------------------------
 # R packages (comment CXXFLAGS and STK_FLAGS in Debug and Release section) 
@@ -49,7 +49,7 @@ CFLAGS   = -Wno-long-long
 #-----------------------------------------------------------------------
 # flags in Release mode 
 #CXXFLAGS   = -std=c++11 -ansi -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
-CXXFLAGS   = -ansi -pedantic -Wall -O3 -march=native -funroll-loops
+#CXXFLAGS   = -ansi -pedantic -Wall -O3 -march=native -funroll-loops
 
 #-----------------------------------------------------------------------
 # flags in Debug mode 
@@ -57,7 +57,5 @@ CXXFLAGS   = -ansi -pedantic -Wall -O3 -march=native -funroll-loops
 #CXXFLAGS   = -ansi -pedantic -Wall -g -O0
 # STK_FLAGS = -DSTK_BOUNDS_CHECK  -DSTK_DEBUG
 
-LDFLAGS =
-LDLIBS = -lm
-
--include $(R_HOME)/etc${R_ARCH}/Makeconf
+#LDFLAGS =
+#LDLIBS = -lm
