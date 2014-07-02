@@ -48,6 +48,8 @@ class MixtureBridge : public mixt::IMixture
     typedef typename BridgeTraits<Id>::Data Data;
     // augmented data type
     typedef typename BridgeTraits<Id>::AugData AugData;
+    // statistics on missing values type
+    typedef typename BridgeTraits<Id>::DataStats DataStats;
     // parameters type to get
     typedef typename BridgeTraits<Id>::Param Param;
     // type of the data

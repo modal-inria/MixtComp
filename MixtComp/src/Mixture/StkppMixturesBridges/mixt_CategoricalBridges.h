@@ -28,6 +28,7 @@
 #include "stkpp/projects/Clustering/include/CategoricalMixtureModels/STK_Categorical_pjk.h"
 #include "../../Sampler/mixt_CategoricalSampler.h"
 #include "../../Sampler/mixt_CategoricalSamplerIterator.h"
+#include "../../Data/mixt_CategoricalDataStat.h"
 
 namespace mixt
 {
@@ -45,6 +46,8 @@ struct BridgeTraits<STK::Clust::Categorical_pjk_>
     typedef STK::Array2D<int> Data;
     /** Type of the AugmentedData*/
     typedef AugmentedData<Data> AugData;
+    /** Type of the DataStat*/
+    typedef CategoricalDataStat DataStat;
     /** Type of the parameter set to be used as output */
     typedef STK::Array2D<STK::Real> Param;
     /** Type of the Data */
