@@ -48,7 +48,7 @@ class SemStrategy
     /** default constructor.
      *  @param p_composer the model to estimate
      **/
-    SemStrategy(STK::MixtureComposer*& p_composer,
+    SemStrategy(mixt::MixtureComposer*& p_composer,
                 STK::Clust::initType init,
                 int nbTry,
                 int nbTrialInInit,
@@ -70,7 +70,7 @@ class SemStrategy
     
   protected:
      /** reference on the main model */
-    STK::MixtureComposer*& p_composer_;
+    mixt::MixtureComposer*& p_composer_;
     /** initialization method */
     STK::IMixtureInit* p_init_;
     

@@ -41,8 +41,8 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   mixt::MixtureManager<mixt::DataHandlerR> manager(handler);
 
   // prepare the composer
-  STK::MixtureComposer composer(handler.nbSample(), handler.nbVariable(), nbClusters);
-  STK::MixtureComposer* p_composer(&composer);
+  mixt::MixtureComposer composer(handler.nbSample(), handler.nbVariable(), nbClusters);
+  mixt::MixtureComposer* p_composer(&composer);
   composer.createMixtures(manager);
   
   // instantiate the SEMStrategy

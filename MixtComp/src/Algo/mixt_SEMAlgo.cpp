@@ -42,7 +42,7 @@ SEMAlgo::SEMAlgo(SEMAlgo const& algo) :
     nbSamplingAttempts_(algo.nbSamplingAttempts_)
 {}
 
-void SEMAlgo::setModel(STK::MixtureComposer* p_model)
+void SEMAlgo::setModel(mixt::MixtureComposer* p_model)
 {
   p_model_ = p_model;
 }

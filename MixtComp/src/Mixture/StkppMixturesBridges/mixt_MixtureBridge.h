@@ -30,7 +30,7 @@
 #ifndef MIXT_MIXTUREBRIDGE_H
 #define MIXT_MIXTUREBRIDGE_H
 
-#include "stkpp/projects/Clustering/include/STK_IMixture.h"
+#include "../mixt_IMixture.h"
 #include "../../Data/mixt_AugmentedData.h"
 #include "mixt_GaussianBridges.h"
 #include "mixt_CategoricalBridges.h"
@@ -41,7 +41,7 @@ namespace mixt
 {
 
 template<int Id>
-class MixtureBridge : public STK::IMixture
+class MixtureBridge : public mixt::IMixture
 {
   public:
     // data type
@@ -64,7 +64,7 @@ class MixtureBridge : public STK::IMixture
      *  @param nbCluster number of cluster
      **/
     MixtureBridge(std::string const& idName, int nbCluster) :
-      STK::IMixture(idName, nbCluster),
+      mixt::IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
       nbVariable_(0),
@@ -73,7 +73,7 @@ class MixtureBridge : public STK::IMixture
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
-      STK::IMixture(bridge),
+      mixt::IMixture(bridge),
       mixture_(bridge.mixture_),
       m_augDataij_(bridge.m_augDataij_),
       nbVariable_(bridge.nbVariable_),
