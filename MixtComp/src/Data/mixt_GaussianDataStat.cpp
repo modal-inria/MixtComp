@@ -35,7 +35,7 @@ GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >
                + pm_augDataij_->v_missingIntervals_.size()
                + pm_augDataij_->v_missingLUIntervals_.size()
                + pm_augDataij_->v_missingRUIntervals_.size();
-  // second dimension corresponds to the couple (sample position, number of variables)
+  // second dimension corresponds to the couple (sample position, variables position)
   posMissing_.resize(STK::Range(0, nbMissing_), 2);
   posMissing_ = 0;
   initPos();

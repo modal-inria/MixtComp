@@ -24,21 +24,38 @@
 #ifndef MIXT_CATEGORICALDATASTAT_H
 #define MIXT_CATEGORICALDATASTAT_H
 
+#include "Arrays/include/STK_Array2D.h"
+#include "mixt_AugmentedData.h"
+
 namespace mixt
 {
+
+typedef std::pair<int, int> pos;
+typedef typename std::vector<          pos                        >::const_iterator iv_missing;
+typedef typename std::vector<std::pair<pos, std::vector<int>    > >::const_iterator iv_missingFiniteValues;
 
 class CategoricalDataStat
 {
   public:
     CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij);
     ~CategoricalDataStat();
+    void initPos();
+    void setModalities();
     void sampleVals();
-
+    void exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const;
   private:
     // number of iterations used to compute the statistics
-    int nbIter;
+    int nbIter_;
+    // total number of missing values
+    int nbMissing_;
+    // number of modalities
+    int nbModalities_;
+    // pointer to data array
     const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
-
+    // array to store the positions of all missing data, regardless of the type (missing, interval, etc...)
+    STK::Array2D<int> posMissing_;
+    // array to store the statistics on the data
+    STK::Array2D<STK::Real> statMissing_;
 };
 
 } // namespace mixt
