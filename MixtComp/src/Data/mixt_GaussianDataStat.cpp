@@ -30,26 +30,9 @@ GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >
     nbIter_(0),
     nbMissing_(0),
     pm_augDataij_(pm_augDataij)
-{
-  nbMissing_ =   pm_augDataij_->v_missing_.size()
-               + pm_augDataij_->v_missingIntervals_.size()
-               + pm_augDataij_->v_missingLUIntervals_.size()
-               + pm_augDataij_->v_missingRUIntervals_.size();
-  // second dimension corresponds to the couple (sample position, variables position)
-  posMissing_.resize(STK::Range(0, nbMissing_), 2);
-  posMissing_ = 0;
-  initPos();
-  // second dimension corresponds to mean and variance
-  statMissing_.resize(STK::Range(0, nbMissing_), 2);
-  posMissing_ = 0.;
-#ifdef MC_DEBUG
-  std::cout << "Initializing statMissing_ and posMissing_" << std::endl;
-  std::cout << "statMissing_" <<  std::endl;
-  std::cout << statMissing_ << std::endl;
-  std::cout << "posMissing_" <<  std::endl;
-  std::cout << posMissing_ << std::endl;
-#endif
-}
+{}
+
+GaussianDataStat::~GaussianDataStat() {};
 
 void GaussianDataStat::initPos()
 {
@@ -87,6 +70,27 @@ void GaussianDataStat::initPos()
     ++currVal;
   }
 }
+
+void GaussianDataStat::initialize()
+{
+  nbMissing_ =   pm_augDataij_->v_missing_.size()
+               + pm_augDataij_->v_missingIntervals_.size()
+               + pm_augDataij_->v_missingLUIntervals_.size()
+               + pm_augDataij_->v_missingRUIntervals_.size();
+  // second dimension corresponds to the couple (sample position, variables position)
+  posMissing_.resize(STK::Range(0, nbMissing_), 2);
+  initPos();
+  // second dimension corresponds to mean and variance
+  statMissing_.resize(STK::Range(0, nbMissing_), 2);
+  statMissing_ = 0.;
+#ifdef MC_DEBUG
+  std::cout << "GaussianDataStat, initializing statMissing_ and posMissing_" << std::endl;
+  std::cout << "statMissing_" <<  std::endl;
+  std::cout << statMissing_ << std::endl;
+  std::cout << "posMissing_" <<  std::endl;
+  std::cout << posMissing_ << std::endl;
+#endif
+};
 
 void GaussianDataStat::sampleVals()
 {

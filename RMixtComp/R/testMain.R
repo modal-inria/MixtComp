@@ -16,7 +16,10 @@ testRMC <- function (){
                 c("data/categoricalData.csv", "data/categoricalDescriptor.csv"))
 #  lm <- getData(c("data/gaussianData.csv", "data/gaussianDescriptor.csv"))
 #   lm <- getData(c("data/categoricalData.csv", "data/categoricalDescriptor.csv"))
-  mcCluster <- getMixtCompCluster(2, 20, 100)
+  mcCluster <- getMixtCompCluster(2,
+                                  20,
+                                  100,
+                                  100)
   mixtCompCluster(lm, mcCluster, 2)
   return(mcCluster)
 }

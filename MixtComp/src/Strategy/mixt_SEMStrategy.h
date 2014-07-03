@@ -54,6 +54,7 @@ class SemStrategy
                 int nbTrialInInit,
                 int nbBurnInIter,
                 int nbIter,
+                int nbGibbsIter,
                 int zMin,
                 int nbSamplingAttempts);
 
@@ -76,6 +77,8 @@ class SemStrategy
     
     /** number of estimation to try */
     int nbTry_;
+    /** number of iteration for final Gibbs sampler */
+    int nbGibbsIter_;
     /** algorithm for burn-in */
     SEMAlgo* p_burnInAlgo_;
     /** algorithm for subsequent long run */

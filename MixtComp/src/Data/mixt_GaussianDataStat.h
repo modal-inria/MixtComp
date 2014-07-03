@@ -43,6 +43,7 @@ class GaussianDataStat
     GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij);
     ~GaussianDataStat();
     void initPos();
+    void initialize();
     void sampleVals();
     void exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const;
   private:

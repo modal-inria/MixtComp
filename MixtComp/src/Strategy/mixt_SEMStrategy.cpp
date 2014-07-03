@@ -38,10 +38,12 @@ SemStrategy::SemStrategy(mixt::MixtureComposer*& p_composer,
                          int nbTrialInInit,
                          int nbBurnInIter,
                          int nbIter,
+                         int nbGibbsIter,
                          int zMin,
                          int nbSamplingAttempts) :
     p_composer_(p_composer),
-    nbTry_(nbTry)
+    nbTry_(nbTry),
+    nbGibbsIter_(nbGibbsIter)
 {
   p_init_ = STK::Clust::createInit(init,
                                    nbTrialInInit,
@@ -96,6 +98,14 @@ bool SemStrategy::run()
     }
   }
   
+  for (int iterGibbs = 0; iterGibbs < nbGibbsIter_; ++iterGibbs)
+  {
+      p_composer_->sStep();
+      p_composer_->samplingStep();
+      p_composer_->eStep();
+      p_composer_->storeData();
+  }
+
   p_composer_->finalizeStep();
 
   return true;

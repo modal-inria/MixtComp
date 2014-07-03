@@ -143,6 +143,14 @@ void MixtureComposer::storeIntermediateResults(int iteration)
   }
 }
 
+void MixtureComposer::storeData()
+{
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->storeData();
+  }
+}
+
 void MixtureComposer::finalizeStep()
 {
   for (size_t l = 0; l < v_mixtures_.size(); ++l)

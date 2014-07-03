@@ -1,6 +1,6 @@
-mixtCompSemStrategy <- function( nbTrialInInit = 2, nbBurnInIter = 20, nbIter = 100 ){
+mixtCompSemStrategy <- function( nbTrialInInit = 2, nbBurnInIter = 20, nbIter = 100, nbGibbsIter = 100 ){
   # create a new instance of SEM strategy
-  return(new("Strategy", "randomInit", nbTrialInInit, nbBurnInIter, nbIter))
+  return(new("Strategy", "randomInit", nbTrialInInit, nbBurnInIter, nbIter, nbGibbsIter))
 }
 
 setClass(
@@ -9,13 +9,15 @@ setClass(
     initMethod = "character",
     nbTrialInInit = "numeric",
     nbBurnInIter = "numeric",
-    nbIter = "numeric"
+    nbIter = "numeric",
+    nbGibbsIter = "numeric"
   ),
   prototype=prototype(
     initMethod = "randomInit",
     nbTrialInInit = 2,
     nbBurnInIter = 20,
-    nbIter = 100
+    nbIter = 100,
+    nbGibbsIter = 100
   ),
   # validity function
   validity=function(object){
@@ -44,6 +46,13 @@ setClass(
     if (object@nbIter < 1){
       stop("nbIter must be positive.")
     }
+    # for 'nbGibbsInIter'
+    if (!is.wholenumber(object@nbGibbsIter)){
+      stop("nbBurnInIter must be an integer.")
+    }
+    if (object@nbGibbsIter < 1){
+      stop("nbBurnInIter must be positive.")
+    }
     return(TRUE)
   }
 )
@@ -51,11 +60,12 @@ setClass(
 setMethod(
   f="initialize",
   signature=c("Strategy"),
-  definition=function(.Object, initMethod, nbTrialInInit, nbBurnInIter, nbIter){
+  definition=function(.Object, initMethod, nbTrialInInit, nbBurnInIter, nbIter, nbGibbsIter){
     .Object@initMethod<-initMethod
     .Object@nbTrialInInit<-nbTrialInInit
     .Object@nbBurnInIter<-nbBurnInIter
     .Object@nbIter<-nbIter
+    .Object@nbGibbsIter<-nbGibbsIter
     validObject(.Object)
     return(.Object)
   }
@@ -71,6 +81,7 @@ setMethod(
     cat("* number of tries in initialization = ", object@nbTrialInInit, "\n")
     cat("* number of iterations in burn-in   = ", object@nbBurnInIter, "\n")
     cat("* number of iterations              = ", object@nbIter, "\n")
+    cat("* number of Gibbs iterations        = ", object@nbGibbsIter, "\n")
     cat("****************************************\n")
   }
 )

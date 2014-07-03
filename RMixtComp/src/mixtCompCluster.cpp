@@ -62,6 +62,7 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
                              mcStrategy.slot("nbTrialInInit"), // number of initialization trials
                              mcStrategy.slot("nbBurnInIter"), // number of burn-in iterations
                              mcStrategy.slot("nbIter"), // number of iterations
+                             mcStrategy.slot("nbGibbsIter"), // number of iterations for Gibbs sampler
                              3, // minimal number of element per class
                              10); // number of sampling attempts for lowly populated classes
 

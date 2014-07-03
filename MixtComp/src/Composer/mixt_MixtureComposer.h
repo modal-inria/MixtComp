@@ -111,6 +111,11 @@ class MixtureComposer : public STK::IMixtureComposerBase
      * store results. This is usually called after a burn-in phase.
      **/
     virtual void storeIntermediateResults(int iteration);
+    /** @brief This step can be used to signal to the mixtures that they
+     * must store data. This is usually called after the long algo, to
+     * store data generated using the estimated parameters
+     */
+    virtual void storeData();
     /**@brief This step can be used by developer to finalize any thing. It will
      *  be called only once after we finish running the estimation algorithm.
      **/

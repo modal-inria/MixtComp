@@ -108,6 +108,10 @@ class IMixture
      * period.
      */
     virtual void storeIntermediateResults(int iteration) {/**Do nothing by default*/}
+    /** @brief This step can be used to store data. This is usually called after the long algo, to
+     * store data generated using the estimated parameters
+     */
+    virtual void storeData() {/**Do nothing by default*/}
     /** @brief This step can be used by developer to finalize any thing. It will
      *  be called only once after we finish running the estimation algorithm.
      */
@@ -132,8 +136,8 @@ class IMixture
      */
     inline virtual void writeParameters(std::ostream& out) const
     {
-#ifdef STK_MIXTURE_DEBUG
-    stk_cout<< _T("You need to override this method in your mixture!");
+#ifdef MC_DEBUG
+    std::cout << _T("You need to override this method in your mixture!");
 #endif
     }
 

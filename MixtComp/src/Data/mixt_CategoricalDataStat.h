@@ -40,6 +40,7 @@ class CategoricalDataStat
     CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij);
     ~CategoricalDataStat();
     void initPos();
+    void initialize();
     void setModalities();
     void sampleVals();
     void exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const;

@@ -30,27 +30,9 @@ CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >
     nbIter_(0),
     nbMissing_(0),
     pm_augDataij_(pm_augDataij)
-{
-  nbMissing_ =   pm_augDataij_->v_missing_.size()
-               + pm_augDataij_->v_missingFiniteValues_.size();
-  // second dimension corresponds to the couple (sample position, variable position)
-  posMissing_.resize(STK::Range(0, nbMissing_), 2);
-  posMissing_ = 0;
+{}
 
-  initPos();
-  setModalities();
-
-  // second dimension corresponds the modalities
-  statMissing_.resize(STK::Range(0, nbMissing_), nbModalities_);
-  posMissing_ = 0.;
-#ifdef MC_DEBUG
-  std::cout << "Initializing statMissing_ and posMissing_" << std::endl;
-  std::cout << "statMissing_" <<  std::endl;
-  std::cout << statMissing_ << std::endl;
-  std::cout << "posMissing_" <<  std::endl;
-  std::cout << posMissing_ << std::endl;
-#endif
-}
+CategoricalDataStat::~CategoricalDataStat() {};
 
 void CategoricalDataStat::initPos()
 {
@@ -73,6 +55,26 @@ void CategoricalDataStat::initPos()
   }
 }
 
+void CategoricalDataStat::initialize()
+{
+  nbMissing_ =   pm_augDataij_->v_missing_.size()
+               + pm_augDataij_->v_missingFiniteValues_.size();
+  // second dimension corresponds to the couple (sample position, variable position)
+  posMissing_.resize(STK::Range(0, nbMissing_), 2);
+  initPos();
+  setModalities();
+  // second dimension corresponds the modalities
+  statMissing_.resize(STK::Range(0, nbMissing_), nbModalities_);
+  statMissing_ = 0.;
+#ifdef MC_DEBUG
+  std::cout << "CategoricalDataStat, initializing statMissing_ and posMissing_" << std::endl;
+  std::cout << "statMissing_" <<  std::endl;
+  std::cout << statMissing_ << std::endl;
+  std::cout << "posMissing_" <<  std::endl;
+  std::cout << posMissing_ << std::endl;
+#endif
+}
+
 void CategoricalDataStat::setModalities()
 {
   std::vector<std::pair<int, int> >::const_iterator it   (pm_augDataij_->dataRanges_.begin());
@@ -91,13 +93,25 @@ void CategoricalDataStat::setModalities()
     if (currMax > max) max = currMax;
   }
 
-  nbModalities_ = max;
+  nbModalities_ = max + 1;
+#ifdef MC_DEBUG
+  std::cout << min << std::endl;
+  std::cout << max << std::endl;
+#endif
 }
 
 void CategoricalDataStat::sampleVals()
 {
   for (int currVal = 0; currVal < nbMissing_; ++currVal)
   {
+    int sample = posMissing_(currVal, 0);
+    int var = posMissing_(currVal, 1);
+#ifdef MC_DEBUG
+    std::cout << statMissing_ << std::endl;
+    std::cout << pm_augDataij_->data_(posMissing_(currVal, 0),
+                                      posMissing_(currVal, 1)) << std::endl;
+    std::cout << "CategoricalDataStat::sampleVals, sample: " << sample << " var: " << var << std::endl;
+#endif
     statMissing_(currVal, pm_augDataij_->data_(posMissing_(currVal, 0),
                                                posMissing_(currVal, 1))) += 1.;
   }
