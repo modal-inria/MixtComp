@@ -24,8 +24,39 @@
 #ifndef MIXT_GAUSSIANDATASTAT_H
 #define MIXT_GAUSSIANDATASTAT_H
 
+#include "Arrays/include/STK_Array2D.h"
+#include "mixt_AugmentedData.h"
+
 namespace mixt
 {
+
+typedef std::pair<int, int> pos;
+typedef typename std::vector<          pos                                    >::const_iterator iv_missing;
+typedef typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::const_iterator iv_missingIntervals;
+typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingLUIntervals;
+typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingRUIntervals;
+typedef typename std::pair<pos, STK::Real> RetValue;
+
+class GaussianDataStat
+{
+  public:
+    GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij);
+    ~GaussianDataStat();
+    void initPos();
+    void sampleVals();
+    void exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const;
+  private:
+    // number of iterations used to compute the statistics
+    int nbIter_;
+    // total number of missing values
+    int nbMissing_;
+    // pointer to data array
+    const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij_;
+    // array to store the positions of all missing data, regardless of the type (missing, interval, etc...)
+    STK::Array2D<int> posMissing_;
+    // array to store the statistics on the data
+    STK::Array2D<STK::Real> statMissing_;
+};
 
 } // namespace mixt
 
