@@ -197,6 +197,9 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
     }
     break;
   }
+#ifdef MC_DEBUG
+  std::cout << z * sd + mean << std::endl;
+#endif
   return RetValue(currPos, z * sd + mean);
 }
 
