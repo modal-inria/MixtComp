@@ -38,7 +38,7 @@ DataExtractorR::DataExtractorR(const MixtureComposer* composer, const DataHandle
 
 DataExtractorR::~DataExtractorR() {};
 
-void DataExtractorR::extractVal(Rcpp::List list) const
+void DataExtractorR::extractVal() const
 {
   for (std::vector<IMixture*>::const_iterator it = composer_->v_mixtures().begin();
        it != composer_->v_mixtures().end();
@@ -46,6 +46,9 @@ void DataExtractorR::extractVal(Rcpp::List list) const
   {
     std::string idModelStr = handler_->info().at((*it)->idName());
     STK::Clust::Mixture idModel = STK::Clust::stringToMixture(idModelStr);
+#ifdef MC_DEBUG
+    std::cout << "DataExtractorR::extractVal, " << idModelStr << std::endl;
+#endif
     switch (idModel)
     {
       case STK::Clust::Gaussian_sjk_:
@@ -54,10 +57,6 @@ void DataExtractorR::extractVal(Rcpp::List list) const
         STK::Array2D<int> posMissing;
         STK::Array2D<STK::Real> statMissing;
         p_bridge->getDataStat()->exportVals(posMissing, statMissing);
-#ifdef MC_DEBUG
-        std::cout << "DataExtractorR::extractVal for Gaussian_sjk" << std::endl;
-
-#endif
       }
       break;
 

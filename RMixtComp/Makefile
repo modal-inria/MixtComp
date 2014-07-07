@@ -17,9 +17,11 @@ cleanRMC:
 	rm -f src/*.a
 	rm -f src/*.so
 	rm -f src/*.exe
-	rm -f src/test/test.exe
 	rm -f src/*.dll
 	find .. -type f -path "../MixtComp/*.o" -exec rm -f {} \;
 	find .. -type f -path "../MixtComp/*.d" -exec rm -f {} \;
 	find .. -type f -path "../MixtComp/*.a" -exec rm -f {} \;
 	find .. -type f -path "../MixtComp/*.so" -exec rm -f {} \;
+
+cleanTest:
+	rm -f src/test/test.exe

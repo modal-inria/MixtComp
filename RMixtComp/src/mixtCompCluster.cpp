@@ -22,6 +22,7 @@
  **/
 
 #include "mixt_DataHandlerR.h"
+#include "mixt_DataExtractorR.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 
 // [[Rcpp::export]]
@@ -72,8 +73,11 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   else
     mcResults.slot("runOK") = false;
 
-  // output the results
+  // output and export the results
+  const mixt::DataHandlerR* p_handler(&handler);
+  mixt::DataExtractorR dataExtractor(p_composer, p_handler);
   composer.writeParameters(std::cout);
+  dataExtractor.extractVal();
 
   // export the composer results to R through modifications of mcResults
   mcResults.slot("nbCluster") = nbClusters;

@@ -202,6 +202,11 @@ class MixtureBridge : public mixt::IMixture
       dataStat_.sampleVals();
     }
 
+    virtual const DataStat* getDataStat()
+    {
+      return &dataStat_;
+    }
+
     /**
      *  This step can be used by developer to finalize any thing. It will be called only once after we
      * finish running the SEM-gibbs algorithm.
@@ -256,7 +261,7 @@ class MixtureBridge : public mixt::IMixture
       return &param_;
     }
 
-    DataStat const* getDataStat() const
+    virtual const DataStat* getDataStat() const
     {
       return &dataStat_;
     }
