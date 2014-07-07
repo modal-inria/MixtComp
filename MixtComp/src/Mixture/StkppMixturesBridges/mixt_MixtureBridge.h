@@ -256,6 +256,11 @@ class MixtureBridge : public mixt::IMixture
       return &param_;
     }
 
+    DataStat const* getDataStat() const
+    {
+      return &dataStat_;
+    }
+
   protected:
     /** The stkpp mixture to bridge with the composer */
     Mixture mixture_;
