@@ -1,8 +1,3 @@
-mixtCompSemStrategy <- function( nbTrialInInit = 2, nbBurnInIter = 20, nbIter = 100, nbGibbsIter = 100 ){
-  # create a new instance of SEM strategy
-  return(new("Strategy", "randomInit", nbTrialInInit, nbBurnInIter, nbIter, nbGibbsIter))
-}
-
 setClass(
   Class="Strategy",
   representation=representation(
@@ -10,6 +5,7 @@ setClass(
     nbTrialInInit = "numeric",
     nbBurnInIter = "numeric",
     nbIter = "numeric",
+    nbGibbsBurnInIter = "numeric",
     nbGibbsIter = "numeric"
   ),
   prototype=prototype(
@@ -17,6 +13,7 @@ setClass(
     nbTrialInInit = 2,
     nbBurnInIter = 20,
     nbIter = 100,
+    nbGibbsBurnInIter = 20,
     nbGibbsIter = 100
   ),
   # validity function
