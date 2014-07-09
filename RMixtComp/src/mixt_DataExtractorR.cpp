@@ -66,14 +66,6 @@ Rcpp::List DataExtractorR::extractVal() const
         Rcpp::IntegerMatrix posMissingR (posMissing.sizeRows() , posMissing.sizeCols() );
         Rcpp::NumericMatrix statMissingR(statMissing.sizeRows(), statMissing.sizeCols());
 
-#ifdef MC_DEBUG
-        std::cout << "data->sizeRows(): " << data->sizeRows() << std::endl;
-        std::cout << "posMissing.sizeRows(): " << posMissing.sizeRows() << std::endl;
-        std::cout << "posMissing.sizeCols(): " << posMissing.sizeCols() << std::endl;
-        std::cout << "statMissing.sizeRows(): " << statMissing.sizeRows() << std::endl;
-        std::cout << "statMissing.sizeCols(): " << statMissing.sizeCols() << std::endl;
-#endif
-
         for (int i = 0; i < data->sizeRows(); ++i)
           for (int j = 0; j < data->sizeCols(); ++j)
             dataR(i, j) = data->elt(i, j);
@@ -91,11 +83,6 @@ Rcpp::List DataExtractorR::extractVal() const
           }
         }
 
-#ifdef MC_DEBUG
-        std::cout << "posMissingR: " << posMissingR << std::endl;
-        std::cout << "statMissingR: " << statMissingR << std::endl;
-#endif
-
         mapExportData[(*it)->idName()] = Rcpp::List::create(Rcpp::Named("data") = dataR,
                                                             Rcpp::Named("posMissing") = posMissingR,
                                                             Rcpp::Named("statMissing") = statMissingR);
@@ -104,7 +91,41 @@ Rcpp::List DataExtractorR::extractVal() const
 
       case STK::Clust::Categorical_pjk_:
       {
-//        CategoricalBridge_pjk_m* const p_bridge = dynamic_cast <CategoricalBridge_pjk_m* const>(*it);
+        CategoricalBridge_pjk_m* const p_bridge = dynamic_cast <CategoricalBridge_pjk_m* const>(*it);
+
+        const STK::Array2D<int>* data = &p_bridge->getData()->data_;
+        STK::Array2D<int> posMissing;
+        STK::Array2D<STK::Real> statMissing;
+
+        p_bridge->getDataStat()->exportVals(posMissing, statMissing);
+
+        Rcpp::IntegerMatrix dataR       (data->sizeRows()      , data->sizeCols()      );
+        Rcpp::IntegerMatrix posMissingR (posMissing.sizeRows() , posMissing.sizeCols() );
+        Rcpp::NumericMatrix statMissingR(statMissing.sizeRows(), statMissing.sizeCols());
+
+        for (int i = 0; i < data->sizeRows(); ++i)
+          for (int j = 0; j < data->sizeCols(); ++j)
+            dataR(i, j) = data->elt(i, j);
+
+        for (int i = 0; i < posMissing.sizeRows(); ++i)
+        {
+          int pos;
+          statMissing.col(i).maxElt(pos);
+          dataR(posMissing(i, 0), posMissing(i, 1)) = pos;  // imputation by the mode
+          for (int j = 0; j < posMissing.sizeCols(); ++j)
+          {
+            posMissingR(i, j) = posMissing(i, j);
+          }
+          for (int j = 0; j < statMissing.sizeCols(); ++j)
+          {
+            statMissingR(i, j) = statMissing(i, j); // saving statistics of estimator for further analysis
+          }
+        }
+
+        mapExportData[(*it)->idName()] = Rcpp::List::create(Rcpp::Named("data") = dataR,
+                                                            Rcpp::Named("posMissing") = posMissingR,
+                                                            Rcpp::Named("statMissing") = statMissingR);
+
       }
       break;
     }
