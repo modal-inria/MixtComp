@@ -36,7 +36,7 @@ class DataExtractorR
   public:
     DataExtractorR(const MixtureComposer* composer, const DataHandlerR* handler);
     ~DataExtractorR();
-    void extractVal() const;
+    Rcpp::List extractVal() const;
   private:
     const MixtureComposer* composer_;
     const DataHandlerR* handler_;

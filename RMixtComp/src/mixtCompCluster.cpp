@@ -26,7 +26,7 @@
 #include "MixtComp/src/mixt_MixtComp.h"
 
 // [[Rcpp::export]]
-void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
+Rcpp::List mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
 {  
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
@@ -77,7 +77,6 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
   const mixt::DataHandlerR* p_handler(&handler);
   mixt::DataExtractorR dataExtractor(p_composer, p_handler);
   composer.writeParameters(std::cout);
-  dataExtractor.extractVal();
 
   // export the composer results to R through modifications of mcResults
   mcResults.slot("nbCluster") = nbClusters;
@@ -98,4 +97,6 @@ void mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
     for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
       proba(iR, kR) = composer.p_tik()->elt(iS, kS);
   mcResults.slot("proba") = proba;
+
+  return dataExtractor.extractVal();
 }

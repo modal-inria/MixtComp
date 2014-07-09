@@ -38,8 +38,9 @@ DataExtractorR::DataExtractorR(const MixtureComposer* composer, const DataHandle
 
 DataExtractorR::~DataExtractorR() {};
 
-void DataExtractorR::extractVal() const
+Rcpp::List DataExtractorR::extractVal() const
 {
+  std::map<std::string, Rcpp::List> mapExportData;
   for (std::vector<IMixture*>::const_iterator it = composer_->v_mixtures().begin();
        it != composer_->v_mixtures().end();
        ++it)
@@ -47,26 +48,68 @@ void DataExtractorR::extractVal() const
     std::string idModelStr = handler_->info().at((*it)->idName());
     STK::Clust::Mixture idModel = STK::Clust::stringToMixture(idModelStr);
 #ifdef MC_DEBUG
-    std::cout << "DataExtractorR::extractVal, " << idModelStr << std::endl;
+    std::cout << "DataExtractorR::extractVal, " << (*it)->idName() << std::endl;
 #endif
     switch (idModel)
     {
       case STK::Clust::Gaussian_sjk_:
       {
         GaussianBridge_sjk_m* const p_bridge = dynamic_cast<GaussianBridge_sjk_m* const>(*it);
+
+        const STK::Array2D<STK::Real>* data = &p_bridge->getData()->data_;
         STK::Array2D<int> posMissing;
         STK::Array2D<STK::Real> statMissing;
+
         p_bridge->getDataStat()->exportVals(posMissing, statMissing);
+
+        Rcpp::NumericMatrix dataR       (data->sizeRows()      , data->sizeCols()      );
+        Rcpp::IntegerMatrix posMissingR (posMissing.sizeRows() , posMissing.sizeCols() );
+        Rcpp::NumericMatrix statMissingR(statMissing.sizeRows(), statMissing.sizeCols());
+
+#ifdef MC_DEBUG
+        std::cout << "data->sizeRows(): " << data->sizeRows() << std::endl;
+        std::cout << "posMissing.sizeRows(): " << posMissing.sizeRows() << std::endl;
+        std::cout << "posMissing.sizeCols(): " << posMissing.sizeCols() << std::endl;
+        std::cout << "statMissing.sizeRows(): " << statMissing.sizeRows() << std::endl;
+        std::cout << "statMissing.sizeCols(): " << statMissing.sizeCols() << std::endl;
+#endif
+
+        for (int i = 0; i < data->sizeRows(); ++i)
+          for (int j = 0; j < data->sizeCols(); ++j)
+            dataR(i, j) = data->elt(i, j);
+
+        for (int i = 0; i < posMissing.sizeRows(); ++i)
+        {
+          dataR(posMissing(i, 0), posMissing(i, 1)) = statMissing(i, 0);  // imputation by expected value estimated in the Gibbs sampler
+          for (int j = 0; j < posMissing.sizeCols(); ++j)
+          {
+            posMissingR(i, j) = posMissing(i, j);
+          }
+          for (int j = 0; j < statMissing.sizeCols(); ++j)
+          {
+            statMissingR(i, j) = statMissing(i, j); // saving statistics of estimator for further analysis
+          }
+        }
+
+#ifdef MC_DEBUG
+        std::cout << "posMissingR: " << posMissingR << std::endl;
+        std::cout << "statMissingR: " << statMissingR << std::endl;
+#endif
+
+        mapExportData[(*it)->idName()] = Rcpp::List::create(Rcpp::Named("data") = dataR,
+                                                            Rcpp::Named("posMissing") = posMissingR,
+                                                            Rcpp::Named("statMissing") = statMissingR);
       }
       break;
 
       case STK::Clust::Categorical_pjk_:
       {
-        CategoricalBridge_pjk_m* const p_bridge = dynamic_cast <CategoricalBridge_pjk_m* const>(*it);
+//        CategoricalBridge_pjk_m* const p_bridge = dynamic_cast <CategoricalBridge_pjk_m* const>(*it);
       }
       break;
     }
   }
+  return Rcpp::wrap(mapExportData);
 }
 
 } // namespace mixt
