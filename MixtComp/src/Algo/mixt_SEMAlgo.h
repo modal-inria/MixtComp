@@ -26,7 +26,7 @@
 #ifndef MIXT_MIXTUREALGO_H
 #define MIXT_MIXTUREALGO_H
 
-#include "Clustering/include/STK_MixtureComposer.h"
+#include "../Composer/mixt_MixtureComposer.h"
 
 namespace mixt
 {
@@ -42,13 +42,13 @@ class SEMAlgo
     /** destructor */
     virtual ~SEMAlgo(){};
     /** set a new model */
-    void setModel(STK::MixtureComposer* p_model);
+    void setModel(MixtureComposer* p_model);
     /** run the algorithm */
     bool run();
 
   private:
     /** pointer on the mixture model */
-    STK::MixtureComposer* p_model_;
+    MixtureComposer* p_model_;
     /** number of iterations of the algorithm */
     int nbIterMax_;
     /** minimal number of elements per class */

@@ -6,9 +6,6 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)
 listModels <- c("Gaussian_sjk",
                 "Categorical_pjk")
 
-#listModels <- c( "Gamma_ajk_bjk"
-#               , "Gaussian_sjk")
-
 listInit <- c("randomInit",
               "randomClassInit",
               "randomFuzzyInit")

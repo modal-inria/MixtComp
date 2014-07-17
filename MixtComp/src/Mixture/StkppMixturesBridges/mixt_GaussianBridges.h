@@ -28,6 +28,7 @@
 #include "stkpp/projects/Clustering/include/GaussianMixtureModels/STK_Gaussian_sjk.h"
 #include "../../Sampler/mixt_GaussianSampler.h"
 #include "../../Sampler/mixt_GaussianSamplerIterator.h"
+#include "../../Data/mixt_GaussianDataStat.h"
 
 namespace mixt
 {
@@ -45,6 +46,8 @@ struct BridgeTraits<STK::Clust::Gaussian_sjk_>
     typedef STK::Array2D<STK::Real> Data;
     /** Type of the AugmentedData*/
     typedef AugmentedData<Data> AugData;
+    /** Type of the DataStat*/
+    typedef GaussianDataStat DataStat;
     /** Type of the parameter set to be used as output */
     typedef STK::Array2D<STK::Real> Param;
     /** Type of the Data */

@@ -32,16 +32,20 @@ namespace mixt
 {
 
 /** default constructor */
-SemStrategy::SemStrategy(STK::MixtureComposer*& p_composer,
+SemStrategy::SemStrategy(mixt::MixtureComposer*& p_composer,
                          STK::Clust::initType init,
                          int nbTry,
                          int nbTrialInInit,
                          int nbBurnInIter,
                          int nbIter,
+                         int nbGibbsBurnInIter,
+                         int nbGibbsIter,
                          int zMin,
                          int nbSamplingAttempts) :
     p_composer_(p_composer),
-    nbTry_(nbTry)
+    nbTry_(nbTry),
+    nbGibbsBurnInIter_(nbGibbsBurnInIter),
+    nbGibbsIter_(nbGibbsIter)
 {
   p_init_ = STK::Clust::createInit(init,
                                    nbTrialInInit,
@@ -96,6 +100,28 @@ bool SemStrategy::run()
     }
   }
   
+  for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
+  {
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
+#endif
+    p_composer_->sStep();
+    p_composer_->samplingStep();
+    p_composer_->eStep();
+  }
+
+  for (int iterGibbs = 0; iterGibbs < nbGibbsIter_; ++iterGibbs)
+  {
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run(), iterGibbs: " << iterGibbs << std::endl;
+#endif
+
+    p_composer_->sStep();
+    p_composer_->samplingStep();
+    p_composer_->eStep();
+    p_composer_->storeData();
+  }
+
   p_composer_->finalizeStep();
 
   return true;

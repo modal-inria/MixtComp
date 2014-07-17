@@ -48,12 +48,14 @@ class SemStrategy
     /** default constructor.
      *  @param p_composer the model to estimate
      **/
-    SemStrategy(STK::MixtureComposer*& p_composer,
+    SemStrategy(mixt::MixtureComposer*& p_composer,
                 STK::Clust::initType init,
                 int nbTry,
                 int nbTrialInInit,
                 int nbBurnInIter,
                 int nbIter,
+                int nbGibbsBurnInIter,
+                int nbGibbsIter,
                 int zMin,
                 int nbSamplingAttempts);
 
@@ -70,12 +72,16 @@ class SemStrategy
     
   protected:
      /** reference on the main model */
-    STK::MixtureComposer*& p_composer_;
+    mixt::MixtureComposer*& p_composer_;
     /** initialization method */
     STK::IMixtureInit* p_init_;
     
     /** number of estimation to try */
     int nbTry_;
+    /** number of burn in iteration for final Gibbs sampler */
+    int nbGibbsBurnInIter_;
+    /** number of iteration for final Gibbs sampler */
+    int nbGibbsIter_;
     /** algorithm for burn-in */
     SEMAlgo* p_burnInAlgo_;
     /** algorithm for subsequent long run */

@@ -26,6 +26,7 @@
 #define MIXT_MIXTUREMANAGER_H
 
 #include "../Mixture/StkppMixturesBridges/mixt_MixtureBridge.h"
+#include "../Composer/mixt_MixtureComposer.h"
 
 namespace mixt
 {
@@ -35,12 +36,12 @@ class MixtureManager
 {
   public:
     typedef typename DataHandler::InfoMap InfoMap;
-    typedef std::vector<STK::IMixture*>::const_iterator ConstMixtIterator;
-    typedef std::vector<STK::IMixture*>::iterator MixtIterator;
+    typedef std::vector<mixt::IMixture*>::const_iterator ConstMixtIterator;
+    typedef std::vector<mixt::IMixture*>::iterator MixtIterator;
 
     MixtureManager(DataHandler const& handler) : handler_(handler) {}
 
-    void createMixtures(STK::MixtureComposer& composer, int nbCluster)
+    void createMixtures(mixt::MixtureComposer& composer, int nbCluster)
     {
       for (typename InfoMap::const_iterator it=handler_.info().begin(); it!=handler_.info().end(); ++it)
       {
@@ -51,7 +52,7 @@ class MixtureManager
 #endif
         STK::Clust::Mixture idModel = STK::Clust::stringToMixture(model);
         // get a mixture fully
-        STK::IMixture* p_mixture = createMixture(idModel, idName, nbCluster);
+        mixt::IMixture* p_mixture = createMixture(idModel, idName, nbCluster);
         if (p_mixture) composer.registerMixture(p_mixture);
       }
     }
@@ -61,7 +62,7 @@ class MixtureManager
      *  @param idName name of the model
      *  @param nbCluster number of cluster of the model
      **/
-    STK::IMixture* createMixture(STK::Clust::Mixture idModel, std::string const& idName, int nbCluster)
+    mixt::IMixture* createMixture(STK::Clust::Mixture idModel, std::string const& idName, int nbCluster)
     {
       switch (idModel)
       {

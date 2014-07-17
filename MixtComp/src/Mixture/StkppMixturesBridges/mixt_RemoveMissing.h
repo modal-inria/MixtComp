@@ -25,98 +25,19 @@
 #ifndef MIXT_REMOVEMISSING_H
 #define MIXT_REMOVEMISSING_H
 
-#include "stkpp/projects/STatistiK/include/STK_Law_Uniform.h"
-#include "stkpp/projects/STatistiK/include/STK_Law_Categorical.h"
+#include "../../Data/mixt_AugmentedData.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "STatistiK/include/STK_Law_Uniform.h"
+#include "STatistiK/include/STK_Law_Categorical.h"
 
 namespace mixt
 {
 
 /** Utility function to lookup the data set and remove missing values
  *  coordinates. */
-void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
-{
-  typedef typename std::pair<int, int> pos;
+void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij);
 
-  // missing value [-inf,+inf] or ?
-  for (typename std::vector<pos>::iterator it = m_augDataij.v_missing_.begin();
-       it != m_augDataij.v_missing_.end();
-       ++it)
-  {
-    m_augDataij.data_((*it).first,
-                       (*it).second) = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].first,
-                                                               m_augDataij.dataRanges_[(*it).second].second);
-  }
-
-  // missing values [a,b]
-  for (typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::iterator it = m_augDataij.v_missingIntervals_.begin();
-       it != m_augDataij.v_missingIntervals_.end();
-       ++it)
-  {
-    m_augDataij.data_((*it).first.first,
-                       (*it).first.second) = STK::Law::Uniform::rand((*it).second.first,
-                                                                     (*it).second.second);
-  }
-
-  // missing values [-inf,b]
-  for (typename std::vector<std::pair<pos, STK::Real> >::iterator it = m_augDataij.v_missingLUIntervals_.begin();
-       it != m_augDataij.v_missingLUIntervals_.end();
-       ++it)
-  {
-    m_augDataij.data_((*it).first.first,
-                       (*it).first.second) = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].first,
-                                                                     (*it).second);
-  }
-
-  // missing values [a,+inf]
-  for (typename std::vector<std::pair<pos, STK::Real> >::iterator it = m_augDataij.v_missingRUIntervals_.begin();
-       it != m_augDataij.v_missingRUIntervals_.end();
-       ++it)
-  {
-    m_augDataij.data_((*it).first.first,
-                       (*it).first.second) = STK::Law::Uniform::rand((*it).second,
-                                                                     m_augDataij.dataRanges_[(*it).second].second);
-  }
-}
-
-void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
-{
-  typedef typename std::pair<int, int> pos;
-
-  // missing value [-inf,+inf] or ?
-  for (typename std::vector<pos>::iterator it = m_augDataij.v_missing_.begin();
-       it != m_augDataij.v_missing_.end();
-       ++it)
-  {
-    int nbModalities = m_augDataij.dataRanges_[(*it).second].second;
-    STK::Array2DVector<STK::Real> modalities(STK::Range(0, nbModalities), 1. / nbModalities);
-    m_augDataij.data_((*it).first,
-                       (*it).second) = STK::Law::Categorical::rand(modalities);
-  }
-
-  // missing values {}
-  for (typename std::vector<std::pair<pos, std::vector<int> > >::iterator it = m_augDataij.v_missingFiniteValues_.begin();
-       it != m_augDataij.v_missingFiniteValues_.end();
-       ++it)
-  {
-    int nbModalities = m_augDataij.dataRanges_[(*it).first.second].second + 1;
-    STK::Real proba = 1. / (*it).second.size();
-    STK::Array2DVector<STK::Real> modalities(STK::Range(0, nbModalities), 0.);
-    for(std::vector<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2)
-      modalities.elt((*it2)) = proba;
-    int sampledValue = STK::Law::Categorical::rand(modalities);
-    m_augDataij.data_((*it).first.first,
-                      (*it).first.second) = sampledValue;
-#ifdef MC_DEBUG
-    std::cout << "removeMissing, int, v_missingFiniteValues_" << std::endl;
-    std::cout << "pos: " << (*it).first.first << " " << (*it).first.second << std::endl;
-    std::cout << "number of present values: " << (*it).second.size() << std::endl;
-    std::cout << "nbModalities: " << nbModalities << std::endl;
-    std::cout << "modalities: " << std::endl;
-    std::cout << modalities;
-    std::cout << "sampled value: " << sampledValue << std::endl;
-#endif
-  }
-}
+void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij);
 
 } /* namespace mixt */
 

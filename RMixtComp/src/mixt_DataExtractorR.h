@@ -17,20 +17,31 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Feb 25, 2014
+ *  Created on: July 7, 2014
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <RInside.h>                    // for the embedded R via RInside
-#include <fstream>
+#ifndef MIXT_DATAEXTRACTOR_H
+#define MIXT_DATAEXTRACTOR_H
 
-int main(int argc, char *argv[])
+#include "MixtComp/src/Composer/mixt_MixtureComposer.h"
+#include "mixt_DataHandlerR.h"
+#include "MixtComp/src/Mixture/mixt_IMixture.h"
+
+namespace mixt
 {
-  RInside R(argc, argv);              // create an embedded R instance
-  R.parseEvalQ("library(methods)");
-  R.parseEvalQ("library(RMixtComp)");
-//    R.parseEvalQ("testRMC()");
-//  R.parseEvalQ("testRMC()");
-  R.parseEvalQ("testGenData()");
-  exit(0);
-}
+
+class DataExtractorR
+{
+  public:
+    DataExtractorR(const MixtureComposer* composer, const DataHandlerR* handler);
+    ~DataExtractorR();
+    Rcpp::List extractVal() const;
+  private:
+    const MixtureComposer* composer_;
+    const DataHandlerR* handler_;
+};
+
+} // namespace mixt
+
+#endif // MIXT_DATAEXTRACTOR_H

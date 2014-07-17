@@ -42,7 +42,7 @@ SEMAlgo::SEMAlgo(SEMAlgo const& algo) :
     nbSamplingAttempts_(algo.nbSamplingAttempts_)
 {}
 
-void SEMAlgo::setModel(STK::MixtureComposer* p_model)
+void SEMAlgo::setModel(mixt::MixtureComposer* p_model)
 {
   p_model_ = p_model;
 }
@@ -51,6 +51,9 @@ bool SEMAlgo::run()
 {
     for (int iter = 0; iter < this->nbIterMax_; ++iter)
     {
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
+#endif
       for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample)
         if (p_model_->sStep() > zMin_)
           break;
@@ -62,6 +65,9 @@ bool SEMAlgo::run()
       p_model_->mStep();
       p_model_->eStep();
       if (p_model_->state() == STK::Clust::longRun_)
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, p_model_->storeIntermediateResults" << std::endl;
+#endif
         p_model_->storeIntermediateResults(iter);
     }
 

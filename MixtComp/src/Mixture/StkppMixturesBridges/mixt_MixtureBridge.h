@@ -30,7 +30,7 @@
 #ifndef MIXT_MIXTUREBRIDGE_H
 #define MIXT_MIXTUREBRIDGE_H
 
-#include "stkpp/projects/Clustering/include/STK_IMixture.h"
+#include "../mixt_IMixture.h"
 #include "../../Data/mixt_AugmentedData.h"
 #include "mixt_GaussianBridges.h"
 #include "mixt_CategoricalBridges.h"
@@ -41,13 +41,15 @@ namespace mixt
 {
 
 template<int Id>
-class MixtureBridge : public STK::IMixture
+class MixtureBridge : public mixt::IMixture
 {
   public:
     // data type
     typedef typename BridgeTraits<Id>::Data Data;
     // augmented data type
     typedef typename BridgeTraits<Id>::AugData AugData;
+    // statistics on missing values type
+    typedef typename BridgeTraits<Id>::DataStat DataStat;
     // parameters type to get
     typedef typename BridgeTraits<Id>::Param Param;
     // type of the data
@@ -64,20 +66,22 @@ class MixtureBridge : public STK::IMixture
      *  @param nbCluster number of cluster
      **/
     MixtureBridge(std::string const& idName, int nbCluster) :
-      STK::IMixture(idName, nbCluster),
+      mixt::IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
       nbVariable_(0),
       sampler_(getData(),
-               getParam())
+               getParam()),
+      dataStat_(getData())
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
-      STK::IMixture(bridge),
+      mixt::IMixture(bridge),
       mixture_(bridge.mixture_),
       m_augDataij_(bridge.m_augDataij_),
       nbVariable_(bridge.nbVariable_),
-      sampler_(bridge.sampler_)
+      sampler_(bridge.sampler_),
+      dataStat_(bridge.dataStat_)
     {
       mixture_.setData(m_augDataij_.data_);
       mixture_.initializeModel();
@@ -120,6 +124,7 @@ class MixtureBridge : public STK::IMixture
       mixture_.setMixtureParameters(p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
       sampler_.setZi(p_zi()); // at this point the bridge has been registered on the composer and p_zi is valid
+      dataStat_.initialize();
     }
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -146,7 +151,7 @@ class MixtureBridge : public STK::IMixture
       std::cout << "v_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl;
       std::cout << "v_missingIntervals_.size(): " << m_augDataij_.v_missingIntervals_.size() << std::endl;
       std::cout << "After removeMissing, " << idName() << std::endl;
-      std::cout << m_augDataij_.data_ << std::endl;
+//      std::cout << m_augDataij_.data_ << std::endl;
 #endif
       initializeMixture();
     }
@@ -191,6 +196,20 @@ class MixtureBridge : public STK::IMixture
      *  @param iteration Provides the iteration number beginning after the burn-in period.
      */
     virtual void storeIntermediateResults(int iteration) {/**Do nothing by default*/}
+
+    virtual void storeData()
+    {
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::storeData, for " << idName();
+#endif
+      dataStat_.sampleVals();
+    }
+
+    virtual const DataStat* getDataStat()
+    {
+      return &dataStat_;
+    }
+
     /**
      *  This step can be used by developer to finalize any thing. It will be called only once after we
      * finish running the SEM-gibbs algorithm.
@@ -245,6 +264,11 @@ class MixtureBridge : public STK::IMixture
       return &param_;
     }
 
+    virtual const DataStat* getDataStat() const
+    {
+      return &dataStat_;
+    }
+
   protected:
     /** The stkpp mixture to bridge with the composer */
     Mixture mixture_;
@@ -254,7 +278,11 @@ class MixtureBridge : public STK::IMixture
     Param param_;
     /** number of variables in the data set */
     int nbVariable_;
-    
+    /** Sampler to generate values */
+    Sampler sampler_;
+    /** Statistics storage for missing data */
+    DataStat dataStat_;
+
   private:
     /** This function will be used in order to initialize the mixture model
      *  using informations stored by the data_ container.
@@ -271,11 +299,9 @@ class MixtureBridge : public STK::IMixture
       mixture_(mixture),
       m_augDataij_(),
       sampler_(getData(),
-               getParam())
+               getParam()),
+      dataStat_(getData())
     {}
-
-    /** Sampler to generate values */
-    Sampler sampler_;
 };
 
 } // namespace mixt

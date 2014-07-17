@@ -2,7 +2,8 @@ categoricalGenerator <- function(nbSamples,
                                  nbVariables,
                                  nbModalities,
                                  z,
-                                 params)
+                                 params,
+                                 missingParams)
 {  
   compositeFile <- file(description = "categoricalData.csv",
                         open = "w",
@@ -43,16 +44,37 @@ categoricalGenerator <- function(nbSamples,
   
   for (i in 1:nbSamples)
   {
-    vals <- rep(0, nbVariables)
+    vals <- list()
     for (j in 1:nbVariables)
     {
-      sampleVals <- rmultinom(1,
-                              1,
-                              params[(nbModalities * (z[i] - 1) + 1) :
-                                     (nbModalities *  z[i]         ) , j])
-      vals[j] <- match(1, sampleVals) - 1
+      missType <- match(1,
+                        rmultinom(1,
+                                  1,
+                                  missingParams))
+      if (missType == 1) # normal, no missing value
+      {
+        sampleVals <- rmultinom(1,
+                                1,
+                                params[(nbModalities * (z[i] - 1) + 1) :
+                                       (nbModalities *  z[i]         ) , j])
+        vals[[j]] <- match(1, sampleVals) - 1
+      }
+      else if (missType == 2) # completely missing
+      {
+        vals[[j]] <- "?"
+      }
+      else if (missType == 3) # missing finite value
+      {
+        nbSampleMod <- sample(nbModalities, 1) # number of modalities to be drawn
+        modalities <- sort(sample(0 : (nbModalities - 1), nbSampleMod)) # modalities drawn
+        vals[[j]] <- paste("{",
+                           paste(modalities,
+                                 collapse = ","),
+                           "}",
+                           sep ="") # formatting for the data file
+      }
     }
-    cat(vals,
+    cat(as.character(vals),
         sep = ";",
         file = compositeFile)
     cat("\n",
