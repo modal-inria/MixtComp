@@ -120,7 +120,7 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
       STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range( z_i      * nbModalities,
                                                                         (z_i + 1) * nbModalities),
                                                              currPos.second);
-      sampleVal = STK::Law::Categorical::rand(modalities);
+      sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities;
     }
     break;
 
