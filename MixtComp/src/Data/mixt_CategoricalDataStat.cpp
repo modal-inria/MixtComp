@@ -69,9 +69,9 @@ void CategoricalDataStat::initialize()
 #ifdef MC_DEBUG
   std::cout << "CategoricalDataStat, initializing statMissing_ and posMissing_" << std::endl;
   std::cout << "statMissing_" <<  std::endl;
-  std::cout << statMissing_ << std::endl;
+//  std::cout << statMissing_ << std::endl;
   std::cout << "posMissing_" <<  std::endl;
-  std::cout << posMissing_ << std::endl;
+//  std::cout << posMissing_ << std::endl;
 #endif
 }
 
@@ -107,13 +107,12 @@ void CategoricalDataStat::sampleVals()
     int sample = posMissing_(currVal, 0);
     int var = posMissing_(currVal, 1);
 #ifdef MC_DEBUG
-    std::cout << statMissing_ << std::endl;
-    std::cout << pm_augDataij_->data_(posMissing_(currVal, 0),
-                                      posMissing_(currVal, 1)) << std::endl;
+//    std::cout << statMissing_ << std::endl;
     std::cout << "CategoricalDataStat::sampleVals, sample: " << sample << " var: " << var << std::endl;
+    std::cout << "line: " << currVal << ", modality: " << pm_augDataij_->data_(sample, var) << std::endl;
 #endif
-    statMissing_(currVal, pm_augDataij_->data_(posMissing_(currVal, 0),
-                                               posMissing_(currVal, 1))) += 1.;
+    statMissing_(currVal, pm_augDataij_->data_(sample,
+                                               var)) += 1.;
   }
 
   ++nbIter_;

@@ -102,17 +102,24 @@ bool SemStrategy::run()
   
   for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
   {
-      p_composer_->sStep();
-      p_composer_->samplingStep();
-      p_composer_->eStep();
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
+#endif
+    p_composer_->sStep();
+    p_composer_->samplingStep();
+    p_composer_->eStep();
   }
 
   for (int iterGibbs = 0; iterGibbs < nbGibbsIter_; ++iterGibbs)
   {
-      p_composer_->sStep();
-      p_composer_->samplingStep();
-      p_composer_->eStep();
-      p_composer_->storeData();
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run(), iterGibbs: " << iterGibbs << std::endl;
+#endif
+
+    p_composer_->sStep();
+    p_composer_->samplingStep();
+    p_composer_->eStep();
+    p_composer_->storeData();
   }
 
   p_composer_->finalizeStep();

@@ -125,7 +125,8 @@ void DataHandlerR::getDataHelper(std::string const& idData,
   getData(idData, augData.data_, nbVariable); // data array filling is not affected by the augmented data
 
 #ifdef MC_DEBUG
-  std::cout << augData.data_ << std::endl;
+  std::cout << "DataHandlerR::getDataHelper" << std::endl;
+//  std::cout << augData.data_ << std::endl;
 #endif
 
   std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData

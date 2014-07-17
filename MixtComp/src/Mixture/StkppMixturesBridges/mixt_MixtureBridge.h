@@ -151,7 +151,7 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "v_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl;
       std::cout << "v_missingIntervals_.size(): " << m_augDataij_.v_missingIntervals_.size() << std::endl;
       std::cout << "After removeMissing, " << idName() << std::endl;
-      std::cout << m_augDataij_.data_ << std::endl;
+//      std::cout << m_augDataij_.data_ << std::endl;
 #endif
       initializeMixture();
     }
@@ -199,6 +199,9 @@ class MixtureBridge : public mixt::IMixture
 
     virtual void storeData()
     {
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::storeData, for " << idName();
+#endif
       dataStat_.sampleVals();
     }
 

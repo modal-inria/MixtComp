@@ -120,6 +120,12 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
       STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range( z_i      * nbModalities,
                                                                         (z_i + 1) * nbModalities),
                                                              currPos.second);
+#ifdef MC_DEBUG
+      std::cout << std::endl;
+      std::cout << "CategoricalSamplerIterator::operator*, missing" << std::endl;
+      std::cout << "nbModalities: " << nbModalities << std::endl;
+      std::cout << "Modalities: " << modalities;
+#endif
       sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities;
     }
     break;
@@ -137,14 +143,19 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
         modalities.elt(*currMod) = (*p_param_)(z_i * nbModalities + *currMod,
                                            currPos.second);
       }
-
       modalities = modalities / modalities.sum();
+#ifdef MC_DEBUG
+      std::cout << std::endl;
+      std::cout << "CategoricalSamplerIterator::operator*, missingFiniteValues" << std::endl;
+      std::cout << "nbModalities: " << nbModalities << std::endl;
+      std::cout << "Modalities: " << modalities;
+#endif
       sampleVal = STK::Law::Categorical::rand(modalities);
     }
     break;
   }
 #ifdef MC_DEBUG
-  std::cout << sampleVal << std::endl;
+  std::cout << "Sampled Val: " << sampleVal << std::endl;
 #endif
   return RetValue(currPos, sampleVal);
 }
