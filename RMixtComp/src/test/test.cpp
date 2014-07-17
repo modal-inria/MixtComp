@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
   R.parseEvalQ("library(methods)");
   R.parseEvalQ("library(RMixtComp)");
 //    R.parseEvalQ("testRMC()");
-  R.parseEvalQ("testRMC()");
+//  R.parseEvalQ("testRMC()");
+  R.parseEvalQ("testGenData()");
   exit(0);
 }
