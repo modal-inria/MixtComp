@@ -1,16 +1,21 @@
 dataGenerator <- function()
 {
-  nbSamples <- 5000
+  nbSamples <- 500
   
   nbVariablesCat <- 6
   nbVariablesGauss <- 2
-  nbModalities <- 2
+  nbModalities <- 3
   nbClasses <- 2
   
+  missingCategorical <- c(0.7, 0.15, 0.15) # normal, missing, missing finite value
+  missingGaussian <- c(0.6, 0.1, 0.1, 0.1, 0.1) # normal, missing, missing interval, missing left unbounded, missing right unbounded
+  
   categoricalParams <- matrix(data = c(0.3,0.3,0.3,0.3,0.3,0.3,
-                                       0.7,0.7,0.7,0.7,0.7,0.7,
+                                       0.6,0.6,0.6,0.6,0.6,0.6,
+                                       0.1,0.1,0.1,0.1,0.1,0.1,
                                        
-                                       0.7,0.7,0.7,0.7,0.7,0.7,
+                                       0.6,0.6,0.6,0.6,0.6,0.6,
+                                       0.1,0.1,0.1,0.1,0.1,0.1,
                                        0.3,0.3,0.3,0.3,0.3,0.3),
                               nrow = nbModalities * nbClasses,
                               ncol = nbVariablesCat,
@@ -36,15 +41,14 @@ dataGenerator <- function()
     z[i] <- match(1, zDis[, i])
   }
   
-  cat(z)
-  
-  gaussianGenerator(nbSamples,
-                    nbVariablesGauss,
-                    z,
-                    gaussianParams)
   categoricalGenerator(nbSamples,
                        nbVariablesCat,
                        nbModalities,
                        z,
-                       categoricalParams)  
+                       categoricalParams,
+                       missingCategorical) 
+  gaussianGenerator(nbSamples,
+                    nbVariablesGauss,
+                    z,
+                    gaussianParams)
 }
