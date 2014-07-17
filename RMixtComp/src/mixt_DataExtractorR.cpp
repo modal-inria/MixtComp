@@ -107,10 +107,17 @@ Rcpp::List DataExtractorR::extractVal() const
           for (int j = 0; j < data->sizeCols(); ++j)
             dataR(i, j) = data->elt(i, j);
 
+#ifdef MC_DEBUG
+          std::cout << "DataExtractorR::extractVal, STK::Clust::Categorical_pjk_, posMissing.sizeRows() = " << posMissing.sizeRows() << std::endl;
+#endif
+
         for (int i = 0; i < posMissing.sizeRows(); ++i)
         {
+#ifdef MC_DEBUG
+          std::cout << "DataExtractorR::extractVal, STK::Clust::Categorical_pjk_, i = " << i << std::endl;
+#endif
           int pos;
-          statMissing.col(i).maxElt(pos);
+          statMissing.row(i).maxElt(pos);
           dataR(posMissing(i, 0), posMissing(i, 1)) = pos;  // imputation by the mode
           for (int j = 0; j < posMissing.sizeCols(); ++j)
           {
