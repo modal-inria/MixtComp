@@ -57,12 +57,19 @@ setClass(
 setMethod(
   f="initialize",
   signature=c("Strategy"),
-  definition=function(.Object, initMethod, nbTrialInInit, nbBurnInIter, nbIter, nbGibbsIter){
+  definition=function(.Object,
+                      initMethod,
+                      nbTrialInInit,
+                      nbBurnInIter,
+                      nbIter,
+                      nbGibbsBurnInIter,
+                      nbGibbsIter){
     .Object@initMethod<-initMethod
     .Object@nbTrialInInit<-nbTrialInInit
     .Object@nbBurnInIter<-nbBurnInIter
     .Object@nbIter<-nbIter
-    .Object@nbGibbsIter<-nbGibbsIter
+    .Object@nbGibbsBurnInIter <- 20
+    .Object@nbGibbsIter<-100
     validObject(.Object)
     return(.Object)
   }
@@ -78,6 +85,7 @@ setMethod(
     cat("* number of tries in initialization = ", object@nbTrialInInit, "\n")
     cat("* number of iterations in burn-in   = ", object@nbBurnInIter, "\n")
     cat("* number of iterations              = ", object@nbIter, "\n")
+    cat("* number of Gibbs burn in iterations= ", object@nbBurnInIter, "\n")
     cat("* number of Gibbs iterations        = ", object@nbGibbsIter, "\n")
     cat("****************************************\n")
   }

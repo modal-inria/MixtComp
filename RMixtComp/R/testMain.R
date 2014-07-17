@@ -6,9 +6,13 @@ testGenData <- function()
   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
                 c("categoricalData.csv", "categoricalDescriptor.csv"))
   
-  mcCluster <- getMixtCompCluster(2, 20, 100)
-  mixtCompCluster(lm, mcCluster, 2)
-  return(mcCluster)
+mcCluster <- getMixtCompCluster(2, # nbTrialInInit
+                                20, # nbBurnInIter
+                                100, # nbIter
+                                20, # nbGibbsBurnInIter
+                                100) # nbGibbsIter
+data <- mixtCompCluster(lm, mcCluster, 2)
+return(list(mcCluster, data))
 }
 
 testRMC <- function (){
@@ -16,10 +20,12 @@ testRMC <- function (){
                 c("data/categoricalData.csv", "data/categoricalDescriptor.csv"))
 #  lm <- getData(c("data/gaussianData.csv", "data/gaussianDescriptor.csv"))
 #   lm <- getData(c("data/categoricalData.csv", "data/categoricalDescriptor.csv"))
-  mcCluster <- getMixtCompCluster(2,
-                                  20,
-                                  100,
-                                  100)
-  mixtCompCluster(lm, mcCluster, 2)
-  return(mcCluster)
+
+  mcCluster <- getMixtCompCluster(2, # nbTrialInInit
+                                  20, # nbBurnInIter
+                                  100, # nbIter
+                                  20, # nbGibbsBurnInIter
+                                  100) # nbGibbsIter
+  data <- mixtCompCluster(lm, mcCluster, 2)
+  return(list(mcCluster, data))
 }
