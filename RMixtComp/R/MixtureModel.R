@@ -4,9 +4,7 @@ setClass(
     augData = "list",
     model = "character",
     id = "character",
-    type = "character",
-    posMissing = "matrix",
-    dataMissing = "matrix"
+    type = "character"
   )
 )
 
@@ -18,8 +16,6 @@ setMethod(
     .Object@model   <- model
     .Object@id      <- id
     .Object@type    <- type
-	  .Object@posMissing <- matrix()
-	  .Object@posMissing <- matrix()
     return(.Object)
   }
 )

@@ -1,7 +1,8 @@
 gaussianGenerator <- function(nbSamples,
                               nbVariables,
                               z,
-                              params)
+                              params,
+                              missingParams)
 {  
   compositeFile <- file(description = "gaussianData.csv",
                         open = "w",
@@ -42,19 +43,64 @@ gaussianGenerator <- function(nbSamples,
   
   for (i in 1:nbSamples)
   {
-    vals <- rep(0, nbVariables)
+    vals <- list()
     for (j in 1:nbVariables)
     {
-      vals[j] <- rnorm(1,
-                       mean = params[2*z[i]-1, j],
-                       sd   = params[2*z[i]  , j])
+      missType <- match(1,
+                        rmultinom(1,
+                                  1,
+                                  missingParams))
+      if (missType == 1) # normal, no missing value
+      {
+        vals[[j]] <- rnorm(1,
+                         mean = params[2*z[i]-1, j],
+                         sd   = params[2*z[i]  , j])
+      }
+      else if (missType == 2) # missing
+      {
+        vals[[j]] <- "?"
+      }
+      else if (missType == 3) # missing interval
+      {
+        bounds <- sort(rnorm(2,
+                             mean = params[2*z[i]-1, j],
+                             sd   = params[2*z[i]  , j]))
+        vals[[j]] <- paste("[",
+                           paste(bounds,
+                                 collapse = ":"),
+                           "]",
+                           sep ="") # formatting for the data file
+      }
+      else if (missType == 4) # missing left unbounded
+      {
+        bounds <- list("-inf",
+                       rnorm(1,
+                             mean = params[2*z[i]-1, j],
+                             sd   = params[2*z[i]  , j]))
+        vals[[j]] <- paste("[",
+                           paste(bounds,
+                                 collapse = ":"),
+                           "]",
+                           sep ="") # formatting for the data file
+      }
+      else if (missType == 5) # missing right unbounded
+      {
+        bounds <- list(rnorm(1,
+                             mean = params[2*z[i]-1, j],
+                             sd   = params[2*z[i]  , j]),
+                       "+inf")
+        vals[[j]] <- paste("[",
+                           paste(bounds,
+                                 collapse = ":"),
+                           "]",
+                           sep ="") # formatting for the data file
+      }
     }
-    cat(vals,
+    cat(as.character(vals),
         sep = ";",
         file = compositeFile)
     cat("\n",
         file = compositeFile)
   }
-  
   close(compositeFile)
 }

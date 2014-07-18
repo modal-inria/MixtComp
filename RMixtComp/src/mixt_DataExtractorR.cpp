@@ -75,7 +75,7 @@ Rcpp::List DataExtractorR::extractVal() const
           dataR(posMissing(i, 0), posMissing(i, 1)) = statMissing(i, 0);  // imputation by expected value estimated in the Gibbs sampler
           for (int j = 0; j < posMissing.sizeCols(); ++j)
           {
-            posMissingR(i, j) = posMissing(i, j);
+            posMissingR(i, j) = posMissing(i, j) + 1; // R matrices cols and rows start at 1
           }
           for (int j = 0; j < statMissing.sizeCols(); ++j)
           {
@@ -121,7 +121,7 @@ Rcpp::List DataExtractorR::extractVal() const
           dataR(posMissing(i, 0), posMissing(i, 1)) = pos;  // imputation by the mode
           for (int j = 0; j < posMissing.sizeCols(); ++j)
           {
-            posMissingR(i, j) = posMissing(i, j);
+            posMissingR(i, j) = posMissing(i, j) + 1; // R matrices cols and rows start at 1
           }
           for (int j = 0; j < statMissing.sizeCols(); ++j)
           {
