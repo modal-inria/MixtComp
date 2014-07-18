@@ -99,8 +99,16 @@ void MixtureComposer::initializeStep()
   setNbFreeParameter(computeNbFreeParameters());
   // compute proportions
   pStep();
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::initializeStep() called on " << v_mixtures_.size() << " mixtures" << std::endl;
+#endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  { (*it)->initializeStep();}
+  {
+#ifdef MC_DEBUG
+    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
+#endif
+    (*it)->initializeStep();
+  }
   setState(STK::Clust::modelInitialized_);
 }
 

@@ -33,6 +33,14 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
 {
   typedef typename std::pair<int, int> pos;
 
+#ifdef MC_DEBUG
+  std::cout << "removeMissing AugmentedData<STK::Array2D<STK::Real> >& " << std::endl
+            << "m_augDataij.v_missing_.size(): " << m_augDataij.v_missing_.size() << std::endl
+            << "m_augDataij.v_missingIntervals_.size(): " << m_augDataij.v_missingIntervals_.size() << std::endl
+            << "m_augDataij.v_missingLUIntervals_.size(): " << m_augDataij.v_missingLUIntervals_.size() << std::endl
+            << "m_augDataij.v_missingRUIntervals_.size(): " << m_augDataij.v_missingRUIntervals_.size() << std::endl;
+#endif
+
   // missing value [-inf,+inf] or ?
   for (typename std::vector<pos>::iterator it = m_augDataij.v_missing_.begin();
        it != m_augDataij.v_missing_.end();

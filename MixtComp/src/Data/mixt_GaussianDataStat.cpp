@@ -98,20 +98,20 @@ void GaussianDataStat::sampleVals()
   {
 #ifdef MC_DEBUG
     std::cout << "GaussianDataStat::sampleVals"
+              << ", nbIter_: " << nbIter_
               << ", sample: " << posMissing_(currVal, 0)
               << ", var: " << posMissing_(currVal, 1)
-              << ", value: " << pm_augDataij_->data_(posMissing_(currVal, 0), posMissing_(currVal, 1))
+              << ", value: " << pm_augDataij_->data_(posMissing_(currVal, 0),
+                                                     posMissing_(currVal, 1))
               << std::endl;
-    std::cout << "GaussianDataStat::sampleVals, nbIter_: " << nbIter_ << std::endl;
-    std::cout << "posMissing_: " << std::endl;
-    std::cout << posMissing_ << std::endl;
-    std::cout << "statMissing_: " << std::endl;
-    std::cout << statMissing_ << std::endl;
 #endif
     // sum of values for mean computation
-    statMissing_(currVal, 0) += pm_augDataij_->data_(posMissing_(currVal, 0), posMissing_(currVal, 1));
+    statMissing_(currVal, 0) += pm_augDataij_->data_(posMissing_(currVal, 0),
+                                                     posMissing_(currVal, 1));
     // sum of squares for variance computation
-    statMissing_(currVal, 1) += pow(pm_augDataij_->data_(posMissing_(currVal, 0), posMissing_(currVal, 1)), 2.);
+    statMissing_(currVal, 1) += pow(pm_augDataij_->data_(posMissing_(currVal, 0),
+                                                         posMissing_(currVal, 1)),
+                                    2.);
   }
 
   ++nbIter_;
@@ -124,13 +124,17 @@ void GaussianDataStat::exportVals(STK::Array2D<int>& posMissing, STK::Array2D<ST
   statMissing.col(0) = statMissing_.col(0) / nbIter_; // mean
   statMissing.col(1) = statMissing_.col(1) / nbIter_ - statMissing.col(0) * statMissing.col(0); // variance
 #ifdef MC_DEBUG
-  std::cout << "GaussianDataStat::exportVals, nbIter_: " << nbIter_ << std::endl;
-  std::cout << "posMissing_: " << std::endl;
-  std::cout << posMissing_ << std::endl;
-  std::cout << "statMissing_: " << std::endl;
-  std::cout << statMissing_ << std::endl;
-  std::cout << "statMissing: " << std::endl;
-  std::cout << statMissing << std::endl;
+  std::cout << "GaussianDataStat::exportVals, nbIter_: " << nbIter_ << std::endl
+            << "posMissing_: " << std::endl
+            << posMissing_ << std::endl
+            << "statMissing_.col(1) / nbIter_: " << std::endl
+            << statMissing_.col(1) / nbIter_ << std::endl
+            << "statMissing.col(0) * statMissing.col(0)" << std::endl
+            << statMissing.col(0) * statMissing.col(0)
+            << "statMissing_: " << std::endl
+            << statMissing_ << std::endl
+            << "statMissing: " << std::endl
+            << statMissing << std::endl;
 #endif
 }
 

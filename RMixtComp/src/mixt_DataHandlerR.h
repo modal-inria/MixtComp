@@ -159,6 +159,15 @@ void DataHandlerR::getDataHelper(std::string const& idData,
     missingRUIntervalsSize  += ls_listRUIntervals .size();
   }
 
+#ifdef MC_DEBUG
+  std::cout << "DataHandlerR::getDataHelper, " << idData << std::endl
+            << "missingSize: " << missingSize << std::endl
+            << "missingFiniteValuesSize: " << missingFiniteValuesSize << std::endl
+            << "missingIntervalsSize: " << missingIntervalsSize << std::endl
+            << "missingLUIntervalsSize: " << missingLUIntervalsSize << std::endl
+            << "missingRUIntervalsSize: " << missingRUIntervalsSize << std::endl;
+#endif
+
   augData.v_missing_            .reserve(missingSize            );
   augData.v_missingFiniteValues_.reserve(missingFiniteValuesSize);
   augData.v_missingIntervals_   .reserve(missingIntervalsSize   );

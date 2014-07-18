@@ -24,9 +24,6 @@
 // List of fields:
 // iv_missing_
 // iv_missingFiniteValues
-// iv_missingIntervals
-// iv_missingLUIntervals
-// iv_missingRUIntervals
 
 #include "STatistiK/include/STK_Law_Categorical.h"
 #include "mixt_CategoricalSamplerIterator.h"
@@ -109,6 +106,10 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
 {
   int sampleVal;
   pos currPos(std::pair<int, int>(0, 0));
+
+#ifdef MC_DEBUG
+  std::cout << "p_zi_: " << p_zi_ << std::endl;
+#endif
 
   switch(currVec_)
   {

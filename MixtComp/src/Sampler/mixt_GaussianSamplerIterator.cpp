@@ -23,7 +23,6 @@
 
 // List of fields:
 // iv_missing_
-// iv_missingFiniteValues
 // iv_missingIntervals
 // iv_missingLUIntervals
 // iv_missingRUIntervals
@@ -135,10 +134,22 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
   STK::Real mean, sd, z;
   pos currPos(std::pair<int, int>(0, 0));
 
+#ifdef MC_DEBUG
+  std::cout << "p_zi_: " << p_zi_ << std::endl;
+#endif
+
   switch(currVec_)
   {
     case 0: // missing
     {
+#ifdef MC_DEBUG
+      std::cout << "GaussianSamplerIterator::operator*" << std::endl;
+      std::cout << "currPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
+      std::cout << "p_param_->sizeRows()" << p_param_->sizeRows() << std::endl;
+      std::cout << "p_param_->sizeCols()" << p_param_->sizeCols() << std::endl;
+      std::cout << "p_zi_->rows()" << p_zi_->rows() << std::endl;
+      std::cout << "p_zi_->cols()" << p_zi_->cols() << std::endl;
+#endif
       currPos = *iv_missing_;
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
       sd    = p_param_->elt(2*p_zi_->elt(currPos.first) + 1, currPos.second);

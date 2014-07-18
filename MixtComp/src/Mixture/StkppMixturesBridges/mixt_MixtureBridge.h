@@ -119,8 +119,16 @@ class MixtureBridge : public mixt::IMixture
      **/
     virtual void initializeStep()
     {
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::initializeStep()"
+                << ", idName(): " << idName()
+                << ", p_composer()" << p_composer()
+                << ", p_zi(): " << p_zi() << std::endl;
+#endif
       if (!p_composer())
-        STKRUNTIME_ERROR_NO_ARG(MixtureBridge::initializeModel,composer is not set);
+        std::cout << "MixtureBridge::initializeStep(), "
+                  << idName()
+                  << " model is not set." << std::endl;
       mixture_.setMixtureParameters(p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
       sampler_.setZi(p_zi()); // at this point the bridge has been registered on the composer and p_zi is valid

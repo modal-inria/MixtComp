@@ -80,6 +80,5 @@ categoricalGenerator <- function(nbSamples,
     cat("\n",
         file = compositeFile)
   }
-  
   close(compositeFile) 
 }
