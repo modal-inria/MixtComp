@@ -122,7 +122,7 @@ void GaussianDataStat::exportVals(STK::Array2D<int>& posMissing, STK::Array2D<ST
   posMissing = posMissing_;
   statMissing.resize(nbMissing_, 2);
   statMissing.col(0) = statMissing_.col(0) / nbIter_; // mean
-  statMissing.col(1) = statMissing_.col(1) / nbIter_ - statMissing.col(0) * statMissing.col(0); // variance
+  statMissing.col(1) = STK::SqrtOp<STK::Real>(statMissing_.col(1) / nbIter_ - statMissing.col(0) * statMissing.col(0)); // variance
 #ifdef MC_DEBUG
   std::cout << "GaussianDataStat::exportVals, nbIter_: " << nbIter_ << std::endl
             << "posMissing_: " << std::endl
