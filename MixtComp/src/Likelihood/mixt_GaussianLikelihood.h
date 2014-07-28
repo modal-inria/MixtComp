@@ -33,6 +33,13 @@ namespace mixt
 
 class GaussianLikelihood
 {
+
+    typedef std::pair<int, int> pos;
+    typedef typename std::vector<          pos                                    >::const_iterator iv_missing;
+    typedef typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::const_iterator iv_missingIntervals;
+    typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingLUIntervals;
+    typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingRUIntervals;
+
   public:
     /** Constructor */
     GaussianLikelihood(std::string idName,

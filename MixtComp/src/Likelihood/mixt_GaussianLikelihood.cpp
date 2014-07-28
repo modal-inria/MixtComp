@@ -51,30 +51,96 @@ GaussianLikelihood::~GaussianLikelihood()
 STK::Real GaussianLikelihood::lnLikelihood()
 {
   STK::Real lnLikelihood = 0.;
+  STK::Array2D<STK::Real> lnComp(presentData_.sizeRows(),
+                                 p_prop_->sizeCols(),
+                                 0.);
 
-  // likelihood for present value
+  // likelihood for present data
   for (int i = 0; i < presentData_.sizeRows(); ++i)
   {
-    STK::Array2DPoint<STK::Real> lnComp(p_prop_->sizeCols());
-    lnComp = 0.;
     for (int k = 0; k < p_prop_->sizeCols(); ++k)
     {
       for (int j = 0; j < presentData_.sizeCols(); ++j)
       {
-        if (presentData_(i, j) != STK::Arithmetic<STK::Real>::NA())
+        STK::Real mean  = p_param_->elt(2*k    , j);
+        STK::Real sd    = p_param_->elt(2*k + 1, j);
+
+        if (presentData_(i, j) != STK::Arithmetic<STK::Real>::NA())   // likelihood for present value
         {
-          STK::Real mean  = p_param_->elt(2*k    , j);
-          STK::Real sd    = p_param_->elt(2*k + 1, j);
-          lnComp[k] += STK::Law::Normal::lpdf(presentData_(i, j),
-                                              mean,
-                                              sd);
+          lnComp(i, k) += STK::Law::Normal::lpdf(presentData_(i, j),
+                                                 mean,
+                                                 sd);
         }
       }
     }
-    STK::Real max = lnComp.maxElt();
-    STK::Real sum = (lnComp -= max).exp().dot(*p_prop_);
+  }
+
+  // partially observed data, missing intervals
+  for (iv_missingIntervals it = p_augData_->v_missingIntervals_.begin();
+       it != p_augData_->v_missingIntervals_.end();
+       ++it)
+  {
+    for (int k = 0; k < p_prop_->sizeCols(); ++k)
+    {
+      int i = it->first.first;
+      int j = it->first.second;
+
+      STK::Real mean  = p_param_->elt(2*k    , j);
+      STK::Real sd    = p_param_->elt(2*k + 1, j);
+
+      STK::Law::Normal normal(mean, sd);
+
+      lnComp(i, k) += std::log(normal.cdf(it->second.second) -
+                               normal.cdf(it->second.first ));
+    }
+  }
+
+  // partially observed data, missing left unbounded interval
+  for (iv_missingLUIntervals it = p_augData_->v_missingLUIntervals_.begin();
+       it != p_augData_->v_missingLUIntervals_.end();
+       ++it)
+  {
+    for (int k = 0; k < p_prop_->sizeCols(); ++k)
+    {
+      int i = it->first.first;
+      int j = it->first.second;
+
+      STK::Real mean  = p_param_->elt(2*k    , j);
+      STK::Real sd    = p_param_->elt(2*k + 1, j);
+
+      STK::Law::Normal normal(mean, sd);
+
+      lnComp(i, k) += std::log(1. - normal.cdf(it->second));
+    }
+  }
+
+  // partially observed data, missing right unbounded interval
+  for (iv_missingLUIntervals it = p_augData_->v_missingRUIntervals_.begin();
+       it != p_augData_->v_missingRUIntervals_.end();
+       ++it)
+  {
+    for (int k = 0; k < p_prop_->sizeCols(); ++k)
+    {
+      int i = it->first.first;
+      int j = it->first.second;
+
+      STK::Real mean  = p_param_->elt(2*k    , j);
+      STK::Real sd    = p_param_->elt(2*k + 1, j);
+
+      STK::Law::Normal normal(mean, sd);
+
+      lnComp(i, k) += std::log(normal.cdf(it->second));
+    }
+  }
+
+  // Compute the likelihood for each sample, using the mixture model
+  for (int i = 0; i < presentData_.sizeRows(); ++i)
+  {
+    STK::Real max = lnComp.row(i).maxElt();
+    STK::Real sum = (lnComp.row(i) -= max).exp().dot(*p_prop_);
     lnLikelihood += max + std::log(sum);
   }
+
   return lnLikelihood;
 }
 
