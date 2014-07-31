@@ -54,7 +54,7 @@ Rcpp::List DataExtractorR::extractVal() const
     {
       case STK::Clust::Gaussian_sjk_:
       {
-        GaussianBridge_sjk_m* const p_bridge = dynamic_cast<GaussianBridge_sjk_m* const>(*it);
+        typename GaussianBridge_sjk_m<DataExtractorR>::type* const p_bridge = dynamic_cast<typename GaussianBridge_sjk_m<DataExtractorR>::type* const>(*it);
 
         const STK::Array2D<STK::Real>* data = &p_bridge->getData()->data_;
         STK::Array2D<int> posMissing;
@@ -91,7 +91,7 @@ Rcpp::List DataExtractorR::extractVal() const
 
       case STK::Clust::Categorical_pjk_:
       {
-        CategoricalBridge_pjk_m* const p_bridge = dynamic_cast <CategoricalBridge_pjk_m* const>(*it);
+        typename CategoricalBridge_pjk_m<DataExtractorR>::type* const p_bridge = dynamic_cast <typename CategoricalBridge_pjk_m<DataExtractorR>::type* const>(*it);
 
         const STK::Array2D<int>* data = &p_bridge->getData()->data_;
         STK::Array2D<int> posMissing;

@@ -40,7 +40,7 @@
 namespace mixt
 {
 
-template<int Id>
+template<int Id, typename DataExtractor>
 class MixtureBridge : public mixt::IMixture
 {
   public:

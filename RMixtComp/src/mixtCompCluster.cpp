@@ -39,7 +39,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters
   handler.writeDataMap();
   
   // create the mixture manager
-  mixt::MixtureManager<mixt::DataHandlerR> manager(handler);
+  mixt::MixtureManager<mixt::DataHandlerR, mixt::DataExtractorR> manager(handler);
 
   // prepare the composer
   mixt::MixtureComposer composer(handler.nbSample(), handler.nbVariable(), nbClusters);

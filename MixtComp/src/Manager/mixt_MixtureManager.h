@@ -31,7 +31,7 @@
 namespace mixt
 {
 
-template<class DataHandler>
+template<typename DataHandler, typename DataExtractor>
 class MixtureManager
 {
   public:
@@ -68,7 +68,7 @@ class MixtureManager
       {
         case STK::Clust::Gaussian_sjk_:
         {
-          GaussianBridge_sjk_m* p_bridge = new GaussianBridge_sjk_m(idName, nbCluster);
+          typename GaussianBridge_sjk_m<DataExtractor>::type* p_bridge = new typename GaussianBridge_sjk_m<DataExtractor>::type(idName, nbCluster);
           p_bridge->setData(this);
           return p_bridge;
         }
@@ -76,7 +76,7 @@ class MixtureManager
 
         case STK::Clust::Categorical_pjk_:
         {
-          CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
+          typename CategoricalBridge_pjk_m<DataExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataExtractor>::type(idName, nbCluster);
           p_bridge->setData(this);
           return p_bridge;
         }
