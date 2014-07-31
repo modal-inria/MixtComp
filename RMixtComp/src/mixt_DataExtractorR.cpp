@@ -91,7 +91,7 @@ Rcpp::List DataExtractorR::extractVal() const
 
       case STK::Clust::Categorical_pjk_:
       {
-        CategoricalBridge_pjk_m* const p_bridge = dynamic_cast <CategoricalBridge_pjk_m* const>(*it);
+        CategoricalBridge_pjk_m* const p_bridge = dynamic_cast<CategoricalBridge_pjk_m* const>(*it);
 
         const STK::Array2D<int>* data = &p_bridge->getData()->data_;
         STK::Array2D<int> posMissing;

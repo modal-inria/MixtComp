@@ -17,12 +17,12 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: July 24, 2014
+ *  Created on: July 28, 2014
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_GAUSSIANLIKELIHOOD_H
-#define MIXT_GAUSSIANLIKELIHOOD_H
+#ifndef MIXT_CATEGORICALLIKELIHOOD_H
+#define MIXT_CATEGORICALLIKELIHOOD_H
 
 #include "DManager/include/STK_DataHandler.h"
 #include "Arrays/include/STK_CArrayPoint.h"
@@ -31,32 +31,38 @@
 namespace mixt
 {
 
-class GaussianLikelihood
+class CategoricalLikelihood
 {
     typedef std::pair<int, int> pos;
-    typedef typename std::vector<          pos                                    >::const_iterator iv_missing;
-    typedef typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::const_iterator iv_missingIntervals;
-    typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingLUIntervals;
-    typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingRUIntervals;
+    typedef typename std::vector<          pos                        >::const_iterator iv_missing;
+    typedef typename std::vector<std::pair<pos, std::vector<int>    > >::const_iterator iv_missingFiniteValues;
 
   public:
     /** Constructor */
-    GaussianLikelihood(const STK::Array2D<STK::Real>* p_param,
-                       const AugmentedData<STK::Array2D<STK::Real> >* augData);
+    CategoricalLikelihood(const STK::CArrayPoint<STK::Real>* p_prop,
+                          const STK::Array2D<STK::Real>* p_param,
+                          const AugmentedData<STK::Array2D<int> >* augData);
     /** Destructor */
-    virtual ~GaussianLikelihood();
+    virtual ~CategoricalLikelihood();
 
     /** Compute the observed log-likelihood */
-    void lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    STK::Real lnLikelihood();
 
   private:
+    /** Original data table indicating whether a data is present, and not
+     * missing nor partially observed */
+    STK::Array2D<int> presentData_;
+
+    /** Pointer to proportions */
+    const STK::CArrayPoint<STK::Real>* p_prop_;
+
     /** Pointer to parameters table */
     const STK::Array2D<STK::Real>* p_param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
-    const AugmentedData<STK::Array2D<STK::Real> >* p_augData_;
+    const AugmentedData<STK::Array2D<int> >* p_augData_;
 };
 
 } /* namespace mixt */
 
-#endif /* STK_MIXTURECOMPOSER_H */
+#endif /* MIXT_CATEGORICALLIKELIHOOD_H */

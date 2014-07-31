@@ -72,6 +72,31 @@ STK::Real MixtureComposer::lnComponentProbability(int i, int k)
   return sum;
 }
 
+STK::Real MixtureComposer::lnObservedLikelihood()
+{
+  STK::Real sum = 0.;
+  STK::Array2D<STK::Real> lnComp(nbCluster_, 0.);
+  for (int k = 0; k < nbCluster_; ++k)
+  {
+    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+    {
+      // STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
+      // lnComp(k) += (*it)->lnObservedLikelihood(&tempVec, k);
+      lnComp(k) += (*it)->lnObservedLikelihood(&lnComp.col(k), k);
+    }
+  }
+
+  // Compute the observed likelihood for the complete mixture model
+  for (int i = 0; i < nbSample(); ++i)
+  {
+    STK::Real max = lnComp.row(i).maxElt();
+    STK::Real sum = (lnComp.row(i) -= max).exp().dot(prop_);
+    lnLikelihood += max + std::log(sum);
+  }
+
+  return sum;
+}
+
 void MixtureComposer::mStep()
 {
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)

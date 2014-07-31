@@ -40,7 +40,7 @@
 namespace mixt
 {
 
-template<int Id>
+template<int Id, typename MixtureManager>
 class MixtureBridge : public mixt::IMixture
 {
   public:
@@ -60,19 +60,27 @@ class MixtureBridge : public mixt::IMixture
     typedef typename BridgeTraits<Id>::Sampler Sampler;
     // type of Sample Iterator
     typedef typename BridgeTraits<Id>::SamplerIterator SamplerIterator;
+    // type of Likelihood
+    typedef typename BridgeTraits<Id>::Likelihood Likelihood;
 
     /** constructor.
      *  @param idName id name of the mixture
      *  @param nbCluster number of cluster
      **/
-    MixtureBridge(std::string const& idName, int nbCluster) :
+    MixtureBridge(std::string const& idName,
+                  int nbCluster,
+                  const MixtureManager* manager) :
       mixt::IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
       nbVariable_(0),
       sampler_(getData(),
                getParam()),
-      dataStat_(getData())
+      dataStat_(getData()),
+      likelihood_(
+                  getParam(),
+                  getData()),
+      manager_(manager)
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
@@ -81,7 +89,9 @@ class MixtureBridge : public mixt::IMixture
       m_augDataij_(bridge.m_augDataij_),
       nbVariable_(bridge.nbVariable_),
       sampler_(bridge.sampler_),
-      dataStat_(bridge.dataStat_)
+      dataStat_(bridge.dataStat_),
+      likelihood_(bridge.likelihood_),
+      manager_(bridge.manager_)
     {
       mixture_.setData(m_augDataij_.data_);
       mixture_.initializeModel();
@@ -138,10 +148,9 @@ class MixtureBridge : public mixt::IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    template<class MixtureManager>
-    void setData(MixtureManager const* p_manager)
+    void setData()
     {
-      p_manager->getData(idName(), m_augDataij_, nbVariable_ );
+      manager_->getData(idName(), m_augDataij_, nbVariable_ );
 
       // data range filling
       for (int currVar = 0; currVar < m_augDataij_.data_.sizeCols(); ++currVar)
@@ -234,6 +243,19 @@ class MixtureBridge : public mixt::IMixture
     {
       return mixture_.lnComponentProbability(i, k);
     }
+
+    /**
+     * This function must be defined to return the observed likelihood
+     * @return the observed log-likelihood
+     */
+    virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+    {
+      manager_->getData(idName(),
+                        m_augDataij_.data_,
+                        nbVariable_ );// reset the data to get partially observed data location
+      mixture_.getParameters(param_); // update the parameters
+      likelihood_.lnLikelihood(lnComp, k);
+    }
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
@@ -290,6 +312,11 @@ class MixtureBridge : public mixt::IMixture
     Sampler sampler_;
     /** Statistics storage for missing data */
     DataStat dataStat_;
+    /** Computation of the observed likelihood */
+    Likelihood likelihood_;
+    /** Pointer to the MixtureManager object, used to get the data
+     * during initialization, and during  */
+    const MixtureManager* manager_;
 
   private:
     /** This function will be used in order to initialize the mixture model
@@ -302,13 +329,20 @@ class MixtureBridge : public mixt::IMixture
      *  @param idName id name of the mixture
      *  @param nbCluster number of cluster
      **/
-    MixtureBridge(Mixture const& mixture, std::string const& idName, int nbCluster) :
-      IMixture( idName, nbCluster),
+    MixtureBridge(Mixture const& mixture,
+                  std::string const& idName,
+                  int nbCluster,
+                  const MixtureManager* manager) :
+      IMixture(idName, nbCluster),
       mixture_(mixture),
       m_augDataij_(),
+      nbVariable_(0),
       sampler_(getData(),
                getParam()),
-      dataStat_(getData())
+      dataStat_(getData()),
+      likelihood_(getParam(),
+                  getData()),
+      manager_(manager)
     {}
 };
 

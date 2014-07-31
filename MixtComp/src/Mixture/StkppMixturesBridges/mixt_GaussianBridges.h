@@ -29,12 +29,13 @@
 #include "../../Sampler/mixt_GaussianSampler.h"
 #include "../../Sampler/mixt_GaussianSamplerIterator.h"
 #include "../../Data/mixt_GaussianDataStat.h"
+#include "../../Likelihood/mixt_GaussianLikelihood.h"
 
 namespace mixt
 {
 
 // forward declaration
-template<int Id> class MixtureBridge;
+template<int Id, typename MixtureManager> class MixtureBridge;
 
 /**
  *  Specialization of the MixtureTraits for the Gaussian_sjk_ model
@@ -60,7 +61,14 @@ struct BridgeTraits<STK::Clust::Gaussian_sjk_>
     typedef GaussianSamplerIterator SamplerIterator;
 };
 
-typedef MixtureBridge<STK::Clust::Gaussian_sjk_> GaussianBridge_sjk_m;
+template <typename MixtureManager>
+struct GaussianBridge_sjk_m
+{
+    typedef MixtureBridge<STK::Clust::Gaussian_sjk_, MixtureManager> type;
+};
+
+template <typename MixtureManager>
+using GaussianBridge_sjk_m = MixtureBridge<STK::Clust::Gaussian_sjk_, MixtureManager>;
 
 } /* namespace mixt */
 

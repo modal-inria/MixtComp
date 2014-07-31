@@ -27,50 +27,30 @@
 namespace mixt
 {
 
-GaussianLikelihood::GaussianLikelihood(std::string idName,
-                                       const STK::IDataHandler* handler,
-                                       const STK::CArrayPoint<STK::Real>* p_prop,
-                                       const STK::Array2D<STK::Real>* p_param,
+GaussianLikelihood::GaussianLikelihood(const STK::Array2D<STK::Real>* p_param,
                                        const AugmentedData<STK::Array2D<STK::Real> >* augData) :
-    p_prop_(p_prop),
     p_param_(p_param),
     p_augData_(augData)
-{
-  int dummyVar;
-  // fill presentData_ with the original data set containing NA information
-  handler->getData(idName,
-                   presentData_,
-                   dummyVar);
-}
+{}
 
 GaussianLikelihood::~GaussianLikelihood()
+{}
+
+void GaussianLikelihood::lnLikelihood(STK::Array2DVector* lnComp, int k)
 {
-
-}
-
-STK::Real GaussianLikelihood::lnLikelihood()
-{
-  STK::Real lnLikelihood = 0.;
-  STK::Array2D<STK::Real> lnComp(presentData_.sizeRows(),
-                                 p_prop_->sizeCols(),
-                                 0.);
-
   // likelihood for present data
-  for (int i = 0; i < presentData_.sizeRows(); ++i)
+  for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
   {
-    for (int k = 0; k < p_prop_->sizeCols(); ++k)
+    for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
     {
-      for (int j = 0; j < presentData_.sizeCols(); ++j)
-      {
-        STK::Real mean  = p_param_->elt(2*k    , j);
-        STK::Real sd    = p_param_->elt(2*k + 1, j);
+      STK::Real mean  = p_param_->elt(2*k    , j);
+      STK::Real sd    = p_param_->elt(2*k + 1, j);
 
-        if (presentData_(i, j) != STK::Arithmetic<STK::Real>::NA())   // likelihood for present value
-        {
-          lnComp(i, k) += STK::Law::Normal::lpdf(presentData_(i, j),
+      if (p_augData_->data_(i, j) != STK::Arithmetic<STK::Real>::NA())   // likelihood for present value
+      {
+        lnComp->elt(i) += STK::Law::Normal::lpdf(p_augData_->data_(i, j),
                                                  mean,
                                                  sd);
-        }
       }
     }
   }
@@ -90,8 +70,8 @@ STK::Real GaussianLikelihood::lnLikelihood()
 
       STK::Law::Normal normal(mean, sd);
 
-      lnComp(i, k) += std::log(normal.cdf(it->second.second) -
-                               normal.cdf(it->second.first ));
+      lnComp->elt(i) += std::log(normal.cdf(it->second.second) -
+                                 normal.cdf(it->second.first ));
     }
   }
 
@@ -110,7 +90,7 @@ STK::Real GaussianLikelihood::lnLikelihood()
 
       STK::Law::Normal normal(mean, sd);
 
-      lnComp(i, k) += std::log(1. - normal.cdf(it->second));
+      lnComp->elt(i) += std::log(1. - normal.cdf(it->second));
     }
   }
 
@@ -129,19 +109,9 @@ STK::Real GaussianLikelihood::lnLikelihood()
 
       STK::Law::Normal normal(mean, sd);
 
-      lnComp(i, k) += std::log(normal.cdf(it->second));
+      lnComp->elt(i) += std::log(normal.cdf(it->second));
     }
   }
-
-  // Compute the likelihood for each sample, using the mixture model
-  for (int i = 0; i < presentData_.sizeRows(); ++i)
-  {
-    STK::Real max = lnComp.row(i).maxElt();
-    STK::Real sum = (lnComp.row(i) -= max).exp().dot(*p_prop_);
-    lnLikelihood += max + std::log(sum);
-  }
-
-  return lnLikelihood;
 }
 
 } /* namespace mixt */

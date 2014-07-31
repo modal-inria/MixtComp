@@ -29,12 +29,13 @@
 #include "../../Sampler/mixt_CategoricalSampler.h"
 #include "../../Sampler/mixt_CategoricalSamplerIterator.h"
 #include "../../Data/mixt_CategoricalDataStat.h"
+#include "../../Likelihood/mixt_CategoricalLikelihood.h"
 
 namespace mixt
 {
 
 // forward declaration
-template<int Id> class MixtureBridge;
+template<int Id, typename MixtureManager> class MixtureBridge;
 
 /**
  *  Specialization of the MixtureTraits for the Gaussian_sjk_ model
@@ -58,9 +59,12 @@ struct BridgeTraits<STK::Clust::Categorical_pjk_>
     typedef CategoricalSampler Sampler;
     /** Corresponding sampler iterator */
     typedef CategoricalSamplerIterator SamplerIterator;
+    /** Type of Likelihood */
+    typedef CategoricalLikelihood Likelihood;
 };
 
-typedef MixtureBridge<STK::Clust::Categorical_pjk_> CategoricalBridge_pjk_m;
+template <typename MixtureManager>
+using CategoricalBridge_pjk_m = MixtureBridge<STK::Clust::Categorical_pjk_, MixtureManager>;
 
 } /* namespace mixt */
 

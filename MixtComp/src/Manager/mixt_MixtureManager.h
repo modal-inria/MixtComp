@@ -39,7 +39,8 @@ class MixtureManager
     typedef std::vector<mixt::IMixture*>::const_iterator ConstMixtIterator;
     typedef std::vector<mixt::IMixture*>::iterator MixtIterator;
 
-    MixtureManager(DataHandler const& handler) : handler_(handler) {}
+    MixtureManager(DataHandler const& handler) :
+      handler_(handler) {}
 
     void createMixtures(mixt::MixtureComposer& composer, int nbCluster)
     {
@@ -68,16 +69,16 @@ class MixtureManager
       {
         case STK::Clust::Gaussian_sjk_:
         {
-          GaussianBridge_sjk_m* p_bridge = new GaussianBridge_sjk_m(idName, nbCluster);
-          p_bridge->setData(this);
+          GaussianBridge_sjk_m<MixtureManager>* p_bridge = new GaussianBridge_sjk_m<MixtureManager>(idName, nbCluster, this);
+          p_bridge->setData();
           return p_bridge;
         }
         break;
 
         case STK::Clust::Categorical_pjk_:
         {
-          CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
-          p_bridge->setData(this);
+          CategoricalBridge_pjk_m<MixtureManager>* p_bridge = new CategoricalBridge_pjk_m<MixtureManager>(idName, nbCluster, this);
+          p_bridge->setData();
           return p_bridge;
         }
         break;

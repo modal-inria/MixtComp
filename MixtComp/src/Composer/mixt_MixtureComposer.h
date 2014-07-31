@@ -83,6 +83,8 @@ class MixtureComposer : public STK::IMixtureComposerBase
      *  @param k index of the component
      **/
     virtual STK::Real lnComponentProbability(int i, int k);
+    /** @return the value of the observed likelihood */
+    virtual STK::Real lnObservedLikelihood();
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(STK::ostream& os) const;
     /** @brief compute the number of free parameters of the model.
@@ -158,4 +160,4 @@ class MixtureComposer : public STK::IMixtureComposerBase
 
 } /* namespace mixt */
 
-#endif /* STK_MIXTURECOMPOSER_H */
+#endif /* MIXT_MIXTURECOMPOSER_H */
