@@ -65,14 +65,15 @@ class MixtureBridge : public mixt::IMixture
      *  @param idName id name of the mixture
      *  @param nbCluster number of cluster
      **/
-    MixtureBridge(std::string const& idName, int nbCluster) :
+    MixtureBridge(std::string const& idName, int nbCluster, DataExtractor* p_extractor) :
       mixt::IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
       nbVariable_(0),
       sampler_(getData(),
                getParam()),
-      dataStat_(getData())
+      dataStat_(getData()),
+      p_extractor_(p_extractor)
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
@@ -81,7 +82,8 @@ class MixtureBridge : public mixt::IMixture
       m_augDataij_(bridge.m_augDataij_),
       nbVariable_(bridge.nbVariable_),
       sampler_(bridge.sampler_),
-      dataStat_(bridge.dataStat_)
+      dataStat_(bridge.dataStat_),
+      p_extractor_(bridge.p_extractor_)
     {
       mixture_.setData(m_augDataij_.data_);
       mixture_.initializeModel();
@@ -103,7 +105,7 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual MixtureBridge* create() const
     {
-      MixtureBridge* p_bridge = new MixtureBridge(mixture_, idName(), nbCluster());
+      MixtureBridge* p_bridge = new MixtureBridge(mixture_, idName(), nbCluster(), p_extractor_);
       p_bridge->m_augDataij_ = m_augDataij_;
       p_bridge->nbVariable_ = nbVariable_;
       // Bug Fix: set the correct data set
@@ -277,6 +279,17 @@ class MixtureBridge : public mixt::IMixture
       return &dataStat_;
     }
 
+    virtual void exportVals() const
+    {
+      STK::Array2D<int> posMissing;
+      STK::Array2D<STK::Real> statMissing;
+      dataStat_.exportVals(posMissing, statMissing); // get data from the DataStat
+      p_extractor_->exportVals(idName(),
+                               &m_augDataij_.data_,
+                               &posMissing,
+                               &statMissing); // export the obtained data using the DataExtractor
+    }
+
   protected:
     /** The stkpp mixture to bridge with the composer */
     Mixture mixture_;
@@ -290,6 +303,8 @@ class MixtureBridge : public mixt::IMixture
     Sampler sampler_;
     /** Statistics storage for missing data */
     DataStat dataStat_;
+    /** Pointer to the data extractor */
+    DataExtractor* p_extractor_;
 
   private:
     /** This function will be used in order to initialize the mixture model
@@ -302,13 +317,14 @@ class MixtureBridge : public mixt::IMixture
      *  @param idName id name of the mixture
      *  @param nbCluster number of cluster
      **/
-    MixtureBridge(Mixture const& mixture, std::string const& idName, int nbCluster) :
+    MixtureBridge(Mixture const& mixture, std::string const& idName, int nbCluster, DataExtractor* p_dataExtractor) :
       IMixture( idName, nbCluster),
       mixture_(mixture),
       m_augDataij_(),
       sampler_(getData(),
                getParam()),
-      dataStat_(getData())
+      dataStat_(getData()),
+      p_extractor_(p_dataExtractor)
     {}
 };
 

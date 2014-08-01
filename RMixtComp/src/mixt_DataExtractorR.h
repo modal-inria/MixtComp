@@ -24,9 +24,8 @@
 #ifndef MIXT_DATAEXTRACTOR_H
 #define MIXT_DATAEXTRACTOR_H
 
-#include "MixtComp/src/Composer/mixt_MixtureComposer.h"
-#include "mixt_DataHandlerR.h"
-#include "MixtComp/src/Mixture/mixt_IMixture.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Rcpp.h"
 
 namespace mixt
 {
@@ -34,12 +33,19 @@ namespace mixt
 class DataExtractorR
 {
   public:
-    DataExtractorR(const MixtureComposer* composer, const DataHandlerR* handler);
+    DataExtractorR();
     ~DataExtractorR();
-    Rcpp::List extractVal() const;
+    void exportVals(std::string idName,
+                    const STK::Array2D<STK::Real>* p_data,
+                    const STK::Array2D<int>* p_posMissing,
+                    const STK::Array2D<STK::Real>* p_statMissing);
+    void exportVals(std::string idName,
+                    const STK::Array2D<int>* p_data,
+                    const STK::Array2D<int>* p_posMissing,
+                    const STK::Array2D<STK::Real>* p_statMissing);
+    Rcpp::List rcppReturnVals() const;
   private:
-    const MixtureComposer* composer_;
-    const DataHandlerR* handler_;
+    Rcpp::List data_;
 };
 
 } // namespace mixt

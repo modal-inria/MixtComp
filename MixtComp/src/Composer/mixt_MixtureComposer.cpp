@@ -159,6 +159,14 @@ void MixtureComposer::storeData()
   }
 }
 
+void MixtureComposer::exportVals() const
+{
+  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->exportVals();
+  }
+}
+
 void MixtureComposer::finalizeStep()
 {
   for (size_t l = 0; l < v_mixtures_.size(); ++l)
