@@ -1,4 +1,6 @@
 useDynLib(RMixtComp)
 exportPattern("^[[:alpha:]]+")
-import(Rcpp)
 import(stringr)
+import(truncnorm)
+import(RInside)
+import(Rcpp)
