@@ -141,6 +141,10 @@ class IMixture
 #endif
     }
 
+    /** This function can be used to write export data
+     */
+    virtual void exportVals() const = 0;
+
   protected:
     /** This function can be used in derived classes to get number of samples.
      *  @return Number of samples.

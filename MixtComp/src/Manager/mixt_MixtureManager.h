@@ -31,7 +31,7 @@
 namespace mixt
 {
 
-template<class DataHandler>
+template<typename DataHandler, typename DataExtractor>
 class MixtureManager
 {
   public:
@@ -39,11 +39,14 @@ class MixtureManager
     typedef std::vector<mixt::IMixture*>::const_iterator ConstMixtIterator;
     typedef std::vector<mixt::IMixture*>::iterator MixtIterator;
 
-    MixtureManager(DataHandler const& handler) : handler_(handler) {}
+    MixtureManager(const DataHandler* handler, DataExtractor* extractor) :
+      p_handler_(handler),
+      p_extractor_(extractor)
+    {}
 
     void createMixtures(mixt::MixtureComposer& composer, int nbCluster)
     {
-      for (typename InfoMap::const_iterator it=handler_.info().begin(); it!=handler_.info().end(); ++it)
+      for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
       {
         std::string idName = it->first;
         std::string model = it->second;
@@ -68,7 +71,7 @@ class MixtureManager
       {
         case STK::Clust::Gaussian_sjk_:
         {
-          GaussianBridge_sjk_m* p_bridge = new GaussianBridge_sjk_m(idName, nbCluster);
+          typename GaussianBridge_sjk_m<DataExtractor>::type* p_bridge = new typename GaussianBridge_sjk_m<DataExtractor>::type(idName, nbCluster, p_extractor_);
           p_bridge->setData(this);
           return p_bridge;
         }
@@ -76,7 +79,7 @@ class MixtureManager
 
         case STK::Clust::Categorical_pjk_:
         {
-          CategoricalBridge_pjk_m* p_bridge = new CategoricalBridge_pjk_m(idName, nbCluster);
+          typename CategoricalBridge_pjk_m<DataExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataExtractor>::type(idName, nbCluster, p_extractor_);
           p_bridge->setData(this);
           return p_bridge;
         }
@@ -97,12 +100,15 @@ class MixtureManager
     template<typename Data>
     inline void getData(std::string const& idName, Data& data, int& nbVariable) const
     {
-      handler_.getData(idName, data, nbVariable);
+      p_handler_->getData(idName, data, nbVariable);
     }
 
   private:
     /** pointer to the dataHandler */
-    DataHandler const& handler_;
+    const DataHandler* p_handler_;
+
+    /** pointer to the dataExtractor */
+    DataExtractor* p_extractor_;
 };
 
 } // namespace mixt
