@@ -80,8 +80,8 @@ STK::Real MixtureComposer::lnObservedLikelihood()
   {
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
-      // STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
-      // (*it)->lnObservedLikelihood(&tempVec, k);
+      STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
+      (*it)->lnObservedLikelihood(&tempVec, k);
       // (*it)->lnObservedLikelihood(&lnComp.col(k), k);
     }
   }
