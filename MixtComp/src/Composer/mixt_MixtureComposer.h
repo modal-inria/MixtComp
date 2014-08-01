@@ -118,6 +118,11 @@ class MixtureComposer : public STK::IMixtureComposerBase
      * store data generated using the estimated parameters
      */
     virtual void storeData();
+
+    /**@brief This step can be used to ask each mixture to export its data
+     **/
+    virtual void exportVals() const;
+
     /**@brief This step can be used by developer to finalize any thing. It will
      *  be called only once after we finish running the estimation algorithm.
      **/

@@ -40,7 +40,8 @@
 namespace mixt
 {
 
-template<int Id, typename MixtureManager>
+template<int Id, typename DataHandler, typename DataExtractor>
+
 class MixtureBridge : public mixt::IMixture
 {
   public:
@@ -69,7 +70,8 @@ class MixtureBridge : public mixt::IMixture
      **/
     MixtureBridge(std::string const& idName,
                   int nbCluster,
-                  const MixtureManager* manager) :
+                  const DataHandler* p_handler_,
+                  DataExtractor* p_extractor) :
       mixt::IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
@@ -80,7 +82,8 @@ class MixtureBridge : public mixt::IMixture
       likelihood_(
                   getParam(),
                   getData()),
-      manager_(manager)
+      p_handler_(p_handler_),
+      p_extractor_(p_extractor)
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
@@ -91,7 +94,8 @@ class MixtureBridge : public mixt::IMixture
       sampler_(bridge.sampler_),
       dataStat_(bridge.dataStat_),
       likelihood_(bridge.likelihood_),
-      manager_(bridge.manager_)
+      p_handler_(bridge.p_handler_),
+      p_extractor_(bridge.p_extractor_)
     {
       mixture_.setData(m_augDataij_.data_);
       mixture_.initializeModel();
@@ -113,7 +117,7 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual MixtureBridge* create() const
     {
-      MixtureBridge* p_bridge = new MixtureBridge(mixture_, idName(), nbCluster());
+      MixtureBridge* p_bridge = new MixtureBridge(mixture_, idName(), nbCluster(), p_handler_, p_extractor_);
       p_bridge->m_augDataij_ = m_augDataij_;
       p_bridge->nbVariable_ = nbVariable_;
       // Bug Fix: set the correct data set
@@ -150,7 +154,7 @@ class MixtureBridge : public mixt::IMixture
      */
     void setData()
     {
-      manager_->getData(idName(), m_augDataij_, nbVariable_ );
+      p_handler_->getData(idName(), m_augDataij_, nbVariable_ );
 
       // data range filling
       for (int currVar = 0; currVar < m_augDataij_.data_.sizeCols(); ++currVar)
@@ -250,7 +254,7 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
     {
-      manager_->getData(idName(),
+      p_handler_->getData(idName(),
                         m_augDataij_.data_,
                         nbVariable_ );// reset the data to get partially observed data location
       mixture_.getParameters(param_); // update the parameters
@@ -299,6 +303,17 @@ class MixtureBridge : public mixt::IMixture
       return &dataStat_;
     }
 
+    virtual void exportVals() const
+    {
+      STK::Array2D<int> posMissing;
+      STK::Array2D<STK::Real> statMissing;
+      dataStat_.exportVals(posMissing, statMissing); // get data from the DataStat
+      p_extractor_->exportVals(idName(),
+                               &m_augDataij_.data_,
+                               &posMissing,
+                               &statMissing); // export the obtained data using the DataExtractor
+    }
+
   protected:
     /** The stkpp mixture to bridge with the composer */
     Mixture mixture_;
@@ -314,9 +329,10 @@ class MixtureBridge : public mixt::IMixture
     DataStat dataStat_;
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
-    /** Pointer to the MixtureManager object, used to get the data
-     * during initialization, and during  */
-    const MixtureManager* manager_;
+    /** Pointer to the data handler */
+    const DataHandler* p_handler_;
+    /** Pointer to the data extractor */
+    DataExtractor* p_extractor_;
 
   private:
     /** This function will be used in order to initialize the mixture model
@@ -332,8 +348,9 @@ class MixtureBridge : public mixt::IMixture
     MixtureBridge(Mixture const& mixture,
                   std::string const& idName,
                   int nbCluster,
-                  const MixtureManager* manager) :
-      IMixture(idName, nbCluster),
+                  const DataHandler* p_handler,
+                  DataExtractor* p_dataExtractor) :
+      IMixture( idName, nbCluster),
       mixture_(mixture),
       m_augDataij_(),
       nbVariable_(0),
@@ -342,7 +359,9 @@ class MixtureBridge : public mixt::IMixture
       dataStat_(getData()),
       likelihood_(getParam(),
                   getData()),
-      manager_(manager)
+      p_handler_(p_handler),
+      p_extractor_(p_dataExtractor)
+
     {}
 };
 

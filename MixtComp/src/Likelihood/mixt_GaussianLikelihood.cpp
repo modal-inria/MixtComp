@@ -36,18 +36,17 @@ GaussianLikelihood::GaussianLikelihood(const STK::Array2D<STK::Real>* p_param,
 GaussianLikelihood::~GaussianLikelihood()
 {}
 
-void GaussianLikelihood::lnLikelihood(STK::Array2DVector* lnComp, int k)
+void GaussianLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
 {
   // likelihood for present data
   for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
   {
     for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
     {
-      STK::Real mean  = p_param_->elt(2*k    , j);
-      STK::Real sd    = p_param_->elt(2*k + 1, j);
-
       if (p_augData_->data_(i, j) != STK::Arithmetic<STK::Real>::NA())   // likelihood for present value
       {
+        STK::Real mean  = p_param_->elt(2*k    , j);
+        STK::Real sd    = p_param_->elt(2*k + 1, j);
         lnComp->elt(i) += STK::Law::Normal::lpdf(p_augData_->data_(i, j),
                                                  mean,
                                                  sd);
@@ -60,19 +59,16 @@ void GaussianLikelihood::lnLikelihood(STK::Array2DVector* lnComp, int k)
        it != p_augData_->v_missingIntervals_.end();
        ++it)
   {
-    for (int k = 0; k < p_prop_->sizeCols(); ++k)
-    {
-      int i = it->first.first;
-      int j = it->first.second;
+    int i = it->first.first;
+    int j = it->first.second;
 
-      STK::Real mean  = p_param_->elt(2*k    , j);
-      STK::Real sd    = p_param_->elt(2*k + 1, j);
+    STK::Real mean  = p_param_->elt(2*k    , j);
+    STK::Real sd    = p_param_->elt(2*k + 1, j);
 
-      STK::Law::Normal normal(mean, sd);
+    STK::Law::Normal normal(mean, sd);
 
-      lnComp->elt(i) += std::log(normal.cdf(it->second.second) -
-                                 normal.cdf(it->second.first ));
-    }
+    lnComp->elt(i) += std::log(normal.cdf(it->second.second) -
+                               normal.cdf(it->second.first ));
   }
 
   // partially observed data, missing left unbounded interval
@@ -80,18 +76,15 @@ void GaussianLikelihood::lnLikelihood(STK::Array2DVector* lnComp, int k)
        it != p_augData_->v_missingLUIntervals_.end();
        ++it)
   {
-    for (int k = 0; k < p_prop_->sizeCols(); ++k)
-    {
-      int i = it->first.first;
-      int j = it->first.second;
+    int i = it->first.first;
+    int j = it->first.second;
 
-      STK::Real mean  = p_param_->elt(2*k    , j);
-      STK::Real sd    = p_param_->elt(2*k + 1, j);
+    STK::Real mean  = p_param_->elt(2*k    , j);
+    STK::Real sd    = p_param_->elt(2*k + 1, j);
 
-      STK::Law::Normal normal(mean, sd);
+    STK::Law::Normal normal(mean, sd);
 
-      lnComp->elt(i) += std::log(1. - normal.cdf(it->second));
-    }
+    lnComp->elt(i) += std::log(1. - normal.cdf(it->second));
   }
 
   // partially observed data, missing right unbounded interval
@@ -99,18 +92,15 @@ void GaussianLikelihood::lnLikelihood(STK::Array2DVector* lnComp, int k)
        it != p_augData_->v_missingRUIntervals_.end();
        ++it)
   {
-    for (int k = 0; k < p_prop_->sizeCols(); ++k)
-    {
-      int i = it->first.first;
-      int j = it->first.second;
+    int i = it->first.first;
+    int j = it->first.second;
 
-      STK::Real mean  = p_param_->elt(2*k    , j);
-      STK::Real sd    = p_param_->elt(2*k + 1, j);
+    STK::Real mean  = p_param_->elt(2*k    , j);
+    STK::Real sd    = p_param_->elt(2*k + 1, j);
 
-      STK::Law::Normal normal(mean, sd);
+    STK::Law::Normal normal(mean, sd);
 
-      lnComp->elt(i) += std::log(normal.cdf(it->second));
-    }
+    lnComp->elt(i) += std::log(normal.cdf(it->second));
   }
 }
 

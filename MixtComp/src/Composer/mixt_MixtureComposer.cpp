@@ -74,15 +74,15 @@ STK::Real MixtureComposer::lnComponentProbability(int i, int k)
 
 STK::Real MixtureComposer::lnObservedLikelihood()
 {
-  STK::Real sum = 0.;
-  STK::Array2D<STK::Real> lnComp(nbCluster_, 0.);
+  STK::Real lnLikelihood = 0.;
+  STK::Array2D<STK::Real> lnComp(nbSample(), nbCluster_, 0.);
   for (int k = 0; k < nbCluster_; ++k)
   {
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       // STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
-      // lnComp(k) += (*it)->lnObservedLikelihood(&tempVec, k);
-      lnComp(k) += (*it)->lnObservedLikelihood(&lnComp.col(k), k);
+      // (*it)->lnObservedLikelihood(&tempVec, k);
+      // (*it)->lnObservedLikelihood(&lnComp.col(k), k);
     }
   }
 
@@ -94,7 +94,7 @@ STK::Real MixtureComposer::lnObservedLikelihood()
     lnLikelihood += max + std::log(sum);
   }
 
-  return sum;
+  return lnLikelihood;
 }
 
 void MixtureComposer::mStep()
@@ -181,6 +181,14 @@ void MixtureComposer::storeData()
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
     (*it)->storeData();
+  }
+}
+
+void MixtureComposer::exportVals() const
+{
+  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->exportVals();
   }
 }
 

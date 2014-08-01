@@ -31,7 +31,7 @@
 namespace mixt
 {
 
-template<class DataHandler>
+template<typename DataHandler, typename DataExtractor>
 class MixtureManager
 {
   public:
@@ -39,12 +39,14 @@ class MixtureManager
     typedef std::vector<mixt::IMixture*>::const_iterator ConstMixtIterator;
     typedef std::vector<mixt::IMixture*>::iterator MixtIterator;
 
-    MixtureManager(DataHandler const& handler) :
-      handler_(handler) {}
+    MixtureManager(const DataHandler* handler, DataExtractor* extractor) :
+      p_handler_(handler),
+      p_extractor_(extractor)
+    {}
 
     void createMixtures(mixt::MixtureComposer& composer, int nbCluster)
     {
-      for (typename InfoMap::const_iterator it=handler_.info().begin(); it!=handler_.info().end(); ++it)
+      for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
       {
         std::string idName = it->first;
         std::string model = it->second;
@@ -69,7 +71,7 @@ class MixtureManager
       {
         case STK::Clust::Gaussian_sjk_:
         {
-          GaussianBridge_sjk_m<MixtureManager>* p_bridge = new GaussianBridge_sjk_m<MixtureManager>(idName, nbCluster, this);
+          typename GaussianBridge_sjk_m<DataHandler, DataExtractor>::type* p_bridge = new typename GaussianBridge_sjk_m<DataHandler, DataExtractor>::type(idName, nbCluster, p_handler_, p_extractor_);
           p_bridge->setData();
           return p_bridge;
         }
@@ -77,7 +79,7 @@ class MixtureManager
 
         case STK::Clust::Categorical_pjk_:
         {
-          CategoricalBridge_pjk_m<MixtureManager>* p_bridge = new CategoricalBridge_pjk_m<MixtureManager>(idName, nbCluster, this);
+          typename CategoricalBridge_pjk_m<DataHandler, DataExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataHandler, DataExtractor>::type(idName, nbCluster, p_handler_, p_extractor_);
           p_bridge->setData();
           return p_bridge;
         }
@@ -90,20 +92,12 @@ class MixtureManager
       return 0; // 0 if idModel is not a stk++ model
     }
 
-    /** Get data from DataHandler
-     *  @param idName name of the model
-     *  @param data set to fill
-     *  @param nbVariable number of variable of the model
-     **/
-    template<typename Data>
-    inline void getData(std::string const& idName, Data& data, int& nbVariable) const
-    {
-      handler_.getData(idName, data, nbVariable);
-    }
-
   private:
     /** pointer to the dataHandler */
-    DataHandler const& handler_;
+    const DataHandler* p_handler_;
+
+    /** pointer to the dataExtractor */
+    DataExtractor* p_extractor_;
 };
 
 } // namespace mixt

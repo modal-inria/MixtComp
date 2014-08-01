@@ -39,22 +39,18 @@ class CategoricalLikelihood
 
   public:
     /** Constructor */
-    CategoricalLikelihood(const STK::CArrayPoint<STK::Real>* p_prop,
-                          const STK::Array2D<STK::Real>* p_param,
+    CategoricalLikelihood(const STK::Array2D<STK::Real>* p_param,
                           const AugmentedData<STK::Array2D<int> >* augData);
     /** Destructor */
     virtual ~CategoricalLikelihood();
 
     /** Compute the observed log-likelihood */
-    STK::Real lnLikelihood();
+    void lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
 
   private:
     /** Original data table indicating whether a data is present, and not
      * missing nor partially observed */
     STK::Array2D<int> presentData_;
-
-    /** Pointer to proportions */
-    const STK::CArrayPoint<STK::Real>* p_prop_;
 
     /** Pointer to parameters table */
     const STK::Array2D<STK::Real>* p_param_;

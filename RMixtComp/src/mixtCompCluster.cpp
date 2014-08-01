@@ -38,8 +38,11 @@ Rcpp::List mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters
   handler.writeInfo(std::cout);
   handler.writeDataMap();
   
+  // create the data extractor
+  mixt::DataExtractorR dataExtractor;
+
   // create the mixture manager
-  mixt::MixtureManager<mixt::DataHandlerR> manager(handler);
+  mixt::MixtureManager<mixt::DataHandlerR, mixt::DataExtractorR> manager(&handler, &dataExtractor);
 
   // prepare the composer
   mixt::MixtureComposer composer(handler.nbSample(), handler.nbVariable(), nbClusters);
@@ -74,10 +77,8 @@ Rcpp::List mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters
   else
     mcResults.slot("runOK") = false;
 
-  // output and export the results
-  const mixt::DataHandlerR* p_handler(&handler);
-  mixt::DataExtractorR dataExtractor(p_composer, p_handler);
   composer.writeParameters(std::cout);
+  composer.exportVals();
 
   // export the composer results to R through modifications of mcResults
   mcResults.slot("nbCluster") = nbClusters;
@@ -99,5 +100,5 @@ Rcpp::List mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters
       proba(iR, kR) = composer.p_tik()->elt(iS, kS);
   mcResults.slot("proba") = proba;
 
-  return dataExtractor.extractVal();
+  return dataExtractor.rcppReturnVals();
 }

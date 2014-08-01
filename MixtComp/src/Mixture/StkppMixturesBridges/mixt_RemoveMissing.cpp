@@ -106,7 +106,8 @@ void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
     STK::Real proba = 1. / (*it).second.size();
     STK::Array2DVector<STK::Real> modalities(STK::Range(0, nbModalities), 0.);
     for(std::vector<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2)
-      modalities(*it2) = proba;
+      modalities[*it2] = proba;
+
     int sampledValue = STK::Law::Categorical::rand(modalities);
     m_augDataij.data_((*it).first.first,
                       (*it).first.second) = sampledValue;
