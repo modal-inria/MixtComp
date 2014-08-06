@@ -47,8 +47,8 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
        ++it)
   {
     m_augDataij.data_((*it).first,
-                       (*it).second) = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].first,
-                                                               m_augDataij.dataRanges_[(*it).second].second);
+                       (*it).second) = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].min_,
+                                                               m_augDataij.dataRanges_[(*it).second].max_);
   }
 
   // missing values [a,b]
@@ -67,7 +67,7 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
        ++it)
   {
     m_augDataij.data_((*it).first.first,
-                       (*it).first.second) = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].first,
+                       (*it).first.second) = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].min_,
                                                                      (*it).second);
   }
 
@@ -78,7 +78,7 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
   {
     m_augDataij.data_((*it).first.first,
                        (*it).first.second) = STK::Law::Uniform::rand((*it).second,
-                                                                     m_augDataij.dataRanges_[(*it).second].second);
+                                                                     m_augDataij.dataRanges_[(*it).second].max_);
   }
 }
 
@@ -91,8 +91,8 @@ void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
        it != m_augDataij.v_missing_.end();
        ++it)
   {
-    int nbModalities = m_augDataij.dataRanges_[(*it).second].second;
-    STK::Array2DVector<STK::Real> modalities(STK::Range(0, nbModalities), 1. / nbModalities);
+    int nbModalities = m_augDataij.dataRanges_[(*it).second].range_;
+    STK::Array2DVector<STK::Real> modalities(nbModalities, 1. / nbModalities);
     m_augDataij.data_((*it).first,
                        (*it).second) = STK::Law::Categorical::rand(modalities);
   }
@@ -102,9 +102,9 @@ void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
        it != m_augDataij.v_missingFiniteValues_.end();
        ++it)
   {
-    int nbModalities = m_augDataij.dataRanges_[(*it).first.second].second + 1;
+    int nbModalities = m_augDataij.dataRanges_[(*it).first.second].range_;
     STK::Real proba = 1. / (*it).second.size();
-    STK::Array2DVector<STK::Real> modalities(STK::Range(0, nbModalities), 0.);
+    STK::Array2DVector<STK::Real> modalities(nbModalities, 0.);
     for(std::vector<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2)
       modalities[*it2] = proba;
 

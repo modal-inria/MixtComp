@@ -42,7 +42,7 @@ class CategoricalSamplerIterator
   public:
     CategoricalSamplerIterator(const STK::Array2D<STK::Real>* p_param,
                                const STK::CArrayVector<int>* p_zi,
-                               const std::vector<std::pair<int, int> >& dataRange,
+                               const std::vector<Range<int> >& dataRange,
                                iv_missing missing,
                                iv_missing missingEnd,
                                iv_missingFiniteValues missingFiniteValues,
@@ -67,7 +67,7 @@ class CategoricalSamplerIterator
     /** Index of currently traversed vector in AugmentedData */
     int currVec_;
     /** Data ranges to compute modalities */
-    const std::vector<std::pair<int, int> >& dataRange_;
+    const std::vector<Range<int> >& dataRange_;
 };
 
 } // namespace mixt

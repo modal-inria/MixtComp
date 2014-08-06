@@ -33,7 +33,7 @@ namespace mixt
 
 CategoricalSamplerIterator::CategoricalSamplerIterator(const STK::Array2D<STK::Real>* p_param,
                                                        const STK::CArrayVector<int>* p_zi,
-                                                       const std::vector<std::pair<int, int> >& dataRange,
+                                                       const std::vector<Range<int> >& dataRange,
                                                        iv_missing missing,
                                                        iv_missing missingEnd,
                                                        iv_missingFiniteValues missingFiniteValues,
@@ -116,7 +116,8 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
     case 0: // missing
     {
       currPos = *iv_missing_;
-      int nbModalities = dataRange_[currPos.second].second + 1;
+      int minModality = dataRange_[currPos.second].min_;
+      int nbModalities = dataRange_[currPos.second].range_;
       int z_i = p_zi_->elt(currPos.first);
       STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range( z_i      * nbModalities,
                                                                         (z_i + 1) * nbModalities),
@@ -127,16 +128,16 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
       std::cout << "nbModalities: " << nbModalities << std::endl;
       std::cout << "Modalities: " << modalities;
 #endif
-      sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities;
+      sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities + minModality;
     }
     break;
 
     case 1: // missingFiniteValues
     {
       currPos = iv_missingFiniteValues_->first;
-      int nbModalities = dataRange_[currPos.second].second + 1;
+      int nbModalities = dataRange_[currPos.second].range_;
       int z_i = p_zi_->elt(currPos.first);
-      STK::Array2DVector<STK::Real> modalities(STK::Range(0, nbModalities), 0.);
+      STK::Array2DVector<STK::Real> modalities(nbModalities, 0.);
       for(std::vector<int>::const_iterator currMod = iv_missingFiniteValues_->second.begin();
           currMod != iv_missingFiniteValues_->second.end();
           ++currMod)

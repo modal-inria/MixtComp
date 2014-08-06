@@ -154,24 +154,29 @@ class MixtureBridge : public mixt::IMixture
      */
     void setData()
     {
+#ifdef MC_DEBUG
+        std::cout << "MixtureBridge::setData(), idName(): " << idName() << std::endl;
+#endif
       p_handler_->getData(idName(), m_augDataij_, nbVariable_ );
 
       // data range filling
       for (int currVar = 0; currVar < m_augDataij_.data_.sizeCols(); ++currVar)
       {
-        m_augDataij_.dataRanges_.push_back(std::pair<Type, Type>(STK::Stat::minSafe(m_augDataij_.data_.col(currVar)),
-                                                                 STK::Stat::maxSafe(m_augDataij_.data_.col(currVar))));
+        m_augDataij_.dataRanges_.push_back(Range<Type>(STK::Stat::minSafe(m_augDataij_.data_.col(currVar)),
+                                                       STK::Stat::maxSafe(m_augDataij_.data_.col(currVar))));
 #ifdef MC_DEBUG
-      std::cout << "min, " << m_augDataij_.dataRanges_.at(currVar).first << std::endl;
-      std::cout << "max, " << m_augDataij_.dataRanges_.at(currVar).second << std::endl;
+        std::cout << "\tcurrVar: " << currVar << std::endl
+                  << "\tm_augDataij_.data_" << m_augDataij_.data_ << std::endl
+                  << "\t\tmin: " << m_augDataij_.dataRanges_.at(currVar).min_ << std::endl
+                  << "\t\tmax, " << m_augDataij_.dataRanges_.at(currVar).max_ << std::endl;
 #endif
       }
       removeMissing(m_augDataij_);
 #ifdef MC_DEBUG
-      std::cout << "v_missing_.size(): " << m_augDataij_.v_missing_.size() << std::endl;
-      std::cout << "v_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl;
-      std::cout << "v_missingIntervals_.size(): " << m_augDataij_.v_missingIntervals_.size() << std::endl;
-      std::cout << "After removeMissing, " << idName() << std::endl;
+      std::cout << "\tv_missing_.size(): " << m_augDataij_.v_missing_.size() << std::endl;
+      std::cout << "\tv_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl;
+      std::cout << "\tv_missingIntervals_.size(): " << m_augDataij_.v_missingIntervals_.size() << std::endl;
+      std::cout << "\tAfter removeMissing, " << idName() << std::endl;
 //      std::cout << m_augDataij_.data_ << std::endl;
 #endif
       initializeMixture();

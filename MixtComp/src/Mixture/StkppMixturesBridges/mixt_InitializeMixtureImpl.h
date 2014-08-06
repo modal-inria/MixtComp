@@ -56,18 +56,19 @@ struct InitializeMixtureImpl<STK::Clust::Categorical_pjk_>
   {
     mixture.setData(augData.data_);
 
-    std::vector<std::pair<int, int> >::iterator it   (augData.dataRanges_.begin());
-    std::vector<std::pair<int, int> >::iterator itEnd(augData.dataRanges_.end  ());
+    // compute the global min and max for all variables in current mixture, as in CategoricalDataStat::setModalities()
+    std::vector<Range<int> >::iterator it   (augData.dataRanges_.begin());
+    std::vector<Range<int> >::iterator itEnd(augData.dataRanges_.end  ());
 
-    int min = it->first;
-    int max = it->second;
+    int min = it->min_;
+    int max = it->max_;
 
     ++it;
 
     for (; it != itEnd; ++it)
     {
-      int currMin = it->first;
-      int currMax = it->second;
+      int currMin = it->min_;
+      int currMax = it->max_;
       if (currMin < min) min = currMin;
       if (currMax > max) max = currMax;
     }

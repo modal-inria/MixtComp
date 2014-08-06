@@ -4,6 +4,7 @@ dataGenerator <- function()
   
   nbVariablesCat <- 6
   nbVariablesGauss <- 2
+  minModality <- 7
   nbModalities <- 3
   nbClasses <- 2
   
@@ -52,7 +53,8 @@ dataGenerator <- function()
                        nbModalities,
                        z,
                        categoricalParams,
-                       missingCategorical) 
+                       missingCategorical,
+                       minModality)
   gaussianGenerator(nbSamples,
                     nbVariablesGauss,
                     z,

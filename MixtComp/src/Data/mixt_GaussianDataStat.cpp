@@ -78,10 +78,10 @@ void GaussianDataStat::initialize()
                + pm_augDataij_->v_missingLUIntervals_.size()
                + pm_augDataij_->v_missingRUIntervals_.size();
   // second dimension corresponds to the couple (sample position, variables position)
-  posMissing_.resize(STK::Range(0, nbMissing_), 2);
+  posMissing_.resize(nbMissing_, 2);
   initPos();
   // second dimension corresponds to mean and variance
-  statMissing_.resize(STK::Range(0, nbMissing_), 2);
+  statMissing_.resize(nbMissing_, 2);
   statMissing_ = 0.;
 #ifdef MC_DEBUG
   std::cout << "GaussianDataStat, initializing statMissing_ and posMissing_" << std::endl;

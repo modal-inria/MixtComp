@@ -42,7 +42,7 @@ void CategoricalLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, 
   {
     for (int j = 0; j < presentData_.sizeCols(); ++j)
     {
-      int nbModalities = p_augData_->dataRanges_[j].second + 1;
+      int nbModalities = p_augData_->dataRanges_[j].range_;
 
       if (presentData_(i, j) != STK::Arithmetic<STK::Real>::NA())   // likelihood for present value
       {
@@ -61,7 +61,7 @@ void CategoricalLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, 
     int i = it->first.first;
     int j = it->first.second;
 
-    int nbModalities = p_augData_->dataRanges_[j].second + 1;
+    int nbModalities = p_augData_->dataRanges_[j].range_;
 
     STK::Real proba = 0.;
 

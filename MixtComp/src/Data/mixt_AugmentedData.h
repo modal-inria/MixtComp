@@ -32,6 +32,36 @@ namespace mixt
 {
 
 template <class DataType>
+struct Range
+{
+    Range(DataType min,
+          DataType max)
+    {
+      min_ = min;
+      max_ = max;
+      range_ = max - min;
+    }
+    DataType min_;
+    DataType max_;
+    DataType range_;
+};
+
+template <>
+struct Range<int>
+{
+    Range(int min,
+          int max)
+    {
+      min_ = min;
+      max_ = max;
+      range_ = max - min + 1;
+    }
+    int min_;
+    int max_;
+    int range_;
+};
+
+template <class DataType>
 struct AugmentedData
 {
   /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
@@ -41,7 +71,7 @@ struct AugmentedData
   /** combination of a sample number and a column number to identify a value */
   typedef std::pair<int, int> pos;
   /** available data ranges, one pair per data column */
-  std::vector<std::pair<Type, Type> > dataRanges_;
+  std::vector<Range<Type> > dataRanges_;
   /** vector of completely unknown values */
   std::vector<          pos                          > v_missing_;
   /** vector of values to be selected among a finite number of possibilities */

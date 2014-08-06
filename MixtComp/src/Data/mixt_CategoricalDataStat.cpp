@@ -60,11 +60,11 @@ void CategoricalDataStat::initialize()
   nbMissing_ =   pm_augDataij_->v_missing_.size()
                + pm_augDataij_->v_missingFiniteValues_.size();
   // second dimension corresponds to the couple (sample position, variable position)
-  posMissing_.resize(STK::Range(0, nbMissing_), 2);
+  posMissing_.resize(nbMissing_, 2);
   initPos();
   setModalities();
   // second dimension corresponds the modalities
-  statMissing_.resize(STK::Range(0, nbMissing_), nbModalities_);
+  statMissing_.resize(nbMissing_, nbModalities_);
   statMissing_ = 0.;
 #ifdef MC_DEBUG
   std::cout << "CategoricalDataStat, initializing statMissing_ and posMissing_" << std::endl;
@@ -77,26 +77,29 @@ void CategoricalDataStat::initialize()
 
 void CategoricalDataStat::setModalities()
 {
-  std::vector<std::pair<int, int> >::const_iterator it   (pm_augDataij_->dataRanges_.begin());
-  std::vector<std::pair<int, int> >::const_iterator itEnd(pm_augDataij_->dataRanges_.end  ());
+  std::vector<Range<int> >::const_iterator it   (pm_augDataij_->dataRanges_.begin());
+  std::vector<Range<int> >::const_iterator itEnd(pm_augDataij_->dataRanges_.end  ());
 
-  int min = it->first;
-  int max = it->second;
+  // compute global min and max, as in InitializeMixtureImpl<STK::Clust::Categorical_pjk_>
+  int min = it->min_;
+  int max = it->max_;
 
   ++it;
 
   for (; it != itEnd; ++it)
   {
-    int currMin = it->first;
-    int currMax = it->second;
+    int currMin = it->min_;
+    int currMax = it->max_;
     if (currMin < min) min = currMin;
     if (currMax > max) max = currMax;
   }
 
-  nbModalities_ = max + 1;
+  nbModalities_ = max - min + 1;
 #ifdef MC_DEBUG
-  std::cout << min << std::endl;
-  std::cout << max << std::endl;
+  std::cout << "CategoricalDataStat::setModalities(): " << std::endl
+            << "\tmin: " << min << std::endl
+            << "\tmax: " << max << std::endl
+            << "\tnbModalities_: " << nbModalities_ << std::endl;
 #endif
 }
 

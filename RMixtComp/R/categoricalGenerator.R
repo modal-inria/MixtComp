@@ -3,7 +3,8 @@ categoricalGenerator <- function(nbSamples,
                                  nbModalities,
                                  z,
                                  params,
-                                 missingParams)
+                                 missingParams,
+                                 minModality)
 {  
   compositeFile <- file(description = "categoricalData.csv",
                         open = "w",
@@ -57,7 +58,7 @@ categoricalGenerator <- function(nbSamples,
                                 1,
                                 params[(nbModalities * (z[i] - 1) + 1) :
                                        (nbModalities *  z[i]         ) , j])
-        vals[[j]] <- match(1, sampleVals) - 1
+        vals[[j]] <- match(1, sampleVals) + minModality - 1
       }
       else if (missType == 2) # completely missing
       {
@@ -66,7 +67,7 @@ categoricalGenerator <- function(nbSamples,
       else if (missType == 3) # missing finite value
       {
         nbSampleMod <- sample(nbModalities, 1) # number of modalities to be drawn
-        modalities <- sort(sample(0 : (nbModalities - 1), nbSampleMod)) # modalities drawn
+        modalities <- sort(sample(minModality : (nbModalities + minModality - 1), nbSampleMod)) # modalities drawn
         vals[[j]] <- paste("{",
                            paste(modalities,
                                  collapse = ","),
