@@ -91,10 +91,11 @@ void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
        it != m_augDataij.v_missing_.end();
        ++it)
   {
+    int firstModality = m_augDataij.dataRanges_[(*it).second].min_;
     int nbModalities = m_augDataij.dataRanges_[(*it).second].range_;
-    STK::Array2DVector<STK::Real> modalities(nbModalities, 1. / nbModalities);
+    STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality, nbModalities), 1. / nbModalities);
     m_augDataij.data_((*it).first,
-                       (*it).second) = STK::Law::Categorical::rand(modalities);
+                      (*it).second) = STK::Law::Categorical::rand(modalities);
   }
 
   // missing values {}
@@ -102,17 +103,26 @@ void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
        it != m_augDataij.v_missingFiniteValues_.end();
        ++it)
   {
+#ifdef MC_DEBUG
+    std::cout << "removeMissing, int, v_missingFiniteValues_" << std::endl;
+#endif
+    int firstModality = m_augDataij.dataRanges_[(*it).first.second].min_;
     int nbModalities = m_augDataij.dataRanges_[(*it).first.second].range_;
     STK::Real proba = 1. / (*it).second.size();
-    STK::Array2DVector<STK::Real> modalities(nbModalities, 0.);
+    STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality, nbModalities), 0.);
     for(std::vector<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2)
-      modalities[*it2] = proba;
+    {
+#ifdef MC_DEBUG
+      std::cout << "Filling: " << *it2
+                << " with: " << proba << std::endl;
+      modalities.elt(*it2) = proba;
+#endif
+    }
 
     int sampledValue = STK::Law::Categorical::rand(modalities);
     m_augDataij.data_((*it).first.first,
                       (*it).first.second) = sampledValue;
 #ifdef MC_DEBUG
-    std::cout << "removeMissing, int, v_missingFiniteValues_" << std::endl;
     std::cout << "pos: " << (*it).first.first << " " << (*it).first.second << std::endl;
     std::cout << "number of present values: " << (*it).second.size() << std::endl;
     std::cout << "nbModalities: " << nbModalities << std::endl;

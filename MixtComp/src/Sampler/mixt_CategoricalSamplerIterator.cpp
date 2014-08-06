@@ -119,14 +119,16 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
       int minModality = dataRange_[currPos.second].min_;
       int nbModalities = dataRange_[currPos.second].range_;
       int z_i = p_zi_->elt(currPos.first);
-      STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range( z_i      * nbModalities,
-                                                                        (z_i + 1) * nbModalities),
+      STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range(z_i * nbModalities,
+                                                                        nbModalities),
                                                              currPos.second);
 #ifdef MC_DEBUG
       std::cout << std::endl;
-      std::cout << "CategoricalSamplerIterator::operator*, missing" << std::endl;
-      std::cout << "nbModalities: " << nbModalities << std::endl;
-      std::cout << "Modalities: " << modalities;
+      std::cout << "CategoricalSamplerIterator::operator*, missing" << std::endl
+                << "\tsample: " << currPos.first << " var: " << currPos.second << std::endl
+                << "\tz_i: " << z_i << std::endl
+                << "\tnbModalities: " << nbModalities << std::endl
+                << "\tModalities: " << modalities;
 #endif
       sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities + minModality;
     }
@@ -135,9 +137,12 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
     case 1: // missingFiniteValues
     {
       currPos = iv_missingFiniteValues_->first;
+      int minModality = dataRange_[currPos.second].min_;
       int nbModalities = dataRange_[currPos.second].range_;
       int z_i = p_zi_->elt(currPos.first);
-      STK::Array2DVector<STK::Real> modalities(nbModalities, 0.);
+      STK::Array2DVector<STK::Real> modalities(STK::Range(minModality,
+                                                          nbModalities),
+                                               0.);
       for(std::vector<int>::const_iterator currMod = iv_missingFiniteValues_->second.begin();
           currMod != iv_missingFiniteValues_->second.end();
           ++currMod)
@@ -148,16 +153,18 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
       modalities = modalities / modalities.sum();
 #ifdef MC_DEBUG
       std::cout << std::endl;
-      std::cout << "CategoricalSamplerIterator::operator*, missingFiniteValues" << std::endl;
-      std::cout << "nbModalities: " << nbModalities << std::endl;
-      std::cout << "Modalities: " << modalities;
+      std::cout << "CategoricalSamplerIterator::operator*, missingFiniteValues" << std::endl
+                << "\tsample: " << currPos.first << " var: " << currPos.second << std::endl
+                << "\tz_i: " << z_i << std::endl
+                << "\tnbModalities: " << nbModalities << std::endl
+                << "\tModalities: " << modalities << std::endl;
 #endif
       sampleVal = STK::Law::Categorical::rand(modalities);
     }
     break;
   }
 #ifdef MC_DEBUG
-  std::cout << "Sampled Val: " << sampleVal << std::endl;
+  std::cout << "\tSampled Val: " << sampleVal << std::endl;
 #endif
   return RetValue(currPos, sampleVal);
 }

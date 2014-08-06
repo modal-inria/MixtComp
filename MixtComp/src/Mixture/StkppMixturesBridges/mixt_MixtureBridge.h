@@ -166,18 +166,19 @@ class MixtureBridge : public mixt::IMixture
                                                        STK::Stat::maxSafe(m_augDataij_.data_.col(currVar))));
 #ifdef MC_DEBUG
         std::cout << "\tcurrVar: " << currVar << std::endl
-                  << "\tm_augDataij_.data_" << m_augDataij_.data_ << std::endl
                   << "\t\tmin: " << m_augDataij_.dataRanges_.at(currVar).min_ << std::endl
-                  << "\t\tmax, " << m_augDataij_.dataRanges_.at(currVar).max_ << std::endl;
+                  << "\t\tmax, " << m_augDataij_.dataRanges_.at(currVar).max_ << std::endl
+                  << "m_augDataij_.data_ before removeMissing: " << std::endl
+                  << m_augDataij_.data_ << std::endl;
 #endif
       }
       removeMissing(m_augDataij_);
 #ifdef MC_DEBUG
-      std::cout << "\tv_missing_.size(): " << m_augDataij_.v_missing_.size() << std::endl;
-      std::cout << "\tv_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl;
-      std::cout << "\tv_missingIntervals_.size(): " << m_augDataij_.v_missingIntervals_.size() << std::endl;
-      std::cout << "\tAfter removeMissing, " << idName() << std::endl;
-//      std::cout << m_augDataij_.data_ << std::endl;
+      std::cout << "\tv_missing_.size(): " << m_augDataij_.v_missing_.size() << std::endl
+                << "\tv_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl
+                << "\tv_missingIntervals_.size(): " << m_augDataij_.v_missingIntervals_.size() << std::endl
+                << "m_augDataij_.data_ after removeMissing: " << std::endl
+                << m_augDataij_.data_ << std::endl;
 #endif
       initializeMixture();
     }

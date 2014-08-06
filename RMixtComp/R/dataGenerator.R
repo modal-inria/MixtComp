@@ -4,7 +4,7 @@ dataGenerator <- function()
   
   nbVariablesCat <- 6
   nbVariablesGauss <- 2
-  minModality <- 7
+  minModality <- 1
   nbModalities <- 3
   nbClasses <- 2
   
