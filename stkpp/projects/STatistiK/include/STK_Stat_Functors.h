@@ -59,7 +59,7 @@ struct MinOp
      **/
     Type const operator()() const
     {
-      Type min  = Arithmetic<Type>::infinity();
+      Type min  = Arithmetic<Type>::max();
       for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
       { min = std::min(min, V_[i]);}
       return min;
@@ -72,7 +72,7 @@ struct MinOp
     Type const operator()( ExprBase<Weights> const&  w) const
     {
       STK_STATICASSERT_ONE_DIMENSION_ONLY(Weights);
-      Type min  = Arithmetic<Type>::infinity();
+      Type min  = Arithmetic<Type>::max();
       for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
       { min = std::min(min, w[i]*V_[i]);}
       return min;
@@ -94,7 +94,7 @@ struct MinSafeOp
     /**  @return the safely computed minimal value of the variable V */
     Type const operator()() const
     {
-      Type min  = Arithmetic<Type>::infinity();
+      Type min  = Arithmetic<Type>::max();
       for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
       { if (!Arithmetic<Type>::isNA(V_[i])) min = std::min(min, V_[i]);}
       return min;
@@ -106,7 +106,7 @@ struct MinSafeOp
     Type const operator()( ExprBase<Weights> const&  w) const
     {
       STK_STATICASSERT_ONE_DIMENSION_ONLY(Weights);
-      Type min  = Arithmetic<Type>::infinity();
+      Type min  = Arithmetic<Type>::max();
       for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
       { if (!Arithmetic<Type>::isNA(V_[i])) min = std::min(min, w[i]*V_[i]);}
       return min;
@@ -130,7 +130,7 @@ struct MaxOp
      **/
     Type const operator()() const
     {
-      Type max  = -Arithmetic<Type>::infinity();
+      Type max  = -Arithmetic<Type>::max();
       for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
       { max = std::max(max, V_[i]);}
       return max;
@@ -143,7 +143,7 @@ struct MaxOp
     Type const operator()( ExprBase<Weights> const&  w) const
     {
       STK_STATICASSERT_ONE_DIMENSION_ONLY(Weights);
-      Type max  = -Arithmetic<Type>::infinity();
+      Type max  = -Arithmetic<Type>::max();
       for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
       { max = std::max(max, w[i]*V_[i]);}
       return max;
@@ -165,7 +165,7 @@ struct MaxSafeOp
     /** @return the safely computed maximal value of the variable V */
     Type const operator()() const
     {
-      Type max  = -Arithmetic<Type>::infinity();
+      Type max  = -Arithmetic<Type>::max();
       for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
       { if (!Arithmetic<Type>::isNA(V_[i])) max = std::max(max, V_[i]);}
       return max;
@@ -177,7 +177,7 @@ struct MaxSafeOp
     Type const operator()( ExprBase<Weights> const&  w) const
     {
       STK_STATICASSERT_ONE_DIMENSION_ONLY(Weights);
-      Type max  = -Arithmetic<Type>::infinity();
+      Type max  = -Arithmetic<Type>::max();
       for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
       { if (!Arithmetic<Type>::isNA(V_[i])) max = std::max(max, w[i]*V_[i]);}
       return max;
