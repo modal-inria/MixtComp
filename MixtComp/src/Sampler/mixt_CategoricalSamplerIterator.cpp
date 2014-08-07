@@ -27,6 +27,7 @@
 
 #include "STatistiK/include/STK_Law_Categorical.h"
 #include "mixt_CategoricalSamplerIterator.h"
+#include "../Various/mixt_Constants.h"
 
 namespace mixt
 {
@@ -143,23 +144,44 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
       STK::Array2DVector<STK::Real> modalities(STK::Range(minModality,
                                                           nbModalities),
                                                0.);
+      STK::Array2DVector<STK::Real> equiModalities(STK::Range(minModality,
+                                                              nbModalities),
+                                                   0.);
       for(std::vector<int>::const_iterator currMod = iv_missingFiniteValues_->second.begin();
           currMod != iv_missingFiniteValues_->second.end();
           ++currMod)
       {
         modalities.elt(*currMod) = (*p_param_)(z_i * nbModalities + *currMod,
                                                currPos.second);
+        equiModalities.elt(*currMod) = 1.;
       }
-      modalities = modalities / modalities.sum();
+      STK::Real modSum = modalities.sum();
+      if (modSum < minStat)
+      {
+        equiModalities = equiModalities / equiModalities.sum();
+        sampleVal = STK::Law::Categorical::rand(equiModalities);
 #ifdef MC_DEBUG
       std::cout << std::endl;
       std::cout << "CategoricalSamplerIterator::operator*, missingFiniteValues" << std::endl
                 << "\tsample: " << currPos.first << " var: " << currPos.second << std::endl
                 << "\tz_i: " << z_i << std::endl
                 << "\tnbModalities: " << nbModalities << std::endl
-                << "\tModalities: " << modalities << std::endl;
+                << "\tequiModalities: " << equiModalities << std::endl;
 #endif
-      sampleVal = STK::Law::Categorical::rand(modalities);
+      }
+      else
+      {
+        modalities = modalities / modalities.sum();
+        sampleVal = STK::Law::Categorical::rand(modalities);
+#ifdef MC_DEBUG
+      std::cout << std::endl;
+      std::cout << "CategoricalSamplerIterator::operator*, missingFiniteValues" << std::endl
+                << "\tsample: " << currPos.first << " var: " << currPos.second << std::endl
+                << "\tz_i: " << z_i << std::endl
+                << "\tnbModalities: " << nbModalities << std::endl
+                << "\tmodalities: " << modalities << std::endl;
+#endif
+      }
     }
     break;
   }

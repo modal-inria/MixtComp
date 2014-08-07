@@ -111,11 +111,15 @@ void CategoricalDataStat::sampleVals()
     int var = posMissing_(currVal, 1);
 #ifdef MC_DEBUG
 //    std::cout << statMissing_ << std::endl;
-    std::cout << "CategoricalDataStat::sampleVals, sample: " << sample << " var: " << var << std::endl;
-    std::cout << "line: " << currVal << ", modality: " << pm_augDataij_->data_(sample, var) << std::endl;
+    std::cout << "CategoricalDataStat::sampleVals" << std::endl
+              << "\tsample: " << sample << std::endl
+              << "\tvar: " << var << std::endl
+              << "\tmodality: " << pm_augDataij_->data_(sample, var) << std::endl;
 #endif
-    statMissing_(currVal, pm_augDataij_->data_(sample,
-                                               var)) += 1.;
+    statMissing_(currVal,
+                 pm_augDataij_->data_(sample,
+                                      var)
+                                - pm_augDataij_->dataRanges_[var].min_) += 1.;
   }
 
   ++nbIter_;
