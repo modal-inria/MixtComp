@@ -46,9 +46,18 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
        it != m_augDataij.v_missing_.end();
        ++it)
   {
+    STK::Real sampleVal = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].min_,
+                                                  m_augDataij.dataRanges_[(*it).second].max_);
     m_augDataij.data_((*it).first,
-                       (*it).second) = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].min_,
-                                                               m_augDataij.dataRanges_[(*it).second].max_);
+                       (*it).second) = sampleVal;
+#ifdef MC_DEBUG
+    std::cout << std::endl;
+    std::cout << "\tsample: " << (*it).first << std::endl;
+    std::cout << "\tvar: " << (*it).second << std::endl;
+    std::cout << "\tMissing type: [-inf,+inf]" << std::endl;
+    std::cout << "\t[" << m_augDataij.dataRanges_[(*it).second].min_ << ":" << m_augDataij.dataRanges_[(*it).second].max_ << "]" << std::endl;
+    std::cout << "\tsampleVal: " << sampleVal <<std::endl;
+#endif
   }
 
   // missing values [a,b]
@@ -56,9 +65,18 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
        it != m_augDataij.v_missingIntervals_.end();
        ++it)
   {
+    STK::Real sampleVal = STK::Law::Uniform::rand((*it).second.first,
+                                                  (*it).second.second);
     m_augDataij.data_((*it).first.first,
-                       (*it).first.second) = STK::Law::Uniform::rand((*it).second.first,
-                                                                     (*it).second.second);
+                       (*it).first.second) = sampleVal;
+#ifdef MC_DEBUG
+    std::cout << std::endl;
+    std::cout << "\tsample: " << (*it).first.first << std::endl;
+    std::cout << "\tvar: " << (*it).first.second << std::endl;
+    std::cout << "\tMissing type: [a,b]" << std::endl;
+    std::cout << "\t[" << (*it).second.first << ":" << (*it).second.second << "]" << std::endl;
+    std::cout << "\tsampleVal: " << sampleVal <<std::endl;
+#endif
   }
 
   // missing values [-inf,b]
@@ -66,9 +84,18 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
        it != m_augDataij.v_missingLUIntervals_.end();
        ++it)
   {
+    STK::Real sampleVal = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).first.second].min_,
+                                                  (*it).second);
     m_augDataij.data_((*it).first.first,
-                       (*it).first.second) = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].min_,
-                                                                     (*it).second);
+                      (*it).first.second) = sampleVal;
+#ifdef MC_DEBUG
+    std::cout << std::endl;
+    std::cout << "\tsample: " << (*it).first.first << std::endl;
+    std::cout << "\tvar: " << (*it).first.second << std::endl;
+    std::cout << "\tMissing type: [-inf,b]" << std::endl;
+    std::cout << "\t[" << m_augDataij.dataRanges_[(*it).first.second].min_ << ":" << (*it).second << "]" << std::endl;
+    std::cout << "\tsampleVal: " << sampleVal <<std::endl;
+#endif
   }
 
   // missing values [a,+inf]
@@ -76,9 +103,18 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
        it != m_augDataij.v_missingRUIntervals_.end();
        ++it)
   {
+    STK::Real sampleVal = STK::Law::Uniform::rand((*it).second,
+                                                  m_augDataij.dataRanges_[(*it).first.second].max_);
     m_augDataij.data_((*it).first.first,
-                       (*it).first.second) = STK::Law::Uniform::rand((*it).second,
-                                                                     m_augDataij.dataRanges_[(*it).second].max_);
+                      (*it).first.second) = sampleVal;
+#ifdef MC_DEBUG
+    std::cout << std::endl;
+    std::cout << "\tsample: " << (*it).first.first << std::endl;
+    std::cout << "\tvar: " << (*it).first.second << std::endl;
+    std::cout << "\tMissing type: [a,+inf]" << std::endl;
+    std::cout << "\t[" << (*it).second << ":" << m_augDataij.dataRanges_[(*it).first.second].max_ << "]" << std::endl;
+    std::cout << "\tsampleVal: " << sampleVal <<std::endl;
+#endif
   }
 }
 
