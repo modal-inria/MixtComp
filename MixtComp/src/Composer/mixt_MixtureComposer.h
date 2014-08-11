@@ -115,13 +115,14 @@ class MixtureComposer : public STK::IMixtureComposerBase
     virtual void storeIntermediateResults(int iteration);
     /** @brief This step can be used to signal to the mixtures that they
      * must store data. This is usually called after the long algo, to
-     * store data generated using the estimated parameters
+     * store data generated using the estimated parameters during a Gibbs sampling
      */
     virtual void storeData();
 
-    /**@brief This step can be used to ask each mixture to export its data
+    /**@brief This step can be used to ask each mixture to export its model parameters
+     * and data
      **/
-    virtual void exportVals() const;
+    virtual void exportDataParam() const;
 
     /**@brief This step can be used by developer to finalize any thing. It will
      *  be called only once after we finish running the estimation algorithm.

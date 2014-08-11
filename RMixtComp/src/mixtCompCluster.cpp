@@ -23,16 +23,19 @@
 
 #include "mixt_DataHandlerR.h"
 #include "mixt_DataExtractorR.h"
+#include "mixt_ParamExtractorR.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 
 // [[Rcpp::export]]
-Rcpp::List mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters)
+Rcpp::List mixtCompCluster(Rcpp::List rList,
+                           Rcpp::S4 mcClusters,
+                           int nbClusters)
 {  
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
   Rcpp::S4 mcResults = mcClusters.slot("results");
   
-  // map the data structure
+  // create the data handler
   mixt::DataHandlerR handler;
   handler.readDataFromRList(rList);
   handler.writeInfo(std::cout);
@@ -41,11 +44,20 @@ Rcpp::List mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters
   // create the data extractor
   mixt::DataExtractorR dataExtractor;
 
+  // create the parameters extractor
+  mixt::ParamExtractorR paramExtractor;
+
   // create the mixture manager
-  mixt::MixtureManager<mixt::DataHandlerR, mixt::DataExtractorR> manager(&handler, &dataExtractor);
+  mixt::MixtureManager<mixt::DataHandlerR,
+                       mixt::DataExtractorR,
+                       mixt::ParamExtractorR> manager(&handler,
+                                                      &dataExtractor,
+                                                      &paramExtractor);
 
   // prepare the composer
-  mixt::MixtureComposer composer(handler.nbSample(), handler.nbVariable(), nbClusters);
+  mixt::MixtureComposer composer(handler.nbSample(),
+                                 handler.nbVariable(),
+                                 nbClusters);
   mixt::MixtureComposer* p_composer(&composer);
   composer.createMixtures(manager);
   
@@ -78,7 +90,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters
     mcResults.slot("runOK") = false;
 
   composer.writeParameters(std::cout);
-  composer.exportVals();
+  composer.exportDataParam();
 
   // export the composer results to R through modifications of mcResults
   mcResults.slot("nbCluster") = nbClusters;
@@ -100,5 +112,9 @@ Rcpp::List mixtCompCluster(Rcpp::List rList, Rcpp::S4 mcClusters, int nbClusters
       proba(iR, kR) = composer.p_tik()->elt(iS, kS);
   mcResults.slot("proba") = proba;
 
-  return dataExtractor.rcppReturnVals();
+  Rcpp::List data = dataExtractor.rcppReturnVal();
+  Rcpp::List param = paramExtractor.rcppReturnParam();
+
+  return Rcpp::List::create(Rcpp::Named("data") = data,
+                            Rcpp::Named("param") = param);
 }

@@ -31,7 +31,9 @@
 namespace mixt
 {
 
-template<typename DataHandler, typename DataExtractor>
+template<typename DataHandler,
+         typename DataExtractor,
+         typename ParamExtractor>
 class MixtureManager
 {
   public:
@@ -39,9 +41,12 @@ class MixtureManager
     typedef std::vector<mixt::IMixture*>::const_iterator ConstMixtIterator;
     typedef std::vector<mixt::IMixture*>::iterator MixtIterator;
 
-    MixtureManager(const DataHandler* handler, DataExtractor* extractor) :
+    MixtureManager(const DataHandler* handler,
+                   DataExtractor* p_dataExtractor,
+                   ParamExtractor* p_paramExtractor) :
       p_handler_(handler),
-      p_extractor_(extractor)
+      p_dataExtractor_(p_dataExtractor),
+      p_paramExtractor_(p_paramExtractor)
     {}
 
     void createMixtures(mixt::MixtureComposer& composer, int nbCluster)
@@ -71,7 +76,15 @@ class MixtureManager
       {
         case STK::Clust::Gaussian_sjk_:
         {
-          typename GaussianBridge_sjk_m<DataHandler, DataExtractor>::type* p_bridge = new typename GaussianBridge_sjk_m<DataHandler, DataExtractor>::type(idName, nbCluster, p_handler_, p_extractor_);
+          typename GaussianBridge_sjk_m<DataHandler,
+                                        DataExtractor,
+                                        ParamExtractor>::type* p_bridge = new typename GaussianBridge_sjk_m<DataHandler,
+                                                                                                            DataExtractor,
+                                                                                                            ParamExtractor>::type(idName,
+                                                                                                                                  nbCluster,
+                                                                                                                                  p_handler_,
+                                                                                                                                  p_dataExtractor_,
+                                                                                                                                  p_paramExtractor_);
           p_bridge->setData();
           return p_bridge;
         }
@@ -79,7 +92,15 @@ class MixtureManager
 
         case STK::Clust::Categorical_pjk_:
         {
-          typename CategoricalBridge_pjk_m<DataHandler, DataExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataHandler, DataExtractor>::type(idName, nbCluster, p_handler_, p_extractor_);
+          typename CategoricalBridge_pjk_m<DataHandler,
+                                           DataExtractor,
+                                           ParamExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataHandler,
+                                                                                                                  DataExtractor,
+                                                                                                                  ParamExtractor>::type(idName,
+                                                                                                                                        nbCluster,
+                                                                                                                                        p_handler_,
+                                                                                                                                        p_dataExtractor_,
+                                                                                                                                        p_paramExtractor_);
           p_bridge->setData();
           return p_bridge;
         }
@@ -97,7 +118,10 @@ class MixtureManager
     const DataHandler* p_handler_;
 
     /** pointer to the dataExtractor */
-    DataExtractor* p_extractor_;
+    DataExtractor* p_dataExtractor_;
+
+    /** pointer to the parameter extractor */
+    ParamExtractor* p_paramExtractor_;
 };
 
 } // namespace mixt

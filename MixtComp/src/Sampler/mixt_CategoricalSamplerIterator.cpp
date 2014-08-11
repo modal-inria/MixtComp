@@ -109,7 +109,10 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
   pos currPos(std::pair<int, int>(0, 0));
 
 #ifdef MC_DEBUG
-  std::cout << "p_zi_: " << p_zi_ << std::endl;
+  std::cout << std::endl;
+  std::cout << "CategoricalSamplerIterator::operator*" << std::endl;
+  std::cout << "\tp_zi_: " << p_zi_ << std::endl;
+  std::cout << "\tp_zi_->sizeRows()" << p_zi_->sizeRows() << std::endl;
 #endif
 
   switch(currVec_)
@@ -166,7 +169,7 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
                 << "\tsample: " << currPos.first << " var: " << currPos.second << std::endl
                 << "\tz_i: " << z_i << std::endl
                 << "\tnbModalities: " << nbModalities << std::endl
-                << "\tequiModalities: " << equiModalities << std::endl;
+                << "\tequiModalities: " << equiModalities;
 #endif
       }
       else
@@ -179,7 +182,7 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
                 << "\tsample: " << currPos.first << " var: " << currPos.second << std::endl
                 << "\tz_i: " << z_i << std::endl
                 << "\tnbModalities: " << nbModalities << std::endl
-                << "\tmodalities: " << modalities << std::endl;
+                << "\tmodalities: " << modalities;
 #endif
       }
     }

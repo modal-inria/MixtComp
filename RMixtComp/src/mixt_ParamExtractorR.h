@@ -17,12 +17,12 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: July 7, 2014
+ *  Created on: August 07, 2014
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_DATAEXTRACTOR_H
-#define MIXT_DATAEXTRACTOR_H
+#ifndef MIXT_PARAMEXTRACTOR_H
+#define MIXT_PARAMEXTRACTOR_H
 
 #include "Arrays/include/STK_Array2D.h"
 #include "Rcpp.h"
@@ -30,22 +30,16 @@
 namespace mixt
 {
 
-class DataExtractorR
+class ParamExtractorR
 {
   public:
-    DataExtractorR();
-    ~DataExtractorR();
-    void exportVals(std::string idName,
-                    const STK::Array2D<STK::Real>* p_data,
-                    const STK::Array2D<int>* p_posMissing,
-                    const STK::Array2D<STK::Real>* p_statMissing);
-    void exportVals(std::string idName,
-                    const STK::Array2D<int>* p_data,
-                    const STK::Array2D<int>* p_posMissing,
-                    const STK::Array2D<STK::Real>* p_statMissing);
-    Rcpp::List rcppReturnVal() const;
+    ParamExtractorR();
+    ~ParamExtractorR();
+    void exportParam(std::string idName,
+                     const STK::Array2D<STK::Real>* p_params);
+    Rcpp::List rcppReturnParam() const;
   private:
-    Rcpp::List data_;
+    Rcpp::List param_;
 };
 
 } // namespace mixt

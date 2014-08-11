@@ -147,7 +147,7 @@ class IMixture
 
     /** This function can be used to write export data
      */
-    virtual void exportVals() const = 0;
+    virtual void exportDataParam() const = 0;
 
   protected:
     /** This function can be used in derived classes to get number of samples.

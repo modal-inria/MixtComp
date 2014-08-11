@@ -134,36 +134,35 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
   STK::Real mean, sd, z;
   pos currPos(std::pair<int, int>(0, 0));
 
-
 #ifdef MC_DEBUG
+  std::cout << std::endl;
   std::cout << "GaussianSamplerIterator::operator*" << std::endl;
-  std::cout << "p_zi_: " << p_zi_ << std::endl;
+  std::cout << "\tp_zi_: " << p_zi_ << std::endl;
+  std::cout << "\tp_zi_->sizeRows()" << p_zi_->sizeRows() << std::endl;
 #endif
-
-
 
   switch(currVec_)
   {
     case 0: // missing
     {
-      currPos = *iv_missing_;
 #ifdef MC_DEBUG
-      std::cout << "*iv_missing_" << std::endl;
-      std::cout << "currPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
+      std::cout << "\t*iv_missing_" << std::endl;
+      std::cout  << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
+      std::cout  << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl;
 #endif
+      currPos = *iv_missing_;
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
       sd    = p_param_->elt(2*p_zi_->elt(currPos.first) + 1, currPos.second);
       z = STK::Law::Normal::rand(0., 1.);
+#ifdef MC_DEBUG
+      std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
+#endif
     }
     break;
 
     case 1: // missingIntervals
     {
       currPos = iv_missingIntervals_->first;
-#ifdef MC_DEBUG
-      std::cout << "*iv_missingIntervals_" << std::endl;
-      std::cout << "currPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
-#endif
       STK::Real infBound(iv_missingIntervals_->second.first);
       STK::Real supBound(iv_missingIntervals_->second.second);
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
@@ -184,44 +183,56 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
       {
         z = lrbSampler(lower, upper);
       }
+#ifdef MC_DEBUG
+      std::cout << "\t*iv_missingIntervals_" << std::endl
+                << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl
+                << "\tinfBound: " << infBound << ", supBound: " << supBound << std::endl
+                << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl
+                << "\tmean: " << mean << ", sd: " << sd << std::endl;
+#endif
     }
     break;
 
     case 2: // missingLUIntervals
     {
       currPos = iv_missingLUIntervals_->first;
-#ifdef MC_DEBUG
-      std::cout << "*iv_missingLUIntervals_" << std::endl;
-      std::cout << "currPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
-#endif
       STK::Real supBound(iv_missingLUIntervals_->second);
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
       sd    = p_param_->elt(2*p_zi_->elt(currPos.first) + 1, currPos.second);
       STK::Real upper = (supBound - mean) / sd;
       STK::Real alpha = (upper + sqrt(pow(upper, 2) + 4.))/2.;
-
       z = -luSampler(-upper, alpha);
+#ifdef MC_DEBUG
+      std::cout << "\t*iv_missingLUIntervals_" << std::endl
+                << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl
+                << "\tsupBound: " << supBound << std::endl
+                << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl
+                << "\tmean: " << mean << ", sd: " << sd << std::endl;
+#endif
     }
     break;
 
     case 3: // missingRUIntervals
     {
       currPos = iv_missingRUIntervals_->first;
-#ifdef MC_DEBUG
-      std::cout << "*iv_missingRUIntervals_" << std::endl;
-      std::cout << "currPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
-#endif
       STK::Real infBound(iv_missingRUIntervals_->second);
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
       sd    = p_param_->elt(2*p_zi_->elt(currPos.first) + 1, currPos.second);
       STK::Real lower = (infBound - mean) / sd;
       STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
       z = luSampler(lower, alpha);
+#ifdef MC_DEBUG
+      std::cout << "\t*iv_missingRUIntervals_" << std::endl
+                << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl
+                << "\tinfBound: " << infBound << std::endl
+                << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl
+                << "\tmean: " << mean << ", sd: " << sd << std::endl;
+#endif
     }
     break;
   }
 #ifdef MC_DEBUG
-  std::cout << z * sd + mean << std::endl;
+  std::cout << "\tsampled value: " << z * sd + mean << std::endl;
 #endif
   return RetValue(currPos, z * sd + mean);
 }

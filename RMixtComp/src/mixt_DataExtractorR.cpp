@@ -58,7 +58,7 @@ void DataExtractorR::exportVals(std::string idName,
     }
   }
 
-  data_[idName] = Rcpp::List::create(Rcpp::Named("data") = dataR,
+  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
                                      Rcpp::Named("posMissing") = posMissingR,
                                      Rcpp::Named("statMissing") = statMissingR);
 
@@ -102,7 +102,7 @@ void DataExtractorR::exportVals(std::string idName,
     }
   }
 
-  data_[idName] = Rcpp::List::create(Rcpp::Named("data") = dataR,
+  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
                                      Rcpp::Named("posMissing") = posMissingR,
                                      Rcpp::Named("statMissing") = statMissingR);
 #ifdef MC_DEBUG
@@ -110,9 +110,9 @@ void DataExtractorR::exportVals(std::string idName,
 #endif
 }
 
-Rcpp::List DataExtractorR::rcppReturnVals() const
+Rcpp::List DataExtractorR::rcppReturnVal() const
 {
-  return Rcpp::wrap(data_);
+  return data_;
 }
 
 } // namespace mixt

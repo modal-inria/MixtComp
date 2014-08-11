@@ -68,10 +68,10 @@ void CategoricalDataStat::initialize()
   statMissing_ = 0.;
 #ifdef MC_DEBUG
   std::cout << "CategoricalDataStat, initializing statMissing_ and posMissing_" << std::endl;
-  std::cout << "statMissing_" <<  std::endl;
-//  std::cout << statMissing_ << std::endl;
+/*  std::cout << "statMissing_" <<  std::endl;
+  std::cout << statMissing_ << std::endl;
   std::cout << "posMissing_" <<  std::endl;
-//  std::cout << posMissing_ << std::endl;
+  std::cout << posMissing_ << std::endl; */
 #endif
 }
 
@@ -129,6 +129,13 @@ void CategoricalDataStat::exportVals(STK::Array2D<int>& posMissing, STK::Array2D
 {
   posMissing = posMissing_;
   statMissing = statMissing_ / STK::Real(nbIter_); // probability of each modality
+#ifdef MC_DEBUG
+  std::cout << "CategoricalDataStat::exportVals, nbIter_: " << nbIter_ << std::endl;
+  std::cout << "\tposMissing: " << std::endl;
+  std::cout << posMissing << std::endl;
+  std::cout << "\tstatMissing: " << std::endl;
+  std::cout << statMissing << std::endl;
+#endif
 }
 
 } // namespace mixt

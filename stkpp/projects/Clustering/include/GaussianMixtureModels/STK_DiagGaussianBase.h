@@ -147,6 +147,12 @@ void DiagGaussianBase<Derived>::initialMean()
   {
     ColVector tik(p_tik()->col(k), true); // create a reference
     p_param(k)->mean_ = Stat::mean(*p_data(), p_tik()->col(k));
+#ifdef MC_DEBUG
+    std::cout << "DiagGaussianBase<Derived>::initialMean()" << std::endl;
+    std::cout << "\tk: " << k << std::endl;
+    std::cout << "\tp_param(k)->mean_.nbAvailableValues(): " << p_param(k)->mean_.nbAvailableValues() << std::endl;
+    std::cout << "\tp_param(k)->mean_.size(): " << p_param(k)->mean_.size() << std::endl;
+#endif
     if (p_param(k)->mean_.nbAvailableValues() != p_param(k)->mean_.size()) throw Clust::initializeStepFail_;
   }
 }

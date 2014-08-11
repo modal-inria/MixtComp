@@ -25,6 +25,7 @@
 #include "mixt_MixtureComposer.h"
 #include "../Mixture/mixt_IMixture.h"
 #include "Arrays/include/STK_Display.h"
+#include "Clustering/include/STK_Clust_Util.h"
 
 namespace mixt
 {
@@ -119,7 +120,7 @@ void MixtureComposer::writeParameters(std::ostream& os) const
 void MixtureComposer::initializeStep()
 {
   if (v_mixtures_.size() == 0)
-    STKRUNTIME_ERROR_NO_ARG(MixtureComposer::initializeStep,no mixture have been registered);
+    std::cout << "MixtureComposer::initializeStep, no mixture have been registered" << std::endl;
   // compute number of free parameters
   setNbFreeParameter(computeNbFreeParameters());
   // compute proportions
@@ -131,8 +132,18 @@ void MixtureComposer::initializeStep()
   {
 #ifdef MC_DEBUG
     std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
+    try
+    {
 #endif
-    (*it)->initializeStep();
+      (*it)->initializeStep();
+#ifdef MC_DEBUG
+    }
+    catch (STK::Clust::exceptions exception)
+    {
+      if (exception == STK::Clust::initializeStepFail_)
+        std::cout << "STK mixture initialization failed" << std::endl;
+    }
+#endif
   }
   setState(STK::Clust::modelInitialized_);
 }
@@ -184,11 +195,11 @@ void MixtureComposer::storeData()
   }
 }
 
-void MixtureComposer::exportVals() const
+void MixtureComposer::exportDataParam() const
 {
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->exportVals();
+    (*it)->exportDataParam();
   }
 }
 

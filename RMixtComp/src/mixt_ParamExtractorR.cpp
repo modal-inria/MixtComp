@@ -21,33 +21,36 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_DATAEXTRACTOR_H
-#define MIXT_DATAEXTRACTOR_H
-
-#include "Arrays/include/STK_Array2D.h"
-#include "Rcpp.h"
+#include "mixt_ParamExtractorR.h"
 
 namespace mixt
 {
 
-class DataExtractorR
+ParamExtractorR::ParamExtractorR()
+{}
+
+ParamExtractorR::~ParamExtractorR()
+{}
+
+void ParamExtractorR::exportParam(std::string idName,
+                                  const STK::Array2D<STK::Real>* p_param)
 {
-  public:
-    DataExtractorR();
-    ~DataExtractorR();
-    void exportVals(std::string idName,
-                    const STK::Array2D<STK::Real>* p_data,
-                    const STK::Array2D<int>* p_posMissing,
-                    const STK::Array2D<STK::Real>* p_statMissing);
-    void exportVals(std::string idName,
-                    const STK::Array2D<int>* p_data,
-                    const STK::Array2D<int>* p_posMissing,
-                    const STK::Array2D<STK::Real>* p_statMissing);
-    Rcpp::List rcppReturnVal() const;
-  private:
-    Rcpp::List data_;
-};
+  Rcpp::NumericMatrix paramR(p_param->sizeRows(), p_param->sizeCols());
+
+  for (int i = 0; i < p_param->sizeRows(); ++i)
+    for (int j = 0; j < p_param->sizeCols(); ++j)
+      paramR(i, j) = p_param->elt(i, j);
+
+  param_[idName] = Rcpp::List::create(Rcpp::Named("param") = paramR);
+
+#ifdef MC_DEBUG
+  std::cout << "ParamExtractorR::exportVals, data_.size():  " << param_.size() << std::endl;
+#endif
+}
+
+Rcpp::List ParamExtractorR::rcppReturnParam() const
+{
+  return param_;
+}
 
 } // namespace mixt
-
-#endif // MIXT_DATAEXTRACTOR_H

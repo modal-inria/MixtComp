@@ -6,26 +6,36 @@ testGenData <- function()
   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
                 c("categoricalData.csv", "categoricalDescriptor.csv"))
   
-mcCluster <- getMixtCompCluster(2, # nbTrialInInit
-                                20, # nbBurnInIter
-                                100, # nbIter
-                                20, # nbGibbsBurnInIter
-                                100) # nbGibbsIter
-data <- mixtCompCluster(lm, mcCluster, 2)
-return(list(mcCluster, data))
+  mcCluster <- getMixtCompCluster(2, # nbTrialInInit
+                                  20, # nbBurnInIter
+                                  100, # nbIter
+                                  20, # nbGibbsBurnInIter
+                                  100) # nbGibbsIter
+  data <- list()
+  param <- list()
+  dataParam <- mixtCompCluster(lm,
+                               mcCluster,
+                               2)
+  return(list(mcCluster,
+              dataParam))
 }
 
 testRMC <- function (){
   lm <- getData(c("data/gaussianData.csv", "data/gaussianDescriptor.csv"),
                 c("data/categoricalData.csv", "data/categoricalDescriptor.csv"))
 #  lm <- getData(c("data/gaussianData.csv", "data/gaussianDescriptor.csv"))
-#   lm <- getData(c("data/categoricalData.csv", "data/categoricalDescriptor.csv"))
+#  lm <- getData(c("data/categoricalData.csv", "data/categoricalDescriptor.csv"))
 
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
                                   20, # nbBurnInIter
                                   100, # nbIter
                                   20, # nbGibbsBurnInIter
                                   100) # nbGibbsIter
-  data <- mixtCompCluster(lm, mcCluster, 2)
-  return(list(mcCluster, data))
+  data <- list()
+  param <- list()
+  dataParam <- mixtCompCluster(lm,
+                               mcCluster,
+                               2)
+  return(list(mcCluster,
+              dataParam))
 }

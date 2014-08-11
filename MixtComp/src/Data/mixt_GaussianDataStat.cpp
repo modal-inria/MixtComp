@@ -85,10 +85,10 @@ void GaussianDataStat::initialize()
   statMissing_ = 0.;
 #ifdef MC_DEBUG
   std::cout << "GaussianDataStat, initializing statMissing_ and posMissing_" << std::endl;
-  std::cout << "statMissing_" <<  std::endl;
+/*  std::cout << "statMissing_" <<  std::endl;
   std::cout << statMissing_ << std::endl;
   std::cout << "posMissing_" <<  std::endl;
-  std::cout << posMissing_ << std::endl;
+  std::cout << posMissing_ << std::endl; */
 #endif
 };
 

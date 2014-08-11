@@ -30,7 +30,7 @@ augmentedData <- function(stringData, intDataType) # stringData is a vector of s
     }
   }
 
-  # [] and :
+  # [:] and :
   listIntervals <- list()
   rangeList <- grep("-*[0-9.]+ *: *-*[0-9.]+", stringData)
   if (length(rangeList) > 0)
@@ -53,6 +53,9 @@ augmentedData <- function(stringData, intDataType) # stringData is a vector of s
     {
       nbrList <- str_match_all(stringData[rangeList[i]], nbrStr)
       nbrList <- as.numeric(nbrList[[1]])
+#      cat("[-inf:] and -inf: ",
+#          "individual: ", rangeList[i],
+#          " : nbrList: ", nbrList, "\n")
       listLUIntervals[[length(listLUIntervals) + 1]] <- list(pos=rangeList[i], listvals=nbrList)
       stringData[rangeList[i]] <- "NA"
     }
@@ -67,6 +70,9 @@ augmentedData <- function(stringData, intDataType) # stringData is a vector of s
     {
       nbrList <- str_match_all(stringData[rangeList[i]], nbrStr)
       nbrList <- as.numeric(nbrList[[1]])
+#      cat("[:+inf] and :+inf: ",
+#          "individual: ", rangeList[i],
+#          " : nbrList: ", nbrList, "\n")
       listRUIntervals[[length(listRUIntervals) + 1]] <- list(pos=rangeList[i], listvals=nbrList)
       stringData[rangeList[i]] <- "NA"
     }
@@ -86,6 +92,4 @@ augmentedData <- function(stringData, intDataType) # stringData is a vector of s
                 listIntervals    = listIntervals           ,
                 listRUIntervals  = listRUIntervals         ,
                 listLUIntervals  = listLUIntervals         ))
-  
-  return(currList)
 }
