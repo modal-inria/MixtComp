@@ -112,7 +112,7 @@ CategoricalSamplerIterator::RetValue CategoricalSamplerIterator::operator*() con
   std::cout << std::endl;
   std::cout << "CategoricalSamplerIterator::operator*" << std::endl;
   std::cout << "\tp_zi_: " << p_zi_ << std::endl;
-  std::cout << "\tp_zi_->sizeRows()" << p_zi_->sizeRows() << std::endl;
+  std::cout << "\tp_zi_->sizeRows(): " << p_zi_->sizeRows() << std::endl;
 #endif
 
   switch(currVec_)

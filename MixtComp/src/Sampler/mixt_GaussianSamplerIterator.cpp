@@ -138,7 +138,7 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
   std::cout << std::endl;
   std::cout << "GaussianSamplerIterator::operator*" << std::endl;
   std::cout << "\tp_zi_: " << p_zi_ << std::endl;
-  std::cout << "\tp_zi_->sizeRows()" << p_zi_->sizeRows() << std::endl;
+  std::cout << "\tp_zi_->sizeRows(): " << p_zi_->sizeRows() << std::endl;
 #endif
 
   switch(currVec_)

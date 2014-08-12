@@ -216,6 +216,12 @@ class MixtureBridge : public mixt::IMixture
     virtual void samplingStep()
     {
       mixture_.getParameters(param_); // update the parameters (used by the Sampler)
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::samplingStep(), getParameters" << std::endl;
+      std::cout << "\tidName: " << idName() << std::endl;
+      std::cout << "\tparam: " << std::endl;
+      std::cout << param_ << std::endl;
+#endif
       SamplerIterator endIt(sampler_.end());
       for (SamplerIterator it = sampler_.begin(); it != endIt; ++it)
       {
@@ -275,6 +281,12 @@ class MixtureBridge : public mixt::IMixture
                           m_augDataij_.data_,
                           nbVariable_);// reset the data to get partially observed data location
       mixture_.getParameters(param_); // update the parameters
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
+      std::cout << "\tidName: " << idName() << std::endl;
+      std::cout << "\tparam: " << std::endl;
+      std::cout << param_ << std::endl;
+#endif
       likelihood_.lnLikelihood(lnComp, k);
     }
     /** This function must return the number of free parameters.
@@ -334,6 +346,12 @@ class MixtureBridge : public mixt::IMixture
       //export the parameters
       Param param;
       mixture_.getParameters(param);
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::exportDataParam(), getParameters" << std::endl;
+      std::cout << "\tidName: " << idName() << std::endl;
+      std::cout << "\tparam: " << std::endl;
+      std::cout << param << std::endl;
+#endif
       p_paramExtractor_->exportParam(idName(),
                                      &param);
     }
