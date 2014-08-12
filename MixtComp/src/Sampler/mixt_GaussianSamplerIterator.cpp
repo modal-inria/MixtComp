@@ -145,18 +145,16 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
   {
     case 0: // missing
     {
-#ifdef MC_DEBUG
-      std::cout << "\t*iv_missing_" << std::endl;
-      std::cout  << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
-      std::cout  << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl;
-#endif
       currPos = *iv_missing_;
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
       sd    = p_param_->elt(2*p_zi_->elt(currPos.first) + 1, currPos.second);
-      z = STK::Law::Normal::rand(0., 1.);
 #ifdef MC_DEBUG
+      std::cout << "\t*iv_missing_" << std::endl;
+      std::cout << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
+      std::cout  << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl;
       std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
 #endif
+      z = STK::Law::Normal::rand(0., 1.);
     }
     break;
 
@@ -167,6 +165,13 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
       STK::Real supBound(iv_missingIntervals_->second.second);
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
       sd    = p_param_->elt(2*p_zi_->elt(currPos.first) + 1, currPos.second);
+#ifdef MC_DEBUG
+      std::cout << "\t*iv_missingIntervals_" << std::endl;
+      std::cout  << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
+      std::cout << "\tinfBound: " << infBound << ", supBound: " << supBound << std::endl;
+      std::cout << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl;
+      std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
+#endif
       STK::Real lower = (infBound - mean) / sd;
       STK::Real upper = (supBound - mean) / sd;
       STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
@@ -175,7 +180,12 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
       {
         do
         {
-          z = luSampler(lower, alpha);
+          z = lbSampler(lower);
+#ifdef MC_DEBUG
+          std::cout << "\talpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(lower / 2) / (upper - lower)" << std::endl;
+          std::cout << "\tupper" << upper << std::endl;
+          std::cout << "\tz" << z << std::endl;
+#endif
         }
         while(upper < z);
       }
@@ -183,13 +193,6 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
       {
         z = lrbSampler(lower, upper);
       }
-#ifdef MC_DEBUG
-      std::cout << "\t*iv_missingIntervals_" << std::endl
-                << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl
-                << "\tinfBound: " << infBound << ", supBound: " << supBound << std::endl
-                << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl
-                << "\tmean: " << mean << ", sd: " << sd << std::endl;
-#endif
     }
     break;
 
@@ -199,9 +202,6 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
       STK::Real supBound(iv_missingLUIntervals_->second);
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
       sd    = p_param_->elt(2*p_zi_->elt(currPos.first) + 1, currPos.second);
-      STK::Real upper = (supBound - mean) / sd;
-      STK::Real alpha = (upper + sqrt(pow(upper, 2) + 4.))/2.;
-      z = -luSampler(-upper, alpha);
 #ifdef MC_DEBUG
       std::cout << "\t*iv_missingLUIntervals_" << std::endl
                 << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl
@@ -209,6 +209,8 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
                 << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl
                 << "\tmean: " << mean << ", sd: " << sd << std::endl;
 #endif
+      STK::Real upper = (supBound - mean) / sd;
+      z = -lbSampler(-upper);
     }
     break;
 
@@ -218,9 +220,6 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
       STK::Real infBound(iv_missingRUIntervals_->second);
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
       sd    = p_param_->elt(2*p_zi_->elt(currPos.first) + 1, currPos.second);
-      STK::Real lower = (infBound - mean) / sd;
-      STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
-      z = luSampler(lower, alpha);
 #ifdef MC_DEBUG
       std::cout << "\t*iv_missingRUIntervals_" << std::endl
                 << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl
@@ -228,6 +227,8 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
                 << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl
                 << "\tmean: " << mean << ", sd: " << sd << std::endl;
 #endif
+      STK::Real lower = (infBound - mean) / sd;
+      z = lbSampler(lower);
     }
     break;
   }
@@ -237,15 +238,22 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
   return RetValue(currPos, z * sd + mean);
 }
 
-// left unbounded sampler
-STK::Real GaussianSamplerIterator::luSampler(STK::Real lower, STK::Real alpha) const
+// left bounded sampler
+STK::Real GaussianSamplerIterator::lbSampler(STK::Real lower) const
 {
+  STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
   STK::Real z, u, rho;
   if (lower < 0)
   {
     do
     {
       z = STK::Law::Normal::rand(0, 1);
+#ifdef MC_DEBUG
+    std::cout << "GaussianSamplerIterator::lbSampler()" << std::endl;
+    std::cout << "\tlower < 0" << std::endl;
+    std::cout << "\tlower: " << lower << std::endl;
+    std::cout << "\tz: " << z << std::endl;
+#endif
     }
     while (z < lower);
   }
@@ -256,6 +264,12 @@ STK::Real GaussianSamplerIterator::luSampler(STK::Real lower, STK::Real alpha) c
       z = STK::Law::Exponential::rand(1./alpha) + lower;
       rho = exp(-pow((z - alpha), 2) / 2.);
       u = STK::Law::Uniform::rand(0., 1.);
+#ifdef MC_DEBUG
+    std::cout << "GaussianSamplerIterator::lbSampler()" << std::endl;
+    std::cout << "\tlower >= 0" << std::endl;
+    std::cout << "\trho: " << rho << std::endl;
+    std::cout << "\tu: " << u << std::endl;
+#endif
     }
     while (u > rho);
   }
@@ -279,6 +293,11 @@ STK::Real GaussianSamplerIterator::lrbSampler(STK::Real lower, STK::Real upper) 
       rho = exp((pow(lower, 2)-pow(z, 2))/2);
 
     u = STK::Law::Uniform::rand(0., 1.);
+#ifdef MC_DEBUG
+    std::cout << "GaussianSamplerIterator::lrbSampler()" << std::endl;
+    std::cout << "\trho: " << rho << std::endl;
+    std::cout << "\tu: " << u << std::endl;
+#endif
   }
   while(u > rho);
 

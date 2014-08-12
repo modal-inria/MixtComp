@@ -58,7 +58,7 @@ class GaussianSamplerIterator
     bool operator==(const GaussianSamplerIterator& rhs) const;
     bool operator!=(const GaussianSamplerIterator& rhs) const;
     RetValue operator*() const;
-    double luSampler(STK::Real lower, STK::Real alpha) const;
+    double lbSampler(STK::Real lower) const;
     double lrbSampler(STK::Real lower, STK::Real upper) const;
     void findNonEmpty();
 
