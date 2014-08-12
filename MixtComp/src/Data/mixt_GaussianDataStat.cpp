@@ -80,20 +80,21 @@ void GaussianDataStat::initialize()
   // second dimension corresponds to the couple (sample position, variables position)
   posMissing_.resize(nbMissing_, 2);
   initPos();
-  // second dimension corresponds to mean and variance
-  statMissing_.resize(nbMissing_, 2);
-  statMissing_ = 0.;
+
+  mean_.resize(nbMissing_);
+  m2_.resize(nbMissing_);
+
+  mean_ = 0.;
+  m2_ = 0.;
+
 #ifdef MC_DEBUG
-  std::cout << "GaussianDataStat, initializing statMissing_ and posMissing_" << std::endl;
-/*  std::cout << "statMissing_" <<  std::endl;
-  std::cout << statMissing_ << std::endl;
-  std::cout << "posMissing_" <<  std::endl;
-  std::cout << posMissing_ << std::endl; */
+  std::cout << "GaussianDataStat, initializing posMissing_, mean_ and m2_" << std::endl;
 #endif
 };
 
 void GaussianDataStat::sampleVals()
 {
+  ++nbIter_;
   for (int currVal = 0; currVal < nbMissing_; ++currVal)
   {
 #ifdef MC_DEBUG
@@ -105,34 +106,30 @@ void GaussianDataStat::sampleVals()
                                                      posMissing_(currVal, 1))
               << std::endl;
 #endif
-    // sum of values for mean computation
-    statMissing_(currVal, 0) += pm_augDataij_->data_(posMissing_(currVal, 0),
-                                                     posMissing_(currVal, 1));
-    // sum of squares for variance computation
-    statMissing_(currVal, 1) += pow(pm_augDataij_->data_(posMissing_(currVal, 0),
-                                                         posMissing_(currVal, 1)),
-                                    2.);
+    STK::Real x = pm_augDataij_->data_(posMissing_(currVal, 0), // sample
+                                       posMissing_(currVal, 1)); // var
+    STK::Real delta = x - mean_[currVal];
+    mean_[currVal] += delta / nbIter_;
+    m2_[currVal] += delta * (x - mean_[currVal]);
   }
-
-  ++nbIter_;
 }
 
 void GaussianDataStat::exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const
 {
   posMissing = posMissing_;
   statMissing.resize(nbMissing_, 2);
-  statMissing.col(0) = statMissing_.col(0) / nbIter_; // mean
-  statMissing.col(1) = (statMissing_.col(1) / nbIter_ - statMissing.col(0) * statMissing.col(0)).sqrt(); // standard deviation
+
+  statMissing.col(0) = mean_;
+
+  if (nbIter_ < 2)
+    statMissing.col(1) = 0.;
+  else
+    statMissing.col(1) = m2_ / (nbIter_ - 1.);
+
 #ifdef MC_DEBUG
   std::cout << "GaussianDataStat::exportVals, nbIter_: " << nbIter_ << std::endl
-            << "posMissing_: " << std::endl
-            << posMissing_ << std::endl
-            << "statMissing_.col(1) / nbIter_: " << std::endl
-            << statMissing_.col(1) / nbIter_ << std::endl
-            << "statMissing.col(0) * statMissing.col(0)" << std::endl
-            << statMissing.col(0) * statMissing.col(0)
-            << "statMissing_: " << std::endl
-            << statMissing_ << std::endl
+            << "posMissing: " << std::endl
+            << posMissing << std::endl
             << "statMissing: " << std::endl
             << statMissing << std::endl;
 #endif

@@ -21,6 +21,9 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+/** Source of the implementation:
+ * http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm */
+
 #ifndef MIXT_GAUSSIANDATASTAT_H
 #define MIXT_GAUSSIANDATASTAT_H
 
@@ -55,8 +58,11 @@ class GaussianDataStat
     const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij_;
     // array to store the positions of all missing data, regardless of the type (missing, interval, etc...)
     STK::Array2D<int> posMissing_;
-    // array to store the statistics on the data
-    STK::Array2D<STK::Real> statMissing_;
+    // array to store the mean
+    STK::Array2DVector<STK::Real> mean_;
+    // array to store M2
+    STK::Array2DVector<STK::Real> m2_;
+
 };
 
 } // namespace mixt
