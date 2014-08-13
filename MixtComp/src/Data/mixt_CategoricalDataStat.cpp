@@ -29,6 +29,7 @@ namespace mixt
 CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij) :
     nbIter_(0),
     nbMissing_(0),
+    nbModalities_(0),
     pm_augDataij_(pm_augDataij)
 {}
 

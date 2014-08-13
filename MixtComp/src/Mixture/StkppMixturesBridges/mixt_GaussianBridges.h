@@ -29,6 +29,7 @@
 #include "../../Sampler/mixt_GaussianSampler.h"
 #include "../../Sampler/mixt_GaussianSamplerIterator.h"
 #include "../../Data/mixt_GaussianDataStat.h"
+#include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_GaussianLikelihood.h"
 
 namespace mixt
@@ -54,6 +55,8 @@ struct BridgeTraits<STK::Clust::Gaussian_sjk_>
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat*/
     typedef GaussianDataStat DataStat;
+    /** Type of the ParamStat */
+    typedef SimpleParamStat ParamStat;
     /** Type of the parameter set to be used as output */
     typedef STK::Array2D<STK::Real> Param;
     /** Type of the Data */

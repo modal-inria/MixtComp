@@ -37,6 +37,7 @@ obj:
 	$(MAKE) -C ./src/Data
 	$(MAKE) -C ./src/Likelihood
 	$(MAKE) -C ./src/Mixture
+	$(MAKE) -C ./src/Param
 	$(MAKE) -C ./src/Sampler
 	$(MAKE) -C ./src/Strategy
 

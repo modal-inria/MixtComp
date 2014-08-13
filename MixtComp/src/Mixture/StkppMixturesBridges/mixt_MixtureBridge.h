@@ -54,6 +54,8 @@ class MixtureBridge : public mixt::IMixture
     typedef typename BridgeTraits<Id>::AugData AugData;
     // statistics on missing values type
     typedef typename BridgeTraits<Id>::DataStat DataStat;
+    // statistics on model parameters
+    typedef typename BridgeTraits<Id>::ParamStat ParamStat;
     // parameters type to get
     typedef typename BridgeTraits<Id>::Param Param;
     // type of the data
@@ -83,6 +85,7 @@ class MixtureBridge : public mixt::IMixture
       sampler_(getData(),
                getParam()),
       dataStat_(getData()),
+      paramStat_(getParam()),
       likelihood_(
                   getParam(),
                   getData()),
@@ -98,6 +101,7 @@ class MixtureBridge : public mixt::IMixture
       nbVariable_(bridge.nbVariable_),
       sampler_(bridge.sampler_),
       dataStat_(bridge.dataStat_),
+      paramStat_(bridge.paramStat_),
       likelihood_(bridge.likelihood_),
       p_handler_(bridge.p_handler_),
       p_dataExtractor_(bridge.p_dataExtractor_),
@@ -158,6 +162,12 @@ class MixtureBridge : public mixt::IMixture
       mixture_.initializeStep();
       sampler_.setZi(p_zi()); // at this point the bridge has been registered on the composer and p_zi is valid
       dataStat_.initialize();
+
+      /** get a sample of parameters to initialize the ParamStat object
+       * with the right size
+       */
+      mixture_.getParameters(param_);
+      paramStat_.initialize();
     }
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -239,7 +249,11 @@ class MixtureBridge : public mixt::IMixture
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
      */
-    virtual void storeIntermediateResults(int iteration) {/**Do nothing by default*/}
+    virtual void storeIntermediateResults(int iteration)
+    {
+      mixture_.getParameters(param_);
+      paramStat_.sampleParam();
+    }
 
     virtual void storeData()
     {
@@ -344,8 +358,8 @@ class MixtureBridge : public mixt::IMixture
                                    &statMissing); // export the obtained data using the DataExtractor
 
       //export the parameters
-      Param param;
-      mixture_.getParameters(param);
+      STK::Array2D<STK::Real> param;
+      paramStat_.exportParam(&param);
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::exportDataParam(), getParameters" << std::endl;
       std::cout << "\tidName: " << idName() << std::endl;
@@ -369,6 +383,8 @@ class MixtureBridge : public mixt::IMixture
     Sampler sampler_;
     /** Statistics storage for missing data */
     DataStat dataStat_;
+    /** Statistics storage for parameters */
+    ParamStat paramStat_;
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
 
@@ -403,6 +419,7 @@ class MixtureBridge : public mixt::IMixture
       sampler_(getData(),
                getParam()),
       dataStat_(getData()),
+      paramStat_(getParam()),
       likelihood_(getParam(),
                   getData()),
       p_handler_(p_handler),

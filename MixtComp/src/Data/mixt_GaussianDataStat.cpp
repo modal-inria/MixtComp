@@ -124,7 +124,7 @@ void GaussianDataStat::exportVals(STK::Array2D<int>& posMissing, STK::Array2D<ST
   if (nbIter_ < 2)
     statMissing.col(1) = 0.;
   else
-    statMissing.col(1) = m2_ / (nbIter_ - 1.);
+    statMissing.col(1) = (m2_ / (nbIter_ - 1.)).sqrt();
 
 #ifdef MC_DEBUG
   std::cout << "GaussianDataStat::exportVals, nbIter_: " << nbIter_ << std::endl

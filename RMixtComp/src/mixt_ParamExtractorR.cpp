@@ -44,7 +44,7 @@ void ParamExtractorR::exportParam(std::string idName,
   param_[idName] = Rcpp::List::create(Rcpp::Named("param") = paramR);
 
 #ifdef MC_DEBUG
-  std::cout << "ParamExtractorR::exportVals, data_.size():  " << param_.size() << std::endl;
+  std::cout << "ParamExtractorR::exportParam, param_.size():  " << param_.size() << std::endl;
 #endif
 }
 
