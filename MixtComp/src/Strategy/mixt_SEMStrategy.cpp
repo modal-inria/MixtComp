@@ -84,20 +84,18 @@ bool SemStrategy::run()
       continue; // make another try
 
     // short run
+    p_composer_->setState(STK::Clust::shortRun_);
     p_burnInAlgo_->setModel(p_composer_);
     if (!p_burnInAlgo_->run())
       continue;
-    p_composer_->setState(STK::Clust::shortRun_);
 
     // long run
+    p_composer_->setState(STK::Clust::longRun_);
     p_longAlgo_->setModel(p_composer_);
     if (!p_longAlgo_->run())
       continue;
     else
-    {
-      p_composer_->setState(STK::Clust::longRun_);
       break; // no need to further try if a run is complete
-    }
   }
   
   for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)

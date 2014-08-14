@@ -65,10 +65,12 @@ bool SEMAlgo::run()
       p_model_->mStep();
       p_model_->eStep();
       if (p_model_->state() == STK::Clust::longRun_)
+      {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeIntermediateResults" << std::endl;
 #endif
         p_model_->storeIntermediateResults(iter);
+      }
     }
 
   return true;

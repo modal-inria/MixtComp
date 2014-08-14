@@ -8,15 +8,24 @@ dataGenerator <- function()
   nbModalities <- 3
   nbClasses <- 2
   
-  missingCategorical <- c(0.7, # present
-                          0.15, # missing
-                          0.15) # missing finite value
-  missingGaussian <- c(0.6, # present
-                       0.1, # missing
-                       0.1, # missing interval
-                       0.1, # missing left unbounded
-                       0.1) # missing right unbounded
-  
+#   missingCategorical <- c(0.7, # present
+#                           0.15, # missing
+#                           0.15) # missing finite value
+#   missingGaussian <- c(0.6, # present
+#                        0.1, # missing
+#                        0.1, # missing interval
+#                        0.1, # missing left unbounded
+#                        0.1) # missing right unbounded
+
+missingCategorical <- c(1., # present
+                        0., # missing
+                        0.) # missing finite value
+missingGaussian <- c(1., # present
+                     0., # missing
+                     0., # missing interval
+                     0., # missing left unbounded
+                     0.) # missing right unbounded
+
   categoricalParams <- matrix(data = c(0.3,0.3,0.3,0.3,0.3,0.3,
                                        0.6,0.6,0.6,0.6,0.6,0.6,
                                        0.1,0.1,0.1,0.1,0.1,0.1,
