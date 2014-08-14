@@ -70,6 +70,14 @@ void SimpleParamStat::sampleParam()
     std::cout << "\tj: " << j << std::endl;
     std::cout << "\tdelta" << std::endl;
     std::cout << delta << std::endl;
+    std::cout << "p_param_->col(j)" << std::endl;
+    std::cout << p_param_->col(j) << std::endl;
+    std::cout << "stat_.col(2 * j)" << std::endl;
+    std::cout << stat_.col(2 * j) << std::endl;
+    std::cout << "p_param_->col(j) - stat_.col(2 * j)" << std::endl;
+    std::cout << p_param_->col(j) - stat_.col(2 * j) << std::endl;
+    std::cout << "delta * (p_param_->col(j) - stat_.col(2 * j))" << std::endl;
+    std::cout << delta * (p_param_->col(j) - stat_.col(2 * j)) << std::endl;
 #endif
   }
 #ifdef MC_DEBUG

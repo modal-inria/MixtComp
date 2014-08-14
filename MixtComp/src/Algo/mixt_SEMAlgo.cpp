@@ -55,10 +55,15 @@ bool SEMAlgo::run()
       std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
 #endif
       for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample)
+      {
+#ifdef MC_DEBUG
+        std::cout << "\titerSample: " << iterSample << std::endl;
+#endif
         if (p_model_->sStep() > zMin_)
           break;
         else
           return false;
+      }
 
       p_model_->pStep();
       p_model_->samplingStep();
