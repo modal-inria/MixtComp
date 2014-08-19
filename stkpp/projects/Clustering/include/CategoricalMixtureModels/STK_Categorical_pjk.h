@@ -157,7 +157,7 @@ void Categorical_pjk<Array>::getParameters(Array2D<Real>& params) const
       {
         for (int j = p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
         {
-          for (int l = 0; l <= nbModalities; ++l)
+          for (int l = 0; l < nbModalities; ++l)
           {
             params(k * nbModalities + l + baseIdx, j) = p_param(k)->proba(j, firstModality + l);
           }
