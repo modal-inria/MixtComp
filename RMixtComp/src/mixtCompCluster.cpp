@@ -103,7 +103,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
 
   Rcpp::NumericVector partition(handler.nbSample());
   for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
-    partition[iR] = composer.p_zi()->elt(iS);
+    partition[iR] = composer.p_zi()->elt(iS) + 1;
   mcResults.slot("partition") = partition;
 
   Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);

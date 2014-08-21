@@ -151,8 +151,8 @@ void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
 #ifdef MC_DEBUG
       std::cout << "Filling: " << *it2
                 << " with: " << proba << std::endl;
-      modalities.elt(*it2) = proba;
 #endif
+      modalities.elt(*it2) = proba;
     }
 
     int sampledValue = STK::Law::Categorical::rand(modalities);
