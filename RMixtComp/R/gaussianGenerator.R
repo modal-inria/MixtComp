@@ -103,4 +103,5 @@ gaussianGenerator <- function(nbSamples,
         file = compositeFile)
   }
   close(compositeFile)
+  close(descriptorFile)
 }

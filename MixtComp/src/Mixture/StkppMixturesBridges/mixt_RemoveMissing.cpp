@@ -50,6 +50,9 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
                                                   m_augDataij.dataRanges_[(*it).second].max_);
     m_augDataij.data_((*it).first,
                        (*it).second) = sampleVal;
+
+//    m_augDataij.data_((*it).first,
+//                       (*it).second) = m_augDataij.data_.col((*it).second).safe().mean();
 #ifdef MC_DEBUG
     std::cout << std::endl;
     std::cout << "\tsample: " << (*it).first << std::endl;
