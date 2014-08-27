@@ -26,6 +26,7 @@
 #include "../Mixture/mixt_IMixture.h"
 #include "Arrays/include/STK_Display.h"
 #include "Clustering/include/STK_Clust_Util.h"
+#include "../Various/mixt_Export.h"
 
 namespace mixt
 {
@@ -179,11 +180,26 @@ void MixtureComposer::samplingStep()
   { (*it)->samplingStep();}
 }
 
-void MixtureComposer::storeIntermediateResults(int iteration)
+void MixtureComposer::storeShortRun(int iteration)
+{
+#ifdef MC_DEBUG
+  std::stringstream fileName;
+  fileName << "log/composer-";
+  fileName << iteration;
+  fileName << "-z_i.csv";
+  writeDataCsv(fileName.str(), p_zi());
+#endif
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->storeShortRun(iteration);
+  }
+}
+
+void MixtureComposer::storeLongRun(int iteration)
 {
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeIntermediateResults(iteration);
+    (*it)->storeLongRun(iteration);
   }
 }
 

@@ -114,8 +114,19 @@ Real Uniform::icdf( Real const& p) const
  **/
 Real Uniform::rand( Real a, Real b)
 {
-  return (b-a <= 1.) ? a + (b-a) * generator.randUnif()
-                     : a + generator.randDiscreteUnif()*((b-a)/4294967296.0) ;
+  Real sampleVal;
+  if (b-a <= 1.)
+  {
+    Real sampleUni = generator.randUnif();
+    sampleVal = a + (b-a) * sampleUni;
+  }
+  else
+  {
+    Real sampleUni = generator.randDiscreteUnifReal();
+    sampleVal = a + (b-a)* sampleUni / 4294967296.;
+  }
+
+  return sampleVal;
 }
 /* Give the value of the pdf at x.
  *  @param x a real value

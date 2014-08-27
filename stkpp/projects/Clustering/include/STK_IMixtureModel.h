@@ -114,19 +114,9 @@ class IMixtureModel : public IRecursiveTemplate<Derived>, public IMixtureModelBa
       // set dimensions
       this->setNbSample(p_dataij_->sizeRows());
       this->setNbVariable(p_dataij_->sizeCols());
-#ifdef MC_DEBUG
-        std::cout << "STK::IMixtureModel::initializeModel()" << std::endl;
-        std::cout << "\tcomponents_.size(): " << components_.size() << std::endl;
-#endif
       // initialize the parameters
       for (int k= components_.firstIdx(); k <= components_.lastIdx(); ++k)
-      {
-#ifdef MC_DEBUG
-        std::cout << "\tk: " << k << std::endl;
-        std::cout << "\tcomponents_[k]->p_param(): " << components_[k]->p_param() << std::endl;
-#endif
-        components_[k]->p_param()->resize(p_dataij_->cols());
-      }
+      { components_[k]->p_param()->resize(p_dataij_->cols());}
     }
     /** set a new data set.
      *  @param data the data set to set*/

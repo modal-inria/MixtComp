@@ -17,18 +17,39 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: August 7, 2014
+ *  Created on: August 25, 2014
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
  **/
 
-#ifndef MIXT_CONSTANTS_H_
-#define MIXT_CONSTANTS_H_
+#ifndef MIXT_EXPORT_H_
+#define MIXT_EXPORT_H_
 
 namespace mixt
 {
 
-STK::Real minStat = 1.e-5; // threshold to have equiprobabilities in categorical sampler
+template <typename Type>
+void writeDataCsv(std::string fileName, const Type* data)
+{
+  std::cout << "writing: " << fileName << std::endl;
+  std::ofstream stream;
+  stream.open(fileName.c_str());
+  for (int i = data->firstIdxRows();
+       i <= data->lastIdxRows();
+       ++i)
+  {
+    for (int j = data->firstIdxCols();
+         j <= data->lastIdxCols();
+         ++j)
+    {
+      stream << data->elt(i,j);
+      if (j < data->lastIdxCols())
+        stream << ";";
+    }
+    stream << std::endl;
+  }
+  stream.close();
+}
 
 } // namespace mixt
 
-#endif /* MIXT_CONSTANTS_H_ */
+#endif /* MIXT_EXPORT_H_ */

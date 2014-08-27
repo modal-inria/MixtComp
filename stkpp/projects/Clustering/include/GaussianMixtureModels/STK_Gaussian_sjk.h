@@ -114,12 +114,6 @@ void Gaussian_sjk<Array>::initializeStep()
   {
     ColVector tik(p_tik()->col(k), true); // create a reference
     p_param(k)->sigma_ = Stat::varianceWithFixedMean(*p_data(), tik, p_param(k)->mean_, false).sqrt();
-#ifdef MC_DEBUG
-    std::cout << "STK::Gaussian_sjk<Array>::initializeStep()" << std::endl;
-    std::cout << "\tk: " << k << std::endl;
-    std::cout << "\tp_param(k)->sigma_.nbAvailableValues(): " << p_param(k)->sigma_.nbAvailableValues() << std::endl;
-    std::cout << "\tp_param(k)->sigma_.size(): " << p_param(k)->sigma_.size() << std::endl;
-#endif
     if (p_param(k)->sigma_.nbAvailableValues() != p_param(k)->sigma_.size()) throw Clust::initializeStepFail_;
   }
 }

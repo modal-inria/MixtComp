@@ -36,6 +36,7 @@
 #include "mixt_CategoricalBridges.h"
 #include "mixt_InitializeMixtureImpl.h"
 #include "mixt_RemoveMissing.h"
+#include "../../Various/mixt_Export.h"
 
 namespace mixt
 {
@@ -245,11 +246,34 @@ class MixtureBridge : public mixt::IMixture
     {
       mixture_.mStep();
     }
+    /** This function should be used to store any results during the burn-in period
+     *  @param iteration Provides the iteration number during the burn-in period
+     */
+    virtual void storeShortRun(int iteration)
+    {
+#ifdef MC_DEBUG
+      std::stringstream fileNameA;
+      fileNameA << "log/";
+      fileNameA << idName();
+      fileNameA << "-";
+      fileNameA << iteration;
+      fileNameA << "-param.csv";
+      writeDataCsv(fileNameA.str(), &param_);
+
+      std::stringstream fileNameB;
+      fileNameB << "log/";
+      fileNameB << idName();
+      fileNameB << "-";
+      fileNameB << iteration;
+      fileNameB << "-data.csv";
+      writeDataCsv(fileNameB.str(), &m_augDataij_.data_);
+#endif
+    }
     /** This function should be used to store any intermediate results during
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
      */
-    virtual void storeIntermediateResults(int iteration)
+    virtual void storeLongRun(int iteration)
     {
       mixture_.getParameters(param_);
       paramStat_.sampleParam();

@@ -104,11 +104,6 @@ int IMixtureComposerBase::cStep()
   for (int i=tik_.firstIdxRows(); i<= tik_.lastIdxRows(); i++)
   { tik_.elt(i, zi_[i]) = 1.;}
   // count the minimal number of individuals in a class
-#ifdef MC_DEBUG
-  std::cout << "STK::IMixtureComposerBase::cStep()" << std::endl;
-  std::cout << "\tafter sample, and cStep(), tik_: " << std::endl;
-  std::cout << tik_ << std::endl;
-#endif
   return (Stat::sum(tik_).minElt());
 }
 
@@ -116,11 +111,6 @@ int IMixtureComposerBase::cStep()
 int IMixtureComposerBase::sStep()
 {
   // simulate zi
-#ifdef MC_DEBUG
-  std::cout << "STK::IMixtureComposerBase::sStep()" << std::endl;
-  std::cout << "\tbefore sampling, tik_: " << std::endl;
-  std::cout << tik_ << std::endl;
-#endif
   for (int i = zi_.firstIdx(); i<= zi_.lastIdx(); ++i)
   { zi_.elt(i) = Law::Categorical::rand(tik_.row(i));}
   return cStep();

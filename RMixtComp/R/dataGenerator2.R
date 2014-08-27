@@ -37,7 +37,7 @@ dataGenerator2 <- function()
                               ncol = nbVariablesCat,
                               byrow = TRUE)
   
-  gaussianParams <- matrix(data = c(-50,-50.,
+  gaussianParams <- matrix(data = c(-50.,-50.,
                                     5.,5.,
                                     
                                     50.,50.,

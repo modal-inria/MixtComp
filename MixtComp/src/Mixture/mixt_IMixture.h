@@ -102,12 +102,17 @@ class IMixture
      *  parameters.
      */
     virtual void paramUpdateStep() = 0;
+    /** @brief This function should be used to store results during the burn-in period.
+     * @param iteration Provides the iteration number in the burn-in
+     * period.
+     */
+    virtual void storeShortRun(int iteration) {/**Do nothing by default*/}
     /** @brief This function should be used to store any intermediate results
      * during various iterations after the burn-in period.
      * @param iteration Provides the iteration number beginning after the burn-in
      * period.
      */
-    virtual void storeIntermediateResults(int iteration) {/**Do nothing by default*/}
+    virtual void storeLongRun(int iteration) {/**Do nothing by default*/}
     /** @brief This step can be used to store data. This is usually called after the long algo, to
      * store data generated using the estimated parameters
      */

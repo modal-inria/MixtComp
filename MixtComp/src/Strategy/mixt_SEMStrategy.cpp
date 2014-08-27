@@ -78,18 +78,27 @@ bool SemStrategy::run()
   for (int iTry = 0; iTry < nbTry_; ++iTry)
   {
     // initialize current model
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run, initialize current model" << std::endl;
+#endif
     p_init_->setModel(p_composer_);
     p_composer_->setState(STK::Clust::modelInitialized_);
     if (!p_init_->run())
       continue; // make another try
 
     // short run
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run, short run" << std::endl;
+#endif
     p_composer_->setState(STK::Clust::shortRun_);
     p_burnInAlgo_->setModel(p_composer_);
     if (!p_burnInAlgo_->run())
       continue;
 
     // long run
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run, long run" << std::endl;
+#endif
     p_composer_->setState(STK::Clust::longRun_);
     p_longAlgo_->setModel(p_composer_);
     if (!p_longAlgo_->run())

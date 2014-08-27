@@ -46,19 +46,26 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
        it != m_augDataij.v_missing_.end();
        ++it)
   {
-    STK::Real sampleVal = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).second].min_,
-                                                  m_augDataij.dataRanges_[(*it).second].max_);
-    m_augDataij.data_((*it).first,
-                       (*it).second) = sampleVal;
+    STK::Real min = m_augDataij.dataRanges_[(*it).second].min_;
+    STK::Real max = m_augDataij.dataRanges_[(*it).second].max_;
 
-//    m_augDataij.data_((*it).first,
-//                       (*it).second) = m_augDataij.data_.col((*it).second).safe().mean();
 #ifdef MC_DEBUG
     std::cout << std::endl;
     std::cout << "\tsample: " << (*it).first << std::endl;
     std::cout << "\tvar: " << (*it).second << std::endl;
     std::cout << "\tMissing type: [-inf,+inf]" << std::endl;
-    std::cout << "\t[" << m_augDataij.dataRanges_[(*it).second].min_ << ":" << m_augDataij.dataRanges_[(*it).second].max_ << "]" << std::endl;
+    std::cout << "\t[" << min << ":" << max << "]" << std::endl;
+#endif
+
+    STK::Real sampleVal = STK::Law::Uniform::rand(min,
+                                                  max);
+    m_augDataij.data_((*it).first,
+                      (*it).second) = sampleVal;
+
+//    m_augDataij.data_((*it).first,
+//                       (*it).second) = m_augDataij.data_.col((*it).second).safe().mean();
+
+#ifdef MC_DEBUG
     std::cout << "\tsampleVal: " << sampleVal <<std::endl;
 #endif
   }

@@ -138,6 +138,11 @@ class RandBase : protected MTRand
     **/
     inline int randDiscreteUnif() { return int(randInt());}
 
+    inline Real randDiscreteUnifReal()
+    {
+      return Real(randInt());
+    }
+
     /** pseudo-random uniform generator.
      *  This is a wrapper of the MTRand class.
      *  \f[

@@ -49,6 +49,15 @@ void SEMAlgo::setModel(mixt::MixtureComposer* p_model)
 
 bool SEMAlgo::run()
 {
+#ifdef MC_DEBUG
+  std::cout << "SEMAlgo::run, entering" << std::endl;
+  if (p_model_->state() == STK::Clust::shortRun_)
+  {
+    std::cout << "SEMAlgo::run, initial partition export" << std::endl;
+    std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
+    p_model_->storeShortRun(-1); // export of the initial partition
+  }
+#endif
     for (int iter = 0; iter < this->nbIterMax_; ++iter)
     {
 #ifdef MC_DEBUG
@@ -69,12 +78,19 @@ bool SEMAlgo::run()
       p_model_->samplingStep();
       p_model_->mStep();
       p_model_->eStep();
+      if (p_model_->state() == STK::Clust::shortRun_)
+      {
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
+#endif
+        p_model_->storeShortRun(iter);
+      }
       if (p_model_->state() == STK::Clust::longRun_)
       {
 #ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_model_->storeIntermediateResults" << std::endl;
+      std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
 #endif
-        p_model_->storeIntermediateResults(iter);
+        p_model_->storeLongRun(iter);
       }
     }
 
