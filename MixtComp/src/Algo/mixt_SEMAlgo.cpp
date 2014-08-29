@@ -78,6 +78,7 @@ bool SEMAlgo::run()
       p_model_->samplingStep();
       p_model_->mStep();
       p_model_->eStep();
+
       if (p_model_->state() == STK::Clust::shortRun_)
       {
 #ifdef MC_DEBUG
@@ -85,12 +86,22 @@ bool SEMAlgo::run()
 #endif
         p_model_->storeShortRun(iter);
       }
+
       if (p_model_->state() == STK::Clust::longRun_)
       {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
 #endif
         p_model_->storeLongRun(iter);
+      }
+
+//      if (p_model_->state() == STK::Clust::initialization_)
+      if (p_model_->state() == STK::Clust::shortRun_)
+      {
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;
+#endif
+        p_model_->misClasStep(iter);
       }
     }
 

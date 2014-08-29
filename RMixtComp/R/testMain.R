@@ -7,7 +7,7 @@ testGenData <- function()
 #                 c("categoricalData.csv", "categoricalDescriptor.csv"))
   
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
-                                  1000, # nbBurnInIter
+                                  20, # nbBurnInIter
                                   100, # nbIter
                                   20, # nbGibbsBurnInIter
                                   100) # nbGibbsIter

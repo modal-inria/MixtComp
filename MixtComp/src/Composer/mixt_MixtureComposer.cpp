@@ -180,6 +180,39 @@ void MixtureComposer::samplingStep()
   { (*it)->samplingStep();}
 }
 
+void MixtureComposer::misClasStep(int iteration)
+{
+  STK::Array2D<STK::Real> probClass(nbSample(), nbCluster(), 0.);
+
+  // computation of the log probability with adequately sampled missing values
+  for (int k = 0; k < nbCluster(); ++k)
+  {
+    zi_ = k; // setting zi_ for the sampling step
+    for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+    {
+      (*it)->samplingStep();
+    }
+    for (int i = 0; i < nbSample(); ++i)
+    {
+      probClass(i, k) = lnComponentProbability(i, k);
+    }
+  }
+
+  // equivalent of the estep to compute new tik_
+  for (int i = tik_.firstIdxRows(); i <= tik_.lastIdxRows(); ++i)
+  {
+    STK::Array2DPoint<STK::Real> lnComp;
+    lnComp = probClass.row(i);
+    int kmax;
+    STK::Real max = lnComp.maxElt(kmax);
+    zi_.elt(i) = kmax;
+    // compute sum_k pk exp{lnCom_k - lnComp_kmax}
+    STK::Real sum2 =  (lnComp -= max).exp().dot(prop_);
+    // compute likelihood of each sample for each component
+    tik_.row(i) = (prop_ * lnComp.exp()) / sum2;
+  }
+}
+
 void MixtureComposer::storeShortRun(int iteration)
 {
 #ifdef MC_DEBUG

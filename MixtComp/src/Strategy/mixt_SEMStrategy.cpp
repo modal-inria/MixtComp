@@ -77,12 +77,18 @@ bool SemStrategy::run()
 {
   for (int iTry = 0; iTry < nbTry_; ++iTry)
   {
-    // initialize current model
+    // initialize p_init
 #ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, initialize current model" << std::endl;
+    std::cout << "SemStrategy::run, initializing p_init_" << std::endl;
 #endif
     p_init_->setModel(p_composer_);
     p_composer_->setState(STK::Clust::modelInitialized_);
+
+    // SEM initialization, coarse misclassification elimination
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run, SEM initialization" << std::endl;
+#endif
+    p_composer_->setState(STK::Clust::initialization_);
     if (!p_init_->run())
       continue; // make another try
 
