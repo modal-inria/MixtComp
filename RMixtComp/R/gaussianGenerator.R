@@ -1,75 +1,52 @@
-gaussianGenerator <- function(nbSamples,
-                              nbVariables,
-                              z,
-                              params,
-                              missingParams)
-{  
-  compositeFile <- file(description = "gaussianData.csv",
-                        open = "w",
-                        blocking = TRUE,
-                        encoding = getOption("encoding"),
-                        raw = FALSE)
-  
-  descriptorFile <- file(description = "gaussianDescriptor.csv",
-                         open = "w",
-                         blocking = TRUE,
-                         encoding = getOption("encoding"),
-                         raw = FALSE)
-  
-  vals <- paste("var",
-                1:nbVariables,
-                sep = "")
-  cat(vals,
-      sep = ";",
-      file = compositeFile)
-  cat("\n",
-      file = compositeFile)
-  vals <- rep("Gaussian_sjk",
-              nbVariables)
-  
-  cat(vals,
-      sep = ";",
-      file = descriptorFile)
-  cat("\n",
-      file = descriptorFile)
-  vals <- paste("gaussian",
-                1:nbVariables,
-                sep = "")
-  cat(vals,
-      sep = ";",
-      file = descriptorFile)
-  cat("\n",
-      file = descriptorFile)
-  
+completeGaussianData <- function(nbSamples,
+                                 nbVariables,
+                                 z,
+                                 params)
+{
+  vals <- matrix(nrow = nbSamples,
+                 ncol = nbVariables)
   for (i in 1:nbSamples)
   {
-    vals <- list()
     for (j in 1:nbVariables)
+    {
+      vals[i, j] <- rnorm(1,
+                          mean = params[2*z[i]-1, j],
+                          sd   = params[2*z[i]  , j])
+    }
+  }
+  colnames(vals) <- paste("var",
+                          1:nbVariables,
+                          sep = "")
+  return(vals)
+}
+
+missingGaussianData <- function(data,
+                                z,
+                                params,
+                                missingParams)
+{
+  for (i in 1:nrow(data))
+  {
+    for (j in 1:ncol(data))
     {
       missType <- match(1,
                         rmultinom(1,
                                   1,
                                   missingParams))
-      if (missType == 1) # normal, no missing value
+      if (missType == 2) # missing
       {
-        vals[[j]] <- rnorm(1,
-                         mean = params[2*z[i]-1, j],
-                         sd   = params[2*z[i]  , j])
-      }
-      else if (missType == 2) # missing
-      {
-        vals[[j]] <- "?"
+        data[i, j] <- "?"
       }
       else if (missType == 3) # missing interval
       {
         bounds <- sort(rnorm(2,
                              mean = params[2*z[i]-1, j],
                              sd   = params[2*z[i]  , j]))
-        vals[[j]] <- paste("[",
-                           paste(bounds,
-                                 collapse = ":"),
-                           "]",
-                           sep ="") # formatting for the data file
+        data[i, j] <- paste("[",
+                            paste(bounds,
+                                  collapse = ":"),
+                            "]",
+                            sep ="") # formatting for the data file
       }
       else if (missType == 4) # missing left unbounded
       {
@@ -77,11 +54,11 @@ gaussianGenerator <- function(nbSamples,
                        rnorm(1,
                              mean = params[2*z[i]-1, j],
                              sd   = params[2*z[i]  , j]))
-        vals[[j]] <- paste("[",
-                           paste(bounds,
-                                 collapse = ":"),
-                           "]",
-                           sep ="") # formatting for the data file
+        data[i, j] <- paste("[",
+                            paste(bounds,
+                                  collapse = ":"),
+                            "]",
+                            sep ="") # formatting for the data file
       }
       else if (missType == 5) # missing right unbounded
       {
@@ -89,19 +66,60 @@ gaussianGenerator <- function(nbSamples,
                              mean = params[2*z[i]-1, j],
                              sd   = params[2*z[i]  , j]),
                        "+inf")
-        vals[[j]] <- paste("[",
-                           paste(bounds,
-                                 collapse = ":"),
-                           "]",
-                           sep ="") # formatting for the data file
+        data[i, j] <- paste("[",
+                            paste(bounds,
+                                  collapse = ":"),
+                            "]",
+                            sep ="") # formatting for the data file
       }
     }
-    cat(as.character(vals),
-        sep = ";",
-        file = compositeFile)
-    cat("\n",
-        file = compositeFile)
   }
-  close(compositeFile)
-  close(descriptorFile)
+  return(data)
+}
+
+writeGaussianData <- function(fileName,
+                              data)
+{
+  write.table(data,
+              file = fileName,
+              quote = FALSE,
+              sep = ";",
+              row.names = FALSE,
+              dec = ".")
+}
+
+writeGaussianDataDescriptor <- function(nbVariables)
+{
+  data <- matrix(nrow = 2, ncol = nbVariables)
+  data[1,] <- rep("Gaussian_sjk", nbVariables)
+  data[2,] <- paste("gaussian",
+                    1:nbVariables,
+                    sep = "")
+  
+  write.table(data,
+              file = "gaussianDescriptor.csv",
+              quote = FALSE,
+              sep = ";",
+              row.names = FALSE,
+              col.names = FALSE,
+              dec = ".")
+}
+
+gaussianGenerator <- function(nbSamples,
+                              nbVariables,
+                              z,
+                              params,
+                              missingParams)
+{
+  data <- completeGaussianData(nbSamples,
+                               nbVariables,
+                               z,
+                               params)
+  data <- missingGaussianData(data,
+                              z,
+                              params,
+                              missingParams)
+  writeGaussianData("gaussianData.csv",
+                    data)
+  writeGaussianDataDescriptor(nbVariables)
 }
