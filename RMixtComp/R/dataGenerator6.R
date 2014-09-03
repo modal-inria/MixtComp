@@ -81,4 +81,9 @@ dataGenerator6 <- function()
                     z,
                     gaussianParams,
                     missingGaussian)
+  
+  write.table(z,
+              file = "classIn.csv",
+              row.names=FALSE,
+              col.names=FALSE)
 }
