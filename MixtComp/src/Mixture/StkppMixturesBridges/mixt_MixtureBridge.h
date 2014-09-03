@@ -394,11 +394,6 @@ class MixtureBridge : public mixt::IMixture
                                      &param);
     }
 
-    virtual void initIndividual(const STK::Array2DVector<bool>* p_sample)
-    {
-      removeMissing(m_augDataij_, p_sample);
-    }
-
   protected:
     /** The stkpp mixture to bridge with the composer */
     Mixture mixture_;

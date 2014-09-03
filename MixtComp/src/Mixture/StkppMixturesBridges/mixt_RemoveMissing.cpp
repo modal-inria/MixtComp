@@ -179,41 +179,4 @@ void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
   }
 }
 
-void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij,
-                   const STK::Array2DVector<bool>* p_sample)
-{
-#ifdef MC_DEBUG
-  std::cout << "removeMissing, const STK::Array2DVector<bool>* p_sample" << std::endl;
-  std::cout << "*p_sample" << std::endl;
-  std::cout << *p_sample << std::endl;
-#endif
-
-  typedef typename std::pair<int, int> pos;
-
-  // missing value [-inf,+inf] or ?
-  for (typename std::vector<pos>::iterator it = m_augDataij.v_missing_.begin();
-       it != m_augDataij.v_missing_.end();
-       ++it)
-  {
-    if (p_sample->elt(it->first))
-    {
-      STK::Real min = m_augDataij.dataRanges_[(*it).second].min_;
-      STK::Real max = m_augDataij.dataRanges_[(*it).second].max_;
-
-      STK::Real sampleVal = STK::Law::Uniform::rand(min,
-                                                    max);
-      m_augDataij.data_((*it).first,
-                        (*it).second) = sampleVal;
-#ifdef MC_DEBUG
-      std::cout << "it->first: " << it->first << std::endl;
-      std::cout << "sampleVal: " << sampleVal << std::endl;
-#endif
-    }
-  }
-}
-
-void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij,
-                   const STK::Array2DVector<bool>* p_sample)
-{}
-
 } /* namespace mixt */

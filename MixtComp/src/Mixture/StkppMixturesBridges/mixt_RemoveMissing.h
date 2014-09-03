@@ -37,13 +37,7 @@ namespace mixt
  *  coordinates. */
 void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij);
 
-void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij,
-                   const STK::Array2DVector<bool>* proba);
-
 void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij);
-
-void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij,
-                   const STK::Array2DVector<bool>* proba);
 
 } /* namespace mixt */
 

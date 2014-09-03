@@ -154,9 +154,6 @@ class IMixture
      */
     virtual void exportDataParam() const = 0;
 
-    /** Reinitialize missing data of a particular sample */
-    virtual void initIndividual(const STK::Array2DVector<bool>* p_sample) = 0;
-
   protected:
     /** This function can be used in derived classes to get number of samples.
      *  @return Number of samples.
