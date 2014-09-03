@@ -75,4 +75,4 @@ STK::Array2D<STK::Real> const* IMixture::p_tik() const
 STK::CArrayVector<int> const* IMixture::p_zi() const
 { return p_composer_->p_zi(); }
 
-} // namespace STK
+} // namespace mixt

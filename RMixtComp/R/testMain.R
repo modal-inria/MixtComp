@@ -1,6 +1,6 @@
 testGenData <- function()
 {
-  dataGenerator2()
+  dataGenerator6()
 #   lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"))
 #   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
@@ -15,7 +15,7 @@ testGenData <- function()
   param <- list()
   dataParam <- mixtCompCluster(lm,
                                mcCluster,
-                               2)
+                               3)
   return(list(mcCluster,
               dataParam))
 }

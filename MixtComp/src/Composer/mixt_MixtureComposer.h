@@ -113,6 +113,9 @@ class MixtureComposer : public STK::IMixtureComposerBase
      * observed data during initialization
      */
     virtual void misClasStep(int iteration);
+    /** @brief Reinitialization of low probability samples
+     */
+    virtual void misClasStepInit(int iteration);
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/

@@ -21,8 +21,8 @@ dataGenerator6 <- function()
                           0., # missing
                           0.) # missing finite value
   
-  missingGaussian <- c(0.95, # present
-                       0.05, # missing
+  missingGaussian <- c(0.8, # present
+                       0.2, # missing
                        0., # missing interval
                        0., # missing left unbounded
                        0.) # missing right unbounded

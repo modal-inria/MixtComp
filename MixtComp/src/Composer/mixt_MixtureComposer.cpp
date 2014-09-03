@@ -27,6 +27,7 @@
 #include "Arrays/include/STK_Display.h"
 #include "Clustering/include/STK_Clust_Util.h"
 #include "../Various/mixt_Export.h"
+#include "STatistiK/include/STK_Law_Uniform.h"
 
 namespace mixt
 {
@@ -210,6 +211,54 @@ void MixtureComposer::misClasStep(int iteration)
     STK::Real sum2 =  (lnComp -= max).exp().dot(prop_);
     // compute likelihood of each sample for each component
     tik_.row(i) = (prop_ * lnComp.exp()) / sum2;
+  }
+}
+
+void MixtureComposer::misClasStepInit(int iteration)
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::misClasStepInit" << std::endl;
+#endif
+  STK::Array2DVector<STK::Real> proba(nbSample());
+  STK::Array2DVector<bool> reInit(nbSample(), false);
+  STK::Real threshold = 0.95;
+
+  // compute the marginal probability to sample a particular individual among others
+  for (int i = tik_.firstIdxRows(); i<= tik_.lastIdxRows(); ++i)
+  {
+    STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
+    for (int k = tik_.firstIdxCols(); k <= tik_.lastIdxCols(); ++k)
+    {
+      lnComp[k] = lnComponentProbability(i,k);
+    }
+    proba[i] =  lnComp.exp().dot(prop_);
+  }
+  proba = proba / proba.sum();
+
+  // select samples to be reinitialized, and uniformize t_ik
+  for (int i = tik_.firstIdxRows(); i<= tik_.lastIdxRows(); ++i)
+  {
+    STK::Real probaOutOfSample = pow(1. - proba[i], nbSample());
+    STK::Real sampleVal = STK::Law::Uniform::rand(0., 1.);
+#ifdef MC_DEBUG
+    std::cout << "\ti: " << i << std::endl;
+    std::cout << "\tproba[i]: " << proba[i] << std::endl;
+    std::cout << "\tprobaOutOfSample: " << probaOutOfSample << std::endl;
+    std::cout << "\tsampleVal: " << sampleVal << std::endl;
+#endif
+//    if (sampleVal < probaOutOfSample)
+    if (probaOutOfSample > threshold)
+    {
+      tik_.row(i) = 1. / nbCluster();
+      reInit[i] = true;
+    }
+  }
+
+  // reinitialize missing values
+  const STK::Array2DVector<bool>* p_reInit = &reInit;
+  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->initIndividual(p_reInit);
   }
 }
 

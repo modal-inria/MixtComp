@@ -102,6 +102,7 @@ bool SEMAlgo::run()
       std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;
 #endif
         p_model_->misClasStep(iter);
+//      p_model_->misClasStepInit(iter);
       }
     }
 
