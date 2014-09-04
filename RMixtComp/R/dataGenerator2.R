@@ -57,21 +57,23 @@ dataGenerator2 <- function()
     z[i] <- match(1, zDis[, i])
   }
   
-  categoricalGenerator(nbSamples,
-                       nbVariablesCat,
-                       nbModalities,
-                       z,
-                       categoricalParams,
-                       missingCategorical,
-                       minModality)
-  gaussianGenerator(nbSamples,
-                    nbVariablesGauss,
-                    z,
-                    gaussianParams,
-                    missingGaussian)
+  nbMissingCat <- categoricalGenerator(nbSamples,
+                                       nbVariablesCat,
+                                       nbModalities,
+                                       z,
+                                       categoricalParams,
+                                       missingCategorical,
+                                       minModality)
+  nbMissingGauss <- gaussianGenerator(nbSamples,
+                                      nbVariablesGauss,
+                                      z,
+                                      gaussianParams,
+                                      missingGaussian)
+  cat("nbMissingCat: ", nbMissingCat, "\n")
+  cat("nbMissingGauss: ", nbMissingGauss, "\n")
 
   write.table(z,
-            file = "classIn.csv",
+            file = "dataGen/classIn.csv",
             row.names=FALSE,
             col.names=FALSE)
 

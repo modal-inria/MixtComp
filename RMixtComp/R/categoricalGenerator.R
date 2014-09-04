@@ -31,6 +31,7 @@ missingCategoricalData <- function(data,
                                    missingParams,
                                    minModality)
 {
+  nbMissing <- 0
   for (i in 1:nrow(data))
   {
     for (j in 1:ncol(data))
@@ -42,6 +43,7 @@ missingCategoricalData <- function(data,
       if (missType == 2) # completely missing
       {
         data[i, j] <- "?"
+        nbMissing <- nbMissing + 1
       }
       else if (missType == 3) # missing finite value
       {
@@ -52,10 +54,12 @@ missingCategoricalData <- function(data,
                                   collapse = ","),
                             "}",
                             sep ="") # formatting for the data file
+        nbMissing <- nbMissing + 1
       }
     }
   }
-  return(data)
+  return(list(data = data,
+              nbMissing = nbMissing))
 }
 
 writeCategoricalData <- function(fileName,
@@ -78,7 +82,7 @@ writeCategoricalDataDescriptor <- function(nbVariables)
                     sep = "")
   
   write.table(data,
-              file = "categoricalDescriptor.csv",
+              file = "dataGen/categoricalDescriptor.csv",
               quote = FALSE,
               sep = ";",
               row.names = FALSE,
@@ -100,15 +104,18 @@ categoricalGenerator <- function(nbSamples,
                                   z,
                                   params,
                                   minModality)
-  writeGaussianData("categoricalData.complete.csv",
+  writeGaussianData("dataGen/categoricalData.complete.csv",
                     data)
-  data <- missingCategoricalData(data,
-                                 nbModalities,
-                                 z,
-                                 params,
-                                 missingParams,
-                                 minModality)
-  writeCategoricalData("categoricalData.csv",
+  retList <- missingCategoricalData(data,
+                                    nbModalities,
+                                    z,
+                                    params,
+                                    missingParams,
+                                    minModality)
+  data <- retList[["data"]]
+  nbMissing <- retList[["nbMissing"]]
+  writeCategoricalData("dataGen/categoricalData.csv",
                        data)
   writeCategoricalDataDescriptor(nbVariables)
+  return(nbMissing)
 }

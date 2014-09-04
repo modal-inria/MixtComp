@@ -2,7 +2,7 @@ testGenData <- function()
 {
   dataGenerator2()
 #   lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
-  lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"))
+  lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
 #   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
 #                 c("categoricalData.csv", "categoricalDescriptor.csv"))
   

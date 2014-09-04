@@ -25,6 +25,7 @@ missingGaussianData <- function(data,
                                 params,
                                 missingParams)
 {
+  nbMissing <- 0
   for (i in 1:nrow(data))
   {
     for (j in 1:ncol(data))
@@ -36,6 +37,7 @@ missingGaussianData <- function(data,
       if (missType == 2) # missing
       {
         data[i, j] <- "?"
+        nbMissing <- nbMissing + 1
       }
       else if (missType == 3) # missing interval
       {
@@ -47,6 +49,7 @@ missingGaussianData <- function(data,
                                   collapse = ":"),
                             "]",
                             sep ="") # formatting for the data file
+        nbMissing <- nbMissing + 1
       }
       else if (missType == 4) # missing left unbounded
       {
@@ -59,6 +62,7 @@ missingGaussianData <- function(data,
                                   collapse = ":"),
                             "]",
                             sep ="") # formatting for the data file
+        nbMissing <- nbMissing + 1
       }
       else if (missType == 5) # missing right unbounded
       {
@@ -71,10 +75,12 @@ missingGaussianData <- function(data,
                                   collapse = ":"),
                             "]",
                             sep ="") # formatting for the data file
+        nbMissing <- nbMissing + 1
       }
     }
   }
-  return(data)
+  return(list(data = data,
+              nbMissing = nbMissing))
 }
 
 writeGaussianData <- function(fileName,
@@ -97,7 +103,7 @@ writeGaussianDataDescriptor <- function(nbVariables)
                     sep = "")
   
   write.table(data,
-              file = "gaussianDescriptor.csv",
+              file = "dataGen/gaussianDescriptor.csv",
               quote = FALSE,
               sep = ";",
               row.names = FALSE,
@@ -115,13 +121,16 @@ gaussianGenerator <- function(nbSamples,
                                nbVariables,
                                z,
                                params)
-  writeGaussianData("gaussianData.complete.csv",
+  writeGaussianData("dataGen/gaussianData.complete.csv",
                     data)
-  data <- missingGaussianData(data,
-                              z,
-                              params,
-                              missingParams)
-  writeGaussianData("gaussianData.csv",
+  retList <- missingGaussianData(data,
+                                 z,
+                                 params,
+                                 missingParams)
+  data <- retList[["data"]]
+  nbMissing <- retList[["nbMissing"]]
+  writeGaussianData("dataGen/gaussianData.csv",
                     data)
   writeGaussianDataDescriptor(nbVariables)
+  return(nbMissing)
 }
