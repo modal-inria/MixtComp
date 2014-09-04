@@ -17,9 +17,9 @@ dataGenerator2 <- function()
 #                         0.1, # missing left unbounded
 #                         0.1) # missing right unbounded
 
-  missingCategorical <- c(1., # present
-                          0., # missing
-                          0.) # missing finite value
+  missingCategorical <- c(0.8, # present
+                          0.1, # missing
+                          0.1) # missing finite value
   missingGaussian <- c(0.8, # present
                        0.2, # missing
                        0., # missing interval

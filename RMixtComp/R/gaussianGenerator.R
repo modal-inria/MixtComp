@@ -14,7 +14,7 @@ completeGaussianData <- function(nbSamples,
                           sd   = params[2*z[i]  , j])
     }
   }
-  colnames(vals) <- paste("var",
+  colnames(vals) <- paste("gaussian",
                           1:nbVariables,
                           sep = "")
   return(vals)
@@ -115,6 +115,8 @@ gaussianGenerator <- function(nbSamples,
                                nbVariables,
                                z,
                                params)
+  writeGaussianData("gaussianData.complete.csv",
+                    data)
   data <- missingGaussianData(data,
                               z,
                               params,
