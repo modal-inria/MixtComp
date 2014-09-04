@@ -57,24 +57,34 @@ dataGenerator2 <- function()
     z[i] <- match(1, zDis[, i])
   }
   
-  nbMissingCat <- categoricalGenerator(nbSamples,
-                                       nbVariablesCat,
-                                       nbModalities,
-                                       z,
-                                       categoricalParams,
-                                       missingCategorical,
-                                       minModality)
-  nbMissingGauss <- gaussianGenerator(nbSamples,
-                                      nbVariablesGauss,
-                                      z,
-                                      gaussianParams,
-                                      missingGaussian)
-  cat("nbMissingCat: ", nbMissingCat, "\n")
-  cat("nbMissingGauss: ", nbMissingGauss, "\n")
+  retCat <- categoricalGenerator(nbSamples,
+                                 nbVariablesCat,
+                                 nbModalities,
+                                 z,
+                                 categoricalParams,
+                                 missingCategorical,
+                                 minModality)
+  retGauss <- gaussianGenerator(nbSamples,
+                                nbVariablesGauss,
+                                z,
+                                gaussianParams,
+                                missingGaussian)
+  listMissing <- union(retCat[["listMissingInd"]], retGauss[["listMissingInd"]])
+  nbMissing <- length(listMissing)
+  nbMissingVal <- retGauss[["nbMissingVal"]] + retCat[["nbMissingVal"]]
+  nbTotalVal <- (nbSamples * (nbVariablesCat + nbVariablesGauss))
+
+  fileConn <- file("dataGen/dataStat.txt")
+  cat("Missing individuals / Total individuals: ", nbMissing, " / ", nbSamples, "\n",
+      "Ratio missing individuals: ", nbMissing / nbSamples, "\n",
+      "Missing values / Total values: ", nbMissingVal, " / ", nbTotalVal, "\n",
+      "Ratio missing values: ", nbMissing / nbTotalVal, "\n",
+      file = fileConn,
+      sep = "")
+  close(fileConn)
 
   write.table(z,
             file = "dataGen/classIn.csv",
             row.names=FALSE,
             col.names=FALSE)
-
 }

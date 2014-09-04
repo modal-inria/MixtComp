@@ -31,10 +31,18 @@ missingCategoricalData <- function(data,
                                    missingParams,
                                    minModality)
 {
-  nbMissing <- 0
+  listMissingInd <- list()
+  nbMissingVal <- 0
   for (i in 1:nrow(data))
   {
-    for (j in 1:ncol(data))
+    nbVar <- ncol(data)
+    nbSampleVar <- sample(0:(nbVar - 1), 1) # number of modalities to be drawn
+    sampledVar <- sort(sample(nbVar, nbSampleVar)) # modalities drawn
+    if (length(sampledVar) > 0)
+    {
+      listMissingInd <- append(listMissingInd, i)
+    }
+    for (j in sampledVar)
     {
       missType <- match(1,
                         rmultinom(1,
@@ -43,7 +51,7 @@ missingCategoricalData <- function(data,
       if (missType == 2) # completely missing
       {
         data[i, j] <- "?"
-        nbMissing <- nbMissing + 1
+        nbMissingVal <- nbMissingVal + 1
       }
       else if (missType == 3) # missing finite value
       {
@@ -54,12 +62,13 @@ missingCategoricalData <- function(data,
                                   collapse = ","),
                             "}",
                             sep ="") # formatting for the data file
-        nbMissing <- nbMissing + 1
+        nbMissingVal <- nbMissingVal + 1
       }
     }
   }
   return(list(data = data,
-              nbMissing = nbMissing))
+              listMissingInd = listMissingInd,
+              nbMissingVal = nbMissingVal))
 }
 
 writeCategoricalData <- function(fileName,
@@ -112,10 +121,9 @@ categoricalGenerator <- function(nbSamples,
                                     params,
                                     missingParams,
                                     minModality)
-  data <- retList[["data"]]
-  nbMissing <- retList[["nbMissing"]]
   writeCategoricalData("dataGen/categoricalData.csv",
-                       data)
+                       retList[["data"]])
   writeCategoricalDataDescriptor(nbVariables)
-  return(nbMissing)
+  return(list(listMissingInd = retList[["listMissingInd"]],
+              nbMissingVal = retList[["nbMissingVal"]]))
 }
