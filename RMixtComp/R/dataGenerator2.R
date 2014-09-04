@@ -17,9 +17,9 @@ dataGenerator2 <- function()
 #                         0.1, # missing left unbounded
 #                         0.1) # missing right unbounded
 
-  missingCategorical <- c(1., # present
-                          0., # missing
-                          0.) # missing finite value
+  missingCategorical <- c(0.8, # present
+                          0.1, # missing
+                          0.1) # missing finite value
   missingGaussian <- c(0.8, # present
                        0.2, # missing
                        0., # missing interval
@@ -57,22 +57,34 @@ dataGenerator2 <- function()
     z[i] <- match(1, zDis[, i])
   }
   
-  categoricalGenerator(nbSamples,
-                       nbVariablesCat,
-                       nbModalities,
-                       z,
-                       categoricalParams,
-                       missingCategorical,
-                       minModality)
-  gaussianGenerator(nbSamples,
-                    nbVariablesGauss,
-                    z,
-                    gaussianParams,
-                    missingGaussian)
+  retCat <- categoricalGenerator(nbSamples,
+                                 nbVariablesCat,
+                                 nbModalities,
+                                 z,
+                                 categoricalParams,
+                                 missingCategorical,
+                                 minModality)
+  retGauss <- gaussianGenerator(nbSamples,
+                                nbVariablesGauss,
+                                z,
+                                gaussianParams,
+                                missingGaussian)
+  listMissing <- union(retCat[["listMissingInd"]], retGauss[["listMissingInd"]])
+  nbMissing <- length(listMissing)
+  nbMissingVal <- retGauss[["nbMissingVal"]] + retCat[["nbMissingVal"]]
+  nbTotalVal <- (nbSamples * (nbVariablesCat + nbVariablesGauss))
+
+  fileConn <- file("dataGen/dataStat.txt")
+  cat("Missing individuals / Total individuals: ", nbMissing, " / ", nbSamples, "\n",
+      "Ratio missing individuals: ", nbMissing / nbSamples, "\n",
+      "Missing values / Total values: ", nbMissingVal, " / ", nbTotalVal, "\n",
+      "Ratio missing values: ", nbMissing / nbTotalVal, "\n",
+      file = fileConn,
+      sep = "")
+  close(fileConn)
 
   write.table(z,
-            file = "classIn.csv",
+            file = "dataGen/classIn.csv",
             row.names=FALSE,
             col.names=FALSE)
-
 }

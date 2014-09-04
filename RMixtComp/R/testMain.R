@@ -2,7 +2,7 @@ testGenData <- function()
 {
   dataGenerator6()
 #   lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
-  lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"))
+  lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
 #   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
 #                 c("categoricalData.csv", "categoricalDescriptor.csv"))
   
@@ -22,8 +22,14 @@ testGenData <- function()
 
 exportMap <- function(nbIterations)
 {
+  classIn <- read.table("dataGen/classIn.csv",
+                        sep = ";")
+  nbInd <- length(classIn$V1)
+  
   for (i in -1:(nbIterations-1))
   {
+    nbMisClass <- 0
+    
     fileNamez_i <- paste("log/composer-",
                          i,
                          "-z_i.csv",
@@ -56,6 +62,14 @@ exportMap <- function(nbIterations)
                                sep = ""),
                          sep = ";")
     
+    for (ind in 1:nbInd)
+    {
+      if ((z_i$V1[ind] + 1) != classIn$V1[ind])
+      {
+        nbMisClass = nbMisClass + 1
+      }
+    }
+    
     colPool <- c("red", "blue", "green")
     png(paste("graph/", i, ".png", sep = ""),
         width = 1000,
@@ -65,10 +79,11 @@ exportMap <- function(nbIterations)
 #         ylim = c(-150., 150.),
 #         xlim = c(-150., 150.),
          col = colPool[z_i$V1 + 1])
-    
     text(-20,
          0,
-         paste("Var 1:\n",
+         paste("Misclassified / Total: ", nbMisClass, " / ", nbInd, "\n",
+               "Misclassification rate: ", nbMisClass / nbInd, "\n",
+               "Var 1:\n",
                "k=1 - exp: ", param1$V1[1], "\n",
                "k=1 - sd: ", param1$V1[2], "\n",
                "k=2 - exp: ", param1$V1[3], "\n",
@@ -77,7 +92,8 @@ exportMap <- function(nbIterations)
                "k=1 - exp: ", param2$V1[1], "\n",
                "k=1 - sd: ", param2$V1[2], "\n",
                "k=2 - exp: ", param2$V1[3], "\n",
-               "k=2 - sd: ", param2$V1[4], "\n"),
+               "k=2 - sd: ", param2$V1[4], "\n",
+               sep = ""),
          adj = 0.)
     
     dev.off()

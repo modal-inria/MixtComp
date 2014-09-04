@@ -1,3 +1,104 @@
+completeCategoricalData <- function(nbSamples,
+                                    nbVariables,
+                                    nbModalities,
+                                    z,
+                                    params,
+                                    minModality)
+{
+  vals <- matrix(nrow = nbSamples,
+                 ncol = nbVariables)
+  for (i in 1:nbSamples)
+  {
+    for (j in 1:nbVariables)
+    {
+      sampleVals <- rmultinom(1,
+                              1,
+                              params[(nbModalities * (z[i] - 1) + 1) :
+                                       (nbModalities *  z[i]         ) , j])
+      vals[i, j] <- match(1, sampleVals) + minModality - 1
+    }
+  }
+  colnames(vals) <- paste("categorical",
+                          1:nbVariables,
+                          sep = "")
+  return(vals)
+}
+
+missingCategoricalData <- function(data,
+                                   nbModalities,
+                                   z,
+                                   params,
+                                   missingParams,
+                                   minModality)
+{
+  listMissingInd <- list()
+  nbMissingVal <- 0
+  for (i in 1:nrow(data))
+  {
+    nbVar <- ncol(data)
+    nbSampleVar <- sample(0:(nbVar - 1), 1) # number of modalities to be drawn
+    sampledVar <- sort(sample(nbVar, nbSampleVar)) # modalities drawn
+    if (length(sampledVar) > 0)
+    {
+      listMissingInd <- append(listMissingInd, i)
+    }
+    for (j in sampledVar)
+    {
+      missType <- match(1,
+                        rmultinom(1,
+                                  1,
+                                  missingParams))
+      if (missType == 2) # completely missing
+      {
+        data[i, j] <- "?"
+        nbMissingVal <- nbMissingVal + 1
+      }
+      else if (missType == 3) # missing finite value
+      {
+        nbSampleMod <- sample(nbModalities, 1) # number of modalities to be drawn
+        modalities <- sort(sample(minModality : (nbModalities + minModality - 1), nbSampleMod)) # modalities drawn
+        data[i, j] <- paste("{",
+                            paste(modalities,
+                                  collapse = ","),
+                            "}",
+                            sep ="") # formatting for the data file
+        nbMissingVal <- nbMissingVal + 1
+      }
+    }
+  }
+  return(list(data = data,
+              listMissingInd = listMissingInd,
+              nbMissingVal = nbMissingVal))
+}
+
+writeCategoricalData <- function(fileName,
+                                 data)
+{
+  write.table(data,
+              file = fileName,
+              quote = FALSE,
+              sep = ";",
+              row.names = FALSE,
+              dec = ".")
+}
+
+writeCategoricalDataDescriptor <- function(nbVariables)
+{
+  data <- matrix(nrow = 2, ncol = nbVariables)
+  data[1,] <- rep("Categorical_pjk", nbVariables)
+  data[2,] <- paste("categorical",
+                    1:nbVariables,
+                    sep = "")
+  
+  write.table(data,
+              file = "dataGen/categoricalDescriptor.csv",
+              quote = FALSE,
+              sep = ";",
+              row.names = FALSE,
+              col.names = FALSE,
+              dec = ".")
+}
+
 categoricalGenerator <- function(nbSamples,
                                  nbVariables,
                                  nbModalities,
@@ -5,82 +106,24 @@ categoricalGenerator <- function(nbSamples,
                                  params,
                                  missingParams,
                                  minModality)
-{  
-  compositeFile <- file(description = "categoricalData.csv",
-                        open = "w",
-                        blocking = TRUE,
-                        encoding = getOption("encoding"),
-                        raw = FALSE)
-  
-  descriptorFile <- file(description = "categoricalDescriptor.csv",
-                         open = "w",
-                         blocking = TRUE,
-                         encoding = getOption("encoding"),
-                         raw = FALSE)
-  
-  vals <- paste("var",
-                1:nbVariables,
-                sep = "")
-  cat(vals,
-      sep = ";",
-      file = compositeFile)
-  cat("\n",
-      file = compositeFile)
-  vals <- rep("Categorical_pjk",
-              nbVariables)
-  
-  cat(vals,
-      sep = ";",
-      file = descriptorFile)
-  cat("\n",
-      file = descriptorFile)
-  vals <- paste("categorical",
-                1:nbVariables,
-                sep = "")
-  cat(vals,
-      sep = ";",
-      file = descriptorFile)
-  cat("\n",
-      file = descriptorFile)
-  
-  for (i in 1:nbSamples)
-  {
-    vals <- list()
-    for (j in 1:nbVariables)
-    {
-      missType <- match(1,
-                        rmultinom(1,
-                                  1,
-                                  missingParams))
-      if (missType == 1) # normal, no missing value
-      {
-        sampleVals <- rmultinom(1,
-                                1,
-                                params[(nbModalities * (z[i] - 1) + 1) :
-                                       (nbModalities *  z[i]         ) , j])
-        vals[[j]] <- match(1, sampleVals) + minModality - 1
-      }
-      else if (missType == 2) # completely missing
-      {
-        vals[[j]] <- "?"
-      }
-      else if (missType == 3) # missing finite value
-      {
-        nbSampleMod <- sample(nbModalities, 1) # number of modalities to be drawn
-        modalities <- sort(sample(minModality : (nbModalities + minModality - 1), nbSampleMod)) # modalities drawn
-        vals[[j]] <- paste("{",
-                           paste(modalities,
-                                 collapse = ","),
-                           "}",
-                           sep ="") # formatting for the data file
-      }
-    }
-    cat(as.character(vals),
-        sep = ";",
-        file = compositeFile)
-    cat("\n",
-        file = compositeFile)
-  }
-  close(compositeFile)
-  close(descriptorFile)
+{
+  data <- completeCategoricalData(nbSamples,
+                                  nbVariables,
+                                  nbModalities,
+                                  z,
+                                  params,
+                                  minModality)
+  writeGaussianData("dataGen/categoricalData.complete.csv",
+                    data)
+  retList <- missingCategoricalData(data,
+                                    nbModalities,
+                                    z,
+                                    params,
+                                    missingParams,
+                                    minModality)
+  writeCategoricalData("dataGen/categoricalData.csv",
+                       retList[["data"]])
+  writeCategoricalDataDescriptor(nbVariables)
+  return(list(listMissingInd = retList[["listMissingInd"]],
+              nbMissingVal = retList[["nbMissingVal"]]))
 }
