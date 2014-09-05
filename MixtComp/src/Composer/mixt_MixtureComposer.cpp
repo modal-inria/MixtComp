@@ -28,6 +28,7 @@
 #include "Clustering/include/STK_Clust_Util.h"
 #include "../Various/mixt_Export.h"
 #include "STatistiK/include/STK_Law_Uniform.h"
+#include "../Various/mixt_Constants.h"
 
 namespace mixt
 {
@@ -221,7 +222,6 @@ void MixtureComposer::misClasStepInit(int iteration)
 #endif
   STK::Array2DVector<STK::Real> proba(nbSample());
   STK::Array2DVector<bool> reInit(nbSample(), false);
-  STK::Real threshold = 0.95;
 
   // compute the marginal probability to sample a particular individual among others
   for (int i = tik_.firstIdxRows(); i<= tik_.lastIdxRows(); ++i)
@@ -247,7 +247,7 @@ void MixtureComposer::misClasStepInit(int iteration)
     std::cout << "\tsampleVal: " << sampleVal << std::endl;
 #endif
 //    if (sampleVal < probaOutOfSample)
-    if (probaOutOfSample > threshold)
+    if (probaOutOfSample > probaNonMisClass)
     {
       tik_.row(i) = 1. / nbCluster();
       reInit[i] = true;

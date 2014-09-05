@@ -24,21 +24,20 @@
  **/
 
 #include "mixt_SEMAlgo.h"
+#include "../Various/mixt_Constants.h"
 
 namespace mixt
 {
 
-SEMAlgo::SEMAlgo(int nbIterMax, int zMin, int nbSamplingAttempts) :
+SEMAlgo::SEMAlgo(int nbIterMax, int nbSamplingAttempts) :
     p_model_(0),
     nbIterMax_(nbIterMax),
-    zMin_(zMin),
     nbSamplingAttempts_(nbSamplingAttempts)
 {}
 
 SEMAlgo::SEMAlgo(SEMAlgo const& algo) :
     p_model_(algo.p_model_),
     nbIterMax_(algo.nbIterMax_),
-    zMin_(algo.zMin_),
     nbSamplingAttempts_(algo.nbSamplingAttempts_)
 {}
 
@@ -68,7 +67,7 @@ bool SEMAlgo::run()
 #ifdef MC_DEBUG
         std::cout << "\titerSample: " << iterSample << std::endl;
 #endif
-        if (p_model_->sStep() > zMin_)
+        if (p_model_->sStep() > minIndPerClass)
           break;
         else
           return false;
@@ -98,11 +97,14 @@ bool SEMAlgo::run()
 //      if (p_model_->state() == STK::Clust::initialization_)
       if (p_model_->state() == STK::Clust::shortRun_)
       {
+        if((iter / moduloMisClass > 0) && (iter & moduloMisClass == 0))
+        {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;
 #endif
-        p_model_->misClasStep(iter);
-//      p_model_->misClasStepInit(iter);
+  //        p_model_->misClasStep(iter);
+          p_model_->misClasStepInit(iter);
+        }
       }
     }
 

@@ -17,23 +17,22 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: August 7, 2014
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
+ *  Created on: Sept 4, 2014
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_CONSTANTS_H_
-#define MIXT_CONSTANTS_H_
+/** @file mixt_Constant.cpp
+ *  @brief In this file we define various constants
+ **/
 
-#include "STKernel/include/STK_Real.h"
+#include "mixt_Constants.h"
 
 namespace mixt
 {
 
-extern const STK::Real minStat; // threshold to have equiprobabilities in categorical sampler
-extern const STK::Real probaNonMisClass; // minimal in-sample probability to avoid rejection
-extern const int moduloMisClass; // modulo used to trigger misclassification step
-extern const int minIndPerClass; // minimal number of individual in a class to accept a z sampling
+const STK::Real minStat = 1.e-5; // threshold to have equiprobabilities in categorical sampler
+const STK::Real probaNonMisClass = 0.95; // minimal in-sample probability to avoid rejection
+const int moduloMisClass = 100; // modulo used to trigger misclassification step
+const int minIndPerClass = 3; // minimal number of individual in a class to accept a z sampling
 
 } // namespace mixt
-
-#endif /* MIXT_CONSTANTS_H_ */

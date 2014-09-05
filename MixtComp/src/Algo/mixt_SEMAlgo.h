@@ -35,7 +35,7 @@ class SEMAlgo
 {
   public:
     /** default constructor */
-    SEMAlgo(int nbIterMax, int zMin, int nbSamplingAttempts);
+    SEMAlgo(int nbIterMax, int nbSamplingAttempts);
     /** Copy constructor.
      *  @param algo the algorithm to copy */
     SEMAlgo(SEMAlgo const& algo);
@@ -51,8 +51,6 @@ class SEMAlgo
     MixtureComposer* p_model_;
     /** number of iterations of the algorithm */
     int nbIterMax_;
-    /** minimal number of elements per class */
-    int zMin_;
     /** number of attempts before giving up on sampling */
     int nbSamplingAttempts_;
 };

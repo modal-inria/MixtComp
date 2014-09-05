@@ -40,7 +40,6 @@ SemStrategy::SemStrategy(mixt::MixtureComposer*& p_composer,
                          int nbIter,
                          int nbGibbsBurnInIter,
                          int nbGibbsIter,
-                         int zMin,
                          int nbSamplingAttempts) :
     p_composer_(p_composer),
     nbTry_(nbTry),
@@ -52,8 +51,8 @@ SemStrategy::SemStrategy(mixt::MixtureComposer*& p_composer,
                                    STK::Clust::semAlgo_,
                                    0,
                                    0.);
-  p_burnInAlgo_ = new SEMAlgo(nbBurnInIter, zMin, nbSamplingAttempts);
-  p_longAlgo_   = new SEMAlgo(nbIter      , zMin, nbSamplingAttempts);
+  p_burnInAlgo_ = new SEMAlgo(nbBurnInIter, nbSamplingAttempts);
+  p_longAlgo_   = new SEMAlgo(nbIter      , nbSamplingAttempts);
 }
 
 /** copy constructor */

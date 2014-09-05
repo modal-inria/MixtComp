@@ -80,7 +80,6 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                              mcStrategy.slot("nbIter"), // number of iterations
                              mcStrategy.slot("nbGibbsBurnInIter"), // number of iterations for Gibbs sampler
                              mcStrategy.slot("nbGibbsIter"), // number of iterations for Gibbs sampler
-                             3, // minimal number of element per class
                              10); // number of sampling attempts for lowly populated classes
 
   // run the strategy

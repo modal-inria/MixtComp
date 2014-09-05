@@ -56,7 +56,6 @@ class SemStrategy
                 int nbIter,
                 int nbGibbsBurnInIter,
                 int nbGibbsIter,
-                int zMin,
                 int nbSamplingAttempts);
 
     /** copy constructor
