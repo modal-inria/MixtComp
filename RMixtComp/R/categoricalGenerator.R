@@ -36,12 +36,9 @@ missingCategoricalData <- function(data,
   for (i in 1:nrow(data))
   {
     nbVar <- ncol(data)
-    nbSampleVar <- sample(0:(nbVar - 1), 1) # number of modalities to be drawn
+    nbSampleVar <- sample(nbVar - 1, 1) # number of modalities to be drawn
     sampledVar <- sort(sample(nbVar, nbSampleVar)) # modalities drawn
-    if (length(sampledVar) > 0)
-    {
-      listMissingInd <- append(listMissingInd, i)
-    }
+    isMissing <- F
     for (j in sampledVar)
     {
       missType <- match(1,
@@ -51,6 +48,7 @@ missingCategoricalData <- function(data,
       if (missType == 2) # completely missing
       {
         data[i, j] <- "?"
+        isMissing <- T
         nbMissingVal <- nbMissingVal + 1
       }
       else if (missType == 3) # missing finite value
@@ -62,8 +60,13 @@ missingCategoricalData <- function(data,
                                   collapse = ","),
                             "}",
                             sep ="") # formatting for the data file
+        isMissing <- T
         nbMissingVal <- nbMissingVal + 1
       }
+    }
+    if (isMissing == T)
+    {
+      listMissingInd <- append(listMissingInd, i)
     }
   }
   return(list(data = data,

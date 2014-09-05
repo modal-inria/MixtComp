@@ -1,13 +1,13 @@
 testGenData <- function()
 {
-  dataGenerator6()
+  dataGenerator2()
 #   lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
   lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
 #   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
 #                 c("categoricalData.csv", "categoricalDescriptor.csv"))
   
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
-                                  20, # nbBurnInIter
+                                  1000, # nbBurnInIter
                                   100, # nbIter
                                   20, # nbGibbsBurnInIter
                                   100) # nbGibbsIter
@@ -15,7 +15,7 @@ testGenData <- function()
   param <- list()
   dataParam <- mixtCompCluster(lm,
                                mcCluster,
-                               3)
+                               2)
   return(list(mcCluster,
               dataParam))
 }
