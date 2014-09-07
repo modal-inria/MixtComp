@@ -246,8 +246,8 @@ void MixtureComposer::misClasStepInit(int iteration)
     std::cout << "\tprobaOutOfSample: " << probaOutOfSample << std::endl;
     std::cout << "\tsampleVal: " << sampleVal << std::endl;
 #endif
-//    if (sampleVal < probaOutOfSample)
-    if (probaOutOfSample > probaNonMisClass)
+    if (sampleVal < probaOutOfSample)
+//    if (probaOutOfSample > probaNonMisClass)
     {
       tik_.row(i) = 1. / nbCluster();
       reInit[i] = true;

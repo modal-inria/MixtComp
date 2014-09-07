@@ -2,7 +2,7 @@ dataGenerator2 <- function()
 {
   nbSamples <- 500
   
-  nbVariableCat <- 2
+  nbVariableCat <- 0
   nbVariableGauss <- 2
   minModality <- 1
   nbModalities <- 3
@@ -49,8 +49,8 @@ dataGenerator2 <- function()
   }
   if (nbVariableGauss > 0)
   {
-    missingGaussian <- c(0.7, # present
-                         0.3, # missing
+    missingGaussian <- c(0.5, # present
+                         0.5, # missing
                          0., # missing interval
                          0., # missing left unbounded
                          0.) # missing right unbounded

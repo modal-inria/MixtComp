@@ -1,6 +1,6 @@
 testGenData <- function()
 {
-  dataGenerator2()
+#  dataGenerator2()
 #   lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
   lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
 #   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
@@ -98,6 +98,38 @@ exportMap <- function(nbIterations)
     
     dev.off()
   }
+}
+
+exportGraph2 <- function(nbIterations)
+{
+  classIn <- read.table("dataGen/classIn.csv",
+                        sep = ";")
+  nbInd <- length(classIn$V1)
+  
+  misClass <- vector(mode = "integer", length = nbIterations)
+  
+  for (i in -1:(nbIterations-1))
+  {
+    fileNamez_i <- paste("log/composer-",
+                         i,
+                         "-z_i.csv",
+                         sep = "")
+    z_i <- read.table(fileNamez_i,
+                      sep = ";")
+    
+    nbMisClass <- 0
+    for (ind in 1:nbInd)
+    {
+      if ((z_i$V1[ind] + 1) != classIn$V1[ind])
+      {
+        nbMisClass = nbMisClass + 1
+      }
+    }
+    misClass[i + 1] <- nbMisClass
+  }
+  plot(misClass,
+       ylim = c(0., 50.),
+       type = "l")
 }
 
 testGeyser <- function()

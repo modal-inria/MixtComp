@@ -97,13 +97,20 @@ bool SEMAlgo::run()
 //      if (p_model_->state() == STK::Clust::initialization_)
       if (p_model_->state() == STK::Clust::shortRun_)
       {
-        if((iter / moduloMisClass > 0) && (iter & moduloMisClass == 0))
+#ifdef MC_DEBUG
+      std::cout << "iter: " << iter << std::endl;
+      std::cout << "moduloMisClass: " << moduloMisClass << std::endl;
+      std::cout << "iter / moduloMisClass: " << (iter / moduloMisClass) << std::endl;
+      std::cout << "iter % moduloMisClass: " << (iter % moduloMisClass) << std::endl;
+#endif
+//        if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
+      if(iter == 10)
         {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;
 #endif
-  //        p_model_->misClasStep(iter);
-          p_model_->misClasStepInit(iter);
+          p_model_->misClasStep(iter);
+  //        p_model_->misClasStepInit(iter);
         }
       }
     }
