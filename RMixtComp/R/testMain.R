@@ -1,5 +1,24 @@
 testGenData <- function()
 {
+  missingCategorical <- c(0.8, # present
+                          0.1, # missing
+                          0.1) # missing finite value
+  missingGaussian <- c(0.5, # present
+                       0.5, # missing
+                       0., # missing interval
+                       0., # missing left unbounded
+                       0.) # missing right unbounded
+  dataGenerator(c(0.5, 0.5), # proportions
+                500, # nbSamples
+                0, # nbVariablesCat
+                0, # nbModalities
+                2, # nbVariablesGauss
+                50., # maxMean
+                10., # maxVar
+                2, # nbClasses
+                missingCategorical, # missingCategorical
+                missingGaussian) # missingGaussian
+  
 #  dataGenerator2()
 #   lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
   lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
@@ -7,7 +26,7 @@ testGenData <- function()
 #                 c("categoricalData.csv", "categoricalDescriptor.csv"))
   
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
-                                  1000, # nbBurnInIter
+                                  20, # nbBurnInIter
                                   100, # nbIter
                                   20, # nbGibbsBurnInIter
                                   100) # nbGibbsIter
