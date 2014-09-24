@@ -4,10 +4,10 @@ testGenData <- function()
                           0.1, # missing
                           0.1) # missing finite value
   missingGaussian <- c(0.5, # present
-                       0.5, # missing
-                       0., # missing interval
-                       0., # missing left unbounded
-                       0.) # missing right unbounded
+                       0.1, # missing
+                       0.1, # missing interval
+                       0.1, # missing left unbounded
+                       0.1) # missing right unbounded
   dataGenerator(c(0.5, 0.5), # proportions
                 500, # nbSamples
                 0, # nbVariablesCat
@@ -19,7 +19,6 @@ testGenData <- function()
                 missingCategorical, # missingCategorical
                 missingGaussian) # missingGaussian
   
-#  dataGenerator2()
 #   lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
   lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
 #   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),

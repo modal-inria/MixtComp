@@ -165,27 +165,28 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
       STK::Real supBound(iv_missingIntervals_->second.second);
       mean  = p_param_->elt(2*p_zi_->elt(currPos.first)    , currPos.second);
       sd    = p_param_->elt(2*p_zi_->elt(currPos.first) + 1, currPos.second);
+
+      STK::Real lower = (infBound - mean) / sd;
+      STK::Real upper = (supBound - mean) / sd;
+      STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
+
 #ifdef MC_DEBUG
       std::cout << "\t*iv_missingIntervals_" << std::endl;
       std::cout  << "\tcurrPos.first: " << currPos.first << ", currPos.second: " << currPos.second << std::endl;
       std::cout << "\tinfBound: " << infBound << ", supBound: " << supBound << std::endl;
       std::cout << "\tz_i: " << p_zi_->elt(currPos.first) << std::endl;
       std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
+      std::cout << "\tlower: " << lower << ", upper: " << upper << ", alpha: " << alpha << std::endl;
 #endif
-      STK::Real lower = (infBound - mean) / sd;
-      STK::Real upper = (supBound - mean) / sd;
-      STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
 
-      if (alpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(lower / 2) / (upper - lower))
+      if (alpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(pow(lower, 2) / 2) / (upper - lower))
       {
         do
         {
-          z = lbSampler(lower);
 #ifdef MC_DEBUG
           std::cout << "\talpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(lower / 2) / (upper - lower)" << std::endl;
-          std::cout << "\tupper" << upper << std::endl;
-          std::cout << "\tz" << z << std::endl;
 #endif
+          z = lbSampler(lower);
         }
         while(upper < z);
       }
@@ -241,6 +242,9 @@ GaussianSamplerIterator::RetValue GaussianSamplerIterator::operator*() const
 // left bounded sampler
 STK::Real GaussianSamplerIterator::lbSampler(STK::Real lower) const
 {
+#ifdef MC_DEBUG
+    std::cout << "GaussianSamplerIterator::lbSampler(), entering" << std::endl;
+#endif
   STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
   STK::Real z, u, rho;
   if (lower < 0)
@@ -251,7 +255,6 @@ STK::Real GaussianSamplerIterator::lbSampler(STK::Real lower) const
 #ifdef MC_DEBUG
     std::cout << "GaussianSamplerIterator::lbSampler()" << std::endl;
     std::cout << "\tlower < 0" << std::endl;
-    std::cout << "\tlower: " << lower << std::endl;
     std::cout << "\tz: " << z << std::endl;
 #endif
     }
