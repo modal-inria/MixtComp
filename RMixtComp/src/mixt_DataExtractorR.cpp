@@ -91,7 +91,7 @@ void DataExtractorR::exportVals(std::string idName,
 #endif
     int pos;
     p_statMissing->row(i).maxElt(pos);
-    dataR(p_posMissing->elt(i, 0), p_posMissing->elt(i, 1)) = pos;  // imputation by the mode
+    dataR(p_posMissing->elt(i, 0), p_posMissing->elt(i, 1)) = pos + 1;  // imputation by the mode
     for (int j = 0; j < p_posMissing->sizeCols(); ++j)
     {
       posMissingR(i, j) = p_posMissing->elt(i, j) + 1; // R matrices cols and rows start at 1

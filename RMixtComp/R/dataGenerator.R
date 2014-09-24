@@ -1,6 +1,7 @@
 dataGenerator <- function(proportions,
                           nbSamples,
                           nbVariableCat,
+                          minModality,
                           nbModalities,
                           nbVariableGauss,
                           maxMean,
@@ -38,6 +39,7 @@ dataGenerator <- function(proportions,
     }
     write.table(categoricalParams,
                 file = "dataGen/categoricalParams.csv",
+                sep = ";",
                 row.names=FALSE,
                 col.names=FALSE)
     retList <- categoricalGenerator(nbSamples,
@@ -66,6 +68,7 @@ dataGenerator <- function(proportions,
     }
     write.table(gaussianParams,
                 file = "dataGen/gaussianParams.csv",
+                sep = ";",
                 row.names=FALSE,
                 col.names=FALSE)
     retList <- gaussianGenerator(nbSamples,

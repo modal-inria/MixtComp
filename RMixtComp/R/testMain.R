@@ -10,8 +10,9 @@ testGenData <- function()
                        0.1) # missing right unbounded
   dataGenerator(c(0.5, 0.5), # proportions
                 500, # nbSamples
-                0, # nbVariablesCat
-                0, # nbModalities
+                6, # nbVariablesCat
+                1, # minModality
+                3, # nbModalities
                 2, # nbVariablesGauss
                 50., # maxMean
                 10., # maxVar
@@ -38,6 +39,34 @@ testGenData <- function()
               dataParam))
 }
 
+exportData <- function(dataOut)
+{
+  write.table(dataOut[[1]]@results@partition,
+              file = "out/classOut.csv",
+              row.names=FALSE,
+              col.names=FALSE)
+  
+  write.table(data.frame(categorical1 = dataOut[[2]]$data$categorical1$completed),
+              file = "out/categorical1data.csv",
+              row.names = FALSE,
+              col.names = FALSE)
+  write.table(data.frame(categorical1 = dataOut[[2]]$param$categorical1),
+              file = "out/categorical1param.csv",
+              sep = ";",
+              row.names = FALSE,
+              col.names = TRUE)
+  
+  write.table(data.frame(gaussian1 = dataOut[[2]]$data$gaussian1$completed),
+              file = "out/gaussian1data.csv",
+              row.names = FALSE,
+              col.names = FALSE)
+  write.table(data.frame(categorical1 = dataOut[[2]]$param$gaussian1),
+              file = "out/gaussian1param.csv",
+              sep = ";",
+              row.names = FALSE,
+              col.names = TRUE)
+}
+
 exportMap <- function(nbIterations)
 {
   classIn <- read.table("dataGen/classIn.csv",
@@ -48,33 +77,33 @@ exportMap <- function(nbIterations)
   {
     nbMisClass <- 0
     
-    fileNamez_i <- paste("log/composer-",
+    fileNamez_i <- paste("out/log/composer-",
                          i,
                          "-z_i.csv",
                          sep = "")
     z_i <- read.table(fileNamez_i,
                       sep = ";")
     
-    fileNameVar1 <- paste("log/gaussian1-",
+    fileNameVar1 <- paste("out/log/gaussian1-",
                           i,
                           "-data.csv",
                           sep = "")
     var1 <- read.table(fileNameVar1,
                        sep = ";")
     
-    fileNameVar2 <- paste("log/gaussian2-",
+    fileNameVar2 <- paste("out/log/gaussian2-",
                           i,
                           "-data.csv",
                           sep = "")
     var2 <- read.table(fileNameVar2,
                        sep = ";")
     
-    param1 <- read.table(paste("log/gaussian1-",
+    param1 <- read.table(paste("out/log/gaussian1-",
                                i,
                                "-param.csv",
                                sep = ""),
                          sep = ";")
-    param2 <- read.table(paste("log/gaussian2-",
+    param2 <- read.table(paste("out/log/gaussian2-",
                                i,
                                "-param.csv",
                                sep = ""),
@@ -89,7 +118,7 @@ exportMap <- function(nbIterations)
     }
     
     colPool <- c("red", "blue", "green")
-    png(paste("graph/", i, ".png", sep = ""),
+    png(paste("out/graph/", i, ".png", sep = ""),
         width = 1000,
         height = 1000)
     plot(var1$V1,
@@ -128,7 +157,7 @@ exportGraph2 <- function(nbIterations)
   
   for (i in -1:(nbIterations-1))
   {
-    fileNamez_i <- paste("log/composer-",
+    fileNamez_i <- paste("out/log/composer-",
                          i,
                          "-z_i.csv",
                          sep = "")
