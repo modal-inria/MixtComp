@@ -19,10 +19,10 @@ testGenData <- function()
                 missingCategorical, # missingCategorical
                 missingGaussian) # missingGaussian
   
-#   lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
-  lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
-#   lm <- getData(c("gaussianData.csv", "gaussianDescriptor.csv"),
-#                 c("categoricalData.csv", "categoricalDescriptor.csv"))
+#  lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
+#  lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
+  lm <- getData(c("dataGen/gaussianData.csv"   , "dataGen/gaussianDescriptor.csv"   ),
+                c("dataGen/categoricalData.csv", "dataGen/categoricalDescriptor.csv"))
   
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
                                   20, # nbBurnInIter

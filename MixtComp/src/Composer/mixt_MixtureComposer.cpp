@@ -266,7 +266,7 @@ void MixtureComposer::storeShortRun(int iteration)
 {
 #ifdef MC_DEBUG
   std::stringstream fileName;
-  fileName << "log/composer-";
+  fileName << "out/log/composer-";
   fileName << iteration;
   fileName << "-z_i.csv";
   writeDataCsv(fileName.str(), p_zi());

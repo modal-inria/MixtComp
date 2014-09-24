@@ -253,7 +253,7 @@ class MixtureBridge : public mixt::IMixture
     {
 #ifdef MC_DEBUG
       std::stringstream fileNameA;
-      fileNameA << "log/";
+      fileNameA << "out/log/";
       fileNameA << idName();
       fileNameA << "-";
       fileNameA << iteration;
@@ -261,7 +261,7 @@ class MixtureBridge : public mixt::IMixture
       writeDataCsv(fileNameA.str(), &param_);
 
       std::stringstream fileNameB;
-      fileNameB << "log/";
+      fileNameB << "out/log/";
       fileNameB << idName();
       fileNameB << "-";
       fileNameB << iteration;
