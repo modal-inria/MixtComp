@@ -2,18 +2,17 @@ confidenceInterval <- function(dataOut, level = 0.95)
 {
   listVars <- ls(dataOut[[2]]$data)
   intData <- list()
+  lev <- qnorm((1. + level) / 2.)
   for (currVar in listVars)
   {
     cat(currVar, "\n")
     currData <- as.character(dataOut[[2]]$data[[currVar]]$completed)
     if (grepl("categorical", currVar))
     {
-      cat(length(dataOut[[2]]$data[[currVar]]$posMiss), "\n")
       for (i in 1:nrow(dataOut[[2]]$data[[currVar]]$posMiss))
       {
         listChar <- vector(mode = "character")
         cumProba <- 0.
-        cat(i, "\n")
         classOrder <- order(dataOut[[2]]$data[[currVar]]$statMissing[i,],
                             decreasing = TRUE)
         for (k in 1:length(classOrder))
@@ -31,6 +30,19 @@ confidenceInterval <- function(dataOut, level = 0.95)
     }
     if (grepl("gaussian", currVar))
     {
+      for (i in 1:nrow(dataOut[[2]]$data[[currVar]]$posMiss))
+      {
+        listChar <- vector(mode = "character")
+        mean <- dataOut[[2]]$data[[currVar]]$statMissing[i, 1]
+        sd <- dataOut[[2]]$data[[currVar]]$statMissing[i, 2]
+        currData[dataOut[[2]]$data[[currVar]]$posMiss[i]] <- paste("[",
+                                                                   mean - lev * sd,
+                                                                   ":",
+                                                                   mean + lev * sd,
+                                                                   "]",
+                                                                   sep = "")
+      }
+      intData[[currVar]] <- currData
     }
   }
   write.table(intData,
@@ -149,7 +161,7 @@ exportMap <- function(nbIterations)
   }
 }
 
-exportGraph2 <- function(nbIterations)
+exportGraph <- function(nbIterations)
 {
   classIn <- read.table("dataGen/classIn.csv",
                         sep = ";")

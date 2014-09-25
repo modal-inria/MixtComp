@@ -1,3 +1,12 @@
+completeTest <- function()
+{
+  myData <- testGenData()
+  confidenceInterval(myData)
+  completedData(myData)
+  # exportMap
+  # exportGraph
+}
+
 testGenData <- function()
 {
   missingCategorical <- c(0.8, # present
