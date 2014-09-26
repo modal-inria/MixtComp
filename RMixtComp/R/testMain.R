@@ -30,17 +30,20 @@ testGenData <- function()
                 missingCategorical, # missingCategorical
                 missingGaussian) # missingGaussian
   
+  # read and parse the data
 #  lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
 #  lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
   lm <- getData(c("dataGen/gaussianData.csv"   , "dataGen/gaussianDescriptor.csv"   ),
                 c("dataGen/categoricalData.csv", "dataGen/categoricalDescriptor.csv"))
   
+  # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
                                   20, # nbBurnInIter
                                   100, # nbIter
                                   20, # nbGibbsBurnInIter
                                   100) # nbGibbsIter
-
+  
+  # launch of the MixtComp algorithm
   dataParam <- mixtCompCluster(lm,
                                mcCluster,
                                2)

@@ -17,10 +17,10 @@ confidenceInterval <- function(dataOut, level = 0.95)
                             decreasing = TRUE)
         for (k in 1:length(classOrder))
         {
-          currProba <- dataOut[[2]]$data[[currVar]]$statMissing[i, classOrder[k]]
-          cumProba <- cumProba + currProba
-          if (k == 1 | cumProba < level)
+          if (cumProba < level)
           {
+            currProba <- dataOut[[2]]$data[[currVar]]$statMissing[i, classOrder[k]]
+            cumProba <- cumProba + currProba
             listChar[[length(listChar)+1]] <- paste(classOrder[k], currProba, sep = ":")
           }
         }
