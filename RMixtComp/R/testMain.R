@@ -3,6 +3,7 @@ completeTest <- function()
   myData <- testGenData()
   confidenceInterval(myData)
   completedData(myData)
+  exportParam(myData)
   # exportMap
   # exportGraph
 }
@@ -39,8 +40,7 @@ testGenData <- function()
                                   100, # nbIter
                                   20, # nbGibbsBurnInIter
                                   100) # nbGibbsIter
-  data <- list()
-  param <- list()
+
   dataParam <- mixtCompCluster(lm,
                                mcCluster,
                                2)

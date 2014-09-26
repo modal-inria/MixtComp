@@ -53,29 +53,45 @@ confidenceInterval <- function(dataOut, level = 0.95)
               col.names=TRUE)
 }
 
-completedData <- function(dataOut)
+exportParam <- function(dataOut)
 {
   write.table(dataOut[[1]]@results@partition,
               file = "out/classOut.csv",
               row.names=FALSE,
               col.names=FALSE)
   
-  write.table(data.frame(categorical1 = dataOut[[2]]$data$categorical1$completed),
-              file = "out/categorical1data.csv",
-              row.names = FALSE,
-              col.names = FALSE)
-  write.table(data.frame(categorical1 = dataOut[[2]]$param$categorical1),
-              file = "out/categorical1param.csv",
-              sep = ";",
-              row.names = FALSE,
-              col.names = TRUE)
-  
-  write.table(data.frame(gaussian1 = dataOut[[2]]$data$gaussian1$completed),
-              file = "out/gaussian1data.csv",
-              row.names = FALSE,
-              col.names = FALSE)
-  write.table(data.frame(categorical1 = dataOut[[2]]$param$gaussian1),
-              file = "out/gaussian1param.csv",
+  listVars <- ls(dataOut[[2]]$data)
+  listData <- list()
+  for (currVar in listVars)
+  {
+    fileName <- paste("out/",
+                      currVar,
+                      "param.csv",
+                      sep = "")
+    currData <- list(currVar = dataOut[[2]]$param[[currVar]]$param)
+    write.table(currData,
+                file = fileName,
+                sep = ";",
+                row.names = FALSE,
+                col.names = TRUE)
+  }
+}
+
+completedData <- function(dataOut)
+{
+  write.table(dataOut[[1]]@results@partition,
+              file = "out/classOut.csv",
+              row.names=FALSE,
+              col.names=FALSE)
+  listVars <- ls(dataOut[[2]]$data)
+  listData <- list()
+  for (currVar in listVars)
+  {
+    listData[[currVar]] <- dataOut[[2]]$data[[currVar]]$completed
+
+  }
+  write.table(listData,
+              file = "out/completedData.csv",
               sep = ";",
               row.names = FALSE,
               col.names = TRUE)
