@@ -1,7 +1,7 @@
 completeTest <- function()
 {
   myData <- testGenData()
-  confidenceInterval(myData)
+  confidenceInterval(myData, 100)
   completedData(myData)
   exportParam(myData)
   # exportMap

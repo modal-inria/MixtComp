@@ -1,8 +1,8 @@
-confidenceInterval <- function(dataOut, level = 0.95)
+confidenceInterval <- function(dataOut, nbSamples, level = 0.95)
 {
   listVars <- ls(dataOut[[2]]$data)
   intData <- list()
-  lev <- qnorm((1. + level) / 2.)
+  z <- qnorm((1. + level) / 2.)
   for (currVar in listVars)
   {
     cat(currVar, "\n")
@@ -36,9 +36,9 @@ confidenceInterval <- function(dataOut, level = 0.95)
         mean <- dataOut[[2]]$data[[currVar]]$statMissing[i, 1]
         sd <- dataOut[[2]]$data[[currVar]]$statMissing[i, 2]
         currData[dataOut[[2]]$data[[currVar]]$posMiss[i]] <- paste("[",
-                                                                   mean - lev * sd,
+                                                                   mean - z * sd / sqrt(nbSamples),
                                                                    ":",
-                                                                   mean + lev * sd,
+                                                                   mean + z * sd / sqrt(nbSamples),
                                                                    "]",
                                                                    sep = "")
       }
