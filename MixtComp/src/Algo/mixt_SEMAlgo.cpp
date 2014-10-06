@@ -50,13 +50,17 @@ bool SEMAlgo::run()
 {
 #ifdef MC_DEBUG
   std::cout << "SEMAlgo::run, entering" << std::endl;
+#endif
+
   if (p_model_->state() == STK::Clust::shortRun_)
   {
+#ifdef MC_DEBUG
     std::cout << "SEMAlgo::run, initial partition export" << std::endl;
     std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
+#endif
     p_model_->storeShortRun(-1); // export of the initial partition
   }
-#endif
+
     for (int iter = 0; iter < this->nbIterMax_; ++iter)
     {
 #ifdef MC_DEBUG
@@ -103,8 +107,8 @@ bool SEMAlgo::run()
       std::cout << "iter / moduloMisClass: " << (iter / moduloMisClass) << std::endl;
       std::cout << "iter % moduloMisClass: " << (iter % moduloMisClass) << std::endl;
 #endif
-//        if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
-      if(iter == 10)
+        if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
+//      if(iter == 10)
         {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;

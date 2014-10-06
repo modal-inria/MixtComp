@@ -1,15 +1,18 @@
-completeTest <- function()
+testComplete <- function()
 {
-  myData <- testGenData()
+  nbBurnInIter <- 200
+  myData <- testGenData(nbBurnInIter)
   confidenceInterval(myData, 100)
   completedData(myData)
   exportParam(myData)
+  exportGraph(nbBurnInIter)
   # exportMap
-  # exportGraph
+  # 
 }
 
-testGenData <- function()
+testGenData <- function(nbBurnInIter)
 {
+  nbClass <- 6
   missingCategorical <- c(0.8, # present
                           0.1, # missing
                           0.1) # missing finite value
@@ -19,14 +22,14 @@ testGenData <- function()
                        0.1, # missing left unbounded
                        0.1) # missing right unbounded
   dataGenerator(c(0.5, 0.5), # proportions
-                500, # nbSamples
-                6, # nbVariablesCat
+                5000, # nbSamples
+                10, # nbVariablesCat
                 1, # minModality
-                3, # nbModalities
-                2, # nbVariablesGauss
+                6, # nbModalities
+                10, # nbVariablesGauss
                 50., # maxMean
                 10., # maxVar
-                2, # nbClasses
+                nbClass, # nbClasses
                 missingCategorical, # missingCategorical
                 missingGaussian) # missingGaussian
   
@@ -38,15 +41,15 @@ testGenData <- function()
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
-                                  20, # nbBurnInIter
-                                  100, # nbIter
-                                  20, # nbGibbsBurnInIter
-                                  100) # nbGibbsIter
+                                  nbBurnInIter, # nbBurnInIter
+                                  1000, # nbIter
+                                  200, # nbGibbsBurnInIter
+                                  1000) # nbGibbsIter
   
   # launch of the MixtComp algorithm
   dataParam <- mixtCompCluster(lm,
                                mcCluster,
-                               2)
+                               nbClass)
   return(list(mcCluster,
               dataParam))
 }

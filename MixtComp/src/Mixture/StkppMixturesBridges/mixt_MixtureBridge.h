@@ -251,7 +251,7 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual void storeShortRun(int iteration)
     {
-#ifdef MC_DEBUG
+#ifdef MC_LOG
       std::stringstream fileNameA;
       fileNameA << "out/log/";
       fileNameA << idName();

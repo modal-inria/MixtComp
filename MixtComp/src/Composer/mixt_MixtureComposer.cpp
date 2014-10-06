@@ -264,7 +264,7 @@ void MixtureComposer::misClasStepInit(int iteration)
 
 void MixtureComposer::storeShortRun(int iteration)
 {
-#ifdef MC_DEBUG
+#ifdef MC_LOG
   std::stringstream fileName;
   fileName << "out/log/composer-";
   fileName << iteration;

@@ -204,7 +204,12 @@ exportGraph <- function(nbIterations)
     }
     misClass[i + 1] <- nbMisClass
   }
+  
+  png("out/misClass.png",
+      width = 1000,
+      height = 1000)
   plot(misClass,
-       ylim = c(0., 50.),
+#       ylim = c(0., 50.),
        type = "l")
+  dev.off()
 }
