@@ -1,3 +1,5 @@
+library(shape)
+
 confidenceInterval <- function(dataOut, nbSamples, level = 0.95)
 {
   listVars <- ls(dataOut[[2]]$data)
@@ -97,7 +99,7 @@ completedData <- function(dataOut)
               col.names = TRUE)
 }
 
-exportMap <- function(nbIterations)
+export2DPoints <- function(nbIterations)
 {
   classIn <- read.table("dataGen/classIn.csv",
                         sep = ";")
@@ -153,11 +155,21 @@ exportMap <- function(nbIterations)
         height = 1000)
     plot(var1$V1,
          var2$V1,
-         #         ylim = c(-150., 150.),
-         #         xlim = c(-150., 150.),
+         ylim = c(-75., 75.),
+         xlim = c(-75., 75.),
          col = colPool[z_i$V1 + 1])
-    text(-20,
-         0,
+    plotellipse(mid = c(param1$V1[1],
+                        param2$V1[1]),
+                rx = param1$V1[2],
+                ry = param2$V1[2])
+    plotellipse(mid = c(param1$V1[3],
+                        param2$V1[3]),
+                rx = param1$V1[4],
+                ry = param2$V1[4])    
+#    text((param1$V1[1]+param1$V1[3])/2.,
+#         (param2$V1[1]+param2$V1[3])/2.,
+    text(-50.,
+         50.,
          paste("Misclassified / Total: ", nbMisClass, " / ", nbInd, "\n",
                "Misclassification rate: ", nbMisClass / nbInd, "\n",
                "Var 1:\n",
@@ -177,7 +189,7 @@ exportMap <- function(nbIterations)
   }
 }
 
-exportGraph <- function(nbIterations)
+exportMisClass <- function(nbIterations)
 {
   classIn <- read.table("dataGen/classIn.csv",
                         sep = ";")
