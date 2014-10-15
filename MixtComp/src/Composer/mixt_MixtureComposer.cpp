@@ -26,7 +26,7 @@
 #include "../Mixture/mixt_IMixture.h"
 #include "Arrays/include/STK_Display.h"
 #include "Clustering/include/STK_Clust_Util.h"
-#include "../Various/mixt_Export.h"
+#include "../Various/mixt_IO.h"
 
 namespace mixt
 {

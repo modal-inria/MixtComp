@@ -24,8 +24,20 @@
 #ifndef MIXT_EXPORT_H_
 #define MIXT_EXPORT_H_
 
+#include <iostream>
+#include <sstream>
+
 namespace mixt
 {
+
+template <typename Type>
+Type str2type(std::string s)
+{
+  std::istringstream i(s);
+  double x;
+  i >> x;
+  return x;
+}
 
 template <typename Type>
 void writeDataCsv(std::string fileName, const Type* data)

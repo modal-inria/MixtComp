@@ -30,140 +30,75 @@
 namespace mixt
 {
 
-DataHandlerR::DataHandlerR()
-{
-  // TODO Auto-generated constructor stub
-}
+DataHandlerR::DataHandlerR() :
+    nbSamples_(0),
+    nbVariables_(0)
+{}
 
 DataHandlerR::~DataHandlerR()
+{}
+
+void DataHandlerR::writeInfo(std::ostream& os) const
 {
-  // TODO Auto-generated destructor stub
+  // show content
+   for (InfoMap::const_iterator it = info_.begin(); it != info_.end(); ++it)
+     os << "name: " << it->first << ", model: " << it->second << std::endl;
 }
 
-bool DataHandlerR::readDataFromRList(Rcpp::List rList)
+bool DataHandlerR::addInfo(std::string const& idData, std::string const& idModel)
 {
-  for (int i = 0; i < rList.size(); ++i)
+  // parse descriptor file
+  std::pair<InfoMap::iterator,bool> ret;
+  // check if identifier is already present
+  ret = info_.insert(std::pair<std::string,std::string>(idData, idModel));
+  // if name already exists, check if there is incoherence
+  if (ret.second==false)
   {
-    rList_ = rList;
-    Rcpp::S4 s4 = rList_[i];
-    std::string objType = s4.slot("type");
-#ifdef MC_DEBUG
-    std::cout << "DataHandlerR::readDataFromRList, " << objType << std::endl;
+     if (ret.first->second != idModel)
+     {
+#ifdef STK_DMANAGER_VERBOSE
+       stk_cerr << _T("Incoherence in addInfo.\n");
 #endif
-    if (objType == "numeric")
-    {
-      readDataFromRListHelper<Rcpp::NumericVector>(i, s4);
-    }
-    else if (objType == "integer")
-    {
-      readDataFromRListHelper<Rcpp::IntegerVector>(i, s4);
-    }
-    else if (objType == "character")
-    {
-      readDataFromRListHelper<Rcpp::CharacterVector>(i, s4);
-    }
+       return false;
+     }
   }
   return true;
 }
 
-void DataHandlerR::getData(std::string const& idData, STK::Array2D<int>& data, int& nbVariable) const
+bool DataHandlerR::readDataFromRList(Rcpp::List rList)
 {
-  std::vector<int> const& v_pos = dataMap_.at(idData);
-  nbVariable = v_pos.size();
-  data.resize(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
-  int j = data.firstIdxCols();
-  for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j)
+  rList_ = rList;
+  for (int i = 0; i < rList.size(); ++i)
   {
-    Rcpp::S4 s4 = rList_[(*it)];
-    Rcpp::List ls = s4.slot("augData");
-    Rcpp::IntegerVector nv = ls["data"];
-    for (int iS = 0, iR = 0; iR < nbSamples_; ++iS, ++iR)
-    {
-      if (nv(iR) == Rcpp::NA)
-        data(iS, j) = STK::Arithmetic<int>::NA();
-      else
-        data(iS, j) = nv(iR);
-    }
+    Rcpp::List currList = rList_[i];
+
+    std::string model = currList("model");
+    std::string id = currList("id");
+    Rcpp::CharacterVector data = currList["data"];
+
+    nbSamples_ = data.size(); // overwritten, because check has already been performed on the R side
+    addInfo(id, model);
+    std::vector<int>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
+    v_pos.push_back(i);
+    ++nbVariables_;
+  #ifdef MC_DEBUG
+    std::cout << "DataHandlerR::readDataFromRListHelper()" << std::endl;
+    std::cout << "\tid: " << id << std::endl;
+    std::cout << "\tmodel: " << model << std::endl;
+    std::cout << "\trList pos: " << i << std::endl;
+  #endif
   }
-}
-
-void DataHandlerR::getData(std::string const& idData, STK::Array2D<STK::Real>& data, int& nbVariable) const
-{
-  std::vector<int> const& v_pos = dataMap_.at(idData);
-  nbVariable = v_pos.size();
-  data.resize(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
-  int j = data.firstIdxCols();
-  for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j)
-  {
-    Rcpp::S4 s4 = rList_[(*it)];
-    Rcpp::List ls = s4.slot("augData");
-    Rcpp::NumericVector nv = ls["data"];
-    for (int iS = 0, iR = 0; iR < nbSamples_; ++iS, ++iR)
-    {
-      if (nv(iR) == Rcpp::NA)
-        data(iS, j) = STK::Arithmetic<STK::Real>::NA();
-      else
-        data(iS, j) = nv(iR);
-    }
-  }
-}
-
-void DataHandlerR::getData(std::string const& idData, STK::Array2D<std::string>& data, int& nbVariable) const
-{
-  std::vector<int> const& v_pos = dataMap_.at(idData);
-  nbVariable = v_pos.size();
-  data.resize(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
-  int j = data.firstIdxCols();
-  for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j)
-  {
-    Rcpp::S4 s4 = rList_[(*it)];
-    Rcpp::List ls = s4.slot("augData");
-    Rcpp::StringVector nv = ls["data"];
-    for (int iS = 0, iR = 0; iR < nbSamples_; ++iS, ++iR)
-    {
-      data(iS, j) = nv(iR);
-    }
-  }
-}
-
-void DataHandlerR::getData(std::string const& idData,
-                           AugmentedData<STK::Array2D<int> >& augData,
-                           int& nbVariable) const
-{
-#ifdef MC_DEBUG
-  std::cout << "DataHandlerR::getData, AugmentedData<STK::Array2D<int> >&" << std::endl;
-#endif
-  getDataHelper<int, Rcpp::IntegerVector>(idData, augData, nbVariable);
-}
-
-void DataHandlerR::getData(std::string const& idData,
-                           AugmentedData<STK::Array2D<STK::Real> >& augData,
-                           int& nbVariable) const
-{
-#ifdef MC_DEBUG
-  std::cout << "DataHandlerR::getData, AugmentedData<STK::Array2D<STK::Real> >&" << std::endl;
-#endif
-  getDataHelper<STK::Real, Rcpp::NumericVector>(idData, augData, nbVariable);
-}
-
-void DataHandlerR::getData(std::string const& idData,
-                           AugmentedData<STK::Array2D<std::string> >& augData,
-                           int& nbVariable) const
-{
-#ifdef MC_DEBUG
-  std::cout << "DataHandlerR::getData, AugmentedData<STK::Array2D<std::string> >&" << std::endl;
-#endif
-  getDataHelper<std::string, Rcpp::CharacterVector>(idData, augData, nbVariable);
+  return true;
 }
 
 void DataHandlerR::writeDataMap() const
 {
-  stk_cout << "Position of data in input: \n";
+  std::cout << "Position of data in input: \n";
   for (DataMap::const_iterator it_id = dataMap_.begin(); it_id != dataMap_.end(); ++it_id)
   {
-    stk_cout << "\tname: " << (*it_id).first << "\n";
+    std::cout << "\tname: " << (*it_id).first << "\n";
     for (std::vector<int>::const_iterator it_dp = (*it_id).second.begin(); it_dp != (*it_id).second.end(); ++it_dp)
-      stk_cout << "\t\trList_ position: " << (*it_dp) << "\n";
+      std::cout << "\t\trList_ position: " << (*it_dp) << std::endl;
   }
 }
 

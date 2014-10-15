@@ -36,7 +36,7 @@
 #include "mixt_CategoricalBridges.h"
 #include "mixt_InitializeMixtureImpl.h"
 #include "mixt_RemoveMissing.h"
-#include "../../Various/mixt_Export.h"
+#include "../../Various/mixt_IO.h"
 
 namespace mixt
 {
@@ -315,9 +315,6 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
     {
-      p_handler_->getData(idName(),
-                          m_augDataij_.data_,
-                          nbVariable_);// reset the data to get partially observed data location
       mixture_.getParameters(param_); // update the parameters
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;

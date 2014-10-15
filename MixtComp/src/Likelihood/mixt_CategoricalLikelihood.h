@@ -24,8 +24,7 @@
 #ifndef MIXT_CATEGORICALLIKELIHOOD_H
 #define MIXT_CATEGORICALLIKELIHOOD_H
 
-#include "DManager/include/STK_DataHandler.h"
-#include "Arrays/include/STK_CArrayPoint.h"
+#include "Arrays/include/STK_Array2D.h"
 #include "../Data/mixt_AugmentedData.h"
 
 namespace mixt
@@ -33,10 +32,6 @@ namespace mixt
 
 class CategoricalLikelihood
 {
-    typedef std::pair<int, int> pos;
-    typedef typename std::vector<          pos                        >::const_iterator iv_missing;
-    typedef typename std::vector<std::pair<pos, std::vector<int>    > >::const_iterator iv_missingFiniteValues;
-
   public:
     /** Constructor */
     CategoricalLikelihood(const STK::Array2D<STK::Real>* p_param,

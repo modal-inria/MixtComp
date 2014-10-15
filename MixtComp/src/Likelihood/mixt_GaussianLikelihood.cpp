@@ -23,6 +23,7 @@
 
 #include "mixt_GaussianLikelihood.h"
 #include "STatistiK/include/STK_Law_Normal.h"
+#include "../Various/mixt_Def.h"
 
 namespace mixt
 {
@@ -43,7 +44,7 @@ void GaussianLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int
   {
     for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
     {
-      if (p_augData_->data_(i, j) != STK::Arithmetic<STK::Real>::NA())   // likelihood for present value
+      if (p_augData_->present_(i, j) == true)   // likelihood for present value
       {
         STK::Real mean  = p_param_->elt(2*k    , j);
         STK::Real sd    = p_param_->elt(2*k + 1, j);
@@ -54,54 +55,67 @@ void GaussianLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int
     }
   }
 
-  // partially observed data, missing intervals
-  for (iv_missingIntervals it = p_augData_->v_missingIntervals_.begin();
-       it != p_augData_->v_missingIntervals_.end();
-       ++it)
+  // loop on missing individuals
+  for (ConstIt_MisInd itInd = p_augData_->misData_.begin();
+       itInd != p_augData_->misData_.end();
+       ++itInd)
   {
-    int i = it->first.first;
-    int j = it->first.second;
+    // loop on missing variables
+    for (ConstIt_MisVar itVar = itInd->begin();
+        itVar != itInd->end();
+        ++itVar)
+    {
+      switch(itVar->second.first)
+      {
+        case missingIntervals_:
+        {
+          int i = itInd->first;
+          int j = itVar->first;
 
-    STK::Real mean  = p_param_->elt(2*k    , j);
-    STK::Real sd    = p_param_->elt(2*k + 1, j);
+          STK::Real mean  = p_param_->elt(2*k    , j);
+          STK::Real sd    = p_param_->elt(2*k + 1, j);
 
-    STK::Law::Normal normal(mean, sd);
+          STK::Real leftBound  = itVar->second.second[0];
+          STK::Real rightBound = itVar->second.second[1];
 
-    lnComp->elt(i) += std::log(normal.cdf(it->second.second) -
-                               normal.cdf(it->second.first ));
+          STK::Law::Normal normal(mean, sd);
+
+          lnComp->elt(i) += std::log(normal.cdf(rightBound) -
+                                     normal.cdf(leftBound));
+        }
+        break;
+
+        case missingLUIntervals_:
+        {
+          int i = itInd->first;
+          int j = itVar->first;
+
+          STK::Real mean  = p_param_->elt(2*k    , j);
+          STK::Real sd    = p_param_->elt(2*k + 1, j);
+
+          STK::Real leftBound  = itVar->second.second[0];
+
+          STK::Law::Normal normal(mean, sd);
+
+          lnComp->elt(i) += std::log(1. - normal.cdf(leftBound));
+        }
+        break;
+
+        case missingRUIntervals_:
+        {
+          int i = itInd->first;
+          int j = itVar->first;
+
+          STK::Real mean  = p_param_->elt(2*k    , j);
+          STK::Real sd    = p_param_->elt(2*k + 1, j);
+
+          STK::Real rightBound  = itVar->second.second[0];
+
+          STK::Law::Normal normal(mean, sd);
+
+          lnComp->elt(i) += std::log(normal.cdf(rightBound));
+        }
+      }
+    }
   }
-
-  // partially observed data, missing left unbounded interval
-  for (iv_missingLUIntervals it = p_augData_->v_missingLUIntervals_.begin();
-       it != p_augData_->v_missingLUIntervals_.end();
-       ++it)
-  {
-    int i = it->first.first;
-    int j = it->first.second;
-
-    STK::Real mean  = p_param_->elt(2*k    , j);
-    STK::Real sd    = p_param_->elt(2*k + 1, j);
-
-    STK::Law::Normal normal(mean, sd);
-
-    lnComp->elt(i) += std::log(1. - normal.cdf(it->second));
-  }
-
-  // partially observed data, missing right unbounded interval
-  for (iv_missingLUIntervals it = p_augData_->v_missingRUIntervals_.begin();
-       it != p_augData_->v_missingRUIntervals_.end();
-       ++it)
-  {
-    int i = it->first.first;
-    int j = it->first.second;
-
-    STK::Real mean  = p_param_->elt(2*k    , j);
-    STK::Real sd    = p_param_->elt(2*k + 1, j);
-
-    STK::Law::Normal normal(mean, sd);
-
-    lnComp->elt(i) += std::log(normal.cdf(it->second));
-  }
-}
-
 } /* namespace mixt */

@@ -27,6 +27,8 @@
 
 #include<utility>
 #include<vector>
+#include "Arrays/include/STK_Array2D.h"
+#include "../Various/mixt_Def.h"
 
 namespace mixt
 {
@@ -64,24 +66,26 @@ struct Range<int>
 template <class DataType>
 struct AugmentedData
 {
-  /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
-  DataType data_;
   /** base type of the table */
   typedef typename DataType::Type Type;
-  /** combination of a sample number and a column number to identify a value */
-  typedef std::pair<int, int> pos;
+  /** type of a missing value descriptor */
+  typedef typename std::pair<MisType, std::vector<Type> > MisVal;
+  /** type of data structure for partially observed values */
+  typedef typename std::map<int, std::map<int, MisVal> > MisData;
+
+  /** iterator on individuals */
+  typedef typename std::map<int, std::map<int, MisVal> >::const_iterator ConstIt_MisInd;
+  /** iterator on variables for a given individual */
+  typedef typename std::map<int, MisVal>::const_iterator ConstIt_MisVar;
+
+  /** two dimensional data table, for example a STK::Array2D<STK::Real> */
+  DataType data_;
+  /** two dimensionnal array of booleans, to indicate presence or absence of data */
+  STK::Array2D<bool> present_;
+  /** data structure for partially observed values */
+  MisData misData_;
   /** available data ranges, one pair per data column */
   std::vector<Range<Type> > dataRanges_;
-  /** vector of completely unknown values */
-  std::vector<          pos                          > v_missing_;
-  /** vector of values to be selected among a finite number of possibilities */
-  std::vector<std::pair<pos, std::vector<Type>     > > v_missingFiniteValues_;
-  /** vector of values restricted to an interval */
-  std::vector<std::pair<pos, std::pair<Type, Type> > > v_missingIntervals_;
-  /** vector of values restricted to a left unbounded interval [- inf, a] */
-  std::vector<std::pair<pos,           Type        > > v_missingLUIntervals_;
-  /** vector of values restricted to a right unbounded interval [a, +inf] */
-  std::vector<std::pair<pos,           Type        > > v_missingRUIntervals_;
 };
 
 } // namespace mixt
