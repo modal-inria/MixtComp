@@ -84,6 +84,8 @@ struct AugmentedData
   STK::Array2D<bool> present_;
   /** data structure for partially observed values */
   MisData misData_;
+  /** total number of partially observed values, used to output the results */
+  int nbMissing_;
   /** available data ranges, one pair per data column */
   std::vector<Range<Type> > dataRanges_;
 };

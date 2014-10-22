@@ -104,6 +104,7 @@ void DataHandlerR::getData(std::string const& idData,
   nbVariable = v_pos.size();// resize the data
   augData.data_.resize(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
   augData.present_.resize(nbSamples_, nbVariable);
+  augData.nbMissing_ = 0;
 
   // definitions of regular expressions to capture / reject numbers
   std::string strNumber("[+-]?((?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
@@ -173,6 +174,7 @@ void DataHandlerR::getData(std::string const& idData,
           augData.misData_[i][j].second.insert(augData.misData_[i][j].second.end(),
                                                results.begin(),
                                                results.end());
+          ++augData.nbMissing_;
           continue;
         }
       }
@@ -185,6 +187,7 @@ void DataHandlerR::getData(std::string const& idData,
         augData.misData_[i][j].second.reserve(2);
         augData.misData_[i][j].second[0] = str2type<Type>(matches[1].str());
         augData.misData_[i][j].second[1] = str2type<Type>(matches[2].str());
+        ++augData.nbMissing_;
         continue;
       }
 
@@ -194,6 +197,7 @@ void DataHandlerR::getData(std::string const& idData,
         augData.present_(i, j) = false;
         augData.misData_[i][j].first = missingLUIntervals_;
         augData.misData_[i][j].second.push_back(str2type<Type>(matches[1].str()));
+        ++augData.nbMissing_;
         continue;
       }
 
@@ -203,6 +207,7 @@ void DataHandlerR::getData(std::string const& idData,
         augData.present_(i, j) = false;
         augData.misData_[i][j].first = missingRUIntervals_;
         augData.misData_[i][j].second.push_back(str2type<Type>(matches[1].str()));
+        ++augData.nbMissing_;
         continue;
       }
 
@@ -210,6 +215,7 @@ void DataHandlerR::getData(std::string const& idData,
       augData.data_(i, j) = STK::Arithmetic<int>::NA();
       augData.present_(i, j) = false;
       augData.misData_[i][j].first = missing_;
+      ++augData.nbMissing_;
     }
   }
 }
