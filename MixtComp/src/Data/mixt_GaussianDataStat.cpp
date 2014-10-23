@@ -26,113 +26,76 @@
 namespace mixt
 {
 
-GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij) :
-    nbIter_(0),
-    nbMissing_(0),
-    pm_augDataij_(pm_augDataij)
+GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
+                                   std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage,
+                                   STK::Real confidenceLevel) :
+    pm_augDataij_(pm_augDataij),
+    p_dataStatStorage_(p_dataStatStorage),
+    confidenceLevel_(confidenceLevel)
 {}
 
 GaussianDataStat::~GaussianDataStat() {};
 
-void GaussianDataStat::initPos()
+void GaussianDataStat::initialize() {};
+
+void GaussianDataStat::sampleVals(int sample,
+                                  int iteration,
+                                  int iterationMax)
 {
-  int currVal = 0;
-  for (iv_missing it = pm_augDataij_ ->v_missing_.begin();
-       it != pm_augDataij_ ->v_missing_.end();
-       ++it)
+  if (iteration == 1) // clear the temporary statistical object
   {
-    posMissing_(currVal, 0) = it->first;
-    posMissing_(currVal, 1) = it->second;
-    ++currVal;
+    tempStat_.clear();
+    // creation of the vectors to store the sampled values
+    for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
+         it_misVar != pm_augDataij_->misData_[sample].end();
+         ++it_misVar)
+    {
+      int var = it_misVar->first;
+      tempStat_[var] = STK::Array2DVector<STK::Real>(iterationMax, 0.);
+    }
+
+    // first sampling, on each missing variables
+    for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
+         it_misVar != pm_augDataij_->misData_[sample].end();
+         ++it_misVar)
+    {
+      int var = it_misVar->first;
+      STK::Real currVal = pm_augDataij_->data_(sample,
+                                               var);
+      tempStat_[var][iteration] = currVal;
+    }
   }
-  for (iv_missingIntervals it = pm_augDataij_ ->v_missingIntervals_.begin();
-       it != pm_augDataij_ ->v_missingIntervals_.end();
-       ++it)
+  else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
   {
-    posMissing_(currVal, 0) = it->first.first;
-    posMissing_(currVal, 1) = it->first.second;
-    ++currVal;
+    for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
+         it_misVar != pm_augDataij_->misData_[sample].end();
+         ++it_misVar)
+    {
+      int var = it_misVar->first;
+      STK::Array2DVector<int> indOrder; // to store indices of ascending order
+      heapSort(indOrder, it_misVar->second);
+      STK::Real realIndLow = confidenceLevel_ / 2. * iterationMax;
+      STK::Real realIndHigh = (1. - confidenceLevel_ / 2.) * iterationMax;
+
+      p_dataStatStorage_[sample][var] = STK::Array2DVector<STK::Real>(3);
+      p_dataStatStorage_[sample][var][0] = misVar->second.mean();
+      p_dataStatStorage_[sample][var][1] =   (1. - (realIndLow  - int(realIndLow ))) * it_misVar->second[indOrder[int(realIndLow )    ]]
+                                           + (1. - (int(realIndLow ) - realIndLow )) * it_misVar->second[indOrder[int(realIndLow ) + 1]];
+      p_dataStatStorage_[sample][var][2] =   (1. - (realIndHigh - int(realIndHigh))) * it_misVar->second[indOrder[int(realIndHigh)    ]]
+                                           + (1. - (int(realIndHigh) - realIndHigh)) * it_misVar->second[indOrder[int(realIndHigh) + 1]];
+    }
   }
-  for (iv_missingLUIntervals it = pm_augDataij_ ->v_missingLUIntervals_.begin();
-       it != pm_augDataij_ ->v_missingLUIntervals_.end();
-       ++it)
-  {
-    posMissing_(currVal, 0) = it->first.first;
-    posMissing_(currVal, 1) = it->first.second;
-    ++currVal;
-  }
-  for (iv_missingRUIntervals it = pm_augDataij_ ->v_missingRUIntervals_.begin();
-       it != pm_augDataij_ ->v_missingRUIntervals_.end();
-       ++it)
-  {
-    posMissing_(currVal, 0) = it->first.first;
-    posMissing_(currVal, 1) = it->first.second;
-    ++currVal;
-  }
-}
-
-void GaussianDataStat::initialize()
-{
-  nbMissing_ =   pm_augDataij_->v_missing_.size()
-               + pm_augDataij_->v_missingIntervals_.size()
-               + pm_augDataij_->v_missingLUIntervals_.size()
-               + pm_augDataij_->v_missingRUIntervals_.size();
-  // second dimension corresponds to the couple (sample position, variables position)
-  posMissing_.resize(nbMissing_, 2);
-  initPos();
-
-  mean_.resize(nbMissing_);
-  m2_.resize(nbMissing_);
-
-  mean_ = 0.;
-  m2_ = 0.;
-
-#ifdef MC_DEBUG
-  std::cout << "GaussianDataStat, initializing posMissing_, mean_ and m2_" << std::endl;
-#endif
-};
-
-void GaussianDataStat::sampleVals()
-{
-  ++nbIter_;
-  for (int currVal = 0; currVal < nbMissing_; ++currVal)
-  {
-#ifdef MC_DEBUG
-    std::cout << "GaussianDataStat::sampleVals"
-              << ", nbIter_: " << nbIter_
-              << ", sample: " << posMissing_(currVal, 0)
-              << ", var: " << posMissing_(currVal, 1)
-              << ", value: " << pm_augDataij_->data_(posMissing_(currVal, 0),
-                                                     posMissing_(currVal, 1))
-              << std::endl;
-#endif
-    STK::Real x = pm_augDataij_->data_(posMissing_(currVal, 0), // sample
-                                       posMissing_(currVal, 1)); // var
-    STK::Real delta = x - mean_[currVal];
-    mean_[currVal] += delta / nbIter_;
-    m2_[currVal] += delta * (x - mean_[currVal]);
-  }
-}
-
-void GaussianDataStat::exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const
-{
-  posMissing = posMissing_;
-  statMissing.resize(nbMissing_, 2);
-
-  statMissing.col(0) = mean_;
-
-  if (nbIter_ < 2)
-    statMissing.col(1) = 0.;
   else
-    statMissing.col(1) = (m2_ / (nbIter_ - 1.)).sqrt();
-
-#ifdef MC_DEBUG
-  std::cout << "GaussianDataStat::exportVals, nbIter_: " << nbIter_ << std::endl
-            << "posMissing: " << std::endl
-            << posMissing << std::endl
-            << "statMissing: " << std::endl
-            << statMissing << std::endl;
-#endif
-}
-
+  {
+    // first sampling, on each missing variables
+    for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
+         it_misVar != pm_augDataij_->misData_[sample].end();
+         ++it_misVar)
+    {
+      int var = it_misVar->first;
+      STK::Real currVal = pm_augDataij_->data_(sample,
+                                               var);
+      tempStat_[var][iteration] = currVal;
+    }
+  }
 } // namespace mixt

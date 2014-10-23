@@ -28,7 +28,7 @@ namespace mixt
 {
 
 CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                                         std::map<int, std::map<int, std::vector<STK::Real> > >* p_dataStatStorage,
+                                         std::map<int, std::map<int, std::vector< std::pair<int, STK::Real> > > >* p_dataStatStorage,
                                          STK::Real confidenceLevel) :
     nbModalities_(0),
     pm_augDataij_(pm_augDataij),
@@ -82,15 +82,16 @@ void CategoricalDataStat::sampleVals(int sample,
                                      int iteration,
                                      int iterationMax)
 {
-  if (iteration == 1) // resize the temporary statistical object
+  if (iteration == 1) // clear the temporary statistical object
   {
+    tempStat_.clear();
     // creation of the objects for counting the modalities
     for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
          it_misVar != pm_augDataij_->misData_[sample].end();
          ++it_misVar)
     {
       int var = it_misVar->first;
-      tempStat_[var] = STK::Array2DPoint(nbModalities_, 0);
+      tempStat_[var] = STK::Array2DPoint<STK::Real>(nbModalities_, 0);
     }
 
     // first sampling, on each missing variables
@@ -107,12 +108,11 @@ void CategoricalDataStat::sampleVals(int sample,
   }
   else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
   {
-    // first sampling, on each missing variables
     for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
          it_misVar != pm_augDataij_->misData_[sample].end();
          ++it_misVar)
     {
-      STK::Array2DPoint<STK::Real> proba = it_misVar->second / iteration; // from count to probabilities
+      STK::Array2DPoint<STK::Real> proba = it_misVar->second / STK::Real(iteration); // from count to probabilities
       STK::Array2DPoint<int> indOrder; // to store indices of ascending order
       heapSort(indOrder, proba);
       STK::Real cumProb = 0.;

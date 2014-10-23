@@ -89,11 +89,10 @@ class MixtureBridge : public mixt::IMixture
       sampler_(getData(),
                getParam()),
       dataStatComputer_(getData(),
-                        getDataStatStorage(),
+                        &dataStatStorage_,
                         confidenceLevel),
       paramStat_(getParam()),
-      likelihood_(
-                  getParam(),
+      likelihood_(getParam(),
                   getData()),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
@@ -117,26 +116,6 @@ class MixtureBridge : public mixt::IMixture
     {
       mixture_.setData(m_augDataij_.data_);
       mixture_.initializeModel();
-    }
-    /** This is a standard create function in usual sense. It must be defined to
-     *  provide new object of your class with correct dimensions and state.
-     *  In other words, this is equivalent to virtual constructor.
-     * @return New instance of class as that of calling object.
-     */
-    virtual MixtureBridge* create() const
-    {
-      MixtureBridge* p_bridge = new MixtureBridge(mixture_,
-                                                  idName(),
-                                                  nbCluster(),
-                                                  p_handler_,
-                                                  p_dataExtractor_,
-                                                  p_paramExtractor_);
-      p_bridge->m_augDataij_ = m_augDataij_;
-      p_bridge->nbVariable_ = nbVariable_;
-      // Bug Fix: set the correct data set
-      p_bridge->mixture_.setData(p_bridge->m_augDataij_.data_);
-      p_bridge->mixture_.initializeModel();
-      return p_bridge;
     }
     /** @brief Initialize the model before its use by the composer.
      *  The parameters values are set to their default values if the mixture_ is

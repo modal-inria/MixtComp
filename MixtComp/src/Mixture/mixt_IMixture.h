@@ -62,12 +62,6 @@ class IMixture
     /** set the mixture composer to the mixture */
     void setMixtureComposer( MixtureComposer const* p_model);
 
-    /**This is a standard create function in usual sense. It must be defined to
-     * provide new object of your class with correct behavior.
-     * In other words, this is equivalent to virtual constructor.
-     * @return New instance of class as that of calling object.
-     */
-    virtual IMixture* create() const  = 0;
     /** @brief This function must be defined in derived class for initialization
      *  of the mixture parameters.
      *  This method should create any container needed by the model, resize

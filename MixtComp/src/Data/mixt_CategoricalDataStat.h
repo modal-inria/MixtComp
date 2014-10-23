@@ -43,6 +43,9 @@ class CategoricalDataStat
                     int iteration,
                     int iterationMax);
   private:
+    /** Set the number of modalities, to count the results */
+    void setModalities();
+
     // number of modalities
     int nbModalities_;
     // pointer to data array
@@ -54,9 +57,6 @@ class CategoricalDataStat
     std::map<int, STK::Array2DPoint<STK::Real> > tempStat_;
     /** Confidence level */
     STK::Real confidenceLevel_;
-
-    /** Set the number of modalities, to count the results */
-    void setModalities();
 };
 
 } // namespace mixt
