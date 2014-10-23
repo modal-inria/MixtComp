@@ -43,13 +43,16 @@ class MixtureManager
 
     MixtureManager(const DataHandler* handler,
                    DataExtractor* p_dataExtractor,
-                   ParamExtractor* p_paramExtractor) :
+                   ParamExtractor* p_paramExtractor,
+                   STK::Real confidenceLevel) :
       p_handler_(handler),
       p_dataExtractor_(p_dataExtractor),
-      p_paramExtractor_(p_paramExtractor)
+      p_paramExtractor_(p_paramExtractor),
+      confidenceLevel_(confidenceLevel)
     {}
 
-    void createMixtures(mixt::MixtureComposer& composer, int nbCluster)
+    void createMixtures(mixt::MixtureComposer& composer,
+                        int nbCluster)
     {
       for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
       {
@@ -60,7 +63,10 @@ class MixtureManager
 #endif
         STK::Clust::Mixture idModel = STK::Clust::stringToMixture(model);
         // get a mixture fully
-        mixt::IMixture* p_mixture = createMixture(idModel, idName, nbCluster);
+        mixt::IMixture* p_mixture = createMixture(idModel,
+                                                  idName,
+                                                  nbCluster,
+                                                  confidenceLevel_);
         if (p_mixture) composer.registerMixture(p_mixture);
       }
     }
@@ -70,7 +76,10 @@ class MixtureManager
      *  @param idName name of the model
      *  @param nbCluster number of cluster of the model
      **/
-    mixt::IMixture* createMixture(STK::Clust::Mixture idModel, std::string const& idName, int nbCluster)
+    mixt::IMixture* createMixture(STK::Clust::Mixture idModel,
+                                  std::string const& idName,
+                                  int nbCluster,
+                                  STK::Real confidenceLevel)
     {
       switch (idModel)
       {
@@ -84,7 +93,8 @@ class MixtureManager
                                                                                                                                   nbCluster,
                                                                                                                                   p_handler_,
                                                                                                                                   p_dataExtractor_,
-                                                                                                                                  p_paramExtractor_);
+                                                                                                                                  p_paramExtractor_,
+                                                                                                                                  confidenceLevel);
           p_bridge->setData();
           return p_bridge;
         }
@@ -100,7 +110,8 @@ class MixtureManager
                                                                                                                                         nbCluster,
                                                                                                                                         p_handler_,
                                                                                                                                         p_dataExtractor_,
-                                                                                                                                        p_paramExtractor_);
+                                                                                                                                        p_paramExtractor_,
+                                                                                                                                        confidenceLevel);
           p_bridge->setData();
           return p_bridge;
         }
@@ -122,6 +133,9 @@ class MixtureManager
 
     /** pointer to the parameter extractor */
     ParamExtractor* p_paramExtractor_;
+
+    /** confidence interval, to be transmitted to the mixtures at creation */
+    STK::Real confidenceLevel_;
 };
 
 } // namespace mixt

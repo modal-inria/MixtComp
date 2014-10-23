@@ -29,7 +29,8 @@
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List rList,
                            Rcpp::S4 mcClusters,
-                           int nbClusters)
+                           int nbClusters,
+                           STK::Real confidenceLevel)
 {  
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
@@ -52,7 +53,8 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                        mixt::DataExtractorR,
                        mixt::ParamExtractorR> manager(&handler,
                                                       &dataExtractor,
-                                                      &paramExtractor);
+                                                      &paramExtractor,
+                                                      confidenceLevel);
 
   // prepare the composer
   mixt::MixtureComposer composer(handler.nbSample(),

@@ -98,7 +98,7 @@ class MixtureBridge : public mixt::IMixture
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
       p_paramExtractor_(p_paramExtractor)
-      // dataStatStorage_ does not need a particular constructor
+      // dataStatStorage_ is an empty std::map at construction
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :

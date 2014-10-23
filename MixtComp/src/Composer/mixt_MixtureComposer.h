@@ -148,7 +148,10 @@ class MixtureComposer : public STK::IMixtureComposerBase
      **/
     template<class MixtureManager>
     void createMixtures(MixtureManager& manager)
-    { manager.createMixtures(*this, nbCluster());}
+    {
+        manager.createMixtures(*this,
+                               nbCluster());
+    }
     /** Create a specific mixture and register it.
      *  @param manager the manger with the responsibility of the creation
      *  @param idModel the id of the mixture we want to create
