@@ -42,7 +42,8 @@ class IMixture
      * @param idName Identification string of Mixture allocated by framework.
      * @param nbCluster number of cluster
      */
-    IMixture( std::string const& idName, int nbCluster);
+    IMixture(std::string const& idName,
+             int nbCluster);
     /**copy constructor.
      * @note The pointer on the composer is not copied and is set to 0: it have
      * to be set again.
@@ -61,13 +62,6 @@ class IMixture
     /** set the mixture composer to the mixture */
     void setMixtureComposer( MixtureComposer const* p_model);
 
-    /**This is a standard clone function in usual sense. It must be defined to
-     * provide new object of your class with values of various parameters equal
-     * to the values of calling object. In other words, this is equivalent to
-     * polymorphic copy constructor.
-     * @return New instance of class as that of calling object.
-     */
-    virtual IMixture* clone() const  = 0;
     /**This is a standard create function in usual sense. It must be defined to
      * provide new object of your class with correct behavior.
      * In other words, this is equivalent to virtual constructor.

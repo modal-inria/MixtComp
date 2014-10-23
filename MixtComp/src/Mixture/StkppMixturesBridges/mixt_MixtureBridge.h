@@ -53,8 +53,10 @@ class MixtureBridge : public mixt::IMixture
     typedef typename BridgeTraits<Id>::Data Data;
     // augmented data type
     typedef typename BridgeTraits<Id>::AugData AugData;
-    // statistics on missing values type
-    typedef typename BridgeTraits<Id>::DataStat DataStat;
+    // statistics on DataStat computer
+    typedef typename BridgeTraits<Id>::DataStatComputer DataStatComputer;
+    // type of DataStat storage
+    typedef typename BridgeTraits<Id>::DataStatStorage DataStatStorage;
     // statistics on model parameters
     typedef typename BridgeTraits<Id>::ParamStat ParamStat;
     // parameters type to get
@@ -78,14 +80,17 @@ class MixtureBridge : public mixt::IMixture
                   int nbCluster,
                   const DataHandler* p_handler_,
                   DataExtractor* p_extractor,
-                  ParamExtractor* p_paramExtractor) :
+                  ParamExtractor* p_paramExtractor,
+                  STK::Real confidenceLevel) :
       mixt::IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
       nbVariable_(0),
       sampler_(getData(),
                getParam()),
-      dataStat_(getData()),
+      dataStatComputer_(getData(),
+                        getDataStatStorage(),
+                        confidenceLevel),
       paramStat_(getParam()),
       likelihood_(
                   getParam(),
@@ -93,6 +98,7 @@ class MixtureBridge : public mixt::IMixture
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
       p_paramExtractor_(p_paramExtractor)
+      // dataStatStorage_ does not need a particular constructor
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
@@ -101,25 +107,16 @@ class MixtureBridge : public mixt::IMixture
       m_augDataij_(bridge.m_augDataij_),
       nbVariable_(bridge.nbVariable_),
       sampler_(bridge.sampler_),
-      dataStat_(bridge.dataStat_),
+      dataStatComputer_(bridge.dataStatComputer_),
       paramStat_(bridge.paramStat_),
       likelihood_(bridge.likelihood_),
       p_handler_(bridge.p_handler_),
       p_dataExtractor_(bridge.p_dataExtractor_),
-      p_paramExtractor_(bridge.p_paramExtractor_)
+      p_paramExtractor_(bridge.p_paramExtractor_),
+      dataStatStorage_(bridge.dataStatStorage_)
     {
       mixture_.setData(m_augDataij_.data_);
       mixture_.initializeModel();
-    }
-    /** This is a standard clone function in usual sense. It must be defined to
-     *  provide new object of your class with values of various parameters
-     *  equal to the values of calling object. In other words, this is
-     *  equivalent to polymorphic copy constructor.
-     *  @return New instance of class as that of calling object.
-     */
-    virtual MixtureBridge* clone() const
-    {
-      return new MixtureBridge(*this);
     }
     /** This is a standard create function in usual sense. It must be defined to
      *  provide new object of your class with correct dimensions and state.
@@ -162,7 +159,7 @@ class MixtureBridge : public mixt::IMixture
       mixture_.setMixtureParameters(p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
       sampler_.setZi(p_zi()); // at this point the bridge has been registered on the composer and p_zi is valid
-      dataStat_.initialize();
+      dataStatComputer_.initialize();
 
       /** get a sample of parameters to initialize the ParamStat object
        * with the right size
@@ -279,17 +276,16 @@ class MixtureBridge : public mixt::IMixture
       paramStat_.sampleParam();
     }
 
-    virtual void storeData()
+    virtual void storeDataIndividual(int sample,
+                                     int iteration,
+                                     int iterationMax)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::storeData, for " << idName();
 #endif
-      dataStat_.sampleVals();
-    }
-
-    virtual const DataStat* getDataStat()
-    {
-      return &dataStat_;
+      dataStatComputer_.sampleVals(sample,
+                                   iteration,
+                                   iterationMax);
     }
 
     /**
@@ -357,26 +353,21 @@ class MixtureBridge : public mixt::IMixture
       return &m_augDataij_;
     }
 
-    virtual Param const* getParam() const
+    virtual const Param* getParam() const
     {
       return &param_;
     }
 
-    virtual const DataStat* getDataStat() const
+    virtual const DataStatStorage* getDataStatStorage() const
     {
-      return &dataStat_;
+      return &dataStatStorage_;
     }
 
     virtual void exportDataParam() const
     {
-      // export the data
-      STK::Array2D<int> posMissing;
-      STK::Array2D<STK::Real> statMissing;
-      dataStat_.exportVals(posMissing, statMissing); // get data from the DataStat
       p_dataExtractor_->exportVals(idName(),
-                                   &m_augDataij_.data_,
-                                   &posMissing,
-                                   &statMissing); // export the obtained data using the DataExtractor
+                                   getData(),
+                                   getDataStatStorage()); // export the obtained data using the DataExtractor
 
       //export the parameters
       STK::Array2D<STK::Real> param;
@@ -402,8 +393,8 @@ class MixtureBridge : public mixt::IMixture
     int nbVariable_;
     /** Sampler to generate values */
     Sampler sampler_;
-    /** Statistics storage for missing data */
-    DataStat dataStat_;
+    /** Statistics computer for missing data */
+    DataStatComputer dataStatComputer_;
     /** Statistics storage for parameters */
     ParamStat paramStat_;
     /** Computation of the observed likelihood */
@@ -416,37 +407,17 @@ class MixtureBridge : public mixt::IMixture
     /** Pointer to the parameters extractor */
     ParamExtractor* p_paramExtractor_;
 
+    /** Statistics storage for missing data */
+    DataStatStorage dataStatStorage_;
+
   private:
     /** This function will be used in order to initialize the mixture model
      *  using informations stored by the data_ container.
      **/
      void initializeMixture()
-     { InitializeMixtureImpl<Id>::run(mixture_, m_augDataij_);}
-    /** protected constructor to use in order to create a bridge.
-     *  @param mixture the mixture to copy
-     *  @param idName id name of the mixture
-     *  @param nbCluster number of cluster
-     **/
-    MixtureBridge(Mixture const& mixture,
-                  std::string const& idName,
-                  int nbCluster,
-                  const DataHandler* p_handler,
-                  DataExtractor* p_dataExtractor,
-                  ParamExtractor* p_paramExtractor) :
-      IMixture( idName, nbCluster),
-      mixture_(mixture),
-      m_augDataij_(),
-      nbVariable_(0),
-      sampler_(getData(),
-               getParam()),
-      dataStat_(getData()),
-      paramStat_(getParam()),
-      likelihood_(getParam(),
-                  getData()),
-      p_handler_(p_handler),
-      p_dataExtractor_(p_dataExtractor),
-      p_paramExtractor_(p_paramExtractor)
-    {}
+     {
+       InitializeMixtureImpl<Id>::run(mixture_, m_augDataij_);
+     }
 };
 
 } // namespace mixt

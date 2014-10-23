@@ -53,8 +53,10 @@ struct BridgeTraits<STK::Clust::Gaussian_sjk_>
     typedef STK::Array2D<STK::Real> Data;
     /** Type of the AugmentedData*/
     typedef AugmentedData<Data> AugData;
-    /** Type of the DataStat*/
-    typedef GaussianDataStat DataStat;
+    /** Type of the DataStat computer */
+    typedef GaussianDataStat DataStatComputer;
+    /** Type of the DataStat storage */
+    typedef std::map<int, std::map<int, std::pair<STK::Real, STK::Real> > > DataStatStorage;
     /** Type of the ParamStat */
     typedef SimpleParamStat ParamStat;
     /** Type of the parameter set to be used as output */

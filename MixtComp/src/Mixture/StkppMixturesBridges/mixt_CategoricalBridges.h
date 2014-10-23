@@ -52,7 +52,9 @@ struct BridgeTraits<STK::Clust::Categorical_pjk_>
     /** Type of the AugmentedData */
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat */
-    typedef CategoricalDataStat DataStat;
+    typedef CategoricalDataStat DataStatComputer;
+    /** Type of the DataStat */
+    typedef std::map<int, std::map<int, std::vector< std::pair<int, STK::Real> > > > DataStatStorage;
     /** Type of the ParamStat */
     typedef SimpleParamStat ParamStat;
     /** Type of the parameter set to be used as output */
@@ -67,6 +69,7 @@ struct BridgeTraits<STK::Clust::Categorical_pjk_>
     typedef CategoricalSamplerIterator SamplerIterator;
     /** Type of Likelihood */
     typedef CategoricalLikelihood Likelihood;
+
 };
 
 template<typename DataHandler,
