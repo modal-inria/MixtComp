@@ -33,81 +33,122 @@ DataExtractorR::~DataExtractorR()
 {}
 
 void DataExtractorR::exportVals(std::string idName,
-                                const STK::Array2D<STK::Real>* p_data,
-                                const STK::Array2D<int>* p_posMissing,
-                                const STK::Array2D<STK::Real>* p_statMissing)
+                                const AugmentedData<STK::Array2D<int> >* p_augData,
+                                const std::map<int, std::map<int, std::vector< std::pair<int, STK::Real> > > >* p_dataStatStorage)
 {
-  Rcpp::NumericMatrix dataR       (p_data->sizeRows()       , p_data->sizeCols()       );
-  Rcpp::IntegerMatrix posMissingR (p_posMissing->sizeRows() , p_posMissing->sizeCols() );
-  Rcpp::NumericMatrix statMissingR(p_statMissing->sizeRows(), p_statMissing->sizeCols());
+  Rcpp::IntegerMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
+                            p_augData->data_.sizeCols());
+  Rcpp::List missingData; // list to store all the missing values in a linear format
 
-  for (int i = 0; i < p_data->sizeRows(); ++i)
-    for (int j = 0; j < p_data->sizeCols(); ++j)
-      dataR(i, j) = p_data->elt(i, j);
-
-  for (int i = 0; i < p_posMissing->sizeRows(); ++i)
+  // basic copy of the data to the export object
+  for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
   {
-    dataR(p_posMissing->elt(i, 0), p_posMissing->elt(i, 1)) = p_statMissing->elt(i, 0);  // imputation by expected value estimated in the Gibbs sampler
-    for (int j = 0; j < p_posMissing->sizeCols(); ++j)
+    for (int j = 0; j < p_augData->data_.sizeCols(); ++j)
     {
-      posMissingR(i, j) = p_posMissing->elt(i, j) + 1; // R matrices cols and rows start at 1
+      dataR(i, j) = p_augData->data_(i, j);
     }
-    for (int j = 0; j < p_statMissing->sizeCols(); ++j)
+  }
+
+  // imputation of missing value and export of their statistics
+  int currMissSample = 0; // index of current missing value in the linear output
+  std::map<int, std::map<int, std::pair<MisType, std::vector<int>   > > >::const_iterator itSamplePos;
+  std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >::const_iterator itSampleData;
+  for(itSamplePos  = p_augData->misData_.begin(),
+      itSampleData = p_dataStatStorage->begin();
+      itSamplePos  != p_augData->misData_.end() &&
+      itSampleData != p_dataStatStorage->end();
+      ++itSamplePos,
+      ++itSampleData)
+  {
+    std::map<int, std::pair<MisType, std::vector<int>   > >::const_iterator itVarPos;
+    std::map<int, std::vector<std::pair<int, STK::Real> > >::const_iterator itVarData;
+    for(itVarPos  = itSamplePos->second.begin(),
+        itVarData = itSampleData->second.begin();
+        itVarPos  != itSamplePos->second.end() &&
+        itVarData != itSampleData->second.end();
+        ++itVarPos,
+        ++itVarData)
     {
-      statMissingR(i, j) = p_statMissing->elt(i, j); // saving statistics of estimator for further analysis
+      int i = itSamplePos->first;
+      int j = itVarPos->first;
+      Rcpp::List currList; // storage for the current missing value
+      currList[0] = i + 1; // R matrices rows start at 1
+      currList[1] = j + 1; // R matrices cols start at 1
+      int currElem;
+      std::vector<std::pair<int, STK::Real> >::const_iterator itVec;
+      for (currElem = 2,
+           itVec = itVarData->second.begin();
+           itVec != itVarData->second.end();
+           ++currElem,
+           ++itVec)
+      {
+        currList[currElem]     = itVec->first; // current modality
+        currList[currElem + 1] = itVec->second; // probability of the modality
+      }
+      missingData[currMissSample] = currList;
+      dataR(i, j) = itVarData->second[0].first; // imputation by the mode
+      ++currMissSample;
     }
   }
 
   data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
-                                     Rcpp::Named("posMissing") = posMissingR,
-                                     Rcpp::Named("statMissing") = statMissingR);
-
-#ifdef MC_DEBUG
-  std::cout << "DataExtractorR::exportVals (gaussian), data_.size():  " << data_.size() << std::endl;
-#endif
+                                     Rcpp::Named("posMissing") = missingData);
 }
 
 void DataExtractorR::exportVals(std::string idName,
-                                const STK::Array2D<int>* p_data,
-                                const STK::Array2D<int>* p_posMissing,
-                                const STK::Array2D<STK::Real>* p_statMissing)
+                                const AugmentedData<STK::Array2D<STK::Real> >* p_augData,
+                                const std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage)
 {
-  Rcpp::IntegerMatrix dataR       (p_data->sizeRows()      , p_data->sizeCols()      );
-  Rcpp::IntegerMatrix posMissingR (p_posMissing->sizeRows() , p_posMissing->sizeCols() );
-  Rcpp::NumericMatrix statMissingR(p_statMissing->sizeRows(), p_statMissing->sizeCols());
+  Rcpp::NumericMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
+                            p_augData->data_.sizeCols());
+  Rcpp::List missingData; // list to store all the missing values in a linear format
 
-  for (int i = 0; i < p_data->sizeRows(); ++i)
-    for (int j = 0; j < p_data->sizeCols(); ++j)
-      dataR(i, j) = p_data->elt(i, j);
-
-#ifdef MC_DEBUG
-    std::cout << "DataExtractorR::extractVal, STK::Clust::Categorical_pjk_, posMissing.sizeRows() = " << p_posMissing->sizeRows() << std::endl;
-#endif
-
-  for (int i = 0; i < p_posMissing->sizeRows(); ++i)
+  // basic copy of the data to the export object
+  for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
   {
-#ifdef MC_DEBUG
-    std::cout << "DataExtractorR::extractVal, STK::Clust::Categorical_pjk_, i = " << i << std::endl;
-#endif
-    int pos;
-    p_statMissing->row(i).maxElt(pos);
-    dataR(p_posMissing->elt(i, 0), p_posMissing->elt(i, 1)) = pos + 1;  // imputation by the mode
-    for (int j = 0; j < p_posMissing->sizeCols(); ++j)
+    for (int j = 0; j < p_augData->data_.sizeCols(); ++j)
     {
-      posMissingR(i, j) = p_posMissing->elt(i, j) + 1; // R matrices cols and rows start at 1
+      dataR(i, j) = p_augData->data_(i, j);
     }
-    for (int j = 0; j < p_statMissing->sizeCols(); ++j)
+  }
+
+  // imputation of missing value and export of their statistics
+  int currMissSample = 0; // index of current missing value in the linear output
+  std::map<int, std::map<int, std::pair<MisType, std::vector<STK::Real>   > > >::const_iterator itSamplePos;
+  std::map<int, std::map<int, STK::Array2DVector<STK::Real>                 > >::const_iterator itSampleData;
+  for(itSamplePos  = p_augData->misData_.begin(),
+      itSampleData = p_dataStatStorage->begin();
+      itSamplePos  != p_augData->misData_.end() &&
+      itSampleData != p_dataStatStorage->end();
+      ++itSamplePos,
+      ++itSampleData)
+  {
+    std::map<int, std::pair<MisType, std::vector<STK::Real>   > >::const_iterator itVarPos;
+    std::map<int, STK::Array2DVector<STK::Real>                 >::const_iterator itVarData;
+    for(itVarPos  = itSamplePos->second.begin(),
+        itVarData = itSampleData->second.begin();
+        itVarPos  != itSamplePos->second.end() &&
+        itVarData != itSampleData->second.end();
+        ++itVarPos,
+        ++itVarData)
     {
-      statMissingR(i, j) = p_statMissing->elt(i, j); // saving statistics of estimator for further analysis
+      int i = itSamplePos->first;
+      int j = itVarPos->first;
+
+      Rcpp::List currList; // storage for the current missing value
+      currList[0] = i + 1; // R matrices rows start at 1
+      currList[1] = j + 1; // R matrices cols start at 1
+      currList[2] = itVarData->second[1]; // left bound
+      currList[3] = itVarData->second[2]; // right bound
+      missingData[currMissSample] = currList;
+
+      dataR(i, j) = itVarData->second[0]; // imputation by the expectation
+      ++currMissSample;
     }
   }
 
   data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
-                                     Rcpp::Named("posMissing") = posMissingR,
-                                     Rcpp::Named("statMissing") = statMissingR);
-#ifdef MC_DEBUG
-  std::cout << "DataExtractorR::exportVals (categorical), data_.size():  " << data_.size() << std::endl;
-#endif
+                                     Rcpp::Named("posMissing") = missingData);
 }
 
 Rcpp::List DataExtractorR::rcppReturnVal() const

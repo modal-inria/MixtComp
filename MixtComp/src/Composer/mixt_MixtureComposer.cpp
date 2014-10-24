@@ -35,19 +35,6 @@ MixtureComposer::MixtureComposer( int nbSample, int nbVariable, int nbCluster)
                                 : STK::IMixtureComposerBase( nbSample, nbVariable, nbCluster)
 {}
 
-MixtureComposer::MixtureComposer( MixtureComposer const& composer)
-                                : STK::IMixtureComposerBase(composer)
-                                , v_mixtures_(composer.v_mixtures_)
-{
-  // clone mixtures
-  for (size_t l = 0; l < v_mixtures_.size(); ++l)
-  {
-    v_mixtures_[l] = composer.v_mixtures_[l]->clone();
-    v_mixtures_[l]->setMixtureComposer(this);
-    v_mixtures_[l]->initializeStep();
-  }
-}
-
 MixtureComposer::~MixtureComposer()
 {
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
@@ -263,21 +250,6 @@ void MixtureComposer::registerMixture(IMixture* p_mixture)
 {
   p_mixture->setMixtureComposer(this);
   v_mixtures_.push_back(p_mixture);
-}
-
-/* @brief Create the composer using existing data handler and ingredients.
- * This method is essentially used by the create() method and can be
- * reused in derived classes. */
-void MixtureComposer::createComposer( std::vector<IMixture*> const& v_mixtures)
-{
-  intializeMixtureParameters();
-  v_mixtures_.resize( v_mixtures.size());
-  for (size_t l = 0; l < v_mixtures_.size(); ++l)
-  {
-    v_mixtures_[l] = v_mixtures[l]->create();
-    v_mixtures_[l]->setMixtureComposer(this);
-    v_mixtures_[l]->initializeStep();
-  }
 }
 
 } /* namespace mixt */

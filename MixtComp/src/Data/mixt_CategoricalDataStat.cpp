@@ -28,7 +28,7 @@ namespace mixt
 {
 
 CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                                         std::map<int, std::map<int, std::vector< std::pair<int, STK::Real> > > >* p_dataStatStorage,
+                                         std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage,
                                          STK::Real confidenceLevel) :
     nbModalities_(0),
     pm_augDataij_(pm_augDataij),

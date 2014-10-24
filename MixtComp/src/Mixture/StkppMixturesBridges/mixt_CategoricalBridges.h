@@ -69,7 +69,6 @@ struct BridgeTraits<STK::Clust::Categorical_pjk_>
     typedef CategoricalSamplerIterator SamplerIterator;
     /** Type of Likelihood */
     typedef CategoricalLikelihood Likelihood;
-
 };
 
 template<typename DataHandler,
