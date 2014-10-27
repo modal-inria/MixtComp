@@ -22,6 +22,7 @@
  **/
 
 #include "mixt_GaussianDataStat.h"
+#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
@@ -46,8 +47,8 @@ void GaussianDataStat::sampleVals(int sample,
   {
     tempStat_.clear();
     // creation of the vectors to store the sampled values
-    for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
-         it_misVar != pm_augDataij_->misData_[sample].end();
+    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->misData_.find(sample)->second.begin();
+         it_misVar != pm_augDataij_->misData_.find(sample)->second.end();
          ++it_misVar)
     {
       int var = it_misVar->first;
@@ -55,8 +56,8 @@ void GaussianDataStat::sampleVals(int sample,
     }
 
     // first sampling, on each missing variables
-    for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
-         it_misVar != pm_augDataij_->misData_[sample].end();
+    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->misData_.find(sample)->second.begin();
+         it_misVar != pm_augDataij_->misData_.find(sample)->second.end();
          ++it_misVar)
     {
       int var = it_misVar->first;
@@ -67,29 +68,30 @@ void GaussianDataStat::sampleVals(int sample,
   }
   else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
   {
-    for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
-         it_misVar != pm_augDataij_->misData_[sample].end();
+    for (std::map<int, STK::Array2DVector<STK::Real> >::const_iterator it_misVar = tempStat_.begin();
+         it_misVar != tempStat_.end();
          ++it_misVar)
     {
       int var = it_misVar->first;
       STK::Array2DVector<int> indOrder; // to store indices of ascending order
-      heapSort(indOrder, it_misVar->second);
+      STK::heapSort(indOrder, it_misVar->second);
       STK::Real realIndLow = confidenceLevel_ / 2. * iterationMax;
       STK::Real realIndHigh = (1. - confidenceLevel_ / 2.) * iterationMax;
 
-      p_dataStatStorage_[sample][var] = STK::Array2DVector<STK::Real>(3);
-      p_dataStatStorage_[sample][var][0] = misVar->second.mean();
-      p_dataStatStorage_[sample][var][1] =   (1. - (realIndLow  - int(realIndLow ))) * it_misVar->second[indOrder[int(realIndLow )    ]]
-                                           + (1. - (int(realIndLow ) - realIndLow )) * it_misVar->second[indOrder[int(realIndLow ) + 1]];
-      p_dataStatStorage_[sample][var][2] =   (1. - (realIndHigh - int(realIndHigh))) * it_misVar->second[indOrder[int(realIndHigh)    ]]
-                                           + (1. - (int(realIndHigh) - realIndHigh)) * it_misVar->second[indOrder[int(realIndHigh) + 1]];
+      STK::Array2DVector<STK::Real> tempVec(3);
+      tempVec[0] = it_misVar->second.mean();
+      tempVec[1] =  (1. - (realIndLow  - int(realIndLow ))) * it_misVar->second[indOrder[int(realIndLow )    ]]
+                  + (1. - (int(realIndLow ) - realIndLow )) * it_misVar->second[indOrder[int(realIndLow ) + 1]];
+      tempVec[2] =  (1. - (realIndHigh - int(realIndHigh))) * it_misVar->second[indOrder[int(realIndHigh)    ]]
+                  + (1. - (int(realIndHigh) - realIndHigh)) * it_misVar->second[indOrder[int(realIndHigh) + 1]];
+      (*p_dataStatStorage_)[sample][var] = tempVec;
     }
   }
   else
   {
     // first sampling, on each missing variables
-    for (ConstIt_MisVar it_misVar = pm_augDataij_->misData_[sample].begin();
-         it_misVar != pm_augDataij_->misData_[sample].end();
+    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->misData_.find(sample)->second.begin();
+         it_misVar != pm_augDataij_->misData_.find(sample)->second.end();
          ++it_misVar)
     {
       int var = it_misVar->first;
@@ -98,4 +100,5 @@ void GaussianDataStat::sampleVals(int sample,
       tempStat_[var][iteration] = currVal;
     }
   }
+}
 } // namespace mixt
