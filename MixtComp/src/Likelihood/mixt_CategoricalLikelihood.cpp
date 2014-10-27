@@ -38,41 +38,53 @@ CategoricalLikelihood::~CategoricalLikelihood()
 void CategoricalLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
 {
   // likelihood for present data
-  for (int i = 0; i < presentData_.sizeRows(); ++i)
+  for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
   {
-    for (int j = 0; j < presentData_.sizeCols(); ++j)
+    for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
     {
-      int nbModalities = p_augData_->dataRanges_[j].range_;
-
-      if (presentData_(i, j) != STK::Arithmetic<STK::Real>::NA())   // likelihood for present value
+      if (p_augData_->present_(i, j) == true)   // likelihood for present value
       {
-        STK::Real proba = p_param_->elt(k * nbModalities + presentData_(i, j),
+        int nbModalities = p_augData_->dataRanges_[j].range_;
+        STK::Real proba = p_param_->elt(k * nbModalities + p_augData_->data_(i, j),
                                         j);
         lnComp->elt(i) += std::log(proba);
       }
     }
   }
 
-  // likelihood for finite number of values
-  for (iv_missingFiniteValues it = p_augData_->v_missingFiniteValues_.begin();
-       it != p_augData_->v_missingFiniteValues_.end();
-       ++it)
+  // likelihood for finite number of values, loop on missing individuals
+  for (AugmentedData<STK::Array2D<int> >::ConstIt_MisInd itInd = p_augData_->misData_.begin();
+       itInd != p_augData_->misData_.end();
+       ++itInd)
   {
-    int i = it->first.first;
-    int j = it->first.second;
-
-    int nbModalities = p_augData_->dataRanges_[j].range_;
-
-    STK::Real proba = 0.;
-
-    for (std::vector<int>::const_iterator itMiss = it->second.begin();
-         itMiss != it->second.end();
-         ++itMiss)
+    // loop on missing variables
+    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar itVar = itInd->second.begin();
+        itVar != itInd->second.end();
+        ++itVar)
     {
-      proba += p_param_->elt(k * nbModalities + *itMiss,
-                             j);
+      switch(itVar->second.first) // (iterator on variables)->(access mapped elements).(get MisType)
+      {
+        case missingFiniteValues_:
+        {
+          int i = itInd->first;
+          int j = itVar->first;
+
+          int nbModalities = p_augData_->dataRanges_[j].range_;
+
+          STK::Real proba = 0.;
+
+          for (std::vector<int>::const_iterator itMiss = itVar->second.second.begin(); // (iterator on variables)->(access mapped elements).(vector of values of MisVal)
+               itMiss != itVar->second.second.end();
+               ++itMiss)
+          {
+            proba += p_param_->elt(k * nbModalities + *itMiss,
+                                   j);
+          }
+          lnComp->elt(i) += std::log(proba);
+        }
+        break;
+      }
     }
-    lnComp->elt(i) += std::log(proba);
   }
 }
 
