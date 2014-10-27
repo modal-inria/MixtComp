@@ -29,153 +29,106 @@ namespace mixt
 
 /** Utility function to lookup the data set and remove missing values
  *  coordinates. */
-void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij)
+void removeMissing(AugmentedData<STK::Array2D<STK::Real> >* p_augData_)
 {
-  typedef typename std::pair<int, int> pos;
-
-#ifdef MC_DEBUG
-  std::cout << "removeMissing AugmentedData<STK::Array2D<STK::Real> >& " << std::endl
-            << "m_augDataij.v_missing_.size(): " << m_augDataij.v_missing_.size() << std::endl
-            << "m_augDataij.v_missingIntervals_.size(): " << m_augDataij.v_missingIntervals_.size() << std::endl
-            << "m_augDataij.v_missingLUIntervals_.size(): " << m_augDataij.v_missingLUIntervals_.size() << std::endl
-            << "m_augDataij.v_missingRUIntervals_.size(): " << m_augDataij.v_missingRUIntervals_.size() << std::endl;
-#endif
-
-  // missing value [-inf,+inf] or ?
-  for (typename std::vector<pos>::iterator it = m_augDataij.v_missing_.begin();
-       it != m_augDataij.v_missing_.end();
-       ++it)
+  // loop on missing individuals
+  for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisInd itInd = p_augData_->misData_.begin();
+       itInd != p_augData_->misData_.end();
+       ++itInd)
   {
-    STK::Real min = m_augDataij.dataRanges_[(*it).second].min_;
-    STK::Real max = m_augDataij.dataRanges_[(*it).second].max_;
+    // loop on missing variables
+    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar itVar = itInd->second.begin();
+        itVar != itInd->second.end();
+        ++itVar)
+    {
+      int i = itInd->first;
+      int j = itVar->first;
+      STK::Real sampleVal;
+      switch(itVar->second.first) // (iterator on map)->(mapped element).(MisType)
+      {
+        case missing_:
+        {
 
-#ifdef MC_DEBUG
-    std::cout << std::endl;
-    std::cout << "\tsample: " << (*it).first << std::endl;
-    std::cout << "\tvar: " << (*it).second << std::endl;
-    std::cout << "\tMissing type: [-inf,+inf]" << std::endl;
-    std::cout << "\t[" << min << ":" << max << "]" << std::endl;
-#endif
+          STK::Real min = p_augData_->dataRanges_[j].min_;
+          STK::Real max = p_augData_->dataRanges_[j].max_;
+          sampleVal = STK::Law::Uniform::rand(min, max);
+        }
+        break;
 
-    STK::Real sampleVal = STK::Law::Uniform::rand(min,
-                                                  max);
-    m_augDataij.data_((*it).first,
-                      (*it).second) = sampleVal;
+        case missingIntervals_:
+        {
+          STK::Real infBound = itVar->second.second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
+          STK::Real supBound = itVar->second.second[1];
+          STK::Real sampleVal = STK::Law::Uniform::rand(infBound, supBound);
+        }
+        break;
 
-//    m_augDataij.data_((*it).first,
-//                       (*it).second) = m_augDataij.data_.col((*it).second).safe().mean();
+        case missingLUIntervals_:
+        {
+          STK::Real min = p_augData_->dataRanges_[j].min_;
+          STK::Real supBound = itVar->second.second[0];
+          STK::Real sampleVal = STK::Law::Uniform::rand(min, supBound);
+        }
+        break;
 
-#ifdef MC_DEBUG
-    std::cout << "\tsampleVal: " << sampleVal <<std::endl;
-#endif
-  }
-
-  // missing values [a,b]
-  for (typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::iterator it = m_augDataij.v_missingIntervals_.begin();
-       it != m_augDataij.v_missingIntervals_.end();
-       ++it)
-  {
-    STK::Real sampleVal = STK::Law::Uniform::rand((*it).second.first,
-                                                  (*it).second.second);
-    m_augDataij.data_((*it).first.first,
-                       (*it).first.second) = sampleVal;
-#ifdef MC_DEBUG
-    std::cout << std::endl;
-    std::cout << "\tsample: " << (*it).first.first << std::endl;
-    std::cout << "\tvar: " << (*it).first.second << std::endl;
-    std::cout << "\tMissing type: [a,b]" << std::endl;
-    std::cout << "\t[" << (*it).second.first << ":" << (*it).second.second << "]" << std::endl;
-    std::cout << "\tsampleVal: " << sampleVal <<std::endl;
-#endif
-  }
-
-  // missing values [-inf,b]
-  for (typename std::vector<std::pair<pos, STK::Real> >::iterator it = m_augDataij.v_missingLUIntervals_.begin();
-       it != m_augDataij.v_missingLUIntervals_.end();
-       ++it)
-  {
-    STK::Real sampleVal = STK::Law::Uniform::rand(m_augDataij.dataRanges_[(*it).first.second].min_,
-                                                  (*it).second);
-    m_augDataij.data_((*it).first.first,
-                      (*it).first.second) = sampleVal;
-#ifdef MC_DEBUG
-    std::cout << std::endl;
-    std::cout << "\tsample: " << (*it).first.first << std::endl;
-    std::cout << "\tvar: " << (*it).first.second << std::endl;
-    std::cout << "\tMissing type: [-inf,b]" << std::endl;
-    std::cout << "\t[" << m_augDataij.dataRanges_[(*it).first.second].min_ << ":" << (*it).second << "]" << std::endl;
-    std::cout << "\tsampleVal: " << sampleVal <<std::endl;
-#endif
-  }
-
-  // missing values [a,+inf]
-  for (typename std::vector<std::pair<pos, STK::Real> >::iterator it = m_augDataij.v_missingRUIntervals_.begin();
-       it != m_augDataij.v_missingRUIntervals_.end();
-       ++it)
-  {
-    STK::Real sampleVal = STK::Law::Uniform::rand((*it).second,
-                                                  m_augDataij.dataRanges_[(*it).first.second].max_);
-    m_augDataij.data_((*it).first.first,
-                      (*it).first.second) = sampleVal;
-#ifdef MC_DEBUG
-    std::cout << std::endl;
-    std::cout << "\tsample: " << (*it).first.first << std::endl;
-    std::cout << "\tvar: " << (*it).first.second << std::endl;
-    std::cout << "\tMissing type: [a,+inf]" << std::endl;
-    std::cout << "\t[" << (*it).second << ":" << m_augDataij.dataRanges_[(*it).first.second].max_ << "]" << std::endl;
-    std::cout << "\tsampleVal: " << sampleVal <<std::endl;
-#endif
+        case missingRUIntervals_:
+        {
+          STK::Real infBound = itVar->second.second[0];
+          STK::Real max = p_augData_->dataRanges_[j].max_;
+          STK::Real sampleVal = STK::Law::Uniform::rand(infBound, max);
+        }
+        break;
+      }
+      p_augData_->data_(i, j) = sampleVal;
+    }
   }
 }
 
-void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij)
+void removeMissing(AugmentedData<STK::Array2D<int> >* p_augData_)
 {
-  typedef typename std::pair<int, int> pos;
-
-  // missing value [-inf,+inf] or ?
-  for (typename std::vector<pos>::iterator it = m_augDataij.v_missing_.begin();
-       it != m_augDataij.v_missing_.end();
-       ++it)
+  // loop on missing individuals
+  for (AugmentedData<STK::Array2D<int> >::ConstIt_MisInd itInd = p_augData_->misData_.begin();
+       itInd != p_augData_->misData_.end();
+       ++itInd)
   {
-    int firstModality = m_augDataij.dataRanges_[(*it).second].min_;
-    int nbModalities = m_augDataij.dataRanges_[(*it).second].range_;
-    STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality, nbModalities), 1. / nbModalities);
-    m_augDataij.data_((*it).first,
-                      (*it).second) = STK::Law::Categorical::rand(modalities);
-  }
-
-  // missing values {}
-  for (typename std::vector<std::pair<pos, std::vector<int> > >::iterator it = m_augDataij.v_missingFiniteValues_.begin();
-       it != m_augDataij.v_missingFiniteValues_.end();
-       ++it)
-  {
-#ifdef MC_DEBUG
-    std::cout << "removeMissing, int, v_missingFiniteValues_" << std::endl;
-#endif
-    int firstModality = m_augDataij.dataRanges_[(*it).first.second].min_;
-    int nbModalities = m_augDataij.dataRanges_[(*it).first.second].range_;
-    STK::Real proba = 1. / (*it).second.size();
-    STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality, nbModalities), 0.);
-    for(std::vector<int>::iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2)
+    // loop on missing variables
+    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar itVar = itInd->second.begin();
+        itVar != itInd->second.end();
+        ++itVar)
     {
-#ifdef MC_DEBUG
-      std::cout << "Filling: " << *it2
-                << " with: " << proba << std::endl;
-#endif
-      modalities.elt(*it2) = proba;
-    }
+      int i = itInd->first;
+      int j = itVar->first;
+      int sampleVal;
+      int firstModality = p_augData_->dataRanges_[j].min_;
+      int nbModalities = p_augData_->dataRanges_[j].range_;
+      switch(itVar->second.first) // (iterator on map)->(mapped element).(MisType)
+      {
+        case missing_:
+        {
+          STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality, nbModalities), 1. / nbModalities);
+          sampleVal = STK::Law::Categorical::rand(modalities);
 
-    int sampledValue = STK::Law::Categorical::rand(modalities);
-    m_augDataij.data_((*it).first.first,
-                      (*it).first.second) = sampledValue;
-#ifdef MC_DEBUG
-    std::cout << "pos: " << (*it).first.first << " " << (*it).first.second << std::endl;
-    std::cout << "number of present values: " << (*it).second.size() << std::endl;
-    std::cout << "nbModalities: " << nbModalities << std::endl;
-    std::cout << "modalities: " << std::endl;
-    std::cout << modalities;
-    std::cout << "sampled value: " << sampledValue << std::endl;
-#endif
+        }
+        break;
+
+        case missingFiniteValues_:
+        {
+          STK::Real proba = 1. / itVar->second.second.size(); // (iterator on map)->(mapped element).(vector of parameters)
+          STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality,
+                                                              nbModalities),
+                                                   0.);
+          for(std::vector<int>::const_iterator itParam = itVar->second.second.begin();
+              itParam != itVar->second.second.end();
+              ++itParam)
+          {
+            modalities[*itParam] = proba;
+          }
+          sampleVal = STK::Law::Categorical::rand(modalities);
+        }
+        break;
+      }
+      p_augData_->data_(i, j) = sampleVal;
+    }
   }
 }
 

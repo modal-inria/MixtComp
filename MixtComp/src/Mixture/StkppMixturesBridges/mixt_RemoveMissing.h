@@ -35,9 +35,9 @@ namespace mixt
 
 /** Utility function to lookup the data set and remove missing values
  *  coordinates. */
-void removeMissing(AugmentedData<STK::Array2D<STK::Real> >& m_augDataij);
+void removeMissing(AugmentedData<STK::Array2D<STK::Real> >* p_augData_);
 
-void removeMissing(AugmentedData<STK::Array2D<int> >& m_augDataij);
+void removeMissing(AugmentedData<STK::Array2D<int> >* p_augData_);
 
 } /* namespace mixt */
 
