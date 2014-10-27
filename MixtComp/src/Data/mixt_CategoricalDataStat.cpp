@@ -91,7 +91,8 @@ void CategoricalDataStat::sampleVals(int sample,
          ++it_misVar)
     {
       int var = it_misVar->first;
-      tempStat_[var] = STK::Array2DPoint<STK::Real>(nbModalities_, 0);
+      tempStat_[var] = STK::Array2DPoint<STK::Real>(STK::Range(pm_augDataij_->dataRanges_[var].min_,
+                                                               nbModalities_), 0);
     }
 
     // first sampling, on each missing variables
@@ -101,8 +102,7 @@ void CategoricalDataStat::sampleVals(int sample,
     {
       int var = it_misVar->first;
       int currMod = pm_augDataij_->data_(sample,
-                                         var)
-                                   - pm_augDataij_->dataRanges_[var].min_);
+                                         var);
       tempStat_[var][currMod] += 1;
     }
   }
@@ -137,8 +137,7 @@ void CategoricalDataStat::sampleVals(int sample,
     {
       int var = it_misVar->first;
       int currMod = pm_augDataij_->data_(sample,
-                                         var)
-                                   - pm_augDataij_->dataRanges_[var].min_);
+                                         var);
       tempStat_[var][currMod] += 1;
     }
   }
