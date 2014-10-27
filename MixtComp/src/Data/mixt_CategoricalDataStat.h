@@ -53,7 +53,7 @@ class CategoricalDataStat
     /** Sparse description of the missing values */
     std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage_;
 
-    /** Array to store values across iterations, for a given individual, map : var->modalities vector*/
+    /** Array to store values across iterations, for the current individual, map : var->modalities vector*/
     std::map<int, STK::Array2DPoint<STK::Real> > tempStat_;
     /** Confidence level */
     STK::Real confidenceLevel_;
