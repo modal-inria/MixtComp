@@ -56,13 +56,13 @@ void GaussianLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int
   }
 
   // loop on missing individuals
-  for (ConstIt_MisInd itInd = p_augData_->misData_.begin();
+  for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisInd itInd = p_augData_->misData_.begin();
        itInd != p_augData_->misData_.end();
        ++itInd)
   {
     // loop on missing variables
-    for (ConstIt_MisVar itVar = itInd->begin();
-        itVar != itInd->end();
+    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar itVar = itInd->second.begin();
+        itVar != itInd->second.end();
         ++itVar)
     {
       switch(itVar->second.first)
@@ -118,4 +118,6 @@ void GaussianLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int
       }
     }
   }
+}
+
 } /* namespace mixt */
