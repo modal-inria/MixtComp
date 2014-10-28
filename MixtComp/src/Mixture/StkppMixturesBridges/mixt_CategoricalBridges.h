@@ -27,7 +27,6 @@
 
 #include "stkpp/projects/Clustering/include/CategoricalMixtureModels/STK_Categorical_pjk.h"
 #include "../../Sampler/mixt_CategoricalSampler.h"
-#include "../../Sampler/mixt_CategoricalSamplerIterator.h"
 #include "../../Data/mixt_CategoricalDataStat.h"
 #include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_CategoricalLikelihood.h"
@@ -65,8 +64,6 @@ struct BridgeTraits<STK::Clust::Categorical_pjk_>
     typedef STK::Categorical_pjk<Data> Mixture;
     /** Sampler to be used for this specific mixture model */
     typedef CategoricalSampler Sampler;
-    /** Corresponding sampler iterator */
-    typedef CategoricalSamplerIterator SamplerIterator;
     /** Type of Likelihood */
     typedef CategoricalLikelihood Likelihood;
 };

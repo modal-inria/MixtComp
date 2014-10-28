@@ -27,7 +27,6 @@
 
 #include "stkpp/projects/Clustering/include/GaussianMixtureModels/STK_Gaussian_sjk.h"
 #include "../../Sampler/mixt_GaussianSampler.h"
-#include "../../Sampler/mixt_GaussianSamplerIterator.h"
 #include "../../Data/mixt_GaussianDataStat.h"
 #include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_GaussianLikelihood.h"
@@ -67,8 +66,6 @@ struct BridgeTraits<STK::Clust::Gaussian_sjk_>
     typedef STK::Gaussian_sjk<Data> Mixture;
     /** Sampler to be used for this specific mixture model */
     typedef GaussianSampler Sampler;
-    /** Corresponding sampler iterator */
-    typedef GaussianSamplerIterator SamplerIterator;
     /** Type of Likelihood */
     typedef GaussianLikelihood Likelihood;
 };

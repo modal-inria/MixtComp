@@ -26,9 +26,7 @@
 #define MIXT_GAUSSIANSAMPLER_H
 
 #include "Arrays/include/STK_Array2D.h"
-
 #include "../Data/mixt_AugmentedData.h"
-#include "mixt_GaussianSamplerIterator.h"
 
 namespace mixt
 {
@@ -36,17 +34,21 @@ namespace mixt
 class GaussianSampler
 {
   public:
-    GaussianSampler(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
+    GaussianSampler(AugmentedData<STK::Array2D<STK::Real> >* p_augData,
                     const STK::Array2D<STK::Real>* p_param);
-    GaussianSampler(const GaussianSampler& sampler);
     ~GaussianSampler();
-    GaussianSamplerIterator begin() const;
-    GaussianSamplerIterator end() const;
     void setZi(const STK::CArrayVector<int>* p_zi);
+    /** Sample new values for the missing variables of the given individual */
+    void sampleIndividual(int i);
   private:
-    const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij_;
+    AugmentedData<STK::Array2D<STK::Real> >* p_augData_;
     const STK::Array2D<STK::Real>* p_param_;
     const STK::CArrayVector<int>* p_zi_;
+
+    /** left bounded sampler */
+    STK::Real lbSampler(STK::Real lower) const;
+    /** left and right bounded sampler*/
+    STK::Real lrbSampler(STK::Real lower, STK::Real upper) const;
 };
 
 } // namespace mixt
