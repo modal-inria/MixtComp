@@ -26,6 +26,7 @@
 #define MIXT_GAUSSIANSAMPLER_H
 
 #include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_CArrayVector.h"
 #include "../Data/mixt_AugmentedData.h"
 
 namespace mixt

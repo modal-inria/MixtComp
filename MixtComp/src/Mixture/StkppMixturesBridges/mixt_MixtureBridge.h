@@ -67,8 +67,6 @@ class MixtureBridge : public mixt::IMixture
     typedef typename BridgeTraits<Id>::Mixture Mixture;
     // type of Sampler
     typedef typename BridgeTraits<Id>::Sampler Sampler;
-    // type of Sample Iterator
-    typedef typename BridgeTraits<Id>::SamplerIterator SamplerIterator;
     // type of Likelihood
     typedef typename BridgeTraits<Id>::Likelihood Likelihood;
 
@@ -86,7 +84,7 @@ class MixtureBridge : public mixt::IMixture
       mixture_(nbCluster),
       m_augDataij_(),
       nbVariable_(0),
-      sampler_(getData(),
+      sampler_(&m_augDataij_,
                getParam()),
       dataStatComputer_(getData(),
                         &dataStatStorage_,
@@ -170,7 +168,7 @@ class MixtureBridge : public mixt::IMixture
                   << m_augDataij_.data_ << std::endl;
 #endif
       }
-      removeMissing(m_augDataij_);
+      removeMissing(&m_augDataij_);
 #ifdef MC_DEBUG
       std::cout << "\tv_missing_.size(): " << m_augDataij_.v_missing_.size() << std::endl
                 << "\tv_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl
@@ -187,34 +185,15 @@ class MixtureBridge : public mixt::IMixture
     {
       mixture_.randomInit();
     }
-    /** This function should be used for imputation of data.
-     *  The default implementation (in the base class) is to do nothing.
-     */
-    virtual void imputationStep()
-    {
-      // imputation based on mean values in classes is not general enough for MixtComp,
-      // samplingStep is used instead
-    }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
      * simulated by the framework itself because to do so we have to take into
      * account all the mixture laws. do nothing by default.
      */
-    virtual void samplingStep()
+    virtual void samplingStep(int i)
     {
       mixture_.getParameters(param_); // update the parameters (used by the Sampler)
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::samplingStep(), getParameters" << std::endl;
-      std::cout << "\tidName: " << idName() << std::endl;
-      std::cout << "\tparam: " << std::endl;
-      std::cout << param_ << std::endl;
-#endif
-      SamplerIterator endIt(sampler_.end());
-      for (SamplerIterator it = sampler_.begin(); it != endIt; ++it)
-      {
-        std::pair<std::pair<int, int>, Type> retValue(*it);
-        m_augDataij_.data_(retValue.first.first, retValue.first.second) = retValue.second;
-      }
+      sampler_.sampleIndividual(i);
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */

@@ -59,7 +59,7 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >* p_augData_)
         {
           STK::Real infBound = itVar->second.second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
           STK::Real supBound = itVar->second.second[1];
-          STK::Real sampleVal = STK::Law::Uniform::rand(infBound, supBound);
+          sampleVal = STK::Law::Uniform::rand(infBound, supBound);
         }
         break;
 
@@ -67,7 +67,7 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >* p_augData_)
         {
           STK::Real min = p_augData_->dataRanges_[j].min_;
           STK::Real supBound = itVar->second.second[0];
-          STK::Real sampleVal = STK::Law::Uniform::rand(min, supBound);
+          sampleVal = STK::Law::Uniform::rand(min, supBound);
         }
         break;
 
@@ -75,7 +75,7 @@ void removeMissing(AugmentedData<STK::Array2D<STK::Real> >* p_augData_)
         {
           STK::Real infBound = itVar->second.second[0];
           STK::Real max = p_augData_->dataRanges_[j].max_;
-          STK::Real sampleVal = STK::Law::Uniform::rand(infBound, max);
+          sampleVal = STK::Law::Uniform::rand(infBound, max);
         }
         break;
       }

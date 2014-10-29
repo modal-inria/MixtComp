@@ -22,6 +22,8 @@
  **/
 
 #include "mixt_CategoricalSampler.h"
+#include "STatistiK/include/STK_Law_Categorical.h"
+#include "../Various/mixt_Constants.h"
 
 namespace mixt
 {

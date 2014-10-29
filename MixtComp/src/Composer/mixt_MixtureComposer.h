@@ -26,7 +26,7 @@
 #define MIXT_MIXTURECOMPOSER_H
 
 #include <vector>
-#include "Clustering/include/STK_IMixtureComposerBase.h"
+#include "mixt_IMixtureComposerBase.h"
 
 namespace mixt
 {
@@ -48,7 +48,7 @@ class IMixture;
  * \f$\boldsymbol{\lambda}^l_k, \, k=1,\ldots K \f$ are the cluster specific parameters
  * and the parameters \f$ \boldsymbol{\alpha}^l \f$ are the shared parameters.
  * */
-class MixtureComposer : public STK::IMixtureComposerBase
+class MixtureComposer : public mixt::IMixtureComposerBase
 {
   public:
     typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
@@ -66,11 +66,6 @@ class MixtureComposer : public STK::IMixtureComposerBase
 
     /** @return a constant reference on the vector of mixture */
     inline std::vector<IMixture*> const& v_mixtures() const { return v_mixtures_;}
-
-    /** Create a composer, but reinitialize the mixtures parameters. */
-    virtual MixtureComposer* create() const;
-    /** Create a clone of the current model, with mixtures parameters preserved. */
-    virtual MixtureComposer* clone() const;
 
     /** initialize randomly the parameters of the components of the model */
     virtual void randomInit();
@@ -102,9 +97,6 @@ class MixtureComposer : public STK::IMixtureComposerBase
      *
      **/
     virtual void initializeStep();
-    /** @brief Impute the missing values.
-     **/
-    virtual void imputationStep();
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels.
      */
@@ -144,33 +136,16 @@ class MixtureComposer : public STK::IMixtureComposerBase
      **/
     void registerMixture(IMixture* mixture);
     /** Utility method allowing to create all the mixtures using the DataHandler
-     *  info of the manager.
-     **/
+    *  info of the manager.
+    **/
     template<class MixtureManager>
     void createMixtures(MixtureManager& manager)
     {
-        manager.createMixtures(*this,
-                               nbCluster());
-    }
-    /** Create a specific mixture and register it.
-     *  @param manager the manger with the responsibility of the creation
-     *  @param idModel the id of the mixture we want to create
-     *  @param idName the name of the mixture
-     **/
-    template<class MixtureManager>
-    void createMixture(MixtureManager& manager, STK::Clust::Mixture idModel, STK::String const& idName)
-    {
-      IMixture* p_mixture = manager.createMixture(idModel, idName, nbCluster_);
-      if (p_mixture) registerMixture(p_mixture);
+      manager.createMixtures(*this,
+                             nbCluster());
     }
 
   protected:
-    /** @brief Create the composer using existing data handler and mixtures.
-     * This method is essentially used by the create() method and can be
-     * reused in derived classes.
-     * @sa MixtureComposerFixedProp
-     **/
-    void createComposer( std::vector<IMixture*> const& v_mixtures_);
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
 };

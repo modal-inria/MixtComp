@@ -32,25 +32,13 @@ namespace mixt
 {
 
 MixtureComposer::MixtureComposer( int nbSample, int nbVariable, int nbCluster)
-                                : STK::IMixtureComposerBase( nbSample, nbVariable, nbCluster)
+                                : mixt::IMixtureComposerBase( nbSample, nbVariable, nbCluster)
 {}
 
 MixtureComposer::~MixtureComposer()
 {
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   { delete (*it);}
-}
-
-/* clone pattern */
-MixtureComposer* MixtureComposer::clone() const
-{ return new MixtureComposer(*this);}
-
-MixtureComposer* MixtureComposer::create() const
-{
-  // set dimensions
-  MixtureComposer* p_composer = new MixtureComposer(nbSample(), nbVariable(), nbCluster());
-  p_composer->createComposer( v_mixtures_);
-  return p_composer;
 }
 
 STK::Real MixtureComposer::lnComponentProbability(int i, int k)
@@ -152,19 +140,18 @@ int MixtureComposer::computeNbFreeParameters() const
   return sum;
 }
 
-void MixtureComposer::imputationStep()
-{
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  { (*it)->imputationStep();}
-}
-
 /* @brief Simulation of all the latent variables and/or missing data
  *  excluding class labels.
  */
 void MixtureComposer::samplingStep()
 {
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  { (*it)->samplingStep();}
+  {
+    for (int i = 0; i < nbSample(); ++i)
+    {
+      (*it)->samplingStep(i);
+    }
+  }
 }
 
 void MixtureComposer::misClasStep(int iteration)
@@ -177,7 +164,10 @@ void MixtureComposer::misClasStep(int iteration)
     zi_ = k; // setting zi_ for the sampling step
     for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
-      (*it)->samplingStep();
+      for (int i = 0; i < nbSample(); ++i)
+      {
+        (*it)->samplingStep(i);
+      }
     }
     for (int i = 0; i < nbSample(); ++i)
     {

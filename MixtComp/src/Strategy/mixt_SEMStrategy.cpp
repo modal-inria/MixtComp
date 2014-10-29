@@ -32,10 +32,8 @@ namespace mixt
 {
 
 /** default constructor */
-SemStrategy::SemStrategy(mixt::MixtureComposer*& p_composer,
-                         STK::Clust::initType init,
+SemStrategy::SemStrategy(mixt::MixtureComposer* p_composer,
                          int nbTry,
-                         int nbTrialInInit,
                          int nbBurnInIter,
                          int nbIter,
                          int nbGibbsBurnInIter,
@@ -46,11 +44,6 @@ SemStrategy::SemStrategy(mixt::MixtureComposer*& p_composer,
     nbGibbsBurnInIter_(nbGibbsBurnInIter),
     nbGibbsIter_(nbGibbsIter)
 {
-  p_init_ = STK::Clust::createInit(init,
-                                   nbTrialInInit,
-                                   STK::Clust::semAlgo_,
-                                   0,
-                                   0.);
   p_burnInAlgo_ = new SEMAlgo(nbBurnInIter, nbSamplingAttempts);
   p_longAlgo_   = new SEMAlgo(nbIter      , nbSamplingAttempts);
 }
@@ -58,7 +51,6 @@ SemStrategy::SemStrategy(mixt::MixtureComposer*& p_composer,
 /** copy constructor */
 SemStrategy::SemStrategy(SemStrategy const& strategy) :
     p_composer_(strategy.p_composer_),
-    p_init_(strategy.p_init_->clone()),
     nbTry_(strategy.nbTry_),
     p_burnInAlgo_(strategy.p_burnInAlgo_),
     p_longAlgo_(strategy.p_longAlgo_)
@@ -67,7 +59,6 @@ SemStrategy::SemStrategy(SemStrategy const& strategy) :
 /** destructor */
 SemStrategy::~SemStrategy()
 {
-  if (p_init_) delete p_init_;
   if (p_burnInAlgo_) delete p_burnInAlgo_;
   if (p_longAlgo_) delete p_longAlgo_;
 }
@@ -76,20 +67,8 @@ bool SemStrategy::run()
 {
   for (int iTry = 0; iTry < nbTry_; ++iTry)
   {
-    // initialize p_init
-#ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, initializing p_init_" << std::endl;
-#endif
-    p_init_->setModel(p_composer_);
-    p_composer_->setState(STK::Clust::modelInitialized_);
-
-    // SEM initialization, coarse misclassification elimination
-#ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, SEM initialization" << std::endl;
-#endif
-    p_composer_->setState(STK::Clust::initialization_);
-    if (!p_init_->run())
-      continue; // make another try
+    // Random initialization
+    p_composer_->randomInit();
 
     // short run
 #ifdef MC_DEBUG
@@ -98,7 +77,7 @@ bool SemStrategy::run()
     p_composer_->setState(STK::Clust::shortRun_);
     p_burnInAlgo_->setModel(p_composer_);
     if (!p_burnInAlgo_->run())
-      continue;
+      continue; // make another try
 
     // long run
 #ifdef MC_DEBUG

@@ -22,10 +22,13 @@
  **/
 
 #include "mixt_GaussianSampler.h"
+#include "STatistiK/include/STK_Law_Normal.h"
+#include "STatistiK/include/STK_Law_Exponential.h"
+#include "STatistiK/include/STK_Law_Uniform.h"
 
 namespace mixt
 {
-GaussianSampler::GaussianSampler(const AugmentedData<STK::Array2D<STK::Real> >* p_augData,
+GaussianSampler::GaussianSampler(AugmentedData<STK::Array2D<STK::Real> >* p_augData,
                                  const STK::Array2D<STK::Real>* p_param) :
     p_augData_(p_augData),
     p_param_(p_param),
@@ -105,7 +108,7 @@ void GaussianSampler::sampleIndividual(int i)
   }
 }
 
-STK::Real GaussianSamplerIterator::lbSampler(STK::Real lower) const
+STK::Real GaussianSampler::lbSampler(STK::Real lower) const
 {
   STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
   STK::Real z, u, rho;
@@ -130,7 +133,7 @@ STK::Real GaussianSamplerIterator::lbSampler(STK::Real lower) const
   return z;
 }
 
-STK::Real GaussianSamplerIterator::lrbSampler(STK::Real lower, STK::Real upper) const
+STK::Real GaussianSampler::lrbSampler(STK::Real lower, STK::Real upper) const
 {
   STK::Real z, u, rho;
 

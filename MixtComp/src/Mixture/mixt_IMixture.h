@@ -76,16 +76,12 @@ class IMixture
      *  parameters of the mixture.
      */
     virtual void randomInit() = 0;
-    /** @brief This function should be used for Imputation of data.
-     *  The default implementation (in the base class) is to do nothing.
-     */
-    virtual void imputationStep() {/**Do nothing by default*/}
     /** @brief This function must be defined for simulation of all the latent
      * variables and/or missing data excluding class labels. The class labels
      * will be simulated by the framework itself because to do so we have to
      * take into account all the mixture laws.
      */
-    virtual void samplingStep() {/**Do nothing by default*/};
+    virtual void samplingStep(int i) {/**Do nothing by default*/};
     /** @brief This function is equivalent to mStep and must be defined to update
      *  parameters.
      */

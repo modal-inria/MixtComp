@@ -30,7 +30,7 @@
 Rcpp::List mixtCompCluster(Rcpp::List rList,
                            Rcpp::S4 mcClusters,
                            int nbClusters,
-                           STK::Real confidenceLevel)
+                           double confidenceLevel)
 {  
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
@@ -63,21 +63,9 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   mixt::MixtureComposer* p_composer(&composer);
   composer.createMixtures(manager);
   
-  // instantiate the SEMStrategy
-  STK::Clust::initType initMethod;
-  std::string s_initMethod = mcStrategy.slot("initMethod");
-  if      (s_initMethod == std::string("randomInit"      ))
-    initMethod = STK::Clust::randomInit_     ;
-  else if (s_initMethod == std::string("randomClassInit"))
-    initMethod = STK::Clust::randomClassInit_;
-  else if (s_initMethod == std::string("randomFuzzyInit"))
-    initMethod = STK::Clust::randomFuzzyInit_;
-
   // create the appropriate strategy and transmit the parameters
   mixt::SemStrategy strategy(p_composer,
-                             initMethod, // init type
                              3, // number of trials of the complete chain
-                             mcStrategy.slot("nbTrialInInit"), // number of initialization trials
                              mcStrategy.slot("nbBurnInIter"), // number of burn-in iterations
                              mcStrategy.slot("nbIter"), // number of iterations
                              mcStrategy.slot("nbGibbsBurnInIter"), // number of iterations for Gibbs sampler
