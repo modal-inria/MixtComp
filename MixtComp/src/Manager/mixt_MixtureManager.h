@@ -51,7 +51,7 @@ class MixtureManager
       confidenceLevel_(confidenceLevel)
     {}
 
-    void createMixtures(mixt::MixtureComposer& composer,
+    void createMixtures(mixt::MixtureComposer* composer,
                         int nbCluster)
     {
       for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
@@ -67,7 +67,7 @@ class MixtureManager
                                                   idName,
                                                   nbCluster,
                                                   confidenceLevel_);
-        if (p_mixture) composer.registerMixture(p_mixture);
+        if (p_mixture) composer->registerMixture(p_mixture);
       }
     }
 

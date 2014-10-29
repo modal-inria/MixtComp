@@ -60,11 +60,12 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   mixt::MixtureComposer composer(handler.nbSample(),
                                  handler.nbVariable(),
                                  nbClusters);
-  mixt::MixtureComposer* p_composer(&composer);
-  composer.createMixtures(manager);
+
+  manager.createMixtures(&composer,
+                         nbClusters);
   
   // create the appropriate strategy and transmit the parameters
-  mixt::SemStrategy strategy(p_composer,
+  mixt::SemStrategy strategy(&composer,
                              3, // number of trials of the complete chain
                              mcStrategy.slot("nbBurnInIter"), // number of burn-in iterations
                              mcStrategy.slot("nbIter"), // number of iterations

@@ -135,15 +135,6 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      *  @note the mixture is not initialized, so don't forget to call
      **/
     void registerMixture(IMixture* mixture);
-    /** Utility method allowing to create all the mixtures using the DataHandler
-    *  info of the manager.
-    **/
-    template<class MixtureManager>
-    void createMixtures(MixtureManager& manager)
-    {
-      manager.createMixtures(*this,
-                             nbCluster());
-    }
 
   protected:
     /** vector of pointers to the mixtures components */
