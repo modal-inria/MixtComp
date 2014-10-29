@@ -48,11 +48,13 @@ class IMixture;
  * \f$\boldsymbol{\lambda}^l_k, \, k=1,\ldots K \f$ are the cluster specific parameters
  * and the parameters \f$ \boldsymbol{\alpha}^l \f$ are the shared parameters.
  * */
+
+typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
+typedef std::vector<IMixture*>::iterator MixtIterator;
+
 class MixtureComposer : public mixt::IMixtureComposerBase
 {
   public:
-    typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
-    typedef std::vector<IMixture*>::iterator MixtIterator;
     /** Constructor.
      * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      */

@@ -38,8 +38,6 @@ class MixtureManager
 {
   public:
     typedef typename DataHandler::InfoMap InfoMap;
-    typedef std::vector<mixt::IMixture*>::const_iterator ConstMixtIterator;
-    typedef std::vector<mixt::IMixture*>::iterator MixtIterator;
 
     MixtureManager(const DataHandler* handler,
                    DataExtractor* p_dataExtractor,
