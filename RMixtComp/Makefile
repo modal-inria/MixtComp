@@ -3,6 +3,9 @@ all:
 	R CMD INSTALL --no-multiarch --with-keep.source .
 #	g++ -I/usr/share/R/include `Rscript -e "Rcpp:::CxxFlags()"` `Rscript -e "RInside:::CxxFlags()"` -O0 -pipe -g -Wall `Rscript -e "RInside:::LdFlags()"` src/test/test.cpp -L/usr/lib/R/lib -lR -lblas -llapack -o src/test/test
 
+boost:
+	cd ../boost_1_56_0/libs/regex/build; rm -Rf gcc; make -f gcc.mak
+	
 cleanAll:
 	find .. -type f -path  "*.o" -exec rm -f {} \;
 	find .. -type f -path  "*.d" -exec rm -f {} \;

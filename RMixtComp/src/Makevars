@@ -31,7 +31,7 @@ MCLIB = ../../MixtComp/lib/libMixtComp.a
 PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I../../stkpp/projects -I$(REINC) -MD -MP
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB) $(RELIB)
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB) regex_obj/libregex.a
 
 export
 
@@ -47,3 +47,4 @@ $(SHLIB): pkglib
 pkglib:
 	(cd $(MCDIR) && $(MAKE) lib)
 	(cd $(STKPPDIR) && $(MAKE) all)
+	cd regex_obj; g++ -m64 -O2 -DMC_LOG -Wall -mtune=core2 -I../../../regex -c ../../../regex/libs/regex/src/*.cpp; ar cr libregex.a *.o
