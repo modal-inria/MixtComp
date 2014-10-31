@@ -10,7 +10,9 @@ testComplete <- function()
   export2DPoints(nbBurnInIter)
 }
 
-testGenData <- function(nbBurnInIter, nbSample)
+testGenData <- function(nbBurnInIter = 20,
+                        nbSample = 500,
+                        confidenceLevel = 0.95)
 {
   nbClass <- 2
   missingCategorical <- c(0.8, # present
@@ -49,7 +51,8 @@ testGenData <- function(nbBurnInIter, nbSample)
   # launch of the MixtComp algorithm
   dataParam <- mixtCompCluster(lm,
                                mcCluster,
-                               nbClass)
+                               nbClass,
+                               confidenceLevel)
   return(list(mcCluster,
               dataParam))
 }
