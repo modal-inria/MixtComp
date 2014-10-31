@@ -169,13 +169,6 @@ class MixtureBridge : public mixt::IMixture
 #endif
       }
       removeMissing(&m_augDataij_);
-#ifdef MC_DEBUG
-      std::cout << "\tv_missing_.size(): " << m_augDataij_.v_missing_.size() << std::endl
-                << "\tv_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl
-                << "\tv_missingIntervals_.size(): " << m_augDataij_.v_missingIntervals_.size() << std::endl
-                << "m_augDataij_.data_ after removeMissing: " << std::endl
-                << m_augDataij_.data_ << std::endl;
-#endif
       initializeMixture();
     }
     /** @brief This function should be used in order to initialize randomly the
