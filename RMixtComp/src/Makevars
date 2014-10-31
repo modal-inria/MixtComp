@@ -22,16 +22,17 @@
 
 STKPPDIR = ../../stkpp
 STKPPLIB = ../../stkpp/lib/libSTKpp.a
-REINC = ../../boost_1_56_0
-RELIB = ../../boost_1_56_0/libs/regex/build/gcc/libboost_regex-gcc-1_56.a
+REINC = ../../regex
+RELIB = regex/libregex.a
 MCDIR = ../../MixtComp
 MCLIB = ../../MixtComp/lib/libMixtComp.a
 
+
 # Flags for the cpp files at the root, i.e.
-PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I../../stkpp/projects -I$(REINC) -MD -MP
+PKG_CXXFLAGS= -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I../../stkpp/projects -I$(REINC)
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB) regex_obj/libregex.a
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB) $(RELIB)
 
 export
 
@@ -42,9 +43,12 @@ export
 ## that will be installed in $(STKPPDIR) and $(PKGLIB) and which users can link against.
 
 all: $(SHLIB)
+
 $(SHLIB): pkglib
 
-pkglib:
+pkglib: $(RELIB)
 	(cd $(MCDIR) && $(MAKE) lib)
 	(cd $(STKPPDIR) && $(MAKE) all)
-	cd regex_obj; g++ -m64 -O2 -DMC_LOG -Wall -mtune=core2 -I../../../regex -c ../../../regex/libs/regex/src/*.cpp; ar cr libregex.a *.o
+
+$(RELIB):
+	cd regex; $(CXX) $(CXXFLAGS) -fPIC -I../../../regex -c ../../../regex/libs/regex/src/*.cpp; ar cr libregex.a *.o

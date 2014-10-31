@@ -1,7 +1,7 @@
 Prerequisite
 ---
 
-The following packages should be installed in R: Rcpp RInside truncnorm stringr
+The following packages should be installed in R: Rcpp RInside truncnorm shape
 
 Build and install in R
 ---
