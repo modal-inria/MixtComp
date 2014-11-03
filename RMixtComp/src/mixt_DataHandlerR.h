@@ -167,7 +167,7 @@ void DataHandlerR::getData(std::string const& idData,
         }
         if (results.size() > 0)
         {
-          augData.data_(i, j) = STK::Arithmetic<int>::NA();
+          augData.data_(i, j) = STK::Arithmetic<Type>::NA();
           augData.present_(i, j) = false;
           augData.misData_[i][j].first = missingFiniteValues_;
           augData.misData_[i][j].second.reserve(results.size());
@@ -181,7 +181,7 @@ void DataHandlerR::getData(std::string const& idData,
 
       if (boost::regex_match(currStr, matches, reIntervals))
       {
-        augData.data_(i, j) = STK::Arithmetic<int>::NA();
+        augData.data_(i, j) = STK::Arithmetic<Type>::NA();
         augData.present_(i, j) = false;
         augData.misData_[i][j].first = missingIntervals_;
         augData.misData_[i][j].second.reserve(2);
@@ -193,7 +193,7 @@ void DataHandlerR::getData(std::string const& idData,
 
       if (boost::regex_match(currStr, matches, reLuIntervals))
       {
-        augData.data_(i, j) = STK::Arithmetic<int>::NA();
+        augData.data_(i, j) = STK::Arithmetic<Type>::NA();
         augData.present_(i, j) = false;
         augData.misData_[i][j].first = missingLUIntervals_;
         augData.misData_[i][j].second.push_back(str2type<Type>(matches[1].str()));
@@ -203,7 +203,7 @@ void DataHandlerR::getData(std::string const& idData,
 
       if (boost::regex_match(currStr, matches, reRuIntervals))
       {
-        augData.data_(i, j) = STK::Arithmetic<int>::NA();
+        augData.data_(i, j) = STK::Arithmetic<Type>::NA();
         augData.present_(i, j) = false;
         augData.misData_[i][j].first = missingRUIntervals_;
         augData.misData_[i][j].second.push_back(str2type<Type>(matches[1].str()));
@@ -212,7 +212,7 @@ void DataHandlerR::getData(std::string const& idData,
       }
 
       // if missing value is none of the above...
-      augData.data_(i, j) = STK::Arithmetic<int>::NA();
+      augData.data_(i, j) = STK::Arithmetic<Type>::NA();
       augData.present_(i, j) = false;
       augData.misData_[i][j].first = missing_;
       ++augData.nbMissing_;
