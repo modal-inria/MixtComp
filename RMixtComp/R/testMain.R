@@ -28,7 +28,7 @@ testGenData <- function(nbBurnInIter = 20,
   {
     dataGenerator(c(0.5, 0.5), # proportions
                   nbSample, # nbSamples
-                  0, # nbVariablesCat
+                  2, # nbVariablesCat
                   1, # minModality
                   6, # nbModalities
                   2, # nbVariablesGauss
@@ -41,9 +41,9 @@ testGenData <- function(nbBurnInIter = 20,
   
   # read and parse the data
 #  lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
-  lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
-#  lm <- getData(c("dataGen/gaussianData.csv"   , "dataGen/gaussianDescriptor.csv"   ),
-#                c("dataGen/categoricalData.csv", "dataGen/categoricalDescriptor.csv"))
+#  lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
+  lm <- getData(c("dataGen/gaussianData.csv"   , "dataGen/gaussianDescriptor.csv"   ),
+                c("dataGen/categoricalData.csv", "dataGen/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit

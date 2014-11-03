@@ -107,7 +107,7 @@ void DataHandlerR::getData(std::string const& idData,
   augData.nbMissing_ = 0;
 
   // definitions of regular expressions to capture / reject numbers
-  std::string strNumber("[+-]?((?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
+  std::string strNumber("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
   std::string strBlank(" *");
   std::string strLeftPar(" *\\[ *");
   std::string strRightPar(" *\\] *");
