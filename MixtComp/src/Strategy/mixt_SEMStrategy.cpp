@@ -68,7 +68,7 @@ bool SemStrategy::run()
   for (int iTry = 0; iTry < nbTry_; ++iTry)
   {
     // Random initialization
-    p_composer_->randomInit();
+    p_composer_->randomClassInit();
 
     // short run
 #ifdef MC_DEBUG

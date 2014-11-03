@@ -134,8 +134,6 @@ class IMixtureComposerBase : public STK::IModelBase
     /** set the state of the model : should be used by any strategy*/
     inline void setState(STK::Clust::modelState state) { state_ = state;}
 
-    /** initialize randomly the parameters of the components of the model */
-    virtual void randomInit() = 0;
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
      **/
@@ -161,7 +159,7 @@ class IMixtureComposerBase : public STK::IModelBase
      *  the class.
      *  @sa IMixture,MixtureBridge
      **/
-    virtual void initializeStep() =0;
+    virtual void initializeStep() = 0;
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model.
@@ -186,10 +184,6 @@ class IMixtureComposerBase : public STK::IModelBase
      *  and compute the tik.
      **/
     void randomClassInit();
-    /** Initialize randomly the posterior probabilities tik of the model.
-     *  Initialize the model parameters and compute the tik.
-     **/
-    void randomFuzzyInit();
     /** Replace tik by zik
      *  @return the minimal value of individuals in a class
      **/

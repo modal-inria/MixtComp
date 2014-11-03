@@ -69,8 +69,6 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** @return a constant reference on the vector of mixture */
     inline std::vector<IMixture*> const& v_mixtures() const { return v_mixtures_;}
 
-    /** initialize randomly the parameters of the components of the model */
-    virtual void randomInit();
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
      **/

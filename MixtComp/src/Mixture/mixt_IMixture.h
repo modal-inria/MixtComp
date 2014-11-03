@@ -72,10 +72,6 @@ class IMixture
      *  This function will be called once the model is created and data is set.
      */
     virtual void initializeStep() = 0;
-    /** @brief This function should be used in order to initialize randomly the
-     *  parameters of the mixture.
-     */
-    virtual void randomInit() = 0;
     /** @brief This function must be defined for simulation of all the latent
      * variables and/or missing data excluding class labels. The class labels
      * will be simulated by the framework itself because to do so we have to

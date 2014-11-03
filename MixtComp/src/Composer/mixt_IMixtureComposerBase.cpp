@@ -64,27 +64,12 @@ void IMixtureComposerBase::randomClassInit()
 {
   prop_ = 1./STK::Real(nbCluster_);
   STK::Law::Categorical law(prop_);
-  for (int i = zi_.firstIdx(); i<= zi_.lastIdx(); ++i)
-  { zi_.elt(i) = law.rand();}
-  cStep();
-  initializeStep();
-  eStep();
-}
-
-/* initialize randomly the posterior probabilities tik of the model */
-void IMixtureComposerBase::randomFuzzyInit()
-{
-  prop_ = 1./STK::Real(nbCluster_);
-  STK::RandBase generator;
-  for (int i = tik_.firstIdxRows(); i<= tik_.lastIdxRows(); ++i)
+  for (int i = zi_.firstIdx(); i <= zi_.lastIdx(); ++i)
   {
-    // create a reference on the i-th row
-    STK::Array2DPoint<STK::Real> tikRowi(tik_.row(i), true);
-    generator.randUnif(tikRowi);
-    tikRowi = tikRowi * prop_;
-    tikRowi /= tikRowi.sum();
+    zi_.elt(i) = law.rand();
   }
-  initializeStep();
+  cStep();
+  initializeStep(); // might contain an mstep to provide parameters at first iteration
   eStep();
 }
 
@@ -93,7 +78,9 @@ int IMixtureComposerBase::cStep()
 {
   tik_ = 0.;
   for (int i=tik_.firstIdxRows(); i<= tik_.lastIdxRows(); i++)
-  { tik_.elt(i, zi_[i]) = 1.;}
+  {
+    tik_.elt(i, zi_[i]) = 1.;
+  }
   // count the minimal number of individuals in a class
   return (STK::Stat::sum(tik_).minElt());
 }
@@ -103,7 +90,9 @@ int IMixtureComposerBase::sStep()
 {
   // simulate zi
   for (int i = zi_.firstIdx(); i<= zi_.lastIdx(); ++i)
-  { zi_.elt(i) = STK::Law::Categorical::rand(tik_.row(i));}
+  {
+    zi_.elt(i) = STK::Law::Categorical::rand(tik_.row(i));
+  }
   return cStep();
 }
 /* compute Tik, default implementation. */
@@ -114,7 +103,9 @@ void IMixtureComposerBase::eStep()
   {
     STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
     for (int k=tik_.firstIdxCols(); k<= tik_.lastIdxCols(); k++)
-    { lnComp[k] = lnComponentProbability(i,k);}
+    {
+      lnComp[k] = lnComponentProbability(i,k);
+    }
     int kmax;
     STK::Real max = lnComp.maxElt(kmax);
     zi_.elt(i) = kmax;
@@ -131,13 +122,16 @@ void IMixtureComposerBase::eStep()
  *  model given the current tik/zi mixture parameters values.
  **/
 void IMixtureComposerBase::mStep()
-{ pStep();
+{
+  pStep();
   /* implement specific parameters estimation in concrete class. */
 }
 
 /* Compute prop using the ML estimator, default implementation. */
 void IMixtureComposerBase::pStep()
-{ prop_ = STK::Stat::mean(tik_);}
+{
+  prop_ = STK::Stat::mean(tik_);
+}
 
 /* Compute Zi using the Map estimator, default implementation. */
 void IMixtureComposerBase::mapStep()

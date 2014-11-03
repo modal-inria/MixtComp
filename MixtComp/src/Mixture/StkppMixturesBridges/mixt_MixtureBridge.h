@@ -171,13 +171,6 @@ class MixtureBridge : public mixt::IMixture
       removeMissing(&m_augDataij_);
       initializeMixture();
     }
-    /** @brief This function should be used in order to initialize randomly the
-     *  parameters of the ingredient.
-     */
-    virtual void randomInit()
-    {
-      mixture_.randomInit();
-    }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
      * simulated by the framework itself because to do so we have to take into

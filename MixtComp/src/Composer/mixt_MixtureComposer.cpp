@@ -124,13 +124,6 @@ void MixtureComposer::initializeStep()
   setState(STK::Clust::modelInitialized_);
 }
 
-void MixtureComposer::randomInit()
-{
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  { (*it)->randomInit();}
-}
-
-
 // implement computeNbFreeParameters
 int MixtureComposer::computeNbFreeParameters() const
 {
