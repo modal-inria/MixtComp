@@ -38,9 +38,8 @@ class GaussianSampler
     GaussianSampler(AugmentedData<STK::Array2D<STK::Real> >* p_augData,
                     const STK::Array2D<STK::Real>* p_param);
     ~GaussianSampler();
-    void setZi(const STK::CArrayVector<int>* p_zi);
     /** Sample new values for the missing variables of the given individual */
-    void sampleIndividual(int i);
+    void sampleIndividual(int i, int z_i);
   private:
     AugmentedData<STK::Array2D<STK::Real> >* p_augData_;
     const STK::Array2D<STK::Real>* p_param_;

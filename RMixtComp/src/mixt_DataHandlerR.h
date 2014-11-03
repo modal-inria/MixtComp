@@ -141,10 +141,18 @@ void DataHandlerR::getData(std::string const& idData,
   int j = 0; // index of the current variable
   for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j) // loop on the elements of the rList_ corresponding to idData
   {
+#ifdef MC_DEBUG
+    std::cout << "DataHandlerR::getData" << std::endl;
+    std::cout << "\tj: " << j << std::endl;
+#endif
     Rcpp::List currVar = rList_[(*it)]; // get current named list
     Rcpp::CharacterVector data = currVar("data");
     for (int i = 0; i < nbSamples_; ++i)
     {
+#ifdef MC_DEBUG
+    std::cout << "DataHandlerR::getData" << std::endl;
+    std::cout << "\ti: " << i << "\tj: " << j << std::endl;
+#endif
       std::string currStr(data[i]);
 
       if (boost::regex_match(currStr, matches, reValue))

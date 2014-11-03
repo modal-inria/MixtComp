@@ -38,20 +38,32 @@ GaussianSampler::GaussianSampler(AugmentedData<STK::Array2D<STK::Real> >* p_augD
 GaussianSampler::~GaussianSampler()
 {}
 
-void GaussianSampler::setZi(const STK::CArrayVector<int>* p_zi)
+void GaussianSampler::sampleIndividual(int i, int z_i)
 {
-  p_zi_ = p_zi;
-}
+#ifdef MC_DEBUG
+  std::cout << "GaussianSampler::sampleIndividual" << std::endl;
+  std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
+  std::cout << "p_param_->sizeRows()" << p_param_->sizeRows() << std::endl;
+  std::cout << "p_param_->sizeCols()" << p_param_->sizeCols() << std::endl;
+#endif
 
-void GaussianSampler::sampleIndividual(int i)
-{
+  if (p_augData_->misData_.find(i) == p_augData_->misData_.end())
+  {
+#ifdef MC_DEBUG
+    std::cout << "empty iterator" << std::endl;
+#endif
+    return;
+  }
+
   // loop on missing variables
   for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar itVar = p_augData_->misData_.find(i)->second.begin(); // p_augData_->misData_.find(i)->(mapped element).(get iterator on variables)()
       itVar != p_augData_->misData_.find(i)->second.end();
       ++itVar)
   {
     int j = itVar->first;
-    int z_i = p_zi_->elt(i);
+#ifdef MC_DEBUG
+  std::cout << "j: " << j << std::endl;
+#endif
     STK::Real z;
     STK::Real mean  = p_param_->elt(2 * z_i    , j);
     STK::Real sd    = p_param_->elt(2 * z_i + 1, j);

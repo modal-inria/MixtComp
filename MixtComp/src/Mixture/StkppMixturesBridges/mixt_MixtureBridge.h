@@ -135,7 +135,6 @@ class MixtureBridge : public mixt::IMixture
                   << " model is not set." << std::endl;
       mixture_.setMixtureParameters(p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
-      sampler_.setZi(p_zi()); // at this point the bridge has been registered on the composer and p_zi is valid
       dataStatComputer_.initialize();
 
       /** get a sample of parameters to initialize the ParamStat object
@@ -179,7 +178,8 @@ class MixtureBridge : public mixt::IMixture
     virtual void samplingStep(int i)
     {
       mixture_.getParameters(param_); // update the parameters (used by the Sampler)
-      sampler_.sampleIndividual(i);
+      sampler_.sampleIndividual(i,
+                                p_zi()->elt(i));
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */

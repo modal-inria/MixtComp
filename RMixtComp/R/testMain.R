@@ -12,7 +12,8 @@ testComplete <- function()
 
 testGenData <- function(nbBurnInIter = 20,
                         nbSample = 500,
-                        confidenceLevel = 0.95)
+                        confidenceLevel = 0.95,
+                        regen = FALSE)
 {
   nbClass <- 2
   missingCategorical <- c(0.8, # present
@@ -23,17 +24,20 @@ testGenData <- function(nbBurnInIter = 20,
                        0.1, # missing interval
                        0.1, # missing left unbounded
                        0.1) # missing right unbounded
-  dataGenerator(c(0.5, 0.5), # proportions
-                nbSample, # nbSamples
-                0, # nbVariablesCat
-                1, # minModality
-                6, # nbModalities
-                2, # nbVariablesGauss
-                50., # maxMean
-                10., # maxVar
-                nbClass, # nbClasses
-                missingCategorical, # missingCategorical
-                missingGaussian) # missingGaussian
+  if (regen == TRUE)
+  {
+    dataGenerator(c(0.5, 0.5), # proportions
+                  nbSample, # nbSamples
+                  0, # nbVariablesCat
+                  1, # minModality
+                  6, # nbModalities
+                  2, # nbVariablesGauss
+                  50., # maxMean
+                  10., # maxVar
+                  nbClass, # nbClasses
+                  missingCategorical, # missingCategorical
+                  missingGaussian) # missingGaussian    
+  }
   
   # read and parse the data
 #  lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))

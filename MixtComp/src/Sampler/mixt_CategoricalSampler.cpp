@@ -37,13 +37,17 @@ CategoricalSampler::CategoricalSampler(AugmentedData<STK::Array2D<int> >* p_augD
 CategoricalSampler::~CategoricalSampler()
 {}
 
-void CategoricalSampler::setZi(const STK::CArrayVector<int>* p_zi)
+void CategoricalSampler::sampleIndividual(int i, int z_i)
 {
-  p_zi_ = p_zi;
-}
 
-void CategoricalSampler::sampleIndividual(int i)
-{
+  if (p_augData_->misData_.find(i) == p_augData_->misData_.end())
+  {
+#ifdef MC_DEBUG
+    std::cout << "empty iterator" << std::endl;
+#endif
+    return;
+  }
+
   // loop on missing variables
   for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar itVar = p_augData_->misData_.find(i)->second.begin(); // p_augData_->misData_.find(i)->(mapped element).(get iterator on variables)()
       itVar != p_augData_->misData_.find(i)->second.end();
@@ -53,7 +57,6 @@ void CategoricalSampler::sampleIndividual(int i)
     int sampleVal;
     int minModality = p_augData_->dataRanges_[j].min_;
     int nbModalities = p_augData_->dataRanges_[j].range_;
-    int z_i = p_zi_->elt(i);
 
     switch(itVar->second.first) // (iterator on map)->(mapped element).(MisType)
     {
