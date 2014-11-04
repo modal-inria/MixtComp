@@ -96,7 +96,10 @@ class IMixture
     /** @brief This step can be used to store data. This is usually called after the long algo, to
      * store data generated using the estimated parameters
      */
-    virtual void storeData() {/**Do nothing by default*/}
+    virtual void storeData(int sample,
+                           int iteration,
+                           int iterationMax)
+    {/**Do nothing by default*/}
     /** @brief This step can be used by developer to finalize any thing. It will
      *  be called only once after we finish running the estimation algorithm.
      */

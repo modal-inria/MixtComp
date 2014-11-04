@@ -101,17 +101,7 @@ bool SemStrategy::run()
     p_composer_->eStep();
   }
 
-  for (int iterGibbs = 0; iterGibbs < nbGibbsIter_; ++iterGibbs)
-  {
-#ifdef MC_DEBUG
-    std::cout << "SemStrategy::run(), iterGibbs: " << iterGibbs << std::endl;
-#endif
-
-    p_composer_->sStep();
-    p_composer_->samplingStep();
-    p_composer_->eStep();
-    p_composer_->storeData();
-  }
+  p_composer_->gibbsSampling(nbGibbsIter_);
 
   p_composer_->finalizeStep();
 

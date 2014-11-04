@@ -220,9 +220,9 @@ class MixtureBridge : public mixt::IMixture
       paramStat_.sampleParam();
     }
 
-    virtual void storeDataIndividual(int sample,
-                                     int iteration,
-                                     int iterationMax)
+    virtual void storeData(int sample,
+                           int iteration,
+                           int iterationMax)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::storeData, for " << idName();

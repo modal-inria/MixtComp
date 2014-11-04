@@ -74,10 +74,10 @@ void IMixtureComposerBase::randomClassInit()
 }
 
 /* cStep */
-int IMixtureComposerBase::cStep()
+int IMixtureComposerBase::cStep(int ind)
 {
-  tik_ = 0.;
-  for (int i=tik_.firstIdxRows(); i<= tik_.lastIdxRows(); i++)
+  std::pair<int, int> range(forRange(ind));
+  for (int i = range.first; i < range.second; ++i)
   {
     tik_.elt(i, zi_[i]) = 1.;
   }
@@ -86,20 +86,22 @@ int IMixtureComposerBase::cStep()
 }
 
 /* simulate zi  */
-int IMixtureComposerBase::sStep()
+int IMixtureComposerBase::sStep(int ind)
 {
+  std::pair<int, int> range(forRange(ind));
   // simulate zi
-  for (int i = zi_.firstIdx(); i<= zi_.lastIdx(); ++i)
+  for (int i = range.first; i < range.second; ++i)
   {
     zi_.elt(i) = STK::Law::Categorical::rand(tik_.row(i));
   }
-  return cStep();
+  return cStep(ind);
 }
 /* compute Tik, default implementation. */
-void IMixtureComposerBase::eStep()
+void IMixtureComposerBase::eStep(int ind)
 {
   STK::Real sum = 0.;
-  for (int i = tik_.firstIdxRows(); i<= tik_.lastIdxRows(); ++i)
+  std::pair<int, int> range(forRange(ind));
+  for (int i = range.first; i < range.second; ++i)
   {
     STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
     for (int k=tik_.firstIdxCols(); k<= tik_.lastIdxCols(); k++)
@@ -134,9 +136,10 @@ void IMixtureComposerBase::pStep()
 }
 
 /* Compute Zi using the Map estimator, default implementation. */
-void IMixtureComposerBase::mapStep()
+void IMixtureComposerBase::mapStep(int ind)
 {
-  for (int i = zi_.firstIdx(); i<= zi_.lastIdx(); ++i)
+  std::pair<int, int> range(forRange(ind));
+  for (int i = range.first; i < range.second; ++i)
   {
     int k;
     tik_.row(i).maxElt(k);
@@ -150,6 +153,18 @@ void IMixtureComposerBase::intializeMixtureParameters()
   prop_ = 1./(STK::Real)nbCluster_;
   tik_  = 1./(STK::Real)nbCluster_;
   zi_   = STK::baseIdx;
+}
+
+std::pair<int, int> IMixtureComposerBase::forRange(int ind) const
+{
+  if (ind == -1) // no individual has been provided
+  {
+    return std::pair<int, int>(0, nbSample());
+  }
+  else
+  {
+    return std::pair<int, int>(ind, ind + 1);
+  }
 }
 } // namespace mixt
 

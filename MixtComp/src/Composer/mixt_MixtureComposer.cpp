@@ -38,14 +38,18 @@ MixtureComposer::MixtureComposer( int nbSample, int nbVariable, int nbCluster)
 MixtureComposer::~MixtureComposer()
 {
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  { delete (*it);}
+  {
+    delete (*it);
+  }
 }
 
 STK::Real MixtureComposer::lnComponentProbability(int i, int k)
 {
   STK::Real sum=0.0;
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  { sum += (*it)->lnComponentProbability(i,k);}
+  {
+    sum += (*it)->lnComponentProbability(i, k);
+  }
   return sum;
 }
 
@@ -77,7 +81,9 @@ STK::Real MixtureComposer::lnObservedLikelihood()
 void MixtureComposer::mStep()
 {
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  { (*it)->paramUpdateStep();}
+  {
+    (*it)->paramUpdateStep();
+  }
 }
 
 void MixtureComposer::writeParameters(std::ostream& os) const
@@ -129,18 +135,21 @@ int MixtureComposer::computeNbFreeParameters() const
 {
   int sum = nbCluster_-1; // proportions
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  { sum+= (*it)->nbFreeParameter();}
+  {
+    sum+= (*it)->nbFreeParameter();
+  }
   return sum;
 }
 
 /* @brief Simulation of all the latent variables and/or missing data
  *  excluding class labels.
  */
-void MixtureComposer::samplingStep()
+void MixtureComposer::samplingStep(int ind)
 {
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  std::pair<int, int> range(forRange(ind));
+  for (int i = range.first; i < range.second; ++i)
   {
-    for (int i = 0; i < nbSample(); ++i)
+    for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       (*it)->samplingStep(i);
     }
@@ -206,11 +215,15 @@ void MixtureComposer::storeLongRun(int iteration)
   }
 }
 
-void MixtureComposer::storeData()
+void MixtureComposer::storeData(int sample,
+                                int iteration,
+                                int iterationMax)
 {
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeData();
+    (*it)->storeData(sample,
+                     iteration,
+                     iterationMax);
   }
 }
 
@@ -233,6 +246,22 @@ void MixtureComposer::registerMixture(IMixture* p_mixture)
 {
   p_mixture->setMixtureComposer(this);
   v_mixtures_.push_back(p_mixture);
+}
+
+void MixtureComposer::gibbsSampling(int nbGibbsIter)
+{
+  for (int i = 0; i < nbSample(); ++i)
+  {
+    for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs)
+    {
+      sStep(i);
+      samplingStep(i);
+      eStep(i);
+      storeData(i,
+                iterGibbs,
+                nbGibbsIter);
+    }
+  }
 }
 
 } /* namespace mixt */

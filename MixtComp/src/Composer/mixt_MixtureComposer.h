@@ -100,7 +100,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels.
      */
-    virtual void samplingStep();
+    virtual void samplingStep(int ind = -1);
     /** @brief Simulation of latent variables to detect misclassified partially
      * observed data during initialization
      */
@@ -117,7 +117,9 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      * must store data. This is usually called after the long algo, to
      * store data generated using the estimated parameters during a Gibbs sampling
      */
-    virtual void storeData();
+    virtual void storeData(int sample,
+                           int iteration,
+                           int iterationMax);
 
     /**@brief This step can be used to ask each mixture to export its model parameters
      * and data
@@ -135,6 +137,9 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      *  @note the mixture is not initialized, so don't forget to call
      **/
     void registerMixture(IMixture* mixture);
+
+    /** Gibbs sampling, one individual at a time */
+    void gibbsSampling(int nbGibbsIter);
 
   protected:
     /** vector of pointers to the mixtures components */

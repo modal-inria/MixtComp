@@ -187,17 +187,17 @@ class IMixtureComposerBase : public STK::IModelBase
     /** Replace tik by zik
      *  @return the minimal value of individuals in a class
      **/
-    int cStep();
+    int cStep(int ind = -1);
     /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
      *  @return the minimal value of individuals in a class
      **/
-    int sStep();
+    int sStep(int ind = -1);
     /** compute the zi and the lnLikelihodd of the current estimators (pk and paramk)
      *  and the next value of the tik.
      **/
-    void eStep();
+    void eStep(int ind = -1);
     /** Compute zi using the Map estimator. */
-    void mapStep();
+    void mapStep(int ind = -1);
 
   protected:
     /** number of cluster. */
@@ -211,6 +211,8 @@ class IMixtureComposerBase : public STK::IModelBase
     /** Create the mixture model parameters. */
     void intializeMixtureParameters();
 
+    /** returns the range of values over which to loop */
+    std::pair<int, int> forRange(int ind) const;
   private:
     /** state of the model*/
     STK::Clust::modelState state_;
