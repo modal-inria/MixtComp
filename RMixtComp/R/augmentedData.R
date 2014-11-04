@@ -6,6 +6,7 @@ augmentedData <- function(stringData, intDataType) # stringData is a vector of s
   listMissing <- list()
   a <- grep("\\?", stringData)
   b <- grep("-inf *: *\\+inf", stringData)
+  c <- grep("NA", stringData)
   rangeList <- c(a, b)
   if (length(rangeList) > 0)
   {
