@@ -40,21 +40,21 @@ Type str2type(std::string s)
 }
 
 template <typename Type>
-void writeDataCsv(std::string fileName, const Type* data)
+void writeDataCsv(std::string fileName, const Type& data)
 {
   std::cout << "writing: " << fileName << std::endl;
   std::ofstream stream;
   stream.open(fileName.c_str());
-  for (int i = data->firstIdxRows();
-       i <= data->lastIdxRows();
+  for (int i = data.firstIdxRows();
+       i <= data.lastIdxRows();
        ++i)
   {
-    for (int j = data->firstIdxCols();
-         j <= data->lastIdxCols();
+    for (int j = data.firstIdxCols();
+         j <= data.lastIdxCols();
          ++j)
     {
-      stream << data->elt(i,j);
-      if (j < data->lastIdxCols())
+      stream << data(i,j);
+      if (j < data.lastIdxCols())
         stream << ";";
     }
     stream << std::endl;

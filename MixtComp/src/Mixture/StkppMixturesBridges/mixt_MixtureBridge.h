@@ -183,7 +183,7 @@ class MixtureBridge : public mixt::IMixture
       fileNameA << "-";
       fileNameA << iteration;
       fileNameA << "-param.csv";
-      writeDataCsv(fileNameA.str(), &param_);
+      writeDataCsv(fileNameA.str(), param_);
 
       std::stringstream fileNameB;
       fileNameB << "out/log/";
@@ -191,7 +191,7 @@ class MixtureBridge : public mixt::IMixture
       fileNameB << "-";
       fileNameB << iteration;
       fileNameB << "-data.csv";
-      writeDataCsv(fileNameB.str(), &m_augDataij_.data_);
+      writeDataCsv(fileNameB.str(), m_augDataij_.data_);
 #endif
     }
     /** This function should be used to store any intermediate results during

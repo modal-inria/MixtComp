@@ -199,7 +199,7 @@ void MixtureComposer::storeShortRun(int iteration)
   fileName << "out/log/composer-";
   fileName << iteration;
   fileName << "-z_i.csv";
-  writeDataCsv(fileName.str(), p_zi());
+  writeDataCsv(fileName.str(), *p_zi());
 #endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
