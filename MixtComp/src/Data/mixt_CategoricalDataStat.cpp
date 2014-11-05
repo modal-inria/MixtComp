@@ -86,8 +86,8 @@ void CategoricalDataStat::sampleVals(int sample,
   {
     tempStat_.clear();
     // creation of the objects for counting the modalities
-    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->misData_.find(sample)->second.begin(); // find iterator is necessary to access an element on a const map
-         it_misVar != pm_augDataij_->misData_.find(sample)->second.end();
+    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin(); // find iterator is necessary to access an element on a const map
+         it_misVar != pm_augDataij_->getInd(sample).end();
          ++it_misVar)
     {
       int var = it_misVar->first;
@@ -97,8 +97,8 @@ void CategoricalDataStat::sampleVals(int sample,
     }
 
     // first sampling, on each missing variables
-    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->misData_.find(sample)->second.begin();
-         it_misVar != pm_augDataij_->misData_.find(sample)->second.end();
+    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
+         it_misVar != pm_augDataij_->getInd(sample).end();
          ++it_misVar)
     {
       int var = it_misVar->first;
@@ -134,8 +134,8 @@ void CategoricalDataStat::sampleVals(int sample,
   }
   else
   {
-    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->misData_.find(sample)->second.begin();
-         it_misVar != pm_augDataij_->misData_.find(sample)->second.end();
+    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
+         it_misVar != pm_augDataij_->getInd(sample).end();
          ++it_misVar)
     {
       int var = it_misVar->first;

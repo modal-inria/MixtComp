@@ -47,8 +47,8 @@ void GaussianDataStat::sampleVals(int sample,
   {
     tempStat_.clear();
     // creation of the vectors to store the sampled values
-    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->misData_.find(sample)->second.begin();
-         it_misVar != pm_augDataij_->misData_.find(sample)->second.end();
+    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
+         it_misVar != pm_augDataij_->getInd(sample).end();
          ++it_misVar)
     {
       int var = it_misVar->first;
@@ -56,8 +56,8 @@ void GaussianDataStat::sampleVals(int sample,
     }
 
     // first sampling, on each missing variables
-    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->misData_.find(sample)->second.begin();
-         it_misVar != pm_augDataij_->misData_.find(sample)->second.end();
+    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
+         it_misVar != pm_augDataij_->getInd(sample).end();
          ++it_misVar)
     {
       int var = it_misVar->first;
@@ -90,8 +90,8 @@ void GaussianDataStat::sampleVals(int sample,
   else
   {
     // first sampling, on each missing variables
-    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->misData_.find(sample)->second.begin();
-         it_misVar != pm_augDataij_->misData_.find(sample)->second.end();
+    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
+         it_misVar != pm_augDataij_->getInd(sample).end();
          ++it_misVar)
     {
       int var = it_misVar->first;

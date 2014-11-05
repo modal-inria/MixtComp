@@ -46,17 +46,9 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
   std::cout << "p_param_->sizeCols()" << p_param_->sizeCols() << std::endl;
 #endif
 
-  if (p_augData_->misData_.find(i) == p_augData_->misData_.end())
-  {
-#ifdef MC_DEBUG
-    std::cout << "empty iterator" << std::endl;
-#endif
-    return;
-  }
-
   // loop on missing variables
-  for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar itVar = p_augData_->misData_.find(i)->second.begin(); // p_augData_->misData_.find(i)->(mapped element).(get iterator on variables)()
-      itVar != p_augData_->misData_.find(i)->second.end();
+  for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar itVar = p_augData_->getInd(i).begin(); // p_augData_->misData_.find(i)->(mapped element).(get iterator on variables)()
+      itVar != p_augData_->getInd(i).end();
       ++itVar)
   {
     int j = itVar->first;

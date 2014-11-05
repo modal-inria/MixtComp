@@ -28,8 +28,6 @@
 #include <utility>
 #include <vector>
 #include "Arrays/include/STK_Array2D.h"
-#include "STatistiK/include/STK_Law_Uniform.h"
-#include "STatistiK/include/STK_Law_Categorical.h"
 #include "STatistiK/include/STK_Stat_Functors.h"
 #include "../Various/mixt_Def.h"
 
@@ -83,15 +81,15 @@ class AugmentedData
     /** type of the complete structure for missing data */
     typedef typename std::map<int, std::map<int, MisVal> > MisData;
     /** type of an individual, as returned by getInd(). Map variable index -> (type of missing, list of parameters) */
-    typedef const typename std::map<int, MisVal>& IndType;
+    typedef typename std::map<int, MisVal> IndType;
 
     /** iterator on individuals */
     typedef typename MisData::const_iterator ConstIt_MisInd;
     /** iterator on variables for a given individual */
     typedef typename std::map<int, MisVal>::const_iterator ConstIt_MisVar;
 
-    /** Object to be */
-    IndType getIndividual(int i)
+    /** Individual to be retrieved */
+    const IndType& getInd(int i) const
     {
       if (misData_.find(i) == misData_.end())
         return emptyInd_;
@@ -154,7 +152,7 @@ class AugmentedData
     std::vector<Range<Type> > dataRanges_;
 
   private:
-    const std::map<int, MisVal> emptyInd_; // empty map, to be returned for empty individual
+    const IndType emptyInd_; // empty map, to be returned for empty individual
 };
 
 } // namespace mixt

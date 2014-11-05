@@ -56,8 +56,8 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
   }
 
   // loop on missing variables
-  for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar itVar = p_augData_->misData_.find(i)->second.begin(); // p_augData_->misData_.find(i)->(mapped element).(get iterator on variables)()
-      itVar != p_augData_->misData_.find(i)->second.end();
+  for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar itVar = p_augData_->getInd(i).begin(); // p_augData_->misData_.find(i)->(mapped element).(get iterator on variables)()
+      itVar != p_augData_->getInd(i).end();
       ++itVar)
   {
     int j = itVar->first;

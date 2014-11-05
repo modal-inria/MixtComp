@@ -22,6 +22,8 @@
  *              iovleff, serge.iovleff@stkpp.org
  **/
 
+#include "STatistiK/include/STK_Law_Uniform.h"
+#include "STatistiK/include/STK_Law_Categorical.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
