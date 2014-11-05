@@ -10,7 +10,29 @@ testComplete <- function()
   export2DPoints(nbBurnInIter)
 }
 
-testGenData <- function(nbBurnInIter, nbSample)
+testTestData <- function(nbBurnInIter = 100,
+		                 nbClass = 3)
+{
+	lm <- getData(c("dataTest/datamix.data.csv",
+					"dataTest/datamix.desc.csv"))
+	
+	# creation of parameters container
+	mcCluster <- getMixtCompCluster(2, # nbTrialInInit
+			nbBurnInIter, # nbBurnInIter
+			1000, # nbIter
+			200, # nbGibbsBurnInIter
+			1000) # nbGibbsIter
+	
+	# launch of the MixtComp algorithm
+	dataParam <- mixtCompCluster(lm,
+			mcCluster,
+			nbClass)
+	return(list(mcCluster,
+					dataParam))
+}
+
+testGenData <- function(nbBurnInIter = 100,
+		                nbSample = 500)
 {
   nbClass <- 2
   missingCategorical <- c(0.8, # present

@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
   R.parseEvalQ("library(RMixtComp)");
 //    R.parseEvalQ("testRMC()");
 //  R.parseEvalQ("testRMC()");
-  R.parseEvalQ("testGenData()");
+// R.parseEvalQ("testGenData()");
+  R.parseEvalQ("testTestData()");
   exit(0);
 }
