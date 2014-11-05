@@ -1,5 +1,6 @@
 all:
 #	R CMD INSTALL --build .
+	Rscript -e "Rcpp::compileAttributes()"
 	R CMD INSTALL --no-multiarch --with-keep.source .
 #	g++ -I/usr/share/R/include `Rscript -e "Rcpp:::CxxFlags()"` `Rscript -e "RInside:::CxxFlags()"` -O0 -pipe -g -Wall `Rscript -e "RInside:::LdFlags()"` src/test/test.cpp -L/usr/lib/R/lib -lR -lblas -llapack -o src/test/test
 
@@ -11,13 +12,7 @@ cleanAll:
 	find .. -type f -path  "*.exe" -exec rm -f {} \;
 	find .. -type f -path  "*.dll" -exec rm -f {} \;
 	
-cleanRMC:
-	rm -f src/*.o
-	rm -f src/*.d
-	rm -f src/*.a
-	rm -f src/*.so
-	rm -f src/*.exe
-	rm -f src/*.dll
+cleanRMC: cleanRMCbase
 	find .. -type f -path "../MixtComp/*.o" -exec rm -f {} \;
 	find .. -type f -path "../MixtComp/*.d" -exec rm -f {} \;
 	find .. -type f -path "../MixtComp/*.a" -exec rm -f {} \;
@@ -30,6 +25,8 @@ cleanRMCbase:
 	rm -f src/*.so
 	rm -f src/*.exe
 	rm -f src/*.dll
+	rm -f src/RcppExports.cpp
+	rm -f R/RcppExports.R
 
 cleanTest:
 	rm -f src/test/test.exe
