@@ -7,7 +7,7 @@ augmentedData <- function(stringData, intDataType) # stringData is a vector of s
   a <- grep("\\?", stringData)
   b <- grep("-inf *: *\\+inf", stringData)
   c <- grep("NA", stringData)
-  rangeList <- c(a, b)
+  rangeList <- c(a, b, c)
   if (length(rangeList) > 0)
   {
     for (i in 1:length(rangeList))

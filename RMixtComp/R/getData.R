@@ -13,7 +13,8 @@ getData <- function(...){
                        dec = ".",
                        fill = FALSE,
                        comment.char = "",
-                       stringsAsFactors = FALSE)
+                       stringsAsFactors = FALSE,
+                       na.strings = "")
     descriptors <- read.table(file = descriptorFile,
                               header = FALSE,
                               sep = ";",
