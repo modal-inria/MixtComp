@@ -35,7 +35,6 @@
 #include "mixt_GaussianBridges.h"
 #include "mixt_CategoricalBridges.h"
 #include "mixt_InitializeMixtureImpl.h"
-#include "mixt_RemoveMissing.h"
 #include "../../Various/mixt_IO.h"
 
 namespace mixt
@@ -153,21 +152,6 @@ class MixtureBridge : public mixt::IMixture
         std::cout << "MixtureBridge::setData(), idName(): " << idName() << std::endl;
 #endif
       p_handler_->getData(idName(), m_augDataij_, nbVariable_ );
-
-      // data range filling
-      for (int currVar = 0; currVar < m_augDataij_.data_.sizeCols(); ++currVar)
-      {
-        m_augDataij_.dataRanges_.push_back(Range<Type>(STK::Stat::minSafe(m_augDataij_.data_.col(currVar)),
-                                                       STK::Stat::maxSafe(m_augDataij_.data_.col(currVar))));
-#ifdef MC_DEBUG
-        std::cout << "\tcurrVar: " << currVar << std::endl
-                  << "\t\tmin: " << m_augDataij_.dataRanges_.at(currVar).min_ << std::endl
-                  << "\t\tmax, " << m_augDataij_.dataRanges_.at(currVar).max_ << std::endl
-                  << "m_augDataij_.data_ before removeMissing: " << std::endl
-                  << m_augDataij_.data_ << std::endl;
-#endif
-      }
-      removeMissing(&m_augDataij_);
       initializeMixture();
     }
     /** This function must be defined for simulation of all the latent variables

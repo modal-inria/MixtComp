@@ -102,9 +102,7 @@ void DataHandlerR::getData(std::string const& idData,
 
   std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
   nbVariable = v_pos.size();// resize the data
-  augData.data_.resize(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
-  augData.present_.resize(nbSamples_, nbVariable);
-  augData.nbMissing_ = 0;
+  augData.resizeArrays(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
 
   // definitions of regular expressions to capture / reject numbers
   std::string strNumber("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
@@ -157,8 +155,7 @@ void DataHandlerR::getData(std::string const& idData,
 
       if (boost::regex_match(currStr, matches, reValue))
       {
-        augData.data_(i, j) = str2type<Type>(matches[1].str());
-        augData.present_(i, j) = true;
+        augData.setPresent(i, j, str2type<Type>(matches[1].str()));
         continue;
       }
 
@@ -175,57 +172,51 @@ void DataHandlerR::getData(std::string const& idData,
         }
         if (results.size() > 0)
         {
-          augData.data_(i, j) = STK::Arithmetic<Type>::NA();
-          augData.present_(i, j) = false;
-          augData.misData_[i][j].first = missingFiniteValues_;
-          augData.misData_[i][j].second.reserve(results.size());
-          augData.misData_[i][j].second.insert(augData.misData_[i][j].second.end(),
-                                               results.begin(),
-                                               results.end());
-          ++augData.nbMissing_;
+          typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+          misVal.first = missingFiniteValues_;
+          misVal.second.reserve(results.size());;
+          misVal.second.insert(misVal.second.end(),
+                               results.begin(),
+                               results.end());
+          augData.setMissing(i, j, misVal);
           continue;
         }
       }
 
       if (boost::regex_match(currStr, matches, reIntervals))
       {
-        augData.data_(i, j) = STK::Arithmetic<Type>::NA();
-        augData.present_(i, j) = false;
-        augData.misData_[i][j].first = missingIntervals_;
-        augData.misData_[i][j].second.reserve(2);
-        augData.misData_[i][j].second[0] = str2type<Type>(matches[1].str());
-        augData.misData_[i][j].second[1] = str2type<Type>(matches[2].str());
-        ++augData.nbMissing_;
+        typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+        misVal.first = missingIntervals_;
+        misVal.second.reserve(2);
+        misVal.second[0] = str2type<Type>(matches[1].str());
+        misVal.second[1] = str2type<Type>(matches[2].str());
+        augData.setMissing(i, j, misVal);
         continue;
       }
 
       if (boost::regex_match(currStr, matches, reLuIntervals))
       {
-        augData.data_(i, j) = STK::Arithmetic<Type>::NA();
-        augData.present_(i, j) = false;
-        augData.misData_[i][j].first = missingLUIntervals_;
-        augData.misData_[i][j].second.push_back(str2type<Type>(matches[1].str()));
-        ++augData.nbMissing_;
+        typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+        misVal.first = missingLUIntervals_;
+        misVal.second.push_back(str2type<Type>(matches[1].str()));
         continue;
       }
 
       if (boost::regex_match(currStr, matches, reRuIntervals))
       {
-        augData.data_(i, j) = STK::Arithmetic<Type>::NA();
-        augData.present_(i, j) = false;
-        augData.misData_[i][j].first = missingRUIntervals_;
-        augData.misData_[i][j].second.push_back(str2type<Type>(matches[1].str()));
-        ++augData.nbMissing_;
+        typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+        misVal.first = missingRUIntervals_;
+        misVal.second.push_back(str2type<Type>(matches[1].str()));
         continue;
       }
 
       // if missing value is none of the above...
-      augData.data_(i, j) = STK::Arithmetic<Type>::NA();
-      augData.present_(i, j) = false;
-      augData.misData_[i][j].first = missing_;
-      ++augData.nbMissing_;
+      typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+      misVal.first = missing_;
     }
   }
+  augData.computeRanges();
+  augData.removeMissing();
 }
 
 } /* namespace mixt */
