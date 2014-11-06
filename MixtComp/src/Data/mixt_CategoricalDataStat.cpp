@@ -41,7 +41,7 @@ void CategoricalDataStat::sampleVals(int sample,
                                      int iteration,
                                      int iterationMax)
 {
-  if (iteration == 1) // clear the temporary statistical object
+  if (iteration == 0) // clear the temporary statistical object
   {
     tempStat_.clear();
     // creation of the objects for counting the modalities

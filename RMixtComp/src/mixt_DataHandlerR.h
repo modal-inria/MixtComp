@@ -174,7 +174,7 @@ void DataHandlerR::getData(std::string const& idData,
         {
           typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
           misVal.first = missingFiniteValues_;
-          misVal.second.resize(results.size());;
+          misVal.second.reserve(results.size());;
           misVal.second.insert(misVal.second.end(),
                                results.begin(),
                                results.end());
@@ -203,6 +203,7 @@ void DataHandlerR::getData(std::string const& idData,
         typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
         misVal.first = missingLUIntervals_;
         misVal.second.push_back(str2type<Type>(matches[1].str()));
+        augData.setMissing(i, j, misVal);
         continue;
       }
 
@@ -211,12 +212,14 @@ void DataHandlerR::getData(std::string const& idData,
         typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
         misVal.first = missingRUIntervals_;
         misVal.second.push_back(str2type<Type>(matches[1].str()));
+        augData.setMissing(i, j, misVal);
         continue;
       }
 
       // if missing value is none of the above...
       typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
       misVal.first = missing_;
+      augData.setMissing(i, j, misVal);
     }
   }
   augData.computeRanges();
