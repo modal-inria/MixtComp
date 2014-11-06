@@ -30,53 +30,12 @@ namespace mixt
 CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
                                          std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage,
                                          STK::Real confidenceLevel) :
-    nbModalities_(0),
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)
 {}
 
 CategoricalDataStat::~CategoricalDataStat() {};
-
-void CategoricalDataStat::initialize()
-{
-  setModalities();
-#ifdef MC_DEBUG
-  std::cout << "CategoricalDataStat, initializing statMissing_ and posMissing_" << std::endl;
-/*  std::cout << "statMissing_" <<  std::endl;
-  std::cout << statMissing_ << std::endl;
-  std::cout << "posMissing_" <<  std::endl;
-  std::cout << posMissing_ << std::endl; */
-#endif
-}
-
-void CategoricalDataStat::setModalities()
-{
-  std::vector<Range<int> >::const_iterator it   (pm_augDataij_->dataRanges_.begin());
-  std::vector<Range<int> >::const_iterator itEnd(pm_augDataij_->dataRanges_.end  ());
-
-  // compute global min and max, as in InitializeMixtureImpl<STK::Clust::Categorical_pjk_>
-  int min = it->min_;
-  int max = it->max_;
-
-  ++it;
-
-  for (; it != itEnd; ++it)
-  {
-    int currMin = it->min_;
-    int currMax = it->max_;
-    if (currMin < min) min = currMin;
-    if (currMax > max) max = currMax;
-  }
-
-  nbModalities_ = max - min + 1;
-#ifdef MC_DEBUG
-  std::cout << "CategoricalDataStat::setModalities(): " << std::endl
-            << "\tmin: " << min << std::endl
-            << "\tmax: " << max << std::endl
-            << "\tnbModalities_: " << nbModalities_ << std::endl;
-#endif
-}
 
 void CategoricalDataStat::sampleVals(int sample,
                                      int iteration,
@@ -91,8 +50,8 @@ void CategoricalDataStat::sampleVals(int sample,
          ++it_misVar)
     {
       int var = it_misVar->first;
-      tempStat_[var] = STK::Array2DPoint<STK::Real>(STK::Range(pm_augDataij_->dataRanges_[var].min_,
-                                                               nbModalities_),
+      tempStat_[var] = STK::Array2DPoint<STK::Real>(STK::Range(pm_augDataij_->dataRanges_[var].min_, // no access to param, hence no need for the globRange_
+                                                               pm_augDataij_->dataRanges_[var].range_),
                                                     0);
     }
 
@@ -119,7 +78,7 @@ void CategoricalDataStat::sampleVals(int sample,
       STK::Array2DPoint<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, proba);
       STK::Real cumProb = 0.;
-      for (int i = nbModalities_ - 1; i > -1; --i)
+      for (int i = pm_augDataij_->dataRanges_[var].range_ - 1; i > -1; --i)
       {
         int currMod = indOrder[i];
         STK::Real currProba = proba[currMod];

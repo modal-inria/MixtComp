@@ -134,7 +134,6 @@ class MixtureBridge : public mixt::IMixture
                   << " model is not set." << std::endl;
       mixture_.setMixtureParameters(p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
-      dataStatComputer_.initialize();
 
       /** get a sample of parameters to initialize the ParamStat object
        * with the right size

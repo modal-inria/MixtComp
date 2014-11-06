@@ -44,7 +44,7 @@ void CategoricalLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, 
     {
       if (p_augData_->present_(i, j) == true)   // likelihood for present value
       {
-        int nbModalities = p_augData_->dataRanges_[j].range_;
+        int nbModalities = p_augData_->globalRange_.range_;
         STK::Real proba = p_param_->elt(k * nbModalities + p_augData_->data_(i, j),
                                         j);
         lnComp->elt(i) += std::log(proba);
@@ -69,7 +69,7 @@ void CategoricalLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, 
           int i = itInd->first;
           int j = itVar->first;
 
-          int nbModalities = p_augData_->dataRanges_[j].range_;
+          int nbModalities = p_augData_->globalRange_.range_;
 
           STK::Real proba = 0.;
 

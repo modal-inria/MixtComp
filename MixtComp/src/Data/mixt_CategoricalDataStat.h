@@ -37,17 +37,10 @@ class CategoricalDataStat
                         std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage,
                         STK::Real confidenceLevel);
     ~CategoricalDataStat();
-    /** initialize both posMissing and statMissing */
-    void initialize();
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);
   private:
-    /** Set the number of modalities, to count the results */
-    void setModalities();
-
-    // number of modalities
-    int nbModalities_;
     // pointer to data array
     const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
     /** Sparse description of the missing values */

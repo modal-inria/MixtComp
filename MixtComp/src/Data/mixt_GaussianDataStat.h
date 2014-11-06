@@ -39,7 +39,6 @@ class GaussianDataStat
                      std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage,
                      STK::Real confidenceLevel);
     ~GaussianDataStat();
-    void initialize();
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);

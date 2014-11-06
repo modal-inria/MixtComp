@@ -55,25 +55,8 @@ struct InitializeMixtureImpl<STK::Clust::Categorical_pjk_>
   static void run(Mixture& mixture, AugData& augData)
   {
     mixture.setData(augData.data_);
-
-    // compute the global min and max for all variables in current mixture, as in CategoricalDataStat::setModalities()
-    std::vector<Range<int> >::const_iterator it   (augData.dataRanges_.begin());
-    std::vector<Range<int> >::const_iterator itEnd(augData.dataRanges_.end  ());
-
-    int min = it->min_;
-    int max = it->max_;
-
-    ++it;
-
-    for (; it != itEnd; ++it)
-    {
-      int currMin = it->min_;
-      int currMax = it->max_;
-      if (currMin < min) min = currMin;
-      if (currMax > max) max = currMax;
-    }
-
-    mixture.setModalities(STK::Range(min, max - min +1));
+    mixture.setModalities(STK::Range(augData.globalRange_.min_,
+                                     augData.globalRange_.range_));
     // TODO: resize proba_ in initializeModel
     mixture.initializeModel();
   }

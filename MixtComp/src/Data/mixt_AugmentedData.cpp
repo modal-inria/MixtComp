@@ -30,6 +30,22 @@ namespace mixt
 {
 
 template<>
+Range<STK::Real>::Range(STK::Real min,
+                        STK::Real max) :
+    min_(min),
+    max_(max),
+    range_(max - min)
+{}
+
+template<>
+Range<int>::Range(int min,
+                  int max) :
+    min_(min),
+    max_(max),
+    range_(max - min + 1) // used to store the number of modalities, for example
+{}
+
+template<>
 void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 {
   // loop on missing individuals
@@ -57,6 +73,11 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 
         case missingIntervals_:
         {
+#ifdef MC_DEBUG
+          std::cout << "AugmentedData<STK::Array2D<STK::Real> >::removeMissing" << std::endl;
+          std::cout << "case missingIntervals_" << std::endl;
+          std::cout << "itVar->second.second.size(): " << itVar->second.second.size() << std::endl;
+#endif
           STK::Real infBound = itVar->second.second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
           STK::Real supBound = itVar->second.second[1];
           sampleVal = STK::Law::Uniform::rand(infBound, supBound);
@@ -87,6 +108,9 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 template<>
 void AugmentedData<STK::Array2D<int> >::removeMissing()
 {
+#ifdef MC_DEBUG
+  std::cout << "AugmentedData<STK::Array2D<int> >::removeMissing" << std::endl;
+#endif
   // loop on missing individuals
   for (ConstIt_MisInd itInd = misData_.begin();
        itInd != misData_.end();
@@ -102,6 +126,10 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
       int sampleVal;
       int firstModality = dataRanges_[j].min_;
       int nbModalities = dataRanges_[j].range_;
+#ifdef MC_DEBUG
+      std::cout << "i: " << i << ", j: " << j << std::endl;
+      std::cout << "firstModality: " << firstModality << ", nbModalities: " << nbModalities << std::endl;
+#endif
       switch(itVar->second.first) // (iterator on map)->(mapped element).(MisType)
       {
         case missing_:
@@ -121,6 +149,9 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
               itParam != itVar->second.second.end();
               ++itParam)
           {
+#ifdef MC_DEBUG
+          std::cout << "\tproba: " << proba << std::endl;
+#endif
             modalities[*itParam] = proba;
           }
           sampleVal = STK::Law::Categorical::rand(modalities);

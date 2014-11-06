@@ -35,44 +35,21 @@ namespace mixt
 {
 
 template <typename DataType>
-struct Range
+class Range
 {
+  public:
     Range(DataType min,
-          DataType max)
-    {
-      min_ = min;
-      max_ = max;
-      range_ = max - min;
-    }
+          DataType max);
+    ~Range(){};
     DataType min_;
     DataType max_;
     DataType range_;
-};
-
-template <>
-struct Range<int>
-{
-    Range(int min,
-          int max)
-    {
-      min_ = min;
-      max_ = max;
-      range_ = max - min + 1;
-    }
-    int min_;
-    int max_;
-    int range_;
 };
 
 template <typename DataType>
 class AugmentedData
 {
   public:
-    AugmentedData() :
-      nbMissing_(0)
-      {};
-    ~AugmentedData() {};
-
     /** Base type of the data table, for example, STK::Real */
     typedef typename DataType::Type Type;
     /** Missing value descriptor: type of missing, and list of parameters */
@@ -87,6 +64,13 @@ class AugmentedData
     typedef typename MisData::const_iterator ConstIt_MisInd;
     /** iterator on variables for a given individual */
     typedef typename std::map<int, MisVal>::const_iterator ConstIt_MisVar;
+
+    AugmentedData() :
+      nbMissing_(0),
+      globalRange_(Type(0),
+                   Type(0))
+      {};
+    ~AugmentedData() {};
 
     /** Individual to be retrieved */
     const IndType& getInd(int i) const
@@ -107,11 +91,25 @@ class AugmentedData
 
     void computeRanges()
     {
+      Type globMin;
+      Type globMax;
       // data range filling
       for (int currVar = 0; currVar < data_.sizeCols(); ++currVar)
       {
-        dataRanges_.push_back(Range<Type>(STK::Stat::minSafe(data_.col(currVar)),
-                                          STK::Stat::maxSafe(data_.col(currVar))));
+        int currMin = STK::Stat::minSafe(data_.col(currVar));
+        int currMax = STK::Stat::maxSafe(data_.col(currVar));
+        if (currVar == 0)
+        {
+          globMin = currMin;
+          globMax = currMax;
+        }
+        else
+        {
+          if (currMin < globMin) globMin = currMin;
+          if (currMax > globMax) globMax = currMax;
+        }
+        dataRanges_.push_back(Range<Type>(currMin,
+                                          currMax));
 #ifdef MC_DEBUG
         std::cout << "AugmentedData::computeRange()" << std::endl;
         std::cout << "\tcurrVar: " << currVar << std::endl
@@ -121,6 +119,8 @@ class AugmentedData
                   << data_ << std::endl;
 #endif
       }
+      globalRange_ = Range<Type>(globMin,
+                                 globMax);
     }
 
     void setPresent(int i, int j, Type val)
@@ -150,6 +150,9 @@ class AugmentedData
     int nbMissing_;
     /** available data ranges, one pair per data column */
     std::vector<Range<Type> > dataRanges_;
+
+    /** maximum range, for example to get the global number of modalities */
+    Range<Type> globalRange_;
 
   private:
     const IndType emptyInd_; // empty map, to be returned for empty individual

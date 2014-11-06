@@ -37,8 +37,6 @@ GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >
 
 GaussianDataStat::~GaussianDataStat() {};
 
-void GaussianDataStat::initialize() {};
-
 void GaussianDataStat::sampleVals(int sample,
                                   int iteration,
                                   int iterationMax)
@@ -52,7 +50,8 @@ void GaussianDataStat::sampleVals(int sample,
          ++it_misVar)
     {
       int var = it_misVar->first;
-      tempStat_[var] = STK::Array2DVector<STK::Real>(iterationMax, 0.);
+      tempStat_[var] = STK::Array2DVector<STK::Real>(iterationMax,
+                                                     0.);
     }
 
     // first sampling, on each missing variables

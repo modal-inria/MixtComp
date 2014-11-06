@@ -53,8 +53,9 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
   {
     int j = itVar->first;
     int sampleVal;
-    int minModality = p_augData_->dataRanges_[j].min_;
-    int nbModalities = p_augData_->dataRanges_[j].range_;
+
+    int minModality = p_augData_->globalRange_.min_;
+    int nbModalities = p_augData_->globalRange_.range_;
 
     switch(itVar->second.first) // (iterator on map)->(mapped element).(MisType)
     {
