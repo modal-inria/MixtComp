@@ -25,6 +25,7 @@
 
 #include "mixt_SEMAlgo.h"
 #include "../Various/mixt_Constants.h"
+#include "../Various/mixt_Timer.h"
 
 namespace mixt
 {
@@ -48,70 +49,46 @@ void SEMAlgo::setModel(mixt::MixtureComposer* p_model)
 
 bool SEMAlgo::run()
 {
-#ifdef MC_DEBUG
-  std::cout << "SEMAlgo::run, entering" << std::endl;
-#endif
-
+  Timer myTimer;
   if (p_model_->state() == STK::Clust::shortRun_)
   {
-#ifdef MC_DEBUG
-    std::cout << "SEMAlgo::run, initial partition export" << std::endl;
-    std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
-#endif
+    myTimer.setName("SEM burn-in");
     p_model_->storeShortRun(-1); // export of the initial partition
   }
+  else if (p_model_->state() == STK::Clust::longRun_)
+  {
+    myTimer.setName("SEM run");
+  }
 
-    for (int iter = 0; iter < this->nbIterMax_; ++iter)
+  for (int iter = 0; iter < nbIterMax_; ++iter)
+  {
+    myTimer.iteration(iter, nbIterMax_);
+    for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample)
     {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
-#endif
-      for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample)
-      {
-#ifdef MC_DEBUG
-        std::cout << "\titerSample: " << iterSample << std::endl;
-#endif
-        if (p_model_->sStep() > minIndPerClass)
-          break;
-        else
-          return false;
-      }
-
-      p_model_->pStep();
-      p_model_->samplingStep();
-      p_model_->mStep();
-      p_model_->eStep();
-
-      if (p_model_->state() == STK::Clust::shortRun_)
-      {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
-#endif
-        p_model_->storeShortRun(iter);
-      }
-
-      if (p_model_->state() == STK::Clust::longRun_)
-      {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
-#endif
-        p_model_->storeLongRun(iter);
-      }
-
-//      if (p_model_->state() == STK::Clust::initialization_)
-      if (p_model_->state() == STK::Clust::shortRun_)
-      {
-        if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
-//      if(iter == 10)
-        {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;
-#endif
-        p_model_->misClasStep(iter);
-        }
-      }
+      if (p_model_->sStep() > minIndPerClass)
+        break;
+      else
+        return false;
     }
 
+    p_model_->pStep();
+    p_model_->samplingStep();
+    p_model_->mStep();
+    p_model_->eStep();
+
+    if (p_model_->state() == STK::Clust::shortRun_)
+    {
+      p_model_->storeShortRun(iter);
+      if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
+      {
+        p_model_->misClasStep(iter);
+      }
+    }
+    else if (p_model_->state() == STK::Clust::longRun_)
+    {
+      p_model_->storeLongRun(iter);
+    }
+  }
   return true;
 }
 

@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2014
+/*  Copyright (C) Inria 2013-2014
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,21 +17,33 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Feb 25, 2014
- *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: November 6, 2014
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
  **/
 
-#include <RInside.h>                    // for the embedded R via RInside
-#include <fstream>
+#ifndef MIXT_TIMER_H_
+#define MIXT_TIMER_H_
 
-int main(int argc, char *argv[])
+#include <ctime>
+#include <string>
+
+namespace mixt
 {
-  RInside R(argc, argv);              // create an embedded R instance
-  R.parseEvalQ("library(methods)");
-  R.parseEvalQ("library(RMixtComp)");
-//    R.parseEvalQ("testRMC()");
-//  R.parseEvalQ("testRMC()");
- R.parseEvalQ("testGenData()");
-//  R.parseEvalQ("testTestData()");
-  exit(0);
-}
+
+class Timer
+{
+  public:
+    Timer();
+    ~Timer();
+
+    void iteration(int iteration,
+                   int iterationMax);
+    void setName(std::string timerName);
+  private:
+    std::string timerName_;
+    std::time_t startTime_;
+};
+
+} // namespace mixt
+
+#endif /* MIXT_CONSTANTS_H_ */

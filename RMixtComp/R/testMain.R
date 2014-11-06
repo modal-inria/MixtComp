@@ -32,7 +32,7 @@ testTestData <- function(nbBurnInIter = 100,
 }
 
 testGenData <- function(nbBurnInIter = 100,
-		                nbSample = 500)
+		                    nbSample = 500)
 {
   nbClass <- 2
   missingCategorical <- c(0.8, # present

@@ -27,6 +27,7 @@
  **/
 
 #include "mixt_SEMStrategy.h"
+#include "../Various/mixt_Timer.h"
 
 namespace mixt
 {
@@ -112,8 +113,11 @@ bool SemStrategy::run()
       break; // no need to further try if a run is complete
   }
   
+  Timer myTimer;
+  myTimer.setName("Gibbs burn-in");
   for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
   {
+    myTimer.iteration(iterBurnInGibbs, nbGibbsBurnInIter_);
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
 #endif
@@ -122,8 +126,10 @@ bool SemStrategy::run()
     p_composer_->eStep();
   }
 
+  myTimer.setName("Gibbs run");
   for (int iterGibbs = 0; iterGibbs < nbGibbsIter_; ++iterGibbs)
   {
+    myTimer.iteration(iterGibbs, nbGibbsIter_);
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run(), iterGibbs: " << iterGibbs << std::endl;
 #endif
