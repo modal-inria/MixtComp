@@ -56,8 +56,6 @@ class MixtureBridge : public mixt::IMixture
     typedef typename BridgeTraits<Id>::DataStatComputer DataStatComputer;
     // type of DataStat storage
     typedef typename BridgeTraits<Id>::DataStatStorage DataStatStorage;
-    // statistics on model parameters
-    typedef typename BridgeTraits<Id>::ParamStat ParamStat;
     // type of the data
     typedef typename BridgeTraits<Id>::Type Type;
     // type of Mixture
@@ -329,11 +327,10 @@ class MixtureBridge : public mixt::IMixture
     Sampler sampler_;
     /** Statistics computer for missing data */
     DataStatComputer dataStatComputer_;
-    /** Statistics storage for parameters */
-    ParamStat paramStat_;
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
-
+    /** Statistics storage for parameters */
+    SimpleParamStat paramStat_;
     /** Pointer to the data handler */
     const DataHandler* p_handler_;
     /** Pointer to the data extractor */
