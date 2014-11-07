@@ -52,7 +52,7 @@ bool SEMAlgo::run()
   std::cout << "SEMAlgo::run, entering" << std::endl;
 #endif
 
-  if (p_model_->state() == STK::Clust::shortRun_)
+  if (p_model_->state() == shortRun_)
   {
 #ifdef MC_DEBUG
     std::cout << "SEMAlgo::run, initial partition export" << std::endl;
@@ -82,7 +82,7 @@ bool SEMAlgo::run()
       p_model_->mStep();
       p_model_->eStep();
 
-      if (p_model_->state() == STK::Clust::shortRun_)
+      if (p_model_->state() == shortRun_)
       {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
@@ -90,7 +90,7 @@ bool SEMAlgo::run()
         p_model_->storeShortRun(iter);
       }
 
-      if (p_model_->state() == STK::Clust::longRun_)
+      if (p_model_->state() == longRun_)
       {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
@@ -98,8 +98,7 @@ bool SEMAlgo::run()
         p_model_->storeLongRun(iter);
       }
 
-//      if (p_model_->state() == STK::Clust::initialization_)
-      if (p_model_->state() == STK::Clust::shortRun_)
+      if (p_model_->state() == shortRun_)
       {
         if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
 //      if(iter == 10)

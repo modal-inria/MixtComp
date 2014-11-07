@@ -74,7 +74,7 @@ bool SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, short run" << std::endl;
 #endif
-    p_composer_->setState(STK::Clust::shortRun_);
+    p_composer_->setState(shortRun_);
     p_burnInAlgo_->setModel(p_composer_);
     if (!p_burnInAlgo_->run())
       continue; // make another try
@@ -83,7 +83,7 @@ bool SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, long run" << std::endl;
 #endif
-    p_composer_->setState(STK::Clust::longRun_);
+    p_composer_->setState(longRun_);
     p_longAlgo_->setModel(p_composer_);
     if (!p_longAlgo_->run())
       continue;

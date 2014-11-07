@@ -44,7 +44,7 @@ IMixtureComposerBase::IMixtureComposerBase( int nbSample, int nbVariable, int nb
                                           : IModelBase(nbSample, nbVariable)
                                           , nbCluster_(nbCluster)
                                           , prop_(nbCluster), tik_(nbSample, nbCluster), zi_(nbSample)
-                                          , state_(STK::Clust::modelCreated_)
+                                          , state_(modelCreated_)
 {  intializeMixtureParameters(); }
 
 /* copy constructor */

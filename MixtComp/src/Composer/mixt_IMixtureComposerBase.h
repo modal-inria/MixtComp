@@ -38,10 +38,10 @@
 
 #include "STKernel/include/STK_Range.h"
 #include "StatModels/include/STK_IModelBase.h"
-#include "Clustering/include/STK_Clust_Util.h"
 #include "Arrays/include/STK_CArrayPoint.h"
 #include "Arrays/include/STK_CArrayVector.h"
 #include "Arrays/include/STK_Array2D.h"
+#include "../Various/mixt_Clust_Util.h"
 
 namespace mixt
 {
@@ -123,7 +123,7 @@ class IMixtureComposerBase : public STK::IModelBase
     /** @return the number of cluster */
     inline int nbCluster() const { return nbCluster_;}
     /** @return the state of the model*/
-    inline STK::Clust::modelState state() const { return state_;}
+    inline modelState state() const { return state_;}
     /** @return the proportions of each mixtures */
     inline STK::CArrayPoint<STK::Real> const* p_pk() const { return &prop_;};
     /** @return the tik probabilities */
@@ -132,7 +132,7 @@ class IMixtureComposerBase : public STK::IModelBase
     inline STK::CArrayVector<int> const* p_zi() const { return &zi_;};
 
     /** set the state of the model : should be used by any strategy*/
-    inline void setState(STK::Clust::modelState state) { state_ = state;}
+    inline void setState(modelState state) {state_ = state;}
 
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
@@ -215,7 +215,7 @@ class IMixtureComposerBase : public STK::IModelBase
     std::pair<int, int> forRange(int ind) const;
   private:
     /** state of the model*/
-    STK::Clust::modelState state_;
+    modelState state_;
 };
 
 } // namespace mixt

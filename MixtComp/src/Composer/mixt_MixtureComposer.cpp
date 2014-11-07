@@ -25,7 +25,6 @@
 #include "mixt_MixtureComposer.h"
 #include "../Mixture/mixt_IMixture.h"
 #include "Arrays/include/STK_Display.h"
-#include "Clustering/include/STK_Clust_Util.h"
 #include "../Various/mixt_IO.h"
 
 namespace mixt
@@ -112,22 +111,9 @@ void MixtureComposer::initializeStep()
 #endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-#ifdef MC_DEBUG
-    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-    try
-    {
-#endif
-      (*it)->initializeStep();
-#ifdef MC_DEBUG
-    }
-    catch (STK::Clust::exceptions exception)
-    {
-      if (exception == STK::Clust::initializeStepFail_)
-        std::cout << "STK mixture initialization failed" << std::endl;
-    }
-#endif
+    (*it)->initializeStep();
   }
-  setState(STK::Clust::modelInitialized_);
+  setState(modelInitialized_);
 }
 
 // implement computeNbFreeParameters
