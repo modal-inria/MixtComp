@@ -58,10 +58,11 @@ bool SEMAlgo::run()
     std::cout << "SEMAlgo::run, initial partition export" << std::endl;
     std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
 #endif
-    p_model_->storeShortRun(-1); // export of the initial partition
+    p_model_->storeShortRun(-1,
+                            nbIterMax_ - 1); // export of the initial partition
   }
 
-    for (int iter = 0; iter < this->nbIterMax_; ++iter)
+    for (int iter = 0; iter < nbIterMax_; ++iter)
     {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
@@ -87,7 +88,8 @@ bool SEMAlgo::run()
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
 #endif
-        p_model_->storeShortRun(iter);
+        p_model_->storeShortRun(iter,
+                                nbIterMax_ - 1);
       }
 
       if (p_model_->state() == longRun_)
@@ -95,7 +97,8 @@ bool SEMAlgo::run()
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
 #endif
-        p_model_->storeLongRun(iter);
+        p_model_->storeLongRun(iter,
+                               nbIterMax_ - 1);
       }
 
       if (p_model_->state() == shortRun_)

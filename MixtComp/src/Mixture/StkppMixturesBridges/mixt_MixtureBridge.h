@@ -58,8 +58,6 @@ class MixtureBridge : public mixt::IMixture
     typedef typename BridgeTraits<Id>::DataStatStorage DataStatStorage;
     // statistics on model parameters
     typedef typename BridgeTraits<Id>::ParamStat ParamStat;
-    // parameters type to get
-    typedef typename BridgeTraits<Id>::Param Param;
     // type of the data
     typedef typename BridgeTraits<Id>::Type Type;
     // type of Mixture
@@ -173,7 +171,8 @@ class MixtureBridge : public mixt::IMixture
     /** This function should be used to store any results during the burn-in period
      *  @param iteration Provides the iteration number during the burn-in period
      */
-    virtual void storeShortRun(int iteration)
+    virtual void storeShortRun(int iteration,
+                               int iterationMax)
     {
 #ifdef MC_LOG
       std::stringstream fileNameA;
@@ -197,10 +196,18 @@ class MixtureBridge : public mixt::IMixture
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
      */
-    virtual void storeLongRun(int iteration)
+    virtual void storeLongRun(int iteration,
+                              int iterationMax)
     {
       mixture_.getParameters(param_);
       paramStat_.sampleParam();
+      if (iteration == iterationMax)
+      {
+        // reinject the SEM estimated parameters into the mixture
+        STK::Array2D<STK::Real> param;
+        paramStat_.exportCompleteParam(&param);
+        mixture_.getParameters(param);
+      }
     }
 
     virtual void storeData(int sample,
@@ -280,7 +287,7 @@ class MixtureBridge : public mixt::IMixture
       return &m_augDataij_;
     }
 
-    virtual const Param* getParam() const
+    virtual const STK::Array2D<STK::Real>* getParam() const
     {
       return &param_;
     }
@@ -298,7 +305,7 @@ class MixtureBridge : public mixt::IMixture
 
       //export the parameters
       STK::Array2D<STK::Real> param;
-      paramStat_.exportParam(&param);
+      paramStat_.exportCompleteParam(&param);
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::exportDataParam(), getParameters" << std::endl;
       std::cout << "\tidName: " << idName() << std::endl;
@@ -315,7 +322,7 @@ class MixtureBridge : public mixt::IMixture
     /** The augmented data set */
     AugData m_augDataij_;
     /** Current parameters of the STK Mixture */
-    Param param_;
+    STK::Array2D<STK::Real> param_;
     /** number of variables in the data set */
     int nbVariable_;
     /** Sampler to generate values */

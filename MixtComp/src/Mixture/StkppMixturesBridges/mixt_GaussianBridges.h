@@ -58,8 +58,6 @@ struct BridgeTraits<STK::Clust::Gaussian_sjk_>
     typedef std::map<int, std::map<int, STK::Array2DVector<STK::Real> > > DataStatStorage;
     /** Type of the ParamStat */
     typedef SimpleParamStat ParamStat;
-    /** Type of the parameter set to be used as output */
-    typedef STK::Array2D<STK::Real> Param;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

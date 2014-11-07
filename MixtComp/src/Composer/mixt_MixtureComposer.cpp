@@ -178,7 +178,8 @@ void MixtureComposer::misClasStep(int iteration)
   }
 }
 
-void MixtureComposer::storeShortRun(int iteration)
+void MixtureComposer::storeShortRun(int iteration,
+                                    int iterationMax)
 {
 #ifdef MC_LOG
   std::stringstream fileName;
@@ -189,15 +190,18 @@ void MixtureComposer::storeShortRun(int iteration)
 #endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeShortRun(iteration);
+    (*it)->storeShortRun(iteration,
+                         iterationMax);
   }
 }
 
-void MixtureComposer::storeLongRun(int iteration)
+void MixtureComposer::storeLongRun(int iteration,
+                                   int iterationMax)
 {
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeLongRun(iteration);
+    (*it)->storeLongRun(iteration,
+                        iterationMax);
   }
 }
 
@@ -245,7 +249,7 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter)
       eStep(i);
       storeData(i,
                 iterGibbs,
-                nbGibbsIter);
+                nbGibbsIter - 1);
     }
   }
 }

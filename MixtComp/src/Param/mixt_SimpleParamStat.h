@@ -36,7 +36,8 @@ class SimpleParamStat
     ~SimpleParamStat();
     void initialize();
     void sampleParam();
-    void exportParam(STK::Array2D<STK::Real>* stat) const;
+    void exportCompleteParam(STK::Array2D<STK::Real>* stat) const;
+    void exportExpectationParam(STK::Array2D<STK::Real>* stat) const;
   private:
     // number of iterations used to compute the statistics
     int nbIter_;

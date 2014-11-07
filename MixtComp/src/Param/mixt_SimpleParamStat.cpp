@@ -88,16 +88,25 @@ void SimpleParamStat::sampleParam()
 #endif
 }
 
-void SimpleParamStat::exportParam(STK::Array2D<STK::Real>* stat) const
+void SimpleParamStat::exportCompleteParam(STK::Array2D<STK::Real>* stat) const
 {
   stat->resize(nbParam_, nbVar_ * 2);
   for (int j = 0; j < nbVar_; ++j)
   {
-    stat->col(2 * j) = stat_.col(j); // mean
+    stat->col(2 * j) = stat_.col(2 * j); // mean
     if (nbIter_ < 2)
       stat->col(2 * j + 1) = 0.; // standard deviation
     else
       stat->col(2 * j + 1) = (stat_.col(2 * j + 1) / (nbIter_ - 1.)).sqrt(); // standard deviation
+  }
+}
+
+void SimpleParamStat::exportExpectationParam(STK::Array2D<STK::Real>* stat) const
+{
+  stat->resize(nbParam_, nbVar_);
+  for (int j = 0; j < nbVar_; ++j)
+  {
+    stat->col(j) = stat_.col(2 * j); // mean
   }
 }
 

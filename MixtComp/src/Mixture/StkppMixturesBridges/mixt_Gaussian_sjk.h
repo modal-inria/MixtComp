@@ -35,6 +35,21 @@ class Gaussian_sjk : public STK::Gaussian_sjk<STK::Array2D<STK::Real> >
   public:
     Gaussian_sjk(int nbCluster) : STK::Gaussian_sjk<STK::Array2D<STK::Real> >(nbCluster) {};
     ~Gaussian_sjk() {};
+
+    /** Set the parameters after the SEM, to the mean estimates for example */
+    void setParameters(STK::Array2D<STK::Real>& params)
+    {
+      int nbClust = this->nbCluster();
+
+      for (int k = 0; k < nbClust; ++k)
+      {
+        for (int j =  p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
+        {
+          p_param(k + STK::baseIdx)->mean_[j]  = params(2 * k +     STK::baseIdx, j);
+          p_param(k + STK::baseIdx)->sigma_[j] = params(2 * k + 1 + STK::baseIdx, j);
+        }
+      }
+    }
 };
 
 } // namespace mixt
