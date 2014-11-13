@@ -61,13 +61,16 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
       ++itVar)
   {
     int j = itVar->first;
-#ifdef MC_DEBUG
-  std::cout << "\tj: " << j << std::endl;
-#endif
+
     STK::Real z;
     STK::Real mean  = p_param_->elt(2 * z_i    , j);
     STK::Real sd    = p_param_->elt(2 * z_i + 1, j);
 
+#ifdef MC_DEBUG
+    std::cout << "\tj: " << j << std::endl;
+    std::cout << "\tmean: " << mean << std::endl;
+    std::cout << "\tsd: " << sd << std::endl;
+#endif
     switch(itVar->second.first) // (iterator on map)->(mapped element).(MisType)
     {
       case missing_:
@@ -81,6 +84,9 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 
       case missingIntervals_:
       {
+#ifdef MC_DEBUG
+        std::cout << "\tmissingIntervals_" << std::endl;
+#endif
         STK::Real infBound(itVar->second.second[0]); // (iterator on map)->(mapped element).(vector of parameters)[relevant parameter]
         STK::Real supBound(itVar->second.second[1]);
 
@@ -132,6 +138,9 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
       }
       break;
     }
+#ifdef MC_DEBUG
+    std::cout << "\tsampled val: " << z * sd + mean << std::endl;
+#endif
     p_augData_->data_(i, j) = z * sd + mean;
   }
 }

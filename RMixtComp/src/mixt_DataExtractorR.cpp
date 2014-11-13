@@ -50,7 +50,6 @@ void DataExtractorR::exportVals(std::string idName,
   }
 
   // imputation of missing value and export of their statistics
-  int currMissSample = 0; // index of current missing value in the linear output
   std::map<int, std::map<int, std::pair<MisType, std::vector<int>   > > >::const_iterator itSamplePos;
   std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >::const_iterator itSampleData;
   for(itSamplePos  = p_augData->misData_.begin(),
@@ -72,27 +71,22 @@ void DataExtractorR::exportVals(std::string idName,
       int i = itSamplePos->first;
       int j = itVarPos->first;
       Rcpp::List currList; // storage for the current missing value
-      currList[0] = i + 1; // R matrices rows start at 1
-      currList[1] = j + 1; // R matrices cols start at 1
-      int currElem;
+      currList.push_back(i + 1); // R matrices rows start at 1
+      currList.push_back(j + 1); // R matrices cols start at 1
       std::vector<std::pair<int, STK::Real> >::const_iterator itVec;
-      for (currElem = 2,
-           itVec = itVarData->second.begin();
+      for (itVec = itVarData->second.begin();
            itVec != itVarData->second.end();
-           ++currElem,
            ++itVec)
       {
-        currList[currElem]     = itVec->first; // current modality
-        currList[currElem + 1] = itVec->second; // probability of the modality
+        currList.push_back(itVec->first ); // current modality
+        currList.push_back(itVec->second); // probability of the modality
       }
-      missingData[currMissSample] = currList;
+      missingData.push_back(currList);
       dataR(i, j) = itVarData->second[0].first; // imputation by the mode
-      ++currMissSample;
     }
   }
-
   data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
-                                     Rcpp::Named("posMissing") = missingData);
+                                     Rcpp::Named("stat") = missingData);
 }
 
 void DataExtractorR::exportVals(std::string idName,
@@ -113,7 +107,6 @@ void DataExtractorR::exportVals(std::string idName,
   }
 
   // imputation of missing value and export of their statistics
-  int currMissSample = 0; // index of current missing value in the linear output
   std::map<int, std::map<int, std::pair<MisType, std::vector<STK::Real>   > > >::const_iterator itSamplePos;
   std::map<int, std::map<int, STK::Array2DVector<STK::Real>                 > >::const_iterator itSampleData;
   for(itSamplePos  = p_augData->misData_.begin(),
@@ -136,19 +129,18 @@ void DataExtractorR::exportVals(std::string idName,
       int j = itVarPos->first;
 
       Rcpp::List currList; // storage for the current missing value
-      currList[0] = i + 1; // R matrices rows start at 1
-      currList[1] = j + 1; // R matrices cols start at 1
-      currList[2] = itVarData->second[1]; // left bound
-      currList[3] = itVarData->second[2]; // right bound
-      missingData[currMissSample] = currList;
+      currList.push_back(i + 1); // R matrices rows start at 1
+      currList.push_back(j + 1); // R matrices cols start at 1
+      currList.push_back(itVarData->second[1]); // left bound
+      currList.push_back(itVarData->second[2]); // right bound
+
+      missingData.push_back(currList);
 
       dataR(i, j) = itVarData->second[0]; // imputation by the expectation
-      ++currMissSample;
     }
   }
-
   data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
-                                     Rcpp::Named("posMissing") = missingData);
+                                     Rcpp::Named("stat") = missingData);
 }
 
 Rcpp::List DataExtractorR::rcppReturnVal() const

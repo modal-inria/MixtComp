@@ -71,19 +71,32 @@ void GaussianDataStat::sampleVals(int sample,
          it_misVar != tempStat_.end();
          ++it_misVar)
     {
+#ifdef MC_DEBUG
+      std::cout << "GaussianDataStat::sampleVals, last iteration: " << std::endl;
+      std::cout << "it_misVar->second: " << std::endl;
+      std::cout << it_misVar->second << std::endl;
+#endif
       int var = it_misVar->first;
       STK::Array2DVector<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, it_misVar->second);
-      STK::Real realIndLow = confidenceLevel_ / 2. * iterationMax;
-      STK::Real realIndHigh = (1. - confidenceLevel_ / 2.) * iterationMax;
+      STK::Real alpha = (1. - confidenceLevel_) / 2.;
+      STK::Real realIndLow = alpha * iterationMax;
+      STK::Real realIndHigh = (1. - alpha) * iterationMax;
 
       STK::Array2DVector<STK::Real> tempVec(3);
       tempVec[0] = it_misVar->second.mean();
       tempVec[1] =  (1. - (realIndLow  - int(realIndLow ))) * it_misVar->second[indOrder[int(realIndLow )    ]]
-                  + (1. - (int(realIndLow ) - realIndLow )) * it_misVar->second[indOrder[int(realIndLow ) + 1]];
+                  + (      realIndLow  - int(realIndLow ) ) * it_misVar->second[indOrder[int(realIndLow ) + 1]];
       tempVec[2] =  (1. - (realIndHigh - int(realIndHigh))) * it_misVar->second[indOrder[int(realIndHigh)    ]]
-                  + (1. - (int(realIndHigh) - realIndHigh)) * it_misVar->second[indOrder[int(realIndHigh) + 1]];
+                  + (      realIndHigh - int(realIndHigh) ) * it_misVar->second[indOrder[int(realIndHigh) + 1]];
       (*p_dataStatStorage_)[sample][var] = tempVec;
+#ifdef MC_DEBUG
+      std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
+      std::cout << "alpha: " << alpha << std::endl;
+      std::cout << "realIndLow: " << realIndLow << std::endl;
+      std::cout << "realIndHigh: " << realIndHigh << std::endl;
+      std::cout << "tempVec: " << tempVec << std::endl;
+#endif
     }
   }
   else

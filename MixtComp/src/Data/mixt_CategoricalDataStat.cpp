@@ -78,9 +78,16 @@ void CategoricalDataStat::sampleVals(int sample,
       STK::Array2DPoint<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, proba);
       STK::Real cumProb = 0.;
-      for (int i = pm_augDataij_->dataRanges_[var].range_ - 1; i > -1; --i)
+      for (int i = pm_augDataij_->dataRanges_[var].max_;
+           i > pm_augDataij_->dataRanges_[var].min_ - 1;
+           --i)
       {
         int currMod = indOrder[i];
+#ifdef MC_DEBUG
+        std::cout << "CategoricalDataStat::sampleVals" << std::endl;
+        std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]" << proba[currMod] << std::endl;
+        std::cout << "\tcumProb: " << cumProb << std::endl;
+#endif
         STK::Real currProba = proba[currMod];
         (*p_dataStatStorage_)[sample][var].push_back(std::pair<int, STK::Real>(currMod, currProba));
         cumProb += currProba;
