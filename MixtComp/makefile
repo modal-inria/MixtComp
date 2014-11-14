@@ -21,19 +21,33 @@
 
 # build path
 LIB_MC = ./lib/libMixtComp.a
+LIB_STK = ../stkpp/lib/libSTKpp.a
 BIN_DIR = ./bin
+EXE_MC = ./bin/mixtComp
 
 #-----------------------------------------------------------------------
 # build rules
 
 # phony prerequisites are executed unconditionally
-.PHONY: all clean
+.PHONY: all exe obj clean
 
+all: lib $(EXE_MC)
+
+clean:
+	find -L . -type f -name "*.o" -exec rm -f {} \;
+	find -L . -type f -name "*.d" -exec rm -f {} \;
+	find -L . -type f -name "*.a" -exec rm -f {} \;
+	find -L . -type f -name "*.so" -exec rm -f {} \;
+
+$(EXE_MC): $(LIB_MC) $(LIB_STK)
+	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../regex src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) -o $(EXE_MC)
+	
 lib: obj $(LIB_MC)
 
 obj:
 	$(MAKE) -C ./src/Composer
 	$(MAKE) -C ./src/Data
+	$(MAKE) -C ./src/IO
 	$(MAKE) -C ./src/Likelihood
 	$(MAKE) -C ./src/Mixture
 	$(MAKE) -C ./src/Param
@@ -43,10 +57,6 @@ obj:
 
 $(LIB_MC): $(wildcard $(BIN_DIR)/*.o)
 	$(AR) $(ARFLAGS) $@ $(BIN_DIR)/*.o
-
-clean:
-	find -L . -type f -name "*.o" -exec rm -f {} \;
-	find -L . -type f -name "*.d" -exec rm -f {} \;
-	find -L . -type f -name "*.a" -exec rm -f {} \;
-	find -L . -type f -name "*.so" -exec rm -f {} \;
-
+	
+$(LIB_STK):
+	cd ../stkpp; $(MAKE) all
