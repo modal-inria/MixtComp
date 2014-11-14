@@ -24,14 +24,15 @@ LIB_MC = ./lib/libMixtComp.a
 LIB_STK = ../stkpp/lib/libSTKpp.a
 BIN_DIR = ./bin
 EXE_MC = ./bin/mixtComp
+EXE_TEST = ./bin/mcTest
 
 #-----------------------------------------------------------------------
 # build rules
 
 # phony prerequisites are executed unconditionally
-.PHONY: all exe obj clean
+.PHONY: all exe obj clean test
 
-all: lib $(EXE_MC)
+all: lib $(EXE_MC) $(EXE_TEST)
 
 clean:
 	find -L . -type f -name "*.o" -exec rm -f {} \;
@@ -40,7 +41,10 @@ clean:
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 
 $(EXE_MC): $(LIB_MC) $(LIB_STK)
-	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../regex src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) -o $(EXE_MC)
+	$(CXX) $(CXXFLAGS) -MD -MP -I.. -I../stkpp/projects -I../regex src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) -o $(EXE_MC)
+
+$(EXE_TEST): $(LIB_MC) $(LIB_STK)
+	$(CXX) $(CXXFLAGS) -MD -MP -I.. -I../stkpp/projects -I../regex src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) -o $(EXE_TEST)
 	
 lib: obj $(LIB_MC)
 

@@ -28,11 +28,17 @@ namespace mixt
 
 DataHandlerCsv::DataHandlerCsv(std::string dataName,
                                std::string descName) :
-    dataName_(dataName),
-    descName_(descName),
+    dataContent_(dataName,
+                 false,
+                 ";"),
+    descContent_(descName,
+                 false,
+                 ";"),
     nbSamples_(0),
     nbVariables_(0)
-{}
+{
+
+}
 
 DataHandlerCsv::~DataHandlerCsv()
 {}

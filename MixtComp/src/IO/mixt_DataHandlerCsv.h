@@ -53,7 +53,7 @@ class DataHandlerCsv
     virtual ~DataHandlerCsv();
 
     /** @return the number of samples (the number of rows of the data) */
-    int nbSample() const { return nbSamples_;}
+    int nbSample() const {return nbSamples_;};
         /** @return the number of variables (the number of columns of the data) */
     int nbVariable() const {return nbVariables_;};
 
@@ -74,17 +74,13 @@ class DataHandlerCsv
                  AugmentedData<STK::Array2D<Type> >& augData,
                  int& nbVariable) const;
   private:
-    /** name of the data file */
-    std::string dataName_;
-    /** name of the descriptor file */
-    std::string descName_;
-
     /** objects to parse the csv files */
     STK::ReadWriteCsv dataContent_;
     STK::ReadWriteCsv descContent_;
 
     int nbSamples_;
     int nbVariables_;
+
     /** Store the informations  of the mixtures in the form (idData, idModel) with
      * - idData: an arbitrary idData for a model
      * - model: a string which can be converted in an existing model
