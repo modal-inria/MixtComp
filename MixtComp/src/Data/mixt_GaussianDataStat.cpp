@@ -43,7 +43,12 @@ void GaussianDataStat::sampleVals(int sample,
 {
   if (iteration == 0) // clear the temporary statistical object
   {
+    // clear internal storage
     tempStat_.clear();
+
+    // clear export storage
+    p_dataStatStorage_->clear();
+
     // creation of the vectors to store the sampled values
     for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
          it_misVar != pm_augDataij_->getInd(sample).end();

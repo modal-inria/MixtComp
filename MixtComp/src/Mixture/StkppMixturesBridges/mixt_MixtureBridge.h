@@ -84,7 +84,9 @@ class MixtureBridge : public mixt::IMixture
       dataStatComputer_(getData(),
                         &dataStatStorage_,
                         confidenceLevel),
-      paramStat_(getParam()),
+      paramStat_(&param_,
+                 &paramStatStorage_,
+                 confidenceLevel),
       likelihood_(getParam(),
                   getData()),
       p_handler_(p_handler_),
@@ -135,7 +137,6 @@ class MixtureBridge : public mixt::IMixture
        * with the right size
        */
       mixture_.getParameters(param_);
-      paramStat_.initialize();
     }
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -198,13 +199,13 @@ class MixtureBridge : public mixt::IMixture
                               int iterationMax)
     {
       mixture_.getParameters(param_);
-      paramStat_.sampleParam();
+      paramStat_.sampleParam(iteration,
+                             iterationMax);
       if (iteration == iterationMax)
       {
         // reinject the SEM estimated parameters into the mixture
-        STK::Array2D<STK::Real> param;
-        paramStat_.exportCompleteParam(&param);
-        mixture_.getParameters(param);
+        paramStat_.setExpectationParam();
+        mixture_.setParameters(param_);
       }
     }
 
@@ -295,23 +296,18 @@ class MixtureBridge : public mixt::IMixture
       return &dataStatStorage_;
     }
 
+    virtual const STK::Array2D<STK::Real>* getParamStatStorage() const
+    {
+      return &paramStatStorage_;
+    }
+
     virtual void exportDataParam() const
     {
       p_dataExtractor_->exportVals(idName(),
                                    getData(),
                                    getDataStatStorage()); // export the obtained data using the DataExtractor
-
-      //export the parameters
-      STK::Array2D<STK::Real> param;
-      paramStat_.exportCompleteParam(&param);
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::exportDataParam(), getParameters" << std::endl;
-      std::cout << "\tidName: " << idName() << std::endl;
-      std::cout << "\tparam: " << std::endl;
-      std::cout << param << std::endl;
-#endif
       p_paramExtractor_->exportParam(idName(),
-                                     &param);
+                                     getParamStatStorage());
     }
 
   protected:
@@ -327,10 +323,10 @@ class MixtureBridge : public mixt::IMixture
     Sampler sampler_;
     /** Statistics computer for missing data */
     DataStatComputer dataStatComputer_;
-    /** Computation of the observed likelihood */
-    Likelihood likelihood_;
     /** Statistics storage for parameters */
     SimpleParamStat paramStat_;
+    /** Computation of the observed likelihood */
+    Likelihood likelihood_;
     /** Pointer to the data handler */
     const DataHandler* p_handler_;
     /** Pointer to the data extractor */
@@ -340,6 +336,8 @@ class MixtureBridge : public mixt::IMixture
 
     /** Statistics storage for missing data */
     DataStatStorage dataStatStorage_;
+    /** Statistics storage for parameters */
+    STK::Array2D<STK::Real> paramStatStorage_;
 
   private:
     /** This function will be used in order to initialize the mixture model

@@ -43,8 +43,6 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
   std::cout << "GaussianSampler::sampleIndividual" << std::endl;
   std::cout << "\ti: " << i << ", z_i: " << z_i << std::endl;
-  std::cout << "\tp_param_->sizeRows()" << p_param_->sizeRows() << std::endl;
-  std::cout << "\tp_param_->sizeCols()" << p_param_->sizeCols() << std::endl;
 #endif
 
   if (p_augData_->misData_.find(i) == p_augData_->misData_.end())

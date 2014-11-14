@@ -43,9 +43,14 @@ void CategoricalDataStat::sampleVals(int sample,
 {
   if (iteration == 0) // clear the temporary statistical object
   {
+    // clear internal storage
     tempStat_.clear();
+
+    // clear export storage
+    p_dataStatStorage_->clear();
+
     // creation of the objects for counting the modalities
-    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin(); // find iterator is necessary to access an element on a const map
+    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
          it_misVar != pm_augDataij_->getInd(sample).end();
          ++it_misVar)
     {

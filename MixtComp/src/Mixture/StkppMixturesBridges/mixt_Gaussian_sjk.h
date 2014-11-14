@@ -45,6 +45,11 @@ class Gaussian_sjk : public STK::Gaussian_sjk<STK::Array2D<STK::Real> >
       {
         for (int j =  p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
         {
+#ifdef MC_DEBUG
+          std::cout << "Gaussian_sjk::setParameters" << std::endl;
+          std::cout << "\tp_param(k + STK::baseIdx)->mean_[j]: " << p_param(k + STK::baseIdx)->mean_[j] << std::endl;
+          std::cout << "\tp_param(k + STK::baseIdx)->sigma_[j]: " << p_param(k + STK::baseIdx)->sigma_[j] << std::endl;
+#endif
           p_param(k + STK::baseIdx)->mean_[j]  = params(2 * k +     STK::baseIdx, j);
           p_param(k + STK::baseIdx)->sigma_[j] = params(2 * k + 1 + STK::baseIdx, j);
         }
