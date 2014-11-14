@@ -38,7 +38,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   
   // create the data handler
   mixt::DataHandlerR handler;
-  handler.readDataFromRList(rList);
+  handler.listData(rList);
   handler.writeInfo(std::cout);
   handler.writeDataMap();
   

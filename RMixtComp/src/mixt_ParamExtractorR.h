@@ -21,8 +21,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_PARAMEXTRACTOR_H
-#define MIXT_PARAMEXTRACTOR_H
+#ifndef MIXT_PARAMEXTRACTORR_H
+#define MIXT_PARAMEXTRACTORR_H
 
 #include "Arrays/include/STK_Array2D.h"
 #include "Rcpp.h"
@@ -44,4 +44,4 @@ class ParamExtractorR
 
 } // namespace mixt
 
-#endif // MIXT_DATAEXTRACTOR_H
+#endif // MIXT_DATAEXTRACTORR_H

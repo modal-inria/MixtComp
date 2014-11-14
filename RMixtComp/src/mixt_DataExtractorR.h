@@ -21,8 +21,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_DATAEXTRACTOR_H
-#define MIXT_DATAEXTRACTOR_H
+#ifndef MIXT_DATAEXTRACTORR_H
+#define MIXT_DATAEXTRACTORR_H
 
 #include "MixtComp/src/Data/mixt_AugmentedData.h"
 #include "Rcpp.h"
@@ -52,4 +52,4 @@ class DataExtractorR
 
 } // namespace mixt
 
-#endif // MIXT_DATAEXTRACTOR_H
+#endif // MIXT_DATAEXTRACTORR_H

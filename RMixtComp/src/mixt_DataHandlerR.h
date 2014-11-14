@@ -62,7 +62,7 @@ class DataHandlerR
     /** read a data file and its companion description file,
       and fill the infoMap_ (id -> model) and dataMap_ (id -> vector of positions)
       members */
-    bool readDataFromRList(Rcpp::List);
+    bool listData(Rcpp::List);
     
     /** @return the map with the idDatas and idModel of the models */
     InfoMap const& info() const{return info_;};

@@ -65,7 +65,7 @@ bool DataHandlerR::addInfo(std::string const& idData, std::string const& idModel
   return true;
 }
 
-bool DataHandlerR::readDataFromRList(Rcpp::List rList)
+bool DataHandlerR::listData(Rcpp::List rList)
 {
   rList_ = rList;
   for (int i = 0; i < rList.size(); ++i)
