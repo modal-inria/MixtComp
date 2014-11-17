@@ -19,6 +19,8 @@
 #   Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
 #------------------------------------------------------------------------
 
+include makevars
+
 # build path
 LIB_MC = ./lib/libMixtComp.a
 LIB_STK = ../stkpp/lib/libSTKpp.a
@@ -42,10 +44,10 @@ clean:
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 
 $(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
-	$(CXX) $(CXXFLAGS) -MD -MP -I.. -I../stkpp/projects -I../regex src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
+	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../regex src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
 
 $(EXE_TEST): $(LIB_MC) $(LIB_STK) $(LIB_RE)
-	$(CXX) $(CXXFLAGS) -MD -MP -I.. -I../stkpp/projects -I../regex src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
+	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../regex src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
 	
 lib: obj $(LIB_MC)
 
