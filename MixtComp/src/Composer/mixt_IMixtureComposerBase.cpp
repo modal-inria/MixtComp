@@ -82,7 +82,15 @@ int IMixtureComposerBase::cStep(int ind)
     tik_.elt(i, zi_[i]) = 1.;
   }
   // count the minimal number of individuals in a class
-  return (STK::Stat::sum(tik_).minElt());
+  if (ind == -1) // cstep applied on whle table, for example for maximization step
+  {
+    // count the minimal number of individuals in a class
+    return (STK::Stat::sum(tik_).minElt());
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 /* simulate zi  */
