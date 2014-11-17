@@ -50,19 +50,19 @@ class DataHandlerR
     typedef std::map<std::string, std::vector<int> > DataMap;
 
     /** default constructor */
-    DataHandlerR();
+    DataHandlerR(Rcpp::List rList);
     /** destructor */
     virtual ~DataHandlerR();
 
     /** @return the number of samples (the number of rows of the data) */
-    int nbSample() const { return nbSamples_;}
+    int nbSample() const {return nbSamples_;}
         /** @return the number of variables (the number of columns of the data) */
     int nbVariable() const {return nbVariables_;};
 
     /** read a data file and its companion description file,
       and fill the infoMap_ (id -> model) and dataMap_ (id -> vector of positions)
       members */
-    bool listData(Rcpp::List);
+    bool listData();
     
     /** @return the map with the idDatas and idModel of the models */
     InfoMap const& info() const{return info_;};

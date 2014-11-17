@@ -37,7 +37,8 @@ DataHandlerCsv::DataHandlerCsv(std::string dataName,
     nbSamples_(0),
     nbVariables_(0)
 {
-
+  dataContent_.read();
+  descContent_.read();
 }
 
 DataHandlerCsv::~DataHandlerCsv()
@@ -72,6 +73,23 @@ bool DataHandlerCsv::addInfo(std::string const& idData, std::string const& idMod
 
 bool DataHandlerCsv::listData()
 {
+  for (int j = 0; j < descContent_.sizeCol(); ++j)
+  {
+    std::string model = descContent_(0, j);
+    std::string id    = descContent_(1, j);
+
+    nbSamples_ = dataContent_.sizeRows(0) - 1; // all columns are supposed to have the same number of rows, add check
+    addInfo(id, model);
+    std::vector<int>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
+    v_pos.push_back(j);
+    ++nbVariables_;
+  #ifdef MC_DEBUG
+    std::cout << "DataHandlerCsv::readDataFromRListHelper()" << std::endl;
+    std::cout << "\tid: " << id << std::endl;
+    std::cout << "\tmodel: " << model << std::endl;
+    std::cout << "\trList pos: " << j << std::endl;
+  #endif
+  }
   return true;
 }
 

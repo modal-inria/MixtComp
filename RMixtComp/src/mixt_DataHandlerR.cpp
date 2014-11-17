@@ -30,9 +30,10 @@
 namespace mixt
 {
 
-DataHandlerR::DataHandlerR() :
+DataHandlerR::DataHandlerR(Rcpp::List rList) :
     nbSamples_(0),
-    nbVariables_(0)
+    nbVariables_(0),
+    rList_(rList)
 {}
 
 DataHandlerR::~DataHandlerR()
@@ -65,10 +66,9 @@ bool DataHandlerR::addInfo(std::string const& idData, std::string const& idModel
   return true;
 }
 
-bool DataHandlerR::listData(Rcpp::List rList)
+bool DataHandlerR::listData()
 {
-  rList_ = rList;
-  for (int i = 0; i < rList.size(); ++i)
+  for (int i = 0; i < rList_.size(); ++i)
   {
     Rcpp::List currList = rList_[i];
 

@@ -33,8 +33,8 @@ int main()
   int nbClusters = 3;
 
   // create the data handler
-  mixt::DataHandlerCsv handler("data.csv",
-                               "desc.csv");
+  mixt::DataHandlerCsv handler("data/gaussian.data.csv",
+                               "data/gaussian.desc.csv");
   handler.listData();
   handler.writeInfo(std::cout);
   handler.writeDataMap();

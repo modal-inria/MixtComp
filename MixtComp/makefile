@@ -25,6 +25,7 @@ LIB_STK = ../stkpp/lib/libSTKpp.a
 BIN_DIR = ./bin
 EXE_MC = ./bin/mixtComp
 EXE_TEST = ./bin/mcTest
+LIB_RE = ./regex/libregex.a
 
 #-----------------------------------------------------------------------
 # build rules
@@ -32,7 +33,7 @@ EXE_TEST = ./bin/mcTest
 # phony prerequisites are executed unconditionally
 .PHONY: all exe obj clean test
 
-all: lib $(EXE_MC) $(EXE_TEST)
+all: lib $(LIB_RE) $(EXE_MC) $(EXE_TEST)
 
 clean:
 	find -L . -type f -name "*.o" -exec rm -f {} \;
@@ -40,11 +41,11 @@ clean:
 	find -L . -type f -name "*.a" -exec rm -f {} \;
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 
-$(EXE_MC): $(LIB_MC) $(LIB_STK)
-	$(CXX) $(CXXFLAGS) -MD -MP -I.. -I../stkpp/projects -I../regex src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) -o $(EXE_MC)
+$(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
+	$(CXX) $(CXXFLAGS) -MD -MP -I.. -I../stkpp/projects -I../regex src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
 
-$(EXE_TEST): $(LIB_MC) $(LIB_STK)
-	$(CXX) $(CXXFLAGS) -MD -MP -I.. -I../stkpp/projects -I../regex src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) -o $(EXE_TEST)
+$(EXE_TEST): $(LIB_MC) $(LIB_STK) $(LIB_RE)
+	$(CXX) $(CXXFLAGS) -MD -MP -I.. -I../stkpp/projects -I../regex src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
 	
 lib: obj $(LIB_MC)
 
@@ -64,3 +65,6 @@ $(LIB_MC): $(wildcard $(BIN_DIR)/*.o)
 	
 $(LIB_STK):
 	cd ../stkpp; $(MAKE) all
+
+$(LIB_RE):
+	cd regex; $(CXX) $(CXXFLAGS) -MD -MP -fPIC -I../../regex -c ../../regex/libs/regex/src/*.cpp; ar cr libregex.a *.o

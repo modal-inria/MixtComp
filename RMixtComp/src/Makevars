@@ -27,7 +27,6 @@ RELIB = regex/libregex.a
 MCDIR = ../../MixtComp
 MCLIB = ../../MixtComp/lib/libMixtComp.a
 
-
 # Flags for the cpp files at the root, i.e.
 PKG_CXXFLAGS= -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I../../stkpp/projects -I$(REINC)
 

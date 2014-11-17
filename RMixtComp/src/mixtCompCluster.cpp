@@ -37,8 +37,8 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   Rcpp::S4 mcResults = mcClusters.slot("results");
   
   // create the data handler
-  mixt::DataHandlerR handler;
-  handler.listData(rList);
+  mixt::DataHandlerR handler(rList);
+  handler.listData();
   handler.writeInfo(std::cout);
   handler.writeDataMap();
   

@@ -31,4 +31,4 @@
 # R related compiler options overrides
 # -include ~/.R/Makevars
 
-CXXFLAGS += -MD -MP -fPIC
+CXXFLAGS += -MD -MP -fPIC -DMC_DEBUG -DMC_LOG
