@@ -144,7 +144,7 @@ void DataHandlerCsv::getData(std::string const& idData,
     std::cout << "DataHandlerCsv::getData" << std::endl;
     std::cout << "\tj: " << j << std::endl;
 #endif
-//    Rcpp::List currVar = rList_[(*it)]; // get current named list
+    int currVar = (*it); // current column in input
 //    Rcpp::CharacterVector data = currVar("data");
     for (int i = 1; i < nbSamples_ + 1; ++i) // data begins at the second line
     {
@@ -152,7 +152,7 @@ void DataHandlerCsv::getData(std::string const& idData,
     std::cout << "DataHandlerR::getData" << std::endl;
     std::cout << "\ti: " << i << "\tj: " << j << std::endl;
 #endif
-      std::string currStr(dataContent_(i, j));
+      std::string currStr(dataContent_(i, currVar));
 
       if (boost::regex_match(currStr, matches, reValue))
       {
