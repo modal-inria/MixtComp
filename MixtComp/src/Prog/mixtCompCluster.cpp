@@ -64,10 +64,10 @@ int main()
   // create the appropriate strategy and transmit the parameters
   mixt::SemStrategy strategy(&composer,
                              3, // number of trials of the complete chain
-                             100, // number of burn-in iterations
-                             500, // number of iterations
-                             100, // number of iterations for Gibbs sampler
-                             500, // number of iterations for Gibbs sampler
+                             114, // number of burn-in iterations
+                             507, // number of iterations
+                             123, // number of iterations for Gibbs sampler burn-in
+                             512, // number of iterations for Gibbs sampler
                              10); // number of sampling attempts for lowly populated classes
 
   // run the strategy

@@ -25,7 +25,7 @@
 
 int main()
 {
-  STK::ReadWriteCsv data("data.csv",
+  STK::ReadWriteCsv data("data/gaussian.data.csv",
                          false,
                          ";");
   data.read();
@@ -34,4 +34,7 @@ int main()
   std::cout << "data(0, 0): " << data(0, 0) << std::endl;
   std::cout << "data(1, 0): " << data(1, 0) << std::endl;
   std::cout << "data(2, 0): " << data(2, 0) << std::endl;
+  std::cout << "data(0, 1): " << data(0, 1) << std::endl;
+  std::cout << "data(1, 1): " << data(1, 1) << std::endl;
+  std::cout << "data(2, 1): " << data(2, 1) << std::endl;
 }
