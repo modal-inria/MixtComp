@@ -132,11 +132,17 @@ int MixtureComposer::computeNbFreeParameters() const
  */
 void MixtureComposer::samplingStep(int ind)
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::samplingStep" << std::endl;
+#endif
   std::pair<int, int> range(forRange(ind));
   for (int i = range.first; i < range.second; ++i)
   {
     for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
+#ifdef MC_DEBUG
+  std::cout << (*it)->idName() << std::endl;
+#endif
       (*it)->samplingStep(i);
     }
   }

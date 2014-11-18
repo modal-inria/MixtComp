@@ -195,7 +195,8 @@ class IMixtureComposerBase : public STK::IModelBase
     /** compute the zi and the lnLikelihodd of the current estimators (pk and paramk)
      *  and the next value of the tik.
      **/
-    void eStep(int ind = -1);
+    void eStep();
+    STK::Real eStep(int i);
     /** Compute zi using the Map estimator. */
     void mapStep(int ind = -1);
 

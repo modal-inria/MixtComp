@@ -76,12 +76,14 @@ void IMixtureComposerBase::randomClassInit()
 /* cStep */
 int IMixtureComposerBase::cStep(int ind)
 {
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::cStep" << std::endl;
+#endif
   std::pair<int, int> range(forRange(ind));
   for (int i = range.first; i < range.second; ++i)
   {
     tik_.elt(i, zi_[i]) = 1.;
   }
-  // count the minimal number of individuals in a class
   if (ind == -1) // cstep applied on whle table, for example for maximization step
   {
     // count the minimal number of individuals in a class
@@ -96,6 +98,9 @@ int IMixtureComposerBase::cStep(int ind)
 /* simulate zi  */
 int IMixtureComposerBase::sStep(int ind)
 {
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::sStep" << std::endl;
+#endif
   std::pair<int, int> range(forRange(ind));
   // simulate zi
   for (int i = range.first; i < range.second; ++i)
@@ -104,35 +109,49 @@ int IMixtureComposerBase::sStep(int ind)
   }
   return cStep(ind);
 }
-/* compute Tik, default implementation. */
-void IMixtureComposerBase::eStep(int ind)
+/* compute Tik, for all individuals */
+void IMixtureComposerBase::eStep()
 {
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::eStep" << std::endl;
+#endif
   STK::Real sum = 0.;
-  std::pair<int, int> range(forRange(ind));
-  for (int i = range.first; i < range.second; ++i)
+  for (int i = 0; i < nbSample(); ++i)
   {
-    STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
-    for (int k=tik_.firstIdxCols(); k<= tik_.lastIdxCols(); k++)
-    {
-      lnComp[k] = lnComponentProbability(i,k);
-    }
-    int kmax;
-    STK::Real max = lnComp.maxElt(kmax);
-    zi_.elt(i) = kmax;
-    // compute sum_k pk exp{lnCom_k - lnComp_kmax}
-    STK::Real sum2 =  (lnComp -= max).exp().dot(prop_);
-    // compute likelihood of each sample for each component
-    tik_.row(i) = (prop_ * lnComp.exp())/sum2;
-    // compute lnLikelihood
-    sum += max + std::log(sum2);
+    sum += eStep(i);
   }
   setLnLikelihood(sum);
+}
+
+/* compute Tik, for a particular individual */
+STK::Real IMixtureComposerBase::eStep(int i)
+{
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::eStep(int i)" << std::endl;
+#endif
+  STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
+  for (int k = tik_.firstIdxCols(); k <= tik_.lastIdxCols(); k++)
+  {
+    lnComp[k] = lnComponentProbability(i, k);
+  }
+  int kmax;
+  STK::Real max = lnComp.maxElt(kmax);
+  zi_.elt(i) = kmax;
+  // compute sum_k pk exp{lnCom_k - lnComp_kmax}
+  STK::Real sum2 = (lnComp -= max).exp().dot(prop_);
+  // compute likelihood of each sample for each component
+  tik_.row(i) = (prop_ * lnComp.exp())/sum2;
+
+  return max + std::log(sum2);
 }
 /* estimate the proportions and the parameters of the components of the
  *  model given the current tik/zi mixture parameters values.
  **/
 void IMixtureComposerBase::mStep()
 {
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::mStep" << std::endl;
+#endif
   pStep();
   /* implement specific parameters estimation in concrete class. */
 }
@@ -140,12 +159,18 @@ void IMixtureComposerBase::mStep()
 /* Compute prop using the ML estimator, default implementation. */
 void IMixtureComposerBase::pStep()
 {
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::pStep" << std::endl;
+#endif
   prop_ = STK::Stat::mean(tik_);
 }
 
 /* Compute Zi using the Map estimator, default implementation. */
 void IMixtureComposerBase::mapStep(int ind)
 {
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::mapStep" << std::endl;
+#endif
   std::pair<int, int> range(forRange(ind));
   for (int i = range.first; i < range.second; ++i)
   {
@@ -165,14 +190,20 @@ void IMixtureComposerBase::intializeMixtureParameters()
 
 std::pair<int, int> IMixtureComposerBase::forRange(int ind) const
 {
+  std::pair<int, int> retRange;
   if (ind == -1) // no individual has been provided
   {
-    return std::pair<int, int>(0, nbSample());
+    retRange = std::pair<int, int>(0, nbSample());
   }
   else
   {
-    return std::pair<int, int>(ind, ind + 1);
+    retRange = std::pair<int, int>(ind, ind + 1);
   }
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::forRange" << std::endl;
+  std::cout << "retRange.first: " << retRange.first << ", retRange.second: " << retRange.second << std::endl;
+#endif
+  return retRange;
 }
 } // namespace mixt
 
