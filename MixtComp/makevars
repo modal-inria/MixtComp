@@ -33,4 +33,6 @@
 
 # -DMC_DEBUG -DMC_LOG
 
-CXXFLAGS += -MD -MP -fPIC -pg
+# CXXFLAGS += -MD -MP -fPIC -pg -DMC_DEBUG -DMC_LOG
+# CXXFLAGS += -MD -MP -fPIC -pg
+CXXFLAGS += -MD -MP -fPIC

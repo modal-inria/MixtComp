@@ -130,21 +130,28 @@ int MixtureComposer::computeNbFreeParameters() const
 /* @brief Simulation of all the latent variables and/or missing data
  *  excluding class labels.
  */
-void MixtureComposer::samplingStep(int ind)
+void MixtureComposer::samplingStep()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::samplingStep" << std::endl;
 #endif
-  std::pair<int, int> range(forRange(ind));
-  for (int i = range.first; i < range.second; ++i)
+  for (int i = 0; i < nbSample(); ++i)
   {
-    for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-    {
+    samplingStep(i);
+  }
+}
+
+void MixtureComposer::samplingStep(int i)
+{
 #ifdef MC_DEBUG
-  std::cout << (*it)->idName() << std::endl;
+  std::cout << "MixtureComposer::samplingStep, single individual" << std::endl;
 #endif
-      (*it)->samplingStep(i);
-    }
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+#ifdef MC_DEBUG
+std::cout << (*it)->idName() << std::endl;
+#endif
+    (*it)->samplingStep(i);
   }
 }
 

@@ -73,42 +73,53 @@ void IMixtureComposerBase::randomClassInit()
   eStep();
 }
 
-/* cStep */
-int IMixtureComposerBase::cStep(int ind)
+/* cStep for all individuals */
+int IMixtureComposerBase::cStep()
 {
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::cStep" << std::endl;
 #endif
-  std::pair<int, int> range(forRange(ind));
-  for (int i = range.first; i < range.second; ++i)
+  for (int i = 0; i < nbSample(); ++i)
   {
-    tik_.elt(i, zi_[i]) = 1.;
+    cStep(i);
   }
-  if (ind == -1) // cstep applied on whle table, for example for maximization step
-  {
-    // count the minimal number of individuals in a class
-    return (STK::Stat::sum(tik_).minElt());
-  }
-  else
-  {
-    return 0;
-  }
+  // count the minimal number of individuals in a class
+  return (STK::Stat::sum(tik_).minElt());
 }
 
-/* simulate zi  */
-int IMixtureComposerBase::sStep(int ind)
+/* cStep for a single individual */
+void IMixtureComposerBase::cStep(int i)
+{
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::cStep, single individual" << std::endl;
+#endif
+  tik_.row(i) = 0.;
+  tik_.elt(i, zi_[i]) = 1.;
+}
+
+/* simulate zi for all individuals */
+int IMixtureComposerBase::sStep()
 {
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::sStep" << std::endl;
 #endif
-  std::pair<int, int> range(forRange(ind));
   // simulate zi
-  for (int i = range.first; i < range.second; ++i)
+  for (int i = 0; i < nbSample(); ++i)
   {
-    zi_.elt(i) = STK::Law::Categorical::rand(tik_.row(i));
+    sStep(i);
   }
-  return cStep(ind);
+  return cStep();
 }
+
+/* simulate zi for a particular individual */
+void IMixtureComposerBase::sStep(int i)
+{
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::sStep, single individual" << std::endl;
+#endif
+  zi_.elt(i) = STK::Law::Categorical::rand(tik_.row(i));
+}
+
 /* compute Tik, for all individuals */
 void IMixtureComposerBase::eStep()
 {
@@ -165,19 +176,27 @@ void IMixtureComposerBase::pStep()
   prop_ = STK::Stat::mean(tik_);
 }
 
-/* Compute Zi using the Map estimator, default implementation. */
-void IMixtureComposerBase::mapStep(int ind)
+/* Compute Zi using the Map estimator,default implementation. */
+void IMixtureComposerBase::mapStep()
 {
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::mapStep" << std::endl;
 #endif
-  std::pair<int, int> range(forRange(ind));
-  for (int i = range.first; i < range.second; ++i)
+  for (int i = 0; i < nbSample(); ++i)
   {
+    mapStep(i);
+  }
+}
+
+/* Compute Zi using the Map estimator, default implementation. */
+void IMixtureComposerBase::mapStep(int i)
+{
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::mapStep, single individual" << std::endl;
+#endif
     int k;
     tik_.row(i).maxElt(k);
     zi_.elt(i) = k;
-  }
 }
 
 /* Create the parameters of the  mixture model. */
@@ -186,24 +205,6 @@ void IMixtureComposerBase::intializeMixtureParameters()
   prop_ = 1./(STK::Real)nbCluster_;
   tik_  = 1./(STK::Real)nbCluster_;
   zi_   = STK::baseIdx;
-}
-
-std::pair<int, int> IMixtureComposerBase::forRange(int ind) const
-{
-  std::pair<int, int> retRange;
-  if (ind == -1) // no individual has been provided
-  {
-    retRange = std::pair<int, int>(0, nbSample());
-  }
-  else
-  {
-    retRange = std::pair<int, int>(ind, ind + 1);
-  }
-#ifdef MC_DEBUG
-  std::cout << "IMixtureComposerBase::forRange" << std::endl;
-  std::cout << "retRange.first: " << retRange.first << ", retRange.second: " << retRange.second << std::endl;
-#endif
-  return retRange;
 }
 } // namespace mixt
 

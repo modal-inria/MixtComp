@@ -100,7 +100,8 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels.
      */
-    virtual void samplingStep(int ind = -1);
+    virtual void samplingStep();
+    virtual void samplingStep(int i);
     /** @brief Simulation of latent variables to detect misclassified partially
      * observed data during initialization
      */

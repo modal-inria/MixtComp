@@ -187,18 +187,22 @@ class IMixtureComposerBase : public STK::IModelBase
     /** Replace tik by zik
      *  @return the minimal value of individuals in a class
      **/
-    int cStep(int ind = -1);
+    int cStep();
+    void cStep(int i);
+
     /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
      *  @return the minimal value of individuals in a class
      **/
-    int sStep(int ind = -1);
-    /** compute the zi and the lnLikelihodd of the current estimators (pk and paramk)
-     *  and the next value of the tik.
-     **/
+    int sStep();
+    void sStep(int i);
+
+    /** compute Tik */
     void eStep();
     STK::Real eStep(int i);
+
     /** Compute zi using the Map estimator. */
-    void mapStep(int ind = -1);
+    void mapStep();
+    void mapStep(int i);
 
   protected:
     /** number of cluster. */
