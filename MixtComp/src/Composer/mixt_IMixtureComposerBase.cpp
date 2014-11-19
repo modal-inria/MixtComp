@@ -69,8 +69,6 @@ void IMixtureComposerBase::randomClassInit()
     zi_.elt(i) = law.rand();
   }
   cStep();
-  initializeStep(); // might contain an mstep to provide parameters at first iteration
-  eStep();
 }
 
 /* cStep for all individuals */

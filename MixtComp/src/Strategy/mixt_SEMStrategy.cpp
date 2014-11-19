@@ -69,6 +69,8 @@ bool SemStrategy::run()
   {
     // Random initialization
     p_composer_->randomClassInit();
+    p_composer_->initializeStep(); // initialize mixture parameters, usually calling an mStep
+    p_composer_->pStep(); // initialize the proportions by m step
 
     // short run
 #ifdef MC_DEBUG
