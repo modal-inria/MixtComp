@@ -1,26 +1,24 @@
-R_HOME = $(shell R RHOME)
-
 ## include headers and libraries for R
-RCPPFLAGS := 		$(shell $(R_HOME)/bin/R CMD config --cppflags)
-RLDFLAGS := 		$(shell $(R_HOME)/bin/R CMD config --ldflags)
-RBLAS := 		$(shell $(R_HOME)/bin/R CMD config BLAS_LIBS)
-RLAPACK := 		$(shell $(R_HOME)/bin/R CMD config LAPACK_LIBS)
+RCPPFLAGS := $(shell R CMD config --cppflags)
+RLDFLAGS := $(shell R CMD config --ldflags)
+RBLAS := $(shell R CMD config BLAS_LIBS)
+RLAPACK := $(shell R CMD config LAPACK_LIBS)
 
 ## include headers and libraries for Rcpp interface classes
-RCPPINCL := 		$(shell echo 'Rcpp:::CxxFlags()' | $(R_HOME)/bin/R --vanilla --slave)
-RCPPLIBS := 		$(shell echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R --vanilla --slave)
+RCPPINCL := $(shell echo 'Rcpp:::CxxFlags()' | R --vanilla --slave)
+RCPPLIBS := $(shell echo 'Rcpp:::LdFlags()'  | R --vanilla --slave)
 
 ## include headers and libraries for RInside embedding classes
-RINSIDEINCL := 		$(shell echo 'RInside:::CxxFlags()' | $(R_HOME)/bin/R --vanilla --slave)
-RINSIDELIBS := 		$(shell echo 'RInside:::LdFlags()'  | $(R_HOME)/bin/R --vanilla --slave)
+RINSIDEINCL := $(shell echo 'RInside:::CxxFlags()' | R --vanilla --slave)
+RINSIDELIBS := 	$(shell echo 'RInside:::LdFlags()' | R --vanilla --slave)
 
 ## compiler etc settings used in default make rules
-CXX := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
-CPPFLAGS := 		-Wall $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CPPFLAGS)
-CXXFLAGS := 		$(RCPPFLAGS) $(RCPPINCL) $(RINSIDEINCL) $(shell $(R_HOME)/bin/R CMD config CXXFLAGS)
-LDFLAGS	= 		# -s
-LDLIBS := 		$(RLDFLAGS) $(RBLAS) $(RLAPACK) $(RINSIDELIBS) $(RCPPLIBS)
-CC := 			$(shell $(R_HOME)/bin/R CMD config CXX)
+CXX := $(shell R $(R_ARCH) CMD config CXX)
+CPPFLAGS :=	-Wall $(shell R $(R_ARCH) CMD config CPPFLAGS)
+CXXFLAGS := $(RCPPFLAGS) $(RCPPINCL) $(RINSIDEINCL) $(shell R CMD config CXXFLAGS)
+LDFLAGS	= # -s
+LDLIBS := $(RLDFLAGS) $(RBLAS) $(RLAPACK) $(RINSIDELIBS) $(RCPPLIBS)
+CC := $(shell R CMD config CXX)
 
 all:
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cpp $(LDFLAGS) $(LDLIBS) -o test
