@@ -62,57 +62,64 @@ bool SEMAlgo::run()
                             nbIterMax_ - 1); // export of the initial partition
   }
 
-    for (int iter = 0; iter < nbIterMax_; ++iter)
+  for (int iter = 0; iter < nbIterMax_; ++iter)
+  {
+#ifdef MC_DEBUG
+    std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
+#endif
+
+    // SE steps
+    for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample)
     {
 #ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
+      std::cout << "\titerSample: " << iterSample << std::endl;
 #endif
-      for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample)
+      if (p_model_->sStep() > minIndPerClass)
       {
-#ifdef MC_DEBUG
-        std::cout << "\titerSample: " << iterSample << std::endl;
-#endif
-        if (p_model_->sStep() > minIndPerClass)
-          break;
-        else
-          return false;
+        break;
       }
-
-      p_model_->pStep();
-      p_model_->samplingStep();
-      p_model_->mStep();
-      p_model_->eStep();
-
-      if (p_model_->state() == shortRun_)
+      else
       {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
-#endif
-        p_model_->storeShortRun(iter,
-                                nbIterMax_ - 1);
+        return false;
       }
-
-      if (p_model_->state() == longRun_)
+    }
+    p_model_->samplingStep();
+    p_model_->eStep();
+    if (p_model_->state() == shortRun_)
+    {
+      if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
+    //      if(iter == 10)
       {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
-#endif
-        p_model_->storeLongRun(iter,
-                               nbIterMax_ - 1);
-      }
-
-      if (p_model_->state() == shortRun_)
-      {
-        if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
-//      if(iter == 10)
-        {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;
 #endif
         p_model_->misClasStep(iter);
-        }
       }
     }
+
+    // M steps
+    p_model_->mStep();
+    p_model_->pStep();
+
+    // storage steps
+    if (p_model_->state() == shortRun_)
+    {
+#ifdef MC_DEBUG
+    std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
+#endif
+      p_model_->storeShortRun(iter,
+                              nbIterMax_ - 1);
+    }
+
+    if (p_model_->state() == longRun_)
+    {
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
+#endif
+      p_model_->storeLongRun(iter,
+                             nbIterMax_ - 1);
+    }
+  }
 
   return true;
 }
