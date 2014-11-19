@@ -37,7 +37,7 @@ class Categorical_pjk : public STK::Categorical_pjk<STK::Array2D<int> >
     ~Categorical_pjk() {};
 
     /** Set the parameters after the SEM, to the mean estimates for example */
-    void setParameters(STK::Array2D<STK::Real>& params)
+    void setParameters(const STK::Array2D<STK::Real>& params)
     {
       int nbClust = this->nbCluster();
       int firstModality = this->modalities_.firstIdx();
@@ -50,8 +50,6 @@ class Categorical_pjk : public STK::Categorical_pjk<STK::Array2D<int> >
           for (int l = 0; l < nbModalities; ++l)
           {
             p_param(k)->proba_[j][firstModality + l] = params(k * nbModalities + l + STK::baseIdx, j);
-//            p_param(k)->proba(j, firstModality + l) = params(k * nbModalities + l + STK::baseIdx, j);
-//            p_param(k)->proba(j, firstModality + l) = params(k * nbModalities + l + STK::baseIdx, j);
           }
         }
       }

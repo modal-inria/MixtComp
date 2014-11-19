@@ -25,6 +25,7 @@
 #include "mixt_DataExtractorR.h"
 #include "mixt_ParamExtractorR.h"
 #include "MixtComp/src/mixt_MixtComp.h"
+#include "MixtComp/src/IO/mixt_ParamSetterDummy.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List rList,
@@ -45,14 +46,19 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   // create the data extractor
   mixt::DataExtractorR dataExtractor;
 
+  // create the parameters setter
+  mixt::ParamSetterDummy paramSetter;
+
   // create the parameters extractor
   mixt::ParamExtractorR paramExtractor;
 
   // create the mixture manager
   mixt::MixtureManager<mixt::DataHandlerR,
                        mixt::DataExtractorR,
+                       mixt::ParamSetterDummy,
                        mixt::ParamExtractorR> manager(&handler,
                                                       &dataExtractor,
+                                                      &paramSetter,
                                                       &paramExtractor,
                                                       confidenceLevel);
 

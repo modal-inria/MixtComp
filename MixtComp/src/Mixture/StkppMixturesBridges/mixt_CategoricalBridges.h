@@ -38,6 +38,7 @@ namespace mixt
 template<int Id,
          typename DataHandler,
          typename DataExtractor,
+         typename ParamSetter,
          typename ParamExtractor> class MixtureBridge;
 
 /**
@@ -66,12 +67,14 @@ struct BridgeTraits<STK::Clust::Categorical_pjk_>
 
 template<typename DataHandler,
          typename DataExtractor,
+         typename ParamSetter,
          typename ParamExtractor>
 struct CategoricalBridge_pjk_m
 {
    typedef MixtureBridge<STK::Clust::Categorical_pjk_,
                          DataHandler,
                          DataExtractor,
+                         ParamSetter,
                          ParamExtractor> type;
 };
 

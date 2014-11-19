@@ -38,10 +38,16 @@ struct InitializeMixtureImpl
 {
   typedef typename BridgeTraits<Id>::Mixture Mixture;
   typedef typename BridgeTraits<Id>::AugData AugData;
-  static void run(Mixture& mixture, AugData& augData)
+  static void run(Mixture& mixture,
+                  AugData& augData,
+                  STK::Array2D<STK::Real>& param)
   {
     mixture.setData(augData.data_);
     mixture.initializeModel();
+    if (param.sizeCols() > 0 && param.sizeRows() > 0) // empty params correspond to an empty
+    {
+      mixture.setParameters(param);
+    }
   }
 };
 
@@ -52,13 +58,19 @@ struct InitializeMixtureImpl<STK::Clust::Categorical_pjk_>
 {
   typedef typename BridgeTraits<STK::Clust::Categorical_pjk_>::Mixture Mixture;
   typedef typename BridgeTraits<STK::Clust::Categorical_pjk_>::AugData AugData;
-  static void run(Mixture& mixture, AugData& augData)
+  static void run(Mixture& mixture,
+                  AugData& augData,
+                  STK::Array2D<STK::Real>& param)
   {
     mixture.setData(augData.data_);
     mixture.setModalities(STK::Range(augData.globalRange_.min_,
                                      augData.globalRange_.range_));
     // TODO: resize proba_ in initializeModel
     mixture.initializeModel();
+    if (param.sizeCols() > 0 && param.sizeRows() > 0) // empty params correspond to an empty
+    {
+      mixture.setParameters(param);
+    }
   }
 };
 

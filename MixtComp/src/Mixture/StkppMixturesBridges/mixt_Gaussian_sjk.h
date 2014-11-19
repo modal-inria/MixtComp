@@ -37,7 +37,7 @@ class Gaussian_sjk : public STK::Gaussian_sjk<STK::Array2D<STK::Real> >
     ~Gaussian_sjk() {};
 
     /** Set the parameters after the SEM, to the mean estimates for example */
-    void setParameters(STK::Array2D<STK::Real>& params)
+    void setParameters(const STK::Array2D<STK::Real>& params)
     {
       int nbClust = this->nbCluster();
 
@@ -47,6 +47,8 @@ class Gaussian_sjk : public STK::Gaussian_sjk<STK::Array2D<STK::Real> >
         {
 #ifdef MC_DEBUG
           std::cout << "Gaussian_sjk::setParameters" << std::endl;
+          std::cout << "\tparams.sizeCols(): " << params.sizeCols() << std::endl;
+          std::cout << "\tparams.sizeRows(): " << params.sizeRows() << std::endl;
           std::cout << "\tp_param(k + STK::baseIdx)->mean_[j]: " << p_param(k + STK::baseIdx)->mean_[j] << std::endl;
           std::cout << "\tp_param(k + STK::baseIdx)->sigma_[j]: " << p_param(k + STK::baseIdx)->sigma_[j] << std::endl;
 #endif

@@ -43,6 +43,7 @@ namespace mixt
 template<int Id,
          typename DataHandler,
          typename DataExtractor,
+         typename ParamSetter,
          typename ParamExtractor>
 
 class MixtureBridge : public mixt::IMixture
@@ -73,6 +74,7 @@ class MixtureBridge : public mixt::IMixture
                   int nbCluster,
                   const DataHandler* p_handler_,
                   DataExtractor* p_extractor,
+                  const ParamSetter* p_paramSetter,
                   ParamExtractor* p_paramExtractor,
                   STK::Real confidenceLevel) :
       mixt::IMixture(idName, nbCluster),
@@ -91,6 +93,7 @@ class MixtureBridge : public mixt::IMixture
                   getData()),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
+      p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
       // dataStatStorage_ is an empty std::map at construction
     {}
@@ -106,6 +109,7 @@ class MixtureBridge : public mixt::IMixture
       likelihood_(bridge.likelihood_),
       p_handler_(bridge.p_handler_),
       p_dataExtractor_(bridge.p_dataExtractor_),
+      p_paramSetter_(bridge.p_paramSetter_),
       p_paramExtractor_(bridge.p_paramExtractor_),
       dataStatStorage_(bridge.dataStatStorage_)
     {
@@ -142,12 +146,13 @@ class MixtureBridge : public mixt::IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    void setData()
+    void setDataParam()
     {
 #ifdef MC_DEBUG
         std::cout << "MixtureBridge::setData(), idName(): " << idName() << std::endl;
 #endif
       p_handler_->getData(idName(), m_augDataij_, nbVariable_ );
+      p_paramSetter_->getParam(idName(), param_);
       initializeMixture();
     }
     /** This function must be defined for simulation of all the latent variables
@@ -331,6 +336,8 @@ class MixtureBridge : public mixt::IMixture
     const DataHandler* p_handler_;
     /** Pointer to the data extractor */
     DataExtractor* p_dataExtractor_;
+    /** Pointer to the param setter */
+    const ParamSetter* p_paramSetter_;
     /** Pointer to the parameters extractor */
     ParamExtractor* p_paramExtractor_;
 
@@ -345,7 +352,9 @@ class MixtureBridge : public mixt::IMixture
      **/
      void initializeMixture()
      {
-       InitializeMixtureImpl<Id>::run(mixture_, m_augDataij_);
+       InitializeMixtureImpl<Id>::run(mixture_,
+                                      m_augDataij_,
+                                      param_);
      }
 };
 
