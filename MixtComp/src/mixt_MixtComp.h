@@ -29,5 +29,6 @@
 #include "Mixture/StkppMixturesBridges/mixt_Clust_Traits.h"
 #include "Manager/mixt_MixtureManager.h"
 #include "Strategy/mixt_SEMStrategy.h"
+#include "Strategy/mixt_GibbsStrategy.h"
 
 #endif /* MIXT_MIXTCOMP_H */

@@ -10,13 +10,21 @@ testComplete <- function()
   export2DPoints(nbBurnInIter)
 }
 
-testGenData <- function(nbBurnInIter = 20,
-                        nbSampleLearn = 500,
-                        nbSamplePredict = 50,
-                        confidenceLevel = 0.95,
-                        regen = TRUE)
+testLearnPredict <- function()
 {
-  nbClass <- 2
+  myDataLearn <- testGenDataLearn()
+  myDataPredict <- testGenDataPredict(myDataLearn[[2]]$param)
+  
+  return(myDataPredict)
+}
+
+testGenDataLearn <- function(nbClass = 2,
+                             nbBurnInIter = 20,
+                             nbSampleLearn = 500,
+                             nbSamplePredict = 50,
+                             confidenceLevel = 0.95,
+                             regen = TRUE)
+{
   missingCategorical <- c(0.8, # present
                           0.1, # missing
                           0.1) # missing finite value
@@ -53,6 +61,32 @@ testGenData <- function(nbBurnInIter = 20,
   
   # launch of the MixtComp algorithm
   dataParam <- mixtCompCluster(lm,
+                               mcCluster,
+                               nbClass,
+                               confidenceLevel)
+  return(list(mcCluster,
+              dataParam))
+}
+
+
+testGenDataPredict <- function(param,
+                               nbClass = 2,
+                               nbBurnInIter = 20,
+                               confidenceLevel = 0.95)
+{
+  lm <- getData(c("dataGen/predict/gaussianData.csv",
+                  "dataGen/predict/gaussianDescriptor.csv"))
+  
+  # creation of parameters container
+  mcCluster <- getMixtCompCluster(2, # nbTrialInInit
+                                  nbBurnInIter, # nbBurnInIter
+                                  100, # nbIter
+                                  20, # nbGibbsBurnInIter
+                                  100) # nbGibbsIter
+  
+  # launch of the MixtComp algorithm
+  dataParam <- mixtCompPredict(lm,
+                               param,
                                mcCluster,
                                nbClass,
                                confidenceLevel)

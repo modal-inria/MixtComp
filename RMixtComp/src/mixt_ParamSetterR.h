@@ -17,18 +17,30 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Feb 25, 2014
+ *  Created on: Nov 19, 2014
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <RInside.h>                    // for the embedded R via RInside
-#include <fstream>
+#ifndef MIXT_PARAMSETTERR_H
+#define MIXT_PARAMSETTERR_H
 
-int main(int argc, char *argv[])
+#include "Arrays/include/STK_Array2D.h"
+#include "Rcpp.h"
+
+namespace mixt
 {
-  RInside R(argc, argv);              // create an embedded R instance
-  R.parseEvalQ("library(methods)");
-  R.parseEvalQ("library(RMixtComp)");
-  R.parseEvalQ("testLearnPredict()");
-  exit(0);
-}
+
+class ParamSetterR
+{
+  public:
+    ParamSetterR(const Rcpp::List param);
+    ~ParamSetterR();
+    void getParam(std::string idName,
+                  STK::Array2D<STK::Real>& param) const;
+  private:
+    const Rcpp::List param_;
+};
+
+} // namespace mixt
+
+#endif // MIXT_PARAMSETTERR_H

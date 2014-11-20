@@ -151,7 +151,9 @@ class MixtureBridge : public mixt::IMixture
 #ifdef MC_DEBUG
         std::cout << "MixtureBridge::setData(), idName(): " << idName() << std::endl;
 #endif
-      p_handler_->getData(idName(), m_augDataij_, nbVariable_ );
+      p_handler_->getData(idName(),
+                          m_augDataij_,
+                          nbVariable_ );
       p_paramSetter_->getParam(idName(), param_);
       initializeMixture();
     }

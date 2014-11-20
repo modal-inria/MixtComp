@@ -17,40 +17,45 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: July 7, 2014
+ *  Created on: Nov 19, 2014
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_ParamExtractorR.h"
+#include "mixt_ParamSetterR.h"
 
 namespace mixt
 {
 
-ParamExtractorR::ParamExtractorR()
+ParamSetterR::ParamSetterR(const Rcpp::List param) :
+    param_(param)
 {}
 
-ParamExtractorR::~ParamExtractorR()
+ParamSetterR::~ParamSetterR()
 {}
 
-void ParamExtractorR::exportParam(std::string idName,
-                                  const STK::Array2D<STK::Real>* p_param)
+void ParamSetterR::getParam(std::string idName,
+                            STK::Array2D<STK::Real>& param) const
 {
-  Rcpp::NumericMatrix paramR(p_param->sizeRows(), p_param->sizeCols());
+  Rcpp::NumericMatrix currParam = param_[idName];
+  int nRows = currParam.nrow();
+  int nCols = currParam.ncol();
+  int nVars = nCols / 3; // because two out of three columns contain confidence intervals
+  param.resize(nRows,
+               nVars);
 
-  for (int i = 0; i < p_param->sizeRows(); ++i)
-    for (int j = 0; j < p_param->sizeCols(); ++j)
-      paramR(i, j) = p_param->elt(i, j);
-
-  param_[idName] = paramR;
+  for (int i = 0; i < nRows; ++i)
+  {
+    for (int j = 0; j < nVars; ++j)
+    {
+      param(i, j) = currParam(i, j * 3);
+    }
+  }
 
 #ifdef MC_DEBUG
-  std::cout << "ParamExtractorR::exportParam, param_.size():  " << param_.size() << std::endl;
+  std::cout << "ParamSetterR::getParam, idName: " << idName << std::endl;
+  std::cout << "param:" << std::endl;
+  std::cout << param << std::endl;
 #endif
-}
-
-Rcpp::List ParamExtractorR::rcppReturnParam() const
-{
-  return param_;
 }
 
 } // namespace mixt
