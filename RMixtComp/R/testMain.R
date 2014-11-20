@@ -11,7 +11,8 @@ testComplete <- function()
 }
 
 testGenData <- function(nbBurnInIter = 20,
-                        nbSample = 500,
+                        nbSampleLearn = 500,
+                        nbSamplePredict = 50,
                         confidenceLevel = 0.95,
                         regen = TRUE)
 {
@@ -26,24 +27,22 @@ testGenData <- function(nbBurnInIter = 20,
                        0.1) # missing right unbounded
   if (regen == TRUE)
   {
-    dataGenerator(c(0.5, 0.5), # proportions
-                  nbSample, # nbSamples
-                  0, # nbVariablesCat
-                  3, # minModality
-                  6, # nbModalities
-                  2, # nbVariablesGauss
-                  50., # maxMean
-                  10., # maxVar
-                  nbClass, # nbClasses
-                  missingCategorical, # missingCategorical
-                  missingGaussian) # missingGaussian    
+    dataParamGenerator(c(0.5, 0.5), # proportions
+                       nbSampleLearn, # nbSamples
+                       nbSamplePredict, # nbSamplePredict
+                       0, # nbVariablesCat
+                       3, # minModality
+                       6, # nbModalities
+                       2, # nbVariablesGauss
+                       50., # maxMean
+                       10., # maxVar
+                       nbClass, # nbClasses
+                       missingCategorical, # missingCategorical
+                       missingGaussian) # missingGaussian
   }
   
-  # read and parse the data
-#  lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
-  lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
-#  lm <- getData(c("dataGen/gaussianData.csv"   , "dataGen/gaussianDescriptor.csv"   ),
-#                c("dataGen/categoricalData.csv", "dataGen/categoricalDescriptor.csv"))
+  lm <- getData(c("dataGen/learn/gaussianData.csv",
+                  "dataGen/learn/gaussianDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit

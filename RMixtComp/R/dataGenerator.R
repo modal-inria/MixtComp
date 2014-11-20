@@ -1,15 +1,16 @@
-dataGenerator <- function(proportions,
+dataGenerator <- function(prefix,
+                          categoricalParams,
+                          gaussianParams,
+                          proportions,
                           nbSamples,
                           nbVariableCat,
                           minModality,
                           nbModalities,
                           nbVariableGauss,
-                          maxMean,
-                          maxVar,
                           nbClasses,
                           missingCategorical,
                           missingGaussian)
-{  
+{
   zDis <- rmultinom(nbSamples,
                     1,
                     proportions)
@@ -24,25 +25,8 @@ dataGenerator <- function(proportions,
   
   if (nbVariableCat > 0)
   {
-    categoricalParams <- matrix(nrow = nbClasses*nbModalities,
-                                ncol = nbVariableCat)
-    
-    for (j in 1:nbVariableCat)
-    {
-      for (n in 1:nbClasses)
-      {
-        proba <- runif(nbModalities)
-        proba <- proba / sum(proba)
-        categoricalParams[((n - 1) * nbModalities + 1) :
-                          ( n      * nbModalities    ) , j] <- proba
-      }
-    }
-    write.table(categoricalParams,
-                file = "dataGen/categoricalParams.csv",
-                sep = ";",
-                row.names=FALSE,
-                col.names=FALSE)
-    retList <- categoricalGenerator(nbSamples,
+    retList <- categoricalGenerator(prefix,
+                                    nbSamples,
                                     nbVariableCat,
                                     nbModalities,
                                     z,
@@ -52,6 +36,76 @@ dataGenerator <- function(proportions,
     listMissing <- union(listMissing, retList[["listMissingInd"]])
     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
   }
+  
+  if (nbVariableGauss > 0)
+  {
+    retList <- gaussianGenerator(prefix,
+                                 nbSamples,
+                                 nbVariableGauss,
+                                 z,
+                                 gaussianParams,
+                                 missingGaussian)
+    listMissing <- union(listMissing, retList[["listMissingInd"]])
+    nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
+  }
+  
+  nbMissing <- length(listMissing)
+  nbTotalVal <- (nbSamples * (nbVariableCat + nbVariableGauss))
+  
+  fileConn <- file(paste(prefix,
+                         "dataStat.txt",
+                         sep = "/"))
+  cat("Missing individuals / Total individuals: ", nbMissing, " / ", nbSamples, "\n",
+      "Ratio missing individuals: ", nbMissing / nbSamples, "\n",
+      "Missing values / Total values: ", nbMissingVal, " / ", nbTotalVal, "\n",
+      "Ratio missing values: ", nbMissingVal / nbTotalVal, "\n",
+      file = fileConn,
+      sep = "")
+  close(fileConn)
+  
+  write.table(z,
+              file = paste(prefix,
+                           "classIn.csv",
+                           sep = "/"),
+              row.names=FALSE,
+              col.names=FALSE)
+}
+
+dataParamGenerator <- function(proportions,
+                               nbSamplesLearn,
+                               nbSamplesPredict,
+                               nbVariableCat,
+                               minModality,
+                               nbModalities,
+                               nbVariableGauss,
+                               maxMean,
+                               maxVar,
+                               nbClasses,
+                               missingCategorical,
+                               missingGaussian)
+{
+  cat("dataParamGenerator\n")
+  if (nbVariableCat > 0)
+  {
+    categoricalParams <- matrix(nrow = nbClasses * nbModalities,
+                                ncol = nbVariableCat)
+    for (j in 1:nbVariableCat)
+    {
+      for (n in 1:nbClasses)
+      {
+        proba <- runif(nbModalities) # proba of each modality for the current class
+        proba <- proba / sum(proba)
+        categoricalParams[((n - 1) * nbModalities + 1) :
+                          ( n      * nbModalities    ) , j] <- proba
+      }
+    }
+    write.table(categoricalParams,
+                file = "dataGen/param/categoricalParams.csv",
+                sep = ";",
+                row.names=FALSE,
+                col.names=FALSE)
+  }
+  
   if (nbVariableGauss > 0)
   {
     gaussianParams <- matrix(nrow = 2 * nbClasses,
@@ -67,33 +121,34 @@ dataGenerator <- function(proportions,
       }
     }
     write.table(gaussianParams,
-                file = "dataGen/gaussianParams.csv",
+                file = "dataGen/param/gaussianParams.csv",
                 sep = ";",
                 row.names=FALSE,
                 col.names=FALSE)
-    retList <- gaussianGenerator(nbSamples,
-                                 nbVariableGauss,
-                                 z,
-                                 gaussianParams,
-                                 missingGaussian)
-    listMissing <- union(listMissing, retList[["listMissingInd"]])
-    nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
   }
-  
-  nbMissing <- length(listMissing)
-  nbTotalVal <- (nbSamples * (nbVariableCat + nbVariableGauss))
-  
-  fileConn <- file("dataGen/dataStat.txt")
-  cat("Missing individuals / Total individuals: ", nbMissing, " / ", nbSamples, "\n",
-      "Ratio missing individuals: ", nbMissing / nbSamples, "\n",
-      "Missing values / Total values: ", nbMissingVal, " / ", nbTotalVal, "\n",
-      "Ratio missing values: ", nbMissingVal / nbTotalVal, "\n",
-      file = fileConn,
-      sep = "")
-  close(fileConn)
-  
-  write.table(z,
-              file = "dataGen/classIn.csv",
-              row.names=FALSE,
-              col.names=FALSE)
+  cat("dataGenerator\n")
+  dataGenerator("dataGen/learn",
+                categoricalParams,
+                gaussianParams,
+                proportions,
+                nbSamplesLearn,
+                nbVariableCat,
+                minModality,
+                nbModalities,
+                nbVariableGauss,
+                nbClasses,
+                missingCategorical,
+                missingGaussian)
+  dataGenerator("dataGen/predict",
+                categoricalParams,
+                gaussianParams,
+                proportions,
+                nbSamplesPredict,
+                nbVariableCat,
+                minModality,
+                nbModalities,
+                nbVariableGauss,
+                nbClasses,
+                missingCategorical,
+                missingGaussian)
 }

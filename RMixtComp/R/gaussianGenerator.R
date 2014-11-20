@@ -108,7 +108,8 @@ writeGaussianData <- function(fileName,
               dec = ".")
 }
 
-writeGaussianDataDescriptor <- function(nbVariables)
+writeGaussianDataDescriptor <- function(fileName,
+                                        nbVariables)
 {
   data <- matrix(nrow = 2, ncol = nbVariables)
   data[1,] <- rep("Gaussian_sjk", nbVariables)
@@ -117,7 +118,7 @@ writeGaussianDataDescriptor <- function(nbVariables)
                     sep = "")
   
   write.table(data,
-              file = "dataGen/gaussianDescriptor.csv",
+              file = fileName,
               quote = FALSE,
               sep = ";",
               row.names = FALSE,
@@ -125,7 +126,8 @@ writeGaussianDataDescriptor <- function(nbVariables)
               dec = ".")
 }
 
-gaussianGenerator <- function(nbSamples,
+gaussianGenerator <- function(prefix,
+                              nbSamples,
                               nbVariables,
                               z,
                               params,
@@ -135,15 +137,26 @@ gaussianGenerator <- function(nbSamples,
                                nbVariables,
                                z,
                                params)
-  writeGaussianData("dataGen/gaussianData.complete.csv",
+  writeGaussianData(paste(prefix,
+                          "gaussianData.complete.csv",
+                          sep = "/"),
                     data)
+  
   retList <- missingGaussianData(data,
                                  z,
                                  params,
                                  missingParams)
-  writeGaussianData("dataGen/gaussianData.csv",
+  
+  writeGaussianData(paste(prefix,
+                          "gaussianData.csv",
+                          sep = "/"),
                     retList[["data"]])
-  writeGaussianDataDescriptor(nbVariables)
+  
+  writeGaussianDataDescriptor(paste(prefix,
+                                    "gaussianDescriptor.csv",
+                                    sep = "/"),
+                              nbVariables)
+  
   return(list(listMissingInd = retList[["listMissingInd"]],
               nbMissingVal = retList[["nbMissingVal"]]))
 }
