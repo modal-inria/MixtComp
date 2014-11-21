@@ -90,7 +90,8 @@ class MixtureBridge : public mixt::IMixture
                  &paramStatStorage_,
                  confidenceLevel),
       likelihood_(getParam(),
-                  getData()),
+                  getData(),
+                  getDataStatStorage()),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
@@ -246,6 +247,22 @@ class MixtureBridge : public mixt::IMixture
     }
 
     /**
+     * This function must be defined to return the completed likelihood
+     * @return the observed log-likelihood
+     */
+    virtual void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+    {
+      mixture_.getParameters(param_); // update the parameters
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
+      std::cout << "\tidName: " << idName() << std::endl;
+      std::cout << "\tparam: " << std::endl;
+      std::cout << param_ << std::endl;
+#endif
+      likelihood_.lnCompletedLikelihood(lnComp, k);
+    }
+
+    /**
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
@@ -258,7 +275,7 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      likelihood_.lnLikelihood(lnComp, k);
+      likelihood_.lnObservedLikelihood(lnComp, k);
     }
     /** This function must return the number of free parameters.
      *  @return Number of free parameters

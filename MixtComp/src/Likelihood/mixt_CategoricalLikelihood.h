@@ -35,12 +35,16 @@ class CategoricalLikelihood
   public:
     /** Constructor */
     CategoricalLikelihood(const STK::Array2D<STK::Real>* p_param,
-                          const AugmentedData<STK::Array2D<int> >* augData);
+                          const AugmentedData<STK::Array2D<int> >* p_augData,
+                          const std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage);
     /** Destructor */
     virtual ~CategoricalLikelihood();
 
+    /** Compute the completed log-likelihood */
+    void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+
     /** Compute the observed log-likelihood */
-    void lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
 
   private:
     /** Pointer to parameters table */
@@ -48,6 +52,9 @@ class CategoricalLikelihood
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
     const AugmentedData<STK::Array2D<int> >* p_augData_;
+
+    /** Pointer to sampled data storage */
+    const std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage_;
 };
 
 } /* namespace mixt */

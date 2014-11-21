@@ -35,12 +35,16 @@ class GaussianLikelihood
   public:
     /** Constructor */
     GaussianLikelihood(const STK::Array2D<STK::Real>* p_param,
-                       const AugmentedData<STK::Array2D<STK::Real> >* augData);
+                       const AugmentedData<STK::Array2D<STK::Real> >* augData,
+                       const std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage);
     /** Destructor */
     virtual ~GaussianLikelihood();
 
+    /** Compute the completed log-likelihood */
+    void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+
     /** Compute the observed log-likelihood */
-    void lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
 
   private:
     /** Pointer to parameters table */
@@ -48,6 +52,9 @@ class GaussianLikelihood
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
     const AugmentedData<STK::Array2D<STK::Real> >* p_augData_;
+
+    /** Pointer to storage of statistics on missing values */
+    const std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage_;
 };
 
 } /* namespace mixt */

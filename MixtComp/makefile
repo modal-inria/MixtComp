@@ -44,10 +44,10 @@ clean:
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 
 $(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
-	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../regex src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
+	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
 
 $(EXE_TEST): $(LIB_MC) $(LIB_STK) $(LIB_RE)
-	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../regex src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
+	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
 	
 lib: obj $(LIB_MC)
 
@@ -69,4 +69,4 @@ $(LIB_STK):
 	cd ../stkpp; $(MAKE) all
 
 $(LIB_RE):
-	cd regex; $(CXX) $(CXXFLAGS) -MD -MP -fPIC -I../../regex -c ../../regex/libs/regex/src/*.cpp; ar cr libregex.a *.o
+	cd regex; $(CXX) $(CXXFLAGS) -MD -MP -fPIC -I../../boost -c ../../boost/libs/regex/src/*.cpp; ar cr libregex.a *.o

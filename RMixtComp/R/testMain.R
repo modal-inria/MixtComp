@@ -23,7 +23,7 @@ testGenDataLearn <- function(nbClass = 2,
                              nbSampleLearn = 500,
                              nbSamplePredict = 50,
                              confidenceLevel = 0.95,
-                             regen = TRUE)
+                             regen = FALSE)
 {
   missingCategorical <- c(0.8, # present
                           0.1, # missing

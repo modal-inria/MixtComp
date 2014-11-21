@@ -116,6 +116,10 @@ class IMixture
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
+    virtual void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k) = 0;
+    /** This function must be defined to return the observed likelihood
+     * @return the value of the observed likelihood in log scale
+     */
     virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k) = 0;
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
