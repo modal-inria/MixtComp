@@ -36,7 +36,7 @@ class GaussianDataStat
 {
   public:
     GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
-                     std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage,
+                     STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
                      STK::Real confidenceLevel);
     ~GaussianDataStat();
     void sampleVals(int sample,
@@ -46,12 +46,18 @@ class GaussianDataStat
     /** pointer to data array */
     const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij_;
     /** Sparse description of the missing values */
-    std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage_;
+    STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage_;
 
-    /** Array to store values across iterations, for a given individual, map : var -> vector of sampled values */
-    std::map<int, STK::Array2DVector<STK::Real> > tempStat_;
+    /** Array to count sampled values across iterations, for the current individual, access: tempStat_[j][i]
+     * i: iteration
+     * j: variable */
+    STK::Array2DPoint<STK::Array2DVector<STK::Real> > tempStat_;
+
     /** Confidence level */
     STK::Real confidenceLevel_;
+
+    void sample(int ind,
+                int iteration);
 };
 
 } // namespace mixt

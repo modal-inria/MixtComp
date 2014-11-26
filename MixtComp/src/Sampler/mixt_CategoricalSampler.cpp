@@ -44,19 +44,19 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
   std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-  // loop on missing variables
-  for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar itVar = p_augData_->getInd(i).begin(); // p_augData_->misData_.find(i)->(mapped element).(get iterator on variables)()
-      itVar != p_augData_->getInd(i).end();
-      ++itVar)
+  for (int j = 0; j < p_augData_->misData_.sizeCols(); ++j)
   {
-    int j = itVar->first;
     int sampleVal;
 
     int minModality = p_augData_->globalRange_.min_;
     int nbModalities = p_augData_->globalRange_.range_;
 
-    switch(itVar->second.first) // (iterator on map)->(mapped element).(MisType)
+    switch(p_augData_->misData_(i, j).first)
     {
+      case present_:
+      {}
+      break;
+
       case missing_:
       {
         STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range(z_i * nbModalities,
@@ -66,7 +66,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
       }
       break;
 
-      case missingFiniteValues_:
+      case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
       {
         STK::Array2DVector<STK::Real> modalities(STK::Range(minModality,
                                                             nbModalities),
@@ -74,8 +74,8 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
         STK::Array2DVector<STK::Real> equiModalities(STK::Range(minModality,
                                                                 nbModalities),
                                                      0.);
-        for(std::vector<int>::const_iterator currMod = itVar->second.second.begin(); // (iterator on map)->(mapped element).(vector of parameters)
-            currMod != itVar->second.second.end();
+        for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i, j).second.begin();
+            currMod != p_augData_->misData_(i, j).second.end();
             ++currMod)
         {
           modalities.elt(*currMod) = (*p_param_)(z_i * nbModalities + *currMod,
@@ -95,9 +95,12 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
         }
       }
       break;
+
+      default:
+      {}
+      break;
     }
     p_augData_->data_(i, j) = sampleVal;
   }
 }
-
 } // namespace mixt

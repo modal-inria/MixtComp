@@ -28,7 +28,7 @@ namespace mixt
 {
 
 CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                                         std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage,
+                                         STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage,
                                          STK::Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
@@ -37,83 +37,83 @@ CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >
 
 CategoricalDataStat::~CategoricalDataStat() {};
 
-void CategoricalDataStat::sampleVals(int sample,
+void CategoricalDataStat::sample(int ind)
+{
+  for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+  {
+    if (pm_augDataij_->misData_(ind, j).first != present_)
+    {
+      int currMod = pm_augDataij_->data_(ind,
+                                         j);
+      tempStat_[j][currMod] += 1.;
+    }
+  }
+}
+
+void CategoricalDataStat::sampleVals(int ind,
                                      int iteration,
                                      int iterationMax)
 {
   if (iteration == 0) // clear the temporary statistical object
   {
-    // clear internal storage
-    tempStat_.clear();
+    // initialize internal storage
+    tempStat_.resize(pm_augDataij_->data_.sizeCols());
 
     // clear export storage
-    p_dataStatStorage_->clear();
+    (*p_dataStatStorage_) = std::vector<std::pair<int, STK::Real> >();
 
     // creation of the objects for counting the modalities
-    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
-         it_misVar != pm_augDataij_->getInd(sample).end();
-         ++it_misVar)
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
     {
-      int var = it_misVar->first;
-      tempStat_[var] = STK::Array2DPoint<STK::Real>(STK::Range(pm_augDataij_->dataRanges_[var].min_, // no access to param, hence no need for the globRange_
-                                                               pm_augDataij_->dataRanges_[var].range_),
+      if (pm_augDataij_->misData_(ind, j).first != present_)
+      {
+        tempStat_[j] = STK::Array2DPoint<STK::Real>(STK::Range(pm_augDataij_->dataRanges_[j].min_, // no access to param, hence no need for the globRange_
+                                                               pm_augDataij_->dataRanges_[j].range_),
                                                     0);
+      }
     }
 
     // first sampling, on each missing variables
-    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
-         it_misVar != pm_augDataij_->getInd(sample).end();
-         ++it_misVar)
-    {
-      int var = it_misVar->first;
-      int currMod = pm_augDataij_->data_(sample,
-                                         var);
-      tempStat_[var][currMod] += 1.;
-    }
+    sample(ind);
   }
   else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
   {
-    for(std::map<int, STK::Array2DPoint<STK::Real> >::const_iterator it = tempStat_.begin();
-        it != tempStat_.end();
-        ++it)
+    // last sampling
+    sample(ind);
+
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
     {
-      int var = it->first;
-      STK::Array2DPoint<STK::Real> proba;
-      proba = it->second / STK::Real(iteration); // from count to probabilities
-      STK::Array2DPoint<int> indOrder; // to store indices of ascending order
-      STK::heapSort(indOrder, proba);
-      STK::Real cumProb = 0.;
-      for (int i = pm_augDataij_->dataRanges_[var].max_;
-           i > pm_augDataij_->dataRanges_[var].min_ - 1;
-           --i)
+      if (pm_augDataij_->misData_(ind, j).first != present_)
       {
-        int currMod = indOrder[i];
-#ifdef MC_DEBUG
-        std::cout << "CategoricalDataStat::sampleVals" << std::endl;
-        std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]" << proba[currMod] << std::endl;
-        std::cout << "\tcumProb: " << cumProb << std::endl;
-#endif
-        STK::Real currProba = proba[currMod];
-        (*p_dataStatStorage_)[sample][var].push_back(std::pair<int, STK::Real>(currMod, currProba));
-        cumProb += currProba;
-        if (cumProb > confidenceLevel_)
+        STK::Array2DPoint<STK::Real> proba;
+        proba = tempStat_[j] / STK::Real(iteration); // from count to probabilities
+        STK::Array2DPoint<int> indOrder; // to store indices of ascending order
+        STK::heapSort(indOrder, proba);
+        STK::Real cumProb = 0.;
+        for (int i = pm_augDataij_->dataRanges_[j].max_;
+             i > pm_augDataij_->dataRanges_[j].min_ - 1;
+             --i)
         {
-          break;
+          int currMod = indOrder[i];
+  #ifdef MC_DEBUG
+          std::cout << "CategoricalDataStat::sampleVals" << std::endl;
+          std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]" << proba[currMod] << std::endl;
+          std::cout << "\tcumProb: " << cumProb << std::endl;
+  #endif
+          STK::Real currProba = proba[currMod];
+          p_dataStatStorage_->elt(ind, j).push_back(std::pair<int, STK::Real>(currMod, currProba));
+          cumProb += currProba;
+          if (cumProb > confidenceLevel_)
+          {
+            break;
+          }
         }
       }
     }
   }
-  else
+  else // any other iteration: juste store the current value
   {
-    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
-         it_misVar != pm_augDataij_->getInd(sample).end();
-         ++it_misVar)
-    {
-      int var = it_misVar->first;
-      int currMod = pm_augDataij_->data_(sample,
-                                         var);
-      tempStat_[var][currMod] += 1;
-    }
+    sample(ind);
   }
 }
 

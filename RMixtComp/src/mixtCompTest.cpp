@@ -21,14 +21,7 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <boost/math/distributions/normal.hpp>
-#include <iostream>
-
 // [[Rcpp::export]]
 void mixtCompTest()
 {
-  boost::math::normal s(0.2, 1.3);
-  std::cout << cdf(s, -0.32) << std::endl;
-  std::cout << cdf(s, 0.2) << std::endl;
-  std::cout << cdf(s, 12) << std::endl;
 }

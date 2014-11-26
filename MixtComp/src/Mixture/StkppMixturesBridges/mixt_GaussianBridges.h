@@ -56,7 +56,7 @@ struct BridgeTraits<STK::Clust::Gaussian_sjk_>
     /** Type of the DataStat computer */
     typedef GaussianDataStat DataStatComputer;
     /** Type of the DataStat storage */
-    typedef std::map<int, std::map<int, STK::Array2DVector<STK::Real> > > DataStatStorage;
+    typedef STK::Array2D<STK::Array2DPoint<STK::Real> > DataStatStorage;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

@@ -193,7 +193,7 @@ void DataHandlerR::getData(std::string const& idData,
         augData.setMissing(i, j, misVal);
 #ifdef MC_DEBUG
         std::cout << "\tmissingIntervals_" << std::endl;
-        std::cout << augData.misData_[i][j].second.size() << std::endl;
+        std::cout << augData.misData_(i, j).second.size() << std::endl;
 #endif
         continue;
       }

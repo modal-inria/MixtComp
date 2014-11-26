@@ -48,59 +48,54 @@ Range<int>::Range(int min,
 template<>
 void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 {
-  // loop on missing individuals
-  for (ConstIt_MisInd itInd = misData_.begin();
-       itInd != misData_.end();
-       ++itInd)
+  for (int j = 0; j < misData_.sizeCols(); ++j)
   {
-    // loop on missing variables
-    for (ConstIt_MisVar itVar = itInd->second.begin();
-        itVar != itInd->second.end();
-        ++itVar)
+    for (int i = 0; i < misData_.sizeRows(); ++i)
     {
-      int i = itInd->first;
-      int j = itVar->first;
-      STK::Real sampleVal;
-      switch(itVar->second.first) // (iterator on map)->(mapped element).(MisType)
+      if (misData_(i, j).first != present_)
       {
-        case missing_:
+        STK::Real sampleVal;
+        switch(misData_(i, j).first) // (iterator on map)->(mapped element).(MisType)
         {
-          STK::Real min = dataRanges_[j].min_;
-          STK::Real max = dataRanges_[j].max_;
-          sampleVal = STK::Law::Uniform::rand(min, max);
-        }
-        break;
+          case missing_:
+          {
+            STK::Real min = dataRanges_[j].min_;
+            STK::Real max = dataRanges_[j].max_;
+            sampleVal = STK::Law::Uniform::rand(min, max);
+          }
+          break;
 
-        case missingIntervals_:
-        {
-#ifdef MC_DEBUG
-          std::cout << "AugmentedData<STK::Array2D<STK::Real> >::removeMissing" << std::endl;
-          std::cout << "case missingIntervals_" << std::endl;
-          std::cout << "itVar->second.second.size(): " << itVar->second.second.size() << std::endl;
-#endif
-          STK::Real infBound = itVar->second.second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
-          STK::Real supBound = itVar->second.second[1];
-          sampleVal = STK::Law::Uniform::rand(infBound, supBound);
-        }
-        break;
+          case missingIntervals_:
+          {
+  #ifdef MC_DEBUG
+            std::cout << "AugmentedData<STK::Array2D<STK::Real> >::removeMissing" << std::endl;
+            std::cout << "case missingIntervals_" << std::endl;
+            std::cout << "misData_(i, j).second.size(): " << misData_(i, j).second.size() << std::endl;
+  #endif
+            STK::Real infBound = misData_(i, j).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
+            STK::Real supBound = misData_(i, j).second[1];
+            sampleVal = STK::Law::Uniform::rand(infBound, supBound);
+          }
+          break;
 
-        case missingLUIntervals_:
-        {
-          STK::Real min = dataRanges_[j].min_;
-          STK::Real supBound = itVar->second.second[0];
-          sampleVal = STK::Law::Uniform::rand(min, supBound);
-        }
-        break;
+          case missingLUIntervals_:
+          {
+            STK::Real min = dataRanges_[j].min_;
+            STK::Real supBound = misData_(i, j).second[0];
+            sampleVal = STK::Law::Uniform::rand(min, supBound);
+          }
+          break;
 
-        case missingRUIntervals_:
-        {
-          STK::Real infBound = itVar->second.second[0];
-          STK::Real max = dataRanges_[j].max_;
-          sampleVal = STK::Law::Uniform::rand(infBound, max);
+          case missingRUIntervals_:
+          {
+            STK::Real infBound = misData_(i, j).second[0];
+            STK::Real max = dataRanges_[j].max_;
+            sampleVal = STK::Law::Uniform::rand(infBound, max);
+          }
+          break;
         }
-        break;
+        data_(i, j) = sampleVal;
       }
-      data_(i, j) = sampleVal;
     }
   }
 }
@@ -111,54 +106,52 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
 #ifdef MC_DEBUG
   std::cout << "AugmentedData<STK::Array2D<int> >::removeMissing" << std::endl;
 #endif
-  // loop on missing individuals
-  for (ConstIt_MisInd itInd = misData_.begin();
-       itInd != misData_.end();
-       ++itInd)
-  {
-    // loop on missing variables
-    for (AugmentedData<STK::Array2D<int> >::ConstIt_MisVar itVar = itInd->second.begin();
-        itVar != itInd->second.end();
-        ++itVar)
-    {
-      int i = itInd->first;
-      int j = itVar->first;
-      int sampleVal;
-      int firstModality = dataRanges_[j].min_;
-      int nbModalities = dataRanges_[j].range_;
-#ifdef MC_DEBUG
-      std::cout << "i: " << i << ", j: " << j << std::endl;
-      std::cout << "firstModality: " << firstModality << ", nbModalities: " << nbModalities << std::endl;
-#endif
-      switch(itVar->second.first) // (iterator on map)->(mapped element).(MisType)
-      {
-        case missing_:
-        {
-          STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality, nbModalities), 1. / nbModalities);
-          sampleVal = STK::Law::Categorical::rand(modalities);
-        }
-        break;
 
-        case missingFiniteValues_:
+  for (int j = 0; j < misData_.sizeCols(); ++j)
+  {
+    for (int i = 0; i < misData_.sizeRows(); ++i)
+    {
+      if (misData_(i, j).first != present_)
+      {
+        int sampleVal;
+        int firstModality = dataRanges_[j].min_;
+        int nbModalities = dataRanges_[j].range_;
+  #ifdef MC_DEBUG
+        std::cout << "i: " << i << ", j: " << j << std::endl;
+        std::cout << "firstModality: " << firstModality << ", nbModalities: " << nbModalities << std::endl;
+  #endif
+        switch(misData_(i, j).first) // (iterator on map)->(mapped element).(MisType)
         {
-          STK::Real proba = 1. / itVar->second.second.size(); // (iterator on map)->(mapped element).(vector of parameters)
-          STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality,
-                                                              nbModalities),
-                                                   0.);
-          for(std::vector<int>::const_iterator itParam = itVar->second.second.begin();
-              itParam != itVar->second.second.end();
-              ++itParam)
+          case missing_:
           {
-#ifdef MC_DEBUG
-          std::cout << "\tproba: " << proba << std::endl;
-#endif
-            modalities[*itParam] = proba;
+            STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality,
+                                                                nbModalities),
+                                                     1. / nbModalities);
+            sampleVal = STK::Law::Categorical::rand(modalities);
           }
-          sampleVal = STK::Law::Categorical::rand(modalities);
+          break;
+
+          case missingFiniteValues_:
+          {
+            STK::Real proba = 1. / misData_(i, j).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
+            STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality,
+                                                                nbModalities),
+                                                     0.);
+            for(std::vector<int>::const_iterator itParam = misData_(i, j).second.begin();
+                itParam != misData_(i, j).second.end();
+                ++itParam)
+            {
+  #ifdef MC_DEBUG
+            std::cout << "\tproba: " << proba << std::endl;
+  #endif
+              modalities[*itParam] = proba;
+            }
+            sampleVal = STK::Law::Categorical::rand(modalities);
+          }
+          break;
         }
-        break;
+        data_(i, j) = sampleVal;
       }
-      data_(i, j) = sampleVal;
     }
   }
 }

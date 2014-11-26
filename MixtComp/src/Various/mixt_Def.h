@@ -29,6 +29,7 @@ namespace mixt
 
 enum MisType
 {
+  present_,
   missing_,
   missingFiniteValues_,
   missingIntervals_,

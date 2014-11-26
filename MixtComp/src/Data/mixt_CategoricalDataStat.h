@@ -34,7 +34,7 @@ class CategoricalDataStat
 {
   public:
     CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                        std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage,
+                        STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage,
                         STK::Real confidenceLevel);
     ~CategoricalDataStat();
     void sampleVals(int sample,
@@ -44,12 +44,17 @@ class CategoricalDataStat
     // pointer to data array
     const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
     /** Sparse description of the missing values */
-    std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage_;
+    STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage_;
 
-    /** Array to store values across iterations, for the current individual, map : var->modalities vector*/
-    std::map<int, STK::Array2DPoint<STK::Real> > tempStat_;
+    /** Array to count sampled values across iterations, for the current individual, , access: tempStat_[j][i]
+     * i: modality
+     * j: variable */
+    STK::Array2DPoint<STK::Array2DVector<STK::Real> > tempStat_;
+
     /** Confidence level */
     STK::Real confidenceLevel_;
+
+    void sample(int ind);
 };
 
 } // namespace mixt

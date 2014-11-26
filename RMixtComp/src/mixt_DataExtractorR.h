@@ -39,11 +39,11 @@ class DataExtractorR
     /** Export function for categorical model */
     void exportVals(std::string idName,
                     const AugmentedData<STK::Array2D<int> >* p_augData,
-                    const std::map<int, std::map<int, std::vector< std::pair<int, STK::Real> > > >* p_dataStatStorage);
+                    const STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage);
     /** Export function for gaussian model */
     void exportVals(std::string idName,
                     const AugmentedData<STK::Array2D<STK::Real> >* p_augData,
-                    const std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage);
+                    const STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage);
 
     Rcpp::List rcppReturnVal() const;
   private:

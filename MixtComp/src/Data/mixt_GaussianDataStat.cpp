@@ -28,7 +28,7 @@ namespace mixt
 {
 
 GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
-                                   std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage,
+                                   STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
                                    STK::Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
@@ -37,85 +37,86 @@ GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >
 
 GaussianDataStat::~GaussianDataStat() {};
 
-void GaussianDataStat::sampleVals(int sample,
+void GaussianDataStat::sample(int ind,
+                              int iteration)
+{
+  for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+  {
+    if (pm_augDataij_->misData_(ind, j).first != present_)
+    {
+      STK::Real currVal = pm_augDataij_->data_(ind,
+                                               j);
+      tempStat_[j][iteration] = currVal;
+    }
+  }
+}
+
+void GaussianDataStat::sampleVals(int ind,
                                   int iteration,
                                   int iterationMax)
 {
   if (iteration == 0) // clear the temporary statistical object
   {
-    // clear internal storage
-    tempStat_.clear();
+    // initialize internal storage
+    tempStat_.resize(pm_augDataij_->data_.sizeCols());
 
     // clear export storage
-    p_dataStatStorage_->clear();
+    (*p_dataStatStorage_) = STK::Array2DPoint<STK::Real>(iterationMax + 1,
+                                                         0.);
 
     // creation of the vectors to store the sampled values
-    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
-         it_misVar != pm_augDataij_->getInd(sample).end();
-         ++it_misVar)
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
     {
-      int var = it_misVar->first;
-      tempStat_[var] = STK::Array2DVector<STK::Real>(iterationMax,
+      if (pm_augDataij_->misData_(ind, j).first != present_)
+      {
+        tempStat_[j] = STK::Array2DVector<STK::Real>(iterationMax,
                                                      0.);
+      }
     }
 
-    // first sampling, on each missing variables
-    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
-         it_misVar != pm_augDataij_->getInd(sample).end();
-         ++it_misVar)
-    {
-      int var = it_misVar->first;
-      STK::Real currVal = pm_augDataij_->data_(sample,
-                                               var);
-      tempStat_[var][iteration] = currVal;
-    }
+    // first sampling
+    sample(ind, iteration);
   }
   else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
   {
-    for (std::map<int, STK::Array2DVector<STK::Real> >::const_iterator it_misVar = tempStat_.begin();
-         it_misVar != tempStat_.end();
-         ++it_misVar)
-    {
-#ifdef MC_DEBUG
-      std::cout << "GaussianDataStat::sampleVals, last iteration: " << std::endl;
-      std::cout << "it_misVar->second: " << std::endl;
-      std::cout << it_misVar->second << std::endl;
-#endif
-      int var = it_misVar->first;
-      STK::Array2DVector<int> indOrder; // to store indices of ascending order
-      STK::heapSort(indOrder, it_misVar->second);
-      STK::Real alpha = (1. - confidenceLevel_) / 2.;
-      STK::Real realIndLow = alpha * iterationMax;
-      STK::Real realIndHigh = (1. - alpha) * iterationMax;
+    // last sampling
+    sample(ind, iteration);
 
-      STK::Array2DVector<STK::Real> tempVec(3);
-      tempVec[0] = it_misVar->second.mean();
-      tempVec[1] =  (1. - (realIndLow  - int(realIndLow ))) * it_misVar->second[indOrder[int(realIndLow )    ]]
-                  + (      realIndLow  - int(realIndLow ) ) * it_misVar->second[indOrder[int(realIndLow ) + 1]];
-      tempVec[2] =  (1. - (realIndHigh - int(realIndHigh))) * it_misVar->second[indOrder[int(realIndHigh)    ]]
-                  + (      realIndHigh - int(realIndHigh) ) * it_misVar->second[indOrder[int(realIndHigh) + 1]];
-      (*p_dataStatStorage_)[sample][var] = tempVec;
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    {
+      if (pm_augDataij_->misData_(ind, j).first != present_)
+      {
 #ifdef MC_DEBUG
-      std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
-      std::cout << "alpha: " << alpha << std::endl;
-      std::cout << "realIndLow: " << realIndLow << std::endl;
-      std::cout << "realIndHigh: " << realIndHigh << std::endl;
-      std::cout << "tempVec: " << tempVec << std::endl;
+        std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
+        std::cout << "j: " << j << std::endl;
 #endif
+        STK::Array2DVector<int> indOrder; // to store indices of ascending order
+        STK::heapSort(indOrder, tempStat_[j]);
+        STK::Real alpha = (1. - confidenceLevel_) / 2.;
+        STK::Real realIndLow = alpha * iterationMax;
+        STK::Real realIndHigh = (1. - alpha) * iterationMax;
+
+        STK::Array2DPoint<STK::Real> tempVec(3);
+        tempVec[0] = tempStat_[j].mean();
+        tempVec[1] =  (1. - (realIndLow  - int(realIndLow ))) * tempStat_[j][indOrder[int(realIndLow )    ]]
+                    + (      realIndLow  - int(realIndLow ) ) * tempStat_[j][indOrder[int(realIndLow ) + 1]];
+        tempVec[2] =  (1. - (realIndHigh - int(realIndHigh))) * tempStat_[j][indOrder[int(realIndHigh)    ]]
+                    + (      realIndHigh - int(realIndHigh) ) * tempStat_[j][indOrder[int(realIndHigh) + 1]];
+        p_dataStatStorage_->elt(ind, j) = tempVec;
+#ifdef MC_DEBUG
+        std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
+        std::cout << "alpha: " << alpha << std::endl;
+        std::cout << "realIndLow: " << realIndLow << std::endl;
+        std::cout << "realIndHigh: " << realIndHigh << std::endl;
+        std::cout << "tempVec: " << tempVec << std::endl;
+#endif
+      }
     }
   }
   else
   {
-    // first sampling, on each missing variables
-    for (AugmentedData<STK::Array2D<STK::Real> >::ConstIt_MisVar it_misVar = pm_augDataij_->getInd(sample).begin();
-         it_misVar != pm_augDataij_->getInd(sample).end();
-         ++it_misVar)
-    {
-      int var = it_misVar->first;
-      STK::Real currVal = pm_augDataij_->data_(sample,
-                                               var);
-      tempStat_[var][iteration] = currVal;
-    }
+    // standard sampling
+    sample(ind, iteration);
   }
 }
 } // namespace mixt

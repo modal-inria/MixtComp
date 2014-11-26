@@ -54,7 +54,7 @@ struct BridgeTraits<STK::Clust::Categorical_pjk_>
     /** Type of the DataStat */
     typedef CategoricalDataStat DataStatComputer;
     /** Type of the DataStat */
-    typedef std::map<int, std::map<int, std::vector< std::pair<int, STK::Real> > > > DataStatStorage;
+    typedef STK::Array2D<std::vector<std::pair<int, STK::Real> > > DataStatStorage;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

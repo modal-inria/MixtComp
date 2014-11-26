@@ -36,7 +36,7 @@ class CategoricalLikelihood
     /** Constructor */
     CategoricalLikelihood(const STK::Array2D<STK::Real>* p_param,
                           const AugmentedData<STK::Array2D<int> >* p_augData,
-                          const std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage);
+                          const STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage);
     /** Destructor */
     virtual ~CategoricalLikelihood();
 
@@ -54,7 +54,7 @@ class CategoricalLikelihood
     const AugmentedData<STK::Array2D<int> >* p_augData_;
 
     /** Pointer to sampled data storage */
-    const std::map<int, std::map<int, std::vector<std::pair<int, STK::Real> > > >* p_dataStatStorage_;
+    const STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage_;
 };
 
 } /* namespace mixt */

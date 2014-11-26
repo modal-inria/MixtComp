@@ -56,14 +56,7 @@ class AugmentedData
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
     /** type of the complete structure for missing data */
-    typedef typename std::map<int, std::map<int, MisVal> > MisData;
-    /** type of an individual, as returned by getInd(). Map variable index -> (type of missing, list of parameters) */
-    typedef typename std::map<int, MisVal> IndType;
-
-    /** iterator on individuals */
-    typedef typename MisData::const_iterator ConstIt_MisInd;
-    /** iterator on variables for a given individual */
-    typedef typename std::map<int, MisVal>::const_iterator ConstIt_MisVar;
+    typedef typename STK::Array2D<MisVal> MisData;
 
     AugmentedData() :
       nbMissing_(0),
@@ -72,21 +65,10 @@ class AugmentedData
       {};
     ~AugmentedData() {};
 
-    /** Individual to be retrieved */
-    const IndType& getInd(int i) const
-    {
-      if (misData_.find(i) == misData_.end())
-        return emptyInd_;
-      else
-        return misData_.find(i)->second;
-    }
-
     void resizeArrays(int nbSample, int nbVariable)
     {
       data_.resize(nbSample, nbVariable);
-      present_.resize(nbSample, nbVariable);
       data_ = Type(0);
-      present_ = false;
     }
 
     void computeRanges()
@@ -126,15 +108,15 @@ class AugmentedData
     void setPresent(int i, int j, Type val)
     {
       data_(i, j) = val;
-      present_(i, j) = true;
+      misData_(i, j) = MisVal(present_,
+                              std::vector<Type>());
     }
 
     void setMissing(int i, int j, MisVal& val)
     {
-      misData_[i][j] = val;
       data_(i, j) = STK::Arithmetic<Type>::NA();
+      misData_(i, j) = val;
       ++nbMissing_;
-      present_(i, j) = false;
     }
 
     /** Remove the missing values by uniform samplings */
@@ -142,8 +124,7 @@ class AugmentedData
 
     /** two dimensional data table, for example a STK::Array2D<STK::Real> */
     DataType data_;
-    /** two dimensional array of booleans, to indicate presence or absence of data */
-    STK::Array2D<bool> present_;
+
     /** data structure for partially observed values */
     MisData misData_;
     /** total number of partially observed values, used to output the results */
@@ -153,9 +134,6 @@ class AugmentedData
 
     /** maximum range, for example to get the global number of modalities */
     Range<Type> globalRange_;
-
-  private:
-    const IndType emptyInd_; // empty map, to be returned for empty individual
 };
 
 } // namespace mixt
