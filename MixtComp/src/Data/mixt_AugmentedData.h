@@ -30,6 +30,7 @@
 #include "Arrays/include/STK_Array2D.h"
 #include "STatistiK/include/STK_Stat_Functors.h"
 #include "../Various/mixt_Def.h"
+#include "Eigen/Dense"
 
 namespace mixt
 {
@@ -56,7 +57,10 @@ class AugmentedData
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
     /** type of the complete structure for missing data */
-    typedef typename STK::Array2D<MisVal> MisData;
+    typedef typename Eigen::Matrix<MisVal,
+                                   Eigen::Dynamic,
+                                   Eigen::Dynamic> MisData;
+    // typedef typename STK::Array2D<MisVal> MisData;
 
     AugmentedData() :
       nbMissing_(0),

@@ -45,7 +45,7 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
   std::cout << "\ti: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-  for (int j = 0; j < p_augData_->misData_.sizeCols(); ++j)
+  for (int j = 0; j < p_augData_->misData_.cols(); ++j)
   {
     if (p_augData_->misData_(i, j).first != present_)
     {

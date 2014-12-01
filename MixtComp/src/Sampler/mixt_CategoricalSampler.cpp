@@ -44,7 +44,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
   std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-  for (int j = 0; j < p_augData_->misData_.sizeCols(); ++j)
+  for (int j = 0; j < p_augData_->misData_.cols(); ++j)
   {
     if (p_augData_->misData_(i, j).first != present_)
     {
@@ -76,6 +76,9 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
               currMod != p_augData_->misData_(i, j).second.end();
               ++currMod)
           {
+#ifdef MC_DEBUG
+            std::cout << "\tcurrMod: " << *currMod << std::endl;
+#endif
             modalities.elt(*currMod) = (*p_param_)(z_i * nbModalities + *currMod,
                                                    j);
             equiModalities.elt(*currMod) = 1.;
