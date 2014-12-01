@@ -25,63 +25,125 @@
 #ifndef MIXT_AUGMENTEDDATA_H
 #define MIXT_AUGMENTEDDATA_H
 
-#include<utility>
-#include<vector>
+#include <utility>
+#include <vector>
+#include "Arrays/include/STK_Array2D.h"
+#include "STatistiK/include/STK_Stat_Functors.h"
+#include "../Various/mixt_Def.h"
+#include "Eigen/Dense"
 
 namespace mixt
 {
 
-template <class DataType>
-struct Range
+template <typename DataType>
+class Range
 {
+  public:
     Range(DataType min,
-          DataType max)
-    {
-      min_ = min;
-      max_ = max;
-      range_ = max - min;
-    }
+          DataType max);
+    ~Range(){};
     DataType min_;
     DataType max_;
     DataType range_;
 };
 
-template <>
-struct Range<int>
+template <typename DataType>
+class AugmentedData
 {
-    Range(int min,
-          int max)
-    {
-      min_ = min;
-      max_ = max;
-      range_ = max - min + 1;
-    }
-    int min_;
-    int max_;
-    int range_;
-};
+  public:
+    /** Base type of the data table, for example, STK::Real */
+    typedef typename DataType::Type Type;
+    /** Missing value descriptor: type of missing, and list of parameters */
+    typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
-template <class DataType>
-struct AugmentedData
-{
-  /** two dimensionnal data table, for example a STK::Array2D<STK::Real> */
-  DataType data_;
-  /** base type of the table */
-  typedef typename DataType::Type Type;
-  /** combination of a sample number and a column number to identify a value */
-  typedef std::pair<int, int> pos;
-  /** available data ranges, one pair per data column */
-  std::vector<Range<Type> > dataRanges_;
-  /** vector of completely unknown values */
-  std::vector<          pos                          > v_missing_;
-  /** vector of values to be selected among a finite number of possibilities */
-  std::vector<std::pair<pos, std::vector<Type>     > > v_missingFiniteValues_;
-  /** vector of values restricted to an interval */
-  std::vector<std::pair<pos, std::pair<Type, Type> > > v_missingIntervals_;
-  /** vector of values restricted to a left unbounded interval [- inf, a] */
-  std::vector<std::pair<pos,           Type        > > v_missingLUIntervals_;
-  /** vector of values restricted to a right unbounded interval [a, +inf] */
-  std::vector<std::pair<pos,           Type        > > v_missingRUIntervals_;
+    /** type of the complete structure for missing data */
+    typedef typename Eigen::Matrix<MisVal,
+                                   Eigen::Dynamic,
+                                   Eigen::Dynamic> MisData;
+    // typedef typename STK::Array2D<MisVal> MisData;
+
+    AugmentedData() :
+      nbMissing_(0),
+      globalRange_(Type(0),
+                   Type(0))
+      {};
+    ~AugmentedData() {};
+
+    void resizeArrays(int nbSample, int nbVariable)
+    {
+      data_.resize(nbSample, nbVariable);
+      data_ = Type(0);
+      misData_.resize(nbSample, nbVariable);
+    }
+
+    void computeRanges()
+    {
+      Type globMin;
+      Type globMax;
+      // data range filling
+      for (int currVar = 0; currVar < data_.sizeCols(); ++currVar)
+      {
+        int currMin = STK::Stat::minSafe(data_.col(currVar));
+        int currMax = STK::Stat::maxSafe(data_.col(currVar));
+        if (currVar == 0)
+        {
+          globMin = currMin;
+          globMax = currMax;
+        }
+        else
+        {
+          if (currMin < globMin) globMin = currMin;
+          if (currMax > globMax) globMax = currMax;
+        }
+        dataRanges_.push_back(Range<Type>(currMin,
+                                          currMax));
+#ifdef MC_DEBUG
+        std::cout << "AugmentedData::computeRange()" << std::endl;
+        std::cout << "\tcurrVar: " << currVar << std::endl
+                  << "\t\tmin: " << dataRanges_.at(currVar).min_ << std::endl
+                  << "\t\tmax, " << dataRanges_.at(currVar).max_ << std::endl
+                  << "m_augDataij_.data_ before removeMissing: " << std::endl
+                  << data_ << std::endl;
+#endif
+      }
+      globalRange_ = Range<Type>(globMin,
+                                 globMax);
+    }
+
+    void setPresent(int i, int j, Type val)
+    {
+#ifdef MC_DEBUG
+      std::cout << "AugmentedData::setPresent" << std::endl;
+      std::cout << "data_.sizeRows(): " << data_.sizeRows() << ", data_.sizeCols(): " << data_.sizeCols() << std::endl;
+      std::cout << "misData_.sizeRows(): " << misData_.sizeRows() << ", misData_.sizeCols(): " << misData_.sizeCols() << std::endl;
+#endif
+      data_(i, j) = val;
+      misData_(i, j) = MisVal(present_,
+                              std::vector<Type>());
+    }
+
+    void setMissing(int i, int j, MisVal& val)
+    {
+      data_(i, j) = STK::Arithmetic<Type>::NA();
+      misData_(i, j) = val;
+      ++nbMissing_;
+    }
+
+    /** Remove the missing values by uniform samplings */
+    void removeMissing();
+
+    /** two dimensional data table, for example a STK::Array2D<STK::Real> */
+    DataType data_;
+
+    /** data structure for partially observed values */
+    MisData misData_;
+    /** total number of partially observed values, used to output the results */
+    int nbMissing_;
+    /** available data ranges, one pair per data column */
+    std::vector<Range<Type> > dataRanges_;
+
+    /** maximum range, for example to get the global number of modalities */
+    Range<Type> globalRange_;
 };
 
 } // namespace mixt

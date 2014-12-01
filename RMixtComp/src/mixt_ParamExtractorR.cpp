@@ -41,7 +41,7 @@ void ParamExtractorR::exportParam(std::string idName,
     for (int j = 0; j < p_param->sizeCols(); ++j)
       paramR(i, j) = p_param->elt(i, j);
 
-  param_[idName] = Rcpp::List::create(Rcpp::Named("param") = paramR);
+  param_[idName] = paramR;
 
 #ifdef MC_DEBUG
   std::cout << "ParamExtractorR::exportParam, param_.size():  " << param_.size() << std::endl;

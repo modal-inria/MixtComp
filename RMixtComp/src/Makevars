@@ -22,14 +22,17 @@
 
 STKPPDIR = ../../stkpp
 STKPPLIB = ../../stkpp/lib/libSTKpp.a
+BOOSTINC = ../../boost
+EIGENINC = ../../eigen
+RELIB = regex/libregex.a
 MCDIR = ../../MixtComp
 MCLIB = ../../MixtComp/lib/libMixtComp.a
 
 # Flags for the cpp files at the root, i.e.
-PKG_CXXFLAGS=`${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I../../stkpp/projects -MD -MP
+PKG_CXXFLAGS= -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I../../stkpp/projects -I$(BOOSTINC) -I$(EIGENINC)
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB)
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB) $(RELIB)
 
 export
 
@@ -40,8 +43,12 @@ export
 ## that will be installed in $(STKPPDIR) and $(PKGLIB) and which users can link against.
 
 all: $(SHLIB)
+
 $(SHLIB): pkglib
 
-pkglib:
+pkglib: $(RELIB)
 	(cd $(MCDIR) && $(MAKE) lib)
 	(cd $(STKPPDIR) && $(MAKE) all)
+
+$(RELIB):
+	cd regex; $(CXX) $(CXXFLAGS) -fPIC -I../../../boost -c ../../../boost/libs/regex/src/*.cpp; ar cr libregex.a *.o

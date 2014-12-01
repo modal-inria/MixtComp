@@ -85,16 +85,16 @@ writeCategoricalData <- function(fileName,
               dec = ".")
 }
 
-writeCategoricalDataDescriptor <- function(nbVariables)
+writeCategoricalDataDescriptor <- function(fileName,
+                                           nbVariables)
 {
   data <- matrix(nrow = 2, ncol = nbVariables)
   data[1,] <- rep("Categorical_pjk", nbVariables)
   data[2,] <- paste("categorical",
                     1:nbVariables,
                     sep = "")
-  
   write.table(data,
-              file = "dataGen/categoricalDescriptor.csv",
+              file = fileName,
               quote = FALSE,
               sep = ";",
               row.names = FALSE,
@@ -102,7 +102,8 @@ writeCategoricalDataDescriptor <- function(nbVariables)
               dec = ".")
 }
 
-categoricalGenerator <- function(nbSamples,
+categoricalGenerator <- function(prefix,
+                                 nbSamples,
                                  nbVariables,
                                  nbModalities,
                                  z,
@@ -116,17 +117,29 @@ categoricalGenerator <- function(nbSamples,
                                   z,
                                   params,
                                   minModality)
-  writeGaussianData("dataGen/categoricalData.complete.csv",
+  
+  writeGaussianData(paste(prefix,
+                          "categoricalData.complete.csv",
+                          sep = "/"),
                     data)
+  
   retList <- missingCategoricalData(data,
                                     nbModalities,
                                     z,
                                     params,
                                     missingParams,
                                     minModality)
-  writeCategoricalData("dataGen/categoricalData.csv",
+  
+  writeCategoricalData(paste(prefix,
+                             "categoricalData.csv",
+                             sep = "/"),
                        retList[["data"]])
-  writeCategoricalDataDescriptor(nbVariables)
+
+  writeCategoricalDataDescriptor(paste(prefix,
+                                       "categoricalDescriptor.csv",
+                                       sep = "/"),
+                                 nbVariables)
+  
   return(list(listMissingInd = retList[["listMissingInd"]],
               nbMissingVal = retList[["nbMissingVal"]]))
 }

@@ -22,117 +22,113 @@
  **/
 
 #include "mixt_GaussianDataStat.h"
+#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
 
-GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij) :
-    nbIter_(0),
-    nbMissing_(0),
-    pm_augDataij_(pm_augDataij)
+GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
+                                   STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
+                                   STK::Real confidenceLevel) :
+    pm_augDataij_(pm_augDataij),
+    p_dataStatStorage_(p_dataStatStorage),
+    confidenceLevel_(confidenceLevel)
 {}
 
 GaussianDataStat::~GaussianDataStat() {};
 
-void GaussianDataStat::initPos()
+void GaussianDataStat::sample(int ind,
+                              int iteration)
 {
-  int currVal = 0;
-  for (iv_missing it = pm_augDataij_ ->v_missing_.begin();
-       it != pm_augDataij_ ->v_missing_.end();
-       ++it)
+  for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
   {
-    posMissing_(currVal, 0) = it->first;
-    posMissing_(currVal, 1) = it->second;
-    ++currVal;
-  }
-  for (iv_missingIntervals it = pm_augDataij_ ->v_missingIntervals_.begin();
-       it != pm_augDataij_ ->v_missingIntervals_.end();
-       ++it)
-  {
-    posMissing_(currVal, 0) = it->first.first;
-    posMissing_(currVal, 1) = it->first.second;
-    ++currVal;
-  }
-  for (iv_missingLUIntervals it = pm_augDataij_ ->v_missingLUIntervals_.begin();
-       it != pm_augDataij_ ->v_missingLUIntervals_.end();
-       ++it)
-  {
-    posMissing_(currVal, 0) = it->first.first;
-    posMissing_(currVal, 1) = it->first.second;
-    ++currVal;
-  }
-  for (iv_missingRUIntervals it = pm_augDataij_ ->v_missingRUIntervals_.begin();
-       it != pm_augDataij_ ->v_missingRUIntervals_.end();
-       ++it)
-  {
-    posMissing_(currVal, 0) = it->first.first;
-    posMissing_(currVal, 1) = it->first.second;
-    ++currVal;
+    if (pm_augDataij_->misData_(ind, j).first != present_)
+    {
+      STK::Real currVal = pm_augDataij_->data_(ind,
+                                               j);
+      tempStat_[j][iteration] = currVal;
+    }
   }
 }
 
-void GaussianDataStat::initialize()
+void GaussianDataStat::sampleVals(int ind,
+                                  int iteration,
+                                  int iterationMax)
 {
-  nbMissing_ =   pm_augDataij_->v_missing_.size()
-               + pm_augDataij_->v_missingIntervals_.size()
-               + pm_augDataij_->v_missingLUIntervals_.size()
-               + pm_augDataij_->v_missingRUIntervals_.size();
-  // second dimension corresponds to the couple (sample position, variables position)
-  posMissing_.resize(nbMissing_, 2);
-  initPos();
-
-  mean_.resize(nbMissing_);
-  m2_.resize(nbMissing_);
-
-  mean_ = 0.;
-  m2_ = 0.;
-
 #ifdef MC_DEBUG
-  std::cout << "GaussianDataStat, initializing posMissing_, mean_ and m2_" << std::endl;
+  std::cout << "GaussianDataStat::sampleVals" << std::endl;
 #endif
-};
-
-void GaussianDataStat::sampleVals()
-{
-  ++nbIter_;
-  for (int currVal = 0; currVal < nbMissing_; ++currVal)
+  if (iteration == 0) // clear the temporary statistical object
   {
+    // initialize internal storage
+    tempStat_.resize(pm_augDataij_->data_.sizeCols());
+
+    // creation of the vectors to store the sampled values
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    {
+      if (pm_augDataij_->misData_(ind, j).first != present_)
+      {
+        tempStat_[j] = STK::Array2DVector<STK::Real>(iterationMax + 1,
+                                                     0.);
+      }
+    }
+
 #ifdef MC_DEBUG
-    std::cout << "GaussianDataStat::sampleVals"
-              << ", nbIter_: " << nbIter_
-              << ", sample: " << posMissing_(currVal, 0)
-              << ", var: " << posMissing_(currVal, 1)
-              << ", value: " << pm_augDataij_->data_(posMissing_(currVal, 0),
-                                                     posMissing_(currVal, 1))
-              << std::endl;
+    std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
 #endif
-    STK::Real x = pm_augDataij_->data_(posMissing_(currVal, 0), // sample
-                                       posMissing_(currVal, 1)); // var
-    STK::Real delta = x - mean_[currVal];
-    mean_[currVal] += delta / nbIter_;
-    m2_[currVal] += delta * (x - mean_[currVal]);
+    // clear current individual
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    {
+      p_dataStatStorage_->elt(ind, j) = STK::Array2DPoint<STK::Real>(3, 0.);
+    }
+
+    // first sampling
+    sample(ind, iteration);
   }
-}
+  else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
+  {
+    // last sampling
+    sample(ind, iteration);
 
-void GaussianDataStat::exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const
-{
-  posMissing = posMissing_;
-  statMissing.resize(nbMissing_, 2);
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    {
+      if (pm_augDataij_->misData_(ind, j).first != present_)
+      {
+#ifdef MC_DEBUG
+        std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
+        std::cout << "j: " << j << std::endl;
+        std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): " << p_dataStatStorage_->sizeCols() << std::endl;
+        std::cout << "tempStat_[j].sizeRows(): " << tempStat_[j].sizeRows() << std::endl;
+        std::cout << "tempStat_[j]: " << std::endl;
+        std::cout << tempStat_[j] << std::endl;
+#endif
+        STK::Array2DVector<int> indOrder; // to store indices of ascending order
+        STK::heapSort(indOrder, tempStat_[j]);
+        STK::Real alpha = (1. - confidenceLevel_) / 2.;
+        STK::Real realIndLow = alpha * iterationMax;
+        STK::Real realIndHigh = (1. - alpha) * iterationMax;
 
-  statMissing.col(0) = mean_;
-
-  if (nbIter_ < 2)
-    statMissing.col(1) = 0.;
+        STK::Array2DPoint<STK::Real> tempVec(3);
+        tempVec[0] = tempStat_[j].mean();
+        tempVec[1] =  (1. - (realIndLow  - int(realIndLow ))) * tempStat_[j][indOrder[int(realIndLow )    ]]
+                    + (      realIndLow  - int(realIndLow ) ) * tempStat_[j][indOrder[int(realIndLow ) + 1]];
+        tempVec[2] =  (1. - (realIndHigh - int(realIndHigh))) * tempStat_[j][indOrder[int(realIndHigh)    ]]
+                    + (      realIndHigh - int(realIndHigh) ) * tempStat_[j][indOrder[int(realIndHigh) + 1]];
+        p_dataStatStorage_->elt(ind, j) = tempVec;
+#ifdef MC_DEBUG
+        std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
+        std::cout << "alpha: " << alpha << std::endl;
+        std::cout << "realIndLow: " << realIndLow << std::endl;
+        std::cout << "realIndHigh: " << realIndHigh << std::endl;
+        std::cout << "tempVec: " << tempVec << std::endl;
+#endif
+      }
+    }
+  }
   else
-    statMissing.col(1) = (m2_ / (nbIter_ - 1.)).sqrt();
-
-#ifdef MC_DEBUG
-  std::cout << "GaussianDataStat::exportVals, nbIter_: " << nbIter_ << std::endl
-            << "posMissing: " << std::endl
-            << posMissing << std::endl
-            << "statMissing: " << std::endl
-            << statMissing << std::endl;
-#endif
+  {
+    // standard sampling
+    sample(ind, iteration);
+  }
 }
-
 } // namespace mixt

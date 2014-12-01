@@ -25,9 +25,8 @@
 #ifndef MIXT_GAUSSIANBRIDGE_H
 #define MIXT_GAUSSIANBRIDGE_H
 
-#include "stkpp/projects/Clustering/include/GaussianMixtureModels/STK_Gaussian_sjk.h"
+#include "mixt_Gaussian_sjk.h"
 #include "../../Sampler/mixt_GaussianSampler.h"
-#include "../../Sampler/mixt_GaussianSamplerIterator.h"
 #include "../../Data/mixt_GaussianDataStat.h"
 #include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_GaussianLikelihood.h"
@@ -41,6 +40,7 @@ namespace mixt
 template<int Id,
          typename DataHandler,
          typename DataExtractor,
+         typename ParamSetter,
          typename ParamExtractor> class MixtureBridge;
 
 /**
@@ -53,32 +53,30 @@ struct BridgeTraits<STK::Clust::Gaussian_sjk_>
     typedef STK::Array2D<STK::Real> Data;
     /** Type of the AugmentedData*/
     typedef AugmentedData<Data> AugData;
-    /** Type of the DataStat*/
-    typedef GaussianDataStat DataStat;
-    /** Type of the ParamStat */
-    typedef SimpleParamStat ParamStat;
-    /** Type of the parameter set to be used as output */
-    typedef STK::Array2D<STK::Real> Param;
+    /** Type of the DataStat computer */
+    typedef GaussianDataStat DataStatComputer;
+    /** Type of the DataStat storage */
+    typedef STK::Array2D<STK::Array2DPoint<STK::Real> > DataStatStorage;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */
-    typedef STK::Gaussian_sjk<Data> Mixture;
+    typedef Gaussian_sjk Mixture;
     /** Sampler to be used for this specific mixture model */
     typedef GaussianSampler Sampler;
-    /** Corresponding sampler iterator */
-    typedef GaussianSamplerIterator SamplerIterator;
     /** Type of Likelihood */
     typedef GaussianLikelihood Likelihood;
 };
 
 template<typename DataHandler,
          typename DataExtractor,
+         typename ParamSetter,
          typename ParamExtractor>
 struct GaussianBridge_sjk_m
 {
    typedef MixtureBridge<STK::Clust::Gaussian_sjk_,
                          DataHandler,
                          DataExtractor,
+                         ParamSetter,
                          ParamExtractor> type;
 };
 

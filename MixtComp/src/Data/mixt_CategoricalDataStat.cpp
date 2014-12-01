@@ -22,121 +22,119 @@
  **/
 
 #include "mixt_CategoricalDataStat.h"
+#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
 
-CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij) :
-    nbIter_(0),
-    nbMissing_(0),
-    nbModalities_(0),
-    pm_augDataij_(pm_augDataij)
+CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
+                                         Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                                       Eigen::Dynamic,
+                                                       Eigen::Dynamic>* p_dataStatStorage,
+                                         STK::Real confidenceLevel) :
+    pm_augDataij_(pm_augDataij),
+    p_dataStatStorage_(p_dataStatStorage),
+    confidenceLevel_(confidenceLevel)
 {}
 
 CategoricalDataStat::~CategoricalDataStat() {};
 
-void CategoricalDataStat::initPos()
+void CategoricalDataStat::sample(int ind)
 {
-  int currVal = 0;
-  for (iv_missing it = pm_augDataij_ ->v_missing_.begin();
-       it != pm_augDataij_ ->v_missing_.end();
-       ++it)
+  for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
   {
-    posMissing_(currVal, 0) = it->first;
-    posMissing_(currVal, 1) = it->second;
-    ++currVal;
-  }
-  for (iv_missingFiniteValues it = pm_augDataij_ ->v_missingFiniteValues_.begin();
-       it != pm_augDataij_ ->v_missingFiniteValues_.end();
-       ++it)
-  {
-    posMissing_(currVal, 0) = it->first.first;
-    posMissing_(currVal, 1) = it->first.second;
-    ++currVal;
+    if (pm_augDataij_->misData_(ind, j).first != present_)
+    {
+      int currMod = pm_augDataij_->data_(ind,
+                                         j);
+      tempStat_[j][currMod] += 1.;
+    }
   }
 }
 
-void CategoricalDataStat::initialize()
+void CategoricalDataStat::sampleVals(int ind,
+                                     int iteration,
+                                     int iterationMax)
 {
-  nbMissing_ =   pm_augDataij_->v_missing_.size()
-               + pm_augDataij_->v_missingFiniteValues_.size();
-  // second dimension corresponds to the couple (sample position, variable position)
-  posMissing_.resize(nbMissing_, 2);
-  initPos();
-  setModalities();
-  // second dimension corresponds the modalities
-  statMissing_.resize(nbMissing_, nbModalities_);
-  statMissing_ = 0.;
-#ifdef MC_DEBUG
-  std::cout << "CategoricalDataStat, initializing statMissing_ and posMissing_" << std::endl;
-/*  std::cout << "statMissing_" <<  std::endl;
-  std::cout << statMissing_ << std::endl;
-  std::cout << "posMissing_" <<  std::endl;
-  std::cout << posMissing_ << std::endl; */
+#ifdef MC_DEBUG_NEW
+  std::cout << "CategoricalDataStat::sampleVals, ind: " << ind << ", iteration: " << iteration << std::endl;
 #endif
-}
-
-void CategoricalDataStat::setModalities()
-{
-  std::vector<Range<int> >::const_iterator it   (pm_augDataij_->dataRanges_.begin());
-  std::vector<Range<int> >::const_iterator itEnd(pm_augDataij_->dataRanges_.end  ());
-
-  // compute global min and max, as in InitializeMixtureImpl<STK::Clust::Categorical_pjk_>
-  int min = it->min_;
-  int max = it->max_;
-
-  ++it;
-
-  for (; it != itEnd; ++it)
+  if (iteration == 0) // clear the temporary statistical object
   {
-    int currMin = it->min_;
-    int currMax = it->max_;
-    if (currMin < min) min = currMin;
-    if (currMax > max) max = currMax;
+    // initialize internal storage
+    tempStat_.resize(pm_augDataij_->data_.sizeCols());
+
+    // clear current individual
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    {
+      (*p_dataStatStorage_)(ind, j) = std::vector<std::pair<int, STK::Real> >();
+    }
+
+    // creation of the objects for counting the modalities
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    {
+      if (pm_augDataij_->misData_(ind, j).first != present_)
+      {
+        tempStat_[j] = STK::Array2DPoint<STK::Real>(STK::Range(pm_augDataij_->dataRanges_[j].min_, // no access to param, hence no need for the globRange_
+                                                               pm_augDataij_->dataRanges_[j].range_),
+                                                    0);
+      }
+    }
+
+    // first sampling, on each missing variables
+    sample(ind);
   }
-
-  nbModalities_ = max - min + 1;
-#ifdef MC_DEBUG
-  std::cout << "CategoricalDataStat::setModalities(): " << std::endl
-            << "\tmin: " << min << std::endl
-            << "\tmax: " << max << std::endl
-            << "\tnbModalities_: " << nbModalities_ << std::endl;
-#endif
-}
-
-void CategoricalDataStat::sampleVals()
-{
-  for (int currVal = 0; currVal < nbMissing_; ++currVal)
+  else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
   {
-    int sample = posMissing_(currVal, 0);
-    int var = posMissing_(currVal, 1);
-#ifdef MC_DEBUG
-//    std::cout << statMissing_ << std::endl;
-    std::cout << "CategoricalDataStat::sampleVals" << std::endl
-              << "\tsample: " << sample << std::endl
-              << "\tvar: " << var << std::endl
-              << "\tmodality: " << pm_augDataij_->data_(sample, var) << std::endl;
+    // last sampling
+    sample(ind);
+
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    {
+      if (pm_augDataij_->misData_(ind, j).first != present_)
+      {
+        STK::Array2DPoint<STK::Real> proba;
+        proba = tempStat_[j] / STK::Real(iterationMax + 1); // from count to probabilities
+        STK::Array2DPoint<int> indOrder; // to store indices of ascending order
+        STK::heapSort(indOrder, proba);
+        STK::Real cumProb = 0.;
+#ifdef MC_DEBUG_NEW
+        std::cout << "pm_augDataij_->dataRanges_[j].max_: " << pm_augDataij_->dataRanges_[j].max_ << std::endl;
+        std::cout << "pm_augDataij_->dataRanges_[j].min_ - 1: " << pm_augDataij_->dataRanges_[j].min_ - 1 << std::endl;
 #endif
-    statMissing_(currVal,
-                 pm_augDataij_->data_(sample,
-                                      var)
-                                - pm_augDataij_->dataRanges_[var].min_) += 1.;
+        for (int i = pm_augDataij_->dataRanges_[j].max_;
+             i > pm_augDataij_->dataRanges_[j].min_ - 1;
+             --i)
+        {
+          int currMod = indOrder[i];
+          STK::Real currProba = proba[currMod];
+          (*p_dataStatStorage_)(ind, j).push_back(std::pair<int, STK::Real>(currMod, currProba));
+          cumProb += currProba;
+#ifdef MC_DEBUG_NEW
+          std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;
+          std::cout << "\tcumProb: " << cumProb << std::endl;
+          std::cout << "p_dataStatStorage_->elt(ind, j).back().first: " << (*p_dataStatStorage_)(ind, j).back().first << std::endl;
+#endif
+          if (cumProb > confidenceLevel_)
+          {
+            break;
+          }
+        }
+      }
+#ifdef MC_DEBUG_NEW
+      for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = (*p_dataStatStorage_)(ind, j).begin();
+           itVec != (*p_dataStatStorage_)(ind, j).end();
+           ++itVec)
+      {
+        std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
+      }
+#endif
+    }
   }
-
-  ++nbIter_;
-}
-
-void CategoricalDataStat::exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const
-{
-  posMissing = posMissing_;
-  statMissing = statMissing_ / STK::Real(nbIter_); // probability of each modality
-#ifdef MC_DEBUG
-  std::cout << "CategoricalDataStat::exportVals, nbIter_: " << nbIter_ << std::endl;
-  std::cout << "\tposMissing: " << std::endl;
-  std::cout << posMissing << std::endl;
-  std::cout << "\tstatMissing: " << std::endl;
-  std::cout << statMissing << std::endl;
-#endif
+  else // any other iteration: juste store the current value
+  {
+    sample(ind);
+  }
 }
 
 } // namespace mixt

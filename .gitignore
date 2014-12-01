@@ -16,3 +16,4 @@ bin
 lib
 test/test
 .metadata/*
+boost_1_56_0/*

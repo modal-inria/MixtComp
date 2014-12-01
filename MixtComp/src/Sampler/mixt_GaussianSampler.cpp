@@ -22,55 +22,165 @@
  **/
 
 #include "mixt_GaussianSampler.h"
+#include "STatistiK/include/STK_Law_Normal.h"
+#include "STatistiK/include/STK_Law_Exponential.h"
+#include "STatistiK/include/STK_Law_Uniform.h"
 
 namespace mixt
 {
-GaussianSampler::GaussianSampler(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
+GaussianSampler::GaussianSampler(AugmentedData<STK::Array2D<STK::Real> >* p_augData,
                                  const STK::Array2D<STK::Real>* p_param) :
-    pm_augDataij_(pm_augDataij),
-    p_param_(p_param)
-{}
-
-GaussianSampler::GaussianSampler(const GaussianSampler& sampler) :
-    pm_augDataij_(sampler.pm_augDataij_),
-    p_param_(sampler.p_param_),
-    p_zi_(sampler.p_zi_)
+    p_augData_(p_augData),
+    p_param_(p_param),
+    p_zi_(0)
 {}
 
 GaussianSampler::~GaussianSampler()
 {}
 
-GaussianSamplerIterator GaussianSampler::begin() const
+void GaussianSampler::sampleIndividual(int i, int z_i)
 {
-  GaussianSamplerIterator iterator(p_param_,
-                                   p_zi_,
-                                   pm_augDataij_->v_missing_.begin(),
-                                   pm_augDataij_->v_missing_.end(),
-                                   pm_augDataij_->v_missingIntervals_.begin(),
-                                   pm_augDataij_->v_missingIntervals_.end(),
-                                   pm_augDataij_->v_missingLUIntervals_.begin(),
-                                   pm_augDataij_->v_missingLUIntervals_.end(),
-                                   pm_augDataij_->v_missingRUIntervals_.begin(),
-                                   pm_augDataij_->v_missingRUIntervals_.end());
-  return iterator;
-}
-GaussianSamplerIterator GaussianSampler::end() const
-{
-  GaussianSamplerIterator iterator(p_param_,
-                                   p_zi_,
-                                   pm_augDataij_->v_missing_.end(),
-                                   pm_augDataij_->v_missing_.end(),
-                                   pm_augDataij_->v_missingIntervals_.end(),
-                                   pm_augDataij_->v_missingIntervals_.end(),
-                                   pm_augDataij_->v_missingLUIntervals_.end(),
-                                   pm_augDataij_->v_missingLUIntervals_.end(),
-                                   pm_augDataij_->v_missingRUIntervals_.end(),
-                                   pm_augDataij_->v_missingRUIntervals_.end());
-  return iterator;
+#ifdef MC_DEBUG
+  std::cout << "GaussianSampler::sampleIndividual" << std::endl;
+  std::cout << "\ti: " << i << ", z_i: " << z_i << std::endl;
+#endif
+
+  for (int j = 0; j < p_augData_->misData_.cols(); ++j)
+  {
+    if (p_augData_->misData_(i, j).first != present_)
+    {
+      STK::Real z;
+      STK::Real mean  = p_param_->elt(2 * z_i    , j);
+      STK::Real sd    = p_param_->elt(2 * z_i + 1, j);
+
+#ifdef MC_DEBUG
+      std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
+#endif
+
+      switch(p_augData_->misData_(i, j).first)
+      {
+        case missing_:
+        {
+#ifdef MC_DEBUG
+          std::cout << "\tmissing_" << std::endl;
+#endif
+          z = STK::Law::Normal::rand(0., 1.);
+        }
+        break;
+
+        case missingIntervals_:
+        {
+#ifdef MC_DEBUG
+          std::cout << "\tmissingIntervals_" << std::endl;
+#endif
+          STK::Real infBound = p_augData_->misData_(i, j).second[0];
+          STK::Real supBound = p_augData_->misData_(i, j).second[1];
+
+          STK::Real lower = (infBound - mean) / sd;
+          STK::Real upper = (supBound - mean) / sd;
+          STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
+
+#ifdef MC_DEBUG
+          std::cout << "\tmissingIntervals_" << std::endl;
+          std::cout << "\tinfBound " << infBound << ", supBound: " << supBound << std::endl;
+          std::cout << "\tlower: " << lower << ", upper: " << upper << std::endl;
+          std::cout << "\talpha: " << alpha << std::endl;
+#endif
+
+          if (alpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(pow(lower, 2) / 2) / (upper - lower))
+          {
+            do
+            {
+              z = lbSampler(lower);
+            }
+            while(upper < z);
+          }
+          else
+          {
+            z = lrbSampler(lower, upper);
+          }
+        }
+        break;
+
+        case missingLUIntervals_: // missingLUIntervals
+        {
+#ifdef MC_DEBUG
+          std::cout << "\tmissingLUIntervals_" << std::endl;
+#endif
+          STK::Real supBound = p_augData_->misData_(i, j).second[0];
+          STK::Real upper = (supBound - mean) / sd;
+          z = -lbSampler(-upper);
+        }
+        break;
+
+        case missingRUIntervals_: // missingRUIntervals
+        {
+#ifdef MC_DEBUG
+          std::cout << "\tmissingRUIntervals_" << std::endl;
+#endif
+          STK::Real infBound = p_augData_->misData_(i, j).second[0];
+          STK::Real lower = (infBound - mean) / sd;
+          z = lbSampler(lower);
+        }
+        break;
+
+        default:
+        {}
+        break;
+      }
+
+#ifdef MC_DEBUG
+      std::cout << "\tsampled val: " << z * sd + mean << std::endl;
+#endif
+      p_augData_->data_(i, j) = z * sd + mean;
+    }
+  }
 }
 
-void GaussianSampler::setZi(const STK::CArrayVector<int>* p_zi)
+STK::Real GaussianSampler::lbSampler(STK::Real lower) const
 {
-  p_zi_ = p_zi;
+  STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
+  STK::Real z, u, rho;
+  if (lower < 0)
+  {
+    do
+    {
+      z = STK::Law::Normal::rand(0, 1);
+    }
+    while (z < lower);
+  }
+  else
+  {
+    do
+    {
+      z = STK::Law::Exponential::rand(1./alpha) + lower;
+      rho = exp(-pow((z - alpha), 2) / 2.);
+      u = STK::Law::Uniform::rand(0., 1.);
+    }
+    while (u > rho);
+  }
+  return z;
+}
+
+STK::Real GaussianSampler::lrbSampler(STK::Real lower, STK::Real upper) const
+{
+  STK::Real z, u, rho;
+
+  do
+  {
+    z = STK::Law::Uniform::rand(lower, upper);
+
+    if (lower < 0. && 0. < upper)
+      rho = exp(-pow(z, 2));
+    else if (upper < 0.)
+      rho = exp((pow(upper, 2)-pow(z, 2))/2);
+    else if (0. < lower)
+      rho = exp((pow(lower, 2)-pow(z, 2))/2);
+
+    u = STK::Law::Uniform::rand(0., 1.);
+  }
+  while(u > rho);
+
+  return z;
 }
 } // namespace mixt

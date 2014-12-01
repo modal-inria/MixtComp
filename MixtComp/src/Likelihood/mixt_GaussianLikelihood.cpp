@@ -22,85 +22,145 @@
  **/
 
 #include "mixt_GaussianLikelihood.h"
-#include "STatistiK/include/STK_Law_Normal.h"
+#include "../Various/mixt_Def.h"
+#include <boost/math/distributions/normal.hpp>
 
 namespace mixt
 {
 
 GaussianLikelihood::GaussianLikelihood(const STK::Array2D<STK::Real>* p_param,
-                                       const AugmentedData<STK::Array2D<STK::Real> >* augData) :
+                                       const AugmentedData<STK::Array2D<STK::Real> >* augData,
+                                       const STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage) :
     p_param_(p_param),
-    p_augData_(augData)
+    p_augData_(augData),
+    p_dataStatStorage_(p_dataStatStorage)
 {}
 
 GaussianLikelihood::~GaussianLikelihood()
 {}
 
-void GaussianLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+void GaussianLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
 {
+#ifdef MC_DEBUG
+      std::cout << "GaussianLikelihood::lnCompletedLikelihood" << std::endl;
+#endif
   // likelihood for present data
-  for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
   {
-    for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
+    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
     {
-      if (p_augData_->data_(i, j) != STK::Arithmetic<STK::Real>::NA())   // likelihood for present value
+      if (p_augData_->misData_(i, j).first == present_)   // likelihood for present value
       {
         STK::Real mean  = p_param_->elt(2*k    , j);
         STK::Real sd    = p_param_->elt(2*k + 1, j);
-        lnComp->elt(i) += STK::Law::Normal::lpdf(p_augData_->data_(i, j),
-                                                 mean,
-                                                 sd);
+        boost::math::normal norm(mean, sd);
+
+        STK::Real proba = boost::math::pdf(norm,
+                                           p_augData_->data_(i, j));
+
+        lnComp->elt(i) += std::log(proba);
+      }
+      else // likelihood for missing values, imputation by the expectation
+      {
+        STK::Real mean  = p_param_->elt(2*k    , j);
+        STK::Real sd    = p_param_->elt(2*k + 1, j);
+        boost::math::normal norm(mean, sd);
+
+        STK::Real proba = boost::math::pdf(norm,
+                                           p_dataStatStorage_->elt(i, j)[0]);
+        lnComp->elt(i) += std::log(proba);
       }
     }
   }
+}
 
-  // partially observed data, missing intervals
-  for (iv_missingIntervals it = p_augData_->v_missingIntervals_.begin();
-       it != p_augData_->v_missingIntervals_.end();
-       ++it)
+void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+{
+#ifdef MC_DEBUG
+      std::cout << "GaussianLikelihood::lnObservedLikelihood" << std::endl;
+#endif
+  // likelihood for present data
+  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
   {
-    int i = it->first.first;
-    int j = it->first.second;
+    for (int i = 0; i < p_augData_->data_.sizeCols(); ++i)
+    {
+      STK::Real mean  = p_param_->elt(2*k    , j);
+      STK::Real sd    = p_param_->elt(2*k + 1, j);
+      boost::math::normal norm(mean, sd);
 
-    STK::Real mean  = p_param_->elt(2*k    , j);
-    STK::Real sd    = p_param_->elt(2*k + 1, j);
+      STK::Real proba;
+      STK::Real logProba;
 
-    STK::Law::Normal normal(mean, sd);
+      switch(p_augData_->misData_(i, j).first)   // likelihood for present value
+      {
+        case present_:
+        {
+          STK::Real mean  = p_param_->elt(2*k    , j);
+          STK::Real sd    = p_param_->elt(2*k + 1, j);
+          boost::math::normal norm(mean, sd);
 
-    lnComp->elt(i) += std::log(normal.cdf(it->second.second) -
-                               normal.cdf(it->second.first ));
-  }
+          proba = boost::math::pdf(norm,
+                                   p_augData_->data_(i, j));
+        }
+        break;
 
-  // partially observed data, missing left unbounded interval
-  for (iv_missingLUIntervals it = p_augData_->v_missingLUIntervals_.begin();
-       it != p_augData_->v_missingLUIntervals_.end();
-       ++it)
-  {
-    int i = it->first.first;
-    int j = it->first.second;
+        case missing_: // no contribution to the observed likelihood
+        {
+#ifdef MC_DEBUG
+          std::cout << "\tmissing" << std::endl;
+#endif
+        }
+        break;
 
-    STK::Real mean  = p_param_->elt(2*k    , j);
-    STK::Real sd    = p_param_->elt(2*k + 1, j);
+        case missingIntervals_:
+        {
+          STK::Real leftBound  = p_augData_->misData_(i, j).second[0];
+          STK::Real rightBound = p_augData_->misData_(i, j).second[1];
+#ifdef MC_DEBUG
+      std::cout << "\tmissingIntervals_" << std::endl;
+      std::cout << "\tleftBound: " << leftBound << "\tboost::math::cdf(norm, leftBound): " << boost::math::cdf(norm, leftBound) << std::endl;
+      std::cout << "\trightBound: " << rightBound << "\tboost::math::cdf(norm, rightBound): " << boost::math::cdf(norm, rightBound) << std::endl;
+#endif
+          proba = boost::math::cdf(norm, rightBound) -
+                  boost::math::cdf(norm, leftBound);
+        }
+        break;
 
-    STK::Law::Normal normal(mean, sd);
+        case missingLUIntervals_:
+        {
+#ifdef MC_DEBUG
+      std::cout << "\tmissingLUIntervals_" << std::endl;
+#endif
+          STK::Real leftBound = p_augData_->misData_(i, j).second[0];
 
-    lnComp->elt(i) += std::log(1. - normal.cdf(it->second));
-  }
+          proba = 1. - boost::math::cdf(norm, leftBound);
+        }
+        break;
 
-  // partially observed data, missing right unbounded interval
-  for (iv_missingLUIntervals it = p_augData_->v_missingRUIntervals_.begin();
-       it != p_augData_->v_missingRUIntervals_.end();
-       ++it)
-  {
-    int i = it->first.first;
-    int j = it->first.second;
+        case missingRUIntervals_:
+        {
+#ifdef MC_DEBUG
+      std::cout << "\tmissingRUIntervals_" << std::endl;
+#endif
+          STK::Real rightBound = p_augData_->misData_(i, j).second[0];
 
-    STK::Real mean  = p_param_->elt(2*k    , j);
-    STK::Real sd    = p_param_->elt(2*k + 1, j);
+          proba = 1. - boost::math::cdf(norm, rightBound);
+        }
+        break;
 
-    STK::Law::Normal normal(mean, sd);
+        default:
+        {}
+        break;
+      }
 
-    lnComp->elt(i) += std::log(normal.cdf(it->second));
+      logProba = std::log(proba);
+      lnComp->elt(i) += logProba;
+
+#ifdef MC_DEBUG
+      std::cout << "\tproba: " << proba << std::endl;
+      std::cout << "\tlogProba: " << logProba << std::endl;
+#endif
+    }
   }
 }
 

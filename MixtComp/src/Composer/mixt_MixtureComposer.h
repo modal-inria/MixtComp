@@ -26,7 +26,7 @@
 #define MIXT_MIXTURECOMPOSER_H
 
 #include <vector>
-#include "Clustering/include/STK_IMixtureComposerBase.h"
+#include "mixt_IMixtureComposerBase.h"
 
 namespace mixt
 {
@@ -48,11 +48,13 @@ class IMixture;
  * \f$\boldsymbol{\lambda}^l_k, \, k=1,\ldots K \f$ are the cluster specific parameters
  * and the parameters \f$ \boldsymbol{\alpha}^l \f$ are the shared parameters.
  * */
-class MixtureComposer : public STK::IMixtureComposerBase
+
+typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
+typedef std::vector<IMixture*>::iterator MixtIterator;
+
+class MixtureComposer : public mixt::IMixtureComposerBase
 {
   public:
-    typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
-    typedef std::vector<IMixture*>::iterator MixtIterator;
     /** Constructor.
      * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      */
@@ -67,13 +69,6 @@ class MixtureComposer : public STK::IMixtureComposerBase
     /** @return a constant reference on the vector of mixture */
     inline std::vector<IMixture*> const& v_mixtures() const { return v_mixtures_;}
 
-    /** Create a composer, but reinitialize the mixtures parameters. */
-    virtual MixtureComposer* create() const;
-    /** Create a clone of the current model, with mixtures parameters preserved. */
-    virtual MixtureComposer* clone() const;
-
-    /** initialize randomly the parameters of the components of the model */
-    virtual void randomInit();
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
      **/
@@ -83,10 +78,16 @@ class MixtureComposer : public STK::IMixtureComposerBase
      *  @param k index of the component
      **/
     virtual STK::Real lnComponentProbability(int i, int k);
+
+    /** @return the value of the completed likelihood */
+    virtual STK::Real lnCompletedLikelihood();
+
     /** @return the value of the observed likelihood */
     virtual STK::Real lnObservedLikelihood();
+
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(STK::ostream& os) const;
+
     /** @brief compute the number of free parameters of the model.
      *  lookup on the mixtures and sum the nbFreeParameter.
      **/
@@ -102,13 +103,11 @@ class MixtureComposer : public STK::IMixtureComposerBase
      *
      **/
     virtual void initializeStep();
-    /** @brief Impute the missing values.
-     **/
-    virtual void imputationStep();
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels.
      */
     virtual void samplingStep();
+    virtual void samplingStep(int i);
     /** @brief Simulation of latent variables to detect misclassified partially
      * observed data during initialization
      */
@@ -116,16 +115,20 @@ class MixtureComposer : public STK::IMixtureComposerBase
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
-    virtual void storeShortRun(int iteration);
+    virtual void storeShortRun(int iteration,
+                               int iterationMax);
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
-    virtual void storeLongRun(int iteration);
+    virtual void storeLongRun(int iteration,
+                              int iterationMax);
     /** @brief This step can be used to signal to the mixtures that they
      * must store data. This is usually called after the long algo, to
      * store data generated using the estimated parameters during a Gibbs sampling
      */
-    virtual void storeData();
+    virtual void storeData(int sample,
+                           int iteration,
+                           int iterationMax);
 
     /**@brief This step can be used to ask each mixture to export its model parameters
      * and data
@@ -143,31 +146,11 @@ class MixtureComposer : public STK::IMixtureComposerBase
      *  @note the mixture is not initialized, so don't forget to call
      **/
     void registerMixture(IMixture* mixture);
-    /** Utility method allowing to create all the mixtures using the DataHandler
-     *  info of the manager.
-     **/
-    template<class MixtureManager>
-    void createMixtures(MixtureManager& manager)
-    { manager.createMixtures(*this, nbCluster());}
-    /** Create a specific mixture and register it.
-     *  @param manager the manger with the responsibility of the creation
-     *  @param idModel the id of the mixture we want to create
-     *  @param idName the name of the mixture
-     **/
-    template<class MixtureManager>
-    void createMixture(MixtureManager& manager, STK::Clust::Mixture idModel, STK::String const& idName)
-    {
-      IMixture* p_mixture = manager.createMixture(idModel, idName, nbCluster_);
-      if (p_mixture) registerMixture(p_mixture);
-    }
+
+    /** Gibbs sampling, one individual at a time */
+    void gibbsSampling(int nbGibbsIter);
 
   protected:
-    /** @brief Create the composer using existing data handler and mixtures.
-     * This method is essentially used by the create() method and can be
-     * reused in derived classes.
-     * @sa MixtureComposerFixedProp
-     **/
-    void createComposer( std::vector<IMixture*> const& v_mixtures_);
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
 };

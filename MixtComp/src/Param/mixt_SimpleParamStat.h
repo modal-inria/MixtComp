@@ -32,25 +32,37 @@ namespace mixt
 class SimpleParamStat
 {
   public:
-    SimpleParamStat(const STK::Array2D<STK::Real>* p_param);
+    SimpleParamStat(STK::Array2D<STK::Real>* p_param,
+                    STK::Array2D<STK::Real>* p_paramStatStorage,
+                    STK::Real confidenceLevel);
     ~SimpleParamStat();
-    void initialize();
-    void sampleParam();
-    void exportParam(STK::Array2D<STK::Real>* stat) const;
+
+    void sampleParam(int iteration,
+                     int iterationMax);
+
+    /** fill the parameters with estimators of the expectation, to be used in the Gibbs sampling */
+    void setExpectationParam();
   private:
     // number of iterations used to compute the statistics
     int nbIter_;
+
     // number of parameters
     int nbParam_;
+
     // number of variables in the model
     int nbVar_;
+
     // pointer to param array
-    const STK::Array2D<STK::Real>* p_param_;
-    /* array to store the statistics on the parameters
-     * odd columns: mean
-     * even columns: M2, see http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm
-     */
-    STK::Array2D<STK::Real> stat_;
+    STK::Array2D<STK::Real>* p_param_;
+
+    /** Storage for iterations results, first dim parameter (variable 1: mean var), second dim iteration */
+    STK::Array2DPoint<STK::Array2DVector<STK::Real> > stat_;
+
+    /** Pointer to array to export the statistics at the last iteration */
+    STK::Array2D<STK::Real>* p_paramStatStorage_;
+
+    /** Confidence level */
+    STK::Real confidenceLevel_;
 };
 
 } // namespace mixt

@@ -27,52 +27,98 @@ namespace mixt
 {
 
 CategoricalLikelihood::CategoricalLikelihood(const STK::Array2D<STK::Real>* p_param,
-                                             const AugmentedData<STK::Array2D<int> >* augData) :
+                                             const AugmentedData<STK::Array2D<int> >* p_augData,
+                                             const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                                                 Eigen::Dynamic,
+                                                                 Eigen::Dynamic>* p_dataStatStorage) :
     p_param_(p_param),
-    p_augData_(augData)
+    p_augData_(p_augData),
+    p_dataStatStorage_(p_dataStatStorage)
 {}
 
 CategoricalLikelihood::~CategoricalLikelihood()
 {}
 
-void CategoricalLikelihood::lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
 {
-  // likelihood for present data
-  for (int i = 0; i < presentData_.sizeRows(); ++i)
+  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
   {
-    for (int j = 0; j < presentData_.sizeCols(); ++j)
+    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
     {
-      int nbModalities = p_augData_->dataRanges_[j].range_;
-
-      if (presentData_(i, j) != STK::Arithmetic<STK::Real>::NA())   // likelihood for present value
+      if (p_augData_->misData_(i, j).first == present_) // likelihood for present data
       {
-        STK::Real proba = p_param_->elt(k * nbModalities + presentData_(i, j),
+        int nbModalities = p_augData_->globalRange_.range_;
+        STK::Real proba = p_param_->elt(k * nbModalities + p_augData_->data_(i, j),
                                         j);
         lnComp->elt(i) += std::log(proba);
       }
+      else // likelihood for estimated missing values, imputation by the mode
+      {
+        int nbModalities = p_augData_->globalRange_.range_;
+        STK::Real proba = p_param_->elt(k * nbModalities + (*p_dataStatStorage_)(i, j)[0].first,
+                                        j);
+        lnComp->elt(i) += std::log(proba); // added lnLikelihood using the mode
+      }
     }
   }
+}
 
-  // likelihood for finite number of values
-  for (iv_missingFiniteValues it = p_augData_->v_missingFiniteValues_.begin();
-       it != p_augData_->v_missingFiniteValues_.end();
-       ++it)
+void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+{
+#ifdef MC_DEBUG_NEW
+  std::cout << "CategoricalLikelihood::lnObservedLikelihood" << std::endl;
+#endif
+  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
   {
-    int i = it->first.first;
-    int j = it->first.second;
-
-    int nbModalities = p_augData_->dataRanges_[j].range_;
-
-    STK::Real proba = 0.;
-
-    for (std::vector<int>::const_iterator itMiss = it->second.begin();
-         itMiss != it->second.end();
-         ++itMiss)
+    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
     {
-      proba += p_param_->elt(k * nbModalities + *itMiss,
-                             j);
+#ifdef MC_DEBUG_NEW
+          std::cout << "\ti: " << i << ", j: " << j << std::endl;
+#endif
+      switch (p_augData_->misData_(i, j).first)
+      {
+        case present_: // likelihood for present data
+        {
+          int nbModalities = p_augData_->globalRange_.range_;
+          STK::Real proba = p_param_->elt(k * nbModalities + p_augData_->data_(i, j),
+                                          j);
+          lnComp->elt(i) += std::log(proba);
+        }
+        break;
+
+        case missing_: // no contribution to the observed likelihood
+        {}
+        break;
+
+        case missingFiniteValues_: // adding the contributions of the various modalities
+        {
+#ifdef MC_DEBUG_NEW
+          std::cout << "missingFiniteValues" << std::endl;
+          std::cout << "p_param_->sizeRows(): " << p_param_->sizeRows() << ", p_param_->sizeCols(): " << p_param_->sizeCols() << std::endl;
+#endif
+          int nbModalities = p_augData_->globalRange_.range_;
+
+          STK::Real proba = 0.;
+
+          for (std::vector<int>::const_iterator itMiss = p_augData_->misData_(i, j).second.begin();
+               itMiss != p_augData_->misData_(i, j).second.end();
+               ++itMiss)
+          {
+#ifdef MC_DEBUG_NEW
+            std::cout << "k: " << k << ", j: " << j << ", nbModalities: " << nbModalities << ", *itMiss: " << *itMiss << std::endl;
+#endif
+            proba += p_param_->elt(k * nbModalities + *itMiss,
+                                   j);
+          }
+          lnComp->elt(i) += std::log(proba);
+        }
+        break;
+
+        default:
+        {}
+        break;
+      }
     }
-    lnComp->elt(i) += std::log(proba);
   }
 }
 

@@ -26,9 +26,8 @@
 #define MIXT_CATEGORICALSAMPLER_H
 
 #include "Arrays/include/STK_Array2D.h"
-
+#include "Arrays/include/STK_CArrayVector.h"
 #include "../Data/mixt_AugmentedData.h"
-#include "mixt_CategoricalSamplerIterator.h"
 
 namespace mixt
 {
@@ -36,15 +35,13 @@ namespace mixt
 class CategoricalSampler
 {
   public:
-    CategoricalSampler(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
+    CategoricalSampler(AugmentedData<STK::Array2D<int> >* p_augData,
                        const STK::Array2D<STK::Real>* p_param);
-    CategoricalSampler(const CategoricalSampler& sampler);
     ~CategoricalSampler();
-    CategoricalSamplerIterator begin() const;
-    CategoricalSamplerIterator end() const;
-    void setZi(const STK::CArrayVector<int>* p_zi);
+    /** Sample new values for the missing variables of the given individual */
+    void sampleIndividual(int i, int z_i);
   private:
-    const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
+    AugmentedData<STK::Array2D<int> >* p_augData_;
     const STK::Array2D<STK::Real>* p_param_;
     const STK::CArrayVector<int>* p_zi_;
 };

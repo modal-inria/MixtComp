@@ -24,39 +24,42 @@
 #ifndef MIXT_CATEGORICALLIKELIHOOD_H
 #define MIXT_CATEGORICALLIKELIHOOD_H
 
-#include "DManager/include/STK_DataHandler.h"
-#include "Arrays/include/STK_CArrayPoint.h"
+#include "Arrays/include/STK_Array2D.h"
 #include "../Data/mixt_AugmentedData.h"
+#include "Eigen/Dense"
 
 namespace mixt
 {
 
 class CategoricalLikelihood
 {
-    typedef std::pair<int, int> pos;
-    typedef typename std::vector<          pos                        >::const_iterator iv_missing;
-    typedef typename std::vector<std::pair<pos, std::vector<int>    > >::const_iterator iv_missingFiniteValues;
-
   public:
     /** Constructor */
     CategoricalLikelihood(const STK::Array2D<STK::Real>* p_param,
-                          const AugmentedData<STK::Array2D<int> >* augData);
+                          const AugmentedData<STK::Array2D<int> >* p_augData,
+                          const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                              Eigen::Dynamic,
+                                              Eigen::Dynamic>* p_dataStatStorage);
     /** Destructor */
     virtual ~CategoricalLikelihood();
 
+    /** Compute the completed log-likelihood */
+    void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+
     /** Compute the observed log-likelihood */
-    void lnLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
 
   private:
-    /** Original data table indicating whether a data is present, and not
-     * missing nor partially observed */
-    STK::Array2D<int> presentData_;
-
     /** Pointer to parameters table */
     const STK::Array2D<STK::Real>* p_param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
     const AugmentedData<STK::Array2D<int> >* p_augData_;
+
+    /** Pointer to sampled data storage */
+    const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                        Eigen::Dynamic,
+                        Eigen::Dynamic>* p_dataStatStorage_;
 };
 
 } /* namespace mixt */

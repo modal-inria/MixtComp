@@ -10,31 +10,23 @@ testComplete <- function()
   export2DPoints(nbBurnInIter)
 }
 
-testTestData <- function(nbBurnInIter = 100,
-		                 nbClass = 3)
+testLearnPredict <- function()
 {
-	lm <- getData(c("dataTest/datamix.data.csv",
-					"dataTest/datamix.desc.csv"))
-	
-	# creation of parameters container
-	mcCluster <- getMixtCompCluster(2, # nbTrialInInit
-			nbBurnInIter, # nbBurnInIter
-			1000, # nbIter
-			200, # nbGibbsBurnInIter
-			1000) # nbGibbsIter
-	
-	# launch of the MixtComp algorithm
-	dataParam <- mixtCompCluster(lm,
-			mcCluster,
-			nbClass)
-	return(list(mcCluster,
-					dataParam))
+  cat("Launching testGenDataLearn\n")
+  myDataLearn <- testGenDataLearn()
+  cat("Launching testGenDataPredict\n")
+  myDataPredict <- testGenDataPredict(myDataLearn[[2]]$param)
+  
+  return(myDataPredict)
 }
 
-testGenData <- function(nbBurnInIter = 100,
-		                    nbSample = 500)
+testGenDataLearn <- function(nbClass = 2,
+                             nbBurnInIter = 20,
+                             nbSampleLearn = 500,
+                             nbSamplePredict = 50,
+                             confidenceLevel = 0.95,
+                             regen = TRUE)
 {
-  nbClass <- 2
   missingCategorical <- c(0.8, # present
                           0.1, # missing
                           0.1) # missing finite value
@@ -43,35 +35,73 @@ testGenData <- function(nbBurnInIter = 100,
                        0.1, # missing interval
                        0.1, # missing left unbounded
                        0.1) # missing right unbounded
-  dataGenerator(c(0.5, 0.5), # proportions
-                nbSample, # nbSamples
-                0, # nbVariablesCat
-                1, # minModality
-                6, # nbModalities
-                2, # nbVariablesGauss
-                50., # maxMean
-                10., # maxVar
-                nbClass, # nbClasses
-                missingCategorical, # missingCategorical
-                missingGaussian) # missingGaussian
+#   missingCategorical <- c(1., # present
+#                           0., # missing
+#                           0.) # missing finite value
+#   missingGaussian <- c(1., # present
+#                        0., # missing
+#                        0., # missing interval
+#                        0., # missing left unbounded
+#                        0.) # missing right unbounded
+  if (regen == TRUE)
+  {
+    dataParamGenerator(c(0.5, 0.5), # proportions
+                       nbSampleLearn, # nbSamples
+                       nbSamplePredict, # nbSamplePredict
+                       2, # nbVariablesCat
+                       3, # minModality
+                       6, # nbModalities
+                       2, # nbVariablesGauss
+                       50., # maxMean
+                       10., # maxVar
+                       nbClass, # nbClasses
+                       missingCategorical, # missingCategorical
+                       missingGaussian) # missingGaussian
+  }
   
-  # read and parse the data
-#  lm <- getData(c("categoricalData.csv", "categoricalDescriptor.csv"))
-  lm <- getData(c("dataGen/gaussianData.csv", "dataGen/gaussianDescriptor.csv"))
-#  lm <- getData(c("dataGen/gaussianData.csv"   , "dataGen/gaussianDescriptor.csv"   ),
-#                c("dataGen/categoricalData.csv", "dataGen/categoricalDescriptor.csv"))
+  lm <- getData(c("dataGen/learn/gaussianData.csv",
+                  "dataGen/learn/gaussianDescriptor.csv"),
+                c("dataGen/learn/categoricalData.csv",
+                  "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
                                   nbBurnInIter, # nbBurnInIter
-                                  1000, # nbIter
-                                  200, # nbGibbsBurnInIter
-                                  1000) # nbGibbsIter
+                                  100, # nbIter
+                                  20, # nbGibbsBurnInIter
+                                  100) # nbGibbsIter
   
   # launch of the MixtComp algorithm
   dataParam <- mixtCompCluster(lm,
                                mcCluster,
-                               nbClass)
+                               nbClass,
+                               confidenceLevel)
+  return(list(mcCluster,
+              dataParam))
+}
+
+
+testGenDataPredict <- function(param,
+                               nbClass = 2,
+                               nbBurnInIter = 20,
+                               confidenceLevel = 0.95)
+{
+  lm <- getData(c("dataGen/predict/gaussianData.csv",
+                  "dataGen/predict/gaussianDescriptor.csv"))
+  
+  # creation of parameters container
+  mcCluster <- getMixtCompCluster(2, # nbTrialInInit
+                                  nbBurnInIter, # nbBurnInIter
+                                  100, # nbIter
+                                  20, # nbGibbsBurnInIter
+                                  100) # nbGibbsIter
+  
+  # launch of the MixtComp algorithm
+  dataParam <- mixtCompPredict(lm,
+                               param,
+                               mcCluster,
+                               nbClass,
+                               confidenceLevel)
   return(list(mcCluster,
               dataParam))
 }

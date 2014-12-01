@@ -21,11 +21,12 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_DATAEXTRACTOR_H
-#define MIXT_DATAEXTRACTOR_H
+#ifndef MIXT_DATAEXTRACTORR_H
+#define MIXT_DATAEXTRACTORR_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "MixtComp/src/Data/mixt_AugmentedData.h"
 #include "Rcpp.h"
+#include "Eigen/Dense"
 
 namespace mixt
 {
@@ -35,14 +36,18 @@ class DataExtractorR
   public:
     DataExtractorR();
     ~DataExtractorR();
+
+    /** Export function for categorical model */
     void exportVals(std::string idName,
-                    const STK::Array2D<STK::Real>* p_data,
-                    const STK::Array2D<int>* p_posMissing,
-                    const STK::Array2D<STK::Real>* p_statMissing);
+                    const AugmentedData<STK::Array2D<int> >* p_augData,
+                    const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                        Eigen::Dynamic,
+                                        Eigen::Dynamic>* p_dataStatStorage);
+    /** Export function for gaussian model */
     void exportVals(std::string idName,
-                    const STK::Array2D<int>* p_data,
-                    const STK::Array2D<int>* p_posMissing,
-                    const STK::Array2D<STK::Real>* p_statMissing);
+                    const AugmentedData<STK::Array2D<STK::Real> >* p_augData,
+                    const STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage);
+
     Rcpp::List rcppReturnVal() const;
   private:
     Rcpp::List data_;
@@ -50,4 +55,4 @@ class DataExtractorR
 
 } // namespace mixt
 
-#endif // MIXT_DATAEXTRACTOR_H
+#endif // MIXT_DATAEXTRACTORR_H

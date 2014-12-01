@@ -23,9 +23,10 @@ getData <- function(...){
                               fill = FALSE,
                               comment.char = "",
                               stringsAsFactors = FALSE)
-    for (i in 1:length(data))
+    for (i in 1:length(data)) # loop over columns of the read data frame
     {
-      lm <- addVariable(lm,
+      # perform length check and generate named list for current variable
+      lm <- addVariable(lm, 
                         data[[i]],
                         descriptors[1, i],
                         descriptors[2, i]) # data is sent as a dataframe

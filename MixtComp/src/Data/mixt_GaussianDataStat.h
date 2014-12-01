@@ -32,37 +32,32 @@
 
 namespace mixt
 {
-
-typedef std::pair<int, int> pos;
-typedef typename std::vector<          pos                                    >::const_iterator iv_missing;
-typedef typename std::vector<std::pair<pos, std::pair<STK::Real, STK::Real> > >::const_iterator iv_missingIntervals;
-typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingLUIntervals;
-typedef typename std::vector<std::pair<pos,           STK::Real             > >::const_iterator iv_missingRUIntervals;
-typedef typename std::pair<pos, STK::Real> RetValue;
-
 class GaussianDataStat
 {
   public:
-    GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij);
+    GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
+                     STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
+                     STK::Real confidenceLevel);
     ~GaussianDataStat();
-    void initPos();
-    void initialize();
-    void sampleVals();
-    void exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const;
+    void sampleVals(int sample,
+                    int iteration,
+                    int iterationMax);
   private:
-    // number of iterations used to compute the statistics
-    int nbIter_;
-    // total number of missing values
-    int nbMissing_;
-    // pointer to data array
+    /** pointer to data array */
     const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij_;
-    // array to store the positions of all missing data, regardless of the type (missing, interval, etc...)
-    STK::Array2D<int> posMissing_;
-    // array to store the mean
-    STK::Array2DVector<STK::Real> mean_;
-    // array to store M2
-    STK::Array2DVector<STK::Real> m2_;
+    /** Sparse description of the missing values */
+    STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage_;
 
+    /** Array to count sampled values across iterations, for the current individual, access: tempStat_[j][i]
+     * i: iteration
+     * j: variable */
+    STK::Array2DPoint<STK::Array2DVector<STK::Real> > tempStat_;
+
+    /** Confidence level */
+    STK::Real confidenceLevel_;
+
+    void sample(int ind,
+                int iteration);
 };
 
 } // namespace mixt

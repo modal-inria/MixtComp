@@ -29,9 +29,8 @@ int main(int argc, char *argv[])
   RInside R(argc, argv);              // create an embedded R instance
   R.parseEvalQ("library(methods)");
   R.parseEvalQ("library(RMixtComp)");
-//    R.parseEvalQ("testRMC()");
-//  R.parseEvalQ("testRMC()");
- R.parseEvalQ("testGenData()");
-//  R.parseEvalQ("testTestData()");
+//  R.parseEvalQ("testGenDataLearn()");
+  R.parseEvalQ("testLearnPredict()");
+
   exit(0);
 }

@@ -25,53 +25,56 @@
 #include "mixt_MixtureComposer.h"
 #include "../Mixture/mixt_IMixture.h"
 #include "Arrays/include/STK_Display.h"
-#include "Clustering/include/STK_Clust_Util.h"
-#include "../Various/mixt_Export.h"
+#include "../Various/mixt_IO.h"
 
 namespace mixt
 {
 
 MixtureComposer::MixtureComposer( int nbSample, int nbVariable, int nbCluster)
-                                : STK::IMixtureComposerBase( nbSample, nbVariable, nbCluster)
+                                : mixt::IMixtureComposerBase( nbSample, nbVariable, nbCluster)
 {}
-
-MixtureComposer::MixtureComposer( MixtureComposer const& composer)
-                                : STK::IMixtureComposerBase(composer)
-                                , v_mixtures_(composer.v_mixtures_)
-{
-  // clone mixtures
-  for (size_t l = 0; l < v_mixtures_.size(); ++l)
-  {
-    v_mixtures_[l] = composer.v_mixtures_[l]->clone();
-    v_mixtures_[l]->setMixtureComposer(this);
-    v_mixtures_[l]->initializeStep();
-  }
-}
 
 MixtureComposer::~MixtureComposer()
 {
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  { delete (*it);}
-}
-
-/* clone pattern */
-MixtureComposer* MixtureComposer::clone() const
-{ return new MixtureComposer(*this);}
-
-MixtureComposer* MixtureComposer::create() const
-{
-  // set dimensions
-  MixtureComposer* p_composer = new MixtureComposer(nbSample(), nbVariable(), nbCluster());
-  p_composer->createComposer( v_mixtures_);
-  return p_composer;
+  {
+    delete (*it);
+  }
 }
 
 STK::Real MixtureComposer::lnComponentProbability(int i, int k)
 {
   STK::Real sum=0.0;
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  { sum += (*it)->lnComponentProbability(i,k);}
+  {
+    sum += (*it)->lnComponentProbability(i, k);
+  }
   return sum;
+}
+
+/** @return the value of the completed likelihood */
+STK::Real MixtureComposer::lnCompletedLikelihood()
+{
+  STK::Real lnLikelihood = 0.;
+  STK::Array2D<STK::Real> lnComp(nbSample(), nbCluster_, 0.);
+  for (int k = 0; k < nbCluster_; ++k)
+  {
+    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+    {
+      STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
+      (*it)->lnCompletedLikelihood(&tempVec, k);
+    }
+  }
+
+  // Compute the observed likelihood for the complete mixture model
+  for (int i = 0; i < nbSample(); ++i)
+  {
+    STK::Real max = lnComp.row(i).maxElt();
+    STK::Real sum = (lnComp.row(i) -= max).exp().dot(prop_);
+    lnLikelihood += max + std::log(sum);
+  }
+
+  return lnLikelihood;
 }
 
 STK::Real MixtureComposer::lnObservedLikelihood()
@@ -84,7 +87,6 @@ STK::Real MixtureComposer::lnObservedLikelihood()
     {
       STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
       (*it)->lnObservedLikelihood(&tempVec, k);
-      // (*it)->lnObservedLikelihood(&lnComp.col(k), k);
     }
   }
 
@@ -101,8 +103,13 @@ STK::Real MixtureComposer::lnObservedLikelihood()
 
 void MixtureComposer::mStep()
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::mStep()" << std::endl;
+#endif
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  { (*it)->paramUpdateStep();}
+  {
+    (*it)->paramUpdateStep();
+  }
 }
 
 void MixtureComposer::writeParameters(std::ostream& os) const
@@ -131,44 +138,20 @@ void MixtureComposer::initializeStep()
 #endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-#ifdef MC_DEBUG
-    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-    try
-    {
-#endif
-      (*it)->initializeStep();
-#ifdef MC_DEBUG
-    }
-    catch (STK::Clust::exceptions exception)
-    {
-      if (exception == STK::Clust::initializeStepFail_)
-        std::cout << "STK mixture initialization failed" << std::endl;
-    }
-#endif
+    (*it)->initializeStep();
   }
-  setState(STK::Clust::modelInitialized_);
+  setState(modelInitialized_);
 }
-
-void MixtureComposer::randomInit()
-{
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  { (*it)->randomInit();}
-}
-
 
 // implement computeNbFreeParameters
 int MixtureComposer::computeNbFreeParameters() const
 {
   int sum = nbCluster_-1; // proportions
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  { sum+= (*it)->nbFreeParameter();}
+  {
+    sum+= (*it)->nbFreeParameter();
+  }
   return sum;
-}
-
-void MixtureComposer::imputationStep()
-{
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  { (*it)->imputationStep();}
 }
 
 /* @brief Simulation of all the latent variables and/or missing data
@@ -176,8 +159,27 @@ void MixtureComposer::imputationStep()
  */
 void MixtureComposer::samplingStep()
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::samplingStep" << std::endl;
+#endif
+  for (int i = 0; i < nbSample(); ++i)
+  {
+    samplingStep(i);
+  }
+}
+
+void MixtureComposer::samplingStep(int i)
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::samplingStep, single individual" << std::endl;
+#endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  { (*it)->samplingStep();}
+  {
+#ifdef MC_DEBUG
+std::cout << (*it)->idName() << std::endl;
+#endif
+    (*it)->samplingStep(i);
+  }
 }
 
 void MixtureComposer::misClasStep(int iteration)
@@ -190,7 +192,10 @@ void MixtureComposer::misClasStep(int iteration)
     zi_ = k; // setting zi_ for the sampling step
     for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
-      (*it)->samplingStep();
+      for (int i = 0; i < nbSample(); ++i)
+      {
+        (*it)->samplingStep(i);
+      }
     }
     for (int i = 0; i < nbSample(); ++i)
     {
@@ -213,34 +218,42 @@ void MixtureComposer::misClasStep(int iteration)
   }
 }
 
-void MixtureComposer::storeShortRun(int iteration)
+void MixtureComposer::storeShortRun(int iteration,
+                                    int iterationMax)
 {
 #ifdef MC_LOG
   std::stringstream fileName;
   fileName << "out/log/composer-";
   fileName << iteration;
   fileName << "-z_i.csv";
-  writeDataCsv(fileName.str(), p_zi());
+  writeDataCsv(fileName.str(), *p_zi());
 #endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeShortRun(iteration);
+    (*it)->storeShortRun(iteration,
+                         iterationMax);
   }
 }
 
-void MixtureComposer::storeLongRun(int iteration)
+void MixtureComposer::storeLongRun(int iteration,
+                                   int iterationMax)
 {
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeLongRun(iteration);
+    (*it)->storeLongRun(iteration,
+                        iterationMax);
   }
 }
 
-void MixtureComposer::storeData()
+void MixtureComposer::storeData(int sample,
+                                int iteration,
+                                int iterationMax)
 {
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeData();
+    (*it)->storeData(sample,
+                     iteration,
+                     iterationMax);
   }
 }
 
@@ -265,18 +278,19 @@ void MixtureComposer::registerMixture(IMixture* p_mixture)
   v_mixtures_.push_back(p_mixture);
 }
 
-/* @brief Create the composer using existing data handler and ingredients.
- * This method is essentially used by the create() method and can be
- * reused in derived classes. */
-void MixtureComposer::createComposer( std::vector<IMixture*> const& v_mixtures)
+void MixtureComposer::gibbsSampling(int nbGibbsIter)
 {
-  intializeMixtureParameters();
-  v_mixtures_.resize( v_mixtures.size());
-  for (size_t l = 0; l < v_mixtures_.size(); ++l)
+  for (int i = 0; i < nbSample(); ++i)
   {
-    v_mixtures_[l] = v_mixtures[l]->create();
-    v_mixtures_[l]->setMixtureComposer(this);
-    v_mixtures_[l]->initializeStep();
+    for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs)
+    {
+      sStep(i);
+      samplingStep(i);
+      eStep(i);
+      storeData(i,
+                iterGibbs,
+                nbGibbsIter - 1);
+    }
   }
 }
 

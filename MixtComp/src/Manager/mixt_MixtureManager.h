@@ -33,23 +33,27 @@ namespace mixt
 
 template<typename DataHandler,
          typename DataExtractor,
+         typename ParamSetter,
          typename ParamExtractor>
 class MixtureManager
 {
   public:
     typedef typename DataHandler::InfoMap InfoMap;
-    typedef std::vector<mixt::IMixture*>::const_iterator ConstMixtIterator;
-    typedef std::vector<mixt::IMixture*>::iterator MixtIterator;
 
     MixtureManager(const DataHandler* handler,
                    DataExtractor* p_dataExtractor,
-                   ParamExtractor* p_paramExtractor) :
+                   const ParamSetter* p_paramSetter,
+                   ParamExtractor* p_paramExtractor,
+                   STK::Real confidenceLevel) :
       p_handler_(handler),
       p_dataExtractor_(p_dataExtractor),
-      p_paramExtractor_(p_paramExtractor)
+      p_paramSetter_(p_paramSetter),
+      p_paramExtractor_(p_paramExtractor),
+      confidenceLevel_(confidenceLevel)
     {}
 
-    void createMixtures(mixt::MixtureComposer& composer, int nbCluster)
+    void createMixtures(mixt::MixtureComposer* composer,
+                        int nbCluster)
     {
       for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
       {
@@ -60,8 +64,11 @@ class MixtureManager
 #endif
         STK::Clust::Mixture idModel = STK::Clust::stringToMixture(model);
         // get a mixture fully
-        mixt::IMixture* p_mixture = createMixture(idModel, idName, nbCluster);
-        if (p_mixture) composer.registerMixture(p_mixture);
+        mixt::IMixture* p_mixture = createMixture(idModel,
+                                                  idName,
+                                                  nbCluster,
+                                                  confidenceLevel_);
+        if (p_mixture) composer->registerMixture(p_mixture);
       }
     }
 
@@ -70,7 +77,10 @@ class MixtureManager
      *  @param idName name of the model
      *  @param nbCluster number of cluster of the model
      **/
-    mixt::IMixture* createMixture(STK::Clust::Mixture idModel, std::string const& idName, int nbCluster)
+    mixt::IMixture* createMixture(STK::Clust::Mixture idModel,
+                                  std::string const& idName,
+                                  int nbCluster,
+                                  STK::Real confidenceLevel)
     {
       switch (idModel)
       {
@@ -78,14 +88,18 @@ class MixtureManager
         {
           typename GaussianBridge_sjk_m<DataHandler,
                                         DataExtractor,
+                                        ParamSetter,
                                         ParamExtractor>::type* p_bridge = new typename GaussianBridge_sjk_m<DataHandler,
                                                                                                             DataExtractor,
+                                                                                                            ParamSetter,
                                                                                                             ParamExtractor>::type(idName,
                                                                                                                                   nbCluster,
                                                                                                                                   p_handler_,
                                                                                                                                   p_dataExtractor_,
-                                                                                                                                  p_paramExtractor_);
-          p_bridge->setData();
+                                                                                                                                  p_paramSetter_,
+                                                                                                                                  p_paramExtractor_,
+                                                                                                                                  confidenceLevel);
+          p_bridge->setDataParam();
           return p_bridge;
         }
         break;
@@ -94,14 +108,18 @@ class MixtureManager
         {
           typename CategoricalBridge_pjk_m<DataHandler,
                                            DataExtractor,
+                                           ParamSetter,
                                            ParamExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataHandler,
                                                                                                                   DataExtractor,
+                                                                                                                  ParamSetter,
                                                                                                                   ParamExtractor>::type(idName,
                                                                                                                                         nbCluster,
                                                                                                                                         p_handler_,
                                                                                                                                         p_dataExtractor_,
-                                                                                                                                        p_paramExtractor_);
-          p_bridge->setData();
+                                                                                                                                        p_paramSetter_,
+                                                                                                                                        p_paramExtractor_,
+                                                                                                                                        confidenceLevel);
+          p_bridge->setDataParam();
           return p_bridge;
         }
         break;
@@ -120,8 +138,14 @@ class MixtureManager
     /** pointer to the dataExtractor */
     DataExtractor* p_dataExtractor_;
 
+    /** pointer to the paramSetter */
+    const ParamSetter* p_paramSetter_;
+
     /** pointer to the parameter extractor */
     ParamExtractor* p_paramExtractor_;
+
+    /** confidence interval, to be transmitted to the mixtures at creation */
+    STK::Real confidenceLevel_;
 };
 
 } // namespace mixt

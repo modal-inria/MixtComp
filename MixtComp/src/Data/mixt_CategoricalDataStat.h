@@ -25,38 +25,41 @@
 #define MIXT_CATEGORICALDATASTAT_H
 
 #include "Arrays/include/STK_Array2D.h"
+#include "Eigen/Dense"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
 {
 
-typedef std::pair<int, int> pos;
-typedef typename std::vector<          pos                        >::const_iterator iv_missing;
-typedef typename std::vector<std::pair<pos, std::vector<int>    > >::const_iterator iv_missingFiniteValues;
-
 class CategoricalDataStat
 {
   public:
-    CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij);
+    CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
+                        Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                      Eigen::Dynamic,
+                                      Eigen::Dynamic>* p_dataStatStorage,
+                        STK::Real confidenceLevel);
     ~CategoricalDataStat();
-    void initPos();
-    void initialize();
-    void setModalities();
-    void sampleVals();
-    void exportVals(STK::Array2D<int>& posMissing, STK::Array2D<STK::Real>& statMissing) const;
+    void sampleVals(int sample,
+                    int iteration,
+                    int iterationMax);
   private:
-    // number of iterations used to compute the statistics
-    int nbIter_;
-    // total number of missing values
-    int nbMissing_;
-    // number of modalities
-    int nbModalities_;
     // pointer to data array
     const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
-    // array to store the positions of all missing data, regardless of the type (missing, interval, etc...)
-    STK::Array2D<int> posMissing_;
-    // array to store the statistics on the data
-    STK::Array2D<STK::Real> statMissing_;
+    /** Sparse description of the missing values */
+    Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                          Eigen::Dynamic,
+                                          Eigen::Dynamic>* p_dataStatStorage_;
+
+    /** Array to count sampled values across iterations, for the current individual, , access: tempStat_[j][i]
+     * i: modality
+     * j: variable */
+    STK::Array2DPoint<STK::Array2DVector<STK::Real> > tempStat_;
+
+    /** Confidence level */
+    STK::Real confidenceLevel_;
+
+    void sample(int ind);
 };
 
 } // namespace mixt

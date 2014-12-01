@@ -35,8 +35,7 @@
 #include "mixt_GaussianBridges.h"
 #include "mixt_CategoricalBridges.h"
 #include "mixt_InitializeMixtureImpl.h"
-#include "mixt_RemoveMissing.h"
-#include "../../Various/mixt_Export.h"
+#include "../../Various/mixt_IO.h"
 
 namespace mixt
 {
@@ -44,6 +43,7 @@ namespace mixt
 template<int Id,
          typename DataHandler,
          typename DataExtractor,
+         typename ParamSetter,
          typename ParamExtractor>
 
 class MixtureBridge : public mixt::IMixture
@@ -53,20 +53,16 @@ class MixtureBridge : public mixt::IMixture
     typedef typename BridgeTraits<Id>::Data Data;
     // augmented data type
     typedef typename BridgeTraits<Id>::AugData AugData;
-    // statistics on missing values type
-    typedef typename BridgeTraits<Id>::DataStat DataStat;
-    // statistics on model parameters
-    typedef typename BridgeTraits<Id>::ParamStat ParamStat;
-    // parameters type to get
-    typedef typename BridgeTraits<Id>::Param Param;
+    // statistics on DataStat computer
+    typedef typename BridgeTraits<Id>::DataStatComputer DataStatComputer;
+    // type of DataStat storage
+    typedef typename BridgeTraits<Id>::DataStatStorage DataStatStorage;
     // type of the data
     typedef typename BridgeTraits<Id>::Type Type;
     // type of Mixture
     typedef typename BridgeTraits<Id>::Mixture Mixture;
     // type of Sampler
     typedef typename BridgeTraits<Id>::Sampler Sampler;
-    // type of Sample Iterator
-    typedef typename BridgeTraits<Id>::SamplerIterator SamplerIterator;
     // type of Likelihood
     typedef typename BridgeTraits<Id>::Likelihood Likelihood;
 
@@ -78,68 +74,50 @@ class MixtureBridge : public mixt::IMixture
                   int nbCluster,
                   const DataHandler* p_handler_,
                   DataExtractor* p_extractor,
-                  ParamExtractor* p_paramExtractor) :
+                  const ParamSetter* p_paramSetter,
+                  ParamExtractor* p_paramExtractor,
+                  STK::Real confidenceLevel) :
       mixt::IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
+      nbSample_(0),
       nbVariable_(0),
-      sampler_(getData(),
+      sampler_(&m_augDataij_,
                getParam()),
-      dataStat_(getData()),
-      paramStat_(getParam()),
-      likelihood_(
-                  getParam(),
-                  getData()),
+      dataStatComputer_(getData(),
+                        &dataStatStorage_,
+                        confidenceLevel),
+      paramStat_(&param_,
+                 &paramStatStorage_,
+                 confidenceLevel),
+      likelihood_(getParam(),
+                  getData(),
+                  getDataStatStorage()),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
+      p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
+      // dataStatStorage_ is an empty STK::Array2D at construction
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
       mixt::IMixture(bridge),
       mixture_(bridge.mixture_),
       m_augDataij_(bridge.m_augDataij_),
+      nbSample_(bridge.nbSample_),
       nbVariable_(bridge.nbVariable_),
       sampler_(bridge.sampler_),
-      dataStat_(bridge.dataStat_),
+      dataStatComputer_(bridge.dataStatComputer_),
       paramStat_(bridge.paramStat_),
       likelihood_(bridge.likelihood_),
       p_handler_(bridge.p_handler_),
       p_dataExtractor_(bridge.p_dataExtractor_),
-      p_paramExtractor_(bridge.p_paramExtractor_)
+      p_paramSetter_(bridge.p_paramSetter_),
+      p_paramExtractor_(bridge.p_paramExtractor_),
+      dataStatStorage_(bridge.dataStatStorage_)
     {
       mixture_.setData(m_augDataij_.data_);
       mixture_.initializeModel();
-    }
-    /** This is a standard clone function in usual sense. It must be defined to
-     *  provide new object of your class with values of various parameters
-     *  equal to the values of calling object. In other words, this is
-     *  equivalent to polymorphic copy constructor.
-     *  @return New instance of class as that of calling object.
-     */
-    virtual MixtureBridge* clone() const
-    {
-      return new MixtureBridge(*this);
-    }
-    /** This is a standard create function in usual sense. It must be defined to
-     *  provide new object of your class with correct dimensions and state.
-     *  In other words, this is equivalent to virtual constructor.
-     * @return New instance of class as that of calling object.
-     */
-    virtual MixtureBridge* create() const
-    {
-      MixtureBridge* p_bridge = new MixtureBridge(mixture_,
-                                                  idName(),
-                                                  nbCluster(),
-                                                  p_handler_,
-                                                  p_dataExtractor_,
-                                                  p_paramExtractor_);
-      p_bridge->m_augDataij_ = m_augDataij_;
-      p_bridge->nbVariable_ = nbVariable_;
-      // Bug Fix: set the correct data set
-      p_bridge->mixture_.setData(p_bridge->m_augDataij_.data_);
-      p_bridge->mixture_.initializeModel();
-      return p_bridge;
     }
     /** @brief Initialize the model before its use by the composer.
      *  The parameters values are set to their default values if the mixture_ is
@@ -152,8 +130,6 @@ class MixtureBridge : public mixt::IMixture
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::initializeStep()"  << std::endl;
       std::cout << "\tidName(): " << idName() << std::endl;
-      std::cout << "\tp_composer()" << p_composer() << std::endl;
-      std::cout << "\tp_zi(): " << p_zi() << std::endl;
 #endif
       if (!p_composer())
         std::cout << "MixtureBridge::initializeStep(), "
@@ -161,95 +137,60 @@ class MixtureBridge : public mixt::IMixture
                   << " model is not set." << std::endl;
       mixture_.setMixtureParameters(p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
-      sampler_.setZi(p_zi()); // at this point the bridge has been registered on the composer and p_zi is valid
-      dataStat_.initialize();
-
-      /** get a sample of parameters to initialize the ParamStat object
-       * with the right size
-       */
+#ifdef MC_DEBUG
       mixture_.getParameters(param_);
-      paramStat_.initialize();
+      std::cout << "param_, after initializeStep: " << std::endl;
+      std::cout << param_ << std::endl;
+#endif
     }
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    void setData()
+    void setDataParam()
     {
 #ifdef MC_DEBUG
         std::cout << "MixtureBridge::setData(), idName(): " << idName() << std::endl;
 #endif
-      p_handler_->getData(idName(), m_augDataij_, nbVariable_ );
-
-      // data range filling
-      for (int currVar = 0; currVar < m_augDataij_.data_.sizeCols(); ++currVar)
-      {
-        m_augDataij_.dataRanges_.push_back(Range<Type>(STK::Stat::minSafe(m_augDataij_.data_.col(currVar)),
-                                                       STK::Stat::maxSafe(m_augDataij_.data_.col(currVar))));
-#ifdef MC_DEBUG
-        std::cout << "\tcurrVar: " << currVar << std::endl
-                  << "\t\tmin: " << m_augDataij_.dataRanges_.at(currVar).min_ << std::endl
-                  << "\t\tmax, " << m_augDataij_.dataRanges_.at(currVar).max_ << std::endl
-                  << "m_augDataij_.data_ before removeMissing: " << std::endl
-                  << m_augDataij_.data_ << std::endl;
-#endif
-      }
-      removeMissing(m_augDataij_);
-#ifdef MC_DEBUG
-      std::cout << "\tv_missing_.size(): " << m_augDataij_.v_missing_.size() << std::endl
-                << "\tv_missingFiniteValues_.size(): " << m_augDataij_.v_missingFiniteValues_.size() << std::endl
-                << "\tv_missingIntervals_.size(): " << m_augDataij_.v_missingIntervals_.size() << std::endl
-                << "m_augDataij_.data_ after removeMissing: " << std::endl
-                << m_augDataij_.data_ << std::endl;
-#endif
-      initializeMixture();
-    }
-    /** @brief This function should be used in order to initialize randomly the
-     *  parameters of the ingredient.
-     */
-    virtual void randomInit()
-    {
-      mixture_.randomInit();
-    }
-    /** This function should be used for imputation of data.
-     *  The default implementation (in the base class) is to do nothing.
-     */
-    virtual void imputationStep()
-    {
-      // imputation based on mean values in classes is not general enough for MixtComp,
-      // samplingStep is used instead
+      p_handler_->getData(idName(),
+                          m_augDataij_,
+                          nbSample_,
+                          nbVariable_ );
+      p_paramSetter_->getParam(idName(), param_);
+      initializeMixture(); // "transfer" the data and params from the bridge to the underlying stkpp mixture
+      dataStatStorage_.resize(nbSample_,
+                              nbVariable_);
     }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
      * simulated by the framework itself because to do so we have to take into
      * account all the mixture laws. do nothing by default.
      */
-    virtual void samplingStep()
+    virtual void samplingStep(int i)
     {
       mixture_.getParameters(param_); // update the parameters (used by the Sampler)
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::samplingStep(), getParameters" << std::endl;
-      std::cout << "\tidName: " << idName() << std::endl;
-      std::cout << "\tparam: " << std::endl;
-      std::cout << param_ << std::endl;
-#endif
-      SamplerIterator endIt(sampler_.end());
-      for (SamplerIterator it = sampler_.begin(); it != endIt; ++it)
-      {
-        std::pair<std::pair<int, int>, Type> retValue(*it);
-        m_augDataij_.data_(retValue.first.first, retValue.first.second) = retValue.second;
-      }
+      sampler_.sampleIndividual(i,
+                                p_zi()->elt(i));
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
     virtual void paramUpdateStep()
     {
       mixture_.mStep();
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::paramUpdateStep" << std::endl;
+      std::cout << "*p_composer()->p_zi()" << std::endl;
+      std::cout << *p_composer()->p_zi() << std::endl;
+      mixture_.getParameters(param_);
+      std::cout << "param_: " << std::endl;
+      std::cout << param_ << std::endl;
+#endif
     }
     /** This function should be used to store any results during the burn-in period
      *  @param iteration Provides the iteration number during the burn-in period
      */
-    virtual void storeShortRun(int iteration)
+    virtual void storeShortRun(int iteration,
+                               int iterationMax)
     {
 #ifdef MC_LOG
       std::stringstream fileNameA;
@@ -258,7 +199,7 @@ class MixtureBridge : public mixt::IMixture
       fileNameA << "-";
       fileNameA << iteration;
       fileNameA << "-param.csv";
-      writeDataCsv(fileNameA.str(), &param_);
+      writeDataCsv(fileNameA.str(), param_);
 
       std::stringstream fileNameB;
       fileNameB << "out/log/";
@@ -266,30 +207,40 @@ class MixtureBridge : public mixt::IMixture
       fileNameB << "-";
       fileNameB << iteration;
       fileNameB << "-data.csv";
-      writeDataCsv(fileNameB.str(), &m_augDataij_.data_);
+      writeDataCsv(fileNameB.str(), m_augDataij_.data_);
 #endif
     }
     /** This function should be used to store any intermediate results during
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
      */
-    virtual void storeLongRun(int iteration)
+    virtual void storeLongRun(int iteration,
+                              int iterationMax)
     {
       mixture_.getParameters(param_);
-      paramStat_.sampleParam();
+      paramStat_.sampleParam(iteration,
+                             iterationMax);
+      if (iteration == iterationMax)
+      {
+        // reinject the SEM estimated parameters into the mixture
+        paramStat_.setExpectationParam();
+        mixture_.setParameters(param_);
+      }
     }
 
-    virtual void storeData()
+    virtual void storeData(int sample,
+                           int iteration,
+                           int iterationMax)
     {
 #ifdef MC_DEBUG
-      std::cout << "MixtureBridge::storeData, for " << idName();
+      std::cout << "MixtureBridge::storeData, for " << idName()
+                << ", sample: " << sample
+                << ", iteration: " << iteration
+                << ", iterationMax: " << iterationMax << std::endl;
 #endif
-      dataStat_.sampleVals();
-    }
-
-    virtual const DataStat* getDataStat()
-    {
-      return &dataStat_;
+      dataStatComputer_.sampleVals(sample,
+                                   iteration,
+                                   iterationMax);
     }
 
     /**
@@ -310,14 +261,27 @@ class MixtureBridge : public mixt::IMixture
     }
 
     /**
+     * This function must be defined to return the completed likelihood
+     * @return the observed log-likelihood
+     */
+    virtual void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+    {
+      mixture_.getParameters(param_); // update the parameters
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
+      std::cout << "\tidName: " << idName() << std::endl;
+      std::cout << "\tparam: " << std::endl;
+      std::cout << param_ << std::endl;
+#endif
+      likelihood_.lnCompletedLikelihood(lnComp, k);
+    }
+
+    /**
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
     virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
     {
-      p_handler_->getData(idName(),
-                          m_augDataij_.data_,
-                          nbVariable_);// reset the data to get partially observed data location
       mixture_.getParameters(param_); // update the parameters
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
@@ -325,7 +289,7 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      likelihood_.lnLikelihood(lnComp, k);
+      likelihood_.lnObservedLikelihood(lnComp, k);
     }
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
@@ -360,38 +324,28 @@ class MixtureBridge : public mixt::IMixture
       return &m_augDataij_;
     }
 
-    virtual Param const* getParam() const
+    virtual const STK::Array2D<STK::Real>* getParam() const
     {
       return &param_;
     }
 
-    virtual const DataStat* getDataStat() const
+    virtual const DataStatStorage* getDataStatStorage() const
     {
-      return &dataStat_;
+      return &dataStatStorage_;
+    }
+
+    virtual const STK::Array2D<STK::Real>* getParamStatStorage() const
+    {
+      return &paramStatStorage_;
     }
 
     virtual void exportDataParam() const
     {
-      // export the data
-      STK::Array2D<int> posMissing;
-      STK::Array2D<STK::Real> statMissing;
-      dataStat_.exportVals(posMissing, statMissing); // get data from the DataStat
       p_dataExtractor_->exportVals(idName(),
-                                   &m_augDataij_.data_,
-                                   &posMissing,
-                                   &statMissing); // export the obtained data using the DataExtractor
-
-      //export the parameters
-      STK::Array2D<STK::Real> param;
-      paramStat_.exportParam(&param);
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::exportDataParam(), getParameters" << std::endl;
-      std::cout << "\tidName: " << idName() << std::endl;
-      std::cout << "\tparam: " << std::endl;
-      std::cout << param << std::endl;
-#endif
+                                   getData(),
+                                   getDataStatStorage()); // export the obtained data using the DataExtractor
       p_paramExtractor_->exportParam(idName(),
-                                     &param);
+                                     getParamStatStorage());
     }
 
   protected:
@@ -400,56 +354,43 @@ class MixtureBridge : public mixt::IMixture
     /** The augmented data set */
     AugData m_augDataij_;
     /** Current parameters of the STK Mixture */
-    Param param_;
+    STK::Array2D<STK::Real> param_;
+    /** number of samples in the data set*/
+    int nbSample_;
     /** number of variables in the data set */
     int nbVariable_;
     /** Sampler to generate values */
     Sampler sampler_;
-    /** Statistics storage for missing data */
-    DataStat dataStat_;
+    /** Statistics computer for missing data */
+    DataStatComputer dataStatComputer_;
     /** Statistics storage for parameters */
-    ParamStat paramStat_;
+    SimpleParamStat paramStat_;
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
-
     /** Pointer to the data handler */
     const DataHandler* p_handler_;
     /** Pointer to the data extractor */
     DataExtractor* p_dataExtractor_;
+    /** Pointer to the param setter */
+    const ParamSetter* p_paramSetter_;
     /** Pointer to the parameters extractor */
     ParamExtractor* p_paramExtractor_;
+
+    /** Statistics storage for missing data */
+    DataStatStorage dataStatStorage_;
+    /** Statistics storage for parameters */
+    STK::Array2D<STK::Real> paramStatStorage_;
 
   private:
     /** This function will be used in order to initialize the mixture model
      *  using informations stored by the data_ container.
      **/
      void initializeMixture()
-     { InitializeMixtureImpl<Id>::run(mixture_, m_augDataij_);}
-    /** protected constructor to use in order to create a bridge.
-     *  @param mixture the mixture to copy
-     *  @param idName id name of the mixture
-     *  @param nbCluster number of cluster
-     **/
-    MixtureBridge(Mixture const& mixture,
-                  std::string const& idName,
-                  int nbCluster,
-                  const DataHandler* p_handler,
-                  DataExtractor* p_dataExtractor,
-                  ParamExtractor* p_paramExtractor) :
-      IMixture( idName, nbCluster),
-      mixture_(mixture),
-      m_augDataij_(),
-      nbVariable_(0),
-      sampler_(getData(),
-               getParam()),
-      dataStat_(getData()),
-      paramStat_(getParam()),
-      likelihood_(getParam(),
-                  getData()),
-      p_handler_(p_handler),
-      p_dataExtractor_(p_dataExtractor),
-      p_paramExtractor_(p_paramExtractor)
-    {}
+     {
+       InitializeMixtureImpl<Id>::run(mixture_,
+                                      m_augDataij_,
+                                      param_);
+     }
 };
 
 } // namespace mixt

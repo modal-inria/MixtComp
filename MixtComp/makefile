@@ -19,22 +19,42 @@
 #   Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
 #------------------------------------------------------------------------
 
+include makevars
+
 # build path
 LIB_MC = ./lib/libMixtComp.a
+LIB_STK = ../stkpp/lib/libSTKpp.a
 BIN_DIR = ./bin
+EXE_MC = ./bin/mixtComp
+EXE_TEST = ./bin/mcTest
+LIB_RE = ./regex/libregex.a
 
 #-----------------------------------------------------------------------
 # build rules
 
 # phony prerequisites are executed unconditionally
-.PHONY: all clean
+.PHONY: all exe obj clean test
 
+all: lib $(LIB_RE) $(EXE_MC) $(EXE_TEST)
+
+clean:
+	find -L . -type f -name "*.o" -exec rm -f {} \;
+	find -L . -type f -name "*.d" -exec rm -f {} \;
+	find -L . -type f -name "*.a" -exec rm -f {} \;
+	find -L . -type f -name "*.so" -exec rm -f {} \;
+
+$(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
+	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
+
+$(EXE_TEST): $(LIB_MC) $(LIB_STK) $(LIB_RE)
+	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
+	
 lib: obj $(LIB_MC)
 
 obj:
-	$(MAKE) -C ./src/Algo
 	$(MAKE) -C ./src/Composer
 	$(MAKE) -C ./src/Data
+	$(MAKE) -C ./src/IO
 	$(MAKE) -C ./src/Likelihood
 	$(MAKE) -C ./src/Mixture
 	$(MAKE) -C ./src/Param
@@ -44,10 +64,9 @@ obj:
 
 $(LIB_MC): $(wildcard $(BIN_DIR)/*.o)
 	$(AR) $(ARFLAGS) $@ $(BIN_DIR)/*.o
+	
+$(LIB_STK):
+	cd ../stkpp; $(MAKE) all
 
-clean:
-	find -L . -type f -name "*.o" -exec rm -f {} \;
-	find -L . -type f -name "*.d" -exec rm -f {} \;
-	find -L . -type f -name "*.a" -exec rm -f {} \;
-	find -L . -type f -name "*.so" -exec rm -f {} \;
-
+$(LIB_RE):
+	cd regex; $(CXX) $(CXXFLAGS) -MD -MP -fPIC -I../../boost -c ../../boost/libs/regex/src/*.cpp; ar cr libregex.a *.o

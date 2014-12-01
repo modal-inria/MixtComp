@@ -22,82 +22,105 @@
  **/
 
 #include "mixt_SimpleParamStat.h"
+#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
 
-SimpleParamStat::SimpleParamStat(const STK::Array2D<STK::Real>* p_param) :
+SimpleParamStat::SimpleParamStat(STK::Array2D<STK::Real>* p_param,
+                                 STK::Array2D<STK::Real>* p_paramStatStorage,
+                                 STK::Real confidenceLevel) :
     nbIter_(0),
+    nbParam_(0),
     nbVar_(0),
-    p_param_(p_param)
+    p_param_(p_param),
+    p_paramStatStorage_(p_paramStatStorage),
+    confidenceLevel_(confidenceLevel)
 {}
 
 SimpleParamStat::~SimpleParamStat()
 {}
 
-void SimpleParamStat::initialize()
+void SimpleParamStat::sampleParam(int iteration,
+                                  int iterationMax)
 {
-  nbParam_ = p_param_->sizeRows();
-  nbVar_ = p_param_->sizeCols();
-  stat_.resize(nbParam_,
-               nbVar_ * 2);
-  stat_ = 0.;
-
-#ifdef MC_DEBUG
-  std::cout << "SimpleParamStat::initialize()" << std::endl;
-  std::cout <<  "\tp_param_->sizeRows(): " << p_param_->sizeRows() << std::endl;
-  std::cout <<  "\tp_param_->sizeCols() * 2: " << p_param_->sizeCols() * 2 << std::endl;
-#endif
-}
-
-void SimpleParamStat::sampleParam()
-{
-  ++nbIter_;
-#ifdef MC_DEBUG
-  std::cout << "SimpleParamStat::sampleParam()" << std::endl;
-#endif
-  for (int j = 0; j < nbVar_; ++j)
+  if (iteration == 0)
   {
-    /* here x is p_param_->col(j)
-     * mean is stat_.col(2 * j)
-     * m2 is stat_.col(2 * j + 1)
-     */
-    STK::Array2DVector<STK::Real> delta;
-    delta = p_param_->col(j) - stat_.col(2 * j);
-    stat_.col(2 * j    ) += delta / nbIter_;
-    stat_.col(2 * j + 1) += delta * (p_param_->col(j) - stat_.col(2 * j));
-#ifdef MC_DEBUG
-    std::cout << "\tj: " << j << std::endl;
-    std::cout << "\tdelta" << std::endl;
-    std::cout << delta << std::endl;
-    std::cout << "p_param_->col(j)" << std::endl;
-    std::cout << p_param_->col(j) << std::endl;
-    std::cout << "stat_.col(2 * j)" << std::endl;
-    std::cout << stat_.col(2 * j) << std::endl;
-    std::cout << "p_param_->col(j) - stat_.col(2 * j)" << std::endl;
-    std::cout << p_param_->col(j) - stat_.col(2 * j) << std::endl;
-    std::cout << "delta * (p_param_->col(j) - stat_.col(2 * j))" << std::endl;
-    std::cout << delta * (p_param_->col(j) - stat_.col(2 * j)) << std::endl;
-#endif
+    nbParam_ = p_param_->sizeRows();
+    nbVar_ = p_param_->sizeCols();
+
+    // resize internal storage
+    stat_.resize(nbVar_ * nbParam_);
+    for (int j = 0; j < nbVar_ * nbParam_; ++j)
+    {
+      stat_[j] = STK::Array2DVector<STK::Real>(iterationMax, 0.);
+    }
+
+    // resize export storage
+    p_paramStatStorage_->resize(nbParam_, 3 * nbVar_);
+
+    // first sampling, on each variable and each parameter
+    for (int j = 0; j < nbVar_; ++j)
+    {
+      for (int p = 0; p < nbParam_; ++p)
+      {
+        stat_[j * nbParam_ + p][iteration] = p_param_->elt(p, j);
+      }
+    }
   }
+  else if (iteration == iterationMax)
+  {
+    for (int j = 0; j < nbVar_; ++j)
+    {
+      for (int p = 0; p < nbParam_; ++p)
+      {
+        STK::Array2DVector<STK::Real>& currParam = stat_[j * nbParam_ + p];
+
 #ifdef MC_DEBUG
-  std::cout << "\t*p_param_" << std::endl;
-  std::cout << *p_param_ << std::endl;
-  std::cout << "\tstat_" << std::endl;
-  std::cout << stat_ << std::endl;
+      std::cout << "GaussianDataStat::sampleVals, last iteration: " << std::endl;
+      std::cout << "j: " << j << ", p: " << p << std::endl;
+      std::cout << "currParam: " << std::endl;
+      std::cout << currParam << std::endl;
 #endif
+
+        STK::Array2DVector<int> indOrder; // to store indices of ascending order
+        STK::heapSort(indOrder, currParam);
+        STK::Real alpha = (1. - confidenceLevel_) / 2.;
+        STK::Real realIndLow = alpha * iterationMax;
+        STK::Real realIndHigh = (1. - alpha) * iterationMax;
+
+        STK::Real mean = currParam.mean();
+        STK::Real low  =  (1. - (realIndLow  - int(realIndLow ))) * currParam[indOrder[int(realIndLow )    ]]
+                        + (      realIndLow  - int(realIndLow ) ) * currParam[indOrder[int(realIndLow ) + 1]];
+        STK::Real high =  (1. - (realIndHigh - int(realIndHigh))) * currParam[indOrder[int(realIndHigh)    ]]
+                        + (      realIndHigh - int(realIndHigh) ) * currParam[indOrder[int(realIndHigh) + 1]];
+
+        p_paramStatStorage_->elt(p, j * nbParam_ + 0) = mean;
+        p_paramStatStorage_->elt(p, j * nbParam_ + 1) = low;
+        p_paramStatStorage_->elt(p, j * nbParam_ + 2) = high;
+      }
+    }
+  }
+  else
+  {
+    for (int j = 0; j < nbVar_; ++j)
+    {
+      for (int p = 0; p < nbParam_; ++p)
+      {
+        stat_[j * nbParam_ + p][iteration] = p_param_->elt(p, j);
+      }
+    }
+  }
 }
 
-void SimpleParamStat::exportParam(STK::Array2D<STK::Real>* stat) const
+void SimpleParamStat::setExpectationParam()
 {
-  stat->resize(nbParam_, nbVar_ * 2);
-  for (int j = 0; j < nbVar_; ++j)
+  for (int i = 0; i < nbParam_; ++i)
   {
-    stat->col(2 * j) = stat_.col(j); // mean
-    if (nbIter_ < 2)
-      stat->col(2 * j + 1) = 0.; // standard deviation
-    else
-      stat->col(2 * j + 1) = (stat_.col(2 * j + 1) / (nbIter_ - 1.)).sqrt(); // standard deviation
+    for(int j = 0; j < nbVar_; ++j)
+    {
+      p_param_->elt(i, j) = p_paramStatStorage_->elt(i, 3 * j);
+    }
   }
 }
 

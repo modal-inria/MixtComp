@@ -25,12 +25,12 @@
 #ifndef MIXT_CATEGORICALBRIDGES_H
 #define MIXT_CATEGORICALBRIDGES_H
 
-#include "stkpp/projects/Clustering/include/CategoricalMixtureModels/STK_Categorical_pjk.h"
+#include "mixt_Categorical_pjk.h"
 #include "../../Sampler/mixt_CategoricalSampler.h"
-#include "../../Sampler/mixt_CategoricalSamplerIterator.h"
 #include "../../Data/mixt_CategoricalDataStat.h"
 #include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_CategoricalLikelihood.h"
+#include "Eigen/Dense"
 
 namespace mixt
 {
@@ -39,6 +39,7 @@ namespace mixt
 template<int Id,
          typename DataHandler,
          typename DataExtractor,
+         typename ParamSetter,
          typename ParamExtractor> class MixtureBridge;
 
 /**
@@ -52,31 +53,31 @@ struct BridgeTraits<STK::Clust::Categorical_pjk_>
     /** Type of the AugmentedData */
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat */
-    typedef CategoricalDataStat DataStat;
-    /** Type of the ParamStat */
-    typedef SimpleParamStat ParamStat;
-    /** Type of the parameter set to be used as output */
-    typedef STK::Array2D<STK::Real> Param;
+    typedef CategoricalDataStat DataStatComputer;
+    /** Type of the DataStat */
+    typedef Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                          Eigen::Dynamic,
+                          Eigen::Dynamic> DataStatStorage;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */
-    typedef STK::Categorical_pjk<Data> Mixture;
+    typedef Categorical_pjk Mixture;
     /** Sampler to be used for this specific mixture model */
     typedef CategoricalSampler Sampler;
-    /** Corresponding sampler iterator */
-    typedef CategoricalSamplerIterator SamplerIterator;
     /** Type of Likelihood */
     typedef CategoricalLikelihood Likelihood;
 };
 
 template<typename DataHandler,
          typename DataExtractor,
+         typename ParamSetter,
          typename ParamExtractor>
 struct CategoricalBridge_pjk_m
 {
    typedef MixtureBridge<STK::Clust::Categorical_pjk_,
                          DataHandler,
                          DataExtractor,
+                         ParamSetter,
                          ParamExtractor> type;
 };
 

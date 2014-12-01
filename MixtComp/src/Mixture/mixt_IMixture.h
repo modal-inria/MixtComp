@@ -42,7 +42,8 @@ class IMixture
      * @param idName Identification string of Mixture allocated by framework.
      * @param nbCluster number of cluster
      */
-    IMixture( std::string const& idName, int nbCluster);
+    IMixture(std::string const& idName,
+             int nbCluster);
     /**copy constructor.
      * @note The pointer on the composer is not copied and is set to 0: it have
      * to be set again.
@@ -61,19 +62,6 @@ class IMixture
     /** set the mixture composer to the mixture */
     void setMixtureComposer( MixtureComposer const* p_model);
 
-    /**This is a standard clone function in usual sense. It must be defined to
-     * provide new object of your class with values of various parameters equal
-     * to the values of calling object. In other words, this is equivalent to
-     * polymorphic copy constructor.
-     * @return New instance of class as that of calling object.
-     */
-    virtual IMixture* clone() const  = 0;
-    /**This is a standard create function in usual sense. It must be defined to
-     * provide new object of your class with correct behavior.
-     * In other words, this is equivalent to virtual constructor.
-     * @return New instance of class as that of calling object.
-     */
-    virtual IMixture* create() const  = 0;
     /** @brief This function must be defined in derived class for initialization
      *  of the mixture parameters.
      *  This method should create any container needed by the model, resize
@@ -84,20 +72,12 @@ class IMixture
      *  This function will be called once the model is created and data is set.
      */
     virtual void initializeStep() = 0;
-    /** @brief This function should be used in order to initialize randomly the
-     *  parameters of the mixture.
-     */
-    virtual void randomInit() = 0;
-    /** @brief This function should be used for Imputation of data.
-     *  The default implementation (in the base class) is to do nothing.
-     */
-    virtual void imputationStep() {/**Do nothing by default*/}
     /** @brief This function must be defined for simulation of all the latent
      * variables and/or missing data excluding class labels. The class labels
      * will be simulated by the framework itself because to do so we have to
      * take into account all the mixture laws.
      */
-    virtual void samplingStep() {/**Do nothing by default*/};
+    virtual void samplingStep(int i) {/**Do nothing by default*/};
     /** @brief This function is equivalent to mStep and must be defined to update
      *  parameters.
      */
@@ -106,17 +86,22 @@ class IMixture
      * @param iteration Provides the iteration number in the burn-in
      * period.
      */
-    virtual void storeShortRun(int iteration) {/**Do nothing by default*/}
+    virtual void storeShortRun(int iteration,
+                               int iterationMax) {/**Do nothing by default*/}
     /** @brief This function should be used to store any intermediate results
      * during various iterations after the burn-in period.
      * @param iteration Provides the iteration number beginning after the burn-in
      * period.
      */
-    virtual void storeLongRun(int iteration) {/**Do nothing by default*/}
+    virtual void storeLongRun(int iteration,
+                              int iterationMax) {/**Do nothing by default*/}
     /** @brief This step can be used to store data. This is usually called after the long algo, to
      * store data generated using the estimated parameters
      */
-    virtual void storeData() {/**Do nothing by default*/}
+    virtual void storeData(int sample,
+                           int iteration,
+                           int iterationMax)
+    {/**Do nothing by default*/}
     /** @brief This step can be used by developer to finalize any thing. It will
      *  be called only once after we finish running the estimation algorithm.
      */
@@ -128,6 +113,10 @@ class IMixture
      * @return the value of component probability in log scale
      */
     virtual double lnComponentProbability(int sample_num, int Cluster_num) = 0;
+    /** This function must be defined to return the observed likelihood
+     * @return the value of the observed likelihood in log scale
+     */
+    virtual void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k) = 0;
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
