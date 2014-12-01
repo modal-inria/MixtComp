@@ -26,6 +26,7 @@
 
 #include "MixtComp/src/Data/mixt_AugmentedData.h"
 #include "Rcpp.h"
+#include "Eigen/Dense"
 
 namespace mixt
 {
@@ -39,7 +40,9 @@ class DataExtractorR
     /** Export function for categorical model */
     void exportVals(std::string idName,
                     const AugmentedData<STK::Array2D<int> >* p_augData,
-                    const STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage);
+                    const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                        Eigen::Dynamic,
+                                        Eigen::Dynamic>* p_dataStatStorage);
     /** Export function for gaussian model */
     void exportVals(std::string idName,
                     const AugmentedData<STK::Array2D<STK::Real> >* p_augData,

@@ -26,6 +26,7 @@
 
 #include "Arrays/include/STK_Array2D.h"
 #include "../Data/mixt_AugmentedData.h"
+#include "Eigen/Dense"
 
 namespace mixt
 {
@@ -36,7 +37,9 @@ class CategoricalLikelihood
     /** Constructor */
     CategoricalLikelihood(const STK::Array2D<STK::Real>* p_param,
                           const AugmentedData<STK::Array2D<int> >* p_augData,
-                          const STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage);
+                          const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                              Eigen::Dynamic,
+                                              Eigen::Dynamic>* p_dataStatStorage);
     /** Destructor */
     virtual ~CategoricalLikelihood();
 
@@ -54,7 +57,9 @@ class CategoricalLikelihood
     const AugmentedData<STK::Array2D<int> >* p_augData_;
 
     /** Pointer to sampled data storage */
-    const STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage_;
+    const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                        Eigen::Dynamic,
+                        Eigen::Dynamic>* p_dataStatStorage_;
 };
 
 } /* namespace mixt */

@@ -96,7 +96,7 @@ void DataHandlerR::getData(std::string const& idData,
                            int& nbSample,
                            int& nbVariable) const
 {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "DataHandlerR::getDataHelper()" << std::endl;
   std::cout << "\tidData: " << idData << std::endl;
 //  std::cout << augData.data_ << std::endl;
@@ -142,7 +142,7 @@ void DataHandlerR::getData(std::string const& idData,
   int j = 0; // index of the current variable
   for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j) // loop on the elements of the rList_ corresponding to idData
   {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
     std::cout << "DataHandlerR::getData" << std::endl;
     std::cout << "\tj: " << j << std::endl;
 #endif
@@ -150,7 +150,7 @@ void DataHandlerR::getData(std::string const& idData,
     Rcpp::CharacterVector data = currVar("data");
     for (int i = 0; i < nbSamples_; ++i)
     {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
     std::cout << "DataHandlerR::getData" << std::endl;
     std::cout << "\ti: " << i << "\tj: " << j << std::endl;
 #endif
@@ -159,6 +159,10 @@ void DataHandlerR::getData(std::string const& idData,
       if (boost::regex_match(currStr, matches, reValue))
       {
         augData.setPresent(i, j, str2type<Type>(matches[1].str()));
+#ifdef MC_DEBUG_NEW
+        std::cout << "\tpresent value" << std::endl;
+        std::cout << str2type<Type>(matches[1].str()) << std::endl;
+#endif
         continue;
       }
 
@@ -166,24 +170,20 @@ void DataHandlerR::getData(std::string const& idData,
       {
         std::string::const_iterator start = currStr.begin();
         std::string::const_iterator end   = currStr.end();
-        std::list<Type> results;
         boost::smatch m;
+        typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+        misVal.first = missingFiniteValues_;
         while (boost::regex_search(start, end, m, reNumber ))
         {
-          results.push_back(str2type<Type>(m[0].str()));
+          misVal.second.push_back(str2type<Type>(m[0].str()));
           start = m[0].second;
+#ifdef MC_DEBUG_NEW
+        std::cout << "\tmissingFiniteValues_" << std::endl;
+        std::cout << m[0].str() << std::endl;
+#endif
         }
-        if (results.size() > 0)
-        {
-          typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
-          misVal.first = missingFiniteValues_;
-          misVal.second.reserve(results.size());;
-          misVal.second.insert(misVal.second.end(),
-                               results.begin(),
-                               results.end());
-          augData.setMissing(i, j, misVal);
-          continue;
-        }
+        augData.setMissing(i, j, misVal);
+        continue;
       }
 
       if (boost::regex_match(currStr, matches, reIntervals))
@@ -194,9 +194,10 @@ void DataHandlerR::getData(std::string const& idData,
         misVal.second[0] = str2type<Type>(matches[1].str());
         misVal.second[1] = str2type<Type>(matches[2].str());
         augData.setMissing(i, j, misVal);
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
         std::cout << "\tmissingIntervals_" << std::endl;
-        std::cout << augData.misData_(i, j).second.size() << std::endl;
+        std::cout << misVal.second[0] << std::endl;
+        std::cout << misVal.second[1] << std::endl;
 #endif
         continue;
       }
@@ -207,6 +208,10 @@ void DataHandlerR::getData(std::string const& idData,
         misVal.first = missingLUIntervals_;
         misVal.second.push_back(str2type<Type>(matches[1].str()));
         augData.setMissing(i, j, misVal);
+#ifdef MC_DEBUG_NEW
+        std::cout << "\tmissingLUIntervals_" << std::endl;
+        std::cout << matches[1].str() << std::endl;
+#endif
         continue;
       }
 
@@ -216,6 +221,10 @@ void DataHandlerR::getData(std::string const& idData,
         misVal.first = missingRUIntervals_;
         misVal.second.push_back(str2type<Type>(matches[1].str()));
         augData.setMissing(i, j, misVal);
+#ifdef MC_DEBUG_NEW
+        std::cout << "\tmissingRUIntervals_" << std::endl;
+        std::cout << matches[1].str() << std::endl;
+#endif
         continue;
       }
 
@@ -223,6 +232,9 @@ void DataHandlerR::getData(std::string const& idData,
       typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
       misVal.first = missing_;
       augData.setMissing(i, j, misVal);
+#ifdef MC_DEBUG_NEW
+        std::cout << "\tmissing_" << std::endl;
+#endif
     }
   }
   augData.computeRanges();

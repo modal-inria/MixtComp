@@ -35,7 +35,9 @@ DataExtractorR::~DataExtractorR()
 
 void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<STK::Array2D<int> >* p_augData,
-                                const STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage)
+                                const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                                    Eigen::Dynamic,
+                                                    Eigen::Dynamic>* p_dataStatStorage)
 {
 #ifdef MC_DEBUG_NEW
   std::cout << "DataExtractorR::exportVals, int" << std::endl;
@@ -68,10 +70,10 @@ void DataExtractorR::exportVals(std::string idName,
         currList.push_back(i + 1); // R matrices rows start at 1
         currList.push_back(j + 1); // R matrices cols start at 1
 #ifdef MC_DEBUG_NEW
-        std::cout << "p_dataStatStorage->elt(i, j).size(): " << p_dataStatStorage->elt(i, j).size() << std::endl;
+        std::cout << "p_dataStatStorage->elt(i, j).size(): " << (*p_dataStatStorage)(i, j).size() << std::endl;
 #endif
-        for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = p_dataStatStorage->elt(i, j).begin();
-             itVec != p_dataStatStorage->elt(i, j).end();
+        for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = (*p_dataStatStorage)(i, j).begin();
+             itVec != (*p_dataStatStorage)(i, j).end();
              ++itVec)
         {
 #ifdef MC_DEBUG_NEW
@@ -81,7 +83,7 @@ void DataExtractorR::exportVals(std::string idName,
           currList.push_back(itVec->second); // probability of the modality
         }
         missingData.push_back(currList);
-        dataR(i, j) = p_dataStatStorage->elt(i, j)[0].first; // imputation by the mode
+        dataR(i, j) = (*p_dataStatStorage)(i, j)[0].first; // imputation by the mode
       }
     }
   }

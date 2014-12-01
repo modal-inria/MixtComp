@@ -28,7 +28,9 @@ namespace mixt
 {
 
 CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                                         STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage,
+                                         Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                                       Eigen::Dynamic,
+                                                       Eigen::Dynamic>* p_dataStatStorage,
                                          STK::Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
@@ -65,7 +67,7 @@ void CategoricalDataStat::sampleVals(int ind,
     // clear current individual
     for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
     {
-      p_dataStatStorage_->elt(ind, j) = std::vector<std::pair<int, STK::Real> >();
+      (*p_dataStatStorage_)(ind, j) = std::vector<std::pair<int, STK::Real> >();
     }
 
     // creation of the objects for counting the modalities
@@ -106,12 +108,12 @@ void CategoricalDataStat::sampleVals(int ind,
         {
           int currMod = indOrder[i];
           STK::Real currProba = proba[currMod];
-          p_dataStatStorage_->elt(ind, j).push_back(std::pair<int, STK::Real>(currMod, currProba));
+          (*p_dataStatStorage_)(ind, j).push_back(std::pair<int, STK::Real>(currMod, currProba));
           cumProb += currProba;
 #ifdef MC_DEBUG_NEW
           std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;
           std::cout << "\tcumProb: " << cumProb << std::endl;
-          std::cout << "p_dataStatStorage_->elt(ind, j).back().first: " << p_dataStatStorage_->elt(ind, j).back().first << std::endl;
+          std::cout << "p_dataStatStorage_->elt(ind, j).back().first: " << (*p_dataStatStorage_)(ind, j).back().first << std::endl;
 #endif
           if (cumProb > confidenceLevel_)
           {
@@ -120,8 +122,8 @@ void CategoricalDataStat::sampleVals(int ind,
         }
       }
 #ifdef MC_DEBUG_NEW
-      for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = p_dataStatStorage_->elt(ind, j).begin();
-           itVec != p_dataStatStorage_->elt(ind, j).end();
+      for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = (*p_dataStatStorage_)(ind, j).begin();
+           itVec != (*p_dataStatStorage_)(ind, j).end();
            ++itVec)
       {
         std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
