@@ -74,6 +74,7 @@ class DataHandlerR
     template<typename Type>
     void getData(std::string const& idData,
                  AugmentedData<STK::Array2D<Type> >& augData,
+                 int& nbSample,
                  int& nbVariable) const;
   private:
     int nbSamples_;
@@ -92,6 +93,7 @@ class DataHandlerR
 template<typename Type>
 void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<STK::Array2D<Type> >& augData,
+                           int& nbSample,
                            int& nbVariable) const
 {
 #ifdef MC_DEBUG
@@ -101,6 +103,7 @@ void DataHandlerR::getData(std::string const& idData,
 #endif
 
   std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
+  nbSample = nbSamples_;
   nbVariable = v_pos.size();// resize the data
   augData.resizeArrays(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
 

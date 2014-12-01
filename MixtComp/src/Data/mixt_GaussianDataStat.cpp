@@ -55,23 +55,31 @@ void GaussianDataStat::sampleVals(int ind,
                                   int iteration,
                                   int iterationMax)
 {
+#ifdef MC_DEBUG
+  std::cout << "GaussianDataStat::sampleVals" << std::endl;
+#endif
   if (iteration == 0) // clear the temporary statistical object
   {
     // initialize internal storage
     tempStat_.resize(pm_augDataij_->data_.sizeCols());
-
-    // clear export storage
-    (*p_dataStatStorage_) = STK::Array2DPoint<STK::Real>(iterationMax + 1,
-                                                         0.);
 
     // creation of the vectors to store the sampled values
     for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
     {
       if (pm_augDataij_->misData_(ind, j).first != present_)
       {
-        tempStat_[j] = STK::Array2DVector<STK::Real>(iterationMax,
+        tempStat_[j] = STK::Array2DVector<STK::Real>(iterationMax + 1,
                                                      0.);
       }
+    }
+
+#ifdef MC_DEBUG
+    std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
+#endif
+    // clear current individual
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    {
+      p_dataStatStorage_->elt(ind, j) = STK::Array2DPoint<STK::Real>(3, 0.);
     }
 
     // first sampling
@@ -89,6 +97,10 @@ void GaussianDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
         std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
         std::cout << "j: " << j << std::endl;
+        std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): " << p_dataStatStorage_->sizeCols() << std::endl;
+        std::cout << "tempStat_[j].sizeRows(): " << tempStat_[j].sizeRows() << std::endl;
+        std::cout << "tempStat_[j]: " << std::endl;
+        std::cout << tempStat_[j] << std::endl;
 #endif
         STK::Array2DVector<int> indOrder; // to store indices of ascending order
         STK::heapSort(indOrder, tempStat_[j]);

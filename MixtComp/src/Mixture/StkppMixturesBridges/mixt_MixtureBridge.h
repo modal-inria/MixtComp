@@ -80,6 +80,7 @@ class MixtureBridge : public mixt::IMixture
       mixt::IMixture(idName, nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
+      nbSample_(0),
       nbVariable_(0),
       sampler_(&m_augDataij_,
                getParam()),
@@ -96,13 +97,14 @@ class MixtureBridge : public mixt::IMixture
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
-      // dataStatStorage_ is an empty std::map at construction
+      // dataStatStorage_ is an empty STK::Array2D at construction
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
       mixt::IMixture(bridge),
       mixture_(bridge.mixture_),
       m_augDataij_(bridge.m_augDataij_),
+      nbSample_(bridge.nbSample_),
       nbVariable_(bridge.nbVariable_),
       sampler_(bridge.sampler_),
       dataStatComputer_(bridge.dataStatComputer_),
@@ -128,8 +130,6 @@ class MixtureBridge : public mixt::IMixture
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::initializeStep()"  << std::endl;
       std::cout << "\tidName(): " << idName() << std::endl;
-      std::cout << "\tp_composer()" << p_composer() << std::endl;
-      std::cout << "\tp_zi(): " << p_zi() << std::endl;
 #endif
       if (!p_composer())
         std::cout << "MixtureBridge::initializeStep(), "
@@ -137,11 +137,11 @@ class MixtureBridge : public mixt::IMixture
                   << " model is not set." << std::endl;
       mixture_.setMixtureParameters(p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
-
-      /** get a sample of parameters to initialize the ParamStat object
-       * with the right size
-       */
+#ifdef MC_DEBUG
       mixture_.getParameters(param_);
+      std::cout << "param_, after initializeStep: " << std::endl;
+      std::cout << param_ << std::endl;
+#endif
     }
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -154,9 +154,12 @@ class MixtureBridge : public mixt::IMixture
 #endif
       p_handler_->getData(idName(),
                           m_augDataij_,
+                          nbSample_,
                           nbVariable_ );
       p_paramSetter_->getParam(idName(), param_);
-      initializeMixture();
+      initializeMixture(); // "transfer" the data and params from the bridge to the underlying stkpp mixture
+      dataStatStorage_.resize(nbSample_,
+                              nbVariable_);
     }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
@@ -174,6 +177,14 @@ class MixtureBridge : public mixt::IMixture
     virtual void paramUpdateStep()
     {
       mixture_.mStep();
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::paramUpdateStep" << std::endl;
+      std::cout << "*p_composer()->p_zi()" << std::endl;
+      std::cout << *p_composer()->p_zi() << std::endl;
+      mixture_.getParameters(param_);
+      std::cout << "param_: " << std::endl;
+      std::cout << param_ << std::endl;
+#endif
     }
     /** This function should be used to store any results during the burn-in period
      *  @param iteration Provides the iteration number during the burn-in period
@@ -222,7 +233,10 @@ class MixtureBridge : public mixt::IMixture
                            int iterationMax)
     {
 #ifdef MC_DEBUG
-      std::cout << "MixtureBridge::storeData, for " << idName();
+      std::cout << "MixtureBridge::storeData, for " << idName()
+                << ", sample: " << sample
+                << ", iteration: " << iteration
+                << ", iterationMax: " << iterationMax << std::endl;
 #endif
       dataStatComputer_.sampleVals(sample,
                                    iteration,
@@ -341,6 +355,8 @@ class MixtureBridge : public mixt::IMixture
     AugData m_augDataij_;
     /** Current parameters of the STK Mixture */
     STK::Array2D<STK::Real> param_;
+    /** number of samples in the data set*/
+    int nbSample_;
     /** number of variables in the data set */
     int nbVariable_;
     /** Sampler to generate values */

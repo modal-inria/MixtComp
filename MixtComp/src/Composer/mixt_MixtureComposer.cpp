@@ -103,6 +103,9 @@ STK::Real MixtureComposer::lnObservedLikelihood()
 
 void MixtureComposer::mStep()
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::mStep()" << std::endl;
+#endif
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
     (*it)->paramUpdateStep();

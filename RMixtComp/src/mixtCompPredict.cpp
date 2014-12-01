@@ -87,7 +87,8 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
 
   // export the composer results to R through modifications of mcResults
   mcResults.slot("nbCluster") = nbClusters;
-  mcResults.slot("lnlikelihood") = composer.lnObservedLikelihood();
+  mcResults.slot("lnObservedLikelihood") = composer.lnObservedLikelihood();
+  mcResults.slot("lnCompletedLikelihood") = composer.lnCompletedLikelihood();
 
   Rcpp::NumericVector proportions(nbClusters);
   for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)

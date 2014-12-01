@@ -37,28 +37,46 @@ void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<STK::Array2D<int> >* p_augData,
                                 const STK::Array2D<std::vector<std::pair<int, STK::Real> > >* p_dataStatStorage)
 {
+#ifdef MC_DEBUG_NEW
+  std::cout << "DataExtractorR::exportVals, int" << std::endl;
+#endif
   Rcpp::IntegerMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
                             p_augData->data_.sizeCols());
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
-  for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
+  for (int j = 0; j < p_augData->data_.sizeCols(); ++j)
   {
-    for (int j = 0; j < p_augData->data_.sizeCols(); ++j)
+    for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
     {
+#ifdef MC_DEBUG_NEW
+      std::cout << "\ti: " << i << ", j: " << j << std::endl;
+#endif
       if (p_augData->misData_(i, j).first == present_)
       {
+#ifdef MC_DEBUG_NEW
+        std::cout << "present_" << std::endl;
+#endif
         dataR(i, j) = p_augData->data_(i, j);
       }
       else
       {
+#ifdef MC_DEBUG_NEW
+        std::cout << "not present_" << std::endl;
+#endif
         Rcpp::List currList; // storage for the current missing value
         currList.push_back(i + 1); // R matrices rows start at 1
         currList.push_back(j + 1); // R matrices cols start at 1
+#ifdef MC_DEBUG_NEW
+        std::cout << "p_dataStatStorage->elt(i, j).size(): " << p_dataStatStorage->elt(i, j).size() << std::endl;
+#endif
         for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = p_dataStatStorage->elt(i, j).begin();
              itVec != p_dataStatStorage->elt(i, j).end();
              ++itVec)
         {
+#ifdef MC_DEBUG_NEW
+          std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
+#endif
           currList.push_back(itVec->first ); // current modality
           currList.push_back(itVec->second); // probability of the modality
         }
@@ -94,12 +112,13 @@ void DataExtractorR::exportVals(std::string idName,
         Rcpp::List currList; // storage for the current missing value
         currList.push_back(i + 1); // R matrices rows start at 1
         currList.push_back(j + 1); // R matrices cols start at 1
+        currList.push_back(p_dataStatStorage->elt(i,j)[0]); // expectation
         currList.push_back(p_dataStatStorage->elt(i,j)[1]); // left bound
         currList.push_back(p_dataStatStorage->elt(i,j)[2]); // right bound
 
         missingData.push_back(currList);
 
-        dataR(i, j) = p_dataStatStorage->elt(i,j)[2]; // imputation by the expectation
+        dataR(i, j) = p_dataStatStorage->elt(i,j)[0]; // imputation by the expectation
       }
     }
   }

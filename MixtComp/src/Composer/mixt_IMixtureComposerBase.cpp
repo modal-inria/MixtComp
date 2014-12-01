@@ -88,9 +88,6 @@ int IMixtureComposerBase::cStep()
 /* cStep for a single individual */
 void IMixtureComposerBase::cStep(int i)
 {
-#ifdef MC_DEBUG
-  std::cout << "IMixtureComposerBase::cStep, single individual" << std::endl;
-#endif
   tik_.row(i) = 0.;
   tik_.elt(i, zi_[i]) = 1.;
 }
@@ -112,9 +109,6 @@ int IMixtureComposerBase::sStep()
 /* simulate zi for a particular individual */
 void IMixtureComposerBase::sStep(int i)
 {
-#ifdef MC_DEBUG
-  std::cout << "IMixtureComposerBase::sStep, single individual" << std::endl;
-#endif
   zi_.elt(i) = STK::Law::Categorical::rand(tik_.row(i));
 }
 
@@ -129,15 +123,16 @@ void IMixtureComposerBase::eStep()
   {
     sum += eStep(i);
   }
+#ifdef MC_DEBUG
+  std::cout << "tik_:" << std::endl;
+  std::cout << tik_ << std::endl;
+#endif
   setLnLikelihood(sum);
 }
 
 /* compute Tik, for a particular individual */
 STK::Real IMixtureComposerBase::eStep(int i)
 {
-#ifdef MC_DEBUG
-  std::cout << "IMixtureComposerBase::eStep(int i)" << std::endl;
-#endif
   STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
   for (int k = tik_.firstIdxCols(); k <= tik_.lastIdxCols(); k++)
   {

@@ -12,7 +12,9 @@ testComplete <- function()
 
 testLearnPredict <- function()
 {
+  cat("Launching testGenDataLearn\n")
   myDataLearn <- testGenDataLearn()
+  cat("Launching testGenDataPredict\n")
   myDataPredict <- testGenDataPredict(myDataLearn[[2]]$param)
   
   return(myDataPredict)
@@ -23,7 +25,7 @@ testGenDataLearn <- function(nbClass = 2,
                              nbSampleLearn = 500,
                              nbSamplePredict = 50,
                              confidenceLevel = 0.95,
-                             regen = FALSE)
+                             regen = TRUE)
 {
   missingCategorical <- c(0.8, # present
                           0.1, # missing
@@ -33,12 +35,20 @@ testGenDataLearn <- function(nbClass = 2,
                        0.1, # missing interval
                        0.1, # missing left unbounded
                        0.1) # missing right unbounded
+#   missingCategorical <- c(1., # present
+#                           0., # missing
+#                           0.) # missing finite value
+#   missingGaussian <- c(1., # present
+#                        0., # missing
+#                        0., # missing interval
+#                        0., # missing left unbounded
+#                        0.) # missing right unbounded
   if (regen == TRUE)
   {
     dataParamGenerator(c(0.5, 0.5), # proportions
                        nbSampleLearn, # nbSamples
                        nbSamplePredict, # nbSamplePredict
-                       0, # nbVariablesCat
+                       2, # nbVariablesCat
                        3, # minModality
                        6, # nbModalities
                        2, # nbVariablesGauss
@@ -50,7 +60,9 @@ testGenDataLearn <- function(nbClass = 2,
   }
   
   lm <- getData(c("dataGen/learn/gaussianData.csv",
-                  "dataGen/learn/gaussianDescriptor.csv"))
+                  "dataGen/learn/gaussianDescriptor.csv"),
+                c("dataGen/learn/categoricalData.csv",
+                  "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit

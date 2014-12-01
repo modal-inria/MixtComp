@@ -46,61 +46,60 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
 
   for (int j = 0; j < p_augData_->misData_.sizeCols(); ++j)
   {
-    int sampleVal;
-
-    int minModality = p_augData_->globalRange_.min_;
-    int nbModalities = p_augData_->globalRange_.range_;
-
-    switch(p_augData_->misData_(i, j).first)
+    if (p_augData_->misData_(i, j).first != present_)
     {
-      case present_:
-      {}
-      break;
+      int sampleVal;
 
-      case missing_:
+      int minModality = p_augData_->globalRange_.min_;
+      int nbModalities = p_augData_->globalRange_.range_;
+
+      switch(p_augData_->misData_(i, j).first)
       {
-        STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range(z_i * nbModalities,
-                                                                          nbModalities),
-                                                               j);
-        sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities + minModality;
-      }
-      break;
+        case missing_:
+        {
+          STK::Array2DVector<STK::Real> modalities = (*p_param_)(STK::Range(z_i * nbModalities,
+                                                                            nbModalities),
+                                                                 j);
+          sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities + minModality;
+        }
+        break;
 
-      case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
-      {
-        STK::Array2DVector<STK::Real> modalities(STK::Range(minModality,
-                                                            nbModalities),
-                                                 0.);
-        STK::Array2DVector<STK::Real> equiModalities(STK::Range(minModality,
-                                                                nbModalities),
-                                                     0.);
-        for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i, j).second.begin();
-            currMod != p_augData_->misData_(i, j).second.end();
-            ++currMod)
+        case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
         {
-          modalities.elt(*currMod) = (*p_param_)(z_i * nbModalities + *currMod,
-                                                 j);
-          equiModalities.elt(*currMod) = 1.;
+          STK::Array2DVector<STK::Real> modalities(STK::Range(minModality,
+                                                              nbModalities),
+                                                   0.);
+          STK::Array2DVector<STK::Real> equiModalities(STK::Range(minModality,
+                                                                  nbModalities),
+                                                       0.);
+          for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i, j).second.begin();
+              currMod != p_augData_->misData_(i, j).second.end();
+              ++currMod)
+          {
+            modalities.elt(*currMod) = (*p_param_)(z_i * nbModalities + *currMod,
+                                                   j);
+            equiModalities.elt(*currMod) = 1.;
+          }
+          STK::Real modSum = modalities.sum();
+          if (modSum < minStat)
+          {
+            equiModalities = equiModalities / equiModalities.sum();
+            sampleVal = STK::Law::Categorical::rand(equiModalities);
+          }
+          else
+          {
+            modalities = modalities / modalities.sum();
+            sampleVal = STK::Law::Categorical::rand(modalities);
+          }
         }
-        STK::Real modSum = modalities.sum();
-        if (modSum < minStat)
-        {
-          equiModalities = equiModalities / equiModalities.sum();
-          sampleVal = STK::Law::Categorical::rand(equiModalities);
-        }
-        else
-        {
-          modalities = modalities / modalities.sum();
-          sampleVal = STK::Law::Categorical::rand(modalities);
-        }
-      }
-      break;
+        break;
 
-      default:
-      {}
-      break;
+        default:
+        {}
+        break;
+      }
+      p_augData_->data_(i, j) = sampleVal;
     }
-    p_augData_->data_(i, j) = sampleVal;
   }
 }
 } // namespace mixt

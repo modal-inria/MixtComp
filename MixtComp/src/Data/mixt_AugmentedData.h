@@ -69,6 +69,7 @@ class AugmentedData
     {
       data_.resize(nbSample, nbVariable);
       data_ = Type(0);
+      misData_.resize(nbSample, nbVariable);
     }
 
     void computeRanges()
@@ -107,6 +108,11 @@ class AugmentedData
 
     void setPresent(int i, int j, Type val)
     {
+#ifdef MC_DEBUG
+      std::cout << "AugmentedData::setPresent" << std::endl;
+      std::cout << "data_.sizeRows(): " << data_.sizeRows() << ", data_.sizeCols(): " << data_.sizeCols() << std::endl;
+      std::cout << "misData_.sizeRows(): " << misData_.sizeRows() << ", misData_.sizeCols(): " << misData_.sizeCols() << std::endl;
+#endif
       data_(i, j) = val;
       misData_(i, j) = MisVal(present_,
                               std::vector<Type>());

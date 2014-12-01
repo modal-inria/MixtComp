@@ -54,13 +54,19 @@ void CategoricalDataStat::sampleVals(int ind,
                                      int iteration,
                                      int iterationMax)
 {
+#ifdef MC_DEBUG_NEW
+  std::cout << "CategoricalDataStat::sampleVals, ind: " << ind << ", iteration: " << iteration << std::endl;
+#endif
   if (iteration == 0) // clear the temporary statistical object
   {
     // initialize internal storage
     tempStat_.resize(pm_augDataij_->data_.sizeCols());
 
-    // clear export storage
-    (*p_dataStatStorage_) = std::vector<std::pair<int, STK::Real> >();
+    // clear current individual
+    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    {
+      p_dataStatStorage_->elt(ind, j) = std::vector<std::pair<int, STK::Real> >();
+    }
 
     // creation of the objects for counting the modalities
     for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
@@ -86,29 +92,41 @@ void CategoricalDataStat::sampleVals(int ind,
       if (pm_augDataij_->misData_(ind, j).first != present_)
       {
         STK::Array2DPoint<STK::Real> proba;
-        proba = tempStat_[j] / STK::Real(iteration); // from count to probabilities
+        proba = tempStat_[j] / STK::Real(iterationMax + 1); // from count to probabilities
         STK::Array2DPoint<int> indOrder; // to store indices of ascending order
         STK::heapSort(indOrder, proba);
         STK::Real cumProb = 0.;
+#ifdef MC_DEBUG_NEW
+        std::cout << "pm_augDataij_->dataRanges_[j].max_: " << pm_augDataij_->dataRanges_[j].max_ << std::endl;
+        std::cout << "pm_augDataij_->dataRanges_[j].min_ - 1: " << pm_augDataij_->dataRanges_[j].min_ - 1 << std::endl;
+#endif
         for (int i = pm_augDataij_->dataRanges_[j].max_;
              i > pm_augDataij_->dataRanges_[j].min_ - 1;
              --i)
         {
           int currMod = indOrder[i];
-  #ifdef MC_DEBUG
-          std::cout << "CategoricalDataStat::sampleVals" << std::endl;
-          std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]" << proba[currMod] << std::endl;
-          std::cout << "\tcumProb: " << cumProb << std::endl;
-  #endif
           STK::Real currProba = proba[currMod];
           p_dataStatStorage_->elt(ind, j).push_back(std::pair<int, STK::Real>(currMod, currProba));
           cumProb += currProba;
+#ifdef MC_DEBUG_NEW
+          std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;
+          std::cout << "\tcumProb: " << cumProb << std::endl;
+          std::cout << "p_dataStatStorage_->elt(ind, j).back().first: " << p_dataStatStorage_->elt(ind, j).back().first << std::endl;
+#endif
           if (cumProb > confidenceLevel_)
           {
             break;
           }
         }
       }
+#ifdef MC_DEBUG_NEW
+      for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = p_dataStatStorage_->elt(ind, j).begin();
+           itVec != p_dataStatStorage_->elt(ind, j).end();
+           ++itVec)
+      {
+        std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
+      }
+#endif
     }
   }
   else // any other iteration: juste store the current value

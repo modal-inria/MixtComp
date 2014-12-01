@@ -57,6 +57,11 @@ class Gaussian_sjk : public STK::Gaussian_sjk<STK::Array2D<STK::Real> >
         }
       }
     }
+
+    void initializeStep()
+    {
+      // mstep performed explicitely in the Strategy, if needed
+    }
 };
 
 } // namespace mixt

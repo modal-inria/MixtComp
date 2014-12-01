@@ -48,6 +48,9 @@ GibbsStrategy::~GibbsStrategy()
 
 bool GibbsStrategy::run()
 {
+  p_composer_->randomClassInit();
+//  p_composer_->initializeStep(); // initialize mixture parameters, usually calling an mStep
+
   for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbBurnInIterGibbs_; ++iterBurnInGibbs)
   {
 #ifdef MC_DEBUG

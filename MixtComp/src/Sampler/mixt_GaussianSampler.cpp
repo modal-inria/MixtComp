@@ -47,86 +47,93 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 
   for (int j = 0; j < p_augData_->misData_.sizeCols(); ++j)
   {
-    STK::Real z;
-    STK::Real mean  = p_param_->elt(2 * z_i    , j);
-    STK::Real sd    = p_param_->elt(2 * z_i + 1, j);
-
-    switch(p_augData_->misData_(i, j).first)
+    if (p_augData_->misData_(i, j).first != present_)
     {
-      case missing_:
+      STK::Real z;
+      STK::Real mean  = p_param_->elt(2 * z_i    , j);
+      STK::Real sd    = p_param_->elt(2 * z_i + 1, j);
+
+#ifdef MC_DEBUG
+      std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
+#endif
+
+      switch(p_augData_->misData_(i, j).first)
       {
-#ifdef MC_DEBUG
-        std::cout << "\tmissing_" << std::endl;
-#endif
-        z = STK::Law::Normal::rand(0., 1.);
-      }
-      break;
-
-      case missingIntervals_:
-      {
-#ifdef MC_DEBUG
-        std::cout << "\tmissingIntervals_" << std::endl;
-#endif
-        STK::Real infBound = p_augData_->misData_(i, j).second[0];
-        STK::Real supBound = p_augData_->misData_(i, j).second[1];
-
-        STK::Real lower = (infBound - mean) / sd;
-        STK::Real upper = (supBound - mean) / sd;
-        STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
-
-#ifdef MC_DEBUG
-        std::cout << "\tmissingIntervals_" << std::endl;
-        std::cout << "\tinfBound " << infBound << ", supBound: " << supBound << std::endl;
-        std::cout << "\tlower " << lower << ", upper: " << upper << std::endl;
-        std::cout << "\talpha " << alpha << std::endl;
-#endif
-
-        if (alpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(pow(lower, 2) / 2) / (upper - lower))
+        case missing_:
         {
-          do
+#ifdef MC_DEBUG
+          std::cout << "\tmissing_" << std::endl;
+#endif
+          z = STK::Law::Normal::rand(0., 1.);
+        }
+        break;
+
+        case missingIntervals_:
+        {
+#ifdef MC_DEBUG
+          std::cout << "\tmissingIntervals_" << std::endl;
+#endif
+          STK::Real infBound = p_augData_->misData_(i, j).second[0];
+          STK::Real supBound = p_augData_->misData_(i, j).second[1];
+
+          STK::Real lower = (infBound - mean) / sd;
+          STK::Real upper = (supBound - mean) / sd;
+          STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
+
+#ifdef MC_DEBUG
+          std::cout << "\tmissingIntervals_" << std::endl;
+          std::cout << "\tinfBound " << infBound << ", supBound: " << supBound << std::endl;
+          std::cout << "\tlower: " << lower << ", upper: " << upper << std::endl;
+          std::cout << "\talpha: " << alpha << std::endl;
+#endif
+
+          if (alpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(pow(lower, 2) / 2) / (upper - lower))
           {
-            z = lbSampler(lower);
+            do
+            {
+              z = lbSampler(lower);
+            }
+            while(upper < z);
           }
-          while(upper < z);
+          else
+          {
+            z = lrbSampler(lower, upper);
+          }
         }
-        else
+        break;
+
+        case missingLUIntervals_: // missingLUIntervals
         {
-          z = lrbSampler(lower, upper);
+#ifdef MC_DEBUG
+          std::cout << "\tmissingLUIntervals_" << std::endl;
+#endif
+          STK::Real supBound = p_augData_->misData_(i, j).second[0];
+          STK::Real upper = (supBound - mean) / sd;
+          z = -lbSampler(-upper);
         }
-      }
-      break;
+        break;
 
-      case missingLUIntervals_: // missingLUIntervals
-      {
+        case missingRUIntervals_: // missingRUIntervals
+        {
 #ifdef MC_DEBUG
-        std::cout << "\tmissingLUIntervals_" << std::endl;
+          std::cout << "\tmissingRUIntervals_" << std::endl;
 #endif
-        STK::Real supBound = p_augData_->misData_(i, j).second[0];
-        STK::Real upper = (supBound - mean) / sd;
-        z = -lbSampler(-upper);
-      }
-      break;
+          STK::Real infBound = p_augData_->misData_(i, j).second[0];
+          STK::Real lower = (infBound - mean) / sd;
+          z = lbSampler(lower);
+        }
+        break;
 
-      case missingRUIntervals_: // missingRUIntervals
-      {
+        default:
+        {}
+        break;
+      }
+
 #ifdef MC_DEBUG
-        std::cout << "\tmissingRUIntervals_" << std::endl;
+      std::cout << "\tsampled val: " << z * sd + mean << std::endl;
 #endif
-        STK::Real infBound = p_augData_->misData_(i, j).second[0];
-        STK::Real lower = (infBound - mean) / sd;
-        z = lbSampler(lower);
-      }
-      break;
-
-      default:
-      {}
-      break;
+      p_augData_->data_(i, j) = z * sd + mean;
     }
-
-#ifdef MC_DEBUG
-    std::cout << "\tsampled val: " << z * sd + mean << std::endl;
-#endif
-    p_augData_->data_(i, j) = z * sd + mean;
   }
 }
 

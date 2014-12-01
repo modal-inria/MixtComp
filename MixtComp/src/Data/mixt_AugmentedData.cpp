@@ -57,12 +57,20 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
         STK::Real sampleVal;
         switch(misData_(i, j).first) // (iterator on map)->(mapped element).(MisType)
         {
+          case present_:
+          {}
+          break;
+
           case missing_:
           {
             STK::Real min = dataRanges_[j].min_;
             STK::Real max = dataRanges_[j].max_;
             sampleVal = STK::Law::Uniform::rand(min, max);
           }
+          break;
+
+          case missingFiniteValues_: // no missing finite values for continuous data
+          {}
           break;
 
           case missingIntervals_:
@@ -122,6 +130,10 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
   #endif
         switch(misData_(i, j).first) // (iterator on map)->(mapped element).(MisType)
         {
+          case present_:
+          {}
+          break;
+
           case missing_:
           {
             STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality,
@@ -148,6 +160,10 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
             }
             sampleVal = STK::Law::Categorical::rand(modalities);
           }
+          break;
+
+          default: // other types of intervals not present in integer data
+          {}
           break;
         }
         data_(i, j) = sampleVal;

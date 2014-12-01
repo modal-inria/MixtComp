@@ -54,6 +54,11 @@ class Categorical_pjk : public STK::Categorical_pjk<STK::Array2D<int> >
         }
       }
     }
+
+    void initializeStep()
+    {
+      // mstep performed explicitely in the Strategy, if needed
+    }
 };
 
 } // namespace mixt
