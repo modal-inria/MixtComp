@@ -15,7 +15,8 @@ testLearnPredict <- function()
   cat("Launching testGenDataLearn\n")
   myDataLearn <- testGenDataLearn()
   cat("Launching testGenDataPredict\n")
-  myDataPredict <- testGenDataPredict(myDataLearn[[2]]$param)
+  myDataPredict <- testGenDataPredict(myDataLearn[[1]]@results@proportions,
+                                      myDataLearn[[2]]$param)
   
   return(myDataPredict)
 }
@@ -45,8 +46,7 @@ testGenDataLearn <- function(nbClass = 2,
 #                        0.) # missing right unbounded
   if (regen == TRUE)
   {
-    dataParamGenerator(c(0.5, 0.5), # proportions
-                       nbSampleLearn, # nbSamples
+    dataParamGenerator(nbSampleLearn, # nbSamples
                        nbSamplePredict, # nbSamplePredict
                        2, # nbVariablesCat
                        3, # minModality
@@ -81,7 +81,8 @@ testGenDataLearn <- function(nbClass = 2,
 }
 
 
-testGenDataPredict <- function(param,
+testGenDataPredict <- function(prop,
+                               param,
                                nbClass = 2,
                                nbBurnInIter = 20,
                                confidenceLevel = 0.95)
@@ -100,6 +101,7 @@ testGenDataPredict <- function(param,
   
   # launch of the MixtComp algorithm
   dataParam <- mixtCompPredict(lm,
+                               prop,
                                param,
                                mcCluster,
                                nbClass,

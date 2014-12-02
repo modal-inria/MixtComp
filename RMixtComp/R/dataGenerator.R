@@ -71,8 +71,7 @@ dataGenerator <- function(prefix,
               col.names=FALSE)
 }
 
-dataParamGenerator <- function(proportions,
-                               nbSamplesLearn,
+dataParamGenerator <- function(nbSamplesLearn,
                                nbSamplesPredict,
                                nbVariableCat,
                                minModality,
@@ -85,6 +84,13 @@ dataParamGenerator <- function(proportions,
                                missingGaussian)
 {
   cat("dataParamGenerator\n")
+  proportions <- runif(nbClasses)
+  proportions <- proportions / sum(proportions)
+  write.table(proportions,
+              file = "dataGen/param/proportions.csv",
+              sep = ";",
+              row.names=FALSE,
+              col.names=FALSE)
   if (nbVariableCat > 0)
   {
     categoricalParams <- matrix(nrow = nbClasses * nbModalities,
