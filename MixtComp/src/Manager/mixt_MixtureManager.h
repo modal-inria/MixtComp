@@ -59,10 +59,13 @@ class MixtureManager
       {
         std::string idName = it->first;
         std::string model = it->second;
-#ifdef MC_DEBUG
-        std::cout << "MixtureManager::createMixtures, " << idName << ", " << model << std::endl;
+        Mixture idModel = stringToMixture(model);
+#ifdef MC_DEBUG_NEW
+        std::cout << "MixtureManager::createMixtures, "
+        		  << "idName: " << idName
+				  << ", model: " << model
+				  << ", idModel:" << idModel << std::endl;
 #endif
-        STK::Clust::Mixture idModel = STK::Clust::stringToMixture(model);
         // get a mixture fully
         mixt::IMixture* p_mixture = createMixture(idModel,
                                                   idName,
@@ -77,14 +80,14 @@ class MixtureManager
      *  @param idName name of the model
      *  @param nbCluster number of cluster of the model
      **/
-    mixt::IMixture* createMixture(STK::Clust::Mixture idModel,
+    mixt::IMixture* createMixture(Mixture idModel,
                                   std::string const& idName,
                                   int nbCluster,
                                   STK::Real confidenceLevel)
     {
       switch (idModel)
       {
-        case STK::Clust::Gaussian_sjk_:
+        case Gaussian_sjk_:
         {
           typename GaussianBridge_sjk_m<DataHandler,
                                         DataExtractor,
@@ -104,7 +107,7 @@ class MixtureManager
         }
         break;
 
-        case STK::Clust::Categorical_pjk_:
+        case Categorical_pjk_:
         {
           typename CategoricalBridge_pjk_m<DataHandler,
                                            DataExtractor,

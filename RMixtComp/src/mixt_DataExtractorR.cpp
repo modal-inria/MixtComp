@@ -39,7 +39,7 @@ void DataExtractorR::exportVals(std::string idName,
                                                     Eigen::Dynamic,
                                                     Eigen::Dynamic>* p_dataStatStorage)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "DataExtractorR::exportVals, int" << std::endl;
 #endif
   Rcpp::IntegerMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
@@ -51,32 +51,32 @@ void DataExtractorR::exportVals(std::string idName,
   {
     for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "\ti: " << i << ", j: " << j << std::endl;
 #endif
       if (p_augData->misData_(i, j).first == present_)
       {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "present_" << std::endl;
 #endif
         dataR(i, j) = p_augData->data_(i, j);
       }
       else
       {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "not present_" << std::endl;
 #endif
         Rcpp::List currList; // storage for the current missing value
         currList.push_back(i + 1); // R matrices rows start at 1
         currList.push_back(j + 1); // R matrices cols start at 1
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "p_dataStatStorage->elt(i, j).size(): " << (*p_dataStatStorage)(i, j).size() << std::endl;
 #endif
         for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = (*p_dataStatStorage)(i, j).begin();
              itVec != (*p_dataStatStorage)(i, j).end();
              ++itVec)
         {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
 #endif
           currList.push_back(itVec->first ); // current modality

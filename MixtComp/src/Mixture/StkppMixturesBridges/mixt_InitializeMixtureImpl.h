@@ -54,10 +54,10 @@ struct InitializeMixtureImpl
 /** Initialize mixture, specialization for Categorical_pjk models
  **/
 template<>
-struct InitializeMixtureImpl<STK::Clust::Categorical_pjk_>
+struct InitializeMixtureImpl<Categorical_pjk_>
 {
-  typedef typename BridgeTraits<STK::Clust::Categorical_pjk_>::Mixture Mixture;
-  typedef typename BridgeTraits<STK::Clust::Categorical_pjk_>::AugData AugData;
+  typedef typename BridgeTraits<Categorical_pjk_>::Mixture Mixture;
+  typedef typename BridgeTraits<Categorical_pjk_>::AugData AugData;
   static void run(Mixture& mixture,
                   AugData& augData,
                   STK::Array2D<STK::Real>& param)

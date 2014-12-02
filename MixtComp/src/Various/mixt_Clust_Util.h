@@ -49,9 +49,9 @@ enum Mixture
   unknown_mixture_
 };
 
-Mixture stringToMixture(STK::String const& type);
+Mixture stringToMixture(std::string const& type);
 
-STK::String mixtureToString(Mixture const& type);
+std::string mixtureToString(Mixture const& type);
 
 }  // namespace mixt
 

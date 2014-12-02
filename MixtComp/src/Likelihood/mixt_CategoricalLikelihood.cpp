@@ -65,14 +65,14 @@ void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>*
 
 void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "CategoricalLikelihood::lnObservedLikelihood" << std::endl;
 #endif
   for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
   {
     for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "\ti: " << i << ", j: " << j << std::endl;
 #endif
       switch (p_augData_->misData_(i, j).first)
@@ -92,7 +92,7 @@ void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* 
 
         case missingFiniteValues_: // adding the contributions of the various modalities
         {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "missingFiniteValues" << std::endl;
           std::cout << "p_param_->sizeRows(): " << p_param_->sizeRows() << ", p_param_->sizeCols(): " << p_param_->sizeCols() << std::endl;
 #endif
@@ -104,7 +104,7 @@ void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* 
                itMiss != p_augData_->misData_(i, j).second.end();
                ++itMiss)
           {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
             std::cout << "k: " << k << ", j: " << j << ", nbModalities: " << nbModalities << ", *itMiss: " << *itMiss << std::endl;
 #endif
             proba += p_param_->elt(k * nbModalities + *itMiss,

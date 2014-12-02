@@ -87,7 +87,9 @@ testGenDataPredict <- function(param,
                                confidenceLevel = 0.95)
 {
   lm <- getData(c("dataGen/predict/gaussianData.csv",
-                  "dataGen/predict/gaussianDescriptor.csv"))
+                  "dataGen/predict/gaussianDescriptor.csv"),
+                c("dataGen/predict/categoricalData.csv",
+                  "dataGen/predict/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit

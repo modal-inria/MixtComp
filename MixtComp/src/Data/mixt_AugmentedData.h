@@ -115,7 +115,7 @@ class AugmentedData
 #ifdef MC_DEBUG
       std::cout << "AugmentedData::setPresent" << std::endl;
       std::cout << "data_.sizeRows(): " << data_.sizeRows() << ", data_.sizeCols(): " << data_.sizeCols() << std::endl;
-      std::cout << "misData_.sizeRows(): " << misData_.sizeRows() << ", misData_.sizeCols(): " << misData_.sizeCols() << std::endl;
+      std::cout << "misData_.sizeRows(): " << misData_.rows() << ", misData_.cols(): " << misData_.cols() << std::endl;
 #endif
       data_(i, j) = val;
       misData_(i, j) = MisVal(present_,

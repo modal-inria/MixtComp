@@ -34,10 +34,10 @@ namespace mixt
  *  @return the Mixture represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_mixture_ type is returned.
  **/
-Mixture stringToMixture( std::string const& type)
+Mixture stringToMixture(std::string const& type)
 {
-  if (STK::toUpperString(type) == STK::toUpperString(_T("Gaussian_sjk_"))) return Gaussian_sjk_;
-  if (STK::toUpperString(type) == STK::toUpperString(_T("Categorical_pjk"))) return Categorical_pjk_;
+  if (type == "Gaussian_sjk") return Gaussian_sjk_;
+  if (type == "Categorical_pjk") return Categorical_pjk_;
   return unknown_mixture_;
 }
 
@@ -46,11 +46,11 @@ Mixture stringToMixture( std::string const& type)
  *  @param type the type of Mixture we want to convert
  *  @return the string associated to this type.
  **/
-STK::String mixtureToString(Mixture const& type)
+std::string mixtureToString(Mixture const& type)
 {
-  if (type == Gaussian_sjk_) return STK::String("Gaussian_sjk");
-  if (type == Categorical_pjk_) return STK::String("Categorical_pjk");
-  return STK::String("unknown");
+  if (type == Gaussian_sjk_) return "Gaussian_sjk";
+  if (type == Categorical_pjk_) return "Categorical_pjk";
+  return "unknown";
 }
 
 } // namespace mixt

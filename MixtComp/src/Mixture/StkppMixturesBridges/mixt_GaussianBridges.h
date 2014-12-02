@@ -47,7 +47,7 @@ template<int Id,
  *  Specialization of the MixtureTraits for the Gaussian_sjk_ model
  **/
 template<>
-struct BridgeTraits<STK::Clust::Gaussian_sjk_>
+struct BridgeTraits<Gaussian_sjk_>
 {
     /** Type of the data set to be used as input */
     typedef STK::Array2D<STK::Real> Data;
@@ -73,7 +73,7 @@ template<typename DataHandler,
          typename ParamExtractor>
 struct GaussianBridge_sjk_m
 {
-   typedef MixtureBridge<STK::Clust::Gaussian_sjk_,
+   typedef MixtureBridge<Gaussian_sjk_,
                          DataHandler,
                          DataExtractor,
                          ParamSetter,
