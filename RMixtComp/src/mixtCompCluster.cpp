@@ -67,7 +67,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                                  handler.nbVariable(),
                                  nbClusters);
 
-  manager.createMixtures(&composer,
+  manager.createMixtures(composer,
                          nbClusters);
   
   // create the appropriate strategy and transmit the parameters

@@ -74,7 +74,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                  nbClusters);
   composer.setProportions(paramSetterComposer.getProportions());
 
-  manager.createMixtures(&composer,
+  manager.createMixtures(composer,
                          nbClusters);
   
   // create the appropriate strategy and transmit the parameters

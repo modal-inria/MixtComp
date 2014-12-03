@@ -52,7 +52,7 @@ class MixtureManager
       confidenceLevel_(confidenceLevel)
     {}
 
-    void createMixtures(mixt::MixtureComposer* composer,
+    void createMixtures(mixt::MixtureComposer& composer,
                         int nbCluster)
     {
       for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
@@ -62,16 +62,19 @@ class MixtureManager
         Mixture idModel = stringToMixture(model);
 #ifdef MC_DEBUG_NEW
         std::cout << "MixtureManager::createMixtures, "
-        		  << "idName: " << idName
-				  << ", model: " << model
-				  << ", idModel:" << idModel << std::endl;
+        		      << "idName: " << idName
+				          << ", model: " << model
+				          << ", idModel: " << idModel << std::endl;
+        std::cout << "composer.p_pk(): " << composer.p_pk()
+                  << ", *composer.p_pk(): " << *composer.p_pk() << std::endl;
 #endif
         // get a mixture fully
         mixt::IMixture* p_mixture = createMixture(idModel,
                                                   idName,
+                                                  composer,
                                                   nbCluster,
                                                   confidenceLevel_);
-        if (p_mixture) composer->registerMixture(p_mixture);
+        if (p_mixture) composer.registerMixture(p_mixture);
       }
     }
 
@@ -82,9 +85,14 @@ class MixtureManager
      **/
     mixt::IMixture* createMixture(Mixture idModel,
                                   std::string const& idName,
+                                  mixt::MixtureComposer& composer,
                                   int nbCluster,
                                   STK::Real confidenceLevel)
     {
+#ifdef MC_DEBUG_NEW
+      std::cout << "MixtureManager::createMixture" << std::endl;
+      std::cout << "idName: " << idName << std::endl;
+#endif
       switch (idModel)
       {
         case Gaussian_sjk_:
@@ -97,6 +105,9 @@ class MixtureManager
                                                                                                             ParamSetter,
                                                                                                             ParamExtractor>::type(idName,
                                                                                                                                   nbCluster,
+                                                                                                                                  composer.p_pk(),
+                                                                                                                                  composer.p_tik(),
+                                                                                                                                  composer.p_zi(),
                                                                                                                                   p_handler_,
                                                                                                                                   p_dataExtractor_,
                                                                                                                                   p_paramSetter_,
@@ -117,6 +128,9 @@ class MixtureManager
                                                                                                                   ParamSetter,
                                                                                                                   ParamExtractor>::type(idName,
                                                                                                                                         nbCluster,
+                                                                                                                                        composer.p_pk(),
+                                                                                                                                        composer.p_tik(),
+                                                                                                                                        composer.p_zi(),
                                                                                                                                         p_handler_,
                                                                                                                                         p_dataExtractor_,
                                                                                                                                         p_paramSetter_,

@@ -72,12 +72,19 @@ class MixtureBridge : public mixt::IMixture
      **/
     MixtureBridge(std::string const& idName,
                   int nbCluster,
+                  STK::CArrayPoint<STK::Real> const* p_prop,
+                  STK::Array2D<STK::Real> const* p_tik,
+                  STK::CArrayVector<int> const* p_zi,
                   const DataHandler* p_handler_,
                   DataExtractor* p_extractor,
                   const ParamSetter* p_paramSetter,
                   ParamExtractor* p_paramExtractor,
                   STK::Real confidenceLevel) :
-      mixt::IMixture(idName, nbCluster),
+      mixt::IMixture(idName,
+                     p_prop,
+                     p_tik,
+                     p_zi,
+                     nbCluster),
       mixture_(nbCluster),
       m_augDataij_(),
       nbSample_(0),
@@ -131,10 +138,6 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "MixtureBridge::initializeStep()"  << std::endl;
       std::cout << "\tidName(): " << idName() << std::endl;
 #endif
-      if (!p_composer())
-        std::cout << "MixtureBridge::initializeStep(), "
-                  << idName()
-                  << " model is not set." << std::endl;
       mixture_.setMixtureParameters(p_pk(), p_tik(), p_zi());
       mixture_.initializeStep();
 #ifdef MC_DEBUG
@@ -149,7 +152,7 @@ class MixtureBridge : public mixt::IMixture
      */
     void setDataParam()
     {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
         std::cout << "MixtureBridge::setData(), idName(): " << idName() << std::endl;
 #endif
       p_handler_->getData(idName(),

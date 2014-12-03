@@ -43,24 +43,36 @@ class IMixture
      * @param nbCluster number of cluster
      */
     IMixture(std::string const& idName,
-             int nbCluster);
+             STK::CArrayPoint<STK::Real> const* p_prop,
+             STK::Array2D<STK::Real> const* p_tik,
+             STK::CArrayVector<int> const* p_zi,
+             int nbCluster) :
+      idName_(idName),
+      nbCluster_(nbCluster),
+      p_prop_(p_prop),
+      p_tik_(p_tik),
+      p_zi_(p_zi)
+    {};
     /**copy constructor.
      * @note The pointer on the composer is not copied and is set to 0: it have
      * to be set again.
      * @param mixture the mixture to copy */
-    IMixture( IMixture const& mixture);
+    IMixture(IMixture const& mixture) :
+      idName_(mixture.idName_),
+      nbCluster_(mixture.nbCluster_),
+      p_prop_(mixture.p_prop_),
+      p_tik_(mixture.p_tik_),
+      p_zi_(mixture.p_zi_)
+    {};
     /** Virtual destructor. */
-    virtual ~IMixture();
+    virtual ~IMixture()
+    {};
 
     /** return the Id of the mixture */
     inline std::string const& idName() const { return idName_;}
     /** @return Number of cluster. */
     inline int nbCluster() const  { return nbCluster_;}
-    /** @return Number of cluster. */
-    inline MixtureComposer const* const p_composer() const { return p_composer_;}
 
-    /** set the mixture composer to the mixture */
-    void setMixtureComposer( MixtureComposer const* p_model);
 
     /** @brief This function must be defined in derived class for initialization
      *  of the mixture parameters.
@@ -164,23 +176,28 @@ class IMixture
     /** This function can be used in derived classes to get proportions from the framework.
      *  @return Pointer to proportions.
      */
-    STK::CArrayPoint<STK::Real> const* p_pk() const;
+    STK::CArrayPoint<STK::Real> const* p_pk() const {return p_prop_;};
     /** This function can be used in derived classes to get posterior probabilities from the framework.
      *  @return Pointer to tik.
      */
-    STK::Array2D<STK::Real> const* p_tik() const;
+    STK::Array2D<STK::Real> const* p_tik() const {return p_tik_;};
     /** This function can be used in derived classes to get class labels from the framework.
      *  @return Pointer to zi.
      */
-    STK::CArrayVector<int> const* p_zi() const;
+    STK::CArrayVector<int> const* p_zi() const {return p_zi_;};
 
   private:
-    /** pointer on the main composer model */
-    const MixtureComposer* p_composer_;
     /** Id name of the mixture */
     std::string idName_;
     /** number of cluster */
     int nbCluster_;
+
+    /** Pointer to the proportions of each mixtures */
+    STK::CArrayPoint<STK::Real> const* p_prop_;
+    /** Pointer to the tik probabilities */
+    STK::Array2D<STK::Real> const* p_tik_;
+    /** Pointer to the zik class label */
+    STK::CArrayVector<int> const* p_zi_;
 };
 
 } // namespace STK

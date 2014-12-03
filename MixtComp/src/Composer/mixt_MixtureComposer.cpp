@@ -278,7 +278,6 @@ void MixtureComposer::finalizeStep()
 /* register the mixture in the composer*/
 void MixtureComposer::registerMixture(IMixture* p_mixture)
 {
-  p_mixture->setMixtureComposer(this);
   v_mixtures_.push_back(p_mixture);
 }
 
