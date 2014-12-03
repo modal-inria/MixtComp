@@ -30,8 +30,10 @@
 namespace mixt
 {
 
-MixtureComposer::MixtureComposer( int nbSample, int nbVariable, int nbCluster)
-                                : mixt::IMixtureComposerBase( nbSample, nbVariable, nbCluster)
+MixtureComposer::MixtureComposer(int nbSample,
+                                 int nbVariable,
+                                 int nbCluster) :
+    mixt::IMixtureComposerBase(nbSample, nbVariable, nbCluster)
 {}
 
 MixtureComposer::~MixtureComposer()
@@ -131,10 +133,9 @@ void MixtureComposer::initializeStep()
     std::cout << "MixtureComposer::initializeStep, no mixture have been registered" << std::endl;
   // compute number of free parameters
   setNbFreeParameter(computeNbFreeParameters());
-  // compute proportions
-  pStep();
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "MixtureComposer::initializeStep() called on " << v_mixtures_.size() << " mixtures" << std::endl;
+  std::cout << "prop_: " << prop_ << std::endl;
 #endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
@@ -146,6 +147,9 @@ void MixtureComposer::initializeStep()
 // implement computeNbFreeParameters
 int MixtureComposer::computeNbFreeParameters() const
 {
+#ifdef MC_DEBUG_NEW
+  std::cout << "MixtureComposer::computeNbFreeParameters()" << std::endl;
+#endif
   int sum = nbCluster_-1; // proportions
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {

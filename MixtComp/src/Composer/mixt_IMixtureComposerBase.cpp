@@ -45,7 +45,9 @@ IMixtureComposerBase::IMixtureComposerBase( int nbSample, int nbVariable, int nb
                                           , nbCluster_(nbCluster)
                                           , prop_(nbCluster), tik_(nbSample, nbCluster), zi_(nbSample)
                                           , state_(modelCreated_)
-{  intializeMixtureParameters(); }
+{
+  intializeMixtureParameters();
+}
 
 /* copy constructor */
 IMixtureComposerBase::IMixtureComposerBase( IMixtureComposerBase const& model)
@@ -62,7 +64,6 @@ IMixtureComposerBase::~IMixtureComposerBase() {}
 /* initialize randomly the labels zi of the model */
 void IMixtureComposerBase::randomClassInit()
 {
-  prop_ = 1./STK::Real(nbCluster_);
   STK::Law::Categorical law(prop_);
   for (int i = zi_.firstIdx(); i <= zi_.lastIdx(); ++i)
   {
@@ -163,7 +164,7 @@ void IMixtureComposerBase::mStep()
 /* Compute prop using the ML estimator, default implementation. */
 void IMixtureComposerBase::pStep()
 {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "IMixtureComposerBase::pStep" << std::endl;
 #endif
   prop_ = STK::Stat::mean(tik_);
@@ -187,14 +188,17 @@ void IMixtureComposerBase::mapStep(int i)
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::mapStep, single individual" << std::endl;
 #endif
-    int k;
-    tik_.row(i).maxElt(k);
-    zi_.elt(i) = k;
+  int k;
+  tik_.row(i).maxElt(k);
+  zi_.elt(i) = k;
 }
 
 /* Create the parameters of the  mixture model. */
 void IMixtureComposerBase::intializeMixtureParameters()
 {
+#ifdef MC_DEBUG_NEW
+  std::cout << "IMixtureComposerBase::intializeMixtureParameters" << std::endl;
+#endif
   prop_ = 1./(STK::Real)nbCluster_;
   tik_  = 1./(STK::Real)nbCluster_;
   zi_   = STK::baseIdx;

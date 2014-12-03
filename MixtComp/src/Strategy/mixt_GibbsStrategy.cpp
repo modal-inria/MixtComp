@@ -49,7 +49,12 @@ GibbsStrategy::~GibbsStrategy()
 bool GibbsStrategy::run()
 {
   p_composer_->randomClassInit();
-//  p_composer_->initializeStep(); // initialize mixture parameters, usually calling an mStep
+#ifdef MC_DEBUG_NEW
+  std::cout << "SemStrategy::run(), after randomClassInit()" << std::endl;
+  std::cout << "*p_composer_->p_zi()" << std::endl;
+  std::cout << *p_composer_->p_zi() << std::endl;
+#endif
+  p_composer_->initializeStep(); // initialize mixture parameters, usually calling an mStep
 
   for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbBurnInIterGibbs_; ++iterBurnInGibbs)
   {

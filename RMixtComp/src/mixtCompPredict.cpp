@@ -25,10 +25,12 @@
 #include "mixt_DataExtractorR.h"
 #include "mixt_ParamExtractorR.h"
 #include "mixt_ParamSetterR.h"
+#include "mixt_ParamSetterComposerR.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompPredict(Rcpp::List dataList,
+                           Rcpp::NumericVector prop,
                            Rcpp::List paramList,
                            Rcpp::S4 mcClusters,
                            int nbClusters,
@@ -53,6 +55,9 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   // create the parameters extractor
   mixt::ParamExtractorR paramExtractor;
 
+  // create the parameters setter for the composer
+  mixt::ParamSetterComposerR paramSetterComposer(prop);
+
   // create the mixture manager
   mixt::MixtureManager<mixt::DataHandlerR,
                        mixt::DataExtractorR,
@@ -67,6 +72,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   mixt::MixtureComposer composer(handler.nbSample(),
                                  handler.nbVariable(),
                                  nbClusters);
+  composer.setProportions(paramSetterComposer.getProportions());
 
   manager.createMixtures(&composer,
                          nbClusters);

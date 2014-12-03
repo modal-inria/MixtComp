@@ -58,7 +58,9 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** Constructor.
      * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      */
-    MixtureComposer( int nbSample, int nbVariable, int nbCluster);
+    MixtureComposer(int nbSample,
+                    int nbVariable,
+                    int nbCluster);
     /** copy constructor.
      *  @param composer the composer to copy
      */

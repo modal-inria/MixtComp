@@ -204,6 +204,20 @@ class IMixtureComposerBase : public STK::IModelBase
     void mapStep();
     void mapStep(int i);
 
+    void setProportions(STK::CArrayPoint<STK::Real> prop)
+    {
+      prop_ = prop;
+#ifdef MC_DEBUG_NEW
+      std::cout << "IMixtureComposerBase::setProportions" << std::endl;
+      std::cout << "prop_: " << prop_ << std::endl;
+#endif
+    };
+
+    void setPartition(STK::CArrayVector<int>& zi)
+    {
+      zi_ = zi;
+    };
+
   protected:
     /** number of cluster. */
     int nbCluster_;
