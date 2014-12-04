@@ -222,7 +222,7 @@ void MixtureComposer::misClasStep(int iteration)
   }
 }
 
-void MixtureComposer::storeShortRun(int iteration,
+void MixtureComposer::storeBurnIn(int iteration,
                                     int iterationMax)
 {
 #ifdef MC_LOG
@@ -234,18 +234,18 @@ void MixtureComposer::storeShortRun(int iteration,
 #endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeShortRun(iteration,
-                         iterationMax);
+    (*it)->storeBurnIn(iteration,
+                       iterationMax);
   }
 }
 
-void MixtureComposer::storeLongRun(int iteration,
+void MixtureComposer::storeParam(int iteration,
                                    int iterationMax)
 {
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeLongRun(iteration,
-                        iterationMax);
+    (*it)->storeParam(iteration,
+                      iterationMax);
   }
 }
 

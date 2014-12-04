@@ -83,7 +83,7 @@ bool SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, short run" << std::endl;
 #endif
-    p_composer_->setState(shortRun_);
+    p_composer_->setState(burnIn_);
     p_burnInAlgo_->setModel(p_composer_);
     if (!p_burnInAlgo_->run())
       continue; // make another try
