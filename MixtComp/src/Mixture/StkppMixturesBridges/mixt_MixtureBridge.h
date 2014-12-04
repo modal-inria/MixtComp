@@ -180,14 +180,6 @@ class MixtureBridge : public mixt::IMixture
     virtual void paramUpdateStep()
     {
       mixture_.mStep();
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::paramUpdateStep" << std::endl;
-      std::cout << "*p_composer()->p_zi()" << std::endl;
-      std::cout << *p_composer()->p_zi() << std::endl;
-      mixture_.getParameters(param_);
-      std::cout << "param_: " << std::endl;
-      std::cout << param_ << std::endl;
-#endif
     }
     /** This function should be used to store any results during the burn-in period
      *  @param iteration Provides the iteration number during the burn-in period
