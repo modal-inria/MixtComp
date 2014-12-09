@@ -44,8 +44,9 @@ enum modelState
 
 enum Mixture
 {
-  Gaussian_sjk_,
   Categorical_pjk_,
+  Gaussian_sjk_,
+  Poisson_k_,
   unknown_mixture_
 };
 

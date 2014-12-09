@@ -38,6 +38,7 @@ Mixture stringToMixture(std::string const& type)
 {
   if (type == "Gaussian_sjk") return Gaussian_sjk_;
   if (type == "Categorical_pjk") return Categorical_pjk_;
+  if (type == "Poisson_k") return Poisson_k_;
   return unknown_mixture_;
 }
 
@@ -50,6 +51,7 @@ std::string mixtureToString(Mixture const& type)
 {
   if (type == Gaussian_sjk_) return "Gaussian_sjk";
   if (type == Categorical_pjk_) return "Categorical_pjk";
+  if (type == Poisson_k_) return "Poisson_k";
   return "unknown";
 }
 

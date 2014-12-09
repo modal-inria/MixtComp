@@ -129,6 +129,12 @@ void DataExtractorR::exportVals(std::string idName,
                                      Rcpp::Named("stat") = missingData);
 }
 
+/** Export function for Poisson model */
+void DataExtractorR::exportVals(std::string idName,
+                                const AugmentedData<STK::Array2D<int> >* p_augData,
+                                const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage)
+{};
+
 Rcpp::List DataExtractorR::rcppReturnVal() const
 {
   return data_;

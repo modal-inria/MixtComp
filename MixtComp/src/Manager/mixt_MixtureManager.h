@@ -95,6 +95,29 @@ class MixtureManager
 #endif
       switch (idModel)
       {
+        case Categorical_pjk_:
+        {
+          typename CategoricalBridge_pjk_m<DataHandler,
+                                           DataExtractor,
+                                           ParamSetter,
+                                           ParamExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataHandler,
+                                                                                                                  DataExtractor,
+                                                                                                                  ParamSetter,
+                                                                                                                  ParamExtractor>::type(idName,
+                                                                                                                                        nbCluster,
+                                                                                                                                        composer.p_pk(),
+                                                                                                                                        composer.p_tik(),
+                                                                                                                                        composer.p_zi(),
+                                                                                                                                        p_handler_,
+                                                                                                                                        p_dataExtractor_,
+                                                                                                                                        p_paramSetter_,
+                                                                                                                                        p_paramExtractor_,
+                                                                                                                                        confidenceLevel);
+          p_bridge->setDataParam();
+          return p_bridge;
+        }
+        break;
+
         case Gaussian_sjk_:
         {
           typename GaussianBridge_sjk_m<DataHandler,
@@ -118,24 +141,24 @@ class MixtureManager
         }
         break;
 
-        case Categorical_pjk_:
+        case Poisson_k_:
         {
-          typename CategoricalBridge_pjk_m<DataHandler,
-                                           DataExtractor,
-                                           ParamSetter,
-                                           ParamExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataHandler,
-                                                                                                                  DataExtractor,
-                                                                                                                  ParamSetter,
-                                                                                                                  ParamExtractor>::type(idName,
-                                                                                                                                        nbCluster,
-                                                                                                                                        composer.p_pk(),
-                                                                                                                                        composer.p_tik(),
-                                                                                                                                        composer.p_zi(),
-                                                                                                                                        p_handler_,
-                                                                                                                                        p_dataExtractor_,
-                                                                                                                                        p_paramSetter_,
-                                                                                                                                        p_paramExtractor_,
-                                                                                                                                        confidenceLevel);
+          typename PoissonBridge_k_m<DataHandler,
+                                     DataExtractor,
+                                     ParamSetter,
+                                     ParamExtractor>::type* p_bridge = new typename PoissonBridge_k_m<DataHandler,
+                                                                                                      DataExtractor,
+                                                                                                      ParamSetter,
+                                                                                                      ParamExtractor>::type(idName,
+                                                                                                                            nbCluster,
+                                                                                                                            composer.p_pk(),
+                                                                                                                            composer.p_tik(),
+                                                                                                                            composer.p_zi(),
+                                                                                                                            p_handler_,
+                                                                                                                            p_dataExtractor_,
+                                                                                                                            p_paramSetter_,
+                                                                                                                            p_paramExtractor_,
+                                                                                                                            confidenceLevel);
           p_bridge->setDataParam();
           return p_bridge;
         }

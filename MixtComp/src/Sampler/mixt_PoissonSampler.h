@@ -17,39 +17,34 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Nov 14, 2014
- *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: December 12, 2014
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <boost/math/distributions/normal.hpp>
+#ifndef MIXT_POISSONSAMPLER_H
+#define MIXT_POISSONSAMPLER_H
 
-template<class T>
-double gen_normal_3(T &generator)
-{
-  return generator();
-}
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_CArrayVector.h"
+#include "../Data/mixt_AugmentedData.h"
 
-// Version that fills a vector
-template<class T>
-void gen_normal_3(T &generator,
-              std::vector<double> &res)
-{
-  for(size_t i=0; i<res.size(); ++i)
-    res[i]=generator();
-}
-
-int main(void)
-{
-  boost::variate_generator<boost::mt19937, boost::normal_distribution<> >
-    generator(boost::mt19937(time(0)),
-              boost::normal_distribution<>());
-
-  for(size_t i=0; i<10; ++i)
-    std::cout<<gen_normal_3(generator)
-             <<std::endl;
-}
-
-int main()
+namespace mixt
 {
 
-}
+class PoissonSampler
+{
+  public:
+    PoissonSampler(AugmentedData<STK::Array2D<int> >* p_augData,
+                   const STK::Array2D<STK::Real>* p_param);
+    ~PoissonSampler();
+    /** Sample new values for the missing variables of the given individual */
+    void sampleIndividual(int i, int z_i);
+  private:
+    AugmentedData<STK::Array2D<int> >* p_augData_;
+    const STK::Array2D<STK::Real>* p_param_;
+    const STK::CArrayVector<int>* p_zi_;
+};
+
+} // namespace mixt
+
+#endif // MIXT_POISSONSAMPLER_H

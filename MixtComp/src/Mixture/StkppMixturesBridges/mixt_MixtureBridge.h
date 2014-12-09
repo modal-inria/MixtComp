@@ -32,8 +32,9 @@
 
 #include "../mixt_IMixture.h"
 #include "../../Data/mixt_AugmentedData.h"
-#include "mixt_GaussianBridges.h"
 #include "mixt_CategoricalBridges.h"
+#include "mixt_GaussianBridges.h"
+#include "mixt_PoissonBridges.h"
 #include "mixt_InitializeMixtureImpl.h"
 #include "../../Various/mixt_IO.h"
 
