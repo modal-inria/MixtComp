@@ -23,6 +23,7 @@
 
 #include "mixt_Poisson_k.h"
 #include <boost/math/distributions/poisson.hpp>
+#include "../../Various/mixt_Constants.h"
 
 namespace mixt
 {
@@ -67,10 +68,28 @@ double Poisson_k::lnComponentProbability(int i, int k) const
   std::cout << "Poisson_k::lnComponentProbability" << std::endl;
   std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
 #endif
-  boost::math::poisson pois(param_[k]);
-  STK::Real proba = boost::math::pdf(pois,
-                                     p_data_ ->elt(i, 0));
-  return proba;
+  int currVal = p_data_ ->elt(i, 0);
+  if (param_[k] > epsilon)
+  {
+    boost::math::poisson pois(param_[k]);
+    STK::Real proba = boost::math::pdf(pois,
+                                       currVal);
+    return proba;
+  }
+  else if (currVal == 0)
+  {
+#ifdef MC_DEBUG_NEW
+    std::cout << "Lambda very close to 0., for x = 0 -> proba is 1" << std::endl;
+#endif
+    return 1.;
+  }
+  else
+  {
+#ifdef MC_DEBUG_NEW
+    std::cout << "Lambda very close to 0., for x = 0 -> proba is 1" << std::endl;
+#endif
+    return 0.;
+  }
 }
 
 void Poisson_k::mStep()

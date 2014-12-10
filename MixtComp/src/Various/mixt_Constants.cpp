@@ -34,5 +34,6 @@ const STK::Real minStat = 1.e-5; // threshold to have equiprobabilities in categ
 const STK::Real probaNonMisClass = 0.95; // minimal in-sample probability to avoid rejection
 const int moduloMisClass = 10; // modulo used to trigger misclassification step
 const int minIndPerClass = 3; // minimal number of individual in a class to accept a z sampling
+const STK::Real epsilon = 1.e-8; // very small value of real to check for near zero values
 
 } // namespace mixt
