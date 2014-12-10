@@ -4,14 +4,9 @@ is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)
 }
 
 listModels <- c("Gaussian_sjk",
-                "Categorical_pjk")
+                "Categorical_pjk",
+                "Poisson_k")
 
 listInit <- c("randomInit",
               "randomClassInit",
               "randomFuzzyInit")
-
-dataType <- function(modelName)
-{
-  if (modelName == "Gaussian_sjk") return("numeric")
-  if (modelName == "Categorical_pjk") return("integer")
-}

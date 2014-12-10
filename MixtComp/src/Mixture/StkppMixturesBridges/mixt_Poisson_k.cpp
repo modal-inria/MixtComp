@@ -22,21 +22,33 @@
  **/
 
 #include "mixt_Poisson_k.h"
+#include <boost/math/distributions/poisson.hpp>
 
 namespace mixt
 {
 
-Poisson_k::Poisson_k(int nbCluster)
-{}
+Poisson_k::Poisson_k(int nbCluster) :
+    nbCluster_(nbCluster)
+{
+  param_.resize(nbCluster,
+                0.);
+}
 
 Poisson_k::~Poisson_k()
 {}
 
 int Poisson_k::computeNbFreeParameters() const
-{}
+{
+  return nbCluster_;
+}
 
 void Poisson_k::getParameters(STK::Array2D<STK::Real>& param) const
-{}
+{
+  for (int i = 0; i < param.sizeRows(); ++i)
+  {
+    param(i, 0) = param_[i];
+  }
+}
 
 void Poisson_k::initializeModel()
 {}
@@ -46,27 +58,79 @@ void Poisson_k::initializeStep()
 
 double Poisson_k::lnComponentProbability(int i, int k) const
 {
-  return 12.;
+  boost::math::poisson pois(param_[k]);
+  STK::Real proba = boost::math::pdf(pois,
+                                     p_data_ ->elt(i, 0));
+  return proba;
 }
 
 void Poisson_k::mStep()
-{}
+{
+#ifdef MC_DEBUG_OLD
+    std::cout << "Gaussian_sjk::mStep" << std::endl;
+    std::cout << "(*p_data_): " << (*p_data_) << std::endl;
+    std::cout << "zi_: " << zi_ << std::endl;
+#endif
+
+  for (int k = 0; k < nbCluster_; ++k)
+  {
+    int nbSampleClass = 0; // number of samples in the current class
+    STK::Real sumClassMean = 0.;
+    STK::Real mean = 0.;
+
+    for (int i = 0; i < (*p_data_).sizeRows(); ++i)
+    {
+#ifdef MC_DEBUG
+    std::cout << "\tk:  " << k << ", i: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << std::endl;
+#endif
+      if ((*p_zi_)[i] == k)
+      {
+        sumClassMean += (*p_data_)(i, 0);
+        ++nbSampleClass = nbSampleClass;
+      }
+    }
+    mean = sumClassMean / STK::Real(nbSampleClass);
+
+#ifdef MC_DEBUG
+    std::cout << "k: " << k << std::endl;
+    std::cout << "\tnbSampleClass: " << nbSampleClass << std::endl;
+    std::cout << "\tsumClassMean: " << sumClassMean << std::endl;
+    std::cout << "\tsumClassVar: " << sumClassVar << std::endl;
+    std::cout << "\tmean: " << mean << std::endl;
+    std::cout << "\tsd: " << sd << std::endl;
+#endif
+    param_[k] = mean;
+  }
+}
 
 int Poisson_k::nbVariable() const
-{}
+{
+  return 1;
+}
 
-void Poisson_k::setData(const STK::Array2D<int>& data)
-{}
+void Poisson_k::setData(STK::Array2D<int>& data)
+{
+  p_data_ = &data;
+}
 
 void Poisson_k::setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
                                      STK::Array2D<STK::Real> const* p_tik,
                                      STK::CArrayVector<int> const* p_zi)
-{}
+{
+  p_zi_ = p_zi;
+}
 
-void Poisson_k::setParameters(const STK::Array2D<STK::Real>& params)
-{}
+void Poisson_k::setParameters(const STK::Array2D<STK::Real>& param)
+{
+  for (int i = 0; i < param.sizeRows(); ++i)
+  {
+    param_[i] = param(i, 0);
+  }
+}
 
 void Poisson_k::writeParameters(std::ostream& out) const
-{}
+{
+  out << param_ << std::endl;
+}
 
 } // namespace mixt

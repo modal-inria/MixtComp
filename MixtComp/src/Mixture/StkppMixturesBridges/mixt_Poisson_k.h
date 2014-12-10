@@ -46,9 +46,9 @@ class Poisson_k
     double lnComponentProbability(int i, int k) const;
 
     /** Set the parameters after the SEM, to the mean estimates for example */
-    void setParameters(const STK::Array2D<STK::Real>& params);
+    void setParameters(const STK::Array2D<STK::Real>& param);
 
-    void setData(const STK::Array2D<int>& data);
+    void setData(STK::Array2D<int>& data);
 
     void initializeModel();
 
@@ -63,6 +63,11 @@ class Poisson_k
                               STK::CArrayVector<int> const* p_zi);
 
     void writeParameters(std::ostream& out) const;
+  private:
+    int nbCluster_;
+    STK::Array2DVector<int> param_;
+    STK::Array2D<int>* p_data_;
+    STK::CArrayVector<int> const* p_zi_;
 };
 
 } // namespace mixt

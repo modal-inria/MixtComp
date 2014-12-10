@@ -1,15 +1,18 @@
 dataGenerator <- function(prefix,
                           categoricalParams,
                           gaussianParams,
+                          poissonParams,
                           proportions,
                           nbSamples,
                           nbVariableCat,
                           minModality,
                           nbModalities,
                           nbVariableGauss,
+                          nbVariablePoisson,
                           nbClasses,
                           missingCategorical,
-                          missingGaussian)
+                          missingGaussian,
+                          missingPoisson)
 {
   zDis <- rmultinom(nbSamples,
                     1,
@@ -49,8 +52,20 @@ dataGenerator <- function(prefix,
     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
   }
   
+  if (nbVariablePoisson > 0)
+  {
+    retList <- poissonGenerator(prefix,
+                                nbSamples,
+                                nbVariablePoisson,
+                                z,
+                                poissonParams,
+                                missingPoisson)
+    listMissing <- union(listMissing, retList[["listMissingInd"]])
+    nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
+  }
+  
   nbMissing <- length(listMissing)
-  nbTotalVal <- (nbSamples * (nbVariableCat + nbVariableGauss))
+  nbTotalVal <- (nbSamples * (nbVariableCat + nbVariableGauss + nbVariablePoisson))
   
   fileConn <- file(paste(prefix,
                          "dataStat.txt",
@@ -79,9 +94,11 @@ dataParamGenerator <- function(nbSamplesLearn,
                                nbVariableGauss,
                                maxMean,
                                maxVar,
+                               nbVariablePoisson,
                                nbClasses,
                                missingCategorical,
-                               missingGaussian)
+                               missingGaussian,
+                               missingPoisson)
 {
   cat("dataParamGenerator\n")
   proportions <- runif(nbClasses)
@@ -132,29 +149,55 @@ dataParamGenerator <- function(nbSamplesLearn,
                 row.names=FALSE,
                 col.names=FALSE)
   }
+  
+  if (nbVariablePoisson > 0)
+  {
+    poissonParams <- matrix(nrow = nbClasses,
+                            ncol = nbVariablePoisson)
+    for (j in 1:nbVariablePoisson)
+    {
+      for (k in 1:nbClasses)
+      {
+        proba <- sample(1:20, 1)
+        poissonParams[k, j] <- proba
+      }
+    }
+    write.table(poissonParams,
+                file = "dataGen/param/poissonParams.csv",
+                sep = ";",
+                row.names=FALSE,
+                col.names=FALSE)
+  }
+  
   cat("dataGenerator\n")
   dataGenerator("dataGen/learn",
                 categoricalParams,
                 gaussianParams,
+                poissonParams,
                 proportions,
                 nbSamplesLearn,
                 nbVariableCat,
                 minModality,
                 nbModalities,
                 nbVariableGauss,
+                nbVariablePoisson,
                 nbClasses,
                 missingCategorical,
-                missingGaussian)
+                missingGaussian,
+                missingPoisson)
   dataGenerator("dataGen/predict",
                 categoricalParams,
                 gaussianParams,
+                poissonParams,
                 proportions,
                 nbSamplesPredict,
                 nbVariableCat,
                 minModality,
                 nbModalities,
                 nbVariableGauss,
+                nbVariablePoisson,
                 nbClasses,
                 missingCategorical,
-                missingGaussian)
+                missingGaussian,
+                missingPoisson)
 }
