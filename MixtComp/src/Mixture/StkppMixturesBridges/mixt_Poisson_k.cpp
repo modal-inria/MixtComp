@@ -137,7 +137,12 @@ void Poisson_k::setParameters(const STK::Array2D<STK::Real>& param)
 
 void Poisson_k::writeParameters(std::ostream& out) const
 {
-  out << param_ << std::endl;
+  for (int k = 0; k < param_.sizeRows(); ++k)
+  {
+    out << "Component: " << k << std::endl;
+    out << "\tlambda: " << param_[k] << std::endl;
+  }
+
 }
 
 } // namespace mixt
