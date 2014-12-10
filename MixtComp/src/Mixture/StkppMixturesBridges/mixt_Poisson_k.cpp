@@ -28,11 +28,10 @@ namespace mixt
 {
 
 Poisson_k::Poisson_k(int nbCluster) :
-    nbCluster_(nbCluster)
-{
-  param_.resize(nbCluster,
-                0.);
-}
+    nbCluster_(nbCluster),
+    param_(nbCluster,
+           0.)
+{}
 
 Poisson_k::~Poisson_k()
 {}
@@ -44,7 +43,13 @@ int Poisson_k::computeNbFreeParameters() const
 
 void Poisson_k::getParameters(STK::Array2D<STK::Real>& param) const
 {
-  for (int i = 0; i < param.sizeRows(); ++i)
+#ifdef MC_DEBUG
+  std::cout << "Poisson_k::getParameters" << std::endl;
+  std::cout << "\tparam_: " << param_ << std::endl;
+#endif
+  param.resize(param_.sizeRows(),
+               1);
+  for (int i = 0; i < param_.sizeRows(); ++i)
   {
     param(i, 0) = param_[i];
   }
@@ -58,6 +63,10 @@ void Poisson_k::initializeStep()
 
 double Poisson_k::lnComponentProbability(int i, int k) const
 {
+#ifdef MC_DEBUG
+  std::cout << "Poisson_k::lnComponentProbability" << std::endl;
+  std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
+#endif
   boost::math::poisson pois(param_[k]);
   STK::Real proba = boost::math::pdf(pois,
                                      p_data_ ->elt(i, 0));
@@ -95,9 +104,7 @@ void Poisson_k::mStep()
     std::cout << "k: " << k << std::endl;
     std::cout << "\tnbSampleClass: " << nbSampleClass << std::endl;
     std::cout << "\tsumClassMean: " << sumClassMean << std::endl;
-    std::cout << "\tsumClassVar: " << sumClassVar << std::endl;
     std::cout << "\tmean: " << mean << std::endl;
-    std::cout << "\tsd: " << sd << std::endl;
 #endif
     param_[k] = mean;
   }

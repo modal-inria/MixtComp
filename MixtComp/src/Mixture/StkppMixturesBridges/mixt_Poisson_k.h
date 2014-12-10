@@ -65,7 +65,7 @@ class Poisson_k
     void writeParameters(std::ostream& out) const;
   private:
     int nbCluster_;
-    STK::Array2DVector<int> param_;
+    STK::Array2DVector<STK::Real> param_;
     STK::Array2D<int>* p_data_;
     STK::CArrayVector<int> const* p_zi_;
 };

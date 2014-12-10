@@ -263,7 +263,7 @@ class MixtureBridge : public mixt::IMixture
     virtual void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
     {
       mixture_.getParameters(param_); // update the parameters
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
       std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
       std::cout << "\tidName: " << idName() << std::endl;
       std::cout << "\tparam: " << std::endl;
@@ -279,7 +279,7 @@ class MixtureBridge : public mixt::IMixture
     virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
     {
       mixture_.getParameters(param_); // update the parameters
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
       std::cout << "\tidName: " << idName() << std::endl;
       std::cout << "\tparam: " << std::endl;
