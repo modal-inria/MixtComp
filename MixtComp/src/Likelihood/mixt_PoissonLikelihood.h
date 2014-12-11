@@ -26,6 +26,7 @@
 
 #include "Arrays/include/STK_Array2D.h"
 #include "../Data/mixt_AugmentedData.h"
+#include "../Statistic/mixt_PoissonStatistic.h"
 
 namespace mixt
 {
@@ -55,6 +56,9 @@ class PoissonLikelihood
 
     /** Pointer to storage of statistics on missing values */
     const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage_;
+
+    /** Statistic object to describe Poisson law */
+    PoissonStatistic poisson_;
 };
 
 } /* namespace mixt */

@@ -17,38 +17,33 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: December 12, 2014
+ *  Created on: December 11, 2014
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_POISSONSAMPLER_H
-#define MIXT_POISSONSAMPLER_H
+#ifndef MIXT_POISSONSTATISTIC_H
+#define MIXT_POISSONSTATISTIC_H
 
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_CArrayVector.h"
-#include "../Data/mixt_AugmentedData.h"
-#include "../Statistic/mixt_PoissonStatistic.h"
+#include "STKernel/include/STK_Real.h"
+#include <boost/random/mersenne_twister.hpp>
 
 namespace mixt
 {
 
-class PoissonSampler
+class PoissonStatistic
 {
   public:
-    PoissonSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                   const STK::Array2D<STK::Real>* p_param);
-    ~PoissonSampler();
-    /** Sample new values for the missing variables of the given individual */
-    void sampleIndividual(int i, int z_i);
+    PoissonStatistic();
+    ~PoissonStatistic();
+    /** pdf evaluated at individual x */
+    STK::Real pdf(int x, STK::Real lambda) const;
+    /** Sample a value from a Poisson Law with parameter lambda */
+    int sample(STK::Real lambda);
   private:
-    AugmentedData<STK::Array2D<int> >* p_augData_;
-    const STK::Array2D<STK::Real>* p_param_;
-    const STK::CArrayVector<int>* p_zi_;
-
-    /** Statistic object to describe Poisson law */
-    PoissonStatistic poisson_;
+    /** Random number generator */
+    boost::mt19937 rng_;
 };
 
 } // namespace mixt
 
-#endif // MIXT_POISSONSAMPLER_H
+#endif // MIXT_POISSONSTATISTIC_H

@@ -59,6 +59,7 @@ obj:
 	$(MAKE) -C ./src/Mixture
 	$(MAKE) -C ./src/Param
 	$(MAKE) -C ./src/Sampler
+	$(MAKE) -C ./src/Statistic
 	$(MAKE) -C ./src/Strategy
 	$(MAKE) -C ./src/Various
 

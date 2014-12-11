@@ -22,9 +22,6 @@
  **/
 
 #include "mixt_PoissonSampler.h"
-#include <boost/random/variate_generator.hpp>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/poisson_distribution.hpp>
 
 namespace mixt
 {
@@ -48,7 +45,7 @@ void PoissonSampler::sampleIndividual(int i, int z_i)
   if (p_augData_->misData_(i, 0).first != present_)
   {
     STK::Real x;
-    STK::Real mean  = p_param_->elt(z_i, 0);
+    STK::Real lambda = p_param_->elt(z_i, 0);
 
 #ifdef MC_DEBUG
     std::cout << "\tmean: " << mean << std::endl;
@@ -61,12 +58,7 @@ void PoissonSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
         std::cout << "\tmissing_" << std::endl;
 #endif
-        boost::mt19937 rng(time(0));
-        boost::poisson_distribution<> pois(mean);
-        boost::variate_generator<boost::mt19937&,
-                                 boost::poisson_distribution<> > generator(rng,
-                                                                           pois);
-        x = generator();
+        x = poisson_.sample(lambda);
       }
       break;
 

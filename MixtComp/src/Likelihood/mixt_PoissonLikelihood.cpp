@@ -23,7 +23,6 @@
 
 #include "mixt_PoissonLikelihood.h"
 #include "../Various/mixt_Def.h"
-#include <boost/math/distributions/poisson.hpp>
 
 namespace mixt
 {
@@ -47,21 +46,20 @@ void PoissonLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnC
 #endif
   // likelihood for present data
 
-  STK::Real mean  = p_param_->elt(k, 0);
-  boost::math::poisson pois(mean);
+  STK::Real lambda = p_param_->elt(k, 0);
   STK::Real proba;
 
   for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
   {
     if (p_augData_->misData_(i, 0).first == present_)   // likelihood for present value
     {
-      proba = boost::math::pdf(pois,
-                               p_augData_->data_(i, 0));
+      proba = poisson_.pdf(p_augData_->data_(i, 0),
+                           lambda);
     }
     else // likelihood for missing values, imputation by the expectation (temporary placeholder ...)
     {
-      proba = boost::math::pdf(pois,
-                               p_dataStatStorage_->elt(i, 0)[0]);
+      proba = poisson_.pdf(p_dataStatStorage_->elt(i, 0)[0],
+                           lambda);
     }
     lnComp->elt(i) += std::log(proba);
   }
@@ -76,17 +74,15 @@ void PoissonLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnCo
   // likelihood for present data
   for (int i = 0; i < p_augData_->data_.sizeCols(); ++i)
   {
-    STK::Real mean = p_param_->elt(k, 0);
-    boost::math::poisson pois(mean);
-
+    STK::Real lambda = p_param_->elt(k, 0);
     STK::Real proba;
 
     switch(p_augData_->misData_(i, 0).first)   // likelihood for present value
     {
       case present_:
       {
-        proba = boost::math::pdf(pois,
-                                 p_augData_->data_(i, 0));
+        proba = poisson_.pdf(p_augData_->data_(i, 0),
+                             lambda);
       }
       break;
 
