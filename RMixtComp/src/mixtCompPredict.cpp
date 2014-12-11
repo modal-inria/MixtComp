@@ -35,7 +35,9 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                            Rcpp::S4 mcClusters,
                            int nbClusters,
                            double confidenceLevel)
-{  
+{
+  // string to log warnings
+  std::string warnLog;
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
   Rcpp::S4 mcResults = mcClusters.slot("results");
@@ -66,7 +68,8 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                                       &dataExtractor,
                                                       &paramSetter,
                                                       &paramExtractor,
-                                                      confidenceLevel);
+                                                      confidenceLevel,
+                                                      warnLog);
 
   // prepare the composer
   mixt::MixtureComposer composer(handler.nbSample(),

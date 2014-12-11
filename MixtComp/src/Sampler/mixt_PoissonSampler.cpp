@@ -48,7 +48,7 @@ void PoissonSampler::sampleIndividual(int i, int z_i)
     STK::Real lambda = p_param_->elt(z_i, 0);
 
 #ifdef MC_DEBUG
-    std::cout << "\tmean: " << mean << std::endl;
+    std::cout << "\tlambda: " << lambda << std::endl;
 #endif
 
     switch(p_augData_->misData_(i, 0).first)

@@ -82,6 +82,10 @@ testGenDataLearn <- function(nbClass = 2,
                                mcCluster,
                                nbClass,
                                confidenceLevel)
+  if (nchar(mcCluster@results@warnLog > 0))
+  {
+    warning(mcCluster@results@warnLog)
+  }
   return(list(mcCluster,
               dataParam))
 }
@@ -114,30 +118,13 @@ testGenDataPredict <- function(prop,
                                mcCluster,
                                nbClass,
                                confidenceLevel)
+  if (nchar(mcCluster@results@warnLog > 0))
+  {
+    warning(mcCluster@results@warnLog)
+  }
   return(list(mcCluster,
               dataParam))
 }
-
-testRMC <- function (){
-  lm <- getData(c("data/gaussianData.csv", "data/gaussianDescriptor.csv"),
-                c("data/categoricalData.csv", "data/categoricalDescriptor.csv"))
-#  lm <- getData(c("data/gaussianData.csv", "data/gaussianDescriptor.csv"))
-#  lm <- getData(c("data/categoricalData.csv", "data/categoricalDescriptor.csv"))
-
-  mcCluster <- getMixtCompCluster(2, # nbTrialInInit
-                                  20, # nbBurnInIter
-                                  100, # nbIter
-                                  20, # nbGibbsBurnInIter
-                                  100) # nbGibbsIter
-  data <- list()
-  param <- list()
-  dataParam <- mixtCompCluster(lm,
-                               mcCluster,
-                               3)
-  return(list(mcCluster,
-              dataParam))
-}
-
 
 testGeyser <- function()
 {

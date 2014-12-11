@@ -32,7 +32,9 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                            Rcpp::S4 mcClusters,
                            int nbClusters,
                            double confidenceLevel)
-{  
+{
+  // string to log warnings
+  std::string warnLog;
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
   Rcpp::S4 mcResults = mcClusters.slot("results");
@@ -60,7 +62,8 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                                                       &dataExtractor,
                                                       &paramSetter,
                                                       &paramExtractor,
-                                                      confidenceLevel);
+                                                      confidenceLevel,
+                                                      warnLog);
 
   // prepare the composer
   mixt::MixtureComposer composer(handler.nbSample(),
@@ -108,6 +111,8 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
       proba(iR, kR) = composer.p_tik()->elt(iS, kS);
   mcResults.slot("proba") = proba;
+
+  mcResults.slot("warnLog") = warnLog;
 
   Rcpp::List data = dataExtractor.rcppReturnVal();
   Rcpp::List param = paramExtractor.rcppReturnParam();

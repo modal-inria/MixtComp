@@ -12,7 +12,8 @@ setClass(
     proportions = "numeric",
     partition = "integer",
     proba = "matrix",
-    runOK = "logical"
+    runOK = "logical",
+    warnLog = "character"
   ),
   prototype=prototype(
     nbCluster = numeric(0),
@@ -21,7 +22,8 @@ setClass(
     proportions = numeric(0),
     partition = integer(0),
     proba = matrix(nrow=0,ncol=0),
-    runOK = F
+    runOK = F,
+    warnLog = character(0)
   )
 )
 
