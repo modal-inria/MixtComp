@@ -151,7 +151,7 @@ class MixtureBridge : public mixt::IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    void setDataParam()
+    void setDataParam(std::string& warnLog)
     {
 #ifdef MC_DEBUG_NEW
         std::cout << "MixtureBridge::setData(), idName(): " << idName() << std::endl;
@@ -159,8 +159,11 @@ class MixtureBridge : public mixt::IMixture
       p_handler_->getData(idName(),
                           m_augDataij_,
                           nbSample_,
-                          nbVariable_ );
-      p_paramSetter_->getParam(idName(), param_);
+                          nbVariable_,
+                          paramStr_,
+                          warnLog);
+      p_paramSetter_->getParam(idName(),
+                               param_);
       initializeMixture(); // "transfer" the data and params from the bridge to the underlying stkpp mixture
       dataStatStorage_.resize(nbSample_,
                               nbVariable_);
@@ -349,6 +352,8 @@ class MixtureBridge : public mixt::IMixture
     AugData m_augDataij_;
     /** Current parameters of the STK Mixture */
     STK::Array2D<STK::Real> param_;
+    /** Parameters transmitted by the user */
+    std::string paramStr_;
     /** number of samples in the data set*/
     int nbSample_;
     /** number of variables in the data set */

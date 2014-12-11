@@ -75,7 +75,9 @@ class DataHandlerR
     void getData(std::string const& idData,
                  AugmentedData<STK::Array2D<Type> >& augData,
                  int& nbSample,
-                 int& nbVariable) const;
+                 int& nbVariable,
+                 std::string& param,
+                 std::string& warnLog) const;
   private:
     int nbSamples_;
     int nbVariables_;
@@ -94,7 +96,9 @@ template<typename Type>
 void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<STK::Array2D<Type> >& augData,
                            int& nbSample,
-                           int& nbVariable) const
+                           int& nbVariable,
+                           std::string& param,
+                           std::string& warnLog) const
 {
 #ifdef MC_DEBUG
   std::cout << "DataHandlerR::getDataHelper()" << std::endl;
@@ -237,7 +241,7 @@ void DataHandlerR::getData(std::string const& idData,
 #endif
     }
   }
-  augData.computeRanges();
+  augData.computeRange();
   augData.removeMissing();
 }
 

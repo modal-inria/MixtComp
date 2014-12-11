@@ -39,6 +39,14 @@ Type str2type(std::string s)
   return x;
 }
 
+template<typename Type>
+std::string type2str(const Type& value)
+{
+    std::ostringstream oss;
+    oss << value;
+    return oss.str();
+}
+
 template <typename Type>
 void writeDataCsv(std::string fileName, const Type& data)
 {

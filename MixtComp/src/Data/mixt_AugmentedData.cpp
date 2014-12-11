@@ -48,6 +48,21 @@ Range<int>::Range(int min,
 template<>
 void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 {
+  if (!rangeUpdate_)
+  {
+    for (int j = 0; j < misData_.cols(); ++j)
+    {
+      for (int i = 0; i < misData_.rows(); ++i)
+      {
+        if (misData_(i, j).first != present_)
+        {
+          data_(i, j) = 0.;
+        }
+      }
+    }
+  }
+  else
+  {
   for (int j = 0; j < misData_.cols(); ++j)
   {
     for (int i = 0; i < misData_.rows(); ++i)
@@ -63,8 +78,8 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 
           case missing_:
           {
-            STK::Real min = dataRanges_[j].min_;
-            STK::Real max = dataRanges_[j].max_;
+            STK::Real min = dataRange_.min_;
+            STK::Real max = dataRange_.max_;
             sampleVal = STK::Law::Uniform::rand(min, max);
           }
           break;
@@ -88,7 +103,7 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 
           case missingLUIntervals_:
           {
-            STK::Real min = dataRanges_[j].min_;
+            STK::Real min = dataRange_.min_;
             STK::Real supBound = misData_(i, j).second[0];
             sampleVal = STK::Law::Uniform::rand(min, supBound);
           }
@@ -97,7 +112,7 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
           case missingRUIntervals_:
           {
             STK::Real infBound = misData_(i, j).second[0];
-            STK::Real max = dataRanges_[j].max_;
+            STK::Real max = dataRange_.max_;
             sampleVal = STK::Law::Uniform::rand(infBound, max);
           }
           break;
@@ -105,6 +120,7 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
         data_(i, j) = sampleVal;
       }
     }
+  }
   }
 }
 
@@ -114,7 +130,21 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
 #ifdef MC_DEBUG
   std::cout << "AugmentedData<STK::Array2D<int> >::removeMissing" << std::endl;
 #endif
-
+  if (!rangeUpdate_)
+  {
+    for (int j = 0; j < misData_.cols(); ++j)
+    {
+      for (int i = 0; i < misData_.rows(); ++i)
+      {
+        if (misData_(i, j).first != present_)
+        {
+          data_(i, j) = 0.;
+        }
+      }
+    }
+  }
+  else
+  {
   for (int j = 0; j < misData_.cols(); ++j)
   {
     for (int i = 0; i < misData_.rows(); ++i)
@@ -122,8 +152,8 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
       if (misData_(i, j).first != present_)
       {
         int sampleVal;
-        int firstModality = dataRanges_[j].min_;
-        int nbModalities = dataRanges_[j].range_;
+        int firstModality = dataRange_.min_;
+        int nbModalities = dataRange_.range_;
   #ifdef MC_DEBUG
         std::cout << "i: " << i << ", j: " << j << std::endl;
         std::cout << "firstModality: " << firstModality << ", nbModalities: " << nbModalities << std::endl;
@@ -169,6 +199,7 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
         data_(i, j) = sampleVal;
       }
     }
+  }
   }
 }
 

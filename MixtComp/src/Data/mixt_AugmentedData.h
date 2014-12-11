@@ -63,9 +63,12 @@ class AugmentedData
     // typedef typename STK::Array2D<MisVal> MisData;
 
     AugmentedData() :
+      nbSample_(0),
+      nbPresent_(0),
       nbMissing_(0),
-      globalRange_(Type(0),
-                   Type(0))
+      rangeUpdate_(false),
+      dataRange_(Type(0),
+                 Type(0))
       {};
     ~AugmentedData() {};
 
@@ -76,38 +79,44 @@ class AugmentedData
       misData_.resize(nbSample, nbVariable);
     }
 
-    void computeRanges()
+    void computeRange()
     {
-      Type globMin;
-      Type globMax;
-      // data range filling
-      for (int currVar = 0; currVar < data_.sizeCols(); ++currVar)
+      Type min;
+      Type max;
+      for (int i = 0; i < misData_.rows(); ++i)
       {
-        int currMin = STK::Stat::minSafe(data_.col(currVar));
-        int currMax = STK::Stat::maxSafe(data_.col(currVar));
-        if (currVar == 0)
+        for (int j = 0; j < misData_.cols(); ++j)
         {
-          globMin = currMin;
-          globMax = currMax;
+          switch (misData_(i, j).first)
+          {
+            case present_:
+            {
+              rangeUpdate(min,
+                          max,
+                          data_(i, j));
+            }
+            break;
+
+            default:
+            {
+              for (typename std::vector<Type>::const_iterator it = misData_(i, j).second.begin();
+                   it != misData_(i, j).second.end();
+                   ++it)
+              {
+                rangeUpdate(min,
+                            max,
+                            *it);
+              }
+            }
+            break;
+          }
         }
-        else
-        {
-          if (currMin < globMin) globMin = currMin;
-          if (currMax > globMax) globMax = currMax;
-        }
-        dataRanges_.push_back(Range<Type>(currMin,
-                                          currMax));
-#ifdef MC_DEBUG
-        std::cout << "AugmentedData::computeRange()" << std::endl;
-        std::cout << "\tcurrVar: " << currVar << std::endl
-                  << "\t\tmin: " << dataRanges_.at(currVar).min_ << std::endl
-                  << "\t\tmax, " << dataRanges_.at(currVar).max_ << std::endl
-                  << "m_augDataij_.data_ before removeMissing: " << std::endl
-                  << data_ << std::endl;
-#endif
       }
-      globalRange_ = Range<Type>(globMin,
-                                 globMax);
+      dataRange_ = Range<Type>(min, max);
+#ifdef MC_DEBUG_NEW
+      std::cout << "AugmentedData::computeRange" << std::endl;
+      std::cout << "min: " << min << ", max: " << max << std::endl;
+#endif
     }
 
     void setPresent(int i, int j, Type val)
@@ -120,6 +129,8 @@ class AugmentedData
       data_(i, j) = val;
       misData_(i, j) = MisVal(present_,
                               std::vector<Type>());
+      ++nbPresent_;
+      ++nbSample_;
     }
 
     void setMissing(int i, int j, MisVal& val)
@@ -127,6 +138,7 @@ class AugmentedData
       data_(i, j) = STK::Arithmetic<Type>::NA();
       misData_(i, j) = val;
       ++nbMissing_;
+      ++nbSample_;
     }
 
     /** Remove the missing values by uniform samplings */
@@ -137,13 +149,35 @@ class AugmentedData
 
     /** data structure for partially observed values */
     MisData misData_;
+    /** total number of values */
+    int nbSample_;
+    /** total number of present values */
+    int nbPresent_;
     /** total number of partially observed values, used to output the results */
     int nbMissing_;
     /** available data ranges, one pair per data column */
-    std::vector<Range<Type> > dataRanges_;
+    Range<Type> dataRange_;
 
-    /** maximum range, for example to get the global number of modalities */
-    Range<Type> globalRange_;
+  private:
+    /** boolean to know if range has already been updated */
+    bool rangeUpdate_;
+
+    void rangeUpdate(Type& min,
+                     Type& max,
+                     const Type& val)
+    {
+      if (!rangeUpdate_)
+      {
+        min = val;
+        max = val;
+        rangeUpdate_ = true;
+      }
+      else
+      {
+        if (val < min) min = val;
+        if (val > max) max = val;
+      }
+    }
 };
 
 } // namespace mixt

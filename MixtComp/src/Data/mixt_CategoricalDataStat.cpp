@@ -75,8 +75,8 @@ void CategoricalDataStat::sampleVals(int ind,
     {
       if (pm_augDataij_->misData_(ind, j).first != present_)
       {
-        tempStat_[j] = STK::Array2DPoint<STK::Real>(STK::Range(pm_augDataij_->dataRanges_[j].min_, // no access to param, hence no need for the globRange_
-                                                               pm_augDataij_->dataRanges_[j].range_),
+        tempStat_[j] = STK::Array2DPoint<STK::Real>(STK::Range(pm_augDataij_->dataRange_.min_, // no access to param, hence no need for the globRange_
+                                                               pm_augDataij_->dataRange_.range_),
                                                     0);
       }
     }
@@ -99,11 +99,11 @@ void CategoricalDataStat::sampleVals(int ind,
         STK::heapSort(indOrder, proba);
         STK::Real cumProb = 0.;
 #ifdef MC_DEBUG
-        std::cout << "pm_augDataij_->dataRanges_[j].max_: " << pm_augDataij_->dataRanges_[j].max_ << std::endl;
-        std::cout << "pm_augDataij_->dataRanges_[j].min_ - 1: " << pm_augDataij_->dataRanges_[j].min_ - 1 << std::endl;
+        std::cout << "pm_augDataij_->dataRange_.max_: " << pm_augDataij_->dataRange_.max_ << std::endl;
+        std::cout << "pm_augDataij_->dataRange_.min_ - 1: " << pm_augDataij_->dataRange_.min_ - 1 << std::endl;
 #endif
-        for (int i = pm_augDataij_->dataRanges_[j].max_;
-             i > pm_augDataij_->dataRanges_[j].min_ - 1;
+        for (int i = pm_augDataij_->dataRange_.max_;
+             i > pm_augDataij_->dataRange_.min_ - 1;
              --i)
         {
           int currMod = indOrder[i];

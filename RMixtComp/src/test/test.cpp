@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
   R.parseEvalQ("library(methods)");
   R.parseEvalQ("library(RMixtComp)");
 //  R.parseEvalQ("testGenDataLearn()");
-//  R.parseEvalQ("testLearnPredict()");
-  R.parseEvalQ("testRougeGorge()");
+  R.parseEvalQ("testLearnPredict()");
+//  R.parseEvalQ("testRougeGorge()");
 
   exit(0);
 }

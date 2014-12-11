@@ -45,13 +45,13 @@ class MixtureManager
                    const ParamSetter* p_paramSetter,
                    ParamExtractor* p_paramExtractor,
                    STK::Real confidenceLevel,
-                   std::string& warnLogs) :
+                   std::string& warnLog) :
       p_handler_(handler),
       p_dataExtractor_(p_dataExtractor),
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor),
       confidenceLevel_(confidenceLevel),
-      warnLogs_(warnLogs)
+      warnLog_(warnLog)
     {}
 
     void createMixtures(mixt::MixtureComposer& composer,
@@ -115,7 +115,7 @@ class MixtureManager
                                                                                                                                         p_paramSetter_,
                                                                                                                                         p_paramExtractor_,
                                                                                                                                         confidenceLevel);
-          p_bridge->setDataParam();
+          p_bridge->setDataParam(warnLog_);
           return p_bridge;
         }
         break;
@@ -138,7 +138,7 @@ class MixtureManager
                                                                                                                                   p_paramSetter_,
                                                                                                                                   p_paramExtractor_,
                                                                                                                                   confidenceLevel);
-          p_bridge->setDataParam();
+          p_bridge->setDataParam(warnLog_);
           return p_bridge;
         }
         break;
@@ -161,7 +161,7 @@ class MixtureManager
                                                                                                                             p_paramSetter_,
                                                                                                                             p_paramExtractor_,
                                                                                                                             confidenceLevel);
-          p_bridge->setDataParam();
+          p_bridge->setDataParam(warnLog_);
           return p_bridge;
         }
         break;
@@ -190,7 +190,7 @@ class MixtureManager
     STK::Real confidenceLevel_;
 
     /** reference to the warnings log */
-    std::string& warnLogs_;
+    std::string& warnLog_;
 };
 
 } // namespace mixt

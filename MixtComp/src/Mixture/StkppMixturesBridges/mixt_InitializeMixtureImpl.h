@@ -63,8 +63,8 @@ struct InitializeMixtureImpl<Categorical_pjk_>
                   STK::Array2D<STK::Real>& param)
   {
     mixture.setData(augData.data_);
-    mixture.setModalities(STK::Range(augData.globalRange_.min_,
-                                     augData.globalRange_.range_));
+    mixture.setModalities(STK::Range(augData.dataRange_.min_,
+                                     augData.dataRange_.range_));
     // TODO: resize proba_ in initializeModel
     mixture.initializeModel();
     if (param.sizeCols() > 0 && param.sizeRows() > 0) // empty params correspond to an empty

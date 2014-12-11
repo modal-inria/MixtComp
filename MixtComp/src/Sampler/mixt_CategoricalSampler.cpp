@@ -50,8 +50,8 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
     {
       int sampleVal;
 
-      int minModality = p_augData_->globalRange_.min_;
-      int nbModalities = p_augData_->globalRange_.range_;
+      int minModality = p_augData_->dataRange_.min_;
+      int nbModalities = p_augData_->dataRange_.range_;
 
       switch(p_augData_->misData_(i, j).first)
       {
