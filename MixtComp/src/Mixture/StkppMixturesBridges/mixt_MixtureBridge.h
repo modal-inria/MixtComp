@@ -172,7 +172,6 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual void samplingStep(int i)
     {
-      mixture_.getParameters(param_); // update the parameters (used by the Sampler)
       sampler_.sampleIndividual(i,
                                 p_zi()->elt(i));
     }
@@ -181,6 +180,7 @@ class MixtureBridge : public mixt::IMixture
     virtual void paramUpdateStep()
     {
       mixture_.mStep();
+      mixture_.getParameters(param_); // update the parameters
     }
     /** This function should be used to store any results during the burn-in period
      *  @param iteration Provides the iteration number during the burn-in period
@@ -262,7 +262,6 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
     {
-      mixture_.getParameters(param_); // update the parameters
 #ifdef MC_DEBUG_NEW
       std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
       std::cout << "\tidName: " << idName() << std::endl;
@@ -278,7 +277,6 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
     {
-      mixture_.getParameters(param_); // update the parameters
 #ifdef MC_DEBUG_NEW
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
       std::cout << "\tidName: " << idName() << std::endl;
