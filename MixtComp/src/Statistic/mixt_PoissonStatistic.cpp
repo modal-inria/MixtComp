@@ -49,14 +49,14 @@ STK::Real PoissonStatistic::pdf(int x, STK::Real lambda) const
   }
   else if (x == 0)
   {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "Lambda very close to 0., for x = 0 -> proba is 1" << std::endl;
 #endif
     return 1.;
   }
   else
   {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "Lambda very close to 0., for x = 1 -> proba is 0" << std::endl;
 #endif
     return 0.;
