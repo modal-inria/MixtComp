@@ -21,9 +21,6 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-/** Source of the implementation:
- * http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm */
-
 #ifndef MIXT_GAUSSIANDATASTAT_H
 #define MIXT_GAUSSIANDATASTAT_H
 
@@ -37,7 +34,8 @@ class GaussianDataStat
   public:
     GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
                      STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
-                     STK::Real confidenceLevel);
+                     STK::Real confidenceLevel,
+                     int nbClass);
     ~GaussianDataStat();
     void sampleVals(int sample,
                     int iteration,

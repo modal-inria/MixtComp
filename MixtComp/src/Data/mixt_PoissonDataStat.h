@@ -21,9 +21,6 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-/** Source of the implementation:
- * http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Online_algorithm */
-
 #ifndef MIXT_POISSONDATASTAT_H
 #define MIXT_POISSONDATASTAT_H
 
@@ -37,7 +34,8 @@ class PoissonDataStat
   public:
     PoissonDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
                     STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
-                    STK::Real confidenceLevel);
+                    STK::Real confidenceLevel,
+                    int nbClass);
     ~PoissonDataStat();
     void sampleVals(int sample,
                     int iteration,

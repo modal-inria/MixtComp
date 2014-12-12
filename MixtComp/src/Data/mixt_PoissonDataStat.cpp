@@ -29,7 +29,8 @@ namespace mixt
 
 PoissonDataStat::PoissonDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
                                  STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
-                                 STK::Real confidenceLevel) :
+                                 STK::Real confidenceLevel,
+                                 int nbClass) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)

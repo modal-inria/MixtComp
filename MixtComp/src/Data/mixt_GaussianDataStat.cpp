@@ -29,7 +29,8 @@ namespace mixt
 
 GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
                                    STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
-                                   STK::Real confidenceLevel) :
+                                   STK::Real confidenceLevel,
+                                   int nbClass) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)

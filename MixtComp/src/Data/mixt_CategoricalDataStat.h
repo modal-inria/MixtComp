@@ -38,12 +38,15 @@ class CategoricalDataStat
                         Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
                                       Eigen::Dynamic,
                                       Eigen::Dynamic>* p_dataStatStorage,
-                        STK::Real confidenceLevel);
+                        STK::Real confidenceLevel,
+                        int nbClass);
     ~CategoricalDataStat();
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);
   private:
+    // number of classes
+    int nbClass_;
     // pointer to data array
     const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
     /** Sparse description of the missing values */

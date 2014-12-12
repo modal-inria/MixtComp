@@ -90,16 +90,19 @@ class MixtureBridge : public mixt::IMixture
       nbSample_(0),
       nbVariable_(0),
       sampler_(&m_augDataij_,
-               getParam()),
+               getParam(),
+               nbCluster),
       dataStatComputer_(getData(),
                         &dataStatStorage_,
-                        confidenceLevel),
+                        confidenceLevel,
+                        nbCluster),
       paramStat_(&param_,
                  &paramStatStorage_,
                  confidenceLevel),
       likelihood_(getParam(),
                   getData(),
-                  getDataStatStorage()),
+                  getDataStatStorage(),
+                  nbCluster),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
@@ -168,7 +171,7 @@ class MixtureBridge : public mixt::IMixture
       if (param_.sizeRows() > 0 && param_.sizeCols() > 0) // setModalities must use the range provided by the ParamSetter
       {
         int nbParam = param_.sizeRows() / nbCluster_; // number of parameters for each cluster
-        mixture_.setModalities(STK::Range(0,
+        mixture_.setModalities(STK::Range(1, // first modality in input had to be 1 for learning set
                                           nbParam));
         mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
         mixture_.setParameters(param_);

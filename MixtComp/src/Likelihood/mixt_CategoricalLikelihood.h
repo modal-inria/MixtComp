@@ -39,7 +39,8 @@ class CategoricalLikelihood
                           const AugmentedData<STK::Array2D<int> >* p_augData,
                           const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
                                               Eigen::Dynamic,
-                                              Eigen::Dynamic>* p_dataStatStorage);
+                                              Eigen::Dynamic>* p_dataStatStorage,
+                          int nbClass);
     /** Destructor */
     virtual ~CategoricalLikelihood();
 
@@ -50,6 +51,7 @@ class CategoricalLikelihood
     void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
 
   private:
+    int nbClass_;
     /** Pointer to parameters table */
     const STK::Array2D<STK::Real>* p_param_;
 

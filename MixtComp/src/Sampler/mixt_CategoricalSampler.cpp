@@ -28,7 +28,9 @@
 namespace mixt
 {
 CategoricalSampler::CategoricalSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                                       const STK::Array2D<STK::Real>* p_param) :
+                                       const STK::Array2D<STK::Real>* p_param,
+                                       int nbClass) :
+    nbClass_(nbClass),
     p_augData_(p_augData),
     p_param_(p_param),
     p_zi_(0)
@@ -50,8 +52,13 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
     {
       int sampleVal;
 
-      int minModality = p_augData_->dataRange_.min_;
-      int nbModalities = p_augData_->dataRange_.range_;
+      int minModality = 1;
+      int nbModalities = p_param_->sizeRows() / nbClass_;
+
+#ifdef MC_DEBUG
+      std::cout << "CategoricalSampler::sampleIndividual" << std::endl;
+      std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
+#endif
 
       switch(p_augData_->misData_(i, j).first)
       {

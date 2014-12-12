@@ -51,7 +51,6 @@ testGenDataLearn <- function(nbClass = 2,
     dataParamGenerator(nbSampleLearn, # nbSamples
                        nbSamplePredict, # nbSamplePredict
                        2, # nbVariablesCat
-                       3, # minModality
                        6, # nbModalities
                        2, # nbVariablesGauss
                        50., # maxMean

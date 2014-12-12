@@ -30,7 +30,9 @@ CategoricalLikelihood::CategoricalLikelihood(const STK::Array2D<STK::Real>* p_pa
                                              const AugmentedData<STK::Array2D<int> >* p_augData,
                                              const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
                                                                  Eigen::Dynamic,
-                                                                 Eigen::Dynamic>* p_dataStatStorage) :
+                                                                 Eigen::Dynamic>* p_dataStatStorage,
+                                             int nbClass) :
+    nbClass_(nbClass),
     p_param_(p_param),
     p_augData_(p_augData),
     p_dataStatStorage_(p_dataStatStorage)
@@ -41,20 +43,19 @@ CategoricalLikelihood::~CategoricalLikelihood()
 
 void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
 {
+  int nbModalities = p_param_->sizeRows() / nbClass_;
   for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
   {
     for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
     {
       if (p_augData_->misData_(i, j).first == present_) // likelihood for present data
       {
-        int nbModalities = p_augData_->dataRange_.range_;
         STK::Real proba = p_param_->elt(k * nbModalities + p_augData_->data_(i, j),
                                         j);
         lnComp->elt(i) += std::log(proba);
       }
       else // likelihood for estimated missing values, imputation by the mode
       {
-        int nbModalities = p_augData_->dataRange_.range_;
         STK::Real proba = p_param_->elt(k * nbModalities + (*p_dataStatStorage_)(i, j)[0].first,
                                         j);
         lnComp->elt(i) += std::log(proba); // added lnLikelihood using the mode
@@ -68,6 +69,7 @@ void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* 
 #ifdef MC_DEBUG
   std::cout << "CategoricalLikelihood::lnObservedLikelihood" << std::endl;
 #endif
+  int nbModalities = p_param_->sizeRows() / nbClass_;
   for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
   {
     for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
@@ -79,7 +81,6 @@ void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* 
       {
         case present_: // likelihood for present data
         {
-          int nbModalities = p_augData_->dataRange_.range_;
           STK::Real proba = p_param_->elt(k * nbModalities + p_augData_->data_(i, j),
                                           j);
           lnComp->elt(i) += std::log(proba);
@@ -96,8 +97,6 @@ void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* 
           std::cout << "missingFiniteValues" << std::endl;
           std::cout << "p_param_->sizeRows(): " << p_param_->sizeRows() << ", p_param_->sizeCols(): " << p_param_->sizeCols() << std::endl;
 #endif
-          int nbModalities = p_augData_->dataRange_.range_;
-
           STK::Real proba = 0.;
 
           for (std::vector<int>::const_iterator itMiss = p_augData_->misData_(i, j).second.begin();

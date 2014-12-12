@@ -31,7 +31,9 @@ CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >
                                          Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
                                                        Eigen::Dynamic,
                                                        Eigen::Dynamic>* p_dataStatStorage,
-                                         STK::Real confidenceLevel) :
+                                         STK::Real confidenceLevel,
+                                         int nbClass) :
+    nbClass_(nbClass),
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)

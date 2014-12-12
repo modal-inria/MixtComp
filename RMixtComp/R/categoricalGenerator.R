@@ -2,8 +2,7 @@ completeCategoricalData <- function(nbSamples,
                                     nbVariables,
                                     nbModalities,
                                     z,
-                                    params,
-                                    minModality)
+                                    params)
 {
   vals <- matrix(nrow = nbSamples,
                  ncol = nbVariables)
@@ -15,7 +14,7 @@ completeCategoricalData <- function(nbSamples,
                               1,
                               params[(nbModalities * (z[i] - 1) + 1) :
                                        (nbModalities *  z[i]         ) , j])
-      vals[i, j] <- match(1, sampleVals) + minModality - 1
+      vals[i, j] <- match(1, sampleVals)
     }
   }
   colnames(vals) <- paste("categorical",
@@ -28,8 +27,7 @@ missingCategoricalData <- function(data,
                                    nbModalities,
                                    z,
                                    params,
-                                   missingParams,
-                                   minModality)
+                                   missingParams)
 {
   listMissingInd <- list()
   nbMissingVal <- 0
@@ -54,7 +52,7 @@ missingCategoricalData <- function(data,
       else if (missType == 3) # missing finite value
       {
         nbSampleMod <- sample(nbModalities, 1) # number of modalities to be drawn
-        modalities <- sort(sample(minModality : (nbModalities + minModality - 1), nbSampleMod)) # modalities drawn
+        modalities <- sort(sample(1 : nbModalities, nbSampleMod)) # modalities drawn
         data[i, j] <- paste("{",
                             paste(modalities,
                                   collapse = ","),
@@ -108,15 +106,13 @@ categoricalGenerator <- function(prefix,
                                  nbModalities,
                                  z,
                                  params,
-                                 missingParams,
-                                 minModality)
+                                 missingParams)
 {
   data <- completeCategoricalData(nbSamples,
                                   nbVariables,
                                   nbModalities,
                                   z,
-                                  params,
-                                  minModality)
+                                  params)
   
   writeGaussianData(paste(prefix,
                           "categoricalData.complete.csv",
@@ -127,8 +123,7 @@ categoricalGenerator <- function(prefix,
                                     nbModalities,
                                     z,
                                     params,
-                                    missingParams,
-                                    minModality)
+                                    missingParams)
   
   writeCategoricalData(paste(prefix,
                              "categoricalData.csv",

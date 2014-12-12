@@ -37,7 +37,8 @@ class PoissonLikelihood
     /** Constructor */
     PoissonLikelihood(const STK::Array2D<STK::Real>* p_param,
                       const AugmentedData<STK::Array2D<int> >* augData,
-                      const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage);
+                      const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
+                      int nbClass);
     /** Destructor */
     virtual ~PoissonLikelihood();
 
