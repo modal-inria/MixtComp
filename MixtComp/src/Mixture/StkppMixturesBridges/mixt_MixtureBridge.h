@@ -35,7 +35,6 @@
 #include "mixt_CategoricalBridges.h"
 #include "mixt_GaussianBridges.h"
 #include "mixt_PoissonBridges.h"
-#include "mixt_InitializeMixtureImpl.h"
 #include "../../Various/mixt_IO.h"
 
 namespace mixt
@@ -154,7 +153,7 @@ class MixtureBridge : public mixt::IMixture
     void setDataParam(std::string& warnLog)
     {
 #ifdef MC_DEBUG_NEW
-        std::cout << "MixtureBridge::setData(), idName(): " << idName() << std::endl;
+        std::cout << "MixtureBridge::setDataParam(), idName(): " << idName() << std::endl;
 #endif
       p_handler_->getData(idName(),
                           m_augDataij_,
@@ -164,7 +163,30 @@ class MixtureBridge : public mixt::IMixture
                           warnLog);
       p_paramSetter_->getParam(idName(),
                                param_);
-      initializeMixture(); // "transfer" the data and params from the bridge to the underlying stkpp mixture
+      mixture_.setData(m_augDataij_.data_);
+
+      if (param_.sizeRows() > 0 && param_.sizeCols() > 0) // setModalities must use the range provided by the ParamSetter
+      {
+        int nbParam = param_.sizeRows() / nbCluster_; // number of parameters for each cluster
+        mixture_.setModalities(STK::Range(0,
+                                          nbParam));
+        mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
+        mixture_.setParameters(param_);
+#ifdef MC_DEBUG_NEW
+        std::cout << "\tparam set " << std::endl;
+        std::cout << "\tnbParam: " << nbParam << std::endl;
+        std::cout << "\tparam_: " << param_ << std::endl;
+#endif
+      }
+      else // setModalities must use the range provided by the data
+      {
+#ifdef MC_DEBUG_NEW
+        std::cout << "\tparam not set " << std::endl;
+#endif
+        mixture_.setModalities(STK::Range(m_augDataij_.dataRange_.min_,
+                                          m_augDataij_.dataRange_.range_));
+        mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
+      }
       dataStatStorage_.resize(nbSample_,
                               nbVariable_);
     }
@@ -379,17 +401,6 @@ class MixtureBridge : public mixt::IMixture
     DataStatStorage dataStatStorage_;
     /** Statistics storage for parameters */
     STK::Array2D<STK::Real> paramStatStorage_;
-
-  private:
-    /** This function will be used in order to initialize the mixture model
-     *  using informations stored by the data_ container.
-     **/
-     void initializeMixture()
-     {
-       InitializeMixtureImpl<Id>::run(mixture_,
-                                      m_augDataij_,
-                                      param_);
-     }
 };
 
 } // namespace mixt

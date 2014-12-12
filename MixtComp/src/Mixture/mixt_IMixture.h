@@ -186,7 +186,6 @@ class IMixture
      */
     STK::CArrayVector<int> const* p_zi() const {return p_zi_;};
 
-  private:
     /** Id name of the mixture */
     std::string idName_;
     /** number of cluster */

@@ -82,7 +82,7 @@ testGenDataLearn <- function(nbClass = 2,
                                mcCluster,
                                nbClass,
                                confidenceLevel)
-  if (nchar(mcCluster@results@warnLog > 0))
+  if (nchar(mcCluster@results@warnLog) > 0)
   {
     warning(mcCluster@results@warnLog)
   }
@@ -118,7 +118,8 @@ testGenDataPredict <- function(prop,
                                mcCluster,
                                nbClass,
                                confidenceLevel)
-  if (nchar(mcCluster@results@warnLog > 0))
+
+  if (nchar(mcCluster@results@warnLog) > 0)
   {
     warning(mcCluster@results@warnLog)
   }

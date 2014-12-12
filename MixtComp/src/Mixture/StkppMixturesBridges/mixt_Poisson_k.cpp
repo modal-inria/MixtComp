@@ -126,6 +126,11 @@ void Poisson_k::setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
   p_zi_ = p_zi;
 }
 
+void Poisson_k::setModalities(STK::Range range) const
+{
+  // does nothing. Used for categorical models.
+}
+
 void Poisson_k::setParameters(const STK::Array2D<STK::Real>& param)
 {
   for (int i = 0; i < param.sizeRows(); ++i)

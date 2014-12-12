@@ -63,6 +63,8 @@ class Poisson_k
                               STK::Array2D<STK::Real> const* p_tik,
                               STK::CArrayVector<int> const* p_zi);
 
+    void setModalities(STK::Range range) const;
+
     void writeParameters(std::ostream& out) const;
   private:
     int nbCluster_;

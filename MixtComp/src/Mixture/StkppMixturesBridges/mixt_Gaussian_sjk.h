@@ -62,6 +62,11 @@ class Gaussian_sjk : public STK::Gaussian_sjk<STK::Array2D<STK::Real> >
     {
       // mstep performed explicitely in the Strategy, if needed
     }
+
+    void setModalities(STK::Range range) const
+    {
+      // does nothing. Used for categorical models.
+    }
 };
 
 } // namespace mixt
