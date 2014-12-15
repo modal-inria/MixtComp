@@ -101,6 +101,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     proportions[kR] = composer.p_pk()->elt(kS);
   mcResults.slot("proportions") = proportions;
 
+  composer.mapStep(); // compute zi_ using maximum a posteriori instead of sampling it
   Rcpp::NumericVector partition(handler.nbSample());
   for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
     partition[iR] = composer.p_zi()->elt(iS) + 1;

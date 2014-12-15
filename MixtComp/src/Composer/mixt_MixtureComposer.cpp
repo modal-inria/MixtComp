@@ -214,7 +214,6 @@ void MixtureComposer::misClasStep(int iteration)
     lnComp = probClass.row(i);
     int kmax;
     STK::Real max = lnComp.maxElt(kmax);
-    zi_.elt(i) = kmax;
     // compute sum_k pk exp{lnCom_k - lnComp_kmax}
     STK::Real sum2 =  (lnComp -= max).exp().dot(prop_);
     // compute likelihood of each sample for each component
@@ -287,9 +286,9 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter)
   {
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs)
     {
+      eStep(i);
       sStep(i);
       samplingStep(i);
-      eStep(i);
       storeData(i,
                 iterGibbs,
                 nbGibbsIter - 1);

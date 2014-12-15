@@ -141,7 +141,6 @@ STK::Real IMixtureComposerBase::eStep(int i)
   }
   int kmax;
   STK::Real max = lnComp.maxElt(kmax);
-  zi_.elt(i) = kmax;
   // compute sum_k pk exp{lnCom_k - lnComp_kmax}
   STK::Real sum2 = (lnComp -= max).exp().dot(prop_);
   // compute likelihood of each sample for each component

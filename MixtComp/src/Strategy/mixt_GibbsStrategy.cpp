@@ -61,9 +61,9 @@ bool GibbsStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "GibbsStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
 #endif
+    p_composer_->eStep();
     p_composer_->sStep();
     p_composer_->samplingStep();
-    p_composer_->eStep();
   }
 
   p_composer_->gibbsSampling(nbIterGibbs_);

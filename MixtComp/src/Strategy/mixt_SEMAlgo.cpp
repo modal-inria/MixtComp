@@ -78,6 +78,7 @@ bool SEMAlgo::run()
 
     myTimer.iteration(iter, nbIterMax_);
     // SE steps
+    p_model_->eStep();
     for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample)
     {
 #ifdef MC_DEBUG
@@ -93,7 +94,7 @@ bool SEMAlgo::run()
       }
     }
     p_model_->samplingStep();
-    p_model_->eStep();
+
     if (p_model_->state() == burnIn_)
     {
       if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
