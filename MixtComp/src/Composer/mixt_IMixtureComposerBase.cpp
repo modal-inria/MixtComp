@@ -166,7 +166,14 @@ void IMixtureComposerBase::pStep()
 #ifdef MC_DEBUG_NEW
   std::cout << "IMixtureComposerBase::pStep" << std::endl;
 #endif
-  prop_ = STK::Stat::mean(tik_);
+  for (int i = 0; i < zi_.sizeRows(); ++i)
+  {
+    prop_[zi_[i]] += 1.;
+  }
+  prop_ = prop_/prop_.sum();
+#ifdef MC_DEBUG_NEW
+  std::cout << "\tprop_: " << prop_ << std::endl;
+#endif
 }
 
 /* Compute Zi using the Map estimator,default implementation. */
