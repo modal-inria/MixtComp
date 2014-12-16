@@ -114,6 +114,11 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   mcResults.slot("proba") = proba;
 
   mcResults.slot("warnLog") = warnLog;
+  if (warnLog != std::string())
+  {
+    std::cout << "!!! warnLog not empty !!!" << std::endl;
+    std::cout << warnLog << std::endl;
+  }
 
   Rcpp::List data = dataExtractor.rcppReturnVal();
   Rcpp::List param = paramExtractor.rcppReturnParam();
