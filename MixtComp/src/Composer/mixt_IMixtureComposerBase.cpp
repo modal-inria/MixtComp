@@ -69,7 +69,6 @@ void IMixtureComposerBase::randomClassInit()
   {
     zi_.elt(i) = law.rand();
   }
-  cStep();
 }
 
 /* cStep for all individuals */
@@ -96,7 +95,7 @@ void IMixtureComposerBase::cStep(int i)
 /* simulate zi for all individuals */
 int IMixtureComposerBase::sStep()
 {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "IMixtureComposerBase::sStep" << std::endl;
 #endif
   // simulate zi
@@ -104,7 +103,17 @@ int IMixtureComposerBase::sStep()
   {
     sStep(i);
   }
-  return cStep();
+  STK::Array2DVector<int> indPerClass(nbCluster_, 0);
+  for (int i = 0; i < nbSample(); ++i)
+  {
+    indPerClass[zi_[i]] += 1;
+  }
+  int minIndPerClass = indPerClass.minElt();
+#ifdef MC_DEBUG_NEW
+  std::cout << "\tindPerClass: " << indPerClass << std::endl;
+  std::cout << "\tminIndPerClass: " << minIndPerClass << std::endl;
+#endif
+  return minIndPerClass;
 }
 
 /* simulate zi for a particular individual */

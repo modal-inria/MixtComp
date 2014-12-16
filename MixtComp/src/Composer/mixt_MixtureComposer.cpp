@@ -109,6 +109,7 @@ void MixtureComposer::mStep()
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::mStep()" << std::endl;
 #endif
+  cStep(); // since tik_ are used as surrogates for zi in stkpp mixtures mStep
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
     (*it)->paramUpdateStep();
@@ -189,7 +190,7 @@ std::cout << (*it)->idName() << std::endl;
 
 void MixtureComposer::misClasStep(int iteration)
 {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "MixtureComposer::misClasStep" << std::endl;
 
 #endif
