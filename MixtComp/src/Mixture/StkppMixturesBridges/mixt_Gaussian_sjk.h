@@ -25,48 +25,56 @@
 #ifndef MIXT_GAUSSIAN_SJK_H
 #define MIXT_GAUSSIAN_SJK_H
 
-#include "Clustering/include/GaussianMixtureModels/STK_Gaussian_sjk.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_CArrayPoint.h"
+#include "Arrays/include/STK_CArrayVector.h"
+#include "../../Statistic/mixt_NormalStatistic.h"
 
 namespace mixt
 {
 
-class Gaussian_sjk : public STK::Gaussian_sjk<STK::Array2D<STK::Real> >
+class Gaussian_sjk
 {
   public:
-    Gaussian_sjk(int nbCluster) : STK::Gaussian_sjk<STK::Array2D<STK::Real> >(nbCluster) {};
-    ~Gaussian_sjk() {};
+    Gaussian_sjk(int nbCluster);
+    ~Gaussian_sjk();
+
+    int computeNbFreeParameters() const;
+
+    void getParameters(STK::Array2D<STK::Real>& param) const;
+
+    double lnComponentProbability(int i, int k) const;
 
     /** Set the parameters after the SEM, to the mean estimates for example */
-    void setParameters(const STK::Array2D<STK::Real>& params)
-    {
-      int nbClust = this->nbCluster();
+    void setParameters(const STK::Array2D<STK::Real>& param);
 
-      for (int k = 0; k < nbClust; ++k)
-      {
-        for (int j =  p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
-        {
-#ifdef MC_DEBUG
-          std::cout << "Gaussian_sjk::setParameters" << std::endl;
-          std::cout << "\tparams.sizeCols(): " << params.sizeCols() << std::endl;
-          std::cout << "\tparams.sizeRows(): " << params.sizeRows() << std::endl;
-          std::cout << "\tp_param(k + STK::baseIdx)->mean_[j]: " << p_param(k + STK::baseIdx)->mean_[j] << std::endl;
-          std::cout << "\tp_param(k + STK::baseIdx)->sigma_[j]: " << p_param(k + STK::baseIdx)->sigma_[j] << std::endl;
-#endif
-          p_param(k + STK::baseIdx)->mean_[j]  = params(2 * k +     STK::baseIdx, j);
-          p_param(k + STK::baseIdx)->sigma_[j] = params(2 * k + 1 + STK::baseIdx, j);
-        }
-      }
-    }
+    void setData(STK::Array2D<STK::Real>& data);
 
-    void initializeStep()
-    {
-      // mstep performed explicitely in the Strategy, if needed
-    }
+    void initializeModel();
 
-    void setModalities(STK::Range range) const
-    {
-      // does nothing. Used for categorical models.
-    }
+    void initializeStep();
+
+    /** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
+     * using the biased estimator which corresponds to the maximum likelihood estimator */
+    void mStep();
+
+    int nbVariable() const;
+
+    void setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
+                              STK::Array2D<STK::Real> const* p_tik,
+                              STK::CArrayVector<int> const* p_zi);
+
+    void setModalities(STK::Range range) const;
+
+    void writeParameters(std::ostream& out) const;
+  private:
+    int nbCluster_;
+    STK::Array2DVector<STK::Real> param_;
+    STK::Array2D<STK::Real>* p_data_;
+    STK::CArrayVector<int> const* p_zi_;
+
+    /** Statistic object to describe Poisson law */
+    NormalStatistic normal_;
 };
 
 } // namespace mixt
