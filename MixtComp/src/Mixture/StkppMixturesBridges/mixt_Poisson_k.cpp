@@ -66,10 +66,11 @@ double Poisson_k::lnComponentProbability(int i, int k) const
   std::cout << "Poisson_k::lnComponentProbability" << std::endl;
   std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
 #endif
-  int currVal = p_data_ ->elt(i, 0);
+  int currVal = p_data_->elt(i, 0);
   STK::Real lambda = param_[k];
-  return poisson_.pdf(currVal,
-                      lambda);
+  STK::Real proba = poisson_.pdf(currVal,
+                                 lambda);
+  return std::log(proba);
 }
 
 void Poisson_k::mStep()
@@ -94,7 +95,7 @@ void Poisson_k::mStep()
       if ((*p_zi_)[i] == k)
       {
         sumClassMean += (*p_data_)(i, 0);
-        ++nbSampleClass = nbSampleClass;
+        nbSampleClass += 1;
       }
     }
     mean = sumClassMean / STK::Real(nbSampleClass);
