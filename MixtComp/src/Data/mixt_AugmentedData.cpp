@@ -22,7 +22,6 @@
  *              iovleff, serge.iovleff@stkpp.org
  **/
 
-#include "STatistiK/include/STK_Law_Uniform.h"
 #include "STatistiK/include/STK_Law_Categorical.h"
 #include "mixt_AugmentedData.h"
 
@@ -80,7 +79,8 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
           {
             STK::Real min = dataRange_.min_;
             STK::Real max = dataRange_.max_;
-            sampleVal = STK::Law::Uniform::rand(min, max);
+            sampleVal = uniform_.sample(min,
+                                        max);
           }
           break;
 
@@ -97,7 +97,8 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
   #endif
             STK::Real infBound = misData_(i, j).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
             STK::Real supBound = misData_(i, j).second[1];
-            sampleVal = STK::Law::Uniform::rand(infBound, supBound);
+            sampleVal = uniform_.sample(infBound,
+                                        supBound);
           }
           break;
 
@@ -105,7 +106,15 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
           {
             STK::Real min = dataRange_.min_;
             STK::Real supBound = misData_(i, j).second[0];
-            sampleVal = STK::Law::Uniform::rand(min, supBound);
+            if (min < supBound)
+            {
+              sampleVal = uniform_.sample(min,
+                                          supBound);
+            }
+            else
+            {
+              sampleVal = supBound;
+            }
           }
           break;
 
@@ -113,7 +122,15 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
           {
             STK::Real infBound = misData_(i, j).second[0];
             STK::Real max = dataRange_.max_;
-            sampleVal = STK::Law::Uniform::rand(infBound, max);
+            if (infBound < max)
+            {
+              sampleVal = uniform_.sample(infBound,
+                                          max);
+            }
+            else
+            {
+              sampleVal = infBound;
+            }
           }
           break;
         }

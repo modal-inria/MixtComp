@@ -28,6 +28,9 @@
 #include "Arrays/include/STK_Array2D.h"
 #include "Arrays/include/STK_CArrayVector.h"
 #include "../Data/mixt_AugmentedData.h"
+#include "../Statistic/mixt_UniformStatistic.h"
+#include "../Statistic/mixt_NormalStatistic.h"
+#include "../Statistic/mixt_ExponentialStatistic.h"
 
 namespace mixt
 {
@@ -47,9 +50,13 @@ class GaussianSampler
     const STK::CArrayVector<int>* p_zi_;
 
     /** left bounded sampler */
-    STK::Real lbSampler(STK::Real lower) const;
+    STK::Real lbSampler(STK::Real lower);
     /** left and right bounded sampler*/
-    STK::Real lrbSampler(STK::Real lower, STK::Real upper) const;
+    STK::Real lrbSampler(STK::Real lower, STK::Real upper);
+
+    UniformStatistic uniform_;
+    NormalStatistic normal_;
+    ExponentialStatistic exponential_;
 };
 
 } // namespace mixt

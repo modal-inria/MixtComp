@@ -23,7 +23,6 @@
 
 #include "mixt_GaussianLikelihood.h"
 #include "../Various/mixt_Def.h"
-#include <boost/math/distributions/normal.hpp>
 
 namespace mixt
 {
@@ -54,10 +53,10 @@ void GaussianLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* ln
       {
         STK::Real mean  = p_param_->elt(2*k    , j);
         STK::Real sd    = p_param_->elt(2*k + 1, j);
-        boost::math::normal norm(mean, sd);
 
-        STK::Real proba = boost::math::pdf(norm,
-                                           p_augData_->data_(i, j));
+        STK::Real proba = normal_.pdf(p_augData_->data_(i, j),
+                                      mean,
+                                      sd);
 
         lnComp->elt(i) += std::log(proba);
       }
@@ -65,10 +64,11 @@ void GaussianLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* ln
       {
         STK::Real mean  = p_param_->elt(2*k    , j);
         STK::Real sd    = p_param_->elt(2*k + 1, j);
-        boost::math::normal norm(mean, sd);
 
-        STK::Real proba = boost::math::pdf(norm,
-                                           p_dataStatStorage_->elt(i, j)[0]);
+        STK::Real proba = normal_.pdf(p_dataStatStorage_->elt(i, j)[0],
+                                      mean,
+                                      sd);
+
         lnComp->elt(i) += std::log(proba);
       }
     }
@@ -87,7 +87,6 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
     {
       STK::Real mean  = p_param_->elt(2*k    , j);
       STK::Real sd    = p_param_->elt(2*k + 1, j);
-      boost::math::normal norm(mean, sd);
 
       STK::Real proba;
       STK::Real logProba;
@@ -98,10 +97,10 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
         {
           STK::Real mean  = p_param_->elt(2*k    , j);
           STK::Real sd    = p_param_->elt(2*k + 1, j);
-          boost::math::normal norm(mean, sd);
 
-          proba = boost::math::pdf(norm,
-                                   p_augData_->data_(i, j));
+          proba = normal_.pdf(p_augData_->data_(i, j),
+                              mean,
+                              sd);
         }
         break;
 
@@ -115,15 +114,19 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
 
         case missingIntervals_:
         {
-          STK::Real leftBound  = p_augData_->misData_(i, j).second[0];
-          STK::Real rightBound = p_augData_->misData_(i, j).second[1];
+          STK::Real infBound  = p_augData_->misData_(i, j).second[0];
+          STK::Real supBound  = p_augData_->misData_(i, j).second[1];
 #ifdef MC_DEBUG
       std::cout << "\tmissingIntervals_" << std::endl;
       std::cout << "\tleftBound: " << leftBound << "\tboost::math::cdf(norm, leftBound): " << boost::math::cdf(norm, leftBound) << std::endl;
       std::cout << "\trightBound: " << rightBound << "\tboost::math::cdf(norm, rightBound): " << boost::math::cdf(norm, rightBound) << std::endl;
 #endif
-          proba = boost::math::cdf(norm, rightBound) -
-                  boost::math::cdf(norm, leftBound);
+          proba =   normal_.cdf(supBound,
+                                mean,
+                                sd)
+                  - normal_.cdf(infBound,
+                                mean,
+                                sd);
         }
         break;
 
@@ -132,9 +135,11 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
 #ifdef MC_DEBUG
       std::cout << "\tmissingLUIntervals_" << std::endl;
 #endif
-          STK::Real leftBound = p_augData_->misData_(i, j).second[0];
+          STK::Real supBound = p_augData_->misData_(i, j).second[0];
 
-          proba = 1. - boost::math::cdf(norm, leftBound);
+          proba = normal_.cdf(supBound,
+                              mean,
+                              sd);
         }
         break;
 
@@ -143,9 +148,12 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
 #ifdef MC_DEBUG
       std::cout << "\tmissingRUIntervals_" << std::endl;
 #endif
-          STK::Real rightBound = p_augData_->misData_(i, j).second[0];
+          STK::Real infBound = p_augData_->misData_(i, j).second[0];
 
-          proba = 1. - boost::math::cdf(norm, rightBound);
+
+          proba = 1. - normal_.cdf(infBound,
+                                   mean,
+                                   sd);
         }
         break;
 

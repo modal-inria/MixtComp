@@ -17,57 +17,51 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: December 11, 2014
+ *  Created on: December 16, 2014
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include "mixt_ExponentialStatistic.h"
+
 #include <ctime>
-#include "mixt_NormalStatistic.h"
 #include <boost/random/variate_generator.hpp>
-#include <boost/random/normal_distribution.hpp>
-#include <boost/math/distributions/normal.hpp>
-#include "../Various/mixt_Constants.h"
+#include <boost/random/exponential_distribution.hpp>
+#include <boost/math/distributions/exponential.hpp>
 
 namespace mixt
 {
 
-NormalStatistic::NormalStatistic() :
+ExponentialStatistic::ExponentialStatistic() :
     rng_(time(0))
 {}
 
-NormalStatistic::~NormalStatistic()
+ExponentialStatistic::~ExponentialStatistic()
 {}
 
-STK::Real NormalStatistic::cdf(int x,
-                               STK::Real mean,
-                               STK::Real sd) const
+STK::Real ExponentialStatistic::cdf(int x,
+                                    STK::Real lambda) const
 {
-  boost::math::normal norm(mean,
-                           sd);
-  STK::Real proba = boost::math::cdf(norm,
+  boost::math::exponential expo(lambda);
+  STK::Real proba = boost::math::cdf(expo,
                                      x);
   return proba;
 }
 
-STK::Real NormalStatistic::pdf(int x,
-                               STK::Real mean,
-                               STK::Real sd) const
+STK::Real ExponentialStatistic::pdf(int x,
+                                    STK::Real lambda) const
 {
-  boost::math::normal norm(mean,
-                           sd);
-  STK::Real proba = boost::math::pdf(norm,
+  boost::math::exponential expo(lambda);
+  STK::Real proba = boost::math::pdf(expo,
                                      x);
   return proba;
 }
 
-STK::Real NormalStatistic::sample(STK::Real mean,
-                                  STK::Real sd)
+STK::Real ExponentialStatistic::sample(STK::Real lambda)
 {
-  boost::normal_distribution<> norm(mean,
-                                    sd);
-  boost::variate_generator<boost::mt19937&,
-                           boost::normal_distribution<> > generator(rng_,
-                                                                    norm);
+  boost::random::exponential_distribution<> expo(lambda);
+  boost::variate_generator<boost::random::mt19937&,
+                           boost::random::exponential_distribution<> > generator(rng_,
+                                                                                 expo);
   STK::Real x = generator();
   return x;
 }

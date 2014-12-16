@@ -17,12 +17,12 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: December 15, 2014
+ *  Created on: December 16, 2014
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_NORMALSTATISTIC_H
-#define MIXT_NORMALSTATISTIC_H
+#ifndef MIXT_EXPONENTIALSTATISTIC_H
+#define MIXT_EXPONENTIALSTATISTIC_H
 
 #include "STKernel/include/STK_Real.h"
 #include <boost/random/mersenne_twister.hpp>
@@ -30,30 +30,27 @@
 namespace mixt
 {
 
-class NormalStatistic
+class ExponentialStatistic
 {
   public:
-    NormalStatistic();
-    ~NormalStatistic();
+    ExponentialStatistic();
+    ~ExponentialStatistic();
 
     /** cdf evaluated at individual x */
     STK::Real cdf(int x,
-                  STK::Real mean,
-                  STK::Real sd) const;
+                  STK::Real lambda) const;
 
     /** pdf evaluated at individual x */
     STK::Real pdf(int x,
-                  STK::Real mean,
-                  STK::Real sd) const;
+                  STK::Real lambda) const;
 
-    /** Sample a value from a Normal Law with parameters mean and sd */
-    STK::Real sample(STK::Real mean,
-                     STK::Real sd);
+    /** Sample a value from an Exponential law with rate lambda */
+    STK::Real sample(STK::Real lambda);
   private:
     /** Random number generator */
-    boost::mt19937 rng_;
+    boost::random::mt19937 rng_;
 };
 
 } // namespace mixt
 
-#endif // MIXT_NORMALSTATISTIC_H
+#endif // MIXT_EXPONENTIALSTATISTIC_H
