@@ -26,6 +26,7 @@
 #include "mixt_SEMAlgo.h"
 #include "../Various/mixt_Constants.h"
 #include "../Various/mixt_Timer.h"
+#include "../Various/mixt_IO.h"
 
 namespace mixt
 {
@@ -47,7 +48,7 @@ void SEMAlgo::setModel(mixt::MixtureComposer* p_model)
   p_model_ = p_model;
 }
 
-bool SEMAlgo::run()
+std::string SEMAlgo::run()
 {
 #ifdef MC_DEBUG
   std::cout << "SEMAlgo::run, entering" << std::endl;
@@ -84,13 +85,17 @@ bool SEMAlgo::run()
 #ifdef MC_DEBUG
       std::cout << "\titerSample: " << iterSample << std::endl;
 #endif
-      if (p_model_->sStep() > minIndPerClass)
+      int nbIndPerClass = p_model_->sStep();
+      if (nbIndPerClass > minIndPerClass)
       {
-        break;
+        break; // enough individuals in each class to carry on
       }
       else
       {
-        return false;
+        return   std::string("SEMAlgo::run(), sStep(): not enough individuals per class: ")
+               + type2str(nbIndPerClass)
+               + std::string(", while required minimum is: ")
+               + type2str(minIndPerClass);
       }
     }
     p_model_->samplingStep();
@@ -131,7 +136,7 @@ bool SEMAlgo::run()
     }
   }
 
-  return true;
+  return ""; // success: return empty string
 }
 
 } // namespace mixt

@@ -44,7 +44,7 @@ class SEMAlgo
     /** set a new model */
     void setModel(MixtureComposer* p_model);
     /** run the algorithm */
-    bool run();
+    std::string run();
 
   private:
     /** pointer on the mixture model */

@@ -26,6 +26,7 @@
 #include "../Mixture/mixt_IMixture.h"
 #include "Arrays/include/STK_Display.h"
 #include "../Various/mixt_IO.h"
+#include "../Various/mixt_Timer.h"
 
 namespace mixt
 {
@@ -282,8 +283,11 @@ void MixtureComposer::registerMixture(IMixture* p_mixture)
 
 void MixtureComposer::gibbsSampling(int nbGibbsIter)
 {
+  Timer myTimer;
+  myTimer.setName("Gibbs: run (individuals count as iterations)");
   for (int i = 0; i < nbSample(); ++i)
   {
+    myTimer.iteration(i, nbSample());
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs)
     {
       eStep(i);

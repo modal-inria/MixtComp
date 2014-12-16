@@ -75,7 +75,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   
   // create the appropriate strategy and transmit the parameters
   mixt::SemStrategy strategy(&composer,
-                             3, // number of trials of the complete chain
+                             mcStrategy.slot("nbTrialInInit"), // number of trials of the complete chain, with different initializations
                              mcStrategy.slot("nbBurnInIter"), // number of burn-in iterations
                              mcStrategy.slot("nbIter"), // number of iterations
                              mcStrategy.slot("nbGibbsBurnInIter"), // number of iterations for Gibbs sampler
@@ -83,10 +83,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                              10); // number of sampling attempts for lowly populated classes
 
   // run the strategy
-  if (strategy.run())
-    mcResults.slot("runOK") = true;
-  else
-    mcResults.slot("runOK") = false;
+  warnLog += strategy.run();
 
   composer.writeParameters(std::cout);
   composer.exportDataParam();

@@ -46,7 +46,7 @@ GibbsStrategy::GibbsStrategy(GibbsStrategy const& strategy) :
 GibbsStrategy::~GibbsStrategy()
 {}
 
-bool GibbsStrategy::run()
+std::string GibbsStrategy::run()
 {
   p_composer_->randomClassInit();
 #ifdef MC_DEBUG_NEW
@@ -70,7 +70,7 @@ bool GibbsStrategy::run()
 
   p_composer_->finalizeStep();
 
-  return true;
+  return ""; // no possibility of error in Gibbs. Since there is no mStep, any number of individuals per class is valid.
 }
 
 } // namespace mixt

@@ -86,10 +86,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                mcStrategy.slot("nbGibbsIter")); // number of iterations for Gibbs sampler);
 
   // run the strategy
-  if (strategy.run())
-    mcResults.slot("runOK") = true;
-  else
-    mcResults.slot("runOK") = false;
+  warnLog += strategy.run();
 
   composer.writeParameters(std::cout);
   composer.exportDataParam();

@@ -62,7 +62,7 @@ class SemStrategy
     virtual ~SemStrategy();
     
     /** run the strategy */
-    bool run();
+    std::string run();
     
   protected:
      /** reference on the main model */

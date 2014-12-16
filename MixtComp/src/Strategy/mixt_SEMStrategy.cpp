@@ -64,13 +64,15 @@ SemStrategy::~SemStrategy()
   if (p_longAlgo_) delete p_longAlgo_;
 }
 
-bool SemStrategy::run()
+std::string SemStrategy::run()
 {
+  std::string currWarn; // collect warning strings from all the steps
+  std::string tempWarn; // warning for each run
   for (int iTry = 0; iTry < nbTry_; ++iTry)
   {
     // Random initialization
     p_composer_->randomClassInit();
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "SemStrategy::run(), after randomClassInit()" << std::endl;
   std::cout << "*p_composer_->p_zi()" << std::endl;
   std::cout << *p_composer_->p_zi() << std::endl;
@@ -80,45 +82,65 @@ bool SemStrategy::run()
     p_composer_->pStep(); // initialize the proportions by m step
 
     // short run
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
     std::cout << "SemStrategy::run, short run" << std::endl;
 #endif
     p_composer_->setState(burnIn_);
     p_burnInAlgo_->setModel(p_composer_);
-    if (!p_burnInAlgo_->run())
+    tempWarn = p_burnInAlgo_->run();
+    if (tempWarn == std::string()) // an empty string means a successful run
+    {
+#ifdef MC_DEBUG_NEW
+    std::cout << "\tp_burnInAlgo_->run() OK" << std::endl;
+#endif
+    }
+    else
+    {
+      currWarn += tempWarn; // append warning to global warning
       continue; // make another try
+    }
 
     // long run
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
     std::cout << "SemStrategy::run, long run" << std::endl;
 #endif
     p_composer_->setState(longRun_);
     p_longAlgo_->setModel(p_composer_);
-    if (!p_longAlgo_->run())
-      continue;
-    else
-      break; // no need to further try if a run is complete
-  }
-  
-  Timer myTimer;
-  myTimer.setName("Gibbs burn-in");
-  for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
-  {
-    myTimer.iteration(iterBurnInGibbs, nbGibbsBurnInIter_);
-#ifdef MC_DEBUG
-    std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
+    tempWarn = p_longAlgo_->run();
+    if (tempWarn == std::string()) // an empty string means a successful run
+    {
+#ifdef MC_DEBUG_NEW
+    std::cout << "\tp_longAlgo_->run() OK" << std::endl;
 #endif
-    p_composer_->sStep();
-    p_composer_->samplingStep();
-    p_composer_->eStep();
+    }
+    else
+    {
+      currWarn += tempWarn; // append warning to global warning
+      continue; // make another try
+    }
+  
+    Timer myTimer;
+    myTimer.setName("Gibbs burn-in");
+    for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
+    {
+      myTimer.iteration(iterBurnInGibbs, nbGibbsBurnInIter_);
+  #ifdef MC_DEBUG_NEW
+      std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
+  #endif
+      p_composer_->sStep();
+      p_composer_->samplingStep();
+      p_composer_->eStep();
+    }
+
+    p_composer_->gibbsSampling(nbGibbsIter_);
+
+    p_composer_->finalizeStep();
+
+    return currWarn;
   }
 
-  myTimer.setName("Gibbs run");
-  p_composer_->gibbsSampling(nbGibbsIter_);
-
-  p_composer_->finalizeStep();
-
-  return true;
+  currWarn += "Number of initialization attempts exhausted. Try again with more initializations or other parameters.\n";
+  return currWarn;
 }
 
 } // namespace mixt
