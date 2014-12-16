@@ -79,7 +79,19 @@ std::string SEMAlgo::run()
 
     myTimer.iteration(iter, nbIterMax_);
     // SE steps
-    p_model_->eStep();
+    if (   p_model_->state() == burnIn_
+        && (iter / moduloMisClass > 0)
+        && (iter % moduloMisClass == 0)) // perform an eStep to remove class locking
+    {
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;
+#endif
+      p_model_->misClasStep(iter);
+    }
+    else // perform a standard eStep
+    {
+      p_model_->eStep();
+    }
     for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample)
     {
 #ifdef MC_DEBUG
@@ -100,17 +112,7 @@ std::string SEMAlgo::run()
     }
     p_model_->samplingStep();
 
-    if (p_model_->state() == burnIn_)
-    {
-      if((iter / moduloMisClass > 0) && (iter % moduloMisClass == 0))
-    //      if(iter == 10)
-      {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;
-#endif
-        p_model_->misClasStep(iter);
-      }
-    }
+
 
     // M steps
     p_model_->mStep();

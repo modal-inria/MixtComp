@@ -189,6 +189,10 @@ std::cout << (*it)->idName() << std::endl;
 
 void MixtureComposer::misClasStep(int iteration)
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::misClasStep" << std::endl;
+
+#endif
   STK::Array2D<STK::Real> probClass(nbSample(), nbCluster(), 0.);
 
   // computation of the log probability with adequately sampled missing values
