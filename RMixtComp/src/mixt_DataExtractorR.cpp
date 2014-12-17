@@ -48,45 +48,40 @@ void DataExtractorR::exportVals(std::string idName,
                             p_augData->data_.sizeCols());
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
-  // basic copy of the data to the export object
-  for (int j = 0; j < p_augData->data_.sizeCols(); ++j)
+  for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
   {
-    for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
+#ifdef MC_DEBUG
+    std::cout << "\ti: " << i << ", j: " << 0 << std::endl;
+#endif
+    if (p_augData->misData_(i, 0).first == present_)
     {
 #ifdef MC_DEBUG
-      std::cout << "\ti: " << i << ", j: " << j << std::endl;
+      std::cout << "present_" << std::endl;
 #endif
-      if (p_augData->misData_(i, j).first == present_)
+      dataR(i, 0) = p_augData->data_(i, 0);
+    }
+    else
+    {
+#ifdef MC_DEBUG
+      std::cout << "not present_" << std::endl;
+#endif
+      Rcpp::List currList; // storage for the current missing value
+      currList.push_back(i + 1); // R matrices rows start at 1
+#ifdef MC_DEBUG
+      std::cout << "p_dataStatStorage->elt(i, j).size(): " << (*p_dataStatStorage)(i, j).size() << std::endl;
+#endif
+      for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = (*p_dataStatStorage)(i, 0).begin();
+           itVec != (*p_dataStatStorage)(i, 0).end();
+           ++itVec)
       {
 #ifdef MC_DEBUG
-        std::cout << "present_" << std::endl;
+        std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
 #endif
-        dataR(i, j) = p_augData->data_(i, j);
+        currList.push_back(itVec->first ); // current modality
+        currList.push_back(itVec->second); // probability of the modality
       }
-      else
-      {
-#ifdef MC_DEBUG
-        std::cout << "not present_" << std::endl;
-#endif
-        Rcpp::List currList; // storage for the current missing value
-        currList.push_back(i + 1); // R matrices rows start at 1
-        currList.push_back(j + 1); // R matrices cols start at 1
-#ifdef MC_DEBUG
-        std::cout << "p_dataStatStorage->elt(i, j).size(): " << (*p_dataStatStorage)(i, j).size() << std::endl;
-#endif
-        for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = (*p_dataStatStorage)(i, j).begin();
-             itVec != (*p_dataStatStorage)(i, j).end();
-             ++itVec)
-        {
-#ifdef MC_DEBUG
-          std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
-#endif
-          currList.push_back(itVec->first ); // current modality
-          currList.push_back(itVec->second); // probability of the modality
-        }
-        missingData.push_back(currList);
-        dataR(i, j) = (*p_dataStatStorage)(i, j)[0].first; // imputation by the mode
-      }
+      missingData.push_back(currList);
+      dataR(i, 0) = (*p_dataStatStorage)(i, 0)[0].first; // imputation by the mode
     }
   }
 
@@ -105,25 +100,21 @@ void DataExtractorR::exportVals(std::string idName,
   // basic copy of the data to the export object
   for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
   {
-    for (int j = 0; j < p_augData->data_.sizeCols(); ++j)
+    if (p_augData->misData_(i, 0).first == present_)
     {
-      if (p_augData->misData_(i, j).first == present_)
-      {
-        dataR(i, j) = p_augData->data_(i, j);
-      }
-      else
-      {
-        Rcpp::List currList; // storage for the current missing value
-        currList.push_back(i + 1); // R matrices rows start at 1
-        currList.push_back(j + 1); // R matrices cols start at 1
-        currList.push_back(p_dataStatStorage->elt(i, j)[0]); // expectation
-        currList.push_back(p_dataStatStorage->elt(i, j)[1]); // left bound
-        currList.push_back(p_dataStatStorage->elt(i, j)[2]); // right bound
+      dataR(i, 0) = p_augData->data_(i, 0);
+    }
+    else
+    {
+      Rcpp::List currList; // storage for the current missing value
+      currList.push_back(i + 1); // R matrices rows start at 1
+      currList.push_back(p_dataStatStorage->elt(i, 0)[0]); // expectation
+      currList.push_back(p_dataStatStorage->elt(i, 0)[1]); // left bound
+      currList.push_back(p_dataStatStorage->elt(i, 0)[2]); // right bound
 
-        missingData.push_back(currList);
+      missingData.push_back(currList);
 
-        dataR(i, j) = p_dataStatStorage->elt(i,j)[0]; // imputation by the expectation
-      }
+      dataR(i, 0) = p_dataStatStorage->elt(i,0)[0]; // imputation by the expectation
     }
   }
 
