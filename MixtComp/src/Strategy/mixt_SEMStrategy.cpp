@@ -77,9 +77,16 @@ std::string SemStrategy::run()
   std::cout << "*p_composer_->p_zi()" << std::endl;
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
-    p_composer_->initializeStep(); // initialize mixture parameters, usually calling an mStep
-    p_composer_->mStep();
-    p_composer_->pStep(); // initialize the proportions by m step
+    p_composer_->initializeStep(); // optionnal step for mixtures that need it
+    tempWarn = p_composer_->mStep();
+    if (tempWarn != std::string())
+    {
+#ifdef MC_DEBUG_NEW
+      std::cout << "\ttempWarn: " << tempWarn << std::endl;
+#endif
+      currWarn += tempWarn; // append warning to global warning
+      continue; // make another try
+    }
 
     // short run
 #ifdef MC_DEBUG_NEW
@@ -88,13 +95,7 @@ std::string SemStrategy::run()
     p_composer_->setState(burnIn_);
     p_burnInAlgo_->setModel(p_composer_);
     tempWarn = p_burnInAlgo_->run();
-    if (tempWarn == std::string()) // an empty string means a successful run
-    {
-#ifdef MC_DEBUG_NEW
-    std::cout << "\tp_burnInAlgo_->run() OK" << std::endl;
-#endif
-    }
-    else
+    if (tempWarn != std::string()) // an empty string means a successful run
     {
       currWarn += tempWarn; // append warning to global warning
       continue; // make another try

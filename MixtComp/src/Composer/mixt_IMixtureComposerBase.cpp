@@ -157,17 +157,6 @@ STK::Real IMixtureComposerBase::eStep(int i)
 
   return max + std::log(sum2);
 }
-/* estimate the proportions and the parameters of the components of the
- *  model given the current tik/zi mixture parameters values.
- **/
-void IMixtureComposerBase::mStep()
-{
-#ifdef MC_DEBUG
-  std::cout << "IMixtureComposerBase::mStep" << std::endl;
-#endif
-  pStep();
-  /* implement specific parameters estimation in concrete class. */
-}
 
 /* Compute prop using the ML estimator, default implementation. */
 void IMixtureComposerBase::pStep()

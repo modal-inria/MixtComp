@@ -203,10 +203,18 @@ class MixtureBridge : public mixt::IMixture
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
-    virtual void paramUpdateStep()
+    virtual std::string mStep()
     {
-      mixture_.mStep();
+      std::string warn = mixture_.mStep();
       mixture_.getParameters(param_); // update the parameters
+      if (warn != std::string())
+      {
+        warn =   std::string("Error in variable ")
+               + idName_
+               + ": \n"
+               + warn;
+      }
+      return warn;
     }
     /** This function should be used to store any results during the burn-in period
      *  @param iteration Provides the iteration number during the burn-in period

@@ -104,16 +104,19 @@ STK::Real MixtureComposer::lnObservedLikelihood()
   return lnLikelihood;
 }
 
-void MixtureComposer::mStep()
+std::string MixtureComposer::mStep()
 {
+  std::string warn;
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::mStep()" << std::endl;
 #endif
+  pStep(); // computation of the proportions, mStep for mixture parameters
   cStep(); // since tik_ are used as surrogates for zi in stkpp mixtures mStep
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
-    (*it)->paramUpdateStep();
+    warn += (*it)->mStep(); // call mStep on each variable
   }
+  return warn;
 }
 
 void MixtureComposer::writeParameters(std::ostream& os) const

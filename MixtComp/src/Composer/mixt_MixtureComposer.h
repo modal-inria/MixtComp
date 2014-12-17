@@ -74,7 +74,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
      **/
-    virtual void mStep();
+    virtual std::string mStep();
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
      *  @param k index of the component

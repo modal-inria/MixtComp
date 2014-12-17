@@ -73,7 +73,7 @@ double Poisson_k::lnComponentProbability(int i, int k) const
   return std::log(proba);
 }
 
-void Poisson_k::mStep()
+std::string Poisson_k::mStep()
 {
 #ifdef MC_DEBUG
     std::cout << "Gaussian_sjk::mStep" << std::endl;
@@ -108,6 +108,7 @@ void Poisson_k::mStep()
 #endif
     param_[k] = mean;
   }
+  return "";
 }
 
 int Poisson_k::nbVariable() const

@@ -70,7 +70,7 @@ double Categorical_pjk::lnComponentProbability(int i, int k) const
   return std::log(proba);
 }
 
-void Categorical_pjk::mStep()
+std::string Categorical_pjk::mStep()
 {
 #ifdef MC_DEBUG_NEW
     std::cout << "Gaussian_sjk::mStep" << std::endl;
@@ -110,6 +110,8 @@ void Categorical_pjk::mStep()
       param_[k * nbModalities_ + p] = modalities[p];
     }
   }
+
+  return "";
 }
 
 int Categorical_pjk::nbVariable() const

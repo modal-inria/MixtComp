@@ -93,7 +93,7 @@ class IMixture
     /** @brief This function is equivalent to mStep and must be defined to update
      *  parameters.
      */
-    virtual void paramUpdateStep() = 0;
+    virtual std::string mStep() = 0;
     /** @brief This function should be used to store results during the burn-in period.
      * @param iteration Provides the iteration number in the burn-in
      * period.

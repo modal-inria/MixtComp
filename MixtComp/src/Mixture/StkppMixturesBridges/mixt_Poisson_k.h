@@ -55,7 +55,7 @@ class Poisson_k
 
     void initializeStep();
 
-    void mStep();
+    std::string mStep();
 
     int nbVariable() const;
 

@@ -22,6 +22,7 @@
  **/
 
 #include "mixt_Gaussian_sjk.h"
+#include "../../Various/mixt_Constants.h"
 
 namespace mixt
 {
@@ -75,8 +76,9 @@ double Gaussian_sjk::lnComponentProbability(int i, int k) const
   return std::log(proba);
 }
 
-void Gaussian_sjk::mStep()
+std::string Gaussian_sjk::mStep()
 {
+  std::string warn;
 #ifdef MC_DEBUG_NEW
   std::cout << "Gaussian_sjk::mStep" << std::endl;
 #endif
@@ -113,12 +115,19 @@ void Gaussian_sjk::mStep()
     std::cout << "\tmean: " << mean << std::endl;
     std::cout << "\tsd: " << sd << std::endl;
 #endif
+
+    if (sd < epsilon)
+    {
+      warn += "estimated standard deviation is zero for a Gaussian_sjk model. The data in your variable is not dispersed enough for this model. Try a more suited model.\n";
+    }
     param_[2 * k    ] = mean;
     param_[2 * k + 1] = sd;
   }
 #ifdef MC_DEBUG_NEW
   std::cout << "param_: " << param_ << std::endl;
 #endif
+
+  return warn;
 }
 
 int Gaussian_sjk::nbVariable() const

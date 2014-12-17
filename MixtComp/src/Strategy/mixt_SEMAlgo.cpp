@@ -78,7 +78,7 @@ std::string SEMAlgo::run()
 #endif
 
     myTimer.iteration(iter, nbIterMax_);
-    // SE steps
+    // SE steps (e followed by s)
     if (   p_model_->state() == burnIn_
         && (iter / moduloMisClass > 0)
         && (iter % moduloMisClass == 0)) // perform an eStep to remove class locking
@@ -112,11 +112,12 @@ std::string SEMAlgo::run()
     }
     p_model_->samplingStep();
 
-
-
-    // M steps
-    p_model_->mStep();
-    p_model_->pStep();
+    // M step
+    std::string warn = p_model_->mStep();
+    if (warn != std::string())
+    {
+      return warn; // error reported in the mStep, terminate the SEM algo, and report it to the strategy.
+    }
 
     // storage steps
     if (p_model_->state() == burnIn_)

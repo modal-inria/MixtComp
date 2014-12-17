@@ -137,10 +137,6 @@ class IMixtureComposerBase : public STK::IModelBase
     /** set the state of the model : should be used by any strategy*/
     inline void setState(modelState state) {state_ = state;}
 
-    /** Compute the proportions and the model parameters given the current tik
-     *  mixture parameters.
-     **/
-    virtual void mStep() = 0;
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
      *  @param k index of the component
@@ -164,14 +160,6 @@ class IMixtureComposerBase : public STK::IModelBase
      **/
     virtual void initializeStep() = 0;
 
-    /** Compute proportions using the ML estimator, default implementation. Set
-     *  as virtual in case we impose fixed proportions in derived model.
-     **/
-    virtual void pStep();
-    /** @brief Impute the missing values.
-     *  Default behavior is "do nothing".
-     **/
-    inline virtual void imputationStep() {}
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels. Default behavior is "do nothing".
      */
@@ -230,6 +218,12 @@ class IMixtureComposerBase : public STK::IModelBase
     STK::Array2D<STK::Real> tik_;
     /** The zik class label */
     STK::CArrayVector<int> zi_;
+
+    /** Compute proportions using the ML estimator, default implementation. Set
+     *  as virtual in case we impose fixed proportions in derived model.
+     **/
+    virtual void pStep();
+
     /** Create the mixture model parameters. */
     void intializeMixtureParameters();
 
