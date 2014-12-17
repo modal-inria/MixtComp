@@ -47,10 +47,16 @@ MixtureComposer::~MixtureComposer()
 
 STK::Real MixtureComposer::lnComponentProbability(int i, int k)
 {
-  STK::Real sum=0.0;
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::lnComponentProbability(int i, int k), i: " << i << ", k: " << k << std::endl;
+#endif
+  STK::Real sum = 0.;
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
     sum += (*it)->lnComponentProbability(i, k);
+#ifdef MC_DEBUG
+    std::cout << (*it)->idName() << ", sum: " << sum << std::endl;
+#endif
   }
   return sum;
 }
@@ -137,7 +143,7 @@ void MixtureComposer::initializeStep()
     std::cout << "MixtureComposer::initializeStep, no mixture have been registered" << std::endl;
   // compute number of free parameters
   setNbFreeParameter(computeNbFreeParameters());
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "MixtureComposer::initializeStep() called on " << v_mixtures_.size() << " mixtures" << std::endl;
   std::cout << "prop_: " << prop_ << std::endl;
 #endif
@@ -151,7 +157,7 @@ void MixtureComposer::initializeStep()
 // implement computeNbFreeParameters
 int MixtureComposer::computeNbFreeParameters() const
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "MixtureComposer::computeNbFreeParameters()" << std::endl;
 #endif
   int sum = nbCluster_-1; // proportions
@@ -192,7 +198,7 @@ std::cout << (*it)->idName() << std::endl;
 
 void MixtureComposer::misClasStep(int iteration)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "MixtureComposer::misClasStep" << std::endl;
 
 #endif

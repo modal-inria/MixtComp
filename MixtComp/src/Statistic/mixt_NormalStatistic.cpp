@@ -31,6 +31,8 @@
 namespace mixt
 {
 
+typedef NormalStatistic::Type Type;
+
 NormalStatistic::NormalStatistic() :
     rng_(time(0))
 {}
@@ -38,7 +40,7 @@ NormalStatistic::NormalStatistic() :
 NormalStatistic::~NormalStatistic()
 {}
 
-STK::Real NormalStatistic::cdf(int x,
+STK::Real NormalStatistic::cdf(Type x,
                                STK::Real mean,
                                STK::Real sd) const
 {
@@ -49,7 +51,7 @@ STK::Real NormalStatistic::cdf(int x,
   return proba;
 }
 
-STK::Real NormalStatistic::pdf(int x,
+STK::Real NormalStatistic::pdf(Type x,
                                STK::Real mean,
                                STK::Real sd) const
 {
@@ -60,15 +62,15 @@ STK::Real NormalStatistic::pdf(int x,
   return proba;
 }
 
-STK::Real NormalStatistic::sample(STK::Real mean,
-                                  STK::Real sd)
+Type NormalStatistic::sample(STK::Real mean,
+                             STK::Real sd)
 {
   boost::normal_distribution<> norm(mean,
                                     sd);
   boost::variate_generator<boost::mt19937&,
                            boost::normal_distribution<> > generator(rng_,
                                                                     norm);
-  STK::Real x = generator();
+  Type x = generator();
   return x;
 }
 

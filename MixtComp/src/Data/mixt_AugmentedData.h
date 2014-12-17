@@ -113,7 +113,7 @@ class AugmentedData
         }
       }
       dataRange_ = Range<Type>(min, max);
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "AugmentedData::computeRange" << std::endl;
       std::cout << "min: " << min << ", max: " << max << std::endl;
 #endif

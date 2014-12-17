@@ -41,7 +41,7 @@ PoissonLikelihood::~PoissonLikelihood()
 
 void PoissonLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
    std::cout << "PoissonLikelihood::lnCompletedLikelihood" << std::endl;
    std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
 #endif
@@ -68,7 +68,7 @@ void PoissonLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnC
 
 void PoissonLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "PoissonLikelihood::lnObservedLikelihood" << std::endl;
       std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
 #endif

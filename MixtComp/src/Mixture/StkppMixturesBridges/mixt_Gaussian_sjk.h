@@ -36,6 +36,8 @@ namespace mixt
 class Gaussian_sjk
 {
   public:
+    typedef STK::Real Type;
+
     Gaussian_sjk(int nbCluster);
     ~Gaussian_sjk();
 
@@ -48,7 +50,7 @@ class Gaussian_sjk
     /** Set the parameters after the SEM, to the mean estimates for example */
     void setParameters(const STK::Array2D<STK::Real>& param);
 
-    void setData(STK::Array2D<STK::Real>& data);
+    void setData(STK::Array2D<Type>& data);
 
     void initializeModel();
 
@@ -68,7 +70,7 @@ class Gaussian_sjk
   private:
     int nbCluster_;
     STK::Array2DVector<STK::Real> param_;
-    STK::Array2D<STK::Real>* p_data_;
+    STK::Array2D<Type>* p_data_;
     STK::CArrayVector<int> const* p_zi_;
 
     /** Statistic object to describe Poisson law */

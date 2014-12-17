@@ -73,7 +73,7 @@ std::string SemStrategy::run()
   {
     // Random initialization
     p_composer_->randomClassInit();
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "SemStrategy::run(), after randomClassInit()" << std::endl;
   std::cout << "*p_composer_->p_zi()" << std::endl;
   std::cout << *p_composer_->p_zi() << std::endl;
@@ -89,7 +89,7 @@ std::string SemStrategy::run()
     }
 
     // short run
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "SemStrategy::run, short run" << std::endl;
 #endif
     p_composer_->setState(burnIn_);
@@ -104,7 +104,7 @@ std::string SemStrategy::run()
     }
 
     // long run
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "SemStrategy::run, long run" << std::endl;
 #endif
     p_composer_->setState(longRun_);
@@ -123,7 +123,7 @@ std::string SemStrategy::run()
     for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
     {
       myTimer.iteration(iterBurnInGibbs, nbGibbsBurnInIter_);
-  #ifdef MC_DEBUG_NEW
+  #ifdef MC_DEBUG
       std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
   #endif
       p_composer_->sStep();

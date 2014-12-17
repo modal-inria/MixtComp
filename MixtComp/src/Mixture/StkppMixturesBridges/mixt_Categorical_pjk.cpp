@@ -26,8 +26,13 @@
 namespace mixt
 {
 
+typedef Categorical_pjk::Type Type;
+
 Categorical_pjk::Categorical_pjk(int nbCluster) :
-    nbCluster_(nbCluster)
+    nbCluster_(nbCluster),
+    nbModalities_(0),
+    p_data_(0),
+    p_zi_(0)
     // modalities are not known at the creation of the object, hence a call to setModality is needed later
 {}
 
@@ -61,18 +66,18 @@ void Categorical_pjk::initializeStep()
 
 double Categorical_pjk::lnComponentProbability(int i, int k) const
 {
+  Type currVal = p_data_->elt(i, 0);
+  STK::Real proba = param_[k * nbModalities_ + currVal - 1]; // first modality is 1 in data, but 0 in parameters storage
 #ifdef MC_DEBUG
   std::cout << "Categorical_pjk::lnComponentProbability" << std::endl;
-  std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
+  std::cout << "\tk: " << k << ", proba: " << proba << std::endl;
 #endif
-  int currVal = p_data_->elt(i, 0);
-  STK::Real proba = param_[k * nbModalities_ + currVal - 1]; // first modality is 1 in data, but 0 in parameters storage
   return std::log(proba);
 }
 
 std::string Categorical_pjk::mStep()
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "Gaussian_sjk::mStep" << std::endl;
 #endif
 #ifdef MC_DEBUG
@@ -93,7 +98,7 @@ std::string Categorical_pjk::mStep()
 #endif
       if ((*p_zi_)[i] == k)
       {
-        int currVal = p_data_->elt(i, 0);
+        Type currVal = p_data_->elt(i, 0);
         nbSampleClass += 1.;
         modalities[currVal - 1] += 1.; // first modality is 1 in data, but 0 in parameters storage
       }
@@ -101,7 +106,7 @@ std::string Categorical_pjk::mStep()
 
     modalities = modalities / nbSampleClass;
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
     std::cout << "modalities: " << modalities << std::endl;
 #endif
@@ -119,7 +124,7 @@ int Categorical_pjk::nbVariable() const
   return 1;
 }
 
-void Categorical_pjk::setData(STK::Array2D<int>& data)
+void Categorical_pjk::setData(STK::Array2D<Type>& data)
 {
   p_data_ = &data;
 }

@@ -26,10 +26,14 @@
 namespace mixt
 {
 
+typedef Poisson_k::Type Type;
+
 Poisson_k::Poisson_k(int nbCluster) :
     nbCluster_(nbCluster),
     param_(nbCluster,
-           0.)
+           0.),
+    p_data_(0),
+    p_zi_(0)
 {}
 
 Poisson_k::~Poisson_k()
@@ -66,7 +70,7 @@ double Poisson_k::lnComponentProbability(int i, int k) const
   std::cout << "Poisson_k::lnComponentProbability" << std::endl;
   std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
 #endif
-  int currVal = p_data_->elt(i, 0);
+  Type currVal = p_data_->elt(i, 0);
   STK::Real lambda = param_[k];
   STK::Real proba = poisson_.pdf(currVal,
                                  lambda);
@@ -94,7 +98,8 @@ std::string Poisson_k::mStep()
 #endif
       if ((*p_zi_)[i] == k)
       {
-        sumClassMean += (*p_data_)(i, 0);
+        Type currVal = (*p_data_)(i, 0);
+        sumClassMean += currVal;
         nbSampleClass += 1;
       }
     }
@@ -116,7 +121,7 @@ int Poisson_k::nbVariable() const
   return 1;
 }
 
-void Poisson_k::setData(STK::Array2D<int>& data)
+void Poisson_k::setData(STK::Array2D<Type>& data)
 {
   p_data_ = &data;
 }

@@ -33,22 +33,24 @@ namespace mixt
 class NormalStatistic
 {
   public:
+    typedef STK::Real Type;
+
     NormalStatistic();
     ~NormalStatistic();
 
     /** cdf evaluated at individual x */
-    STK::Real cdf(int x,
+    STK::Real cdf(Type x,
                   STK::Real mean,
                   STK::Real sd) const;
 
     /** pdf evaluated at individual x */
-    STK::Real pdf(int x,
+    STK::Real pdf(Type x,
                   STK::Real mean,
                   STK::Real sd) const;
 
     /** Sample a value from a Normal Law with parameters mean and sd */
-    STK::Real sample(STK::Real mean,
-                     STK::Real sd);
+    Type sample(STK::Real mean,
+                STK::Real sd);
   private:
     /** Random number generator */
     boost::mt19937 rng_;

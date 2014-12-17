@@ -62,7 +62,7 @@ class MixtureManager
         std::string idName = it->first;
         std::string model = it->second;
         Mixture idModel = stringToMixture(model);
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "MixtureManager::createMixtures, "
         		      << "idName: " << idName
 				          << ", model: " << model
@@ -91,7 +91,7 @@ class MixtureManager
                                   int nbCluster,
                                   STK::Real confidenceLevel)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "MixtureManager::createMixture" << std::endl;
       std::cout << "idName: " << idName << std::endl;
 #endif

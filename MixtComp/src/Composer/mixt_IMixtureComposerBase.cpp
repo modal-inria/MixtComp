@@ -74,7 +74,7 @@ void IMixtureComposerBase::randomClassInit()
 /* simulate zi for all individuals */
 int IMixtureComposerBase::sStep()
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::sStep" << std::endl;
 #endif
   // simulate zi
@@ -88,7 +88,7 @@ int IMixtureComposerBase::sStep()
     indPerClass[zi_[i]] += 1;
   }
   int minIndPerClass = indPerClass.minElt();
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "\tindPerClass: " << indPerClass << std::endl;
   std::cout << "\tminIndPerClass: " << minIndPerClass << std::endl;
 #endif
@@ -106,13 +106,14 @@ void IMixtureComposerBase::eStep()
 {
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::eStep" << std::endl;
+  std::cout << "prop_: " << prop_ << std::endl;
 #endif
   STK::Real sum = 0.;
   for (int i = 0; i < nbSample(); ++i)
   {
     sum += eStep(i);
   }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "tik_:" << std::endl;
   std::cout << tik_ << std::endl;
 #endif
@@ -122,6 +123,9 @@ void IMixtureComposerBase::eStep()
 /* compute Tik, for a particular individual */
 STK::Real IMixtureComposerBase::eStep(int i)
 {
+#ifdef MC_DEBUG
+  std::cout << "IMixtureComposerBase::eStep(i), i: " << i << std::endl;
+#endif
   STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
   for (int k = tik_.firstIdxCols(); k <= tik_.lastIdxCols(); k++)
   {
@@ -134,13 +138,17 @@ STK::Real IMixtureComposerBase::eStep(int i)
   // compute likelihood of each sample for each component
   tik_.row(i) = (prop_ * lnComp.exp())/sum2;
 
+#ifdef MC_DEBUG
+  std::cout << "\tmax: " << max << ", sum2: " << sum2 << std::endl;
+#endif
+
   return max + std::log(sum2);
 }
 
 /* Compute prop using the ML estimator, default implementation. */
 void IMixtureComposerBase::pStep()
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::pStep" << std::endl;
 #endif
   for (int i = 0; i < zi_.sizeRows(); ++i)
@@ -148,7 +156,7 @@ void IMixtureComposerBase::pStep()
     prop_[zi_[i]] += 1.;
   }
   prop_ = prop_/prop_.sum();
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "\tprop_: " << prop_ << std::endl;
 #endif
 }
@@ -179,7 +187,7 @@ void IMixtureComposerBase::mapStep(int i)
 /* Create the parameters of the  mixture model. */
 void IMixtureComposerBase::intializeMixtureParameters()
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::intializeMixtureParameters" << std::endl;
 #endif
   prop_ = 1./(STK::Real)nbCluster_;

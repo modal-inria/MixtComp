@@ -27,10 +27,14 @@
 namespace mixt
 {
 
+typedef Gaussian_sjk::Type Type;
+
 Gaussian_sjk::Gaussian_sjk(int nbCluster) :
     nbCluster_(nbCluster),
     param_(2 * nbCluster,
-           0.)
+           0.),
+    p_data_(0),
+    p_zi_(0)
 {}
 
 Gaussian_sjk::~Gaussian_sjk()
@@ -43,7 +47,7 @@ int Gaussian_sjk::computeNbFreeParameters() const
 
 void Gaussian_sjk::getParameters(STK::Array2D<STK::Real>& param) const
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::getParameters" << std::endl;
   std::cout << "\tparam_: " << param_ << std::endl;
 #endif
@@ -63,23 +67,23 @@ void Gaussian_sjk::initializeStep()
 
 double Gaussian_sjk::lnComponentProbability(int i, int k) const
 {
-#ifdef MC_DEBUG
-  std::cout << "Poisson_k::lnComponentProbability" << std::endl;
-  std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
-#endif
-  int currVal = p_data_ ->elt(i, 0);
+  Type currVal = p_data_ ->elt(i, 0);
   STK::Real mean = param_[2 * k    ];
   STK::Real sd   = param_[2 * k + 1];
   STK::Real proba = normal_.pdf(currVal,
                                 mean,
                                 sd);
+#ifdef MC_DEBUG
+  std::cout << "Gaussian_sjk::lnComponentProbability" << std::endl;
+  std::cout << "\tk: " << k << ", mean: " << mean << ", sd: " << sd << ", currVal: " << currVal << ", proba: " << proba << std::endl;
+#endif
   return std::log(proba);
 }
 
 std::string Gaussian_sjk::mStep()
 {
   std::string warn;
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::mStep" << std::endl;
 #endif
 #ifdef MC_DEBUG
@@ -102,7 +106,7 @@ std::string Gaussian_sjk::mStep()
       if ((*p_zi_)[i] == k)
       {
         ++n;
-        STK::Real x = (*p_data_)(i, 0);
+        Type x = (*p_data_)(i, 0);
         STK::Real delta = x - mean;
         mean = mean + delta / STK::Real(n);
         M2 = M2 + delta * (x - mean);
@@ -110,7 +114,7 @@ std::string Gaussian_sjk::mStep()
     }
     sd = std::sqrt(M2 / STK::Real(n));
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
     std::cout << "\tmean: " << mean << std::endl;
     std::cout << "\tsd: " << sd << std::endl;
@@ -118,12 +122,15 @@ std::string Gaussian_sjk::mStep()
 
     if (sd < epsilon)
     {
+#ifdef MC_DEBUG
+      std::cout << "\tnull estimated standard deviation" << param_ << std::endl;
+#endif
       warn += "estimated standard deviation is zero for a Gaussian_sjk model. The data in your variable is not dispersed enough for this model. Try a more suited model.\n";
     }
     param_[2 * k    ] = mean;
     param_[2 * k + 1] = sd;
   }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "param_: " << param_ << std::endl;
 #endif
 
@@ -135,7 +142,7 @@ int Gaussian_sjk::nbVariable() const
   return 1;
 }
 
-void Gaussian_sjk::setData(STK::Array2D<STK::Real>& data)
+void Gaussian_sjk::setData(STK::Array2D<Type>& data)
 {
   p_data_ = &data;
 }

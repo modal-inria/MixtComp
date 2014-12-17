@@ -29,10 +29,10 @@ int main(int argc, char *argv[])
   RInside R(argc, argv);              // create an embedded R instance
   R.parseEvalQ("library(methods)");
   R.parseEvalQ("library(RMixtComp)");
-  R.parseEvalQ("testGenDataLearn()");
+//  R.parseEvalQ("testGenDataLearn()");
 //  R.parseEvalQ("testLearnPredict()");
 //  R.parseEvalQ("clustering()");
-//  R.parseEvalQ("testAuchan()");
+  R.parseEvalQ("clustAuchan()");
 
 //  R.parseEvalQ("testRougeGorge()");
 

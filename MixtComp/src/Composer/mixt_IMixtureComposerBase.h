@@ -193,7 +193,7 @@ class IMixtureComposerBase : public STK::IModelBase
     void setProportions(STK::CArrayPoint<STK::Real> prop)
     {
       prop_ = prop;
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "IMixtureComposerBase::setProportions" << std::endl;
       std::cout << "prop_: " << prop_ << std::endl;
 #endif

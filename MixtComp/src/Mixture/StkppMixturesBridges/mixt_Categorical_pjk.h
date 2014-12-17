@@ -35,6 +35,7 @@ namespace mixt
 class Categorical_pjk
 {
   public:
+    typedef int Type;
     Categorical_pjk(int nbCluster);
     ~Categorical_pjk();
 
@@ -45,7 +46,7 @@ class Categorical_pjk
     double lnComponentProbability(int i, int k) const;
     std::string mStep();
     int nbVariable() const;
-    void setData(STK::Array2D<int>& data);
+    void setData(STK::Array2D<Type>& data);
     void setMixtureParameters(STK::CArrayVector<int> const* p_zi);
     void setModalities(int nbModalities);
     void setParameters(const STK::Array2D<STK::Real>& param);
@@ -54,7 +55,7 @@ class Categorical_pjk
   private:
     int nbCluster_;
     int nbModalities_;
-    STK::Array2D<int>* p_data_;
+    STK::Array2D<Type>* p_data_;
     STK::Array2DVector<STK::Real> param_;
     STK::CArrayVector<int> const* p_zi_;
 };

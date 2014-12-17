@@ -33,21 +33,23 @@ namespace mixt
 class UniformStatistic
 {
   public:
+    typedef STK::Real Type;
+
     UniformStatistic();
     ~UniformStatistic();
 
     /** cdf evaluated at individual x */
-    STK::Real cdf(int x,
+    STK::Real cdf(Type x,
                   STK::Real min,
                   STK::Real max) const;
 
     /** pdf evaluated at individual x */
-    STK::Real pdf(int x,
+    STK::Real pdf(Type x,
                   STK::Real min,
                   STK::Real max) const;
 
     /** Sample a value from a Normal Law with parameters mean and sd */
-    STK::Real sample(STK::Real min,
+    Type sample(STK::Real min,
                      STK::Real max);
   private:
     /** Random number generator */

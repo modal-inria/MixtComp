@@ -151,7 +151,7 @@ class MixtureBridge : public mixt::IMixture
      */
     void setDataParam(std::string& warnLog)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "MixtureBridge::setDataParam(), idName(): " << idName() << std::endl;
 #endif
       p_handler_->getData(idName(),
@@ -170,7 +170,7 @@ class MixtureBridge : public mixt::IMixture
         mixture_.setModalities(nbParam);
         mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
         mixture_.setParameters(param_);
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "\tparam set " << std::endl;
         std::cout << "\tnbParam: " << nbParam << std::endl;
         std::cout << "\tparam_: " << param_ << std::endl;
@@ -178,7 +178,7 @@ class MixtureBridge : public mixt::IMixture
       }
       else // setModalities must use the range provided by the data
       {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "\tparam not set " << std::endl;
 #endif
         mixture_.setModalities(m_augDataij_.dataRange_.range_);
@@ -292,7 +292,7 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
       std::cout << "\tidName: " << idName() << std::endl;
       std::cout << "\tparam: " << std::endl;
@@ -307,7 +307,7 @@ class MixtureBridge : public mixt::IMixture
      */
     virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
       std::cout << "\tidName: " << idName() << std::endl;
       std::cout << "\tparam: " << std::endl;
