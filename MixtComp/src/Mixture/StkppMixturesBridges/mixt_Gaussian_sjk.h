@@ -64,7 +64,7 @@ class Gaussian_sjk
                               STK::Array2D<STK::Real> const* p_tik,
                               STK::CArrayVector<int> const* p_zi);
 
-    void setModalities(STK::Range range) const;
+    void setModalities(int nbModalities);
 
     void writeParameters(std::ostream& out) const;
   private:

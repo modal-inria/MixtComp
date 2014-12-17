@@ -171,8 +171,7 @@ class MixtureBridge : public mixt::IMixture
       if (param_.sizeRows() > 0 && param_.sizeCols() > 0) // setModalities must use the range provided by the ParamSetter
       {
         int nbParam = param_.sizeRows() / nbCluster_; // number of parameters for each cluster
-        mixture_.setModalities(STK::Range(1, // first modality in input had to be 1 for learning set
-                                          nbParam));
+        mixture_.setModalities(nbParam);
         mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
         mixture_.setParameters(param_);
 #ifdef MC_DEBUG_NEW
@@ -186,8 +185,7 @@ class MixtureBridge : public mixt::IMixture
 #ifdef MC_DEBUG_NEW
         std::cout << "\tparam not set " << std::endl;
 #endif
-        mixture_.setModalities(STK::Range(m_augDataij_.dataRange_.min_,
-                                          m_augDataij_.dataRange_.range_));
+        mixture_.setModalities(m_augDataij_.dataRange_.range_);
         mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
       }
       dataStatStorage_.resize(nbSample_,

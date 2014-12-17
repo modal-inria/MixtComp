@@ -50,9 +50,9 @@ testGenDataLearn <- function(nbClass = 2,
   {
     dataParamGenerator(nbSampleLearn, # nbSamples
                        nbSamplePredict, # nbSamplePredict
-                       0, # nbVariablesCat
+                       10, # nbVariablesCat
                        6, # nbModalities
-                       6, # nbVariablesGauss
+                       0, # nbVariablesGauss
                        50., # maxMean
                        10., # maxVar
                        0, # nbVariablePois
@@ -62,8 +62,8 @@ testGenDataLearn <- function(nbClass = 2,
                        missingPoisson) # missingGaussian
   }
   
-  lm <- getData(c("dataGen/learn/gaussianData.csv",
-                  "dataGen/learn/gaussianDescriptor.csv"))
+  lm <- getData(c("dataGen/learn/categoricalData.csv",
+                  "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
@@ -92,8 +92,8 @@ testGenDataPredict <- function(prop,
                                nbBurnInIter = 20,
                                confidenceLevel = 0.95)
 {
-  lm <- getData(c("dataGen/learn/gaussianData.csv",
-                  "dataGen/learn/gaussianDescriptor.csv"))
+  lm <- getData(c("dataGen/learn/categoricalData.csv",
+                  "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit

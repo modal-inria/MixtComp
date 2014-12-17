@@ -74,7 +74,7 @@ double Poisson_k::lnComponentProbability(int i, int k) const
 
 void Poisson_k::mStep()
 {
-#ifdef MC_DEBUG_OLD
+#ifdef MC_DEBUG
     std::cout << "Gaussian_sjk::mStep" << std::endl;
     std::cout << "(*p_data_): " << (*p_data_) << std::endl;
     std::cout << "zi_: " << zi_ << std::endl;
@@ -126,7 +126,7 @@ void Poisson_k::setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
   p_zi_ = p_zi;
 }
 
-void Poisson_k::setModalities(STK::Range range) const
+void Poisson_k::setModalities(int nbModalities)
 {
   // does nothing. Used for categorical models.
 }

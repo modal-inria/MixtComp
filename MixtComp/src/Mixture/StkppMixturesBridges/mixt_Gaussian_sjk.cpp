@@ -138,7 +138,7 @@ void Gaussian_sjk::setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
   p_zi_ = p_zi; // only the z_i is used in SEM
 }
 
-void Gaussian_sjk::setModalities(STK::Range range) const
+void Gaussian_sjk::setModalities(int nbModalities)
 {
   // does nothing. Used for categorical models.
 }
