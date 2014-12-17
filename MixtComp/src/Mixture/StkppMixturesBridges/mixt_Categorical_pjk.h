@@ -46,9 +46,7 @@ class Categorical_pjk
     std::string mStep();
     int nbVariable() const;
     void setData(STK::Array2D<int>& data);
-    void setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
-                              STK::Array2D<STK::Real> const* p_tik,
-                              STK::CArrayVector<int> const* p_zi);
+    void setMixtureParameters(STK::CArrayVector<int> const* p_zi);
     void setModalities(int nbModalities);
     void setParameters(const STK::Array2D<STK::Real>& param);
     void writeParameters(std::ostream& out) const;

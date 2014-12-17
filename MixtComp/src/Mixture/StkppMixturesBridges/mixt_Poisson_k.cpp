@@ -121,9 +121,7 @@ void Poisson_k::setData(STK::Array2D<int>& data)
   p_data_ = &data;
 }
 
-void Poisson_k::setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
-                                     STK::Array2D<STK::Real> const* p_tik,
-                                     STK::CArrayVector<int> const* p_zi)
+void Poisson_k::setMixtureParameters(STK::CArrayVector<int> const* p_zi)
 {
   p_zi_ = p_zi;
 }

@@ -111,7 +111,6 @@ std::string MixtureComposer::mStep()
   std::cout << "MixtureComposer::mStep()" << std::endl;
 #endif
   pStep(); // computation of the proportions, mStep for mixture parameters
-  cStep(); // since tik_ are used as surrogates for zi in stkpp mixtures mStep
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
     warn += (*it)->mStep(); // call mStep on each variable

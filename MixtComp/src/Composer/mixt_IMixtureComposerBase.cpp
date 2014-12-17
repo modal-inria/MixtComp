@@ -71,27 +71,6 @@ void IMixtureComposerBase::randomClassInit()
   }
 }
 
-/* cStep for all individuals */
-int IMixtureComposerBase::cStep()
-{
-#ifdef MC_DEBUG
-  std::cout << "IMixtureComposerBase::cStep" << std::endl;
-#endif
-  for (int i = 0; i < nbSample(); ++i)
-  {
-    cStep(i);
-  }
-  // count the minimal number of individuals in a class
-  return (STK::Stat::sum(tik_).minElt());
-}
-
-/* cStep for a single individual */
-void IMixtureComposerBase::cStep(int i)
-{
-  tik_.row(i) = 0.;
-  tik_.elt(i, zi_[i]) = 1.;
-}
-
 /* simulate zi for all individuals */
 int IMixtureComposerBase::sStep()
 {
