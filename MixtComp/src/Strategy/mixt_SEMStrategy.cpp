@@ -28,6 +28,7 @@
 
 #include "mixt_SEMStrategy.h"
 #include "../Various/mixt_Timer.h"
+#include "../Various/mixt_IO.h"
 
 namespace mixt
 {
@@ -81,10 +82,9 @@ std::string SemStrategy::run()
     tempWarn = p_composer_->mStep();
     if (tempWarn != std::string())
     {
-#ifdef MC_DEBUG_NEW
-      std::cout << "\ttempWarn: " << tempWarn << std::endl;
-#endif
-      currWarn += tempWarn; // append warning to global warning
+      currWarn +=   std::string("SemStrategy, initialization mStep, iTry: ")
+                  + type2str(iTry) + "\n"
+                  + tempWarn; // append warning to global warning
       continue; // make another try
     }
 
@@ -97,7 +97,9 @@ std::string SemStrategy::run()
     tempWarn = p_burnInAlgo_->run();
     if (tempWarn != std::string()) // an empty string means a successful run
     {
-      currWarn += tempWarn; // append warning to global warning
+      currWarn +=   std::string("SemStrategy, burn-in, iTry: ")
+                  + type2str(iTry) + "\n"
+                  + tempWarn; // append warning to global warning
       continue; // make another try
     }
 
@@ -108,15 +110,11 @@ std::string SemStrategy::run()
     p_composer_->setState(longRun_);
     p_longAlgo_->setModel(p_composer_);
     tempWarn = p_longAlgo_->run();
-    if (tempWarn == std::string()) // an empty string means a successful run
+    if (tempWarn != std::string()) // an empty string means a successful run
     {
-#ifdef MC_DEBUG_NEW
-    std::cout << "\tp_longAlgo_->run() OK" << std::endl;
-#endif
-    }
-    else
-    {
-      currWarn += tempWarn; // append warning to global warning
+      currWarn +=   std::string("SemStrategy, run, iTry: ")
+                  + type2str(iTry) + "\n"
+                  + tempWarn; // append warning to global warning
       continue; // make another try
     }
   
