@@ -101,13 +101,14 @@ namespace mixt
  * called before any use of the class as it will create/resize the arrays
  * and initialize the constants of the model.
  */
-class IMixtureComposerBase : public STK::IModelBase
+class IMixtureComposerBase
 {
   protected:
     /** Constructor.
      * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      **/
-    IMixtureComposerBase( int nbSample, int nbVariable, int nbCluster);
+    IMixtureComposerBase(int nbSample,
+                         int nbCluster);
     /** copy constructor. If the pointer on the mixture parameters are not zero
      *  then they are cloned.
      *  @note if the model have not created the parameters, then the pointer are
@@ -151,7 +152,7 @@ class IMixtureComposerBase : public STK::IModelBase
      *  in order to give a value to IModelBase::nbFreeParameter_.
      *  @return the number of free parameters
      **/
-    virtual int computeNbFreeParameters() const = 0;
+    virtual int nbFreeParameters() const = 0;
     /** @brief Initialize the model before at its first use.
      *  This function can be overloaded in derived class for initialization of
      *  the specific model parameters. It should be called prior to any used of
@@ -207,12 +208,16 @@ class IMixtureComposerBase : public STK::IModelBase
   protected:
     /** number of cluster. */
     int nbCluster_;
+    /** Number of samples */
+    int nbSample_;
     /** The proportions of each mixtures */
     STK::CArrayPoint<STK::Real> prop_;
     /** The tik probabilities */
     STK::Array2D<STK::Real> tik_;
     /** The zik class label */
     STK::CArrayVector<int> zi_;
+
+
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model.

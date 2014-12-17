@@ -93,7 +93,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** @brief compute the number of free parameters of the model.
      *  lookup on the mixtures and sum the nbFreeParameter.
      **/
-    virtual int computeNbFreeParameters() const;
+    virtual int nbFreeParameters() const;
     /**@brief This step can be used by developer to initialize any thing which
      * is not the model. It will be called before running the estimation
      * algorithm. In this class, the @c initializeSterp method

@@ -40,23 +40,25 @@
 
 namespace mixt
 {
-IMixtureComposerBase::IMixtureComposerBase( int nbSample, int nbVariable, int nbCluster)
-                                          : IModelBase(nbSample, nbVariable)
-                                          , nbCluster_(nbCluster)
-                                          , prop_(nbCluster), tik_(nbSample, nbCluster), zi_(nbSample)
-                                          , state_(modelCreated_)
+IMixtureComposerBase::IMixtureComposerBase(int nbSample,
+                                           int nbCluster) :
+    nbCluster_(nbCluster),
+    nbSample_(nbSample),
+    prop_(nbCluster),
+    tik_(nbSample, nbCluster),
+    zi_(nbSample),
+    state_(modelCreated_)
 {
   intializeMixtureParameters();
 }
 
 /* copy constructor */
-IMixtureComposerBase::IMixtureComposerBase( IMixtureComposerBase const& model)
-                                          : IModelBase(model)
-                                          , nbCluster_(model.nbCluster_)
-                                          , prop_(model.prop_)
-                                          , tik_(model.tik_)
-                                          , zi_(model.zi_)
-                                          , state_(model.state_)
+IMixtureComposerBase::IMixtureComposerBase( IMixtureComposerBase const& model) :
+    nbCluster_(model.nbCluster_),
+    prop_(model.prop_),
+    tik_(model.tik_),
+    zi_(model.zi_),
+    state_(model.state_)
 {}
 /* destructor */
 IMixtureComposerBase::~IMixtureComposerBase() {}
@@ -78,12 +80,12 @@ int IMixtureComposerBase::sStep()
   std::cout << "IMixtureComposerBase::sStep" << std::endl;
 #endif
   // simulate zi
-  for (int i = 0; i < nbSample(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
     sStep(i);
   }
   STK::Array2DVector<int> indPerClass(nbCluster_, 0);
-  for (int i = 0; i < nbSample(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
     indPerClass[zi_[i]] += 1;
   }
@@ -109,7 +111,7 @@ void IMixtureComposerBase::eStep()
   std::cout << "prop_: " << prop_ << std::endl;
 #endif
   STK::Real sum = 0.;
-  for (int i = 0; i < nbSample(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
     sum += eStep(i);
   }
@@ -117,7 +119,6 @@ void IMixtureComposerBase::eStep()
   std::cout << "tik_:" << std::endl;
   std::cout << tik_ << std::endl;
 #endif
-  setLnLikelihood(sum);
 }
 
 /* compute Tik, for a particular individual */
@@ -167,7 +168,7 @@ void IMixtureComposerBase::mapStep()
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::mapStep" << std::endl;
 #endif
-  for (int i = 0; i < nbSample(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
     mapStep(i);
   }

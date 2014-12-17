@@ -34,7 +34,8 @@ namespace mixt
 MixtureComposer::MixtureComposer(int nbSample,
                                  int nbVariable,
                                  int nbCluster) :
-    mixt::IMixtureComposerBase(nbSample, nbVariable, nbCluster)
+    mixt::IMixtureComposerBase(nbSample,
+                               nbCluster)
 {}
 
 MixtureComposer::~MixtureComposer()
@@ -65,7 +66,7 @@ STK::Real MixtureComposer::lnComponentProbability(int i, int k)
 STK::Real MixtureComposer::lnCompletedLikelihood()
 {
   STK::Real lnLikelihood = 0.;
-  STK::Array2D<STK::Real> lnComp(nbSample(), nbCluster_, 0.);
+  STK::Array2D<STK::Real> lnComp(nbSample_, nbCluster_, 0.);
   for (int k = 0; k < nbCluster_; ++k)
   {
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
@@ -76,7 +77,7 @@ STK::Real MixtureComposer::lnCompletedLikelihood()
   }
 
   // Compute the observed likelihood for the complete mixture model
-  for (int i = 0; i < nbSample(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
     STK::Real max = lnComp.row(i).maxElt();
     STK::Real sum = (lnComp.row(i) -= max).exp().dot(prop_);
@@ -89,7 +90,7 @@ STK::Real MixtureComposer::lnCompletedLikelihood()
 STK::Real MixtureComposer::lnObservedLikelihood()
 {
   STK::Real lnLikelihood = 0.;
-  STK::Array2D<STK::Real> lnComp(nbSample(), nbCluster_, 0.);
+  STK::Array2D<STK::Real> lnComp(nbSample_, nbCluster_, 0.);
   for (int k = 0; k < nbCluster_; ++k)
   {
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
@@ -100,7 +101,7 @@ STK::Real MixtureComposer::lnObservedLikelihood()
   }
 
   // Compute the observed likelihood for the complete mixture model
-  for (int i = 0; i < nbSample(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
     STK::Real max = lnComp.row(i).maxElt();
     STK::Real sum = (lnComp.row(i) -= max).exp().dot(prop_);
@@ -126,9 +127,8 @@ std::string MixtureComposer::mStep()
 
 void MixtureComposer::writeParameters(std::ostream& os) const
 {
-  stk_cout << _T("Composer lnLikelihood = ") << lnLikelihood() << std::endl;
-  stk_cout << _T("Composer nbFreeParameter = ") << this->nbFreeParameter() << std::endl;
-  stk_cout << _T("Composer proportions = ") << *(this->p_pk()) << std::endl;
+  std::cout << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
+  std::cout << "Composer proportions = " << prop_ << std::endl;
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
@@ -140,9 +140,9 @@ void MixtureComposer::writeParameters(std::ostream& os) const
 void MixtureComposer::initializeStep()
 {
   if (v_mixtures_.size() == 0)
+  {
     std::cout << "MixtureComposer::initializeStep, no mixture have been registered" << std::endl;
-  // compute number of free parameters
-  setNbFreeParameter(computeNbFreeParameters());
+  }
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::initializeStep() called on " << v_mixtures_.size() << " mixtures" << std::endl;
   std::cout << "prop_: " << prop_ << std::endl;
@@ -155,12 +155,12 @@ void MixtureComposer::initializeStep()
 }
 
 // implement computeNbFreeParameters
-int MixtureComposer::computeNbFreeParameters() const
+int MixtureComposer::nbFreeParameters() const
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::computeNbFreeParameters()" << std::endl;
 #endif
-  int sum = nbCluster_-1; // proportions
+  int sum = nbCluster_ - 1; // proportions
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
     sum+= (*it)->nbFreeParameter();
@@ -176,7 +176,7 @@ void MixtureComposer::samplingStep()
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::samplingStep" << std::endl;
 #endif
-  for (int i = 0; i < nbSample(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
     samplingStep(i);
   }
@@ -202,7 +202,9 @@ void MixtureComposer::misClasStep(int iteration)
   std::cout << "MixtureComposer::misClasStep" << std::endl;
 
 #endif
-  STK::Array2D<STK::Real> probClass(nbSample(), nbCluster(), 0.);
+  STK::Array2D<STK::Real> probClass(nbSample_,
+                                    nbCluster_,
+                                    0.);
 
   // computation of the log probability with adequately sampled missing values
   for (int k = 0; k < nbCluster(); ++k)
@@ -210,12 +212,12 @@ void MixtureComposer::misClasStep(int iteration)
     zi_ = k; // setting zi_ for the sampling step
     for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
-      for (int i = 0; i < nbSample(); ++i)
+      for (int i = 0; i < nbSample_; ++i)
       {
         (*it)->samplingStep(i);
       }
     }
-    for (int i = 0; i < nbSample(); ++i)
+    for (int i = 0; i < nbSample_; ++i)
     {
       probClass(i, k) = lnComponentProbability(i, k);
     }
@@ -298,9 +300,9 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter)
 {
   Timer myTimer;
   myTimer.setName("Gibbs: run (individuals count as iterations)");
-  for (int i = 0; i < nbSample(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
-    myTimer.iteration(i, nbSample());
+    myTimer.iteration(i, nbSample_);
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs)
     {
       eStep(i);
