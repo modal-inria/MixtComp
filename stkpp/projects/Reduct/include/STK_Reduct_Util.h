@@ -33,11 +33,7 @@
 /** @file STK_Reduct_Util.h
  *  @brief In this file we define utilities enum and functions for the Reduct
  *  project.
- *
- * @namespace STK::Reduct This is the namespace for the reduction dimension project.
- * It will enclose all variables and constant specific to the Reduct project.
  **/
-
 
 #ifndef STK_REDUCT_UTIL_H_
 #define STK_REDUCT_UTIL_H_
@@ -71,14 +67,14 @@ enum TypeReduction
  *  @return the TypeReduction represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_ type is returned.
  **/
-TypeReduction StringToTypeReduction( String const& type);
+TypeReduction stringToTypeReduction( String const& type);
 
 /** @ingroup Reduct
  *  convert a TypeReduction to a String.
  *  @param type the type of reduction we want to convert
  *  @return the string associated to this type.
  **/
-String TypeReductionToString( TypeReduction const& type);
+String typeReductionToString( TypeReduction const& type);
 
 
 } // namespace Reduct

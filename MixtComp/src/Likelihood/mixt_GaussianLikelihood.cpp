@@ -23,6 +23,9 @@
 
 #include "mixt_GaussianLikelihood.h"
 #include "../Various/mixt_Def.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DVector.h"
+#include "Arrays/include/STK_Array2DPoint.h"
 
 namespace mixt
 {

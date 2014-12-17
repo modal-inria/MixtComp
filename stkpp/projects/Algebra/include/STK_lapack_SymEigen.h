@@ -29,19 +29,14 @@
  **/
 
 /** @file STK_lapack_SymEigen.h
- *  @brief In this file .
+ *  @brief In this file we define the enclosing class of the syevr lapck routine.
  **/
 
 
 #ifndef STK_LAPACK_SYMEIGEN_H
 #define STK_LAPACK_SYMEIGEN_H
 
-#include "STKernel/include/STK_Real.h"
-#include "Sdk/include/STK_IRunner.h"
-
-#include "Arrays/include/STK_Array2DSquare.h"
-#include "Arrays/include/STK_CArraySquare.h"
-#include "Arrays/include/STK_CArrayVector.h"
+#include "STK_ISymEigen.h"
 
 #ifdef STKUSELAPACK
 
@@ -73,77 +68,80 @@ namespace lapack
  *    @brief  SymEigen computes the eigenvalues and optionally the
  *    eigenvectors of a symmetric real matrix using the syevr Lapack routine.
  */
-class SymEigen : public IRunnerBase
+class SymEigen : public ISymEigen<SymEigen>
 {
   public:
-    /** @brief Constructor.
-     *  @param data reference on a C-like symmetric square array
+    typedef ISymEigen<SymEigen> Base;
+    /** @brief Constructor
+     *  @param data reference on a symmetric square matrix
+     *  @param ref @c true if we overwrite the data set, @c false otherwise
      */
-    SymEigen( CArraySquareXX const& data);
+    inline SymEigen( CSquareXd const& data, bool ref =false)
+                   : Base(data, ref), range_(data.range())
+                   , JOBZ_('V'), RANGE_('A'), UPLO_('U')
+                   , VL_(0.0), VU_(0.0), IL_(0), IU_(0)
+                   , data_(data)
+    { data_.shift(0);}
     /** @brief Constructor
      *  @param data reference on a symmetric square expression
      */
     template<class Derived>
     SymEigen( ArrayBase<Derived> const& data)
-            : norm_(0.), rank_(0), det_(0.)
-            , range_(data.range()), data_()
-            , eigenVectors_(range_.size(), 0.)
-            , eigenValues_(range_.size(), 0.)
-            , SupporteigenVectors_(2*range_.size(), 0)
-            , JOBZ('V'), RANGE('A'), UPLO('U')
-            , VL(0.0), VU(0.0), IL(0), IU(0)
-            , nbEigenvalues_(range_.size())
-    {
-      data_ = data.asDerived();
-      data_.shift(0);
-      eigenVectors_.shift(0);
-      eigenValues_.shift(0);
-      SupporteigenVectors_.shift(0);
-    }
+            : ISymEigen(data), range_(data.range())
+            , JOBZ_('V'), RANGE_('A'), UPLO_('U')
+            , VL_(0.0), VU_(0.0), IL_(0), IU_(0)
+            , data_(data)
+    { data_.shift(0);}
     /** @brief copy constructor
      *  @param eigen the SymEigen to copy
      */
-    SymEigen( SymEigen const& eigen);
+    inline SymEigen( SymEigen const& eigen)
+                   : Base(eigen)
+                   , JOBZ_(eigen.JOBZ_), RANGE_(eigen.RANGE_), UPLO_(eigen.UPLO_)
+                   , VL_(eigen.VL_), VU_(eigen.VU_), IL_(eigen.IL_), IU_(eigen.IU_)
+     {}
     /** Destructor. */
-    virtual ~SymEigen();
+    inline virtual ~SymEigen() {}
+    /** @param jobz If jobz ='N': Compute eigenvalues only; If jobz = 'V': Compute
+     * eigenvalues and eigenvectors.
+     **/
+    inline void setJobz(char jobz) { JOBZ_ = jobz;}
+    /** @param range range of the eigenvalues to be found.
+     *  If range = 'A': all eigenvalues will be found.
+     *  If range = 'V': all eigenvalues in the half-open interval  (VL_,VU_] will be found.
+     *  If range = 'I': the IL_-th through IU_-th eigenvalues will be found.
+     **/
+    inline void setRange(char range) { RANGE_ = range;}
+    /** @param uplo values to used in A.
+     * If uplo = 'U':  Upper triangle of A is stored;
+     * If uplo = 'L':  Lower triangle of A is stored.
+     **/
+    inline void setUplo(char uplo) { UPLO_ = uplo;}
+    /** @param[in] vl,vu lower and upper bounds of the interval to be searched
+     * for eigenvalues.
+     * Not referenced if RANGE_ = 'A' or 'I'.
+    **/
+    inline void setVlAndVu(Real const& vl, Real const& vu) { VL_ = vl; VU_ = vu;}
+    /** @param il, iu
+     *  If RANGE_='I', the indices (in ascending order)
+     *  of the smallest and largest eigenvalues to be returned.
+     *  1 <= IL_ <= IU_ <= NL, if NL > 0; IL_ = 1 and IU_ = 0 if NL = 0. Not
+     *  referenced if RANGE_ = 'A' or 'V'.
+    **/
+    inline void setIlAndIu(int il, int iu) { IL_ = il; IU_ = iu;}
     /** @brief clone pattern */
-    virtual SymEigen* clone() const;
+    inline virtual SymEigen* clone() const { return new SymEigen(*this);}
     /** @brief Run eigenvalues decomposition
      *  Launch SYEVR LAPACK routine to perform the eigenvalues decomposition.
      *  @return @c true if no error occur, @c false otherwise
      */
-    bool run();
-    /** @return the trace norm of the matrix */
-    inline Real norm()  const { return norm_;}
-    /** @return the rank of the matrix */
-    inline int rank()  const { return rank_;}
-    /** @return the determinant of the Matrix */
-    inline Real det()  const { return det_;}
-    /**  @return the rotation matrix */
-    inline CArraySquareXX const& eigenVectors() const{ return eigenVectors_;}
-    /** @return the eigenvalues */
-    inline CVectorX const& eigenValues() const { return eigenValues_;}
+    bool runImpl();
 
   protected:
-    /** trace norm */
-    Real norm_;
-    /** rank */
-    Real rank_;
-    /** determinant */
-    Real det_;
     /** range of the original data set. The data_ array is shifted in order
-     *  to get a zero based array, so we need to conserve the origianl range
+     *  to get a zero based array, so we need to conserve the original range.
      **/
    Range range_;
-   /** array with the original data. Will be overwritten. */
-   CArraySquareXX data_;
-   /** Square matrix or the eigenvectors. */
-   CArraySquareXX eigenVectors_;
-   /** Array of the eigenvalues */
-   CVectorX eigenValues_;
-   /** Array for the support of the eigenvectors */
-   CArrayVector<int> SupporteigenVectors_;
-
     /** wrapper of the LAPACK SYEVR routine. Compute the eigenvalues of a symmetric
      *  square matrix.
      *
@@ -158,8 +156,8 @@ class SymEigen : public IRunnerBase
      *  \verbatim
      *  CHARACTER*1
      *  = 'A': all eigenvalues will be found.
-     *  = 'V': all eigenvalues in the half-open interval  (VL,VU]  will be found.
-     *  = 'I': the IL-th through IU-th eigenvalues will be found.
+     *  = 'V': all eigenvalues in the half-open interval  (VL_,VU_]  will be found.
+     *  = 'I': the IL_-th through IU_-th eigenvalues will be found.
      * \endverbatim
      *
      *  @param[in] uplo
@@ -173,29 +171,29 @@ class SymEigen : public IRunnerBase
      *
      * @param[in,out] a Real array, dimension (LDA, N)
      * \verbatim
-     * On entry, the symmetric matrix A.  If UPLO = 'U', the leading
+     * On entry, the symmetric matrix A.  If UPLO_ = 'U', the leading
      * N-by-N upper triangular part of A contains the upper  triangular part
-     * of the  matrix  A.   If  UPLO  = 'L', the leading N-by-N lower triangular
+     * of the  matrix  A.   If  UPLO_  = 'L', the leading N-by-N lower triangular
      * part of A contains the lower triangular part of the matrix A.  On
-     * exit, the lower triangle (if UPLO='L') or the upper triangle
-     * (if UPLO='U') of A, including the diagonal, is destroyed.
+     * exit, the lower triangle (if UPLO_='L') or the upper triangle
+     * (if UPLO_='U') of A, including the diagonal, is destroyed.
      * \endverbatim
      *
      * @param[in] lda The leading dimension of the array A.  LDA >= max(1,N).
      *
      * @param[in] vl,vu
      * \verbatim
-     *  Real If RANGE='V', the lower and  upper  bounds
-     *  of  the  interval to be searched for eigenvalues. VL < VU.  Not
-     *  referenced if RANGE = 'A' or 'I'.
+     *  Real If RANGE_='V', the lower and  upper  bounds
+     *  of  the  interval to be searched for eigenvalues. VL_ < VU_.  Not
+     *  referenced if RANGE_ = 'A' or 'I'.
      * \endverbatim
      *
      * @param[in] il, iu
      * \verbatim
-     *  INTEGER If RANGE='I', the indices (in ascending order)
+     *  INTEGER If RANGE_='I', the indices (in ascending order)
      *  of the smallest and largest eigenvalues to be returned.
-     *  1 <= IL <= IU <= NL, if NL > 0; IL = 1 and IU = 0 if NL = 0. Not
-     *  referenced if RANGE = 'A' or 'V'.
+     *  1 <= IL_ <= IU_ <= NL, if NL > 0; IL_ = 1 and IU_ = 0 if NL = 0. Not
+     *  referenced if RANGE_ = 'A' or 'V'.
      * \endverbatim
      *
      * @param[in] abstol
@@ -223,8 +221,8 @@ class SymEigen : public IRunnerBase
      *
      * @param[out] m
      * \verbatim
-     *   The  total number of eigenvalues found.  0 <= M <= NL.  If RANGE
-     *   = 'A', M = NL, and if RANGE = 'I', M = IU-IL+1.
+     *   The  total number of eigenvalues found.  0 <= M <= NL.  If RANGE_
+     *   = 'A', M = NL, and if RANGE_ = 'I', M = IU_-IL_+1.
      * \endverbatim
      *
      * @param[out] w
@@ -237,19 +235,19 @@ class SymEigen : public IRunnerBase
      * @param[out] z
      * \verbatim
      *  array, dimension (LDZ, max(1,M))
-     *  If  JOBZ = 'V', then if INFO = 0, the first M columns of Z contain
+     *  If  JOBZ_ = 'V', then if INFO = 0, the first M columns of Z contain
      *  the orthonormal eigenvectors of the matrix A corresponding
      *  to  the selected eigenvalues, with the i-th column of Z holding
-     *  the eigenvector associated with W(i).  If JOBZ = 'N', then Z is
+     *  the eigenvector associated with W(i).  If JOBZ_ = 'N', then Z is
      *  not  referenced.   Note:  the  user  must  ensure that at least
-     *  max(1,M) columns are supplied in the array Z; if RANGE  =  'V',
+     *  max(1,M) columns are supplied in the array Z; if RANGE_  =  'V',
      *  the exact value of M is not known in advance and an upper bound
      *  must be used.  Supplying N columns is always safe.
      * \endverbatim
      *
      * @param[in] ldz
      * \verbatim
-     *  The leading dimension of the array Z.  LDZ >= 1, and if JOBZ  =
+     *  The leading dimension of the array Z.  LDZ >= 1, and if JOBZ_  =
      *  'V', LDZ >= max(1,N).
      * \endverbatim
      *
@@ -306,12 +304,13 @@ class SymEigen : public IRunnerBase
              );
   private:
     /** Lapack pptions */
-    char JOBZ, RANGE, UPLO;
-    Real VL, VU;
-    int IL, IU;
-    /** The  total number of eigenvalues found */
-    int nbEigenvalues_;
+    char JOBZ_, RANGE_, UPLO_;
+    Real VL_, VU_;
+    int IL_, IU_;
+    /** Square matrix with the original data set. */
+    CSquareXd data_;
 };
+
 
 /** @} */
 

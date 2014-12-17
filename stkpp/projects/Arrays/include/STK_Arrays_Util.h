@@ -30,9 +30,6 @@
 
 /** @file STK_Arrays_Util.h
  *  @brief In this file we define utilities functions and enum for the Array classes.
- *
- *  @namespace STK::Arrays the namespace Arrays contain all the internal stuff needed
- *  by The Arrays* classes.
  **/
 
 

@@ -91,10 +91,10 @@ int Test( int M, int N, bool output)
     //int row=1, col=1;
     CArray<Type , UnknownSize, UnknownSize, Arrays::by_col_> C0(M, N, 0);
     CArray<Type , 3, 4, Arrays::by_col_> C1(M, N);
-    CArray<bool, 3, 4, Arrays::by_row_> C2(M, N, 1);
+    CArray<bool , 3, 4, Arrays::by_row_> C2(M, N, 1);
     numbering(C1);
-    stk_cout << "C1<Type,...> = \n" << C1;
-    stk_cout << "C2<bool,...> = \n" << C2;
+    print(C1,"C1<Type, 3, 4, Arrays::by_col_>");
+    print(C2, "C2<bool, 3, 4, Arrays::by_row_> C2(M, N, 1>");
     // first test
     C0 = Type(2)*C1 - Type(3) * C2;
     stk_cout << "Test: C0 = 2*C1 - 3*C2; C0 =\n" << C0;

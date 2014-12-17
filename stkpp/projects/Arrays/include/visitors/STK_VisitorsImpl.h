@@ -72,14 +72,14 @@ struct VisitorArrayImpl<Visitor, Derived, Arrays::by_col_, UnknownSize, UnknownS
 {
   inline static void run( Derived const& expr, Visitor& visitor)
   {
-    for(int j = expr.firstIdxCols(); j <= expr.lastIdxCols(); ++j)
-      for(int i = expr.firstIdxRows(); i <= expr.lastIdxRows(); ++i)
+    for(int j = expr.beginCols(); j < expr.endCols(); ++j)
+      for(int i = expr.beginRows(); i < expr.endRows(); ++i)
         visitor(expr.elt(i, j), i, j);
   }
   inline static void apply( Derived& array, Visitor& visitor)
   {
-    for(int j = array.firstIdxCols(); j <= array.lastIdxCols(); ++j)
-      for(int i = array.firstIdxRows(); i <= array.lastIdxRows(); ++i)
+    for(int j = array.beginCols(); j < array.endCols(); ++j)
+      for(int i = array.beginRows(); i < array.endRows(); ++i)
         visitor(array.elt(i, j));
   }
 };
@@ -92,14 +92,14 @@ struct VisitorArrayImpl<Visitor, Derived, Arrays::by_row_, UnknownSize, UnknownS
 {
   inline static void run( Derived const& expr, Visitor& visitor)
   {
-    for(int i = expr.firstIdxRows(); i <= expr.lastIdxRows(); ++i)
-      for(int j = expr.firstIdxCols(); j <= expr.lastIdxCols(); ++j)
+    for(int i = expr.beginRows(); i < expr.endRows(); ++i)
+      for(int j = expr.beginCols(); j < expr.endCols(); ++j)
         visitor(expr.elt(i, j), i, j);
   }
   inline static void apply( Derived& array, Visitor& visitor)
   {
-    for(int i = array.firstIdxRows(); i <= array.lastIdxRows(); ++i)
-      for(int j = array.firstIdxCols(); j <= array.lastIdxCols(); ++j)
+    for(int i = array.beginRows(); i < array.endRows(); ++i)
+      for(int j = array.beginCols(); j < array.endCols(); ++j)
         visitor(array.elt(i, j));
   }
 };
@@ -115,14 +115,14 @@ struct VisitorArrayImpl< Visitor, Derived, Orient_, SizeRows_, UnknownSize>
   inline static void run( Derived const& expr, Visitor& visitor)
   {
     VisitorArrayImpl<Visitor, Derived, Orient_, SizeRows_ -1, UnknownSize>::run(expr, visitor);
-    for(int j = expr.firstIdxCols(); j <= expr.lastIdxCols(); ++j)
+    for(int j = expr.beginCols(); j < expr.endCols(); ++j)
       visitor(expr.elt(Idx(SizeRows_), j), Idx(SizeRows_), j);
   }
   inline static void apply( Derived& array, Visitor& visitor)
   {
     VisitorArrayImpl<Visitor, Derived, Orient_, SizeRows_ -1, UnknownSize>::apply(array, visitor);
-    for(int j = array.firstIdxCols(); j <= array.lastIdxCols(); ++j)
-      visitor(array.elt(baseIdx, j));
+    for(int j = array.beginCols(); j < array.endCols(); ++j)
+      visitor(array.elt(Idx(SizeRows_), j));
   }
 };
 
@@ -136,12 +136,12 @@ struct VisitorArrayImpl< Visitor, Derived, Orient_, 1, UnknownSize>
 {
   inline static void run( Derived const& expr, Visitor& visitor)
   {
-    for(int j = expr.firstIdxCols(); j <= expr.lastIdxCols(); ++j)
+    for(int j = expr.beginCols(); j < expr.endCols(); ++j)
       visitor(expr.elt(baseIdx, j), baseIdx, j);
   }
   inline static void apply( Derived& array, Visitor& visitor)
   {
-    for(int j = array.firstIdxCols(); j <= array.lastIdxCols(); ++j)
+    for(int j = array.beginCols(); j < array.endCols(); ++j)
       visitor(array.elt(baseIdx, j));
   }
 };
@@ -157,13 +157,13 @@ struct VisitorArrayImpl< Visitor, Derived, Orient_, UnknownSize, SizeCols_>
   inline static void run( Derived const& expr, Visitor& visitor)
   {
     VisitorArrayImpl<Visitor, Derived, Orient_, UnknownSize, SizeCols_-1>::run(expr, visitor);
-    for(int i = expr.firstIdxRows(); i <= expr.lastIdxRows(); ++i)
+    for(int i = expr.beginRows(); i < expr.endRows(); ++i)
       visitor(expr.elt(i, Idx(SizeCols_)), i, Idx(SizeCols_));
   }
   inline static void apply( Derived& array, Visitor& visitor)
   {
     VisitorArrayImpl<Visitor, Derived, Orient_, SizeCols_ -1, UnknownSize>::apply(array, visitor);
-    for(int i = array.firstIdxRows(); i <= array.lastIdxRows(); ++i)
+    for(int i = array.beginRows(); i < array.endRows(); ++i)
       visitor(array.elt(i, Idx(SizeCols_)));
   }
 };
@@ -178,12 +178,12 @@ struct VisitorArrayImpl< Visitor, Derived, Orient_, UnknownSize, 1>
 {
   inline static void run( Derived const& expr, Visitor& visitor)
   {
-    for(int i = expr.firstIdxRows(); i <= expr.lastIdxRows(); ++i)
+    for(int i = expr.beginRows(); i < expr.endRows(); ++i)
       visitor(expr.elt(i, baseIdx), i, baseIdx);
   }
   inline static void apply( Derived& array, Visitor& visitor)
   {
-    for(int i = array.firstIdxRows(); i <= array.lastIdxRows(); ++i)
+    for(int i = array.beginRows(); i < array.endRows(); ++i)
       visitor(array.elt(i, baseIdx));
   }
 };
@@ -272,12 +272,12 @@ struct VisitorUnrollCol
   inline static void run( Derived const& matrix, Visitor& visitor)
   {
     VisitorUnrollCol<Visitor, Derived, SizeRows_-1, SizeCols_>::run(matrix, visitor);
-    visitor(matrix.elt(baseIdx, Idx(SizeCols_)), baseIdx, Idx(SizeCols_));
+    visitor(matrix.elt(Idx(SizeRows_), Idx(SizeCols_)), Idx(SizeRows_), Idx(SizeCols_));
   }
   inline static void apply( Derived& matrix, Visitor& visitor)
   {
     VisitorUnrollCol<Visitor, Derived, SizeRows_-1, SizeCols_>::apply(matrix, visitor);
-    visitor(matrix.elt(baseIdx, Idx(SizeCols_)));
+    visitor(matrix.elt(Idx(SizeRows_), Idx(SizeCols_)));
   }
 };
 
@@ -326,9 +326,9 @@ template<typename Visitor, typename Derived>
 struct VisitorVectorImpl<Visitor, Derived, UnknownSize>
 {
   inline static void run( Derived const& vect, Visitor& visitor)
-  { for(int i = vect.firstIdx(); i <= vect.lastIdx(); ++i) visitor(vect.elt(i), i, vect.colIdx());}
+  { for(int i = vect.begin(); i < vect.end(); ++i) visitor(vect.elt(i), i, vect.colIdx());}
   inline static void apply( Derived& array, Visitor& applier)
-  { for(int i = array.firstIdx(); i <= array.lastIdx(); ++i) applier(array.elt(i));}
+  { for(int i = array.begin(); i < array.end(); ++i) applier(array.elt(i));}
 };
 
 /** @ingroup hidden
@@ -366,9 +366,9 @@ template<typename Visitor, typename Derived>
 struct VisitorPointImpl<Visitor, Derived, UnknownSize>
 {
   inline static void run( Derived const& row, Visitor& visitor)
-  { for(int j = row.firstIdx(); j <= row.lastIdx(); ++j) visitor(row.elt(j), row.rowIdx(),j);}
+  { for(int j = row.begin(); j < row.end(); ++j) visitor(row.elt(j), row.rowIdx(),j);}
   inline static void apply( Derived& row, Visitor& visitor)
-  { for(int j = row.firstIdx(); j <= row.lastIdx(); ++j) visitor(row.elt(j));}
+  { for(int j = row.begin(); j < row.end(); ++j) visitor(row.elt(j));}
 };
 
 
@@ -407,9 +407,9 @@ template<typename Visitor, typename Derived>
 struct VisitorDiagonalImpl<Visitor, Derived, UnknownSize>
 {
   inline static void run( Derived const& matrix, Visitor& visitor)
-  { for(int j = matrix.firstIdx(); j <= matrix.lastIdx(); ++j) visitor(matrix.elt(j), j,j);}
+  { for(int j = matrix.begin(); j < matrix.end(); ++j) visitor(matrix.elt(j), j,j);}
   inline static void apply( Derived& matrix, Visitor& visitor)
-  { for(int j = matrix.firstIdx(); j <= matrix.lastIdx(); ++j) visitor(matrix.elt(j));}
+  { for(int j = matrix.begin(); j < matrix.end(); ++j) visitor(matrix.elt(j));}
 };
 
 /** @ingroup hidden
@@ -448,14 +448,14 @@ struct VisitorUpperImpl<Visitor, Derived, Arrays::by_col_>
 {
   inline static void run( Derived const& matrix, Visitor& visitor)
   {
-    for(int j = matrix.lastIdxCols(); j >= matrix.firstIdxCols(); --j)
-      for(int i = std::min(j, matrix.lastIdxRows()); i >= matrix.firstIdxRows(); --i)
+    for(int j = matrix.lastIdxCols(); j >= matrix.beginCols(); --j)
+      for(int i = std::min(j, matrix.lastIdxRows()); i >= matrix.beginRows(); --i)
         visitor(matrix.elt(i, j), i, j);
   }
   inline static void apply( Derived& matrix, Visitor& visitor)
   {
-    for(int j = matrix.lastIdxCols(); j >= matrix.firstIdxCols(); --j)
-      for(int i = std::min(j, matrix.lastIdxRows()); i >= matrix.firstIdxRows(); --i)
+    for(int j = matrix.lastIdxCols(); j >= matrix.beginCols(); --j)
+      for(int i = std::min(j, matrix.lastIdxRows()); i >= matrix.beginRows(); --i)
         visitor(matrix.elt(i, j));
   }
 };
@@ -467,14 +467,14 @@ struct VisitorUpperImpl<Visitor, Derived, Arrays::by_row_>
 {
   inline static void run( Derived const& matrix, Visitor& visitor)
   {
-    for(int i = matrix.firstIdxRows(); i <= matrix.lastIdxRows(); ++i)
-      for(int j = std::max(i, matrix.firstIdxCols()); j <= matrix.lastIdxCols(); ++j)
+    for(int i = matrix.beginRows(); i <= matrix.lastIdxRows(); ++i)
+      for(int j = std::max(i, matrix.beginCols()); j <= matrix.lastIdxCols(); ++j)
         visitor(matrix.elt(i, j), i, j);
   }
   inline static void apply( Derived& matrix, Visitor& visitor)
   {
-    for(int i = matrix.firstIdxRows(); i <= matrix.lastIdxRows(); ++i)
-      for(int j = std::max(i, matrix.firstIdxCols()); j <= matrix.lastIdxCols(); ++j)
+    for(int i = matrix.beginRows(); i <= matrix.lastIdxRows(); ++i)
+      for(int j = std::max(i, matrix.beginCols()); j <= matrix.lastIdxCols(); ++j)
         visitor(matrix.elt(i, j));
   }
 };
@@ -487,14 +487,14 @@ struct VisitorLowerImpl<Visitor, Derived, Arrays::by_col_>
 {
   inline static void run( Derived const& matrix, Visitor& visitor)
   {
-    for(int j = matrix.firstIdxCols(); j <= matrix.lastIdxCols(); ++j)
-      for(int i = std::max(j, matrix.firstIdxRows()); i <= matrix.lastIdxRows(); ++i)
+    for(int j = matrix.beginCols(); j <= matrix.lastIdxCols(); ++j)
+      for(int i = std::max(j, matrix.beginRows()); i <= matrix.lastIdxRows(); ++i)
         visitor(matrix.elt(i, j), i, j);
   }
   inline static void apply( Derived& matrix, Visitor& visitor)
   {
-    for(int j = matrix.firstIdxCols(); j <= matrix.lastIdxCols(); ++j)
-      for(int i = std::max(j, matrix.firstIdxRows()); i <= matrix.lastIdxRows(); ++i)
+    for(int j = matrix.beginCols(); j <= matrix.lastIdxCols(); ++j)
+      for(int i = std::max(j, matrix.beginRows()); i <= matrix.lastIdxRows(); ++i)
         visitor(matrix.elt(i, j));
   }
 };
@@ -506,14 +506,14 @@ struct VisitorLowerImpl<Visitor, Derived, Arrays::by_row_>
 {
   inline static void run( Derived const& matrix, Visitor& visitor)
   {
-    for(int i = matrix.lastIdxRows(); i >= matrix.firstIdxRows(); --i)
-      for(int j = std::min(i, matrix.lastIdxCols()); j >= matrix.firstIdxCols(); --j)
+    for(int i = matrix.lastIdxRows(); i >= matrix.beginRows(); --i)
+      for(int j = std::min(i, matrix.lastIdxCols()); j >= matrix.beginCols(); --j)
         visitor(matrix.elt(i, j), i, j);
   }
   inline static void apply( Derived& matrix, Visitor& visitor)
   {
-    for(int i = matrix.lastIdxRows(); i >= matrix.firstIdxRows(); --i)
-      for(int j = std::min(i, matrix.lastIdxCols()); j >= matrix.firstIdxCols(); --j)
+    for(int i = matrix.lastIdxRows(); i >= matrix.beginRows(); --i)
+      for(int j = std::min(i, matrix.lastIdxCols()); j >= matrix.beginCols(); --j)
         visitor(matrix.elt(i, j));
   }
 };
@@ -526,7 +526,7 @@ template<typename Visitor, typename Derived>
 struct VisitorNumberImpl
 {
   inline static void run( Derived const& matrix, Visitor& visitor)
-  { visitor(matrix.elt(), matrix.firstIdxRows(), matrix.firstIdxCols());}
+  { visitor(matrix.elt(), matrix.beginRows(), matrix.beginCols());}
   inline static void apply( Derived& matrix, Visitor& visitor)
   { visitor(matrix.elt());}
 };

@@ -37,46 +37,49 @@
 #ifndef STK_MIXTUREFACADE_H
 #define STK_MIXTUREFACADE_H
 
+#include "../../Sdk/include/STK_IRunner.h"
 #include "STK_Clust_Util.h"
 
 namespace STK
 {
 
-class IMixtureComposerBase;
+class IMixtureComposer;
 class IMixtureStrategy;
 
 /** facade design pattern.
  * The StrategyFacade allow to create the strategy for estimating a mixture model
  * with less effort
  **/
-class StrategyFacade
+class StrategyFacade: public IRunnerBase
 {
   public:
     /** constructor.
      * @param p_model a reference on the current model
      **/
-    inline StrategyFacade( IMixtureComposerBase*& p_model)
-                        : p_model_(p_model), p_strategy_(0)
+    inline StrategyFacade( IMixtureComposer*& p_model)
+                         : IRunnerBase(), p_model_(p_model), p_strategy_(0)
     {}
     /** destructor. */
-    ~StrategyFacade();
-    /** set model in case it is needed after construction */
-    inline void setModel(IMixtureComposerBase* p_model) {p_model_ = p_model;};
+    virtual ~StrategyFacade();
+    /** set model in case we want to use the strategy again
+     *  @param p_model the model to set
+     **/
+    inline void setModel(IMixtureComposer*& p_model) {p_model_ = p_model;};
     /** create a SimpleStrategy */
     void createSimpleStrategy( Clust::initType init, int nbTrialInInit, Clust::algoType initAlgo, int nbInitIter, Real initEpsilon
                              , int nbTry
                              , Clust::algoType algo, int nbIter, Real epsilon);
-    /** create a XemStrategy */
-    void createXemStrategy( Clust::initType init, int nbTrialInInit, Clust::algoType initAlgo, int nbInitIter, Real initEpsilon
-                          , int nbTry, int nbShortRun
-                          , Clust::algoType shortAlgo, int nbShortIter, Real shortEpsilon
-                          , Clust::algoType longAlgo, int nblongIter, Real longEpsilon);
+    /** create a FullStrategy */
+    void createFullStrategy( Clust::initType init, int nbTryInInit, Clust::algoType initAlgo, int nbInitIter, Real initEpsilon
+                           , int nbTry, int nbInitRun, int nbShortRun
+                           , Clust::algoType shortAlgo, int nbShortIter, Real shortEpsilon
+                           , Clust::algoType longAlgo, int nblongIter, Real longEpsilon);
     /** run the strategy */
-    void run();
+   virtual bool run();
 
   protected:
     /** the mixture model to estimate */
-    IMixtureComposerBase*& p_model_;
+    IMixtureComposer*& p_model_;
     /** the strategy to use in order to estimate the mixture model */
     IMixtureStrategy* p_strategy_;
 };

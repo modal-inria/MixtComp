@@ -52,11 +52,16 @@
  *  of this set are likely to be the true one.
  **/
 
+/**  @ingroup StatModels
+ *  @namespace Model namespace enclosing the enum and utilities functions of the
+ *  StatModel project.
+ **/
+
 #ifndef STATMODELS_H
 #define STATMODELS_H
 
 #include "../projects/StatModels/include/STK_Model_Util.h"
-#include "../projects/StatModels/include/STK_IModelBase.h"
+#include "../projects/StatModels/include/STK_IStatModelBase.h"
 
 #include "../projects/StatModels/include/STK_BernoulliModel.h"
 #include "../projects/StatModels/include/STK_JointBernoulliModel.h"

@@ -334,7 +334,7 @@ int TestPoint( int M, int N, Range I, Range J, bool output)
     stk_cout << _T("Test constructor (M), resize(M+1) and elt acccess.\n");
     CPointX C0(M); C0.resize(M+1); C0.elt(C0.lastIdx()) = M;
     numbering(C0);
-    C0.elt(I.firstIdx())=M;  C0.elt(I.lastIdx())=M;
+    C0.elt(I.begin())=M;  C0.elt(I.lastIdx())=M;
     print(C0, "C0");
     print(C0.transpose(), "C0.transpose()");
     stk_cout << "C0: Min Coeff =" << C0.minElt(row);
@@ -353,7 +353,7 @@ int TestVector( int M, int N, Range I, Range J, bool output)
     stk_cout << _T("Test constructor (N), resize(N+1) and elt acccess.\n");
     CVectorX C0(N); C0.resize(N+1); C0.elt(C0.lastIdx()) = N;
     numbering(C0);
-    C0.elt(J.firstIdx())=N;  C0.elt(I.lastIdx())=N;
+    C0.elt(J.begin())=N;  C0.elt(I.lastIdx())=N;
     print(C0, "C0");
     print(C0.transpose(), "C0.transpose()");
     stk_cout << "C0: Min Coeff =" << C0.minElt(row);

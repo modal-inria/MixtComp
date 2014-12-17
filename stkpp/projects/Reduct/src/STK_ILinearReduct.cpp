@@ -49,13 +49,13 @@ ILinearReduct::ILinearReduct() : IReduct()
  * Constructor.
  * @param data the input data set
  */
-ILinearReduct::ILinearReduct( Matrix const* p_data) : IReduct(p_data)
+ILinearReduct::ILinearReduct( ArrayXX const* p_data) : IReduct(p_data)
 {}
 /*
  * Constructor.
  * @param data the input data set
  */
-ILinearReduct::ILinearReduct( Matrix const& data) : IReduct(data)
+ILinearReduct::ILinearReduct( ArrayXX const& data) : IReduct(data)
 {}
 /* copy Constructor.
  *  @param reductor the reductor to copy.
@@ -114,7 +114,7 @@ bool ILinearReduct::run( Vector const& weights)
 void ILinearReduct::projection()
 {
   // check if p_reduced exists
-  if (!p_reduced_) p_reduced_ = new Matrix;
+  if (!p_reduced_) p_reduced_ = new ArrayXX;
   // compute matrix multiplication
   *p_reduced_ =   (*p_data_) * axis_;
 }

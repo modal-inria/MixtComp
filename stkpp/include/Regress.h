@@ -71,6 +71,11 @@
  * infinite-dimensional.
  **/
 
+/** @ingroup Regress
+ * @namespace STK::Regress
+ * @brief This namespace encloses all variables and constant specific to the Regress project.
+ **/
+
 
 
 #ifndef REGRESS_H

@@ -46,17 +46,6 @@ namespace STK
 {
 
 /** @ingroup DManager
-  * @brief Representation of Not Available String value.
-  * Empty String : the empty string is also the NA value of the class String.
-  **/
-static const String STRING_EMPTY   = String();
-/** @ingroup DManager
- * @brief Representation of a New Line String. */
-static const String STRING_NL      = _T("\n");
-/** @ingroup DManager
- * @brief  Representation of a blank value. */
-static const String STRING_BLANK  = _T(" ");
-/** @ingroup DManager
  * @brief  default prefix of a variable name. */
 static const String STRING_VAR  = _T("Var");
 
@@ -105,7 +94,7 @@ enum TypeDataFile
  *  @return the TypeDataFile represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_ type is returned.
  **/
-TypeDataFile StringToTypeDataFile( String const& type);
+TypeDataFile stringToTypeDataFile( String const& type);
 
 /** @ingroup DManager
  *  convert a TypeDataFile to a String.

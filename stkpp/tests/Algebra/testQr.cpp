@@ -32,17 +32,7 @@
  *  @brief In this file we test the Qr class.
  **/
 
-//  Matrix QtQ, Qt;
-//  QtQ.resize(qr3.Q().cols(), qr3.Q().cols());
-//  stk_cout << _T(" Q'Q= \n");
-//  stk_cout << QtQ << _T("\n" ;
-//
-//  QtQ.resize(qr3.Q().rows(), qr3.Q().rows());
-//  stk_cout << _T(" QQ'= \n");
-//  stk_cout << QtQ << _T("\n" ;
-
 #include "STKpp.h"
-
 using namespace STK;
 
 /* main print method. */
@@ -58,7 +48,6 @@ void print(Container2D const& A, String const& name)
   stk_cout << name << _T(".rangeCols() =\n")  << A.rangeCols() << _T("\n");
   stk_cout << name << _T(".capacityCols().isRef() =") << A.capacityCols().isRef()  << _T("\n");
   stk_cout << name << _T(".capacityCols() =\n") << A.capacityCols()  << _T("\n");
-  stk_cout << name << _T(".p_data() =") << A.allocator().p_data()  << _T("\n");
   stk_cout << name << _T("=\n")   << A << _T("\n\n");
 }
 
@@ -72,139 +61,150 @@ void writeResult( const Qr& q, bool verbose = false)
     print(q.R(), "R");
   }
   // compute QR
-  Matrix QxR;
+  ArrayXX QR;
   //q.compQ();
+  stk_cout << _T("Q is computed ?") << q.isCompQ() << _T("\n");
   if (q.isCompQ())
   { // Q is formed, we can compute QR directly
-    QxR = q.Q() * q.R();
+
+    QR = q.Q() * q.R();
   }
   else
   { // apply leftHousolder transformation to R
-    QxR = q.R();
-    leftHouseholder(QxR, q.Q());
+    QR = q.R();
+    leftArrayHouseholder(QR, q.Q());
   }
   // write result
-  print(QxR, "QxR");
+  print(QR, "QR");
 }
 
 /* test_qr. */
-void test_qr(int M, int N)
+void test_qr(int M, int N, bool verbose = false)
 {
   int i,j,k;
   int size = std::min(M,N);
+  Vector T3;
 
-  stk_cout << _T("Test qr with:\n");
+  stk_cout << _T("Test QR class with:\n");
   stk_cout << _T("M = ") << M << _T(", N = ") << N << _T("\n\n");
   
   stk_cout << _T("=========================\n");
   stk_cout << _T("Test1: qr1(A) with A(N,M)\n");
-  Matrix A(Range(1,N),Range(1,M), 0.0);
-  for (i=1; i<N; i++) { A(i,i+1) = 2; A(i,i) = 1.0;}
-  A(2,2) = 0.0;
+  ArrayXX A(N, M, 0.0);
+  for (i=baseIdx; i<baseIdx+N; i++) { A(i,i+1) = 2; A(i,i) = 1.0;}
+  A(A.beginRows()+1,A.beginCols()+1) = 0.0;
   print(A, _T("A"));
   Qr qr1(A);
-  writeResult(qr1);
-     
+  qr1.run();
+  writeResult(qr1, verbose);
+
+  stk_cout << _T("---------------\n");
+  stk_cout << _T("qr1.eraseCol(3)\n");
+  qr1.eraseCol(3);
+  writeResult(qr1, verbose);
+
+  stk_cout << _T("-----------------------------------------------\n");
+  stk_cout << _T("T3 = A.col(3); qr3.pushBackCol(T3);\n");
+  T3 = A.col(3);
+  stk_cout << _T("T3 =") << T3 << _T("\n");
+  qr1.pushBackCol(T3);
+  writeResult(qr1, verbose);
+
+  stk_cout << _T("----------------------------------------------------\n");
+  stk_cout << _T("T3 = 1.0; qr3.insertCol(T3, qr3.R().lastIdxCols() );\n");
+  T3 = 1.0;
+  stk_cout << _T("T3 =") << T3 << _T("\n");
+  qr1.insertCol(T3, qr1.R().lastIdxCols() );
+  writeResult(qr1, verbose);
+
   stk_cout << _T("==========================\n");
   stk_cout << _T("Test2: qr2(A) with A(M,N).\n");
-  A.resize(Range(1,M),Range(1,N));
+  A.resize(M, N);
   A = 0.0;
-  for (i=1; i<N; i++) { A(i,i+1) = 2; A(i,i) = 1.0;}
-  A(2,2) = 0.0;
+  for (i=baseIdx; i<A.lastIdxCols(); i++) { A(i,i+1) = 2; A(i,i) = 1.0;}
+  A(A.beginRows()+1,A.beginCols()+1) = 0.0;
   print(A, _T("A"));
   Qr qr2(A);
-  writeResult(qr2);
+  qr2.run();
+  writeResult(qr2, verbose);
 
   // Third test
   stk_cout << _T("==========================\n");
   stk_cout << _T("Test3: qr3(A) with A(M,N).\n");
-  for (i=M, k=1; i>=1; i--)
-    for (j=1; j<=N; j++)
+  for (i=A.lastIdxRows(), k=1; i>=A.beginRows(); i--)
+    for (j=A.beginCols(); j<=A.lastIdxCols(); j++)
     { A(i,j) = M*N-k++;}
-  for (i=1; i<size; i++) { A(i,i+1) = 2.0; A(i,i) = 1.0;}
-  A(2,2) = 0.0; //A(1, N) = 10.;
+  for (i=A.beginCols(); i<A.lastIdxCols(); i++) { A(i,i+1) = 2.0; A(i,i) = 1.0;}
+  A(A.beginRows()+1,A.beginCols()+1) = 0.0;
   print(A, _T("A"));
   Qr qr3(A);
-  writeResult(qr3);
+  qr3.run();
+  writeResult(qr3, verbose);
 
   stk_cout << _T("---------------\n");
   stk_cout << _T("qr3.eraseCol(3)\n");
   qr3.eraseCol(3);
-  writeResult(qr3);
+  writeResult(qr3, verbose);
 
   stk_cout << _T("-----------------------------------------------\n");
   stk_cout << _T("T3 = A.col(A.lastIdxCols()); qr3.pushBackCol(T3);\n");
-  Vector T3(A.col(A.lastIdxCols()));
+  T3 = A.col(A.lastIdxCols());
   stk_cout << _T("T3 =") << T3 << _T("\n");
   qr3.pushBackCol(T3);
-  writeResult(qr3);
+  writeResult(qr3, verbose);
 
   stk_cout << _T("----------------------------------------------------\n");
   stk_cout << _T("T3 = 1.0; qr3.insertCol(T3, qr3.R().lastIdxCols() );\n");
   T3 = 1.0;
   stk_cout << _T("T3 =") << T3 << _T("\n");
   qr3.insertCol(T3, qr3.R().lastIdxCols() );
-  writeResult(qr3);
+  writeResult(qr3, verbose);
 
   stk_cout << _T("==========================\n");
   stk_cout << _T("Test4: qr4(A) with A(N,M).\n");
-  A.resize(Range(1,N),Range(1,M));
-  for (i=N, k=1; i>=1; i--)
-    for (j=1; j<=M; j++)
+  A.resize(N, M);
+  for (i=A.lastIdxRows(), k= baseIdx; i>=A.beginRows(); i--)
+    for (j=A.beginCols(); j<=A.lastIdxCols(); j++)
     { A(i,j) = M*N-k++;}
   for (i=1; i<size; i++) { A(i,i+1) = 2.0; A(i,i) = 1.0;}
-  A(2,2) = 0.0;
+  A(A.beginRows()+1,A.beginCols()+1) = 0.0;
   print(A, _T("A"));
   Qr qr4(A);
-  writeResult(qr4);
+  qr4.run();
+  writeResult(qr4, verbose);
 
   stk_cout << _T("------------------\n");
   stk_cout << _T("qr4.popBackCols();\n");
   qr4.popBackCols();
-  writeResult(qr4);
+  writeResult(qr4, verbose);
 
   stk_cout << _T("----------------\n");
   stk_cout << _T("qr4.eraseCol(3);\n");
   qr4.eraseCol(3);
-  writeResult(qr4);
+  writeResult(qr4, verbose);
 
   stk_cout << _T("----------------------------------------------\n");
   stk_cout << _T("Vector T4(A.rows(), 1.0); qr4.pushBackCol(T4);\n");
   Vector T4(A.rows(), 1.0);
   stk_cout << _T("T4 =") << T4 << _T("\n");
   qr4.pushBackCol(T4);
-  writeResult(qr4);
+  writeResult(qr4, verbose);
 
   stk_cout << _T("------------------------------------\n");
   stk_cout << _T("T4 = A.col(3); qr4.insertCol(T4, 3);\n");
   T4 = A.col(3);
   stk_cout << _T("T4 =") << T4 << _T("\n");
   qr4.insertCol(T4, 3);
-  writeResult(qr4);
+  writeResult(qr4, verbose);
 }
 
 // Main
 int main(int argc, char *argv[])
 { 
-  int M, N;
-  if (argc < 3)
-  {
-    stk_cout << _T("Usage: M, N\n");
-    stk_cout << _T("Setting: M=16 and N=10\n");
-    M = 16;
-    N =10;
-  }
-  else
-  {
-    M = atoi(argv[1]);
-    N = atoi(argv[2]);
-    if (M<=N)
-    {
-      stk_cout << _T("Usage: M > N\n");
-      exit(1);
-    }
-
-  }
+  int M=16, N =10;
+  bool verbose = false;
+  stk_cout << _T("Setting: M=16 and N=10\n");
+  if (argc >= 2) { verbose = atoi(argv[1]);}
 
   try
   {
@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++""\n");
     stk_cout << _T("\n\n");
 
-    test_qr(M,N);
+    test_qr(M,N, verbose);
 
     stk_cout << _T("\n\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++""\n");

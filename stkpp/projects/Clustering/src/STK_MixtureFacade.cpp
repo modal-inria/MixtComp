@@ -35,7 +35,7 @@
 #include "../include/STK_MixtureFacade.h"
 #include "../include/STK_MixtureStrategy.h"
 #include "../include/STK_MixtureInit.h"
-#include "../include/STK_IMixtureComposerBase.h"
+#include "../include/STK_IMixtureComposer.h"
 
 namespace STK
 {
@@ -54,32 +54,52 @@ void StrategyFacade::createSimpleStrategy( Clust::initType init, int nbTrialInIn
   p_strategy_ = p_strategy;
   p_strategy_->setMixtureInit(Clust::createInit(init, nbTrialInInit, initAlgo, nbInitIter, initEpsilon));
 }
-void StrategyFacade::createXemStrategy( Clust::initType init, int nbTrialInInit, Clust::algoType initAlgo, int nbInitIter, Real initEpsilon
-                                     , int nbTry, int nbShortRun
-                                     , Clust::algoType shortAlgo, int nbShortIter, Real shortEpsilon
-                                     , Clust::algoType longAlgo, int nblongIter, Real longEpsilon)
-{
-  XemStrategyParam* p_param = new XemStrategyParam();
-  p_param->nbShortRun_ = nbShortRun;
-  p_param->p_shortAlgo_ = Clust::createAlgo(shortAlgo, nbShortIter, shortEpsilon);
-  p_param->p_longAlgo_ = Clust::createAlgo(longAlgo, nblongIter, longEpsilon);
 
-  XemStrategy* p_strategy = new XemStrategy(p_model_);
-  p_strategy->setNbTry(nbTry);
-  p_strategy->setParam(p_param);
-  p_strategy_ = p_strategy;
-  p_strategy_->setMixtureInit(Clust::createInit(init, nbTrialInInit, initAlgo, nbInitIter, initEpsilon));
+/* create a FullStrategy */
+void StrategyFacade::createFullStrategy( Clust::initType init, int nbTryInInit, Clust::algoType initAlgo, int nbInitIter, Real initEpsilon
+                       , int nbTry, int nbInitRun, int nbShortRun
+                       , Clust::algoType shortAlgo, int nbShortIter, Real shortEpsilon
+                       , Clust::algoType longAlgo, int nblongIter, Real longEpsilon)
+{
+  IMixtureAlgo* p_shortAlgo = Clust::createAlgo(shortAlgo, nbShortIter, shortEpsilon);
+  IMixtureAlgo* p_longAlgo = Clust::createAlgo(longAlgo, nblongIter, longEpsilon);
+  IMixtureInit* p_init = Clust::createInit(init, nbTryInInit, initAlgo, nbInitIter, initEpsilon);
+
+  p_strategy_ = Clust::createFullStrategy(p_model_, nbTry, nbInitRun, p_init, nbShortRun, p_shortAlgo, p_longAlgo);
 }
 
-void StrategyFacade::run()
+bool StrategyFacade::run()
 {
+#ifdef STK_MIXTURE_VERBOSE
+  stk_cout << _T("------------------------------\n")
+           << _T("Entering StrategyFacade::run()\n");
+#endif
+  bool flag = false;
   if (p_strategy_)
   {
-    if (p_model_->state() == Clust::modelCreated_)
-      p_model_->initializeStep();
-    p_strategy_->run();
+    // just check if the model is fresh or is already
+    if (p_strategy_->run()) { flag = true;}
+    else
+    {
+      msg_error_ += STKERROR_NO_ARG(StrategyFacade::run,strategy failed\n);
+      msg_error_ += p_strategy_->error();
+#ifdef STK_MIXTURE_VERBOSE
+      stk_cout << _T("StrategyFacade:run() terminated without success.\n")
+               << msg_error_ << _T("\n")
+               << _T("------------------------------------------------\n");
+#endif
+    }
+    p_model_->imputationStep();
     p_model_->finalizeStep();
   }
+  else
+  { msg_error_ = STKERROR_NO_ARG(MixtureFacade::run(),strategy is not set);}
+#ifdef STK_MIXTURE_VERBOSE
+  stk_cout << _T("StrategyFacade:run() terminated.\np_model->lnLikelihood() =")
+           << p_model_->lnLikelihood() << _T("\n")
+           << _T("--------------------------------\n");
+#endif
+  return flag;
 }
 
 

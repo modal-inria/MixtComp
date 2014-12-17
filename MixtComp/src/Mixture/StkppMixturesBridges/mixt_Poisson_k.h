@@ -27,7 +27,7 @@
 #define MIXT_POISSON_K_H
 
 #include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_CArrayPoint.h"
+#include "Arrays/include/STK_Array2DVector.h"
 #include "Arrays/include/STK_CArrayVector.h"
 #include "../../Statistic/mixt_PoissonStatistic.h"
 

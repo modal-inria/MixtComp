@@ -89,7 +89,7 @@ class Gaussian2BlocksModel : public GaussianModel
      * the maximal dimension of the data set (only one block).
      * @param p_data pointer on the data set
      */
-    Gaussian2BlocksModel( Matrix const* p_data);
+    Gaussian2BlocksModel( ArrayXX const* p_data);
 
     /** destructor. */
     virtual ~Gaussian2BlocksModel();
@@ -97,7 +97,7 @@ class Gaussian2BlocksModel : public GaussianModel
     /** get the dimension of the model.
      *  @return the dimension of the model
      **/
-    inline int const& dim() const { return dim_;}
+    inline int dim() const { return dim_;}
     /** set the dimension of the model.
      *  @param dim the dimension of the model
      **/
@@ -109,7 +109,7 @@ class Gaussian2BlocksModel : public GaussianModel
     inline bool run( int const& dim)
     {
       setDim(dim);
-      return GaussianModel::run();
+      return run();
     }
     /** implementation of the weighted  2 blocks Gaussian statistical model.
      *  @param weights the weights of the samples
@@ -119,10 +119,20 @@ class Gaussian2BlocksModel : public GaussianModel
     inline bool run(Vector const& weights, int const& dim)
     {
       setDim(dim);
-      return GaussianModel::run(weights);
+      return run(weights);
     }
-
   protected:
+    /** implementation of the Gaussian statistical model
+     * @return @c true if no error occur and @c false otherwise.
+     */
+    inline virtual bool run() { return GaussianModel::run();}
+    /** implementation of the weighted Gaussian statistical model
+     * @param weights the weights of the samples
+     * @return @c true if no error occur and @c false otherwise.
+     */
+    inline virtual bool run(Vector const& weights)
+    { return GaussianModel::run(weights);}
+
     /** compute the empirical covariance matrix. */
     virtual void compCovariance();
     /** compute the empirical weighted covariance matrix.

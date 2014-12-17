@@ -35,7 +35,6 @@
 #ifndef STK_STAT_TRANSFORM_H
 #define STK_STAT_TRANSFORM_H
 
-#include "STKernel/include/STK_Arithmetic.h"
 #include "STKernel/include/STK_Misc.h"
 
 #include "STK_Stat_UnivariateReal.h"
@@ -54,14 +53,14 @@ template < class RowVector, class Array >
 void center( Array&  V, RowVector& mean)
 {
   mean.resize(V.cols());
-  for (int j=  V.firstIdxCols(); j<= V.lastIdxCols(); j++)
+  for (int j=  V.beginCols(); j<= V.lastIdxCols(); j++)
   {
     // compute mean
     Real mu = Stat::mean(V.col(j));
     // save current mean
     mean[j] = (mu = Arithmetic<Real>::isFinite(mu) ?  mu : 0.);
     // translate data
-    for (int i= V.firstIdxRows(); i<= V.lastIdxRows(); i++)
+    for (int i= V.beginRows(); i<= V.lastIdxRows(); i++)
     { V(i,j) -= mu;}
   }
 }
@@ -81,14 +80,14 @@ void center( Array& V, Column const& W, RowVector& mean)
 #endif
   // create result
   mean.resize(V.cols());
-  for (int j= V.firstIdxCols(); j<= V.lastIdxCols(); j++)
+  for (int j= V.beginCols(); j<= V.lastIdxCols(); j++)
   {
     // compute mean
     Real mu = Stat::mean(V.col(j), W);
     // save current mean
     mean[j] = (mu = Arithmetic<Real>::isFinite(mu) ?  mu : 0.);
     // translate data
-    for (int i= V.firstIdxRows(); i<= V.lastIdxRows(); i++)
+    for (int i= V.beginRows(); i<= V.lastIdxRows(); i++)
     { V(i,j) -= mu;}
   }
 }
@@ -106,7 +105,7 @@ void standardize( Array& V, RowVector& mean, RowVector& std)
     std.resize(V.cols());
     // center
     center(V, mean);
-    for (int j= V.firstIdxCols(); j<= V.lastIdxCols(); j++)
+    for (int j= V.beginCols(); j<= V.lastIdxCols(); j++)
     {
       // compute standard deviation
       Real dev = Stat::variance(V.col(j));
@@ -136,7 +135,7 @@ void standardize( Array& V, Column const& W, RowVector& mean, RowVector& std)
   std.resize(V.cols());
   // center
   center(V, W, mean);
-  for (int j= V.firstIdxCols(); j<= V.lastIdxCols(); j++)
+  for (int j= V.beginCols(); j<= V.lastIdxCols(); j++)
   {
     // compute standard deviation
     Real dev = Stat::variance(V.col(j), W);
@@ -158,8 +157,8 @@ void decenter( Array&  V, RowVector const& mean)
     throw runtime_error(_T("Error in Stat::decenter(V, mean): "
                              "ranges are not the same."));
   // get dimensions
-  const int  firstRowVector = V.firstIdxRows(), lastRowVector = V.lastIdxRows();
-  const int  firstVar = V.firstIdxCols(), lastVar = V.lastIdxCols();
+  const int  firstRowVector = V.beginRows(), lastRowVector = V.lastIdxRows();
+  const int  firstVar = V.beginCols(), lastVar = V.lastIdxCols();
   for (int j= firstVar; j<= lastVar; j++)
   {
     // translate data
@@ -179,8 +178,8 @@ void destandardize( Array& V, RowVector const& std)
     if (V.cols() != std.range())
       STKRUNTIME_ERROR_NO_ARG(Error in Stat::decenter(V, std),ranges are not the sames);
   // get dimensions
-  const int  firstRowVector = V.firstIdxRows(), lastRowVector = V.lastIdxRows();
-  const int  firstVar = V.firstIdxCols(), lastVar = V.lastIdxCols();
+  const int  firstRowVector = V.beginRows(), lastRowVector = V.lastIdxRows();
+  const int  firstVar = V.beginCols(), lastVar = V.lastIdxCols();
   for (int j= firstVar; j<= lastVar; j++)
   {
     // dilate

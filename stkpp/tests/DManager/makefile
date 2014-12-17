@@ -28,73 +28,52 @@
 #
 #-----------------------------------------------------------------------
 # makevars contains general definitions and flags.
-ifeq ($(MAKEVARS),)
-        include ../../$(RELATIVEMAKEVARS)
-else
-        include $(MAKEVARS)
-endif
 ifneq ($(wildcard ./makevars.local),) 
 	include makevars.local
 endif
 
 #-----------------------------------------------------------------------
-# Paths to bin, lib, include and projects
-BIN_DIR = ../../bin/
-LIB_DIR = ../../lib/
-INC_DIR = ../../include/
-PROJECTS_DIR = ../../projects/
-
-#-----------------------------------------------------------------------
 # source files
-#
-CPP_SRCS = \
+CXX_SRCS =
+
+TEST_SRCS = \
 	testList1D.cpp \
 	testHeapSort.cpp \
 	testCsv.cpp \
 	testPages.cpp 
 
-## library name
-CXX_LIB = $(LIB_DIR)/$(LIB_STKPP_A)
-
 #-----------------------------------------------------------------------
 # binary files
-#
-CXX_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
+CXX_OBJS = $(CXX_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
+TEST_OBJS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
 
 #-----------------------------------------------------------------------
 # program files
-#
-CXX_PROGS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%)
+TEST_PROGS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%)
 
 #-----------------------------------------------------------------------
 # Targets
-#
-.PHONY: all obj testCsv
-all: obj progs
+.PHONY: all obj progs
+all: progs
 
-obj: $(CXX_OBJS) $(CXX_SRCS)
-progs: $(CXX_PROGS)
+progs: obj $(TEST_PROGS)
+obj: $(CXX_OBJS) $(TEST_OBJS)
 
-testCsv: $(BIN_DIR)testCsv
-testPages: $(BIN_DIR)testPages
+testCsv: $(TEST_BIN_DIR)testCsv
+testPages: $(TEST_BIN_DIR)testPages
 
 #-----------------------------------------------------------------------
 # Objects compilation rules
-#
-$(BIN_DIR)%.o: makefile
-$(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $< -c -o $@
-
+$(TEST_BIN_DIR)%.o: makefile
+$(TEST_BIN_DIR)%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS) -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # program compilation rules
-#
-$(BIN_DIR)test%: makefile
-$(BIN_DIR)test%: $(BIN_DIR)test%.o $(CXX_LIB)
-	$(CXX) $(LDFLAGS) $< $(CXX_LIB) $(LDLIBS) -o $@ 
+$(TEST_BIN_DIR)test%: $(TEST_BIN_DIR)test%.o $(CXX_OBJS)
+	$(CXX) $^ $(TEST_STKPP_LIB) $(LDFLAGS) $(LDLIBS) -o $@ 
 
 #-----------------------------------------------------------------------
 # clean test programs 
 clean:
-	$(RM) $(BIN_DIR)test*
-
+	$(RM) $(TEST_PROGS) $(CXX_OBJS) $(TEST_OBJS)

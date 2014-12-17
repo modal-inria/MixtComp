@@ -52,7 +52,7 @@ AdditiveBSplineRegressionPage::AdditiveBSplineRegressionPage(int const& level)
                             : IPage(_T("AdditiveBSplineRegression"), level, true)
                             , nbControlPoints_(3)
                             , degree_(3)
-                            , position_(BSplineCoefficients::periodic_)
+                            , position_(Regress::periodic_)
 
 
 {
@@ -108,8 +108,8 @@ bool AdditiveBSplineRegressionPage::validate()
   }
 
   // third option
-  position_ = BSplineCoefficients::StringToKnotsPosition(options_[2].get(String()));
-  if (position_ == BSplineCoefficients::unknown_ )
+  position_ = Regress::stringToKnotsPosition(options_[2].get(String()));
+  if (position_ == Regress::unknownKnotsPosition_ )
   {
     msg_error_ = BSPLINEERRORCODES[1];
     msg_error_ += "knots position is unknown.\n";

@@ -218,7 +218,7 @@ const Real doubleFactorialArray[39] =
  *  Array of the 40th first Bernouilli numbers
  *  Bernouilli(n) n=0, 2, 4, ... ,40.
  **/
-static const Real bernouilliNumbersArray[21] =
+const Real bernouilliNumbersArray[21] =
 {
                          1.0,             // 0
                          1.0/      6.0,   // 2

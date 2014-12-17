@@ -37,6 +37,8 @@
 #define STK_SVD_H
 
 #include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DPoint.h"
+#include "Arrays/include/STK_Array2DVector.h"
 #include "Arrays/include/STK_Array2DSquare.h"
 
 namespace STK
@@ -44,14 +46,14 @@ namespace STK
 
 /** @ingroup Algebra
  *  @brief The class Svd compute the Singular Value Decomposition
- *  of a Matrix with the Golub-Reinsch Algorithm.
+ *  of a Array with the Golub-Reinsch Algorithm.
  * 
  *  The method take as:
  *  - input: A matrix A(nrow,ncol)
  *  - output:
- *    -# U Matrix (nrow,ncolU).
+ *    -# U Array (nrow,ncolU).
  *    -# D Vector (ncol)
- *    -# V Matrix (ncol,ncol).
+ *    -# V Array (ncol,ncol).
  *  and perform the decomposition: 
  *  - A = UDV' (transpose V).
  *  U can have more cols than A,
@@ -61,8 +63,8 @@ class Svd
 {
   protected:
     /* containers */
-    Matrix       U_;    ///< U_ matrix
-    MatrixSquare V_;    ///< V_ square matrix
+    ArrayXX       U_;    ///< U_ matrix
+    ArraySquareX V_;    ///< V_ square matrix
     Point        D_;    ///< Array of the singular values
 
     /* dimensions */
@@ -90,7 +92,7 @@ class Svd
      *  @param withV if true, we save the right housolder transforms
      *  in V_.
      **/
-    Svd( Matrix const&    A       = Matrix()
+    Svd( ArrayXX const&    A       = ArrayXX()
        , bool      ref     = false
        , bool      withU   = true
        , bool      withV   = true
@@ -119,7 +121,7 @@ class Svd
     /** clear U_, V_ and D_.                                          */
     void clear();
 
-    /** Compute the svd of the Matrix A and copy the data
+    /** Compute the svd of the Array A and copy the data
      *  see the corresponding constructor Take care that if U_ was previously
      *  a reference, it cannot be modified.
      *  @param A is the matrix to decompose.
@@ -128,7 +130,7 @@ class Svd
      *  @param withV if true, we save the right housolder transforms
      *  in V_.
      **/    
-    void newSvd( Matrix const&    A       = Matrix()
+    void newSvd( ArrayXX const&    A       = ArrayXX()
                , bool      withU   = true
                , bool      withV   = true
                );
@@ -141,20 +143,20 @@ class Svd
      *  @param D the element of the diagonal
      *  @param F the element of the surdiagnal
      **/
-    static Real bidiag(const Matrix& M, Point& D, Vector& F);
+    static Real bidiag(const ArrayXX& M, Point& D, Vector& F);
 
     /** right eliminate the element on the subdiagonal of the row nrow
      *  @param D the diagonal of the matrix
      *  @param F the surdiagonal of the matrix
      *  @param nrow the number of the row were we want to rightEliminate
-     *  @param V a right orthogonal Square Matrix
+     *  @param V a right orthogonal Square ArrayXX
      *  @param withV true if we want to update V
      *  @param tol the tolerance to use
      **/
     static void rightEliminate( Point& D
                               , Vector& F
                               , int const& nrow
-                              , MatrixSquare& V
+                              , ArraySquareX& V
                               , bool withV = true
                               , Real const& tol = Arithmetic<Real>::epsilon()
                               );
@@ -163,14 +165,14 @@ class Svd
      *  @param D the diagonal of the matrix
      *  @param F the surdiagonal of the matrix
      *  @param nrow the number of the row were we want to rightEliminate
-     *  @param U a left orthogonal Matrix
+     *  @param U a left orthogonal ArrayXX
      *  @param withU true if we want to update U
      *  @param tol the tolerance to use
      **/
     static void leftEliminate( Point& D
                              , Vector& F
                              , int const& nrow
-                             , Matrix& U
+                             , ArrayXX& U
                              , bool withU = true
                              , Real const& tol = Arithmetic<Real>::epsilon()
                              );
@@ -178,16 +180,16 @@ class Svd
     /** Computing the diagonalisation of a bidiagnal matrix
      *  @param D the diagoanl of the matrix
      *  @param F the subdiagonal of the matrix
-     *  @param U a left orthogonal Matrix
+     *  @param U a left orthogonal ArrayXX
      *  @param withU true if we want to update U
-     *  @param V a right orthogonal Square Matrix
+     *  @param V a right orthogonal Square ArrayXX
      *  @param withV true if we want to update V
      *  @param tol the tolerance to use
      **/
     static bool diag( Point& D
                     , Vector& F
-                    , Matrix& U
-                    , MatrixSquare& V
+                    , ArrayXX& U
+                    , ArraySquareX& V
                     , bool withU = true
                     , bool withV = true
                     , Real const& tol = Arithmetic<Real>::epsilon()
@@ -210,16 +212,16 @@ class Svd
     /// if an error occur during svd()
     inline bool error()    const { return error_;}
     /// get U (const)
-    inline Matrix const&       getU() const { return U_;}
+    inline ArrayXX const&       getU() const { return U_;}
     /// get V (const)
-    inline MatrixSquare const& getV() const { return V_;}
+    inline ArraySquareX const& getV() const { return V_;}
     /// get D (const)
     inline const Point&        getD() const { return D_;}
     
     /// get U
-    inline Matrix&       getU() { return U_;}
+    inline ArrayXX&       getU() { return U_;}
     /// get V
-    inline MatrixSquare& getV() { return V_;}
+    inline ArraySquareX& getV() { return V_;}
     /// get D
     inline Point&        getD() { return D_;}
     

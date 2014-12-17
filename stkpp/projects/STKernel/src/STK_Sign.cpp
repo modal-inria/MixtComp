@@ -49,36 +49,43 @@ ostream& operator << (ostream& os, const Sign& output)
 
 /*  Overloading of the istream >> for the type Sign.
  **/
-istream& operator >> (istream& is, Sign& input)
+istream& operator >> (istream& is, Sign& value)
 {
-  int buff;
-  // failed to read a discrete value
-  if ((is >> buff).fail()) return is;
-  switch (buff)
+  // get current file position
+  std::ios::pos_type pos = is.tellg();
+  int res;
+  // try to read an integer
+  if (!(is >> res).fail())
   {
-    case -1:
-      input = negative_;
-      break;
-    case 1:
-      input = positive_;
-      break;
-    default:
-      input = signNA_;
-      break;
+    switch (res)
+    {
+      case 1:
+        value = positive_;
+        break;
+      case -1:
+        value = negative_;
+        break;
+      default:
+        value = signNA_;
+        is.clear(); is.seekg(pos); is.setstate(std::ios::failbit);
+        break;
+    }
   }
+  else
+  { value = signNA_;}
   return is;
 }
 
 /* @ingroup Base
  *  Convert a String to a Sign.
- *  @param type the String we want to convert
+ *  @param str the String we want to convert
  *  @return the Sign represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_ type is returned.
  **/
-Sign stringToSign( String const& type)
+Sign stringToSign( String const& str)
 {
-  if (toUpperString(type) == toUpperString(_T("-1"))) return negative_;
-  if (toUpperString(type) == toUpperString(_T("1"))) return positive_;
+  if (toUpperString(str) == toUpperString(_T("-1"))) return negative_;
+  if (toUpperString(str) == toUpperString(_T("1"))) return positive_;
   return signNA_;
 }
 
@@ -98,14 +105,15 @@ Sign stringToSign( String const& type, std::map<String, Sign> const& mapping)
 
 /* @ingroup Base
  *  Convert a Sign to a String.
- *  @param type the type of Binary we want to convert
+ *  @param value the type of Binary we want to convert
  *  @return the string associated to this type.
  **/
-String signToString( Sign const& type)
+String signToString( Sign const& value, std::ios_base& (*f)(std::ios_base&))
 {
-  if (type == negative_)  return String(_T("-1"));
-  if (type == positive_) return String(_T("1"));
-  return stringNa;
+  if (Arithmetic<Sign>::isNA(value)) return stringNa;
+  ostringstream os;
+  os << f << static_cast<int>(value);
+  return os.str();
 }
 
 /* @ingroup Base

@@ -29,7 +29,7 @@
  **/
 
 /** @file STK_Integer.cpp
- *  @brief In this file we implement the conversion functions for the type int.
+ *  @brief In this file we implement the conversion functions for the type Integer.
  **/
 
 #include "../include/STK_Integer.h"
@@ -37,80 +37,28 @@
 namespace STK
 {
 
-istream& streamToInt(istream& is, int& value)
+/* @ingroup Base
+ *  Convert a String to a Integer using a map.
+ *  @param str the String we want to convert
+ *  @param mapping the mapping between the string and the Integer
+ *  @return the Integer represented by the String @c str. if the string
+ *  does not match any known name, the @c unknown_ str is returned.
+ **/
+Integer stringToInt( String const& str, std::map<String, Integer> const& mapping)
 {
-  // get current file position
-  std::ios::pos_type pos = is.tellg();
-  // try to read a discrete value
-  int buff;
-  // failed to read a discrete value
-  if ((is >> buff).fail())
-  {
-    // reset position in the stream
-    is.seekg(pos);
-    // clear failbit and eofbit state if necessary
-    is.clear(is.rdstate() & ~std::ios::failbit);
-    if (is.eof()) is.clear(is.rdstate() & ~std::ios::eofbit);
-    // Try to read a NA value, in all case value is a NA object
-    value = Arithmetic<int>::NA();
-    Char* buffer = new Char[stringNaSize()+1];
-    is.getline(buffer, stringNaSize()+1);
-    // if we don't get a NA String, rewind stream
-    if (!(stringNa.compare(buffer) == 0)) { is.seekg(pos); }
-    delete[] buffer;
-  }
-  return is;
+  std::map<String, Integer>::const_iterator it=mapping.find(str);
+  return (it == mapping.end()) ? Arithmetic<Integer>::NA() : it->second;
 }
 
 /* @ingroup Base
- *  Convert a String to a int.
- *  @param type the String we want to convert
- *  @return the int represented by the String @c type. if the string
- *  does not match any known name, the @c unknown_ type is returned.
+ *  Convert an Integer to a String.
+ *  @param value the Integer we want to convert
+ *  @param mapping the mapping between the Integer and the String
+ *  @return the string associated to this Integer.
  **/
-int stringToInt( String const& type)
+String intToString( Integer const& value, std::map<Integer, String> const& mapping)
 {
-  stringstream ss(type);
-  int result;
-  return ss >> result ? result : Arithmetic<int>::NA();
-}
-
-/* @ingroup Base
- *  Convert a String to a int using a map.
- *  @param type the String we want to convert
- *  @param mapping the mapping between the string and the int
- *  @return the int represented by the String @c type. if the string
- *  does not match any known name, the @c unknown_ type is returned.
- **/
-int stringToInt( String const& type, std::map<String, int> const& mapping)
-{
-  std::map<String, int>::const_iterator it=mapping.find(type);
-  if (it == mapping.end())  return Arithmetic<int>::NA();
-  return it->second;
-}
-
-/* @ingroup Base
- *  Convert a TypeRegression to a String.
- *  @param type the type of int we want to convert
- *  @return the string associated to this type.
- **/
-String intToString( int const& value)
-{
-  if (Arithmetic<int>::isNA(value)) return stringNa;
-  stringstream ss;
-  ss << value;
-  return ss.str();
-}
-
-/* @ingroup Base
- *  Convert an int to a String.
- *  @param type the type of int we want to convert
- *  @param mapping the mapping between the int and the String
- *  @return the string associated to this type.
- **/
-String intToString( int const& type, std::map<int, String> mapping)
-{
-  std::map<int, String>::const_iterator it=mapping.find(type);
+  std::map<Integer, String>::const_iterator it=mapping.find(value);
   if (it == mapping.end())  return stringNa;
   return it->second;
 }

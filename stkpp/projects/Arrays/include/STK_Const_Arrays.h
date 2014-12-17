@@ -36,7 +36,7 @@
 #ifndef STK_CONST_ARRAYS_H
 #define STK_CONST_ARRAYS_H
 
-#include "STK_ArrayBase.h"
+#include "STK_ExprBase.h"
 
 namespace STK
 {
@@ -48,13 +48,42 @@ template< typename Type_, int Size_ = UnknownSize> class Identity;
 template< typename Type_, int Size_ = UnknownSize> class Square;
 template< typename Type_, int Size_ = UnknownSize> class Vector;
 template< typename Type_, int Size_ = UnknownSize> class Point;
-template< typename Type_, int SizeRows_ = UnknownSize, int SizeCols_ = UnknownSize>
-class General;
-template< typename Type_, int SizeRows_ = UnknownSize, int SizeCols_ = UnknownSize>
-class UpperTriangular;
-template< typename Type_, int SizeRows_ = UnknownSize, int SizeCols_ = UnknownSize>
-class LowerTriangular;
+template< typename Type_, int SizeRows_ = UnknownSize, int SizeCols_ = UnknownSize> class Array;
+template< typename Type_, int SizeRows_ = UnknownSize, int SizeCols_ = UnknownSize> class UpperTriangular;
+template< typename Type_, int SizeRows_ = UnknownSize, int SizeCols_ = UnknownSize> class LowerTriangular;
+
+
 }
+
+typedef Const::Vector<Real, UnknownSize> ConstVectorX;
+typedef Const::Vector<Real, 3> ConstVector3;
+typedef Const::Vector<Real, 2> ConstVector2;
+typedef Const::Vector<double, UnknownSize> ConstVectorXd;
+typedef Const::Vector<double, 3> ConstVector3d;
+typedef Const::Vector<double, 2> ConstVector2d;
+typedef Const::Vector<int, UnknownSize> ConstVectorXi;
+typedef Const::Vector<int, 3> ConstVector3i;
+typedef Const::Vector<int, 2> ConstVector2i;
+
+typedef Const::Point<Real, UnknownSize> ConstPointX;
+typedef Const::Point<Real, 3> ConstPoint3;
+typedef Const::Point<Real, 2> ConstPoint2;
+typedef Const::Point<double, UnknownSize> ConstPointXd;
+typedef Const::Point<double, 3> ConstPoint3d;
+typedef Const::Point<double, 2> ConstPoint2d;
+typedef Const::Point<int, UnknownSize> ConstPointXi;
+typedef Const::Point<int, 3> ConstPoint3i;
+typedef Const::Point<int, 2> ConstPoint2i;
+
+typedef Const::Point<Real, UnknownSize> ConstPointX;
+typedef Const::Point<Real, 3> ConstPoint3;
+typedef Const::Point<Real, 2> ConstPoint2;
+typedef Const::Point<double, UnknownSize> ConstPointXd;
+typedef Const::Point<double, 3> ConstPoint3d;
+typedef Const::Point<double, 2> ConstPoint2d;
+typedef Const::Point<int, UnknownSize> ConstPointXi;
+typedef Const::Point<int, 3> ConstPoint3i;
+typedef Const::Point<int, 2> ConstPoint2i;
 
 namespace hidden
 {
@@ -126,7 +155,7 @@ struct Traits< Const::Square <Type_, Size_> >
  *  @brief Traits class for the general constant matrix
  */
 template< typename Type_, int SizeRows_, int SizeCols_>
-struct Traits< Const::General<Type_, SizeRows_, SizeCols_> >
+struct Traits< Const::Array<Type_, SizeRows_, SizeCols_> >
 {
   typedef Type_ Type;
   enum
@@ -175,6 +204,52 @@ struct Traits< Const::LowerTriangular<Type_, SizeRows_, SizeCols_> >
 
 namespace Const
 {
+template< class Derived, int SizeRows_, int SizeCols_>
+class IConstArray: protected IContainer2D<SizeRows_, SizeCols_>, public ExprBase<Derived>
+{
+  protected:
+    /** Type for the IContainer2D base Class. */
+    typedef IContainer2D<SizeRows_, SizeCols_ > Base2D;
+    typedef ExprBase<Derived> Base;
+    /** default constructor */
+    inline IConstArray(): Base2D(), Base() {}
+    /** constructor with specified dimension */
+    inline IConstArray(Range const& rows, Range const& cols) : Base2D(rows, cols), Base() {}
+    /** destructor */
+    inline ~IConstArray() {}
+
+  public:
+    /** @return the Vertical range */
+    inline Range rows() const { return Base2D::rows();}
+    /** @return the index of the first row */
+    inline int beginRowsImpl() const { return Base2D::beginRowsImpl();}
+    /** @return the ending index of the rows */
+    inline int endRowsImpl() const { return Base2D::endRowsImpl();}
+    /** @return the number of rows */
+    inline int sizeRowsImpl() const { return Base2D::sizeRowsImpl();}
+
+    /**@return the Horizontal range */
+    inline Range cols() const { return Base2D::cols();}
+    /** @return the index of the first column */
+    inline int beginColsImpl() const { return Base2D::beginColsImpl();}
+    /**  @return the ending index of columns */
+    inline int endColsImpl() const { return Base2D::endColsImpl();}
+    /** @return the number of columns */
+    inline int sizeColsImpl() const { return Base2D ::sizeColsImpl();}
+
+    /** @return the index of the first column */
+    inline int firstIdxCols() const { return Base2D::firstIdxCols();}
+    /**  @return the index of the last column */
+    inline int lastIdxCols() const { return Base2D::lastIdxCols();}
+    /** @return the index of the first row */
+    inline int firstIdxRows() const { return Base2D::firstIdxRows();}
+    /** @return the index of the last row */
+    inline int lastIdxRows() const { return Base2D::lastIdxRows();}
+
+    /**  @return @c true if the container is empty, @c false otherwise */
+    inline bool empty() const { return Base2D::empty();}
+};
+
 /**@ingroup Arrays
  * Define the constant identity matrix
  * \f[
@@ -195,13 +270,13 @@ namespace Const
  *  STK::Const::Square<Real,3> S3; // S3 is a 3x3 square matrix of 1.
  *  STK::Const::Square<Real> S(10); // S is a 10x10 identity matrix of 1.
  * @endcode
- * @tparam Size_ the size of the identity Matrix. Default is UnknownSize.
+ * @tparam Size_ the size of the identity ArrayXX. Default is UnknownSize.
  **/
 template< typename Type_, int Size_ >
-class Identity : public ITArrayBase<Identity<Type_, Size_>, Size_, Size_ >
+class Identity : public IConstArray<Identity<Type_, Size_>, Size_, Size_ >
 {
   public:
-    typedef ITArrayBase<Identity<Type_, Size_>, Size_, Size_ > Base;
+    typedef IConstArray<Identity<Type_, Size_>, Size_, Size_ > Base;
     typedef Type_ Type;
     enum
     {
@@ -247,13 +322,13 @@ class Identity : public ITArrayBase<Identity<Type_, Size_>, Size_, Size_ >
  *  STK::Const::Square<Real,3> S3; // S3 is a 3x3 square matrix of Real
  *  STK::Const::Square<Real> S(10); // S is a 10x10 square matrix of Real
  * @endcode
- * @tparam Size_ the size of the square Matrix. Default is UnknownSize.
+ * @tparam Size_ the size of the square ArrayXX. Default is UnknownSize.
  **/
 template< typename Type_, int Size_ >
-class Square : public ITArrayBase<Square<Type_, Size_>, Size_, Size_ >
+class Square : public IConstArray<Square<Type_, Size_>, Size_, Size_ >
 {
   public:
-    typedef ITArrayBase<Square<Type_, Size_>, Size_, Size_ > Base;
+    typedef IConstArray<Square<Type_, Size_>, Size_, Size_ > Base;
     typedef typename hidden::Traits< Const::Square <Type_, Size_> >::Type Type;
     enum
     {
@@ -291,30 +366,30 @@ class Square : public ITArrayBase<Square<Type_, Size_>, Size_, Size_ >
  * The sizes can be either two fixed template arguments or dynamic sizes.
  * Exemple:
  * @code
- *  STK::Const::General<Real,3, 4> G3; // G3 is a 3x4 matrix of Real
- *  STK::Const::General<Real> S(10, 20); // S is a 10x20 matrix of Real
+ *  STK::Const::Array<Real,3, 4> G3; // G3 is a 3x4 matrix of Real
+ *  STK::Const::Array<Real> S(10, 20); // S is a 10x20 matrix of Real
  * @endcode
  * @tparam SizeRows_ the number of row of the matrix. Default is UnknownSize.
  * @tparam SizeCols_ the number of column of the matrix. Default is UnknownSize.
  **/
 template< typename Type_, int SizeRows_, int SizeCols_ >
-class General : public ITArrayBase<General<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ >
+class Array : public IConstArray<Array<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ >
 {
   public:
-    typedef ITArrayBase<General<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ > Base;
+    typedef IConstArray<Array<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ > Base;
     typedef Type_ Type;
     enum
     {
-      structure_ = hidden::Traits< Const::General <Type_, SizeRows_, SizeCols_> >::structure_,
-      orient_    = hidden::Traits< Const::General <Type_, SizeRows_, SizeCols_> >::orient_,
-      sizeRows_  = hidden::Traits< Const::General <Type_, SizeRows_, SizeCols_> >::sizeRows_,
-      sizeCols_  = hidden::Traits< Const::General <Type_, SizeRows_, SizeCols_> >::sizeCols_,
-      storage_   = hidden::Traits< Const::General <Type_, SizeRows_, SizeCols_> >::storage_
+      structure_ = hidden::Traits< Const::Array <Type_, SizeRows_, SizeCols_> >::structure_,
+      orient_    = hidden::Traits< Const::Array <Type_, SizeRows_, SizeCols_> >::orient_,
+      sizeRows_  = hidden::Traits< Const::Array <Type_, SizeRows_, SizeCols_> >::sizeRows_,
+      sizeCols_  = hidden::Traits< Const::Array <Type_, SizeRows_, SizeCols_> >::sizeCols_,
+      storage_   = hidden::Traits< Const::Array <Type_, SizeRows_, SizeCols_> >::storage_
     };
     /** default constructor */
-    General() : Base() {}
+    Array() : Base() {}
     /** constructor with specified dimension */
-    General(Range rangeRows, Range rangeCols) : Base(rangeRows, rangeCols) {}
+    Array(Range rangeRows, Range rangeCols) : Base(rangeRows, rangeCols) {}
     /** @return the element (i,j) of the constant square matrix.
      *  @param i index of the row
      *  @param j index of the column
@@ -346,10 +421,10 @@ class General : public ITArrayBase<General<Type_, SizeRows_, SizeCols_>, SizeRow
  * @tparam SizeCols_ the number of column of the matrix. Default is UnknownSize.
  **/
 template< typename Type_, int SizeRows_, int SizeCols_ >
-class UpperTriangular : public ITArrayBase<UpperTriangular<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ >
+class UpperTriangular : public IConstArray<UpperTriangular<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ >
 {
   public:
-    typedef ITArrayBase<UpperTriangular<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ > Base;
+    typedef IConstArray<UpperTriangular<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ > Base;
     typedef Type_ Type;
     enum
     {
@@ -394,10 +469,10 @@ class UpperTriangular : public ITArrayBase<UpperTriangular<Type_, SizeRows_, Siz
  * @tparam SizeCols_ the number of column of the matrix. Default is UnknownSize.
  **/
 template< typename Type_, int SizeRows_, int SizeCols_ >
-class LowerTriangular : public ITArrayBase<LowerTriangular<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ >
+class LowerTriangular : public IConstArray<LowerTriangular<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ >
 {
   public:
-    typedef ITArrayBase<LowerTriangular<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ > Base;
+    typedef IConstArray<LowerTriangular<Type_, SizeRows_, SizeCols_>, SizeRows_, SizeCols_ > Base;
     typedef Type_ Type;
     enum
     {
@@ -437,10 +512,10 @@ class LowerTriangular : public ITArrayBase<LowerTriangular<Type_, SizeRows_, Siz
  * @tparam Size_ the size of the row-vector. Default is UnknownSize.
  **/
 template< typename Type_, int Size_ >
-class Point : public ITArrayBase<Point<Type_, Size_>, Size_, Size_ >
+class Point : public IConstArray<Point<Type_, Size_>, Size_, Size_ >
 {
   public:
-    typedef ITArrayBase<Point<Type_, Size_>, Size_, Size_ > Base;
+    typedef IConstArray<Point<Type_, Size_>, Size_, Size_ > Base;
     typedef typename hidden::Traits< Const::Point <Type_, Size_> >::Type Type;
     enum
     {
@@ -484,10 +559,10 @@ class Point : public ITArrayBase<Point<Type_, Size_>, Size_, Size_ >
  * @tparam Size_ the size of the row-vector. Default is UnknownSize.
  **/
 template< typename Type_, int Size_ >
-class Vector : public ITArrayBase<Vector<Type_, Size_>, Size_, Size_ >
+class Vector : public IConstArray<Vector<Type_, Size_>, Size_, Size_ >
 {
   public:
-    typedef ITArrayBase<Vector<Type_, Size_>, Size_, Size_ > Base;
+    typedef IConstArray<Vector<Type_, Size_>, Size_, Size_ > Base;
     typedef typename hidden::Traits< Const::Vector <Type_, Size_> >::Type Type;
     enum
     {

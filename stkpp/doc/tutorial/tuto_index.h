@@ -5,6 +5,7 @@
  *  This module contain the source of the examples used in the tutorials.
  *
  *  @page PageTutorials Tutorials
+ *  Learn by examples.
  *  @b Table @b of @b contents
  *  <ul>
  *  <li> @b Tips

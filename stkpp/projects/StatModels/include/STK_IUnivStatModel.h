@@ -37,8 +37,9 @@
 #ifndef STK_IUNIVSTATMODEL_H
 #define STK_IUNIVSTATMODEL_H
 
-#include "STK_IModelBase.h"
+#include "STK_IStatModelBase.h"
 #include "Sdk/include/STK_IRunner.h"
+#include "Sdk/include/STK_Macros.h"
 
 namespace STK
 {
@@ -83,7 +84,7 @@ namespace STK
  *  class IUnivLaw, @sa IUnivLaw.
  **/
 template <class ColVector, class WColVector, class UnivariateLaw>
-class IUnivStatModel : public IModelBase, public IRunnerUnsupervised<ColVector, WColVector>
+class IUnivStatModel : public IStatModelBase, public IRunnerUnsupervised<ColVector, WColVector>
 {
   public:
     using IRunnerUnsupervised<ColVector, WColVector>::p_data;
@@ -94,16 +95,16 @@ class IUnivStatModel : public IModelBase, public IRunnerUnsupervised<ColVector, 
 
   protected:
     /** default constructor. */
-    IUnivStatModel() : IModelBase(), Runner() {}
+    IUnivStatModel() : IStatModelBase(), Runner() {}
     /** Constructor with data set. */
-    IUnivStatModel(ColVector const& data) : IModelBase(data.size(), 1), Runner(data)
+    IUnivStatModel(ColVector const& data) : IStatModelBase(data.size(), 1), Runner(data)
     { this->initialize(data.size(), 1);}
     /** Constructor with a ptr on the data set. */
-    IUnivStatModel(ColVector const* p_data) : IModelBase(), Runner(p_data)
+    IUnivStatModel(ColVector const* p_data) : IStatModelBase(), Runner(p_data)
     { if (p_data) this->initialize(p_data->size(), 1) ;}
     /** Copy constructor. */
     IUnivStatModel( IUnivStatModel const& model)
-                  : IModelBase(model), Runner(model), law_(model.law_) {}
+                  : IStatModelBase(model), Runner(model), law_(model.law_) {}
 
   public:
     /** destructor */
@@ -112,7 +113,7 @@ class IUnivStatModel : public IModelBase, public IRunnerUnsupervised<ColVector, 
     Real computeLnLikelihood() const
     {
       Real sum = 0.0;
-      for (int i= p_data()->firstIdx(); i<= p_data()->lastIdx(); i++)
+      for (int i= p_data()->begin(); i<= p_data()->lastIdx(); i++)
       { if (!Arithmetic<Type>::isNA(p_data()->elt(i))) sum += law_.lpdf(p_data()->elt(i));}
       return sum;
     }

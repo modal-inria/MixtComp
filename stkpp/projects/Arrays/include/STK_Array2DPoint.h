@@ -36,7 +36,7 @@
 #ifndef STK_ARRAY2DPOINT_H
 #define STK_ARRAY2DPOINT_H
 
-#include "STK_Display.h"
+#include "STK_IArray2D.h"
 
 namespace STK
 {
@@ -46,10 +46,12 @@ template<typename> class Array2DVector;
 
 /** @ingroup Arrays
   * @brief final class for a Real horizontal container.
-  *
   * A Point is a row oriented 1D container of Real.
   */
-typedef Array2DPoint<Real> Point;
+typedef Array2DPoint<Real>   Point;
+typedef Array2DPoint<Real>   PointX;
+typedef Array2DPoint<double> PointXd;
+typedef Array2DPoint<int>    PointXi;
 
 namespace hidden
 {
@@ -121,7 +123,7 @@ class Array2DPoint : public IArray2D< Array2DPoint<Type> >
      *  @param v initial value of the container
      **/
     Array2DPoint( Range const& J, Type const& v) : Base(Range(1), J)
-    { this->setValue(v);}
+    { LowBase::setValue(v);}
     /** Copy constructor
      *  @param T the container to copy
      *  @param ref true if this is a wrapper of T
@@ -144,6 +146,12 @@ class Array2DPoint : public IArray2D< Array2DPoint<Type> >
     Array2DPoint( IArray2D<OtherArray> const& T, Range const& J, int row)
                 : Base(T, Range(row, 1), J)
     {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    Array2DPoint( ExprBase<OtherDerived> const& T): Base(Range(1), Range())
+    { LowBase::operator=(T);}
     /** constructor by reference, ref_=1.
      *  @param p_data a pointer on the data to wrap
      *  @param J the range of the data to wrap
@@ -156,15 +164,15 @@ class Array2DPoint : public IArray2D< Array2DPoint<Type> >
     /** @return a constant reference on the jth element
      *  @param j index of the element (const)
      **/
-    inline Type const & elt1Impl(int const& j) const { return this->data(j)[this->firstIdxRows()];}
+    inline Type const & elt1Impl(int const& j) const { return this->data(j)[this->beginRows()];}
     /** @return a reference on the jth element
      *  @param j index of the element
      **/
-    inline Type& elt1Impl(int const& j) { return this->data(j)[this->firstIdxRows()];}
+    inline Type& elt1Impl(int const& j) { return this->data(j)[this->beginRows()];}
     /** New first indexes for the object.
      *  @param cbeg the index of the first column to set
      **/
-    void shift1D(int const& cbeg) { Base::shift(this->firstIdxRows(), cbeg);}
+    void shift1D(int const& cbeg) { Base::shift(this->beginRows(), cbeg);}
     /**  Resize the container.
      *  @param J the range to set to the container
      **/
@@ -181,7 +189,7 @@ class Array2DPoint : public IArray2D< Array2DPoint<Type> >
     void erase( int const& pos, int const& n=1)
     { Base::eraseCols(pos, n);}
     /** Insert n elts at the position pos of the container. The bound
-     *  last_ should be modified at the very end of the insertion as pos
+     *  end_ should be modified at the very end of the insertion as pos
      *  can be a reference to it.
      *  @param pos index where to insert elements
      *  @param n number of elements to insert (default 1)
@@ -200,7 +208,7 @@ class Array2DPoint : public IArray2D< Array2DPoint<Type> >
     /** set the container to a constant value.
      *  @param v the value to set
      **/
-    inline Array2DPoint& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline Array2DPoint& operator=(Type const& v) { return LowBase::setValue(v);}
 };
 
 } // namespace STK

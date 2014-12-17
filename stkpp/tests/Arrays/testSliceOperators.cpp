@@ -81,18 +81,20 @@ void print(CArray const& A, String const& name)
 template< class Type>
 int Test( int M, int N)
 {
-    //
-    //int row=1, col=1;
-    Array2DVector<Type> c0;
-    Array2DPoint<Type> p0;
-    CArray<Type , 3, 4, Arrays::by_row_> t(M, N, 1);
-    numbering(t);
-    print(t,"t");
-    c0 = (t * Type(2)).col(1);
-    print(c0,"c0 = (t * Type(2)).col(1)");
-    p0 = (t * Type(2)).row(1);
-    print(p0,"p0 = (C1 * Type(2)).row(1)");
-    return true;
+  Array2DVector<Type> c0, c1;
+  Array2DPoint<Type> p0, p1;
+  CArray<Type , 5, 6, Arrays::by_row_> t(M, N, 1);
+  numbering(t);
+  print(t,"t");
+  c0 = (t * Type(2)).col(baseIdx+1);
+  c1 = (t * Type(2)).col(baseIdx+1).sub(_R(baseIdx, baseIdx+2));
+  print(c0,"c0 = (t * Type(2)).col(baseIdx+1)");
+  print(c1,"c1 = (t * Type(2)).col(baseIdx+1).sub(_R(baseIdx, baseIdx+2))");
+  p0 = (t * Type(2)).row(baseIdx+1);
+  p1 = (t * Type(2)).row(baseIdx+1).sub(_R(baseIdx, baseIdx+2));
+  print(p0,"p0 = (t * Type(2)).row(baseIdx+1)");
+  print(p1,"p1 = (t * Type(2)).row(baseIdx+1).sub(_R(baseIdx, baseIdx+2))");
+  return true;
 }
 
 /*--------------------------------------------------------------------*/

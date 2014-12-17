@@ -84,16 +84,16 @@ class IUnivLaw;
  *  regression. As the regression model is linear there is no necessity
  *  to use the @c setRegresor method. it will be created by this object.
  **/
-class LinearAAModel : public IRunnerUnsupervised<Matrix, Vector>
+class LinearAAModel : public IRunnerUnsupervised<ArrayXX, Vector>
                     , public GaussianAAModel
 {
   public :
-    typedef IRunnerUnsupervised<Matrix, Vector> Runner;
+    typedef IRunnerUnsupervised<ArrayXX, Vector> Runner;
     /** constructor. compute the Linear AA models of the matrix data
      *  using the local variance as criteria.
      *  @param data the data set to modelize
      **/
-    LinearAAModel( Matrix const& data);
+    LinearAAModel( ArrayXX const& data);
 
     /** copy constructor.
      *  @param model the model to copy
@@ -178,12 +178,12 @@ class LinearAAModel : public IRunnerUnsupervised<Matrix, Vector>
     static void simul( const Law::IUnivLaw<Real>& law
                      , Vector const& mu
                      , Real const& std
-                     , Matrix& proj
-                     , Matrix& data
+                     , ArrayXX& proj
+                     , ArrayXX& data
                      );
     protected:
       /** working data set;*/
-      Matrix workData_;
+      ArrayXX workData_;
 };
 
 } // namespace STK

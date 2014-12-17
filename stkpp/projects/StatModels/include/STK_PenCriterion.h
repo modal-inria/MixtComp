@@ -38,7 +38,7 @@
 #define STK_PENCRITERION_H
 
 #include "Sdk/include/STK_IRunner.h"
-#include "STK_IModelBase.h"
+#include "STK_IStatModelBase.h"
 
 namespace STK
 {
@@ -55,15 +55,18 @@ class ICriterion : public IRunnerBase
     /** Constructor.
      *  @param p_model a pointer on the current model
      **/
-    inline ICriterion( IModelBase* const p_model) : p_model_(p_model), value_(Arithmetic<Real>::NA()){}
+    inline ICriterion( IStatModelBase const* p_model)
+                     : p_model_(p_model), value_(Arithmetic<Real>::NA()){}
     /** Constructor.
      *  @param model the current model
      **/
-    inline ICriterion( IModelBase const& model) : p_model_(&model), value_(Arithmetic<Real>::NA()) {}
+    inline ICriterion( IStatModelBase const& model)
+                     : p_model_(&model), value_(Arithmetic<Real>::NA()) {}
     /** copy Constructor.
      *  @param criterion the criterion to copy
      **/
-    inline ICriterion( ICriterion const& criterion) : p_model_(criterion.p_model_), value_(criterion.value_) {}
+    inline ICriterion( ICriterion const& criterion)
+                     : p_model_(criterion.p_model_), value_(criterion.value_) {}
 
   public:
     /** Destructor */
@@ -71,13 +74,13 @@ class ICriterion : public IRunnerBase
     /** @return The value of the criterion */
     inline Real const& value() const { return value_;}
     /** @param p_model a pointer on the current model to set */
-     inline void setModel( IModelBase* const p_model) { p_model_ = p_model;}
+    void setModel( IStatModelBase const* p_model);
     /** @param model the current model to set */
-     inline void setModel( IModelBase const& model) { p_model_ = &model;}
+    void setModel( IStatModelBase const& model);
 
   protected:
     /** The current statistical model to use*/
-    IModelBase const* p_model_;
+    IStatModelBase const* p_model_;
     /** Computed value of the criterion */
     Real value_;
 };
@@ -99,11 +102,11 @@ class AICCriterion : public ICriterion
     /** Constructor.
      *  @param p_model apointer on the current model
      **/
-    inline AICCriterion( IModelBase* const p_model) : ICriterion(p_model) {}
+    inline AICCriterion( IStatModelBase* const p_model) : ICriterion(p_model) {}
     /** Constructor.
      *  @param model the current model
      **/
-    inline AICCriterion( IModelBase const& model) : ICriterion(model) {}
+    inline AICCriterion( IStatModelBase const& model) : ICriterion(model) {}
     /** copy Constructor.
      *  @param criterion the criterion to copy
      **/
@@ -134,11 +137,11 @@ class BICCriterion : public ICriterion
     /** Constructor.
      *  @param p_model apointer on the current model
      **/
-    inline BICCriterion( IModelBase* const p_model) : ICriterion(p_model) {}
+    inline BICCriterion( IStatModelBase* const p_model) : ICriterion(p_model) {}
     /** Constructor.
      *  @param model the current model
      **/
-    inline BICCriterion( IModelBase const& model) : ICriterion(model) {}
+    inline BICCriterion( IStatModelBase const& model) : ICriterion(model) {}
     /** copy Constructor.
      *  @param criterion the criterion to copy
      **/

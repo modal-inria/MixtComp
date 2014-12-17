@@ -103,7 +103,7 @@ class JointGammaModel : public IMultiStatModel<Array, WColVector, JointGammaPara
     virtual Real computeLnLikelihood( RowVector const& rowData) const
     {
       Real sum =0.;
-      for (Integer j= rowData.firstIdx(); j <= rowData.lastIdx(); ++j)
+      for (Integer j= rowData.begin(); j <= rowData.lastIdx(); ++j)
       { sum += Law::Gamma::lpdf(rowData[j], shape()[j], scale()[j]);}
       return sum;
     }
@@ -126,16 +126,16 @@ class JointGammaModel : public IMultiStatModel<Array, WColVector, JointGammaPara
     /** compute the parameters */
     virtual void computeParameters()
     {
-      for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
+      for (int j=p_data()->beginCols(); j < p_data()->endCols(); ++j)
       {
         mean()[j] =  p_data()->col(j).safe().mean();
         meanLog()[j] = p_data()->col(j).safe(1.).log().mean();
         variance()[j] = p_data()->col(j).safe().variance();
-        Real start1 = (mean()[j]*mean()[j]) / variance()[j];
-        Real start2 = 0.9*start1 +  0.05/(mean()[j] - meanLog()[j]);
+        Real x0 = (mean()[j]*mean()[j]) / variance()[j];
+        Real x1 = 0.9*x0 +  0.05/(mean()[j] - meanLog()[j]);
         dloglikelihood funct(mean()[j], meanLog()[j]);
-        Real a =  Algo::findZero(funct, start1, start2);
-        // replace with moment estimator if needed
+        Real a =  Algo::findZero(funct, x0, x1);
+        // replace with moment estimate if needed
         if (!Arithmetic<Real>::isFinite(a)) { a =  mean()[j]*mean()[j]/variance()[j];}
         shape()[j] = a;
         scale()[j] = mean()[j]/a;
@@ -144,16 +144,16 @@ class JointGammaModel : public IMultiStatModel<Array, WColVector, JointGammaPara
     /** compute the weighted parameters */
     virtual void computeParameters( WColVector const& weights)
     {
-      for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
+      for (int j=p_data()->beginCols(); j < p_data()->endCols(); ++j)
       {
         mean()[j] =  p_data()->col(j).safe().wmean(weights);
         meanLog()[j] = p_data()->col(j).safe(1).log().wmean(weights);
         variance()[j] = p_data()->col(j).safe().wvariance(weights);
-        Real start1 = (mean()[j]*mean()[j]) / variance()[j];
-        Real start2 = 0.9*start1 +  0.05/(mean()[j] - meanLog()[j]);
+        Real x0 = (mean()[j]*mean()[j]) / variance()[j];
+        Real x1 = 0.9*x0 +  0.05/(mean()[j] - meanLog()[j]);
         dloglikelihood funct(mean()[j], meanLog()[j]);
-        Real a =  Algo::findZero(funct, start1, start2);
-        // replace with moment estimator if needed
+        Real a =  Algo::findZero(funct, x0, x1);
+        // replace with moment estimate if needed
         if (!Arithmetic<Real>::isFinite(a)) { a =  mean()[j]*mean()[j]/variance()[j];}
         shape()[j] = a;
         scale()[j] = mean()[j]/a;

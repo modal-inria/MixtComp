@@ -89,7 +89,7 @@ class SeriePi : public ISerie<SeriePi>
     **/
     inline Real operator[](int k) const
     { int aux = 4*k;
-      return  std::pow(2, -aux)
+      return  std::pow(2., -aux)
             * ( 2.0/(aux+0.5)
               - 1.0/(aux+2.0)
               - 0.5/(aux+2.5)

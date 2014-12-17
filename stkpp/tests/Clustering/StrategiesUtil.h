@@ -39,7 +39,16 @@
 
 #include "Clustering.h"
 
-void testSimpleStrategy( STK::IMixtureComposerBase*& p_composer);
-void testXemStrategy( STK::IMixtureComposerBase*& p_composer);
+namespace STK
+{
+void testSimpleStrategy( IMixtureComposer*& p_composer);
+
+void testFullStrategy( IMixtureComposer*& p_composer
+                     , Clust::initType init = Clust::randomClassInit_
+                     , int nbTryInInit =5, Clust::algoType initAlgo = Clust::semAlgo_
+                     , int nbTry =2, int nbInitRun =10, int nbShortRun =5
+                     , Clust::algoType shortAlgo= Clust::semiSemAlgo_
+                     , Clust::algoType longAlgo= Clust::semiSemAlgo_);
+} // namespace STK
 
 #endif

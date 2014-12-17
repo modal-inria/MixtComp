@@ -127,9 +127,9 @@ int Test( int M, int N, Range I, Range J, bool output)
     numbering(C0);
 
     stk_cout << _T("Interverting the rows of C0 with the rows of C4.\n");
-    for (int i=C0.firstIdxRows(); i<= C0.lastIdxRows(); i++)
+    for (int i=C0.beginRows(); i<= C0.lastIdxRows(); i++)
     {
-      C0.row(i).assign(C4.row(C4.lastIdxRows()+C4.firstIdxRows()-i));
+      C0.row(i).assign(C4.row(C4.lastIdxRows()+C4.beginRows()-i));
     }
     print(C0,_T("C0"));
 

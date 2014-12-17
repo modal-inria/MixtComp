@@ -35,29 +35,27 @@
 #ifndef STK_CARRAYSQUARE_H
 #define STK_CARRAYSQUARE_H
 
-#include "STKernel/include/STK_Constants.h"
-
 #include "STK_ICArray.h"
 
 namespace STK
 {
-template< typename Type_, int Size_ = UnknownSize, bool Orient_ = Arrays::by_col_>
-class CArraySquare;
+// forward declarations
+template< typename Type_, int Size_ = UnknownSize, bool Orient_ = Arrays::by_col_> class CArraySquare;
+template< typename Type, int SizeRows_, int SizeCols_, bool Orient_> class CArray;
+template< typename Type, int SizeCols_, bool Orient_> class CArrayPoint;
+template< typename Type, int SizeRows_, bool Orient_> class CArrayVector;
+template< typename Type, int SizeRows_, int SizeCols_, bool Orient_> class CArrayNumber;
 
-template< typename Type, int SizeRows_, int SizeCols_, bool Orient_>
-class CArray;
-template< typename Type, int SizeCols_, bool Orient_>
-class CArrayPoint;
-template< typename Type, int SizeRows_, bool Orient_>
-class CArrayVector;
-template< typename Type, int SizeRows_, int SizeCols_, bool Orient_>
-class CArrayNumber;
-
-
-
-typedef CArraySquare<Real>                        CArraySquareXX;
-typedef CArraySquare<Real, 2, Arrays::by_col_>    CArraySquare22;
-typedef CArraySquare<Real, 3, Arrays::by_col_>    CArraySquare33;
+// typedef for CArrayVector Real is by default double, but can be float
+typedef CArraySquare<Real>                                 CSquareX;
+typedef CArraySquare<Real, 2, Arrays::by_col_>             CSquare2;
+typedef CArraySquare<Real, 3, Arrays::by_col_>             CSquare3;
+typedef CArraySquare<double, UnknownSize, Arrays::by_col_> CSquareXd;
+typedef CArraySquare<double, 2, Arrays::by_col_>           CSquare2d;
+typedef CArraySquare<double, 3, Arrays::by_col_>           CSquare3d;
+typedef CArraySquare<int, UnknownSize, Arrays::by_col_>    CSquareXi;
+typedef CArraySquare<int, 2, Arrays::by_col_>              CSquare2i;
+typedef CArraySquare<int, 3, Arrays::by_col_>              CSquare3i;
 
 namespace hidden
 {
@@ -153,18 +151,18 @@ class CArraySquare
     /** constructor with specified dimension.
      *  @param size range of the columns
      **/
-    inline CArraySquare( int const& size) : Base(size, size) {}
+    inline CArraySquare( int const& size): Base(size, size) {}
     /** constructor with rbeg, rend, cbeg and cend specified,
      *  initialization with a constant.
      *  @param size range of the columns
      *  @param v initial value of the container
      **/
-    inline CArraySquare( int const& size, Type const& v) : Base(size, size, v) {}
+    inline CArraySquare( int const& size, Type const& v): Base(size, size, v) {}
     /** Copy constructor
      *  @param T the container to copy
      *  @param ref true if T is wrapped
      **/
-    inline CArraySquare( CArraySquare const& T, bool ref=false) : Base(T, ref) {}
+    inline CArraySquare( CArraySquare const& T, bool ref=false): Base(T, ref) {}
     /** wrapper constructor for 0 based C-Array.
      *  @param q pointer on the array
      *  @param size number of rows/columns
@@ -174,13 +172,19 @@ class CArraySquare
      *  @param allocator the allocator to wrap
      **/
     template<class OtherAllocator>
-    inline CArraySquare( OtherAllocator const& allocator) : Base(allocator) {}
+    inline CArraySquare( CAllocatorBase<OtherAllocator> const& allocator): Base(allocator.asDerived()) {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    CArraySquare( ExprBase<OtherDerived> const& T): Base()
+    { LowBase::operator=(T);}
     /** destructor. */
     inline ~CArraySquare() {}
     /** operator= : set the container to a constant value.
      *  @param v the value to set
      **/
-    inline CArraySquare& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline CArraySquare& operator=(Type const& v) { return LowBase::setValue(v);}
     /** operator = : overwrite the CArray with the Right hand side T.
      *  @param T the container to copy
      **/

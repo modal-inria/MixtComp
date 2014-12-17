@@ -45,24 +45,9 @@
 
 namespace STK
 {
-/**  @ingroup Base
-  *  @defgroup iostream I/O stream declarations
-  *
-  *  Nearly all of the I/O classes are parameterized on the type of
-  *  characters they read and write (The major exception is ios_base at
-  *  the top of the hierarchy).
-  *
-  *  For ease of use, all of the basic_* I/O-related
-  *  classes are given typedef names in the namespace STK. For example:
-  * 
-  *  @code
-  *     typedef basic_ifstream<Char>  ifstream;
-  *  @endcode
-  *
-  *  These declarations in the STK namespace would be very useful if you
-  *  modifiy the built-in type representation of Char (say wchar_t).
-  *  @{
-  **/
+/**@ingroup iostream
+*  @{
+**/
 
 /** ios for Char */
 typedef std::basic_ios<Char>           ios;

@@ -83,14 +83,14 @@ class LocalVariance : public ILinearReduct
      *  @param type type of proximity graph to build
      *  @param nbNeighbor number of neighbors to use in the proximity graph
      */
-    LocalVariance( Matrix const* p_data, TypeGraph type = distance_, int nbNeighbor =1);
+    LocalVariance( ArrayXX const* p_data, TypeGraph type = distance_, int nbNeighbor =1);
     /** Constructor. the TypeGraph and the number of neighbors are
      *  given by the user and are not modified.
      *  @param data the data set to process
      *  @param type type of proximity graph to build
      *  @param nbNeighbor number of neighbors to use in the proximity graph
      */
-    LocalVariance( Matrix const& data, TypeGraph type = distance_, int nbNeighbor =1);
+    LocalVariance( ArrayXX const& data, TypeGraph type = distance_, int nbNeighbor =1);
     /** copy Constructor.
      *  @param reductor the reductor to copy
      */
@@ -101,13 +101,13 @@ class LocalVariance : public ILinearReduct
     /** Destructor */
     virtual ~LocalVariance();
     /** @return the number of neighbors used in the local covariance.*/
-    inline int const& nbNeighbor() const { return nbNeighbor_;}
+    inline int nbNeighbor() const { return nbNeighbor_;}
     /**@return an array with the index of the neighbors of an individual */
     inline Array2D<int> const& pred() const { return neighbors_;}
     /** @return the covariance matrix of the data set */
-    inline MatrixSquare const& covariance() const { return covariance_;}
+    inline ArraySquareX const& covariance() const { return covariance_;}
     /**@return the local covariance matrix computed using the proximity graph. */
-    inline MatrixSquare const& localCovariance() const { return localCovariance_;}
+    inline ArraySquareX const& localCovariance() const { return localCovariance_;}
 
   protected:
     /**
@@ -123,16 +123,16 @@ class LocalVariance : public ILinearReduct
      * to the neighbors */
     Array2D<int> neighbors_;
     /** distance matrix : store the minimal distance to the neighbors */
-    Matrix dist_;
+    ArrayXX dist_;
 
-    /** the local covariance Matrix */
-    MatrixSquare localCovariance_;
-    /** the covariance Matrix */
-    MatrixSquare covariance_;
+    /** the local covariance Array */
+    ArraySquareX localCovariance_;
+    /** the covariance Array */
+    ArraySquareX covariance_;
     /** the multivariate Statistics. This structure is used in order to
      *  compute the global covariance matrix of the data set.
      **/
-    Stat::MultivariateMatrix* p_dataStatistics_;
+    Stat::MultivariateArrayXX* p_dataStatistics_;
 
     /** Compute the axis by maximizing the ratio of the local variance on the
      *  total variance of the data set.

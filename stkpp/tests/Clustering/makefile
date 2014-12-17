@@ -28,74 +28,55 @@
 #
 #-----------------------------------------------------------------------
 # makevars contains general definitions and flags.
-ifeq ($(MAKEVARS),)
-        include ../../$(RELATIVEMAKEVARS)
-else
-        include $(MAKEVARS)
-endif
 ifneq ($(wildcard ./makevars.local),) 
 	include makevars.local
 endif
 
-
-#-----------------------------------------------------------------------
-# Paths to bin, lib, include and projects
-BIN_DIR = ../../bin/
-LIB_DIR = ../../lib/
-INC_DIR = ../../include/
-PROJECTS_DIR = ../../projects/
-
 #-----------------------------------------------------------------------
 # source files
-#
-CPP_SRCS = \
+CXX_SRCS = \
 	SimulUtil.cpp \
 	StrategiesUtil.cpp
 
 TEST_SRCS = \
 	testDataHandler.cpp \
-	testGammaMixtureModels.cpp \
-	testGaussianMixtureModels.cpp \
+	testAllGammaMixtureModels.cpp \
+	testAllGaussianMixtureModels.cpp \
 	testCategoricalMixtureModels.cpp \
+	testCategoricalWithBirds.cpp \
+	testHeterogeneousWithHeartDisease.cpp \
 	testComposer.cpp
-
-## library name
-CXX_LIB = $(LIB_DIR)/$(LIB_STKPP_A)
+#	testGammaMixtureModels.cpp \
 
 #-----------------------------------------------------------------------
 # binary files
-#
-CXX_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
-TEST_OBJS = $(TEST_SRCS:%.cpp=$(BIN_DIR)%.o)
+CXX_OBJS = $(CXX_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
+TEST_OBJS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
 
 #-----------------------------------------------------------------------
 # program files
-TEST_PROGS = $(TEST_SRCS:%.cpp=$(BIN_DIR)%)
+TEST_PROGS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%)
 
 #-----------------------------------------------------------------------
 # Targets
-#
 .PHONY: all obj progs
-all: obj progs
+all: progs
 
-obj: $(CXX_OBJS) $(CXX_SRCS) $(TEST_SRCS)
-progs: $(TEST_PROGS)
+progs: obj $(TEST_PROGS)
+obj: $(CXX_OBJS) $(TEST_OBJS)
 
 #-----------------------------------------------------------------------
 # Objects compilation rules
-#
-$(BIN_DIR)%.o: %.cpp 
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
+$(TEST_BIN_DIR)%.o: %.cpp 
+	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS) -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $(STK_PROJECT_FLAGS) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # program compilation rules
-#
-$(BIN_DIR)test%: $(BIN_DIR)test%.o test%.cpp $(CXX_LIB) makefile
-	$(CXX)  $< $(LDFLAGS) $(CXX_OBJS) $(CXX_LIB) $(LDLIBS) -o $@ 
+$(TEST_BIN_DIR)test%:  $(CXX_OBJS) $(TEST_BIN_DIR)test%.o
+	$(CXX) $^ $(TEST_STKPP_LIB) $(LDFLAGS) $(LDLIBS) -o $@ 
 
 #-----------------------------------------------------------------------
 # clean test programs 
 .PHONY: clean
 clean:
-	$(RM) $(BIN_DIR)test*
-
+	$(RM) $(TEST_PROGS) $(CXX_OBJS) $(TEST_OBJS)

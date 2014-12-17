@@ -1,0 +1,1 @@
+/home/iovleff/Developpement/workspace/stkpp/projects/STKernel/include/STK_Functors.h:69: warning: documented symbol `typedef STK::hidden::FunctorParamTraits< Functor, NbParam_ >::If< Functor::NbParam_ >' was not declared or defined.

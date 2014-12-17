@@ -4,8 +4,8 @@ FILE( GLOB Clustering_files
   include/*.h
   )
 
-INCLUDE_DIRECTORIES("..")
+include_directories("..")
 
 # Add Clustering files to STKClustering library
-ADD_LIBRARY(STKClustering OBJECT ${Clustering_files})
+add_library(STKClustering OBJECT ${Clustering_files})
 

@@ -43,16 +43,16 @@ int main(int argc, char *argv[])
   stk_cout << _T("\n\n");
 
   // first test
-  Matrix A(11,3);
+  ArrayXX A(11,3);
   RandBase ran;
   // simulate 1D manifold
   stk_cout << _T("Test heapSort method with with 11 rows and 3 column\n");
-  for (int i=A.firstIdxRows(); i<=A.lastIdxRows(); i++)
+  for (int i=A.beginRows(); i<=A.lastIdxRows(); i++)
   {
-	for (int j=A.firstIdxCols(); j<= A.lastIdxCols(); j++ )
+	for (int j=A.beginCols(); j<= A.lastIdxCols(); j++ )
       A(i, j) = ran.randGauss();
   }
-  int iCol =A.firstIdxCols();
+  int iCol =A.beginCols();
   stk_cout << _T("A=\n") << A << _T("\n");
   stk_cout << _T("Test heapSort() of the first column\n");
   Vector A1(A.col(iCol), true);
@@ -79,9 +79,9 @@ int main(int argc, char *argv[])
   stk_cout << _T("Test heapSort method with indexes, sort the column 1\n");
   A.resize(10, 2);
   Vector Ab1(A.col(1), true);
-  for (int i=A.firstIdxRows(); i<=A.lastIdxRows(); i++)
+  for (int i=A.beginRows(); i<=A.lastIdxRows(); i++)
   {
-	for (int j=A.firstIdxCols(); j<= A.lastIdxCols(); j++ )
+	for (int j=A.beginCols(); j<= A.lastIdxCols(); j++ )
       A(i, j) = ran.randGauss();
   }
   stk_cout << _T("A=\n") << A << _T("\n");

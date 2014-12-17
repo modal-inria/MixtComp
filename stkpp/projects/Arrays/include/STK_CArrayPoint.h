@@ -35,27 +35,29 @@
 #ifndef STK_CARRAY2DPOINT_H
 #define STK_CARRAY2DPOINT_H
 
-#include "STKernel/include/STK_Constants.h"
-
 #include "STK_ICArray.h"
 
 namespace STK
 {
+// forward declaration
 template< typename Type, int SizeCols_=UnknownSize, bool Orient_ = Arrays::by_row_>
 class CArrayPoint;
 
-template< typename Type, int SizeRows_, int SizeCols_, bool Orient_>
-class CArray;
-template< typename Type, int Size_, bool Orient_>
-class CArraySquare;
-template< typename Type, int SizeRows_, bool Orient_>
-class CArrayVector;
-template< typename Type, int SizeRows_, int SizeCols_, bool Orient_>
-class CArrayNumber;
+template< typename Type, int SizeRows_, int SizeCols_, bool Orient_> class CArray;
+template< typename Type, int Size_, bool Orient_> class CArraySquare;
+template< typename Type, int SizeRows_, bool Orient_> class CArrayVector;
+template< typename Type, int SizeRows_, int SizeCols_, bool Orient_> class CArrayNumber;
 
+// typedef for CArrayVector Real is by default double, but can be float
 typedef CArrayPoint<Real, UnknownSize, Arrays::by_row_>   CPointX;
 typedef CArrayPoint<Real, 2, Arrays::by_row_>             CPoint2;
 typedef CArrayPoint<Real, 3, Arrays::by_row_>             CPoint3;
+typedef CArrayPoint<double, UnknownSize, Arrays::by_row_> CPointXd;
+typedef CArrayPoint<double, 2, Arrays::by_row_>           CPoint2d;
+typedef CArrayPoint<double, 3, Arrays::by_row_>           CPoint3d;
+typedef CArrayPoint<int, UnknownSize, Arrays::by_row_>    CPointXi;
+typedef CArrayPoint<int, 2, Arrays::by_row_>              CPoint2i;
+typedef CArrayPoint<int, 3, Arrays::by_row_>              CPoint3i;
 
 namespace hidden
 {
@@ -115,40 +117,43 @@ class CArrayPoint : public ICArray < CArrayPoint<Type, SizeCols_, Orient_> >
     };
 
     /** Default constructor. */
-    inline CArrayPoint() : Base() {}
+    inline CArrayPoint(): Base() {}
     /** constructor with specified dimension.
      *  @param sizeCols range of the columns
      **/
-    inline CArrayPoint( int const& sizeCols) : Base(1, sizeCols) {}
+    inline CArrayPoint( int const& sizeCols): Base(1, sizeCols) {}
     /** constructor with rbeg, rend, cbeg and cend specified,
      *  initialization with a constant.
      *  @param sizeCols range of the columns
      *  @param v initial value of the container
      **/
-    inline CArrayPoint( int const& sizeCols, Type const& v) : Base(1, sizeCols, v) {}
+    inline CArrayPoint( int const& sizeCols, Type const& v): Base(1, sizeCols, v) {}
     /** Copy constructor
      *  @param T the container to copy
      *  @param ref true if T is wrapped
      **/
-    inline CArrayPoint( const CArrayPoint &T, bool ref=false) : Base(T, ref) {}
+    inline CArrayPoint( const CArrayPoint &T, bool ref=false): Base(T, ref) {}
     /** wrapper constructor for 0 based C-Array.
      *  @param q pointer on the array
      *  @param nbCol number of columns
      **/
-    inline CArrayPoint( Type* const& q, int nbCol): Base(q, 1, nbCol)
-    {}
-
+    inline CArrayPoint( Type* const& q, int nbCol): Base(q, 1, nbCol) {}
     /** constructor by reference.
      *  @param allocator the allocator to wrap
      **/
     template<class OtherAllocator>
-    inline CArrayPoint( OtherAllocator const& allocator) : Base(allocator) {}
+    inline CArrayPoint( CAllocatorBase<OtherAllocator> const& allocator): Base(allocator.asDerived()) {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    CArrayPoint( ExprBase<OtherDerived> const& T): Base() { LowBase::operator=(T);}
     /** destructor. */
     inline ~CArrayPoint() {}
     /** operator= : set the container to a constant value.
      *  @param v the value to set
      **/
-    inline CArrayPoint& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline CArrayPoint& operator=(Type const& v) { return LowBase::setValue(v);}
     /** operator = : overwrite the CArray with the Right hand side T.
      *  @param T the container to copy
      **/

@@ -25,6 +25,8 @@
 #define MIXT_CATEGORICALDATASTAT_H
 
 #include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DPoint.h"
+#include "Arrays/include/STK_Array2DVector.h"
 #include "Eigen/Dense"
 #include "mixt_AugmentedData.h"
 

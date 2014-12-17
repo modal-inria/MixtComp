@@ -35,15 +35,7 @@
 #ifndef STK_IPAGE_H
 #define STK_IPAGE_H
 
-// C++ headers
 #include <vector>
-#include <string>
-
-// STK+ headers
-#include "STKernel/include/STK_Integer.h"
-#include "STKernel/include/STK_Real.h"
-#include "STKernel/include/STK_String.h"
-#include "STKernel/include/STK_Stream.h"
 
 #include "STK_Option.h"
 
@@ -135,6 +127,10 @@ class IPage
      *  @return the container with the options
      **/
     inline ContOption const& options() const { return options_;};
+    /** @brief name of the IPage.
+     *  @return the name of the IPage
+     */
+    inline String const& msg_error() const { return msg_error_;}
 
     /** @brief bookkeeping function. Find an Option given its name
      *  @param name name of the Option to find

@@ -36,192 +36,102 @@
 
 using namespace STK;
 
+template<typename Type>
+int testTypedStream(String const& s1, String const& s2, String const& str)
+{
+  istringstream is(s1+STRING_BLANK+stringNa+STRING_BLANK+s2);
+  stk_cout << _T("Testing type: ") << str << _T("\n");
+  stk_cout << _T("With string: ") <<is.str() << _T("\n");
+  Type x, y, z;
+  int flag1 = !(is >> Proxy<Type>(x) >> Proxy<Type>(y) >> Proxy<Type>(z)).fail();
+  String sx, sy, sz;
+  sx = typeToString(x);
+  sy = typeToString(y);
+  sz = typeToString(z);
+  int flag2 = ((stringToType<Type>(sx)==stringToType<Type>(s1))
+             &&(sy==stringNa)
+             &&(stringToType<Type>(sz)==stringToType<Type>(s2)));
+  stk_cout << _T("Get: sx =") <<sx << _T(", sy =") << sy << _T(", sz =") << sz << _T("\n");
+  stk_cout << _T("flag1 =")<< flag1 << _T(", flag2 =") << flag2 << _T("\n\n");
+  return (flag1&&flag2);
+}
+template<typename Type>
+void testNaValues(String const& str)
+{
+  stk_cout << _T("-----------------\nTesting type = ") << str << _T("\n");
+  Type x;
+  stk_cout << _T("stringToType(x, stringNa) = ") << stringToType(x, stringNa) << _T("\n");
+  stk_cout << _T("x =")             << Proxy<Type>(x) << _T("\n");
+  stk_cout << _T("isNA(x) =")       << STK::Arithmetic<Type>::isNA(x) << _T("\n");
+  stk_cout << _T("isFinite(c) =") << STK::Arithmetic<Type>::isFinite(x) << _T("\n");
+  stk_cout << _T("isInfinite(c) =") << STK::Arithmetic<Type>::isInfinite(x) << _T("\n");
+}
+template<typename Type>
+void testStringToType(String const& str)
+{
+  stk_cout << _T("Test with string =====") << str << _T("=====\n");
+  Type res = stringToType<Type>(str);
+  stk_cout << _T("result =") << Proxy<Type>(res) << _T("\n");
+}
 
-/* main.                                                              */
+/* main. */
 int main(int argc, char *argv[])
 {
+  int count = 0;
   try
   {
     stk_cout << _T("\n\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("+ Test STK::Base                                      +\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("\n\n");
+    stk_cout << _T("+ Test Real Type                                      +\n");
+    String s1(_T("3.14")), s2(_T("0.01"));
+    count -= testTypedStream<Real>(s1, s2, _T("Real"));
+    s1 = _T("-.14"); s2= _T("0.01");
+    count -= testTypedStream<Real>(s1, s2, _T("Real"));
+    testStringToType<Real>(stringNa);
+    testStringToType<Real>(" "+ stringNa);
+    testStringToType<Real>(" "+ stringNa + " ");
+    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    stk_cout << _T("+ Test Integer Type                                   +\n");
+    s1 = _T("-2"); s2 = _T("101");
+    count -= testTypedStream<Integer>(s1, s2, _T("Integer"));
+    s1 = _T("-.2"); s2 = _T("101");
+    count -= testTypedStream<Integer>(s1, s2, _T("Integer"));
+    testStringToType<Real>(stringNa);
+    testStringToType<Real>(" "+ stringNa);
+    testStringToType<Real>(" "+ stringNa + " ");
+    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    stk_cout << _T("+ Test Binary Type                                    +\n");
+    s1 = _T("1"); s2 = _T("0");
+    count -= testTypedStream<Binary>(s1, s2, _T("Binary"));
+    s1 = _T("-1"); s2 = _T("0");
+    count -= testTypedStream<Binary>(s1, s2, _T("Binary"));
+    testStringToType<Real>(stringNa);
+    testStringToType<Real>(" "+ stringNa);
+    testStringToType<Real>(" "+ stringNa + " ");
+    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    stk_cout << _T("+ Test Sign Type                                      +\n");
+    s1 = _T("1"); s2 = _T("-1");
+    count -= testTypedStream<Sign>(s1, s2, _T("Sign"));
+    s1 = _T("1"); s2 = _T("0");
+    count -= testTypedStream<Sign>(s1, s2, _T("Sign"));
 
-    // first test
-    stk_cout << _T("Test: istringstream in(stringNa); Real x; in >> Proxy<Real>(x);\n");
-    istringstream in(stringNa);
-    Real x;
-    in >> Proxy<Real>(x);
-    stk_cout << _T("x =")              << Proxy<Real>(x) << _T("\n");
-    stk_cout << _T("isNA(x) =")       << STK::Arithmetic<Real>::isNA(x) << _T("\n");
-    stk_cout << _T("isInfinite(x) =") << STK::Arithmetic<Real>::isInfinite(x) << _T("\n\n");
+    stk_cout << _T("\nNumber of failure=") << count;
 
-    stk_cout << _T(" Test: x = Arithmetic<Real>::infinity();\n");
-    x = Arithmetic<Real>::infinity();
-    stk_cout << _T("x =")             << Proxy<Real>(x) << _T("\n");
-    stk_cout << _T("isNA(x) =")       << STK::Arithmetic<Real>::isNA(x) << _T("\n");
-    stk_cout << _T("isInfinite(x) =") << STK::Arithmetic<Real>::isInfinite(x) << _T("\n\n");
+
 
     // second test
     stk_cout << _T("\n\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("+ Testing all types:\n");
-    stk_cout << _T("Char c;\n");
-    stk_cout << _T("+++++++\n");
-    Char c;
-    stk_cout << _T("stringToType(c, stringNa) = ") << stringToType(c, stringNa) << _T("\n");
-    stk_cout << _T("c =")             << Proxy<Char>(c) << _T("\n");
-    stk_cout << _T("isNA(c) =")       << STK::Arithmetic<Char>::isNA(c) << _T("\n");
-    stk_cout << _T("isInfinite(c) =") << STK::Arithmetic<Char>::isInfinite(c) << _T("\n\n");
-
-    stk_cout << _T("String l;\n");
-    stk_cout << _T("+**++++++\n");
-    String l;
-    stk_cout << _T("stringToType(l, stringNa) = ") << stringToType(l, stringNa) << _T("\n");
-    stk_cout << _T("l =") << Proxy<String>(l) << _T("\n");
-    stk_cout << _T("isNA(l) =") << STK::Arithmetic<String>::isNA(l) << _T("\n");
-    stk_cout << _T("isInfinite(l) =") << STK::Arithmetic<String>::isInfinite(l) << _T("\n\n");
-
-    stk_cout << _T("Real r;\n");
-    Real r;
-    stk_cout << _T("stringToType(r, stringNa) = ")
-             << stringToType(r, stringNa)
-             << _T("\n");
-    stk_cout << _T("r =") << Proxy<Real>(r) << _T("\n");
-    stk_cout << _T("isNA(r) =")
-             << STK::Arithmetic<Real>::isNA(r)
-             << _T("\n");
-    stk_cout << _T("isInfinite(r) =")
-             << STK::Arithmetic<Real>::isInfinite(r)
-             << _T("\n");
-
-    stk_cout << _T("\n");
-    stk_cout << _T("int d;\n");
-    int d;
-    stk_cout << _T("stringToType(d, stringNa) = ") << stringToType(d, stringNa)<< _T("\n");
-    stk_cout << _T("d =") << Proxy<int> (d) << _T("\n");
-    stk_cout << _T("isNA(d) =")
-             << STK::Arithmetic<int> ::isNA(d)
-             << _T("\n");
-    stk_cout << _T("isInfinite(d) =")
-             << STK::Arithmetic<int> ::isInfinite(d)
-             << _T("\n");
-
-    stk_cout << _T("\n\n");
-    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("Testing Binary base type.\n");
-    Binary b;
-    String zero(_T("0")), one(_T("1")), two(_T("2")), three(_T("3"));
-    stk_cout << _T("stringToType(b,") << stringNa  <<_T(") = ") << stringToType(b, stringNa)<< _T("\n");
-    stk_cout << _T("b =") << Proxy<Binary>(b) << _T("\n");
-    stk_cout << _T("isNA(b) =") << STK::Arithmetic<Binary>::isNA(b) << _T("\n");
-    stk_cout << _T("isInfinite(b) =")<< STK::Arithmetic<Binary>::isInfinite(b) << _T("\n");
-    stk_cout << _T("stringToType(b,") << zero  <<_T(") = ") << stringToType(b, zero)<< _T("\n");
-    stk_cout << _T("b =") << Proxy<Binary>(b) << _T("\n");
-    stk_cout << _T("isNA(b) =") << STK::Arithmetic<Binary>::isNA(b) << _T("\n");
-    stk_cout << _T("isInfinite(b) =")<< STK::Arithmetic<Binary>::isInfinite(b) << _T("\n");
-    stk_cout << _T("stringToType(b,") << one  <<_T(") = ") << stringToType(b, one)<< _T("\n");
-    stk_cout << _T("b =") << Proxy<Binary>(b) << _T("\n");
-    stk_cout << _T("isNA(b) =") << STK::Arithmetic<Binary>::isNA(b) << _T("\n");
-    stk_cout << _T("isInfinite(b) =")<< STK::Arithmetic<Binary>::isInfinite(b) << _T("\n");
-    stk_cout << _T("stringToType(b,") << two  <<_T(") = ") << stringToType(b, two)<< _T("\n");
-    stk_cout << _T("b =") << Proxy<Binary>(b) << _T("\n");
-    stk_cout << _T("isNA(b) =") << STK::Arithmetic<Binary>::isNA(b) << _T("\n");
-    stk_cout << _T("isInfinite(b) =")<< STK::Arithmetic<Binary>::isInfinite(b) << _T("\n");
-    stk_cout << _T("stringToType(b,") << three  <<_T(") = ") << stringToType(b, three)<< _T("\n");
-    stk_cout << _T("b =") << Proxy<Binary>(b) << _T("\n");
-    stk_cout << _T("isNA(b) =") << STK::Arithmetic<Binary>::isNA(b) << _T("\n");
-    stk_cout << _T("isInfinite(b) =")<< STK::Arithmetic<Binary>::isInfinite(b) << _T("\n");
-
-    stk_cout << _T("\n\n");
-    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    stk_cout << _T("Testing Sign base type.\n");
-    Sign s;
-    stk_cout << _T("stringToType(s, stringNa) = ")
-    << stringToType(s, stringNa)<< _T("\n");
-    stk_cout << _T("s =") << Proxy<Sign>(s) << _T("\n");
-    stk_cout << _T("isNA(s) =")
-              << STK::Arithmetic<Sign>::isNA(s) << _T("\n");
-    stk_cout << _T("isInfinite(s) =")
-             << STK::Arithmetic<Sign>::isInfinite(s) << _T("\n");
-
-    // third test
-    stk_cout << _T("\n\n");
-    stk_cout << _T("Testing all types:\n");
-    stk_cout << _T("String pi = 3.14159;\n");
-    String pi = _T("3.14159");
-    stk_cout << _T("Char c;\n");
-    stk_cout << _T("stringToType(c, l) = ")
-    << stringToType(c, pi)<< _T("\n");
-    stk_cout << _T("c =") << Proxy<Char>(c) << _T("\n");
-    stk_cout << _T("isNA(c) =")
-             << STK::Arithmetic<Char>::isNA(c) << _T("\n");
-    stk_cout << _T("isInfinite(c) =")
-             << STK::Arithmetic<Char>::isInfinite(c)
-             << _T("\n");
-
-    stk_cout << _T("\n");
-    stk_cout << _T("String l;\n");
-    stk_cout << _T("stringToType(l, pi) = ")
-    << stringToType(l, pi)<< _T("\n");
-    stk_cout << _T("l =") << Proxy<String>(l) << _T("\n");
-    stk_cout << _T("isNA(l) =")
-             << STK::Arithmetic<String>::isNA(l)
-             << _T("\n");
-    stk_cout << _T("isInfinite(l) =")
-             << STK::Arithmetic<String>::isInfinite(l) << _T("\n");
-
-    stk_cout << _T("\n");
-    stk_cout << _T("Real r;\n");
-    stk_cout << _T("stringToType(r, pi) = ")
-    << stringToType(r, pi)<< _T("\n");
-    stk_cout << _T("r =") << Proxy<Real>(r) << _T("\n");
-    stk_cout << _T("isNA(r) =")
-             << STK::Arithmetic<Real>::isNA(r) << _T("\n");
-    stk_cout << _T("isInfinite(r) =")
-             << STK::Arithmetic<Real>::isInfinite(r)
-             << _T("\n");
-
-    stk_cout << _T("\n");
-    stk_cout << _T("int d;\n");
-    stk_cout << _T("stringToType(d, pi) = ")
-    << stringToType(d, pi)<< _T("\n");
-    stk_cout << _T("d =") << Proxy<int> (d) << _T("\n");
-    stk_cout << _T("isNA(d) =")
-             << STK::Arithmetic<int> ::isNA(d)
-             << _T("\n");
-    stk_cout << _T("isInfinite(d) =")
-             << STK::Arithmetic<int> ::isInfinite(d)
-             << _T("\n");
-
-    stk_cout << _T("\n");
-    stk_cout << _T("Binary b;\n");
-    stk_cout << _T("stringToType(b, pi) = ")
-    << stringToType(b, pi)<< _T("\n");
-    stk_cout << _T("b =") << Proxy<Binary>(b) << _T("\n");
-    stk_cout << _T("isNA(b) =")
-              << STK::Arithmetic<Binary>::isNA(b) << _T("\n");
-    stk_cout << _T("isInfinite(b) =")
-              << STK::Arithmetic<Binary>::isInfinite(b) << _T("\n");
-
-    stk_cout << _T("\n");
-    stk_cout << _T("Sign s;\n");
-    stk_cout << _T("stringToType(s, pi) = ")
-    << stringToType(s, pi)<< _T("\n");
-    stk_cout << _T("s =") << Proxy<Sign>(s) << _T("\n");
-    stk_cout << _T("isNA(s) =")
-              << STK::Arithmetic<Sign>::isNA(s) << _T("\n");
-    stk_cout << _T("isInfinite(s) =")
-              << STK::Arithmetic<Sign>::isInfinite(s) << _T("\n");
-
-    // fourth test
-    stk_cout << _T("\n\n");
-    stk_cout << _T("Testing Real:\n");
-    stk_cout << _T("Real pireal = 3.14159;\n");
-    Real pireal = 3.14159;
-    stk_cout << _T("typeToString(pireal) = ")
-    << typeToString(pireal)<< _T("\n");
+    stk_cout << _T("+ Testing NA values for all types:\n");
+    testNaValues<Char>(_T("Char"));
+    testNaValues<String>(_T("String"));
+    testNaValues<Real>(_T("Real"));
+    testNaValues<Integer>(_T("Integer"));
+    testNaValues<Binary>(_T("Binary"));
+    testNaValues<Sign>(_T("Sign"));
+    testNaValues<Range>(_T("Range"));
 
     // fourth test
     stk_cout << _T("\n\n");

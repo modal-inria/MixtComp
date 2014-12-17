@@ -34,8 +34,7 @@
  *  @brief This file include all the header files of the project Reduct.
  **/
 
-/**
- * @defgroup Reduct Dimension Reduction.
+/** @defgroup Reduct Dimension Reduction.
  * @brief The project Reduct propose a set of classes for computing dimension
  * Reduction (or feature extraction) of a data set.
  *
@@ -61,6 +60,12 @@
  * (which uses diffusion distances in the data space), t-SNE (which minimizes
  * the divergence between distributions over pairs of points), and curvilinear
  * component analysis.
+ **/
+
+/**  @ingroup Reduct
+ * @namespace STK::Reduct
+ * @brief This namespace encloses all variables and constant specific to the
+ * Reduct project.
  **/
 
 

@@ -30,7 +30,7 @@ class ContigPage: public STK::IPage
     /** @return the file name with the project data */
     inline STK::String const& graphFileName() const { return graphFileName_;}
     /** @return the file name with the project data */
-    inline int const& dimension() const { return dim_;}
+    inline int dimension() const { return dim_;}
     /** validate the options. */
     virtual bool validate();
     /*The clone method must always be reimplemented */

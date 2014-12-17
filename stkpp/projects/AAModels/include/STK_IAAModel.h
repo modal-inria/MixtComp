@@ -36,7 +36,9 @@
 #ifndef STK_IAAMODEL_H
 #define STK_IAAMODEL_H
 
-#include "Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DPoint.h"
+#include "Arrays/include/STK_Array2DVector.h"
 
 namespace STK
 {
@@ -64,17 +66,17 @@ class IAAModel
 {
   private:
     /** regression type for the AAModels */
-    typedef IRegression<Matrix, Matrix, Vector > Regressor;
+    typedef IRegression<ArrayXX, ArrayXX, Vector > Regressor;
 
   protected:
     /** Constructor.
      *  @param p_workData A pointer on the the working data set
      **/
-    IAAModel( Matrix* p_workData);
+    IAAModel( ArrayXX* p_workData);
     /** Constructor.
      *  @param workData the working data set
      **/
-    IAAModel( Matrix& workData);
+    IAAModel( ArrayXX& workData);
     /** destructor. It is protected in order to prevent the use of this class.
      *  use @c GaussianAAModel decorator instead.
      **/
@@ -84,7 +86,7 @@ class IAAModel
     /** get the working data set
      *  @return the working data set
      **/
-    inline Matrix const& workData() const { return *p_workData_;}
+    inline ArrayXX const& workData() const { return *p_workData_;}
     /** Get the reductor used for the computation of the reduced data
      *  @return a reference on the Index object
      **/
@@ -96,19 +98,19 @@ class IAAModel
     /** get the reduced data set
      * @return the reduced data set
      **/
-    inline Matrix*  const& p_reduced() const { return p_reduced_;}
+    inline ArrayXX* const& p_reduced() const { return p_reduced_;}
     /** get the matrix of the predicted values
      * @return A ptr on the predicted values
      **/
-    inline Matrix*  const& p_predicted() const { return p_predicted_;}
+    inline ArrayXX* const& p_predicted() const { return p_predicted_;}
     /** get the matrix of the residuals
      * @return A ptr on the residual covariance
      **/
-    inline Matrix* const& p_residuals() const { return p_residuals_;}
+    inline ArrayXX* const& p_residuals() const { return p_residuals_;}
     /** get the dimension of the model
      * @return the dimension of the model
      **/
-    inline int const& dim() const { return dim_;}
+    inline int dim() const { return dim_;}
 
     /** is the data set centered ?
      * @return @c true if the data set is centered, @c false otherwise
@@ -122,11 +124,11 @@ class IAAModel
     /** get the mean of the data set
      * @return the mean of the data set
      */
-    inline Point const& mean() const { return mean_;}
+    inline PointX const& mean() const { return mean_;}
     /** get the standard deviation of the data set
      * @return the standard deviation of the data set
      */
-    inline Point const& std() const { return std_;}
+    inline PointX const& std() const { return std_;}
     /** set the dimension of the model.
      * @param dim the dimension of the model to set
      */
@@ -134,7 +136,7 @@ class IAAModel
     /** set the working set with the Data to treat.
      * @param workData the working data set to treat
      */
-    void setWorkData( Matrix& workData);
+    void setWorkData( ArrayXX& workData);
     /** set the reduction dimension method.
      * @param p_reductor a pointer on the reduction dimension method to use
      */
@@ -172,7 +174,7 @@ class IAAModel
     void reduction( Vector const& weights);
     /** compute the regression of the original data set and set the results in
      *  @c p_predicted and @c p_residuals. **/
-    void regression();
+    void regressionStep();
     /** compute the weighted regression  of the original data set using the
      *  reduced data set as predictor and set the results in @c p_predicted and
      *  @c p_residuals.
@@ -196,27 +198,27 @@ class IAAModel
      **/
     IReduct* p_reductor_;
 
-    /** Matrix of the local data set. */
-    Matrix* p_workData_;
-    /** Matrix of the reduced data set : the data set is shared with
+    /** Array of the local data set. */
+    ArrayXX* p_workData_;
+    /** Array of the reduced data set : the data set is shared with
      * @c p_reductor and set when the @c regression method is call.
      **/
-    Matrix* p_reduced_;
-    /** Matrix of the predicted data set: the data set is shared with
+    ArrayXX* p_reduced_;
+    /** Array of the predicted data set: the data set is shared with
      * @c p_regressor and set when the @c regression method is call. **/
-    Matrix* p_predicted_;
-    /** Matrix of the residuals: the data set is shared with @c p_regressor
+    ArrayXX* p_predicted_;
+    /** Array of the residuals: the data set is shared with @c p_regressor
      * and set when the @c regression method is call.
      **/
-    Matrix* p_residuals_;
+    ArrayXX* p_residuals_;
 
   private:
     /** The dimension of the AA Model. */
     int dim_;
     /** vector of the means of the input data set. */
-    Point mean_;
+    PointX mean_;
     /** vector of the standard deviation of the input data set. */
-    Point std_;
+    PointX std_;
     /** a boolean @c true if the working data set is centered, @c false
      *  otherwise. */
     bool isCentered_;

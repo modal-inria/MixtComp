@@ -68,8 +68,8 @@ namespace Funct
 
 /** @ingroup Analysis
  *  @brief Compute the function:
- *  B(a,b,x,y) = \frac{ x^{a} (1-x)^{b}}{B(a,b)}
- *  using  (a+b) * (p*log(x/p)+q*log(y/q))
+ *  \f[ B(a,b,x,y) = \frac{ x^{a} (1-x)^{b}}{B(a,b)} \f]
+ *  using  \f$ (a+b) * (p*log(x/p)+q*log(y/q)) \f$
  */
 static Real dbinom(Real const& a, Real const& b, Real const& x, bool xm1)
 {
@@ -198,6 +198,7 @@ Real betaRatio_ae( Real const& a, Real const& b, Real const& x
  *  @param a first parameter, must be >0
  *  @param b second parameter, must be >0
  *  @param x value to evaluate the function
+ *  @param xm1 @c true if we want to compute the function at 1-x
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  *  @return the value of the beta ratio function using its series representation
  **/
@@ -271,13 +272,6 @@ static Real serie_up( Real const& a, Real const& b, Real x, bool xm1, int n)
   }
   // return result
   return dbinom(a+l, b, x, xm1) *(sum2/a0 + sum1);
-
-//  stk_cout << _T("bt =") << dbinom(a, b, x, xm1) << _T(" serie =") << sum/a << " res =" << dbinom(a, b, x, xm1)*sum/a<< "\n";
-//  stk_cout << _T("n =") << n << _T(", l =") << l << "\n";
-//  Real sum = 1.;
-//  for (int k=n-2; k>=0; --k)  { sum = 1. + sum *x0*(s+k)/(a+k+1);}
-//  stk_cout << _T("bt_l =") << dbinom(a+l, b, x, xm1) << _T(" serie_l =") << (sum2/a0 + sum1) << " res=" << dbinom(a+l, b, x, xm1) *(sum2/a0 + sum1)<< "\n";
-//  return dbinom(a, b, x, xm1) *sum/a;
 }
 
 /** @ingroup Analysis

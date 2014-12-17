@@ -29,7 +29,7 @@ Configure options
    ./configure -DCMAKE_BUILD_TYPE=Debug
 
  * stkpp options:
-   ./configure -DZERO_BASED_ARRAYS=OFF : the first index of the arrays will not start at 0 (the default)
+   ./configure -DZERO_BASED_ARRAYS=OFF : the first index of the arrays will start at 1 (0 is the default)
    ./configure -DREAL_ARE_FLOAT=ON : will use float rather than double as real representation
 
 example: build a Release version with 1 based Arrays
@@ -53,10 +53,8 @@ check the macros in the file:
 
 In particular:
  * If you don't have the Rmath library installed on your computer, set HASRMATH = f
+ * If you have lapack installed on your system, set STK_CXXFLAGS += -DSTKUSELAPACK
  
- * If your make is not called "make", set the environment variable MAKE to
-     its name, and use that name throughout these instructions.
-
 
 Issue the following command
 ---------------------------
@@ -64,13 +62,12 @@ Issue the following command
 	make all
 	
 You will get a the static library libSTKpp.a in the lib/ directory. This library
-can be linked with your own application. Take care that "make" alone will call
-the cmake builder.
+can be linked with your own application.
 
 if you want to make the test programs, issue the following command:
 -------------------------------------------------------------------
 
-make alltests
+make all_tests
 
 if you want to make the manual, issue the following command:
 ------------------------------------------------------------
@@ -82,17 +79,35 @@ The documentation can be browse in the directory doc/html.
 Linking to stkpp:
 -----------------
 
-The directory lib/ contain the library libSTKpp. You can also include
+The directory lib/ contain the library libSTKpp.a. You can also include
 all the headers using the directive
 #include "stkpp/include/STKpp.h"
 
 You can also, at your convenience, add only the headers of the projects you
 need to use.
 
-Allmost of the class in STK++ are templated thus, use the same macro in your
-project. In particular the flag -DSTKBASEARRAYS=1 if you disable the ZERO_BASE_ARRAY
-option and -DSTKREALAREFLOAT if you compile stk++ in float.
+Almost of the class in STK++ are templated thus, use the same macro in your
+project. In particular use the flag -DSTKBASEARRAYS=1 if you disable
+the ZERO_BASE_ARRAY option and -DSTKREALAREFLOAT if you compile stk++ in float.
 
+In order to compile properly your application with stk++, you also will have to
+give the path of the stkpp/projects directory. Here is an example, assuming the
+stkpp main directory is two levels up:
+
+#############################################################
+# part of a makefile compiling target using stk++ library
+include ../../stkpp/makevars
+
+STKPP_DIR = ../../stkpp/
+STKPP_LIB = ../../stkpp/lib/libSTKpp.a
+STKPP_INC = $(STKPP_DIR)include/
+STKPP_PROJECTS = $(STKPP_DIR)projects/
+
+target.o: target.cpp 
+  $(CXX) $(CXXFLAGS) $(STK_CXXFLAGS) -I$(STKPP_INC) -I$(STKPP_PROJECTS) $< -c -o $@
+target: target.o
+  $(CXX)  $< $(LDFLAGS) $(CXX_OBJS) $(STKPP_LIB) $(LDLIBS) -o $@ 
+##############################################################
  
 == PREREQUISITIES ==
 

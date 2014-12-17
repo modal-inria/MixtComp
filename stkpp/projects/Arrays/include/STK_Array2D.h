@@ -34,18 +34,22 @@
 #ifndef STK_ARRAY2D_H
 #define STK_ARRAY2D_H
 
-#include "STK_Array2DVector.h"
-#include "STK_Array2DPoint.h"
+#include "STK_IArray2D.h"
 
 namespace STK
 {
-template<typename> class Array2D;
+// forward declaration
+template< typename Type> class Array2D;
+template< typename Type> class Array2DPoint;
+template< typename Type> class Array2DVector;
+
 /** @ingroup Arrays
   * @brief Specialization of the Array2D class for Real values.
-  *
-  * A Matrix is a column oriented 2D container of Real.
+  * An Array is a column oriented 2D container of Real.
  **/
-typedef Array2D<Real> Matrix;
+typedef Array2D<Real>   ArrayXX;
+typedef Array2D<double> ArrayXXd;
+typedef Array2D<int>    ArrayXXi;
 
 
 namespace hidden
@@ -126,71 +130,71 @@ class Array2D : public IArray2D< Array2D<Type> >
     /** Default constructor */
     Array2D() : Base() {}
     /** constructor
-     *  @param I range of the Rows
-     *  @param J range of the Cols
+     *  @param I,J range of the rows and columns
      **/
     Array2D( Range const& I, Range const& J) : Base(I, J) {}
     /** constructor with rbeg, rend, cbeg and cend specified,
      *  initialization with a constant.
-     *  @param I range of the Rows
-     *  @param J range of the Cols
+     *  @param I,J range of the rows and columns
      *  @param v initial value of the container
      **/
     Array2D( Range const& I, Range const& J, Type const& v) : Base(I, J)
-    { this->setValue(v);}
+    { LowBase::setValue(v);}
     /** Copy constructor
      *  @param T the container to copy
      *  @param ref true if T is wrapped
      **/
-    Array2D( const Array2D &T, bool ref=false) : Base(T, ref) {}
-    /** constructor by reference, ref_=1.
+    Array2D( Array2D const& T, bool ref=false) : Base(T, ref) {}
+    /** Copy constructor by reference, ref_=1.
      *  @param T the container to wrap
-     *  @param I range of the Rows to wrap
-     *  @param J range of the Cols to wrap
+     *  @param I,J range of the rows and columns to wrap
      **/
     template<class OtherArray>
     Array2D( IArray2D<OtherArray> const& T, Range const& I, Range const& J)
            : Base(T, I, J) {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    Array2D( ExprBase<OtherDerived> const& T): Base()
+    { LowBase::operator=(T);}
     /** Wrapper constructor Contruct a reference container.
      *  @param q pointer on the data
-     *  @param I range of the  Rows to wrap
-     *  @param J range of the Cols to wrap
+     *  @param I,J range of the rows and columns to wrap
      **/
     Array2D( Type** q, Range const& I, Range const& J) : Base(q, I, J) {}
     /** destructor. */
-    ~Array2D() {}
-    /** operator = : overwrite the CArray with the Right hand side T.
+    inline ~Array2D() {}
+    /** operator = : overwrite the Array2D with the right hand side T.
      *  @param T the container to copy
      **/
     template<class Rhs>
-    inline Array2D& operator=(Rhs const& T) { return LowBase::operator=(T);}
+    inline Array2D& operator=( Rhs const& T) { return LowBase::operator=(T);}
     /** overwrite the Array2D with T.
      *  @param T the container to copy
      **/
-    inline Array2D& operator=(const Array2D &T) { return LowBase::assign(T);}
+    inline Array2D& operator=( Array2D const& T) { return LowBase::assign(T);}
     /** set the container to a constant value.
      *  @param v the value to set
      **/
-    inline Array2D& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline Array2D& operator=( Type const& v) { return LowBase::setValue(v);}
     /** Swapping the pos1 row and the pos2 row.
-     *  @param pos1 position of the first row
-     *  @param pos2 position of the second row
+     *  @param pos1,pos2 position of the rows to swap
      **/
     void swapRows( int const& pos1, int const& pos2)
     {
 #ifdef STK_BOUNDS_CHECK
       // check conditions
-      if (this->firstIdxRows() > pos1)
-      STKOUT_OF_RANGE_2ARG(Array2D::swapRows,pos1, pos2,firstIdxRows()>pos1);
-      if (this->lastIdxRows() < pos1)
-      STKOUT_OF_RANGE_2ARG(Array2D::swapRows,pos1, pos2,lastIdxRows()<pos1);
-      if (this->firstIdxRows() > pos2)
-      STKOUT_OF_RANGE_2ARG(Array2D::swapRows,pos1, pos2,firstIdxRows()>pos2);
-      if (this->lastIdxRows() < pos2)
-      STKOUT_OF_RANGE_2ARG(Array2D::swapRows,pos1, pos2,lastIdxRows() < pos2);
+      if (this->beginRows() > pos1)
+      STKOUT_OF_RANGE_2ARG(Array2D::swapRows,pos1, pos2,beginRows()>pos1);
+      if (this->endRows() <= pos1)
+      STKOUT_OF_RANGE_2ARG(Array2D::swapRows,pos1, pos2,endRows()<=pos1);
+      if (this->beginRows() > pos2)
+      STKOUT_OF_RANGE_2ARG(Array2D::swapRows,pos1, pos2,beginRows()>pos2);
+      if (this->endRows() <= pos2)
+      STKOUT_OF_RANGE_2ARG(Array2D::swapRows,pos1, pos2,endRows()<=pos2);
 #endif
-      // swap
-      for (int j=this->firstIdxCols(); j<=this->lastIdxCols(); j++)
+      for (int j=this->beginCols(); j<this->endCols(); j++)
       { std::swap(this->elt(pos1, j), this->elt(pos2, j));}
     }
 };

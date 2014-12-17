@@ -26,8 +26,9 @@
 #define MIXT_CATEGORICAL_PJK
 
 #include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_CArrayPoint.h"
+#include "Arrays/include/STK_Array2DVector.h"
 #include "Arrays/include/STK_CArrayVector.h"
+
 
 namespace mixt
 {

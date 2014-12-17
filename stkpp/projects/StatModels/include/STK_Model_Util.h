@@ -63,14 +63,14 @@ enum TypeCriterion
  *  @return the TypeCriterion represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_ type is returned.
  **/
-TypeCriterion StringToTypeCriterion( String const& type);
+TypeCriterion stringToTypeCriterion( String const& type);
 
 /** @ingroup StatModels
  *  convert a TypeCriterion to a String.
  *  @param type the type of criterion we want to convert
  *  @return the string associated to this type.
  **/
-String TypeCriterionToString( TypeCriterion const& type);
+String typeCriterionToString( TypeCriterion const& type);
 
 
 } // namespace Model

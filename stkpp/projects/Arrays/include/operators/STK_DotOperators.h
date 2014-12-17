@@ -105,7 +105,7 @@ class DotProduct : public ExprBase< DotProduct<Lhs, Rhs> >
     {
       if (lhs.cols() != rhs.rows())
       { STKRUNTIME_ERROR_NO_ARG(DotProduct, sizes mismatch for 2D array);}
-      result_.shift(lhs.firstIdxRows(), rhs.firstIdxCols());
+      result_.shift(lhs.beginRows(), rhs.beginCols());
       result_.elt() = lhs.dot(rhs);
     }
     /**  @return the range of the rows */

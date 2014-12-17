@@ -51,8 +51,13 @@
  *    <li> methods for sorting one dimensional containers and two-dimensionnal
  *    containers using one column as sorting key, </li>
  *    <li> classes for reading/writing options file. </li>
- *</ul>
- *
+ * </ul>
+ **/
+
+/** @ingroup DManager
+ *  @namespace STK::Import
+ *  @brief The import namespace contains the constants and global functions used
+ *  in the DManager project when importing data in STK containers.
  **/
 
 #ifndef DMANAGER_H

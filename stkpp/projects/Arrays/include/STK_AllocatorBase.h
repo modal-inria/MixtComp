@@ -46,7 +46,7 @@ namespace STK
 {
 
 /** @ingroup Arrays
- *  @brief Templated base class for all *Array* classes.
+ *  @brief Templated base class for all Allocator classes.
  *
  *  The AllocatorBase class is the base class of all Arrays
  *  stored in memory : it manages the main pointer on the data.
@@ -109,14 +109,16 @@ class AllocatorBase : public IContainerRef
     { /* derived class have to copy the data if ref==false */}
 
     /** destructor. */
-    ~AllocatorBase() { freeData(); }
+    ~AllocatorBase() { free(); }
 
     /** @return the first index of the data. */
-    inline int const& firstData() const { return rangeData_.firstIdx();}
+    inline int firstData() const { return rangeData_.begin();}
+    /**@return the ending index of the data */
+    inline int endData() const { return rangeData_.end();}
    /**@return the last index of the data */
-    inline int const& lastData() const { return rangeData_.lastIdx();}
+    inline int lastData() const { return rangeData_.lastIdx();}
     /** @return the size of the data */
-    inline int const& sizeData() const { return rangeData_.size();}
+    inline int sizeData() const { return rangeData_.size();}
     /** @return the range of the data*/
     inline Range const& rangeData() const { return rangeData_;}
     /** @return a pointer on the constant data set*/
@@ -174,10 +176,11 @@ class AllocatorBase : public IContainerRef
      **/
     inline AllocatorBase& copy( AllocatorBase const& T)
     {
-      // allocate memory
+      // allocate memory if necessary
       malloc(T.rangeData_);
+      setRangeData(T.rangeData_);
       // copy values
-      for (int pos= T.firstData(); pos <= T.lastData(); ++pos)
+      for (int pos= T.firstData(); pos < T.endData(); ++pos)
       { p_data_[pos] = T.p_data_[pos];}
       return *this;
     }
@@ -195,7 +198,7 @@ class AllocatorBase : public IContainerRef
     inline AllocatorBase& move( AllocatorBase const& T)
     {
       if (this == &T) return *this;
-      if (!this->isRef()) freeData();
+      if (!this->isRef()) free();
       setPtrData(T.p_data_, T.rangeData_, T.isRef());
       T.setRef(true);
       return *this;
@@ -217,19 +220,21 @@ class AllocatorBase : public IContainerRef
     }
     /** @brief main ptr memory allocation.
      *
-     *  if @code I.firstIdx() != 0 @endcode the allocated memory have to be
-     *  addressed using the formula @code p_data_[I.firstIdx()+i] @endcode.
+     *  @note if @code I.begin() != baseIdx @endcode the allocated memory
+     *  have to be addressed using the formula
+     *  @code p_data_[I.begin()+i] @endcode.
      *
      *  @param I range of the data allocated
      **/
     void malloc( Range const& I)
     {
       if ((this->rangeData() == I)&&(p_data_)&&(!this->isRef())) return;
+      // free any existing data
+      free();
       const int size = I.size();
       // check size
       if (size <= 0)
       {
-        freeData();
         setPtrData(0, I, false);
         this->setRef(false);
         return;
@@ -237,14 +242,12 @@ class AllocatorBase : public IContainerRef
       // allocate memory
       try
       {
-        // allocate memory
-        Type* p = new Type[size];
-        freeData(); // no error: free any allocated memory
-        setPtrData(p, Range(0, size-1, 0), false);
-        decPtrData(I.firstIdx());
+        setPtrData(new Type[size], Range(0, size), false);
+        decPtrData(I.begin());
       }
       catch (std::bad_alloc const& error)  // if an alloc error occur
       {
+        setDefault();
         STKRUNTIME_ERROR_1ARG(AllocatorBase::malloc, I, memory allocation failed);
       }
       this->setRef(false);
@@ -262,11 +265,11 @@ class AllocatorBase : public IContainerRef
     void realloc( Range const& I)
     {
       if ((this->rangeData() == I)&&(p_data_)&&(!this->isRef())) return;
-      const int size = I.size(), inc= I.firstIdx();
+      const int size = I.size(), inc= I.begin();
       // check size
       if (size <= 0)
       {
-        freeData();
+        free();
         setPtrData(0, I, false);
         return;
       }
@@ -276,11 +279,11 @@ class AllocatorBase : public IContainerRef
         Type* p  = new Type[size];
          p -= inc;
         // no error: copy data
-        const int firstData = std::max(rangeData_.firstIdx(), I.firstIdx())
+        const int firstData = std::max(rangeData_.begin(), I.begin())
                     , lastData  = std::min(rangeData_.lastIdx(), I.lastIdx());
         for (int i = firstData; i<=lastData; ++i) { p[i] = p_data_[i];}
         // liberate old memory
-        freeData();
+        free();
         // set default values
         setPtrData(p, I, false);
       }
@@ -290,7 +293,7 @@ class AllocatorBase : public IContainerRef
       }
     }
     /** function for main ptr memory deallocation. */
-    void freeData()
+    void free()
     {
       // nothing to do for ref
       if (this->isRef()) return;
@@ -344,7 +347,7 @@ class AllocatorBase : public IContainerRef
      **/
     inline void decPtrData( int const& dec)
     {
-      if (p_data_) { p_data_  -= dec;}
+      if (p_data_) { p_data_ -= dec;}
       rangeData_.inc(dec);
     }
   private:

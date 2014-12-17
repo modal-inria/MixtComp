@@ -37,10 +37,15 @@
 #ifndef STK_IGAUSSIANMODEL_H
 #define STK_IGAUSSIANMODEL_H
 
-#include "STK_StatisticalModel.h"
-#include "STatistiK/include/STK_Stat_MultivariateReal.h"
+#include "STK_IStatModel.h"
 
+#include "Arrays/include/STK_Array2D.h"
 #include "Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DVector.h"
+#include "Arrays/include/STK_Array2DPoint.h"
+
+#include "STatistiK/include/STK_Stat_Functors.h"
+
 
 namespace STK
 {
@@ -59,7 +64,7 @@ Real univariateGaussianLnLikelihood(Vector const& data, Real const& mu, Real con
  *  @param sigma the (diagonal) covairance matrix (only the diagonal is used)
  *  @return
  */
-Real diagonalGaussianLnLikelihood(Matrix const& data, Point const& mu, MatrixSquare const& sigma);
+Real diagonalGaussianLnLikelihood(ArrayXX const& data, Point const& mu, ArraySquareX const& sigma);
 
 /** @ingroup StatModels
  *  @brief Compute the the maximum likelihood estimates of a complete Gaussian
@@ -77,7 +82,7 @@ Real diagonalGaussianLnLikelihood(Matrix const& data, Point const& mu, MatrixSqu
  *               \exp\left(-\frac{1}{2} (X_i-\mu)^T \Sigma^{-1} (X_i-\mu)\right)
  * \f]
  *
- * The maximum likelihood estimator can be performed via matrix calculus formulae
+ * The maximum likelihood estimate can be performed via matrix calculus formulae
  * Re-write the likelihood in the log form using the trace trick:
  * \f[
  * \ln L(\mu,\Sigma) = \operatorname{const} -{n \over 2} \ln \det(\Sigma)
@@ -99,7 +104,7 @@ Real diagonalGaussianLnLikelihood(Matrix const& data, Point const& mu, MatrixSqu
  * \f[
  *  \sum_{i=1}^n (X_i - \mu) = 0,
  * \f]
- * which leads to the maximum likelihood estimator
+ * which leads to the maximum likelihood estimate
  * \f[
  *  \hat{\mu} = \bar{X} = \frac{1}{n} \sum_{i=1}^n X_i.
  * \f]
@@ -121,9 +126,9 @@ Real diagonalGaussianLnLikelihood(Matrix const& data, Point const& mu, MatrixSqu
  *  to impose various constraint on the covariance matrix.
  **/
 template <class Array>
-class IGaussianModel : public StatisticalModel<Array>
+class IGaussianModel : public IStatModel<Array>
 {
-  typedef StatisticalModel<Array> Base;
+  typedef IStatModel<Array> Base;
   typedef typename Array::Row RowVector;
   typedef typename Array::Col ColVector;
 

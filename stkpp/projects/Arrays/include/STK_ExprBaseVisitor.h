@@ -213,42 +213,81 @@ typename hidden::Traits<Derived>::Type const ExprBase<Derived>::normInf() const
 template<typename Derived>
 typename hidden::Traits<Derived>::Type const ExprBase<Derived>::mean() const
 { return (this->sizeArray() >0) ? sum()/Type(this->sizeArray()) : Arithmetic<Type>::NA();}
-/* sum the values of all the array */
+/* compute the variance  of all the array */
 template<typename Derived>
 typename hidden::Traits<Derived>::Type const ExprBase<Derived>::variance() const
-{ return (this->sizeArray() >0) ?
-   ((*this-mean()).square().sum()/Type(this->sizeArray())) : Arithmetic<Type>::NA();
+{ if (this->sizeArray()<=0) return Arithmetic<Type>::NA();
+  Type mu = mean();
+  return (*this-mu).square().sum()/Type(this->sizeArray());
 }
-
+/* compute the variance with given mean of all the elements of this*/
+template<typename Derived>
+typename hidden::Traits<Derived>::Type const ExprBase<Derived>::variance(Type const mean) const
+{ if (this->sizeArray()<=0) return Arithmetic<Type>::NA();
+  return (*this-mean).square().sum()/Type(this->sizeArray());
+}
 
 /* @return the weighted sum of all the elements of this using a Visitor*/
 template<typename Derived>
 template<typename Rhs>
 typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wsum(ExprBase<Rhs> const& weights) const
-{ return dot(weights);}
+{
+  STK_STATICASSERT_VECTOR_ONLY(Derived);
+  STK_STATICASSERT_ONE_DIMENSION_ONLY(Rhs);
+  return dot(weights);
+}
 /* @return the norm of this*/
 template<typename Derived>
 template<typename Rhs>
 typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wnorm(ExprBase<Rhs> const& weights) const
-{ return Type(std::sqrt(wnorm2(weights)));}
+{
+  STK_STATICASSERT_VECTOR_ONLY(Derived);
+  STK_STATICASSERT_ONE_DIMENSION_ONLY(Rhs);
+  return Type(std::sqrt(wnorm2(weights)));
+}
 /* @return the square norm of this*/
 template<typename Derived>
 template<typename Rhs>
 typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wnorm2(ExprBase<Rhs> const& weights) const
-{ return (square().dot(weights));}
-/* @return the mean of all the elements of this using a Visitor*/
+{
+  STK_STATICASSERT_VECTOR_ONLY(Derived);
+  STK_STATICASSERT_ONE_DIMENSION_ONLY(Rhs);
+ return square().dot(weights);
+}
+/* @return the weighted mean */
 template<typename Derived>
 template<typename Rhs>
 typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wmean(ExprBase<Rhs> const& weights) const
-{ return (this->sizeArray() >0) ? wsum(weights)/weights.sum() : Arithmetic<Type>::NA();}
+{
+  STK_STATICASSERT_VECTOR_ONLY(Derived);
+  STK_STATICASSERT_ONE_DIMENSION_ONLY(Rhs);
+  Type size = weights.sum();
+  if (size <= 0) return Arithmetic<Type>::NA();
+  return wsum(weights)/size;
+}
 /* @return the variance of all the elements of this using a Visitor*/
 template<typename Derived>
 template<typename Rhs>
 typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wvariance(ExprBase<Rhs> const& weights) const
 {
+  STK_STATICASSERT_VECTOR_ONLY(Derived);
+  STK_STATICASSERT_ONE_DIMENSION_ONLY(Rhs);
   Type size = weights.sum();
-  return (size >0) ?
-    ((*this-(wsum(weights)/size)).square().wsum(weights)/size) : Arithmetic<Type>::NA();;
+  if (size <= 0) return Arithmetic<Type>::NA();
+  Type mean = wsum(weights)/size;
+  return (*this-mean).square().wsum(weights)/size;
+}
+
+/** @return the variance with given mean of all the elements of this*/
+template<typename Derived>
+template<typename Rhs>
+typename hidden::Traits<Derived>::Type const ExprBase<Derived>::wvariance(Type const wmean, ExprBase<Rhs> const& weights) const
+{
+  STK_STATICASSERT_VECTOR_ONLY(Derived);
+  STK_STATICASSERT_ONE_DIMENSION_ONLY(Rhs);
+  Type size = weights.sum();
+  if (size <= 0) return Arithmetic<Type>::NA();
+  return (*this-wmean).square().wsum(weights)/size;
 }
 
 } // namespace STK

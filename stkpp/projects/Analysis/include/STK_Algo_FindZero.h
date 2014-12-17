@@ -78,24 +78,27 @@ template <class Function>
 Real SecantMethod( IFunction<Function> const& f, Real const& x0, Real const& x1, Real tol)
 {
   Real a = x0, b = x1, fa = f(x0), fb = f(x1);
-  // trivial cases
-  if (fa==0.) return a;
-  if (fb==0.) return b;
-  // check if root is bracketed
-  if (fa * fb <0.) { return BrentMethod(f, a, b, tol);}
   // set low and high values
   if (std::abs(fa) < std::abs(fb))
   {
     std::swap(a, b);
     std::swap(fa, fb);
   }
+  // trivial case
+  if (std::abs(fb)<tol) return b;
+  // if root is bracketed use Brent method
+  if (fa * fb <0.) { return BrentMethod(f, a, b, tol);}
   // start secant iterations
-  while( (std::abs(b-a)>tol))
+  while( std::abs(b-a)>tol )
   {
-    Real delta = fb * (b - a) / (fb - fa);
-    Real s = b - delta;
-    // if we are out of bound, we stop
-    if (s<f.xmin() || s > f.xmax()) return Arithmetic<Real>::NA();
+    Real s = b - fb * (b - a) / (fb - fa);
+    Real delta = b-s;
+    // if we are out of bound, we try a desperate step
+    if (s<f.xmin())
+    { s = (b + std::max(f.xmin(), b - std::abs(b-a))/8 )/2.; delta = b-s;}
+    if (s>f.xmax())
+    { s = (b + std::min(f.xmax(), b + std::abs(b-a))/8 )/2.; delta = b-s;}
+    // compute f(s)
     Real fs = f(s);
     // check if we can switch to Brent method
     if (fb * fs < 0) { return BrentMethod(f, b, s, tol); }
@@ -111,7 +114,7 @@ Real SecantMethod( IFunction<Function> const& f, Real const& x0, Real const& x1,
         // check if we can switch to Brent method
         if (fb * fs < 0) { return BrentMethod(f, b, s, tol); }
         // ok !
-        if (std::abs(fs)<std::abs(fb)) { break ; dv = false;}
+        if (std::abs(fs)<std::abs(fb)) { dv = false; break ;}
       }
       // we were not lucky...
       if (dv) return Arithmetic<Real>::NA();
@@ -119,8 +122,14 @@ Real SecantMethod( IFunction<Function> const& f, Real const& x0, Real const& x1,
     // update
     a =b; fa = fb;
     b =s; fb = fs;
+    // set low and high values
+    if (std::abs(fa) < std::abs(fb))
+    {
+      std::swap(a, b);
+      std::swap(fa, fb);
+    }
     // trivial case
-    if (fb==0.) return b;
+    if (std::abs(fb) <tol) return b;
   }
   return b;
 }
@@ -137,77 +146,73 @@ Real SecantMethod( IFunction<Function> const& f, Real const& x0, Real const& x1,
 template <class Function>
 Real BrentMethod( IFunction<Function> const& f, Real const& x0, Real const& x1, Real tol)
 {
-  Real ak = x0, bk = x1, fak = f(x0), fbk = f(x1);
-  // trivial cases
-  if (fak==0.) return ak;
-  if (fbk==0.) return bk;
-  // check if root is bracketed
-  if (fak * fbk >0.) // secant method have to be used
-  { return SecantMethod(f, ak, bk, tol);}
+  Real a = x0, b = x1, fa = f(x0), fb = f(x1);
   // set low and high values
-  if (std::abs(fak) < std::abs(fbk))
+  if (std::abs(fa) < std::abs(fb))
   {
-    std::swap(ak, bk);
-    std::swap(fak, fbk);
+    std::swap(a, b);
+    std::swap(fa, fb);
   }
-  Real bkm1 = ak, fbkm1 = fak;
+  // trivial case
+  if (std::abs(fb)<tol) return b;
+  // if root is not bracketed secant method have to be used
+  if (fa * fb >0.) { return SecantMethod(f, a, b, tol);}
+  Real bkm1 = a, fbkm1 = fa;
   bool mflag = true;
   Real bkm2 = bkm1; // value of bkm2 is not used at the first iteration as mflag = true
 
   int iter =0;
 #ifdef STK_ANALYSIS_VERBOSE
-  stk_cout << _T("iter = ") << iter <<_T(". bkm1, ak, bk = ") << bkm1 << _T(" ") << ak << _T(" ") << bk << _T("\n");
-  stk_cout << _T("iter = ") << iter <<_T(". fbkm1, fak, fbk = ") << fbkm1 << _T(" ") << fak << _T(" ") << fbk << _T("\n");
+  stk_cout << _T("iter = ") << iter <<_T(". bkm1, a, b = ") << bkm1 << _T(" ") << a << _T(" ") << b << _T("\n");
+  stk_cout << _T("iter = ") << iter <<_T(". fbkm1, fak, fbk = ") << fbkm1 << _T(" ") << fa << _T(" ") << fb << _T("\n");
 #endif
-  while( (std::abs(bk-ak)>tol) )
+  // start Brent iterations
+  while( std::abs(b-a)>tol )
   {
     iter++;
     Real s;
-    if ((fak != fbkm1) && (fbk != fbkm1)) // inverse quadratic approximation
+    if ((fa != fbkm1) && (fb != fbkm1)) // inverse quadratic approximation
     {
-      Real dab = fak - fbk, dac = fak -fbkm1, dbc = fbk -fbkm1;
-      s = ak * fbk * fbkm1 / dab / dac
-        + bk * fak * fbkm1 / -dab / dbc
-        + bkm1 * fak * fbk / dac / dbc;
-      //stk_cout << _T("iter = ") << iter<<_T(". Quadratic. s=")<< s << _T("\n");
+      Real dab = fa - fb, dac = fa -fbkm1, dbc = fb -fbkm1;
+      s = a * fb * fbkm1 / dab / dac
+        + b * fa * fbkm1 / -dab / dbc
+        + bkm1 * fa * fb / dac / dbc;
     }
     else // secante method
-    {
-      s = bk - fbk * (bk - ak) / (fbk - fak);
-      //stk_cout << _T("iter = ") << iter<<_T(". Secant. s=")<< s << _T("\n");
-    }
+    { s = b - fb * (b - a) / (fb - fa);}
     // check if we shall fall-back to dichotomy
-    Real tmp = (3. * ak + bk) / 4., diff1 =std::abs(bk - bkm1), diff2 = std::abs(bkm1-bkm2);
-    if (!( ((s > tmp) && (s < bk)) || ((s < tmp) && (s > bk)) ) // s not between bk and tmp
-       ||( mflag &&(  (std::abs(s-bk) >= diff1 / 2.)||(diff1 < tol)))
-       ||(!mflag &&( (std::abs(s-bk) >= diff2/2.)||(diff2 < tol)))
+    Real tmp = (3. * a + b) / 4., diff1 =std::abs(b - bkm1), diff2 = std::abs(bkm1-bkm2);
+    if (!( ((s > tmp) && (s < b)) || ((s < tmp) && (s > b)) ) // s not between b and tmp
+       ||( mflag &&( (std::abs(s-b) >= diff1 / 2.)||(diff1 < tol)))
+       ||(!mflag &&( (std::abs(s-b) >= diff2 / 2.)||(diff2 < tol)))
+       ||(s<=f.xmin())||(s>=f.xmax())
        )
     {
-       s = (ak + bk) / 2.;
-       //stk_cout << _T("iter = ") << iter<<_T(". Dichotomy. s=")<< s << _T("\n");
+       s = (a + b) / 2.;
        mflag = true;
     }
     else { mflag = false;}
 
     Real fs = f(s);
-    bkm2 = bkm1; bkm1 = bk; fbkm1 = fbk;
+    // save history
+    bkm2 = bkm1; bkm1 = b; fbkm1 = fb;
     // check for bracketing the root
-    if (fak * fs < 0) { bk = s; fbk = fs; }
-    else              { ak = s; fak = fs; }
-    // if |f(ak)| < |f(bk)| then swap (ak, bk)
-    if (std::abs(fak) < std::abs(fbk))
+    if (fa * fs < 0) { b = s; fb = fs; }
+    else             { a = s; fa = fs; }
+    // if |f(a)| < |f(b)| then swap (a, b)
+    if (std::abs(fa) < std::abs(fb))
     {
-      std::swap(ak, bk);
-      std::swap(fak, fbk);
+      std::swap(a, b);
+      std::swap(fa, fb);
     }
 #ifdef STK_ANALYSIS_VERBOSE
-    stk_cout << _T("iter = ") << iter <<_T(". bkm1, ak, bk = ") << bkm1 << _T(" ") << ak << _T(" ") << bk << _T("\n");
-    stk_cout << _T("iter = ") << iter <<_T(". fbkm1, fak, fbk = ") << fbkm1 << _T(" ") << fak << _T(" ") << fbk << _T("\n");
+    stk_cout << _T("iter = ") << iter <<_T(". bkm1, ak, b = ") << bkm1 << _T(" ") << ak << _T(" ") << b << _T("\n");
+    stk_cout << _T("iter = ") << iter <<_T(". fbkm1, fa, fb = ") << fbkm1 << _T(" ") << fa << _T(" ") << fb << _T("\n");
 #endif
-    if (fbk==0.) return bk;
+    if (std::abs(fb) < tol ) return b;
     if (iter > MAX_ITER) return Arithmetic<Real>::NA();
   }
-  return bk;
+  return b;
 }
 
 /** @ingroup Analysis
@@ -222,10 +227,10 @@ Real BrentMethod( IFunction<Function> const& f, Real const& x0, Real const& x1, 
  * @return the zero of the function if any, a NA value otherwise
 **/
 template <class Function>
-Real findZero( IFunction<Function> const& f, Real const& x0, Real const& x1, Real tol = Arithmetic<Real>:: epsilon())
+Real findZero( IFunction<Function> const& f, Real const& x0, Real const& x1, Real tol = Arithmetic<Real>::epsilon())
 {
-  if (x0<f.xmin() || x0>f.xmax() || x1<f.xmin() || x1>f.xmax())
-    STKDOMAIN_ERROR_2ARG(BrentMethod,x0,x1,An initial point is out of the domain);
+  if (x0<f.xmin() || x0>f.xmax() || x1<f.xmin() || x1>f.xmax() || tol<=0 )
+    return Arithmetic<Real>::NA();
   return BrentMethod(f, x0, x1, tol);
 }
 

@@ -257,7 +257,7 @@
  *     if (x.range() != jointLaw_.range())
  *     {STKRUNTIME_ERROR_NO_ARG(JointProbability::lpdf(x),dimensions mismatch);}
  *     Real sum = 0.;
- *     for (int j = x.firstIdx(); j <= x.lastIdx(); ++j)
+ *     for (int j = x.begin(); j < x.end(); ++j)
  *     { sum+= Arithmetic<Type>::isNA(x[j]) ? 0. : jointLaw_[j].lpdf(x[j]);}
  *     return sum;
  *   }
@@ -280,7 +280,7 @@
  * @code
  *  BernoulliModel< Array2DVector<Binary> > univariateModel;
  *  Array2DVector<Binary> var;
- *  for (int j= data.firstIdxCols(); j <= data.lastIdxCols(); ++j)
+ *  for (int j= data.beginCols(); j <data.endCols(); ++j)
  *  {
  *    stk_cout << "j=" << j << _T("\n";);
  *    var.move(data.col(j));
@@ -293,7 +293,7 @@
  * @code
  *  JointBernoulliModel<Array2D<Binary> > jb(data);
  *  jb.run();
- *  for (int j= data.firstIdxCols(); j <= data.lastIdxCols(); ++j)
+ *  for (int j= data.beginCols(); j < data.endCols(); ++j)
  *  {
  *    stk_cout << "j=" << j << _T("\n";);
  *    stk_cout << "jb.law().prob(j) = " << jb.law().prob(j) << _T("\n";);

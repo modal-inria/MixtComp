@@ -209,34 +209,43 @@ class CAllocatorBase : public ITContainer2D<Derived>
     typedef typename hidden::Traits<Derived>::SubVector SubVector;
     typedef typename hidden::Traits<Derived>::Transposed Transposed;
 
+    enum
+    {
+      structure_ = hidden::Traits<Derived>::structure_,
+      orient_    = hidden::Traits<Derived>::orient_,
+      sizeRows_  = hidden::Traits<Derived>::sizeRows_,
+      sizeCols_  = hidden::Traits<Derived>::sizeCols_,
+      storage_   = hidden::Traits<Derived>::storage_
+    };
+
     /** @return the index of the allocator*/
-    inline int const& idx() const { return idx_;}
+    inline int idx() const { return idx_;}
     /** Access to the ith row of the Allocator.
      *  @param i index of the row
      *  @return a reference on the ith row
      **/
     inline RowVector row(int const& i) const
-    { return  RowVector(this->asDerived(), Range(i,1), this->cols(), idx_);}
+    { return RowVector(this->asDerived(), Range(i,1), this->cols(), idx_);}
     /** Access to the row (i,J) of the Allocator.
      *  @param i index of the row
      *  @param J range of the columns
      *  @return a reference on the ith row
      **/
     inline SubRowVector row(int const& i, Range const& J) const
-    { return  SubRowVector(this->asDerived(), Range(i,1), J, idx_);}
+    { return SubRowVector(this->asDerived(), Range(i,1), J, idx_);}
     /** Access to the jth column of the Allocator.
      *  @param j index of the column
      *  @return a reference on the jth column
      **/
     inline ColVector col(int const& j) const
-    { return  ColVector(this->asDerived(), this->rows(), Range(j,1), idx_);}
+    { return ColVector(this->asDerived(), this->rows(), Range(j,1), idx_);}
     /** Access to the column (I,j) of the Allocator.
      *  @param I range of the rows
      *  @param j index of the column
      *  @return a reference on the jth column
      **/
     inline SubColVector col(Range const& I, int const& j) const
-    { return  SubColVector(this->asDerived(), I, Range(j,1), idx_);}
+    { return SubColVector(this->asDerived(), I, Range(j,1), idx_);}
     /** Access to the sub-part (I,J) of the Allocator.
      *  @param I range of the rows
      *  @param J range of the columns
@@ -249,7 +258,10 @@ class CAllocatorBase : public ITContainer2D<Derived>
      *  @return a reference on a sub-part of the Allocaor
      **/
     inline SubVector sub(Range const& I) const
-    { return this->asDerived().sub1Impl(I);}
+    {
+      STK_STATICASSERT_ONE_DIMENSION_ONLY(Derived)
+      return this->asDerived().sub1Impl(I);
+    }
     /** transpose the Allocator.
      *  @return a transposed allocator
      **/
@@ -289,14 +301,24 @@ class CAllocatorBase : public ITContainer2D<Derived>
     { this->asDerived().resize1Impl(size);
       return this->asDerived();
     }
-  protected:
+    /** Swapping the pos1 column and the pos2 column.
+     *  @param pos1 position of the first col
+     *  @param pos2 position of the second col
+     **/
+    void swapCols(int pos1, int pos2)
+    {
+      for (int i=this->beginRowsImpl(); i< this->endRowsImpl(); ++i)
+      { std::swap(this->asDerived().elt2Impl(i, pos1),this->asDerived().elt2Impl(i, pos2));}
+    }
+
+    protected:
     /** index of the data set */
     int idx_;
     /** set index of the data. */
     void setIdx( int const& idx) { idx_ = idx;}
 };
 
-/** @brief Specialization for row _oriented Allocators.*/
+/** @brief Specialization for column-oriented Allocators.*/
 template<class Derived>
 class OrientedCAllocator<Derived, Arrays::by_col_>: public CAllocatorBase<Derived>
 {
@@ -331,8 +353,8 @@ class OrientedCAllocator<Derived, Arrays::by_col_>: public CAllocatorBase<Derive
      **/
     void setValue(Type const& v)
     {
-      for (int j= this->firstIdxCols(); j <= this->lastIdxCols(); ++j)
-        for (int i = this->firstIdxRows(); i<=this->lastIdxRows(); ++i)
+      for (int j= this->beginCols(); j <= this->lastIdxCols(); ++j)
+        for (int i = this->beginRows(); i<=this->lastIdxRows(); ++i)
         { this->elt(i, j) = v;}
     }
 
@@ -345,7 +367,7 @@ class OrientedCAllocator<Derived, Arrays::by_col_>: public CAllocatorBase<Derive
      *  @return The range of the 1D allocator
      **/
     static inline Range prod(Range const& I, Range const& J)
-    { return Range(I.size()*J.firstIdx()+I.firstIdx(), I.size()*J.size()); }
+    { return Range(I.size()*J.begin()+I.begin(), I.size()*J.size()); }
     /** return the increment to apply to a zero based pointer corresponding to
      *  the actual first row and first column indexes. */
     inline int shiftInc(int const& firstRow, int const& firstCol)
@@ -356,7 +378,7 @@ class OrientedCAllocator<Derived, Arrays::by_col_>: public CAllocatorBase<Derive
     inline void setSizedIdx() {this->idx_ = this->asDerived().sizeRows();}
 };
 
-/** @brief Specialization for col_ oriented Allocators.*/
+/** @brief Specialization for row-oriented Allocators.*/
 template<class Derived>
 class OrientedCAllocator<Derived, Arrays::by_row_>: public CAllocatorBase<Derived>
 {
@@ -392,8 +414,8 @@ class OrientedCAllocator<Derived, Arrays::by_row_>: public CAllocatorBase<Derive
      **/
     void setValue(Type const& v)
     {
-      for (int i = this->firstIdxRows(); i<=this->lastIdxRows(); ++i)
-        for (int j= this->firstIdxCols(); j <= this->lastIdxCols(); ++j)
+      for (int i = this->beginRows(); i<=this->lastIdxRows(); ++i)
+        for (int j= this->beginCols(); j <= this->lastIdxCols(); ++j)
         { this->elt(i, j) = v;}
     }
 
@@ -406,7 +428,7 @@ class OrientedCAllocator<Derived, Arrays::by_row_>: public CAllocatorBase<Derive
      *  @return The range of the 1D allocator
      **/
     static inline Range prod(Range const& I, Range const& J)
-    { return Range(J.size()*I.firstIdx()+J.firstIdx(), I.size()*J.size());}
+    { return Range(J.size()*I.begin()+J.begin(), I.size()*J.size());}
     /** return the increment corresponding to the actual first row an column. */
     inline int shiftInc(int const& firstRow, int const& firstCol)
     { return this->idx_*firstRow+firstCol; }
@@ -449,7 +471,7 @@ class StructuredCAllocator<Derived, 1, 1, Orient_> : public OrientedCAllocator<D
   protected:
     /** Default constructor */
     inline StructuredCAllocator( Range const& I, Range const& J)
-                      : Base(I, J), row_(I.firstIdx()), col_(J.firstIdx())
+                      : Base(I, J), row_(I.begin()), col_(J.begin())
     {}
     /** copy constructor */
     inline StructuredCAllocator( StructuredCAllocator const& A,  int const& idx)
@@ -462,7 +484,7 @@ class StructuredCAllocator<Derived, 1, 1, Orient_> : public OrientedCAllocator<D
     { row_ = T.row_; col_ = T.col_; return *this;}
   public:
     /** @return a constant reference on the element of the Allocator. */
-    inline Type const elt0Impl() const { return this->elt(row_, col_);}
+    inline Type const& elt0Impl() const { return this->elt(row_, col_);}
     /** @return a reference on the element of the Allocator. */
     inline Type& elt0Impl() { return this->elt(row_, col_);}
 
@@ -491,7 +513,7 @@ class StructuredCAllocator<Derived, 1, SizeCols_, Orient_> : public OrientedCAll
   protected:
     /** Default constructor */
     inline StructuredCAllocator( Range const& I, Range const& J)
-                              : Base(I, J), row_(I.firstIdx()) {}
+                              : Base(I, J), row_(I.begin()) {}
     /** copy constructor */
     inline StructuredCAllocator( StructuredCAllocator const& A,  int const& idx)
                               : Base(A, idx), row_(A.row_) {}
@@ -504,7 +526,7 @@ class StructuredCAllocator<Derived, 1, SizeCols_, Orient_> : public OrientedCAll
     /** @return a constant reference on the element (i,j) of the Allocator.
      *  @param j index of the column
      **/
-    inline Type const elt1Impl( int const& j) const
+    inline Type const& elt1Impl( int const& j) const
     { return this->elt(row_, j);}
     /** @return a reference on the element (i,j) of the Allocator.
      *  @param j index of the columns
@@ -524,7 +546,7 @@ class StructuredCAllocator<Derived, 1, SizeCols_, Orient_> : public OrientedCAll
      *  @param sizeCols the size of the point
      **/
     void resize1Impl(int const& sizeCols)
-    { this->asDerived().resize2Impl(1, sizeCols); row_ = this->rows().firstIdx();}
+    { this->asDerived().resize2Impl(1, sizeCols); row_ = this->rows().begin();}
     /** @return a sub-vector in the specified range of the Allocator.
      *  @param J range of the sub-vector
      **/
@@ -546,7 +568,7 @@ class StructuredCAllocator<Derived, SizeRows_, 1, Orient_>
   protected:
     /** Default constructor */
     inline StructuredCAllocator( Range const& I, Range const& J)
-                               : Base(I, J), col_(J.firstIdx())
+                               : Base(I, J), col_(J.begin())
     {}
     /** copy constructor */
     inline StructuredCAllocator( StructuredCAllocator const& A,  int const& idx)
@@ -560,7 +582,7 @@ class StructuredCAllocator<Derived, SizeRows_, 1, Orient_>
     /** @return a constant reference on the element (i,j) of the Allocator.
      *  @param i index of the row
      **/
-    inline Type const elt1Impl( int const& i) const
+    inline Type const& elt1Impl( int const& i) const
     { return this->elt(i, col_);}
     /** @return a reference on the element (i,j) of the Allocator.
      *  @param i index of the row
@@ -648,12 +670,12 @@ class CAllocator
     }
     void shift2Impl(int const& firstRow, int const& firstCol)
     {
-      if ((firstRow == this->firstIdxRows())&&(firstCol == this->firstIdxCols())) return;
+      if ((firstRow == this->beginRows())&&(firstCol == this->beginCols())) return;
       // check for reference
       if (this->isRef())
       { STKRUNTIME_ERROR_2ARG(CAllocator::shift2Impl, firstRow, firstCol, cannot operate on reference);}
       // set new ranges and translate main pointer
-      TContainer2D<SizeRows_, SizeCols_>::shift(firstRow, firstCol);
+      IContainer2D<SizeRows_, SizeCols_>::shift(firstRow, firstCol);
       this->shiftData(this->shiftInc(firstRow, firstCol));
     }
     inline CAllocator& resize2Impl( int, int) { return *this;}
@@ -725,18 +747,18 @@ class CAllocator<Type, Structure_, UnknownSize, UnknownSize, Orient_>
     {
       Allocator::move(T);
       Base::move(T);
-      TContainer2D<UnknownSize, UnknownSize>::setRanges(T.rows(), T.cols());
+      IContainer2D<UnknownSize, UnknownSize>::setRanges(T.rows(), T.cols());
       this->setIdx(T.idx());
       return *this;
     }
     void shift2Impl(int const& firstRow, int const& firstCol)
     {
-      if ((firstRow == this->firstIdxRows())&&(firstCol == this->firstIdxCols())) return;
+      if ((firstRow == this->beginRows())&&(firstCol == this->beginCols())) return;
       // check for reference
       if (this->isRef())
       { STKRUNTIME_ERROR_2ARG( CAllocator::shift2Impl, firstRow, firstCol, cannot operate on reference);}
       // set new ranges and  translate main pointer
-      TContainer2D<UnknownSize, UnknownSize>::shift(firstRow, firstCol);
+      IContainer2D<UnknownSize, UnknownSize>::shift(firstRow, firstCol);
       this->shiftData(this->shiftInc(firstRow, firstCol));
     }
     CAllocator& resize2Impl( int const& sizeRows, int const& sizeCols)
@@ -745,7 +767,7 @@ class CAllocator<Type, Structure_, UnknownSize, UnknownSize, Orient_>
      if ((sizeRows <= 0)||(sizeCols<=0))
      {
        // free any allocated memory if this is not a reference
-       this->freeData();
+       this->free();
        // set Range values and null pointer
        this->setPtrData(0, this->prod(sizeRows, sizeCols), false);
        this->setRanges(sizeRows, sizeCols);
@@ -774,12 +796,12 @@ class CAllocator<Type, Structure_, UnknownSize, UnknownSize, Orient_>
      {
        // create new container
        resize2Impl(sizeRows, sizeCols);
-       shift2Impl(copy.firstIdxRows(), copy.firstIdxCols());
+       shift2Impl(copy.beginRows(), copy.beginCols());
        // copy data
        const int lastRow = std::min(copy.lastIdxRows(), this->lastIdxRows());
        const int lastCol = std::min(copy.lastIdxCols(), this->lastIdxCols());
-       for (int j= this->firstIdxCols(); j <= lastCol; ++j)
-         for (int i = this->firstIdxRows(); i<=lastRow; ++i)
+       for (int j= this->beginCols(); j <= lastCol; ++j)
+         for (int i = this->beginRows(); i<=lastRow; ++i)
          { this->elt(i, j) = copy.elt(i, j);}
      }
      catch (std::bad_alloc & error)  // if an alloc error occur
@@ -834,12 +856,12 @@ class CAllocator<Type, Structure_, SizeRows_, UnknownSize, Orient_>
     }
     void shift2Impl(int const& firstRow, int const& firstCol)
     {
-      if ((firstRow == this->firstIdxRows())&&(firstCol == this->firstIdxCols())) return;
+      if ((firstRow == this->beginRows())&&(firstCol == this->beginCols())) return;
       // check for reference
       if (this->isRef())
       { STKRUNTIME_ERROR_2ARG(CAllocator::shift2Impl, firstRow, firstCol, cannot operate on reference);}
       // set new ranges and  translate main pointer
-      TContainer2D<SizeRows_, UnknownSize>::shift(firstRow, firstCol);
+      IContainer2D<SizeRows_, UnknownSize>::shift(firstRow, firstCol);
       this->shiftData(this->shiftInc(firstRow, firstCol));
     }
     CAllocator& resize2Impl( int, int sizeCols)
@@ -848,7 +870,7 @@ class CAllocator<Type, Structure_, SizeRows_, UnknownSize, Orient_>
       if (sizeCols<=0)
       {
         // free any allocated memory if it is not a reference
-        this->freeData();
+        this->free();
         // set Range values and null pointer
         this->setPtrData(0, this->prod(SizeRows_, sizeCols), false);
         this->setRanges(SizeRows_, sizeCols);
@@ -869,11 +891,11 @@ class CAllocator<Type, Structure_, SizeRows_, UnknownSize, Orient_>
       {
         // create new container
         resize2Impl(SizeRows_, sizeCols);
-        shift2Impl(copy.firstIdxRows(), copy.firstIdxCols());
+        shift2Impl(copy.beginRows(), copy.beginCols());
         // copy data
         const int lastCol = std::min(copy.lastIdxCols(), this->lastIdxCols());
-        for (int j= this->firstIdxCols(); j <= lastCol; ++j)
-          for (int i = this->firstIdxRows(); i<=this->lastIdxRows(); ++i)
+        for (int j= this->beginCols(); j <= lastCol; ++j)
+          for (int i = this->beginRows(); i<=this->lastIdxRows(); ++i)
         { this->elt(i, j) = copy.elt(i, j);}
 
       }
@@ -934,12 +956,12 @@ class CAllocator<Type, Structure_, UnknownSize, SizeCols_, Orient_>
     void shift2Impl(int const& firstRow, int const& firstCol)
     {
       // check if there is something to do
-      if ((firstRow == this->firstIdxRows())&&(firstCol == this->firstIdxCols())) return;
+      if ((firstRow == this->beginRows())&&(firstCol == this->beginCols())) return;
       // check for reference
       if (this->isRef())
       { STKRUNTIME_ERROR_2ARG(CAllocator::shift2Impl, firstRow, firstCol, cannot operate on reference.);}
       // set new ranges and  translate main pointer
-      TContainer2D<UnknownSize, SizeCols_>::shift(firstRow, firstCol);
+      IContainer2D<UnknownSize, SizeCols_>::shift(firstRow, firstCol);
       this->shiftData(this->shiftInc(firstRow, firstCol));
     }
     CAllocator& resize2Impl( int const& sizeRows, int)
@@ -948,7 +970,7 @@ class CAllocator<Type, Structure_, UnknownSize, SizeCols_, Orient_>
       if (sizeRows <= 0)
       {
         // free any allocated memory if it is not a reference
-        this->freeData();
+        this->free();
         // set Range values and null pointer
         this->setPtrData(0, this->prod(sizeRows, SizeCols_), false);
         this->setRanges(sizeRows, SizeCols_);
@@ -970,12 +992,12 @@ class CAllocator<Type, Structure_, UnknownSize, SizeCols_, Orient_>
      {
        // create new container
        resize2Impl(sizeRows, SizeCols_);
-       shift2Impl(copy.firstIdxRows(), copy.firstIdxCols());
+       shift2Impl(copy.beginRows(), copy.beginCols());
        // copy data
        const int lastRow = std::min(copy.lastIdxRows(), this->lastIdxRows())
                    , lastCol = this->lastIdxCols();
-       for (int j= this->firstIdxCols(); j <= lastCol; ++j)
-         for (int i = this->firstIdxRows(); i<=lastRow; ++i)
+       for (int j= this->beginCols(); j <= lastCol; ++j)
+         for (int i = this->beginRows(); i<=lastRow; ++i)
          { this->elt(i, j) = copy.elt(i, j);}
      }
      catch (std::bad_alloc & error)  // if an alloc error occur

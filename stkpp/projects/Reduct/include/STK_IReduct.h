@@ -39,6 +39,7 @@
 
 #include "Sdk/include/STK_IRunner.h"
 #include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DVector.h"
 
 namespace STK
 {
@@ -54,21 +55,21 @@ namespace STK
  *
  * The derived class will compute a @em reduced data set of dimension (n,d).
  */
-class IReduct : public IRunnerUnsupervised<Matrix, Vector>
+class IReduct : public IRunnerUnsupervised<ArrayXX, Vector>
 {
-  typedef IRunnerUnsupervised<Matrix, Vector> Runner;
+  typedef IRunnerUnsupervised<ArrayXX, Vector> Runner;
   protected:
     /** Default constructor. */
     IReduct();
     /** Constructor with a pointer on the constant data set.
      *  @param p_data a pointer on the data set to reduce.
      * */
-    IReduct( Matrix const* p_data);
+    IReduct( ArrayXX const* p_data);
     /** Constructor with a constant reference on the data set.
      *  @param data the data set to reduce.
      * */
-    IReduct( Matrix const& data);
-    /** Copy constructor. Use the operator = of the clas Matrix
+    IReduct( ArrayXX const& data);
+    /** Copy constructor. Use the operator = of the clas ArrayXX
      *  @param reductor The reductor to copy.
      * */
     IReduct( IReduct const& reductor);
@@ -79,11 +80,11 @@ class IReduct : public IRunnerUnsupervised<Matrix, Vector>
     /** get the number of dimension.
      *  @return The number of dimension computed
      **/
-    inline int const& dim() const { return dim_;}
+    inline int dim() const { return dim_;}
     /** get a pointer on the reduced data set
      * @return a constant pointer on the data set
      **/
-    inline Matrix* p_reduced() const { return p_reduced_; }
+    inline ArrayXX* p_reduced() const { return p_reduced_; }
     /** set the number of dimension.
      *  @param dim the number of dimension to set
      **/
@@ -93,7 +94,7 @@ class IReduct : public IRunnerUnsupervised<Matrix, Vector>
     /** dimension of the reduced data set */
     int dim_;
     /** The reduced data set. */
-    Matrix* p_reduced_;
+    ArrayXX* p_reduced_;
 };
 
 } // namespace STK

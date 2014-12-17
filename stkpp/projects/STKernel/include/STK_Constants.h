@@ -32,10 +32,11 @@
  *  @brief In this file we define the main constant which will be used through
  *  the STK++ project.
  **/
-#include "STK_Integer.h"
 
 #ifndef STK_CONSTANTS_H
 #define STK_CONSTANTS_H
+
+#include "STK_String.h"
 
 #ifndef STKBASEARRAYS
 /** This value means that the default range for a vector or the rows/columns of
@@ -47,7 +48,7 @@
 namespace STK
 {
 /** @ingroup STKernel
- *  This value represents the base index of the containers created in stk++.
+ *  This value represents the base index of the containers created in STK++.
  **/
 const int baseIdx = STKBASEARRAYS;
 
@@ -56,7 +57,7 @@ const int baseIdx = STKBASEARRAYS;
  *  instead the value is stored in some runtime variable. This is the same value
  *  that the value used for representing NA Integers when Integer is int.
  **/
-const int UnknownSize = __INT_MAX__;
+const int UnknownSize = INT_MAX;
 //const int UnknownSize = STK::Arithmetic<int>::NA();
 
 /** @ingroup STKernel
@@ -66,6 +67,13 @@ const int MaxUnroll = 100;
 /** @ingroup STKernel
  * This value means that when we unroll loops we go until MaxUnrollSquareRoot */
 const int MaxUnrollSquareRoot = 10;
+
+/** @ingroup STKernel
+ * @brief Representation of a New Line String. */
+static const String STRING_NL      = _T("\n");
+/** @ingroup STKernel
+ * @brief  Representation of a blank value. */
+static const String STRING_BLANK  = _T(" ");
 
 } // namespace STK
 

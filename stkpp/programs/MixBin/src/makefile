@@ -50,25 +50,24 @@ CXX_INCS	= $(wildcard $(INC_DIR)*.h)
 #-----------------------------------------------------------------------
 # source files
 #
-CPP_SRCS = $(wildcard *.cpp)
+CXX_SRCS = $(wildcard *.cpp)
 
 #-----------------------------------------------------------------------
 # binary files
 #
-CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
+CPP_OBJS = $(CXX_SRCS:%.cpp=$(BIN_DIR)%.o)
 
 #-----------------------------------------------------------------------
 # Compilation rules
 #
 $(BIN_DIR)%.o: $(INC_DIR)%.h makefile
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(STKPP_INC_DIR)  -I$(STKPP_PROJECTS_DIR) $(AAM_FLAGS) $< -c -o $@
+	$(CXX) $(CXXFLAGS) $(AAM_FLAGS) -I$(STKPP_INC_DIR)  -I$(STKPP_PROJECTS_DIR) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # rule for compiling the aam program
 mixbin: $(CPP_OBJS) $(CXX_INCS)
-	$(CXX)  $(CFLAGS) $(CXXFLAGS) $(CPP_OBJS) $(STKPP_LIB) \
-	-o $(BIN_DIR)$@ -lm
+	$(CXX) $(CPP_OBJS) $(STKPP_LIB) -o $(BIN_DIR)$@ -lm
 
 #-----------------------------------------------------------------------
 # creating objects files

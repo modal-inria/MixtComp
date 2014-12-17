@@ -39,6 +39,7 @@
 #include "../include/STK_IPage.h"
 
 #include "STKernel/include/STK_Exceptions.h"
+#include "Sdk/include/STK_Macros.h"
 
 namespace STK
 {
@@ -84,8 +85,7 @@ IPage::IPage( String const& name, int const& level, bool isOptional)
 }
 
 /* Destructor */
-IPage::~IPage()
-{ }
+IPage::~IPage() { }
 
 /* Copy constructor.
  * @param page the page to copy
@@ -122,7 +122,7 @@ void IPage::read( istream& is)
     if ( !isOptional_ ) // throw error message if the page is not optional
     {
       msg_error_ = "Page " + std::string(_T(keyword_.c_str())) + " not found \n";
-      throw runtime_error(msg_error_);
+      STKRUNTIME_ERROR_NO_ARG(IPage::read, msg_error_);
     }
     else return;
   }
@@ -145,13 +145,13 @@ void IPage::read( istream& is)
     if (line.find_first_of(CHAR_EQUAL) != line.npos)
     {
       if (!processLine(line))
-        throw runtime_error(msg_error_);
+        STKRUNTIME_ERROR_NO_ARG(Ipage::Read, msg_error_);
     }
     else
     {
       msg_error_ = "ERROR. In page " + std::string(_T(name_.c_str()))
                  + ". Incorrect line.\n";
-      throw runtime_error(msg_error_);
+      STKRUNTIME_ERROR_NO_ARG(Ipage::Read, msg_error_);
     }
   }
   // clear states
@@ -205,7 +205,7 @@ Option const& IPage::option( String const& name) const
   msg_error_ = _T("In Ipage::Option(");
   msg_error_ += name;
   msg_error_ +=_T(") const; Option not found\n");
-  throw runtime_error(msg_error_);
+  STKRUNTIME_ERROR_NO_ARG(Ipage::option, msg_error_);
 }
 
 /*  internal bookkeeping.
@@ -224,7 +224,7 @@ Option& IPage::option( String const& name)
   msg_error_ = _T("In IPage::option(");
   msg_error_ += name;
   msg_error_ +=_T("); Option not found\n");
-  throw runtime_error(msg_error_);
+  STKRUNTIME_ERROR_NO_ARG(Ipage::option, msg_error_);
 }
 
 

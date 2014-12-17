@@ -26,52 +26,112 @@
 # Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
+# Macros and definitions are in makevars, they can be overloaded using makevars.local
+# should contain at least the CXXFLAGS and the LIB_STKPP_A name.
+ifeq ($(wildcard ./makevars.local),) 
+	MAIN_MAKEVARS = makevars
+else 
+	MAIN_MAKEVARS = makevars.local
+endif
+
+include $(MAIN_MAKEVARS)
 
 #-----------------------------------------------------------------------
-# Macros and definitions are in MAKEVARS, they can be overloaded by up call
+# main Paths
+MAIN_PROJECTS_DIR = projects/
+MAIN_INCLUDE_DIR = include/
+MAIN_LIB_DIR = lib/
+MAIN_BIN_DIR = bin/
+CMAKE_DIR = cmakedir/
 
-ifeq ($(wildcard ./makevars.local),) 
-	RELATIVEMAKEVARS = ./makevars
-else 
-	RELATIVEMAKEVARS = ./makevars.local
-endif
+#-----------------------------------------------------------------------
+# library name
+STKPP_LIB = $(MAIN_LIB_DIR)$(LIB_STKPP_A)
 
-MAKEVARS = $(realpath $(RELATIVEMAKEVARS))
-export RELATIVEMAKEVARS
-export MAKEVARS
-
-ifeq ($(MAKEVARS),)
-	include $(RELATIVEMAKEVARS)
+#-----------------------------------------------------------------------
+# export common variables.
+# check if we are using symoblic paths, in this case use absolute paths
+# (may fail on windows platform), otherwise use relative paths
+ifneq ($(patsubst $(MAIN_PROJECTS_DIR)STKernel/../../%,%,$(wildcard $(MAIN_PROJECTS_DIR)STKernel/../../*)),$(patsubst $(MAIN_PROJECTS_DIR)../%,%,$(wildcard $(MAIN_PROJECTS_DIR)../*)))
+BIN_DIR = $(CURDIR)/$(MAIN_BIN_DIR)
+PROJECTS_DIR = $(CURDIR)/$(MAIN_PROJECTS_DIR)
+TEST_LIB_DIR = $(CURDIR)/$(MAIN_LIB_DIR)
+TEST_BIN_DIR = $(CURDIR)/$(MAIN_BIN_DIR)
+TEST_PROJECTS_DIR = $(CURDIR)/$(MAIN_PROJECTS_DIR)
+TEST_INCLUDE_DIR = $(CURDIR)/$(MAIN_INCLUDE_DIR)
 else
-	include $(MAKEVARS)
+BIN_DIR = ../../../$(MAIN_BIN_DIR)
+PROJECTS_DIR = ../..
+TEST_LIB_DIR = ../../$(MAIN_LIB_DIR)
+TEST_BIN_DIR = ../../$(MAIN_BIN_DIR)
+TEST_PROJECTS_DIR = ../../$(MAIN_PROJECTS_DIR)
+TEST_INCLUDE_DIR = ../../$(MAIN_INCLUDE_DIR)
 endif
+
+TEST_STKPP_LIB = $(TEST_LIB_DIR)$(LIB_STKPP_A)
+
+export
+
+#-----------------------------------------------------------------------
+# all compiles the objects and create the library, no tests are build
+.PHONY: all echo
+all: lib
+lib: $(STKPP_LIB)
+
+# for debugging purpose
+echo:
+	@echo $(wildcard ./makevars.local)
+	@echo $(MAIN_MAKEVARS)
+	@echo $(LIB_STKPP_A)
+
+#---------------------------------------------------------------------------
+# Default: wrapper for cmake, if you don't want to use cmake, issue make all.
+# See detailed INSTALL instructions
+#---------------------------------------------------------------------------
+.PHONY: cmake_debug cmake_release cmake_debug_0 cmake_release_0 cmake_clean cmake_doc cmake_test
+
+cmake_debug_0: #./build/Makefile
+	cd $(CMAKE_DIR); cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=on
+	$(MAKE) -C cmakedir  VERBOSE=1
+
+cmake_release_0: #./build/Makefile
+	cd $(CMAKE_DIR); cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=on -DCMAKE_BUILD_TYPE=Release
+	$(MAKE) -C cmakedir  VERBOSE=1
+
+cmake_debug: #./build/Makefile
+	cd $(CMAKE_DIR); cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=off
+	$(MAKE) -C cmakedir  VERBOSE=1
+
+cmake_release: #./build/Makefile
+	cd $(CMAKE_DIR); cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true  -DZERO_BASED_ARRAYS=off -DCMAKE_BUILD_TYPE=Release
+	$(MAKE) -C cmakedir  VERBOSE=1
+
+cmake_clean:
+	@- cd $(CMAKE_DIR); $(MAKE) clean  VERBOSE=1
+	@- $(RM) -rf ./cmakedir/*ake*  ./cmakedir/*est* ./cmakedir/projects ./cmakedir/D*
+	
+cmake_doc:
+	cd $(CMAKE_DIR); $(MAKE) doc
+
+cmake_test:
+	cd $(CMAKE_DIR); $(MAKE) test
 
 #-----------------------------------------------------------------------
 # handmade make for building the library
 #-----------------------------------------------------------------------
-# main Paths
-PROJECTS_DIR = ./projects/
-BIN_DIR = ./bin/
-LIB_DIR = ./lib/
-
-#-----------------------------------------------------------------------
-# library name
-STK_LIB = $(LIB_DIR)$(LIB_STKPP_A)
-
-#-----------------------------------------------------------------------
 # projects paths
-STKERNEL_DIR  = $(PROJECTS_DIR)STKernel/
-ARRAYS_DIR    = $(PROJECTS_DIR)Arrays/
-SDK_DIR       = $(PROJECTS_DIR)Sdk/
-DMANAGER_DIR  = $(PROJECTS_DIR)DManager/
-ALGEBRA_DIR   = $(PROJECTS_DIR)Algebra/
-ANALYSIS_DIR  = $(PROJECTS_DIR)Analysis/
-STATISTIK_DIR = $(PROJECTS_DIR)STatistiK/
-STATMODELS_DIR= $(PROJECTS_DIR)StatModels/
-CLUSTERING_DIR= $(PROJECTS_DIR)Clustering/
-AAMODELS_DIR  = $(PROJECTS_DIR)AAModels/
-REGRESS_DIR   = $(PROJECTS_DIR)Regress/
-REDUCT_DIR    = $(PROJECTS_DIR)Reduct/
+STKERNEL_DIR  = $(MAIN_PROJECTS_DIR)STKernel/
+ARRAYS_DIR    = $(MAIN_PROJECTS_DIR)Arrays/
+SDK_DIR       = $(MAIN_PROJECTS_DIR)Sdk/
+DMANAGER_DIR  = $(MAIN_PROJECTS_DIR)DManager/
+ALGEBRA_DIR   = $(MAIN_PROJECTS_DIR)Algebra/
+ANALYSIS_DIR  = $(MAIN_PROJECTS_DIR)Analysis/
+STATISTIK_DIR = $(MAIN_PROJECTS_DIR)STatistiK/
+STATMODELS_DIR= $(MAIN_PROJECTS_DIR)StatModels/
+CLUSTERING_DIR= $(MAIN_PROJECTS_DIR)Clustering/
+AAMODELS_DIR  = $(MAIN_PROJECTS_DIR)AAModels/
+REGRESS_DIR   = $(MAIN_PROJECTS_DIR)Regress/
+REDUCT_DIR    = $(MAIN_PROJECTS_DIR)Reduct/
 
 SRC_STKERNEL_DIR  = $(STKERNEL_DIR)src/
 SRC_ARRAYS_DIR    = $(ARRAYS_DIR)src/
@@ -88,18 +148,18 @@ SRC_AAMODELS_DIR  = $(AAMODELS_DIR)src/
 
 #-----------------------------------------------------------------------
 # projects binaries
-STKERNEL_OBJS = $(patsubst $(SRC_STKERNEL_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_STKERNEL_DIR)/*.cpp))
-ARRAYS_OBJS   = $(patsubst $(SRC_ARRAYS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_ARRAYS_DIR)/*.cpp))
-SDK_OBJS      = $(patsubst $(SRC_SDK_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_SDK_DIR)/*.cpp))
-ALGEBRA_OBJS  = $(patsubst $(SRC_ALGEBRA_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_ALGEBRA_DIR)/*.cpp))
-ANALYSIS_OBJS = $(patsubst $(SRC_ANALYSIS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_ANALYSIS_DIR)/*.cpp))
-DMANAGER_OBJS = $(patsubst $(SRC_DMANAGER_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_DMANAGER_DIR)/*.cpp))
-STATISTIK_OBJS= $(patsubst $(SRC_STATISTIK_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_STATISTIK_DIR)/*.cpp))
-STATMODELS_OBJS= $(patsubst $(SRC_STATMODELS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_STATMODELS_DIR)/*.cpp))
-CLUSTERING_OBJS= $(patsubst $(SRC_CLUSTERING_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_CLUSTERING_DIR)/*.cpp))
-REGRESS_OBJS  = $(patsubst $(SRC_REGRESS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_REGRESS_DIR)/*.cpp))
-REDUCT_OBJS   = $(patsubst $(SRC_REDUCT_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_REDUCT_DIR)/*.cpp))
-AAMODELS_OBJS = $(patsubst $(SRC_AAMODELS_DIR)%.cpp, $(BIN_DIR)%.o, $(wildcard $(SRC_AAMODELS_DIR)/*.cpp))
+STKERNEL_OBJS = $(patsubst $(SRC_STKERNEL_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_STKERNEL_DIR)*.cpp))
+ARRAYS_OBJS   = $(patsubst $(SRC_ARRAYS_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_ARRAYS_DIR)*.cpp))
+SDK_OBJS      = $(patsubst $(SRC_SDK_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_SDK_DIR)*.cpp))
+ALGEBRA_OBJS  = $(patsubst $(SRC_ALGEBRA_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_ALGEBRA_DIR)*.cpp))
+ANALYSIS_OBJS = $(patsubst $(SRC_ANALYSIS_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_ANALYSIS_DIR)*.cpp))
+DMANAGER_OBJS = $(patsubst $(SRC_DMANAGER_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_DMANAGER_DIR)*.cpp))
+STATISTIK_OBJS= $(patsubst $(SRC_STATISTIK_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_STATISTIK_DIR)*.cpp))
+STATMODELS_OBJS= $(patsubst $(SRC_STATMODELS_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_STATMODELS_DIR)*.cpp))
+CLUSTERING_OBJS= $(patsubst $(SRC_CLUSTERING_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_CLUSTERING_DIR)*.cpp))
+REGRESS_OBJS  = $(patsubst $(SRC_REGRESS_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_REGRESS_DIR)*.cpp))
+REDUCT_OBJS   = $(patsubst $(SRC_REDUCT_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_REDUCT_DIR)*.cpp))
+AAMODELS_OBJS = $(patsubst $(SRC_AAMODELS_DIR)%.cpp, $(MAIN_BIN_DIR)%.o, $(wildcard $(SRC_AAMODELS_DIR)*.cpp))
 
 #-----------------------------------------------------------------------
 # all binaries
@@ -116,14 +176,6 @@ CPP_OBJS = \
   $(REGRESS_OBJS) \
   $(REDUCT_OBJS) \
   $(AAMODELS_OBJS)
-
-#-----------------------------------------------------------------------
-# all compiles the objects and create the library, no tests are build
-.PHONY: all lib obj
-all: lib
-
-# Create the library. Build the objects of each projects and then add them
-lib: obj $(STK_LIB)
 
 # obj compiles the objects in all projects
 obj: stkernel sdk dmanager arrays algebra analysis statistik statmodel clustering \
@@ -160,89 +212,58 @@ reduct:
 
 #-----------------------------------------------------------------------
 # create the library adding the objects
-$(STK_LIB): $(CPP_OBJS)
+$(STKPP_LIB): obj
 	$(AR) $(ARFLAGS) $@ $(CPP_OBJS)
 
 #-----------------------------------------------------------------------
 # rules for cleaning objects
-.PHONY: clean_lib clean_obj clean clean_stkernel clean_arrays clean_sdk \
-  clean_dmanager clean_algebra clean_analysis clean_statistik clean_statmodel \
-  clean_clustering  clean_aamodels clean_regress clean_reduct
+.PHONY: clean_lib clean_obj clean cleanStkernel cleanArrays cleanSdk \
+  cleanDmanager cleanAlgebra cleanAnalysis cleanStatistik cleanStatmodel \
+  cleanClustering  cleanAAmodels cleanRegress cleanReduct
 
 clean: clean_lib clean_obj
 
 clean_lib:
-	$(RM) $(STK_LIB)
+	$(RM) $(STKPP_LIB)
 
 clean_obj: \
-  clean_stkernel \
-  clean_arrays \
-  clean_sdk \
-  clean_dmanager \
-  clean_algebra \
-  clean_analysis \
-  clean_statistik \
-  clean_statmodel \
-  clean_clustering \
-  clean_aamodels \
-  clean_regress \
-  clean_reduct
+  cleanStkernel \
+  cleanArrays \
+  cleanSdk \
+  cleanDmanager \
+  cleanAlgebra \
+  cleanAnalysis \
+  cleanStatistik \
+  cleanStatmodel \
+  cleanClustering \
+  cleanAAmodels \
+  cleanRegress \
+  cleanReduct
 
-clean_stkernel:
+cleanStkernel:
 	$(RM) $(STKERNEL_OBJS)
-clean_arrays:
+cleanArrays:
 	$(RM) $(ARRAYS_OBJS)
-clean_sdk:
-	$(RM) $(SDK_OBJS)
-clean_dmanager:
+cleanSdk:
+#	$(RM) $(SDK_OBJS)
+cleanDmanager:
 	$(RM) $(DMANAGER_OBJS)
-clean_algebra:
+cleanAlgebra:
 	$(RM) $(ALGEBRA_OBJS)
-clean_analysis:
+cleanAnalysis:
 	$(RM) $(ANALYSIS_OBJS)
-clean_statistik:
+cleanStatistik:
 	$(RM) $(STATISTIK_OBJS)
-clean_statmodel:
+cleanStatmodel:
 	$(RM) $(STATMODELS_OBJS)
-clean_clustering:
+cleanClustering:
 	$(RM) $(CLUSTERING_OBJS)
-clean_aamodels:
+cleanAAmodels:
 	$(RM) $(AAMODELS_OBJS)
-clean_regress:
+cleanRegress:
 	$(RM) $(REGRESS_OBJS)
-clean_reduct:
+cleanReduct:
 	$(RM) $(REDUCT_OBJS)
-
-#-----------------------------------------------------------------------
-# wrapper for cmake
-#-----------------------------------------------------------------------
-.PHONY: cmake_debug cmake_release cmake_debug_0 cmake_release_0 cmake_clean cmake_doc cmake_test
-
-cmake_debug: #./build/Makefile
-	cd cmakedir/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=off
-	$(MAKE) -C cmakedir  VERBOSE=1
-
-cmake_release: #./build/Makefile
-	cd cmakedir/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true  -DZERO_BASED_ARRAYS=off -DCMAKE_BUILD_TYPE=Release
-	$(MAKE) -C cmakedir  VERBOSE=1
-
-cmake_debug_0: #./build/Makefile
-	cd cmakedir/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=on
-	$(MAKE) -C cmakedir  VERBOSE=1
-
-cmake_release_0: #./build/Makefile
-	cd cmakedir/; cmake ../ -DCMAKE_VERBOSE_MAKEFILE=true -DZERO_BASED_ARRAYS=on -DCMAKE_BUILD_TYPE=Release
-	$(MAKE) -C cmakedir  VERBOSE=1
-
-cmake_clean:
-	@- cd cmakedir/; $(MAKE) clean  VERBOSE=1
-	@- $(RM) -rf ./cmakedir/*
-	
-cmake_doc:
-	cd cmakedir/; $(MAKE) doc
-
-cmake_test:
-	cd cmakedir/; $(MAKE) test
 
 #-----------------------------------------------------------------------
 # Tests
@@ -262,8 +283,8 @@ TESTS_CLUSTERING_DIR = $(TESTS_DIR)Clustering/
 
 #-----------------------------------------------------------------------
 # rule if we want to compile test programs
-.PHONY: testsAAModels testsCsv testArrays testAlgebra testDManager testsStatModels \
-testRegress testsSTatistiK testsPages alltests testClustering cleantests
+.PHONY: testsAAModels testsCsv testsArrays testsAlgebra testsDManager testsStatModels \
+testsRegress testsSTatistiK testsPages all_tests testsClustering cleantests
 
 testsSTKernel: obj lib
 	cd $(TESTS_STKERNEL_DIR); $(MAKE) all
@@ -291,14 +312,38 @@ testsCsv: obj lib
 testsPages: obj lib
 	cd $(TESTS_DMANAGER_DIR); $(MAKE) testPages
 
-alltests: testsSTKernel testsArrays testsAnalysis testsAlgebra testsDManager \
+all_tests: testsSTKernel testsArrays testsAnalysis testsAlgebra testsDManager \
 testsStatModels testsRegress testsAAModels testsSTatistiK testsClustering
 
-clean_tests:
-	$(RM) $(BIN_DIR)test*
+.PHONY: cleantestsAAModels cleantestArrays cleantestAlgebra cleantestDManager \
+cleantestsStatModels cleantestRegress cleantestsSTatistiK cleantestClustering
+
+cleantestsSTKernel:
+	cd $(TESTS_STKERNEL_DIR); $(MAKE) clean
+cleantestsArrays:
+	cd $(TESTS_ARRAYS_DIR); $(MAKE) clean
+cleantestsAnalysis:
+	cd $(TESTS_ANALYSIS_DIR); $(MAKE) clean
+cleantestsAlgebra:
+	cd $(TESTS_ALGEBRA_DIR); $(MAKE) clean
+cleantestsRegress:
+	cd $(TESTS_REGRESS_DIR); $(MAKE) clean
+cleantestsDManager:
+	cd $(TESTS_DMANAGER_DIR); $(MAKE) clean
+cleantestsSTatistiK:
+	cd $(TESTS_STATISTIK_DIR); $(MAKE) clean
+cleantestsStatModels:
+	cd $(TESTS_STATMODELS_DIR); $(MAKE) clean
+cleantestsAAModels:
+	cd $(TESTS_AAMODELS_DIR); $(MAKE) clean
+cleantestsClustering:
+	cd $(TESTS_CLUSTERING_DIR); $(MAKE) clean
+
+clean_tests: cleantestsSTKernel cleantestsArrays cleantestsAnalysis cleantestsAlgebra cleantestsDManager \
+cleantestsStatModels cleantestsRegress cleantestsAAModels cleantestsSTatistiK cleantestsClustering
 
 #-----------------------------------------------------------------------
-# Tutorials
+# Tutorials and Programs
 #-----------------------------------------------------------------------
 # rule if we want to compile tutorial and programs
 PROGRAMS_DIR = ./programs/
@@ -319,12 +364,11 @@ contiguity:
 	cd $(CONTIGUITY_DIR); $(MAKE) all
 
 cleantuto:
-	$(RM) $(BIN_DIR)tuto*
+	$(RM) $(MAIN_BIN_DIR)tuto*
 cleanmixbin:
 	cd $(MIXBIN_DIR); $(MAKE) clean
 cleancontiguity:
 	cd $(CONTIGUITY_DIR); $(MAKE) clean
-
 
 #-----------------------------------------------------------------------
 # gui project (to remove)

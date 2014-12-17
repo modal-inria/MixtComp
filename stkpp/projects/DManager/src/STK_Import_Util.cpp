@@ -35,7 +35,7 @@
  *  strings when importing data.
  **/
 #include "../include/STK_Import_Util.h"
-#include "STKernel/include/STK_String_Util.h"
+#include "STKernel/include/STK_String.h"
 
 namespace STK
 {
@@ -48,7 +48,7 @@ namespace Import
  *  @return the TypeRegression represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_ type is returned.
  **/
-TypeImport StringToTypeImport( String const& type)
+TypeImport stringToTypeImport( String const& type)
 {
   if (toUpperString(type) == toUpperString(_T("unknown"))) return unknown_;
   if (toUpperString(type) == toUpperString(_T("numeric")))  return numeric_;
@@ -63,7 +63,7 @@ TypeImport StringToTypeImport( String const& type)
  *  @param type the type of regression we want to convert
  *  @return the string associated to this type.
  **/
-String TypeImportToString( TypeImport const& type)
+String typeImportToString( TypeImport const& type)
 {
   if (type == numeric_)  return String(_T("numeric"));
   if (type == only_numeric_) return String(_T("only_numeric"));

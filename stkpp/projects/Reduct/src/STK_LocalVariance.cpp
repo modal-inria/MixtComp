@@ -34,10 +34,9 @@
 
 #include "../include/STK_LocalVariance.h"
 
-#include "Algebra/include/STK_EigenvaluesSymmetric.h"
-#include "Algebra/include/STK_LinAlgebra2D.h"
+#include "Algebra/include/STK_SymEigen.h"
 
-#include "STKernel/include/STK_String_Util.h"
+#include "STKernel/include/STK_String.h"
 
 namespace STK
 {
@@ -68,7 +67,7 @@ String LocalVariance::typeGraphToString( TypeGraph const& type)
  * Constructor.
  * @param data the input data set
  */
-LocalVariance::LocalVariance( Matrix const* p_data, TypeGraph type, int nbNeighbor)
+LocalVariance::LocalVariance( ArrayXX const* p_data, TypeGraph type, int nbNeighbor)
                             : ILinearReduct(p_data)
                             , type_(type)
                             , nbNeighbor_(nbNeighbor)
@@ -100,7 +99,7 @@ LocalVariance::LocalVariance( Matrix const* p_data, TypeGraph type, int nbNeighb
  * Constructor.
  * @param data the input data set
  */
-LocalVariance::LocalVariance( Matrix const& data, TypeGraph type, int nbNeighbor)
+LocalVariance::LocalVariance( ArrayXX const& data, TypeGraph type, int nbNeighbor)
                             : ILinearReduct(data)
                             , type_(type)
                             , nbNeighbor_(nbNeighbor)
@@ -213,9 +212,9 @@ void LocalVariance::computeCovarianceMatrices()
   covariance_ = p_dataStatistics_->covariance();
 
   // constants
-  const int begin_ind = p_data_->firstIdxRows();
+  const int begin_ind = p_data_->beginRows();
   const int last_ind  = p_data_->lastIdxRows();
-  const int begin_var = p_data_->firstIdxCols();
+  const int begin_var = p_data_->beginCols();
   const int last_var  = p_data_->lastIdxCols();
   const Real pond = 2* nbNeighbor_ * p_data_->sizeRows();
 
@@ -247,9 +246,9 @@ void LocalVariance::computeCovarianceMatrices( Vector const& weights)
   covariance_ = p_dataStatistics_->covariance();
 
   // get dimensions
-  const int begin_ind = p_data_->firstIdxRows();
+  const int begin_ind = p_data_->beginRows();
   const int last_ind  = p_data_->lastIdxRows();
-  const int begin_var = p_data_->firstIdxCols();
+  const int begin_var = p_data_->beginCols();
   const int last_var  = p_data_->lastIdxCols();
   const Real pond = 2* nbNeighbor_ * p_data_->sizeRows() ;
   // compute weighted local covariance matrix
@@ -278,31 +277,30 @@ void LocalVariance::computeCovarianceMatrices( Vector const& weights)
 void LocalVariance::computeAxis()
 {
   // compute the number of axis, cannot be greater than the dimension of the data
-  Range range(p_data_->firstIdxCols(), std::min(dim_, p_data_->sizeCols()));
+  Range range(p_data_->beginCols(), std::min(dim_, p_data_->sizeCols()));
 
   // compute the eigenvalues decomposition of the local covariance
-  EigenvaluesSymmetric* decomp = new EigenvaluesSymmetric(localCovariance_);
+  SymEigen* decomp = new SymEigen(localCovariance_);
   decomp->run();
   // compute the generalized inverse of the local covariance
-  MatrixSquare* inv_local = decomp->ginv();
+  ArraySquareX inv_local;
+  decomp->ginv(inv_local);
   // we can safely remove the decomposition
   delete decomp;
   // compute the product
-  MatrixSquare prod;
-  prod = (*inv_local) * covariance_;
-  // we can safely remove the inverse
-  delete inv_local;
+  ArraySquareX prod;
+  prod = inv_local * covariance_;
   // compute the eigenvalues decomposition of the product
-  decomp = new EigenvaluesSymmetric(prod);
+  decomp = new SymEigen(prod);
   decomp->run();
 
   // save axis and index values
   axis_.resize(p_data_->cols(), range);
   idx_values_.resize(range);
-  for (int j=range.firstIdx(); j<=range.lastIdx(); j++)
+  for (int j=range.begin(); j<=range.lastIdx(); j++)
   {
     axis_.col(j)   = decomp->rotation().col(j);
-    idx_values_[j] = decomp->eigenvalues()[j];
+    idx_values_[j] = decomp->eigenValues()[j];
   }
   // we can safely remove the decomposition
   delete decomp;
@@ -311,7 +309,7 @@ void LocalVariance::computeAxis()
 void LocalVariance::prim()
 {
   // get dimensions
-  const int begin_ind = p_data_->firstIdxRows();
+  const int begin_ind = p_data_->beginRows();
   const int last_ind = p_data_->lastIdxRows();
   /* value vector : store the minimal value. */
   Vector value(p_data_->rows(), Arithmetic<Real>::max());
@@ -359,7 +357,7 @@ void LocalVariance::minimalDistance()
   dist_.resize(p_data_->rows(), Range(1,nbNeighbor_));
   dist_ = Arithmetic<Real>::max();
   // get dimensions
-  const int begin_ind = p_data_->firstIdxRows();
+  const int begin_ind = p_data_->beginRows();
   const int last_ind = p_data_->lastIdxRows();
   // start minimal distance algorithm
   for (int j = begin_ind; j<last_ind; j++)
@@ -420,7 +418,7 @@ void LocalVariance::clear()
 /* initialize dimension */
 void LocalVariance::initialize()
 {
-  p_dataStatistics_ = new Stat::MultivariateMatrix(p_data_);
+  p_dataStatistics_ = new Stat::MultivariateArrayXX(p_data_);
   localCovariance_.resize(p_data_->cols());
 }
 

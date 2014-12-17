@@ -3,25 +3,22 @@
 # author: Serge Iovleff
 #-----------------------------------------------------------------------
 #
-# This file have to be include in all makefile of the projects.
+# This file will be include in all makefile of the projects,
+# except if the file makevars.local is present.
 #
 #-----------------------------------------------------------------------
 #
 # HASRMATH 't' if your system has libRmath.
 # Note: If HASRMATH = t, you have to add the lines
 # LIB_RMATH_A = /usr/[local/]lib/libRmath.a   # check the path on your system
-# R_FLAGS = -DMATHLIB_STANDALONE
 #
+#LIB_RMATH_A = /usr/lib/libRmath.a   # check the path on your system
+#HASRMATH = t
 HASRMATH = f
 
 #-----------------------------------------------------------------------
-# Using stkpp in an R packages (comment CXXFLAGS and STK_FLAGS in Debug and Release section) 
-# include $(R_HOME)/etc${R_ARCH}/Makeconf
-# STK_FLAGS = ${CPICFLAGS} -ansi -pedantic -Wall
-
-#-----------------------------------------------------------------------
 #   Macro       Significance
-#               
+#
 #   CC         C compiler
 #   CXX        C++ compiler
 #
@@ -36,35 +33,31 @@ CXX   = g++
 # make program
 # MAKE  = make
 
-
 #-----------------------------------------------------------------------
 # Name of the STK++ library
 LIB_STKPP_A = libSTKpp.a
 
 #-----------------------------------------------------------------------
-# specific C flags
-# long long are available
-CFLAGS   = -Wno-long-long
-
-#-----------------------------------------------------------------------
-# flags in Debug mode 
-#CXXFLAGS   = -std=c++11 -ansi -pedantic -Wall -g -O0
-#CXXFLAGS   = -ansi -pedantic -Wall -g -O0
-# STK_FLAGS = -DSTK_BOUNDS_CHECK  -DSTK_DEBUG
-
+# linking flags
 LDFLAGS =
-LDLIBS = -lm
+# comment if you are not using lapack and/or openmp
+LDLIBS = -lm -llapack -fopenmp
+STK_CXXFLAGS += -DSTKUSELAPACK
 
 #-----------------------------------------------------------------------
-# flags in Release mode 
-#CXXFLAGS   = -std=c++11 -ansi -pedantic -Wall -O3 -ftree-vectorize -march=native -funroll-loops
-CXXFLAGS   = -ansi -pedantic -Wall -O3 -march=native -funroll-loops
+# flags in Debug mode
+# STK_CXXFLAGS = -DSTK_BOUNDS_CHECK  -DSTK_DEBUG
+#CXXFLAGS   = -std=c++11 -ansi -pedantic -Wall -g -Wno-long-long
 
 #-----------------------------------------------------------------------
-# Uncomment the next line if you want to have 1 based arrays 
-#STK_FLAGS += -DSTKBASEARRAYS=1
+# flags in Release mode
+CXXFLAGS   = -ansi -pedantic -Wall -O3 -fopenmp
+
+#-----------------------------------------------------------------------
+# Uncomment the next line if you want to have 1 based arrays
+#STK_CXXFLAGS += -DSTKBASEARRAYS=1
 
 #-----------------------------------------------------------------------
 # Uncomment the next line if you want to use wchar set
 # (will not work).
-# STK_FLAGS = -DSTK_UNICODE
+# STK_CXXFLAGS += -DSTK_UNICODE

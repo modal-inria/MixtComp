@@ -60,85 +60,53 @@ int main(int argc, char *argv[])
   handler.writeInfo(std::cout);
 
   MixtureManager<DataHandler> manager(handler);
-  //stk_cout << handler.data();
   //  CsvToArray<Array2D<Real>, String > import(handler.data(), 0.2);
   //  import.run();
   //  stk_cout << import.p_data()->safe();
   stk_cout << _T("\n\n");
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ composer(), setDataHandler()                      +\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ Create composers and setDataHandler               +\n");
-  MixtureComposer* composer = new MixtureComposer(handler.nbSample(), handler.nbVariable(),3);
-
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ CreateMixtures() and initializeStep()            +\n");
-  stk_cout << _T("+ composer:                                         +\n");
+  stk_cout << _T("+ Create composer and Mixtures                      +\n");
+  MixtureComposer* composer = new MixtureComposer(handler.nbSample(),3);
   composer->createMixtures(manager);
-//  composer->initializeStep();
-//  composer->writeParameters(stk_cout);
-//
-//  stk_cout << _T("\n\n");
-//  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//  stk_cout << _T("+ test randomClassInit(). composer:                 +\n");
-//  composer->randomClassInit();
-//  composer->writeParameters(stk_cout);
-//
-//  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//  stk_cout << _T("+ sem iterations. composer:                         +\n");
-//  composer->samplingStep();
-//  composer->mStep();
-//  composer->sStep();
-//  composer->eStep();
-//  composer->writeParameters(stk_cout);
-//  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//  stk_cout << _T("+ em iterations. composer:                           +\n");
-//  composer->imputationStep();
-//  composer->mStep();
-//  composer->eStep();
-//  composer->writeParameters(stk_cout);
-//  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//  stk_cout << _T("+ cem iterations. composer:                           +\n");
-//  composer->imputationStep();
-//  composer->cStep();
-//  composer->eStep();
-//  composer->writeParameters(stk_cout);
   delete composer;
-//
+  stk_cout << _T("\n\n");
+  stk_cout << _T("+ Create composer and Mixtures done without error   +\n");
+  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   //
   stk_cout << _T("\n\n");
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ Testing strategies                                  +\n");
-  IMixtureComposerBase* composer1 = new MixtureComposer(handler.nbSample(), handler.nbVariable(),3);
-  IMixtureComposerBase* composerFixed1 = new MixtureComposerFixedProp(handler.nbSample(), handler.nbVariable(),3);
+  stk_cout << _T("+ Testing strategies: creating composer and mixtures+\n");
+  IMixtureComposer* composer1 = new MixtureComposer(handler.nbSample(),3);
   MixtureComposer* p_composer1 = static_cast<MixtureComposer*>(composer1);
+
+  IMixtureComposer* composerFixed1 = new MixtureComposerFixedProp(handler.nbSample(),3);
   MixtureComposerFixedProp* p_composerFixed1 = static_cast<MixtureComposerFixedProp*>(composerFixed1);
 
-  stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ CreateMixtures(), initializeStep()               +\n");
-  stk_cout << _T("+ composer:                                         +\n");
   p_composer1->createMixtures(manager);
-  p_composer1->initializeStep();
-  p_composer1->writeParameters(stk_cout);
   p_composerFixed1->createMixtures(manager);
-  p_composerFixed1->initializeStep();
-  p_composerFixed1->writeParameters(stk_cout);
 
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   stk_cout << _T("+ testSimpleStrategy: composer1                     +\n");
-  testSimpleStrategy((composer1));
+  testSimpleStrategy(composer1);
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   stk_cout << _T("+ testSimpleStrategy: composerFixed1                +\n");
-  testSimpleStrategy((composerFixed1));
+  testSimpleStrategy(composerFixed1);
 
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ testXemStrategy: composer1                        +\n");
-  testXemStrategy((composer1));
+  stk_cout << _T("+ testFullStrategy: composer1                        +\n");
+  testFullStrategy(composer1, Clust::randomClassInit_
+                   , 5, Clust::semAlgo_
+                   , 2, 10, 5
+                   , Clust::semiSemAlgo_
+                   , Clust::semiSemAlgo_);
+
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ testXemStrategy: composerFixed1                   +\n");
-  testXemStrategy((composerFixed1));
+  stk_cout << _T("+ testFullStrategy: composerFixed1                  +\n");
+  testFullStrategy(composerFixed1, Clust::randomClassInit_
+                   , 5, Clust::semAlgo_
+                   , 2, 10, 5
+                   , Clust::semiSemAlgo_
+                   , Clust::semiSemAlgo_);
 
   delete composer1;
   delete composerFixed1;

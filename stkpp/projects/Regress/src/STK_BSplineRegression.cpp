@@ -34,7 +34,6 @@
  **/
 
 
-#include "Algebra/include/STK_LinAlgebra2D.h"
 #include "Algebra/include/STK_GinvSymmetric.h"
 
 #include "../include/STK_BSplineRegression.h"
@@ -42,13 +41,13 @@
 namespace STK
 {
 
-BSplineRegression::BSplineRegression( Matrix const* p_y
-                                    , Vector const* p_x
+BSplineRegression::BSplineRegression( ArrayXX const* p_y
+                                    , VectorX const* p_x
                                     , int const& nbControlPoints
                                     , int const& degree
                                     , const _Kposition& position
                                     )
-                                    : IRegression<Matrix, Vector, Vector>(p_y, p_x)
+                                    : IRegression<ArrayXX, Vector, Vector>(p_y, p_x)
                                     , nbControlPoints_(nbControlPoints)
                                     , degree_(degree)
                                     , position_(position)
@@ -60,10 +59,10 @@ BSplineRegression::~BSplineRegression()
 {}
 
 /* compute the regression function. */
-void BSplineRegression::regression()
+void BSplineRegression::regressionStep()
 {
   // compute X'X
-  MatrixSquare prod;
+  ArraySquareX prod;
   prod.move(multLeftTranspose(coefs_.coefficients()));
 
   // compute (X'X)^{-1}
@@ -78,7 +77,7 @@ void BSplineRegression::regression()
 void BSplineRegression::regression(Vector const& weights)
 {
   // compute X'X
-  MatrixSquare prod;
+  ArraySquareX prod;
   prod.move(weightedMultLeftTranspose(coefs_.coefficients(), weights));
 
   // compute (X'X)^{-1}
@@ -86,19 +85,17 @@ void BSplineRegression::regression(Vector const& weights)
   inv(prod);
 
   // compute X'Y
-  Matrix temp;
+  ArrayXX temp;
   temp.move(wmultLeftTranspose(coefs_.coefficients(), p_y_->asDerived(), weights));
   // compute (X'X)^{-1}X'Y
   controlPoints_.move(mult(prod, temp));
 }
 
 /* Compute the predicted outputs by the regression function. */
-void BSplineRegression::prediction()
+void BSplineRegression::predictionStep()
 {
-  // create predictions if it does not exist any
-  if (!p_predicted_) p_predicted_ = new Matrix;
   // compute predictions
-  p_predicted_->move(mult(coefs_.coefficients(), controlPoints_));
+  predicted_.move(mult(coefs_.coefficients(), controlPoints_));
 }
 
 /* @brief Extrapolate the values @c y from the value @c x.
@@ -107,7 +104,7 @@ void BSplineRegression::prediction()
  *  @param x the input data set
  *  @param y the output (extrapolated) data set
  */
-Matrix BSplineRegression::extrapolate( Vector const& x) const
+ArrayXX BSplineRegression::extrapolate( Vector const& x) const
 { return mult(coefs_.extrapolate(x), controlPoints_);}
 
 } // namespace STK

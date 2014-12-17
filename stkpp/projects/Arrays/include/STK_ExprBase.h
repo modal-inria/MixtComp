@@ -57,18 +57,19 @@
 namespace STK
 {
 template<class Derived> class ExprBase;
+template<class Derived> class ArrayBase;
 template<class Derived, class Rhs> struct  ProductReturnType;
 template<class Derived> class  ArrayInitializer;
 } // namespace STK
 
 #include "STKernel/include/STK_Functors.h"
 
-#include "Arrays/include/products/STK_ProductOperators.h"
-
-#include "Arrays/include/operators/STK_TransposeOperator.h"
-#include "Arrays/include/operators/STK_UnaryOperators.h"
-#include "Arrays/include/operators/STK_BinaryOperators.h"
-#include "Arrays/include/operators/STK_DotOperators.h"
+#include "products/STK_ProductOperators.h"
+#include "operators/STK_TransposeOperator.h"
+#include "operators/STK_DiagOperator.h"
+#include "operators/STK_UnaryOperators.h"
+#include "operators/STK_BinaryOperators.h"
+#include "operators/STK_DotOperators.h"
 
 namespace STK
 {
@@ -184,10 +185,12 @@ class ExprBase : public ITContainer<Derived, hidden::Traits<Derived>::structure_
     inline Type const norm2() const;
     /** @return the infinite norm of this*/
     inline Type const normInf() const;
-    /** @return the mean of all the elements of this using a Visitor*/
+    /** @return the mean of all the elements of this*/
     inline Type const mean() const;
-    /** @return the variance of all the elements of this using a Visitor*/
+    /** @return the variance of all the elements of this*/
     inline Type const variance() const;
+    /** @return the variance with given mean of all the elements of this*/
+    inline Type const variance(Type const mean) const;
 
     /** @return the weighted sum of all the elements of this using a Visitor
      *  @note will only work with row-vectors or col-vectors
@@ -214,6 +217,9 @@ class ExprBase : public ITContainer<Derived, hidden::Traits<Derived>::structure_
      **/
     template<typename Rhs>
     inline Type const wvariance(ExprBase<Rhs> const& weights) const;
+    /** @return the variance with given mean of all the elements of this*/
+    template<typename Rhs>
+    inline Type const wvariance(Type const wmean, ExprBase<Rhs> const& weights) const;
 
     /** @return the weighted sum of all the elements of this using a Visitor
      *  @note will only work with row-vectors or col-vectors
@@ -343,6 +349,10 @@ class ExprBase : public ITContainer<Derived, hidden::Traits<Derived>::structure_
     /** @return the transposed expression of this. */
     inline TransposeOperator<Derived> transpose() const
     { return TransposeOperator<Derived> (this->asDerived());}
+
+    /** @return the diagonal expression of this. */
+    inline DiagOperator<Derived> diag() const
+    { return DiagOperator<Derived> (this->asDerived());}
 
     /** @return the j-th column of this. */
     inline ColOperator<Derived> col(int j) const

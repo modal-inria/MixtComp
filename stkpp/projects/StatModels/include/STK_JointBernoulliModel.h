@@ -140,7 +140,7 @@ class JointBernoulliModel : public IMultiStatModel<Array, WColVector, JointBerno
     virtual Real computeLnLikelihood( RowVector const& rowData) const
     {
       Real sum =0.;
-      for (Integer j= rowData.firstIdx(); j <= rowData.lastIdx(); ++j)
+      for (Integer j= rowData.begin(); j <= rowData.lastIdx(); ++j)
       {
         sum += rowData[j] * p_param()->lnProb(j)
              + (1-rowData[j] * p_param()->ln1mProb(j) );
@@ -151,12 +151,12 @@ class JointBernoulliModel : public IMultiStatModel<Array, WColVector, JointBerno
     /** compute the parameters */
     virtual void computeParameters()
     {
-      for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
+      for (int j=p_data()->beginCols(); j < p_data()->endCols(); ++j)
       {
         Real sum=0.;
         int nbObs=p_data()->sizeRows();
 
-        for (int i=p_data()->firstIdxRows(); i<=p_data()->lastIdxRows(); ++i)
+        for (int i=p_data()->beginRows(); i<=p_data()->lastIdxRows(); ++i)
         { (p_data()->elt(i,j) == binaryNA_) ? --nbObs : sum += p_data()->elt(i,j);}
         if (nbObs != 0) { p_param()->setProb(j,sum/nbObs);}
                    else { p_param()->setProb(j, Arithmetic<Real>::NA());}
@@ -168,10 +168,10 @@ class JointBernoulliModel : public IMultiStatModel<Array, WColVector, JointBerno
     virtual void computeParameters(WColVector const& weights)
     {
       // compute
-      for (int j=p_data()->firstIdxCols(); j<=p_data()->lastIdxCols(); ++j)
+      for (int j=p_data()->beginCols(); j < p_data()->endCols(); ++j)
       {
         Real sum=0., wsum = 0.;
-        for (int i=p_data()->firstIdxRows(); i<=p_data()->lastIdxRows(); ++i)
+        for (int i=p_data()->beginRows(); i<=p_data()->lastIdxRows(); ++i)
         { if (p_data()->elt(i,j) != binaryNA_)
           { sum  += weights[i]*p_data()->elt(i,j);
             wsum += weights[i];

@@ -40,6 +40,8 @@
 #ifndef STK_DENSEARRAYBASE_H
 #define STK_DENSEARRAYBASE_H
 
+#include "STK_ArrayBase.h"
+
 #include "STK_ExprBaseVisitor.h"
 #include "STK_ExprBaseDot.h"
 #include "STK_ExprBaseProduct.h"
@@ -134,23 +136,38 @@ class ICArray : public ArrayBase<Derived>
     {}
     /**  destructor */
     inline ~ICArray() {}
+
   public:
     /** @return the Horizontal range */
     inline Range cols() const { return allocator_.cols();};
     /**  @return the index of the first column */
-    inline int firstIdxCols() const { return allocator_.firstIdxCols();}
-    /** @return the index of the last column */
-    inline int lastIdxCols() const { return allocator_.lastIdxCols();}
+    inline int beginColsImpl() const { return allocator_.beginCols();}
+    /**  @return the ending index of the columns */
+    inline int endColsImpl() const { return allocator_.endCols();}
     /** @return the Horizontal size (the number of column) */
     inline int sizeColsImpl() const { return allocator_.sizeCols();}
-    /**  @return the Range of the rows of the container. */
+
+    /**  @return the Range of the rows of the container */
     inline Range rows() const { return allocator_.rows();}
     /** @return the index of the first row*/
-    inline int firstIdxRows() const { return allocator_.firstIdxRows();}
-    /** @return the index of the last row */
-    inline int lastIdxRows() const { return allocator_.lastIdxRows();}
+    inline int beginRowsImpl() const { return allocator_.beginRows();}
+    /** @return the ending index of the rows */
+    inline int endRowsImpl() const { return allocator_.endRows();}
     /** @return the Vertical size (the number of rows) */
     inline int sizeRowsImpl() const { return allocator_.sizeRows();}
+
+    /**  @return the index of the first column */
+    inline int firstIdxCols() const { return allocator_.beginCols();}
+    /** @return the index of the last column */
+    inline int lastIdxCols() const { return allocator_.lastIdxCols();}
+    /** @return the index of the first row*/
+    inline int firstIdxRows() const { return allocator_.beginRows();}
+    /** @return the index of the last row */
+    inline int lastIdxRows() const { return allocator_.lastIdxRows();}
+
+    /** @return @c true if the container is empty, @c false otherwise */
+     inline bool empty() const { return allocator_.empty();}
+
     /** @return @c true if *this is reference container, @c false otherwise */
     inline bool isRef() const { return allocator_.isRef();}
 
@@ -162,31 +179,48 @@ class ICArray : public ArrayBase<Derived>
     inline Type* p_data() { return allocator_.p_data();}
 
     // general arrays
-    inline Type& elt2Impl( int const& i, int const& j)
-    { return allocator_.elt(i, j);}
-    inline Type const elt2Impl( int const& i, int const& j) const
-    { return allocator_.elt(i, j);}
-
-    inline Row row(int const& i) const { return  Row( allocator_.row(i));}
-    inline SubRow row(int const& i, Range const& J) const { return SubRow( allocator_.row( i, J));}
-
-    inline Col col(int const& j) const { return  Col( allocator_.col(j));}
-    inline SubCol col(Range const& I, int const& j) const { return SubCol( allocator_.col( I, j));}
-
-    inline SubArray sub(Range const& I, Range const& J) const { return SubArray(allocator_.sub(I, J));}
+    inline Type& elt2Impl( int i, int j) { return allocator_.elt(i, j);}
+    inline Type const& elt2Impl( int i, int j) const { return allocator_.elt(i, j);}
 
     // vectors and points
-    inline Type& elt1Impl( int const& j) { return allocator_.elt(j);}
-    inline Type const elt1Impl( int const& j) const { return allocator_.elt(j);}
+    inline Type& elt1Impl( int j) { return allocator_.elt(j);}
+    inline Type const& elt1Impl( int j) const { return allocator_.elt(j);}
 
     // numbers
     inline Type& elt0Impl() { return allocator_.elt();}
-    inline Type const elt0Impl() const { return allocator_.elt();}
+    inline Type const& elt0Impl() const { return allocator_.elt();}
 
-    inline SubVector sub( Range const& J) const { return SubVector( allocator_.sub(J));}
+    inline Row rowImpl(int i) const { return  Row( allocator_.row(i));}
+    inline SubRow rowImpl(int i, Range const& J) const { return SubRow( allocator_.row( i, J));}
+
+    inline Col colImpl(int j) const { return  Col( allocator_.col(j));}
+    inline SubCol colImpl(Range const& I, int j) const { return SubCol( allocator_.col( I, j));}
+
+    inline SubArray subImpl(Range const& I, Range const& J) const { return SubArray(allocator_.sub(I, J));}
+
+    inline SubVector subImpl( Range const& J) const { return SubVector( allocator_.sub(J));}
 
     /** @return the transposed CArray. */
     inline Transposed transpose() const { return Transposed(allocator_.transpose());}
+    /** swap two elements: only for vectors an points. */
+    inline void swap(int i, int  j) { std::swap(this->elt(i), this->elt(j)); }
+    /** Swapping the pos1 column and the pos2 column.
+     *  @param pos1 position of the first col
+     *  @param pos2 position of the second col
+     **/
+    void swapCols(int pos1, int pos2)
+    {
+      if (this->beginCols() > pos1)
+      { STKOUT_OF_RANGE_2ARG(ICArray::swapCols,pos1, pos2,beginCols() >pos1);}
+      if (this->lastIdxCols() < pos1)
+      { STKOUT_OF_RANGE_2ARG(ICArray::swapCols,pos1, pos2,lastIdxCols() <pos1);}
+      if (this->beginCols() > pos2)
+      { STKOUT_OF_RANGE_2ARG(ICArray::swapCols,pos1, pos2,beginCols() >pos2);}
+      if (this->lastIdxCols() < pos2)
+      { STKOUT_OF_RANGE_2ARG(ICArray::swapCols,pos1, pos2,lastIdxCols() <pos2);}
+      // swap allocator
+      allocator_.swapCols(pos1, pos2);
+    }
     /** exchange this with T.
      *  @param T the container to exchange with this
      **/
@@ -196,14 +230,14 @@ class ICArray : public ArrayBase<Derived>
      **/
     inline void move(Derived const& T) { allocator_.move(T.allocator_);}
     /** shift the Array.
-     *  @param firstIdxRows,firstIdxCols  first indexes of the rows and columns
+     *  @param firstIdxRows,beginCols  first indexes of the rows and columns
      **/
-    Derived& shift(int firstIdxRows, int firstIdxCols)
+    Derived& shift(int firstIdxRows, int beginCols)
     {
-      if((this->firstIdxRows() == firstIdxRows) && (this->firstIdxCols()==firstIdxCols)) return this->asDerived();
+      if((this->beginRows() == firstIdxRows) && (this->beginCols()==beginCols)) return this->asDerived();
       if (this->isRef())
-      { STKRUNTIME_ERROR_2ARG(ICArray::shift,firstIdxRows,firstIdxCols,cannot operate on reference);}
-      allocator_.shift(firstIdxRows, firstIdxCols);
+      { STKRUNTIME_ERROR_2ARG(ICArray::shift,firstIdxRows,beginCols,cannot operate on reference);}
+      allocator_.shift(firstIdxRows, beginCols);
       return this->asDerived();
     }
     /** shift the Array.
@@ -211,7 +245,7 @@ class ICArray : public ArrayBase<Derived>
      **/
     Derived& shift(int firstIdx)
     {
-      if((this->firstIdx() == firstIdx)) return this->asDerived();
+      if((this->begin() == firstIdx)) return this->asDerived();
       if (this->isRef())
       { STKRUNTIME_ERROR_1ARG(ICArray::shift,firstIdx,cannot operate on reference);}
       allocator_.shift(firstIdx);
@@ -227,19 +261,19 @@ class ICArray : public ArrayBase<Derived>
       if (this->isRef())
       { STKRUNTIME_ERROR_2ARG(ICArray::resize,I,J,cannot operate on reference);}
       allocator_.resize(I.size(), J.size());
-      allocator_.shift(I.firstIdx(), J.firstIdx());
+      allocator_.shift(I.begin(), J.begin());
       return this->asDerived();
     }
     /** Resize the vector.
      *  @param I Range of the vector
      **/
-    inline Derived& resize(Range const& I)
+    Derived& resize(Range const& I)
     {
       if (this->range() == I) return this->asDerived();
       if (this->isRef())
       { STKRUNTIME_ERROR_1ARG(ICArray::resize,I,cannot operate on reference);}
       allocator_.resize(I.size());
-      allocator_.shift(I.firstIdx());
+      allocator_.shift(I.begin());
       return this->asDerived();
     }
   private:
@@ -255,29 +289,29 @@ class ICArray : public ArrayBase<Derived>
         this->resize(src.rows(), src.cols());
 
       // Copy without overlapping
-      if (src.firstIdxRows()>=this->firstIdxRows())
+      if (src.beginRows()>=this->beginRows())
       {
-        if (src.firstIdxCols()>this->firstIdxCols())
+        if (src.beginCols()>this->beginCols())
         {
-          for ( int jSrc=src.firstIdxCols(), jDst=this->firstIdxCols(); jSrc<=src.lastIdxCols(); jDst++, jSrc++)
+          for ( int jSrc=src.beginCols(), jDst=this->beginCols(); jSrc<=src.lastIdxCols(); jDst++, jSrc++)
           { this->copyColumnForward(src, jDst, jSrc);}
         }
         else
         {
-          for ( int jSrc=src.lastIdxCols(), jDst=this->lastIdxCols(); jSrc>=src.firstIdxCols(); jDst--, jSrc--)
+          for ( int jSrc=src.lastIdxCols(), jDst=this->lastIdxCols(); jSrc>=src.beginCols(); jDst--, jSrc--)
           { this->copyColumnForward(src, jDst, jSrc);}
         }
         return this->asDerived();
       }
-      // src.firstIdxRows()<this->firstIdxRows()
-      if (src.firstIdxCols()>=this->firstIdxCols())
+      // src.beginRows()<this->beginRows()
+      if (src.beginCols()>=this->beginCols())
       {
-        for ( int jSrc=src.firstIdxCols(), jDst=this->firstIdxCols(); jSrc<=src.lastIdxCols(); jDst++, jSrc++)
+        for ( int jSrc=src.beginCols(), jDst=this->beginCols(); jSrc<=src.lastIdxCols(); jDst++, jSrc++)
         { this->copyColumnBackward(src, jDst, jSrc);}
       }
-      else // src.firstIdxCols()<this->firstIdxCols()
+      else // src.beginCols()<this->beginCols()
       {
-        for ( int jSrc=src.lastIdxCols(), jDst=this->lastIdxCols(); jSrc>=src.firstIdxCols(); jDst--, jSrc--)
+        for ( int jSrc=src.lastIdxCols(), jDst=this->lastIdxCols(); jSrc>=src.beginCols(); jDst--, jSrc--)
         { this->copyColumnBackward(src, jDst, jSrc);}
       }
       return this->asDerived();

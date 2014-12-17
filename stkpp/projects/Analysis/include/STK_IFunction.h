@@ -45,14 +45,14 @@ namespace STK
  *  @brief Interface base class for functions.
  *
  * The IFunction class is the templated base class for all functions.
- * 
+ *
  * IFunction takes a function template parameter. This parameter
  * is the type of the class which derives from it. For example
  * @code
  * class Function : public IFunction<Function>
  * {...}
  * @endcode
-  * 
+  *
  * The pseudo virtual function defined in this interface and to implement
  * have the following definition:
  * @code
@@ -69,9 +69,9 @@ class IFunction : public IRecursiveTemplate<Function>
 {
   protected:
     /** Default Constructor*/
-    IFunction() {}
+    inline IFunction() {}
     /** destructor.*/
-    ~IFunction() {}
+    inline ~IFunction() {}
 
   public:
     /** @return the value of the function at x
@@ -84,7 +84,7 @@ class IFunction : public IRecursiveTemplate<Function>
     /** @return the maximal value of the function at x */
     inline Real xmax() const { return this->asDerived().xmaxImpl();}
 
-    /** @return Default implmentation of the minimal value */
+    /** @return Default implementation of the minimal value */
     inline Real xminImpl() const { return -Arithmetic<Real>::max();}
     /** @return Default implementation of the maximal value */
     inline Real xmaxImpl() const { return Arithmetic<Real>::max();}

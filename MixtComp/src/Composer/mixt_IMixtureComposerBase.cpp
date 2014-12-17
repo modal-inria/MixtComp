@@ -37,6 +37,8 @@
 #include "mixt_IMixtureComposerBase.h"
 #include "STatistiK/include/STK_Law_Categorical.h"
 #include "STatistiK/include/STK_Stat_Functors.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DPoint.h"
 
 namespace mixt
 {
@@ -67,7 +69,7 @@ IMixtureComposerBase::~IMixtureComposerBase() {}
 void IMixtureComposerBase::randomClassInit()
 {
   STK::Law::Categorical law(prop_);
-  for (int i = zi_.firstIdx(); i <= zi_.lastIdx(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
     zi_.elt(i) = law.rand();
   }

@@ -36,7 +36,7 @@
 #include "Arrays.h"
 using namespace STK;
 
-
+/** @ingroup Arrays */
 struct TestMultiplicator
 {
     CVectorX operator()(CVectorX const& x) const
@@ -53,34 +53,29 @@ struct TestMultiplicator
       A_ = A_.transpose() * A_;
     }
     // fixed matrix
-    TestMultiplicator(CArrayXX const& A) : A_(A)
-    {}
+    TestMultiplicator(CArrayXX const& A) : A_(A) {}
     CArrayXX A_;
 };
 
+/** @ingroup Arrays */
 struct IdMultiplicator
 {
-    CVectorX operator()(CVectorX const& x) const
-    {
-      return   x ;
-    }
-
+  CVectorX operator()(CVectorX const& x) const
+  { return   x ;}
 };
 
+/** @ingroup Arrays */
 struct DiagonalMultiplicator
 {
-    CVectorX operator()(CVectorX const& x) const
-    {
-      CVectorX a;
-      a = M_ * x;
-      return   a ;
-    }
-    DiagonalMultiplicator(CArrayXX const& A) : M_(A.sizeRows())
-    {
-      for(int i = 1; i<= A.sizeRows() ;i++)
-        M_[i]=1/A(i,i);
-    }
-    Array2DDiagonal<Real> M_;
+  CVectorX operator()(CVectorX const& x) const
+  {
+    CVectorX a;
+    a = M_ * x;
+    return   a ;
+  }
+  DiagonalMultiplicator(CArrayXX const& A) : M_(A.rows())
+  { for (int i = M_.begin(); i< M_.end() ;i++) M_[i]=1/A(i,i);}
+  Array2DDiagonal<Real> M_;
 };
 
 

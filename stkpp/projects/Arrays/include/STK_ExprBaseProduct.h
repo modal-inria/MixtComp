@@ -46,16 +46,16 @@ namespace STK
 // in the product folder
 template<typename Lhs, typename Rhs> class DotProduct;
 
-template<typename Lhs, typename Rhs> class MatrixByMatrixProduct;
-template<typename Lhs, typename Rhs> class MatrixByVectorProduct;
-template<typename Lhs, typename Rhs> class MatrixByDiagonalProduct;
+template<typename Lhs, typename Rhs> class ArrayByArrayProduct;
+template<typename Lhs, typename Rhs> class ArrayByVectorProduct;
+template<typename Lhs, typename Rhs> class ArrayByDiagonalProduct;
 
-template<typename Lhs, typename Rhs> class PointByMatrixProduct;
+template<typename Lhs, typename Rhs> class PointByArrayProduct;
 template<typename Lhs, typename Rhs> class PointByDiagonalProduct;
 
 template<typename Lhs, typename Rhs> class VectorByPointProduct;
 
-template<typename Lhs, typename Rhs> class DiagonalByMatrixProduct;
+template<typename Lhs, typename Rhs> class DiagonalByArrayProduct;
 template<typename Lhs, typename Rhs> class DiagonalByVectorProduct;
 
 
@@ -65,19 +65,19 @@ namespace hidden
  *  @brief Helper class to select the correct ProductreturnType.
  *
  *  If there is n structure, there is potentially n(n-1)/2 kind
- *  of product. Default is MatrixByMatrixProduct.
+ *  of product. Default is ArrayByArrayProduct.
  **/
 template<typename Lhs, typename Rhs, int LStructure_, int RStructure_>
 struct ProductSelector
-{ typedef MatrixByMatrixProduct<Lhs, Rhs> ReturnType;};
+{ typedef ArrayByArrayProduct<Lhs, Rhs> ReturnType;};
 
 template<typename Lhs, typename Rhs, int LStructure_>
 struct ProductSelector<Lhs, Rhs, LStructure_, Arrays::vector_>
-{ typedef MatrixByVectorProduct<Lhs, Rhs> ReturnType;};
+{ typedef ArrayByVectorProduct<Lhs, Rhs> ReturnType;};
 
 template<typename Lhs, typename Rhs, int RStructure_>
 struct ProductSelector<Lhs, Rhs, Arrays::point_, RStructure_>
-{ typedef PointByMatrixProduct<Lhs, Rhs> ReturnType;};
+{ typedef PointByArrayProduct<Lhs, Rhs> ReturnType;};
 
 template<typename Lhs, typename Rhs>
 struct ProductSelector<Lhs, Rhs, Arrays::point_, Arrays::diagonal_>
@@ -91,11 +91,11 @@ struct ProductSelector<Lhs, Rhs, Arrays::vector_, Arrays::point_>
 
 template<typename Lhs, typename Rhs, int LStructure_>
 struct ProductSelector<Lhs, Rhs, LStructure_, Arrays::diagonal_>
-{ typedef MatrixByDiagonalProduct<Lhs, Rhs> ReturnType;};
+{ typedef ArrayByDiagonalProduct<Lhs, Rhs> ReturnType;};
 
 template<typename Lhs, typename Rhs, int RStructure_>
 struct ProductSelector<Lhs, Rhs, Arrays::diagonal_, RStructure_>
-{ typedef DiagonalByMatrixProduct<Lhs, Rhs> ReturnType;};
+{ typedef DiagonalByArrayProduct<Lhs, Rhs> ReturnType;};
 
 
 

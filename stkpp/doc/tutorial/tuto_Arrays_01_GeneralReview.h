@@ -50,21 +50,24 @@
  * operator[] is thus restricted to vectors/points.
  * For vectors, just pass one index in a bracket.
  *
- * The numbering starts at 1. This behavior can be modify by defining the
- * STKBASEARRAYS macro at compile time using the directive -DSTKBASEARRAYS=0
- * for 0 based arrays. If you want to build code independent of the numbering
- * start you should use the @c firstIdxCols(), firstIdxRows(), lastIdxCols(),
- * lastIdxRows() method of the arrays and the @c firstIdx(), lastIdx() methods
- * of the Row-vectors, Column-Vectors, square matrices and diagonal matrices.
+ * The numbering starts at 0. This behavior can be modify by defining the
+ * STKBASEARRAYS macro at compile time using the directive -DSTKBASEARRAYS=1
+ * for 1 based arrays like in FORTRAN. If you want to build code independent of
+ * the numbering start you should use the @c beginCols(), beginRows(), endCols(),
+ * lastIdxCols(), endRows() and lastIdxRows() method of the arrays and the
+ * @c begin(), end(), lastIdx() methods of the Row-vectors, Column-Vectors,
+ * square matrices and diagonal matrices.
  *
  * For example
  * @code
  * Array2D t(5, 5); // array of size 5x5
- * for (int i=t.firstIdxRows(); i<=lastIdxRows(); i++)
+ * for (int i=t.beginRows(); i<t.endRows(); i++)
  * {
  *   Array2DPoint r(t.row(i), true); // create a reference on the i-th row of t
- *   // fill the i-th row of t with the number i. Same (but slower) than r=i;
- *   for (int j=r.firstIdx(); j<=lastIdx(); j++) { r[j] = i;}
+ *   // fill the i-th row of t with the number i
+ *   r= i;
+ *   // Do the same than r=i;
+ *   // for (int j=r.begin(); j<r.end(); j++) { r[j] = i;}
  * }
  * @endcode
  *
@@ -88,7 +91,6 @@
  *
  * On the other hand the CArray class have five template parameters:
  * - the type of the data that will be stored,
- * - the Structure of the array,
  * - the number of rows if it is known at compile time,
  * - the number of columns if it is known at compile time,
  * - the Orientation scheme of the data (by row or by column).

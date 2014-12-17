@@ -214,9 +214,9 @@ namespace Arrays
 {
 
 /** @ingroup Arrays
- *  @brief Matrix sum (by coefficient)
- *  Perform the matrix sum coefficient by coefficient of the Matrix lhs
- *  by the Matrix rhs
+ *  @brief Array sum (by coefficient)
+ *  Perform the matrix sum coefficient by coefficient of the Array lhs
+ *  by the Array rhs
  **/
 template<typename Lhs, typename Rhs>
 struct SumOp
@@ -237,17 +237,17 @@ struct SumOp
   {
     res_.resize(rows_, cols_); res_ = Type();
     Range cols = Range::inf(cols_, lhs_.cols());
-    for (int j= cols.firstIdx(); j <= cols.lastIdx(); ++j)
+    for (int j= cols.begin(); j <= cols.lastIdx(); ++j)
     {
       Range rows = Range::inf(rows_, lhs_.rangeRowsInCol(j));
-      for (int i= rows.firstIdx(); i <= rows.lastIdx(); ++i)
+      for (int i= rows.begin(); i <= rows.lastIdx(); ++i)
       { res_(i,j) += lhs_(i,j);}
     }
     cols = Range::inf(cols_, rhs_.cols());
-    for (int j= cols.firstIdx(); j <= cols.lastIdx(); ++j)
+    for (int j= cols.begin(); j <= cols.lastIdx(); ++j)
     {
       Range rows = Range::inf(rows_, rhs_.rangeRowsInCol(j));
-      for (int i= rows.firstIdx(); i <= rows.lastIdx(); ++i)
+      for (int i= rows.begin(); i <= rows.lastIdx(); ++i)
       { res_(i,j) += rhs_(i,j);}
     }
     return res_;
@@ -261,9 +261,9 @@ struct SumOp
 };
 
 /** @ingroup Arrays
- *  @brief Matrix difference (by coefficient)
- *  Perform the matrix difference coefficient by coefficient of the Matrix lhs
- *  by the Matrix rhs
+ *  @brief Array difference (by coefficient)
+ *  Perform the matrix difference coefficient by coefficient of the Array lhs
+ *  by the Array rhs
  **/
 template<typename Lhs, typename Rhs>
 struct DifferenceOp
@@ -284,17 +284,17 @@ struct DifferenceOp
   {
     res_.resize(rows_, cols_); res_ = Type();
     Range cols = Range::inf(cols_, lhs_.cols());
-    for (int j= cols.firstIdx(); j <= cols.lastIdx(); ++j)
+    for (int j= cols.begin(); j <= cols.lastIdx(); ++j)
     {
       Range rows = Range::inf(rows_, lhs_.rangeRowsInCol(j));
-      for (int i= rows.firstIdx(); i <= rows.lastIdx(); ++i)
+      for (int i= rows.begin(); i <= rows.lastIdx(); ++i)
       { res_(i,j) += lhs_(i,j);}
     }
     cols = Range::inf(cols_, rhs_.cols());
-    for (int j= cols.firstIdx(); j <= cols.lastIdx(); ++j)
+    for (int j= cols.begin(); j <= cols.lastIdx(); ++j)
     {
       Range rows = Range::inf(rows_, rhs_.rangeRowsInCol(j));
-      for (int i= rows.firstIdx(); i <= rows.lastIdx(); ++i)
+      for (int i= rows.begin(); i <= rows.lastIdx(); ++i)
       { res_(i,j) -= rhs_(i,j);}
     }
     return res_;
@@ -308,9 +308,9 @@ struct DifferenceOp
 };
 
 /** @ingroup Arrays
- *  @brief Matrix product (by coefficient)
- *  Perform the matrix product coefficient by coefficient of the Matrix lhs
- *  by the Matrix rhs
+ *  @brief Array product (by coefficient)
+ *  Perform the matrix product coefficient by coefficient of the Array lhs
+ *  by the Array rhs
  **/
 template<typename Lhs, typename Rhs>
 struct Product
@@ -330,10 +330,10 @@ struct Product
   inline result_type operator()()
   {
     res_.resize(rows_, cols_); res_ = Type();
-    for (int j= cols_.firstIdx(); j <= cols_.lastIdx(); ++j)
+    for (int j= cols_.begin(); j <= cols_.lastIdx(); ++j)
     {
       Range rows = Range::inf(lhs_.rangeRowsInCol(j), rhs_.rangeRowsInCol(j));
-      for (int i= rows.firstIdx(); i <= rows.lastIdx(); ++i)
+      for (int i= rows.begin(); i <= rows.lastIdx(); ++i)
       { res_(i,j) = lhs_(i,j) * rhs_(i,j);}
     }
     return res_;
@@ -349,8 +349,8 @@ struct Product
 /** @ingroup Arrays
  *  @brief Matricial Division
  *
- *  Perform the matrix division coefficient by coefficient of the Matrix lhs
- *  by the Matrix rhs
+ *  Perform the matrix division coefficient by coefficient of the Array lhs
+ *  by the Array rhs
  **/
 template<typename Lhs, typename Rhs>
 struct DivOp
@@ -370,10 +370,10 @@ struct DivOp
   inline result_type operator()()
   {
     res_.resize(rows_, cols_); res_ = Type();
-    for (int j= cols_.firstIdx(); j <= cols_.lastIdx(); ++j)
+    for (int j= cols_.begin(); j <= cols_.lastIdx(); ++j)
     {
       Range rows = Range::inf(lhs_.rangeRowsInCol(j), rhs_.rangeRowsInCol(j));
-      for (int i= rows.firstIdx(); i <= rows.lastIdx(); ++i)
+      for (int i= rows.begin(); i <= rows.lastIdx(); ++i)
       { res_(i,j) = lhs_(i,j) / rhs_(i,j);}
     }
     return res_;
@@ -387,8 +387,8 @@ struct DivOp
 };
 
 /** @ingroup Arrays
- *  @brief Matrix multiplication
- *  Perform the matrix product of the Matrix lhs by the Matrix rhs
+ *  @brief Array multiplication
+ *  Perform the matrix product of the Array lhs by the Array rhs
  **/
 template<typename Lhs, typename Rhs>
 struct MultOp
@@ -410,10 +410,10 @@ struct MultOp
    {
      res_.resize(rows_, cols_);
      // for all cols and for all rows
-     for (int j=res_.firstIdxCols(); j<=res_.lastIdxCols(); j++)
+     for (int j=res_.beginCols(); j<=res_.lastIdxCols(); j++)
      {
        Integer const last = res_.rangeRowsInCol(j).lastIdx();
-       for (int i=res_.rangeRowsInCol(j).firstIdx(); i<=last; i++)
+       for (int i=res_.rangeRowsInCol(j).begin(); i<=last; i++)
        { res_(i, j) = dot(lhs_.row(i), rhs_.col(j));}
      }
      return res_;
@@ -423,10 +423,10 @@ struct MultOp
    {
      res_.resize(rows_, cols_);
      // for all cols and for all rows
-     for (int j=res_.firstIdxCols(); j<=res_.lastIdxCols(); j++)
+     for (int j=res_.beginCols(); j<=res_.lastIdxCols(); j++)
      {
        Integer const last = res_.rangeRowsInCol(j).lastIdx();
-       for (int i=res_.rangeRowsInCol(j).firstIdx(); i<=last; i++)
+       for (int i=res_.rangeRowsInCol(j).begin(); i<=last; i++)
        { res_(i, j) = weightedDot(lhs_.row(i), rhs_.col(j), weights);}
      }
      return res_;
@@ -441,8 +441,8 @@ struct MultOp
 };
 
 /** @ingroup Arrays
- *  @brief Matrix multiplication
- *  Perform the matrix product of the transposed Matrix lhs by the Matrix rhs
+ *  @brief Array multiplication
+ *  Perform the matrix product of the transposed Array lhs by the Array rhs
  **/
 template<typename Lhs, typename Rhs>
 struct MultLeftTransposeOp
@@ -463,10 +463,10 @@ struct MultLeftTransposeOp
    inline result_type operator()()
    {
      res_.resize(rows_, cols_);
-     for (int j=res_.firstIdxCols(); j<=res_.lastIdxCols(); j++)
+     for (int j=res_.beginCols(); j<=res_.lastIdxCols(); j++)
      {
        Integer const last = res_.rangeRowsInCol(j).lastIdx();
-       for (int i=res_.rangeRowsInCol(j).firstIdx(); i<=last; i++)
+       for (int i=res_.rangeRowsInCol(j).begin(); i<=last; i++)
        { res_(i, j) = dot(lhs_.col(i), rhs_.col(j));}
      }
      return res_;
@@ -475,10 +475,10 @@ struct MultLeftTransposeOp
    inline result_type operator()(ExprBase<Weights> const& weights)
    {
      res_.resize(rows_, cols_);
-     for (int j=rhs_.firstIdxCols(); j<=rhs_.lastIdxCols(); j++)
+     for (int j=rhs_.beginCols(); j<=rhs_.lastIdxCols(); j++)
      {
        Integer const last = res_.rangeRowsInCol(j).lastIdx();
-       for (int i=res_.rangeRowsInCol(j).firstIdx(); i<=last; i++)
+       for (int i=res_.rangeRowsInCol(j).begin(); i<=last; i++)
        { res_(i, j) = weightedDot(lhs_.col(i), rhs_.col(j), weights);}
      }
      return res_;
@@ -493,8 +493,8 @@ struct MultLeftTransposeOp
 };
 
 /** @ingroup Arrays
- *  @brief Matrix multiplication
- *  Perform the matrix product of the Matrix lhs by the transposed Matrix rhs
+ *  @brief Array multiplication
+ *  Perform the matrix product of the Array lhs by the transposed Array rhs
  **/
 template<typename Lhs, typename Rhs>
 struct MultRightTransposeOp
@@ -515,10 +515,10 @@ struct MultRightTransposeOp
    inline result_type operator()()
    {
      res_.resize(rows_, cols_);
-     for (int j=res_.firstIdxCols(); j<=res_.lastIdxCols(); j++)
+     for (int j=res_.beginCols(); j<=res_.lastIdxCols(); j++)
      {
        Integer const last = res_.rangeRowsInCol(j).lastIdx();
-       for (int i=res_.rangeRowsInCol(j).firstIdx(); i<=last; i++)
+       for (int i=res_.rangeRowsInCol(j).begin(); i<=last; i++)
        { res_(i, j) = dot(lhs_.row(i), rhs_.row(j));}
      }
      return res_;
@@ -527,10 +527,10 @@ struct MultRightTransposeOp
    inline result_type operator()(ExprBase<Weights> const& weights)
    {
      res_.resize(rows_, cols_);
-     for (int j=res_.firstIdxCols(); j<=res_.lastIdxCols(); j++)
+     for (int j=res_.beginCols(); j<=res_.lastIdxCols(); j++)
      {
        Integer const last = res_.rangeRowsInCol(j).lastIdx();
-       for (int i=res_.rangeRowsInCol(j).firstIdx(); i<=last; i++)
+       for (int i=res_.rangeRowsInCol(j).begin(); i<=last; i++)
        { res_(i, j) = weightedDot(lhs_.row(i), rhs_.row(j), weights);}
      }
      return res_;
@@ -634,7 +634,7 @@ Real dot( ITContainer< Container1D1> const& x
         )
 {
   // compute the valid range
-  const int first = std::max(x.firstIdx(), y.firstIdx()) , last = std::min(x.lastIdx(), y.lastIdx());
+  const int first = std::max(x.begin(), y.begin()) , last = std::min(x.lastIdx(), y.lastIdx());
   // compute the sum product
   Real sum=0.0;
   int i;
@@ -667,7 +667,7 @@ Real weightedDot( ITContainer< Container1D1> const& x
                 )
 {
   // compute the valid range
-  const int first = std::max(x.firstIdx(), y.firstIdx()) , last = std::min(x.lastIdx(), y.lastIdx());
+  const int first = std::max(x.begin(), y.begin()) , last = std::min(x.lastIdx(), y.lastIdx());
 #ifdef STK_DEBUG
   if (!Range(first,last).isIn(w.range()))
     throw runtime_error("In weightedDot(x, w) "
@@ -702,7 +702,7 @@ Real dist( ITContainer< Container1D1> const& x
          )
 {
   // compute the valid range
-  const int first = std::max(x.firstIdx(), y.firstIdx()) , last = std::min(x.lastIdx(), y.lastIdx());
+  const int first = std::max(x.begin(), y.begin()) , last = std::min(x.lastIdx(), y.lastIdx());
   // compute the std::maximal difference
   Real scale = 0.;
   for (int i = first; i<=last; i++)
@@ -742,7 +742,7 @@ Real weightedDist( ITContainer< Container1D1> const& x
                  )
 {
   // compute the valid range
-  const int first = std::max(x.firstIdx(), y.firstIdx()) , last = std::min(x.lastIdx(), y.lastIdx());
+  const int first = std::max(x.begin(), y.begin()) , last = std::min(x.lastIdx(), y.lastIdx());
 #ifdef STK_DEBUG
   if (!Range(first,last).isIn(w.range()))
     throw runtime_error("In weightedDist(x, w) "
@@ -766,7 +766,7 @@ Real weightedDist( ITContainer< Container1D1> const& x
 }
 
 /** @ingroup Arrays
- *  @brief Matrix multiplication by its transpose
+ *  @brief Array multiplication by its transpose
  *
  *  Perform the matrix product \f$ A'A \f$.
  *
@@ -777,14 +777,14 @@ Array2DSquare<typename Derived::Type> multLeftTranspose( ExprBase<Derived> const
 {
   typedef typename Derived::Type Type;
   Array2DSquare<Type> res(A.cols(), Type(0));
-  for (int i=A.firstIdxCols(); i<=A.lastIdxCols(); i++)
+  for (int i=A.beginCols(); i<=A.lastIdxCols(); i++)
   {
     // diagonal
-    for (int k = A.firstIdxRows(); k<=A.lastIdxRows(); k++) res(i, i) += A(k, i) * A(k, i);
+    for (int k = A.beginRows(); k<=A.lastIdxRows(); k++) res(i, i) += A(k, i) * A(k, i);
     // outside diagonal
-    for (int j=A.firstIdxCols(); j<i; j++)
+    for (int j=A.beginCols(); j<i; j++)
     {
-      for (int k = A.firstIdxRows(); k<=A.lastIdxRows(); k++)
+      for (int k = A.beginRows(); k<=A.lastIdxRows(); k++)
         res(i, j) += A(k, i) * A(k, j);
       res(j, i) = res(i, j);
     }
@@ -793,7 +793,7 @@ Array2DSquare<typename Derived::Type> multLeftTranspose( ExprBase<Derived> const
 }
 
 /** @ingroup Arrays
- *  @brief Matrix multiplication by its transpose
+ *  @brief Array multiplication by its transpose
  *
  *  Perform the matrix product \f$ AA' \f$.
  *
@@ -804,15 +804,15 @@ Array2DSquare<typename Derived::Type> multRightTranspose( ExprBase<Derived> cons
 {
   typedef typename Derived::Type Type;
   Array2DSquare<Type> res(A.rows(), Type(0));
-  for (int i=A.firstIdxRows(); i<=A.lastIdxRows(); i++)
+  for (int i=A.beginRows(); i<=A.lastIdxRows(); i++)
   {
     // compute diagonal
-    for (int k = A.firstIdxCols(); k<=A.lastIdxCols(); k++)
+    for (int k = A.beginCols(); k<=A.lastIdxCols(); k++)
       res(i, i) += A(i, k) * A(i, k);
     // compute outside diagonal
-    for (int j=A.firstIdxRows(); j<i; j++)
+    for (int j=A.beginRows(); j<i; j++)
     {
-      for (int k = A.firstIdxCols(); k<=A.lastIdxCols(); k++)
+      for (int k = A.beginCols(); k<=A.lastIdxCols(); k++)
         res(i, j) += A(i, k) * A(j, k);
       res(j, i) = res(i, j);
     }
@@ -834,15 +834,15 @@ Array2DSquare<typename Derived::Type>
 {
   typedef typename Derived::Type Type;
   Array2DSquare<Type> res(A.cols(), Type(0));
-  for (int i=A.firstIdxCols(); i<=A.lastIdxCols(); i++)
+  for (int i=A.beginCols(); i<=A.lastIdxCols(); i++)
   {
     // diagonal
-    for (int k = A.firstIdxRows(); k<=A.lastIdxRows(); k++)
+    for (int k = A.beginRows(); k<=A.lastIdxRows(); k++)
       res(i, i) += weights[k] * A(k, i) * A(k, i);
     // outside diagonal
-    for (int j=A.firstIdxCols(); j<i; j++)
+    for (int j=A.beginCols(); j<i; j++)
     {
-      for (int k = A.firstIdxRows(); k<=A.lastIdxRows(); k++)
+      for (int k = A.beginRows(); k<=A.lastIdxRows(); k++)
         res(i, j) += weights[k] * A(k, i) * A(k, j);
       res(j, i) = res(i, j);
     }
@@ -851,7 +851,7 @@ Array2DSquare<typename Derived::Type>
 }
 
 /** @ingroup Arrays
- *  @brief Weigthed Matrix multiplication by its transpose
+ *  @brief Weigthed Array multiplication by its transpose
  *
  *  Perform the matrix product \f$ AWA' \f$.
  *
@@ -864,15 +864,15 @@ Array2DSquare<typename Derived::Type>
 {
   typedef typename Derived::Type Type;
   Array2DSquare<Type> res(A.cols(), Type(0));
-  for (int i=A.firstIdxRows(); i<=A.lastIdxRows(); i++)
+  for (int i=A.beginRows(); i<=A.lastIdxRows(); i++)
   {
     // compute diagonal
-    for (int k = A.firstIdxCols(); k<=A.lastIdxCols(); k++)
+    for (int k = A.beginCols(); k<=A.lastIdxCols(); k++)
       res(i, i) += weights[k] *A(i, k) * A(i, k);
     // compute outside diagonal
-    for (int j=A.firstIdxRows(); j<i; j++)
+    for (int j=A.beginRows(); j<i; j++)
     {
-      for (int k = A.firstIdxCols(); k<=A.lastIdxCols(); k++)
+      for (int k = A.beginCols(); k<=A.lastIdxCols(); k++)
         res(i, j) += weights[k] * A(i, k) * A(j, k);
       res(j, i) = res(i, j);
     }

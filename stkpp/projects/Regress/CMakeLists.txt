@@ -4,7 +4,7 @@ FILE( GLOB Regress_files
   include/*.h
   )
 
-INCLUDE_DIRECTORIES("..")
+include_directories("..")
 
 # Add Regress files to STKRegress library
-ADD_LIBRARY(STKRegress OBJECT ${Regress_files})
+add_library(STKRegress OBJECT ${Regress_files})

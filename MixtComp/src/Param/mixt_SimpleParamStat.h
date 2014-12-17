@@ -25,6 +25,8 @@
 #define MIXT_SIMPLEPARAMSTAT_H
 
 #include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DVector.h"
+#include "Arrays/include/STK_Array2DPoint.h"
 
 namespace mixt
 {

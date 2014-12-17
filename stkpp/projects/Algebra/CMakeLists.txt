@@ -4,8 +4,8 @@ FILE( GLOB Algebra_files
   include/*.h
   )
 
-INCLUDE_DIRECTORIES("..")
+include_directories("..")
 
 # Add Algebra files to STKAlgebra library
-ADD_LIBRARY(STKAlgebra OBJECT ${Algebra_files})
+add_library(STKAlgebra OBJECT ${Algebra_files})
 

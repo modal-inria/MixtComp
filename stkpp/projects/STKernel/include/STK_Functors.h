@@ -29,7 +29,7 @@
  **/
 
 /** @file STK_Functors.h
- *  @brief In this file we implement the functors .
+ *  @brief In this file we implement the functors.
  **/
 
 
@@ -37,8 +37,6 @@
 #define STK_FUNCTORS_H
 
 #include <cmath>
-#include "Sdk/include/STK_MetaTemplate.h"
-
 #include "STK_Integer.h"
 
 namespace STK

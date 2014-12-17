@@ -113,7 +113,7 @@ class RandBase : protected MTRand
   : gsize_(gsize), glimit_(glimit), gvol_(gvol)
     {
       // dimension
-      int first = bigSeed.firstIdx(), size = bigSeed.size();
+      int first = bigSeed.begin(), size = bigSeed.size();
       uint32* arraySeed = new uint32[size];
       // cast int in uint32
       for (int i=first; i<=bigSeed.lastIdx(); i++)
@@ -181,8 +181,8 @@ class RandBase : protected MTRand
      **/
     template< class TContainer1D>
     inline void randDiscreteUnif(ArrayBase<TContainer1D>& A)
-    { for (int i=A.firstIdxRows(); i<=A.lastIdxRows(); i++)
-        for (int j=A.firstIdxCols(); j<=A.lastIdxCols(); j++)
+    { for (int i=A.beginRows(); i<=A.lastIdxRows(); i++)
+        for (int j=A.beginCols(); j<=A.lastIdxCols(); j++)
           A(i,j) = randDiscreteUnif();
     }
 
@@ -192,8 +192,8 @@ class RandBase : protected MTRand
      **/
     template< class TContainer1D>
     inline void randUnif(ArrayBase<TContainer1D>& A)
-    { for (int i=A.firstIdxRows(); i<=A.lastIdxRows(); i++)
-        for (int j=A.firstIdxCols(); j<=A.lastIdxCols(); j++)
+    { for (int i=A.beginRows(); i<=A.lastIdxRows(); i++)
+        for (int j=A.beginCols(); j<=A.lastIdxCols(); j++)
           A(i,j) = randUnif();
     }
 
@@ -203,8 +203,8 @@ class RandBase : protected MTRand
      **/
     template< class TContainer1D>
     inline void randGauss(ArrayBase< TContainer1D>& A)
-    { for (int i=A.firstIdxRows(); i<=A.lastIdxRows(); i++)
-        for (int j=A.firstIdxCols(); j<=A.lastIdxCols(); j++)
+    { for (int i=A.beginRows(); i<=A.lastIdxRows(); i++)
+        for (int j=A.beginCols(); j<=A.lastIdxCols(); j++)
           A(i,j) = randGauss();
     }
 
@@ -214,8 +214,8 @@ class RandBase : protected MTRand
      **/
     template< class TContainer1D>
     inline void randExp(ArrayBase< TContainer1D>& A)
-    { for (int i=A.firstIdxRows(); i<=A.lastIdxRows(); i++)
-        for (int j=A.firstIdxCols(); j<=A.lastIdxCols(); j++)
+    { for (int i=A.beginRows(); i<=A.lastIdxRows(); i++)
+        for (int j=A.beginCols(); j<=A.lastIdxCols(); j++)
           A(i,j) = randExp();
     }
 

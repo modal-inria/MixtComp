@@ -68,11 +68,11 @@ void printHead(Array2D<Type> const& A, String const& name)
   stk_cout << "print: " << name << _T("\n";);
   stk_cout << name << _T(".isRef() =")        << A.isRef()  << _T("\n");
   stk_cout << name << _T(".rows() =")      << A.rows()  << _T(" | ");
-  stk_cout << name << _T(".firstIdxRows() =")   << A.firstIdxRows()  << _T(" ");
+  stk_cout << name << _T(".beginRows() =")   << A.beginRows()  << _T(" ");
   stk_cout << name << _T(".lastIdxRows() =")      << A.lastIdxRows()  << _T(" ");
   stk_cout << name << _T(".sizeRows() =")      << A.sizeRows()  << _T("\n");
   stk_cout << name << _T(".cols() =")      << A.cols()  << _T(" | ");
-  stk_cout << name << _T(".firstIdxCols() =")   << A.firstIdxCols()  << _T(" ");
+  stk_cout << name << _T(".beginCols() =")   << A.beginCols()  << _T(" ");
   stk_cout << name << _T(".lastIdxCols() =")      << A.lastIdxCols()  << _T(" ");
   stk_cout << name << _T(".sizeCols() =")      << A.sizeCols()  << _T("\n");
   stk_cout << name << _T(".capacityHo() =")   << A.capacityHo()  << _T("\n");
@@ -162,14 +162,14 @@ void TestArray2D( int M, int N, Range I, Range J, bool output)
     if (output) { print(A, "A");}
 
     //
-    if (output) stk_cout << _T("Testing  A.insertCols(A.firstIdxCols()+1,4) and A.col(A.firstIdxCols()+Range(1,4))=4\n");
-    A.insertCols(A.firstIdxCols()+1,4);
-    A.col(A.firstIdxCols()+Range(1,4)) = Type(4);
+    if (output) stk_cout << _T("Testing  A.insertCols(A.beginCols()+1,4) and A.col(A.beginCols()+Range(1,4))=4\n");
+    A.insertCols(A.beginCols()+1,4);
+    A.col(A.beginCols()+Range(1,4)) = Type(4);
     if (output) { print(A, "A");}
 
      //
-    if (output) stk_cout << _T("Testing  A.eraseCols(A.firstIdxCols()+2)\n");
-    A.eraseCols(A.firstIdxCols()+2);
+    if (output) stk_cout << _T("Testing  A.eraseCols(A.beginCols()+2)\n");
+    A.eraseCols(A.beginCols()+2);
     if (output) { print(A, "A");}
 
     //
@@ -178,19 +178,19 @@ void TestArray2D( int M, int N, Range I, Range J, bool output)
     if (output) { print(A, "A");}
 
      //
-    if (output) stk_cout << _T("Testing A.swapRows(A.firstIdxRows()+2,A.firstIdxRows()+M-1) \n");
-    A.swapRows(A.firstIdxRows()+2,A.firstIdxRows()+M-1);
+    if (output) stk_cout << _T("Testing A.swapRows(A.beginRows()+2,A.beginRows()+M-1) \n");
+    A.swapRows(A.beginRows()+2,A.beginRows()+M-1);
     if (output) { print(A, "A");}
 
     //
-    if (output) stk_cout << _T("Testing A.eraseRows(A.firstIdxRows()+0, A.firstIdxRows()+2) \n");
-    A.eraseRows(A.firstIdxRows()+0, A.firstIdxRows()+2);
+    if (output) stk_cout << _T("Testing A.eraseRows(A.beginRows()+0, A.beginRows()+2) \n");
+    A.eraseRows(A.beginRows()+0, A.beginRows()+2);
     if (output) { print(A, "A");}
 
     //
-    if (output) stk_cout << _T("Testing A.insertRows(A.firstIdxRows()+1, 2) and A(A.firstIdxRows()+1:2,:) = A(A.firstIdxRows()+4:5,:)\n");
-    A.insertRows(A.firstIdxRows()+1,2);
-    A(A.firstIdxRows()+Range(1,2), A.cols()).copy(A(A.firstIdxRows()+Range(4,5, 0), A.cols()));
+    if (output) stk_cout << _T("Testing A.insertRows(A.beginRows()+1, 2) and A(A.beginRows()+1:2,:) = A(A.beginRows()+4:5,:)\n");
+    A.insertRows(A.beginRows()+1,2);
+    A(A.beginRows()+Range(1,2), A.cols()).copy(A(A.beginRows()+Range(4,5, 0), A.cols()));
     if (output) { print(A, "A");}
 
     //
@@ -199,13 +199,13 @@ void TestArray2D( int M, int N, Range I, Range J, bool output)
     if (output) { print(A, "A");}
 
     //
-    if (output) stk_cout << _T("Testing A.eraseRows(A.firstIdxRows(), A.sizeRows())\n");
-    A.eraseRows(A.firstIdxRows(),A.sizeRows());
+    if (output) stk_cout << _T("Testing A.eraseRows(A.beginRows(), A.sizeRows())\n");
+    A.eraseRows(A.beginRows(),A.sizeRows());
     if (output) { print(A, "A");}
 
     //
-    if (output) stk_cout << _T("Testing A.insertCols(A.firstIdxCols()+1,2) and A.pushBackRows(2), A=2\n");
-    A.insertCols(A.firstIdxCols()+1,2);
+    if (output) stk_cout << _T("Testing A.insertCols(A.beginCols()+1,2) and A.pushBackRows(2), A=2\n");
+    A.insertCols(A.beginCols()+1,2);
     A.pushBackRows(2);
     A = Type(2);
     if (output) { print(A, "A");}
@@ -216,14 +216,14 @@ void TestArray2D( int M, int N, Range I, Range J, bool output)
     A = B;
     if (output) { print(A, "A");}
 
-    if (output) stk_cout << _T("Testing A.insertRows(A.firstIdxRows()+2, 5) and A(A.firstIdxRows()+2:7,A.cols()) = 3.\n");
-    A.insertRows(A.firstIdxRows()+2,5);
-    A(Range(A.firstIdxRows()+2,5), A.cols()) = Type(3);
+    if (output) stk_cout << _T("Testing A.insertRows(A.beginRows()+2, 5) and A(A.beginRows()+2:7,A.cols()) = 3.\n");
+    A.insertRows(A.beginRows()+2,5);
+    A(Range(A.beginRows()+2,5), A.cols()) = Type(3);
     if (output) { print(A, "A");}
 
    //
-    if (output)  stk_cout << _T("Testing A.eraseCols(A.firstIdxCols(), A.sizeCols())\n");
-    A.eraseCols(A.firstIdxCols(),A.sizeCols());
+    if (output)  stk_cout << _T("Testing A.eraseCols(A.beginCols(), A.sizeCols())\n");
+    A.eraseCols(A.beginCols(),A.sizeCols());
     if (output) { print(A, "A");}
 
     //

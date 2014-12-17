@@ -39,10 +39,12 @@
 
 #include <cmath>
 
-#include "../../../Arrays/include/STK_Const_Arrays.h"
-#include "../../../Arrays/include/STK_Display.h"
-#include "../../../StatModels/include/STK_IMultiParameters.h"
-#include "../../../STatistiK/include/STK_Law_Normal.h"
+#include "Arrays/include/STK_Const_Arrays.h"
+#include "Arrays/include/STK_Array2DPoint.h"
+#include "Arrays/include/STK_Display.h"
+
+#include "StatModels/include/STK_IMultiParameters.h"
+#include "STatistiK/include/STK_Law_Normal.h"
 
 namespace STK
 {
@@ -84,7 +86,7 @@ class DiagGaussianParametersBase : public IMultiParameters<Parameters>
     Real computeLnLikelihood( RowVector const& rowData) const
     {
       Real sum =0.;
-      for (Integer j= rowData.firstIdx(); j <= rowData.lastIdx(); ++j)
+      for (Integer j= rowData.begin(); j <= rowData.lastIdx(); ++j)
       { sum += Law::Normal::lpdf(rowData[j], mean(j), sigma(j));}
       return sum;
     }
@@ -92,7 +94,7 @@ class DiagGaussianParametersBase : public IMultiParameters<Parameters>
 
 
 /** @ingroup Clustering
- *  Structure encapsulating the parameters of the gamma_ajk_mj model.
+ *  Structure encapsulating the parameters of the gaussian_sjk model.
  **/
 class Gaussian_sjk_Parameters: public DiagGaussianParametersBase<Gaussian_sjk_Parameters>
 {
@@ -133,7 +135,7 @@ class Gaussian_sjk_Parameters: public DiagGaussianParametersBase<Gaussian_sjk_Pa
 };
 
 /** @ingroup Clustering
- *  Structure encapsulating the parameters of the gamma_ajk_mj model.
+ *  Structure encapsulating the parameters of the gaussian_sj model.
  **/
 class Gaussian_sj_Parameters: public DiagGaussianParametersBase<Gaussian_sj_Parameters>
 {
@@ -169,7 +171,7 @@ class Gaussian_sj_Parameters: public DiagGaussianParametersBase<Gaussian_sj_Para
 };
 
 /** @ingroup Clustering
- *  Structure encapsulating the parameters of the gamma_ajk_mk model.
+ *  Structure encapsulating the parameters of the gaussian_sk model.
  **/
 class Gaussian_sk_Parameters: public DiagGaussianParametersBase<Gaussian_sk_Parameters>
 {
@@ -208,7 +210,7 @@ class Gaussian_sk_Parameters: public DiagGaussianParametersBase<Gaussian_sk_Para
 };
 
 /** @ingroup Clustering
- *  Structure encapsulating the parameters of the gamma_ajk_m model.
+ *  Structure encapsulating the parameters of the gaussian_s model.
  **/
 class Gaussian_s_Parameters: public DiagGaussianParametersBase<Gaussian_s_Parameters>
 {

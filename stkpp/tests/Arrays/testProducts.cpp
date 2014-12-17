@@ -230,36 +230,83 @@ int main(int argc, char *argv[])
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("+ Test operator* : big dimension                      +\n");
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-    Array2D<Real> mBig(501, 3000), resBig, res2Big;
-    Array2DSquare<Real> mBigSquare(501);
+    Array2D<Real> mBig(501, 3003), resBig, res2Big;
+    Array2D<Real> m2Big(501, 3003);
+    Array2DSquare<Real> mBigSquare(501), m2BigSquare(501);
     Array2DVector<Real> vBig(501), vResBig, vRes2Big;
     Array2DPoint<Real> pBig(501), pResBig, pRes2Big;
-    mBig.randGauss();
-    mBigSquare.randGauss();
+    // create big matrices
+    mBig.randGauss(); mBigSquare.randGauss();
+
     vBig.randUnif();
     pBig.randUnif();
-    // matrix by matrix product
+
+    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    stk_cout << _T("+ Result have more columns than rows                  +\n");
+    m2Big       = mBig;
+    m2BigSquare = mBigSquare;
+    res2Big.resize(mBigSquare.rows(), mBig.cols());
+    res2Big = 0.;
     Chrono::start();
     resBig.move(mult(mBigSquare, mBig));
     stk_cout << _T("Product Using resBig.move(mult(mBigSquare, mBig)) done. Elapsed time = ")
              << Chrono::elapsed() << _T("\n");
+
     Chrono::start();
-    res2Big = mBigSquare * mBig;
-    stk_cout << _T("Product Using res2Big = mBigSquare * mBig done. Elapsed time = ")
-             << Chrono::elapsed() << _T("\n");
+    hidden::bp<Array2DSquare<Real>, Array2D<Real>, Array2D<Real> >::run(m2BigSquare, m2Big, res2Big);
+    stk_cout << _T("Product Using bp<...>::run done. Elapsed time = ") << Chrono::elapsed() << _T("\n");
     diff = resBig - res2Big;
     stk_cout << _T("diff.max=") << diff.maxElt(iMax, jMax) << _T("\n");
-    stk_cout << _T("diff.min=") << diff.minElt(iMin, jMin) << _T("\n");
+    stk_cout << _T("diff.min=") << diff.minElt(iMin, jMin) << _T("\n\n");
 
+    res2Big.resize(mBigSquare.rows(), mBig.cols());
+    res2Big = 0.;
+    Chrono::start();
+    hidden::pb<Array2DSquare<Real>, Array2D<Real>, Array2D<Real> >::run(m2BigSquare, m2Big, res2Big);
+    stk_cout << _T("Product Using pb<...>::run. Elapsed time = ") << Chrono::elapsed() << _T("\n");
+    diff = resBig - res2Big;
+    stk_cout << _T("diff.max=") << diff.maxElt(iMax, jMax) << _T("\n");
+    stk_cout << _T("diff.min=") << diff.minElt(iMin, jMin) << _T("\n\n");
+
+    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    stk_cout << _T("+ Result have more rows than columns                  +\n");
+    Chrono::start();
+    resBig.move(mult(mBig.transpose(), mBigSquare));
+    stk_cout << _T("Product Using resBig.move(mult(mBigSquare, mBig)) done. Elapsed time = ")
+             << Chrono::elapsed() << _T("\n");
+
+    m2Big       = mBig.transpose();
+    m2BigSquare = mBigSquare;
+    res2Big.resize(m2Big.rows(), m2BigSquare.cols());
+    res2Big = 0.;
+    Chrono::start();
+    hidden::bp<Array2DSquare<Real>, Array2D<Real>, Array2D<Real> >::run(m2Big, m2BigSquare, res2Big);
+    stk_cout << _T("Product Using bp<...>::run done. Elapsed time = ") << Chrono::elapsed() << _T("\n");
+    diff = resBig - res2Big;
+    stk_cout << _T("diff.max=") << diff.maxElt(iMax, jMax) << _T("\n");
+    stk_cout << _T("diff.min=") << diff.minElt(iMin, jMin) << _T("\n\n");
+
+    res2Big = 0.;
+    Chrono::start();
+    hidden::pb<Array2DSquare<Real>, Array2D<Real>, Array2D<Real> >::run(m2Big, m2BigSquare, res2Big);
+    stk_cout << _T("Product Using pb<...>::run. Elapsed time = ") << Chrono::elapsed() << _T("\n");
+    diff = resBig - res2Big;
+    stk_cout << _T("diff.max=") << diff.maxElt(iMax, jMax) << _T("\n");
+    stk_cout << _T("diff.min=") << diff.minElt(iMin, jMin) << _T("\n\n");
+
+    stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+    stk_cout << _T("+ Matrix by vector product                            +\n");
     // matrix by vector product
     Chrono::start();
     vResBig.move(mult(mBigSquare, vBig));
     stk_cout << _T("Product Using vResBig.move(mult(mBigSquare, vBig)) done. Elapsed time = ")
              << Chrono::elapsed() << _T("\n");
+
     Chrono::start();
     vRes2Big = mBigSquare * vBig;
     stk_cout << _T("Product Using vRes2Big = mBigSquare * mBig done. Elapsed time = ")
              << Chrono::elapsed() << _T("\n");
+
     vdiff = vResBig - vRes2Big;
     stk_cout << _T("vdiff.max=") << vdiff.maxElt(iMax) << _T("\n");
     stk_cout << _T("vdiff.min=") << vdiff.minElt(iMin) << _T("\n");

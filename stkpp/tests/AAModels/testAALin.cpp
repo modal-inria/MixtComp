@@ -52,11 +52,11 @@ void printHead(Container2D<TYPE> const& A, String const& name)
   stk_cout << name << _T(".isRef() =")        << A.isRef()  << _T("\n");
   stk_cout << name << _T(".capacityHo() =")   << A.capacityHo()  << _T("\n");
   stk_cout << name << _T(".cols() =")      << A.cols()  << _T(" | ");
-  stk_cout << name << _T(".firstIdxCols() =")   << A.firstIdxCols()  << _T(" ");
+  stk_cout << name << _T(".beginCols() =")   << A.beginCols()  << _T(" ");
   stk_cout << name << _T(".lastIdxCols() =")      << A.lastIdxCols()  << _T(" ");
   stk_cout << name << _T(".sizeCols() =")      << A.sizeCols()  << _T("\n");
   stk_cout << name << _T(".rows() =")      << A.rows()  << _T(" | ");
-  stk_cout << name << _T(".firstIdxRows() =")   << A.firstIdxRows()  << _T(" ");
+  stk_cout << name << _T(".beginRows() =")   << A.beginRows()  << _T(" ");
   stk_cout << name << _T(".lastIdxRows() =")      << A.lastIdxRows()  << _T(" ");
   stk_cout << name << _T(".sizeRows() =")      << A.sizeRows()  << _T("\n");
   stk_cout << name << _T(".rangeCols().isRef() =")  << A.rangeCols().isRef() << _T("\n");
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
   // first test
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   stk_cout << _T("+ Test LocalVariance class (on a small data set)    +\n");
-  Matrix A(Range(1,5),Range(1,2));
+  ArrayXX A(Range(1,5),Range(1,2));
   
   A(1,1) = 0.0; A(1,2) = 0.0;
   A(2,1) = 5.0; A(2,2) = 5.0;
@@ -200,7 +200,11 @@ int main(int argc, char *argv[])
 
   LinearAAModel wtest(A);
   wtest.setReductor(testlocal);
-  wtest.run(weights, 2);
+  if (!wtest.run(weights, 2))
+  {
+    stk_cout << _T("An error occur in wtest.run(weights, 2)\nWhat:")  << wtest.error() << _T("\n");
+    return 0;
+  }
 
   stk_cout << "results with second manifold weighted\n";
   stk_cout << "cov =\n" << ((LocalVariance*)testlocal)->covariance() << _T("\n";);
@@ -237,7 +241,7 @@ int main(int argc, char *argv[])
   stk_cout << "Test LinearAAmodel simulation method\n";
 
   Law::Normal law(0.0, 4.0);
-  Matrix proj(Range(1,3), Range(1,2));
+  ArrayXX proj(Range(1,3), Range(1,2));
   Vector mean(Range(1,3));
   law.randArray(mean);
   stk_cout << "mean =" << mean;

@@ -25,7 +25,7 @@
  * <td>
  * The @ref STK::Array2D and @ref STK::CArray classes are the most general
  * classes for storing scalars. The values are stored in array of range
- * (firstIdxRows:lastIdxRows)x(firstIdxCols:lastIdxCols).
+ * (beginRows:lastIdxRows)x(beginCols:lastIdxCols).
  * </td>
  * </tr>
  *
@@ -43,7 +43,7 @@
  * <td>
  * The @ref STK::Array2DVector, @ref STK::Array2DPoint, @ref STK::CArrayVector
  * and @ref STK::CArrayPoint classes allow to store scalars in column and row
- * vectors. The values are stored in arrays of range (firstIdx:lastIdx).
+ * vectors. The values are stored in arrays of range (begin:lastIdx).
  * </td>
  * </tr>
  *
@@ -58,7 +58,7 @@
  * <td>
  * The @ref STK::Array2DSquare class is a general class for storing scalars in
  * a square matrix. The values are stored in an array of range
- * (firstIdx:lastIdx)x(firstIdx:lastIdx).
+ * (begin:lastIdx)x(begin:lastIdx).
  * </td>
  * </tr>
  *
@@ -71,7 +71,7 @@
  * <td>
  * The @ref STK::Array2DDiagonal class is a general class for storing scalars in
  * a diagonal matrix. The values are stored in an array of range
- * (firstIdx:lastIdx)x(firstIdx:lastIdx) with zero outside the diagonal.
+ * (begin:lastIdx)x(begin:lastIdx) with zero outside the diagonal.
  * @note Only the diagonal values are effectively stored in an Array2DDiagonal
  * array.
  * </td>
@@ -88,7 +88,7 @@
  * The @ref STK::Array2DUpperTriangular and  STK::Array2DLowerTriangular classes are
  * general classes for storing scalars in triangular matrices.
  * The values are stored in an array of range
- * (firstIdxRows:lastIdxRows)x(firstIdxCols:lastIdxCols) with zero in the
+ * (beginRows:lastIdxRows)x(beginCols:lastIdxCols) with zero in the
  * respectively lower and upper part of the array.
  * @note Only the non-zeros values are effectively stored in the arrays and
  * the upper part (respectively the lower part) is the part of the array such
@@ -150,14 +150,14 @@
  * </td>
  * <td>
  * The following code build an array of Real (double by default) with rows in
- * the range 2:4 and columns in the range 1:10 (this is the default, but can be
- * 0:9 if the macro STKBASEARRAYS=0 is activated). The array is initialized with
+ * the range 2:4 and columns in the range 0:9 (this is the default, but can be
+ * 1:10 if the macro STKBASEARRAYS=1 is activated). The array is initialized with
  * the value 2.
  * @code
  * Array2D<Real> a(Range(2,3), 10, 2.);
  * @endcode
  * The following code build a vector of Real (double by default) with columns
- * in the range 1:10 (this is the default, but can be 0:9 if the macro STKBASEARRAYS=0
+ * in the range 0:9 (this is the default, but can be 1:10 if the macro STKBASEARRAYS=1
  * is activated). The array is initialized with the value 2.
  * @code
  * Array2DVector<Real> a( 10, 2.);

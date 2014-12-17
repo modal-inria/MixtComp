@@ -48,54 +48,34 @@ int main(int argc, char *argv[])
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
   stk_cout << _T("\n\n");
 
-  CArray<Real> A(100, 20);
+  CArray<Real> A(100, 5);
+  CArrayVector<Real> w(100);
   Law::Normal law(1,2);
+  Law::Exponential exp(1);
   law.randArray(A);
+  exp.randArray(w);
 
   stk_cout << _T("min(A.col(1) =") << min(A.col(1)) << _T("\n");
-  stk_cout << _T("min(A) =") << min(A) << _T("\n");
-  stk_cout << _T("max(A) =") << max(A) << _T("\n");
-  stk_cout << _T("max(A.abs()) =") << max(A.abs()) << _T("\n");
-  stk_cout << _T("mean(A) =") << mean(A) << _T("\n");
+  stk_cout << _T("min(A) =\n") << min(A);
+  stk_cout << _T("max(A) =\n") << max(A);
+  stk_cout << _T("max(A.abs()) =\n") << max(A.abs());
+  stk_cout << _T("mean(A) =\n") << mean(A);
+  stk_cout << _T("mean(A,w) =\n") << mean(A,w);
+  stk_cout << _T("variance(A) =\n") << variance(A);
+  stk_cout << _T("variance(A,w) =\n") << variance(A,w);
+  stk_cout << _T("sd(A) =\n") << variance(A).sqrt();
 
-  A -= Const::Vector<Real>(100) * mean(A);
-
-  stk_cout << _T("min(A) =") << min(A) << _T("\n");
-  stk_cout << _T("max(A) =") << max(A) << _T("\n");
-  stk_cout << _T("max(A.abs()) =") << max(A.abs()) << _T("\n");
-  stk_cout << _T("mean(A) =") << mean(A) << _T("\n");
-
-  // test static methods
   stk_cout << _T("\n\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+   Test static univariate methods                  +\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("\n\n");
+  stk_cout << _T("Centering A.\n");
+  Array2DPoint<Real> m = mean(A);
+  A -= Const::Vector<Real>(100) * m;
 
-  Law::Exponential exp(1);
-  CArrayVector<Real> w(100);
-  exp.randArray(w);
-  stk_cout  << _T("\n\n");
-  stk_cout << _T("Test static method : mean, var, varwithFixedMean ;\n");
-
-  Array2DPoint<Real> mu, wmu;
-  mu = mean(A); wmu = mean(A, w);
-  stk_cout << _T("mean(A) = ") << mu << _T("\n");
-  stk_cout << _T("mean(A, w) = ") << wmu << _T("\n");
-
-  stk_cout << _T("var(A) = ")        << variance(A) << _T("\n");
-  stk_cout << _T("var(A, true) = ")  << variance(A, true) << _T("\n");
-  stk_cout << _T("var(A, w) = ")     << variance(A, w) << _T("\n");
-  stk_cout << _T("var(A, w, true) = ") << variance(A, w, true) << _T("\n");
-
-  stk_cout << _T("varianceWithFixedMean(A, mu) = ")
-           << varianceWithFixedMean(A, mu) << _T("\n");
-  stk_cout << _T("varianceWithFixedMean(A, mu, true) = ")
-           << varianceWithFixedMean(A, mu, true) << _T("\n");
-  stk_cout << _T("varianceWithFixedMean(A, w, wmu) = ")
-           << varianceWithFixedMean(A, w, wmu) << _T("\n");
-  stk_cout << _T("varianceWithFixedMean(A, w, wmu, true) = ")
-           << varianceWithFixedMean(A, w, wmu, true) << _T("\n");
+  stk_cout << _T("min(A) =\n") << min(A);
+  stk_cout << _T("max(A) =\n") << max(A);
+  stk_cout << _T("max(A.abs()) =\n") << max(A.abs());
+  stk_cout << _T("mean(A) =\n") << mean(A);
+  stk_cout << _T("varianceWithFixedMean(A,m) =\n")   << varianceWithFixedMean(A,m);
+  stk_cout << _T("varianceWithFixedMean(A,w,m) =\n") << varianceWithFixedMean(A,w,m);
 
   stk_cout << _T("\n\n");
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");

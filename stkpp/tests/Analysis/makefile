@@ -28,96 +28,79 @@
 #
 #-----------------------------------------------------------------------
 # makevars contains general definitions and flags.
-ifeq ($(MAKEVARS),)
-        include ../../$(RELATIVEMAKEVARS)
-else
-        include $(MAKEVARS)
-endif
 ifneq ($(wildcard ./makevars.local),) 
 	include makevars.local
 endif
 
 #-----------------------------------------------------------------------
-# Paths to bin, lib, include and projects
-BIN_DIR = ../../bin/
-LIB_DIR = ../../lib/
-INC_DIR = ../../include/
-PROJECTS_DIR = ../../projects/
-
-#-----------------------------------------------------------------------
 # source files
-#
+CXX_SRCS =
+
 TEST_SRCS = \
 	testAnalysis.cpp \
 	testBetaRatio.cpp \
 	testPsi.cpp \
 	testFindZero.cpp
 
-## library name
-CXX_LIB = $(LIB_DIR)/$(LIB_STKPP_A)
-
 #-----------------------------------------------------------------------
 # binary files
-#
-CXX_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
-TEST_OBJS = $(TEST_SRCS:%.cpp=$(BIN_DIR)%.o)
+CXX_OBJS = $(CXX_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
+TEST_OBJS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
 
 #-----------------------------------------------------------------------
 # program files
-TEST_PROGS = $(TEST_SRCS:%.cpp=$(BIN_DIR)%)
+TEST_PROGS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%)
 
 #-----------------------------------------------------------------------
 # Targets
-#
-.PHONY: all obj testCsv
-all: obj progs
+.PHONY: all obj progs
+all: progs
 
-obj: $(CXX_OBJS) $(CXX_SRCS)  $(TEST_SRCS)
-progs: $(TEST_PROGS)
+progs: obj $(TEST_PROGS)
+obj: $(CXX_OBJS) $(TEST_OBJS)
 
 #-----------------------------------------------------------------------
 # test files depending from Rmath
 # test testAnalysis.o object file 
 # test testBetaRatio.o object file 
-$(BIN_DIR)testAnalysis.o: testAnalysis.cpp makefile $(CXX_LIB)
+$(TEST_BIN_DIR)testAnalysis.o: testAnalysis.cpp makefile $(TEST_STKPP_LIB)
 	@ case x$(HASRMATH) in xt ) \
-	echo $(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
+	echo $(CXX) $(CXXFLAGS)  $(STK_CXXFLAGS) -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $(R_FLAGS) $< -c -o $@; \
+	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS)  -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $(R_FLAGS) $< -c -o $@; \
 esac
 
-$(BIN_DIR)testBetaRatio.o: testBetaRatio.cpp makefile $(CXX_LIB)
+$(TEST_BIN_DIR)testBetaRatio.o: testBetaRatio.cpp makefile $(TEST_STKPP_LIB)
 	@ case x$(HASRMATH) in xt ) \
-	echo 	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
-	$(CXX) $(CFLAGS) $(CXXFLAGS) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
+	echo 	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS) -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $(R_FLAGS) $< -c -o $@; \
+	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS) $(R_FLAGS)  -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $< -c -o $@; \
 esac
 
 #-----------------------------------------------------------------------
 # Objects compilation rules
-$(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(STK_PROJECT_FLAGS) $< -c -o $@
+$(TEST_BIN_DIR)%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS) -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $(STK_PROJECT_FLAGS) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # rule for compiling the testAnalysis program
 # rule for compiling the testBetaRatio program
-$(BIN_DIR)testAnalysis: $(BIN_DIR)testAnalysis.o  testAnalysis.cpp $(CXX_LIB)
+$(TEST_BIN_DIR)testAnalysis: $(TEST_BIN_DIR)testAnalysis.o  testAnalysis.cpp $(TEST_STKPP_LIB)
 	@ case x$(HASRMATH) in xt ) \
-	echo 	$(CXX)  $(R_FLAGS)  $(CXX_LIB) $(LIB_RMATH_A)  $< -o $@   $(LDLIBS); \
-	$(CXX)  $<  $(R_FLAGS)  $(CXX_LIB) $(LIB_RMATH_A) -o $@   $(LDLIBS); \
+	echo 	$(CXX)  $(R_FLAGS)  $(TEST_STKPP_LIB) $(LIB_RMATH_A)  $< -o $@   $(LDLIBS); \
+	$(CXX)  $<  $(R_FLAGS)  $(TEST_STKPP_LIB) $(LIB_RMATH_A) -o $@   $(LDLIBS); \
 esac
-$(BIN_DIR)testBetaRatio: $(BIN_DIR)testBetaRatio.o testBetaRatio.cpp $(CXX_LIB)
+$(TEST_BIN_DIR)testBetaRatio: $(TEST_BIN_DIR)testBetaRatio.o testBetaRatio.cpp $(TEST_STKPP_LIB)
 	@ case x$(HASRMATH) in xt ) \
-	echo $(CXX) $< $(R_FLAGS)  $(CXX_LIB) $(LIB_RMATH_A) -o $@   $(LDLIBS); \
-	$(CXX) $<  $(CXX_LIB) $(LIB_RMATH_A) -o $@   $(LDLIBS); \
+	echo $(CXX) $< $(R_FLAGS)  $(TEST_STKPP_LIB) $(LIB_RMATH_A) -o $@   $(LDLIBS); \
+	$(CXX) $<  $(TEST_STKPP_LIB) $(LIB_RMATH_A) -o $@   $(LDLIBS); \
 esac
 
 #-----------------------------------------------------------------------
 # program compilation rules
-$(BIN_DIR)test%: makefile
-$(BIN_DIR)test%: $(BIN_DIR)test%.o $(CXX_LIB) $(CXX_OBJS) $(CXX_SRCS)  $(TEST_SRCS)
-	$(CXX)  $< $(LDFLAGS) $(CXX_OBJS) $(CXX_LIB) $(LDLIBS) -o $@ 
+$(TEST_BIN_DIR)test%: $(TEST_BIN_DIR)test%.o $(CXX_OBJS)
+	$(CXX) $^ $(TEST_STKPP_LIB) $(LDFLAGS) $(LDLIBS) -o $@ 
 
 #-----------------------------------------------------------------------
 # clean test programs 
 clean:
-	$(RM) $(BIN_DIR)test*
+	$(RM) $(TEST_PROGS) $(CXX_OBJS) $(TEST_OBJS)
 

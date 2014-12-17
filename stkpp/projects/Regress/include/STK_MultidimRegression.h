@@ -47,14 +47,14 @@ namespace STK
 /** @brief The @c MultidimRegression class allows to regress a multidimensional
  *  output variable among a multivariate explanation variable.
  */
-class MultidimRegression : public IRegression<Matrix, Matrix, Vector>
+class MultidimRegression : public IRegression<ArrayXX, ArrayXX, Vector>
 {
   public:
     /** Constructor.
      * @param y Variates to predict
      * @param x co-variates
      */
-    MultidimRegression( Matrix const* y =0, Matrix const* x =0);
+    MultidimRegression( ArrayXX const* y =0, ArrayXX const* x =0);
 
     /** Destructor. */
     virtual ~MultidimRegression();
@@ -64,24 +64,24 @@ class MultidimRegression : public IRegression<Matrix, Matrix, Vector>
      *  The coefficients @c coefs_ have to be estimated previously.
      *  @param x the input data set
      */
-    virtual Matrix extrapolate(Matrix const& x) const;
+    virtual ArrayXX extrapolate(ArrayXX const& x) const;
 
   protected:
-    Matrix coefs_;
+    ArrayXX coefs_;
 
   private:
     /** compute the regression function. */
-    virtual void regression();
+    virtual void regressionStep();
     /** compute the weighted regression function.
      * @param weights the weights of the samples
      **/
-    virtual void regression(Vector const& weights);
+    virtual void regression(VectorX const& weights);
     /** Compute the predicted outputs by the regression function. */
-    virtual void prediction();
+    virtual void predictionStep();
     /** Compute the number of parameter of the regression function.
      * @return the number of parameter of the regression function
      **/
-    inline virtual int computeNbParameter() const
+    inline virtual int computeNbFreeParameter() const
     { return coefs_.sizeCols() * coefs_.sizeRows(); }
 };
 

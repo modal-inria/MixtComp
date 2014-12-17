@@ -42,7 +42,7 @@ PROJECTS_DIR = ../../projects/
 #-----------------------------------------------------------------------
 # source files
 #
-CPP_SRCS = \
+CXX_SRCS = \
 	tutoAccessors.cpp \
 	tutoSubArrays.cpp \
 	tutoReference.cpp \
@@ -50,17 +50,17 @@ CPP_SRCS = \
 	tutoCenteringAnArray.cpp
 
 ## library name
-CXX_LIB = $(LIB_DIR)/$(LIB_STKPP_A)
+STKPP_LIB = $(LIB_DIR)/$(LIB_STKPP_A)
 
 #-----------------------------------------------------------------------
 # binary files
 #
-CXX_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
+CXX_OBJS = $(CXX_SRCS:%.cpp=$(BIN_DIR)%.o)
 
 #-----------------------------------------------------------------------
 # program files
 #
-CXX_PROGS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%)
+CXX_PROGS = $(CXX_SRCS:%.cpp=$(BIN_DIR)%)
 
 #-----------------------------------------------------------------------
 # Targets
@@ -77,13 +77,13 @@ tutoprograms: $(CXX_PROGS)
 $(BIN_DIR)%.o: makefile
 
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(INC_DIR) -I$(PROJECTS_DIR) $(STK_FLAGS) $< -c -o $@
+	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS)-I$(INC_DIR) -I$(PROJECTS_DIR) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # program compilation rules
 #
-$(BIN_DIR)tuto%: $(BIN_DIR)tuto%.o $(CXX_LIB)
-	$(CXX) $< $(CXX_LIB) -o $@ -lm
+$(BIN_DIR)tuto%: $(BIN_DIR)tuto%.o $(STKPP_LIB)
+	$(CXX) $< $(STKPP_LIB) -o $@ -lm
 
 #-----------------------------------------------------------------------
 # clean test programs 

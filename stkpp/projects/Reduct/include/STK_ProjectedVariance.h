@@ -53,11 +53,11 @@ class ProjectedVariance : public ILinearReduct
     /** Constructor.
      *  @param p_data a pointer on the constant data set to reduce.
      **/
-    ProjectedVariance(Matrix const* p_data);
+    ProjectedVariance(ArrayXX const* p_data);
     /** Constructor.
      *  @param data a constant reference on the data set to reduce.
      **/
-    ProjectedVariance(Matrix const& data);
+    ProjectedVariance(ArrayXX const& data);
     /** Copy constructor.
      * @param reductor the reductor to copy
      **/
@@ -71,8 +71,8 @@ class ProjectedVariance : public ILinearReduct
     { return new ProjectedVariance(*this);}
 
   protected:
-    /** the covariance Matrix */
-    MatrixSquare covariance_;
+    /** the covariance Array */
+    ArraySquareX covariance_;
 
   private:
     /** Find the axis by maximizing the Index. */

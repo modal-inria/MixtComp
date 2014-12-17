@@ -35,28 +35,39 @@
 #ifndef STK_CARRAY_H
 #define STK_CARRAY_H
 
-#include "STKernel/include/STK_Constants.h"
-
 #include "STK_ICArray.h"
-#include "STK_Display.h"
 
 namespace STK
 {
-template< typename Type, int SizeRows_ = UnknownSize, int SizeCols_ = UnknownSize, bool Orient_ = Arrays::by_col_>
-class CArray;
+// forward declaration
+template< typename Type, int SizeRows_ = UnknownSize, int SizeCols_ = UnknownSize, bool Orient_ = Arrays::by_col_> class CArray;
 
-template< typename Type, int SizeCols_, bool Orient_>
-class CArrayPoint;
-template< typename Type, int SizeRows_, bool Orient_>
-class CArrayVector;
-template< typename Type, int SizeRows_, int SizeCols_, bool Orient_>
-class CArrayNumber;
+template< typename Type, int SizeCols_, bool Orient_> class CArrayPoint;
+template< typename Type, int SizeRows_, bool Orient_> class CArrayVector;
+template< typename Type, int SizeRows_, int SizeCols_, bool Orient_> class CArrayNumber;
 
-typedef CArray<Real>                                  CArrayXX;
-typedef CArray<Real, UnknownSize, 2, Arrays::by_col_> CArrayX2;
-typedef CArray<Real, UnknownSize, 3, Arrays::by_col_> CArrayX3;
-typedef CArray<Real, 2, 2, Arrays::by_col_>           CArray22;
-typedef CArray<Real, 3, 3, Arrays::by_col_>           CArray33;
+// typedef for CArrayVector Real is by default double, but can be float
+typedef CArray<Real>                                    CArrayXX;
+typedef CArray<Real, UnknownSize, 2, Arrays::by_col_>   CArrayX2;
+typedef CArray<Real, UnknownSize, 3, Arrays::by_col_>   CArrayX3;
+typedef CArray<Real, 2, UnknownSize, Arrays::by_col_>   CArray2X;
+typedef CArray<Real, 3, UnknownSize, Arrays::by_col_>   CArray3X;
+typedef CArray<Real, 2, 2, Arrays::by_col_>             CArray22;
+typedef CArray<Real, 3, 3, Arrays::by_col_>             CArray33;
+typedef CArray<double>                                  CArrayXX;
+typedef CArray<double, UnknownSize, 2, Arrays::by_col_> CArrayX2d;
+typedef CArray<double, UnknownSize, 3, Arrays::by_col_> CArrayX3d;
+typedef CArray<double, 2, UnknownSize, Arrays::by_col_> CArray2Xd;
+typedef CArray<double, 3, UnknownSize, Arrays::by_col_> CArray3Xd;
+typedef CArray<double, 2, 2, Arrays::by_col_>           CArray22d;
+typedef CArray<double, 3, 3, Arrays::by_col_>           CArray33d;
+typedef CArray<int>                                     CArrayXXi;
+typedef CArray<int, UnknownSize, 2, Arrays::by_col_>    CArrayX2i;
+typedef CArray<int, UnknownSize, 3, Arrays::by_col_>    CArrayX3i;
+typedef CArray<int, 2, UnknownSize, Arrays::by_col_>    CArray2Xi;
+typedef CArray<int, 3, UnknownSize, Arrays::by_col_>    CArray3Xi;
+typedef CArray<int, 2, 2, Arrays::by_col_>              CArray22i;
+typedef CArray<int, 3, 3, Arrays::by_col_>              CArray33i;
 
 namespace hidden
 {
@@ -152,7 +163,7 @@ class CArray: public ICArray < CArray<Type, SizeRows_, SizeCols_, Orient_> >
      *  @param sizeRows size of the rows
      *  @param sizeCols size of the columns
      **/
-    inline CArray( int const& sizeRows, int const& sizeCols) : Base(sizeRows, sizeCols) {}
+    inline CArray( int const& sizeRows, int const& sizeCols): Base(sizeRows, sizeCols) {}
     /** constructor with rbeg, rend, cbeg and cend specified,
      *  initialization with a constant.
      *  @param sizeRows size of the rows
@@ -166,7 +177,7 @@ class CArray: public ICArray < CArray<Type, SizeRows_, SizeCols_, Orient_> >
      *  @param T the container to copy
      *  @param ref true if T is wrapped
      **/
-    inline CArray( CArray const& T, bool ref=false) : Base(T, ref) {}
+    inline CArray( CArray const& T, bool ref=false): Base(T, ref) {}
     /** wrapper constructor for 0 based C-Array.
      *  @param q pointer on the array
      *  @param nbRow number of rows
@@ -177,13 +188,18 @@ class CArray: public ICArray < CArray<Type, SizeRows_, SizeCols_, Orient_> >
      *  @param allocator the allocator to wrap
      **/
     template<class OtherAllocator>
-    inline CArray( OtherAllocator const& allocator) : Base(allocator) {}
+    inline CArray( CAllocatorBase<OtherAllocator> const& allocator): Base(allocator.asDerived()) {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    CArray( ExprBase<OtherDerived> const& T): Base() { LowBase::operator=(T);}
     /** destructor. */
     inline ~CArray() {}
     /** operator= : set the container to a constant value.
      *  @param v the value to set
      **/
-    inline CArray& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline CArray& operator=(Type const& v) { return LowBase::setValue(v);}
     /** operator = : overwrite this with the Right hand side rhs.
      *  @param rhs the container to copy
      **/

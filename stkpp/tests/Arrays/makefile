@@ -28,28 +28,15 @@
 #
 #-----------------------------------------------------------------------
 # makevars contains general definitions and flags.
-ifeq ($(MAKEVARS),)
-        include ../../$(RELATIVEMAKEVARS)
-else
-        include $(MAKEVARS)
-endif
 ifneq ($(wildcard ./makevars.local),) 
 	include makevars.local
 endif
 
 #-----------------------------------------------------------------------
-# Paths to bin, lib, include and projects
-BIN_DIR = ../../bin/
-LIB_DIR = ../../lib/
-INC_DIR = ../../include/
-PROJECTS_DIR = ../../projects/
-
-ARRAYS_INC_DIR = ../../projects/Arrays/include/
-
-#-----------------------------------------------------------------------
 # source files
-#
-CPP_SRCS = \
+CXX_SRCS =
+
+TEST_SRCS = \
 	testArray1D.cpp \
 	testArray2D.cpp \
 	testArray2DMergeSet.cpp \
@@ -68,51 +55,35 @@ CPP_SRCS = \
 	testBiProducts.cpp \
 	testBiSum.cpp
 
-## library name
-CXX_LIB = $(LIB_DIR)/$(LIB_STKPP_A)
-
 #-----------------------------------------------------------------------
 # binary files
-#
-CXX_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
+CXX_OBJS = $(CXX_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
+TEST_OBJS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
 
 #-----------------------------------------------------------------------
 # program files
-#
-CXX_PROGS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%)
+TEST_PROGS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%)
 
 #-----------------------------------------------------------------------
 # Targets
-#
-.PHONY: all obj
-all: obj progs
+.PHONY: all obj progs
+all: progs
 
-obj: $(CXX_OBJS) $(CPP_SRCS)
-progs: $(CXX_PROGS)
+progs: obj $(TEST_PROGS)
+obj: $(CXX_OBJS) $(TEST_OBJS)
 
 #-----------------------------------------------------------------------
 # Objects compilation rules
-#
-$(BIN_DIR)%.o: makefile
-$(BIN_DIR)testArray2D.o: $(ARRAYS_INC_DIR)STK_Array2DVector.h \
-                         $(ARRAYS_INC_DIR)STK_Array2DPoint.h \
-                         $(ARRAYS_INC_DIR)STK_Array2D.h \
-                         $(ARRAYS_INC_DIR)STK_IArray2DBase.h \
-                         $(ARRAYS_INC_DIR)STK_Array2DDiagonal.h \
-                         $(ARRAYS_INC_DIR)STK_IArray2D.h
-
-$(BIN_DIR)%.o: %.cpp makefile $(CXX_LIB)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $< -c -o $@
-
+$(TEST_BIN_DIR)%.o: %.cpp 
+	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS)  $(STK_PROJECT_FLAGS) -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # program compilation rules
-#
-$(BIN_DIR)test%: makefile
-$(BIN_DIR)test%: $(BIN_DIR)test%.o
-	$(CXX) $(LDFLAGS) $< $(CXX_LIB) $(LDLIBS) -o $@ 
+$(TEST_BIN_DIR)test%: $(TEST_BIN_DIR)test%.o $(CXX_OBJS)
+	$(CXX) $^ $(TEST_STKPP_LIB) $(LDFLAGS) $(LDLIBS) -o $@ 
 
 #-----------------------------------------------------------------------
 # clean test programs 
+.PHONY: clean
 clean:
-	$(RM) $(BIN_DIR)test*
+	$(RM) $(TEST_PROGS) $(CXX_OBJS) $(TEST_OBJS)

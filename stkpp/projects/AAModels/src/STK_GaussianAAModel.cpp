@@ -54,9 +54,9 @@ namespace STK
 /* Constructor.
  *  @param p_workData a pointer on the data set to process
  **/
-GaussianAAModel::GaussianAAModel( Matrix* p_workData)
+GaussianAAModel::GaussianAAModel( ArrayXX* p_workData)
                                 : IAAModel(p_workData)
-                                , StatisticalModel<Matrix>(p_workData)
+                                , IStatModel<ArrayXX>(p_workData)
                                 , projectedCovariance_()
                                 , residualCovariance_()
                                 , residualVariance_(0.)
@@ -65,9 +65,9 @@ GaussianAAModel::GaussianAAModel( Matrix* p_workData)
 { }
 
 // constructor
-GaussianAAModel::GaussianAAModel( Matrix& workData)
+GaussianAAModel::GaussianAAModel( ArrayXX& workData)
                                 : IAAModel(workData)
-                                , StatisticalModel<Matrix>(workData)
+                                , IStatModel<ArrayXX>(workData)
                                 , projectedCovariance_()
                                 , residualCovariance_()
                                 , residualVariance_(0.)
@@ -80,12 +80,12 @@ GaussianAAModel::~GaussianAAModel()
 {}
 
 /* update the container when the data set is modified. **/
-void GaussianAAModel::setWorkData(Matrix& workData)
+void GaussianAAModel::setWorkData(ArrayXX& workData)
 {
   // update data set and flags for the IAAModel part
   IAAModel::setWorkData(workData);
-  // set dimensions to new size for the StatisticalModel part
-  StatisticalModel<Matrix>::setData(workData);
+  // set dimensions to new size for the IStatModel part
+  IStatModel<ArrayXX>::setData(workData);
 }
 
 /* compute the ln-likelihood of the model */
@@ -115,7 +115,7 @@ void GaussianAAModel::computeModelParameters()
 void GaussianAAModel::computeNbFreeParameters()
 {
   // get number of free parameters
-  setNbFreeParameter(p_regressor_->nbParameter() + dim() * (dim()+1)/2 + 1);
+  setNbFreeParameter(p_regressor_->nbFreeParameter() + dim() * (dim()+1)/2 + 1);
 }
 
 /* compute the ln-likelihood of the model */
@@ -126,12 +126,12 @@ void GaussianAAModel::computeProjectedLnLikelihood()
 #endif
 
   // range of the column to use
-  Range cols = Range(dim())+(p_reduced_->firstIdxCols()-1);
+  Range cols = Range(p_reduced_->beginCols(), dim());
 
   // create a reference with the first columns of the reduced data
-  Matrix reducedData(*p_reduced_, p_reduced_->rows(), cols);
+  ArrayXX reducedData(*p_reduced_, p_reduced_->rows(), cols);
   // create a reference with the first columns of the reduced data
-  MatrixSquare reducedCovariance(projectedCovariance(), cols);
+  ArraySquareX reducedCovariance(projectedCovariance(), cols);
 
   // compute first part of the ln-likelihood
   Point mean(cols, 0.);
@@ -155,8 +155,8 @@ void GaussianAAModel::computeResidualLnLikelihood()
   residualLnLikelihood_ = ( Const::_LNSQRT2PI_ + 0.5*std::log(residualVariance_ ))
                           * (dim() - nbVariable()) * nbSample();
   // compute second part of the log-likelihood
-  const int firstSample = p_residuals_->firstIdxRows(), lastSample= p_residuals_->lastIdxRows();
-  for (int i=firstSample; i<=lastSample; i++)
+  const int firstSample = p_residuals_->beginRows(), endSample= p_residuals_->endRows();
+  for (int i=firstSample; i<endSample; i++)
   { residualLnLikelihood_ -= p_residuals_->row(i).norm2()/(2.*residualVariance_);}
 
 #ifdef STK_AAMODELS_VERBOSE
@@ -189,7 +189,7 @@ void GaussianAAModel::computeResidualCovariance()
   stk_cout << _T("in GaussianAAModel::computeResidualCovariance().\n");
 #endif
   Stat::covariance(*p_residuals_, residualCovariance_);
-  residualVariance_ = trace(residualCovariance_)/Real(nbVariable()-dim());
+  residualVariance_ = (residualCovariance_.trace())/Real(nbVariable()-dim());
 #ifdef STK_AAMODELS_VERBOSE
   stk_cout << _T("GaussianAAModel::computeResidualCovariance() done.\n");
   stk_cout << _T("residualVariance_ = ") << residualVariance_ << _T("\n");

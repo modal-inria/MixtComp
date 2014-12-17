@@ -55,7 +55,7 @@ ExportToCsv::ExportToCsv( const DataFrame& df)
   p_data_->resize(0, df.sizeCols());
 
   // for each field Try a String conversion
-  for(int iVar = df.firstIdxCols(), irw = p_data_->firstIdx(); iVar<=df.lastIdxCols(); iVar++, irw++)
+  for(int iVar = df.beginCols(), irw = p_data_->begin(); iVar<=df.lastIdxCols(); iVar++, irw++)
   { if (df.elt(iVar)) df.elt(iVar)->exportAsString(p_data_->var(irw));}
 }
 
@@ -69,7 +69,7 @@ ExportToCsv::~ExportToCsv()
 void ExportToCsv::setColumnsNames(String const& prefix)
 {
   // get first and last column indexes
-  const int first = p_data_->firstIdx(), last = p_data_->lastIdx();
+  const int first = p_data_->begin(), last = p_data_->lastIdx();
   // set names of the variables
   for(int i = first; i<=last; i++)
   {

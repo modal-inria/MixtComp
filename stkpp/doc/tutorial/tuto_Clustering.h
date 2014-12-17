@@ -10,7 +10,7 @@
  *
  * @section ClusterIntroduction About Mixture Models
  *
- * This tutorial will show you how to add a new mixture model to stk++.
+ * This tutorial will show you how to add a new mixture model to STK++.
  * The design of the Clustering model have been think with in mind less
  * efforts for the programmer who need to add a mixture model.
  *
@@ -61,20 +61,21 @@
  * (the Parameter and the %Model) to implement. In a model, it is
  * required to implement the following methods:
  * @code
- *  void initializeStep();
+ *  inline bool initializeStep() { return mStep();}
  *  void randomInit();
- *  void mStep();
+ *  bool mStep();
  *  Real impute(int i, int j) const;
  *  Real sample(int i, int j) const;
  *  void getParameters(Array2D<Real>& params) const;
+ *  void setParameters();
  *  void writeParameters(ostream& os) const;
  *  int computeNbFreeParameters() const;
  * @endcode
  * and if there is shared parameters, the following method:
  * @code
- *  void initializeModel();
+ *  void initializeModelImpl();
  * @endcode
- * These methods will be called by the STK::MixtureBridge class.
+ * These methods are needed by the parent class STK::MixtureBridge class.
  *
  * @sa STK_MixtureBridge.h
  *
@@ -85,13 +86,14 @@
  * and must store the class specific parameters and have a pointer on the shared
  * parameters of the mixture.
  *
- * It is required by @c STK::IMultiParameters that the derived class @c Parameter
+ * It is required from @c STK::IMultiParameters that the derived class @c Parameter
  * implement the methods
  * @code
  *   void resizeImpl(Range const& range);
  *   void printImpl(ostream &os);
  * @endcode
- * and by the @c STK::MixutureComponent class it implements the templated method
+ * and by the @c STK::IMixtureModel interface class that it implements the (templated)
+ * method
  * @code
  *  template<class RowVector>
  *  Real computeLnLikelihood( RowVector const& rowData) const
@@ -100,7 +102,7 @@
  * The method @c resizeImpl have to resize the containers of the parameters
  * in order to match the range of the variables.
  *
- * The method @c printImpl have to print the whole parameters.
+ * The method @c printImpl have to print the whole parameters to the output stream.
  *
  * @subsection GaussianParameterBase Gaussian Examples: Common base class for the parameters
  *
@@ -117,11 +119,11 @@
  * }
  * @endcode
  *
- * At this level, it is also required to the derived class to implement the method
+ * Observe that we are now requiring to the derived class to implement the method
  * @code
  *   void sigmaImpl(int j);
  * @endcode
- * but all models will access to the j-th mean and standard deviation using
+ * as all models will access to the j-th mean and standard deviation using
  * @c mean(j) and @c sigma(j).
  *
  * @note The default constructor and the copy constructor are mandatory, hovewer
@@ -168,11 +170,10 @@
  * @endcode
  *
  * @sa STK_DiagGaussianParameters.h
- * @note The pointer p_sigam_ is initialized to NULL (0), as the common value
+ * @note The pointer p_sigam_ is initialized to NULL (0), as the shared value
  * sigma_ is stored by the model class @c Gaussian_s.
  * @warning If the pointer value is not set at the creation of the model, you
  * will experiment an unexpected behavior.
- *
  *
  * @section ModelClass Implementing the Model class
  *
@@ -205,9 +206,9 @@
  * class Gaussian_sjk : public DiagGaussianBase<Gaussian_sjk<Array> >
  * {
  *   ...
- *   void initializeStep();
+ *   inline bool initializeStep() { return mStep();}
  *   void randomInit();
- *   void mStep();
+ *   bool mStep();
  *   inline int computeNbFreeParameters() const
  *   { return 2*this->nbCluster()*this->nbVariable();}
  *
@@ -216,23 +217,22 @@
  *
  * @subsection GaussianParcimoniousModel Gaussian Example: The Gaussian_s model
  *
- * The model STK::Gaussian_s have the shared parameter sigma. Thus we have to
- * sur-define the method @c initializeModel
+ * The model STK::Gaussian_s have the shared parameter sigma_. Thus we have to
+ * overload the method @c initializeModelImpl
  *
  * @code
  * template<class Array>
  * class Gaussian_s : public DiagGaussianBase<Gaussian_s<Array> >
  * {
  *    ...
- *   virtual void initializeModel()
+ *   void initializeModelImpl()
  *   {
- *     Base::initializeModel();
- *     for (int k= baseIdx; k <= components().lastIdx(); ++k)
- *     { components()[k]->p_param()->p_sigma_ = &sigma_;}
+ *     for (int k= baseIdx; k < components().end(); ++k)
+ *     { p_param(k)->p_sigma_ = &sigma_;}
  *   }
- *   void initializeStep();
+ *   inline bool initializeStep() { return mStep();}
  *   void randomInit();
- *   void mStep();
+ *   bool mStep();
  *   inline int computeNbFreeParameters() const
  *   { return this->nbCluster()*this->nbVariable() + 1;}
  *     ...
@@ -242,7 +242,7 @@
  * @endcode
  *
  * @warning When there is shared parameters in the model, the model have to share
- * them between the parameters.
+ * them between the parameters classes.
  *
  * @sa STK_Gaussian_s.h
  *
@@ -263,8 +263,8 @@
  *
  * @sa STK_Clust_Util.h, STK::MixtureManager
  *
- * In the directory Bridges, the STK::Clust::BridgeTraits class have to be
- * specialized.
+ * In the directory MixturesBridges, the STK::Clust::MixtureBridgeTraits class
+ * have to be specialized.
  *
  * @sa STK_GaussianBridges.h
  *

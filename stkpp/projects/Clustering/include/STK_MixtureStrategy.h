@@ -30,7 +30,7 @@
  **/
 
 /** @file STK_MixtureStrategy.h
- *  @brief In this file we define the strategy to use in order to estimate a
+ *  @brief In this file we define the strategies to use in order to estimate a
  *  mixture model.
  **/
 
@@ -44,7 +44,7 @@
 namespace STK
 {
 // forward declarations
-class IMixtureComposerBase;
+class IMixtureComposer;
 class IMixtureAlgo;
 class IMixtureInit;
 
@@ -56,7 +56,7 @@ class IMixtureStrategy : public IRunnerBase
     /** default constructor.
      *  @param p_model the model to estimate
      **/
-    inline IMixtureStrategy( IMixtureComposerBase*& p_model)
+    inline IMixtureStrategy( IMixtureComposer*& p_model)
                            : IRunnerBase(), nbTry_(1), p_model_(p_model), p_init_(0)
     {}
     /** copy constructor
@@ -76,9 +76,13 @@ class IMixtureStrategy : public IRunnerBase
     /** number of tries of each strategies (1 by default) */
     int nbTry_;
     /** reference on the main model */
-    IMixtureComposerBase*& p_model_;
+    IMixtureComposer*& p_model_;
     /** initialization method */
     IMixtureInit* p_init_;
+    /** store a model in p_model_ if it is better.
+     * @param p_otherModel the model to store
+     **/
+    void storeModel(IMixtureComposer*& p_otherModel);
 };
 
 /** @ingroup Clustering
@@ -103,7 +107,7 @@ class SimpleStrategy : public IMixtureStrategy
     /** default constructor.
      * @param p_model a reference pointer on the model to estimate
      **/
-    inline SimpleStrategy( IMixtureComposerBase*& p_model) : IMixtureStrategy(p_model), p_param_(0)
+    inline SimpleStrategy( IMixtureComposer*& p_model) : IMixtureStrategy(p_model), p_param_(0)
     {}
     /** copy constructor.
      *  @param strategy the strategy to copy
@@ -148,6 +152,7 @@ struct XemStrategyParam
  *   a high tolerance,
  *  - pick the best model obtained,
  *  - on this best model perform a long run.
+ *  This strategy is used in Rmixmod R package.
  **/
 class XemStrategy: public IMixtureStrategy
 {
@@ -155,7 +160,7 @@ class XemStrategy: public IMixtureStrategy
     /** default constructor.
      * @param p_model a reference pointer on the model to estimate
      **/
-    inline XemStrategy( IMixtureComposerBase*& p_model) : IMixtureStrategy(p_model), p_param_()
+    inline XemStrategy( IMixtureComposer*& p_model) : IMixtureStrategy(p_model), p_param_()
     {}
     /** copy constructor.
      *  @param strategy the strategy to copy
@@ -178,6 +183,68 @@ class XemStrategy: public IMixtureStrategy
     XemStrategyParam* p_param_;
 };
 
+/** @ingroup Clustering
+ *  helper structure encapsulating the parameters of the Full strategy
+ **/
+struct FullStrategyParam
+{  /** Constructor. Set default values */
+    inline FullStrategyParam() : nbInitRun_(1), nbShortRun_(0), p_shortAlgo_(0) , p_longAlgo_(0)
+    {}
+    /** destructor */
+    virtual ~FullStrategyParam();
+    /** number of initialization run to perform */
+    int nbInitRun_;
+    /** number of short run to perform */
+    int nbShortRun_;
+    /** algorithm to use in short runs  */
+    IMixtureAlgo* p_shortAlgo_;
+    /** algorithm to use in long run  */
+    IMixtureAlgo* p_longAlgo_;
+};
+
+/** @ingroup Clustering
+ *  A FullStrategy is based on the following paradigm:
+ *  - perform nbInitRun_ of the p_init_ initialization method, select the best initialization
+ *  - perform nbShortRun of the shortAlgo with a small number of iterations and
+ *   a high tolerance,
+ *  - pick the best model obtained,
+ *  - on this best model perform a long run.
+ *  This strategy is used in Rmixmod R package.
+ **/
+class FullStrategy: public IMixtureStrategy
+{
+  public:
+    /** default constructor.
+     * @param p_model a reference pointer on the model to estimate
+     **/
+    inline FullStrategy( IMixtureComposer*& p_model) : IMixtureStrategy(p_model), p_param_()
+    {}
+    /** copy constructor.
+     *  @param strategy the strategy to copy
+     **/
+    inline FullStrategy( FullStrategy const& strategy) : IMixtureStrategy(strategy), p_param_(0)
+    {}
+    /** destructor */
+    inline virtual ~FullStrategy() { if (p_param_) delete p_param_;}
+    /** clone pattern */
+    inline virtual FullStrategy* clone() const { return new FullStrategy(*this);}
+    /** set the parameters of the strategy
+     * @param  p_param  the parameters of the Xem strategy
+     **/
+    void setParam(FullStrategyParam * p_param) { p_param_ = p_param;}
+
+    /** run the strategy */
+    virtual bool run();
+
+  protected:
+    FullStrategyParam* p_param_;
+    /** Perform the Initialization step
+     *  Initialize nbInitRun_ (should be  > 0) model and select the best model
+     *  among them
+     **/
+    void initStep(IMixtureComposer*& p_current, IMixtureComposer*& pcurrentBestModel);
+};
+
 }  // namespace STK
 
-#endif /* STK_MIXTURESTRATEGY_H_ */
+#endif /* STK_MIXTURESTRATEGY_H */

@@ -4,7 +4,7 @@ FILE( GLOB STatistiK_files
   include/*.h
   )
   
-INCLUDE_DIRECTORIES("..")
+include_directories("..")
 
 # Add STatistiK files to STKSTatistiK library
-ADD_LIBRARY(STKSTatistiK OBJECT ${STatistiK_files})
+add_library(STKSTatistiK OBJECT ${STatistiK_files})

@@ -37,20 +37,25 @@
 #ifndef STK_LAW_MULTINORMAL_H
 #define STK_LAW_MULTINORMAL_H
 
-#include "STK_Law_IMultiLaw.h"
-#include "STK_Law_Normal.h"
 
-#include "Analysis/include/STK_Const_Math.h"
-
+#include "Arrays/include/STK_CArray.h"
+#include "Arrays/include/STK_CArraySquare.h"
+#include "Arrays/include/STK_CArrayPoint.h"
+#include "Arrays/include/STK_CArrayVector.h"
 #include "Arrays/include/STK_Array2D.h"
 #include "Arrays/include/STK_Array2DSquare.h"
+#include "Arrays/include/STK_Array2DDiagonal.h"
 #include "Arrays/include/STK_Array2DLowerTriangular.h"
 #include "Arrays/include/STK_Array2DUpperTriangular.h"
 #include "Arrays/include/STK_Array2D_Functors.h"
 #include "Arrays/include/STK_Const_Arrays.h"
 
-#include "Algebra/include/STK_EigenvaluesSymmetric.h"
-#include "Algebra/include/STK_LinAlgebra2D.h"
+#include "Algebra/include/STK_SymEigen.h"
+
+#include "STK_Law_IMultiLaw.h"
+#include "STK_Law_Normal.h"
+
+#include "Analysis/include/STK_Const_Math.h"
 
 namespace STK
 {
@@ -99,11 +104,11 @@ class MultiNormal: public IMultiLaw<RowVector>
      *  @param mu mean of the Normal distribution
      *  @param sigma covariance matrix of the Normal distribution
      **/
-    MultiNormal( RowVector const& mu, MatrixSquare const& sigma)
+    MultiNormal( RowVector const& mu, ArraySquareX const& sigma)
                : IMultiLaw<RowVector>(_T("MultiNormal"))
                , mu_()
                , sigma_()
-               , decomp_(0)
+               , decomp_(sigma)
     { setParameters(mu, sigma);}
 
     /** destructor. */
@@ -111,13 +116,13 @@ class MultiNormal: public IMultiLaw<RowVector>
     /** @@return the location parameter */
     inline RowVector const& mu() const { return mu_;}
     /** @@return the variance-covariance matrix */
-    inline MatrixSquare const& sigma() const { return sigma_;}
+    inline ArraySquareX const& sigma() const { return sigma_;}
     /** @@return the square root of the variance-covariance matrix */
-    inline MatrixSquare const& squareroot() const { return squareroot_;}
+    inline ArraySquareX const& squareroot() const { return squareroot_;}
     /** @@return the eigenvalue decomposition */
-    inline EigenvaluesSymmetric const& decomp() const { return decomp_;}
+    inline SymEigen const& decomp() const { return decomp_;}
     /** update the parameters specific to the law. */
-    void setParameters( RowVector const& mu, MatrixSquare const& sigma)
+    void setParameters( RowVector const& mu, ArraySquareX const& sigma)
     {
       // check dimensions
       if (mu.range() != sigma.range())
@@ -133,12 +138,12 @@ class MultiNormal: public IMultiLaw<RowVector>
       invEigenvalues_.resize(mu_.range());
       squareroot_.resize(mu_.range());
       // get dimension
-      int rank = decomp_.rank(), last = mu_.firstIdx() + rank -1;
-      for (int j=mu_.firstIdx(); j<= last; j++)
-      { invEigenvalues_[j] = 1./decomp_.eigenvalues()[j];}
-      for (int j=last+1; j<= mu_.lastIdx(); j++) { invEigenvalues_[j] = 0.;}
+      int rank = decomp_.rank(), end = mu_.begin() + rank;
+      for (int j=mu_.begin(); j< end; j++)
+      { invEigenvalues_[j] = 1./decomp_.eigenValues()[j];}
+      for (int j=end; j< mu_.end(); j++) { invEigenvalues_[j] = 0.;}
 
-      squareroot_ = (decomp_.rotation() * decomp_.eigenvalues().sqrt()).transpose();
+      squareroot_ = decomp_.rotation() * decomp_.eigenValues().sqrt().diag() * decomp_.rotation().transpose();
     }
     /** @brief compute the probability distribution function (density) of the
      * multivariate normal law
@@ -191,7 +196,7 @@ class MultiNormal: public IMultiLaw<RowVector>
       if (data.cols() != mu_.range() )
       { STKRUNTIME_ERROR_NO_ARG(MultiNormal::lnLikelihood(x),data.cols() != mu_.range());}
       // get dimensions of the samples and sum over all ln-likelihood values
-      const int first = data.firstIdxRows(), last = data.lastIdxRows();
+      const int first = data.beginRows(), last = data.lastIdxRows();
       Real sum = 0.0;
       for (int i=first; i<= last; i++)
       {
@@ -234,13 +239,13 @@ class MultiNormal: public IMultiLaw<RowVector>
     /** The position parameter. **/
     RowVector mu_;
     /** The covariance parameter. **/
-    MatrixSquare sigma_;
+    ArraySquareX sigma_;
     /** the decomposition in eigenvalues of the covariance matrix*/
-    EigenvaluesSymmetric decomp_;
+    SymEigen decomp_;
     /** inverse of the eigenvalues of sigma_ */
-    MatrixDiagonal invEigenvalues_;
+    ArrayDiagonalX invEigenvalues_;
     /** The square root of the matrix @c Sigma_. **/
-    MatrixSquare squareroot_;
+    ArraySquareX squareroot_;
 };
 
 } // namespace Law

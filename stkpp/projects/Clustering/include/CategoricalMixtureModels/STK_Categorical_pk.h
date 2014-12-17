@@ -48,11 +48,12 @@ namespace Clust
 /** @ingroup Clustering
  *  Traits class for the Categorical_pk traits policy. */
 template<class _Array>
-struct MixtureModelTraits< Categorical_pk<_Array> >
+struct MixtureTraits< Categorical_pk<_Array> >
 {
   typedef _Array Array;
+  typedef typename Array::Type Type;
   typedef Categorical_pkParameters Parameters;
-  typedef MixtureComponent<_Array, Parameters> Component;
+  typedef Array2D<Real>   Param;
 };
 
 } // namespace hidden
@@ -62,8 +63,7 @@ struct MixtureModelTraits< Categorical_pk<_Array> >
  *  the most general diagonal Categorical model and have a density function of the
  *  form
  * \f[
- *  f(\mathbf{x}|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d
- *   .
+ *  P(\mathbf{x}=(l_1,\ldots,l_d)|\theta) = \sum_{k=1}^K p_k \prod_{j=1}^d p_{kl_j}.
  * \f]
  **/
 template<class Array>
@@ -71,14 +71,14 @@ class Categorical_pk : public CategoricalBase<Categorical_pk<Array> >
 {
   public:
     typedef CategoricalBase<Categorical_pk<Array> > Base;
-    typedef typename Clust::MixtureModelTraits< Categorical_pk<Array> >::Component Component;
-    typedef typename Clust::MixtureModelTraits< Categorical_pk<Array> >::Parameters Parameters;
-    typedef typename Array::Col ColVector;
+    typedef typename Clust::MixtureTraits< Categorical_pk<Array> >::Parameters Parameters;
 
     using Base::p_tik;
+    using Base::components;
     using Base::p_data;
     using Base::p_param;
-    using Base::components;
+    using Base::paramBuffer_;
+    using Base::modalities_;
 
     /** default constructor
      * @param nbCluster number of cluster in the model
@@ -91,26 +91,38 @@ class Categorical_pk : public CategoricalBase<Categorical_pk<Array> >
     /** destructor */
     inline ~Categorical_pk() {}
     /** Compute the inital weighted mean and the initial common variances. */
-    void initializeStep();
+    bool initializeStep();
     /** Initialize randomly the parameters of the Categorical mixture.
      *  Probabilities will be choosen uniformly.
      */
     void randomInit();
     /** Compute the weighted proportions of each class. */
-    void mStep();
-    /** get the parameters of the model
-     *  @param params An Array2D with the parameters of the model
-     **/
-    void getParameters(Array2D<Real>& params) const;
+    bool mStep();
     /** @return the number of free parameters of the model */
     inline int computeNbFreeParameters() const
     { return this->nbCluster()*(this->modalities_.size()-1);}
+    /** set the parameters of the model */
+    void setParametersImpl();
 };
 
-/** Initialize the parameters using mStep. */
+/* set the parameters of the model */
 template<class Array>
-void Categorical_pk<Array>::initializeStep()
-{}
+void Categorical_pk<Array>::setParametersImpl()
+{
+  int nbCluster    = this->nbCluster();
+  int nbModalities = this->modalities_.size();
+  for (int k = 0; k < nbCluster; ++k)
+  {
+    for (int l = 0; l < nbModalities; ++l)
+    { p_param(baseIdx + k)->proba_[modalities_.begin() + l]
+                                  = paramBuffer_(baseIdx + k * nbModalities + l, p_data()->beginCols());
+    }
+  }
+}
+
+/* Initialize the parameters using mStep. */
+template<class Array>
+bool Categorical_pk<Array>::initializeStep() { return mStep();}
 
 /* Initialize randomly the parameters of the Categorical mixture. The centers
  *  will be selected randomly among the data set and the standard-deviation
@@ -119,7 +131,7 @@ void Categorical_pk<Array>::initializeStep()
 template<class Array>
 void Categorical_pk<Array>::randomInit()
 {
-  for (int k = baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+  for (int k = baseIdx; k < components().end(); ++k)
   {
     p_param(k)->proba_.randUnif();
     p_param(k)->proba_ /= p_param(k)->proba_.sum();
@@ -128,44 +140,21 @@ void Categorical_pk<Array>::randomInit()
 
 /* Compute the weighted mean and the common variance. */
 template<class Array>
-void Categorical_pk<Array>::mStep()
+bool Categorical_pk<Array>::mStep()
 {
-  for (int k = baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+  for (int k = baseIdx; k < components().end(); ++k)
   {
-    for (int j = p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
+    p_param(k)->proba_ = 0.;
+    for (int j = p_data()->beginCols(); j < p_data()->endCols(); ++j)
     {
-      for (int i = p_tik()->firstIdxRows(); i <= p_tik()->lastIdxRows(); ++i)
-      {
-        p_param(k)->proba_[(*p_data())(i, j)] += (*p_tik())(i, k);
-      }
+      for (int i = p_tik()->beginRows(); i < p_tik()->endRows(); ++i)
+      { p_param(k)->proba_[(*p_data())(i, j)] += (*p_tik())(i, k);}
     }
-    p_param(k)->proba_ /=  p_param(k)->proba_.sum();
+    Real sum = p_param(k)->proba_.sum();
+    if (sum<=0.) return false;
+    p_param(k)->proba_ /= sum;
   }
-}
-
-/** get the parameters of the model
- *  @param params the parameters of the model
- **/
-template<class Array>
-void Categorical_pk<Array>::getParameters(Array2D<Real>& params) const
-{
-  for (int k = baseIdx; k <= p_tik()->lastIdxCols(); ++k)
-    params.pushBackRows(p_param(k)->proba_*Const::Point<Real>(this->nbCluster()));
-//  int firstId = params.firstIdxRows();
-//  int nbClust = this->nbCluster();
-//  int nbModalities = modalities_.size();
-//
-//  params.resize(nbModalities * nbClust, p_data()->cols());
-//  for (int k = 0; k <= nbClust; ++k)
-//  {
-//    for (int j = p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
-//    {
-//      for (int l = 0; l < nbModalities; ++l)
-//      {
-//        params(k * nbModalities + l + firstId, j) = p_param(k)->proba(j, l);
-//      }
-//    }
-//  }
+  return true;
 }
 
 } // namespace STK

@@ -47,7 +47,7 @@ namespace Funct
 /** @ingroup Analysis
  *  @brief Compute the incomplete gamma functions ratio.
  **/
-Real gammaRatio(Real const& a, Real const& x, const bool &lower_tail);
+Real gammaRatio(Real const& a, Real const& x, bool lower_tail);
  
 /** @ingroup Analysis
  *  @brief Compute the incomplete gamma function ratio Q(a,x).

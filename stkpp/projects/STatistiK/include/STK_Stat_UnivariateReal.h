@@ -360,10 +360,10 @@ class Univariate<TContainer1D, Real>
       if (!sorted_)
       {  STKRUNTIME_ERROR_NO_ARG(Univariate<TContainer1D>::compQuantiles(T),V_ is not sorted);}
       // number of quantiles
-      int  nt = T.size(), shift = V_.firstIdx()-1;
+      int  nt = T.size(), shift = V_.begin()-1;
       Real n1 = Real(nbAvailable_+1), nt1 = Real(nt+1);
 
-      for (int j=T.firstIdx(), k=1; j<=T.lastIdx(); j++, k++)
+      for (int j=T.begin(), k=1; j<=T.lastIdx(); j++, k++)
       {
         // find index of the k-th quantile
         Real find  = Real(k*n1)/nt1;  // compute the index in Real
@@ -387,7 +387,7 @@ class Univariate<TContainer1D, Real>
       min_ =  Arithmetic<Real>::max();
       max_ = -Arithmetic<Real>::max();
       // discard missing values
-      for (int i=V_.lastIdx(); i>=V_.firstIdx(); i--)
+      for (int i=V_.lastIdx(); i>=V_.begin(); i--)
       {
         if ( Arithmetic<Real>::isNA(V_[i]) )
         {
@@ -407,7 +407,7 @@ class Univariate<TContainer1D, Real>
       sum2weights_= 1./(Real)nbAvailable_;
 
       // no samples
-      if ((nbAvailable_ == 0))
+      if (nbAvailable_ == 0)
       {
         min_  = Arithmetic<Real>::NA();
         max_  = Arithmetic<Real>::NA();
@@ -427,7 +427,7 @@ class Univariate<TContainer1D, Real>
       max_ = -Arithmetic<Real>::max();
 
       // discard missing values or values without weights
-      for (int i=V_.lastIdx(); i>=V_.firstIdx(); i--)
+      for (int i=V_.lastIdx(); i>=V_.begin(); i--)
       {
         if ( Arithmetic<Real>::isNA(V_[i])||Arithmetic<Real>::isNA(W_[i]))
         {
@@ -445,7 +445,7 @@ class Univariate<TContainer1D, Real>
         }
       }
       // no samples
-      if ((nbAvailable_ == 0))
+      if (nbAvailable_ == 0)
       {
         min_  = Arithmetic<Real>::NA();
         max_  = Arithmetic<Real>::NA();
@@ -501,7 +501,7 @@ class Univariate<TContainer1D, Real>
         if (amax_) // if the absolute maximal value is greater than 0
         {
           // sum samples with scaling
-          for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
+          for (int i=V_.begin(); i<=V_.lastIdx(); i++)
             mean_ += V_[i]/amax_;
           // divide by the number of available observation
           mean_ /= n;
@@ -516,7 +516,7 @@ class Univariate<TContainer1D, Real>
       mad_  = 0.0;
       kurtosis_ = 0.0;
       skewness_ = 0.0;
-      for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
+      for (int i=V_.begin(); i<=V_.lastIdx(); i++)
       {
         sum       += (dev1 = V_[i]-mean_); // deviation from the mean
         var_      += (dev2 = dev1*dev1);   // squared deviation
@@ -584,7 +584,7 @@ class Univariate<TContainer1D, Real>
       if (amax_) // if the maximal value is greater than 0
        {
         // sum samples
-        for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
+        for (int i=V_.begin(); i<=V_.lastIdx(); i++)
           mean_ += (W_[i]*V_[i])/amax_; // compute the mean with scaling
         mean_ /= sumweights_;           // weight the sum
         mean_ *= amax_;                 // and unscale
@@ -596,7 +596,7 @@ class Univariate<TContainer1D, Real>
       mad_  = 0.0;
       kurtosis_ = 0.0;
       skewness_ = 0.0;
-      for (int i=V_.firstIdx(); i<=V_.lastIdx(); i++)
+      for (int i=V_.begin(); i<=V_.lastIdx(); i++)
       {
         Real weight = W_[i];
         sum       += weight * (dev1 = V_[i]-mean_); // deviation from the mean
@@ -607,7 +607,7 @@ class Univariate<TContainer1D, Real>
       }
       mad_ /= sumweights_;
       uvar_ = (var_ - sum*sum/sumweights_)/(sumweights_ - sum2weights_/sumweights_);
-      var_  = (var_ - sum*sum)/(sumweights_);
+      var_  = (var_ - sum*sum/sumweights_)/sumweights_;
       std_  = sqrt((double)var_);
       ustd_ = sqrt((double)uvar_);
       // if there is variance

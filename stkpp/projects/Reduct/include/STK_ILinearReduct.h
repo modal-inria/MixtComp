@@ -58,7 +58,7 @@ namespace STK
  * of the base class IReduct) when the user use the virtual method @c run()
  * (for not weighted observations) or @c run(weights) (for weighted observations).
  *
- * The Matrix axis_ is computed by maximizing some criteria defined in
+ * The Array axis_ is computed by maximizing some criteria defined in
  * derived classes. It is constructed using the pure virtual functions:
  * @code
  *  virtual void maximizeCriteria() =0;
@@ -73,11 +73,11 @@ class ILinearReduct : public IReduct
     /** Constructor.
      *  @param p_data a pointer on the constant data set to reduce.
      **/
-    ILinearReduct( Matrix const* p_data);
+    ILinearReduct( ArrayXX const* p_data);
     /** Constructor.
      *  @param data a constant reference on the data set to reduce.
      **/
-    ILinearReduct( Matrix const& data);
+    ILinearReduct( ArrayXX const& data);
     /** copy Constructor.
      *  @param reductor the reductor to copy.
      **/
@@ -100,15 +100,15 @@ class ILinearReduct : public IReduct
      **/
     inline Vector const& criteriaValues() const { return idx_values_; }
     /** Get the axis
-     *  @return a constant reference Matrix of the axis
+     *  @return a constant reference Array of the axis
      **/
-    inline Matrix const& axis() const { return axis_; }
+    inline ArrayXX const& axis() const { return axis_; }
 
   protected:
     /** The values of the index for each axis. */
     Vector idx_values_;
     /** The computed axis. */
-    Matrix axis_;
+    ArrayXX axis_;
 
   private:
     /** Find the axis by maximizing the Index. */

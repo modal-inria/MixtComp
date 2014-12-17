@@ -42,7 +42,7 @@ Copyright 1984, 1987, 1992, 2000 by Stephen L. Moshier
 #include "../include/STK_Funct_util.h"
 #include "../include/STK_Const_Math.h"
 
-/** The Bernouilli numbers */
+/** The Bernouilli numbers divided by 2k */
 static double A[] = {
  8.333333333333333333333333333333333333333333333333333333333333333333333E-2,
 -2.10927960927960927961092796092796092796092796092796092796092796092796E-2,
@@ -100,21 +100,21 @@ Real psi_raw( Real x)
     nz = q - p;
     if( nz != 0.5 )
     {
-      if( nz > 0.5 )
-      { nz = q - p - 1.;}
+      if( nz > 0.5 ) { nz = q - p - 1.;}
       nz = Const::_PI_/std::tan(Const::_PI_*nz);
     }
     else { nz = 0.0;}
     x = 1.0 - x;
   }
+  if (x==1.) return -Const::_EULER_;
   // check for positive integer up to 20
-  if( (x <= 20.0) && (x == floor(x)) )
+  if( (x <= 20.0) && (x == std::floor(x)) )
   {
     y = 0.0;
     for( int i=int(x)-1; i>1; i-- ) { y += 1.0/(Real)i; }
-    y = y - Const::_EULER_ + 1.;
+    y += -Const::_EULER_ + 1.;
   }
-  else // not integer
+  else // not integer or greater than 20
   {
     s = x;
     w = 0.0;
@@ -124,7 +124,7 @@ Real psi_raw( Real x)
       s += 1.0;
     }
     z = 1.0/(s * s);
-    y = log(s) - (0.5/s) - z * evalPolynomial<6>( z, A) -  w;
+    y = std::log(s) - (0.5/s) - z * evalPolynomial<6>( z, A) -  w;
   }
   return (negative) ? y - nz : y;
 }

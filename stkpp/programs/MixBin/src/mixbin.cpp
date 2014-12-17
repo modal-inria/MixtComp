@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
     // create univariate variable container
     Array2DVector<Binary> var;
     // for each variables in the data set
-    for (int j= data.firstIdxCols(); j <= data.lastIdxCols(); ++j)
+    for (int j= data.beginCols(); j < data.endCols(); ++j)
     {
       // move each variables into var
       var.move(data.col(j));
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     // estimates the parameters
     jb.run();
     // print the results
-    for (int j= data.firstIdxCols(); j <= data.lastIdxCols(); ++j)
+    for (int j= data.beginCols(); j< data.endCols(); ++j)
     {
       stk_cout << "j=" << j << _T("\n";);
       stk_cout << "jb.law().prob(j) = " << jb.p_param()->prob(j) << _T("\n";);

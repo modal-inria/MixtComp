@@ -33,17 +33,43 @@
  **/
 
 #include "../include/STK_DataHandler.h"
-#include "Arrays/include/STK_Display.h"
 
 namespace STK
 {
 
-/** read a data file and its companion description file. */
+/* read a data file and its companion description file. */
+bool DataHandler::readDataFromCsvFile( std::string const& datafile
+                                          , std::string const& idData
+                                          , std::string const& idModel)
+{
+  ReadWriteCsv data(datafile);
+  // no names to read in the first line
+  data.setWithNames(withNames_);
+  // read the data set
+  if (!data.read())
+  {
+    stk_cerr << _T("An error occur when reading the data file.\nWhat: ")
+             << data.error();
+    return false;
+  }
+  // add descriptor
+  Variable<std::string> desc(2);
+  desc[baseIdx] = idModel ; desc[baseIdx+1] = idData;
+  // store data and descriptors
+  if (!addInfo(idData, idModel)) return false;
+  data_ += data;
+  // store descriptor : this is the same for all the columns added
+  for (int j=data.beginCols(); j< data.endCols(); ++j)
+  { descriptor_.push_back(desc);}
+  return true;
+}
+
+/* read a data file and its companion description file. */
 bool DataHandler::readDataFromCsvFile(std::string const& datafile, std::string descriptorfile)
 {
   ReadWriteCsv rwdata(datafile);
   // no names to read in the first line
-  rwdata.setWithNames(false);
+  rwdata.setWithNames(withNames_);
   // read the data set
   if (!rwdata.read())
   {
@@ -67,78 +93,55 @@ bool DataHandler::readDataFromCsvFile(std::string const& datafile, std::string d
     stk_cerr << _T("Data file and descriptor file does not have the same number of column.\n");
     return false;
   }
-  if (rwdata.rows().size() == 0)
+  if (rwdata.sizeRows() == 0)
   {
     stk_cerr << _T("No data.\n");
     return false;
   }
-  if (rwdesc.rows().size() < 2)
+  if (rwdesc.sizeRows() < 2)
   {
     stk_cerr << _T("No descriptor.\n");
     return false;
   }
   // parse descriptor file
-  int firstRow = rwdesc.firstIdxRows();
-  for (int j=rwdesc.firstIdxCols(); j<= rwdesc.lastIdxCols(); j++)
+  int firstRow = rwdesc.beginRows();
+  for (int j=rwdesc.beginCols(); j< rwdesc.endCols(); j++)
   {
     std::string idModel = rwdesc.at(j).at(firstRow);
     std::string idData = rwdesc.at(j).at(firstRow+1);
     if (!addInfo(idData, idModel)) return false;
   }
   // store data and descriptors
-  data_ += rwdata;
+  data_       += rwdata;
   descriptor_ += rwdesc;
   return true;
 }
 
-std::vector<int> DataHandler::colIndex(std::string const& id) const
+/* remove the data with the given idData */
+void DataHandler::removeData(std::string const& idData)
 {
-  int rowNames = descriptor_.firstIdxRows() +1;
+  int rowIdData = descriptor_.beginRows()+1;
+  for (int i = descriptor_.endCols()-1; i >= descriptor_.beginCols(); --i)
+  { if (descriptor_.var(i)[rowIdData] == idData)
+    {
+      data_.eraseColumn(i);
+      descriptor_.eraseColumn(i);
+     }
+  }
+  info_.erase(idData);
+}
+
+/* lookup on the descriptors in order to get the columns of the ReadWriteCsv
+ *  with the Id idData.
+ *  @param idData id of the data to get
+ **/
+std::vector<int> DataHandler::colIndex(std::string const& idData) const
+{
+  int rowIdData = descriptor_.beginRows()+1;
   std::vector<int> colindex;
-  for (int i = descriptor_.firstIdxCols(); i <= descriptor_.lastIdxCols(); ++i)
-  {
-    if (descriptor_.var(i).at(rowNames) == id) colindex.push_back(i);
-  }
+  for (int i = descriptor_.beginCols(); i <= descriptor_.lastIdxCols(); ++i)
+  { if (descriptor_.var(i).at(rowIdData) == idData) colindex.push_back(i);}
   return colindex;
-}
-
-void DataHandler::getData(std::string const& id, Array2D<int>& data, int& nbVariable) const
-{
-  std::vector<int> colindex = colIndex(id);
-  nbVariable = colindex.size();
-  data.resize(nbSample(), nbVariable);
-  int j= data.firstIdxCols();
-  for (std::vector<int>::const_iterator it = colindex.begin(); it != colindex.end(); ++it, ++j)
-  {
-    for (int i = data_.firstRow(*it); i <= data_.lastRow(*it); ++i)
-    { data(i, j) = STK::stringToType<int>(data_(i,*it));}
-  }
-}
-
-void DataHandler::getData(std::string const& id, Array2D<Real>& data, int& nbVariable) const
-{
-  std::vector<int> colindex = colIndex(id);
-  nbVariable = colindex.size();
-  data.resize(data_.rows(), nbVariable);
-  int j= data.firstIdxCols();
-  for (std::vector<int>::const_iterator it = colindex.begin(); it != colindex.end(); ++it, ++j)
-  {
-    for (int i = data_.firstRow(*it); i <= data_.lastRow(*it); ++i)
-    { data(i, j) = STK::stringToType<Real>(data_(i,*it));}
-  }
-}
-
-void DataHandler::getData(std::string const& id, Array2D<std::string>& data, int& nbVariable) const
-{
-  std::vector<int> colindex = colIndex(id);
-  nbVariable = colindex.size();
-  data.resize(data_.rows(), nbVariable);
-  int j= data.firstIdxCols();
-  for (std::vector<int>::const_iterator it = colindex.begin(); it != colindex.end(); ++it, ++j)
-  {
-    for (int i = data_.firstRow(*it); i <= data_.lastRow(*it); ++i)
-    { data(i, j) = data_(i,*it);}
-  }
 }
 
 

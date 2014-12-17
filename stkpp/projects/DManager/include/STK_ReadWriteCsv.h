@@ -155,51 +155,81 @@ class TReadWriteCsv
       reserve_      = Csv::DEFAULT_RESERVE;
     }
     /**  @return the index of the first variable (should be baseIdx). */
-    inline int firstIdx() const { return str_data_.firstIdx(); }
-    /** @return the index of the last variable */
-    inline int lastIdx() const { return str_data_.lastIdx(); }
+    inline int begin() const { return str_data_.begin(); }
+    /** @return the ending index of the variables */
+    inline int end() const { return str_data_.end(); }
     /**@return The current number of variables of the TReadWriteCsv */
     inline int size() const { return str_data_.size(); }
-    /**  @return the index of the first variable (should be baseIdx). */
-    inline int firstIdxCols() const { return str_data_.firstIdx(); }
-    /** @return the index of the last variable */
-    inline int lastIdxCols() const { return str_data_.lastIdx(); }
-    /**@return The current number of variables of the TReadWriteCsv */
-    inline int sizeCol() const { return str_data_.size(); }
+
     /**@return The range of the variables of the TReadWriteCsv */
     inline Range cols() const { return str_data_.range(); }
+    /**  @return the index of the first variable (should be baseIdx). */
+    inline int beginCols() const { return str_data_.begin(); }
+    /** @return the ending index of the variables */
+    inline int endCols() const { return str_data_.end(); }
+    /**@return The current number of variables of the TReadWriteCsv */
+    inline int sizeCol() const { return str_data_.size(); }
+
     /** @param icol index of the variable
      *  @return the first index in the column @c icol
      **/
-    inline int firstRow( int const& icol) const { return str_data_.at(icol).firstIdx();}
+    inline int firstRow( int icol) const { return str_data_.at(icol).begin();}
+    /** @param icol index of the column
+     *  @return the ending index of the column @c icol
+     **/
+    inline int endRow( int icol) const { return str_data_.at(icol).end();}
     /** @param icol index of the column
      *  @return the last index in the column @c icol
      **/
-    inline int lastRow( int const& icol) const { return str_data_.at(icol).lastIdx();}
+    inline int lastRow( int icol) const { return str_data_.at(icol).lastIdx();}
     /** @param icol index of the column
      *  @return the number of element in the column @c icol
      **/
-    inline int sizeRows( int const& icol) const { return str_data_.at(icol).size();}
+    inline int sizeRow( int icol) const { return str_data_.at(icol).size();}
     /** @return the first index of the samples. */
-    int firstIdxRows() const
+    int beginRows() const
     {
       if (size()<= 0) return baseIdx;
-      int retVal = firstRow(firstIdx());
-      for (int i=firstIdx()+1; i<=lastIdx(); i++)
+      int retVal = firstRow(begin());
+      for (int i=begin()+1; i<=lastIdx(); i++)
       { retVal = std::min(retVal, firstRow(i));}
+      return retVal;
+    }
+    /** @return the ending index of the samples. */
+    int endRows() const
+    {
+      if (size()<= 0) return baseIdx;
+      int retVal = lastRow(begin());
+      for (int i=begin()+1; i<end(); i++)
+      { retVal = std::max(retVal, endRow(i));}
+      return retVal;
+    }
+    /** @return the size of the samples. */
+    int sizeRows() const
+    {
+      if (size()<= 0) return 0;
+      int retVal = sizeRow(begin());
+      for (int i=begin()+1; i<end(); i++)
+      { retVal = std::max(retVal, sizeRow(i));}
       return retVal;
     }
     /** @return the last index of the samples. */
     int lastIdxRows() const
     {
       if (size()<= 0) return baseIdx-1;
-      int retVal = lastRow(firstIdx());
-      for (int i=firstIdx()+1; i<=lastIdx(); i++)
+      int retVal = lastRow(begin());
+      for (int i=begin()+1; i<=lastIdx(); i++)
       { retVal = std::max(retVal, lastRow(i));}
       return retVal;
     }
     /**@return The range of the samples of the TReadWriteCsv */
-    inline Range rows() const { return Range(firstIdxRows(), lastIdxRows(), 0); }
+    inline Range rows() const { return Range(beginRows(), lastIdxRows(), 0); }
+
+    /** @return the index of the last variable */
+    inline int lastIdx() const { return str_data_.lastIdx(); }
+    /** @return the index of the last variable */
+    inline int lastIdxCols() const { return str_data_.lastIdx(); }
+
     /** @return the last error encountered */
     inline String const& error() const { return msg_error_; }
     /**@return the delimiters used in the Csv file*/
@@ -286,9 +316,9 @@ class TReadWriteCsv
      **/
     inline Var const operator[](int const& icol) const { return str_data_[icol]; }
    /** @return the first variable. */
-    inline Var& front() { return str_data_.at(firstIdx());}
+    inline Var& front() { return str_data_.at(begin());}
     /** @return the first variable (const). */
-    inline Var const& front() const { return str_data_.at(firstIdx());}
+    inline Var const& front() const { return str_data_.at(begin());}
     /** @return the last variable. */
     inline Var& back() { return str_data_.at(lastIdx());}
     /** @return the last variable (const). */
@@ -387,7 +417,7 @@ class TReadWriteCsv
      **/
     TReadWriteCsv& operator+=( TReadWriteCsv const& rw)
     {
-      for ( int i=rw.firstIdx(); i<=rw.lastIdx(); i++)
+      for ( int i=rw.begin(); i<=rw.lastIdx(); i++)
       { str_data_.push_back(rw.str_data_[i]);}
       return *this;
     }
@@ -458,7 +488,7 @@ class TReadWriteCsv
       try
       {
         ofstream os(file_name.c_str());
-        writeSelection( os, firstIdxRows(), lastIdxRows(), firstIdx(), lastIdx());
+        writeSelection( os, beginRows(), lastIdxRows(), begin(), lastIdx());
         os.close();
         return true;
       }
@@ -470,7 +500,7 @@ class TReadWriteCsv
      *  @param os the output stream
      **/
     void write( ostream& os) const
-    { writeSelection(os, firstIdxRows(), lastIdxRows(), firstIdx(), lastIdx());}
+    { writeSelection(os, beginRows(), lastIdxRows(), begin(), lastIdx());}
     /** Write to output stream a selection based on the coordinates
      *  passed (Think of it as highlighting cells in Excel).
      *  @param os the output stream
@@ -491,7 +521,7 @@ class TReadWriteCsv
     friend ostream& operator<<( ostream& os, TReadWriteCsv const& rw)
     {
       try
-      { rw.writeSelection( os, rw.firstIdxRows(), rw.lastIdxRows(), rw.firstIdx(), rw.lastIdx());}
+      { rw.writeSelection( os, rw.beginRows(), rw.lastIdxRows(), rw.begin(), rw.lastIdx());}
       // catch and re-throw any Exceptions
       catch(const Exception& e) { throw e; }
       catch(...) { throw Exception(Csv::ERRORCODES[1]); }
@@ -635,7 +665,7 @@ class TReadWriteCsv
      **/
     inline void resizeRows( Range const& rows)
     {
-      for (int iVar=firstIdx(); iVar<=lastIdx(); iVar++ )
+      for (int iVar=begin(); iVar<=lastIdx(); iVar++ )
       { str_data_.elt(iVar).resize(rows);}
     }
     /** resize the @c TReadWriteCsv to the given range of columns.
@@ -660,7 +690,7 @@ bool TReadWriteCsv<Type>::read( istream& inBuffer)
     resizeCols(nbVars_);
     resizeRows(nbRows_);
     // Read data : loop for all rows
-    int currentRow=firstIdxRows()-1, countRows = 0;
+    int currentRow=beginRows()-1, countRows = 0;
     for (; !inBuffer.eof();)
     {
       int nbField = readCurrentLine(inBuffer, currentLine, listDelimiters);
@@ -673,7 +703,7 @@ bool TReadWriteCsv<Type>::read( istream& inBuffer)
       // first loop on the existing columns with data
       currentRow++; countRows++;
       istringstream instream(currentLine);
-      int icol=firstIdx();
+      int icol=begin();
       for (int iField=1 ; iField<=nbField; iField++, icol++)
       {
         String field;

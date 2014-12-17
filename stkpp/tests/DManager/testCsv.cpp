@@ -62,7 +62,7 @@ bool readCsv(std::string filename)
   file.close();
 
   stk_cout << "Found, rows= "<<rows<<" , cols="<<cols << _T("\n";);
-  Matrix m_Dataij(rows, cols);
+  ArrayXX m_Dataij(rows, cols);
 
   rows = 1 ; cols = 1;
   file.open(filename.c_str(),std::ios::in);
@@ -83,8 +83,8 @@ bool readCsv(std::string filename)
 void dimReadWriteCsv(ReadWriteCsv const& df)
 {
   stk_cout << _T("Dimensions:\n");
-  stk_cout << _T("first= ")<< df.firstIdx()<< _T(", last= ") << df.lastIdx() << _T("\n");
-  stk_cout << _T("firstVe= ")<< df.firstIdxRows()<< _T(", lastVe= ") << df.lastIdxRows() << _T("\n");
+  stk_cout << _T("first= ")<< df.begin()<< _T(", last= ") << df.lastIdx() << _T("\n");
+  stk_cout << _T("firstVe= ")<< df.beginRows()<< _T(", lastVe= ") << df.lastIdxRows() << _T("\n");
 }
 
 bool timeReadWriteCsv(std::string fileName)

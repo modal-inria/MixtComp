@@ -57,7 +57,7 @@ Range evalRangeCapacity(STK::Range const& I)
 {
   int n = 0;
   for (int k=1, n=0 ; k <= I.size(); n++, k <<= 1);
-  return Range(I.firstIdx(),I.size() + n);
+  return Range(I.begin(),I.size() + n);
 }
 
 } // namespace Arrays

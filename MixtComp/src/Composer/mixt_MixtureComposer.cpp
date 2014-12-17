@@ -24,9 +24,11 @@
 
 #include "mixt_MixtureComposer.h"
 #include "../Mixture/mixt_IMixture.h"
-#include "Arrays/include/STK_Display.h"
 #include "../Various/mixt_IO.h"
 #include "../Various/mixt_Timer.h"
+#include "Arrays/include/STK_Display.h"
+#include "Arrays/include/STK_Array2DPoint.h"
+#include "Arrays/include/STK_Array2DVector.h"
 
 namespace mixt
 {

@@ -42,14 +42,14 @@ void write_List1D(const Container1D<Type>& C, String const& message, String cons
 {
   stk_cout << message;
   stk_cout << name << _T(".range() = ") << C.range() << _T("\n");
-  stk_cout << name << _T(".p_firstIdx() = ") << C.p_firstIdx() << _T("\n");
+  stk_cout << name << _T(".p_begin() = ") << C.p_begin() << _T("\n");
   stk_cout << name << _T(".p_lastIdx() = ") << C.p_lastIdx() << _T("\n");
-  if (C.p_firstIdx() != 0)
-    stk_cout << name << _T(".p_firstIdx()->getLeft() = ") << C.p_firstIdx()->getLeft() << _T("\n");
+  if (C.p_begin() != 0)
+    stk_cout << name << _T(".p_begin()->getLeft() = ") << C.p_begin()->getLeft() << _T("\n");
   if (C.p_lastIdx() != 0)
     stk_cout << name << _T(".p_lastIdx()->getRight() = ") << C.p_lastIdx()->getRight() << _T("\n");
 
-  stk_cout << name << _T(".p_firstIdx() = ") << C.p_firstIdx() << _T("\n");
+  stk_cout << name << _T(".p_begin() = ") << C.p_begin() << _T("\n");
   stk_cout << name << _T(" = ") << C << _T("\n\n");
 }
 
@@ -90,9 +90,9 @@ void test_List1D( int M, Range J, bool output)
   { stk_cout << _T("Range(M,D.lastIdx(), 0) =") << Range(M,D.lastIdx(), 0) << _T("\n";);
     write_List1D(D, _T("Test D.pushBack(2); D.sub(Range(M,D.lastIdx(), 0)) = 1.0;\n"), _T("D"));}
 
-  D.swap(D.firstIdx(),D.lastIdx());
+  D.swap(D.begin(),D.lastIdx());
   if (output)
-  { write_List1D(D, _T("Test D.swap(D.firstIdx(),D.lastIdx())\n"), _T("D"));}
+  { write_List1D(D, _T("Test D.swap(D.begin(),D.lastIdx())\n"), _T("D"));}
 
   D.popBack();
   if (output)
@@ -130,9 +130,9 @@ void test_List1D( int M, Range J, bool output)
   if (output)
   { write_List1D(C, _T("Test C.front() = -2.0; C.back()  = -2.0;\n"), _T("C"));}
 
-  C.at(J.firstIdx()) = C.front();  C.at(J.lastIdx()) = C.back();
+  C.at(J.begin()) = C.front();  C.at(J.lastIdx()) = C.back();
   if (output)
-  { write_List1D(C, _T("Test C.at(J.firstIdx()) = C.front();  C.at(J.lastIdx()) = C.back();;\n"), _T("C"));}
+  { write_List1D(C, _T("Test C.at(J.begin()) = C.front();  C.at(J.lastIdx()) = C.back();\n"), _T("C"));}
 
   C.pushBack(); C.back() = Type(2);
   if (output)
@@ -143,9 +143,9 @@ void test_List1D( int M, Range J, bool output)
   if (output)
   { write_List1D(C, _T("Test C.insert(Range(2,4), -3.0); C.insertElt(1); C.at(1) = 1.0)\n"), _T("C"));}
 
-  C.erase(J.firstIdx(), J.size());
+  C.erase(J.begin(), J.size());
   if (output)
-  { write_List1D(C, _T("Test C.erase(J.firstIdx(), J.size())\n"), _T("C"));}
+  { write_List1D(C, _T("Test C.erase(J.begin(), J.size())\n"), _T("C"));}
 }
 
 

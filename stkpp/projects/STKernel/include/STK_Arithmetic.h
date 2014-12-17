@@ -42,15 +42,6 @@
 
 namespace STK
 {
-/** @ingroup Base
- *  @defgroup Arithmetic Arithmetic properties.
- *  
- *
- *  These classes extend the @c numeric_limits C++ struct. They
- *  allow to handle in a transparent way a possible
- *  Not Available (NA) value in the data.
- **/
-
 /** @ingroup Arithmetic
   *  @brief Arithmetic properties of STK fundamental types.
   *
@@ -67,9 +58,9 @@ namespace STK
   *  -# If the fundamental type is an Integral type (@c union), a NA is
   *  the value (if any) defined in the declaration.
   *
-  *  The class arithmetic<TYPE> inherit from @c std::numeric_limits<TYPE>
+  *  The class arithmetic<Type> inherit from @c std::numeric_limits<Type>
   *  whom which we give hereafter the definition.
-    \code
+    @code
     template<typename _Tp>
     struct numeric_limits
     {
@@ -191,43 +182,32 @@ namespace STK
       //  value.
       static _Tp denorm_min() throw() { return static_cast<_Tp>(0); }
   };
-  \endcode
+  @endcode
   *
   **/
-template<class TYPE>
-struct Arithmetic : public std::numeric_limits<TYPE>
+template<class Type>
+struct Arithmetic : public std::numeric_limits<Type>
 {
-  /** Adding a Non Avalaible (NA) special number
-   * @return the NA value of the type @c TYPE
-   **/
-  static TYPE NA() throw() { return static_cast<TYPE>(0);}
-
   /** True if the type has a representation for a "Not Available."    */
   static const bool hasNA = false;
-
-  /** Test if x is a Non Avalaible (NA) special number.
-   *  @param x the value to test.
+  /** Adding a Non Available (NA) special number
+   * @return the NA value of the type @c Type
+   **/
+  static inline Type NA() throw() { return static_cast<Type>(0);}
+  /** @param x the value to test.
    *  @return @c true if the parameter @c x is a NA value, @c false otherwise
    **/
-  static bool isNA(TYPE const& x) throw()
-  { return false;}
-
-  /** x is  infinite.
-   *  @param x the value to test.
+  static inline bool isNA(Type const& x) throw() { return false;}
+  /** @param x the value to test.
    *  @return @c true if the parameter @c x is an infinite value, @c false
    *  otherwise
    **/
-  static bool isInfinite(TYPE const& x) throw()
- { return false; }
-
-  /** Test if x is  finite : i.e. if x is not infinite and
-   *  x is not a NA value.
-   *  @param x the value to test.
+  static inline bool isInfinite(Type const& x) throw() { return false; }
+  /** @param x the value to test.
    *  @return @c true if the parameter @c x is a finite value, @c false
    *  otherwise
    **/
-  static bool isFinite(TYPE const& x) throw()
-  { return (!isNA(x) && !isInfinite(x));}
+  static inline bool isFinite(Type const& x) throw() { return (!isNA(x) && !isInfinite(x));}
 };
 
 } // namespace STK

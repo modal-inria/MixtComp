@@ -131,7 +131,7 @@ class Categorical: public IUnivLaw<int>
     static int rand(OtherArray const& prob)
     {
       Real u = Law::generator.randUnif(), cum = 0.;
-      for(int k = prob.firstIdx(); k< prob.lastIdx(); k++)
+      for(int k = prob.begin(); k< prob.lastIdx(); k++)
       {
         cum += prob[k];
         if (u<=cum) return k;

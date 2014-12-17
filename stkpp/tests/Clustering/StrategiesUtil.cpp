@@ -36,12 +36,13 @@
 
 #include "StrategiesUtil.h"
 
-using namespace STK;
+namespace STK
+{
 
-void testSimpleStrategy( IMixtureComposerBase*& p_composer)
+void testSimpleStrategy( IMixtureComposer*& p_composer)
 {
   StrategyFacade facade(p_composer);
-  facade.createSimpleStrategy( Clust::randomClassInit_, 3, Clust::semAlgo_, 20, 1e-04
+  facade.createSimpleStrategy( Clust::randomInit_, 3, Clust::semAlgo_, 20, 1e-04
                              , 5, Clust::emAlgo_, 500, 1e-08);
   facade.run();
   stk_cout << _T("\n");
@@ -50,16 +51,26 @@ void testSimpleStrategy( IMixtureComposerBase*& p_composer)
   p_composer->writeParameters(stk_cout);
 }
 
-void testXemStrategy( IMixtureComposerBase*& p_composer)
+void testFullStrategy( IMixtureComposer*& p_composer
+                     , Clust::initType init, int nbTryInInit, Clust::algoType initAlgo
+                     , int nbTry, int nbInitRun, int nbShortRun
+                     , Clust::algoType shortAlgo
+                     , Clust::algoType longAlgo)
 {
   StrategyFacade facade(p_composer);
-  facade.createXemStrategy( Clust::randomClassInit_, 3, Clust::semAlgo_, 20, 1e-04
-                          , 3
-                          , 3, Clust::cemAlgo_, 100, 1e-05, Clust::emAlgo_, 500, 1e-08);
-  facade.run();
-  stk_cout << _T("\n");
-  stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-  stk_cout << _T("+ XemStrategy terminated. Results:                  +\n");
+  facade.createFullStrategy( init, nbTryInInit, initAlgo, 20, 1e-02
+                           , nbTry, nbInitRun, nbShortRun
+                           , shortAlgo, 100, 1e-04
+                           , longAlgo, 500, 1e-08);
+  stk_cout << _T("\n")
+           << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+  if (!facade.run())
+  { stk_cout << _T("+ FullStrategy terminated without success+\n");}
+  else
+  { stk_cout << _T("+ FullStrategy terminated with success+\n");}
+  stk_cout << _T("Computed lnLikelihood =") <<p_composer->computeLnLikelihood() << _T("\n");
   p_composer->writeParameters(stk_cout);
+  stk_cout << _T("\n\n");
 }
 
+} // namespace STK

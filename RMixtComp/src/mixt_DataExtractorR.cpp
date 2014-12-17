@@ -23,6 +23,8 @@
 
 #include "mixt_DataExtractorR.h"
 #include "MixtComp/src/Various/mixt_Def.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DPoint.h"
 
 namespace mixt
 {
@@ -114,9 +116,9 @@ void DataExtractorR::exportVals(std::string idName,
         Rcpp::List currList; // storage for the current missing value
         currList.push_back(i + 1); // R matrices rows start at 1
         currList.push_back(j + 1); // R matrices cols start at 1
-        currList.push_back(p_dataStatStorage->elt(i,j)[0]); // expectation
-        currList.push_back(p_dataStatStorage->elt(i,j)[1]); // left bound
-        currList.push_back(p_dataStatStorage->elt(i,j)[2]); // right bound
+        currList.push_back(p_dataStatStorage->elt(i, j)[0]); // expectation
+        currList.push_back(p_dataStatStorage->elt(i, j)[1]); // left bound
+        currList.push_back(p_dataStatStorage->elt(i, j)[2]); // right bound
 
         missingData.push_back(currList);
 

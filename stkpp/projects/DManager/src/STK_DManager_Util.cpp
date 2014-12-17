@@ -50,7 +50,7 @@ namespace DManager
  *  @return the TypeDataFile represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_ type is returned.
  **/
-TypeDataFile StringToTypeDataFile( String const& type)
+TypeDataFile stringToTypeDataFile( String const& type)
 {
   if (toUpperString(type) == toUpperString(_T("csv")))  return csv_;
   return unknown_;

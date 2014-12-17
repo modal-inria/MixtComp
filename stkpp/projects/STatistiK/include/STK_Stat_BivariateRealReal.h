@@ -51,7 +51,7 @@ namespace Stat
  *  @param Y second variable
  *  @param xMean the mean of X
  *  @param yMean the mean of Y
- *  @param unbiased @c true if we want an unbiased estimator of the variance,
+ *  @param unbiased @c true if we want an unbiased estimate of the variance,
  *  @c false otherwise (default is @c false)
  **/
 template<class TContainer1D>
@@ -68,7 +68,7 @@ Real covarianceWithFixedMean( TContainer1D const& X
     if (com.empty()) { return Arithmetic<Real>::NA();}
 
     // get dimensions
-    const int first = com.firstIdx(), last = com.lastIdx();
+    const int first = com.begin(), last = com.lastIdx();
     int nobs = com.size();
     // compute covariance
     Real xsum  = 0.0, ysum = 0.0, cov  = 0.0, xdev, ydev;
@@ -111,7 +111,7 @@ Real covarianceWithFixedMean( TContainer1D const& X
  *  @param W weights
  *  @param xMean the mean of X
  *  @param yMean the mean of Y
- *  @param unbiased @c true if we want an unbiased estimator of the variance,
+ *  @param unbiased @c true if we want an unbiased estimate of the variance,
  *  @c false otherwise (default is @c false)
  **/
 template<class TContainer1D>
@@ -133,7 +133,7 @@ Real covarianceWithFixedMean( TContainer1D const& X
       return covarianceWithFixedMean(X, Y, xMean, yMean, unbiased);
 
     // get dimensions
-    int first = com.firstIdx(), last = com.lastIdx();
+    int first = com.begin(), last = com.lastIdx();
     // compute covariance
     Real xsum  = 0.0, ysum = 0.0, xdev, ydev, sumWeights = 0.0, sum2Weights = 0.0, cov = 0.0;
     for (int i=first; i<=last; i++)
@@ -171,7 +171,7 @@ Real covarianceWithFixedMean( TContainer1D const& X
  *  \f]
  *  @param X first variable
  *  @param Y second variable
- *  @param unbiased @c true if we want an unbiased estimator of the variance,
+ *  @param unbiased @c true if we want an unbiased estimate of the variance,
  *  @c false otherwise (default is @c false)
  **/
 template<class TContainer1D>
@@ -189,7 +189,7 @@ Real covariance( TContainer1D const& X
     Real xMean = mean(X), yMean = mean(Y);
     
     // get dimensions
-    const int first = com.firstIdx(), last = com.lastIdx();
+    const int first = com.begin(), last = com.lastIdx();
     int nobs = com.size();
     // compute covariance
     Real xsum  = 0.0, ysum = 0.0, cov  = 0.0, xdev, ydev;
@@ -226,7 +226,7 @@ Real covariance( TContainer1D const& X
  *  @param X first variable
  *  @param Y second variable
  *  @param W weights
- *  @param unbiased @c true if we want an unbiased estimator of the variance,
+ *  @param unbiased @c true if we want an unbiased estimate of the variance,
  *  @c false otherwise (default is @c false)
  **/
 template<class TContainer1D>
@@ -249,7 +249,7 @@ Real covariance( TContainer1D const& X
         return covarianceWithFixedMean(X, Y, xMean, yMean, unbiased);
     
     // get dimensions
-    int first = com.firstIdx(), last = com.lastIdx();
+    int first = com.begin(), last = com.lastIdx();
     // compute covariance
     Real xsum  = 0.0, ysum = 0.0, xdev, ydev, sumWeights = 0.0, sum2Weights = 0.0, cov = 0.0;
     for (int i=first; i<=last; i++)

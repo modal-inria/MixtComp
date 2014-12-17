@@ -37,7 +37,6 @@
 #define MIXT_IMODELMIXTUREBASE_H
 
 #include "STKernel/include/STK_Range.h"
-#include "StatModels/include/STK_IModelBase.h"
 #include "Arrays/include/STK_CArrayPoint.h"
 #include "Arrays/include/STK_CArrayVector.h"
 #include "Arrays/include/STK_Array2D.h"

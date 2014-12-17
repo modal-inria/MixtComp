@@ -35,7 +35,7 @@
  **/
 
 #include "../include/STK_IPage.h"
-#include "STKernel/include/STK_Exceptions.h"
+#include "Sdk/include/STK_Macros.h"
 
 namespace STK
 {
@@ -121,20 +121,15 @@ Option::Option( Option const& opt)
       else p_Page_ = 0;
       break;
     case unknown_:
-      runtime_error("Error in Option(opt). Unknown type option.\n");
+      STKRUNTIME_ERROR_NO_ARG(Option::Option,Unknown type option.);
       break; // avoid warning
   };
 }
 
-/*
- * destructor.
- */
-Option::~Option()
-{ deleteValue();}
+/* destructor.n*/
+Option::~Option() { deleteValue();}
 
-/*
- * copy
- */
+/* copy */
 Option& Option::operator=( Option const& opt)
 {
   // Do the assignment operation of the members
@@ -183,7 +178,7 @@ Option& Option::operator=( Option const& opt)
       else p_Page_ = 0;
       break;
     case unknown_:
-      runtime_error("Error in Option::operator=(opt). Unknown type option.\n");
+      STKRUNTIME_ERROR_NO_ARG(Option::operator=,Unknown type option.);
       break; // avoid warning
   };
   // return this
@@ -195,12 +190,6 @@ Option& Option::operator=( Option const& opt)
  */
 bool Option::setValue( String const& str )
 {
-  // list of values
-  Range rangeValue;
-  std::list<String> lStringValue;
-  std::list<Real> lRealValue;
-  std::list<int> lintValue;
-  std::list<Range> lRangeValue;
   // choose type
   switch (type_)
   {
@@ -208,46 +197,59 @@ bool Option::setValue( String const& str )
       set(str);
       break;
     case real_:
+    {
       Real realValue;
-      if (stringToType(realValue, str))
-        set(realValue);
-      else
-        runtime_error("Error in Option::setValue(value). Conversion failed.\n");
-      break;
+      if (stringToType(realValue, str)) { set(realValue);}
+      else STKRUNTIME_ERROR_1ARG(Option::setValue,str,Real convertion failed.);
+    }
+    break;
     case integer_:
+    {
       int integerValue;
-      if (stringToType(integerValue, str))
-        set(integerValue);
-      else
-        runtime_error("Error in Option::setValue(value). Conversion failed.\n");
-      break;
+      if (stringToType(integerValue, str)) { set(integerValue);}
+      else STKRUNTIME_ERROR_1ARG(Option::setValue,str,Integer convertion failed.);
+    }
+    break;
     case range_:
-      if (stringToType(rangeValue, str))
-      { set(rangeValue);}
-      else
-        runtime_error("Error in Option::setValue(value). Conversion failed.\n");
-      break;
+    {
+      Range rangeValue;
+      if (stringToType(rangeValue, str)) { set(rangeValue);}
+      else STKRUNTIME_ERROR_1ARG(Option::setValue,str,Range convertion failed.);
+    }
+    break;
     case lstring_:
+    {
+      std::list<String> lStringValue;
       DManager::readList(str, lStringValue);
       set(lStringValue);
-      break;
+    }
+    break;
     case lreal_:
+    {
+      std::list<Real> lRealValue;
       DManager::readList(str, lRealValue);
       set(lRealValue);
-      break;
+    }
+    break;
     case linteger_:
+    {
+      std::list<int> lintValue;
       DManager::readList(str, lintValue);
       set(lintValue);
-      break;
+    }
+    break;
     case lrange_:
+    {
+      std::list<Range> lRangeValue;
       DManager::readList(str, lRangeValue);
       set(lRangeValue);
-      break;
+    }
+    break;
     case page_:
-      runtime_error("Error in Option::setValue(value). Page option.\n");
+      STKRUNTIME_ERROR_1ARG(Option::setValue,str,page option not allowed.);
       break;
     case unknown_:
-      runtime_error("Error in Option::setValue(value). Unknown type option.\n");
+      STKRUNTIME_ERROR_1ARG(Option::setValue,str, unknown option.);
       break; // avoid warning
   };
   // error if an error occur in readList ?
@@ -316,7 +318,7 @@ void Option::write( ostream& os) const
         p_Page_->write(os);
       break;
     case unknown_:
-      runtime_error("Error in Option::setValue(value). Unknown type option.\n");
+      STKRUNTIME_ERROR_NO_ARG(Option::write,Unknown option.);
       break; // avoid warning
   };
 }
@@ -333,9 +335,7 @@ void Option::read( istream& is)
       {
         p_Page_->read(is);
         if (!p_Page_->validate())
-        {
-          throw runtime_error("Error in Option::read(is) <A sub-page is not validated>.\n");
-        }
+        { STKRUNTIME_ERROR_NO_ARG(Option::read,p_Page_->msg_error());}
       }
   };
 }

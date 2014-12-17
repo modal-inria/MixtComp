@@ -38,8 +38,6 @@
 
 #include "STK_DManager_Util.h"
 
-#include "Arrays/include/STK_IContainer1D.h"
-
 namespace STK
 {
 // forward definition
@@ -62,11 +60,11 @@ class IVariable
 {
   protected:
     /** Id Type of the variable. */
-    const IdType type_;
+    const Base::IdType type_;
     /** Name of the variable. */
     String name_;
     /** Default constructor */
-    IVariable( IdType const& type, String const& name)
+    IVariable( Base::IdType const& type, String const& name)
              : type_(type), name_(name)
     {}
     /** Copy  constructor  */
@@ -89,7 +87,7 @@ class IVariable
                                  )
    { return (prefix+typeToString<int> (num));}
     /** @return the type of the variable. */
-    inline const IdType& getType() const { return type_;}
+    inline const Base::IdType& getType() const { return type_;}
     /** @return the name of the variable. */
     inline String const& name() const { return name_;}
     /** Set a default name for the variable of the form : prefix + num.   */

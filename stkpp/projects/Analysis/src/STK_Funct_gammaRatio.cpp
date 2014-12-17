@@ -69,12 +69,11 @@ static Real apois(Real const& a, Real const& b)
   // special value
   if (b==0.) return( 0. );
   // stirling approximation and deviance
-  return( sqrt(a)*exp(-gammaLnStirlingError(a)-dev0(a, b))
-        * (Const::_1_SQRT2PI_)
-        );
+  return( sqrt(a)*exp(-gammaLnStirlingError(a)-dev0(a, b))* (Const::_1_SQRT2PI_));
 }
 
-/** This Serie computes
+/** @ingroup Analysis
+ * This Serie computes
  * \f[
  *    \frac{x^n}{(a+n)n!}
  * \f]
@@ -83,21 +82,19 @@ static Real apois(Real const& a, Real const& b)
 class Seriedl : public ISerie<Seriedl>
 { 
   private:
-    const   Real& a_;
-    const   Real& x_;
-    mutable Real n_;
-    mutable Real xn_factn_;
-    mutable Real aplusn_;
+    Real const& x_;
+    mutable int n_;
+    mutable Real xn_factn_;// x^n/n!
+    mutable Real aplusn_; // a+n
   
   public:
-    inline Seriedl(Real const& a, Real const& x)
-                    : a_(a), x_(x)
-                    , n_(1), xn_factn_(x), aplusn_(a+1.)
-    { ;}
-    
-    inline Real firstImpl() const
-    { return x_/aplusn_;}
-
+    /** constructor */
+    inline Seriedl( Real const& a, Real const& x)
+                  : x_(x), n_(1), xn_factn_(x), aplusn_(a+1.)
+    {}
+    /** compute the first term of the serie */
+    inline Real firstImpl() const { return x_/aplusn_;}
+    /** compute the next terms */
     inline Real nextImpl() const
     {
       // n and x^n/ n!
@@ -124,10 +121,7 @@ class Seriedl : public ISerie<Seriedl>
  *  @param x value to evaluate the gamma ratio function
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  **/
-static Real gammaRatio_dl( Real const& a
-                         , Real const& x
-                         , const bool &lower_tail
-                         )
+static Real gammaRatio_dl( Real const& a, Real const& x, bool lower_tail)
 {
   Seriedl f(a, x);
   if (lower_tail)
@@ -154,10 +148,7 @@ static Real gammaRatio_dl( Real const& a
  *  @param x value to evaluate the gamma ratio function
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  **/
-static Real gammaRatio_cf( Real const& a
-                         , Real const& x
-                         , const bool lower_tail
-                         )
+static Real gammaRatio_cf( Real const& a, Real const& x, bool lower_tail)
 {
   // initialize b_n
   Real bn = x + 1. -a; // b_1
@@ -240,14 +231,10 @@ static Real gammaRatio_cf( Real const& a
  *  @param x value to evaluate the gamma ratio function
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  **/
-static Real gammaRatio_sr( Real const& a
-                         , Real const& x
-                         , const bool &lower_tail
-                         )
+static Real gammaRatio_sr( Real const& a, Real const& x, bool lower_tail)
 {
   Real y = a+1., term = x / (a+1.),  sum = term;
-  /* sum =  1+\sum_{n=1}^\infty x^n / (a+1)*(a+2)*...*(a+n))
-   */
+  /* sum =  1+\sum_{n=1}^\infty x^n / (a+1)*(a+2)*...*(a+n)) */
   do
   {
     y++;
@@ -282,10 +269,7 @@ static Real gammaRatio_sr( Real const& a
  * @param x value to evaluate the gamma ratio function
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  **/
-static Real gammaRatio_ae( Real const& a
-                         , Real const& x
-                         , const bool &lower_tail
-                         )
+static Real gammaRatio_ae( Real const& a, Real const& x, bool lower_tail)
 {
   Real term = 1, sum = 0, b=a-1;
   // sum =  1+\sum_{n=1}^\infty (a-1)*...*(a - n) / x^n
@@ -321,10 +305,7 @@ static Real gammaRatio_ae( Real const& a
  * @param apd value to evaluate the gamma ratio function
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  **/
-static inline Real poisson_ae( Real const& a1
-                             , Real const& apd
-                             , const bool &lower_tail = true
-                             )
+static inline Real poisson_ae( Real const& a1, Real const& apd, bool lower_tail = true)
 {
   // odd coefficients
   static const Real coefs_i[8] =
@@ -400,9 +381,7 @@ static inline Real poisson_ae( Real const& a1
  *  @param x value to evaluate the gamma ratio function
  **/
 Real gammaRatioQ(Real const& a, Real const& x)
-{
-  return gammaRatio(a, x, false);
-} 
+{ return gammaRatio(a, x, false);}
  
 /** Compute the incomplete gamma function ratio P(a,x)
  *  \f[ P(a, x) = \frac{1}{\Gamma(a)}
@@ -412,9 +391,7 @@ Real gammaRatioQ(Real const& a, Real const& x)
  *  @param x value to evaluate the gamma ratio function
  **/
 Real gammaRatioP(Real const& a, Real const& x)
-{
-  return gammaRatio(a, x, true);
-}
+{ return gammaRatio(a, x, true);}
  
 /** Compute the incomplete gamma function ratio P(a,x)
  *  \f[ P(a, x) = \frac{1}{\Gamma(a)}
@@ -424,7 +401,7 @@ Real gammaRatioP(Real const& a, Real const& x)
  *  @param x value to evaluate the gamma ratio function
  *  @param lower_tail @c true if we want the lower tail, @c false otherwise
  **/
-Real gammaRatio(Real const& a, Real const& x, const bool &lower_tail)
+Real gammaRatio(Real const& a, Real const& x, bool lower_tail)
 {
   // Check if a and x are available
   if (Arithmetic<Real>::isNA(a)||Arithmetic<Real>::isNA(x)) return a;

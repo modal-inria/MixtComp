@@ -4,9 +4,9 @@ FILE( GLOB AAModels_files
   include/*.h
   )
 
-INCLUDE_DIRECTORIES("..")
+include_directories("..")
 
 # Add AAModels files to STKAAModels library
-ADD_LIBRARY(STKAAModels OBJECT ${AAModels_files})
+add_library(STKAAModels OBJECT ${AAModels_files})
 
 

@@ -284,12 +284,22 @@ class BinaryOperator : public BinaryOperatorBase< BinaryOp, Lhs, Rhs >
     }
     /**  @return the range of the rows */
     inline Range const rows() const { return lhs_.rows();}
-    /** @return the range of the columns */
-    inline Range const cols() const { return lhs_.cols();}
+    /** @return the first index of the rows */
+    inline int beginRowsImpl() const { return(lhs_.beginRows());}
+    /** @return the ending index of the rows */
+    inline int endRowsImpl() const { return(lhs_.endRows());}
     /** @return the fixed size type if available to enable compile time optimizations */
     inline int sizeRowsImpl() const { return((sizeRows_ != UnknownSize) ? sizeRows_ : rhs_.sizeRows());}
+
+    /** @return the range of the columns */
+    inline Range const cols() const { return lhs_.cols();}
+    /** @return the first index of the columns */
+    inline int beginColsImpl() const { return(lhs_.beginCols());}
+    /** @return the ending index of the columns */
+    inline int endColsImpl() const { return(lhs_.endCols());}
     /** @return the fixed size type if available to enable compile time optimizations */
     inline int sizeColsImpl() const { return((sizeCols_ != UnknownSize) ? sizeCols_ : rhs_.sizeCols());}
+
     /** @return the left hand side expression */
     inline Lhs const& lhs() const { return lhs_; }
     /** @return the right hand side nested expression */
@@ -372,7 +382,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpDiag2d_>
     /** accesses to the element i, j */
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return (i==j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i), this->asDerived().rhs().elt(i, j))
-                    : this->asDerived().functor()( Type(0), this->asDerived().rhs().elt(i, j));}
+                    : this->asDerived().functor()( Type(), this->asDerived().rhs().elt(i, j));}
 };
 
 /** @ingroup Arrays
@@ -390,7 +400,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOp2dDiag_>
     /** accesses to the element i, j */
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return (i==j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i,j), this->asDerived().rhs().elt(i))
-                    : this->asDerived().functor()( this->asDerived().lhs().elt(i, j), Type(0));}
+                    : this->asDerived().functor()( this->asDerived().lhs().elt(i, j), Type());}
 };
 
 /** @ingroup Arrays
@@ -408,7 +418,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOp2dUp_>
     /** accesses to the element i, j */
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return (i<=j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i,j), this->asDerived().rhs().elt(i,j))
-                    : this->asDerived().functor()( this->asDerived().lhs().elt(i,j), Type(0));}
+                    : this->asDerived().functor()( this->asDerived().lhs().elt(i,j), Type());}
 };
 
 /** @ingroup Arrays
@@ -426,7 +436,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpUp2d_>
     /** accesses to the element i, j */
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return (i<=j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i,j), this->asDerived().rhs().elt(i,j))
-                    : this->asDerived().functor()( Type(0), this->asDerived().rhs().elt(i,j));}
+                    : this->asDerived().functor()( Type(), this->asDerived().rhs().elt(i,j));}
 };
 
 /** @ingroup Arrays
@@ -480,8 +490,8 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpDiagUp_>
     /** accesses to the element i, j */
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return (i==j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i), this->asDerived().rhs().elt(i, j))
-                    : (i<j) ? this->asDerived().functor()( Type(0), this->asDerived().rhs().elt(i, j))
-                             : this->asDerived().functor()( Type(0), Type(0));}
+                    : (i<j) ? this->asDerived().functor()( Type(), this->asDerived().rhs().elt(i, j))
+                            : this->asDerived().functor()( Type(), Type());}
 };
 
 /** @ingroup Arrays
@@ -500,7 +510,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpUpDiag_>
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return (i==j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i,j), this->asDerived().rhs().elt(i))
                     : (i<j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i, j), Type(0))
-                            : this->asDerived().functor()( Type(0), Type(0));}
+                            : this->asDerived().functor()( Type(), Type());}
 };
 
 /** @ingroup Arrays
@@ -518,8 +528,8 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpDiagLow_>
     /** accesses to the element i, j */
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return (i==j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i), this->asDerived().rhs().elt(i, j))
-                    : (i>j) ? this->asDerived().functor()( Type(0), this->asDerived().rhs().elt(i, j))
-                            : this->asDerived().functor()( Type(0), Type(0));}
+                    : (i>j) ? this->asDerived().functor()( Type(), this->asDerived().rhs().elt(i, j))
+                            : this->asDerived().functor()( Type(), Type());}
 };
 
 /** @ingroup Arrays
@@ -538,7 +548,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpLowDiag_>
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return (i==j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i,j), this->asDerived().rhs().elt(i))
                     : (i>j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i, j), Type(0))
-                            : this->asDerived().functor()( Type(0), Type(0));}
+                            : this->asDerived().functor()( Type(), Type());}
 };
 
 /** @ingroup Arrays
@@ -556,7 +566,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpUpUp_>
     /** accesses to the element i, j */
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return  (i<=j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i, j), this->asDerived().rhs().elt(i, j))
-                    : this->asDerived().functor()( Type(0), Type(0));}
+                    : this->asDerived().functor()( Type(), Type());}
 };
 
 /** @ingroup Arrays
@@ -574,7 +584,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpLowLow_>
     /** accesses to the element i, j */
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return  (i>=j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i, j), this->asDerived().rhs().elt(i, j))
-                    : this->asDerived().functor()( Type(0), Type(0));}
+                    : this->asDerived().functor()( Type(), Type());}
 };
 
 /** @ingroup Arrays
@@ -593,7 +603,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpUpLow_>
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return  (i==j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i, j), this->asDerived().rhs().elt(i, j))
                      : (i<j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i, j), Type(0))
-                             : this->asDerived().functor()( Type(0), this->asDerived().rhs().elt(i, j));}
+                             : this->asDerived().functor()( Type(), this->asDerived().rhs().elt(i, j));}
 };
 
 /** @ingroup Arrays
@@ -611,7 +621,7 @@ class BinaryOperatorBase< BinaryOp, Lhs, Rhs, Arrays::binOpLowUp_>
     /** accesses to the element i, j */
     inline typename BinaryOp::result_type const elt2Impl(int i, int j) const
     { return  (i==j) ? this->asDerived().functor()( this->asDerived().lhs().elt(i, j), this->asDerived().rhs().elt(i, j))
-                     : (i<j) ? this->asDerived().functor()( Type(0), this->asDerived().rhs().elt(i, j))
+                     : (i<j) ? this->asDerived().functor()( Type(), this->asDerived().rhs().elt(i, j))
                              : this->asDerived().functor()( this->asDerived().lhs().elt(i, j), Type(0));}
 };
 

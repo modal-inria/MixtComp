@@ -39,7 +39,7 @@
 #define STK_ITMULTILAW_H
 
 #include "STKernel/include/STK_Real.h"
-#include "Arrays/include/STK_Array2DPoint.h"
+#include "Arrays/include/STK_Array1D.h"
 #include "STK_Law_ILawBase.h"
 
 namespace STK
@@ -117,7 +117,7 @@ class JointProbability: public IMultiLaw<RowVector>
     /** destructor */
     virtual ~JointProbability() {}
     /** @return the array with the marginals laws */
-    Array2DPoint<Law> const& JointLaw() const { return jointLaw_;}
+    Array1D<Law> const& JointLaw() const { return jointLaw_;}
 
     /** @return the jth marginal law */
     Law const& law(int const& j) const { return jointLaw_[j];}
@@ -148,7 +148,7 @@ class JointProbability: public IMultiLaw<RowVector>
       if (x.range() != jointLaw_.range())
       {STKRUNTIME_ERROR_NO_ARG(JointProbability::lpdf(x),dimensions mismatch);}
       Real sum = 0.;
-      for (int j= x.firstIdx(); j <= x.lastIdx(); ++j)
+      for (int j= x.begin(); j <= x.lastIdx(); ++j)
       { sum+= Arithmetic<Type>::isNA(x[j]) ? 0. : jointLaw_[j].lpdf(x[j]);}
       return sum;
     }
@@ -159,12 +159,12 @@ class JointProbability: public IMultiLaw<RowVector>
     virtual void rand( RowVector& x) const
     {
       x.resize(jointLaw_.range());
-      for (int j= x.firstIdx(); j <= x.lastIdx(); ++j)
+      for (int j= x.begin(); j <= x.lastIdx(); ++j)
       { x[j] = jointLaw_[j].rand();}
     }
   protected:
     /** Array with the marginal laws */
-    Array2DPoint<Law> jointLaw_;
+    Array1D<Law> jointLaw_;
 };
 
 

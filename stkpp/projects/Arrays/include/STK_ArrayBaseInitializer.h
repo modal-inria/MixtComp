@@ -53,7 +53,7 @@ class ArrayInitializer
     typedef typename Derived::Type Type;
     /** Constructor */
     inline ArrayInitializer( Derived& array, const Type& s)
-                           : array_(array), row_(array.firstIdxRows()), col_(array.firstIdxCols())
+                           : array_(array), row_(array.beginRows()), col_(array.beginCols())
     { // check if there is space
       if (array.empty())
       { STKRUNTIME_ERROR_NO_ARG(ArrayInitializer::ArrayInitializer,array is empty);}
@@ -62,7 +62,7 @@ class ArrayInitializer
    }
     //    template<typename Rhs>
     //    inline ArrayInitializer( Derived& array, const ArrayBase<Rhs>& other)
-    //                           : array_(array), row_(array.firstIdxRows()), col_(array.firstIdxCols())
+    //                           : array_(array), row_(array.beginRows()), col_(array.beginCols())
     //     { // check if there is space
     //      if (array.empty())
     //      { STKRUNTIME_ERROR_NO_ARG(ArrayInitializer::ArrayInitializer,Too many coefficients passed to operator<<(array is empty));}
@@ -84,7 +84,7 @@ class ArrayInitializer
   protected:
     /** Set (row_, col_) to the first element of the array.
      * @note Useful only if the structure of the array does not allow element
-     * in the (firstIdxRows(), firstIdxCols()) position.
+     * in the (firstIdxRows(), beginCols()) position.
      **/
     void toFirstElt()
     {
@@ -92,14 +92,14 @@ class ArrayInitializer
       { row_++;}
       if (row_ > array_.lastIdxRows())
       { STKRUNTIME_ERROR_NO_ARG(ArrayInitializer::toFirstElt,array is empty);}
-      col_ = array_.rangeColsInRow(row_).firstIdx();
+      col_ = array_.rangeColsInRow(row_).begin();
     }
     /** Computr the next element*/
     void toNextElt()
     {
       // for the current row go to first available column if necessary
-      if (col_ < array_.rangeColsInRow(row_).firstIdx())
-      { col_ = array_.rangeColsInRow(row_).firstIdx();}
+      if (col_ < array_.rangeColsInRow(row_).begin())
+      { col_ = array_.rangeColsInRow(row_).begin();}
       else // otherwise just increment
       { col_++;}
       // check if we need to go to next row
@@ -110,7 +110,7 @@ class ArrayInitializer
         { row_++;}
         if (row_ > array_.lastIdxRows())
         { STKRUNTIME_ERROR_NO_ARG(ArrayInitializer::toNextElt,Too many coefficients passed to operator<<);}
-        col_ = array_.rangeColsInRow(row_).firstIdx();
+        col_ = array_.rangeColsInRow(row_).begin();
       }
     }
   protected:

@@ -39,7 +39,7 @@
 
 #include <cmath>
 
-#include "STK_IModelBase.h"
+#include "STK_IStatModelBase.h"
 #include "STK_IMultiParameters.h"
 #include "Sdk/include/STK_IRunner.h"
 #include "Sdk/include/STK_Macros.h"
@@ -101,7 +101,7 @@ namespace STK
  *  @sa IMixtureModel.
  **/
 template <class Array, class WColVector, class Parameters>
-class IMultiStatModel : public IModelBase, public IRunnerUnsupervised<Array, WColVector>
+class IMultiStatModel : public IStatModelBase, public IRunnerUnsupervised<Array, WColVector>
 {
   public:
     /** Type of the row vector of the container */
@@ -114,16 +114,16 @@ class IMultiStatModel : public IModelBase, public IRunnerUnsupervised<Array, WCo
 
   protected:
     /** default constructor. */
-    IMultiStatModel() : IModelBase(), Runner()
+    IMultiStatModel() : IStatModelBase(), Runner()
                       , p_param_(0), isParametersCreated_(false) {}
     /** Constructor with data set. */
     IMultiStatModel( Array const& data)
-                   : IModelBase(), Runner(data)
+                   : IStatModelBase(), Runner(data)
                    , p_param_(0) , isParametersCreated_(false)
     { this->initialize(data.sizeRows(), data.sizeCols());}
     /** Constructor with a ptr on the data set. */
     IMultiStatModel( Array const* p_data)
-                   : IModelBase(), Runner(p_data)
+                   : IStatModelBase(), Runner(p_data)
                    , p_param_(0), isParametersCreated_(false)
     {
       if (p_data)
@@ -133,7 +133,7 @@ class IMultiStatModel : public IModelBase, public IRunnerUnsupervised<Array, WCo
      *  @param model the model to copy
      **/
     IMultiStatModel( IMultiStatModel const& model)
-                   : IModelBase(model), Runner(model)
+                   : IStatModelBase(model), Runner(model)
                    , p_param_( (model.isParametersCreated_ && model.p_param_)
                                ? model.p_param_->clone() : model.p_param_)
                    , isParametersCreated_(model.isParametersCreated_)
@@ -150,7 +150,7 @@ class IMultiStatModel : public IModelBase, public IRunnerUnsupervised<Array, WCo
     Real computeLnLikelihood() const
     {
       Real sum = 0.0;
-      for (int i= p_data()->firstIdxRows(); i<= p_data()->lastIdxRows(); i++)
+      for (int i= p_data()->beginRows(); i<= p_data()->lastIdxRows(); i++)
       { sum += computeLnLikelihood(p_data()->row(i));}
       return(sum);
     }

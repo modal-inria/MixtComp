@@ -122,7 +122,7 @@ struct ApplyFunctorByCol<Derived, Funct, false>
   resultByColType operator()()
   {
     resultByColType res(lhs_.cols());
-    for (int j= lhs_.firstIdxCols(); j <= lhs_.lastIdxCols(); ++j)
+    for (int j= lhs_.beginCols(); j <= lhs_.lastIdxCols(); ++j)
     { res[j] = Funct(lhs_.col(j))();}
     return res;
   }
@@ -130,7 +130,7 @@ struct ApplyFunctorByCol<Derived, Funct, false>
   resultByColType operator()(ExprBase<Weights> const& w)
   {
     resultByColType res_(lhs_.cols());
-    for (int j= lhs_.firstIdxCols(); j <= lhs_.lastIdxCols(); ++j)
+    for (int j= lhs_.beginCols(); j <= lhs_.lastIdxCols(); ++j)
     { res_[j] = Funct(lhs_.col(j))(w);}
     return res_;
   }
@@ -138,7 +138,7 @@ struct ApplyFunctorByCol<Derived, Funct, false>
   resultByColType operator()(bool option)
   {
     resultByColType res(lhs_.cols());
-    for (int j= lhs_.firstIdxCols(); j <= lhs_.lastIdxCols(); ++j)
+    for (int j= lhs_.beginCols(); j <= lhs_.lastIdxCols(); ++j)
     { res[j] = Funct(lhs_.col(j))( option);}
     return res;
   }
@@ -146,7 +146,7 @@ struct ApplyFunctorByCol<Derived, Funct, false>
   resultByColType operator()(ExprBase<Weights> const& w, bool option)
   {
     resultByColType res_(lhs_.cols());
-    for (int j= lhs_.firstIdxCols(); j <= lhs_.lastIdxCols(); ++j)
+    for (int j= lhs_.beginCols(); j <= lhs_.lastIdxCols(); ++j)
     { res_[j] = Funct(lhs_.col(j))(w, option);}
     return res_;
   }
@@ -154,7 +154,7 @@ struct ApplyFunctorByCol<Derived, Funct, false>
   resultByColType operator()(ExprBase<Weights> const& w, Type value)
   {
     resultByColType res_(lhs_.cols());
-    for (int j= lhs_.firstIdxCols(); j <= lhs_.lastIdxCols(); ++j)
+    for (int j= lhs_.beginCols(); j <= lhs_.lastIdxCols(); ++j)
     { res_[j] = Funct(lhs_.col(j))(w, value);}
     return res_;
   }
@@ -165,7 +165,7 @@ struct ApplyFunctorByCol<Derived, Funct, false>
   if (lhs_.cols() != value.cols()) STKRUNTIME_ERROR_NO_ARG(ApplyFunctorByCol::operator(value,option),lhs_.cols()!=value.cols());
 #endif
     resultByColType res(lhs_.cols());
-    for (int j= lhs_.firstIdxCols(); j <= lhs_.lastIdxCols(); ++j)
+    for (int j= lhs_.beginCols(); j <= lhs_.lastIdxCols(); ++j)
     { res[j] = Funct(lhs_.col(j))(value[j], option);}
     return res;
   }
@@ -176,7 +176,7 @@ struct ApplyFunctorByCol<Derived, Funct, false>
   if (lhs_.cols() != value.cols()) STKRUNTIME_ERROR_NO_ARG(ApplyFunctorByCol::operator(w,value,option),lhs_.cols()!=value.cols());
 #endif
     resultByColType res_(lhs_.cols());
-    for (int j= lhs_.firstIdxCols(); j <= lhs_.lastIdxCols(); ++j)
+    for (int j= lhs_.beginCols(); j <= lhs_.lastIdxCols(); ++j)
     { res_[j] = Funct(lhs_.col(j))(w, value[j], option);}
     return res_;
   }
@@ -198,7 +198,7 @@ struct ApplyFunctorByRow<Derived, Funct, false>
   resultByRowType operator()()
   {
     resultByRowType res(lhs_.rows());
-    for (int i= lhs_.firstIdxRows(); i <= lhs_.lastIdxRows(); ++i)
+    for (int i= lhs_.beginRows(); i <= lhs_.lastIdxRows(); ++i)
     { res[i] = Funct(lhs_.row(i))();}
     return res;
   }
@@ -206,14 +206,14 @@ struct ApplyFunctorByRow<Derived, Funct, false>
   inline resultByRowType operator()(ExprBase<Weights> const& w)
   {
     resultByRowType res_(lhs_.rows());
-    for (int i= lhs_.firstIdxRows(); i <= lhs_.lastIdxRows(); ++i)
+    for (int i= lhs_.beginRows(); i <= lhs_.lastIdxRows(); ++i)
     { res_[i] = Funct(lhs_.row(i))(w);}
     return res_;
   }
   resultByRowType operator()(bool option)
   {
     resultByRowType res(lhs_.rows());
-    for (int j= lhs_.firstIdxRows(); j <= lhs_.lastIdxRows(); ++j)
+    for (int j= lhs_.beginRows(); j <= lhs_.lastIdxRows(); ++j)
     { res[j] = Funct(lhs_.row(j))( option);}
     return res;
   }
@@ -221,7 +221,7 @@ struct ApplyFunctorByRow<Derived, Funct, false>
   resultByRowType operator()(ExprBase<Weights> const& w, bool option)
   {
     resultByRowType res_(lhs_.rows());
-    for (int j= lhs_.firstIdxRows(); j <= lhs_.lastIdxRows(); ++j)
+    for (int j= lhs_.beginRows(); j <= lhs_.lastIdxRows(); ++j)
     { res_[j] = Funct(lhs_.row(j))(w, option);}
     return res_;
   }
@@ -231,7 +231,7 @@ struct ApplyFunctorByRow<Derived, Funct, false>
   if (lhs_.rows() != value.rows()) STKRUNTIME_ERROR_NO_ARG(ApplyFunctorByRow::operator(value,option),lhs_.rows()!=value.rows());
 #endif
     resultByRowType res(lhs_.rows());
-    for (int j= lhs_.firstIdxRows(); j <= lhs_.lastIdxRows(); ++j)
+    for (int j= lhs_.beginRows(); j <= lhs_.lastIdxRows(); ++j)
     { res[j] = Funct(lhs_.row(j))(value[j], option);}
     return res;
   }
@@ -242,7 +242,7 @@ struct ApplyFunctorByRow<Derived, Funct, false>
   if (lhs_.rows() != value.rows()) STKRUNTIME_ERROR_NO_ARG(ApplyFunctorByRow::operator(w,value,option),lhs_.rows()!=value.rows());
 #endif
     resultByRowType res_(lhs_.rows());
-    for (int j= lhs_.firstIdxRows(); j <= lhs_.lastIdxRows(); ++j)
+    for (int j= lhs_.beginRows(); j <= lhs_.lastIdxRows(); ++j)
     { res_[j] = Funct(lhs_.row(j))(w, value[j], option);}
     return res_;
   }

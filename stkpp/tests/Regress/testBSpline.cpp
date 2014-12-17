@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
   
   stk_cout << "x =\n" << x << _T("\n";);
 
-  BSplineCoefficients x_coefs(x, 7, 3);
+  BSplineCoefficients<Vector> x_coefs(x, 7, 3);
   x_coefs.run();
 
   stk_cout << "knots =\n" << x_coefs.knots() << _T("\n";);
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
   RandBase ran;
   int nb_sample = 150;
-  Matrix A(Range(1,nb_sample), Range(1,3));
+  ArrayXX A(Range(1,nb_sample), Range(1,3));
   x.resize(Range(1,nb_sample));
   Real step = 1./nb_sample;
   // simulate 1D manifold
@@ -119,10 +119,10 @@ int main(int argc, char *argv[])
   stk_cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
   stk_cout << "+ Estimating 1D manifold with uniform knots          \n";
 
-  BSplineRegression a_reg_unif(&A, &x, nbControlPoint, degree, BSplineCoefficients::uniform_);
+  BSplineRegression a_reg_unif(&A, &x, nbControlPoint, degree, Regress::uniform_);
   a_reg_unif.run();
   // test extrapolate
-  Matrix Y, R;
+  ArrayXX Y, R;
   Y.move(a_reg_unif.extrapolate(x));
   R =  *(a_reg_unif.p_predicted()) - Y;
   Point mu;
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
   stk_cout << "knots =\n";
   stk_cout << a_reg_unif.knots() << _T("\n";);
 
-  Stat::MultivariateMatrix statResiduals(a_reg_unif.p_residuals());
+  Stat::MultivariateArrayXX statResiduals(a_reg_unif.p_residuals());
   statResiduals.run();
   stk_cout << "Mean of the residuals = \n";
   stk_cout << statResiduals.mean() << _T("\n";);
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 
   A.shift(0,0);
   x.shift(0);
-  BSplineRegression a_reg_period(&A, &x, nbControlPoint, degree, BSplineCoefficients::periodic_);
+  BSplineRegression a_reg_period(&A, &x, nbControlPoint, degree, Regress::periodic_);
   a_reg_period.run();
   stk_cout << "knots =\n";
   stk_cout << a_reg_period.knots() << _T("\n";);
@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
   A.resize(Range(1,nb_sample), Range(1,3));
   x.resize(Range(1,nb_sample));
   Vector y(Range(1,nb_sample));
-  Matrix B(Range(1,nb_sample),Range(1,2));
+  ArrayXX B(Range(1,nb_sample),Range(1,2));
   int k =1;
   for (int i=1; i<=nb_step; i++)
     for (int j=1; j<=nb_step; j++)
@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
    stk_cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
    stk_cout << "+ Estimating 2D manifold with uniform knots          \n";
 
-   AdditiveBSplineRegression reg_unif(&A, &B, nbControlPoint, degree, BSplineCoefficients::uniform_);
+   AdditiveBSplineRegression reg_unif(&A, &B, nbControlPoint, degree, Regress::uniform_);
    reg_unif.run();
    // test extrapolate
    Y.move(reg_unif.extrapolate(B));
@@ -248,9 +248,9 @@ int main(int argc, char *argv[])
    stk_cout << statResiduals.covariance() << _T("\n";);
 
    ExportToCsv exporter2D_unif(A, _T("Var"));
-   exporter2D_unif.append<Matrix>(B, _T("Proj"));
-   exporter2D_unif.append<Matrix>(*(reg_unif.p_predicted()), _T("Pred"));
-   exporter2D_unif.append<Matrix>(*(reg_unif.p_residuals()), _T("Res"));
+   exporter2D_unif.append<ArrayXX>(B, _T("Proj"));
+   exporter2D_unif.append<ArrayXX>(*(reg_unif.p_predicted()), _T("Pred"));
+   exporter2D_unif.append<ArrayXX>(*(reg_unif.p_residuals()), _T("Res"));
    exporter2D_unif.p_readWriteCsv()->write("./tests/data/recons2Dunif.csv");
 
    stk_cout << _T("\n";);
@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
    stk_cout << "+ Estimating 2D manifold with periodic knots         \n";
    A.shift(0,0);
    B.shift(0,0);
-   AdditiveBSplineRegression reg_period(&A, &B, nbControlPoint, degree, BSplineCoefficients::periodic_);
+   AdditiveBSplineRegression reg_period(&A, &B, nbControlPoint, degree, Regress::periodic_);
    reg_period.run();
    // test extrapolate
    Y.move(reg_period.extrapolate(B));
@@ -283,9 +283,9 @@ int main(int argc, char *argv[])
    stk_cout << statResiduals.covariance() << _T("\n";);
 
    ExportToCsv exporter2D_period(A, _T("Var"));
-   exporter2D_unif.append<Matrix>(B, _T("Proj"));
-   exporter2D_unif.append<Matrix>(*(reg_period.p_predicted()), _T("Pred"));
-   exporter2D_unif.append<Matrix>(*(reg_period.p_residuals()), _T("Res"));
+   exporter2D_unif.append<ArrayXX>(B, _T("Proj"));
+   exporter2D_unif.append<ArrayXX>(*(reg_period.p_predicted()), _T("Pred"));
+   exporter2D_unif.append<ArrayXX>(*(reg_period.p_residuals()), _T("Res"));
    exporter2D_unif.p_readWriteCsv()->write("./tests/data/recons2Dperiod.csv");
 
    stk_cout << _T("\n";);

@@ -1,8 +1,8 @@
 # This variable has names of the tests source files without extension
-SET( TESTS_FILES
-    testGammaMixtureModels
+set( TESTS_FILES
+    testAllGammaMixtureModels
     testCategoricalMixtureModels
-    testGaussianMixtureModels
+    testAllGaussianMixtureModels
 )
 
 FILE( GLOB Util_Files
@@ -10,30 +10,30 @@ FILE( GLOB Util_Files
   SimulUtil.cpp
  )
  
-INCLUDE_DIRECTORIES("../../projects")
+include_directories("../../projects")
  
-ADD_LIBRARY(TestUtil OBJECT ${Util_Files})
+add_library(TestUtil OBJECT ${Util_Files})
  
  # create stktest library
-ADD_LIBRARY(${LIBRARY_TEST}
+add_library(${LIBRARY_TEST}
 $<TARGET_OBJECTS:TestUtil>)
  
 SET_TARGET_PROPERTIES(${LIBRARY_TEST} PROPERTIES LINKER_LANGUAGE CXX)
-INSTALL(TARGETS ${LIBRARY_TEST} ARCHIVE DESTINATION ${LIBRARY_OUTPUT_PATH})
+install(TARGETS ${LIBRARY_TEST} ARCHIVE DESTINATION ${LIBRARY_OUTPUT_PATH})
  
  
  
 # loop over files
-FOREACH(test ${TESTS_FILES})
+foreach(test ${TESTS_FILES})
   # Compile and link our test
   # Executable will be named after test source file
-  ADD_EXECUTABLE(${test} ${test}.cpp)
+  add_executable(${test} ${test}.cpp)
   TARGET_LINK_LIBRARIES(${test} ${LIBRARY_TEST} ${LIBRARY_NAME})
   # Add test
-  ADD_TEST(NAME ${test} COMMAND ${test})
-ENDFOREACH(test)
+  add_test(NAME ${test} COMMAND ${test})
+endforeach(test)
 
-INSTALL(TARGETS ${TESTS_NOARGS} RUNTIME DESTINATION ${CTEST_BINARY_DIRECTORY})
+install(TARGETS ${TESTS_NOARGS} RUNTIME DESTINATION ${CTEST_BINARY_DIRECTORY})
 
 
 #ADD_CUSTOM_TARGET(check COMMAND ${CMAKE_CTEST_COMMAND} DEPENDS ${TESTS_NOARGS})

@@ -4,7 +4,7 @@ FILE( GLOB StatModels_files
   include/*.h
   )
 
-INCLUDE_DIRECTORIES("..")
+include_directories("..")
 
 # Add StatModels files to STKStatModels library
-ADD_LIBRARY(STKStatModels OBJECT ${StatModels_files})
+add_library(STKStatModels OBJECT ${StatModels_files})

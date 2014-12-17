@@ -30,25 +30,15 @@
  **/
 
 /** @file Sdk.h
- *  @brief This file include all the other header files of the
- *  project Sdk.
+ *  @brief This file include all the other header files of the project Sdk.
  *
- **/
-
-/**
  * @defgroup Sdk Software Development Kit.
- * @brief The Sdk project propose a set of high level Interfaces that are
- * implemented in the STK++ projects.
+ * @brief The Sdk project propose a set of high level interfaces, template for
+ * meta-programming and macros that are used throughout the STK++ projects.
  *
  * In Sdk we define the pure Interface classes than can be used throughout the
  * STK++ whole project. The aim is to unified the syntax and the treatment
  * realized by the statistical methods.
- **/
-
-/** @defgroup hidden Hidden implementation details
- * @namespace STK::hidden The hidden namespace enclose the classes and methods
- * which are used internally by the STK++ classes. They are hidden to the
- * end-user of theses classes.
  **/
 
 #ifndef SDK_H

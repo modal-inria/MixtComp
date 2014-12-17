@@ -49,11 +49,11 @@ void writeResult(const Svd& s)
   stk_cout << _T(" UDV'=\n");
   // compute D
   Array2DDiagonal<Real> D(s.getU().cols(), 0.0);
-  for (int i= s.getD().firstIdx(); i<= s.getD().lastIdx(); ++i)
+  for (int i= s.getD().begin(); i<= s.getD().lastIdx(); ++i)
   { D[i]=s.getD()[i];}
 
   // UDV'
-  Matrix Res;
+  ArrayXX Res;
   Res = s.getU() * D * s.getV().transpose();
   stk_cout << Res << _T("\n");
 }
@@ -64,7 +64,7 @@ void test_svd(int M, int N)
   int j,k;
 
   // Test svd
-  Matrix A(Range(1,N),Range(1,M));
+  ArrayXX A(Range(1,N),Range(1,M));
   int size = std::min(M,N);
 
   // First test
@@ -74,7 +74,7 @@ void test_svd(int M, int N)
   stk_cout << _T("\n\n");
   
   stk_cout << _T("preliminary test R0(T)\n");
-  Matrix T(Range(1,2), Range(1,2), 0.0);
+  ArrayXX T(Range(1,2), Range(1,2), 0.0);
   T(1,2) = 1.0;
   T(2,2) = 1.0;
   Svd R0(T);
@@ -165,7 +165,7 @@ void test_svd(int M, int N)
 
   // Fifth test
   stk_cout << _T("Fifth test (with pointer) : newSvd\n");
-  Matrix* B = new Matrix(Range(1,2*M), Range(1,N), 0.0);
+  ArrayXX* B = new ArrayXX(Range(1,2*M), Range(1,N), 0.0);
   for (j=2, k=0; j<=N; j++, k++)
     for (int i=1; i<=2*M; i++)
     { (*B)(i,j) = k;}
@@ -182,7 +182,7 @@ void test_svd(int M, int N)
 
 // Fifth test
   stk_cout << _T("Fifth test 2(with pointer) : Svd(B)\n");
-  B = new Matrix(Range(1,2*M), Range(1,N), 0.0);
+  B = new ArrayXX(Range(1,2*M), Range(1,N), 0.0);
   for (j=2, k=0; j<=N; j++, k++)
     for (int i=1; i<=2*M; i++)
     { (*B)(i,j) = k;}

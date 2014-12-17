@@ -24,7 +24,7 @@
 
 /*
  * Project:  stkpp::STatistiK::Law
- * Purpose:  Interface base class for all univariate probabilities laws.
+ * Purpose:  Interface base class for all univariate distributions laws.
  * Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  **/
 
@@ -39,6 +39,7 @@
 // RandBase header
 #include "STK_Law_ILawBase.h"
 #include "Arrays/include/STK_ArrayBase.h"
+#include "STKernel/include/STK_Real.h"
 
 namespace STK
 {
@@ -46,12 +47,12 @@ namespace STK
 namespace Law
 {
 /** @ingroup Laws
- *  @brief Interface base class for all the univariate probabilities laws.
+ *  @brief Interface base class for all the univariate distributions.
  *
  *  A general probability law (discrete or real) possess a
  *  probability density law. It can be simulated.
  *
- * Interface base class for the unidimensional probabilities laws. Every derived
+ * Interface base class for the univariate distributions. Every derived
  * class have to furnish :
  * - a random generator method
  * @code Type rand() const @endcode
@@ -71,7 +72,6 @@ class IUnivLaw : public ILawBase
      *  @param name the name of the law
      **/
     IUnivLaw(String const& name) : ILawBase(name) {}
-
     /** copy Constructor.
      *  @param law the law to copy
      **/
@@ -79,7 +79,7 @@ class IUnivLaw : public ILawBase
 
   public:
     /** Virtual destructor. **/
-    virtual ~IUnivLaw() {}
+    inline virtual ~IUnivLaw() {}
     /** Pseudo-random Real law generator for a two dimensional
      *  container of Real.
      *  @param A the container to store the random numbers
@@ -87,8 +87,8 @@ class IUnivLaw : public ILawBase
     template < class Array>
     void randArray( ArrayBase< Array>& A) const
     {
-      for (int j=A.firstIdxCols(); j<=A.lastIdxCols(); j++)
-        for (int i=A.firstIdxRows(); i<=A.lastIdxRows(); i++)
+      for (int j=A.beginCols(); j<=A.lastIdxCols(); j++)
+        for (int i=A.beginRows(); i<=A.lastIdxRows(); i++)
           A(i, j) = rand();
     }
     /** @return a @c Type random variate . */

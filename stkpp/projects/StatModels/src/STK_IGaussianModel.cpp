@@ -38,8 +38,6 @@
 
 #include "../include/STK_IGaussianModel.h"
 
-#include "STKernel/include/STK_Arithmetic.h"
-
 namespace STK
 {
 
@@ -52,7 +50,7 @@ namespace STK
  */
 Real univariateGaussianLnLikelihood(Vector const& data, Real const& mu, Real const& sigma)
 {
-  int first = data.firstIdx(), last = data.lastIdx(), nbSample = data.size();
+  int first = data.begin(), last = data.lastIdx(), nbSample = data.size();
   if (sigma)
   {
     Real scale = 0., std = std::sqrt((double)sigma);
@@ -83,9 +81,9 @@ Real univariateGaussianLnLikelihood(Vector const& data, Real const& mu, Real con
  * @param sigma the (diagonal) covairance matrix
  * @return
  */
-Real diagonalGaussianLnLikelihood(Matrix const& data, Point const& mu, MatrixSquare const& sigma)
+Real diagonalGaussianLnLikelihood(ArrayXX const& data, Point const& mu, ArraySquareX const& sigma)
 {
-  int first = mu.firstIdx(), last = mu.lastIdx();
+  int first = mu.begin(), last = mu.lastIdx();
   // compute for each row tjhe gaussian ln-likehood
   Real sum = 0.;
   for (int j = first; j<= last; ++j)

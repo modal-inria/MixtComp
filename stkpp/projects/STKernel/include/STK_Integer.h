@@ -24,7 +24,7 @@
 
 /*
  * Project:  stkpp:stkernel::base
- * Purpose:  Define the fundamental type int.
+ * Purpose:  Define the fundamental type Integer.
  * Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  *
  **/
@@ -36,8 +36,13 @@
 #ifndef STK_INTEGER_H
 #define STK_INTEGER_H
 
-#include "STK_String_Util.h"
 #include <map>
+#include "STK_String.h"
+
+// for building
+#ifdef IS_RTKPP_LIB
+#include "Rtkpp/include/STK_RcppTraits.h"
+#endif
 
 namespace STK
 {
@@ -50,106 +55,134 @@ namespace STK
 typedef int Integer ;
 
 /** @ingroup Arithmetic
- *  @brief Specialization for int (long).
- * 
+ *  @brief Specialization for Integer (long).
+ *
  *  We are using the largest element of the underlying
  *  Type for representing NA (not available) discrete numbers.
  */
 template<>
-struct Arithmetic<Integer>  : public std::numeric_limits<int>
+struct Arithmetic<Integer>  : public std::numeric_limits<Integer>
 {
-  /** We are using the maximal value of the int Type for NA values. */
-  static inline int max() throw()
-  { return std::numeric_limits<int>::max() -1; }
-  /** Adding a Non Avalaible (NA) special number. */
-  static inline int NA() throw()
-  { return std::numeric_limits<int>::max();}
+#ifdef IS_RTKPP_LIB
+  enum
+  {
+    Rtype_ = hidden::RcppTraits<Integer>::Rtype_
+  };
+#endif
   /** True if the type has a representation for a "Not Available". */
   static const bool hasNA = true;
-  /** Test if x is a Non Avalaible (NA) special number.
-   *  @param x the int number to test.
+  /** Adding a Non Available (NA) special number. */
+  static inline Integer NA() throw() { return std::numeric_limits<Integer>::min();}
+  /** Test if x is a Non Available (NA) special number.
+   *  @param x the Integer number to test.
    **/
   static inline bool isNA(Integer const& x) throw()
-  { return (x==std::numeric_limits<int>::max());}
-  /** Test if x is  infinite.
-   *  @param x the int number to test.
+  { return (x==std::numeric_limits<Integer>::min());}
+  /** We are using the maximal value (positive or negative) of the Integer
+    * type for NA values. */
+  static inline Integer min() throw() { return std::numeric_limits<Integer>::min() +1; }
+  /** @return @c true if x is  infinite : always false for Integer.
+   *  @param x the Integer number to test.
    **/
   static inline bool isInfinite(Integer const& x) throw() { return false; }
-  /** Test if x is  finite : i.e. if x is not infinite and
-   *   x is not a NA value.
+  /** @return @¢ true if x is  finite : i.e. if x is not a NA value.
    *  @param x the value to test.
    **/
   static inline bool isFinite(Integer const& x) throw() { return (!isNA(x));}
 };
 
-/** @ingroup RTTI 
- *  @brief Specialization of the IdTypeImpl for the Type int.
+/** @ingroup RTTI
+ *  @brief Specialization of the IdTypeImpl for the type Integer.
  **/
 template<>
 struct IdTypeImpl<Integer>
 {
-  /** Give the IdType of the type int. */
-  static IdType returnType() { return(integer_);}
+  /** Give the IdType of the type Integer. */
+  static inline Base::IdType returnType() { return(Base::integer_);}
 };
 
-/** @ingroup Base
- *  extract an int from an input stream. If the extraction failed, value is
- *  set to a NA value.
- *  @param is the stream
- *  @param value the value extracted from the stream.
- *  @return the current stream. If the extraction failed, the stream is unmodified.
+#ifdef IS_RTKPP_LIB
+/** @ingroup Arithmetic
+ *  @brief Specialization for const Integer (long).
+ *
+ *  We are using the largest element of the underlying
+ *  Type for representing NA (not available) discrete numbers.
+ */
+template<>
+struct Arithmetic<const Integer>
+{
+  enum
+  {
+    Rtype_ = hidden::RcppTraits<const Integer>::Rtype_
+  };
+  /** True if the type has a representation for a "Not Available". */
+  static const bool hasNA = true;
+  /** Adding a Non Available (NA) special number. */
+  static inline Integer NA() throw() { return std::numeric_limits<Integer>::min();}
+  /** Test if x is a Non Available (NA) special number.
+   *  @param x the Integer number to test.
+   **/
+  static inline bool isNA(Integer const& x) throw()
+  { return (x==std::numeric_limits<Integer>::min());}
+  /** We are using the maximal value (positive or negative) of the Integer
+    * type for NA values. */
+  static inline Integer min() throw() { return std::numeric_limits<Integer>::min() +1; }
+  /** @return @c true if x is  infinite : always false for Integer.
+   *  @param x the Integer number to test.
+   **/
+  static inline bool isInfinite(Integer const& x) throw() { return false; }
+  /** @return @¢ true if x is  finite : i.e. if x is not a NA value.
+   *  @param x the value to test.
+   **/
+  static inline bool isFinite(Integer const& x) throw() { return (!isNA(x));}
+};
+
+/** @ingroup RTTI
+ *  @brief Specialization of the IdTypeImpl for the type const Integer (needed by Rcpp).
  **/
-istream& streamToInt(istream& is, int& value);
+template<>
+struct IdTypeImpl<const Integer>
+{
+  /** Give the IdType of the type Integer. */
+  static inline Base::IdType returnType() { return(Base::integer_);}
+};
+
+#endif /* IS_RTKPP_LIB */
 
 /** @ingroup Base
- *  Convert a String to an int.
- *  @param type the String we want to convert
- *  @return the int represented by the String @c type. if the string
- *  does not match any known name, the @c unknown_ type is returned.
+ *  @brief Convert a String to an Integer.
+ *  @param str the String we want to convert
+ *  @return the Integer represented by the String @c str. If the string
+ *  does not match any known name, the NA value is returned.
  **/
-int stringToInt( String const& type);
+inline Integer stringToInt( String const& str)
+{ return stringToType<Integer>(str);}
 
 /** @ingroup Base
- *  Convert a String to an int using a map.
- *  @param type the String we want to convert
+ *  Convert a String to an Integer using a map.
+ *  @param str the String we want to convert
  *  @param mapping the mapping between the string and the Int
  *  @return the Int represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_ type is returned.
  **/
-int stringToInt( String const& type, std::map<String, int> const& mapping);
+Integer stringToInt( String const& str, std::map<String, Integer> const& mapping);
 
 /** @ingroup Base
- *  Convert a Int to a String.
- *  @param type the type of int we want to convert
- *  @return the string associated to this type.
+ *  Convert an Integer to a String.
+ *  @param value the Integer we want to convert
+ *  @param f format, by default write every number in decimal
+ *  @return the string associated to this value.
  **/
-String intToString( int const& type);
+inline String intToString( Integer const& value, std::ios_base& (*f)(std::ios_base&) = std::dec)
+{ return typeToString<Integer>(value,f);}
 
 /** @ingroup Base
- *  Convert an int to a String.
- *  @param type the type of int we want to convert
- *  @param mapping the mapping between the Int and the String
- *  @return the string associated to this type.
+ *  Convert an Integer to a String.
+ *  @param value the Integer we want to convert
+ *  @param mapping the mapping between Integer and String
+ *  @return the String associated to this value.
  **/
-String intToString( int const& type, std::map<int, String> mapping);
-
-/** @ingroup Base
- *  @brief specialization for int
- *  @param s the String to convert
- *  @return The value to get from the String
- **/
-template<>
-inline int stringToType<int>( String const& s)
-{ return stringToInt(s);}
-
-/** @ingroup Base
- *  @brief specialization for int
- *  @param t The Int to convert to String
- *  @param f flag, by default write every number in decimal
- **/
-template<>
-inline String typeToString<int>( int const& t, std::ios_base& (*f)(std::ios_base&))
-{ return intToString(t);}
+String intToString( Integer const& value, std::map<Integer, String> const& mapping);
 
 } // namespace STK
 

@@ -56,17 +56,17 @@ struct CsvToArrayImpl<String, Array2D<OtherType> >
   static void run(TReadWriteCsv<String> const& rw, Array2D<OtherType>* p_data, Real const propMiss)
   {
     int jSize = 0;
-    for(int jVar = rw.firstIdx(); jVar<=rw.lastIdx(); jVar++)
+    for(int jVar = rw.begin(); jVar<=rw.lastIdx(); jVar++)
     {
       if ( (rw.var(jVar).nbMiss()/Real(rw.var(jVar).size())) <= propMiss)
       {  jSize++;}
     }
     // resize
-    p_data->resize(rw.rows(), Range(rw.firstIdx(), jSize));
-    for(int jVar = rw.firstIdx(), jCol=rw.firstIdx(); jVar<=rw.lastIdx(); jVar++)
+    p_data->resize(rw.rows(), Range(rw.begin(), jSize));
+    for(int jVar = rw.begin(), jCol=rw.begin(); jVar<=rw.lastIdx(); jVar++)
     {
       if ( (rw.var(jVar).nbMiss()/Real(rw.var(jVar).size())) <= propMiss)
-      for (int i =p_data->firstIdxRows(); i<= p_data->lastIdxRows(); ++i)
+      for (int i =p_data->beginRows(); i<= p_data->lastIdxRows(); ++i)
       { p_data->elt(i, jCol) = stringToType<OtherType>(rw(i,jVar));}
       jCol++;
     }
@@ -79,7 +79,7 @@ struct CsvToArrayImpl<Type, Array2D<Type> >
   static void run(TReadWriteCsv<Type> const& rw, Array2D<Type>* p_data, Real const propMiss)
   {
     p_data->reserveCols(rw.size());
-    for(int jVar = rw.firstIdx(); jVar<=rw.lastIdx(); jVar++)
+    for(int jVar = rw.begin(); jVar<=rw.lastIdx(); jVar++)
     {
       if ( (rw.var(jVar).nbMiss()/Real(rw.var(jVar).size())) <= propMiss)
        p_data->merge(rw.var(jVar));
@@ -93,18 +93,18 @@ struct CsvToArrayImpl<Type, CArray<Type > >
   static void run(TReadWriteCsv<Type> const& rw, CArray<Type >* p_data, Real const propMiss)
   {
     int jSize = 0;
-    for(int jVar = rw.firstIdx(); jVar<=rw.lastIdx(); jVar++)
+    for(int jVar = rw.begin(); jVar<=rw.lastIdx(); jVar++)
     {
       if ( (rw.var(jVar).nbMiss()/Real(rw.var(jVar).size())) <= propMiss)
       {  jSize++;}
     }
     // resize
-    p_data->resize(rw.rows(), Range(rw.firstIdx(), jSize));
-    for(int jVar = rw.firstIdx(), jCol=rw.firstIdx(); jVar<=rw.lastIdx(); jVar++)
+    p_data->resize(rw.rows(), Range(rw.begin(), jSize));
+    for(int jVar = rw.begin(), jCol=rw.begin(); jVar<=rw.lastIdx(); jVar++)
     {
       if ( (rw.var(jVar).nbMiss()/Real(rw.var(jVar).size())) <= propMiss)
       {
-         for (int i =p_data->firstIdxRows(); i<= p_data->lastIdxRows(); ++i)
+         for (int i =p_data->beginRows(); i<= p_data->lastIdxRows(); ++i)
          { p_data->elt(i, jCol) = rw(i,jVar);}
          jCol++;
       }

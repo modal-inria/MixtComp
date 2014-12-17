@@ -1,12 +1,12 @@
 /* kennel tutorial: how to used the STK++ kernel tools
  **/
 
-/**@page PageTutorialKernel The Kernel tools
+/**@page PageTutorialKernel Description of the STKernel projects: The Kernel tools.
  *
  * The STKernel project is the low-level core library that forms the basis
  * of the STK++ library. This tutorial intent to give some help to the
- * Developers who want to use the fundamental type and i-o facilities of the
- * library.
+ * Developers who want to use the STK++ fundamental types and i-o facilities
+ * provided by the library.
  *
  * In statistics, missing data, or missing values, occur when no data value
  * is stored for the variable in the current observation. Missing data are a
@@ -20,18 +20,27 @@
  * two aspects. It is desirable to
  * - have some internal representation of the missing data,
  * - to be able to read/write missing values in a transparent way,
- * - to identify dynamically the kind of data.
+ * - to identify dynamically the type of data the program handles.
  *
  * Theses goals have been achieved in STK++ by
  * - extending the numeric_limits struct with specific static methods,
  * - designing a Runtime Type Identification (RTTI) mechanism for handling
  * heterogeneous data.
  *
- * @see Arithmetic, IdTypeImpl.
+ * @see Arithmetic, IdTypeImpl
+ *
+ * Additionally, the STKernel project provides typedef of the @c std::basic_*
+ * streams in the STK namespace domain for the predefined @c Char type which can
+ * be either a @c char or a @c wchar. Thus a programmer can write
+ * @code
+ *   STK::ifstream ifs;
+ * @endcode
+ * and compile the library using the flag -DSTK_UNICODE, without taking care all
+ * along the code if he has to use ifstream or wifstream.
  *
  *  @section STKernelMissingData Handling the missing values
  *
- * In the version 0.4 of STK++ there exists 6 kinds of fundamental types: String,
+ * In the version 0.5.3 of STK++ there exists 6 kinds of fundamental types: String,
  * Real, Integer, Binary, Sign and Range. All these types are self-explaining
  * except maybe Range which represents a range of integer in the form first:last.
  *
@@ -67,13 +76,16 @@
      x =.
      b =.
    @endverbatim
- * The missing values is displayed by the dot ("."). This is a global behavior
- * that can be modified at runtime by accessing the global variable stringNa.
- * The operator @c << is predefined for the type @c double and in order to
- * produce the correct output it is necessary to use the @e Proxy class.
- * On the contrary, the STK++ defined type @c Binary implement the @c << and
- * @c >> operator so that it is possible to avoid the use of any proxy class.
+ * The missing values are displayed using the dot (".") symbol. This is a
+ * global behavior that can be modified at runtime by using the global method
+ * @c setStringNa. For example using:
+ * @code
+ *   setStringNa(_T("NA"));
+ * @endcode
+ * all the input and output operation will be altered and NA value will be
+ * read/write using NA.
  *
+ * @note In order to produce the correct output it is necessary to use the @e Proxy class.*
  * @note The use of the Proxy class does not produce more
  * computation, nor object creation, in optimized mode.
  *
@@ -123,9 +135,9 @@
  *  @code
  *  IdTypeImpl<Type>::returnType()
  *  @endcode
+ *  The value returned is an IdType.
  *
- *  On the other side, knowing the Id of an object, it is possible to tune
- *  the code of your application. This RTTI mechanism is mainly used in the
- *  Variable and DataFrame classes.
- *
+ *  Knowing the Id of an object, it is possible to tune the code of your
+ *  application. This RTTI mechanism is mainly used in STK++ in the Variable
+ *  and DataFrame classes.
  **/

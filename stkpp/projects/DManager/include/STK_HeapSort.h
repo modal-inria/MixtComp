@@ -37,7 +37,7 @@
 #ifndef STK_HEAPSORT_H
 #define STK_HEAPSORT_H
 
-#include "Arrays/include/STK_ITContainer2D.h"
+#include "Arrays/include/STK_ArrayBase.h"
 
 namespace STK
 {
@@ -47,7 +47,7 @@ namespace STK
  *  @param T the container to sort
  **/
 template<class Vector>
-void heapSort( ITContainer<Vector>& T)
+void heapSort( ArrayBase<Vector>& T)
 {
   typedef typename hidden::Traits<Vector>::Type Type;
   // number of elements
@@ -55,7 +55,7 @@ void heapSort( ITContainer<Vector>& T)
   if (nb_elt < 2) return;
 
   // if the container is base one, shift0 = 0 and shift1 = 1
-  int shift1 = T.firstIdx(), shift0 = T.firstIdx() - 1;
+  int shift1 = T.begin(), shift0 = T.begin() - 1;
 
   // create heap
   for (int first = nb_elt/2; first > 0; -- first)
@@ -118,7 +118,7 @@ void heapSort( ITContainer<Vector>& T)
  *  @param Tsort the container with the result
  **/
 template< class Vector>
-void heapSort( ITContainer<Vector> const& T, Vector& Tsort)
+void heapSort( ArrayBase<Vector> const& T, Vector& Tsort)
 {
   typedef typename Vector::Type Type;
   // copy T in Tsort
@@ -128,7 +128,7 @@ void heapSort( ITContainer<Vector> const& T, Vector& Tsort)
   if (nb_elt < 2) return;
 
   // if the container is base one, shift0 = 0 and shift1 = 1
-  int shift1 = Tsort.firstIdx(), shift0 = Tsort.firstIdx() - 1;
+  int shift1 = Tsort.begin(), shift0 = Tsort.begin() - 1;
 
   // create heap
   for (int first = nb_elt/2; first > 0; -- first)
@@ -192,7 +192,7 @@ void heapSort( ITContainer<Vector> const& T, Vector& Tsort)
  *  @param T the container to sort
  **/
 template< class Vector, class VectorInt>
-void heapSort( ITContainer< VectorInt> & I, ITContainer<Vector> const& T)
+void heapSort( ArrayBase< VectorInt> & I, ArrayBase<Vector> const& T)
 {
   typedef typename hidden::Traits<Vector>::Type Type;
 
@@ -201,14 +201,14 @@ void heapSort( ITContainer< VectorInt> & I, ITContainer<Vector> const& T)
 
   // create index array
   I.asDerived().resize(T.range());
-  int first = I.firstIdx(), last = I.lastIdx();
+  int first = I.begin(), last = I.lastIdx();
   for (int i=first; i<=last; i++)
   { I[i] = i;}
 
   if (nb_elt < 2) return;
 
   // if the container is base one, shift0 = 0 and shift1 = 1
-  int shift1 = T.firstIdx(), shift0 = T.firstIdx() - 1;
+  int shift1 = T.begin(), shift0 = T.begin() - 1;
 
   // create heap
   for (first = nb_elt/2; first > 0; --first)
@@ -280,7 +280,7 @@ void heapSort( ITContainer< VectorInt> & I, ITContainer<Vector> const& T)
  *  @param T the container to sort
  **/
 template<class Vector, class VectorInt>
-void applySort1D( ITContainer<Vector>& T, ITContainer<VectorInt> const& I)
+void applySort1D( ArrayBase<Vector>& T, ArrayBase<VectorInt> const& I)
 {
 #ifdef STK_DEBUG
   if (I.range() != T.range())
@@ -289,7 +289,7 @@ void applySort1D( ITContainer<Vector>& T, ITContainer<VectorInt> const& I)
   }
 #endif
   Vector A(T.range());
-  for (int i=I.firstIdx(); i<= I.lastIdx(); i++) { A[i] = T[I[i]];}
+  for (int i=I.begin(); i<= I.lastIdx(); i++) { A[i] = T[I[i]];}
   T.asDerived() = A.asDerived();
 }
 
@@ -299,7 +299,7 @@ void applySort1D( ITContainer<Vector>& T, ITContainer<VectorInt> const& I)
  *  @param T the container to sort
  **/
 template < class Array, class VectorInt>
-void applySort2D( Array& T, ITContainer< VectorInt> const& I)
+void applySort2D( Array& T, ArrayBase< VectorInt> const& I)
 {
 #ifdef STK_DEBUG
   if (I.range() != T.rows())
@@ -308,7 +308,7 @@ void applySort2D( Array& T, ITContainer< VectorInt> const& I)
   }
 #endif
   Array A(T.rows(), T.cols());
-  for (int i=I.firstIdx(); i<= I.lastIdx(); i++) { A.row(i) = T.row(I[i]);}
+  for (int i=I.begin(); i<= I.lastIdx(); i++) { A.row(i) = T.row(I[i]);}
   T.asDerived().move(A.asDerived());
 }
 

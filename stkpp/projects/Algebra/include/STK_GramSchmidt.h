@@ -52,9 +52,9 @@ template < class TContainer2D>
 void gramSchmidt( ArrayBase<TContainer2D>& A)
 {
   // orthonormalize
-  for (int j= A.firstIdxCols(); j<= A.lastIdxCols(); j++)
+  for (int j= A.beginCols(); j< A.endCols(); j++)
   {
-    for( int i= A.firstIdxCols(); i < j; i++)
+    for( int i= A.beginCols(); i < j; i++)
     {
       const Real dotij = dot(A.asDerived().col(i), A.asDerived().col(j));
       A.asDerived().col(j) -= A.asDerived().col(i) * dotij;

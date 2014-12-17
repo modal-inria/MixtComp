@@ -24,34 +24,35 @@
 
 /*
  * Project:  stkpp::Arrays
- * Purpose:  Define the Upper Triangular Matrix class.
+ * Purpose:  Define the Upper Triangular Array class.
  * Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  *
  **/
 
 /** @file STK_Array2DUpperTriangular.h
-  * @brief In this file we define the MatrixTriangular class
+  * @brief In this file we define the ArrayXXTriangular class
  **/
 
 #ifndef STK_MATRIXUPPERTRIANGULAR_H
 #define STK_MATRIXUPPERTRIANGULAR_H
 
-
-
-#include "STK_Array2DVector.h"
-#include "STK_Array2DPoint.h"
+#include "STK_IArray2D.h"
 
 namespace STK
 {
+// forward declaration
 template<typename> class Array2DUpperTriangular;
+template<typename> class Array2DPoint;
+template<typename> class Array2DVector;
 
 /** @ingroup Arrays
   * @brief Specialization of the Array2D class for Type values.
-  *
   * A Array2DLowerTriangular is a column oriented 2D container of Type
   * whcih is lower triangular.
  **/
-typedef Array2DUpperTriangular<Real> MatrixUpperTriangular;
+typedef Array2DUpperTriangular<Real>   ArrayUpperTriangularXX;
+typedef Array2DUpperTriangular<double> ArrayUpperTriangularXXd;
+typedef Array2DUpperTriangular<int>    ArrayUpperTriangularXXi;
 
 namespace hidden
 {
@@ -128,7 +129,7 @@ class Array2DUpperTriangular : public IArray2D< Array2DUpperTriangular<Type> >
      **/
     Array2DUpperTriangular( Range const& I, Range const& J, Type const& v)
                           : Base(I, J)
-    { this->setValue(v);}
+    { LowBase::setValue(v);}
     /** Copy constructor
      *  @param T the container to copy
      *  @param ref true if T is wrapped
@@ -149,6 +150,12 @@ class Array2DUpperTriangular : public IArray2D< Array2DUpperTriangular<Type> >
      **/
     Array2DUpperTriangular( Type** q, Range const& I, Range const& J)
                           : Base(q, I, J) {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    Array2DUpperTriangular( ExprBase<OtherDerived> const& T): Base()
+    { LowBase::operator=(T);}
     /** destructor. */
     ~Array2DUpperTriangular() {}
     /** operator = : overwrite the CArray with the Right hand side T.
@@ -161,7 +168,7 @@ class Array2DUpperTriangular : public IArray2D< Array2DUpperTriangular<Type> >
     Array2DUpperTriangular& operator=(const Array2DUpperTriangular &T)
     { return LowBase::assign(T);}
     /** Operator = : overwrite with a constant value. */
-    inline Array2DUpperTriangular& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline Array2DUpperTriangular& operator=(Type const& v) { return LowBase::setValue(v);}
 };
 
 } // namespace STK

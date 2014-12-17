@@ -148,7 +148,7 @@ class MTRand
       if( left == 0 ) reload();
       --left;
 
-      register uint32 s1;
+      uint32 s1;
       s1  = *pNext++;
       s1 ^= (s1 >> 11);
       s1 ^= (s1 <<  7) & 0x9d2c5680UL;
@@ -218,9 +218,9 @@ class MTRand
     inline void seed( uint32 *const bigSeed, const uint32 seedLength )
     {
       initialize(19650218UL);
-      register int i = 1;
-      register uint32 j = 0;
-      register int k = ( N > seedLength ? N : seedLength );
+      int i = 1;
+      uint32 j = 0;
+      int k = ( N > seedLength ? N : seedLength );
       for( ; k; --k )
       {
         state[i] =
@@ -255,9 +255,9 @@ class MTRand
       if( urandom )
       {
           uint32 bigSeed[N];
-          register uint32 *s = bigSeed;
-          register int i = N;
-          register bool success = true;
+          uint32 *s = bigSeed;
+          int i = N;
+          bool success = true;
           while( success && i-- )
               success = fread( s++, sizeof(uint32), 1, urandom );
           fclose(urandom);
@@ -273,9 +273,9 @@ class MTRand
      **/
     inline void save( uint32* saveArray ) const
     {
-      register uint32 *sa = saveArray;
-      register const uint32 *s = state;
-      register int i = N;
+      uint32 *sa = saveArray;
+      const uint32 *s = state;
+      int i = N;
       for( ; i--; *sa++ = *s++ ) {}
       *sa = left;
     }
@@ -285,18 +285,13 @@ class MTRand
      **/
     inline void load( uint32 *const loadArray )
     {
-      register uint32 *s = state;
-      register uint32 *la = loadArray;
-      register int i = N;
+      uint32 *s = state;
+      uint32 *la = loadArray;
+      int i = N;
       for( ; i--; *s++ = *la++ ) {}
       left = *la;
       pNext = &state[N-left];
     }
-
-    friend std::ostream& operator<<( std::ostream& os
-                                   , const MTRand& mtrand );
-    friend std::istream& operator>>( std::istream& is
-                                   , MTRand& mtrand );
 
   protected:
     /** Initialize generator state with seed
@@ -307,9 +302,9 @@ class MTRand
      **/
     inline void initialize( const uint32 seed )
     {
-      register uint32 *s = state;
-      register uint32 *r = state;
-      register int i = 1;
+      uint32 *s = state;
+      uint32 *r = state;
+      int i = 1;
       *s++ = seed & 0xffffffffUL;
       for( ; i < N; ++i )
       {
@@ -324,8 +319,8 @@ class MTRand
      **/
     inline void reload()
     {
-      register uint32 *p = state;
-      register int i;
+      uint32 *p = state;
+      int i;
       for( i = N - M; i--; ++p )
         *p = twist( p[M], p[0], p[1] );
       for( i = M; --i; ++p )
@@ -379,24 +374,5 @@ class MTRand
       return ( h1 + differ++ ) ^ h2;
     }
 };
-
-inline std::ostream& operator<<( std::ostream& os, const MTRand& mtrand )
-{
-    register const MTRand::uint32 *s = mtrand.state;
-    register int i = mtrand.N;
-    for( ; i--; os << *s++ << "\t" ) {}
-    return os << mtrand.left;
-}
-
-
-inline std::istream& operator>>( std::istream& is, MTRand& mtrand )
-{
-    register MTRand::uint32 *s = mtrand.state;
-    register int i = mtrand.N;
-    for( ; i--; is >> *s++ ) {}
-    is >> mtrand.left;
-    mtrand.pNext = &mtrand.state[mtrand.N-mtrand.left];
-    return is;
-}
 
 #endif  // MERSENNETWISTER_H

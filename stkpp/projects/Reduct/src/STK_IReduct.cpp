@@ -47,14 +47,14 @@ IReduct::IReduct() : Runner()
 /* Constructor with a pointer on the constant data set.
  *  @param p_data the data set to reduce.
  **/
-IReduct::IReduct( Matrix const* p_data) : Runner(p_data)
+IReduct::IReduct( ArrayXX const* p_data) : Runner(p_data)
                                         , dim_(0)
                                         , p_reduced_(0)
     {;}
 /* Constructor with a constant reference on the data set.
  *  @param data the data set to reduce.
  * */
-IReduct::IReduct( Matrix const& data) : Runner(data)
+IReduct::IReduct( ArrayXX const& data) : Runner(data)
                                       , dim_(0)
                                       , p_reduced_(0)
     {;}

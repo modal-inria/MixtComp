@@ -36,7 +36,7 @@
 #ifndef STK_DATAFRAME_H
 #define STK_DATAFRAME_H
 
-#include "Arrays/include/STK_IContainer2D.h"
+#include "Arrays/include/STK_ITContainer2D.h"
 
 #include "STK_List1D.h"
 #include "STK_IVariable.h"
@@ -44,6 +44,7 @@
 
 namespace STK
 {
+
 /** @ingroup DManager
   * @brief DataFrame is a List of Variable with the same number of rows.
   *  This is thus also a 2D container.
@@ -54,9 +55,11 @@ namespace STK
   *
   * Each Cell of the List1D contain a pointer on a Variable.
  **/
-class DataFrame : protected List1D<IVariable* >, public IContainer2D
+class DataFrame : protected List1D<IVariable* >, public IContainer2D<UnknownSize,UnknownSize>
 {
   protected:
+    /** Type of the Base container */
+    typedef IContainer2D<UnknownSize, UnknownSize > Base2D;
     /** Type for the list container. */
     typedef List1D<IVariable*> Base;
 
@@ -71,26 +74,39 @@ class DataFrame : protected List1D<IVariable* >, public IContainer2D
     DataFrame( DataFrame const& T, bool ref = false);
     /** Destructor. */
     virtual ~DataFrame();
+
+    /**@return the range of the columns */
+    inline Range cols() const { return Base2D::cols();}
+    /** @return the index of the first column */
+    inline int beginCols() const { return Base2D::beginColsImpl();}
+    /**  @return the ending index of the columns */
+    inline int endCols() const { return Base2D::endColsImpl();}
+    /** @return the number of columns */
+    inline int sizeCols() const { return Base2D ::sizeColsImpl();}
+
+    /** @return the range of the rows */
+    inline Range rows() const { return Base2D::rows();}
+    /** @return the index of the first row */
+    inline int beginRows() const { return Base2D::beginRowsImpl();}
+    /** @return the ending index of the rows */
+    inline int endRows() const { return Base2D::endRowsImpl();}
+    /** @return the number of rows */
+    inline int sizeRows() const { return Base2D::sizeRowsImpl();}
+
+    /** @return the index of the first column */
+    inline int firstIdxCols() const { return Base2D::firstIdxCols();}
+    /**  @return the index of the last column */
+    inline int lastIdxCols() const { return Base2D::lastIdxCols();}
+    /** @return the index of the first row */
+    inline int firstIdxRows() const { return Base2D::firstIdxRows();}
+    /** @return the index of the last row */
+    inline int lastIdxRows() const { return Base2D::lastIdxRows();}
+
+    /** @return @c true if the container is empty, @c false otherwise */
+    inline bool empty() const { return Base2D::empty();}
+
     /** Clear the object. */
     void clear();
-    /**@return the Horizontal range */
-    inline Range cols() const { return IContainer2D::cols();}
-    /** @return the index of the first column */
-    inline int const& firstIdxCols() const { return IContainer2D::firstIdxCols();}
-    /**  @return the index of the last column */
-    inline int lastIdxCols() const { return IContainer2D::lastIdxCols();}
-    /** @return the Horizontal size (the number of column) */
-    inline int sizeCols() const { return IContainer2D ::sizeColsImpl();}
-    /** @return the Vertical range */
-    inline Range rows() const { return IContainer2D::rows();}
-    /** @return the index of the first row */
-    inline int const& firstIdxRows() const { return IContainer2D::firstIdxRows();}
-    /** @return the index of the last row */
-    inline int lastIdxRows() const { return IContainer2D::lastIdxRows();}
-    /** @return the Vertical size (the number of rows) */
-    inline int sizeRows() const { return IContainer2D::sizeRowsImpl();}
-    /**  @return @c true if the container is empty, @c false otherwise */
-    inline bool empty() const { return IContainer2D::empty();}
     /** access to an element. Set the method elt as a public method. */
     inline IVariable*& elt(int const& i) { return Base::elt(i);}
     /** access to a constant element. Set the method elt as a public method. */
@@ -100,7 +116,7 @@ class DataFrame : protected List1D<IVariable* >, public IContainer2D
     DataFrame& operator=(DataFrame const& T);
 
     /** resize the container:
-     * - call @c shift(I.firstIdx(), J.firstIdx()
+     * - call @c shift(I.begin(), J.begin()
      * - call @c popBackCols() (@c insertRows()) and/or @c popBackCols()
      *  (@c popBackRows()).
      *  The implicit assumption made by this method is that it is easier and
@@ -149,7 +165,7 @@ class DataFrame : protected List1D<IVariable* >, public IContainer2D
     void pushBackVariable( IVariable* const & V);
     /** Append a DataFrame front. */
     inline void pushFrontVariable( IVariable* const & V)
-    { insertVariable(firstIdxCols(), V);}
+    { insertVariable(beginCols(), V);}
     /** merge this DataFrame with D. */
     void merge( DataFrame const& D);
     /** Insert a DataFrame at the specified position to the container. */
@@ -158,7 +174,7 @@ class DataFrame : protected List1D<IVariable* >, public IContainer2D
     void pushBackDataFrame( DataFrame const &D);
     /** Append a DataFrame front. */
     inline void pushFrontDataFrame( DataFrame const &D)
-    { insertDataFrame(firstIdxCols(), D);}
+    { insertDataFrame(beginCols(), D);}
     /** write a DataFrame to the output stream os. */
     void writeDataFrame( ostream  &os, int const& left, int const& right) const;
 

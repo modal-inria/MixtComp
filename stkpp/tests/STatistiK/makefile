@@ -28,79 +28,62 @@
 #
 #-----------------------------------------------------------------------
 # makevars contains general definitions and flags.
-ifeq ($(MAKEVARS),)
-	include ../../$(RELATIVEMAKEVARS)
-else
-	include $(MAKEVARS)
-endif
 ifneq ($(wildcard ./makevars.local),) 
 	include makevars.local
 endif
 
 #-----------------------------------------------------------------------
-# Paths to bin, lib, include and projects
-BIN_DIR = ../../bin/
-LIB_DIR = ../../lib/
-INC_DIR = ../../include/
-PROJECTS_DIR = ../../projects/
-
-#-----------------------------------------------------------------------
 # source files
-#
-CPP_SRCS = \
+CXX_SRCS =
+
+TEST_SRCS = \
 	testUnivariateReal.cpp \
 	testStatFunctors.cpp \
 	testLawGamma.cpp
 
-## library name
-CXX_LIB = $(LIB_DIR)$(LIB_STKPP_A)
-
 #-----------------------------------------------------------------------
 # binary files
-#
-CXX_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
+CXX_OBJS = $(CXX_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
+TEST_OBJS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%.o)
 
 #-----------------------------------------------------------------------
 # program files
-#
-CXX_PROGS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%)
+TEST_PROGS = $(TEST_SRCS:%.cpp=$(TEST_BIN_DIR)%)
 
 #-----------------------------------------------------------------------
 # Targets
-#
-.PHONY: all obj
-all: obj progs
+.PHONY: all obj progs
+all: progs
 
-obj: $(CXX_OBJS) $(CPP_SRCS) 
-progs: $(CXX_PROGS)
+progs: obj $(TEST_PROGS)
+obj: $(CXX_OBJS) $(TEST_OBJS)
 
 #-----------------------------------------------------------------------
 # test testGamma object file 
-$(BIN_DIR)testGamma.o: testGamma.cpp makefile
+$(TEST_BIN_DIR)testGamma.o: testGamma.cpp makefile
 	@ case x$(HASRMATH) in xt ) \
 	echo compiling $@; \
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $(R_FLAGS) $< -c -o $@; \
+	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS) -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $(R_FLAGS) $< -c -o $@; \
 esac
 
 # other object files 
-$(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) -I$(INC_DIR) $(STK_FLAGS) $< -c -o $@
+$(TEST_BIN_DIR)%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(STK_CXXFLAGS) -I$(TEST_PROJECTS_DIR) -I$(TEST_INCLUDE_DIR) $(STK_CXXFLAGS) $< -c -o $@
 
 
 #-----------------------------------------------------------------------
 # rule for compiling the testLawGamma object file
-$(BIN_DIR)testLawGamma: $(BIN_DIR)testLawGamma.o $(CXX_LIB)
+$(TEST_BIN_DIR)testLawGamma: $(TEST_BIN_DIR)testLawGamma.o $(TEST_STKPP_LIB)
 	@ case x$(HASRMATH) in xt ) \
 	echo compiling $@; \
-	$(CXX)  $< $(LDFLAGS) $(R_FLAGS) $(LIB_RMATH_A) $(CXX_LIB) -o $@  $(LDLIBS); \
+	$(CXX)  $< $(LDFLAGS) $(R_FLAGS) $(LIB_RMATH_A) $(TEST_STKPP_LIB) -o $@  $(LDLIBS); \
 esac
 
 # other program compilation rules
-$(BIN_DIR)test%: makefile
-$(BIN_DIR)test%: $(BIN_DIR)test%.o $(CXX_LIB)
-	$(CXX) $< $(LDFLAGS) $(CXX_LIB) -o $@  $(LDLIBS) 
+$(TEST_BIN_DIR)test%: $(TEST_BIN_DIR)test%.o $(CXX_OBJS)
+	$(CXX) $^ $(TEST_STKPP_LIB) $(LDFLAGS) $(LDLIBS) -o $@ 
 
 #-----------------------------------------------------------------------
 # clean test programs 
 clean:
-	$(RM) $(BIN_DIR)test*
+	$(RM) $(TEST_PROGS) $(CXX_OBJS) $(TEST_OBJS)

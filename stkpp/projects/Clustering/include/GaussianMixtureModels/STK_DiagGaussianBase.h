@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*     Copyright (C) 2004-2014 Serge IOVLEFF, Inria
+/*     Copyright (C) 2004-2014 Serge IOVLEFF
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as
@@ -53,12 +53,11 @@ class DiagGaussianBase : public IMixtureModel<Derived >
 {
   public:
     typedef IMixtureModel<Derived > Base;
-    typedef Array2D<Real>::Col ColVector;
 
     using Base::p_tik;
+    using Base::components;
     using Base::p_data;
     using Base::p_param;
-    using Base::components;
 
     /** default constructor
      * @param nbCluster number of cluster in the model
@@ -75,7 +74,7 @@ class DiagGaussianBase : public IMixtureModel<Derived >
     Real impute(int i, int j) const
     {
       Real sum = 0.;
-      for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+      for (int k= baseIdx; k < components().end(); ++k)
       { sum += p_tik()->elt(i,k) * p_param(k)->mean(j);}
       return sum;
     }
@@ -89,32 +88,21 @@ class DiagGaussianBase : public IMixtureModel<Derived >
     /** get the parameters of the model
      *  @param params the parameters of the model
      **/
-    void getParameters(Array2D<Real>& params) const
-    {
-      int nbClust = this->nbCluster();
-      params.resize(2*nbClust, p_data()->cols());
-
-      for (int k= 0; k < nbClust; ++k)
-      {
-        for (int j=  p_data()->firstIdxCols();  j <= p_data()->lastIdxCols(); ++j)
-        {
-          params(2*k+  baseIdx, j) = p_param(k+baseIdx)->mean(j);
-          params(2*k+1+baseIdx, j) = p_param(k+baseIdx)->sigma(j);
-        }
-      }
-    }
+    void getParameters(Array2D<Real>& params) const;
+    /** @return the parameters of the model in an array of size (K * 2d). */
+    ArrayXX getParametersImpl() const;
     /** Write the parameters on the output stream os */
     void writeParameters(ostream& os) const
     {
       Array2DPoint<Real> sigma(p_data()->cols());
-      for (int k= baseIdx; k <= components().lastIdx(); ++k)
+      for (int k= baseIdx; k < components().end(); ++k)
       {
         // store sigma values in an array for a nice output
-        for (int j= sigma.firstIdx();  j <= sigma.lastIdx(); ++j)
+        for (int j= sigma.begin();  j <= sigma.lastIdx(); ++j)
         { sigma[j] = p_param(k)->sigma(j);}
-        stk_cout << _T("---> Component ") << k << _T("\n");
-        stk_cout << _T("mean = ") << p_param(k)->mean_;
-        stk_cout << _T("sigma = ")<< sigma;
+        os << _T("---> Component ") << k << _T("\n");
+        os << _T("mean = ") << p_param(k)->mean_;
+        os << _T("sigma = ")<< sigma;
       }
     }
 
@@ -123,43 +111,75 @@ class DiagGaussianBase : public IMixtureModel<Derived >
      *  of the data set.
      **/
     void randomMean();
-    /** compute the initial weighted mean of a Gaussian mixture. */
-    void initialMean();
     /** compute the weighted mean of a Gaussian mixture. */
-    void updateMean();
+    bool updateMean();
 };
 
 template<class Derived>
 void DiagGaussianBase<Derived>::randomMean()
 {
-  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+  // indexes array
+  Array2DVector<int> indexes(p_data()->rows());
+  for(int i=p_data()->beginRows(); i< p_data()->endRows(); ++i) { indexes[i] = i;}
+  Range rind = p_data()->rows();
+  // sample without repetition
+  for (int  k= baseIdx; k < p_tik()->endCols(); ++k)
   {
-    // random number in [0, size[
-    int i = p_data()->firstIdxRows() + std::floor(Law::Uniform::rand(0.,1.)*this->nbSample());
-    p_param(k)->mean_.copy(p_data()->row(i));
+    // random number in [0, end-k[
+    int i = (int)Law::Uniform::rand(rind.begin(), rind.end());
+    // get ith individuals
+    p_param(baseIdx + k)->mean_.copy(p_data()->row(indexes[i]));
+    // exchange it with nth
+    indexes.swap(i, rind.lastIdx());
+    // decrease
+    rind.decLast(1);
   }
 }
 
 template<class Derived>
-void DiagGaussianBase<Derived>::initialMean()
+bool DiagGaussianBase<Derived>::updateMean()
 {
-  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+  for (int k= baseIdx; k < components().end(); ++k)
   {
-    ColVector tik(p_tik()->col(k), true); // create a reference
-    p_param(k)->mean_ = Stat::mean(*p_data(), p_tik()->col(k));
-    if (p_param(k)->mean_.nbAvailableValues() != p_param(k)->mean_.size()) throw Clust::initializeStepFail_;
+    for (int j=p_data()->beginCols(); j< p_data()->endCols(); ++j)
+    { p_param(k)->mean_[j] = p_data()->col(j).wmean(p_tik()->col(k));}
   }
+  return true;
 }
 
+/* get the parameters of the model
+ *  @param params the parameters of the model
+ **/
 template<class Derived>
-void DiagGaussianBase<Derived>::updateMean()
+void DiagGaussianBase<Derived>::getParameters(Array2D<Real>& params) const
 {
-  for (int k= baseIdx; k <= p_tik()->lastIdxCols(); ++k)
+  int nbClust = this->nbCluster();
+  params.resize(2*nbClust, p_data()->cols());
+  for (int k= 0; k < nbClust; ++k)
   {
-    ColVector tik(p_tik()->col(k), true); // create a reference
-    p_param(k)->mean_ = Stat::mean(*p_data(), tik);
-    if (p_param(k)->mean_.nbAvailableValues() != p_param(k)->mean_.size()) throw Clust::mStepFail_;
+    for (int j=  p_data()->beginCols();  j < p_data()->endCols(); ++j)
+    {
+      params(baseIdx+2*k  , j) = p_param(baseIdx+k)->mean(j);
+      params(baseIdx+2*k+1, j) = p_param(baseIdx+k)->sigma(j);
+    }
   }
+}
+/* @return the parameters of the model in an array of size (K * 2d). */
+template<class Derived>
+ArrayXX DiagGaussianBase<Derived>::getParametersImpl() const
+{
+  ArrayXX params;
+  int nbClust = this->nbCluster();
+  params.resize(2*nbClust, p_data()->cols());
+  for (int k= 0; k < nbClust; ++k)
+  {
+    for (int j=  p_data()->beginCols();  j < p_data()->endCols(); ++j)
+    {
+      params(baseIdx+2*k  , j) = p_param(baseIdx+k)->mean(j);
+      params(baseIdx+2*k+1, j) = p_param(baseIdx+k)->sigma(j);
+    }
+  }
+  return params;
 }
 } // namespace STK
 

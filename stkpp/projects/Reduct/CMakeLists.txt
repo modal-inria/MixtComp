@@ -4,7 +4,7 @@ FILE( GLOB Reduct_files
   include/*.h
   )
 
-INCLUDE_DIRECTORIES("..")
+include_directories("..")
 
 # Add Reduct files to STKReduct library
-ADD_LIBRARY(STKReduct OBJECT ${Reduct_files})
+add_library(STKReduct OBJECT ${Reduct_files})

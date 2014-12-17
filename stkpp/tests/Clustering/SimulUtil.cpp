@@ -63,7 +63,7 @@ void simulCategorical_pkModel( int d, int K, int L, Array_pkProba& proba)
 {
   // create arrays of porbabilities
   proba.resize(K);
-  for (int k= baseIdx; k <= proba.lastIdx(); ++k)
+  for (int k= baseIdx; k < proba.end(); ++k)
   {
     proba[k].resize(L);
     proba[k].randUnif(); // generate numbers in ]0,1[
@@ -78,77 +78,173 @@ void simulCategorical_pkMixture( int n, int d, Array_pkProba const& proba, Array
   simulZi(n, pk, zi);
   // create Categorical laws
   Array1D< Law::Categorical > law(proba.range());
-  for (int k= baseIdx; k <= proba.lastIdx(); ++k)  { law[k].setProb(proba[k]);}
+  for (int k= baseIdx; k < proba.end(); ++k)  { law[k].setProb(proba[k]);}
   // generate data
   dataij.resize(n, d);
-  for (int i= baseIdx; i <= dataij.lastIdxRows(); ++i)
+  for (int i= baseIdx; i < dataij.endRows(); ++i)
   {
-    for (int j= baseIdx; j <= dataij.lastIdxCols(); ++j)
+    for (int j= baseIdx; j < dataij.endCols(); ++j)
     { dataij(i,j) = law[zi[i]].rand();}
   }
 }
 
-
-/** Simulate a Categorical_pjk mixture model */
-void simulGamma_bjModel( int d, int K, Array_bjParam& param)
+/** Simulate the scales of the gamma mixture model */
+static void simulGamma_bk( Array2Param& param)
 {
-  // create arrays of porbabilities
+  for (int k= baseIdx; k < param.end(); ++k)
+  { param[k][baseIdx+1] = Law::Exponential::rand(1.);}
+}
+
+/** Simulate the scale of the gamma mixture model */
+static void simulGamma_b( Array2Param& param)
+{
+  Real scale = Law::Exponential::rand(1.);
+  for (int k= baseIdx; k < param.end(); ++k)
+  { param[k][baseIdx+1] = scale;}
+}
+
+/** Simulate the scales of the gamma mixture model */
+static void simulGamma_ak( Array2Param& param)
+{
+  for (int k= baseIdx; k < param.end(); ++k)
+  { param[k][baseIdx] = Law::Exponential::rand(10.);}
+}
+
+/** Simulate the scale of the gamma mixture model */
+static void simulGamma_a( Array2Param& param)
+{
+  Real scale = Law::Exponential::rand(10.);
+  for (int k= baseIdx; k < param.end(); ++k)
+  { param[k][baseIdx] = scale;}
+}
+
+/* Simulate a gamma_a_bk mixture model */
+void simulGamma_a_bk_Model( int K, Array2Param& param)
+{
+  // create arrays of probabilities
   param.resize(K);
-  for (int k= baseIdx; k <= param.lastIdx(); ++k)
+  simulGamma_a(param);
+  simulGamma_bk(param);
+}
+
+/* Simulate a gamma_ak_bk mixture model */
+void simulGamma_ak_bk_Model( int K, Array2Param& param)
+{
+  // create arrays of probabilities
+  param.resize(K);
+  simulGamma_ak(param);
+  simulGamma_bk(param);
+}
+
+/* Simulate a gamma_ak_b mixture model */
+void simulGamma_ak_b_Model( int K, Array2Param& param)
+{
+  // create arrays of probabilities
+  param.resize(K);
+  simulGamma_ak(param);
+  simulGamma_b(param);
+}
+
+/* Simulate a gamma_bk mixture data set */
+void simulGamma_Mixture( int n, int d
+                       , Array2Param const& param
+                       , Array2DVector<Real> const& pk
+                       , Array2D<Real>& dataij
+                       , Array2DVector<int>& zi)
+{
+  simulZi(n, pk, zi);
+  // create Categorical laws
+  Array1D< Law::Gamma > law(param.range());
+  for (int k= baseIdx; k < param.end(); ++k)
+  { law[k].setShape(param[k][baseIdx]);
+    law[k].setScale(param[k][baseIdx+1]);
+  }
+  // generate data
+  dataij.resize(n, d);
+  for (int i= baseIdx; i < dataij.endRows(); ++i)
+  {
+    for (int j= baseIdx; j < dataij.endCols(); ++j)
+    { dataij(i,j) = law[zi[i]].rand();}
+  }
+}
+
+/** Simulate a gamma_bk mixture model */
+void simulGamma_bkModel( int d, int K, Array2Param& param)
+{
+  // create arrays of probabilities
+  param.resize(K);
+  for (int k= baseIdx; k < param.end(); ++k)
   {
     param[k][baseIdx]   = Law::Exponential::rand(10.);
     param[k][baseIdx+1] = Law::Exponential::rand(1.);
   }
 }
 
-/** Simulate a Categorical_pjk mixture data set */
-void simulGamma_bjMixture( int n, int d, Array_bjParam const& param, Array2DVector<Real> const& pk
+/** Simulate a gamma_b mixture model */
+void simulGamma_bModel( int d, int K, Array2Param& param)
+{
+  // create arrays of probabilities
+  param.resize(K);
+  Real scale = Law::Exponential::rand(1.);
+  for (int k= baseIdx; k < param.end(); ++k)
+  {
+    param[k][baseIdx]   = Law::Exponential::rand(10.);
+    param[k][baseIdx+1] = scale;
+  }
+}
+
+/** Simulate a gamma_bk mixture data set */
+void simulGamma_bkMixture( int n, int d, Array2Param const& param, Array2DVector<Real> const& pk
                          , Array2D<Real>& dataij, Array2DVector<int>& zi)
 {
   simulZi(n, pk, zi);
   // create Categorical laws
   Array1D< Law::Gamma > law(param.range());
-  for (int k= baseIdx; k <= param.lastIdx(); ++k)
+  for (int k= baseIdx; k < param.end(); ++k)
   { law[k].setShape(param[k][baseIdx]);
     law[k].setScale(param[k][baseIdx+1]);
   }
   // generate data
   dataij.resize(n, d);
-  for (int i= baseIdx; i <= dataij.lastIdxRows(); ++i)
+  for (int i= baseIdx; i < dataij.endRows(); ++i)
   {
-    for (int j= baseIdx; j <= dataij.lastIdxCols(); ++j)
+    for (int j= baseIdx; j < dataij.endCols(); ++j)
     { dataij(i,j) = law[zi[i]].rand();}
   }
 }
 
 /** Simulate a Categorical_pjk mixture data set */
-void simulGaussian_sModel( int d, int K, Array_bjParam& param)
+void simulGaussian_sModel( int K, Array2Param& param)
 {
   // create arrays of porbabilities
   param.resize(K);
-  for (int k= baseIdx; k <= param.lastIdx(); ++k)
+  Real s = Law::Exponential::rand(1.);
+  for (int k= baseIdx; k < param.end(); ++k)
   {
     param[k][baseIdx]   = Law::Normal::rand(0.,10.);
-    param[k][baseIdx+1] = Law::Exponential::rand(1.);
+    param[k][baseIdx+1] = s;
   }
 }
 /** Simulate a Categorical_pjk mixture data set */
-void simulGaussian_sMixture( int n, int d, Array_sParam const& param, Array2DVector<Real> const& pk
+void simulGaussian_sMixture( int n, int d, Array2Param const& param, Array2DVector<Real> const& pk
                            , Array2D<Real>& dataij, Array2DVector<int>& zi)
 {
-  simulZi(n, pk, zi);
-  // create Categorical laws
+  // create Categorical and Gaussian laws
+  Categorical zilaw(pk);
   Array1D< Law::Gaussian > law(param.range());
-  for (int k= baseIdx; k <= param.lastIdx(); ++k)
+  for (int k= baseIdx; k < param.end(); ++k)
   { law[k].setMu(param[k][baseIdx]);
     law[k].setSigma(param[k][baseIdx+1]);
   }
   // generate data
+  zi.resize(n);
   dataij.resize(n, d);
-  for (int i= baseIdx; i <= dataij.lastIdxRows(); ++i)
+  for (int i= baseIdx; i < dataij.endRows(); ++i)
   {
-    for (int j= baseIdx; j <= dataij.lastIdxCols(); ++j)
-    { dataij(i,j) = law[zi[i]].rand();}
+    int k= zilaw.rand();
+    zi[i] = k;
+    for (int j= baseIdx; j < dataij.endCols(); ++j)
+    { dataij(i,j) = law[k].rand();}
   }
 }
 

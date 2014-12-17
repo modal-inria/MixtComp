@@ -44,21 +44,24 @@
  *  @defgroup Laws  The probabilities laws sub-project.
  *  In this sub-project, we compute and simulate the usual probabilities laws:
  *  normal law, binomial law, Cauchy law,...
- *
- * @ingroup STatistiK
- * @defgroup StatDesc The descriptive statistics sub-project.
- * In this sub-project, we compute the usual descriptive statistics of variables.
- *
- * @ingroup STatistiK
- * @namespace STK::Law
- * @brief This is the namespace enclosing the classes handling the usual
- * probabilities Laws.
- *
- * @ingroup STatistiK
- * @namespace STK::Stat
- * @brief this is the namespace for the statistical treatment.
- * The namespace Stat enclose the methods and classes  for usual statistical
- * treatment of the variable like mean, variance, covariance, ...
+ **/
+
+/** @ingroup STatistiK
+ *  @defgroup StatDesc The descriptive statistics sub-project.
+ *  In this sub-project, we compute the usual descriptive statistics of variables.
+ **/
+
+/** @ingroup STatistiK
+ *  @namespace STK::Law
+ *  @brief This is the namespace enclosing the classes handling the usual
+ *  probabilities Laws.
+ **/
+
+/** @ingroup STatistiK
+ *  @namespace STK::Stat
+ *  @brief this is the namespace for the statistical treatment.
+ *  The namespace Stat enclose the methods and classes  for usual statistical
+ *  treatment of the variable like mean, variance, covariance, ...
  **/
 
 #ifndef STATISTIK_H

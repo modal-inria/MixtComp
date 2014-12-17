@@ -35,20 +35,44 @@
  **/
 
 #include "../include/STK_Regress_Util.h"
-#include "STKernel/include/STK_String_Util.h"
+#include "STKernel/include/STK_String.h"
 
 namespace STK
 {
 
 namespace Regress
 {
+/* convert a String to a TypeReduction.
+ *  @param type the type of reduction we want to define
+ *  @return the TypeReduction represented by the String @c type. if the string
+ *  does not match any known name, the @c unknown_ type is returned.
+ **/
+KnotsPosition stringToKnotsPosition( String const& type)
+{
+  if (toUpperString(type) == toUpperString(_T("uniform")))  return uniform_;
+  if (toUpperString(type) == toUpperString(_T("periodic"))) return periodic_;
+  if (toUpperString(type) == toUpperString(_T("density"))) return density_;
+  return unknownKnotsPosition_;
+}
+
+/* convert a TypeReduction to a String.
+ *  @param type the type of reduction we want to convert
+ *  @return the string associated to this type.
+ **/
+String knotsPositionToString( KnotsPosition const& type)
+{
+  if (type == uniform_)  return String(_T("uniform"));
+  if (type == periodic_) return String(_T("periodic"));
+  if (type == density_) return String(_T("density"));
+  return String(_T("unknown"));
+}
 
 /* convert a String to a TypeRegression.
  *  @param type the type of regression we want to define
  *  @return the TypeRegression represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_ type is returned.
  **/
-TypeRegression StringToTypeRegression( String const& type)
+TypeRegression stringToTypeRegression( String const& type)
 {
   if (toUpperString(type) == toUpperString(_T("unknown"))) return unknown_;
   if (toUpperString(type) == toUpperString(_T("linear")))  return linear_;

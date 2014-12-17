@@ -41,39 +41,9 @@
 
 namespace STK
 {
-/** @ingroup Base
- *  @defgroup RTTI Runtime Type Identification.
- *  
- *  These classes allow to handle the Runtime type identification (RTTI)
- *  problem and are useful when working with heterogeneous data.
- **/
-
-/** @ingroup RTTI 
- *  @brief Id for the Type of a variable.
- * 
- *  IdType is an enum for the type used in the statistical variables :
- *  - Char for letter variables
- *  - String for string (id) variables.
- *  - Real for quantitative variables,
- *  - int for qualitative variables,
- *  - Binary for binary (0,1) variables,
- *  - Sign for sign (-1, 1) variables,
- *  - unknown if the type is not available
- **/
-enum IdType
-{
-  character,   ///< character type
-  real_,        ///< Quantitative type
-  integer_,    ///< Qualitative type
-  binary_,      ///< Binary type {0, 1}
-  signof,       ///< Sign type {-1, 1}
-  string,      ///< String type
-  unknown_ =__INT_MAX__  ///< Unknown type
-};
-
 /** @ingroup RTTI
  *  @brief Implementation of the return type.
- * 
+ *
  *  This object will be specialized for runtime type identification
  *  (RTTI). Default is unknown_ type.
  **/
@@ -81,7 +51,7 @@ template<typename TYPE>
 struct IdTypeImpl
 {
   /**@return the IdType of the variable (unknown by default). */
-  static IdType returnType() { return(unknown_);}
+  static Base::IdType returnType() { return(Base::unknown_);}
 };
 
 } // namespace STK

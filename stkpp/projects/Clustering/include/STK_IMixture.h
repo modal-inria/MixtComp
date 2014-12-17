@@ -37,14 +37,14 @@
  * @brief define the main interface for linking specific mixture model to the
  * composer.
  */
-#include "../include/STK_MixtureComposer.h"
+#include <string>
+#include "Arrays/include/STK_CArrayPoint.h"
+#include "Arrays/include/STK_CArrayVector.h"
+#include "Arrays/include/STK_Array2D.h"
 
 namespace STK
 {
-
-template<class Type, int SizeCols_, bool Orient_ > class CArrayPoint;
-template<class Type> class Array2D;
-template<class Type, int SizeCols_, bool Orient_ > class CArrayVector;
+class IMixtureComposer;
 
 class IMixture
 {
@@ -62,15 +62,15 @@ class IMixture
     /** Virtual destructor. */
     virtual ~IMixture();
 
-    /** return the Id of the mixture */
-    inline std::string const& idName() const { return idName_;}
+    /** @return the Idname of the mixture */
+    inline std::string const& idName() const { return idData_;}
     /** @return Number of cluster. */
     inline int nbCluster() const  { return nbCluster_;}
-    /** @return Number of cluster. */
-    inline MixtureComposer const* const p_composer() const { return p_composer_;}
+    /** @return A constant pointer on the composer. */
+    inline IMixtureComposer const* const p_composer() const { return p_composer_;}
 
     /** set the mixture composer to the mixture */
-    void setMixtureComposer( MixtureComposer const* p_model);
+    void setMixtureComposer( IMixtureComposer const* p_model);
 
     /**This is a standard clone function in usual sense. It must be defined to
      * provide new object of your class with values of various parameters equal
@@ -99,30 +99,10 @@ class IMixture
      *  parameters of the mixture.
      */
     virtual void randomInit() = 0;
-    /** @brief This function should be used for Imputation of data.
-     *  The default implementation (in the base class) is to do nothing.
-     */
-    virtual void imputationStep() {/**Do nothing by default*/}
-    /** @brief This function must be defined for simulation of all the latent
-     * variables and/or missing data excluding class labels. The class labels
-     * will be simulated by the framework itself because to do so we have to
-     * take into account all the mixture laws.
-     */
-    virtual void samplingStep() {/**Do nothing by default*/};
     /** @brief This function is equivalent to mStep and must be defined to update
      *  parameters.
      */
     virtual void paramUpdateStep() = 0;
-    /** @brief This function should be used to store any intermediate results
-     * during various iterations after the burn-in period.
-     * @param iteration Provides the iteration number beginning after the burn-in
-     * period.
-     */
-    virtual void storeIntermediateResults(int iteration) {/**Do nothing by default*/}
-    /** @brief This step can be used by developer to finalize any thing. It will
-     *  be called only once after we finish running the estimation algorithm.
-     */
-    virtual void finalizeStep() {/**Do nothing by default*/}
     /** This function must be defined to return the posterior probability (PDF)
      * for corresponding sample_num and Cluster_num.
      * @param sample_num Sample number
@@ -138,6 +118,37 @@ class IMixture
      *  @return Number of variables
      */
     virtual int nbVariable() const = 0;
+    /** @brief This function should be used for Imputation of data.
+     *  The default implementation (in the base class) is to do nothing.
+     */
+    virtual void imputationStep() {/**Do nothing by default*/}
+    /** @brief This function must be defined for simulation of all the latent
+     * variables and/or missing data excluding class labels. The class labels
+     * will be simulated by the framework itself because to do so we have to
+     * take into account all the mixture laws.
+     */
+    virtual void samplingStep() {/**Do nothing by default*/};
+    /** @brief This function should be used to store any intermediate results
+     * during various iterations after the burn-in period.
+     * @param iteration Provides the iteration number beginning after the burn-in
+     * period.
+     */
+    virtual void storeIntermediateResults(int iteration) {/**Do nothing by default*/}
+    /**@brief This step can be used to signal to the mixtures that they must
+     * release the stored results. This is usually called if the estimation
+     * process failed.
+     **/
+    virtual void releaseIntermediateResults() {/**Do nothing by default*/}
+    /** @brief set the parameters of the model.
+     *  This function should be used to set the parameters computed using the
+     *  intermediate results. This method will be called after the long-run and
+     *  before the finalize step.
+     **/
+    virtual void setParameters() {/**Do nothing by default*/}
+    /** @brief This step can be used by developer to finalize any thing. It will
+     *  be called only once after we finish running the estimation algorithm.
+     */
+    virtual void finalizeStep() {/**Do nothing by default*/}
     /** This function can be used to write summary of parameters on to the output stream.
      *  @param out Stream where you want to write the summary of parameters.
      */
@@ -169,21 +180,41 @@ class IMixture
     /** This function can be used in derived classes to get proportions from the framework.
      *  @return Pointer to proportions.
      */
-    CArrayPoint<Real> const* p_pk() const;
+    CPointX const* p_pk() const;
     /** This function can be used in derived classes to get posterior probabilities from the framework.
      *  @return Pointer to tik.
      */
-    Array2D<Real> const* p_tik() const;
+    ArrayXX const* p_tik() const;
     /** This function can be used in derived classes to get class labels from the framework.
      *  @return Pointer to zi.
      */
-    CArrayVector<int> const* p_zi() const;
+    CVectorXi const* p_zi() const;
+    /** This function can be used in derived classes to get proportions from
+     *  the framework.
+     *  @return Pointer to proportions.
+     */
+    CPointX const& pk() const;
+    /** This function can be used in derived classes to get estimated number
+     *  of individuals from the framework.
+     *  @return the numbers of individuals.
+     */
+    CPointX const& nk() const;
+    /** This function can be used in derived classes to get posterior probabilities
+     *  from the framework.
+     *  @return Pointer to tik.
+     */
+    ArrayXX const& tik() const;
+    /** This function can be used in derived classes to get class labels from
+     *  the framework.
+     *  @return Pointer to zi.
+     */
+    CVectorXi const& zi() const;
 
   private:
     /** pointer on the main composer model */
-    const MixtureComposer* p_composer_;
+    const IMixtureComposer* p_composer_;
     /** Id name of the mixture */
-    std::string idName_;
+    std::string idData_;
     /** number of cluster */
     int nbCluster_;
 };

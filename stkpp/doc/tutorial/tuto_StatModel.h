@@ -50,7 +50,7 @@
  *  @note The two @c run methods are implemented by @c IMultiStatModel.
  *  </li>
  *
- *  <li> IModelBase, which furnish the following accessors
+ *  <li> IStatModelBase, which furnish the following accessors
  *  @code
  *    int const& nbSample() const;
  *    Real lnNbSample() const;

@@ -4,8 +4,8 @@ FILE( GLOB Analysis_files
   include/*.h
   )
 # Add STatistiK files to STKSTatistiK library
-ADD_LIBRARY(STKAnalysis OBJECT ${Analysis_files})
+add_library(STKAnalysis OBJECT ${Analysis_files})
 
-INCLUDE_DIRECTORIES("..")
+include_directories("..")
 
 # TARGET_LINK_LIBRARIES(STKAnalysis STKpp)

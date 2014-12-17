@@ -55,13 +55,13 @@ Real g0(Real const& x);
 Real dev0(Real const& a, Real const& b);
 
 /** @ingroup Analysis
- *  @brief compute the fonction \f$ \log(1+x) \f$.
+ *  @brief compute the function \f$ \log(1+x) \f$.
  *  @param x value to evaluate the function
  **/
 Real log1p(Real const& x);
 
 /** @ingroup Analysis
- *  @brief compute the fonction \f$ \exp(x)-1 \f$.
+ *  @brief compute the function \f$ \exp(x)-1 \f$.
  **/
 Real expm1(Real const& x);
 

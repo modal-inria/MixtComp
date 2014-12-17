@@ -35,7 +35,7 @@
  **/
 
 #include "../include/STK_Reduct_Util.h"
-#include "STKernel/include/STK_String_Util.h"
+#include "STKernel/include/STK_String.h"
 
 namespace STK
 {
@@ -48,7 +48,7 @@ namespace Reduct
  *  @return the TypeReduction represented by the String @c type. if the string
  *  does not match any known name, the @c unknown_ type is returned.
  **/
-TypeReduction StringToTypeReduction( String const& type)
+TypeReduction stringToTypeReduction( String const& type)
 {
   if (toUpperString(type) == toUpperString(_T("totalVariance")))  return totalVariance_;
   if (toUpperString(type) == toUpperString(_T("localVariance"))) return localVariance_;
@@ -60,7 +60,7 @@ TypeReduction StringToTypeReduction( String const& type)
  *  @param type the type of reduction we want to convert
  *  @return the string associated to this type.
  **/
-String TypeReductionToString( TypeReduction const& type)
+String typeReductionToString( TypeReduction const& type)
 {
   if (type == totalVariance_)  return String(_T("totalVariance"));
   if (type == localVariance_) return String(_T("localVariance"));

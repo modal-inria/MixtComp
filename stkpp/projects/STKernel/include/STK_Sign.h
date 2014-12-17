@@ -36,8 +36,8 @@
 #ifndef STK_SIGN_H
 #define STK_SIGN_H
 
-#include "STK_String_Util.h"
 #include <map>
+#include "STK_String.h"
 
 namespace STK
 {
@@ -49,8 +49,12 @@ namespace STK
  enum Sign
  { negative_ =-1, ///< negative sign
    positive_ = 1, ///< positive sign
-   signNA_ = __INT_MAX__  ///< Not Available value
+   signNA_ = INT_MIN  ///< Not Available value
  };
+
+// forward declaration
+template<typename Type> struct Arithmetic;
+template<typename Type> struct IdTypeImpl;
 
 /** @ingroup Arithmetic
  *  @brief Specialization for Sign.
@@ -60,11 +64,11 @@ namespace STK
 template<>
 struct Arithmetic<Sign> : public std::numeric_limits<Sign>
 {
-   /** Adding a Non Avalaible (NA) special number. */
+   /** Adding a Non Available (NA) special number. */
    static Sign NA() throw() { return signNA_;}
    /** True if the type has a representation for a "Not Available". */
    static const bool hasNA = true;
-   /** Test if x is a Non Avalaible (NA) special number.
+   /** Test if x is a Non Available (NA) special number.
     *  @param x the Sign number to test.
     **/
    static bool isNA(const Sign& x) throw() { return (x==signNA_);}
@@ -77,36 +81,35 @@ struct Arithmetic<Sign> : public std::numeric_limits<Sign>
     **/
    static bool isFinite(const Sign& x) throw() { return (!isNA(x) && !isInfinite(x));}
  };
- 
-/** @ingroup RTTI 
+
+/** @ingroup RTTI
  *  @brief Specialization of the IdTypeImpl for the Type Sign.
- * 
+ *
  *  Return the IdType of a Sign.
  **/
 template<>
 struct IdTypeImpl<Sign>
 {
   /** Give the IdType of the type Sign. */
-  static IdType returnType()
-  { return(signof);}
+  static Base::IdType returnType() { return(Base::sign_);}
 };
-  
+
 /** @ingroup stream
  *  @brief Overloading of the ostream << for the type Sign.
  *  @param os the output stream
- *  @param output the value to send to the stream
+ *  @param value the value to send to the stream
  **/
-ostream& operator << (ostream& os, const Sign& output);
+ostream& operator << (ostream& os, const Sign& value);
 
 /** @ingroup stream
  *  @brief Overloading of the istream >> for the type Sign.
  *  @param is the input stream
- *  @param input the value to get from the stream
+ *  @param value the value to get from the stream
  **/
-istream& operator >> (istream& is, Sign& input);
+istream& operator >> (istream& is, Sign& value);
 
 /** @ingroup Base
- *  Convert a String to a Sign.
+ *  @brief Convert a String to a Sign.
  *  @param type the String we want to convert
  *  @return the Sign represented by the String @c type. if the string
  *  does not match any known name, the @c signNA_ value is returned.
@@ -114,7 +117,7 @@ istream& operator >> (istream& is, Sign& input);
 Sign stringToSign( String const& type);
 
 /** @ingroup Base
- *  Convert a String to a Sign using a map.
+ *  @brief Convert a String to a Sign using a map.
  *  @param type the String we want to convert
  *  @param mapping the mapping between the string and the Sign
  *  @return the Sign represented by the String @c type. if the string
@@ -123,33 +126,34 @@ Sign stringToSign( String const& type);
 Sign stringToSign( String const& type, std::map<String, Sign> const& mapping);
 
 /** @ingroup Base
- *  Convert a Sign to a String.
- *  @param type the type of Sign we want to convert
- *  @return the string associated to this type.
+ *  @brief Convert a Sign to a String.
+ *  @param value the Sign we want to convert
+ *  @param f format, by default write every number in decimal
+ *  @return the string associated to this value.
  **/
-String signToString( Sign const& type);
+String signToString( Sign const& value, std::ios_base& (*f)(std::ios_base&) = std::dec);
 
 /** @ingroup Base
- *  Convert a Sign to a String.
- *  @param type the type of Sign we want to convert
+ *  @brief Convert a Sign to a String.
+ *  @param value the Sign we want to convert
  *  @param mapping the mapping between the Sign and the String
  *  @return the string associated to this type.
  **/
-String signToString( Sign const& type, std::map<Sign, String> mapping);
+String signToString( Sign const& value, std::map<Sign, String> mapping);
 
 /** @ingroup Base
  *  @brief specialization for Sign
- *  @param s the String to convert
+ *  @param str the String to convert
  *  @return The value to get from the String
  **/
 template<>
-inline Sign stringToType<Sign>( String const& s)
-{ return stringToSign(s);}
+inline Sign stringToType<Sign>( String const& str)
+{ return stringToSign(str);}
 
 /** @ingroup Base
  *  @brief specialization for Sign
  *  @param t The Sign to convert to String
- *  @param f flag, by default write every number in decimal
+ *  @param f format, by default write every number in decimal
  **/
 template<>
 inline String typeToString<Sign>( Sign const& t, std::ios_base& (*f)(std::ios_base&))

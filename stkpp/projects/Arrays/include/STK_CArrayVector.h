@@ -35,29 +35,28 @@
 #ifndef STK_CARRAYVECTOR_H
 #define STK_CARRAYVECTOR_H
 
-#include "STKernel/include/STK_Constants.h"
-
 #include "STK_ICArray.h"
 
 namespace STK
 {
 // forward declaration
-template< typename Type, int SizeRows_=UnknownSize, bool Orient_ = Arrays::by_col_>
-class CArrayVector;
+template< typename Type, int SizeRows_=UnknownSize, bool Orient_ = Arrays::by_col_> class CArrayVector;
 
+template< typename Type, int SizeRows_, int SizeCols_, bool Orient_> class CArray;
+template< typename Type, int Size_, bool Orient_> class CArraySquare;
+template< typename Type, int SizeCols_, bool Orient_> class CArrayPoint;
+template< typename Type, int SizeRows_, int SizeCols_, bool Orient_> class CArrayNumber;
+
+// typedef for CArrayVector Real is by default double, but can be float
 typedef CArrayVector<Real, UnknownSize, Arrays::by_col_>   CVectorX;
 typedef CArrayVector<Real, 2, Arrays::by_col_>             CVector2;
 typedef CArrayVector<Real, 3, Arrays::by_col_>             CVector3;
-
-
-template< typename Type, int SizeRows_, int SizeCols_, bool Orient_>
-class CArray;
-template< typename Type, int Size_, bool Orient_>
-class CArraySquare;
-template< typename Type, int SizeCols_, bool Orient_>
-class CArrayPoint;
-template< typename Type, int SizeRows_, int SizeCols_, bool Orient_>
-class CArrayNumber;
+typedef CArrayVector<double, UnknownSize, Arrays::by_col_> CVectorXd;
+typedef CArrayVector<double, 2, Arrays::by_col_>           CVector2d;
+typedef CArrayVector<double, 3, Arrays::by_col_>           CVector3d;
+typedef CArrayVector<int, UnknownSize, Arrays::by_col_>    CVectorXi;
+typedef CArrayVector<int, 2, Arrays::by_col_>              CVector2i;
+typedef CArrayVector<int, 3, Arrays::by_col_>              CVector3i;
 
 namespace hidden
 {
@@ -135,19 +134,23 @@ class CArrayVector : public ICArray < CArrayVector<Type, SizeRows_, Orient_> >
      *  @param q pointer on the array
      *  @param nbRow number of rows
      **/
-    inline CArrayVector( Type* const& q, int nbRow): Base(q, nbRow, 1)
-    {}
+    inline CArrayVector( Type* const& q, int nbRow): Base(q, nbRow, 1) {}
     /** constructor by reference.
      *  @param allocator the allocator to wrap
      **/
     template<class OtherAllocator>
-    inline CArrayVector( OtherAllocator const& allocator) : Base(allocator) {}
+    inline CArrayVector( CAllocatorBase<OtherAllocator> const& allocator): Base(allocator.asDerived()) {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    CArrayVector( ExprBase<OtherDerived> const& T): Base() { LowBase::operator=(T);}
     /** destructor. */
     inline ~CArrayVector() {}
     /** operator= : set the container to a constant value.
      *  @param v the value to set
      **/
-    inline CArrayVector& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline CArrayVector& operator=(Type const& v) { return LowBase::setValue(v);}
     /** operator = : overwrite the CArray with the Right hand side T.
      *  @param T the container to copy
      **/

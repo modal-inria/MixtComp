@@ -137,13 +137,23 @@ class TransposeOperator  : public TransposeOperatorBase< Lhs >, public TRef<1>
     };
     /** Constructor */
     inline TransposeOperator( Lhs const& lhs) : Base(), lhs_(lhs) {}
+
     /**  @return the range of the rows */
     inline Range const rows() const { return lhs_.cols();}
+    /** @return the first index of the rows */
+    inline int const beginRowsImpl() const { return lhs_.beginCols();}
+    /** @return the ending index of the rows */
+    inline int const endRowsImpl() const { return lhs_.endCols();}
+    /** @return the number of rows */
+    inline int const sizeRowsImpl() const { return lhs_.sizeCols();}
+
     /** @return the range of the Columns */
     inline Range const cols() const { return lhs_.rows();}
-    /** @return the number of rows of the transposed expression */
-    inline int const sizeRowsImpl() const { return lhs_.sizeCols();}
-    /** @return the number of columns of the transposed expression */
+    /** @return the first index of the columns */
+    inline int const beginColsImpl() const { return lhs_.beginRows();}
+    /** @return the ending index of the columns */
+    inline int const endColsImpl() const { return lhs_.endRows();}
+    /** @return the number of columns */
     inline int const sizeColsImpl() const { return lhs_.sizeRows();}
 
     /** @return the left hand side expression */
@@ -165,8 +175,7 @@ class TransposeOperatorBase : public ExprBase< TransposeOperator< Lhs> >
     /** constructor. */
     inline TransposeOperatorBase() : Base() {}
     /** @return the element (i,j) of the transposed expression.
-     *  @param i index of the row
-     *  @param j index of the column
+     *  @param i, j index of the row and of the column
      **/
     inline Type const elt2Impl(int i, int j) const
     { return (this->asDerived().lhs().elt(j, i));}

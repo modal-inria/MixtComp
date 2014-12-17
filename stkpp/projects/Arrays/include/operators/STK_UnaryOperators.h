@@ -1,4 +1,3 @@
-
 /*--------------------------------------------------------------------*/
 /*     Copyright (C) 2004-2012  Serge Iovleff
 
@@ -74,10 +73,9 @@ template<typename UnaryOp, typename Lhs>
 class UnaryOperatorBase;
 
 
-/** @class UnaryOperator
-  * @ingroup Arrays
+/** @ingroup Arrays
   *
-  * \brief Generic expression when unary operator is applied to an expression
+  * @brief Generic expression when unary operator is applied to an expression
   *
   * @tparam UnaryOp template functor implementing the operator
   * @tparam Lhs the type of the expression to which we are applying the unary operator
@@ -109,29 +107,38 @@ class UnaryOperator  : public UnaryOperatorBase< UnaryOp, Lhs >, public TRef<1>
         storage_   = hidden::Traits< UnaryOperator >::storage_
     };
     inline UnaryOperator( Lhs const& rhs, UnaryOp const& functor = UnaryOp())
-                        : Base(), rhs_(rhs), functor_(functor)
+                        : Base(), lhs_(rhs), functor_(functor)
     {}
     /**  @return the range of the rows */
-    inline Range const rows() const { return rhs_.rows();}
-    /** @return the range of the Columns */
-    inline Range const cols() const { return rhs_.cols();}
-    /** @return the size of the vector */
-    inline int const sizeRowsImpl() const { return rhs_.sizeRows();}
-    /** @return the fixed size type if available to enable compile time optimizations */
-    inline int const sizeColsImpl() const { return rhs_.sizeCols();}
+    inline Range const rows() const { return lhs_.rows();}
+    /** @return the first index of the rows */
+    inline int const beginRowsImpl() const { return lhs_.beginRows();}
+    /** @return the ending index of the rows */
+    inline int const endRowsImpl() const { return lhs_.endRows();}
+    /** @return the number of rows */
+    inline int const sizeRowsImpl() const { return lhs_.sizeRows();}
 
-    /** @return the right hand side expression */
-    inline Lhs const& rhs() const { return rhs_; }
+    /** @return the range of the Columns */
+    inline Range const cols() const { return lhs_.cols();}
+    /** @return the first index of the columns */
+    inline int const beginColsImpl() const { return lhs_.beginCols();}
+    /** @return the ending index of the columns */
+    inline int const endColsImpl() const { return lhs_.endCols();}
+    /** @return the number of columns */
+    inline int const sizeColsImpl() const { return lhs_.sizeCols();}
+
+    /** @return the left hand side expression */
+    inline Lhs const& rhs() const { return lhs_; }
     /** @return the functor representing the unary operation */
     inline UnaryOp const& functor() const { return functor_; }
 
   protected:
-    Lhs const& rhs_;
+    Lhs const& lhs_;
     UnaryOp const functor_;
 };
 
 /** @ingroup Arrays
-  * @brief implement the access to the elements in the (2D) general case.
+  * @brief implement the access to the elements of the unary operator.
   **/
 template<typename UnaryOp, typename Lhs>
 class UnaryOperatorBase : public ExprBase< UnaryOperator<UnaryOp, Lhs> >
@@ -147,12 +154,12 @@ class UnaryOperatorBase : public ExprBase< UnaryOperator<UnaryOp, Lhs> >
      **/
     inline Type const elt2Impl(int i, int j) const
     { return this->asDerived().functor()(this->asDerived().rhs().elt(i, j));}
-    /** @return the element ith element of the operator
+    /** @return the ith element of the operator
      *  @param i index of the ith element
      **/
     inline Type const elt1Impl(int i) const
     { return this->asDerived().functor()(this->asDerived().rhs().elt(i));}
-    /** accesses to the element of the operator */
+    /** @return the element of the operator */
     inline Type const elt0Impl() const
     { return this->asDerived().functor()(this->asDerived().rhs().elt());}
 };

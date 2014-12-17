@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     stk_cout << _T(" At position(") << i <<_T(",") << j << _T(")\n");
     stk_cout << _T("general.minElt() =") << general.minElt() << _T("\n");
     stk_cout << _T("\nTest safe visitors for general arrays.\n");
-    general(general.firstIdxRows(), general.firstIdxCols()) = Arithmetic<Real>::NA();
+    general(general.beginRows(), general.beginCols()) = Arithmetic<Real>::NA();
     stk_cout << _T("general =\n") << general;
     stk_cout << _T("general.safe().sum() =") << general.safe().sum() << _T("\n");
     stk_cout << _T("general.safe().norm() =") << general.safe().norm() << _T("\n");
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     stk_cout << _T(" At position(") << i <<_T(",") << j << _T(")\n");
     stk_cout << _T("square.minElt() =") << square.minElt() << _T("\n");
     stk_cout << _T("\nTest safe visitors for square arrays.\n");
-    square(square.firstIdxRows(), square.firstIdxCols()) = Arithmetic<Real>::NA();
+    square(square.beginRows(), square.beginCols()) = Arithmetic<Real>::NA();
     stk_cout << _T("square =\n") << square;
     stk_cout << _T("square.safe().sum() =") << square.safe().sum() << _T("\n");
     stk_cout << _T("square.safe().norm() =") << square.safe().norm() << _T("\n");
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
     stk_cout << _T(" At position(") << i <<_T(",") << j << _T(")\n");
     stk_cout << _T("diagonal.minElt() =") << diagonal.minElt() << _T("\n");
     stk_cout << _T("\nTest safe visitors for diagonal arrays.\n");
-    diagonal(diagonal.firstIdxRows(), diagonal.firstIdxCols()) = Arithmetic<Real>::NA();
+    diagonal(diagonal.beginRows(), diagonal.beginCols()) = Arithmetic<Real>::NA();
     stk_cout << _T("diagonal =\n") << diagonal;
     stk_cout << _T("diagonal.safe().sum() =") << diagonal.safe().sum() << _T("\n");
     stk_cout << _T("diagonal.safe().norm() =") << diagonal.safe().norm() << _T("\n");
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
     stk_cout << _T(" At position(") << i <<_T(",") << j << _T(")\n");
     stk_cout << _T("lowTriangular.minElt() =") << lowTriangular.minElt() << _T("\n");
     stk_cout << _T("\nTest safe visitors for lowTriangular arrays.\n");
-    lowTriangular(lowTriangular.firstIdxRows(), lowTriangular.firstIdxCols()) = Arithmetic<Real>::NA();
+    lowTriangular(lowTriangular.beginRows(), lowTriangular.beginCols()) = Arithmetic<Real>::NA();
     stk_cout << _T("lowTriangular =\n") << lowTriangular;
     stk_cout << _T("lowTriangular.safe().sum() =") << lowTriangular.safe().sum() << _T("\n");
     stk_cout << _T("lowTriangular.safe().norm() =") << lowTriangular.safe().norm() << _T("\n");
@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
     stk_cout << _T(" At position(") << i <<_T(",") << j << _T(")\n");
     stk_cout << _T("upTriangular.minElt() =") << upTriangular.minElt() << _T("\n");
     stk_cout << _T("\nTest safe visitors for upTriangular arrays.\n");
-    upTriangular(upTriangular.firstIdxRows(), upTriangular.firstIdxCols()) = Arithmetic<Real>::NA();
+    upTriangular(upTriangular.beginRows(), upTriangular.beginCols()) = Arithmetic<Real>::NA();
     stk_cout << _T("upTriangular =\n") << upTriangular;
     stk_cout << _T("upTriangular.safe().sum() =") << upTriangular.safe().sum() << _T("\n");
     stk_cout << _T("upTriangular.safe().norm() =") << upTriangular.safe().norm() << _T("\n");
@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
     stk_cout << _T(" At position(") << i <<_T(",") << j << _T(")\n");
     stk_cout << _T("vector.minElt() =") << vector.minElt() << _T("\n");
     stk_cout << _T("\nTest safe visitors for vector arrays.\n");
-    vector(vector.firstIdxRows(), vector.firstIdxCols()) = Arithmetic<Real>::NA();
+    vector(vector.beginRows(), vector.beginCols()) = Arithmetic<Real>::NA();
     stk_cout << _T("vector =\n") << vector;
     stk_cout << _T("vector.safe().sum() =") << vector.safe().sum() << _T("\n");
     stk_cout << _T("vector.safe().norm() =") << vector.safe().norm() << _T("\n");
@@ -303,7 +303,7 @@ int main(int argc, char *argv[])
     stk_cout << _T(" At position(") << i <<_T(",") << j << _T(")\n");
     stk_cout << _T("point.minElt() =") << point.minElt() << _T("\n");
     stk_cout << _T("\nTest safe visitors for point arrays.\n");
-    point(point.firstIdxRows(), point.firstIdxCols()) = Arithmetic<Real>::NA();
+    point(point.beginRows(), point.beginCols()) = Arithmetic<Real>::NA();
     stk_cout << _T("point =\n") << point;
     stk_cout << _T("point.safe().sum() =") << point.safe().sum() << _T("\n");
     stk_cout << _T("point.safe().norm() =") << point.safe().norm() << _T("\n");

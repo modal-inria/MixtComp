@@ -37,7 +37,7 @@
 #ifndef STK_GINVSYMMETRIC_H
 #define STK_GINVSYMMETRIC_H
 
-#include "STK_EigenvaluesSymmetric.h"
+#include "STK_SymEigen.h"
 
 namespace STK
 {
@@ -56,21 +56,22 @@ class GinvSymmetric
      *  overwritten by the result.
      *  @param x the matrix to inverse.
      **/
-    inline void operator()(MatrixSquare*& x)
+    template<class ArraySquare>
+    inline void operator()(ArraySquare*& x)
     {
-      EigenvaluesSymmetric* decomp = new EigenvaluesSymmetric(x);
+      SymEigen* decomp = new SymEigen(*x);
       decomp->run();
-      delete x;
-      x = decomp->ginv();
+      decomp->ginv(*x);
       delete decomp;
     }
     /** Compute the generalized inverse of the symmetric matrix x. x is
      *  overwritten by the result.
      *  @param x the matrix to inverse.
      **/
-    inline void operator()(MatrixSquare& x)
+    template<class ArraySquare>
+    inline void operator()(ArraySquare& x)
     {
-      EigenvaluesSymmetric* decomp = new EigenvaluesSymmetric(&x);
+      SymEigen* decomp = new SymEigen(x);
       decomp->run();
       decomp->ginv(x);
       delete decomp;

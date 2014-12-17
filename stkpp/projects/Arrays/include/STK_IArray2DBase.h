@@ -41,13 +41,15 @@
 #ifndef STK_IARRAY2DBASE_H
 #define STK_IARRAY2DBASE_H
 
-#include "STK_ExprBaseVisitor.h"
-#include "STK_ExprBaseDot.h"
-#include "STK_ExprBaseProduct.h"
+#include "STK_ArrayBase.h"
 
-#include "STK_ArrayBaseInitializer.h"
+#include "STK_ExprBaseProduct.h"
+#include "STK_ExprBaseDot.h"
+#include "STK_ExprBaseVisitor.h"
+
 #include "STK_ArrayBaseApplier.h"
 #include "STK_ArrayBaseAssign.h"
+#include "STK_ArrayBaseInitializer.h"
 
 #include "STK_Array1D.h"
 
@@ -72,14 +74,18 @@ namespace STK
  * array: for exemple @c TYPE*, @c Array1D<TYPE>*, @c DBACCESS*....
  * @tparam Derived is the name of the class that implements @c IArray2DBase.
  **/
-template < class PTRCOL, class Derived>
-class IArray2DBase : public ITArrayBase<Derived>
+template < class PTRCOL, class Derived
+         , int SizeRow_ = hidden::Traits<Derived>::sizeRows_
+         , int SizeCol_ = hidden::Traits<Derived>::sizeCols_>
+class IArray2DBase :  protected IContainer2D<SizeRow_, SizeCol_>, public ArrayBase<Derived>
 {
   public:
-    /** Type for the Base reference Class. */
+    /** Type for the IContainer2D base Class. */
+    typedef IContainer2D<SizeRow_, SizeCol_ > Base2D;
+    /** Type for the Base Class. */
     typedef AllocatorBase<PTRCOL> Allocator;
     /** type of the Base Container Class. */
-    typedef ITArrayBase<Derived> Base;
+    typedef ArrayBase<Derived> Base;
 
     typedef typename hidden::Traits<Derived>::Type Type;
     typedef typename hidden::Traits<Derived>::Row RowVector;
@@ -88,9 +94,18 @@ class IArray2DBase : public ITArrayBase<Derived>
     typedef typename hidden::Traits<Derived>::SubCol SubColVector;
     typedef typename hidden::Traits<Derived>::SubArray SubArray;
 
+    enum
+    {
+      structure_ = hidden::Traits<Derived>::structure_,
+      orient_    = hidden::Traits<Derived>::orient_,
+      sizeRows_  = hidden::Traits<Derived>::sizeRows_,
+      sizeCols_  = hidden::Traits<Derived>::sizeCols_,
+      storage_   = hidden::Traits<Derived>::storage_
+    };
+
   protected:
     /** Default constructor */
-    IArray2DBase(): Base()
+    IArray2DBase(): Base2D(), Base()
                   , allocator_()
                   , capacityCols_()
                   , rangeCols_()
@@ -101,7 +116,7 @@ class IArray2DBase : public ITArrayBase<Derived>
      *  @param J range of the columns
      **/
     IArray2DBase( Range const& I, Range const& J)
-                : Base(I, J)
+                : Base2D(I, J), Base()
                 , allocator_()
                 , capacityCols_()
                 , rangeCols_()
@@ -114,7 +129,7 @@ class IArray2DBase : public ITArrayBase<Derived>
      *  @param ref true if we wrap T
      **/
     IArray2DBase( IArray2DBase const& T, bool ref =false)
-                : Base(T)
+                : Base2D(T), Base()
                 , allocator_(T.allocator_, ref)
                 , capacityCols_(T.capacityCols_)
                 , rangeCols_(T.rangeCols_)
@@ -127,26 +142,14 @@ class IArray2DBase : public ITArrayBase<Derived>
      **/
     template<class Rhs>
     IArray2DBase( IArray2DBase<PTRCOL, Rhs> const& T, Range const& I, Range const& J)
-                : Base(I, J)
+                : Base2D(I, J), Base()
                 , allocator_(T.allocator(), true)
-                , capacityCols_(J)
+                , capacityCols_(T.capacityCols(), J)
                 , rangeCols_(J)
                 , capacityHo_(J.size())
     {
-      if (I.firstIdx() < T.firstIdxRows())
-      { STKOUT_OF_RANGE_2ARG(IArray2DBase::IArray2DBase T, I, J,I.firstIdx() < T.firstIdxRows());}
-      if (I.lastIdx() > T.lastIdxRows())
-      { STKOUT_OF_RANGE_2ARG(IArray2DBase::IArray2DBase T, I, J,I.lastIdx() > T.lastIdxRows());}
-      if (J.firstIdx() < T.firstIdxCols())
-      { STKOUT_OF_RANGE_2ARG(IArray2DBase::IArray2DBase T, I, J,J.firstIdx() < T.firstIdxCols());}
-      if (J.lastIdx() > T.lastIdxCols())
-      {STKOUT_OF_RANGE_2ARG(IArray2DBase::IArray2DBase T, I, J,J.lastIdx() > T.lastIdxCols());}
-      // adjust capacity and range of each Cols
-      for (int j=J.firstIdx(); j<=J.lastIdx(); j++)
-      {
-        // copy capacity of the column j (is it necessary ?)
-        capacityCols_[j] = T.capacityCols()[j];
-        // compute available wrapped range of the column j
+      for (int j=J.begin(); j<J.end(); j++)
+      { // compute available wrapped range of the column j
         rangeCols_[j] = Range::inf(I, T.rangeCols()[j]);
       }
     }
@@ -156,7 +159,7 @@ class IArray2DBase : public ITArrayBase<Derived>
      *  @param J range of the columns to wrap
      **/
     IArray2DBase( PTRCOL* q, Range const& I, Range const& J)
-                : Base(I, J)
+                : Base2D(I, J), Base()
                 , allocator_(q, J, true)
                 , capacityCols_(J, I.size())
                 , rangeCols_(J, I)
@@ -168,6 +171,36 @@ class IArray2DBase : public ITArrayBase<Derived>
     ~IArray2DBase() {}
 
   public:
+    /** @return the Vertical range */
+    inline Range rows() const { return Base2D::rows();}
+    /** @return the index of the first row */
+    inline int beginRowsImpl() const { return Base2D::beginRowsImpl();}
+    /** @return the ending index of the rows */
+    inline int endRowsImpl() const { return Base2D::endRowsImpl();}
+    /** @return the number of rows */
+    inline int sizeRowsImpl() const { return Base2D::sizeRowsImpl();}
+
+    /**@return the Horizontal range */
+    inline Range cols() const { return Base2D::cols();}
+    /** @return the index of the first column */
+    inline int beginColsImpl() const { return Base2D::beginColsImpl();}
+    /**  @return the ending index of columns */
+    inline int endColsImpl() const { return Base2D::endColsImpl();}
+    /** @return the number of columns */
+    inline int sizeColsImpl() const { return Base2D ::sizeColsImpl();}
+
+    /** @return the index of the first column */
+    inline int firstIdxCols() const { return Base2D::firstIdxCols();}
+    /**  @return the index of the last column */
+    inline int lastIdxCols() const { return Base2D::lastIdxCols();}
+    /** @return the index of the first row */
+    inline int firstIdxRows() const { return Base2D::firstIdxRows();}
+    /** @return the index of the last row */
+    inline int lastIdxRows() const { return Base2D::lastIdxRows();}
+
+    /**  @return @c true if the container is empty, @c false otherwise */
+    inline bool empty() const { return Base2D::empty();}
+
     /** @return a constant pointer on the j-th column of the container
      *  @param j the index of the column
      **/
@@ -211,10 +244,10 @@ class IArray2DBase : public ITArrayBase<Derived>
      **/
     inline ColVector atCol(int j) const
     {
-      if (this->firstIdxCols() > j)
-      { STKOUT_OF_RANGE_1ARG(IArray2DBase::atCol, j, firstIdxCols() > j);}
-      if (this->lastIdxCols() < j)
-      { STKOUT_OF_RANGE_1ARG(IArray2DBase::atCol, j, lastIdxCols() < j);}
+      if (this->beginCols() > j)
+      { STKOUT_OF_RANGE_1ARG(IArray2DBase::atCol, j, beginCols() > j);}
+      if (this->endCols() <= j)
+      { STKOUT_OF_RANGE_1ARG(IArray2DBase::atCol, j, endCols() <= j);}
       return this->asDerived().col(j);
     }
     /** @return the row i.
@@ -222,9 +255,9 @@ class IArray2DBase : public ITArrayBase<Derived>
      **/
     inline RowVector atRow(int i) const
     {
-      if (this->firstIdxRows() > i)
-      { STKOUT_OF_RANGE_1ARG(IArray2DBase::atRow, i, firstIdxRows() > i);}
-      if (this->lastIdxRows() < i)
+      if (this->beginRows() > i)
+      { STKOUT_OF_RANGE_1ARG(IArray2DBase::atRow, i, beginRows() > i);}
+      if (this->endRows() <= i)
       { STKOUT_OF_RANGE_1ARG(IArray2DBase::at, i, lastIdxRows() < i);}
       return this->asDerived().row(i);
     }
@@ -252,7 +285,7 @@ class IArray2DBase : public ITArrayBase<Derived>
     void reserveCols(int size)
     {
       if (capacityHo_ >= size) return;
-      Range J(this->firstIdxCols(), size);
+      Range J(this->beginCols(), size);
       // try to allocate memory
       try
       {
@@ -282,14 +315,14 @@ class IArray2DBase : public ITArrayBase<Derived>
     /** New beginning index for the columns of the object.
      *  @param cbeg the index of the first column to set
      **/
-    void shiftFirstIdxCols(int cbeg)
+    void shiftbeginCols(int cbeg)
     {
       // if there is something to do
-      if ((cbeg - this->firstIdxCols()) != 0)
+      if ((cbeg - this->beginCols()) != 0)
       {
         // is this structure just a pointer?
         if (this->isRef())
-        { STKRUNTIME_ERROR_1ARG(IArray2DBase::shiftFirstIdxCols,cbeg,cannot operate on references);}
+        { STKRUNTIME_ERROR_1ARG(IArray2DBase::shiftbeginCols,cbeg,cannot operate on references);}
         // translate data
         allocator_.shiftData(cbeg);
         // tranlate capacityCols_
@@ -297,7 +330,7 @@ class IArray2DBase : public ITArrayBase<Derived>
         // translate rangeCols_
         rangeCols_.shift(cbeg);
         // adjust dimensions
-        Base::shiftFirstIdxCols(cbeg);
+        Base2D::shiftbeginCols(cbeg);
       }
     }
     /** Swapping the pos1 column and the pos2 column.
@@ -306,14 +339,14 @@ class IArray2DBase : public ITArrayBase<Derived>
      **/
     void swapCols(int pos1, int pos2)
     {
-      if (this->firstIdxCols() > pos1)
-      { STKOUT_OF_RANGE_2ARG(IArray2D::swapCols,pos1, pos2,firstIdxCols() >pos1);}
-      if (this->lastIdxCols() < pos1)
-      { STKOUT_OF_RANGE_2ARG(IArray2D::swapCols,pos1, pos2,lastIdxCols() <pos1);}
-      if (this->firstIdxCols() > pos2)
-      { STKOUT_OF_RANGE_2ARG(IArray2D::swapCols,pos1, pos2,firstIdxCols() >pos2);}
-      if (this->lastIdxCols() < pos2)
-      { STKOUT_OF_RANGE_2ARG(IArray2D::swapCols,pos1, pos2,lastIdxCols() <pos2);}
+      if (this->beginCols() > pos1)
+      { STKOUT_OF_RANGE_2ARG(IArray2D::swapCols,pos1, pos2,beginCols() >pos1);}
+      if (this->endCols() <= pos1)
+      { STKOUT_OF_RANGE_2ARG(IArray2D::swapCols,pos1, pos2,endCols() <= pos1);}
+      if (this->beginCols() > pos2)
+      { STKOUT_OF_RANGE_2ARG(IArray2D::swapCols,pos1, pos2,beginCols() >pos2);}
+      if (this->endCols() <= pos2)
+      { STKOUT_OF_RANGE_2ARG(IArray2D::swapCols,pos1, pos2,endCols() <=pos2);}
       // swap allocator part
       allocator_.swap(pos1, pos2);
       // swap capacityCols_
@@ -329,7 +362,7 @@ class IArray2DBase : public ITArrayBase<Derived>
       // swap AllocatorBase part
       allocator_.exchange(T.allocator_);
       // swap IContainer2D part
-      Base::exchange(T);
+      Base2D::exchange(T);
       // swap this part
       std::swap(this->capacityHo_, T.capacityHo_);
       capacityCols_.exchange(T.capacityCols_);
@@ -370,12 +403,11 @@ class IArray2DBase : public ITArrayBase<Derived>
       this->reallocCols(cols);
       this->setCols(cols);
       // align other range
-      const int last = cols.lastIdx();
-      Tref.shiftFirstIdxCols(first); // easiest like that
+      Tref.shiftbeginCols(first); // easiest like that
       // copy data from other
-      for (int j=first; j<= last; j++) { copyColumn(Tref, j, j);}
+      for (int j=first; j< cols.end(); j++) { copyColumn(Tref, j, j);}
       // delete and set view on the data
-      Tref.allocator().freeData();
+      Tref.allocator().free();
       Tref.allocator().setPtrData(allocator_.p_data(), allocator_.rangeData(), true);
     }
     /** Append the vector @c other to @c this without copying the data
@@ -499,7 +531,7 @@ class IArray2DBase : public ITArrayBase<Derived>
         // initialize this->rangeCols_
         rangeCols_.resize(J);
         // allocate memory for the columns
-        allocator_.malloc(Range(J.firstIdx(), size));
+        allocator_.malloc(Range(J.begin(), size));
       }
       catch (runtime_error & error)   // if an error occur
       {
@@ -531,7 +563,7 @@ class IArray2DBase : public ITArrayBase<Derived>
       try
       {
         // allocate memory for the columns
-        allocator_.realloc(Range(J.firstIdx(), size));
+        allocator_.realloc(Range(J.begin(), size));
         // initialize this->capacityCols_
         capacityCols_.resize(J);
         // initialize this->rangeCols_
@@ -565,11 +597,11 @@ class IArray2DBase : public ITArrayBase<Derived>
       // Nothing to do for reference
       if (this->isRef()) return;
       // free memory allocated in AllocatorBase
-      allocator_.freeData();
+      allocator_.free();
       // set capacity size to default
       this->setCapacityHo();
       // set range of the columns to default
-      this->setCols(Range(this->firstIdxCols(), 0));
+      this->setCols(Range(this->beginCols(), 0));
       // set capacityCols_ to default
       capacityCols_.clear();
       // set rangeCols_ to default

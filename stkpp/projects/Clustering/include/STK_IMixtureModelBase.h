@@ -44,7 +44,6 @@
 
 namespace STK
 {
-
 /** @ingroup Clustering
  *  @brief Base class for Mixture model.
  *
@@ -84,16 +83,16 @@ class IMixtureModelBase
     /** @return the proportions of each mixtures */
     inline CArrayPoint<Real> const* p_pk() const { return p_pk_;};
     /** @return the tik probabilities */
-    inline Array2D<Real> const* p_tik() const { return p_tik_;};
+    inline ArrayXX const* p_tik() const { return p_tik_;};
     /** @return  the zi class label */
     inline CArrayVector<int> const* p_zi() const { return p_zi_;};
-    /** Set the parameters of the  mixture model using external prop, tik and zi.
+    /** Set the parameters of the  mixture model using external pk, tik and zi.
      *  @param p_pk pointer on the proportions of the mixture model
      *  @param p_tik pointer on the posterior probabilities
      *  @param p_zi pointer on the class labels
      * */
     void setMixtureParameters( CArrayPoint<Real> const* p_pk
-                             , Array2D<Real> const* p_tik
+                             , ArrayXX const* p_tik
                              , CArrayVector<int> const* p_zi
                              );
 
@@ -101,7 +100,7 @@ class IMixtureModelBase
     /** The proportions of each mixtures */
     CArrayPoint<Real> const* p_pk_;
     /** The tik probabilities */
-    Array2D<Real> const* p_tik_;
+    ArrayXX const* p_tik_;
     /** The zik class label */
     CArrayVector<int> const* p_zi_;
     /** Set the number of sample of the model

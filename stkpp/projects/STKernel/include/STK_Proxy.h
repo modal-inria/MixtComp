@@ -26,7 +26,6 @@
  * Project:  stkpp::STKernel::Base
  * Purpose:  Define the Proxy classes for wrapping any types.
  * Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
- *
  **/
 
 /** @file STK_Proxy.h
@@ -38,9 +37,9 @@
 #define STK_PROXY_H
 
 #include "Sdk/include/STK_MetaTemplate.h"
-#include "STK_String.h"
+#include "STK_Global.h"
 
-namespace STK 
+namespace STK
 {
 /** @ingroup Base
  *  The Proxy class allow to surdefine operators and methods for
@@ -105,19 +104,20 @@ namespace STK
      {
        // get current file position
        std::ios::pos_type pos = is.tellg();
-       // Check if we fail to read the stream using the predefined >> operator
-       if ((is >> p.x_).fail())
+       // failed to read directly the Type value
+       if ( (is >> p.x_).fail() )
        {
-         is.seekg(pos);
-         // clear failbit and eofbit state if necessary
-         is.clear(is.rdstate() & ~std::ios::failbit);
-         if (is.eof()) is.clear(is.rdstate() & ~std::ios::eofbit);
-         // Try to read a NA value from the stream, in all case the result is a NA value
          p.x_ = Arithmetic<Type>::NA();
-         Char* buffer = new Char[stringNaSize()+1];
-         is.getline(buffer, stringNaSize()+1);
-         // if we don't get a NA String, rewind stream
-         if (!(stringNa.compare(buffer) == 0)) { is.seekg(pos); }
+         // clear and reset position
+         is.clear(); is.seekg(pos);
+         // Try to read a NA value, in all case value is a NA object
+         Char* buffer = new Char[stringNaSize+1];
+
+         if (is.get(buffer,stringNaSize+1).fail())
+         { is.clear(); is.seekg(pos); is.setstate(std::ios::failbit);}
+         else if (!(stringNa.compare(buffer) == 0))
+              { is.clear(); is.seekg(pos); is.setstate(std::ios::failbit);}
+
          delete[] buffer;
        }
        return is;
@@ -130,7 +130,7 @@ namespace STK
       *  @param p the value to send to the stream
       **/
      inline friend ostream& operator << (ostream& os, Proxy<Type> const& p)
-     { return Arithmetic<Type>::isNA(p.x_) ? (os <<  stringNa) : (os << p.y_);}
+     { return Arithmetic<Type>::isNA(p.y_) ? (os <<  stringNa) : (os << p.y_);}
 };
 
  /** @ingroup Base
@@ -174,7 +174,7 @@ namespace STK
       friend istream& operator >> (istream& is, Proxy<String> p)
       {
         String buff;
-        is >> buff;
+        is >> std::skipws >> buff;
         p = (buff  == stringNa) ? Arithmetic<String>::NA() : buff;
         return is;
       }

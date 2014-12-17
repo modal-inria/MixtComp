@@ -36,15 +36,14 @@
 #ifndef STK_MATRIXLOWERTRIANGULAR_H
 #define STK_MATRIXLOWERTRIANGULAR_H
 
-
-
-
-#include "STK_Array2DVector.h"
-#include "STK_Array2DPoint.h"
+#include "STK_IArray2D.h"
 
 namespace STK
 {
+// forward declaration
 template<typename> class Array2DLowerTriangular;
+template<typename> class Array2DPoint;
+template<typename> class Array2DVector;
 
 /** @ingroup Arrays
   * @brief Specialization of the Array2D class for lower triangular
@@ -53,7 +52,9 @@ template<typename> class Array2DLowerTriangular;
   * An Array2DLowerTriangular is a column oriented 2D container of Real
   * whcih is lower triangular.
  **/
-typedef Array2DLowerTriangular<Real> MatrixLowerTriangular;
+typedef Array2DLowerTriangular<Real>   ArrayLowerTriangularXX;
+typedef Array2DLowerTriangular<double> ArrayLowerTriangularXXd;
+typedef Array2DLowerTriangular<int>    ArrayLowerTriangularXXi;
 
 namespace hidden
 {
@@ -135,7 +136,7 @@ class Array2DLowerTriangular : public IArray2D< Array2DLowerTriangular<Type> >
      **/
     Array2DLowerTriangular( Range const& I, Range const& J, Type const& v)
                           : Base(I, J)
-    { this->setValue(v);}
+    { LowBase::setValue(v);}
     /** Copy constructor
      *  @param T the container to copy
      *  @param ref true if T is wrapped
@@ -156,6 +157,12 @@ class Array2DLowerTriangular : public IArray2D< Array2DLowerTriangular<Type> >
      **/
     Array2DLowerTriangular( Type** q, Range const& I, Range const& J)
                           : Base(q, I, J) {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    Array2DLowerTriangular( ExprBase<OtherDerived> const& T): Base()
+    { LowBase::operator=(T);}
     /** destructor : use destructor of IArray2D. */
     ~Array2DLowerTriangular() {}
     /** operator = : overwrite the CArray with the Right hand side T.
@@ -171,7 +178,7 @@ class Array2DLowerTriangular : public IArray2D< Array2DLowerTriangular<Type> >
     /** operator= : set the container to a constant value.
      *  @param v the value to set
      **/
-    inline Array2DLowerTriangular& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline Array2DLowerTriangular& operator=(Type const& v){ return LowBase::setValue(v);}
 };
 
 } // namespace STK

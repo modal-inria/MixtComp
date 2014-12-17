@@ -35,7 +35,6 @@
 #ifndef STK_VARIABLE_H
 #define STK_VARIABLE_H
 
-#include "Arrays/include/STK_Traits.h"
 #include "Arrays/include/STK_IArray2D.h"
 #include "STK_IVariable.h"
 
@@ -159,28 +158,71 @@ class Variable : public IVariable
     Variable( IArray2D<OtherArray> const& T, Range const& I, int col)
             : IVariable(IdTypeImpl<Type>::returnType(), stringNa)
             , Base(T, I, Range(col, 1))
-    {}
+    {
+        enum { value_ = hidden::isSame<Type, typename OtherArray::Type>::value };
+        STK_STATICASSERT(value_,YOU_TRIED_TO_WRAP_A_CONTAINER_WITH_THE_WRONG_TYPE_AS_A_VARIABLE);
+    }
+    /** constructor by reference, ref_=1.
+     *  @param T the container to wrap
+     *  @param col the index of the col to wrap
+     **/
+    template<class OtherArray>
+    Variable( IArray2D<OtherArray> const& T, int col)
+            : IVariable(IdTypeImpl<Type>::returnType(), stringNa)
+            , Base(T, T.range(), Range(col, 1))
+    {
+      enum
+      {
+        value_ = hidden::isSame<Type, typename OtherArray::Type>::value,
+        is1D_ = ( (OtherArray::struct_ == Arrays::vector_)
+               || (OtherArray::struct_ == Arrays::point_)
+               || (OtherArray::struct_ == Arrays::diagonal_)
+               )
+      };
+      STK_STATICASSERT(value_,YOU_TRIED_TO_WRAP_A_CONTAINER_WITH_THE_WRONG_TYPE_AS_A_VARIABLE);
+      STK_STATICASSERT(is1D_,YOU_TRIED_TO_WRAP_A_CONTAINER_WHICH_IS_NOT_1D_AS_A_VARIABLE);
+    }
+    /** constructor by reference, ref_=1.
+     *  @param T the container to wrap
+     **/
+    template<class OtherArray>
+    Variable( IArray2D<OtherArray> const& T)
+            : IVariable(IdTypeImpl<Type>::returnType(), stringNa)
+            , Base(T, T.range(), T.cols())
+    {
+      enum
+      {
+        value_ = hidden::isSame<Type, typename OtherArray::Type>::value,
+        is1D_ = ( (OtherArray::structure_ == (int)Arrays::vector_)
+               || (OtherArray::structure_ == (int)Arrays::point_)
+               || (OtherArray::structure_ == (int)Arrays::diagonal_)
+               )
+      };
+      STK_STATICASSERT(value_,YOU_TRIED_TO_WRAP_A_CONTAINER_WITH_THE_WRONG_TYPE_AS_A_VARIABLE);
+      STK_STATICASSERT(is1D_,YOU_TRIED_TO_WRAP_A_CONTAINER_WHICH_IS_NOT_1D_AS_A_VARIABLE);
+    }
     /** destructor. */
     ~Variable() {}
-    virtual void popBack(int const& n =1) { Base::popBackRows(n);}
     /** clone return a ptr on a copy of the Object.
      *  @param ref true if we want just a reference
      **/
     virtual Variable* clone( bool ref = false) const
     { return new Variable(*this, ref);}
+    /** */
+    virtual void popBack(int const& n =1) { Base::popBackRows(n);}
     /** @return a constant reference on the ith element
      *  @param i index of the element (const)
      **/
-    inline Type const & elt1Impl(int const& i) const { return this->data(this->firstIdxCols())[i];}
+    inline Type const& elt1Impl(int const& i) const { return this->data(this->beginCols())[i];}
     /** @return a reference on the ith element
      *  @param i index of the element
      **/
-    inline Type& elt1Impl(int const& i) { return this->data(this->firstIdxCols())[i];}
+    inline Type& elt1Impl(int const& i) { return this->data(this->beginCols())[i];}
     /** New first index for the object.
      *  @param rbeg the index of the first row to set
      **/
     void shift1D(int const& rbeg)
-    { Base::shift(rbeg, this->firstIdxCols());}
+    { Base::shift(rbeg, this->beginCols());}
     /**  Resize the container.
      *  @param I the range to set to the container
      **/
@@ -199,7 +241,7 @@ class Variable : public IVariable
       this->back() = v;
     }
     /** Insert n elements at the position pos of the container. The bound
-     *  last_ should be modified at the very end of the insertion as pos
+     *  end_ should be modified at the very end of the insertion as pos
      *  can be a reference to it.
      *  @param pos index where to insert elements
      *  @param n number of elements to insert (default 1)
@@ -235,7 +277,7 @@ class Variable : public IVariable
     void encode()
     { int code = baseIdx;
       std::pair< typename std::map<Type, int>::iterator, bool> ret;
-      for (int i=this->firstIdx(); i<= this->lastIdx(); i++)
+      for (int i=this->begin(); i<= this->lastIdx(); i++)
       { ret=coding_.insert(std::pair<Type, int>(this->elt(i), i));
         if (ret.second==true) { code++;}
       }
@@ -245,7 +287,7 @@ class Variable : public IVariable
     {
       typename String::size_type maxlength = with_name ? this->name().size() : 0;
       // loop over the values
-      for (int i=this->firstIdx(); i<=this->lastIdx(); i++)
+      for (int i=this->begin(); i<=this->lastIdx(); i++)
       { maxlength = std::max(maxlength, this->template eltAsString<Type>(i).size() );}
       return int(maxlength);
     }
@@ -254,7 +296,7 @@ class Variable : public IVariable
     {
       int nbMiss = 0;
       // loop over the values
-      for (int i=this->firstIdx(); i<=this->lastIdx(); i++)
+      for (int i=this->begin(); i<=this->lastIdx(); i++)
       { if (Arithmetic<Type>::isNA(this->elt(i))) nbMiss++;}
       return nbMiss;
     }
@@ -350,7 +392,7 @@ inline int Variable<Type>::importFromString( Variable< String > const& V
   this->resize(V.range());
   this->setName(V.name());
   int nSuccess = V.size();
-  for (int i=V.firstIdx(); i<=V.lastIdx(); i++)
+  for (int i=V.begin(); i<=V.lastIdx(); i++)
     if ( (Arithmetic<String>::isNA(V[i])) || (V[i]==stringNa) ) // not Available
       this->elt(i) = Arithmetic<Type>::NA();
     else
@@ -371,7 +413,7 @@ inline void Variable<Type>::exportAsString( Variable< String >& V) const
 {
   V.resize(this->range());
   V.setName(this->name());
-  for (int i=this->firstIdx(); i<=this->lastIdx(); i++)
+  for (int i=this->begin(); i<=this->lastIdx(); i++)
   { V[i] = this->template eltAsString<Type>(i);}
 }
 /** Operator << : overwrite the Variable by converting the strings
@@ -383,7 +425,7 @@ inline Variable<String>& Variable<String>::operator<<( Variable< String > const&
 {
   this->resize(V.range());
   this->setName(V.name());
-  for (int i=V.firstIdx(); i<=V.lastIdx(); i++) this->elt(i) = V[i];
+  for (int i=V.begin(); i<=V.lastIdx(); i++) this->elt(i) = V[i];
   return *this;
 }
 /** Operator << : overwrite the Variable by converting the Strings
@@ -395,7 +437,7 @@ inline Variable<Type>& Variable<Type>::operator<<( Variable< String > const& V)
 {
   this->resize(V.range());
   this->setName(V.name());
-  for (int i=V.firstIdx(); i<=V.lastIdx(); i++) this->elt(i) = stringToType<Type>(V[i]);
+  for (int i=V.begin(); i<=V.lastIdx(); i++) this->elt(i) = stringToType<Type>(V[i]);
   return *this;
 }
 /** Operator >> : convert the Variable V into strings.
@@ -406,7 +448,7 @@ inline Variable<String> const& Variable<String>::operator>>(Variable< String >& 
 {
   V.resize(this->range());
   V.setName(this->name());
-  for (int i=this->firstIdx(); i<=this->lastIdx(); i++) V[i] = this->elt(i);
+  for (int i=this->begin(); i<=this->lastIdx(); i++) V[i] = this->elt(i);
   return *this;
 }
 /** Operator >> : convert the Variable V into strings.
@@ -417,7 +459,7 @@ inline Variable<Type> const& Variable<Type>::operator>>(Variable< String >& V) c
 {
   V.resize(this->range());
   V.setName(this->name());
-  for (int i=this->firstIdx(); i<=this->lastIdx(); i++) V[i] = typeToString<Type>(this->elt(i));
+  for (int i=this->begin(); i<=this->lastIdx(); i++) V[i] = typeToString<Type>(this->elt(i));
   return *this;
 }
 /** ostream for Variable. */

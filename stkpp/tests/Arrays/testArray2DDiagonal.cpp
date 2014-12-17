@@ -68,11 +68,11 @@ void printHead(Array2D<Type> const& A, String const& name)
   stk_cout << "print: " << name << _T("\n";);
   stk_cout << name << _T(".isRef() =")        << A.isRef()  << _T("\n");
   stk_cout << name << _T(".rows() =")      << A.rows()  << _T(" | ");
-  stk_cout << name << _T(".firstIdxRows() =")   << A.firstIdxRows()  << _T(" ");
+  stk_cout << name << _T(".beginRows() =")   << A.beginRows()  << _T(" ");
   stk_cout << name << _T(".lastIdxRows() =")      << A.lastIdxRows()  << _T(" ");
   stk_cout << name << _T(".sizeRows() =")      << A.sizeRows()  << _T("\n");
   stk_cout << name << _T(".cols() =")      << A.cols()  << _T(" | ");
-  stk_cout << name << _T(".firstIdxCols() =")   << A.firstIdxCols()  << _T(" ");
+  stk_cout << name << _T(".beginCols() =")   << A.beginCols()  << _T(" ");
   stk_cout << name << _T(".lastIdxCols() =")      << A.lastIdxCols()  << _T(" ");
   stk_cout << name << _T(".sizeCols() =")      << A.sizeCols()  << _T("\n");
   stk_cout << name << _T(".capacityHo() =")   << A.capacityHo()  << _T("\n");
@@ -100,12 +100,12 @@ void TestDiagonal( int M, int N, Range I, Range J, bool output)
     //
     if (output) stk_cout << _T(" Test constructor A(M), set A(j) = 100+ j\n");
     Array2DDiagonal<Type> A(M);
-    for (int j=A.firstIdx(); j<=A.lastIdx(); j++) A[j] = 100+j;
+    for (int j=A.begin(); j<=A.lastIdx(); j++) A[j] = 100+j;
     if (output) { print(A, "A");}
 
     //
-    if (output) stk_cout << _T(" Test A.erase(I.firstIdx(), 1)\n");
-    A.erase(I.firstIdx(), 1);
+    if (output) stk_cout << _T(" Test A.erase(I.begin(), 1)\n");
+    A.erase(I.begin(), 1);
     if (output) { print(A, "A");}
 
     //

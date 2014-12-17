@@ -82,9 +82,9 @@ class Multivariate : public IRunnerUnsupervised< Array, WColVector>
     /** virtual destructor. */
     virtual ~Multivariate() {}
     /** @return the number of samples in the data set (the number of rows) */
-    inline int const& nbSamples() const {return nbSamples_;}
+    inline int nbSamples() const {return nbSamples_;}
     /** @return the number of variables in the data set (the number of columns) */
-    inline int const& nbVariable() const {return nbVar_;}
+    inline int nbVariable() const {return nbVar_;}
     /** Number of missing values
      *  @return An array with the number of missing values for each variables
      *  of the data set
@@ -107,12 +107,12 @@ class Multivariate : public IRunnerUnsupervised< Array, WColVector>
       nbMiss_.resize(this->p_data_->cols());
       nbAvailable_.resize(this->p_data_->cols());
       // for each variables
-      for (int j= this->p_data_->firstIdxCols(); j<= this->p_data_->lastIdxCols(); j++)
+      for (int j= this->p_data_->beginCols(); j<= this->p_data_->lastIdxCols(); j++)
       {
         // number of observations
         int nobs = nbSamples_;
         // compute the mean
-        for (int i= this->p_data_->firstIdxRows(); i<= this->p_data_->lastIdxRows(); i++)
+        for (int i= this->p_data_->beginRows(); i<= this->p_data_->lastIdxRows(); i++)
         {  if (!Arithmetic<Type>::isFinite((*this->p_data_)(i,j))) nobs--;}
         nbAvailable_[j] = nobs;
         nbMiss_[j] = nbSamples_ - nobs;

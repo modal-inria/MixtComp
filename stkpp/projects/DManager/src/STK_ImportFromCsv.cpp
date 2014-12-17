@@ -34,9 +34,9 @@
  **/
 
 #include "STKernel/include/STK_Real.h"
+#include "STKernel/include/STK_Exceptions.h"
 
 #include "../include/STK_ImportFromCsv.h"
-#include "STKernel/include/STK_Exceptions.h"
 
 namespace STK
 {
@@ -53,6 +53,7 @@ ImportFromCsv::ImportFromCsv( ReadWriteCsv const& import, Import::TypeImport typ
  **/
 ImportFromCsv::ImportFromCsv( ImportFromCsv const& import)
                             : p_dataFrame_(import.p_dataFrame_)
+                            , typeImport_(import.typeImport_)
                             , import_(import.import_)
 {}
 
@@ -89,11 +90,11 @@ bool ImportFromCsv::asNumeric()
   try
   {
     // for each field Try a numeric conversion
-    for (int j =import_.firstIdx(); j <=import_.lastIdx(); j++)
+    for (int j =import_.begin(); j <=import_.lastIdx(); j++)
     {
       Variable<Real>* pvReal = new Variable<Real>();
       // test number of successful conversion
-      if (import<Real>(j, *pvReal)==import_.sizeRows(j))
+      if (import<Real>(j, *pvReal)==import_.sizeRow(j))
       {  // if no failure add variable to the dataframe
          p_dataFrame_->pushBackVariable(pvReal);
       }
@@ -120,11 +121,11 @@ bool ImportFromCsv::asOnlyNumeric()
   try
   {
     // for each field Try a numeric conversion
-    for (int j =import_.firstIdx(); j <=import_.lastIdx(); j++)
+    for (int j =import_.begin(); j <import_.end(); j++)
     {
       Variable<Real>* pvReal = new Variable<Real>;
       // test number of successful conversion
-      if (import<Real>(j, *pvReal) == import_.sizeRows(j))
+      if (import<Real>(j, *pvReal) == import_.sizeRow(j))
       {  // if no failure add variable to the dataframe
          p_dataFrame_->pushBackVariable(pvReal);
       }
@@ -146,7 +147,7 @@ bool ImportFromCsv::asString()
   try
   {
     // for each field Try a numeric conversion
-    for (int j =import_.firstIdx(); j <=import_.lastIdx(); j++)
+    for (int j =import_.begin(); j <=import_.lastIdx(); j++)
     {
       Variable<String>* pvString = import_.clone(j);
       p_dataFrame_->pushBackVariable(pvString);

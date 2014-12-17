@@ -43,12 +43,11 @@ namespace Law
 /* @return a @c Type random variate . */
 int Categorical::rand() const
 {
-  { Real u = Law::generator.randUnif();
-    int k;
-    for(k = cumProb_.firstIdx(); k< cumProb_.lastIdx(); k++)
-    { if (u<=cumProb_[k]) return k;}
-    return k;
-  }
+  Real u = Law::generator.randUnif();
+  int k;
+  for(k = cumProb_.begin(); k< cumProb_.end(); k++)
+  { if (u<=cumProb_[k]) return k;}
+  return k;
 }
 
 /* @brief compute the probability distribution function (density)
@@ -72,7 +71,7 @@ Real Categorical::lpdf(int const& x) const
  *  @return the value of the cdf
  **/
 Real Categorical::cdf(Real const& t) const
-{ return (t<prob_.firstIdx()) ? 0. : (t>=prob_.lastIdx()) ? 1. : cumProb_[std::floor(t)];}
+{ return (t<prob_.begin()) ? 0. : (t>=prob_.lastIdx()) ? 1. : cumProb_[std::floor(t)];}
 
 /* @brief inverse cumulative distribution function
  *  Compute the Real quantile t such that the probability of a random
@@ -84,7 +83,7 @@ int Categorical::icdf(Real const& prob) const
   if (prob<0) STKDOMAIN_ERROR_1ARG(Categorical::icdf,prob,prob must be >= 0);
   if (prob>1) STKDOMAIN_ERROR_1ARG(Categorical::icdf,prob,prob must be <= 1);
   int k;
-  for (k = cumProb_.firstIdx(); k< cumProb_.lastIdx(); ++k)
+  for (k = cumProb_.begin(); k< cumProb_.lastIdx(); ++k)
   { if (cumProb_[k] >= prob) return k;}
   return k;
 }
@@ -93,7 +92,7 @@ void Categorical::computeCumProb()
 {
   cumProb_.resize(prob_.range());
   Real sum=0.;
-  for (int k=prob_.firstIdx(); k<= prob_.lastIdx(); ++k)
+  for (int k=prob_.begin(); k< prob_.end(); ++k)
   { cumProb_[k] = (sum+=prob_[k]);}
   // normalize
   if (sum) {cumProb_/=sum; prob_ /=sum;}

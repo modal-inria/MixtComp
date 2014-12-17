@@ -174,7 +174,7 @@ class Option
     /** get the option as an int
      *  @param value any int (will not be used)
      **/
-    inline int const& get( int const& value) const
+    inline int get( int const& value) const
     { return *p_int_;}
     /** get the option as a Range
      *  @param value any Range (will not be used)

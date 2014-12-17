@@ -24,7 +24,7 @@
 */
 
 /*
- * Project:  stkpp::STKernel::Base
+ * Project:  stkpp::Sdk::Base
  * created on: 23 août 2012
  * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  **/
@@ -38,10 +38,9 @@
 #ifndef STK_MACROS_H
 #define STK_MACROS_H
 
-#include "STKernel/include/STK_String_Util.h"
 #include "STKernel/include/STK_Exceptions.h"
 
-/** @ingroup STKernel
+/** @ingroup Sdk
  * generate an Error message with no argument. All Error message have the form :
  * "Error in classname::methodname()\nWhat: error message."
  **/
@@ -52,7 +51,7 @@
 #define STKERROR_NO_ARG(Where, Error) \
   STKERROR_NO_ARG2(Where,  Error)
 
-/** @ingroup STKernel
+/** @ingroup Sdk
  * generate an Error message with no argument. All Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -64,7 +63,7 @@
 #define STKERROR_1ARG(Where, Arg, Error) \
   STKERROR_1ARG2(Where, Arg, Error)
 
-/** @ingroup STKernel
+/** @ingroup Sdk
  * generate an Error message with no argument. All Error message have the form :
  * "Error in classname::methodname(arg1, arg2)\nWhat: error message."
  **/
@@ -75,7 +74,7 @@
 #define STKERROR_2ARG(Where, Arg1, Arg2, Error) \
   STKERROR_2ARG2(Where, Arg1, Arg2, Error)
 
-/** @ingroup STKernel
+/** @ingroup Sdk
  * generate an Error message with no argument. All Error message have the form :
  * "Error in classname::methodname(Arg1, Arg2, Arg3)\nWhat: error message."
  **/
@@ -87,7 +86,7 @@
 #define STKERROR_3ARG(Where, Arg1, Arg2, Arg3, Error) \
   STKERROR_3ARG2(Where, Arg1, Arg2, Arg3, Error)
 
-/** @ingroup STKernel
+/** @ingroup Sdk
  *  throw an STK::out_of_range exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -96,7 +95,7 @@
 #define STKOUT_OF_RANGE_1ARG(Where, Arg, Error) \
     STKOUT_OF_RANGE_1ARG2(Where, Arg, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an STK::out_of_range exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -105,7 +104,7 @@
 #define STKOUT_OF_RANGE_2ARG(Where, Arg1, Arg2, Error) \
     STKOUT_OF_RANGE_2ARG2(Where, Arg1, Arg2, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an STK::out_of_range exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -114,7 +113,7 @@
 #define STKOUT_OF_RANGE_3ARG(Where, Arg1, Arg2, Arg3, Error) \
     STKOUT_OF_RANGE_3ARG2(Where, Arg1, Arg2, Arg3, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an runtime exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -123,7 +122,7 @@
 #define STKRUNTIME_ERROR_2ARG(Where, Arg1, Arg2, Error) \
     STKRUNTIME_ERROR_2ARG2(Where, Arg1, Arg2, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an runtime exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -132,7 +131,7 @@
 #define STKRUNTIME_ERROR_1ARG(Where, Arg, Error) \
     STKRUNTIME_ERROR_1ARG2(Where, Arg, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an runtime exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -141,7 +140,7 @@
 #define STKRUNTIME_ERROR_NO_ARG(Where, Error) \
     STKRUNTIME_ERROR_NO_ARG2(Where, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an domain exception with two arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -150,7 +149,16 @@
 #define STKDOMAIN_ERROR_2ARG(Where, Arg1, Arg2, Error) \
     STKDOMAIN_ERROR_2ARG2(Where, Arg1, Arg2, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
+ * throw an domain exception with two arguments. Error message have the form :
+ * "Error in classname::methodname(arg)\nWhat: error message."
+ **/
+#define STKDOMAIN_ERROR_3ARG2(Where, Arg1, Arg2, Arg3, Error) \
+  throw STK::domain_error(STKERROR_3ARG2(Where, Arg1, Arg2, Arg3, Error))
+#define STKDOMAIN_ERROR_3ARG(Where, Arg1, Arg2, Arg3, Error) \
+    STKDOMAIN_ERROR_3ARG2(Where, Arg1, Arg2, Arg3, Error)
+
+/**  @ingroup Sdk
  * throw an domain exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -159,7 +167,7 @@
 #define STKDOMAIN_ERROR_1ARG(Where, Arg, Error) \
     STKDOMAIN_ERROR_1ARG2(Where, Arg, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an domain exception with one arguments. Error message have the form :
  * "Error in classname::methodname(arg)\nWhat: error message."
  **/
@@ -168,7 +176,7 @@
 #define STKDOMAIN_ERROR_NO_ARG(Where, Error) \
     STKDOMAIN_ERROR_NO_ARG2(Where, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an invalid argument exception with two arguments. Error message have the form :
  * "Error in classname::methodname(arg1, arg2)\nWhat: error message."
  **/
@@ -177,7 +185,7 @@
 #define STKINVALIDARGUMENT_ERROR_2ARG(Where, Arg1, Arg2, Error) \
     STKINVALIDARGUMENT_ERROR_2ARG2(Where, Arg1, Arg2, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an invalid argument exception with one argument. Error message have the form :
  * "Error in classname::methodname(arg1)\nWhat: error message."
  **/
@@ -186,7 +194,7 @@
 #define STKINVALIDARGUMENT_ERROR_1ARG(Where, Arg1, Error) \
     STKINVALIDARGUMENT_ERROR_1ARG2(Where, Arg1, Error)
 
-/**  @ingroup STKernel
+/**  @ingroup Sdk
  * throw an invalid argument exception with no argument. Error message have the form :
  * "Error in classname::methodname(arg1)\nWhat: error message."
  **/

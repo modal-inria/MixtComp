@@ -38,7 +38,6 @@
 #define STK_GAUSSIANMODEL_H
 
 #include "STK_IGaussianModel.h"
-#include "../../../include/Arrays.h"
 
 namespace STK
 {
@@ -47,17 +46,17 @@ namespace STK
  *  @brief Compute the maximum likelihood estimates of a complete Gaussian
  *  statistical model.
  **/
-class GaussianModel : public IGaussianModel<Matrix>
+class GaussianModel : public IGaussianModel<ArrayXX>
 {
   public:
     /** constructor.
      * @param p_data pointer on the data set
      */
-    GaussianModel( Matrix const* p_data);
+    GaussianModel( ArrayXX const* p_data);
     /** constructor.
      * @param data reference on the data set
      */
-    GaussianModel( Matrix const& data);
+    GaussianModel( ArrayXX const& data);
     /** destructor. */
     virtual ~GaussianModel();
     /** implementation of the Gaussian statistical model
@@ -72,18 +71,16 @@ class GaussianModel : public IGaussianModel<Matrix>
     /** get the empirical covariance
      * @return the empirical covariance
      */
-    inline MatrixSquare const& covariance() const { return cov_;}
+    inline ArraySquareX const& covariance() const { return cov_;}
   protected:
-    /** Matrix of the empirical covaiance */
-    MatrixSquare cov_;
+    /** ArrayXX of the empirical covaiance */
+    ArraySquareX cov_;
     /** compute the empirical covariance matrix. */
-    virtual inline void compCovariance()
-    { Stat::covariance(*p_data_,cov_);}
+    virtual void compCovariance();
     /** compute the empirical weighted covariance matrix.
      * @param weights the weights of the samples
      **/
-    virtual inline void compWeightedCovariance(Matrix::Col const& weights)
-    { Stat::covariance(*p_data_, weights, cov_);}
+    virtual void compWeightedCovariance(ArrayXX::Col const& weights);
 };
 
 } // namespace STK

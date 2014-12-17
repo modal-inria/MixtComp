@@ -33,7 +33,6 @@
  **/
 
 #include "../include/STK_IDataHandler.h"
-#include "Arrays/include/STK_Display.h"
 
 namespace STK
 {
@@ -41,8 +40,8 @@ namespace STK
 void IDataHandler::writeInfo(ostream& os) const
 {
   // show content
-   for (InfoMap::const_iterator it=info_.begin(); it!=info_.end(); ++it)
-     os << _T("name: ") << it->first << _T(", model: ") << it->second << _T('\n');
+  for (InfoMap::const_iterator it=info_.begin(); it!=info_.end(); ++it)
+  os << _T("IdData: ") << it->first << _T(", IdModel: ") << it->second << _T('\n');
 }
 
 bool IDataHandler::addInfo(std::string const& idData, std::string const& idModel)
@@ -56,8 +55,8 @@ bool IDataHandler::addInfo(std::string const& idData, std::string const& idModel
   {
      if (ret.first->second != idModel)
      {
-#ifdef STK_DMANAGER_VERBOSE
-       stk_cerr << _T("Incoherence in addInfo.\n");
+#ifdef STK_MIXTURE_DEBUG
+       stk_cerr << _T("In IDataHandler::addInfo, There exists an idData with a different idModel.\n");
 #endif
        return false;
      }
@@ -65,7 +64,21 @@ bool IDataHandler::addInfo(std::string const& idData, std::string const& idModel
   return true;
 }
 
-
+/* @brief Giving a the Id of a dataset, find the Id of the model.
+ *  @param idData can be any string given by the user.
+ *  @param idModel The Id of the model associated with the data
+ *  (not modified if idData is not present in the map).
+ *  @return @c false if there exists already an idData matched with an other
+ *  idModel, @c true otherwise.
+ **/
+bool IDataHandler::getIdModel(std::string const& idData, std::string& idModel) const
+{
+  bool res = false;
+  // show content
+  for (InfoMap::const_iterator it=info_.begin(); it!=info_.end(); ++it)
+  { if (it->first == idData) { idModel = it->second; res = true; break;}}
+ return res;
+}
 
 } // namespace STK
 

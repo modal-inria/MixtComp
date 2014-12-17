@@ -27,12 +27,6 @@
 #
 #-----------------------------------------------------------------------
 # Macro definitions
-ifeq ($(MAKEVARS),)
-	include ../../../$(RELATIVEMAKEVARS)
-else
-	include $(MAKEVARS)
-endif
-
 ifneq ($(wildcard makevars.local),)
 	include makevars.local
 endif
@@ -40,8 +34,6 @@ endif
 #-----------------------------------------------------------------------
 # Paths
 INC_DIR = ../include/
-BIN_DIR = ../../../bin/
-PROJECTS_DIR = ../..
 
 #-----------------------------------------------------------------------
 # header files
@@ -59,12 +51,12 @@ CPP_OBJS = $(CPP_SRCS:%.cpp=$(BIN_DIR)%.o)
 # Compilation rules
 $(BIN_DIR)%.o: $(INC_DIR)%.h makefile
 $(BIN_DIR)%.o: %.cpp
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -I$(PROJECTS_DIR) $(STK_FLAGS) $< -c -o $@
-
-#-----------------------------------------------------------------------
-# creating objects files
-obj: $(CPP_OBJS)
+	$(CXX) $(CXXFLAGS) $(CXXPICFLAGS) $(STK_CXXFLAGS) -I$(PROJECTS_DIR) $< -c -o $@
 
 #-----------------------------------------------------------------------
 # Targets
 all: obj
+
+#-----------------------------------------------------------------------
+# creating objects files
+obj: $(CPP_OBJS)

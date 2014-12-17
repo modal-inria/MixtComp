@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 
   // first test. Law with a mean (1,0,1) and S = Diag(1, 2, 1)
   Point mu(Range(1,3), 1.); mu[2] = 0.0;
-  MatrixSquare sigma(Range(1,3), 0.);
+  ArraySquareX sigma(Range(1,3), 0.);
   sigma(1,1) = 1.; sigma(2,2) = 2.; sigma(3,3) = 1.;
 
 
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 
   stk_cout << _T("mu =\n") << multilaw.mu() << _T("\n");
   stk_cout << _T("sigma =\n") << multilaw.sigma() << _T("\n");
-  stk_cout << _T("eigenvalues =\n") << multilaw.decomp().eigenvalues() << _T("\n");
+  stk_cout << _T("eigenvalues =\n") << multilaw.decomp().eigenValues() << _T("\n");
   stk_cout << _T("rotation =\n") << multilaw.decomp().rotation() << _T("\n\n");
 
   Point zero(Range(1,3), 1.); zero[2] = 0.0;
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
   // simulate law object
   stk_cout << _T("Simulate Data set with n=" << N << " rows\n");
-  Matrix data(Range(1,N), Range(1,3));
+  ArrayXX data(Range(1,N), Range(1,3));
   multilaw.rand(data);
 
 //#ifdef STK_DEBUG
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
   stk_cout << _T("ln-likelihood using law method =" << multilaw.lnLikelihood(data) << "\n\n");
 
   stk_cout << _T("Compute multivariate Statistics\n");
-  Stat::MultivariateMatrix multistat(&data);
+  Stat::MultivariateArrayXX multistat(&data);
   multistat.run();
   stk_cout << _T("mean =\n") << multistat.mean() << _T("\n");
   stk_cout << _T("covariance =\n") << multistat.covariance() << _T("\n");
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
   stk_cout << _T("lnLikelihood = ") << statmodel.lnLikelihood() << _T("\n");
 
   stk_cout << _T("\nCompute pdf for 5 observations\n");
-  for (int i = data.firstIdxRows(); i <= std::min(data.lastIdxRows(), int(5)); ++i)
+  for (int i = data.beginRows(); i <= std::min(data.lastIdxRows(), int(5)); ++i)
   {
     stk_cout << "data(" << i << ")=" << data.row(i) << _T("\n";);
     stk_cout << "empirical pdf(data(" << i << "))=" << statmodel.p_law()->pdf(data.row(i)) << _T("\n";);
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
   // simulate law object
   stk_cout << _T("Simulate bigData(Range(1,10000), Range(1,3)\n");
-  Matrix bigData(Range(1,10000), Range(1,3));
+  ArrayXX bigData(Range(1,10000), Range(1,3));
   multilaw.rand(bigData);
 
   stk_cout << _T("Compute bigData multivariate Statistics\n");
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 
   // simulate law object
   stk_cout << _T("Simulate bigData0(Range(0,10000), Range(0,3)\n");
-  Matrix bigData0(Range(0,10000), Range(0,3));
+  ArrayXX bigData0(Range(0,10000), Range(0,3));
   multilaw.rand(bigData0);
   stk_cout << _T("Compute bigData multivariate Statistics\n");
   multistat.setData(bigData0);
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
   stk_cout << _T("\n\n");
 
   stk_cout << _T("\nCompute pdf for 5 observations\n\n");
-  for (int i = data.firstIdxRows(); i <= std::min(data.lastIdxRows(), int(5)); ++i)
+  for (int i = data.beginRows(); i <= std::min(data.lastIdxRows(), int(5)); ++i)
   {
     stk_cout << "data.row(" << i << ")=" << data.row(i);
     stk_cout << "empirical pdf(data.row(" << i << "))=" << statmodel.p_law()->pdf(data.row(i)) << _T("\n";);

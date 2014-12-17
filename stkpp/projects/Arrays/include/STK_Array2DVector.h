@@ -39,7 +39,7 @@
 #ifndef STK_ARRAY2DVECTOR_H
 #define STK_ARRAY2DVECTOR_H
 
-#include "STK_Display.h"
+#include "STK_IArray2D.h"
 
 namespace STK
 {
@@ -53,7 +53,10 @@ template<typename> class Array2DVector;
   *
   * A Vector is a column oriented 1D container of Real.
   **/
-typedef Array2DVector<Real> Vector;
+typedef Array2DVector<Real>   Vector;
+typedef Array2DVector<Real>   VectorX;
+typedef Array2DVector<double> VectorXd;
+typedef Array2DVector<int>    VectorXi;
 
 namespace hidden
 {
@@ -126,7 +129,7 @@ class Array2DVector : public IArray2D< Array2DVector<Type> >
      *  @param v initial value of the container
      **/
     Array2DVector( Range const& I, Type const& v) : Base(I, Range(1))
-    { this->setValue(v);}
+    { LowBase::setValue(v);}
     /** Copy constructor
      *  @param T the container to copy
      *  @param ref true if this is a wrapper of T
@@ -149,6 +152,12 @@ class Array2DVector : public IArray2D< Array2DVector<Type> >
     Array2DVector( IArray2D<OtherArray> const& T, Range const& I, int col)
                 : Base(T, I, Range(col, 1))
     {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    Array2DVector( ExprBase<OtherDerived> const& T): Base( Range(), Range(1))
+    { LowBase::operator=(T);}
     /** constructor by reference, ref_=1.
      *  @param p_data a pointer on the data to wrap
      *  @param I the range of the data to wrap
@@ -162,39 +171,36 @@ class Array2DVector : public IArray2D< Array2DVector<Type> >
     /** @return a constant reference on the ith element
      *  @param i index of the element (const)
      **/
-    inline Type const & elt1Impl(int const& i) const { return this->data(this->firstIdxCols())[i];}
+    inline Type const & elt1Impl( int i) const { return this->data(this->beginCols())[i];}
     /** @return a reference on the ith element
      *  @param i index of the element
      **/
-    inline Type& elt1Impl(int const& i) { return this->data(this->firstIdxCols())[i];}
+    inline Type& elt1Impl( int i) { return this->data(this->beginCols())[i];}
     /** New first index for the object.
      *  @param rbeg the index of the first row to set
      **/
-    void shift1D(int const& rbeg)
-    { Base::shift(rbeg, this->firstIdxCols());}
+    void shift1D( int rbeg) { Base::shift(rbeg, this->beginCols());}
     /**  Resize the container.
      *  @param I the range to set to the container
      **/
-    inline Array2DVector<Type>& resize1D(Range const& I)
+    inline Array2DVector<Type>& resize1D( Range const& I)
     { Base::resize(I, this->cols()); return *this;}
     /** Add n elements to the container.
      *  @param n number of elements to add
      **/
-    void pushBack( int const& n=1)
-    { Base::pushBackRows(n);}
+    void pushBack( int n=1) { Base::pushBackRows(n);}
     /** Delete n elements at the pos index to the container.
      *  @param pos index where to delete elements
      *  @param n number of elements to delete (default 1)
     **/
-    void erase( int const& pos, int const& n=1)
-    { Base::eraseRows(pos, n);}
+    void erase( int pos, int const& n=1) { Base::eraseRows(pos, n);}
     /** Insert n elements at the position pos of the container. The bound
-     *  last_ should be modified at the very end of the insertion as pos
+     *  end_ should be modified at the very end of the insertion as pos
      *  can be a reference to it.
      *  @param pos index where to insert elements
      *  @param n number of elements to insert (default 1)
      **/
-    void insertElt(int const& pos, int const& n =1)
+    void insertElt(int pos, int const& n =1)
     { Base::insertRows(pos, n);}
     /** operator = : overwrite the CArray with the Right hand side T.
      *  @param T the container to copy
@@ -208,7 +214,7 @@ class Array2DVector : public IArray2D< Array2DVector<Type> >
     /** set the container to a constant value.
      *  @param v the value to set
      **/
-    inline Array2DVector& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline Array2DVector& operator=(Type const& v) { return LowBase::setValue(v);}
 };
 
 } // namespace STK

@@ -36,14 +36,18 @@
 #ifndef STK_ARRAY2DDIAGONAL_H
 #define STK_ARRAY2DDIAGONAL_H
 
-#include "STK_Array2D.h"
+#include "STK_IArray2D.h"
 
 namespace STK
 {
+// forward declaration
+template< typename Type> class Array2DDiagonal;
+template< typename Type> class Array2DPoint;
+template< typename Type> class Array2DVector;
 
-template<class Type> class Array2DDiagonal;
-
-typedef Array2DDiagonal<Real> MatrixDiagonal;
+typedef Array2DDiagonal<Real>   ArrayDiagonalX;
+typedef Array2DDiagonal<double> ArrayDiagonalXd;
+typedef Array2DDiagonal<int>    ArrayDiagonalXi;
 
 namespace hidden
 {
@@ -119,17 +123,23 @@ class Array2DDiagonal : public IArray2D< Array2DDiagonal<Type> >
      *  @param I range of the Rows and Cols
      *  @param v initial value of the container
      **/
-    Array2DDiagonal( Range const& I, Real const& v): Base(I, I) { this->setValue(v);}
+    Array2DDiagonal( Range const& I, Real const& v): Base(I, I) { LowBase::setValue(v);}
     /** Copy constructor.
      *  @param T the container to copy
      *  @param ref true if T is wrapped
      **/
-    Array2DDiagonal( Array2DDiagonal const&T, bool ref=false) : Base(T, ref) {}
+    Array2DDiagonal( Array2DDiagonal const& T, bool ref=false) : Base(T, ref) {}
     /** constructor by reference, ref_=1 in the range given by I.
      *  @param T the Container to wrap
      *  @param I range of the container to wrap
      **/
     Array2DDiagonal( Array2DDiagonal const& T, Range const& I) : Base(T, I, I) {}
+    /** Copy constructor using an expression.
+     *  @param T the container to wrap
+     **/
+    template<class OtherDerived>
+    Array2DDiagonal( ExprBase<OtherDerived> const& T): Base()
+    { LowBase::operator=(T);}
     /** destructor. */
     ~Array2DDiagonal() {}
     /** @param i index of the diagonal element
@@ -140,7 +150,7 @@ class Array2DDiagonal : public IArray2D< Array2DDiagonal<Type> >
     /** @param i index of the diagonal element
      *  @return a constant reference on the ith diagonal element
      **/
-    inline Type const elt1Impl(int const& i) const
+    inline Type const& elt1Impl(int const& i) const
     { return this->elt(i,i);}
     /** New beginning index for the object.
      *  @param beg first index of the container
@@ -206,7 +216,7 @@ class Array2DDiagonal : public IArray2D< Array2DDiagonal<Type> >
     /** set the container to a constant value.
      *  @param v the value to set
      **/
-    inline Array2DDiagonal& operator=(Type const& v) { this->setValue(v); return *this;}
+    inline Array2DDiagonal& operator=(Type const& v){ return LowBase::setValue(v);}
 };
 
 } // namespace STK

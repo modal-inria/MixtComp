@@ -38,15 +38,15 @@
 namespace STK
 {
 /* Default constructor . */
-DataFrame::DataFrame() : Base(), IContainer2D() {}
+DataFrame::DataFrame() : Base(), Base2D() {}
 
 /* Copy constructor */
 DataFrame::DataFrame( DataFrame const& T, bool ref)
                     : Base(T.range())
-                    , IContainer2D(T)
+                    , Base2D(T)
 {
   // we need to copy explicitly the data
-  for (int j=firstIdx(); j<=lastIdx(); j++) // for all columns
+  for (int j=begin(); j<=lastIdx(); j++) // for all columns
     if (T[j])                            // if there is data
       elt(j) = T[j]->clone(ref); // set the adress of a clone
 }
@@ -61,7 +61,7 @@ void DataFrame::clear()
   // set default range for list
   Base::setRange();
   // set default range for container2D
-  IContainer2D::setRanges(0, 0);
+  Base2D::setRanges(0, 0);
 }
 
 /* Operator = : overwrite the DataFrame with T. */
@@ -71,9 +71,9 @@ DataFrame& DataFrame::operator=(DataFrame const& T)
   if (sizeCols() != T.sizeCols()) Base::resize(T.cols());
 
   // Copy without overlapping.
-  if ((T.firstIdx()>=firstIdx()))
+  if ((T.begin()>=begin()))
   {
-    for (int jt=T.firstIdx(), j=firstIdx(); jt<=T.lastIdx(); j++, jt++)
+    for (int jt=T.begin(), j=begin(); jt<=T.lastIdx(); j++, jt++)
     {
       // clear old mem if any
       if (elt(j)) delete elt(j);
@@ -84,7 +84,7 @@ DataFrame& DataFrame::operator=(DataFrame const& T)
   }
   else
   {
-    for (int jt=T.lastIdx(), j=lastIdx(); jt>=T.firstIdx(); j--, jt--)
+    for (int jt=T.lastIdx(), j=lastIdx(); jt>=T.begin(); j--, jt--)
     {
       // clear old mem if any
       if (elt(j)) delete elt(j);
@@ -97,7 +97,7 @@ DataFrame& DataFrame::operator=(DataFrame const& T)
 }
 
 /* resize the container:
- * - call @c shift(I.firstIdx(), J.firstIdx()
+ * - call @c shift(I.begin(), J.begin()
  * - call @c popBackCols() (@c insertRows()) and/or @c popBackCols()
  *  (@c popBackRows()).
  *  The implicit assumption made by this method is that it is easier and
@@ -110,7 +110,7 @@ void DataFrame::resize( Range const& I, Range const& J)
   // check if there is something to do
   if ((rows() == I) && (cols() == J)) return;
   //  translate beg
-  shift(I.firstIdx(), J.firstIdx());
+  shift(I.begin(), J.begin());
   // number of rows to del or add
   int rinc = I.lastIdx() - lastIdxRows();
   // number of cols to del or add
@@ -136,19 +136,19 @@ void DataFrame::shift(int const& cbeg)
   // list1D shift
   Base::shift(cbeg);
   // IContainer2D shift for Col
-  shiftFirstIdxCols(cbeg);
+  shiftbeginCols(cbeg);
 }
 
 /* New beginning index for the object. */
 void DataFrame::shift(int const& rbeg, int const& cbeg)
 {
- if (firstIdxRows() == rbeg && firstIdxCols() == cbeg) return;
+ if (firstIdxRows() == rbeg && beginCols() == cbeg) return;
  if (isRef())
  { STKRUNTIME_ERROR_2ARG(DataFrame::shift,rbeg,cbeg,cannot operate on reference); }
   // list1D shift
   shift(cbeg);
   // For each column update Variable
-  for (int j=firstIdx(); j<=lastIdx(); j++)
+  for (int j=begin(); j<=lastIdx(); j++)
     if (elt(j)) { elt(j)->shift(rbeg);}
   // update range of the rows
   shiftFirstIdxRows(rbeg);
@@ -180,8 +180,8 @@ void DataFrame::eraseCols( int pos, int const& n)
   // if n<=0 nothing to do
   if (n<=0) return;
   // check conditions
-  if (pos<firstIdx())
-  { STKOUT_OF_RANGE_2ARG(DataFrame::eraseCols,pos, n,pos<firstIdx());}
+  if (pos<begin())
+  { STKOUT_OF_RANGE_2ARG(DataFrame::eraseCols,pos, n,pos<begin());}
   if (pos>lastIdx())
   { STKOUT_OF_RANGE_2ARG(DataFrame::eraseCols,pos, n,pos>lastIdx());}
   if (lastIdx() < pos+n-1)
@@ -217,7 +217,7 @@ void DataFrame::insertVariable(int pos, IVariable* const & V)
   }
   else
   { // put NA values to the other columns
-    for (int i=this->firstIdxCols(); i <pos; i++)
+    for (int i=this->beginCols(); i <pos; i++)
       if (elt(i)) { elt(i)->pushBackNAValues(-inc);}
     for (int i=pos+1; i <=this->lastIdxCols(); i++)
       if (elt(i)) { elt(i)->pushBackNAValues(-inc);}
@@ -245,7 +245,7 @@ void DataFrame::pushBackVariable( IVariable* const &V)
   }
   else
   { // put NA values to the oter columns
-    for (int i=this->firstIdx(); i <lastIdxCols(); i++)
+    for (int i=this->begin(); i <lastIdxCols(); i++)
       if (elt(i)) { elt(i)->pushBackNAValues(-inc);}
     // update LastVe
     incLastIdxRows(-inc);
@@ -267,7 +267,7 @@ void DataFrame::merge( DataFrame const& other)
   // update rows with NA values
   int pos(lastIdx()+1), inc = sizeRows() - otherRef.sizeRows();
 
-  otherRef.shift(firstIdxRows(), firstIdxCols());
+  otherRef.shift(firstIdxRows(), beginCols());
   Base::merge(otherRef);
 
   if (inc == 0) return; // same size
@@ -279,7 +279,7 @@ void DataFrame::merge( DataFrame const& other)
   }
   else
   { // put NA values to the existing columns
-    for (int i=this->firstIdx(); i <pos; i++)
+    for (int i=this->begin(); i <pos; i++)
       if (elt(i)) { elt(i)->pushBackNAValues(-inc);}
 
     // update LastVe
@@ -295,14 +295,14 @@ void DataFrame::insertDataFrame( int pos, const DataFrame& D)
   // is this structure just a pointer?
   if (this->isRef())
   { STKRUNTIME_ERROR_1ARG(DataFrame::insertDataFrame,pos,cannot operate on reference);}
-  if (firstIdx()>pos)
-  { STKOUT_OF_RANGE_1ARG(DataFrame::insertDataFrame,pos,firstIdx()>pos);}
+  if (begin()>pos)
+  { STKOUT_OF_RANGE_1ARG(DataFrame::insertDataFrame,pos,begin()>pos);}
   if (lastIdx()+1<pos)
   { STKOUT_OF_RANGE_1ARG(DataFrame::insertDataFrame,pos,lastIdx()+1<pos);}
   // List1D
   insertElt(pos, D.sizeCols());
   // insert all columns of D
-  for (int i = D.firstIdxCols(), icol = pos; i <=D.lastIdxCols(); i++, icol++)
+  for (int i = D.beginCols(), icol = pos; i <=D.lastIdxCols(); i++, icol++)
   {
     if (D.elt(i))
     {
@@ -323,7 +323,7 @@ void DataFrame::insertDataFrame( int pos, const DataFrame& D)
   }
   else
   { // put NA values to the oter columns
-    for (int i=this->firstIdxCols(); i <pos; i++)
+    for (int i=this->beginCols(); i <pos; i++)
       if (elt(i)) { elt(i)->pushBackNAValues(-inc);}
     for (int i=pos+D.sizeCols(); i <=this->lastIdx(); i++)
       if (elt(i)) { elt(i)->pushBackNAValues(-inc);}
@@ -345,7 +345,7 @@ void DataFrame::pushBackDataFrame( DataFrame const &D)
   // List1D
   pushBack(D.sizeCols());
   // insert all columns of D
-  for (int i = D.firstIdx(), icol = pos; i <=D.lastIdx(); i++, icol++)
+  for (int i = D.begin(), icol = pos; i <=D.lastIdx(); i++, icol++)
   {
     if (D.elt(i))
     {
@@ -365,7 +365,7 @@ void DataFrame::pushBackDataFrame( DataFrame const &D)
   }
   else
   { // put NA values to the oter columns
-    for (int i=this->firstIdx(); i <pos; i++)
+    for (int i=this->begin(); i <pos; i++)
       if (elt(i)) { elt(i)->pushBackNAValues(-inc);}
     // update LastVe
     incLastIdxRows(-inc);
@@ -388,8 +388,8 @@ void DataFrame::insertCols( int pos, int const& n)
 {
   if (n <= 0) return;        // if n<=0 nothing to do
   // check conditions
-  if (pos<firstIdx())
-  { STKOUT_OF_RANGE_2ARG(DataFrame::insertCols,pos, n,pos<firstIdx());}
+  if (pos<begin())
+  { STKOUT_OF_RANGE_2ARG(DataFrame::insertCols,pos, n,pos<begin());}
   if (pos>lastIdx())
   { STKOUT_OF_RANGE_2ARG(Dataframe::insertCols,pos, n,pos>lastIdx());}
   // insert n elements in list1D
@@ -404,7 +404,7 @@ void DataFrame::pushBackRows(int const& n)
   // if n<=0 nothing to do
   if (n<=0) return;
   // for each column append row
-  for (int j=firstIdx(); j<=lastIdx(); j++)
+  for (int j=begin(); j<=lastIdx(); j++)
   {
     if (elt(j)) { elt(j)->pushBack(n);}
   }
@@ -418,11 +418,11 @@ void DataFrame::insertRows( int pos, int const& n)
   // if n<=0 nothing to do
   if (n<=0) return;
   if (firstIdxRows() > pos)
-  { STKOUT_OF_RANGE_2ARG(DataFrame::insertRows,pos, n,firstIdxRows() > pos);}
+  { STKOUT_OF_RANGE_2ARG(DataFrame::insertRows,pos, n,beginRows() > pos);}
   if (lastIdxRows()+1 < pos)
   { STKOUT_OF_RANGE_2ARG(DataFrame::insertRows,pos, n,lastIdxRows()+1 < pos);}
   // insert rows to each variables
-  for (int j=firstIdx(); j<=lastIdx(); j++)
+  for (int j=begin(); j<=lastIdx(); j++)
     if (elt(j)) { elt(j)->insertElt(pos, n);}
   // update rows_
   incLastIdxRows(n);
@@ -434,7 +434,7 @@ void DataFrame::popBackRows(int const& n)
   if (sizeRows() < n)
   { STKOUT_OF_RANGE_1ARG(DataFrame::popBackRows,n,sizeRows() < n);}
   // del last row to each variable
-  for (int j=firstIdx(); j<=lastIdx(); j++)
+  for (int j=begin(); j<=lastIdx(); j++)
     if (elt(j)) { elt(j)->popBack(n);}
   decLastIdxRows(n);
 }
@@ -445,13 +445,13 @@ void DataFrame::eraseRows( int pos, int const& n)
   // if n<=0 nothing to do
   if (n<=0) return;
   if (firstIdxRows() > pos)
-  { STKOUT_OF_RANGE_2ARG(DataFrame::eraseRows,pos, n,firstIdxRows() > pos);}
+  { STKOUT_OF_RANGE_2ARG(DataFrame::eraseRows,pos, n,beginRows() > pos);}
   if (lastIdxRows() < pos)
   { STKOUT_OF_RANGE_2ARG(DataFrame::eraseRows,pos, n,lastIdxRows() < pos);}
   if (lastIdxRows() < pos+n-1)
   { STKOUT_OF_RANGE_2ARG(DataFrame::eraseRows,pos, n,lastIdxRows() < pos+n-1);}
   // for each variable erase elts
-  for (int j=firstIdx(); j<=lastIdx(); j++)
+  for (int j=begin(); j<=lastIdx(); j++)
     if (elt(j)) { elt(j)->erase(pos, n);}
   // update rows_
   decLastIdxRows(n);
@@ -473,7 +473,7 @@ void DataFrame::freeCols()
 {
   if (isRef()) return;
   // for all columns
-  for (int j=firstIdx(); j<=lastIdx(); j++)
+  for (int j=begin(); j<=lastIdx(); j++)
     if (elt(j))          // if there is mem allocated
     { delete elt(j); elt(j) = 0;}
   // set default range
@@ -492,14 +492,14 @@ void DataFrame::writeDataFrame( ostream& os, int const& left
   // set delimiters to blank
   pData->setDelimiters(STRING_BLANK);
   // write the csv
-  pData->writeSelection(os, firstIdxRows(), lastIdxRows(), left, right);
+  pData->writeSelection(os, beginRows(), lastIdxRows(), left, right);
 }
 
 /* Print a DataFrame. */
 ostream& operator<< (ostream& s, const DataFrame& V)
 {
   s << std::right;
-  V.writeDataFrame(s, V.firstIdxCols(), V.lastIdxCols());
+  V.writeDataFrame(s, V.beginCols(), V.lastIdxCols());
   return s;
 }
 

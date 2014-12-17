@@ -31,7 +31,7 @@
 
 #include "../include/STK_ProjectedVariance.h"
 #include "STatistiK/include/STK_Stat_MultivariateReal.h"
-#include "Algebra/include/STK_EigenvaluesSymmetric.h"
+#include "Algebra/include/STK_SymEigen.h"
 
 namespace STK
 {
@@ -41,13 +41,13 @@ ProjectedVariance::ProjectedVariance() : ILinearReduct()
 /* Constructor.
  *  @param p_data a pointer on the constant data set to reduce.
  **/
-ProjectedVariance::ProjectedVariance(Matrix const* p_data) : ILinearReduct(p_data)
+ProjectedVariance::ProjectedVariance(ArrayXX const* p_data) : ILinearReduct(p_data)
 {;}
 
 /* Constructor.
  *  @param data a constatn reference on the data set to reduce.
  **/
-ProjectedVariance::ProjectedVariance(Matrix const& data) : ILinearReduct(data)
+ProjectedVariance::ProjectedVariance(ArrayXX const& data) : ILinearReduct(data)
 {}
 /* Copy constructor.
  * @param reductor the reductor to copy
@@ -82,12 +82,12 @@ void ProjectedVariance::maximizeCriteria(Vector const& weights)
 /* compute axis and index. */
 void ProjectedVariance::computeAxis()
 {
-  EigenvaluesSymmetric eigen(&covariance_);
+  SymEigen eigen(covariance_);
   eigen.run();
 
   // compute the number of axis
-  Range range(p_data_->firstIdxCols(), std::min(p_data_->firstIdxCols()+dim_-1, p_data_->lastIdxCols()), 0);
-  const int begin_axis = range.firstIdx();
+  Range range(p_data_->beginCols(), std::min(p_data_->beginCols()+dim_-1, p_data_->lastIdxCols()), 0);
+  const int begin_axis = range.begin();
   const int last_axis = range.lastIdx();
   // copy axis and index values
   axis_.resize(p_data_->cols(), range);
@@ -95,7 +95,7 @@ void ProjectedVariance::computeAxis()
   for (int j=begin_axis; j<=last_axis; j++)
   {
     axis_.col(j) = eigen.rotation().col(j);
-    idx_values_[j] = eigen.eigenvalues()[j];
+    idx_values_[j] = eigen.eigenValues()[j];
   }
 }
 

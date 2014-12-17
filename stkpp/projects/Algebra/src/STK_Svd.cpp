@@ -48,7 +48,7 @@ namespace STK
 
 /* Constructors   */
 /* Default constructor  */
- Svd::Svd( Matrix const& A, bool   ref, bool   withU, bool   withV)
+ Svd::Svd( ArrayXX const& A, bool   ref, bool   withU, bool   withV)
         : U_(A, ref)
         , withU_(withU)
         , withV_(withV)
@@ -162,7 +162,7 @@ void Svd::compSvd()
 
 
 /* New computation of the Svd.                                        */
-void Svd::newSvd( Matrix const&   A
+void Svd::newSvd( ArrayXX const&   A
                 , bool     withU
                 , bool     withV
                 )
@@ -206,13 +206,13 @@ void Svd::clear()
 
 
 /* Bidiagonalization of the matrix M.                                 */
-Real Svd::bidiag(const Matrix& M, Point& D, Vector& F)
+Real Svd::bidiag(const ArrayXX& M, Point& D, Vector& F)
 {
   // norm of the matrix M
   Real norm  = 0.0;
   // compute the number of iteration
-  int begin_iter = M.firstIdxCols();
-  int last_iter  = M.firstIdxCols() + std::min(M.sizeCols(), M.sizeRows()) -1;
+  int begin_iter = M.beginCols();
+  int last_iter  = M.beginCols() + std::min(M.sizeCols(), M.sizeRows()) -1;
   // Diagonal values
   D.resize(Range(begin_iter, last_iter, 0));
   // Upper diagonal values
@@ -221,8 +221,8 @@ Real Svd::bidiag(const Matrix& M, Point& D, Vector& F)
   // Bidiagonalisation of M
   // loop on the cols and rows
   Range rowRange0(M.rows())
-    , rowRange1(Range(M.firstIdxRows()+1, M.lastIdxRows(), 0))
-    , colRange1(Range(M.firstIdxCols()+1, M.lastIdxCols(), 0));
+    , rowRange1(Range(M.beginRows()+1, M.lastIdxRows(), 0))
+    , colRange1(Range(M.beginCols()+1, M.lastIdxCols(), 0));
   for ( int iter=begin_iter ; iter<=last_iter
       ; iter++
       , rowRange0.incFirst(1)
@@ -367,7 +367,7 @@ void Svd::compU()
 
 /* eliminate the element of the surdiagonal with right rotations      */
 void Svd::rightEliminate( Point& D, Vector& F, int const& nrow
-                        , MatrixSquare& V, bool withV, Real const& tol
+                        , ArraySquareX& V, bool withV, Real const& tol
                         )
 {
   // the element to eliminate
@@ -401,7 +401,7 @@ void Svd::rightEliminate( Point& D, Vector& F, int const& nrow
 /* eliminate the element of the surdiagonal with left rotations       */
 void Svd::leftEliminate( Point& D, Vector& F
                        , int const& nrow
-                       , Matrix& U
+                       , ArrayXX& U
                        , bool withU
                        , Real const& tol
                        )
@@ -433,8 +433,8 @@ void Svd::leftEliminate( Point& D, Vector& F
 /*  diagonalization of the bidiag matrix                              */
 bool Svd::diag( Point& D
               , Vector& F
-              , Matrix& U
-              , MatrixSquare& V
+              , ArrayXX& U
+              , ArraySquareX& V
               , bool withU
               , bool withV
               , Real const& tol
@@ -443,7 +443,7 @@ bool Svd::diag( Point& D
   // result of the diag process
   bool error = false;
   // Diagonalization of A : Reduction of la matrice bidiagonale
-  for (int end=D.lastIdx(); end>=D.firstIdx(); --end)
+  for (int end=D.lastIdx(); end>=D.begin(); --end)
   { // 30 iter max
     int iter;
     for (iter=1; iter<=30; iter++)
@@ -463,7 +463,7 @@ bool Svd::diag( Point& D
       // now D[end] != 0 and F[end-1] != 0
       // look for the greatest matrix such that all the elements
       // of the diagonal and surdiagonal are not zeros
-      for (beg = end-1; beg>D.firstIdx(); --beg)
+      for (beg = end-1; beg>D.begin(); --beg)
       {
         if ((std::abs(D[beg])+tol == tol)||(std::abs(F[beg])+tol == tol))
         break;
@@ -563,7 +563,7 @@ bool Svd::diag( Point& D
       // change sign of the column end of V
       if (withV)
       {
-        for (int i= V.firstIdxRows(); i <= V.lastIdxRows(); ++i)
+        for (int i= V.beginRows(); i <= V.lastIdxRows(); ++i)
         { V(i,end) = -V(i,end);}
       }
     }

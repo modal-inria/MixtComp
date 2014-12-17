@@ -38,7 +38,7 @@
 #define STK_GAUSSIANAAMODEL_H
 
 #include "STK_IAAModel.h"
-#include "StatModels/include/STK_StatisticalModel.h"
+#include "StatModels/include/STK_IStatModel.h"
 #include "../../../include/Arrays.h"
 
 namespace STK
@@ -79,17 +79,17 @@ namespace STK
  *  of the model. It can be sub-classed or used by any class.
  **/
 class GaussianAAModel : public IAAModel
-                      , public StatisticalModel<Matrix>
+                      , public IStatModel<ArrayXX>
 {
   public:
     /** Constructor.
      *  @param p_workData a pointer on the data set to process
      **/
-    GaussianAAModel( Matrix* p_workData);
+    GaussianAAModel( ArrayXX* p_workData);
     /** Constructor.
      *  @param workData a reference on the data set to process
      **/
-    GaussianAAModel( Matrix& workData);
+    GaussianAAModel( ArrayXX& workData);
 
     /** virtual destuctor. */
     virtual ~GaussianAAModel();
@@ -109,11 +109,11 @@ class GaussianAAModel : public IAAModel
     /** get the covariance of the projected the data set
      * @return the projected the data set
      */
-    inline MatrixSquare const& projectedCovariance() const { return projectedCovariance_;}
+    inline ArraySquareX const& projectedCovariance() const { return projectedCovariance_;}
     /** get the covariance of the residuals
      * @return the residuals
      */
-    inline MatrixSquare const& residualCovariance() const { return residualCovariance_;}
+    inline ArraySquareX const& residualCovariance() const { return residualCovariance_;}
     /** get the variance of the residuals
      * @return the variance of the residuals
      */
@@ -122,7 +122,7 @@ class GaussianAAModel : public IAAModel
     /** Set a new working data set.
      *  @param workData the working data set to use
      **/
-    virtual void setWorkData(Matrix& workData);
+    virtual void setWorkData(ArrayXX& workData);
 
     /** compute the covariance matrix of the projected data set.
      *  This method is set public as the projected covariance can be computed
@@ -145,7 +145,7 @@ class GaussianAAModel : public IAAModel
 
     /** @brief compute the ln-likelihood of the projected data set
      *  The projected data set is assumed Gaussian with an arbitrary
-     *  covariance Matrix.
+     *  covariance ArrayXX.
      * */
     void computeProjectedLnLikelihood();
     /** @brief compute the ln-likelihood of the projected data set.
@@ -156,9 +156,9 @@ class GaussianAAModel : public IAAModel
 
   private:
     /** The covariance matrix of the projected data set */
-    MatrixSquare projectedCovariance_;
+    ArraySquareX projectedCovariance_;
     /** The covariance matrix of the residuals */
-    MatrixSquare residualCovariance_;
+    ArraySquareX residualCovariance_;
     /** The total variance of the residuals */
     Real residualVariance_;
     /** likelihood of the projected data set. */

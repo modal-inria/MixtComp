@@ -29,7 +29,7 @@
  **/
 
 /** @file STK_DataHandler.h
- *  @brief In this file we define the data handler.
+ *  @brief In this file we define the interface class IDataHandler.
  **/
 
 
@@ -39,12 +39,24 @@
 #include <map>
 #include <string>
 
-#include "Arrays/include/STK_Array2D.h"
+#include "STKernel/include/STK_Stream.h"
 
 namespace STK
 {
+namespace hidden
+{
+/** @ingroup hidden
+ *  The DataHandlerTraits will give the type of container furnished by the
+ *  concrete implementations of the IDataHandler class.
+ **/
+template<class DataHandler, typename Type>
+struct DataHandlerTraits
+{};
+
+} // namespace hidden
+
 /** @ingroup DManager
- *  The DataHandler class allow to recover data
+ *  A DataHandler class allow to store various data set idetified with an idData
  */
 class IDataHandler
 {
@@ -60,34 +72,34 @@ class IDataHandler
      *  An info descriptor is a pair that allow to say that all columns of
      *  the data set(s) handled by the data handler and having the name "idData"
      *  are modeled by the model with model "idModel".
-     *  @param idData can be any string given by the user
-     *  @param idModel represent the idModel of a given model (defined inside or
-     *  outside stk++).
+     *  @param idData can be any string given by the user for identifying data.
+     *  @param idModel represent the idModel of a given model (can be defined
+     *  inside or outside STK++).
      *
      *  @note If the pair (idData, idModel) already exists then addInfo will do nothing.
      *  @return @c false if there exists already an idData matched with an other
      *  idModel, @c true otherwise.
      **/
     bool addInfo(std::string const& idData, std::string const& idModel);
+    /** @brief Giving a the Id of a dataset, find the Id of the model.
+     *  @param idData can be any string given by the user for identifying data.
+     *  @param idModel The Id of the model associated with the data
+     *  (not modified if idData is not present in the map).
+     *  @return @c true if there exists an idData in the InfoMap, @c false
+     *  otherwise.
+     **/
+    bool getIdModel(std::string const& idData, std::string& idModel) const;
     /** @return the number of sample (the number of rows of the data) */
     virtual int nbSample() const =0;
     /** @return the number of variables (the number of columns of the data) */
     virtual int nbVariable() const =0;
-
     /** write the info on os */
     void writeInfo(ostream& os) const;
 
-    /** return in an Array2D<int> the data with the given idData */
-    virtual void getData(std::string const& idData, Array2D<int>& data, int& nbVariable) const =0;
-    /** return in an Array2D<Real> the data with the given idData */
-    virtual void getData(std::string const& idData, Array2D<Real>& data, int& nbVariable) const =0;
-    /** return in an Array2D<std::string> the data with the given idData */
-    virtual void getData(std::string const& idData, Array2D<std::string>& data, int& nbVariable) const =0;
-
-  private:
+  protected:
     /** Store the informations  of the mixtures in the form (idData, idModel) with
-     * - idData: an arbitrary idData for a model
-     * - model: a string which can be converted in an existing model
+     * - idData: an arbitrary idData for data.
+     * - idModel: a string which represent a (statistical) model.
      * @sa stringToMixture */
     InfoMap info_;
 };

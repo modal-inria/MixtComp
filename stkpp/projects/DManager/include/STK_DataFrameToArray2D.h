@@ -38,8 +38,7 @@
 #ifndef STK_DATAFRAMETOARRAY2D_H
 #define STK_DATAFRAMETOARRAY2D_H
 
-#include "STK_DataFrame.h"
-#include "../../../include/Arrays.h"
+#include "../../Arrays/include/STK_Array2D.h"
 
 namespace STK
 {
@@ -67,7 +66,7 @@ class DataFrameToArray2D
     {
       p_data_ = new Array2D<Type>();
       // for each field Try a type conversion
-      for(int iVar = df_.firstIdxCols(); iVar<=df_.lastIdxCols(); iVar++)
+      for(int iVar = df_.beginCols(); iVar<=df_.lastIdxCols(); iVar++)
       {
         IVariable* const p_var = df_.elt(iVar);
         // if there is a variable
@@ -98,7 +97,7 @@ class DataFrameToArray2D
       // check if there exists data
       if (!p_data_) return;
       // get the first index
-      const int firstCol = p_data_->firstIdxCols(), firstRow = p_data_->firstIdxRows();
+      const int firstCol = p_data_->beginCols(), firstRow = p_data_->beginRows();
       // get the last index
       int lastCol = p_data_->lastIdxCols(), lastRow = p_data_->lastIdxRows();
       if (byRow)

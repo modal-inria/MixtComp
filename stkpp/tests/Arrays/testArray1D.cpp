@@ -43,7 +43,9 @@ void print(Container2D<TYPE> const& A, String const& name)
   stk_cout << name << _T(".isRef() =")        << A.isRef()  << _T("\n");
   stk_cout << name << _T(".capacityHo() =")   << A.capacityHo()  << _T("\n");
   stk_cout << name << _T(".cols() =")      << A.cols()  << _T("\n");
+  stk_cout << name << _T(".sizeCols() =")      << A.sizeCols()  << _T("\n");
   stk_cout << name << _T(".rows() =")      << A.rows()  << _T("\n");
+  stk_cout << name << _T(".sizeRows() =")      << A.sizeRows()  << _T("\n");
   stk_cout << name << _T(".rangeCols().isRef() =")  << A.rangeCols().isRef() << _T("\n");
   stk_cout << name << _T(".rangeCols() = ")  << A.rangeCols() << _T("\n");
   stk_cout << name << _T(".capacityCols().isRef() =") << A.capacityCols().isRef()  << _T("\n");
@@ -96,10 +98,13 @@ void testArray( int M, int N, Range J, bool output)
   if (output)
   { write_Array(D, _T("D"), _T("Test D.sub(J) = 5 (modification of a lhs object !)\n"));}
 
-  Container1D<TYPE> Dref(D.sub(Range(J-1)), true);
+  Container1D<TYPE> Dref(D.sub(J-1), true);
+  if (output)
+  { write_Array(D, _T("Dref"), _T("Test Dref(D.sub(J-1), true)\n"));}
+
   Dref.copy(B.sub(J));
   if (output)
-  { write_Array(D, _T("D"), _T("Test Dref(D.sub(Range(J-1)), true); Dref.copy(B.sub(J))\n"));}
+  { write_Array(D, _T("D"), _T("Test Dref.copy(B.sub(J))\n"));}
 
   D.shift(1);
   if (output)
@@ -109,10 +114,10 @@ void testArray( int M, int N, Range J, bool output)
   if (output)
   { write_Array(D, _T("D"), _T("Test D.pushBack(2); D.sub(Range(M,D.lastIdx()), 0) = 1\n"));}
 
-  D.swap(D.firstIdx(),D.lastIdx());
+  D.swap(D.begin(),D.lastIdx());
   if (output)
-  { write_Array(D, _T("D"), _T("Test D.swap(D.firstIdx(),D.lastIdx())\n"));}
-
+  { write_Array(D, _T("D"), _T("Test D.swap(D.begin(),D.lastIdx())\n"));}
+  stk_cout << "D.size() - 1 = " << D.size() -1 <<"\n";
   D.erase(2, D.size()-1);
   if (output)
   { write_Array(D, _T("D"), _T("Test D.erase(2,D.size()-1)\n"));}
@@ -144,18 +149,20 @@ void testArray( int M, int N, Range J, bool output)
   if (output)
   { write_Array(C, _T("C"), _T("Test C.front() = -2 and C.back() = -2\n"));}
 
-  C.elt(J.firstIdx()) = C.front();
+  C.elt(J.begin()) = C.front();
   C.elt(J.lastIdx())  = C.back();
   if (output)
-  { write_Array(C, _T("C"), _T("Test C.at(J.firstIdx()) = C.front() and C.at(J.lastIdx()) = C.back()\n"));}
+  { write_Array(C, _T("C"), _T("Test C.at(J.begin()) = C.front() and C.at(J.lastIdx()) = C.back()\n"));}
 
   C.elt(C.lastIdx()-1) = -C.elt(C.lastIdx()-1);
   if (output)
-  { write_Array(C, _T("C"), _T("Test C.insert(Range(C.lastIdx(),C.lastIdx()), 4); C.at(C.lastIdx()-1) = -C.at(C.lastIdx()-1)\n"));}
+  { write_Array(C, _T("C"), _T("Test C.elt(C.lastIdx()-1) = -C.elt(C.lastIdx()-1)\n"));}
 
-  C.erase(J.firstIdx(), J.size());
+  C.erase(J.begin(), J.size());
   if (output)
-  { write_Array(C, _T("C"), _T("Test C.erase(J.firstIdx(), J.size())\n"));}
+  { stk_cout << _T("J= ") << J << _T("\n");
+    stk_cout << _T("C.range() = ") << C.range() << _T("\n");
+    write_Array(C, _T("C"), _T("Test C.erase(J.begin(), J.size())\n"));}
 }
 
 

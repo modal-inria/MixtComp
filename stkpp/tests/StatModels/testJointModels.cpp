@@ -34,9 +34,8 @@
  *  @brief In this file we test the joint Statistical models.
  **/
 
+#include "Arrays.h"
 #include "STatistiK.h"
-#include "STatistiK/include/STK_Law_Util.h"
-
 #include "StatModels.h"
 
 using namespace STK;
@@ -46,7 +45,7 @@ void testModel(Array& data, Law const& law)
 {
   typedef typename Array::Row RowVector;
   // simulate data set
-  for (Integer i= data.firstIdxRows(); i <= data.lastIdxRows(); ++i)
+  for (Integer i= data.beginRows(); i <= data.lastIdxRows(); ++i)
   {
     RowVector row(data.row(i), true); // reference on the ith row
     law.rand(row);
@@ -110,7 +109,7 @@ int main(int argc, char *argv[])
   // create Bernoulli joint law
   Law::JointBernoulli<Array2DPoint<Binary> > bLaw(20);
   CPointX prob(20);
-  for (Integer j= bLaw.JointLaw().firstIdx(); j <= bLaw.JointLaw().lastIdx(); ++j)
+  for (Integer j= bLaw.JointLaw().begin(); j <= bLaw.JointLaw().lastIdx(); ++j)
   {
     prob[j] = Law::generator.randUnif();
     bLaw.setProb(j, prob[j]);
@@ -144,7 +143,7 @@ int main(int argc, char *argv[])
   Law::JointNormal<Array2DPoint<Real> > nLaw(20);
   CPointX mu(20);
   CPointX sigma(20);
-  for (Integer j= nLaw.JointLaw().firstIdx(); j <= nLaw.JointLaw().lastIdx(); ++j)
+  for (Integer j= nLaw.JointLaw().begin(); j <= nLaw.JointLaw().lastIdx(); ++j)
   {
     mu[j] = Law::generator.randGauss();
     sigma[j] = Law::generator.randExp();
@@ -181,7 +180,7 @@ int main(int argc, char *argv[])
   // create Bernoulli joint law
   Law::JointGamma<Array2DPoint<Real> > gLaw(20);
   CPointX alpha(20), beta(20);
-  for (Integer j= gLaw.JointLaw().firstIdx(); j <= gLaw.JointLaw().lastIdx(); ++j)
+  for (Integer j= gLaw.JointLaw().begin(); j <= gLaw.JointLaw().lastIdx(); ++j)
   {
     alpha[j] = Law::generator.randExp()*5;
     beta[j] = Law::generator.randExp();

@@ -24,22 +24,23 @@
 
 /*
  * Project:  Algebra
- * Purpose:  test program for testing EigenvaluesSymmetric class.
+ * Purpose:  test program for testing SymEigen class.
  * Author:   Serge Iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  */
 
 /** @file testLapackSymmEigen.cpp
- *  @brief In this file we test the EigenvaluesSymmetric class.
+ *  @brief In this file we test the SymEigen class.
  **/
 
+#include "Arrays.h"
 #include "Algebra.h"
 
-using namespace STK;
 
 // only if lapack is installed
 #ifdef STKUSELAPACK
 
-using namespace STK::lapack;
+using namespace STK;
+using namespace STK;
 
 template <typename Type>
 struct numberingVisitor
@@ -62,7 +63,7 @@ void numbering(ArrayBase<Container2D>& matrix)
 template<typename Container2D>
 void symmetrize(ArrayBase<Container2D>& matrix)
 {
-  for (int i=matrix.firstIdx(); i<=matrix.lastIdx(); i++)
+  for (int i=matrix.begin(); i<=matrix.lastIdx(); i++)
     for (int j=i; j<=matrix.lastIdx(); j++)
     { matrix(i,j) = (matrix(i,j) + matrix(i,j))/2.;
       matrix(j,i) = matrix(i,j);
@@ -80,7 +81,7 @@ void print(ArrayBase<Container2D> const& A, String const& name)
 }
 
 
-void writeResult( SymEigen const& s)
+void writeResult( lapack::SymEigen const& s)
 {
   stk_cout << "s.rank()=" << s.rank()<< _T("\n");
   stk_cout << "s.det()=" << s.det()<< _T("\n");
@@ -105,7 +106,7 @@ void writeResult( SymEigen const& s)
 /* test SymmEigen*/
 bool testSymmEigen(int N)
 {
-  MatrixSquare A(N), id2;
+  ArraySquareX A(N), id2;
 
   stk_cout << _T("\n\n");
   stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -116,15 +117,15 @@ bool testSymmEigen(int N)
   stk_cout << _T("+ First test +\n");
   stk_cout << _T("++++++++++++++\n");
   A = 0.0;
-  for (int i=A.firstIdx(); i<=A.lastIdx(); i++) { A(i,i)  = 1.0;}
-  for (int i=A.firstIdx(); i<A.lastIdx(); i++) { A(i,i+1) = 2.0; A(i+1, i) = 2.0;}
+  for (int i=A.begin(); i<=A.lastIdx(); i++) { A(i,i)  = 1.0;}
+  for (int i=A.begin(); i<A.lastIdx(); i++) { A(i,i+1) = 2.0; A(i+1, i) = 2.0;}
   if (A.range().isContaining(2)) A(2,2) = 0.0;
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
   // run test
-  SymEigen* eigen = new SymEigen(A);
+  lapack::SymEigen* eigen = new lapack::SymEigen(A);
   if (!eigen->run()) { delete eigen; return false;}
   writeResult(*eigen);
   delete eigen;
@@ -143,7 +144,7 @@ bool testSymmEigen(int N)
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
 
-  eigen = new SymEigen(A);
+  eigen = new lapack::SymEigen(A);
   if (!eigen->run()) { delete eigen; return false;}
   writeResult(*eigen);
   delete eigen;
@@ -152,21 +153,21 @@ bool testSymmEigen(int N)
   stk_cout << _T("+++++++++++++++++++++++++\n");
   stk_cout << _T("+Third test : A singular+\n");
   stk_cout << _T("+++++++++++++++++++++++++\n");
-  for (int i=baseIdx, k=1; i<=A.lastIdx(); i++)
-    for (int j=i; j<=A.lastIdx(); j++)
+  for (int i=baseIdx, k=1; i<A.end(); i++)
+    for (int j=i; j<A.end(); j++)
     { A(i,j) = N*N-k++;
       A(j,i) = A(i,j);
     }
-  for (int i=baseIdx; i<=A.lastIdx(); i++) { A(i,i) = 1.0;}
+  for (int i=baseIdx; i<A.end(); i++) { A(i,i) = 1.0;}
   for (int i=baseIdx; i<A.lastIdx(); i++) { A(i,i+1) = 2.0; A(i+1, i) = 2.0;}
   if (A.range().isContaining(2)) A(2,2) = 0.0;
-  A.col(baseIdx) = 0.0;
+  A.col(baseIdx+1) = 0.0;
   A.row(baseIdx+1) = 0.0;
 
   stk_cout << _T("A = \n");
   stk_cout << A << _T("\n");
   print(A, _T("A"));
-  eigen = new SymEigen(A);
+  eigen = new lapack::SymEigen(A);
   if (!eigen->run())
   { delete eigen; return false;}
   writeResult(*eigen);
@@ -206,7 +207,7 @@ int main(int argc, char *argv[])
     stk_cout << _T("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     stk_cout << _T("\n\n");
   }
-  catch (Exception & error)
+  catch (Exception const& error)
   {
     std::cerr << _T("An error occured : ") << error.error() << _T("\n");
   }

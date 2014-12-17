@@ -4,7 +4,7 @@ FILE( GLOB STKernel_files
   include/*.h
   )
   
-INCLUDE_DIRECTORIES("..")
+include_directories("..")
 
 # Add STKernel files to STKSTKernel library
-ADD_LIBRARY(STKSTKernel OBJECT ${STKernel_files})
+add_library(STKSTKernel OBJECT ${STKernel_files})

@@ -60,6 +60,7 @@ template<> struct StaticAssert<true>
   enum
   {
     YOU_TRIED_CALLING_A_VECTOR_METHOD_ON_A_MATRIX,
+    YOU_TRIED_CALLING_A_MATRIX_METHOD_ON_A_VECTOR,
     YOU_TRIED_TO_USE_A_UNIDIMENSIONAL_METHOD_ON_A_MATRIX,
     YOU_TRIED_TO_CONSTRUCT_A_REFERENCE_WITH_A_DIFFERENT_ORIENTATION,
     YOU_TRIED_TO_CONSTRUCT_A_SQUAREMATRIX_WITH_DIFFERENT_DIMENSIONS,
@@ -73,6 +74,13 @@ template<> struct StaticAssert<true>
     YOU_TRIED_TO_APPLY_A_METHOD_BETWEEN_NOT_COMPATIBLE_ARRAYS,
     YOU_TRIED_TO_APPLY_A_PRODUCT_OPERATOR_BETWEEN_NOT_COMPATIBLE_ARRAYS,
     YOU_TRIED_TO_APPLY_A_BINARY_OPERATOR_WITH_WRONG_DIMENSIONS_SIZE,
+    YOU_TRIED_TO_WRAP_A_CONTAINER_WITH_THE_WRONG_TYPE_AS_A_VARIABLE,
+    YOU_TRIED_TO_WRAP_A_CONTAINER_WHICH_IS_NOT_1D_AS_A_VARIABLE,
+    YOU_CANNOT_USED_AN_UNIDIMENSIONAL_METHOD_ON_THIS_OBJECT,
+    YOU_CANNOT_USED_A_ZERODIMENSIONAL_METHOD_ON_THIS_OBJECT,
+    YOU_HAVE_TO_USE_A_VECTOR_OR_POINT_IN_THIS_METHOD,
+    YOU_HAVE_TO_USE_A_SQUARE_MATRIX_IN_THIS_METHOD,
+    YOU_HAVE_TO_USE_A_MATRIX_OR_SQUARE_MATRIX_IN_THIS_METHOD,
     INVALID_VECTOR_VECTOR_PRODUCT,
     INVALID_POINT_POINT_PRODUCT
   };
@@ -115,11 +123,23 @@ template<> struct StaticAssert<true>
 #define STK_STATICASSERT_PRODUCT_OPERATOR_MISMATCH(COND) \
     STK_STATICASSERT(COND,YOU_TRIED_TO_APPLY_A_PRODUCT_OPERATOR_BETWEEN_NOT_COMPATIBLE_ARRAYS)
 
+#define STK_STATICASSERT_TWO_DIMENSIONS_ONLY(EXPR) \
+STK_STATICASSERT(  (hidden::Traits<EXPR>::structure_==(int)Arrays::array2D_) \
+                 ||(hidden::Traits<EXPR>::structure_==(int)Arrays::square_) \
+                 ||(hidden::Traits<EXPR>::structure_==(int)Arrays::diagonal_) \
+                 ||(hidden::Traits<EXPR>::structure_==(int)Arrays::lower_triangular_) \
+                 ||(hidden::Traits<EXPR>::structure_==(int)Arrays::upper_triangular_) \
+                 ,YOU_TRIED_CALLING_A_MATRIX_METHOD_ON_A_VECTOR)
+
 #define STK_STATICASSERT_VECTOR_ONLY(EXPR) \
-STK_STATICASSERT((EXPR::structure_==(int)Arrays::vector_)||(EXPR::structure_==(int)Arrays::point_),YOU_TRIED_CALLING_A_VECTOR_METHOD_ON_A_MATRIX)
+STK_STATICASSERT(  (hidden::Traits<EXPR>::structure_==(int)Arrays::vector_) \
+                 ||(hidden::Traits<EXPR>::structure_==(int)Arrays::point_) \
+                 ,YOU_TRIED_CALLING_A_VECTOR_METHOD_ON_A_MATRIX)
 
 #define STK_STATICASSERT_ONE_DIMENSION_ONLY(EXPR) \
-STK_STATICASSERT((EXPR::structure_==(int)Arrays::vector_)||(EXPR::structure_==(int)Arrays::point_)||(EXPR::structure_==(int)Arrays::diagonal_),YOU_TRIED_TO_USE_A_UNIDIMENSIONAL_METHOD_ON_A_MATRIX)
+STK_STATICASSERT((hidden::Traits<EXPR>::structure_==(int)Arrays::vector_)||(hidden::Traits<EXPR>::structure_==(int)Arrays::point_)||(hidden::Traits<EXPR>::structure_==(int)Arrays::diagonal_),YOU_CANNOT_USED_AN_UNIDIMENSIONAL_METHOD_ON_THIS_OBJECT)
 
+#define STK_STATICASSERT_ZERO_DIMENSION_ONLY(EXPR) \
+STK_STATICASSERT((hidden::Traits<EXPR>::structure_==(int)Arrays::number_),YOU_CANNOT_USED_A_ZERODIMENSIONAL_METHOD_ON_THIS_OBJECT)
 
 #endif /* STK_STATICASSERT_H */

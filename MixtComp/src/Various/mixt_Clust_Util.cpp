@@ -22,7 +22,6 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#include "STKernel/include/STK_String_Util.h"
 #include "mixt_Clust_Util.h"
 
 namespace mixt
