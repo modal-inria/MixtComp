@@ -133,7 +133,7 @@ void IMixtureComposerBase::eStep()
   {
     sum += eStep(i);
   }
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "tik_:" << std::endl;
   std::cout << tik_ << std::endl;
 #endif

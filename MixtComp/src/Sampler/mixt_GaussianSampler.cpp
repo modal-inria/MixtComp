@@ -22,9 +22,6 @@
  **/
 
 #include "mixt_GaussianSampler.h"
-#include "STatistiK/include/STK_Law_Normal.h"
-#include "STatistiK/include/STK_Law_Exponential.h"
-#include "STatistiK/include/STK_Law_Uniform.h"
 
 namespace mixt
 {
@@ -65,7 +62,8 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
           std::cout << "\tmissing_" << std::endl;
 #endif
-          z = STK::Law::Normal::rand(0., 1.);
+          z = normal_.sample(0.,
+                             1.);
         }
         break;
 
@@ -138,7 +136,7 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
   }
 }
 
-STK::Real GaussianSampler::lbSampler(STK::Real lower) const
+STK::Real GaussianSampler::lbSampler(STK::Real lower)
 {
   STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
   STK::Real z, u, rho;
@@ -146,7 +144,8 @@ STK::Real GaussianSampler::lbSampler(STK::Real lower) const
   {
     do
     {
-      z = STK::Law::Normal::rand(0, 1);
+      z = normal_.sample(0.,
+                         1.);
     }
     while (z < lower);
   }
@@ -154,22 +153,22 @@ STK::Real GaussianSampler::lbSampler(STK::Real lower) const
   {
     do
     {
-      z = STK::Law::Exponential::rand(1./alpha) + lower;
+      z = exponential_.sample(1. / alpha) + lower;
       rho = exp(-pow((z - alpha), 2) / 2.);
-      u = STK::Law::Uniform::rand(0., 1.);
+      u = uniform_.sample(0., 1.);
     }
     while (u > rho);
   }
   return z;
 }
 
-STK::Real GaussianSampler::lrbSampler(STK::Real lower, STK::Real upper) const
+STK::Real GaussianSampler::lrbSampler(STK::Real lower, STK::Real upper)
 {
   STK::Real z, u, rho;
 
   do
   {
-    z = STK::Law::Uniform::rand(lower, upper);
+    z = uniform_.sample(lower, upper);
 
     if (lower < 0. && 0. < upper)
       rho = exp(-pow(z, 2));
@@ -178,7 +177,7 @@ STK::Real GaussianSampler::lrbSampler(STK::Real lower, STK::Real upper) const
     else if (0. < lower)
       rho = exp((pow(lower, 2)-pow(z, 2))/2);
 
-    u = STK::Law::Uniform::rand(0., 1.);
+    u = uniform_.sample(0., 1.);
   }
   while(u > rho);
 

@@ -28,9 +28,9 @@
 #include <utility>
 #include <vector>
 #include "Arrays/include/STK_Array2D.h"
-#include "STatistiK/include/STK_Stat_Functors.h"
 #include "../Various/mixt_Def.h"
 #include "Eigen/Dense"
+#include "../Statistic/mixt_UniformStatistic.h"
 
 namespace mixt
 {
@@ -178,6 +178,8 @@ class AugmentedData
         if (val > max) max = val;
       }
     }
+
+    UniformStatistic uniform_;
 };
 
 } // namespace mixt

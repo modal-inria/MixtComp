@@ -25,40 +25,40 @@
 #ifndef MIXT_CATEGORICAL_PJK
 #define MIXT_CATEGORICAL_PJK
 
-#include "Clustering/include/GaussianMixtureModels/STK_Gaussian_sjk.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_CArrayPoint.h"
+#include "Arrays/include/STK_CArrayVector.h"
 
 namespace mixt
 {
 
-class Categorical_pjk : public STK::Categorical_pjk<STK::Array2D<int> >
+class Categorical_pjk
 {
   public:
-    Categorical_pjk(int nbCluster) : STK::Categorical_pjk<STK::Array2D<int> >(nbCluster) {};
-    ~Categorical_pjk() {};
+    Categorical_pjk(int nbCluster);
+    ~Categorical_pjk();
 
-    /** Set the parameters after the SEM, to the mean estimates for example */
-    void setParameters(const STK::Array2D<STK::Real>& params)
-    {
-      int nbClust = this->nbCluster();
-      int firstModality = this->modalities_.firstIdx();
-      int nbModalities = this->modalities_.size();
+    int computeNbFreeParameters() const;
+    void getParameters(STK::Array2D<STK::Real>& param) const;
+    void initializeModel();
+    void initializeStep();
+    double lnComponentProbability(int i, int k) const;
+    void mStep();
+    int nbVariable() const;
+    void setData(STK::Array2D<int>& data);
+    void setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
+                              STK::Array2D<STK::Real> const* p_tik,
+                              STK::CArrayVector<int> const* p_zi);
+    void setModalities(int nbModalities);
+    void setParameters(const STK::Array2D<STK::Real>& param);
+    void writeParameters(std::ostream& out) const;
 
-      for (int k = 0; k < nbClust; ++k)
-      {
-        for (int j = p_data()->firstIdxCols(); j <= p_data()->lastIdxCols(); ++j)
-        {
-          for (int l = 0; l < nbModalities; ++l)
-          {
-            p_param(k)->proba_[j][firstModality + l] = params(k * nbModalities + l + STK::baseIdx, j);
-          }
-        }
-      }
-    }
-
-    void initializeStep()
-    {
-      // mstep performed explicitely in the Strategy, if needed
-    }
+  private:
+    int nbCluster_;
+    int nbModalities_;
+    STK::Array2D<int>* p_data_;
+    STK::Array2DVector<STK::Real> param_;
+    STK::CArrayVector<int> const* p_zi_;
 };
 
 } // namespace mixt

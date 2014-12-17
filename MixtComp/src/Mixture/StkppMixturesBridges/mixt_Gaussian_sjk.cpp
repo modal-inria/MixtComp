@@ -21,29 +21,29 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_Poisson_k.h"
+#include "mixt_Gaussian_sjk.h"
 
 namespace mixt
 {
 
-Poisson_k::Poisson_k(int nbCluster) :
+Gaussian_sjk::Gaussian_sjk(int nbCluster) :
     nbCluster_(nbCluster),
-    param_(nbCluster,
+    param_(2 * nbCluster,
            0.)
 {}
 
-Poisson_k::~Poisson_k()
+Gaussian_sjk::~Gaussian_sjk()
 {}
 
-int Poisson_k::computeNbFreeParameters() const
+int Gaussian_sjk::computeNbFreeParameters() const
 {
-  return nbCluster_;
+  return 2 * nbCluster_;
 }
 
-void Poisson_k::getParameters(STK::Array2D<STK::Real>& param) const
+void Gaussian_sjk::getParameters(STK::Array2D<STK::Real>& param) const
 {
-#ifdef MC_DEBUG
-  std::cout << "Poisson_k::getParameters" << std::endl;
+#ifdef MC_DEBUG_NEW
+  std::cout << "Gaussian_sjk::getParameters" << std::endl;
   std::cout << "\tparam_: " << param_ << std::endl;
 #endif
   param.resize(param_.sizeRows(),
@@ -54,85 +54,96 @@ void Poisson_k::getParameters(STK::Array2D<STK::Real>& param) const
   }
 }
 
-void Poisson_k::initializeModel()
+void Gaussian_sjk::initializeModel()
 {}
 
-void Poisson_k::initializeStep()
+void Gaussian_sjk::initializeStep()
 {}
 
-double Poisson_k::lnComponentProbability(int i, int k) const
+double Gaussian_sjk::lnComponentProbability(int i, int k) const
 {
 #ifdef MC_DEBUG
   std::cout << "Poisson_k::lnComponentProbability" << std::endl;
   std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
 #endif
-  int currVal = p_data_->elt(i, 0);
-  STK::Real lambda = param_[k];
-  STK::Real proba = poisson_.pdf(currVal,
-                                 lambda);
+  int currVal = p_data_ ->elt(i, 0);
+  STK::Real mean = param_[2 * k    ];
+  STK::Real sd   = param_[2 * k + 1];
+  STK::Real proba = normal_.pdf(currVal,
+                                mean,
+                                sd);
   return std::log(proba);
 }
 
-void Poisson_k::mStep()
+void Gaussian_sjk::mStep()
 {
+#ifdef MC_DEBUG_NEW
+  std::cout << "Gaussian_sjk::mStep" << std::endl;
+#endif
 #ifdef MC_DEBUG
-    std::cout << "Gaussian_sjk::mStep" << std::endl;
-    std::cout << "(*p_data_): " << (*p_data_) << std::endl;
-    std::cout << "zi_: " << zi_ << std::endl;
+  std::cout << "(*p_zi_): " << (*p_zi_) << std::endl;
+  std::cout << "(*p_data_): " << (*p_data_) << std::endl;
 #endif
 
   for (int k = 0; k < nbCluster_; ++k)
   {
-    int nbSampleClass = 0; // number of samples in the current class
-    STK::Real sumClassMean = 0.;
     STK::Real mean = 0.;
+    STK::Real sd = 0.;
+    STK::Real M2 = 0.;
+    int n = 0;
 
-    for (int i = 0; i < (*p_data_).sizeRows(); ++i)
+    for (int i = 1; i < (*p_data_).sizeRows(); ++i)
     {
 #ifdef MC_DEBUG
-    std::cout << "\tk:  " << k << ", i: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << std::endl;
+      std::cout << "\tk:  " << k << ", i: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << std::endl;
 #endif
       if ((*p_zi_)[i] == k)
       {
-        sumClassMean += (*p_data_)(i, 0);
-        nbSampleClass += 1;
+        ++n;
+        STK::Real x = (*p_data_)(i, 0);
+        STK::Real delta = x - mean;
+        mean = mean + delta / STK::Real(n);
+        M2 = M2 + delta * (x - mean);
       }
     }
-    mean = sumClassMean / STK::Real(nbSampleClass);
+    sd = std::sqrt(M2 / STK::Real(n));
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
     std::cout << "k: " << k << std::endl;
-    std::cout << "\tnbSampleClass: " << nbSampleClass << std::endl;
-    std::cout << "\tsumClassMean: " << sumClassMean << std::endl;
     std::cout << "\tmean: " << mean << std::endl;
+    std::cout << "\tsd: " << sd << std::endl;
 #endif
-    param_[k] = mean;
+    param_[2 * k    ] = mean;
+    param_[2 * k + 1] = sd;
   }
+#ifdef MC_DEBUG_NEW
+  std::cout << "param_: " << param_ << std::endl;
+#endif
 }
 
-int Poisson_k::nbVariable() const
+int Gaussian_sjk::nbVariable() const
 {
   return 1;
 }
 
-void Poisson_k::setData(STK::Array2D<int>& data)
+void Gaussian_sjk::setData(STK::Array2D<STK::Real>& data)
 {
   p_data_ = &data;
 }
 
-void Poisson_k::setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
+void Gaussian_sjk::setMixtureParameters(STK::CArrayPoint<STK::Real> const* p_pk,
                                      STK::Array2D<STK::Real> const* p_tik,
                                      STK::CArrayVector<int> const* p_zi)
 {
-  p_zi_ = p_zi;
+  p_zi_ = p_zi; // only the z_i is used in SEM
 }
 
-void Poisson_k::setModalities(int nbModalities)
+void Gaussian_sjk::setModalities(int nbModalities)
 {
   // does nothing. Used for categorical models.
 }
 
-void Poisson_k::setParameters(const STK::Array2D<STK::Real>& param)
+void Gaussian_sjk::setParameters(const STK::Array2D<STK::Real>& param)
 {
   for (int i = 0; i < param.sizeRows(); ++i)
   {
@@ -140,14 +151,14 @@ void Poisson_k::setParameters(const STK::Array2D<STK::Real>& param)
   }
 }
 
-void Poisson_k::writeParameters(std::ostream& out) const
+void Gaussian_sjk::writeParameters(std::ostream& out) const
 {
   for (int k = 0; k < param_.sizeRows(); ++k)
   {
     out << "Component: " << k << std::endl;
-    out << "\tlambda: " << param_[k] << std::endl;
+    out << "\tmean: " << param_[2 * k    ] << std::endl;
+    out << "\tsd: "   << param_[2 * k + 1] << std::endl;
   }
-
 }
 
 } // namespace mixt
