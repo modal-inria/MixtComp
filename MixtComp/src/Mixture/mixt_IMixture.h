@@ -43,14 +43,10 @@ class IMixture
      * @param nbCluster number of cluster
      */
     IMixture(std::string const& idName,
-             STK::CArrayPoint<STK::Real> const* p_prop,
-             STK::Array2D<STK::Real> const* p_tik,
              STK::CArrayVector<int> const* p_zi,
              int nbCluster) :
       idName_(idName),
       nbCluster_(nbCluster),
-      p_prop_(p_prop),
-      p_tik_(p_tik),
       p_zi_(p_zi)
     {};
     /**copy constructor.
@@ -60,8 +56,6 @@ class IMixture
     IMixture(IMixture const& mixture) :
       idName_(mixture.idName_),
       nbCluster_(mixture.nbCluster_),
-      p_prop_(mixture.p_prop_),
-      p_tik_(mixture.p_tik_),
       p_zi_(mixture.p_zi_)
     {};
     /** Virtual destructor. */
@@ -173,14 +167,6 @@ class IMixture
      *  @return Pointer to tik.
      */
     STK::Real const** posteriorProbabilities() const;
-    /** This function can be used in derived classes to get proportions from the framework.
-     *  @return Pointer to proportions.
-     */
-    STK::CArrayPoint<STK::Real> const* p_pk() const {return p_prop_;};
-    /** This function can be used in derived classes to get posterior probabilities from the framework.
-     *  @return Pointer to tik.
-     */
-    STK::Array2D<STK::Real> const* p_tik() const {return p_tik_;};
     /** This function can be used in derived classes to get class labels from the framework.
      *  @return Pointer to zi.
      */
@@ -191,10 +177,6 @@ class IMixture
     /** number of cluster */
     int nbCluster_;
 
-    /** Pointer to the proportions of each mixtures */
-    STK::CArrayPoint<STK::Real> const* p_prop_;
-    /** Pointer to the tik probabilities */
-    STK::Array2D<STK::Real> const* p_tik_;
     /** Pointer to the zik class label */
     STK::CArrayVector<int> const* p_zi_;
 };

@@ -175,11 +175,6 @@ class IMixtureComposerBase : public STK::IModelBase
      *  and compute the tik.
      **/
     void randomClassInit();
-    /** Replace tik by zik
-     *  @return the minimal value of individuals in a class
-     **/
-    int cStep();
-    void cStep(int i);
 
     /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
      *  @return the minimal value of individuals in a class
