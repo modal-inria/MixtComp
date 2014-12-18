@@ -79,6 +79,7 @@ double Poisson_k::lnComponentProbability(int i, int k) const
 
 std::string Poisson_k::mStep()
 {
+  std::string warn;
 #ifdef MC_DEBUG
     std::cout << "Gaussian_sjk::mStep" << std::endl;
     std::cout << "(*p_data_): " << (*p_data_) << std::endl;
@@ -117,7 +118,7 @@ std::string Poisson_k::mStep()
       warn += "Poisson model has an estimated lambda parameter < 0. Your data contains negative values. Have you considered using a Gaussian model ?\n";
     }
 
-    param_[k] = mean;
+    param_[k] = lambda;
   }
   return "";
 }
