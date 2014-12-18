@@ -23,6 +23,7 @@
 
 #include "mixt_Gaussian_sjk.h"
 #include "../../Various/mixt_Constants.h"
+#include "Arrays/include/STK_Display.h"
 
 namespace mixt
 {
@@ -160,6 +161,11 @@ void Gaussian_sjk::setModalities(int nbModalities)
 
 void Gaussian_sjk::setParameters(const STK::Array2D<STK::Real>& param)
 {
+#ifdef MC_DEBUG_NEW
+  std::cout << "Gaussian_sjk::setParameters" << std::endl;
+  std::cout << "param: " << param << std::endl;
+  std::cout << "param_: " << param_ << std::endl;
+#endif
   for (int i = 0; i < param.sizeRows(); ++i)
   {
     param_[i] = param(i, 0);
@@ -168,7 +174,7 @@ void Gaussian_sjk::setParameters(const STK::Array2D<STK::Real>& param)
 
 void Gaussian_sjk::writeParameters(std::ostream& out) const
 {
-  for (int k = 0; k < param_.sizeRows(); ++k)
+  for (int k = 0; k < nbCluster_; ++k)
   {
     out << "Component: " << k << std::endl;
     out << "\tmean: " << param_[2 * k    ] << std::endl;

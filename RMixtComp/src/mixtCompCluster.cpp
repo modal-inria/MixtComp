@@ -84,11 +84,11 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
 
   // run the strategy
   warnLog += strategy.run();
+  mcResults.slot("warnLog") = warnLog;
 
   if (warnLog == std::string())
   {
     composer.writeParameters(std::cout);
-
     composer.exportDataParam();
 
     // export the composer results to R through modifications of mcResults
@@ -115,7 +115,6 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   }
   else
   {
-    mcResults.slot("warnLog") = warnLog;
     std::cout << "!!! warnLog not empty !!!" << std::endl;
     std::cout << warnLog << std::endl;
   }

@@ -120,7 +120,7 @@ std::string Poisson_k::mStep()
 
     param_[k] = lambda;
   }
-  return "";
+  return warn;
 }
 
 int Poisson_k::nbVariable() const
@@ -153,7 +153,7 @@ void Poisson_k::setParameters(const STK::Array2D<STK::Real>& param)
 
 void Poisson_k::writeParameters(std::ostream& out) const
 {
-  for (int k = 0; k < param_.sizeRows(); ++k)
+  for (int k = 0; k < nbCluster_; ++k)
   {
     out << "Component: " << k << std::endl;
     out << "\tlambda: " << param_[k] << std::endl;

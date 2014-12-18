@@ -151,7 +151,7 @@ void Categorical_pjk::setParameters(const STK::Array2D<STK::Real>& param)
 
 void Categorical_pjk::writeParameters(std::ostream& out) const
 {
-  for (int k = 0; k < param_.sizeRows(); ++k)
+  for (int k = 0; k < nbCluster_; ++k)
   {
     out << "Component: " << k << std::endl;
     out << "\tlambda: " << param_[k] << std::endl;
