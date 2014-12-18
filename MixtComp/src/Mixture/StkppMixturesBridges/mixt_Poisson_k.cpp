@@ -89,7 +89,7 @@ std::string Poisson_k::mStep()
   {
     int nbSampleClass = 0; // number of samples in the current class
     STK::Real sumClassMean = 0.;
-    STK::Real mean = 0.;
+    STK::Real lambda = 0.;
 
     for (int i = 0; i < (*p_data_).sizeRows(); ++i)
     {
@@ -103,14 +103,20 @@ std::string Poisson_k::mStep()
         nbSampleClass += 1;
       }
     }
-    mean = sumClassMean / STK::Real(nbSampleClass);
+    lambda = sumClassMean / STK::Real(nbSampleClass);
 
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
     std::cout << "\tnbSampleClass: " << nbSampleClass << std::endl;
     std::cout << "\tsumClassMean: " << sumClassMean << std::endl;
-    std::cout << "\tmean: " << mean << std::endl;
+    std::cout << "\tlambda: " << mean << std::endl;
 #endif
+
+    if (lambda < 0.)
+    {
+      warn += "Poisson model has an estimated lambda parameter < 0. Your data contains negative values. Have you considered using a Gaussian model ?\n";
+    }
+
     param_[k] = mean;
   }
   return "";

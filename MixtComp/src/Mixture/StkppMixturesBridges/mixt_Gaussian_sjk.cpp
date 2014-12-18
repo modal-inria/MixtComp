@@ -126,7 +126,7 @@ std::string Gaussian_sjk::mStep()
 #ifdef MC_DEBUG
       std::cout << "\tnull estimated standard deviation" << param_ << std::endl;
 #endif
-      warn += "estimated standard deviation is zero for a Gaussian_sjk model. The data in your variable is not dispersed enough for this model. Try a more suited model.\n";
+      warn += "Gaussian model must have a non zero standard deviation. The estimated standard deviation is zero for this variable, as it is not dispersed enough for this model. Have you considered using a Poisson model ?\n";
     }
     param_[2 * k    ] = mean;
     param_[2 * k + 1] = sd;
