@@ -126,7 +126,20 @@ void DataExtractorR::exportVals(std::string idName,
 void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<STK::Array2D<int> >* p_augData,
                                 const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage)
-{};
+{
+  Rcpp::NumericMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
+                            p_augData->data_.sizeCols());
+  Rcpp::List missingData; // list to store all the missing values in a linear format
+
+  // basic copy of the data to the export object
+  for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
+  {
+    dataR(i, 0) = p_augData->data_(i, 0); // simple copy of the current data at the moment
+  }
+
+  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
+                                     Rcpp::Named("stat") = missingData);
+};
 
 Rcpp::List DataExtractorR::rcppReturnVal() const
 {

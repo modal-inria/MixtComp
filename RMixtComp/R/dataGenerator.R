@@ -136,6 +136,8 @@ dataParamGenerator <- function(nbSamplesLearn,
       {
         proba <- c(2. * maxMean * (runif(1) - 0.5),
                         maxVar  * runif(1))
+#         proba <- c(2. * maxMean * (runif(1) - 0.5), # null variance version
+#                    0)
         gaussianParams[((n - 1) * 2 + 1) :
                        ( n      * 2    ) , j] <- proba
       }

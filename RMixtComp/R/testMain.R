@@ -22,7 +22,7 @@ testLearnPredict <- function()
 }
 
 testGenDataLearn <- function(nbClass = 2,
-                             nbBurnInIter = 20,
+                             nbBurnInIter = 100,
                              nbSampleLearn = 500,
                              nbSamplePredict = 50,
                              confidenceLevel = 0.95,
@@ -31,11 +31,19 @@ testGenDataLearn <- function(nbClass = 2,
   missingCategorical <- c(0.8, # present
                           0.1, # missing
                           0.1) # missing finite value
+  
   missingGaussian <- c(0.5, # present
                        0.1, # missing
                        0.1, # missing interval
                        0.1, # missing left unbounded
                        0.1) # missing right unbounded
+
+#   missingGaussian <- c(1., # present
+#                        0., # missing
+#                        0., # missing interval
+#                        0., # missing left unbounded
+#                        0.) # missing right unbounded
+
   missingPoisson <- c(1.) # present
   
   #   missingCategorical <- c(1., # present
@@ -69,7 +77,10 @@ testGenDataLearn <- function(nbClass = 2,
                    "dataGen/learn/categoricalDescriptor.csv"),
                  c("dataGen/learn/poissonData.csv",
                    "dataGen/learn/poissonDescriptor.csv"))
-  
+
+#   lm <- getData(c("dataGen/learn/gaussianData.csv",
+#                   "dataGen/learn/gaussianDescriptor.csv"))
+
 #  lm <- getData(c("dataGen/learn/poissonData.csv",
 #                  "dataGen/learn/poissonDescriptor.csv"))
 
@@ -80,7 +91,7 @@ testGenDataLearn <- function(nbClass = 2,
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
                                   nbBurnInIter, # nbBurnInIter
                                   100, # nbIter
-                                  20, # nbGibbsBurnInIter
+                                  100, # nbGibbsBurnInIter
                                   100) # nbGibbsIter
   
   # launch of the MixtComp algorithm
@@ -109,7 +120,10 @@ testGenDataPredict <- function(prop,
                    "dataGen/predict/categoricalDescriptor.csv"),
                  c("dataGen/predict/poissonData.csv",
                    "dataGen/predict/poissonDescriptor.csv"))
-  
+   
+#   lm <- getData(c("dataGen/predict/gaussianData.csv",
+#                   "dataGen/predict/gaussianDescriptor.csv"))
+   
 #  lm <- getData(c("dataGen/predict/poissonData.csv",
 #                  "dataGen/predict/poissonDescriptor.csv"))
 
@@ -120,7 +134,7 @@ testGenDataPredict <- function(prop,
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
                                   nbBurnInIter, # nbBurnInIter
                                   100, # nbIter
-                                  20, # nbGibbsBurnInIter
+                                  100, # nbGibbsBurnInIter
                                   100) # nbGibbsIter
   
   # launch of the MixtComp algorithm
