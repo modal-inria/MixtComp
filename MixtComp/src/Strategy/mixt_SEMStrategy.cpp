@@ -135,7 +135,7 @@ std::string SemStrategy::run()
 
     p_composer_->finalizeStep();
 
-    return currWarn;
+    return ""; // if the last attempt is a success, consider the run a success
   }
 
   currWarn += "Number of initialization attempts exhausted. Try again with more initializations or other parameters.\n";
