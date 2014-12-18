@@ -124,6 +124,9 @@ std::string MixtureComposer::mStep()
   {
     warn += (*it)->mStep(); // call mStep on each variable
   }
+#ifdef MC_DEBUG
+  std::cout << "\twarn: " << warn << std::endl;
+#endif
   return warn;
 }
 

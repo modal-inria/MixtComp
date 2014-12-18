@@ -118,6 +118,7 @@ std::string Gaussian_sjk::mStep()
     std::cout << "k: " << k << std::endl;
     std::cout << "\tmean: " << mean << std::endl;
     std::cout << "\tsd: " << sd << std::endl;
+    std::cout << "\tepsilon: " << epsilon << std::endl;
 #endif
 
     if (sd < epsilon)

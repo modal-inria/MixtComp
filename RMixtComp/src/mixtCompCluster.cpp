@@ -85,34 +85,37 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   // run the strategy
   warnLog += strategy.run();
 
-  composer.writeParameters(std::cout);
-  composer.exportDataParam();
-
-  // export the composer results to R through modifications of mcResults
-  mcResults.slot("nbCluster") = nbClusters;
-  mcResults.slot("lnObservedLikelihood") = composer.lnObservedLikelihood();
-  mcResults.slot("lnCompletedLikelihood") = composer.lnCompletedLikelihood();
-
-  Rcpp::NumericVector proportions(nbClusters);
-  for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-    proportions[kR] = composer.p_pk()->elt(kS);
-  mcResults.slot("proportions") = proportions;
-
-  composer.mapStep(); // compute zi_ using maximum a posteriori instead of sampling it
-  Rcpp::NumericVector partition(handler.nbSample());
-  for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
-    partition[iR] = composer.p_zi()->elt(iS) + 1;
-  mcResults.slot("partition") = partition;
-
-  Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
-  for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
-    for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-      proba(iR, kR) = composer.p_tik()->elt(iS, kS);
-  mcResults.slot("proba") = proba;
-
-  mcResults.slot("warnLog") = warnLog;
-  if (warnLog != std::string())
+  if (warnLog == std::string())
   {
+    composer.writeParameters(std::cout);
+
+    composer.exportDataParam();
+
+    // export the composer results to R through modifications of mcResults
+    mcResults.slot("nbCluster") = nbClusters;
+    mcResults.slot("lnObservedLikelihood") = composer.lnObservedLikelihood();
+    mcResults.slot("lnCompletedLikelihood") = composer.lnCompletedLikelihood();
+
+    Rcpp::NumericVector proportions(nbClusters);
+    for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
+      proportions[kR] = composer.p_pk()->elt(kS);
+    mcResults.slot("proportions") = proportions;
+
+    composer.mapStep(); // compute zi_ using maximum a posteriori instead of sampling it
+    Rcpp::NumericVector partition(handler.nbSample());
+    for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
+      partition[iR] = composer.p_zi()->elt(iS) + 1;
+    mcResults.slot("partition") = partition;
+
+    Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
+    for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
+      for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
+        proba(iR, kR) = composer.p_tik()->elt(iS, kS);
+    mcResults.slot("proba") = proba;
+  }
+  else
+  {
+    mcResults.slot("warnLog") = warnLog;
     std::cout << "!!! warnLog not empty !!!" << std::endl;
     std::cout << warnLog << std::endl;
   }

@@ -7,6 +7,7 @@ setClass(
   Class="Results",
   representation=representation(
     nbCluster = "numeric",
+    nbFreeParameters = "numeric",
     lnCompletedLikelihood = "numeric",
     lnObservedLikelihood = "numeric",
     proportions = "numeric",
@@ -16,6 +17,7 @@ setClass(
   ),
   prototype=prototype(
     nbCluster = numeric(0),
+    nbFreeParameters = numeric(0),
     lnCompletedLikelihood = numeric(0),
     lnObservedLikelihood = numeric(0),
     proportions = numeric(0),
