@@ -68,8 +68,8 @@ setMethod(
     .Object@nbTrialInInit<-nbTrialInInit
     .Object@nbBurnInIter<-nbBurnInIter
     .Object@nbIter<-nbIter
-    .Object@nbGibbsBurnInIter <- 20
-    .Object@nbGibbsIter<-100
+    .Object@nbGibbsBurnInIter <- nbGibbsBurnInIter
+    .Object@nbGibbsIter <- nbGibbsIter
     validObject(.Object)
     return(.Object)
   }

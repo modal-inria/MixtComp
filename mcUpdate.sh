@@ -1,4 +1,5 @@
 cd RMixtComp
 git pull
-make cleanAll
+make cleanRMCbase
+# make cleanAll
 make all
