@@ -130,22 +130,25 @@ STK::Real IMixtureComposerBase::eStep(int i)
   std::cout << "IMixtureComposerBase::eStep(i), i: " << i << std::endl;
 #endif
   STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
-  for (int k = tik_.firstIdxCols(); k <= tik_.lastIdxCols(); k++)
+  for (int k = 0; k < nbCluster_; k++)
   {
-    lnComp[k] = lnComponentProbability(i, k);
+    lnComp[k] = std::log(prop_[k]) + lnComponentProbability(i, k);
   }
-  int kmax;
-  STK::Real max = lnComp.maxElt(kmax);
-  // compute sum_k pk exp{lnCom_k - lnComp_kmax}
-  STK::Real sum2 = (lnComp -= max).exp().dot(prop_);
-  // compute likelihood of each sample for each component
-  tik_.row(i) = (prop_ * lnComp.exp())/sum2;
+
+  STK::Real lnCompMax = lnComp.maxElt();
+  STK::Array2DPoint<STK::Real> lnCompDenom = lnComp;
+  lnCompDenom -= lnCompMax;
+  lnCompDenom = lnCompDenom.exp();
+  STK::Real lnCompDenomSum = lnCompDenom.sum();
+  lnCompDenomSum = lnCompMax + std::log(lnCompDenomSum);
+  lnComp -= lnCompDenomSum;
+
+  tik_.row(i) = lnComp.exp();
 
 #ifdef MC_DEBUG
   std::cout << "\tmax: " << max << ", sum2: " << sum2 << std::endl;
+  std::cout << "tik_.row(i): " << tik_.row(i) << std::endl;
 #endif
-
-  return max + std::log(sum2);
 }
 
 /* Compute prop using the ML estimator, default implementation. */

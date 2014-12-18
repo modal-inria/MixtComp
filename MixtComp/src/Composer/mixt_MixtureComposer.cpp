@@ -224,21 +224,23 @@ void MixtureComposer::misClasStep(int iteration)
     }
     for (int i = 0; i < nbSample_; ++i)
     {
-      probClass(i, k) = lnComponentProbability(i, k);
+      probClass(i, k) = std::log(prop_[k]) + lnComponentProbability(i, k);
     }
   }
 
   // equivalent of the estep to compute new tik_
-  for (int i = tik_.firstIdxRows(); i <= tik_.lastIdxRows(); ++i)
+  for (int i = 0; i < nbSample_; ++i)
   {
     STK::Array2DPoint<STK::Real> lnComp;
     lnComp = probClass.row(i);
-    int kmax;
-    STK::Real max = lnComp.maxElt(kmax);
-    // compute sum_k pk exp{lnCom_k - lnComp_kmax}
-    STK::Real sum2 =  (lnComp -= max).exp().dot(prop_);
-    // compute likelihood of each sample for each component
-    tik_.row(i) = (prop_ * lnComp.exp()) / sum2;
+    STK::Real lnCompMax = lnComp.maxElt();
+    STK::Array2DPoint<STK::Real> lnCompDenom = lnComp;
+    lnCompDenom -= lnCompMax;
+    lnCompDenom = lnCompDenom.exp();
+    STK::Real lnCompDenomSum = lnCompDenom.sum();
+    lnCompDenomSum = lnCompMax + std::log(lnCompDenomSum);
+    lnComp -= lnCompDenomSum;
+    tik_.row(i) = lnComp.exp();
   }
 }
 
