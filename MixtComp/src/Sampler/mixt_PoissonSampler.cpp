@@ -45,7 +45,7 @@ void PoissonSampler::sampleIndividual(int i, int z_i)
 
   if (p_augData_->misData_(i, 0).first != present_)
   {
-    STK::Real x;
+    int x;
     STK::Real lambda = p_param_->elt(z_i, 0);
 
 #ifdef MC_DEBUG

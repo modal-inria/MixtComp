@@ -134,7 +134,22 @@ void DataExtractorR::exportVals(std::string idName,
   // basic copy of the data to the export object
   for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
   {
-    dataR(i, 0) = p_augData->data_(i, 0); // simple copy of the current data at the moment
+    if (p_augData->misData_(i, 0).first == present_)
+    {
+      dataR(i, 0) = p_augData->data_(i, 0);
+    }
+    else
+    {
+      Rcpp::List currList; // storage for the current missing value
+      currList.push_back(i + 1); // R matrices rows start at 1
+      currList.push_back(p_dataStatStorage->elt(i, 0)[0]); // expectation
+      currList.push_back(p_dataStatStorage->elt(i, 0)[1]); // left bound
+      currList.push_back(p_dataStatStorage->elt(i, 0)[2]); // right bound
+
+      missingData.push_back(currList);
+
+      dataR(i, 0) = p_dataStatStorage->elt(i,0)[0]; // imputation by the expectation
+    }
   }
 
   data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,

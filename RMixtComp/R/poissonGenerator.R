@@ -26,6 +26,32 @@ missingPoissonData <- function(data,
 {
   listMissingInd <- list()
   nbMissingVal <- 0
+  
+  for (i in 1:nrow(data))
+  {
+    nbVar <- ncol(data)
+    nbSampleVar <- sample(nbVar - 1, 1) # number of modalities to be drawn
+    sampledVar <- sort(sample(nbVar, nbSampleVar)) # modalities drawn
+    isMissing <- F
+    for (j in sampledVar)
+    {
+      missType <- match(1,
+                        rmultinom(1,
+                                  1,
+                                  missingParams))
+      if (missType == 2) # missing
+      {
+        data[i, j] <- "?"
+        isMissing <- T
+        nbMissingVal <- nbMissingVal + 1
+      }
+      if (isMissing == T)
+      {
+        listMissingInd <- append(listMissingInd, i)
+      }
+    }
+  }  
+  
   return(list(data = data,
               listMissingInd = listMissingInd,
               nbMissingVal = nbMissingVal))
