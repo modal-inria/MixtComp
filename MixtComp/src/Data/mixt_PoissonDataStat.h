@@ -51,7 +51,7 @@ class PoissonDataStat
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: iteration
      * Variables are ignored, as they are not supported in the global framework*/
-    STK::Array2DVector<int> tempStat_;
+    STK::Array2DVector<int> stat_;
 
     /** Confidence level */
     STK::Real confidenceLevel_;

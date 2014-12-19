@@ -41,14 +41,11 @@ GaussianDataStat::~GaussianDataStat() {};
 void GaussianDataStat::sample(int ind,
                               int iteration)
 {
-  for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+  if (pm_augDataij_->misData_(ind, 0).first != present_)
   {
-    if (pm_augDataij_->misData_(ind, j).first != present_)
-    {
-      STK::Real currVal = pm_augDataij_->data_(ind,
-                                               j);
-      tempStat_[j][iteration] = currVal;
-    }
+    STK::Real currVal = pm_augDataij_->data_(ind,
+                                             0);
+    stat_[iteration] = currVal;
   }
 }
 
@@ -62,17 +59,7 @@ void GaussianDataStat::sampleVals(int ind,
   if (iteration == 0) // clear the temporary statistical object
   {
     // initialize internal storage
-    tempStat_.resize(pm_augDataij_->data_.sizeCols());
-
-    // creation of the vectors to store the sampled values
-    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
-    {
-      if (pm_augDataij_->misData_(ind, j).first != present_)
-      {
-        tempStat_[j] = STK::Array2DVector<STK::Real>(iterationMax + 1,
-                                                     0.);
-      }
-    }
+    stat_.resize(iterationMax + 1);
 
 #ifdef MC_DEBUG
     std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
@@ -91,39 +78,36 @@ void GaussianDataStat::sampleVals(int ind,
     // last sampling
     sample(ind, iteration);
 
-    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    if (pm_augDataij_->misData_(ind, 0).first != present_)
     {
-      if (pm_augDataij_->misData_(ind, j).first != present_)
-      {
 #ifdef MC_DEBUG
-        std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
-        std::cout << "j: " << j << std::endl;
-        std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): " << p_dataStatStorage_->sizeCols() << std::endl;
-        std::cout << "tempStat_[j].sizeRows(): " << tempStat_[j].sizeRows() << std::endl;
-        std::cout << "tempStat_[j]: " << std::endl;
-        std::cout << tempStat_[j] << std::endl;
+      std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
+      std::cout << "j: " << j << std::endl;
+      std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): " << p_dataStatStorage_->sizeCols() << std::endl;
+      std::cout << "tempStat_[j].sizeRows(): " << tempStat_[j].sizeRows() << std::endl;
+      std::cout << "tempStat_[j]: " << std::endl;
+      std::cout << tempStat_[j] << std::endl;
 #endif
-        STK::Array2DVector<int> indOrder; // to store indices of ascending order
-        STK::heapSort(indOrder, tempStat_[j]);
-        STK::Real alpha = (1. - confidenceLevel_) / 2.;
-        STK::Real realIndLow = alpha * iterationMax;
-        STK::Real realIndHigh = (1. - alpha) * iterationMax;
+      STK::Array2DVector<int> indOrder; // to store indices of ascending order
+      STK::heapSort(indOrder, stat_);
+      STK::Real alpha = (1. - confidenceLevel_) / 2.;
+      STK::Real realIndLow = alpha * iterationMax;
+      STK::Real realIndHigh = (1. - alpha) * iterationMax;
 
-        STK::Array2DPoint<STK::Real> tempVec(3);
-        tempVec[0] = tempStat_[j].mean();
-        tempVec[1] =  (1. - (realIndLow  - int(realIndLow ))) * tempStat_[j][indOrder[int(realIndLow )    ]]
-                    + (      realIndLow  - int(realIndLow ) ) * tempStat_[j][indOrder[int(realIndLow ) + 1]];
-        tempVec[2] =  (1. - (realIndHigh - int(realIndHigh))) * tempStat_[j][indOrder[int(realIndHigh)    ]]
-                    + (      realIndHigh - int(realIndHigh) ) * tempStat_[j][indOrder[int(realIndHigh) + 1]];
-        p_dataStatStorage_->elt(ind, j) = tempVec;
+      STK::Array2DPoint<STK::Real> tempPoint(3);
+      tempPoint[0] = stat_.mean();
+      tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_[indOrder[int(realIndLow )    ]]
+                    + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];
+      tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_[indOrder[int(realIndHigh)    ]]
+                    + (      realIndHigh - int(realIndHigh) ) * stat_[indOrder[int(realIndHigh) + 1]];
+      p_dataStatStorage_->elt(ind, 0) = tempPoint;
 #ifdef MC_DEBUG
-        std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
-        std::cout << "alpha: " << alpha << std::endl;
-        std::cout << "realIndLow: " << realIndLow << std::endl;
-        std::cout << "realIndHigh: " << realIndHigh << std::endl;
-        std::cout << "tempVec: " << tempVec << std::endl;
+      std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
+      std::cout << "alpha: " << alpha << std::endl;
+      std::cout << "realIndLow: " << realIndLow << std::endl;
+      std::cout << "realIndHigh: " << realIndHigh << std::endl;
+      std::cout << "tempVec: " << tempVec << std::endl;
 #endif
-      }
     }
   }
   else

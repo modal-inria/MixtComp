@@ -21,35 +21,29 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <boost/math/distributions/normal.hpp>
-
-template<class T>
-double gen_normal_3(T &generator)
-{
-  return generator();
-}
-
-// Version that fills a vector
-template<class T>
-void gen_normal_3(T &generator,
-              std::vector<double> &res)
-{
-  for(size_t i=0; i<res.size(); ++i)
-    res[i]=generator();
-}
-
-int main(void)
-{
-  boost::variate_generator<boost::mt19937, boost::normal_distribution<> >
-    generator(boost::mt19937(time(0)),
-              boost::normal_distribution<>());
-
-  for(size_t i=0; i<10; ++i)
-    std::cout<<gen_normal_3(generator)
-             <<std::endl;
-}
+#include "DManager/include/STK_HeapSort.h"
+#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DVector.h"
+#include "Arrays/include/STK_Array2DPoint.h"
+#include "Arrays/include/STK_Display.h"
 
 int main()
 {
+  STK::Array2D<STK::Real> test(3, 3, 0.);
 
+  test(0, 0) = 1.;
+  test(0, 1) = 12.;
+  test(0, 2) = 89.;
+  test(1, 0) = 14.;
+  test(1, 1) = 78.;
+  test(1, 2) = 1.3;
+  test(2, 0) = 0.5;
+  test(2, 1) = 74.7;
+  test(2, 2) = 3.3;
+
+  STK::Array2DVector<int> indOrder; // to store indices of ascending order
+  STK::heapSort(indOrder, test.row(1));
+
+  std::cout << test << std::endl;
+  std::cout << indOrder << std::endl;
 }

@@ -48,10 +48,9 @@ class GaussianDataStat
     /** Sparse description of the missing values */
     STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage_;
 
-    /** Array to count sampled values across iterations, for the current individual, access: tempStat_[j][i]
-     * i: iteration
-     * j: variable */
-    STK::Array2DPoint<STK::Array2DVector<STK::Real> > tempStat_;
+    /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
+     * i: sampling iteration */
+    STK::Array2DPoint<STK::Real> stat_;
 
     /** Confidence level */
     STK::Real confidenceLevel_;

@@ -56,10 +56,9 @@ class CategoricalDataStat
                                           Eigen::Dynamic,
                                           Eigen::Dynamic>* p_dataStatStorage_;
 
-    /** Array to count sampled values across iterations, for the current individual, , access: tempStat_[j][i]
-     * i: modality
-     * j: variable */
-    STK::Array2DPoint<STK::Array2DVector<STK::Real> > tempStat_;
+    /** Array to count sampled values across iterations, for the current individual,
+     * i: modalities */
+    STK::Array2DVector<int> stat_;
 
     /** Confidence level */
     STK::Real confidenceLevel_;

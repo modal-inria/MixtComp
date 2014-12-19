@@ -45,7 +45,7 @@ void PoissonDataStat::sample(int ind,
   {
     int currVal = pm_augDataij_->data_(ind,
                                        0);
-    tempStat_[iteration] = currVal;
+    stat_[iteration] = currVal;
   }
 }
 
@@ -60,7 +60,7 @@ void PoissonDataStat::sampleVals(int ind,
   {
     if (pm_augDataij_->misData_(ind, 0).first != present_)
     {
-      tempStat_ = STK::Array2DVector<STK::Real>(iterationMax + 1,
+      stat_ = STK::Array2DVector<STK::Real>(iterationMax + 1,
                                                 0.);
     }
 
