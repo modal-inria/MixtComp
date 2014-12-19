@@ -54,8 +54,8 @@ void GaussianLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* ln
     {
       if (p_augData_->misData_(i, j).first == present_)   // likelihood for present value
       {
-        STK::Real mean  = p_param_->elt(2*k    , j);
-        STK::Real sd    = p_param_->elt(2*k + 1, j);
+        STK::Real mean  = p_param_->elt(2 * k    , j);
+        STK::Real sd    = p_param_->elt(2 * k + 1, j);
 
         STK::Real proba = normal_.pdf(p_augData_->data_(i, j),
                                       mean,
@@ -65,8 +65,8 @@ void GaussianLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* ln
       }
       else // likelihood for missing values, imputation by the expectation
       {
-        STK::Real mean  = p_param_->elt(2*k    , j);
-        STK::Real sd    = p_param_->elt(2*k + 1, j);
+        STK::Real mean  = p_param_->elt(2 * k    , j);
+        STK::Real sd    = p_param_->elt(2 * k + 1, j);
 
         STK::Real proba = normal_.pdf(p_dataStatStorage_->elt(i, j)[0],
                                       mean,
@@ -88,8 +88,8 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
   {
     for (int i = 0; i < p_augData_->data_.sizeCols(); ++i)
     {
-      STK::Real mean  = p_param_->elt(2*k    , j);
-      STK::Real sd    = p_param_->elt(2*k + 1, j);
+      STK::Real mean  = p_param_->elt(2 * k    , j);
+      STK::Real sd    = p_param_->elt(2 * k + 1, j);
 
       STK::Real proba;
       STK::Real logProba;
@@ -98,8 +98,8 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
       {
         case present_:
         {
-          STK::Real mean  = p_param_->elt(2*k    , j);
-          STK::Real sd    = p_param_->elt(2*k + 1, j);
+          STK::Real mean  = p_param_->elt(2 * k    , j);
+          STK::Real sd    = p_param_->elt(2 * k + 1, j);
 
           proba = normal_.pdf(p_augData_->data_(i, j),
                               mean,

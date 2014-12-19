@@ -51,20 +51,21 @@ class SimpleParamStat
     // number of parameters
     int nbParam_;
 
-    // number of variables in the model
-    int nbVar_;
-
     // pointer to param array
     STK::Array2D<STK::Real>* p_param_;
 
-    /** Storage for iterations results, first dim parameter (variable 1: mean var), second dim iteration */
-    STK::Array2DPoint<STK::Array2DVector<STK::Real> > stat_;
+    /** Storage for iterations results,
+     * first dimension: index of the parameter
+     * second dimension: iteration of the stored value */
+    STK::Array2D<STK::Real> stat_;
 
     /** Pointer to array to export the statistics at the last iteration */
     STK::Array2D<STK::Real>* p_paramStatStorage_;
 
     /** Confidence level */
     STK::Real confidenceLevel_;
+
+    void sample(int iteration);
 };
 
 } // namespace mixt

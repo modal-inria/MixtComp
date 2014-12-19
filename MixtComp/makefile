@@ -35,7 +35,8 @@ LIB_RE = ./regex/libregex.a
 # phony prerequisites are executed unconditionally
 .PHONY: all exe obj clean test
 
-all: lib $(LIB_RE) $(EXE_MC) $(EXE_TEST)
+# all: lib $(LIB_RE) $(EXE_MC) $(EXE_TEST)
+all: lib $(LIB_RE) $(EXE_TEST)
 
 clean:
 	find -L . -type f -name "*.o" -exec rm -f {} \;
@@ -44,10 +45,10 @@ clean:
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 
 $(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
-	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
+	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost -I../boost src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
 
-$(EXE_TEST): $(LIB_MC) $(LIB_STK) $(LIB_RE)
-	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
+$(EXE_TEST): $(LIB_MC) $(LIB_STK) $(LIB_RE) src/Prog/mcTest.cpp
+	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost -I../eigen src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
 	
 lib: obj $(LIB_MC)
 
