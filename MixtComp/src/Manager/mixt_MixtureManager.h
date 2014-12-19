@@ -25,7 +25,7 @@
 #ifndef MIXT_MIXTUREMANAGER_H
 #define MIXT_MIXTUREMANAGER_H
 
-#include "../Mixture/StkppMixturesBridges/mixt_MixtureBridge.h"
+#include "../Mixture/SimpleMixtureBridge/mixt_MixtureBridge.h"
 #include "../Composer/mixt_MixtureComposer.h"
 
 namespace mixt

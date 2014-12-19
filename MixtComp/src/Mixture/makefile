@@ -66,7 +66,7 @@ SRC = $(wildcard *.cpp)
 DIST_O = $(SRC:%.cpp=$(BIN_DIR)/%.o)
 
 all: $(DIST_O)
-	$(MAKE) -C StkppMixturesBridges
+	$(MAKE) -C SimpleMixtureBridge
 
 $(DIST_O): $(BIN_DIR)/%.o : %.o
 	cp $< $@
