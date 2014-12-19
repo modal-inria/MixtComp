@@ -63,7 +63,7 @@ std::string SEMAlgo::run()
     std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
 #endif
     myTimer.setName("SEM burn-in");
-    p_model_->storeBurnIn(-1,
+    p_model_->storeSEMBurnIn(-1,
                           nbIterMax_ - 1); // export of the initial partition
   }
   else if (p_model_->state() == longRun_)
@@ -125,7 +125,7 @@ std::string SEMAlgo::run()
 #ifdef MC_DEBUG
     std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
 #endif
-      p_model_->storeBurnIn(iter,
+      p_model_->storeSEMBurnIn(iter,
                             nbIterMax_ - 1);
     }
 
@@ -134,7 +134,7 @@ std::string SEMAlgo::run()
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
 #endif
-      p_model_->storeParam(iter,
+      p_model_->storeSEMRun(iter,
                            nbIterMax_ - 1);
     }
   }

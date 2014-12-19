@@ -215,7 +215,7 @@ class MixtureBridge : public mixt::IMixture
     /** This function should be used to store any results during the burn-in period
      *  @param iteration Provides the iteration number during the burn-in period
      */
-    virtual void storeBurnIn(int iteration,
+    virtual void storeSEMBurnIn(int iteration,
                                int iterationMax)
     {
 #ifdef MC_LOG
@@ -240,7 +240,7 @@ class MixtureBridge : public mixt::IMixture
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
      */
-    virtual void storeParam(int iteration,
+    virtual void storeSEMRun(int iteration,
                               int iterationMax)
     {
       mixture_.getParameters(param_);
@@ -254,7 +254,7 @@ class MixtureBridge : public mixt::IMixture
       }
     }
 
-    virtual void storeData(int sample,
+    virtual void storeGibbsRun(int sample,
                            int iteration,
                            int iterationMax)
     {

@@ -241,8 +241,8 @@ void MixtureComposer::misClasStep(int iteration)
   }
 }
 
-void MixtureComposer::storeBurnIn(int iteration,
-                                    int iterationMax)
+void MixtureComposer::storeSEMBurnIn(int iteration,
+                                     int iterationMax)
 {
 #ifdef MC_LOG
   std::stringstream fileName;
@@ -253,30 +253,30 @@ void MixtureComposer::storeBurnIn(int iteration,
 #endif
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeBurnIn(iteration,
+    (*it)->storeSEMBurnIn(iteration,
+                          iterationMax);
+  }
+}
+
+void MixtureComposer::storeSEMRun(int iteration,
+                                  int iterationMax)
+{
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->storeSEMRun(iteration,
                        iterationMax);
   }
 }
 
-void MixtureComposer::storeParam(int iteration,
-                                   int iterationMax)
+void MixtureComposer::storeGibbsRun(int sample,
+                                 int iteration,
+                                 int iterationMax)
 {
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->storeParam(iteration,
+    (*it)->storeGibbsRun(sample,
+                      iteration,
                       iterationMax);
-  }
-}
-
-void MixtureComposer::storeData(int sample,
-                                int iteration,
-                                int iterationMax)
-{
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    (*it)->storeData(sample,
-                     iteration,
-                     iterationMax);
   }
 }
 
@@ -312,9 +312,9 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter)
       eStep(i);
       sStep(i);
       samplingStep(i);
-      storeData(i,
-                iterGibbs,
-                nbGibbsIter - 1);
+      storeGibbsRun(i,
+                 iterGibbs,
+                 nbGibbsIter - 1);
     }
   }
 }

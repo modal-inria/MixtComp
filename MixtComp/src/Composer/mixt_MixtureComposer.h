@@ -117,20 +117,20 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
-    virtual void storeBurnIn(int iteration,
+    virtual void storeSEMBurnIn(int iteration,
                                int iterationMax);
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
-    virtual void storeParam(int iteration,
-                              int iterationMax);
+    virtual void storeSEMRun(int iteration,
+                             int iterationMax);
     /** @brief This step can be used to signal to the mixtures that they
      * must store data. This is usually called after the long algo, to
      * store data generated using the estimated parameters during a Gibbs sampling
      */
-    virtual void storeData(int sample,
-                           int iteration,
-                           int iterationMax);
+    virtual void storeGibbsRun(int sample,
+                               int iteration,
+                               int iterationMax);
 
     /**@brief This step can be used to ask each mixture to export its model parameters
      * and data
