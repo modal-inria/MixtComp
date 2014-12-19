@@ -29,8 +29,7 @@ GaussianSampler::GaussianSampler(AugmentedData<STK::Array2D<STK::Real> >* p_augD
                                  const STK::Array2D<STK::Real>* p_param,
                                  int nbClass) :
     p_augData_(p_augData),
-    p_param_(p_param),
-    p_zi_(0)
+    p_param_(p_param)
 {}
 
 GaussianSampler::~GaussianSampler()

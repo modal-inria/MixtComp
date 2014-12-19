@@ -27,7 +27,6 @@
 
 #include "Arrays/include/STK_Array2D.h"
 #include "Arrays/include/STK_Array2DVector.h"
-#include "Arrays/include/STK_CArrayVector.h"
 
 
 namespace mixt
@@ -48,7 +47,7 @@ class Categorical_pjk
     std::string mStep();
     int nbVariable() const;
     void setData(STK::Array2D<Type>& data);
-    void setMixtureParameters(STK::CArrayVector<int> const* p_zi);
+    void setMixtureParameters(STK::Array2DVector<int> const* p_zi);
     void setModalities(int nbModalities);
     void setParameters(const STK::Array2D<STK::Real>& param);
     void writeParameters(std::ostream& out) const;
@@ -58,7 +57,7 @@ class Categorical_pjk
     int nbModalities_;
     STK::Array2D<Type>* p_data_;
     STK::Array2DVector<STK::Real> param_;
-    STK::CArrayVector<int> const* p_zi_;
+    STK::Array2DVector<int> const* p_zi_;
 };
 
 } // namespace mixt

@@ -26,7 +26,6 @@
 #define MIXT_CATEGORICALSAMPLER_H
 
 #include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_CArrayVector.h"
 #include "../Data/mixt_AugmentedData.h"
 
 namespace mixt
@@ -45,7 +44,6 @@ class CategoricalSampler
     int nbClass_;
     AugmentedData<STK::Array2D<int> >* p_augData_;
     const STK::Array2D<STK::Real>* p_param_;
-    const STK::CArrayVector<int>* p_zi_;
 };
 
 } // namespace mixt

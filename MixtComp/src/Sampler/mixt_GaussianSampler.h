@@ -26,7 +26,6 @@
 #define MIXT_GAUSSIANSAMPLER_H
 
 #include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_CArrayVector.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_UniformStatistic.h"
 #include "../Statistic/mixt_NormalStatistic.h"
@@ -47,7 +46,6 @@ class GaussianSampler
   private:
     AugmentedData<STK::Array2D<STK::Real> >* p_augData_;
     const STK::Array2D<STK::Real>* p_param_;
-    const STK::CArrayVector<int>* p_zi_;
 
     /** left bounded sampler */
     STK::Real lbSampler(STK::Real lower);

@@ -25,7 +25,6 @@
 #define MIXT_POISSONSAMPLER_H
 
 #include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_CArrayVector.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_PoissonStatistic.h"
 
@@ -44,7 +43,6 @@ class PoissonSampler
   private:
     AugmentedData<STK::Array2D<int> >* p_augData_;
     const STK::Array2D<STK::Real>* p_param_;
-    const STK::CArrayVector<int>* p_zi_;
 
     /** Statistic object to describe Poisson law */
     PoissonStatistic poisson_;

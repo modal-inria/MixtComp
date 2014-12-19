@@ -149,7 +149,7 @@ void Gaussian_sjk::setData(STK::Array2D<Type>& data)
   p_data_ = &data;
 }
 
-void Gaussian_sjk::setMixtureParameters(STK::CArrayVector<int> const* p_zi)
+void Gaussian_sjk::setMixtureParameters(STK::Array2DVector<int> const* p_zi)
 {
   p_zi_ = p_zi; // only the z_i is used in SEM
 }

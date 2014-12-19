@@ -72,7 +72,7 @@ class MixtureBridge : public mixt::IMixture
      **/
     MixtureBridge(std::string const& idName,
                   int nbCluster,
-                  STK::CArrayVector<int> const* p_zi,
+                  STK::Array2DVector<int> const* p_zi,
                   const DataHandler* p_handler_,
                   DataExtractor* p_extractor,
                   const ParamSetter* p_paramSetter,

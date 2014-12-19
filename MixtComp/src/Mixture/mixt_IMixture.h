@@ -43,7 +43,7 @@ class IMixture
      * @param nbCluster number of cluster
      */
     IMixture(std::string const& idName,
-             STK::CArrayVector<int> const* p_zi,
+             STK::Array2DVector<int> const* p_zi,
              int nbCluster) :
       idName_(idName),
       nbCluster_(nbCluster),
@@ -170,7 +170,7 @@ class IMixture
     /** This function can be used in derived classes to get class labels from the framework.
      *  @return Pointer to zi.
      */
-    STK::CArrayVector<int> const* p_zi() const {return p_zi_;};
+    STK::Array2DVector<int> const* p_zi() const {return p_zi_;};
 
     /** Id name of the mixture */
     std::string idName_;
@@ -178,7 +178,7 @@ class IMixture
     int nbCluster_;
 
     /** Pointer to the zik class label */
-    STK::CArrayVector<int> const* p_zi_;
+    STK::Array2DVector<int> const* p_zi_;
 };
 
 } // namespace STK

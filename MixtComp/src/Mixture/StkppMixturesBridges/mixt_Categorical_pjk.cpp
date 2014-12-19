@@ -129,7 +129,7 @@ void Categorical_pjk::setData(STK::Array2D<Type>& data)
   p_data_ = &data;
 }
 
-void Categorical_pjk::setMixtureParameters(STK::CArrayVector<int> const* p_zi)
+void Categorical_pjk::setMixtureParameters(STK::Array2DVector<int> const* p_zi)
 {
   p_zi_ = p_zi;
 }

@@ -27,7 +27,6 @@
 
 #include "Arrays/include/STK_Array2D.h"
 #include "Arrays/include/STK_Array2DVector.h"
-#include "Arrays/include/STK_CArrayVector.h"
 #include "../../Statistic/mixt_NormalStatistic.h"
 
 namespace mixt
@@ -62,7 +61,7 @@ class Gaussian_sjk
 
     int nbVariable() const;
 
-    void setMixtureParameters(STK::CArrayVector<int> const* p_zi);
+    void setMixtureParameters(STK::Array2DVector<int> const* p_zi);
 
     void setModalities(int nbModalities);
 
@@ -71,7 +70,7 @@ class Gaussian_sjk
     int nbCluster_;
     STK::Array2DVector<STK::Real> param_;
     STK::Array2D<Type>* p_data_;
-    STK::CArrayVector<int> const* p_zi_;
+    STK::Array2DVector<int> const* p_zi_;
 
     /** Statistic object to describe Poisson law */
     NormalStatistic normal_;
