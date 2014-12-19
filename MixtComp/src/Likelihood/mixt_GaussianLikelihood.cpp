@@ -30,7 +30,7 @@
 namespace mixt
 {
 
-GaussianLikelihood::GaussianLikelihood(const STK::Array2D<STK::Real>* p_param,
+GaussianLikelihood::GaussianLikelihood(const STK::Array2DVector<STK::Real>* p_param,
                                        const AugmentedData<STK::Array2D<STK::Real> >* augData,
                                        const STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
                                        int nbClass) :

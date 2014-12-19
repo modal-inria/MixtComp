@@ -35,7 +35,7 @@ class PoissonLikelihood
 {
   public:
     /** Constructor */
-    PoissonLikelihood(const STK::Array2D<STK::Real>* p_param,
+    PoissonLikelihood(const STK::Array2DVector<STK::Real>* p_param,
                       const AugmentedData<STK::Array2D<int> >* augData,
                       const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
                       int nbClass);
@@ -50,7 +50,7 @@ class PoissonLikelihood
 
   private:
     /** Pointer to parameters table */
-    const STK::Array2D<STK::Real>* p_param_;
+    const STK::Array2DVector<STK::Real>* p_param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
     const AugmentedData<STK::Array2D<int> >* p_augData_;

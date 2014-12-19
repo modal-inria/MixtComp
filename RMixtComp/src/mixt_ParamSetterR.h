@@ -24,7 +24,7 @@
 #ifndef MIXT_PARAMSETTERR_H
 #define MIXT_PARAMSETTERR_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DVector.h"
 #include "Rcpp.h"
 
 namespace mixt
@@ -36,7 +36,7 @@ class ParamSetterR
     ParamSetterR(const Rcpp::List param);
     ~ParamSetterR();
     void getParam(std::string idName,
-                  STK::Array2D<STK::Real>& param) const;
+                  STK::Array2DVector<STK::Real>& param) const;
   private:
     const Rcpp::List param_;
 };

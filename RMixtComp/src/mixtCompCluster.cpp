@@ -68,7 +68,8 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   // prepare the composer
   mixt::MixtureComposer composer(handler.nbSample(),
                                  handler.nbVariable(),
-                                 nbClusters);
+                                 nbClusters,
+                                 confidenceLevel);
 
   manager.createMixtures(composer,
                          nbClusters);

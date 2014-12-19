@@ -241,7 +241,7 @@ class MixtureBridge : public mixt::IMixture
      *  @param iteration Provides the iteration number beginning after the burn-in period.
      */
     virtual void storeSEMRun(int iteration,
-                              int iterationMax)
+                             int iterationMax)
     {
       mixture_.getParameters(param_);
       paramStat_.sampleParam(iteration,
@@ -255,8 +255,8 @@ class MixtureBridge : public mixt::IMixture
     }
 
     virtual void storeGibbsRun(int sample,
-                           int iteration,
-                           int iterationMax)
+                               int iteration,
+                               int iterationMax)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::storeData, for " << idName()
@@ -348,7 +348,7 @@ class MixtureBridge : public mixt::IMixture
       return &m_augDataij_;
     }
 
-    virtual const STK::Array2D<STK::Real>* getParam() const
+    virtual const STK::Array2DVector<STK::Real>* getParam() const
     {
       return &param_;
     }
@@ -378,7 +378,7 @@ class MixtureBridge : public mixt::IMixture
     /** The augmented data set */
     AugData m_augDataij_;
     /** Current parameters of the STK Mixture */
-    STK::Array2D<STK::Real> param_;
+    STK::Array2DVector<STK::Real> param_;
     /** Parameters transmitted by the user */
     std::string paramStr_;
     /** number of samples in the data set*/

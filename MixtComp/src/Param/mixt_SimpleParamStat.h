@@ -34,7 +34,7 @@ namespace mixt
 class SimpleParamStat
 {
   public:
-    SimpleParamStat(STK::Array2D<STK::Real>* p_param,
+    SimpleParamStat(STK::Array2DVector<STK::Real>* p_param,
                     STK::Array2D<STK::Real>* p_paramStatStorage,
                     STK::Real confidenceLevel);
     ~SimpleParamStat();
@@ -52,7 +52,7 @@ class SimpleParamStat
     int nbParam_;
 
     // pointer to param array
-    STK::Array2D<STK::Real>* p_param_;
+    STK::Array2DVector<STK::Real>* p_param_;
 
     /** Storage for iterations results,
      * first dimension: index of the parameter

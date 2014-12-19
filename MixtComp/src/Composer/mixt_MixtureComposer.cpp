@@ -35,9 +35,13 @@ namespace mixt
 
 MixtureComposer::MixtureComposer(int nbSample,
                                  int nbVariable,
-                                 int nbCluster) :
+                                 int nbCluster,
+                                 STK::Real confidenceLevel) :
     mixt::IMixtureComposerBase(nbSample,
-                               nbCluster)
+                               nbCluster),
+    paramStat_(&prop_,
+               &paramStatStorage_,
+               confidenceLevel)
 {}
 
 MixtureComposer::~MixtureComposer()
@@ -261,6 +265,13 @@ void MixtureComposer::storeSEMBurnIn(int iteration,
 void MixtureComposer::storeSEMRun(int iteration,
                                   int iterationMax)
 {
+  paramStat_.sampleParam(iteration,
+                         iterationMax);
+  if (iteration == iterationMax)
+  {
+    // reinject the SEM estimated parameters into the mixture
+    paramStat_.setExpectationParam();
+  }
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
     (*it)->storeSEMRun(iteration,

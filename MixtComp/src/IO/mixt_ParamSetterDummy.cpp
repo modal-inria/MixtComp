@@ -33,7 +33,7 @@ ParamSetterDummy::~ParamSetterDummy()
 {}
 
 void ParamSetterDummy::getParam(std::string idName,
-                                STK::Array2D<STK::Real>& params) const
+                                STK::Array2DVector<STK::Real>& params) const
 {
   params = 0.;
 }

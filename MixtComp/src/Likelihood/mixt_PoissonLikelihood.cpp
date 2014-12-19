@@ -30,7 +30,7 @@
 namespace mixt
 {
 
-PoissonLikelihood::PoissonLikelihood(const STK::Array2D<STK::Real>* p_param,
+PoissonLikelihood::PoissonLikelihood(const STK::Array2DVector<STK::Real>* p_param,
                                      const AugmentedData<STK::Array2D<int> >* augData,
                                      const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
                                      int nbClass) :

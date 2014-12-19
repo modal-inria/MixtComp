@@ -44,7 +44,7 @@ int Poisson_k::computeNbFreeParameters() const
   return nbCluster_;
 }
 
-void Poisson_k::getParameters(STK::Array2D<STK::Real>& param) const
+void Poisson_k::getParameters(STK::Array2DVector<STK::Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Poisson_k::getParameters" << std::endl;
@@ -143,7 +143,7 @@ void Poisson_k::setModalities(int nbModalities)
   // does nothing. Used for categorical models.
 }
 
-void Poisson_k::setParameters(const STK::Array2D<STK::Real>& param)
+void Poisson_k::setParameters(const STK::Array2DVector<STK::Real>& param)
 {
   for (int i = 0; i < param.sizeRows(); ++i)
   {

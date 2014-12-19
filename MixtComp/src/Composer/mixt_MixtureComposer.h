@@ -27,11 +27,11 @@
 
 #include <vector>
 #include "mixt_IMixtureComposerBase.h"
+#include "../Param/mixt_SimpleParamStat.h"
+#include "../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {
-
-class IMixture;
 
 /** @ingroup Clustering
  *  Main class for handling composed mixture models.
@@ -60,7 +60,8 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      */
     MixtureComposer(int nbSample,
                     int nbVariable,
-                    int nbCluster);
+                    int nbCluster,
+                    STK::Real confidenceLevel);
     /** copy constructor.
      *  @param composer the composer to copy
      */
@@ -155,6 +156,12 @@ class MixtureComposer : public mixt::IMixtureComposerBase
   protected:
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
+
+    /** computer parameters statistics */
+    SimpleParamStat paramStat_;
+
+    /** storage for data statistics */
+    STK::Array2D<STK::Real> paramStatStorage_;
 };
 
 } /* namespace mixt */

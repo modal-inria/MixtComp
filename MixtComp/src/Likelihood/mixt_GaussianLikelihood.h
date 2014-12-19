@@ -35,7 +35,7 @@ class GaussianLikelihood
 {
   public:
     /** Constructor */
-    GaussianLikelihood(const STK::Array2D<STK::Real>* p_param,
+    GaussianLikelihood(const STK::Array2DVector<STK::Real>* p_param,
                        const AugmentedData<STK::Array2D<STK::Real> >* augData,
                        const STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
                        int nbClass);
@@ -50,7 +50,7 @@ class GaussianLikelihood
 
   private:
     /** Pointer to parameters table */
-    const STK::Array2D<STK::Real>* p_param_;
+    const STK::Array2DVector<STK::Real>* p_param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
     const AugmentedData<STK::Array2D<STK::Real> >* p_augData_;

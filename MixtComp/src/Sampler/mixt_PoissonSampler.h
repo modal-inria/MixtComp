@@ -25,6 +25,7 @@
 #define MIXT_POISSONSAMPLER_H
 
 #include "Arrays/include/STK_Array2D.h"
+#include "Arrays/include/STK_Array2DVector.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_PoissonStatistic.h"
 
@@ -35,14 +36,14 @@ class PoissonSampler
 {
   public:
     PoissonSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                   const STK::Array2D<STK::Real>* p_param,
+                   const STK::Array2DVector<STK::Real>* p_param,
                    int nbClass);
     ~PoissonSampler();
     /** Sample new values for the missing variables of the given individual */
     void sampleIndividual(int i, int z_i);
   private:
     AugmentedData<STK::Array2D<int> >* p_augData_;
-    const STK::Array2D<STK::Real>* p_param_;
+    const STK::Array2DVector<STK::Real>* p_param_;
 
     /** Statistic object to describe Poisson law */
     PoissonStatistic poisson_;

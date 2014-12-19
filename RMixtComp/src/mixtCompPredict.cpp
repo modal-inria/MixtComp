@@ -74,7 +74,8 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   // prepare the composer
   mixt::MixtureComposer composer(handler.nbSample(),
                                  handler.nbVariable(),
-                                 nbClusters);
+                                 nbClusters,
+                                 confidenceLevel);
   composer.setProportions(paramSetterComposer.getProportions());
 
   manager.createMixtures(composer,

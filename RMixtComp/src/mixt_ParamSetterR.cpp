@@ -34,7 +34,7 @@ ParamSetterR::~ParamSetterR()
 {}
 
 void ParamSetterR::getParam(std::string idName,
-                            STK::Array2D<STK::Real>& param) const
+                            STK::Array2DVector<STK::Real>& param) const
 {
   Rcpp::NumericMatrix currParam = param_[idName];
   int nRows = currParam.nrow();

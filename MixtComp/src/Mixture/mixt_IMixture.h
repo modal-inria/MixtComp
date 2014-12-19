@@ -26,14 +26,8 @@
 #ifndef MIXT_IMIXTURE_H
 #define MIXT_IMIXTURE_H
 
-#include "../Composer/mixt_MixtureComposer.h"
-
 namespace mixt
 {
-
-template<class Type, int SizeCols_, bool Orient_ > class CArrayPoint;
-template<class Type> class Array2D;
-template<class Type, int SizeCols_, bool Orient_ > class CArrayVector;
 
 class IMixture
 {

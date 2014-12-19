@@ -35,7 +35,7 @@ class CategoricalSampler
 {
   public:
     CategoricalSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                       const STK::Array2D<STK::Real>* p_param,
+                       const STK::Array2DVector<STK::Real>* p_param,
                        int nbClass);
     ~CategoricalSampler();
     /** Sample new values for the missing variables of the given individual */
@@ -43,7 +43,7 @@ class CategoricalSampler
   private:
     int nbClass_;
     AugmentedData<STK::Array2D<int> >* p_augData_;
-    const STK::Array2D<STK::Real>* p_param_;
+    const STK::Array2DVector<STK::Real>* p_param_;
 };
 
 } // namespace mixt

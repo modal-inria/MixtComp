@@ -42,12 +42,12 @@ class Gaussian_sjk
 
     int computeNbFreeParameters() const;
 
-    void getParameters(STK::Array2D<STK::Real>& param) const;
+    void getParameters(STK::Array2DVector<STK::Real>& param) const;
 
     double lnComponentProbability(int i, int k) const;
 
     /** Set the parameters after the SEM, to the mean estimates for example */
-    void setParameters(const STK::Array2D<STK::Real>& param);
+    void setParameters(const STK::Array2DVector<STK::Real>& param);
 
     void setData(STK::Array2D<Type>& data);
 

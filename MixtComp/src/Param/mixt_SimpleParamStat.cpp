@@ -29,7 +29,7 @@
 namespace mixt
 {
 
-SimpleParamStat::SimpleParamStat(STK::Array2D<STK::Real>* p_param,
+SimpleParamStat::SimpleParamStat(STK::Array2DVector<STK::Real>* p_param,
                                  STK::Array2D<STK::Real>* p_paramStatStorage,
                                  STK::Real confidenceLevel) :
     nbIter_(0),

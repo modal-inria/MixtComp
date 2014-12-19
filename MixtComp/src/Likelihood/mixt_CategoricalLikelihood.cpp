@@ -29,7 +29,7 @@
 namespace mixt
 {
 
-CategoricalLikelihood::CategoricalLikelihood(const STK::Array2D<STK::Real>* p_param,
+CategoricalLikelihood::CategoricalLikelihood(const STK::Array2DVector<STK::Real>* p_param,
                                              const AugmentedData<STK::Array2D<int> >* p_augData,
                                              const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
                                                                  Eigen::Dynamic,

@@ -40,7 +40,7 @@ class Categorical_pjk
     ~Categorical_pjk();
 
     int computeNbFreeParameters() const;
-    void getParameters(STK::Array2D<STK::Real>& param) const;
+    void getParameters(STK::Array2DVector<STK::Real>& param) const;
     void initializeModel();
     void initializeStep();
     double lnComponentProbability(int i, int k) const;
@@ -49,7 +49,7 @@ class Categorical_pjk
     void setData(STK::Array2D<Type>& data);
     void setMixtureParameters(STK::Array2DVector<int> const* p_zi);
     void setModalities(int nbModalities);
-    void setParameters(const STK::Array2D<STK::Real>& param);
+    void setParameters(const STK::Array2DVector<STK::Real>& param);
     void writeParameters(std::ostream& out) const;
 
   private:

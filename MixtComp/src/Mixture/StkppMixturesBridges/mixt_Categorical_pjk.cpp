@@ -44,7 +44,7 @@ int Categorical_pjk::computeNbFreeParameters() const
   return param_.sizeRows();
 }
 
-void Categorical_pjk::getParameters(STK::Array2D<STK::Real>& param) const
+void Categorical_pjk::getParameters(STK::Array2DVector<STK::Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Categorical_pjk::getParameters" << std::endl;
@@ -141,7 +141,7 @@ void Categorical_pjk::setModalities(int nbModalities)
                            nbCluster_ * nbModalities_));
 }
 
-void Categorical_pjk::setParameters(const STK::Array2D<STK::Real>& param)
+void Categorical_pjk::setParameters(const STK::Array2DVector<STK::Real>& param)
 {
   for (int i = 0; i < param.sizeRows(); ++i)
   {

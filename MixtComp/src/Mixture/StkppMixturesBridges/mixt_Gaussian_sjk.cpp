@@ -46,7 +46,7 @@ int Gaussian_sjk::computeNbFreeParameters() const
   return 2 * nbCluster_;
 }
 
-void Gaussian_sjk::getParameters(STK::Array2D<STK::Real>& param) const
+void Gaussian_sjk::getParameters(STK::Array2DVector<STK::Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::getParameters" << std::endl;
@@ -159,7 +159,7 @@ void Gaussian_sjk::setModalities(int nbModalities)
   // does nothing. Used for categorical models.
 }
 
-void Gaussian_sjk::setParameters(const STK::Array2D<STK::Real>& param)
+void Gaussian_sjk::setParameters(const STK::Array2DVector<STK::Real>& param)
 {
 #ifdef MC_DEBUG_NEW
   std::cout << "Gaussian_sjk::setParameters" << std::endl;
