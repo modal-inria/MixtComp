@@ -112,10 +112,9 @@ void IMixtureComposerBase::eStep()
   std::cout << "IMixtureComposerBase::eStep" << std::endl;
   std::cout << "prop_: " << prop_ << std::endl;
 #endif
-  STK::Real sum = 0.;
   for (int i = 0; i < nbSample_; ++i)
   {
-    sum += eStep(i);
+    eStep(i);
   }
 #ifdef MC_DEBUG
   std::cout << "tik_:" << std::endl;
@@ -124,7 +123,7 @@ void IMixtureComposerBase::eStep()
 }
 
 /* compute Tik, for a particular individual */
-STK::Real IMixtureComposerBase::eStep(int i)
+void IMixtureComposerBase::eStep(int i)
 {
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::eStep(i), i: " << i << std::endl;
@@ -136,14 +135,10 @@ STK::Real IMixtureComposerBase::eStep(int i)
   }
 
   STK::Real lnCompMax = lnComp.maxElt();
-  STK::Array2DPoint<STK::Real> lnCompDenom = lnComp;
-  lnCompDenom -= lnCompMax;
-  lnCompDenom = lnCompDenom.exp();
-  STK::Real lnCompDenomSum = lnCompDenom.sum();
-  lnCompDenomSum = lnCompMax + std::log(lnCompDenomSum);
-  lnComp -= lnCompDenomSum;
-
-  tik_.row(i) = lnComp.exp();
+  lnComp -= lnCompMax;
+  lnComp = lnComp.exp();
+  STK::Real sum = lnComp.sum();
+  tik_.row(i) = lnComp / sum;
 
 #ifdef MC_DEBUG
   std::cout << "\tmax: " << max << ", sum2: " << sum2 << std::endl;

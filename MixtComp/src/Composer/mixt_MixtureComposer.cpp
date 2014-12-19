@@ -212,7 +212,7 @@ void MixtureComposer::misClasStep(int iteration)
                                     0.);
 
   // computation of the log probability with adequately sampled missing values
-  for (int k = 0; k < nbCluster(); ++k)
+  for (int k = 0; k < nbCluster_; ++k)
   {
     zi_ = k; // setting zi_ for the sampling step
     for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
@@ -234,13 +234,10 @@ void MixtureComposer::misClasStep(int iteration)
     STK::Array2DPoint<STK::Real> lnComp;
     lnComp = probClass.row(i);
     STK::Real lnCompMax = lnComp.maxElt();
-    STK::Array2DPoint<STK::Real> lnCompDenom = lnComp;
-    lnCompDenom -= lnCompMax;
-    lnCompDenom = lnCompDenom.exp();
-    STK::Real lnCompDenomSum = lnCompDenom.sum();
-    lnCompDenomSum = lnCompMax + std::log(lnCompDenomSum);
-    lnComp -= lnCompDenomSum;
-    tik_.row(i) = lnComp.exp();
+    lnComp -= lnCompMax;
+    lnComp = lnComp.exp();
+    STK::Real sum = lnComp.sum();
+    tik_.row(i) = lnComp / sum;
   }
 }
 

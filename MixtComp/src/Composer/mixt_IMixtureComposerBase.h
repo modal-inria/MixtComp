@@ -184,7 +184,7 @@ class IMixtureComposerBase
 
     /** compute Tik */
     void eStep();
-    STK::Real eStep(int i);
+    void eStep(int i);
 
     /** Compute zi using the Map estimator. */
     void mapStep();
