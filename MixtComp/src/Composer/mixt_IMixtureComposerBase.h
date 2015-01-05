@@ -215,8 +215,6 @@ class IMixtureComposerBase
     /** The zik class label */
     STK::Array2DVector<int> zi_;
 
-
-
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model.
      **/

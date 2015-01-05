@@ -41,7 +41,9 @@ MixtureComposer::MixtureComposer(int nbSample,
                                nbCluster),
     paramStat_(&prop_,
                &paramStatStorage_,
-               confidenceLevel)
+               confidenceLevel),
+    nik_(nbSample,
+         nbCluster)
 {}
 
 MixtureComposer::~MixtureComposer()
@@ -280,14 +282,38 @@ void MixtureComposer::storeSEMRun(int iteration,
 }
 
 void MixtureComposer::storeGibbsRun(int sample,
-                                 int iteration,
-                                 int iterationMax)
+                                    int iteration,
+                                    int iterationMax)
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::storeGibbsRun" << std::endl;
+  std::cout << "sample: " << sample << ", iteration: " << iteration << ", iterationMax: " << iterationMax << std::endl;
+#endif
+  if (iteration == 0) // initialize nik_
+  {
+    nik_.row(sample) = 0.;
+    nik_(sample, zi_[sample]) += 1.;
+  }
+  else if (iteration == iterationMax)  // estimate tik_ from nik_
+  {
+#ifdef MC_DEBUG
+    std::cout << "\titeration == iterationMax" << std::endl;
+    std::cout << "\ttik_.row(sample): " << tik_.row(sample) << std::endl;
+    std::cout << "\tnik_.row(sample): " << nik_.row(sample) << std::endl;
+#endif
+    nik_(sample, zi_[sample]) += 1.;
+    tik_.row(sample) = nik_.row(sample) / STK::Real(iterationMax + 1);
+  }
+  else // increment relevant nik values according to sampled zi_
+  {
+    nik_(sample, zi_[sample]) += 1.;
+  }
+
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
     (*it)->storeGibbsRun(sample,
-                      iteration,
-                      iterationMax);
+                         iteration,
+                         iterationMax);
   }
 }
 
@@ -324,8 +350,8 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter)
       sStep(i);
       samplingStep(i);
       storeGibbsRun(i,
-                 iterGibbs,
-                 nbGibbsIter - 1);
+                    iterGibbs,
+                    nbGibbsIter - 1);
     }
   }
 }

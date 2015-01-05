@@ -156,7 +156,7 @@ void IMixtureComposerBase::pStep()
   {
     prop_[zi_[i]] += 1.;
   }
-  prop_ = prop_/prop_.sum();
+  prop_ = prop_ / prop_.sum();
 #ifdef MC_DEBUG
   std::cout << "\tprop_: " << prop_ << std::endl;
 #endif

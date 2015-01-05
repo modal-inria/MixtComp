@@ -160,8 +160,11 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** computer parameters statistics */
     SimpleParamStat paramStat_;
 
-    /** storage for data statistics */
+    /** storage for proportions statistics */
     STK::Array2D<STK::Real> paramStatStorage_;
+
+    /** storage for number of samples during Gibbs */
+    STK::Array2D<STK::Real> nik_;
 };
 
 } /* namespace mixt */
