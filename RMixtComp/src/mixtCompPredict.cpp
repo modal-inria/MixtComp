@@ -36,7 +36,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                            int nbClusters,
                            double confidenceLevel)
 {
-  // string to log warnings
+  // string to log warnings, useless as of now, since Gibbs sampling can not fail, it lacks an mStep
   std::string warnLog;
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
@@ -87,7 +87,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                mcStrategy.slot("nbGibbsIter")); // number of iterations for Gibbs sampler);
 
   // run the strategy
-  warnLog += strategy.run();
+  strategy.run();
 
   composer.writeParameters(std::cout);
   composer.exportDataParam();
@@ -116,7 +116,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   mcResults.slot("proba") = proba;
 
   mcResults.slot("warnLog") = warnLog;
-  if (warnLog != std::string())
+  if (warnLog.size() > 0)
   {
     std::cout << "!!! warnLog not empty !!!" << std::endl;
     std::cout << warnLog << std::endl;

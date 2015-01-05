@@ -87,7 +87,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   warnLog += strategy.run();
   mcResults.slot("warnLog") = warnLog;
 
-  if (warnLog == std::string())
+  if (warnLog.size() == 0)
   {
     composer.writeParameters(std::cout);
     composer.exportDataParam();

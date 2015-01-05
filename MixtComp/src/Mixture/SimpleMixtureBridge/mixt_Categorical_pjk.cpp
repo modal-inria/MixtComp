@@ -85,6 +85,7 @@ std::string Categorical_pjk::mStep()
     std::cout << "(*p_zi_)_: " << (*p_zi_) << std::endl;
 #endif
 
+  std::string warn;
   for (int k = 0; k < nbCluster_; ++k)
   {
     STK::Real nbSampleClass = 0.;
@@ -116,7 +117,7 @@ std::string Categorical_pjk::mStep()
     }
   }
 
-  return "";
+  return warn;
 }
 
 int Categorical_pjk::nbVariable() const

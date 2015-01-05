@@ -114,7 +114,7 @@ std::string SEMAlgo::run()
 
     // M step
     std::string warn = p_model_->mStep();
-    if (warn != std::string())
+    if (warn.size() > 0)
     {
       return warn; // error reported in the mStep, terminate the SEM algo, and report it to the strategy.
     }
@@ -139,7 +139,7 @@ std::string SEMAlgo::run()
     }
   }
 
-  return ""; // success: return empty string
+  return std::string(); // success: return empty string
 }
 
 } // namespace mixt

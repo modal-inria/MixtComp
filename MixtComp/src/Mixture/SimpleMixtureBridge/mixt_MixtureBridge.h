@@ -203,7 +203,7 @@ class MixtureBridge : public mixt::IMixture
     {
       std::string warn = mixture_.mStep();
       mixture_.getParameters(param_); // update the parameters
-      if (warn != std::string())
+      if (warn.size() > 0)
       {
         warn =   std::string("Error in variable ")
                + idName_

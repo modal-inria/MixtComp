@@ -67,10 +67,11 @@ SemStrategy::~SemStrategy()
 
 std::string SemStrategy::run()
 {
-  std::string currWarn; // collect warning strings from all the steps
-  std::string tempWarn; // warning for each run
+  std::string allWarn; // collect warning strings from all the trials
+
   for (int iTry = 0; iTry < nbTry_; ++iTry)
   {
+    std::string tryWarn; // warning for each run
     // Random initialization
     p_composer_->randomClassInit();
 #ifdef MC_DEBUG
@@ -79,12 +80,12 @@ std::string SemStrategy::run()
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
     p_composer_->initializeStep(); // optionnal step for mixtures that need it
-    tempWarn = p_composer_->mStep();
-    if (tempWarn != std::string())
+    tryWarn = p_composer_->mStep();
+    if (tryWarn.size() > 0)
     {
-      currWarn +=   std::string("SemStrategy, initialization mStep, iTry: ")
-                  + type2str(iTry) + "\n"
-                  + tempWarn; // append warning to global warning
+      allWarn +=   std::string("SemStrategy, initialization mStep, iTry: ")
+                 + type2str(iTry) + "\n"
+                 + tryWarn; // append warning to global warning
       continue; // make another try
     }
 
@@ -94,12 +95,12 @@ std::string SemStrategy::run()
 #endif
     p_composer_->setState(burnIn_);
     p_burnInAlgo_->setModel(p_composer_);
-    tempWarn = p_burnInAlgo_->run();
-    if (tempWarn != std::string()) // an empty string means a successful run
+    tryWarn = p_burnInAlgo_->run();
+    if (tryWarn.size() > 0) // an empty string means a successful run
     {
-      currWarn +=   std::string("SemStrategy, burn-in, iTry: ")
-                  + type2str(iTry) + "\n"
-                  + tempWarn; // append warning to global warning
+      allWarn +=   std::string("SemStrategy, burn-in, iTry: ")
+                 + type2str(iTry) + "\n"
+                 + tryWarn; // append warning to global warning
       continue; // make another try
     }
 
@@ -109,12 +110,12 @@ std::string SemStrategy::run()
 #endif
     p_composer_->setState(longRun_);
     p_longAlgo_->setModel(p_composer_);
-    tempWarn = p_longAlgo_->run();
-    if (tempWarn != std::string()) // an empty string means a successful run
+    tryWarn = p_longAlgo_->run();
+    if (tryWarn.size() > 0) // an empty string means a successful run
     {
-      currWarn +=   std::string("SemStrategy, run, iTry: ")
-                  + type2str(iTry) + "\n"
-                  + tempWarn; // append warning to global warning
+      allWarn +=   std::string("SemStrategy, run, iTry: ")
+                 + type2str(iTry) + "\n"
+                 + tryWarn; // append warning to global warning
       continue; // make another try
     }
   
@@ -135,11 +136,11 @@ std::string SemStrategy::run()
 
     p_composer_->finalizeStep();
 
-    return ""; // if the last attempt is a success, consider the run a success
+    return allWarn; // if the last attempt is a success, consider the run a success. AllWarn is an empty string.
   }
 
-  currWarn += "Number of initialization attempts exhausted. Try again with more initializations or other parameters.\n";
-  return currWarn;
+  allWarn += "Number of initialization attempts exhausted. Try again with more initializations or other parameters.\n";
+  return allWarn;
 }
 
 } // namespace mixt

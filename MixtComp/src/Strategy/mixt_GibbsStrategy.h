@@ -50,7 +50,7 @@ class GibbsStrategy
     virtual ~GibbsStrategy();
     
     /** run the strategy */
-    std::string run();
+    void run();
     
   protected:
      /** reference on the main model */
