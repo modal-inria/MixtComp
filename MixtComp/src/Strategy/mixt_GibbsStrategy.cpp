@@ -22,6 +22,7 @@
  **/
 
 #include "mixt_GibbsStrategy.h"
+#include "../Various/mixt_Timer.h"
 
 namespace mixt
 {
@@ -56,8 +57,11 @@ void GibbsStrategy::run()
 #endif
   p_composer_->initializeStep(); // initialize mixture parameters, usually calling an mStep
 
+  Timer myTimer;
+  myTimer.setName("Gibbs: burn-in");
   for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbBurnInIterGibbs_; ++iterBurnInGibbs)
   {
+    myTimer.iteration(iterBurnInGibbs, nbBurnInIterGibbs_);
 #ifdef MC_DEBUG
     std::cout << "GibbsStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
 #endif
