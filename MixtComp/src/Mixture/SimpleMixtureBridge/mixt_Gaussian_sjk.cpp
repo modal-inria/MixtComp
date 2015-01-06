@@ -167,7 +167,7 @@ void Gaussian_sjk::paramNames(std::vector<std::string>& names) const
     names[2 * k] =   std::string("k: ")
                    + type2str(k)
                    + std::string(", mean");
-    names[2 * k + 1] =   std::string("c: ")
+    names[2 * k + 1] =   std::string("k: ")
                        + type2str(k)
                        + std::string(", sd");
   }
