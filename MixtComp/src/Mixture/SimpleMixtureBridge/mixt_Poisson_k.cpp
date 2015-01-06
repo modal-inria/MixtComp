@@ -115,7 +115,9 @@ std::string Poisson_k::mStep()
 
     if (lambda < 0.)
     {
-      warn += "Poisson model has an estimated lambda parameter < 0. Your data contains negative values. Have you considered using a Gaussian model ?\n";
+      warn += "Poisson model has an estimated lambda parameter < 0."
+              "Your data contains negative values."
+              "Have you considered using a Gaussian model ?\n";
     }
 
     param_[k] = lambda;

@@ -98,14 +98,16 @@ std::string Gaussian_sjk::mStep()
     STK::Real sd = 0.;
     STK::Real M2 = 0.;
     int n = 0;
-
-    for (int i = 1; i < (*p_data_).sizeRows(); ++i)
-    {
 #ifdef MC_DEBUG
-      std::cout << "\tk:  " << k << ", i: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << std::endl;
+    std::cout << "\tk:  " << k << std::endl;
 #endif
+    for (int i = 0; i < (*p_data_).sizeRows(); ++i)
+    {
       if ((*p_zi_)[i] == k)
       {
+#ifdef MC_DEBUG
+        std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i, 0)" << (*p_data_)(i, 0) << std::endl;
+#endif
         ++n;
         Type x = (*p_data_)(i, 0);
         STK::Real delta = x - mean;
@@ -125,10 +127,22 @@ std::string Gaussian_sjk::mStep()
     if (sd < epsilon)
     {
 #ifdef MC_DEBUG
-      std::cout << "\tnull estimated standard deviation" << param_ << std::endl;
+      std::cout << "\tnull estimated standard deviation" << std::endl;
+      std::cout << "(*p_data_): " << (*p_data_) << std::endl;
+
+      for (int i = 0; i < (*p_data_).sizeRows(); ++i)
+      {
+        if ((*p_zi_)[i] == k)
+        {
+          std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i, 0): " << (*p_data_)(i, 0) << std::endl;
+        }
+      }
 #endif
-      warn += "Gaussian model must have a non zero standard deviation. The estimated standard deviation is zero for this variable, as it is not dispersed enough for this model. Have you considered using a Poisson model ?\n";
+      warn += "Gaussian model must have a non zero standard deviation."
+              "The estimated standard deviation is zero for this variable. The data is not dispersed enough for this model."
+              "Do you have values that repeat themselves often ? Have you considered using a Poisson model ?\n";
     }
+
     param_[2 * k    ] = mean;
     param_[2 * k + 1] = sd;
   }
@@ -161,7 +175,7 @@ void Gaussian_sjk::setModalities(int nbModalities)
 
 void Gaussian_sjk::setParameters(const STK::Array2DVector<STK::Real>& param)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::setParameters" << std::endl;
   std::cout << "param: " << param << std::endl;
   std::cout << "param_: " << param_ << std::endl;
