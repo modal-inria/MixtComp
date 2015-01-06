@@ -22,6 +22,7 @@
  **/
 
 #include "mixt_Categorical_pjk.h"
+#include "../../Various/mixt_IO.h"
 
 namespace mixt
 {
@@ -125,6 +126,21 @@ int Categorical_pjk::nbVariable() const
   return 1;
 }
 
+void Categorical_pjk::paramNames(std::vector<std::string>& names) const
+{
+  names.resize(nbCluster_ * nbModalities_);
+  for (int k = 0; k < nbCluster_; ++k)
+  {
+    for (int p = 0; p < nbModalities_; ++p)
+    {
+      names[k * nbModalities_ + p] =   std::string("k: ")
+                                     + type2str(k)
+                                     + std::string(", modality: ")
+                                     + type2str(p);
+    }
+  }
+}
+
 void Categorical_pjk::setData(STK::Array2D<Type>& data)
 {
   p_data_ = &data;
@@ -157,7 +173,6 @@ void Categorical_pjk::writeParameters(std::ostream& out) const
     out << "Component: " << k << std::endl;
     out << "\tlambda: " << param_[k] << std::endl;
   }
-
 }
 
 } // namespace mixt

@@ -102,7 +102,8 @@ class MixtureBridge : public mixt::IMixture
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
-      p_paramExtractor_(p_paramExtractor)
+      p_paramExtractor_(p_paramExtractor,
+                        confidenceLevel)
       // dataStatStorage_ is an empty STK::Array2D at construction
     {}
     /** copy constructor */
@@ -186,6 +187,7 @@ class MixtureBridge : public mixt::IMixture
       }
       dataStatStorage_.resize(nbSample_,
                               nbVariable_);
+      mixture_.paramNames(paramNames_); // set the parameters names to be used for export
     }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
@@ -369,7 +371,8 @@ class MixtureBridge : public mixt::IMixture
                                    getData(),
                                    getDataStatStorage()); // export the obtained data using the DataExtractor
       p_paramExtractor_->exportParam(idName(),
-                                     getParamStatStorage());
+                                     getParamStatStorage(),
+                                     paramNames_);
     }
 
   protected:
@@ -391,6 +394,8 @@ class MixtureBridge : public mixt::IMixture
     DataStatComputer dataStatComputer_;
     /** Statistics storage for parameters */
     SimpleParamStat paramStat_;
+    /** Vector of parameters names */
+    std::vector<std::string> paramNames_;
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
     /** Pointer to the data handler */

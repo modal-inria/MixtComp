@@ -25,9 +25,9 @@
 #ifndef MIXT_CATEGORICAL_PJK
 #define MIXT_CATEGORICAL_PJK
 
+#include <vector>
 #include "Arrays/include/STK_Array2D.h"
 #include "Arrays/include/STK_Array2DVector.h"
-
 
 namespace mixt
 {
@@ -46,6 +46,7 @@ class Categorical_pjk
     double lnComponentProbability(int i, int k) const;
     std::string mStep();
     int nbVariable() const;
+    void paramNames(std::vector<std::string>& names) const;
     void setData(STK::Array2D<Type>& data);
     void setMixtureParameters(STK::Array2DVector<int> const* p_zi);
     void setModalities(int nbModalities);
