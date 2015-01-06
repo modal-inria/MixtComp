@@ -90,8 +90,9 @@ dataParamGenerator <- function(nbSamplesLearn,
                                nbModalities,
                                nbVariableGauss,
                                maxMean,
-                               maxVar,
+                               maxSD,
                                nbVariablePoisson,
+                               maxLambda,
                                nbClasses,
                                missingCategorical,
                                missingGaussian,
@@ -135,7 +136,7 @@ dataParamGenerator <- function(nbSamplesLearn,
       for (n in 1:nbClasses)
       {
         proba <- c(2. * maxMean * (runif(1) - 0.5),
-                        maxVar  * runif(1))
+                        maxSD   * runif(1))
 #         proba <- c(2. * maxMean * (runif(1) - 0.5), # null variance version
 #                    0)
         gaussianParams[((n - 1) * 2 + 1) :
@@ -157,7 +158,7 @@ dataParamGenerator <- function(nbSamplesLearn,
     {
       for (k in 1:nbClasses)
       {
-        proba <- sample(1:20, 1)
+        proba <- maxLambda * runif(1)
         poissonParams[k, j] <- proba
       }
     }
