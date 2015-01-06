@@ -22,6 +22,7 @@
  **/
 
 #include "mixt_Poisson_k.h"
+#include "../../Various/mixt_IO.h"
 
 namespace mixt
 {
@@ -128,6 +129,17 @@ std::string Poisson_k::mStep()
 int Poisson_k::nbVariable() const
 {
   return 1;
+}
+
+void Poisson_k::paramNames(std::vector<std::string>& names) const
+{
+  names.resize(nbCluster_);
+  for (int k = 0; k < nbCluster_; ++k)
+  {
+    names[k] =   std::string("k: ")
+               + type2str(k)
+               + std::string(", lambda");
+  }
 }
 
 void Poisson_k::setData(STK::Array2D<Type>& data)

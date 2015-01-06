@@ -85,6 +85,7 @@ class MixtureBridge : public mixt::IMixture
       m_augDataij_(),
       nbSample_(0),
       nbVariable_(0),
+      confidenceLevel_(confidenceLevel),
       sampler_(&m_augDataij_,
                getParam(),
                nbCluster),
@@ -112,6 +113,7 @@ class MixtureBridge : public mixt::IMixture
       m_augDataij_(bridge.m_augDataij_),
       nbSample_(bridge.nbSample_),
       nbVariable_(bridge.nbVariable_),
+      confidenceLevel_(bridge.confidenceLevel_),
       sampler_(bridge.sampler_),
       dataStatComputer_(bridge.dataStatComputer_),
       paramStat_(bridge.paramStat_),
@@ -170,6 +172,9 @@ class MixtureBridge : public mixt::IMixture
         mixture_.setModalities(nbParam);
         mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
         mixture_.setParameters(param_);
+        paramStatStorage_.resize(param_.sizeRows(),
+                                 1); // no quantiles have to be computed for imported parameters, hence the single column
+        paramStatStorage_.col(0) = param_;
 #ifdef MC_DEBUG
         std::cout << "\tparam set " << std::endl;
         std::cout << "\tnbParam: " << nbParam << std::endl;
@@ -186,6 +191,7 @@ class MixtureBridge : public mixt::IMixture
       }
       dataStatStorage_.resize(nbSample_,
                               nbVariable_);
+      mixture_.paramNames(paramNames_); // set the parameters names to be used for export
     }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
@@ -365,11 +371,16 @@ class MixtureBridge : public mixt::IMixture
 
     virtual void exportDataParam() const
     {
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge: exportDataParam, idName(): " << idName() << std::endl;
+#endif
       p_dataExtractor_->exportVals(idName(),
                                    getData(),
                                    getDataStatStorage()); // export the obtained data using the DataExtractor
       p_paramExtractor_->exportParam(idName(),
-                                     getParamStatStorage());
+                                     getParamStatStorage(),
+                                     paramNames_,
+                                     confidenceLevel_);
     }
 
   protected:
@@ -385,12 +396,16 @@ class MixtureBridge : public mixt::IMixture
     int nbSample_;
     /** number of variables in the data set */
     int nbVariable_;
+    /** confidence level used in computation of parameters and missing values statistics */
+    STK::Real confidenceLevel_;
     /** Sampler to generate values */
     Sampler sampler_;
     /** Statistics computer for missing data */
     DataStatComputer dataStatComputer_;
     /** Statistics storage for parameters */
     SimpleParamStat paramStat_;
+    /** Vector of parameters names */
+    std::vector<std::string> paramNames_;
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
     /** Pointer to the data handler */

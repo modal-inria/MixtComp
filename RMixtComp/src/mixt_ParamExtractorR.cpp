@@ -22,6 +22,8 @@
  **/
 
 #include "mixt_ParamExtractorR.h"
+#include "MixtComp/src/Various/mixt_IO.h"
+#include "Arrays/include/STK_Display.h"
 
 namespace mixt
 {
@@ -33,13 +35,57 @@ ParamExtractorR::~ParamExtractorR()
 {}
 
 void ParamExtractorR::exportParam(std::string idName,
-                                  const STK::Array2D<STK::Real>* p_param)
+                                  const STK::Array2D<STK::Real>* p_params,
+                                  const std::vector<std::string>& paramNames,
+                                  const STK::Real confidenceLevel)
 {
-  Rcpp::NumericMatrix paramR(p_param->sizeRows(), p_param->sizeCols());
+#ifdef MC_DEBUG
+  std::cout << "ParamExtractorR::exportParam" << std::endl;
+  std::cout << "p_params->sizeRows(): " << p_params->sizeRows() << std::endl;
+  std::cout << "p_params->sizeCols(): " << p_params->sizeCols() << std::endl;
+#endif
 
-  for (int i = 0; i < p_param->sizeRows(); ++i)
-    for (int j = 0; j < p_param->sizeCols(); ++j)
-      paramR(i, j) = p_param->elt(i, j);
+  Rcpp::CharacterVector rows(p_params->sizeRows()); // names of the parameters
+  Rcpp::CharacterVector cols; // names for expectation and confidence interval values
+
+  STK::Real alpha = (1. - confidenceLevel) / 2.;
+
+  Rcpp::NumericMatrix paramR(p_params->sizeRows(),
+                             p_params->sizeCols());
+
+  // values setting
+  for (int i = 0; i < p_params->sizeRows(); ++i)
+  {
+    for (int j = 0; j < p_params->sizeCols(); ++j)
+    {
+      paramR(i, j) = p_params->elt(i, j);
+    }
+  }
+
+  // names setting for rows
+  for (int i = 0; i < p_params->sizeRows(); ++i)
+  {
+    rows[i] = paramNames[i];
+  }
+
+  // names setting for cols
+  if (p_params->sizeCols() == 1)
+  {
+    cols.push_back("value");
+  }
+  else if (p_params->sizeCols() == 3)
+  {
+    cols.push_back("expectation");
+    cols.push_back(  std::string("q ")
+                   + type2str(alpha * 100.)
+                   + std::string("%"));
+    cols.push_back(  std::string("q ")
+                   + type2str((1. - alpha) * 100.)
+                   + std::string("%"));
+  }
+
+  Rcpp::List dimnms = Rcpp::List::create(rows, cols);
+  paramR.attr("dimnames") = dimnms;
 
   param_[idName] = paramR;
 

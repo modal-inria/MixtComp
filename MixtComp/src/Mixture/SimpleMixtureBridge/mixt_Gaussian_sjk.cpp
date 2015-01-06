@@ -22,9 +22,9 @@
  **/
 
 #include "mixt_Gaussian_sjk.h"
-#include "../../Various/mixt_IO.h"
-#include "../../Various/mixt_Constants.h"
 #include "Arrays/include/STK_Display.h"
+#include "../../Various/mixt_Constants.h"
+#include "../../Various/mixt_IO.h"
 
 namespace mixt
 {
@@ -159,6 +159,20 @@ std::string Gaussian_sjk::mStep()
 int Gaussian_sjk::nbVariable() const
 {
   return 1;
+}
+
+void Gaussian_sjk::paramNames(std::vector<std::string>& names) const
+{
+  names.resize(nbCluster_ * 2);
+  for (int k = 0; k < nbCluster_; ++k)
+  {
+    names[2 * k] =   std::string("k: ")
+                   + type2str(k)
+                   + std::string(", mean");
+    names[2 * k + 1] =   std::string("k: ")
+                       + type2str(k)
+                       + std::string(", sd");
+  }
 }
 
 void Gaussian_sjk::setData(STK::Array2D<Type>& data)

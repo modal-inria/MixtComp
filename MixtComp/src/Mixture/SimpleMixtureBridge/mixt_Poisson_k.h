@@ -26,6 +26,7 @@
 #ifndef MIXT_POISSON_K_H
 #define MIXT_POISSON_K_H
 
+#include <vector>
 #include "Arrays/include/STK_Array2D.h"
 #include "Arrays/include/STK_Array2DVector.h"
 #include "../../Statistic/mixt_PoissonStatistic.h"
@@ -59,6 +60,8 @@ class Poisson_k
     std::string mStep();
 
     int nbVariable() const;
+
+    void paramNames(std::vector<std::string>& names) const;
 
     void setMixtureParameters(STK::Array2DVector<int> const* p_zi);
 

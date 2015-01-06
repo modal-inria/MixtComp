@@ -36,7 +36,9 @@ class ParamExtractorR
     ParamExtractorR();
     ~ParamExtractorR();
     void exportParam(std::string idName,
-                     const STK::Array2D<STK::Real>* p_params);
+                     const STK::Array2D<STK::Real>* p_params,
+                     const std::vector<std::string>& paramNames,
+                     const STK::Real confidenceLevel);
     Rcpp::List rcppReturnParam() const;
   private:
     Rcpp::List param_;

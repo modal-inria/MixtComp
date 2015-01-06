@@ -25,6 +25,7 @@
 #ifndef MIXT_GAUSSIAN_SJK_H
 #define MIXT_GAUSSIAN_SJK_H
 
+#include <vector>
 #include "Arrays/include/STK_Array2D.h"
 #include "Arrays/include/STK_Array2DVector.h"
 #include "../../Statistic/mixt_NormalStatistic.h"
@@ -60,6 +61,8 @@ class Gaussian_sjk
     std::string mStep();
 
     int nbVariable() const;
+
+    void paramNames(std::vector<std::string>& names) const;
 
     void setMixtureParameters(STK::Array2DVector<int> const* p_zi);
 
