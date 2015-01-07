@@ -34,6 +34,7 @@ extern const STK::Real probaNonMisClass; // minimal in-sample probability to avo
 extern const int moduloMisClass; // modulo used to trigger misclassification step
 extern const int minIndPerClass; // minimal number of individual in a class to accept a z sampling
 extern const STK::Real epsilon; // very small value of real to check for near zero values
+extern const int minModality; // minimal modality for categorical models
 
 } // namespace mixt
 

@@ -37,6 +37,12 @@ enum MisType
   missingRUIntervals_
 };
 
+enum LikelihoodType
+{
+  lnCompletedLikelihood_,
+  lnObservedLikelihood_
+};
+
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

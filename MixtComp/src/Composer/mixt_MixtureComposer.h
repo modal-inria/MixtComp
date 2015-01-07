@@ -29,6 +29,7 @@
 #include "mixt_IMixtureComposerBase.h"
 #include "../Param/mixt_SimpleParamStat.h"
 #include "../Mixture/mixt_IMixture.h"
+#include "../Various/mixt_Def.h"
 
 namespace mixt
 {
@@ -83,10 +84,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     virtual STK::Real lnComponentProbability(int i, int k);
 
     /** @return the value of the completed likelihood */
-    virtual STK::Real lnCompletedLikelihood();
-
-    /** @return the value of the observed likelihood */
-    virtual STK::Real lnObservedLikelihood();
+    virtual STK::Real lnLikelihood(LikelihoodType lnType);
 
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(STK::ostream& os) const;

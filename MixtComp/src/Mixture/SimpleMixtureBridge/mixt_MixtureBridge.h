@@ -36,6 +36,7 @@
 #include "mixt_GaussianBridges.h"
 #include "mixt_PoissonBridges.h"
 #include "../../Various/mixt_IO.h"
+#include "../../Various/mixt_Constants.h"
 
 namespace mixt
 {
@@ -257,6 +258,22 @@ class MixtureBridge : public mixt::IMixture
         // reinject the SEM estimated parameters into the mixture
         paramStat_.setExpectationParam();
         mixture_.setParameters(param_);
+#ifdef MC_DEBUG
+        std::cout << "MixtureBridge::storeSEMRun" << std::endl;
+        int nbModalities = param_.sizeCols() / nbCluster_;
+        for (int p = 0; p < nbModalities; ++p)
+        {
+          STK::Real sum = 0.;
+          for (int k = 0; k < nbCluster_; ++k)
+          {
+            sum += param_[k * nbModalities + p];
+          }
+          if (sum < epsilon)
+          {
+            std::cout << "probability of modality: " << p << " is 0 in every classes" << std::endl;
+          }
+        }
+#endif
       }
     }
 

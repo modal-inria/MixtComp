@@ -35,5 +35,6 @@ const STK::Real probaNonMisClass = 0.95; // minimal in-sample probability to avo
 const int moduloMisClass = 10; // modulo used to trigger misclassification step
 const int minIndPerClass = 3; // minimal number of individual in a class to accept a z sampling
 const STK::Real epsilon = 1.e-8; // very small value of real to check for near zero values
+const int minModality = 1; // minimal modality for categorical models
 
 } // namespace mixt

@@ -23,6 +23,8 @@
 
 #include "mixt_Categorical_pjk.h"
 #include "../../Various/mixt_IO.h"
+#include "../../Various/mixt_Constants.h"
+#include "Arrays/include/STK_Display.h"
 
 namespace mixt
 {
@@ -68,7 +70,7 @@ void Categorical_pjk::initializeStep()
 double Categorical_pjk::lnComponentProbability(int i, int k) const
 {
   Type currVal = p_data_->elt(i, 0);
-  STK::Real proba = param_[k * nbModalities_ + currVal - 1]; // first modality is 1 in data, but 0 in parameters storage
+  STK::Real proba = param_[k * nbModalities_ + currVal - minModality]; // first modality is 1 in data, but 0 in parameters storage
 #ifdef MC_DEBUG
   std::cout << "Categorical_pjk::lnComponentProbability" << std::endl;
   std::cout << "\tk: " << k << ", proba: " << proba << std::endl;
@@ -102,21 +104,31 @@ std::string Categorical_pjk::mStep()
       {
         Type currVal = p_data_->elt(i, 0);
         nbSampleClass += 1.;
-        modalities[currVal - 1] += 1.; // first modality is 1 in data, but 0 in parameters storage
+        modalities[currVal - minModality] += 1.; // first modality is minModality in data, but 0 in parameters storage
       }
     }
 
     modalities = modalities / nbSampleClass;
-
-#ifdef MC_DEBUG
-    std::cout << "k: " << k << std::endl;
-    std::cout << "modalities: " << modalities << std::endl;
-#endif
     for (int p = 0; p < nbModalities_; ++p)
     {
       param_[k * nbModalities_ + p] = modalities[p];
     }
   }
+
+#ifdef MC_DEBUG
+  for (int p = 0; p < nbModalities_; ++p)
+  {
+    STK::Real sum = 0.;
+    for (int k = 0; k < nbCluster_; ++k)
+    {
+      sum += param_[k * nbModalities_ + p];
+    }
+    if (sum < epsilon)
+    {
+      std::cout << "probability of modality: " << p << " is 0 in every classes" << std::endl;
+    }
+  }
+#endif
 
   return warn;
 }

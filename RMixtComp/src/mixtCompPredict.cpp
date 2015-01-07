@@ -27,6 +27,7 @@
 #include "mixt_ParamSetterR.h"
 #include "mixt_ParamSetterComposerR.h"
 #include "MixtComp/src/mixt_MixtComp.h"
+#include "MixtComp/src/Various/mixt_Def.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompPredict(Rcpp::List dataList,
@@ -95,8 +96,8 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   // export the composer results to R through modifications of mcResults
   mcResults.slot("nbCluster") = nbClusters;
   mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
-  mcResults.slot("lnObservedLikelihood") = composer.lnObservedLikelihood();
-  mcResults.slot("lnCompletedLikelihood") = composer.lnCompletedLikelihood();
+  mcResults.slot("lnObservedLikelihood") = composer.lnLikelihood(mixt::lnObservedLikelihood_);
+  mcResults.slot("lnCompletedLikelihood") = composer.lnLikelihood(mixt::lnCompletedLikelihood_);
 
   Rcpp::NumericVector proportions(nbClusters);
   for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)

@@ -48,8 +48,6 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
   if (p_augData_->misData_(i, 0).first != present_)
   {
     int sampleVal;
-
-    int minModality = 1;
     int nbModalities = p_param_->sizeRows() / nbClass_;
 
 #ifdef MC_DEBUG
@@ -63,16 +61,16 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
       {
         STK::Array2DVector<STK::Real> modalities = (*p_param_)[STK::Range(z_i * nbModalities,
                                                                           nbModalities)];
-        sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities + minModality;
+        sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities;
       }
       break;
 
       case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
       {
-        STK::Array2DVector<STK::Real> modalities(STK::Range(minModality,
+        STK::Array2DVector<STK::Real> modalities(STK::Range(0,
                                                             nbModalities),
                                                  0.);
-        STK::Array2DVector<STK::Real> equiModalities(STK::Range(minModality,
+        STK::Array2DVector<STK::Real> equiModalities(STK::Range(0,
                                                                 nbModalities),
                                                      0.);
         for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i, 0).second.begin();
@@ -82,7 +80,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
           std::cout << "\tcurrMod: " << *currMod << std::endl;
 #endif
-          modalities.elt(*currMod) = (*p_param_)[z_i * nbModalities + *currMod];
+          modalities.elt(*currMod) = (*p_param_)[z_i * nbModalities + *currMod - minModality];
           equiModalities.elt(*currMod) = 1.;
         }
         STK::Real modSum = modalities.sum();
@@ -103,7 +101,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
       {}
       break;
     }
-    p_augData_->data_(i, 0) = sampleVal;
+    p_augData_->data_(i, 0) = sampleVal + minModality;
   }
 }
 } // namespace mixt
