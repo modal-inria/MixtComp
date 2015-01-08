@@ -23,38 +23,33 @@
 
 #include <Rcpp.h>
 
-// [[Rcpp::export]]
-Rcpp::NumericMatrix fun()
-{
-  Rcpp::NumericMatrix x(2,2);
-  x.fill(42); // or more interesting values
-  Rcpp::List dimnms = // two vec. with static names
-  Rcpp::List::create(Rcpp::CharacterVector::create("cc", "dd"),
-  Rcpp::CharacterVector::create("ee", "ff"));
-  // and assign it
-  x.attr("dimnames") = dimnms;
-  return(x);
-}
+#include "MixtComp/src/Statistic/mixt_NormalStatistic.h"
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix fun2()
+void sampleTest()
 {
-  Rcpp::NumericMatrix x(2,2);
-  x.fill(42); // or more interesting values
+  STK::Real mu = 7.;
+  STK::Real sd = 0.5;
+  STK::Real infBound = 4.5;
+  STK::Real supBound = 5.5;
 
-  Rcpp::CharacterVector rows(2);
-  Rcpp::CharacterVector cols(2);
+  mixt::NormalStatistic norm;
 
-  rows[0] = "bouga";
-  rows[1] = "bougi";
-
-  cols[0] = "tata";
-  cols[1] = "toto";
-
-  Rcpp::List dimnms = Rcpp::List::create(rows, cols);
-
-  // and assign it
-  x.attr("dimnames") = dimnms;
-
-  return(x);
+  for (int i = 0; i < 10; ++i)
+  {
+    std::cout << norm.sampleI(mu, sd, infBound, supBound) << std::endl;
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < 10; ++i)
+  {
+    std::cout << norm.sampleIB(mu, sd, infBound) << std::endl;
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < 10; ++i)
+  {
+    std::cout << norm.sampleSB(mu, sd, supBound) << std::endl;
+  }
+  std::cout << std::endl;
+  std::cout << norm.lpdf(8., mu, sd) << std::endl;
+  std::cout << log(norm.pdf(8., mu, sd)) << std::endl;
 }

@@ -72,29 +72,10 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
         STK::Real infBound = p_augData_->misData_(i, 0).second[0];
         STK::Real supBound = p_augData_->misData_(i, 0).second[1];
 
-        STK::Real lower = (infBound - mean) / sd;
-        STK::Real upper = (supBound - mean) / sd;
-        STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
-
-#ifdef MC_DEBUG
-        std::cout << "\tmissingIntervals_" << std::endl;
-        std::cout << "\tinfBound " << infBound << ", supBound: " << supBound << std::endl;
-        std::cout << "\tlower: " << lower << ", upper: " << upper << std::endl;
-        std::cout << "\talpha: " << alpha << std::endl;
-#endif
-
-        if (alpha*exp(alpha * lower / 2.) / sqrt(exp(1)) > exp(pow(lower, 2) / 2) / (upper - lower))
-        {
-          do
-          {
-            z = lbSampler(lower);
-          }
-          while(upper < z);
-        }
-        else
-        {
-          z = lrbSampler(lower, upper);
-        }
+        z = normal_.sampleI(mean,
+                            sd,
+                            infBound,
+                            supBound);
       }
       break;
 
@@ -104,8 +85,9 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
         std::cout << "\tmissingLUIntervals_" << std::endl;
 #endif
         STK::Real supBound = p_augData_->misData_(i, 0).second[0];
-        STK::Real upper = (supBound - mean) / sd;
-        z = -lbSampler(-upper);
+        z = normal_.sampleSB(mean,
+                             sd,
+                             supBound);
       }
       break;
 
@@ -115,13 +97,18 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
         std::cout << "\tmissingRUIntervals_" << std::endl;
 #endif
         STK::Real infBound = p_augData_->misData_(i, 0).second[0];
-        STK::Real lower = (infBound - mean) / sd;
-        z = lbSampler(lower);
+        z = normal_.sampleIB(mean,
+                             sd,
+                             infBound);
       }
       break;
 
       default:
-      {}
+      {
+#ifdef MC_DEBUG
+        std::cout << "\tunsupported missing value type" << std::endl;
+#endif
+      }
       break;
     }
 
@@ -130,53 +117,5 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #endif
     p_augData_->data_(i, 0) = z * sd + mean;
   }
-}
-
-STK::Real GaussianSampler::lbSampler(STK::Real lower)
-{
-  STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
-  STK::Real z, u, rho;
-  if (lower < 0)
-  {
-    do
-    {
-      z = normal_.sample(0.,
-                         1.);
-    }
-    while (z < lower);
-  }
-  else
-  {
-    do
-    {
-      z = exponential_.sample(1. / alpha) + lower;
-      rho = exp(-pow((z - alpha), 2) / 2.);
-      u = uniform_.sample(0., 1.);
-    }
-    while (u > rho);
-  }
-  return z;
-}
-
-STK::Real GaussianSampler::lrbSampler(STK::Real lower, STK::Real upper)
-{
-  STK::Real z, u, rho;
-
-  do
-  {
-    z = uniform_.sample(lower, upper);
-
-    if (lower < 0. && 0. < upper)
-      rho = exp(-pow(z, 2));
-    else if (upper < 0.)
-      rho = exp((pow(upper, 2)-pow(z, 2))/2);
-    else if (0. < lower)
-      rho = exp((pow(lower, 2)-pow(z, 2))/2);
-
-    u = uniform_.sample(0., 1.);
-  }
-  while(u > rho);
-
-  return z;
 }
 } // namespace mixt

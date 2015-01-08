@@ -36,5 +36,7 @@ const int moduloMisClass = 10; // modulo used to trigger misclassification step
 const int minIndPerClass = 3; // minimal number of individual in a class to accept a z sampling
 const STK::Real epsilon = 1.e-8; // very small value of real to check for near zero values
 const int minModality = 1; // minimal modality for categorical models
+const STK::Real pi = 3.141592653589793; // pi
+const STK::Real l2pi = 0.9189385332046727417; // constant used in pdf computation for normal law, 1/2 * log(2 * pi)
 
 } // namespace mixt

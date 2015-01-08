@@ -35,6 +35,8 @@ extern const int moduloMisClass; // modulo used to trigger misclassification ste
 extern const int minIndPerClass; // minimal number of individual in a class to accept a z sampling
 extern const STK::Real epsilon; // very small value of real to check for near zero values
 extern const int minModality; // minimal modality for categorical models
+extern const STK::Real pi; // pi
+extern const STK::Real l2pi; // constant used in pdf computation for normal law
 
 } // namespace mixt
 

@@ -48,11 +48,6 @@ class GaussianSampler
     AugmentedData<STK::Array2D<STK::Real> >* p_augData_;
     const STK::Array2DVector<STK::Real>* p_param_;
 
-    /** left bounded sampler */
-    STK::Real lbSampler(STK::Real lower);
-    /** left and right bounded sampler*/
-    STK::Real lrbSampler(STK::Real lower, STK::Real upper);
-
     UniformStatistic uniform_;
     NormalStatistic normal_;
     ExponentialStatistic exponential_;
