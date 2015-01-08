@@ -36,11 +36,13 @@ ParamExtractorR::~ParamExtractorR()
 
 void ParamExtractorR::exportParam(std::string idName,
                                   const STK::Array2D<STK::Real>* p_params,
+                                  const STK::Array2D<STK::Real>* p_paramsLogs,
                                   const std::vector<std::string>& paramNames,
                                   const STK::Real confidenceLevel)
 {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "ParamExtractorR::exportParam" << std::endl;
+  std::cout << "idName: " << idName << std::endl;
   std::cout << "p_params->sizeRows(): " << p_params->sizeRows() << std::endl;
   std::cout << "p_params->sizeCols(): " << p_params->sizeCols() << std::endl;
 #endif
@@ -87,7 +89,33 @@ void ParamExtractorR::exportParam(std::string idName,
   Rcpp::List dimnms = Rcpp::List::create(rows, cols);
   paramR.attr("dimnames") = dimnms;
 
-  param_[idName] = paramR;
+  Rcpp::NumericMatrix paramLogR;
+
+  if (p_paramsLogs->sizeRows() > 0 && p_paramsLogs->sizeCols()) // only if log has taken place, for example not during predict
+  {
+#ifdef MC_DEBUG_NEW
+    std::cout << "(*p_paramsLogs)" << (*p_paramsLogs) << std::endl;
+#endif
+    // copy of the log data
+    paramLogR = Rcpp::NumericMatrix(p_paramsLogs->sizeRows(),
+                                    p_paramsLogs->sizeCols());
+    for (int i = 0; i < p_paramsLogs->sizeRows(); ++i)
+    {
+      for (int j = 0; j < p_paramsLogs->sizeCols(); ++j)
+      {
+        paramLogR(i, j) = p_paramsLogs->elt(i, j);
+      }
+    }
+    Rcpp::CharacterVector colsLog(p_paramsLogs->sizeCols());
+//    colsLog[0] = "One col per SEM iteration";
+    Rcpp::List dimnmsLog = Rcpp::List::create(rows, colsLog);
+    paramLogR.attr("dimnames") = dimnmsLog;
+  }
+  
+  Rcpp::List ls = Rcpp::List::create(Rcpp::Named("stat") = paramR   ,
+                                     Rcpp::Named("log")  = paramLogR);
+
+  param_[idName] = ls;
 
 #ifdef MC_DEBUG
   std::cout << "ParamExtractorR::exportParam, param_.size():  " << param_.size() << std::endl;

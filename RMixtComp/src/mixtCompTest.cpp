@@ -22,39 +22,13 @@
  **/
 
 #include <Rcpp.h>
+#include "Arrays/include/STK_Array2DVector.h"
+#include "Arrays/include/STK_Display.h"
+#include <iostream>     // std::cout
+#include <algorithm>    // std::sort
 
 // [[Rcpp::export]]
-Rcpp::NumericMatrix fun()
+void matSort()
 {
-  Rcpp::NumericMatrix x(2,2);
-  x.fill(42); // or more interesting values
-  Rcpp::List dimnms = // two vec. with static names
-  Rcpp::List::create(Rcpp::CharacterVector::create("cc", "dd"),
-  Rcpp::CharacterVector::create("ee", "ff"));
-  // and assign it
-  x.attr("dimnames") = dimnms;
-  return(x);
-}
 
-// [[Rcpp::export]]
-Rcpp::NumericMatrix fun2()
-{
-  Rcpp::NumericMatrix x(2,2);
-  x.fill(42); // or more interesting values
-
-  Rcpp::CharacterVector rows(2);
-  Rcpp::CharacterVector cols(2);
-
-  rows[0] = "bouga";
-  rows[1] = "bougi";
-
-  cols[0] = "tata";
-  cols[1] = "toto";
-
-  Rcpp::List dimnms = Rcpp::List::create(rows, cols);
-
-  // and assign it
-  x.attr("dimnames") = dimnms;
-
-  return(x);
 }

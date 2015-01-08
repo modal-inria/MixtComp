@@ -161,6 +161,9 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** storage for proportions statistics */
     STK::Array2D<STK::Real> paramStatStorage_;
 
+    /** Log for sampled parameters */
+    STK::Array2D<STK::Real> paramlog_;
+
     /** storage for number of samples during Gibbs */
     STK::Array2D<STK::Real> nik_;
 };
