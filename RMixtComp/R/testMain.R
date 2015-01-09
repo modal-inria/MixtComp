@@ -102,12 +102,12 @@ testGenDataPredict <- function(prop,
                                nbBurnInIter = 20,
                                confidenceLevel = 0.95)
 {
-   lm <- getData(c("dataGen/predict/gaussianData.csv",
-                   "dataGen/predict/gaussianDescriptor.csv"),
-                 c("dataGen/predict/categoricalData.csv",
-                   "dataGen/predict/categoricalDescriptor.csv"),
-                 c("dataGen/predict/poissonData.csv",
-                   "dataGen/predict/poissonDescriptor.csv"))
+  lm <- getData(c("dataGen/predict/gaussianData.csv",
+                 "dataGen/predict/gaussianDescriptor.csv"),
+                c("dataGen/predict/categoricalData.csv",
+                  "dataGen/predict/categoricalDescriptor.csv"),
+                c("dataGen/predict/poissonData.csv",
+                  "dataGen/predict/poissonDescriptor.csv"))
    
 #   lm <- getData(c("dataGen/predict/gaussianData.csv",
 #                   "dataGen/predict/gaussianDescriptor.csv"))

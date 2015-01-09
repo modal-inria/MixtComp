@@ -103,6 +103,17 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
       proportions[kR] = composer.p_pk()->elt(kS);
     mcResults.slot("proportions") = proportions;
 
+    Rcpp::NumericMatrix proportionsLog(composer.p_pkLog()->sizeRows(),
+                                       composer.p_pkLog()->sizeCols());
+    for (int i = 0; i < composer.p_pkLog()->sizeRows(); ++i)
+    {
+      for (int j = 0; j < composer.p_pkLog()->sizeCols(); ++j)
+      {
+        proportionsLog(i, j) = (*composer.p_pkLog())(i, j);
+      }
+    }
+    mcResults.slot("proportionsLog") = proportionsLog;
+
     composer.mapStep(); // compute zi_ using maximum a posteriori instead of sampling it
     Rcpp::NumericVector partition(handler.nbSample());
     for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)

@@ -11,6 +11,7 @@ setClass(
     lnCompletedLikelihood = "numeric",
     lnObservedLikelihood = "numeric",
     proportions = "numeric",
+    proportionsLog = "matrix",
     partition = "integer",
     proba = "matrix",
     warnLog = "character"
@@ -21,8 +22,9 @@ setClass(
     lnCompletedLikelihood = numeric(0),
     lnObservedLikelihood = numeric(0),
     proportions = numeric(0),
+    proportionsLog = matrix(nrow = 0, ncol = 0),
     partition = integer(0),
-    proba = matrix(nrow=0,ncol=0),
+    proba = matrix(nrow = 0, ncol = 0),
     warnLog = character(0)
   )
 )

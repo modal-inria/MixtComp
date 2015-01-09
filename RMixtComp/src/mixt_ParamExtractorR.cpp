@@ -107,7 +107,6 @@ void ParamExtractorR::exportParam(std::string idName,
       }
     }
     Rcpp::CharacterVector colsLog(p_paramsLogs->sizeCols());
-//    colsLog[0] = "One col per SEM iteration";
     Rcpp::List dimnmsLog = Rcpp::List::create(rows, colsLog);
     paramLogR.attr("dimnames") = dimnmsLog;
   }
