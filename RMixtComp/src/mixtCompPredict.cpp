@@ -28,6 +28,7 @@
 #include "mixt_ParamSetterComposerR.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 #include "MixtComp/src/Various/mixt_Def.h"
+#include "MixtComp/src/Various/mixt_Timer.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompPredict(Rcpp::List dataList,
@@ -37,7 +38,9 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                            int nbClusters,
                            double confidenceLevel)
 {
-  // string to log warnings, useless as of now, since Gibbs sampling can not fail, it lacks an mStep
+  mixt::Timer totalTimer("Total Run");
+
+  // string to log warnings, useless as of now. Gibbs sampling can not fail as it lacks an mStep.
   std::string warnLog;
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
@@ -79,8 +82,11 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                  confidenceLevel);
   composer.setProportions(paramSetterComposer.getProportions());
 
+  // create the mixtures, and read / set the data
+  mixt::Timer readTimer("Read Data");
   manager.createMixtures(composer,
                          nbClusters);
+  readTimer.top("data have been read");
   
   // create the appropriate strategy and transmit the parameters
   mixt::GibbsStrategy strategy(&composer,
@@ -88,7 +94,9 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                mcStrategy.slot("nbGibbsIter")); // number of iterations for Gibbs sampler);
 
   // run the strategy
+  mixt::Timer stratTimer("Strategy Run");
   strategy.run();
+  stratTimer.top("strategy run complete");
 
   composer.writeParameters(std::cout);
   composer.exportDataParam();
@@ -124,6 +132,8 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
     std::cout << "!!! warnLog not empty !!!" << std::endl;
     std::cout << warnLog << std::endl;
   }
+
+  mcResults.slot("runTime") = totalTimer.top("end of run");
 
   Rcpp::List data = dataExtractor.rcppReturnVal();
   Rcpp::List param = paramExtractor.rcppReturnParam();

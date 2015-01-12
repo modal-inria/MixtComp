@@ -27,6 +27,7 @@
 #include "MixtComp/src/mixt_MixtComp.h"
 #include "MixtComp/src/IO/mixt_ParamSetterDummy.h"
 #include "MixtComp/src/Various/mixt_Def.h"
+#include "MixtComp/src/Various/mixt_Timer.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List rList,
@@ -34,6 +35,8 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                            int nbClusters,
                            double confidenceLevel)
 {
+  mixt::Timer totalTimer("Total Run");
+
   // string to log warnings
   std::string warnLog;
   // parse the S4 argument into input and output
@@ -72,8 +75,11 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                                  nbClusters,
                                  confidenceLevel);
 
+  // create the mixtures, and read / set the data
+  mixt::Timer readTimer("Read Data");
   manager.createMixtures(composer,
                          nbClusters);
+  readTimer.top("data have been read");
   
   // create the appropriate strategy and transmit the parameters
   mixt::SemStrategy strategy(&composer,
@@ -85,7 +91,9 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                              10); // number of sampling attempts for lowly populated classes
 
   // run the strategy
+  mixt::Timer stratTimer("Strategy Run");
   warnLog += strategy.run();
+  stratTimer.top("strategy run complete");
   mcResults.slot("warnLog") = warnLog;
 
   if (warnLog.size() == 0)
@@ -116,6 +124,8 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     mcResults.slot("proba") = proba;
 
     mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
+
+    mcResults.slot("runTime") = totalTimer.top("end of run");
   }
   else
   {

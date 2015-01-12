@@ -31,9 +31,13 @@
 namespace mixt
 {
 
-Timer::Timer() :
-    startTime_(0.)
-{};
+Timer::Timer(std::string timerName) :
+    timerName_(timerName)
+{
+  std::cout << timerName_ << ", timer created" << std::endl;
+  std::time(&creationTime_);
+  std::time(&topTime_);
+};
 
 Timer::~Timer()
 {};
@@ -57,6 +61,18 @@ void Timer::iteration(int iteration,
     std::cout << "Mean time per iteration: " << timePerIt << std::endl;
     std::cout << "Estimated remaining time: " << (iterationMax - iteration + 1) * timePerIt << std::endl;
   }
+}
+
+double Timer::top(std::string message)
+{
+  std::time_t currTime;
+  std::time(&currTime);
+  double lastTopTime = std::difftime(currTime, topTime_);
+  std::cout << timerName_ << ", " << message
+            << ", time since last top: " << lastTopTime
+            << " s , time since creation: " << std::difftime(currTime, creationTime_) << " s" << std::endl;
+  std::time(&topTime_);
+  return lastTopTime;
 }
 
 void Timer::setName(std::string timerName)
