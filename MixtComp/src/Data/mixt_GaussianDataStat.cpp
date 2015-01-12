@@ -56,30 +56,30 @@ void GaussianDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
   std::cout << "GaussianDataStat::sampleVals" << std::endl;
 #endif
-  if (iteration == 0) // clear the temporary statistical object
+  if (pm_augDataij_->misData_(ind, 0).first != present_)
   {
-    // initialize internal storage
-    stat_.resize(iterationMax + 1);
-
-#ifdef MC_DEBUG
-    std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
-#endif
-    // clear current individual
-    for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+    if (iteration == 0) // clear the temporary statistical object
     {
-      p_dataStatStorage_->elt(ind, j) = STK::Array2DPoint<STK::Real>(3, 0.);
+      // initialize internal storage
+      stat_.resize(iterationMax + 1);
+
+  #ifdef MC_DEBUG
+      std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
+  #endif
+      // clear current individual
+      for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+      {
+        p_dataStatStorage_->elt(ind, j) = STK::Array2DPoint<STK::Real>(3, 0.);
+      }
+
+      // first sampling
+      sample(ind, iteration);
     }
-
-    // first sampling
-    sample(ind, iteration);
-  }
-  else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
-  {
-    // last sampling
-    sample(ind, iteration);
-
-    if (pm_augDataij_->misData_(ind, 0).first != present_)
+    else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
     {
+      // last sampling
+      sample(ind, iteration);
+
 #ifdef MC_DEBUG
       std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
       std::cout << "j: " << j << std::endl;
@@ -109,11 +109,12 @@ void GaussianDataStat::sampleVals(int ind,
       std::cout << "tempVec: " << tempVec << std::endl;
 #endif
     }
-  }
-  else
-  {
-    // standard sampling
-    sample(ind, iteration);
+    else
+    {
+      // standard sampling
+      sample(ind, iteration);
+    }
   }
 }
+
 } // namespace mixt

@@ -56,29 +56,27 @@ void PoissonDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
   std::cout << "GaussianDataStat::sampleVals" << std::endl;
 #endif
-  if (iteration == 0) // clear the temporary statistical object
+
+  if (pm_augDataij_->misData_(ind, 0).first != present_)
   {
-    if (pm_augDataij_->misData_(ind, 0).first != present_)
+    if (iteration == 0) // clear the temporary statistical object
     {
       stat_.resize(iterationMax + 1);
-    }
 
 #ifdef MC_DEBUG
-    std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
+      std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
 #endif
-    // clear global individual
-    p_dataStatStorage_->elt(ind, 0) = STK::Array2DPoint<STK::Real>(3, 0.);
+      // clear global individual
+      p_dataStatStorage_->elt(ind, 0) = STK::Array2DPoint<STK::Real>(3, 0.);
 
-    // first sampling
-    sample(ind, iteration);
-  }
-  else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
-  {
-    // last sampling
-    sample(ind, iteration);
-
-    if (pm_augDataij_->misData_(ind, 0).first != present_)
+      // first sampling
+      sample(ind, iteration);
+    }
+    else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
     {
+      // last sampling
+      sample(ind, iteration);
+
 #ifdef MC_DEBUG
       std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
       std::cout << "j: " << j << std::endl;
@@ -108,11 +106,11 @@ void PoissonDataStat::sampleVals(int ind,
       std::cout << "tempVec: " << tempVec << std::endl;
 #endif
     }
-  }
-  else
-  {
-    // standard sampling
-    sample(ind, iteration);
+    else
+    {
+      // standard sampling
+      sample(ind, iteration);
+    }
   }
 }
 } // namespace mixt

@@ -58,25 +58,25 @@ void CategoricalDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
   std::cout << "CategoricalDataStat::sampleVals, ind: " << ind << ", iteration: " << iteration << std::endl;
 #endif
-  if (iteration == 0) // clear the temporary statistical object
+  if (pm_augDataij_->misData_(ind, 0).first != present_)
   {
-    // initialize internal storage
-    stat_.resize(STK::Range(pm_augDataij_->dataRange_.min_, // no access to param, hence no need for the globRange_
-                            pm_augDataij_->dataRange_.range_));
-
-    // clear current individual
-    (*p_dataStatStorage_)(ind, 0) = std::vector<std::pair<int, STK::Real> >();
-
-    // first sampling, on each missing variables
-    sample(ind);
-  }
-  else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
-  {
-    // last sampling
-    sample(ind);
-
-    if (pm_augDataij_->misData_(ind, 0).first != present_)
+    if (iteration == 0) // clear the temporary statistical object
     {
+      // initialize internal storage
+      stat_.resize(STK::Range(pm_augDataij_->dataRange_.min_, // no access to param, hence no need for the globRange_
+                              pm_augDataij_->dataRange_.range_));
+
+      // clear current individual
+      (*p_dataStatStorage_)(ind, 0) = std::vector<std::pair<int, STK::Real> >();
+
+      // first sampling, on each missing variables
+      sample(ind);
+    }
+    else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
+    {
+      // last sampling
+      sample(ind);
+
       STK::Array2DVector<STK::Real> proba = stat_ / STK::Real(iterationMax + 1); // from count to probabilities
       STK::Array2DPoint<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, proba);
@@ -112,10 +112,10 @@ void CategoricalDataStat::sampleVals(int ind,
       std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
     }
 #endif
-  }
-  else // any other iteration: juste store the current value
-  {
-    sample(ind);
+    else // any other iteration: juste store the current value
+    {
+      sample(ind);
+    }
   }
 }
 
