@@ -116,6 +116,8 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
       proba(iR, kR) = composer.p_tik()->elt(iS, kS);
   mcResults.slot("proba") = proba;
 
+  mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
+
   mcResults.slot("warnLog") = warnLog;
   if (warnLog.size() > 0)
   {

@@ -114,6 +114,8 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
       for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
         proba(iR, kR) = composer.p_tik()->elt(iS, kS);
     mcResults.slot("proba") = proba;
+
+    mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
   }
   else
   {

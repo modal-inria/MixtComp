@@ -44,7 +44,7 @@ Categorical_pjk::~Categorical_pjk()
 
 int Categorical_pjk::computeNbFreeParameters() const
 {
-  return param_.sizeRows();
+  return (nbModalities_ - 1);
 }
 
 void Categorical_pjk::getParameters(STK::Array2DVector<STK::Real>& param) const
