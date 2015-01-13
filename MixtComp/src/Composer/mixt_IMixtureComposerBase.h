@@ -203,6 +203,11 @@ class IMixtureComposerBase
       zi_ = zi;
     };
 
+    int nbSample() const
+    {
+      return nbSample_;
+    };
+
   protected:
     /** number of cluster. */
     int nbCluster_;

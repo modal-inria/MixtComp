@@ -107,6 +107,16 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   mcResults.slot("lnObservedLikelihood") = composer.lnLikelihood(mixt::lnObservedLikelihood_);
   mcResults.slot("lnCompletedLikelihood") = composer.lnLikelihood(mixt::lnCompletedLikelihood_);
 
+  // export the composer results to R through modifications of mcResults
+  mcResults.slot("nbCluster") = nbClusters;
+  mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
+  STK::Real lnObsLik = composer.lnLikelihood(mixt::lnObservedLikelihood_);
+  STK::Real lnCompLik = composer.lnLikelihood(mixt::lnCompletedLikelihood_);
+  mcResults.slot("lnObservedLikelihood") = lnObsLik;
+  mcResults.slot("lnCompletedLikelihood") = lnCompLik;
+  mcResults.slot("BIC") = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+  mcResults.slot("ICL") = lnCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+
   Rcpp::NumericVector proportions(nbClusters);
   for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
     proportions[kR] = composer.p_pk()->elt(kS);
@@ -123,8 +133,6 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
     for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
       proba(iR, kR) = composer.p_tik()->elt(iS, kS);
   mcResults.slot("proba") = proba;
-
-  mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
 
   mcResults.slot("warnLog") = warnLog;
   if (warnLog.size() > 0)
