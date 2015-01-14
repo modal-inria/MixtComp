@@ -92,7 +92,7 @@ void PoissonDataStat::sampleVals(int ind,
       STK::Real realIndHigh = (1. - alpha) * iterationMax;
 
       STK::Array2DPoint<STK::Real> tempPoint(3);
-      tempPoint[0] = stat_.mean();
+      tempPoint[0] = int(stat_.mean()); // mode of a Poisson is lambda rounded down to the closest integer
       tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_[indOrder[int(realIndLow )    ]]
                     + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];
       tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_[indOrder[int(realIndHigh)    ]]

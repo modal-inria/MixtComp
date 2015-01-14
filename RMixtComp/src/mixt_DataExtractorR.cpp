@@ -66,7 +66,7 @@ void DataExtractorR::exportVals(std::string idName,
       std::cout << "not present_" << std::endl;
 #endif
       Rcpp::List currList; // storage for the current missing value
-      currList.push_back(i + 1); // R matrices rows start at 1
+      currList.push_back(i + 1); // store position, R matrices rows start at 1
 #ifdef MC_DEBUG
       std::cout << "p_dataStatStorage->elt(i, j).size(): " << (*p_dataStatStorage)(i, j).size() << std::endl;
 #endif
