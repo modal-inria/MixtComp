@@ -16,7 +16,8 @@ setClass(
     partition = "integer",
     proba = "matrix",
     warnLog = "character",
-    runTime = "numeric"
+    runTime = "numeric",
+    nbSample = "integer"
   ),
   prototype=prototype(
     nbCluster = numeric(0),
@@ -29,7 +30,8 @@ setClass(
     partition = integer(0),
     proba = matrix(nrow=0,ncol=0),
     warnLog = character(0),
-    runTime = numeric(0)
+    runTime = numeric(0),
+    nbSample = integer(0)
   )
 )
 

@@ -95,7 +95,6 @@ testGenDataLearn <- function(nbClass = 2,
               dataParam))
 }
 
-
 testGenDataPredict <- function(prop,
                                param,
                                nbClass = 2,

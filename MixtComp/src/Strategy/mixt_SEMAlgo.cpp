@@ -64,7 +64,7 @@ std::string SEMAlgo::run()
 #endif
     myTimer.setName("SEM burn-in");
     p_model_->storeSEMBurnIn(-1,
-                          nbIterMax_ - 1); // export of the initial partition
+                             nbIterMax_ - 1); // export of the initial partition
   }
   else if (p_model_->state() == longRun_)
   {
@@ -104,10 +104,15 @@ std::string SEMAlgo::run()
       }
       else
       {
-        return   std::string("SEMAlgo::run(), sStep(): not enough individuals per class: ")
-               + type2str(nbIndPerClass)
-               + std::string(", while required minimum is: ")
-               + type2str(minIndPerClass);
+        if (iterSample = nbSamplingAttempts_ - 1) // on last attempt, exit with error message
+        {
+          return   std::string("SEMAlgo::run(), sStep(): not enough individuals per class: ")
+                 + type2str(nbIndPerClass)
+                 + std::string(", while required minimum is: ")
+                 + type2str(minIndPerClass)
+                 +  std::string(". Number of sampling attempts: ")
+                 + type2str(nbSamplingAttempts_);
+        }
       }
     }
     p_model_->samplingStep();

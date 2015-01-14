@@ -28,6 +28,7 @@
 #include "MixtComp/src/IO/mixt_ParamSetterDummy.h"
 #include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/Various/mixt_Timer.h"
+#include "MixtComp/src/Various/mixt_Constants.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List rList,
@@ -88,7 +89,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                              mcStrategy.slot("nbIter"), // number of iterations
                              mcStrategy.slot("nbGibbsBurnInIter"), // number of iterations for Gibbs sampler
                              mcStrategy.slot("nbGibbsIter"), // number of iterations for Gibbs sampler
-                             10); // number of sampling attempts for lowly populated classes
+                             mixt::nbSamplingAttempts); // number of sampling attempts for lowly populated classes
 
   // run the strategy
   mixt::Timer stratTimer("Strategy Run");
@@ -129,6 +130,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     mcResults.slot("proba") = proba;
 
     mcResults.slot("runTime") = totalTimer.top("end of run");
+    mcResults.slot("nbSample") = composer.nbSample();
   }
   else
   {
