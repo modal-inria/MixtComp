@@ -76,6 +76,7 @@ STK::Real MixtureComposer::lnLikelihood(LikelihoodType lnType)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
+  std::cout << "lnType: " << lnType << std::endl;
 #endif
   STK::Real lnLikelihood = 0.;
   STK::Array2D<STK::Real> lnComp(nbSample_,

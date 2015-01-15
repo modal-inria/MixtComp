@@ -76,7 +76,7 @@ void PoissonLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnCo
       std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
 #endif
   // likelihood for present data
-  for (int i = 0; i < p_augData_->data_.sizeCols(); ++i)
+  for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
   {
     STK::Real lambda = p_param_->elt(k, 0);
     STK::Real proba;
@@ -95,6 +95,7 @@ void PoissonLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnCo
 #ifdef MC_DEBUG
         std::cout << "\tmissing" << std::endl;
 #endif
+        proba = 1.;
       }
       break;
 

@@ -86,7 +86,7 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
   // likelihood for present data
   for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
   {
-    for (int i = 0; i < p_augData_->data_.sizeCols(); ++i)
+    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
     {
       STK::Real mean  = p_param_->elt(2 * k    , j);
       STK::Real sd    = p_param_->elt(2 * k + 1, j);
@@ -112,6 +112,7 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
 #ifdef MC_DEBUG
           std::cout << "\tmissing" << std::endl;
 #endif
+          proba = 1.;
         }
         break;
 
