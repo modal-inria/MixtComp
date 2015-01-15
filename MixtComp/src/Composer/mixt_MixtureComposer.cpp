@@ -71,12 +71,11 @@ STK::Real MixtureComposer::lnComponentProbability(int i, int k)
   return sum;
 }
 
-/** @return the value of the completed likelihood */
-STK::Real MixtureComposer::lnLikelihood(LikelihoodType lnType)
+/** @return the value of the observed likelihood */
+STK::Real MixtureComposer::lnObservedLikelihood()
 {
 #ifdef MC_DEBUG
-  std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
-  std::cout << "lnType: " << lnType << std::endl;
+  std::cout << "MixtureComposer::lnObservedLikelihood() " << std::endl;
 #endif
   STK::Real lnLikelihood = 0.;
   STK::Array2D<STK::Real> lnComp(nbSample_,
@@ -91,20 +90,7 @@ STK::Real MixtureComposer::lnLikelihood(LikelihoodType lnType)
     tempVec += std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
-      switch(lnType)
-      {
-        case lnCompletedLikelihood_:
-        {
-          (*it)->lnCompletedLikelihood(&tempVec, k);
-        }
-        break;
-
-        case lnObservedLikelihood_:
-        {
-          (*it)->lnObservedLikelihood(&tempVec, k);
-        }
-        break;
-      }
+      (*it)->lnObservedLikelihood(&tempVec, k);
 #ifdef MC_DEBUG
       std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
       std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
@@ -112,7 +98,6 @@ STK::Real MixtureComposer::lnLikelihood(LikelihoodType lnType)
     }
   }
 
-  // Compute the observed / completed likelihood for the complete mixture model
   for (int i = 0; i < nbSample_; ++i)
   {
 #ifdef MC_DEBUG
@@ -133,13 +118,45 @@ STK::Real MixtureComposer::lnLikelihood(LikelihoodType lnType)
 #endif
   }
 
-//  // Compute the observed likelihood for the complete mixture model
-//  for (int i = 0; i < nbSample_; ++i)
-//  {
-//    STK::Real max = lnComp.row(i).maxElt();
-//    STK::Real sum = (lnComp.row(i) -= max).exp().dot(prop_);
-//    lnLikelihood += max + std::log(sum);
-//  }
+  return lnLikelihood;
+}
+
+/** @return the value of the completed likelihood */
+STK::Real MixtureComposer::lnCompletedLikelihood()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
+#endif
+  STK::Real lnLikelihood = 0.;
+  STK::Array2D<STK::Real> lnComp(nbSample_,
+                                 nbCluster_,
+                                 0.);
+  for (int k = 0; k < nbCluster_; ++k)
+  {
+#ifdef MC_DEBUG
+    std::cout << "k: " << k << std::endl;
+#endif
+    STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
+    tempVec += std::log(prop_[k]);
+    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+    {
+      (*it)->lnCompletedLikelihood(&tempVec, k);
+#ifdef MC_DEBUG
+      std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
+      std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
+#endif
+    }
+  }
+
+  // Compute the observed / completed likelihood for the complete mixture model
+  for (int i = 0; i < nbSample_; ++i)
+  {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << std::endl;
+    std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
+#endif
+    lnLikelihood += lnComp(i, zi_[i]);
+  }
 
   return lnLikelihood;
 }

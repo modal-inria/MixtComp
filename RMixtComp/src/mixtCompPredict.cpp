@@ -104,14 +104,8 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   // export the composer results to R through modifications of mcResults
   mcResults.slot("nbCluster") = nbClusters;
   mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
-  mcResults.slot("lnObservedLikelihood") = composer.lnLikelihood(mixt::lnObservedLikelihood_);
-  mcResults.slot("lnCompletedLikelihood") = composer.lnLikelihood(mixt::lnCompletedLikelihood_);
-
-  // export the composer results to R through modifications of mcResults
-  mcResults.slot("nbCluster") = nbClusters;
-  mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
-  STK::Real lnObsLik = composer.lnLikelihood(mixt::lnObservedLikelihood_);
-  STK::Real lnCompLik = composer.lnLikelihood(mixt::lnCompletedLikelihood_);
+  STK::Real lnObsLik = composer.lnObservedLikelihood();
+  STK::Real lnCompLik = composer.lnCompletedLikelihood();
   mcResults.slot("lnObservedLikelihood") = lnObsLik;
   mcResults.slot("lnCompletedLikelihood") = lnCompLik;
   mcResults.slot("BIC") = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());

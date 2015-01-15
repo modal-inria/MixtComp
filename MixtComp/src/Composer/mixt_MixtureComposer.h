@@ -83,8 +83,11 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      **/
     virtual STK::Real lnComponentProbability(int i, int k);
 
+    /** @return the value of the observed likelihood */
+    virtual STK::Real lnObservedLikelihood();
+
     /** @return the value of the completed likelihood */
-    virtual STK::Real lnLikelihood(LikelihoodType lnType);
+    virtual STK::Real lnCompletedLikelihood();
 
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(STK::ostream& os) const;
