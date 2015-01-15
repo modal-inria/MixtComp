@@ -379,6 +379,7 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter)
                     nbGibbsIter - 1);
     }
   }
+  mapStep(); // z_i estimated by the mode at the end of the Gibbs Sampling
 }
 
 } /* namespace mixt */
