@@ -57,22 +57,22 @@ void GaussianLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* ln
         STK::Real mean  = p_param_->elt(2 * k    , j);
         STK::Real sd    = p_param_->elt(2 * k + 1, j);
 
-        STK::Real proba = normal_.pdf(p_augData_->data_(i, j),
-                                      mean,
-                                      sd);
+        STK::Real logProba = normal_.lpdf(p_augData_->data_(i, j),
+                                          mean,
+                                          sd);
 
-        lnComp->elt(i) += std::log(proba);
+        lnComp->elt(i) += logProba;
       }
       else // likelihood for missing values, imputation by the expectation
       {
         STK::Real mean  = p_param_->elt(2 * k    , j);
         STK::Real sd    = p_param_->elt(2 * k + 1, j);
 
-        STK::Real proba = normal_.pdf(p_dataStatStorage_->elt(i, j)[0],
-                                      mean,
-                                      sd);
+        STK::Real logProba = normal_.lpdf(p_dataStatStorage_->elt(i, j)[0],
+                                          mean,
+                                          sd);
 
-        lnComp->elt(i) += std::log(proba);
+        lnComp->elt(i) += logProba;
       }
     }
   }
@@ -91,7 +91,6 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
       STK::Real mean  = p_param_->elt(2 * k    , j);
       STK::Real sd    = p_param_->elt(2 * k + 1, j);
 
-      STK::Real proba;
       STK::Real logProba;
 
       switch(p_augData_->misData_(i, j).first)   // likelihood for present value
@@ -101,9 +100,9 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
           STK::Real mean  = p_param_->elt(2 * k    , j);
           STK::Real sd    = p_param_->elt(2 * k + 1, j);
 
-          proba = normal_.pdf(p_augData_->data_(i, j),
-                              mean,
-                              sd);
+          logProba = normal_.lpdf(p_augData_->data_(i, j),
+                                  mean,
+                                  sd);
         }
         break;
 
@@ -112,7 +111,7 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
 #ifdef MC_DEBUG
           std::cout << "\tmissing" << std::endl;
 #endif
-          proba = 1.;
+          logProba = 0.;
         }
         break;
 
@@ -125,12 +124,12 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
       std::cout << "\tleftBound: " << leftBound << "\tboost::math::cdf(norm, leftBound): " << boost::math::cdf(norm, leftBound) << std::endl;
       std::cout << "\trightBound: " << rightBound << "\tboost::math::cdf(norm, rightBound): " << boost::math::cdf(norm, rightBound) << std::endl;
 #endif
-          proba =   normal_.cdf(supBound,
-                                mean,
-                                sd)
-                  - normal_.cdf(infBound,
-                                mean,
-                                sd);
+          logProba = std::log(  normal_.cdf(supBound,
+                                            mean,
+                                            sd)
+                              - normal_.cdf(infBound,
+                                            mean,
+                                            sd));
         }
         break;
 
@@ -141,9 +140,9 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
 #endif
           STK::Real supBound = p_augData_->misData_(i, j).second[0];
 
-          proba = normal_.cdf(supBound,
-                              mean,
-                              sd);
+          logProba = std::log(normal_.cdf(supBound,
+                                          mean,
+                                          sd));
         }
         break;
 
@@ -155,9 +154,9 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
           STK::Real infBound = p_augData_->misData_(i, j).second[0];
 
 
-          proba = 1. - normal_.cdf(infBound,
-                                   mean,
-                                   sd);
+          logProba = std::log(1. - normal_.cdf(infBound,
+                                               mean,
+                                               sd));
         }
         break;
 
@@ -166,11 +165,9 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
         break;
       }
 
-      logProba = std::log(proba);
       lnComp->elt(i) += logProba;
 
 #ifdef MC_DEBUG
-      std::cout << "\tproba: " << proba << std::endl;
       std::cout << "\tlogProba: " << logProba << std::endl;
 #endif
     }

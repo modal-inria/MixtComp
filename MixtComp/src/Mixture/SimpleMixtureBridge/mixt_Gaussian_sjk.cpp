@@ -72,14 +72,14 @@ double Gaussian_sjk::lnComponentProbability(int i, int k) const
   Type currVal = p_data_ ->elt(i, 0);
   STK::Real mean = param_[2 * k    ];
   STK::Real sd   = param_[2 * k + 1];
-  STK::Real proba = normal_.pdf(currVal,
-                                mean,
-                                sd);
+  STK::Real logProba = normal_.lpdf(currVal,
+                                    mean,
+                                    sd);
 #ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::lnComponentProbability" << std::endl;
   std::cout << "\tk: " << k << ", mean: " << mean << ", sd: " << sd << ", currVal: " << currVal << ", proba: " << proba << std::endl;
 #endif
-  return std::log(proba);
+  return logProba;
 }
 
 std::string Gaussian_sjk::mStep()
