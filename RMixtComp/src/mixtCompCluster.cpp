@@ -107,10 +107,12 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
     STK::Real lnObsLik = composer.lnObservedLikelihood();
     STK::Real lnCompLik = composer.lnCompletedLikelihood();
+    STK::Real lnSemiCompLik = composer.lnSemiCompletedLikelihood();
     mcResults.slot("lnObservedLikelihood") = lnObsLik;
+    mcResults.slot("lnSemiCompletedLikelihood") = lnSemiCompLik;
     mcResults.slot("lnCompletedLikelihood") = lnCompLik;
-    mcResults.slot("BIC") = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
-    mcResults.slot("ICL") = lnCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+    mcResults.slot("BIC") = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+    mcResults.slot("ICL") = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
 
     Rcpp::NumericVector proportions(nbClusters);
     for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)

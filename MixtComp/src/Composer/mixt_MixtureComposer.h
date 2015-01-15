@@ -89,6 +89,9 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** @return the value of the completed likelihood */
     virtual STK::Real lnCompletedLikelihood();
 
+    /** @return the value of the semi-completed likelihood (completion only for latent class) */
+    virtual STK::Real lnSemiCompletedLikelihood();
+
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(STK::ostream& os) const;
 
