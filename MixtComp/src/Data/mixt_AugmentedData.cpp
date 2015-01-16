@@ -123,7 +123,6 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
       }
     }
   }
-  }
 }
 
 template<>
@@ -187,7 +186,6 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
         data_(i, j) = sampleVal;
       }
     }
-  }
   }
 }
 
