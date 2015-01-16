@@ -22,6 +22,7 @@
  **/
 
 #include "mixt_CategoricalDataStat.h"
+#include "../Various/mixt_Constants.h"
 #include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
@@ -63,8 +64,12 @@ void CategoricalDataStat::sampleVals(int ind,
     if (iteration == 0) // clear the temporary statistical object
     {
       // initialize internal storage
-      stat_.resize(STK::Range(pm_augDataij_->dataRange_.min_, // no access to param, hence no need for the globRange_
-                              pm_augDataij_->dataRange_.range_));
+#ifdef MC_DEBUG
+      std::cout << "\tminModality: " << minModality << std::endl;
+      std::cout << "\tnbClass_: " << nbClass_ << std::endl;
+#endif
+      stat_.resize(STK::Range(minModality,
+                              nbClass_));
 
       // clear current individual
       (*p_dataStatStorage_)(ind, 0) = std::vector<std::pair<int, STK::Real> >();
@@ -81,12 +86,9 @@ void CategoricalDataStat::sampleVals(int ind,
       STK::Array2DPoint<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, proba);
       STK::Real cumProb = 0.;
-#ifdef MC_DEBUG
-      std::cout << "pm_augDataij_->dataRange_.max_: " << pm_augDataij_->dataRange_.max_ << std::endl;
-      std::cout << "pm_augDataij_->dataRange_.min_ - 1: " << pm_augDataij_->dataRange_.min_ - 1 << std::endl;
-#endif
-      for (int i = pm_augDataij_->dataRange_.max_;
-           i > pm_augDataij_->dataRange_.min_ - 1;
+
+      for (int i = nbClass_;
+           i > minModality - 1;
            --i)
       {
         int currMod = indOrder[i];

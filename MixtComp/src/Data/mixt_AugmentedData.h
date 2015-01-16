@@ -83,26 +83,29 @@ class AugmentedData
     {
       Type min;
       Type max;
+      bool isInfo = false; // is there any information available on the data ?
       for (int i = 0; i < misData_.rows(); ++i)
       {
         for (int j = 0; j < misData_.cols(); ++j)
         {
           switch (misData_(i, j).first)
           {
-            case present_:
+            case present_: // data is present, range is updated directly
             {
+              isInfo = true;
               rangeUpdate(min,
                           max,
                           data_(i, j));
             }
             break;
 
-            default:
+            default: // data is missing, range is updated using information on the missing value
             {
               for (typename std::vector<Type>::const_iterator it = misData_(i, j).second.begin();
                    it != misData_(i, j).second.end();
                    ++it)
               {
+                isInfo = true;
                 rangeUpdate(min,
                             max,
                             *it);
@@ -112,8 +115,15 @@ class AugmentedData
           }
         }
       }
-      dataRange_ = Range<Type>(min, max);
-#ifdef MC_DEBUG
+      if (isInfo == true)
+      {
+        dataRange_ = Range<Type>(min, max);
+      }
+      else
+      {
+        dataRange_ = Range<Type>(0., 0.5); // default range, should allow for initialization in prediction for all types of data
+      }
+#ifdef MC_DEBUG_NEW
       std::cout << "AugmentedData::computeRange" << std::endl;
       std::cout << "min: " << min << ", max: " << max << std::endl;
 #endif

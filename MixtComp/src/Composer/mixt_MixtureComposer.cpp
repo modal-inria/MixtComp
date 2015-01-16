@@ -393,6 +393,9 @@ void MixtureComposer::storeGibbsRun(int sample,
 
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
+#ifdef MC_DEBUG
+    std::cout << (*it)->idName() << std::endl;
+#endif
     (*it)->storeGibbsRun(sample,
                          iteration,
                          iterationMax);
