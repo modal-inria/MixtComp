@@ -44,12 +44,15 @@ CategoricalDataStat::~CategoricalDataStat() {};
 
 void CategoricalDataStat::sample(int ind)
 {
-  if (pm_augDataij_->misData_(ind, 0).first != present_)
+  int currMod = pm_augDataij_->data_(ind,
+                                     0);
+#ifdef MC_DEBUG
+  if (currMod == 0)
   {
-    int currMod = pm_augDataij_->data_(ind,
-                                       0);
-    stat_[currMod] += 1.;
+    std::cout << "CategoricalDataStat::sample, modality 0 detected" << std::endl;
   }
+#endif
+  stat_[currMod] += 1.;
 }
 
 void CategoricalDataStat::sampleVals(int ind,

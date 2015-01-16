@@ -41,12 +41,9 @@ PoissonDataStat::~PoissonDataStat() {};
 void PoissonDataStat::sample(int ind,
                              int iteration)
 {
-  if (pm_augDataij_->misData_(ind, 0).first != present_)
-  {
-    int currVal = pm_augDataij_->data_(ind,
-                                       0);
-    stat_[iteration] = currVal;
-  }
+  int currVal = pm_augDataij_->data_(ind,
+                                     0);
+  stat_[iteration] = currVal;
 }
 
 void PoissonDataStat::sampleVals(int ind,

@@ -47,21 +47,6 @@ Range<int>::Range(int min,
 template<>
 void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 {
-  if (!rangeUpdate_)
-  {
-    for (int j = 0; j < misData_.cols(); ++j)
-    {
-      for (int i = 0; i < misData_.rows(); ++i)
-      {
-        if (misData_(i, j).first != present_)
-        {
-          data_(i, j) = 0.;
-        }
-      }
-    }
-  }
-  else
-  {
   for (int j = 0; j < misData_.cols(); ++j)
   {
     for (int i = 0; i < misData_.rows(); ++i)
@@ -147,21 +132,7 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
 #ifdef MC_DEBUG
   std::cout << "AugmentedData<STK::Array2D<int> >::removeMissing" << std::endl;
 #endif
-  if (!rangeUpdate_)
-  {
-    for (int j = 0; j < misData_.cols(); ++j)
-    {
-      for (int i = 0; i < misData_.rows(); ++i)
-      {
-        if (misData_(i, j).first != present_)
-        {
-          data_(i, j) = 0.;
-        }
-      }
-    }
-  }
-  else
-  {
+
   for (int j = 0; j < misData_.cols(); ++j)
   {
     for (int i = 0; i < misData_.rows(); ++i)

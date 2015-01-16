@@ -29,6 +29,7 @@
 #include <vector>
 #include "Arrays/include/STK_Array2D.h"
 #include "../Various/mixt_Def.h"
+#include "../Various/mixt_Constants.h"
 #include "Eigen/Dense"
 #include "../Statistic/mixt_UniformStatistic.h"
 
@@ -83,7 +84,7 @@ class AugmentedData
     {
       Type min;
       Type max;
-      bool isInfo = false; // is there any information available on the data ?
+
       for (int i = 0; i < misData_.rows(); ++i)
       {
         for (int j = 0; j < misData_.cols(); ++j)
@@ -92,7 +93,6 @@ class AugmentedData
           {
             case present_: // data is present, range is updated directly
             {
-              isInfo = true;
               rangeUpdate(min,
                           max,
                           data_(i, j));
@@ -105,7 +105,6 @@ class AugmentedData
                    it != misData_(i, j).second.end();
                    ++it)
               {
-                isInfo = true;
                 rangeUpdate(min,
                             max,
                             *it);
@@ -115,15 +114,16 @@ class AugmentedData
           }
         }
       }
-      if (isInfo == true)
+      if (rangeUpdate_ == true)
       {
         dataRange_ = Range<Type>(min, max);
       }
       else
       {
-        dataRange_ = Range<Type>(0., 0.5); // default range, should allow for initialization in prediction for all types of data
+        dataRange_ = Range<Type>(minModality,
+                                 minModality + 0.5); // default range, should allow for initialization in prediction for all types of data
       }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "AugmentedData::computeRange" << std::endl;
       std::cout << "min: " << min << ", max: " << max << std::endl;
 #endif

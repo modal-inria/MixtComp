@@ -72,8 +72,15 @@ double Categorical_pjk::lnComponentProbability(int i, int k) const
   Type currVal = p_data_->elt(i, 0);
   STK::Real proba = param_[k * nbModalities_ + currVal - minModality]; // first modality is 1 in data, but 0 in parameters storage
 #ifdef MC_DEBUG
-  std::cout << "Categorical_pjk::lnComponentProbability" << std::endl;
   std::cout << "\tk: " << k << ", proba: " << proba << std::endl;
+#endif
+#ifdef MC_DEBUG
+  std::cout << "Categorical_pjk::lnComponentProbability" << std::endl;
+  if (currVal == 0)
+  {
+    std::cout << "modality 0 in data" << std::endl;
+    std::cout << "k * nbModalities_ + currVal - minModality: " << k * nbModalities_ + currVal - minModality << std::endl;
+  }
 #endif
   return std::log(proba);
 }
