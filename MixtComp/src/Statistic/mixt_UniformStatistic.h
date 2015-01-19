@@ -24,7 +24,7 @@
 #ifndef MIXT_UNIFORMSTATISTIC_H
 #define MIXT_UNIFORMSTATISTIC_H
 
-#include "STKernel/include/STK_Real.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include <boost/random/mersenne_twister.hpp>
 
 namespace mixt
@@ -50,7 +50,7 @@ class UniformStatistic
 
     /** Sample a value from a Normal Law with parameters mean and sd */
     Type sample(STK::Real min,
-                     STK::Real max);
+                STK::Real max);
   private:
     /** Random number generator */
     boost::random::mt19937 rng_;

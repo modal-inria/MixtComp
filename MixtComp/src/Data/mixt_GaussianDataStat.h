@@ -24,9 +24,7 @@
 #ifndef MIXT_GAUSSIANDATASTAT_H
 #define MIXT_GAUSSIANDATASTAT_H
 
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DPoint.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt

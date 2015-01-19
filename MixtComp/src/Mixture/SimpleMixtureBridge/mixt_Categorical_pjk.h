@@ -26,8 +26,7 @@
 #define MIXT_CATEGORICAL_PJK
 
 #include <vector>
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {

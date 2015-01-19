@@ -27,8 +27,7 @@
 #define MIXT_POISSON_K_H
 
 #include <vector>
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_PoissonStatistic.h"
 
 namespace mixt

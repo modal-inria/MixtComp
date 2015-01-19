@@ -24,7 +24,7 @@
 #ifndef MIXT_POISSONSTATISTIC_H
 #define MIXT_POISSONSTATISTIC_H
 
-#include "STKernel/include/STK_Real.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include <boost/random/mersenne_twister.hpp>
 
 namespace mixt

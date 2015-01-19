@@ -24,7 +24,7 @@
 #ifndef MIXT_GAUSSIANLIKELIHOOD_H
 #define MIXT_GAUSSIANLIKELIHOOD_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_NormalStatistic.h"
 

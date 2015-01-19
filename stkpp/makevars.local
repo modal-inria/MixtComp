@@ -1,5 +1,0 @@
-LIB_DIR = lib
-LIB_STKPP_A = libSTKpp.a
-
-CFLAGS =
-STK_FLAGS = -Wno-long-long -fPIC

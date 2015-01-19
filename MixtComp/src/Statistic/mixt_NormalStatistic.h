@@ -24,8 +24,8 @@
 #ifndef MIXT_NORMALSTATISTIC_H
 #define MIXT_NORMALSTATISTIC_H
 
-#include "STKernel/include/STK_Real.h"
 #include <boost/random/mersenne_twister.hpp>
+#include "../LinAlg/mixt_LinAlg.h"
 #include "mixt_UniformStatistic.h"
 #include "mixt_ExponentialStatistic.h"
 

@@ -24,7 +24,7 @@
 #ifndef MIXT_PARAMSETTERDUMMY_H
 #define MIXT_PARAMSETTERDUMMY_H
 
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {

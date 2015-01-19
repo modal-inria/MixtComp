@@ -25,7 +25,7 @@
 #ifndef MIXT_CATEGORICALSAMPLER_H
 #define MIXT_CATEGORICALSAMPLER_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
 
 namespace mixt

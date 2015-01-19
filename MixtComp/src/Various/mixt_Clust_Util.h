@@ -25,9 +25,6 @@
 #ifndef MIXT_CLUST_UTIL_H
 #define MIXT_CLUST_UTIL_H
 
-#include "STKernel/include/STK_String.h"
-#include "STKernel/include/STK_Real.h"
-
 namespace mixt
 {
 

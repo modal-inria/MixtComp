@@ -29,6 +29,7 @@
 #include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/Various/mixt_Timer.h"
 #include "MixtComp/src/Various/mixt_Constants.h"
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List rList,

@@ -24,8 +24,6 @@
 #ifndef MIXT_MIXTCOMP_H
 #define MIXT_MIXTCOMP_H
 
-#include "stkpp/include/Clustering.h"
-
 #include "Mixture/SimpleMixtureBridge/mixt_Clust_Traits.h"
 #include "Manager/mixt_MixtureManager.h"
 #include "Strategy/mixt_SEMStrategy.h"

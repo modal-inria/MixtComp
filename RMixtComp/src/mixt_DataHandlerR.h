@@ -32,7 +32,7 @@
 #include <map>
 #include <Rcpp.h>
 #include "boost/regex.hpp"
-#include "Arrays/include/STK_Array2D.h"
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 #include "MixtComp/src/Data/mixt_AugmentedData.h"
 #include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/Various/mixt_IO.h"

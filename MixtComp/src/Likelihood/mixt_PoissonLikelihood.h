@@ -24,7 +24,7 @@
 #ifndef MIXT_POISSONLIKELIHOOD_H
 #define MIXT_POISSONLIKELIHOOD_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_PoissonStatistic.h"
 

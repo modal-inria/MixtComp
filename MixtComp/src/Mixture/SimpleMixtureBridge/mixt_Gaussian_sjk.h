@@ -26,8 +26,7 @@
 #define MIXT_GAUSSIAN_SJK_H
 
 #include <vector>
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_NormalStatistic.h"
 
 namespace mixt

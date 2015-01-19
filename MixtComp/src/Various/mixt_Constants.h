@@ -24,7 +24,7 @@
 #ifndef MIXT_CONSTANTS_H_
 #define MIXT_CONSTANTS_H_
 
-#include "STKernel/include/STK_Real.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {

@@ -27,10 +27,9 @@
 
 #include <utility>
 #include <vector>
-#include "Arrays/include/STK_Array2D.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Def.h"
 #include "../Various/mixt_Constants.h"
-#include "Eigen/Dense"
 #include "../Statistic/mixt_UniformStatistic.h"
 
 namespace mixt

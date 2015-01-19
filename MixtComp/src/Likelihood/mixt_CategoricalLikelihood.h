@@ -24,9 +24,8 @@
 #ifndef MIXT_CATEGORICALLIKELIHOOD_H
 #define MIXT_CATEGORICALLIKELIHOOD_H
 
-#include "Arrays/include/STK_Array2D.h"
 #include "../Data/mixt_AugmentedData.h"
-#include "Eigen/Dense"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {

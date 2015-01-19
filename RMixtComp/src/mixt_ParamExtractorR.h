@@ -24,7 +24,7 @@
 #ifndef MIXT_PARAMEXTRACTORR_H
 #define MIXT_PARAMEXTRACTORR_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 #include "Rcpp.h"
 
 namespace mixt
