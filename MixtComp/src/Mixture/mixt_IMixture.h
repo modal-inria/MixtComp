@@ -116,11 +116,11 @@ class IMixture
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
-    virtual void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k) = 0;
+    virtual void lnCompletedLikelihood(STK::Array2DVector<Real>* lnComp, int k) = 0;
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
-    virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k) = 0;
+    virtual void lnObservedLikelihood(STK::Array2DVector<Real>* lnComp, int k) = 0;
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
@@ -155,12 +155,12 @@ class IMixture
     /** This function can be used in derived classes to get proportions from the framework.
      *  @return Pointer to proportions.
      */
-    STK::Real const* proportions() const;
+    Real const* proportions() const;
     /** This function can be used in derived classes to get the posterior probabilities
      *  from the framework.
      *  @return Pointer to tik.
      */
-    STK::Real const** posteriorProbabilities() const;
+    Real const** posteriorProbabilities() const;
     /** This function can be used in derived classes to get class labels from the framework.
      *  @return Pointer to zi.
      */

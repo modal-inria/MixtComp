@@ -45,7 +45,7 @@ int Poisson_k::computeNbFreeParameters() const
   return nbCluster_;
 }
 
-void Poisson_k::getParameters(STK::Array2DVector<STK::Real>& param) const
+void Poisson_k::getParameters(STK::Array2DVector<Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Poisson_k::getParameters" << std::endl;
@@ -72,8 +72,8 @@ double Poisson_k::lnComponentProbability(int i, int k) const
   std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
 #endif
   Type currVal = p_data_->elt(i, 0);
-  STK::Real lambda = param_[k];
-  STK::Real proba = poisson_.pdf(currVal,
+  Real lambda = param_[k];
+  Real proba = poisson_.pdf(currVal,
                                  lambda);
   return std::log(proba);
 }
@@ -90,8 +90,8 @@ std::string Poisson_k::mStep()
   for (int k = 0; k < nbCluster_; ++k)
   {
     int nbSampleClass = 0; // number of samples in the current class
-    STK::Real sumClassMean = 0.;
-    STK::Real lambda = 0.;
+    Real sumClassMean = 0.;
+    Real lambda = 0.;
 
     for (int i = 0; i < (*p_data_).sizeRows(); ++i)
     {
@@ -105,7 +105,7 @@ std::string Poisson_k::mStep()
         nbSampleClass += 1;
       }
     }
-    lambda = sumClassMean / STK::Real(nbSampleClass);
+    lambda = sumClassMean / Real(nbSampleClass);
 
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
@@ -157,7 +157,7 @@ void Poisson_k::setModalities(int nbModalities)
   // does nothing. Used for categorical models.
 }
 
-void Poisson_k::setParameters(const STK::Array2DVector<STK::Real>& param)
+void Poisson_k::setParameters(const STK::Array2DVector<Real>& param)
 {
   for (int i = 0; i < param.sizeRows(); ++i)
   {

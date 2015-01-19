@@ -47,7 +47,7 @@ int Gaussian_sjk::computeNbFreeParameters() const
   return 2 * nbCluster_;
 }
 
-void Gaussian_sjk::getParameters(STK::Array2DVector<STK::Real>& param) const
+void Gaussian_sjk::getParameters(STK::Array2DVector<Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::getParameters" << std::endl;
@@ -70,9 +70,9 @@ void Gaussian_sjk::initializeStep()
 double Gaussian_sjk::lnComponentProbability(int i, int k) const
 {
   Type currVal = p_data_ ->elt(i, 0);
-  STK::Real mean = param_[2 * k    ];
-  STK::Real sd   = param_[2 * k + 1];
-  STK::Real logProba = normal_.lpdf(currVal,
+  Real mean = param_[2 * k    ];
+  Real sd   = param_[2 * k + 1];
+  Real logProba = normal_.lpdf(currVal,
                                     mean,
                                     sd);
 #ifdef MC_DEBUG
@@ -95,9 +95,9 @@ std::string Gaussian_sjk::mStep()
 
   for (int k = 0; k < nbCluster_; ++k)
   {
-    STK::Real mean = 0.;
-    STK::Real sd = 0.;
-    STK::Real M2 = 0.;
+    Real mean = 0.;
+    Real sd = 0.;
+    Real M2 = 0.;
     int n = 0;
 #ifdef MC_DEBUG
     std::cout << "\tk:  " << k << std::endl;
@@ -111,12 +111,12 @@ std::string Gaussian_sjk::mStep()
 #endif
         ++n;
         Type x = (*p_data_)(i, 0);
-        STK::Real delta = x - mean;
-        mean = mean + delta / STK::Real(n);
+        Real delta = x - mean;
+        mean = mean + delta / Real(n);
         M2 = M2 + delta * (x - mean);
       }
     }
-    sd = std::sqrt(M2 / STK::Real(n));
+    sd = std::sqrt(M2 / Real(n));
 
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
@@ -192,7 +192,7 @@ void Gaussian_sjk::setModalities(int nbModalities)
   // does nothing. Used for categorical models.
 }
 
-void Gaussian_sjk::setParameters(const STK::Array2DVector<STK::Real>& param)
+void Gaussian_sjk::setParameters(const STK::Array2DVector<Real>& param)
 {
 #ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::setParameters" << std::endl;

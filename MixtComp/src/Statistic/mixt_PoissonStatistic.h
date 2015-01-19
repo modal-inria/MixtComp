@@ -38,10 +38,10 @@ class PoissonStatistic
     PoissonStatistic();
     ~PoissonStatistic();
     /** pdf evaluated at individual x */
-    STK::Real pdf(Type x,
-                  STK::Real lambda) const;
+    Real pdf(Type x,
+                  Real lambda) const;
     /** Sample a value from a Poisson Law with parameter lambda */
-    Type sample(STK::Real lambda);
+    Type sample(Real lambda);
   private:
     /** Random number generator */
     boost::mt19937 rng_;

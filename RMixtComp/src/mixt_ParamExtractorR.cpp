@@ -35,10 +35,10 @@ ParamExtractorR::~ParamExtractorR()
 {}
 
 void ParamExtractorR::exportParam(std::string idName,
-                                  const STK::Array2D<STK::Real>* p_params,
-                                  const STK::Array2D<STK::Real>* p_paramsLogs,
+                                  const STK::Array2D<Real>* p_params,
+                                  const STK::Array2D<Real>* p_paramsLogs,
                                   const std::vector<std::string>& paramNames,
-                                  const STK::Real confidenceLevel)
+                                  const Real confidenceLevel)
 {
 #ifdef MC_DEBUG_NEW
   std::cout << "ParamExtractorR::exportParam" << std::endl;
@@ -50,7 +50,7 @@ void ParamExtractorR::exportParam(std::string idName,
   Rcpp::CharacterVector rows(p_params->sizeRows()); // names of the parameters
   Rcpp::CharacterVector cols; // names for expectation and confidence interval values
 
-  STK::Real alpha = (1. - confidenceLevel) / 2.;
+  Real alpha = (1. - confidenceLevel) / 2.;
 
   Rcpp::NumericMatrix paramR(p_params->sizeRows(),
                              p_params->sizeCols());

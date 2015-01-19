@@ -40,38 +40,38 @@ NormalStatistic::NormalStatistic() :
 NormalStatistic::~NormalStatistic()
 {}
 
-STK::Real NormalStatistic::cdf(Type x,
-                               STK::Real mean,
-                               STK::Real sd) const
+Real NormalStatistic::cdf(Type x,
+                               Real mean,
+                               Real sd) const
 {
   boost::math::normal norm(mean,
                            sd);
-  STK::Real proba = boost::math::cdf(norm,
+  Real proba = boost::math::cdf(norm,
                                      x);
   return proba;
 }
 
 /** log pdf evaluated at individual x */
-STK::Real NormalStatistic::lpdf(Type x,
-                                STK::Real mean,
-                                STK::Real sd) const
+Real NormalStatistic::lpdf(Type x,
+                                Real mean,
+                                Real sd) const
 {
   return -log(sd) - l2pi - 0.5 * pow((x - mean) / sd, 2);
 }
 
-STK::Real NormalStatistic::pdf(Type x,
-                               STK::Real mean,
-                               STK::Real sd) const
+Real NormalStatistic::pdf(Type x,
+                               Real mean,
+                               Real sd) const
 {
   boost::math::normal norm(mean,
                            sd);
-  STK::Real proba = boost::math::pdf(norm,
+  Real proba = boost::math::pdf(norm,
                                      x);
   return proba;
 }
 
-Type NormalStatistic::sample(STK::Real mean,
-                             STK::Real sd)
+Type NormalStatistic::sample(Real mean,
+                             Real sd)
 {
   boost::normal_distribution<> norm(mean,
                                     sd);
@@ -82,18 +82,18 @@ Type NormalStatistic::sample(STK::Real mean,
   return x;
 }
 
-Type NormalStatistic::sampleI(STK::Real mean,
-                              STK::Real sd,
-                              STK::Real infBound,
-                              STK::Real supBound)
+Type NormalStatistic::sampleI(Real mean,
+                              Real sd,
+                              Real infBound,
+                              Real supBound)
 {
 #ifdef MC_DEBUG
   std::cout << "NormalStatistic::sampleI" << std::endl;
 #endif
-  STK::Real z;
+  Real z;
 
-  STK::Real lower = (infBound - mean) / sd;
-  STK::Real upper = (supBound - mean) / sd;
+  Real lower = (infBound - mean) / sd;
+  Real upper = (supBound - mean) / sd;
 
 #ifdef MC_DEBUG
   std::cout << "\tmissingIntervals_" << std::endl;
@@ -131,33 +131,33 @@ Type NormalStatistic::sampleI(STK::Real mean,
   return z * sd + mean;
 }
 
-Type NormalStatistic::sampleIB(STK::Real mean,
-                               STK::Real sd,
-                               STK::Real infBound)
+Type NormalStatistic::sampleIB(Real mean,
+                               Real sd,
+                               Real infBound)
 {
-  STK::Real z;
-  STK::Real lower = (infBound - mean) / sd;
+  Real z;
+  Real lower = (infBound - mean) / sd;
   z = lbSampler(lower);
   return z * sd + mean;
 }
 
-Type NormalStatistic::sampleSB(STK::Real mean,
-                               STK::Real sd,
-                               STK::Real supBound)
+Type NormalStatistic::sampleSB(Real mean,
+                               Real sd,
+                               Real supBound)
 {
-  STK::Real z;
-  STK::Real upper = (supBound - mean) / sd;
+  Real z;
+  Real upper = (supBound - mean) / sd;
   z = -lbSampler(-upper);
   return z * sd + mean;
 }
 
-STK::Real NormalStatistic::lbSampler(STK::Real lower)
+Real NormalStatistic::lbSampler(Real lower)
 {
 #ifdef MC_DEBUG
   std::cout << "NormalStatistic::lbSampler" << std::endl;
 #endif
-  STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
-  STK::Real z, u, rho;
+  Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
+  Real z, u, rho;
   if (lower < 0) // less than 0.5 proba of rejection using regular sampling
   {
     do
@@ -180,9 +180,9 @@ STK::Real NormalStatistic::lbSampler(STK::Real lower)
   return z;
 }
 
-STK::Real NormalStatistic::lrbSampler(STK::Real lower, STK::Real upper)
+Real NormalStatistic::lrbSampler(Real lower, Real upper)
 {
-  STK::Real z, u, rho;
+  Real z, u, rho;
 #ifdef MC_DEBUG
   std::cout << "NormalStatistic::lrbSampler" << std::endl;
 #endif
@@ -219,10 +219,10 @@ STK::Real NormalStatistic::lrbSampler(STK::Real lower, STK::Real upper)
   return z;
 }
 
-STK::Real NormalStatistic::sideSampler(STK::Real lower, STK::Real upper)
+Real NormalStatistic::sideSampler(Real lower, Real upper)
 {
-  STK::Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
-  STK::Real z, u, rho;
+  Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
+  Real z, u, rho;
 
 #ifdef MC_DEBUG
   std::cout << "NormalStatistic::sideSampler" << std::endl;

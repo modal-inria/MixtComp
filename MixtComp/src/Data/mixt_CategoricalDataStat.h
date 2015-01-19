@@ -34,10 +34,10 @@ class CategoricalDataStat
 {
   public:
     CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                        Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                        Eigen::Matrix<std::vector<std::pair<int, Real> >,
                                       Eigen::Dynamic,
                                       Eigen::Dynamic>* p_dataStatStorage,
-                        STK::Real confidenceLevel,
+                        Real confidenceLevel,
                         int nbClass);
     ~CategoricalDataStat();
     void sampleVals(int sample,
@@ -49,7 +49,7 @@ class CategoricalDataStat
     // pointer to data array
     const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
     /** Sparse description of the missing values */
-    Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+    Eigen::Matrix<std::vector<std::pair<int, Real> >,
                                           Eigen::Dynamic,
                                           Eigen::Dynamic>* p_dataStatStorage_;
 
@@ -58,7 +58,7 @@ class CategoricalDataStat
     STK::Array2DVector<int> stat_;
 
     /** Confidence level */
-    STK::Real confidenceLevel_;
+    Real confidenceLevel_;
 
     void sample(int ind);
 };

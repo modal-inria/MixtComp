@@ -122,12 +122,12 @@ class IMixtureComposerBase
     /** @return the state of the model*/
     inline modelState state() const { return state_;}
     /** @return the proportions of each mixtures */
-    inline STK::Array2DVector<STK::Real> const* p_pk() const
+    inline STK::Array2DVector<Real> const* p_pk() const
     {
       return &prop_;
     };
     /** @return the tik probabilities */
-    inline STK::Array2D<STK::Real> const* p_tik() const {return &tik_;};
+    inline STK::Array2D<Real> const* p_tik() const {return &tik_;};
     /** @return  the zi class label */
     inline STK::Array2DVector<int> const* p_zi() const {return &zi_;};
 
@@ -138,7 +138,7 @@ class IMixtureComposerBase
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    virtual STK::Real lnComponentProbability(int i, int k) = 0;
+    virtual Real lnComponentProbability(int i, int k) = 0;
 
     // virtual with default implementation
     /** write the parameters of the model in the stream os. */
@@ -187,7 +187,7 @@ class IMixtureComposerBase
     void mapStep();
     void mapStep(int i);
 
-    void setProportions(STK::Array2DVector<STK::Real> prop)
+    void setProportions(STK::Array2DVector<Real> prop)
     {
       prop_ = prop;
 #ifdef MC_DEBUG
@@ -212,9 +212,9 @@ class IMixtureComposerBase
     /** Number of samples */
     int nbSample_;
     /** The proportions of each mixtures */
-    STK::Array2DVector<STK::Real> prop_;
+    STK::Array2DVector<Real> prop_;
     /** The tik probabilities */
-    STK::Array2D<STK::Real> tik_;
+    STK::Array2D<Real> tik_;
     /** The zik class label */
     STK::Array2DVector<int> zi_;
 

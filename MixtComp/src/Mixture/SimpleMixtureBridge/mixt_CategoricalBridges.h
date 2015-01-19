@@ -56,7 +56,7 @@ struct BridgeTraits<Categorical_pjk_>
     /** Type of the DataStat */
     typedef CategoricalDataStat DataStatComputer;
     /** Type of the DataStat */
-    typedef Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+    typedef Eigen::Matrix<std::vector<std::pair<int, Real> >,
                           Eigen::Dynamic,
                           Eigen::Dynamic> DataStatStorage;
     /** Type of the Data */

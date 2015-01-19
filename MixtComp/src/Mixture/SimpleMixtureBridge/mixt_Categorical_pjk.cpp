@@ -47,7 +47,7 @@ int Categorical_pjk::computeNbFreeParameters() const
   return (nbModalities_ - 1);
 }
 
-void Categorical_pjk::getParameters(STK::Array2DVector<STK::Real>& param) const
+void Categorical_pjk::getParameters(STK::Array2DVector<Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Categorical_pjk::getParameters" << std::endl;
@@ -70,7 +70,7 @@ void Categorical_pjk::initializeStep()
 double Categorical_pjk::lnComponentProbability(int i, int k) const
 {
   Type currVal = p_data_->elt(i, 0);
-  STK::Real proba = param_[k * nbModalities_ + currVal - minModality]; // first modality is 1 in data, but 0 in parameters storage
+  Real proba = param_[k * nbModalities_ + currVal - minModality]; // first modality is 1 in data, but 0 in parameters storage
 #ifdef MC_DEBUG
   std::cout << "\tk: " << k << ", proba: " << proba << std::endl;
 #endif
@@ -98,8 +98,8 @@ std::string Categorical_pjk::mStep()
   std::string warn;
   for (int k = 0; k < nbCluster_; ++k)
   {
-    STK::Real nbSampleClass = 0.;
-    STK::Array2DVector<STK::Real> modalities(nbModalities_, // todo: switch to int for counting (currently stkpp error with STK::Array2DVector<int> / real)
+    Real nbSampleClass = 0.;
+    STK::Array2DVector<Real> modalities(nbModalities_, // todo: switch to int for counting (currently stkpp error with STK::Array2DVector<int> / real)
                                              0.);
 
     for (int i = 0; i < (*p_data_).sizeRows(); ++i)
@@ -125,7 +125,7 @@ std::string Categorical_pjk::mStep()
 #ifdef MC_DEBUG
   for (int p = 0; p < nbModalities_; ++p)
   {
-    STK::Real sum = 0.;
+    Real sum = 0.;
     for (int k = 0; k < nbCluster_; ++k)
     {
       sum += param_[k * nbModalities_ + p];
@@ -177,7 +177,7 @@ void Categorical_pjk::setModalities(int nbModalities)
                            nbCluster_ * nbModalities_));
 }
 
-void Categorical_pjk::setParameters(const STK::Array2DVector<STK::Real>& param)
+void Categorical_pjk::setParameters(const STK::Array2DVector<Real>& param)
 {
   for (int i = 0; i < param.sizeRows(); ++i)
   {

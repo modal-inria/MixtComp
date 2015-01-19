@@ -40,13 +40,13 @@ PoissonStatistic::PoissonStatistic() :
 PoissonStatistic::~PoissonStatistic()
 {}
 
-STK::Real PoissonStatistic::pdf(Type x,
-                                STK::Real lambda) const
+Real PoissonStatistic::pdf(Type x,
+                                Real lambda) const
 {
   if (lambda > epsilon)
   {
     boost::math::poisson pois(lambda);
-    STK::Real proba = boost::math::pdf(pois,
+    Real proba = boost::math::pdf(pois,
                                        x);
     return proba;
   }
@@ -66,7 +66,7 @@ STK::Real PoissonStatistic::pdf(Type x,
   }
 }
 
-Type PoissonStatistic::sample(STK::Real lambda)
+Type PoissonStatistic::sample(Real lambda)
 {
   if (lambda > epsilon)
   {

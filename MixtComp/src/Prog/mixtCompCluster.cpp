@@ -29,7 +29,7 @@
 
 int main()
 {
-  STK::Real confidenceLevel = 0.95;
+  Real confidenceLevel = 0.95;
   int nbClusters = 3;
 
   // create the data handler

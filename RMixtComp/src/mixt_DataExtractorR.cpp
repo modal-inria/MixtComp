@@ -37,7 +37,7 @@ DataExtractorR::~DataExtractorR()
 
 void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<STK::Array2D<int> >* p_augData,
-                                const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                const Eigen::Matrix<std::vector<std::pair<int, Real> >,
                                                     Eigen::Dynamic,
                                                     Eigen::Dynamic>* p_dataStatStorage)
 {
@@ -70,7 +70,7 @@ void DataExtractorR::exportVals(std::string idName,
 #ifdef MC_DEBUG
       std::cout << "p_dataStatStorage->elt(i, j).size(): " << (*p_dataStatStorage)(i, j).size() << std::endl;
 #endif
-      for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = (*p_dataStatStorage)(i, 0).begin();
+      for (std::vector<std::pair<int, Real> >::const_iterator itVec = (*p_dataStatStorage)(i, 0).begin();
            itVec != (*p_dataStatStorage)(i, 0).end();
            ++itVec)
       {
@@ -90,8 +90,8 @@ void DataExtractorR::exportVals(std::string idName,
 }
 
 void DataExtractorR::exportVals(std::string idName,
-                                const AugmentedData<STK::Array2D<STK::Real> >* p_augData,
-                                const STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage)
+                                const AugmentedData<STK::Array2D<Real> >* p_augData,
+                                const STK::Array2D<STK::Array2DPoint<Real> >* p_dataStatStorage)
 {
   Rcpp::NumericMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
                             p_augData->data_.sizeCols());

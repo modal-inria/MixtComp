@@ -33,21 +33,21 @@ namespace mixt
 class ExponentialStatistic
 {
   public:
-    typedef STK::Real Type;
+    typedef Real Type;
 
     ExponentialStatistic();
     ~ExponentialStatistic();
 
     /** cdf evaluated at individual x */
-    STK::Real cdf(Type x,
-                  STK::Real lambda) const;
+    Real cdf(Type x,
+                  Real lambda) const;
 
     /** pdf evaluated at individual x */
-    STK::Real pdf(Type x,
-                  STK::Real lambda) const;
+    Real pdf(Type x,
+                  Real lambda) const;
 
     /** Sample a value from an Exponential law with rate lambda */
-    Type sample(STK::Real lambda);
+    Type sample(Real lambda);
   private:
     /** Random number generator */
     boost::random::mt19937 rng_;

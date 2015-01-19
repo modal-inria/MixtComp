@@ -25,8 +25,8 @@
 
 namespace mixt
 {
-GaussianSampler::GaussianSampler(AugmentedData<STK::Array2D<STK::Real> >* p_augData,
-                                 const STK::Array2DVector<STK::Real>* p_param,
+GaussianSampler::GaussianSampler(AugmentedData<STK::Array2D<Real> >* p_augData,
+                                 const STK::Array2DVector<Real>* p_param,
                                  int nbClass) :
     p_augData_(p_augData),
     p_param_(p_param)
@@ -44,9 +44,9 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 
   if (p_augData_->misData_(i, 0).first != present_)
   {
-    STK::Real z;
-    STK::Real mean  = p_param_->elt(2 * z_i    );
-    STK::Real sd    = p_param_->elt(2 * z_i + 1);
+    Real z;
+    Real mean  = p_param_->elt(2 * z_i    );
+    Real sd    = p_param_->elt(2 * z_i + 1);
 
 #ifdef MC_DEBUG
     std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
@@ -69,8 +69,8 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
         std::cout << "\tmissingIntervals_" << std::endl;
 #endif
-        STK::Real infBound = p_augData_->misData_(i, 0).second[0];
-        STK::Real supBound = p_augData_->misData_(i, 0).second[1];
+        Real infBound = p_augData_->misData_(i, 0).second[0];
+        Real supBound = p_augData_->misData_(i, 0).second[1];
 
         z = normal_.sampleI(mean,
                             sd,
@@ -84,7 +84,7 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
         std::cout << "\tmissingLUIntervals_" << std::endl;
 #endif
-        STK::Real supBound = p_augData_->misData_(i, 0).second[0];
+        Real supBound = p_augData_->misData_(i, 0).second[0];
         z = normal_.sampleSB(mean,
                              sd,
                              supBound);
@@ -96,7 +96,7 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
         std::cout << "\tmissingRUIntervals_" << std::endl;
 #endif
-        STK::Real infBound = p_augData_->misData_(i, 0).second[0];
+        Real infBound = p_augData_->misData_(i, 0).second[0];
         z = normal_.sampleIB(mean,
                              sd,
                              infBound);

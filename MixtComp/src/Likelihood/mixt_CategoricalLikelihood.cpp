@@ -31,9 +31,9 @@
 namespace mixt
 {
 
-CategoricalLikelihood::CategoricalLikelihood(const STK::Array2DVector<STK::Real>* p_param,
+CategoricalLikelihood::CategoricalLikelihood(const STK::Array2DVector<Real>* p_param,
                                              const AugmentedData<STK::Array2D<int> >* p_augData,
-                                             const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                             const Eigen::Matrix<std::vector<std::pair<int, Real> >,
                                                                  Eigen::Dynamic,
                                                                  Eigen::Dynamic>* p_dataStatStorage,
                                              int nbClass) :
@@ -46,7 +46,7 @@ CategoricalLikelihood::CategoricalLikelihood(const STK::Array2DVector<STK::Real>
 CategoricalLikelihood::~CategoricalLikelihood()
 {}
 
-void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
 {
   int nbModalities = p_param_->sizeRows() / nbClass_;
   for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
@@ -56,12 +56,12 @@ void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>*
       if (p_augData_->misData_(i, j).first == present_) // likelihood for present data
       {
         int ind = k * nbModalities + p_augData_->data_(i, j) - minModality;
-        STK::Real proba = p_param_->elt(ind,
+        Real proba = p_param_->elt(ind,
                                         j);
 #ifdef MC_DEBUG
         if (proba < epsilon)
         {
-          STK::Real sum = 0.;
+          Real sum = 0.;
           std::cout << "Null proba detected, k: " << k << std::endl;
           std::cout << "p_augData_->data_(i, j) - minModality: " << p_augData_->data_(i, j) - minModality << std::endl;
           std::cout << "param: " << std::endl;
@@ -77,7 +77,7 @@ void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>*
       }
       else // likelihood for estimated missing values, imputation by the mode
       {
-        STK::Real proba = p_param_->elt(k * nbModalities + (*p_dataStatStorage_)(i, j)[0].first - minModality,
+        Real proba = p_param_->elt(k * nbModalities + (*p_dataStatStorage_)(i, j)[0].first - minModality,
                                         j);
         lnComp->elt(i) += std::log(proba); // added lnLikelihood using the mode
       }
@@ -85,7 +85,7 @@ void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>*
   }
 }
 
-void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "CategoricalLikelihood::lnObservedLikelihood" << std::endl;
@@ -102,7 +102,7 @@ void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* 
       {
         case present_: // likelihood for present data
         {
-          STK::Real proba = p_param_->elt(k * nbModalities + p_augData_->data_(i, j) - minModality,
+          Real proba = p_param_->elt(k * nbModalities + p_augData_->data_(i, j) - minModality,
                                           j);
           lnComp->elt(i) += std::log(proba);
         }
@@ -118,7 +118,7 @@ void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* 
           std::cout << "missingFiniteValues" << std::endl;
           std::cout << "p_param_->sizeRows(): " << p_param_->sizeRows() << ", p_param_->sizeCols(): " << p_param_->sizeCols() << std::endl;
 #endif
-          STK::Real proba = 0.;
+          Real proba = 0.;
 
           for (std::vector<int>::const_iterator itMiss = p_augData_->misData_(i, j).second.begin();
                itMiss != p_augData_->misData_(i, j).second.end();

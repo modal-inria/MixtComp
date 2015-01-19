@@ -37,15 +37,15 @@ namespace mixt
 class GaussianSampler
 {
   public:
-    GaussianSampler(AugmentedData<STK::Array2D<STK::Real> >* p_augData,
-                    const STK::Array2DVector<STK::Real>* p_param,
+    GaussianSampler(AugmentedData<STK::Array2D<Real> >* p_augData,
+                    const STK::Array2DVector<Real>* p_param,
                     int nbClass);
     ~GaussianSampler();
     /** Sample new values for the missing variables of the given individual */
     void sampleIndividual(int i, int z_i);
   private:
-    AugmentedData<STK::Array2D<STK::Real> >* p_augData_;
-    const STK::Array2DVector<STK::Real>* p_param_;
+    AugmentedData<STK::Array2D<Real> >* p_augData_;
+    const STK::Array2DVector<Real>* p_param_;
 
     UniformStatistic uniform_;
     NormalStatistic normal_;

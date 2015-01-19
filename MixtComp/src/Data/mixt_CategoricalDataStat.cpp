@@ -29,10 +29,10 @@ namespace mixt
 {
 
 CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                                         Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
+                                         Eigen::Matrix<std::vector<std::pair<int, Real> >,
                                                        Eigen::Dynamic,
                                                        Eigen::Dynamic>* p_dataStatStorage,
-                                         STK::Real confidenceLevel,
+                                         Real confidenceLevel,
                                          int nbClass) :
     nbClass_(nbClass),
     pm_augDataij_(pm_augDataij),
@@ -75,7 +75,7 @@ void CategoricalDataStat::sampleVals(int ind,
                               nbClass_));
 
       // clear current individual
-      (*p_dataStatStorage_)(ind, 0) = std::vector<std::pair<int, STK::Real> >();
+      (*p_dataStatStorage_)(ind, 0) = std::vector<std::pair<int, Real> >();
 
       // first sampling, on each missing variables
       sample(ind);
@@ -85,18 +85,18 @@ void CategoricalDataStat::sampleVals(int ind,
       // last sampling
       sample(ind);
 
-      STK::Array2DVector<STK::Real> proba = stat_ / STK::Real(iterationMax + 1); // from count to probabilities
+      STK::Array2DVector<Real> proba = stat_ / Real(iterationMax + 1); // from count to probabilities
       STK::Array2DPoint<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, proba);
-      STK::Real cumProb = 0.;
+      Real cumProb = 0.;
 
       for (int i = nbClass_;
            i > minModality - 1;
            --i)
       {
         int currMod = indOrder[i];
-        STK::Real currProba = proba[currMod];
-        (*p_dataStatStorage_)(ind, 0).push_back(std::pair<int, STK::Real>(currMod, currProba));
+        Real currProba = proba[currMod];
+        (*p_dataStatStorage_)(ind, 0).push_back(std::pair<int, Real>(currMod, currProba));
         cumProb += currProba;
 #ifdef MC_DEBUG
         std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;
@@ -110,7 +110,7 @@ void CategoricalDataStat::sampleVals(int ind,
       }
     }
 #ifdef MC_DEBUG
-    for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = (*p_dataStatStorage_)(ind, 0).begin();
+    for (std::vector<std::pair<int, Real> >::const_iterator itVec = (*p_dataStatStorage_)(ind, 0).begin();
          itVec != (*p_dataStatStorage_)(ind, 0).end();
          ++itVec)
     {

@@ -51,7 +51,7 @@ template <typename DataType>
 class AugmentedData
 {
   public:
-    /** Base type of the data table, for example, STK::Real */
+    /** Base type of the data table, for example, Real */
     typedef typename DataType::Type Type;
     /** Missing value descriptor: type of missing, and list of parameters */
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
@@ -153,7 +153,7 @@ class AugmentedData
     /** Remove the missing values by uniform samplings */
     void removeMissing();
 
-    /** two dimensional data table, for example a STK::Array2D<STK::Real> */
+    /** two dimensional data table, for example a STK::Array2D<Real> */
     DataType data_;
 
     /** data structure for partially observed values */

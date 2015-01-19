@@ -32,9 +32,9 @@ namespace mixt
 class GaussianDataStat
 {
   public:
-    GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
-                     STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
-                     STK::Real confidenceLevel,
+    GaussianDataStat(const AugmentedData<STK::Array2D<Real> >* pm_augDataij,
+                     STK::Array2D<STK::Array2DPoint<Real> >* p_dataStatStorage,
+                     Real confidenceLevel,
                      int nbClass);
     ~GaussianDataStat();
     void sampleVals(int sample,
@@ -42,16 +42,16 @@ class GaussianDataStat
                     int iterationMax);
   private:
     /** pointer to data array */
-    const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij_;
+    const AugmentedData<STK::Array2D<Real> >* pm_augDataij_;
     /** Description of the missing values */
-    STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage_;
+    STK::Array2D<STK::Array2DPoint<Real> >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: sampling iteration */
-    STK::Array2DPoint<STK::Real> stat_;
+    STK::Array2DPoint<Real> stat_;
 
     /** Confidence level */
-    STK::Real confidenceLevel_;
+    Real confidenceLevel_;
 
     void sample(int ind,
                 int iteration);

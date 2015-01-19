@@ -27,9 +27,9 @@
 namespace mixt
 {
 
-GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
-                                   STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
-                                   STK::Real confidenceLevel,
+GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<Real> >* pm_augDataij,
+                                   STK::Array2D<STK::Array2DPoint<Real> >* p_dataStatStorage,
+                                   Real confidenceLevel,
                                    int nbClass) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
@@ -41,7 +41,7 @@ GaussianDataStat::~GaussianDataStat() {};
 void GaussianDataStat::sample(int ind,
                               int iteration)
 {
-  STK::Real currVal = pm_augDataij_->data_(ind,
+  Real currVal = pm_augDataij_->data_(ind,
                                            0);
   stat_[iteration] = currVal;
 }
@@ -66,7 +66,7 @@ void GaussianDataStat::sampleVals(int ind,
       // clear current individual
       for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
       {
-        p_dataStatStorage_->elt(ind, j) = STK::Array2DPoint<STK::Real>(3, 0.);
+        p_dataStatStorage_->elt(ind, j) = STK::Array2DPoint<Real>(3, 0.);
       }
 
       // first sampling
@@ -87,11 +87,11 @@ void GaussianDataStat::sampleVals(int ind,
 #endif
       STK::Array2DVector<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, stat_);
-      STK::Real alpha = (1. - confidenceLevel_) / 2.;
-      STK::Real realIndLow = alpha * iterationMax;
-      STK::Real realIndHigh = (1. - alpha) * iterationMax;
+      Real alpha = (1. - confidenceLevel_) / 2.;
+      Real realIndLow = alpha * iterationMax;
+      Real realIndHigh = (1. - alpha) * iterationMax;
 
-      STK::Array2DPoint<STK::Real> tempPoint(3);
+      STK::Array2DPoint<Real> tempPoint(3);
       tempPoint[0] = stat_.mean();
       tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_[indOrder[int(realIndLow )    ]]
                     + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];

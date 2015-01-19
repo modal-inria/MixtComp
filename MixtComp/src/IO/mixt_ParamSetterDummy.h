@@ -35,7 +35,7 @@ class ParamSetterDummy
     ParamSetterDummy();
     ~ParamSetterDummy();
     void getParam(std::string idName,
-                  STK::Array2DVector<STK::Real>& params) const;
+                  STK::Array2DVector<Real>& params) const;
 };
 
 } // namespace mixt

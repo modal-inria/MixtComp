@@ -128,16 +128,16 @@ void IMixtureComposerBase::eStep(int i)
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::eStep(i), i: " << i << std::endl;
 #endif
-  STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
+  STK::Array2DPoint<Real> lnComp(tik_.cols());
   for (int k = 0; k < nbCluster_; k++)
   {
     lnComp[k] = std::log(prop_[k]) + lnComponentProbability(i, k);
   }
 
-  STK::Real lnCompMax = lnComp.maxElt();
+  Real lnCompMax = lnComp.maxElt();
   lnComp -= lnCompMax;
   lnComp = lnComp.exp();
-  STK::Real sum = lnComp.sum();
+  Real sum = lnComp.sum();
   tik_.row(i) = lnComp / sum;
 
 #ifdef MC_DEBUG
@@ -191,8 +191,8 @@ void IMixtureComposerBase::intializeMixtureParameters()
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::intializeMixtureParameters" << std::endl;
 #endif
-  prop_ = 1./(STK::Real)nbCluster_;
-  tik_  = 1./(STK::Real)nbCluster_;
+  prop_ = 1./(Real)nbCluster_;
+  tik_  = 1./(Real)nbCluster_;
   zi_   = STK::baseIdx;
 }
 } // namespace mixt

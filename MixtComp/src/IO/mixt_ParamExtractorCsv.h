@@ -35,7 +35,7 @@ class ParamExtractorCsv
     ParamExtractorCsv();
     ~ParamExtractorCsv();
     void exportParam(std::string idName,
-                     const STK::Array2D<STK::Real>* p_params);
+                     const STK::Array2D<Real>* p_params);
 };
 
 } // namespace mixt

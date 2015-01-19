@@ -29,7 +29,7 @@
 
 int main()
 {
-  STK::Array2D<STK::Real> test(3, 3, 0.);
+  STK::Array2D<Real> test(3, 3, 0.);
 
   test(0, 0) = 1.;
   test(0, 1) = 12.;

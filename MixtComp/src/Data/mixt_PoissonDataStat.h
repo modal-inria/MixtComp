@@ -34,7 +34,7 @@ class PoissonDataStat
   public:
     PoissonDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
                     STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
-                    STK::Real confidenceLevel,
+                    Real confidenceLevel,
                     int nbClass);
     ~PoissonDataStat();
     void sampleVals(int sample,
@@ -52,7 +52,7 @@ class PoissonDataStat
     STK::Array2DVector<int> stat_;
 
     /** Confidence level */
-    STK::Real confidenceLevel_;
+    Real confidenceLevel_;
 
     void sample(int ind,
                 int iteration);
