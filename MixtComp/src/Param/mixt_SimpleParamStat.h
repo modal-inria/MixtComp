@@ -36,6 +36,7 @@ class SimpleParamStat
   public:
     SimpleParamStat(STK::Array2DVector<STK::Real>* p_param,
                     STK::Array2D<STK::Real>* p_paramStatStorage,
+                    STK::Array2D<STK::Real>* p_paramlog,
                     STK::Real confidenceLevel);
     ~SimpleParamStat();
 
@@ -54,13 +55,13 @@ class SimpleParamStat
     // pointer to param array
     STK::Array2DVector<STK::Real>* p_param_;
 
+    /** Pointer to array to export the statistics at the last iteration */
+    STK::Array2D<STK::Real>* p_paramStatStorage_;
+
     /** Storage for iterations results,
      * first dimension: index of the parameter
      * second dimension: iteration of the stored value */
-    STK::Array2D<STK::Real> stat_;
-
-    /** Pointer to array to export the statistics at the last iteration */
-    STK::Array2D<STK::Real>* p_paramStatStorage_;
+    STK::Array2D<STK::Real>* p_paramlog_;
 
     /** Confidence level */
     STK::Real confidenceLevel_;

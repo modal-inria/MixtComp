@@ -36,7 +36,8 @@ ParamSetterR::~ParamSetterR()
 void ParamSetterR::getParam(std::string idName,
                             STK::Array2DVector<STK::Real>& param) const
 {
-  Rcpp::NumericMatrix currParam = param_[idName];
+  Rcpp::List logStat = param_[idName];
+  Rcpp::NumericMatrix currParam = logStat["stat"];
   int nRows = currParam.nrow();
   int nCols = currParam.ncol();
   int nVars = nCols / 3; // because two out of three columns contain confidence intervals

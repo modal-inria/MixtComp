@@ -96,6 +96,7 @@ class MixtureBridge : public mixt::IMixture
                         nbCluster),
       paramStat_(&param_,
                  &paramStatStorage_,
+                 &paramLogStorage_,
                  confidenceLevel),
       likelihood_(getParam(),
                   getData(),
@@ -386,6 +387,11 @@ class MixtureBridge : public mixt::IMixture
       return &paramStatStorage_;
     }
 
+    virtual const STK::Array2D<STK::Real>* getParamLogStorage() const
+    {
+      return &paramLogStorage_;
+    }
+
     virtual void exportDataParam() const
     {
 #ifdef MC_DEBUG
@@ -396,6 +402,7 @@ class MixtureBridge : public mixt::IMixture
                                    getDataStatStorage()); // export the obtained data using the DataExtractor
       p_paramExtractor_->exportParam(idName(),
                                      getParamStatStorage(),
+                                     getParamLogStorage(),
                                      paramNames_,
                                      confidenceLevel_);
     }
@@ -438,6 +445,8 @@ class MixtureBridge : public mixt::IMixture
     DataStatStorage dataStatStorage_;
     /** Statistics storage for parameters */
     STK::Array2D<STK::Real> paramStatStorage_;
+    /** Log for sampled parameters */
+    STK::Array2D<STK::Real> paramLogStorage_;
 };
 
 } // namespace mixt

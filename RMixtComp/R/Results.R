@@ -14,6 +14,7 @@ setClass(
     BIC = "numeric",
     ICL = "numeric",
     proportions = "numeric",
+    proportionsLog = "matrix",
     partition = "integer",
     proba = "matrix",
     warnLog = "character",
@@ -29,8 +30,9 @@ setClass(
     BIC = numeric(0),
     ICL = numeric(0),
     proportions = numeric(0),
+    proportionsLog = matrix(nrow = 0, ncol = 0),
     partition = integer(0),
-    proba = matrix(nrow=0,ncol=0),
+    proba = matrix(nrow = 0, ncol = 0),
     warnLog = character(0),
     runTime = numeric(0),
     nbSample = integer(0)

@@ -41,6 +41,7 @@ MixtureComposer::MixtureComposer(int nbSample,
                                nbCluster),
     paramStat_(&prop_,
                &paramStatStorage_,
+               &paramlog_,
                confidenceLevel),
     nik_(nbSample,
          nbCluster)

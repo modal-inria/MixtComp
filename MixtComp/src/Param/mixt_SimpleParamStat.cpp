@@ -31,11 +31,13 @@ namespace mixt
 
 SimpleParamStat::SimpleParamStat(STK::Array2DVector<STK::Real>* p_param,
                                  STK::Array2D<STK::Real>* p_paramStatStorage,
+                                 STK::Array2D<STK::Real>* p_paramlog,
                                  STK::Real confidenceLevel) :
     nbIter_(0),
     nbParam_(0),
     p_param_(p_param),
     p_paramStatStorage_(p_paramStatStorage),
+    p_paramlog_(p_paramlog),
     confidenceLevel_(confidenceLevel)
 {}
 
@@ -54,7 +56,7 @@ void SimpleParamStat::sample(int iteration)
       std::cout << "std::abs(paramVal)" << std::endl;
     }
 #endif
-    stat_(p, iteration) = paramVal;
+    (*p_paramlog_)(p, iteration) = paramVal;
   }
 }
 
@@ -66,7 +68,7 @@ void SimpleParamStat::sampleParam(int iteration,
     nbParam_ = p_param_->sizeRows();
 
     // resize internal storage
-    stat_.resize(nbParam_, iterationMax + 1);
+    (*p_paramlog_).resize(nbParam_, iterationMax + 1);
 
     // resize export storage
     p_paramStatStorage_->resize(nbParam_, 3);
@@ -89,16 +91,16 @@ void SimpleParamStat::sampleParam(int iteration,
 #endif
 
       STK::Array2DVector<int> indOrder; // to store indices of ascending order
-      STK::heapSort(indOrder, stat_.row(p));
+      STK::heapSort(indOrder, (*p_paramlog_).row(p));
       STK::Real alpha = (1. - confidenceLevel_) / 2.;
       STK::Real realIndLow = alpha * iterationMax;
       STK::Real realIndHigh = (1. - alpha) * iterationMax;
 
-      STK::Real mean = stat_.row(p).mean();
-      STK::Real low  =  (1. - (realIndLow  - int(realIndLow ))) * stat_(p, indOrder[int(realIndLow )    ])
-                      + (      realIndLow  - int(realIndLow ) ) * stat_(p, indOrder[int(realIndLow ) + 1]);
-      STK::Real high =  (1. - (realIndHigh - int(realIndHigh))) * stat_(p, indOrder[int(realIndHigh)    ])
-                      + (      realIndHigh - int(realIndHigh) ) * stat_(p, indOrder[int(realIndHigh) + 1]);
+      STK::Real mean = (*p_paramlog_).row(p).mean();
+      STK::Real low  =  (1. - (realIndLow  - int(realIndLow ))) * (*p_paramlog_)(p, indOrder[int(realIndLow )    ])
+                      + (      realIndLow  - int(realIndLow ) ) * (*p_paramlog_)(p, indOrder[int(realIndLow ) + 1]);
+      STK::Real high =  (1. - (realIndHigh - int(realIndHigh))) * (*p_paramlog_)(p, indOrder[int(realIndHigh)    ])
+                      + (      realIndHigh - int(realIndHigh) ) * (*p_paramlog_)(p, indOrder[int(realIndHigh) + 1]);
 
       p_paramStatStorage_->elt(p, 0) = mean;
       p_paramStatStorage_->elt(p, 1) = low;

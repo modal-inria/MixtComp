@@ -22,34 +22,13 @@
  **/
 
 #include <Rcpp.h>
-
-#include "MixtComp/src/Statistic/mixt_NormalStatistic.h"
+#include "Arrays/include/STK_Array2DVector.h"
+#include "Arrays/include/STK_Display.h"
+#include <iostream>     // std::cout
+#include <algorithm>    // std::sort
 
 // [[Rcpp::export]]
-void sampleTest()
+void matSort()
 {
-  STK::Real mu = 7.;
-  STK::Real sd = 0.5;
-  STK::Real infBound = 4.5;
-  STK::Real supBound = 5.5;
 
-  mixt::NormalStatistic norm;
-
-  for (int i = 0; i < 10; ++i)
-  {
-    std::cout << norm.sampleI(mu, sd, infBound, supBound) << std::endl;
-  }
-  std::cout << std::endl;
-  for (int i = 0; i < 10; ++i)
-  {
-    std::cout << norm.sampleIB(mu, sd, infBound) << std::endl;
-  }
-  std::cout << std::endl;
-  for (int i = 0; i < 10; ++i)
-  {
-    std::cout << norm.sampleSB(mu, sd, supBound) << std::endl;
-  }
-  std::cout << std::endl;
-  std::cout << norm.lpdf(8., mu, sd) << std::endl;
-  std::cout << log(norm.pdf(8., mu, sd)) << std::endl;
 }
