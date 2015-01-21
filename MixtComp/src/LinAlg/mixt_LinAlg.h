@@ -65,6 +65,17 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
     {
       Eigen::Matrix<T, _Rows, _Cols>::operator=(op);
     }
+
+    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
+    Matrix(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block) :
+      Eigen::Matrix<T, _Rows, _Cols>(block)
+    {};
+
+    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
+    void operator=(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block)
+    {
+      Eigen::Matrix<T, _Rows, _Cols>::operator=(block);
+    }
 };
 
 template<typename T>
