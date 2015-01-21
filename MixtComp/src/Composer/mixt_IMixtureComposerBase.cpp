@@ -35,10 +35,8 @@
 
 #include <cmath>
 #include "mixt_IMixtureComposerBase.h"
-#include "STatistiK/include/STK_Law_Categorical.h"
-#include "STatistiK/include/STK_Stat_Functors.h"
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DPoint.h"
+#include "../LinAlg/mixt_LinAlg.h"
+#include "../Statistic/mixt_MultinomialStatistic.h"
 
 namespace mixt
 {

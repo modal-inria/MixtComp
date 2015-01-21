@@ -57,10 +57,7 @@ class AugmentedData
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
     /** type of the complete structure for missing data */
-    typedef typename Eigen::Matrix<MisVal,
-                                   Eigen::Dynamic,
-                                   Eigen::Dynamic> MisData;
-    // typedef typename STK::Array2D<MisVal> MisData;
+    typedef typename Matrix<MisVal> MisData;
 
     AugmentedData() :
       nbSample_(0),
