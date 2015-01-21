@@ -78,51 +78,51 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
     }
 };
 
-template<typename T>
-class Vector : public Matrix<T, Eigen::Dynamic, 1>
+template<typename T, int _Rows = Eigen::Dynamic>
+class Vector : public Matrix<T, _Rows, 1>
 {
   public:
     Vector() :
-      Matrix<T, Eigen::Dynamic, 1>()
+      Matrix<T, _Rows, 1>()
     {};
 
     Vector(int nrow) :
-      Matrix<T, Eigen::Dynamic, 1>(nrow, 1)
+      Matrix<T, _Rows, 1>(nrow, 1)
     {};
 
     template<int _ArgRows>
     Vector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, 1> > op) :
-      Matrix<T, Eigen::Dynamic, 1>(op)
+      Matrix<T, _Rows, 1>(op)
     {};
 
     template<int _ArgRows>
     void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, 1> > op)
     {
-      Matrix<T, Eigen::Dynamic, 1>::operator=(op);
+      Matrix<T, _Rows, 1>::operator=(op);
     }
 };
 
-template<typename T>
-class RowVector : public Matrix<T, 1, Eigen::Dynamic>
+template<typename T, int _Cols = Eigen::Dynamic>
+class RowVector : public Matrix<T, 1, _Cols>
 {
   public:
     RowVector() :
-      Matrix<T, 1, Eigen::Dynamic>()
+      Matrix<T, 1, _Cols>()
     {};
 
     RowVector(int ncol) :
-      Matrix<T, 1, Eigen::Dynamic>(1, ncol)
+      Matrix<T, 1, _Cols>(1, ncol)
     {};
 
     template<int _ArgCols>
     RowVector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, _ArgCols> > op) :
-      Matrix<T, 1, _ArgCols>(op)
+      Matrix<T, 1, _Cols>(op)
     {};
 
     template<int _ArgCols>
     void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, _ArgCols> > op)
     {
-      Matrix<T, 1, _ArgCols>::operator=(op);
+      Matrix<T, 1, _Cols>::operator=(op);
     }
 };
 
