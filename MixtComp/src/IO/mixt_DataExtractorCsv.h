@@ -37,12 +37,12 @@ class DataExtractorCsv
 
     /** Export function for categorical model */
     void exportVals(std::string idName,
-                    const AugmentedData<STK::Array2D<int> >* p_augData,
+                    const AugmentedData<Matrix<int> >* p_augData,
                     const std::map<int, std::map<int, std::vector< std::pair<int, Real> > > >* p_dataStatStorage);
     /** Export function for gaussian model */
     void exportVals(std::string idName,
-                    const AugmentedData<STK::Array2D<Real> >* p_augData,
-                    const std::map<int, std::map<int, STK::Array2DVector<Real> > >* p_dataStatStorage);
+                    const AugmentedData<Matrix<Real> >* p_augData,
+                    const std::map<int, std::map<int, Vector<Real> > >* p_dataStatStorage);
 };
 
 } // namespace mixt

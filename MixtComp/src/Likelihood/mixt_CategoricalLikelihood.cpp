@@ -31,8 +31,8 @@
 namespace mixt
 {
 
-CategoricalLikelihood::CategoricalLikelihood(const STK::Array2DVector<Real>* p_param,
-                                             const AugmentedData<STK::Array2D<int> >* p_augData,
+CategoricalLikelihood::CategoricalLikelihood(const Vector<Real>* p_param,
+                                             const AugmentedData<Matrix<int> >* p_augData,
                                              const Eigen::Matrix<std::vector<std::pair<int, Real> >,
                                                                  Eigen::Dynamic,
                                                                  Eigen::Dynamic>* p_dataStatStorage,
@@ -46,7 +46,7 @@ CategoricalLikelihood::CategoricalLikelihood(const STK::Array2DVector<Real>* p_p
 CategoricalLikelihood::~CategoricalLikelihood()
 {}
 
-void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
+void CategoricalLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
 {
   int nbModalities = p_param_->sizeRows() / nbClass_;
   for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
@@ -85,7 +85,7 @@ void CategoricalLikelihood::lnCompletedLikelihood(STK::Array2DVector<Real>* lnCo
   }
 }
 
-void CategoricalLikelihood::lnObservedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
+void CategoricalLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "CategoricalLikelihood::lnObservedLikelihood" << std::endl;

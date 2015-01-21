@@ -73,7 +73,7 @@ class MixtureBridge : public mixt::IMixture
      **/
     MixtureBridge(std::string const& idName,
                   int nbCluster,
-                  STK::Array2DVector<int> const* p_zi,
+                  Vector<int> const* p_zi,
                   const DataHandler* p_handler_,
                   DataExtractor* p_extractor,
                   const ParamSetter* p_paramSetter,
@@ -314,7 +314,7 @@ class MixtureBridge : public mixt::IMixture
      * This function must be defined to return the completed likelihood
      * @return the observed log-likelihood
      */
-    virtual void lnCompletedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
+    virtual void lnCompletedLikelihood(Vector<Real>* lnComp, int k)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
@@ -329,7 +329,7 @@ class MixtureBridge : public mixt::IMixture
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
-    virtual void lnObservedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
+    virtual void lnObservedLikelihood(Vector<Real>* lnComp, int k)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
@@ -372,7 +372,7 @@ class MixtureBridge : public mixt::IMixture
       return &m_augDataij_;
     }
 
-    virtual const STK::Array2DVector<Real>* getParam() const
+    virtual const Vector<Real>* getParam() const
     {
       return &param_;
     }
@@ -382,12 +382,12 @@ class MixtureBridge : public mixt::IMixture
       return &dataStatStorage_;
     }
 
-    virtual const STK::Array2D<Real>* getParamStatStorage() const
+    virtual const Matrix<Real>* getParamStatStorage() const
     {
       return &paramStatStorage_;
     }
 
-    virtual const STK::Array2D<Real>* getParamLogStorage() const
+    virtual const Matrix<Real>* getParamLogStorage() const
     {
       return &paramLogStorage_;
     }
@@ -413,7 +413,7 @@ class MixtureBridge : public mixt::IMixture
     /** The augmented data set */
     AugData m_augDataij_;
     /** Current parameters of the STK Mixture */
-    STK::Array2DVector<Real> param_;
+    Vector<Real> param_;
     /** Parameters transmitted by the user */
     std::string paramStr_;
     /** number of samples in the data set*/
@@ -444,9 +444,9 @@ class MixtureBridge : public mixt::IMixture
     /** Statistics storage for missing data */
     DataStatStorage dataStatStorage_;
     /** Statistics storage for parameters */
-    STK::Array2D<Real> paramStatStorage_;
+    Matrix<Real> paramStatStorage_;
     /** Log for sampled parameters */
-    STK::Array2D<Real> paramLogStorage_;
+    Matrix<Real> paramLogStorage_;
 };
 
 } // namespace mixt

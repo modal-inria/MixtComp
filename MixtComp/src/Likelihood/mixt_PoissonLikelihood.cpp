@@ -30,9 +30,9 @@
 namespace mixt
 {
 
-PoissonLikelihood::PoissonLikelihood(const STK::Array2DVector<Real>* p_param,
-                                     const AugmentedData<STK::Array2D<int> >* augData,
-                                     const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
+PoissonLikelihood::PoissonLikelihood(const Vector<Real>* p_param,
+                                     const AugmentedData<Matrix<int> >* augData,
+                                     const Matrix<STK::Array2DPoint<int> >* p_dataStatStorage,
                                      int nbClass) :
     p_param_(p_param),
     p_augData_(augData),
@@ -42,7 +42,7 @@ PoissonLikelihood::PoissonLikelihood(const STK::Array2DVector<Real>* p_param,
 PoissonLikelihood::~PoissonLikelihood()
 {}
 
-void PoissonLikelihood::lnCompletedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
+void PoissonLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
    std::cout << "PoissonLikelihood::lnCompletedLikelihood" << std::endl;
@@ -69,7 +69,7 @@ void PoissonLikelihood::lnCompletedLikelihood(STK::Array2DVector<Real>* lnComp, 
   }
 }
 
-void PoissonLikelihood::lnObservedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
+void PoissonLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
       std::cout << "PoissonLikelihood::lnObservedLikelihood" << std::endl;

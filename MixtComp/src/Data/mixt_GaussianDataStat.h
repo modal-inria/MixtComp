@@ -32,8 +32,8 @@ namespace mixt
 class GaussianDataStat
 {
   public:
-    GaussianDataStat(const AugmentedData<STK::Array2D<Real> >* pm_augDataij,
-                     STK::Array2D<STK::Array2DPoint<Real> >* p_dataStatStorage,
+    GaussianDataStat(const AugmentedData<Matrix<Real> >* pm_augDataij,
+                     Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage,
                      Real confidenceLevel,
                      int nbClass);
     ~GaussianDataStat();
@@ -42,9 +42,9 @@ class GaussianDataStat
                     int iterationMax);
   private:
     /** pointer to data array */
-    const AugmentedData<STK::Array2D<Real> >* pm_augDataij_;
+    const AugmentedData<Matrix<Real> >* pm_augDataij_;
     /** Description of the missing values */
-    STK::Array2D<STK::Array2DPoint<Real> >* p_dataStatStorage_;
+    Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: sampling iteration */

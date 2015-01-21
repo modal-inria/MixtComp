@@ -47,7 +47,7 @@ int Gaussian_sjk::computeNbFreeParameters() const
   return 2 * nbCluster_;
 }
 
-void Gaussian_sjk::getParameters(STK::Array2DVector<Real>& param) const
+void Gaussian_sjk::getParameters(Vector<Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::getParameters" << std::endl;
@@ -177,12 +177,12 @@ void Gaussian_sjk::paramNames(std::vector<std::string>& names) const
   }
 }
 
-void Gaussian_sjk::setData(STK::Array2D<Type>& data)
+void Gaussian_sjk::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
 }
 
-void Gaussian_sjk::setMixtureParameters(STK::Array2DVector<int> const* p_zi)
+void Gaussian_sjk::setMixtureParameters(Vector<int> const* p_zi)
 {
   p_zi_ = p_zi; // only the z_i is used in SEM
 }
@@ -192,7 +192,7 @@ void Gaussian_sjk::setModalities(int nbModalities)
   // does nothing. Used for categorical models.
 }
 
-void Gaussian_sjk::setParameters(const STK::Array2DVector<Real>& param)
+void Gaussian_sjk::setParameters(const Vector<Real>& param)
 {
 #ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::setParameters" << std::endl;

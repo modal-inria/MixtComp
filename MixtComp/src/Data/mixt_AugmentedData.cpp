@@ -45,7 +45,7 @@ Range<int>::Range(int min,
 {}
 
 template<>
-void AugmentedData<STK::Array2D<Real> >::removeMissing()
+void AugmentedData<Matrix<Real> >::removeMissing()
 {
   for (int j = 0; j < misData_.cols(); ++j)
   {
@@ -76,7 +76,7 @@ void AugmentedData<STK::Array2D<Real> >::removeMissing()
           case missingIntervals_:
           {
   #ifdef MC_DEBUG
-            std::cout << "AugmentedData<STK::Array2D<Real> >::removeMissing" << std::endl;
+            std::cout << "AugmentedData<Matrix<Real> >::removeMissing" << std::endl;
             std::cout << "case missingIntervals_" << std::endl;
             std::cout << "misData_(i, j).second.size(): " << misData_(i, j).second.size() << std::endl;
   #endif
@@ -126,10 +126,10 @@ void AugmentedData<STK::Array2D<Real> >::removeMissing()
 }
 
 template<>
-void AugmentedData<STK::Array2D<int> >::removeMissing()
+void AugmentedData<Matrix<int> >::removeMissing()
 {
 #ifdef MC_DEBUG
-  std::cout << "AugmentedData<STK::Array2D<int> >::removeMissing" << std::endl;
+  std::cout << "AugmentedData<Matrix<int> >::removeMissing" << std::endl;
 #endif
 
   for (int j = 0; j < misData_.cols(); ++j)
@@ -153,7 +153,7 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
 
           case missing_:
           {
-            STK::Array2DVector<Real> modalities(STK::Range(firstModality,
+            Vector<Real> modalities(STK::Range(firstModality,
                                                                 nbModalities),
                                                      1. / nbModalities);
             sampleVal = STK::Law::Categorical::rand(modalities);
@@ -163,7 +163,7 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
           case missingFiniteValues_:
           {
             Real proba = 1. / misData_(i, j).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
-            STK::Array2DVector<Real> modalities(STK::Range(firstModality,
+            Vector<Real> modalities(STK::Range(firstModality,
                                                                 nbModalities),
                                                      0.);
             for(std::vector<int>::const_iterator itParam = misData_(i, j).second.begin();

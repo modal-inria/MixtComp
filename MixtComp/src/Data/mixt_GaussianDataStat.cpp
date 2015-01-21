@@ -27,8 +27,8 @@
 namespace mixt
 {
 
-GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<Real> >* pm_augDataij,
-                                   STK::Array2D<STK::Array2DPoint<Real> >* p_dataStatStorage,
+GaussianDataStat::GaussianDataStat(const AugmentedData<Matrix<Real> >* pm_augDataij,
+                                   Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage,
                                    Real confidenceLevel,
                                    int nbClass) :
     pm_augDataij_(pm_augDataij),
@@ -85,7 +85,7 @@ void GaussianDataStat::sampleVals(int ind,
       std::cout << "tempStat_[j]: " << std::endl;
       std::cout << tempStat_[j] << std::endl;
 #endif
-      STK::Array2DVector<int> indOrder; // to store indices of ascending order
+      Vector<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, stat_);
       Real alpha = (1. - confidenceLevel_) / 2.;
       Real realIndLow = alpha * iterationMax;

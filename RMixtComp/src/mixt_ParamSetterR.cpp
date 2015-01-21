@@ -34,7 +34,7 @@ ParamSetterR::~ParamSetterR()
 {}
 
 void ParamSetterR::getParam(std::string idName,
-                            STK::Array2DVector<Real>& param) const
+                            Vector<Real>& param) const
 {
   Rcpp::List logStat = param_[idName];
   Rcpp::NumericMatrix currParam = logStat["stat"];

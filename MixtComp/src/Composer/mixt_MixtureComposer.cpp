@@ -79,7 +79,7 @@ Real MixtureComposer::lnObservedLikelihood()
   std::cout << "MixtureComposer::lnObservedLikelihood() " << std::endl;
 #endif
   Real lnLikelihood = 0.;
-  STK::Array2D<Real> lnComp(nbSample_,
+  Matrix<Real> lnComp(nbSample_,
                                  nbCluster_,
                                  0.);
   for (int k = 0; k < nbCluster_; ++k)
@@ -87,7 +87,7 @@ Real MixtureComposer::lnObservedLikelihood()
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    STK::Array2DVector<Real> tempVec(lnComp.col(k), true);
+    Vector<Real> tempVec(lnComp.col(k), true);
     tempVec += std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
@@ -129,7 +129,7 @@ Real MixtureComposer::lnCompletedLikelihood()
   std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
 #endif
   Real lnLikelihood = 0.;
-  STK::Array2D<Real> lnComp(nbSample_,
+  Matrix<Real> lnComp(nbSample_,
                                  nbCluster_,
                                  0.);
   for (int k = 0; k < nbCluster_; ++k)
@@ -137,7 +137,7 @@ Real MixtureComposer::lnCompletedLikelihood()
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    STK::Array2DVector<Real> tempVec(lnComp.col(k), true);
+    Vector<Real> tempVec(lnComp.col(k), true);
     tempVec += std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
@@ -169,7 +169,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
   std::cout << "MixtureComposer::lnSemiCompletedLikelihood() " << std::endl;
 #endif
   Real lnLikelihood = 0.;
-  STK::Array2D<Real> lnComp(nbSample_,
+  Matrix<Real> lnComp(nbSample_,
                                  nbCluster_,
                                  0.);
   for (int k = 0; k < nbCluster_; ++k)
@@ -177,7 +177,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    STK::Array2DVector<Real> tempVec(lnComp.col(k), true);
+    Vector<Real> tempVec(lnComp.col(k), true);
     tempVec += std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
@@ -296,7 +296,7 @@ void MixtureComposer::misClasStep(int iteration)
   std::cout << "MixtureComposer::misClasStep" << std::endl;
 
 #endif
-  STK::Array2D<Real> probClass(nbSample_,
+  Matrix<Real> probClass(nbSample_,
                                     nbCluster_,
                                     0.);
 

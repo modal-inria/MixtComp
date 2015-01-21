@@ -34,16 +34,16 @@ namespace mixt
 class CategoricalSampler
 {
   public:
-    CategoricalSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                       const STK::Array2DVector<Real>* p_param,
+    CategoricalSampler(AugmentedData<Matrix<int> >* p_augData,
+                       const Vector<Real>* p_param,
                        int nbClass);
     ~CategoricalSampler();
     /** Sample new values for the missing variables of the given individual */
     void sampleIndividual(int i, int z_i);
   private:
     int nbClass_;
-    AugmentedData<STK::Array2D<int> >* p_augData_;
-    const STK::Array2DVector<Real>* p_param_;
+    AugmentedData<Matrix<int> >* p_augData_;
+    const Vector<Real>* p_param_;
 };
 
 } // namespace mixt

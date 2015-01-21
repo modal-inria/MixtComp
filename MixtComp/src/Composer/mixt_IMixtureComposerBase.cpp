@@ -84,7 +84,7 @@ int IMixtureComposerBase::sStep()
   {
     sStep(i);
   }
-  STK::Array2DVector<int> indPerClass(nbCluster_, 0);
+  Vector<int> indPerClass(nbCluster_, 0);
   for (int i = 0; i < nbSample_; ++i)
   {
     indPerClass[zi_[i]] += 1;

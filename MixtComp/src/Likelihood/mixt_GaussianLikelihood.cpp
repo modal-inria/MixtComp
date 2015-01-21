@@ -30,9 +30,9 @@
 namespace mixt
 {
 
-GaussianLikelihood::GaussianLikelihood(const STK::Array2DVector<Real>* p_param,
-                                       const AugmentedData<STK::Array2D<Real> >* augData,
-                                       const STK::Array2D<STK::Array2DPoint<Real> >* p_dataStatStorage,
+GaussianLikelihood::GaussianLikelihood(const Vector<Real>* p_param,
+                                       const AugmentedData<Matrix<Real> >* augData,
+                                       const Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage,
                                        int nbClass) :
     p_param_(p_param),
     p_augData_(augData),
@@ -42,7 +42,7 @@ GaussianLikelihood::GaussianLikelihood(const STK::Array2DVector<Real>* p_param,
 GaussianLikelihood::~GaussianLikelihood()
 {}
 
-void GaussianLikelihood::lnCompletedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
+void GaussianLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
       std::cout << "GaussianLikelihood::lnCompletedLikelihood" << std::endl;
@@ -78,7 +78,7 @@ void GaussianLikelihood::lnCompletedLikelihood(STK::Array2DVector<Real>* lnComp,
   }
 }
 
-void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<Real>* lnComp, int k)
+void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
       std::cout << "GaussianLikelihood::lnObservedLikelihood" << std::endl;

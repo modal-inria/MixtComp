@@ -122,14 +122,14 @@ class IMixtureComposerBase
     /** @return the state of the model*/
     inline modelState state() const { return state_;}
     /** @return the proportions of each mixtures */
-    inline STK::Array2DVector<Real> const* p_pk() const
+    inline Vector<Real> const* p_pk() const
     {
       return &prop_;
     };
     /** @return the tik probabilities */
-    inline STK::Array2D<Real> const* p_tik() const {return &tik_;};
+    inline Matrix<Real> const* p_tik() const {return &tik_;};
     /** @return  the zi class label */
-    inline STK::Array2DVector<int> const* p_zi() const {return &zi_;};
+    inline Vector<int> const* p_zi() const {return &zi_;};
 
     /** set the state of the model : should be used by any strategy*/
     inline void setState(modelState state) {state_ = state;}
@@ -187,7 +187,7 @@ class IMixtureComposerBase
     void mapStep();
     void mapStep(int i);
 
-    void setProportions(STK::Array2DVector<Real> prop)
+    void setProportions(Vector<Real> prop)
     {
       prop_ = prop;
 #ifdef MC_DEBUG
@@ -196,7 +196,7 @@ class IMixtureComposerBase
 #endif
     };
 
-    void setPartition(STK::Array2DVector<int>& zi)
+    void setPartition(Vector<int>& zi)
     {
       zi_ = zi;
     };
@@ -212,11 +212,11 @@ class IMixtureComposerBase
     /** Number of samples */
     int nbSample_;
     /** The proportions of each mixtures */
-    STK::Array2DVector<Real> prop_;
+    Vector<Real> prop_;
     /** The tik probabilities */
-    STK::Array2D<Real> tik_;
+    Matrix<Real> tik_;
     /** The zik class label */
-    STK::Array2DVector<int> zi_;
+    Vector<int> zi_;
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model.

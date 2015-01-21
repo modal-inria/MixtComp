@@ -158,7 +158,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     void gibbsSampling(int nbGibbsIter);
 
     /** @return the logs of the proportions */
-    inline STK::Array2D<Real> const* p_pkLog() const
+    inline Matrix<Real> const* p_pkLog() const
     {
       return &paramlog_;
     };
@@ -170,13 +170,13 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     SimpleParamStat paramStat_;
 
     /** storage for proportions statistics */
-    STK::Array2D<Real> paramStatStorage_;
+    Matrix<Real> paramStatStorage_;
 
     /** Log for sampled parameters */
-    STK::Array2D<Real> paramlog_;
+    Matrix<Real> paramlog_;
 
     /** storage for number of samples during Gibbs */
-    STK::Array2D<Real> nik_;
+    Matrix<Real> nik_;
 };
 
 } /* namespace mixt */

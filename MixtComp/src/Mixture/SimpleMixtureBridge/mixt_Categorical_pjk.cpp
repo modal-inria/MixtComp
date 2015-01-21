@@ -47,7 +47,7 @@ int Categorical_pjk::computeNbFreeParameters() const
   return (nbModalities_ - 1);
 }
 
-void Categorical_pjk::getParameters(STK::Array2DVector<Real>& param) const
+void Categorical_pjk::getParameters(Vector<Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Categorical_pjk::getParameters" << std::endl;
@@ -99,7 +99,7 @@ std::string Categorical_pjk::mStep()
   for (int k = 0; k < nbCluster_; ++k)
   {
     Real nbSampleClass = 0.;
-    STK::Array2DVector<Real> modalities(nbModalities_, // todo: switch to int for counting (currently stkpp error with STK::Array2DVector<int> / real)
+    Vector<Real> modalities(nbModalities_, // todo: switch to int for counting (currently stkpp error with Vector<int> / real)
                                              0.);
 
     for (int i = 0; i < (*p_data_).sizeRows(); ++i)
@@ -160,12 +160,12 @@ void Categorical_pjk::paramNames(std::vector<std::string>& names) const
   }
 }
 
-void Categorical_pjk::setData(STK::Array2D<Type>& data)
+void Categorical_pjk::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
 }
 
-void Categorical_pjk::setMixtureParameters(STK::Array2DVector<int> const* p_zi)
+void Categorical_pjk::setMixtureParameters(Vector<int> const* p_zi)
 {
   p_zi_ = p_zi;
 }
@@ -177,7 +177,7 @@ void Categorical_pjk::setModalities(int nbModalities)
                            nbCluster_ * nbModalities_));
 }
 
-void Categorical_pjk::setParameters(const STK::Array2DVector<Real>& param)
+void Categorical_pjk::setParameters(const Vector<Real>& param)
 {
   for (int i = 0; i < param.sizeRows(); ++i)
   {

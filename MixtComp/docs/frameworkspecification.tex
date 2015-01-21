@@ -133,7 +133,7 @@ psedo code for {\bf setData()} is given below:
 virtual void setData()
 {
   Data<type> mydatahandler;
-  STK::Array2D<type> data = mydatahandler.getData(id_,nbVariable_);
+  Matrix<type> data = mydatahandler.getData(id_,nbVariable_);
   // Fill up your data container using data 
 }
 \end{lstlisting}

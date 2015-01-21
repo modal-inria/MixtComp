@@ -36,7 +36,7 @@ class ParamSetterR
     ParamSetterR(const Rcpp::List param);
     ~ParamSetterR();
     void getParam(std::string idName,
-                  STK::Array2DVector<Real>& param) const;
+                  Vector<Real>& param) const;
   private:
     const Rcpp::List param_;
 };

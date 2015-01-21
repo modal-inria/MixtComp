@@ -28,7 +28,7 @@
 namespace mixt
 {
 
-CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
+CategoricalDataStat::CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
                                          Eigen::Matrix<std::vector<std::pair<int, Real> >,
                                                        Eigen::Dynamic,
                                                        Eigen::Dynamic>* p_dataStatStorage,
@@ -85,7 +85,7 @@ void CategoricalDataStat::sampleVals(int ind,
       // last sampling
       sample(ind);
 
-      STK::Array2DVector<Real> proba = stat_ / Real(iterationMax + 1); // from count to probabilities
+      Vector<Real> proba = stat_ / Real(iterationMax + 1); // from count to probabilities
       STK::Array2DPoint<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, proba);
       Real cumProb = 0.;

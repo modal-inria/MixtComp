@@ -33,7 +33,7 @@ namespace mixt
 class CategoricalDataStat
 {
   public:
-    CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
+    CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
                         Eigen::Matrix<std::vector<std::pair<int, Real> >,
                                       Eigen::Dynamic,
                                       Eigen::Dynamic>* p_dataStatStorage,
@@ -47,7 +47,7 @@ class CategoricalDataStat
     // number of classes
     int nbClass_;
     // pointer to data array
-    const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
+    const AugmentedData<Matrix<int> >* pm_augDataij_;
     /** Sparse description of the missing values */
     Eigen::Matrix<std::vector<std::pair<int, Real> >,
                                           Eigen::Dynamic,
@@ -55,7 +55,7 @@ class CategoricalDataStat
 
     /** Array to count sampled values across iterations, for the current individual,
      * i: modalities */
-    STK::Array2DVector<int> stat_;
+    Vector<int> stat_;
 
     /** Confidence level */
     Real confidenceLevel_;

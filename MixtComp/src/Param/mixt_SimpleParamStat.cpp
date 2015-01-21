@@ -29,9 +29,9 @@
 namespace mixt
 {
 
-SimpleParamStat::SimpleParamStat(STK::Array2DVector<Real>* p_param,
-                                 STK::Array2D<Real>* p_paramStatStorage,
-                                 STK::Array2D<Real>* p_paramlog,
+SimpleParamStat::SimpleParamStat(Vector<Real>* p_param,
+                                 Matrix<Real>* p_paramStatStorage,
+                                 Matrix<Real>* p_paramlog,
                                  Real confidenceLevel) :
     nbIter_(0),
     nbParam_(0),
@@ -90,7 +90,7 @@ void SimpleParamStat::sampleParam(int iteration,
     std::cout << currParam << std::endl;
 #endif
 
-      STK::Array2DVector<int> indOrder; // to store indices of ascending order
+      Vector<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, (*p_paramlog_).row(p));
       Real alpha = (1. - confidenceLevel_) / 2.;
       Real realIndLow = alpha * iterationMax;

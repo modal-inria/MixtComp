@@ -50,7 +50,7 @@ template<>
 struct BridgeTraits<Categorical_pjk_>
 {
     /** Type of the data set to be used as input */
-    typedef STK::Array2D<int> Data;
+    typedef Matrix<int> Data;
     /** Type of the AugmentedData */
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat */

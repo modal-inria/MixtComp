@@ -34,7 +34,7 @@ class ParamSetterComposerR
   public:
     ParamSetterComposerR(Rcpp::NumericVector prop);
     ~ParamSetterComposerR();
-    STK::Array2DVector<Real> getProportions() const;
+    Vector<Real> getProportions() const;
   private:
     Rcpp::NumericVector prop_;
 };

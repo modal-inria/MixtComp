@@ -150,7 +150,7 @@ class AugmentedData
     /** Remove the missing values by uniform samplings */
     void removeMissing();
 
-    /** two dimensional data table, for example a STK::Array2D<Real> */
+    /** two dimensional data table, for example a Matrix<Real> */
     DataType data_;
 
     /** data structure for partially observed values */

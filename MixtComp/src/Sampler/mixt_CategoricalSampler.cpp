@@ -27,8 +27,8 @@
 
 namespace mixt
 {
-CategoricalSampler::CategoricalSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                                       const STK::Array2DVector<Real>* p_param,
+CategoricalSampler::CategoricalSampler(AugmentedData<Matrix<int> >* p_augData,
+                                       const Vector<Real>* p_param,
                                        int nbClass) :
     nbClass_(nbClass),
     p_augData_(p_augData),
@@ -59,7 +59,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
     {
       case missing_:
       {
-        STK::Array2DVector<Real> modalities = (*p_param_)[STK::Range(z_i * nbModalities,
+        Vector<Real> modalities = (*p_param_)[STK::Range(z_i * nbModalities,
                                                                           nbModalities)];
         sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities;
       }
@@ -67,10 +67,10 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
 
       case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
       {
-        STK::Array2DVector<Real> modalities(STK::Range(0,
+        Vector<Real> modalities(STK::Range(0,
                                                             nbModalities),
                                                  0.);
-        STK::Array2DVector<Real> equiModalities(STK::Range(0,
+        Vector<Real> equiModalities(STK::Range(0,
                                                                 nbModalities),
                                                      0.);
         for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i, 0).second.begin();

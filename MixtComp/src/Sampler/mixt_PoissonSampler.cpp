@@ -25,8 +25,8 @@
 
 namespace mixt
 {
-PoissonSampler::PoissonSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                               const STK::Array2DVector<Real>* p_param,
+PoissonSampler::PoissonSampler(AugmentedData<Matrix<int> >* p_augData,
+                               const Vector<Real>* p_param,
                                int nbClass) :
     p_augData_(p_augData),
     p_param_(p_param)

@@ -32,8 +32,8 @@ namespace mixt
 class PoissonDataStat
 {
   public:
-    PoissonDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                    STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
+    PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+                    Matrix<STK::Array2DPoint<int> >* p_dataStatStorage,
                     Real confidenceLevel,
                     int nbClass);
     ~PoissonDataStat();
@@ -42,14 +42,14 @@ class PoissonDataStat
                     int iterationMax);
   private:
     /** pointer to data array */
-    const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
+    const AugmentedData<Matrix<int> >* pm_augDataij_;
     /** Description of the missing values */
-    STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage_;
+    Matrix<STK::Array2DPoint<int> >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: iteration
      * Variables are ignored, as they are not supported in the global framework*/
-    STK::Array2DVector<int> stat_;
+    Vector<int> stat_;
 
     /** Confidence level */
     Real confidenceLevel_;

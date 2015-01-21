@@ -32,9 +32,9 @@ namespace mixt
 class SimpleParamStat
 {
   public:
-    SimpleParamStat(STK::Array2DVector<Real>* p_param,
-                    STK::Array2D<Real>* p_paramStatStorage,
-                    STK::Array2D<Real>* p_paramlog,
+    SimpleParamStat(Vector<Real>* p_param,
+                    Matrix<Real>* p_paramStatStorage,
+                    Matrix<Real>* p_paramlog,
                     Real confidenceLevel);
     ~SimpleParamStat();
 
@@ -51,15 +51,15 @@ class SimpleParamStat
     int nbParam_;
 
     // pointer to param array
-    STK::Array2DVector<Real>* p_param_;
+    Vector<Real>* p_param_;
 
     /** Pointer to array to export the statistics at the last iteration */
-    STK::Array2D<Real>* p_paramStatStorage_;
+    Matrix<Real>* p_paramStatStorage_;
 
     /** Storage for iterations results,
      * first dimension: index of the parameter
      * second dimension: iteration of the stored value */
-    STK::Array2D<Real>* p_paramlog_;
+    Matrix<Real>* p_paramlog_;
 
     /** Confidence level */
     Real confidenceLevel_;

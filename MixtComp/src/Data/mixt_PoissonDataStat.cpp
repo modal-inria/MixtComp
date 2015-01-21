@@ -27,8 +27,8 @@
 namespace mixt
 {
 
-PoissonDataStat::PoissonDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                                 STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
+PoissonDataStat::PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+                                 Matrix<STK::Array2DPoint<int> >* p_dataStatStorage,
                                  Real confidenceLevel,
                                  int nbClass) :
     pm_augDataij_(pm_augDataij),
@@ -82,8 +82,8 @@ void PoissonDataStat::sampleVals(int ind,
       std::cout << "tempStat_[j]: " << std::endl;
       std::cout << tempStat_[j] << std::endl;
 #endif
-      STK::Array2DVector<int> indOrder; // to store indices of ascending order
-      STK::heapSort<STK::Array2DVector<int>, STK::Array2DVector<int> >(indOrder, stat_);
+      Vector<int> indOrder; // to store indices of ascending order
+      STK::heapSort<Vector<int>, Vector<int> >(indOrder, stat_);
       Real alpha = (1. - confidenceLevel_) / 2.;
       Real realIndLow = alpha * iterationMax;
       Real realIndHigh = (1. - alpha) * iterationMax;

@@ -45,7 +45,7 @@ int Poisson_k::computeNbFreeParameters() const
   return nbCluster_;
 }
 
-void Poisson_k::getParameters(STK::Array2DVector<Real>& param) const
+void Poisson_k::getParameters(Vector<Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Poisson_k::getParameters" << std::endl;
@@ -142,12 +142,12 @@ void Poisson_k::paramNames(std::vector<std::string>& names) const
   }
 }
 
-void Poisson_k::setData(STK::Array2D<Type>& data)
+void Poisson_k::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
 }
 
-void Poisson_k::setMixtureParameters(STK::Array2DVector<int> const* p_zi)
+void Poisson_k::setMixtureParameters(Vector<int> const* p_zi)
 {
   p_zi_ = p_zi;
 }
@@ -157,7 +157,7 @@ void Poisson_k::setModalities(int nbModalities)
   // does nothing. Used for categorical models.
 }
 
-void Poisson_k::setParameters(const STK::Array2DVector<Real>& param)
+void Poisson_k::setParameters(const Vector<Real>& param)
 {
   for (int i = 0; i < param.sizeRows(); ++i)
   {
