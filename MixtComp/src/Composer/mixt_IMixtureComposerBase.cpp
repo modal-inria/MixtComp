@@ -66,10 +66,9 @@ IMixtureComposerBase::~IMixtureComposerBase() {}
 /* initialize randomly the labels zi of the model */
 void IMixtureComposerBase::randomClassInit()
 {
-  STK::Law::Categorical law(prop_);
   for (int i = 0; i < nbSample_; ++i)
   {
-    zi_.elt(i) = law.rand();
+    zi_(i) = multi_.sample(prop_);
   }
 }
 
@@ -84,12 +83,12 @@ int IMixtureComposerBase::sStep()
   {
     sStep(i);
   }
-  Vector<int> indPerClass(nbCluster_, 0);
+  Vector<int> indPerClass = Vector<int>::Zero(nbCluster_);
   for (int i = 0; i < nbSample_; ++i)
   {
     indPerClass[zi_[i]] += 1;
   }
-  int minIndPerClass = indPerClass.minElt();
+  int minIndPerClass = indPerClass.minCoeff();
 #ifdef MC_DEBUG
   std::cout << "\tindPerClass: " << indPerClass << std::endl;
   std::cout << "\tminIndPerClass: " << minIndPerClass << std::endl;
@@ -100,7 +99,7 @@ int IMixtureComposerBase::sStep()
 /* simulate zi for a particular individual */
 void IMixtureComposerBase::sStep(int i)
 {
-  zi_.elt(i) = STK::Law::Categorical::rand(tik_.row(i));
+  zi_(i) = multi_.sample(tik_.row(i));
 }
 
 /* compute Tik, for all individuals */
