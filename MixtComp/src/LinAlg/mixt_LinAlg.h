@@ -43,41 +43,70 @@ void sortContiguous(T& ref)
             ref.data() + ref.size());
 }
 
-template<typename T>
-class Matrix : public Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>
+template<typename T, int _Rows = Eigen::Dynamic, int _Cols = Eigen::Dynamic>
+class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
 {
   public:
+    Matrix() :
+      Eigen::Matrix<T, _Rows, _Cols>()
+    {};
+
     Matrix(int nrow, int ncol) :
-      Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>(nrow, ncol)
+      Eigen::Matrix<T, _Rows, _Cols>(nrow, ncol)
     {};
+
+    Matrix(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _Rows, _Cols> > op) :
+      Eigen::Matrix<T, _Rows, _Cols>(op)
+    {};
+
+    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _Rows, _Cols> > op)
+    {
+      Eigen::Matrix<T, _Rows, _Cols>::operator=(op);
+    }
 };
 
 template<typename T>
-class Vector : public Eigen::Matrix<T, Eigen::Dynamic, 1>
+class Vector : public Matrix<T, Eigen::Dynamic, 1>
 {
   public:
+    Vector() :
+      Matrix<T, Eigen::Dynamic, 1>()
+    {};
+
     Vector(int nrow) :
-      Eigen::Matrix<T, Eigen::Dynamic, 1>(nrow)
+      Matrix<T, Eigen::Dynamic, 1>(nrow, 1)
     {};
 
-    /** Copy from a lightweight block object representing a subpart of a matrix */
-    Vector(typename Eigen::Block<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>, Eigen::Dynamic, Eigen::Dynamic> block) :
-      Eigen::Matrix<T, Eigen::Dynamic, 1>(block)
+    Vector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, Eigen::Dynamic, 1> > op) :
+      Matrix<T, Eigen::Dynamic, 1>(op)
     {};
+
+    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, Eigen::Dynamic, 1> > op)
+    {
+      Matrix<T, Eigen::Dynamic, 1>::operator=(op);
+    }
 };
 
 template<typename T>
-class RowVector : public Eigen::Matrix<T, 1, Eigen::Dynamic>
+class RowVector : public Matrix<T, 1, Eigen::Dynamic>
 {
   public:
-    RowVector(int ncol) :
-      Eigen::Matrix<T, 1, Eigen::Dynamic>(ncol)
+    RowVector() :
+      Matrix<T, 1, Eigen::Dynamic>()
     {};
 
-    /** Copy from a lightweight block object representing a subpart of a matrix */
-    RowVector(typename Eigen::Block<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>, Eigen::Dynamic, Eigen::Dynamic> block) :
-      Eigen::Matrix<T, 1, Eigen::Dynamic>(block)
+    RowVector(int ncol) :
+      Matrix<T, 1, Eigen::Dynamic>(1, ncol)
     {};
+
+    RowVector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, Eigen::Dynamic> > op) :
+      Matrix<T, 1, Eigen::Dynamic>(op)
+    {};
+
+    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, Eigen::Dynamic> > op)
+    {
+      Matrix<T, 1, Eigen::Dynamic>::operator=(op);
+    }
 };
 
 } // namespace mixt
