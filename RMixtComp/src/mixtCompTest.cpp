@@ -22,13 +22,29 @@
  **/
 
 #include <Rcpp.h>
-#include "Arrays/include/STK_Array2DVector.h"
-#include "Arrays/include/STK_Display.h"
+#include <Eigen/Dense>
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
+#include "MixtComp/src/Statistic/mixt_MultinomialStatistic.h"
 #include <iostream>     // std::cout
 #include <algorithm>    // std::sort
 
-// [[Rcpp::export]]
-void matSort()
-{
+typedef double Real;
 
+// [[Rcpp::export]]
+void linAlg()
+{
+  mixt::Matrix<Real> a(3, 3);
+
+  a << 3,2,1,
+       0.3,5,6,
+       0.7,2,42;
+
+  std::cout << a.rows() << std::endl;
+
+  mixt::MultinomialStatistic multi;
+
+  for (int i = 0; i < 100; ++i)
+  {
+    std::cout << multi.sample(a.block(1,0,2,1)) << std::endl;
+  }
 }
