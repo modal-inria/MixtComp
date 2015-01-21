@@ -55,11 +55,13 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       Eigen::Matrix<T, _Rows, _Cols>(nrow, ncol)
     {};
 
-    Matrix(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _Rows, _Cols> > op) :
+    template<int _ArgRows, int _ArgCols>
+    Matrix(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, _ArgCols> > op) :
       Eigen::Matrix<T, _Rows, _Cols>(op)
     {};
 
-    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _Rows, _Cols> > op)
+    template<int _ArgRows, int _ArgCols>
+    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, _ArgCols> > op)
     {
       Eigen::Matrix<T, _Rows, _Cols>::operator=(op);
     }
@@ -77,11 +79,13 @@ class Vector : public Matrix<T, Eigen::Dynamic, 1>
       Matrix<T, Eigen::Dynamic, 1>(nrow, 1)
     {};
 
-    Vector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, Eigen::Dynamic, 1> > op) :
+    template<int _ArgRows>
+    Vector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, 1> > op) :
       Matrix<T, Eigen::Dynamic, 1>(op)
     {};
 
-    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, Eigen::Dynamic, 1> > op)
+    template<int _ArgRows>
+    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, 1> > op)
     {
       Matrix<T, Eigen::Dynamic, 1>::operator=(op);
     }
@@ -99,13 +103,15 @@ class RowVector : public Matrix<T, 1, Eigen::Dynamic>
       Matrix<T, 1, Eigen::Dynamic>(1, ncol)
     {};
 
-    RowVector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, Eigen::Dynamic> > op) :
-      Matrix<T, 1, Eigen::Dynamic>(op)
+    template<int _ArgCols>
+    RowVector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, _ArgCols> > op) :
+      Matrix<T, 1, _ArgCols>(op)
     {};
 
-    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, Eigen::Dynamic> > op)
+    template<int _ArgCols>
+    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, _ArgCols> > op)
     {
-      Matrix<T, 1, Eigen::Dynamic>::operator=(op);
+      Matrix<T, 1, _ArgCols>::operator=(op);
     }
 };
 
