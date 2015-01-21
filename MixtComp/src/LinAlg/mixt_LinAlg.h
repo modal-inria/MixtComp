@@ -55,27 +55,19 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       Eigen::Matrix<T, _Rows, _Cols>(nrow, ncol)
     {};
 
-    template<int _ArgRows, int _ArgCols>
-    Matrix(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, _ArgCols> > op) :
-      Eigen::Matrix<T, _Rows, _Cols>(op)
+    /** This constructor allows to construct Matrix from Eigen expressions */
+    template<typename OtherDerived>
+    Matrix(const Eigen::MatrixBase<OtherDerived>& other) :
+      Eigen::Matrix<T, _Rows, _Cols>(other)
     {};
 
-    template<int _ArgRows, int _ArgCols>
-    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, _ArgCols> > op)
+    /** This method allows to assign Eigen expressions to Matrix */
+    template<typename OtherDerived>
+    Matrix& operator=(const Eigen::MatrixBase<OtherDerived>& other)
     {
-      Eigen::Matrix<T, _Rows, _Cols>::operator=(op);
+      this->Eigen::Matrix<T, _Rows, _Cols>::operator=(other);
+      return *this;
     }
-
-    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
-    Matrix(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block) :
-      Eigen::Matrix<T, _Rows, _Cols>(block)
-    {};
-
-    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
-    void operator=(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block)
-    {
-      Eigen::Matrix<T, _Rows, _Cols>::operator=(block);
-    };
 };
 
 template<typename T, int _Rows = Eigen::Dynamic>
@@ -90,27 +82,19 @@ class Vector : public Matrix<T, _Rows, 1>
       Matrix<T, _Rows, 1>(nrow, 1)
     {};
 
-    template<int _ArgRows>
-    Vector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, 1> > op) :
-      Matrix<T, _Rows, 1>(op)
+    /** This constructor allows to construct Vector from Eigen expressions */
+    template<typename OtherDerived>
+    Vector(const Eigen::MatrixBase<OtherDerived>& other) :
+      Matrix<T, _Rows, 1>(other)
     {};
 
-    template<int _ArgRows>
-    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, 1> > op)
+    /** This method allows to assign Eigen expressions to Vector */
+    template<typename OtherDerived>
+    Vector& operator=(const Eigen::MatrixBase<OtherDerived>& other)
     {
-      Matrix<T, _Rows, 1>::operator=(op);
-    };
-
-    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
-    Vector(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block) :
-      Matrix<T, _Rows, 1>(block)
-    {};
-
-    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
-    void operator=(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block)
-    {
-      Matrix<T, _Rows, 1>::operator=(block);
-    };
+      this->Matrix<T, _Rows, 1>::operator=(other);
+      return *this;
+    }
 };
 
 template<typename T, int _Cols = Eigen::Dynamic>
@@ -125,27 +109,19 @@ class RowVector : public Matrix<T, 1, _Cols>
       Matrix<T, 1, _Cols>(1, ncol)
     {};
 
-    template<int _ArgCols>
-    RowVector(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, _ArgCols> > op) :
-      Matrix<T, 1, _Cols>(op)
+    /** This constructor allows to construct RowVector from Eigen expressions */
+    template<typename OtherDerived>
+    RowVector(const Eigen::MatrixBase<OtherDerived>& other) :
+      Matrix<T, 1, _Cols>(other)
     {};
 
-    template<int _ArgCols>
-    void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, _ArgCols> > op)
+    /** This method allows to assign Eigen expressions to RowVector */
+    template<typename OtherDerived>
+    RowVector& operator=(const Eigen::MatrixBase<OtherDerived>& other)
     {
-      Matrix<T, 1, _Cols>::operator=(op);
-    };
-
-    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
-    RowVector(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block) :
-      Matrix<T, 1, _Cols>(block)
-    {};
-
-    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
-    void operator=(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block)
-    {
-      Matrix<T, 1, _Cols>::operator=(block);
-    };
+      this->Matrix<T, 1, _Cols>::operator=(other);
+      return *this;
+    }
 };
 
 } // namespace mixt
