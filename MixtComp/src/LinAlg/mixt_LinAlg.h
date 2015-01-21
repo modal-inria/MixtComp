@@ -75,7 +75,7 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
     void operator=(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block)
     {
       Eigen::Matrix<T, _Rows, _Cols>::operator=(block);
-    }
+    };
 };
 
 template<typename T, int _Rows = Eigen::Dynamic>
@@ -99,7 +99,18 @@ class Vector : public Matrix<T, _Rows, 1>
     void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, _ArgRows, 1> > op)
     {
       Matrix<T, _Rows, 1>::operator=(op);
-    }
+    };
+
+    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
+    Vector(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block) :
+      Matrix<T, _Rows, 1>(block)
+    {};
+
+    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
+    void operator=(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block)
+    {
+      Matrix<T, _Rows, 1>::operator=(block);
+    };
 };
 
 template<typename T, int _Cols = Eigen::Dynamic>
@@ -123,7 +134,18 @@ class RowVector : public Matrix<T, 1, _Cols>
     void operator=(const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>, Eigen::Matrix<T, 1, _ArgCols> > op)
     {
       Matrix<T, 1, _Cols>::operator=(op);
-    }
+    };
+
+    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
+    RowVector(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block) :
+      Matrix<T, 1, _Cols>(block)
+    {};
+
+    template<int _ArgRows, int _ArgCols, int _ArgBlockRows, int _ArgBlockCols>
+    void operator=(Eigen::Block<Eigen::Matrix<double, _ArgRows, _ArgCols>, _ArgBlockRows, _ArgBlockCols> block)
+    {
+      Matrix<T, 1, _Cols>::operator=(block);
+    };
 };
 
 } // namespace mixt
