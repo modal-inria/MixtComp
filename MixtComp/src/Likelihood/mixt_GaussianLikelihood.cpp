@@ -32,7 +32,7 @@ namespace mixt
 
 GaussianLikelihood::GaussianLikelihood(const Vector<Real>* p_param,
                                        const AugmentedData<Matrix<Real> >* augData,
-                                       const Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage,
+                                       const Matrix<RowVector<Real> >* p_dataStatStorage,
                                        int nbClass) :
     p_param_(p_param),
     p_augData_(augData),

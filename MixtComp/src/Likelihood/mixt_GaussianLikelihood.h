@@ -37,7 +37,7 @@ class GaussianLikelihood
     /** Constructor */
     GaussianLikelihood(const Vector<Real>* p_param,
                        const AugmentedData<Matrix<Real> >* augData,
-                       const Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage,
+                       const Matrix<RowVector<Real> >* p_dataStatStorage,
                        int nbClass);
     /** Destructor */
     virtual ~GaussianLikelihood();
@@ -56,7 +56,7 @@ class GaussianLikelihood
     const AugmentedData<Matrix<Real> >* p_augData_;
 
     /** Pointer to storage of statistics on missing values */
-    const Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage_;
+    const Matrix<RowVector<Real> >* p_dataStatStorage_;
 
     NormalStatistic normal_;
 };

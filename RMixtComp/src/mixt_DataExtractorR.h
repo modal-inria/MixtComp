@@ -46,11 +46,11 @@ class DataExtractorR
     /** Export function for gaussian model */
     void exportVals(std::string idName,
                     const AugmentedData<Matrix<Real> >* p_augData,
-                    const Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage);
+                    const Matrix<RowVector<Real> >* p_dataStatStorage);
     /** Export function for Poisson model */
     void exportVals(std::string idName,
                     const AugmentedData<Matrix<int> >* p_augData,
-                    const Matrix<STK::Array2DPoint<int> >* p_dataStatStorage);
+                    const Matrix<RowVector<int> >* p_dataStatStorage);
 
     Rcpp::List rcppReturnVal() const;
   private:

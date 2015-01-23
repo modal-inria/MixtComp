@@ -91,7 +91,7 @@ void DataExtractorR::exportVals(std::string idName,
 
 void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<Matrix<Real> >* p_augData,
-                                const Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage)
+                                const Matrix<RowVector<Real> >* p_dataStatStorage)
 {
   Rcpp::NumericMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
                             p_augData->data_.sizeCols());
@@ -125,7 +125,7 @@ void DataExtractorR::exportVals(std::string idName,
 /** Export function for Poisson model */
 void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<Matrix<int> >* p_augData,
-                                const Matrix<STK::Array2DPoint<int> >* p_dataStatStorage)
+                                const Matrix<RowVector<int> >* p_dataStatStorage)
 {
   Rcpp::NumericMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
                             p_augData->data_.sizeCols());

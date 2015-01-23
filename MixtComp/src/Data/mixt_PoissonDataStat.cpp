@@ -28,7 +28,7 @@ namespace mixt
 {
 
 PoissonDataStat::PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
-                                 Matrix<STK::Array2DPoint<int> >* p_dataStatStorage,
+                                 Matrix<RowVector<int> >* p_dataStatStorage,
                                  Real confidenceLevel,
                                  int nbClass) :
     pm_augDataij_(pm_augDataij),
@@ -64,7 +64,7 @@ void PoissonDataStat::sampleVals(int ind,
       std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
 #endif
       // clear global individual
-      p_dataStatStorage_->elt(ind, 0) = STK::Array2DPoint<Real>(3, 0.);
+      p_dataStatStorage_->elt(ind, 0) = RowVector<Real>(3, 0.);
 
       // first sampling
       sample(ind, iteration);
@@ -88,7 +88,7 @@ void PoissonDataStat::sampleVals(int ind,
       Real realIndLow = alpha * iterationMax;
       Real realIndHigh = (1. - alpha) * iterationMax;
 
-      STK::Array2DPoint<Real> tempPoint(3);
+      RowVector<Real> tempPoint(3);
       tempPoint[0] = int(stat_.mean()); // mode of a Poisson is lambda rounded down to the closest integer
       tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_[indOrder[int(realIndLow )    ]]
                     + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];

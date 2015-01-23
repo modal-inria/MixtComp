@@ -28,7 +28,7 @@ namespace mixt
 {
 
 GaussianDataStat::GaussianDataStat(const AugmentedData<Matrix<Real> >* pm_augDataij,
-                                   Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage,
+                                   Matrix<RowVector<Real> >* p_dataStatStorage,
                                    Real confidenceLevel,
                                    int nbClass) :
     pm_augDataij_(pm_augDataij),
@@ -66,7 +66,7 @@ void GaussianDataStat::sampleVals(int ind,
       // clear current individual
       for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
       {
-        p_dataStatStorage_->elt(ind, j) = STK::Array2DPoint<Real>(3, 0.);
+        p_dataStatStorage_->elt(ind, j) = RowVector<Real>(3, 0.);
       }
 
       // first sampling
@@ -91,7 +91,7 @@ void GaussianDataStat::sampleVals(int ind,
       Real realIndLow = alpha * iterationMax;
       Real realIndHigh = (1. - alpha) * iterationMax;
 
-      STK::Array2DPoint<Real> tempPoint(3);
+      RowVector<Real> tempPoint(3);
       tempPoint[0] = stat_.mean();
       tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_[indOrder[int(realIndLow )    ]]
                     + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];

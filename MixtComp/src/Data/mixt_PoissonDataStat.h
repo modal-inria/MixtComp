@@ -33,7 +33,7 @@ class PoissonDataStat
 {
   public:
     PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
-                    Matrix<STK::Array2DPoint<int> >* p_dataStatStorage,
+                    Matrix<RowVector<int> >* p_dataStatStorage,
                     Real confidenceLevel,
                     int nbClass);
     ~PoissonDataStat();
@@ -44,7 +44,7 @@ class PoissonDataStat
     /** pointer to data array */
     const AugmentedData<Matrix<int> >* pm_augDataij_;
     /** Description of the missing values */
-    Matrix<STK::Array2DPoint<int> >* p_dataStatStorage_;
+    Matrix<RowVector<int> >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: iteration

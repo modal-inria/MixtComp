@@ -86,7 +86,7 @@ void CategoricalDataStat::sampleVals(int ind,
       sample(ind);
 
       Vector<Real> proba = stat_ / Real(iterationMax + 1); // from count to probabilities
-      STK::Array2DPoint<int> indOrder; // to store indices of ascending order
+      RowVector<int> indOrder; // to store indices of ascending order
       STK::heapSort(indOrder, proba);
       Real cumProb = 0.;
 

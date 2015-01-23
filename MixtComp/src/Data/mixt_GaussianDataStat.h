@@ -33,7 +33,7 @@ class GaussianDataStat
 {
   public:
     GaussianDataStat(const AugmentedData<Matrix<Real> >* pm_augDataij,
-                     Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage,
+                     Matrix<RowVector<Real> >* p_dataStatStorage,
                      Real confidenceLevel,
                      int nbClass);
     ~GaussianDataStat();
@@ -44,11 +44,11 @@ class GaussianDataStat
     /** pointer to data array */
     const AugmentedData<Matrix<Real> >* pm_augDataij_;
     /** Description of the missing values */
-    Matrix<STK::Array2DPoint<Real> >* p_dataStatStorage_;
+    Matrix<RowVector<Real> >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: sampling iteration */
-    STK::Array2DPoint<Real> stat_;
+    RowVector<Real> stat_;
 
     /** Confidence level */
     Real confidenceLevel_;

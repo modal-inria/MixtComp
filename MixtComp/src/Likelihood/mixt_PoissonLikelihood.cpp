@@ -32,7 +32,7 @@ namespace mixt
 
 PoissonLikelihood::PoissonLikelihood(const Vector<Real>* p_param,
                                      const AugmentedData<Matrix<int> >* augData,
-                                     const Matrix<STK::Array2DPoint<int> >* p_dataStatStorage,
+                                     const Matrix<RowVector<int> >* p_dataStatStorage,
                                      int nbClass) :
     p_param_(p_param),
     p_augData_(augData),

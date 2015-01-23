@@ -320,7 +320,7 @@ void MixtureComposer::misClasStep(int iteration)
   // equivalent of the estep to compute new tik_
   for (int i = 0; i < nbSample_; ++i)
   {
-    STK::Array2DPoint<Real> lnComp;
+    RowVector<Real> lnComp;
     lnComp = probClass.row(i);
     Real lnCompMax = lnComp.maxElt();
     lnComp -= lnCompMax;

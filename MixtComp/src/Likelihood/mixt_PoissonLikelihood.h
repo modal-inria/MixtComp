@@ -37,7 +37,7 @@ class PoissonLikelihood
     /** Constructor */
     PoissonLikelihood(const Vector<Real>* p_param,
                       const AugmentedData<Matrix<int> >* augData,
-                      const Matrix<STK::Array2DPoint<int> >* p_dataStatStorage,
+                      const Matrix<RowVector<int> >* p_dataStatStorage,
                       int nbClass);
     /** Destructor */
     virtual ~PoissonLikelihood();
@@ -56,7 +56,7 @@ class PoissonLikelihood
     const AugmentedData<Matrix<int> >* p_augData_;
 
     /** Pointer to storage of statistics on missing values */
-    const Matrix<STK::Array2DPoint<int> >* p_dataStatStorage_;
+    const Matrix<RowVector<int> >* p_dataStatStorage_;
 
     /** Statistic object to describe Poisson law */
     PoissonStatistic poisson_;

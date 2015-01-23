@@ -55,7 +55,7 @@ struct BridgeTraits<Poisson_k_>
     /** Type of the DataStat */
     typedef PoissonDataStat DataStatComputer;
     /** Type of the DataStat */
-    typedef Matrix<STK::Array2DPoint<int> > DataStatStorage;
+    typedef Matrix<RowVector<int> > DataStatStorage;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */
