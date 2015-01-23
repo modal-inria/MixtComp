@@ -68,6 +68,24 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       this->Eigen::Matrix<T, _Rows, _Cols>::operator=(other);
       return *this;
     }
+    /** Component-wise product */
+    template<typename OtherDerived>
+    const Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<T, T>, const Eigen::Matrix<T, _Rows, _Cols>, const Eigen::Matrix<double, _Rows, _Cols> > operator%(const Eigen::MatrixBase<OtherDerived>& other)
+    {
+      return this->Eigen::Matrix<T, _Rows, _Cols>::cwiseProduct(other);
+    }
+
+    /** Compute the log */
+    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T,  _Rows, _Cols> > > log()
+    {
+      return this->Eigen::Matrix<T, _Rows, _Cols>::array().log();
+    }
+
+    /** Compute the exp */
+    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T,  _Rows, _Cols> > > exp()
+    {
+      return this->Eigen::Matrix<T, _Rows, _Cols>::array().exp();
+    }
 };
 
 template<typename T, int _Rows = Eigen::Dynamic>
