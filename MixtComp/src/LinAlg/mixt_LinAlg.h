@@ -68,6 +68,40 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       this->Eigen::Matrix<T, _Rows, _Cols>::operator=(other);
       return *this;
     }
+
+    /** Element-wise operation between matrix and basic type */
+    Matrix& operator=(const T& other)
+    {
+      (*this) = Eigen::Matrix<T, _Rows, _Cols>::Constant(this->rows(), this->cols(), other);
+      return *this;
+    }
+
+    /** Element-wise += between matrix and basic type */
+    Matrix& operator+=(const T& other)
+    {
+      (*this) = this->Eigen::Matrix<T, _Rows, _Cols>::operator+(Eigen::Matrix<T, _Rows, _Cols>::Constant(this->rows(), this->cols(), other));
+      return (*this);
+    }
+
+    /** Element-wise - between matrix and basic type */
+    Matrix& operator-=(const T& other)
+    {
+      (*this) = this->Eigen::Matrix<T, _Rows, _Cols>::operator-(Eigen::Matrix<T, _Rows, _Cols>::Constant(this->rows(), this->cols(), other));
+      return (*this);
+    }
+
+    /** Element-wise + between matrix and basic type */
+    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T, _Rows, _Cols> > > operator+(const T& other)
+    {
+      return this->Eigen::Matrix<T, _Rows, _Cols>::array().operator+(other);
+    }
+
+    /** Element-wise - between matrix and basic type */
+    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T, _Rows, _Cols> > > operator-(const T& other)
+    {
+      return this->Eigen::Matrix<T, _Rows, _Cols>::array().operator-(other);
+    }
+
     /** Component-wise product */
     template<typename OtherDerived>
     const Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<T, T>, const Eigen::Matrix<T, _Rows, _Cols>, const Eigen::Matrix<double, _Rows, _Cols> > operator%(const Eigen::MatrixBase<OtherDerived>& other)
@@ -75,13 +109,13 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       return this->Eigen::Matrix<T, _Rows, _Cols>::cwiseProduct(other);
     }
 
-    /** Compute the log */
+    /** Element-wise log computation */
     const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T,  _Rows, _Cols> > > log()
     {
       return this->Eigen::Matrix<T, _Rows, _Cols>::array().log();
     }
 
-    /** Compute the exp */
+    /** Element-wise exp computation */
     const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T,  _Rows, _Cols> > > exp()
     {
       return this->Eigen::Matrix<T, _Rows, _Cols>::array().exp();
