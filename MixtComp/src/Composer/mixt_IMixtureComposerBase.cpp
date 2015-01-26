@@ -83,7 +83,7 @@ int IMixtureComposerBase::sStep()
   {
     sStep(i);
   }
-  Vector<int> indPerClass = Vector<int>::Zero(nbCluster_);
+  Vector<int> indPerClass = 0;
   for (int i = 0; i < nbSample_; ++i)
   {
     indPerClass[zi_[i]] += 1;
@@ -131,7 +131,7 @@ void IMixtureComposerBase::eStep(int i)
     lnComp[k] = std::log(prop_[k]) + lnComponentProbability(i, k);
   }
 
-  Real lnCompMax = lnComp.maxElt();
+  Real lnCompMax = lnComp.maxCoeff();
   lnComp -= lnCompMax;
   lnComp = lnComp.exp();
   Real sum = lnComp.sum();

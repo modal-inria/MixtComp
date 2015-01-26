@@ -43,7 +43,9 @@ void sortContiguous(T& ref)
             ref.data() + ref.size());
 }
 
-template<typename T, int _Rows = Eigen::Dynamic, int _Cols = Eigen::Dynamic>
+template<typename T,
+         int _Rows = Eigen::Dynamic,
+         int _Cols = Eigen::Dynamic>
 class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
 {
   public:
@@ -90,6 +92,7 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
     }
 
     /** Element-wise + between matrix and basic type */
+    //TODO: use scalar_difference_op
     const Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>,
                               const Eigen::Matrix<T, _Rows, _Cols> >
     operator-(const T& scalar) const
@@ -146,6 +149,20 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
                                                                          other.derived(),
                                                                          Eigen::internal::scalar_product_op<T, T>());
     }
+
+//    /** Component-wise product */
+//    template<typename OtherDerived>
+//    const Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<T, T>,
+//                               const Eigen::Matrix<T, _Rows, _Cols>,
+//                               const Eigen::MatrixBase<OtherDerived> >
+//    operator%(const Eigen::MatrixBase<OtherDerived>& other) const
+//    {
+//      return Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<T, T>,
+//                                  const Eigen::Matrix<T, _Rows, _Cols>,
+//                                  const Eigen::MatrixBase<OtherDerived> >(this->derived(),
+//                                                                          other.derived(),
+//                                                                          Eigen::internal::scalar_product_op<T, T>());
+//    }
 };
 
 template<typename T, int _Rows = Eigen::Dynamic>
