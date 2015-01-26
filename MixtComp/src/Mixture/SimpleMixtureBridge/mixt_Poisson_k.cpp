@@ -51,9 +51,9 @@ void Poisson_k::getParameters(Vector<Real>& param) const
   std::cout << "Poisson_k::getParameters" << std::endl;
   std::cout << "\tparam_: " << param_ << std::endl;
 #endif
-  param.resize(param_.sizeRows(),
+  param.resize(param_.rows(),
                1);
-  for (int i = 0; i < param_.sizeRows(); ++i)
+  for (int i = 0; i < param_.rows(); ++i)
   {
     param(i, 0) = param_[i];
   }
@@ -93,7 +93,7 @@ std::string Poisson_k::mStep()
     Real sumClassMean = 0.;
     Real lambda = 0.;
 
-    for (int i = 0; i < (*p_data_).sizeRows(); ++i)
+    for (int i = 0; i < (*p_data_).rows(); ++i)
     {
 #ifdef MC_DEBUG
     std::cout << "\tk:  " << k << ", i: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << std::endl;
@@ -159,7 +159,7 @@ void Poisson_k::setModalities(int nbModalities)
 
 void Poisson_k::setParameters(const Vector<Real>& param)
 {
-  for (int i = 0; i < param.sizeRows(); ++i)
+  for (int i = 0; i < param.rows(); ++i)
   {
     param_[i] = param(i, 0);
   }

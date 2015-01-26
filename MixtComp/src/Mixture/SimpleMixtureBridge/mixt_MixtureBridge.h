@@ -168,13 +168,13 @@ class MixtureBridge : public mixt::IMixture
                                param_);
       mixture_.setData(m_augDataij_.data_);
 
-      if (param_.sizeRows() > 0 && param_.sizeCols() > 0) // setModalities must use the range provided by the ParamSetter
+      if (param_.rows() > 0 && param_.cols() > 0) // setModalities must use the range provided by the ParamSetter
       {
-        int nbParam = param_.sizeRows() / nbCluster_; // number of parameters for each cluster
+        int nbParam = param_.rows() / nbCluster_; // number of parameters for each cluster
         mixture_.setModalities(nbParam);
         mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
         mixture_.setParameters(param_);
-        paramStatStorage_.resize(param_.sizeRows(),
+        paramStatStorage_.resize(param_.rows(),
                                  1); // no quantiles have to be computed for imported parameters, hence the single column
         paramStatStorage_.col(0) = param_;
 #ifdef MC_DEBUG
@@ -261,7 +261,7 @@ class MixtureBridge : public mixt::IMixture
         mixture_.setParameters(param_);
 #ifdef MC_DEBUG
         std::cout << "MixtureBridge::storeSEMRun" << std::endl;
-        int nbModalities = param_.sizeCols() / nbCluster_;
+        int nbModalities = param_.cols() / nbCluster_;
         for (int p = 0; p < nbModalities; ++p)
         {
           Real sum = 0.;

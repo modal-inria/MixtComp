@@ -48,7 +48,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
   if (p_augData_->misData_(i, 0).first != present_)
   {
     int sampleVal;
-    int nbModalities = p_param_->sizeRows() / nbClass_;
+    int nbModalities = p_param_->rows() / nbClass_;
 
 #ifdef MC_DEBUG
     std::cout << "CategoricalSampler::sampleIndividual" << std::endl;

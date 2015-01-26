@@ -48,9 +48,9 @@ void GaussianLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
       std::cout << "GaussianLikelihood::lnCompletedLikelihood" << std::endl;
 #endif
   // likelihood for present data
-  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
+  for (int j = 0; j < p_augData_->data_.cols(); ++j)
   {
-    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+    for (int i = 0; i < p_augData_->data_.rows(); ++i)
     {
       if (p_augData_->misData_(i, j).first == present_)   // likelihood for present value
       {
@@ -84,9 +84,9 @@ void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
       std::cout << "GaussianLikelihood::lnObservedLikelihood" << std::endl;
 #endif
   // likelihood for present data
-  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
+  for (int j = 0; j < p_augData_->data_.cols(); ++j)
   {
-    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+    for (int i = 0; i < p_augData_->data_.rows(); ++i)
     {
       Real mean  = p_param_->elt(2 * k    , j);
       Real sd    = p_param_->elt(2 * k + 1, j);

@@ -53,7 +53,7 @@ void PoissonLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
   Real lambda = p_param_->elt(k, 0);
   Real proba;
 
-  for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+  for (int i = 0; i < p_augData_->data_.rows(); ++i)
   {
     if (p_augData_->misData_(i, 0).first == present_)   // likelihood for present value
     {
@@ -76,7 +76,7 @@ void PoissonLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
       std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
 #endif
   // likelihood for present data
-  for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+  for (int i = 0; i < p_augData_->data_.rows(); ++i)
   {
     Real lambda = p_param_->elt(k, 0);
     Real proba;

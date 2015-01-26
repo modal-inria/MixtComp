@@ -53,9 +53,9 @@ void Gaussian_sjk::getParameters(Vector<Real>& param) const
   std::cout << "Gaussian_sjk::getParameters" << std::endl;
   std::cout << "\tparam_: " << param_ << std::endl;
 #endif
-  param.resize(param_.sizeRows(),
+  param.resize(param_.rows(),
                1);
-  for (int i = 0; i < param_.sizeRows(); ++i)
+  for (int i = 0; i < param_.rows(); ++i)
   {
     param(i, 0) = param_[i];
   }
@@ -102,7 +102,7 @@ std::string Gaussian_sjk::mStep()
 #ifdef MC_DEBUG
     std::cout << "\tk:  " << k << std::endl;
 #endif
-    for (int i = 0; i < (*p_data_).sizeRows(); ++i)
+    for (int i = 0; i < (*p_data_).rows(); ++i)
     {
       if ((*p_zi_)[i] == k)
       {
@@ -131,7 +131,7 @@ std::string Gaussian_sjk::mStep()
       std::cout << "\tnull estimated standard deviation" << std::endl;
       std::cout << "(*p_data_): " << (*p_data_) << std::endl;
 
-      for (int i = 0; i < (*p_data_).sizeRows(); ++i)
+      for (int i = 0; i < (*p_data_).rows(); ++i)
       {
         if ((*p_zi_)[i] == k)
         {
@@ -199,7 +199,7 @@ void Gaussian_sjk::setParameters(const Vector<Real>& param)
   std::cout << "param: " << param << std::endl;
   std::cout << "param_: " << param_ << std::endl;
 #endif
-  for (int i = 0; i < param.sizeRows(); ++i)
+  for (int i = 0; i < param.rows(); ++i)
   {
     param_[i] = param(i, 0);
   }

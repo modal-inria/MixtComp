@@ -65,7 +65,7 @@ void SimpleParamStat::sampleParam(int iteration,
 {
   if (iteration == 0)
   {
-    nbParam_ = p_param_->sizeRows();
+    nbParam_ = p_param_->rows();
 
     // resize internal storage
     (*p_paramlog_).resize(nbParam_, iterationMax + 1);

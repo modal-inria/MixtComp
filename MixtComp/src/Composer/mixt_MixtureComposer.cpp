@@ -105,7 +105,7 @@ Real MixtureComposer::lnObservedLikelihood()
     std::cout << "i: " << i << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
-    Real max = lnComp.row(i).maxElt();
+    Real max = lnComp.row(i).maxCoeff();
     lnComp.row(i) -= max;
     lnComp.row(i) = lnComp.row(i).exp();
     Real sum = lnComp.row(i).sum();
@@ -322,7 +322,7 @@ void MixtureComposer::misClasStep(int iteration)
   {
     RowVector<Real> lnComp;
     lnComp = probClass.row(i);
-    Real lnCompMax = lnComp.maxElt();
+    Real lnCompMax = lnComp.maxCoeff();
     lnComp -= lnCompMax;
     lnComp = lnComp.exp();
     Real sum = lnComp.sum();

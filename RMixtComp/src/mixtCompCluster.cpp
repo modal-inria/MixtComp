@@ -120,11 +120,11 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
       proportions[kR] = composer.p_pk()->elt(kS);
     mcResults.slot("proportions") = proportions;
 
-    Rcpp::NumericMatrix proportionsLog(composer.p_pkLog()->sizeRows(),
-                                       composer.p_pkLog()->sizeCols());
-    for (int i = 0; i < composer.p_pkLog()->sizeRows(); ++i)
+    Rcpp::NumericMatrix proportionsLog(composer.p_pkLog()->rows(),
+                                       composer.p_pkLog()->cols());
+    for (int i = 0; i < composer.p_pkLog()->rows(); ++i)
     {
-      for (int j = 0; j < composer.p_pkLog()->sizeCols(); ++j)
+      for (int j = 0; j < composer.p_pkLog()->cols(); ++j)
       {
         proportionsLog(i, j) = (*composer.p_pkLog())(i, j);
       }

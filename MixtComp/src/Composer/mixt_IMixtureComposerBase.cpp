@@ -149,7 +149,7 @@ void IMixtureComposerBase::pStep()
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::pStep" << std::endl;
 #endif
-  for (int i = 0; i < zi_.sizeRows(); ++i)
+  for (int i = 0; i < zi_.rows(); ++i)
   {
     prop_[zi_[i]] += 1.;
   }
@@ -178,7 +178,7 @@ void IMixtureComposerBase::mapStep(int i)
   std::cout << "IMixtureComposerBase::mapStep, single individual" << std::endl;
 #endif
   int k;
-  tik_.row(i).maxElt(k);
+  tik_.row(i).maxCoeff(k);
   zi_.elt(i) = k;
 }
 

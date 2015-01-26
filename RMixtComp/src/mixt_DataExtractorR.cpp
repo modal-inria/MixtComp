@@ -44,11 +44,11 @@ void DataExtractorR::exportVals(std::string idName,
 #ifdef MC_DEBUG
   std::cout << "DataExtractorR::exportVals, int" << std::endl;
 #endif
-  Rcpp::IntegerMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
-                            p_augData->data_.sizeCols());
+  Rcpp::IntegerMatrix dataR(p_augData->data_.rows(), // matrix to store the completed data set
+                            p_augData->data_.cols());
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
-  for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
+  for (int i = 0; i < p_augData->data_.rows(); ++i)
   {
 #ifdef MC_DEBUG
     std::cout << "\ti: " << i << ", j: " << 0 << std::endl;
@@ -93,12 +93,12 @@ void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<Matrix<Real> >* p_augData,
                                 const Matrix<RowVector<Real> >* p_dataStatStorage)
 {
-  Rcpp::NumericMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
-                            p_augData->data_.sizeCols());
+  Rcpp::NumericMatrix dataR(p_augData->data_.rows(), // matrix to store the completed data set
+                            p_augData->data_.cols());
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
-  for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
+  for (int i = 0; i < p_augData->data_.rows(); ++i)
   {
     if (p_augData->misData_(i, 0).first == present_)
     {
@@ -127,12 +127,12 @@ void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<Matrix<int> >* p_augData,
                                 const Matrix<RowVector<int> >* p_dataStatStorage)
 {
-  Rcpp::NumericMatrix dataR(p_augData->data_.sizeRows(), // matrix to store the completed data set
-                            p_augData->data_.sizeCols());
+  Rcpp::NumericMatrix dataR(p_augData->data_.rows(), // matrix to store the completed data set
+                            p_augData->data_.cols());
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
-  for (int i = 0; i < p_augData->data_.sizeRows(); ++i)
+  for (int i = 0; i < p_augData->data_.rows(); ++i)
   {
     if (p_augData->misData_(i, 0).first == present_)
     {

@@ -48,10 +48,10 @@ CategoricalLikelihood::~CategoricalLikelihood()
 
 void CategoricalLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
 {
-  int nbModalities = p_param_->sizeRows() / nbClass_;
-  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
+  int nbModalities = p_param_->rows() / nbClass_;
+  for (int j = 0; j < p_augData_->data_.cols(); ++j)
   {
-    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+    for (int i = 0; i < p_augData_->data_.rows(); ++i)
     {
       if (p_augData_->misData_(i, j).first == present_) // likelihood for present data
       {
@@ -90,10 +90,10 @@ void CategoricalLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
 #ifdef MC_DEBUG
   std::cout << "CategoricalLikelihood::lnObservedLikelihood" << std::endl;
 #endif
-  int nbModalities = p_param_->sizeRows() / nbClass_;
-  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
+  int nbModalities = p_param_->rows() / nbClass_;
+  for (int j = 0; j < p_augData_->data_.cols(); ++j)
   {
-    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+    for (int i = 0; i < p_augData_->data_.rows(); ++i)
     {
 #ifdef MC_DEBUG
           std::cout << "\ti: " << i << ", j: " << j << std::endl;
@@ -116,7 +116,7 @@ void CategoricalLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
         {
 #ifdef MC_DEBUG
           std::cout << "missingFiniteValues" << std::endl;
-          std::cout << "p_param_->sizeRows(): " << p_param_->sizeRows() << ", p_param_->sizeCols(): " << p_param_->sizeCols() << std::endl;
+          std::cout << "p_param_->rows(): " << p_param_->rows() << ", p_param_->cols(): " << p_param_->cols() << std::endl;
 #endif
           Real proba = 0.;
 

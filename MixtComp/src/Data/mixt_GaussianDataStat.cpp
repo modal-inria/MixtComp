@@ -61,10 +61,10 @@ void GaussianDataStat::sampleVals(int ind,
       stat_.resize(iterationMax + 1);
 
   #ifdef MC_DEBUG
-      std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
+      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): "<< p_dataStatStorage_->cols() << std::endl;
   #endif
       // clear current individual
-      for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+      for (int j = 0; j < pm_augDataij_->data_.cols(); ++j)
       {
         p_dataStatStorage_->elt(ind, j) = RowVector<Real>(3, 0.);
       }
@@ -80,8 +80,8 @@ void GaussianDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
       std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
       std::cout << "j: " << j << std::endl;
-      std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): " << p_dataStatStorage_->sizeCols() << std::endl;
-      std::cout << "tempStat_[j].sizeRows(): " << tempStat_[j].sizeRows() << std::endl;
+      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): " << p_dataStatStorage_->cols() << std::endl;
+      std::cout << "tempStat_[j].rows(): " << tempStat_[j].rows() << std::endl;
       std::cout << "tempStat_[j]: " << std::endl;
       std::cout << tempStat_[j] << std::endl;
 #endif

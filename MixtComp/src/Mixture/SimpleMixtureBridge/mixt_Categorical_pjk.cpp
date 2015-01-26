@@ -53,9 +53,9 @@ void Categorical_pjk::getParameters(Vector<Real>& param) const
   std::cout << "Categorical_pjk::getParameters" << std::endl;
   std::cout << "\tparam_: " << param_ << std::endl;
 #endif
-  param.resize(param_.sizeRows(),
+  param.resize(param_.rows(),
                1);
-  for (int i = 0; i < param_.sizeRows(); ++i)
+  for (int i = 0; i < param_.rows(); ++i)
   {
     param(i, 0) = param_[i];
   }
@@ -102,7 +102,7 @@ std::string Categorical_pjk::mStep()
     Vector<Real> modalities(nbModalities_, // todo: switch to int for counting (currently stkpp error with Vector<int> / real)
                                              0.);
 
-    for (int i = 0; i < (*p_data_).sizeRows(); ++i)
+    for (int i = 0; i < (*p_data_).rows(); ++i)
     {
 #ifdef MC_DEBUG
     std::cout << "\tk:  " << k << ", i: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << std::endl;
@@ -179,7 +179,7 @@ void Categorical_pjk::setModalities(int nbModalities)
 
 void Categorical_pjk::setParameters(const Vector<Real>& param)
 {
-  for (int i = 0; i < param.sizeRows(); ++i)
+  for (int i = 0; i < param.rows(); ++i)
   {
     param_[i] = param(i, 0);
   }
