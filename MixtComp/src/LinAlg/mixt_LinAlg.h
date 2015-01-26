@@ -104,19 +104,25 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
 
     /** Component-wise product */
     template<typename OtherDerived>
-    const Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<T, T>, const Eigen::Matrix<T, _Rows, _Cols>, const Eigen::Matrix<double, _Rows, _Cols> > operator%(const Eigen::MatrixBase<OtherDerived>& other)
+    const Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<T, T>,
+                               const Eigen::Matrix<T, _Rows, _Cols>,
+                               const Eigen::Matrix<T, _Rows, _Cols> >
+    operator%(const Eigen::MatrixBase<OtherDerived>& other) const
     {
       return this->Eigen::Matrix<T, _Rows, _Cols>::cwiseProduct(other);
     }
 
-    /** Element-wise log computation */
-    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T,  _Rows, _Cols> > > log()
+    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
+                              const Eigen::Matrix<T, _Rows, _Cols> >
+    log() const
     {
-      return this->Eigen::Matrix<T, _Rows, _Cols>::array().log();
+      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
+                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
+                                                                        Eigen::internal::scalar_log_op<T>());
     }
 
     /** Element-wise exp computation */
-    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T,  _Rows, _Cols> > > exp()
+    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T,  _Rows, _Cols> > > exp()
     {
       return this->Eigen::Matrix<T, _Rows, _Cols>::array().exp();
     }
