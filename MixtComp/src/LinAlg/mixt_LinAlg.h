@@ -49,17 +49,17 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
   public:
     Matrix() :
       Eigen::Matrix<T, _Rows, _Cols>()
-    {};
+    {}
 
     Matrix(int nrow, int ncol) :
       Eigen::Matrix<T, _Rows, _Cols>(nrow, ncol)
-    {};
+    {}
 
-    /** This constructor allows to construct Matrix from Eigen expressions */
+    /** Constructor from Eigen expressions */
     template<typename OtherDerived>
     Matrix(const Eigen::MatrixBase<OtherDerived>& other) :
       Eigen::Matrix<T, _Rows, _Cols>(other)
-    {};
+    {}
 
     /** This method allows to assign Eigen expressions to Matrix */
     template<typename OtherDerived>
@@ -76,40 +76,38 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       return *this;
     }
 
+    /** Element-wise + between matrix and basic type */
+    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>,
+                              const Eigen::Matrix<T, _Rows, _Cols> >
+    operator+(const T& scalar) const
+    {
+      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>,
+                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
+                                                                        Eigen::internal::scalar_add_op<T>(scalar));
+    }
+
+    /** Element-wise + between matrix and basic type */
+    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>,
+                              const Eigen::Matrix<T, _Rows, _Cols> >
+    operator-(const T& scalar) const
+    {
+      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>,
+                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
+                                                                        Eigen::internal::scalar_add_op<T>(-scalar));
+    }
+
     /** Element-wise += between matrix and basic type */
     Matrix& operator+=(const T& other)
     {
-      (*this) = this->Eigen::Matrix<T, _Rows, _Cols>::operator+(Eigen::Matrix<T, _Rows, _Cols>::Constant(this->rows(), this->cols(), other));
+      (*this) = (*this) + other;
       return (*this);
     }
 
     /** Element-wise - between matrix and basic type */
     Matrix& operator-=(const T& other)
     {
-      (*this) = this->Eigen::Matrix<T, _Rows, _Cols>::operator-(Eigen::Matrix<T, _Rows, _Cols>::Constant(this->rows(), this->cols(), other));
+      (*this) = (*this) - other;
       return (*this);
-    }
-
-    /** Element-wise + between matrix and basic type */
-    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T, _Rows, _Cols> > > operator+(const T& other)
-    {
-      return this->Eigen::Matrix<T, _Rows, _Cols>::array().operator+(other);
-    }
-
-    /** Element-wise - between matrix and basic type */
-    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T, _Rows, _Cols> > > operator-(const T& other)
-    {
-      return this->Eigen::Matrix<T, _Rows, _Cols>::array().operator-(other);
-    }
-
-    /** Component-wise product */
-    template<typename OtherDerived>
-    const Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<T, T>,
-                               const Eigen::Matrix<T, _Rows, _Cols>,
-                               const Eigen::Matrix<T, _Rows, _Cols> >
-    operator%(const Eigen::MatrixBase<OtherDerived>& other) const
-    {
-      return this->Eigen::Matrix<T, _Rows, _Cols>::cwiseProduct(other);
     }
 
     const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
@@ -122,9 +120,23 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
     }
 
     /** Element-wise exp computation */
-    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>, const Eigen::ArrayWrapper<Eigen::Matrix<T,  _Rows, _Cols> > > exp()
+    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>,
+                              const Eigen::Matrix<T, _Rows, _Cols> >
+    exp() const
     {
-      return this->Eigen::Matrix<T, _Rows, _Cols>::array().exp();
+      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>,
+                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
+                                                                        Eigen::internal::scalar_exp_op<T>());
+    }
+
+    /** Component-wise product */
+    template<typename OtherDerived>
+    const Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<T, T>,
+                               const Eigen::Matrix<T, _Rows, _Cols>,
+                               const Eigen::Matrix<T, _Rows, _Cols> >
+    operator%(const Eigen::MatrixBase<OtherDerived>& other) const
+    {
+      return this->Eigen::Matrix<T, _Rows, _Cols>::cwiseProduct(other);
     }
 };
 
@@ -134,17 +146,17 @@ class Vector : public Matrix<T, _Rows, 1>
   public:
     Vector() :
       Matrix<T, _Rows, 1>()
-    {};
+    {}
 
     Vector(int nrow) :
       Matrix<T, _Rows, 1>(nrow, 1)
-    {};
+    {}
 
     /** This constructor allows to construct Vector from Eigen expressions */
     template<typename OtherDerived>
     Vector(const Eigen::MatrixBase<OtherDerived>& other) :
       Matrix<T, _Rows, 1>(other)
-    {};
+    {}
 
     /** This method allows to assign Eigen expressions to Vector */
     template<typename OtherDerived>
