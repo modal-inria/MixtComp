@@ -17,7 +17,7 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: December 16, 2014
+ *  Created on: January 19, 2015
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
@@ -61,7 +61,7 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       Eigen::Matrix<T, _Rows, _Cols>(other)
     {}
 
-    /** This method allows to assign Eigen expressions to Matrix */
+    /** Assign Eigen expressions to Matrix */
     template<typename OtherDerived>
     Matrix& operator=(const Eigen::MatrixBase<OtherDerived>& other)
     {
@@ -69,10 +69,13 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       return *this;
     }
 
-    /** Element-wise operation between matrix and basic type */
-    Matrix& operator=(const T& other)
+    /** Element-wise assignment of a scalar to a matrix */
+    Matrix& operator=(const T& scalar)
     {
-      (*this) = Eigen::Matrix<T, _Rows, _Cols>::Constant(this->rows(), this->cols(), other);
+      (*this) = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>,
+                                      Eigen::Matrix<T, _Rows, _Cols> >(this->rows(),
+                                                                       this->cols(),
+                                                                       Eigen::internal::scalar_constant_op<T>(scalar));
       return *this;
     }
 
