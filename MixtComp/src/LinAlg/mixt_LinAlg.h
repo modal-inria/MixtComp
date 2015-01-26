@@ -57,6 +57,11 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       Eigen::Matrix<T, _Rows, _Cols>(nrow, ncol)
     {}
 
+    /** Constructor with default value */
+    Matrix(int nrow, int ncol, const T& scalar) :
+      Eigen::Matrix<T, _Rows, _Cols>(Eigen::Matrix<T, _Rows, _Cols>::Constant(nrow, ncol, scalar))
+    {}
+
     /** Constructor from Eigen expressions */
     template<typename OtherDerived>
     Matrix(const Eigen::MatrixBase<OtherDerived>& other) :
@@ -177,6 +182,11 @@ class Vector : public Matrix<T, _Rows, 1>
       Matrix<T, _Rows, 1>(nrow, 1)
     {}
 
+    /** Constructor with default value */
+    Vector(int nrow, const T& scalar) :
+      Matrix<T, _Rows, 1>(Eigen::Matrix<T, _Rows, 1>::Constant(nrow, scalar))
+    {}
+
     /** This constructor allows to construct Vector from Eigen expressions */
     template<typename OtherDerived>
     Vector(const Eigen::MatrixBase<OtherDerived>& other) :
@@ -203,6 +213,11 @@ class RowVector : public Matrix<T, 1, _Cols>
     RowVector(int ncol) :
       Matrix<T, 1, _Cols>(1, ncol)
     {};
+
+    /** Constructor with default value */
+    RowVector(int ncol, const T& scalar) :
+      Matrix<T, 1, _Cols>(Eigen::Matrix<T, 1, _Cols>::Constant(ncol, scalar))
+    {}
 
     /** This constructor allows to construct RowVector from Eigen expressions */
     template<typename OtherDerived>
