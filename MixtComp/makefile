@@ -51,6 +51,7 @@ $(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
 
 $(EXE_TEST): src/Prog/mcTest.cpp
 	$(CXX) $(CXXFLAGS) -I.. -I../boost -I../eigen src/Prog/mcTest.cpp -o $(EXE_TEST)
+	bin/mcTest
 	
 lib: obj $(LIB_MC)
 

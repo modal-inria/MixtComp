@@ -29,8 +29,8 @@
 namespace mixt
 {
 
-// Eigen storage is column-major by default, which suits the main way of accessing data, by looping over individuals instead of variables
-
+/** Eigen storage is column-major by default, which suits the main way of accessing data,
+ * by looping over individuals instead of variables */
 typedef double Real;
 
 /** General sort of data that is contiguous in memory (use of pointer to data and size).
@@ -73,9 +73,9 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
     Matrix& operator=(const T& scalar)
     {
       (*this) = Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>,
-                                      Eigen::Matrix<T, _Rows, _Cols> >(this->rows(),
-                                                                       this->cols(),
-                                                                       Eigen::internal::scalar_constant_op<T>(scalar));
+                                      const Eigen::Matrix<T, _Rows, _Cols> >(this->rows(),
+                                                                             this->cols(),
+                                                                             Eigen::internal::scalar_constant_op<T>(scalar));
       return *this;
     }
 
@@ -113,6 +113,7 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       return (*this);
     }
 
+    /** Element-wise log computation */
     const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
                               const Eigen::Matrix<T, _Rows, _Cols> >
     log() const
@@ -139,7 +140,11 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
                                const Eigen::Matrix<T, _Rows, _Cols> >
     operator%(const Eigen::MatrixBase<OtherDerived>& other) const
     {
-      return this->Eigen::Matrix<T, _Rows, _Cols>::cwiseProduct(other);
+      return Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<T, T>,
+                                  const Eigen::Matrix<T, _Rows, _Cols>,
+                                  const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
+                                                                         other.derived(),
+                                                                         Eigen::internal::scalar_product_op<T, T>());
     }
 };
 
