@@ -178,8 +178,8 @@ void IMixtureComposerBase::mapStep(int i)
   std::cout << "IMixtureComposerBase::mapStep, single individual" << std::endl;
 #endif
   int k;
-  tik_.row(i).maxCoeff(k);
-  zi_.elt(i) = k;
+  tik_.row(i).maxCoeff(&k);
+  zi_(i) = k;
 }
 
 /* Create the parameters of the  mixture model. */
@@ -190,7 +190,7 @@ void IMixtureComposerBase::intializeMixtureParameters()
 #endif
   prop_ = 1./(Real)nbCluster_;
   tik_  = 1./(Real)nbCluster_;
-  zi_   = STK::baseIdx;
+  zi_   = 0;
 }
 } // namespace mixt
 
