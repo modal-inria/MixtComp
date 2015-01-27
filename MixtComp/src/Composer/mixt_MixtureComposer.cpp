@@ -26,9 +26,7 @@
 #include "../Mixture/mixt_IMixture.h"
 #include "../Various/mixt_IO.h"
 #include "../Various/mixt_Timer.h"
-#include "Arrays/include/STK_Display.h"
-#include "Arrays/include/STK_Array2DPoint.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -80,8 +78,8 @@ Real MixtureComposer::lnObservedLikelihood()
 #endif
   Real lnLikelihood = 0.;
   Matrix<Real> lnComp(nbSample_,
-                                 nbCluster_,
-                                 0.);
+                      nbCluster_,
+                      0.);
   for (int k = 0; k < nbCluster_; ++k)
   {
 #ifdef MC_DEBUG
@@ -219,15 +217,15 @@ std::string MixtureComposer::mStep()
   return warn;
 }
 
-void MixtureComposer::writeParameters(std::ostream& os) const
+void MixtureComposer::writeParameters(std::ostream& out) const
 {
-  std::cout << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
-  std::cout << "Composer proportions = " << prop_ << std::endl;
+  out << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
+  out << "Composer proportions = " << prop_ << std::endl;
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    stk_cout << _T("Parameters of the mixtures:") << (*it)->idName() << _T("\n");
-    (*it)->writeParameters(os);
+    out << "Parameters of the mixtures: " << (*it)->idName() << "\n";
+    (*it)->writeParameters(out);
   }
 }
 

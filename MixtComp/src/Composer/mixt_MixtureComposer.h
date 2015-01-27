@@ -93,7 +93,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     virtual Real lnSemiCompletedLikelihood();
 
     /** write the parameters of the model in the stream os. */
-    virtual void writeParameters(STK::ostream& os) const;
+    virtual void writeParameters(std::ostream& os) const;
 
     /** @brief compute the number of free parameters of the model.
      *  lookup on the mixtures and sum the nbFreeParameter.
