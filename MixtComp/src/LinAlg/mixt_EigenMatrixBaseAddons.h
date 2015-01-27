@@ -46,17 +46,33 @@ operator-(const Scalar& scalar) const
 }
 
 /** Element-wise += between matrix and scalar */
-inline MatrixBase<Derived>& operator+=(const Scalar& scalar)
+inline MatrixBase<Derived>&
+operator+=(const Scalar& scalar)
 {
   (*this) = derived() + scalar;
   return *this;
 }
 
 /** Element-wise -= between matrix and scalar */
-inline MatrixBase<Derived>& operator-=(const Scalar& scalar)
+inline MatrixBase<Derived>&
+operator-=(const Scalar& scalar)
 {
   (*this) = derived() - scalar;
   return *this;
+}
+
+/** Component-wise product */
+template<typename OtherDerived>
+inline const CwiseBinaryOp<Eigen::internal::scalar_product_op<Scalar, Scalar>,
+                           const Derived,
+                           const Derived>
+operator%(const MatrixBase<OtherDerived>& other) const
+{
+  return Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<Scalar, Scalar>,
+                              const Derived,
+                              const OtherDerived>(derived(),
+                                                  other.derived(),
+                                                  Eigen::internal::scalar_product_op<Scalar, Scalar>());
 }
 
 #endif // MIXT_EIGENMATRIXBASEADDONS_H
