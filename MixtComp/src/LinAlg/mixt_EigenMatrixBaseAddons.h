@@ -25,15 +25,17 @@
 #define MIXT_EIGENMATRIXBASEADDONS_H
 
 /** Element-wise + between matrix and basic type */
+/** Element-wise + between matrix and scalar */
 inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
                           const Derived>
 operator+(const Scalar& scalar) const
 {
   return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-                      Derived>(derived(),
+                      const Derived>(derived(),
                                internal::scalar_add_op<Scalar>(scalar));
 }
 
+/** Element-wise - between matrix and scalar */
 inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
                           const Derived>
 operator-(const Scalar& scalar) const
@@ -41,6 +43,20 @@ operator-(const Scalar& scalar) const
   return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
                       const Derived>(derived(),
                                      internal::scalar_add_op<Scalar>(-scalar));
+}
+
+/** Element-wise += between matrix and scalar */
+inline MatrixBase<Derived>& operator+=(const Scalar& scalar)
+{
+  (*this) = derived() + scalar;
+  return *this;
+}
+
+/** Element-wise -= between matrix and scalar */
+inline MatrixBase<Derived>& operator-=(const Scalar& scalar)
+{
+  (*this) = derived() - scalar;
+  return *this;
 }
 
 #endif // MIXT_EIGENMATRIXBASEADDONS_H
