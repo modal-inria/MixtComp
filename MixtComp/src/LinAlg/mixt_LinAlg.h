@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2014
+/*  Copyright (C) Inria 2015
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -84,27 +84,6 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
                                                                              this->cols(),
                                                                              Eigen::internal::scalar_constant_op<T>(scalar));
       return *this;
-    }
-
-    /** Element-wise + between matrix and basic type */
-    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>,
-                              const Eigen::Matrix<T, _Rows, _Cols> >
-    operator+(const T& scalar) const
-    {
-      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>,
-                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
-                                                                        Eigen::internal::scalar_add_op<T>(scalar));
-    }
-
-    /** Element-wise + between matrix and basic type */
-    //TODO: use scalar_difference_op
-    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>,
-                              const Eigen::Matrix<T, _Rows, _Cols> >
-    operator-(const T& scalar) const
-    {
-      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_add_op<T>,
-                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
-                                                                        Eigen::internal::scalar_add_op<T>(-scalar));
     }
 
     /** Element-wise += between matrix and basic type */

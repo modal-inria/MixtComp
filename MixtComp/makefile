@@ -50,7 +50,7 @@ $(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
 # 	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost -I../eigen src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
 
 $(EXE_TEST): src/Prog/mcTest.cpp
-	$(CXX) $(CXXFLAGS) -I.. -I../boost -I../eigen src/Prog/mcTest.cpp -o $(EXE_TEST)
+	$(CXX) $(CXXFLAGS) -I.. -I../boost -I../eigen -DEIGEN_MATRIXBASE_PLUGIN=\"MixtComp/src/LinAlg/mixt_EigenMatrixBaseAddons.h\" src/Prog/mcTest.cpp -o $(EXE_TEST)
 	bin/mcTest
 	
 lib: obj $(LIB_MC)
