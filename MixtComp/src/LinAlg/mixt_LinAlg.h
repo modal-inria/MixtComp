@@ -176,6 +176,22 @@ class RowVector : public Matrix<T, 1, _Cols>
     }
 };
 
+template<typename T>
+const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>,
+                            const Eigen::Matrix<T,
+                                                Eigen::Dynamic,
+                                                Eigen::Dynamic> >
+Constant (int nrow, int ncol, const T& scalar)
+{
+  return Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>,
+                               const Eigen::Matrix<T,
+                                                   Eigen::Dynamic,
+                                                   Eigen::Dynamic> >(nrow,
+                                                                     ncol,
+                                                                     Eigen::internal::scalar_constant_op<T>(scalar));
+}
+
+
 } // namespace mixt
 
 #endif // MIXT_LINALG_H
