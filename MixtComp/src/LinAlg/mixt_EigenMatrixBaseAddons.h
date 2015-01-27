@@ -24,7 +24,6 @@
 #ifndef MIXT_EIGENMATRIXBASEADDONS_H
 #define MIXT_EIGENMATRIXBASEADDONS_H
 
-/** Element-wise + between matrix and basic type */
 /** Element-wise + between matrix and scalar */
 inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
                           const Derived>
