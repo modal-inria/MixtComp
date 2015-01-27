@@ -125,7 +125,7 @@ void IMixtureComposerBase::eStep(int i)
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::eStep(i), i: " << i << std::endl;
 #endif
-  RowVector<Real> lnComp(tik_.cols());
+  RowVector<Real> lnComp(nbSample_);
   for (int k = 0; k < nbCluster_; k++)
   {
     lnComp[k] = std::log(prop_[k]) + lnComponentProbability(i, k);
