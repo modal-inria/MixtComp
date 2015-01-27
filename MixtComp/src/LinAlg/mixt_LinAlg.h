@@ -81,25 +81,25 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
       return *this;
     }
 
-    /** Element-wise log computation */
-    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
-                              const Eigen::Matrix<T, _Rows, _Cols> >
-    log() const
-    {
-      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
-                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
-                                                                        Eigen::internal::scalar_log_op<T>());
-    }
-
-    /** Element-wise exp computation */
-    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>,
-                              const Eigen::Matrix<T, _Rows, _Cols> >
-    exp() const
-    {
-      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>,
-                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
-                                                                        Eigen::internal::scalar_exp_op<T>());
-    }
+//    /** Element-wise log computation */
+//    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
+//                              const Eigen::Matrix<T, _Rows, _Cols> >
+//    log() const
+//    {
+//      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
+//                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
+//                                                                        Eigen::internal::scalar_log_op<T>());
+//    }
+//
+//    /** Element-wise exp computation */
+//    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>,
+//                              const Eigen::Matrix<T, _Rows, _Cols> >
+//    exp() const
+//    {
+//      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>,
+//                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
+//                                                                        Eigen::internal::scalar_exp_op<T>());
+//    }
 };
 
 template<typename T, int _Rows = Eigen::Dynamic>

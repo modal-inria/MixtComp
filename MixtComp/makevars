@@ -31,4 +31,4 @@
 # R related compiler options overrides
 # -include ~/.R/Makevars
 
-CXXFLAGS += -MD -MP -fPIC
+CXXFLAGS += -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"MixtComp/src/LinAlg/mixt_EigenMatrixBaseAddons.h\" -fPIC

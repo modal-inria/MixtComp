@@ -78,15 +78,14 @@ Real MixtureComposer::lnObservedLikelihood()
 #endif
   Real lnLikelihood = 0.;
   Matrix<Real> lnComp(nbSample_,
-                      nbCluster_,
-                      0.);
+                      nbCluster_);
   for (int k = 0; k < nbCluster_; ++k)
   {
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    Vector<Real> tempVec(lnComp.col(k), true);
-    tempVec += std::log(prop_[k]);
+    Vector<Real> tempVec(nbSample_);
+    tempVec = std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       (*it)->lnObservedLikelihood(&tempVec, k);
@@ -95,7 +94,9 @@ Real MixtureComposer::lnObservedLikelihood()
       std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
 #endif
     }
+    lnComp.col(k) = tempVec;
   }
+  //TODO: remove copying of temporary vector
 
   for (int i = 0; i < nbSample_; ++i)
   {
@@ -128,15 +129,14 @@ Real MixtureComposer::lnCompletedLikelihood()
 #endif
   Real lnLikelihood = 0.;
   Matrix<Real> lnComp(nbSample_,
-                                 nbCluster_,
-                                 0.);
+                      nbCluster_);
   for (int k = 0; k < nbCluster_; ++k)
   {
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    Vector<Real> tempVec(lnComp.col(k), true);
-    tempVec += std::log(prop_[k]);
+    Vector<Real> tempVec(nbSample_);
+    tempVec = std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       (*it)->lnCompletedLikelihood(&tempVec, k);
@@ -145,6 +145,7 @@ Real MixtureComposer::lnCompletedLikelihood()
       std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
 #endif
     }
+    lnComp.col(k) = tempVec;
   }
 
   // Compute the observed / completed likelihood for the complete mixture model
@@ -168,14 +169,13 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
 #endif
   Real lnLikelihood = 0.;
   Matrix<Real> lnComp(nbSample_,
-                                 nbCluster_,
-                                 0.);
+                      nbCluster_);
   for (int k = 0; k < nbCluster_; ++k)
   {
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    Vector<Real> tempVec(lnComp.col(k), true);
+    Vector<Real> tempVec(nbSample_);
     tempVec += std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
@@ -185,6 +185,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
       std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
 #endif
     }
+    lnComp.col(k) = tempVec;
   }
 
   // Compute the observed / completed likelihood for the complete mixture model
@@ -295,8 +296,7 @@ void MixtureComposer::misClasStep(int iteration)
 
 #endif
   Matrix<Real> probClass(nbSample_,
-                                    nbCluster_,
-                                    0.);
+                         nbCluster_);
 
   // computation of the log probability with adequately sampled missing values
   for (int k = 0; k < nbCluster_; ++k)

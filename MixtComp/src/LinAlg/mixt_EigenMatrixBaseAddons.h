@@ -74,4 +74,24 @@ operator%(const MatrixBase<OtherDerived>& other) const
                                                   Eigen::internal::scalar_product_op<Scalar, Scalar>());
 }
 
+/** Element-wise log computation */
+const CwiseUnaryOp<internal::scalar_log_op<Scalar>,
+                   const Derived>
+log() const
+{
+  return Eigen::CwiseUnaryOp<internal::scalar_log_op<Scalar>,
+                             const Derived>(derived(),
+                                            internal::scalar_log_op<Scalar>());
+}
+
+/** Element-wise exp computation */
+const CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
+                   const Derived>
+exp() const
+{
+  return Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<Scalar>,
+                             const Derived>(derived(),
+                                            internal::scalar_exp_op<Scalar>());
+}
+
 #endif // MIXT_EIGENMATRIXBASEADDONS_H
