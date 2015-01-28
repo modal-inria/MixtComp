@@ -104,7 +104,7 @@ std::string SEMAlgo::run()
       }
       else
       {
-        if (iterSample = nbSamplingAttempts_ - 1) // on last attempt, exit with error message
+        if (iterSample == nbSamplingAttempts_ - 1) // on last attempt, exit with error message
         {
           return   std::string("SEMAlgo::run(), sStep(): not enough individuals per class: ")
                  + type2str(nbIndPerClass)
