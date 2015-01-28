@@ -188,7 +188,7 @@ class MixtureBridge : public mixt::IMixture
 #ifdef MC_DEBUG
         std::cout << "\tparam not set " << std::endl;
 #endif
-        mixture_.setModalities(m_augDataij_.dataRange_.range_);
+        mixture_.setModalities(m_augDataij_.dataRange_.max_);
         mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
       }
       dataStatStorage_.resize(nbSample_,
