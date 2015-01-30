@@ -372,7 +372,7 @@ void MixtureComposer::storeGibbsRun(int sample,
 #endif
   if (iteration == 0) // initialize nik_
   {
-    nik_.row(sample).setConstant(0.);
+    nik_.row(sample) = 0.;
     nik_(sample, zi_[sample]) += 1.;
   }
   else if (iteration == iterationMax)  // estimate tik_ from nik_
