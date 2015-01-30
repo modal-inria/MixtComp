@@ -22,7 +22,6 @@
  **/
 
 #include "mixt_GaussianDataStat.h"
-#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
@@ -66,7 +65,8 @@ void GaussianDataStat::sampleVals(int ind,
       // clear current individual
       for (int j = 0; j < pm_augDataij_->data_.cols(); ++j)
       {
-        p_dataStatStorage_->elt(ind, j) = RowVector<Real>(3, 0.);
+        (*p_dataStatStorage_)(ind, j) = RowVector<Real>(3);
+        (*p_dataStatStorage_)(ind, j) = 0.;
       }
 
       // first sampling
@@ -86,7 +86,7 @@ void GaussianDataStat::sampleVals(int ind,
       std::cout << tempStat_[j] << std::endl;
 #endif
       Vector<int> indOrder; // to store indices of ascending order
-      STK::heapSort(indOrder, stat_);
+      sortContiguousIndex(stat_, indOrder);
       Real alpha = (1. - confidenceLevel_) / 2.;
       Real realIndLow = alpha * iterationMax;
       Real realIndHigh = (1. - alpha) * iterationMax;
@@ -97,7 +97,7 @@ void GaussianDataStat::sampleVals(int ind,
                     + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];
       tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_[indOrder[int(realIndHigh)    ]]
                     + (      realIndHigh - int(realIndHigh) ) * stat_[indOrder[int(realIndHigh) + 1]];
-      p_dataStatStorage_->elt(ind, 0) = tempPoint;
+      (*p_dataStatStorage_)(ind, 0) = tempPoint;
 #ifdef MC_DEBUG
       std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
       std::cout << "alpha: " << alpha << std::endl;
