@@ -27,6 +27,7 @@
 
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
+#include "../Statistic/mixt_MultinomialStatistic.h"
 
 namespace mixt
 {
@@ -44,6 +45,8 @@ class CategoricalSampler
     int nbClass_;
     AugmentedData<Matrix<int> >* p_augData_;
     const Vector<Real>* p_param_;
+
+    MultinomialStatistic multi_;
 };
 
 } // namespace mixt

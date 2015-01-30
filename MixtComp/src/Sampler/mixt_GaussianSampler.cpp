@@ -45,8 +45,8 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
   if (p_augData_->misData_(i, 0).first != present_)
   {
     Real z;
-    Real mean  = p_param_->elt(2 * z_i    );
-    Real sd    = p_param_->elt(2 * z_i + 1);
+    Real mean  = (*p_param_)(2 * z_i    );
+    Real sd    = (*p_param_)(2 * z_i + 1);
 
 #ifdef MC_DEBUG
     std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
