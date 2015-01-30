@@ -21,10 +21,10 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <iostream>
 #include "mixt_DataExtractorR.h"
 #include "MixtComp/src/Various/mixt_Def.h"
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DPoint.h"
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -108,13 +108,13 @@ void DataExtractorR::exportVals(std::string idName,
     {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
-      currList.push_back(p_dataStatStorage->elt(i, 0)[0]); // expectation
-      currList.push_back(p_dataStatStorage->elt(i, 0)[1]); // left bound
-      currList.push_back(p_dataStatStorage->elt(i, 0)[2]); // right bound
+      currList.push_back((*p_dataStatStorage)(i, 0)[0]); // expectation
+      currList.push_back((*p_dataStatStorage)(i, 0)[1]); // left bound
+      currList.push_back((*p_dataStatStorage)(i, 0)[2]); // right bound
 
       missingData.push_back(currList);
 
-      dataR(i, 0) = p_dataStatStorage->elt(i,0)[0]; // imputation by the expectation
+      dataR(i, 0) = (*p_dataStatStorage)(i,0)[0]; // imputation by the expectation
     }
   }
 
@@ -142,13 +142,13 @@ void DataExtractorR::exportVals(std::string idName,
     {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
-      currList.push_back(p_dataStatStorage->elt(i, 0)[0]); // expectation
-      currList.push_back(p_dataStatStorage->elt(i, 0)[1]); // left bound
-      currList.push_back(p_dataStatStorage->elt(i, 0)[2]); // right bound
+      currList.push_back((*p_dataStatStorage)(i, 0)[0]); // expectation
+      currList.push_back((*p_dataStatStorage)(i, 0)[1]); // left bound
+      currList.push_back((*p_dataStatStorage)(i, 0)[2]); // right bound
 
       missingData.push_back(currList);
 
-      dataR(i, 0) = p_dataStatStorage->elt(i,0)[0]; // imputation by the expectation
+      dataR(i, 0) = (*p_dataStatStorage)(i,0)[0]; // imputation by the expectation
     }
   }
 

@@ -24,7 +24,7 @@
 #ifndef MIXT_PARAMSETTERCOMPOSERR_H
 #define MIXT_PARAMSETTERCOMPOSERR_H
 
-#include "Arrays/include/STK_Array2DVector.h"
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {

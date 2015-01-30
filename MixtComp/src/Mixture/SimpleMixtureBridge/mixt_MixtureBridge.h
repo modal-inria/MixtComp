@@ -203,7 +203,7 @@ class MixtureBridge : public mixt::IMixture
     virtual void samplingStep(int i)
     {
       sampler_.sampleIndividual(i,
-                                p_zi()->elt(i));
+                                (*p_zi())(i));
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */

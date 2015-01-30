@@ -23,7 +23,7 @@
 
 #include "mixt_ParamExtractorR.h"
 #include "MixtComp/src/Various/mixt_IO.h"
-#include "Arrays/include/STK_Display.h"
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -60,7 +60,7 @@ void ParamExtractorR::exportParam(std::string idName,
   {
     for (int j = 0; j < p_params->cols(); ++j)
     {
-      paramR(i, j) = p_params->elt(i, j);
+      paramR(i, j) = (*p_params)(i, j);
     }
   }
 
@@ -103,7 +103,7 @@ void ParamExtractorR::exportParam(std::string idName,
     {
       for (int j = 0; j < p_paramsLogs->cols(); ++j)
       {
-        paramLogR(i, j) = p_paramsLogs->elt(i, j);
+        paramLogR(i, j) = (*p_paramsLogs)(i, j);
       }
     }
     Rcpp::CharacterVector colsLog(p_paramsLogs->cols());

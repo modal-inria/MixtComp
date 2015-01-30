@@ -36,8 +36,7 @@ ParamSetterComposerR::~ParamSetterComposerR()
 
 Vector<Real> ParamSetterComposerR::getProportions() const
 {
-  Vector<Real> prop(prop_.size(),
-                                   0.);
+  Vector<Real> prop(prop_.size());
   for (int i = 0; i < prop_.size(); ++i)
   {
     prop[i] = prop_[i];

@@ -104,9 +104,9 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   // export the composer results to R through modifications of mcResults
   mcResults.slot("nbCluster") = nbClusters;
   mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
-  Real lnObsLik = composer.lnObservedLikelihood();
-  Real lnCompLik = composer.lnCompletedLikelihood();
-  Real lnSemiCompLik = composer.lnSemiCompletedLikelihood();
+  mixt::Real lnObsLik = composer.lnObservedLikelihood();
+  mixt::Real lnCompLik = composer.lnCompletedLikelihood();
+  mixt::Real lnSemiCompLik = composer.lnSemiCompletedLikelihood();
   mcResults.slot("lnObservedLikelihood") = lnObsLik;
   mcResults.slot("lnSemiCompletedLikelihood") = lnSemiCompLik;
   mcResults.slot("lnCompletedLikelihood") = lnCompLik;
@@ -115,18 +115,18 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
 
   Rcpp::NumericVector proportions(nbClusters);
   for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-    proportions[kR] = composer.p_pk()->elt(kS);
+    proportions[kR] = (*composer.p_pk())(kS);
   mcResults.slot("proportions") = proportions;
 
   Rcpp::NumericVector partition(handler.nbSample());
   for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
-    partition[iR] = composer.p_zi()->elt(iS) + 1;
+    partition[iR] = (*composer.p_zi())(iS) + 1;
   mcResults.slot("partition") = partition;
 
   Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
   for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
     for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-      proba(iR, kR) = composer.p_tik()->elt(iS, kS);
+      proba(iR, kR) = (*composer.p_tik())(iS, kS);
   mcResults.slot("proba") = proba;
 
   mcResults.slot("warnLog") = warnLog;
