@@ -22,7 +22,6 @@
  **/
 
 #include "mixt_PoissonDataStat.h"
-#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
@@ -64,7 +63,8 @@ void PoissonDataStat::sampleVals(int ind,
       std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): "<< p_dataStatStorage_->cols() << std::endl;
 #endif
       // clear global individual
-      p_dataStatStorage_->elt(ind, 0) = RowVector<Real>(3, 0.);
+      (*p_dataStatStorage_)(ind, 0) = RowVector<int>(3);
+      (*p_dataStatStorage_)(ind, 0) = 0.;
 
       // first sampling
       sample(ind, iteration);
@@ -83,18 +83,18 @@ void PoissonDataStat::sampleVals(int ind,
       std::cout << tempStat_[j] << std::endl;
 #endif
       Vector<int> indOrder; // to store indices of ascending order
-      STK::heapSort<Vector<int>, Vector<int> >(indOrder, stat_);
+      sortContiguousIndex(stat_, indOrder);
       Real alpha = (1. - confidenceLevel_) / 2.;
       Real realIndLow = alpha * iterationMax;
       Real realIndHigh = (1. - alpha) * iterationMax;
 
-      RowVector<Real> tempPoint(3);
+      RowVector<int> tempPoint(3);
       tempPoint[0] = int(stat_.mean()); // mode of a Poisson is lambda rounded down to the closest integer
       tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_[indOrder[int(realIndLow )    ]]
                     + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];
       tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_[indOrder[int(realIndHigh)    ]]
                     + (      realIndHigh - int(realIndHigh) ) * stat_[indOrder[int(realIndHigh) + 1]];
-      p_dataStatStorage_->elt(ind, 0) = tempPoint;
+      (*p_dataStatStorage_)(ind, 0) = tempPoint;
 #ifdef MC_DEBUG
       std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
       std::cout << "alpha: " << alpha << std::endl;
