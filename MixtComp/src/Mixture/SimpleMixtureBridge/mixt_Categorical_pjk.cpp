@@ -24,7 +24,7 @@
 #include "mixt_Categorical_pjk.h"
 #include "../../Various/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
-#include "Arrays/include/STK_Display.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -69,7 +69,7 @@ void Categorical_pjk::initializeStep()
 
 double Categorical_pjk::lnComponentProbability(int i, int k) const
 {
-  Type currVal = p_data_->elt(i, 0);
+  Type currVal = (*p_data_)(i, 0);
   Real proba = param_[k * nbModalities_ + currVal - minModality]; // first modality is 1 in data, but 0 in parameters storage
 #ifdef MC_DEBUG
   std::cout << "\tk: " << k << ", proba: " << proba << std::endl;
@@ -99,8 +99,8 @@ std::string Categorical_pjk::mStep()
   for (int k = 0; k < nbCluster_; ++k)
   {
     Real nbSampleClass = 0.;
-    Vector<Real> modalities(nbModalities_, // todo: switch to int for counting (currently stkpp error with Vector<int> / real)
-                                             0.);
+    Vector<Real> modalities(nbModalities_);
+    modalities = 0.;
 
     for (int i = 0; i < (*p_data_).rows(); ++i)
     {
@@ -109,7 +109,7 @@ std::string Categorical_pjk::mStep()
 #endif
       if ((*p_zi_)[i] == k)
       {
-        Type currVal = p_data_->elt(i, 0);
+        Type currVal = (*p_data_)(i, 0);
         nbSampleClass += 1.;
         modalities[currVal - minModality] += 1.; // first modality is minModality in data, but 0 in parameters storage
       }
@@ -173,8 +173,7 @@ void Categorical_pjk::setMixtureParameters(Vector<int> const* p_zi)
 void Categorical_pjk::setModalities(int nbModalities)
 {
   nbModalities_ = nbModalities;
-  param_.resize(STK::Range(0,
-                           nbCluster_ * nbModalities_));
+  param_.resize(nbCluster_ * nbModalities_);
 }
 
 void Categorical_pjk::setParameters(const Vector<Real>& param)

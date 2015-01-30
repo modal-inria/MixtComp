@@ -31,8 +31,7 @@ typedef Poisson_k::Type Type;
 
 Poisson_k::Poisson_k(int nbCluster) :
     nbCluster_(nbCluster),
-    param_(nbCluster,
-           0.),
+    param_(nbCluster),
     p_data_(0),
     p_zi_(0)
 {}
@@ -51,11 +50,10 @@ void Poisson_k::getParameters(Vector<Real>& param) const
   std::cout << "Poisson_k::getParameters" << std::endl;
   std::cout << "\tparam_: " << param_ << std::endl;
 #endif
-  param.resize(param_.rows(),
-               1);
+  param.resize(param_.rows());
   for (int i = 0; i < param_.rows(); ++i)
   {
-    param(i, 0) = param_[i];
+    param(i) = param_[i];
   }
 }
 
@@ -71,7 +69,7 @@ double Poisson_k::lnComponentProbability(int i, int k) const
   std::cout << "Poisson_k::lnComponentProbability" << std::endl;
   std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
 #endif
-  Type currVal = p_data_->elt(i, 0);
+  Type currVal = (*p_data_)(i, 0);
   Real lambda = param_[k];
   Real proba = poisson_.pdf(currVal,
                                  lambda);

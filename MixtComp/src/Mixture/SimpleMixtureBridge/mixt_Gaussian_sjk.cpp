@@ -22,7 +22,7 @@
  **/
 
 #include "mixt_Gaussian_sjk.h"
-#include "Arrays/include/STK_Display.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../Various/mixt_IO.h"
 
@@ -33,8 +33,7 @@ typedef Gaussian_sjk::Type Type;
 
 Gaussian_sjk::Gaussian_sjk(int nbCluster) :
     nbCluster_(nbCluster),
-    param_(2 * nbCluster,
-           0.),
+    param_(2 * nbCluster),
     p_data_(0),
     p_zi_(0)
 {}
@@ -53,11 +52,10 @@ void Gaussian_sjk::getParameters(Vector<Real>& param) const
   std::cout << "Gaussian_sjk::getParameters" << std::endl;
   std::cout << "\tparam_: " << param_ << std::endl;
 #endif
-  param.resize(param_.rows(),
-               1);
+  param.resize(param_.rows());
   for (int i = 0; i < param_.rows(); ++i)
   {
-    param(i, 0) = param_[i];
+    param(i) = param_[i];
   }
 }
 
@@ -69,7 +67,7 @@ void Gaussian_sjk::initializeStep()
 
 double Gaussian_sjk::lnComponentProbability(int i, int k) const
 {
-  Type currVal = p_data_ ->elt(i, 0);
+  Type currVal = (*p_data_)(i, 0);
   Real mean = param_[2 * k    ];
   Real sd   = param_[2 * k + 1];
   Real logProba = normal_.lpdf(currVal,
