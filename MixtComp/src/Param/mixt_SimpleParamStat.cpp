@@ -22,9 +22,8 @@
  **/
 
 #include "mixt_SimpleParamStat.h"
-#include "DManager/include/STK_HeapSort.h"
-#include "Arrays/include/STK_Display.h"
 #include "../Various/mixt_Constants.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -48,7 +47,7 @@ void SimpleParamStat::sample(int iteration)
 {
   for (int p = 0; p < nbParam_; ++p)
   {
-    Real paramVal = p_param_->elt(p, 0);
+    Real paramVal = (*p_param_)(p, 0);
 #ifdef MC_DEBUG
     if (std::abs(paramVal) < epsilon)
     {
@@ -90,21 +89,21 @@ void SimpleParamStat::sampleParam(int iteration,
     std::cout << currParam << std::endl;
 #endif
 
-      Vector<int> indOrder; // to store indices of ascending order
-      STK::heapSort(indOrder, (*p_paramlog_).row(p));
-      Real alpha = (1. - confidenceLevel_) / 2.;
-      Real realIndLow = alpha * iterationMax;
-      Real realIndHigh = (1. - alpha) * iterationMax;
+      RowVector<Real> currRow = (*p_paramlog_).row(p); // copy to use sortContiguous on contiguous data
+      sortContiguous(currRow);
+      int alpha = (1. - confidenceLevel_) / 2.;
+      int realIndLow = alpha * iterationMax;
+      int realIndHigh = (1. - alpha) * iterationMax;
 
-      Real mean = (*p_paramlog_).row(p).mean();
-      Real low  =  (1. - (realIndLow  - int(realIndLow ))) * (*p_paramlog_)(p, indOrder[int(realIndLow )    ])
-                      + (      realIndLow  - int(realIndLow ) ) * (*p_paramlog_)(p, indOrder[int(realIndLow ) + 1]);
-      Real high =  (1. - (realIndHigh - int(realIndHigh))) * (*p_paramlog_)(p, indOrder[int(realIndHigh)    ])
-                      + (      realIndHigh - int(realIndHigh) ) * (*p_paramlog_)(p, indOrder[int(realIndHigh) + 1]);
+      Real mean = currRow.mean();
+      Real low  =   (1. - (realIndLow  - int(realIndLow ))) * currRow(realIndLow     )
+                  + (      realIndLow  - int(realIndLow ) ) * currRow(realIndLow  + 1);
+      Real high =   (1. - (realIndHigh - int(realIndHigh))) * currRow(realIndHigh    )
+                  + (      realIndHigh - int(realIndHigh) ) * currRow(realIndHigh + 1);
 
-      p_paramStatStorage_->elt(p, 0) = mean;
-      p_paramStatStorage_->elt(p, 1) = low;
-      p_paramStatStorage_->elt(p, 2) = high;
+      (*p_paramStatStorage_)(p, 0) = mean;
+      (*p_paramStatStorage_)(p, 1) = low;
+      (*p_paramStatStorage_)(p, 2) = high;
     }
   }
   else
@@ -121,7 +120,7 @@ void SimpleParamStat::setExpectationParam()
 #endif
   for (int i = 0; i < nbParam_; ++i)
   {
-    p_param_->elt(i, 0) = p_paramStatStorage_->elt(i, 0);
+    (*p_param_)(i, 0) = (*p_paramStatStorage_)(i, 0);
   }
 #ifdef MC_DEBUG
   std::cout << "(*p_param_): " << (*p_param_) << std::endl;
