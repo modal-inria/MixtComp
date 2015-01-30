@@ -215,7 +215,7 @@ template<typename Derived> class MatrixBase
 
     typedef Diagonal<Derived> DiagonalReturnType;
     DiagonalReturnType diagonal();
-	typedef typename internal::add_const<Diagonal<const Derived> >::type ConstDiagonalReturnType;
+    typedef typename internal::add_const<Diagonal<const Derived> >::type ConstDiagonalReturnType;
     ConstDiagonalReturnType diagonal() const;
 
     template<int Index> struct DiagonalIndexReturnType { typedef Diagonal<Derived,Index> Type; };
@@ -223,16 +223,12 @@ template<typename Derived> class MatrixBase
 
     template<int Index> typename DiagonalIndexReturnType<Index>::Type diagonal();
     template<int Index> typename ConstDiagonalIndexReturnType<Index>::Type diagonal() const;
+    
+    typedef Diagonal<Derived,DynamicIndex> DiagonalDynamicIndexReturnType;
+    typedef typename internal::add_const<Diagonal<const Derived,DynamicIndex> >::type ConstDiagonalDynamicIndexReturnType;
 
-    // Note: The "MatrixBase::" prefixes are added to help MSVC9 to match these declarations with the later implementations.
-    // On the other hand they confuse MSVC8...
-    #if (defined _MSC_VER) && (_MSC_VER >= 1500) // 2008 or later
-    typename MatrixBase::template DiagonalIndexReturnType<DynamicIndex>::Type diagonal(Index index);
-    typename MatrixBase::template ConstDiagonalIndexReturnType<DynamicIndex>::Type diagonal(Index index) const;
-    #else
-    typename DiagonalIndexReturnType<DynamicIndex>::Type diagonal(Index index);
-    typename ConstDiagonalIndexReturnType<DynamicIndex>::Type diagonal(Index index) const;
-    #endif
+    DiagonalDynamicIndexReturnType diagonal(Index index);
+    ConstDiagonalDynamicIndexReturnType diagonal(Index index) const;
 
     #ifdef EIGEN2_SUPPORT
     template<unsigned int Mode> typename internal::eigen2_part_return_type<Derived, Mode>::type part();
@@ -449,14 +445,14 @@ template<typename Derived> class MatrixBase
 ///////// MatrixFunctions module /////////
 
     typedef typename internal::stem_function<Scalar>::type StemFunction;
-//    const MatrixExponentialReturnValue<Derived> exp() const;
+    const MatrixExponentialReturnValue<Derived> exp() const;
     const MatrixFunctionReturnValue<Derived> matrixFunction(StemFunction f) const;
     const MatrixFunctionReturnValue<Derived> cosh() const;
     const MatrixFunctionReturnValue<Derived> sinh() const;
     const MatrixFunctionReturnValue<Derived> cos() const;
     const MatrixFunctionReturnValue<Derived> sin() const;
     const MatrixSquareRootReturnValue<Derived> sqrt() const;
-//    const MatrixLogarithmReturnValue<Derived> log() const;
+    const MatrixLogarithmReturnValue<Derived> log() const;
     const MatrixPowerReturnValue<Derived> pow(const RealScalar& p) const;
 
 #ifdef EIGEN2_SUPPORT
