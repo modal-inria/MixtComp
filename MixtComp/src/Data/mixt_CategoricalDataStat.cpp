@@ -23,7 +23,6 @@
 
 #include "mixt_CategoricalDataStat.h"
 #include "../Various/mixt_Constants.h"
-#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
@@ -52,7 +51,7 @@ void CategoricalDataStat::sample(int ind)
     std::cout << "CategoricalDataStat::sample, modality 0 detected" << std::endl;
   }
 #endif
-  stat_[currMod] += 1.;
+  stat_[currMod - minModality] += 1.;
 }
 
 void CategoricalDataStat::sampleVals(int ind,
@@ -71,10 +70,10 @@ void CategoricalDataStat::sampleVals(int ind,
       std::cout << "\tminModality: " << minModality << std::endl;
       std::cout << "\tnbClass_: " << nbClass_ << std::endl;
 #endif
-      stat_.resize(STK::Range(minModality,
-                              nbClass_));
+      stat_.resize(nbClass_);
 
-      // clear current individual
+      // clear output storage for current individual, a vector of <modality, proba>, ordered by decreasing probability
+      // up to a cut-off defined by confidenceLevel
       (*p_dataStatStorage_)(ind, 0) = std::vector<std::pair<int, Real> >();
 
       // first sampling, on each missing variables
@@ -86,17 +85,17 @@ void CategoricalDataStat::sampleVals(int ind,
       sample(ind);
 
       Vector<Real> proba = stat_ / Real(iterationMax + 1); // from count to probabilities
-      RowVector<int> indOrder; // to store indices of ascending order
-      STK::heapSort(indOrder, proba);
+      Vector<int> indOrder; // to store indices of ascending order
+      sortContiguousIndex(proba, indOrder);
       Real cumProb = 0.;
 
-      for (int i = nbClass_;
-           i > minModality - 1;
+      for (int i = nbClass_; // from the most probable modality ...
+           i > minModality - 1; // ... to the least probable modality
            --i)
       {
         int currMod = indOrder[i];
         Real currProba = proba[currMod];
-        (*p_dataStatStorage_)(ind, 0).push_back(std::pair<int, Real>(currMod, currProba));
+        (*p_dataStatStorage_)(ind, 0).push_back(std::pair<int, Real>(currMod + minModality, currProba));
         cumProb += currProba;
 #ifdef MC_DEBUG
         std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;

@@ -25,6 +25,7 @@
 #define MIXT_LINALG_H
 
 #include <Eigen/Dense>
+#include <vector>
 
 namespace mixt
 {
@@ -32,16 +33,6 @@ namespace mixt
 /** Eigen storage is column-major by default, which suits the main way of accessing data,
  * by looping over individuals instead of variables */
 typedef double Real;
-
-/** General sort of data that is contiguous in memory (use of pointer to data and size).
- * Be advised against using it against subparts (i.e. blocks) of matrices which elements are
- * not stored contiguously */
-template <typename T>
-void sortContiguous(T& ref)
-{
-  std::sort(ref.data(),
-            ref.data() + ref.size());
-}
 
 template<typename T,
          int _Rows = Eigen::Dynamic,
@@ -82,26 +73,6 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
                                                                              Eigen::internal::scalar_constant_op<T>(scalar));
       return *this;
     }
-
-//    /** Element-wise log computation */
-//    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
-//                              const Eigen::Matrix<T, _Rows, _Cols> >
-//    log() const
-//    {
-//      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_log_op<T>,
-//                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
-//                                                                        Eigen::internal::scalar_log_op<T>());
-//    }
-//
-//    /** Element-wise exp computation */
-//    const Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>,
-//                              const Eigen::Matrix<T, _Rows, _Cols> >
-//    exp() const
-//    {
-//      return Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<T>,
-//                                 const Eigen::Matrix<T, _Rows, _Cols> >(this->derived(),
-//                                                                        Eigen::internal::scalar_exp_op<T>());
-//    }
 };
 
 template<typename T, int _Rows = Eigen::Dynamic>
@@ -178,6 +149,8 @@ class RowVector : public Matrix<T, 1, _Cols>
     }
 };
 
+/** Constant operator, could be used to fix an object to a constant value if the assignment to a scalar has not been
+ * defined. For example m = Constant(3, 3, 12.) to assign 12 to a 3x3 m object. */
 template<typename T>
 const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>,
                             const Eigen::Matrix<T,
@@ -193,6 +166,50 @@ Constant (int nrow, int ncol, const T& scalar)
                                                                      Eigen::internal::scalar_constant_op<T>(scalar));
 }
 
+/** General sort of data that is contiguous in memory (use of pointer to data and size).
+ * Be advised against using it against subparts (i.e. blocks) of matrices which elements are
+ * not stored contiguously */
+template <typename Container>
+void sortContiguous(Container& ref)
+{
+  std::sort(ref.data(),
+            ref.data() + ref.size());
+}
+
+/** Comparator for indexed pairs */
+template <typename pair>
+bool comparator (const pair& l, const pair& r)
+{
+  return l.first < r.first;
+};
+
+/** Contiguous data sort, keeping track of the indices, introduces overhead, copy input data, copy indexes */
+ template <typename Container>
+void sortContiguousIndex(Container& in, Vector<int>& out)
+{
+  typedef typename std::pair<typename Container::Type, int> IntPair;
+
+  int nbElem = in.size();
+  out.resize(nbElem); // resizing the indices vector
+  std::vector<IntPair> sortVec(nbElem);
+  int n = 0;
+
+  for (int i = 0; i < in.rows(); ++i)
+  {
+    for (int j = 0; j < in.cols(); ++j)
+    {
+      sortVec[n] = IntPair(in(i, j), n);
+      ++n;
+    }
+  }
+
+  std::sort(sortVec.begin(), sortVec.end(), comparator<IntPair>);
+
+  for(int i = 0; i < nbElem; ++i)
+  {
+    out(i) = sortVec[i].second;
+  }
+}
 
 } // namespace mixt
 

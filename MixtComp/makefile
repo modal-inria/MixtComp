@@ -32,7 +32,7 @@ LIB_RE = ./regex/libregex.a
 # build rules
 
 # phony prerequisites are executed unconditionally
-.PHONY: all exe obj clean test
+.PHONY: all exe obj clean test $(EXE_TEST)
 
 # all: lib $(LIB_RE) $(EXE_MC) $(EXE_TEST)
 all: lib $(LIB_RE) $(EXE_TEST)
@@ -49,7 +49,7 @@ $(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
 # $(EXE_TEST): $(LIB_MC) $(LIB_STK) $(LIB_RE) src/Prog/mcTest.cpp
 # 	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost -I../eigen src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
 
-$(EXE_TEST): src/Prog/mcTest.cpp
+$(EXE_TEST):
 	$(CXX) $(CXXFLAGS) -I.. -I../boost -I../eigen -DEIGEN_MATRIXBASE_PLUGIN=\"MixtComp/src/LinAlg/mixt_EigenMatrixBaseAddons.h\" src/Prog/mcTest.cpp -o $(EXE_TEST)
 	bin/mcTest
 	

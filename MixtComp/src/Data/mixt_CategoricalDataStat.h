@@ -55,7 +55,7 @@ class CategoricalDataStat
 
     /** Array to count sampled values across iterations, for the current individual,
      * i: modalities */
-    Vector<int> stat_;
+    Vector<Real> stat_;
 
     /** Confidence level */
     Real confidenceLevel_;
