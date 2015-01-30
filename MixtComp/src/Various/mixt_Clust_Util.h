@@ -25,6 +25,8 @@
 #ifndef MIXT_CLUST_UTIL_H
 #define MIXT_CLUST_UTIL_H
 
+#include <string>
+
 namespace mixt
 {
 
