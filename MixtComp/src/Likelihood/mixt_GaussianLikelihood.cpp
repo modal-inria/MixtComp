@@ -23,9 +23,7 @@
 
 #include "mixt_GaussianLikelihood.h"
 #include "../Various/mixt_Def.h"
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
-#include "Arrays/include/STK_Array2DPoint.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -54,25 +52,25 @@ void GaussianLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
     {
       if (p_augData_->misData_(i, j).first == present_)   // likelihood for present value
       {
-        Real mean  = p_param_->elt(2 * k    , j);
-        Real sd    = p_param_->elt(2 * k + 1, j);
+        Real mean  = (*p_param_)(2 * k    , j);
+        Real sd    = (*p_param_)(2 * k + 1, j);
 
         Real logProba = normal_.lpdf(p_augData_->data_(i, j),
-                                          mean,
-                                          sd);
+                                     mean,
+                                     sd);
 
-        lnComp->elt(i) += logProba;
+        (*lnComp)(i) += logProba;
       }
       else // likelihood for missing values, imputation by the expectation
       {
-        Real mean  = p_param_->elt(2 * k    , j);
-        Real sd    = p_param_->elt(2 * k + 1, j);
+        Real mean  = (*p_param_)(2 * k    , j);
+        Real sd    = (*p_param_)(2 * k + 1, j);
 
-        Real logProba = normal_.lpdf(p_dataStatStorage_->elt(i, j)[0],
-                                          mean,
-                                          sd);
+        Real logProba = normal_.lpdf((*p_dataStatStorage_)(i, j)[0],
+                                     mean,
+                                     sd);
 
-        lnComp->elt(i) += logProba;
+        (*lnComp)(i) += logProba;
       }
     }
   }
@@ -88,8 +86,8 @@ void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
   {
     for (int i = 0; i < p_augData_->data_.rows(); ++i)
     {
-      Real mean  = p_param_->elt(2 * k    , j);
-      Real sd    = p_param_->elt(2 * k + 1, j);
+      Real mean  = (*p_param_)(2 * k    , j);
+      Real sd    = (*p_param_)(2 * k + 1, j);
 
       Real logProba;
 
@@ -97,8 +95,8 @@ void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
       {
         case present_:
         {
-          Real mean  = p_param_->elt(2 * k    , j);
-          Real sd    = p_param_->elt(2 * k + 1, j);
+          Real mean  = (*p_param_)(2 * k    , j);
+          Real sd    = (*p_param_)(2 * k + 1, j);
 
           logProba = normal_.lpdf(p_augData_->data_(i, j),
                                   mean,
@@ -165,7 +163,7 @@ void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
         break;
       }
 
-      lnComp->elt(i) += logProba;
+      (*lnComp) += logProba;
 
 #ifdef MC_DEBUG
       std::cout << "\tlogProba: " << logProba << std::endl;

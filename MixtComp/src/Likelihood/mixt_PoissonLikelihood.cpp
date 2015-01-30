@@ -23,9 +23,7 @@
 
 #include "mixt_PoissonLikelihood.h"
 #include "../Various/mixt_Def.h"
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
-#include "Arrays/include/STK_Array2DPoint.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -50,7 +48,7 @@ void PoissonLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
 #endif
   // likelihood for present data
 
-  Real lambda = p_param_->elt(k, 0);
+  Real lambda = (*p_param_)(k, 0);
   Real proba;
 
   for (int i = 0; i < p_augData_->data_.rows(); ++i)
@@ -62,10 +60,10 @@ void PoissonLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
     }
     else // likelihood for missing values, imputation by the expectation (temporary placeholder ...)
     {
-      proba = poisson_.pdf(p_dataStatStorage_->elt(i, 0)[0],
+      proba = poisson_.pdf((*p_dataStatStorage_)(i, 0)[0],
                            lambda);
     }
-    lnComp->elt(i) += std::log(proba);
+    (*lnComp)(i) += std::log(proba);
   }
 }
 
@@ -78,7 +76,7 @@ void PoissonLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
   // likelihood for present data
   for (int i = 0; i < p_augData_->data_.rows(); ++i)
   {
-    Real lambda = p_param_->elt(k, 0);
+    Real lambda = (*p_param_)(k, 0);
     Real proba;
 
     switch(p_augData_->misData_(i, 0).first)   // likelihood for present value
@@ -103,7 +101,7 @@ void PoissonLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
       {}
       break;
     }
-    lnComp->elt(i) += std::log(proba);
+    (*lnComp)(i) += std::log(proba);
 
 #ifdef MC_DEBUG
     std::cout << "\tproba: " << proba << std::endl;
