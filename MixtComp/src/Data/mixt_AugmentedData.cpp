@@ -22,7 +22,6 @@
  *              iovleff, serge.iovleff@stkpp.org
  **/
 
-#include "STatistiK/include/STK_Law_Categorical.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
@@ -153,19 +152,17 @@ void AugmentedData<Matrix<int> >::removeMissing()
 
           case missing_:
           {
-            Vector<Real> modalities(STK::Range(firstModality,
-                                                                nbModalities),
-                                                     1. / nbModalities);
-            sampleVal = STK::Law::Categorical::rand(modalities);
+            Vector<Real> modalities(nbModalities);
+            modalities = 1. / nbModalities;
+            sampleVal = multi_.sample(modalities) + minModality;
           }
           break;
 
           case missingFiniteValues_:
           {
             Real proba = 1. / misData_(i, j).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
-            Vector<Real> modalities(STK::Range(firstModality,
-                                                                nbModalities),
-                                                     0.);
+            Vector<Real> modalities(nbModalities);
+            modalities = 0.;
             for(std::vector<int>::const_iterator itParam = misData_(i, j).second.begin();
                 itParam != misData_(i, j).second.end();
                 ++itParam)
@@ -175,7 +172,7 @@ void AugmentedData<Matrix<int> >::removeMissing()
   #endif
               modalities[*itParam] = proba;
             }
-            sampleVal = STK::Law::Categorical::rand(modalities);
+            sampleVal = multi_.sample(modalities) + minModality;
           }
           break;
 

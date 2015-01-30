@@ -25,12 +25,14 @@
 #ifndef MIXT_AUGMENTEDDATA_H
 #define MIXT_AUGMENTEDDATA_H
 
+#include <limits>
 #include <utility>
 #include <vector>
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Def.h"
 #include "../Various/mixt_Constants.h"
 #include "../Statistic/mixt_UniformStatistic.h"
+#include "../Statistic/mixt_MultinomialStatistic.h"
 
 namespace mixt
 {
@@ -57,7 +59,7 @@ class AugmentedData
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
     /** type of the complete structure for missing data */
-    typedef typename Matrix<MisVal> MisData;
+    typedef Matrix<MisVal> MisData;
 
     AugmentedData() :
       nbSample_(0),
@@ -141,7 +143,7 @@ class AugmentedData
 
     void setMissing(int i, int j, MisVal& val)
     {
-      data_(i, j) = STK::Arithmetic<Type>::NA();
+      data_(i, j) = std::numeric_limits<int>::quiet_NaN(); // set to quiet nan, for types that supports it. For int, the returned value would be 0 ...
       misData_(i, j) = val;
       ++nbMissing_;
       ++nbSample_;
@@ -185,7 +187,11 @@ class AugmentedData
       }
     }
 
+    /** Uniform law*/
     UniformStatistic uniform_;
+
+    /** multinomial law */
+    MultinomialStatistic multi_;
 };
 
 } // namespace mixt

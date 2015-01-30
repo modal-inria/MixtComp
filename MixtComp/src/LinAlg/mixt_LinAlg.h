@@ -49,6 +49,8 @@ template<typename T,
 class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
 {
   public:
+    typedef T Type;
+
     Matrix() :
       Eigen::Matrix<T, _Rows, _Cols>()
     {}
