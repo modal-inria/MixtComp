@@ -40,7 +40,7 @@ void ParamExtractorR::exportParam(std::string idName,
                                   const std::vector<std::string>& paramNames,
                                   const Real confidenceLevel)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "ParamExtractorR::exportParam" << std::endl;
   std::cout << "idName: " << idName << std::endl;
   std::cout << "p_params->rows(): " << p_params->rows() << std::endl;
@@ -93,7 +93,7 @@ void ParamExtractorR::exportParam(std::string idName,
 
   if (p_paramsLogs->rows() > 0 && p_paramsLogs->cols()) // only if log has taken place, for example not during predict
   {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "(*p_paramsLogs)" << (*p_paramsLogs) << std::endl;
 #endif
     // copy of the log data

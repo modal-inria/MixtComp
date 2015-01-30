@@ -91,10 +91,9 @@ void SimpleParamStat::sampleParam(int iteration,
 
       RowVector<Real> currRow = (*p_paramlog_).row(p); // copy to use sortContiguous on contiguous data
       sortContiguous(currRow);
-      int alpha = (1. - confidenceLevel_) / 2.;
+      Real alpha = (1. - confidenceLevel_) / 2.;
       int realIndLow = alpha * iterationMax;
       int realIndHigh = (1. - alpha) * iterationMax;
-
       Real mean = currRow.mean();
       Real low  =   (1. - (realIndLow  - int(realIndLow ))) * currRow(realIndLow     )
                   + (      realIndLow  - int(realIndLow ) ) * currRow(realIndLow  + 1);

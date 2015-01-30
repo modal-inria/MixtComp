@@ -111,7 +111,8 @@ std::string SEMAlgo::run()
                  + std::string(", while required minimum is: ")
                  + type2str(minIndPerClass)
                  +  std::string(". Number of sampling attempts: ")
-                 + type2str(nbSamplingAttempts_);
+                 + type2str(nbSamplingAttempts_)
+                 + std::string("\n");
         }
       }
     }

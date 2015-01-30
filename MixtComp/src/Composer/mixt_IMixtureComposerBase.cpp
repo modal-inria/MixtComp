@@ -83,9 +83,16 @@ int IMixtureComposerBase::sStep()
   {
     sStep(i);
   }
-  Vector<int> indPerClass = 0;
+#ifdef MC_DEBUG
+  std::cout << "nbCluster_: " << nbCluster_ << std::endl;
+#endif
+  Vector<int> indPerClass(nbCluster_);
+  indPerClass = 0;
   for (int i = 0; i < nbSample_; ++i)
   {
+#ifdef MC_DEBUG
+  std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
+#endif
     indPerClass[zi_[i]] += 1;
   }
   int minIndPerClass = indPerClass.minCoeff();
@@ -125,11 +132,15 @@ void IMixtureComposerBase::eStep(int i)
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::eStep(i), i: " << i << std::endl;
 #endif
-  RowVector<Real> lnComp(nbSample_);
+  RowVector<Real> lnComp(nbCluster_);
   for (int k = 0; k < nbCluster_; k++)
   {
     lnComp[k] = std::log(prop_[k]) + lnComponentProbability(i, k);
   }
+
+#ifdef MC_DEBUG
+    std::cout << "lnComp: " << lnComp << std::endl;
+#endif
 
   Real lnCompMax = lnComp.maxCoeff();
   lnComp -= lnCompMax;

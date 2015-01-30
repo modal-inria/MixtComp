@@ -24,6 +24,7 @@
 #ifndef MIXT_MULTINOMIALSTATISTIC_H
 #define MIXT_MULTINOMIALSTATISTIC_H
 
+#include <iostream>
 #include "../LinAlg/mixt_LinAlg.h"
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
@@ -50,7 +51,7 @@ class MultinomialStatistic
                                boost::random::uniform_real_distribution<> > generator(rng_,
                                                                                       uni);
       Real x = generator();
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "MultinomialStatistic::sample" << std::endl;
       std::cout << "modalities: " << modalities << std::endl;
       std::cout << "x: " << x << std::endl;
@@ -60,14 +61,18 @@ class MultinomialStatistic
       int rows = modalities.rows();
       int cols = modalities.cols();
 
-      for (int j =0; j < rows; ++j) // double loop because the incoming object potentially is a block
+      for (int i = 0; i < rows; ++i) // double loop because the incoming object potentially is a block
       {
-        for (int i = 0; i < cols; ++i)
+        for (int j = 0; j < cols; ++j)
         {
           cumProb += modalities(i, j);
           if (x < cumProb)
           {
-            return j * cols + i;
+#ifdef MC_DEBUG
+            std::cout << "i: " << i << ",j: " << j << std::endl;
+            std::cout << "j * cols + i: " << j * rows + i << std::endl;
+#endif
+            return j * rows + i;
           }
         }
       }
