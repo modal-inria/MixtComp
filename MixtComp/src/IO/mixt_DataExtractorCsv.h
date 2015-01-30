@@ -24,6 +24,7 @@
 #ifndef MIXT_DATAEXTRACTORCSV_H
 #define MIXT_DATAEXTRACTORCSV_H
 
+#include <map>
 #include "../Data/mixt_AugmentedData.h"
 
 namespace mixt
