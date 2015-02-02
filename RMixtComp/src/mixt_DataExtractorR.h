@@ -40,9 +40,7 @@ class DataExtractorR
     /** Export function for categorical model */
     void exportVals(std::string idName,
                     const AugmentedData<Matrix<int> >* p_augData,
-                    const Eigen::Matrix<std::vector<std::pair<int, Real> >,
-                                        Eigen::Dynamic,
-                                        Eigen::Dynamic>* p_dataStatStorage);
+                    const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage);
     /** Export function for gaussian model */
     void exportVals(std::string idName,
                     const AugmentedData<Matrix<Real> >* p_augData,

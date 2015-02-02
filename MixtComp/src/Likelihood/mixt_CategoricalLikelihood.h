@@ -36,9 +36,7 @@ class CategoricalLikelihood
     /** Constructor */
     CategoricalLikelihood(const Vector<Real>* p_param,
                           const AugmentedData<Matrix<int> >* p_augData,
-                          const Eigen::Matrix<std::vector<std::pair<int, Real> >,
-                                              Eigen::Dynamic,
-                                              Eigen::Dynamic>* p_dataStatStorage,
+                          const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                           int nbClass);
     /** Destructor */
     virtual ~CategoricalLikelihood();
@@ -58,9 +56,7 @@ class CategoricalLikelihood
     const AugmentedData<Matrix<int> >* p_augData_;
 
     /** Pointer to sampled data storage */
-    const Eigen::Matrix<std::vector<std::pair<int, Real> >,
-                        Eigen::Dynamic,
-                        Eigen::Dynamic>* p_dataStatStorage_;
+    const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
 };
 
 } /* namespace mixt */

@@ -70,7 +70,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
         modalities = 0.;
 
         Vector<Real> equiModalities(nbModalities);
-        modalities = 0.;
+        equiModalities = 0.;
 
         for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i, 0).second.begin();
             currMod != p_augData_->misData_(i, 0).second.end();
@@ -79,8 +79,8 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
           std::cout << "\tcurrMod: " << *currMod << std::endl;
 #endif
-          modalities(*currMod) = (*p_param_)[z_i * nbModalities + *currMod - minModality];
-          equiModalities(*currMod) = 1.;
+          modalities(*currMod - minModality) = (*p_param_)[z_i * nbModalities + *currMod - minModality];
+          equiModalities(*currMod - minModality) = 1.;
         }
         Real modSum = modalities.sum();
         if (modSum < minStat)

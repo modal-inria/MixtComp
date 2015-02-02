@@ -34,9 +34,7 @@ class CategoricalDataStat
 {
   public:
     CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
-                        Eigen::Matrix<std::vector<std::pair<int, Real> >,
-                                      Eigen::Dynamic,
-                                      Eigen::Dynamic>* p_dataStatStorage,
+                        Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                         Real confidenceLevel,
                         int nbClass);
     ~CategoricalDataStat();
@@ -49,9 +47,7 @@ class CategoricalDataStat
     // pointer to data array
     const AugmentedData<Matrix<int> >* pm_augDataij_;
     /** Sparse description of the missing values */
-    Eigen::Matrix<std::vector<std::pair<int, Real> >,
-                                          Eigen::Dynamic,
-                                          Eigen::Dynamic>* p_dataStatStorage_;
+    Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual,
      * i: modalities */

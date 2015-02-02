@@ -37,9 +37,7 @@ DataExtractorR::~DataExtractorR()
 
 void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<Matrix<int> >* p_augData,
-                                const Eigen::Matrix<std::vector<std::pair<int, Real> >,
-                                                    Eigen::Dynamic,
-                                                    Eigen::Dynamic>* p_dataStatStorage)
+                                const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage)
 {
 #ifdef MC_DEBUG
   std::cout << "DataExtractorR::exportVals, int" << std::endl;

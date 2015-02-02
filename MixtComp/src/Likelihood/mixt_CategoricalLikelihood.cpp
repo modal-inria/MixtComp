@@ -30,9 +30,7 @@ namespace mixt
 
 CategoricalLikelihood::CategoricalLikelihood(const Vector<Real>* p_param,
                                              const AugmentedData<Matrix<int> >* p_augData,
-                                             const Eigen::Matrix<std::vector<std::pair<int, Real> >,
-                                                                 Eigen::Dynamic,
-                                                                 Eigen::Dynamic>* p_dataStatStorage,
+                                             const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                                              int nbClass) :
     nbClass_(nbClass),
     p_param_(p_param),
@@ -75,7 +73,7 @@ void CategoricalLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
       else // likelihood for estimated missing values, imputation by the mode
       {
         Real proba = (*p_param_)(k * nbModalities + (*p_dataStatStorage_)(i, j)[0].first - minModality,
-                                        j);
+                                 j);
         (*lnComp)(i) += std::log(proba); // added lnLikelihood using the mode
       }
     }

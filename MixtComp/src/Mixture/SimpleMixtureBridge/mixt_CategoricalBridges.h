@@ -31,7 +31,7 @@
 #include "../../Data/mixt_CategoricalDataStat.h"
 #include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_CategoricalLikelihood.h"
-#include "Eigen/Dense"
+#include "../../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -56,9 +56,7 @@ struct BridgeTraits<Categorical_pjk_>
     /** Type of the DataStat */
     typedef CategoricalDataStat DataStatComputer;
     /** Type of the DataStat */
-    typedef Eigen::Matrix<std::vector<std::pair<int, Real> >,
-                          Eigen::Dynamic,
-                          Eigen::Dynamic> DataStatStorage;
+    typedef Matrix<std::vector<std::pair<int, Real> > > DataStatStorage;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

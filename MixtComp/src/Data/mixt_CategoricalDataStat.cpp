@@ -28,9 +28,7 @@ namespace mixt
 {
 
 CategoricalDataStat::CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
-                                         Eigen::Matrix<std::vector<std::pair<int, Real> >,
-                                                       Eigen::Dynamic,
-                                                       Eigen::Dynamic>* p_dataStatStorage,
+                                         Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                                          Real confidenceLevel,
                                          int nbClass) :
     nbClass_(nbClass),
@@ -70,7 +68,8 @@ void CategoricalDataStat::sampleVals(int ind,
       std::cout << "\tminModality: " << minModality << std::endl;
       std::cout << "\tnbClass_: " << nbClass_ << std::endl;
 #endif
-      stat_.resize(nbClass_);
+      stat_.resize(pm_augDataij_->dataRange_.range_);
+      stat_ = 0.;
 
       // clear output storage for current individual, a vector of <modality, proba>, ordered by decreasing probability
       // up to a cut-off defined by confidenceLevel
@@ -81,20 +80,19 @@ void CategoricalDataStat::sampleVals(int ind,
     }
     else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
     {
-      // last sampling
-      sample(ind);
+      sample(ind); // last sampling
 
-      Vector<Real> proba = stat_ / Real(iterationMax + 1); // from count to probabilities
+      stat_ /= Real(iterationMax + 1); // from count to probabilities
       Vector<int> indOrder; // to store indices of ascending order
-      sortContiguousIndex(proba, indOrder);
+      sortContiguousIndex(stat_, indOrder);
       Real cumProb = 0.;
 
-      for (int i = nbClass_; // from the most probable modality ...
-           i > minModality - 1; // ... to the least probable modality
+      for (int i = nbClass_ - 1; // from the most probable modality ...
+           i > -1; // ... to the least probable modality
            --i)
       {
         int currMod = indOrder[i];
-        Real currProba = proba[currMod];
+        Real currProba = stat_[currMod];
         (*p_dataStatStorage_)(ind, 0).push_back(std::pair<int, Real>(currMod + minModality, currProba));
         cumProb += currProba;
 #ifdef MC_DEBUG
