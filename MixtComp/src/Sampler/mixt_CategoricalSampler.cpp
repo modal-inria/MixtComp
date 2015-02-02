@@ -100,7 +100,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
       {}
       break;
     }
-    p_augData_->data_(i, 0) = sampleVal + minModality;
+    p_augData_->data_(i, 0) = sampleVal;
   }
 }
 } // namespace mixt
