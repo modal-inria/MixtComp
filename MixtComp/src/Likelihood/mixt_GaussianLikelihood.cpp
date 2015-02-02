@@ -67,8 +67,8 @@ void GaussianLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
         Real sd    = (*p_param_)(2 * k + 1, j);
 
         Real logProba = normal_.lpdf((*p_dataStatStorage_)(i, j)[0],
-                                     mean,
-                                     sd);
+                                      mean,
+                                      sd);
 
         (*lnComp)(i) += logProba;
       }
@@ -163,7 +163,7 @@ void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
         break;
       }
 
-      (*lnComp) += logProba;
+      (*lnComp)(i) += logProba;
 
 #ifdef MC_DEBUG
       std::cout << "\tlogProba: " << logProba << std::endl;

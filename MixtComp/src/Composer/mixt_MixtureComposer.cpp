@@ -148,7 +148,7 @@ Real MixtureComposer::lnCompletedLikelihood()
     lnComp.col(k) = tempVec;
   }
 
-  // Compute the observed / completed likelihood for the complete mixture model
+  // Compute the completed likelihood for the complete mixture model
   for (int i = 0; i < nbSample_; ++i)
   {
 #ifdef MC_DEBUG
@@ -176,7 +176,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
     std::cout << "k: " << k << std::endl;
 #endif
     Vector<Real> tempVec(nbSample_);
-    tempVec += std::log(prop_[k]);
+    tempVec = std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       (*it)->lnObservedLikelihood(&tempVec, k);
@@ -188,7 +188,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
     lnComp.col(k) = tempVec;
   }
 
-  // Compute the observed / completed likelihood for the complete mixture model
+  // Compute the completed likelihood for the complete mixture model
   for (int i = 0; i < nbSample_; ++i)
   {
 #ifdef MC_DEBUG
