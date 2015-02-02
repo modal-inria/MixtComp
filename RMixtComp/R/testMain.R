@@ -17,7 +17,9 @@ testLearnPredict <- function()
   cat("Launching testGenDataPredict\n")
   myDataPredict <- testGenDataPredict(myDataLearn[[1]]@results@proportions,
                                       myDataLearn[[2]]$param)
-  
+  confMat <- confusionMatrix("dataGen/predict/classIn.csv",
+                            myDataPredict)
+  print(confMat)
   return(myDataPredict)
 }
 
@@ -28,31 +30,31 @@ testGenDataLearn <- function(nbClass = 2,
                              confidenceLevel = 0.95,
                              regen = TRUE)
 {
-#   missingCategorical <- c(0.8, # present
-#                           0.1, # missing
-#                           0.1) # missing finite value
+  missingCategorical <- c(0.8, # present
+                          0.1, # missing
+                          0.1) # missing finite value
+  
+  missingGaussian <- c(0.5, # present
+                       0.1, # missing
+                       0.1, # missing interval
+                       0.1, # missing left unbounded
+                       0.1) # missing right unbounded
+
+  missingPoisson <- c(0.8, # present
+                      0.2) # missing
+  
+#   missingCategorical <- c(1., # present
+#                           0., # missing
+#                           0.) # missing finite value
 #   
-#   missingGaussian <- c(0.5, # present
-#                        0.1, # missing
-#                        0.1, # missing interval
-#                        0.1, # missing left unbounded
-#                        0.1) # missing right unbounded
-# 
-#   missingPoisson <- c(0.8, # present
-#                       0.2) # missing
-  
-  missingCategorical <- c(1., # present
-                          0., # missing
-                          0.) # missing finite value
-  
-  missingGaussian <- c(1., # present
-                       0., # missing
-                       0., # missing interval
-                       0., # missing left unbounded
-                       0.) # missing right unbounded
-  
-  missingPoisson <- c(1., # present
-                      0.) # missing
+#   missingGaussian <- c(1., # present
+#                        0., # missing
+#                        0., # missing interval
+#                        0., # missing left unbounded
+#                        0.) # missing right unbounded
+#   
+#   missingPoisson <- c(1., # present
+#                       0.) # missing
   
   if (regen == TRUE)
   {
@@ -85,8 +87,8 @@ testGenDataLearn <- function(nbClass = 2,
 #   lm <- getData(c("dataGen/learn/poissonData.csv",
 #                   "dataGen/learn/poissonDescriptor.csv"))
 
-#  lm <- getData(c("dataGen/learn/categoricalData.csv",
-#                  "dataGen/learn/categoricalDescriptor.csv"))
+#   lm <- getData(c("dataGen/learn/categoricalData.csv",
+#                   "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
@@ -128,8 +130,8 @@ testGenDataPredict <- function(prop,
 #   lm <- getData(c("dataGen/predict/poissonData.csv",
 #                   "dataGen/predict/poissonDescriptor.csv"))
 
-#  lm <- getData(c("dataGen/learn/categoricalData.csv",
-#                  "dataGen/learn/categoricalDescriptor.csv"))
+#   lm <- getData(c("dataGen/learn/categoricalData.csv",
+#                   "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
@@ -152,6 +154,25 @@ testGenDataPredict <- function(prop,
   }
   return(list(mcCluster,
               dataParam))
+}
+
+confusionMatrix <- function(classInFile,
+                            res)
+{
+  classIn <- read.csv2(classInFile,
+                       header = FALSE,
+                       dec = ".")
+  matConf <- matrix(0,
+                    max(classIn),
+                    max(classIn))
+  for (i in 1:nrow(classIn))
+  {
+    matConf[classIn[i, 1],
+            res[[1]]@results@partition[i]] = matConf[classIn[i, 1],
+                                                     res[[1]]@results@partition[i]] + 1
+  }
+  
+  return(matConf)
 }
 
 testGeyser <- function()
