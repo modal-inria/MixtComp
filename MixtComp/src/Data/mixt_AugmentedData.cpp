@@ -170,7 +170,7 @@ void AugmentedData<Matrix<int> >::removeMissing()
   #ifdef MC_DEBUG
             std::cout << "\tproba: " << proba << std::endl;
   #endif
-              modalities[*itParam] = proba;
+              modalities[*itParam - minModality] = proba;
             }
             sampleVal = multi_.sample(modalities) + minModality;
           }
