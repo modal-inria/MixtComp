@@ -28,14 +28,18 @@ EXE_MC = ./bin/mixtComp
 EXE_TEST = ./bin/mcTest
 LIB_RE = ./regex/libregex.a
 
+GTEST_DIR = ../gtest
+EXE_UNITTEST = ./bin/unitTest
+LIB_GTEST = ./lib/gtest_main.a
+
 #-----------------------------------------------------------------------
 # build rules
 
 # phony prerequisites are executed unconditionally
-.PHONY: all exe obj clean test $(EXE_TEST)
+.PHONY: all exe obj clean test $(EXE_TEST) $(EXE_UNITTEST)
 
 # all: lib $(LIB_RE) $(EXE_MC) $(EXE_TEST)
-all: lib $(LIB_RE) $(EXE_TEST)
+all: lib $(LIB_RE) $(EXE_TEST) $(EXE_UNITTEST)
 
 clean:
 	find -L . -type f -name "*.o" -exec rm -f {} \;
@@ -46,13 +50,21 @@ clean:
 $(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
 	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost -I../boost src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
 
-# $(EXE_TEST): $(LIB_MC) $(LIB_STK) $(LIB_RE) src/Prog/mcTest.cpp
-# 	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost -I../eigen src/Prog/mcTest.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_TEST)
+$(EXE_TEST): 
+	$(CXX) $(CXXFLAGS) -I.. -I../boost -I../eigen test/mcTest.cpp -o $@
+	$@
 
-$(EXE_TEST):
-	$(CXX) $(CXXFLAGS) -I.. -I../boost -I../eigen -DEIGEN_MATRIXBASE_PLUGIN=\"MixtComp/src/LinAlg/mixt_EigenMatrixBaseAddons.h\" src/Prog/mcTest.cpp -o $(EXE_TEST)
-	bin/mcTest
-	
+$(EXE_UNITTEST): test/sample1_unittest.cpp $(LIB_GTEST)
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR)/include $(CXXFLAGS) -pthread -c test/sample1.cpp -o lib/sample1.o
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR)/include $(CXXFLAGS) -pthread -c test/sample1_unittest.cpp -o lib/sample1_unittest.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread lib/gtest-all.o lib/gtest_main.o lib/sample1.o lib/sample1_unittest.o  -o $@
+	$@
+  
+$(LIB_GTEST):
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include $(CXXFLAGS) -pthread -c $(GTEST_DIR)/src/gtest-all.cc -o lib/gtest-all.o
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include $(CXXFLAGS) -pthread -c $(GTEST_DIR)/src/gtest_main.cc -o lib/gtest_main.o
+	$(AR) $(ARFLAGS) $@ lib/gtest-all.o lib/gtest_main.o
+
 lib: obj $(LIB_MC)
 
 obj:

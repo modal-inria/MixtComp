@@ -25,6 +25,7 @@
 #define MIXT_MULTINOMIALSTATISTIC_H
 
 #include <iostream>
+#include <ctime>
 #include "../LinAlg/mixt_LinAlg.h"
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/uniform_real_distribution.hpp>

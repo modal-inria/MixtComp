@@ -23,7 +23,7 @@
 
 #include <iostream>
 #include <limits>
-#include "../LinAlg/mixt_LinAlg.h"
+#include "../src/LinAlg/mixt_LinAlg.h"
 
 using namespace mixt;
 
