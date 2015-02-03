@@ -24,11 +24,10 @@ CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"MixtComp/src/LinAlg/mix
 CXXFLAGS += -I.. -I../boost -I../eigen -Igtest -Igtest/include
 
 # build path
-LIB_MC = ./bin/libMixtComp.a
 EXE_TEST = ./test/mcTest
-LIB_RE = ./regex/libregex.a
 
-# sources
+# library files
+LIB_MC = ./lib/libMixtComp.a
 SRC_MC += $(wildcard src/Composer/*.cpp)
 SRC_MC += $(wildcard src/Data/*.cpp)
 SRC_MC += $(wildcard src/IO/*.cpp)
@@ -39,18 +38,32 @@ SRC_MC += $(wildcard src/Sampler/*.cpp)
 SRC_MC += $(wildcard src/Statistic/*.cpp)
 SRC_MC += $(wildcard src/Strategy/*.cpp)
 SRC_MC += $(wildcard src/Various/*.cpp)
-
 O_MC = $(SRC_MC:%.cpp=%.o)
 
+#regex files
+LIB_RE = ./lib/libRegex.a
+SRC_RE = $(wildcard ../boost/libs/regex/src/*.cpp)
+O_RE = $(SRC_RE:%.cpp=%.o)
+
+#test files
+
+
+# make recipes
 clean:
 	find -L . -type f -name "*.o" -exec rm -f {} \;
 	find -L . -type f -name "*.d" -exec rm -f {} \;
 	find -L . -type f -name "*.a" -exec rm -f {} \;
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 
-lib: $(LIB_MC)
+libMC: $(LIB_MC)
 
 $(LIB_MC): $(O_MC)
 	$(AR) $(ARFLAGS) $@ $^
-	
+
+libRE: $(LIB_RE)
+
+$(LIB_RE): $(O_RE)
+	$(AR) $(ARFLAGS) $@ $^
+
 -include $(SRC_MC:%.cpp=%.d)
+-include $(SRC_RE:%.cpp=%.d)
