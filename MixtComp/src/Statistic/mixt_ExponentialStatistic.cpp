@@ -40,25 +40,25 @@ ExponentialStatistic::ExponentialStatistic() :
 ExponentialStatistic::~ExponentialStatistic()
 {}
 
-STK::Real ExponentialStatistic::cdf(Type x,
-                                    STK::Real lambda) const
+Real ExponentialStatistic::cdf(Type x,
+                                    Real lambda) const
 {
   boost::math::exponential expo(lambda);
-  STK::Real proba = boost::math::cdf(expo,
+  Real proba = boost::math::cdf(expo,
                                      x);
   return proba;
 }
 
-STK::Real ExponentialStatistic::pdf(Type x,
-                                    STK::Real lambda) const
+Real ExponentialStatistic::pdf(Type x,
+                                    Real lambda) const
 {
   boost::math::exponential expo(lambda);
-  STK::Real proba = boost::math::pdf(expo,
+  Real proba = boost::math::pdf(expo,
                                      x);
   return proba;
 }
 
-Type ExponentialStatistic::sample(STK::Real lambda)
+Type ExponentialStatistic::sample(Real lambda)
 {
   boost::random::exponential_distribution<> expo(lambda);
   boost::variate_generator<boost::random::mt19937&,

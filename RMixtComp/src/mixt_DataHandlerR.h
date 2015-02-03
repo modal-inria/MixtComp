@@ -32,7 +32,7 @@
 #include <map>
 #include <Rcpp.h>
 #include "boost/regex.hpp"
-#include "Arrays/include/STK_Array2D.h"
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 #include "MixtComp/src/Data/mixt_AugmentedData.h"
 #include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/Various/mixt_IO.h"
@@ -73,7 +73,7 @@ class DataHandlerR
 
     template<typename Type>
     void getData(std::string const& idData,
-                 AugmentedData<STK::Array2D<Type> >& augData,
+                 AugmentedData<Matrix<Type> >& augData,
                  int& nbSample,
                  int& nbVariable,
                  std::string& param,
@@ -94,7 +94,7 @@ class DataHandlerR
 
 template<typename Type>
 void DataHandlerR::getData(std::string const& idData,
-                           AugmentedData<STK::Array2D<Type> >& augData,
+                           AugmentedData<Matrix<Type> >& augData,
                            int& nbSample,
                            int& nbVariable,
                            std::string& param,
@@ -175,7 +175,7 @@ void DataHandlerR::getData(std::string const& idData,
         std::string::const_iterator start = currStr.begin();
         std::string::const_iterator end   = currStr.end();
         boost::smatch m;
-        typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+        typename AugmentedData<Matrix<Type> >::MisVal misVal;
         misVal.first = missingFiniteValues_;
         while (boost::regex_search(start, end, m, reNumber ))
         {
@@ -192,7 +192,7 @@ void DataHandlerR::getData(std::string const& idData,
 
       if (boost::regex_match(currStr, matches, reIntervals))
       {
-        typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+        typename AugmentedData<Matrix<Type> >::MisVal misVal;
         misVal.first = missingIntervals_;
         misVal.second.resize(2);
         misVal.second[0] = str2type<Type>(matches[1].str());
@@ -208,7 +208,7 @@ void DataHandlerR::getData(std::string const& idData,
 
       if (boost::regex_match(currStr, matches, reLuIntervals))
       {
-        typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+        typename AugmentedData<Matrix<Type> >::MisVal misVal;
         misVal.first = missingLUIntervals_;
         misVal.second.push_back(str2type<Type>(matches[1].str()));
         augData.setMissing(i, j, misVal);
@@ -221,7 +221,7 @@ void DataHandlerR::getData(std::string const& idData,
 
       if (boost::regex_match(currStr, matches, reRuIntervals))
       {
-        typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+        typename AugmentedData<Matrix<Type> >::MisVal misVal;
         misVal.first = missingRUIntervals_;
         misVal.second.push_back(str2type<Type>(matches[1].str()));
         augData.setMissing(i, j, misVal);
@@ -233,7 +233,7 @@ void DataHandlerR::getData(std::string const& idData,
       }
 
       // if missing value is none of the above...
-      typename AugmentedData<STK::Array2D<Type> >::MisVal misVal;
+      typename AugmentedData<Matrix<Type> >::MisVal misVal;
       misVal.first = missing_;
       augData.setMissing(i, j, misVal);
 #ifdef MC_DEBUG

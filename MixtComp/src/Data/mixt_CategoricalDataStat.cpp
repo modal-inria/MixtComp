@@ -23,16 +23,13 @@
 
 #include "mixt_CategoricalDataStat.h"
 #include "../Various/mixt_Constants.h"
-#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
 
-CategoricalDataStat::CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                                         Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
-                                                       Eigen::Dynamic,
-                                                       Eigen::Dynamic>* p_dataStatStorage,
-                                         STK::Real confidenceLevel,
+CategoricalDataStat::CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+                                         Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
+                                         Real confidenceLevel,
                                          int nbClass) :
     nbClass_(nbClass),
     pm_augDataij_(pm_augDataij),
@@ -52,7 +49,7 @@ void CategoricalDataStat::sample(int ind)
     std::cout << "CategoricalDataStat::sample, modality 0 detected" << std::endl;
   }
 #endif
-  stat_[currMod] += 1.;
+  stat_[currMod - minModality] += 1.;
 }
 
 void CategoricalDataStat::sampleVals(int ind,
@@ -71,32 +68,32 @@ void CategoricalDataStat::sampleVals(int ind,
       std::cout << "\tminModality: " << minModality << std::endl;
       std::cout << "\tnbClass_: " << nbClass_ << std::endl;
 #endif
-      stat_.resize(STK::Range(minModality,
-                              nbClass_));
+      stat_.resize(pm_augDataij_->dataRange_.range_);
+      stat_ = 0.;
 
-      // clear current individual
-      (*p_dataStatStorage_)(ind, 0) = std::vector<std::pair<int, STK::Real> >();
+      // clear output storage for current individual, a vector of <modality, proba>, ordered by decreasing probability
+      // up to a cut-off defined by confidenceLevel
+      (*p_dataStatStorage_)(ind, 0) = std::vector<std::pair<int, Real> >();
 
       // first sampling, on each missing variables
       sample(ind);
     }
     else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
     {
-      // last sampling
-      sample(ind);
+      sample(ind); // last sampling
 
-      STK::Array2DVector<STK::Real> proba = stat_ / STK::Real(iterationMax + 1); // from count to probabilities
-      STK::Array2DPoint<int> indOrder; // to store indices of ascending order
-      STK::heapSort(indOrder, proba);
-      STK::Real cumProb = 0.;
+      stat_ /= Real(iterationMax + 1); // from count to probabilities
+      Vector<int> indOrder; // to store indices of ascending order
+      sortContiguousIndex(stat_, indOrder);
+      Real cumProb = 0.;
 
-      for (int i = nbClass_;
-           i > minModality - 1;
+      for (int i = nbClass_ - 1; // from the most probable modality ...
+           i > -1; // ... to the least probable modality
            --i)
       {
         int currMod = indOrder[i];
-        STK::Real currProba = proba[currMod];
-        (*p_dataStatStorage_)(ind, 0).push_back(std::pair<int, STK::Real>(currMod, currProba));
+        Real currProba = stat_[currMod];
+        (*p_dataStatStorage_)(ind, 0).push_back(std::pair<int, Real>(currMod + minModality, currProba));
         cumProb += currProba;
 #ifdef MC_DEBUG
         std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;
@@ -110,7 +107,7 @@ void CategoricalDataStat::sampleVals(int ind,
       }
     }
 #ifdef MC_DEBUG
-    for (std::vector<std::pair<int, STK::Real> >::const_iterator itVec = (*p_dataStatStorage_)(ind, 0).begin();
+    for (std::vector<std::pair<int, Real> >::const_iterator itVec = (*p_dataStatStorage_)(ind, 0).begin();
          itVec != (*p_dataStatStorage_)(ind, 0).end();
          ++itVec)
     {

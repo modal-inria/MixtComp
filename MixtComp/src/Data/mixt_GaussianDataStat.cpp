@@ -22,14 +22,13 @@
  **/
 
 #include "mixt_GaussianDataStat.h"
-#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
 
-GaussianDataStat::GaussianDataStat(const AugmentedData<STK::Array2D<STK::Real> >* pm_augDataij,
-                                   STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
-                                   STK::Real confidenceLevel,
+GaussianDataStat::GaussianDataStat(const AugmentedData<Matrix<Real> >* pm_augDataij,
+                                   Matrix<RowVector<Real> >* p_dataStatStorage,
+                                   Real confidenceLevel,
                                    int nbClass) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
@@ -41,7 +40,7 @@ GaussianDataStat::~GaussianDataStat() {};
 void GaussianDataStat::sample(int ind,
                               int iteration)
 {
-  STK::Real currVal = pm_augDataij_->data_(ind,
+  Real currVal = pm_augDataij_->data_(ind,
                                            0);
   stat_[iteration] = currVal;
 }
@@ -61,12 +60,13 @@ void GaussianDataStat::sampleVals(int ind,
       stat_.resize(iterationMax + 1);
 
   #ifdef MC_DEBUG
-      std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
+      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): "<< p_dataStatStorage_->cols() << std::endl;
   #endif
       // clear current individual
-      for (int j = 0; j < pm_augDataij_->data_.sizeCols(); ++j)
+      for (int j = 0; j < pm_augDataij_->data_.cols(); ++j)
       {
-        p_dataStatStorage_->elt(ind, j) = STK::Array2DPoint<STK::Real>(3, 0.);
+        (*p_dataStatStorage_)(ind, j) = RowVector<Real>(3);
+        (*p_dataStatStorage_)(ind, j) = 0.;
       }
 
       // first sampling
@@ -80,24 +80,24 @@ void GaussianDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
       std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
       std::cout << "j: " << j << std::endl;
-      std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): " << p_dataStatStorage_->sizeCols() << std::endl;
-      std::cout << "tempStat_[j].sizeRows(): " << tempStat_[j].sizeRows() << std::endl;
+      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): " << p_dataStatStorage_->cols() << std::endl;
+      std::cout << "tempStat_[j].rows(): " << tempStat_[j].rows() << std::endl;
       std::cout << "tempStat_[j]: " << std::endl;
       std::cout << tempStat_[j] << std::endl;
 #endif
-      STK::Array2DVector<int> indOrder; // to store indices of ascending order
-      STK::heapSort(indOrder, stat_);
-      STK::Real alpha = (1. - confidenceLevel_) / 2.;
-      STK::Real realIndLow = alpha * iterationMax;
-      STK::Real realIndHigh = (1. - alpha) * iterationMax;
+      Vector<int> indOrder; // to store indices of ascending order
+      sortContiguousIndex(stat_, indOrder);
+      Real alpha = (1. - confidenceLevel_) / 2.;
+      Real realIndLow = alpha * iterationMax;
+      Real realIndHigh = (1. - alpha) * iterationMax;
 
-      STK::Array2DPoint<STK::Real> tempPoint(3);
+      RowVector<Real> tempPoint(3);
       tempPoint[0] = stat_.mean();
       tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_[indOrder[int(realIndLow )    ]]
                     + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];
       tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_[indOrder[int(realIndHigh)    ]]
                     + (      realIndHigh - int(realIndHigh) ) * stat_[indOrder[int(realIndHigh) + 1]];
-      p_dataStatStorage_->elt(ind, 0) = tempPoint;
+      (*p_dataStatStorage_)(ind, 0) = tempPoint;
 #ifdef MC_DEBUG
       std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
       std::cout << "alpha: " << alpha << std::endl;

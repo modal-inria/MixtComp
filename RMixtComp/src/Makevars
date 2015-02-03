@@ -20,8 +20,6 @@
 #               Serge IOVLEFF <serge.iovleff@stkpp.org>
 #------------------------------------------------------------------------
 
-STKPPDIR = ../../stkpp
-STKPPLIB = ../../stkpp/lib/libSTKpp.a
 BOOSTINC = ../../boost
 EIGENINC = ../../eigen
 RELIB = regex/libregex.a
@@ -32,7 +30,7 @@ MCLIB = ../../MixtComp/lib/libMixtComp.a
 PKG_CXXFLAGS= -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I../../stkpp/projects -I$(BOOSTINC) -I$(EIGENINC)
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(STKPPLIB) $(RELIB)
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(RELIB)
 
 export
 
@@ -48,7 +46,6 @@ $(SHLIB): pkglib
 
 pkglib: $(RELIB)
 	(cd $(MCDIR) && $(MAKE) lib)
-	(cd $(STKPPDIR) && $(MAKE) all)
 
 $(RELIB):
 	cd regex; $(CXX) $(CXXFLAGS) -fPIC -I../../../boost -c ../../../boost/libs/regex/src/*.cpp; ar cr libregex.a *.o

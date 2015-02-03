@@ -37,7 +37,7 @@ class IMixture
      * @param nbCluster number of cluster
      */
     IMixture(std::string const& idName,
-             STK::Array2DVector<int> const* p_zi,
+             Vector<int> const* p_zi,
              int nbCluster) :
       idName_(idName),
       nbCluster_(nbCluster),
@@ -116,11 +116,11 @@ class IMixture
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
-    virtual void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k) = 0;
+    virtual void lnCompletedLikelihood(Vector<Real>* lnComp, int k) = 0;
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
-    virtual void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k) = 0;
+    virtual void lnObservedLikelihood(Vector<Real>* lnComp, int k) = 0;
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
@@ -155,16 +155,16 @@ class IMixture
     /** This function can be used in derived classes to get proportions from the framework.
      *  @return Pointer to proportions.
      */
-    STK::Real const* proportions() const;
+    Real const* proportions() const;
     /** This function can be used in derived classes to get the posterior probabilities
      *  from the framework.
      *  @return Pointer to tik.
      */
-    STK::Real const** posteriorProbabilities() const;
+    Real const** posteriorProbabilities() const;
     /** This function can be used in derived classes to get class labels from the framework.
      *  @return Pointer to zi.
      */
-    STK::Array2DVector<int> const* p_zi() const {return p_zi_;};
+    Vector<int> const* p_zi() const {return p_zi_;};
 
     /** Id name of the mixture */
     std::string idName_;
@@ -172,7 +172,7 @@ class IMixture
     int nbCluster_;
 
     /** Pointer to the zik class label */
-    STK::Array2DVector<int> const* p_zi_;
+    Vector<int> const* p_zi_;
 };
 
 } // namespace STK

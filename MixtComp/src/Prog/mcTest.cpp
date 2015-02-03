@@ -21,29 +21,18 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "DManager/include/STK_HeapSort.h"
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
-#include "Arrays/include/STK_Array2DPoint.h"
-#include "Arrays/include/STK_Display.h"
+#include <iostream>
+#include <limits>
+#include "../LinAlg/mixt_LinAlg.h"
+
+using namespace mixt;
 
 int main()
 {
-  STK::Array2D<STK::Real> test(3, 3, 0.);
-
-  test(0, 0) = 1.;
-  test(0, 1) = 12.;
-  test(0, 2) = 89.;
-  test(1, 0) = 14.;
-  test(1, 1) = 78.;
-  test(1, 2) = 1.3;
-  test(2, 0) = 0.5;
-  test(2, 1) = 74.7;
-  test(2, 2) = 3.3;
-
-  STK::Array2DVector<int> indOrder; // to store indices of ascending order
-  STK::heapSort(indOrder, test.row(1));
-
-  std::cout << test << std::endl;
-  std::cout << indOrder << std::endl;
+  Vector<Real> m(9);
+  m << 1, 3, 7,
+      13, 15, 5,
+       1, 3, 0;
+  std::cout << m.log()       << std::endl;
+  std::cout << m.log().exp() << std::endl;
 }

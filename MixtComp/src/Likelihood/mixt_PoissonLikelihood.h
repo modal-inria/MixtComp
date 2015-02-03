@@ -24,7 +24,7 @@
 #ifndef MIXT_POISSONLIKELIHOOD_H
 #define MIXT_POISSONLIKELIHOOD_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_PoissonStatistic.h"
 
@@ -35,28 +35,28 @@ class PoissonLikelihood
 {
   public:
     /** Constructor */
-    PoissonLikelihood(const STK::Array2DVector<STK::Real>* p_param,
-                      const AugmentedData<STK::Array2D<int> >* augData,
-                      const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
+    PoissonLikelihood(const Vector<Real>* p_param,
+                      const AugmentedData<Matrix<int> >* augData,
+                      const Matrix<RowVector<int> >* p_dataStatStorage,
                       int nbClass);
     /** Destructor */
     virtual ~PoissonLikelihood();
 
     /** Compute the completed log-likelihood */
-    void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    void lnCompletedLikelihood(Vector<Real>* lnComp, int k);
 
     /** Compute the observed log-likelihood */
-    void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    void lnObservedLikelihood(Vector<Real>* lnComp, int k);
 
   private:
     /** Pointer to parameters table */
-    const STK::Array2DVector<STK::Real>* p_param_;
+    const Vector<Real>* p_param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
-    const AugmentedData<STK::Array2D<int> >* p_augData_;
+    const AugmentedData<Matrix<int> >* p_augData_;
 
     /** Pointer to storage of statistics on missing values */
-    const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage_;
+    const Matrix<RowVector<int> >* p_dataStatStorage_;
 
     /** Statistic object to describe Poisson law */
     PoissonStatistic poisson_;

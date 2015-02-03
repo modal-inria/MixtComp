@@ -25,8 +25,9 @@
 #ifndef MIXT_CATEGORICALSAMPLER_H
 #define MIXT_CATEGORICALSAMPLER_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
+#include "../Statistic/mixt_MultinomialStatistic.h"
 
 namespace mixt
 {
@@ -34,16 +35,18 @@ namespace mixt
 class CategoricalSampler
 {
   public:
-    CategoricalSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                       const STK::Array2DVector<STK::Real>* p_param,
+    CategoricalSampler(AugmentedData<Matrix<int> >* p_augData,
+                       const Vector<Real>* p_param,
                        int nbClass);
     ~CategoricalSampler();
     /** Sample new values for the missing variables of the given individual */
     void sampleIndividual(int i, int z_i);
   private:
     int nbClass_;
-    AugmentedData<STK::Array2D<int> >* p_augData_;
-    const STK::Array2DVector<STK::Real>* p_param_;
+    AugmentedData<Matrix<int> >* p_augData_;
+    const Vector<Real>* p_param_;
+
+    MultinomialStatistic multi_;
 };
 
 } // namespace mixt

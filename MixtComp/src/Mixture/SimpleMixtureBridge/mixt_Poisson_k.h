@@ -27,8 +27,7 @@
 #define MIXT_POISSON_K_H
 
 #include <vector>
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_PoissonStatistic.h"
 
 namespace mixt
@@ -44,14 +43,14 @@ class Poisson_k
 
     int computeNbFreeParameters() const;
 
-    void getParameters(STK::Array2DVector<STK::Real>& param) const;
+    void getParameters(Vector<Real>& param) const;
 
     double lnComponentProbability(int i, int k) const;
 
     /** Set the parameters after the SEM, to the mean estimates for example */
-    void setParameters(const STK::Array2DVector<STK::Real>& param);
+    void setParameters(const Vector<Real>& param);
 
-    void setData(STK::Array2D<Type>& data);
+    void setData(Matrix<Type>& data);
 
     void initializeModel();
 
@@ -63,16 +62,16 @@ class Poisson_k
 
     void paramNames(std::vector<std::string>& names) const;
 
-    void setMixtureParameters(STK::Array2DVector<int> const* p_zi);
+    void setMixtureParameters(Vector<int> const* p_zi);
 
     void setModalities(int nbModalities);
 
     void writeParameters(std::ostream& out) const;
   private:
     int nbCluster_;
-    STK::Array2DVector<STK::Real> param_;
-    STK::Array2D<Type>* p_data_;
-    STK::Array2DVector<int> const* p_zi_;
+    Vector<Real> param_;
+    Matrix<Type>* p_data_;
+    Vector<int> const* p_zi_;
 
     /** Statistic object to describe Poisson law */
     PoissonStatistic poisson_;

@@ -26,9 +26,7 @@
 #include "../Mixture/mixt_IMixture.h"
 #include "../Various/mixt_IO.h"
 #include "../Various/mixt_Timer.h"
-#include "Arrays/include/STK_Display.h"
-#include "Arrays/include/STK_Array2DPoint.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -36,7 +34,7 @@ namespace mixt
 MixtureComposer::MixtureComposer(int nbSample,
                                  int nbVariable,
                                  int nbCluster,
-                                 STK::Real confidenceLevel) :
+                                 Real confidenceLevel) :
     mixt::IMixtureComposerBase(nbSample,
                                nbCluster),
     paramStat_(&prop_,
@@ -55,15 +53,15 @@ MixtureComposer::~MixtureComposer()
   }
 }
 
-STK::Real MixtureComposer::lnComponentProbability(int i, int k)
+Real MixtureComposer::lnComponentProbability(int i, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnComponentProbability(int i, int k), i: " << i << ", k: " << k << std::endl;
 #endif
-  STK::Real sum = 0.;
+  Real sum = 0.;
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
-    STK::Real logProba = (*it)->lnComponentProbability(i, k);
+    Real logProba = (*it)->lnComponentProbability(i, k);
     sum += logProba;
 #ifdef MC_DEBUG
     std::cout << (*it)->idName() << ", sum: " << sum << std::endl;
@@ -73,22 +71,21 @@ STK::Real MixtureComposer::lnComponentProbability(int i, int k)
 }
 
 /** @return the value of the observed likelihood */
-STK::Real MixtureComposer::lnObservedLikelihood()
+Real MixtureComposer::lnObservedLikelihood()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnObservedLikelihood() " << std::endl;
 #endif
-  STK::Real lnLikelihood = 0.;
-  STK::Array2D<STK::Real> lnComp(nbSample_,
-                                 nbCluster_,
-                                 0.);
+  Real lnLikelihood = 0.;
+  Matrix<Real> lnComp(nbSample_,
+                      nbCluster_);
   for (int k = 0; k < nbCluster_; ++k)
   {
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
-    tempVec += std::log(prop_[k]);
+    Vector<Real> tempVec(nbSample_);
+    tempVec = std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       (*it)->lnObservedLikelihood(&tempVec, k);
@@ -97,7 +94,9 @@ STK::Real MixtureComposer::lnObservedLikelihood()
       std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
 #endif
     }
+    lnComp.col(k) = tempVec;
   }
+  //TODO: remove copying of temporary vector
 
   for (int i = 0; i < nbSample_; ++i)
   {
@@ -105,10 +104,10 @@ STK::Real MixtureComposer::lnObservedLikelihood()
     std::cout << "i: " << i << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
-    STK::Real max = lnComp.row(i).maxElt();
+    Real max = lnComp.row(i).maxCoeff();
     lnComp.row(i) -= max;
     lnComp.row(i) = lnComp.row(i).exp();
-    STK::Real sum = lnComp.row(i).sum();
+    Real sum = lnComp.row(i).sum();
     lnLikelihood += max + std::log(sum);
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
@@ -123,22 +122,21 @@ STK::Real MixtureComposer::lnObservedLikelihood()
 }
 
 /** @return the value of the completed likelihood */
-STK::Real MixtureComposer::lnCompletedLikelihood()
+Real MixtureComposer::lnCompletedLikelihood()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
 #endif
-  STK::Real lnLikelihood = 0.;
-  STK::Array2D<STK::Real> lnComp(nbSample_,
-                                 nbCluster_,
-                                 0.);
+  Real lnLikelihood = 0.;
+  Matrix<Real> lnComp(nbSample_,
+                      nbCluster_);
   for (int k = 0; k < nbCluster_; ++k)
   {
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
-    tempVec += std::log(prop_[k]);
+    Vector<Real> tempVec(nbSample_);
+    tempVec = std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       (*it)->lnCompletedLikelihood(&tempVec, k);
@@ -147,9 +145,10 @@ STK::Real MixtureComposer::lnCompletedLikelihood()
       std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
 #endif
     }
+    lnComp.col(k) = tempVec;
   }
 
-  // Compute the observed / completed likelihood for the complete mixture model
+  // Compute the completed likelihood for the complete mixture model
   for (int i = 0; i < nbSample_; ++i)
   {
 #ifdef MC_DEBUG
@@ -163,22 +162,21 @@ STK::Real MixtureComposer::lnCompletedLikelihood()
 }
 
 /** @return the value of the semi-completed likelihood (completion only for latent class) */
-STK::Real MixtureComposer::lnSemiCompletedLikelihood()
+Real MixtureComposer::lnSemiCompletedLikelihood()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnSemiCompletedLikelihood() " << std::endl;
 #endif
-  STK::Real lnLikelihood = 0.;
-  STK::Array2D<STK::Real> lnComp(nbSample_,
-                                 nbCluster_,
-                                 0.);
+  Real lnLikelihood = 0.;
+  Matrix<Real> lnComp(nbSample_,
+                      nbCluster_);
   for (int k = 0; k < nbCluster_; ++k)
   {
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    STK::Array2DVector<STK::Real> tempVec(lnComp.col(k), true);
-    tempVec += std::log(prop_[k]);
+    Vector<Real> tempVec(nbSample_);
+    tempVec = std::log(prop_[k]);
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       (*it)->lnObservedLikelihood(&tempVec, k);
@@ -187,9 +185,10 @@ STK::Real MixtureComposer::lnSemiCompletedLikelihood()
       std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
 #endif
     }
+    lnComp.col(k) = tempVec;
   }
 
-  // Compute the observed / completed likelihood for the complete mixture model
+  // Compute the completed likelihood for the complete mixture model
   for (int i = 0; i < nbSample_; ++i)
   {
 #ifdef MC_DEBUG
@@ -219,15 +218,15 @@ std::string MixtureComposer::mStep()
   return warn;
 }
 
-void MixtureComposer::writeParameters(std::ostream& os) const
+void MixtureComposer::writeParameters(std::ostream& out) const
 {
-  std::cout << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
-  std::cout << "Composer proportions = " << prop_ << std::endl;
+  out << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
+  out << "Composer proportions = " << prop_ << std::endl;
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    stk_cout << _T("Parameters of the mixtures:") << (*it)->idName() << _T("\n");
-    (*it)->writeParameters(os);
+    out << "Parameters of the mixtures: " << (*it)->idName() << "\n";
+    (*it)->writeParameters(out);
   }
 }
 
@@ -296,9 +295,8 @@ void MixtureComposer::misClasStep(int iteration)
   std::cout << "MixtureComposer::misClasStep" << std::endl;
 
 #endif
-  STK::Array2D<STK::Real> probClass(nbSample_,
-                                    nbCluster_,
-                                    0.);
+  Matrix<Real> probClass(nbSample_,
+                         nbCluster_);
 
   // computation of the log probability with adequately sampled missing values
   for (int k = 0; k < nbCluster_; ++k)
@@ -320,12 +318,12 @@ void MixtureComposer::misClasStep(int iteration)
   // equivalent of the estep to compute new tik_
   for (int i = 0; i < nbSample_; ++i)
   {
-    STK::Array2DPoint<STK::Real> lnComp;
+    RowVector<Real> lnComp;
     lnComp = probClass.row(i);
-    STK::Real lnCompMax = lnComp.maxElt();
+    Real lnCompMax = lnComp.maxCoeff();
     lnComp -= lnCompMax;
     lnComp = lnComp.exp();
-    STK::Real sum = lnComp.sum();
+    Real sum = lnComp.sum();
     tik_.row(i) = lnComp / sum;
   }
 }
@@ -385,7 +383,7 @@ void MixtureComposer::storeGibbsRun(int sample,
     std::cout << "\tnik_.row(sample): " << nik_.row(sample) << std::endl;
 #endif
     nik_(sample, zi_[sample]) += 1.;
-    tik_.row(sample) = nik_.row(sample) / STK::Real(iterationMax + 1);
+    tik_.row(sample) = nik_.row(sample) / Real(iterationMax + 1);
   }
   else // increment relevant nik values according to sampled zi_
   {

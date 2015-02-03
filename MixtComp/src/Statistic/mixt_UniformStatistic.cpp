@@ -40,30 +40,30 @@ UniformStatistic::UniformStatistic() :
 UniformStatistic::~UniformStatistic()
 {}
 
-STK::Real UniformStatistic::cdf(Type x,
-                                STK::Real min,
-                                STK::Real max) const
+Real UniformStatistic::cdf(Type x,
+                                Real min,
+                                Real max) const
 {
   boost::math::uniform uni(min,
                            max);
-  STK::Real proba = boost::math::cdf(uni,
+  Real proba = boost::math::cdf(uni,
                                      x);
   return proba;
 }
 
-STK::Real UniformStatistic::pdf(Type x,
-                                STK::Real min,
-                                STK::Real max) const
+Real UniformStatistic::pdf(Type x,
+                                Real min,
+                                Real max) const
 {
   boost::math::uniform uni(min,
                            max);
-  STK::Real proba = boost::math::pdf(uni,
+  Real proba = boost::math::pdf(uni,
                                      x);
   return proba;
 }
 
-Type UniformStatistic::sample(STK::Real min,
-                              STK::Real max)
+Type UniformStatistic::sample(Real min,
+                              Real max)
 {
   boost::random::uniform_real_distribution<> uni(min,
                                                  max);

@@ -25,8 +25,7 @@
 #ifndef MIXT_GAUSSIANSAMPLER_H
 #define MIXT_GAUSSIANSAMPLER_H
 
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_UniformStatistic.h"
 #include "../Statistic/mixt_NormalStatistic.h"
@@ -38,15 +37,15 @@ namespace mixt
 class GaussianSampler
 {
   public:
-    GaussianSampler(AugmentedData<STK::Array2D<STK::Real> >* p_augData,
-                    const STK::Array2DVector<STK::Real>* p_param,
+    GaussianSampler(AugmentedData<Matrix<Real> >* p_augData,
+                    const Vector<Real>* p_param,
                     int nbClass);
     ~GaussianSampler();
     /** Sample new values for the missing variables of the given individual */
     void sampleIndividual(int i, int z_i);
   private:
-    AugmentedData<STK::Array2D<STK::Real> >* p_augData_;
-    const STK::Array2DVector<STK::Real>* p_param_;
+    AugmentedData<Matrix<Real> >* p_augData_;
+    const Vector<Real>* p_param_;
 
     UniformStatistic uniform_;
     NormalStatistic normal_;

@@ -24,7 +24,7 @@
 #ifndef MIXT_PARAMEXTRACTORR_H
 #define MIXT_PARAMEXTRACTORR_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 #include "Rcpp.h"
 
 namespace mixt
@@ -36,10 +36,10 @@ class ParamExtractorR
     ParamExtractorR();
     ~ParamExtractorR();
     void exportParam(std::string idName,
-                     const STK::Array2D<STK::Real>* p_params,
-                     const STK::Array2D<STK::Real>* p_paramsLogs,
+                     const Matrix<Real>* p_params,
+                     const Matrix<Real>* p_paramsLogs,
                      const std::vector<std::string>& paramNames,
-                     const STK::Real confidenceLevel);
+                     const Real confidenceLevel);
     Rcpp::List rcppReturnParam() const;
   private:
     Rcpp::List param_;

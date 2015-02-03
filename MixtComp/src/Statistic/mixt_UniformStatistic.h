@@ -24,7 +24,7 @@
 #ifndef MIXT_UNIFORMSTATISTIC_H
 #define MIXT_UNIFORMSTATISTIC_H
 
-#include "STKernel/include/STK_Real.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include <boost/random/mersenne_twister.hpp>
 
 namespace mixt
@@ -33,24 +33,24 @@ namespace mixt
 class UniformStatistic
 {
   public:
-    typedef STK::Real Type;
+    typedef Real Type;
 
     UniformStatistic();
     ~UniformStatistic();
 
     /** cdf evaluated at individual x */
-    STK::Real cdf(Type x,
-                  STK::Real min,
-                  STK::Real max) const;
+    Real cdf(Type x,
+                  Real min,
+                  Real max) const;
 
     /** pdf evaluated at individual x */
-    STK::Real pdf(Type x,
-                  STK::Real min,
-                  STK::Real max) const;
+    Real pdf(Type x,
+                  Real min,
+                  Real max) const;
 
     /** Sample a value from a Normal Law with parameters mean and sd */
-    Type sample(STK::Real min,
-                     STK::Real max);
+    Type sample(Real min,
+                Real max);
   private:
     /** Random number generator */
     boost::random::mt19937 rng_;

@@ -26,8 +26,7 @@
 #define MIXT_CATEGORICAL_PJK
 
 #include <vector>
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -40,25 +39,25 @@ class Categorical_pjk
     ~Categorical_pjk();
 
     int computeNbFreeParameters() const;
-    void getParameters(STK::Array2DVector<STK::Real>& param) const;
+    void getParameters(Vector<Real>& param) const;
     void initializeModel();
     void initializeStep();
     double lnComponentProbability(int i, int k) const;
     std::string mStep();
     int nbVariable() const;
     void paramNames(std::vector<std::string>& names) const;
-    void setData(STK::Array2D<Type>& data);
-    void setMixtureParameters(STK::Array2DVector<int> const* p_zi);
+    void setData(Matrix<Type>& data);
+    void setMixtureParameters(Vector<int> const* p_zi);
     void setModalities(int nbModalities);
-    void setParameters(const STK::Array2DVector<STK::Real>& param);
+    void setParameters(const Vector<Real>& param);
     void writeParameters(std::ostream& out) const;
 
   private:
     int nbCluster_;
     int nbModalities_;
-    STK::Array2D<Type>* p_data_;
-    STK::Array2DVector<STK::Real> param_;
-    STK::Array2DVector<int> const* p_zi_;
+    Matrix<Type>* p_data_;
+    Vector<Real> param_;
+    Vector<int> const* p_zi_;
 };
 
 } // namespace mixt

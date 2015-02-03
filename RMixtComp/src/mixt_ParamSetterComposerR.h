@@ -24,7 +24,7 @@
 #ifndef MIXT_PARAMSETTERCOMPOSERR_H
 #define MIXT_PARAMSETTERCOMPOSERR_H
 
-#include "Arrays/include/STK_Array2DVector.h"
+#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -34,7 +34,7 @@ class ParamSetterComposerR
   public:
     ParamSetterComposerR(Rcpp::NumericVector prop);
     ~ParamSetterComposerR();
-    STK::Array2DVector<STK::Real> getProportions() const;
+    Vector<Real> getProportions() const;
   private:
     Rcpp::NumericVector prop_;
 };

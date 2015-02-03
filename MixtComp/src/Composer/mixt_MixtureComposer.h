@@ -62,7 +62,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     MixtureComposer(int nbSample,
                     int nbVariable,
                     int nbCluster,
-                    STK::Real confidenceLevel);
+                    Real confidenceLevel);
     /** copy constructor.
      *  @param composer the composer to copy
      */
@@ -81,19 +81,19 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    virtual STK::Real lnComponentProbability(int i, int k);
+    virtual Real lnComponentProbability(int i, int k);
 
     /** @return the value of the observed likelihood */
-    virtual STK::Real lnObservedLikelihood();
+    virtual Real lnObservedLikelihood();
 
     /** @return the value of the completed likelihood */
-    virtual STK::Real lnCompletedLikelihood();
+    virtual Real lnCompletedLikelihood();
 
     /** @return the value of the semi-completed likelihood (completion only for latent class) */
-    virtual STK::Real lnSemiCompletedLikelihood();
+    virtual Real lnSemiCompletedLikelihood();
 
     /** write the parameters of the model in the stream os. */
-    virtual void writeParameters(STK::ostream& os) const;
+    virtual void writeParameters(std::ostream& os) const;
 
     /** @brief compute the number of free parameters of the model.
      *  lookup on the mixtures and sum the nbFreeParameter.
@@ -158,7 +158,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     void gibbsSampling(int nbGibbsIter);
 
     /** @return the logs of the proportions */
-    inline STK::Array2D<STK::Real> const* p_pkLog() const
+    inline Matrix<Real> const* p_pkLog() const
     {
       return &paramlog_;
     };
@@ -170,13 +170,13 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     SimpleParamStat paramStat_;
 
     /** storage for proportions statistics */
-    STK::Array2D<STK::Real> paramStatStorage_;
+    Matrix<Real> paramStatStorage_;
 
     /** Log for sampled parameters */
-    STK::Array2D<STK::Real> paramlog_;
+    Matrix<Real> paramlog_;
 
     /** storage for number of samples during Gibbs */
-    STK::Array2D<STK::Real> nik_;
+    Matrix<Real> nik_;
 };
 
 } /* namespace mixt */

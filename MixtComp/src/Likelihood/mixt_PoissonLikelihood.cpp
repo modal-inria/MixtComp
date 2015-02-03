@@ -23,16 +23,14 @@
 
 #include "mixt_PoissonLikelihood.h"
 #include "../Various/mixt_Def.h"
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
-#include "Arrays/include/STK_Array2DPoint.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
 
-PoissonLikelihood::PoissonLikelihood(const STK::Array2DVector<STK::Real>* p_param,
-                                     const AugmentedData<STK::Array2D<int> >* augData,
-                                     const STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
+PoissonLikelihood::PoissonLikelihood(const Vector<Real>* p_param,
+                                     const AugmentedData<Matrix<int> >* augData,
+                                     const Matrix<RowVector<int> >* p_dataStatStorage,
                                      int nbClass) :
     p_param_(p_param),
     p_augData_(augData),
@@ -42,7 +40,7 @@ PoissonLikelihood::PoissonLikelihood(const STK::Array2DVector<STK::Real>* p_para
 PoissonLikelihood::~PoissonLikelihood()
 {}
 
-void PoissonLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+void PoissonLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
    std::cout << "PoissonLikelihood::lnCompletedLikelihood" << std::endl;
@@ -50,10 +48,10 @@ void PoissonLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnC
 #endif
   // likelihood for present data
 
-  STK::Real lambda = p_param_->elt(k, 0);
-  STK::Real proba;
+  Real lambda = (*p_param_)(k, 0);
+  Real proba;
 
-  for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+  for (int i = 0; i < p_augData_->data_.rows(); ++i)
   {
     if (p_augData_->misData_(i, 0).first == present_)   // likelihood for present value
     {
@@ -62,24 +60,24 @@ void PoissonLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnC
     }
     else // likelihood for missing values, imputation by the expectation (temporary placeholder ...)
     {
-      proba = poisson_.pdf(p_dataStatStorage_->elt(i, 0)[0],
+      proba = poisson_.pdf((*p_dataStatStorage_)(i, 0)[0],
                            lambda);
     }
-    lnComp->elt(i) += std::log(proba);
+    (*lnComp)(i) += std::log(proba);
   }
 }
 
-void PoissonLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+void PoissonLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
       std::cout << "PoissonLikelihood::lnObservedLikelihood" << std::endl;
       std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
 #endif
   // likelihood for present data
-  for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+  for (int i = 0; i < p_augData_->data_.rows(); ++i)
   {
-    STK::Real lambda = p_param_->elt(k, 0);
-    STK::Real proba;
+    Real lambda = (*p_param_)(k, 0);
+    Real proba;
 
     switch(p_augData_->misData_(i, 0).first)   // likelihood for present value
     {
@@ -103,7 +101,7 @@ void PoissonLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnCo
       {}
       break;
     }
-    lnComp->elt(i) += std::log(proba);
+    (*lnComp)(i) += std::log(proba);
 
 #ifdef MC_DEBUG
     std::cout << "\tproba: " << proba << std::endl;

@@ -25,8 +25,8 @@
 
 namespace mixt
 {
-PoissonSampler::PoissonSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                               const STK::Array2DVector<STK::Real>* p_param,
+PoissonSampler::PoissonSampler(AugmentedData<Matrix<int> >* p_augData,
+                               const Vector<Real>* p_param,
                                int nbClass) :
     p_augData_(p_augData),
     p_param_(p_param)
@@ -45,7 +45,7 @@ void PoissonSampler::sampleIndividual(int i, int z_i)
   if (p_augData_->misData_(i, 0).first != present_)
   {
     int x;
-    STK::Real lambda = p_param_->elt(z_i);
+    Real lambda = (*p_param_)(z_i);
 
 #ifdef MC_DEBUG
     std::cout << "\tlambda: " << lambda << std::endl;

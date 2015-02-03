@@ -24,7 +24,7 @@
 #ifndef MIXT_GAUSSIANLIKELIHOOD_H
 #define MIXT_GAUSSIANLIKELIHOOD_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_NormalStatistic.h"
 
@@ -35,28 +35,28 @@ class GaussianLikelihood
 {
   public:
     /** Constructor */
-    GaussianLikelihood(const STK::Array2DVector<STK::Real>* p_param,
-                       const AugmentedData<STK::Array2D<STK::Real> >* augData,
-                       const STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
+    GaussianLikelihood(const Vector<Real>* p_param,
+                       const AugmentedData<Matrix<Real> >* augData,
+                       const Matrix<RowVector<Real> >* p_dataStatStorage,
                        int nbClass);
     /** Destructor */
     virtual ~GaussianLikelihood();
 
     /** Compute the completed log-likelihood */
-    void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    void lnCompletedLikelihood(Vector<Real>* lnComp, int k);
 
     /** Compute the observed log-likelihood */
-    void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    void lnObservedLikelihood(Vector<Real>* lnComp, int k);
 
   private:
     /** Pointer to parameters table */
-    const STK::Array2DVector<STK::Real>* p_param_;
+    const Vector<Real>* p_param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
-    const AugmentedData<STK::Array2D<STK::Real> >* p_augData_;
+    const AugmentedData<Matrix<Real> >* p_augData_;
 
     /** Pointer to storage of statistics on missing values */
-    const STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage_;
+    const Matrix<RowVector<Real> >* p_dataStatStorage_;
 
     NormalStatistic normal_;
 };

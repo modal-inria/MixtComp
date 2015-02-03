@@ -23,16 +23,14 @@
 
 #include "mixt_GaussianLikelihood.h"
 #include "../Various/mixt_Def.h"
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DVector.h"
-#include "Arrays/include/STK_Array2DPoint.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
 
-GaussianLikelihood::GaussianLikelihood(const STK::Array2DVector<STK::Real>* p_param,
-                                       const AugmentedData<STK::Array2D<STK::Real> >* augData,
-                                       const STK::Array2D<STK::Array2DPoint<STK::Real> >* p_dataStatStorage,
+GaussianLikelihood::GaussianLikelihood(const Vector<Real>* p_param,
+                                       const AugmentedData<Matrix<Real> >* augData,
+                                       const Matrix<RowVector<Real> >* p_dataStatStorage,
                                        int nbClass) :
     p_param_(p_param),
     p_augData_(augData),
@@ -42,63 +40,63 @@ GaussianLikelihood::GaussianLikelihood(const STK::Array2DVector<STK::Real>* p_pa
 GaussianLikelihood::~GaussianLikelihood()
 {}
 
-void GaussianLikelihood::lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+void GaussianLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
       std::cout << "GaussianLikelihood::lnCompletedLikelihood" << std::endl;
 #endif
   // likelihood for present data
-  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
+  for (int j = 0; j < p_augData_->data_.cols(); ++j)
   {
-    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+    for (int i = 0; i < p_augData_->data_.rows(); ++i)
     {
       if (p_augData_->misData_(i, j).first == present_)   // likelihood for present value
       {
-        STK::Real mean  = p_param_->elt(2 * k    , j);
-        STK::Real sd    = p_param_->elt(2 * k + 1, j);
+        Real mean  = (*p_param_)(2 * k    , j);
+        Real sd    = (*p_param_)(2 * k + 1, j);
 
-        STK::Real logProba = normal_.lpdf(p_augData_->data_(i, j),
-                                          mean,
-                                          sd);
+        Real logProba = normal_.lpdf(p_augData_->data_(i, j),
+                                     mean,
+                                     sd);
 
-        lnComp->elt(i) += logProba;
+        (*lnComp)(i) += logProba;
       }
       else // likelihood for missing values, imputation by the expectation
       {
-        STK::Real mean  = p_param_->elt(2 * k    , j);
-        STK::Real sd    = p_param_->elt(2 * k + 1, j);
+        Real mean  = (*p_param_)(2 * k    , j);
+        Real sd    = (*p_param_)(2 * k + 1, j);
 
-        STK::Real logProba = normal_.lpdf(p_dataStatStorage_->elt(i, j)[0],
-                                          mean,
-                                          sd);
+        Real logProba = normal_.lpdf((*p_dataStatStorage_)(i, j)[0],
+                                      mean,
+                                      sd);
 
-        lnComp->elt(i) += logProba;
+        (*lnComp)(i) += logProba;
       }
     }
   }
 }
 
-void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k)
+void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
 {
 #ifdef MC_DEBUG
       std::cout << "GaussianLikelihood::lnObservedLikelihood" << std::endl;
 #endif
   // likelihood for present data
-  for (int j = 0; j < p_augData_->data_.sizeCols(); ++j)
+  for (int j = 0; j < p_augData_->data_.cols(); ++j)
   {
-    for (int i = 0; i < p_augData_->data_.sizeRows(); ++i)
+    for (int i = 0; i < p_augData_->data_.rows(); ++i)
     {
-      STK::Real mean  = p_param_->elt(2 * k    , j);
-      STK::Real sd    = p_param_->elt(2 * k + 1, j);
+      Real mean  = (*p_param_)(2 * k    , j);
+      Real sd    = (*p_param_)(2 * k + 1, j);
 
-      STK::Real logProba;
+      Real logProba;
 
       switch(p_augData_->misData_(i, j).first)   // likelihood for present value
       {
         case present_:
         {
-          STK::Real mean  = p_param_->elt(2 * k    , j);
-          STK::Real sd    = p_param_->elt(2 * k + 1, j);
+          Real mean  = (*p_param_)(2 * k    , j);
+          Real sd    = (*p_param_)(2 * k + 1, j);
 
           logProba = normal_.lpdf(p_augData_->data_(i, j),
                                   mean,
@@ -117,8 +115,8 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
 
         case missingIntervals_:
         {
-          STK::Real infBound  = p_augData_->misData_(i, j).second[0];
-          STK::Real supBound  = p_augData_->misData_(i, j).second[1];
+          Real infBound  = p_augData_->misData_(i, j).second[0];
+          Real supBound  = p_augData_->misData_(i, j).second[1];
 #ifdef MC_DEBUG
       std::cout << "\tmissingIntervals_" << std::endl;
       std::cout << "\tleftBound: " << leftBound << "\tboost::math::cdf(norm, leftBound): " << boost::math::cdf(norm, leftBound) << std::endl;
@@ -138,7 +136,7 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
 #ifdef MC_DEBUG
       std::cout << "\tmissingLUIntervals_" << std::endl;
 #endif
-          STK::Real supBound = p_augData_->misData_(i, j).second[0];
+          Real supBound = p_augData_->misData_(i, j).second[0];
 
           logProba = std::log(normal_.cdf(supBound,
                                           mean,
@@ -151,7 +149,7 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
 #ifdef MC_DEBUG
       std::cout << "\tmissingRUIntervals_" << std::endl;
 #endif
-          STK::Real infBound = p_augData_->misData_(i, j).second[0];
+          Real infBound = p_augData_->misData_(i, j).second[0];
 
 
           logProba = std::log(1. - normal_.cdf(infBound,
@@ -165,7 +163,7 @@ void GaussianLikelihood::lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnC
         break;
       }
 
-      lnComp->elt(i) += logProba;
+      (*lnComp)(i) += logProba;
 
 #ifdef MC_DEBUG
       std::cout << "\tlogProba: " << logProba << std::endl;

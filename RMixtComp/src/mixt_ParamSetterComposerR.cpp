@@ -34,10 +34,9 @@ ParamSetterComposerR::ParamSetterComposerR(Rcpp::NumericVector prop) :
 ParamSetterComposerR::~ParamSetterComposerR()
 {}
 
-STK::Array2DVector<STK::Real> ParamSetterComposerR::getProportions() const
+Vector<Real> ParamSetterComposerR::getProportions() const
 {
-  STK::Array2DVector<STK::Real> prop(prop_.size(),
-                                   0.);
+  Vector<Real> prop(prop_.size());
   for (int i = 0; i < prop_.size(); ++i)
   {
     prop[i] = prop_[i];

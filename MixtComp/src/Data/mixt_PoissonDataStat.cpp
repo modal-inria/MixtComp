@@ -22,14 +22,13 @@
  **/
 
 #include "mixt_PoissonDataStat.h"
-#include "DManager/include/STK_HeapSort.h"
 
 namespace mixt
 {
 
-PoissonDataStat::PoissonDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                                 STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
-                                 STK::Real confidenceLevel,
+PoissonDataStat::PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+                                 Matrix<RowVector<int> >* p_dataStatStorage,
+                                 Real confidenceLevel,
                                  int nbClass) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
@@ -61,10 +60,11 @@ void PoissonDataStat::sampleVals(int ind,
       stat_.resize(iterationMax + 1);
 
 #ifdef MC_DEBUG
-      std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): "<< p_dataStatStorage_->sizeCols() << std::endl;
+      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): "<< p_dataStatStorage_->cols() << std::endl;
 #endif
       // clear global individual
-      p_dataStatStorage_->elt(ind, 0) = STK::Array2DPoint<STK::Real>(3, 0.);
+      (*p_dataStatStorage_)(ind, 0) = RowVector<int>(3);
+      (*p_dataStatStorage_)(ind, 0) = 0.;
 
       // first sampling
       sample(ind, iteration);
@@ -77,24 +77,24 @@ void PoissonDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
       std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
       std::cout << "j: " << j << std::endl;
-      std::cout << "p_dataStatStorage_->sizeRows(): " << p_dataStatStorage_->sizeRows() << ", p_dataStatStorage_->sizeCols(): " << p_dataStatStorage_->sizeCols() << std::endl;
-      std::cout << "tempStat_[j].sizeRows(): " << tempStat_[j].sizeRows() << std::endl;
+      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): " << p_dataStatStorage_->cols() << std::endl;
+      std::cout << "tempStat_[j].rows(): " << tempStat_[j].rows() << std::endl;
       std::cout << "tempStat_[j]: " << std::endl;
       std::cout << tempStat_[j] << std::endl;
 #endif
-      STK::Array2DVector<int> indOrder; // to store indices of ascending order
-      STK::heapSort<STK::Array2DVector<int>, STK::Array2DVector<int> >(indOrder, stat_);
-      STK::Real alpha = (1. - confidenceLevel_) / 2.;
-      STK::Real realIndLow = alpha * iterationMax;
-      STK::Real realIndHigh = (1. - alpha) * iterationMax;
+      Vector<int> indOrder; // to store indices of ascending order
+      sortContiguousIndex(stat_, indOrder);
+      Real alpha = (1. - confidenceLevel_) / 2.;
+      Real realIndLow = alpha * iterationMax;
+      Real realIndHigh = (1. - alpha) * iterationMax;
 
-      STK::Array2DPoint<STK::Real> tempPoint(3);
+      RowVector<int> tempPoint(3);
       tempPoint[0] = int(stat_.mean()); // mode of a Poisson is lambda rounded down to the closest integer
       tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_[indOrder[int(realIndLow )    ]]
                     + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];
       tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_[indOrder[int(realIndHigh)    ]]
                     + (      realIndHigh - int(realIndHigh) ) * stat_[indOrder[int(realIndHigh) + 1]];
-      p_dataStatStorage_->elt(ind, 0) = tempPoint;
+      (*p_dataStatStorage_)(ind, 0) = tempPoint;
 #ifdef MC_DEBUG
       std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
       std::cout << "alpha: " << alpha << std::endl;

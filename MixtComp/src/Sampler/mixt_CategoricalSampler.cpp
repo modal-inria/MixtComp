@@ -22,13 +22,12 @@
  **/
 
 #include "mixt_CategoricalSampler.h"
-#include "STatistiK/include/STK_Law_Categorical.h"
 #include "../Various/mixt_Constants.h"
 
 namespace mixt
 {
-CategoricalSampler::CategoricalSampler(AugmentedData<STK::Array2D<int> >* p_augData,
-                                       const STK::Array2DVector<STK::Real>* p_param,
+CategoricalSampler::CategoricalSampler(AugmentedData<Matrix<int> >* p_augData,
+                                       const Vector<Real>* p_param,
                                        int nbClass) :
     nbClass_(nbClass),
     p_augData_(p_augData),
@@ -48,7 +47,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
   if (p_augData_->misData_(i, 0).first != present_)
   {
     int sampleVal;
-    int nbModalities = p_param_->sizeRows() / nbClass_;
+    int nbModalities = p_param_->rows() / nbClass_;
 
 #ifdef MC_DEBUG
     std::cout << "CategoricalSampler::sampleIndividual" << std::endl;
@@ -59,20 +58,20 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
     {
       case missing_:
       {
-        STK::Array2DVector<STK::Real> modalities = (*p_param_)[STK::Range(z_i * nbModalities,
-                                                                          nbModalities)];
-        sampleVal = STK::Law::Categorical::rand(modalities) - z_i * nbModalities;
+        Vector<Real> modalities = (*p_param_).block(z_i * nbModalities, 0,  // position of first element
+                                                    nbModalities      , 1); // dimension of the vector to extract
+        sampleVal = multi_.sample(modalities) + minModality;
       }
       break;
 
       case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
       {
-        STK::Array2DVector<STK::Real> modalities(STK::Range(0,
-                                                            nbModalities),
-                                                 0.);
-        STK::Array2DVector<STK::Real> equiModalities(STK::Range(0,
-                                                                nbModalities),
-                                                     0.);
+        Vector<Real> modalities(nbModalities);
+        modalities = 0.;
+
+        Vector<Real> equiModalities(nbModalities);
+        equiModalities = 0.;
+
         for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i, 0).second.begin();
             currMod != p_augData_->misData_(i, 0).second.end();
             ++currMod)
@@ -80,19 +79,19 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
           std::cout << "\tcurrMod: " << *currMod << std::endl;
 #endif
-          modalities.elt(*currMod) = (*p_param_)[z_i * nbModalities + *currMod - minModality];
-          equiModalities.elt(*currMod) = 1.;
+          modalities(*currMod - minModality) = (*p_param_)[z_i * nbModalities + *currMod - minModality];
+          equiModalities(*currMod - minModality) = 1.;
         }
-        STK::Real modSum = modalities.sum();
+        Real modSum = modalities.sum();
         if (modSum < minStat)
         {
           equiModalities = equiModalities / equiModalities.sum();
-          sampleVal = STK::Law::Categorical::rand(equiModalities);
+          sampleVal = multi_.sample(equiModalities) + minModality;
         }
         else
         {
           modalities = modalities / modalities.sum();
-          sampleVal = STK::Law::Categorical::rand(modalities);
+          sampleVal = multi_.sample(modalities) + minModality;
         }
       }
       break;
@@ -101,7 +100,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
       {}
       break;
     }
-    p_augData_->data_(i, 0) = sampleVal + minModality;
+    p_augData_->data_(i, 0) = sampleVal;
   }
 }
 } // namespace mixt

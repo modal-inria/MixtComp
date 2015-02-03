@@ -22,15 +22,14 @@
  *              iovleff, serge.iovleff@stkpp.org
  **/
 
-#include "STatistiK/include/STK_Law_Categorical.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
 {
 
 template<>
-Range<STK::Real>::Range(STK::Real min,
-                        STK::Real max) :
+Range<Real>::Range(Real min,
+                        Real max) :
     min_(min),
     max_(max),
     range_(max - min)
@@ -45,7 +44,7 @@ Range<int>::Range(int min,
 {}
 
 template<>
-void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
+void AugmentedData<Matrix<Real> >::removeMissing()
 {
   for (int j = 0; j < misData_.cols(); ++j)
   {
@@ -53,7 +52,7 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
     {
       if (misData_(i, j).first != present_)
       {
-        STK::Real sampleVal;
+        Real sampleVal;
         switch(misData_(i, j).first) // (iterator on map)->(mapped element).(MisType)
         {
           case present_:
@@ -62,8 +61,8 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 
           case missing_:
           {
-            STK::Real min = dataRange_.min_;
-            STK::Real max = dataRange_.max_;
+            Real min = dataRange_.min_;
+            Real max = dataRange_.max_;
             sampleVal = uniform_.sample(min,
                                         max);
           }
@@ -76,12 +75,12 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
           case missingIntervals_:
           {
   #ifdef MC_DEBUG
-            std::cout << "AugmentedData<STK::Array2D<STK::Real> >::removeMissing" << std::endl;
+            std::cout << "AugmentedData<Matrix<Real> >::removeMissing" << std::endl;
             std::cout << "case missingIntervals_" << std::endl;
             std::cout << "misData_(i, j).second.size(): " << misData_(i, j).second.size() << std::endl;
   #endif
-            STK::Real infBound = misData_(i, j).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
-            STK::Real supBound = misData_(i, j).second[1];
+            Real infBound = misData_(i, j).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
+            Real supBound = misData_(i, j).second[1];
             sampleVal = uniform_.sample(infBound,
                                         supBound);
           }
@@ -89,8 +88,8 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 
           case missingLUIntervals_:
           {
-            STK::Real min = dataRange_.min_;
-            STK::Real supBound = misData_(i, j).second[0];
+            Real min = dataRange_.min_;
+            Real supBound = misData_(i, j).second[0];
             if (min < supBound)
             {
               sampleVal = uniform_.sample(min,
@@ -105,8 +104,8 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 
           case missingRUIntervals_:
           {
-            STK::Real infBound = misData_(i, j).second[0];
-            STK::Real max = dataRange_.max_;
+            Real infBound = misData_(i, j).second[0];
+            Real max = dataRange_.max_;
             if (infBound < max)
             {
               sampleVal = uniform_.sample(infBound,
@@ -126,10 +125,10 @@ void AugmentedData<STK::Array2D<STK::Real> >::removeMissing()
 }
 
 template<>
-void AugmentedData<STK::Array2D<int> >::removeMissing()
+void AugmentedData<Matrix<int> >::removeMissing()
 {
 #ifdef MC_DEBUG
-  std::cout << "AugmentedData<STK::Array2D<int> >::removeMissing" << std::endl;
+  std::cout << "AugmentedData<Matrix<int> >::removeMissing" << std::endl;
 #endif
 
   for (int j = 0; j < misData_.cols(); ++j)
@@ -153,19 +152,17 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
 
           case missing_:
           {
-            STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality,
-                                                                nbModalities),
-                                                     1. / nbModalities);
-            sampleVal = STK::Law::Categorical::rand(modalities);
+            Vector<Real> modalities(nbModalities);
+            modalities = 1. / nbModalities;
+            sampleVal = multi_.sample(modalities) + minModality;
           }
           break;
 
           case missingFiniteValues_:
           {
-            STK::Real proba = 1. / misData_(i, j).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
-            STK::Array2DVector<STK::Real> modalities(STK::Range(firstModality,
-                                                                nbModalities),
-                                                     0.);
+            Real proba = 1. / misData_(i, j).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
+            Vector<Real> modalities(nbModalities);
+            modalities = 0.;
             for(std::vector<int>::const_iterator itParam = misData_(i, j).second.begin();
                 itParam != misData_(i, j).second.end();
                 ++itParam)
@@ -173,9 +170,9 @@ void AugmentedData<STK::Array2D<int> >::removeMissing()
   #ifdef MC_DEBUG
             std::cout << "\tproba: " << proba << std::endl;
   #endif
-              modalities[*itParam] = proba;
+              modalities[*itParam - minModality] = proba;
             }
-            sampleVal = STK::Law::Categorical::rand(modalities);
+            sampleVal = multi_.sample(modalities) + minModality;
           }
           break;
 

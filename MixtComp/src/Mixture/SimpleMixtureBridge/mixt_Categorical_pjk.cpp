@@ -24,7 +24,7 @@
 #include "mixt_Categorical_pjk.h"
 #include "../../Various/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
-#include "Arrays/include/STK_Display.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -47,15 +47,15 @@ int Categorical_pjk::computeNbFreeParameters() const
   return (nbModalities_ - 1);
 }
 
-void Categorical_pjk::getParameters(STK::Array2DVector<STK::Real>& param) const
+void Categorical_pjk::getParameters(Vector<Real>& param) const
 {
 #ifdef MC_DEBUG
   std::cout << "Categorical_pjk::getParameters" << std::endl;
   std::cout << "\tparam_: " << param_ << std::endl;
 #endif
-  param.resize(param_.sizeRows(),
+  param.resize(param_.rows(),
                1);
-  for (int i = 0; i < param_.sizeRows(); ++i)
+  for (int i = 0; i < param_.rows(); ++i)
   {
     param(i, 0) = param_[i];
   }
@@ -69,8 +69,8 @@ void Categorical_pjk::initializeStep()
 
 double Categorical_pjk::lnComponentProbability(int i, int k) const
 {
-  Type currVal = p_data_->elt(i, 0);
-  STK::Real proba = param_[k * nbModalities_ + currVal - minModality]; // first modality is 1 in data, but 0 in parameters storage
+  Type currVal = (*p_data_)(i, 0);
+  Real proba = param_[k * nbModalities_ + currVal - minModality]; // first modality is 1 in data, but 0 in parameters storage
 #ifdef MC_DEBUG
   std::cout << "\tk: " << k << ", proba: " << proba << std::endl;
 #endif
@@ -98,18 +98,18 @@ std::string Categorical_pjk::mStep()
   std::string warn;
   for (int k = 0; k < nbCluster_; ++k)
   {
-    STK::Real nbSampleClass = 0.;
-    STK::Array2DVector<STK::Real> modalities(nbModalities_, // todo: switch to int for counting (currently stkpp error with STK::Array2DVector<int> / real)
-                                             0.);
+    Real nbSampleClass = 0.;
+    Vector<Real> modalities(nbModalities_);
+    modalities = 0.;
 
-    for (int i = 0; i < (*p_data_).sizeRows(); ++i)
+    for (int i = 0; i < (*p_data_).rows(); ++i)
     {
 #ifdef MC_DEBUG
     std::cout << "\tk:  " << k << ", i: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << std::endl;
 #endif
       if ((*p_zi_)[i] == k)
       {
-        Type currVal = p_data_->elt(i, 0);
+        Type currVal = (*p_data_)(i, 0);
         nbSampleClass += 1.;
         modalities[currVal - minModality] += 1.; // first modality is minModality in data, but 0 in parameters storage
       }
@@ -125,7 +125,7 @@ std::string Categorical_pjk::mStep()
 #ifdef MC_DEBUG
   for (int p = 0; p < nbModalities_; ++p)
   {
-    STK::Real sum = 0.;
+    Real sum = 0.;
     for (int k = 0; k < nbCluster_; ++k)
     {
       sum += param_[k * nbModalities_ + p];
@@ -160,12 +160,12 @@ void Categorical_pjk::paramNames(std::vector<std::string>& names) const
   }
 }
 
-void Categorical_pjk::setData(STK::Array2D<Type>& data)
+void Categorical_pjk::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
 }
 
-void Categorical_pjk::setMixtureParameters(STK::Array2DVector<int> const* p_zi)
+void Categorical_pjk::setMixtureParameters(Vector<int> const* p_zi)
 {
   p_zi_ = p_zi;
 }
@@ -173,13 +173,12 @@ void Categorical_pjk::setMixtureParameters(STK::Array2DVector<int> const* p_zi)
 void Categorical_pjk::setModalities(int nbModalities)
 {
   nbModalities_ = nbModalities;
-  param_.resize(STK::Range(0,
-                           nbCluster_ * nbModalities_));
+  param_.resize(nbCluster_ * nbModalities_);
 }
 
-void Categorical_pjk::setParameters(const STK::Array2DVector<STK::Real>& param)
+void Categorical_pjk::setParameters(const Vector<Real>& param)
 {
-  for (int i = 0; i < param.sizeRows(); ++i)
+  for (int i = 0; i < param.rows(); ++i)
   {
     param_[i] = param(i, 0);
   }
@@ -187,10 +186,10 @@ void Categorical_pjk::setParameters(const STK::Array2DVector<STK::Real>& param)
 
 void Categorical_pjk::writeParameters(std::ostream& out) const
 {
-  for (int k = 0; k < nbCluster_; ++k)
+  for (int p = 0; p < nbModalities_; ++p)
   {
-    out << "Component: " << k << std::endl;
-    out << "\tlambda: " << param_[k] << std::endl;
+    out << "Component: " << p << std::endl;
+    out << "\talpha_p: " << param_[p] << std::endl;
   }
 }
 

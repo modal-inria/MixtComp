@@ -49,13 +49,13 @@ template<>
 struct BridgeTraits<Poisson_k_>
 {
     /** Type of the data set to be used as input */
-    typedef STK::Array2D<int> Data;
+    typedef Matrix<int> Data;
     /** Type of the AugmentedData */
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat */
     typedef PoissonDataStat DataStatComputer;
     /** Type of the DataStat */
-    typedef STK::Array2D<STK::Array2DPoint<int> > DataStatStorage;
+    typedef Matrix<RowVector<int> > DataStatStorage;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

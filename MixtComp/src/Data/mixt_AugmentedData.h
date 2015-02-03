@@ -25,13 +25,14 @@
 #ifndef MIXT_AUGMENTEDDATA_H
 #define MIXT_AUGMENTEDDATA_H
 
+#include <limits>
 #include <utility>
 #include <vector>
-#include "Arrays/include/STK_Array2D.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Def.h"
 #include "../Various/mixt_Constants.h"
-#include "Eigen/Dense"
 #include "../Statistic/mixt_UniformStatistic.h"
+#include "../Statistic/mixt_MultinomialStatistic.h"
 
 namespace mixt
 {
@@ -52,16 +53,13 @@ template <typename DataType>
 class AugmentedData
 {
   public:
-    /** Base type of the data table, for example, STK::Real */
+    /** Base type of the data table, for example, Real */
     typedef typename DataType::Type Type;
     /** Missing value descriptor: type of missing, and list of parameters */
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
     /** type of the complete structure for missing data */
-    typedef typename Eigen::Matrix<MisVal,
-                                   Eigen::Dynamic,
-                                   Eigen::Dynamic> MisData;
-    // typedef typename STK::Array2D<MisVal> MisData;
+    typedef Matrix<MisVal> MisData;
 
     AugmentedData() :
       nbSample_(0),
@@ -133,8 +131,8 @@ class AugmentedData
     {
 #ifdef MC_DEBUG
       std::cout << "AugmentedData::setPresent" << std::endl;
-      std::cout << "data_.sizeRows(): " << data_.sizeRows() << ", data_.sizeCols(): " << data_.sizeCols() << std::endl;
-      std::cout << "misData_.sizeRows(): " << misData_.rows() << ", misData_.cols(): " << misData_.cols() << std::endl;
+      std::cout << "data_.rows(): " << data_.rows() << ", data_.cols(): " << data_.cols() << std::endl;
+      std::cout << "misData_.rows(): " << misData_.rows() << ", misData_.cols(): " << misData_.cols() << std::endl;
 #endif
       data_(i, j) = val;
       misData_(i, j) = MisVal(present_,
@@ -145,7 +143,7 @@ class AugmentedData
 
     void setMissing(int i, int j, MisVal& val)
     {
-      data_(i, j) = STK::Arithmetic<Type>::NA();
+      data_(i, j) = std::numeric_limits<int>::quiet_NaN(); // set to quiet nan, for types that supports it. For int, the returned value would be 0 ...
       misData_(i, j) = val;
       ++nbMissing_;
       ++nbSample_;
@@ -154,7 +152,7 @@ class AugmentedData
     /** Remove the missing values by uniform samplings */
     void removeMissing();
 
-    /** two dimensional data table, for example a STK::Array2D<STK::Real> */
+    /** two dimensional data table, for example a Matrix<Real> */
     DataType data_;
 
     /** data structure for partially observed values */
@@ -189,7 +187,11 @@ class AugmentedData
       }
     }
 
+    /** Uniform law*/
     UniformStatistic uniform_;
+
+    /** multinomial law */
+    MultinomialStatistic multi_;
 };
 
 } // namespace mixt

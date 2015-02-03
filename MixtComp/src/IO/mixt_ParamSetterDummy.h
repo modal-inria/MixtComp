@@ -24,7 +24,7 @@
 #ifndef MIXT_PARAMSETTERDUMMY_H
 #define MIXT_PARAMSETTERDUMMY_H
 
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -35,7 +35,7 @@ class ParamSetterDummy
     ParamSetterDummy();
     ~ParamSetterDummy();
     void getParam(std::string idName,
-                  STK::Array2DVector<STK::Real>& params) const;
+                  Vector<Real>& params) const;
 };
 
 } // namespace mixt

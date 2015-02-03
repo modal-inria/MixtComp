@@ -108,7 +108,16 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel> class 
     typedef Impl Base;
     EIGEN_GENERIC_PUBLIC_INTERFACE(Block)
     EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Block)
-  
+
+    /** Assignment of a scalar */
+    inline
+    const Block<XprType, BlockRows, BlockCols, InnerPanel>&
+    operator=(const Scalar& scalar)
+    {
+      this->derived().setConstant(scalar);
+      return (*this);
+    }
+
     /** Column or Row constructor
       */
     inline Block(XprType& xpr, Index i) : Impl(xpr,i)

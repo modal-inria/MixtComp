@@ -24,9 +24,8 @@
 #ifndef MIXT_CATEGORICALLIKELIHOOD_H
 #define MIXT_CATEGORICALLIKELIHOOD_H
 
-#include "Arrays/include/STK_Array2D.h"
 #include "../Data/mixt_AugmentedData.h"
-#include "Eigen/Dense"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -35,33 +34,29 @@ class CategoricalLikelihood
 {
   public:
     /** Constructor */
-    CategoricalLikelihood(const STK::Array2DVector<STK::Real>* p_param,
-                          const AugmentedData<STK::Array2D<int> >* p_augData,
-                          const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
-                                              Eigen::Dynamic,
-                                              Eigen::Dynamic>* p_dataStatStorage,
+    CategoricalLikelihood(const Vector<Real>* p_param,
+                          const AugmentedData<Matrix<int> >* p_augData,
+                          const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                           int nbClass);
     /** Destructor */
     virtual ~CategoricalLikelihood();
 
     /** Compute the completed log-likelihood */
-    void lnCompletedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    void lnCompletedLikelihood(Vector<Real>* lnComp, int k);
 
     /** Compute the observed log-likelihood */
-    void lnObservedLikelihood(STK::Array2DVector<STK::Real>* lnComp, int k);
+    void lnObservedLikelihood(Vector<Real>* lnComp, int k);
 
   private:
     int nbClass_;
     /** Pointer to parameters table */
-    const STK::Array2DVector<STK::Real>* p_param_;
+    const Vector<Real>* p_param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
-    const AugmentedData<STK::Array2D<int> >* p_augData_;
+    const AugmentedData<Matrix<int> >* p_augData_;
 
     /** Pointer to sampled data storage */
-    const Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
-                        Eigen::Dynamic,
-                        Eigen::Dynamic>* p_dataStatStorage_;
+    const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
 };
 
 } /* namespace mixt */

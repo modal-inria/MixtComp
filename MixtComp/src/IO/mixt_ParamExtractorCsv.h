@@ -24,7 +24,7 @@
 #ifndef MIXT_PARAMEXTRACTORCSV_H
 #define MIXT_PARAMEXTRACTORCSV_H
 
-#include "Arrays/include/STK_Array2D.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
@@ -35,7 +35,7 @@ class ParamExtractorCsv
     ParamExtractorCsv();
     ~ParamExtractorCsv();
     void exportParam(std::string idName,
-                     const STK::Array2D<STK::Real>* p_params);
+                     const Matrix<Real>* p_params);
 };
 
 } // namespace mixt

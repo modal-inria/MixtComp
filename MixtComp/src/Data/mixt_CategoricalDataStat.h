@@ -24,10 +24,7 @@
 #ifndef MIXT_CATEGORICALDATASTAT_H
 #define MIXT_CATEGORICALDATASTAT_H
 
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DPoint.h"
-#include "Arrays/include/STK_Array2DVector.h"
-#include "Eigen/Dense"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
@@ -36,11 +33,9 @@ namespace mixt
 class CategoricalDataStat
 {
   public:
-    CategoricalDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                        Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
-                                      Eigen::Dynamic,
-                                      Eigen::Dynamic>* p_dataStatStorage,
-                        STK::Real confidenceLevel,
+    CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+                        Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
+                        Real confidenceLevel,
                         int nbClass);
     ~CategoricalDataStat();
     void sampleVals(int sample,
@@ -50,18 +45,16 @@ class CategoricalDataStat
     // number of classes
     int nbClass_;
     // pointer to data array
-    const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
+    const AugmentedData<Matrix<int> >* pm_augDataij_;
     /** Sparse description of the missing values */
-    Eigen::Matrix<std::vector<std::pair<int, STK::Real> >,
-                                          Eigen::Dynamic,
-                                          Eigen::Dynamic>* p_dataStatStorage_;
+    Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual,
      * i: modalities */
-    STK::Array2DVector<int> stat_;
+    Vector<Real> stat_;
 
     /** Confidence level */
-    STK::Real confidenceLevel_;
+    Real confidenceLevel_;
 
     void sample(int ind);
 };

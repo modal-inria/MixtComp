@@ -24,6 +24,7 @@
 #ifndef MIXT_DATAEXTRACTORCSV_H
 #define MIXT_DATAEXTRACTORCSV_H
 
+#include <map>
 #include "../Data/mixt_AugmentedData.h"
 
 namespace mixt
@@ -37,12 +38,12 @@ class DataExtractorCsv
 
     /** Export function for categorical model */
     void exportVals(std::string idName,
-                    const AugmentedData<STK::Array2D<int> >* p_augData,
-                    const std::map<int, std::map<int, std::vector< std::pair<int, STK::Real> > > >* p_dataStatStorage);
+                    const AugmentedData<Matrix<int> >* p_augData,
+                    const std::map<int, std::map<int, std::vector< std::pair<int, Real> > > >* p_dataStatStorage);
     /** Export function for gaussian model */
     void exportVals(std::string idName,
-                    const AugmentedData<STK::Array2D<STK::Real> >* p_augData,
-                    const std::map<int, std::map<int, STK::Array2DVector<STK::Real> > >* p_dataStatStorage);
+                    const AugmentedData<Matrix<Real> >* p_augData,
+                    const std::map<int, std::map<int, Vector<Real> > >* p_dataStatStorage);
 };
 
 } // namespace mixt

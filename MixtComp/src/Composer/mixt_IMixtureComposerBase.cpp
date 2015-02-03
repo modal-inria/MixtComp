@@ -35,10 +35,8 @@
 
 #include <cmath>
 #include "mixt_IMixtureComposerBase.h"
-#include "STatistiK/include/STK_Law_Categorical.h"
-#include "STatistiK/include/STK_Stat_Functors.h"
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DPoint.h"
+#include "../LinAlg/mixt_LinAlg.h"
+#include "../Statistic/mixt_MultinomialStatistic.h"
 
 namespace mixt
 {
@@ -68,10 +66,9 @@ IMixtureComposerBase::~IMixtureComposerBase() {}
 /* initialize randomly the labels zi of the model */
 void IMixtureComposerBase::randomClassInit()
 {
-  STK::Law::Categorical law(prop_);
   for (int i = 0; i < nbSample_; ++i)
   {
-    zi_.elt(i) = law.rand();
+    zi_(i) = multi_.sample(prop_);
   }
 }
 
@@ -86,12 +83,19 @@ int IMixtureComposerBase::sStep()
   {
     sStep(i);
   }
-  STK::Array2DVector<int> indPerClass(nbCluster_, 0);
+#ifdef MC_DEBUG
+  std::cout << "nbCluster_: " << nbCluster_ << std::endl;
+#endif
+  Vector<int> indPerClass(nbCluster_);
+  indPerClass = 0;
   for (int i = 0; i < nbSample_; ++i)
   {
+#ifdef MC_DEBUG
+  std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
+#endif
     indPerClass[zi_[i]] += 1;
   }
-  int minIndPerClass = indPerClass.minElt();
+  int minIndPerClass = indPerClass.minCoeff();
 #ifdef MC_DEBUG
   std::cout << "\tindPerClass: " << indPerClass << std::endl;
   std::cout << "\tminIndPerClass: " << minIndPerClass << std::endl;
@@ -102,7 +106,7 @@ int IMixtureComposerBase::sStep()
 /* simulate zi for a particular individual */
 void IMixtureComposerBase::sStep(int i)
 {
-  zi_.elt(i) = STK::Law::Categorical::rand(tik_.row(i));
+  zi_(i) = multi_.sample(tik_.row(i));
 }
 
 /* compute Tik, for all individuals */
@@ -128,16 +132,20 @@ void IMixtureComposerBase::eStep(int i)
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::eStep(i), i: " << i << std::endl;
 #endif
-  STK::Array2DPoint<STK::Real> lnComp(tik_.cols());
+  RowVector<Real> lnComp(nbCluster_);
   for (int k = 0; k < nbCluster_; k++)
   {
     lnComp[k] = std::log(prop_[k]) + lnComponentProbability(i, k);
   }
 
-  STK::Real lnCompMax = lnComp.maxElt();
+#ifdef MC_DEBUG
+    std::cout << "lnComp: " << lnComp << std::endl;
+#endif
+
+  Real lnCompMax = lnComp.maxCoeff();
   lnComp -= lnCompMax;
   lnComp = lnComp.exp();
-  STK::Real sum = lnComp.sum();
+  Real sum = lnComp.sum();
   tik_.row(i) = lnComp / sum;
 
 #ifdef MC_DEBUG
@@ -152,7 +160,7 @@ void IMixtureComposerBase::pStep()
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::pStep" << std::endl;
 #endif
-  for (int i = 0; i < zi_.sizeRows(); ++i)
+  for (int i = 0; i < zi_.rows(); ++i)
   {
     prop_[zi_[i]] += 1.;
   }
@@ -181,8 +189,8 @@ void IMixtureComposerBase::mapStep(int i)
   std::cout << "IMixtureComposerBase::mapStep, single individual" << std::endl;
 #endif
   int k;
-  tik_.row(i).maxElt(k);
-  zi_.elt(i) = k;
+  tik_.row(i).maxCoeff(&k);
+  zi_(i) = k;
 }
 
 /* Create the parameters of the  mixture model. */
@@ -191,9 +199,9 @@ void IMixtureComposerBase::intializeMixtureParameters()
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::intializeMixtureParameters" << std::endl;
 #endif
-  prop_ = 1./(STK::Real)nbCluster_;
-  tik_  = 1./(STK::Real)nbCluster_;
-  zi_   = STK::baseIdx;
+  prop_ = 1./(Real)nbCluster_;
+  tik_  = 1./(Real)nbCluster_;
+  zi_   = 0;
 }
 } // namespace mixt
 

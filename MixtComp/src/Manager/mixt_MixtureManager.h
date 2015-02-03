@@ -44,7 +44,7 @@ class MixtureManager
                    DataExtractor* p_dataExtractor,
                    const ParamSetter* p_paramSetter,
                    ParamExtractor* p_paramExtractor,
-                   STK::Real confidenceLevel,
+                   Real confidenceLevel,
                    std::string& warnLog) :
       p_handler_(handler),
       p_dataExtractor_(p_dataExtractor),
@@ -89,7 +89,7 @@ class MixtureManager
                                   std::string const& idName,
                                   mixt::MixtureComposer& composer,
                                   int nbCluster,
-                                  STK::Real confidenceLevel)
+                                  Real confidenceLevel)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureManager::createMixture" << std::endl;
@@ -181,7 +181,7 @@ class MixtureManager
     ParamExtractor* p_paramExtractor_;
 
     /** confidence interval, to be transmitted to the mixtures at creation */
-    STK::Real confidenceLevel_;
+    Real confidenceLevel_;
 
     /** reference to the warnings log */
     std::string& warnLog_;

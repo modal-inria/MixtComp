@@ -24,9 +24,7 @@
 #ifndef MIXT_POISSONDATASTAT_H
 #define MIXT_POISSONDATASTAT_H
 
-#include "Arrays/include/STK_Array2D.h"
-#include "Arrays/include/STK_Array2DPoint.h"
-#include "Arrays/include/STK_Array2DVector.h"
+#include "../LinAlg/mixt_LinAlg.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
@@ -34,9 +32,9 @@ namespace mixt
 class PoissonDataStat
 {
   public:
-    PoissonDataStat(const AugmentedData<STK::Array2D<int> >* pm_augDataij,
-                    STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage,
-                    STK::Real confidenceLevel,
+    PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+                    Matrix<RowVector<int> >* p_dataStatStorage,
+                    Real confidenceLevel,
                     int nbClass);
     ~PoissonDataStat();
     void sampleVals(int sample,
@@ -44,17 +42,17 @@ class PoissonDataStat
                     int iterationMax);
   private:
     /** pointer to data array */
-    const AugmentedData<STK::Array2D<int> >* pm_augDataij_;
+    const AugmentedData<Matrix<int> >* pm_augDataij_;
     /** Description of the missing values */
-    STK::Array2D<STK::Array2DPoint<int> >* p_dataStatStorage_;
+    Matrix<RowVector<int> >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: iteration
      * Variables are ignored, as they are not supported in the global framework*/
-    STK::Array2DVector<int> stat_;
+    Vector<int> stat_;
 
     /** Confidence level */
-    STK::Real confidenceLevel_;
+    Real confidenceLevel_;
 
     void sample(int ind,
                 int iteration);

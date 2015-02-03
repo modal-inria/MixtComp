@@ -78,7 +78,7 @@ bool DataHandlerCsv::listData()
     std::string model = descContent_(0, j);
     std::string id    = descContent_(1, j);
 
-    nbSamples_ = dataContent_.sizeRows(0) - 1; // all columns are supposed to have the same number of rows, add check
+    nbSamples_ = dataContent_.rows(0) - 1; // all columns are supposed to have the same number of rows, add check
     addInfo(id, model);
     std::vector<int>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
     v_pos.push_back(j);
