@@ -54,10 +54,9 @@ $(EXE_TEST):
 	$(CXX) $(CXXFLAGS) -I.. -I../boost -I../eigen test/mcTest.cpp -o $@
 	$@
 
-$(EXE_UNITTEST): test/sample1_unittest.cpp $(LIB_GTEST)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR)/include $(CXXFLAGS) -pthread -c test/sample1.cpp -o lib/sample1.o
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR)/include $(CXXFLAGS) -pthread -c test/sample1_unittest.cpp -o lib/sample1_unittest.o
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread lib/gtest-all.o lib/gtest_main.o lib/sample1.o lib/sample1_unittest.o  -o $@
+$(EXE_UNITTEST): $(LIB_GTEST)
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR)/include -I.. -I../eigen $(CXXFLAGS) -pthread -c test/LinAlg.cpp -o lib/LinAlg.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread lib/gtest-all.o lib/gtest_main.o lib/LinAlg.o -o $@
 	$@
   
 $(LIB_GTEST):
