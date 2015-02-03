@@ -17,13 +17,6 @@ testLearnPredict <- function()
   cat("Launching testGenDataPredict\n")
   myDataPredict <- testGenDataPredict(myDataLearn[[1]]@results@proportions,
                                       myDataLearn[[2]]$param)
-  confMat <- confusionMatrix("dataGen/predict/classIn.csv",
-                            myDataPredict)
-  print(confMat)
-  cat("lnObservedLikelihood: "     , myDataPredict[[1]]@results@lnObservedLikelihood     , "\n",
-      "lnSemiCompletedLikelihood: ", myDataPredict[[1]]@results@lnSemiCompletedLikelihood, "\n",
-      "lnCompletedLikelihood: "    , myDataPredict[[1]]@results@lnCompletedLikelihood    , "\n",
-      sep = "")
   return(myDataPredict)
 }
 
@@ -64,7 +57,7 @@ testGenDataLearn <- function(nbClass = 2,
   {
     dataParamGenerator(nbSampleLearn, # nbSamples
                        nbSamplePredict, # nbSamplePredict
-                       9, # nbVariablesCat
+                       3, # nbVariablesCat
                        6, # nbModalities
                        3, # nbVariablesGauss
                        0.5, # maxMean
@@ -110,6 +103,15 @@ testGenDataLearn <- function(nbClass = 2,
   {
     warning(mcCluster@results@warnLog)
   }
+
+  confMat <- confusionMatrix("dataGen/learn/classIn.csv",
+                             mcCluster)
+  print(confMat)
+  cat("lnObservedLikelihood: "     , mcCluster@results@lnObservedLikelihood     , "\n",
+      "lnSemiCompletedLikelihood: ", mcCluster@results@lnSemiCompletedLikelihood, "\n",
+      "lnCompletedLikelihood: "    , mcCluster@results@lnCompletedLikelihood    , "\n",
+      sep = "")
+
   return(list(mcCluster,
               dataParam))
 }
@@ -156,6 +158,15 @@ testGenDataPredict <- function(prop,
   {
     warning(mcCluster@results@warnLog)
   }
+  
+  confMat <- confusionMatrix("dataGen/predict/classIn.csv",
+                             mcCluster)
+  print(confMat)
+  cat("lnObservedLikelihood: "     , mcCluster@results@lnObservedLikelihood     , "\n",
+      "lnSemiCompletedLikelihood: ", mcCluster@results@lnSemiCompletedLikelihood, "\n",
+      "lnCompletedLikelihood: "    , mcCluster@results@lnCompletedLikelihood    , "\n",
+      sep = "")
+  
   return(list(mcCluster,
               dataParam))
 }
@@ -172,8 +183,8 @@ confusionMatrix <- function(classInFile,
   for (i in 1:nrow(classIn))
   {
     matConf[classIn[i, 1],
-            res[[1]]@results@partition[i]] = matConf[classIn[i, 1],
-                                                     res[[1]]@results@partition[i]] + 1
+            res@results@partition[i]] = matConf[classIn[i, 1],
+                                                res@results@partition[i]] + 1
   }
   
   return(matConf)
