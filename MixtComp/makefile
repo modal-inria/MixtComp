@@ -19,27 +19,28 @@
 #   Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
 #------------------------------------------------------------------------
 
-include makevars
+#generic build variables
+CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"MixtComp/src/LinAlg/mixt_EigenMatrixBaseAddons.h\" -fPIC
+CXXFLAGS += -I.. -I../boost -I../eigen -Igtest -Igtest/include
 
 # build path
-LIB_MC = ./lib/libMixtComp.a
-BIN_DIR = ./bin
-EXE_MC = ./bin/mixtComp
-EXE_TEST = ./bin/mcTest
+LIB_MC = ./bin/libMixtComp.a
+EXE_TEST = ./test/mcTest
 LIB_RE = ./regex/libregex.a
 
-GTEST_DIR = ../gtest
-EXE_UNITTEST = ./bin/unitTest
-LIB_GTEST = ./lib/gtest_main.a
+# sources
+SRC_MC += $(wildcard src/Composer/*.cpp)
+SRC_MC += $(wildcard src/Data/*.cpp)
+SRC_MC += $(wildcard src/IO/*.cpp)
+SRC_MC += $(wildcard src/Likelihoog/*.cpp)
+SRC_MC += $(wildcard src/Mixture/SimpleMixtureBridge/*.cpp)
+SRC_MC += $(wildcard src/Param/*.cpp)
+SRC_MC += $(wildcard src/Sampler/*.cpp)
+SRC_MC += $(wildcard src/Statistic/*.cpp)
+SRC_MC += $(wildcard src/Strategy/*.cpp)
+SRC_MC += $(wildcard src/Various/*.cpp)
 
-#-----------------------------------------------------------------------
-# build rules
-
-# phony prerequisites are executed unconditionally
-.PHONY: all exe obj clean test $(EXE_TEST) $(EXE_UNITTEST)
-
-# all: lib $(LIB_RE) $(EXE_MC) $(EXE_TEST)
-all: lib $(LIB_RE) $(EXE_TEST) $(EXE_UNITTEST)
+O_MC = $(SRC_MC:%.cpp=%.o)
 
 clean:
 	find -L . -type f -name "*.o" -exec rm -f {} \;
@@ -47,42 +48,9 @@ clean:
 	find -L . -type f -name "*.a" -exec rm -f {} \;
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 
-$(EXE_MC): $(LIB_MC) $(LIB_STK) $(LIB_RE)
-	$(CXX) $(CXXFLAGS) -I.. -I../stkpp/projects -I../boost -I../boost src/Prog/mixtCompCluster.cpp $(LIB_MC) $(LIB_STK) $(LIB_RE) -o $(EXE_MC)
+lib: $(LIB_MC)
 
-$(EXE_TEST): 
-	$(CXX) $(CXXFLAGS) -I.. -I../boost -I../eigen test/mcTest.cpp -o $@
-	$@
-
-$(EXE_UNITTEST): $(LIB_GTEST)
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR)/include -I.. -I../eigen $(CXXFLAGS) -pthread -c test/LinAlg.cpp -o lib/LinAlg.o
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread lib/gtest-all.o lib/gtest_main.o lib/LinAlg.o -o $@
-	$@
-  
-$(LIB_GTEST):
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include $(CXXFLAGS) -pthread -c $(GTEST_DIR)/src/gtest-all.cc -o lib/gtest-all.o
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GTEST_DIR)/include $(CXXFLAGS) -pthread -c $(GTEST_DIR)/src/gtest_main.cc -o lib/gtest_main.o
-	$(AR) $(ARFLAGS) $@ lib/gtest-all.o lib/gtest_main.o
-
-lib: obj $(LIB_MC)
-
-obj:
-	$(MAKE) -C ./src/Composer
-	$(MAKE) -C ./src/Data
-	$(MAKE) -C ./src/IO
-	$(MAKE) -C ./src/Likelihood
-	$(MAKE) -C ./src/Mixture
-	$(MAKE) -C ./src/Param
-	$(MAKE) -C ./src/Sampler
-	$(MAKE) -C ./src/Statistic
-	$(MAKE) -C ./src/Strategy
-	$(MAKE) -C ./src/Various
-
-$(LIB_MC): $(wildcard $(BIN_DIR)/*.o)
-	$(AR) $(ARFLAGS) $@ $(BIN_DIR)/*.o
+$(LIB_MC): $(O_MC)
+	$(AR) $(ARFLAGS) $@ $^
 	
-$(LIB_STK):
-	cd ../stkpp; $(MAKE) all
-
-$(LIB_RE):
-	cd regex; $(CXX) $(CXXFLAGS) -MD -MP -fPIC -I../../boost -c ../../boost/libs/regex/src/*.cpp; ar cr libregex.a *.o
+-include $(SRC_MC:%.cpp=%.d)
