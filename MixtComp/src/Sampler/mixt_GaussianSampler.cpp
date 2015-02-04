@@ -76,6 +76,15 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
                             sd,
                             infBound,
                             supBound);
+#ifdef MC_DEBUG
+        if (!(infBound < z < supBound))
+        {
+          std::cout << "\tmissingIntervals, sampling error" << std::endl;
+          std::cout << "\tinfBound: " << infBound << std::endl;
+          std::cout << "\tsupBound: " << supBound << std::endl;
+          std::cout << "\tz: " << z << std::endl;
+        }
+#endif
       }
       break;
 
@@ -88,6 +97,14 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
         z = normal_.sampleSB(mean,
                              sd,
                              supBound);
+#ifdef MC_DEBUG
+        if (!(z < supBound))
+        {
+          std::cout << "\tmissingLUIntervals_, sampling error" << std::endl;
+          std::cout << "\tsupBound: " << supBound << std::endl;
+          std::cout << "\tz: " << z << std::endl;
+        }
+#endif
       }
       break;
 
@@ -100,6 +117,14 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
         z = normal_.sampleIB(mean,
                              sd,
                              infBound);
+#ifdef MC_DEBUG
+        if (!(infBound < z))
+        {
+          std::cout << "\tmissingRUIntervals_, sampling error" << std::endl;
+          std::cout << "\tinfBound: " << infBound << std::endl;
+          std::cout << "\tz: " << z << std::endl;
+        }
+#endif
       }
       break;
 
@@ -115,7 +140,7 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
     std::cout << "\tsampled val: " << z * sd + mean << std::endl;
 #endif
-    p_augData_->data_(i, 0) = z * sd + mean;
+    p_augData_->data_(i, 0) = z;
   }
 }
 } // namespace mixt

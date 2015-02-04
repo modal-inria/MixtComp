@@ -89,6 +89,11 @@ void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
       Real mean  = (*p_param_)(2 * k    , j);
       Real sd    = (*p_param_)(2 * k + 1, j);
 
+#ifdef MC_DEBUG
+      std::cout << "i: " << i << std::endl;
+      std::cout << "\tmean: " << mean << std::endl;
+      std::cout << "\tsd: " << sd << std::endl;
+#endif
       Real logProba;
 
       switch(p_augData_->misData_(i, j).first)   // likelihood for present value
@@ -117,44 +122,48 @@ void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
         {
           Real infBound  = p_augData_->misData_(i, j).second[0];
           Real supBound  = p_augData_->misData_(i, j).second[1];
+          Real infCdf = normal_.cdf(infBound,
+                                    mean,
+                                    sd);
+          Real supCdf = normal_.cdf(supBound,
+                                    mean,
+                                    sd);
 #ifdef MC_DEBUG
-      std::cout << "\tmissingIntervals_" << std::endl;
-      std::cout << "\tleftBound: " << leftBound << "\tboost::math::cdf(norm, leftBound): " << boost::math::cdf(norm, leftBound) << std::endl;
-      std::cout << "\trightBound: " << rightBound << "\tboost::math::cdf(norm, rightBound): " << boost::math::cdf(norm, rightBound) << std::endl;
+          std::cout << "\tmissingIntervals_" << std::endl;
+          std::cout << "\tinfBound: " << infBound << "\tsupBound: " << supBound << std::endl;
+          std::cout << "\tinfCdf: " << infCdf << "\tsupCdf: " << supCdf << std::endl;
 #endif
-          logProba = std::log(  normal_.cdf(supBound,
-                                            mean,
-                                            sd)
-                              - normal_.cdf(infBound,
-                                            mean,
-                                            sd));
+          logProba = std::log(supCdf - infCdf);
         }
         break;
 
         case missingLUIntervals_:
         {
-#ifdef MC_DEBUG
-      std::cout << "\tmissingLUIntervals_" << std::endl;
-#endif
           Real supBound = p_augData_->misData_(i, j).second[0];
-
-          logProba = std::log(normal_.cdf(supBound,
-                                          mean,
-                                          sd));
+          Real supCdf = normal_.cdf(supBound,
+                                    mean,
+                                    sd);
+#ifdef MC_DEBUG
+          std::cout << "\tmissingLUIntervals_" << std::endl;
+          std::cout << "\tsupBound: " << supBound << std::endl;
+          std::cout << "\tsupCdf: " << supCdf << std::endl;
+#endif
+          logProba = std::log(supCdf);
         }
         break;
 
         case missingRUIntervals_:
         {
-#ifdef MC_DEBUG
-      std::cout << "\tmissingRUIntervals_" << std::endl;
-#endif
           Real infBound = p_augData_->misData_(i, j).second[0];
-
-
-          logProba = std::log(1. - normal_.cdf(infBound,
-                                               mean,
-                                               sd));
+          Real infCdf = normal_.cdf(infBound,
+                                    mean,
+                                    sd);
+#ifdef MC_DEBUG
+          std::cout << "\tmissingRUIntervals_" << std::endl;
+          std::cout << "\tinfBound: " << infBound << std::endl;
+          std::cout << "\tinfCdf: " << infCdf << std::endl;
+#endif
+          logProba = std::log(1. - infCdf);
         }
         break;
 
@@ -162,12 +171,10 @@ void GaussianLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
         {}
         break;
       }
-
-      (*lnComp)(i) += logProba;
-
 #ifdef MC_DEBUG
       std::cout << "\tlogProba: " << logProba << std::endl;
 #endif
+      (*lnComp)(i) += logProba;
     }
   }
 }

@@ -182,7 +182,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
       (*it)->lnObservedLikelihood(&tempVec, k);
 #ifdef MC_DEBUG
       std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-      std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
+      std::cout << "tempVec: " << tempVec << std::endl;
 #endif
     }
     lnComp.col(k) = tempVec;
@@ -192,7 +192,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
   for (int i = 0; i < nbSample_; ++i)
   {
 #ifdef MC_DEBUG
-    std::cout << "i: " << i << std::endl;
+    std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << ", lnComp(i, zi_[i]): " << lnComp(i, zi_[i]) << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
     lnLikelihood += lnComp(i, zi_[i]);

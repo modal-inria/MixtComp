@@ -101,7 +101,7 @@ completedData <- function(dataOut)
 
 export2DPoints <- function(nbIterations)
 {
-  classIn <- read.table("dataGen/classIn.csv",
+  classIn <- read.table("dataGen/learn/classIn.csv",
                         sep = ";")
   nbInd <- length(classIn$V1)
   
@@ -150,13 +150,13 @@ export2DPoints <- function(nbIterations)
     }
     
     colPool <- c("red", "blue", "green")
-    png(paste("out/graph/", i, ".png", sep = ""),
+    png(paste("out/graph/", sprintf("%04d", i), ".png", sep = ""),
         width = 1000,
         height = 1000)
     plot(var1$V1,
          var2$V1,
-         ylim = c(-75., 75.),
-         xlim = c(-75., 75.),
+         ylim = c(-0.75, 0.75),
+         xlim = c(-0.75, 0.75),
          col = colPool[z_i$V1 + 1])
     plotellipse(mid = c(param1$V1[1],
                         param2$V1[1]),
@@ -168,8 +168,8 @@ export2DPoints <- function(nbIterations)
                 ry = param2$V1[4])    
 #    text((param1$V1[1]+param1$V1[3])/2.,
 #         (param2$V1[1]+param2$V1[3])/2.,
-    text(-50.,
-         50.,
+    text(-0.50,
+          0.50,
          paste("Misclassified / Total: ", nbMisClass, " / ", nbInd, "\n",
                "Misclassification rate: ", nbMisClass / nbInd, "\n",
                "Var 1:\n",

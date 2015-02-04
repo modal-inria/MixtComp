@@ -54,16 +54,16 @@ void writeDataCsv(std::string fileName, const Type& data)
   std::cout << "writing: " << fileName << std::endl;
   std::ofstream stream;
   stream.open(fileName.c_str());
-  for (int i = data.firstIdxRows();
-       i <= data.lastIdxRows();
+  for (int i = 0;
+       i < data.rows();
        ++i)
   {
-    for (int j = data.firstIdxCols();
-         j <= data.lastIdxCols();
+    for (int j = 0;
+         j < data.cols();
          ++j)
     {
       stream << data(i,j);
-      if (j < data.lastIdxCols())
+      if (j < data.cols())
         stream << ";";
     }
     stream << std::endl;
