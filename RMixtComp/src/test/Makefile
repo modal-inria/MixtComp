@@ -20,11 +20,17 @@ LDFLAGS	= # -s
 LDLIBS := $(RLDFLAGS) $(RBLAS) $(RLAPACK) $(RINSIDELIBS) $(RCPPLIBS)
 CC := $(shell R CMD config CXX)
 
-all:
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) test.cpp $(LDFLAGS) $(LDLIBS) -o test
-#	g++ -m64 -Wall  -IC:/R/R-3.1.0/include -IC:/R/R-3.1.0/include/x64 -Ic:/rlibs/Rcpp/include -Ic:/rlibs/RInside/include -g -O0 -Wall -mtune=core2 src/test/test.cpp -LC:/R/R-3.1.0/bin/x64 -lR -lm -LC:/R/R-3.1.0/bin/x64 -lRblas -LC:/R/R-3.1.0/bin/x64 -lRlapack "c:/rlibs/RInside/lib/x64/libRInside.a"  -o src/test/test
-#	$(CXX) $(ALL_CPPFLAGS) $(ALL_CXXFLAGS) `R CMD config --cppflags` `Rscript -e "Rcpp:::CxxFlags()"` `Rscript -e "RInside:::CxxFlags()"` src/test/test.cpp `R CMD config --ldflags` `Rscript -e "RInside:::LdFlags()"` -o src/test/test
-# 	Rscript src/test/test.R
+# files for test case
+EXE_TEST = test
+SRC_TEST = $(wildcard *.cpp)
+O_TEST = $(SRC_TEST:%.cpp=%.o)
 
 clean:
 	rm -f test
+
+all: $(EXE_TEST)
+
+$(EXE_TEST): $(O_TEST)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ $(LDFLAGS) $(LDLIBS) -o $@
+
+-include $(SRC_TEST:%.cpp=%.d)

@@ -24,12 +24,9 @@ INC_BOOST = ../../boost
 INC_EIGEN = ../../eigen
 DIR_MC = ../../MixtComp
 LIB_MC = ../../MixtComp/lib/libMixtComp.a
-
-# regex files
 DIR_RE = regex
 LIB_RE = regex/libRegex.a
-SRC_RE = $(wildcard ../../boost/libs/regex/src/*.cpp)
-O_RE = $(SRC_RE:%.cpp=%.o)
+DIR_TEST = test
 
 # Flags for the cpp files at the root, i.e.
 PKG_CXXFLAGS = -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I$(INC_BOOST) -I$(INC_EIGEN)
@@ -52,3 +49,4 @@ $(SHLIB): pkglib
 pkglib:
 	(cd $(DIR_MC) && $(MAKE) lib)
 	(cd $(DIR_RE) && $(MAKE) lib)
+	(cd $(DIR_TEST) && $(MAKE) all)

@@ -55,13 +55,13 @@ O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 
 # make recipes
-clean:
+clean: # only cleans MixtComp
 	find -L . -type f -name "*.o" -exec rm -f {} \;
 	find -L . -type f -name "*.d" -exec rm -f {} \;
 	find -L . -type f -name "*.a" -exec rm -f {} \;
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 
-allClean:
+allClean: # cleans MixtComp and all bundled libraries
 	find -L .. -type f -name "*.o" -exec rm -f {} \;
 	find -L .. -type f -name "*.d" -exec rm -f {} \;
 	find -L .. -type f -name "*.a" -exec rm -f {} \;
