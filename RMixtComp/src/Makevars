@@ -20,17 +20,22 @@
 #               Serge IOVLEFF <serge.iovleff@stkpp.org>
 #------------------------------------------------------------------------
 
-BOOSTINC = ../../boost
-EIGENINC = ../../eigen
-RELIB = regex/libregex.a
-MCDIR = ../../MixtComp
-MCLIB = ../../MixtComp/lib/libMixtComp.a
+INC_BOOST = ../../boost
+INC_EIGEN = ../../eigen
+DIR_MC = ../../MixtComp
+LIB_MC = ../../MixtComp/lib/libMixtComp.a
+
+# regex files
+DIR_RE = regex
+LIB_RE = regex/libRegex.a
+SRC_RE = $(wildcard ../../boost/libs/regex/src/*.cpp)
+O_RE = $(SRC_RE:%.cpp=%.o)
 
 # Flags for the cpp files at the root, i.e.
-PKG_CXXFLAGS= -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I../../stkpp/projects -I$(BOOSTINC) -I$(EIGENINC)
+PKG_CXXFLAGS = -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I$(INC_BOOST) -I$(INC_EIGEN)
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(MCLIB) $(RELIB)
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(LIB_MC) $(LIB_RE)
 
 export
 
@@ -38,14 +43,12 @@ export
 
 ## $(SHLIB) is the usual default target that is built automatically from all source 
 ## files in this directory. pkglib is an additional target for the libraries
-## that will be installed in $(STKPPDIR) and $(PKGLIB) and which users can link against.
+## that will be installed in (PKGLIB) and which users can link against.
 
 all: $(SHLIB)
 
 $(SHLIB): pkglib
 
-pkglib: $(RELIB)
-	(cd $(MCDIR) && $(MAKE) lib)
-
-$(RELIB):
-	cd regex; $(CXX) $(CXXFLAGS) -fPIC -I../../../boost -c ../../../boost/libs/regex/src/*.cpp; ar cr libregex.a *.o
+pkglib:
+	(cd $(DIR_MC) && $(MAKE) lib)
+	(cd $(DIR_RE) && $(MAKE) lib)

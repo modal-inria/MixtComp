@@ -20,18 +20,15 @@
 #------------------------------------------------------------------------
 
 #generic build variables
-CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"MixtComp/src/LinAlg/mixt_EigenMatrixBaseAddons.h\" -fPIC
-CXXFLAGS += -I.. -I../boost -I../eigen -Igtest -Igtest/include
-
-# build path
-EXE_TEST = ./test/mcTest
+CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
+CXXFLAGS += -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
 
 # library files
-LIB_MC = ./lib/libMixtComp.a
+LIB_MC = lib/libMixtComp.a
 SRC_MC += $(wildcard src/Composer/*.cpp)
 SRC_MC += $(wildcard src/Data/*.cpp)
 SRC_MC += $(wildcard src/IO/*.cpp)
-SRC_MC += $(wildcard src/Likelihoog/*.cpp)
+SRC_MC += $(wildcard src/Likelihood/*.cpp)
 SRC_MC += $(wildcard src/Mixture/SimpleMixtureBridge/*.cpp)
 SRC_MC += $(wildcard src/Param/*.cpp)
 SRC_MC += $(wildcard src/Sampler/*.cpp)
@@ -40,13 +37,22 @@ SRC_MC += $(wildcard src/Strategy/*.cpp)
 SRC_MC += $(wildcard src/Various/*.cpp)
 O_MC = $(SRC_MC:%.cpp=%.o)
 
-#regex files
-LIB_RE = ./lib/libRegex.a
+# regex files
+LIB_RE = lib/libRegex.a
 SRC_RE = $(wildcard ../boost/libs/regex/src/*.cpp)
 O_RE = $(SRC_RE:%.cpp=%.o)
 
-#test files
+# sample test
+EXE_TEST = prog/test
+SRC_TEST = prog/mcTest.cpp
+O_TEST = $(SRC_TEST:%.cpp=%.o)
 
+# unit-test files
+EXE_UTEST = test/uTest
+SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
+SRC_UTEST = $(wildcard test/*.cpp)
+O_GTEST = $(SRC_GTEST:%.cc=%.o)
+O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 
 # make recipes
 clean:
@@ -55,7 +61,13 @@ clean:
 	find -L . -type f -name "*.a" -exec rm -f {} \;
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 
-libMC: $(LIB_MC)
+allClean:
+	find -L .. -type f -name "*.o" -exec rm -f {} \;
+	find -L .. -type f -name "*.d" -exec rm -f {} \;
+	find -L .. -type f -name "*.a" -exec rm -f {} \;
+	find -L .. -type f -name "*.so" -exec rm -f {} \;
+
+lib: $(LIB_MC)
 
 $(LIB_MC): $(O_MC)
 	$(AR) $(ARFLAGS) $@ $^
@@ -64,6 +76,21 @@ libRE: $(LIB_RE)
 
 $(LIB_RE): $(O_RE)
 	$(AR) $(ARFLAGS) $@ $^
+	
+utest: $(EXE_UTEST)
+	$(EXE_UTEST)
+
+$(EXE_UTEST): $(O_GTEST) $(O_UTEST)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
+test: $(EXE_TEST)
+	$(EXE_TEST)
+
+$(EXE_TEST): $(O_TEST)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
 
 -include $(SRC_MC:%.cpp=%.d)
 -include $(SRC_RE:%.cpp=%.d)
+-include $(SRC_TEST:%.cpp=%.d)
+-include $(SRC_GTEST:%.cc=%.d)
+-include $(SRC_UTEST:%.cpp=%.d)
