@@ -1,4 +1,4 @@
-CXXFLAGS += -I../../../boost
+CXXFLAGS += -I../../../boost -fPIC
 
 # regex files
 LIB_RE = libRegex.a
