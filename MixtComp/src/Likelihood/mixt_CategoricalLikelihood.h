@@ -42,10 +42,10 @@ class CategoricalLikelihood
     virtual ~CategoricalLikelihood();
 
     /** Compute the completed log-likelihood */
-    void lnCompletedLikelihood(Vector<Real>* lnComp, int k);
+    void lnCompletedLikelihood(Matrix<Real>* lnComp);
 
     /** Compute the observed log-likelihood */
-    void lnObservedLikelihood(Vector<Real>* lnComp, int k);
+    void lnObservedLikelihood(Matrix<Real>* lnComp);
 
   private:
     int nbClass_;

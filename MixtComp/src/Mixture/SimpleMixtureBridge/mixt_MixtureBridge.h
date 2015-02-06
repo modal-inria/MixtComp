@@ -314,7 +314,7 @@ class MixtureBridge : public mixt::IMixture
      * This function must be defined to return the completed likelihood
      * @return the observed log-likelihood
      */
-    virtual void lnCompletedLikelihood(Vector<Real>* lnComp, int k)
+    virtual void lnCompletedLikelihood(Matrix<Real>* lnComp)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
@@ -322,14 +322,14 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      likelihood_.lnCompletedLikelihood(lnComp, k);
+      likelihood_.lnCompletedLikelihood(lnComp);
     }
 
     /**
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
-    virtual void lnObservedLikelihood(Vector<Real>* lnComp, int k)
+    virtual void lnObservedLikelihood(Matrix<Real>* lnComp)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
@@ -337,7 +337,7 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      likelihood_.lnObservedLikelihood(lnComp, k);
+      likelihood_.lnObservedLikelihood(lnComp);
     }
     /** This function must return the number of free parameters.
      *  @return Number of free parameters

@@ -84,19 +84,17 @@ Real MixtureComposer::lnObservedLikelihood()
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    Vector<Real> tempVec(nbSample_);
-    tempVec = std::log(prop_[k]);
-    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-    {
-      (*it)->lnObservedLikelihood(&tempVec, k);
-#ifdef MC_DEBUG
-      std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-      std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
-#endif
-    }
-    lnComp.col(k) = tempVec;
+    lnComp.col(k) = std::log(prop_[k]);
   }
-  //TODO: remove copying of temporary vector
+
+  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->lnObservedLikelihood(&lnComp);
+#ifdef MC_DEBUG
+    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
+    std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
+#endif
+  }
 
   for (int i = 0; i < nbSample_; ++i)
   {
@@ -135,17 +133,16 @@ Real MixtureComposer::lnCompletedLikelihood()
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    Vector<Real> tempVec(nbSample_);
-    tempVec = std::log(prop_[k]);
-    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-    {
-      (*it)->lnCompletedLikelihood(&tempVec, k);
+    lnComp.col(k) = std::log(prop_[k]);
+  }
+
+  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->lnCompletedLikelihood(&lnComp);
 #ifdef MC_DEBUG
-      std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-      std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
+    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
+    std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
 #endif
-    }
-    lnComp.col(k) = tempVec;
   }
 
   // Compute the completed likelihood for the complete mixture model
@@ -175,17 +172,16 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
 #ifdef MC_DEBUG
     std::cout << "k: " << k << std::endl;
 #endif
-    Vector<Real> tempVec(nbSample_);
-    tempVec = std::log(prop_[k]);
-    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-    {
-      (*it)->lnObservedLikelihood(&tempVec, k);
+    lnComp.col(k) = std::log(prop_[k]);
+  }
+
+  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+    (*it)->lnObservedLikelihood(&lnComp);
 #ifdef MC_DEBUG
-      std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-      std::cout << "tempVec: " << tempVec << std::endl;
+    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
+    std::cout << "tempVec: " << tempVec << std::endl;
 #endif
-    }
-    lnComp.col(k) = tempVec;
   }
 
   // Compute the completed likelihood for the complete mixture model

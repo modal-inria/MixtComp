@@ -41,65 +41,62 @@ CategoricalLikelihood::CategoricalLikelihood(const Vector<Real>* p_param,
 CategoricalLikelihood::~CategoricalLikelihood()
 {}
 
-void CategoricalLikelihood::lnCompletedLikelihood(Vector<Real>* lnComp, int k)
+void CategoricalLikelihood::lnCompletedLikelihood(Matrix<Real>* lnComp)
 {
   int nbModalities = p_param_->rows() / nbClass_;
-  for (int j = 0; j < p_augData_->data_.cols(); ++j)
+  for (int k = 0; k < nbClass_; ++k)
   {
     for (int i = 0; i < p_augData_->data_.rows(); ++i)
     {
-      if (p_augData_->misData_(i, j).first == present_) // likelihood for present data
+      if (p_augData_->misData_(i, 0).first == present_) // likelihood for present data
       {
-        int ind = k * nbModalities + p_augData_->data_(i, j) - minModality;
-        Real proba = (*p_param_)(ind,
-                                 j);
+        int ind = k * nbModalities + p_augData_->data_(i, 0) - minModality;
+        Real proba = (*p_param_)(ind);
 #ifdef MC_DEBUG
         if (proba < epsilon)
         {
           Real sum = 0.;
           std::cout << "Null proba detected, k: " << k << std::endl;
-          std::cout << "p_augData_->data_(i, j) - minModality: " << p_augData_->data_(i, j) - minModality << std::endl;
+          std::cout << "p_augData_->data_(i, j) - minModality: " << p_augData_->data_(i, 0) - minModality << std::endl;
           std::cout << "param: " << std::endl;
           for (int p = 0; p < nbModalities; ++p)
           {
-            std::cout << p_param_->elt(k * nbModalities + p, j) << std::endl;
-            sum += p_param_->elt(k * nbModalities + p, j);
+            std::cout << p_param_->elt(k * nbModalities + p) << std::endl;
+            sum += p_param_->elt(k * nbModalities + p);
           }
           std::cout << "sum: " << sum << std::endl;
         }
 #endif
-        (*lnComp)(i) += std::log(proba);
+        (*lnComp)(i, k) += std::log(proba);
       }
       else // likelihood for estimated missing values, imputation by the mode
       {
-        Real proba = (*p_param_)(k * nbModalities + (*p_dataStatStorage_)(i, j)[0].first - minModality,
-                                 j);
-        (*lnComp)(i) += std::log(proba); // added lnLikelihood using the mode
+        Real proba = (*p_param_)(k * nbModalities + (*p_dataStatStorage_)(i, 0)[0].first - minModality);
+        (*lnComp)(i, k) += std::log(proba); // added lnLikelihood using the mode
       }
     }
   }
 }
 
-void CategoricalLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
+void CategoricalLikelihood::lnObservedLikelihood(Matrix<Real>* lnComp)
 {
 #ifdef MC_DEBUG
   std::cout << "CategoricalLikelihood::lnObservedLikelihood" << std::endl;
 #endif
   int nbModalities = p_param_->rows() / nbClass_;
-  for (int j = 0; j < p_augData_->data_.cols(); ++j)
+  for (int k = 0; k < nbClass_; ++k)
   {
     for (int i = 0; i < p_augData_->data_.rows(); ++i)
     {
 #ifdef MC_DEBUG
           std::cout << "\ti: " << i << ", j: " << j << std::endl;
 #endif
-      switch (p_augData_->misData_(i, j).first)
+      switch (p_augData_->misData_(i, 0).first)
       {
         case present_: // likelihood for present data
         {
-          Real proba = (*p_param_)(k * nbModalities + p_augData_->data_(i, j) - minModality,
-                                   j);
-          (*lnComp)(i) += std::log(proba);
+          Real proba = (*p_param_)(k * nbModalities + p_augData_->data_(i, 0) - minModality);
+          (*lnComp)(i, k) += std::log(proba);
         }
         break;
 
@@ -115,17 +112,16 @@ void CategoricalLikelihood::lnObservedLikelihood(Vector<Real>* lnComp, int k)
 #endif
           Real proba = 0.;
 
-          for (std::vector<int>::const_iterator itMiss = p_augData_->misData_(i, j).second.begin();
-               itMiss != p_augData_->misData_(i, j).second.end();
+          for (std::vector<int>::const_iterator itMiss = p_augData_->misData_(i, 0).second.begin();
+               itMiss != p_augData_->misData_(i, 0).second.end();
                ++itMiss)
           {
 #ifdef MC_DEBUG
             std::cout << "k: " << k << ", j: " << j << ", nbModalities: " << nbModalities << ", *itMiss: " << *itMiss << std::endl;
 #endif
-            proba += (*p_param_)(k * nbModalities + *itMiss - minModality,
-                                 j);
+            proba += (*p_param_)(k * nbModalities + *itMiss - minModality);
           }
-          (*lnComp)(i) += std::log(proba);
+          (*lnComp)(i, k) += std::log(proba);
         }
         break;
 
