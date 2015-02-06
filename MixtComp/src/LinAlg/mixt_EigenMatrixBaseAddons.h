@@ -31,7 +31,7 @@ operator+(const Scalar& scalar) const
 {
   return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
                       const Derived>(derived(),
-                               internal::scalar_add_op<Scalar>(scalar));
+                                     internal::scalar_add_op<Scalar>(scalar));
 }
 
 /** Element-wise - between matrix and scalar */
