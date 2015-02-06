@@ -26,6 +26,7 @@
 
 #include <Eigen/Dense>
 #include <vector>
+// #include "mixt_MatrixIterator.h"
 
 namespace mixt
 {
@@ -40,6 +41,76 @@ template<typename T,
 class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
 {
   public:
+    class iterator
+    {
+      public:
+        typedef T Type;
+
+        iterator(int i, int j, Matrix<T, _Rows, _Cols>& mat) :
+          i_(i),
+          j_(j),
+          rows_(mat.rows()),
+          cols_(mat.cols()),
+          mat_(mat)
+        {}
+
+        iterator(const iterator& it) :
+          i_(it.i_),
+          j_(it.j_),
+          rows_(it.rows_),
+          cols_(it.cols_),
+          mat_(it.mat_)
+        {}
+
+        ~iterator() {}
+
+        bool operator==(const iterator& it)
+        {
+          if (i_ == it.i_ && j_ == it.j_ && &mat_ == &it.mat_)
+            return true;
+          else
+            return false;
+        }
+
+        bool operator!=(const iterator& it)
+        {
+          std::cout << "!=, i_: " << i_ << ", j_: " << j_ << std::endl;
+          std::cout << "!=, it.i_: " << it.i_ << ", it.j_: " << it.j_ << std::endl;
+          if (i_ != it.i_ || j_ != it.j_ || &mat_ != &it.mat_)
+            return true;
+          else
+            return false;
+        }
+
+        T& operator*()
+        {
+          std::cout << "*, i_: " << i_ << ", j_: " << j_ << std::endl;
+          return mat_(i_, j_);
+        }
+
+        const iterator& operator++()
+        {
+          if (i_ < rows_ - 1)
+          {
+            ++i_;
+          }
+          else
+          {
+            i_ = 0;
+            ++j_;
+          }
+          std::cout << "++, i_: " << i_ << ", j_: " << j_ << std::endl;
+          return *this;
+        }
+
+      protected:
+        int i_;
+        int j_;
+        int rows_;
+        int cols_;
+        Matrix<T, _Rows, _Cols>& mat_;
+    };
+
     typedef T Type;
 
     Matrix() :
@@ -72,6 +143,16 @@ class Matrix : public Eigen::Matrix<T, _Rows, _Cols>
                                                                              this->cols(),
                                                                              Eigen::internal::scalar_constant_op<T>(scalar));
       return *this;
+    }
+
+    iterator begin()
+    {
+      return iterator(0, 0, *this);
+    }
+
+    iterator end()
+    {
+      return iterator(0, this->cols(), *this);
     }
 };
 

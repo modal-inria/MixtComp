@@ -29,10 +29,22 @@ using namespace mixt;
 
 int main()
 {
-  Vector<Real> m(9);
-  m << 1, 3, 7,
-      13, 15, 5,
-       1, 3, 0;
-  std::cout << m.log()       << std::endl;
-  std::cout << m.log().exp() << std::endl;
+  Matrix<Real> m(3, 3);
+  m << 1, 2, 3, 4, 5, 6, 7, 8, 9;
+
+  Matrix<Real>::iterator endIt = m.end();
+  for (Matrix<Real>::iterator it = m.begin();
+       it != endIt;
+       ++it)
+  {
+    std::cout << *it << std::endl;
+  }
+
+  Matrix<Real>::iterator endItCol = m.col(1).end();
+  for (Matrix<Real>::iterator it = m.col(1).begin();
+       it != endItCol;
+       ++it)
+  {
+    std::cout << *it << std::endl;
+  }
 }
