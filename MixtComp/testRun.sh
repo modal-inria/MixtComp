@@ -1,2 +1,2 @@
-make bin/mcTest
-./bin/mcTest
+make test
+./prog/test

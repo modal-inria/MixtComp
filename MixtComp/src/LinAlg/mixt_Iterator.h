@@ -42,7 +42,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
       j_(j),
       rows_(mat.rows()),
       cols_(mat.cols()),
-      mat_(mat)
+      p_mat_(&mat)
     {}
 
     iterator(const iterator& it) :
@@ -50,10 +50,16 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
       j_(it.j_),
       rows_(it.rows_),
       cols_(it.cols_),
-      mat_(it.mat_)
+      p_mat_(it.p_mat_)
     {}
 
     ~iterator() {}
+
+    int operator+(int i)
+    {
+      int pos = (i_
+      return (j_ - it.j_) * rows_ + (i_ - it.i_);
+    }
 
     int operator-(const iterator& it)
     {
@@ -62,7 +68,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     bool operator==(const iterator& it)
     {
-      if (i_ == it.i_ && j_ == it.j_ && &mat_ == &it.mat_)
+      if (i_ == it.i_ && j_ == it.j_ && &p_mat_ == &it.p_mat_)
         return true;
       else
         return false;
@@ -72,7 +78,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
     {
       std::cout << "!=, i_: " << i_ << ", j_: " << j_ << std::endl;
       std::cout << "!=, it.i_: " << it.i_ << ", it.j_: " << it.j_ << std::endl;
-      if (i_ != it.i_ || j_ != it.j_ || &mat_ != &it.mat_)
+      if (i_ != it.i_ || j_ != it.j_ || &p_mat_ != &it.p_mat_)
         return true;
       else
         return false;
@@ -81,7 +87,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
     typename T::Type& operator*()
     {
       std::cout << "*, i_: " << i_ << ", j_: " << j_ << std::endl;
-      return mat_(i_, j_);
+      return (*p_mat_)(i_, j_);
     }
 
     const iterator& operator++()
@@ -99,11 +105,25 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
       return *this;
     }
 
+  protected:
     int i_;
     int j_;
     int rows_;
     int cols_;
-    T& mat_;
+    T* p_mat_;
+
+    /** linear position in vector */
+    int indToPos()
+    {
+      return j_ * rows_ + i;
+    }
+
+    /** indices from linear position */
+    void posToIn(int pos, int& i, int& j)
+    {
+      i = pos / rows_;
+      j = pos % rows_;
+    }
 };
 
 } // namespace mixt

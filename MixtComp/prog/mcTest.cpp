@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <limits>
+#include <algorithm>
 #include "../src/LinAlg/mixt_LinAlg.h"
 
 using namespace mixt;
@@ -30,21 +31,17 @@ using namespace mixt;
 int main()
 {
   Matrix<Real> m(3, 3);
+//  Eigen::MatrixXf m(3, 3);
   m << 1, 2, 3, 4, 5, 6, 7, 8, 9;
 
-  Matrix<Real>::iterator endIt = m.end();
-  for (Matrix<Real>::iterator it = m.begin();
-       it != endIt;
-       ++it)
-  {
-    std::cout << *it << std::endl;
-  }
+//  Matrix<Real>::iterator endIt = m.end();
+//  for (Matrix<Real>::iterator it = m.begin();
+//       it != endIt;
+//       ++it)
+//  {
+//    std::cout << *it << std::endl;
+//  }
+  sort(m);
 
-  Matrix<Real>::iterator endItCol = m.col(1).end();
-  for (Matrix<Real>::iterator it = m.col(1).begin();
-       it != endItCol;
-       ++it)
-  {
-    std::cout << *it << std::endl;
-  }
+  std::cout << m << std::endl;
 }

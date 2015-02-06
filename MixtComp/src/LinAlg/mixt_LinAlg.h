@@ -26,7 +26,7 @@
 
 #include <Eigen/Dense>
 #include <vector>
-#include "mixt_Iterator.h"
+// #include "mixt_Iterator.h"
 
 namespace mixt
 {

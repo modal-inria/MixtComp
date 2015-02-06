@@ -85,18 +85,17 @@ void GaussianDataStat::sampleVals(int ind,
       std::cout << "tempStat_[j]: " << std::endl;
       std::cout << tempStat_[j] << std::endl;
 #endif
-      Vector<int> indOrder; // to store indices of ascending order
-      sortContiguousIndex(stat_, indOrder);
+      sortContiguous(stat_);
       Real alpha = (1. - confidenceLevel_) / 2.;
       Real realIndLow = alpha * iterationMax;
       Real realIndHigh = (1. - alpha) * iterationMax;
 
       RowVector<Real> tempPoint(3);
       tempPoint[0] = stat_.mean();
-      tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_[indOrder[int(realIndLow )    ]]
-                    + (      realIndLow  - int(realIndLow ) ) * stat_[indOrder[int(realIndLow ) + 1]];
-      tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_[indOrder[int(realIndHigh)    ]]
-                    + (      realIndHigh - int(realIndHigh) ) * stat_[indOrder[int(realIndHigh) + 1]];
+      tempPoint[1] =  (1. - (realIndLow  - int(realIndLow ))) * stat_(realIndLow )
+                    + (      realIndLow  - int(realIndLow ) ) * stat_(realIndLow + 1);
+      tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_(realIndHigh)
+                    + (      realIndHigh - int(realIndHigh) ) * stat_(realIndHigh + 1);
       (*p_dataStatStorage_)(ind, 0) = tempPoint;
 #ifdef MC_DEBUG
       std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
