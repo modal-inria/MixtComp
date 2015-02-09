@@ -26,6 +26,7 @@
 
 // reference on what needs to be implemented for STL iterators: http://stackoverflow.com/questions/7758580/writing-your-own-stl-container/7759622#7759622
 
+#include <iostream>
 #include <iterator>
 
 namespace mixt
@@ -45,7 +46,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
       cols_(mat.cols()),
       p_mat_(&mat)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "iterator(int pos, T& mat)" << std::endl;
 #endif
     }
@@ -56,7 +57,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
       cols_(it.cols_),
       p_mat_(it.p_mat_)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "iterator(const iterator& it)" << std::endl;
 #endif
     }
@@ -65,7 +66,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     iterator operator+(int i)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "iterator operator+(int i)" << std::endl;
 #endif
       return iterator(pos_ + i, *p_mat_);
@@ -73,7 +74,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     iterator operator-(int i)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "iterator operator-(int i)" << std::endl;
 #endif
       return iterator(pos_ - i, *p_mat_);
@@ -81,7 +82,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     int operator-(const iterator& it)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "int operator-(const iterator& it)" << std::endl;
 #endif
       return pos_ - it.pos_;
@@ -89,7 +90,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     bool operator<(const iterator& it)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "bool operator<(const iterator& it)" << std::endl;
 #endif
       return pos_ < it.pos_;
@@ -97,7 +98,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     bool operator==(const iterator& it)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "bool operator==(const iterator& it)" << std::endl;
 #endif
       if (pos_ == it.pos_)
@@ -108,7 +109,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     bool operator!=(const iterator& it)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "bool operator!=(const iterator& it)" << std::endl;
 #endif
       std::cout << "!=, pos_: " << pos_ << ", it.pos_: " << it.pos_ << std::endl;
@@ -120,7 +121,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     typename T::Type& operator*() const
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "typename T::Type& operator*() const" << std::endl;
 #endif
       int i;
@@ -132,7 +133,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     const iterator& operator++()
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "const iterator& operator++()" << std::endl;
 #endif
       ++pos_;
@@ -141,7 +142,7 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     const iterator& operator--()
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "const iterator& operator--()" << std::endl;
 #endif
       --pos_;
