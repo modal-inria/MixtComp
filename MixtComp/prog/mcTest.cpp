@@ -32,7 +32,7 @@ int main()
 {
   Matrix<Real> m(3, 3);
 //  Eigen::MatrixXf m(3, 3);
-  m << 1, 2, 3, 4, 5, 6, 7, 8, 9;
+  m << 1, 15, 3, 22, 0, -15, 8, -100, 12;
 
 //  Matrix<Real>::iterator endIt = m.end();
 //  for (Matrix<Real>::iterator it = m.begin();
@@ -41,7 +41,33 @@ int main()
 //  {
 //    std::cout << *it << std::endl;
 //  }
-  sort(m);
+//  sort(m);
 
+  iterator<Matrix<Real> > begin(0, m);
+  iterator<Matrix<Real> > end(9, m);
+  iterator<Matrix<Real> > it = begin;
+
+//  for (int i = 0;
+//       i < 12;
+//       ++i)
+//  {
+//    std::cout << "i: "<< i << std::endl;
+//    std::cout << "*it: "<< *it << std::endl;
+//    std::cout << "(it != end): " << (it != end) << std::endl;
+//    ++it;
+//  }
+
+  std::cout << "m: " << std::endl;
   std::cout << m << std::endl;
+  sort(m);
+  std::cout << "m: " << std::endl;
+  std::cout << m << std::endl;
+
+
+//  for (iterator<Matrix<Real> > it = begin;
+//       it != end;
+//       ++it)
+//  {
+//    std::cout << "*it: " << *it << std::endl;
+//  }
 }

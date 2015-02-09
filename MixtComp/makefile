@@ -22,6 +22,7 @@
 #generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
 CXXFLAGS += -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
+CXXFLAGS +=  -DMC_DEBUG_NEW
 
 # library files
 LIB_MC = lib/libMixtComp.a
@@ -78,13 +79,11 @@ $(LIB_RE): $(O_RE)
 	$(AR) $(ARFLAGS) $@ $^
 	
 utest: $(EXE_UTEST)
-	$(EXE_UTEST)
 
 $(EXE_UTEST): $(O_GTEST) $(O_UTEST)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 test: $(EXE_TEST)
-	$(EXE_TEST)
 
 $(EXE_TEST): $(O_TEST)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@

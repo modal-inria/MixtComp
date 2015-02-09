@@ -24,6 +24,8 @@
 #ifndef MIXT_ITERATOR_H
 #define MIXT_ITERATOR_H
 
+// reference on what needs to be implemented for STL iterators: http://stackoverflow.com/questions/7758580/writing-your-own-stl-container/7759622#7759622
+
 #include <iterator>
 
 namespace mixt
@@ -37,38 +39,68 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
                                       typename T::Type&>
 {
   public:
-    iterator(int i, int j, T& mat) :
-      i_(i),
-      j_(j),
+    iterator(int pos, T& mat) :
+      pos_(pos),
       rows_(mat.rows()),
       cols_(mat.cols()),
       p_mat_(&mat)
-    {}
+    {
+#ifdef MC_DEBUG_NEW
+      std::cout << "iterator(int pos, T& mat)" << std::endl;
+#endif
+    }
 
     iterator(const iterator& it) :
-      i_(it.i_),
-      j_(it.j_),
+      pos_(it.pos_),
       rows_(it.rows_),
       cols_(it.cols_),
       p_mat_(it.p_mat_)
-    {}
+    {
+#ifdef MC_DEBUG_NEW
+      std::cout << "iterator(const iterator& it)" << std::endl;
+#endif
+    }
 
     ~iterator() {}
 
-    int operator+(int i)
+    iterator operator+(int i)
     {
-      int pos = (i_
-      return (j_ - it.j_) * rows_ + (i_ - it.i_);
+#ifdef MC_DEBUG_NEW
+      std::cout << "iterator operator+(int i)" << std::endl;
+#endif
+      return iterator(pos_ + i, *p_mat_);
+    }
+
+    iterator operator-(int i)
+    {
+#ifdef MC_DEBUG_NEW
+      std::cout << "iterator operator-(int i)" << std::endl;
+#endif
+      return iterator(pos_ - i, *p_mat_);
     }
 
     int operator-(const iterator& it)
     {
-      return (j_ - it.j_) * rows_ + (i_ - it.i_);
+#ifdef MC_DEBUG_NEW
+      std::cout << "int operator-(const iterator& it)" << std::endl;
+#endif
+      return pos_ - it.pos_;
+    }
+
+    bool operator<(const iterator& it)
+    {
+#ifdef MC_DEBUG_NEW
+      std::cout << "bool operator<(const iterator& it)" << std::endl;
+#endif
+      return pos_ < it.pos_;
     }
 
     bool operator==(const iterator& it)
     {
-      if (i_ == it.i_ && j_ == it.j_ && &p_mat_ == &it.p_mat_)
+#ifdef MC_DEBUG_NEW
+      std::cout << "bool operator==(const iterator& it)" << std::endl;
+#endif
+      if (pos_ == it.pos_)
         return true;
       else
         return false;
@@ -76,53 +108,57 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
 
     bool operator!=(const iterator& it)
     {
-      std::cout << "!=, i_: " << i_ << ", j_: " << j_ << std::endl;
-      std::cout << "!=, it.i_: " << it.i_ << ", it.j_: " << it.j_ << std::endl;
-      if (i_ != it.i_ || j_ != it.j_ || &p_mat_ != &it.p_mat_)
+#ifdef MC_DEBUG_NEW
+      std::cout << "bool operator!=(const iterator& it)" << std::endl;
+#endif
+      std::cout << "!=, pos_: " << pos_ << ", it.pos_: " << it.pos_ << std::endl;
+      if (pos_ != it.pos_)
         return true;
       else
         return false;
     }
 
-    typename T::Type& operator*()
+    typename T::Type& operator*() const
     {
-      std::cout << "*, i_: " << i_ << ", j_: " << j_ << std::endl;
-      return (*p_mat_)(i_, j_);
+#ifdef MC_DEBUG_NEW
+      std::cout << "typename T::Type& operator*() const" << std::endl;
+#endif
+      int i;
+      int j;
+      posToIn(i, j);
+      std::cout << "*, pos_: " << pos_ << ", i: " << i << ", j: " << j << std::endl;
+      return (*p_mat_)(i, j);
     }
 
     const iterator& operator++()
     {
-      if (i_ < rows_ - 1)
-      {
-        ++i_;
-      }
-      else
-      {
-        i_ = 0;
-        ++j_;
-      }
-      std::cout << "++, i_: " << i_ << ", j_: " << j_ << std::endl;
+#ifdef MC_DEBUG_NEW
+      std::cout << "const iterator& operator++()" << std::endl;
+#endif
+      ++pos_;
+      return *this;
+    }
+
+    const iterator& operator--()
+    {
+#ifdef MC_DEBUG_NEW
+      std::cout << "const iterator& operator--()" << std::endl;
+#endif
+      --pos_;
       return *this;
     }
 
   protected:
-    int i_;
-    int j_;
+    int pos_;
     int rows_;
     int cols_;
     T* p_mat_;
 
-    /** linear position in vector */
-    int indToPos()
+    /** updates indices from linear position */
+    void posToIn(int& i, int& j) const
     {
-      return j_ * rows_ + i;
-    }
-
-    /** indices from linear position */
-    void posToIn(int pos, int& i, int& j)
-    {
-      i = pos / rows_;
-      j = pos % rows_;
+      i = pos_ % rows_;
+      j = pos_ / rows_;
     }
 };
 

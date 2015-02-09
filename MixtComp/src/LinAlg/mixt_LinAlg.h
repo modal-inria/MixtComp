@@ -26,7 +26,7 @@
 
 #include <Eigen/Dense>
 #include <vector>
-// #include "mixt_Iterator.h"
+#include "mixt_Iterator.h"
 
 namespace mixt
 {
@@ -177,13 +177,13 @@ void sortContiguous(Container& ref)
             ref.data() + ref.size());
 }
 
-///** Sort function for non contiguous data, for example block. Slower than sortContiguous */
-//template <typename Container>
-//void sort(Container& ref)
-//{
-//  std::sort(iterator<Container>(0, 0, ref),
-//            iterator<Container>(0, ref.cols(), ref));
-//}
+/** Sort function for non contiguous data, for example block. Slower than sortContiguous */
+template <typename Container>
+void sort(Container& ref)
+{
+  std::sort(iterator<Container>(0, ref),
+            iterator<Container>(ref.rows() * ref.cols(), ref));
+}
 
 /** Comparator for indexed pairs */
 template <typename pair>
