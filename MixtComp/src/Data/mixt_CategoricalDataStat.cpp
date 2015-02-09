@@ -84,7 +84,7 @@ void CategoricalDataStat::sampleVals(int ind,
 
       stat_ /= Real(iterationMax + 1); // from count to probabilities
       Vector<int> indOrder; // to store indices of ascending order
-      sortContiguousIndex(stat_, indOrder);
+      sortIndex(stat_, indOrder);
       Real cumProb = 0.;
 
       for (int i = nbClass_ - 1; // from the most probable modality ...

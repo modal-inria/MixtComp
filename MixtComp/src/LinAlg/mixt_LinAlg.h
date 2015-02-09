@@ -192,9 +192,10 @@ bool comparator (const pair& l, const pair& r)
   return l.first < r.first;
 };
 
-/** Contiguous data sort, keeping track of the indices, introduces overhead, copy input data, copy indexes */
+/** Sort keeping track of the indices, does not modify input,
+ * introduces overhead, copy input data, copy indexes */
  template <typename Container>
-void sortContiguousIndex(Container& in, Vector<int>& out)
+void sortIndex(const Container& in, Vector<int>& out)
 {
   typedef typename std::pair<typename Container::Type, int> IntPair;
 
