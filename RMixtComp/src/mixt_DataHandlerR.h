@@ -241,8 +241,6 @@ void DataHandlerR::getData(std::string const& idData,
 #endif
     }
   }
-  augData.computeRange();
-  augData.removeMissing();
 }
 
 } /* namespace mixt */

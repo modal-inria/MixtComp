@@ -164,6 +164,8 @@ class MixtureBridge : public mixt::IMixture
                           nbVariable_,
                           paramStr_,
                           warnLog);
+      m_augDataij_.computeRange();
+      m_augDataij_.removeMissing();
       p_paramSetter_->getParam(idName(),
                                param_);
       mixture_.setData(m_augDataij_.data_);

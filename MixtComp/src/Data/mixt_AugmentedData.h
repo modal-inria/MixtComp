@@ -116,7 +116,7 @@ class AugmentedData
       {
         dataRange_ = Range<Type>(min, max);
       }
-      else
+      else // in prediction, a variable can be completely missing
       {
         dataRange_ = Range<Type>(minModality,
                                  minModality + 0.5); // default range, should allow for initialization in prediction for all types of data

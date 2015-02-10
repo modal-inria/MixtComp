@@ -84,6 +84,7 @@ $(EXE_UTEST): $(O_GTEST) $(O_UTEST)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 test: $(EXE_TEST)
+	$(EXE_TEST)
 
 $(EXE_TEST): $(O_TEST)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
