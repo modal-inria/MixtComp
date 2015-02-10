@@ -48,7 +48,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   
   // create the data handler
   mixt::DataHandlerR handler(dataList);
-  handler.listData();
+  warnLog += handler.listData();
   handler.writeInfo(std::cout);
   handler.writeDataMap();
   

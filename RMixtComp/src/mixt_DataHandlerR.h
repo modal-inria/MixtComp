@@ -55,18 +55,17 @@ class DataHandlerR
     virtual ~DataHandlerR();
 
     /** @return the number of samples (the number of rows of the data) */
-    int nbSample() const {return nbSamples_;}
+    int nbSample() const {return nbSample_;}
         /** @return the number of variables (the number of columns of the data) */
     int nbVariable() const {return nbVariables_;};
 
     /** read a data file and its companion description file,
       and fill the infoMap_ (id -> model) and dataMap_ (id -> vector of positions)
       members */
-    bool listData();
+    std::string listData();
     
     /** @return the map with the idDatas and idModel of the models */
     InfoMap const& info() const{return info_;};
-    bool addInfo(std::string const& idData, std::string const& idModel);
     void writeInfo(std::ostream& os) const;
     /** write information on the localization of data in the rList */
     void writeDataMap() const;
@@ -79,7 +78,7 @@ class DataHandlerR
                  std::string& param,
                  std::string& warnLog) const;
   private:
-    int nbSamples_;
+    int nbSample_;
     int nbVariables_;
     /** Store the informations  of the mixtures in the form (idData, idModel) with
      * - idData: an arbitrary idData for a model
@@ -107,9 +106,9 @@ void DataHandlerR::getData(std::string const& idData,
 #endif
 
   std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
-  nbSample = nbSamples_;
+  nbSample = nbSample_;
   nbVariable = v_pos.size();// resize the data
-  augData.resizeArrays(nbSamples_, nbVariable); // R has already enforced that all data has the same number of rows
+  augData.resizeArrays(nbSample_, nbVariable); // R has already enforced that all data has the same number of rows
 
   // definitions of regular expressions to capture / reject numbers
   std::string strNumber("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
@@ -152,7 +151,7 @@ void DataHandlerR::getData(std::string const& idData,
 #endif
     Rcpp::List currVar = rList_[(*it)]; // get current named list
     Rcpp::CharacterVector data = currVar("data");
-    for (int i = 0; i < nbSamples_; ++i)
+    for (int i = 0; i < nbSample_; ++i)
     {
 #ifdef MC_DEBUG
     std::cout << "DataHandlerR::getData" << std::endl;

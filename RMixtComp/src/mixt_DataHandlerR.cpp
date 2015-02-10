@@ -31,7 +31,7 @@ namespace mixt
 {
 
 DataHandlerR::DataHandlerR(Rcpp::List rList) :
-    nbSamples_(0),
+    nbSample_(-1),
     nbVariables_(0),
     rList_(rList)
 {}
@@ -46,28 +46,9 @@ void DataHandlerR::writeInfo(std::ostream& os) const
      os << "name: " << it->first << ", model: " << it->second << std::endl;
 }
 
-bool DataHandlerR::addInfo(std::string const& idData, std::string const& idModel)
+std::string DataHandlerR::listData()
 {
-  // parse descriptor file
-  std::pair<InfoMap::iterator,bool> ret;
-  // check if identifier is already present
-  ret = info_.insert(std::pair<std::string,std::string>(idData, idModel));
-  // if name already exists, check if there is incoherence
-  if (ret.second==false)
-  {
-     if (ret.first->second != idModel)
-     {
-#ifdef STK_DMANAGER_VERBOSE
-       stk_cerr << _T("Incoherence in addInfo.\n");
-#endif
-       return false;
-     }
-  }
-  return true;
-}
-
-bool DataHandlerR::listData()
-{
+  std::string warnLog;
   for (int i = 0; i < rList_.size(); ++i)
   {
     Rcpp::List currList = rList_[i];
@@ -76,19 +57,36 @@ bool DataHandlerR::listData()
     std::string id = currList("id");
     Rcpp::CharacterVector data = currList["data"];
 
-    nbSamples_ = data.size(); // overwritten, because check has already been performed on the R side
-    addInfo(id, model);
+    // add to info_, and perform various checks
+    std::pair<InfoMap::iterator, bool> ret; // parse descriptor file
+    ret = info_.insert(std::pair<std::string,std::string>(id, model)); // check if identifier is already present
+    if (ret.second == false) // if name already exists, return a warning
+    {
+      warnLog += std::string("Several variables bear the same name: ") + id + std::string(", while only a variable per name is allowed.\n");
+    }
+    if (data.size() == 0)
+    {
+      warnLog += std::string("Variable: ") + id + std::string(" has 0 samples.");
+    }
+    if (nbSample_ > 0 && nbSample_ != data.size())
+    {
+      warnLog +=   std::string("Variable: ") + id + std::string(" has ")
+                 + type2str(data.size()) + std::string(" samples, while the previous variable had ")
+                 + type2str(nbSample_) + std::string(" samples.\n");
+    }
+
+    nbSample_ = data.size(); // overwritten, because check has already been performed on the R side
     std::vector<int>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
     v_pos.push_back(i);
     ++nbVariables_;
-  #ifdef MC_DEBUG
+#ifdef MC_DEBUG
     std::cout << "DataHandlerR::readDataFromRListHelper()" << std::endl;
     std::cout << "\tid: " << id << std::endl;
     std::cout << "\tmodel: " << model << std::endl;
     std::cout << "\trList pos: " << i << std::endl;
-  #endif
+#endif
   }
-  return true;
+  return warnLog;
 }
 
 void DataHandlerR::writeDataMap() const
