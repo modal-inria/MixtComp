@@ -38,11 +38,13 @@ class Categorical_pjk
     Categorical_pjk(int nbCluster);
     ~Categorical_pjk();
 
+    bool checkMinVal() const;
     int computeNbFreeParameters() const;
     void getParameters(Vector<Real>& param) const;
     void initializeModel();
     void initializeStep();
     double lnComponentProbability(int i, int k) const;
+    int minVal() const;
     std::string mStep();
     int nbVariable() const;
     void paramNames(std::vector<std::string>& names) const;

@@ -39,6 +39,11 @@ Poisson_k::Poisson_k(int nbCluster) :
 Poisson_k::~Poisson_k()
 {}
 
+bool Poisson_k::checkMinVal() const
+{
+  return true;
+}
+
 int Poisson_k::computeNbFreeParameters() const
 {
   return nbCluster_;
@@ -74,6 +79,11 @@ double Poisson_k::lnComponentProbability(int i, int k) const
   Real proba = poisson_.pdf(currVal,
                                  lambda);
   return std::log(proba);
+}
+
+int Poisson_k::minVal() const
+{
+  return 0;
 }
 
 std::string Poisson_k::mStep()

@@ -82,55 +82,67 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                  confidenceLevel);
   composer.setProportions(paramSetterComposer.getProportions());
 
-  // create the mixtures, and read / set the data
-  mixt::Timer readTimer("Read Data");
-  manager.createMixtures(composer,
-                         nbClusters);
-  readTimer.top("data have been read");
+  if (warnLog.size() == 0) // data is correct in descriptors, proceed with reading
+  {
+    // create the mixtures, and read / set the data
+    mixt::Timer readTimer("Read Data");
+    manager.createMixtures(composer,
+                           nbClusters);
+    readTimer.top("data have been read");
+  }
   
-  // create the appropriate strategy and transmit the parameters
-  mixt::GibbsStrategy strategy(&composer,
-                               mcStrategy.slot("nbGibbsBurnInIter"), // number of iterations for Gibbs sampler
-                               mcStrategy.slot("nbGibbsIter")); // number of iterations for Gibbs sampler);
+  if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
+  {
+    // create the appropriate strategy and transmit the parameters
+    mixt::GibbsStrategy strategy(&composer,
+                                 mcStrategy.slot("nbGibbsBurnInIter"), // number of iterations for Gibbs sampler
+                                 mcStrategy.slot("nbGibbsIter")); // number of iterations for Gibbs sampler);
 
-  // run the strategy
-  mixt::Timer stratTimer("Strategy Run");
-  strategy.run();
-  stratTimer.top("strategy run complete");
+    // run the strategy
+    mixt::Timer stratTimer("Strategy Run");
+    strategy.run();
+    stratTimer.top("strategy run complete");
+  }
 
-  composer.writeParameters(std::cout);
-  composer.exportDataParam();
+  if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
+  {
+    composer.writeParameters(std::cout);
+    composer.exportDataParam();
 
-  // export the composer results to R through modifications of mcResults
-  mcResults.slot("nbCluster") = nbClusters;
-  mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
-  mixt::Real lnObsLik = composer.lnObservedLikelihood();
-  mixt::Real lnCompLik = composer.lnCompletedLikelihood();
-  mixt::Real lnSemiCompLik = composer.lnSemiCompletedLikelihood();
-  mcResults.slot("lnObservedLikelihood") = lnObsLik;
-  mcResults.slot("lnSemiCompletedLikelihood") = lnSemiCompLik;
-  mcResults.slot("lnCompletedLikelihood") = lnCompLik;
-  mcResults.slot("BIC") = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
-  mcResults.slot("ICL") = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+    // export the composer results to R through modifications of mcResults
+    mcResults.slot("nbCluster") = nbClusters;
+    mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
+    mixt::Real lnObsLik = composer.lnObservedLikelihood();
+    mixt::Real lnCompLik = composer.lnCompletedLikelihood();
+    mixt::Real lnSemiCompLik = composer.lnSemiCompletedLikelihood();
+    mcResults.slot("lnObservedLikelihood") = lnObsLik;
+    mcResults.slot("lnSemiCompletedLikelihood") = lnSemiCompLik;
+    mcResults.slot("lnCompletedLikelihood") = lnCompLik;
+    mcResults.slot("BIC") = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+    mcResults.slot("ICL") = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
 
-  Rcpp::NumericVector proportions(nbClusters);
-  for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-    proportions[kR] = (*composer.p_pk())(kS);
-  mcResults.slot("proportions") = proportions;
-
-  Rcpp::NumericVector partition(handler.nbSample());
-  for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
-    partition[iR] = (*composer.p_zi())(iS) + 1;
-  mcResults.slot("partition") = partition;
-
-  Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
-  for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
+    Rcpp::NumericVector proportions(nbClusters);
     for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-      proba(iR, kR) = (*composer.p_tik())(iS, kS);
-  mcResults.slot("proba") = proba;
+      proportions[kR] = (*composer.p_pk())(kS);
+    mcResults.slot("proportions") = proportions;
+
+    Rcpp::NumericVector partition(handler.nbSample());
+    for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
+      partition[iR] = (*composer.p_zi())(iS) + 1;
+    mcResults.slot("partition") = partition;
+
+    Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
+    for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
+      for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
+        proba(iR, kR) = (*composer.p_tik())(iS, kS);
+    mcResults.slot("proba") = proba;
+
+    mcResults.slot("runTime") = totalTimer.top("end of run");
+    mcResults.slot("nbSample") = composer.nbSample();
+  }
 
   mcResults.slot("warnLog") = warnLog;
-  if (warnLog.size() > 0)
+  if (warnLog.size() != 0)
   {
     std::cout << "!!! warnLog not empty !!!" << std::endl;
     std::cout << warnLog << std::endl;

@@ -77,26 +77,31 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                                  nbClusters,
                                  confidenceLevel);
 
-  // create the mixtures, and read / set the data
-  mixt::Timer readTimer("Read Data");
-  manager.createMixtures(composer,
-                         nbClusters);
-  readTimer.top("data have been read");
-  
-  // create the appropriate strategy and transmit the parameters
-  mixt::SemStrategy strategy(&composer,
-                             mcStrategy.slot("nbTrialInInit"), // number of trials of the complete chain, with different initializations
-                             mcStrategy.slot("nbBurnInIter"), // number of burn-in iterations
-                             mcStrategy.slot("nbIter"), // number of iterations
-                             mcStrategy.slot("nbGibbsBurnInIter"), // number of iterations for Gibbs sampler
-                             mcStrategy.slot("nbGibbsIter"), // number of iterations for Gibbs sampler
-                             mixt::nbSamplingAttempts); // number of sampling attempts for lowly populated classes
+  if (warnLog.size() == 0) // data is correct in descriptors, proceed with reading
+  {
+    // create the mixtures, and read / set the data
+    mixt::Timer readTimer("Read Data");
+    manager.createMixtures(composer,
+                           nbClusters);
+    readTimer.top("data have been read");
+  }
 
-  // run the strategy
-  mixt::Timer stratTimer("Strategy Run");
-  warnLog += strategy.run();
-  stratTimer.top("strategy run complete");
-  mcResults.slot("warnLog") = warnLog;
+  if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
+  {
+    // create the appropriate strategy and transmit the parameters
+    mixt::SemStrategy strategy(&composer,
+                               mcStrategy.slot("nbTrialInInit"), // number of trials of the complete chain, with different initializations
+                               mcStrategy.slot("nbBurnInIter"), // number of burn-in iterations
+                               mcStrategy.slot("nbIter"), // number of iterations
+                               mcStrategy.slot("nbGibbsBurnInIter"), // number of iterations for Gibbs sampler
+                               mcStrategy.slot("nbGibbsIter"), // number of iterations for Gibbs sampler
+                               mixt::nbSamplingAttempts); // number of sampling attempts for lowly populated classes
+  
+    // run the strategy
+    mixt::Timer stratTimer("Strategy Run");
+    warnLog += strategy.run();
+    stratTimer.top("strategy run complete");
+  }
 
   if (warnLog.size() == 0)
   {
@@ -145,7 +150,9 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     mcResults.slot("runTime") = totalTimer.top("end of run");
     mcResults.slot("nbSample") = composer.nbSample();
   }
-  else
+
+  mcResults.slot("warnLog") = warnLog;
+  if (warnLog.size() != 0)
   {
     std::cout << "!!! warnLog not empty !!!" << std::endl;
     std::cout << warnLog << std::endl;

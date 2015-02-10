@@ -165,37 +165,47 @@ class MixtureBridge : public mixt::IMixture
                           paramStr_,
                           warnLog);
       m_augDataij_.computeRange();
-      m_augDataij_.removeMissing();
-      p_paramSetter_->getParam(idName(),
-                               param_);
-      mixture_.setData(m_augDataij_.data_);
+      if (mixture_.checkMinVal() && m_augDataij_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value
+      {
+        warnLog +=   std::string("Variable: ") + idName()
+                   + std::string(" requires a minimum value of ") + type2str(mixture_.minVal())
+                   + std::string(" in either provided values or bounds. The minimum value currently provided is : ")
+                   + type2str(m_augDataij_.dataRange_.min_) + std::string(".\n");
+      }
+      else // minimum value requirements have been met
+      {
+        m_augDataij_.removeMissing();
+        p_paramSetter_->getParam(idName(),
+                                 param_);
+        mixture_.setData(m_augDataij_.data_);
 
-      if (param_.rows() > 0 && param_.cols() > 0) // setModalities must use the range provided by the ParamSetter
-      {
-        int nbParam = param_.rows() / nbCluster_; // number of parameters for each cluster
-        mixture_.setModalities(nbParam);
-        mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
-        mixture_.setParameters(param_);
-        paramStatStorage_.resize(param_.rows(),
-                                 1); // no quantiles have to be computed for imported parameters, hence the single column
-        paramStatStorage_.col(0) = param_;
-#ifdef MC_DEBUG
-        std::cout << "\tparam set " << std::endl;
-        std::cout << "\tnbParam: " << nbParam << std::endl;
-        std::cout << "\tparam_: " << param_ << std::endl;
-#endif
+        if (param_.rows() > 0 && param_.cols() > 0) // setModalities must use the range provided by the ParamSetter
+        {
+          int nbParam = param_.rows() / nbCluster_; // number of parameters for each cluster
+          mixture_.setModalities(nbParam);
+          mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
+          mixture_.setParameters(param_);
+          paramStatStorage_.resize(param_.rows(),
+                                   1); // no quantiles have to be computed for imported parameters, hence the single column
+          paramStatStorage_.col(0) = param_;
+  #ifdef MC_DEBUG
+          std::cout << "\tparam set " << std::endl;
+          std::cout << "\tnbParam: " << nbParam << std::endl;
+          std::cout << "\tparam_: " << param_ << std::endl;
+  #endif
+        }
+        else // setModalities must use the range provided by the data
+        {
+  #ifdef MC_DEBUG
+          std::cout << "\tparam not set " << std::endl;
+  #endif
+          mixture_.setModalities(m_augDataij_.dataRange_.max_);
+          mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
+        }
+        dataStatStorage_.resize(nbSample_,
+                                nbVariable_);
+        mixture_.paramNames(paramNames_); // set the parameters names to be used for export
       }
-      else // setModalities must use the range provided by the data
-      {
-#ifdef MC_DEBUG
-        std::cout << "\tparam not set " << std::endl;
-#endif
-        mixture_.setModalities(m_augDataij_.dataRange_.max_);
-        mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
-      }
-      dataStatStorage_.resize(nbSample_,
-                              nbVariable_);
-      mixture_.paramNames(paramNames_); // set the parameters names to be used for export
     }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
