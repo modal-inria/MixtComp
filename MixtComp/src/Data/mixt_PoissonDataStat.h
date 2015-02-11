@@ -34,8 +34,7 @@ class PoissonDataStat
   public:
     PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
                     Matrix<RowVector<int> >* p_dataStatStorage,
-                    Real confidenceLevel,
-                    int nbClass);
+                    Real confidenceLevel);
     ~PoissonDataStat();
     void sampleVals(int sample,
                     int iteration,

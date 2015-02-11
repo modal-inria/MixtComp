@@ -29,9 +29,7 @@ namespace mixt
 
 CategoricalDataStat::CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
                                          Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
-                                         Real confidenceLevel,
-                                         int nbClass) :
-    nbClass_(nbClass),
+                                         Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)
@@ -68,7 +66,7 @@ void CategoricalDataStat::sampleVals(int ind,
       std::cout << "\tminModality: " << minModality << std::endl;
       std::cout << "\tnbClass_: " << nbClass_ << std::endl;
 #endif
-      stat_.resize(pm_augDataij_->dataRange_.range_);
+      stat_.resize(pm_augDataij_->dataRange_.max_);
       stat_ = 0.;
 
       // clear output storage for current individual, a vector of <modality, proba>, ordered by decreasing probability
@@ -87,7 +85,8 @@ void CategoricalDataStat::sampleVals(int ind,
       sortIndex(stat_, indOrder);
       Real cumProb = 0.;
 
-      for (int i = nbClass_ - 1; // from the most probable modality ...
+
+      for (int i = pm_augDataij_->dataRange_.max_ - 1; // from the most probable modality ...
            i > -1; // ... to the least probable modality
            --i)
       {

@@ -28,8 +28,7 @@ namespace mixt
 
 GaussianDataStat::GaussianDataStat(const AugmentedData<Matrix<Real> >* pm_augDataij,
                                    Matrix<RowVector<Real> >* p_dataStatStorage,
-                                   Real confidenceLevel,
-                                   int nbClass) :
+                                   Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)

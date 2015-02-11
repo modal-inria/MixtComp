@@ -35,15 +35,12 @@ class CategoricalDataStat
   public:
     CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
                         Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
-                        Real confidenceLevel,
-                        int nbClass);
+                        Real confidenceLevel);
     ~CategoricalDataStat();
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);
   private:
-    // number of classes
-    int nbClass_;
     // pointer to data array
     const AugmentedData<Matrix<int> >* pm_augDataij_;
     /** Sparse description of the missing values */

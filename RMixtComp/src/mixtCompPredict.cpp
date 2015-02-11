@@ -40,7 +40,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
 {
   mixt::Timer totalTimer("Total Run");
 
-  // string to log warnings, useless as of now. Gibbs sampling can not fail as it lacks an mStep.
+  // string to log warnings
   std::string warnLog;
   // parse the S4 argument into input and output
   Rcpp::S4 mcStrategy = mcClusters.slot("strategy");

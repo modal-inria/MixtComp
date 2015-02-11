@@ -34,8 +34,7 @@ class GaussianDataStat
   public:
     GaussianDataStat(const AugmentedData<Matrix<Real> >* pm_augDataij,
                      Matrix<RowVector<Real> >* p_dataStatStorage,
-                     Real confidenceLevel,
-                     int nbClass);
+                     Real confidenceLevel);
     ~GaussianDataStat();
     void sampleVals(int sample,
                     int iteration,

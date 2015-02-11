@@ -196,10 +196,13 @@ void Categorical_pjk::setParameters(const Vector<Real>& param)
 
 void Categorical_pjk::writeParameters(std::ostream& out) const
 {
-  for (int p = 0; p < nbModalities_; ++p)
+  for (int k = 0; k < nbCluster_; ++k)
   {
-    out << "Component: " << p << std::endl;
-    out << "\talpha_p: " << param_[p] << std::endl;
+    out << "Component: " << k << std::endl;
+    for (int p = 0; p < nbModalities_; ++p)
+    {
+      out << "\talpha_ "  << p << ": " << param_[k * nbModalities_ + p] << std::endl;
+    }
   }
 }
 

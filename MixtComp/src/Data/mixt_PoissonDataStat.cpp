@@ -28,8 +28,7 @@ namespace mixt
 
 PoissonDataStat::PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
                                  Matrix<RowVector<int> >* p_dataStatStorage,
-                                 Real confidenceLevel,
-                                 int nbClass) :
+                                 Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)
