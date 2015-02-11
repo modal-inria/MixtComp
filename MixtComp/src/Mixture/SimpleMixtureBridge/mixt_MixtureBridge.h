@@ -90,7 +90,7 @@ class MixtureBridge : public mixt::IMixture
       sampler_(&m_augDataij_,
                getParam(),
                nbCluster),
-      dataStatComputer_(getData(),
+      dataStatComputer_(&m_augDataij_,
                         &dataStatStorage_,
                         confidenceLevel),
       paramStat_(&param_,
@@ -302,6 +302,10 @@ class MixtureBridge : public mixt::IMixture
       dataStatComputer_.sampleVals(sample,
                                    iteration,
                                    iterationMax);
+      if (iteration == iterationMax)
+      {
+        dataStatComputer_.imputeData(sample);
+      }
     }
 
     /**

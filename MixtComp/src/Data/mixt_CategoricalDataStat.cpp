@@ -27,7 +27,7 @@
 namespace mixt
 {
 
-CategoricalDataStat::CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+CategoricalDataStat::CategoricalDataStat(AugmentedData<Matrix<int> >* pm_augDataij,
                                          Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                                          Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
@@ -117,6 +117,25 @@ void CategoricalDataStat::sampleVals(int ind,
     {
       sample(ind);
     }
+  }
+}
+
+void CategoricalDataStat::imputeData(int ind)
+{
+#ifdef MC_DEBUG
+  std::cout << "pm_augDataij_->data_" << std::endl;
+//  std::cout << pm_augDataij_->data_ << std::endl;
+  std::cout << "(*p_dataStatStorage_).rows(): " << (*p_dataStatStorage_).rows() << std::endl;
+  std::cout << "(*p_dataStatStorage_).cols(): " << (*p_dataStatStorage_).cols() << std::endl;
+#endif
+  if (pm_augDataij_->misData_(ind, 0).first != present_)
+  {
+#ifdef MC_DEBUG
+    std::cout << "ind: " << ind << std::endl;
+    std::cout << "(*p_dataStatStorage_)(i, 0): " << (*p_dataStatStorage_)(i, 0).size() << std::endl;
+    std::cout << "(*p_dataStatStorage_)(i, 0)[0].first: " << (*p_dataStatStorage_)(i, 0)[0].first << std::endl;
+#endif
+    pm_augDataij_->data_(ind, 0) = (*p_dataStatStorage_)(ind, 0)[0].first; // imputation by the mode
   }
 }
 

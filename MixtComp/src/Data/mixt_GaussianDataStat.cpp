@@ -26,7 +26,7 @@
 namespace mixt
 {
 
-GaussianDataStat::GaussianDataStat(const AugmentedData<Matrix<Real> >* pm_augDataij,
+GaussianDataStat::GaussianDataStat(AugmentedData<Matrix<Real> >* pm_augDataij,
                                    Matrix<RowVector<Real> >* p_dataStatStorage,
                                    Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
@@ -109,6 +109,14 @@ void GaussianDataStat::sampleVals(int ind,
       // standard sampling
       sample(ind, iteration);
     }
+  }
+}
+
+void GaussianDataStat::imputeData(int ind)
+{
+  if (pm_augDataij_->misData_(ind, 0).first != present_)
+  {
+    pm_augDataij_->data_(ind, 0) = (*p_dataStatStorage_)(ind,0)[0]; // imputation by the expectation
   }
 }
 

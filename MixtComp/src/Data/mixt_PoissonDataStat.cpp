@@ -26,7 +26,7 @@
 namespace mixt
 {
 
-PoissonDataStat::PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+PoissonDataStat::PoissonDataStat(AugmentedData<Matrix<int> >* pm_augDataij,
                                  Matrix<RowVector<int> >* p_dataStatStorage,
                                  Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
@@ -108,4 +108,13 @@ void PoissonDataStat::sampleVals(int ind,
     }
   }
 }
+
+void PoissonDataStat::imputeData(int ind)
+{
+  if (pm_augDataij_->misData_(ind, 0).first != present_)
+  {
+    pm_augDataij_->data_(ind, 0) = (*p_dataStatStorage_)(ind,0)[0]; // imputation by the expectation
+  }
+}
+
 } // namespace mixt

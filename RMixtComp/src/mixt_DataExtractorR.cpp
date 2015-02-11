@@ -79,7 +79,6 @@ void DataExtractorR::exportVals(std::string idName,
         currList.push_back(itVec->second); // probability of the modality
       }
       missingData.push_back(currList);
-      dataR(i, 0) = (*p_dataStatStorage)(i, 0)[0].first; // imputation by the mode
     }
   }
 
@@ -111,8 +110,6 @@ void DataExtractorR::exportVals(std::string idName,
       currList.push_back((*p_dataStatStorage)(i, 0)[2]); // right bound
 
       missingData.push_back(currList);
-
-      dataR(i, 0) = (*p_dataStatStorage)(i,0)[0]; // imputation by the expectation
     }
   }
 
@@ -145,8 +142,6 @@ void DataExtractorR::exportVals(std::string idName,
       currList.push_back((*p_dataStatStorage)(i, 0)[2]); // right bound
 
       missingData.push_back(currList);
-
-      dataR(i, 0) = (*p_dataStatStorage)(i,0)[0]; // imputation by the expectation
     }
   }
 

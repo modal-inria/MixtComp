@@ -33,16 +33,17 @@ namespace mixt
 class CategoricalDataStat
 {
   public:
-    CategoricalDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+    CategoricalDataStat(AugmentedData<Matrix<int> >* pm_augDataij,
                         Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                         Real confidenceLevel);
     ~CategoricalDataStat();
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);
+    void imputeData(int ind);
   private:
     // pointer to data array
-    const AugmentedData<Matrix<int> >* pm_augDataij_;
+    AugmentedData<Matrix<int> >* pm_augDataij_;
     /** Sparse description of the missing values */
     Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
 

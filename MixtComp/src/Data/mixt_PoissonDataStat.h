@@ -32,16 +32,17 @@ namespace mixt
 class PoissonDataStat
 {
   public:
-    PoissonDataStat(const AugmentedData<Matrix<int> >* pm_augDataij,
+    PoissonDataStat(AugmentedData<Matrix<int> >* pm_augDataij,
                     Matrix<RowVector<int> >* p_dataStatStorage,
                     Real confidenceLevel);
     ~PoissonDataStat();
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);
+    void imputeData(int ind);
   private:
     /** pointer to data array */
-    const AugmentedData<Matrix<int> >* pm_augDataij_;
+    AugmentedData<Matrix<int> >* pm_augDataij_;
     /** Description of the missing values */
     Matrix<RowVector<int> >* p_dataStatStorage_;
 
