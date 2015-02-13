@@ -42,6 +42,11 @@ Categorical_pjk::Categorical_pjk(int nbCluster) :
 Categorical_pjk::~Categorical_pjk()
 {}
 
+bool Categorical_pjk::checkMaxVal() const
+{
+  return true;
+}
+
 bool Categorical_pjk::checkMinVal() const
 {
   return true;
@@ -88,6 +93,11 @@ double Categorical_pjk::lnComponentProbability(int i, int k) const
   }
 #endif
   return std::log(proba);
+}
+
+int Categorical_pjk::maxVal() const
+{
+  return nbModalities_ + minModality - 1;
 }
 
 int Categorical_pjk::minVal() const

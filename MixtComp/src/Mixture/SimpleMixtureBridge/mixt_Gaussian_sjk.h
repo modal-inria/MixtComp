@@ -40,6 +40,7 @@ class Gaussian_sjk
     Gaussian_sjk(int nbCluster);
     ~Gaussian_sjk();
 
+    bool checkMaxVal() const;
     bool checkMinVal() const;
     int computeNbFreeParameters() const;
 
@@ -61,6 +62,7 @@ class Gaussian_sjk
     std::string mStep();
 
     Real minVal() const;
+    Real maxVal() const;
 
     int nbVariable() const;
 

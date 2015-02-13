@@ -113,7 +113,7 @@ void PoissonDataStat::imputeData(int ind)
 {
   if (pm_augDataij_->misData_(ind, 0).first != present_)
   {
-    pm_augDataij_->data_(ind, 0) = (*p_dataStatStorage_)(ind,0)[0]; // imputation by the expectation
+    pm_augDataij_->data_(ind, 0) = (*p_dataStatStorage_)(ind,0)[0]; // imputation by the mode
   }
 }
 

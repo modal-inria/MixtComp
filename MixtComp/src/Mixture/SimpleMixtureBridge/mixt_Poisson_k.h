@@ -41,6 +41,7 @@ class Poisson_k
     Poisson_k(int nbCluster);
     ~Poisson_k();
 
+    bool checkMaxVal() const;
     bool checkMinVal() const;
     int computeNbFreeParameters() const;
 
@@ -59,6 +60,7 @@ class Poisson_k
 
     std::string mStep();
 
+    int maxVal() const;
     int minVal() const;
     int nbVariable() const;
 

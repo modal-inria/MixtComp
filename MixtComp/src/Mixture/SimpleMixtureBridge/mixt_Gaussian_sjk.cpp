@@ -41,6 +41,11 @@ Gaussian_sjk::Gaussian_sjk(int nbCluster) :
 Gaussian_sjk::~Gaussian_sjk()
 {}
 
+bool Gaussian_sjk::checkMaxVal() const
+{
+  return false;
+}
+
 bool Gaussian_sjk::checkMinVal() const
 {
   return false;
@@ -83,6 +88,11 @@ double Gaussian_sjk::lnComponentProbability(int i, int k) const
   std::cout << "\tk: " << k << ", mean: " << mean << ", sd: " << sd << ", currVal: " << currVal << ", proba: " << proba << std::endl;
 #endif
   return logProba;
+}
+
+Real Gaussian_sjk::maxVal() const
+{
+  return 0;
 }
 
 Real Gaussian_sjk::minVal() const

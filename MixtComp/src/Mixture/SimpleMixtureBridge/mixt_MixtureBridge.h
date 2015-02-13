@@ -166,10 +166,10 @@ class MixtureBridge : public mixt::IMixture
       m_augDataij_.computeRange();
       if (mixture_.checkMinVal() && m_augDataij_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value
       {
-        warnLog +=   std::string("Variable: ") + idName()
-                   + std::string(" requires a minimum value of ") + type2str(mixture_.minVal())
-                   + std::string(" in either provided values or bounds. The minimum value currently provided is : ")
-                   + type2str(m_augDataij_.dataRange_.min_) + std::string(".\n");
+        std::stringstream sstm;
+        sstm << "Variable: " << idName() << " requires a minimum value of " << mixture_.minVal()
+             << " in either provided values or bounds. The minimum value currently provided is : " << m_augDataij_.dataRange_.min_ << std::endl;
+        warnLog += sstm.str();
       }
       else // minimum value requirements have been met
       {
@@ -178,7 +178,9 @@ class MixtureBridge : public mixt::IMixture
                                  param_);
         mixture_.setData(m_augDataij_.data_);
 
-        if (param_.rows() > 0 && param_.cols() > 0) // setModalities must use the range provided by the ParamSetter
+        // test if parameters are provided, in that case the mode is prediction, not learning and setModalities
+        // must use the range provided by the ParamSetter
+        if (param_.rows() > 0 && param_.cols() > 0)
         {
           int nbParam = param_.rows() / nbCluster_; // number of parameters for each cluster
           mixture_.setModalities(nbParam);
@@ -187,17 +189,34 @@ class MixtureBridge : public mixt::IMixture
           paramStatStorage_.resize(param_.rows(),
                                    1); // no quantiles have to be computed for imported parameters, hence the single column
           paramStatStorage_.col(0) = param_;
+          // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
+          if (mixture_.checkMaxVal() && mixture_.maxVal() < m_augDataij_.dataRange_.max_)
+          {
+            std::stringstream sstm;
+            sstm << "Variable: " << idName() << " requires a maximum value of " << mixture_.maxVal()
+                 << " for the data during prediction. This maximum value usually corresponds to the maximum value used during the learning phase."
+                 << " The maximum value in the data provided for prediction is : " << m_augDataij_.dataRange_.max_ << std::endl;
+            warnLog += sstm.str();
+          }
   #ifdef MC_DEBUG
           std::cout << "\tparam set " << std::endl;
           std::cout << "\tnbParam: " << nbParam << std::endl;
           std::cout << "\tparam_: " << param_ << std::endl;
   #endif
         }
-        else // setModalities must use the range provided by the data
+        else // code is in learning mode. setModalities must use the range provided by the data
         {
   #ifdef MC_DEBUG
           std::cout << "\tparam not set " << std::endl;
   #endif
+          if (m_augDataij_.nbPresent_ < 3) // Any variable with less than three samples will be rejected as not privinding enough information for learning
+          {
+            std::stringstream sstm;
+            sstm << "Variable: " << idName() << " only has " << m_augDataij_.nbPresent_
+                 << " present values. Maybe there is an error in the data encoding. If the variable truly has less than"
+                 << "3 samples, it should be removed from the study as it does not provide enough information." << std::endl;
+            warnLog += sstm.str();
+          }
           mixture_.setModalities(m_augDataij_.dataRange_.max_);
           mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
         }

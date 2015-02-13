@@ -10,10 +10,10 @@ testComplete <- function()
   export2DPoints(nbBurnInIter)
 }
 
-testLearnPredict <- function()
+testLearnPredict <- function(regen = TRUE)
 {
   cat("Launching testGenDataLearn\n")
-  myDataLearn <- testGenDataLearn()
+  myDataLearn <- testGenDataLearn(regen = regen)
   cat("Launching testGenDataPredict\n")
   myDataPredict <- testGenDataPredict(myDataLearn[[1]]@results@proportions,
                                       myDataLearn[[2]]$param)
@@ -27,13 +27,13 @@ testGenDataLearn <- function(nbClass = 2,
                              confidenceLevel = 0.95,
                              regen = TRUE)
 {
-#   missingCategorical <- c(0.8, # present
-#                           0.1, # missing
-#                           0.1) # missing finite value
-  
   missingCategorical <- c(0.8, # present
-                          0.2, # missing
-                          0.) # missing finite value
+                          0.1, # missing
+                          0.1) # missing finite value
+  
+#   missingCategorical <- c(0.8, # present
+#                           0.2, # missing
+#                           0.) # missing finite value
  
   missingGaussian <- c(0.6, # present
                        0.1, # missing
@@ -61,9 +61,9 @@ testGenDataLearn <- function(nbClass = 2,
   {
     dataParamGenerator(nbSampleLearn, # nbSamples
                        nbSamplePredict, # nbSamplePredict
-                       2, # nbVariablesCat
+                       3, # nbVariablesCat
                        6, # nbModalities
-                       2, # nbVariablesGauss
+                       3, # nbVariablesGauss
                        0.5, # maxMean
                        0.1, # maxSD
                        3, # nbVariablePois
@@ -75,12 +75,12 @@ testGenDataLearn <- function(nbClass = 2,
   }
   
 
-#    lm <- getData(c("dataGen/learn/gaussianData.csv",
-#                    "dataGen/learn/gaussianDescriptor.csv"),
-#                  c("dataGen/learn/categoricalData.csv",
-#                    "dataGen/learn/categoricalDescriptor.csv"),
-#                  c("dataGen/learn/poissonData.csv",
-#                    "dataGen/learn/poissonDescriptor.csv"))
+   lm <- getData(c("dataGen/learn/gaussianData.csv",
+                   "dataGen/learn/gaussianDescriptor.csv"),
+                 c("dataGen/learn/categoricalData.csv",
+                   "dataGen/learn/categoricalDescriptor.csv"),
+                 c("dataGen/learn/poissonData.csv",
+                   "dataGen/learn/poissonDescriptor.csv"))
 
 #   lm <- getData(c("dataGen/learn/gaussianData.csv",
 #                   "dataGen/learn/gaussianDescriptor.csv"))
@@ -88,8 +88,8 @@ testGenDataLearn <- function(nbClass = 2,
 #   lm <- getData(c("dataGen/learn/poissonData.csv",
 #                   "dataGen/learn/poissonDescriptor.csv"))
 
-  lm <- getData(c("dataGen/learn/categoricalData.csv",
-                  "dataGen/learn/categoricalDescriptor.csv"))
+#   lm <- getData(c("dataGen/learn/categoricalData.csv",
+#                   "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
@@ -127,12 +127,12 @@ testGenDataPredict <- function(prop,
                                confidenceLevel = 0.95)
 {
 
-#   lm <- getData(c("dataGen/predict/gaussianData.csv",
-#                  "dataGen/predict/gaussianDescriptor.csv"),
-#                 c("dataGen/predict/categoricalData.csv",
-#                   "dataGen/predict/categoricalDescriptor.csv"),
-#                 c("dataGen/predict/poissonData.csv",
-#                   "dataGen/predict/poissonDescriptor.csv"))
+  lm <- getData(c("dataGen/predict/gaussianData.csv",
+                 "dataGen/predict/gaussianDescriptor.csv"),
+                c("dataGen/predict/categoricalData.csv",
+                  "dataGen/predict/categoricalDescriptor.csv"),
+                c("dataGen/predict/poissonData.csv",
+                  "dataGen/predict/poissonDescriptor.csv"))
    
 #   lm <- getData(c("dataGen/predict/gaussianData.csv",
 #                   "dataGen/predict/gaussianDescriptor.csv"))
@@ -140,8 +140,8 @@ testGenDataPredict <- function(prop,
 #   lm <- getData(c("dataGen/predict/poissonData.csv",
 #                   "dataGen/predict/poissonDescriptor.csv"))
 
-  lm <- getData(c("dataGen/learn/categoricalData.csv",
-                  "dataGen/learn/categoricalDescriptor.csv"))
+#   lm <- getData(c("dataGen/learn/categoricalData.csv",
+#                   "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of parameters container
   mcCluster <- getMixtCompCluster(2, # nbTrialInInit
