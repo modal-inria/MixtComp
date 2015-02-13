@@ -28,7 +28,7 @@
 
 #include "mixt_SEMStrategy.h"
 #include "../Various/mixt_Timer.h"
-#include "../Various/mixt_IO.h"
+#include "../IO/mixt_IO.h"
 
 namespace mixt
 {

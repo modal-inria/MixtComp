@@ -82,6 +82,13 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                  confidenceLevel);
   composer.setProportions(paramSetterComposer.getProportions());
 
+  if (confidenceLevel < 0. || 1. < confidenceLevel)
+  {
+    warnLog +=   std::string("confidenceLevel should be in the interval [0;1], but value input is: ")
+               + mixt::type2str(confidenceLevel)
+               + std::string(".\n");
+  }
+
   if (warnLog.size() == 0) // data is correct in descriptors, proceed with reading
   {
     // create the mixtures, and read / set the data

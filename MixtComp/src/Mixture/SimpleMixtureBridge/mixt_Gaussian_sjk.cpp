@@ -24,7 +24,7 @@
 #include "mixt_Gaussian_sjk.h"
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Various/mixt_Constants.h"
-#include "../../Various/mixt_IO.h"
+#include "../../IO/mixt_IO.h"
 
 namespace mixt
 {

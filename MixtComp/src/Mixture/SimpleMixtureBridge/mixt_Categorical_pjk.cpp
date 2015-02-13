@@ -22,7 +22,7 @@
  **/
 
 #include "mixt_Categorical_pjk.h"
-#include "../../Various/mixt_IO.h"
+#include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../LinAlg/mixt_LinAlg.h"
 

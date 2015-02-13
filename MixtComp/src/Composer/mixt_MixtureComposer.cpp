@@ -24,7 +24,7 @@
 
 #include "mixt_MixtureComposer.h"
 #include "../Mixture/mixt_IMixture.h"
-#include "../Various/mixt_IO.h"
+#include "../IO/mixt_IO.h"
 #include "../Various/mixt_Timer.h"
 #include "../LinAlg/mixt_LinAlg.h"
 

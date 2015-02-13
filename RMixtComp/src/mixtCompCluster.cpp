@@ -30,6 +30,7 @@
 #include "MixtComp/src/Various/mixt_Timer.h"
 #include "MixtComp/src/Various/mixt_Constants.h"
 #include "MixtComp/src/LinAlg/mixt_LinAlg.h"
+#include "MixtComp/src/IO/mixt_IO.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List rList,
@@ -76,6 +77,13 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
                                  handler.nbVariable(),
                                  nbClusters,
                                  confidenceLevel);
+
+  if (confidenceLevel < 0. || 1. < confidenceLevel)
+  {
+    warnLog +=   std::string("confidenceLevel should be in the interval [0;1], but value input is: ")
+               + mixt::type2str(confidenceLevel)
+               + std::string(".\n");
+  }
 
   if (warnLog.size() == 0) // data is correct in descriptors, proceed with reading
   {

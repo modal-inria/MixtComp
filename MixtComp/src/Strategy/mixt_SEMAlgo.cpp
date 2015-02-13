@@ -26,7 +26,7 @@
 #include "mixt_SEMAlgo.h"
 #include "../Various/mixt_Constants.h"
 #include "../Various/mixt_Timer.h"
-#include "../Various/mixt_IO.h"
+#include "../IO/mixt_IO.h"
 
 namespace mixt
 {

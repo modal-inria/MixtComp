@@ -22,7 +22,7 @@
  **/
 
 #include "mixt_ParamExtractorR.h"
-#include "MixtComp/src/Various/mixt_IO.h"
+#include "MixtComp/src/IO/mixt_IO.h"
 #include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 
 namespace mixt

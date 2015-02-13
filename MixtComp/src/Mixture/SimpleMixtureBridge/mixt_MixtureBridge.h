@@ -35,7 +35,7 @@
 #include "mixt_CategoricalBridges.h"
 #include "mixt_GaussianBridges.h"
 #include "mixt_PoissonBridges.h"
-#include "../../Various/mixt_IO.h"
+#include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
 
 namespace mixt

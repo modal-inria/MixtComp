@@ -31,7 +31,7 @@
 #include "Arrays/include/STK_Array2D.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Various/mixt_Def.h"
-#include "../Various/mixt_IO.h"
+#include "../IO/mixt_IO.h"
 
 #include "DManager/include/STK_ReadWriteCsv.h"
 
