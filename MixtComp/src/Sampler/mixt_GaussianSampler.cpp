@@ -59,8 +59,8 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
         std::cout << "\tmissing_" << std::endl;
 #endif
-        z = normal_.sample(0.,
-                           1.);
+        z = normal_.sample(mean,
+                           sd);
       }
       break;
 

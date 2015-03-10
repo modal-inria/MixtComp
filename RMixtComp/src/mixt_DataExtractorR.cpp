@@ -51,14 +51,8 @@ void DataExtractorR::exportVals(std::string idName,
 #ifdef MC_DEBUG
     std::cout << "\ti: " << i << ", j: " << 0 << std::endl;
 #endif
-    if (p_augData->misData_(i, 0).first == present_)
-    {
-#ifdef MC_DEBUG
-      std::cout << "present_" << std::endl;
-#endif
-      dataR(i, 0) = p_augData->data_(i, 0);
-    }
-    else
+    dataR(i, 0) = p_augData->data_(i, 0); // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
+    if (p_augData->misData_(i, 0).first != present_)
     {
 #ifdef MC_DEBUG
       std::cout << "not present_" << std::endl;
@@ -97,11 +91,8 @@ void DataExtractorR::exportVals(std::string idName,
   // basic copy of the data to the export object
   for (int i = 0; i < p_augData->data_.rows(); ++i)
   {
-    if (p_augData->misData_(i, 0).first == present_)
-    {
-      dataR(i, 0) = p_augData->data_(i, 0);
-    }
-    else
+    dataR(i, 0) = p_augData->data_(i, 0);
+    if (p_augData->misData_(i, 0).first != present_)
     {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
@@ -122,18 +113,15 @@ void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<Matrix<int> >* p_augData,
                                 const Matrix<RowVector<int> >* p_dataStatStorage)
 {
-  Rcpp::NumericMatrix dataR(p_augData->data_.rows(), // matrix to store the completed data set
+  Rcpp::IntegerMatrix dataR(p_augData->data_.rows(), // matrix to store the completed data set
                             p_augData->data_.cols());
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
   for (int i = 0; i < p_augData->data_.rows(); ++i)
   {
-    if (p_augData->misData_(i, 0).first == present_)
-    {
-      dataR(i, 0) = p_augData->data_(i, 0);
-    }
-    else
+    dataR(i, 0) = p_augData->data_(i, 0);
+    if (p_augData->misData_(i, 0).first != present_)
     {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
