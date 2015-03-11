@@ -23,8 +23,8 @@
  *              Parmeet Bhatia <b..._DOT_p..._AT_gmail_Dot_com>
  **/
 
-#ifndef MIXT_IMODELMIXTUREBASE_H
-#define MIXT_IMODELMIXTUREBASE_H
+#ifndef MIXT_IMIXTURECOMPOSERBASE_H
+#define MIXT_IMIXTURECOMPOSERBASE_H
 
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Clust_Util.h"
@@ -225,5 +225,5 @@ class IMixtureComposerBase
 
 } // namespace mixt
 
-#endif
+#endif // MIXT_IMIXTURECOMPOSERBASE_H
 
