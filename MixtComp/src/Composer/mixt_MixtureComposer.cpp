@@ -152,7 +152,7 @@ Real MixtureComposer::lnCompletedLikelihood()
     std::cout << "i: " << i << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
-    lnLikelihood += lnComp(i, zi_[i]);
+    lnLikelihood += lnComp(i, zi_.data_(i));
   }
 
   return lnLikelihood;
@@ -191,7 +191,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
     std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << ", lnComp(i, zi_[i]): " << lnComp(i, zi_[i]) << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
-    lnLikelihood += lnComp(i, zi_[i]);
+    lnLikelihood += lnComp(i, zi_.data_(i));
   }
 
   return lnLikelihood;
@@ -297,7 +297,7 @@ void MixtureComposer::misClasStep(int iteration)
   // computation of the log probability with adequately sampled missing values
   for (int k = 0; k < nbCluster_; ++k)
   {
-    zi_ = k; // setting zi_ for the sampling step
+    zi_.data_ = k; // setting zi_ for the sampling step
     for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       for (int i = 0; i < nbSample_; ++i)
@@ -369,7 +369,7 @@ void MixtureComposer::storeGibbsRun(int sample,
   if (iteration == 0) // initialize nik_
   {
     nik_.row(sample) = 0.;
-    nik_(sample, zi_[sample]) += 1.;
+    nik_(sample, zi_.data_(sample)) += 1.;
   }
   else if (iteration == iterationMax)  // estimate tik_ from nik_
   {
@@ -378,12 +378,12 @@ void MixtureComposer::storeGibbsRun(int sample,
     std::cout << "\ttik_.row(sample): " << tik_.row(sample) << std::endl;
     std::cout << "\tnik_.row(sample): " << nik_.row(sample) << std::endl;
 #endif
-    nik_(sample, zi_[sample]) += 1.;
+    nik_(sample, zi_.data_(sample)) += 1.;
     tik_.row(sample) = nik_.row(sample) / Real(iterationMax + 1);
   }
   else // increment relevant nik values according to sampled zi_
   {
-    nik_(sample, zi_[sample]) += 1.;
+    nik_(sample, zi_.data_(sample)) += 1.;
   }
 
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)

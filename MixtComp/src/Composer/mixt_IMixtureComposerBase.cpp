@@ -36,9 +36,9 @@ IMixtureComposerBase::IMixtureComposerBase(int nbSample,
     nbSample_(nbSample),
     prop_(nbCluster),
     tik_(nbSample, nbCluster),
-    zi_(nbSample),
     state_(modelCreated_)
 {
+  zi_.resizeArrays(nbSample, 1);
   intializeMixtureParameters();
 }
 
@@ -58,7 +58,7 @@ void IMixtureComposerBase::randomClassInit()
 {
   for (int i = 0; i < nbSample_; ++i)
   {
-    zi_(i) = multi_.sample(prop_);
+    zi_.data_(i) = multi_.sample(prop_);
   }
 }
 
@@ -83,7 +83,7 @@ int IMixtureComposerBase::sStep()
 #ifdef MC_DEBUG
   std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
 #endif
-    indPerClass[zi_[i]] += 1;
+    indPerClass[zi_.data_(i)] += 1;
   }
   int minIndPerClass = indPerClass.minCoeff();
 #ifdef MC_DEBUG
@@ -96,7 +96,7 @@ int IMixtureComposerBase::sStep()
 /* simulate zi for a particular individual */
 void IMixtureComposerBase::sStep(int i)
 {
-  zi_(i) = multi_.sample(tik_.row(i));
+  zi_.data_(i) = multi_.sample(tik_.row(i));
 }
 
 /* compute Tik, for all individuals */
@@ -150,9 +150,9 @@ void IMixtureComposerBase::pStep()
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::pStep" << std::endl;
 #endif
-  for (int i = 0; i < zi_.rows(); ++i)
+  for (int i = 0; i < zi_.data_.rows(); ++i)
   {
-    prop_[zi_[i]] += 1.;
+    prop_[zi_.data_(i)] += 1.;
   }
   prop_ = prop_ / prop_.sum();
 #ifdef MC_DEBUG
@@ -180,7 +180,7 @@ void IMixtureComposerBase::mapStep(int i)
 #endif
   int k;
   tik_.row(i).maxCoeff(&k);
-  zi_(i) = k;
+  zi_.data_(i) = k;
 }
 
 /* Create the parameters of the  mixture model. */
@@ -189,9 +189,9 @@ void IMixtureComposerBase::intializeMixtureParameters()
 #ifdef MC_DEBUG
   std::cout << "IMixtureComposerBase::intializeMixtureParameters" << std::endl;
 #endif
-  prop_ = 1./(Real)nbCluster_;
-  tik_  = 1./(Real)nbCluster_;
-  zi_   = 0;
+  prop_     = 1./(Real)nbCluster_;
+  tik_      = 1./(Real)nbCluster_;
+  zi_.data_ = 0;
 }
 } // namespace mixt
 

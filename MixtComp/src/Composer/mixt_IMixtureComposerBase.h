@@ -29,6 +29,7 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Clust_Util.h"
 #include "../Statistic/mixt_MultinomialStatistic.h"
+#include "../Data/mixt_AugmentedData.h"
 
 namespace mixt
 {
@@ -120,7 +121,7 @@ class IMixtureComposerBase
     /** @return the tik probabilities */
     inline Matrix<Real> const* p_tik() const {return &tik_;};
     /** @return  the zi class label */
-    inline Vector<int> const* p_zi() const {return &zi_;};
+    inline Vector<int> const* p_zi() const {return &zi_.data_;};
 
     /** set the state of the model : should be used by any strategy*/
     inline void setState(modelState state) {state_ = state;}
@@ -187,11 +188,6 @@ class IMixtureComposerBase
 #endif
     };
 
-    void setPartition(Vector<int>& zi)
-    {
-      zi_ = zi;
-    };
-
     int nbSample() const
     {
       return nbSample_;
@@ -207,7 +203,7 @@ class IMixtureComposerBase
     /** The tik probabilities */
     Matrix<Real> tik_;
     /** The zik class label */
-    Vector<int> zi_;
+    AugmentedData<Vector<int> > zi_;
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model.
