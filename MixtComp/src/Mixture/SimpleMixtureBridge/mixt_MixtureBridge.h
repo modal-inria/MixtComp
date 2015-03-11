@@ -209,12 +209,13 @@ class MixtureBridge : public mixt::IMixture
   #ifdef MC_DEBUG
           std::cout << "\tparam not set " << std::endl;
   #endif
-          if (m_augDataij_.nbPresent_ < 3) // Any variable with less than three samples will be rejected as not privinding enough information for learning
+          if (m_augDataij_.nbPresent_ < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
           {
             std::stringstream sstm;
             sstm << "Variable: " << idName() << " only has " << m_augDataij_.nbPresent_
-                 << " present values. Maybe there is an error in the data encoding. If the variable truly has less than"
-                 << "3 samples, it should be removed from the study as it does not provide enough information." << std::endl;
+                 << " present values. Maybe there is an error in the data encoding. If the variable truly has less than "
+                 << minNbPresentValues
+                 << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
             warnLog += sstm.str();
           }
           mixture_.setModalities(m_augDataij_.dataRange_.max_);

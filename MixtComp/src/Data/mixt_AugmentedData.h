@@ -97,7 +97,11 @@ class AugmentedData
             }
             break;
 
-            default: // data is missing, range is updated using information on the missing value
+            /* Data is missing, range is updated using information on the missing value.
+             * If data is completely missing, misData_(i, j).second.size() == 0, and no update on the ranges is
+             * carried on.
+             */
+            default:
             {
               for (typename std::vector<Type>::const_iterator it = misData_(i, j).second.begin();
                    it != misData_(i, j).second.end();

@@ -39,5 +39,6 @@ const Real epsilon = 1.e-8; // very small value of real to check for near zero v
 const int minModality = 1; // minimal modality for categorical models
 const Real pi = 3.141592653589793; // pi
 const Real l2pi = 0.9189385332046727417; // constant used in pdf computation for normal law, 1/2 * log(2 * pi)
+const int minNbPresentValues = 3; // minimum number of present values for a given variable below which data is considered uninformative
 
 } // namespace mixt

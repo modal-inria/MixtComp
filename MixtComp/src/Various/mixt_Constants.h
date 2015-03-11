@@ -38,6 +38,7 @@ extern const Real epsilon; // very small value of real to check for near zero va
 extern const int minModality; // minimal modality for categorical models
 extern const Real pi; // pi
 extern const Real l2pi; // constant used in pdf computation for normal law
+extern const int minNbPresentValues; // minimum number of present values
 
 } // namespace mixt
 
