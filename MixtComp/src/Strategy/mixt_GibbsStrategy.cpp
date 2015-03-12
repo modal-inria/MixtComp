@@ -47,8 +47,9 @@ GibbsStrategy::GibbsStrategy(GibbsStrategy const& strategy) :
 GibbsStrategy::~GibbsStrategy()
 {}
 
-void GibbsStrategy::run()
+std::string GibbsStrategy::run()
 {
+  std::string warnLog;
   p_composer_->randomClassInit();
 #ifdef MC_DEBUG
   std::cout << "SemStrategy::run(), after randomClassInit()" << std::endl;
@@ -73,6 +74,8 @@ void GibbsStrategy::run()
   p_composer_->gibbsSampling(nbIterGibbs_);
 
   p_composer_->finalizeStep();
+
+  return warnLog;
 }
 
 } // namespace mixt

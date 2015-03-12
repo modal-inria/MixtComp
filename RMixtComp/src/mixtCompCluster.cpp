@@ -156,6 +156,9 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     std::cout << warnLog << std::endl;
   }
 
+  mcResults.slot("runTime") = totalTimer.top("end of run");
+  mcResults.slot("nbSample") = composer.nbSample();
+
   Rcpp::List data = dataExtractor.rcppReturnVal();
   Rcpp::List param = paramExtractor.rcppReturnParam();
 

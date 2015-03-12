@@ -107,7 +107,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
 
     // run the strategy
     mixt::Timer stratTimer("Strategy Run");
-    strategy.run();
+    warnLog += strategy.run();
     stratTimer.top("strategy run complete");
   }
 
