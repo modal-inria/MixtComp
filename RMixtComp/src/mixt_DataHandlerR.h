@@ -74,7 +74,6 @@ class DataHandlerR
     void getData(std::string const& idData,
                  AugmentedData<Matrix<Type> >& augData,
                  int& nbSample,
-                 int& nbVariable,
                  std::string& param,
                  std::string& warnLog) const;
   private:
@@ -95,7 +94,6 @@ template<typename Type>
 void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<Matrix<Type> >& augData,
                            int& nbSample,
-                           int& nbVariable,
                            std::string& param,
                            std::string& warnLog) const
 {
@@ -107,8 +105,7 @@ void DataHandlerR::getData(std::string const& idData,
 
   std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
   nbSample = nbSample_;
-  nbVariable = v_pos.size();// resize the data
-  augData.resizeArrays(nbSample_, nbVariable); // R has already enforced that all data has the same number of rows
+  augData.resizeArrays(nbSample_); // R has already enforced that all data has the same number of rows, and now all mixture ane univariate
 
   // definitions of regular expressions to capture / reject numbers
   std::string strNumber("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");

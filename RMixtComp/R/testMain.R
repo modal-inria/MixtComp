@@ -109,7 +109,7 @@ testGenDataLearn <- function(nbClass = 2,
   }
 
   confMat <- confusionMatrix("dataGen/learn/classIn.csv",
-                             mcCluster)
+                             dataParam)
   print(confMat)
   cat("lnObservedLikelihood: "     , mcCluster@results@lnObservedLikelihood     , "\n",
       "lnSemiCompletedLikelihood: ", mcCluster@results@lnSemiCompletedLikelihood, "\n",
@@ -164,7 +164,7 @@ testGenDataPredict <- function(prop,
   }
   
   confMat <- confusionMatrix("dataGen/predict/classIn.csv",
-                             mcCluster)
+                             dataParam)
   print(confMat)
   cat("lnObservedLikelihood: "     , mcCluster@results@lnObservedLikelihood     , "\n",
       "lnSemiCompletedLikelihood: ", mcCluster@results@lnSemiCompletedLikelihood, "\n",
@@ -176,7 +176,7 @@ testGenDataPredict <- function(prop,
 }
 
 confusionMatrix <- function(classInFile,
-                            res)
+                            dataParam)
 {
   classIn <- read.csv2(classInFile,
                        header = FALSE,
@@ -187,8 +187,8 @@ confusionMatrix <- function(classInFile,
   for (i in 1:nrow(classIn))
   {
     matConf[classIn[i, 1],
-            res@results@partition[i]] = matConf[classIn[i, 1],
-                                                res@results@partition[i]] + 1
+            dataParam$data$z_class$completed[i]] = matConf[classIn[i, 1],
+                                                           dataParam$data$z_class$completed[i]] + 1
   }
   
   return(matConf)

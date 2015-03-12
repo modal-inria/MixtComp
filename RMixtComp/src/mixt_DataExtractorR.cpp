@@ -35,6 +35,7 @@ DataExtractorR::DataExtractorR()
 DataExtractorR::~DataExtractorR()
 {}
 
+/** Export function for categorical model */
 void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<Matrix<int> >* p_augData,
                                 const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage)
@@ -80,6 +81,28 @@ void DataExtractorR::exportVals(std::string idName,
                                      Rcpp::Named("stat") = missingData);
 }
 
+/** Export function for classes (called from the composer) */
+void DataExtractorR::exportVals(std::string idName,
+                                const AugmentedData<Vector<int> >& augData,
+                                const Matrix<Real>& tikC)
+{
+  Rcpp::IntegerVector dataR(tikC.rows()); // vector to store the completed data set
+  Rcpp::NumericMatrix tikR(tikC.rows(),
+                           tikC.cols()); // the empirical tik are completely exported, instead of the predominant modalities as in other categorical variables
+
+  for (int i = 0; i < tikC.rows(); ++i)
+  {
+    dataR(i) = augData.data_(i) + 1; // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
+    for (int j = 0; j < tikC.cols(); ++j)
+    {
+      tikR(i, j) = tikC(i, j);
+    }
+  }
+  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
+                                     Rcpp::Named("stat") = tikR);
+}
+
+/** Export function for gaussian model */
 void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<Matrix<Real> >* p_augData,
                                 const Matrix<RowVector<Real> >* p_dataStatStorage)

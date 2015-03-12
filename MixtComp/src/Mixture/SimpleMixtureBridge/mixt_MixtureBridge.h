@@ -85,7 +85,6 @@ class MixtureBridge : public mixt::IMixture
       mixture_(nbCluster),
       m_augDataij_(),
       nbSample_(0),
-      nbVariable_(0),
       confidenceLevel_(confidenceLevel),
       sampler_(&m_augDataij_,
                getParam(),
@@ -113,7 +112,6 @@ class MixtureBridge : public mixt::IMixture
       mixture_(bridge.mixture_),
       m_augDataij_(bridge.m_augDataij_),
       nbSample_(bridge.nbSample_),
-      nbVariable_(bridge.nbVariable_),
       confidenceLevel_(bridge.confidenceLevel_),
       sampler_(bridge.sampler_),
       dataStatComputer_(bridge.dataStatComputer_),
@@ -160,7 +158,6 @@ class MixtureBridge : public mixt::IMixture
       p_handler_->getData(idName(),
                           m_augDataij_,
                           nbSample_,
-                          nbVariable_,
                           paramStr_,
                           warnLog);
       m_augDataij_.computeRange();
@@ -222,7 +219,7 @@ class MixtureBridge : public mixt::IMixture
           mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
         }
         dataStatStorage_.resize(nbSample_,
-                                nbVariable_);
+                                1);
         mixture_.paramNames(paramNames_); // set the parameters names to be used for export
       }
     }
@@ -453,8 +450,6 @@ class MixtureBridge : public mixt::IMixture
     std::string paramStr_;
     /** number of samples in the data set*/
     int nbSample_;
-    /** number of variables in the data set */
-    int nbVariable_;
     /** confidence level used in computation of parameters and missing values statistics */
     Real confidenceLevel_;
     /** Sampler to generate values */

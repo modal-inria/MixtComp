@@ -38,7 +38,7 @@ IMixtureComposerBase::IMixtureComposerBase(int nbSample,
     tik_(nbSample, nbCluster),
     state_(modelCreated_)
 {
-  zi_.resizeArrays(nbSample, 1);
+  zi_.resizeArrays(nbSample);
   intializeMixtureParameters();
 }
 

@@ -71,11 +71,11 @@ class AugmentedData
       {};
     ~AugmentedData() {};
 
-    void resizeArrays(int nbSample, int nbVariable)
+    void resizeArrays(int nbSample)
     {
-      data_.resize(nbSample, nbVariable);
+      data_.resize(nbSample, 1);
       data_ = Type(0);
-      misData_.resize(nbSample, nbVariable);
+      misData_.resize(nbSample, 1);
     }
 
     void computeRange()

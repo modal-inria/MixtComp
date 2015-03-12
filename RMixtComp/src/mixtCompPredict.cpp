@@ -115,6 +115,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   {
     composer.writeParameters(std::cout);
     composer.exportDataParam();
+    composer.exportZi(dataExtractor);
 
     // export the composer results to R through modifications of mcResults
     mcResults.slot("nbCluster") = nbClusters;
@@ -132,17 +133,6 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
     for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
       proportions[kR] = (*composer.p_pk())(kS);
     mcResults.slot("proportions") = proportions;
-
-    Rcpp::NumericVector partition(handler.nbSample());
-    for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
-      partition[iR] = (*composer.p_zi())(iS) + 1;
-    mcResults.slot("partition") = partition;
-
-    Rcpp::NumericMatrix proba(handler.nbSample(), nbClusters);
-    for (int iS = 0, iR = 0; iR < handler.nbSample(); ++iS, ++iR)
-      for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-        proba(iR, kR) = (*composer.p_tik())(iS, kS);
-    mcResults.slot("proba") = proba;
 
     mcResults.slot("runTime") = totalTimer.top("end of run");
     mcResults.slot("nbSample") = composer.nbSample();

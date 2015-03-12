@@ -188,10 +188,34 @@ class IMixtureComposerBase
 #endif
     };
 
+    /** DataHandler is injected to take care of setting the values of the latent classes.
+     * This avoids templating the whole composer with DataHandler type, as is currently done
+     * with the individual IMixtures */
+    template<typename DataHandler>
+    std::string setZi(const DataHandler& dataHandler)
+    {
+      std::string warnLog;
+      std::string dummyParam;
+      dataHandler.getData("z_class", // reserved name for the class
+                          zi_,
+                          nbSample_,
+                          dummyParam,
+                          warnLog);
+      return warnLog;
+    };
+
     int nbSample() const
     {
       return nbSample_;
     };
+
+    template<typename DataExport>
+    void exportZi(DataExport& dataExport)
+    {
+      dataExport.exportVals("z_class",
+                            zi_,
+                            tik_);
+    }
 
   protected:
     /** number of cluster. */

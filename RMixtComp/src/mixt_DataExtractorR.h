@@ -41,6 +41,10 @@ class DataExtractorR
     void exportVals(std::string idName,
                     const AugmentedData<Matrix<int> >* p_augData,
                     const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage);
+    /** Export function for classes (called from the composer) */
+    void exportVals(std::string idName,
+                    const AugmentedData<Vector<int> >& augData,
+                    const Matrix<Real>& tik);
     /** Export function for gaussian model */
     void exportVals(std::string idName,
                     const AugmentedData<Matrix<Real> >* p_augData,
