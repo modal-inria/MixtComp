@@ -70,9 +70,9 @@ class DataHandlerR
     /** write information on the localization of data in the rList */
     void writeDataMap() const;
 
-    template<typename Type>
+    template<typename DataType>
     void getData(std::string const& idData,
-                 AugmentedData<Matrix<Type> >& augData,
+                 AugmentedData<DataType>& augData,
                  int& nbSample,
                  std::string& param,
                  std::string& warnLog) const;
@@ -90,152 +90,163 @@ class DataHandlerR
     Rcpp::List rList_;
 };
 
-template<typename Type>
+template<typename DataType>
 void DataHandlerR::getData(std::string const& idData,
-                           AugmentedData<Matrix<Type> >& augData,
+                           AugmentedData<DataType>& augData,
                            int& nbSample,
                            std::string& param,
                            std::string& warnLog) const
 {
+  typedef typename AugmentedData<DataType>::Type Type;
 #ifdef MC_DEBUG
   std::cout << "DataHandlerR::getDataHelper()" << std::endl;
   std::cout << "\tidData: " << idData << std::endl;
 //  std::cout << augData.data_ << std::endl;
 #endif
 
-  std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
-  nbSample = nbSample_;
-  augData.resizeArrays(nbSample_); // R has already enforced that all data has the same number of rows, and now all mixture ane univariate
-
-  // definitions of regular expressions to capture / reject numbers
-  std::string strNumber("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
-  std::string strBlank(" *");
-  std::string strLeftPar(" *\\[ *");
-  std::string strRightPar(" *\\] *");
-  std::string centralColon(" *: *");
-  std::string minusInf("-inf");
-  std::string plusInf("\\+inf");
-
-  boost::regex reNumber(strNumber);
-  boost::regex reValue(strBlank + // " *(-*[0-9.]+) *"
-                       strNumber +
-                       strBlank);
-  boost::regex reFiniteValues(" *\\{.*\\} *");
-  boost::regex reIntervals(strLeftPar + // " *\\[ *(-*[0-9.]+) *: *(-*[0-9.]+) *\\] *"
-                           strNumber +
-                           centralColon +
-                           strNumber +
-                           strRightPar);
-  boost::regex reLuIntervals(strLeftPar +  // " *\\[ *-inf *: *(-*[0-9.]+) *\\] *"
-                             minusInf +
-                             centralColon +
-                             strNumber +
-                             strRightPar);
-  boost::regex reRuIntervals(strLeftPar + // " *\\[ *(-*[0-9.]+) *: *\\+inf *\\] *"
-                             strNumber +
-                             centralColon +
-                             plusInf +
-                             strRightPar);
-
-  boost::smatch matches;
-
-  int j = 0; // index of the current variable
-  for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j) // loop on the elements of the rList_ corresponding to idData
+  if (dataMap_.find(idData) != dataMap_.end()) // check if the data requested is present in the input data
   {
-#ifdef MC_DEBUG
-    std::cout << "DataHandlerR::getData" << std::endl;
-    std::cout << "\tj: " << j << std::endl;
-#endif
-    Rcpp::List currVar = rList_[(*it)]; // get current named list
-    Rcpp::CharacterVector data = currVar("data");
-    for (int i = 0; i < nbSample_; ++i)
+    std::vector<int> const& v_pos = dataMap_.at(idData); // get the elements of the rList_ corresponding to idData
+    nbSample = nbSample_;
+    augData.resizeArrays(nbSample_); // R has already enforced that all data has the same number of rows, and now all mixture ane univariate
+
+    // definitions of regular expressions to capture / reject numbers
+    std::string strNumber("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
+    std::string strBlank(" *");
+    std::string strLeftPar(" *\\[ *");
+    std::string strRightPar(" *\\] *");
+    std::string centralColon(" *: *");
+    std::string minusInf("-inf");
+    std::string plusInf("\\+inf");
+
+    boost::regex reNumber(strNumber);
+    boost::regex reValue(strBlank + // " *(-*[0-9.]+) *"
+                         strNumber +
+                         strBlank);
+    boost::regex reFiniteValues(" *\\{.*\\} *");
+    boost::regex reIntervals(strLeftPar + // " *\\[ *(-*[0-9.]+) *: *(-*[0-9.]+) *\\] *"
+                             strNumber +
+                             centralColon +
+                             strNumber +
+                             strRightPar);
+    boost::regex reLuIntervals(strLeftPar +  // " *\\[ *-inf *: *(-*[0-9.]+) *\\] *"
+                               minusInf +
+                               centralColon +
+                               strNumber +
+                               strRightPar);
+    boost::regex reRuIntervals(strLeftPar + // " *\\[ *(-*[0-9.]+) *: *\\+inf *\\] *"
+                               strNumber +
+                               centralColon +
+                               plusInf +
+                               strRightPar);
+
+    boost::smatch matches;
+
+    int j = 0; // index of the current variable
+    for (std::vector<int>::const_iterator it = v_pos.begin(); it != v_pos.end(); ++it, ++j) // loop on the elements of the rList_ corresponding to idData
     {
-#ifdef MC_DEBUG
-    std::cout << "DataHandlerR::getData" << std::endl;
-    std::cout << "\ti: " << i << "\tj: " << j << std::endl;
-#endif
-      std::string currStr(data[i]);
-
-      if (boost::regex_match(currStr, matches, reValue))
+  #ifdef MC_DEBUG
+      std::cout << "DataHandlerR::getData" << std::endl;
+      std::cout << "\tj: " << j << std::endl;
+  #endif
+      Rcpp::List currVar = rList_[(*it)]; // get current named list
+      Rcpp::CharacterVector data = currVar("data");
+      for (int i = 0; i < nbSample_; ++i)
       {
-        augData.setPresent(i, j, str2type<Type>(matches[1].str()));
-#ifdef MC_DEBUG
-        std::cout << "\tpresent value" << std::endl;
-        std::cout << str2type<Type>(matches[1].str()) << std::endl;
-#endif
-        continue;
-      }
+  #ifdef MC_DEBUG
+      std::cout << "DataHandlerR::getData" << std::endl;
+      std::cout << "\ti: " << i << "\tj: " << j << std::endl;
+  #endif
+        std::string currStr(data[i]);
 
-      if (boost::regex_match(currStr, matches, reFiniteValues))
-      {
-        std::string::const_iterator start = currStr.begin();
-        std::string::const_iterator end   = currStr.end();
-        boost::smatch m;
-        typename AugmentedData<Matrix<Type> >::MisVal misVal;
-        misVal.first = missingFiniteValues_;
-        while (boost::regex_search(start, end, m, reNumber ))
+        if (boost::regex_match(currStr, matches, reValue))
         {
-          misVal.second.push_back(str2type<Type>(m[0].str()));
-          start = m[0].second;
-#ifdef MC_DEBUG
-        std::cout << "\tmissingFiniteValues_" << std::endl;
-        std::cout << m[0].str() << std::endl;
-#endif
+          augData.setPresent(i, j, str2type<Type>(matches[1].str()));
+  #ifdef MC_DEBUG
+          std::cout << "\tpresent value" << std::endl;
+          std::cout << str2type<Type>(matches[1].str()) << std::endl;
+  #endif
+          continue;
         }
-        augData.setMissing(i, j, misVal);
-        continue;
-      }
 
-      if (boost::regex_match(currStr, matches, reIntervals))
-      {
+        if (boost::regex_match(currStr, matches, reFiniteValues))
+        {
+          std::string::const_iterator start = currStr.begin();
+          std::string::const_iterator end   = currStr.end();
+          boost::smatch m;
+          typename AugmentedData<Matrix<Type> >::MisVal misVal;
+          misVal.first = missingFiniteValues_;
+          while (boost::regex_search(start, end, m, reNumber ))
+          {
+            misVal.second.push_back(str2type<Type>(m[0].str()));
+            start = m[0].second;
+  #ifdef MC_DEBUG
+          std::cout << "\tmissingFiniteValues_" << std::endl;
+          std::cout << m[0].str() << std::endl;
+  #endif
+          }
+          augData.setMissing(i, j, misVal);
+          continue;
+        }
+
+        if (boost::regex_match(currStr, matches, reIntervals))
+        {
+          typename AugmentedData<Matrix<Type> >::MisVal misVal;
+          misVal.first = missingIntervals_;
+          misVal.second.resize(2);
+          misVal.second[0] = str2type<Type>(matches[1].str());
+          misVal.second[1] = str2type<Type>(matches[2].str());
+          augData.setMissing(i, j, misVal);
+  #ifdef MC_DEBUG
+          std::cout << "\tmissingIntervals_" << std::endl;
+          std::cout << misVal.second[0] << std::endl;
+          std::cout << misVal.second[1] << std::endl;
+  #endif
+          continue;
+        }
+
+        if (boost::regex_match(currStr, matches, reLuIntervals))
+        {
+          typename AugmentedData<Matrix<Type> >::MisVal misVal;
+          misVal.first = missingLUIntervals_;
+          misVal.second.push_back(str2type<Type>(matches[1].str()));
+          augData.setMissing(i, j, misVal);
+  #ifdef MC_DEBUG
+          std::cout << "\tmissingLUIntervals_" << std::endl;
+          std::cout << matches[1].str() << std::endl;
+  #endif
+          continue;
+        }
+
+        if (boost::regex_match(currStr, matches, reRuIntervals))
+        {
+          typename AugmentedData<Matrix<Type> >::MisVal misVal;
+          misVal.first = missingRUIntervals_;
+          misVal.second.push_back(str2type<Type>(matches[1].str()));
+          augData.setMissing(i, j, misVal);
+  #ifdef MC_DEBUG
+          std::cout << "\tmissingRUIntervals_" << std::endl;
+          std::cout << matches[1].str() << std::endl;
+  #endif
+          continue;
+        }
+
+        // if missing value is none of the above...
         typename AugmentedData<Matrix<Type> >::MisVal misVal;
-        misVal.first = missingIntervals_;
-        misVal.second.resize(2);
-        misVal.second[0] = str2type<Type>(matches[1].str());
-        misVal.second[1] = str2type<Type>(matches[2].str());
+        misVal.first = missing_;
         augData.setMissing(i, j, misVal);
-#ifdef MC_DEBUG
-        std::cout << "\tmissingIntervals_" << std::endl;
-        std::cout << misVal.second[0] << std::endl;
-        std::cout << misVal.second[1] << std::endl;
-#endif
-        continue;
+  #ifdef MC_DEBUG
+          std::cout << "\tmissing_" << std::endl;
+  #endif
       }
-
-      if (boost::regex_match(currStr, matches, reLuIntervals))
-      {
-        typename AugmentedData<Matrix<Type> >::MisVal misVal;
-        misVal.first = missingLUIntervals_;
-        misVal.second.push_back(str2type<Type>(matches[1].str()));
-        augData.setMissing(i, j, misVal);
-#ifdef MC_DEBUG
-        std::cout << "\tmissingLUIntervals_" << std::endl;
-        std::cout << matches[1].str() << std::endl;
-#endif
-        continue;
-      }
-
-      if (boost::regex_match(currStr, matches, reRuIntervals))
-      {
-        typename AugmentedData<Matrix<Type> >::MisVal misVal;
-        misVal.first = missingRUIntervals_;
-        misVal.second.push_back(str2type<Type>(matches[1].str()));
-        augData.setMissing(i, j, misVal);
-#ifdef MC_DEBUG
-        std::cout << "\tmissingRUIntervals_" << std::endl;
-        std::cout << matches[1].str() << std::endl;
-#endif
-        continue;
-      }
-
-      // if missing value is none of the above...
-      typename AugmentedData<Matrix<Type> >::MisVal misVal;
-      misVal.first = missing_;
-      augData.setMissing(i, j, misVal);
-#ifdef MC_DEBUG
-        std::cout << "\tmissing_" << std::endl;
-#endif
     }
+  }
+  else
+  {
+    std::stringstream sstm;
+    sstm << "Data from the variable: " << idData << " has been requested but is absent from the provided data."
+         << " Please check that all the necessary data is provided" << std::endl;
+    warnLog += sstm.str();
   }
 }
 

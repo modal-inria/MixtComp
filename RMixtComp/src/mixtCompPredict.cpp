@@ -93,6 +93,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   {
     // create the mixtures, and read / set the data
     mixt::Timer readTimer("Read Data");
+    warnLog += composer.setZi(handler);
     manager.createMixtures(composer,
                            nbClusters);
     readTimer.top("data have been read");
