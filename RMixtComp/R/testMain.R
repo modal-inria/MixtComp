@@ -75,7 +75,9 @@ testGenDataLearn <- function(nbClass = 2,
   }
   
 
-   lm <- getData(c("dataGen/learn/gaussianData.csv",
+   lm <- getData(c("dataGen/learn/zData.csv",
+                   "dataGen/learn/zDescriptor.csv"),
+                 c("dataGen/learn/gaussianData.csv",
                    "dataGen/learn/gaussianDescriptor.csv"),
                  c("dataGen/learn/categoricalData.csv",
                    "dataGen/learn/categoricalDescriptor.csv"),
@@ -127,7 +129,9 @@ testGenDataPredict <- function(prop,
                                confidenceLevel = 0.95)
 {
 
-  lm <- getData(c("dataGen/predict/gaussianData.csv",
+  lm <- getData(c("dataGen/learn/zData.csv",
+                  "dataGen/learn/zDescriptor.csv"),
+                c("dataGen/predict/gaussianData.csv",
                  "dataGen/predict/gaussianDescriptor.csv"),
                 c("dataGen/predict/categoricalData.csv",
                   "dataGen/predict/categoricalDescriptor.csv"),

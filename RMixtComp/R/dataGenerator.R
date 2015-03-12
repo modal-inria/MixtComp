@@ -16,7 +16,8 @@ dataGenerator <- function(prefix,
   zDis <- rmultinom(nbSamples,
                     1,
                     proportions)
-  z <- rep(0, nbSamples)
+  z <- vector("integer",
+              nbSamples)
   for (i in 1:nbSamples)
   {
     z[i] <- match(1, zDis[, i])
@@ -61,6 +62,9 @@ dataGenerator <- function(prefix,
     listMissing <- union(listMissing, retList[["listMissingInd"]])
     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
   }
+  
+  zGenerator(prefix,
+             z)
   
   nbMissing <- length(listMissing)
   nbTotalVal <- (nbSamples * (nbVariableCat + nbVariableGauss + nbVariablePoisson))

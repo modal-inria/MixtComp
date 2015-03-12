@@ -114,10 +114,10 @@ categoricalGenerator <- function(prefix,
                                   z,
                                   params)
   
-  writeGaussianData(paste(prefix,
-                          "categoricalData.complete.csv",
-                          sep = "/"),
-                    data)
+  writeCategoricalData(paste(prefix,
+                             "categoricalData.complete.csv",
+                             sep = "/"),
+                       data)
   
   retList <- missingCategoricalData(data,
                                     nbModalities,
