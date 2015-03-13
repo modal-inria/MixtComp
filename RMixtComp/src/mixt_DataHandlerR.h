@@ -75,6 +75,7 @@ class DataHandlerR
                  AugmentedData<DataType>& augData,
                  int& nbSample,
                  std::string& param,
+                 typename AugmentedData<DataType>::Type offset,
                  std::string& warnLog) const;
   private:
     int nbSample_;
@@ -95,9 +96,11 @@ void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<DataType>& augData,
                            int& nbSample,
                            std::string& param,
+                           typename AugmentedData<DataType>::Type offset,
                            std::string& warnLog) const
 {
   typedef typename AugmentedData<DataType>::Type Type;
+  typedef typename AugmentedData<Matrix<Type> >::MisVal MisVal;
 #ifdef MC_DEBUG
   std::cout << "DataHandlerR::getDataHelper()" << std::endl;
   std::cout << "\tidData: " << idData << std::endl;
@@ -153,15 +156,15 @@ void DataHandlerR::getData(std::string const& idData,
       Rcpp::CharacterVector data = currVar("data");
       for (int i = 0; i < nbSample_; ++i)
       {
-  #ifdef MC_DEBUG
-      std::cout << "DataHandlerR::getData" << std::endl;
-      std::cout << "\ti: " << i << "\tj: " << j << std::endl;
-  #endif
+#ifdef MC_DEBUG
+        std::cout << "DataHandlerR::getData" << std::endl;
+        std::cout << "\ti: " << i << "\tj: " << j << std::endl;
+#endif
         std::string currStr(data[i]);
 
-        if (boost::regex_match(currStr, matches, reValue))
+        if (boost::regex_match(currStr, matches, reValue)) // value is present
         {
-          augData.setPresent(i, j, str2type<Type>(matches[1].str()));
+          augData.setPresent(i, j, str2type<Type>(matches[1].str()) + offset);
   #ifdef MC_DEBUG
           std::cout << "\tpresent value" << std::endl;
           std::cout << str2type<Type>(matches[1].str()) << std::endl;
@@ -169,33 +172,33 @@ void DataHandlerR::getData(std::string const& idData,
           continue;
         }
 
-        if (boost::regex_match(currStr, matches, reFiniteValues))
+        if (boost::regex_match(currStr, matches, reFiniteValues)) // only a finite number of values are acceptable
         {
           std::string::const_iterator start = currStr.begin();
           std::string::const_iterator end   = currStr.end();
           boost::smatch m;
-          typename AugmentedData<Matrix<Type> >::MisVal misVal;
+          MisVal misVal;
           misVal.first = missingFiniteValues_;
           while (boost::regex_search(start, end, m, reNumber ))
           {
-            misVal.second.push_back(str2type<Type>(m[0].str()));
+            misVal.second.push_back(str2type<Type>(m[0].str()) + offset);
             start = m[0].second;
-  #ifdef MC_DEBUG
-          std::cout << "\tmissingFiniteValues_" << std::endl;
-          std::cout << m[0].str() << std::endl;
-  #endif
+#ifdef MC_DEBUG
+            std::cout << "\tmissingFiniteValues_" << std::endl;
+            std::cout << m[0].str() << std::endl;
+#endif
           }
           augData.setMissing(i, j, misVal);
           continue;
         }
 
-        if (boost::regex_match(currStr, matches, reIntervals))
+        if (boost::regex_match(currStr, matches, reIntervals)) // acceptable values provided by intervals
         {
-          typename AugmentedData<Matrix<Type> >::MisVal misVal;
+          MisVal misVal;
           misVal.first = missingIntervals_;
           misVal.second.resize(2);
-          misVal.second[0] = str2type<Type>(matches[1].str());
-          misVal.second[1] = str2type<Type>(matches[2].str());
+          misVal.second[0] = str2type<Type>(matches[1].str()) + offset;
+          misVal.second[1] = str2type<Type>(matches[2].str()) + offset;
           augData.setMissing(i, j, misVal);
   #ifdef MC_DEBUG
           std::cout << "\tmissingIntervals_" << std::endl;
@@ -205,11 +208,11 @@ void DataHandlerR::getData(std::string const& idData,
           continue;
         }
 
-        if (boost::regex_match(currStr, matches, reLuIntervals))
+        if (boost::regex_match(currStr, matches, reLuIntervals)) // data is lower bounded
         {
-          typename AugmentedData<Matrix<Type> >::MisVal misVal;
+          MisVal misVal;
           misVal.first = missingLUIntervals_;
-          misVal.second.push_back(str2type<Type>(matches[1].str()));
+          misVal.second.push_back(str2type<Type>(matches[1].str()) + offset);
           augData.setMissing(i, j, misVal);
   #ifdef MC_DEBUG
           std::cout << "\tmissingLUIntervals_" << std::endl;
@@ -218,11 +221,11 @@ void DataHandlerR::getData(std::string const& idData,
           continue;
         }
 
-        if (boost::regex_match(currStr, matches, reRuIntervals))
+        if (boost::regex_match(currStr, matches, reRuIntervals)) // data is upper bounded
         {
-          typename AugmentedData<Matrix<Type> >::MisVal misVal;
+          MisVal misVal;
           misVal.first = missingRUIntervals_;
-          misVal.second.push_back(str2type<Type>(matches[1].str()));
+          misVal.second.push_back(str2type<Type>(matches[1].str()) + offset);
           augData.setMissing(i, j, misVal);
   #ifdef MC_DEBUG
           std::cout << "\tmissingRUIntervals_" << std::endl;
@@ -231,13 +234,12 @@ void DataHandlerR::getData(std::string const& idData,
           continue;
         }
 
-        // if missing value is none of the above...
-        typename AugmentedData<Matrix<Type> >::MisVal misVal;
+        MisVal misVal; // in all other cases data is considered completely missing
         misVal.first = missing_;
         augData.setMissing(i, j, misVal);
-  #ifdef MC_DEBUG
-          std::cout << "\tmissing_" << std::endl;
-  #endif
+#ifdef MC_DEBUG
+        std::cout << "\tmissing_" << std::endl;
+#endif
       }
     }
   }

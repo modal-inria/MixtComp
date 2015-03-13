@@ -158,13 +158,6 @@ class IMixtureComposerBase
      **/
     inline virtual void finalizeStep() {}
 
-    // not virtual
-    /** Initialize randomly the labels zi of the model.
-     *  Initialize the model parameters using initializeStep()
-     *  and compute the tik.
-     **/
-    void randomClassInit();
-
     /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
      *  @return the minimal value of individuals in a class
      **/
@@ -194,13 +187,80 @@ class IMixtureComposerBase
     template<typename DataHandler>
     std::string setZi(const DataHandler& dataHandler)
     {
+#ifdef MC_DEBUG_NEW
+      std::cout << "IMixtureComposerBase::setZi" << std::endl;
+#endif
       std::string warnLog;
       std::string dummyParam;
       dataHandler.getData("z_class", // reserved name for the class
                           zi_,
                           nbSample_,
                           dummyParam,
+                          -minModality, // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
                           warnLog);
+
+      zi_.computeRange(); // compute effective range of the data for checking
+      if (zi_.dataRange_.min_ < 0)
+      {
+        std::stringstream sstm;
+        sstm << "The z_class latent class variable has a lowest provided value of: "
+             << minModality + zi_.dataRange_.min_
+             << " while the minimal value has to be: "
+             << minModality
+             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+        warnLog += sstm.str();
+      }
+      if (zi_.dataRange_.max_ > nbCluster_ - 1)
+      {
+        std::stringstream sstm;
+        sstm << "The z_class latent class variable has a highest provided value of: "
+             << minModality + zi_.dataRange_.max_
+             << " while the maximal value can not exceed the number of class: "
+             << minModality + nbCluster_ - 1
+             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+        warnLog += sstm.str();
+      }
+      zi_.dataRange_.min_ = 0; // real range provided by the parameters is enforced
+      zi_.dataRange_.max_ = nbCluster_ - 1;
+      zi_.dataRange_.range_ = nbCluster_;
+
+      for (int iterSample = 0; iterSample < nbSamplingAttempts; ++iterSample) // sample until there are enough individuals per class
+      {
+        zi_.removeMissingClass(); // uniform random sampling of the latent classes
+
+        Vector<int> indPerClass(nbCluster_);
+        indPerClass = 0;
+        for (int i = 0; i < nbSample_; ++i)
+        {
+      #ifdef MC_DEBUG
+        std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
+      #endif
+          indPerClass[zi_.data_(i)] += 1;
+        }
+        int nbIndPerClass = indPerClass.minCoeff();
+
+        if (nbIndPerClass > minIndPerClass)
+        {
+          break; // enough individuals in each class to carry on
+        }
+        else
+        {
+          if (iterSample == nbSamplingAttempts - 1) // on last attempt, exit with error message
+          {
+            std::stringstream sstm;
+            sstm << "Problem during random initialization of the z_class latent class variable. The class with the lowest number "
+                 << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
+                 << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
+                 << " partition samplings before failure. The number of classes might be too important"
+                 << " relative to the number of individuals." << std::endl;
+            warnLog += sstm.str();
+          }
+        }
+      }
+#ifdef MC_DEBUG_NEW
+      std::cout << "zi_.data_: " << std::endl;
+      std::cout << zi_.data_ << std::endl;
+#endif
       return warnLog;
     };
 
@@ -222,7 +282,7 @@ class IMixtureComposerBase
     int nbCluster_;
     /** Number of samples */
     int nbSample_;
-    /** The proportions of each mixtures */
+    /** The proportions of each class */
     Vector<Real> prop_;
     /** The tik probabilities */
     Matrix<Real> tik_;

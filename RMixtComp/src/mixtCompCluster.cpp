@@ -92,7 +92,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     warnLog += composer.setZi(handler);
     manager.createMixtures(composer,
                            nbClusters);
-    readTimer.top("data have been read");
+    readTimer.top("data has been read");
   }
 
   if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures

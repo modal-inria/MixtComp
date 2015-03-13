@@ -159,6 +159,7 @@ class MixtureBridge : public mixt::IMixture
                           m_augDataij_,
                           nbSample_,
                           paramStr_,
+                          0, // offset currently set to 0, but should use information provided by mixture_
                           warnLog);
       m_augDataij_.computeRange();
       if (mixture_.checkMinVal() && m_augDataij_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value

@@ -53,15 +53,6 @@ IMixtureComposerBase::IMixtureComposerBase( IMixtureComposerBase const& model) :
 /* destructor */
 IMixtureComposerBase::~IMixtureComposerBase() {}
 
-/* initialize randomly the labels zi of the model */
-void IMixtureComposerBase::randomClassInit()
-{
-  for (int i = 0; i < nbSample_; ++i)
-  {
-    zi_.data_(i) = multi_.sample(prop_);
-  }
-}
-
 /* simulate zi for all individuals */
 int IMixtureComposerBase::sStep()
 {

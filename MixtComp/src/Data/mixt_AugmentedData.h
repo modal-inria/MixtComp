@@ -65,9 +65,9 @@ class AugmentedData
       nbSample_(0),
       nbPresent_(0),
       nbMissing_(0),
-      rangeUpdate_(false),
       dataRange_(Type(0),
-                 Type(0))
+                 Type(0)),
+      rangeUpdate_(false)
       {};
     ~AugmentedData() {};
 
@@ -155,6 +155,9 @@ class AugmentedData
 
     /** Remove the missing values by uniform samplings */
     void removeMissing();
+
+    /** Remove the missing values by uniform samplings, taking into account that classes begin at 0 no matter the minModality value */
+    void removeMissingClass();
 
     /** two dimensional data table, for example a Matrix<Real> */
     DataType data_;

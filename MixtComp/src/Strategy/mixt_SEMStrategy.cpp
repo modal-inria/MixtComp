@@ -72,8 +72,6 @@ std::string SemStrategy::run()
   for (int iTry = 0; iTry < nbTry_; ++iTry)
   {
     std::string tryWarn; // warning for each run
-    // Random initialization
-    p_composer_->randomClassInit();
 #ifdef MC_DEBUG
   std::cout << "SemStrategy::run(), after randomClassInit()" << std::endl;
   std::cout << "*p_composer_->p_zi()" << std::endl;

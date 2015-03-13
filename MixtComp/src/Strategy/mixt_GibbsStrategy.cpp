@@ -50,7 +50,6 @@ GibbsStrategy::~GibbsStrategy()
 std::string GibbsStrategy::run()
 {
   std::string warnLog;
-  p_composer_->randomClassInit();
 #ifdef MC_DEBUG
   std::cout << "SemStrategy::run(), after randomClassInit()" << std::endl;
   std::cout << "*p_composer_->p_zi()" << std::endl;
