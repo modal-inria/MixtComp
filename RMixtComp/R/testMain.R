@@ -13,10 +13,10 @@ testComplete <- function()
 testLearnPredict <- function(regen = TRUE)
 {
   cat("Launching testGenDataLearn\n")
-  myDataLearn <- testGenDataLearn(regen = regen)
+  res <- testGenDataLearn(regen = regen)
   cat("Launching testGenDataPredict\n")
-  myDataPredict <- testGenDataPredict(myDataLearn[[1]]@results@proportions,
-                                      myDataLearn[[2]]$param)
+  myDataPredict <- testGenDataPredict(res$mixture$proportions,
+                                      res$variable$param)
   return(myDataPredict)
 }
 
@@ -98,33 +98,32 @@ testGenDataLearn <- function(nbClass = 2,
 #   lm <- getData(c("dataGen/learn/categoricalData.csv",
 #                   "dataGen/learn/categoricalDescriptor.csv"))
   
-  # creation of parameters container
-  mcCluster <- getMixtCompCluster(2, # nbTrialInInit
-                                  nbBurnInIter, # nbBurnInIter
-                                  100, # nbIter
-                                  100, # nbGibbsBurnInIter
-                                  100) # nbGibbsIter
+  # creation of strategy list
+  mcStrategy <- list(nbTrialInInit = 2,
+                     nbBurnInIter = nbBurnInIter,
+                     nbIter = 100,
+                     nbGibbsBurnInIter = 100,
+                     nbGibbsIter = 100)
   
   # launch of the MixtComp algorithm
-  dataParam <- mixtCompCluster(lm,
-                               mcCluster,
-                               nbClass,
-                               confidenceLevel)
-  if (nchar(mcCluster@results@warnLog) > 0)
+  res <- mixtCompCluster(lm,
+                         mcStrategy,
+                         nbClass,
+                         confidenceLevel)
+  if (nchar(res$mixture$warnLog) > 0)
   {
-    warning(mcCluster@results@warnLog)
+    warning(res$mixture$warnLog)
   }
 
   confMat <- confusionMatrix("dataGen/learn/classIn.csv",
-                             dataParam)
+                             res$variable)
   print(confMat)
-  cat("lnObservedLikelihood: "     , mcCluster@results@lnObservedLikelihood     , "\n",
-      "lnSemiCompletedLikelihood: ", mcCluster@results@lnSemiCompletedLikelihood, "\n",
-      "lnCompletedLikelihood: "    , mcCluster@results@lnCompletedLikelihood    , "\n",
+  cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
+      "lnSemiCompletedLikelihood: ", res$mixture$lnSemiCompletedLikelihood, "\n",
+      "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
       sep = "")
 
-  return(list(mcCluster,
-              dataParam))
+  return(res)
 }
 
 testGenDataPredict <- function(prop,
@@ -152,36 +151,35 @@ testGenDataPredict <- function(prop,
 #   lm <- getData(c("dataGen/learn/categoricalData.csv",
 #                   "dataGen/learn/categoricalDescriptor.csv"))
   
-  # creation of parameters container
-  mcCluster <- getMixtCompCluster(2, # nbTrialInInit
-                                  nbBurnInIter, # nbBurnInIter
-                                  100, # nbIter
-                                  100, # nbGibbsBurnInIter
-                                  100) # nbGibbsIter
-  
+  # creation of strategy list
+  mcStrategy <- list(nbTrialInInit = 2,
+                     nbBurnInIter = nbBurnInIter,
+                     nbIter = 100,
+                     nbGibbsBurnInIter = 100,
+                     nbGibbsIter = 100)
+
   # launch of the MixtComp algorithm
-  dataParam <- mixtCompPredict(lm,
-                               prop,
-                               param,
-                               mcCluster,
-                               nbClass,
-                               confidenceLevel)
+  res <- mixtCompPredict(lm,
+                         prop,
+                         param,
+                         mcStrategy,
+                         nbClass,
+                         confidenceLevel)
   
-  if (nchar(mcCluster@results@warnLog) > 0)
+  if (nchar(res$mixture$warnLog) > 0)
   {
-    warning(mcCluster@results@warnLog)
+    warning(res$mixture$warnLog)
   }
   
   confMat <- confusionMatrix("dataGen/predict/classIn.csv",
-                             dataParam)
+                             res$variable)
   print(confMat)
-  cat("lnObservedLikelihood: "     , mcCluster@results@lnObservedLikelihood     , "\n",
-      "lnSemiCompletedLikelihood: ", mcCluster@results@lnSemiCompletedLikelihood, "\n",
-      "lnCompletedLikelihood: "    , mcCluster@results@lnCompletedLikelihood    , "\n",
+  cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
+      "lnSemiCompletedLikelihood: ", res$mixture$lnSemiCompletedLikelihood, "\n",
+      "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
       sep = "")
   
-  return(list(mcCluster,
-              dataParam))
+  return(res)
 }
 
 confusionMatrix <- function(classInFile,

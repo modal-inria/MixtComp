@@ -34,7 +34,7 @@
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List rList,
-                           Rcpp::S4 mcClusters,
+                           Rcpp::List mcStrategy,
                            int nbClusters,
                            double confidenceLevel)
 {
@@ -42,10 +42,11 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
 
   // string to log warnings
   std::string warnLog;
-  // parse the S4 argument into input and output
-  Rcpp::S4 mcStrategy = mcClusters.slot("strategy");
-  Rcpp::S4 mcResults = mcClusters.slot("results");
   
+  // lists to export results
+  Rcpp::List mcMixture;
+  Rcpp::List mcVariable;
+
   // create the data handler
   mixt::DataHandlerR handler(rList);
   warnLog += handler.listData();
@@ -99,11 +100,11 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   {
     // create the appropriate strategy and transmit the parameters
     mixt::SemStrategy strategy(&composer,
-                               mcStrategy.slot("nbTrialInInit"), // number of trials of the complete chain, with different initializations
-                               mcStrategy.slot("nbBurnInIter"), // number of burn-in iterations
-                               mcStrategy.slot("nbIter"), // number of iterations
-                               mcStrategy.slot("nbGibbsBurnInIter"), // number of iterations for Gibbs sampler
-                               mcStrategy.slot("nbGibbsIter"), // number of iterations for Gibbs sampler
+                               mcStrategy["nbTrialInInit"],
+                               mcStrategy["nbBurnInIter"], // number of burn-in iterations
+                               mcStrategy["nbIter"], // number of iterations
+                               mcStrategy["nbGibbsBurnInIter"], // number of iterations for Gibbs sampler
+                               mcStrategy["nbGibbsIter"], // number of iterations for Gibbs sampler
                                mixt::nbSamplingAttempts); // number of sampling attempts for lowly populated classes
   
     // run the strategy
@@ -119,21 +120,21 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     composer.exportZi(dataExtractor);
 
     // export the composer results to R through modifications of mcResults
-    mcResults.slot("nbCluster") = nbClusters;
-    mcResults.slot("nbFreeParameters") = composer.nbFreeParameters();
+    mcMixture["nbCluster"] = nbClusters;
+    mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
     mixt::Real lnObsLik = composer.lnObservedLikelihood();
     mixt::Real lnCompLik = composer.lnCompletedLikelihood();
     mixt::Real lnSemiCompLik = composer.lnSemiCompletedLikelihood();
-    mcResults.slot("lnObservedLikelihood") = lnObsLik;
-    mcResults.slot("lnSemiCompletedLikelihood") = lnSemiCompLik;
-    mcResults.slot("lnCompletedLikelihood") = lnCompLik;
-    mcResults.slot("BIC") = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
-    mcResults.slot("ICL") = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+    mcMixture["lnObservedLikelihood"] = lnObsLik;
+    mcMixture["lnSemiCompletedLikelihood"] = lnSemiCompLik;
+    mcMixture["lnCompletedLikelihood"] = lnCompLik;
+    mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+    mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
 
     Rcpp::NumericVector proportions(nbClusters);
     for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
       proportions[kR] = (*composer.p_pk())(kS);
-    mcResults.slot("proportions") = proportions;
+    mcMixture["proportions"] = proportions;
 
     Rcpp::NumericMatrix proportionsLog(composer.p_pkLog()->rows(),
                                        composer.p_pkLog()->cols());
@@ -144,25 +145,29 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
         proportionsLog(i, j) = (*composer.p_pkLog())(i, j);
       }
     }
-    mcResults.slot("proportionsLog") = proportionsLog;
+    mcMixture["proportionsLog"] = proportionsLog;
 
-    mcResults.slot("runTime") = totalTimer.top("end of run");
-    mcResults.slot("nbSample") = composer.nbSample();
+    mcMixture["runTime"] = totalTimer.top("end of run");
+    mcMixture["nbSample"] = composer.nbSample();
   }
 
-  mcResults.slot("warnLog") = warnLog;
+  mcMixture["warnLog"] = warnLog;
   if (warnLog.size() != 0)
   {
     std::cout << "!!! warnLog not empty !!!" << std::endl;
     std::cout << warnLog << std::endl;
   }
 
-  mcResults.slot("runTime") = totalTimer.top("end of run");
-  mcResults.slot("nbSample") = composer.nbSample();
+  mcMixture["runTime"] = totalTimer.top("end of run");
+  mcMixture["nbSample"] = composer.nbSample();
 
   Rcpp::List data = dataExtractor.rcppReturnVal();
   Rcpp::List param = paramExtractor.rcppReturnParam();
+  mcVariable = Rcpp::List::create(Rcpp::Named("data") = data,
+                                  Rcpp::Named("param") = param);
 
-  return Rcpp::List::create(Rcpp::Named("data") = data,
-                            Rcpp::Named("param") = param);
+
+  return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy,
+                            Rcpp::Named("mixture") = mcMixture,
+                            Rcpp::Named("variable") = mcVariable);
 }
