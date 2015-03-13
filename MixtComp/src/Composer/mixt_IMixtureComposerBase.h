@@ -28,7 +28,7 @@
 
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Clust_Util.h"
-#include "../Statistic/mixt_MultinomialStatistic.h"
+#include "../Sampler/mixt_ClassSampler.h"
 #include "../Data/mixt_AugmentedData.h"
 
 namespace mixt
@@ -303,8 +303,8 @@ class IMixtureComposerBase
     /** state of the model*/
     modelState state_;
 
-    /** multinomial law */
-    MultinomialStatistic multi_;
+    /** class sampler */
+    ClassSampler sampler_;
 };
 
 } // namespace mixt

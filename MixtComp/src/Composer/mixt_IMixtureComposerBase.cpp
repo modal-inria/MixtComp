@@ -36,7 +36,10 @@ IMixtureComposerBase::IMixtureComposerBase(int nbSample,
     nbSample_(nbSample),
     prop_(nbCluster),
     tik_(nbSample, nbCluster),
-    state_(modelCreated_)
+    state_(modelCreated_),
+    sampler_(zi_,
+             tik_,
+             nbCluster)
 {
   zi_.resizeArrays(nbSample);
   intializeMixtureParameters();
@@ -48,7 +51,8 @@ IMixtureComposerBase::IMixtureComposerBase( IMixtureComposerBase const& model) :
     prop_(model.prop_),
     tik_(model.tik_),
     zi_(model.zi_),
-    state_(model.state_)
+    state_(model.state_),
+    sampler_(model.sampler_)
 {}
 /* destructor */
 IMixtureComposerBase::~IMixtureComposerBase() {}
@@ -87,7 +91,7 @@ int IMixtureComposerBase::sStep()
 /* simulate zi for a particular individual */
 void IMixtureComposerBase::sStep(int i)
 {
-  zi_.data_(i) = multi_.sample(tik_.row(i));
+  sampler_.sampleIndividual(i);
 }
 
 /* compute Tik, for all individuals */
