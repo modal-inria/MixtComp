@@ -9,6 +9,7 @@ dataGenerator <- function(prefix,
                           nbVariableGauss,
                           nbVariablePoisson,
                           nbClasses,
+                          missingZ,
                           missingCategorical,
                           missingGaussian,
                           missingPoisson)
@@ -25,6 +26,11 @@ dataGenerator <- function(prefix,
   
   listMissing <- list()
   nbMissingVal <- 0
+  
+  zGenerator(prefix,
+             z,
+             nbClasses,
+             missingZ)
   
   if (nbVariableCat > 0)
   {
@@ -63,9 +69,6 @@ dataGenerator <- function(prefix,
     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
   }
   
-  zGenerator(prefix,
-             z)
-  
   nbMissing <- length(listMissing)
   nbTotalVal <- (nbSamples * (nbVariableCat + nbVariableGauss + nbVariablePoisson))
   
@@ -98,6 +101,7 @@ dataParamGenerator <- function(nbSamplesLearn,
                                nbVariablePoisson,
                                maxLambda,
                                nbClasses,
+                               missingZ,
                                missingCategorical,
                                missingGaussian,
                                missingPoisson)
@@ -185,6 +189,7 @@ dataParamGenerator <- function(nbSamplesLearn,
                 nbVariableGauss,
                 nbVariablePoisson,
                 nbClasses,
+                missingZ,
                 missingCategorical,
                 missingGaussian,
                 missingPoisson)
@@ -199,6 +204,7 @@ dataParamGenerator <- function(nbSamplesLearn,
                 nbVariableGauss,
                 nbVariablePoisson,
                 nbClasses,
+                missingZ,
                 missingCategorical,
                 missingGaussian,
                 missingPoisson)

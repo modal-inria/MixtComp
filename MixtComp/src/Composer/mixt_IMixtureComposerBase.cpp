@@ -69,7 +69,8 @@ int IMixtureComposerBase::sStep()
     sStep(i);
   }
 #ifdef MC_DEBUG
-  std::cout << "nbCluster_: " << nbCluster_ << std::endl;
+  std::cout << "zi_.data_: " << std::endl;
+  std::cout << zi_.data_ << std::endl;
 #endif
   Vector<int> indPerClass(nbCluster_);
   indPerClass = 0;

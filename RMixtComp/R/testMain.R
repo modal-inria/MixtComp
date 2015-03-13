@@ -27,6 +27,10 @@ testGenDataLearn <- function(nbClass = 2,
                              confidenceLevel = 0.95,
                              regen = TRUE)
 {
+  missingZ <- c(0.4, # present
+                0.3, # missing
+                0.3) # missing finite value
+  
   missingCategorical <- c(0.8, # present
                           0.1, # missing
                           0.1) # missing finite value
@@ -69,6 +73,7 @@ testGenDataLearn <- function(nbClass = 2,
                        3, # nbVariablePois
                        20., # maxLambda
                        nbClass, # nbClasses
+                       missingZ,
                        missingCategorical, # missingCategorical
                        missingGaussian,
                        missingPoisson) # missingGaussian

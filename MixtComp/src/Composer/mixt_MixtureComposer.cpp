@@ -294,6 +294,8 @@ void MixtureComposer::misClasStep(int iteration)
   Matrix<Real> probClass(nbSample_,
                          nbCluster_);
 
+  Vector<int> ziBack = zi_.data_;
+
   // computation of the log probability with adequately sampled missing values
   for (int k = 0; k < nbCluster_; ++k)
   {
@@ -322,6 +324,8 @@ void MixtureComposer::misClasStep(int iteration)
     Real sum = lnComp.sum();
     tik_.row(i) = lnComp / sum;
   }
+
+  zi_.data_ = ziBack; // restore zi_ to initial values, useful because in supervised learning some zi_ are fixed and not resampled after misClasStep
 }
 
 void MixtureComposer::storeSEMBurnIn(int iteration,

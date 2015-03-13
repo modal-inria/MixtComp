@@ -187,7 +187,7 @@ class IMixtureComposerBase
     template<typename DataHandler>
     std::string setZi(const DataHandler& dataHandler)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "IMixtureComposerBase::setZi" << std::endl;
 #endif
       std::string warnLog;
@@ -232,9 +232,9 @@ class IMixtureComposerBase
         indPerClass = 0;
         for (int i = 0; i < nbSample_; ++i)
         {
-      #ifdef MC_DEBUG
-        std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
-      #endif
+#ifdef MC_DEBUG
+          std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
+#endif
           indPerClass[zi_.data_(i)] += 1;
         }
         int nbIndPerClass = indPerClass.minCoeff();
@@ -257,7 +257,7 @@ class IMixtureComposerBase
           }
         }
       }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "zi_.data_: " << std::endl;
       std::cout << zi_.data_ << std::endl;
 #endif

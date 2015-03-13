@@ -34,8 +34,8 @@ missingCategoricalData <- function(data,
   for (i in 1:nrow(data))
   {
     nbVar <- ncol(data)
-    nbSampleVar <- sample(nbVar - 1, 1) # number of modalities to be drawn
-    sampledVar <- sort(sample(nbVar, nbSampleVar)) # modalities drawn
+    nbSampleVar <- sample(nbVar - 1, 1) # number of variables to be missing
+    sampledVar <- sort(sample(nbVar, nbSampleVar)) # missing variables
     isMissing <- F
     for (j in sampledVar)
     {
