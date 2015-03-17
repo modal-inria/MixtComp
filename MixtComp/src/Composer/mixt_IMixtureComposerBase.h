@@ -185,7 +185,7 @@ class IMixtureComposerBase
      * This avoids templating the whole composer with DataHandler type, as is currently done
      * with the individual IMixtures */
     template<typename DataHandler>
-    std::string setZi(const DataHandler& dataHandler)
+    std::string setZi(const DataHandler& dataHandler, bool checkInd)
     {
 #ifdef MC_DEBUG
       std::cout << "IMixtureComposerBase::setZi" << std::endl;
@@ -248,22 +248,19 @@ class IMixtureComposerBase
         }
         int nbIndPerClass = indPerClass.minCoeff();
 
-        if (nbIndPerClass > minIndPerClass)
+        if (nbIndPerClass > minIndPerClass || checkInd == false)
         {
           break; // enough individuals in each class to carry on
         }
-        else
+        else if (iterSample == nbSamplingAttempts - 1) // on last attempt, exit with error message
         {
-          if (iterSample == nbSamplingAttempts - 1) // on last attempt, exit with error message
-          {
-            std::stringstream sstm;
-            sstm << "Problem during random initialization of the z_class latent class variable. The class with the lowest number "
-                 << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
-                 << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
-                 << " partition samplings before failure. The number of classes might be too important"
-                 << " relative to the number of individuals." << std::endl;
-            warnLog += sstm.str();
-          }
+          std::stringstream sstm;
+          sstm << "Problem during random initialization of the z_class latent class variable. The class with the lowest number "
+               << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
+               << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
+               << " partition samplings before failure. The number of classes might be too important"
+               << " relative to the number of individuals." << std::endl;
+          warnLog += sstm.str();
         }
       }
 #ifdef MC_DEBUG

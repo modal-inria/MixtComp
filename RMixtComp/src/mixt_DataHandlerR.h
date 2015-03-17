@@ -247,7 +247,7 @@ void DataHandlerR::getData(std::string const& idData,
   {
     std::stringstream sstm;
     sstm << "Data from the variable: " << idData << " has been requested but is absent from the provided data."
-         << " Please check that all the necessary data is provided" << std::endl;
+         << " Please check that all the necessary data is provided." << std::endl;
     warnLog += sstm.str();
   }
 }

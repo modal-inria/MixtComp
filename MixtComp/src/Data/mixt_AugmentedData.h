@@ -74,7 +74,6 @@ class AugmentedData
     void resizeArrays(int nbSample)
     {
       data_.resize(nbSample, 1);
-      data_ = Type(0);
       misData_.resize(nbSample, 1);
     }
 
