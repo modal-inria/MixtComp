@@ -202,6 +202,7 @@ class IMixtureComposerBase
       if (warnLog.size() > 0) // zi_class was not provided
       {
         zi_.setAllMissing(nbSample_); // set every value state to missing_
+        warnLog = std::string(); // warnLog reinitialized
       }
 #ifdef MC_DEBUG
       std::cout << "zi_.data_: " << std::endl;
