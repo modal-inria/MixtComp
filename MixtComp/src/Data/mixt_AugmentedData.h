@@ -160,7 +160,7 @@ class AugmentedData
       misVal.first = missing_; // description of completely missing individual
       for (int i = 0; i < nbSample; ++i)
       {
-        setMissing(i, 1, misVal);
+        setMissing(i, 0, misVal);
       }
     }
 
