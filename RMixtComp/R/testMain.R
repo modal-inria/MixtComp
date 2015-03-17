@@ -27,8 +27,12 @@ testGenDataLearn <- function(nbClass = 2,
                              confidenceLevel = 0.95,
                              regen = TRUE)
 {
-  missingZ <- c(0.4, # present
-                0.3, # missing
+#   missingZ <- c(0.4, # present
+#                 0.3, # missing
+#                 0.3) # missing finite value
+  
+  missingZ <- c(0.3, # present
+                0.4, # missing
                 0.3) # missing finite value
   
   missingCategorical <- c(0.8, # present
@@ -133,8 +137,8 @@ testGenDataPredict <- function(prop,
                                confidenceLevel = 0.95)
 {
 
-  lm <- getData(c("dataGen/learn/zData.csv",
-                  "dataGen/learn/zDescriptor.csv"),
+  lm <- getData(c("dataGen/predict/zData.csv",
+                  "dataGen/predict/zDescriptor.csv"),
                 c("dataGen/predict/gaussianData.csv",
                  "dataGen/predict/gaussianDescriptor.csv"),
                 c("dataGen/predict/categoricalData.csv",

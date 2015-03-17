@@ -199,6 +199,11 @@ class IMixtureComposerBase
                           -minModality, // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
                           warnLog);
 
+#ifdef MC_DEBUG
+      std::cout << "zi_.data_: " << std::endl;
+      std::cout << zi_.data_ << std::endl;
+#endif
+
       zi_.computeRange(); // compute effective range of the data for checking
       if (zi_.dataRange_.min_ < 0)
       {
