@@ -199,12 +199,16 @@ class IMixtureComposerBase
                           -minModality, // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
                           warnLog);
 
+      if (warnLog.size() > 0) // zi_class was not provided
+      {
+        zi_.setAllMissing(nbSample_); // set every value state to missing_
+      }
 #ifdef MC_DEBUG
       std::cout << "zi_.data_: " << std::endl;
       std::cout << zi_.data_ << std::endl;
 #endif
 
-      zi_.computeRange(); // compute effective range of the data for checking
+      zi_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
       if (zi_.dataRange_.min_ < 0)
       {
         std::stringstream sstm;
