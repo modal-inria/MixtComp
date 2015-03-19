@@ -39,6 +39,7 @@ extern const int minModality; // minimal modality for categorical models
 extern const Real pi; // pi
 extern const Real l2pi; // constant used in pdf computation for normal law
 extern const int minNbPresentValues; // minimum number of present values
+extern const int nbClusterMax; // maximum number of clusters that can be asked
 
 } // namespace mixt
 

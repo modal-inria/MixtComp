@@ -83,6 +83,14 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                  confidenceLevel);
   composer.setProportions(paramSetterComposer.getProportions());
 
+  if (nbClusters < 0 || mixt::nbClusterMax < nbClusters)
+  {
+    std::stringstream sstm;
+    sstm << "Number of classes must be comprised between 1 and " << mixt::nbClusterMax
+         << ". The provided value, " << nbClusters << " does not comply." << std::endl;
+    warnLog += sstm.str();
+  }
+
   if (confidenceLevel < 0. || 1. < confidenceLevel)
   {
     warnLog +=   std::string("confidenceLevel should be in the interval [0;1], but value input is: ")
