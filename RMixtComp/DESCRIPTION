@@ -4,7 +4,7 @@ Title: Mixture Composer
 Version: 0.1
 Date: 2014-01-09
 Author: Vincent KUBICKI, Serge Iovleff
-Copyright: Authors, and specific copyright notice for stkpp library at inst/COPYRIGHTS
+Copyright: Inria
 Maintainer: Vincent KUBICKI <vincent.kubicki@inria.fr>
 Description: Mixture Composer is a project to build mixture models with heterogeneous data
     sets. The conditional independence property enable composing all the

@@ -54,4 +54,4 @@ std::string mixtureToString(Mixture const& type);
 
 }  // namespace mixt
 
-#endif /* STK_CLUST_UTIL_H */
+#endif /* MIXT_CLUST_UTIL_H */

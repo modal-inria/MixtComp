@@ -1,4 +1,4 @@
-addVariable <- function (lm, data, model, id){
+addVariable <- function (lm, data, id, model){
   if (!is.na(match(model, listModels)))
   {
     if (length(lm) == 0)

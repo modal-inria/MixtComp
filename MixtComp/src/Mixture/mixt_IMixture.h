@@ -175,6 +175,6 @@ class IMixture
     Vector<int> const* p_zi_;
 };
 
-} // namespace STK
+} // namespace mixt
 
-#endif /* STK_IMIXTURE_H */
+#endif /* MIXT_IMIXTURE_H */

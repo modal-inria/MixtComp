@@ -87,10 +87,11 @@ writeCategoricalDataDescriptor <- function(fileName,
                                            nbVariables)
 {
   data <- matrix(nrow = 2, ncol = nbVariables)
-  data[1,] <- rep("Categorical_pjk", nbVariables)
-  data[2,] <- paste("categorical",
+  data[1,] <- paste("categorical",
                     1:nbVariables,
                     sep = "")
+  data[2,] <- rep("Categorical_pjk", nbVariables)
+  
   write.table(data,
               file = fileName,
               quote = FALSE,

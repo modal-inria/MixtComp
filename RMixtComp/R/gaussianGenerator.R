@@ -112,10 +112,10 @@ writeGaussianDataDescriptor <- function(fileName,
                                         nbVariables)
 {
   data <- matrix(nrow = 2, ncol = nbVariables)
-  data[1,] <- rep("Gaussian_sjk", nbVariables)
-  data[2,] <- paste("gaussian",
+  data[1,] <- paste("gaussian",
                     1:nbVariables,
                     sep = "")
+  data[2,] <- rep("Gaussian_sjk", nbVariables)
   
   write.table(data,
               file = fileName,

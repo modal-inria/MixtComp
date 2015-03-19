@@ -164,7 +164,7 @@ class MixtureManager
           return 0;
         break;
       }
-      return 0; // 0 if idModel is not a stk++ model
+      return 0; // 0 if idModel is not bundled with MixtComp
     }
 
   private:

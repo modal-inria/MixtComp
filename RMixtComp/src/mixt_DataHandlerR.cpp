@@ -53,8 +53,8 @@ std::string DataHandlerR::listData()
   {
     Rcpp::List currList = rList_[i];
 
-    std::string model = currList("model");
-    std::string id = currList("id");
+    std::string model = currList["model"];
+    std::string id = currList["id"];
     Rcpp::CharacterVector data = currList["data"];
 
     // add to info_, and perform various checks

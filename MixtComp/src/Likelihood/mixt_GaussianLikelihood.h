@@ -65,4 +65,4 @@ class GaussianLikelihood
 
 } /* namespace mixt */
 
-#endif /* STK_MIXTURECOMPOSER_H */
+#endif /* MIXT_MIXTURECOMPOSER_H */

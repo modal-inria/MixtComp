@@ -72,10 +72,10 @@ writePoissonDataDescriptor <- function(fileName,
                                         nbVariables)
 {
   data <- matrix(nrow = 2, ncol = nbVariables)
-  data[1,] <- rep("Poisson_k", nbVariables)
-  data[2,] <- paste("poisson",
+  data[1,] <- paste("poisson",
                     1:nbVariables,
                     sep = "")
+  data[2,] <- rep("Poisson_k", nbVariables)
   
   write.table(data,
               file = fileName,

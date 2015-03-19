@@ -104,7 +104,7 @@ class MixtureBridge : public mixt::IMixture
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
-      // dataStatStorage_ is an empty STK::Array2D at construction
+      // dataStatStorage_ is an empty array at construction
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
@@ -188,6 +188,7 @@ class MixtureBridge : public mixt::IMixture
                                    1); // no quantiles have to be computed for imported parameters, hence the single column
           paramStatStorage_.col(0) = param_;
           // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
+          // in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
           if (mixture_.checkMaxVal() && mixture_.maxVal() < m_augDataij_.dataRange_.max_)
           {
             std::stringstream sstm;
@@ -441,7 +442,7 @@ class MixtureBridge : public mixt::IMixture
     }
 
   protected:
-    /** The stkpp mixture to bridge with the composer */
+    /** The simple mixture to bridge with the composer */
     Mixture mixture_;
     /** The augmented data set */
     AugData m_augDataij_;

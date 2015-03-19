@@ -51,8 +51,8 @@ writeZDataDescriptor <- function(fileName)
 {
   data <- matrix(nrow = 2,
                  ncol = 1)
-  data[1,] <- "LatentClass"
-  data[2,] <- "z_class"
+  data[1,] <- "z_class"
+  data[2,] <- "LatentClass"
   write.table(data,
               file = fileName,
               quote = FALSE,
