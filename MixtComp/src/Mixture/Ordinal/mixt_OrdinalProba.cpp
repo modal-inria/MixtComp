@@ -118,14 +118,14 @@ void e(std::list<std::pair<int, Real> >& probList,
 
   if (z == 0) // blind comparison
   {
-    for (int s = 0; s < 3; ++s) // loop over left, middle, then right segment
+    for (int s = 0; s < 3; ++s) // loop over left, middle, and finally right segment
     {
       if (partition[s].size() > 0)
       {
         y(probList,
           mu,
           pi,
-          proba * (Real(partition[s].size()) / Real(eVal.size())), // proba of the segment is proportionnal to its size
+          proba * (Real(partition[s].size()) / Real(eVal.size())), // probability of the segment is proportional to its size
           partition[closestSegment]);
       }
     }

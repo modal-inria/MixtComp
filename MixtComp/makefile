@@ -82,13 +82,13 @@ $(LIB_RE): $(O_RE)
 utest: $(EXE_UTEST)
 
 $(EXE_UTEST): $(O_GTEST) $(O_UTEST)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+	$(CXX) $^ $(LIB_MC) -o $@ -lpthread # linker only
 
 test: $(EXE_TEST)
 	$(EXE_TEST)
 
 $(EXE_TEST): $(O_TEST)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
+	$(CXX) $^ $(LIB_MC) -o $@ -lpthread # linker only
 
 -include $(SRC_MC:%.cpp=%.d)
 -include $(SRC_RE:%.cpp=%.d)

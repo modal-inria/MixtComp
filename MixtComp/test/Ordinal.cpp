@@ -23,13 +23,37 @@
 
 #include "gtest/gtest.h"
 #include "../src/Mixture/Ordinal/mixt_OrdinalProba.h"
+#include "../src/Various/mixt_Constants.h"
 
 // Probabilities sum to 1
 TEST(Ordinal, totalProb1)
 {
-  std::list<std::pair<int, mixt::Real> >& probList; // storage for
+  int mu = 3; // mode
+  mixt::Real pi; // precision
+  int nbMod = 8; // number of modalities
 
-  EXPECT_TRUE(m.inverse().inverse().isApprox(m));
+  std::list<std::pair<int, mixt::Real> > probList; // storage for the results
+  std::vector<int> modality(nbMod); // initial modalities vector
+  mixt::Real sumProba; // global sum of probabilities on the output
+
+  for (int p = 0; p < nbMod; ++p)
+  {
+    modality[p] = p;
+  }
+
+//  mixt::OrdinalProba::y(probList, // computation of the joint distribution
+//                        mu,
+//                        pi,
+//                        1., // possible values of x are comprised in the input modality set
+//                        modality);
+
+  for (std::list<std::pair<int, mixt::Real> >::const_iterator it = probList.begin();
+       it != probList.end();
+       ++it) // loop over component of joint probability
+  {
+    sumProba += it->second;
+  }
+  ASSERT_LT(std::abs(1. - sumProba), mixt::epsilon);
 }
 
 // Conditional probabilities sum to 1
