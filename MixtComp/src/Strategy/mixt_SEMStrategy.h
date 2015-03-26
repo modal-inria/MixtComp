@@ -48,7 +48,7 @@ class SemStrategy
      *  @param p_composer the model to estimate
      **/
     SemStrategy(mixt::MixtureComposer* p_composer,
-                int nbTry,
+                int nbTrialInInit,
                 int nbBurnInIter,
                 int nbIter,
                 int nbGibbsBurnInIter,
@@ -69,7 +69,7 @@ class SemStrategy
     mixt::MixtureComposer* p_composer_;
     
     /** number of estimation to try */
-    int nbTry_;
+    int nbTrialInInit_;
     /** number of burn in iteration for final Gibbs sampler */
     int nbGibbsBurnInIter_;
     /** number of iteration for final Gibbs sampler */

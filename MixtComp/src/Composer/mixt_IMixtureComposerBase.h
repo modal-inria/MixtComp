@@ -276,14 +276,6 @@ class IMixtureComposerBase
       return nbSample_;
     };
 
-    template<typename DataExport>
-    void exportZi(DataExport& dataExport)
-    {
-      dataExport.exportVals("z_class",
-                            zi_,
-                            tik_);
-    }
-
   protected:
     /** number of cluster. */
     int nbCluster_;

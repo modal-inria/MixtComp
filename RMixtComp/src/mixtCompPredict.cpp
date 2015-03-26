@@ -124,8 +124,9 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
   {
     composer.writeParameters(std::cout);
-    composer.exportDataParam();
-    composer.exportZi(dataExtractor);
+    composer.exportDataParam<mixt::DataExtractorR,
+                             mixt::ParamExtractorR>(dataExtractor,
+                                                    paramExtractor);
 
     // export the composer results to R through modifications of mcResults
     mcMixture["nbCluster"] = nbClusters;
@@ -138,11 +139,6 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
     mcMixture["lnCompletedLikelihood"] = lnCompLik;
     mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
     mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
-
-    Rcpp::NumericVector proportions(nbClusters);
-    for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-      proportions[kR] = (*composer.p_pk())(kS);
-    mcMixture["proportions"] = proportions;
 
     mcMixture["runTime"] = totalTimer.top("end of run");
     mcMixture["nbSample"] = composer.nbSample();

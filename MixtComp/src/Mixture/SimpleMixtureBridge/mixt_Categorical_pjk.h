@@ -49,7 +49,7 @@ class Categorical_pjk
     int minVal() const;
     std::string mStep();
     int nbVariable() const;
-    void paramNames(std::vector<std::string>& names) const;
+    std::vector<std::string> paramNames() const;
     void setData(Matrix<Type>& data);
     void setMixtureParameters(Vector<int> const* p_zi);
     void setModalities(int nbModalities);

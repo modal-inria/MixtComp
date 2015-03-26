@@ -35,14 +35,14 @@ namespace mixt
 
 /** default constructor */
 SemStrategy::SemStrategy(mixt::MixtureComposer* p_composer,
-                         int nbTry,
+                         int nbTrialInInit_,
                          int nbBurnInIter,
                          int nbIter,
                          int nbGibbsBurnInIter,
                          int nbGibbsIter,
                          int nbSamplingAttempts) :
     p_composer_(p_composer),
-    nbTry_(nbTry),
+    nbTrialInInit_(nbTrialInInit_),
     nbGibbsBurnInIter_(nbGibbsBurnInIter),
     nbGibbsIter_(nbGibbsIter)
 {
@@ -53,7 +53,7 @@ SemStrategy::SemStrategy(mixt::MixtureComposer* p_composer,
 /** copy constructor */
 SemStrategy::SemStrategy(SemStrategy const& strategy) :
     p_composer_(strategy.p_composer_),
-    nbTry_(strategy.nbTry_),
+    nbTrialInInit_(strategy.nbTrialInInit_),
     p_burnInAlgo_(strategy.p_burnInAlgo_),
     p_longAlgo_(strategy.p_longAlgo_)
 {}
@@ -69,7 +69,7 @@ std::string SemStrategy::run()
 {
   std::string allWarn; // collect warning strings from all the trials
 
-  for (int iTry = 0; iTry < nbTry_; ++iTry)
+  for (int iTry = 0; iTry < nbTrialInInit_; ++iTry)
   {
     std::string tryWarn; // warning for each run
 #ifdef MC_DEBUG

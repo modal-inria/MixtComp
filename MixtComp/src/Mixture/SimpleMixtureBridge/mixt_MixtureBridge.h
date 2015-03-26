@@ -92,9 +92,9 @@ class MixtureBridge : public mixt::IMixture
       dataStatComputer_(&m_augDataij_,
                         &dataStatStorage_,
                         confidenceLevel),
-      paramStat_(&param_,
-                 &paramStatStorage_,
-                 &paramLogStorage_,
+      paramStat_(param_,
+                 paramStatStorage_,
+                 paramLogStorage_,
                  confidenceLevel),
       likelihood_(getParam(),
                   getData(),
@@ -222,7 +222,6 @@ class MixtureBridge : public mixt::IMixture
         }
         dataStatStorage_.resize(nbSample_,
                                 1);
-        mixture_.paramNames(paramNames_); // set the parameters names to be used for export
       }
     }
     /** This function must be defined for simulation of all the latent variables
@@ -416,14 +415,14 @@ class MixtureBridge : public mixt::IMixture
       return &dataStatStorage_;
     }
 
-    virtual const Matrix<Real>* getParamStatStorage() const
+    virtual const Matrix<Real>& getParamStatStorage() const
     {
-      return &paramStatStorage_;
+      return paramStatStorage_;
     }
 
-    virtual const Matrix<Real>* getParamLogStorage() const
+    virtual const Matrix<Real>& getParamLogStorage() const
     {
-      return &paramLogStorage_;
+      return paramLogStorage_;
     }
 
     virtual void exportDataParam() const
@@ -437,7 +436,7 @@ class MixtureBridge : public mixt::IMixture
       p_paramExtractor_->exportParam(idName(),
                                      getParamStatStorage(),
                                      getParamLogStorage(),
-                                     paramNames_,
+                                     mixture_.paramNames(),
                                      confidenceLevel_);
     }
 
@@ -460,8 +459,6 @@ class MixtureBridge : public mixt::IMixture
     DataStatComputer dataStatComputer_;
     /** Statistics storage for parameters */
     SimpleParamStat paramStat_;
-    /** Vector of parameters names */
-    std::vector<std::string> paramNames_;
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
     /** Pointer to the data handler */

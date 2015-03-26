@@ -165,19 +165,22 @@ int Categorical_pjk::nbVariable() const
   return 1;
 }
 
-void Categorical_pjk::paramNames(std::vector<std::string>& names) const
+std::vector<std::string> Categorical_pjk::paramNames() const
 {
-  names.resize(nbCluster_ * nbModalities_);
+  std::vector<std::string> names(nbCluster_ * nbModalities_);
   for (int k = 0; k < nbCluster_; ++k)
   {
     for (int p = 0; p < nbModalities_; ++p)
     {
-      names[k * nbModalities_ + p] =   std::string("k: ")
-                                     + type2str(k)
-                                     + std::string(", modality: ")
-                                     + type2str(p);
+      std::stringstream sstm;
+      sstm << "k: "
+           << k + minModality
+           << ", modality: "
+           << p + minModality;
+      names[k * nbModalities_ + p] = sstm.str();
     }
   }
+  return names;
 }
 
 void Categorical_pjk::setData(Matrix<Type>& data)

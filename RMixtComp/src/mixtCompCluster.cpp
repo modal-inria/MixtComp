@@ -124,8 +124,9 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   if (warnLog.size() == 0)
   {
     composer.writeParameters(std::cout);
-    composer.exportDataParam();
-    composer.exportZi(dataExtractor);
+    composer.exportDataParam<mixt::DataExtractorR,
+                             mixt::ParamExtractorR>(dataExtractor,
+                                                    paramExtractor);
 
     // export the composer results to R through modifications of mcResults
     mcMixture["nbCluster"] = nbClusters;
@@ -138,22 +139,6 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
     mcMixture["lnCompletedLikelihood"] = lnCompLik;
     mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
     mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
-
-    Rcpp::NumericVector proportions(nbClusters);
-    for (int kS = 0, kR = 0; kR < nbClusters; ++kS, ++kR)
-      proportions[kR] = (*composer.p_pk())(kS);
-    mcMixture["proportions"] = proportions;
-
-    Rcpp::NumericMatrix proportionsLog(composer.p_pkLog()->rows(),
-                                       composer.p_pkLog()->cols());
-    for (int i = 0; i < composer.p_pkLog()->rows(); ++i)
-    {
-      for (int j = 0; j < composer.p_pkLog()->cols(); ++j)
-      {
-        proportionsLog(i, j) = (*composer.p_pkLog())(i, j);
-      }
-    }
-    mcMixture["proportionsLog"] = proportionsLog;
 
     mcMixture["runTime"] = totalTimer.top("end of run");
     mcMixture["nbSample"] = composer.nbSample();

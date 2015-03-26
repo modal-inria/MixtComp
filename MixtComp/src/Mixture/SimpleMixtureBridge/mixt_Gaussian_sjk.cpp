@@ -181,9 +181,9 @@ int Gaussian_sjk::nbVariable() const
   return 1;
 }
 
-void Gaussian_sjk::paramNames(std::vector<std::string>& names) const
+std::vector<std::string> Gaussian_sjk::paramNames() const
 {
-  names.resize(nbCluster_ * 2);
+  std::vector<std::string> names(nbCluster_ * 2);
   for (int k = 0; k < nbCluster_; ++k)
   {
     names[2 * k] =   std::string("k: ")
@@ -193,6 +193,7 @@ void Gaussian_sjk::paramNames(std::vector<std::string>& names) const
                        + type2str(k)
                        + std::string(", sd");
   }
+  return names;
 }
 
 void Gaussian_sjk::setData(Matrix<Type>& data)

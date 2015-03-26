@@ -46,12 +46,6 @@ webDemo <- function(folderName)
   }
   close(fileConn)
   
-#   confMat <- confusionMatrix(paste(folderName,
-#                                    "archive/classIn.csv",
-#                                    sep = "/"),
-#                              res$variable)
-#   print(confMat)
-  
   save(res,
        file = paste(folderName,
                     "out/output.RData",

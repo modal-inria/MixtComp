@@ -64,7 +64,7 @@ class Poisson_k
     int minVal() const;
     int nbVariable() const;
 
-    void paramNames(std::vector<std::string>& names) const;
+    std::vector<std::string> paramNames() const;
 
     void setMixtureParameters(Vector<int> const* p_zi);
 

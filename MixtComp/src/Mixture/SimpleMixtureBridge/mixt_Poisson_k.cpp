@@ -149,9 +149,9 @@ int Poisson_k::nbVariable() const
   return 1;
 }
 
-void Poisson_k::paramNames(std::vector<std::string>& names) const
+std::vector<std::string> Poisson_k::paramNames() const
 {
-  names.resize(nbCluster_);
+  std::vector<std::string> names(nbCluster_);
   for (int k = 0; k < nbCluster_; ++k)
   {
     names[k] =   std::string("k: ")

@@ -37,12 +37,13 @@ MixtureComposer::MixtureComposer(int nbSample,
                                  Real confidenceLevel) :
     mixt::IMixtureComposerBase(nbSample,
                                nbCluster),
-    paramStat_(&prop_,
-               &paramStatStorage_,
-               &paramlog_,
+    paramStat_(prop_,
+               paramStatStorage_,
+               paramLogStorage_,
                confidenceLevel),
     nik_(nbSample,
-         nbCluster)
+         nbCluster),
+    confidenceLevel_(confidenceLevel)
 {}
 
 MixtureComposer::~MixtureComposer()
@@ -401,14 +402,6 @@ void MixtureComposer::storeGibbsRun(int sample,
   }
 }
 
-void MixtureComposer::exportDataParam() const
-{
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    (*it)->exportDataParam();
-  }
-}
-
 void MixtureComposer::finalizeStep()
 {
   for (size_t l = 0; l < v_mixtures_.size(); ++l)
@@ -439,6 +432,20 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter)
     }
   }
   mapStep(); // z_i estimated by the mode at the end of the Gibbs Sampling
+}
+
+std::vector<std::string> MixtureComposer::paramNames() const
+{
+  std::vector<std::string> names(nbCluster_);
+  for (int k = 0; k < nbCluster_; ++k)
+  {
+    std::stringstream sstm;
+    sstm << "k: "
+         << k + minModality;
+    names[k] = sstm.str();
+  }
+
+  return names;
 }
 
 } /* namespace mixt */

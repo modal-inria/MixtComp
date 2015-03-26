@@ -140,7 +140,23 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /**@brief This step can be used to ask each mixture to export its model parameters
      * and data
      **/
-    virtual void exportDataParam() const;
+    template<typename DataExtractor,
+             typename ParamExtractor>
+    void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const
+    {
+      dataExtractor.exportVals("z_class",
+                               zi_,
+                               tik_);
+      paramExtractor.exportParam("z_class",
+                                 paramStatStorage(),
+                                 paramLogStorage(),
+                                 paramNames(),
+                                 confidenceLevel_);
+      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+      {
+        (*it)->exportDataParam();
+      }
+    };
 
     /**@brief This step can be used by developer to finalize any thing. It will
      *  be called only once after we finish running the estimation algorithm.
@@ -157,11 +173,21 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** Gibbs sampling, one individual at a time */
     void gibbsSampling(int nbGibbsIter);
 
-    /** @return the logs of the proportions */
-    inline Matrix<Real> const* p_pkLog() const
+    /** @return a reference on the statistics of the proportions */
+    inline Matrix<Real> const& paramStatStorage() const
     {
-      return &paramlog_;
+      return paramStatStorage_;
     };
+
+    /** @return a reference on the statistics of the proportions */
+    inline Matrix<Real> const& paramLogStorage() const
+    {
+      return paramLogStorage_;
+    };
+
+    /** @return names of the parameters */
+    std::vector<std::string> paramNames() const;
+
   protected:
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
@@ -173,10 +199,13 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     Matrix<Real> paramStatStorage_;
 
     /** Log for sampled parameters */
-    Matrix<Real> paramlog_;
+    Matrix<Real> paramLogStorage_;
 
     /** storage for number of samples during Gibbs */
     Matrix<Real> nik_;
+
+    /** confidence level used for the computation of statistics */
+    Real confidenceLevel_;
 };
 
 } /* namespace mixt */
