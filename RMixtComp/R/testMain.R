@@ -15,8 +15,7 @@ testLearnPredict <- function(regen = TRUE)
   cat("Launching testGenDataLearn\n")
   res <- testGenDataLearn(regen = regen)
   cat("Launching testGenDataPredict\n")
-  myDataPredict <- testGenDataPredict(res$mixture$proportions,
-                                      res$variable$param)
+  myDataPredict <- testGenDataPredict(res$variable$param)
   return(myDataPredict)
 }
 
@@ -130,8 +129,7 @@ testGenDataLearn <- function(nbClass = 2,
   return(res)
 }
 
-testGenDataPredict <- function(prop,
-                               param,
+testGenDataPredict <- function(param,
                                nbClass = 2,
                                nbBurnInIter = 20,
                                confidenceLevel = 0.95)
@@ -164,7 +162,6 @@ testGenDataPredict <- function(prop,
 
   # launch of the MixtComp algorithm
   res <- mixtCompPredict(lm,
-                         prop,
                          param,
                          mcStrategy,
                          nbClass,

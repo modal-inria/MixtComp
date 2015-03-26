@@ -43,8 +43,8 @@ void ParamExtractorR::exportParam(std::string idName,
 #ifdef MC_DEBUG
   std::cout << "ParamExtractorR::exportParam" << std::endl;
   std::cout << "idName: " << idName << std::endl;
-  std::cout << "params->rows(): " << params.rows() << std::endl;
-  std::cout << "params->cols(): " << params.cols() << std::endl;
+  std::cout << "params.rows(): " << params.rows() << std::endl;
+  std::cout << "params.cols(): " << params.cols() << std::endl;
 #endif
 
   Rcpp::CharacterVector rows(params.rows()); // names of the parameters

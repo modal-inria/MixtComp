@@ -158,6 +158,7 @@ std::vector<std::string> Poisson_k::paramNames() const
                + type2str(k)
                + std::string(", lambda");
   }
+  return names;
 }
 
 void Poisson_k::setData(Matrix<Type>& data)

@@ -33,7 +33,7 @@
 #include "MixtComp/src/IO/mixt_IO.h"
 
 // [[Rcpp::export]]
-Rcpp::List mixtCompCluster(Rcpp::List rList,
+Rcpp::List mixtCompCluster(Rcpp::List dataList,
                            Rcpp::List mcStrategy,
                            int nbClusters,
                            double confidenceLevel)
@@ -48,7 +48,7 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   Rcpp::List mcVariable;
 
   // create the data handler
-  mixt::DataHandlerR handler(rList);
+  mixt::DataHandlerR handler(dataList);
   warnLog += handler.listData();
   handler.writeInfo(std::cout);
   handler.writeDataMap();
@@ -98,7 +98,10 @@ Rcpp::List mixtCompCluster(Rcpp::List rList,
   {
     // create the mixtures, and read / set the data
     mixt::Timer readTimer("Read Data");
-    warnLog += composer.setZi(handler, true);
+    warnLog += composer.setDataParam<mixt::ParamSetterDummy,
+                                     mixt::DataHandlerR>(paramSetter,
+                                                         handler,
+                                                         true);
     manager.createMixtures(composer,
                            nbClusters);
     readTimer.top("data has been read");

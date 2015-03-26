@@ -25,14 +25,12 @@
 #include "mixt_DataExtractorR.h"
 #include "mixt_ParamExtractorR.h"
 #include "mixt_ParamSetterR.h"
-#include "mixt_ParamSetterComposerR.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 #include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/Various/mixt_Timer.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompPredict(Rcpp::List dataList,
-                           Rcpp::NumericVector prop,
                            Rcpp::List paramList,
                            Rcpp::List mcStrategy,
                            int nbClusters,
@@ -62,9 +60,6 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   // create the parameters extractor
   mixt::ParamExtractorR paramExtractor;
 
-  // create the parameters setter for the composer
-  mixt::ParamSetterComposerR paramSetterComposer(prop);
-
   // create the mixture manager
   mixt::MixtureManager<mixt::DataHandlerR,
                        mixt::DataExtractorR,
@@ -81,7 +76,6 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                  handler.nbVariable(),
                                  nbClusters,
                                  confidenceLevel);
-  composer.setProportions(paramSetterComposer.getProportions());
 
   if (nbClusters < 0 || mixt::nbClusterMax < nbClusters)
   {
@@ -102,7 +96,10 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   {
     // create the mixtures, and read / set the data
     mixt::Timer readTimer("Read Data");
-    warnLog += composer.setZi(handler, false);
+    warnLog += composer.setDataParam<mixt::ParamSetterR,
+                                     mixt::DataHandlerR>(paramSetter,
+                                                         handler,
+                                                         false);
     manager.createMixtures(composer,
                            nbClusters);
     readTimer.top("data has been read");

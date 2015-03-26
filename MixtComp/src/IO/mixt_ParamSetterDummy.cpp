@@ -34,8 +34,6 @@ ParamSetterDummy::~ParamSetterDummy()
 
 void ParamSetterDummy::getParam(std::string idName,
                                 Vector<Real>& params) const
-{
-  params = 0.;
-}
+{}
 
 } // namespace mixt

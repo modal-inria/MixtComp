@@ -172,18 +172,81 @@ class IMixtureComposerBase
     void mapStep();
     void mapStep(int i);
 
-    void setProportions(Vector<Real> prop)
+    /** DataHandler is injected to take care of setting the values of the latent classes.
+     * This avoids templating the whole composer with DataHandler type, as is currently done
+     * with the individual IMixtures
+     * @param checkInd should be set to 1 if a minimum number of individual per class should be
+     * enforced at sampling (true in learning, false in prediction) */
+    template<typename ParamSetter,
+             typename DataHandler>
+    std::string setDataParam(const ParamSetter& paramSetter,
+                             const DataHandler& dataHandler,
+                             bool checkInd)
     {
-      prop_ = prop;
+      std::string warnLog;
+      warnLog += setProportion(paramSetter);
+      warnLog += setZi(dataHandler,
+                       checkInd);
+      return warnLog;
+    }
+
+    int nbSample() const
+    {
+      return nbSample_;
+    };
+
+  protected:
+    /** number of cluster. */
+    int nbCluster_;
+    /** Number of samples */
+    int nbSample_;
+    /** The proportions of each class */
+    Vector<Real> prop_;
+    /** The tik probabilities */
+    Matrix<Real> tik_;
+    /** The zik class label */
+    AugmentedData<Vector<int> > zi_;
+
+    /** Compute proportions using the ML estimator, default implementation. Set
+     *  as virtual in case we impose fixed proportions in derived model.
+     **/
+    virtual void pStep();
+
+    /** Create the mixture model parameters. */
+    void intializeMixtureParameters();
+
+    /** returns the range of values over which to loop */
+    std::pair<int, int> forRange(int ind) const;
+  private:
+    /** state of the model*/
+    modelState state_;
+
+    /** class sampler */
+    ClassSampler sampler_;
+
+
+    /** ParamSetter is injected to take care of setting the values of the proportions.
+     * This avoids templating the whole composer with DataHandler type, as is currently done
+     * with the individual IMixtures. */
+    template<typename ParamSetter>
+    std::string setProportion(const ParamSetter& paramSetter)
+    {
 #ifdef MC_DEBUG
-      std::cout << "IMixtureComposerBase::setProportions" << std::endl;
-      std::cout << "prop_: " << prop_ << std::endl;
+      std::cout << "IMixtureComposerBase::setProportion" << std::endl;
 #endif
+      std::string warnLog;
+
+      paramSetter.getParam("z_class",
+                           prop_);
+
+      return warnLog;
     };
 
     /** DataHandler is injected to take care of setting the values of the latent classes.
      * This avoids templating the whole composer with DataHandler type, as is currently done
-     * with the individual IMixtures */
+     * with the individual IMixtures.
+     * @param checkInd should be set to 1 if a minimum number of individual per class should be
+     * enforced at sampling (true in learning, false in prediction) */
     template<typename DataHandler>
     std::string setZi(const DataHandler& dataHandler, bool checkInd)
     {
@@ -270,40 +333,6 @@ class IMixtureComposerBase
 #endif
       return warnLog;
     };
-
-    int nbSample() const
-    {
-      return nbSample_;
-    };
-
-  protected:
-    /** number of cluster. */
-    int nbCluster_;
-    /** Number of samples */
-    int nbSample_;
-    /** The proportions of each class */
-    Vector<Real> prop_;
-    /** The tik probabilities */
-    Matrix<Real> tik_;
-    /** The zik class label */
-    AugmentedData<Vector<int> > zi_;
-
-    /** Compute proportions using the ML estimator, default implementation. Set
-     *  as virtual in case we impose fixed proportions in derived model.
-     **/
-    virtual void pStep();
-
-    /** Create the mixture model parameters. */
-    void intializeMixtureParameters();
-
-    /** returns the range of values over which to loop */
-    std::pair<int, int> forRange(int ind) const;
-  private:
-    /** state of the model*/
-    modelState state_;
-
-    /** class sampler */
-    ClassSampler sampler_;
 };
 
 } // namespace mixt

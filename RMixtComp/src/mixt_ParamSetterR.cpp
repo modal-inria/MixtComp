@@ -39,17 +39,11 @@ void ParamSetterR::getParam(std::string idName,
   Rcpp::List logStat = param_[idName];
   Rcpp::NumericMatrix currParam = logStat["stat"];
   int nRows = currParam.nrow();
-  int nCols = currParam.ncol();
-  int nVars = nCols / 3; // because two out of three columns contain confidence intervals
-  param.resize(nRows,
-               nVars);
+  param.resize(nRows);
 
   for (int i = 0; i < nRows; ++i)
   {
-    for (int j = 0; j < nVars; ++j)
-    {
-      param(i, j) = currParam(i, j * 3);
-    }
+    param(i) = currParam(i, 0); // only the mode / expectation is used, quantile information is discarded
   }
 
 #ifdef MC_DEBUG
