@@ -1,13 +1,10 @@
-webDemo <- function(folderName)
+webDemoPredict <- function(folderName)
 {
-  iniContent <- read.table(paste(folderName,
-                                 "in/param.ini",
-                                 sep = "/"),
-                           sep = "=",
-                           strip.white = TRUE,
-                           stringsAsFactors = FALSE)
+  load(paste(folderName,
+             "in/output.RData",
+             sep = "/"))
   
-  nbClass = iniContent[which(iniContent[, 1] == "nbCluster"), 2]
+  nbClass <- res$mixture$nbCluster
   
   lm <- getData(c(paste(folderName,
                         "in/data.csv",
@@ -24,7 +21,8 @@ webDemo <- function(folderName)
                      nbGibbsIter = 100)
   
   # launch of the MixtComp algorithm
-  res <- mixtCompCluster(lm,
+  res <- mixtCompPredict(lm,
+                         res$variable$param,
                          mcStrategy,
                          nbClass,
                          0.95)

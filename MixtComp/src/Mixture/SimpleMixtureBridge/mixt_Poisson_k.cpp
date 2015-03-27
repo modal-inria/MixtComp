@@ -23,6 +23,7 @@
 
 #include "mixt_Poisson_k.h"
 #include "../../IO/mixt_IO.h"
+#include "../../Various/mixt_Constants.h"
 
 namespace mixt
 {
@@ -154,9 +155,11 @@ std::vector<std::string> Poisson_k::paramNames() const
   std::vector<std::string> names(nbCluster_);
   for (int k = 0; k < nbCluster_; ++k)
   {
-    names[k] =   std::string("k: ")
-               + type2str(k)
-               + std::string(", lambda");
+    std::stringstream sstm;
+    sstm << "k: "
+         << k + minModality
+         << ", lambda";
+    names[k] = sstm.str();
   }
   return names;
 }

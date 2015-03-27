@@ -186,12 +186,15 @@ std::vector<std::string> Gaussian_sjk::paramNames() const
   std::vector<std::string> names(nbCluster_ * 2);
   for (int k = 0; k < nbCluster_; ++k)
   {
-    names[2 * k] =   std::string("k: ")
-                   + type2str(k)
-                   + std::string(", mean");
-    names[2 * k + 1] =   std::string("k: ")
-                       + type2str(k)
-                       + std::string(", sd");
+    std::stringstream sstmMean, sstmSd;
+    sstmMean << "k: "
+             << k + minModality
+             << ", mean: ";
+    sstmSd << "k: "
+           << k + minModality
+           << ", sd";
+    names[2 * k    ] = sstmMean.str();
+    names[2 * k + 1] = sstmSd  .str();
   }
   return names;
 }
