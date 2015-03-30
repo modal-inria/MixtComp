@@ -169,7 +169,7 @@ class MixtureBridge : public mixt::IMixture
              << " in either provided values or bounds. The minimum value currently provided is : " << m_augDataij_.dataRange_.min_ << std::endl;
         warnLog += sstm.str();
       }
-      else // minimum value requirements have been met
+      else // minimum value requirements have been met, wether the mode is learning or prediction
       {
         m_augDataij_.removeMissing();
         p_paramSetter_->getParam(idName(),
@@ -178,10 +178,16 @@ class MixtureBridge : public mixt::IMixture
 
         // test if parameters are provided, in that case the mode is prediction, not learning and setModalities
         // must use the range provided by the ParamSetter
-        if (param_.rows() > 0 && param_.cols() > 0)
+        if (param_.rows() > 0 && param_.cols() > 0) // predict mode detected
         {
           int nbParam = param_.rows() / nbCluster_; // number of parameters for each cluster
-          mixture_.setModalities(nbParam);
+          if (mixture_.hasModalities()) // predict data not representative of population, information from learning data set must be used
+          {
+            m_augDataij_.dataRange_.min_ = minModality;
+            m_augDataij_.dataRange_.max_ = minModality + nbParam - 1;
+            m_augDataij_.dataRange_.range_ = nbParam;
+            mixture_.setModalities(nbParam);
+          }
           mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
           mixture_.setParameters(param_);
           paramStatStorage_.resize(param_.rows(),
@@ -203,7 +209,7 @@ class MixtureBridge : public mixt::IMixture
           std::cout << "\tparam_: " << param_ << std::endl;
   #endif
         }
-        else // code is in learning mode. setModalities must use the range provided by the data
+        else // learning mode detected. setModalities must use the range provided by the data
         {
   #ifdef MC_DEBUG
           std::cout << "\tparam not set " << std::endl;

@@ -69,6 +69,11 @@ void Gaussian_sjk::getParameters(Vector<Real>& param) const
   }
 }
 
+bool Gaussian_sjk::hasModalities() const
+{
+  return false;
+}
+
 void Gaussian_sjk::initializeModel()
 {}
 

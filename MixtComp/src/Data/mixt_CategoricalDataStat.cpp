@@ -61,10 +61,12 @@ void CategoricalDataStat::sampleVals(int ind,
   {
     if (iteration == 0) // clear the temporary statistical object
     {
+#ifdef MC_DEBUG
+      std::cout << "CategoricalDataStat::sampleVals, iteration 0" << std::endl;
+#endif
       // initialize internal storage
 #ifdef MC_DEBUG
-      std::cout << "\tminModality: " << minModality << std::endl;
-      std::cout << "\tnbClass_: " << nbClass_ << std::endl;
+      std::cout << "pm_augDataij_->dataRange_.max_: " << pm_augDataij_->dataRange_.max_ << std::endl;
 #endif
       stat_.resize(pm_augDataij_->dataRange_.max_);
       stat_ = 0.;
@@ -78,6 +80,9 @@ void CategoricalDataStat::sampleVals(int ind,
     }
     else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
     {
+#ifdef MC_DEBUG
+      std::cout << "CategoricalDataStat::sampleVals, iterationMax" << std::endl;
+#endif
       sample(ind); // last sampling
 
       stat_ /= Real(iterationMax + 1); // from count to probabilities

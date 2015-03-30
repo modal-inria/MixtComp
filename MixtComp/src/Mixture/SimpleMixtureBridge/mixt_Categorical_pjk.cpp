@@ -71,6 +71,11 @@ void Categorical_pjk::getParameters(Vector<Real>& param) const
   }
 }
 
+bool Categorical_pjk::hasModalities() const
+{
+  return true;
+}
+
 void Categorical_pjk::initializeModel()
 {}
 

@@ -42,6 +42,7 @@ class Categorical_pjk
     bool checkMinVal() const;
     int computeNbFreeParameters() const;
     void getParameters(Vector<Real>& param) const;
+    bool hasModalities() const;
     void initializeModel();
     void initializeStep();
     double lnComponentProbability(int i, int k) const;

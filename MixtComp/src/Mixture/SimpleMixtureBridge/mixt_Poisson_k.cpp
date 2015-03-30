@@ -68,6 +68,11 @@ void Poisson_k::getParameters(Vector<Real>& param) const
   }
 }
 
+bool Poisson_k::hasModalities() const
+{
+  return false;
+}
+
 void Poisson_k::initializeModel()
 {}
 
