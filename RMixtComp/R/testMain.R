@@ -83,14 +83,14 @@ testGenDataLearn <- function(nbClass = 2,
   }
   
 
-   lm <- getData(c("dataGen/learn/zData.csv",
-                   "dataGen/learn/zDescriptor.csv"),
-                 c("dataGen/learn/gaussianData.csv",
-                   "dataGen/learn/gaussianDescriptor.csv"),
-                 c("dataGen/learn/categoricalData.csv",
-                   "dataGen/learn/categoricalDescriptor.csv"),
-                 c("dataGen/learn/poissonData.csv",
-                   "dataGen/learn/poissonDescriptor.csv"))
+   resGetData <- getData(c("dataGen/learn/zData.csv",
+                           "dataGen/learn/zDescriptor.csv"),
+                         c("dataGen/learn/gaussianData.csv",
+                          "dataGen/learn/gaussianDescriptor.csv"),
+                         c("dataGen/learn/categoricalData.csv",
+                           "dataGen/learn/categoricalDescriptor.csv"),
+                         c("dataGen/learn/poissonData.csv",
+                           "dataGen/learn/poissonDescriptor.csv"))
 
 #   lm <- getData(c("dataGen/learn/gaussianData.csv",
 #                   "dataGen/learn/gaussianDescriptor.csv"))
@@ -109,7 +109,7 @@ testGenDataLearn <- function(nbClass = 2,
                      nbGibbsIter = 100)
   
   # launch of the MixtComp algorithm
-  res <- mixtCompCluster(lm,
+  res <- mixtCompCluster(resGetData$lm,
                          mcStrategy,
                          nbClass,
                          confidenceLevel)
@@ -135,14 +135,14 @@ testGenDataPredict <- function(param,
                                confidenceLevel = 0.95)
 {
 
-  lm <- getData(c("dataGen/predict/zData.csv",
-                  "dataGen/predict/zDescriptor.csv"),
-                c("dataGen/predict/gaussianData.csv",
-                 "dataGen/predict/gaussianDescriptor.csv"),
-                c("dataGen/predict/categoricalData.csv",
-                  "dataGen/predict/categoricalDescriptor.csv"),
-                c("dataGen/predict/poissonData.csv",
-                  "dataGen/predict/poissonDescriptor.csv"))
+  resGetData <- getData(c("dataGen/predict/zData.csv",
+                          "dataGen/predict/zDescriptor.csv"),
+                        c("dataGen/predict/gaussianData.csv",
+                          "dataGen/predict/gaussianDescriptor.csv"),
+                        c("dataGen/predict/categoricalData.csv",
+                          "dataGen/predict/categoricalDescriptor.csv"),
+                        c("dataGen/predict/poissonData.csv",
+                          "dataGen/predict/poissonDescriptor.csv"))
    
 #   lm <- getData(c("dataGen/predict/gaussianData.csv",
 #                   "dataGen/predict/gaussianDescriptor.csv"))
@@ -161,7 +161,7 @@ testGenDataPredict <- function(param,
                      nbGibbsIter = 100)
 
   # launch of the MixtComp algorithm
-  res <- mixtCompPredict(lm,
+  res <- mixtCompPredict(resGetData$lm,
                          param,
                          mcStrategy,
                          nbClass,

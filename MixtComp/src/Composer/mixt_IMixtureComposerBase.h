@@ -262,8 +262,13 @@ class IMixtureComposerBase
                           -minModality, // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
                           warnLog);
 
-      if (warnLog.size() > 0) // zi_class was not provided
+      if (warnLog.size() > 0) // z_class was not provided
       {
+#ifdef MC_DEBUG
+        std::cout << "warnLog: " << std::endl;
+        std::cout << warnLog << std::endl;
+        std::cout << "z_class was not provided" << std::endl;
+#endif
         zi_.setAllMissing(nbSample_); // set every value state to missing_
         warnLog = std::string(); // warnLog reinitialized
       }

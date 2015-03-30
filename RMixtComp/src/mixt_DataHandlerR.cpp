@@ -48,6 +48,10 @@ void DataHandlerR::writeInfo(std::ostream& os) const
 
 std::string DataHandlerR::listData()
 {
+#ifdef MC_DEBUG
+  std::cout << "DataHandlerR::listData()" << std::endl;
+  std::cout << "rList_.size(): " << rList_.size() << std::endl;
+#endif
   std::string warnLog;
   for (int i = 0; i < rList_.size(); ++i)
   {

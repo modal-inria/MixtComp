@@ -1,9 +1,7 @@
-is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)
-{
-  abs(x - round(x)) < tol
-}
-
 listModels <- c("Gaussian_sjk",
                 "Categorical_pjk",
                 "Poisson_k",
                 "LatentClass")
+
+maxVariable <- 20
+maxIndividual <- 10000
