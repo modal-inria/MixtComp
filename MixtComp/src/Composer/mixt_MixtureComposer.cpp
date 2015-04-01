@@ -54,12 +54,14 @@ MixtureComposer::~MixtureComposer()
   }
 }
 
+/** Compute the completed likelihood for a single individual, with the class fixed as a parameter */
 Real MixtureComposer::lnCompletedLikelihood(int i, int k)
 {
 #ifdef MC_DEBUG
-  std::cout << "MixtureComposer::lnComponentProbability(int i, int k), i: " << i << ", k: " << k << std::endl;
+  std::cout << "MixtureComposer::lnCompletedLikelihood(int i, int k), i: " << i << ", k: " << k << std::endl;
 #endif
-  Real sum = 0.;
+  Real sum = std::log(prop_[k]);
+
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
     Real logProba = (*it)->lnCompletedLikelihood(i, k);
@@ -68,10 +70,32 @@ Real MixtureComposer::lnCompletedLikelihood(int i, int k)
     std::cout << (*it)->idName() << ", sum: " << sum << std::endl;
 #endif
   }
+
   return sum;
 }
 
-/** @return the value of the observed likelihood */
+/** Compute the observed likelihood for a single individual, with the class fixed as a parameter */
+Real MixtureComposer::lnObservedLikelihood(int i, int k)
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::lnCompletedLikelihood(int i, int k), i: " << i << ", k: " << k << std::endl;
+#endif
+  Real sum = std::log(prop_[k]);
+
+  for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
+  {
+    Real logProba = (*it)->lnObservedLikelihood(i, k);
+    sum += logProba;
+#ifdef MC_DEBUG
+    std::cout << (*it)->idName() << ", sum: " << sum << std::endl;
+#endif
+  }
+
+  return sum;
+}
+
+/** Observed data, and marginalization over classes
+ * @return the value of the observed likelihood */
 Real MixtureComposer::lnObservedLikelihood()
 {
 #ifdef MC_DEBUG
@@ -80,26 +104,16 @@ Real MixtureComposer::lnObservedLikelihood()
   Real lnLikelihood = 0.;
   Matrix<Real> lnComp(nbSample_,
                       nbCluster_);
+
   for (int k = 0; k < nbCluster_; ++k)
   {
-#ifdef MC_DEBUG
-    std::cout << "k: " << k << std::endl;
-#endif
-    lnComp.col(k) = std::log(prop_[k]);
-  }
-
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    for (int k = 0; k < nbCluster_; ++k)
+    for (int i = 0; i < nbSample_; ++i)
     {
-      for (int i = 0; i < nbSample_; ++i)
-      {
-        lnComp(i, k) = (*it)->lnObservedLikelihood(i, k);
-      }
+      lnComp(i, k) = lnObservedLikelihood(i, k);
     }
   }
 
-  for (int i = 0; i < nbSample_; ++i)
+  for (int i = 0; i < nbSample_; ++i) // sum is inside a log, hence the numerous steps for the computation
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
@@ -122,87 +136,50 @@ Real MixtureComposer::lnObservedLikelihood()
   return lnLikelihood;
 }
 
-/** @return the value of the completed likelihood */
-Real MixtureComposer::lnCompletedLikelihood()
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
-#endif
-  Real lnLikelihood = 0.;
-  Matrix<Real> lnComp(nbSample_,
-                      nbCluster_);
-  for (int k = 0; k < nbCluster_; ++k)
-  {
-#ifdef MC_DEBUG
-    std::cout << "k: " << k << std::endl;
-#endif
-    lnComp.col(k) = std::log(prop_[k]);
-  }
-
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    for (int k = 0; k < nbCluster_; ++k)
-    {
-      for (int i = 0; i < nbSample_; ++i)
-      {
-        lnComp(i, k) = (*it)->lnCompletedLikelihood(i, k);
-      }
-    }
-  }
-
-  // Compute the completed likelihood for the complete mixture model
-  for (int i = 0; i < nbSample_; ++i)
-  {
-#ifdef MC_DEBUG
-    std::cout << "i: " << i << std::endl;
-    std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
-#endif
-    lnLikelihood += lnComp(i, zi_.data_(i));
-  }
-
-  return lnLikelihood;
-}
-
-/** @return the value of the semi-completed likelihood (completion only for latent class) */
+/** Completed latent classes, and marginalization over missing data
+ * @return the value of the semi-completed likelihood (completion only for latent class) */
 Real MixtureComposer::lnSemiCompletedLikelihood()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnSemiCompletedLikelihood() " << std::endl;
 #endif
   Real lnLikelihood = 0.;
-  Matrix<Real> lnComp(nbSample_,
-                      nbCluster_);
-  for (int k = 0; k < nbCluster_; ++k)
-  {
-#ifdef MC_DEBUG
-    std::cout << "k: " << k << std::endl;
-#endif
-    lnComp.col(k) = std::log(prop_[k]);
-  }
 
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    for (int k = 0; k < nbCluster_; ++k)
-    {
-      for (int i = 0; i < nbSample_; ++i)
-      {
-        lnComp(i, k) = (*it)->lnObservedLikelihood(i, k);
-      }
-    }
-  }
-
-  // Compute the completed likelihood for the complete mixture model
+  // Compute the completed likelihood for the complete mixture model, using the completed data
   for (int i = 0; i < nbSample_; ++i)
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << ", lnComp(i, zi_[i]): " << lnComp(i, zi_[i]) << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
-    lnLikelihood += lnComp(i, zi_.data_(i));
+    lnLikelihood += lnObservedLikelihood(i, zi_.data_(i));
   }
 
   return lnLikelihood;
 }
+
+/** Completed on both missing value and latent classes
+ * @return the value of the completed likelihood for all data */
+Real MixtureComposer::lnCompletedLikelihood()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
+#endif
+  Real lnLikelihood = 0.;
+
+  // Compute the completed likelihood for the complete mixture model, using the completed data
+  for (int i = 0; i < nbSample_; ++i)
+  {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << std::endl;
+    std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
+#endif
+    lnLikelihood += lnCompletedLikelihood(i, zi_.data_(i));
+  }
+
+  return lnLikelihood;
+}
+
 
 std::string MixtureComposer::mStep()
 {
@@ -315,7 +292,7 @@ void MixtureComposer::misClasStep(int iteration)
     }
     for (int i = 0; i < nbSample_; ++i)
     {
-      probClass(i, k) = std::log(prop_[k]) + lnCompletedLikelihood(i, k);
+      probClass(i, k) = lnCompletedLikelihood(i, k);
     }
   }
 

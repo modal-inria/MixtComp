@@ -119,7 +119,7 @@ void IMixtureComposerBase::eStep(int i)
   RowVector<Real> lnComp(nbCluster_);
   for (int k = 0; k < nbCluster_; k++)
   {
-    lnComp[k] = std::log(prop_[k]) + lnCompletedLikelihood(i, k);
+    lnComp[k] = lnCompletedLikelihood(i, k);
   }
 
 #ifdef MC_DEBUG
