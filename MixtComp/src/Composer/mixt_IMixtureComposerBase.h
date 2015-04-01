@@ -69,7 +69,6 @@ namespace mixt
  * @code
  *   virtual IMixtureComposerBase* create() const = 0;
  *   virtual IMixtureComposerBase* clone() const = 0;
- *   virtual void initializeStep() =0;
  *   virtual bool randomInit() =0;
  *   virtual void mStep() = 0;
  *   virtual Real lnComponentProbability(int i, int k) = 0;
@@ -82,12 +81,7 @@ namespace mixt
  *   virtual void pStep();
  *   virtual void inputationStep();
  *   virtual void samplingStep();
- *   virtual void finalizeStep();
  * @endcode
- *
- * @note the virtual method @c IMixtureComposerBase::initializeStep have to be
- * called before any use of the class as it will create/resize the arrays
- * and initialize the constants of the model.
  */
 class IMixtureComposerBase
 {
@@ -111,8 +105,7 @@ class IMixtureComposerBase
 
     /** @return the number of cluster */
     inline int nbCluster() const { return nbCluster_;}
-    /** @return the state of the model*/
-    inline modelState state() const { return state_;}
+
     /** @return the proportions of each mixtures */
     inline Vector<Real> const* p_pk() const
     {
@@ -123,40 +116,24 @@ class IMixtureComposerBase
     /** @return  the zi class label */
     inline Vector<int> const* p_zi() const {return &zi_.data_;};
 
-    /** set the state of the model : should be used by any strategy*/
-    inline void setState(modelState state) {state_ = state;}
-
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    virtual Real lnComponentProbability(int i, int k) = 0;
+    virtual Real lnCompletedLikelihood(int i, int k) = 0;
 
     // virtual with default implementation
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(std::ostream& os) const {};
     /** compute the number of free parameters of the model.
-     *  This method is used in IMixtureComposerBase::initializeStep
-     *  in order to give a value to IModelBase::nbFreeParameter_.
      *  @return the number of free parameters
      **/
     virtual int nbFreeParameters() const = 0;
-    /** @brief Initialize the model before at its first use.
-     *  This function can be overloaded in derived class for initialization of
-     *  the specific model parameters. It should be called prior to any used of
-     *  the class.
-     *  @sa IMixture,MixtureBridge
-     **/
-    virtual void initializeStep() = 0;
 
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels. Default behavior is "do nothing".
      */
     virtual void samplingStep() {};
-    /** @brief Finalize the estimation of the model.
-     * The default behavior is "do nothing".
-     **/
-    inline virtual void finalizeStep() {}
 
     /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
      *  @return the minimal value of individuals in a class
@@ -172,18 +149,80 @@ class IMixtureComposerBase
     void mapStep();
     void mapStep(int i);
 
-    void setProportions(Vector<Real> prop)
+    /** DataHandler is injected to take care of setting the values of the latent classes.
+     * This avoids templating the whole composer with DataHandler type, as is currently done
+     * with the individual IMixtures
+     * @param checkInd should be set to 1 if a minimum number of individual per class should be
+     * enforced at sampling (true in learning, false in prediction) */
+    template<typename ParamSetter,
+             typename DataHandler>
+    std::string setDataParam(const ParamSetter& paramSetter,
+                             const DataHandler& dataHandler,
+                             bool checkInd)
     {
-      prop_ = prop;
+      std::string warnLog;
+      warnLog += setProportion(paramSetter);
+      warnLog += setZi(dataHandler,
+                       checkInd);
+      return warnLog;
+    }
+
+    int nbSample() const
+    {
+      return nbSample_;
+    };
+
+  protected:
+    /** number of cluster. */
+    int nbCluster_;
+    /** Number of samples */
+    int nbSample_;
+    /** The proportions of each class */
+    Vector<Real> prop_;
+    /** The tik probabilities */
+    Matrix<Real> tik_;
+    /** The zik class label */
+    AugmentedData<Vector<int> > zi_;
+
+    /** Create the mixture model parameters. */
+    void intializeMixtureParameters();
+
+    /** returns the range of values over which to loop */
+    std::pair<int, int> forRange(int ind) const;
+
+  protected:
+    /** Compute proportions using the ML estimator, default implementation. Set
+     *  as virtual in case we impose fixed proportions in derived model. Only called
+     *  by mStep
+     **/
+    virtual void pStep();
+
+  private:
+    /** class sampler */
+    ClassSampler sampler_;
+
+    /** ParamSetter is injected to take care of setting the values of the proportions.
+     * This avoids templating the whole composer with DataHandler type, as is currently done
+     * with the individual IMixtures. */
+    template<typename ParamSetter>
+    std::string setProportion(const ParamSetter& paramSetter)
+    {
 #ifdef MC_DEBUG
-      std::cout << "IMixtureComposerBase::setProportions" << std::endl;
-      std::cout << "prop_: " << prop_ << std::endl;
+      std::cout << "IMixtureComposerBase::setProportion" << std::endl;
 #endif
+      std::string warnLog;
+
+      paramSetter.getParam("z_class",
+                           prop_);
+
+      return warnLog;
     };
 
     /** DataHandler is injected to take care of setting the values of the latent classes.
      * This avoids templating the whole composer with DataHandler type, as is currently done
-     * with the individual IMixtures */
+     * with the individual IMixtures.
+     * @param checkInd should be set to 1 if a minimum number of individual per class should be
+     * enforced at sampling (true in learning, false in prediction) */
     template<typename DataHandler>
     std::string setZi(const DataHandler& dataHandler, bool checkInd)
     {
@@ -199,8 +238,13 @@ class IMixtureComposerBase
                           -minModality, // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
                           warnLog);
 
-      if (warnLog.size() > 0) // zi_class was not provided
+      if (warnLog.size() > 0) // z_class was not provided
       {
+#ifdef MC_DEBUG
+        std::cout << "warnLog: " << std::endl;
+        std::cout << warnLog << std::endl;
+        std::cout << "z_class was not provided" << std::endl;
+#endif
         zi_.setAllMissing(nbSample_); // set every value state to missing_
         warnLog = std::string(); // warnLog reinitialized
       }
@@ -270,48 +314,6 @@ class IMixtureComposerBase
 #endif
       return warnLog;
     };
-
-    int nbSample() const
-    {
-      return nbSample_;
-    };
-
-    template<typename DataExport>
-    void exportZi(DataExport& dataExport)
-    {
-      dataExport.exportVals("z_class",
-                            zi_,
-                            tik_);
-    }
-
-  protected:
-    /** number of cluster. */
-    int nbCluster_;
-    /** Number of samples */
-    int nbSample_;
-    /** The proportions of each class */
-    Vector<Real> prop_;
-    /** The tik probabilities */
-    Matrix<Real> tik_;
-    /** The zik class label */
-    AugmentedData<Vector<int> > zi_;
-
-    /** Compute proportions using the ML estimator, default implementation. Set
-     *  as virtual in case we impose fixed proportions in derived model.
-     **/
-    virtual void pStep();
-
-    /** Create the mixture model parameters. */
-    void intializeMixtureParameters();
-
-    /** returns the range of values over which to loop */
-    std::pair<int, int> forRange(int ind) const;
-  private:
-    /** state of the model*/
-    modelState state_;
-
-    /** class sampler */
-    ClassSampler sampler_;
 };
 
 } // namespace mixt

@@ -31,11 +31,12 @@ namespace mixt
 
 typedef Gaussian_sjk::Type Type;
 
-Gaussian_sjk::Gaussian_sjk(int nbCluster) :
+Gaussian_sjk::Gaussian_sjk(int nbCluster,
+                           Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
     param_(2 * nbCluster),
     p_data_(0),
-    p_zi_(0)
+    p_zi_(p_zi)
 {}
 
 Gaussian_sjk::~Gaussian_sjk()
@@ -69,25 +70,9 @@ void Gaussian_sjk::getParameters(Vector<Real>& param) const
   }
 }
 
-void Gaussian_sjk::initializeModel()
-{}
-
-void Gaussian_sjk::initializeStep()
-{}
-
-double Gaussian_sjk::lnComponentProbability(int i, int k) const
+bool Gaussian_sjk::hasModalities() const
 {
-  Type currVal = (*p_data_)(i, 0);
-  Real mean = param_[2 * k    ];
-  Real sd   = param_[2 * k + 1];
-  Real logProba = normal_.lpdf(currVal,
-                                    mean,
-                                    sd);
-#ifdef MC_DEBUG
-  std::cout << "Gaussian_sjk::lnComponentProbability" << std::endl;
-  std::cout << "\tk: " << k << ", mean: " << mean << ", sd: " << sd << ", currVal: " << currVal << ", proba: " << proba << std::endl;
-#endif
-  return logProba;
+  return false;
 }
 
 Real Gaussian_sjk::maxVal() const
@@ -181,28 +166,27 @@ int Gaussian_sjk::nbVariable() const
   return 1;
 }
 
-void Gaussian_sjk::paramNames(std::vector<std::string>& names) const
+std::vector<std::string> Gaussian_sjk::paramNames() const
 {
-  names.resize(nbCluster_ * 2);
+  std::vector<std::string> names(nbCluster_ * 2);
   for (int k = 0; k < nbCluster_; ++k)
   {
-    names[2 * k] =   std::string("k: ")
-                   + type2str(k)
-                   + std::string(", mean");
-    names[2 * k + 1] =   std::string("k: ")
-                       + type2str(k)
-                       + std::string(", sd");
+    std::stringstream sstmMean, sstmSd;
+    sstmMean << "k: "
+             << k + minModality
+             << ", mean: ";
+    sstmSd << "k: "
+           << k + minModality
+           << ", sd";
+    names[2 * k    ] = sstmMean.str();
+    names[2 * k + 1] = sstmSd  .str();
   }
+  return names;
 }
 
 void Gaussian_sjk::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
-}
-
-void Gaussian_sjk::setMixtureParameters(Vector<int> const* p_zi)
-{
-  p_zi_ = p_zi; // only the z_i is used in SEM
 }
 
 void Gaussian_sjk::setModalities(int nbModalities)

@@ -36,7 +36,6 @@ IMixtureComposerBase::IMixtureComposerBase(int nbSample,
     nbSample_(nbSample),
     prop_(nbCluster),
     tik_(nbSample, nbCluster),
-    state_(modelCreated_),
     sampler_(zi_,
              tik_,
              nbCluster)
@@ -51,7 +50,6 @@ IMixtureComposerBase::IMixtureComposerBase( IMixtureComposerBase const& model) :
     prop_(model.prop_),
     tik_(model.tik_),
     zi_(model.zi_),
-    state_(model.state_),
     sampler_(model.sampler_)
 {}
 /* destructor */
@@ -121,7 +119,7 @@ void IMixtureComposerBase::eStep(int i)
   RowVector<Real> lnComp(nbCluster_);
   for (int k = 0; k < nbCluster_; k++)
   {
-    lnComp[k] = std::log(prop_[k]) + lnComponentProbability(i, k);
+    lnComp[k] = lnCompletedLikelihood(i, k);
   }
 
 #ifdef MC_DEBUG

@@ -35,16 +35,16 @@ class SEMAlgo
 {
   public:
     /** default constructor */
-    SEMAlgo(int nbIterMax, int nbSamplingAttempts);
+    SEMAlgo(MixtureComposer* p_model,
+            int nbIterMax,
+            int nbSamplingAttempts);
     /** Copy constructor.
      *  @param algo the algorithm to copy */
     SEMAlgo(SEMAlgo const& algo);
     /** destructor */
     virtual ~SEMAlgo(){};
-    /** set a new model */
-    void setModel(MixtureComposer* p_model);
     /** run the algorithm */
-    std::string run();
+    std::string run(RunType runType);
 
   private:
     /** pointer on the mixture model */

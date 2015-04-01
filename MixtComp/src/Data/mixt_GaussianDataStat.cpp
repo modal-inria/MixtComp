@@ -40,7 +40,7 @@ void GaussianDataStat::sample(int ind,
                               int iteration)
 {
   Real currVal = pm_augDataij_->data_(ind,
-                                           0);
+                                      0);
   stat_[iteration] = currVal;
 }
 
@@ -55,6 +55,9 @@ void GaussianDataStat::sampleVals(int ind,
   {
     if (iteration == 0) // clear the temporary statistical object
     {
+#ifdef MC_DEBUG
+      std::cout << "GaussianDataStat::sampleVals, iteration 0" << std::endl;
+#endif
       // initialize internal storage
       stat_.resize(iterationMax + 1);
 
@@ -73,6 +76,9 @@ void GaussianDataStat::sampleVals(int ind,
     }
     else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
     {
+#ifdef MC_DEBUG
+      std::cout << "GaussianDataStat::sampleVals, iterationMax" << std::endl;
+#endif
       // last sampling
       sample(ind, iteration);
 

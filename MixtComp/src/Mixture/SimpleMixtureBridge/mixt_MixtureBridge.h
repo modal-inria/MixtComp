@@ -72,34 +72,35 @@ class MixtureBridge : public mixt::IMixture
      *  @param nbCluster number of cluster
      **/
     MixtureBridge(std::string const& idName,
-                  int nbCluster,
+                  int nbClass,
                   Vector<int> const* p_zi,
                   const DataHandler* p_handler_,
                   DataExtractor* p_extractor,
                   const ParamSetter* p_paramSetter,
                   ParamExtractor* p_paramExtractor,
                   Real confidenceLevel) :
-      mixt::IMixture(idName,
-                     p_zi,
-                     nbCluster),
-      mixture_(nbCluster),
+      mixt::IMixture(idName),
+      p_zi_(p_zi),
+      nbClass_(nbClass),
+      mixture_(nbClass,
+               p_zi),
       m_augDataij_(),
       nbSample_(0),
       confidenceLevel_(confidenceLevel),
       sampler_(&m_augDataij_,
                getParam(),
-               nbCluster),
+               nbClass),
       dataStatComputer_(&m_augDataij_,
                         &dataStatStorage_,
                         confidenceLevel),
-      paramStat_(&param_,
-                 &paramStatStorage_,
-                 &paramLogStorage_,
+      paramStat_(param_,
+                 paramStatStorage_,
+                 paramLogStorage_,
                  confidenceLevel),
       likelihood_(getParam(),
                   getData(),
                   getDataStatStorage(),
-                  nbCluster),
+                  nbClass),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
@@ -109,6 +110,8 @@ class MixtureBridge : public mixt::IMixture
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
       mixt::IMixture(bridge),
+      p_zi_(bridge.p_zi_),
+      nbClass_(bridge.nbClass_),
       mixture_(bridge.mixture_),
       m_augDataij_(bridge.m_augDataij_),
       nbSample_(bridge.nbSample_),
@@ -124,28 +127,8 @@ class MixtureBridge : public mixt::IMixture
       dataStatStorage_(bridge.dataStatStorage_)
     {
       mixture_.setData(m_augDataij_.data_);
-      mixture_.initializeModel();
     }
-    /** @brief Initialize the model before its use by the composer.
-     *  The parameters values are set to their default values if the mixture_ is
-     *  newly created. if MixtureBridge::initializeModel is used during a
-     *  cloning, mixture class have to take care of the existing values of the
-     *  parameters.
-     **/
-    virtual void initializeStep()
-    {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::initializeStep()"  << std::endl;
-      std::cout << "\tidName(): " << idName() << std::endl;
-#endif
-      mixture_.setMixtureParameters(p_zi());
-      mixture_.initializeStep();
-#ifdef MC_DEBUG
-      mixture_.getParameters(param_);
-      std::cout << "param_, after initializeStep: " << std::endl;
-      std::cout << param_ << std::endl;
-#endif
-    }
+
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
@@ -169,7 +152,7 @@ class MixtureBridge : public mixt::IMixture
              << " in either provided values or bounds. The minimum value currently provided is : " << m_augDataij_.dataRange_.min_ << std::endl;
         warnLog += sstm.str();
       }
-      else // minimum value requirements have been met
+      else // minimum value requirements have been met, wether the mode is learning or prediction
       {
         m_augDataij_.removeMissing();
         p_paramSetter_->getParam(idName(),
@@ -178,11 +161,16 @@ class MixtureBridge : public mixt::IMixture
 
         // test if parameters are provided, in that case the mode is prediction, not learning and setModalities
         // must use the range provided by the ParamSetter
-        if (param_.rows() > 0 && param_.cols() > 0)
+        if (param_.rows() > 0 && param_.cols() > 0) // predict mode detected
         {
-          int nbParam = param_.rows() / nbCluster_; // number of parameters for each cluster
-          mixture_.setModalities(nbParam);
-          mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
+          int nbParam = param_.rows() / nbClass_; // number of parameters for each cluster
+          if (mixture_.hasModalities()) // predict data not representative of population, information from learning data set must be used
+          {
+            m_augDataij_.dataRange_.min_ = minModality;
+            m_augDataij_.dataRange_.max_ = minModality + nbParam - 1;
+            m_augDataij_.dataRange_.range_ = nbParam;
+            mixture_.setModalities(nbParam);
+          }
           mixture_.setParameters(param_);
           paramStatStorage_.resize(param_.rows(),
                                    1); // no quantiles have to be computed for imported parameters, hence the single column
@@ -203,7 +191,7 @@ class MixtureBridge : public mixt::IMixture
           std::cout << "\tparam_: " << param_ << std::endl;
   #endif
         }
-        else // code is in learning mode. setModalities must use the range provided by the data
+        else // learning mode detected. setModalities must use the range provided by the data
         {
   #ifdef MC_DEBUG
           std::cout << "\tparam not set " << std::endl;
@@ -218,11 +206,9 @@ class MixtureBridge : public mixt::IMixture
             warnLog += sstm.str();
           }
           mixture_.setModalities(m_augDataij_.dataRange_.max_);
-          mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
         }
         dataStatStorage_.resize(nbSample_,
                                 1);
-        mixture_.paramNames(paramNames_); // set the parameters names to be used for export
       }
     }
     /** This function must be defined for simulation of all the latent variables
@@ -230,10 +216,10 @@ class MixtureBridge : public mixt::IMixture
      * simulated by the framework itself because to do so we have to take into
      * account all the mixture laws. do nothing by default.
      */
-    virtual void samplingStep(int i)
+    virtual void samplingStep(int ind)
     {
-      sampler_.sampleIndividual(i,
-                                (*p_zi())(i));
+      sampler_.sampleIndividual(ind,
+                                (*p_zi())(ind));
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
@@ -323,32 +309,16 @@ class MixtureBridge : public mixt::IMixture
                                    iterationMax);
       if (iteration == iterationMax)
       {
-        dataStatComputer_.imputeData(sample);
+        dataStatComputer_.imputeData(sample); // impute the missing values using empirical mean or mode, depending of the model
       }
     }
 
     /**
-     *  This step can be used by developer to finalize any thing. It will be called only once after we
-     * finish running the SEM-gibbs algorithm.
+     * This function must be defined to return the completed likelihood, using the current values for
+     * unknown values
+     * @return the completed log-likelihood
      */
-    virtual void finalizeStep() {}
-    /**
-     * This function must be defined to return the posterior probability (PDF)
-     * for corresponding sample i and cluster k.
-     * @param i Sample number
-     * @param k Cluster number
-     * @return the log-component probability
-     */
-    virtual double lnComponentProbability(int i, int k)
-    {
-      return mixture_.lnComponentProbability(i, k);
-    }
-
-    /**
-     * This function must be defined to return the completed likelihood
-     * @return the observed log-likelihood
-     */
-    virtual void lnCompletedLikelihood(Matrix<Real>* lnComp)
+    virtual Real lnCompletedLikelihood(int i, int k)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
@@ -356,14 +326,14 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      likelihood_.lnCompletedLikelihood(lnComp);
+      return likelihood_.lnCompletedLikelihood(i, k);
     }
 
     /**
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
-    virtual void lnObservedLikelihood(Matrix<Real>* lnComp)
+    virtual Real lnObservedLikelihood(int i, int k)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
@@ -371,7 +341,7 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      likelihood_.lnObservedLikelihood(lnComp);
+      return likelihood_.lnObservedLikelihood(i, k);
     }
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
@@ -416,14 +386,14 @@ class MixtureBridge : public mixt::IMixture
       return &dataStatStorage_;
     }
 
-    virtual const Matrix<Real>* getParamStatStorage() const
+    virtual const Matrix<Real>& getParamStatStorage() const
     {
-      return &paramStatStorage_;
+      return paramStatStorage_;
     }
 
-    virtual const Matrix<Real>* getParamLogStorage() const
+    virtual const Matrix<Real>& getParamLogStorage() const
     {
-      return &paramLogStorage_;
+      return paramLogStorage_;
     }
 
     virtual void exportDataParam() const
@@ -437,11 +407,20 @@ class MixtureBridge : public mixt::IMixture
       p_paramExtractor_->exportParam(idName(),
                                      getParamStatStorage(),
                                      getParamLogStorage(),
-                                     paramNames_,
+                                     mixture_.paramNames(),
                                      confidenceLevel_);
     }
 
+    /** This function can be used in derived classes to get class labels from the framework.
+     *  @return Pointer to zi.
+     */
+    Vector<int> const* p_zi() const {return p_zi_;};
+
   protected:
+    /** Pointer to the zik class label */
+    Vector<int> const* p_zi_;
+    /** Number of classes */
+    int nbClass_;
     /** The simple mixture to bridge with the composer */
     Mixture mixture_;
     /** The augmented data set */
@@ -460,8 +439,6 @@ class MixtureBridge : public mixt::IMixture
     DataStatComputer dataStatComputer_;
     /** Statistics storage for parameters */
     SimpleParamStat paramStat_;
-    /** Vector of parameters names */
-    std::vector<std::string> paramNames_;
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
     /** Pointer to the data handler */

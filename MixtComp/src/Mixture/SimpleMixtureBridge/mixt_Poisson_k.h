@@ -38,7 +38,8 @@ class Poisson_k
   public:
     typedef int Type;
 
-    Poisson_k(int nbCluster);
+    Poisson_k(int nbCluster,
+              Vector<int> const* p_zi);
     ~Poisson_k();
 
     bool checkMaxVal() const;
@@ -46,17 +47,12 @@ class Poisson_k
     int computeNbFreeParameters() const;
 
     void getParameters(Vector<Real>& param) const;
-
-    double lnComponentProbability(int i, int k) const;
+    bool hasModalities() const;
 
     /** Set the parameters after the SEM, to the mean estimates for example */
     void setParameters(const Vector<Real>& param);
 
     void setData(Matrix<Type>& data);
-
-    void initializeModel();
-
-    void initializeStep();
 
     std::string mStep();
 
@@ -64,9 +60,7 @@ class Poisson_k
     int minVal() const;
     int nbVariable() const;
 
-    void paramNames(std::vector<std::string>& names) const;
-
-    void setMixtureParameters(Vector<int> const* p_zi);
+    std::vector<std::string> paramNames() const;
 
     void setModalities(int nbModalities);
 

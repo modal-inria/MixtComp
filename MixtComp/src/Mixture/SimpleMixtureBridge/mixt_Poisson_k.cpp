@@ -23,17 +23,19 @@
 
 #include "mixt_Poisson_k.h"
 #include "../../IO/mixt_IO.h"
+#include "../../Various/mixt_Constants.h"
 
 namespace mixt
 {
 
 typedef Poisson_k::Type Type;
 
-Poisson_k::Poisson_k(int nbCluster) :
+Poisson_k::Poisson_k(int nbCluster,
+                     Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
     param_(nbCluster),
     p_data_(0),
-    p_zi_(0)
+    p_zi_(p_zi)
 {}
 
 Poisson_k::~Poisson_k()
@@ -67,23 +69,9 @@ void Poisson_k::getParameters(Vector<Real>& param) const
   }
 }
 
-void Poisson_k::initializeModel()
-{}
-
-void Poisson_k::initializeStep()
-{}
-
-double Poisson_k::lnComponentProbability(int i, int k) const
+bool Poisson_k::hasModalities() const
 {
-#ifdef MC_DEBUG
-  std::cout << "Poisson_k::lnComponentProbability" << std::endl;
-  std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
-#endif
-  Type currVal = (*p_data_)(i, 0);
-  Real lambda = param_[k];
-  Real proba = poisson_.pdf(currVal,
-                                 lambda);
-  return std::log(proba);
+  return false;
 }
 
 int Poisson_k::maxVal() const
@@ -149,25 +137,23 @@ int Poisson_k::nbVariable() const
   return 1;
 }
 
-void Poisson_k::paramNames(std::vector<std::string>& names) const
+std::vector<std::string> Poisson_k::paramNames() const
 {
-  names.resize(nbCluster_);
+  std::vector<std::string> names(nbCluster_);
   for (int k = 0; k < nbCluster_; ++k)
   {
-    names[k] =   std::string("k: ")
-               + type2str(k)
-               + std::string(", lambda");
+    std::stringstream sstm;
+    sstm << "k: "
+         << k + minModality
+         << ", lambda";
+    names[k] = sstm.str();
   }
+  return names;
 }
 
 void Poisson_k::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
-}
-
-void Poisson_k::setMixtureParameters(Vector<int> const* p_zi)
-{
-  p_zi_ = p_zi;
 }
 
 void Poisson_k::setModalities(int nbModalities)

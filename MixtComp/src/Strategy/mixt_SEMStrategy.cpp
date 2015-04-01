@@ -35,25 +35,29 @@ namespace mixt
 
 /** default constructor */
 SemStrategy::SemStrategy(mixt::MixtureComposer* p_composer,
-                         int nbTry,
+                         int nbTrialInInit_,
                          int nbBurnInIter,
                          int nbIter,
                          int nbGibbsBurnInIter,
                          int nbGibbsIter,
                          int nbSamplingAttempts) :
     p_composer_(p_composer),
-    nbTry_(nbTry),
+    nbTrialInInit_(nbTrialInInit_),
     nbGibbsBurnInIter_(nbGibbsBurnInIter),
     nbGibbsIter_(nbGibbsIter)
 {
-  p_burnInAlgo_ = new SEMAlgo(nbBurnInIter, nbSamplingAttempts);
-  p_longAlgo_   = new SEMAlgo(nbIter      , nbSamplingAttempts);
+  p_burnInAlgo_ = new SEMAlgo(p_composer,
+                              nbBurnInIter,
+                              nbSamplingAttempts);
+  p_longAlgo_   = new SEMAlgo(p_composer,
+                              nbIter,
+                              nbSamplingAttempts);
 }
 
 /** copy constructor */
 SemStrategy::SemStrategy(SemStrategy const& strategy) :
     p_composer_(strategy.p_composer_),
-    nbTry_(strategy.nbTry_),
+    nbTrialInInit_(strategy.nbTrialInInit_),
     p_burnInAlgo_(strategy.p_burnInAlgo_),
     p_longAlgo_(strategy.p_longAlgo_)
 {}
@@ -69,7 +73,7 @@ std::string SemStrategy::run()
 {
   std::string allWarn; // collect warning strings from all the trials
 
-  for (int iTry = 0; iTry < nbTry_; ++iTry)
+  for (int iTry = 0; iTry < nbTrialInInit_; ++iTry)
   {
     std::string tryWarn; // warning for each run
 #ifdef MC_DEBUG
@@ -77,7 +81,6 @@ std::string SemStrategy::run()
   std::cout << "*p_composer_->p_zi()" << std::endl;
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
-    p_composer_->initializeStep(); // optional step for mixtures that need it
     tryWarn = p_composer_->mStep();
     if (tryWarn.size() > 0)
     {
@@ -91,9 +94,7 @@ std::string SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, short run" << std::endl;
 #endif
-    p_composer_->setState(burnIn_);
-    p_burnInAlgo_->setModel(p_composer_);
-    tryWarn = p_burnInAlgo_->run();
+    tryWarn = p_burnInAlgo_->run(burnIn_);
     if (tryWarn.size() > 0) // an empty string means a successful run
     {
       allWarn +=   std::string("SemStrategy, burn-in, iTry: ")
@@ -106,9 +107,7 @@ std::string SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, long run" << std::endl;
 #endif
-    p_composer_->setState(longRun_);
-    p_longAlgo_->setModel(p_composer_);
-    tryWarn = p_longAlgo_->run();
+    tryWarn = p_longAlgo_->run(longRun_);
     if (tryWarn.size() > 0) // an empty string means a successful run
     {
       allWarn +=   std::string("SemStrategy, run, iTry: ")
@@ -131,8 +130,6 @@ std::string SemStrategy::run()
     }
 
     p_composer_->gibbsSampling(nbGibbsIter_);
-
-    p_composer_->finalizeStep();
 
     return allWarn; // if the last attempt is a success, consider the run a success. AllWarn is an empty string.
   }

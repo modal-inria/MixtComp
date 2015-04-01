@@ -81,7 +81,8 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    virtual Real lnComponentProbability(int i, int k);
+    virtual Real lnCompletedLikelihood(int i, int k);
+    virtual Real lnObservedLikelihood(int i, int k);
 
     /** @return the value of the observed likelihood */
     virtual Real lnObservedLikelihood();
@@ -99,17 +100,6 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      *  lookup on the mixtures and sum the nbFreeParameter.
      **/
     virtual int nbFreeParameters() const;
-    /**@brief This step can be used by developer to initialize any thing which
-     * is not the model. It will be called before running the estimation
-     * algorithm. In this class, the @c initializeSterp method
-     *  - set the number of free parameters using the pure virtual function @¢ computeNbFreeParameters()
-     *  - Compute the
-     *  - call the initializeStep() of all the mixtures,
-     *  First initialization of the parameters of the model.
-     *  This method is called in order to initialize the parameters.
-     *
-     **/
-    virtual void initializeStep();
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels.
      */
@@ -140,12 +130,24 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /**@brief This step can be used to ask each mixture to export its model parameters
      * and data
      **/
-    virtual void exportDataParam() const;
+    template<typename DataExtractor,
+             typename ParamExtractor>
+    void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const
+    {
+      dataExtractor.exportVals("z_class",
+                               zi_,
+                               tik_);
+      paramExtractor.exportParam("z_class",
+                                 paramStatStorage(),
+                                 paramLogStorage(),
+                                 paramNames(),
+                                 confidenceLevel_);
+      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+      {
+        (*it)->exportDataParam();
+      }
+    };
 
-    /**@brief This step can be used by developer to finalize any thing. It will
-     *  be called only once after we finish running the estimation algorithm.
-     **/
-    virtual void finalizeStep();
     /** register a mixture to the composer.
      *  When a mixture is registered, the composer:
      *  - assign composer pointer (itself) to the mixture
@@ -157,11 +159,21 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** Gibbs sampling, one individual at a time */
     void gibbsSampling(int nbGibbsIter);
 
-    /** @return the logs of the proportions */
-    inline Matrix<Real> const* p_pkLog() const
+    /** @return a reference on the statistics of the proportions */
+    inline Matrix<Real> const& paramStatStorage() const
     {
-      return &paramlog_;
+      return paramStatStorage_;
     };
+
+    /** @return a reference on the statistics of the proportions */
+    inline Matrix<Real> const& paramLogStorage() const
+    {
+      return paramLogStorage_;
+    };
+
+    /** @return names of the parameters */
+    std::vector<std::string> paramNames() const;
+
   protected:
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
@@ -173,10 +185,13 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     Matrix<Real> paramStatStorage_;
 
     /** Log for sampled parameters */
-    Matrix<Real> paramlog_;
+    Matrix<Real> paramLogStorage_;
 
     /** storage for number of samples during Gibbs */
     Matrix<Real> nik_;
+
+    /** confidence level used for the computation of statistics */
+    Real confidenceLevel_;
 };
 
 } /* namespace mixt */

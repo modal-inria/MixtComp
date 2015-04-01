@@ -56,6 +56,9 @@ void PoissonDataStat::sampleVals(int ind,
   {
     if (iteration == 0) // clear the temporary statistical object
     {
+#ifdef MC_DEBUG
+      std::cout << "PoissonDataStat::sampleVals, iteration 0" << std::endl;
+#endif
       stat_.resize(iterationMax + 1);
 
 #ifdef MC_DEBUG
@@ -70,6 +73,9 @@ void PoissonDataStat::sampleVals(int ind,
     }
     else if (iteration == iterationMax) // export the statistics to the p_dataStatStorage object
     {
+#ifdef MC_DEBUG
+      std::cout << "PoissonDataStat::sampleVals, iterationMax" << std::endl;
+#endif
       // last sampling
       sample(ind, iteration);
 

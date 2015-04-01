@@ -37,7 +37,8 @@ class Gaussian_sjk
   public:
     typedef Real Type;
 
-    Gaussian_sjk(int nbCluster);
+    Gaussian_sjk(int nbCluster,
+                 Vector<int> const* p_zi);
     ~Gaussian_sjk();
 
     bool checkMaxVal() const;
@@ -45,17 +46,12 @@ class Gaussian_sjk
     int computeNbFreeParameters() const;
 
     void getParameters(Vector<Real>& param) const;
-
-    double lnComponentProbability(int i, int k) const;
+    bool hasModalities() const;
 
     /** Set the parameters after the SEM, to the mean estimates for example */
     void setParameters(const Vector<Real>& param);
 
     void setData(Matrix<Type>& data);
-
-    void initializeModel();
-
-    void initializeStep();
 
     /** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
      * using the biased estimator which corresponds to the maximum likelihood estimator */
@@ -66,9 +62,7 @@ class Gaussian_sjk
 
     int nbVariable() const;
 
-    void paramNames(std::vector<std::string>& names) const;
-
-    void setMixtureParameters(Vector<int> const* p_zi);
+    std::vector<std::string> paramNames() const;
 
     void setModalities(int nbModalities);
 

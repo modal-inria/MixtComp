@@ -32,9 +32,9 @@ namespace mixt
 class SimpleParamStat
 {
   public:
-    SimpleParamStat(Vector<Real>* p_param,
-                    Matrix<Real>* p_paramStatStorage,
-                    Matrix<Real>* p_paramlog,
+    SimpleParamStat(Vector<Real>& param,
+                    Matrix<Real>& paramStatStorage,
+                    Matrix<Real>& paramlog,
                     Real confidenceLevel);
     ~SimpleParamStat();
 
@@ -51,15 +51,15 @@ class SimpleParamStat
     int nbParam_;
 
     // pointer to param array
-    Vector<Real>* p_param_;
+    Vector<Real>& param_;
 
     /** Pointer to array to export the statistics at the last iteration */
-    Matrix<Real>* p_paramStatStorage_;
+    Matrix<Real>& paramStatStorage_;
 
     /** Storage for iterations results,
      * first dimension: index of the parameter
      * second dimension: iteration of the stored value */
-    Matrix<Real>* p_paramlog_;
+    Matrix<Real>& paramlog_;
 
     /** Confidence level */
     Real confidenceLevel_;

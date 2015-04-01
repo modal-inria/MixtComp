@@ -49,14 +49,16 @@ void ClassSampler::sampleIndividual(int i)
     int sampleVal;
 
 #ifdef MC_DEBUG
-    std::cout << "ClassSampler::sampleIndividual" << std::endl;
-    std::cout << "i: " << i << std::endl;
+    std::cout << "present_" << std::endl;
 #endif
 
     switch(zi_.misData_(i, 0).first)
     {
       case missing_:
       {
+#ifdef MC_DEBUG
+        std::cout << "missing_" << std::endl;
+#endif
         sampleVal = multi_.sample(tik_.block(i, 0,         // position of first element
                                              1, nbClass_)); // dimension of the vector to extract);
       }
@@ -64,6 +66,9 @@ void ClassSampler::sampleIndividual(int i)
 
       case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
       {
+#ifdef MC_DEBUG
+        std::cout << "missingFiniteValues_" << std::endl;
+#endif
         Vector<Real> modalities(nbClass_);
         modalities = 0.;
 

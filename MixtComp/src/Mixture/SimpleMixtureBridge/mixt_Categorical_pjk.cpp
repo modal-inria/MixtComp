@@ -31,11 +31,12 @@ namespace mixt
 
 typedef Categorical_pjk::Type Type;
 
-Categorical_pjk::Categorical_pjk(int nbCluster) :
+Categorical_pjk::Categorical_pjk(int nbCluster,
+                                 Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
     nbModalities_(0),
     p_data_(0),
-    p_zi_(0)
+    p_zi_(p_zi)
     // modalities are not known at the creation of the object, hence a call to setModality is needed later
 {}
 
@@ -71,28 +72,9 @@ void Categorical_pjk::getParameters(Vector<Real>& param) const
   }
 }
 
-void Categorical_pjk::initializeModel()
-{}
-
-void Categorical_pjk::initializeStep()
-{}
-
-double Categorical_pjk::lnComponentProbability(int i, int k) const
+bool Categorical_pjk::hasModalities() const
 {
-  Type currVal = (*p_data_)(i, 0);
-  Real proba = param_[k * nbModalities_ + currVal - minModality]; // first modality is 1 in data, but 0 in parameters storage
-#ifdef MC_DEBUG
-  std::cout << "\tk: " << k << ", proba: " << proba << std::endl;
-#endif
-#ifdef MC_DEBUG
-  std::cout << "Categorical_pjk::lnComponentProbability" << std::endl;
-  if (currVal == 0)
-  {
-    std::cout << "modality 0 in data" << std::endl;
-    std::cout << "k * nbModalities_ + currVal - minModality: " << k * nbModalities_ + currVal - minModality << std::endl;
-  }
-#endif
-  return std::log(proba);
+  return true;
 }
 
 int Categorical_pjk::maxVal() const
@@ -165,29 +147,27 @@ int Categorical_pjk::nbVariable() const
   return 1;
 }
 
-void Categorical_pjk::paramNames(std::vector<std::string>& names) const
+std::vector<std::string> Categorical_pjk::paramNames() const
 {
-  names.resize(nbCluster_ * nbModalities_);
+  std::vector<std::string> names(nbCluster_ * nbModalities_);
   for (int k = 0; k < nbCluster_; ++k)
   {
     for (int p = 0; p < nbModalities_; ++p)
     {
-      names[k * nbModalities_ + p] =   std::string("k: ")
-                                     + type2str(k)
-                                     + std::string(", modality: ")
-                                     + type2str(p);
+      std::stringstream sstm;
+      sstm << "k: "
+           << k + minModality
+           << ", modality: "
+           << p + minModality;
+      names[k * nbModalities_ + p] = sstm.str();
     }
   }
+  return names;
 }
 
 void Categorical_pjk::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
-}
-
-void Categorical_pjk::setMixtureParameters(Vector<int> const* p_zi)
-{
-  p_zi_ = p_zi;
 }
 
 void Categorical_pjk::setModalities(int nbModalities)

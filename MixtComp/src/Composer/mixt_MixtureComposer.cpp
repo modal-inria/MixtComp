@@ -37,12 +37,13 @@ MixtureComposer::MixtureComposer(int nbSample,
                                  Real confidenceLevel) :
     mixt::IMixtureComposerBase(nbSample,
                                nbCluster),
-    paramStat_(&prop_,
-               &paramStatStorage_,
-               &paramlog_,
+    paramStat_(prop_,
+               paramStatStorage_,
+               paramLogStorage_,
                confidenceLevel),
     nik_(nbSample,
-         nbCluster)
+         nbCluster),
+    confidenceLevel_(confidenceLevel)
 {}
 
 MixtureComposer::~MixtureComposer()
@@ -53,24 +54,48 @@ MixtureComposer::~MixtureComposer()
   }
 }
 
-Real MixtureComposer::lnComponentProbability(int i, int k)
+/** Compute the completed likelihood for a single individual, with the class fixed as a parameter */
+Real MixtureComposer::lnCompletedLikelihood(int i, int k)
 {
 #ifdef MC_DEBUG
-  std::cout << "MixtureComposer::lnComponentProbability(int i, int k), i: " << i << ", k: " << k << std::endl;
+  std::cout << "MixtureComposer::lnCompletedLikelihood(int i, int k), i: " << i << ", k: " << k << std::endl;
 #endif
-  Real sum = 0.;
+  Real sum = std::log(prop_[k]);
+
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
-    Real logProba = (*it)->lnComponentProbability(i, k);
+    Real logProba = (*it)->lnCompletedLikelihood(i, k);
     sum += logProba;
 #ifdef MC_DEBUG
     std::cout << (*it)->idName() << ", sum: " << sum << std::endl;
 #endif
   }
+
   return sum;
 }
 
-/** @return the value of the observed likelihood */
+/** Compute the observed likelihood for a single individual, with the class fixed as a parameter */
+Real MixtureComposer::lnObservedLikelihood(int i, int k)
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::lnCompletedLikelihood(int i, int k), i: " << i << ", k: " << k << std::endl;
+#endif
+  Real sum = std::log(prop_[k]);
+
+  for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
+  {
+    Real logProba = (*it)->lnObservedLikelihood(i, k);
+    sum += logProba;
+#ifdef MC_DEBUG
+    std::cout << (*it)->idName() << ", sum: " << sum << std::endl;
+#endif
+  }
+
+  return sum;
+}
+
+/** Observed data, and marginalization over classes
+ * @return the value of the observed likelihood */
 Real MixtureComposer::lnObservedLikelihood()
 {
 #ifdef MC_DEBUG
@@ -79,24 +104,16 @@ Real MixtureComposer::lnObservedLikelihood()
   Real lnLikelihood = 0.;
   Matrix<Real> lnComp(nbSample_,
                       nbCluster_);
+
   for (int k = 0; k < nbCluster_; ++k)
   {
-#ifdef MC_DEBUG
-    std::cout << "k: " << k << std::endl;
-#endif
-    lnComp.col(k) = std::log(prop_[k]);
+    for (int i = 0; i < nbSample_; ++i)
+    {
+      lnComp(i, k) = lnObservedLikelihood(i, k);
+    }
   }
 
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    (*it)->lnObservedLikelihood(&lnComp);
-#ifdef MC_DEBUG
-    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-    std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
-#endif
-  }
-
-  for (int i = 0; i < nbSample_; ++i)
+  for (int i = 0; i < nbSample_; ++i) // sum is inside a log, hence the numerous steps for the computation
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
@@ -119,83 +136,50 @@ Real MixtureComposer::lnObservedLikelihood()
   return lnLikelihood;
 }
 
-/** @return the value of the completed likelihood */
-Real MixtureComposer::lnCompletedLikelihood()
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
-#endif
-  Real lnLikelihood = 0.;
-  Matrix<Real> lnComp(nbSample_,
-                      nbCluster_);
-  for (int k = 0; k < nbCluster_; ++k)
-  {
-#ifdef MC_DEBUG
-    std::cout << "k: " << k << std::endl;
-#endif
-    lnComp.col(k) = std::log(prop_[k]);
-  }
-
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    (*it)->lnCompletedLikelihood(&lnComp);
-#ifdef MC_DEBUG
-    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-    std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
-#endif
-  }
-
-  // Compute the completed likelihood for the complete mixture model
-  for (int i = 0; i < nbSample_; ++i)
-  {
-#ifdef MC_DEBUG
-    std::cout << "i: " << i << std::endl;
-    std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
-#endif
-    lnLikelihood += lnComp(i, zi_.data_(i));
-  }
-
-  return lnLikelihood;
-}
-
-/** @return the value of the semi-completed likelihood (completion only for latent class) */
+/** Completed latent classes, and marginalization over missing data
+ * @return the value of the semi-completed likelihood (completion only for latent class) */
 Real MixtureComposer::lnSemiCompletedLikelihood()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnSemiCompletedLikelihood() " << std::endl;
 #endif
   Real lnLikelihood = 0.;
-  Matrix<Real> lnComp(nbSample_,
-                      nbCluster_);
-  for (int k = 0; k < nbCluster_; ++k)
-  {
-#ifdef MC_DEBUG
-    std::cout << "k: " << k << std::endl;
-#endif
-    lnComp.col(k) = std::log(prop_[k]);
-  }
 
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    (*it)->lnObservedLikelihood(&lnComp);
-#ifdef MC_DEBUG
-    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-    std::cout << "tempVec: " << tempVec << std::endl;
-#endif
-  }
-
-  // Compute the completed likelihood for the complete mixture model
+  // Compute the completed likelihood for the complete mixture model, using the completed data
   for (int i = 0; i < nbSample_; ++i)
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << ", lnComp(i, zi_[i]): " << lnComp(i, zi_[i]) << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
-    lnLikelihood += lnComp(i, zi_.data_(i));
+    lnLikelihood += lnObservedLikelihood(i, zi_.data_(i));
   }
 
   return lnLikelihood;
 }
+
+/** Completed on both missing value and latent classes
+ * @return the value of the completed likelihood for all data */
+Real MixtureComposer::lnCompletedLikelihood()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
+#endif
+  Real lnLikelihood = 0.;
+
+  // Compute the completed likelihood for the complete mixture model, using the completed data
+  for (int i = 0; i < nbSample_; ++i)
+  {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << std::endl;
+    std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
+#endif
+    lnLikelihood += lnCompletedLikelihood(i, zi_.data_(i));
+  }
+
+  return lnLikelihood;
+}
+
 
 std::string MixtureComposer::mStep()
 {
@@ -224,23 +208,6 @@ void MixtureComposer::writeParameters(std::ostream& out) const
     out << "Parameters of the mixtures: " << (*it)->idName() << "\n";
     (*it)->writeParameters(out);
   }
-}
-
-void MixtureComposer::initializeStep()
-{
-  if (v_mixtures_.size() == 0)
-  {
-    std::cout << "MixtureComposer::initializeStep, no mixture have been registered" << std::endl;
-  }
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::initializeStep() called on " << v_mixtures_.size() << " mixtures" << std::endl;
-  std::cout << "prop_: " << prop_ << std::endl;
-#endif
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    (*it)->initializeStep();
-  }
-  setState(modelInitialized_);
 }
 
 // implement computeNbFreeParameters
@@ -309,7 +276,7 @@ void MixtureComposer::misClasStep(int iteration)
     }
     for (int i = 0; i < nbSample_; ++i)
     {
-      probClass(i, k) = std::log(prop_[k]) + lnComponentProbability(i, k);
+      probClass(i, k) = lnCompletedLikelihood(i, k);
     }
   }
 
@@ -401,20 +368,6 @@ void MixtureComposer::storeGibbsRun(int sample,
   }
 }
 
-void MixtureComposer::exportDataParam() const
-{
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    (*it)->exportDataParam();
-  }
-}
-
-void MixtureComposer::finalizeStep()
-{
-  for (size_t l = 0; l < v_mixtures_.size(); ++l)
-  { v_mixtures_[l]->finalizeStep();}
-}
-
 /* register the mixture in the composer*/
 void MixtureComposer::registerMixture(IMixture* p_mixture)
 {
@@ -439,6 +392,20 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter)
     }
   }
   mapStep(); // z_i estimated by the mode at the end of the Gibbs Sampling
+}
+
+std::vector<std::string> MixtureComposer::paramNames() const
+{
+  std::vector<std::string> names(nbCluster_);
+  for (int k = 0; k < nbCluster_; ++k)
+  {
+    std::stringstream sstm;
+    sstm << "k: "
+         << k + minModality;
+    names[k] = sstm.str();
+  }
+
+  return names;
 }
 
 } /* namespace mixt */

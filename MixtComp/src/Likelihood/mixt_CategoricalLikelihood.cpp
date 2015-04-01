@@ -41,96 +41,77 @@ CategoricalLikelihood::CategoricalLikelihood(const Vector<Real>* p_param,
 CategoricalLikelihood::~CategoricalLikelihood()
 {}
 
-void CategoricalLikelihood::lnCompletedLikelihood(Matrix<Real>* lnComp)
+Real CategoricalLikelihood::lnCompletedLikelihood(int i, int k)
 {
   int nbModalities = p_param_->rows() / nbClass_;
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    for (int i = 0; i < p_augData_->data_.rows(); ++i)
-    {
-      if (p_augData_->misData_(i, 0).first == present_) // likelihood for present data
-      {
-        int ind = k * nbModalities + p_augData_->data_(i, 0) - minModality;
-        Real proba = (*p_param_)(ind);
+
+  int ind = k * nbModalities + p_augData_->data_(i, 0) - minModality;
+  Real proba = (*p_param_)(ind);
 #ifdef MC_DEBUG
-        if (proba < epsilon)
-        {
-          Real sum = 0.;
-          std::cout << "Null proba detected, k: " << k << std::endl;
-          std::cout << "p_augData_->data_(i, j) - minModality: " << p_augData_->data_(i, 0) - minModality << std::endl;
-          std::cout << "param: " << std::endl;
-          for (int p = 0; p < nbModalities; ++p)
-          {
-            std::cout << p_param_->elt(k * nbModalities + p) << std::endl;
-            sum += p_param_->elt(k * nbModalities + p);
-          }
-          std::cout << "sum: " << sum << std::endl;
-        }
-#endif
-        (*lnComp)(i, k) += std::log(proba);
-      }
-      else // likelihood for estimated missing values, imputation by the mode
-      {
-        Real proba = (*p_param_)(k * nbModalities + (*p_dataStatStorage_)(i, 0)[0].first - minModality);
-        (*lnComp)(i, k) += std::log(proba); // added lnLikelihood using the mode
-      }
+  if (proba < epsilon)
+  {
+    Real sum = 0.;
+    std::cout << "Null proba detected, k: " << k << std::endl;
+    std::cout << "p_augData_->data_(i, j) - minModality: " << p_augData_->data_(i, 0) - minModality << std::endl;
+    std::cout << "param: " << std::endl;
+    for (int p = 0; p < nbModalities; ++p)
+    {
+      std::cout << p_param_->elt(k * nbModalities + p) << std::endl;
+      sum += p_param_->elt(k * nbModalities + p);
     }
+    std::cout << "sum: " << sum << std::endl;
   }
+#endif
+  return std::log(proba);
 }
 
-void CategoricalLikelihood::lnObservedLikelihood(Matrix<Real>* lnComp)
+Real CategoricalLikelihood::lnObservedLikelihood(int i, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "CategoricalLikelihood::lnObservedLikelihood" << std::endl;
 #endif
   int nbModalities = p_param_->rows() / nbClass_;
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    for (int i = 0; i < p_augData_->data_.rows(); ++i)
-    {
+  Real proba;
 #ifdef MC_DEBUG
           std::cout << "\ti: " << i << ", j: " << j << std::endl;
 #endif
-      switch (p_augData_->misData_(i, 0).first)
+  switch (p_augData_->misData_(i, 0).first)
+  {
+    case present_: // likelihood for present data
+    {
+      proba = (*p_param_)(k * nbModalities + p_augData_->data_(i, 0) - minModality);
+    }
+    break;
+
+    case missing_: // no contribution to the observed likelihood
+    {}
+    break;
+
+    case missingFiniteValues_: // adding the contributions of the various modalities
+    {
+#ifdef MC_DEBUG
+      std::cout << "missingFiniteValues" << std::endl;
+      std::cout << "p_param_->rows(): " << p_param_->rows() << ", p_param_->cols(): " << p_param_->cols() << std::endl;
+#endif
+      proba = 0.;
+
+      for (std::vector<int>::const_iterator itMiss = p_augData_->misData_(i, 0).second.begin();
+           itMiss != p_augData_->misData_(i, 0).second.end();
+           ++itMiss)
       {
-        case present_: // likelihood for present data
-        {
-          Real proba = (*p_param_)(k * nbModalities + p_augData_->data_(i, 0) - minModality);
-          (*lnComp)(i, k) += std::log(proba);
-        }
-        break;
-
-        case missing_: // no contribution to the observed likelihood
-        {}
-        break;
-
-        case missingFiniteValues_: // adding the contributions of the various modalities
-        {
 #ifdef MC_DEBUG
-          std::cout << "missingFiniteValues" << std::endl;
-          std::cout << "p_param_->rows(): " << p_param_->rows() << ", p_param_->cols(): " << p_param_->cols() << std::endl;
+        std::cout << "k: " << k << ", j: " << j << ", nbModalities: " << nbModalities << ", *itMiss: " << *itMiss << std::endl;
 #endif
-          Real proba = 0.;
-
-          for (std::vector<int>::const_iterator itMiss = p_augData_->misData_(i, 0).second.begin();
-               itMiss != p_augData_->misData_(i, 0).second.end();
-               ++itMiss)
-          {
-#ifdef MC_DEBUG
-            std::cout << "k: " << k << ", j: " << j << ", nbModalities: " << nbModalities << ", *itMiss: " << *itMiss << std::endl;
-#endif
-            proba += (*p_param_)(k * nbModalities + *itMiss - minModality);
-          }
-          (*lnComp)(i, k) += std::log(proba);
-        }
-        break;
-
-        default:
-        {}
-        break;
+        proba += (*p_param_)(k * nbModalities + *itMiss - minModality);
       }
     }
+    break;
+
+    default:
+    {}
+    break;
   }
+  return std::log(proba);
 }
 
 } /* namespace mixt */
