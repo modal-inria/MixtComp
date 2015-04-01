@@ -46,8 +46,12 @@ SemStrategy::SemStrategy(mixt::MixtureComposer* p_composer,
     nbGibbsBurnInIter_(nbGibbsBurnInIter),
     nbGibbsIter_(nbGibbsIter)
 {
-  p_burnInAlgo_ = new SEMAlgo(nbBurnInIter, nbSamplingAttempts);
-  p_longAlgo_   = new SEMAlgo(nbIter      , nbSamplingAttempts);
+  p_burnInAlgo_ = new SEMAlgo(p_composer,
+                              nbBurnInIter,
+                              nbSamplingAttempts);
+  p_longAlgo_   = new SEMAlgo(p_composer,
+                              nbIter,
+                              nbSamplingAttempts);
 }
 
 /** copy constructor */
@@ -91,7 +95,6 @@ std::string SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, short run" << std::endl;
 #endif
-    p_burnInAlgo_->setModel(p_composer_);
     tryWarn = p_burnInAlgo_->run(burnIn_);
     if (tryWarn.size() > 0) // an empty string means a successful run
     {
@@ -105,7 +108,6 @@ std::string SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, long run" << std::endl;
 #endif
-    p_longAlgo_->setModel(p_composer_);
     tryWarn = p_longAlgo_->run(longRun_);
     if (tryWarn.size() > 0) // an empty string means a successful run
     {

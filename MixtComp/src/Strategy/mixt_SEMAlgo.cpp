@@ -31,8 +31,10 @@
 namespace mixt
 {
 
-SEMAlgo::SEMAlgo(int nbIterMax, int nbSamplingAttempts) :
-    p_model_(0),
+SEMAlgo::SEMAlgo(MixtureComposer* p_model,
+                 int nbIterMax,
+                 int nbSamplingAttempts) :
+    p_model_(p_model),
     nbIterMax_(nbIterMax),
     nbSamplingAttempts_(nbSamplingAttempts)
 {}
@@ -42,11 +44,6 @@ SEMAlgo::SEMAlgo(SEMAlgo const& algo) :
     nbIterMax_(algo.nbIterMax_),
     nbSamplingAttempts_(algo.nbSamplingAttempts_)
 {}
-
-void SEMAlgo::setModel(mixt::MixtureComposer* p_model)
-{
-  p_model_ = p_model;
-}
 
 std::string SEMAlgo::run(RunType runType)
 {
