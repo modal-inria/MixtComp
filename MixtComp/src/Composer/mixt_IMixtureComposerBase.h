@@ -69,7 +69,6 @@ namespace mixt
  * @code
  *   virtual IMixtureComposerBase* create() const = 0;
  *   virtual IMixtureComposerBase* clone() const = 0;
- *   virtual void initializeStep() =0;
  *   virtual bool randomInit() =0;
  *   virtual void mStep() = 0;
  *   virtual Real lnComponentProbability(int i, int k) = 0;
@@ -82,12 +81,7 @@ namespace mixt
  *   virtual void pStep();
  *   virtual void inputationStep();
  *   virtual void samplingStep();
- *   virtual void finalizeStep();
  * @endcode
- *
- * @note the virtual method @c IMixtureComposerBase::initializeStep have to be
- * called before any use of the class as it will create/resize the arrays
- * and initialize the constants of the model.
  */
 class IMixtureComposerBase
 {
@@ -132,27 +126,14 @@ class IMixtureComposerBase
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(std::ostream& os) const {};
     /** compute the number of free parameters of the model.
-     *  This method is used in IMixtureComposerBase::initializeStep
-     *  in order to give a value to IModelBase::nbFreeParameter_.
      *  @return the number of free parameters
      **/
     virtual int nbFreeParameters() const = 0;
-    /** @brief Initialize the model before at its first use.
-     *  This function can be overloaded in derived class for initialization of
-     *  the specific model parameters. It should be called prior to any used of
-     *  the class.
-     *  @sa IMixture,MixtureBridge
-     **/
-    virtual void initializeStep() = 0;
 
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels. Default behavior is "do nothing".
      */
     virtual void samplingStep() {};
-    /** @brief Finalize the estimation of the model.
-     * The default behavior is "do nothing".
-     **/
-    inline virtual void finalizeStep() {}
 
     /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
      *  @return the minimal value of individuals in a class

@@ -126,12 +126,6 @@ class MixtureBridge : public mixt::IMixture
     {
       mixture_.setData(m_augDataij_.data_);
     }
-    /** @brief Initialize the model before its use by the composer.
-     *  The parameters values are set to their default values if the mixture_ is
-     *  newly created.
-     **/
-    virtual void initializeStep()
-    {}
 
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -316,12 +310,6 @@ class MixtureBridge : public mixt::IMixture
         dataStatComputer_.imputeData(sample); // impute the missing values using empirical mean or mode, depending of the model
       }
     }
-
-    /**
-     *  This step can be used by developer to finalize any thing. It will be called only once after we
-     * finish running the SEM-gibbs algorithm.
-     */
-    virtual void finalizeStep() {}
 
     /**
      * This function must be defined to return the completed likelihood, using the current values for

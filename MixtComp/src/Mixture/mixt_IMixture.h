@@ -61,17 +61,6 @@ class IMixture
     /** @return Number of cluster. */
     inline int nbCluster() const  { return nbCluster_;}
 
-
-    /** @brief This function must be defined in derived class for initialization
-     *  of the mixture parameters.
-     *  This method should create any container needed by the model, resize
-     *  them and initialize them.
-     *  Since this method can be used when create is called, its main
-     *  purpose should be to reset the mixture parameters, while leaving the
-     *  data unchanged.
-     *  This function will be called once the model is created and data is set.
-     */
-    virtual void initializeStep() = 0;
     /** @brief This function must be defined for simulation of all the latent
      * variables and/or missing data excluding class labels. The class labels
      * will be simulated by the framework itself because to do so we have to
@@ -101,11 +90,7 @@ class IMixture
     virtual void storeGibbsRun(int sample,
                            int iteration,
                            int iterationMax)
-    {/**Do nothing by default*/}
-    /** @brief This step can be used by developer to finalize any thing. It will
-     *  be called only once after we finish running the estimation algorithm.
-     */
-    virtual void finalizeStep() {/**Do nothing by default*/}
+    {}
 
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale

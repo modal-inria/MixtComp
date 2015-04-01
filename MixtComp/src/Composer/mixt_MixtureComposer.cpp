@@ -210,22 +210,6 @@ void MixtureComposer::writeParameters(std::ostream& out) const
   }
 }
 
-void MixtureComposer::initializeStep()
-{
-  if (v_mixtures_.size() == 0)
-  {
-    std::cout << "MixtureComposer::initializeStep, no mixture have been registered" << std::endl;
-  }
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::initializeStep() called on " << v_mixtures_.size() << " mixtures" << std::endl;
-  std::cout << "prop_: " << prop_ << std::endl;
-#endif
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    (*it)->initializeStep();
-  }
-}
-
 // implement computeNbFreeParameters
 int MixtureComposer::nbFreeParameters() const
 {
@@ -382,12 +366,6 @@ void MixtureComposer::storeGibbsRun(int sample,
                          iteration,
                          iterationMax);
   }
-}
-
-void MixtureComposer::finalizeStep()
-{
-  for (size_t l = 0; l < v_mixtures_.size(); ++l)
-  { v_mixtures_[l]->finalizeStep();}
 }
 
 /* register the mixture in the composer*/

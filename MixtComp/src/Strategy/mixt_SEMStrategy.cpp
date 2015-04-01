@@ -81,7 +81,6 @@ std::string SemStrategy::run()
   std::cout << "*p_composer_->p_zi()" << std::endl;
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
-    p_composer_->initializeStep(); // optional step for mixtures that need it
     tryWarn = p_composer_->mStep();
     if (tryWarn.size() > 0)
     {
@@ -131,8 +130,6 @@ std::string SemStrategy::run()
     }
 
     p_composer_->gibbsSampling(nbGibbsIter_);
-
-    p_composer_->finalizeStep();
 
     return allWarn; // if the last attempt is a success, consider the run a success. AllWarn is an empty string.
   }

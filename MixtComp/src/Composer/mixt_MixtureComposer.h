@@ -100,17 +100,6 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      *  lookup on the mixtures and sum the nbFreeParameter.
      **/
     virtual int nbFreeParameters() const;
-    /**@brief This step can be used by developer to initialize any thing which
-     * is not the model. It will be called before running the estimation
-     * algorithm. In this class, the @c initializeSterp method
-     *  - set the number of free parameters using the pure virtual function @¢ computeNbFreeParameters()
-     *  - Compute the
-     *  - call the initializeStep() of all the mixtures,
-     *  First initialization of the parameters of the model.
-     *  This method is called in order to initialize the parameters.
-     *
-     **/
-    virtual void initializeStep();
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels.
      */
@@ -159,10 +148,6 @@ class MixtureComposer : public mixt::IMixtureComposerBase
       }
     };
 
-    /**@brief This step can be used by developer to finalize any thing. It will
-     *  be called only once after we finish running the estimation algorithm.
-     **/
-    virtual void finalizeStep();
     /** register a mixture to the composer.
      *  When a mixture is registered, the composer:
      *  - assign composer pointer (itself) to the mixture

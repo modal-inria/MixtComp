@@ -55,7 +55,6 @@ std::string GibbsStrategy::run()
   std::cout << "*p_composer_->p_zi()" << std::endl;
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
-  p_composer_->initializeStep(); // initialize mixture parameters, usually calling an mStep
 
   Timer myTimer;
   myTimer.setName("Gibbs: burn-in");
@@ -71,8 +70,6 @@ std::string GibbsStrategy::run()
   }
 
   p_composer_->gibbsSampling(nbIterGibbs_);
-
-  p_composer_->finalizeStep();
 
   return warnLog;
 }
