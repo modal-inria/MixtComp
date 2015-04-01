@@ -74,19 +74,6 @@ bool Poisson_k::hasModalities() const
   return false;
 }
 
-double Poisson_k::lnComponentProbability(int i, int k) const
-{
-#ifdef MC_DEBUG
-  std::cout << "Poisson_k::lnComponentProbability" << std::endl;
-  std::cout << "k: " << k << ", param_[k]: " << param_[k] << std::endl;
-#endif
-  Type currVal = (*p_data_)(i, 0);
-  Real lambda = param_[k];
-  Real proba = poisson_.pdf(currVal,
-                                 lambda);
-  return std::log(proba);
-}
-
 int Poisson_k::maxVal() const
 {
   return 0;

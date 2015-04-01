@@ -203,16 +203,19 @@ class IMixtureComposerBase
     /** The zik class label */
     AugmentedData<Vector<int> > zi_;
 
-    /** Compute proportions using the ML estimator, default implementation. Set
-     *  as virtual in case we impose fixed proportions in derived model.
-     **/
-    virtual void pStep();
-
     /** Create the mixture model parameters. */
     void intializeMixtureParameters();
 
     /** returns the range of values over which to loop */
     std::pair<int, int> forRange(int ind) const;
+
+  protected:
+    /** Compute proportions using the ML estimator, default implementation. Set
+     *  as virtual in case we impose fixed proportions in derived model. Only called
+     *  by mStep
+     **/
+    virtual void pStep();
+
   private:
     /** class sampler */
     ClassSampler sampler_;

@@ -47,7 +47,6 @@ class Gaussian_sjk
 
     void getParameters(Vector<Real>& param) const;
     bool hasModalities() const;
-    double lnComponentProbability(int i, int k) const;
 
     /** Set the parameters after the SEM, to the mean estimates for example */
     void setParameters(const Vector<Real>& param);

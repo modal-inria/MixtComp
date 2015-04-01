@@ -313,7 +313,7 @@ class MixtureBridge : public mixt::IMixture
                                    iterationMax);
       if (iteration == iterationMax)
       {
-        dataStatComputer_.imputeData(sample);
+        dataStatComputer_.imputeData(sample); // impute the missing values using empirical mean or mode, depending of the model
       }
     }
 
@@ -322,23 +322,13 @@ class MixtureBridge : public mixt::IMixture
      * finish running the SEM-gibbs algorithm.
      */
     virtual void finalizeStep() {}
-    /**
-     * This function must be defined to return the posterior probability (PDF)
-     * for corresponding sample i and cluster k.
-     * @param i Sample number
-     * @param k Cluster number
-     * @return the log-component probability
-     */
-    virtual double lnComponentProbability(int i, int k)
-    {
-      return mixture_.lnComponentProbability(i, k);
-    }
 
     /**
-     * This function must be defined to return the completed likelihood
-     * @return the observed log-likelihood
+     * This function must be defined to return the completed likelihood, using the current values for
+     * unknown values
+     * @return the completed log-likelihood
      */
-    virtual void lnCompletedLikelihood(Matrix<Real>* lnComp)
+    virtual Real lnCompletedLikelihood(int i, int k)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
@@ -346,14 +336,14 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      likelihood_.lnCompletedLikelihood(lnComp);
+      return likelihood_.lnCompletedLikelihood(i, k);
     }
 
     /**
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
-    virtual void lnObservedLikelihood(Matrix<Real>* lnComp)
+    virtual Real lnObservedLikelihood(int i, int k)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
@@ -361,7 +351,7 @@ class MixtureBridge : public mixt::IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      likelihood_.lnObservedLikelihood(lnComp);
+      return likelihood_.lnObservedLikelihood(i, k);
     }
     /** This function must return the number of free parameters.
      *  @return Number of free parameters

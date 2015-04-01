@@ -62,7 +62,7 @@ Real MixtureComposer::lnComponentProbability(int i, int k)
   Real sum = 0.;
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
-    Real logProba = (*it)->lnComponentProbability(i, k);
+    Real logProba = (*it)->lnCompletedLikelihood(i, k);
     sum += logProba;
 #ifdef MC_DEBUG
     std::cout << (*it)->idName() << ", sum: " << sum << std::endl;
@@ -90,11 +90,13 @@ Real MixtureComposer::lnObservedLikelihood()
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->lnObservedLikelihood(&lnComp);
-#ifdef MC_DEBUG
-    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-    std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
-#endif
+    for (int k = 0; k < nbCluster_; ++k)
+    {
+      for (int i = 0; i < nbSample_; ++i)
+      {
+        lnComp(i, k) = (*it)->lnObservedLikelihood(i, k);
+      }
+    }
   }
 
   for (int i = 0; i < nbSample_; ++i)
@@ -139,11 +141,13 @@ Real MixtureComposer::lnCompletedLikelihood()
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->lnCompletedLikelihood(&lnComp);
-#ifdef MC_DEBUG
-    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-    std::cout << "lnComp.col(k): " << lnComp.col(k) << std::endl;
-#endif
+    for (int k = 0; k < nbCluster_; ++k)
+    {
+      for (int i = 0; i < nbSample_; ++i)
+      {
+        lnComp(i, k) = (*it)->lnCompletedLikelihood(i, k);
+      }
+    }
   }
 
   // Compute the completed likelihood for the complete mixture model
@@ -178,11 +182,13 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    (*it)->lnObservedLikelihood(&lnComp);
-#ifdef MC_DEBUG
-    std::cout << "(*it)->idName(): " << (*it)->idName() << std::endl;
-    std::cout << "tempVec: " << tempVec << std::endl;
-#endif
+    for (int k = 0; k < nbCluster_; ++k)
+    {
+      for (int i = 0; i < nbSample_; ++i)
+      {
+        lnComp(i, k) = (*it)->lnObservedLikelihood(i, k);
+      }
+    }
   }
 
   // Compute the completed likelihood for the complete mixture model

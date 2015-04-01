@@ -43,10 +43,10 @@ class GaussianLikelihood
     virtual ~GaussianLikelihood();
 
     /** Compute the completed log-likelihood */
-    void lnCompletedLikelihood(Matrix<Real>* lnComp);
+    Real lnCompletedLikelihood(int i, int k);
 
     /** Compute the observed log-likelihood */
-    void lnObservedLikelihood(Matrix<Real>* lnComp);
+    Real lnObservedLikelihood(int i, int k);
 
   private:
     int nbClass_;

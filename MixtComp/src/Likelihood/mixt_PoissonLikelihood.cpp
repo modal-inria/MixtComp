@@ -41,77 +41,58 @@ PoissonLikelihood::PoissonLikelihood(const Vector<Real>* p_param,
 PoissonLikelihood::~PoissonLikelihood()
 {}
 
-void PoissonLikelihood::lnCompletedLikelihood(Matrix<Real>* lnComp)
+Real PoissonLikelihood::lnCompletedLikelihood(int i, int k)
 {
 #ifdef MC_DEBUG
    std::cout << "PoissonLikelihood::lnCompletedLikelihood" << std::endl;
    std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
 #endif
-  // likelihood for present data
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    Real lambda = (*p_param_)(k, 0);
-    Real proba;
-    for (int i = 0; i < p_augData_->data_.rows(); ++i)
-    {
-      if (p_augData_->misData_(i, 0).first == present_)   // likelihood for present value
-      {
-        proba = poisson_.pdf(p_augData_->data_(i, 0),
-                             lambda);
-      }
-      else // likelihood for missing values, imputation by the expectation (temporary placeholder ...)
-      {
-        proba = poisson_.pdf((*p_dataStatStorage_)(i, 0)[0],
-                             lambda);
-      }
-      (*lnComp)(i, k) += std::log(proba);
-    }
-  }
+
+  Real lambda = (*p_param_)(k, 0);
+  Real proba;
+  proba = poisson_.pdf(p_augData_->data_(i, 0),
+                       lambda);
+
+  return std::log(proba);
 }
 
-void PoissonLikelihood::lnObservedLikelihood(Matrix<Real>* lnComp)
+Real PoissonLikelihood::lnObservedLikelihood(int i, int k)
 {
 #ifdef MC_DEBUG
-      std::cout << "PoissonLikelihood::lnObservedLikelihood" << std::endl;
-      std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
+  std::cout << "PoissonLikelihood::lnObservedLikelihood" << std::endl;
+  std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
 #endif
-  // likelihood for present data
-  for (int k = 0; k < nbClass_; ++k)
+  Real lambda = (*p_param_)(k, 0);
+  Real proba;
+
+  switch(p_augData_->misData_(i, 0).first)   // likelihood for present value
   {
-    for (int i = 0; i < p_augData_->data_.rows(); ++i)
+    case present_:
     {
-      Real lambda = (*p_param_)(k, 0);
-      Real proba;
-
-      switch(p_augData_->misData_(i, 0).first)   // likelihood for present value
-      {
-        case present_:
-        {
-          proba = poisson_.pdf(p_augData_->data_(i, 0),
-                               lambda);
-        }
-        break;
-
-        case missing_: // no contribution to the observed likelihood
-        {
-  #ifdef MC_DEBUG
-          std::cout << "\tmissing" << std::endl;
-  #endif
-          proba = 1.;
-        }
-        break;
-
-        default:
-        {}
-        break;
-      }
-      (*lnComp)(i, k) += std::log(proba);
-
-  #ifdef MC_DEBUG
-      std::cout << "\tproba: " << proba << std::endl;
-  #endif
+      proba = poisson_.pdf(p_augData_->data_(i, 0),
+                           lambda);
     }
+    break;
+
+    case missing_: // no contribution to the observed likelihood
+    {
+#ifdef MC_DEBUG
+      std::cout << "\tmissing" << std::endl;
+#endif
+      proba = 1.;
+    }
+    break;
+
+    default:
+    {}
+    break;
   }
+
+  return std::log(proba);
+
+#ifdef MC_DEBUG
+  std::cout << "\tproba: " << proba << std::endl;
+#endif
 }
 
 } /* namespace mixt */

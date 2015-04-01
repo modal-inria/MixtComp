@@ -106,21 +106,15 @@ class IMixture
      *  be called only once after we finish running the estimation algorithm.
      */
     virtual void finalizeStep() {/**Do nothing by default*/}
-    /** This function must be defined to return the posterior probability (PDF)
-     * for corresponding sample_num and Cluster_num.
-     * @param sample_num Sample number
-     * @param Cluster_num Cluster number
-     * @return the value of component probability in log scale
-     */
-    virtual double lnComponentProbability(int sample_num, int Cluster_num) = 0;
+
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
-    virtual void lnCompletedLikelihood(Matrix<Real>* lnComp) = 0;
+    virtual Real lnCompletedLikelihood(int i, int k) = 0;
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
-    virtual void lnObservedLikelihood(Matrix<Real>* lnComp) = 0;
+    virtual Real lnObservedLikelihood(int i, int k) = 0;
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */

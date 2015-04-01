@@ -75,21 +75,6 @@ bool Gaussian_sjk::hasModalities() const
   return false;
 }
 
-double Gaussian_sjk::lnComponentProbability(int i, int k) const
-{
-  Type currVal = (*p_data_)(i, 0);
-  Real mean = param_[2 * k    ];
-  Real sd   = param_[2 * k + 1];
-  Real logProba = normal_.lpdf(currVal,
-                                    mean,
-                                    sd);
-#ifdef MC_DEBUG
-  std::cout << "Gaussian_sjk::lnComponentProbability" << std::endl;
-  std::cout << "\tk: " << k << ", mean: " << mean << ", sd: " << sd << ", currVal: " << currVal << ", proba: " << proba << std::endl;
-#endif
-  return logProba;
-}
-
 Real Gaussian_sjk::maxVal() const
 {
   return 0;
