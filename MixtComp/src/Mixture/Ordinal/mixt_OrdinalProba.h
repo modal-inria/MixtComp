@@ -34,30 +34,7 @@ namespace mixt
 namespace OrdinalProba
 {
 
-/** Factor in the probability of each possible value of y_j
- *  Call order: y -> z -> e */
-void y(std::list<std::pair<int, Real> >& probList,
-       const int mu,
-       const Real pi,
-       Real proba,
-       const std::vector<int>& eVal);
-
-/** Factor in the probability of the comparison being perfect */
-void z(std::list<std::pair<int, Real> >& probList,
-       const int mu,
-       const Real pi,
-       Real proba,
-       const std::vector<int>& eVal,
-       int yVal);
-
-/** Factor in probability of choosing each of the three possible e_j from the results of the last computes the values of each */
-void e(std::list<std::pair<int, Real> >& probList,
-       const int mu,
-       const Real pi,
-       Real proba,
-       const std::vector<int>& eVal,
-       int yVal,
-       int zVal);
+Real computeProba(const Vector<int>& c);
 
 } // namespace OrdinalProba
 
