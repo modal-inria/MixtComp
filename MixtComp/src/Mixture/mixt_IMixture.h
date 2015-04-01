@@ -36,122 +36,89 @@ class IMixture
      * @param idName Identification string of Mixture allocated by framework.
      * @param nbCluster number of cluster
      */
-    IMixture(std::string const& idName,
-             Vector<int> const* p_zi,
-             int nbCluster) :
-      idName_(idName),
-      nbCluster_(nbCluster),
-      p_zi_(p_zi)
+    IMixture(std::string const& idName) :
+      idName_(idName)
     {};
     /**copy constructor.
      * @note The pointer on the composer is not copied and is set to 0: it have
      * to be set again.
      * @param mixture the mixture to copy */
     IMixture(IMixture const& mixture) :
-      idName_(mixture.idName_),
-      nbCluster_(mixture.nbCluster_),
-      p_zi_(mixture.p_zi_)
+      idName_(mixture.idName_)
     {};
     /** Virtual destructor. */
     virtual ~IMixture()
     {};
 
     /** return the Id of the mixture */
-    inline std::string const& idName() const { return idName_;}
-    /** @return Number of cluster. */
-    inline int nbCluster() const  { return nbCluster_;}
+    inline std::string const& idName() const
+    {
+      return idName_;
+    }
 
     /** @brief This function must be defined for simulation of all the latent
      * variables and/or missing data excluding class labels. The class labels
      * will be simulated by the framework itself because to do so we have to
      * take into account all the mixture laws.
      */
-    virtual void samplingStep(int i) {/**Do nothing by default*/};
+    virtual void samplingStep(int ind)
+    = 0;
     /** @brief This function is equivalent to mStep and must be defined to update
      *  parameters.
      */
-    virtual std::string mStep() = 0;
+    virtual std::string mStep()
+    = 0;
     /** @brief This function should be used to store results during the burn-in period.
      * @param iteration Provides the iteration number in the burn-in
      * period.
      */
     virtual void storeSEMBurnIn(int iteration,
-                               int iterationMax) {/**Do nothing by default*/}
+                               int iterationMax)
+    = 0;
     /** @brief This function should be used to store any intermediate results
      * during various iterations after the burn-in period.
      * @param iteration Provides the iteration number beginning after the burn-in
      * period.
      */
     virtual void storeSEMRun(int iteration,
-                              int iterationMax) {/**Do nothing by default*/}
+                              int iterationMax)
+    = 0;
     /** @brief This step can be used to store data. This is usually called after the long algo, to
      * store data generated using the estimated parameters
      */
     virtual void storeGibbsRun(int sample,
                            int iteration,
                            int iterationMax)
-    {}
+    = 0;
 
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
-    virtual Real lnCompletedLikelihood(int i, int k) = 0;
+    virtual Real lnCompletedLikelihood(int i, int k)
+    = 0;
     /** This function must be defined to return the observed likelihood
      * @return the value of the observed likelihood in log scale
      */
-    virtual Real lnObservedLikelihood(int i, int k) = 0;
+    virtual Real lnObservedLikelihood(int i, int k)
+    = 0;
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
-    virtual int nbFreeParameter() const = 0;
-    /** This function must return the number of variables (columns).
-     *  @return Number of variables
-     */
-    virtual int nbVariable() const = 0;
+    virtual int nbFreeParameter() const
+    = 0;
     /** This function can be used to write summary of parameters on to the output stream.
      *  @param out Stream where you want to write the summary of parameters.
      */
     inline virtual void writeParameters(std::ostream& out) const
-    {
-#ifdef MC_DEBUG
-    std::cout << _T("You need to override this method in your mixture!");
-#endif
-    }
-
+    = 0;
     /** This function must be implemented to export data
      */
-    virtual void exportDataParam() const = 0;
+    virtual void exportDataParam() const
+    = 0;
 
   protected:
-    /** This function can be used in derived classes to get number of samples.
-     *  @return Number of samples.
-     */
-    int nbSample() const;
-    /** This function can be used in derived classes to get class labels from the framework.
-     * @return Pointer to class labels.
-     */
-    int const* classLabels() const;
-    /** This function can be used in derived classes to get proportions from the framework.
-     *  @return Pointer to proportions.
-     */
-    Real const* proportions() const;
-    /** This function can be used in derived classes to get the posterior probabilities
-     *  from the framework.
-     *  @return Pointer to tik.
-     */
-    Real const** posteriorProbabilities() const;
-    /** This function can be used in derived classes to get class labels from the framework.
-     *  @return Pointer to zi.
-     */
-    Vector<int> const* p_zi() const {return p_zi_;};
-
     /** Id name of the mixture */
     std::string idName_;
-    /** number of cluster */
-    int nbCluster_;
-
-    /** Pointer to the zik class label */
-    Vector<int> const* p_zi_;
 };
 
 } // namespace mixt

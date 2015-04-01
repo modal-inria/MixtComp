@@ -72,24 +72,24 @@ class MixtureBridge : public mixt::IMixture
      *  @param nbCluster number of cluster
      **/
     MixtureBridge(std::string const& idName,
-                  int nbCluster,
+                  int nbClass,
                   Vector<int> const* p_zi,
                   const DataHandler* p_handler_,
                   DataExtractor* p_extractor,
                   const ParamSetter* p_paramSetter,
                   ParamExtractor* p_paramExtractor,
                   Real confidenceLevel) :
-      mixt::IMixture(idName,
-                     p_zi,
-                     nbCluster),
-      mixture_(nbCluster,
+      mixt::IMixture(idName),
+      p_zi_(p_zi),
+      nbClass_(nbClass),
+      mixture_(nbClass,
                p_zi),
       m_augDataij_(),
       nbSample_(0),
       confidenceLevel_(confidenceLevel),
       sampler_(&m_augDataij_,
                getParam(),
-               nbCluster),
+               nbClass),
       dataStatComputer_(&m_augDataij_,
                         &dataStatStorage_,
                         confidenceLevel),
@@ -100,7 +100,7 @@ class MixtureBridge : public mixt::IMixture
       likelihood_(getParam(),
                   getData(),
                   getDataStatStorage(),
-                  nbCluster),
+                  nbClass),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
@@ -110,6 +110,8 @@ class MixtureBridge : public mixt::IMixture
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
       mixt::IMixture(bridge),
+      p_zi_(bridge.p_zi_),
+      nbClass_(bridge.nbClass_),
       mixture_(bridge.mixture_),
       m_augDataij_(bridge.m_augDataij_),
       nbSample_(bridge.nbSample_),
@@ -161,7 +163,7 @@ class MixtureBridge : public mixt::IMixture
         // must use the range provided by the ParamSetter
         if (param_.rows() > 0 && param_.cols() > 0) // predict mode detected
         {
-          int nbParam = param_.rows() / nbCluster_; // number of parameters for each cluster
+          int nbParam = param_.rows() / nbClass_; // number of parameters for each cluster
           if (mixture_.hasModalities()) // predict data not representative of population, information from learning data set must be used
           {
             m_augDataij_.dataRange_.min_ = minModality;
@@ -214,10 +216,10 @@ class MixtureBridge : public mixt::IMixture
      * simulated by the framework itself because to do so we have to take into
      * account all the mixture laws. do nothing by default.
      */
-    virtual void samplingStep(int i)
+    virtual void samplingStep(int ind)
     {
-      sampler_.sampleIndividual(i,
-                                (*p_zi())(i));
+      sampler_.sampleIndividual(ind,
+                                (*p_zi())(ind));
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
@@ -409,7 +411,16 @@ class MixtureBridge : public mixt::IMixture
                                      confidenceLevel_);
     }
 
+    /** This function can be used in derived classes to get class labels from the framework.
+     *  @return Pointer to zi.
+     */
+    Vector<int> const* p_zi() const {return p_zi_;};
+
   protected:
+    /** Pointer to the zik class label */
+    Vector<int> const* p_zi_;
+    /** Number of classes */
+    int nbClass_;
     /** The simple mixture to bridge with the composer */
     Mixture mixture_;
     /** The augmented data set */
