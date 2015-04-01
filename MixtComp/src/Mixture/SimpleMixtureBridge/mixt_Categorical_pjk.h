@@ -35,7 +35,8 @@ class Categorical_pjk
 {
   public:
     typedef int Type;
-    Categorical_pjk(int nbCluster);
+    Categorical_pjk(int nbCluster,
+                    Vector<int> const* p_zi);
     ~Categorical_pjk();
 
     bool checkMaxVal() const;
@@ -43,7 +44,6 @@ class Categorical_pjk
     int computeNbFreeParameters() const;
     void getParameters(Vector<Real>& param) const;
     bool hasModalities() const;
-    void initializeStep();
     double lnComponentProbability(int i, int k) const;
     int maxVal() const;
     int minVal() const;
@@ -51,7 +51,6 @@ class Categorical_pjk
     int nbVariable() const;
     std::vector<std::string> paramNames() const;
     void setData(Matrix<Type>& data);
-    void setMixtureParameters(Vector<int> const* p_zi);
     void setModalities(int nbModalities);
     void setParameters(const Vector<Real>& param);
     void writeParameters(std::ostream& out) const;

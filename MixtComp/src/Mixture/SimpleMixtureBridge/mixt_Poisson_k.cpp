@@ -30,11 +30,12 @@ namespace mixt
 
 typedef Poisson_k::Type Type;
 
-Poisson_k::Poisson_k(int nbCluster) :
+Poisson_k::Poisson_k(int nbCluster,
+                     Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
     param_(nbCluster),
     p_data_(0),
-    p_zi_(0)
+    p_zi_(p_zi)
 {}
 
 Poisson_k::~Poisson_k()
@@ -72,9 +73,6 @@ bool Poisson_k::hasModalities() const
 {
   return false;
 }
-
-void Poisson_k::initializeStep()
-{}
 
 double Poisson_k::lnComponentProbability(int i, int k) const
 {
@@ -169,11 +167,6 @@ std::vector<std::string> Poisson_k::paramNames() const
 void Poisson_k::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
-}
-
-void Poisson_k::setMixtureParameters(Vector<int> const* p_zi)
-{
-  p_zi_ = p_zi;
 }
 
 void Poisson_k::setModalities(int nbModalities)

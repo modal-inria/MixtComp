@@ -82,7 +82,8 @@ class MixtureBridge : public mixt::IMixture
       mixt::IMixture(idName,
                      p_zi,
                      nbCluster),
-      mixture_(nbCluster),
+      mixture_(nbCluster,
+               p_zi),
       m_augDataij_(),
       nbSample_(0),
       confidenceLevel_(confidenceLevel),
@@ -130,19 +131,8 @@ class MixtureBridge : public mixt::IMixture
      *  newly created.
      **/
     virtual void initializeStep()
-    {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::initializeStep()"  << std::endl;
-      std::cout << "\tidName(): " << idName() << std::endl;
-#endif
-      mixture_.setMixtureParameters(p_zi());
-      mixture_.initializeStep();
-#ifdef MC_DEBUG
-      mixture_.getParameters(param_);
-      std::cout << "param_, after initializeStep: " << std::endl;
-      std::cout << param_ << std::endl;
-#endif
-    }
+    {}
+
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.

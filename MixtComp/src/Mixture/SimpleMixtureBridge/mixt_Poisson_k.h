@@ -38,7 +38,8 @@ class Poisson_k
   public:
     typedef int Type;
 
-    Poisson_k(int nbCluster);
+    Poisson_k(int nbCluster,
+              Vector<int> const* p_zi);
     ~Poisson_k();
 
     bool checkMaxVal() const;
@@ -54,8 +55,6 @@ class Poisson_k
 
     void setData(Matrix<Type>& data);
 
-    void initializeStep();
-
     std::string mStep();
 
     int maxVal() const;
@@ -63,8 +62,6 @@ class Poisson_k
     int nbVariable() const;
 
     std::vector<std::string> paramNames() const;
-
-    void setMixtureParameters(Vector<int> const* p_zi);
 
     void setModalities(int nbModalities);
 

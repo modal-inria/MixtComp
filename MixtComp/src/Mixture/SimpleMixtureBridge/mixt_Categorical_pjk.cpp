@@ -31,11 +31,12 @@ namespace mixt
 
 typedef Categorical_pjk::Type Type;
 
-Categorical_pjk::Categorical_pjk(int nbCluster) :
+Categorical_pjk::Categorical_pjk(int nbCluster,
+                                 Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
     nbModalities_(0),
     p_data_(0),
-    p_zi_(0)
+    p_zi_(p_zi)
     // modalities are not known at the creation of the object, hence a call to setModality is needed later
 {}
 
@@ -75,9 +76,6 @@ bool Categorical_pjk::hasModalities() const
 {
   return true;
 }
-
-void Categorical_pjk::initializeStep()
-{}
 
 double Categorical_pjk::lnComponentProbability(int i, int k) const
 {
@@ -188,11 +186,6 @@ std::vector<std::string> Categorical_pjk::paramNames() const
 void Categorical_pjk::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
-}
-
-void Categorical_pjk::setMixtureParameters(Vector<int> const* p_zi)
-{
-  p_zi_ = p_zi;
 }
 
 void Categorical_pjk::setModalities(int nbModalities)

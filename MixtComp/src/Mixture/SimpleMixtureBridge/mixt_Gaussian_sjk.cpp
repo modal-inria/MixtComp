@@ -31,11 +31,12 @@ namespace mixt
 
 typedef Gaussian_sjk::Type Type;
 
-Gaussian_sjk::Gaussian_sjk(int nbCluster) :
+Gaussian_sjk::Gaussian_sjk(int nbCluster,
+                           Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
     param_(2 * nbCluster),
     p_data_(0),
-    p_zi_(0)
+    p_zi_(p_zi)
 {}
 
 Gaussian_sjk::~Gaussian_sjk()
@@ -73,9 +74,6 @@ bool Gaussian_sjk::hasModalities() const
 {
   return false;
 }
-
-void Gaussian_sjk::initializeStep()
-{}
 
 double Gaussian_sjk::lnComponentProbability(int i, int k) const
 {
@@ -204,11 +202,6 @@ std::vector<std::string> Gaussian_sjk::paramNames() const
 void Gaussian_sjk::setData(Matrix<Type>& data)
 {
   p_data_ = &data;
-}
-
-void Gaussian_sjk::setMixtureParameters(Vector<int> const* p_zi)
-{
-  p_zi_ = p_zi; // only the z_i is used in SEM
 }
 
 void Gaussian_sjk::setModalities(int nbModalities)
