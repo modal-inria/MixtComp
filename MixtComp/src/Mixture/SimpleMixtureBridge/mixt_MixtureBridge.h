@@ -124,13 +124,10 @@ class MixtureBridge : public mixt::IMixture
       dataStatStorage_(bridge.dataStatStorage_)
     {
       mixture_.setData(m_augDataij_.data_);
-      mixture_.initializeModel();
     }
     /** @brief Initialize the model before its use by the composer.
      *  The parameters values are set to their default values if the mixture_ is
-     *  newly created. if MixtureBridge::initializeModel is used during a
-     *  cloning, mixture class have to take care of the existing values of the
-     *  parameters.
+     *  newly created.
      **/
     virtual void initializeStep()
     {
@@ -188,7 +185,6 @@ class MixtureBridge : public mixt::IMixture
             m_augDataij_.dataRange_.range_ = nbParam;
             mixture_.setModalities(nbParam);
           }
-          mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
           mixture_.setParameters(param_);
           paramStatStorage_.resize(param_.rows(),
                                    1); // no quantiles have to be computed for imported parameters, hence the single column
@@ -224,7 +220,6 @@ class MixtureBridge : public mixt::IMixture
             warnLog += sstm.str();
           }
           mixture_.setModalities(m_augDataij_.dataRange_.max_);
-          mixture_.initializeModel(); // resize the parameters inside the mixture, to be ready for the mStep to come later
         }
         dataStatStorage_.resize(nbSample_,
                                 1);

@@ -76,9 +76,6 @@ bool Categorical_pjk::hasModalities() const
   return true;
 }
 
-void Categorical_pjk::initializeModel()
-{}
-
 void Categorical_pjk::initializeStep()
 {}
 

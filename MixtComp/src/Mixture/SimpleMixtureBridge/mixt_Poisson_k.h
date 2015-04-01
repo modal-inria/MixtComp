@@ -54,8 +54,6 @@ class Poisson_k
 
     void setData(Matrix<Type>& data);
 
-    void initializeModel();
-
     void initializeStep();
 
     std::string mStep();

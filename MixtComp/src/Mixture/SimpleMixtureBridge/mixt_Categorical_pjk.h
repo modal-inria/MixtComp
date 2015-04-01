@@ -43,7 +43,6 @@ class Categorical_pjk
     int computeNbFreeParameters() const;
     void getParameters(Vector<Real>& param) const;
     bool hasModalities() const;
-    void initializeModel();
     void initializeStep();
     double lnComponentProbability(int i, int k) const;
     int maxVal() const;

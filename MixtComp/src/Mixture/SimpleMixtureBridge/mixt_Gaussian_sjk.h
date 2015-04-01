@@ -53,8 +53,6 @@ class Gaussian_sjk
 
     void setData(Matrix<Type>& data);
 
-    void initializeModel();
-
     void initializeStep();
 
     /** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm

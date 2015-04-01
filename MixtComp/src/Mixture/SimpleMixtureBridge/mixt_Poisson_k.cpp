@@ -73,9 +73,6 @@ bool Poisson_k::hasModalities() const
   return false;
 }
 
-void Poisson_k::initializeModel()
-{}
-
 void Poisson_k::initializeStep()
 {}
 

@@ -74,9 +74,6 @@ bool Gaussian_sjk::hasModalities() const
   return false;
 }
 
-void Gaussian_sjk::initializeModel()
-{}
-
 void Gaussian_sjk::initializeStep()
 {}
 
