@@ -241,7 +241,6 @@ void MixtureComposer::initializeStep()
   {
     (*it)->initializeStep();
   }
-  setState(modelInitialized_);
 }
 
 // implement computeNbFreeParameters

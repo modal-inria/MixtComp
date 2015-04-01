@@ -91,9 +91,8 @@ std::string SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, short run" << std::endl;
 #endif
-    p_composer_->setState(burnIn_);
     p_burnInAlgo_->setModel(p_composer_);
-    tryWarn = p_burnInAlgo_->run();
+    tryWarn = p_burnInAlgo_->run(burnIn_);
     if (tryWarn.size() > 0) // an empty string means a successful run
     {
       allWarn +=   std::string("SemStrategy, burn-in, iTry: ")
@@ -106,9 +105,8 @@ std::string SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, long run" << std::endl;
 #endif
-    p_composer_->setState(longRun_);
     p_longAlgo_->setModel(p_composer_);
-    tryWarn = p_longAlgo_->run();
+    tryWarn = p_longAlgo_->run(longRun_);
     if (tryWarn.size() > 0) // an empty string means a successful run
     {
       allWarn +=   std::string("SemStrategy, run, iTry: ")

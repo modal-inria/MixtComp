@@ -48,7 +48,7 @@ void SEMAlgo::setModel(mixt::MixtureComposer* p_model)
   p_model_ = p_model;
 }
 
-std::string SEMAlgo::run()
+std::string SEMAlgo::run(RunType runType)
 {
 #ifdef MC_DEBUG
   std::cout << "SEMAlgo::run, entering" << std::endl;
@@ -56,7 +56,7 @@ std::string SEMAlgo::run()
 
   Timer myTimer;
 
-  if (p_model_->state() == burnIn_)
+  if (runType == burnIn_)
   {
 #ifdef MC_DEBUG
     std::cout << "SEMAlgo::run, initial partition export" << std::endl;
@@ -66,7 +66,7 @@ std::string SEMAlgo::run()
     p_model_->storeSEMBurnIn(-1,
                              nbIterMax_ - 1); // export of the initial partition
   }
-  else if (p_model_->state() == longRun_)
+  else if (runType == longRun_)
   {
     myTimer.setName("SEM run");
   }
@@ -79,7 +79,7 @@ std::string SEMAlgo::run()
 
     myTimer.iteration(iter, nbIterMax_);
     // SE steps (e followed by s)
-    if (   p_model_->state() == burnIn_
+    if (runType == burnIn_
         && (iter / moduloMisClass > 0)
         && (iter % moduloMisClass == 0)) // perform an eStep to remove class locking
     {
@@ -126,7 +126,7 @@ std::string SEMAlgo::run()
     }
 
     // storage steps
-    if (p_model_->state() == burnIn_)
+    if (runType == burnIn_)
     {
 #ifdef MC_DEBUG
     std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
@@ -135,7 +135,7 @@ std::string SEMAlgo::run()
                             nbIterMax_ - 1);
     }
 
-    if (p_model_->state() == longRun_)
+    if (runType == longRun_)
     {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;

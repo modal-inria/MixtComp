@@ -111,8 +111,7 @@ class IMixtureComposerBase
 
     /** @return the number of cluster */
     inline int nbCluster() const { return nbCluster_;}
-    /** @return the state of the model*/
-    inline modelState state() const { return state_;}
+
     /** @return the proportions of each mixtures */
     inline Vector<Real> const* p_pk() const
     {
@@ -122,9 +121,6 @@ class IMixtureComposerBase
     inline Matrix<Real> const* p_tik() const {return &tik_;};
     /** @return  the zi class label */
     inline Vector<int> const* p_zi() const {return &zi_.data_;};
-
-    /** set the state of the model : should be used by any strategy*/
-    inline void setState(modelState state) {state_ = state;}
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
@@ -218,12 +214,8 @@ class IMixtureComposerBase
     /** returns the range of values over which to loop */
     std::pair<int, int> forRange(int ind) const;
   private:
-    /** state of the model*/
-    modelState state_;
-
     /** class sampler */
     ClassSampler sampler_;
-
 
     /** ParamSetter is injected to take care of setting the values of the proportions.
      * This avoids templating the whole composer with DataHandler type, as is currently done

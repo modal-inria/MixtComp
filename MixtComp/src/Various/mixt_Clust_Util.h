@@ -30,7 +30,7 @@
 namespace mixt
 {
 
-enum modelState
+enum RunType
 {
   modelCreated_, ///< the model has been created but is not initialized
   modelInitialized_, ///< the model is initialized, but its parameters are not initialized
