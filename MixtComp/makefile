@@ -22,7 +22,7 @@
 #generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
 CXXFLAGS += -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
-# CXXFLAGS +=  -DMC_DEBUG_NEW
+CXXFLAGS += -O0 -g -DMC_DEBUG_NEW # optional flags, for example for out-of-R compilation
 
 # library files
 LIB_MC = lib/libMixtComp.a
@@ -79,13 +79,12 @@ libRE: $(LIB_RE)
 $(LIB_RE): $(O_RE)
 	$(AR) $(ARFLAGS) $@ $^
 	
-utest: $(EXE_UTEST)
+utest: $(LIB_MC) $(EXE_UTEST)
 
 $(EXE_UTEST): $(O_GTEST) $(O_UTEST)
 	$(CXX) $^ $(LIB_MC) -o $@ -lpthread # linker only
 
-test: $(EXE_TEST)
-	$(EXE_TEST)
+test: $(LIB_MC) $(EXE_TEST) 
 
 $(EXE_TEST): $(O_TEST)
 	$(CXX) $^ $(LIB_MC) -o $@ -lpthread # linker only

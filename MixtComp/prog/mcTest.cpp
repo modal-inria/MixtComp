@@ -21,53 +21,38 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <iostream>
-#include <limits>
-#include <algorithm>
-#include "../src/LinAlg/mixt_LinAlg.h"
+#include "../src/Mixture/Ordinal/mixt_OrdinalProba.h"
+#include "../src/Various/mixt_Constants.h"
 
 using namespace mixt;
 
 int main()
 {
-  Matrix<Real> m(3, 3);
-//  Eigen::MatrixXf m(3, 3);
-  m << 1, 15, 3, 22, 0, -15, 8, -100, 12;
+  std::cout << "top" << std::endl;
 
-//  Matrix<Real>::iterator endIt = m.end();
-//  for (Matrix<Real>::iterator it = m.begin();
-//       it != endIt;
-//       ++it)
-//  {
-//    std::cout << *it << std::endl;
-//  }
-//  sort(m);
+  int mu = 3; // mode
+  mixt::Real pi; // precision
+  int nbMod = 8; // number of modalities
 
-  iterator<Matrix<Real> > begin(0, m);
-  iterator<Matrix<Real> > end(9, m);
-  iterator<Matrix<Real> > it = begin;
+  std::list<std::pair<int, mixt::Real> > probList; // storage for the results
+  std::vector<int> modality(nbMod); // initial modalities vector
+  mixt::Real sumProba; // global sum of probabilities on the output
 
-//  for (int i = 0;
-//       i < 12;
-//       ++i)
-//  {
-//    std::cout << "i: "<< i << std::endl;
-//    std::cout << "*it: "<< *it << std::endl;
-//    std::cout << "(it != end): " << (it != end) << std::endl;
-//    ++it;
-//  }
+  for (int p = 0; p < nbMod; ++p)
+  {
+    modality[p] = p;
+  }
 
-  std::cout << "m: " << std::endl;
-  std::cout << m << std::endl;
-  sort(m);
-  std::cout << "m: " << std::endl;
-  std::cout << m << std::endl;
+  mixt::OrdinalProba::y(probList, // computation of the joint distribution
+                        mu,
+                        pi,
+                        1., // possible values of x are comprised in the input modality set
+                        modality);
 
-
-//  for (iterator<Matrix<Real> > it = begin;
-//       it != end;
-//       ++it)
-//  {
-//    std::cout << "*it: " << *it << std::endl;
-//  }
+  for (std::list<std::pair<int, mixt::Real> >::const_iterator it = probList.begin();
+       it != probList.end();
+       ++it) // loop over component of joint probability
+  {
+    sumProba += it->second;
+  }
 }

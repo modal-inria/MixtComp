@@ -41,11 +41,11 @@ TEST(Ordinal, totalProb1)
     modality[p] = p;
   }
 
-//  mixt::OrdinalProba::y(probList, // computation of the joint distribution
-//                        mu,
-//                        pi,
-//                        1., // possible values of x are comprised in the input modality set
-//                        modality);
+  mixt::OrdinalProba::y(probList, // computation of the joint distribution
+                        mu,
+                        pi,
+                        1., // possible values of x are comprised in the input modality set
+                        modality);
 
   for (std::list<std::pair<int, mixt::Real> >::const_iterator it = probList.begin();
        it != probList.end();

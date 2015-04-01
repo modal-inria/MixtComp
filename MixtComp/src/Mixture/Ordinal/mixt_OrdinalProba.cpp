@@ -35,6 +35,11 @@ void y(std::list<std::pair<int, Real> >& probList,
        Real proba,
        const std::vector<int>& eVal)
 {
+#ifdef MC_DEBUG_NEW
+  std::cout << "OrdinalProba::y" << std::endl;
+  std::cout << "eVal.size(): " << eVal.size() << std::endl;
+#endif
+
   int nbElem = eVal.size();
   if (nbElem > 1) // list has strictly more than one modality, the algorithm must go through at least one another round of y -> z -> e
   {
@@ -61,6 +66,9 @@ void z(std::list<std::pair<int, Real> >& probList,
        const std::vector<int>& eVal,
        int yVal)
 {
+#ifdef MC_DEBUG_NEW
+  std::cout << "OrdinalProba::z" << std::endl;
+#endif
   e(probList,
     mu,
     pi,
@@ -87,6 +95,9 @@ void e(std::list<std::pair<int, Real> >& probList,
        int yVal,
        int zVal)
 {
+#ifdef MC_DEBUG_NEW
+  std::cout << "OrdinalProba::e" << std::endl;
+#endif
   std::vector<std::vector<int> > partition(3); // list of candidates for next e_j
   std::vector<Real> distance(3); // distance of each e_j candidate to mu
 
