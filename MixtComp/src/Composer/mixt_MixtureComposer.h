@@ -81,7 +81,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    virtual Real lnComponentProbability(int i, int k);
+    virtual Real lnCompletedLikelihood(int i, int k);
 
     /** @return the value of the observed likelihood */
     virtual Real lnObservedLikelihood();

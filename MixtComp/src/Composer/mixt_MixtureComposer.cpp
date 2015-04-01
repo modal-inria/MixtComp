@@ -54,7 +54,7 @@ MixtureComposer::~MixtureComposer()
   }
 }
 
-Real MixtureComposer::lnComponentProbability(int i, int k)
+Real MixtureComposer::lnCompletedLikelihood(int i, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnComponentProbability(int i, int k), i: " << i << ", k: " << k << std::endl;
@@ -315,7 +315,7 @@ void MixtureComposer::misClasStep(int iteration)
     }
     for (int i = 0; i < nbSample_; ++i)
     {
-      probClass(i, k) = std::log(prop_[k]) + lnComponentProbability(i, k);
+      probClass(i, k) = std::log(prop_[k]) + lnCompletedLikelihood(i, k);
     }
   }
 

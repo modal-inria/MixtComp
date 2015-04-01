@@ -126,7 +126,7 @@ class IMixtureComposerBase
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    virtual Real lnComponentProbability(int i, int k) = 0;
+    virtual Real lnCompletedLikelihood(int i, int k) = 0;
 
     // virtual with default implementation
     /** write the parameters of the model in the stream os. */
