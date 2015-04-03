@@ -135,8 +135,8 @@ class MixtureBridge : public mixt::IMixture
      */
     void setDataParam(std::string& warnLog)
     {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::setDataParam(), idName(): " << idName() << std::endl;
+#ifdef MC_DEBUG_NEW
+      std::cout << "MixtureBridge::setDataParam(), " << idName() << ", " << mixture_.model() << std::endl;
 #endif
       p_handler_->getData(idName(),
                           m_augDataij_,
@@ -145,14 +145,15 @@ class MixtureBridge : public mixt::IMixture
                           0, // offset currently set to 0, but should use information provided by mixture_
                           warnLog);
       m_augDataij_.computeRange();
-      std::string tempLog = m_augDataij_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
-      if(tempLog.size() > 0)
+      std::string tempLog  = m_augDataij_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
+                  tempLog += m_augDataij_.sortAndCheckMissing(); // sort and check for duplicates in missing values descriptions
+      if(tempLog.size() > 0) // check on the missing values description
       {
         std::stringstream sstm;
-        sstm << "Variable " << idName() << " with model " << mixture_.model() << " has unsupported missing value types.\n" << tempLog;
+        sstm << "Variable " << idName() << " with model " << mixture_.model() << " has a problem with the descriptions of missing values.\n" << tempLog;
         warnLog += sstm.str();
       }
-      if (mixture_.checkMinVal() && m_augDataij_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value
+      else if (mixture_.checkMinVal() && m_augDataij_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value
       {
         std::stringstream sstm;
         sstm << "Variable: " << idName() << " requires a minimum value of " << mixture_.minVal()

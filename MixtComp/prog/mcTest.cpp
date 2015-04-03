@@ -21,53 +21,37 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <iostream>
-#include <limits>
-#include <algorithm>
-#include "../src/LinAlg/mixt_LinAlg.h"
-
-using namespace mixt;
+#include <iostream>     // std::cout
+#include <algorithm>    // std::sort
+#include <vector>       // std::vector
 
 int main()
 {
-  Matrix<Real> m(3, 3);
-//  Eigen::MatrixXf m(3, 3);
-  m << 1, 15, 3, 22, 0, -15, 8, -100, 12;
+//  int myints[] = {32,71,12,45,26,80,53,33};
+  int myints[] = {32,71,12,45,26,71,53,33};
 
-//  Matrix<Real>::iterator endIt = m.end();
-//  for (Matrix<Real>::iterator it = m.begin();
-//       it != endIt;
-//       ++it)
-//  {
-//    std::cout << *it << std::endl;
-//  }
-//  sort(m);
+  std::cout << std::endl;
+  std::vector<int> myvector (myints, myints+8);               // 32 71 12 45 26 80 53 33
 
-  iterator<Matrix<Real> > begin(0, m);
-  iterator<Matrix<Real> > end(9, m);
-  iterator<Matrix<Real> > it = begin;
+  for (int i = 0; i < myvector.size(); ++i)
+  {
+    std::cout << myvector[i] << std::endl;
+  }
+  std::cout << std::endl;
 
-//  for (int i = 0;
-//       i < 12;
-//       ++i)
-//  {
-//    std::cout << "i: "<< i << std::endl;
-//    std::cout << "*it: "<< *it << std::endl;
-//    std::cout << "(it != end): " << (it != end) << std::endl;
-//    ++it;
-//  }
+  // using default comparison (operator <):
+  std::sort (myvector.begin(), myvector.end());           //(12 32 45 71)26 80 53 33
 
-  std::cout << "m: " << std::endl;
-  std::cout << m << std::endl;
-  sort(m);
-  std::cout << "m: " << std::endl;
-  std::cout << m << std::endl;
+  for (int i = 0; i < myvector.size(); ++i)
+  {
+    std::cout << myvector[i] << std::endl;
+  }
 
-
-//  for (iterator<Matrix<Real> > it = begin;
-//       it != end;
-//       ++it)
-//  {
-//    std::cout << "*it: " << *it << std::endl;
-//  }
+  for (int i = 0; i < myvector.size() - 1; ++i)
+  {
+    if (myvector[i] == myvector[i + 1])
+    {
+      std::cout << "duplicated value " <<  myvector[i] << " found." << std::endl;
+    }
+  }
 }
