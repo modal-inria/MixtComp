@@ -19,10 +19,14 @@
 #   Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
 #------------------------------------------------------------------------
 
-#generic build variables
+# test wether the build was triggered by R or not, if not then get the compilation flags from a file
+ifeq ($(R_BUILD),)
+include Makevars
+endif
+
+# generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
 CXXFLAGS += -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
-CXXFLAGS += -O0 -g -DMC_DEBUG_NEW # optional flags, for example for out-of-R compilation
 
 # library files
 LIB_MC = lib/libMixtComp.a
@@ -45,16 +49,19 @@ SRC_RE = $(wildcard ../boost/libs/regex/src/*.cpp)
 O_RE = $(SRC_RE:%.cpp=%.o)
 
 # sample test
-EXE_TEST = prog/test
-SRC_TEST = prog/mcTest.cpp
+EXE_TEST = test/test
+SRC_TEST = test/mcTest.cpp
 O_TEST = $(SRC_TEST:%.cpp=%.o)
 
 # unit-test files
-EXE_UTEST = test/uTest
+EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
-SRC_UTEST = $(wildcard test/*.cpp)
+SRC_UTEST = $(wildcard utest/*.cpp)
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
+
+# $(warning $(CXX)) # example of console output for debug
+# $(warning $(CXXFLAGS)) # example of console output for debug
 
 # make recipes
 clean: # only cleans MixtComp
@@ -81,13 +88,16 @@ $(LIB_RE): $(O_RE)
 	
 utest: $(LIB_MC) $(EXE_UTEST)
 
+#$(EXE_UTEST): $(O_GTEST) $(O_UTEST)
+#	$(CXX) $^ $(LIB_MC) -o $@ -lpthread 
+
 $(EXE_UTEST): $(O_GTEST) $(O_UTEST)
-	$(CXX) $^ $(LIB_MC) -o $@ -lpthread # linker only
+	$(CXX) $^ $(LIB_MC) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 test: $(LIB_MC) $(EXE_TEST) 
 
 $(EXE_TEST): $(O_TEST)
-	$(CXX) $^ $(LIB_MC) -o $@ -lpthread # linker only
+	$(CXX) $^ $(LIB_MC) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 -include $(SRC_MC:%.cpp=%.d)
 -include $(SRC_RE:%.cpp=%.d)

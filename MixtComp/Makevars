@@ -1,0 +1,2 @@
+CXX = g++ -m64
+CXXFLAGS = -O0 -g -DMC_DEBUG_NEW -Wall -mtune=core2

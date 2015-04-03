@@ -34,7 +34,9 @@ PKG_CXXFLAGS = -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(LIB_MC) $(LIB_RE)
 
-export
+R_BUILD = True
+
+export R_BUILD CXX CXXFLAGS # flags needed for the compilation of librairies
 
 .PHONY: all pkglib
 
