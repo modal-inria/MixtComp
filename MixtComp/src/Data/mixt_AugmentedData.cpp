@@ -138,7 +138,6 @@ void AugmentedData<Matrix<int> >::removeMissing()
       if (misData_(i, j).first != present_)
       {
         int sampleVal;
-        int firstModality = dataRange_.min_;
         int nbModalities = dataRange_.range_;
   #ifdef MC_DEBUG
         std::cout << "i: " << i << ", j: " << j << std::endl;

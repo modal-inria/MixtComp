@@ -34,7 +34,21 @@ namespace mixt
 namespace OrdinalProba
 {
 
-Real computeProba(const Vector<int>& c);
+Real yProba(const std::pair<int, int>& e);
+Real zProba(int z,
+            Real pi);
+Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in this function, hence the non const reference
+            int y,
+            int z,
+            int e,
+            int mu,
+            Real pi);
+
+Real computeProba(const Vector<int>& c,
+                  int x,
+                  std::pair<int, int> eVal,
+                  int mu,
+                  Real pi);
 
 } // namespace OrdinalProba
 

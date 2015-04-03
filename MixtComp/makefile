@@ -69,12 +69,16 @@ clean: # only cleans MixtComp
 	find -L . -type f -name "*.d" -exec rm -f {} \;
 	find -L . -type f -name "*.a" -exec rm -f {} \;
 	find -L . -type f -name "*.so" -exec rm -f {} \;
+	find -L . -type f -name "*.exe" -exec rm -f {} \;
+	find -L . -type f -name "*.dll" -exec rm -f {} \;
 
 allClean: # cleans MixtComp and all bundled libraries
 	find -L .. -type f -name "*.o" -exec rm -f {} \;
 	find -L .. -type f -name "*.d" -exec rm -f {} \;
 	find -L .. -type f -name "*.a" -exec rm -f {} \;
 	find -L .. -type f -name "*.so" -exec rm -f {} \;
+	find -L .. -type f -name "*.exe" -exec rm -f {} \;
+	find -L .. -type f -name "*.dll" -exec rm -f {} \;
 
 lib: $(LIB_MC)
 

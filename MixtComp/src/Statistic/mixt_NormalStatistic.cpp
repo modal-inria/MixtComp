@@ -222,7 +222,7 @@ Real NormalStatistic::lrbSampler(Real lower, Real upper)
 Real NormalStatistic::sideSampler(Real lower, Real upper)
 {
   Real alpha = (lower + sqrt(pow(lower, 2) + 4.))/2.;
-  Real z, u, rho;
+  Real z;
 
 #ifdef MC_DEBUG
   std::cout << "NormalStatistic::sideSampler" << std::endl;
