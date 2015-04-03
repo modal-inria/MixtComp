@@ -25,6 +25,7 @@
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../IO/mixt_IO.h"
+#include "../../Various/mixt_Def.h"
 
 namespace mixt
 {
@@ -41,6 +42,18 @@ Gaussian_sjk::Gaussian_sjk(int nbCluster,
 
 Gaussian_sjk::~Gaussian_sjk()
 {}
+
+Vector<bool> Gaussian_sjk::acceptedType() const
+{
+  Vector<bool> at(nb_enum_MisType_);
+  at(0) = true; // present_,
+  at(1) = true;// missing_,
+  at(2) = false;// missingFiniteValues_,
+  at(3) = true;// missingIntervals_,
+  at(4) = true;// missingLUIntervals_,
+  at(5) = true;// missingRUIntervals_,
+  return at;
+}
 
 bool Gaussian_sjk::checkMaxVal() const
 {
@@ -83,6 +96,11 @@ Real Gaussian_sjk::maxVal() const
 Real Gaussian_sjk::minVal() const
 {
   return 0;
+}
+
+std::string Gaussian_sjk::model() const
+{
+  return "Gaussian_sjk";
 }
 
 std::string Gaussian_sjk::mStep()

@@ -42,6 +42,7 @@ class Poisson_k
               Vector<int> const* p_zi);
     ~Poisson_k();
 
+    Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
     bool checkMinVal() const;
     int computeNbFreeParameters() const;
@@ -58,6 +59,7 @@ class Poisson_k
 
     int maxVal() const;
     int minVal() const;
+    std::string model() const;
     int nbVariable() const;
 
     std::vector<std::string> paramNames() const;

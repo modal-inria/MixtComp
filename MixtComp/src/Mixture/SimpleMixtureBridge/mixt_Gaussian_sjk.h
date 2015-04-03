@@ -41,6 +41,7 @@ class Gaussian_sjk
                  Vector<int> const* p_zi);
     ~Gaussian_sjk();
 
+    Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
     bool checkMinVal() const;
     int computeNbFreeParameters() const;
@@ -59,7 +60,7 @@ class Gaussian_sjk
 
     Real minVal() const;
     Real maxVal() const;
-
+    std::string model() const;
     int nbVariable() const;
 
     std::vector<std::string> paramNames() const;

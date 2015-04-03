@@ -63,13 +63,96 @@ class AugmentedData
 
     AugmentedData() :
       nbSample_(0),
-      nbPresent_(0),
-      nbMissing_(0),
+      misCount_(nb_enum_MisType_),
       dataRange_(Type(0),
                  Type(0)),
       rangeUpdate_(false)
-      {};
+      {
+        for (int i = 0; i < nb_enum_MisType_; ++i) // initialize counter for each type of missing value to 0
+        {
+          misCount_(i) = 0;
+        }
+      };
     ~AugmentedData() {};
+
+    /**
+     * Return the correct expression according to the number of individuals
+     * @param  Number of individuals
+     * @return "individual(s) has/have"
+    */
+    std::string indExpression(int nbInd)
+    {
+      std::string num;
+      if (misCount_(missing_) == 1)
+      {
+        num = " individual has a value ";
+      }
+      else
+      {
+        num = " individuals have values ";
+      }
+      return num;
+    }
+
+    /**
+     * Check the types of missing value.
+     * @param  A vector containing true or false according to the mixture support of a a given missing value type
+     * @return Description of the eventual error, otherwise empty string
+    */
+    std::string checkMissingType(Vector<bool> listType)
+    {
+      std::string warnLog;
+      if (listType(missing_) == false && misCount_(missing_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Non observed values are not supported for this model, yet "
+             << misCount_(missing_)
+             << indExpression(misCount_(missing_))
+             << "completely missing." << std::endl;
+        warnLog += sstm.str();
+      }
+
+      if (listType(missingFiniteValues_) == false && misCount_(missingFiniteValues_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Partially observed values defined by list of possible values, {a, b, c, ... }, are not supported for this model, yet "
+             << misCount_(missingFiniteValues_)
+             << indExpression(misCount_(missingFiniteValues_))
+             << "defined by list of possible values." << std::endl;
+        warnLog += sstm.str();
+      }
+
+      if (listType(missingIntervals_) == false && misCount_(missingIntervals_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Partially observed values defined by interval, [a:b], are not supported for this model, yet "
+             << misCount_(missingIntervals_)
+             << indExpression(misCount_(missingIntervals_))
+             << "defined by interval." << std::endl;
+        warnLog += sstm.str();
+      }
+
+      if (listType(missingLUIntervals_) == false && misCount_(missingLUIntervals_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Partially observed values defined by upper-bounded semi-interval, [-inf:a], are not supported for this model, yet "
+             << misCount_(missingLUIntervals_)
+             << indExpression(misCount_(missingLUIntervals_))
+             << "defined by upper-bounded semi-interval." << std::endl;
+        warnLog += sstm.str();
+      }
+
+      if (listType(missingRUIntervals_) == false && misCount_(missingRUIntervals_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Partially observed values defined by lower-bounded semi-interval, [a:+inf], are not supported for this model, yet "
+             << misCount_(missingRUIntervals_)
+             << indExpression(misCount_(missingRUIntervals_))
+             << "defined by lower-bounded semi-interval." << std::endl;
+        warnLog += sstm.str();
+      }
+      return warnLog;
+    }
 
     void resizeArrays(int nbSample)
     {
@@ -140,7 +223,7 @@ class AugmentedData
       data_(i, j) = val;
       misData_(i, j) = MisVal(present_,
                               std::vector<Type>());
-      ++nbPresent_;
+      ++misCount_(present_);
       ++nbSample_;
     }
 
@@ -148,7 +231,7 @@ class AugmentedData
     {
       data_(i, j) = std::numeric_limits<int>::quiet_NaN(); // set to quiet nan, for types that supports it. For int, the returned value would be 0 ...
       misData_(i, j) = val;
-      ++nbMissing_;
+      ++misCount_(val.first);
       ++nbSample_;
     }
 
@@ -170,6 +253,39 @@ class AugmentedData
     /** Remove the missing values by uniform samplings, taking into account that classes begin at 0 no matter the minModality value */
     void removeMissingClass();
 
+    /**
+     * In-place sort every descriptor of missing values, and check for duplicates, which are currently forbidden
+     * @return Description of the eventual error, otherwise empty string
+    */
+    std::string sortAndCheckMissing()
+    {
+      std::string warnLog;
+
+      for (int i = 0; i < nbSample_; ++i)
+      {
+        std::vector<Type>& currVec = misData_(i, 0).second;
+        if (currVec.size() > 1)
+        {
+          std::sort(currVec.begin(),
+                    currVec.end());
+          for (int v = 0; v < currVec.size() - 1; ++ v)
+          {
+            if (currVec[v] == currVec[v + 1])
+            {
+              std::stringstream sstm;
+              sstm << "Individual " << i
+                   << " has duplicate value "
+                   << currVec[v]
+                   << " in its missing value description. This is never necessary and forbidden." << std::endl;
+              warnLog += sstm.str();
+            }
+          }
+        }
+      }
+
+      return warnLog;
+    }
+
     /** two dimensional data table, for example a Matrix<Real> */
     DataType data_;
 
@@ -177,10 +293,9 @@ class AugmentedData
     MisData misData_;
     /** total number of values */
     int nbSample_;
-    /** total number of present values */
-    int nbPresent_;
-    /** total number of partially observed values, used to output the results */
-    int nbMissing_;
+    /** Number of each type of missing data
+     * Order of indices */
+    Vector<int> misCount_;
     /** available data ranges, one pair per data column */
     Range<Type> dataRange_;
 

@@ -39,6 +39,7 @@ class Categorical_pjk
                     Vector<int> const* p_zi);
     ~Categorical_pjk();
 
+    Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
     bool checkMinVal() const;
     int computeNbFreeParameters() const;
@@ -46,6 +47,7 @@ class Categorical_pjk
     bool hasModalities() const;
     int maxVal() const;
     int minVal() const;
+    std::string model() const;
     std::string mStep();
     int nbVariable() const;
     std::vector<std::string> paramNames() const;

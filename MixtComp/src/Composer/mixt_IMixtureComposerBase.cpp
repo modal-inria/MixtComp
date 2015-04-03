@@ -38,7 +38,8 @@ IMixtureComposerBase::IMixtureComposerBase(int nbSample,
     tik_(nbSample, nbCluster),
     sampler_(zi_,
              tik_,
-             nbCluster)
+             nbCluster),
+    idName_("z_class")
 {
   zi_.resizeArrays(nbSample);
   intializeMixtureParameters();
