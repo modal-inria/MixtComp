@@ -135,8 +135,8 @@ class MixtureBridge : public mixt::IMixture
      */
     void setDataParam(std::string& warnLog)
     {
-#ifdef MC_DEBUG
-        std::cout << "MixtureBridge::setDataParam(), idName(): " << idName() << std::endl;
+#ifdef MC_DEBUG_NEW
+      std::cout << "MixtureBridge::setDataParam(), idName(): " << idName() << std::endl;
 #endif
       p_handler_->getData(idName(),
                           m_augDataij_,
@@ -144,6 +144,10 @@ class MixtureBridge : public mixt::IMixture
                           paramStr_,
                           0, // offset currently set to 0, but should use information provided by mixture_
                           warnLog);
+#ifdef MC_DEBUG_NEW
+      std::cout << "m_augDataij_.misCount_: " << std::endl;
+      std::cout << m_augDataij_.misCount_ << std::endl;
+#endif
       m_augDataij_.computeRange();
       if (mixture_.checkMinVal() && m_augDataij_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value
       {
@@ -152,7 +156,7 @@ class MixtureBridge : public mixt::IMixture
              << " in either provided values or bounds. The minimum value currently provided is : " << m_augDataij_.dataRange_.min_ << std::endl;
         warnLog += sstm.str();
       }
-      else // minimum value requirements have been met, wether the mode is learning or prediction
+      else // minimum value requirements have been met, whether the mode is learning or prediction
       {
         m_augDataij_.removeMissing();
         p_paramSetter_->getParam(idName(),
@@ -196,10 +200,10 @@ class MixtureBridge : public mixt::IMixture
   #ifdef MC_DEBUG
           std::cout << "\tparam not set " << std::endl;
   #endif
-          if (m_augDataij_.nbPresent_ < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
+          if (m_augDataij_.misCount_(present_) < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
           {
             std::stringstream sstm;
-            sstm << "Variable: " << idName() << " only has " << m_augDataij_.nbPresent_
+            sstm << "Variable: " << idName() << " only has " << m_augDataij_.misCount_(present_)
                  << " present values. Maybe there is an error in the data encoding. If the variable truly has less than "
                  << minNbPresentValues
                  << " present values, it should be removed from the study as it does not provide enough information." << std::endl;

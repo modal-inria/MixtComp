@@ -27,6 +27,8 @@
 namespace mixt
 {
 
+/** Do not force member values with = assignment, otherwise NB_ENUM_MISTYPE will
+ * not contain the number of elements in MisType */
 enum MisType
 {
   present_,
@@ -34,7 +36,8 @@ enum MisType
   missingFiniteValues_,
   missingIntervals_,
   missingLUIntervals_,
-  missingRUIntervals_
+  missingRUIntervals_,
+  nb_enum_MisType_
 };
 
 enum LikelihoodType

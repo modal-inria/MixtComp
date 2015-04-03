@@ -63,12 +63,16 @@ class AugmentedData
 
     AugmentedData() :
       nbSample_(0),
-      nbPresent_(0),
-      nbMissing_(0),
+      misCount_(nb_enum_MisType_),
       dataRange_(Type(0),
                  Type(0)),
       rangeUpdate_(false)
-      {};
+      {
+        for (int i = 0; i < nb_enum_MisType_; ++i) // initialize counter for each type of missing value to 0
+        {
+          misCount_(i) = 0;
+        }
+      };
     ~AugmentedData() {};
 
     void resizeArrays(int nbSample)
@@ -140,7 +144,7 @@ class AugmentedData
       data_(i, j) = val;
       misData_(i, j) = MisVal(present_,
                               std::vector<Type>());
-      ++nbPresent_;
+      ++misCount_(present_);
       ++nbSample_;
     }
 
@@ -148,7 +152,7 @@ class AugmentedData
     {
       data_(i, j) = std::numeric_limits<int>::quiet_NaN(); // set to quiet nan, for types that supports it. For int, the returned value would be 0 ...
       misData_(i, j) = val;
-      ++nbMissing_;
+      ++misCount_(val.first);
       ++nbSample_;
     }
 
@@ -177,10 +181,9 @@ class AugmentedData
     MisData misData_;
     /** total number of values */
     int nbSample_;
-    /** total number of present values */
-    int nbPresent_;
-    /** total number of partially observed values, used to output the results */
-    int nbMissing_;
+    /** Number of each type of missing data
+     * Order of indices */
+    Vector<int> misCount_;
     /** available data ranges, one pair per data column */
     Range<Type> dataRange_;
 
