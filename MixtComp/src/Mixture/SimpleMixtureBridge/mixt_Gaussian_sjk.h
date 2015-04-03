@@ -60,7 +60,7 @@ class Gaussian_sjk
 
     Real minVal() const;
     Real maxVal() const;
-
+    std::string model() const;
     int nbVariable() const;
 
     std::vector<std::string> paramNames() const;

@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
   R.parseEvalQ("setwd(\"C:/Users/Vincent KUBICKI/Data/analysis/150330 - test données prostate/02 - crash en prédiction\")");
   R.parseEvalQ("source(\"learn.R\")");
-  R.parseEvalQ("source(\"predict.R\")");
+//  R.parseEvalQ("source(\"predict.R\")");
 
   exit(0);
 }

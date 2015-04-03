@@ -76,6 +76,25 @@ class AugmentedData
     ~AugmentedData() {};
 
     /**
+     * Return the correct expression according to the number of individuals
+     * @param  Number of individuals
+     * @return "individual(s) has/have"
+    */
+    std::string indExpression(int nbInd)
+    {
+      std::string num;
+      if (misCount_(missing_) == 1)
+      {
+        num = " individual has a value ";
+      }
+      else
+      {
+        num = " individuals have values ";
+      }
+      return num;
+    }
+
+    /**
      * Check the types of missing value.
      * @param  A vector containing true or false according to the mixture support of a a given missing value type
      * @return Description of the eventual error, otherwise empty string
@@ -87,7 +106,9 @@ class AugmentedData
       {
         std::stringstream sstm;
         sstm << "Non observed values are not supported for this model, yet "
-             << misCount_(missing_) << " individuals have completely missing values." << std::endl;
+             << misCount_(missing_)
+             << indExpression(misCount_(missing_))
+             << "completely missing." << std::endl;
         warnLog += sstm.str();
       }
 
@@ -95,7 +116,9 @@ class AugmentedData
       {
         std::stringstream sstm;
         sstm << "Partially observed values defined by list of possible values, {a, b, c, ... }, are not supported for this model, yet "
-             << misCount_(missingFiniteValues_) << " individuals have values defined by list of possible values." << std::endl;
+             << misCount_(missingFiniteValues_)
+             << indExpression(misCount_(missingFiniteValues_))
+             << "defined by list of possible values." << std::endl;
         warnLog += sstm.str();
       }
 
@@ -103,7 +126,9 @@ class AugmentedData
       {
         std::stringstream sstm;
         sstm << "Partially observed values defined by interval, [a:b], are not supported for this model, yet "
-             << misCount_(missingIntervals_) << " individuals have values defined by interval." << std::endl;
+             << misCount_(missingIntervals_)
+             << indExpression(misCount_(missingIntervals_))
+             << "defined by interval." << std::endl;
         warnLog += sstm.str();
       }
 
@@ -111,7 +136,9 @@ class AugmentedData
       {
         std::stringstream sstm;
         sstm << "Partially observed values defined by upper-bounded semi-interval, [-inf:a], are not supported for this model, yet "
-             << misCount_(missingLUIntervals_) << " individuals have values defined by upper-bounded semi-interval." << std::endl;
+             << misCount_(missingLUIntervals_)
+             << indExpression(misCount_(missingLUIntervals_))
+             << "defined by upper-bounded semi-interval." << std::endl;
         warnLog += sstm.str();
       }
 
@@ -119,7 +146,9 @@ class AugmentedData
       {
         std::stringstream sstm;
         sstm << "Partially observed values defined by lower-bounded semi-interval, [a:+inf], are not supported for this model, yet "
-             << misCount_(missingRUIntervals_) << " individuals have values defined by lower-bounded semi-interval." << std::endl;
+             << misCount_(missingRUIntervals_)
+             << indExpression(misCount_(missingRUIntervals_))
+             << "defined by lower-bounded semi-interval." << std::endl;
         warnLog += sstm.str();
       }
       return warnLog;

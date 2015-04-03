@@ -97,6 +97,11 @@ int Poisson_k::minVal() const
   return 0;
 }
 
+std::string Poisson_k::model() const
+{
+  return "Poisson_k";
+}
+
 std::string Poisson_k::mStep()
 {
   std::string warn;

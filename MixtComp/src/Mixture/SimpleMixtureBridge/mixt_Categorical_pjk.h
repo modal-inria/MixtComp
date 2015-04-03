@@ -47,6 +47,7 @@ class Categorical_pjk
     bool hasModalities() const;
     int maxVal() const;
     int minVal() const;
+    std::string model() const;
     std::string mStep();
     int nbVariable() const;
     std::vector<std::string> paramNames() const;

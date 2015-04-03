@@ -98,6 +98,11 @@ Real Gaussian_sjk::minVal() const
   return 0;
 }
 
+std::string Gaussian_sjk::model() const
+{
+  return "Gaussian_sjk";
+}
+
 std::string Gaussian_sjk::mStep()
 {
   std::string warn;

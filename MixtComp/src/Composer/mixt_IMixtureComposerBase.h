@@ -201,6 +201,9 @@ class IMixtureComposerBase
     /** class sampler */
     ClassSampler sampler_;
 
+    /** name of the latent class variable */
+    std::string idName_;
+
     /** ParamSetter is injected to take care of setting the values of the proportions.
      * This avoids templating the whole composer with DataHandler type, as is currently done
      * with the individual IMixtures. */
@@ -237,7 +240,6 @@ class IMixtureComposerBase
                           dummyParam,
                           -minModality, // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
                           warnLog);
-
       if (warnLog.size() > 0) // z_class was not provided
       {
 #ifdef MC_DEBUG
@@ -253,6 +255,21 @@ class IMixtureComposerBase
       std::cout << zi_.data_ << std::endl;
 #endif
 
+      Vector<bool> at(nb_enum_MisType_);
+      at(0) = true; // present_,
+      at(1) = true;// missing_,
+      at(2) = true;// missingFiniteValues_,
+      at(3) = false;// missingIntervals_,
+      at(4) = false;// missingLUIntervals_,
+      at(5) = false;// missingRUIntervals_,
+
+      std::string tempLog = zi_.checkMissingType(at); // check if the missing data provided are compatible with the model
+      if(tempLog.size() > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Variable " << idName_ << " contains latent classes and has unsupported missing value types.\n" << tempLog;
+        warnLog += sstm.str();
+      }
       zi_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
       if (zi_.dataRange_.min_ < 0)
       {

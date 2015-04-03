@@ -100,6 +100,11 @@ int Categorical_pjk::minVal() const
   return minModality;
 }
 
+std::string Categorical_pjk::model() const
+{
+  return "Categorical_pjk";
+}
+
 std::string Categorical_pjk::mStep()
 {
 #ifdef MC_DEBUG

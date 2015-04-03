@@ -59,6 +59,7 @@ class Poisson_k
 
     int maxVal() const;
     int minVal() const;
+    std::string model() const;
     int nbVariable() const;
 
     std::vector<std::string> paramNames() const;
