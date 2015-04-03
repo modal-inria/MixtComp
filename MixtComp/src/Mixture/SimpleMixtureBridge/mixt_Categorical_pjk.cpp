@@ -25,6 +25,7 @@
 #include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../LinAlg/mixt_LinAlg.h"
+#include "../../Various/mixt_Def.h"
 
 namespace mixt
 {
@@ -42,6 +43,18 @@ Categorical_pjk::Categorical_pjk(int nbCluster,
 
 Categorical_pjk::~Categorical_pjk()
 {}
+
+Vector<bool> Categorical_pjk::acceptedType() const
+{
+  Vector<bool> at(nb_enum_MisType_);
+  at(0) = true; // present_,
+  at(1) = true;// missing_,
+  at(2) = true;// missingFiniteValues_,
+  at(3) = false;// missingIntervals_,
+  at(4) = false;// missingLUIntervals_,
+  at(5) = false;// missingRUIntervals_,
+  return at;
+}
 
 bool Categorical_pjk::checkMaxVal() const
 {

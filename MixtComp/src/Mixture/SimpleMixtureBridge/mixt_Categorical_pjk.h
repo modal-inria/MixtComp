@@ -39,6 +39,7 @@ class Categorical_pjk
                     Vector<int> const* p_zi);
     ~Categorical_pjk();
 
+    Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
     bool checkMinVal() const;
     int computeNbFreeParameters() const;

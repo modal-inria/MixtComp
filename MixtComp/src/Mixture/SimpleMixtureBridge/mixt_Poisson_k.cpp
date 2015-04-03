@@ -24,6 +24,7 @@
 #include "mixt_Poisson_k.h"
 #include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
+#include "../../Various/mixt_Def.h"
 
 namespace mixt
 {
@@ -40,6 +41,18 @@ Poisson_k::Poisson_k(int nbCluster,
 
 Poisson_k::~Poisson_k()
 {}
+
+Vector<bool> Poisson_k::acceptedType() const
+{
+  Vector<bool> at(nb_enum_MisType_);
+  at(0) = true; // present_,
+  at(1) = true;// missing_,
+  at(2) = false;// missingFiniteValues_,
+  at(3) = false;// missingIntervals_,
+  at(4) = false;// missingLUIntervals_,
+  at(5) = false;// missingRUIntervals_,
+  return at;
+}
 
 bool Poisson_k::checkMaxVal() const
 {

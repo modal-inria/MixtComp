@@ -72,6 +72,7 @@ class MixtureBridge : public mixt::IMixture
      *  @param nbCluster number of cluster
      **/
     MixtureBridge(std::string const& idName,
+                  std::string const& idModel,
                   int nbClass,
                   Vector<int> const* p_zi,
                   const DataHandler* p_handler_,
@@ -79,7 +80,8 @@ class MixtureBridge : public mixt::IMixture
                   const ParamSetter* p_paramSetter,
                   ParamExtractor* p_paramExtractor,
                   Real confidenceLevel) :
-      mixt::IMixture(idName),
+      mixt::IMixture(idName,
+                     idModel),
       p_zi_(p_zi),
       nbClass_(nbClass),
       mixture_(nbClass,
@@ -144,11 +146,14 @@ class MixtureBridge : public mixt::IMixture
                           paramStr_,
                           0, // offset currently set to 0, but should use information provided by mixture_
                           warnLog);
-#ifdef MC_DEBUG_NEW
-      std::cout << "m_augDataij_.misCount_: " << std::endl;
-      std::cout << m_augDataij_.misCount_ << std::endl;
-#endif
       m_augDataij_.computeRange();
+      std::string tempLog = m_augDataij_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
+      if(tempLog.size() > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Variable: " << idName() << " has unsupported missing value types.\n" << tempLog;
+        warnLog += sstm.str();
+      }
       if (mixture_.checkMinVal() && m_augDataij_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value
       {
         std::stringstream sstm;

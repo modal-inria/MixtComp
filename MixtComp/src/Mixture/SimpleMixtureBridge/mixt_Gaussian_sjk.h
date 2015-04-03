@@ -41,6 +41,7 @@ class Gaussian_sjk
                  Vector<int> const* p_zi);
     ~Gaussian_sjk();
 
+    Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
     bool checkMinVal() const;
     int computeNbFreeParameters() const;

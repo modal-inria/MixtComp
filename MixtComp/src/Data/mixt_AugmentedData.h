@@ -75,6 +75,56 @@ class AugmentedData
       };
     ~AugmentedData() {};
 
+    /**
+     * Check the types of missing value.
+     * @param  A vector containing true or false according to the mixture support of a a given missing value type
+     * @return Description of the eventual error, otherwise empty string
+    */
+    std::string checkMissingType(Vector<bool> listType)
+    {
+      std::string warnLog;
+      if (listType(missing_) == false && misCount_(missing_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Non observed values are not supported for this model, yet "
+             << misCount_(missing_) << " individuals have completely missing values." << std::endl;
+        warnLog += sstm.str();
+      }
+
+      if (listType(missingFiniteValues_) == false && misCount_(missingFiniteValues_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Partially observed values defined by list of possible values, {a, b, c, ... }, are not supported for this model, yet "
+             << misCount_(missingFiniteValues_) << " individuals have values defined by list of possible values." << std::endl;
+        warnLog += sstm.str();
+      }
+
+      if (listType(missingIntervals_) == false && misCount_(missingIntervals_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Partially observed values defined by interval, [a:b], are not supported for this model, yet "
+             << misCount_(missingIntervals_) << " individuals have values defined by interval." << std::endl;
+        warnLog += sstm.str();
+      }
+
+      if (listType(missingLUIntervals_) == false && misCount_(missingLUIntervals_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Partially observed values defined by upper-bounded semi-interval, [-inf:a], are not supported for this model, yet "
+             << misCount_(missingLUIntervals_) << " individuals have values defined by upper-bounded semi-interval." << std::endl;
+        warnLog += sstm.str();
+      }
+
+      if (listType(missingRUIntervals_) == false && misCount_(missingRUIntervals_) > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Partially observed values defined by lower-bounded semi-interval, [a:+inf], are not supported for this model, yet "
+             << misCount_(missingRUIntervals_) << " individuals have values defined by lower-bounded semi-interval." << std::endl;
+        warnLog += sstm.str();
+      }
+      return warnLog;
+    }
+
     void resizeArrays(int nbSample)
     {
       data_.resize(nbSample, 1);
