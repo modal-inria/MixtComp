@@ -40,7 +40,7 @@ TEST(Ordinal, simple1)
   Vector<int> c(3); // vector describing the search process
   c(0) = 1; // first element y picked, proba 0.5
   c(1) = 1; // comparison is perfect, proba 0.5
-  c(2) = 2; // upper segment selected, proba 1.
+  c(2) = 1; // middle segment selected, proba 1.
   int x = 1; // value x obtained at the end of the binary search algorithm, proba 1. as upper segment was selected
 
   Real proba = OrdinalProba::computeProba(c,

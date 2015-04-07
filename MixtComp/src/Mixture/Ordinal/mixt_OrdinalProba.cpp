@@ -36,22 +36,29 @@ namespace OrdinalProba
 
 Real yProba(const std::pair<int, int>& e)
 {
-  return 1. / Real(e.second - e.first + 1.) ; // conditional probability of y, which only depends of the size of the interval
+  Real yProba = 1. / Real(e.second - e.first + 1.);
+#ifdef MC_DEBUG_NEW
+    std::cout << "yProba: " << yProba << std::endl;
+#endif
+  return yProba; // conditional probability of y, which only depends of the size of the interval
 }
 
 Real zProba(int z,
             Real pi)
 {
-  Real proba;
+  Real zProba;
   if (z == 1) // comparison is perfect
   {
-    proba = pi;
+    zProba = pi;
   }
   else
   {
-    proba = (1. - pi); // comparison is blind
+    zProba = (1. - pi); // comparison is blind
   }
-  return proba;
+#ifdef MC_DEBUG_NEW
+    std::cout << "zProba: " << zProba << std::endl;
+#endif
+  return zProba;
 }
 
 Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in this function, hence the non const reference
@@ -61,9 +68,11 @@ Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in th
             int mu,
             Real pi)
 {
-  Real proba;
+#ifdef MC_DEBUG_NEW
+  std::cout << "eProba" << std::endl;
+#endif
+  Real eProba;
   Vector<std::pair<int, int> > partition(3); // list of candidates for next e_j. Candidates on first dimension, bounds on second dimension
-  std::cout << partition.size() << std::endl;
   if (eVal.first != y) // is the left interval non-empty ? If not, partition element will be an empty vector
   {
     partition(0).first  = eVal.first;
@@ -71,7 +80,8 @@ Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in th
   }
   else
   {
-    partition(0).first = -1; // impossible value used to designate an empty set
+    partition(0).first  = -1; // impossible value used to designate an empty set
+    partition(0).second = -1;
   }
   partition(1).first  = y; // center interval always contains the center element
   partition(1).second = y;
@@ -82,43 +92,77 @@ Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in th
   }
   else
   {
-    partition(2).first = -1; // impossible value used to designate an empty set
+    partition(2).first  = -1; // impossible value used to designate an empty set
+    partition(2).second = -1;
   }
   int closestSegment = -1; // index in partition of the closest segment
   Real disClosestSegment; // distance between mu and closest segment
   for (int s = 0; s < 3; ++s) // computation of the closest segment
   {
-    if (partition(s).first > 0) // empty vectors are ignored, as they describe an empty segment
+#ifdef MC_DEBUG_NEW
+    std::cout << "\ts: " << s << ", partition(s).first: " << partition(s).first << ", partition(s).second: " << partition(s).second << std::endl;
+#endif
+    if (partition(s).first > -1) // pair containing {-1, -1} are ignored, as they describe an empty segment
     {
       Real disCurrSegment = std::min(std::abs(mu - partition(s).first),
                                      std::abs(mu - partition(s).second));
-      if ( disCurrSegment < disClosestSegment || s < 0) // a new closest segment has been found
+#ifdef MC_DEBUG_NEW
+      std::cout << "\t\tdisCurrSegment: " << disCurrSegment << std::endl;
+#endif
+      if ( disCurrSegment < disClosestSegment || s == 0) // a new closest segment has been found
       {
         closestSegment = s;
         disClosestSegment = disCurrSegment;
       }
     }
   }
+#ifdef MC_DEBUG_NEW
+  std::cout << "\tclosestSegment: " << closestSegment << std::endl;
+  std::cout << "\tdisClosestSegment: " << disClosestSegment << std::endl;
+#endif
 
   if (z == 1) // if comparison is perfect, anything but the best interval has a 0 conditional probability
   {
     if (e == closestSegment)
     {
-      proba = 1.;
+      eProba = 1.;
     }
     else
     {
-      proba = 0.;
+      eProba = 0.;
     }
   }
   else // comparison is imperfect, probability of the selected subinterval is proportional to its size
   {
-    proba = Real(partition(e).second - partition(e).first) / Real(eVal.second - eVal.first);
+    eProba = Real(partition(e).second - partition(e).first) / Real(eVal.second - eVal.first);
   }
 
   eVal = partition(e); // segment is updated
+#ifdef MC_DEBUG_NEW
+    std::cout << "eProba: " << eProba << std::endl;
+#endif
+  return eProba;
+}
 
-  return proba;
+Real xProba(int x,
+            std::pair<int, int> eVal)
+{
+#ifdef MC_DEBUG_NEW
+  std::cout << "xProba, eVal.first: " << eVal.first << ", eVal.second: " << eVal.second << ", x: " << x << std::endl;
+#endif
+  Real xProba;
+  if (eVal.first == x) // if the content of the segment is different from x, then the proba to get x is null
+  {
+    xProba = 1.;
+  }
+  else
+  {
+    xProba = 0.;
+  }
+#ifdef MC_DEBUG_NEW
+    std::cout << "xProba: " << xProba << std::endl;
+#endif
+  return xProba;
 }
 
 Real computeProba(const Vector<int>& c,
@@ -127,10 +171,16 @@ Real computeProba(const Vector<int>& c,
                   int mu,
                   Real pi)
 {
+#ifdef MC_DEBUG_NEW
+    std::cout << "OrdinalProba::computeProba" << std::endl;
+#endif
   Real proba = 1.; // The initial probability of being in any of the member of the input interval is 1
 
   for (int i = 0; i < c.size() / 3; ++i) // loop over triplets of path variables
   {
+#ifdef MC_DEBUG_NEW
+    std::cout << "i: " << i << std::endl;
+#endif
     int y = c(i    ); // breakpoint
     int z = c(i + 1); // accuracy
     int e = c(i + 2); // segment
@@ -150,10 +200,9 @@ Real computeProba(const Vector<int>& c,
                     pi);
   }
 
-  if (eVal.first != x) // if the content of the segment is different from x, then the proba to get x is null
-  {
-    proba = 0.;
-  }
+  // probability of x
+  proba *= xProba(x,
+                  eVal);
 
   return proba;
 }
