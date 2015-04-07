@@ -90,17 +90,17 @@ libRE: $(LIB_RE)
 $(LIB_RE): $(O_RE)
 	$(AR) $(ARFLAGS) $@ $^
 	
-utest: $(LIB_MC) $(EXE_UTEST)
+utest: $(EXE_UTEST)
 
 #$(EXE_UTEST): $(O_GTEST) $(O_UTEST)
 #	$(CXX) $^ $(LIB_MC) -o $@ -lpthread 
 
-$(EXE_UTEST): $(O_GTEST) $(O_UTEST)
+$(EXE_UTEST): $(LIB_MC) $(O_GTEST) $(O_UTEST)
 	$(CXX) $^ $(LIB_MC) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
-test: $(LIB_MC) $(EXE_TEST) 
+test: $(EXE_TEST)
 
-$(EXE_TEST): $(O_TEST)
+$(EXE_TEST): $(LIB_MC) $(O_TEST)
 	$(CXX) $^ $(LIB_MC) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 -include $(SRC_MC:%.cpp=%.d)
