@@ -70,6 +70,7 @@ Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in th
 {
 #ifdef MC_DEBUG_NEW
   std::cout << "eProba" << std::endl;
+  std::cout << "eVal.first: " << eVal.first << ", eval.second: " << eVal.second << std::endl;
 #endif
   Real eProba;
   Vector<std::pair<int, int> > partition(3); // list of candidates for next e_j. Candidates on first dimension, bounds on second dimension
@@ -106,17 +107,20 @@ Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in th
     {
       Real disCurrSegment = std::min(std::abs(mu - partition(s).first),
                                      std::abs(mu - partition(s).second));
-#ifdef MC_DEBUG_NEW
-      std::cout << "\t\tdisCurrSegment: " << disCurrSegment << std::endl;
-#endif
-      if ( disCurrSegment < disClosestSegment || s == 0) // a new closest segment has been found
+      if (disCurrSegment < disClosestSegment || closestSegment == -1) // a new closest segment has been found, or for the first valid segment
       {
         closestSegment = s;
         disClosestSegment = disCurrSegment;
+#ifdef MC_DEBUG_NEW
+      std::cout << "\t\tdisCurrSegment: " << disCurrSegment << std::endl;
+      std::cout << "\t\tdisClosestSegment: " << disClosestSegment << std::endl;
+#endif
       }
     }
   }
+
 #ifdef MC_DEBUG_NEW
+  std::cout << "\te: " << e << std::endl;
   std::cout << "\tclosestSegment: " << closestSegment << std::endl;
   std::cout << "\tdisClosestSegment: " << disClosestSegment << std::endl;
 #endif
@@ -134,7 +138,7 @@ Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in th
   }
   else // comparison is imperfect, probability of the selected subinterval is proportional to its size
   {
-    eProba = Real(partition(e).second - partition(e).first) / Real(eVal.second - eVal.first);
+    eProba = Real(partition(e).second - partition(e).first + 1) / Real(eVal.second - eVal.first + 1);
   }
 
   eVal = partition(e); // segment is updated
@@ -173,17 +177,20 @@ Real computeProba(const Vector<int>& c,
 {
 #ifdef MC_DEBUG_NEW
     std::cout << "OrdinalProba::computeProba" << std::endl;
+    std::cout << "c: " << std::endl;
+    std::cout << c << std::endl;
 #endif
   Real proba = 1.; // The initial probability of being in any of the member of the input interval is 1
 
   for (int i = 0; i < c.size() / 3; ++i) // loop over triplets of path variables
   {
+    int y = c(3 * i    ); // breakpoint
+    int z = c(3 * i + 1); // accuracy
+    int e = c(3 * i + 2); // segment
+
 #ifdef MC_DEBUG_NEW
-    std::cout << "i: " << i << std::endl;
+    std::cout << "i: " << i << ", y: " << y << ", z: " << z << ", e: " << e << std::endl;
 #endif
-    int y = c(i    ); // breakpoint
-    int z = c(i + 1); // accuracy
-    int e = c(i + 2); // segment
 
     // probability of y
     proba *= yProba(eVal);

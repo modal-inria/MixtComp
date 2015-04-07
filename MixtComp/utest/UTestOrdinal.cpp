@@ -17,7 +17,7 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Feb 02, 2015
+ *  Created on: March 24, 2015
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
@@ -50,6 +50,37 @@ TEST(Ordinal, simple1)
                                           pi);
 
   ASSERT_LT(std::abs(0.25 - proba), epsilon);
+}
+
+// Simple case with three modalities and imprecision
+TEST(Ordinal, simple2)
+{
+  int mu = 1; // mode
+  Real pi = 0.5; // precision
+
+  std::pair<int, int> eVal; // vector describing initial segment
+  eVal.first = 0;
+  eVal.second = 2;
+
+  Vector<int> c(6); // vector describing the search process
+  c(0) = 1; // y, middle element y picked, proba 0.3
+  c(1) = 0; // z, comparison is imperfect, proba 0.5
+  c(2) = 0; // e, left segment selected, proba 0.33 (all have the same size)
+
+  c(3) = 0; // y, only one element to choose from, proba 1.
+  c(4) = 1; // z, comparison is perfect, proba 0.5
+  c(5) = 1; // e, only one segment, in the middle, with proba 1.
+  int x = 0; // the mode was not picked !
+
+  Real proba = OrdinalProba::computeProba(c,
+                                          x,
+                                          eVal,
+                                          mu,
+                                          pi);
+
+  ASSERT_LT(std::abs(  1./3. * 0.5 * 1./3.
+                     * 1. * 0.5 * 1.
+                     - proba), epsilon);
 }
 
 // Conditional probabilities sum to 1
