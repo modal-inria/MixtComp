@@ -61,22 +61,22 @@ Real zProba(int z,
   return zProba;
 }
 
-Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in this function, hence the non const reference
-            int y,
+Real eProba(int y,
             int z,
-            int e,
+            const std::pair<int, int>& ePr,
+            const std::pair<int, int>& eCurr,
             int mu,
             Real pi)
 {
 #ifdef MC_DEBUG_NEW
   std::cout << "eProba" << std::endl;
-  std::cout << "eVal.first: " << eVal.first << ", eval.second: " << eVal.second << std::endl;
+  std::cout << "e.first: " << ePr.first << ", e.second: " << ePr.second << std::endl;
 #endif
   Real eProba;
   Vector<std::pair<int, int> > partition(3); // list of candidates for next e_j. Candidates on first dimension, bounds on second dimension
-  if (eVal.first != y) // is the left interval non-empty ? If not, partition element will be an empty vector
+  if (ePr.first != y) // is the left interval non-empty ? If not, partition element will be an empty vector
   {
-    partition(0).first  = eVal.first;
+    partition(0).first  = ePr.first;
     partition(0).second = y - 1;
   }
   else
@@ -86,10 +86,10 @@ Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in th
   }
   partition(1).first  = y; // center interval always contains the center element
   partition(1).second = y;
-  if (eVal.second != y) // is the right interval non-empty ? If not, partition element will be an empty vector
+  if (ePr.second != y) // is the right interval non-empty ? If not, partition element will be an empty vector
   {
     partition(2).first  = y + 1;
-    partition(2).second = eVal.second;
+    partition(2).second = ePr.second;
   }
   else
   {
@@ -120,14 +120,13 @@ Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in th
   }
 
 #ifdef MC_DEBUG_NEW
-  std::cout << "\te: " << e << std::endl;
   std::cout << "\tclosestSegment: " << closestSegment << std::endl;
   std::cout << "\tdisClosestSegment: " << disClosestSegment << std::endl;
 #endif
 
   if (z == 1) // if comparison is perfect, anything but the best interval has a 0 conditional probability
   {
-    if (e == closestSegment)
+    if (eCurr == partition(closestSegment))
     {
       eProba = 1.;
     }
@@ -138,10 +137,9 @@ Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in th
   }
   else // comparison is imperfect, probability of the selected subinterval is proportional to its size
   {
-    eProba = Real(partition(e).second - partition(e).first + 1) / Real(eVal.second - eVal.first + 1);
+    eProba = Real(partition(closestSegment).second - partition(closestSegment).first + 1) / Real(ePr.second - ePr.first + 1);
   }
 
-  eVal = partition(e); // segment is updated
 #ifdef MC_DEBUG_NEW
     std::cout << "eProba: " << eProba << std::endl;
 #endif
@@ -169,50 +167,79 @@ Real xProba(int x,
   return xProba;
 }
 
-Real computeProba(const Vector<int>& c,
+Real computeProba(const std::pair<int, int>& eInit,
+                  const Vector<ItBOS>& c,
                   int x,
-                  std::pair<int, int> eVal,
                   int mu,
                   Real pi)
 {
 #ifdef MC_DEBUG_NEW
     std::cout << "OrdinalProba::computeProba" << std::endl;
-    std::cout << "c: " << std::endl;
-    std::cout << c << std::endl;
 #endif
   Real proba = 1.; // The initial probability of being in any of the member of the input interval is 1
 
-  for (int i = 0; i < c.size() / 3; ++i) // loop over triplets of path variables
+  for (int i = 0; i < c.size(); ++i) // loop over triplets of path variables
   {
-    int y = c(3 * i    ); // breakpoint
-    int z = c(3 * i + 1); // accuracy
-    int e = c(3 * i + 2); // segment
+    int y = c(i).y_; // breakpoint
+    int z = c(i).z_; // accuracy
+    std::pair<int, int> ePr; // previous iteration segment
+    if (i == 0)
+    {
+      ePr = eInit;
+    }
+    else
+    {
+      ePr = c(i - 1).e_;
+    }
+    const std::pair<int, int>& eCur = c(i).e_; // current iteration segment
 
 #ifdef MC_DEBUG_NEW
-    std::cout << "i: " << i << ", y: " << y << ", z: " << z << ", e: " << e << std::endl;
+    std::cout << "i: " << i
+              << ", y: " << y
+              << ", z: " << z
+              << ", ePr.first: " << ePr.first << ", ePr.second: " << ePr.second
+              << ", eCur.first: " << eCur.first << ", eCur.second: " << eCur.second << std::endl;
 #endif
 
     // probability of y
-    proba *= yProba(eVal);
+    proba *= yProba(ePr);
 
     // probability of z
-    proba *= zProba(z, pi);
+    proba *= zProba(z,
+                    pi);
 
     // probability of e
-    proba *= eProba(eVal,
-                    y,
+    proba *= eProba(y,
                     z,
-                    e,
+                    ePr,
+                    eCur,
                     mu,
                     pi);
   }
 
   // probability of x
-  proba *= xProba(x,
-                  eVal);
+  proba *= xProba(x, c(c.size() - 1).e_); // comparison of the last segment with the sampled x value
 
   return proba;
 }
+
+//void multinomialY(const Vector<int>& c,
+//                  const std::pair<int, int>& eVal,
+//                  Vector<Real>& proba,
+//                  int index)
+//{
+//  int lowVal, highVal;
+//  if (index == 0)
+//  {
+//    lowVal = eVal.first;
+//    highVal = eVal.second;
+//  }
+//  else
+//  {
+//  }
+//
+//  int firstValue = index * 3 - 1;
+//}
 
 } // namespace OrdinalProba
 

@@ -34,21 +34,44 @@ namespace mixt
 namespace OrdinalProba
 {
 
+/**
+ * Structure containing the values of an iteration of the BOS algorithm
+ */
+struct ItBOS
+{
+    int y_;
+    int z_;
+    std::pair<int, int> e_;
+};
+
 Real yProba(const std::pair<int, int>& e);
 Real zProba(int z,
             Real pi);
-Real eProba(std::pair<int, int>& eVal, // the subinterval will be modified in this function, hence the non const reference
-            int y,
+Real eProba(int y,
             int z,
-            int e,
+            const std::pair<int, int>& ePr,
+            const std::pair<int, int>& eCurr,
             int mu,
             Real pi);
 
-Real computeProba(const Vector<int>& c,
+Real computeProba(const std::pair<int, int>& eInit,
+                  const Vector<ItBOS>& c,
                   int x,
-                  std::pair<int, int> eVal,
                   int mu,
                   Real pi);
+
+/**
+ * Multinomial probability distribution for the variable y at a specific index
+ *
+ * @param c a constant reference to a vector containing the current search path
+ * @param eVal a constant reference to a vector containing the first interval of the search path
+ * @param proba a reference to the vector with the probability distribution of the sampled variable
+ * @param index localization of the segment in which the value to be sampled resides
+ */
+//void multinomialY(const Vector<int>& c,
+//                  const std::pair<int, int>& eVal,
+//                  Vector<Real>& proba,
+//                  int index);
 
 } // namespace OrdinalProba
 

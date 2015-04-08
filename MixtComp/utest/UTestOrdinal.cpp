@@ -33,19 +33,20 @@ TEST(Ordinal, simple1)
   int mu = 1; // mode
   Real pi = 0.5; // precision
 
-  std::pair<int, int> eVal; // vector describing initial segment
-  eVal.first = 0;
-  eVal.second = 1;
+  std::pair<int, int> eInit; // vector describing initial segment
+  eInit.first = 0;
+  eInit.second = 1;
 
-  Vector<int> c(3); // vector describing the search process
-  c(0) = 1; // first element y picked, proba 0.5
-  c(1) = 1; // comparison is perfect, proba 0.5
-  c(2) = 1; // middle segment selected, proba 1.
+  Vector<OrdinalProba::ItBOS> c(1); // vector describing the search process
+
+  c(0).y_ = 1; // first element y picked, proba 0.5
+  c(0).z_ = 1; // comparison is perfect, proba 0.5
+  c(0).e_ = std::pair<int, int> (1, 1); // correct value picked, proba 1.
   int x = 1; // value x obtained at the end of the binary search algorithm, proba 1. as upper segment was selected
 
-  Real proba = OrdinalProba::computeProba(c,
+  Real proba = OrdinalProba::computeProba(eInit,
+                                          c,
                                           x,
-                                          eVal,
                                           mu,
                                           pi);
 
@@ -58,23 +59,24 @@ TEST(Ordinal, simple2)
   int mu = 1; // mode
   Real pi = 0.5; // precision
 
-  std::pair<int, int> eVal; // vector describing initial segment
-  eVal.first = 0;
-  eVal.second = 2;
+  std::pair<int, int> eInit; // vector describing initial segment
+  eInit.first = 0;
+  eInit.second = 2;
 
-  Vector<int> c(6); // vector describing the search process
-  c(0) = 1; // y, middle element y picked, proba 0.3
-  c(1) = 0; // z, comparison is imperfect, proba 0.5
-  c(2) = 0; // e, left segment selected, proba 0.33 (all have the same size)
+  Vector<OrdinalProba::ItBOS> c(2); // vector describing the search process
 
-  c(3) = 0; // y, only one element to choose from, proba 1.
-  c(4) = 1; // z, comparison is perfect, proba 0.5
-  c(5) = 1; // e, only one segment, in the middle, with proba 1.
+  c(0).y_ = 1; // y, middle element y picked, proba 1./3.
+  c(0).z_ = 0; // z, comparison is imperfect, proba 0.5
+  c(0).e_ = std::pair<int, int> (0, 0); // e, left segment selected, proba 0.33 (all have the same size)
+
+  c(1).y_ = 0; // y, only one element to choose from, proba 1.
+  c(1).z_ = 1; // z, comparison is perfect, proba 0.5
+  c(1).e_ = std::pair<int, int> (0, 0); // e, only one segment, in the middle, with proba 1.
   int x = 0; // the mode was not picked !
 
-  Real proba = OrdinalProba::computeProba(c,
+  Real proba = OrdinalProba::computeProba(eInit,
+                                          c,
                                           x,
-                                          eVal,
                                           mu,
                                           pi);
 
