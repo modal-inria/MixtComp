@@ -68,10 +68,13 @@ Real computeProba(const std::pair<int, int>& eInit,
  * @param proba a reference to the vector with the probability distribution of the sampled variable
  * @param index localization of the segment in which the value to be sampled resides
  */
-//void multinomialY(const Vector<int>& c,
-//                  const std::pair<int, int>& eVal,
-//                  Vector<Real>& proba,
-//                  int index);
+void multinomialY(const std::pair<int, int>& eInit,
+                  Vector<ItBOS>& c,
+                  int x,
+                  int mu,
+                  Real pi,
+                  Vector<Real>& proba,
+                  int index);
 
 } // namespace OrdinalProba
 

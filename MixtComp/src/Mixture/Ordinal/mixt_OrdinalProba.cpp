@@ -223,23 +223,41 @@ Real computeProba(const std::pair<int, int>& eInit,
   return proba;
 }
 
-//void multinomialY(const Vector<int>& c,
-//                  const std::pair<int, int>& eVal,
-//                  Vector<Real>& proba,
-//                  int index)
-//{
-//  int lowVal, highVal;
-//  if (index == 0)
-//  {
-//    lowVal = eVal.first;
-//    highVal = eVal.second;
-//  }
-//  else
-//  {
-//  }
-//
-//  int firstValue = index * 3 - 1;
-//}
+void multinomialY(const std::pair<int, int>& eInit,
+                  Vector<ItBOS>& c,
+                  int x,
+                  int mu,
+                  Real pi,
+                  Vector<Real>& proba,
+                  int index)
+{
+  int yBack = c(index).y_; // current y value is backed-up
+  int lowVal, highVal;
+  if (index == 0)
+  {
+    lowVal = eInit.first;
+    highVal = eInit.second;
+  }
+  else
+  {
+    lowVal = c(index - 1).e_.first;
+    highVal = c(index - 1).e_.first;
+  }
+
+  int nbVal = highVal - lowVal + 1;
+  proba.resize(nbVal);
+
+  for (int i = 0; i < nbVal; ++i)
+  {
+    c(index).y_ = lowVal + i; // y value is replaced in-place in the path
+    proba(i) = computeProba(eInit,
+                            c,
+                            x,
+                            mu,
+                            pi);
+  }
+  c(index).y_ = yBack; // initial y value is restored
+}
 
 } // namespace OrdinalProba
 

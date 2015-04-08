@@ -84,6 +84,3 @@ TEST(Ordinal, simple2)
                      * 1. * 0.5 * 1.
                      - proba), epsilon);
 }
-
-// Conditional probabilities sum to 1
-// Mode is on the correct modality
