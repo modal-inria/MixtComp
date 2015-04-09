@@ -34,9 +34,18 @@ namespace OrdinalProba
 // vector c contains a series of [y, z, e, y, z, e, ... ]
 // format of interval e is a vector with bounds included: [1, 3] corresponds to the set {1, 2, 3}
 
-Real yProba(const std::pair<int, int>& e)
+Real yProba(const std::pair<int, int>& e,
+            int y)
 {
-  Real yProba = 1. / Real(e.second - e.first + 1.);
+  Real yProba;
+  if (e.first <= y && y <= e.second) // y is among the last segment values
+  {
+    yProba = 1. / Real(e.second - e.first + 1.);
+  }
+  else
+  {
+    yProba = 0.;
+  }
 #ifdef MC_DEBUG_NEW
     std::cout << "yProba: " << yProba << std::endl;
 #endif
@@ -202,7 +211,8 @@ Real computeProba(const std::pair<int, int>& eInit,
 #endif
 
     // probability of y
-    proba *= yProba(ePr);
+    proba *= yProba(ePr,
+                    y);
 
     // probability of z
     proba *= zProba(z,
@@ -232,30 +242,20 @@ void multinomialY(const std::pair<int, int>& eInit,
                   int index)
 {
   int yBack = c(index).y_; // current y value is backed-up
-  int lowVal, highVal;
-  if (index == 0)
-  {
-    lowVal = eInit.first;
-    highVal = eInit.second;
-  }
-  else
-  {
-    lowVal = c(index - 1).e_.first;
-    highVal = c(index - 1).e_.first;
-  }
-
-  int nbVal = highVal - lowVal + 1;
+  int nbVal = eInit.second - eInit.first + 1;
   proba.resize(nbVal);
 
   for (int i = 0; i < nbVal; ++i)
   {
-    c(index).y_ = lowVal + i; // y value is replaced in-place in the path
+    c(index).y_ = i; // y value is replaced in-place in the path
     proba(i) = computeProba(eInit,
                             c,
                             x,
                             mu,
                             pi);
   }
+  Real sumProba = proba.sum();
+  proba /= sumProba; // renormalization of probability vector
   c(index).y_ = yBack; // initial y value is restored
 }
 

@@ -44,7 +44,8 @@ struct ItBOS
     std::pair<int, int> e_;
 };
 
-Real yProba(const std::pair<int, int>& e);
+Real yProba(const std::pair<int, int>& e,
+            int y);
 Real zProba(int z,
             Real pi);
 Real eProba(int y,
