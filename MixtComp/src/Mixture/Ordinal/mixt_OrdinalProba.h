@@ -59,10 +59,9 @@ Real yProba(const std::pair<int, int>& e,
             int y);
 Real zProba(int z,
             Real pi);
-Real eProba(int y,
-            int z,
-            const std::pair<int, int>& ePr,
-            const std::pair<int, int>& eCurr,
+Real eProba(int z,
+            const Vector<std::pair<int, int> >& part,
+            const std::pair<int, int>& e,
             int mu,
             Real pi);
 

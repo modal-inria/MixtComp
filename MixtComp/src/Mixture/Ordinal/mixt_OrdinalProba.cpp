@@ -96,23 +96,17 @@ Real zProba(int z,
   return zProba;
 }
 
-Real eProba(int y,
-            int z,
-            const std::pair<int, int>& ePr,
-            const std::pair<int, int>& eCurr,
+Real eProba(int z,
+            const Vector<std::pair<int, int> >& part,
+            const std::pair<int, int>& e,
             int mu,
             Real pi)
 {
 #ifdef MC_DEBUG_NEW
   std::cout << "eProba" << std::endl;
-  std::cout << "e.first: " << ePr.first << ", e.second: " << ePr.second << std::endl;
 #endif
   Real eProba;
-
-  Vector<std::pair<int, int> > part;
-  partition(ePr,
-            y,
-            part);
+  int sizePart = 0;
 
   int closestSegment = -1; // index in partition of the closest segment
   Real disClosestSegment; // distance between mu and closest segment
@@ -121,6 +115,7 @@ Real eProba(int y,
 #ifdef MC_DEBUG_NEW
     std::cout << "\ts: " << s << ", part(s).first: " << part(s).first << ", part(s).second: " << part(s).second << std::endl;
 #endif
+    sizePart += part(s).second - part(s).first + 1;
     if (part(s).first > -1) // pair containing {-1, -1} are ignored, as they describe an empty segment
     {
       Real disCurrSegment = std::min(std::abs(mu - part(s).first),
@@ -144,7 +139,7 @@ Real eProba(int y,
 
   if (z == 1) // if comparison is perfect, anything but the best interval has a 0 conditional probability
   {
-    if (eCurr == part(closestSegment))
+    if (e == part(closestSegment))
     {
       eProba = 1.;
     }
@@ -155,7 +150,7 @@ Real eProba(int y,
   }
   else // comparison is imperfect, probability of the selected subinterval is proportional to its size
   {
-    eProba = Real(part(closestSegment).second - part(closestSegment).first + 1) / Real(ePr.second - ePr.first + 1);
+    eProba = Real(part(closestSegment).second - part(closestSegment).first + 1) / Real(sizePart);
   }
 
 #ifdef MC_DEBUG_NEW
@@ -219,18 +214,19 @@ Real computeProba(const std::pair<int, int>& eInit,
               << ", eCur.first: " << eCur.first << ", eCur.second: " << eCur.second << std::endl;
 #endif
 
-    // probability of y
+    Vector<std::pair<int, int> > part;
+    partition(ePr,
+              y,
+              part);
+
     proba *= yProba(ePr,
                     y);
 
-    // probability of z
     proba *= zProba(z,
                     pi);
 
-    // probability of e
-    proba *= eProba(y,
-                    z,
-                    ePr,
+    proba *= eProba(z,
+                    part,
                     eCur,
                     mu,
                     pi);
