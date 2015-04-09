@@ -256,6 +256,12 @@ void multinomialY(const std::pair<int, int>& eInit,
   }
   Real sumProba = proba.sum();
   proba /= sumProba; // renormalization of probability vector
+#ifdef MC_DEBUG_NEW
+  std::cout << "multinomialY" << std::endl;
+  std::cout << "sumProba: " << sumProba << std::endl;
+  std::cout << "proba" << std::endl;
+  std::cout << proba << std::endl;
+#endif
   c(index).y_ = yBack; // initial y value is restored
 }
 
