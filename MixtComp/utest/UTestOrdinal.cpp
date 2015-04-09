@@ -133,3 +133,43 @@ TEST(Ordinal, multinomialY0)
 #endif
   EXPECT_TRUE(computedProba.isApprox(expectedProba));
 }
+
+/**
+ * Test the probability vector obtained by multinomialY
+ */
+TEST(Ordinal, multinomialZ0)
+{
+  int mu = 3; // mode
+  Real pi = 0.34; // precision
+
+  std::pair<int, int> eInit; // vector describing initial segment
+  eInit.first = 3;
+  eInit.second = 5;
+
+  Vector<OrdinalProba::ItBOS> c(1); // vector describing the search process
+
+  c(0).y_ = 4; // y picked, proba 1./3.
+  c(0).z_ = 1; // conditional probability will be computed over this variable
+  c(0).e_ = std::pair<int, int> (5, 5); // e, right segment selected, proba 2./3. (sizes of segments are not equal)
+  int x = 5; // the mode was not picked, but x is compatible with last e, therefore conditional probability is 1.
+
+  int index = 0; // iteration where y conditional probability is to be computed
+  Vector<Real> computedProba; // conditional probability distribution actually computed by multinomialY
+  Vector<Real> expectedProba(2); // conditional probability expected
+  expectedProba(0) = 1.; // only an imprecise comparison will yield 5 while the mode is at 3
+  expectedProba(1) = 0.; // perfect comparison is only possible for x = 3
+
+  multinomialZ(eInit,
+               c,
+               x,
+               mu,
+               pi,
+               computedProba,
+               index);
+
+#ifdef MC_DEBUG_NEW
+  std::cout << "computedProba" << std::endl;
+  std::cout << computedProba << std::endl;
+#endif
+  EXPECT_TRUE(computedProba.isApprox(expectedProba));
+}

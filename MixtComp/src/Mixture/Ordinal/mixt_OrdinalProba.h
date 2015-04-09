@@ -64,12 +64,32 @@ Real computeProba(const std::pair<int, int>& eInit,
 /**
  * Multinomial probability distribution for the variable y at a specific index
  *
+ * @param eInit a constant reference to the initial segment
  * @param c a constant reference to a vector containing the current search path
- * @param eVal a constant reference to a vector containing the first interval of the search path
+ * @param mu localization parameter (mode) of the distribution
+ * @param pi precision parameter of the distribution
  * @param proba a reference to the vector with the probability distribution of the sampled variable
  * @param index localization of the segment in which the value to be sampled resides
  */
 void multinomialY(const std::pair<int, int>& eInit,
+                  Vector<ItBOS>& c,
+                  int x,
+                  int mu,
+                  Real pi,
+                  Vector<Real>& proba,
+                  int index);
+
+/**
+ * Multinomial probability distribution for the variable z at a specific index
+ *
+ * @param eInit a constant reference to the initial segment
+ * @param c a constant reference to a vector containing the current search path
+ * @param mu localization parameter (mode) of the distribution
+ * @param pi precision parameter of the distribution
+ * @param proba a reference to the vector with the probability distribution of the sampled variable
+ * @param index localization of the segment in which the value to be sampled resides
+ */
+void multinomialZ(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,

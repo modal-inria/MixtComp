@@ -265,6 +265,41 @@ void multinomialY(const std::pair<int, int>& eInit,
   c(index).y_ = yBack; // initial y value is restored
 }
 
+void multinomialZ(const std::pair<int, int>& eInit,
+                  Vector<ItBOS>& c,
+                  int x,
+                  int mu,
+                  Real pi,
+                  Vector<Real>& proba,
+                  int index)
+{
+  int nbVal = 2; // only two possible values for z
+  int zBack = c(index).z_; // current z value is backed-up
+  proba.resize(nbVal);
+  Vector<int> vals(nbVal);
+  vals(0) = 0;
+  vals(1) = 1;
+
+  for (int i = 0; i < nbVal; ++i)
+  {
+    c(index).z_ = i; // z value is replaced in-place in the path
+    proba(i) = computeProba(eInit,
+                            c,
+                            x,
+                            mu,
+                            pi);
+  }
+  Real sumProba = proba.sum();
+  proba /= sumProba; // renormalization of probability vector
+#ifdef MC_DEBUG_NEW
+  std::cout << "multinomialZ" << std::endl;
+  std::cout << "sumProba: " << sumProba << std::endl;
+  std::cout << "proba" << std::endl;
+  std::cout << proba << std::endl;
+#endif
+  c(index).z_ = zBack; // initial z value is restored
+}
+
 } // namespace OrdinalProba
 
 } // namespace mixt
