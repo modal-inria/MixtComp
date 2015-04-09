@@ -29,10 +29,36 @@ namespace mixt
 namespace OrdinalProba
 {
 
-// Possible optimization: first look at the values of e beginning with the end, if at any moment x is not inside the interval, then the probability of the chain is 0.
-// If the SEM Gibbs is initialized correctly, it will never stray into 0 probability event, so safeguards of that sort are useless.
-// vector c contains a series of [y, z, e, y, z, e, ... ]
 // format of interval e is a vector with bounds included: [1, 3] corresponds to the set {1, 2, 3}
+
+void partition(const std::pair<int, int>& e,
+               int y,
+               Vector<std::pair<int, int> >& part)
+{
+  part.resize(3); // list of candidates for next e_j. Candidates on first dimension, bounds on second dimension
+  if (e.first != y) // is the left interval non-empty ? If not, partition element will be an empty vector
+  {
+    part(0).first  = e.first;
+    part(0).second = y - 1;
+  }
+  else
+  {
+    part(0).first  = -1; // impossible value used to designate an empty set
+    part(0).second = -1;
+  }
+  part(1).first  = y; // center interval always contains the center element
+  part(1).second = y;
+  if (e.second != y) // is the right interval non-empty ? If not, partition element will be an empty vector
+  {
+    part(2).first  = y + 1;
+    part(2).second = e.second;
+  }
+  else
+  {
+    part(2).first  = -1; // impossible value used to designate an empty set
+    part(2).second = -1;
+  }
+}
 
 Real yProba(const std::pair<int, int>& e,
             int y)
@@ -82,40 +108,23 @@ Real eProba(int y,
   std::cout << "e.first: " << ePr.first << ", e.second: " << ePr.second << std::endl;
 #endif
   Real eProba;
-  Vector<std::pair<int, int> > partition(3); // list of candidates for next e_j. Candidates on first dimension, bounds on second dimension
-  if (ePr.first != y) // is the left interval non-empty ? If not, partition element will be an empty vector
-  {
-    partition(0).first  = ePr.first;
-    partition(0).second = y - 1;
-  }
-  else
-  {
-    partition(0).first  = -1; // impossible value used to designate an empty set
-    partition(0).second = -1;
-  }
-  partition(1).first  = y; // center interval always contains the center element
-  partition(1).second = y;
-  if (ePr.second != y) // is the right interval non-empty ? If not, partition element will be an empty vector
-  {
-    partition(2).first  = y + 1;
-    partition(2).second = ePr.second;
-  }
-  else
-  {
-    partition(2).first  = -1; // impossible value used to designate an empty set
-    partition(2).second = -1;
-  }
+
+  Vector<std::pair<int, int> > part;
+  partition(ePr,
+            y,
+            part);
+
   int closestSegment = -1; // index in partition of the closest segment
   Real disClosestSegment; // distance between mu and closest segment
   for (int s = 0; s < 3; ++s) // computation of the closest segment
   {
 #ifdef MC_DEBUG_NEW
-    std::cout << "\ts: " << s << ", partition(s).first: " << partition(s).first << ", partition(s).second: " << partition(s).second << std::endl;
+    std::cout << "\ts: " << s << ", part(s).first: " << part(s).first << ", part(s).second: " << part(s).second << std::endl;
 #endif
-    if (partition(s).first > -1) // pair containing {-1, -1} are ignored, as they describe an empty segment
+    if (part(s).first > -1) // pair containing {-1, -1} are ignored, as they describe an empty segment
     {
-      Real disCurrSegment = std::min(std::abs(mu - partition(s).first),
-                                     std::abs(mu - partition(s).second));
+      Real disCurrSegment = std::min(std::abs(mu - part(s).first),
+                                     std::abs(mu - part(s).second));
       if (disCurrSegment < disClosestSegment || closestSegment == -1) // a new closest segment has been found, or for the first valid segment
       {
         closestSegment = s;
@@ -135,7 +144,7 @@ Real eProba(int y,
 
   if (z == 1) // if comparison is perfect, anything but the best interval has a 0 conditional probability
   {
-    if (eCurr == partition(closestSegment))
+    if (eCurr == part(closestSegment))
     {
       eProba = 1.;
     }
@@ -146,7 +155,7 @@ Real eProba(int y,
   }
   else // comparison is imperfect, probability of the selected subinterval is proportional to its size
   {
-    eProba = Real(partition(closestSegment).second - partition(closestSegment).first + 1) / Real(ePr.second - ePr.first + 1);
+    eProba = Real(part(closestSegment).second - part(closestSegment).first + 1) / Real(ePr.second - ePr.first + 1);
   }
 
 #ifdef MC_DEBUG_NEW

@@ -44,6 +44,17 @@ struct ItBOS
     std::pair<int, int> e_;
 };
 
+/**
+ * Partition of a segment given a breakpoint
+ *
+ * @param[in] segment to be partitioned
+ * @param[in] y breakpoint
+ * @param[out] partition
+ */
+void partition(const std::pair<int, int>& e,
+               int y,
+               Vector<std::pair<int, int> >& part);
+
 Real yProba(const std::pair<int, int>& e,
             int y);
 Real zProba(int z,
