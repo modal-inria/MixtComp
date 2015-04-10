@@ -142,6 +142,12 @@ class MixtureComposer : public mixt::IMixtureComposerBase
       warnLog += setProportion(paramSetter);
       warnLog += setZi(dataHandler,
                        mode);
+      if (mode == prediction_) // in prediction, paramStatStorage_ will not be modified later during the run
+      {
+        paramStatStorage_.resize(prop_.rows(), // paramStatStorage_ is set now, and will not be modified further during predict run
+                                 1); // no quantiles have to be computed for imported parameters, hence the single column
+        paramStatStorage_.col(0) = prop_;
+      }
 
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
       {
