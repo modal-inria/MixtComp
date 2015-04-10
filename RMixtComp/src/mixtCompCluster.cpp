@@ -98,12 +98,12 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
   {
     // create the mixtures, and read / set the data
     mixt::Timer readTimer("Read Data");
+    manager.createMixtures(composer,
+                           nbClusters);
     warnLog += composer.setDataParam<mixt::ParamSetterDummy,
                                      mixt::DataHandlerR>(paramSetter,
                                                          handler,
                                                          true);
-    manager.createMixtures(composer,
-                           nbClusters);
     readTimer.top("data has been read");
   }
 
@@ -145,6 +145,7 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
 
     mcMixture["runTime"] = totalTimer.top("end of run");
     mcMixture["nbSample"] = composer.nbSample();
+    mcMixture["mode"] = "learn";
   }
 
   mcMixture["warnLog"] = warnLog;

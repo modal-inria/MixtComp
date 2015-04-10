@@ -42,7 +42,7 @@ IMixtureComposerBase::IMixtureComposerBase(int nbSample,
     idName_("z_class")
 {
   zi_.resizeArrays(nbSample);
-  intializeMixtureParameters();
+  intializeMixtureParameters(); // default values that will be overwritten either by pStep (learning), or setDataParam (prediction)
 }
 
 /* copy constructor */

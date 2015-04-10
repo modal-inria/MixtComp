@@ -113,7 +113,6 @@ class MixtureManager
                                                                                                                                         p_paramSetter_,
                                                                                                                                         p_paramExtractor_,
                                                                                                                                         confidenceLevel);
-          p_bridge->setDataParam(warnLog_);
           return p_bridge;
         }
         break;
@@ -134,7 +133,6 @@ class MixtureManager
                                                                                                                                   p_paramSetter_,
                                                                                                                                   p_paramExtractor_,
                                                                                                                                   confidenceLevel);
-          p_bridge->setDataParam(warnLog_);
           return p_bridge;
         }
         break;
@@ -155,7 +153,6 @@ class MixtureManager
                                                                                                                             p_paramSetter_,
                                                                                                                             p_paramExtractor_,
                                                                                                                             confidenceLevel);
-          p_bridge->setDataParam(warnLog_);
           return p_bridge;
         }
         break;

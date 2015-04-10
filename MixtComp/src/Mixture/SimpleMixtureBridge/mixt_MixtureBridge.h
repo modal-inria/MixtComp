@@ -133,11 +133,12 @@ class MixtureBridge : public mixt::IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    void setDataParam(std::string& warnLog)
+    std::string setDataParam()
     {
 #ifdef MC_DEBUG_NEW
       std::cout << "MixtureBridge::setDataParam(), " << idName() << ", " << mixture_.model() << std::endl;
 #endif
+      std::string warnLog;
       p_handler_->getData(idName(),
                           m_augDataij_,
                           nbSample_,
@@ -180,7 +181,7 @@ class MixtureBridge : public mixt::IMixture
             mixture_.setModalities(nbParam);
           }
           mixture_.setParameters(param_);
-          paramStatStorage_.resize(param_.rows(),
+          paramStatStorage_.resize(param_.rows(), // paramStatStorage_ is set now, and will not be modified furing predict run
                                    1); // no quantiles have to be computed for imported parameters, hence the single column
           paramStatStorage_.col(0) = param_;
           // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
@@ -218,6 +219,8 @@ class MixtureBridge : public mixt::IMixture
         dataStatStorage_.resize(nbSample_,
                                 1);
       }
+
+      return warnLog;
     }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be

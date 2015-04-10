@@ -59,6 +59,7 @@ Real MixtureComposer::lnCompletedLikelihood(int i, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnCompletedLikelihood(int i, int k), i: " << i << ", k: " << k << std::endl;
+  std::cout << "prop_.size(): " << prop_.size() << std::endl;
 #endif
   Real sum = std::log(prop_[k]);
 
