@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
   R.parseEvalQ("library(RMixtComp)");
 
 //  R.parseEvalQ("testGenDataLearn()");
-  R.parseEvalQ("testLearnPredict()");
+//  R.parseEvalQ("testLearnPredict()");
 
 //  R.parseEvalQ("clustering()");
 //  R.parseEvalQ("clustAuchan()");
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 //  R.parseEvalQ("source(\"learn.R\")");
 //  R.parseEvalQ("source(\"predict.R\")");
 
-//  R.parseEvalQ("webDemoPredict(\"/home/elvinz/Data/workspace/mixtcomp.master/RMixtComp/dataServer/exp_69\")");
+  R.parseEvalQ("webDemoLearn(\"/home/elvinz/Data/workspace/mixtcomp.master/RMixtComp/dataServer/exp_68\")");
 
   exit(0);
 }

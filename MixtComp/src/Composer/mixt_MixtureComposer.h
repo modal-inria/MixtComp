@@ -164,7 +164,7 @@ class MixtureComposer : public mixt::IMixtureComposerBase
              typename ParamExtractor>
     void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "MixtureComposer::exportDataParam" << std::endl;
       std::cout << "zi_data_" << std::endl;
       std::cout << zi_.data_ << std::endl;

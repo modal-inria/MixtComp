@@ -135,7 +135,7 @@ class MixtureBridge : public mixt::IMixture
      */
     std::string setDataParam(RunMode mode)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "MixtureBridge::setDataParam(), " << idName() << ", " << mixture_.model() << std::endl;
 #endif
       std::string warnLog;
