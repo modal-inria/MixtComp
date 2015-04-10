@@ -39,10 +39,10 @@ namespace OrdinalProba
  */
 struct ItBOS
 {
-    int y_;
-    int z_;
-    Vector<std::pair<int, int> > part_;
-    std::pair<int, int> e_;
+    int y_; // breaking point
+    Vector<std::pair<int, int> > part_; // partition is uniquely defined by e_ from previous iteration and by y_
+    int z_; // blindness of comparison
+    std::pair<int, int> e_; // final segment for current iteration
 };
 
 /**
@@ -79,16 +79,16 @@ Real computeProba(const std::pair<int, int>& eInit,
  * @param c a constant reference to a vector containing the current search path
  * @param mu localization parameter (mode) of the distribution
  * @param pi precision parameter of the distribution
- * @param proba a reference to the vector with the probability distribution of the sampled variable
  * @param index localization of the segment in which the value to be sampled resides
+ * @param[out] proba a reference to the vector with the probability distribution of the sampled variable
  */
 void multinomialY(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,
                   Real pi,
-                  Vector<Real>& proba,
-                  int index);
+                  int index,
+                  Vector<Real>& proba);
 
 /**
  * Multinomial probability distribution for the variable z at a specific index
@@ -97,16 +97,16 @@ void multinomialY(const std::pair<int, int>& eInit,
  * @param c a constant reference to a vector containing the current search path
  * @param mu localization parameter (mode) of the distribution
  * @param pi precision parameter of the distribution
- * @param proba a reference to the vector with the probability distribution of the sampled variable
  * @param index localization of the segment in which the value to be sampled resides
+ * @param[out] probability for the elements of the partition (all other segment have null probability)
  */
 void multinomialZ(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,
                   Real pi,
-                  Vector<Real>& proba,
-                  int index);
+                  int index,
+                  Vector<Real>& proba);
 
 } // namespace OrdinalProba
 

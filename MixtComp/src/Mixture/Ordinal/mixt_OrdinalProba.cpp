@@ -244,14 +244,25 @@ void multinomialY(const std::pair<int, int>& eInit,
                   int x,
                   int mu,
                   Real pi,
-                  Vector<Real>& proba,
-                  int index)
+                  int index,
+                  Vector<Real>& proba)
 {
   int yBack = c(index).y_; // current y value is backed-up
-  int nbVal = eInit.second - eInit.first + 1;
+  int minVal, maxVal;
+  if (index == 0)
+  {
+    minVal = eInit.first;
+    maxVal = eInit.second;
+  }
+  else
+  {
+    minVal = c(index - 1).e_.first;
+    maxVal = c(index - 1).e_.second;
+  }
+  int nbVal = maxVal - minVal + 1;
   proba.resize(nbVal);
 
-  for (int i = 0; i < nbVal; ++i)
+  for (int i = minVal; i < maxVal + 1; ++i) // loop over values of y allowed by previous segment
   {
     c(index).y_ = i; // y value is replaced in-place in the path
     proba(i) = computeProba(eInit,
@@ -279,14 +290,11 @@ void multinomialZ(const std::pair<int, int>& eInit,
                   Vector<Real>& proba,
                   int index)
 {
-  int nbVal = 2; // only two possible values for z
+  int nbVal = 2; // partition is always composed of three elements
   int zBack = c(index).z_; // current z value is backed-up
   proba.resize(nbVal);
-  Vector<int> vals(nbVal);
-  vals(0) = 0;
-  vals(1) = 1;
 
-  for (int i = 0; i < nbVal; ++i)
+  for (int i = 0; i < 2; ++i)
   {
     c(index).z_ = i; // z value is replaced in-place in the path
     proba(i) = computeProba(eInit,

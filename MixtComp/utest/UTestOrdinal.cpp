@@ -129,18 +129,17 @@ TEST(Ordinal, multinomialY0)
 
   int index = 1; // iteration where y conditional probability is to be computed
   Vector<Real> computedProba; // conditional probability distribution actually computed by multinomialY
-  Vector<Real> expectedProba(3); // conditional probability expected
+  Vector<Real> expectedProba(2); // conditional probability expected
   expectedProba(0) = 0.5; // since comparison is perfect, the splitting point does not matter
   expectedProba(1) = 0.5; // since comparison is perfect, the splitting point does not matter
-  expectedProba(2) = 0.; // point is unreachable at iteration 2
 
   multinomialY(eInit,
                c,
                x,
                mu,
                pi,
-               computedProba,
-               index);
+               index,
+               computedProba);
 
 #ifdef MC_DEBUG_NEW
   std::cout << "computedProba" << std::endl;
