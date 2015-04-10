@@ -41,6 +41,7 @@ struct ItBOS
 {
     int y_;
     int z_;
+    Vector<std::pair<int, int> > part_;
     std::pair<int, int> e_;
 };
 

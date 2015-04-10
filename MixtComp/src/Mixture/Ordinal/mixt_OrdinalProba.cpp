@@ -106,39 +106,32 @@ Real eProba(int z,
   std::cout << "eProba" << std::endl;
 #endif
   Real eProba;
-  int sizePart = 0;
 
-  int closestSegment = -1; // index in partition of the closest segment
-  Real disClosestSegment; // distance between mu and closest segment
-  for (int s = 0; s < 3; ++s) // computation of the closest segment
+  if (z == 1) // comparison is perfect, and only the best segment has a nonzero probability
   {
-#ifdef MC_DEBUG_NEW
-    std::cout << "\ts: " << s << ", part(s).first: " << part(s).first << ", part(s).second: " << part(s).second << std::endl;
-#endif
-    sizePart += part(s).second - part(s).first + 1;
-    if (part(s).first > -1) // pair containing {-1, -1} are ignored, as they describe an empty segment
+    int closestSegment = -1; // index in partition of the closest segment
+    Real disClosestSegment; // distance between mu and closest segment
+    for (int s = 0; s < 3; ++s) // computation of the closest segment
     {
-      Real disCurrSegment = std::min(std::abs(mu - part(s).first),
-                                     std::abs(mu - part(s).second));
-      if (disCurrSegment < disClosestSegment || closestSegment == -1) // a new closest segment has been found, or for the first valid segment
+  #ifdef MC_DEBUG_NEW
+      std::cout << "\ts: " << s << ", part(s).first: " << part(s).first << ", part(s).second: " << part(s).second << std::endl;
+  #endif
+      if (part(s).first > -1) // pair containing {-1, -1} are ignored, as they describe an empty segment
       {
-        closestSegment = s;
-        disClosestSegment = disCurrSegment;
-#ifdef MC_DEBUG_NEW
-      std::cout << "\t\tdisCurrSegment: " << disCurrSegment << std::endl;
-      std::cout << "\t\tdisClosestSegment: " << disClosestSegment << std::endl;
-#endif
+        Real disCurrSegment = std::min(std::abs(mu - part(s).first),
+                                       std::abs(mu - part(s).second));
+        if (disCurrSegment < disClosestSegment || closestSegment == -1) // a new closest segment has been found, or for the first valid segment
+        {
+          closestSegment = s;
+          disClosestSegment = disCurrSegment;
+  #ifdef MC_DEBUG_NEW
+        std::cout << "\t\tdisCurrSegment: " << disCurrSegment << std::endl;
+        std::cout << "\t\tdisClosestSegment: " << disClosestSegment << std::endl;
+  #endif
+        }
       }
     }
-  }
 
-#ifdef MC_DEBUG_NEW
-  std::cout << "\tclosestSegment: " << closestSegment << std::endl;
-  std::cout << "\tdisClosestSegment: " << disClosestSegment << std::endl;
-#endif
-
-  if (z == 1) // if comparison is perfect, anything but the best interval has a 0 conditional probability
-  {
     if (e == part(closestSegment))
     {
       eProba = 1.;
@@ -148,9 +141,19 @@ Real eProba(int z,
       eProba = 0.;
     }
   }
-  else // comparison is imperfect, probability of the selected subinterval is proportional to its size
+  else // comparison is blind, and proba is based on sizes of segments
   {
-    eProba = Real(part(closestSegment).second - part(closestSegment).first + 1) / Real(sizePart);
+    int sizePart = 0; // total size of the partition
+    eProba = 0.; // by default the segment is assumed absent from the partition, and hence having a null probability
+    for (int s = 0; s < 3; ++s) // test if e is among the partition. If this is the case, computation of proba using the size, otherwise proba is zero
+    {
+      sizePart += part(s).second - part(s).first + 1;
+      if (part(s) == e)
+      {
+        eProba = Real(part(s).second - part(s).first + 1);
+      }
+    }
+    eProba /= Real(sizePart);
   }
 
 #ifdef MC_DEBUG_NEW
@@ -202,23 +205,18 @@ Real computeProba(const std::pair<int, int>& eInit,
     }
     else
     {
-      ePr = c(i - 1).e_;
+      ePr = c(i - 1).e_; // last iteration segment
     }
-    const std::pair<int, int>& eCur = c(i).e_; // current iteration segment
+    const Vector<std::pair<int, int> >& part = c(i).part_; // current iteration partition
+    const std::pair<int, int>& e = c(i).e_; // current iteration segment segment
 
 #ifdef MC_DEBUG_NEW
     std::cout << "i: " << i
               << ", y: " << y
               << ", z: " << z
               << ", ePr.first: " << ePr.first << ", ePr.second: " << ePr.second
-              << ", eCur.first: " << eCur.first << ", eCur.second: " << eCur.second << std::endl;
+              << ", e.first: " << e.first << ", e.second: " << e.second << std::endl;
 #endif
-
-    Vector<std::pair<int, int> > part;
-    partition(ePr,
-              y,
-              part);
-
     proba *= yProba(ePr,
                     y);
 
@@ -227,13 +225,16 @@ Real computeProba(const std::pair<int, int>& eInit,
 
     proba *= eProba(z,
                     part,
-                    eCur,
+                    e,
                     mu,
                     pi);
   }
 
   // probability of x
-  proba *= xProba(x, c(c.size() - 1).e_); // comparison of the last segment with the sampled x value
+  int lastElem = c.size() - 1;
+  const std::pair<int, int>& lastSeg = c(lastElem).e_; // last iteration segment
+  proba *= xProba(x,
+                  lastSeg); // comparison of the last segment with the sampled x value
 
   return proba;
 }
