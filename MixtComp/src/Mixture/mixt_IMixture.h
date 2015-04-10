@@ -117,7 +117,7 @@ class IMixture
      *
      * @return Empty string if no errors, otherwise errors description
      */
-    virtual std::string setDataParam()
+    virtual std::string setDataParam(RunMode mode)
     = 0;
 
     /** This function must be implemented to export data

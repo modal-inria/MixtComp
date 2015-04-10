@@ -202,7 +202,8 @@ class IMixtureComposerBase
       * @param checkInd should be set to 1 if a minimum number of individual per class should be
       * enforced at sampling (true in learning, false in prediction) */
     template<typename DataHandler>
-    std::string setZi(const DataHandler& dataHandler, bool checkInd)
+    std::string setZi(const DataHandler& dataHandler,
+                      RunMode mode)
     {
 #ifdef MC_DEBUG
       std::cout << "IMixtureComposerBase::setZi" << std::endl;
@@ -230,7 +231,7 @@ class IMixtureComposerBase
      std::cout << zi_.data_ << std::endl;
 #endif
 
-     Vector<bool> at(nb_enum_MisType_);
+     Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
      at(0) = true; // present_,
      at(1) = true;// missing_,
      at(2) = true;// missingFiniteValues_,
@@ -285,7 +286,7 @@ class IMixtureComposerBase
        }
        int nbIndPerClass = indPerClass.minCoeff();
 
-       if (nbIndPerClass > minIndPerClass || checkInd == false)
+       if (nbIndPerClass > minIndPerClass || mode == prediction_)
        {
          break; // enough individuals in each class to carry on
        }

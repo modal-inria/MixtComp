@@ -101,7 +101,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
     warnLog += composer.setDataParam<mixt::ParamSetterR,
                                      mixt::DataHandlerR>(paramSetter,
                                                          handler,
-                                                         false);
+                                                         mixt::prediction_);
     readTimer.top("data has been read");
   }
   

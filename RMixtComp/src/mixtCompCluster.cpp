@@ -103,7 +103,7 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
     warnLog += composer.setDataParam<mixt::ParamSetterDummy,
                                      mixt::DataHandlerR>(paramSetter,
                                                          handler,
-                                                         true);
+                                                         mixt::learning_);
     readTimer.top("data has been read");
   }
 

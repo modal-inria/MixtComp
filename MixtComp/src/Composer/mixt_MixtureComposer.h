@@ -136,16 +136,16 @@ class MixtureComposer : public mixt::IMixtureComposerBase
              typename DataHandler>
     std::string setDataParam(const ParamSetter& paramSetter,
                              const DataHandler& dataHandler,
-                             bool checkInd)
+                             RunMode mode)
     {
       std::string warnLog;
       warnLog += setProportion(paramSetter);
       warnLog += setZi(dataHandler,
-                       checkInd);
+                       mode);
 
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
       {
-        warnLog += (*it)->setDataParam();
+        warnLog += (*it)->setDataParam(mode);
       }
 
       return warnLog;
