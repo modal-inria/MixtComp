@@ -73,7 +73,7 @@ Real computeProba(const std::pair<int, int>& eInit,
                   Real pi);
 
 /**
- * Multinomial probability distribution for the variable y at a specific index
+ * Multinomial conditional probability distribution for the variable y at a specific index
  *
  * @param eInit a constant reference to the initial segment
  * @param c a constant reference to a vector containing the current search path
@@ -91,16 +91,34 @@ void multinomialY(const std::pair<int, int>& eInit,
                   Vector<Real>& proba);
 
 /**
- * Multinomial probability distribution for the variable z at a specific index
+ * Binomial conditional probability distribution for the variable z at a specific index
  *
  * @param eInit a constant reference to the initial segment
  * @param c a constant reference to a vector containing the current search path
  * @param mu localization parameter (mode) of the distribution
  * @param pi precision parameter of the distribution
  * @param index localization of the segment in which the value to be sampled resides
- * @param[out] probability for the elements of the partition (all other segment have null probability)
+ * @param[out] binomial probability distribution of the variable z
  */
 void multinomialZ(const std::pair<int, int>& eInit,
+                  Vector<ItBOS>& c,
+                  int x,
+                  int mu,
+                  Real pi,
+                  int index,
+                  Vector<Real>& proba);
+
+/**
+ * Multinomial conditional probability distribution for the elements of the partition at a specific index
+ *
+ * @param eInit a constant reference to the initial segment
+ * @param c a constant reference to a vector containing the current search path
+ * @param mu localization parameter (mode) of the distribution
+ * @param pi precision parameter of the distribution
+ * @param index localization of the segment in which the value to be sampled resides
+ * @param[out] multinomial probability distribution of the elements of the partition
+ */
+void multinomialE(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,

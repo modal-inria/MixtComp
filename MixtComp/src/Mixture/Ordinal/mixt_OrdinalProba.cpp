@@ -36,27 +36,40 @@ void partition(const std::pair<int, int>& e,
                Vector<std::pair<int, int> >& part)
 {
   part.resize(3); // list of candidates for next e_j. Candidates on first dimension, bounds on second dimension
-  if (e.first != y) // is the left interval non-empty ? If not, partition element will be an empty vector
+
+  if (y < e.first || y > e.second) // if y is not in the interval, all elements of the partition are empty
   {
-    part(0).first  = e.first;
-    part(0).second = y - 1;
-  }
-  else
-  {
-    part(0).first  = -1; // impossible value used to designate an empty set
+    part(0).first  = -1;
     part(0).second = -1;
-  }
-  part(1).first  = y; // center interval always contains the center element
-  part(1).second = y;
-  if (e.second != y) // is the right interval non-empty ? If not, partition element will be an empty vector
-  {
-    part(2).first  = y + 1;
-    part(2).second = e.second;
+    part(1).first  = -1;
+    part(1).second = -1;
+    part(2).first  = -1;
+    part(2).second = -1;
   }
   else
   {
-    part(2).first  = -1; // impossible value used to designate an empty set
-    part(2).second = -1;
+    if (e.first != y) // is the left interval non-empty ? If not, partition element will be an empty vector
+    {
+      part(0).first  = e.first;
+      part(0).second = y - 1;
+    }
+    else
+    {
+      part(0).first  = -1; // impossible value used to designate an empty set
+      part(0).second = -1;
+    }
+    part(1).first  = y; // center interval always contains the center element
+    part(1).second = y;
+    if (e.second != y) // is the right interval non-empty ? If not, partition element will be an empty vector
+    {
+      part(2).first  = y + 1;
+      part(2).second = e.second;
+    }
+    else
+    {
+      part(2).first  = -1; // impossible value used to designate an empty set
+      part(2).second = -1;
+    }
   }
 }
 
@@ -125,14 +138,14 @@ Real eProba(int z,
           closestSegment = s;
           disClosestSegment = disCurrSegment;
   #ifdef MC_DEBUG_NEW
-        std::cout << "\t\tdisCurrSegment: " << disCurrSegment << std::endl;
-        std::cout << "\t\tdisClosestSegment: " << disClosestSegment << std::endl;
+          std::cout << "\t\tdisCurrSegment: " << disCurrSegment << std::endl;
+          std::cout << "\t\tdisClosestSegment: " << disClosestSegment << std::endl;
   #endif
         }
       }
     }
 
-    if (e == part(closestSegment))
+    if (closestSegment > -1 && e == part(closestSegment)) // the closest segment must be defined, and e must then be equal to it.
     {
       eProba = 1.;
     }
@@ -153,7 +166,14 @@ Real eProba(int z,
         eProba = Real(part(s).second - part(s).first + 1);
       }
     }
-    eProba /= Real(sizePart);
+    if (sizePart > 0) // the case sizePart = 0 means that y was not in the segment e of the previous iteration. Case is possible during a Gibbs sampling.
+    {
+      eProba /= Real(sizePart);
+    }
+    else
+    {
+      eProba = 0.;
+    }
   }
 
 #ifdef MC_DEBUG_NEW
@@ -287,10 +307,10 @@ void multinomialZ(const std::pair<int, int>& eInit,
                   int x,
                   int mu,
                   Real pi,
-                  Vector<Real>& proba,
-                  int index)
+                  int index,
+                  Vector<Real>& proba)
 {
-  int nbVal = 2; // partition is always composed of three elements
+  int nbVal = 2; // 0: blind, 1: perfect
   int zBack = c(index).z_; // current z value is backed-up
   proba.resize(nbVal);
 
@@ -312,6 +332,38 @@ void multinomialZ(const std::pair<int, int>& eInit,
   std::cout << proba << std::endl;
 #endif
   c(index).z_ = zBack; // initial z value is restored
+}
+
+void multinomialE(const std::pair<int, int>& eInit,
+                  Vector<ItBOS>& c,
+                  int x,
+                  int mu,
+                  Real pi,
+                  int index,
+                  Vector<Real>& proba)
+{
+  int nbVal = 3; // partition is always composed of three elements
+  std::pair<int, int> eBack = c(index).e_; // current z value is backed-up
+  proba.resize(nbVal);
+
+  for (int i = 0; i < 3; ++i)
+  {
+    c(index).e_ = c(index).part_(i); // segment is replaced by the corresponding element of the partition
+    proba(i) = computeProba(eInit,
+                            c,
+                            x,
+                            mu,
+                            pi);
+  }
+  Real sumProba = proba.sum();
+  proba /= sumProba; // renormalization of probability vector
+#ifdef MC_DEBUG_NEW
+  std::cout << "multinomialZ" << std::endl;
+  std::cout << "sumProba: " << sumProba << std::endl;
+  std::cout << "proba" << std::endl;
+  std::cout << proba << std::endl;
+#endif
+  c(index).e_ = eBack; // initial z value is restored
 }
 
 } // namespace OrdinalProba
