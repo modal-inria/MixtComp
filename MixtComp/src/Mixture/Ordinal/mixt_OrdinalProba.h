@@ -81,14 +81,16 @@ Real computeProba(const std::pair<int, int>& eInit,
  * @param pi precision parameter of the distribution
  * @param index localization of the segment in which the value to be sampled resides
  * @param[out] proba a reference to the vector with the probability distribution of the sampled variable
+ * @param[out] minVal minimum value from the previous segment
  */
-void multinomialY(const std::pair<int, int>& eInit,
+void yMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,
                   Real pi,
                   int index,
-                  Vector<Real>& proba);
+                  Vector<Real>& proba,
+                  int& minVal);
 
 /**
  * Binomial conditional probability distribution for the variable z at a specific index
@@ -100,7 +102,7 @@ void multinomialY(const std::pair<int, int>& eInit,
  * @param index localization of the segment in which the value to be sampled resides
  * @param[out] binomial probability distribution of the variable z
  */
-void multinomialZ(const std::pair<int, int>& eInit,
+void zMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,
@@ -118,13 +120,67 @@ void multinomialZ(const std::pair<int, int>& eInit,
  * @param index localization of the segment in which the value to be sampled resides
  * @param[out] multinomial probability distribution of the elements of the partition
  */
-void multinomialE(const std::pair<int, int>& eInit,
+void eMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,
                   Real pi,
                   int index,
                   Vector<Real>& proba);
+
+/**
+ * Sample and update a y value in the search path, using the conditional probability
+ * provided by yMultinomial
+ *
+ * @param eInit a constant reference to the initial segment
+ * @param[out] c a constant reference to a vector containing the current search path
+ * @param x value of the ordinal data
+ * @param mu localization parameter (mode) of the distribution
+ * @param pi precision parameter of the distribution
+ * @param index localization of the segment in which the value to be sampled resides
+ */
+void ySample(const std::pair<int, int>& eInit,
+             Vector<ItBOS>& c,
+             int x,
+             int mu,
+             Real pi,
+             int index);
+
+/**
+ * Sample and update a z value in the search path, using the conditional probability
+ * provided by zMultinomial
+ *
+ * @param eInit a constant reference to the initial segment
+ * @param[out] c a constant reference to a vector containing the current search path
+ * @param x value of the ordinal data
+ * @param mu localization parameter (mode) of the distribution
+ * @param pi precision parameter of the distribution
+ * @param index localization of the segment in which the value to be sampled resides
+ */
+void zSample(const std::pair<int, int>& eInit,
+             Vector<ItBOS>& c,
+             int x,
+             int mu,
+             Real pi,
+             int index);
+
+/**
+ * Sample and update a e value in the search path, using the conditional probability
+ * provided by eMultinomial
+ *
+ * @param eInit a constant reference to the initial segment
+ * @param[out] c a constant reference to a vector containing the current search path
+ * @param x value of the ordinal data
+ * @param mu localization parameter (mode) of the distribution
+ * @param pi precision parameter of the distribution
+ * @param index localization of the segment in which the value to be sampled resides
+ */
+void zSample(const std::pair<int, int>& eInit,
+             Vector<ItBOS>& c,
+             int x,
+             int mu,
+             Real pi,
+             int index);
 
 } // namespace OrdinalProba
 

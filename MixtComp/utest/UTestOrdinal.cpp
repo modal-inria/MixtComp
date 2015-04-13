@@ -132,20 +132,22 @@ TEST(Ordinal, multinomialY0)
   Vector<Real> expectedProba(2); // conditional probability expected
   expectedProba(0) = 0.5; // since comparison is perfect, the splitting point does not matter
   expectedProba(1) = 0.5; // since comparison is perfect, the splitting point does not matter
+  int minVal;
 
-  multinomialY(eInit,
+  yMultinomial(eInit,
                c,
                x,
                mu,
                pi,
                index,
-               computedProba);
+               computedProba,
+               minVal);
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "computedProba" << std::endl;
   std::cout << computedProba << std::endl;
 #endif
-  EXPECT_TRUE(computedProba.isApprox(expectedProba));
+  EXPECT_TRUE(computedProba.isApprox(expectedProba) && minVal == 0);
 }
 
 /**
@@ -176,7 +178,7 @@ TEST(Ordinal, multinomialZ0)
   expectedProba(0) = 1.; // only an imprecise comparison will yield 5 while the mode is at 3
   expectedProba(1) = 0.; // perfect comparison is only possible for x = 3
 
-  multinomialZ(eInit,
+  zMultinomial(eInit,
                c,
                x,
                mu,
@@ -184,7 +186,7 @@ TEST(Ordinal, multinomialZ0)
                index,
                computedProba);
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "computedProba" << std::endl;
   std::cout << computedProba << std::endl;
 #endif
@@ -225,7 +227,7 @@ TEST(Ordinal, multinomialE0)
   expectedProba(1) = 0.; // perfect comparison is only possible for x = 3
   expectedProba(2) = 0.; // perfect comparison is only possible for x = 3
 
-  multinomialE(eInit,
+  eMultinomial(eInit,
                c,
                x,
                mu,
@@ -233,7 +235,7 @@ TEST(Ordinal, multinomialE0)
                0, // iteration where e conditional probability is to be computed
                computedProba);
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "computedProba" << std::endl;
   std::cout << computedProba << std::endl;
 #endif

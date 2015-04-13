@@ -21,6 +21,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include "../Statistic/mixt_MultinomialStatistic.h"
 #include "mixt_OrdinalProba.h"
 
 namespace mixt
@@ -85,7 +86,7 @@ Real yProba(const std::pair<int, int>& e,
   {
     yProba = 0.;
   }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "yProba: " << yProba << std::endl;
 #endif
   return yProba; // conditional probability of y, which only depends of the size of the interval
@@ -103,7 +104,7 @@ Real zProba(int z,
   {
     zProba = (1. - pi); // comparison is blind
   }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "zProba: " << zProba << std::endl;
 #endif
   return zProba;
@@ -115,7 +116,7 @@ Real eProba(int z,
             int mu,
             Real pi)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "eProba" << std::endl;
 #endif
   Real eProba;
@@ -126,7 +127,7 @@ Real eProba(int z,
     Real disClosestSegment; // distance between mu and closest segment
     for (int s = 0; s < 3; ++s) // computation of the closest segment
     {
-  #ifdef MC_DEBUG_NEW
+  #ifdef MC_DEBUG
       std::cout << "\ts: " << s << ", part(s).first: " << part(s).first << ", part(s).second: " << part(s).second << std::endl;
   #endif
       if (part(s).first > -1) // pair containing {-1, -1} are ignored, as they describe an empty segment
@@ -137,7 +138,7 @@ Real eProba(int z,
         {
           closestSegment = s;
           disClosestSegment = disCurrSegment;
-  #ifdef MC_DEBUG_NEW
+  #ifdef MC_DEBUG
           std::cout << "\t\tdisCurrSegment: " << disCurrSegment << std::endl;
           std::cout << "\t\tdisClosestSegment: " << disClosestSegment << std::endl;
   #endif
@@ -176,7 +177,7 @@ Real eProba(int z,
     }
   }
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "eProba: " << eProba << std::endl;
 #endif
   return eProba;
@@ -185,7 +186,7 @@ Real eProba(int z,
 Real xProba(int x,
             std::pair<int, int> eVal)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "xProba, eVal.first: " << eVal.first << ", eVal.second: " << eVal.second << ", x: " << x << std::endl;
 #endif
   Real xProba;
@@ -197,7 +198,7 @@ Real xProba(int x,
   {
     xProba = 0.;
   }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "xProba: " << xProba << std::endl;
 #endif
   return xProba;
@@ -209,7 +210,7 @@ Real computeProba(const std::pair<int, int>& eInit,
                   int mu,
                   Real pi)
 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "OrdinalProba::computeProba" << std::endl;
 #endif
   Real proba = 1.; // The initial probability of being in any of the member of the input interval is 1
@@ -230,7 +231,7 @@ Real computeProba(const std::pair<int, int>& eInit,
     const Vector<std::pair<int, int> >& part = c(i).part_; // current iteration partition
     const std::pair<int, int>& e = c(i).e_; // current iteration segment segment
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "i: " << i
               << ", y: " << y
               << ", z: " << z
@@ -259,16 +260,17 @@ Real computeProba(const std::pair<int, int>& eInit,
   return proba;
 }
 
-void multinomialY(const std::pair<int, int>& eInit,
+void yMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,
                   Real pi,
                   int index,
-                  Vector<Real>& proba)
+                  Vector<Real>& proba,
+                  int& minVal)
 {
   int yBack = c(index).y_; // current y value is backed-up
-  int minVal, maxVal;
+  int maxVal;
   if (index == 0)
   {
     minVal = eInit.first;
@@ -293,7 +295,7 @@ void multinomialY(const std::pair<int, int>& eInit,
   }
   Real sumProba = proba.sum();
   proba /= sumProba; // renormalization of probability vector
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "multinomialY" << std::endl;
   std::cout << "sumProba: " << sumProba << std::endl;
   std::cout << "proba" << std::endl;
@@ -302,7 +304,7 @@ void multinomialY(const std::pair<int, int>& eInit,
   c(index).y_ = yBack; // initial y value is restored
 }
 
-void multinomialZ(const std::pair<int, int>& eInit,
+void zMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,
@@ -325,7 +327,7 @@ void multinomialZ(const std::pair<int, int>& eInit,
   }
   Real sumProba = proba.sum();
   proba /= sumProba; // renormalization of probability vector
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "multinomialZ" << std::endl;
   std::cout << "sumProba: " << sumProba << std::endl;
   std::cout << "proba" << std::endl;
@@ -334,7 +336,7 @@ void multinomialZ(const std::pair<int, int>& eInit,
   c(index).z_ = zBack; // initial z value is restored
 }
 
-void multinomialE(const std::pair<int, int>& eInit,
+void eMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
                   int x,
                   int mu,
@@ -357,13 +359,72 @@ void multinomialE(const std::pair<int, int>& eInit,
   }
   Real sumProba = proba.sum();
   proba /= sumProba; // renormalization of probability vector
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   std::cout << "multinomialZ" << std::endl;
   std::cout << "sumProba: " << sumProba << std::endl;
   std::cout << "proba" << std::endl;
   std::cout << proba << std::endl;
 #endif
   c(index).e_ = eBack; // initial z value is restored
+}
+
+void ySample(const std::pair<int, int>& eInit,
+             Vector<ItBOS>& c,
+             int x,
+             int mu,
+             Real pi,
+             int index)
+{
+  int minVal;
+  MultinomialStatistic multi;
+  Vector<Real> proba;
+  yMultinomial(eInit, // computation of the conditional probability distribution
+               c,
+               x,
+               mu,
+               pi,
+               index,
+               proba,
+               minVal);
+  c(index).y_ = multi.sample(proba) + minVal; // sampled value replaces the current value in the search path c
+}
+
+void zSample(const std::pair<int, int>& eInit,
+             Vector<ItBOS>& c,
+             int x,
+             int mu,
+             Real pi,
+             int index)
+{
+  MultinomialStatistic multi;
+  Vector<Real> proba;
+  zMultinomial(eInit, // computation of the conditional probability distribution
+               c,
+               x,
+               mu,
+               pi,
+               index,
+               proba);
+  c(index).z_ = multi.sample(proba); // sampled value replaces the current value in the search path c
+}
+
+void eSample(const std::pair<int, int>& eInit,
+             Vector<ItBOS>& c,
+             int x,
+             int mu,
+             Real pi,
+             int index)
+{
+  MultinomialStatistic multi;
+  Vector<Real> proba;
+  eMultinomial(eInit, // computation of the conditional probability distribution
+               c,
+               x,
+               mu,
+               pi,
+               index,
+               proba);
+  c(index).e_ = c(index).part_(multi.sample(proba)); // sampled value replaces the current value in the search path c
 }
 
 } // namespace OrdinalProba

@@ -44,7 +44,7 @@ class MultinomialStatistic
 
     /** Sample a value from a multinomial law with coefficient of modalities provided */
     template<typename T>
-    Type sample(const T& modalities)
+    Type sample(const T& proportion)
     {
       boost::random::uniform_real_distribution<> uni(0.,
                                                      1.);
@@ -54,19 +54,19 @@ class MultinomialStatistic
       Real x = generator();
 #ifdef MC_DEBUG
       std::cout << "MultinomialStatistic::sample" << std::endl;
-      std::cout << "modalities: " << modalities << std::endl;
+      std::cout << "proportion: " << proportion << std::endl;
       std::cout << "x: " << x << std::endl;
 #endif
       Real cumProb = 0.; // cumulative probability
 
-      int rows = modalities.rows();
-      int cols = modalities.cols();
+      int rows = proportion.rows();
+      int cols = proportion.cols();
 
       for (int i = 0; i < rows; ++i) // double loop because the incoming object potentially is a block
       {
         for (int j = 0; j < cols; ++j)
         {
-          cumProb += modalities(i, j);
+          cumProb += proportion(i, j);
           if (x < cumProb)
           {
 #ifdef MC_DEBUG
