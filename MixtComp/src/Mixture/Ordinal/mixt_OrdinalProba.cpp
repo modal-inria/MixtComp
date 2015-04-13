@@ -270,14 +270,18 @@ void yMultinomial(const std::pair<int, int>& eInit,
                   int& minVal)
 {
   int yBack = c(index).y_; // current y value is backed-up
+  Vector<std::pair<int, int> > partBack = c(index).part_; // current partition is backed-up
+  const std::pair<int, int>* p_preSeg; // const pointer to the segment used to compute partition
   int maxVal;
   if (index == 0)
   {
+    p_preSeg = &eInit;
     minVal = eInit.first;
     maxVal = eInit.second;
   }
   else
   {
+    p_preSeg = &c(index - 1).e_;
     minVal = c(index - 1).e_.first;
     maxVal = c(index - 1).e_.second;
   }
@@ -287,6 +291,9 @@ void yMultinomial(const std::pair<int, int>& eInit,
   for (int i = minVal; i < maxVal + 1; ++i) // loop over values of y allowed by previous segment
   {
     c(index).y_ = i; // y value is replaced in-place in the path
+    partition(*p_preSeg, // computation of the partition
+              c(index).y_,
+              c(index).part_); // partition is updated according to the new breaking point
     proba(i) = computeProba(eInit,
                             c,
                             x,
