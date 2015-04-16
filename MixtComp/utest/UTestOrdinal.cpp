@@ -234,10 +234,10 @@ TEST(Ordinal, multinomialE0)
   EXPECT_TRUE(computedProba.isApprox(expectedProba));
 }
 
-///**
-// * Test if the mode obtained through Gibbs sampling corresponds to the mu parameter
-// */
-TEST(Ordinal, GibbsSampling)
+/**
+ * Test if a null precision implies an equipartition of the sampled x value
+ */
+TEST(Ordinal, GibbsSamplingNullPrecision)
 {
   int mu = 1; // mode
   Real pi = 0.; // precision
@@ -290,4 +290,60 @@ TEST(Ordinal, GibbsSampling)
 #endif
 
   ASSERT_LT((expectedProba - computedProba).norm(), 0.01);
+}
+
+/**
+ * Test if a non-null precision implies a corrected estimation of the mode, from sampled values
+ */
+TEST(Ordinal, GibbsSamplingMode)
+{
+  int mu = 1; // mode
+  Real pi = 0.5; // precision
+  int nbIter = 10000; // number of calls to samplePath
+  Vector<Real> computedProba(2); // computed probability distribution of x
+  computedProba = 0.;
+  int computedMode; // computed mode
+  int x; // x value to be sampled at each iteration
+
+  MultinomialStatistic multi;
+
+  std::pair<int, int> eInit; // vector describing initial segment
+  eInit.first = 0;
+  eInit.second = 1;
+
+  Vector<OrdinalProba::ItBOS> c(1); // initial search process of the Gibbs sampler
+
+  c(0).y_ = 1;
+  c(0).z_ = 1;
+  OrdinalProba::partition(eInit,
+                          c(0).y_,
+                          c(0).part_);
+  c(0).e_ = std::pair<int, int> (1, 1);
+
+  for (int i = 0; i < nbIter; ++i)
+  {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << std::endl;
+#endif
+    samplePath(eInit,
+               c,
+               mu,
+               pi,
+               multi);
+    x = c(0).e_.first; // x is sampled here
+    computedProba(x) += 1.; // the new occurrence of x is stored
+#ifdef MC_DEBUG
+   std::cout << "x: " << x << std::endl;
+   std::cout << "computedProba" << std::endl;
+   std::cout << computedProba << std::endl;
+#endif
+  }
+  computedProba /= computedProba.sum();
+  computedProba.maxCoeff(&computedMode);
+#ifdef MC_DEBUG
+  std::cout << "computedProba" << std::endl;
+  std::cout << computedProba << std::endl;
+#endif
+
+  ASSERT_EQ(computedMode, mu); // has the real mode been estimated correctly ?
 }
