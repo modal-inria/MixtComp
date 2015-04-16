@@ -24,6 +24,7 @@
 #include "gtest/gtest.h"
 #include "../src/Mixture/Ordinal/mixt_OrdinalProba.h"
 #include "../src/Various/mixt_Constants.h"
+#include "../src/Statistic/mixt_MultinomialStatistic.h"
 
 using namespace mixt;
 
@@ -47,11 +48,9 @@ TEST(Ordinal, computeProba0)
                           c(0).y_,
                           c(0).part_);
   c(0).e_ = std::pair<int, int> (1, 1); // segment is {1}, proba 1.
-  int x = 1; // value x obtained at the end of the binary search algorithm, proba 1. as upper segment was selected
 
   Real proba = OrdinalProba::computeProba(eInit,
                                           c,
-                                          x,
                                           mu,
                                           pi);
 
@@ -85,11 +84,9 @@ TEST(Ordinal, computeProba1)
                           c(1).y_,
                           c(1).part_);
   c(1).e_ = std::pair<int, int> (0, 0); // e, only one segment, in the middle, with proba 1.
-  int x = 0; // the mode was not picked !
 
   Real proba = OrdinalProba::computeProba(eInit,
                                           c,
-                                          x,
                                           mu,
                                           pi);
 
@@ -125,7 +122,6 @@ TEST(Ordinal, multinomialY0)
                           c(1).y_,
                           c(1).part_);
   c(1).e_ = std::pair<int, int> (1, 1); // best segment, {1}, considering that the comparison is perfect
-  int x = 1; // the mode was not picked, but x is compatible with last e, therefore conditional probability is 1.
 
   int index = 1; // iteration where y conditional probability is to be computed
   Vector<Real> computedProba; // conditional probability distribution actually computed by multinomialY
@@ -136,7 +132,6 @@ TEST(Ordinal, multinomialY0)
 
   yMultinomial(eInit,
                c,
-               x,
                mu,
                pi,
                index,
@@ -170,7 +165,6 @@ TEST(Ordinal, multinomialZ0)
                           c(0).y_,
                           c(0).part_);
   c(0).e_ = std::pair<int, int> (5, 5); // e, right segment selected, proba 2./3. (sizes of segments are not equal)
-  int x = 5; // the mode was not picked, but x is compatible with last e, therefore conditional probability is 1.
 
   int index = 0; // iteration where y conditional probability is to be computed
   Vector<Real> computedProba; // conditional probability distribution actually computed by multinomialY
@@ -180,7 +174,6 @@ TEST(Ordinal, multinomialZ0)
 
   zMultinomial(eInit,
                c,
-               x,
                mu,
                pi,
                index,
@@ -213,13 +206,13 @@ TEST(Ordinal, multinomialE0)
                           c(0).y_,
                           c(0).part_);
   c(0).e_ = std::pair<int, int> (6, 7); // value which will be variable
+
   c(1).y_ = 6; // y picked, proba 1./2.
   c(1).z_ = 1;
   OrdinalProba::partition(c(0).e_, // computation of the partition
                           c(1).y_,
                           c(1).part_);
   c(1).e_ = std::pair<int, int> (6, 6); // e, right segment selected, proba 2./3. (sizes of segments are not equal)
-  int x = 6; // the mode was not picked, but x is compatible with last e, therefore conditional probability is 1.
 
   Vector<Real> computedProba; // conditional probability distribution actually computed by multinomialY
   Vector<Real> expectedProba(3); // conditional probability expected
@@ -229,7 +222,6 @@ TEST(Ordinal, multinomialE0)
 
   eMultinomial(eInit,
                c,
-               x,
                mu,
                pi,
                0, // iteration where e conditional probability is to be computed
@@ -240,4 +232,62 @@ TEST(Ordinal, multinomialE0)
   std::cout << computedProba << std::endl;
 #endif
   EXPECT_TRUE(computedProba.isApprox(expectedProba));
+}
+
+///**
+// * Test if the mode obtained through Gibbs sampling corresponds to the mu parameter
+// */
+TEST(Ordinal, GibbsSampling)
+{
+  int mu = 1; // mode
+  Real pi = 0.; // precision
+  int nbIter = 10000; // number of calls to samplePath
+  Vector<Real> computedProba(2); // computed probability distribution of x
+  Vector<Real> expectedProba(2); // expected probability distribution of x
+  computedProba = 0.;
+  expectedProba = 0.5;
+  int x; // x value to be sampled at each iteration
+
+
+  MultinomialStatistic multi;
+
+  std::pair<int, int> eInit; // vector describing initial segment
+  eInit.first = 0;
+  eInit.second = 1;
+
+  Vector<OrdinalProba::ItBOS> c(1); // initial search process of the Gibbs sampler
+
+  c(0).y_ = 0;
+  c(0).z_ = 0;
+  OrdinalProba::partition(eInit,
+                          c(0).y_,
+                          c(0).part_);
+  c(0).e_ = std::pair<int, int> (0, 0);
+
+  for (int i = 0; i < nbIter; ++i)
+  {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << std::endl;
+#endif
+    samplePath(eInit,
+               c,
+               mu,
+               pi,
+               multi);
+    x = c(0).e_.first; // x is sampled here
+    computedProba(x) += 1.; // the new occurrence of x is stored
+#ifdef MC_DEBUG
+   std::cout << "x: " << x << std::endl;
+   std::cout << "computedProba" << std::endl;
+   std::cout << computedProba << std::endl;
+#endif
+  }
+  computedProba /= computedProba.sum();
+
+#ifdef MC_DEBUG
+  std::cout << "computedProba" << std::endl;
+  std::cout << computedProba << std::endl;
+#endif
+
+  ASSERT_LT((expectedProba - computedProba).norm(), 0.01);
 }

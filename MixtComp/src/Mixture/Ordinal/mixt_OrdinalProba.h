@@ -27,12 +27,22 @@
 #include <list>
 #include <utility>
 #include "../LinAlg/mixt_LinAlg.h"
+#include "../Statistic/mixt_MultinomialStatistic.h"
 
 namespace mixt
 {
 
 namespace OrdinalProba
 {
+
+/**
+ * Usual call order is:
+ * samplePath
+ * y, z and eSample
+ * yMultinomial
+ * computeProba
+ * y, z, and eProba
+ */
 
 /**
  * Structure containing the values of an iteration of the BOS algorithm
@@ -68,7 +78,6 @@ Real eProba(int z,
 
 Real computeProba(const std::pair<int, int>& eInit,
                   const Vector<ItBOS>& c,
-                  int x,
                   int mu,
                   Real pi);
 
@@ -85,7 +94,6 @@ Real computeProba(const std::pair<int, int>& eInit,
  */
 void yMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
-                  int x,
                   int mu,
                   Real pi,
                   int index,
@@ -104,7 +112,6 @@ void yMultinomial(const std::pair<int, int>& eInit,
  */
 void zMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
-                  int x,
                   int mu,
                   Real pi,
                   int index,
@@ -122,7 +129,6 @@ void zMultinomial(const std::pair<int, int>& eInit,
  */
 void eMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
-                  int x,
                   int mu,
                   Real pi,
                   int index,
@@ -141,10 +147,10 @@ void eMultinomial(const std::pair<int, int>& eInit,
  */
 void ySample(const std::pair<int, int>& eInit,
              Vector<ItBOS>& c,
-             int x,
              int mu,
              Real pi,
-             int index);
+             int index,
+             MultinomialStatistic& multi);
 
 /**
  * Sample and update a z value in the search path, using the conditional probability
@@ -159,10 +165,10 @@ void ySample(const std::pair<int, int>& eInit,
  */
 void zSample(const std::pair<int, int>& eInit,
              Vector<ItBOS>& c,
-             int x,
              int mu,
              Real pi,
-             int index);
+             int index,
+             MultinomialStatistic& multi);
 
 /**
  * Sample and update a e value in the search path, using the conditional probability
@@ -175,12 +181,27 @@ void zSample(const std::pair<int, int>& eInit,
  * @param pi precision parameter of the distribution
  * @param index localization of the segment in which the value to be sampled resides
  */
-void zSample(const std::pair<int, int>& eInit,
+void eSample(const std::pair<int, int>& eInit,
              Vector<ItBOS>& c,
-             int x,
              int mu,
              Real pi,
-             int index);
+             int index,
+             MultinomialStatistic& multi);
+
+/**
+ * Performs a single step of Gibbs sampling across all elements in the search path
+ *
+ * @param eInit a constant reference to the initial segment
+ * @param[out] c a constant reference to a vector containing the current search path
+ * @param x value of the ordinal data
+ * @param mu localization parameter (mode) of the distribution
+ * @param pi precision parameter of the distribution
+ */
+void samplePath(const std::pair<int, int>& eInit,
+                Vector<ItBOS>& c,
+                int mu,
+                Real pi,
+                MultinomialStatistic& multi);
 
 } // namespace OrdinalProba
 

@@ -21,7 +21,7 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-using namespace mixt;
-
 int main()
-{}
+{
+
+}

@@ -21,7 +21,6 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "../Statistic/mixt_MultinomialStatistic.h"
 #include "mixt_OrdinalProba.h"
 
 namespace mixt
@@ -123,6 +122,9 @@ Real eProba(int z,
 
   if (z == 1) // comparison is perfect, and only the best segment has a nonzero probability
   {
+#ifdef MC_DEBUG
+    std::cout << "z == 1" << std::endl;
+#endif
     int closestSegment = -1; // index in partition of the closest segment
     Real disClosestSegment; // distance between mu and closest segment
     for (int s = 0; s < 3; ++s) // computation of the closest segment
@@ -157,14 +159,20 @@ Real eProba(int z,
   }
   else // comparison is blind, and proba is based on sizes of segments
   {
+#ifdef MC_DEBUG
+    std::cout << "z == 0" << std::endl;
+#endif
     int sizePart = 0; // total size of the partition
     eProba = 0.; // by default the segment is assumed absent from the partition, and hence having a null probability
     for (int s = 0; s < 3; ++s) // test if e is among the partition. If this is the case, computation of proba using the size, otherwise proba is zero
     {
-      sizePart += part(s).second - part(s).first + 1;
-      if (part(s) == e)
+      if (part(s).first > -1) // test if current segment is nonempty
       {
-        eProba = Real(part(s).second - part(s).first + 1);
+        sizePart += part(s).second - part(s).first + 1;
+        if (part(s) == e)
+        {
+          eProba = Real(part(s).second - part(s).first + 1);
+        }
       }
     }
     if (sizePart > 0) // the case sizePart = 0 means that y was not in the segment e of the previous iteration. Case is possible during a Gibbs sampling.
@@ -183,30 +191,8 @@ Real eProba(int z,
   return eProba;
 }
 
-Real xProba(int x,
-            std::pair<int, int> eVal)
-{
-#ifdef MC_DEBUG
-  std::cout << "xProba, eVal.first: " << eVal.first << ", eVal.second: " << eVal.second << ", x: " << x << std::endl;
-#endif
-  Real xProba;
-  if (eVal.first == x) // if the content of the segment is different from x, then the proba to get x is null
-  {
-    xProba = 1.;
-  }
-  else
-  {
-    xProba = 0.;
-  }
-#ifdef MC_DEBUG
-    std::cout << "xProba: " << xProba << std::endl;
-#endif
-  return xProba;
-}
-
 Real computeProba(const std::pair<int, int>& eInit,
                   const Vector<ItBOS>& c,
-                  int x,
                   int mu,
                   Real pi)
 {
@@ -251,18 +237,11 @@ Real computeProba(const std::pair<int, int>& eInit,
                     pi);
   }
 
-  // probability of x
-  int lastElem = c.size() - 1;
-  const std::pair<int, int>& lastSeg = c(lastElem).e_; // last iteration segment
-  proba *= xProba(x,
-                  lastSeg); // comparison of the last segment with the sampled x value
-
   return proba;
 }
 
 void yMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
-                  int x,
                   int mu,
                   Real pi,
                   int index,
@@ -296,7 +275,6 @@ void yMultinomial(const std::pair<int, int>& eInit,
               c(index).part_); // partition is updated according to the new breaking point
     proba(i) = computeProba(eInit,
                             c,
-                            x,
                             mu,
                             pi);
   }
@@ -309,11 +287,11 @@ void yMultinomial(const std::pair<int, int>& eInit,
   std::cout << proba << std::endl;
 #endif
   c(index).y_ = yBack; // initial y value is restored
+  c(index).part_ = partBack; // current partition is restored
 }
 
 void zMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
-                  int x,
                   int mu,
                   Real pi,
                   int index,
@@ -328,7 +306,6 @@ void zMultinomial(const std::pair<int, int>& eInit,
     c(index).z_ = i; // z value is replaced in-place in the path
     proba(i) = computeProba(eInit,
                             c,
-                            x,
                             mu,
                             pi);
   }
@@ -345,12 +322,14 @@ void zMultinomial(const std::pair<int, int>& eInit,
 
 void eMultinomial(const std::pair<int, int>& eInit,
                   Vector<ItBOS>& c,
-                  int x,
                   int mu,
                   Real pi,
                   int index,
                   Vector<Real>& proba)
 {
+#ifdef MC_DEBUG
+  std::cout << "eMultinomial" << std::endl;
+#endif
   int nbVal = 3; // partition is always composed of three elements
   std::pair<int, int> eBack = c(index).e_; // current z value is backed-up
   proba.resize(nbVal);
@@ -360,7 +339,6 @@ void eMultinomial(const std::pair<int, int>& eInit,
     c(index).e_ = c(index).part_(i); // segment is replaced by the corresponding element of the partition
     proba(i) = computeProba(eInit,
                             c,
-                            x,
                             mu,
                             pi);
   }
@@ -377,61 +355,122 @@ void eMultinomial(const std::pair<int, int>& eInit,
 
 void ySample(const std::pair<int, int>& eInit,
              Vector<ItBOS>& c,
-             int x,
              int mu,
              Real pi,
-             int index)
+             int index,
+             MultinomialStatistic& multi)
 {
   int minVal;
-  MultinomialStatistic multi;
   Vector<Real> proba;
   yMultinomial(eInit, // computation of the conditional probability distribution
                c,
-               x,
                mu,
                pi,
                index,
                proba,
                minVal);
-  c(index).y_ = multi.sample(proba) + minVal; // sampled value replaces the current value in the search path c
+  Real sampleVal = multi.sample(proba);
+  c(index).y_ = sampleVal + minVal; // sampled value replaces the current value in the search path c
+
+  if (index == 0) // partition is updated using eInit segment
+  {
+    partition(eInit,
+              c(index).y_,
+              c(index).part_);
+  }
+  else // partition is updated previous iteration segment
+  {
+    partition(c(index - 1).e_,
+              c(index).y_,
+              c(index).part_);
+  }
+
+#ifdef MC_DEBUG
+  std::cout << "ySample, sampleVal: " << sampleVal << std::endl;
+  std::cout << proba << std::endl;
+#endif
 }
 
 void zSample(const std::pair<int, int>& eInit,
              Vector<ItBOS>& c,
-             int x,
              int mu,
              Real pi,
-             int index)
+             int index,
+             MultinomialStatistic& multi)
 {
-  MultinomialStatistic multi;
   Vector<Real> proba;
   zMultinomial(eInit, // computation of the conditional probability distribution
                c,
-               x,
                mu,
                pi,
                index,
                proba);
-  c(index).z_ = multi.sample(proba); // sampled value replaces the current value in the search path c
+  Real sampleVal = multi.sample(proba);
+  c(index).z_ = sampleVal; // sampled value replaces the current value in the search path c
+#ifdef MC_DEBUG
+  std::cout << "zSample, sampleVal: " << sampleVal << std::endl;
+  std::cout << proba << std::endl;
+#endif
 }
 
 void eSample(const std::pair<int, int>& eInit,
              Vector<ItBOS>& c,
-             int x,
              int mu,
              Real pi,
-             int index)
+             int index,
+             MultinomialStatistic& multi)
 {
-  MultinomialStatistic multi;
+#ifdef MC_DEBUG
+  for (int i = 0; i < 3; ++i)
+  {
+    std::cout << "c(index).part_(i).first: " << c(index).part_(i).first << std::endl;
+    std::cout << "c(index).part_(i).second: " << c(index).part_(i).second << std::endl;
+  }
+#endif
   Vector<Real> proba;
   eMultinomial(eInit, // computation of the conditional probability distribution
                c,
-               x,
                mu,
                pi,
                index,
                proba);
-  c(index).e_ = c(index).part_(multi.sample(proba)); // sampled value replaces the current value in the search path c
+  int sampleSegIndex = multi.sample(proba);
+  std::pair<int, int> sampleVal(c(index).part_(sampleSegIndex));
+  c(index).e_ = sampleVal; // sampled value replaces the current value in the search path c
+#ifdef MC_DEBUG
+  std::cout << "eSample, sampleVal.first: " << sampleVal.first << ", sampleVal.second: " <<  sampleVal.second << std::endl;
+  std::cout << "proba" << std::endl;
+  std::cout << proba << std::endl;
+#endif
+}
+
+void samplePath(const std::pair<int, int>& eInit,
+           Vector<ItBOS>& c,
+           int mu,
+           Real pi,
+           MultinomialStatistic& multi)
+{
+  for (int i = 0; i < c.size(); ++i)
+  {
+    ySample(eInit,
+            c,
+            mu,
+            pi,
+            i,
+            multi);
+    zSample(eInit,
+            c,
+            mu,
+            pi,
+            i,
+            multi);
+    eSample(eInit,
+            c,
+            mu,
+            pi,
+            i,
+            multi);
+  }
 }
 
 } // namespace OrdinalProba
