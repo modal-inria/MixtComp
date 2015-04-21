@@ -93,7 +93,7 @@ Real computeProba(const std::pair<int, int>& eInit,
  * @param[out] minVal minimum value from the previous segment
  */
 void yMultinomial(const std::pair<int, int>& eInit,
-                  Vector<ItBOS>& c,
+                  const Vector<ItBOS>& c,
                   int mu,
                   Real pi,
                   int index,
