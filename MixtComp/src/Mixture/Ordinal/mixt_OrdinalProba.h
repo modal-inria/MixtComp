@@ -110,8 +110,7 @@ void yMultinomial(const std::pair<int, int>& eInit,
  * @param index localization of the segment in which the value to be sampled resides
  * @param[out] binomial probability distribution of the variable z
  */
-void zMultinomial(const std::pair<int, int>& eInit,
-                  Vector<ItBOS>& c,
+void zMultinomial(const Vector<ItBOS>& c,
                   int mu,
                   Real pi,
                   int index,

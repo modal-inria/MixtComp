@@ -51,7 +51,7 @@ class IMixture
     {};
 
     /** return the Id of the mixture */
-    inline std::string const& idName() const
+    std::string const& idName() const
     {
       return idName_;
     }
@@ -109,7 +109,7 @@ class IMixture
     /** This function can be used to write summary of parameters on to the output stream.
      *  @param out Stream where you want to write the summary of parameters.
      */
-    inline virtual void writeParameters(std::ostream& out) const
+    virtual void writeParameters(std::ostream& out) const
     = 0;
     /** This function must be implemented to export data
      */

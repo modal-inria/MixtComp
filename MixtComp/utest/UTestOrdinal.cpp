@@ -172,8 +172,7 @@ TEST(Ordinal, multinomialZ0)
   expectedProba(0) = 1.; // only an imprecise comparison will yield 5 while the mode is at 3
   expectedProba(1) = 0.; // perfect comparison is only possible for x = 3
 
-  zMultinomial(eInit,
-               c,
+  zMultinomial(c,
                mu,
                pi,
                index,

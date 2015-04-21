@@ -297,24 +297,25 @@ void yMultinomial(const std::pair<int, int>& eInit,
 #endif
 }
 
-void zMultinomial(const std::pair<int, int>& eInit,
-                  Vector<ItBOS>& c,
+void zMultinomial(const Vector<ItBOS>& c,
                   int mu,
                   Real pi,
                   int index,
                   Vector<Real>& proba)
 {
   int nbVal = 2; // 0: blind, 1: perfect
-  int zBack = c(index).z_; // current z value is backed-up
   proba.resize(nbVal);
 
-  for (int i = 0; i < 2; ++i)
+  for (int z = 0; z < nbVal; ++z)
   {
-    c(index).z_ = i; // z value is replaced in-place in the path
-    proba(i) = computeProba(eInit,
-                            c,
-                            mu,
-                            pi);
+    Real zP = zProba(z,
+                     pi);
+    Real eP = eProba(z,
+                     c(index).part_,
+                     c(index).e_,
+                     mu,
+                     pi);
+    proba(z) = zP * eP;
   }
   Real sumProba = proba.sum();
   proba /= sumProba; // renormalization of probability vector
@@ -324,7 +325,6 @@ void zMultinomial(const std::pair<int, int>& eInit,
   std::cout << "proba" << std::endl;
   std::cout << proba << std::endl;
 #endif
-  c(index).z_ = zBack; // initial z value is restored
 }
 
 void eMultinomial(const std::pair<int, int>& eInit,
@@ -406,8 +406,7 @@ void zSample(const std::pair<int, int>& eInit,
              MultinomialStatistic& multi)
 {
   Vector<Real> proba;
-  zMultinomial(eInit, // computation of the conditional probability distribution
-               c,
+  zMultinomial(c,
                mu,
                pi,
                index,
