@@ -127,6 +127,7 @@ void zMultinomial(const Vector<ItBOS>& c,
  * @param[out] multinomial probability distribution of the elements of the partition
  */
 void eMultinomial(const Vector<ItBOS>& c,
+                  const Vector<int>& endCond,
                   int mu,
                   Real pi,
                   int index,
@@ -181,6 +182,7 @@ void zSample(const std::pair<int, int>& eInit,
  */
 void eSample(const std::pair<int, int>& eInit,
              Vector<ItBOS>& c,
+             const Vector<int>& endCond,
              int mu,
              Real pi,
              int index,
@@ -197,6 +199,7 @@ void eSample(const std::pair<int, int>& eInit,
  */
 void samplePath(const std::pair<int, int>& eInit,
                 Vector<ItBOS>& c,
+                const Vector<int>& endCond,
                 int mu,
                 Real pi,
                 MultinomialStatistic& multi);
