@@ -219,8 +219,7 @@ TEST(Ordinal, multinomialE0)
   expectedProba(1) = 0.; // perfect comparison is only possible for x = 3
   expectedProba(2) = 0.; // perfect comparison is only possible for x = 3
 
-  eMultinomial(eInit,
-               c,
+  eMultinomial(c,
                mu,
                pi,
                0, // iteration where e conditional probability is to be computed

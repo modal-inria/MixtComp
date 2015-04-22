@@ -327,8 +327,7 @@ void zMultinomial(const Vector<ItBOS>& c,
 #endif
 }
 
-void eMultinomial(const std::pair<int, int>& eInit,
-                  Vector<ItBOS>& c,
+void eMultinomial(const Vector<ItBOS>& c,
                   int mu,
                   Real pi,
                   int index,
@@ -338,16 +337,26 @@ void eMultinomial(const std::pair<int, int>& eInit,
   std::cout << "eMultinomial" << std::endl;
 #endif
   int nbVal = 3; // partition is always composed of three elements
-  std::pair<int, int> eBack = c(index).e_; // current z value is backed-up
   proba.resize(nbVal);
 
-  for (int i = 0; i < 3; ++i)
+  for (int e = 0; e < nbVal; ++e)
   {
-    c(index).e_ = c(index).part_(i); // segment is replaced by the corresponding element of the partition
-    proba(i) = computeProba(eInit,
-                            c,
-                            mu,
-                            pi);
+    Real eP = eProba(c(index).z_,
+                     c(index).part_,
+                     c(index).part_(e),
+                     mu,
+                     pi);
+    Real eS; // proba of subsequent element
+    if (index != c.size() - 1) // subsequent y proba is impacted by the change in e
+    {
+      eS = yProba(c(index    ).e_,
+                  c(index + 1).y_);
+    }
+    else // proba of the user-provided constraint is impacted by the change in e
+    {
+      eS = 1.; // no constraints at the moment
+    }
+    proba(e) = eP * eS;
   }
   Real sumProba = proba.sum();
   proba /= sumProba; // renormalization of probability vector
@@ -357,7 +366,6 @@ void eMultinomial(const std::pair<int, int>& eInit,
   std::cout << "proba" << std::endl;
   std::cout << proba << std::endl;
 #endif
-  c(index).e_ = eBack; // initial z value is restored
 }
 
 void ySample(const std::pair<int, int>& eInit,
@@ -427,6 +435,7 @@ void eSample(const std::pair<int, int>& eInit,
              MultinomialStatistic& multi)
 {
 #ifdef MC_DEBUG
+  std::cout << "eSample" << std::endl;
   for (int i = 0; i < 3; ++i)
   {
     std::cout << "c(index).part_(i).first: " << c(index).part_(i).first << std::endl;
@@ -434,12 +443,15 @@ void eSample(const std::pair<int, int>& eInit,
   }
 #endif
   Vector<Real> proba;
-  eMultinomial(eInit, // computation of the conditional probability distribution
-               c,
+  eMultinomial(c,
                mu,
                pi,
                index,
                proba);
+#ifdef MC_DEBUG
+  std::cout << "proba" << std::endl;
+  std::cout << proba << std::endl;
+#endif
   int sampleSegIndex = multi.sample(proba);
   std::pair<int, int> sampleVal(c(index).part_(sampleSegIndex));
   c(index).e_ = sampleVal; // sampled value replaces the current value in the search path c

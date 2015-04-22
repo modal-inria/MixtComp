@@ -126,8 +126,7 @@ void zMultinomial(const Vector<ItBOS>& c,
  * @param index localization of the segment in which the value to be sampled resides
  * @param[out] multinomial probability distribution of the elements of the partition
  */
-void eMultinomial(const std::pair<int, int>& eInit,
-                  Vector<ItBOS>& c,
+void eMultinomial(const Vector<ItBOS>& c,
                   int mu,
                   Real pi,
                   int index,
