@@ -358,7 +358,7 @@ TEST(Ordinal, GibbsSamplingMode)
 /**
  * Test if a non-null precision implies a corrected estimation of the mode, from sampled values
  */
-TEST(Ordinal, GibbsSampling1RangeConstraint)
+TEST(Ordinal, GibbsSamplingRangeConstraint)
 {
   int mu = 0; // mode
   Real pi = 0.5; // precision
@@ -377,6 +377,77 @@ TEST(Ordinal, GibbsSampling1RangeConstraint)
 
   Vector<int> endCond(2); // vector describing the constraint on the value
   endCond(0) = 1;
+  endCond(1) = 2;
+
+  Vector<OrdinalProba::ItBOS> c(2); // initial search process of the Gibbs sampler
+
+  c(0).y_ = 0;
+  c(0).z_ = 0;
+  OrdinalProba::partition(eInit,
+                          c(0).y_,
+                          c(0).part_);
+  c(0).e_ = std::pair<int, int> (1, 2);
+  c(1).y_ = 2;
+  c(1).z_ = 0;
+  OrdinalProba::partition(c(1).e_,
+                          c(1).y_,
+                          c(1).part_);
+  c(1).e_ = std::pair<int, int> (2, 2);
+
+  for (int i = 0; i < nbIter; ++i)
+  {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << std::endl;
+#endif
+    samplePath(eInit,
+               c,
+               endCond,
+               mu,
+               pi,
+               multi);
+    x = c(1).e_.first; // x is sampled here
+#ifdef MC_DEBUG
+    std::cout << "x: " << x << std::endl;
+#endif
+    computedProba(x) += 1.; // the new occurrence of x is stored
+#ifdef MC_DEBUG
+   std::cout << "x: " << x << std::endl;
+   std::cout << "computedProba" << std::endl;
+   std::cout << computedProba << std::endl;
+#endif
+  }
+  computedProba /= computedProba.sum();
+  computedProba.maxCoeff(&computedMode);
+#ifdef MC_DEBUG
+  std::cout << "computedProba" << std::endl;
+  std::cout << computedProba << std::endl;
+#endif
+
+  ASSERT_EQ(computedMode, expectedMode); // has the real mode been estimated correctly ?
+}
+
+/**
+ * Test allowing a single value in the Gibbs sampling (typical usage as data value is known)
+ */
+TEST(Ordinal, GibbsSamplingValConstraint)
+{
+  int mu = 1; // mode
+  Real pi = 0.5; // precision
+  int nbIter = 10000; // number of calls to samplePath
+  Vector<Real> computedProba(3); // computed probability distribution of x
+  computedProba = 0.;
+  int computedMode; // computed mode
+  int expectedMode = 2; // expected mode not equal to "parameter" mode, as custom constraints are provided on x values
+  int x; // x value to be sampled at each iteration
+
+  MultinomialStatistic multi;
+
+  std::pair<int, int> eInit; // vector describing initial segment
+  eInit.first = 0;
+  eInit.second = 2;
+
+  Vector<int> endCond(2); // vector describing the constraint on the value
+  endCond(0) = 2;
   endCond(1) = 2;
 
   Vector<OrdinalProba::ItBOS> c(2); // initial search process of the Gibbs sampler
