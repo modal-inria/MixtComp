@@ -56,11 +56,40 @@ struct ItBOS
 };
 
 /**
+ * Compute valid initial path for the Gibbs
+ *
+ * @param[in] initSeg initial segment on which path must be computed
+ * @param[in] endCond constraints on the final data
+ * @param[in] multi multinomial sampler
+ * @param[out] c path
+ */
+void initPath(const std::pair<int, int>& initSeg,
+              const Vector<int>& endCond,
+              MultinomialStatistic& multi,
+              Vector<ItBOS>& c);
+
+/**
+ * Output a representation of the single node to std::cout
+ *
+ * @param[in] node
+ */
+void displaySegNode(const ItBOS& node);
+
+/**
+ * Output a representation of the path to std::cout
+ *
+ * @param[in] eInit initial segment of the path
+ * @param[in] c path
+ */
+void displayPath(const std::pair<int, int>& eInit,
+                 const Vector<ItBOS>& c);
+
+/**
  * Partition of a segment given a breakpoint
  *
- * @param[in] segment to be partitioned
+ * @param[in] e segment to be partitioned
  * @param[in] y breakpoint
- * @param[out] partition
+ * @param[out] part partition
  */
 void partition(const std::pair<int, int>& e,
                int y,

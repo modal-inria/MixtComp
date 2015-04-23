@@ -31,10 +31,100 @@ namespace OrdinalProba
 
 // format of interval e is a vector with bounds included: [1, 3] corresponds to the set {1, 2, 3}
 
+void initPath(const std::pair<int, int>& initSeg,
+              const Vector<int>& endCond,
+              MultinomialStatistic& multi,
+              Vector<ItBOS>& c)
+{
+#ifdef MC_DEBUG
+  std::cout << "initPath" << std::endl;
+#endif
+  int nbSegment = initSeg.second - initSeg.first; // number of segments in the path
+  int minCond = initSeg.first; // the restrictions on the segments are loose by default
+  int maxCond = initSeg.second;
+
+  c.resize(nbSegment);
+
+  if (endCond.size() != 0) // tighter restriction applied according to the provided data
+  {
+    minCond = endCond.minCoeff();
+    maxCond = endCond.maxCoeff();
+  }
+#ifdef MC_DEBUG
+  std::cout << "minCond: " << minCond << ", maxCond: " << maxCond << std::endl;
+#endif
+  std::pair<int, int> seg = initSeg;
+
+  for (int i = 0; i < nbSegment; ++i) // loop to fill all the elements of the path
+  {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << std::endl;
+#endif
+    int sizeSeg = seg.second - seg.first + 1;
+    Vector<Real> yProba(sizeSeg);
+    yProba = 1. / Real(sizeSeg);
+    c(i).y_ = multi.sample(yProba) + seg.first;
+    partition(seg,
+              c(i).y_,
+              c(i).part_);
+    c(i).z_ = 0; // comparisons are all blind in initialization
+    Vector<Real> segProba(3);
+    for (int s = 0; s < 3; ++s) // computation of the allowed segments
+    {
+      if ( c(i).part_(s).first > -1       && // only non-empty segments are considered
+           c(i).part_(s).first <= maxCond && // test if the current segment of the partition can reach any allowed point
+           minCond             <= c(i).part_(s).second )
+        segProba(s) = c(i).part_(s).second - c(i).part_(s).first + 1; // proba to sample segment is proportional
+      else
+        segProba(s) = 0.;
+    }
+    segProba /= segProba.sum();
+    int sampleSeg = multi.sample(segProba);
+#ifdef MC_DEBUG
+    std::cout << "segProba" << std::endl;
+    std::cout << segProba << std::endl;
+    std::cout << "sampleSeg: " << sampleSeg << std::endl;
+#endif
+    c(i).e_ = c(i).part_(sampleSeg);
+    seg = c(i).e_;
+#ifdef MC_DEBUG
+    std::cout << "currNode" << std::endl;
+    displaySegNode(c(i));
+#endif
+  }
+}
+
+void displaySegNode(const ItBOS& node)
+{
+  std::cout << "\ty: " << node.y_ << std::endl;
+  std::cout << "\tpart: " << std::endl;
+  for (int s = 0; s < 3; ++s)
+  {
+    std::cout << "\t\tpart(" << s << ").first: "  << node.part_(s).first
+              << ", part(" << s << ").second: "   << node.part_(s).second << std::endl;
+  }
+  std::cout << "\tz: " << node.z_ << std::endl;
+  std::cout << "\te.first: " << node.e_.first << ", e.second: " << node.e_.second << std::endl;
+}
+
+void displayPath(const std::pair<int, int>& eInit,
+                 const Vector<ItBOS>& c)
+{
+  std::cout << "eInit.first: " << eInit.first << ", eInit.second: " << eInit.second << std::endl;
+  for (int i = 0; i < c.size(); ++i)
+  {
+    std::cout << "i: " << i << std::endl;
+    displaySegNode(c(i));
+  }
+}
+
 void partition(const std::pair<int, int>& e,
                int y,
                Vector<std::pair<int, int> >& part)
 {
+#ifdef MC_DEBUG
+  std::cout << "partition" << std::endl;
+#endif
   part.resize(3); // list of candidates for next e_j. Candidates on first dimension, bounds on second dimension
 
   if (y < e.first || y > e.second) // if y is not in the interval, all elements of the partition are empty
@@ -71,6 +161,9 @@ void partition(const std::pair<int, int>& e,
       part(2).second = -1;
     }
   }
+#ifdef MC_DEBUG
+  std::cout << "end partition" << std::endl;
+#endif
 }
 
 Real yProba(const std::pair<int, int>& e,
@@ -533,6 +626,8 @@ void samplePath(const std::pair<int, int>& eInit,
             multi);
   }
 }
+
+
 
 } // namespace OrdinalProba
 

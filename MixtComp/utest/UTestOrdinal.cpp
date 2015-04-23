@@ -496,3 +496,36 @@ TEST(Ordinal, GibbsSamplingValConstraint)
 
   ASSERT_EQ(computedMode, expectedMode); // has the real mode been estimated correctly ?
 }
+
+/**
+ * Test checking the initialization of the Gibbs sampling
+ */
+TEST(Ordinal, GibbsInit)
+{
+  std::pair<int, int> initSeg(5, 12); // initial segment
+  Vector<int> endCond(2); // condition to be verified by the last segment
+  endCond(0) = 8;
+  endCond(1) = 10;
+
+  MultinomialStatistic multi;
+
+  Vector<OrdinalProba::ItBOS> c;
+
+  OrdinalProba::initPath(initSeg,
+                         endCond,
+                         multi,
+                         c);
+
+  int nbSeg = initSeg.second - initSeg.first;
+  bool validPath;
+  if (endCond(0) <= c(nbSeg - 1).e_.first && c(nbSeg - 1).e_.first <= endCond(1))
+    validPath = true;
+  else
+    validPath = false;
+
+#ifdef MC_DEBUG
+  OrdinalProba::displayPath(initSeg, c);
+#endif
+
+  ASSERT_EQ(validPath, true); // has the real mode been estimated correctly ?
+}
