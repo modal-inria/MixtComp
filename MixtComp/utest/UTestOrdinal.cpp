@@ -536,5 +536,19 @@ TEST(Ordinal, GibbsInit)
   OrdinalProba::displayPath(initSeg, c);
 #endif
 
-  ASSERT_EQ(validPath, true); // has the real mode been estimated correctly ?
+  int mu = 8; // arbitrary mode, just to verify the validity of the path
+  int pi = 0.5;
+
+  Real proba = OrdinalProba::computeProba(initSeg,
+                                          c,
+                                          endCond,
+                                          mu,
+                                          pi);
+#ifdef MC_DEBUG
+  std::cout << "proba: " << proba << std::endl;
+#endif
+
+  ASSERT_EQ(validPath, true); // is the path generated valid ?
+  ASSERT_GT(proba,
+            epsilon); // is his proba non zero ?
 }
