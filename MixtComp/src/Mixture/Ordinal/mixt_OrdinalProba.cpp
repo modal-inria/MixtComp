@@ -60,10 +60,7 @@ void initPath(const std::pair<int, int>& initSeg,
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
 #endif
-    int sizeSeg = seg.second - seg.first + 1;
-    Vector<Real> yProba(sizeSeg);
-    yProba = 1. / Real(sizeSeg);
-    c(i).y_ = multi.sample(yProba) + seg.first;
+    c(i).y_ = multi.sampleInt(seg.first, seg.second);
     partition(seg,
               c(i).y_,
               c(i).part_);

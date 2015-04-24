@@ -80,6 +80,14 @@ class MultinomialStatistic
       return -1; // to accelerate sampling, no check have been computed on modalities to verify that is it actually a probability distribution
     };
 
+    /**
+     * Uniform int sample
+     * @param low lower bound of the support
+     * @param high higher bound of the support
+     * @return integer uniformly sampled from [low:high]
+     */
+    int sampleInt(int low, int high);
+
   private:
     /** Random number generator */
     boost::random::mt19937 rng_;
