@@ -64,7 +64,7 @@ struct ItBOS
  * @param[out] c path
  */
 void initPath(const std::pair<int, int>& initSeg,
-              const Vector<int>& endCond,
+              const std::pair<int, int>& endCond,
               MultinomialStatistic& multi,
               Vector<ItBOS>& c);
 
@@ -117,7 +117,7 @@ Real eProba(int z,
  */
 Real computeProba(const std::pair<int, int>& eInit,
                   const Vector<ItBOS>& c,
-                  const Vector<int>& endCond,
+                  const std::pair<int, int>& endCond,
                   int mu,
                   Real pi);
 
@@ -167,7 +167,7 @@ void zMultinomial(const Vector<ItBOS>& c,
  * @param[out] multinomial probability distribution of the elements of the partition
  */
 void eMultinomial(const Vector<ItBOS>& c,
-                  const Vector<int>& endCond,
+                  const std::pair<int, int>& endCond,
                   int mu,
                   Real pi,
                   int index,
@@ -222,7 +222,7 @@ void zSample(const std::pair<int, int>& eInit,
  */
 void eSample(const std::pair<int, int>& eInit,
              Vector<ItBOS>& c,
-             const Vector<int>& endCond,
+             const std::pair<int, int>& endCond,
              int mu,
              Real pi,
              int index,
@@ -239,7 +239,7 @@ void eSample(const std::pair<int, int>& eInit,
  */
 void samplePath(const std::pair<int, int>& eInit,
                 Vector<ItBOS>& c,
-                const Vector<int>& endCond,
+                const std::pair<int, int>& endCond,
                 int mu,
                 Real pi,
                 MultinomialStatistic& multi);

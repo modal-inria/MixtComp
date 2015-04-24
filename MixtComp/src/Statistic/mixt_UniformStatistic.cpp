@@ -31,8 +31,6 @@
 namespace mixt
 {
 
-typedef UniformStatistic::Type Type;
-
 UniformStatistic::UniformStatistic() :
     rng_(time(0))
 {}
@@ -40,29 +38,29 @@ UniformStatistic::UniformStatistic() :
 UniformStatistic::~UniformStatistic()
 {}
 
-Real UniformStatistic::cdf(Type x,
-                                Real min,
-                                Real max) const
+Real UniformStatistic::cdf(Real x,
+                           Real min,
+                           Real max) const
 {
   boost::math::uniform uni(min,
                            max);
   Real proba = boost::math::cdf(uni,
-                                     x);
+                                x);
   return proba;
 }
 
-Real UniformStatistic::pdf(Type x,
-                                Real min,
-                                Real max) const
+Real UniformStatistic::pdf(Real x,
+                           Real min,
+                           Real max) const
 {
   boost::math::uniform uni(min,
                            max);
   Real proba = boost::math::pdf(uni,
-                                     x);
+                                x);
   return proba;
 }
 
-Type UniformStatistic::sample(Real min,
+Real UniformStatistic::sample(Real min,
                               Real max)
 {
   boost::random::uniform_real_distribution<> uni(min,
@@ -70,7 +68,7 @@ Type UniformStatistic::sample(Real min,
   boost::variate_generator<boost::random::mt19937&,
                            boost::random::uniform_real_distribution<> > generator(rng_,
                                                                                   uni);
-  Type x = generator();
+  Real x = generator();
   return x;
 }
 

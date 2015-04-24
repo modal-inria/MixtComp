@@ -33,23 +33,26 @@ namespace mixt
 class UniformStatistic
 {
   public:
-    typedef Real Type;
-
     UniformStatistic();
     ~UniformStatistic();
 
     /** cdf evaluated at individual x */
-    Real cdf(Type x,
-                  Real min,
-                  Real max) const;
+    Real cdf(Real x,
+             Real min,
+             Real max) const;
 
     /** pdf evaluated at individual x */
-    Real pdf(Type x,
-                  Real min,
-                  Real max) const;
+    Real pdf(Real x,
+             Real min,
+             Real max) const;
 
-    /** Sample a value from a Normal Law with parameters mean and sd */
-    Type sample(Real min,
+    /**
+     * Sample a Real from a uniform distribution
+     * @param min lower bound of the support
+     * @param max higher bound of the support
+     * @return Real uniformly sampled from [low:high]
+     */
+    Real sample(Real min,
                 Real max);
   private:
     /** Random number generator */

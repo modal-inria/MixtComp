@@ -32,7 +32,7 @@ namespace OrdinalProba
 // format of interval e is a vector with bounds included: [1, 3] corresponds to the set {1, 2, 3}
 
 void initPath(const std::pair<int, int>& initSeg,
-              const Vector<int>& endCond,
+              const std::pair<int, int>& endCond,
               MultinomialStatistic& multi,
               Vector<ItBOS>& c)
 {
@@ -40,18 +40,11 @@ void initPath(const std::pair<int, int>& initSeg,
   std::cout << "initPath" << std::endl;
 #endif
   int nbSegment = initSeg.second - initSeg.first; // number of segments in the path
-  int minCond = initSeg.first; // the restrictions on the segments are loose by default
-  int maxCond = initSeg.second;
 
   c.resize(nbSegment);
 
-  if (endCond.size() != 0) // tighter restriction applied according to the provided data
-  {
-    minCond = endCond.minCoeff();
-    maxCond = endCond.maxCoeff();
-  }
 #ifdef MC_DEBUG
-  std::cout << "minCond: " << minCond << ", maxCond: " << maxCond << std::endl;
+  std::cout << "endCond.first: " << endCond.first << ", endCond.second: " << endCond.second << std::endl;
 #endif
   std::pair<int, int> seg = initSeg;
 
@@ -69,8 +62,8 @@ void initPath(const std::pair<int, int>& initSeg,
     for (int s = 0; s < 3; ++s) // computation of the allowed segments
     {
       if ( c(i).part_(s).first > -1       && // only non-empty segments are considered
-           c(i).part_(s).first <= maxCond && // test if the current segment of the partition can reach any allowed point
-           minCond             <= c(i).part_(s).second )
+           c(i).part_(s).first <= endCond.second && // test if the current segment of the partition can reach any allowed point
+           endCond.first       <= c(i).part_(s).second )
         segProba(s) = c(i).part_(s).second - c(i).part_(s).first + 1; // proba to sample segment is proportional
       else
         segProba(s) = 0.;
@@ -289,7 +282,7 @@ Real eProba(int z,
 
 Real computeProba(const std::pair<int, int>& initSeg,
                   const Vector<ItBOS>& c,
-                  const Vector<int>& endCond,
+                  const std::pair<int, int>& endCond,
                   int mu,
                   Real pi)
 {
@@ -300,16 +293,7 @@ Real computeProba(const std::pair<int, int>& initSeg,
 
   int nbSegment = initSeg.second - initSeg.first; // number of segments in the path
 
-  int minCond = initSeg.first; // the restrictions on the segments are loose by default
-  int maxCond = initSeg.second;
-
-  if (endCond.size() != 0) // tighter restriction applied according to the provided data
-  {
-    minCond = endCond.minCoeff();
-    maxCond = endCond.maxCoeff();
-  }
-
-  if (minCond <= c(nbSegment - 1).e_.first && c(nbSegment - 1).e_.first <= maxCond) // is the path compatible with the provided condition ?
+  if (endCond.first <= c(nbSegment - 1).e_.first && c(nbSegment - 1).e_.first <= endCond.second) // is the path compatible with the provided condition ?
   {
     for (int i = 0; i < c.size(); ++i) // loop over triplets of path variables
     {
@@ -446,7 +430,7 @@ void zMultinomial(const Vector<ItBOS>& c,
 }
 
 void eMultinomial(const Vector<ItBOS>& c,
-                  const Vector<int>& endCond,
+                  const std::pair<int, int>& endCond,
                   int mu,
                   Real pi,
                   int index,
@@ -474,26 +458,10 @@ void eMultinomial(const Vector<ItBOS>& c,
     }
     else // proba of the user-provided constraint is impacted by the change in e
     {
-      switch (endCond.size())
-      {
-        case 0: // no constraint on final value
-          eS = 1.;
-        break;
-
-        case 1: // a single value is acceptable
-          if (currSeg.first == endCond(0))
-            eS = 1.;
-          else
-            eS = 0.;
-        break;
-
-        case 2: // a range of values is acceptable
-          if (endCond(0) <= currSeg.first && currSeg.first <= endCond(1))
-            eS = 1.;
-          else
-            eS = 0.;
-        break;
-      }
+      if (endCond.first <= currSeg.first && currSeg.first <= endCond.second)
+        eS = 1.;
+      else
+        eS = 0.;
     }
     proba(e) = eP * eS;
 #ifdef MC_DEBUG
@@ -578,7 +546,7 @@ void zSample(const std::pair<int, int>& eInit,
 
 void eSample(const std::pair<int, int>& eInit,
              Vector<ItBOS>& c,
-             const Vector<int>& endCond,
+             const std::pair<int, int>& endCond,
              int mu,
              Real pi,
              int index,
@@ -612,7 +580,7 @@ void eSample(const std::pair<int, int>& eInit,
 
 void samplePath(const std::pair<int, int>& eInit,
                 Vector<ItBOS>& c,
-                const Vector<int>& endCond,
+                const std::pair<int, int>& endCond,
                 int mu,
                 Real pi,
                 MultinomialStatistic& multi)
