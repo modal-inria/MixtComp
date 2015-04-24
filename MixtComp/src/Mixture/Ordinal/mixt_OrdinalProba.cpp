@@ -290,51 +290,68 @@ Real eProba(int z,
   return eProba;
 }
 
-Real computeProba(const std::pair<int, int>& eInit,
+Real computeProba(const std::pair<int, int>& initSeg,
                   const Vector<ItBOS>& c,
+                  const Vector<int>& endCond,
                   int mu,
                   Real pi)
 {
 #ifdef MC_DEBUG
-    std::cout << "OrdinalProba::computeProba" << std::endl;
+  std::cout << "OrdinalProba::computeProba" << std::endl;
 #endif
   Real proba = 1.; // The initial probability of being in any of the member of the input interval is 1
 
-  for (int i = 0; i < c.size(); ++i) // loop over triplets of path variables
+  int nbSegment = initSeg.second - initSeg.first; // number of segments in the path
+
+  int minCond = initSeg.first; // the restrictions on the segments are loose by default
+  int maxCond = initSeg.second;
+
+  if (endCond.size() != 0) // tighter restriction applied according to the provided data
   {
-    int y = c(i).y_; // breakpoint
-    int z = c(i).z_; // accuracy
-    std::pair<int, int> ePr; // previous iteration segment
-    if (i == 0)
-    {
-      ePr = eInit;
-    }
-    else
-    {
-      ePr = c(i - 1).e_; // last iteration segment
-    }
-    const Vector<std::pair<int, int> >& part = c(i).part_; // current iteration partition
-    const std::pair<int, int>& e = c(i).e_; // current iteration segment segment
-
-#ifdef MC_DEBUG
-    std::cout << "i: " << i
-              << ", y: " << y
-              << ", z: " << z
-              << ", ePr.first: " << ePr.first << ", ePr.second: " << ePr.second
-              << ", e.first: " << e.first << ", e.second: " << e.second << std::endl;
-#endif
-    proba *= yProba(ePr,
-                    y);
-
-    proba *= zProba(z,
-                    pi);
-
-    proba *= eProba(z,
-                    part,
-                    e,
-                    mu,
-                    pi);
+    minCond = endCond.minCoeff();
+    maxCond = endCond.maxCoeff();
   }
+
+  if (minCond <= c(nbSegment - 1).e_.first && c(nbSegment - 1).e_.first <= maxCond) // is the path compatible with the provided condition ?
+  {
+    for (int i = 0; i < c.size(); ++i) // loop over triplets of path variables
+    {
+      int y = c(i).y_; // breakpoint
+      int z = c(i).z_; // accuracy
+      std::pair<int, int> ePr; // previous iteration segment
+      if (i == 0)
+      {
+        ePr = initSeg;
+      }
+      else
+      {
+        ePr = c(i - 1).e_; // last iteration segment
+      }
+      const Vector<std::pair<int, int> >& part = c(i).part_; // current iteration partition
+      const std::pair<int, int>& e = c(i).e_; // current iteration segment segment
+
+  #ifdef MC_DEBUG
+      std::cout << "i: " << i
+                << ", y: " << y
+                << ", z: " << z
+                << ", ePr.first: " << ePr.first << ", ePr.second: " << ePr.second
+                << ", e.first: " << e.first << ", e.second: " << e.second << std::endl;
+  #endif
+      proba *= yProba(ePr,
+                      y);
+
+      proba *= zProba(z,
+                      pi);
+
+      proba *= eProba(z,
+                      part,
+                      e,
+                      mu,
+                      pi);
+    }
+  }
+  else // conditional probability of verifying condition given the path is null
+      proba = 0.;
 
   return proba;
 }

@@ -105,8 +105,19 @@ Real eProba(int z,
             int mu,
             Real pi);
 
+/**
+ * Joint probability of the path and the imposed condition
+ *
+ * @param eInit a constant reference to the initial segment
+ * @param c a constant reference to a vector containing the current search path
+ * endCond
+ * @param mu localization parameter (mode) of the distribution
+ * @param pi precision parameter of the distribution
+ * @return joint probability
+ */
 Real computeProba(const std::pair<int, int>& eInit,
                   const Vector<ItBOS>& c,
+                  const Vector<int>& endCond,
                   int mu,
                   Real pi);
 

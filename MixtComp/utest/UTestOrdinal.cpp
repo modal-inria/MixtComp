@@ -42,6 +42,10 @@ TEST(Ordinal, computeProba0)
 
   Vector<OrdinalProba::ItBOS> c(1); // vector describing the search process
 
+  Vector<int> endCond(2); // end condition
+  endCond(0) = 0;
+  endCond(1) = 1;
+
   c(0).y_ = 1; // second element y picked, proba 0.5
   c(0).z_ = 1; // comparison is perfect, proba 0.5
   OrdinalProba::partition(eInit, // computation of the partition
@@ -51,6 +55,7 @@ TEST(Ordinal, computeProba0)
 
   Real proba = OrdinalProba::computeProba(eInit,
                                           c,
+                                          endCond,
                                           mu,
                                           pi);
 
@@ -68,6 +73,9 @@ TEST(Ordinal, computeProba1)
   std::pair<int, int> eInit; // vector describing initial segment
   eInit.first = 0;
   eInit.second = 2;
+
+  Vector<int> endCond(1); // end condition
+  endCond(0) = 0;
 
   Vector<OrdinalProba::ItBOS> c(2); // vector describing the search process
 
@@ -87,6 +95,7 @@ TEST(Ordinal, computeProba1)
 
   Real proba = OrdinalProba::computeProba(eInit,
                                           c,
+                                          endCond,
                                           mu,
                                           pi);
 
