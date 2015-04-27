@@ -34,7 +34,7 @@ int MultinomialStatistic::sampleInt(int low, int high)
   boost::variate_generator<boost::random::mt19937&,
                            boost::random::uniform_int_distribution<> > generator(rng_,
                                                                                  uni);
-  Real x = generator();
+  int x = generator();
   return x;
 }
 

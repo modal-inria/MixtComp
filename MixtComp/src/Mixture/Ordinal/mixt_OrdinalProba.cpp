@@ -101,10 +101,10 @@ void displayPath(const std::pair<int, int>& eInit,
                  const Vector<ItBOS>& c)
 {
   std::cout << "eInit.first: " << eInit.first << ", eInit.second: " << eInit.second << std::endl;
-  for (int i = 0; i < c.size(); ++i)
+  for (int node = 0; node < c.size(); ++node)
   {
-    std::cout << "i: " << i << std::endl;
-    displaySegNode(c(i));
+    std::cout << "node: " << node << std::endl;
+    displaySegNode(c(node));
   }
 }
 
@@ -607,6 +607,10 @@ void samplePath(const std::pair<int, int>& eInit,
             i,
             multi);
   }
+#ifdef MC_DEBUG_NEW
+ displayPath(eInit,
+             c);
+#endif
 }
 
 
