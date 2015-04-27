@@ -50,7 +50,7 @@ namespace OrdinalProba
 struct ItBOS
 {
     int y_; // breaking point
-    Vector<Vector<int, 2> > part_; // partition is uniquely defined by e_ from previous iteration and by y_
+    Vector<Vector<int, 2>, 3> part_; // partition is uniquely defined by e_ from previous iteration and by y_
     int z_; // blindness of comparison
     Vector<int, 2> e_; // final segment for current iteration
 };
@@ -93,7 +93,7 @@ void displayPath(const Vector<int, 2>& eInit,
  */
 void partition(const Vector<int, 2>& e,
                int y,
-               Vector<Vector<int, 2> >& part);
+               Vector<Vector<int, 2>, 3>& part);
 
 Real yProba(const Vector<int, 2>& e,
             int y);
