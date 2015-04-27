@@ -31,29 +31,29 @@ namespace OrdinalProba
 
 // format of interval e is a vector with bounds included: [1, 3] corresponds to the set {1, 2, 3}
 
-void initPath(const std::pair<int, int>& initSeg,
-              const std::pair<int, int>& endCond,
+void initPath(const Vector<int, 2>& initSeg,
+              const Vector<int, 2>& endCond,
               MultinomialStatistic& multi,
               Vector<ItBOS>& c)
 {
 #ifdef MC_DEBUG
   std::cout << "initPath" << std::endl;
 #endif
-  int nbSegment = initSeg.second - initSeg.first; // number of segments in the path
+  int nbSegment = initSeg(1) - initSeg(0); // number of segments in the path
 
   c.resize(nbSegment);
 
 #ifdef MC_DEBUG
-  std::cout << "endCond.first: " << endCond.first << ", endCond.second: " << endCond.second << std::endl;
+  std::cout << "endCond(0): " << endCond(0) << ", endCond(1): " << endCond(1) << std::endl;
 #endif
-  std::pair<int, int> seg = initSeg;
+  Vector<int, 2> seg = initSeg;
 
   for (int i = 0; i < nbSegment; ++i) // loop to fill all the elements of the path
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
 #endif
-    c(i).y_ = multi.sampleInt(seg.first, seg.second);
+    c(i).y_ = multi.sampleInt(seg(0), seg(1));
     partition(seg,
               c(i).y_,
               c(i).part_);
@@ -61,10 +61,10 @@ void initPath(const std::pair<int, int>& initSeg,
     Vector<Real> segProba(3);
     for (int s = 0; s < 3; ++s) // computation of the allowed segments
     {
-      if ( c(i).part_(s).first > -1       && // only non-empty segments are considered
-           c(i).part_(s).first <= endCond.second && // test if the current segment of the partition can reach any allowed point
-           endCond.first       <= c(i).part_(s).second )
-        segProba(s) = c(i).part_(s).second - c(i).part_(s).first + 1; // proba to sample segment is proportional
+      if ( c(i).part_(s)(0) > -1       && // only non-empty segments are considered
+           c(i).part_(s)(0) <= endCond(1) && // test if the current segment of the partition can reach any allowed point
+           endCond(0)       <= c(i).part_(s)(1) )
+        segProba(s) = c(i).part_(s)(1) - c(i).part_(s)(0) + 1; // proba to sample segment is proportional
       else
         segProba(s) = 0.;
     }
@@ -90,17 +90,17 @@ void displaySegNode(const ItBOS& node)
   std::cout << "\tpart: " << std::endl;
   for (int s = 0; s < 3; ++s)
   {
-    std::cout << "\t\tpart(" << s << ").first: "  << node.part_(s).first
-              << ", part(" << s << ").second: "   << node.part_(s).second << std::endl;
+    std::cout << "\t\tpart(" << s << ")(0): "  << node.part_(s)(0)
+              << ", part(" << s << ")(1): "   << node.part_(s)(1) << std::endl;
   }
   std::cout << "\tz: " << node.z_ << std::endl;
-  std::cout << "\te.first: " << node.e_.first << ", e.second: " << node.e_.second << std::endl;
+  std::cout << "\te(0): " << node.e_(0) << ", e(1): " << node.e_(1) << std::endl;
 }
 
-void displayPath(const std::pair<int, int>& eInit,
+void displayPath(const Vector<int, 2>& eInit,
                  const Vector<ItBOS>& c)
 {
-  std::cout << "eInit.first: " << eInit.first << ", eInit.second: " << eInit.second << std::endl;
+  std::cout << "eInit(0): " << eInit(0) << ", eInit(1): " << eInit(1) << std::endl;
   for (int node = 0; node < c.size(); ++node)
   {
     std::cout << "node: " << node << std::endl;
@@ -108,47 +108,47 @@ void displayPath(const std::pair<int, int>& eInit,
   }
 }
 
-void partition(const std::pair<int, int>& e,
+void partition(const Vector<int, 2>& e,
                int y,
-               Vector<std::pair<int, int> >& part)
+               Vector<Vector<int, 2> >& part)
 {
 #ifdef MC_DEBUG
   std::cout << "partition" << std::endl;
 #endif
   part.resize(3); // list of candidates for next e_j. Candidates on first dimension, bounds on second dimension
 
-  if (y < e.first || y > e.second) // if y is not in the interval, all elements of the partition are empty
+  if (y < e(0) || y > e(1)) // if y is not in the interval, all elements of the partition are empty
   {
-    part(0).first  = -1;
-    part(0).second = -1;
-    part(1).first  = -1;
-    part(1).second = -1;
-    part(2).first  = -1;
-    part(2).second = -1;
+    part(0)(0)  = -1;
+    part(0)(1) = -1;
+    part(1)(0)  = -1;
+    part(1)(1) = -1;
+    part(2)(0)  = -1;
+    part(2)(1) = -1;
   }
   else
   {
-    if (e.first != y) // is the left interval non-empty ? If not, partition element will be an empty vector
+    if (e(0) != y) // is the left interval non-empty ? If not, partition element will be an empty vector
     {
-      part(0).first  = e.first;
-      part(0).second = y - 1;
+      part(0)(0)  = e(0);
+      part(0)(1) = y - 1;
     }
     else
     {
-      part(0).first  = -1; // impossible value used to designate an empty set
-      part(0).second = -1;
+      part(0)(0)  = -1; // impossible value used to designate an empty set
+      part(0)(1) = -1;
     }
-    part(1).first  = y; // center interval always contains the center element
-    part(1).second = y;
-    if (e.second != y) // is the right interval non-empty ? If not, partition element will be an empty vector
+    part(1)(0)  = y; // center interval always contains the center element
+    part(1)(1) = y;
+    if (e(1) != y) // is the right interval non-empty ? If not, partition element will be an empty vector
     {
-      part(2).first  = y + 1;
-      part(2).second = e.second;
+      part(2)(0)  = y + 1;
+      part(2)(1) = e(1);
     }
     else
     {
-      part(2).first  = -1; // impossible value used to designate an empty set
-      part(2).second = -1;
+      part(2)(0)  = -1; // impossible value used to designate an empty set
+      part(2)(1) = -1;
     }
   }
 #ifdef MC_DEBUG
@@ -156,13 +156,13 @@ void partition(const std::pair<int, int>& e,
 #endif
 }
 
-Real yProba(const std::pair<int, int>& e,
+Real yProba(const Vector<int, 2>& e,
             int y)
 {
   Real yProba;
-  if (e.first <= y && y <= e.second) // y is among the last segment values
+  if (e(0) <= y && y <= e(1)) // y is among the last segment values
   {
-    yProba = 1. / Real(e.second - e.first + 1.);
+    yProba = 1. / Real(e(1) - e(0) + 1.);
   }
   else
   {
@@ -193,8 +193,8 @@ Real zProba(int z,
 }
 
 Real eProba(int z,
-            const Vector<std::pair<int, int> >& part,
-            const std::pair<int, int>& e,
+            const Vector<Vector<int, 2> >& part,
+            const Vector<int, 2>& e,
             int mu,
             Real pi)
 {
@@ -213,12 +213,12 @@ Real eProba(int z,
     for (int s = 0; s < 3; ++s) // computation of the closest segment
     {
   #ifdef MC_DEBUG
-      std::cout << "\ts: " << s << ", part(s).first: " << part(s).first << ", part(s).second: " << part(s).second << std::endl;
+      std::cout << "\ts: " << s << ", part(s)(0): " << part(s)(0) << ", part(s)(1): " << part(s)(1) << std::endl;
   #endif
-      if (part(s).first > -1) // pair containing {-1, -1} are ignored, as they describe an empty segment
+      if (part(s)(0) > -1) // pair containing {-1, -1} are ignored, as they describe an empty segment
       {
-        Real disCurrSegment = std::min(std::abs(mu - part(s).first),
-                                       std::abs(mu - part(s).second));
+        Real disCurrSegment = std::min(std::abs(mu - part(s)(0)),
+                                       std::abs(mu - part(s)(1)));
         if (disCurrSegment < disClosestSegment || closestSegment == -1) // a new closest segment has been found, or for the first valid segment
         {
           closestSegment = s;
@@ -250,17 +250,17 @@ Real eProba(int z,
     for (int s = 0; s < 3; ++s) // test if e is among the partition. If this is the case, computation of proba using the size, otherwise proba is zero
     {
 #ifdef MC_DEBUG
-      std::cout << "s: " << s << ", part(s).first: " << part(s).first << ", part(s).second: " << part(s).second << std::endl;
+      std::cout << "s: " << s << ", part(s)(0): " << part(s)(0) << ", part(s)(1): " << part(s)(1) << std::endl;
 #endif
-      if (part(s).first > -1) // test if current segment is nonempty
+      if (part(s)(0) > -1) // test if current segment is nonempty
       {
-        sizePart += part(s).second - part(s).first + 1;
+        sizePart += part(s)(1) - part(s)(0) + 1;
         if (part(s) == e)
         {
 #ifdef MC_DEBUG
           std::cout << "part(s) == e, s: " << s << std::endl;
 #endif
-          eProba = Real(part(s).second - part(s).first + 1);
+          eProba = Real(part(s)(1) - part(s)(0) + 1);
         }
       }
     }
@@ -280,9 +280,9 @@ Real eProba(int z,
   return eProba;
 }
 
-Real computeProba(const std::pair<int, int>& initSeg,
+Real computeProba(const Vector<int, 2>& initSeg,
                   const Vector<ItBOS>& c,
-                  const std::pair<int, int>& endCond,
+                  const Vector<int, 2>& endCond,
                   int mu,
                   Real pi)
 {
@@ -291,15 +291,15 @@ Real computeProba(const std::pair<int, int>& initSeg,
 #endif
   Real proba = 1.; // The initial probability of being in any of the member of the input interval is 1
 
-  int nbSegment = initSeg.second - initSeg.first; // number of segments in the path
+  int nbSegment = initSeg(1) - initSeg(0); // number of segments in the path
 
-  if (endCond.first <= c(nbSegment - 1).e_.first && c(nbSegment - 1).e_.first <= endCond.second) // is the path compatible with the provided condition ?
+  if (endCond(0) <= c(nbSegment - 1).e_(0) && c(nbSegment - 1).e_(0) <= endCond(1)) // is the path compatible with the provided condition ?
   {
     for (int i = 0; i < c.size(); ++i) // loop over triplets of path variables
     {
       int y = c(i).y_; // breakpoint
       int z = c(i).z_; // accuracy
-      std::pair<int, int> ePr; // previous iteration segment
+      Vector<int, 2> ePr; // previous iteration segment
       if (i == 0)
       {
         ePr = initSeg;
@@ -308,15 +308,15 @@ Real computeProba(const std::pair<int, int>& initSeg,
       {
         ePr = c(i - 1).e_; // last iteration segment
       }
-      const Vector<std::pair<int, int> >& part = c(i).part_; // current iteration partition
-      const std::pair<int, int>& e = c(i).e_; // current iteration segment segment
+      const Vector<Vector<int, 2> >& part = c(i).part_; // current iteration partition
+      const Vector<int, 2>& e = c(i).e_; // current iteration segment segment
 
   #ifdef MC_DEBUG
       std::cout << "i: " << i
                 << ", y: " << y
                 << ", z: " << z
-                << ", ePr.first: " << ePr.first << ", ePr.second: " << ePr.second
-                << ", e.first: " << e.first << ", e.second: " << e.second << std::endl;
+                << ", ePr(0): " << ePr(0) << ", ePr(1): " << ePr(1)
+                << ", e(0): " << e(0) << ", e(1): " << e(1) << std::endl;
   #endif
       proba *= yProba(ePr,
                       y);
@@ -337,7 +337,7 @@ Real computeProba(const std::pair<int, int>& initSeg,
   return proba;
 }
 
-void yMultinomial(const std::pair<int, int>& eInit,
+void yMultinomial(const Vector<int, 2>& eInit,
                   const Vector<ItBOS>& c,
                   int mu,
                   Real pi,
@@ -349,26 +349,26 @@ void yMultinomial(const std::pair<int, int>& eInit,
   std::cout << "yMultinomial" << std::endl;
   std::cout << "index: " << index << std::endl;
 #endif
-  const std::pair<int, int>* p_preSeg; // const pointer to the segment used to compute partition
+  const Vector<int, 2>* p_preSeg; // const pointer to the segment used to compute partition
   int maxVal;
   if (index == 0)
   {
     p_preSeg = &eInit;
-    minVal = eInit.first;
-    maxVal = eInit.second;
+    minVal = eInit(0);
+    maxVal = eInit(1);
   }
   else
   {
     p_preSeg = &c(index - 1).e_;
-    minVal = c(index - 1).e_.first;
-    maxVal = c(index - 1).e_.second;
+    minVal = c(index - 1).e_(0);
+    maxVal = c(index - 1).e_(1);
   }
   int nbVal = maxVal - minVal + 1;
   proba.resize(nbVal);
 
   for (int y = minVal; y < maxVal + 1; ++y) // loop over values of y allowed by previous segment
   {
-    Vector<std::pair<int, int> > part; // partition generated by current y value
+    Vector<Vector<int, 2> > part; // partition generated by current y value
     partition(*p_preSeg, // computation of the partition, according to the new breaking point y
               y,
               part);
@@ -430,7 +430,7 @@ void zMultinomial(const Vector<ItBOS>& c,
 }
 
 void eMultinomial(const Vector<ItBOS>& c,
-                  const std::pair<int, int>& endCond,
+                  const Vector<int, 2>& endCond,
                   int mu,
                   Real pi,
                   int index,
@@ -444,7 +444,7 @@ void eMultinomial(const Vector<ItBOS>& c,
 
   for (int e = 0; e < nbVal; ++e)
   {
-    const std::pair<int, int>& currSeg = c(index).part_(e);
+    const Vector<int, 2>& currSeg = c(index).part_(e);
     Real eP = eProba(c(index).z_,
                      c(index).part_,
                      currSeg,
@@ -458,7 +458,7 @@ void eMultinomial(const Vector<ItBOS>& c,
     }
     else // proba of the user-provided constraint is impacted by the change in e
     {
-      if (endCond.first <= currSeg.first && currSeg.first <= endCond.second)
+      if (endCond(0) <= currSeg(0) && currSeg(0) <= endCond(1))
         eS = 1.;
       else
         eS = 0.;
@@ -477,7 +477,20 @@ void eMultinomial(const Vector<ItBOS>& c,
 #endif
 }
 
-void ySample(const std::pair<int, int>& eInit,
+void nodeMultinomial(const Vector<int, 2>& eInit,
+                     const Vector<int, 2>& endCond,
+                     int mu,
+                     Real pi,
+                     std::list<Vector<ItBOS, 2> >& pathList,
+                     std::list<Real>& probaList)
+{
+  for (int y0 = eInit(0); y0 < eInit(0) + 1; ++y0)
+  {
+    Real y0proba = 1.;
+  }
+}
+
+void ySample(const Vector<int, 2>& eInit,
              Vector<ItBOS>& c,
              int mu,
              Real pi,
@@ -519,7 +532,7 @@ void ySample(const std::pair<int, int>& eInit,
 #endif
 }
 
-void zSample(const std::pair<int, int>& eInit,
+void zSample(const Vector<int, 2>& eInit,
              Vector<ItBOS>& c,
              int mu,
              Real pi,
@@ -544,9 +557,9 @@ void zSample(const std::pair<int, int>& eInit,
 #endif
 }
 
-void eSample(const std::pair<int, int>& eInit,
+void eSample(const Vector<int, 2>& eInit,
              Vector<ItBOS>& c,
-             const std::pair<int, int>& endCond,
+             const Vector<int, 2>& endCond,
              int mu,
              Real pi,
              int index,
@@ -556,8 +569,8 @@ void eSample(const std::pair<int, int>& eInit,
   std::cout << "eSample" << std::endl;
   for (int i = 0; i < 3; ++i)
   {
-    std::cout << "c(index).part_(i).first: " << c(index).part_(i).first << std::endl;
-    std::cout << "c(index).part_(i).second: " << c(index).part_(i).second << std::endl;
+    std::cout << "c(index).part_(i)(0): " << c(index).part_(i)(0) << std::endl;
+    std::cout << "c(index).part_(i)(1): " << c(index).part_(i)(1) << std::endl;
   }
 #endif
   Vector<Real> proba;
@@ -568,19 +581,19 @@ void eSample(const std::pair<int, int>& eInit,
                index,
                proba);
   int sampleSegIndex = multi.sample(proba);
-  std::pair<int, int> sampleVal(c(index).part_(sampleSegIndex));
+  Vector<int, 2> sampleVal(c(index).part_(sampleSegIndex));
   c(index).e_ = sampleVal; // sampled value replaces the current value in the search path c
 #ifdef MC_DEBUG
   std::cout << "proba" << std::endl;
   std::cout << proba << std::endl;
   std::cout << "sampleSegIndex: " << sampleSegIndex << std::endl;
-  std::cout << "eSample, sampleVal.first: " << sampleVal.first << ", sampleVal.second: " <<  sampleVal.second << std::endl;
+  std::cout << "eSample, sampleVal(0): " << sampleVal(0) << ", sampleVal(1): " <<  sampleVal(1) << std::endl;
 #endif
 }
 
-void samplePath(const std::pair<int, int>& eInit,
+void samplePath(const Vector<int, 2>& eInit,
                 Vector<ItBOS>& c,
-                const std::pair<int, int>& endCond,
+                const Vector<int, 2>& endCond,
                 int mu,
                 Real pi,
                 MultinomialStatistic& multi)
@@ -607,7 +620,7 @@ void samplePath(const std::pair<int, int>& eInit,
             i,
             multi);
   }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
  displayPath(eInit,
              c);
 #endif

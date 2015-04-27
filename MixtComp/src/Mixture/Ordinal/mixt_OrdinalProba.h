@@ -50,9 +50,9 @@ namespace OrdinalProba
 struct ItBOS
 {
     int y_; // breaking point
-    Vector<std::pair<int, int> > part_; // partition is uniquely defined by e_ from previous iteration and by y_
+    Vector<Vector<int, 2> > part_; // partition is uniquely defined by e_ from previous iteration and by y_
     int z_; // blindness of comparison
-    std::pair<int, int> e_; // final segment for current iteration
+    Vector<int, 2> e_; // final segment for current iteration
 };
 
 /**
@@ -63,8 +63,8 @@ struct ItBOS
  * @param[in] multi multinomial sampler
  * @param[out] c path
  */
-void initPath(const std::pair<int, int>& initSeg,
-              const std::pair<int, int>& endCond,
+void initPath(const Vector<int, 2>& initSeg,
+              const Vector<int, 2>& endCond,
               MultinomialStatistic& multi,
               Vector<ItBOS>& c);
 
@@ -81,7 +81,7 @@ void displaySegNode(const ItBOS& node);
  * @param[in] eInit initial segment of the path
  * @param[in] c path
  */
-void displayPath(const std::pair<int, int>& eInit,
+void displayPath(const Vector<int, 2>& eInit,
                  const Vector<ItBOS>& c);
 
 /**
@@ -91,17 +91,17 @@ void displayPath(const std::pair<int, int>& eInit,
  * @param[in] y breakpoint
  * @param[out] part partition
  */
-void partition(const std::pair<int, int>& e,
+void partition(const Vector<int, 2>& e,
                int y,
-               Vector<std::pair<int, int> >& part);
+               Vector<Vector<int, 2> >& part);
 
-Real yProba(const std::pair<int, int>& e,
+Real yProba(const Vector<int, 2>& e,
             int y);
 Real zProba(int z,
             Real pi);
 Real eProba(int z,
-            const Vector<std::pair<int, int> >& part,
-            const std::pair<int, int>& e,
+            const Vector<Vector<int, 2> >& part,
+            const Vector<int, 2>& e,
             int mu,
             Real pi);
 
@@ -115,9 +115,9 @@ Real eProba(int z,
  * @param pi precision parameter of the distribution
  * @return joint probability
  */
-Real computeProba(const std::pair<int, int>& eInit,
+Real computeProba(const Vector<int, 2>& eInit,
                   const Vector<ItBOS>& c,
-                  const std::pair<int, int>& endCond,
+                  const Vector<int, 2>& endCond,
                   int mu,
                   Real pi);
 
@@ -132,7 +132,7 @@ Real computeProba(const std::pair<int, int>& eInit,
  * @param[out] proba a reference to the vector with the probability distribution of the sampled variable
  * @param[out] minVal minimum value from the previous segment
  */
-void yMultinomial(const std::pair<int, int>& eInit,
+void yMultinomial(const Vector<int, 2>& eInit,
                   const Vector<ItBOS>& c,
                   int mu,
                   Real pi,
@@ -167,11 +167,28 @@ void zMultinomial(const Vector<ItBOS>& c,
  * @param[out] multinomial probability distribution of the elements of the partition
  */
 void eMultinomial(const Vector<ItBOS>& c,
-                  const std::pair<int, int>& endCond,
+                  const Vector<int, 2>& endCond,
                   int mu,
                   Real pi,
                   int index,
                   Vector<Real>& proba);
+
+/**
+ * Multinomial conditional probability distribution for the elements of the partition at a specific index
+ *
+ * @param eInit a constant reference to the initial segment
+ * @param endCond a constant reference to the condition verified by the data data
+ * @param mu localization parameter (mode) of the distribution
+ * @param pi precision parameter of the distribution
+ * @param[out] pathList list of the various path
+ * @param[out] probaList list of the conditional probabilities of the paths in pathList
+ */
+void nodeMultinomial(const Vector<int, 2>& eInit,
+                     const Vector<int, 2>& endCond,
+                     int mu,
+                     Real pi,
+                     std::list<Vector<ItBOS, 2> >& pathList,
+                     std::list<Real>& probaList);
 
 /**
  * Sample and update a y value in the search path, using the conditional probability
@@ -184,7 +201,7 @@ void eMultinomial(const Vector<ItBOS>& c,
  * @param pi precision parameter of the distribution
  * @param index localization of the segment in which the value to be sampled resides
  */
-void ySample(const std::pair<int, int>& eInit,
+void ySample(const Vector<int, 2>& eInit,
              Vector<ItBOS>& c,
              int mu,
              Real pi,
@@ -202,7 +219,7 @@ void ySample(const std::pair<int, int>& eInit,
  * @param pi precision parameter of the distribution
  * @param index localization of the segment in which the value to be sampled resides
  */
-void zSample(const std::pair<int, int>& eInit,
+void zSample(const Vector<int, 2>& eInit,
              Vector<ItBOS>& c,
              int mu,
              Real pi,
@@ -220,9 +237,9 @@ void zSample(const std::pair<int, int>& eInit,
  * @param pi precision parameter of the distribution
  * @param index localization of the segment in which the value to be sampled resides
  */
-void eSample(const std::pair<int, int>& eInit,
+void eSample(const Vector<int, 2>& eInit,
              Vector<ItBOS>& c,
-             const std::pair<int, int>& endCond,
+             const Vector<int, 2>& endCond,
              int mu,
              Real pi,
              int index,
@@ -237,9 +254,9 @@ void eSample(const std::pair<int, int>& eInit,
  * @param mu localization parameter (mode) of the distribution
  * @param pi precision parameter of the distribution
  */
-void samplePath(const std::pair<int, int>& eInit,
+void samplePath(const Vector<int, 2>& eInit,
                 Vector<ItBOS>& c,
-                const std::pair<int, int>& endCond,
+                const Vector<int, 2>& endCond,
                 int mu,
                 Real pi,
                 MultinomialStatistic& multi);
