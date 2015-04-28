@@ -32,58 +32,58 @@ namespace OrdinalProba
 
 // format of interval e is a vector with bounds included: [1, 3] corresponds to the set {1, 2, 3}
 
-void initPath(const Vector<int, 2>& initSeg,
-              const Vector<int, 2>& endCond,
-              MultinomialStatistic& multi,
-              Vector<BOSNode>& c)
-{
-#ifdef MC_DEBUG
-  std::cout << "initPath" << std::endl;
-#endif
-  int nbSegment = initSeg(1) - initSeg(0); // number of segments in the path
-
-  c.resize(nbSegment);
-
-#ifdef MC_DEBUG
-  std::cout << "endCond(0): " << endCond(0) << ", endCond(1): " << endCond(1) << std::endl;
-#endif
-  Vector<int, 2> seg = initSeg;
-
-  for (int i = 0; i < nbSegment; ++i) // loop to fill all the elements of the path
-  {
-#ifdef MC_DEBUG
-    std::cout << "i: " << i << std::endl;
-#endif
-    c(i).y_ = multi.sampleInt(seg(0), seg(1));
-    partition(seg,
-              c(i).y_,
-              c(i).part_);
-    c(i).z_ = 0; // comparisons are all blind in initialization
-    Vector<Real> segProba(3);
-    for (int s = 0; s < 3; ++s) // computation of the allowed segments
-    {
-      if ( c(i).part_(s)(0) > -1       && // only non-empty segments are considered
-           c(i).part_(s)(0) <= endCond(1) && // test if the current segment of the partition can reach any allowed point
-           endCond(0)       <= c(i).part_(s)(1) )
-        segProba(s) = c(i).part_(s)(1) - c(i).part_(s)(0) + 1; // proba to sample segment is proportional
-      else
-        segProba(s) = 0.;
-    }
-    segProba /= segProba.sum();
-    int sampleSeg = multi.sample(segProba);
-#ifdef MC_DEBUG
-    std::cout << "segProba" << std::endl;
-    std::cout << segProba << std::endl;
-    std::cout << "sampleSeg: " << sampleSeg << std::endl;
-#endif
-    c(i).e_ = c(i).part_(sampleSeg);
-    seg = c(i).e_;
-#ifdef MC_DEBUG
-    std::cout << "currNode" << std::endl;
-    displaySegNode(c(i));
-#endif
-  }
-}
+//void initPath(const Vector<int, 2>& initSeg,
+//              const Vector<int, 2>& endCond,
+//              MultinomialStatistic& multi,
+//              Vector<BOSNode>& c)
+//{
+//#ifdef MC_DEBUG
+//  std::cout << "initPath" << std::endl;
+//#endif
+//  int nbSegment = initSeg(1) - initSeg(0); // number of segments in the path
+//
+//  c.resize(nbSegment);
+//
+//#ifdef MC_DEBUG
+//  std::cout << "endCond(0): " << endCond(0) << ", endCond(1): " << endCond(1) << std::endl;
+//#endif
+//  Vector<int, 2> seg = initSeg;
+//
+//  for (int i = 0; i < nbSegment; ++i) // loop to fill all the elements of the path
+//  {
+//#ifdef MC_DEBUG
+//    std::cout << "i: " << i << std::endl;
+//#endif
+//    c(i).y_ = multi.sampleInt(seg(0), seg(1));
+//    partition(seg,
+//              c(i).y_,
+//              c(i).part_);
+//    c(i).z_ = 0; // comparisons are all blind in initialization
+//    Vector<Real> segProba(3);
+//    for (int s = 0; s < 3; ++s) // computation of the allowed segments
+//    {
+//      if ( c(i).part_(s)(0) > -1       && // only non-empty segments are considered
+//           c(i).part_(s)(0) <= endCond(1) && // test if the current segment of the partition can reach any allowed point
+//           endCond(0)       <= c(i).part_(s)(1) )
+//        segProba(s) = c(i).part_(s)(1) - c(i).part_(s)(0) + 1; // proba to sample segment is proportional
+//      else
+//        segProba(s) = 0.;
+//    }
+//    segProba /= segProba.sum();
+//    int sampleSeg = multi.sample(segProba);
+//#ifdef MC_DEBUG
+//    std::cout << "segProba" << std::endl;
+//    std::cout << segProba << std::endl;
+//    std::cout << "sampleSeg: " << sampleSeg << std::endl;
+//#endif
+//    c(i).e_ = c(i).part_(sampleSeg);
+//    seg = c(i).e_;
+//#ifdef MC_DEBUG
+//    std::cout << "currNode" << std::endl;
+//    displaySegNode(c(i));
+//#endif
+//  }
+//}
 
 void displaySegNode(const BOSNode& node)
 {
@@ -111,46 +111,47 @@ void displayPath(const Vector<int, 2>& eInit,
 
 void partition(const Vector<int, 2>& e,
                int y,
-               Vector<Vector<int, 2>, 3>& part)
+               Vector<Vector<int, 2> >& part)
 {
 #ifdef MC_DEBUG
   std::cout << "partition" << std::endl;
 #endif
-  part.resize(3); // list of candidates for next e_j. Candidates on first dimension, bounds on second dimension
-
-  if (y < e(0) || y > e(1)) // if y is not in the interval, all elements of the partition are empty
+  if (y < e(0) || y > e(1)) // if y is not in the interval, the partition is empty
   {
-    part(0)(0)  = -1;
-    part(0)(1) = -1;
-    part(1)(0)  = -1;
-    part(1)(1) = -1;
-    part(2)(0)  = -1;
-    part(2)(1) = -1;
+    part.resize(0);
   }
   else
   {
+    int partSize = 3; // maximum size of the partition
+    int yPos; // position of the "breaking point" segment
+    if (e(0) == y) // is the left segment empty ?
+    {
+      partSize -= 1;
+    }
+    if (e(1) == y) // is the right segment empty ?
+    {
+      partSize -= 1;
+    }
+    part.resize(partSize);
+
     if (e(0) != y) // is the left interval non-empty ? If not, partition element will be an empty vector
     {
-      part(0)(0)  = e(0);
+      part(0)(0) = e(0);
       part(0)(1) = y - 1;
+      yPos = 1;
     }
     else
-    {
-      part(0)(0)  = -1; // impossible value used to designate an empty set
-      part(0)(1) = -1;
-    }
-    part(1)(0)  = y; // center interval always contains the center element
-    part(1)(1) = y;
+      yPos = 0;
     if (e(1) != y) // is the right interval non-empty ? If not, partition element will be an empty vector
     {
-      part(2)(0)  = y + 1;
-      part(2)(1) = e(1);
+      part(partSize - 1)(0) = y + 1;
+      part(partSize - 1)(1) = e(1);
+      yPos = partSize - 2;
     }
     else
-    {
-      part(2)(0)  = -1; // impossible value used to designate an empty set
-      part(2)(1) = -1;
-    }
+      yPos = partSize - 1;
+    part(yPos)(0) = y; // center interval always contains the center element
+    part(yPos)(1) = y;
   }
 #ifdef MC_DEBUG
   std::cout << "end partition" << std::endl;
@@ -346,101 +347,101 @@ void nodeMultinomial(const Vector<int, 2>& eInit,
                      std::list<Vector<BOSNode, 2> >& pathList,
                      std::list<Real>& probaList)
 {
-  for (int y0 = eInit(0); y0 < eInit(1) + 1; ++y0) // outer node
-  {
-    Vector<Vector<int, 2>, 3> part0; // partition corresponding to y0 value
-    partition(eInit,
-              y0,
-              part0);
-    Real y0proba = yProba(eInit, y0);
-#ifdef MC_DEBUG
-    std::cout << "y0: " << y0 << std::endl;
-    std::cout << "\ty0proba: " << y0proba << std::endl;
-#endif
-    for (int z0 = 0; z0 < 2; ++z0)
-    {
-      Real z0proba = y0proba * zProba(z0, pi);
-#ifdef MC_DEBUG
-      std::cout << "y0: " << y0 << ", z0: " << z0 << std::endl;
-      std::cout << "\tz0proba: " << z0proba << std::endl;
-#endif
-      for(int e0 = 0; e0 < 3; ++e0)
-      {
-        Real e0proba = z0proba * eProba(z0,
-                                        part0,
-                                        part0(e0),
-                                        mu,
-                                        pi);
-#ifdef MC_DEBUG
-        std::cout << "y0: " << y0 << ", z0: " << z0 << ", e0: " << e0 << ", part0(e0)(0): " << part0(e0)(0) << ", part0(e0)(1): " << part0(e0)(1) << std::endl;
-        std::cout << "\te0proba: " << e0proba << std::endl;
-#endif
-        if (e0proba > epsilon) // null probability segments are not computed further
-        {
-          for(int y1 = part0(e0)(0); y1 < part0(e0)(0) + 1; ++y1) // inner node
-          {
-            Vector<Vector<int, 2>, 3> part1; // partition corresponding to y1 value
-            partition(part0(e0),
-                      y1,
-                      part1);
-            Real y1proba = e0proba * yProba(part0(e0), y1);
-#ifdef MC_DEBUG
-            std::cout << "y0: " << y0 << ", z0: " << z0 << ", e0: " << e0 << ", part0(e0)(0): " << part0(e0)(0) << ", part0(e0)(1): " << part0(e0)(1) << std::endl;
-            std::cout << "y1: " << y1 << std::endl;
-            std::cout << "\ty1proba: " << y1proba << std::endl;
-#endif
-            for (int z1 = 0; z1 < 2; ++z1)
-            {
-              Real z1proba = y1proba * zProba(z1, pi);
-#ifdef MC_DEBUG
-              std::cout << "y0: " << y0 << ", z0: " << z0 << ", e0: " << e0 << ", part0(e0)(0): " << part0(e0)(0) << ", part0(e0)(1): " << part0(e0)(1) << std::endl;
-              std::cout << "y1: " << y1 << ", z1: " << z1 << std::endl;
-              std::cout << "\tz1proba: " << z1proba << std::endl;
-#endif
-              for(int e1 = 0; e1 < 3; ++e1)
-              {
-                Real e1proba = z1proba * eProba(z1,
-                                                part1,
-                                                part1(e1),
-                                                mu,
-                                                pi);
-#ifdef MC_DEBUG
-                std::cout << "y0: " << y0 << ", z0: " << z0 << ", e0: " << e0 << ", part0(e0)(0): " << part0(e0)(0) << ", part0(e0)(1): " << part0(e0)(1) << std::endl;
-                std::cout << "y1: " << y1 << ", z1: " << z1 << ", e1: " << e1 << ", part1(e1)(0): " << part1(e1)(0) << ", part1(e1)(1): " << part1(e1)(1) << std::endl;
-                std::cout << "\te1proba: " << e1proba << std::endl;
-#endif
-                if (e1proba > epsilon && part1(e1)(0) <= endCond(0) && part1(e1)(1) <= endCond(1)) // is the final condition verified ?
-                {
-                    pathList.push_back(Vector<BOSNode, 2>());
-                    pathList.back()(0).y_ = y0;
-                    pathList.back()(0).part_ = part0;
-                    pathList.back()(0).z_ = z0;
-                    pathList.back()(0).e_ = part0(e0);
-                    pathList.back()(1).y_ = y1;
-                    pathList.back()(1).part_ = part1;
-                    pathList.back()(1).z_ = z1;
-                    pathList.back()(1).e_ = part1(e1);
-                    probaList.push_back(e1proba); // proba of current path is saved
-                }
-                else
-                {
-#ifdef MC_DEBUG
-                    std::cout << "e1, null proba case or final condition not verified" << std::endl;
-#endif
-                }
-              }
-            }
-          }
-        }
-        else
-        {
-#ifdef MC_DEBUG
-          std::cout << "e0, null proba case detected" << std::endl;
-#endif
-        }
-      }
-    }
-  }
+//  for (int y0 = eInit(0); y0 < eInit(1) + 1; ++y0) // outer node
+//  {
+//    Vector<Vector<int, 2>, 3> part0; // partition corresponding to y0 value
+//    partition(eInit,
+//              y0,
+//              part0);
+//    Real y0proba = yProba(eInit, y0);
+//#ifdef MC_DEBUG
+//    std::cout << "y0: " << y0 << std::endl;
+//    std::cout << "\ty0proba: " << y0proba << std::endl;
+//#endif
+//    for (int z0 = 0; z0 < 2; ++z0)
+//    {
+//      Real z0proba = y0proba * zProba(z0, pi);
+//#ifdef MC_DEBUG
+//      std::cout << "y0: " << y0 << ", z0: " << z0 << std::endl;
+//      std::cout << "\tz0proba: " << z0proba << std::endl;
+//#endif
+//      for(int e0 = 0; e0 < 3; ++e0)
+//      {
+//        Real e0proba = z0proba * eProba(z0,
+//                                        part0,
+//                                        part0(e0),
+//                                        mu,
+//                                        pi);
+//#ifdef MC_DEBUG
+//        std::cout << "y0: " << y0 << ", z0: " << z0 << ", e0: " << e0 << ", part0(e0)(0): " << part0(e0)(0) << ", part0(e0)(1): " << part0(e0)(1) << std::endl;
+//        std::cout << "\te0proba: " << e0proba << std::endl;
+//#endif
+//        if (e0proba > epsilon) // null probability segments are not computed further
+//        {
+//          for(int y1 = part0(e0)(0); y1 < part0(e0)(0) + 1; ++y1) // inner node
+//          {
+//            Vector<Vector<int, 2>, 3> part1; // partition corresponding to y1 value
+//            partition(part0(e0),
+//                      y1,
+//                      part1);
+//            Real y1proba = e0proba * yProba(part0(e0), y1);
+//#ifdef MC_DEBUG
+//            std::cout << "y0: " << y0 << ", z0: " << z0 << ", e0: " << e0 << ", part0(e0)(0): " << part0(e0)(0) << ", part0(e0)(1): " << part0(e0)(1) << std::endl;
+//            std::cout << "y1: " << y1 << std::endl;
+//            std::cout << "\ty1proba: " << y1proba << std::endl;
+//#endif
+//            for (int z1 = 0; z1 < 2; ++z1)
+//            {
+//              Real z1proba = y1proba * zProba(z1, pi);
+//#ifdef MC_DEBUG
+//              std::cout << "y0: " << y0 << ", z0: " << z0 << ", e0: " << e0 << ", part0(e0)(0): " << part0(e0)(0) << ", part0(e0)(1): " << part0(e0)(1) << std::endl;
+//              std::cout << "y1: " << y1 << ", z1: " << z1 << std::endl;
+//              std::cout << "\tz1proba: " << z1proba << std::endl;
+//#endif
+//              for(int e1 = 0; e1 < 3; ++e1)
+//              {
+//                Real e1proba = z1proba * eProba(z1,
+//                                                part1,
+//                                                part1(e1),
+//                                                mu,
+//                                                pi);
+//#ifdef MC_DEBUG
+//                std::cout << "y0: " << y0 << ", z0: " << z0 << ", e0: " << e0 << ", part0(e0)(0): " << part0(e0)(0) << ", part0(e0)(1): " << part0(e0)(1) << std::endl;
+//                std::cout << "y1: " << y1 << ", z1: " << z1 << ", e1: " << e1 << ", part1(e1)(0): " << part1(e1)(0) << ", part1(e1)(1): " << part1(e1)(1) << std::endl;
+//                std::cout << "\te1proba: " << e1proba << std::endl;
+//#endif
+//                if (e1proba > epsilon && part1(e1)(0) <= endCond(0) && part1(e1)(1) <= endCond(1)) // is the final condition verified ?
+//                {
+//                    pathList.push_back(Vector<BOSNode, 2>());
+//                    pathList.back()(0).y_ = y0;
+//                    pathList.back()(0).part_ = part0;
+//                    pathList.back()(0).z_ = z0;
+//                    pathList.back()(0).e_ = part0(e0);
+//                    pathList.back()(1).y_ = y1;
+//                    pathList.back()(1).part_ = part1;
+//                    pathList.back()(1).z_ = z1;
+//                    pathList.back()(1).e_ = part1(e1);
+//                    probaList.push_back(e1proba); // proba of current path is saved
+//                }
+//                else
+//                {
+//#ifdef MC_DEBUG
+//                    std::cout << "e1, null proba case or final condition not verified" << std::endl;
+//#endif
+//                }
+//              }
+//            }
+//          }
+//        }
+//        else
+//        {
+//#ifdef MC_DEBUG
+//          std::cout << "e0, null proba case detected" << std::endl;
+//#endif
+//        }
+//      }
+//    }
+//  }
 }
 
 void samplePath(const Vector<int, 2>& eInit,

@@ -30,104 +30,179 @@
 using namespace mixt;
 
 /**
- * Simple case with two modalities
+ * Computation of a partition
  */
-TEST(Ordinal, computeProba0)
+TEST(Ordinal, partition0)
 {
-  int mu = 1; // mode
-  Real pi = 0.5; // precision
+  Vector<int, 2> e;
+  e << 0, 5;
+  int y = 2;
+  Vector<Vector<int, 2> > partComputed;
+  Vector<Vector<int, 2>, 3> partExpected;
+  partExpected(0) << 0, 1;
+  partExpected(1) << 2, 2;
+  partExpected(2) << 3, 5;
 
-  Vector<int, 2> eInit; // vector describing initial segment
-  eInit << 0, 1;
-
-  Vector<OrdinalProba::BOSNode, 1> c; // vector describing the search process
-
-  Vector<int, 2> endCond; // end condition
-  endCond << 0, 1;
-
-  c(0).y_ = 1; // second element y picked, proba 0.5
-  c(0).z_ = 1; // comparison is perfect, proba 0.5
-  OrdinalProba::partition(eInit, // computation of the partition
-                          c(0).y_,
-                          c(0).part_);
-  c(0).e_ << 1, 1; // segment is {1}, proba 1.
-
-  Real proba = OrdinalProba::computeProba(eInit,
-                                          c,
-                                          endCond,
-                                          mu,
-                                          pi);
-
-  ASSERT_LT(std::abs(0.25 - proba), epsilon);
+  OrdinalProba::partition(e,
+                          y,
+                          partComputed);
+  ASSERT_EQ(partComputed, partExpected); // has the real mode been estimated correctly ?
 }
 
 /**
- * Simple case with three modalities and imprecision
+ * Computation of a partition
  */
-TEST(Ordinal, computeProba1)
+TEST(Ordinal, partition1)
 {
-  int mu = 1; // mode
-  Real pi = 0.5; // precision
+  Vector<int, 2> e;
+  e << 6, 8;
+  int y = 2;
+  Vector<Vector<int, 2> > partComputed;
+  Vector<Vector<int, 2> > partExpected(0);
 
-  Vector<int, 2> eInit; // vector describing initial segment
-  eInit << 0, 2;
-
-  Vector<int, 2> endCond;  // end condition
-  endCond << 0, 0;
-
-  Vector<OrdinalProba::BOSNode, 2> c; // vector describing the search process
-
-  c(0).y_ = 1; // y, middle element y picked, proba 1./3.
-  c(0).z_ = 0; // z, comparison is imperfect, proba 0.5
-  OrdinalProba::partition(eInit, // computation of the partition
-                          c(0).y_,
-                          c(0).part_);
-  c(0).e_ << 0, 0; // e, left segment selected, proba 0.33 (all have the same size)
-  c(1).y_ = 0; // y, only one element to choose from, proba 1.
-  c(1).z_ = 1; // z, comparison is perfect, proba 0.5
-  OrdinalProba::partition(c(0).e_, // computation of the partition
-                          c(1).y_,
-                          c(1).part_);
-  c(1).e_ << 0, 0; // e, only one segment, in the middle, with proba 1.
-
-  Real proba = OrdinalProba::computeProba(eInit,
-                                          c,
-                                          endCond,
-                                          mu,
-                                          pi);
-
-  ASSERT_LT(std::abs(  1./3. * 0.5 * 1./3.
-                     * 1. * 0.5 * 1.
-                     - proba), epsilon);
+  OrdinalProba::partition(e,
+                          y,
+                          partComputed);
+  ASSERT_EQ(partComputed, partExpected); // has the real mode been estimated correctly ?
 }
 
-TEST(Ordinal, nodeMultinomial)
+/**
+ * Computation of a partition
+ */
+TEST(Ordinal, partition2)
 {
-  Vector<int, 2> eInit;
-  eInit << 0, 1;
-  Vector<int, 2> endCond;
-  endCond << 0, 1;
-  int mu = 0;
-  Real pi = 0.5;
-  std::list<Vector<OrdinalProba::BOSNode, 2> > pathList;
-  std::list<Real> probaList;
-  OrdinalProba::nodeMultinomial(eInit,
-                                endCond,
-                                mu,
-                                pi,
-                                pathList,
-                                probaList);
-#ifdef MC_DEBUG
-  std::cout << "probaList" << std::endl;
-  for (std::list<Real>::const_iterator it = probaList.begin();
-       it != probaList.end();
-       ++it)
-  {
-    std::cout << *it << std::endl;
-  }
-#endif
-  ASSERT_EQ(pathList.size(), 8); // is the size of pathList correct ?
+  Vector<int, 2> e;
+  e << 6, 8;
+  int y = 6;
+  Vector<Vector<int, 2> > partComputed;
+  Vector<Vector<int, 2> > partExpected(2);
+  partExpected(0) << 6, 6;
+  partExpected(1) << 7, 8;
+
+  OrdinalProba::partition(e,
+                          y,
+                          partComputed);
+  ASSERT_EQ(partComputed, partExpected); // has the real mode been estimated correctly ?
 }
+
+/**
+ * Computation of a partition
+ */
+TEST(Ordinal, partition3)
+{
+  Vector<int, 2> e;
+  e << 6, 8;
+  int y = 8;
+  Vector<Vector<int, 2> > partComputed;
+  Vector<Vector<int, 2> > partExpected(2);
+  partExpected(0) << 6, 7;
+  partExpected(1) << 8, 8;
+
+  OrdinalProba::partition(e,
+                          y,
+                          partComputed);
+  ASSERT_EQ(partComputed, partExpected); // has the real mode been estimated correctly ?
+}
+
+///**
+// * Simple case with two modalities
+// */
+//TEST(Ordinal, computeProba0)
+//{
+//  int mu = 1; // mode
+//  Real pi = 0.5; // precision
+//
+//  Vector<int, 2> eInit; // vector describing initial segment
+//  eInit << 0, 1;
+//
+//  Vector<OrdinalProba::BOSNode, 1> c; // vector describing the search process
+//
+//  Vector<int, 2> endCond; // end condition
+//  endCond << 0, 1;
+//
+//  c(0).y_ = 1; // second element y picked, proba 0.5
+//  c(0).z_ = 1; // comparison is perfect, proba 0.5
+//  OrdinalProba::partition(eInit, // computation of the partition
+//                          c(0).y_,
+//                          c(0).part_);
+//  c(0).e_ << 1, 1; // segment is {1}, proba 1.
+//
+//  Real proba = OrdinalProba::computeProba(eInit,
+//                                          c,
+//                                          endCond,
+//                                          mu,
+//                                          pi);
+//
+//  ASSERT_LT(std::abs(0.25 - proba), epsilon);
+//}
+//
+///**
+// * Simple case with three modalities and imprecision
+// */
+//TEST(Ordinal, computeProba1)
+//{
+//  int mu = 1; // mode
+//  Real pi = 0.5; // precision
+//
+//  Vector<int, 2> eInit; // vector describing initial segment
+//  eInit << 0, 2;
+//
+//  Vector<int, 2> endCond;  // end condition
+//  endCond << 0, 0;
+//
+//  Vector<OrdinalProba::BOSNode, 2> c; // vector describing the search process
+//
+//  c(0).y_ = 1; // y, middle element y picked, proba 1./3.
+//  c(0).z_ = 0; // z, comparison is imperfect, proba 0.5
+//  OrdinalProba::partition(eInit, // computation of the partition
+//                          c(0).y_,
+//                          c(0).part_);
+//  c(0).e_ << 0, 0; // e, left segment selected, proba 0.33 (all have the same size)
+//  c(1).y_ = 0; // y, only one element to choose from, proba 1.
+//  c(1).z_ = 1; // z, comparison is perfect, proba 0.5
+//  OrdinalProba::partition(c(0).e_, // computation of the partition
+//                          c(1).y_,
+//                          c(1).part_);
+//  c(1).e_ << 0, 0; // e, only one segment, in the middle, with proba 1.
+//
+//  Real proba = OrdinalProba::computeProba(eInit,
+//                                          c,
+//                                          endCond,
+//                                          mu,
+//                                          pi);
+//
+//  ASSERT_LT(std::abs(  1./3. * 0.5 * 1./3.
+//                     * 1. * 0.5 * 1.
+//                     - proba), epsilon);
+//}
+
+//TEST(Ordinal, nodeMultinomial)
+//{
+//  Vector<int, 2> eInit;
+//  eInit << 0, 1;
+//  Vector<int, 2> endCond;
+//  endCond << 0, 1;
+//  int mu = 0;
+//  Real pi = 0.5;
+//  std::list<Vector<OrdinalProba::BOSNode, 2> > pathList;
+//  std::list<Real> probaList;
+//  OrdinalProba::nodeMultinomial(eInit,
+//                                endCond,
+//                                mu,
+//                                pi,
+//                                pathList,
+//                                probaList);
+//#ifdef MC_DEBUG
+//  std::cout << "probaList" << std::endl;
+//  for (std::list<Real>::const_iterator it = probaList.begin();
+//       it != probaList.end();
+//       ++it)
+//  {
+//    std::cout << *it << std::endl;
+//  }
+//#endif
+//  ASSERT_EQ(pathList.size(), 8); // is the size of pathList correct ?
+//}
 
 ///**
 // * Test if a null precision implies an equipartition of the sampled x value

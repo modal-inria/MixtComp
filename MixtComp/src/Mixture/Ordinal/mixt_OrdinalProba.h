@@ -93,7 +93,7 @@ void displayPath(const Vector<int, 2>& eInit,
  */
 void partition(const Vector<int, 2>& e,
                int y,
-               Vector<Vector<int, 2>, 3>& part);
+               Vector<Vector<int, 2> >& part);
 
 Real yProba(const Vector<int, 2>& e,
             int y);
