@@ -47,7 +47,7 @@ namespace OrdinalProba
 /**
  * Structure containing the values of an iteration of the BOS algorithm
  */
-struct ItBOS
+struct BOSNode
 {
     int y_; // breaking point
     Vector<Vector<int, 2>, 3> part_; // partition is uniquely defined by e_ from previous iteration and by y_
@@ -66,14 +66,14 @@ struct ItBOS
 void initPath(const Vector<int, 2>& initSeg,
               const Vector<int, 2>& endCond,
               MultinomialStatistic& multi,
-              Vector<ItBOS>& c);
+              Vector<BOSNode>& c);
 
 /**
  * Output a representation of the single node to std::cout
  *
  * @param[in] node
  */
-void displaySegNode(const ItBOS& node);
+void displaySegNode(const BOSNode& node);
 
 /**
  * Output a representation of the path to std::cout
@@ -82,7 +82,7 @@ void displaySegNode(const ItBOS& node);
  * @param[in] c path
  */
 void displayPath(const Vector<int, 2>& eInit,
-                 const Vector<ItBOS>& c);
+                 const Vector<BOSNode>& c);
 
 /**
  * Partition of a segment given a breakpoint
@@ -116,7 +116,7 @@ Real eProba(int z,
  * @return joint probability
  */
 Real computeProba(const Vector<int, 2>& eInit,
-                  const Vector<ItBOS>& c,
+                  const Vector<BOSNode>& c,
                   const Vector<int, 2>& endCond,
                   int mu,
                   Real pi);
@@ -133,7 +133,7 @@ Real computeProba(const Vector<int, 2>& eInit,
  * @param[out] minVal minimum value from the previous segment
  */
 void yMultinomial(const Vector<int, 2>& eInit,
-                  const Vector<ItBOS>& c,
+                  const Vector<BOSNode>& c,
                   int mu,
                   Real pi,
                   int index,
@@ -150,7 +150,7 @@ void yMultinomial(const Vector<int, 2>& eInit,
  * @param index localization of the segment in which the value to be sampled resides
  * @param[out] binomial probability distribution of the variable z
  */
-void zMultinomial(const Vector<ItBOS>& c,
+void zMultinomial(const Vector<BOSNode>& c,
                   int mu,
                   Real pi,
                   int index,
@@ -166,7 +166,7 @@ void zMultinomial(const Vector<ItBOS>& c,
  * @param index localization of the segment in which the value to be sampled resides
  * @param[out] multinomial probability distribution of the elements of the partition
  */
-void eMultinomial(const Vector<ItBOS>& c,
+void eMultinomial(const Vector<BOSNode>& c,
                   const Vector<int, 2>& endCond,
                   int mu,
                   Real pi,
@@ -187,7 +187,7 @@ void nodeMultinomial(const Vector<int, 2>& eInit,
                      const Vector<int, 2>& endCond,
                      int mu,
                      Real pi,
-                     std::list<Vector<ItBOS, 2> >& pathList,
+                     std::list<Vector<BOSNode, 2> >& pathList,
                      std::list<Real>& probaList);
 
 /**
@@ -202,7 +202,7 @@ void nodeMultinomial(const Vector<int, 2>& eInit,
  * @param index localization of the segment in which the value to be sampled resides
  */
 void ySample(const Vector<int, 2>& eInit,
-             Vector<ItBOS>& c,
+             Vector<BOSNode>& c,
              int mu,
              Real pi,
              int index,
@@ -220,7 +220,7 @@ void ySample(const Vector<int, 2>& eInit,
  * @param index localization of the segment in which the value to be sampled resides
  */
 void zSample(const Vector<int, 2>& eInit,
-             Vector<ItBOS>& c,
+             Vector<BOSNode>& c,
              int mu,
              Real pi,
              int index,
@@ -238,7 +238,7 @@ void zSample(const Vector<int, 2>& eInit,
  * @param index localization of the segment in which the value to be sampled resides
  */
 void eSample(const Vector<int, 2>& eInit,
-             Vector<ItBOS>& c,
+             Vector<BOSNode>& c,
              const Vector<int, 2>& endCond,
              int mu,
              Real pi,
@@ -255,7 +255,7 @@ void eSample(const Vector<int, 2>& eInit,
  * @param pi precision parameter of the distribution
  */
 void samplePath(const Vector<int, 2>& eInit,
-                Vector<ItBOS>& c,
+                Vector<BOSNode>& c,
                 const Vector<int, 2>& endCond,
                 int mu,
                 Real pi,
