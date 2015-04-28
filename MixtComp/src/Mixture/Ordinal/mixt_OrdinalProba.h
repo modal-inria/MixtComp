@@ -122,58 +122,6 @@ Real computeProba(const Vector<int, 2>& eInit,
                   Real pi);
 
 /**
- * Multinomial conditional probability distribution for the variable y at a specific index
- *
- * @param eInit a constant reference to the initial segment
- * @param c a constant reference to a vector containing the current search path
- * @param mu localization parameter (mode) of the distribution
- * @param pi precision parameter of the distribution
- * @param index localization of the segment in which the value to be sampled resides
- * @param[out] proba a reference to the vector with the probability distribution of the sampled variable
- * @param[out] minVal minimum value from the previous segment
- */
-void yMultinomial(const Vector<int, 2>& eInit,
-                  const Vector<BOSNode>& c,
-                  int mu,
-                  Real pi,
-                  int index,
-                  Vector<Real>& proba,
-                  int& minVal);
-
-/**
- * Binomial conditional probability distribution for the variable z at a specific index
- *
- * @param eInit a constant reference to the initial segment
- * @param c a constant reference to a vector containing the current search path
- * @param mu localization parameter (mode) of the distribution
- * @param pi precision parameter of the distribution
- * @param index localization of the segment in which the value to be sampled resides
- * @param[out] binomial probability distribution of the variable z
- */
-void zMultinomial(const Vector<BOSNode>& c,
-                  int mu,
-                  Real pi,
-                  int index,
-                  Vector<Real>& proba);
-
-/**
- * Multinomial conditional probability distribution for the elements of the partition at a specific index
- *
- * @param eInit a constant reference to the initial segment
- * @param c a constant reference to a vector containing the current search path
- * @param mu localization parameter (mode) of the distribution
- * @param pi precision parameter of the distribution
- * @param index localization of the segment in which the value to be sampled resides
- * @param[out] multinomial probability distribution of the elements of the partition
- */
-void eMultinomial(const Vector<BOSNode>& c,
-                  const Vector<int, 2>& endCond,
-                  int mu,
-                  Real pi,
-                  int index,
-                  Vector<Real>& proba);
-
-/**
  * Multinomial conditional probability distribution for the elements of the partition at a specific index
  *
  * @param eInit a constant reference to the initial segment
@@ -189,61 +137,6 @@ void nodeMultinomial(const Vector<int, 2>& eInit,
                      Real pi,
                      std::list<Vector<BOSNode, 2> >& pathList,
                      std::list<Real>& probaList);
-
-/**
- * Sample and update a y value in the search path, using the conditional probability
- * provided by yMultinomial
- *
- * @param eInit a constant reference to the initial segment
- * @param[out] c a constant reference to a vector containing the current search path
- * @param x value of the ordinal data
- * @param mu localization parameter (mode) of the distribution
- * @param pi precision parameter of the distribution
- * @param index localization of the segment in which the value to be sampled resides
- */
-void ySample(const Vector<int, 2>& eInit,
-             Vector<BOSNode>& c,
-             int mu,
-             Real pi,
-             int index,
-             MultinomialStatistic& multi);
-
-/**
- * Sample and update a z value in the search path, using the conditional probability
- * provided by zMultinomial
- *
- * @param eInit a constant reference to the initial segment
- * @param[out] c a constant reference to a vector containing the current search path
- * @param x value of the ordinal data
- * @param mu localization parameter (mode) of the distribution
- * @param pi precision parameter of the distribution
- * @param index localization of the segment in which the value to be sampled resides
- */
-void zSample(const Vector<int, 2>& eInit,
-             Vector<BOSNode>& c,
-             int mu,
-             Real pi,
-             int index,
-             MultinomialStatistic& multi);
-
-/**
- * Sample and update a e value in the search path, using the conditional probability
- * provided by eMultinomial
- *
- * @param eInit a constant reference to the initial segment
- * @param[out] c a constant reference to a vector containing the current search path
- * @param x value of the ordinal data
- * @param mu localization parameter (mode) of the distribution
- * @param pi precision parameter of the distribution
- * @param index localization of the segment in which the value to be sampled resides
- */
-void eSample(const Vector<int, 2>& eInit,
-             Vector<BOSNode>& c,
-             const Vector<int, 2>& endCond,
-             int mu,
-             Real pi,
-             int index,
-             MultinomialStatistic& multi);
 
 /**
  * Performs a single step of Gibbs sampling across all elements in the search path
