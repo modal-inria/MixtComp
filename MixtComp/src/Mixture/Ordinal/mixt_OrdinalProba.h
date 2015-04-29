@@ -32,9 +32,6 @@
 namespace mixt
 {
 
-namespace OrdinalProba
-{
-
 /**
  * Usual call order is:
  * samplePath
@@ -47,12 +44,21 @@ namespace OrdinalProba
 /**
  * Structure containing the values of an iteration of the BOS algorithm
  */
-struct BOSNode
+class BOSNode
 {
+  public:
     int y_; // breaking point
-    Vector<Vector<int, 2>, 3> part_; // partition is uniquely defined by e_ from previous iteration and by y_
+    Vector<Vector<int, 2> > part_; // partition is uniquely defined by e_ from previous iteration and by y_
+    int partSize_; // number of elements in the partition
     int z_; // blindness of comparison
-    Vector<int, 2> e_; // final segment for current iteration
+    int e_; // final segment for current iteration, as an index of the partition
+
+    /**
+     * Compute the partition part_ from the internal breaking point y_ and a provided segment
+     *
+     * @param e provided segment
+     */
+    void partition(const Vector<int, 2>& e);
 };
 
 /**
@@ -92,8 +98,7 @@ void displayPath(const Vector<int, 2>& eInit,
  * @param[out] part partition
  */
 void partition(const Vector<int, 2>& e,
-               int y,
-               Vector<Vector<int, 2> >& part);
+               BOSNode& node);
 
 Real yProba(const Vector<int, 2>& e,
             int y);
@@ -153,8 +158,6 @@ void samplePath(const Vector<int, 2>& eInit,
                 int mu,
                 Real pi,
                 MultinomialStatistic& multi);
-
-} // namespace OrdinalProba
 
 } // namespace mixt
 

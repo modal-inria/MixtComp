@@ -36,17 +36,15 @@ TEST(Ordinal, partition0)
 {
   Vector<int, 2> e;
   e << 0, 5;
-  int y = 2;
-  Vector<Vector<int, 2> > partComputed;
-  Vector<Vector<int, 2>, 3> partExpected;
+  BOSNode node;
+  node.y_ = 2;
+  Vector<Vector<int, 2> > partExpected(3);
   partExpected(0) << 0, 1;
   partExpected(1) << 2, 2;
   partExpected(2) << 3, 5;
 
-  OrdinalProba::partition(e,
-                          y,
-                          partComputed);
-  ASSERT_EQ(partComputed, partExpected); // has the real mode been estimated correctly ?
+  node.partition(e);
+  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
 }
 
 /**
@@ -56,14 +54,12 @@ TEST(Ordinal, partition1)
 {
   Vector<int, 2> e;
   e << 6, 8;
-  int y = 2;
-  Vector<Vector<int, 2> > partComputed;
+  BOSNode node;
+  node.y_ = 2;
   Vector<Vector<int, 2> > partExpected(0);
 
-  OrdinalProba::partition(e,
-                          y,
-                          partComputed);
-  ASSERT_EQ(partComputed, partExpected); // has the real mode been estimated correctly ?
+  node.partition(e);
+  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
 }
 
 /**
@@ -73,16 +69,14 @@ TEST(Ordinal, partition2)
 {
   Vector<int, 2> e;
   e << 6, 8;
-  int y = 6;
-  Vector<Vector<int, 2> > partComputed;
+  BOSNode node;
+  node.y_ = 6;
   Vector<Vector<int, 2> > partExpected(2);
   partExpected(0) << 6, 6;
   partExpected(1) << 7, 8;
 
-  OrdinalProba::partition(e,
-                          y,
-                          partComputed);
-  ASSERT_EQ(partComputed, partExpected); // has the real mode been estimated correctly ?
+  node.partition(e);
+  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
 }
 
 /**
@@ -92,16 +86,14 @@ TEST(Ordinal, partition3)
 {
   Vector<int, 2> e;
   e << 6, 8;
-  int y = 8;
-  Vector<Vector<int, 2> > partComputed;
+  BOSNode node;
+  node.y_ = 8;
   Vector<Vector<int, 2> > partExpected(2);
   partExpected(0) << 6, 7;
   partExpected(1) << 8, 8;
 
-  OrdinalProba::partition(e,
-                          y,
-                          partComputed);
-  ASSERT_EQ(partComputed, partExpected); // has the real mode been estimated correctly ?
+  node.partition(e);
+  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
 }
 
 ///**
@@ -123,8 +115,7 @@ TEST(Ordinal, partition3)
 //  c(0).y_ = 1; // second element y picked, proba 0.5
 //  c(0).z_ = 1; // comparison is perfect, proba 0.5
 //  OrdinalProba::partition(eInit, // computation of the partition
-//                          c(0).y_,
-//                          c(0).part_);
+//                          c(0));
 //  c(0).e_ << 1, 1; // segment is {1}, proba 1.
 //
 //  Real proba = OrdinalProba::computeProba(eInit,
@@ -135,7 +126,7 @@ TEST(Ordinal, partition3)
 //
 //  ASSERT_LT(std::abs(0.25 - proba), epsilon);
 //}
-//
+
 ///**
 // * Simple case with three modalities and imprecision
 // */

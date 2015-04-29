@@ -27,8 +27,54 @@
 namespace mixt
 {
 
-namespace OrdinalProba
+void BOSNode::partition(const Vector<int, 2>& e)
 {
+#ifdef MC_DEBUG
+  std::cout << "partition" << std::endl;
+#endif
+  if (y_ < e(0) || y_ > e(1)) // if y is not in the interval, the partition is empty
+  {
+    partSize_ = 0;
+    part_.resize(partSize_);
+  }
+  else
+  {
+    partSize_ = 3; // maximum size of the partition
+    int yPos; // position of the "breaking point" segment
+    if (e(0) == y_) // is the left segment empty ?
+    {
+      partSize_ -= 1;
+    }
+    if (e(1) == y_) // is the right segment empty ?
+    {
+      partSize_ -= 1;
+    }
+    part_.resize(partSize_);
+
+    if (e(0) != y_) // is the left interval non-empty ? If not, partition element will be an empty vector
+    {
+      part_(0)(0) = e(0);
+      part_(0)(1) = y_ - 1;
+      yPos = 1;
+    }
+    else
+      yPos = 0;
+    if (e(1) != y_) // is the right interval non-empty ? If not, partition element will be an empty vector
+    {
+      part_(partSize_ - 1)(0) = y_ + 1;
+      part_(partSize_ - 1)(1) = e(1);
+      yPos = partSize_ - 2;
+    }
+    else
+      yPos = partSize_ - 1;
+    part_(yPos)(0) = y_; // center interval always contains the center element
+    part_(yPos)(1) = y_;
+  }
+#ifdef MC_DEBUG
+  std::cout << "end partition" << std::endl;
+#endif
+}
+
 
 // format of interval e is a vector with bounds included: [1, 3] corresponds to the set {1, 2, 3}
 
@@ -95,7 +141,7 @@ void displaySegNode(const BOSNode& node)
               << ", part(" << s << ")(1): "   << node.part_(s)(1) << std::endl;
   }
   std::cout << "\tz: " << node.z_ << std::endl;
-  std::cout << "\te(0): " << node.e_(0) << ", e(1): " << node.e_(1) << std::endl;
+  std::cout << "\tnode.part_(node.e_)(0): " << node.part_(node.e_)(0) << ", node.part_(node.e_)(1): " << node.part_(node.e_)(1) << std::endl;
 }
 
 void displayPath(const Vector<int, 2>& eInit,
@@ -107,55 +153,6 @@ void displayPath(const Vector<int, 2>& eInit,
     std::cout << "node: " << node << std::endl;
     displaySegNode(c(node));
   }
-}
-
-void partition(const Vector<int, 2>& e,
-               int y,
-               Vector<Vector<int, 2> >& part)
-{
-#ifdef MC_DEBUG
-  std::cout << "partition" << std::endl;
-#endif
-  if (y < e(0) || y > e(1)) // if y is not in the interval, the partition is empty
-  {
-    part.resize(0);
-  }
-  else
-  {
-    int partSize = 3; // maximum size of the partition
-    int yPos; // position of the "breaking point" segment
-    if (e(0) == y) // is the left segment empty ?
-    {
-      partSize -= 1;
-    }
-    if (e(1) == y) // is the right segment empty ?
-    {
-      partSize -= 1;
-    }
-    part.resize(partSize);
-
-    if (e(0) != y) // is the left interval non-empty ? If not, partition element will be an empty vector
-    {
-      part(0)(0) = e(0);
-      part(0)(1) = y - 1;
-      yPos = 1;
-    }
-    else
-      yPos = 0;
-    if (e(1) != y) // is the right interval non-empty ? If not, partition element will be an empty vector
-    {
-      part(partSize - 1)(0) = y + 1;
-      part(partSize - 1)(1) = e(1);
-      yPos = partSize - 2;
-    }
-    else
-      yPos = partSize - 1;
-    part(yPos)(0) = y; // center interval always contains the center element
-    part(yPos)(1) = y;
-  }
-#ifdef MC_DEBUG
-  std::cout << "end partition" << std::endl;
-#endif
 }
 
 Real yProba(const Vector<int, 2>& e,
@@ -283,62 +280,62 @@ Real eProba(int z,
   return eProba;
 }
 
-Real computeProba(const Vector<int, 2>& initSeg,
-                  const Vector<BOSNode>& c,
-                  const Vector<int, 2>& endCond,
-                  int mu,
-                  Real pi)
-{
-#ifdef MC_DEBUG
-  std::cout << "OrdinalProba::computeProba" << std::endl;
-#endif
-  Real proba = 1.; // The initial probability of being in any of the member of the input interval is 1
-
-  int nbSegment = initSeg(1) - initSeg(0); // number of segments in the path
-
-  if (endCond(0) <= c(nbSegment - 1).e_(0) && c(nbSegment - 1).e_(0) <= endCond(1)) // is the path compatible with the provided condition ?
-  {
-    for (int i = 0; i < c.size(); ++i) // loop over triplets of path variables
-    {
-      int y = c(i).y_; // breakpoint
-      int z = c(i).z_; // accuracy
-      Vector<int, 2> ePr; // previous iteration segment
-      if (i == 0)
-      {
-        ePr = initSeg;
-      }
-      else
-      {
-        ePr = c(i - 1).e_; // last iteration segment
-      }
-      const Vector<Vector<int, 2> >& part = c(i).part_; // current iteration partition
-      const Vector<int, 2>& e = c(i).e_; // current iteration segment segment
-
-  #ifdef MC_DEBUG
-      std::cout << "i: " << i
-                << ", y: " << y
-                << ", z: " << z
-                << ", ePr(0): " << ePr(0) << ", ePr(1): " << ePr(1)
-                << ", e(0): " << e(0) << ", e(1): " << e(1) << std::endl;
-  #endif
-      proba *= yProba(ePr,
-                      y);
-
-      proba *= zProba(z,
-                      pi);
-
-      proba *= eProba(z,
-                      part,
-                      e,
-                      mu,
-                      pi);
-    }
-  }
-  else // conditional probability of verifying condition given the path is null
-      proba = 0.;
-
-  return proba;
-}
+//Real computeProba(const Vector<int, 2>& initSeg,
+//                  const Vector<BOSNode>& c,
+//                  const Vector<int, 2>& endCond,
+//                  int mu,
+//                  Real pi)
+//{
+//#ifdef MC_DEBUG
+//  std::cout << "OrdinalProba::computeProba" << std::endl;
+//#endif
+//  Real proba = 1.; // The initial probability of being in any of the member of the input interval is 1
+//
+//  int nbSegment = initSeg(1) - initSeg(0); // number of segments in the path
+//
+//  if (endCond(0) <= c(nbSegment - 1).e_(0) && c(nbSegment - 1).e_(0) <= endCond(1)) // is the path compatible with the provided condition ?
+//  {
+//    for (int i = 0; i < c.size(); ++i) // loop over triplets of path variables
+//    {
+//      int y = c(i).y_; // breakpoint
+//      int z = c(i).z_; // accuracy
+//      Vector<int, 2> ePr; // previous iteration segment
+//      if (i == 0)
+//      {
+//        ePr = initSeg;
+//      }
+//      else
+//      {
+//        ePr = c(i - 1).e_; // last iteration segment
+//      }
+//      const Vector<Vector<int, 2> >& part = c(i).part_; // current iteration partition
+//      const Vector<int, 2>& e = c(i).e_; // current iteration segment segment
+//
+//  #ifdef MC_DEBUG
+//      std::cout << "i: " << i
+//                << ", y: " << y
+//                << ", z: " << z
+//                << ", ePr(0): " << ePr(0) << ", ePr(1): " << ePr(1)
+//                << ", e(0): " << e(0) << ", e(1): " << e(1) << std::endl;
+//  #endif
+//      proba *= yProba(ePr,
+//                      y);
+//
+//      proba *= zProba(z,
+//                      pi);
+//
+//      proba *= eProba(z,
+//                      part,
+//                      e,
+//                      mu,
+//                      pi);
+//    }
+//  }
+//  else // conditional probability of verifying condition given the path is null
+//      proba = 0.;
+//
+//  return proba;
+//}
 
 void nodeMultinomial(const Vector<int, 2>& eInit,
                      const Vector<int, 2>& endCond,
@@ -478,7 +475,5 @@ void samplePath(const Vector<int, 2>& eInit,
 //             c);
 //#endif
 }
-
-} // namespace OrdinalProba
 
 } // namespace mixt
