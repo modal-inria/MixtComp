@@ -22,8 +22,10 @@
  **/
 
 #include "gtest/gtest.h"
-#include "../src/Mixture/Ordinal/mixt_OrdinalProba.h"
+
 #include "../src/Various/mixt_Constants.h"
+#include "../src/Mixture/Ordinal/mixt_BOSNode.h"
+#include "../src/Mixture/Ordinal/mixt_BOSPath.h"
 #include "../src/Statistic/mixt_MultinomialStatistic.h"
 #include "../src/Statistic/mixt_UniformStatistic.h"
 
@@ -96,36 +98,28 @@ TEST(Ordinal, partition3)
   ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
 }
 
-///**
-// * Simple case with two modalities
-// */
-//TEST(Ordinal, computeProba0)
-//{
-//  int mu = 1; // mode
-//  Real pi = 0.5; // precision
-//
-//  Vector<int, 2> eInit; // vector describing initial segment
-//  eInit << 0, 1;
-//
-//  Vector<OrdinalProba::BOSNode, 1> c; // vector describing the search process
-//
-//  Vector<int, 2> endCond; // end condition
-//  endCond << 0, 1;
-//
-//  c(0).y_ = 1; // second element y picked, proba 0.5
-//  c(0).z_ = 1; // comparison is perfect, proba 0.5
-//  OrdinalProba::partition(eInit, // computation of the partition
-//                          c(0));
-//  c(0).e_ << 1, 1; // segment is {1}, proba 1.
-//
-//  Real proba = OrdinalProba::computeProba(eInit,
-//                                          c,
-//                                          endCond,
-//                                          mu,
-//                                          pi);
-//
-//  ASSERT_LT(std::abs(0.25 - proba), epsilon);
-//}
+/**
+ * Simple case with two modalities
+ */
+TEST(Ordinal, computeProba0)
+{
+  int mu = 1; // mode
+  Real pi = 0.5; // precision
+
+  BOSPath path;
+  path.setInit(0, 1);
+  path.setEnd(0, 1);
+
+  path.c_(0).y_ = 1; // second element y picked, proba 0.5
+  path.c_(0).z_ = 1; // comparison is perfect, proba 0.5
+  path.c_(0).partition(path.eInit_); // computation of the partition
+  path.c_(0).e_ = 1; // segment is {1}, proba 1.
+
+  Real proba = path.computeProba(mu,
+                                 pi);
+
+  ASSERT_LT(std::abs(0.25 - proba), epsilon);
+}
 
 ///**
 // * Simple case with three modalities and imprecision

@@ -21,44 +21,38 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_ORDINAL
-#define MIXT_ORDINAL
+#ifndef MIXT_BOSPATH
+#define MIXT_BOSPATH
 
 #include <list>
 #include <utility>
 #include "../LinAlg/mixt_LinAlg.h"
+#include "mixt_BOSNode.h"
 #include "../Statistic/mixt_MultinomialStatistic.h"
 
 namespace mixt
 {
 
-/**
- * Usual call order is:
- * samplePath
- * y, z and eSample
- * yMultinomial
- * computeProba
- * y, z, and eProba
- */
-
-/**
- * Structure containing the values of an iteration of the BOS algorithm
- */
-class BOSNode
+class BOSPath
 {
   public:
-    int y_; // breaking point
-    Vector<Vector<int, 2> > part_; // partition is uniquely defined by e_ from previous iteration and by y_
-    int partSize_; // number of elements in the partition
-    int z_; // blindness of comparison
-    int e_; // final segment for current iteration, as an index of the partition
+    Vector<int, 2> eInit_;
+    Vector<BOSNode> c_;
+    Vector<int, 2> endCond_;
+
+    void setInit(int a, int b);
+    void setEnd(int a, int b);
 
     /**
-     * Compute the partition part_ from the internal breaking point y_ and a provided segment
-     *
-     * @param e provided segment
+     * Joint probability on the whole BOSPath (path + end condition)
+     * @param mu localization parameter (mode) of the distribution
+     * @param pi precision parameter of the distribution
+     * @return joint probability
      */
-    void partition(const Vector<int, 2>& e);
+    Real computeProba(int mu,
+                      Real pi);
+  private:
+    int nbSegment_;
 };
 
 /**
@@ -100,32 +94,6 @@ void displayPath(const Vector<int, 2>& eInit,
 void partition(const Vector<int, 2>& e,
                BOSNode& node);
 
-Real yProba(const Vector<int, 2>& e,
-            int y);
-Real zProba(int z,
-            Real pi);
-Real eProba(int z,
-            const Vector<Vector<int, 2> >& part,
-            const Vector<int, 2>& e,
-            int mu,
-            Real pi);
-
-/**
- * Joint probability of the path and the imposed condition
- *
- * @param eInit a constant reference to the initial segment
- * @param c a constant reference to a vector containing the current search path
- * endCond
- * @param mu localization parameter (mode) of the distribution
- * @param pi precision parameter of the distribution
- * @return joint probability
- */
-Real computeProba(const Vector<int, 2>& eInit,
-                  const Vector<BOSNode>& c,
-                  const Vector<int, 2>& endCond,
-                  int mu,
-                  Real pi);
-
 /**
  * Multinomial conditional probability distribution for the elements of the partition at a specific index
  *
@@ -161,4 +129,4 @@ void samplePath(const Vector<int, 2>& eInit,
 
 } // namespace mixt
 
-#endif // MIXT_ORDINAL
+#endif // MIXT_BOSPATH
