@@ -40,6 +40,8 @@ class BOSPath
     Vector<BOSNode> c_;
     Vector<int, 2> endCond_;
 
+    int nbNode_;
+
     void setInit(int a, int b);
     void setEnd(int a, int b);
 
@@ -67,8 +69,21 @@ class BOSPath
                          int index,
                          std::list<Vector<BOSNode, 2> >& pathList,
                          std::list<Real>& probaList) const;
-  private:
-    int nbSegment_;
+
+    /**
+     * Randomly initialize the path while being compatible with eInit and endCond constraints
+     */
+    void initPath();
+
+    /**
+     * Return a reference to final segment of a node
+     *
+     * @param i index of the node
+     * @value constant reference to the final segment of a node
+     */
+    const Vector<int, 2>& seg(int i) const;
+
+    MultinomialStatistic multi_;
 };
 
 /**
@@ -97,8 +112,7 @@ void displaySegNode(const BOSNode& node);
  * @param[in] eInit initial segment of the path
  * @param[in] c path
  */
-void displayPath(const Vector<int, 2>& eInit,
-                 const Vector<BOSNode>& c);
+void displayPath(const BOSPath& path);
 
 /**
  * Performs a single step of Gibbs sampling across all elements in the search path

@@ -185,6 +185,44 @@ TEST(Ordinal, nodeMultinomial)
   ASSERT_EQ(pathList.size(), 8); // is the size of pathList correct ?
 }
 
+/**
+ * Test checking the initialization of the Gibbs sampling
+ */
+TEST(Ordinal, GibbsInit)
+{
+  BOSPath path;
+  path.setInit(5, 12);
+  path.setEnd(8, 10);
+
+  path.initPath();
+#ifdef MC_DEBUG
+  std::cout << "path.c_.size(): " << path.c_.size() << std::endl;
+  std::cout << "path.nbNode_: " << path.nbNode_ << std::endl;
+#endif
+  bool validPath;
+  if (path.endCond_(0) <= path.seg(path.nbNode_ - 1)(0) && path.seg(path.nbNode_ - 1)(0) <= path.endCond_(1))
+    validPath = true;
+  else
+    validPath = false;
+
+#ifdef MC_DEBUG
+  displayPath(path);
+#endif
+
+  int mu = 8; // arbitrary mode, just to verify the validity of the path
+  int pi = 0.5;
+
+  Real logProba = path.computeLogProba(mu, pi);
+
+#ifdef MC_DEBUG
+  std::cout << "logProba: " << logProba << std::endl;
+#endif
+
+  ASSERT_EQ(validPath, true); // is the path generated valid ?
+  ASSERT_GT(logProba,
+            minInf); // is his proba non zero ?
+}
+
 ///**
 // * Test if a null precision implies an equipartition of the sampled x value
 // */
@@ -431,53 +469,6 @@ TEST(Ordinal, nodeMultinomial)
 //#endif
 //
 //  ASSERT_EQ(computedMode, expectedMode); // has the real mode been estimated correctly ?
-//}
-//
-///**
-// * Test checking the initialization of the Gibbs sampling
-// */
-//TEST(Ordinal, GibbsInit)
-//{
-//  Vector<int, 2> initSeg; // initial segment
-//  initSeg << 5, 12;
-//  Vector<int, 2> endCond; // condition to be verified by the last segment
-//  endCond << 8, 10;
-//
-//  MultinomialStatistic multi;
-//
-//  Vector<OrdinalProba::BOSNode> c;
-//
-//  OrdinalProba::initPath(initSeg,
-//                         endCond,
-//                         multi,
-//                         c);
-//
-//  int nbSeg = initSeg(1) - initSeg(0);
-//  bool validPath;
-//  if (endCond(0) <= c(nbSeg - 1).e_(0) && c(nbSeg - 1).e_(0) <= endCond(1))
-//    validPath = true;
-//  else
-//    validPath = false;
-//
-//#ifdef MC_DEBUG
-//  OrdinalProba::displayPath(initSeg, c);
-//#endif
-//
-//  int mu = 8; // arbitrary mode, just to verify the validity of the path
-//  int pi = 0.5;
-//
-//  Real proba = OrdinalProba::computeProba(initSeg,
-//                                          c,
-//                                          endCond,
-//                                          mu,
-//                                          pi);
-//#ifdef MC_DEBUG
-//  std::cout << "proba: " << proba << std::endl;
-//#endif
-//
-//  ASSERT_EQ(validPath, true); // is the path generated valid ?
-//  ASSERT_GT(proba,
-//            epsilon); // is his proba non zero ?
 //}
 
 ///**

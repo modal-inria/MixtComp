@@ -32,8 +32,8 @@ void BOSPath::setInit(int a, int b)
 {
   eInit_(0) = a;
   eInit_(1) = b;
-  nbSegment_ = eInit_(1) - eInit_(0); // number of segments in the path};
-  c_.resize(nbSegment_);
+  nbNode_ = eInit_(1) - eInit_(0); // number of segments in the path;
+  c_.resize(nbNode_);
 }
 
 void BOSPath::setEnd(int a, int b)
@@ -50,11 +50,11 @@ Real BOSPath::computeLogProba(int mu,
 #endif
   Real logProba = 0.; // The initial probability of being in any of the member of the input interval is 1
 
-  int lastE = c_(nbSegment_ - 1).e_;
-  int lastSeg = c_(nbSegment_ - 1).part_(lastE)(0); // last segment only contains one element
+  int lastE = c_(nbNode_ - 1).e_;
+  int lastSeg = c_(nbNode_ - 1).part_(lastE)(0); // last segment only contains one element
   if (endCond_(0) <= lastSeg && lastSeg <= endCond_(1)) // is the path compatible with the provided condition ?
   {
-    for (int node = 0; node < nbSegment_; ++node) // loop over each BOSNode in c
+    for (int node = 0; node < nbNode_; ++node) // loop over each BOSNode in c
     {
 #ifdef MC_DEBUG
       std::cout << "node: " << node << std::endl;
@@ -91,10 +91,16 @@ void BOSPath::nodeMultinomial(int mu,
 {
   Vector<BOSNode, 2> path; // a specific path is used for this computation, instead of c
   Vector<int, 2> firstSeg;
+  Vector<int, 2> lastSeg;
   if (index == 0)
     firstSeg = eInit_;
   else
     firstSeg = c_(index - 1).part_(c_(index - 1).e_);
+
+  if (index == c_.size() - 1)
+    lastSeg = endCond_;
+  else
+    lastSeg = c_(index + 1).part_(c_(index + 1).e_);
 
   for (path(0).y_ = firstSeg(0)    ;
        path(0).y_ < firstSeg(1) + 1;
@@ -159,7 +165,7 @@ void BOSPath::nodeMultinomial(int mu,
                 std::cout << "y1: " << path(1).y_ << ", z0: " << path(1).z_ << ", e0: " << path(1).e_ << ", part0(e0)(0): " << path(1).part_(path(1).e_)(0) << ", part0(e0)(1): " << path(1).part_(path(1).e_)(1) << std::endl;
                 std::cout << "\te1LogProba: " << e1LogProba << std::endl;
 #endif
-                if (e1LogProba > minInf && endSeg(0) <= endCond_(1) && endSeg(1) <= endCond_(0)) // is the final condition verified ?
+                if (e1LogProba > minInf && endSeg(0) <= lastSeg(1) && endSeg(1) <= lastSeg(0)) // is the final condition verified ?
                 {
                   Real logProba = y0LogProba + z0LogProba + e0LogProba + y1LogProba + z1LogProba + e1LogProba;
                   pathList.push_back(path);
@@ -186,66 +192,61 @@ void BOSPath::nodeMultinomial(int mu,
   }
 }
 
-// format of interval e is a vector with bounds included: [1, 3] corresponds to the set {1, 2, 3}
+void BOSPath::initPath()
+{
+#ifdef MC_DEBUG
+  std::cout << "initPath" << std::endl;
+  std::cout << "endCond_(0): " << endCond_(0) << ", endCond_(1): " << endCond_(1) << std::endl;
+#endif
+  Vector<int, 2> seg = eInit_;
 
-//void initPath(const Vector<int, 2>& initSeg,
-//              const Vector<int, 2>& endCond,
-//              MultinomialStatistic& multi,
-//              Vector<BOSNode>& c)
-//{
-//#ifdef MC_DEBUG
-//  std::cout << "initPath" << std::endl;
-//#endif
-//  int nbSegment = initSeg(1) - initSeg(0); // number of segments in the path
-//
-//  c.resize(nbSegment);
-//
-//#ifdef MC_DEBUG
-//  std::cout << "endCond(0): " << endCond(0) << ", endCond(1): " << endCond(1) << std::endl;
-//#endif
-//  Vector<int, 2> seg = initSeg;
-//
-//  for (int i = 0; i < nbSegment; ++i) // loop to fill all the elements of the path
-//  {
-//#ifdef MC_DEBUG
-//    std::cout << "i: " << i << std::endl;
-//#endif
-//    c(i).y_ = multi.sampleInt(seg(0), seg(1));
-//    partition(seg,
-//              c(i).y_,
-//              c(i).part_);
-//    c(i).z_ = 0; // comparisons are all blind in initialization
-//    Vector<Real> segProba(3);
-//    for (int s = 0; s < 3; ++s) // computation of the allowed segments
-//    {
-//      if ( c(i).part_(s)(0) > -1       && // only non-empty segments are considered
-//           c(i).part_(s)(0) <= endCond(1) && // test if the current segment of the partition can reach any allowed point
-//           endCond(0)       <= c(i).part_(s)(1) )
-//        segProba(s) = c(i).part_(s)(1) - c(i).part_(s)(0) + 1; // proba to sample segment is proportional
-//      else
-//        segProba(s) = 0.;
-//    }
-//    segProba /= segProba.sum();
-//    int sampleSeg = multi.sample(segProba);
-//#ifdef MC_DEBUG
-//    std::cout << "segProba" << std::endl;
-//    std::cout << segProba << std::endl;
-//    std::cout << "sampleSeg: " << sampleSeg << std::endl;
-//#endif
-//    c(i).e_ = c(i).part_(sampleSeg);
-//    seg = c(i).e_;
-//#ifdef MC_DEBUG
-//    std::cout << "currNode" << std::endl;
-//    displaySegNode(c(i));
-//#endif
-//  }
-//}
+  for (int i = 0; i < nbNode_; ++i) // loop to fill all the elements of the path
+  {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << std::endl;
+#endif
+    c_(i).y_ = multi_.sampleInt(seg(0), seg(1));
+    c_(i).partition(seg);
+    c_(i).z_ = 0; // comparisons are all blind in initialization
+    Vector<Real> segProba(c_(i).partSize_);
+    for (int s = 0; s < c_(i).partSize_; ++s) // computation of the allowed segments
+    {
+      if (c_(i).part_(s)(0) <= endCond_(1) && // test if the current segment of the partition can reach any allowed point
+          endCond_(0)       <= c_(i).part_(s)(1) )
+        segProba(s) = c_(i).part_(s)(1) - c_(i).part_(s)(0) + 1; // proba to sample segment is proportional
+      else
+        segProba(s) = 0.;
+    }
+    segProba /= segProba.sum();
+    int sampleSeg = multi_.sample(segProba);
+#ifdef MC_DEBUG
+    std::cout << "segProba" << std::endl;
+    std::cout << segProba << std::endl;
+    std::cout << "sampleSeg: " << sampleSeg << std::endl;
+#endif
+    c_(i).e_ = sampleSeg;
+    seg = c_(i).part_(sampleSeg);
+#ifdef MC_DEBUG
+    std::cout << "currNode" << std::endl;
+    displaySegNode(c_(i));
+#endif
+  }
+}
+
+const Vector<int, 2>& BOSPath::seg(int i) const
+{
+#ifdef MC_DEBUG
+  std::cout << "BOSPath::seg" << std::endl;
+  std::cout << "c_(i).e_: " << c_(i).e_ << ", c_(i).partSize_: " << c_(i).partSize_ << std::endl;
+#endif
+  return c_(i).part_(c_(i).e_);
+}
 
 void displaySegNode(const BOSNode& node)
 {
   std::cout << "\ty: " << node.y_ << std::endl;
   std::cout << "\tpart: " << std::endl;
-  for (int s = 0; s < 3; ++s)
+  for (int s = 0; s < node.partSize_; ++s)
   {
     std::cout << "\t\tpart(" << s << ")(0): "  << node.part_(s)(0)
               << ", part(" << s << ")(1): "   << node.part_(s)(1) << std::endl;
@@ -254,14 +255,13 @@ void displaySegNode(const BOSNode& node)
   std::cout << "\tnode.part_(node.e_)(0): " << node.part_(node.e_)(0) << ", node.part_(node.e_)(1): " << node.part_(node.e_)(1) << std::endl;
 }
 
-void displayPath(const Vector<int, 2>& eInit,
-                 const Vector<BOSNode>& c)
+void displayPath(const BOSPath& path)
 {
-  std::cout << "eInit(0): " << eInit(0) << ", eInit(1): " << eInit(1) << std::endl;
-  for (int node = 0; node < c.size(); ++node)
+  std::cout << "path.eInit_(0): " << path.eInit_(0) << ", path.eInit_(1): " << path.eInit_(1) << std::endl;
+  for (int node = 0; node < path.c_.size(); ++node)
   {
     std::cout << "node: " << node << std::endl;
-    displaySegNode(c(node));
+    displaySegNode(path.c_(node));
   }
 }
 
