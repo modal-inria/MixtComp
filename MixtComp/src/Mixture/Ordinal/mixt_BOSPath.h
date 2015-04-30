@@ -45,12 +45,28 @@ class BOSPath
 
     /**
      * Joint probability on the whole BOSPath (path + end condition)
+     *
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution
      * @return joint probability
      */
     Real computeLogProba(int mu,
-                         Real pi);
+                         Real pi) const;
+
+    /**
+     * Multinomial conditional probability distribution for the elements of the partition at a specific index
+     *
+     * @param index index of the first node for which probabilities are computed
+     * @param mu localization parameter (mode) of the distribution
+     * @param pi precision parameter of the distribution
+     * @param[out] pathList list of the various path
+     * @param[out] probaList list of the conditional probabilities of the paths in pathList
+     */
+    void nodeMultinomial(int mu,
+                         Real pi,
+                         int index,
+                         std::list<Vector<BOSNode, 2> >& pathList,
+                         std::list<Real>& probaList) const;
   private:
     int nbSegment_;
 };
@@ -83,33 +99,6 @@ void displaySegNode(const BOSNode& node);
  */
 void displayPath(const Vector<int, 2>& eInit,
                  const Vector<BOSNode>& c);
-
-/**
- * Partition of a segment given a breakpoint
- *
- * @param[in] e segment to be partitioned
- * @param[in] y breakpoint
- * @param[out] part partition
- */
-void partition(const Vector<int, 2>& e,
-               BOSNode& node);
-
-/**
- * Multinomial conditional probability distribution for the elements of the partition at a specific index
- *
- * @param eInit a constant reference to the initial segment
- * @param endCond a constant reference to the condition verified by the data data
- * @param mu localization parameter (mode) of the distribution
- * @param pi precision parameter of the distribution
- * @param[out] pathList list of the various path
- * @param[out] probaList list of the conditional probabilities of the paths in pathList
- */
-void nodeMultinomial(const Vector<int, 2>& eInit,
-                     const Vector<int, 2>& endCond,
-                     int mu,
-                     Real pi,
-                     std::list<Vector<BOSNode, 2> >& pathList,
-                     std::list<Real>& probaList);
 
 /**
  * Performs a single step of Gibbs sampling across all elements in the search path

@@ -74,7 +74,7 @@ void BOSNode::partition(const Vector<int, 2>& e)
 #endif
 }
 
-Real BOSNode::yLogProba(const Vector<int, 2>& e)
+Real BOSNode::yLogProba(const Vector<int, 2>& e) const
 {
 #ifdef MC_DEBUG
   std::cout << "BOSNode::yProba" << std::endl;
@@ -94,7 +94,7 @@ Real BOSNode::yLogProba(const Vector<int, 2>& e)
   return std::log(yProba); // conditional probability of y, which only depends of the size of the interval
 }
 
-Real BOSNode::zLogProba(Real pi)
+Real BOSNode::zLogProba(Real pi) const
 {
 #ifdef MC_DEBUG
   std::cout << "BOSNode::zProba" << std::endl;
@@ -115,7 +115,7 @@ Real BOSNode::zLogProba(Real pi)
 }
 
 Real BOSNode::eLogProba(int mu,
-                        Real pi)
+                        Real pi) const
 {
 #ifdef MC_DEBUG
   std::cout << "BOSNode::eProba" << std::endl;

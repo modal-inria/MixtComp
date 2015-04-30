@@ -155,33 +155,35 @@ TEST(Ordinal, computeLogProba1)
   ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
 }
 
-//TEST(Ordinal, nodeMultinomial)
-//{
-//  Vector<int, 2> eInit;
-//  eInit << 0, 1;
-//  Vector<int, 2> endCond;
-//  endCond << 0, 1;
-//  int mu = 0;
-//  Real pi = 0.5;
-//  std::list<Vector<OrdinalProba::BOSNode, 2> > pathList;
-//  std::list<Real> probaList;
-//  OrdinalProba::nodeMultinomial(eInit,
-//                                endCond,
-//                                mu,
-//                                pi,
-//                                pathList,
-//                                probaList);
-//#ifdef MC_DEBUG
-//  std::cout << "probaList" << std::endl;
-//  for (std::list<Real>::const_iterator it = probaList.begin();
-//       it != probaList.end();
-//       ++it)
-//  {
-//    std::cout << *it << std::endl;
-//  }
-//#endif
-//  ASSERT_EQ(pathList.size(), 8); // is the size of pathList correct ?
-//}
+TEST(Ordinal, nodeMultinomial)
+{
+  int mu = 0;
+  Real pi = 0.5;
+
+  BOSPath path;
+  path.setInit(0, 1);
+  path.setEnd(0, 1);
+
+  int index = 0; // index of the first node of the pair used in the computation
+
+  std::list<Vector<BOSNode, 2> > pathList;
+  std::list<Real> probaList;
+  path.nodeMultinomial(mu,
+                       pi,
+                       index,
+                       pathList,
+                       probaList);
+#ifdef MC_DEBUG
+  std::cout << "probaList" << std::endl;
+  for (std::list<Real>::const_iterator it = probaList.begin();
+       it != probaList.end();
+       ++it)
+  {
+    std::cout << *it << std::endl;
+  }
+#endif
+  ASSERT_EQ(pathList.size(), 8); // is the size of pathList correct ?
+}
 
 ///**
 // * Test if a null precision implies an equipartition of the sampled x value
