@@ -49,8 +49,8 @@ class BOSPath
      * @param pi precision parameter of the distribution
      * @return joint probability
      */
-    Real computeProba(int mu,
-                      Real pi);
+    Real computeLogProba(int mu,
+                         Real pi);
   private:
     int nbSegment_;
 };

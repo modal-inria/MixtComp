@@ -74,7 +74,7 @@ void BOSNode::partition(const Vector<int, 2>& e)
 #endif
 }
 
-Real BOSNode::yProba(const Vector<int, 2>& e)
+Real BOSNode::yLogProba(const Vector<int, 2>& e)
 {
 #ifdef MC_DEBUG
   std::cout << "BOSNode::yProba" << std::endl;
@@ -91,10 +91,10 @@ Real BOSNode::yProba(const Vector<int, 2>& e)
 #ifdef MC_DEBUG
     std::cout << "yProba: " << yProba << std::endl;
 #endif
-  return yProba; // conditional probability of y, which only depends of the size of the interval
+  return std::log(yProba); // conditional probability of y, which only depends of the size of the interval
 }
 
-Real BOSNode::zProba(Real pi)
+Real BOSNode::zLogProba(Real pi)
 {
 #ifdef MC_DEBUG
   std::cout << "BOSNode::zProba" << std::endl;
@@ -111,11 +111,11 @@ Real BOSNode::zProba(Real pi)
 #ifdef MC_DEBUG
     std::cout << "zProba: " << zProba << std::endl;
 #endif
-  return zProba;
+  return std::log(zProba);
 }
 
-Real BOSNode::eProba(int mu,
-                     Real pi)
+Real BOSNode::eLogProba(int mu,
+                        Real pi)
 {
 #ifdef MC_DEBUG
   std::cout << "BOSNode::eProba" << std::endl;
@@ -191,7 +191,7 @@ Real BOSNode::eProba(int mu,
 #ifdef MC_DEBUG
     std::cout << "eProba: " << eProba << std::endl;
 #endif
-  return eProba;
+  return std::log(eProba);
 }
 
 } // namespace mixt

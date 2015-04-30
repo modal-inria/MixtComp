@@ -42,38 +42,45 @@ void BOSPath::setEnd(int a, int b)
   endCond_(1) = b;
 };
 
-Real BOSPath::computeProba(int mu,
-                           Real pi)
+Real BOSPath::computeLogProba(int mu,
+                              Real pi)
 {
 #ifdef MC_DEBUG
   std::cout << "BOSPath::computeProba" << std::endl;
 #endif
-  Real proba = 1.; // The initial probability of being in any of the member of the input interval is 1
+  Real logProba = 0.; // The initial probability of being in any of the member of the input interval is 1
 
   int lastE = c_(nbSegment_ - 1).e_;
   int lastSeg = c_(nbSegment_ - 1).part_(lastE)(0); // last segment only contains one element
   if (endCond_(0) <= lastSeg && lastSeg <= endCond_(1)) // is the path compatible with the provided condition ?
   {
-    for (int i = 0; i < nbSegment_; ++i) // loop over each BOSNode in c
+    for (int node = 0; node < nbSegment_; ++node) // loop over each BOSNode in c
     {
-      if (i == 0)
+#ifdef MC_DEBUG
+      std::cout << "node: " << node << std::endl;
+#endif
+      Real yLogProba;
+      if (node == 0)
       {
-        proba *= c_(i).yProba(eInit_); // yProba based on initial segment
+        yLogProba = c_(node).yLogProba(eInit_); // yProba based on initial segment
       }
       else
       {
-        proba *= c_(i).yProba(c_(i - 1).e_); // yProba based on previous iteration segment
+        yLogProba = c_(node).yLogProba(c_(node - 1).part_(c_(node - 1).e_)); // yProba based on previous iteration segment
       }
-      proba *= c_(i).zProba(pi);
-
-      proba *= c_(i).eProba(mu,
-                            pi);
+      Real zLogProba = c_(node).zLogProba(pi);
+      Real eLogProba = c_(node).eLogProba(mu,
+                                 pi);
+#ifdef MC_DEBUG
+      std::cout << "yLogProba: " << yLogProba << ", zLogProba: " << zLogProba << ", eLogProba: " << eLogProba << std::endl;
+#endif
+      logProba += yLogProba + zLogProba + eLogProba;
     }
   }
   else // conditional probability of verifying condition given the path is null
-      proba = 0.;
+      logProba = std::log(0);
 
-  return proba;
+  return logProba;
 }
 
 // format of interval e is a vector with bounds included: [1, 3] corresponds to the set {1, 2, 3}

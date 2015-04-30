@@ -48,10 +48,10 @@ class BOSNode
      */
     void partition(const Vector<int, 2>& e);
 
-    Real yProba(const Vector<int, 2>& e);
-    Real zProba(Real pi);
-    Real eProba(int mu,
-                Real pi);
+    Real yLogProba(const Vector<int, 2>& e);
+    Real zLogProba(Real pi);
+    Real eLogProba(int mu,
+                   Real pi);
 };
 
 } // namespace mixt

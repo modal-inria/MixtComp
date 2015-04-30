@@ -101,7 +101,7 @@ TEST(Ordinal, partition3)
 /**
  * Simple case with two modalities
  */
-TEST(Ordinal, computeProba0)
+TEST(Ordinal, computeLogProba0)
 {
   int mu = 1; // mode
   Real pi = 0.5; // precision
@@ -115,51 +115,45 @@ TEST(Ordinal, computeProba0)
   path.c_(0).partition(path.eInit_); // computation of the partition
   path.c_(0).e_ = 1; // segment is {1}, proba 1.
 
-  Real proba = path.computeProba(mu,
+  Real expectedProba = std::log(0.5 * 0.5 * 1.);
+  Real computedProba = path.computeLogProba(mu,
                                  pi);
 
-  ASSERT_LT(std::abs(0.25 - proba), epsilon);
+  ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
 }
 
-///**
-// * Simple case with three modalities and imprecision
-// */
-//TEST(Ordinal, computeProba1)
-//{
-//  int mu = 1; // mode
-//  Real pi = 0.5; // precision
-//
-//  Vector<int, 2> eInit; // vector describing initial segment
-//  eInit << 0, 2;
-//
-//  Vector<int, 2> endCond;  // end condition
-//  endCond << 0, 0;
-//
-//  Vector<OrdinalProba::BOSNode, 2> c; // vector describing the search process
-//
-//  c(0).y_ = 1; // y, middle element y picked, proba 1./3.
-//  c(0).z_ = 0; // z, comparison is imperfect, proba 0.5
-//  OrdinalProba::partition(eInit, // computation of the partition
-//                          c(0).y_,
-//                          c(0).part_);
-//  c(0).e_ << 0, 0; // e, left segment selected, proba 0.33 (all have the same size)
-//  c(1).y_ = 0; // y, only one element to choose from, proba 1.
-//  c(1).z_ = 1; // z, comparison is perfect, proba 0.5
-//  OrdinalProba::partition(c(0).e_, // computation of the partition
-//                          c(1).y_,
-//                          c(1).part_);
-//  c(1).e_ << 0, 0; // e, only one segment, in the middle, with proba 1.
-//
-//  Real proba = OrdinalProba::computeProba(eInit,
-//                                          c,
-//                                          endCond,
-//                                          mu,
-//                                          pi);
-//
-//  ASSERT_LT(std::abs(  1./3. * 0.5 * 1./3.
-//                     * 1. * 0.5 * 1.
-//                     - proba), epsilon);
-//}
+/**
+ * Simple case with three modalities and imprecision
+ */
+TEST(Ordinal, computeLogProba1)
+{
+  int mu = 1; // mode
+  Real pi = 0.5; // precision
+
+  BOSPath path;
+  path.setInit(0, 2);
+  path.setEnd(0, 0);
+
+  path.c_(0).y_ = 1; // y, middle element y picked, proba 1./3.
+  path.c_(0).z_ = 0; // z, comparison is imperfect, proba 0.5
+  path.c_(0).partition(path.eInit_); // computation of the partition
+  path.c_(0).e_ = 0; // e, left segment {0, 0} selected, proba 0.33 (all have the same size)
+
+  path.c_(1).y_ = 0; // y, only one element to choose from, proba 1.
+  path.c_(1).z_ = 1; // z, comparison is perfect, proba 0.5
+  path.c_(1).partition(path.c_(0).part_(path.c_(0).e_)); // computation of the partition
+  path.c_(1).e_ = 0; // e, only one segment in partition, with proba 1.
+
+  Real expectedProba = std::log(1./3. * 0.5 * 1./3. *
+                                1.    * 0.5 * 1.);
+  Real computedProba = path.computeLogProba(mu, pi);
+
+#ifdef MC_DEBUG
+  std::cout << "expectedProba: " << expectedProba << std::endl;
+  std::cout << "proba: " << computedProba << std::endl;
+#endif
+  ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
+}
 
 //TEST(Ordinal, nodeMultinomial)
 //{
