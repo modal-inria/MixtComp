@@ -25,8 +25,10 @@
 #define MIXT_EIGENMATRIXBASEADDONS_H
 
 #include "mixt_Iterator.h"
+#include "mixt_ConstIterator.h"
 
 typedef Iterator iterator;
+typedef ConstIterator const_iterator;
 
 /** Element-wise + between matrix and scalar */
 inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
@@ -104,10 +106,22 @@ iterator begin()
                   derived());
 }
 
+const_iterator begin() const
+{
+  return ConstIterator(0,
+                       derived());
+}
+
 iterator end()
 {
   return Iterator(derived().rows() * derived().cols(),
                   derived());
+}
+
+const_iterator end() const
+{
+  return ConstIterator(derived().rows() * derived().cols(),
+                       derived());
 }
 
 #endif // MIXT_EIGENMATRIXBASEADDONS_H

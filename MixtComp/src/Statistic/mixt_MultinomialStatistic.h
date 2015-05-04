@@ -37,14 +37,13 @@ namespace mixt
 class MultinomialStatistic
 {
   public:
-    typedef int Type;
 
     MultinomialStatistic() : rng_(time(0)) {};
     ~MultinomialStatistic() {};
 
     /** Sample a value from a multinomial law with coefficient of modalities provided */
     template<typename T>
-    Type sample(const T& proportion)
+    int sample(const T& proportion)
     {
       boost::random::uniform_real_distribution<> uni(0.,
                                                      1.);
@@ -58,24 +57,21 @@ class MultinomialStatistic
       std::cout << "x: " << x << std::endl;
 #endif
       Real cumProb = 0.; // cumulative probability
+      int index = 0;
 
-      int rows = proportion.rows();
-      int cols = proportion.cols();
-
-      for (int i = 0; i < rows; ++i) // double loop because the incoming object potentially is a block
+      for(typename T::const_iterator it = proportion.begin();
+          it != proportion.end();
+          ++it)
       {
-        for (int j = 0; j < cols; ++j)
+        cumProb += *it;
+        if (x < cumProb)
         {
-          cumProb += proportion(i, j);
-          if (x < cumProb)
-          {
 #ifdef MC_DEBUG
-            std::cout << "i: " << i << ",j: " << j << std::endl;
-            std::cout << "j * cols + i: " << j * rows + i << std::endl;
+          std::cout << "index: " << index << std::endl;
 #endif
-            return j * rows + i;
-          }
+          return index;
         }
+        ++index;
       }
       return -1; // to accelerate sampling, no check have been computed on modalities to verify that is it actually a probability distribution
     };

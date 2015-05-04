@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2014
+/*  Copyright (C) Inria 2015
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,9 +17,8 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Mar 27, 2014
+ *  Created on: May 4, 2015
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
- *              iovleff, serge.iovleff@stkpp.org
  **/
 
 #ifndef MIXT_CLASSSAMPLER_H
