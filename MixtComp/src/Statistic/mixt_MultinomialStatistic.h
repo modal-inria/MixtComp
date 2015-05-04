@@ -46,7 +46,7 @@ class MultinomialStatistic
     template<typename T>
     int sample(const T& proportion)
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "MultinomialStatistic::sample()" << std::endl;
       std::cout << "proportion" << std::endl;
       itPrint(proportion);

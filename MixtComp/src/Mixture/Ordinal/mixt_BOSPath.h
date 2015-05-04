@@ -68,12 +68,24 @@ class BOSPath
                          Real pi,
                          int index,
                          std::list<Vector<BOSNode, 2> >& pathList,
-                         std::list<Real>& probaList) const;
+                         Vector<Real>& probaVec) const;
 
     /**
      * Randomly initialize the path while being compatible with eInit and endCond constraints
      */
     void initPath();
+
+    /**
+     * Performs a single step of Gibbs sampling across all elements in the search path
+     *
+     * @param eInit a constant reference to the initial segment
+     * @param[out] c a constant reference to a vector containing the current search path
+     * @param x value of the ordinal data
+     * @param mu localization parameter (mode) of the distribution
+     * @param pi precision parameter of the distribution
+     */
+    void samplePath(int mu,
+                    Real pi);
 
     /**
      * Return a reference to final segment of a node
@@ -85,19 +97,6 @@ class BOSPath
 
     MultinomialStatistic multi_;
 };
-
-/**
- * Compute valid initial path for the Gibbs
- *
- * @param[in] initSeg initial segment on which path must be computed
- * @param[in] endCond constraints on the final data
- * @param[in] multi multinomial sampler
- * @param[out] c path
- */
-void initPath(const Vector<int, 2>& initSeg,
-              const Vector<int, 2>& endCond,
-              MultinomialStatistic& multi,
-              Vector<BOSNode>& c);
 
 /**
  * Output a representation of the single node to std::cout
@@ -113,22 +112,6 @@ void displaySegNode(const BOSNode& node);
  * @param[in] c path
  */
 void displayPath(const BOSPath& path);
-
-/**
- * Performs a single step of Gibbs sampling across all elements in the search path
- *
- * @param eInit a constant reference to the initial segment
- * @param[out] c a constant reference to a vector containing the current search path
- * @param x value of the ordinal data
- * @param mu localization parameter (mode) of the distribution
- * @param pi precision parameter of the distribution
- */
-void samplePath(const Vector<int, 2>& eInit,
-                Vector<BOSNode>& c,
-                const Vector<int, 2>& endCond,
-                int mu,
-                Real pi,
-                MultinomialStatistic& multi);
 
 } // namespace mixt
 

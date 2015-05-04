@@ -87,8 +87,12 @@ void BOSPath::nodeMultinomial(int mu,
                               Real pi,
                               int index,
                               std::list<Vector<BOSNode, 2> >& pathList,
-                              std::list<Real>& probaList) const
+                              Vector<Real>& probaVec) const
 {
+#ifdef MC_DBUG_NEW
+  std::cout << "BOSPath::nodeMultinomial" << std::endl;
+#endif
+  std::list<Real> probaList;
   Vector<BOSNode, 2> path; // a specific path is used for this computation, instead of c
   Vector<int, 2> firstSeg;
   Vector<int, 2> lastSeg;
@@ -190,6 +194,24 @@ void BOSPath::nodeMultinomial(int mu,
       }
     }
   }
+
+  // conversion from list of logs to categorical density distribution, similar to eStep conversion
+  int nbPath = probaList.size();
+  probaVec.resize(nbPath);
+  std::list<Real>::const_iterator it = probaList.begin();
+  for (int i = 0; i < nbPath; ++i, ++it)
+  {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << " / " << nbPath << std::endl;
+#endif
+    probaVec(i) = *it;
+  }
+
+  Real max = probaVec.maxCoeff();
+  probaVec -= max;
+  probaVec = probaVec.exp();
+  Real sum = probaVec.sum();
+  probaVec /= sum;
 }
 
 void BOSPath::initPath()
@@ -242,6 +264,38 @@ const Vector<int, 2>& BOSPath::seg(int i) const
   return c_(i).part_(c_(i).e_);
 }
 
+void BOSPath::samplePath(int mu,
+                         Real pi)
+{
+#ifdef MC_DEBUG
+  std::cout << "BOSPath::samplePath" << std::endl;
+#endif
+  for (int i = 0; i < nbNode_ - 2; ++i)
+  {
+    // computation of the possible node values and associated probabilities
+    std::list<Vector<BOSNode, 2> > pathList;
+    Vector<Real> probaVec;
+    nodeMultinomial(mu,
+                    pi,
+                    i,
+                    pathList,
+                    probaVec);
+
+    // sampling and replacement in the path
+    int nodeSampled = multi_.sample(probaVec);
+    std::list<Vector<BOSNode, 2> >::iterator it = pathList.begin();
+    for(int node = 0; node < nodeSampled; ++node)
+    {
+      ++it; // fast-forward to the sampled sub-path
+    }
+    c_[i]     = (*it)(0);
+    c_[i + 1] = (*it)(1);
+  }
+#ifdef MC_DEBUG
+  displayPath(*this);
+#endif
+}
+
 void displaySegNode(const BOSNode& node)
 {
   std::cout << "\ty: " << node.y_ << std::endl;
@@ -263,41 +317,6 @@ void displayPath(const BOSPath& path)
     std::cout << "node: " << node << std::endl;
     displaySegNode(path.c_(node));
   }
-}
-
-void samplePath(const Vector<int, 2>& eInit,
-                Vector<BOSNode>& c,
-                const Vector<int, 2>& endCond,
-                int mu,
-                Real pi,
-                MultinomialStatistic& multi)
-{
-//  for (int i = 0; i < c.size(); ++i)
-//  {
-//    ySample(eInit,
-//            c,
-//            mu,
-//            pi,
-//            i,
-//            multi);
-//    zSample(eInit,
-//            c,
-//            mu,
-//            pi,
-//            i,
-//            multi);
-//    eSample(eInit,
-//            c,
-//            endCond,
-//            mu,
-//            pi,
-//            i,
-//            multi);
-//  }
-//#ifdef MC_DEBUG
-// displayPath(eInit,
-//             c);
-//#endif
 }
 
 } // namespace mixt
