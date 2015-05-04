@@ -71,6 +71,22 @@ void writeDataCsv(std::string fileName, const Type& data)
   stream.close();
 }
 
+/**
+ * Print elements of an iterable object
+ *
+ * @param obj object to iterate on
+ */
+template<typename Type>
+void itPrint(Type& obj)
+{
+  for (typename Type::const_iterator it = obj.begin();
+       it != obj.end();
+       ++it)
+  {
+    std::cout << *it << std::endl;
+  }
+}
+
 } // namespace mixt
 
 #endif /* MIXT_EXPORT_H_ */

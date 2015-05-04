@@ -26,10 +26,11 @@
 
 #include <iostream>
 #include <ctime>
-#include "../LinAlg/mixt_LinAlg.h"
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
 #include <boost/random/mersenne_twister.hpp>
+#include "../LinAlg/mixt_LinAlg.h"
+#include "../IO/mixt_IO.h"
 
 namespace mixt
 {
@@ -45,6 +46,11 @@ class MultinomialStatistic
     template<typename T>
     int sample(const T& proportion)
     {
+#ifdef MC_DEBUG_NEW
+      std::cout << "MultinomialStatistic::sample()" << std::endl;
+      std::cout << "proportion" << std::endl;
+      itPrint(proportion);
+#endif
       boost::random::uniform_real_distribution<> uni(0.,
                                                      1.);
       boost::variate_generator<boost::random::mt19937&,
