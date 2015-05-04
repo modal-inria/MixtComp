@@ -50,6 +50,13 @@ class ConstIterator : public std::iterator<std::random_access_iterator_tag,
       p_mat_(it.p_mat_)
     {}
 
+    ConstIterator(const Iterator& it) :
+      pos_(it.pos_),
+      rows_(it.rows_),
+      cols_(it.cols_),
+      p_mat_(it.p_mat_)
+    {}
+
     ~ConstIterator() {}
 
     ConstIterator operator+(int i)

@@ -45,7 +45,7 @@ TEST(Matrix, iterator)
        1, 3, 0;
   Matrix<int> b(3, 3);
 
-  Matrix<int>::iterator itA = a.begin();
+  Matrix<int>::const_iterator itA = a.begin();
   Matrix<int>::iterator itB = b.begin();
 
   for(;
