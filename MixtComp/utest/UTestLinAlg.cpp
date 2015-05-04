@@ -24,12 +24,71 @@
 #include "gtest/gtest.h"
 #include "../src/LinAlg/mixt_LinAlg.h"
 
+using namespace mixt;
+
 // Test double inversion of a matrix
 TEST(Matrix, Inversion)
 {
-  mixt::Matrix<mixt::Real> m(3, 3);
+  Matrix<Real> m(3, 3);
   m << 1, 3, 7,
       13, 15, 5,
        1, 3, 0;
   EXPECT_TRUE(m.inverse().inverse().isApprox(m));
+}
+
+// Test the two types of Matrix iterators
+TEST(Matrix, iterator)
+{
+  Matrix<int> a(3, 3);
+  a << 1, 3, 7,
+      13, 15, 5,
+       1, 3, 0;
+  Matrix<int> b(3, 3);
+
+  Matrix<int>::iterator itA = a.begin();
+  Matrix<int>::iterator itB = b.begin();
+
+  for(;
+      itA != a.end();
+      ++itA,
+      ++itB)
+  {
+    *itB = *itA;
+  }
+
+  ASSERT_EQ(a, b);
+}
+
+// Test the contiguous matrix sort
+TEST(Matrix, sortContiguous)
+{
+  Matrix<int> a(3, 3);
+  a << 1, 3, 7,
+      13, 15, 5,
+       -41, 3, -9;
+  Matrix<int> b(3, 3);
+  b << -41, 3, 7,
+       -9, 3, 13,
+       1, 5, 15;
+
+  sortContiguous(a);
+
+  ASSERT_EQ(a, b);
+}
+
+// Test the matrix sort
+TEST(Matrix, sort)
+{
+  Matrix<int> a(3, 3);
+  a << 1, 3, 7,
+      13, 15, 5,
+       -41, 3, -9;
+  Matrix<int> b(3, 3);
+  b << -41, 3, 7,
+       -9, 3, 13,
+       1, 5, 15;
+
+  sort(a);
+
+  ASSERT_EQ(a, b);
 }

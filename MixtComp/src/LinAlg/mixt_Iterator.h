@@ -17,7 +17,7 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: January 19, 2015
+ *  Created on: May 15, 2015
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
@@ -26,134 +26,92 @@
 
 // reference on what needs to be implemented for STL iterators: http://stackoverflow.com/questions/7758580/writing-your-own-stl-container/7759622#7759622
 
-#include <iostream>
-#include <iterator>
+//#include <iostream>
+//#include <iterator>
 
-namespace mixt
-{
-
-template <typename T>
-class iterator : public std::iterator<std::random_access_iterator_tag,
-                                      typename T::Type,
+class Iterator : public std::iterator<std::random_access_iterator_tag,
+                                      Scalar,
                                       int,
-                                      typename T::Type*,
-                                      typename T::Type&>
+                                      Scalar*,
+                                      Scalar&>
 {
   public:
-    iterator(int pos, T& mat) :
+    Iterator(int pos, Derived& mat) :
       pos_(pos),
       rows_(mat.rows()),
       cols_(mat.cols()),
       p_mat_(&mat)
-    {
-#ifdef MC_DEBUG
-      std::cout << "iterator(int pos, T& mat)" << std::endl;
-#endif
-    }
+    {}
 
-    iterator(const iterator& it) :
+    Iterator(const Iterator& it) :
       pos_(it.pos_),
       rows_(it.rows_),
       cols_(it.cols_),
       p_mat_(it.p_mat_)
+    {}
+
+    ~Iterator() {}
+
+    Iterator operator+(int i)
     {
-#ifdef MC_DEBUG
-      std::cout << "iterator(const iterator& it)" << std::endl;
-#endif
+      return Iterator(pos_ + i, *p_mat_);
     }
 
-    ~iterator() {}
-
-    iterator operator+(int i)
+    Iterator operator-(int i)
     {
-#ifdef MC_DEBUG
-      std::cout << "iterator operator+(int i)" << std::endl;
-#endif
-      return iterator(pos_ + i, *p_mat_);
+      return Iterator(pos_ - i, *p_mat_);
     }
 
-    iterator operator-(int i)
+    int operator-(const Iterator& it)
     {
-#ifdef MC_DEBUG
-      std::cout << "iterator operator-(int i)" << std::endl;
-#endif
-      return iterator(pos_ - i, *p_mat_);
-    }
-
-    int operator-(const iterator& it)
-    {
-#ifdef MC_DEBUG
-      std::cout << "int operator-(const iterator& it)" << std::endl;
-#endif
       return pos_ - it.pos_;
     }
 
-    bool operator<(const iterator& it)
+    bool operator<(const Iterator& it)
     {
-#ifdef MC_DEBUG
-      std::cout << "bool operator<(const iterator& it)" << std::endl;
-#endif
       return pos_ < it.pos_;
     }
 
-    bool operator==(const iterator& it)
+    bool operator==(const Iterator& it)
     {
-#ifdef MC_DEBUG
-      std::cout << "bool operator==(const iterator& it)" << std::endl;
-#endif
       if (pos_ == it.pos_)
         return true;
       else
         return false;
     }
 
-    bool operator!=(const iterator& it)
+    bool operator!=(const Iterator& it)
     {
-#ifdef MC_DEBUG
-      std::cout << "bool operator!=(const iterator& it)" << std::endl;
-#endif
-      std::cout << "!=, pos_: " << pos_ << ", it.pos_: " << it.pos_ << std::endl;
       if (pos_ != it.pos_)
         return true;
       else
         return false;
     }
 
-    typename T::Type& operator*() const
+    Scalar& operator*() const
     {
-#ifdef MC_DEBUG
-      std::cout << "typename T::Type& operator*() const" << std::endl;
-#endif
       int i;
       int j;
       posToIn(i, j);
-      std::cout << "*, pos_: " << pos_ << ", i: " << i << ", j: " << j << std::endl;
       return (*p_mat_)(i, j);
     }
 
-    const iterator& operator++()
+    const Iterator& operator++()
     {
-#ifdef MC_DEBUG
-      std::cout << "const iterator& operator++()" << std::endl;
-#endif
       ++pos_;
       return *this;
     }
 
-    const iterator& operator--()
+    const Iterator& operator--()
     {
-#ifdef MC_DEBUG
-      std::cout << "const iterator& operator--()" << std::endl;
-#endif
       --pos_;
       return *this;
     }
 
-  protected:
     int pos_;
     int rows_;
     int cols_;
-    T* p_mat_;
+    Derived* p_mat_;
 
     /** updates indices from linear position */
     void posToIn(int& i, int& j) const
@@ -163,6 +121,4 @@ class iterator : public std::iterator<std::random_access_iterator_tag,
     }
 };
 
-} // namespace mixt
-
-#endif // MIXT_LINALG_H
+#endif // MIXT_ITERATOR_H

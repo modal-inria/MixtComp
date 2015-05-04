@@ -181,8 +181,8 @@ void sortContiguous(Container& ref)
 template <typename Container>
 void sort(Container& ref)
 {
-  std::sort(iterator<Container>(0, ref),
-            iterator<Container>(ref.rows() * ref.cols(), ref));
+  std::sort(ref.begin(),
+            ref.end());
 }
 
 /** Comparator for indexed pairs */

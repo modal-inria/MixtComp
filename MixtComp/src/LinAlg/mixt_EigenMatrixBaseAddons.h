@@ -24,6 +24,10 @@
 #ifndef MIXT_EIGENMATRIXBASEADDONS_H
 #define MIXT_EIGENMATRIXBASEADDONS_H
 
+#include "mixt_Iterator.h"
+
+typedef Iterator iterator;
+
 /** Element-wise + between matrix and scalar */
 inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
                           const Derived>
@@ -92,6 +96,18 @@ exp() const
   return Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<Scalar>,
                              const Derived>(derived(),
                                             internal::scalar_exp_op<Scalar>());
+}
+
+iterator begin()
+{
+  return Iterator(0,
+                  derived());
+}
+
+iterator end()
+{
+  return Iterator(derived().rows() * derived().cols(),
+                  derived());
 }
 
 #endif // MIXT_EIGENMATRIXBASEADDONS_H
