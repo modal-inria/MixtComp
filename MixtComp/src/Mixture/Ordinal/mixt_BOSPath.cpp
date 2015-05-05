@@ -269,31 +269,37 @@ void BOSPath::samplePath(int mu,
 {
 #ifdef MC_DEBUG
   std::cout << "BOSPath::samplePath" << std::endl;
+  std::cout << "displayPath" << std::endl;
+  displayPath(*this);
 #endif
-  for (int i = 0; i < nbNode_ - 2; ++i)
+  for (int node = 0; node < nbNode_ - 1; ++node)
   {
+#ifdef MC_DEBUG
+    std::cout << "node: " << node << " / " << nbNode_ - 2 << std::endl;
+#endif
     // computation of the possible node values and associated probabilities
     std::list<Vector<BOSNode, 2> > pathList;
     Vector<Real> probaVec;
     nodeMultinomial(mu,
                     pi,
-                    i,
+                    node,
                     pathList,
                     probaVec);
 
     // sampling and replacement in the path
-    int nodeSampled = multi_.sample(probaVec);
+    int pathSampled = multi_.sample(probaVec);
     std::list<Vector<BOSNode, 2> >::iterator it = pathList.begin();
-    for(int node = 0; node < nodeSampled; ++node)
+    for(int path = 0; path < pathSampled; ++path)
     {
       ++it; // fast-forward to the sampled sub-path
     }
-    c_[i]     = (*it)(0);
-    c_[i + 1] = (*it)(1);
-  }
+    c_[node    ] = (*it)(0);
+    c_[node + 1] = (*it)(1);
 #ifdef MC_DEBUG
-  displayPath(*this);
+    std::cout << "displayPath" << std::endl;
+    displayPath(*this);
 #endif
+  }
 }
 
 void displaySegNode(const BOSNode& node)
