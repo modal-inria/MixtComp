@@ -31,197 +31,197 @@
 
 using namespace mixt;
 
-///**
-// * Computation of a partition
-// */
-//TEST(Ordinal, partition0)
-//{
-//  Vector<int, 2> e;
-//  e << 0, 5;
-//  BOSNode node;
-//  node.y_ = 2;
-//  Vector<Vector<int, 2> > partExpected(3);
-//  partExpected(0) << 0, 1;
-//  partExpected(1) << 2, 2;
-//  partExpected(2) << 3, 5;
-//
-//  node.partition(e);
-//  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
-//}
-//
-///**
-// * Computation of a partition
-// */
-//TEST(Ordinal, partition1)
-//{
-//  Vector<int, 2> e;
-//  e << 6, 8;
-//  BOSNode node;
-//  node.y_ = 2;
-//  Vector<Vector<int, 2> > partExpected(0);
-//
-//  node.partition(e);
-//  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
-//}
-//
-///**
-// * Computation of a partition
-// */
-//TEST(Ordinal, partition2)
-//{
-//  Vector<int, 2> e;
-//  e << 6, 8;
-//  BOSNode node;
-//  node.y_ = 6;
-//  Vector<Vector<int, 2> > partExpected(2);
-//  partExpected(0) << 6, 6;
-//  partExpected(1) << 7, 8;
-//
-//  node.partition(e);
-//  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
-//}
-//
-///**
-// * Computation of a partition
-// */
-//TEST(Ordinal, partition3)
-//{
-//  Vector<int, 2> e;
-//  e << 6, 8;
-//  BOSNode node;
-//  node.y_ = 8;
-//  Vector<Vector<int, 2> > partExpected(2);
-//  partExpected(0) << 6, 7;
-//  partExpected(1) << 8, 8;
-//
-//  node.partition(e);
-//  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
-//}
-//
-///**
-// * Simple case with two modalities
-// */
-//TEST(Ordinal, computeLogProba0)
-//{
-//  int mu = 1; // mode
-//  Real pi = 0.5; // precision
-//
-//  BOSPath path;
-//  path.setInit(0, 1);
-//  path.setEnd(0, 1);
-//
-//  path.c_(0).y_ = 1; // second element y picked, proba 0.5
-//  path.c_(0).z_ = 1; // comparison is perfect, proba 0.5
-//  path.c_(0).partition(path.eInit_); // computation of the partition
-//  path.c_(0).e_ = 1; // segment is {1}, proba 1.
-//
-//  Real expectedProba = std::log(0.5 * 0.5 * 1.);
-//  Real computedProba = path.computeLogProba(mu,
-//                                 pi);
-//
-//  ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
-//}
-//
-///**
-// * Simple case with three modalities and imprecision
-// */
-//TEST(Ordinal, computeLogProba1)
-//{
-//  int mu = 1; // mode
-//  Real pi = 0.5; // precision
-//
-//  BOSPath path;
-//  path.setInit(0, 2);
-//  path.setEnd(0, 0);
-//
-//  path.c_(0).y_ = 1; // y, middle element y picked, proba 1./3.
-//  path.c_(0).z_ = 0; // z, comparison is imperfect, proba 0.5
-//  path.c_(0).partition(path.eInit_); // computation of the partition
-//  path.c_(0).e_ = 0; // e, left segment {0, 0} selected, proba 0.33 (all have the same size)
-//
-//  path.c_(1).y_ = 0; // y, only one element to choose from, proba 1.
-//  path.c_(1).z_ = 1; // z, comparison is perfect, proba 0.5
-//  path.c_(1).partition(path.c_(0).part_(path.c_(0).e_)); // computation of the partition
-//  path.c_(1).e_ = 0; // e, only one segment in partition, with proba 1.
-//
-//  Real expectedProba = std::log(1./3. * 0.5 * 1./3. *
-//                                1.    * 0.5 * 1.);
-//  Real computedProba = path.computeLogProba(mu, pi);
-//
-//#ifdef MC_DEBUG
-//  std::cout << "expectedProba: " << expectedProba << std::endl;
-//  std::cout << "proba: " << computedProba << std::endl;
-//#endif
-//  ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
-//}
-//
-//TEST(Ordinal, nodeMultinomial)
-//{
-//  int mu = 0;
-//  Real pi = 0.5;
-//
-//  BOSPath path;
-//  path.setInit(0, 1);
-//  path.setEnd(0, 1);
-//
-//  int index = 0; // index of the first node of the pair used in the computation
-//
-//  std::list<Vector<BOSNode, 2> > pathList;
-//  std::list<Real> probaList;
-//  path.nodeMultinomial(mu,
-//                       pi,
-//                       index,
-//                       pathList,
-//                       probaList);
-//#ifdef MC_DEBUG
-//  std::cout << "probaList" << std::endl;
-//  for (std::list<Real>::const_iterator it = probaList.begin();
-//       it != probaList.end();
-//       ++it)
-//  {
-//    std::cout << *it << std::endl;
-//  }
-//#endif
-//  ASSERT_EQ(pathList.size(), 8); // is the size of pathList correct ?
-//}
-//
-///**
-// * Test checking the initialization of the Gibbs sampling
-// */
-//TEST(Ordinal, GibbsInit)
-//{
-//  BOSPath path;
-//  path.setInit(5, 12);
-//  path.setEnd(8, 10);
-//
-//  path.initPath();
-//#ifdef MC_DEBUG
-//  std::cout << "path.c_.size(): " << path.c_.size() << std::endl;
-//  std::cout << "path.nbNode_: " << path.nbNode_ << std::endl;
-//#endif
-//  bool validPath;
-//  if (path.endCond_(0) <= path.seg(path.nbNode_ - 1)(0) && path.seg(path.nbNode_ - 1)(0) <= path.endCond_(1))
-//    validPath = true;
-//  else
-//    validPath = false;
-//
-//#ifdef MC_DEBUG
-//  displayPath(path);
-//#endif
-//
-//  int mu = 8; // arbitrary mode, just to verify the validity of the path
-//  int pi = 0.5;
-//
-//  Real logProba = path.computeLogProba(mu, pi);
-//
-//#ifdef MC_DEBUG
-//  std::cout << "logProba: " << logProba << std::endl;
-//#endif
-//
-//  ASSERT_EQ(validPath, true); // is the path generated valid ?
-//  ASSERT_GT(logProba,
-//            minInf); // is his proba non zero ?
-//}
+/**
+ * Computation of a partition
+ */
+TEST(Ordinal, partition0)
+{
+  Vector<int, 2> e;
+  e << 0, 5;
+  BOSNode node;
+  node.y_ = 2;
+  Vector<Vector<int, 2> > partExpected(3);
+  partExpected(0) << 0, 1;
+  partExpected(1) << 2, 2;
+  partExpected(2) << 3, 5;
+
+  node.partition(e);
+  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
+}
+
+/**
+ * Computation of a partition
+ */
+TEST(Ordinal, partition1)
+{
+  Vector<int, 2> e;
+  e << 6, 8;
+  BOSNode node;
+  node.y_ = 2;
+  Vector<Vector<int, 2> > partExpected(0);
+
+  node.partition(e);
+  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
+}
+
+/**
+ * Computation of a partition
+ */
+TEST(Ordinal, partition2)
+{
+  Vector<int, 2> e;
+  e << 6, 8;
+  BOSNode node;
+  node.y_ = 6;
+  Vector<Vector<int, 2> > partExpected(2);
+  partExpected(0) << 6, 6;
+  partExpected(1) << 7, 8;
+
+  node.partition(e);
+  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
+}
+
+/**
+ * Computation of a partition
+ */
+TEST(Ordinal, partition3)
+{
+  Vector<int, 2> e;
+  e << 6, 8;
+  BOSNode node;
+  node.y_ = 8;
+  Vector<Vector<int, 2> > partExpected(2);
+  partExpected(0) << 6, 7;
+  partExpected(1) << 8, 8;
+
+  node.partition(e);
+  ASSERT_EQ(node.part_, partExpected); // has the real mode been estimated correctly ?
+}
+
+/**
+ * Simple case with two modalities
+ */
+TEST(Ordinal, computeLogProba0)
+{
+  int mu = 1; // mode
+  Real pi = 0.5; // precision
+
+  BOSPath path;
+  path.setInit(0, 1);
+  path.setEnd(0, 1);
+
+  path.c_(0).y_ = 1; // second element y picked, proba 0.5
+  path.c_(0).z_ = 1; // comparison is perfect, proba 0.5
+  path.c_(0).partition(path.eInit_); // computation of the partition
+  path.c_(0).e_ = 1; // segment is {1}, proba 1.
+
+  Real expectedProba = std::log(0.5 * 0.5 * 1.);
+  Real computedProba = path.computeLogProba(mu,
+                                 pi);
+
+  ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
+}
+
+/**
+ * Simple case with three modalities and imprecision
+ */
+TEST(Ordinal, computeLogProba1)
+{
+  int mu = 1; // mode
+  Real pi = 0.5; // precision
+
+  BOSPath path;
+  path.setInit(0, 2);
+  path.setEnd(0, 0);
+
+  path.c_(0).y_ = 1; // y, middle element y picked, proba 1./3.
+  path.c_(0).z_ = 0; // z, comparison is imperfect, proba 0.5
+  path.c_(0).partition(path.eInit_); // computation of the partition
+  path.c_(0).e_ = 0; // e, left segment {0, 0} selected, proba 0.33 (all have the same size)
+
+  path.c_(1).y_ = 0; // y, only one element to choose from, proba 1.
+  path.c_(1).z_ = 1; // z, comparison is perfect, proba 0.5
+  path.c_(1).partition(path.c_(0).part_(path.c_(0).e_)); // computation of the partition
+  path.c_(1).e_ = 0; // e, only one segment in partition, with proba 1.
+
+  Real expectedProba = std::log(1./3. * 0.5 * 1./3. *
+                                1.    * 0.5 * 1.);
+  Real computedProba = path.computeLogProba(mu, pi);
+
+#ifdef MC_DEBUG
+  std::cout << "expectedProba: " << expectedProba << std::endl;
+  std::cout << "proba: " << computedProba << std::endl;
+#endif
+  ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
+}
+
+TEST(Ordinal, nodeMultinomial)
+{
+  int mu = 0;
+  Real pi = 0.5;
+
+  BOSPath path;
+  path.setInit(0, 1);
+  path.setEnd(0, 1);
+
+  int index = 0; // index of the first node of the pair used in the computation
+
+  std::list<Vector<BOSNode, 2> > pathList;
+  Vector<Real> probaVec;
+  path.nodeMultinomial(mu,
+                       pi,
+                       index,
+                       pathList,
+                       probaVec);
+#ifdef MC_DEBUG
+  std::cout << "probaList" << std::endl;
+  for (std::list<Real>::const_iterator it = probaList.begin();
+       it != probaList.end();
+       ++it)
+  {
+    std::cout << *it << std::endl;
+  }
+#endif
+  ASSERT_EQ(pathList.size(), 8); // is the size of pathList correct ?
+}
+
+/**
+ * Test checking the initialization of the Gibbs sampling
+ */
+TEST(Ordinal, GibbsInit)
+{
+  BOSPath path;
+  path.setInit(5, 12);
+  path.setEnd(8, 10);
+
+  path.initPath();
+#ifdef MC_DEBUG
+  std::cout << "path.c_.size(): " << path.c_.size() << std::endl;
+  std::cout << "path.nbNode_: " << path.nbNode_ << std::endl;
+#endif
+  bool validPath;
+  if (path.endCond_(0) <= path.seg(path.nbNode_ - 1)(0) && path.seg(path.nbNode_ - 1)(0) <= path.endCond_(1))
+    validPath = true;
+  else
+    validPath = false;
+
+#ifdef MC_DEBUG
+  displayPath(path);
+#endif
+
+  int mu = 8; // arbitrary mode, just to verify the validity of the path
+  int pi = 0.5;
+
+  Real logProba = path.computeLogProba(mu, pi);
+
+#ifdef MC_DEBUG
+  std::cout << "logProba: " << logProba << std::endl;
+#endif
+
+  ASSERT_EQ(validPath, true); // is the path generated valid ?
+  ASSERT_GT(logProba,
+            minInf); // is his proba non zero ?
+}
 
 /**
  * test the probability distribution generated by arbitrary BOS parameters.
