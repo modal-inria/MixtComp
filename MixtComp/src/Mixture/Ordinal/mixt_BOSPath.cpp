@@ -109,7 +109,7 @@ void BOSPath::nodeMultinomial(int mu,
        path(0).y_ < firstSeg(1) + 1;
        ++path(0).y_) // outer node
   {
-    path(0).partition(firstSeg);
+    path(0).partition(firstSeg); // computation of path(0).part_
     Real y0LogProba = path(0).yLogProba(firstSeg);
 #ifdef MC_DEBUG
     std::cout << "y0: " << y0 << std::endl;
@@ -140,7 +140,7 @@ void BOSPath::nodeMultinomial(int mu,
               path(1).y_ < currSeg(1) + 1;
               ++path(1).y_) // inner node
           {
-            path(1).partition(currSeg);
+            path(1).partition(currSeg); // computation of path(1).part_
             Real y1LogProba = path(1).yLogProba(currSeg);
 #ifdef MC_DEBUG
             std::cout << "y0: " << path(0).y_ << ", z0: " << path(0).z_ << ", e0: " << path(0).e_ << ", part0(e0)(0): " << path(0).part_(path(0).e_)(0) << ", part0(e0)(1): " << path(0).part_(path(0).e_)(1) << std::endl;
@@ -170,13 +170,16 @@ void BOSPath::nodeMultinomial(int mu,
 #endif
                 if (index != nbNode_ - 2) // does the second node in the pair corresponds to the last node in c, if not, the proba of the next node conditionally to the current last segment must be computed
                 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
                   std::cout << "index != nbNode_ - 2" << std::endl;
 #endif
-                  Real lastNodeLogProba =   c_(index + 2).yLogProba(endSeg) // yProba based on previous iteration segment
-                                          + c_(index + 2).zLogProba(pi)
-                                          + c_(index + 2).eLogProba(mu, pi);
-#ifdef MC_DEBUG_NEW
+                  BOSNode lastNode = c_(index + 2); // copy of the last node
+                  lastNode.partition(endSeg); // computation of the partition in the last node
+
+                  Real lastNodeLogProba =   lastNode.yLogProba(endSeg) // yProba based on second node
+                                          + lastNode.zLogProba(pi)
+                                          + lastNode.eLogProba(mu, pi);
+#ifdef MC_DEBUG
                   std::cout << "lastNodeLogProba: " << lastNodeLogProba << std::endl;
 #endif
                   if (lastNodeLogProba > minInf) // has the next node a non zero probability, given the current value of path(1).e_ ?
@@ -190,7 +193,7 @@ void BOSPath::nodeMultinomial(int mu,
                 }
                 else //
                 {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
                   std::cout << "index == nbNode_ - 2" << std::endl;
 #endif
                   if (e1LogProba > minInf && endSeg(0) <= endCond_(1) && endCond_(0) <= endSeg(1)) // is the final segment compatible with the data constraint ?
@@ -224,6 +227,9 @@ void BOSPath::nodeMultinomial(int mu,
 
   // conversion from list of logs to categorical density distribution, similar to eStep conversion
   int nbPath = probaList.size();
+#ifdef MC_DEBUG_NEW
+  std::cout << "nbPath: " << nbPath << std::endl;
+#endif
   probaVec.resize(nbPath);
   std::list<Real>::const_iterator it = probaList.begin();
   for (int i = 0; i < nbPath; ++i, ++it)
@@ -247,24 +253,28 @@ void BOSPath::initPath()
   std::cout << "initPath" << std::endl;
   std::cout << "endCond_(0): " << endCond_(0) << ", endCond_(1): " << endCond_(1) << std::endl;
 #endif
-  Vector<int, 2> seg = eInit_;
+  Vector<int, 2> currSeg = eInit_;
 
   for (int i = 0; i < nbNode_; ++i) // loop to fill all the elements of the path
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
 #endif
-    c_(i).y_ = multi_.sampleInt(seg(0), seg(1));
-    c_(i).partition(seg);
+    c_(i).y_ = multi_.sampleInt(currSeg(0), currSeg(1));
+    c_(i).partition(currSeg);
     c_(i).z_ = 0; // comparisons are all blind in initialization
-    Vector<Real> segProba(c_(i).partSize_);
+    Vector<Real> segProba(c_(i).partSize_); // vector of proba of each segment in the partition
     for (int s = 0; s < c_(i).partSize_; ++s) // computation of the allowed segments
     {
       if (c_(i).part_(s)(0) <= endCond_(1) && // test if the current segment of the partition can reach any allowed point
           endCond_(0)       <= c_(i).part_(s)(1) )
-        segProba(s) = c_(i).part_(s)(1) - c_(i).part_(s)(0) + 1; // proba to sample segment is proportional
+      {
+        segProba(s) = c_(i).part_(s)(1) - c_(i).part_(s)(0) + 1; // proba to sample segment is proportional to its size
+      }
       else
-        segProba(s) = 0.;
+      {
+        segProba(s) = 0.; // segments incompatible with the last segment have a zero probability
+      }
     }
     segProba /= segProba.sum();
     int sampleSeg = multi_.sample(segProba);
@@ -274,7 +284,7 @@ void BOSPath::initPath()
     std::cout << "sampleSeg: " << sampleSeg << std::endl;
 #endif
     c_(i).e_ = sampleSeg;
-    seg = c_(i).part_(sampleSeg);
+    currSeg = seg(i); // initial segment used for next node
 #ifdef MC_DEBUG
     std::cout << "currNode" << std::endl;
     displaySegNode(c_(i));
