@@ -87,14 +87,6 @@ class BOSPath
     void samplePath(int mu,
                     Real pi);
 
-    /**
-     * Return a reference to final segment of a node
-     *
-     * @param i index of the node
-     * @value constant reference to the final segment of a node
-     */
-    const Vector<int, 2>& seg(int i) const;
-
     MultinomialStatistic multi_;
 };
 

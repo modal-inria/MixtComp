@@ -74,6 +74,17 @@ void BOSNode::partition(const Vector<int, 2>& e)
 #endif
 }
 
+bool BOSNode::isInPart(const Vector<int, 2>& e) const
+{
+  bool isIn = false;
+  for (int i = 0; i < partSize_; ++i)
+  {
+    if (e == part_(i))
+      isIn = true;
+  }
+  return isIn;
+}
+
 Real BOSNode::yLogProba(const Vector<int, 2>& e) const
 {
 #ifdef MC_DEBUG
@@ -118,7 +129,7 @@ Real BOSNode::eLogProba(int mu,
                         Real pi) const
 {
 #ifdef MC_DEBUG
-  std::cout << "BOSNode::eProba" << std::endl;
+  std::cout << "BOSNode::eLogProba, internal segment" << std::endl;
   std::cout << "e_(0): " << e_(0) << ", e_(1): " << e_(1) << std::endl;
 #endif
   Real eProba;
@@ -148,7 +159,7 @@ Real BOSNode::eLogProba(int mu,
       }
     }
 
-    if (closestSegment > -1 && e_ == closestSegment) // a closest segment exists, and e points to it
+    if (closestSegment > -1 && e_ == part_(closestSegment)) // a closest segment exists, and e points to it
     {
       eProba = 1.;
     }
@@ -170,7 +181,7 @@ Real BOSNode::eLogProba(int mu,
       std::cout << "s: " << s << ", part(s)(0): " << part(s)(0) << ", part(s)(1): " << part(s)(1) << std::endl;
 #endif
       sizePart += part_(s)(1) - part_(s)(0) + 1;
-      if (s == e_) // computation of probability for current e_
+      if (e_ == part_(s)) // computation of probability for current e_
       {
 #ifdef MC_DEBUG
         std::cout << "part(s) == e, s: " << s << std::endl;
