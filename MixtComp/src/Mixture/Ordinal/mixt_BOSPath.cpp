@@ -89,22 +89,21 @@ void BOSPath::nodeMultinomial(int mu,
                               std::list<Vector<BOSNode, 2> >& pathList,
                               Vector<Real>& probaVec) const
 {
-#ifdef MC_DBUG_NEW
+#ifdef MC_DEBUG_NEW
   std::cout << "BOSPath::nodeMultinomial" << std::endl;
 #endif
   std::list<Real> probaList;
   Vector<BOSNode, 2> path; // a specific path is used for this computation, instead of c
   Vector<int, 2> firstSeg;
-  Vector<int, 2> lastSeg;
-  if (index == 0)
-    firstSeg = eInit_;
-  else
-    firstSeg = c_(index - 1).part_(c_(index - 1).e_);
 
-  if (index == c_.size() - 1)
-    lastSeg = endCond_;
+  if (index == 0)
+  {
+    firstSeg = eInit_;
+  }
   else
-    lastSeg = c_(index + 1).part_(c_(index + 1).e_);
+  {
+    firstSeg = seg(index - 1);
+  }
 
   for (path(0).y_ = firstSeg(0)    ;
        path(0).y_ < firstSeg(1) + 1;
@@ -169,17 +168,45 @@ void BOSPath::nodeMultinomial(int mu,
                 std::cout << "y1: " << path(1).y_ << ", z0: " << path(1).z_ << ", e0: " << path(1).e_ << ", part0(e0)(0): " << path(1).part_(path(1).e_)(0) << ", part0(e0)(1): " << path(1).part_(path(1).e_)(1) << std::endl;
                 std::cout << "\te1LogProba: " << e1LogProba << std::endl;
 #endif
-                if (e1LogProba > minInf && endSeg(0) <= lastSeg(1) && endSeg(1) <= lastSeg(0)) // is the final condition verified ?
+                if (index != nbNode_ - 2) // does the second node in the pair corresponds to the last node in c, if not, the proba of the next node conditionally to the current last segment must be computed
                 {
-                  Real logProba = y0LogProba + z0LogProba + e0LogProba + y1LogProba + z1LogProba + e1LogProba;
-                  pathList.push_back(path);
-                  probaList.push_back(logProba); // proba of current path is saved
-                }
-                else
-                {
-#ifdef MC_DEBUG
-                  std::cout << "e1, null proba case or final condition not verified" << std::endl;
+#ifdef MC_DEBUG_NEW
+                  std::cout << "index != nbNode_ - 2" << std::endl;
 #endif
+                  Real lastNodeLogProba =   c_(index + 2).yLogProba(endSeg) // yProba based on previous iteration segment
+                                          + c_(index + 2).zLogProba(pi)
+                                          + c_(index + 2).eLogProba(mu, pi);
+#ifdef MC_DEBUG_NEW
+                  std::cout << "lastNodeLogProba: " << lastNodeLogProba << std::endl;
+#endif
+                  if (lastNodeLogProba > minInf) // has the next node a non zero probability, given the current value of path(1).e_ ?
+                  {
+                    Real logProba =   y0LogProba + z0LogProba + e0LogProba
+                                    + y1LogProba + z1LogProba + e1LogProba
+                                    + lastNodeLogProba;
+                    pathList.push_back(path);
+                    probaList.push_back(logProba); // proba of current path is saved
+                  }
+                }
+                else //
+                {
+#ifdef MC_DEBUG_NEW
+                  std::cout << "index == nbNode_ - 2" << std::endl;
+#endif
+                  if (e1LogProba > minInf && endSeg(0) <= endCond_(1) && endCond_(0) <= endSeg(1)) // is the final segment compatible with the data constraint ?
+                  {
+                    Real logProba =   y0LogProba + z0LogProba + e0LogProba
+                                    + y1LogProba + z1LogProba + e1LogProba;
+                    pathList.push_back(path);
+                    probaList.push_back(logProba); // proba of current path is saved
+                  }
+                  else
+                  {
+#ifdef MC_DEBUG
+                    std::cout << "e1, null proba case or final condition not verified" << std::endl;
+#endif
+                  }
+
                 }
               }
             }
@@ -267,14 +294,14 @@ const Vector<int, 2>& BOSPath::seg(int i) const
 void BOSPath::samplePath(int mu,
                          Real pi)
 {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "BOSPath::samplePath" << std::endl;
   std::cout << "displayPath" << std::endl;
   displayPath(*this);
 #endif
   for (int node = 0; node < nbNode_ - 1; ++node)
   {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
     std::cout << "node: " << node << " / " << nbNode_ - 2 << std::endl;
 #endif
     // computation of the possible node values and associated probabilities
@@ -287,6 +314,23 @@ void BOSPath::samplePath(int mu,
                     probaVec);
 
     // sampling and replacement in the path
+#ifdef MC_DEBUG_NEW
+    std::cout << "probaVec.size(): " << probaVec.size() << std::endl;
+    std::cout << "pathList.size(): " << pathList.size() << std::endl;
+#endif
+#ifdef MC_DEBUG
+    std::cout << "probaVec: " << probaVec << std::endl;
+    std::cout << "pathList" << std::endl;
+    for(std::list<Vector<BOSNode, 2> >::iterator it = pathList.begin();
+        it != pathList.end();
+        ++it)
+    {
+      std::cout << "displaySegNode((*it)(0))" << std::endl;
+      displaySegNode((*it)(0));
+      std::cout << "displaySegNode((*it)(1))" << std::endl;
+      displaySegNode((*it)(1));
+    }
+#endif
     int pathSampled = multi_.sample(probaVec);
     std::list<Vector<BOSNode, 2> >::iterator it = pathList.begin();
     for(int path = 0; path < pathSampled; ++path)

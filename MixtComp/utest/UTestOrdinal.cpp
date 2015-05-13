@@ -161,8 +161,8 @@ TEST(Ordinal, nodeMultinomial)
   Real pi = 0.5;
 
   BOSPath path;
-  path.setInit(0, 1);
-  path.setEnd(0, 1);
+  path.setInit(0, 2);
+  path.setEnd(0, 2);
 
   int index = 0; // index of the first node of the pair used in the computation
 
@@ -256,27 +256,27 @@ TEST(Ordinal, ArbitraryGibbs)
   int expectedMode = std::max(mu, endMin);
   expectedMode = std::min(expectedMode, endMax);
 
-#ifdef MC_DEBUG
-  std::cout << "initSeg(0): " << initSeg(0) << ", initSeg(1): " << initSeg(1) << std::endl;
-  std::cout << "minCond: " << minCond << ", maxCond: " << maxCond << std::endl;
+#ifdef MC_DEBUG_NEW
+  std::cout << "iniMin: " << iniMin << ", iniMax: " << iniMax << std::endl;
+  std::cout << "endMin: " << endMin << ", endMax: " << endMax << std::endl;
   std::cout << "mu: " << mu << ", pi: " << pi << std::endl;
   std::cout << "expectedMode: " << expectedMode << std::endl;
 #endif
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "Initial path" << std::endl;
-  OrdinalProba::displayPath(initSeg,
-                            c);
+  displayPath(path);
 #endif
 
   for (int iter = 0; iter < nbIter; ++iter)
   {
-#ifdef MC_DEBUG
-    std::cout << "iter: " << iter << std::endl;
-#endif
     path.samplePath(mu, pi);
     int x = path.seg(path.nbNode_-1)(0); // x is sampled here
     computedProba(x) += 1.; // the new occurrence of x is stored
+#ifdef MC_DEBUG_NEW
+    std::cout << "iter: " << iter << std::endl;
+    displayPath(path);
+#endif
   }
   computedProba /= computedProba.sum();
   computedProba.maxCoeff(&computedMode);
