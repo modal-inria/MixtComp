@@ -84,7 +84,9 @@ Real CategoricalLikelihood::lnObservedLikelihood(int i, int k)
     break;
 
     case missing_: // no contribution to the observed likelihood
-    {}
+    {
+      proba = 1.;
+    }
     break;
 
     case missingFiniteValues_: // adding the contributions of the various modalities

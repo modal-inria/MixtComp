@@ -111,6 +111,15 @@ class IMixture
      */
     virtual void writeParameters(std::ostream& out) const
     = 0;
+
+    /**
+     * Order the mixture to get the data and set its parameters
+     *
+     * @return Empty string if no errors, otherwise errors description
+     */
+    virtual std::string setDataParam(RunMode mode)
+    = 0;
+
     /** This function must be implemented to export data
      */
     virtual void exportDataParam() const

@@ -149,24 +149,6 @@ class IMixtureComposerBase
     void mapStep();
     void mapStep(int i);
 
-    /** DataHandler is injected to take care of setting the values of the latent classes.
-     * This avoids templating the whole composer with DataHandler type, as is currently done
-     * with the individual IMixtures
-     * @param checkInd should be set to 1 if a minimum number of individual per class should be
-     * enforced at sampling (true in learning, false in prediction) */
-    template<typename ParamSetter,
-             typename DataHandler>
-    std::string setDataParam(const ParamSetter& paramSetter,
-                             const DataHandler& dataHandler,
-                             bool checkInd)
-    {
-      std::string warnLog;
-      warnLog += setProportion(paramSetter);
-      warnLog += setZi(dataHandler,
-                       checkInd);
-      return warnLog;
-    }
-
     int nbSample() const
     {
       return nbSample_;
@@ -197,13 +179,6 @@ class IMixtureComposerBase
      **/
     virtual void pStep();
 
-  private:
-    /** class sampler */
-    ClassSampler sampler_;
-
-    /** name of the latent class variable */
-    std::string idName_;
-
     /** ParamSetter is injected to take care of setting the values of the proportions.
      * This avoids templating the whole composer with DataHandler type, as is currently done
      * with the individual IMixtures. */
@@ -222,12 +197,13 @@ class IMixtureComposerBase
     };
 
     /** DataHandler is injected to take care of setting the values of the latent classes.
-     * This avoids templating the whole composer with DataHandler type, as is currently done
-     * with the individual IMixtures.
-     * @param checkInd should be set to 1 if a minimum number of individual per class should be
-     * enforced at sampling (true in learning, false in prediction) */
+      * This avoids templating the whole composer with DataHandler type, as is currently done
+      * with the individual IMixtures.
+      * @param checkInd should be set to 1 if a minimum number of individual per class should be
+      * enforced at sampling (true in learning, false in prediction) */
     template<typename DataHandler>
-    std::string setZi(const DataHandler& dataHandler, bool checkInd)
+    std::string setZi(const DataHandler& dataHandler,
+                      RunMode mode)
     {
 #ifdef MC_DEBUG
       std::cout << "IMixtureComposerBase::setZi" << std::endl;
@@ -248,89 +224,98 @@ class IMixtureComposerBase
         std::cout << "z_class was not provided" << std::endl;
 #endif
         zi_.setAllMissing(nbSample_); // set every value state to missing_
-        warnLog = std::string(); // warnLog reinitialized
-      }
+       warnLog = std::string(); // warnLog reinitialized
+     }
 #ifdef MC_DEBUG
-      std::cout << "zi_.data_: " << std::endl;
-      std::cout << zi_.data_ << std::endl;
+     std::cout << "zi_.data_: " << std::endl;
+     std::cout << zi_.data_ << std::endl;
 #endif
 
-      Vector<bool> at(nb_enum_MisType_);
-      at(0) = true; // present_,
-      at(1) = true;// missing_,
-      at(2) = true;// missingFiniteValues_,
-      at(3) = false;// missingIntervals_,
-      at(4) = false;// missingLUIntervals_,
-      at(5) = false;// missingRUIntervals_,
+     Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
+     at(0) = true; // present_,
+     at(1) = true;// missing_,
+     at(2) = true;// missingFiniteValues_,
+     at(3) = false;// missingIntervals_,
+     at(4) = false;// missingLUIntervals_,
+     at(5) = false;// missingRUIntervals_,
 
-      std::string tempLog = zi_.checkMissingType(at); // check if the missing data provided are compatible with the model
-      if(tempLog.size() > 0)
-      {
-        std::stringstream sstm;
-        sstm << "Variable " << idName_ << " contains latent classes and has unsupported missing value types.\n" << tempLog;
-        warnLog += sstm.str();
-      }
-      zi_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
-      if (zi_.dataRange_.min_ < 0)
-      {
-        std::stringstream sstm;
-        sstm << "The z_class latent class variable has a lowest provided value of: "
-             << minModality + zi_.dataRange_.min_
-             << " while the minimal value has to be: "
-             << minModality
-             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
-        warnLog += sstm.str();
-      }
-      if (zi_.dataRange_.max_ > nbCluster_ - 1)
-      {
-        std::stringstream sstm;
-        sstm << "The z_class latent class variable has a highest provided value of: "
-             << minModality + zi_.dataRange_.max_
-             << " while the maximal value can not exceed the number of class: "
-             << minModality + nbCluster_ - 1
-             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
-        warnLog += sstm.str();
-      }
-      zi_.dataRange_.min_ = 0; // real range provided by the parameters is enforced
-      zi_.dataRange_.max_ = nbCluster_ - 1;
-      zi_.dataRange_.range_ = nbCluster_;
+     std::string tempLog = zi_.checkMissingType(at); // check if the missing data provided are compatible with the model
+     if(tempLog.size() > 0)
+     {
+       std::stringstream sstm;
+       sstm << "Variable " << idName_ << " contains latent classes and has unsupported missing value types.\n" << tempLog;
+       warnLog += sstm.str();
+     }
+     zi_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
+     if (zi_.dataRange_.min_ < 0)
+     {
+       std::stringstream sstm;
+       sstm << "The z_class latent class variable has a lowest provided value of: "
+            << minModality + zi_.dataRange_.min_
+            << " while the minimal value has to be: "
+            << minModality
+            << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+       warnLog += sstm.str();
+     }
+     if (zi_.dataRange_.max_ > nbCluster_ - 1)
+     {
+       std::stringstream sstm;
+       sstm << "The z_class latent class variable has a highest provided value of: "
+            << minModality + zi_.dataRange_.max_
+            << " while the maximal value can not exceed the number of class: "
+            << minModality + nbCluster_ - 1
+            << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+       warnLog += sstm.str();
+     }
+     zi_.dataRange_.min_ = 0; // real range provided by the parameters is enforced
+     zi_.dataRange_.max_ = nbCluster_ - 1;
+     zi_.dataRange_.range_ = nbCluster_;
 
-      for (int iterSample = 0; iterSample < nbSamplingAttempts; ++iterSample) // sample until there are enough individuals per class
-      {
-        zi_.removeMissingClass(); // uniform random sampling of the latent classes
+     for (int iterSample = 0; iterSample < nbSamplingAttempts; ++iterSample) // sample until there are enough individuals per class
+     {
+       zi_.removeMissingClass(); // uniform random sampling of the latent classes
 
-        Vector<int> indPerClass(nbCluster_);
-        indPerClass = 0;
-        for (int i = 0; i < nbSample_; ++i)
-        {
-#ifdef MC_DEBUG
-          std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
-#endif
-          indPerClass[zi_.data_(i)] += 1;
-        }
-        int nbIndPerClass = indPerClass.minCoeff();
+       Vector<int> indPerClass(nbCluster_);
+       indPerClass = 0;
+       for (int i = 0; i < nbSample_; ++i)
+       {
+    #ifdef MC_DEBUG
+         std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
+    #endif
+         indPerClass[zi_.data_(i)] += 1;
+       }
+       int nbIndPerClass = indPerClass.minCoeff();
 
-        if (nbIndPerClass > minIndPerClass || checkInd == false)
-        {
-          break; // enough individuals in each class to carry on
-        }
-        else if (iterSample == nbSamplingAttempts - 1) // on last attempt, exit with error message
-        {
-          std::stringstream sstm;
-          sstm << "Problem during random initialization of the z_class latent class variable. The class with the lowest number "
-               << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
-               << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
-               << " partition samplings before failure. The number of classes might be too important"
-               << " relative to the number of individuals." << std::endl;
-          warnLog += sstm.str();
-        }
-      }
-#ifdef MC_DEBUG
-      std::cout << "zi_.data_: " << std::endl;
-      std::cout << zi_.data_ << std::endl;
-#endif
-      return warnLog;
+       if (nbIndPerClass > minIndPerClass || mode == prediction_)
+       {
+         break; // enough individuals in each class to carry on
+       }
+       else if (iterSample == nbSamplingAttempts - 1) // on last attempt, exit with error message
+       {
+         std::stringstream sstm;
+         sstm << "Problem during random initialization of the z_class latent class variable. The class with the lowest number "
+              << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
+              << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
+              << " partition samplings before failure. The number of classes might be too important"
+              << " relative to the number of individuals." << std::endl;
+         warnLog += sstm.str();
+       }
+     }
+    #ifdef MC_DEBUG
+     std::cout << "zi_.data_: " << std::endl;
+     std::cout << zi_.data_ << std::endl;
+    #endif
+     return warnLog;
     };
+
+
+  private:
+    /** class sampler */
+    ClassSampler sampler_;
+
+    /** name of the latent class variable */
+    std::string idName_;
+
 };
 
 } // namespace mixt

@@ -46,6 +46,12 @@ enum LikelihoodType
   lnObservedLikelihood_
 };
 
+enum RunMode
+{
+  learning_,
+  prediction_
+};
+
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

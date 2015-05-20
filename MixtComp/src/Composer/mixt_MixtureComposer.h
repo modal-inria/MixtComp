@@ -127,6 +127,36 @@ class MixtureComposer : public mixt::IMixtureComposerBase
                                int iteration,
                                int iterationMax);
 
+    /** DataHandler is injected to take care of setting the values of the latent classes.
+     * This avoids templating the whole composer with DataHandler type, as is currently done
+     * with the individual IMixtures
+     * @param checkInd should be set to 1 if a minimum number of individual per class should be
+     * enforced at sampling (true in learning, false in prediction) */
+    template<typename ParamSetter,
+             typename DataHandler>
+    std::string setDataParam(const ParamSetter& paramSetter,
+                             const DataHandler& dataHandler,
+                             RunMode mode)
+    {
+      std::string warnLog;
+      warnLog += setProportion(paramSetter);
+      warnLog += setZi(dataHandler,
+                       mode);
+      if (mode == prediction_) // in prediction, paramStatStorage_ will not be modified later during the run
+      {
+        paramStatStorage_.resize(prop_.rows(), // paramStatStorage_ is set now, and will not be modified further during predict run
+                                 1); // no quantiles have to be computed for imported parameters, hence the single column
+        paramStatStorage_.col(0) = prop_;
+      }
+
+      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+      {
+        warnLog += (*it)->setDataParam(mode);
+      }
+
+      return warnLog;
+    }
+
     /**@brief This step can be used to ask each mixture to export its model parameters
      * and data
      **/
@@ -134,6 +164,11 @@ class MixtureComposer : public mixt::IMixtureComposerBase
              typename ParamExtractor>
     void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const
     {
+#ifdef MC_DEBUG
+      std::cout << "MixtureComposer::exportDataParam" << std::endl;
+      std::cout << "zi_data_" << std::endl;
+      std::cout << zi_.data_ << std::endl;
+#endif
       dataExtractor.exportVals("z_class",
                                zi_,
                                tik_);

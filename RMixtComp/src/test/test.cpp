@@ -27,19 +27,22 @@
 int main(int argc, char *argv[])
 {
   RInside R(argc, argv);              // create an embedded R instance
-  R.parseEvalQ("library(methods)");
+//  R.parseEvalQ("library(methods)");
   R.parseEvalQ("library(RMixtComp)");
 
 //  R.parseEvalQ("testGenDataLearn()");
 //  R.parseEvalQ("testLearnPredict()");
+
 //  R.parseEvalQ("clustering()");
 //  R.parseEvalQ("clustAuchan()");
 //  R.parseEvalQ("linAlg()");
 //  R.parseEvalQ("testRougeGorge()");
 
-  R.parseEvalQ("setwd(\"C:/Users/Vincent KUBICKI/Data/analysis/150330 - test données prostate/02 - crash en prédiction\")");
-  R.parseEvalQ("source(\"learn.R\")");
+//  R.parseEvalQ("setwd(\"C:/Users/Vincent KUBICKI/Data/analysis/150330 - test donnï¿½es prostate/02 - crash en prï¿½diction\")");
+//  R.parseEvalQ("source(\"learn.R\")");
 //  R.parseEvalQ("source(\"predict.R\")");
+
+  R.parseEvalQ("webDemoLearn(\"/home/elvinz/Data/workspace/mixtcomp.master/RMixtComp/dataServer/exp_68\")");
 
   exit(0);
 }

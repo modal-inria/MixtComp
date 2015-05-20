@@ -133,11 +133,12 @@ class MixtureBridge : public mixt::IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    void setDataParam(std::string& warnLog)
+    std::string setDataParam(RunMode mode)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::setDataParam(), " << idName() << ", " << mixture_.model() << std::endl;
 #endif
+      std::string warnLog;
       p_handler_->getData(idName(),
                           m_augDataij_,
                           nbSample_,
@@ -163,14 +164,12 @@ class MixtureBridge : public mixt::IMixture
       else // minimum value requirements have been met, whether the mode is learning or prediction
       {
         m_augDataij_.removeMissing();
-        p_paramSetter_->getParam(idName(),
-                                 param_);
         mixture_.setData(m_augDataij_.data_);
 
-        // test if parameters are provided, in that case the mode is prediction, not learning and setModalities
-        // must use the range provided by the ParamSetter
-        if (param_.rows() > 0 && param_.cols() > 0) // predict mode detected
+        if (mode == prediction_) // predict mode
         {
+          p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
+                                   param_);
           int nbParam = param_.rows() / nbClass_; // number of parameters for each cluster
           if (mixture_.hasModalities()) // predict data not representative of population, information from learning data set must be used
           {
@@ -180,7 +179,7 @@ class MixtureBridge : public mixt::IMixture
             mixture_.setModalities(nbParam);
           }
           mixture_.setParameters(param_);
-          paramStatStorage_.resize(param_.rows(),
+          paramStatStorage_.resize(param_.rows(), // paramStatStorage_ is set now, and will not be modified furing predict run
                                    1); // no quantiles have to be computed for imported parameters, hence the single column
           paramStatStorage_.col(0) = param_;
           // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
@@ -199,7 +198,7 @@ class MixtureBridge : public mixt::IMixture
           std::cout << "\tparam_: " << param_ << std::endl;
   #endif
         }
-        else // learning mode detected. setModalities must use the range provided by the data
+        else // learning mode
         {
   #ifdef MC_DEBUG
           std::cout << "\tparam not set " << std::endl;
@@ -218,6 +217,8 @@ class MixtureBridge : public mixt::IMixture
         dataStatStorage_.resize(nbSample_,
                                 1);
       }
+
+      return warnLog;
     }
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
