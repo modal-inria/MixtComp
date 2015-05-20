@@ -61,7 +61,7 @@ class MixtureManager
       {
         std::string idName = it->first;
         std::string model = it->second;
-        Mixture idModel = stringToMixture(model);
+
 #ifdef MC_DEBUG
         std::cout << "MixtureManager::createMixtures, "
         		      << "idName: " << idName
@@ -85,7 +85,7 @@ class MixtureManager
      *  @param idName name of the model
      *  @param nbCluster number of cluster of the model
      **/
-    mixt::IMixture* createMixture(Mixture idModel,
+    mixt::IMixture* createMixture(std::string const& idModel,
                                   std::string const& idName,
                                   mixt::MixtureComposer& composer,
                                   int nbCluster,
@@ -95,76 +95,68 @@ class MixtureManager
       std::cout << "MixtureManager::createMixture" << std::endl;
       std::cout << "idName: " << idName << std::endl;
 #endif
-      switch (idModel)
+
+      if (idModel == "Categorical_pjk")
       {
-        case Categorical_pjk_:
-        {
-          typename CategoricalBridge_pjk_m<DataHandler,
-                                           DataExtractor,
-                                           ParamSetter,
-                                           ParamExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataHandler,
-                                                                                                                  DataExtractor,
-                                                                                                                  ParamSetter,
-                                                                                                                  ParamExtractor>::type(idName,
-                                                                                                                                        nbCluster,
-                                                                                                                                        composer.p_zi(),
-                                                                                                                                        p_handler_,
-                                                                                                                                        p_dataExtractor_,
-                                                                                                                                        p_paramSetter_,
-                                                                                                                                        p_paramExtractor_,
-                                                                                                                                        confidenceLevel);
-          p_bridge->setDataParam(warnLog_);
-          return p_bridge;
-        }
-        break;
-
-        case Gaussian_sjk_:
-        {
-          typename GaussianBridge_sjk_m<DataHandler,
-                                        DataExtractor,
-                                        ParamSetter,
-                                        ParamExtractor>::type* p_bridge = new typename GaussianBridge_sjk_m<DataHandler,
-                                                                                                            DataExtractor,
-                                                                                                            ParamSetter,
-                                                                                                            ParamExtractor>::type(idName,
-                                                                                                                                  nbCluster,
-                                                                                                                                  composer.p_zi(),
-                                                                                                                                  p_handler_,
-                                                                                                                                  p_dataExtractor_,
-                                                                                                                                  p_paramSetter_,
-                                                                                                                                  p_paramExtractor_,
-                                                                                                                                  confidenceLevel);
-          p_bridge->setDataParam(warnLog_);
-          return p_bridge;
-        }
-        break;
-
-        case Poisson_k_:
-        {
-          typename PoissonBridge_k_m<DataHandler,
-                                     DataExtractor,
-                                     ParamSetter,
-                                     ParamExtractor>::type* p_bridge = new typename PoissonBridge_k_m<DataHandler,
-                                                                                                      DataExtractor,
-                                                                                                      ParamSetter,
-                                                                                                      ParamExtractor>::type(idName,
-                                                                                                                            nbCluster,
-                                                                                                                            composer.p_zi(),
-                                                                                                                            p_handler_,
-                                                                                                                            p_dataExtractor_,
-                                                                                                                            p_paramSetter_,
-                                                                                                                            p_paramExtractor_,
-                                                                                                                            confidenceLevel);
-          p_bridge->setDataParam(warnLog_);
-          return p_bridge;
-        }
-        break;
-
-        default:
-          return 0;
-        break;
+        typename CategoricalBridge_pjk_m<DataHandler,
+                                         DataExtractor,
+                                         ParamSetter,
+                                         ParamExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataHandler,
+                                                                                                                DataExtractor,
+                                                                                                                ParamSetter,
+                                                                                                                ParamExtractor>::type(idName,
+                                                                                                                                      nbCluster,
+                                                                                                                                      composer.p_zi(),
+                                                                                                                                      p_handler_,
+                                                                                                                                      p_dataExtractor_,
+                                                                                                                                      p_paramSetter_,
+                                                                                                                                      p_paramExtractor_,
+                                                                                                                                      confidenceLevel);
+        p_bridge->setDataParam(warnLog_);
+        return p_bridge;
       }
-      return 0; // 0 if idModel is not bundled with MixtComp
+      else if (idModel == "Gaussian_sjk")
+      {
+        typename GaussianBridge_sjk_m<DataHandler,
+                                      DataExtractor,
+                                      ParamSetter,
+                                      ParamExtractor>::type* p_bridge = new typename GaussianBridge_sjk_m<DataHandler,
+                                                                                                          DataExtractor,
+                                                                                                          ParamSetter,
+                                                                                                          ParamExtractor>::type(idName,
+                                                                                                                                nbCluster,
+                                                                                                                                composer.p_zi(),
+                                                                                                                                p_handler_,
+                                                                                                                                p_dataExtractor_,
+                                                                                                                                p_paramSetter_,
+                                                                                                                                p_paramExtractor_,
+                                                                                                                                confidenceLevel);
+        p_bridge->setDataParam(warnLog_);
+        return p_bridge;
+      }
+      else if (idModel == "Poisson_k")
+      {
+        typename PoissonBridge_k_m<DataHandler,
+                                   DataExtractor,
+                                   ParamSetter,
+                                   ParamExtractor>::type* p_bridge = new typename PoissonBridge_k_m<DataHandler,
+                                                                                                    DataExtractor,
+                                                                                                    ParamSetter,
+                                                                                                    ParamExtractor>::type(idName,
+                                                                                                                          nbCluster,
+                                                                                                                          composer.p_zi(),
+                                                                                                                          p_handler_,
+                                                                                                                          p_dataExtractor_,
+                                                                                                                          p_paramSetter_,
+                                                                                                                          p_paramExtractor_,
+                                                                                                                          confidenceLevel);
+        p_bridge->setDataParam(warnLog_);
+        return p_bridge;
+      }
+      else
+      {
+        return 0;
+      }
     }
 
   private:

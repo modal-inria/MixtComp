@@ -40,18 +40,6 @@ enum RunType
   finalized_ ///< the model is finalized
 };
 
-enum Mixture
-{
-  Categorical_pjk_,
-  Gaussian_sjk_,
-  Poisson_k_,
-  unknown_mixture_
-};
-
-Mixture stringToMixture(std::string const& type);
-
-std::string mixtureToString(Mixture const& type);
-
 }  // namespace mixt
 
 #endif /* MIXT_CLUST_UTIL_H */

@@ -230,10 +230,10 @@ TEST(Ordinal, ArbitraryGibbs)
 {
   MultinomialStatistic multi;
   UniformStatistic uni;
-  int nbIter = 10000;
+  int nbIter = 1000;
 
   int iniMin = 0;
-  int iniMax = 7;
+  int iniMax = 4;
 
 //  int minCond = multi.sampleInt(0      , initSeg(1));
 //  int maxCond = multi.sampleInt(minCond, initSeg(1));
@@ -245,13 +245,19 @@ TEST(Ordinal, ArbitraryGibbs)
   path.setEnd (endMin, endMax);
 
   path.initPath();
+#ifdef MC_DEBUG
+  std::cout << "initialization, displayPath(path)" << std::endl;
+  displayPath(path);
+#endif
 
   Vector<Real> computedProba(iniMax - iniMin + 1);
   computedProba = 0.;
   int computedMode;
 
-  int mu = multi.sampleInt(iniMin, iniMax);
-  Real pi = uni.sample(0., 1.);
+//  int mu = multi.sampleInt(iniMin, iniMax);
+//  Real pi = uni.sample(0., 1.);
+  int mu = 2;
+  Real pi = 0.5;
 
   int expectedMode = std::max(mu, endMin);
   expectedMode = std::min(expectedMode, endMax);
@@ -263,7 +269,7 @@ TEST(Ordinal, ArbitraryGibbs)
   std::cout << "expectedMode: " << expectedMode << std::endl;
 #endif
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "Initial path, displayPath: " << std::endl;
   displayPath(path);
 #endif
@@ -279,12 +285,14 @@ TEST(Ordinal, ArbitraryGibbs)
   }
   computedProba /= computedProba.sum();
   computedProba.maxCoeff(&computedMode);
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
+  std::cout << "Final path, displayPath: " << std::endl;
+  displayPath(path);
   std::cout << "computedProba" << std::endl;
   std::cout << computedProba << std::endl;
 #endif
 
-  ASSERT_EQ(computedMode, expectedMode); // has the real mode been estimated correctly ?
+  ASSERT_EQ(expectedMode, computedMode); // has the real mode been estimated correctly ?
 }
 
 ///**

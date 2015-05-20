@@ -110,29 +110,17 @@ void BOSPath::nodeMultinomial(int mu,
   {
     path(0).partition(firstSeg); // computation of path(0).part_
     Real y0LogProba = path(0).yLogProba(firstSeg);
-#ifdef MC_DEBUG
-    std::cout << "y0: " << y0 << std::endl;
-    std::cout << "\ty0LogProba: " << y0LogProba << std::endl;
-#endif
     for (path(0).z_ = 0;
          path(0).z_ < 2;
          ++path(0).z_)
     {
       Real z0LogProba = path(0).zLogProba(pi);
-#ifdef MC_DEBUG
-      std::cout << "y0: " << path(0).y_ << ", z0: " << path(0).z_ << std::endl;
-      std::cout << "\tz0LogProba: " << z0LogProba << std::endl;
-#endif
       for(int e0 = 0            ;
           e0 < path(0).partSize_;
           ++e0)
       {
         path(0).e_ = path(0).part_(e0);
         Real e0LogProba = path(0).eLogProba(mu, pi);
-#ifdef MC_DEBUG
-        std::cout << "y0: " << path(0).y_ << ", z0: " << path(0).z_ << ", e0: " << path(0).e_ << ", part0(e0)(0): " << path(0).part_(path(0).e_)(0) << ", part0(e0)(1): " << path(0).part_(path(0).e_)(1) << std::endl;
-        std::cout << "\te0LogProba: " << e0LogProba << std::endl;
-#endif
         if (e0LogProba > minInf) // null probability segments are not computed further
         {
           for(path(1).y_ = path(0).e_(0)    ;
@@ -141,37 +129,21 @@ void BOSPath::nodeMultinomial(int mu,
           {
             path(1).partition(path(0).e_); // computation of path(1).part_
             Real y1LogProba = path(1).yLogProba(path(0).e_);
-#ifdef MC_DEBUG
-            std::cout << "y0: " << path(0).y_ << ", z0: " << path(0).z_ << ", e0: " << path(0).e_ << ", part0(e0)(0): " << path(0).part_(path(0).e_)(0) << ", part0(e0)(1): " << path(0).part_(path(0).e_)(1) << std::endl;
-            std::cout << "y1: " << path(1).y_ << std::endl;
-            std::cout << "\ty1LogProba: " << y1LogProba << std::endl;
-#endif
             for (path(1).z_ = 0;
                  path(1).z_ < 2;
                  ++path(1).z_)
             {
               Real z1LogProba = path(1).zLogProba(pi);
-#ifdef MC_DEBUG
-              std::cout << "y0: " << path(0).y_ << ", z0: " << path(0).z_ << ", e0: " << path(0).e_ << ", part0(e0)(0): " << path(0).part_(path(0).e_)(0) << ", part0(e0)(1): " << path(0).part_(path(0).e_)(1) << std::endl;
-              std::cout << "y1: " << path(1).y_ << ", z0: " << path(1).z_  << std::endl;
-              std::cout << "\tz1LogProba: " << z1LogProba << std::endl;
-#endif
               for(int e1 = 0;
                   e1 < path(1).partSize_;
                   ++e1)
               {
                 path(1).e_ = path(1).part_(e1);
                 Real e1LogProba = path(1).eLogProba(mu, pi);
-                // Vector<int, 2> endSeg = path(1).part_(path(1).e_);
-#ifdef MC_DEBUG
-                std::cout << "y0: " << path(0).y_ << ", z0: " << path(0).z_ << ", e0: " << path(0).e_ << ", part0(e0)(0): " << path(0).part_(path(0).e_)(0) << ", part0(e0)(1): " << path(0).part_(path(0).e_)(1) << std::endl;
-                std::cout << "y1: " << path(1).y_ << ", z0: " << path(1).z_ << ", e0: " << path(1).e_ << ", part0(e0)(0): " << path(1).part_(path(1).e_)(0) << ", part0(e0)(1): " << path(1).part_(path(1).e_)(1) << std::endl;
-                std::cout << "\te1LogProba: " << e1LogProba << std::endl;
-#endif
-                if (index != nbNode_ - 2) // does the second node in the pair corresponds to the last node in c, if not, the proba of the next node conditionally to the current last segment must be computed
+                if (index < nbNode_ - 2 && e1LogProba > minInf) // does the second node in the pair corresponds to the last node in c, if not, the proba of the next node conditionally to the current last segment must be computed
                 {
 #ifdef MC_DEBUG
-                  std::cout << "index != nbNode_ - 2" << std::endl;
+                  std::cout << "not the last node" << std::endl;
 #endif
                   BOSNode lastNode = c_(index + 2); // copy of the last node
                   lastNode.partition(path(1).e_); // computation of the partition in the last node
@@ -191,29 +163,19 @@ void BOSPath::nodeMultinomial(int mu,
                       probaList.push_back(logProba); // proba of current path is saved
                     }
                   }
-#ifdef MC_DEBUG
-                  std::cout << "lastNodeLogProba: " << lastNodeLogProba << std::endl;
-#endif
                 }
                 else // the second node corresponds to the last node in c, and the compatibility with the data constraint is checked
                 {
-#ifdef MC_DEBUG
-                  std::cout << "index == nbNode_ - 2" << std::endl;
-#endif
-                  if (e1LogProba > minInf && path(1).e_(0) <= endCond_(1) && endCond_(0) <= path(1).e_(1)) // is the final segment compatible with the data constraint ?
+                  if (path(1).e_(0) <= endCond_(1) && endCond_(0) <= path(1).e_(1) && e1LogProba > minInf) // is the final segment compatible with the data constraint ?
                   {
+#ifdef MC_DEBUG
+                    std::cout << "last node, data constraint satisfied" << std::endl;
+#endif
                     Real logProba =   y0LogProba + z0LogProba + e0LogProba
                                     + y1LogProba + z1LogProba + e1LogProba;
                     pathList.push_back(path);
                     probaList.push_back(logProba); // proba of current path is saved
                   }
-                  else
-                  {
-#ifdef MC_DEBUG
-                    std::cout << "e1, null proba case or final condition not verified" << std::endl;
-#endif
-                  }
-
                 }
               }
             }
@@ -271,7 +233,7 @@ void BOSPath::initPath()
     for (int s = 0; s < c_(i).partSize_; ++s) // computation of the allowed segments
     {
       if (c_(i).part_(s)(0) <= endCond_(1) && // test if the current segment of the partition can reach any allowed point
-          endCond_(0)       <= c_(i).part_(s)(1) )
+          endCond_(0)       <= c_(i).part_(s)(1))
       {
         segProba(s) = c_(i).part_(s)(1) - c_(i).part_(s)(0) + 1; // proba to sample segment is proportional to its size
       }
