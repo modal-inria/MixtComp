@@ -41,6 +41,7 @@ extern const Real l2pi; // constant used in pdf computation for normal law
 extern const int minNbPresentValues; // minimum number of present values
 extern const int nbClusterMax; // maximum number of clusters that can be asked
 extern const Real minInf; // value of log(0)
+extern const int sizeTupleConst; // size of the tuples for the BOS model
 
 } // namespace mixt
 

@@ -56,19 +56,60 @@ class BOSPath
                          Real pi) const;
 
     /**
-     * Multinomial conditional probability distribution for the elements of the partition at a specific index
+     * Multinomial conditional probability distribution for tuples inside the path
      *
-     * @param index index of the first node for which probabilities are computed
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution
+     * @param startIndex index of the first node of the tuple inside the complete path
+     * @param sizeTuple size of the tuple
+     * @param[out] pathList list of the various path
+     * @param[out] probaVec vector of the conditional probabilities of the paths in pathList
+     */
+    void tupleMultinomial(int mu,
+                          Real pi,
+                          int startIndex,
+                          int sizeTuple,
+                          std::list<Vector<BOSNode> >& pathList,
+                          Vector<Real>& probaVec) const;
+
+    /**
+     * Multinomial conditional probability distribution for the elements of the partition at a specific index
+     *
+     * @param mu localization parameter (mode) of the distribution
+     * @param pi precision parameter of the distribution
+     * @param startIndex the start index of the tuple, inside the complete path
+     * @param currIndex the current index of the tuple, inside the complete path
+     * @param logProba the conditional log probability of the previous nodes inside the path
      * @param[out] pathList list of the various path
      * @param[out] probaList list of the conditional probabilities of the paths in pathList
+     * @param[out] tuple
      */
     void nodeMultinomial(int mu,
                          Real pi,
-                         int index,
-                         std::list<Vector<BOSNode, 2> >& pathList,
-                         Vector<Real>& probaVec) const;
+                         int startIndex,
+                         int currIndex,
+                         Real logProba,
+                         std::list<Vector<BOSNode> >& pathList,
+                         std::list<Real>& probaList,
+                         Vector<BOSNode>& tuple) const;
+
+    /**
+     * Compute the conditional probability of the end condition given the last node, and fill pathList and probaList
+     *
+     * @param mu localization parameter (mode) of the distribution
+     * @param pi precision parameter of the distribution
+     * @param logProba the conditional log probability of the previous nodes inside the path
+     * @param tuple
+     * @param[out] pathList list of the various path
+     * @param[out] probaList list of the conditional probabilities of the paths in pathList
+     */
+    void endMultinomial(int mu,
+                        Real pi,
+                        int currIndex,
+                        Real logProba,
+                        const Vector<BOSNode>& tuple,
+                        std::list<Vector<BOSNode> >& pathList,
+                        std::list<Real>& probaList) const;
 
     /**
      * Randomly initialize the path while being compatible with eInit and endCond constraints

@@ -82,117 +82,29 @@ Real BOSPath::computeLogProba(int mu,
   return logProba;
 }
 
-void BOSPath::nodeMultinomial(int mu,
-                              Real pi,
-                              int index,
-                              std::list<Vector<BOSNode, 2> >& pathList,
-                              Vector<Real>& probaVec) const
+void BOSPath::tupleMultinomial(int mu,
+                               Real pi,
+                               int startIndex,
+                               int sizeTuple,
+                               std::list<Vector<BOSNode> >& pathList,
+                               Vector<Real>& probaVec) const
 {
 #ifdef MC_DEBUG
-  std::cout << "BOSPath::nodeMultinomial" << std::endl;
+  std::cout << "BOSPath::tupleMultinomial" << std::endl;
 #endif
   std::list<Real> probaList;
-  Vector<BOSNode, 2> path; // a specific path is used for this computation, instead of c
-  Vector<int, 2> firstSeg;
+  Vector<BOSNode> tuple(sizeTuple); // a specific path is used for this computation, instead of c
 
-  if (index == 0)
-  {
-    firstSeg = eInit_;
-  }
-  else
-  {
-    firstSeg = c_(index - 1).e_;
-  }
+  nodeMultinomial(mu,
+                  pi,
+                  startIndex,
+                  startIndex, // currIndex = startIndex for the first recursive call
+                  0., // log(1)
+                  pathList,
+                  probaList,
+                  tuple); // a specific path is used for this computation, instead of c) const
 
-  for (path(0).y_ = firstSeg(0)    ;
-       path(0).y_ < firstSeg(1) + 1;
-       ++path(0).y_) // outer node
-  {
-    path(0).partition(firstSeg); // computation of path(0).part_
-    Real y0LogProba = path(0).yLogProba(firstSeg);
-    for (path(0).z_ = 0;
-         path(0).z_ < 2;
-         ++path(0).z_)
-    {
-      Real z0LogProba = path(0).zLogProba(pi);
-      for(int e0 = 0            ;
-          e0 < path(0).partSize_;
-          ++e0)
-      {
-        path(0).e_ = path(0).part_(e0);
-        Real e0LogProba = path(0).eLogProba(mu, pi);
-        if (e0LogProba > minInf) // null probability segments are not computed further
-        {
-          for(path(1).y_ = path(0).e_(0)    ;
-              path(1).y_ < path(0).e_(1) + 1;
-              ++path(1).y_) // inner node
-          {
-            path(1).partition(path(0).e_); // computation of path(1).part_
-            Real y1LogProba = path(1).yLogProba(path(0).e_);
-            for (path(1).z_ = 0;
-                 path(1).z_ < 2;
-                 ++path(1).z_)
-            {
-              Real z1LogProba = path(1).zLogProba(pi);
-              for(int e1 = 0;
-                  e1 < path(1).partSize_;
-                  ++e1)
-              {
-                path(1).e_ = path(1).part_(e1);
-                Real e1LogProba = path(1).eLogProba(mu, pi);
-                if (index < nbNode_ - 2 && e1LogProba > minInf) // does the second node in the pair corresponds to the last node in c, if not, the proba of the next node conditionally to the current last segment must be computed
-                {
-#ifdef MC_DEBUG
-                  std::cout << "not the last node" << std::endl;
-#endif
-                  BOSNode lastNode = c_(index + 2); // copy of the last node
-                  lastNode.partition(path(1).e_); // computation of the partition in the last node
-
-                  if (lastNode.isInPart(c_(index + 2).e_)) // is the next node final segment still compatible with the new partition of the node ?
-                  {
-                    Real lastNodeLogProba =   lastNode.yLogProba(path(1).e_) // yProba based on second node
-                                            + lastNode.zLogProba(pi)
-                                            + lastNode.eLogProba(mu, pi); // the proba of the segment with the new partition
-
-                    if (lastNodeLogProba > minInf) // has the next node a non zero probability, given the current value of path(1).e_ ?
-                    {
-                      Real logProba =   y0LogProba + z0LogProba + e0LogProba
-                                      + y1LogProba + z1LogProba + e1LogProba
-                                      + lastNodeLogProba;
-                      pathList.push_back(path);
-                      probaList.push_back(logProba); // proba of current path is saved
-                    }
-                  }
-                }
-                else // the second node corresponds to the last node in c, and the compatibility with the data constraint is checked
-                {
-                  if (path(1).e_(0) <= endCond_(1) && endCond_(0) <= path(1).e_(1) && e1LogProba > minInf) // is the final segment compatible with the data constraint ?
-                  {
-#ifdef MC_DEBUG
-                    std::cout << "last node, data constraint satisfied" << std::endl;
-#endif
-                    Real logProba =   y0LogProba + z0LogProba + e0LogProba
-                                    + y1LogProba + z1LogProba + e1LogProba;
-                    pathList.push_back(path);
-                    probaList.push_back(logProba); // proba of current path is saved
-                  }
-                }
-              }
-            }
-          }
-        }
-        else
-        {
-#ifdef MC_DEBUG
-          std::cout << "e0, null proba case detected" << std::endl;
-#endif
-        }
-      }
-    }
-  }
-
-  // conversion from list of logs to categorical density distribution, similar to eStep conversion
-  int nbPath = probaList.size();
+  int nbPath = probaList.size(); // conversion from list of logs to categorical density distribution, similar to eStep conversion
 #ifdef MC_DEBUG
   std::cout << "nbPath: " << nbPath << std::endl;
 #endif
@@ -211,6 +123,131 @@ void BOSPath::nodeMultinomial(int mu,
   probaVec = probaVec.exp();
   Real sum = probaVec.sum();
   probaVec /= sum;
+}
+
+void BOSPath::nodeMultinomial(int mu,
+                              Real pi,
+                              int startIndex,
+                              int currIndex,
+                              Real logProba,
+                              std::list<Vector<BOSNode> >& pathList,
+                              std::list<Real>& probaList,
+                              Vector<BOSNode>& tuple) const
+{
+  int tupleIndex = currIndex - startIndex; // relative index inside the tuple
+#ifdef MC_DEBUG
+  std::cout << "BOSPath::nodeMultinomial, startIndex: " << startIndex
+            << ", currIndex: " << currIndex
+            << ", tupleIndex: " << tupleIndex
+            << ", tuple.size(): " << tuple.size()
+            << ", logProba: " << logProba << std::endl;
+#endif
+
+  Vector<int, 2> firstSeg;
+  if (currIndex == 0)
+  {
+    firstSeg = eInit_;
+  }
+  else
+  {
+    firstSeg = tuple(currIndex - 1).e_;
+  }
+
+  for (tuple(tupleIndex).y_ = firstSeg(0)    ;
+       tuple(tupleIndex).y_ < firstSeg(1) + 1;
+       ++tuple(tupleIndex).y_)
+  {
+    tuple(tupleIndex).partition(firstSeg); // computation of path(0).part_
+    Real yLogProba = tuple(tupleIndex).yLogProba(firstSeg);
+    for (tuple(tupleIndex).z_ = 0;
+         tuple(tupleIndex).z_ < 2;
+         ++tuple(tupleIndex).z_)
+    {
+      Real zLogProba = tuple(tupleIndex).zLogProba(pi);
+      for(int e = 0                      ;
+          e < tuple(tupleIndex).partSize_;
+          ++e)
+      {
+        tuple(tupleIndex).e_ = tuple(tupleIndex).part_(e); // segment is taken from the partition
+        Real eLogProba = tuple(tupleIndex).eLogProba(mu, pi);
+        if (eLogProba > minInf) // null probability segments are not computed further
+        {
+          if (tupleIndex + 1 < tuple.size()) // is the next element a node or an end condition ?
+          {
+            nodeMultinomial(mu,
+                            pi,
+                            startIndex,
+                            currIndex + 1,
+                            logProba + yLogProba + zLogProba + eLogProba,
+                            pathList,
+                            probaList,
+                            tuple); // a specific path is used for this computation, instead of c) const
+          }
+          else // next element is the end condition. pathList and probaList must eventually be filled.
+          {
+            endMultinomial(mu,
+                           pi,
+                           currIndex + 1,
+                           logProba + yLogProba + zLogProba + eLogProba,
+                           tuple,
+                           pathList,
+                           probaList);
+          }
+        }
+        else // null probability result in no action
+        {
+        }
+      }
+    }
+  }
+}
+
+void BOSPath::endMultinomial(int mu,
+                             Real pi,
+                             int currIndex,
+                             Real logProba,
+                             const Vector<BOSNode>& tuple,
+                             std::list<Vector<BOSNode> >& pathList,
+                             std::list<Real>& probaList) const
+{
+#ifdef MC_DEBUG
+  std::cout << "BOSPath::endMultinomial" << std::endl;
+#endif
+  Vector<int, 2> lastSegment = tuple(tuple.size() - 1).e_;
+
+  if (currIndex < nbNode_) // is this end condition a node ? In this case, the conditional probabilities must be computed inside that node
+  {
+#ifdef MC_DEBUG
+    std::cout << "not the last node" << std::endl;
+#endif
+    BOSNode endNode = c_(currIndex); // copy of the ending node
+    endNode.partition(lastSegment); // computation of the partition in the ending node, using the resulting segment of the last node of the tuple
+
+    if (endNode.isInPart(endNode.e_)) // is the last node final segment still compatible with its new partition ?
+    {
+      Real lastNodeLogProba =   endNode.yLogProba(lastSegment) // yLogProba in ending node, based on the last segment
+                              + endNode.zLogProba(pi)
+                              + endNode.eLogProba(mu, pi); // the proba of the segment with the new partition
+
+      if (lastNodeLogProba > minInf) // has the next node a non zero probability, given the current value of path(1).e_ ?
+      {
+        pathList.push_back(tuple);
+        probaList.push_back(logProba + lastNodeLogProba); // log proba of current path is saved
+      }
+    }
+  }
+  else // the second node corresponds to the last node in c, and the compatibility with the data constraint is checked
+  {
+    if (lastSegment(0) <= endCond_(1) &&
+        endCond_(0)    <= lastSegment(1)) // is the final segment compatible with the data constraint ?
+    {
+#ifdef MC_DEBUG
+      std::cout << "last node, data constraint satisfied" << std::endl;
+#endif
+      pathList.push_back(tuple);
+      probaList.push_back(logProba); // proba of current path is saved
+    }
+  }
 }
 
 void BOSPath::initPath()
@@ -264,46 +301,51 @@ void BOSPath::samplePath(int mu,
 #ifdef MC_DEBUG
   std::cout << "BOSPath::samplePath" << std::endl;
 #endif
-  for (int node = 0; node < nbNode_ - 1; ++node)
+  for (int startIndex = 0; startIndex < nbNode_ - 1; ++startIndex)
   {
 #ifdef MC_DEBUG
-    std::cout << "node: " << node << " / " << nbNode_ - 2 << std::endl;
+    std::cout << "node: " << startIndex << " / " << nbNode_ - 2 << std::endl;
 #endif
     // computation of the possible node values and associated probabilities
-    std::list<Vector<BOSNode, 2> > pathList;
+    std::list<Vector<BOSNode> > pathList;
     Vector<Real> probaVec;
-    nodeMultinomial(mu,
-                    pi,
-                    node,
-                    pathList,
-                    probaVec);
+
+    tupleMultinomial(mu,
+                     pi,
+                     startIndex,
+                     sizeTupleConst,
+                     pathList,
+                     probaVec);
 
     // sampling and replacement in the path
 #ifdef MC_DEBUG
     std::cout << "probaVec.size(): " << probaVec.size() << std::endl;
     std::cout << "pathList.size(): " << pathList.size() << std::endl;
 #endif
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG // export all the elements in the pathList
     std::cout << "probaVec: " << probaVec << std::endl;
     std::cout << "pathList" << std::endl;
     for(std::list<Vector<BOSNode, 2> >::iterator it = pathList.begin();
         it != pathList.end();
         ++it)
     {
-      std::cout << "displaySegNode((*it)(0))" << std::endl;
-      displaySegNode((*it)(0));
-      std::cout << "displaySegNode((*it)(1))" << std::endl;
-      displaySegNode((*it)(1));
+      for (int currNode = 0; currNode < sizeTupleConst; ++currNode) // copy sampled tuple inside the path
+      {
+        std::cout << "displaySegNode: " << currNode << std::endl;
+        displaySegNode((*it)(currNode));
+      }
     }
 #endif
     int pathSampled = multi_.sample(probaVec);
-    std::list<Vector<BOSNode, 2> >::iterator it = pathList.begin();
-    for(int path = 0; path < pathSampled; ++path)
+    std::list<Vector<BOSNode> >::const_iterator it = pathList.begin();
+    for(int path = 0; path < pathSampled; ++path) // fast-forward to the sampled sub-path
     {
-      ++it; // fast-forward to the sampled sub-path
+      ++it;
     }
-    c_[node    ] = (*it)(0);
-    c_[node + 1] = (*it)(1);
+    for (int currNode = 0; currNode < sizeTupleConst; ++currNode) // copy sampled tuple inside the path
+    {
+      c_[startIndex + currNode] = (*it)(currNode);
+    }
 #ifdef MC_DEBUG
     std::cout << "end of node iteration inside samplePath, displayPath:" << std::endl;
     displayPath(*this);
