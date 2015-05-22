@@ -32,95 +32,123 @@ namespace mixt
 class IMixture
 {
   public:
-    /**Constructor with identification character
-     * @param idName Identification string of Mixture allocated by framework.
-     * @param nbCluster number of cluster
+    /**
+     * Constructor with identification character
+     *
+     * @param idName Identification string of the mixture provided by the framework
      */
     IMixture(std::string const& idName) :
       idName_(idName)
     {};
-    /**copy constructor.
-     * @note The pointer on the composer is not copied and is set to 0: it have
-     * to be set again.
-     * @param mixture the mixture to copy */
-    IMixture(IMixture const& mixture) :
-      idName_(mixture.idName_)
-    {};
+
     /** Virtual destructor. */
     virtual ~IMixture()
     {};
 
-    /** return the Id of the mixture */
+    /**
+     * Return the Id of the mixture
+     * @return Id of the mixture*/
     std::string const& idName() const
     {
       return idName_;
     }
 
-    /** @brief This function must be defined for simulation of all the latent
-     * variables and/or missing data excluding class labels. The class labels
-     * will be simulated by the framework itself because to do so we have to
-     * take into account all the mixture laws.
+    /**
+     * Simulation of latent variables and partially observed data
+     *
+     * @param ind index of the individual which data must be sampled
      */
     virtual void samplingStep(int ind)
     = 0;
-    /** @brief This function is equivalent to mStep and must be defined to update
-     *  parameters.
+
+    /**
+     * Maximum-Likelihood estimation of the mixture parameters
+     *
+     * @return empty string if mStep successful, or a detailed description of the eventual error
      */
     virtual std::string mStep()
     = 0;
-    /** @brief This function should be used to store results during the burn-in period.
-     * @param iteration Provides the iteration number in the burn-in
-     * period.
+
+    /**
+     * Storage / display of intermediate results during the SEM burn-in phase
+     *
+     * @param iteration SEM burn-in iteration number in the burn-in
+     * @param iterationMax maximum number of iterations
      */
     virtual void storeSEMBurnIn(int iteration,
-                               int iterationMax)
+                                int iterationMax)
     = 0;
-    /** @brief This function should be used to store any intermediate results
-     * during various iterations after the burn-in period.
-     * @param iteration Provides the iteration number beginning after the burn-in
+
+    /**
+     * Storage of mixture parameters during SEM run phase
+     *
+     * @param iteration SEM run iteration number
+     * @param iterationMax maximum number of iterations
      * period.
      */
     virtual void storeSEMRun(int iteration,
-                              int iterationMax)
-    = 0;
-    /** @brief This step can be used to store data. This is usually called after the long algo, to
-     * store data generated using the estimated parameters
-     */
-    virtual void storeGibbsRun(int sample,
-                           int iteration,
-                           int iterationMax)
+                             int iterationMax)
     = 0;
 
-    /** This function must be defined to return the observed likelihood
-     * @return the value of the observed likelihood in log scale
+    /**
+     * Storage of mixture parameters during SEM run phase
+     *
+     * @param i individual
+     * @param iteration Gibbs iteration
+     * @param iterationMax maximum number of iterations
+     */
+    virtual void storeGibbsRun(int i,
+                               int iteration,
+                               int iterationMax)
+    = 0;
+
+    /**
+     * Computation of completed likelihood
+     *
+     * @param i individual
+     * @param k class
+     * @return value of the completed likelihood in log scale
      */
     virtual Real lnCompletedLikelihood(int i, int k)
     = 0;
-    /** This function must be defined to return the observed likelihood
-     * @return the value of the observed likelihood in log scale
+
+    /**
+     * Computation of observed likelihood
+     *
+     * @param i individual
+     * @param k class
+     * @return value of the observed likelihood in log scale
      */
     virtual Real lnObservedLikelihood(int i, int k)
     = 0;
-    /** This function must return the number of free parameters.
+
+    /**
+     * Computation of the number of free parameters.
+     *
      *  @return Number of free parameters
      */
     virtual int nbFreeParameter() const
     = 0;
-    /** This function can be used to write summary of parameters on to the output stream.
-     *  @param out Stream where you want to write the summary of parameters.
+
+    /**
+     * This function can be used to write summary of parameters on to the output stream.
+     *
+     *  @param[out] stream to write the summary of parameters to
      */
     virtual void writeParameters(std::ostream& out) const
     = 0;
 
     /**
-     * Order the mixture to get the data and set its parameters
+     * Initialization of the data and parameters
      *
-     * @return Empty string if no errors, otherwise errors description
+     * @param mode run mode, for example learning or prediction
+     * @return empty string if no errors, otherwise errors description
      */
     virtual std::string setDataParam(RunMode mode)
     = 0;
 
-    /** This function must be implemented to export data
+    /**
+     * Export of parameters and data
      */
     virtual void exportDataParam() const
     = 0;
