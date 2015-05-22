@@ -119,14 +119,13 @@ class BOSPath
     /**
      * Performs a single step of Gibbs sampling across all elements in the search path
      *
-     * @param eInit a constant reference to the initial segment
-     * @param[out] c a constant reference to a vector containing the current search path
-     * @param x value of the ordinal data
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution
+     * @param sizeTuple size of the tuple (number of contiguous nodes allowed to vary simultaneously)
      */
     void samplePath(int mu,
-                    Real pi);
+                    Real pi,
+                    int sizeTuple);
 
     MultinomialStatistic multi_;
 };

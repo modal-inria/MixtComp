@@ -42,6 +42,5 @@ const Real l2pi = 0.9189385332046727417; // constant used in pdf computation for
 const int minNbPresentValues = 3; // minimum number of present values for a given variable below which data is considered uninformative
 const int nbClusterMax = 30; // maximum number of clusters that can be asked
 const Real minInf = std::log(0.); // value of log(0)
-const int sizeTupleConst = 2;
 
 } // namespace mixt

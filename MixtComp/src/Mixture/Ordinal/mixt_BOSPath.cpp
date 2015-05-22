@@ -308,15 +308,16 @@ void BOSPath::initPath()
 }
 
 void BOSPath::samplePath(int mu,
-                         Real pi)
+                         Real pi,
+                         int sizeTuple)
 {
 #ifdef MC_DEBUG
   std::cout << "BOSPath::samplePath" << std::endl;
 #endif
-  for (int startIndex = 0; startIndex < nbNode_ - sizeTupleConst + 1; ++startIndex)
+  for (int startIndex = 0; startIndex < nbNode_ - sizeTuple + 1; ++startIndex)
   {
 #ifdef MC_DEBUG
-    std::cout << "node: " << startIndex << " / " << nbNode_ - sizeTupleConst + 1 << std::endl;
+    std::cout << "node: " << startIndex << " / " << nbNode_ - sizeTuple + 1 << std::endl;
 #endif
     // computation of the possible node values and associated probabilities
     std::list<Vector<BOSNode> > pathList;
@@ -325,7 +326,7 @@ void BOSPath::samplePath(int mu,
     tupleMultinomial(mu,
                      pi,
                      startIndex,
-                     sizeTupleConst,
+                     sizeTuple,
                      pathList,
                      probaVec);
 
@@ -341,7 +342,7 @@ void BOSPath::samplePath(int mu,
         it != pathList.end();
         ++it)
     {
-      for (int currNode = 0; currNode < sizeTupleConst; ++currNode) // copy sampled tuple inside the path
+      for (int currNode = 0; currNode < sizeTuple; ++currNode) // copy sampled tuple inside the path
       {
         std::cout << "displaySegNode: " << currNode << std::endl;
         displaySegNode((*it)(currNode));
@@ -354,7 +355,7 @@ void BOSPath::samplePath(int mu,
     {
       ++it;
     }
-    for (int currNode = 0; currNode < sizeTupleConst; ++currNode) // copy sampled tuple inside the path
+    for (int currNode = 0; currNode < sizeTuple; ++currNode) // copy sampled tuple inside the path
     {
       c_[startIndex + currNode] = (*it)(currNode);
     }

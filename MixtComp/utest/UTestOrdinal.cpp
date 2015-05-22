@@ -155,30 +155,30 @@ TEST(Ordinal, computeLogProba1)
   ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
 }
 
-TEST(Ordinal, tupleMultinomial)
-{
-  int mu = 0;
-  Real pi = 0.5;
-
-  BOSPath path;
-  path.setInit(0, 2);
-  path.setEnd(0, 2);
-
-  int index = 0; // index of the first node of the pair used in the computation
-
-  std::list<Vector<BOSNode> > pathList;
-  Vector<Real> probaVec;
-  path.tupleMultinomial(mu,
-                        pi,
-                        index,
-                        sizeTupleConst,
-                        pathList,
-                        probaVec);
-#ifdef MC_DEBUG
-  std::cout << probaVec << std::endl;
-#endif
-  ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
-}
+//TEST(Ordinal, tupleMultinomial)
+//{
+//  int mu = 0;
+//  Real pi = 0.5;
+//
+//  BOSPath path;
+//  path.setInit(0, 2);
+//  path.setEnd(0, 2);
+//
+//  int index = 0; // index of the first node of the pair used in the computation
+//
+//  std::list<Vector<BOSNode> > pathList;
+//  Vector<Real> probaVec;
+//  path.tupleMultinomial(mu,
+//                        pi,
+//                        index,
+//                        sizeTupleConst,
+//                        pathList,
+//                        probaVec);
+//#ifdef MC_DEBUG
+//  std::cout << probaVec << std::endl;
+//#endif
+//  ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
+//}
 
 /**
  * Test checking the initialization of the Gibbs sampling
@@ -228,7 +228,7 @@ TEST(Ordinal, ArbitraryGibbs)
   int nbIter = 1000;
 
   int iniMin = 0;
-  int iniMax = 4;
+  int iniMax = 9;
 
 //  int minCond = multi.sampleInt(0      , initSeg(1));
 //  int maxCond = multi.sampleInt(minCond, initSeg(1));
@@ -253,6 +253,7 @@ TEST(Ordinal, ArbitraryGibbs)
 //  Real pi = uni.sample(0., 1.);
   int mu = 2;
   Real pi = 0.5;
+  int sizeTuple = 4;
 
   int expectedMode = std::max(mu, endMin);
   expectedMode = std::min(expectedMode, endMax);
@@ -274,7 +275,9 @@ TEST(Ordinal, ArbitraryGibbs)
 #ifdef MC_DEBUG
     std::cout << "ArbitraryGibbs, iter: " << iter << std::endl;
 #endif
-    path.samplePath(mu, pi);
+    path.samplePath(mu,
+                    pi,
+                    sizeTuple);
     int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
     computedProba(x) += 1.; // the new occurrence of x is stored
   }
