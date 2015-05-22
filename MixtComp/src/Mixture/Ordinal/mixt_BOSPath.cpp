@@ -144,14 +144,26 @@ void BOSPath::nodeMultinomial(int mu,
 #endif
 
   Vector<int, 2> firstSeg;
-  if (currIndex == 0)
+  if (tupleIndex == 0) // is this the begining of the tuple ?
   {
-    firstSeg = eInit_;
+    if (currIndex == 0) // is the tuple at the beginning of the path ?
+    {
+      firstSeg = eInit_;
+    }
+    else
+    {
+      firstSeg = c_(currIndex - 1).e_;
+    }
   }
   else
   {
-    firstSeg = tuple(currIndex - 1).e_;
+    firstSeg = tuple(tupleIndex - 1).e_;
   }
+
+#ifdef MC_DEBUG
+  std::cout << "firstSeg" << std::endl;
+  std::cout << firstSeg << std::endl;
+#endif
 
   for (tuple(tupleIndex).y_ = firstSeg(0)    ;
        tuple(tupleIndex).y_ < firstSeg(1) + 1;
@@ -301,10 +313,10 @@ void BOSPath::samplePath(int mu,
 #ifdef MC_DEBUG
   std::cout << "BOSPath::samplePath" << std::endl;
 #endif
-  for (int startIndex = 0; startIndex < nbNode_ - 1; ++startIndex)
+  for (int startIndex = 0; startIndex < nbNode_ - sizeTupleConst + 1; ++startIndex)
   {
 #ifdef MC_DEBUG
-    std::cout << "node: " << startIndex << " / " << nbNode_ - 2 << std::endl;
+    std::cout << "node: " << startIndex << " / " << nbNode_ - sizeTupleConst + 1 << std::endl;
 #endif
     // computation of the possible node values and associated probabilities
     std::list<Vector<BOSNode> > pathList;
