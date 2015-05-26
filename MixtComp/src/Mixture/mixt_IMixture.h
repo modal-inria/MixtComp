@@ -109,7 +109,7 @@ class IMixture
      * @param k class
      * @return value of the completed likelihood in log scale
      */
-    virtual Real lnCompletedLikelihood(int i, int k)
+    virtual Real lnCompletedProbability(int i, int k)
     = 0;
 
     /**
@@ -119,7 +119,7 @@ class IMixture
      * @param k class
      * @return value of the observed likelihood in log scale
      */
-    virtual Real lnObservedLikelihood(int i, int k)
+    virtual Real lnObservedProbability(int i, int k)
     = 0;
 
     /**
