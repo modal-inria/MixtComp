@@ -28,7 +28,7 @@ namespace mixt
 {
 
 /** default constructor */
-GibbsStrategy::GibbsStrategy(mixt::MixtureComposer* p_composer,
+GibbsStrategy::GibbsStrategy(MixtureComposer* p_composer,
                              int nbBurnInIterGibbs,
                              int nbIterGibbs) :
     p_composer_(p_composer),

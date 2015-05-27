@@ -54,7 +54,7 @@ class MixtureManager
       warnLog_(warnLog)
     {}
 
-    void createMixtures(mixt::MixtureComposer& composer,
+    void createMixtures(MixtureComposer& composer,
                         int nbCluster)
     {
       for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
@@ -71,11 +71,11 @@ class MixtureManager
                   << ", *composer.p_pk(): " << *composer.p_pk() << std::endl;
 #endif
         // get a mixture fully
-        mixt::IMixture* p_mixture = createMixture(idModel,
-                                                  idName,
-                                                  composer,
-                                                  nbCluster,
-                                                  confidenceLevel_);
+        IMixture* p_mixture = createMixture(idModel,
+                                            idName,
+                                            composer,
+                                            nbCluster,
+                                            confidenceLevel_);
         if (p_mixture) composer.registerMixture(p_mixture);
       }
     }
@@ -85,11 +85,11 @@ class MixtureManager
      *  @param idName name of the model
      *  @param nbCluster number of cluster of the model
      **/
-    mixt::IMixture* createMixture(std::string const& idModel,
-                                  std::string const& idName,
-                                  mixt::MixtureComposer& composer,
-                                  int nbCluster,
-                                  Real confidenceLevel)
+    IMixture* createMixture(std::string const& idModel,
+                            std::string const& idName,
+                            MixtureComposer& composer,
+                            int nbCluster,
+                            Real confidenceLevel)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureManager::createMixture" << std::endl;

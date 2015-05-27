@@ -34,7 +34,7 @@ namespace mixt
 {
 
 /** default constructor */
-SemStrategy::SemStrategy(mixt::MixtureComposer* p_composer,
+SemStrategy::SemStrategy(MixtureComposer* p_composer,
                          int nbTrialInInit_,
                          int nbBurnInIter,
                          int nbIter,

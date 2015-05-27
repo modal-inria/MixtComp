@@ -53,7 +53,7 @@ namespace mixt
 typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
 typedef std::vector<IMixture*>::iterator MixtIterator;
 
-class MixtureComposer : public mixt::IMixtureComposerBase
+class MixtureComposer : public IMixtureComposerBase
 {
   public:
     /** Constructor.

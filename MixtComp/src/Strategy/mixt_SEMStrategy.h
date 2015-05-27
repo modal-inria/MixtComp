@@ -47,7 +47,7 @@ class SemStrategy
     /** default constructor.
      *  @param p_composer the model to estimate
      **/
-    SemStrategy(mixt::MixtureComposer* p_composer,
+    SemStrategy(MixtureComposer* p_composer,
                 int nbTrialInInit,
                 int nbBurnInIter,
                 int nbIter,
@@ -66,7 +66,7 @@ class SemStrategy
     
   protected:
      /** reference on the main model */
-    mixt::MixtureComposer* p_composer_;
+    MixtureComposer* p_composer_;
     
     /** number of estimation to try */
     int nbTrialInInit_;

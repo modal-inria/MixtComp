@@ -39,7 +39,7 @@ class GibbsStrategy
     /** default constructor.
      *  @param p_composer the model to estimate
      **/
-    GibbsStrategy(mixt::MixtureComposer* p_composer,
+    GibbsStrategy(MixtureComposer* p_composer,
                     int nbBurnInIter,
                     int nbIter);
 

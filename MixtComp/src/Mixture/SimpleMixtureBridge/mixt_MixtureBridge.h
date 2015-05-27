@@ -47,7 +47,7 @@ template<int Id,
          typename ParamSetter,
          typename ParamExtractor>
 
-class MixtureBridge : public mixt::IMixture
+class MixtureBridge : public IMixture
 {
   public:
     // data type
@@ -79,7 +79,7 @@ class MixtureBridge : public mixt::IMixture
                   const ParamSetter* p_paramSetter,
                   ParamExtractor* p_paramExtractor,
                   Real confidenceLevel) :
-      mixt::IMixture(idName),
+      IMixture(idName),
       p_zi_(p_zi),
       nbClass_(nbClass),
       mixture_(nbClass,
@@ -109,7 +109,7 @@ class MixtureBridge : public mixt::IMixture
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
-      mixt::IMixture(bridge),
+      IMixture(bridge),
       p_zi_(bridge.p_zi_),
       nbClass_(bridge.nbClass_),
       mixture_(bridge.mixture_),
