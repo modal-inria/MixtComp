@@ -41,7 +41,7 @@ PoissonLikelihood::PoissonLikelihood(const Vector<Real>* p_param,
 PoissonLikelihood::~PoissonLikelihood()
 {}
 
-Real PoissonLikelihood::lnCompletedLikelihood(int i, int k)
+Real PoissonLikelihood::lnCompletedProbability(int i, int k)
 {
 #ifdef MC_DEBUG
    std::cout << "PoissonLikelihood::lnCompletedLikelihood" << std::endl;
@@ -56,7 +56,7 @@ Real PoissonLikelihood::lnCompletedLikelihood(int i, int k)
   return std::log(proba);
 }
 
-Real PoissonLikelihood::lnObservedLikelihood(int i, int k)
+Real PoissonLikelihood::lnObservedProbability(int i, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "PoissonLikelihood::lnObservedLikelihood" << std::endl;

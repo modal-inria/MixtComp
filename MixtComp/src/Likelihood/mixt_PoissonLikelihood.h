@@ -43,10 +43,10 @@ class PoissonLikelihood
     virtual ~PoissonLikelihood();
 
     /** Compute the completed log-likelihood */
-    Real lnCompletedLikelihood(int i, int k);
+    Real lnCompletedProbability(int i, int k);
 
     /** Compute the observed log-likelihood */
-    Real lnObservedLikelihood(int i, int k);
+    Real lnObservedProbability(int i, int k);
 
   private:
     int nbClass_;

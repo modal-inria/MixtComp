@@ -41,7 +41,7 @@ CategoricalLikelihood::CategoricalLikelihood(const Vector<Real>* p_param,
 CategoricalLikelihood::~CategoricalLikelihood()
 {}
 
-Real CategoricalLikelihood::lnCompletedLikelihood(int i, int k)
+Real CategoricalLikelihood::lnCompletedProbability(int i, int k)
 {
   int nbModalities = p_param_->rows() / nbClass_;
 
@@ -65,7 +65,7 @@ Real CategoricalLikelihood::lnCompletedLikelihood(int i, int k)
   return std::log(proba);
 }
 
-Real CategoricalLikelihood::lnObservedLikelihood(int i, int k)
+Real CategoricalLikelihood::lnObservedProbability(int i, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "CategoricalLikelihood::lnObservedLikelihood" << std::endl;

@@ -327,7 +327,7 @@ class MixtureBridge : public IMixture
      * unknown values
      * @return the completed log-likelihood
      */
-    virtual Real lnCompletedLikelihood(int i, int k)
+    virtual Real lnCompletedProbability(int i, int k)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
@@ -335,14 +335,14 @@ class MixtureBridge : public IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      return likelihood_.lnCompletedLikelihood(i, k);
+      return likelihood_.lnCompletedProbability(i, k);
     }
 
     /**
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
-    virtual Real lnObservedLikelihood(int i, int k)
+    virtual Real lnObservedProbability(int i, int k)
     {
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
@@ -350,7 +350,7 @@ class MixtureBridge : public IMixture
       std::cout << "\tparam: " << std::endl;
       std::cout << param_ << std::endl;
 #endif
-      return likelihood_.lnObservedLikelihood(i, k);
+      return likelihood_.lnObservedProbability(i, k);
     }
     /** This function must return the number of free parameters.
      *  @return Number of free parameters

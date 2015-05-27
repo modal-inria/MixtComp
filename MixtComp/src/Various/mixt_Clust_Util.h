@@ -30,6 +30,13 @@
 namespace mixt
 {
 
+enum SimpleMixtureID
+{
+  Categorical_pjk_,
+  Gaussian_sjk_,
+  Poisson_k_
+};
+
 enum RunType
 {
   modelCreated_, ///< the model has been created but is not initialized

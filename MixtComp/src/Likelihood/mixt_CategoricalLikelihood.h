@@ -41,11 +41,11 @@ class CategoricalLikelihood
     /** Destructor */
     virtual ~CategoricalLikelihood();
 
-    /** Compute the completed log-likelihood */
-    Real lnCompletedLikelihood(int i, int k);
+    /** Compute the completed log probability of individual i */
+    Real lnCompletedProbability(int i, int k);
 
-    /** Compute the observed log-likelihood */
-    Real lnObservedLikelihood(int i, int k);
+    /** Compute the observed log probability of individual i */
+    Real lnObservedProbability(int i, int k);
 
   private:
     int nbClass_;

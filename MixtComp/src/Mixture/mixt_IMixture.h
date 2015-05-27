@@ -26,6 +26,10 @@
 #ifndef MIXT_IMIXTURE_H
 #define MIXT_IMIXTURE_H
 
+#include <iostream>
+#include "../LinAlg/mixt_LinAlg.h"
+#include "../Various/mixt_Def.h"
+
 namespace mixt
 {
 

@@ -60,7 +60,7 @@ class MixtureManager
       for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
       {
         std::string idName = it->first;
-        std::string model = it->second;
+        std::string idModel = it->second;
 
 #ifdef MC_DEBUG
         std::cout << "MixtureManager::createMixtures, "
@@ -112,7 +112,6 @@ class MixtureManager
                                                                                                                                       p_paramSetter_,
                                                                                                                                       p_paramExtractor_,
                                                                                                                                       confidenceLevel);
-        p_bridge->setDataParam(warnLog_);
         return p_bridge;
       }
       else if (idModel == "Gaussian_sjk")
@@ -131,7 +130,6 @@ class MixtureManager
                                                                                                                                 p_paramSetter_,
                                                                                                                                 p_paramExtractor_,
                                                                                                                                 confidenceLevel);
-        p_bridge->setDataParam(warnLog_);
         return p_bridge;
       }
       else if (idModel == "Poisson_k")
@@ -150,7 +148,6 @@ class MixtureManager
                                                                                                                           p_paramSetter_,
                                                                                                                           p_paramExtractor_,
                                                                                                                           confidenceLevel);
-        p_bridge->setDataParam(warnLog_);
         return p_bridge;
       }
       else

@@ -41,7 +41,7 @@ GaussianLikelihood::GaussianLikelihood(const Vector<Real>* p_param,
 GaussianLikelihood::~GaussianLikelihood()
 {}
 
-Real GaussianLikelihood::lnCompletedLikelihood(int i, int k)
+Real GaussianLikelihood::lnCompletedProbability(int i, int k)
 {
 #ifdef MC_DEBUG
       std::cout << "GaussianLikelihood::lnCompletedLikelihood" << std::endl;
@@ -56,7 +56,7 @@ Real GaussianLikelihood::lnCompletedLikelihood(int i, int k)
   return logProba;
 }
 
-Real GaussianLikelihood::lnObservedLikelihood(int i, int k)
+Real GaussianLikelihood::lnObservedProbability(int i, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "GaussianLikelihood::lnObservedLikelihood" << std::endl;

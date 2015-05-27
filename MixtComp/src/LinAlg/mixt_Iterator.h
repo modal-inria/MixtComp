@@ -29,6 +29,11 @@
 //#include <iostream>
 //#include <iterator>
 
+/**
+ * Iterator class for Eigen::Matrix. This file is included from mixt_EigenMatrixBaseAddons.h and the Iterator class is therefor not a member of the namespace mixt::.
+ * It is accessible in MixtComp through the derived class mixt::Matrix.
+ */
+
 class Iterator : public std::iterator<std::random_access_iterator_tag,
                                       Scalar,
                                       int,
