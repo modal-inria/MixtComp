@@ -228,7 +228,7 @@ TEST(Ordinal, ArbitraryGibbs)
   int nbIter = 1000;
 
   int iniMin = 0;
-  int iniMax = 9;
+  int iniMax = 4;
 
 //  int minCond = multi.sampleInt(0      , initSeg(1));
 //  int maxCond = multi.sampleInt(minCond, initSeg(1));
@@ -249,11 +249,11 @@ TEST(Ordinal, ArbitraryGibbs)
   computedProba = 0.;
   int computedMode;
 
-//  int mu = multi.sampleInt(iniMin, iniMax);
-//  Real pi = uni.sample(0., 1.);
-  int mu = 2;
-  Real pi = 0.5;
-  int sizeTuple = 4;
+  int mu = multi.sampleInt(iniMin, iniMax);
+  Real pi = uni.sample(0., 1.);
+//  int mu = 2;
+//  Real pi = 0.5;
+  int sizeTuple = 2;
 
   int expectedMode = std::max(mu, endMin);
   expectedMode = std::min(expectedMode, endMax);
@@ -291,6 +291,64 @@ TEST(Ordinal, ArbitraryGibbs)
 #endif
 
   ASSERT_EQ(expectedMode, computedMode); // has the real mode been estimated correctly ?
+}
+
+/**
+ * Test the probability distribution obtained from frequencies of forwardSamplePath
+ */
+TEST(Ordinal, forwardSamplePath)
+{
+  MultinomialStatistic multi;
+  UniformStatistic uni;
+  int nbIter = 1e4;
+
+  int iniMin = 0;
+  int iniMax = 4;
+
+//  int minCond = multi.sampleInt(0      , initSeg(1));
+//  int maxCond = multi.sampleInt(minCond, initSeg(1));
+  int endMin = iniMin;
+  int endMax = iniMax;
+
+  BOSPath path;
+  path.setInit(iniMin, iniMax);
+  path.setEnd (endMin, endMax);
+
+  Vector<Real> computedProba(iniMax - iniMin + 1);
+  computedProba = 0.;
+  int computedMode;
+
+  int mu = multi.sampleInt(iniMin, iniMax);
+  Real pi = uni.sample(0., 1.);
+//  int mu = 2;
+//  Real pi = 0.5;
+
+#ifdef MC_DEBUG
+  std::cout << "iniMin: " << iniMin << ", iniMax: " << iniMax << std::endl;
+  std::cout << "endMin: " << endMin << ", endMax: " << endMax << std::endl;
+  std::cout << "mu: " << mu << ", pi: " << pi << std::endl;
+  std::cout << "expectedMode: " << expectedMode << std::endl;
+#endif
+
+  for (int iter = 0; iter < nbIter; ++iter)
+  {
+#ifdef MC_DEBUG
+    std::cout << "forwardSamplePath, iter: " << iter << std::endl;
+#endif
+    path.forwardSamplePath(mu, pi);
+    int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
+    computedProba(x) += 1.; // the new occurrence of x is stored
+  }
+  computedProba /= computedProba.sum();
+  computedProba.maxCoeff(&computedMode);
+#ifdef MC_DEBUG
+  std::cout << "Final path, displayPath: " << std::endl;
+  displayPath(path);
+  std::cout << "computedProba" << std::endl;
+  std::cout << computedProba << std::endl;
+#endif
+
+  ASSERT_EQ(mu, computedMode); // has the real mode been estimated correctly ?
 }
 
 ///**

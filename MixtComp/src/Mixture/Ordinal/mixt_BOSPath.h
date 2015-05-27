@@ -127,6 +127,15 @@ class BOSPath
                     Real pi,
                     int sizeTuple);
 
+    /**
+     * Overwrite the complete path by sampling everything.
+     *
+     * @param mu localization parameter (mode) of the distribution
+     * @param pi precision parameter of the distribution
+     */
+    void forwardSamplePath(int mu,
+                           Real pi);
+
     MultinomialStatistic multi_;
 };
 

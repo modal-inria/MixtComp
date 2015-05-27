@@ -366,6 +366,48 @@ void BOSPath::samplePath(int mu,
   }
 }
 
+void BOSPath::forwardSamplePath(int mu,
+                                Real pi)
+{
+  Vector<int, 2> seg = eInit_;
+  Vector<Real> currProba;
+
+  for (int iNode = 0; iNode < nbNode_; ++iNode)
+  {
+    BOSNode& currNode = c_(iNode);
+
+    int nbElem = seg(1) - seg(0) + 1;
+    currProba.resize(nbElem);
+    for (int iY = 0;
+         iY < nbElem;
+         ++iY)
+    {
+      currNode.y_ = iY + seg(0);
+      currProba(iY) = std::exp(currNode.yLogProba(seg));
+    }
+    currNode.y_ = multi_.sample(currProba) + seg(0);
+    currNode.partition(seg);
+
+    currProba.resize(2);
+    for (int z = 0; z < 2; ++z)
+    {
+      currNode.z_ = z;
+      currProba(z) = std::exp(currNode.zLogProba(pi));
+    }
+    currNode.z_ = multi_.sample(currProba);
+
+    currProba.resize(currNode.partSize_);
+    for (int e = 0; e < currNode.partSize_; ++e)
+    {
+      currNode.e_ = currNode.part_(e);
+      currProba(e) = std::exp(currNode.eLogProba(mu, pi));
+    }
+    currNode.e_ = currNode.part_(multi_.sample(currProba));
+
+    seg = currNode.e_;
+  }
+}
+
 void displaySegNode(const BOSNode& node)
 {
   std::cout << "\ty: " << node.y_ << std::endl;
