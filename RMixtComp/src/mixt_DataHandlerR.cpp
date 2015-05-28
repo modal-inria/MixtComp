@@ -63,7 +63,7 @@ std::string DataHandlerR::listData()
 
     // add to info_, and perform various checks
     std::pair<InfoMap::iterator, bool> ret; // parse descriptor file
-    ret = info_.insert(std::pair<std::string,std::string>(id, model)); // check if identifier is already present
+    ret = info_.insert(std::pair<std::string, std::string>(id, model)); // check if identifier is already present
     if (ret.second == false) // if name already exists, return a warning
     {
       warnLog += std::string("Several variables bear the same name: ") + id + std::string(", while only a variable per name is allowed.\n");
@@ -80,8 +80,7 @@ std::string DataHandlerR::listData()
     }
 
     nbSample_ = data.size(); // overwritten, because check has already been performed on the R side
-    std::vector<int>& v_pos = dataMap_[id]; // dataMap_[id] created if not already existing
-    v_pos.push_back(i);
+    dataMap_[id] = i; // dataMap_[id] created if not already existing
     ++nbVariables_;
 #ifdef MC_DEBUG
     std::cout << "DataHandlerR::readDataFromRListHelper()" << std::endl;
@@ -99,8 +98,7 @@ void DataHandlerR::writeDataMap() const
   for (DataMap::const_iterator it_id = dataMap_.begin(); it_id != dataMap_.end(); ++it_id)
   {
     std::cout << "\tname: " << (*it_id).first << "\n";
-    for (std::vector<int>::const_iterator it_dp = (*it_id).second.begin(); it_dp != (*it_id).second.end(); ++it_dp)
-      std::cout << "\t\trList_ position: " << (*it_dp) << std::endl;
+    std::cout << "\t\trList_ position: " << (*it_id).second << std::endl;
   }
 }
 

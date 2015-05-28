@@ -39,20 +39,20 @@ class DataExtractorR
 
     /** Export function for categorical model */
     void exportVals(std::string idName,
-                    const AugmentedData<Matrix<int> >* p_augData,
-                    const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage);
+                    const AugmentedData<Vector<int> >* p_augData,
+                    const Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage);
     /** Export function for classes (called from the composer) */
     void exportVals(std::string idName,
                     const AugmentedData<Vector<int> >& augData,
                     const Matrix<Real>& tik);
     /** Export function for gaussian model */
     void exportVals(std::string idName,
-                    const AugmentedData<Matrix<Real> >* p_augData,
-                    const Matrix<RowVector<Real> >* p_dataStatStorage);
+                    const AugmentedData<Vector<Real> >* p_augData,
+                    const Vector<RowVector<Real> >* p_dataStatStorage);
     /** Export function for Poisson model */
     void exportVals(std::string idName,
-                    const AugmentedData<Matrix<int> >* p_augData,
-                    const Matrix<RowVector<int> >* p_dataStatStorage);
+                    const AugmentedData<Vector<int> >* p_augData,
+                    const Vector<RowVector<int> >* p_dataStatStorage);
 
     Rcpp::List rcppReturnVal() const;
   private:

@@ -27,10 +27,10 @@
 namespace mixt
 {
 
-CategoricalDataStat::CategoricalDataStat(AugmentedData<Matrix<int> >* pm_augDataij,
-                                         Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
+CategoricalDataStat::CategoricalDataStat(AugmentedData<Vector<int> >* p_augData,
+                                         Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                                          Real confidenceLevel) :
-    pm_augDataij_(pm_augDataij),
+    p_augData_(p_augData),
     p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)
 {}
@@ -39,8 +39,7 @@ CategoricalDataStat::~CategoricalDataStat() {};
 
 void CategoricalDataStat::sample(int ind)
 {
-  int currMod = pm_augDataij_->data_(ind,
-                                     0);
+  int currMod = p_augData_->data_(ind);
 #ifdef MC_DEBUG
   if (currMod == 0)
   {
@@ -57,7 +56,7 @@ void CategoricalDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
   std::cout << "CategoricalDataStat::sampleVals, ind: " << ind << ", iteration: " << iteration << std::endl;
 #endif
-  if (pm_augDataij_->misData_(ind, 0).first != present_)
+  if (p_augData_->misData_(ind).first != present_)
   {
     if (iteration == 0) // clear the temporary statistical object
     {
@@ -66,14 +65,14 @@ void CategoricalDataStat::sampleVals(int ind,
 #endif
       // initialize internal storage
 #ifdef MC_DEBUG
-      std::cout << "pm_augDataij_->dataRange_.max_: " << pm_augDataij_->dataRange_.max_ << std::endl;
+      std::cout << "pm_augDataij_->dataRange_.max_: " << p_augData_->dataRange_.max_ << std::endl;
 #endif
-      stat_.resize(pm_augDataij_->dataRange_.max_);
+      stat_.resize(p_augData_->dataRange_.max_);
       stat_ = 0.;
 
       // clear output storage for current individual, a vector of <modality, proba>, ordered by decreasing probability
       // up to a cut-off defined by confidenceLevel
-      (*p_dataStatStorage_)(ind, 0) = std::vector<std::pair<int, Real> >();
+      (*p_dataStatStorage_)(ind) = std::vector<std::pair<int, Real> >();
 
       // first sampling, on each missing variables
       sample(ind);
@@ -91,18 +90,18 @@ void CategoricalDataStat::sampleVals(int ind,
       Real cumProb = 0.;
 
 
-      for (int i = pm_augDataij_->dataRange_.max_ - 1; // from the most probable modality ...
+      for (int i = p_augData_->dataRange_.max_ - 1; // from the most probable modality ...
            i > -1; // ... to the least probable modality
            --i)
       {
         int currMod = indOrder[i];
         Real currProba = stat_[currMod];
-        (*p_dataStatStorage_)(ind, 0).push_back(std::pair<int, Real>(currMod + minModality, currProba));
+        (*p_dataStatStorage_)(ind).push_back(std::pair<int, Real>(currMod + minModality, currProba));
         cumProb += currProba;
 #ifdef MC_DEBUG
         std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;
         std::cout << "\tcumProb: " << cumProb << std::endl;
-        std::cout << "p_dataStatStorage_->elt(ind, j).back().first: " << (*p_dataStatStorage_)(ind, 0).back().first << std::endl;
+        std::cout << "p_dataStatStorage_->elt(ind, j).back().first: " << (*p_dataStatStorage_)(ind).back().first << std::endl;
 #endif
         if (cumProb > confidenceLevel_)
         {
@@ -111,7 +110,7 @@ void CategoricalDataStat::sampleVals(int ind,
       }
     }
 #ifdef MC_DEBUG
-    for (std::vector<std::pair<int, Real> >::const_iterator itVec = (*p_dataStatStorage_)(ind, 0).begin();
+    for (std::vector<std::pair<int, Real> >::const_iterator itVec = (*p_dataStatStorage_)(ind).begin();
          itVec != (*p_dataStatStorage_)(ind, 0).end();
          ++itVec)
     {
@@ -127,9 +126,9 @@ void CategoricalDataStat::sampleVals(int ind,
 
 void CategoricalDataStat::imputeData(int ind)
 {
-  if (pm_augDataij_->misData_(ind, 0).first != present_)
+  if (p_augData_->misData_(ind, 0).first != present_)
   {
-    pm_augDataij_->data_(ind, 0) = (*p_dataStatStorage_)(ind, 0)[0].first; // imputation by the mode
+    p_augData_->data_(ind) = (*p_dataStatStorage_)(ind)[0].first; // imputation by the mode
   }
 }
 

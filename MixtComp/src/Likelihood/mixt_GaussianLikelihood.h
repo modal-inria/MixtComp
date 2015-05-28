@@ -36,8 +36,8 @@ class GaussianLikelihood
   public:
     /** Constructor */
     GaussianLikelihood(const Vector<Real>* p_param,
-                       const AugmentedData<Matrix<Real> >* augData,
-                       const Matrix<RowVector<Real> >* p_dataStatStorage,
+                       const AugmentedData<Vector<Real> >* augData,
+                       const Vector<RowVector<Real> >* p_dataStatStorage,
                        int nbClass);
     /** Destructor */
     virtual ~GaussianLikelihood();
@@ -55,10 +55,10 @@ class GaussianLikelihood
     const Vector<Real>* p_param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
-    const AugmentedData<Matrix<Real> >* p_augData_;
+    const AugmentedData<Vector<Real> >* p_augData_;
 
     /** Pointer to storage of statistics on missing values */
-    const Matrix<RowVector<Real> >* p_dataStatStorage_;
+    const Vector<RowVector<Real> >* p_dataStatStorage_;
 
     NormalStatistic normal_;
 };

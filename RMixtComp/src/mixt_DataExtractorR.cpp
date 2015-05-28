@@ -37,23 +37,22 @@ DataExtractorR::~DataExtractorR()
 
 /** Export function for categorical model */
 void DataExtractorR::exportVals(std::string idName,
-                                const AugmentedData<Matrix<int> >* p_augData,
-                                const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage)
+                                const AugmentedData<Vector<int> >* p_augData,
+                                const Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage)
 {
 #ifdef MC_DEBUG
   std::cout << "DataExtractorR::exportVals, int" << std::endl;
 #endif
-  Rcpp::IntegerMatrix dataR(p_augData->data_.rows(), // matrix to store the completed data set
-                            p_augData->data_.cols());
+  Rcpp::IntegerVector dataR(p_augData->data_.rows()); // vector to store the completed data set
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   for (int i = 0; i < p_augData->data_.rows(); ++i)
   {
 #ifdef MC_DEBUG
-    std::cout << "\ti: " << i << ", j: " << 0 << std::endl;
+    std::cout << "\ti: " << i << std::endl;
 #endif
-    dataR(i, 0) = p_augData->data_(i, 0); // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
-    if (p_augData->misData_(i, 0).first != present_)
+    dataR(i) = p_augData->data_(i); // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
+    if (p_augData->misData_(i).first != present_)
     {
 #ifdef MC_DEBUG
       std::cout << "not present_" << std::endl;
@@ -61,10 +60,10 @@ void DataExtractorR::exportVals(std::string idName,
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // store position, R matrices rows start at 1
 #ifdef MC_DEBUG
-      std::cout << "p_dataStatStorage->elt(i, j).size(): " << (*p_dataStatStorage)(i, j).size() << std::endl;
+      std::cout << "p_dataStatStorage->elt(i).size(): " << (*p_dataStatStorage)(i).size() << std::endl;
 #endif
-      for (std::vector<std::pair<int, Real> >::const_iterator itVec = (*p_dataStatStorage)(i, 0).begin();
-           itVec != (*p_dataStatStorage)(i, 0).end();
+      for (std::vector<std::pair<int, Real> >::const_iterator itVec = (*p_dataStatStorage)(i).begin();
+           itVec != (*p_dataStatStorage)(i).end();
            ++itVec)
       {
 #ifdef MC_DEBUG
@@ -104,24 +103,23 @@ void DataExtractorR::exportVals(std::string idName,
 
 /** Export function for gaussian model */
 void DataExtractorR::exportVals(std::string idName,
-                                const AugmentedData<Matrix<Real> >* p_augData,
-                                const Matrix<RowVector<Real> >* p_dataStatStorage)
+                                const AugmentedData<Vector<Real> >* p_augData,
+                                const Vector<RowVector<Real> >* p_dataStatStorage)
 {
-  Rcpp::NumericMatrix dataR(p_augData->data_.rows(), // matrix to store the completed data set
-                            p_augData->data_.cols());
+  Rcpp::NumericVector dataR(p_augData->data_.rows()); // vector to store the completed data set
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
   for (int i = 0; i < p_augData->data_.rows(); ++i)
   {
-    dataR(i, 0) = p_augData->data_(i, 0);
-    if (p_augData->misData_(i, 0).first != present_)
+    dataR(i) = p_augData->data_(i);
+    if (p_augData->misData_(i).first != present_)
     {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
-      currList.push_back((*p_dataStatStorage)(i, 0)[0]); // expectation
-      currList.push_back((*p_dataStatStorage)(i, 0)[1]); // left bound
-      currList.push_back((*p_dataStatStorage)(i, 0)[2]); // right bound
+      currList.push_back((*p_dataStatStorage)(i)[0]); // expectation
+      currList.push_back((*p_dataStatStorage)(i)[1]); // left bound
+      currList.push_back((*p_dataStatStorage)(i)[2]); // right bound
 
       missingData.push_back(currList);
     }
@@ -133,24 +131,23 @@ void DataExtractorR::exportVals(std::string idName,
 
 /** Export function for Poisson model */
 void DataExtractorR::exportVals(std::string idName,
-                                const AugmentedData<Matrix<int> >* p_augData,
-                                const Matrix<RowVector<int> >* p_dataStatStorage)
+                                const AugmentedData<Vector<int> >* p_augData,
+                                const Vector<RowVector<int> >* p_dataStatStorage)
 {
-  Rcpp::IntegerMatrix dataR(p_augData->data_.rows(), // matrix to store the completed data set
-                            p_augData->data_.cols());
+  Rcpp::IntegerVector dataR(p_augData->data_.rows()); // vector to store the completed data set
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
   for (int i = 0; i < p_augData->data_.rows(); ++i)
   {
-    dataR(i, 0) = p_augData->data_(i, 0);
-    if (p_augData->misData_(i, 0).first != present_)
+    dataR(i) = p_augData->data_(i);
+    if (p_augData->misData_(i).first != present_)
     {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
-      currList.push_back((*p_dataStatStorage)(i, 0)[0]); // expectation
-      currList.push_back((*p_dataStatStorage)(i, 0)[1]); // left bound
-      currList.push_back((*p_dataStatStorage)(i, 0)[2]); // right bound
+      currList.push_back((*p_dataStatStorage)(i)[0]); // expectation
+      currList.push_back((*p_dataStatStorage)(i)[1]); // left bound
+      currList.push_back((*p_dataStatStorage)(i)[2]); // right bound
 
       missingData.push_back(currList);
     }

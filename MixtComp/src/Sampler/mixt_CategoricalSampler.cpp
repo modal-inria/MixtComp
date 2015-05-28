@@ -26,7 +26,7 @@
 
 namespace mixt
 {
-CategoricalSampler::CategoricalSampler(AugmentedData<Matrix<int> >* p_augData,
+CategoricalSampler::CategoricalSampler(AugmentedData<Vector<int> >* p_augData,
                                        const Vector<Real>* p_param,
                                        int nbClass) :
     nbClass_(nbClass),
@@ -44,7 +44,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
   std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-  if (p_augData_->misData_(i, 0).first != present_)
+  if (p_augData_->misData_(i).first != present_)
   {
     int sampleVal;
     int nbModalities = p_param_->rows() / nbClass_;
@@ -54,7 +54,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
     std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-    switch(p_augData_->misData_(i, 0).first)
+    switch(p_augData_->misData_(i).first)
     {
       case missing_:
       {
@@ -72,8 +72,8 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
         Vector<Real> equiModalities(nbModalities);
         equiModalities = 0.;
 
-        for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i, 0).second.begin();
-            currMod != p_augData_->misData_(i, 0).second.end();
+        for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i).second.begin();
+            currMod != p_augData_->misData_(i).second.end();
             ++currMod)
         {
 #ifdef MC_DEBUG
@@ -100,7 +100,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
       {}
       break;
     }
-    p_augData_->data_(i, 0) = sampleVal;
+    p_augData_->data_(i) = sampleVal;
   }
 }
 } // namespace mixt

@@ -25,7 +25,7 @@
 
 namespace mixt
 {
-PoissonSampler::PoissonSampler(AugmentedData<Matrix<int> >* p_augData,
+PoissonSampler::PoissonSampler(AugmentedData<Vector<int> >* p_augData,
                                const Vector<Real>* p_param,
                                int nbClass) :
     p_augData_(p_augData),
@@ -42,7 +42,7 @@ void PoissonSampler::sampleIndividual(int i, int z_i)
   std::cout << "\ti: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-  if (p_augData_->misData_(i, 0).first != present_)
+  if (p_augData_->misData_(i).first != present_)
   {
     int x;
     Real lambda = (*p_param_)(z_i);
@@ -51,7 +51,7 @@ void PoissonSampler::sampleIndividual(int i, int z_i)
     std::cout << "\tlambda: " << lambda << std::endl;
 #endif
 
-    switch(p_augData_->misData_(i, 0).first)
+    switch(p_augData_->misData_(i).first)
     {
       case missing_:
       {
@@ -70,7 +70,7 @@ void PoissonSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
     std::cout << "\tsampled val: " << x << std::endl;
 #endif
-    p_augData_->data_(i, 0) = x;
+    p_augData_->data_(i) = x;
   }
 }
 

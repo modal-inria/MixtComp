@@ -32,8 +32,8 @@ namespace mixt
 class PoissonDataStat
 {
   public:
-    PoissonDataStat(AugmentedData<Matrix<int> >* pm_augDataij,
-                    Matrix<RowVector<int> >* p_dataStatStorage,
+    PoissonDataStat(AugmentedData<Vector<int> >* pm_augDataij,
+                    Vector<RowVector<int> >* p_dataStatStorage,
                     Real confidenceLevel);
     ~PoissonDataStat();
     void sampleVals(int sample,
@@ -42,9 +42,9 @@ class PoissonDataStat
     void imputeData(int ind);
   private:
     /** pointer to data array */
-    AugmentedData<Matrix<int> >* pm_augDataij_;
+    AugmentedData<Vector<int> >* pm_augDataij_;
     /** Description of the missing values */
-    Matrix<RowVector<int> >* p_dataStatStorage_;
+    Vector<RowVector<int> >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: iteration

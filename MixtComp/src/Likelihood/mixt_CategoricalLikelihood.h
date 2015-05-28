@@ -35,8 +35,8 @@ class CategoricalLikelihood
   public:
     /** Constructor */
     CategoricalLikelihood(const Vector<Real>* p_param,
-                          const AugmentedData<Matrix<int> >* p_augData,
-                          const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
+                          const AugmentedData<Vector<int> >* p_augData,
+                          const Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                           int nbClass);
     /** Destructor */
     virtual ~CategoricalLikelihood();
@@ -53,10 +53,10 @@ class CategoricalLikelihood
     const Vector<Real>* p_param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
-    const AugmentedData<Matrix<int> >* p_augData_;
+    const AugmentedData<Vector<int> >* p_augData_;
 
     /** Pointer to sampled data storage */
-    const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
+    const Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
 };
 
 } /* namespace mixt */

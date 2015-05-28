@@ -50,13 +50,13 @@ template<>
 struct BridgeTraits<Categorical_pjk_>
 {
     /** Type of the data set to be used as input */
-    typedef Matrix<int> Data;
+    typedef Vector<int> Data;
     /** Type of the AugmentedData */
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat */
     typedef CategoricalDataStat DataStatComputer;
     /** Type of the DataStat */
-    typedef Matrix<std::vector<std::pair<int, Real> > > DataStatStorage;
+    typedef Vector<std::vector<std::pair<int, Real> > > DataStatStorage;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

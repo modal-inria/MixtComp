@@ -29,8 +29,6 @@
 namespace mixt
 {
 
-typedef Poisson_k::Type Type;
-
 Poisson_k::Poisson_k(int nbCluster,
                      Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
@@ -124,7 +122,7 @@ std::string Poisson_k::mStep()
 #endif
       if ((*p_zi_)[i] == k)
       {
-        Type currVal = (*p_data_)(i, 0);
+        int currVal = (*p_data_)(i);
         sumClassMean += currVal;
         nbSampleClass += 1;
       }
@@ -150,11 +148,6 @@ std::string Poisson_k::mStep()
   return warn;
 }
 
-int Poisson_k::nbVariable() const
-{
-  return 1;
-}
-
 std::vector<std::string> Poisson_k::paramNames() const
 {
   std::vector<std::string> names(nbCluster_);
@@ -169,7 +162,7 @@ std::vector<std::string> Poisson_k::paramNames() const
   return names;
 }
 
-void Poisson_k::setData(Matrix<Type>& data)
+void Poisson_k::setData(Vector<int>& data)
 {
   p_data_ = &data;
 }
@@ -183,7 +176,7 @@ void Poisson_k::setParameters(const Vector<Real>& param)
 {
   for (int i = 0; i < param.rows(); ++i)
   {
-    param_[i] = param(i, 0);
+    param_[i] = param(i);
   }
 }
 

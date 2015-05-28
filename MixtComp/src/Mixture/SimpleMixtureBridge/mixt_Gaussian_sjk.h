@@ -35,8 +35,6 @@ namespace mixt
 class Gaussian_sjk
 {
   public:
-    typedef Real Type;
-
     Gaussian_sjk(int nbCluster,
                  Vector<int> const* p_zi);
     ~Gaussian_sjk();
@@ -52,7 +50,7 @@ class Gaussian_sjk
     /** Set the parameters after the SEM, to the mean estimates for example */
     void setParameters(const Vector<Real>& param);
 
-    void setData(Matrix<Type>& data);
+    void setData(Vector<Real>& data);
 
     /** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
      * using the biased estimator which corresponds to the maximum likelihood estimator */
@@ -61,7 +59,6 @@ class Gaussian_sjk
     Real minVal() const;
     Real maxVal() const;
     std::string model() const;
-    int nbVariable() const;
 
     std::vector<std::string> paramNames() const;
 
@@ -71,7 +68,7 @@ class Gaussian_sjk
   private:
     int nbCluster_;
     Vector<Real> param_;
-    Matrix<Type>* p_data_;
+    Vector<Real>* p_data_;
     Vector<int> const* p_zi_;
 
     /** Statistic object to describe Poisson law */

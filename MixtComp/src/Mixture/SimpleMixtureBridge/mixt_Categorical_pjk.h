@@ -34,7 +34,6 @@ namespace mixt
 class Categorical_pjk
 {
   public:
-    typedef int Type;
     Categorical_pjk(int nbCluster,
                     Vector<int> const* p_zi);
     ~Categorical_pjk();
@@ -49,9 +48,8 @@ class Categorical_pjk
     int minVal() const;
     std::string model() const;
     std::string mStep();
-    int nbVariable() const;
     std::vector<std::string> paramNames() const;
-    void setData(Matrix<Type>& data);
+    void setData(Vector<int>& data);
     void setModalities(int nbModalities);
     void setParameters(const Vector<Real>& param);
     void writeParameters(std::ostream& out) const;
@@ -59,7 +57,7 @@ class Categorical_pjk
   private:
     int nbCluster_;
     int nbModalities_;
-    Matrix<Type>* p_data_;
+    Vector<int>* p_data_;
     Vector<Real> param_;
     Vector<int> const* p_zi_;
 };

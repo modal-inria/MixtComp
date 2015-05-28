@@ -26,8 +26,8 @@
 namespace mixt
 {
 
-GaussianDataStat::GaussianDataStat(AugmentedData<Matrix<Real> >* pm_augDataij,
-                                   Matrix<RowVector<Real> >* p_dataStatStorage,
+GaussianDataStat::GaussianDataStat(AugmentedData<Vector<Real> >* pm_augDataij,
+                                   Vector<RowVector<Real> >* p_dataStatStorage,
                                    Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
     p_dataStatStorage_(p_dataStatStorage),
@@ -51,7 +51,7 @@ void GaussianDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
   std::cout << "GaussianDataStat::sampleVals" << std::endl;
 #endif
-  if (pm_augDataij_->misData_(ind, 0).first != present_)
+  if (pm_augDataij_->misData_(ind).first != present_)
   {
     if (iteration == 0) // clear the temporary statistical object
     {
@@ -65,11 +65,9 @@ void GaussianDataStat::sampleVals(int ind,
       std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): "<< p_dataStatStorage_->cols() << std::endl;
   #endif
       // clear current individual
-      for (int j = 0; j < pm_augDataij_->data_.cols(); ++j)
-      {
-        (*p_dataStatStorage_)(ind, j) = RowVector<Real>(3);
-        (*p_dataStatStorage_)(ind, j) = 0.;
-      }
+
+      (*p_dataStatStorage_)(ind) = RowVector<Real>(3);
+      (*p_dataStatStorage_)(ind) = 0.;
 
       // first sampling
       sample(ind, iteration);
@@ -84,11 +82,10 @@ void GaussianDataStat::sampleVals(int ind,
 
 #ifdef MC_DEBUG
       std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
-      std::cout << "j: " << j << std::endl;
-      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): " << p_dataStatStorage_->cols() << std::endl;
-      std::cout << "tempStat_[j].rows(): " << tempStat_[j].rows() << std::endl;
-      std::cout << "tempStat_[j]: " << std::endl;
-      std::cout << tempStat_[j] << std::endl;
+      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << std::endl;
+      std::cout << "tempStat_.rows(): " << tempStat_.rows() << std::endl;
+      std::cout << "tempStat_: " << std::endl;
+      std::cout << tempStat_ << std::endl;
 #endif
       sortContiguous(stat_);
       Real alpha = (1. - confidenceLevel_) / 2.;
@@ -101,7 +98,7 @@ void GaussianDataStat::sampleVals(int ind,
                     + (      realIndLow  - int(realIndLow ) ) * stat_(realIndLow + 1);
       tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_(realIndHigh)
                     + (      realIndHigh - int(realIndHigh) ) * stat_(realIndHigh + 1);
-      (*p_dataStatStorage_)(ind, 0) = tempPoint;
+      (*p_dataStatStorage_)(ind) = tempPoint;
 #ifdef MC_DEBUG
       std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
       std::cout << "alpha: " << alpha << std::endl;
@@ -120,9 +117,9 @@ void GaussianDataStat::sampleVals(int ind,
 
 void GaussianDataStat::imputeData(int ind)
 {
-  if (pm_augDataij_->misData_(ind, 0).first != present_)
+  if (pm_augDataij_->misData_(ind).first != present_)
   {
-    pm_augDataij_->data_(ind, 0) = (*p_dataStatStorage_)(ind,0)[0]; // imputation by the expectation
+    pm_augDataij_->data_(ind) = (*p_dataStatStorage_)(ind)[0]; // imputation by the expectation
   }
 }
 

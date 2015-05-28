@@ -29,8 +29,8 @@ namespace mixt
 {
 
 PoissonLikelihood::PoissonLikelihood(const Vector<Real>* p_param,
-                                     const AugmentedData<Matrix<int> >* augData,
-                                     const Matrix<RowVector<int> >* p_dataStatStorage,
+                                     const AugmentedData<Vector<int> >* augData,
+                                     const Vector<RowVector<int> >* p_dataStatStorage,
                                      int nbClass) :
     nbClass_(nbClass),
     p_param_(p_param),

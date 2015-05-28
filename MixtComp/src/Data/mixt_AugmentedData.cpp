@@ -29,7 +29,7 @@ namespace mixt
 
 template<>
 Range<Real>::Range(Real min,
-                        Real max) :
+                   Real max) :
     min_(min),
     max_(max),
     range_(max - min)
@@ -44,7 +44,7 @@ Range<int>::Range(int min,
 {}
 
 template<>
-void AugmentedData<Matrix<Real> >::removeMissing()
+void AugmentedData<Vector<Real> >::removeMissing()
 {
   for (int j = 0; j < misData_.cols(); ++j)
   {
@@ -125,7 +125,7 @@ void AugmentedData<Matrix<Real> >::removeMissing()
 }
 
 template<>
-void AugmentedData<Matrix<int> >::removeMissing()
+void AugmentedData<Vector<int> >::removeMissing()
 {
 #ifdef MC_DEBUG
   std::cout << "AugmentedData<Matrix<int> >::removeMissing" << std::endl;

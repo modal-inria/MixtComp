@@ -35,7 +35,7 @@ namespace mixt
 class CategoricalSampler
 {
   public:
-    CategoricalSampler(AugmentedData<Matrix<int> >* p_augData,
+    CategoricalSampler(AugmentedData<Vector<int> >* p_augData,
                        const Vector<Real>* p_param,
                        int nbClass);
     ~CategoricalSampler();
@@ -43,7 +43,7 @@ class CategoricalSampler
     void sampleIndividual(int i, int z_i);
   private:
     int nbClass_;
-    AugmentedData<Matrix<int> >* p_augData_;
+    AugmentedData<Vector<int> >* p_augData_;
     const Vector<Real>* p_param_;
 
     MultinomialStatistic multi_;

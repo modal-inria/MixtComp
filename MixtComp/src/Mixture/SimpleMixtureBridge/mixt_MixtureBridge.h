@@ -84,13 +84,13 @@ class MixtureBridge : public IMixture
       nbClass_(nbClass),
       mixture_(nbClass,
                p_zi),
-      m_augDataij_(),
+      augData_(),
       nbSample_(0),
       confidenceLevel_(confidenceLevel),
-      sampler_(&m_augDataij_,
+      sampler_(&augData_,
                getParam(),
                nbClass),
-      dataStatComputer_(&m_augDataij_,
+      dataStatComputer_(&augData_,
                         &dataStatStorage_,
                         confidenceLevel),
       paramStat_(param_,
@@ -113,7 +113,7 @@ class MixtureBridge : public IMixture
       p_zi_(bridge.p_zi_),
       nbClass_(bridge.nbClass_),
       mixture_(bridge.mixture_),
-      m_augDataij_(bridge.m_augDataij_),
+      augData_(bridge.augData_),
       nbSample_(bridge.nbSample_),
       confidenceLevel_(bridge.confidenceLevel_),
       sampler_(bridge.sampler_),
@@ -126,7 +126,7 @@ class MixtureBridge : public IMixture
       p_paramExtractor_(bridge.p_paramExtractor_),
       dataStatStorage_(bridge.dataStatStorage_)
     {
-      mixture_.setData(m_augDataij_.data_);
+      mixture_.setData(augData_.data_);
     }
 
     /** This function will be defined to set the data into your data containers.
@@ -140,31 +140,31 @@ class MixtureBridge : public IMixture
 #endif
       std::string warnLog;
       p_handler_->getData(idName(),
-                          m_augDataij_,
+                          augData_,
                           nbSample_,
                           paramStr_,
                           0, // offset currently set to 0, but should use information provided by mixture_
                           warnLog);
-      m_augDataij_.computeRange();
-      std::string tempLog  = m_augDataij_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
-                  tempLog += m_augDataij_.sortAndCheckMissing(); // sort and check for duplicates in missing values descriptions
+      augData_.computeRange();
+      std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
+                  tempLog += augData_.sortAndCheckMissing(); // sort and check for duplicates in missing values descriptions
       if(tempLog.size() > 0) // check on the missing values description
       {
         std::stringstream sstm;
         sstm << "Variable " << idName() << " with model " << mixture_.model() << " has a problem with the descriptions of missing values.\n" << tempLog;
         warnLog += sstm.str();
       }
-      else if (mixture_.checkMinVal() && m_augDataij_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value
+      else if (mixture_.checkMinVal() && augData_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value
       {
         std::stringstream sstm;
         sstm << "Variable: " << idName() << " requires a minimum value of " << mixture_.minVal()
-             << " in either provided values or bounds. The minimum value currently provided is : " << m_augDataij_.dataRange_.min_ << std::endl;
+             << " in either provided values or bounds. The minimum value currently provided is : " << augData_.dataRange_.min_ << std::endl;
         warnLog += sstm.str();
       }
       else // minimum value requirements have been met, whether the mode is learning or prediction
       {
-        m_augDataij_.removeMissing();
-        mixture_.setData(m_augDataij_.data_);
+        augData_.removeMissing();
+        mixture_.setData(augData_.data_);
 
         if (mode == prediction_) // predict mode
         {
@@ -173,9 +173,9 @@ class MixtureBridge : public IMixture
           int nbParam = param_.rows() / nbClass_; // number of parameters for each cluster
           if (mixture_.hasModalities()) // predict data not representative of population, information from learning data set must be used
           {
-            m_augDataij_.dataRange_.min_ = minModality;
-            m_augDataij_.dataRange_.max_ = minModality + nbParam - 1;
-            m_augDataij_.dataRange_.range_ = nbParam;
+            augData_.dataRange_.min_ = minModality;
+            augData_.dataRange_.max_ = minModality + nbParam - 1;
+            augData_.dataRange_.range_ = nbParam;
             mixture_.setModalities(nbParam);
           }
           mixture_.setParameters(param_);
@@ -184,12 +184,12 @@ class MixtureBridge : public IMixture
           paramStatStorage_.col(0) = param_;
           // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
           // in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
-          if (mixture_.checkMaxVal() && mixture_.maxVal() < m_augDataij_.dataRange_.max_)
+          if (mixture_.checkMaxVal() && mixture_.maxVal() < augData_.dataRange_.max_)
           {
             std::stringstream sstm;
             sstm << "Variable: " << idName() << " requires a maximum value of " << mixture_.maxVal()
                  << " for the data during prediction. This maximum value usually corresponds to the maximum value used during the learning phase."
-                 << " The maximum value in the data provided for prediction is : " << m_augDataij_.dataRange_.max_ << std::endl;
+                 << " The maximum value in the data provided for prediction is : " << augData_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();
           }
   #ifdef MC_DEBUG
@@ -203,16 +203,16 @@ class MixtureBridge : public IMixture
   #ifdef MC_DEBUG
           std::cout << "\tparam not set " << std::endl;
   #endif
-          if (m_augDataij_.misCount_(present_) < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
+          if (augData_.misCount_(present_) < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
           {
             std::stringstream sstm;
-            sstm << "Variable: " << idName() << " only has " << m_augDataij_.misCount_(present_)
+            sstm << "Variable: " << idName() << " only has " << augData_.misCount_(present_)
                  << " present values. Maybe there is an error in the data encoding. If the variable truly has less than "
                  << minNbPresentValues
                  << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
             warnLog += sstm.str();
           }
-          mixture_.setModalities(m_augDataij_.dataRange_.max_);
+          mixture_.setModalities(augData_.dataRange_.max_);
         }
         dataStatStorage_.resize(nbSample_,
                                 1);
@@ -266,7 +266,7 @@ class MixtureBridge : public IMixture
       fileNameB << "-";
       fileNameB << iteration;
       fileNameB << "-data.csv";
-      writeDataCsv(fileNameB.str(), m_augDataij_.data_);
+      writeDataCsv(fileNameB.str(), augData_.data_);
 #endif
     }
     /** This function should be used to store any intermediate results during
@@ -362,13 +362,6 @@ class MixtureBridge : public IMixture
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
-    /** This function must return the number of variables.
-     *  @return Number of variables
-     */
-    virtual int nbVariable() const
-    {
-      return mixture_.nbVariable();
-    }
     virtual void writeParameters(std::ostream& out) const
     {
       mixture_.writeParameters(out);
@@ -382,7 +375,7 @@ class MixtureBridge : public IMixture
 
     virtual AugmentedData<Data> const* getData() const
     {
-      return &m_augDataij_;
+      return &augData_;
     }
 
     virtual const Vector<Real>* getParam() const
@@ -433,7 +426,7 @@ class MixtureBridge : public IMixture
     /** The simple mixture to bridge with the composer */
     Mixture mixture_;
     /** The augmented data set */
-    AugData m_augDataij_;
+    AugData augData_;
     /** Current parameters of the STK Mixture */
     Vector<Real> param_;
     /** Parameters transmitted by the user */

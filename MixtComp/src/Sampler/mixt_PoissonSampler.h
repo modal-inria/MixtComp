@@ -34,14 +34,14 @@ namespace mixt
 class PoissonSampler
 {
   public:
-    PoissonSampler(AugmentedData<Matrix<int> >* p_augData,
+    PoissonSampler(AugmentedData<Vector<int> >* p_augData,
                    const Vector<Real>* p_param,
                    int nbClass);
     ~PoissonSampler();
     /** Sample new values for the missing variables of the given individual */
     void sampleIndividual(int i, int z_i);
   private:
-    AugmentedData<Matrix<int> >* p_augData_;
+    AugmentedData<Vector<int> >* p_augData_;
     const Vector<Real>* p_param_;
 
     /** Statistic object to describe Poisson law */

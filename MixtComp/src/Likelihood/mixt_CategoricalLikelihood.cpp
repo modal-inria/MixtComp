@@ -29,8 +29,8 @@ namespace mixt
 {
 
 CategoricalLikelihood::CategoricalLikelihood(const Vector<Real>* p_param,
-                                             const AugmentedData<Matrix<int> >* p_augData,
-                                             const Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
+                                             const AugmentedData<Vector<int> >* p_augData,
+                                             const Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                                              int nbClass) :
     nbClass_(nbClass),
     p_param_(p_param),

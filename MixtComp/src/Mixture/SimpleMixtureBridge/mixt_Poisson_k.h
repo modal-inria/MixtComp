@@ -36,8 +36,6 @@ namespace mixt
 class Poisson_k
 {
   public:
-    typedef int Type;
-
     Poisson_k(int nbCluster,
               Vector<int> const* p_zi);
     ~Poisson_k();
@@ -53,14 +51,13 @@ class Poisson_k
     /** Set the parameters after the SEM, to the mean estimates for example */
     void setParameters(const Vector<Real>& param);
 
-    void setData(Matrix<Type>& data);
+    void setData(Vector<int>& data);
 
     std::string mStep();
 
     int maxVal() const;
     int minVal() const;
     std::string model() const;
-    int nbVariable() const;
 
     std::vector<std::string> paramNames() const;
 
@@ -70,7 +67,7 @@ class Poisson_k
   private:
     int nbCluster_;
     Vector<Real> param_;
-    Matrix<Type>* p_data_;
+    Vector<int>* p_data_;
     Vector<int> const* p_zi_;
 
     /** Statistic object to describe Poisson law */

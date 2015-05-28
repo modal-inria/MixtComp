@@ -29,8 +29,8 @@ namespace mixt
 {
 
 GaussianLikelihood::GaussianLikelihood(const Vector<Real>* p_param,
-                                       const AugmentedData<Matrix<Real> >* augData,
-                                       const Matrix<RowVector<Real> >* p_dataStatStorage,
+                                       const AugmentedData<Vector<Real> >* augData,
+                                       const Vector<RowVector<Real> >* p_dataStatStorage,
                                        int nbClass) :
     nbClass_(nbClass),
     p_param_(p_param),
@@ -49,7 +49,7 @@ Real GaussianLikelihood::lnCompletedProbability(int i, int k)
   Real mean  = (*p_param_)(2 * k    );
   Real sd    = (*p_param_)(2 * k + 1);
 
-  Real logProba = normal_.lpdf(p_augData_->data_(i, 0),
+  Real logProba = normal_.lpdf(p_augData_->data_(i),
                                mean,
                                sd);
 
@@ -71,14 +71,14 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k)
 #endif
   Real logProba;
 
-  switch(p_augData_->misData_(i, 0).first)   // likelihood for present value
+  switch(p_augData_->misData_(i).first)   // likelihood for present value
   {
     case present_:
     {
       Real mean  = (*p_param_)(2 * k    );
       Real sd    = (*p_param_)(2 * k + 1);
 
-      logProba = normal_.lpdf(p_augData_->data_(i, 0),
+      logProba = normal_.lpdf(p_augData_->data_(i),
                               mean,
                               sd);
     }
@@ -95,8 +95,8 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k)
 
     case missingIntervals_:
     {
-      Real infBound  = p_augData_->misData_(i, 0).second[0];
-      Real supBound  = p_augData_->misData_(i, 0).second[1];
+      Real infBound  = p_augData_->misData_(i).second[0];
+      Real supBound  = p_augData_->misData_(i).second[1];
       Real infCdf = normal_.cdf(infBound,
                                 mean,
                                 sd);
@@ -114,7 +114,7 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k)
 
     case missingLUIntervals_:
     {
-      Real supBound = p_augData_->misData_(i, 0).second[0];
+      Real supBound = p_augData_->misData_(i).second[0];
       Real supCdf = normal_.cdf(supBound,
                                 mean,
                                 sd);
@@ -129,7 +129,7 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k)
 
     case missingRUIntervals_:
     {
-      Real infBound = p_augData_->misData_(i, 0).second[0];
+      Real infBound = p_augData_->misData_(i).second[0];
       Real infCdf = normal_.cdf(infBound,
                                 mean,
                                 sd);

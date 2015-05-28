@@ -33,8 +33,8 @@ namespace mixt
 class CategoricalDataStat
 {
   public:
-    CategoricalDataStat(AugmentedData<Matrix<int> >* pm_augDataij,
-                        Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
+    CategoricalDataStat(AugmentedData<Vector<int> >* m_augData,
+                        Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                         Real confidenceLevel);
     ~CategoricalDataStat();
     void sampleVals(int sample,
@@ -43,9 +43,9 @@ class CategoricalDataStat
     void imputeData(int ind);
   private:
     // pointer to data array
-    AugmentedData<Matrix<int> >* pm_augDataij_;
+    AugmentedData<Vector<int> >* p_augData_;
     /** Sparse description of the missing values */
-    Matrix<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
+    Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual,
      * i: modalities */

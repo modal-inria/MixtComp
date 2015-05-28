@@ -29,9 +29,6 @@
 
 namespace mixt
 {
-
-typedef Categorical_pjk::Type Type;
-
 Categorical_pjk::Categorical_pjk(int nbCluster,
                                  Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
@@ -77,8 +74,7 @@ void Categorical_pjk::getParameters(Vector<Real>& param) const
   std::cout << "Categorical_pjk::getParameters" << std::endl;
   std::cout << "\tparam_: " << param_ << std::endl;
 #endif
-  param.resize(param_.rows(),
-               1);
+  param.resize(param_.rows());
   for (int i = 0; i < param_.rows(); ++i)
   {
     param(i, 0) = param_[i];
@@ -129,7 +125,7 @@ std::string Categorical_pjk::mStep()
 #endif
       if ((*p_zi_)[i] == k)
       {
-        Type currVal = (*p_data_)(i, 0);
+        int currVal = (*p_data_)(i);
         nbSampleClass += 1.;
         modalities[currVal - minModality] += 1.; // first modality is minModality in data, but 0 in parameters storage
       }
@@ -138,7 +134,7 @@ std::string Categorical_pjk::mStep()
     modalities = modalities / nbSampleClass;
     for (int p = 0; p < nbModalities_; ++p)
     {
-      param_[k * nbModalities_ + p] = modalities[p];
+      param_(k * nbModalities_ + p) = modalities[p];
     }
   }
 
@@ -148,7 +144,7 @@ std::string Categorical_pjk::mStep()
     Real sum = 0.;
     for (int k = 0; k < nbCluster_; ++k)
     {
-      sum += param_[k * nbModalities_ + p];
+      sum += param_(k * nbModalities_ + p);
     }
     if (sum < epsilon)
     {
@@ -158,11 +154,6 @@ std::string Categorical_pjk::mStep()
 #endif
 
   return warn;
-}
-
-int Categorical_pjk::nbVariable() const
-{
-  return 1;
 }
 
 std::vector<std::string> Categorical_pjk::paramNames() const
@@ -183,7 +174,7 @@ std::vector<std::string> Categorical_pjk::paramNames() const
   return names;
 }
 
-void Categorical_pjk::setData(Matrix<Type>& data)
+void Categorical_pjk::setData(Vector<int>& data)
 {
   p_data_ = &data;
 }
@@ -198,7 +189,7 @@ void Categorical_pjk::setParameters(const Vector<Real>& param)
 {
   for (int i = 0; i < param.rows(); ++i)
   {
-    param_[i] = param(i, 0);
+    param_[i] = param(i);
   }
 }
 
@@ -209,7 +200,7 @@ void Categorical_pjk::writeParameters(std::ostream& out) const
     out << "Component: " << k << std::endl;
     for (int p = 0; p < nbModalities_; ++p)
     {
-      out << "\talpha_ "  << p << ": " << param_[k * nbModalities_ + p] << std::endl;
+      out << "\talpha_ "  << p << ": " << param_(k * nbModalities_ + p) << std::endl;
     }
   }
 }

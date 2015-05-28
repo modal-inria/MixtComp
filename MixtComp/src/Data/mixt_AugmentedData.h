@@ -55,11 +55,12 @@ class AugmentedData
   public:
     /** Base type of the data table, for example, Real */
     typedef typename DataType::Type Type;
+
     /** Missing value descriptor: type of missing, and list of parameters */
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
     /** type of the complete structure for missing data */
-    typedef Matrix<MisVal> MisData;
+    typedef Vector<MisVal> MisData;
 
     AugmentedData() :
       nbSample_(0),
@@ -156,8 +157,8 @@ class AugmentedData
 
     void resizeArrays(int nbSample)
     {
-      data_.resize(nbSample, 1);
-      misData_.resize(nbSample, 1);
+      data_.resize(nbSample);
+      misData_.resize(nbSample);
     }
 
     void computeRange()
@@ -167,35 +168,32 @@ class AugmentedData
 
       for (int i = 0; i < misData_.rows(); ++i)
       {
-        for (int j = 0; j < misData_.cols(); ++j)
+        switch (misData_(i).first)
         {
-          switch (misData_(i, j).first)
+          case present_: // data is present, range is updated directly
           {
-            case present_: // data is present, range is updated directly
+            rangeUpdate(min,
+                        max,
+                        data_(i));
+          }
+          break;
+
+          /* Data is missing, range is updated using information on the missing value.
+           * If data is completely missing, misData_(i, j).second.size() == 0, and no update on the ranges is
+           * carried on.
+           */
+          default:
+          {
+            for (typename std::vector<Type>::const_iterator it = misData_(i).second.begin();
+                 it != misData_(i).second.end();
+                 ++it)
             {
               rangeUpdate(min,
                           max,
-                          data_(i, j));
+                          *it);
             }
-            break;
-
-            /* Data is missing, range is updated using information on the missing value.
-             * If data is completely missing, misData_(i, j).second.size() == 0, and no update on the ranges is
-             * carried on.
-             */
-            default:
-            {
-              for (typename std::vector<Type>::const_iterator it = misData_(i, j).second.begin();
-                   it != misData_(i, j).second.end();
-                   ++it)
-              {
-                rangeUpdate(min,
-                            max,
-                            *it);
-              }
-            }
-            break;
           }
+          break;
         }
       }
       if (rangeUpdate_ == true)
@@ -213,37 +211,37 @@ class AugmentedData
 #endif
     }
 
-    void setPresent(int i, int j, Type val)
+    void setPresent(int i, Type val)
     {
 #ifdef MC_DEBUG
       std::cout << "AugmentedData::setPresent" << std::endl;
-      std::cout << "data_.rows(): " << data_.rows() << ", data_.cols(): " << data_.cols() << std::endl;
-      std::cout << "misData_.rows(): " << misData_.rows() << ", misData_.cols(): " << misData_.cols() << std::endl;
+      std::cout << "data_.rows(): " << data_.rows() << std::endl;
+      std::cout << "misData_.rows(): " << misData_.rows() << std::endl;
 #endif
-      data_(i, j) = val;
-      misData_(i, j) = MisVal(present_,
-                              std::vector<Type>());
+      data_(i) = val;
+      misData_(i) = MisVal(present_,
+                           std::vector<Type>());
       ++misCount_(present_);
       ++nbSample_;
     }
 
-    void setMissing(int i, int j, const MisVal& val)
+    void setMissing(int i, const MisVal& val)
     {
-      data_(i, j) = std::numeric_limits<int>::quiet_NaN(); // set to quiet nan, for types that supports it. For int, the returned value would be 0 ...
-      misData_(i, j) = val;
+      data_(i) = std::numeric_limits<int>::quiet_NaN(); // set to quiet nan, for types that supports it. For int, the returned value would be 0 ...
+      misData_(i) = val;
       ++misCount_(val.first);
       ++nbSample_;
     }
 
     /** set all individuals to be completely missing, for example for the latent class in unsupervised learning */
-    void setAllMissing(int nbSample)
+    void setAllMissing(int nbInd)
     {
-      resizeArrays(nbSample);
+      resizeArrays(nbInd);
       MisVal misVal;
       misVal.first = missing_; // description of completely missing individual
-      for (int i = 0; i < nbSample; ++i)
+      for (int i = 0; i < nbInd; ++i)
       {
-        setMissing(i, 0, misVal);
+        setMissing(i, misVal);
       }
     }
 
@@ -263,12 +261,12 @@ class AugmentedData
 
       for (int i = 0; i < nbSample_; ++i)
       {
-        std::vector<Type>& currVec = misData_(i, 0).second;
+        std::vector<Type>& currVec = misData_(i).second;
         if (currVec.size() > 1)
         {
           std::sort(currVec.begin(),
                     currVec.end());
-          for (int v = 0; v < currVec.size() - 1; ++ v)
+          for (unsigned int v = 0; v < currVec.size() - 1; ++ v)
           {
             if (currVec[v] == currVec[v + 1])
             {

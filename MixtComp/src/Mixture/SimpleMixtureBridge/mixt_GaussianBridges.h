@@ -50,13 +50,13 @@ template<>
 struct BridgeTraits<Gaussian_sjk_>
 {
     /** Type of the data set to be used as input */
-    typedef Matrix<Real> Data;
+    typedef Vector<Real> Data;
     /** Type of the AugmentedData*/
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat computer */
     typedef GaussianDataStat DataStatComputer;
     /** Type of the DataStat storage */
-    typedef Matrix<RowVector<Real> > DataStatStorage;
+    typedef Vector<RowVector<Real> > DataStatStorage;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

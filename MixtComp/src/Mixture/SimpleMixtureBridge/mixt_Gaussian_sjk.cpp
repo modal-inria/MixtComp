@@ -30,8 +30,6 @@
 namespace mixt
 {
 
-typedef Gaussian_sjk::Type Type;
-
 Gaussian_sjk::Gaussian_sjk(int nbCluster,
                            Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
@@ -128,10 +126,10 @@ std::string Gaussian_sjk::mStep()
       if ((*p_zi_)[i] == k)
       {
 #ifdef MC_DEBUG
-        std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i, 0)" << (*p_data_)(i, 0) << std::endl;
+        std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i)" << (*p_data_)(i) << std::endl;
 #endif
         ++n;
-        Type x = (*p_data_)(i, 0);
+        Real x = (*p_data_)(i);
         Real delta = x - mean;
         mean = mean + delta / Real(n);
         M2 = M2 + delta * (x - mean);
@@ -156,7 +154,7 @@ std::string Gaussian_sjk::mStep()
       {
         if ((*p_zi_)[i] == k)
         {
-          std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i, 0): " << (*p_data_)(i, 0) << std::endl;
+          std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i): " << (*p_data_)(i) << std::endl;
         }
       }
 #endif
@@ -169,19 +167,14 @@ std::string Gaussian_sjk::mStep()
                             " Is this the case ? Have you considered using a Poisson model if you are counting occurrences of events ?\n");
     }
 
-    param_[2 * k    ] = mean;
-    param_[2 * k + 1] = sd;
+    param_(2 * k    ) = mean;
+    param_(2 * k + 1) = sd;
   }
 #ifdef MC_DEBUG
   std::cout << "param_: " << param_ << std::endl;
 #endif
 
   return warn;
-}
-
-int Gaussian_sjk::nbVariable() const
-{
-  return 1;
 }
 
 std::vector<std::string> Gaussian_sjk::paramNames() const
@@ -202,7 +195,7 @@ std::vector<std::string> Gaussian_sjk::paramNames() const
   return names;
 }
 
-void Gaussian_sjk::setData(Matrix<Type>& data)
+void Gaussian_sjk::setData(Vector<Real>& data)
 {
   p_data_ = &data;
 }
@@ -221,7 +214,7 @@ void Gaussian_sjk::setParameters(const Vector<Real>& param)
 #endif
   for (int i = 0; i < param.rows(); ++i)
   {
-    param_[i] = param(i, 0);
+    param_[i] = param(i);
   }
 }
 
