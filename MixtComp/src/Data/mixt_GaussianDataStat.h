@@ -32,7 +32,7 @@ namespace mixt
 class GaussianDataStat
 {
   public:
-    GaussianDataStat(AugmentedData<Vector<Real> >* pm_augDataij,
+    GaussianDataStat(AugmentedData<Vector<Real> >& augData,
                      Real confidenceLevel);
     ~GaussianDataStat();
     void sampleVals(int sample,
@@ -40,11 +40,11 @@ class GaussianDataStat
                     int iterationMax);
     void imputeData(int ind);
 
-    const Vector<RowVector<Real> >* getDataStatStorage() const {return &dataStatStorage_;};
+    const Vector<RowVector<Real> >& getDataStatStorage() const {return dataStatStorage_;};
     void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd);};
   private:
     /** pointer to data array */
-    AugmentedData<Vector<Real> >* pm_augDataij_;
+    AugmentedData<Vector<Real> >& augData_;
 
     /** Description of the missing values */
     Vector<RowVector<Real> > dataStatStorage_;

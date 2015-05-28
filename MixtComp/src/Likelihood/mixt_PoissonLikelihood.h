@@ -35,8 +35,8 @@ class PoissonLikelihood
 {
   public:
     /** Constructor */
-    PoissonLikelihood(const Vector<Real>* p_param,
-                      const AugmentedData<Vector<int> >* augData,
+    PoissonLikelihood(const Vector<Real>& param,
+                      const AugmentedData<Vector<int> >& augData,
                       int nbClass);
     /** Destructor */
     virtual ~PoissonLikelihood();
@@ -49,14 +49,12 @@ class PoissonLikelihood
 
   private:
     int nbClass_;
+
     /** Pointer to parameters table */
-    const Vector<Real>* p_param_;
+    const Vector<Real>& param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
-    const AugmentedData<Vector<int> >* p_augData_;
-
-    /** Pointer to storage of statistics on missing values */
-    const Vector<RowVector<int> >* p_dataStatStorage_;
+    const AugmentedData<Vector<int> >& augData_;
 
     /** Statistic object to describe Poisson law */
     PoissonStatistic poisson_;

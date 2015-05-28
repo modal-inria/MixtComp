@@ -28,12 +28,12 @@
 namespace mixt
 {
 
-PoissonLikelihood::PoissonLikelihood(const Vector<Real>* p_param,
-                                     const AugmentedData<Vector<int> >* augData,
+PoissonLikelihood::PoissonLikelihood(const Vector<Real>& param,
+                                     const AugmentedData<Vector<int> >& augData,
                                      int nbClass) :
     nbClass_(nbClass),
-    p_param_(p_param),
-    p_augData_(augData)
+    param_(param),
+    augData_(augData)
 {}
 
 PoissonLikelihood::~PoissonLikelihood()
@@ -43,12 +43,12 @@ Real PoissonLikelihood::lnCompletedProbability(int i, int k)
 {
 #ifdef MC_DEBUG
    std::cout << "PoissonLikelihood::lnCompletedLikelihood" << std::endl;
-   std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
+   std::cout << "\t(*p_param_): " << param_ << std::endl;
 #endif
 
-  Real lambda = (*p_param_)(k);
+  Real lambda = param_(k);
   Real proba;
-  proba = poisson_.pdf(p_augData_->data_(i),
+  proba = poisson_.pdf(augData_.data_(i),
                        lambda);
 
   return std::log(proba);
@@ -58,16 +58,16 @@ Real PoissonLikelihood::lnObservedProbability(int i, int k)
 {
 #ifdef MC_DEBUG
   std::cout << "PoissonLikelihood::lnObservedLikelihood" << std::endl;
-  std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
+  std::cout << "\t(*p_param_): " << param_ << std::endl;
 #endif
-  Real lambda = (*p_param_)(k);
+  Real lambda = param_(k);
   Real proba;
 
-  switch(p_augData_->misData_(i).first)   // likelihood for present value
+  switch(augData_.misData_(i).first)   // likelihood for present value
   {
     case present_:
     {
-      proba = poisson_.pdf(p_augData_->data_(i),
+      proba = poisson_.pdf(augData_.data_(i),
                            lambda);
     }
     break;

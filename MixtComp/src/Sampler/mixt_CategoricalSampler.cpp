@@ -26,12 +26,12 @@
 
 namespace mixt
 {
-CategoricalSampler::CategoricalSampler(AugmentedData<Vector<int> >* p_augData,
-                                       const Vector<Real>* p_param,
+CategoricalSampler::CategoricalSampler(AugmentedData<Vector<int> >& augData,
+                                       const Vector<Real>& param,
                                        int nbClass) :
     nbClass_(nbClass),
-    p_augData_(p_augData),
-    p_param_(p_param)
+    augData_(augData),
+    param_(param)
 {}
 
 CategoricalSampler::~CategoricalSampler()
@@ -44,22 +44,22 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
   std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-  if (p_augData_->misData_(i).first != present_)
+  if (augData_.misData_(i).first != present_)
   {
     int sampleVal;
-    int nbModalities = p_param_->rows() / nbClass_;
+    int nbModalities = param_.rows() / nbClass_;
 
 #ifdef MC_DEBUG
     std::cout << "CategoricalSampler::sampleIndividual" << std::endl;
     std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-    switch(p_augData_->misData_(i).first)
+    switch(augData_.misData_(i).first)
     {
       case missing_:
       {
-        Vector<Real> modalities = (*p_param_).block(z_i * nbModalities, 0,  // position of first element
-                                                    nbModalities      , 1); // dimension of the vector to extract
+        Vector<Real> modalities = param_.block(z_i * nbModalities, 0,  // position of first element
+                                               nbModalities      , 1); // dimension of the vector to extract
         sampleVal = multi_.sample(modalities) + minModality;
       }
       break;
@@ -72,14 +72,14 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
         Vector<Real> equiModalities(nbModalities);
         equiModalities = 0.;
 
-        for(std::vector<int>::const_iterator currMod = p_augData_->misData_(i).second.begin();
-            currMod != p_augData_->misData_(i).second.end();
+        for(std::vector<int>::const_iterator currMod = augData_.misData_(i).second.begin();
+            currMod != augData_.misData_(i).second.end();
             ++currMod)
         {
 #ifdef MC_DEBUG
           std::cout << "\tcurrMod: " << *currMod << std::endl;
 #endif
-          modalities(*currMod - minModality) = (*p_param_)[z_i * nbModalities + *currMod - minModality];
+          modalities(*currMod - minModality) = param_[z_i * nbModalities + *currMod - minModality];
           equiModalities(*currMod - minModality) = 1.;
         }
         Real modSum = modalities.sum();
@@ -100,7 +100,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
       {}
       break;
     }
-    p_augData_->data_(i) = sampleVal;
+    augData_.data_(i) = sampleVal;
   }
 }
 } // namespace mixt

@@ -46,80 +46,77 @@ Range<int>::Range(int min,
 template<>
 void AugmentedData<Vector<Real> >::removeMissing()
 {
-  for (int j = 0; j < misData_.cols(); ++j)
+  for (int i = 0; i < misData_.rows(); ++i)
   {
-    for (int i = 0; i < misData_.rows(); ++i)
+    if (misData_(i).first != present_)
     {
-      if (misData_(i, j).first != present_)
+      Real sampleVal;
+      switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
       {
-        Real sampleVal;
-        switch(misData_(i, j).first) // (iterator on map)->(mapped element).(MisType)
+        case present_:
+        {}
+        break;
+
+        case missing_:
         {
-          case present_:
-          {}
-          break;
+          Real min = dataRange_.min_;
+          Real max = dataRange_.max_;
+          sampleVal = uniform_.sample(min,
+                                      max);
+        }
+        break;
 
-          case missing_:
+        case missingFiniteValues_: // no missing finite values for continuous data
+        {}
+        break;
+
+        case missingIntervals_:
+        {
+#ifdef MC_DEBUG
+          std::cout << "AugmentedData<Matrix<Real> >::removeMissing" << std::endl;
+          std::cout << "case missingIntervals_" << std::endl;
+          std::cout << "misData_(i).second.size(): " << misData_(i).second.size() << std::endl;
+#endif
+          Real infBound = misData_(i).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
+          Real supBound = misData_(i).second[1];
+          sampleVal = uniform_.sample(infBound,
+                                      supBound);
+        }
+        break;
+
+        case missingLUIntervals_:
+        {
+          Real min = dataRange_.min_;
+          Real supBound = misData_(i).second[0];
+          if (min < supBound)
           {
-            Real min = dataRange_.min_;
-            Real max = dataRange_.max_;
             sampleVal = uniform_.sample(min,
-                                        max);
-          }
-          break;
-
-          case missingFiniteValues_: // no missing finite values for continuous data
-          {}
-          break;
-
-          case missingIntervals_:
-          {
-  #ifdef MC_DEBUG
-            std::cout << "AugmentedData<Matrix<Real> >::removeMissing" << std::endl;
-            std::cout << "case missingIntervals_" << std::endl;
-            std::cout << "misData_(i, j).second.size(): " << misData_(i, j).second.size() << std::endl;
-  #endif
-            Real infBound = misData_(i, j).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
-            Real supBound = misData_(i, j).second[1];
-            sampleVal = uniform_.sample(infBound,
                                         supBound);
           }
-          break;
-
-          case missingLUIntervals_:
+          else
           {
-            Real min = dataRange_.min_;
-            Real supBound = misData_(i, j).second[0];
-            if (min < supBound)
-            {
-              sampleVal = uniform_.sample(min,
-                                          supBound);
-            }
-            else
-            {
-              sampleVal = supBound;
-            }
+            sampleVal = supBound;
           }
-          break;
-
-          case missingRUIntervals_:
-          {
-            Real infBound = misData_(i, j).second[0];
-            Real max = dataRange_.max_;
-            if (infBound < max)
-            {
-              sampleVal = uniform_.sample(infBound,
-                                          max);
-            }
-            else
-            {
-              sampleVal = infBound;
-            }
-          }
-          break;
         }
-        data_(i, j) = sampleVal;
+        break;
+
+        case missingRUIntervals_:
+        {
+          Real infBound = misData_(i).second[0];
+          Real max = dataRange_.max_;
+          if (infBound < max)
+          {
+            sampleVal = uniform_.sample(infBound,
+                                        max);
+          }
+          else
+          {
+            sampleVal = infBound;
+          }
+        }
+        break;
       }
+      data_(i) = sampleVal;
     }
   }
 }
@@ -131,56 +128,53 @@ void AugmentedData<Vector<int> >::removeMissing()
   std::cout << "AugmentedData<Matrix<int> >::removeMissing" << std::endl;
 #endif
 
-  for (int j = 0; j < misData_.cols(); ++j)
+  for (int i = 0; i < misData_.rows(); ++i)
   {
-    for (int i = 0; i < misData_.rows(); ++i)
+    if (misData_(i).first != present_)
     {
-      if (misData_(i, j).first != present_)
+      int sampleVal;
+      int nbModalities = dataRange_.range_;
+#ifdef MC_DEBUG
+      std::cout << "i: " << i << ", j: " << j << std::endl;
+      std::cout << "firstModality: " << firstModality << ", nbModalities: " << nbModalities << std::endl;
+#endif
+      switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
       {
-        int sampleVal;
-        int nbModalities = dataRange_.range_;
-  #ifdef MC_DEBUG
-        std::cout << "i: " << i << ", j: " << j << std::endl;
-        std::cout << "firstModality: " << firstModality << ", nbModalities: " << nbModalities << std::endl;
-  #endif
-        switch(misData_(i, j).first) // (iterator on map)->(mapped element).(MisType)
+        case present_:
+        {}
+        break;
+
+        case missing_:
         {
-          case present_:
-          {}
-          break;
-
-          case missing_:
-          {
-            Vector<Real> modalities(nbModalities);
-            modalities = 1. / nbModalities;
-            sampleVal = multi_.sample(modalities) + minModality;
-          }
-          break;
-
-          case missingFiniteValues_:
-          {
-            Real proba = 1. / misData_(i, j).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
-            Vector<Real> modalities(nbModalities);
-            modalities = 0.;
-            for(std::vector<int>::const_iterator itParam = misData_(i, j).second.begin();
-                itParam != misData_(i, j).second.end();
-                ++itParam)
-            {
-  #ifdef MC_DEBUG
-            std::cout << "\tproba: " << proba << std::endl;
-  #endif
-              modalities[*itParam - minModality] = proba;
-            }
-            sampleVal = multi_.sample(modalities) + minModality;
-          }
-          break;
-
-          default: // other types of intervals not present in integer data
-          {}
-          break;
+          Vector<Real> modalities(nbModalities);
+          modalities = 1. / nbModalities;
+          sampleVal = multi_.sample(modalities) + minModality;
         }
-        data_(i, j) = sampleVal;
+        break;
+
+        case missingFiniteValues_:
+        {
+          Real proba = 1. / misData_(i).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
+          Vector<Real> modalities(nbModalities);
+          modalities = 0.;
+          for(std::vector<int>::const_iterator itParam = misData_(i).second.begin();
+              itParam != misData_(i).second.end();
+              ++itParam)
+          {
+#ifdef MC_DEBUG
+          std::cout << "\tproba: " << proba << std::endl;
+#endif
+            modalities[*itParam - minModality] = proba;
+          }
+          sampleVal = multi_.sample(modalities) + minModality;
+        }
+        break;
+
+        default: // other types of intervals not present in integer data
+        {}
+        break;
       }
+      data_(i) = sampleVal;
     }
   }
 }

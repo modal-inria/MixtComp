@@ -28,12 +28,12 @@
 namespace mixt
 {
 
-GaussianLikelihood::GaussianLikelihood(const Vector<Real>* p_param,
-                                       const AugmentedData<Vector<Real> >* augData,
+GaussianLikelihood::GaussianLikelihood(const Vector<Real>& param,
+                                       const AugmentedData<Vector<Real> >& augData,
                                        int nbClass) :
     nbClass_(nbClass),
-    p_param_(p_param),
-    p_augData_(augData)
+    param_(param),
+    augData_(augData)
 {}
 
 GaussianLikelihood::~GaussianLikelihood()
@@ -44,10 +44,10 @@ Real GaussianLikelihood::lnCompletedProbability(int i, int k)
 #ifdef MC_DEBUG
       std::cout << "GaussianLikelihood::lnCompletedLikelihood" << std::endl;
 #endif
-  Real mean  = (*p_param_)(2 * k    );
-  Real sd    = (*p_param_)(2 * k + 1);
+  Real mean  = param_(2 * k    );
+  Real sd    = param_(2 * k + 1);
 
-  Real logProba = normal_.lpdf(p_augData_->data_(i),
+  Real logProba = normal_.lpdf(augData_.data_(i),
                                mean,
                                sd);
 
@@ -59,8 +59,8 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k)
 #ifdef MC_DEBUG
   std::cout << "GaussianLikelihood::lnObservedLikelihood" << std::endl;
 #endif
-  Real mean  = (*p_param_)(2 * k    );
-  Real sd    = (*p_param_)(2 * k + 1);
+  Real mean  = param_(2 * k    );
+  Real sd    = param_(2 * k + 1);
 
 #ifdef MC_DEBUG
   std::cout << "i: " << i << std::endl;
@@ -69,14 +69,14 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k)
 #endif
   Real logProba;
 
-  switch(p_augData_->misData_(i).first)   // likelihood for present value
+  switch(augData_.misData_(i).first)   // likelihood for present value
   {
     case present_:
     {
-      Real mean  = (*p_param_)(2 * k    );
-      Real sd    = (*p_param_)(2 * k + 1);
+      Real mean  = param_(2 * k    );
+      Real sd    = param_(2 * k + 1);
 
-      logProba = normal_.lpdf(p_augData_->data_(i),
+      logProba = normal_.lpdf(augData_.data_(i),
                               mean,
                               sd);
     }
@@ -93,8 +93,8 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k)
 
     case missingIntervals_:
     {
-      Real infBound  = p_augData_->misData_(i).second[0];
-      Real supBound  = p_augData_->misData_(i).second[1];
+      Real infBound  = augData_.misData_(i).second[0];
+      Real supBound  = augData_.misData_(i).second[1];
       Real infCdf = normal_.cdf(infBound,
                                 mean,
                                 sd);
@@ -112,7 +112,7 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k)
 
     case missingLUIntervals_:
     {
-      Real supBound = p_augData_->misData_(i).second[0];
+      Real supBound = augData_.misData_(i).second[0];
       Real supCdf = normal_.cdf(supBound,
                                 mean,
                                 sd);
@@ -127,7 +127,7 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k)
 
     case missingRUIntervals_:
     {
-      Real infBound = p_augData_->misData_(i).second[0];
+      Real infBound = augData_.misData_(i).second[0];
       Real infCdf = normal_.cdf(infBound,
                                 mean,
                                 sd);

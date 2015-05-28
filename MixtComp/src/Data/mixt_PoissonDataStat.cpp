@@ -26,9 +26,9 @@
 namespace mixt
 {
 
-PoissonDataStat::PoissonDataStat(AugmentedData<Vector<int> >* pm_augDataij,
+PoissonDataStat::PoissonDataStat(AugmentedData<Vector<int> >& augData,
                                  Real confidenceLevel) :
-    pm_augDataij_(pm_augDataij),
+    augData_(augData),
     confidenceLevel_(confidenceLevel)
 {}
 
@@ -37,7 +37,7 @@ PoissonDataStat::~PoissonDataStat() {};
 void PoissonDataStat::sample(int ind,
                              int iteration)
 {
-  int currVal = pm_augDataij_->data_(ind);
+  int currVal = augData_.data_(ind);
   stat_[iteration] = currVal;
 }
 
@@ -49,7 +49,7 @@ void PoissonDataStat::sampleVals(int ind,
   std::cout << "GaussianDataStat::sampleVals" << std::endl;
 #endif
 
-  if (pm_augDataij_->misData_(ind).first != present_)
+  if (augData_.misData_(ind).first != present_)
   {
     if (iteration == 0) // clear the temporary statistical object
     {
@@ -59,7 +59,7 @@ void PoissonDataStat::sampleVals(int ind,
       stat_.resize(iterationMax + 1);
 
 #ifdef MC_DEBUG
-      std::cout << "p_dataStatStorage_->rows(): " << dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): "<< dataStatStorage_->cols() << std::endl;
+      std::cout << "p_dataStatStorage_.rows(): " << dataStatStorage_.rows() << ", p_dataStatStorage_.cols(): "<< dataStatStorage_.cols() << std::endl;
 #endif
       // clear global individual
       dataStatStorage_(ind) = RowVector<int>(3);
@@ -78,7 +78,7 @@ void PoissonDataStat::sampleVals(int ind,
 
 #ifdef MC_DEBUG
       std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
-      std::cout << "p_dataStatStorage_->rows(): " << dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): " << dataStatStorage_->cols() << std::endl;
+      std::cout << "p_dataStatStorage_.rows(): " << dataStatStorage_.rows() << ", p_dataStatStorage_.cols(): " << dataStatStorage_.cols() << std::endl;
       std::cout << "tempStat_.rows(): " << tempStat_.rows() << std::endl;
       std::cout << "tempStat_: " << std::endl;
       std::cout << tempStat_ << std::endl;
@@ -113,9 +113,9 @@ void PoissonDataStat::sampleVals(int ind,
 
 void PoissonDataStat::imputeData(int ind)
 {
-  if (pm_augDataij_->misData_(ind).first != present_)
+  if (augData_.misData_(ind).first != present_)
   {
-    pm_augDataij_->data_(ind) = dataStatStorage_(ind)[0]; // imputation by the mode
+    augData_.data_(ind) = dataStatStorage_(ind)[0]; // imputation by the mode
   }
 }
 

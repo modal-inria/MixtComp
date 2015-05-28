@@ -33,7 +33,7 @@ namespace mixt
 class CategoricalDataStat
 {
   public:
-    CategoricalDataStat(AugmentedData<Vector<int> >* m_augData,
+    CategoricalDataStat(AugmentedData<Vector<int> >& augData,
                         Real confidenceLevel);
     ~CategoricalDataStat();
     void sampleVals(int sample,
@@ -41,12 +41,12 @@ class CategoricalDataStat
                     int iterationMax);
     void imputeData(int ind);
 
-    const Vector<std::vector<std::pair<int, Real> > >* getDataStatStorage() const {return &dataStatStorage_;};
+    const Vector<std::vector<std::pair<int, Real> > >& getDataStatStorage() const {return dataStatStorage_;};
     void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd);};
 
   private:
-    // pointer to data array
-    AugmentedData<Vector<int> >* p_augData_;
+    /** Reference to augmented data */
+    AugmentedData<Vector<int> >& augData_;
 
     /** Sparse description of the missing values */
     Vector<std::vector<std::pair<int, Real> > > dataStatStorage_;

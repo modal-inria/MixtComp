@@ -27,9 +27,9 @@
 namespace mixt
 {
 
-CategoricalDataStat::CategoricalDataStat(AugmentedData<Vector<int> >* p_augData,
+CategoricalDataStat::CategoricalDataStat(AugmentedData<Vector<int> >& augData,
                                          Real confidenceLevel) :
-    p_augData_(p_augData),
+    augData_(augData),
     confidenceLevel_(confidenceLevel)
 {}
 
@@ -37,7 +37,7 @@ CategoricalDataStat::~CategoricalDataStat() {};
 
 void CategoricalDataStat::sample(int ind)
 {
-  int currMod = p_augData_->data_(ind);
+  int currMod = augData_.data_(ind);
 #ifdef MC_DEBUG
   if (currMod == 0)
   {
@@ -54,7 +54,7 @@ void CategoricalDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
   std::cout << "CategoricalDataStat::sampleVals, ind: " << ind << ", iteration: " << iteration << std::endl;
 #endif
-  if (p_augData_->misData_(ind).first != present_)
+  if (augData_.misData_(ind).first != present_)
   {
     if (iteration == 0) // clear the temporary statistical object
     {
@@ -63,9 +63,9 @@ void CategoricalDataStat::sampleVals(int ind,
 #endif
       // initialize internal storage
 #ifdef MC_DEBUG
-      std::cout << "pm_augDataij_->dataRange_.max_: " << p_augData_->dataRange_.max_ << std::endl;
+      std::cout << "pm_augDataij_.dataRange_.max_: " << augData_.dataRange_.max_ << std::endl;
 #endif
-      stat_.resize(p_augData_->dataRange_.max_);
+      stat_.resize(augData_.dataRange_.max_);
       stat_ = 0.;
 
       // clear output storage for current individual, a vector of <modality, proba>, ordered by decreasing probability
@@ -88,7 +88,7 @@ void CategoricalDataStat::sampleVals(int ind,
       Real cumProb = 0.;
 
 
-      for (int i = p_augData_->dataRange_.max_ - 1; // from the most probable modality ...
+      for (int i = augData_.dataRange_.max_ - 1; // from the most probable modality ...
            i > -1; // ... to the least probable modality
            --i)
       {
@@ -99,7 +99,7 @@ void CategoricalDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
         std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;
         std::cout << "\tcumProb: " << cumProb << std::endl;
-        std::cout << "p_dataStatStorage_->elt(ind, j).back().first: " << dataStatStorage_(ind).back().first << std::endl;
+        std::cout << "p_dataStatStorage_.elt(ind, j).back().first: " << dataStatStorage_(ind).back().first << std::endl;
 #endif
         if (cumProb > confidenceLevel_)
         {
@@ -112,7 +112,7 @@ void CategoricalDataStat::sampleVals(int ind,
          itVec != dataStatStorage_(ind).end();
          ++itVec)
     {
-      std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
+      std::cout << "itVec.first: " << itVec.first << ", itVec.second: " << itVec.second << std::endl;
     }
 #endif
     else // any other iteration: juste store the current value
@@ -124,9 +124,9 @@ void CategoricalDataStat::sampleVals(int ind,
 
 void CategoricalDataStat::imputeData(int ind)
 {
-  if (p_augData_->misData_(ind).first != present_)
+  if (augData_.misData_(ind).first != present_)
   {
-    p_augData_->data_(ind) = dataStatStorage_(ind)[0].first; // imputation by the mode
+    augData_.data_(ind) = dataStatStorage_(ind)[0].first; // imputation by the mode
   }
 }
 

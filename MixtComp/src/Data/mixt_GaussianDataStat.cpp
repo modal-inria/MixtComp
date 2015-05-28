@@ -26,9 +26,9 @@
 namespace mixt
 {
 
-GaussianDataStat::GaussianDataStat(AugmentedData<Vector<Real> >* pm_augDataij,
+GaussianDataStat::GaussianDataStat(AugmentedData<Vector<Real> >& augData,
                                    Real confidenceLevel) :
-    pm_augDataij_(pm_augDataij),
+    augData_(augData),
     confidenceLevel_(confidenceLevel)
 {}
 
@@ -37,7 +37,7 @@ GaussianDataStat::~GaussianDataStat() {};
 void GaussianDataStat::sample(int ind,
                               int iteration)
 {
-  Real currVal = pm_augDataij_->data_(ind,
+  Real currVal = augData_.data_(ind,
                                       0);
   stat_[iteration] = currVal;
 }
@@ -49,7 +49,7 @@ void GaussianDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
   std::cout << "GaussianDataStat::sampleVals" << std::endl;
 #endif
-  if (pm_augDataij_->misData_(ind).first != present_)
+  if (augData_.misData_(ind).first != present_)
   {
     if (iteration == 0) // clear the temporary statistical object
     {
@@ -60,7 +60,7 @@ void GaussianDataStat::sampleVals(int ind,
       stat_.resize(iterationMax + 1);
 
   #ifdef MC_DEBUG
-      std::cout << "p_dataStatStorage_->rows(): " << dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): "<< dataStatStorage_->cols() << std::endl;
+      std::cout << "p_dataStatStorage_.rows(): " << dataStatStorage_.rows() << ", p_dataStatStorage_.cols(): "<< dataStatStorage_.cols() << std::endl;
   #endif
       // clear current individual
 
@@ -80,7 +80,7 @@ void GaussianDataStat::sampleVals(int ind,
 
 #ifdef MC_DEBUG
       std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
-      std::cout << "p_dataStatStorage_->rows(): " << dataStatStorage_->rows() << std::endl;
+      std::cout << "p_dataStatStorage_.rows(): " << dataStatStorage_.rows() << std::endl;
       std::cout << "tempStat_.rows(): " << tempStat_.rows() << std::endl;
       std::cout << "tempStat_: " << std::endl;
       std::cout << tempStat_ << std::endl;
@@ -115,9 +115,9 @@ void GaussianDataStat::sampleVals(int ind,
 
 void GaussianDataStat::imputeData(int ind)
 {
-  if (pm_augDataij_->misData_(ind).first != present_)
+  if (augData_.misData_(ind).first != present_)
   {
-    pm_augDataij_->data_(ind) = dataStatStorage_(ind)[0]; // imputation by the expectation
+    augData_.data_(ind) = dataStatStorage_(ind)[0]; // imputation by the expectation
   }
 }
 

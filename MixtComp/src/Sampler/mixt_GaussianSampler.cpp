@@ -25,11 +25,11 @@
 
 namespace mixt
 {
-GaussianSampler::GaussianSampler(AugmentedData<Vector<Real> >* p_augData,
-                                 const Vector<Real>* p_param,
+GaussianSampler::GaussianSampler(AugmentedData<Vector<Real> >& augData,
+                                 const Vector<Real>& param,
                                  int nbClass) :
-    p_augData_(p_augData),
-    p_param_(p_param)
+    augData_(augData),
+    param_(param)
 {}
 
 GaussianSampler::~GaussianSampler()
@@ -42,17 +42,17 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
   std::cout << "\ti: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-  if (p_augData_->misData_(i).first != present_)
+  if (augData_.misData_(i).first != present_)
   {
     Real z;
-    Real mean  = (*p_param_)(2 * z_i    );
-    Real sd    = (*p_param_)(2 * z_i + 1);
+    Real mean  = param_(2 * z_i    );
+    Real sd    = param_(2 * z_i + 1);
 
 #ifdef MC_DEBUG
     std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
 #endif
 
-    switch(p_augData_->misData_(i).first)
+    switch(augData_.misData_(i).first)
     {
       case missing_:
       {
@@ -69,8 +69,8 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
         std::cout << "\tmissingIntervals_" << std::endl;
 #endif
-        Real infBound = p_augData_->misData_(i).second[0];
-        Real supBound = p_augData_->misData_(i).second[1];
+        Real infBound = augData_.misData_(i).second[0];
+        Real supBound = augData_.misData_(i).second[1];
 
         z = normal_.sampleI(mean,
                             sd,
@@ -93,7 +93,7 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
         std::cout << "\tmissingLUIntervals_" << std::endl;
 #endif
-        Real supBound = p_augData_->misData_(i).second[0];
+        Real supBound = augData_.misData_(i).second[0];
         z = normal_.sampleSB(mean,
                              sd,
                              supBound);
@@ -113,7 +113,7 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
         std::cout << "\tmissingRUIntervals_" << std::endl;
 #endif
-        Real infBound = p_augData_->misData_(i).second[0];
+        Real infBound = augData_.misData_(i).second[0];
         z = normal_.sampleIB(mean,
                              sd,
                              infBound);
@@ -140,7 +140,7 @@ void GaussianSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
     std::cout << "\tsampled val: " << z * sd + mean << std::endl;
 #endif
-    p_augData_->data_(i) = z;
+    augData_.data_(i) = z;
   }
 }
 } // namespace mixt

@@ -37,15 +37,15 @@ namespace mixt
 class GaussianSampler
 {
   public:
-    GaussianSampler(AugmentedData<Vector<Real> >* p_augData,
-                    const Vector<Real>* p_param,
+    GaussianSampler(AugmentedData<Vector<Real> >& augData,
+                    const Vector<Real>& param,
                     int nbClass);
     ~GaussianSampler();
     /** Sample new values for the missing variables of the given individual */
     void sampleIndividual(int i, int z_i);
   private:
-    AugmentedData<Vector<Real> >* p_augData_;
-    const Vector<Real>* p_param_;
+    AugmentedData<Vector<Real> >& augData_;
+    const Vector<Real>& param_;
 
     UniformStatistic uniform_;
     NormalStatistic normal_;

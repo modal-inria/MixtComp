@@ -85,15 +85,15 @@ class MixtureBridge : public IMixture
       augData_(),
       nbSample_(0),
       confidenceLevel_(confidenceLevel),
-      sampler_(&augData_,
-               getParam(),
+      sampler_(augData_,
+               param_,
                nbClass),
-      dataStat_(&augData_,
+      dataStat_(augData_,
                 confidenceLevel),
       paramStat_(param_,
                  confidenceLevel),
-      likelihood_(getParam(),
-                  getData(),
+      likelihood_(param_,
+                  augData_,
                   nbClass),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
@@ -355,22 +355,6 @@ class MixtureBridge : public IMixture
     {
       mixture_.writeParameters(out);
     }
-    /** Utility function to use in mode debug in order to test that the
-     *  model is well initialized. */
-    int checkModel() const
-    {
-      return mixture_.checkModel();
-    }
-
-    virtual const AugmentedData<Data>* getData() const
-    {
-      return &augData_;
-    }
-
-    virtual const Vector<Real>* getParam() const
-    {
-      return &param_;
-    }
 
     virtual void exportDataParam() const
     {
@@ -378,7 +362,7 @@ class MixtureBridge : public IMixture
       std::cout << "MixtureBridge: exportDataParam, idName(): " << idName() << std::endl;
 #endif
       p_dataExtractor_->exportVals(idName(),
-                                   getData(),
+                                   augData_,
                                    dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
       p_paramExtractor_->exportParam(idName(),
                                      paramStat_.getStatStorage(),
