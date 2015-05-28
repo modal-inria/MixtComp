@@ -54,9 +54,7 @@ struct BridgeTraits<Gaussian_sjk_>
     /** Type of the AugmentedData*/
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat computer */
-    typedef GaussianDataStat DataStatComputer;
-    /** Type of the DataStat storage */
-    typedef Vector<RowVector<Real> > DataStatStorage;
+    typedef GaussianDataStat DataStat;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

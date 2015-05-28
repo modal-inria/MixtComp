@@ -52,7 +52,7 @@ void ClassSampler::sampleIndividual(int i)
     std::cout << "present_" << std::endl;
 #endif
 
-    switch(zi_.misData_(i, 0).first)
+    switch(zi_.misData_(i).first)
     {
       case missing_:
       {

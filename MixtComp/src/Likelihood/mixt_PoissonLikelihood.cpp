@@ -30,12 +30,10 @@ namespace mixt
 
 PoissonLikelihood::PoissonLikelihood(const Vector<Real>* p_param,
                                      const AugmentedData<Vector<int> >* augData,
-                                     const Vector<RowVector<int> >* p_dataStatStorage,
                                      int nbClass) :
     nbClass_(nbClass),
     p_param_(p_param),
-    p_augData_(augData),
-    p_dataStatStorage_(p_dataStatStorage)
+    p_augData_(augData)
 {}
 
 PoissonLikelihood::~PoissonLikelihood()
@@ -48,9 +46,9 @@ Real PoissonLikelihood::lnCompletedProbability(int i, int k)
    std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
 #endif
 
-  Real lambda = (*p_param_)(k, 0);
+  Real lambda = (*p_param_)(k);
   Real proba;
-  proba = poisson_.pdf(p_augData_->data_(i, 0),
+  proba = poisson_.pdf(p_augData_->data_(i),
                        lambda);
 
   return std::log(proba);
@@ -62,14 +60,14 @@ Real PoissonLikelihood::lnObservedProbability(int i, int k)
   std::cout << "PoissonLikelihood::lnObservedLikelihood" << std::endl;
   std::cout << "\t(*p_param_): " << (*p_param_) << std::endl;
 #endif
-  Real lambda = (*p_param_)(k, 0);
+  Real lambda = (*p_param_)(k);
   Real proba;
 
-  switch(p_augData_->misData_(i, 0).first)   // likelihood for present value
+  switch(p_augData_->misData_(i).first)   // likelihood for present value
   {
     case present_:
     {
-      proba = poisson_.pdf(p_augData_->data_(i, 0),
+      proba = poisson_.pdf(p_augData_->data_(i),
                            lambda);
     }
     break;

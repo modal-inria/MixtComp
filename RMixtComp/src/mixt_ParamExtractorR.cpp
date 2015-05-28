@@ -35,47 +35,47 @@ ParamExtractorR::~ParamExtractorR()
 {}
 
 void ParamExtractorR::exportParam(std::string idName,
-                                  const Matrix<Real>& params,
-                                  const Matrix<Real>& paramsLogs,
+                                  const Matrix<Real>& statStorage,
+                                  const Matrix<Real>& logStorage,
                                   const std::vector<std::string>& paramNames,
                                   const Real confidenceLevel)
 {
 #ifdef MC_DEBUG
   std::cout << "ParamExtractorR::exportParam" << std::endl;
   std::cout << "idName: " << idName << std::endl;
-  std::cout << "params.rows(): " << params.rows() << std::endl;
-  std::cout << "params.cols(): " << params.cols() << std::endl;
+  std::cout << "params.rows(): " << statStorage.rows() << std::endl;
+  std::cout << "params.cols(): " << statStorage.cols() << std::endl;
 #endif
 
-  Rcpp::CharacterVector rows(params.rows()); // names of the parameters
+  Rcpp::CharacterVector rows(statStorage.rows()); // names of the parameters
   Rcpp::CharacterVector cols; // names for expectation and confidence interval values
 
   Real alpha = (1. - confidenceLevel) / 2.;
 
-  Rcpp::NumericMatrix paramR(params.rows(),
-                             params.cols());
+  Rcpp::NumericMatrix paramR(statStorage.rows(),
+                             statStorage.cols());
 
   // values setting
-  for (int i = 0; i < params.rows(); ++i)
+  for (int i = 0; i < statStorage.rows(); ++i)
   {
-    for (int j = 0; j < params.cols(); ++j)
+    for (int j = 0; j < statStorage.cols(); ++j)
     {
-      paramR(i, j) = params(i, j);
+      paramR(i, j) = statStorage(i, j);
     }
   }
 
   // names setting for rows
-  for (int i = 0; i < params.rows(); ++i)
+  for (int i = 0; i < statStorage.rows(); ++i)
   {
     rows[i] = paramNames[i];
   }
 
   // names setting for cols
-  if (params.cols() == 1)
+  if (statStorage.cols() == 1)
   {
     cols.push_back("value");
   }
-  else if (params.cols() == 3)
+  else if (statStorage.cols() == 3)
   {
     cols.push_back("expectation");
     cols.push_back(  std::string("q ")
@@ -91,22 +91,22 @@ void ParamExtractorR::exportParam(std::string idName,
 
   Rcpp::NumericMatrix paramLogR;
 
-  if (paramsLogs.rows() > 0 && paramsLogs.cols()) // only if log has taken place, for example not during predict
+  if (logStorage.rows() > 0 && logStorage.cols()) // only if log has taken place, for example not during predict
   {
 #ifdef MC_DEBUG
-    std::cout << "paramsLogs: " << paramsLogs << std::endl;
+    std::cout << "paramsLogs: " << logStorage << std::endl;
 #endif
     // copy of the log data
-    paramLogR = Rcpp::NumericMatrix(paramsLogs.rows(),
-                                    paramsLogs.cols());
-    for (int i = 0; i < paramsLogs.rows(); ++i)
+    paramLogR = Rcpp::NumericMatrix(logStorage.rows(),
+                                    logStorage.cols());
+    for (int i = 0; i < logStorage.rows(); ++i)
     {
-      for (int j = 0; j < paramsLogs.cols(); ++j)
+      for (int j = 0; j < logStorage.cols(); ++j)
       {
-        paramLogR(i, j) = paramsLogs(i, j);
+        paramLogR(i, j) = logStorage(i, j);
       }
     }
-    Rcpp::CharacterVector colsLog(paramsLogs.cols());
+    Rcpp::CharacterVector colsLog(logStorage.cols());
     Rcpp::List dimnmsLog = Rcpp::List::create(rows, colsLog);
     paramLogR.attr("dimnames") = dimnmsLog;
   }

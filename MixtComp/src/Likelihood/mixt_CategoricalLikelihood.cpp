@@ -30,12 +30,10 @@ namespace mixt
 
 CategoricalLikelihood::CategoricalLikelihood(const Vector<Real>* p_param,
                                              const AugmentedData<Vector<int> >* p_augData,
-                                             const Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                                              int nbClass) :
     nbClass_(nbClass),
     p_param_(p_param),
-    p_augData_(p_augData),
-    p_dataStatStorage_(p_dataStatStorage)
+    p_augData_(p_augData)
 {}
 
 CategoricalLikelihood::~CategoricalLikelihood()
@@ -45,14 +43,14 @@ Real CategoricalLikelihood::lnCompletedProbability(int i, int k)
 {
   int nbModalities = p_param_->rows() / nbClass_;
 
-  int ind = k * nbModalities + p_augData_->data_(i, 0) - minModality;
+  int ind = k * nbModalities + p_augData_->data_(i) - minModality;
   Real proba = (*p_param_)(ind);
 #ifdef MC_DEBUG
   if (proba < epsilon)
   {
     Real sum = 0.;
     std::cout << "Null proba detected, k: " << k << std::endl;
-    std::cout << "p_augData_->data_(i, j) - minModality: " << p_augData_->data_(i, 0) - minModality << std::endl;
+    std::cout << "p_augData_->data_(i, j) - minModality: " << p_augData_->data_(i) - minModality << std::endl;
     std::cout << "param: " << std::endl;
     for (int p = 0; p < nbModalities; ++p)
     {
@@ -75,11 +73,11 @@ Real CategoricalLikelihood::lnObservedProbability(int i, int k)
 #ifdef MC_DEBUG
           std::cout << "\ti: " << i << ", j: " << j << std::endl;
 #endif
-  switch (p_augData_->misData_(i, 0).first)
+  switch (p_augData_->misData_(i).first)
   {
     case present_: // likelihood for present data
     {
-      proba = (*p_param_)(k * nbModalities + p_augData_->data_(i, 0) - minModality);
+      proba = (*p_param_)(k * nbModalities + p_augData_->data_(i) - minModality);
     }
     break;
 
@@ -97,8 +95,8 @@ Real CategoricalLikelihood::lnObservedProbability(int i, int k)
 #endif
       proba = 0.;
 
-      for (std::vector<int>::const_iterator itMiss = p_augData_->misData_(i, 0).second.begin();
-           itMiss != p_augData_->misData_(i, 0).second.end();
+      for (std::vector<int>::const_iterator itMiss = p_augData_->misData_(i).second.begin();
+           itMiss != p_augData_->misData_(i).second.end();
            ++itMiss)
       {
 #ifdef MC_DEBUG

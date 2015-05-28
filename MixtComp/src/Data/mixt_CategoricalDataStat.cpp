@@ -28,10 +28,8 @@ namespace mixt
 {
 
 CategoricalDataStat::CategoricalDataStat(AugmentedData<Vector<int> >* p_augData,
-                                         Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                                          Real confidenceLevel) :
     p_augData_(p_augData),
-    p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)
 {}
 
@@ -72,7 +70,7 @@ void CategoricalDataStat::sampleVals(int ind,
 
       // clear output storage for current individual, a vector of <modality, proba>, ordered by decreasing probability
       // up to a cut-off defined by confidenceLevel
-      (*p_dataStatStorage_)(ind) = std::vector<std::pair<int, Real> >();
+      dataStatStorage_(ind) = std::vector<std::pair<int, Real> >();
 
       // first sampling, on each missing variables
       sample(ind);
@@ -96,12 +94,12 @@ void CategoricalDataStat::sampleVals(int ind,
       {
         int currMod = indOrder[i];
         Real currProba = stat_[currMod];
-        (*p_dataStatStorage_)(ind).push_back(std::pair<int, Real>(currMod + minModality, currProba));
+        dataStatStorage_(ind).push_back(std::pair<int, Real>(currMod + minModality, currProba));
         cumProb += currProba;
 #ifdef MC_DEBUG
         std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;
         std::cout << "\tcumProb: " << cumProb << std::endl;
-        std::cout << "p_dataStatStorage_->elt(ind, j).back().first: " << (*p_dataStatStorage_)(ind).back().first << std::endl;
+        std::cout << "p_dataStatStorage_->elt(ind, j).back().first: " << dataStatStorage_(ind).back().first << std::endl;
 #endif
         if (cumProb > confidenceLevel_)
         {
@@ -110,8 +108,8 @@ void CategoricalDataStat::sampleVals(int ind,
       }
     }
 #ifdef MC_DEBUG
-    for (std::vector<std::pair<int, Real> >::const_iterator itVec = (*p_dataStatStorage_)(ind).begin();
-         itVec != (*p_dataStatStorage_)(ind, 0).end();
+    for (std::vector<std::pair<int, Real> >::const_iterator itVec = dataStatStorage_(ind).begin();
+         itVec != dataStatStorage_(ind).end();
          ++itVec)
     {
       std::cout << "itVec->first: " << itVec->first << ", itVec->second: " << itVec->second << std::endl;
@@ -126,9 +124,9 @@ void CategoricalDataStat::sampleVals(int ind,
 
 void CategoricalDataStat::imputeData(int ind)
 {
-  if (p_augData_->misData_(ind, 0).first != present_)
+  if (p_augData_->misData_(ind).first != present_)
   {
-    p_augData_->data_(ind) = (*p_dataStatStorage_)(ind)[0].first; // imputation by the mode
+    p_augData_->data_(ind) = dataStatStorage_(ind)[0].first; // imputation by the mode
   }
 }
 

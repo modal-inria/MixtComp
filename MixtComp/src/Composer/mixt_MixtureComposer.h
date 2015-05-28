@@ -145,9 +145,7 @@ class MixtureComposer : public IMixtureComposerBase
                        mode);
       if (mode == prediction_) // in prediction, paramStatStorage_ will not be modified later during the run
       {
-        paramStatStorage_.resize(prop_.rows(), // paramStatStorage_ is set now, and will not be modified further during predict run
-                                 1); // no quantiles have to be computed for imported parameters, hence the single column
-        paramStatStorage_.col(0) = prop_;
+        paramStat_.setParamStorage(prop_); // paramStatStorage_ is set now, and will not be modified further during predict run
       }
 
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
@@ -174,8 +172,8 @@ class MixtureComposer : public IMixtureComposerBase
                                zi_,
                                tik_);
       paramExtractor.exportParam("z_class",
-                                 paramStatStorage(),
-                                 paramLogStorage(),
+                                 paramStat_.getStatStorage(),
+                                 paramStat_.getLogStorage(),
                                  paramNames(),
                                  confidenceLevel_);
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
@@ -195,18 +193,6 @@ class MixtureComposer : public IMixtureComposerBase
     /** Gibbs sampling, one individual at a time */
     void gibbsSampling(int nbGibbsIter);
 
-    /** @return a reference on the statistics of the proportions */
-    inline Matrix<Real> const& paramStatStorage() const
-    {
-      return paramStatStorage_;
-    };
-
-    /** @return a reference on the statistics of the proportions */
-    inline Matrix<Real> const& paramLogStorage() const
-    {
-      return paramLogStorage_;
-    };
-
     /** @return names of the parameters */
     std::vector<std::string> paramNames() const;
 
@@ -216,12 +202,6 @@ class MixtureComposer : public IMixtureComposerBase
 
     /** computer parameters statistics */
     SimpleParamStat paramStat_;
-
-    /** storage for proportions statistics */
-    Matrix<Real> paramStatStorage_;
-
-    /** Log for sampled parameters */
-    Matrix<Real> paramLogStorage_;
 
     /** storage for number of samples during Gibbs */
     Matrix<Real> nik_;

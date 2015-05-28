@@ -37,7 +37,6 @@ class PoissonLikelihood
     /** Constructor */
     PoissonLikelihood(const Vector<Real>* p_param,
                       const AugmentedData<Vector<int> >* augData,
-                      const Vector<RowVector<int> >* p_dataStatStorage,
                       int nbClass);
     /** Destructor */
     virtual ~PoissonLikelihood();

@@ -27,10 +27,8 @@ namespace mixt
 {
 
 PoissonDataStat::PoissonDataStat(AugmentedData<Vector<int> >* pm_augDataij,
-                                 Vector<RowVector<int> >* p_dataStatStorage,
                                  Real confidenceLevel) :
     pm_augDataij_(pm_augDataij),
-    p_dataStatStorage_(p_dataStatStorage),
     confidenceLevel_(confidenceLevel)
 {}
 
@@ -61,11 +59,11 @@ void PoissonDataStat::sampleVals(int ind,
       stat_.resize(iterationMax + 1);
 
 #ifdef MC_DEBUG
-      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): "<< p_dataStatStorage_->cols() << std::endl;
+      std::cout << "p_dataStatStorage_->rows(): " << dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): "<< dataStatStorage_->cols() << std::endl;
 #endif
       // clear global individual
-      (*p_dataStatStorage_)(ind) = RowVector<int>(3);
-      (*p_dataStatStorage_)(ind) = 0.;
+      dataStatStorage_(ind) = RowVector<int>(3);
+      dataStatStorage_(ind) = 0.;
 
       // first sampling
       sample(ind, iteration);
@@ -80,7 +78,7 @@ void PoissonDataStat::sampleVals(int ind,
 
 #ifdef MC_DEBUG
       std::cout << "GaussianDataStat::sampleVals, last iteration" << std::endl;
-      std::cout << "p_dataStatStorage_->rows(): " << p_dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): " << p_dataStatStorage_->cols() << std::endl;
+      std::cout << "p_dataStatStorage_->rows(): " << dataStatStorage_->rows() << ", p_dataStatStorage_->cols(): " << dataStatStorage_->cols() << std::endl;
       std::cout << "tempStat_.rows(): " << tempStat_.rows() << std::endl;
       std::cout << "tempStat_: " << std::endl;
       std::cout << tempStat_ << std::endl;
@@ -96,7 +94,7 @@ void PoissonDataStat::sampleVals(int ind,
                     + (      realIndLow  - int(realIndLow ) ) * stat_(realIndLow + 1);
       tempPoint[2] =  (1. - (realIndHigh - int(realIndHigh))) * stat_(realIndHigh    )
                     + (      realIndHigh - int(realIndHigh) ) * stat_(realIndHigh + 1);
-      (*p_dataStatStorage_)(ind) = tempPoint;
+      dataStatStorage_(ind) = tempPoint;
 #ifdef MC_DEBUG
       std::cout << "confidenceLevel_: " << confidenceLevel_ << std::endl;
       std::cout << "alpha: " << alpha << std::endl;
@@ -117,7 +115,7 @@ void PoissonDataStat::imputeData(int ind)
 {
   if (pm_augDataij_->misData_(ind).first != present_)
   {
-    pm_augDataij_->data_(ind) = (*p_dataStatStorage_)(ind)[0]; // imputation by the mode
+    pm_augDataij_->data_(ind) = dataStatStorage_(ind)[0]; // imputation by the mode
   }
 }
 

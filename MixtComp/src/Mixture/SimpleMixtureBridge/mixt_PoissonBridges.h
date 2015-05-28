@@ -52,9 +52,7 @@ struct BridgeTraits<Poisson_k_>
     /** Type of the AugmentedData */
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat */
-    typedef PoissonDataStat DataStatComputer;
-    /** Type of the DataStat */
-    typedef Vector<RowVector<int> > DataStatStorage;
+    typedef PoissonDataStat DataStat;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

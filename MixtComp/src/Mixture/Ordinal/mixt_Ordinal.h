@@ -228,7 +228,7 @@ class Ordinal : public IMixture
     PoissonDataStat dataStatComputer_;
 
     /** Store the statistics on missing data for export, after the GibbsRun phase */
-
+    Vector<RowVector<int> > dataStatStorage_;
 
     /** Pointer to the data handler */
     const DataHandler* p_handler_;

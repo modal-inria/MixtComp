@@ -33,16 +33,20 @@ class SimpleParamStat
 {
   public:
     SimpleParamStat(Vector<Real>& param,
-                    Matrix<Real>& paramStatStorage,
-                    Matrix<Real>& paramlog,
                     Real confidenceLevel);
     ~SimpleParamStat();
 
     void sampleParam(int iteration,
                      int iterationMax);
 
+    /** Set the storage of parameters, for example in the prediction case */
+    void setParamStorage(Vector<Real>& param);
+
     /** fill the parameters with estimators of the expectation, to be used in the Gibbs sampling */
     void setExpectationParam();
+
+    const Matrix<Real>& getStatStorage() const {return statStorage_;};
+    const Matrix<Real>& getLogStorage() const {return logStorage_;};
   private:
     // number of iterations used to compute the statistics
     int nbIter_;
@@ -50,16 +54,16 @@ class SimpleParamStat
     // number of parameters
     int nbParam_;
 
-    // pointer to param array
+    // Reference to param array
     Vector<Real>& param_;
 
-    /** Pointer to array to export the statistics at the last iteration */
-    Matrix<Real>& paramStatStorage_;
+    /** Array to export the statistics at the last iteration */
+    Matrix<Real> statStorage_;
 
     /** Storage for iterations results,
      * first dimension: index of the parameter
      * second dimension: iteration of the stored value */
-    Matrix<Real>& paramlog_;
+    Matrix<Real> logStorage_;
 
     /** Confidence level */
     Real confidenceLevel_;

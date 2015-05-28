@@ -30,12 +30,10 @@ namespace mixt
 
 GaussianLikelihood::GaussianLikelihood(const Vector<Real>* p_param,
                                        const AugmentedData<Vector<Real> >* augData,
-                                       const Vector<RowVector<Real> >* p_dataStatStorage,
                                        int nbClass) :
     nbClass_(nbClass),
     p_param_(p_param),
-    p_augData_(augData),
-    p_dataStatStorage_(p_dataStatStorage)
+    p_augData_(augData)
 {}
 
 GaussianLikelihood::~GaussianLikelihood()

@@ -33,18 +33,21 @@ class GaussianDataStat
 {
   public:
     GaussianDataStat(AugmentedData<Vector<Real> >* pm_augDataij,
-                     Vector<RowVector<Real> >* p_dataStatStorage,
                      Real confidenceLevel);
     ~GaussianDataStat();
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);
     void imputeData(int ind);
+
+    const Vector<RowVector<Real> >* getDataStatStorage() const {return &dataStatStorage_;};
+    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd);};
   private:
     /** pointer to data array */
     AugmentedData<Vector<Real> >* pm_augDataij_;
+
     /** Description of the missing values */
-    Vector<RowVector<Real> >* p_dataStatStorage_;
+    Vector<RowVector<Real> > dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: sampling iteration */

@@ -33,18 +33,21 @@ class PoissonDataStat
 {
   public:
     PoissonDataStat(AugmentedData<Vector<int> >* pm_augDataij,
-                    Vector<RowVector<int> >* p_dataStatStorage,
                     Real confidenceLevel);
     ~PoissonDataStat();
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);
     void imputeData(int ind);
+
+    const Vector<RowVector<int> >* getDataStatStorage() const {return &dataStatStorage_;};
+    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd);};
   private:
     /** pointer to data array */
     AugmentedData<Vector<int> >* pm_augDataij_;
+
     /** Description of the missing values */
-    Vector<RowVector<int> >* p_dataStatStorage_;
+    Vector<RowVector<int> > dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual, access: tempStat_[i]
      * i: iteration

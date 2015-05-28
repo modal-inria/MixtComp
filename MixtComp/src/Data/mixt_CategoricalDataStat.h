@@ -34,18 +34,22 @@ class CategoricalDataStat
 {
   public:
     CategoricalDataStat(AugmentedData<Vector<int> >* m_augData,
-                        Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage,
                         Real confidenceLevel);
     ~CategoricalDataStat();
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);
     void imputeData(int ind);
+
+    const Vector<std::vector<std::pair<int, Real> > >* getDataStatStorage() const {return &dataStatStorage_;};
+    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd);};
+
   private:
     // pointer to data array
     AugmentedData<Vector<int> >* p_augData_;
+
     /** Sparse description of the missing values */
-    Vector<std::vector<std::pair<int, Real> > >* p_dataStatStorage_;
+    Vector<std::vector<std::pair<int, Real> > > dataStatStorage_;
 
     /** Array to count sampled values across iterations, for the current individual,
      * i: modalities */

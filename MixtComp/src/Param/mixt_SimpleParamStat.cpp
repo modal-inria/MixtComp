@@ -29,25 +29,28 @@ namespace mixt
 {
 
 SimpleParamStat::SimpleParamStat(Vector<Real>& param,
-                                 Matrix<Real>& paramStatStorage,
-                                 Matrix<Real>& paramlog,
                                  Real confidenceLevel) :
     nbIter_(0),
     nbParam_(0),
     param_(param),
-    paramStatStorage_(paramStatStorage),
-    paramlog_(paramlog),
     confidenceLevel_(confidenceLevel)
 {}
 
 SimpleParamStat::~SimpleParamStat()
 {}
 
+void SimpleParamStat::setParamStorage(Vector<Real>& param)
+{
+  statStorage_.resize(param.rows(),
+                           1); // no quantiles have to be computed for imported parameters, hence the single column
+  statStorage_.col(0) = param;
+}
+
 void SimpleParamStat::sample(int iteration)
 {
   for (int p = 0; p < nbParam_; ++p)
   {
-    Real paramVal = param_(p, 0);
+    Real paramVal = param_(p);
 #ifdef MC_DEBUG
     if (std::abs(paramVal) < epsilon)
     {
@@ -55,7 +58,7 @@ void SimpleParamStat::sample(int iteration)
       std::cout << "std::abs(paramVal)" << std::endl;
     }
 #endif
-    paramlog_(p, iteration) = paramVal;
+    logStorage_(p, iteration) = paramVal;
   }
 }
 
@@ -67,10 +70,10 @@ void SimpleParamStat::sampleParam(int iteration,
     nbParam_ = param_.rows();
 
     // resize internal storage
-    paramlog_.resize(nbParam_, iterationMax + 1);
+    logStorage_.resize(nbParam_, iterationMax + 1);
 
     // resize export storage
-    paramStatStorage_.resize(nbParam_, 3);
+    statStorage_.resize(nbParam_, 3);
 
     // first sampling, on each variable and each parameter
     sample(0);
@@ -89,7 +92,7 @@ void SimpleParamStat::sampleParam(int iteration,
     std::cout << currParam << std::endl;
 #endif
 
-      RowVector<Real> currRow = paramlog_.row(p); // copy to use sortContiguous on contiguous data
+      RowVector<Real> currRow = logStorage_.row(p); // copy to use sortContiguous on contiguous data
       sortContiguous(currRow);
       Real alpha = (1. - confidenceLevel_) / 2.;
       int realIndLow = alpha * iterationMax;
@@ -100,9 +103,9 @@ void SimpleParamStat::sampleParam(int iteration,
       Real high =   (1. - (realIndHigh - int(realIndHigh))) * currRow(realIndHigh    )
                   + (      realIndHigh - int(realIndHigh) ) * currRow(realIndHigh + 1);
 
-      paramStatStorage_(p, 0) = mean;
-      paramStatStorage_(p, 1) = low;
-      paramStatStorage_(p, 2) = high;
+      statStorage_(p, 0) = mean;
+      statStorage_(p, 1) = low;
+      statStorage_(p, 2) = high;
     }
   }
   else
@@ -119,11 +122,11 @@ void SimpleParamStat::setExpectationParam()
 #endif
   for (int i = 0; i < nbParam_; ++i)
   {
-    param_(i, 0) = paramStatStorage_(i, 0);
+    param_(i) = statStorage_(i, 0);
   }
 #ifdef MC_DEBUG
   std::cout << "(*p_param_): " << (*p_param_) << std::endl;
-  std::cout << "(*p_paramStatStorage_): " << (*p_paramStatStorage_) << std::endl;
+  std::cout << "(*p_paramStatStorage_): " << statStorage_ << std::endl;
 #endif
 }
 

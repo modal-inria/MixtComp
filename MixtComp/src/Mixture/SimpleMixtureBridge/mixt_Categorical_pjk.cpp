@@ -77,7 +77,7 @@ void Categorical_pjk::getParameters(Vector<Real>& param) const
   param.resize(param_.rows());
   for (int i = 0; i < param_.rows(); ++i)
   {
-    param(i, 0) = param_[i];
+    param(i) = param_(i);
   }
 }
 

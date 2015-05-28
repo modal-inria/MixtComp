@@ -55,9 +55,7 @@ class MixtureBridge : public IMixture
     // augmented data type
     typedef typename BridgeTraits<Id>::AugData AugData;
     // statistics on DataStat computer
-    typedef typename BridgeTraits<Id>::DataStatComputer DataStatComputer;
-    // type of DataStat storage
-    typedef typename BridgeTraits<Id>::DataStatStorage DataStatStorage;
+    typedef typename BridgeTraits<Id>::DataStat DataStat;
     // type of the data
     typedef typename BridgeTraits<Id>::Type Type;
     // type of Mixture
@@ -90,22 +88,17 @@ class MixtureBridge : public IMixture
       sampler_(&augData_,
                getParam(),
                nbClass),
-      dataStatComputer_(&augData_,
-                        &dataStatStorage_,
-                        confidenceLevel),
+      dataStat_(&augData_,
+                confidenceLevel),
       paramStat_(param_,
-                 paramStatStorage_,
-                 paramLogStorage_,
                  confidenceLevel),
       likelihood_(getParam(),
                   getData(),
-                  getDataStatStorage(),
                   nbClass),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
-      // dataStatStorage_ is an empty array at construction
     {}
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
@@ -117,14 +110,13 @@ class MixtureBridge : public IMixture
       nbSample_(bridge.nbSample_),
       confidenceLevel_(bridge.confidenceLevel_),
       sampler_(bridge.sampler_),
-      dataStatComputer_(bridge.dataStatComputer_),
+      dataStat_(bridge.dataStat_),
       paramStat_(bridge.paramStat_),
       likelihood_(bridge.likelihood_),
       p_handler_(bridge.p_handler_),
       p_dataExtractor_(bridge.p_dataExtractor_),
       p_paramSetter_(bridge.p_paramSetter_),
-      p_paramExtractor_(bridge.p_paramExtractor_),
-      dataStatStorage_(bridge.dataStatStorage_)
+      p_paramExtractor_(bridge.p_paramExtractor_)
     {
       mixture_.setData(augData_.data_);
     }
@@ -143,7 +135,7 @@ class MixtureBridge : public IMixture
                           augData_,
                           nbSample_,
                           paramStr_,
-                          0, // offset currently set to 0, but should use information provided by mixture_
+                          0, // offset currently set to 0, but should use information provided by mixture_, and firstModality should be removed everywhere
                           warnLog);
       augData_.computeRange();
       std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
@@ -179,9 +171,7 @@ class MixtureBridge : public IMixture
             mixture_.setModalities(nbParam);
           }
           mixture_.setParameters(param_);
-          paramStatStorage_.resize(param_.rows(), // paramStatStorage_ is set now, and will not be modified furing predict run
-                                   1); // no quantiles have to be computed for imported parameters, hence the single column
-          paramStatStorage_.col(0) = param_;
+          paramStat_.setParamStorage(param_); // paramStatStorage_ is set now, and will not be modified during predict run by the paramStat_ object
           // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
           // in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
           if (mixture_.checkMaxVal() && mixture_.maxVal() < augData_.dataRange_.max_)
@@ -214,8 +204,7 @@ class MixtureBridge : public IMixture
           }
           mixture_.setModalities(augData_.dataRange_.max_);
         }
-        dataStatStorage_.resize(nbSample_,
-                                1);
+        dataStat_.resizeStatStorage(nbSample_);
       }
 
       return warnLog;
@@ -313,12 +302,12 @@ class MixtureBridge : public IMixture
                 << ", iteration: " << iteration
                 << ", iterationMax: " << iterationMax << std::endl;
 #endif
-      dataStatComputer_.sampleVals(sample,
+      dataStat_.sampleVals(sample,
                                    iteration,
                                    iterationMax);
       if (iteration == iterationMax)
       {
-        dataStatComputer_.imputeData(sample); // impute the missing values using empirical mean or mode, depending of the model
+        dataStat_.imputeData(sample); // impute the missing values using empirical mean or mode, depending of the model
       }
     }
 
@@ -373,7 +362,7 @@ class MixtureBridge : public IMixture
       return mixture_.checkModel();
     }
 
-    virtual AugmentedData<Data> const* getData() const
+    virtual const AugmentedData<Data>* getData() const
     {
       return &augData_;
     }
@@ -383,21 +372,6 @@ class MixtureBridge : public IMixture
       return &param_;
     }
 
-    virtual const DataStatStorage* getDataStatStorage() const
-    {
-      return &dataStatStorage_;
-    }
-
-    virtual const Matrix<Real>& getParamStatStorage() const
-    {
-      return paramStatStorage_;
-    }
-
-    virtual const Matrix<Real>& getParamLogStorage() const
-    {
-      return paramLogStorage_;
-    }
-
     virtual void exportDataParam() const
     {
 #ifdef MC_DEBUG
@@ -405,10 +379,10 @@ class MixtureBridge : public IMixture
 #endif
       p_dataExtractor_->exportVals(idName(),
                                    getData(),
-                                   getDataStatStorage()); // export the obtained data using the DataExtractor
+                                   dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
       p_paramExtractor_->exportParam(idName(),
-                                     getParamStatStorage(),
-                                     getParamLogStorage(),
+                                     paramStat_.getStatStorage(),
+                                     paramStat_.getLogStorage(),
                                      mixture_.paramNames(),
                                      confidenceLevel_);
     }
@@ -427,7 +401,7 @@ class MixtureBridge : public IMixture
     Mixture mixture_;
     /** The augmented data set */
     AugData augData_;
-    /** Current parameters of the STK Mixture */
+    /** Current parameters of the mixture_ */
     Vector<Real> param_;
     /** Parameters transmitted by the user */
     std::string paramStr_;
@@ -438,7 +412,7 @@ class MixtureBridge : public IMixture
     /** Sampler to generate values */
     Sampler sampler_;
     /** Statistics computer for missing data */
-    DataStatComputer dataStatComputer_;
+    DataStat dataStat_;
     /** Statistics storage for parameters */
     SimpleParamStat paramStat_;
     /** Computation of the observed likelihood */
@@ -451,13 +425,6 @@ class MixtureBridge : public IMixture
     const ParamSetter* p_paramSetter_;
     /** Pointer to the parameters extractor */
     ParamExtractor* p_paramExtractor_;
-
-    /** Statistics storage for missing data */
-    DataStatStorage dataStatStorage_;
-    /** Statistics storage for parameters */
-    Matrix<Real> paramStatStorage_;
-    /** Log for sampled parameters */
-    Matrix<Real> paramLogStorage_;
 };
 
 } // namespace mixt
