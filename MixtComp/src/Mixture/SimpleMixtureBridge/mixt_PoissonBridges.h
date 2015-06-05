@@ -26,7 +26,7 @@
 
 #include "mixt_Poisson_k.h"
 #include "../../Sampler/mixt_PoissonSampler.h"
-#include "../../Data/mixt_PoissonDataStat.h"
+#include "../../Data/mixt_ConfIntDataStat.h"
 #include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_PoissonLikelihood.h"
 #include "Eigen/Dense"
@@ -52,7 +52,7 @@ struct BridgeTraits<Poisson_k_>
     /** Type of the AugmentedData */
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat */
-    typedef PoissonDataStat DataStat;
+    typedef ConfIntDataStat<int> DataStat;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */

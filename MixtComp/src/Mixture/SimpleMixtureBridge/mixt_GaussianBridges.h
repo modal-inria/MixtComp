@@ -27,7 +27,7 @@
 
 #include "mixt_Gaussian_sjk.h"
 #include "../../Sampler/mixt_GaussianSampler.h"
-#include "../../Data/mixt_GaussianDataStat.h"
+#include "../../Data/mixt_ConfIntDataStat.h"
 #include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_GaussianLikelihood.h"
 
@@ -54,7 +54,7 @@ struct BridgeTraits<Gaussian_sjk_>
     /** Type of the AugmentedData*/
     typedef AugmentedData<Data> AugData;
     /** Type of the DataStat computer */
-    typedef GaussianDataStat DataStat;
+    typedef ConfIntDataStat<Real> DataStat;
     /** Type of the Data */
     typedef Data::Type Type;
     /** Type of the mixture model */
