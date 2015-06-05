@@ -27,7 +27,6 @@
 #include "mixt_IMixtureComposerBase.h"
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Statistic/mixt_MultinomialStatistic.h"
-#include "../Statistic/mixt_FunctionStatistic.h"
 
 namespace mixt
 {
@@ -128,19 +127,7 @@ void IMixtureComposerBase::eStep(int i)
     std::cout << "lnComp: " << lnComp << std::endl;
 #endif
 
-//    RowVector<Real> dummyVec
-//    logToMulti(lnComp,
-//               tik_.row(i));
-//    tik_.row(i)
-
-//  logToMulti(lnComp,
-//             tik_.row(i));
-
-  Real lnCompMax = lnComp.maxCoeff();
-  lnComp -= lnCompMax;
-  lnComp = lnComp.exp();
-  Real sum = lnComp.sum();
-  tik_.row(i) = lnComp / sum;
+  lnComp.logToMulti(tik_.row(i));
 
 #ifdef MC_DEBUG
   std::cout << "\tmax: " << max << ", sum2: " << sum2 << std::endl;

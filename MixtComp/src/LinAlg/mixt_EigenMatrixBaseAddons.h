@@ -140,4 +140,25 @@ void sort()
             derived().end());
 }
 
+/**
+ * Computation of a multinomial distribution from log values of weights.
+ * A common example of usage is the computations of the proportions t_ik
+ * from the logProbabilities. A const-cast is used to allow usage of temporary object !
+ *
+ * @param log vector of log values
+ * @param[out] multi multinomial distribution
+ */
+template<typename OtherDerived>
+Scalar logToMulti(const MatrixBase<OtherDerived>& multi)
+{
+  const_cast<MatrixBase<OtherDerived>& >(multi) = derived();
+  Scalar max = multi.maxCoeff();
+  const_cast<MatrixBase<OtherDerived>& >(multi) -= max;
+  const_cast<MatrixBase<OtherDerived>& >(multi) = multi.exp();
+  Scalar sum = multi.sum();
+  const_cast<MatrixBase<OtherDerived>& >(multi) = multi / sum;
+
+  return max + std::log(sum);
+}
+
 #endif // MIXT_EIGENMATRIXBASEADDONS_H

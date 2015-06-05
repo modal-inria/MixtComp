@@ -97,11 +97,8 @@ Real MixtureComposer::lnObservedLikelihood()
     std::cout << "i: " << i << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
-    Real max = lnComp.row(i).maxCoeff();
-    lnComp.row(i) -= max;
-    lnComp.row(i) = lnComp.row(i).exp();
-    Real sum = lnComp.row(i).sum();
-    lnLikelihood += max + std::log(sum);
+    RowVector<Real> dummy;
+    lnLikelihood += lnComp.row(i).logToMulti(dummy);
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
@@ -282,13 +279,7 @@ void MixtureComposer::misClasStep(int iteration)
   // equivalent of the estep to compute new tik_
   for (int i = 0; i < nbSample_; ++i)
   {
-    RowVector<Real> lnComp;
-    lnComp = probClass.row(i);
-    Real lnCompMax = lnComp.maxCoeff();
-    lnComp -= lnCompMax;
-    lnComp = lnComp.exp();
-    Real sum = lnComp.sum();
-    tik_.row(i) = lnComp / sum;
+    probClass.row(i).logToMulti(tik_.row(i));
   }
 
   zi_.data_ = ziBack; // restore zi_ to initial values, useful because in supervised learning some zi_ are fixed and not resampled after misClasStep
