@@ -29,7 +29,7 @@ LIB_RE = regex/libRegex.a
 DIR_TEST = test
 
 # Flags for the cpp files at the root, i.e.
-PKG_CXXFLAGS = -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I$(INC_BOOST) -I$(INC_EIGEN)
+PKG_CXXFLAGS = -MD -MP `${R_HOME}/bin/Rscript -e "Rcpp:::CxxFlags()"` -I../.. -I$(INC_BOOST) -I$(INC_EIGEN) -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -I$(DIR_MC)/src/LinAlg
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(LIB_MC) $(LIB_RE)

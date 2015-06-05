@@ -27,9 +27,9 @@
 
 #include <vector>
 #include "mixt_IMixtureComposerBase.h"
-#include "../Param/mixt_SimpleParamStat.h"
 #include "../Mixture/mixt_IMixture.h"
 #include "../Various/mixt_Def.h"
+#include "../Param/mixt_ConfIntParamStat.h"
 
 namespace mixt
 {
@@ -201,7 +201,7 @@ class MixtureComposer : public IMixtureComposerBase
     std::vector<IMixture*> v_mixtures_;
 
     /** computer parameters statistics */
-    SimpleParamStat paramStat_;
+    ConfIntParamStat<Real> paramStat_;
 
     /** storage for number of samples during Gibbs */
     Matrix<Real> nik_;

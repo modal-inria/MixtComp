@@ -124,4 +124,20 @@ const_iterator end() const
                        derived());
 }
 
+/** General sort of data that is contiguous in memory (use of pointer to data and size).
+ * Be advised against using it against subparts (i.e. blocks) of matrices which elements are
+ * not stored contiguously */
+void sortContiguous()
+{
+  std::sort(derived().data(),
+            derived().data() + derived().size());
+}
+
+/** Sort function for non contiguous data, for example block. Slower than sortContiguous */
+void sort()
+{
+  std::sort(derived().begin(),
+            derived().end());
+}
+
 #endif // MIXT_EIGENMATRIXBASEADDONS_H

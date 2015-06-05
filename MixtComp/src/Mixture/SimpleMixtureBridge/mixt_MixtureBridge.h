@@ -37,6 +37,7 @@
 #include "mixt_PoissonBridges.h"
 #include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
+#include "../../Param/mixt_ConfIntParamStat.h"
 
 namespace mixt
 {
@@ -398,7 +399,7 @@ class MixtureBridge : public IMixture
     /** Statistics computer for missing data */
     DataStat dataStat_;
     /** Statistics storage for parameters */
-    SimpleParamStat paramStat_;
+    ConfIntParamStat<Real> paramStat_;
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
     /** Pointer to the data handler */

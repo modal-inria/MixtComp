@@ -27,7 +27,6 @@
 #include "mixt_Poisson_k.h"
 #include "../../Sampler/mixt_PoissonSampler.h"
 #include "../../Data/mixt_ConfIntDataStat.h"
-#include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_PoissonLikelihood.h"
 #include "Eigen/Dense"
 

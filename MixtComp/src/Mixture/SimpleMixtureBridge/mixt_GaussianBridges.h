@@ -28,7 +28,6 @@
 #include "mixt_Gaussian_sjk.h"
 #include "../../Sampler/mixt_GaussianSampler.h"
 #include "../../Data/mixt_ConfIntDataStat.h"
-#include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_GaussianLikelihood.h"
 
 namespace mixt

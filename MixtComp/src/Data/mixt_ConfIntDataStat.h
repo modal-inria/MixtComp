@@ -61,7 +61,7 @@ class ConfIntDataStat
         {
           sample(ind, iteration); // last sampling
 
-          sortContiguous(stat_);
+          stat_.sortContiguous();
           Real alpha = (1. - confidenceLevel_) / 2.;
           int realIndLow =        alpha  * iterationMax;
           int realIndHigh = (1. - alpha) * iterationMax;

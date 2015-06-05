@@ -29,7 +29,6 @@
 #include "mixt_Categorical_pjk.h"
 #include "../../Sampler/mixt_CategoricalSampler.h"
 #include "../../Data/mixt_CategoricalDataStat.h"
-#include "../../Param/mixt_SimpleParamStat.h"
 #include "../../Likelihood/mixt_CategoricalLikelihood.h"
 #include "../../LinAlg/mixt_LinAlg.h"
 

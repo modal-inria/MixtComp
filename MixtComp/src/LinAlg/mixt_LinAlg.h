@@ -166,27 +166,9 @@ Constant (int nrow, int ncol, const T& scalar)
                                                                      Eigen::internal::scalar_constant_op<T>(scalar));
 }
 
-/** General sort of data that is contiguous in memory (use of pointer to data and size).
- * Be advised against using it against subparts (i.e. blocks) of matrices which elements are
- * not stored contiguously */
-template <typename Container>
-void sortContiguous(Container& ref)
-{
-  std::sort(ref.data(),
-            ref.data() + ref.size());
-}
-
-/** Sort function for non contiguous data, for example block. Slower than sortContiguous */
-template <typename Container>
-void sort(Container& ref)
-{
-  std::sort(ref.begin(),
-            ref.end());
-}
-
 /** Comparator for indexed pairs */
 template <typename pair>
-bool comparator (const pair& l, const pair& r)
+bool comparator(const pair& l, const pair& r)
 {
   return l.first < r.first;
 };
