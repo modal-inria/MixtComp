@@ -58,9 +58,8 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
     {
       case missing_:
       {
-        Vector<Real> modalities = param_.block(z_i * nbModalities, 0,  // position of first element
-                                               nbModalities      , 1); // dimension of the vector to extract
-        sampleVal = multi_.sample(modalities);
+        sampleVal = multi_.sample(param_.block(z_i * nbModalities, 0,  // position of first element
+                                               nbModalities      , 1)); // dimension of the vector to extract);
       }
       break;
 
@@ -78,8 +77,10 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
         {
 #ifdef MC_DEBUG
           std::cout << "\tcurrMod: " << *currMod << std::endl;
+          std::cout << "z_i * nbModalities + *currMod: " << z_i * nbModalities + *currMod << ", param_.size(): " << param_.size() << std::endl;
+          std::cout << "*currMod: " << *currMod << ", modalities.size(): " << modalities.size() << std::endl;
 #endif
-          modalities(*currMod) = param_[z_i * nbModalities + *currMod];
+          modalities(*currMod) = param_(z_i * nbModalities + *currMod);
           equiModalities(*currMod) = 1.;
         }
         Real modSum = modalities.sum();
@@ -97,7 +98,11 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
       break;
 
       default:
-      {}
+      {
+#ifdef MC_DEBUG_NEW
+          std::cout << "CategoricalSampler, missing value type unknown" << std::endl;
+#endif
+      }
       break;
     }
     augData_.data_(i) = sampleVal;

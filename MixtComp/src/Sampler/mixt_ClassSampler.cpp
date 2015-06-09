@@ -100,7 +100,11 @@ void ClassSampler::sampleIndividual(int i)
       break;
 
       default:
-      {}
+      {
+#ifdef MC_DEBUG_NEW
+          std::cout << "ClassSampler, missing value type unknown" << std::endl;
+#endif
+      }
       break;
     }
     zi_.data_(i) = sampleVal;

@@ -46,7 +46,7 @@ class CategoricalDenseDataStat
 
     const Matrix<Real>& getDataStatStorage() const {return dataStatStorage_;}
 
-    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd, augData_.dataRange_.max_);}
+    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd, augData_.dataRange_.max_ + 1);}
 
   private:
     /** Reference to augmented data */

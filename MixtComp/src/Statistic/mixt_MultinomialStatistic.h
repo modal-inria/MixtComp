@@ -70,6 +70,9 @@ class MultinomialStatistic
           ++it)
       {
         cumProb += *it;
+#ifdef MC_DEBUG
+          std::cout << "x: " << x << ", cumpProb: " << cumProb << std::endl;
+#endif
         if (x < cumProb)
         {
 #ifdef MC_DEBUG
