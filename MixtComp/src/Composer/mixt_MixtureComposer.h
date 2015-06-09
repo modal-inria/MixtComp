@@ -30,6 +30,7 @@
 #include "../Mixture/mixt_IMixture.h"
 #include "../Various/mixt_Def.h"
 #include "../Param/mixt_ConfIntParamStat.h"
+#include "../Data/mixt_CategoricalDenseDataStat.h"
 
 namespace mixt
 {
@@ -63,10 +64,12 @@ class MixtureComposer : public IMixtureComposerBase
                     int nbVariable,
                     int nbCluster,
                     Real confidenceLevel);
+
     /** copy constructor.
      *  @param composer the composer to copy
      */
     MixtureComposer(MixtureComposer const& composer);
+
     /** The registered mixtures will be deleted there.*/
     virtual ~MixtureComposer();
 
@@ -77,6 +80,7 @@ class MixtureComposer : public IMixtureComposerBase
      *  mixture parameters.
      **/
     virtual std::string mStep();
+
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
      *  @param k index of the component
@@ -101,25 +105,30 @@ class MixtureComposer : public IMixtureComposerBase
      *  lookup on the mixtures and sum the nbFreeParameter.
      **/
     virtual int nbFreeParameters() const;
+
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels.
      */
     virtual void samplingStep();
     virtual void samplingStep(int i);
+
     /** @brief Simulation of latent variables to detect misclassified partially
      * observed data during initialization
      */
     virtual void misClasStep(int iteration);
+
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
     virtual void storeSEMBurnIn(int iteration,
                                int iterationMax);
+
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
     virtual void storeSEMRun(int iteration,
                              int iterationMax);
+
     /** @brief This step can be used to signal to the mixtures that they
      * must store data. This is usually called after the long algo, to
      * store data generated using the estimated parameters during a Gibbs sampling
@@ -141,12 +150,13 @@ class MixtureComposer : public IMixtureComposerBase
     {
       std::string warnLog;
       warnLog += setProportion(paramSetter);
-      warnLog += setZi(dataHandler,
+      warnLog += setZi(dataHandler, // dataHandler getData is called to fill zi_
                        mode);
       if (mode == prediction_) // in prediction, paramStatStorage_ will not be modified later during the run
       {
         paramStat_.setParamStorage(prop_); // paramStatStorage_ is set now, and will not be modified further during predict run
       }
+      dataStat_.resizeStatStorage(nbSample_);
 
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
       {
@@ -203,8 +213,8 @@ class MixtureComposer : public IMixtureComposerBase
     /** computer parameters statistics */
     ConfIntParamStat<Real> paramStat_;
 
-    /** storage for number of samples during Gibbs */
-    Matrix<Real> nik_;
+    /** computer of the statistics on latent variables */
+    CategoricalDenseDataStat dataStat_;
 
     /** confidence level used for the computation of statistics */
     Real confidenceLevel_;

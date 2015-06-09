@@ -39,8 +39,8 @@ MixtureComposer::MixtureComposer(int nbSample,
                                nbCluster),
     paramStat_(prop_,
                confidenceLevel),
-    nik_(nbSample,
-         nbCluster),
+    dataStat_(zi_,
+              confidenceLevel),
     confidenceLevel_(confidenceLevel)
 {}
 
@@ -327,25 +327,10 @@ void MixtureComposer::storeGibbsRun(int sample,
   std::cout << "MixtureComposer::storeGibbsRun" << std::endl;
   std::cout << "sample: " << sample << ", iteration: " << iteration << ", iterationMax: " << iterationMax << std::endl;
 #endif
-  if (iteration == 0) // initialize nik_
-  {
-    nik_.row(sample) = 0.;
-    nik_(sample, zi_.data_(sample)) += 1.;
-  }
-  else if (iteration == iterationMax)  // estimate tik_ from nik_
-  {
-#ifdef MC_DEBUG
-    std::cout << "\titeration == iterationMax" << std::endl;
-    std::cout << "\ttik_.row(sample): " << tik_.row(sample) << std::endl;
-    std::cout << "\tnik_.row(sample): " << nik_.row(sample) << std::endl;
-#endif
-    nik_(sample, zi_.data_(sample)) += 1.;
-    tik_.row(sample) = nik_.row(sample) / Real(iterationMax + 1);
-  }
-  else // increment relevant nik values according to sampled zi_
-  {
-    nik_(sample, zi_.data_(sample)) += 1.;
-  }
+
+  dataStat_.sampleVals(sample,
+                       iteration,
+                       iterationMax);
 
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
