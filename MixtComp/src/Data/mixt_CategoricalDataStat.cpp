@@ -44,7 +44,7 @@ void CategoricalDataStat::sample(int ind)
     std::cout << "CategoricalDataStat::sample, modality 0 detected" << std::endl;
   }
 #endif
-  stat_[currMod - minModality] += 1.;
+  stat_[currMod] += 1.;
 }
 
 void CategoricalDataStat::sampleVals(int ind,
@@ -94,7 +94,7 @@ void CategoricalDataStat::sampleVals(int ind,
       {
         int currMod = indOrder[i];
         Real currProba = stat_[currMod];
-        dataStatStorage_(ind).push_back(std::pair<int, Real>(currMod + minModality, currProba));
+        dataStatStorage_(ind).push_back(std::pair<int, Real>(currMod, currProba));
         cumProb += currProba;
 #ifdef MC_DEBUG
         std::cout << "\ti: " << i << ", currMod: " << currMod << ", proba[currMod]: " << proba[currMod] << std::endl;

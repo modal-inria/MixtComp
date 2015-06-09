@@ -148,7 +148,7 @@ void AugmentedData<Vector<int> >::removeMissing()
         {
           Vector<Real> modalities(nbModalities);
           modalities = 1. / nbModalities;
-          sampleVal = multi_.sample(modalities) + minModality;
+          sampleVal = multi_.sample(modalities);
         }
         break;
 
@@ -164,9 +164,9 @@ void AugmentedData<Vector<int> >::removeMissing()
 #ifdef MC_DEBUG
           std::cout << "\tproba: " << proba << std::endl;
 #endif
-            modalities[*itParam - minModality] = proba;
+            modalities[*itParam] = proba;
           }
-          sampleVal = multi_.sample(modalities) + minModality;
+          sampleVal = multi_.sample(modalities);
         }
         break;
 

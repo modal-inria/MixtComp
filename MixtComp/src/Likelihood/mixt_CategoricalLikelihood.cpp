@@ -43,14 +43,14 @@ Real CategoricalLikelihood::lnCompletedProbability(int i, int k)
 {
   int nbModalities = param_.rows() / nbClass_;
 
-  int ind = k * nbModalities + augData_.data_(i) - minModality;
+  int ind = k * nbModalities + augData_.data_(i);
   Real proba = param_(ind);
 #ifdef MC_DEBUG
   if (proba < epsilon)
   {
     Real sum = 0.;
     std::cout << "Null proba detected, k: " << k << std::endl;
-    std::cout << "augData_.data_(i, j) - minModality: " << augData_.data_(i) - minModality << std::endl;
+    std::cout << "augData_.data_(i, j): " << augData_.data_(i) << std::endl;
     std::cout << "param: " << std::endl;
     for (int p = 0; p < nbModalities; ++p)
     {
@@ -77,7 +77,7 @@ Real CategoricalLikelihood::lnObservedProbability(int i, int k)
   {
     case present_: // likelihood for present data
     {
-      proba = param_(k * nbModalities + augData_.data_(i) - minModality);
+      proba = param_(k * nbModalities + augData_.data_(i));
     }
     break;
 
@@ -102,7 +102,7 @@ Real CategoricalLikelihood::lnObservedProbability(int i, int k)
 #ifdef MC_DEBUG
         std::cout << "k: " << k << ", j: " << j << ", nbModalities: " << nbModalities << ", *itMiss: " << *itMiss << std::endl;
 #endif
-        proba += param_(k * nbModalities + *itMiss - minModality);
+        proba += param_(k * nbModalities + *itMiss);
       }
     }
     break;

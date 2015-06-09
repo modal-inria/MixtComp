@@ -88,12 +88,12 @@ bool Categorical_pjk::hasModalities() const
 
 int Categorical_pjk::maxVal() const
 {
-  return nbModalities_ + minModality - 1;
+  return nbModalities_ - 1;
 }
 
 int Categorical_pjk::minVal() const
 {
-  return minModality;
+  return 0;
 }
 
 std::string Categorical_pjk::model() const
@@ -127,7 +127,7 @@ std::string Categorical_pjk::mStep()
       {
         int currVal = (*p_data_)(i);
         nbSampleClass += 1.;
-        modalities[currVal - minModality] += 1.; // first modality is minModality in data, but 0 in parameters storage
+        modalities[currVal] += 1.;
       }
     }
 

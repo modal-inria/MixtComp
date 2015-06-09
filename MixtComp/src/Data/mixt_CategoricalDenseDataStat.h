@@ -44,9 +44,9 @@ class CategoricalDenseDataStat
 
     void imputeData(int ind);
 
-    const Matrix<Real>& getDataStatStorage() const {return dataStatStorage_;};
+    const Matrix<Real>& getDataStatStorage() const {return dataStatStorage_;}
 
-    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd, augData_.dataRange_.max_);};
+    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd, augData_.dataRange_.max_);}
 
   private:
     /** Reference to augmented data */

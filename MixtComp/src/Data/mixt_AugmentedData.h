@@ -202,8 +202,8 @@ class AugmentedData
       }
       else // in prediction, a variable can be completely missing
       {
-        dataRange_ = Range<Type>(minModality,
-                                 minModality + 0.5); // default range, should allow for initialization in prediction for all types of data
+        dataRange_ = Range<Type>(0.,
+                                 0.5); // default range, should allow for initialization in prediction for all types of data
       }
 #ifdef MC_DEBUG
       std::cout << "AugmentedData::computeRange" << std::endl;

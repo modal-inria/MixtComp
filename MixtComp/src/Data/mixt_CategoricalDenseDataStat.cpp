@@ -43,8 +43,10 @@ void CategoricalDenseDataStat::sample(int ind)
   {
     std::cout << "CategoricalDataStat::sample, modality 0 detected" << std::endl;
   }
+  std::cout << "CategoricalDenseDataStat::sample, ind: " << ind << ", currMod: " << currMod << ", minModality: " << minModality
+            << ", dataStatStorage_.rows(): " << dataStatStorage_.rows() << ", dataStatStorage_.cols(): " << dataStatStorage_.cols() << std::endl;
 #endif
-  dataStatStorage_(ind, currMod - minModality) += 1.;
+  dataStatStorage_(ind, currMod) += 1.;
 }
 
 void CategoricalDenseDataStat::sampleVals(int ind,

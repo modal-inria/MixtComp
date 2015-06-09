@@ -69,7 +69,7 @@ void DataExtractorR::exportVals(std::string idName,
 #ifdef MC_DEBUG
         std::cout << "itVec.first: " << itVec.first << ", itVec.second: " << itVec.second << std::endl;
 #endif
-        currList.push_back(itVec->first ); // current modality
+        currList.push_back(itVec->first + minModality); // current modality
         currList.push_back(itVec->second); // probability of the modality
       }
       missingData.push_back(currList);

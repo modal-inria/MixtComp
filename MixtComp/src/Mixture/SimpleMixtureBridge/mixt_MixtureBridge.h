@@ -136,7 +136,7 @@ class MixtureBridge : public IMixture
                           augData_,
                           nbSample_,
                           paramStr_,
-                          0, // offset currently set to 0, but should use information provided by mixture_, and firstModality should be removed everywhere
+                          (mixture_.hasModalities()) ? (-minModality) : (0), // minModality offset for categorical models
                           warnLog);
       augData_.computeRange();
       std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
@@ -166,8 +166,8 @@ class MixtureBridge : public IMixture
           int nbParam = param_.rows() / nbClass_; // number of parameters for each cluster
           if (mixture_.hasModalities()) // predict data not representative of population, information from learning data set must be used
           {
-            augData_.dataRange_.min_ = minModality;
-            augData_.dataRange_.max_ = minModality + nbParam - 1;
+            augData_.dataRange_.min_ = 0;
+            augData_.dataRange_.max_ = nbParam - 1;
             augData_.dataRange_.range_ = nbParam;
             mixture_.setModalities(nbParam);
           }

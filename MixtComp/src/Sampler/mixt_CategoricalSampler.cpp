@@ -60,7 +60,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
       {
         Vector<Real> modalities = param_.block(z_i * nbModalities, 0,  // position of first element
                                                nbModalities      , 1); // dimension of the vector to extract
-        sampleVal = multi_.sample(modalities) + minModality;
+        sampleVal = multi_.sample(modalities);
       }
       break;
 
@@ -79,19 +79,19 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
 #ifdef MC_DEBUG
           std::cout << "\tcurrMod: " << *currMod << std::endl;
 #endif
-          modalities(*currMod - minModality) = param_[z_i * nbModalities + *currMod - minModality];
-          equiModalities(*currMod - minModality) = 1.;
+          modalities(*currMod) = param_[z_i * nbModalities + *currMod];
+          equiModalities(*currMod) = 1.;
         }
         Real modSum = modalities.sum();
         if (modSum < minStat)
         {
           equiModalities = equiModalities / equiModalities.sum();
-          sampleVal = multi_.sample(equiModalities) + minModality;
+          sampleVal = multi_.sample(equiModalities);
         }
         else
         {
           modalities = modalities / modalities.sum();
-          sampleVal = multi_.sample(modalities) + minModality;
+          sampleVal = multi_.sample(modalities);
         }
       }
       break;
