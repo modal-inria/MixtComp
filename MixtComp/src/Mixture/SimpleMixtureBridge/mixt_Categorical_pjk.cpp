@@ -127,6 +127,9 @@ std::string Categorical_pjk::mStep()
       {
         int currVal = (*p_data_)(i);
         nbSampleClass += 1.;
+#ifdef MC_DEBUG
+        std::cout << "\tcurrVal: " << currVal << ", modalities.size(): " << modalities.size() << std::endl;
+#endif
         modalities[currVal] += 1.;
       }
     }

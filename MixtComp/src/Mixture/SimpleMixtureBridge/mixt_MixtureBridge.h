@@ -203,7 +203,7 @@ class MixtureBridge : public IMixture
                  << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
             warnLog += sstm.str();
           }
-          mixture_.setModalities(augData_.dataRange_.max_);
+          mixture_.setModalities(augData_.dataRange_.max_ + 1); // set the number of modalities
         }
         dataStat_.resizeStatStorage(nbSample_);
       }

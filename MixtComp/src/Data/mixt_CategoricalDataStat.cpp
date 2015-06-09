@@ -43,6 +43,7 @@ void CategoricalDataStat::sample(int ind)
   {
     std::cout << "CategoricalDataStat::sample, modality 0 detected" << std::endl;
   }
+  std::cout << "currMod: " << currMod << ", stat_.size(): " << stat_.size() << std::endl;
 #endif
   stat_[currMod] += 1.;
 }
@@ -65,7 +66,7 @@ void CategoricalDataStat::sampleVals(int ind,
 #ifdef MC_DEBUG
       std::cout << "pm_augDataij_.dataRange_.max_: " << augData_.dataRange_.max_ << std::endl;
 #endif
-      stat_.resize(augData_.dataRange_.max_);
+      stat_.resize(augData_.dataRange_.max_ + 1);
       stat_ = 0.;
 
       // clear output storage for current individual, a vector of <modality, proba>, ordered by decreasing probability
