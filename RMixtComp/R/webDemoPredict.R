@@ -38,23 +38,27 @@ webDemoPredict <- function(folderName)
                            nbClass,
                            0.95)
     
+    save(res,
+         file = paste(folderName,
+                      "out/output.RData",
+                      sep = "/"))
+    
     if (nchar(res$mixture$warnLog) > 0)
     {
       cat(res$mixture$warnLog,
           file = fileConn,
           sep = "")
+      quit(save = "no", status = 1)
     }
     else
     {
       cat("Run completed successfully",
           file = logConn,
           sep = "")
+      quit(save = "no", status = 0)
     }
 
-    save(res,
-         file = paste(folderName,
-                      "out/output.RData",
-                      sep = "/"))
+
   }
   close(logConn)
 }
