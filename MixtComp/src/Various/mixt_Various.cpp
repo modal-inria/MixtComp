@@ -38,14 +38,23 @@ void writeProgress(int group,
   Real startPoint = (Real)group / (Real)(groupMax + 1);
   Real inGroupPoint = (Real)iteration / (Real)(iterationMax + 1);
   Real globalPoint = startPoint + inGroupPoint * groupSize;
+
 #ifdef MC_DEBUG_NEW
       std::cout << "writeProgress, groupSize: " << groupSize
                 << ", startPoint: " << startPoint
                 << ", inGroupPoint: " << inGroupPoint
                 << ", globalPoint: " << globalPoint << std::endl;
 #endif
+
   std::ofstream myfile;
-  myfile.open(progressFile.c_str(), std::ios::out | std::ios::binary);
+  if(const char* env_p = std::getenv("WORKER_PROGRESS_FILE")) // has the WORKER_PROGRESS_FILE variable been defined ?
+  {
+    myfile.open(env_p, std::ios::out | std::ios::binary);
+  }
+  else
+  {
+    myfile.open(progressFile.c_str(), std::ios::out | std::ios::binary);
+  }
   myfile << globalPoint;
   myfile.close();
 }

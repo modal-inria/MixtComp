@@ -20,8 +20,8 @@ testLearnPredict <- function(regen = TRUE)
 }
 
 testGenDataLearn <- function(nbClass = 2,
-                             nbSampleLearn = 10000,
-                             nbSamplePredict = 10000,
+                             nbSampleLearn = 100,
+                             nbSamplePredict = 100,
                              confidenceLevel = 0.95,
                              regen = TRUE)
 {  
