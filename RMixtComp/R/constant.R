@@ -3,5 +3,5 @@ listModels <- c("Gaussian_sjk",
                 "Poisson_k",
                 "LatentClass")
 
-maxVariable <- 20
-maxIndividual <- 10000
+maxVariable <- 100
+maxIndividual <- 20000

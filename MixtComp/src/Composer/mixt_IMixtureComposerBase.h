@@ -286,7 +286,7 @@ class IMixtureComposerBase
        }
        int nbIndPerClass = indPerClass.minCoeff();
 
-       if (nbIndPerClass > minIndPerClass || mode == prediction_)
+       if (nbIndPerClass > minIndPerClass || mode == prediction_) // prediction => no parameter estimation => no check for a minimum number of individuals per class
        {
          break; // enough individuals in each class to carry on
        }

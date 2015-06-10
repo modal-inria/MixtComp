@@ -20,9 +20,8 @@ testLearnPredict <- function(regen = TRUE)
 }
 
 testGenDataLearn <- function(nbClass = 2,
-                             nbBurnInIter = 100,
-                             nbSampleLearn = 500,
-                             nbSamplePredict = 50,
+                             nbSampleLearn = 10000,
+                             nbSamplePredict = 10000,
                              confidenceLevel = 0.95,
                              regen = TRUE)
 {  
@@ -99,7 +98,7 @@ testGenDataLearn <- function(nbClass = 2,
   
   # creation of strategy list
   mcStrategy <- list(nbTrialInInit = 2,
-                     nbBurnInIter = nbBurnInIter,
+                     nbBurnInIter = 100,
                      nbIter = 100,
                      nbGibbsBurnInIter = 100,
                      nbGibbsIter = 100)
@@ -127,7 +126,6 @@ testGenDataLearn <- function(nbClass = 2,
 
 testGenDataPredict <- function(param,
                                nbClass = 2,
-                               nbBurnInIter = 20,
                                confidenceLevel = 0.95)
 {
 
@@ -151,7 +149,7 @@ testGenDataPredict <- function(param,
   
   # creation of strategy list
   mcStrategy <- list(nbTrialInInit = 2,
-                     nbBurnInIter = nbBurnInIter,
+                     nbBurnInIter = 100,
                      nbIter = 100,
                      nbGibbsBurnInIter = 100,
                      nbGibbsIter = 100)
