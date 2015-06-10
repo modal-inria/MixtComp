@@ -23,6 +23,7 @@
 
 #include "mixt_GibbsStrategy.h"
 #include "../Various/mixt_Timer.h"
+#include "../Various/mixt_Various.h"
 
 namespace mixt
 {
@@ -60,7 +61,11 @@ std::string GibbsStrategy::run()
   myTimer.setName("Gibbs: burn-in");
   for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbBurnInIterGibbs_; ++iterBurnInGibbs)
   {
-    myTimer.iteration(iterBurnInGibbs, nbBurnInIterGibbs_);
+    myTimer.iteration(iterBurnInGibbs, nbBurnInIterGibbs_ - 1);
+    writeProgress(0,
+                  1,
+                  iterBurnInGibbs,
+                  nbBurnInIterGibbs_); // progress write in progress file
 #ifdef MC_DEBUG
     std::cout << "GibbsStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
 #endif
@@ -69,7 +74,9 @@ std::string GibbsStrategy::run()
     p_composer_->samplingStep();
   }
 
-  p_composer_->gibbsSampling(nbIterGibbs_);
+  p_composer_->gibbsSampling(nbIterGibbs_,
+                             1, // group
+                             1); // groupMax
 
   return warnLog;
 }

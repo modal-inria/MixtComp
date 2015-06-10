@@ -44,7 +44,9 @@ class SEMAlgo
     /** destructor */
     virtual ~SEMAlgo(){};
     /** run the algorithm */
-    std::string run(RunType runType);
+    std::string run(RunType runType,
+                    int group,
+                    int groupMax);
 
   private:
     /** pointer on the mixture model */

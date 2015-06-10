@@ -29,6 +29,7 @@
 #include "mixt_SEMStrategy.h"
 #include "../Various/mixt_Timer.h"
 #include "../IO/mixt_IO.h"
+#include "../Various/mixt_Various.h"
 
 namespace mixt
 {
@@ -90,11 +91,12 @@ std::string SemStrategy::run()
       continue; // make another try
     }
 
-    // short run
 #ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, short run" << std::endl;
+    std::cout << "SemStrategy::run, burn-in" << std::endl;
 #endif
-    tryWarn = p_burnInAlgo_->run(burnIn_);
+    tryWarn = p_burnInAlgo_->run(burnIn_,
+                                 0, // group
+                                 3); // groupMax
     if (tryWarn.size() > 0) // an empty string means a successful run
     {
       allWarn +=   std::string("SemStrategy, burn-in, iTry: ")
@@ -103,11 +105,12 @@ std::string SemStrategy::run()
       continue; // make another try
     }
 
-    // long run
 #ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, long run" << std::endl;
+    std::cout << "SemStrategy::run, run" << std::endl;
 #endif
-    tryWarn = p_longAlgo_->run(longRun_);
+    tryWarn = p_longAlgo_->run(run_,
+                               1, // group
+                               3); // groupMax
     if (tryWarn.size() > 0) // an empty string means a successful run
     {
       allWarn +=   std::string("SemStrategy, run, iTry: ")
@@ -120,7 +123,11 @@ std::string SemStrategy::run()
     myTimer.setName("Gibbs burn-in");
     for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
     {
-      myTimer.iteration(iterBurnInGibbs, nbGibbsBurnInIter_);
+      myTimer.iteration(iterBurnInGibbs, nbGibbsBurnInIter_ - 1);
+      writeProgress(2,
+                    3,
+                    iterBurnInGibbs,
+                    nbGibbsBurnInIter_ - 1);
   #ifdef MC_DEBUG
       std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
   #endif
@@ -129,7 +136,9 @@ std::string SemStrategy::run()
       p_composer_->eStep();
     }
 
-    p_composer_->gibbsSampling(nbGibbsIter_);
+    p_composer_->gibbsSampling(nbGibbsIter_,
+                               3, // group
+                               3); // groupMax
 
     return allWarn; // if the last attempt is a success, consider the run a success. AllWarn is an empty string.
   }

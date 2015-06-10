@@ -192,7 +192,9 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     void registerMixture(IMixture* mixture);
 
     /** Gibbs sampling, one individual at a time */
-    void gibbsSampling(int nbGibbsIter);
+    void gibbsSampling(int nbGibbsIter,
+                       int group,
+                       int groupMax);
 
     /** @return a reference on the statistics of the proportions */
     inline Matrix<Real> const& paramStatStorage() const

@@ -27,6 +27,7 @@
 #include "../IO/mixt_IO.h"
 #include "../Various/mixt_Timer.h"
 #include "../LinAlg/mixt_LinAlg.h"
+#include "../Various/mixt_Various.h"
 
 namespace mixt
 {
@@ -375,13 +376,19 @@ void MixtureComposer::registerMixture(IMixture* p_mixture)
   v_mixtures_.push_back(p_mixture);
 }
 
-void MixtureComposer::gibbsSampling(int nbGibbsIter)
+void MixtureComposer::gibbsSampling(int nbGibbsIter,
+                                    int group,
+                                    int groupMax)
 {
   Timer myTimer;
   myTimer.setName("Gibbs: run (individuals count as iterations)");
   for (int i = 0; i < nbSample_; ++i)
   {
-    myTimer.iteration(i, nbSample_);
+    myTimer.iteration(i, nbSample_ - 1);
+    writeProgress(group,
+                  groupMax,
+                  i,
+                  nbSample_ - 1);
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs)
     {
       eStep(i);
