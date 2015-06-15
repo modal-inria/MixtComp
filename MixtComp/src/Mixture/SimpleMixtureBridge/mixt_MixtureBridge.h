@@ -163,7 +163,6 @@ class MixtureBridge : public mixt::IMixture
       }
       else // minimum value requirements have been met, whether the mode is learning or prediction
       {
-        m_augDataij_.removeMissing();
         mixture_.setData(m_augDataij_.data_);
 
         if (mode == prediction_) // predict mode
@@ -423,7 +422,14 @@ class MixtureBridge : public mixt::IMixture
     /** This function can be used in derived classes to get class labels from the framework.
      *  @return Pointer to zi.
      */
-    Vector<int> const* p_zi() const {return p_zi_;};
+    Vector<int> const* p_zi() const {return p_zi_;}
+
+    bool possibleNullProbability() const {return mixture_.possibleNullProbability();}
+
+    void removeMissing()
+    {
+      m_augDataij_.removeMissing();
+    }
 
   protected:
     /** Pointer to the zik class label */

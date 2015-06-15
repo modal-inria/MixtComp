@@ -56,6 +56,8 @@ class Categorical_pjk
     void setParameters(const Vector<Real>& param);
     void writeParameters(std::ostream& out) const;
 
+    bool possibleNullProbability() const {return true;} // a proportion might be estimated at 0
+
   private:
     int nbCluster_;
     int nbModalities_;

@@ -250,9 +250,6 @@ class AugmentedData
     /** Remove the missing values by uniform samplings */
     void removeMissing();
 
-    /** Remove the missing values by uniform samplings, taking into account that classes begin at 0 no matter the minModality value */
-    void removeMissingClass();
-
     /**
      * In-place sort every descriptor of missing values, and check for duplicates, which are currently forbidden
      * @return Description of the eventual error, otherwise empty string

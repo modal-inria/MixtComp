@@ -211,6 +211,14 @@ class MixtureComposer : public mixt::IMixtureComposerBase
     /** @return names of the parameters */
     std::vector<std::string> paramNames() const;
 
+    /**
+     * Completion of the data using observed t_ik, to detect impossible observations. The observed tik are computed,
+     * impossible individual are detected, and zi_ and missing variable are completed.
+     * @return string containing a description of the problematic combinations of data and models */
+    std::string eStepObserved();
+
+    void removeMissing();
+
   protected:
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;

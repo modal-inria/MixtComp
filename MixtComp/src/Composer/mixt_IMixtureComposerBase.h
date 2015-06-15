@@ -107,14 +107,13 @@ class IMixtureComposerBase
     inline int nbCluster() const { return nbCluster_;}
 
     /** @return the proportions of each mixtures */
-    inline Vector<Real> const* p_pk() const
-    {
-      return &prop_;
-    };
+    inline Vector<Real> const* p_pk() const {return &prop_;}
+
     /** @return the tik probabilities */
-    inline Matrix<Real> const* p_tik() const {return &tik_;};
+    inline Matrix<Real> const* p_tik() const {return &tik_;}
+
     /** @return  the zi class label */
-    inline Vector<int> const* p_zi() const {return &zi_.data_;};
+    inline Vector<int> const* p_zi() const {return &zi_.data_;}
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
@@ -125,6 +124,7 @@ class IMixtureComposerBase
     // virtual with default implementation
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(std::ostream& os) const {};
+
     /** compute the number of free parameters of the model.
      *  @return the number of free parameters
      **/
@@ -224,31 +224,31 @@ class IMixtureComposerBase
         std::cout << "z_class was not provided" << std::endl;
 #endif
         zi_.setAllMissing(nbSample_); // set every value state to missing_
-       warnLog = std::string(); // warnLog reinitialized
-     }
+        warnLog = std::string(); // warnLog reinitialized
+      }
 #ifdef MC_DEBUG
-     std::cout << "zi_.data_: " << std::endl;
-     std::cout << zi_.data_ << std::endl;
+      std::cout << "zi_.data_: " << std::endl;
+      std::cout << zi_.data_ << std::endl;
 #endif
 
-     Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
-     at(0) = true; // present_,
-     at(1) = true;// missing_,
-     at(2) = true;// missingFiniteValues_,
-     at(3) = false;// missingIntervals_,
-     at(4) = false;// missingLUIntervals_,
-     at(5) = false;// missingRUIntervals_,
+      Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
+      at(0) = true; // present_,
+      at(1) = true;// missing_,
+      at(2) = true;// missingFiniteValues_,
+      at(3) = false;// missingIntervals_,
+      at(4) = false;// missingLUIntervals_,
+      at(5) = false;// missingRUIntervals_,
 
-     std::string tempLog = zi_.checkMissingType(at); // check if the missing data provided are compatible with the model
-     if(tempLog.size() > 0)
-     {
+      std::string tempLog = zi_.checkMissingType(at); // check if the missing data provided are compatible with the model
+      if(tempLog.size() > 0)
+      {
        std::stringstream sstm;
        sstm << "Variable " << idName_ << " contains latent classes and has unsupported missing value types.\n" << tempLog;
        warnLog += sstm.str();
-     }
-     zi_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
-     if (zi_.dataRange_.min_ < 0)
-     {
+      }
+      zi_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
+      if (zi_.dataRange_.min_ < 0)
+      {
        std::stringstream sstm;
        sstm << "The z_class latent class variable has a lowest provided value of: "
             << minModality + zi_.dataRange_.min_
@@ -256,9 +256,9 @@ class IMixtureComposerBase
             << minModality
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
        warnLog += sstm.str();
-     }
-     if (zi_.dataRange_.max_ > nbCluster_ - 1)
-     {
+      }
+      if (zi_.dataRange_.max_ > nbCluster_ - 1)
+      {
        std::stringstream sstm;
        sstm << "The z_class latent class variable has a highest provided value of: "
             << minModality + zi_.dataRange_.max_
@@ -266,48 +266,13 @@ class IMixtureComposerBase
             << minModality + nbCluster_ - 1
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
        warnLog += sstm.str();
-     }
-     zi_.dataRange_.min_ = 0; // real range provided by the parameters is enforced
-     zi_.dataRange_.max_ = nbCluster_ - 1;
-     zi_.dataRange_.range_ = nbCluster_;
+      }
+      zi_.dataRange_.min_ = 0; // real range provided by the parameters is enforced
+      zi_.dataRange_.max_ = nbCluster_ - 1;
+      zi_.dataRange_.range_ = nbCluster_;
 
-     for (int iterSample = 0; iterSample < nbSamplingAttempts; ++iterSample) // sample until there are enough individuals per class
-     {
-       zi_.removeMissingClass(); // uniform random sampling of the latent classes
-
-       Vector<int> indPerClass(nbCluster_);
-       indPerClass = 0;
-       for (int i = 0; i < nbSample_; ++i)
-       {
-    #ifdef MC_DEBUG
-         std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
-    #endif
-         indPerClass[zi_.data_(i)] += 1;
-       }
-       int nbIndPerClass = indPerClass.minCoeff();
-
-       if (nbIndPerClass > minIndPerClass || mode == prediction_) // prediction => no parameter estimation => no check for a minimum number of individuals per class
-       {
-         break; // enough individuals in each class to carry on
-       }
-       else if (iterSample == nbSamplingAttempts - 1) // on last attempt, exit with error message
-       {
-         std::stringstream sstm;
-         sstm << "Problem during random initialization of the z_class latent class variable. The class with the lowest number "
-              << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
-              << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
-              << " partition samplings before failure. The number of classes might be too important"
-              << " relative to the number of individuals." << std::endl;
-         warnLog += sstm.str();
-       }
-     }
-    #ifdef MC_DEBUG
-     std::cout << "zi_.data_: " << std::endl;
-     std::cout << zi_.data_ << std::endl;
-    #endif
-     return warnLog;
+      return warnLog;
     };
-
 
   private:
     /** class sampler */
