@@ -45,7 +45,8 @@ SemStrategy::SemStrategy(mixt::MixtureComposer* p_composer,
     p_composer_(p_composer),
     nbTrialInInit_(nbTrialInInit_),
     nbGibbsBurnInIter_(nbGibbsBurnInIter),
-    nbGibbsIter_(nbGibbsIter)
+    nbGibbsIter_(nbGibbsIter),
+    nbSamplingAttempts_(nbSamplingAttempts)
 {
   p_burnInAlgo_ = new SEMAlgo(p_composer,
                               nbBurnInIter,
@@ -73,6 +74,32 @@ SemStrategy::~SemStrategy()
 std::string SemStrategy::run()
 {
   std::string allWarn; // collect warning strings from all the trials
+
+  for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample) // sample until there are enough individuals per class, using default tik from IMixtureComposerBase::intializeMixtureParameters()
+  {
+#ifdef MC_DEBUG
+    std::cout << "\titerSample: " << iterSample << std::endl;
+#endif
+    int nbIndPerClass = p_composer_->sStep();
+    if (nbIndPerClass > minIndPerClass)
+    {
+      break; // enough individuals in each class to carry on
+    }
+    else
+    {
+      if (iterSample == nbSamplingAttempts_ - 1) // on last attempt, exit with error message
+      {
+        std::stringstream sstm;
+        sstm << "Sampling step problem in SEM. The class with the lowest number "
+             << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
+             << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
+             << " partition samplings before failure. The number of classes might be too important"
+             << " relative to the number of individuals." << std::endl;
+        return sstm.str();
+      }
+    }
+  }
+  p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
   for (int iTry = 0; iTry < nbTrialInInit_; ++iTry)
   {

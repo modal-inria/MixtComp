@@ -78,24 +78,30 @@ testGenDataLearn <- function(nbClass = 2,
                        missingPoisson) # missingGaussian
   }
   
-  
-  resGetData <- getData(c("dataGen/learn/zData.csv",
-                          "dataGen/learn/zDescriptor.csv"),
-                        c("dataGen/learn/gaussianData.csv",
-                          "dataGen/learn/gaussianDescriptor.csv"),
-                        c("dataGen/learn/categoricalData.csv",
-                          "dataGen/learn/categoricalDescriptor.csv"),
-                        c("dataGen/learn/poissonData.csv",
-                          "dataGen/learn/poissonDescriptor.csv"))
-  
-  #   lm <- getData(c("dataGen/learn/gaussianData.csv",
-  #                   "dataGen/learn/gaussianDescriptor.csv"))
-  
-  #   lm <- getData(c("dataGen/learn/poissonData.csv",
-  #                   "dataGen/learn/poissonDescriptor.csv"))
-  
-  #   lm <- getData(c("dataGen/learn/categoricalData.csv",
-  #                   "dataGen/learn/categoricalDescriptor.csv"))
+#    resGetData <- getData(c("dataGen/learn/zData.csv",
+#                            "dataGen/learn/zDescriptor.csv"),
+#                          c("dataGen/learn/gaussianData.csv",
+#                           "dataGen/learn/gaussianDescriptor.csv"),
+#                          c("dataGen/learn/categoricalData.csv",
+#                            "dataGen/learn/categoricalDescriptor.csv"),
+#                          c("dataGen/learn/poissonData.csv",
+#                            "dataGen/learn/poissonDescriptor.csv"))
+   
+   resGetData <- getData(c("dataGen/learn/gaussianData.csv",
+                           "dataGen/learn/gaussianDescriptor.csv"),
+                         c("dataGen/learn/categoricalData.csv",
+                           "dataGen/learn/categoricalDescriptor.csv"),
+                         c("dataGen/learn/poissonData.csv",
+                           "dataGen/learn/poissonDescriptor.csv"))
+
+#   lm <- getData(c("dataGen/learn/gaussianData.csv",
+#                   "dataGen/learn/gaussianDescriptor.csv"))
+
+#   lm <- getData(c("dataGen/learn/poissonData.csv",
+#                   "dataGen/learn/poissonDescriptor.csv"))
+
+#   lm <- getData(c("dataGen/learn/categoricalData.csv",
+#                   "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of strategy list
   mcStrategy <- list(nbTrialInInit = 2,
@@ -130,10 +136,16 @@ testGenDataPredict <- function(param,
                                nbBurnInIter = 20,
                                confidenceLevel = 0.95)
 {
-  
-  resGetData <- getData(c("dataGen/predict/zData.csv",
-                          "dataGen/predict/zDescriptor.csv"),
-                        c("dataGen/predict/gaussianData.csv",
+  #   resGetData <- getData(c("dataGen/predict/zData.csv",
+  #                           "dataGen/predict/zDescriptor.csv"),
+  #                         c("dataGen/predict/gaussianData.csv",
+  #                           "dataGen/predict/gaussianDescriptor.csv"),
+  #                         c("dataGen/predict/categoricalData.csv",
+  #                           "dataGen/predict/categoricalDescriptor.csv"),
+  #                         c("dataGen/predict/poissonData.csv",
+  #                           "dataGen/predict/poissonDescriptor.csv"))
+
+  resGetData <- getData(c("dataGen/predict/gaussianData.csv",
                           "dataGen/predict/gaussianDescriptor.csv"),
                         c("dataGen/predict/categoricalData.csv",
                           "dataGen/predict/categoricalDescriptor.csv"),

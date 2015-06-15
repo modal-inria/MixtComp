@@ -57,13 +57,21 @@ std::string GibbsStrategy::run()
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
 
+  warnLog += p_composer_->eStepObserved(); // compute observed tik
+  if (warnLog.size() != 0) // impossible individuals detected, execution is aborted
+  {
+    return warnLog;
+  }
+  p_composer_->sStep(); // class are sampled using the observed probabilities, no minimum number of individual per class is required in prediction
+  p_composer_->samplingStep(); // in prediction, parameters are know, samplingStep is used instead of removeMissing
+
   Timer myTimer;
   myTimer.setName("Gibbs: burn-in");
   for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbBurnInIterGibbs_; ++iterBurnInGibbs)
   {
     myTimer.iteration(iterBurnInGibbs, nbBurnInIterGibbs_ - 1);
-    writeProgress(0,
-                  1,
+    writeProgress(0, // group
+                  1, // groupMax
                   iterBurnInGibbs,
                   nbBurnInIterGibbs_); // progress write in progress file
 #ifdef MC_DEBUG

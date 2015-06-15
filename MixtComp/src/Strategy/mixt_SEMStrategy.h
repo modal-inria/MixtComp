@@ -78,6 +78,8 @@ class SemStrategy
     SEMAlgo* p_burnInAlgo_;
     /** algorithm for subsequent long run */
     SEMAlgo* p_longAlgo_;
+
+    int nbSamplingAttempts_;
 };
 
 }  // namespace mixt

@@ -67,6 +67,8 @@ class Poisson_k
     void setModalities(int nbModalities);
 
     void writeParameters(std::ostream& out) const;
+
+    bool possibleNullProbability() const {return true;} // for null lambda, all non-null value have a 0 probability
   private:
     int nbCluster_;
     Vector<Real> param_;
