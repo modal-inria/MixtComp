@@ -257,7 +257,7 @@ class IMixtureComposerBase
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
        warnLog += sstm.str();
       }
-      if (zi_.dataRange_.max_ > nbCluster_ - 1)
+      if (zi_.dataRange_.hasRange_ == true || zi_.dataRange_.max_ > nbCluster_ - 1)
       {
        std::stringstream sstm;
        sstm << "The z_class latent class variable has a highest provided value of: "

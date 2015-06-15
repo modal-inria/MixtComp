@@ -29,18 +29,22 @@ namespace mixt
 
 template<>
 Range<Real>::Range(Real min,
-                        Real max) :
+                   Real max,
+                   bool hasRange) :
     min_(min),
     max_(max),
-    range_(max - min)
+    range_(max - min),
+    hasRange_(hasRange)
 {}
 
 template<>
 Range<int>::Range(int min,
-                  int max) :
+                  int max,
+                  bool hasRange) :
     min_(min),
     max_(max),
-    range_(max - min + 1) // used to store the number of modalities, for example
+    range_(max - min + 1), // used to store the number of modalities, for example,
+    hasRange_(hasRange)
 {}
 
 template<>

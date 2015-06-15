@@ -78,10 +78,17 @@ testGenDataLearn <- function(nbClass = 2,
   }
   
 
-   resGetData <- getData(c("dataGen/learn/zData.csv",
-                           "dataGen/learn/zDescriptor.csv"),
-                         c("dataGen/learn/gaussianData.csv",
-                          "dataGen/learn/gaussianDescriptor.csv"),
+#    resGetData <- getData(c("dataGen/learn/zData.csv",
+#                            "dataGen/learn/zDescriptor.csv"),
+#                          c("dataGen/learn/gaussianData.csv",
+#                           "dataGen/learn/gaussianDescriptor.csv"),
+#                          c("dataGen/learn/categoricalData.csv",
+#                            "dataGen/learn/categoricalDescriptor.csv"),
+#                          c("dataGen/learn/poissonData.csv",
+#                            "dataGen/learn/poissonDescriptor.csv"))
+   
+   resGetData <- getData(c("dataGen/learn/gaussianData.csv",
+                           "dataGen/learn/gaussianDescriptor.csv"),
                          c("dataGen/learn/categoricalData.csv",
                            "dataGen/learn/categoricalDescriptor.csv"),
                          c("dataGen/learn/poissonData.csv",
@@ -129,9 +136,16 @@ testGenDataPredict <- function(param,
                                confidenceLevel = 0.95)
 {
 
-  resGetData <- getData(c("dataGen/predict/zData.csv",
-                          "dataGen/predict/zDescriptor.csv"),
-                        c("dataGen/predict/gaussianData.csv",
+#   resGetData <- getData(c("dataGen/predict/zData.csv",
+#                           "dataGen/predict/zDescriptor.csv"),
+#                         c("dataGen/predict/gaussianData.csv",
+#                           "dataGen/predict/gaussianDescriptor.csv"),
+#                         c("dataGen/predict/categoricalData.csv",
+#                           "dataGen/predict/categoricalDescriptor.csv"),
+#                         c("dataGen/predict/poissonData.csv",
+#                           "dataGen/predict/poissonDescriptor.csv"))
+  
+  resGetData <- getData(c("dataGen/predict/gaussianData.csv",
                           "dataGen/predict/gaussianDescriptor.csv"),
                         c("dataGen/predict/categoricalData.csv",
                           "dataGen/predict/categoricalDescriptor.csv"),
