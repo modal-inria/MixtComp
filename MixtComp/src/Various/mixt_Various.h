@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2013-2014
+/*  Copyright (C) Inria 2015
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,32 +17,21 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: November 6, 2014
+ *  Created on: June 10, 2015
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
- *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#ifndef MIXT_CLUST_UTIL_H
-#define MIXT_CLUST_UTIL_H
-
-#include <string>
+#ifndef MIXT_VARIOUS_H_
+#define MIXT_VARIOUS_H_
 
 namespace mixt
 {
 
-enum SimpleMixtureID
-{
-  Categorical_pjk_,
-  Gaussian_sjk_,
-  Poisson_k_
-};
+void writeProgress(int group,
+                   int groupMax,
+                   int iteration,
+                   int iterationMax);
 
-enum RunType
-{
-  burnIn_,
-  run_,
-};
+} // namespace mixt
 
-}  // namespace mixt
-
-#endif /* MIXT_CLUST_UTIL_H */
+#endif /* MIXT_VARIOUS_H_ */

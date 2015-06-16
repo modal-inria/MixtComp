@@ -33,32 +33,32 @@ testGenDataLearn <- function(nbClass = 2,
   missingCategorical <- c(0.8, # present
                           0.1, # missing
                           0.1) # missing finite value
- 
+  
   missingGaussian <- c(0.6, # present
                        0.1, # missing
                        0.1, # missing interval
                        0.1, # missing left unbounded
                        0.1) # missing right unbounded
-
+  
   missingPoisson <- c(0.8, # present
                       0.2) # missing
   
-#   missingZ <- c(0., # present
-#                 1., # missing
-#                 0.) # missing finite value
-#   
-#   missingCategorical <- c(1., # present
-#                           0., # missing
-#                           0.) # missing finite value
-# 
-#   missingGaussian <- c(1., # present
-#                        0., # missing
-#                        0., # missing interval
-#                        0., # missing left unbounded
-#                        0.) # missing right unbounded
-#   
-#   missingPoisson <- c(1., # present
-#                       0.) # missing
+  #   missingZ <- c(0., # present
+  #                 1., # missing
+  #                 0.) # missing finite value
+  #   
+  #   missingCategorical <- c(1., # present
+  #                           0., # missing
+  #                           0.) # missing finite value
+  # 
+  #   missingGaussian <- c(1., # present
+  #                        0., # missing
+  #                        0., # missing interval
+  #                        0., # missing left unbounded
+  #                        0.) # missing right unbounded
+  #   
+  #   missingPoisson <- c(1., # present
+  #                       0.) # missing
   
   if (regen == TRUE)
   {
@@ -78,11 +78,17 @@ testGenDataLearn <- function(nbClass = 2,
                        missingPoisson) # missingGaussian
   }
   
-
-   resGetData <- getData(c("dataGen/learn/zData.csv",
-                           "dataGen/learn/zDescriptor.csv"),
-                         c("dataGen/learn/gaussianData.csv",
-                          "dataGen/learn/gaussianDescriptor.csv"),
+#    resGetData <- getData(c("dataGen/learn/zData.csv",
+#                            "dataGen/learn/zDescriptor.csv"),
+#                          c("dataGen/learn/gaussianData.csv",
+#                           "dataGen/learn/gaussianDescriptor.csv"),
+#                          c("dataGen/learn/categoricalData.csv",
+#                            "dataGen/learn/categoricalDescriptor.csv"),
+#                          c("dataGen/learn/poissonData.csv",
+#                            "dataGen/learn/poissonDescriptor.csv"))
+   
+   resGetData <- getData(c("dataGen/learn/gaussianData.csv",
+                           "dataGen/learn/gaussianDescriptor.csv"),
                          c("dataGen/learn/categoricalData.csv",
                            "dataGen/learn/categoricalDescriptor.csv"),
                          c("dataGen/learn/poissonData.csv",
@@ -113,7 +119,7 @@ testGenDataLearn <- function(nbClass = 2,
   {
     warning(res$mixture$warnLog)
   }
-
+  
   confMat <- confusionMatrix("dataGen/learn/classIn.csv",
                              res$variable)
   print(confMat)
@@ -121,7 +127,7 @@ testGenDataLearn <- function(nbClass = 2,
       "lnSemiCompletedLikelihood: ", res$mixture$lnSemiCompletedLikelihood, "\n",
       "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
       sep = "")
-
+  
   return(res)
 }
 
@@ -130,24 +136,30 @@ testGenDataPredict <- function(param,
                                nbBurnInIter = 20,
                                confidenceLevel = 0.95)
 {
+  #   resGetData <- getData(c("dataGen/predict/zData.csv",
+  #                           "dataGen/predict/zDescriptor.csv"),
+  #                         c("dataGen/predict/gaussianData.csv",
+  #                           "dataGen/predict/gaussianDescriptor.csv"),
+  #                         c("dataGen/predict/categoricalData.csv",
+  #                           "dataGen/predict/categoricalDescriptor.csv"),
+  #                         c("dataGen/predict/poissonData.csv",
+  #                           "dataGen/predict/poissonDescriptor.csv"))
 
-  resGetData <- getData(c("dataGen/predict/zData.csv",
-                          "dataGen/predict/zDescriptor.csv"),
-                        c("dataGen/predict/gaussianData.csv",
+  resGetData <- getData(c("dataGen/predict/gaussianData.csv",
                           "dataGen/predict/gaussianDescriptor.csv"),
                         c("dataGen/predict/categoricalData.csv",
                           "dataGen/predict/categoricalDescriptor.csv"),
                         c("dataGen/predict/poissonData.csv",
                           "dataGen/predict/poissonDescriptor.csv"))
-   
-#   lm <- getData(c("dataGen/predict/gaussianData.csv",
-#                   "dataGen/predict/gaussianDescriptor.csv"))
-   
-#   lm <- getData(c("dataGen/predict/poissonData.csv",
-#                   "dataGen/predict/poissonDescriptor.csv"))
-
-#   lm <- getData(c("dataGen/learn/categoricalData.csv",
-#                   "dataGen/learn/categoricalDescriptor.csv"))
+  
+  #   lm <- getData(c("dataGen/predict/gaussianData.csv",
+  #                   "dataGen/predict/gaussianDescriptor.csv"))
+  
+  #   lm <- getData(c("dataGen/predict/poissonData.csv",
+  #                   "dataGen/predict/poissonDescriptor.csv"))
+  
+  #   lm <- getData(c("dataGen/learn/categoricalData.csv",
+  #                   "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of strategy list
   mcStrategy <- list(nbTrialInInit = 2,
@@ -155,7 +167,7 @@ testGenDataPredict <- function(param,
                      nbIter = 100,
                      nbGibbsBurnInIter = 100,
                      nbGibbsIter = 100)
-
+  
   # launch of the MixtComp algorithm
   res <- mixtCompPredict(resGetData$lm,
                          param,

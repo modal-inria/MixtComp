@@ -42,7 +42,7 @@ IMixtureComposerBase::IMixtureComposerBase(int nbSample,
     idName_("z_class")
 {
   zi_.resizeArrays(nbSample);
-  intializeMixtureParameters(); // default values that will be overwritten either by pStep (learning), or setDataParam (prediction)
+  intializeMixtureParameters(); // default values that will be overwritten either by pStep (learning), or eStepObserved (prediction)
 }
 
 /* copy constructor */
@@ -78,7 +78,7 @@ int IMixtureComposerBase::sStep()
 #ifdef MC_DEBUG
   std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
 #endif
-    indPerClass[zi_.data_(i)] += 1;
+    indPerClass(zi_.data_(i)) += 1;
   }
   int minIndPerClass = indPerClass.minCoeff();
 #ifdef MC_DEBUG

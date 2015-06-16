@@ -24,7 +24,7 @@
 #ifndef MIXT_CONSTANTS_H_
 #define MIXT_CONSTANTS_H_
 
-#include "../LinAlg/mixt_LinAlg.h"
+#include "../LinAlg/mixt_LinAlg.h" // for the definition of Real type
 
 namespace mixt
 {
@@ -40,6 +40,7 @@ extern const Real pi; // pi
 extern const Real l2pi; // constant used in pdf computation for normal law
 extern const int minNbPresentValues; // minimum number of present values
 extern const int nbClusterMax; // maximum number of clusters that can be asked
+extern const std::string progressFile; // progress file name
 extern const Real minInf; // value of log(0)
 
 } // namespace mixt

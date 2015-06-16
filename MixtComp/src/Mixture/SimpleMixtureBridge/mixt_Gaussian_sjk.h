@@ -65,6 +65,8 @@ class Gaussian_sjk
     void setModalities(int nbModalities);
 
     void writeParameters(std::ostream& out) const;
+
+    bool possibleNullProbability() const {return false;} // no individual can possibly have a null probability
   private:
     int nbCluster_;
     Vector<Real> param_;

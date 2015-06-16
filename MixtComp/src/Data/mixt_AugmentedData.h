@@ -41,12 +41,14 @@ template <typename DataType>
 class Range
 {
   public:
-    Range(DataType min,
-          DataType max);
+    Range(DataType min = std::numeric_limits<int>::quiet_NaN(),
+          DataType max = std::numeric_limits<int>::quiet_NaN(),
+          bool hasRange = false);
     ~Range(){};
     DataType min_;
     DataType max_;
     DataType range_;
+    bool hasRange_;
 };
 
 template <typename DataType>
@@ -65,8 +67,7 @@ class AugmentedData
     AugmentedData() :
       nbSample_(0),
       misCount_(nb_enum_MisType_),
-      dataRange_(Type(0),
-                 Type(0)),
+      dataRange_(),
       rangeUpdate_(false)
       {
         for (int i = 0; i < nb_enum_MisType_; ++i) // initialize counter for each type of missing value to 0
@@ -200,11 +201,6 @@ class AugmentedData
       {
         dataRange_ = Range<Type>(min, max);
       }
-      else // in prediction, a variable can be completely missing
-      {
-        dataRange_ = Range<Type>(0.,
-                                 0.5); // default range, should allow for initialization in prediction for all types of data
-      }
 #ifdef MC_DEBUG
       std::cout << "AugmentedData::computeRange" << std::endl;
       std::cout << "min: " << min << ", max: " << max << std::endl;
@@ -247,9 +243,6 @@ class AugmentedData
 
     /** Remove the missing values by uniform samplings */
     void removeMissing();
-
-    /** Remove the missing values by uniform samplings, taking into account that classes begin at 0 no matter the minModality value */
-    void removeMissingClass();
 
     /**
      * In-place sort every descriptor of missing values, and check for duplicates, which are currently forbidden

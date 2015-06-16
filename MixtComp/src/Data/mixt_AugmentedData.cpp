@@ -29,18 +29,22 @@ namespace mixt
 
 template<>
 Range<Real>::Range(Real min,
-                   Real max) :
+                   Real max,
+                   bool hasRange) :
     min_(min),
     max_(max),
-    range_(max - min)
+    range_(max - min),
+    hasRange_(hasRange)
 {}
 
 template<>
 Range<int>::Range(int min,
-                  int max) :
+                  int max,
+                  bool hasRange) :
     min_(min),
     max_(max),
-    range_(max - min + 1) // used to store the number of modalities, for example
+    range_(max - min + 1), // used to store the number of modalities, for example,
+    hasRange_(hasRange)
 {}
 
 template<>
@@ -133,65 +137,6 @@ void AugmentedData<Vector<int> >::removeMissing()
     if (misData_(i).first != present_)
     {
       int sampleVal;
-      int nbModalities = dataRange_.range_;
-#ifdef MC_DEBUG
-      std::cout << "i: " << i << ", j: " << j << std::endl;
-      std::cout << "firstModality: " << firstModality << ", nbModalities: " << nbModalities << std::endl;
-#endif
-      switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
-      {
-        case present_:
-        {}
-        break;
-
-        case missing_:
-        {
-          Vector<Real> modalities(nbModalities);
-          modalities = 1. / nbModalities;
-          sampleVal = multi_.sample(modalities);
-        }
-        break;
-
-        case missingFiniteValues_:
-        {
-          Real proba = 1. / misData_(i).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
-          Vector<Real> modalities(nbModalities);
-          modalities = 0.;
-          for(std::vector<int>::const_iterator itParam = misData_(i).second.begin();
-              itParam != misData_(i).second.end();
-              ++itParam)
-          {
-#ifdef MC_DEBUG
-          std::cout << "\tproba: " << proba << std::endl;
-#endif
-            modalities[*itParam] = proba;
-          }
-          sampleVal = multi_.sample(modalities);
-        }
-        break;
-
-        default: // other types of intervals not present in integer data
-        {}
-        break;
-      }
-      data_(i) = sampleVal;
-    }
-  }
-}
-
-template<>
-void AugmentedData<Vector<int> >::removeMissingClass()
-{
-#ifdef MC_DEBUG
-  std::cout << "AugmentedData<Matrix<int> >::removeMissing" << std::endl;
-#endif
-
-  for (int i = 0; i < misData_.rows(); ++i)
-  {
-    if (misData_(i).first != present_)
-    {
-      int sampleVal;
-      int firstModality = dataRange_.min_;
       int nbModalities = dataRange_.range_;
 #ifdef MC_DEBUG
       std::cout << "i: " << i << ", j: " << j << std::endl;

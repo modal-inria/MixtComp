@@ -23,6 +23,7 @@
 
 #include "mixt_GibbsStrategy.h"
 #include "../Various/mixt_Timer.h"
+#include "../Various/mixt_Various.h"
 
 namespace mixt
 {
@@ -56,11 +57,23 @@ std::string GibbsStrategy::run()
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
 
+  warnLog += p_composer_->eStepObserved(); // compute observed tik
+  if (warnLog.size() != 0) // impossible individuals detected, execution is aborted
+  {
+    return warnLog;
+  }
+  p_composer_->sStep(); // class are sampled using the observed probabilities, no minimum number of individual per class is required in prediction
+  p_composer_->samplingStep(); // in prediction, parameters are know, samplingStep is used instead of removeMissing
+
   Timer myTimer;
   myTimer.setName("Gibbs: burn-in");
   for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbBurnInIterGibbs_; ++iterBurnInGibbs)
   {
-    myTimer.iteration(iterBurnInGibbs, nbBurnInIterGibbs_);
+    myTimer.iteration(iterBurnInGibbs, nbBurnInIterGibbs_ - 1);
+    writeProgress(0, // group
+                  1, // groupMax
+                  iterBurnInGibbs,
+                  nbBurnInIterGibbs_); // progress write in progress file
 #ifdef MC_DEBUG
     std::cout << "GibbsStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
 #endif
@@ -69,7 +82,9 @@ std::string GibbsStrategy::run()
     p_composer_->samplingStep();
   }
 
-  p_composer_->gibbsSampling(nbIterGibbs_);
+  p_composer_->gibbsSampling(nbIterGibbs_,
+                             1, // group
+                             1); // groupMax
 
   return warnLog;
 }

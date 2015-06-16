@@ -27,6 +27,7 @@
 #include "../Various/mixt_Constants.h"
 #include "../Various/mixt_Timer.h"
 #include "../IO/mixt_IO.h"
+#include "../Various/mixt_Various.h"
 
 namespace mixt
 {
@@ -45,7 +46,9 @@ SEMAlgo::SEMAlgo(SEMAlgo const& algo) :
     nbSamplingAttempts_(algo.nbSamplingAttempts_)
 {}
 
-std::string SEMAlgo::run(RunType runType)
+std::string SEMAlgo::run(RunType runType,
+                         int group,
+                         int groupMax)
 {
 #ifdef MC_DEBUG
   std::cout << "SEMAlgo::run, entering" << std::endl;
@@ -63,7 +66,7 @@ std::string SEMAlgo::run(RunType runType)
     p_model_->storeSEMBurnIn(-1,
                              nbIterMax_ - 1); // export of the initial partition
   }
-  else if (runType == longRun_)
+  else if (runType == run_)
   {
     myTimer.setName("SEM run");
   }
@@ -74,7 +77,11 @@ std::string SEMAlgo::run(RunType runType)
     std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
 #endif
 
-    myTimer.iteration(iter, nbIterMax_);
+    myTimer.iteration(iter, nbIterMax_ - 1);
+    writeProgress(group,
+                  groupMax,
+                  iter,
+                  nbIterMax_ - 1);
     // SE steps (e followed by s)
     if (runType == burnIn_
         && (iter / moduloMisClass > 0)
@@ -132,7 +139,7 @@ std::string SEMAlgo::run(RunType runType)
                             nbIterMax_ - 1);
     }
 
-    if (runType == longRun_)
+    if (runType == run_)
     {
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
