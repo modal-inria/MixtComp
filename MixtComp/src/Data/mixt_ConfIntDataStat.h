@@ -85,9 +85,9 @@ class ConfIntDataStat
       }
     }
 
-    const Vector<RowVector<Type> >& getDataStatStorage() const {return dataStatStorage_;};
+    const Vector<RowVector<Type> >& getDataStatStorage() const {return dataStatStorage_;}
 
-    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd);};
+    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd);}
 
   private:
     /** pointer to data array */

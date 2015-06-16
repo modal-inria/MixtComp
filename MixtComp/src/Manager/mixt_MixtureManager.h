@@ -26,6 +26,7 @@
 #define MIXT_MIXTUREMANAGER_H
 
 #include "../Mixture/SimpleMixtureBridge/mixt_MixtureBridge.h"
+#include "../Mixture/Ordinal/mixt_Ordinal.h"
 #include "../Composer/mixt_MixtureComposer.h"
 
 namespace mixt
@@ -114,7 +115,7 @@ class MixtureManager
                                                                                                                                       confidenceLevel);
         return p_bridge;
       }
-      else if (idModel == "Gaussian_sjk")
+      if (idModel == "Gaussian_sjk")
       {
         typename GaussianBridge_sjk_m<DataHandler,
                                       DataExtractor,
@@ -132,7 +133,7 @@ class MixtureManager
                                                                                                                                 confidenceLevel);
         return p_bridge;
       }
-      else if (idModel == "Poisson_k")
+      if (idModel == "Poisson_k")
       {
         typename PoissonBridge_k_m<DataHandler,
                                    DataExtractor,
@@ -150,10 +151,26 @@ class MixtureManager
                                                                                                                           confidenceLevel);
         return p_bridge;
       }
-      else
+      if (idModel == "Ordinal")
       {
-        return 0;
+        Ordinal<DataHandler,
+                DataExtractor,
+                ParamSetter,
+                ParamExtractor>* p_bridge = new Ordinal<DataHandler,
+                                                        DataExtractor,
+                                                        ParamSetter,
+                                                        ParamExtractor>(idName,
+                                                                        nbCluster,
+                                                                        composer.p_zi(),
+                                                                        p_handler_,
+                                                                        p_dataExtractor_,
+                                                                        p_paramSetter_,
+                                                                        p_paramExtractor_,
+                                                                        confidenceLevel);
+        return p_bridge;
       }
+
+      return 0;
     }
 
   private:

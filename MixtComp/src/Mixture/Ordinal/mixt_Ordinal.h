@@ -25,6 +25,7 @@
 #define MIXT_ORDINAL
 
 #include "../mixt_IMixture.h"
+#include "mixt_BOSPath.h"
 
 namespace mixt
 {
@@ -52,50 +53,17 @@ class Ordinal : public IMixture
       augData_(),
       nbInd_(0), // number of individuals will be set during setDataParam
       confidenceLevel_(confidenceLevel),
-      sampler_(&m_augDataij_,
-               getParam(),
-               nbClass),
-      dataStatComputer_(&m_augDataij_,
-                        &dataStatStorage_,
+      dataStatComputer_(augData_,
                         confidenceLevel),
-      paramStat_(param_,
-                 paramStatStorage_,
-                 paramLogStorage_,
-                 confidenceLevel),
-      likelihood_(getParam(),
-                  getData(),
-                  getDataStatStorage(),
-                  nbClass),
+      muParamStatComputer_(mu_,
+                           confidenceLevel),
+      piParamStatComputer_(pi_,
+                           confidenceLevel),
       p_handler_(p_handler_),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
-      // dataStatStorage_ is an empty array at construction
-{}
-
-    /** copy constructor */
-    Ordinal(Ordinal const& ordinal) :
-      IMixture(ordinal),
-      p_zi_(ordinal.p_zi_),
-      nbClass_(ordinal.nbClass_),
-      m_augDataij_(ordinal.m_augDataij_),
-      nbInd_(ordinal.nbInd_),
-      confidenceLevel_(ordinal.confidenceLevel_),
-      sampler_(ordinal.sampler_),
-      dataStatComputer_(ordinal.dataStatComputer_),
-      paramStat_(ordinal.paramStat_),
-      likelihood_(ordinal.likelihood_),
-      p_handler_(ordinal.p_handler_),
-      p_dataExtractor_(ordinal.p_dataExtractor_),
-      p_paramSetter_(ordinal.p_paramSetter_),
-      p_paramExtractor_(ordinal.p_paramExtractor_),
-      dataStatStorage_(ordinal.dataStatStorage_)
-    {
-      mixture_.setData(m_augDataij_.data_);
-    }
-
-    /** copy constructor */
-    Ordinal(MixtureBridge const& bridge);
+    {}
 
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -103,8 +71,11 @@ class Ordinal : public IMixture
      */
     std::string setDataParam(RunMode mode)
     {
+      std::string warnLog;
       // data handler fait son getData et remplit le augData
-      v_path_.resize(nbInd_);
+      // v_path_.resize(nbInd_);
+
+      return warnLog;
     }
 
     /** This function must be defined for simulation of all the latent variables
@@ -120,6 +91,8 @@ class Ordinal : public IMixture
      */
     virtual std::string mStep()
     {
+      std::string warnLog;
+      return warnLog;
     }
 
     /** This function should be used to store any results during the burn-in period
@@ -155,7 +128,7 @@ class Ordinal : public IMixture
      */
     virtual Real lnCompletedProbability(int i, int k)
     {
-
+      return 12.;
     }
 
     /**
@@ -164,7 +137,7 @@ class Ordinal : public IMixture
      */
     virtual Real lnObservedProbability(int i, int k)
     {
-
+      return 12.;
     }
 
     /** This function must return the number of free parameters.
@@ -172,15 +145,7 @@ class Ordinal : public IMixture
      */
     virtual int nbFreeParameter() const
     {
-
-    }
-
-    /** This function must return the number of variables.
-     *  @return Number of variables
-     */
-    virtual int nbVariable() const
-    {
-
+      return 12;
     }
 
     /** This function can be used to write summary of parameters on to the output stream.
@@ -195,6 +160,11 @@ class Ordinal : public IMixture
     {
 
     }
+
+    bool possibleNullProbability() const {return true;}
+
+    void removeMissing() {};
+
   protected:
   private:
     /** Pointer to the zik class label */
@@ -204,13 +174,13 @@ class Ordinal : public IMixture
     int nbClass_;
 
     /** The augmented data set */
-    AugmentedData<Matrix<int> > augData_;
+    AugmentedData<Vector<int> > augData_;
 
     /** Vector containing path for individuals */
-    Vector<BOSPath> v_path_;
+    Vector<BOSPath> path_;
 
     /** Matrix containing observed probability distribution */
-    Matrix<Real> m_proba_;
+    Matrix<Real> proba_;
 
     /** Number of samples in the data set*/
     int nbInd_;
@@ -218,17 +188,20 @@ class Ordinal : public IMixture
     /** Confidence level used in computation of parameters and missing values statistics */
     Real confidenceLevel_;
 
-    /** Mode parameter */
-    Vector<int> v_mu_;
+    /** Mode parameter, one element per class */
+    Vector<int> mu_;
 
-    /** Precision parameter */
-    Vector<Real> v_pi_;
+    /** Precision parameter, one element per class */
+    Vector<Real> pi_;
 
     /** Compute the statistics on missing data during GibbsRun phase */
-    PoissonDataStat dataStatComputer_;
+    ConfIntDataStat<int> dataStatComputer_;
 
-    /** Store the statistics on missing data for export, after the GibbsRun phase */
-    Vector<RowVector<int> > dataStatStorage_;
+    /** Compute the statistics on mu parameter */
+    ConfIntParamStat<int> muParamStatComputer_;
+
+    /** Compute the statistics on pi parameter */
+    ConfIntParamStat<Real> piParamStatComputer_;
 
     /** Pointer to the data handler */
     const DataHandler* p_handler_;
