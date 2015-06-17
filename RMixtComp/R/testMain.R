@@ -123,7 +123,8 @@ testGenDataLearn <- function(nbClass = 2,
     warning(res$mixture$warnLog)
   }
   
-  confMat <- confusionMatrix("dataGen/learn/classIn.csv",
+  confMat <- confusionMatrix(nbClass,
+                             "dataGen/learn/classIn.csv",
                              res$variable)
   print(confMat)
   cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
@@ -183,7 +184,8 @@ testGenDataPredict <- function(param,
     warning(res$mixture$warnLog)
   }
   
-  confMat <- confusionMatrix("dataGen/predict/classIn.csv",
+  confMat <- confusionMatrix(nbClass,
+                             "dataGen/predict/classIn.csv",
                              res$variable)
   print(confMat)
   cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
@@ -194,15 +196,16 @@ testGenDataPredict <- function(param,
   return(res)
 }
 
-confusionMatrix <- function(classInFile,
+confusionMatrix <- function(nbClass,
+                            classInFile,
                             dataParam)
 {
   classIn <- read.csv2(classInFile,
                        header = FALSE,
                        dec = ".")
   matConf <- matrix(0,
-                    max(classIn),
-                    max(classIn))
+                    nbClass,
+                    nbClass)
   for (i in 1:nrow(classIn))
   {
     matConf[classIn[i, 1],
