@@ -15,14 +15,17 @@ testLearnPredict <- function(regen = TRUE)
   cat("Launching testGenDataLearn\n")
   res <- testGenDataLearn(regen = regen)
   cat("Launching testGenDataPredict\n")
-  myDataPredict <- testGenDataPredict(res$variable$param)
-  return(myDataPredict)
+  if (nchar(res$mixture$warnLog) == 0)
+  {
+    myDataPredict <- testGenDataPredict(res$variable$param)
+    return(myDataPredict)
+  }
 }
 
 testGenDataLearn <- function(nbClass = 2,
                              nbBurnInIter = 100,
                              nbSampleLearn = 50,
-                             nbSamplePredict = 50,
+                             nbSamplePredict = 100,
                              confidenceLevel = 0.95,
                              regen = TRUE)
 {  
