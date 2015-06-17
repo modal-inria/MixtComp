@@ -79,6 +79,9 @@ Real CategoricalLikelihood::lnObservedLikelihood(int i, int k)
   {
     case present_: // likelihood for present data
     {
+#ifdef MC_DEBUG
+      std::cout << "p_augData_->data_(i, 0): " << p_augData_->data_(i, 0) << std::endl;
+#endif
       proba = (*p_param_)(k * nbModalities + p_augData_->data_(i, 0) - minModality);
     }
     break;

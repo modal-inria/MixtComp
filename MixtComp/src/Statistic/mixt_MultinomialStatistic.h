@@ -67,6 +67,9 @@ class MultinomialStatistic
         for (int j = 0; j < cols; ++j)
         {
           cumProb += modalities(i, j);
+#ifdef MC_DEBUG
+            std::cout << "x: " << x ", cumProb: " << cumProb << std::endl;
+#endif
           if (x < cumProb)
           {
 #ifdef MC_DEBUG
