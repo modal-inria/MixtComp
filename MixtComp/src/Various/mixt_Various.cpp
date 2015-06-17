@@ -40,7 +40,7 @@ void writeProgress(int group,
   Real inGroupPoint = (Real)iteration / (Real)(iterationMax + 1);
   Real globalPoint = startPoint + inGroupPoint * groupSize;
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "writeProgress, groupSize: " << groupSize
                 << ", startPoint: " << startPoint
                 << ", inGroupPoint: " << inGroupPoint

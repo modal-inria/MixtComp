@@ -65,10 +65,6 @@ class Ordinal : public IMixture
       p_paramExtractor_(p_paramExtractor)
     {}
 
-    /** This function will be defined to set the data into your data containers.
-     *  To facilitate data handling, framework provide templated functions,
-     *  that can be called directly to get the data.
-     */
     std::string setDataParam(RunMode mode)
     {
       std::string warnLog;
@@ -78,36 +74,22 @@ class Ordinal : public IMixture
       return warnLog;
     }
 
-    /** This function must be defined for simulation of all the latent variables
-     * and/or missing data excluding class labels. The class labels will be
-     * simulated by the framework itself because to do so we have to take into
-     * account all the mixture laws. do nothing by default.
-     */
     virtual void samplingStep(int ind)
     {
     }
 
-    /** This function is equivalent to Mstep and must be defined to update parameters.
-     */
     virtual std::string mStep()
     {
       std::string warnLog;
       return warnLog;
     }
 
-    /** This function should be used to store any results during the burn-in period
-     *  @param iteration Provides the iteration number during the burn-in period
-     */
     virtual void storeSEMBurnIn(int iteration,
                                int iterationMax)
     {
 
     }
 
-    /** This function should be used to store any intermediate results during
-     *  various iterations after the burn-in period.
-     *  @param iteration Provides the iteration number beginning after the burn-in period.
-     */
     virtual void storeSEMRun(int iteration,
                              int iterationMax)
     {
@@ -122,10 +104,6 @@ class Ordinal : public IMixture
 
     }
 
-    /**
-     * Completed likelihood, using the current values for unknown values
-     * @return the completed log-likelihood
-     */
     virtual Real lnCompletedProbability(int i, int k)
     {
       return 12.;
@@ -140,17 +118,11 @@ class Ordinal : public IMixture
       return 12.;
     }
 
-    /** This function must return the number of free parameters.
-     *  @return Number of free parameters
-     */
     virtual int nbFreeParameter() const
     {
       return 12;
     }
 
-    /** This function can be used to write summary of parameters on to the output stream.
-     * @param out Stream where you want to write the summary of parameters.
-     */
     virtual void writeParameters(std::ostream& out) const
     {
 
@@ -161,9 +133,12 @@ class Ordinal : public IMixture
 
     }
 
-    bool possibleNullProbability() const {return true;}
+    bool possibleNullProbability() const {return false;} // a precision of 1 concentrates the probability on the mode ??? Therefore should be true ? -> Very long initialization ...
 
-    void removeMissing() {};
+    void removeMissing()
+    {
+      // should use BOSPath::initPath()
+    };
 
   protected:
   private:
