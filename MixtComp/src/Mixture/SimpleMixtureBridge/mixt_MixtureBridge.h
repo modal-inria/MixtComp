@@ -170,26 +170,27 @@ class MixtureBridge : public mixt::IMixture
           p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
                                    param_);
           int nbParam = param_.rows() / nbClass_; // number of parameters for each cluster
-          if (mixture_.hasModalities()) // predict data not representative of population, information from learning data set must be used
+          if (mixture_.hasModalities()) // all modalities might not be present in the predict set, and as such the real data range from the learning set must be used
           {
-            m_augDataij_.dataRange_.min_ = minModality;
-            m_augDataij_.dataRange_.max_ = minModality + nbParam - 1;
-            m_augDataij_.dataRange_.range_ = nbParam;
             mixture_.setModalities(nbParam);
           }
           mixture_.setParameters(param_);
           paramStatStorage_.resize(param_.rows(), // paramStatStorage_ is set now, and will not be modified furing predict run
                                    1); // no quantiles have to be computed for imported parameters, hence the single column
           paramStatStorage_.col(0) = param_;
-          // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
-          // in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
-          if (mixture_.checkMaxVal() && mixture_.maxVal() < m_augDataij_.dataRange_.max_)
+          if (mixture_.checkMaxVal() && mixture_.maxVal() < m_augDataij_.dataRange_.max_) // check the predict observed values to see if they are in the range of the learn observed values
           {
             std::stringstream sstm;
             sstm << "Variable: " << idName() << " requires a maximum value of " << mixture_.maxVal()
                  << " for the data during prediction. This maximum value usually corresponds to the maximum value used during the learning phase."
                  << " The maximum value in the data provided for prediction is : " << m_augDataij_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();
+          }
+          if (mixture_.hasModalities()) // now that predict observed values have been checked, the real data range must be used for all data
+          {
+            m_augDataij_.dataRange_.min_ = minModality;
+            m_augDataij_.dataRange_.max_ = minModality + nbParam - 1;
+            m_augDataij_.dataRange_.range_ = nbParam;
           }
   #ifdef MC_DEBUG
           std::cout << "\tparam set " << std::endl;
@@ -211,7 +212,7 @@ class MixtureBridge : public mixt::IMixture
                  << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
             warnLog += sstm.str();
           }
-          mixture_.setModalities(m_augDataij_.dataRange_.max_);
+          mixture_.setModalities(m_augDataij_.dataRange_.max_ + 1 - minModality);
         }
         dataStatStorage_.resize(nbSample_,
                                 1);
