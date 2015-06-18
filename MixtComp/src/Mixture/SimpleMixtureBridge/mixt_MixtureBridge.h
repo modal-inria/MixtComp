@@ -163,11 +163,8 @@ class MixtureBridge : public IMixture
           p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
                                    param_);
           int nbParam = param_.rows() / nbClass_; // number of parameters for each cluster
-          if (mixture_.hasModalities()) // predict data not representative of population, information from learning data set must be used
+          if (mixture_.hasModalities()) // all modalities might not be present in the predict set, and as such the real data range from the learning set must be used
           {
-            augData_.dataRange_.min_ = 0;
-            augData_.dataRange_.max_ = nbParam - 1;
-            augData_.dataRange_.range_ = nbParam;
             mixture_.setModalities(nbParam);
           }
           mixture_.setParameters(param_);
@@ -181,6 +178,12 @@ class MixtureBridge : public IMixture
                  << " for the data during prediction. This maximum value usually corresponds to the maximum value used during the learning phase."
                  << " The maximum value in the data provided for prediction is : " << augData_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();
+          }
+          if (mixture_.hasModalities()) // now that predict observed values have been checked, the real data range must be used for all data
+          {
+            augData_.dataRange_.min_ = minModality;
+            augData_.dataRange_.max_ = minModality + nbParam - 1;
+            augData_.dataRange_.range_ = nbParam;
           }
   #ifdef MC_DEBUG
           std::cout << "\tparam set " << std::endl;
