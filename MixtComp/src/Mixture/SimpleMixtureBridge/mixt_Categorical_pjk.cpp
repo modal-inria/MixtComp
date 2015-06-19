@@ -208,4 +208,16 @@ void Categorical_pjk::writeParameters(std::ostream& out) const
   }
 }
 
+bool Categorical_pjk::possibleNullProbability() const
+{
+  if (param_.minCoeff() < epsilon) // at least one proportion has been estimated at zero
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 } // namespace mixt

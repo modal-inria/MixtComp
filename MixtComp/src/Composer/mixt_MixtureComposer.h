@@ -216,6 +216,8 @@ class MixtureComposer : public IMixtureComposerBase
 
     void removeMissing();
 
+    void lnObservedLikelihoodDebug();
+
   protected:
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
