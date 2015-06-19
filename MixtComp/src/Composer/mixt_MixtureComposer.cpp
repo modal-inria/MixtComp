@@ -86,7 +86,7 @@ void MixtureComposer::lnObservedLikelihoodDebug()
   {
     for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
     {
-      if ((*it)->lnObservedLikelihood(i, zi_.data_(i)) == minInf)
+      if ((*it)->lnObservedProbability(i, zi_.data_(i)) == minInf)
       {
         std::cout << "MixtureComposer::lnObservedLikelihoodDebug, minInf, i: " << i << ", zi_.data_(i): " << zi_.data_(i) << ", idName: " << (*it)->idName() << std::endl;
       }
