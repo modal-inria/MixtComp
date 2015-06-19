@@ -77,6 +77,27 @@ Real MixtureComposer::lnObservedLikelihood(int i, int k)
 
 /** Observed data, and marginalization over classes
  * @return the value of the observed likelihood */
+void MixtureComposer::lnObservedLikelihoodDebug()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::lnObservedLikelihoodDebug() " << std::endl;
+#endif
+  Real lnLikelihood = 0.;
+
+  for (int i = 0; i < nbSample_; ++i)
+  {
+    for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
+    {
+      if ((*it)->lnObservedLikelihood(i, zi_.data_(i)) == minInf)
+      {
+        std::cout << "MixtureComposer::lnObservedLikelihoodDebug, minInf, i: " << i << ", zi_.data_(i): " << zi_.data_(i) << ", idName: " << (*it)->idName() << std::endl;
+      }
+    }
+  }
+}
+
+/** Observed data, and marginalization over classes
+ * @return the value of the observed likelihood */
 Real MixtureComposer::lnObservedLikelihood()
 {
 #ifdef MC_DEBUG

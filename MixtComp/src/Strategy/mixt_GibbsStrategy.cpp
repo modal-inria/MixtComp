@@ -86,6 +86,10 @@ std::string GibbsStrategy::run()
                              1, // group
                              1); // groupMax
 
+#ifdef MC_DEBUG
+  p_composer_->lnObservedLikelihoodDebug();
+#endif
+
   return warnLog;
 }
 
