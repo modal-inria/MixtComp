@@ -68,45 +68,99 @@ class Ordinal : public IMixture
     std::string setDataParam(RunMode mode)
     {
       std::string warnLog;
-      // data handler fait son getData et remplit le augData
       // v_path_.resize(nbInd_);
+      // range check
+      // no imputation: either in removeMissing for learn or eStepObserved for prediction
+      // path_ elements, setInit and setEnd must be called according to the content of AugmentedData
+
+      p_handler_->getData(idName(),
+                          augData_,
+                          nbInd_,
+                          paramStr_,
+                          -minModality, // ordinal data are modalities
+                          warnLog);
+      augData_.computeRange();
+
+      std::string tempLog  = augData_.checkMissingType(acceptedType()); // check if the missing data provided are compatible with the model
+                  tempLog += augData_.sortAndCheckMissing(); // sort and check for duplicates in missing values descriptions
+
+      if(tempLog.size() > 0) // check on the missing values description
+      {
+        std::stringstream sstm;
+        sstm << "Variable " << idName() << " with Ordinal model has a problem with the descriptions of missing values.\n" << tempLog;
+        warnLog += sstm.str();
+      }
+      else if (augData_.dataRange_.min_ < 0) // modality encoding is 0-based
+      {
+        std::stringstream sstm;
+        sstm << "Variable: " << idName() << " is described by an Ordinal model which requires a minimum value of 0 in either provided values or bounds."
+             << " The minimum value currently provided is : " << augData_.dataRange_.min_ << std::endl;
+        warnLog += sstm.str();
+      }
+      else // minimum value requirements have been met, whether the mode is learning or prediction
+      {
+        if (mode == learning_)
+        {
+          if (augData_.misCount_(present_) < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
+          {
+            std::stringstream sstm;
+            sstm << "Variable: " << idName() << " only has " << augData_.misCount_(present_)
+                 << " present values. Maybe there is an error in the data encoding. If the variable truly has less than "
+                 << minNbPresentValues
+                 << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
+            warnLog += sstm.str();
+          }
+          nbModalities_ = augData_.dataRange_.max_ + 1;
+        }
+        else // prediction mode
+        {
+          // as for categorical model, nbModalities must be computed from parameters
+          // modalities range must be checked
+          // compute observed probability right now as it could be needed at eStepObserved, and WILL be needed at the logObservedLikelihood computation at the end in any cases
+        }
+      }
 
       return warnLog;
     }
 
     virtual void samplingStep(int ind)
     {
+      path_(ind).samplePath(mu_((*p_zi_)(ind)),
+                            pi_((*p_zi_)(ind)),
+                            sizeTuple); // one round of Gibbs sampler for the designated individual
     }
 
     virtual std::string mStep()
     {
       std::string warnLog;
+      // pi directly obtained from formula
+      // mu obtaining from direct computation over all possible values
       return warnLog;
     }
 
     virtual void storeSEMBurnIn(int iteration,
-                               int iterationMax)
+                                int iterationMax)
     {
-
+      // nothing to be done here
     }
 
     virtual void storeSEMRun(int iteration,
                              int iterationMax)
     {
-      // at last iteration, compute the obsersved probability distribution and store it
-      // in m_proba_
+      // ConfIntStat used to sample
+      // at last iteration, compute the observed probability distribution logProba_
     }
 
     virtual void storeGibbsRun(int sample,
                                int iteration,
                                int iterationMax)
     {
-
+      // ConfIntStat called to sample value
     }
 
     virtual Real lnCompletedProbability(int i, int k)
     {
-      return 12.;
+      return path_(i).computeLogProba(mu_(k), pi_(k));
     }
 
     /**
@@ -115,38 +169,73 @@ class Ordinal : public IMixture
      */
     virtual Real lnObservedProbability(int i, int k)
     {
-      return 12.;
+      // should be integrated over the various types of interval values
+      // return logProba_(i, k);
+      return 12;
     }
 
     virtual int nbFreeParameter() const
     {
-      return 12;
+      return 2;
     }
 
     virtual void writeParameters(std::ostream& out) const
     {
-
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        out << "Class: " << k << std::endl;
+        out << "mu: " << mu_(k) << std::endl;
+        out << "pi_: " << pi_(k) << std::endl;
+      }
     }
 
     virtual void exportDataParam() const
     {
-
+      // add double matrices case to DataExtractor and ParamExtractor
     }
 
-    bool possibleNullProbability() const {return false;} // a precision of 1 concentrates the probability on the mode ??? Therefore should be true ? -> Very long initialization ...
+    bool possibleNullProbability() const
+    {
+      if (pi_.minCoeff() > epsilon)
+      {
+        return false;
+      }
+      else
+      {
+        return true; // a precision of 0 concentrates the probability on the mode ??? Therefore should be true ? -> Very long initialization ...
+      }
+    }
 
     void removeMissing()
     {
-      // should use BOSPath::initPath()
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free
+      }
     };
 
-  protected:
+    const Vector<bool>& acceptedType()
+    {
+      Vector<bool> at(nb_enum_MisType_);
+      at(0) = true; // present_,
+      at(1) = true;// missing_,
+      at(2) = true;// missingFiniteValues_,
+      at(3) = false;// missingIntervals_,
+      at(4) = false;// missingLUIntervals_,
+      at(5) = false;// missingRUIntervals_,
+      return at;
+    }
+
   private:
+
     /** Pointer to the zik class label */
     Vector<int> const* p_zi_;
 
     /** Number of classes */
     int nbClass_;
+
+    /** Number of modalities */
+    int nbModalities_;
 
     /** The augmented data set */
     AugmentedData<Vector<int> > augData_;
@@ -154,11 +243,16 @@ class Ordinal : public IMixture
     /** Vector containing path for individuals */
     Vector<BOSPath> path_;
 
-    /** Matrix containing observed probability distribution */
-    Matrix<Real> proba_;
+    /** Matrix containing observed log probability distribution
+     * Modalities in rows
+     * Classes in columns */
+    Matrix<Real> logProba_;
 
     /** Number of samples in the data set*/
     int nbInd_;
+
+    /** Optional string parameters */
+    std::string paramStr_;
 
     /** Confidence level used in computation of parameters and missing values statistics */
     Real confidenceLevel_;

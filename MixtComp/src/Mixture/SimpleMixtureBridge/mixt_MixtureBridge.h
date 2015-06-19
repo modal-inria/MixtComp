@@ -158,7 +158,23 @@ class MixtureBridge : public IMixture
       {
         mixture_.setData(augData_.data_);
 
-        if (mode == prediction_) // predict mode
+        if (mode == learning_) // learning mode
+        {
+  #ifdef MC_DEBUG
+          std::cout << "\tparam not set " << std::endl;
+  #endif
+          if (augData_.misCount_(present_) < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
+          {
+            std::stringstream sstm;
+            sstm << "Variable: " << idName() << " only has " << augData_.misCount_(present_)
+                 << " present values. Maybe there is an error in the data encoding. If the variable truly has less than "
+                 << minNbPresentValues
+                 << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
+            warnLog += sstm.str();
+          }
+          mixture_.setModalities(augData_.dataRange_.max_ + 1); // set the number of modalities
+        }
+        else // predict mode
         {
           p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
                                    param_);
@@ -191,22 +207,7 @@ class MixtureBridge : public IMixture
           std::cout << "\tparam_: " << param_ << std::endl;
   #endif
         }
-        else // learning mode
-        {
-  #ifdef MC_DEBUG
-          std::cout << "\tparam not set " << std::endl;
-  #endif
-          if (augData_.misCount_(present_) < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
-          {
-            std::stringstream sstm;
-            sstm << "Variable: " << idName() << " only has " << augData_.misCount_(present_)
-                 << " present values. Maybe there is an error in the data encoding. If the variable truly has less than "
-                 << minNbPresentValues
-                 << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
-            warnLog += sstm.str();
-          }
-          mixture_.setModalities(augData_.dataRange_.max_ + 1); // set the number of modalities
-        }
+
         dataStat_.resizeStatStorage(nbSample_);
       }
 

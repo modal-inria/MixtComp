@@ -222,7 +222,7 @@ void Gaussian_sjk::writeParameters(std::ostream& out) const
 {
   for (int k = 0; k < nbCluster_; ++k)
   {
-    out << "Component: " << k << std::endl;
+    out << "Class: " << k << std::endl;
     out << "\tmean: " << param_[2 * k    ] << std::endl;
     out << "\tsd: "   << param_[2 * k + 1] << std::endl;
   }

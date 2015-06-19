@@ -184,7 +184,7 @@ void Poisson_k::writeParameters(std::ostream& out) const
 {
   for (int k = 0; k < nbCluster_; ++k)
   {
-    out << "Component: " << k << std::endl;
+    out << "Class: " << k << std::endl;
     out << "\tlambda: " << param_[k] << std::endl;
   }
 

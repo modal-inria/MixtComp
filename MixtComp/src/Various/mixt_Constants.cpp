@@ -43,5 +43,6 @@ const int minNbPresentValues = 3; // minimum number of present values for a give
 const int nbClusterMax = 30; // maximum number of clusters that can be asked
 const std::string progressFile = "progress"; // progress file name
 const Real minInf = std::log(0.); // value of log(0)
+const int sizeTuple = 4; // default size of tuple for Gibbs sampling in BOS model
 
 } // namespace mixt

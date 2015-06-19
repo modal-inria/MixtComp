@@ -200,7 +200,7 @@ void Categorical_pjk::writeParameters(std::ostream& out) const
 {
   for (int k = 0; k < nbCluster_; ++k)
   {
-    out << "Component: " << k << std::endl;
+    out << "Class: " << k << std::endl;
     for (int p = 0; p < nbModalities_; ++p)
     {
       out << "\talpha_ "  << p << ": " << param_(k * nbModalities_ + p) << std::endl;
