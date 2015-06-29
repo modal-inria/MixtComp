@@ -84,12 +84,13 @@ class ConfIntParamStat
       }
     }
 
-    /** Set the storage of parameters, for example in the prediction case */
-    void setParamStorage(const Vector<Type>& param)
+    /** Set the storage of parameters, for example in the prediction case where there is no M-Step, and no
+     * statistics on the estimated parameters. */
+    void setParamStorage()
     {
-      statStorage_.resize(param.rows(),
+      statStorage_.resize(param_.rows(),
                           1); // no quantiles have to be computed for imported parameters, hence the single column
-      statStorage_.col(0) = param;
+      statStorage_.col(0) = param_;
     }
 
     /** fill the parameters with estimators of the expectation, to be used in the Gibbs sampling */

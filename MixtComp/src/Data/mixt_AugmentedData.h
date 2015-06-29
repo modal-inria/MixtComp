@@ -75,6 +75,7 @@ class AugmentedData
           misCount_(i) = 0;
         }
       };
+
     ~AugmentedData() {};
 
     /**

@@ -172,19 +172,22 @@ class MixtureBridge : public IMixture
                  << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
             warnLog += sstm.str();
           }
-          mixture_.setModalities(augData_.dataRange_.max_ + 1); // set the number of modalities
+          if (mixture_.hasModalities())
+          {
+            mixture_.setModalities(augData_.dataRange_.max_ + 1); // set the number of modalities
+          }
         }
         else // predict mode
         {
           p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
                                    param_);
-          int nbParam = param_.rows() / nbClass_; // number of parameters for each cluster
+          int nbModalities = param_.rows() / nbClass_; // number of parameters for each cluster
           if (mixture_.hasModalities()) // all modalities might not be present in the predict set, and as such the real data range from the learning set must be used
           {
-            mixture_.setModalities(nbParam);
+            mixture_.setModalities(nbModalities);
           }
           mixture_.setParameters(param_);
-          paramStat_.setParamStorage(param_); // paramStatStorage_ is set now, and will not be modified during predict run by the paramStat_ object
+          paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object
           // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
           // in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
           if (mixture_.checkMaxVal() && mixture_.maxVal() < augData_.dataRange_.max_)
@@ -197,13 +200,13 @@ class MixtureBridge : public IMixture
           }
           if (mixture_.hasModalities()) // now that predict observed values have been checked, the real data range must be used for all data
           {
-            augData_.dataRange_.min_ = minModality;
-            augData_.dataRange_.max_ = minModality + nbParam - 1;
-            augData_.dataRange_.range_ = nbParam;
+            augData_.dataRange_.min_ = 0;
+            augData_.dataRange_.max_ = nbModalities - 1;
+            augData_.dataRange_.range_ = nbModalities;
           }
   #ifdef MC_DEBUG
           std::cout << "\tparam set " << std::endl;
-          std::cout << "\tnbParam: " << nbParam << std::endl;
+          std::cout << "\tnbParam: " << nbModalities << std::endl;
           std::cout << "\tparam_: " << param_ << std::endl;
   #endif
         }

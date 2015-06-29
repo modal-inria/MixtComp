@@ -74,7 +74,7 @@ class MixtureComposer : public IMixtureComposerBase
     virtual ~MixtureComposer();
 
     /** @return a constant reference on the vector of mixture */
-    inline std::vector<IMixture*> const& v_mixtures() const { return v_mixtures_;}
+    inline std::vector<IMixture*> const& v_mixtures() const {return v_mixtures_;}
 
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
@@ -154,7 +154,7 @@ class MixtureComposer : public IMixtureComposerBase
                        mode);
       if (mode == prediction_) // in prediction, paramStatStorage_ will not be modified later during the run
       {
-        paramStat_.setParamStorage(prop_); // paramStatStorage_ is set now, and will not be modified further during predict run
+        paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
       }
       dataStat_.resizeStatStorage(nbSample_);
 
