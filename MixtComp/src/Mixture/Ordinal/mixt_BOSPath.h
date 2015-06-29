@@ -136,6 +136,9 @@ class BOSPath
     void forwardSamplePath(int mu,
                            Real pi);
 
+    /** Compute the number of z at 1 in path_ */
+    int nbZ() const;
+
     MultinomialStatistic multi_;
 };
 

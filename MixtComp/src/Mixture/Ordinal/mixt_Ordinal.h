@@ -107,7 +107,7 @@ class Ordinal : public IMixture
                  << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
             warnLog += sstm.str();
           }
-          nbModalities_ = augData_.dataRange_.max_ + 1;
+          nbModalities_ = augData_.dataRange_.max_ + 1; // since an offset has been applied during getData, modalities are 0-based
           setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
         }
         else // prediction mode
@@ -120,13 +120,13 @@ class Ordinal : public IMixture
           if (nbModalities_ - 1 < augData_.dataRange_.max_)
           {
             std::stringstream sstm;
-            sstm << "Variable: " << idName() << " requires a maximum value of " << nbModalities_ - 1
+            sstm << "Variable: " << idName() << " requires a maximum value of " << minModality + nbModalities_ - 1
                  << " for the data during prediction. This maximum value corresponds to the maximum value used during the learning phase."
-                 << " The maximum value in the data provided for prediction is : " << augData_.dataRange_.max_ << std::endl;
+                 << " The maximum value in the data provided for prediction is : " << minModality + augData_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();
           }
 
-          // datarange from learning is applied
+          // data range from learning is applied
           augData_.dataRange_.min_ = 0;
           augData_.dataRange_.max_ = nbModalities_ - 1;
           augData_.dataRange_.range_ = nbModalities_;
@@ -146,7 +146,7 @@ class Ordinal : public IMixture
       for (int i = 0; i < nbInd_; ++i)
       {
         path_(i).setInit(0,
-                         augData_.dataRange_.max_); // every initial segment is the same and span all the modalities
+                         augData_.dataRange_.max_); // every initial segment is the same and spans all the modalities
         if (augData_.misData_(i).first == present_) // final value is set
         {
           path_(i).setEnd(augData_.data_(i),
@@ -183,16 +183,56 @@ class Ordinal : public IMixture
 
     virtual void samplingStep(int ind)
     {
-      path_(ind).samplePath(mu_((*p_zi_)(ind)),
-                            pi_((*p_zi_)(ind)),
-                            sizeTuple); // one round of Gibbs sampler for the designated individual
+      if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
+      {
+        path_(ind).forwardSamplePath(mu_((*p_zi_)(ind)),
+                                     pi_((*p_zi_)(ind)));
+      }
+      else // perform one round of Gibbs sampler for the designated individual
+      {
+        path_(ind).samplePath(mu_((*p_zi_)(ind)),
+                              pi_((*p_zi_)(ind)),
+                              sizeTuple);
+      }
+      augData_.data_(ind) = path_(ind).c_(nbModalities_ - 1).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
     virtual std::string mStep()
     {
       std::string warnLog;
-      // pi directly obtained from formula
-      // mu obtaining from direct computation over all possible values
+
+      pi_ = 0.; // parameter is reinitialized
+      Vector<Real> indPerClass(nbClass_);
+      indPerClass = 0;
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        int indClass = (*p_zi_)(i);
+        indPerClass(indClass) += 1.;
+        pi_(indClass) += path_(i).nbZ();
+      }
+      pi_ /= indPerClass;
+
+      // mu obtained from maximization over all possible values
+      Matrix<Real> logLik(nbClass_, nbModalities_);
+      logLik = 0.;
+
+      for (int p = 0; p < nbModalities_; ++p)
+      {
+        for (int i = 0; i < nbInd_; ++i)
+        {
+          int indClass = (*p_zi_)(i);
+          logLik(indClass,
+                 p) += path_(i).computeLogProba(mu_(p),
+                                                pi_(p));
+        }
+      }
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        int maxLik;
+        logLik.row(k).maxCoeff(&maxLik);
+        mu_(k) = maxLik;
+      }
+
       return warnLog;
     }
 
@@ -250,7 +290,7 @@ class Ordinal : public IMixture
 
     virtual void exportDataParam() const
     {
-      // add double matrices case to DataExtractor and ParamExtractor
+      // add double matrices case to DataExtractor and ParamExtractor, or extract everything in a single matrix of Real for the time being ???
     }
 
     bool possibleNullProbability() const

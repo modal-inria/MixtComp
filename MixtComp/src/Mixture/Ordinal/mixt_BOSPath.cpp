@@ -408,6 +408,16 @@ void BOSPath::forwardSamplePath(int mu,
   }
 }
 
+int BOSPath::nbZ() const
+{
+  int nz = 0;
+  for (int node = 0; node < nbNode_; ++node)
+  {
+    nz += c_(node).z_;
+  }
+  return nz;
+}
+
 void displaySegNode(const BOSNode& node)
 {
   std::cout << "\ty: " << node.y_ << std::endl;
