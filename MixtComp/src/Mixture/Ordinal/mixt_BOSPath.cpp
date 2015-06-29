@@ -394,7 +394,7 @@ void BOSPath::forwardSamplePath(int mu,
       currNode.z_ = z;
       currProba(z) = std::exp(currNode.zLogProba(pi));
     }
-    currNode.z_ = multi_.sample(currProba);
+    currNode.z_ = 1 - multi_.sample(currProba);
 
     currProba.resize(currNode.partSize_);
     for (int e = 0; e < currNode.partSize_; ++e)
