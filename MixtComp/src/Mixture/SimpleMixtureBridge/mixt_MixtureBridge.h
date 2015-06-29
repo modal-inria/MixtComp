@@ -193,9 +193,9 @@ class MixtureBridge : public IMixture
           if (mixture_.checkMaxVal() && mixture_.maxVal() < augData_.dataRange_.max_)
           {
             std::stringstream sstm;
-            sstm << "Variable: " << idName() << " requires a maximum value of " << mixture_.maxVal()
+            sstm << "Variable: " << idName() << " requires a maximum value of " << ((mixture_.hasModalities()) ? (minModality) : (0)) + mixture_.maxVal()
                  << " for the data during prediction. This maximum value usually corresponds to the maximum value used during the learning phase."
-                 << " The maximum value in the data provided for prediction is : " << augData_.dataRange_.max_ << std::endl;
+                 << " The maximum value in the data provided for prediction is : " << ((mixture_.hasModalities()) ? (minModality) : (0)) + augData_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();
           }
           if (mixture_.hasModalities()) // now that predict observed values have been checked, the real data range must be used for all data
