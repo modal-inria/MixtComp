@@ -101,6 +101,14 @@ class Iterator : public std::iterator<std::random_access_iterator_tag,
       return (*p_mat_)(i, j);
     }
 
+    Scalar* operator->() const
+    {
+      int i;
+      int j;
+      posToIn(i, j);
+      return &(*p_mat_)(i, j);
+    }
+
     const Iterator& operator++()
     {
       ++pos_;
