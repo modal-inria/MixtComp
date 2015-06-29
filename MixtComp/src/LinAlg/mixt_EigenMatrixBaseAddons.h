@@ -80,6 +80,38 @@ operator%(const MatrixBase<OtherDerived>& other) const
                                                   Eigen::internal::scalar_product_op<Scalar, Scalar>());
 }
 
+/** Component-wise quotient */
+template<typename OtherDerived>
+inline const CwiseBinaryOp<Eigen::internal::scalar_quotient_op<Scalar, Scalar>,
+                           const Derived,
+                           const Derived>
+operator/(const MatrixBase<OtherDerived>& other) const
+{
+  return Eigen::CwiseBinaryOp<Eigen::internal::scalar_quotient_op<Scalar, Scalar>,
+                              const Derived,
+                              const OtherDerived>(derived(),
+                                                  other.derived(),
+                                                  Eigen::internal::scalar_quotient_op<Scalar, Scalar>());
+}
+
+/** Element-wise %= between matrices */
+template<typename OtherDerived>
+inline MatrixBase<Derived>&
+operator%=(const MatrixBase<OtherDerived>& other)
+{
+  (*this) = derived() % other;
+  return *this;
+}
+
+/** Element-wise /= between matrices */
+template<typename OtherDerived>
+inline MatrixBase<Derived>&
+operator/=(const MatrixBase<OtherDerived>& other)
+{
+  (*this) = derived() / other;
+  return *this;
+}
+
 /** Element-wise log computation */
 const CwiseUnaryOp<internal::scalar_log_op<Scalar>,
                    const Derived>
