@@ -50,6 +50,7 @@ class Ordinal : public IMixture
       IMixture(idName),
       p_zi_(p_zi),
       nbClass_(nbClass),
+      nbModalities_(0),
       augData_(),
       nbInd_(0), // number of individuals will be set during setDataParam
       confidenceLevel_(confidenceLevel),
@@ -68,16 +69,12 @@ class Ordinal : public IMixture
     std::string setDataParam(RunMode mode)
     {
       std::string warnLog;
-      // v_path_.resize(nbInd_);
-      // range check
-      // no imputation: either in removeMissing for learn or eStepObserved for prediction
-      // path_ elements, setInit and setEnd must be called according to the content of AugmentedData
 
       p_handler_->getData(idName(),
                           augData_,
                           nbInd_,
                           paramStr_,
-                          -minModality, // ordinal data are modalities
+                          -minModality, // ordinal data are modalities, offset enforces 0-based encoding through the whole mixture
                           warnLog);
       augData_.computeRange();
 
@@ -111,16 +108,77 @@ class Ordinal : public IMixture
             warnLog += sstm.str();
           }
           nbModalities_ = augData_.dataRange_.max_ + 1;
+          setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
         }
         else // prediction mode
         {
-          // as for categorical model, nbModalities must be computed from parameters
-          // modalities range must be checked
-          // compute observed probability right now as it could be needed at eStepObserved, and WILL be needed at the logObservedLikelihood computation at the end in any cases
+          setParam(); // set nbModalities_, mu_ and pi_ using p_paramSetter_
+
+          muParamStatComputer_.setParamStorage();
+          piParamStatComputer_.setParamStorage();
+
+          if (nbModalities_ - 1 < augData_.dataRange_.max_)
+          {
+            std::stringstream sstm;
+            sstm << "Variable: " << idName() << " requires a maximum value of " << nbModalities_ - 1
+                 << " for the data during prediction. This maximum value corresponds to the maximum value used during the learning phase."
+                 << " The maximum value in the data provided for prediction is : " << augData_.dataRange_.max_ << std::endl;
+            warnLog += sstm.str();
+          }
+
+          // datarange from learning is applied
+          augData_.dataRange_.min_ = 0;
+          augData_.dataRange_.max_ = nbModalities_ - 1;
+          augData_.dataRange_.range_ = nbModalities_;
+
+          setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
         }
+
+        dataStatComputer_.resizeStatStorage(nbInd_);
       }
 
       return warnLog;
+    }
+
+    /** Use information in AugmentedData to set the values of every path in path_ */
+    void setPath()
+    {
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        path_(i).setInit(0,
+                         augData_.dataRange_.max_); // every initial segment is the same and span all the modalities
+        if (augData_.misData_(i).first == present_) // final value is set
+        {
+          path_(i).setEnd(augData_.data_(i),
+                          augData_.data_(i));
+        }
+        else if (augData_.misData_(i).first == missing_)
+        {
+          path_(i).setEnd(0,
+                          augData_.dataRange_.max_); // final interval is the same as initial interval
+        }
+        else if (augData_.misData_(i).first == missingIntervals_)
+        {
+          path_(i).setEnd(augData_.misData_(i).second[0],
+                          augData_.misData_(i).second[1]); // bounds of the interval are provided
+        }
+      }
+    }
+
+    /** get parameters from single table, then dispatch it to mu_ and pi_ */
+    void setParam()
+    {
+      Vector<Real> param;
+      p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
+                               param);
+      nbModalities_ = param.size() / (2 * nbClass_);
+      mu_.resize(nbClass_);
+      pi_.resize(nbClass_);
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        mu_(k) = param(2 * k    );
+        pi_(k) = param(2 * k + 1);
+      }
     }
 
     virtual void samplingStep(int ind)
@@ -169,7 +227,8 @@ class Ordinal : public IMixture
      */
     virtual Real lnObservedProbability(int i, int k)
     {
-      // should be integrated over the various types of interval values
+      // should be marginalized over all latent variables
+      // check if logProba has already been computed or not
       // return logProba_(i, k);
       return 12;
     }
@@ -214,13 +273,13 @@ class Ordinal : public IMixture
       }
     };
 
-    const Vector<bool>& acceptedType()
+    Vector<bool> acceptedType()
     {
       Vector<bool> at(nb_enum_MisType_);
       at(0) = true; // present_,
       at(1) = true;// missing_,
-      at(2) = true;// missingFiniteValues_,
-      at(3) = false;// missingIntervals_,
+      at(2) = false;// missingFiniteValues_,
+      at(3) = true;// missingIntervals_,
       at(4) = false;// missingLUIntervals_,
       at(5) = false;// missingRUIntervals_,
       return at;
