@@ -132,6 +132,7 @@ class Ordinal : public IMixture
           augData_.dataRange_.range_ = nbModalities_;
 
           setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
+          computeObservedLogProba(); // parameters are know, so logProba can be computed immediately
         }
 
         dataStatComputer_.resizeStatStorage(nbInd_);
@@ -237,16 +238,37 @@ class Ordinal : public IMixture
     }
 
     virtual void storeSEMBurnIn(int iteration,
-                                int iterationMax)
-    {
-      // nothing to be done here
-    }
+                                int iterationMax) {}
 
     virtual void storeSEMRun(int iteration,
                              int iterationMax)
     {
-      // ConfIntStat used to sample
-      // at last iteration, compute the observed probability distribution logProba_
+      muParamStatComputer_.sampleParam(iteration, iterationMax);
+      piParamStatComputer_.sampleParam(iteration, iterationMax);
+
+      if (iteration == iterationMax) // at last iteration, compute the observed probability distribution logProba_
+      {
+        computeObservedLogProba();
+      }
+    }
+
+    void computeObservedLogProba()
+    {
+      observedLogProba_.resize(nbClass_, nbModalities_);
+      BOSPath samplePath; // BOSPath used for the various samplings
+      samplePath.setInit(0, nbModalities_ - 1);
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        RowVector<Real> nbInd(nbModalities_); // observed frequencies
+        samplePath.setEnd(k, k);
+        nbInd = 0;
+        for (int i = 0; i < nbSampleBOS; ++i)
+        {
+          samplePath.forwardSamplePath(mu_(k), pi_(k)); // complete the individual
+          nbInd(samplePath.c_(nbModalities_ - 1).e_(0)) += 1.; // register the x value, for marginalization
+        }
+        observedLogProba_.row(k) = nbInd / nbSampleBOS;
+      }
     }
 
     virtual void storeGibbsRun(int sample,
@@ -345,7 +367,7 @@ class Ordinal : public IMixture
     /** Matrix containing observed log probability distribution
      * Modalities in rows
      * Classes in columns */
-    Matrix<Real> logProba_;
+    Matrix<Real> observedLogProba_;
 
     /** Number of samples in the data set*/
     int nbInd_;
