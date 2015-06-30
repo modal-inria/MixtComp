@@ -277,9 +277,8 @@ class MixtureBridge : public IMixture
                              iterationMax);
       if (iteration == iterationMax)
       {
-        // reinject the SEM estimated parameters into the mixture
-        paramStat_.setExpectationParam();
-        mixture_.setParameters(param_);
+        paramStat_.setExpectationParam(); // set parameter to mode / expectation
+        mixture_.setParameters(param_); // reinject the SEM estimated parameters into the mixture
 #ifdef MC_DEBUG
         std::cout << "MixtureBridge::storeSEMRun" << std::endl;
         int nbModalities = param_.cols() / nbCluster_;

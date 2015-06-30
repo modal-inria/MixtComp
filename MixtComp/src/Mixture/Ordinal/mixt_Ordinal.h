@@ -248,7 +248,9 @@ class Ordinal : public IMixture
 
       if (iteration == iterationMax) // at last iteration, compute the observed probability distribution logProba_
       {
-        computeObservedProba();
+        muParamStatComputer_.setExpectationParam(); // estimate mu parameter using mode / expectation
+        piParamStatComputer_.setExpectationParam(); // estimate pi parameter using mode / expectation
+        computeObservedProba(); // compute observed probabilities using estimated parameters
       }
     }
 
@@ -330,7 +332,45 @@ class Ordinal : public IMixture
 
     virtual void exportDataParam() const
     {
-      // add double matrices case to DataExtractor and ParamExtractor, or extract everything in a single matrix of Real for the time being ???
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge: exportDataParam, idName(): " << idName() << std::endl;
+#endif
+
+      Matrix<Real> paramStatStorage(2 * nbClass_, muParamStatComputer_.getStatStorage().cols()); // aggregates both mu and pi values
+      Matrix<Real> paramLogStorage (2 * nbClass_, piParamStatComputer_.getLogStorage() .cols()); // aggregates both mu and pi logs
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        paramStatStorage.row(2 * k    ) = muParamStatComputer_.getStatStorage().row(k).cast<Real>();
+        paramStatStorage.row(2 * k + 1) = piParamStatComputer_.getStatStorage().row(k);
+        paramLogStorage .row(2 * k    ) = muParamStatComputer_.getLogStorage ().row(k).cast<Real>();
+        paramLogStorage .row(2 * k + 1) = piParamStatComputer_.getLogStorage ().row(k);
+      }
+      p_dataExtractor_->exportVals(idName(),
+                                   augData_,
+                                   dataStatComputer_.getDataStatStorage()); // export the obtained data using the DataExtractor
+      p_paramExtractor_->exportParam(idName(),
+                                     paramStatStorage,
+                                     paramLogStorage,
+                                     paramNames(),
+                                     confidenceLevel_);
+    }
+
+    std::vector<std::string> paramNames() const
+    {
+      std::vector<std::string> names(nbClass_ * 2);
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        std::stringstream sstmMean, sstmSd;
+        sstmMean << "k: "
+                 << k + minModality
+                 << ", mu: ";
+        sstmSd << "k: "
+               << k + minModality
+               << ", pi";
+        names[2 * k    ] = sstmMean.str();
+        names[2 * k + 1] = sstmSd  .str();
+      }
+      return names;
     }
 
     bool possibleNullProbability() const
