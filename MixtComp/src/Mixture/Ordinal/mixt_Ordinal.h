@@ -132,7 +132,7 @@ class Ordinal : public IMixture
           augData_.dataRange_.range_ = nbModalities_;
 
           setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
-          computeObservedLogProba(); // parameters are know, so logProba can be computed immediately
+          computeObservedProba(); // parameters are know, so logProba can be computed immediately
         }
 
         dataStatComputer_.resizeStatStorage(nbInd_);
@@ -211,13 +211,12 @@ class Ordinal : public IMixture
         indPerClass(indClass) += 1.;
         pi_(indClass) += path_(i).nbZ();
       }
-      pi_ /= indPerClass;
+      pi_ /= indPerClass; // from accounts to frequencies
 
-      // mu obtained from maximization over all possible values
       Matrix<Real> logLik(nbClass_, nbModalities_);
       logLik = 0.;
 
-      for (int p = 0; p < nbModalities_; ++p)
+      for (int p = 0; p < nbModalities_; ++p) // mu obtained from maximization over all possible values
       {
         for (int i = 0; i < nbInd_; ++i)
         {
@@ -227,6 +226,7 @@ class Ordinal : public IMixture
                                                 pi_(p));
         }
       }
+
       for (int k = 0; k < nbClass_; ++k)
       {
         int maxLik;
@@ -238,7 +238,7 @@ class Ordinal : public IMixture
     }
 
     virtual void storeSEMBurnIn(int iteration,
-                                int iterationMax) {}
+                                int iterationMax) {} // nothing to be done here
 
     virtual void storeSEMRun(int iteration,
                              int iterationMax)
@@ -248,13 +248,13 @@ class Ordinal : public IMixture
 
       if (iteration == iterationMax) // at last iteration, compute the observed probability distribution logProba_
       {
-        computeObservedLogProba();
+        computeObservedProba();
       }
     }
 
-    void computeObservedLogProba()
+    void computeObservedProba()
     {
-      observedLogProba_.resize(nbClass_, nbModalities_);
+      observedProba_.resize(nbClass_, nbModalities_);
       BOSPath samplePath; // BOSPath used for the various samplings
       samplePath.setInit(0, nbModalities_ - 1);
       for (int k = 0; k < nbClass_; ++k)
@@ -267,20 +267,22 @@ class Ordinal : public IMixture
           samplePath.forwardSamplePath(mu_(k), pi_(k)); // complete the individual
           nbInd(samplePath.c_(nbModalities_ - 1).e_(0)) += 1.; // register the x value, for marginalization
         }
-        observedLogProba_.row(k) = nbInd / nbSampleBOS;
+        observedProba_.row(k) = nbInd / nbSampleBOS;
       }
     }
 
-    virtual void storeGibbsRun(int sample,
+    virtual void storeGibbsRun(int ind,
                                int iteration,
                                int iterationMax)
     {
-      // ConfIntStat called to sample value
+      dataStatComputer_.sampleVals(ind,
+                                   iteration,
+                                   iterationMax); // ConfIntStat called to sample value
     }
 
     virtual Real lnCompletedProbability(int i, int k)
     {
-      return path_(i).computeLogProba(mu_(k), pi_(k));
+      return path_(i).computeLogProba(mu_(k), pi_(k)); // path_(i) contains a completed individual
     }
 
     /**
@@ -289,15 +291,31 @@ class Ordinal : public IMixture
      */
     virtual Real lnObservedProbability(int i, int k)
     {
-      // should be marginalized over all latent variables
-      // check if logProba has already been computed or not
-      // return logProba_(i, k);
-      return 12;
+      if (augData_.misData_(i).first == present_) //
+      {
+        return std::log(observedProba_(k, augData_.data_(i))); // marginalized only over c_i
+      }
+      else if (augData_.misData_(i).first == missing_) // marginalized over c_i and all modalities: proba is 1.
+      {
+        return 0.;
+      }
+      else if (augData_.misData_(i).first == missingIntervals_) // marginalized over c_i and the observed interval
+      {
+        Real proba = 0;
+        for (int p = augData_.misData_(i).second[0];
+             p < augData_.misData_(i).second[1] + 1;
+             ++p)
+        {
+          proba += observedProba_(k, p);
+        }
+        return std::log(proba);
+      }
+      return std::numeric_limits<Real>:: signaling_NaN(); // fail case
     }
 
     virtual int nbFreeParameter() const
     {
-      return 2;
+      return 1; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
     }
 
     virtual void writeParameters(std::ostream& out) const
@@ -367,7 +385,7 @@ class Ordinal : public IMixture
     /** Matrix containing observed log probability distribution
      * Modalities in rows
      * Classes in columns */
-    Matrix<Real> observedLogProba_;
+    Matrix<Real> observedProba_;
 
     /** Number of samples in the data set*/
     int nbInd_;
