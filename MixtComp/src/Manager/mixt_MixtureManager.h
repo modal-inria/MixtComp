@@ -55,9 +55,10 @@ class MixtureManager
       warnLog_(warnLog)
     {}
 
-    void createMixtures(MixtureComposer& composer,
-                        int nbCluster)
+    std::string createMixtures(MixtureComposer& composer,
+                               int nbCluster)
     {
+      std::string warnLog;
       for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
       {
         std::string idName = it->first;
@@ -71,14 +72,25 @@ class MixtureManager
         std::cout << "composer.p_pk(): " << composer.p_pk()
                   << ", *composer.p_pk(): " << *composer.p_pk() << std::endl;
 #endif
-        // get a mixture fully
+
         IMixture* p_mixture = createMixture(idModel,
                                             idName,
                                             composer,
                                             nbCluster,
                                             confidenceLevel_);
-        if (p_mixture) composer.registerMixture(p_mixture);
+        if (p_mixture)
+        {
+          composer.registerMixture(p_mixture);
+        }
+        else
+        {
+          std::stringstream sstm;
+          sstm << "The model " << idModel << " has been selected to describe the variable " << idName
+               << " but it is not implemented yet. Please choose an available model for this variable." << std::endl;
+          warnLog += sstm.str();
+        }
       }
+      return warnLog;
     }
 
     /** create a mixture and initialize it*
