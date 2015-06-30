@@ -68,7 +68,7 @@ bool Categorical_pjk::checkMinVal() const
 
 int Categorical_pjk::computeNbFreeParameters() const
 {
-  return (nbModalities_ - 1);
+  return nbCluster_ * (nbModalities_ - 1);
 }
 
 void Categorical_pjk::getParameters(Vector<Real>& param) const
