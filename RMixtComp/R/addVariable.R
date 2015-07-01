@@ -4,14 +4,7 @@ addVariable <- function (lm,
                          model)
 {
   warnLog = "" # warnLog will contain the various possible error messages
-  if (is.na(match(model, listModels))) # is the model disallowed ?
-  {
-    warnLog <- paste(warnLog,
-                     "Variable ", id, " can not be added, as model ", model, " is not supported.\n",
-                     "Please check the syntax in the descriptor file.\n",
-                     sep = "")
-  }
-  else if (length(lm) == 0) # first variable is automaticaly added
+  if (length(lm) == 0) # first variable is automaticaly added
   {
     lm[[1]] <- list(data = data,
                     model = model,
