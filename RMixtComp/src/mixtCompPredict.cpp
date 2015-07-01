@@ -81,9 +81,16 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
 
   if (confidenceLevel < 0. || 1. < confidenceLevel)
   {
-    warnLog +=   std::string("confidenceLevel should be in the interval [0;1], but value input is: ")
-               + mixt::type2str(confidenceLevel)
-               + std::string(".\n");
+    std::stringstream sstm;
+    sstm << "ConfidenceLevel should be in the interval [0;1], but current value is: " << confidenceLevel << std::endl;
+    warnLog += sstm.str();
+  }
+
+  if (handler.nbSample() < -1 || handler.nbVariable() < -1)
+  {
+    std::stringstream sstm;
+    sstm << "No valid data provided. Please check the descriptor file." << std::endl;
+    warnLog += sstm.str();
   }
 
   if (warnLog.size() == 0) // data is correct in descriptors, proceed with reading
