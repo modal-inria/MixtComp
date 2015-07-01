@@ -58,6 +58,7 @@ class MixtureManager
                                int nbCluster)
     {
       std::string warnLog;
+      int nbVar = 0; // number of variables
       for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
       {
         std::string idName = it->first;
@@ -80,6 +81,7 @@ class MixtureManager
         if (p_mixture)
         {
           composer.registerMixture(p_mixture);
+          ++nbVar;
         }
         else
         {
@@ -88,6 +90,12 @@ class MixtureManager
                << " but it is not implemented yet. Please choose an available model for this variable." << std::endl;
           warnLog += sstm.str();
         }
+      }
+      if (nbVar == 0)
+      {
+        std::stringstream sstm;
+        sstm << "No valid variable in the input. Please check the descriptor file." << std::endl;
+        warnLog += sstm.str();
       }
       return warnLog;
     }
