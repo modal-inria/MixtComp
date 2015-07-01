@@ -86,7 +86,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
     warnLog += sstm.str();
   }
 
-  if (handler.nbSample() < -1 || handler.nbVariable() < -1)
+  if (handler.nbSample() < 1 || handler.nbVariable() < 1)
   {
     std::stringstream sstm;
     sstm << "No valid data provided. Please check the descriptor file." << std::endl;
