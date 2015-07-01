@@ -71,12 +71,6 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                                       confidenceLevel,
                                                       warnLog);
 
-  // prepare the composer
-  mixt::MixtureComposer composer(handler.nbSample(),
-                                 handler.nbVariable(),
-                                 nbClusters,
-                                 confidenceLevel);
-
   if (nbClusters < 0 || mixt::nbClusterMax < nbClusters)
   {
     std::stringstream sstm;
@@ -94,7 +88,11 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
 
   if (warnLog.size() == 0) // data is correct in descriptors, proceed with reading
   {
-    // create the mixtures, and read / set the data
+    mixt::MixtureComposer composer(handler.nbSample(),
+                                   handler.nbVariable(),
+                                   nbClusters,
+                                   confidenceLevel);
+
     mixt::Timer readTimer("Read Data");
     warnLog += manager.createMixtures(composer,
                                       nbClusters);
@@ -103,45 +101,45 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
                                                          handler,
                                                          mixt::prediction_);
     readTimer.top("data has been read");
+
+    if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
+    {
+      // create the appropriate strategy and transmit the parameters
+      mixt::GibbsStrategy strategy(&composer,
+                                   mcStrategy["nbGibbsBurnInIter"], // number of iterations for Gibbs sampler
+                                   mcStrategy["nbGibbsIter"]); // number of iterations for Gibbs sampler);
+
+      // run the strategy
+      mixt::Timer stratTimer("Strategy Run");
+      warnLog += strategy.run();
+      stratTimer.top("strategy run complete");
+
+      if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
+      {
+        composer.writeParameters(std::cout);
+        composer.exportDataParam<mixt::DataExtractorR,
+                                 mixt::ParamExtractorR>(dataExtractor,
+                                                        paramExtractor);
+
+        // export the composer results to R through modifications of mcResults
+        mcMixture["nbCluster"] = nbClusters;
+        mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
+        mixt::Real lnObsLik = composer.lnObservedLikelihood();
+        mixt::Real lnCompLik = composer.lnCompletedLikelihood();
+        mixt::Real lnSemiCompLik = composer.lnSemiCompletedLikelihood();
+        mcMixture["lnObservedLikelihood"] = lnObsLik;
+        mcMixture["lnSemiCompletedLikelihood"] = lnSemiCompLik;
+        mcMixture["lnCompletedLikelihood"] = lnCompLik;
+        mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+        mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+
+        mcMixture["runTime"] = totalTimer.top("end of run");
+        mcMixture["nbSample"] = composer.nbSample();
+        mcMixture["mode"] = "predict";
+      }
+    }
   }
   
-  if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
-  {
-    // create the appropriate strategy and transmit the parameters
-    mixt::GibbsStrategy strategy(&composer,
-                                 mcStrategy["nbGibbsBurnInIter"], // number of iterations for Gibbs sampler
-                                 mcStrategy["nbGibbsIter"]); // number of iterations for Gibbs sampler);
-
-    // run the strategy
-    mixt::Timer stratTimer("Strategy Run");
-    warnLog += strategy.run();
-    stratTimer.top("strategy run complete");
-  }
-
-  if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
-  {
-    composer.writeParameters(std::cout);
-    composer.exportDataParam<mixt::DataExtractorR,
-                             mixt::ParamExtractorR>(dataExtractor,
-                                                    paramExtractor);
-
-    // export the composer results to R through modifications of mcResults
-    mcMixture["nbCluster"] = nbClusters;
-    mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
-    mixt::Real lnObsLik = composer.lnObservedLikelihood();
-    mixt::Real lnCompLik = composer.lnCompletedLikelihood();
-    mixt::Real lnSemiCompLik = composer.lnSemiCompletedLikelihood();
-    mcMixture["lnObservedLikelihood"] = lnObsLik;
-    mcMixture["lnSemiCompletedLikelihood"] = lnSemiCompLik;
-    mcMixture["lnCompletedLikelihood"] = lnCompLik;
-    mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
-    mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
-
-    mcMixture["runTime"] = totalTimer.top("end of run");
-    mcMixture["nbSample"] = composer.nbSample();
-    mcMixture["mode"] = "predict";
-  }
-
   mcMixture["warnLog"] = warnLog;
   if (warnLog.size() != 0)
   {
@@ -150,7 +148,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   }
 
   mcMixture["runTime"] = totalTimer.top("end of run");
-  mcMixture["nbSample"] = composer.nbSample();
+  mcMixture["nbSample"] = handler.nbSample();
 
   Rcpp::List data = dataExtractor.rcppReturnVal();
   Rcpp::List param = paramExtractor.rcppReturnParam();
