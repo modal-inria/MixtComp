@@ -232,3 +232,24 @@ testGeyser <- function()
   return(list(mcCluster,
               dataParam))
 }
+
+testAERES <- function()
+{
+  nbClass <- 2
+  confidenceLevel <- 0.95
+  
+  resGetData <- getData(c("dataTest/AERES/data.csv",
+                          "dataTest/AERES/desc.csv"))
+  
+  mcStrategy <- list(nbTrialInInit = 2,
+                     nbBurnInIter = 100,
+                     nbIter = 100,
+                     nbGibbsBurnInIter = 100,
+                     nbGibbsIter = 100)
+  
+  # launch of the MixtComp algorithm
+  res <- mixtCompCluster(resGetData$lm,
+                         mcStrategy,
+                         nbClass,
+                         confidenceLevel)
+}
