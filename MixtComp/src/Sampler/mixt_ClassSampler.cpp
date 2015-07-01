@@ -101,7 +101,7 @@ void ClassSampler::sampleIndividual(int i)
 
       default:
       {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "ClassSampler, missing value type unknown" << std::endl;
 #endif
       }

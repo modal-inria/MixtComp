@@ -54,6 +54,8 @@ class Ordinal : public IMixture
       augData_(),
       nbInd_(0), // number of individuals will be set during setDataParam
       confidenceLevel_(confidenceLevel),
+      mu_(nbClass),
+      pi_(nbClass),
       dataStatComputer_(augData_,
                         confidenceLevel),
       muParamStatComputer_(mu_,
@@ -68,6 +70,10 @@ class Ordinal : public IMixture
 
     std::string setDataParam(RunMode mode)
     {
+#ifdef MC_DEBUG
+        std::cout << "Ordinal::setDataParam" << std::endl;
+#endif
+
       std::string warnLog;
 
       p_handler_->getData(idName(),
@@ -108,7 +114,6 @@ class Ordinal : public IMixture
             warnLog += sstm.str();
           }
           nbModalities_ = augData_.dataRange_.max_ + 1; // since an offset has been applied during getData, modalities are 0-based
-          setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
         }
         else // prediction mode
         {
@@ -131,9 +136,16 @@ class Ordinal : public IMixture
           augData_.dataRange_.max_ = nbModalities_ - 1;
           augData_.dataRange_.range_ = nbModalities_;
 
-          setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
           computeObservedProba(); // parameters are know, so logProba can be computed immediately
         }
+
+#ifdef MC_DEBUG
+        std::cout << "augData_.data_" << std::endl;
+        std::cout << augData_.data_ << std::endl;
+#endif
+
+        path_.resize(nbInd_);
+        setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
 
         dataStatComputer_.resizeStatStorage(nbInd_);
       }
@@ -144,6 +156,10 @@ class Ordinal : public IMixture
     /** Use information in AugmentedData to set the values of every path in path_ */
     void setPath()
     {
+#ifdef MC_DEBUG
+      std::cout << "Ordinal::setPath" << std::endl;
+      std::cout << "path_.size(): " << path_.size() << std::endl;
+#endif
       for (int i = 0; i < nbInd_; ++i)
       {
         path_(i).setInit(0,
@@ -184,6 +200,11 @@ class Ordinal : public IMixture
 
     virtual void samplingStep(int ind)
     {
+#ifdef MC_DEBUG
+      std::cout << "Ordinal::samplingStep" << std::endl;
+      std::cout << "ind: " << ind << std::endl;
+      std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
+#endif
       if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
       {
         path_(ind).forwardSamplePath(mu_((*p_zi_)(ind)),
@@ -195,7 +216,7 @@ class Ordinal : public IMixture
                               pi_((*p_zi_)(ind)),
                               sizeTuple);
       }
-      augData_.data_(ind) = path_(ind).c_(nbModalities_ - 1).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
+      augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
     virtual std::string mStep()
@@ -216,14 +237,14 @@ class Ordinal : public IMixture
       Matrix<Real> logLik(nbClass_, nbModalities_);
       logLik = 0.;
 
-      for (int p = 0; p < nbModalities_; ++p) // mu obtained from maximization over all possible values
+      for (int mu = 0; mu < nbModalities_; ++mu) // mu obtained from maximization over all possible values
       {
         for (int i = 0; i < nbInd_; ++i)
         {
           int indClass = (*p_zi_)(i);
           logLik(indClass,
-                 p) += path_(i).computeLogProba(mu_(p),
-                                                pi_(p));
+                 mu) += path_(i).computeLogProba(mu,
+                                                 pi_(indClass));
         }
       }
 
@@ -267,7 +288,7 @@ class Ordinal : public IMixture
         for (int i = 0; i < nbSampleBOS; ++i)
         {
           samplePath.forwardSamplePath(mu_(k), pi_(k)); // complete the individual
-          nbInd(samplePath.c_(nbModalities_ - 1).e_(0)) += 1.; // register the x value, for marginalization
+          nbInd(samplePath.c_(nbModalities_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / nbSampleBOS;
       }
@@ -280,6 +301,10 @@ class Ordinal : public IMixture
       dataStatComputer_.sampleVals(ind,
                                    iteration,
                                    iterationMax); // ConfIntStat called to sample value
+      if (iteration == iterationMax)
+      {
+        dataStatComputer_.imputeData(ind); // impute the missing values using empirical mean
+      }
     }
 
     virtual Real lnCompletedProbability(int i, int k)
@@ -293,6 +318,11 @@ class Ordinal : public IMixture
      */
     virtual Real lnObservedProbability(int i, int k)
     {
+#ifdef MC_DEBUG
+      std::cout << "Ordinal::lnobservedProbability" << std::endl;
+      std::cout << "observedProba_.rows(): " << observedProba_.rows() << ", observedProba_.cols(): " << observedProba_.cols() << std::endl;
+      std::cout << "augData_.data_(i): " << augData_.data_(i) << std::endl;
+#endif
       if (augData_.misData_(i).first == present_) //
       {
         return std::log(observedProba_(k, augData_.data_(i))); // marginalized only over c_i

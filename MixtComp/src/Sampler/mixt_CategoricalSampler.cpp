@@ -99,7 +99,7 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
 
       default:
       {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "CategoricalSampler, missing value type unknown" << std::endl;
 #endif
       }
