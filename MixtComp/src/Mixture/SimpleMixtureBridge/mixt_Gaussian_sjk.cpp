@@ -148,25 +148,24 @@ std::string Gaussian_sjk::mStep()
 
     if (sd < epsilon)
     {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
       std::cout << "\tnull estimated standard deviation" << std::endl;
-      std::cout << "(*p_data_): " << (*p_data_) << std::endl;
-
-      for (int i = 0; i < (*p_data_).rows(); ++i)
-      {
-        if ((*p_zi_)[i] == k)
-        {
-          std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i, 0): " << (*p_data_)(i, 0) << std::endl;
-        }
-      }
+//      std::cout << "(*p_data_): " << (*p_data_) << std::endl;
+//
+//      for (int i = 0; i < (*p_data_).rows(); ++i)
+//      {
+//        if ((*p_zi_)[i] == k)
+//        {
+//          std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i, 0): " << (*p_data_)(i, 0) << std::endl;
+//        }
+//      }
 #endif
-      warn +=   std::string("Gaussian mixture model must have a non null standard deviation in each class."
-                            " A class with estimated mean = ")
-              + type2str(mean)
-              + std::string(" containing ")
-              + type2str(n)
-              + std::string(" samples has an estimated standard deviation of 0. The data is not dispersed enough and values close to this mean might be repeated too often."
-                            " Is this the case ? Have you considered using a Poisson model if you are counting occurrences of events ?\n");
+      std::stringstream sstm;
+      sstm << "Gaussian mixture model must have a non null standard deviation in each class. A class with estimated mean = "
+           << mean << " containing " << n << " samples has an estimated standard deviation of 0."
+           << " The data is not dispersed enough and values close to this mean might be repeated too often."
+           << " Is this the case ? Have you considered using a Poisson model if you are counting occurrences of events ?" << std::endl;
+      warn += sstm.str();
     }
 
     param_[2 * k    ] = mean;

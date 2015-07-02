@@ -83,10 +83,10 @@ class MixtureManager
           composer.registerMixture(p_mixture);
           ++nbVar;
         }
-        else
+        else if (model != "LatentClass")
         {
           std::stringstream sstm;
-          sstm << "The model " << idModel << " has been selected to describe the variable " << idName
+          sstm << "The model " << model << " has been selected to describe the variable " << idName
                << " but it is not implemented yet. Please choose an available model for this variable." << std::endl;
           warnLog += sstm.str();
         }

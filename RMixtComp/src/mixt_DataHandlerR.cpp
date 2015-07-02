@@ -74,9 +74,10 @@ std::string DataHandlerR::listData()
     }
     if (nbSample_ > 0 && nbSample_ != data.size())
     {
-      warnLog +=   std::string("Variable: ") + id + std::string(" has ")
-                 + type2str(data.size()) + std::string(" samples, while the previous variable had ")
-                 + type2str(nbSample_) + std::string(" samples.\n");
+      std::stringstream sstm;
+      sstm << "Variable: " << id << " has " << data.size() << " individuals, while the previous variable had "
+           << nbSample_ << " individuals. All variables must have the same number of individuals." << std::endl;
+      warnLog += sstm.str();
     }
 
     nbSample_ = data.size(); // overwritten, because check has already been performed on the R side
