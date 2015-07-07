@@ -240,6 +240,14 @@ class Ordinal : public IMixture
       }
       pi_ /= indPerClass; // from accounts to frequencies
 
+      if (pi_.minCoeff() < epsilon) // model is not identifiable in at least one class
+      {
+        std::stringstream sstm;
+        sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable is uniformly null. Try using a categorical model, "
+             << "if the number of modalities is not too high." << std::endl;
+        warnLog += sstm.str();
+      }
+
       Matrix<Real> logLik(nbClass_, nbModalities_);
       logLik = 0.;
 
