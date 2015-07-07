@@ -214,7 +214,7 @@ class Ordinal : public IMixture
       {
         path_(ind).samplePath(mu_((*p_zi_)(ind)),
                               pi_((*p_zi_)(ind)),
-                              sizeTuple);
+                              sizeTupleBOS);
       }
       augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
@@ -243,7 +243,7 @@ class Ordinal : public IMixture
       if (pi_.minCoeff() < epsilon) // model is not identifiable in at least one class
       {
         std::stringstream sstm;
-        sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable is uniformly null. Try using a categorical model, "
+        sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly null in at least one class. Try using a categorical model, "
              << "if the number of modalities is not too high." << std::endl;
         warnLog += sstm.str();
       }
@@ -436,9 +436,49 @@ class Ordinal : public IMixture
 
     void removeMissing()
     {
+#ifdef MC_DEBUG_NEW
+      std::cout << "Ordinal::removeMissing" << std::endl;
+#endif
       for (int i = 0; i < nbInd_; ++i)
       {
-        path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free
+        path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
+      }
+
+      Vector<int> muIni(nbClass_); // dummy parameter to remove z = 0 in path_
+
+      MultinomialStatistic multi;
+      RowVector<Real> prop(nbModalities_); // proportion for uniform sample of mu
+      prop = 1. / Real(nbModalities_);
+
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        muIni(k) = multi.sample(prop);
+      }
+
+#ifdef MC_DEBUG_NEW
+      std::cout << "prop: " << std::endl;
+      std::cout << prop << std::endl;
+      std::cout << "muIni:" << std::endl;
+      std::cout << muIni << std::endl;
+      std::cout << "(*p_zi_):" << std::endl;
+      std::cout << (*p_zi_) << std::endl;
+#endif
+
+      for (int i = 0; i < nbInd_; ++i) // Gibbs sampling to remove the
+      {
+        for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
+        {
+#ifdef MC_DEBUG_NEW
+          if (idName_ == "Ordinal1" && i == 0)
+          {
+            std::cout << "n: " << n << std::endl;
+            BOSDisplayPath(path_(i));
+          }
+#endif
+          path_(i).samplePath((*p_zi_)(i), // mu
+                              0.5, // pi, value used to get more non null z
+                              sizeTupleBOS); // sizeTuple
+        }
       }
     };
 

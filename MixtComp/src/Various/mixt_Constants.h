@@ -42,8 +42,9 @@ extern const int minNbPresentValues; // minimum number of present values
 extern const int nbClusterMax; // maximum number of clusters that can be asked
 extern const std::string progressFile; // progress file name
 extern const Real minInf; // value of log(0)
-extern const int sizeTuple; // default size of tuple for Gibbs sampling in BOS model
+extern const int sizeTupleBOS; // default size of tuple for Gibbs sampling in BOS model
 extern const int nbSampleBOS; // number of sample per class to estimate the observed probability
+extern const int nbGibbsIniBOS; // number of Gibbs sampling rounds in initialization to increase variability on z
 
 } // namespace mixt
 

@@ -121,11 +121,11 @@ class BOSPath
      *
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution
-     * @param sizeTuple size of the tuple (number of contiguous nodes allowed to vary simultaneously)
+     * @param sizeTupleMax maximum size of the tuple (number of contiguous nodes allowed to vary simultaneously)
      */
     void samplePath(int mu,
                     Real pi,
-                    int sizeTuple);
+                    int sizeTupleMax);
 
     /**
      * Overwrite the complete path by sampling everything.
@@ -147,7 +147,7 @@ class BOSPath
  *
  * @param[in] node
  */
-void displaySegNode(const BOSNode& node);
+void BOSDisplaySegNode(const BOSNode& node);
 
 /**
  * Output a representation of the path to std::cout
@@ -155,7 +155,7 @@ void displaySegNode(const BOSNode& node);
  * @param[in] eInit initial segment of the path
  * @param[in] c path
  */
-void displayPath(const BOSPath& path);
+void BOSDisplayPath(const BOSPath& path);
 
 } // namespace mixt
 

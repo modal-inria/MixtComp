@@ -302,15 +302,16 @@ void BOSPath::initPath()
     currSeg = c_(i).e_; // initial segment used for next node
 #ifdef MC_DEBUG
     std::cout << "currNode" << std::endl;
-    displaySegNode(c_(i));
+    BOSDisplaySegNode(c_(i));
 #endif
   }
 }
 
 void BOSPath::samplePath(int mu,
                          Real pi,
-                         int sizeTuple)
+                         int sizeTupleMax)
 {
+  int sizeTuple = std::min(nbNode_, sizeTupleMax);
 #ifdef MC_DEBUG
   std::cout << "BOSPath::samplePath" << std::endl;
 #endif
@@ -345,7 +346,7 @@ void BOSPath::samplePath(int mu,
       for (int currNode = 0; currNode < sizeTuple; ++currNode) // copy sampled tuple inside the path
       {
         std::cout << "displaySegNode: " << currNode << std::endl;
-        displaySegNode((*it)(currNode));
+        BOSDisplaySegNode((*it)(currNode));
       }
     }
 #endif
@@ -361,7 +362,7 @@ void BOSPath::samplePath(int mu,
     }
 #ifdef MC_DEBUG
     std::cout << "end of node iteration inside samplePath, displayPath:" << std::endl;
-    displayPath(*this);
+    BOSDisplayPath(*this);
 #endif
   }
 }
@@ -418,7 +419,7 @@ int BOSPath::nbZ() const
   return nz;
 }
 
-void displaySegNode(const BOSNode& node)
+void BOSDisplaySegNode(const BOSNode& node)
 {
   std::cout << "\ty: " << node.y_ << std::endl;
   std::cout << "\tpart: " << std::endl;
@@ -431,13 +432,13 @@ void displaySegNode(const BOSNode& node)
   std::cout << "\tnode.e_(0): " << node.e_(0) << ", node.e_(1): " << node.e_(1) << std::endl;
 }
 
-void displayPath(const BOSPath& path)
+void BOSDisplayPath(const BOSPath& path)
 {
   std::cout << "path.eInit_(0): " << path.eInit_(0) << ", path.eInit_(1): " << path.eInit_(1) << std::endl;
   for (int node = 0; node < path.c_.size(); ++node)
   {
     std::cout << "node: " << node << std::endl;
-    displaySegNode(path.c_(node));
+    BOSDisplaySegNode(path.c_(node));
   }
 }
 
