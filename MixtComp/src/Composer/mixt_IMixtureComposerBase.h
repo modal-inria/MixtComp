@@ -135,6 +135,13 @@ class IMixtureComposerBase
      */
     virtual void samplingStep() {};
 
+    /**
+     * Run sStep until there is at least minIndPerClass individuals per class.
+     * If, after nbSamplingAttempts there are not enough individuals per class, return
+     * an error message.
+     */
+    std::string sStepNbAttempts(int nbSamplingAttempts);
+
     /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
      *  @return the minimal value of individuals in a class
      **/
@@ -151,6 +158,9 @@ class IMixtureComposerBase
 
     int nbSample() const {return nbSample_;}
 
+    /** Create the mixture model parameters. */
+    void intializeMixtureParameters();
+
   protected:
     /** number of cluster. */
     int nbCluster_;
@@ -166,9 +176,6 @@ class IMixtureComposerBase
 
     /** The zik class label */
     AugmentedData<Vector<int> > zi_;
-
-    /** Create the mixture model parameters. */
-    void intializeMixtureParameters();
 
     /** returns the range of values over which to loop */
     std::pair<int, int> forRange(int ind) const;

@@ -75,77 +75,72 @@ std::string SemStrategy::run()
 {
   std::string allWarn; // collect warning strings from all the trials
 
-  for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample) // sample until there are enough individuals per class, using default tik from IMixtureComposerBase::intializeMixtureParameters()
+  for (int iTry = 0; iTry < nbTrialInInit_; ++iTry) // trials on the whole SEM chain
   {
-#ifdef MC_DEBUG
-    std::cout << "\titerSample: " << iterSample << std::endl;
-#endif
-    int nbIndPerClass = p_composer_->sStep();
-    if (nbIndPerClass > minIndPerClass)
-    {
-      break; // enough individuals in each class to carry on
-    }
-    else
-    {
-      if (iterSample == nbSamplingAttempts_ - 1) // on last attempt, exit with error message
-      {
-        std::stringstream sstm;
-        sstm << "Sampling step problem in SEM. The class with the lowest number "
-             << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
-             << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
-             << " partition samplings before failure. The number of classes might be too important"
-             << " relative to the number of individuals." << std::endl;
-        return sstm.str();
-      }
-    }
-  }
-  p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
-
-  for (int iTry = 0; iTry < nbTrialInInit_; ++iTry)
-  {
-    std::string tryWarn; // warning for each run
+    std::string tryWarn; // warning for each trial
 #ifdef MC_DEBUG
   std::cout << "SemStrategy::run(), after randomClassInit()" << std::endl;
   std::cout << "*p_composer_->p_zi()" << std::endl;
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
-    tryWarn = p_composer_->mStep();
+
+    p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
+
+    tryWarn = p_composer_->sStepNbAttempts(nbSamplingAttempts_); // perform at max nbSamplingAttempts_ calls to p_composer_->sStep();
     if (tryWarn.size() > 0)
     {
-      allWarn +=   std::string("SemStrategy, initialization mStep, iTry: ")
-                 + type2str(iTry) + "\n"
-                 + tryWarn; // append warning to global warning
+      std::stringstream sstm;
+      sstm << "SemStrategy error, initial partition, iTry: " << iTry << std::endl
+           << tryWarn;
+      allWarn += sstm.str(); // append warning to global warning
+      continue; // make another try
+    }
+
+    p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+
+    tryWarn = p_composer_->mStep(); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing()
+    if (tryWarn.size() > 0)
+    {
+      std::stringstream sstm;
+      sstm << "SemStrategy error, initial mStep, iTry: " << iTry << std::endl
+           << tryWarn;
+      allWarn += sstm.str(); // append warning to global warning
       continue; // make another try
     }
 
 #ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, burn-in" << std::endl;
+    std::cout << "SemStrategy::run, SEM burn-in" << std::endl;
 #endif
     tryWarn = p_burnInAlgo_->run(burnIn_,
                                  0, // group
                                  3); // groupMax
     if (tryWarn.size() > 0) // an empty string means a successful run
     {
-      allWarn +=   std::string("SemStrategy, burn-in, iTry: ")
-                 + type2str(iTry) + "\n"
-                 + tryWarn; // append warning to global warning
+      std::stringstream sstm;
+      sstm << "SemStrategy error, SEM burn-in, iTry: " << iTry << std::endl
+           << tryWarn;
+      allWarn += sstm.str(); // append warning to global warning
       continue; // make another try
     }
 
 #ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, run" << std::endl;
+    std::cout << "SemStrategy::run, SEM run" << std::endl;
 #endif
     tryWarn = p_longAlgo_->run(run_,
                                1, // group
                                3); // groupMax
     if (tryWarn.size() > 0) // an empty string means a successful run
     {
-      allWarn +=   std::string("SemStrategy, run, iTry: ")
-                 + type2str(iTry) + "\n"
-                 + tryWarn; // append warning to global warning
+      std::stringstream sstm;
+      sstm << "SemStrategy error, SEM run, iTry: " << iTry << std::endl
+           << tryWarn;
+      allWarn += sstm.str(); // append warning to global warning
       continue; // make another try
     }
   
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run, Gibbs burn-in" << std::endl;
+#endif
     Timer myTimer;
     myTimer.setName("Gibbs burn-in");
     for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
@@ -163,6 +158,9 @@ std::string SemStrategy::run()
       p_composer_->eStep();
     }
 
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::run, Gibbs run" << std::endl;
+#endif
     p_composer_->gibbsSampling(nbGibbsIter_,
                                3, // group
                                3); // groupMax

@@ -51,24 +51,20 @@ std::string SEMAlgo::run(RunType runType,
                          int groupMax)
 {
 #ifdef MC_DEBUG
-  std::cout << "SEMAlgo::run, entering" << std::endl;
+  std::cout << "SEMAlgo::run" << std::endl;
 #endif
 
   Timer myTimer;
 
   if (runType == burnIn_)
   {
-#ifdef MC_DEBUG
-    std::cout << "SEMAlgo::run, initial partition export" << std::endl;
-    std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
-#endif
-    myTimer.setName("SEM burn-in");
+    myTimer.setName("SEMAlgo::run(), burn-in");
     p_model_->storeSEMBurnIn(-1,
                              nbIterMax_ - 1); // export of the initial partition
   }
   else if (runType == run_)
   {
-    myTimer.setName("SEM run");
+    myTimer.setName("SEMAlgo::run(), run");
   }
 
   for (int iter = 0; iter < nbIterMax_; ++iter)
@@ -82,7 +78,7 @@ std::string SEMAlgo::run(RunType runType,
                   groupMax,
                   iter,
                   nbIterMax_ - 1);
-    // SE steps (e followed by s)
+
     if (runType == burnIn_
         && (iter / moduloMisClass > 0)
         && (iter % moduloMisClass == 0)) // perform an eStep to remove class locking
@@ -96,47 +92,27 @@ std::string SEMAlgo::run(RunType runType,
     {
       p_model_->eStep();
     }
-    for (int iterSample = 0; iterSample < nbSamplingAttempts_; ++iterSample) // sample until there are enough individuals per class
+    std::string sWarn = p_model_->sStepNbAttempts(nbSamplingAttempts_); // p_model_->sStep()
+    if (sWarn.size() > 0)
     {
-#ifdef MC_DEBUG
-      std::cout << "\titerSample: " << iterSample << std::endl;
-#endif
-      int nbIndPerClass = p_model_->sStep();
-      if (nbIndPerClass > minIndPerClass)
-      {
-        break; // enough individuals in each class to carry on
-      }
-      else
-      {
-        if (iterSample == nbSamplingAttempts_ - 1) // on last attempt, exit with error message
-        {
-          std::stringstream sstm;
-          sstm << "Sampling step problem in SEM. The class with the lowest number "
-               << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
-               << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
-               << " partition samplings before failure. The number of classes might be too important"
-               << " relative to the number of individuals." << std::endl;
-          return sstm.str();
-        }
-      }
+      return sWarn;
     }
-    p_model_->samplingStep();
 
-    // M step
+    p_model_->samplingStep(); // each mixture samples its partially observed values
+
     std::string warn = p_model_->mStep();
     if (warn.size() > 0)
     {
       return warn; // error reported in the mStep, terminate the SEM algo, and report it to the strategy.
     }
 
-    // storage steps
     if (runType == burnIn_)
     {
 #ifdef MC_DEBUG
     std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
 #endif
       p_model_->storeSEMBurnIn(iter,
-                            nbIterMax_ - 1);
+                               nbIterMax_ - 1);
     }
 
     if (runType == run_)
@@ -145,7 +121,7 @@ std::string SEMAlgo::run(RunType runType,
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
 #endif
       p_model_->storeSEMRun(iter,
-                           nbIterMax_ - 1);
+                            nbIterMax_ - 1);
     }
   }
 

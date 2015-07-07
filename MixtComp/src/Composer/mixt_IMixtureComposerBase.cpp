@@ -46,15 +46,47 @@ IMixtureComposerBase::IMixtureComposerBase(int nbSample,
 }
 
 /* copy constructor */
-IMixtureComposerBase::IMixtureComposerBase( IMixtureComposerBase const& model) :
+IMixtureComposerBase::IMixtureComposerBase(IMixtureComposerBase const& model) :
     nbCluster_(model.nbCluster_),
     prop_(model.prop_),
     tik_(model.tik_),
     zi_(model.zi_),
     sampler_(model.sampler_)
 {}
+
 /* destructor */
 IMixtureComposerBase::~IMixtureComposerBase() {}
+
+std::string IMixtureComposerBase::sStepNbAttempts(int nbSamplingAttempts)
+{
+  std::string warnLog;
+  for (int iterSample = 0; iterSample < nbSamplingAttempts; ++iterSample) // sample until there are enough individuals per class, using default tik from IMixtureComposerBase::intializeMixtureParameters()
+  {
+    int nbIndPerClass = sStep();
+  #ifdef MC_DEBUG
+    std::cout << "IMixtureComposerBase::sStepNbAttempts, iterSample: " << iterSample << std::endl;
+    std::cout << "nbIndPerClass: " << nbIndPerClass << std::endl;
+  #endif
+    if (nbIndPerClass > minIndPerClass)
+    {
+      break; // enough individuals in each class to carry on
+    }
+    else
+    {
+      if (iterSample == nbSamplingAttempts - 1) // on last attempt, detail the error in the error message
+      {
+        std::stringstream sstm;
+        sstm << "Sampling step problem in SEM. The class with the lowest number "
+             << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
+             << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
+             << " partition samplings before failure. The number of classes might be too important"
+             << " relative to the number of individuals. Try decreasing the number of classes." << std::endl;
+        warnLog += sstm.str();
+      }
+    }
+  }
+  return warnLog;
+}
 
 /* simulate zi for all individuals */
 int IMixtureComposerBase::sStep()
