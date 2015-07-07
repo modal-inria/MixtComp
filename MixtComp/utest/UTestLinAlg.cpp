@@ -71,7 +71,7 @@ TEST(Matrix, sortContiguous)
        -9, 3, 13,
        1, 5, 15;
 
-  sortContiguous(a);
+  a.sortContiguous();
 
   ASSERT_EQ(a, b);
 }
@@ -88,7 +88,7 @@ TEST(Matrix, sort)
        -9, 3, 13,
        1, 5, 15;
 
-  sort(a);
+  a.sort();
 
   ASSERT_EQ(a, b);
 }
