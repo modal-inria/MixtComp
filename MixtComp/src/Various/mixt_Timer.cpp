@@ -47,7 +47,7 @@ void Timer::iteration(int iteration,
 {
   if (iteration == 0)
   {
-    std::cout << timerName_ << ": initializing" << std::endl;
+    std::cout << timerName_ << ": timer initializing" << std::endl;
     std::time(&startTime_);
   }
   else

@@ -91,7 +91,7 @@ std::string IMixtureComposerBase::sStepNbAttempts(int nbSamplingAttempts)
 /* simulate zi for all individuals */
 int IMixtureComposerBase::sStep()
 {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "IMixtureComposerBase::sStep" << std::endl;
 #endif
   // simulate zi
@@ -107,8 +107,9 @@ int IMixtureComposerBase::sStep()
   indPerClass = 0;
   for (int i = 0; i < nbSample_; ++i)
   {
-#ifdef MC_DEBUG
-  std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << std::endl;
+#ifdef MC_DEBUG_NEW
+  std::cout << "i: " << i << ", zi_.data_(i): " << zi_.data_(i) << std::endl;
+  std::cout << "zi_.data_.size(): " << zi_.data_.size() << ", indPerClass.size(): " << indPerClass.size() << std::endl;
 #endif
     indPerClass(zi_.data_(i)) += 1;
   }

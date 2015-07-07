@@ -158,7 +158,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
 /** Compute the completed likelihood for a single individual, with the class fixed as a parameter */
 Real MixtureComposer::lnCompletedProbability(int i, int k)
 {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "MixtureComposer::lnCompletedLikelihood(int i, int k), i: " << i << ", k: " << k << std::endl;
   std::cout << "prop_.size(): " << prop_.size() << std::endl;
 #endif
@@ -168,7 +168,7 @@ Real MixtureComposer::lnCompletedProbability(int i, int k)
   {
     Real logProba = (*it)->lnCompletedProbability(i, k);
     sum += logProba;
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
     std::cout << (*it)->idName() << ", sum: " << sum << std::endl;
 #endif
   }

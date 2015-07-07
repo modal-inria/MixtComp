@@ -221,14 +221,14 @@ class Ordinal : public IMixture
 
     virtual std::string mStep()
     {
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::mStep" << std::endl;
+#ifdef MC_DEBUG_NEW
+      std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
 #endif
       std::string warnLog;
 
-      pi_ = 0.; // parameter is reinitialized
+      pi_ = 0.; // pi_ parameter is reinitialized
       Vector<Real> indPerClass(nbClass_);
-      indPerClass = 0;
+      indPerClass = 0; // counting the number of individual per class
       for (int i = 0; i < nbInd_; ++i)
       {
 #ifdef MC_DEBUG
@@ -238,7 +238,8 @@ class Ordinal : public IMixture
         indPerClass(indClass) += 1.;
         pi_(indClass) += path_(i).nbZ();
       }
-      pi_ /= indPerClass; // from accounts to frequencies
+      indPerClass *= (nbModalities_ - 1.); // there are (nbModalities_ - 1.) nodes per individual
+      pi_ /= indPerClass; // from accounts to frequencies of z
 
       if (pi_.minCoeff() < epsilon) // model is not identifiable in at least one class
       {
@@ -273,6 +274,13 @@ class Ordinal : public IMixture
         logLik.row(k).maxCoeff(&maxLik);
         mu_(k) = maxLik;
       }
+
+#ifdef MC_DEBUG_NEW
+      std::cout << "mu_" << std::endl;
+      std::cout << mu_ << std::endl;
+      std::cout << "pi_" << std::endl;
+      std::cout << pi_ << std::endl;
+#endif
 
       return warnLog;
     }
@@ -436,7 +444,7 @@ class Ordinal : public IMixture
 
     void removeMissing()
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "Ordinal::removeMissing" << std::endl;
 #endif
       for (int i = 0; i < nbInd_; ++i)
@@ -455,7 +463,7 @@ class Ordinal : public IMixture
         muIni(k) = multi.sample(prop);
       }
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "prop: " << std::endl;
       std::cout << prop << std::endl;
       std::cout << "muIni:" << std::endl;
@@ -468,7 +476,7 @@ class Ordinal : public IMixture
       {
         for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
         {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           if (idName_ == "Ordinal1" && i == 0)
           {
             std::cout << "n: " << n << std::endl;

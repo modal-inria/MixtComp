@@ -43,7 +43,7 @@ const int minNbPresentValues = 3; // minimum number of present values for a give
 const int nbClusterMax = 30; // maximum number of clusters that can be asked
 const std::string progressFile = "progress"; // progress file name
 const Real minInf = std::log(0.); // value of log(0)
-const int sizeTupleBOS = 4; // default size of tuple for Gibbs sampling in BOS model
+const int sizeTupleBOS = 2; // default size of tuple for Gibbs sampling in BOS model
 const int nbSampleBOS = 200000; // number of sample per class to estimate the observed probability
 const int nbGibbsIniBOS = 100; // number of Gibbs sampling rounds in initialization to increase variability on z
 
