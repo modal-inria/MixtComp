@@ -221,6 +221,9 @@ class Ordinal : public IMixture
 
     virtual std::string mStep()
     {
+#ifdef MC_DEBUG
+      std::cout << "Ordinal::mStep" << std::endl;
+#endif
       std::string warnLog;
 
       pi_ = 0.; // parameter is reinitialized
@@ -228,6 +231,9 @@ class Ordinal : public IMixture
       indPerClass = 0;
       for (int i = 0; i < nbInd_; ++i)
       {
+#ifdef MC_DEBUG
+        std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << std::endl;
+#endif
         int indClass = (*p_zi_)(i);
         indPerClass(indClass) += 1.;
         pi_(indClass) += path_(i).nbZ();
@@ -247,6 +253,11 @@ class Ordinal : public IMixture
                                                  pi_(indClass));
         }
       }
+
+#ifdef MC_DEBUG
+      std::cout << "logLik: " << std::endl;
+      std::cout << logLik << std::endl;
+#endif
 
       for (int k = 0; k < nbClass_; ++k)
       {
