@@ -483,7 +483,7 @@ class Ordinal : public IMixture
             BOSDisplayPath(path_(i));
           }
 #endif
-          path_(i).samplePath((*p_zi_)(i), // mu
+          path_(i).samplePath(muIni((*p_zi_)(i)), // mu
                               0.5, // pi, value used to get more non null z
                               sizeTupleBOS); // sizeTuple
         }
