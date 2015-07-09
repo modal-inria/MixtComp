@@ -153,7 +153,10 @@ class Ordinal : public IMixture
       return warnLog;
     }
 
-    /** Use information in AugmentedData to set the values of every path in path_ */
+    /**
+     * Use information in AugmentedData to set the values of every path in path_. Called at the end
+     * of setDataParam
+     * */
     void setPath()
     {
 #ifdef MC_DEBUG
@@ -221,7 +224,7 @@ class Ordinal : public IMixture
 
     virtual std::string mStep()
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
 #endif
       std::string warnLog;
@@ -263,11 +266,6 @@ class Ordinal : public IMixture
         }
       }
 
-#ifdef MC_DEBUG
-      std::cout << "logLik: " << std::endl;
-      std::cout << logLik << std::endl;
-#endif
-
       for (int k = 0; k < nbClass_; ++k)
       {
         int maxLik;
@@ -275,7 +273,9 @@ class Ordinal : public IMixture
         mu_(k) = maxLik;
       }
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
+      std::cout << "logLik: " << std::endl;
+      std::cout << logLik << std::endl;
       std::cout << "mu_" << std::endl;
       std::cout << mu_ << std::endl;
       std::cout << "pi_" << std::endl;

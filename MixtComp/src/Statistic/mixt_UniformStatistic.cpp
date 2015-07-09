@@ -32,7 +32,7 @@ namespace mixt
 {
 
 UniformStatistic::UniformStatistic() :
-    rng_(time(0))
+    rng_(long(this) + time(0))
 {}
 
 UniformStatistic::~UniformStatistic()

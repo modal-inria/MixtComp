@@ -34,7 +34,7 @@ namespace mixt
 typedef PoissonStatistic::Type Type;
 
 PoissonStatistic::PoissonStatistic() :
-    rng_(time(0))
+    rng_(long(this) + time(0))
 {}
 
 PoissonStatistic::~PoissonStatistic()

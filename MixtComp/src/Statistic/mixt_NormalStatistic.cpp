@@ -34,7 +34,7 @@ namespace mixt
 typedef NormalStatistic::Type Type;
 
 NormalStatistic::NormalStatistic() :
-    rng_(time(0))
+    rng_(long(this) + time(0))
 {}
 
 NormalStatistic::~NormalStatistic()

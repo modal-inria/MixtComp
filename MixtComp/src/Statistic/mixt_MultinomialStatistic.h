@@ -39,7 +39,9 @@ class MultinomialStatistic
 {
   public:
 
-    MultinomialStatistic() : rng_(time(0)) {};
+    MultinomialStatistic() :
+      rng_(long(this) + time(0))
+  {};
     ~MultinomialStatistic() {};
 
     /** Sample a value from a multinomial law with coefficient of modalities provided */

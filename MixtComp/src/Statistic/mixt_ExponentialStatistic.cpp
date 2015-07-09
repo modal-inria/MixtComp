@@ -34,7 +34,7 @@ namespace mixt
 typedef ExponentialStatistic::Type Type;
 
 ExponentialStatistic::ExponentialStatistic() :
-    rng_(time(0))
+    rng_(long(this) + time(0))
 {}
 
 ExponentialStatistic::~ExponentialStatistic()

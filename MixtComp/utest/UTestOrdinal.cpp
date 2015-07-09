@@ -28,6 +28,7 @@
 #include "../src/Mixture/Ordinal/mixt_BOSPath.h"
 #include "../src/Statistic/mixt_MultinomialStatistic.h"
 #include "../src/Statistic/mixt_UniformStatistic.h"
+#include "UTestFunction.h"
 
 using namespace mixt;
 
@@ -154,31 +155,6 @@ TEST(Ordinal, computeLogProba1)
 #endif
   ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
 }
-
-//TEST(Ordinal, tupleMultinomial)
-//{
-//  int mu = 0;
-//  Real pi = 0.5;
-//
-//  BOSPath path;
-//  path.setInit(0, 2);
-//  path.setEnd(0, 2);
-//
-//  int index = 0; // index of the first node of the pair used in the computation
-//
-//  std::list<Vector<BOSNode> > pathList;
-//  Vector<Real> probaVec;
-//  path.tupleMultinomial(mu,
-//                        pi,
-//                        index,
-//                        sizeTupleConst,
-//                        pathList,
-//                        probaVec);
-//#ifdef MC_DEBUG
-//  std::cout << probaVec << std::endl;
-//#endif
-//  ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
-//}
 
 /**
  * Test checking the initialization of the Gibbs sampling
@@ -350,6 +326,86 @@ TEST(Ordinal, forwardSamplePath)
 
   ASSERT_EQ(mu, computedMode); // has the real mode been estimated correctly ?
 }
+
+/**
+ * Generate individuals that follows a distribution, and try to estimate it back
+ */
+TEST(Ordinal, mStep)
+{
+  int nbInd = 100;
+  int nbModalities = 4;
+  int mu;
+  Real pi;
+  int nbIt = 1000;
+  int tupleSize = 2;
+  Real errorTolerance = 0.05;
+
+  MultinomialStatistic multi;
+  UniformStatistic uni;
+
+  RowVector<Real> prop(nbModalities);
+  prop = 1. / Real(nbModalities);
+#ifdef MC_DEBUG
+  std::cout << prop << std::endl;
+#endif
+  mu = multi.sample(prop);
+  pi = uni.sample(0., 1.);
+
+  Vector<BOSPath> path(nbInd);
+  for (int i = 0; i < nbInd; ++i) // initialization of the paths
+  {
+    path(i).setInit(0, nbModalities - 1);
+    path(i).setEnd (0, nbModalities - 1); // no constraint on values
+    path(i).initPath(); // random init, with uniform z = 0
+
+    for (int n = 0; n < nbIt; ++n)
+    {
+      path(i).samplePath(mu,
+                         pi,
+                         tupleSize);
+    }
+  }
+
+  int muEst; // estimated mu
+  Real piEst; // estimated pi
+
+  mStepBOS(path,
+           muEst,
+           piEst,
+           nbModalities);
+
+#ifdef MC_DEBUG
+  std::cout << "mu: " << mu << ", muEst: " << muEst << std::endl;
+  std::cout << "pi: " << pi << ", piEst: " << piEst << std::endl;
+#endif
+  ASSERT_EQ(mu, muEst);
+  ASSERT_LT(std::abs(pi - piEst), errorTolerance);
+}
+
+//TEST(Ordinal, tupleMultinomial)
+//{
+//  int mu = 0;
+//  Real pi = 0.5;
+//
+//  BOSPath path;
+//  path.setInit(0, 2);
+//  path.setEnd(0, 2);
+//
+//  int index = 0; // index of the first node of the pair used in the computation
+//
+//  std::list<Vector<BOSNode> > pathList;
+//  Vector<Real> probaVec;
+//  path.tupleMultinomial(mu,
+//                        pi,
+//                        index,
+//                        sizeTupleConst,
+//                        pathList,
+//                        probaVec);
+//#ifdef MC_DEBUG
+//  std::cout << probaVec << std::endl;
+//#endif
+//  ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
+//}
 
 ///**
 // * Test if a null precision implies an equipartition of the sampled x value
