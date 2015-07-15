@@ -165,7 +165,7 @@ std::string SemStrategy::run()
                                3, // group
                                3); // groupMax
 
-    return allWarn; // if the last attempt is a success, consider the run a success. AllWarn is an empty string.
+    return std::string(); // if the last attempt is a success, ignore all warnings in allWarn and return an empty string
   }
 
   allWarn += "Number of initialization attempts exhausted. Try again with more initializations or other parameters.\n";
