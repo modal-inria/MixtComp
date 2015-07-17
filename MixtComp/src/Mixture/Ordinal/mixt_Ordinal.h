@@ -231,17 +231,21 @@ class Ordinal : public IMixture
 
       pi_ = 0.; // pi_ parameter is reinitialized
       Vector<Real> indPerClass(nbClass_);
-      indPerClass = 0; // counting the number of individual per class
+      indPerClass = 0.; // counting the number of individual per class
       for (int i = 0; i < nbInd_; ++i)
       {
 #ifdef MC_DEBUG
         std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << std::endl;
 #endif
         int indClass = (*p_zi_)(i);
-        indPerClass(indClass) += 1.;
+        indPerClass(indClass) += 1.; // there are (nbModalities_ - 1.) nodes per individual
         pi_(indClass) += path_(i).nbZ();
       }
-      indPerClass *= (nbModalities_ - 1.); // there are (nbModalities_ - 1.) nodes per individual
+#ifdef MC_DEBUG_NEW
+        std::cout << "indPerClass" << std::endl;
+        std::cout << indPerClass << std::endl;
+#endif
+      indPerClass *= (nbModalities_ - 1.);
       pi_ /= indPerClass; // from accounts to frequencies of z
 
       if (pi_.minCoeff() < epsilon) // model is not identifiable in at least one class
@@ -453,6 +457,7 @@ class Ordinal : public IMixture
       }
 
       Vector<int> muIni(nbClass_); // dummy parameter to remove z = 0 in path_
+      Vector<Real> piIni(nbClass_);
 
       MultinomialStatistic multi;
       RowVector<Real> prop(nbModalities_); // proportion for uniform sample of mu
@@ -463,16 +468,19 @@ class Ordinal : public IMixture
         muIni(k) = multi.sample(prop);
       }
 
+      piIni = 0.5; // value used to get more non null z
 #ifdef MC_DEBUG
       std::cout << "prop: " << std::endl;
       std::cout << prop << std::endl;
       std::cout << "muIni:" << std::endl;
       std::cout << muIni << std::endl;
+      std::cout << "piIni:" << std::endl;
+      std::cout << piIni << std::endl;
       std::cout << "(*p_zi_):" << std::endl;
       std::cout << (*p_zi_) << std::endl;
 #endif
 
-      for (int i = 0; i < nbInd_; ++i) // Gibbs sampling to remove the
+      for (int i = 0; i < nbInd_; ++i)
       {
         for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
         {
@@ -484,7 +492,7 @@ class Ordinal : public IMixture
           }
 #endif
           path_(i).samplePath(muIni((*p_zi_)(i)), // mu
-                              0.5, // pi, value used to get more non null z
+                              piIni((*p_zi_)(i)), // pi
                               sizeTupleBOS); // sizeTuple
         }
       }

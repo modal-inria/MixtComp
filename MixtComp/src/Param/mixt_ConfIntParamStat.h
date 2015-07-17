@@ -55,7 +55,7 @@ class ConfIntParamStat
         logStorage_.resize(nbParam_, iterationMax + 1); // resize internal storage
         statStorage_.resize(nbParam_, 3); // resize export storage
 
-        sample(0); // first sampling, on each each parameter
+        sample(0); // first sampling, on each parameter
       }
       else if (iteration == iterationMax)
       {
@@ -73,7 +73,8 @@ class ConfIntParamStat
           int realIndLow =        alpha  * iterationMax;
           int realIndHigh = (1. - alpha) * iterationMax;
 
-          statStorage_(p, 0) = logStorage_.row(p).mean();
+ //         statStorage_(p, 0) = logStorage_.row(p).mean();
+          statStorage_(p, 0) = logStorage_.row(p)(iterationMax / 2);
           statStorage_(p, 1) = logStorage_.row(p)(realIndLow     );
           statStorage_(p, 2) = logStorage_.row(p)(realIndHigh + 1);
         }

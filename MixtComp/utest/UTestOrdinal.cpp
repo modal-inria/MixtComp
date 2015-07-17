@@ -336,7 +336,6 @@ TEST(Ordinal, mStep)
   int nbModalities = 4;
   int mu;
   Real pi;
-  int nbIt = 1000;
   int tupleSize = 2;
   Real errorTolerance = 0.05;
 
@@ -358,7 +357,7 @@ TEST(Ordinal, mStep)
     path(i).setEnd (0, nbModalities - 1); // no constraint on values
     path(i).initPath(); // random init, with uniform z = 0
 
-    for (int n = 0; n < nbIt; ++n)
+    for (int n = 0; n < nbGibbsIniBOS; ++n)
     {
       path(i).samplePath(mu,
                          pi,
