@@ -248,15 +248,50 @@ class Ordinal : public IMixture
       indPerClass *= (nbModalities_ - 1.);
       pi_ /= indPerClass; // from accounts to frequencies of z
 
-      if (pi_.minCoeff() < epsilon) // model is not identifiable in at least one class
+      for (int k = 0; k < nbClass_; ++k) // reboot degenerate classes
       {
-        std::stringstream sstm;
-        sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in at least one class. Try using a categorical model, "
-             << "if the number of modalities is not too high." << std::endl;
-        warnLog += sstm.str();
+        if (pi_(k) < epsilon)
+        {
+#ifdef MC_DEBUG_NEW
+          std::cout << "Ordinal::mStep, class " << k << " has degenerated" << std::endl;
+#endif
+          Vector<Real> freqMod(nbModalities_); // frequencies of completed values for the current class
+          for (int i = 0; i < nbInd_; ++i) // compute distribution of values
+          {
+            if ((*p_zi_)(i) == k) // among individuals inside the degenerate class
+            {
+              freqMod(augData_.data_(i)) += 1.; // completed values are used
+            }
+          }
+          freqMod(k) = 0.; // current mu value is forbidden as it lead to degeneracy
+          freqMod = freqMod / freqMod.sum(); // frequencies are renormalized to get a probability distribution
+
+          mu_(k) = multi_.sample(freqMod); // mu is sampled from this distribution
+          pi_(k) = 0.5; // pi is set high enough to avoid an immediate degeneracy
+
+          for (int i = 0; i < nbInd_; ++i) // have some samplePath calls to shake this up, and get some non zero z values inside the path
+          {
+            if ((*p_zi_)(i) == k)
+            {
+              for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
+              {
+      #ifdef MC_DEBUG
+                if (idName_ == "Ordinal1" && i == 0)
+                {
+                  std::cout << "n: " << n << std::endl;
+                  BOSDisplayPath(path_(i));
+                }
+      #endif
+                path_(i).samplePath(mu_(k), // mu
+                                    pi_(k), // pi
+                                    sizeTupleBOS); // sizeTuple
+              }
+            }
+          }
+        }
       }
 
-      if (pi_.maxCoeff() > 1. - epsilon) // model is not identifiable in at least one class
+      if (pi_.maxCoeff() > 1. - epsilon)
       {
         std::stringstream sstm;
         sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in at least one class. Try using a categorical model, "
@@ -554,6 +589,9 @@ class Ordinal : public IMixture
 
     /** Precision parameter, one element per class */
     Vector<Real> pi_;
+
+    /** Sampler for reinitialization of parameters after degeneracy */
+    MultinomialStatistic multi_;
 
     /** Compute the statistics on missing data during GibbsRun phase */
     ConfIntDataStat<int> dataStatComputer_;
