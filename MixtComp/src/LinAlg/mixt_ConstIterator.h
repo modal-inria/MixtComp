@@ -95,7 +95,10 @@ class ConstIterator : public std::iterator<std::random_access_iterator_tag,
         return false;
     }
 
-    const Scalar& operator*() const
+    /**
+     * returns const Scalar instead of const Scalar& to avoid error with temporaries
+     */
+    const Scalar operator*() const
     {
       int i;
       int j;

@@ -119,6 +119,11 @@ void AugmentedData<Vector<Real> >::removeMissing()
           }
         }
         break;
+
+        default:
+        {}
+        break;
+
       }
       data_(i) = sampleVal;
     }

@@ -263,7 +263,7 @@ class Ordinal : public IMixture
               freqMod(augData_.data_(i)) += 1.; // completed values are used
             }
           }
-          freqMod(k) = 0.; // current mu value is forbidden as it lead to degeneracy
+          freqMod(mu_(k)) = 0.; // current mu value is forbidden as it lead to degeneracy
           freqMod = freqMod / freqMod.sum(); // frequencies are renormalized to get a probability distribution
 
           mu_(k) = multi_.sample(freqMod); // mu is sampled from this distribution

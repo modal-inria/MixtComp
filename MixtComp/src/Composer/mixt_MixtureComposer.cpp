@@ -80,7 +80,6 @@ void MixtureComposer::lnObservedLikelihoodDebug()
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnObservedLikelihoodDebug() " << std::endl;
 #endif
-  Real lnLikelihood = 0.;
 
   for (int i = 0; i < nbSample_; ++i)
   {
