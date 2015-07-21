@@ -273,15 +273,11 @@ class Ordinal : public IMixture
           {
             if ((*p_zi_)(i) == k)
             {
+#ifdef MC_DEBUG_NEW
+              std::cout << "0-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
+#endif
               for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
               {
-      #ifdef MC_DEBUG
-                if (idName_ == "Ordinal1" && i == 0)
-                {
-                  std::cout << "n: " << n << std::endl;
-                  BOSDisplayPath(path_(i));
-                }
-      #endif
                 path_(i).samplePath(mu_(k), // mu
                                     pi_(k), // pi
                                     sizeTupleBOS); // sizeTuple
@@ -289,14 +285,24 @@ class Ordinal : public IMixture
             }
           }
         }
-      }
 
-      if (pi_.maxCoeff() > 1. - epsilon)
-      {
-        std::stringstream sstm;
-        sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in at least one class. Try using a categorical model, "
-             << "if the number of modalities is not too high." << std::endl;
-        warnLog += sstm.str();
+        if (pi_(k) > 1. - epsilon)
+        {
+          for (int i = 0; i < nbInd_; ++i) // have some samplePath calls to shake this up, and get some non zero z values inside the path
+          {
+            if ((*p_zi_)(i) == k)
+            {
+  #ifdef MC_DEBUG_NEW
+              std::cout << "1-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
+  #endif
+            }
+          }
+//          std::stringstream sstm;
+//          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". Try using a categorical model, "
+//               << "if the number of modalities is not too high." << std::endl;
+//          warnLog += sstm.str();
+          pi_(k) = 0.9; // forced lower bound for debug purposes
+        }
       }
 
       Matrix<Real> logLik(nbClass_, nbModalities_);
