@@ -241,7 +241,7 @@ class Ordinal : public IMixture
         indPerClass(indClass) += 1.; // there are (nbModalities_ - 1.) nodes per individual
         pi_(indClass) += path_(i).nbZ();
       }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "indPerClass" << std::endl;
         std::cout << indPerClass << std::endl;
 #endif
@@ -251,7 +251,15 @@ class Ordinal : public IMixture
       if (pi_.minCoeff() < epsilon) // model is not identifiable in at least one class
       {
         std::stringstream sstm;
-        sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly null in at least one class. Try using a categorical model, "
+        sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in at least one class. Try using a categorical model, "
+             << "if the number of modalities is not too high." << std::endl;
+        warnLog += sstm.str();
+      }
+
+      if (pi_.maxCoeff() > 1. - epsilon) // model is not identifiable in at least one class
+      {
+        std::stringstream sstm;
+        sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in at least one class. Try using a categorical model, "
              << "if the number of modalities is not too high." << std::endl;
         warnLog += sstm.str();
       }
