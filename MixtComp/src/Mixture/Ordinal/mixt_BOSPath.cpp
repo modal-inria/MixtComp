@@ -108,21 +108,17 @@ void BOSPath::tupleMultinomial(int mu,
 #ifdef MC_DEBUG
   std::cout << "nbPath: " << nbPath << std::endl;
 #endif
-  probaVec.resize(nbPath);
+  Vector<Real> logProba(nbPath);
   std::list<Real>::const_iterator it = probaList.begin();
   for (int i = 0; i < nbPath; ++i, ++it)
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << " / " << nbPath << std::endl;
 #endif
-    probaVec(i) = *it;
+    logProba(i) = *it;
   }
 
-  Real max = probaVec.maxCoeff();
-  probaVec -= max;
-  probaVec = probaVec.exp();
-  Real sum = probaVec.sum();
-  probaVec /= sum;
+  logProba.logToMulti(probaVec);
 }
 
 void BOSPath::nodeMultinomial(int mu,
@@ -313,7 +309,7 @@ void BOSPath::samplePath(int mu,
 {
   int sizeTuple = std::min(nbNode_, sizeTupleMax);
 #ifdef MC_DEBUG
-  std::cout << "BOSPath::samplePath" << std::endl;
+  std::cout << "BOSPath::samplePath, nbNode_: " << nbNode_ << ", sizeTupleMax: " << sizeTupleMax << ", sizeTuple: " << sizeTuple << std::endl;
 #endif
   for (int startIndex = 0; startIndex < nbNode_ - sizeTuple + 1; ++startIndex)
   {

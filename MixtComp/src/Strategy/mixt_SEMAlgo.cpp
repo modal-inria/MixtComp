@@ -79,19 +79,8 @@ std::string SEMAlgo::run(RunType runType,
                   iter,
                   nbIterMax_ - 1);
 
-    if (runType == burnIn_
-        && (iter / moduloMisClass > 0)
-        && (iter % moduloMisClass == 0)) // perform an eStep to remove class locking
-    {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_model_->misClasStep" << std::endl;
-#endif
-      p_model_->misClasStep(iter);
-    }
-    else // perform a standard eStep
-    {
-      p_model_->eStep();
-    }
+    p_model_->eStep();
+
     std::string sWarn = p_model_->sStepNbAttempts(nbSamplingAttempts_); // p_model_->sStep()
     if (sWarn.size() > 0)
     {

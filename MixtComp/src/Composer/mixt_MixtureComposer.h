@@ -112,11 +112,6 @@ class MixtureComposer : public IMixtureComposerBase
     virtual void samplingStep();
     virtual void samplingStep(int i);
 
-    /** @brief Simulation of latent variables to detect misclassified partially
-     * observed data during initialization
-     */
-    virtual void misClasStep(int iteration);
-
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/

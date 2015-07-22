@@ -269,43 +269,6 @@ std::cout << (*it)->idName() << std::endl;
   }
 }
 
-void MixtureComposer::misClasStep(int iteration)
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::misClasStep" << std::endl;
-
-#endif
-  Matrix<Real> probClass(nbSample_,
-                         nbCluster_);
-
-  Vector<int> ziBack = zi_.data_;
-
-  // computation of the log probability with adequately sampled missing values
-  for (int k = 0; k < nbCluster_; ++k)
-  {
-    zi_.data_ = k; // setting zi_ for the sampling step
-    for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-    {
-      for (int i = 0; i < nbSample_; ++i)
-      {
-        (*it)->samplingStep(i);
-      }
-    }
-    for (int i = 0; i < nbSample_; ++i)
-    {
-      probClass(i, k) = lnCompletedProbability(i, k);
-    }
-  }
-
-  // equivalent of the estep to compute new tik_
-  for (int i = 0; i < nbSample_; ++i)
-  {
-    probClass.row(i).logToMulti(tik_.row(i));
-  }
-
-  zi_.data_ = ziBack; // restore zi_ to initial values, useful because in supervised learning some zi_ are fixed and not resampled after misClasStep
-}
-
 void MixtureComposer::storeSEMBurnIn(int iteration,
                                      int iterationMax)
 {

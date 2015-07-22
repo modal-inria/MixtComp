@@ -179,6 +179,7 @@ void sort()
  *
  * @param log vector of log values
  * @param[out] multi multinomial distribution
+ * @value log of the sum of all components
  */
 template<typename OtherDerived>
 Scalar logToMulti(const MatrixBase<OtherDerived>& multi)
