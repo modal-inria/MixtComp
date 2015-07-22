@@ -236,7 +236,7 @@ class Ordinal : public IMixture
       for (int i = 0; i < nbInd_; ++i)
       {
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << std::endl;
 #endif
 
@@ -256,63 +256,22 @@ class Ordinal : public IMixture
         if (pi_(k) < epsilon)
         {
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "Ordinal::mStep, class " << k << " has 0-degenerated" << std::endl;
 #endif
-
-          Vector<Real> freqMod(nbModalities_); // frequencies of completed values for the current class
-          for (int i = 0; i < nbInd_; ++i) // compute distribution of values
-          {
-            if ((*p_zi_)(i) == k) // among individuals inside the degenerate class
-            {
-              freqMod(augData_.data_(i)) += 1.; // completed values are used
-            }
-          }
-
-#ifdef MC_DEBUG_NEW
-          std::cout << "total freqMod: " << std::endl;
-          std::cout << freqMod << std::endl;
-#endif
-
-          // freqMod(k) = 0.; // error, but parameters well estimated with this ...
-          freqMod(mu_(k)) = 0.; // current mu value is forbidden as it lead to degeneracy
-          freqMod = freqMod / freqMod.sum(); // frequencies are renormalized to get a probability distribution
-
-#ifdef MC_DEBUG_NEW
-          std::cout << "effective freqMod: " << std::endl;
-          std::cout << freqMod << std::endl;
-#endif
-
-          mu_(k) = multi_.sample(freqMod); // mu is sampled from this distribution
-          pi_(k) = 0.99; // pi is set high enough to avoid an immediate degeneracy
-
-          for (int i = 0; i < nbInd_; ++i) // have some samplePath calls to shake this up, and get some non zero z values inside the path
-          {
-            if ((*p_zi_)(i) == k)
-            {
-#ifdef MC_DEBUG_NEW
-              std::cout << "0-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
-#endif
-              for (int n = 0; n < nbGibbsIniBOS; ++n) // same initialization than used in removeMisssing, to increase variability on z among individuals
-              {
-                path_(i).samplePath(mu_(k), // mu
-                                    pi_(k), // pi
-                                    sizeTupleBOS); // sizeTuple
-              }
-            }
-          }
+          sampleMuFreq(k, true);
         }
 
         if (pi_(k) > 1. - epsilon)
         {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "Ordinal::mStep, class " << k << " has 1-degenerated" << std::endl;
 #endif
           for (int i = 0; i < nbInd_; ++i)
           {
             if ((*p_zi_)(i) == k)
             {
-  #ifdef MC_DEBUG_NEW
+  #ifdef MC_DEBUG
               std::cout << "1-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
   #endif
             }
@@ -346,7 +305,7 @@ class Ordinal : public IMixture
         mu_(k) = maxLik;
       }
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "End of Ordinal::mStep" << std::endl;
       std::cout << "logLik: " << std::endl;
       std::cout << logLik << std::endl;
@@ -526,19 +485,11 @@ class Ordinal : public IMixture
         path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
       }
 
-      Vector<int> muIni(nbClass_); // dummy parameter to remove z = 0 in path_
-      Vector<Real> piIni(nbClass_);
-
-      MultinomialStatistic multi;
-      RowVector<Real> prop(nbModalities_); // proportion for uniform sample of mu
-      prop = 1. / Real(nbModalities_);
-
       for (int k = 0; k < nbClass_; ++k)
       {
-        muIni(k) = multi.sample(prop);
+        sampleMuFreq(k, false); // mu is sampled from modalities frequencies, without taking current mu value into account
       }
 
-      piIni = 0.5; // value used to get more non null z
 #ifdef MC_DEBUG
       std::cout << "prop: " << std::endl;
       std::cout << prop << std::endl;
@@ -561,8 +512,8 @@ class Ordinal : public IMixture
             BOSDisplayPath(path_(i));
           }
 #endif
-          path_(i).samplePath(muIni((*p_zi_)(i)), // mu
-                              piIni((*p_zi_)(i)), // pi
+          path_(i).samplePath(mu_((*p_zi_)(i)), // mu
+                              piInitBOS, // pi
                               sizeTupleBOS); // sizeTuple
         }
       }
@@ -581,6 +532,58 @@ class Ordinal : public IMixture
     }
 
   private:
+    /**
+     * Sample the next mu. Used in removeMissing to initialize, and in
+     * @param k class for which the mode must be simulated
+     * @param prohibitCurrentMu shall the current value of mu be forbidden, for example if it lead to degeneracy in the mStep ?
+     * */
+    void sampleMuFreq(int k,
+                      bool prohibitCurrentMu)
+    {
+      Vector<Real> freqMod(nbModalities_); // frequencies of completed values for the current class
+      for (int i = 0; i < nbInd_; ++i) // compute distribution of values
+      {
+        if ((*p_zi_)(i) == k) // among individuals inside the degenerate class
+        {
+          freqMod(augData_.data_(i)) += 1.; // completed values are used
+        }
+      }
+
+#ifdef MC_DEBUG
+      std::cout << "total freqMod: " << std::endl;
+      std::cout << freqMod << std::endl;
+#endif
+
+      if (prohibitCurrentMu == true)
+      {
+        freqMod(mu_(k)) = 0.; // current mu value is prohibited as it lead to degeneracy
+      }
+      freqMod = freqMod / freqMod.sum(); // frequencies are renormalized to get a probability distribution
+
+#ifdef MC_DEBUG
+      std::cout << "effective freqMod: " << std::endl;
+      std::cout << freqMod << std::endl;
+#endif
+
+      mu_(k) = multi_.sample(freqMod); // mu is sampled from this distribution
+      pi_(k) = piInitBOS; // pi is set high enough to avoid an immediate degeneracy
+
+      for (int i = 0; i < nbInd_; ++i) // have some samplePath calls to shake this up, and get some non zero z values inside the path
+      {
+        if ((*p_zi_)(i) == k)
+        {
+#ifdef MC_DEBUG
+          std::cout << "0-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
+#endif
+          for (int n = 0; n < nbGibbsIniBOS; ++n) // same initialization than used in removeMisssing, to increase variability on z among individuals
+          {
+            path_(i).samplePath(mu_(k), // mu
+                                pi_(k), // pi
+                                sizeTupleBOS); // sizeTuple
+          }
+        }
+      }
+    }
 
     /** Pointer to the zik class label */
     Vector<int> const* p_zi_;
