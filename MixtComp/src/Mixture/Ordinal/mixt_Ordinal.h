@@ -227,34 +227,39 @@ class Ordinal : public IMixture
 #ifdef MC_DEBUG
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
 #endif
+
       std::string warnLog;
 
       pi_ = 0.; // pi_ parameter is reinitialized
-      Vector<Real> indPerClass(nbClass_);
-      indPerClass = 0.; // counting the number of individual per class
+      Vector<Real> nodePerClass(nbClass_); // total number of nodes in a class
+      nodePerClass = 0.; // counting the number of individual per class
       for (int i = 0; i < nbInd_; ++i)
       {
-#ifdef MC_DEBUG
+
+#ifdef MC_DEBUG_NEW
         std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << std::endl;
 #endif
+
         int indClass = (*p_zi_)(i);
-        indPerClass(indClass) += 1.; // there are (nbModalities_ - 1.) nodes per individual
-        pi_(indClass) += path_(i).nbZ();
+        nodePerClass(indClass) += path_(i).nbNode_; // add all nodes of the individual
+        pi_(indClass) += path_(i).nbZ(); // add only z = 1 nodes of the individual
       }
+
 #ifdef MC_DEBUG
         std::cout << "indPerClass" << std::endl;
-        std::cout << indPerClass << std::endl;
+        std::cout << nodePerClass << std::endl;
 #endif
-      indPerClass *= (nbModalities_ - 1.);
-      pi_ /= indPerClass; // from accounts to frequencies of z
+      pi_ /= nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
 
       for (int k = 0; k < nbClass_; ++k) // reboot degenerate classes
       {
         if (pi_(k) < epsilon)
         {
+
 #ifdef MC_DEBUG_NEW
-          std::cout << "Ordinal::mStep, class " << k << " has degenerated" << std::endl;
+          std::cout << "Ordinal::mStep, class " << k << " has 0-degenerated" << std::endl;
 #endif
+
           Vector<Real> freqMod(nbModalities_); // frequencies of completed values for the current class
           for (int i = 0; i < nbInd_; ++i) // compute distribution of values
           {
@@ -263,11 +268,23 @@ class Ordinal : public IMixture
               freqMod(augData_.data_(i)) += 1.; // completed values are used
             }
           }
+
+#ifdef MC_DEBUG_NEW
+          std::cout << "total freqMod: " << std::endl;
+          std::cout << freqMod << std::endl;
+#endif
+
+          // freqMod(k) = 0.; // error, but parameters well estimated with this ...
           freqMod(mu_(k)) = 0.; // current mu value is forbidden as it lead to degeneracy
           freqMod = freqMod / freqMod.sum(); // frequencies are renormalized to get a probability distribution
 
+#ifdef MC_DEBUG_NEW
+          std::cout << "effective freqMod: " << std::endl;
+          std::cout << freqMod << std::endl;
+#endif
+
           mu_(k) = multi_.sample(freqMod); // mu is sampled from this distribution
-          pi_(k) = 0.5; // pi is set high enough to avoid an immediate degeneracy
+          pi_(k) = 0.99; // pi is set high enough to avoid an immediate degeneracy
 
           for (int i = 0; i < nbInd_; ++i) // have some samplePath calls to shake this up, and get some non zero z values inside the path
           {
@@ -276,7 +293,7 @@ class Ordinal : public IMixture
 #ifdef MC_DEBUG_NEW
               std::cout << "0-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
 #endif
-              for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
+              for (int n = 0; n < nbGibbsIniBOS; ++n) // same initialization than used in removeMisssing, to increase variability on z among individuals
               {
                 path_(i).samplePath(mu_(k), // mu
                                     pi_(k), // pi
@@ -288,7 +305,10 @@ class Ordinal : public IMixture
 
         if (pi_(k) > 1. - epsilon)
         {
-          for (int i = 0; i < nbInd_; ++i) // have some samplePath calls to shake this up, and get some non zero z values inside the path
+#ifdef MC_DEBUG_NEW
+          std::cout << "Ordinal::mStep, class " << k << " has 1-degenerated" << std::endl;
+#endif
+          for (int i = 0; i < nbInd_; ++i)
           {
             if ((*p_zi_)(i) == k)
             {
@@ -301,7 +321,7 @@ class Ordinal : public IMixture
 //          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". Try using a categorical model, "
 //               << "if the number of modalities is not too high." << std::endl;
 //          warnLog += sstm.str();
-          pi_(k) = 0.9; // forced lower bound for debug purposes
+          pi_(k) = 1 - epsilon; // forced upper bound for debugging purposes
         }
       }
 
@@ -326,7 +346,8 @@ class Ordinal : public IMixture
         mu_(k) = maxLik;
       }
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
+      std::cout << "End of Ordinal::mStep" << std::endl;
       std::cout << "logLik: " << std::endl;
       std::cout << logLik << std::endl;
       std::cout << "mu_" << std::endl;
