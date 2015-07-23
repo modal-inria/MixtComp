@@ -224,7 +224,7 @@ class Ordinal : public IMixture
 
     virtual std::string mStep()
     {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
 #endif
 
@@ -233,38 +233,43 @@ class Ordinal : public IMixture
       pi_ = 0.; // pi_ parameter is reinitialized
       Vector<Real> nodePerClass(nbClass_); // total number of nodes in a class
       nodePerClass = 0.; // counting the number of individual per class
+      Vector<Real> zPerClass(nbClass_);
+      zPerClass = 0.;
       for (int i = 0; i < nbInd_; ++i)
       {
 
-#ifdef MC_DEBUG
-        std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << std::endl;
+#ifdef MC_DEBUG_NEW
+        std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
 #endif
 
         int indClass = (*p_zi_)(i);
         nodePerClass(indClass) += path_(i).nbNode_; // add all nodes of the individual
-        pi_(indClass) += path_(i).nbZ(); // add only z = 1 nodes of the individual
+        zPerClass(indClass) += path_(i).nbZ(); // add only z = 1 nodes of the individual
       }
 
-#ifdef MC_DEBUG
-        std::cout << "indPerClass" << std::endl;
+#ifdef MC_DEBUG_NEW
+        std::cout << "nodePerClass" << std::endl;
         std::cout << nodePerClass << std::endl;
+        std::cout << "zPerClass" << std::endl;
+        std::cout << zPerClass << std::endl;
 #endif
-      pi_ /= nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
+
+      pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
 
       for (int k = 0; k < nbClass_; ++k) // reboot degenerate classes
       {
-        if (pi_(k) < epsilon)
+        if (pi_(k) < piThreshold)
         {
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
           std::cout << "Ordinal::mStep, class " << k << " has 0-degenerated" << std::endl;
 #endif
           sampleMuFreq(k, true);
         }
 
-        if (pi_(k) > 1. - epsilon)
+        if (pi_(k) > 1. - piThreshold)
         {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
           std::cout << "Ordinal::mStep, class " << k << " has 1-degenerated" << std::endl;
 #endif
           for (int i = 0; i < nbInd_; ++i)
@@ -280,7 +285,7 @@ class Ordinal : public IMixture
 //          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". Try using a categorical model, "
 //               << "if the number of modalities is not too high." << std::endl;
 //          warnLog += sstm.str();
-          pi_(k) = 1 - epsilon; // forced upper bound for debugging purposes
+          pi_(k) = 1 - piThreshold; // forced upper bound for debugging purposes
         }
       }
 
@@ -305,7 +310,7 @@ class Ordinal : public IMixture
         mu_(k) = maxLik;
       }
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
       std::cout << "End of Ordinal::mStep" << std::endl;
       std::cout << "logLik: " << std::endl;
       std::cout << logLik << std::endl;
@@ -541,6 +546,7 @@ class Ordinal : public IMixture
                       bool prohibitCurrentMu)
     {
       Vector<Real> freqMod(nbModalities_); // frequencies of completed values for the current class
+      freqMod = 0.;
       for (int i = 0; i < nbInd_; ++i) // compute distribution of values
       {
         if ((*p_zi_)(i) == k) // among individuals inside the degenerate class

@@ -47,6 +47,7 @@ extern const int sizeTupleBOS; // default size of tuple for Gibbs sampling in BO
 extern const int nbSampleBOS; // number of sample per class to estimate the observed probability
 extern const int nbGibbsIniBOS; // number of Gibbs sampling rounds in initialization to increase variability on z
 extern const Real piInitBOS; // value of pi used in Gibbs used in initialization
+extern const Real piThreshold; //threashold on pi to detect degeneracy
 
 } // namespace mixt
 

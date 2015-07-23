@@ -130,7 +130,7 @@ void IMixtureComposerBase::sStep(int i)
 /* compute Tik, for all individuals */
 void IMixtureComposerBase::eStep()
 {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "IMixtureComposerBase::eStep" << std::endl;
   std::cout << "prop_: " << prop_ << std::endl;
 #endif
@@ -138,7 +138,7 @@ void IMixtureComposerBase::eStep()
   {
     eStep(i);
   }
-#ifdef MC_DEBUG
+#ifdef MC_DEBUG_NEW
   std::cout << "tik_:" << std::endl;
   std::cout << tik_ << std::endl;
 #endif
