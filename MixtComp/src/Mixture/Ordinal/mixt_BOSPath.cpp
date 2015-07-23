@@ -118,6 +118,9 @@ void BOSPath::tupleMultinomial(int mu,
     logProba(i) = *it;
   }
 
+#ifdef MC_DEBUG
+  std::cout << "logProba.size(): " << logProba.size() << std::endl;
+#endif
   logProba.logToMulti(probaVec);
 }
 
@@ -271,8 +274,8 @@ void BOSPath::initPath()
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
 #endif
-    c_(i).y_ = multi_.sampleInt(currSeg(0), currSeg(1));
-    c_(i).partition(currSeg);
+    c_(i).y_ = multi_.sampleInt(currSeg(0), currSeg(1)); // uniform sampling of z
+    c_(i).partition(currSeg); // compute the partition, where y cuts into currSeg
     c_(i).z_ = 0; // comparisons are all blind in initialization
     Vector<Real> segProba(c_(i).partSize_); // vector of proba of each segment in the partition
     for (int s = 0; s < c_(i).partSize_; ++s) // computation of the allowed segments

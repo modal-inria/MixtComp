@@ -34,7 +34,10 @@ extern const Real probaNonMisClass; // minimal in-sample probability to avoid re
 extern const int moduloMisClass; // modulo used to trigger misclassification step
 extern const int minIndPerClass; // minimal number of individual in a class to accept a z sampling
 extern const int nbSamplingAttempts; // number of sampling attempts, when a not enough individuals are sampled
+
 extern const Real epsilon; // very small value of real to check for near zero values
+extern const Real logEpsilon; // log of very small value
+
 extern const int minModality; // minimal modality for categorical models
 extern const Real pi; // pi
 extern const Real l2pi; // constant used in pdf computation for normal law

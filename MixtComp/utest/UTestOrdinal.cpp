@@ -157,41 +157,56 @@ TEST(Ordinal, computeLogProba1)
 }
 
 /**
- * Test checking the initialization of the Gibbs sampling
+ * Multiple Tests of the initialization, using the piInitBos used in initialisation
  */
-TEST(Ordinal, GibbsInit)
+TEST(Ordinal, initPath)
 {
   BOSPath path;
-  path.setInit(5, 12);
-  path.setEnd(8, 10);
+  int nbTest = 10000;
+  MultinomialStatistic multi;
 
-  path.initPath();
+  bool validPath = true;
+  bool zeroZ = true;
+  bool nonNulProba = true;
+
+  for (int i = 0; i < nbTest; ++i)
+  {
+    int ini0 = multi.sampleInt(0       , 9   );
+    int ini1 = multi.sampleInt(ini0 + 1, 10  );
+    int end0 = multi.sampleInt(ini0    , ini1);
+    int end1 = multi.sampleInt(end0    , ini1);
+
+    int mu = multi.sampleInt(ini0, ini1);
+
+    path.setInit(ini0, ini1);
+    path.setEnd (end0, end1);
+
+    path.initPath();
+
+    if (!(path.endCond_(0)                <= path.c_(path.nbNode_ - 1).e_(0) &&
+        path.c_(path.nbNode_ - 1).e_(0) <= path.endCond_(1)                    ))
+    {
+      validPath = false;
+    }
+
+    Real logProba = path.computeLogProba(mu, piInitBOS);
+    if (logProba == minInf)
+    {
 #ifdef MC_DEBUG
-  std::cout << "path.c_.size(): " << path.c_.size() << std::endl;
-  std::cout << "path.nbNode_: " << path.nbNode_ << std::endl;
+      std::cout << "logProba: " << logProba << std::endl;
 #endif
-  bool validPath;
-  if (path.endCond_(0) <= path.c_(path.nbNode_ - 1).e_(0) && path.c_(path.nbNode_ - 1).e_(0) <= path.endCond_(1))
-    validPath = true;
-  else
-    validPath = false;
+      nonNulProba = false;
+    }
 
-#ifdef MC_DEBUG
-  displayPath(path);
-#endif
+    if (path.nbZ() > 0)
+    {
+      zeroZ = false;
+    }
+  }
 
-  int mu = 8; // arbitrary mode, just to verify the validity of the path
-  int pi = 0.5;
-
-  Real logProba = path.computeLogProba(mu, pi);
-
-#ifdef MC_DEBUG
-  std::cout << "logProba: " << logProba << std::endl;
-#endif
-
-  ASSERT_EQ(validPath, true); // is the path generated valid ?
-  ASSERT_GT(logProba,
-            minInf); // is his proba non zero ?
+  ASSERT_EQ(validPath, true); // are all path generated valid ?
+  ASSERT_EQ(zeroZ, true); // are all z been initialized to 0 ?
+  ASSERT_EQ(nonNulProba, true); // do they all have a non zero probability ?
 }
 
 /**
@@ -215,58 +230,63 @@ TEST(Ordinal, ArbitraryGibbs)
   path.setInit(iniMin, iniMax);
   path.setEnd (endMin, endMax);
 
-  path.initPath();
-#ifdef MC_DEBUG
-  std::cout << "initialization, displayPath(path)" << std::endl;
-  displayPath(path);
-#endif
+  bool correctExpectedMode = true;
 
-  Vector<Real> computedProba(iniMax - iniMin + 1);
-  computedProba = 0.;
-  int computedMode;
-
-  int mu = multi.sampleInt(iniMin, iniMax);
-  Real pi = uni.sample(0., 1.);
-//  int mu = 2;
-//  Real pi = 0.5;
-  int sizeTuple = 2;
-
-  int expectedMode = std::max(mu, endMin);
-  expectedMode = std::min(expectedMode, endMax);
-
-#ifdef MC_DEBUG
-  std::cout << "iniMin: " << iniMin << ", iniMax: " << iniMax << std::endl;
-  std::cout << "endMin: " << endMin << ", endMax: " << endMax << std::endl;
-  std::cout << "mu: " << mu << ", pi: " << pi << std::endl;
-  std::cout << "expectedMode: " << expectedMode << std::endl;
-#endif
-
-#ifdef MC_DEBUG
-  std::cout << "Initial path, displayPath: " << std::endl;
-  displayPath(path);
-#endif
-
-  for (int iter = 0; iter < nbIter; ++iter)
+  for (int mu = endMin; mu <= iniMax; ++mu)
   {
+    path.initPath();
+  #ifdef MC_DEBUG
+    std::cout << "initialization, displayPath(path)" << std::endl;
+    displayPath(path);
+  #endif
+
+    Vector<Real> computedProba(iniMax - iniMin + 1);
+    computedProba = 0.;
+    int computedMode;
+
+    Real pi = 0.5;
+
+    int expectedMode = std::max(mu, endMin);
+    expectedMode = std::min(expectedMode, endMax);
+
+  #ifdef MC_DEBUG
+    std::cout << "iniMin: " << iniMin << ", iniMax: " << iniMax << std::endl;
+    std::cout << "endMin: " << endMin << ", endMax: " << endMax << std::endl;
+    std::cout << "mu: " << mu << ", pi: " << pi << std::endl;
+    std::cout << "expectedMode: " << expectedMode << std::endl;
+  #endif
+
+  #ifdef MC_DEBUG
+    std::cout << "Initial path, displayPath: " << std::endl;
+    BOSDisplayPath(path);
+  #endif
+
+    for (int iter = 0; iter < nbIter; ++iter)
+    {
+  #ifdef MC_DEBUG
+      std::cout << "ArbitraryGibbs, iter: " << iter << std::endl;
+  #endif
+      path.samplePath(mu,
+                      pi,
+                      sizeTupleBOS);
+      int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
+      computedProba(x) += 1.; // the new occurrence of x is stored
+    }
+    computedProba /= computedProba.sum();
+    computedProba.maxCoeff(&computedMode);
+
 #ifdef MC_DEBUG
-    std::cout << "ArbitraryGibbs, iter: " << iter << std::endl;
-#endif
-    path.samplePath(mu,
-                    pi,
-                    sizeTuple);
-    int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
-    computedProba(x) += 1.; // the new occurrence of x is stored
-  }
-  computedProba /= computedProba.sum();
-  computedProba.maxCoeff(&computedMode);
-#ifdef MC_DEBUG
-  std::cout << "Final path, displayPath: " << std::endl;
-  displayPath(path);
-  std::cout << "computedProba" << std::endl;
-  std::cout << computedProba << std::endl;
+    std::cout << "computedProba" << std::endl;
+    std::cout << computedProba << std::endl;
 #endif
 
-  ASSERT_EQ(expectedMode, computedMode); // has the real mode been estimated correctly ?
+    if (expectedMode != computedMode)
+    {
+      correctExpectedMode = false;
+    }
+  }
+
+  ASSERT_EQ(correctExpectedMode, true); // has the real mode been estimated correctly ?
 }
 
 /**
@@ -336,7 +356,6 @@ TEST(Ordinal, mStep)
   int nbModalities = 4;
   int mu;
   Real pi;
-  int tupleSize = 2;
   Real errorTolerance = 0.05;
 
   MultinomialStatistic multi;
@@ -361,7 +380,7 @@ TEST(Ordinal, mStep)
     {
       path(i).samplePath(mu,
                          pi,
-                         tupleSize);
+                         sizeTupleBOS);
     }
   }
 

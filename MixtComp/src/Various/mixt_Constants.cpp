@@ -35,7 +35,10 @@ const Real probaNonMisClass = 0.95; // minimal in-sample probability to avoid re
 const int moduloMisClass = 10; // modulo used to trigger misclassification step
 const int minIndPerClass = 3; // minimal number of individual in a class to accept a z sampling
 const int nbSamplingAttempts = 20; // number of sampling attempts, when not enough individuals are sampled
+
 const Real epsilon = 1.e-8; // very small value of real to check for near zero values
+const Real logEpsilon = std::log(epsilon); // log of very small value
+
 const int minModality = 1; // minimal modality for categorical models
 const Real pi = 3.141592653589793; // pi
 const Real l2pi = 0.9189385332046727417; // constant used in pdf computation for normal law, 1/2 * log(2 * pi)
@@ -48,6 +51,6 @@ const int sizeTupleBOS = 2; // default size of tuple for Gibbs sampling in BOS m
 const int nbSampleBOS = 200000; // number of sample per class to estimate the observed probability
 const int nbGibbsIniBOS = 1000; // number of Gibbs sampling rounds in initialization to increase variability on z
 const Real piInitBOS = 0.99; // value of pi used in Gibbs for initialization
-const Real piThreshold = 0.005; //threshold on pi to detect degeneracy
+const Real piThreshold = 0.1; //threshold on pi to detect degeneracy
 
 } // namespace mixt

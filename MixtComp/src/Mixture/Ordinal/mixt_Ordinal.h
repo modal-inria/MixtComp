@@ -538,7 +538,7 @@ class Ordinal : public IMixture
 
   private:
     /**
-     * Sample the next mu. Used in removeMissing to initialize, and in
+     * Sample the next mu for the class k and initialize the individuals in the class using it.
      * @param k class for which the mode must be simulated
      * @param prohibitCurrentMu shall the current value of mu be forbidden, for example if it lead to degeneracy in the mStep ?
      * */
@@ -578,12 +578,15 @@ class Ordinal : public IMixture
       {
         if ((*p_zi_)(i) == k)
         {
-#ifdef MC_DEBUG
-          std::cout << "0-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
-#endif
           path_(i).initPath(); // enforce all z = 0 and start fresh
+#ifdef MC_DEBUG_NEW
+          std::cout << "0-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << ", path_(i).computeLogProba(mu_(k), pi_(k)): " << path_(i).computeLogProba(mu_(k), pi_(k)) << std::endl;
+#endif
           for (int n = 0; n < nbGibbsIniBOS; ++n) // same initialization than used in removeMisssing, to increase variability on z among individuals
           {
+#ifdef MC_DEBUG_NEW
+            std::cout << "n: " << n << std::endl;
+#endif
             path_(i).samplePath(mu_(k), // mu
                                 pi_(k), // pi
                                 sizeTupleBOS); // sizeTuple
