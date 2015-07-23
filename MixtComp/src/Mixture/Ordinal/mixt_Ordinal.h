@@ -224,7 +224,7 @@ class Ordinal : public IMixture
 
     virtual std::string mStep()
     {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
 #endif
 
@@ -238,7 +238,7 @@ class Ordinal : public IMixture
       for (int i = 0; i < nbInd_; ++i)
       {
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
 #endif
 
@@ -247,7 +247,7 @@ class Ordinal : public IMixture
         zPerClass(indClass) += path_(i).nbZ(); // add only z = 1 nodes of the individual
       }
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
         std::cout << "nodePerClass" << std::endl;
         std::cout << nodePerClass << std::endl;
         std::cout << "zPerClass" << std::endl;
@@ -261,7 +261,7 @@ class Ordinal : public IMixture
         if (pi_(k) < piThreshold)
         {
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "Ordinal::mStep, class " << k << " has 0-degenerated" << std::endl;
 #endif
           sampleMuFreq(k, true);
@@ -269,7 +269,7 @@ class Ordinal : public IMixture
 
         if (pi_(k) > 1. - piThreshold)
         {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "Ordinal::mStep, class " << k << " has 1-degenerated" << std::endl;
 #endif
           for (int i = 0; i < nbInd_; ++i)
@@ -310,7 +310,7 @@ class Ordinal : public IMixture
         mu_(k) = maxLik;
       }
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "End of Ordinal::mStep" << std::endl;
       std::cout << "logLik: " << std::endl;
       std::cout << logLik << std::endl;
@@ -581,6 +581,7 @@ class Ordinal : public IMixture
 #ifdef MC_DEBUG
           std::cout << "0-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
 #endif
+          path_(i).initPath(); // enforce all z = 0 and start fresh
           for (int n = 0; n < nbGibbsIniBOS; ++n) // same initialization than used in removeMisssing, to increase variability on z among individuals
           {
             path_(i).samplePath(mu_(k), // mu
