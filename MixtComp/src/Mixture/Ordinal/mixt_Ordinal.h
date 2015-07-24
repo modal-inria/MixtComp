@@ -337,6 +337,17 @@ class Ordinal : public IMixture
         muParamStatComputer_.setExpectationParam(); // estimate mu parameter using mode / expectation
         piParamStatComputer_.setExpectationParam(); // estimate pi parameter using mode / expectation
         computeObservedProba(); // compute observed probabilities using estimated parameters
+
+        for (int i = 0; i < nbInd_; ++i) // Gibbs to avoid null proba of individuals, since the parameters have been changed by setExpectationParam()
+        {
+          path_(i).initPath();
+          for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
+          {
+            path_(i).samplePath(mu_((*p_zi_)(i)), // mu
+                                pi_((*p_zi_)(i)), // pi
+                                sizeTupleBOS); // sizeTuple
+          }
+        }
       }
     }
 
@@ -579,12 +590,12 @@ class Ordinal : public IMixture
         if ((*p_zi_)(i) == k)
         {
           path_(i).initPath(); // enforce all z = 0 and start fresh
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
           std::cout << "0-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << ", path_(i).computeLogProba(mu_(k), pi_(k)): " << path_(i).computeLogProba(mu_(k), pi_(k)) << std::endl;
 #endif
           for (int n = 0; n < nbGibbsIniBOS; ++n) // same initialization than used in removeMisssing, to increase variability on z among individuals
           {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
             std::cout << "n: " << n << std::endl;
 #endif
             path_(i).samplePath(mu_(k), // mu
