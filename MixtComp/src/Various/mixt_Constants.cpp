@@ -51,6 +51,6 @@ const int sizeTupleBOS = 2; // default size of tuple for Gibbs sampling in BOS m
 const int nbSampleBOS = 200000; // number of sample per class to estimate the observed probability
 const int nbGibbsIniBOS = 1000; // number of Gibbs sampling rounds in initialization to increase variability on z
 const Real piInitBOS = 0.99; // value of pi used in Gibbs for initialization
-const Real piThreshold = 0.1; //threshold on pi to detect degeneracy
+const Real piThreshold = 0.005; //threshold on pi to detect degeneracy. Too high and classes are badly estimated, too low and individuals can not change class easily.
 
 } // namespace mixt

@@ -258,7 +258,7 @@ class Ordinal : public IMixture
 
       for (int k = 0; k < nbClass_; ++k) // reboot degenerate classes
       {
-        if (pi_(k) < piThreshold)
+        if (pi_(k) < piThreshold) // if piThreshold is too high, and a class has a high value of pi, individuals with z = 0 will be unable to switch, even if they belong to the new class
         {
 
 #ifdef MC_DEBUG
