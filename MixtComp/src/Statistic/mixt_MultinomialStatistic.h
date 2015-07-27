@@ -31,6 +31,7 @@
 #include <boost/random/mersenne_twister.hpp>
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../IO/mixt_IO.h"
+#include "../Various/mixt_Constants.h"
 
 namespace mixt
 {
@@ -48,22 +49,24 @@ class MultinomialStatistic
     template<typename T>
     int sample(const T& proportion)
     {
-#ifdef MC_DEBUG
-      std::cout << "MultinomialStatistic::sample()" << std::endl;
-      std::cout << "proportion" << std::endl;
-      itPrint(proportion);
-#endif
       boost::random::uniform_real_distribution<> uni(0.,
                                                      1.);
       boost::variate_generator<boost::random::mt19937&,
                                boost::random::uniform_real_distribution<> > generator(rng_,
                                                                                       uni);
       Real x = generator();
-#ifdef MC_DEBUG
-      std::cout << "MultinomialStatistic::sample" << std::endl;
-      std::cout << "proportion: " << proportion << std::endl;
-      std::cout << "x: " << x << std::endl;
+
+#ifdef MC_DEBUG_NEW
+      if (proportion.sum() < 1. - epsilon && 1. + epsilon < proportion.sum())
+      {
+        std::cout << "MultinomialStatistic::sample()" << std::endl;
+        std::cout << "proportion" << std::endl;
+        itPrint(proportion);
+        std::cout << "proportion does not describe a probability distribution" << std::endl;
+        std::cout << "x: " << x << std::endl;
+      }
 #endif
+
       Real cumProb = 0.; // cumulative probability
       int index = 0;
 
@@ -84,6 +87,9 @@ class MultinomialStatistic
         }
         ++index;
       }
+#ifdef MC_DEBUG_NEW
+      std::cout << "MultinomialStatistic::sample, -1 value sampled" << std::endl;
+#endif
       return -1; // to accelerate sampling, no check have been computed on modalities to verify that is it actually a probability distribution
     };
 

@@ -66,9 +66,9 @@ class ConfIntDataStat
           int realIndLow =        alpha  * iterationMax;
           int realIndHigh = (1. - alpha) * iterationMax;
 
-          dataStatStorage_(ind)(0) = stat_.mean();
-          dataStatStorage_(ind)(1) = stat_(realIndLow     );
-          dataStatStorage_(ind)(2) = stat_(realIndHigh + 1);
+          dataStatStorage_(ind)(0) = stat_(iterationMax / 2);
+          dataStatStorage_(ind)(1) = stat_(realIndLow      );
+          dataStatStorage_(ind)(2) = stat_(realIndHigh + 1 );
         }
         else
         {

@@ -30,12 +30,15 @@ namespace mixt
 {
 
 Poisson_k::Poisson_k(int nbCluster,
+                     Vector<Real>& param,
                      Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
-    param_(nbCluster),
+    param_(param),
     p_data_(0),
     p_zi_(p_zi)
-{}
+{
+  param_.resize(nbCluster);
+}
 
 Poisson_k::~Poisson_k()
 {}
@@ -65,19 +68,6 @@ bool Poisson_k::checkMinVal() const
 int Poisson_k::computeNbFreeParameters() const
 {
   return nbCluster_;
-}
-
-void Poisson_k::getParameters(Vector<Real>& param) const
-{
-#ifdef MC_DEBUG
-  std::cout << "Poisson_k::getParameters" << std::endl;
-  std::cout << "\tparam_: " << param_ << std::endl;
-#endif
-  param.resize(param_.rows());
-  for (int i = 0; i < param_.rows(); ++i)
-  {
-    param(i) = param_[i];
-  }
 }
 
 bool Poisson_k::hasModalities() const
@@ -170,14 +160,6 @@ void Poisson_k::setData(Vector<int>& data)
 void Poisson_k::setModalities(int nbModalities)
 {
   // does nothing. Used for categorical models.
-}
-
-void Poisson_k::setParameters(const Vector<Real>& param)
-{
-  for (int i = 0; i < param.rows(); ++i)
-  {
-    param_[i] = param(i);
-  }
 }
 
 void Poisson_k::writeParameters(std::ostream& out) const

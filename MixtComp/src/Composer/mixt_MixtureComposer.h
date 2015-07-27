@@ -18,15 +18,16 @@
 /*
  *  Project:    MixtComp
  *  Created on: July 2, 2014
- *  Authors:    Serge IOVLEFF <serge.iovleff@inria.fr>
- *              Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *              Serge IOVLEFF <serge.iovleff@inria.fr>
+ *
  **/
 
 #ifndef MIXT_MIXTURECOMPOSER_H
 #define MIXT_MIXTURECOMPOSER_H
 
 #include <vector>
-#include "mixt_IMixtureComposerBase.h"
+#include "../Sampler/mixt_ClassSampler.h"
 #include "../Mixture/mixt_IMixture.h"
 #include "../Various/mixt_Def.h"
 #include "../Param/mixt_ConfIntParamStat.h"
@@ -35,26 +36,10 @@
 namespace mixt
 {
 
-/** @ingroup Clustering
- *  Main class for handling composed mixture models.
- *  A composed mixture model on some composed space
- *  \f$  \mathbb{X} = \subset \mathcal{X}^1\times \ldots  \times \mathcal{X}^L \f$
- *  is a density of the form
- * \f[
- *     f(\mathbf{x}|\boldsymbol{\theta})
- *     = \sum_{k=1}^K p_k \prod_{l=1}^L f^l(\mathbf{x}^l;\boldsymbol{\lambda}^l_k,\boldsymbol{\alpha}^l)
- *     \quad \mathbf{x} \in \mathbb{X}.
- * \f]
- * The \f$ p_k > 0\f$ with  \f$ \sum_{k=1}^K p_k =1\f$ are the mixing proportions.
- * The density \e f is called the component of the model. The parameters
- * \f$\boldsymbol{\lambda}^l_k, \, k=1,\ldots K \f$ are the cluster specific parameters
- * and the parameters \f$ \boldsymbol{\alpha}^l \f$ are the shared parameters.
- * */
-
 typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
 typedef std::vector<IMixture*>::iterator MixtIterator;
 
-class MixtureComposer : public IMixtureComposerBase
+class MixtureComposer
 {
   public:
     /** Constructor.
@@ -73,13 +58,48 @@ class MixtureComposer : public IMixtureComposerBase
     /** The registered mixtures will be deleted there.*/
     virtual ~MixtureComposer();
 
+    /** Create the mixture model parameters. */
+    void intializeMixtureParameters();
+
+    int nbSample() const {return nbSample_;}
+
+    /** @return  the zi class label */
+    inline Vector<int> const* p_zi() const {return &zi_.data_;}
+
     /** @return a constant reference on the vector of mixture */
     inline std::vector<IMixture*> const& v_mixtures() const {return v_mixtures_;}
+
+    /**
+     * Run sStep until there is at least minIndPerClass individuals per class.
+     * If, after nbSamplingAttempts there are not enough individuals per class, return
+     * an error message.
+     */
+    std::string sStepNbAttempts(int nbSamplingAttempts);
 
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
      **/
     virtual std::string mStep();
+
+    /** Compute proportions using the ML estimator, default implementation. Set
+     *  as virtual in case we impose fixed proportions in derived model. Only called
+     *  by mStep
+     **/
+    virtual void pStep();
+
+    /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
+     *  @return the minimal value of individuals in a class
+     **/
+    int sStep();
+    void sStep(int i);
+
+    /** compute Tik */
+    void eStep();
+    void eStep(int i);
+
+    /** Compute zi using the Map estimator. */
+    void mapStep();
+    void mapStep(int i);
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
@@ -161,6 +181,95 @@ class MixtureComposer : public IMixtureComposerBase
       return warnLog;
     }
 
+    /** ParamSetter is injected to take care of setting the values of the proportions.
+     * This avoids templating the whole composer with DataHandler type, as is currently done
+     * with the individual IMixtures. */
+    template<typename ParamSetter>
+    std::string setProportion(const ParamSetter& paramSetter)
+    {
+#ifdef MC_DEBUG
+      std::cout << "MixtureComposer::setProportion" << std::endl;
+#endif
+      std::string warnLog;
+
+      paramSetter.getParam("z_class",
+                           prop_);
+
+      return warnLog;
+    }
+
+    /** DataHandler is injected to take care of setting the values of the latent classes.
+      * This avoids templating the whole composer with DataHandler type, as is currently done
+      * with the individual IMixtures.
+      * @param checkInd should be set to 1 if a minimum number of individual per class should be
+      * enforced at sampling (true in learning, false in prediction) */
+    template<typename DataHandler>
+    std::string setZi(const DataHandler& dataHandler,
+                      RunMode mode)
+    {
+#ifdef MC_DEBUG
+      std::cout << "IMixtureComposerBase::setZi" << std::endl;
+#endif
+      std::string warnLog;
+      std::string dummyParam;
+
+      if (dataHandler.info().find("z_class") == dataHandler.info().end()) // z_class was not provided
+      {
+        zi_.setAllMissing(nbSample_); // set every value state to missing_
+      }
+      else // z_class was provided and its value is acquired in zi_
+      {
+        dataHandler.getData("z_class", // reserved name for the class
+                            zi_,
+                            nbSample_,
+                            dummyParam,
+                            -minModality, // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
+                            warnLog);
+      }
+
+      Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
+      at(0) = true; // present_,
+      at(1) = true;// missing_,
+      at(2) = true;// missingFiniteValues_,
+      at(3) = false;// missingIntervals_,
+      at(4) = false;// missingLUIntervals_,
+      at(5) = false;// missingRUIntervals_,
+
+      std::string tempLog = zi_.checkMissingType(at); // check if the missing data provided are compatible with the model
+      if(tempLog.size() > 0)
+      {
+       std::stringstream sstm;
+       sstm << "Variable " << idName_ << " contains latent classes and has unsupported missing value types.\n" << tempLog;
+       warnLog += sstm.str();
+      }
+      zi_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
+      if (zi_.dataRange_.min_ < 0)
+      {
+       std::stringstream sstm;
+       sstm << "The z_class latent class variable has a lowest provided value of: "
+            << minModality + zi_.dataRange_.min_
+            << " while the minimal value has to be: "
+            << minModality
+            << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+       warnLog += sstm.str();
+      }
+      if (zi_.dataRange_.hasRange_ == true || zi_.dataRange_.max_ > nbCluster_ - 1)
+      {
+       std::stringstream sstm;
+       sstm << "The z_class latent class variable has a highest provided value of: "
+            << minModality + zi_.dataRange_.max_
+            << " while the maximal value can not exceed the number of class: "
+            << minModality + nbCluster_ - 1
+            << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+       warnLog += sstm.str();
+      }
+      zi_.dataRange_.min_ = 0; // real range provided by the parameters is enforced
+      zi_.dataRange_.max_ = nbCluster_ - 1;
+      zi_.dataRange_.range_ = nbCluster_;
+
+      return warnLog;
+    };
+
     /**@brief This step can be used to ask each mixture to export its model parameters
      * and data
      **/
@@ -213,7 +322,28 @@ class MixtureComposer : public IMixtureComposerBase
 
     void lnObservedLikelihoodDebug();
 
-  protected:
+  private:
+    /** name of the latent class variable */
+    std::string idName_;
+
+    /** number of cluster. */
+    int nbCluster_;
+
+    /** Number of samples */
+    int nbSample_;
+
+    /** The proportions of each class */
+    Vector<Real> prop_;
+
+    /** The tik probabilities */
+    Matrix<Real> tik_;
+
+    /** The zik class label */
+    AugmentedData<Vector<int> > zi_;
+
+    /** class sampler */
+    ClassSampler sampler_;
+
     /** vector of pointers to the mixtures components */
     std::vector<IMixture*> v_mixtures_;
 

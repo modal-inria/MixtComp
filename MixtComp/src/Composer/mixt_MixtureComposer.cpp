@@ -18,8 +18,8 @@
 /*
  *  Project:    MixtComp
  *  Created on: July 2, 2014
- *  Authors:    Serge IOVLEFF <serge.iovleff@inria.fr>
- *              Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
 #include "mixt_MixtureComposer.h"
@@ -36,14 +36,23 @@ MixtureComposer::MixtureComposer(int nbSample,
                                  int nbVariable,
                                  int nbCluster,
                                  Real confidenceLevel) :
-    mixt::IMixtureComposerBase(nbSample,
-                               nbCluster),
+    nbCluster_(nbCluster),
+    nbSample_(nbSample),
+    prop_(nbCluster),
+    tik_(nbSample, nbCluster),
+    sampler_(zi_,
+            tik_,
+            nbCluster),
+    idName_("z_class"),
     paramStat_(prop_,
                confidenceLevel),
     dataStat_(zi_,
               confidenceLevel),
     confidenceLevel_(confidenceLevel)
-{}
+{
+  zi_.resizeArrays(nbSample);
+  intializeMixtureParameters(); // default values that will be overwritten either by pStep (learning), or eStepObserved (prediction)
+}
 
 MixtureComposer::~MixtureComposer()
 {
@@ -51,6 +60,17 @@ MixtureComposer::~MixtureComposer()
   {
     delete (*it);
   }
+}
+
+/* Create the parameters of the  mixture model. */
+void MixtureComposer::intializeMixtureParameters()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::intializeMixtureParameters" << std::endl;
+#endif
+  prop_     = 1./(Real)nbCluster_;
+  tik_      = 1./(Real)nbCluster_;
+  zi_.data_ = 0;
 }
 
 /** Compute the observed likelihood for a single individual, with the class fixed as a parameter */
@@ -197,7 +217,6 @@ Real MixtureComposer::lnCompletedLikelihood()
   return lnLikelihood;
 }
 
-
 std::string MixtureComposer::mStep()
 {
   std::string warn;
@@ -213,6 +232,156 @@ std::string MixtureComposer::mStep()
   std::cout << "\twarn: " << warn << std::endl;
 #endif
   return warn;
+}
+
+std::string MixtureComposer::sStepNbAttempts(int nbSamplingAttempts)
+{
+  std::string warnLog;
+  for (int iterSample = 0; iterSample < nbSamplingAttempts; ++iterSample) // sample until there are enough individuals per class, using default tik from IMixtureComposerBase::intializeMixtureParameters()
+  {
+    int nbIndPerClass = sStep();
+  #ifdef MC_DEBUG
+    std::cout << "MixtureComposer::sStepNbAttempts, iterSample: " << iterSample << std::endl;
+    std::cout << "nbIndPerClass: " << nbIndPerClass << std::endl;
+  #endif
+    if (nbIndPerClass > minIndPerClass)
+    {
+      break; // enough individuals in each class to carry on
+    }
+    else
+    {
+      if (iterSample == nbSamplingAttempts - 1) // on last attempt, detail the error in the error message
+      {
+        std::stringstream sstm;
+        sstm << "Sampling step problem in SEM. The class with the lowest number "
+             << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
+             << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
+             << " partition samplings before failure. The number of classes might be too important"
+             << " relative to the number of individuals. Try decreasing the number of classes." << std::endl;
+        warnLog += sstm.str();
+      }
+    }
+  }
+  return warnLog;
+}
+
+/* simulate zi for all individuals */
+int MixtureComposer::sStep()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStep" << std::endl;
+#endif
+  // simulate zi
+  for (int i = 0; i < nbSample_; ++i)
+  {
+    sStep(i);
+  }
+#ifdef MC_DEBUG
+  std::cout << "zi_.data_: " << std::endl;
+  std::cout << zi_.data_ << std::endl;
+#endif
+  Vector<int> indPerClass(nbCluster_);
+  indPerClass = 0;
+  for (int i = 0; i < nbSample_; ++i)
+  {
+#ifdef MC_DEBUG
+  std::cout << "i: " << i << ", zi_.data_(i): " << zi_.data_(i) << std::endl;
+  std::cout << "zi_.data_.size(): " << zi_.data_.size() << ", indPerClass.size(): " << indPerClass.size() << std::endl;
+#endif
+    indPerClass(zi_.data_(i)) += 1;
+  }
+  int minIndPerClass = indPerClass.minCoeff();
+#ifdef MC_DEBUG
+  std::cout << "\tindPerClass: " << indPerClass << std::endl;
+  std::cout << "\tminIndPerClass: " << minIndPerClass << std::endl;
+#endif
+  return minIndPerClass;
+}
+
+/* simulate zi for a particular individual */
+void MixtureComposer::sStep(int i)
+{
+  sampler_.sampleIndividual(i);
+}
+
+/* compute Tik, for all individuals */
+void MixtureComposer::eStep()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::eStep" << std::endl;
+  std::cout << "prop_: " << prop_ << std::endl;
+#endif
+  for (int i = 0; i < nbSample_; ++i)
+  {
+    eStep(i);
+  }
+#ifdef MC_DEBUG
+  std::cout << "tik_:" << std::endl;
+  std::cout << tik_ << std::endl;
+#endif
+}
+
+/* compute Tik, for a particular individual */
+void MixtureComposer::eStep(int i)
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::eStep(i), i: " << i << std::endl;
+#endif
+  RowVector<Real> lnComp(nbCluster_);
+  for (int k = 0; k < nbCluster_; k++)
+  {
+    lnComp[k] = lnCompletedProbability(i, k);
+  }
+
+#ifdef MC_DEBUG
+    std::cout << "lnComp: " << lnComp << std::endl;
+#endif
+
+  lnComp.logToMulti(tik_.row(i));
+
+#ifdef MC_DEBUG
+  std::cout << "\tmax: " << max << ", sum2: " << sum2 << std::endl;
+  std::cout << "tik_.row(i): " << tik_.row(i) << std::endl;
+#endif
+}
+
+/* Compute prop using the ML estimator, default implementation. */
+void MixtureComposer::pStep()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::pStep" << std::endl;
+#endif
+  for (int i = 0; i < zi_.data_.rows(); ++i)
+  {
+    prop_[zi_.data_(i)] += 1.;
+  }
+  prop_ = prop_ / prop_.sum();
+#ifdef MC_DEBUG
+  std::cout << "\tprop_: " << prop_ << std::endl;
+#endif
+}
+
+/* Compute Zi using the Map estimator,default implementation. */
+void MixtureComposer::mapStep()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::mapStep" << std::endl;
+#endif
+  for (int i = 0; i < nbSample_; ++i)
+  {
+    mapStep(i);
+  }
+}
+
+/* Compute Zi using the Map estimator, default implementation. */
+void MixtureComposer::mapStep(int i)
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::mapStep, single individual" << std::endl;
+#endif
+  int k;
+  tik_.row(i).maxCoeff(&k);
+  zi_.data_(i) = k;
 }
 
 void MixtureComposer::writeParameters(std::ostream& out) const

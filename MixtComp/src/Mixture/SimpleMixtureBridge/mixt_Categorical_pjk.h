@@ -35,14 +35,15 @@ class Categorical_pjk
 {
   public:
     Categorical_pjk(int nbCluster,
+                    Vector<Real>& param,
                     Vector<int> const* p_zi);
     ~Categorical_pjk();
 
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
     bool checkMinVal() const;
+    bool checkParam() const;
     int computeNbFreeParameters() const;
-    void getParameters(Vector<Real>& param) const;
     bool hasModalities() const;
     int maxVal() const;
     int minVal() const;
@@ -51,7 +52,6 @@ class Categorical_pjk
     std::vector<std::string> paramNames() const;
     void setData(Vector<int>& data);
     void setModalities(int nbModalities);
-    void setParameters(const Vector<Real>& param);
     void writeParameters(std::ostream& out) const;
 
     bool possibleNullProbability() const;
@@ -60,7 +60,7 @@ class Categorical_pjk
     int nbCluster_;
     int nbModalities_;
     Vector<int>* p_data_;
-    Vector<Real> param_;
+    Vector<Real>& param_;
     Vector<int> const* p_zi_;
 };
 

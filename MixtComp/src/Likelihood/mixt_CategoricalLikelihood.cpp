@@ -42,8 +42,17 @@ CategoricalLikelihood::~CategoricalLikelihood()
 Real CategoricalLikelihood::lnCompletedProbability(int i, int k)
 {
   int nbModalities = param_.rows() / nbClass_;
-
   int ind = k * nbModalities + augData_.data_(i);
+
+#ifdef MC_DEBUG_NEW
+  if (augData_.data_(i) < 0)
+  {
+    std::cout << "CategoricalLikelihood::lnCompletedProbability" << std::endl;
+    std::cout << "i: " << i << ", k: " << k << ", nbModalities: " << nbModalities <<  ", ind: " << ind << std::endl;
+    std::cout << "param_" << std::endl;
+    std::cout << param_ << std::endl;
+  }
+#endif
   Real proba = param_(ind);
 #ifdef MC_DEBUG
   if (proba < epsilon)

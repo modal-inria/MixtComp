@@ -36,19 +36,17 @@ class Gaussian_sjk
 {
   public:
     Gaussian_sjk(int nbCluster,
+                 Vector<Real>& param,
                  Vector<int> const* p_zi);
     ~Gaussian_sjk();
 
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
     bool checkMinVal() const;
+    bool checkParam() const {return true;}
     int computeNbFreeParameters() const;
 
-    void getParameters(Vector<Real>& param) const;
     bool hasModalities() const;
-
-    /** Set the parameters after the SEM, to the mean estimates for example */
-    void setParameters(const Vector<Real>& param);
 
     void setData(Vector<Real>& data);
 
@@ -69,7 +67,7 @@ class Gaussian_sjk
     bool possibleNullProbability() const {return false;} // no individual can possibly have a null probability
   private:
     int nbCluster_;
-    Vector<Real> param_;
+    Vector<Real>& param_;
     Vector<Real>* p_data_;
     Vector<int> const* p_zi_;
 

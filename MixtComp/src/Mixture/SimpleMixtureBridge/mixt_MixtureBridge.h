@@ -81,7 +81,9 @@ class MixtureBridge : public IMixture
       IMixture(idName),
       p_zi_(p_zi),
       nbClass_(nbClass),
+      param_(),
       mixture_(nbClass,
+               param_,
                p_zi),
       augData_(),
       nbSample_(0),
@@ -106,6 +108,7 @@ class MixtureBridge : public IMixture
       IMixture(bridge),
       p_zi_(bridge.p_zi_),
       nbClass_(bridge.nbClass_),
+      param_(bridge.param_),
       mixture_(bridge.mixture_),
       augData_(bridge.augData_),
       nbSample_(bridge.nbSample_),
@@ -186,7 +189,6 @@ class MixtureBridge : public IMixture
           {
             mixture_.setModalities(nbModalities);
           }
-          mixture_.setParameters(param_);
           paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object
           // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
           // in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
@@ -231,7 +233,6 @@ class MixtureBridge : public IMixture
     virtual std::string mStep()
     {
       std::string warn = mixture_.mStep();
-      mixture_.getParameters(param_); // update the parameters
       if (warn.size() > 0)
       {
         warn =   std::string("Error in variable ")
@@ -272,13 +273,12 @@ class MixtureBridge : public IMixture
     virtual void storeSEMRun(int iteration,
                              int iterationMax)
     {
-      mixture_.getParameters(param_);
       paramStat_.sampleParam(iteration,
                              iterationMax);
       if (iteration == iterationMax)
       {
         paramStat_.setExpectationParam(); // set parameter to mode / expectation
-        mixture_.setParameters(param_); // reinject the SEM estimated parameters into the mixture
+        mixture_.checkParam(); // since estimated have not been estimated by maximum likelihood, but by statistics on the SEM chain, the values must be checked
 #ifdef MC_DEBUG
         std::cout << "MixtureBridge::storeSEMRun" << std::endl;
         int nbModalities = param_.cols() / nbCluster_;
@@ -391,12 +391,12 @@ class MixtureBridge : public IMixture
     Vector<int> const* p_zi_;
     /** Number of classes */
     int nbClass_;
+    /** Current parameters of the mixture_ */
+    Vector<Real> param_;
     /** The simple mixture to bridge with the composer */
     Mixture mixture_;
     /** The augmented data set */
     AugData augData_;
-    /** Current parameters of the mixture_ */
-    Vector<Real> param_;
     /** Parameters transmitted by the user */
     std::string paramStr_;
     /** number of samples in the data set*/

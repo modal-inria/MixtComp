@@ -31,12 +31,15 @@ namespace mixt
 {
 
 Gaussian_sjk::Gaussian_sjk(int nbCluster,
+                           Vector<Real>& param,
                            Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
-    param_(2 * nbCluster),
     p_data_(0),
+    param_(param),
     p_zi_(p_zi)
-{}
+{
+  param_.resize(2 * nbCluster);
+}
 
 Gaussian_sjk::~Gaussian_sjk()
 {}
@@ -66,19 +69,6 @@ bool Gaussian_sjk::checkMinVal() const
 int Gaussian_sjk::computeNbFreeParameters() const
 {
   return 2 * nbCluster_;
-}
-
-void Gaussian_sjk::getParameters(Vector<Real>& param) const
-{
-#ifdef MC_DEBUG
-  std::cout << "Gaussian_sjk::getParameters" << std::endl;
-  std::cout << "\tparam_: " << param_ << std::endl;
-#endif
-  param.resize(param_.rows());
-  for (int i = 0; i < param_.rows(); ++i)
-  {
-    param(i) = param_[i];
-  }
 }
 
 bool Gaussian_sjk::hasModalities() const
@@ -202,19 +192,6 @@ void Gaussian_sjk::setData(Vector<Real>& data)
 void Gaussian_sjk::setModalities(int nbModalities)
 {
   // does nothing. Used for categorical models.
-}
-
-void Gaussian_sjk::setParameters(const Vector<Real>& param)
-{
-#ifdef MC_DEBUG
-  std::cout << "Gaussian_sjk::setParameters" << std::endl;
-  std::cout << "param: " << param << std::endl;
-  std::cout << "param_: " << param_ << std::endl;
-#endif
-  for (int i = 0; i < param.rows(); ++i)
-  {
-    param_[i] = param(i);
-  }
 }
 
 void Gaussian_sjk::writeParameters(std::ostream& out) const

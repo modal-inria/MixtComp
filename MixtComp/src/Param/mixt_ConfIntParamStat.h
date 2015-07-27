@@ -73,10 +73,9 @@ class ConfIntParamStat
           int realIndLow =        alpha  * iterationMax;
           int realIndHigh = (1. - alpha) * iterationMax;
 
- //         statStorage_(p, 0) = logStorage_.row(p).mean();
           statStorage_(p, 0) = logStorage_.row(p)(iterationMax / 2);
-          statStorage_(p, 1) = logStorage_.row(p)(realIndLow     );
-          statStorage_(p, 2) = logStorage_.row(p)(realIndHigh + 1);
+          statStorage_(p, 1) = logStorage_.row(p)(realIndLow      );
+          statStorage_(p, 2) = logStorage_.row(p)(realIndHigh + 1 );
         }
       }
       else

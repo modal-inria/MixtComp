@@ -37,19 +37,17 @@ class Poisson_k
 {
   public:
     Poisson_k(int nbCluster,
+              Vector<Real>& param,
               Vector<int> const* p_zi);
     ~Poisson_k();
 
     Vector<bool> acceptedType() const;
+    bool checkParam() const {return true;}
     bool checkMaxVal() const;
     bool checkMinVal() const;
     int computeNbFreeParameters() const;
 
-    void getParameters(Vector<Real>& param) const;
     bool hasModalities() const;
-
-    /** Set the parameters after the SEM, to the mean estimates for example */
-    void setParameters(const Vector<Real>& param);
 
     void setData(Vector<int>& data);
 
@@ -68,7 +66,7 @@ class Poisson_k
     bool possibleNullProbability() const;
   private:
     int nbCluster_;
-    Vector<Real> param_;
+    Vector<Real>& param_;
     Vector<int>* p_data_;
     Vector<int> const* p_zi_;
 
