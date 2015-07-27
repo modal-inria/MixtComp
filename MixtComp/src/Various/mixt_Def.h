@@ -52,6 +52,19 @@ enum RunMode
   prediction_
 };
 
+enum SimpleMixtureID
+{
+  Categorical_pjk_,
+  Gaussian_sjk_,
+  Poisson_k_
+};
+
+enum RunType
+{
+  burnIn_,
+  run_,
+};
+
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

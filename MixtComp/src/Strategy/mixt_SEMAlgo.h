@@ -26,7 +26,7 @@
 #ifndef MIXT_MIXTUREALGO_H
 #define MIXT_MIXTUREALGO_H
 
-#include "../Various/mixt_Clust_Util.h"
+#include "../Various/mixt_Def.h"
 #include "../Composer/mixt_MixtureComposer.h"
 
 namespace mixt
