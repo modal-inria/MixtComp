@@ -27,6 +27,7 @@ endif
 # generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
 CXXFLAGS += -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
+CXXFLAGS += -DMC_VERBOSE
 
 # library files
 LIB_MC = lib/libMixtComp.a
