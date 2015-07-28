@@ -80,15 +80,21 @@ std::string SEMAlgo::run(RunType runType,
                                                   deg); // p_model_->sStep() called nbSamplingAttempts_ at most, to get enough individuals per class
     if (deg != noDeg_)
     {
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, degeneracy in p_model_->sStepNbAttempts" << std::endl;
+#endif
       return sWarn;
     }
 
     p_model_->samplingStep(); // each mixture samples its partially observed values
 
-    std::string warn = p_model_->mStep(deg);
+    std::string mWarn = p_model_->mStep(deg);
     if (deg != noDeg_)
     {
-      return warn; // error reported in the mStep, terminate the SEM algo, and report it to the strategy.
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, degeneracy in p_model_->mStep" << std::endl;
+#endif
+      return mWarn; // error reported in the mStep, terminate the SEM algo, and report it to the strategy.
     }
 
     if (runType == burnIn_)

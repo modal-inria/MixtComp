@@ -228,7 +228,7 @@ std::string MixtureComposer::mStep(DegeneracyType& worstDeg)
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
     DegeneracyType currDeg = noDeg_;
-    std::string currWarn = (*it)->mStep(currDeg); // call mStep on each variable
+    warn += (*it)->mStep(currDeg); // call mStep on each variable
     worstDeg = std::max(currDeg, worstDeg); // update the worst degeneracy so far
   }
 #ifdef MC_DEBUG
@@ -257,6 +257,9 @@ std::string MixtureComposer::sStepNbAttempts(int nbSamplingAttempts,
     {
       if (iterSample == nbSamplingAttempts - 1) // on last attempt, detail the error in the error message
       {
+#ifdef MC_DEBUG
+        std::cout << "MixtureComposer::sStepNbAttempts, all attempts exhausted" << std::endl;
+#endif
         std::stringstream sstm;
         sstm << "Sampling step problem in SEM. The class with the lowest number "
              << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
@@ -390,15 +393,19 @@ void MixtureComposer::mapStep(int i)
   zi_.data_(i) = k;
 }
 
-void MixtureComposer::writeParameters(std::ostream& out) const
+void MixtureComposer::writeParameters() const
 {
-  out << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
-  out << "Composer proportions = " << prop_ << std::endl;
+#ifdef MC_VERBOSE
+  std::cout << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
+  std::cout << "Composer proportions = " << prop_ << std::endl;
+#endif
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
-    out << "Parameters of the mixtures: " << (*it)->idName() << "\n";
-    (*it)->writeParameters(out);
+#ifdef MC_VERBOSE
+    std::cout << "Parameters of the mixtures: " << (*it)->idName() << "\n";
+#endif
+    (*it)->writeParameters();
   }
 }
 

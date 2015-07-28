@@ -166,14 +166,18 @@ void Poisson_k::setModalities(int nbModalities)
   // does nothing. Used for categorical models.
 }
 
-void Poisson_k::writeParameters(std::ostream& out) const
+void Poisson_k::writeParameters() const
 {
+  std::stringstream sstm;
   for (int k = 0; k < nbCluster_; ++k)
   {
-    out << "Class: " << k << std::endl;
-    out << "\tlambda: " << param_[k] << std::endl;
+    sstm << "Class: " << k << std::endl;
+    sstm << "\tlambda: " << param_[k] << std::endl;
   }
 
+#ifdef MC_VERBOSE
+  std::cout << sstm.str() << std::endl;
+#endif
 }
 
 bool Poisson_k::possibleNullProbability() const

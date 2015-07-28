@@ -44,7 +44,7 @@ Real CategoricalLikelihood::lnCompletedProbability(int i, int k)
   int nbModalities = param_.rows() / nbClass_;
   int ind = k * nbModalities + augData_.data_(i);
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
   if (augData_.data_(i) < 0)
   {
     std::cout << "CategoricalLikelihood::lnCompletedProbability" << std::endl;

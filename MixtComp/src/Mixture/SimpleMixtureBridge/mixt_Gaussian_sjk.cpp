@@ -192,14 +192,19 @@ void Gaussian_sjk::setModalities(int nbModalities)
   // does nothing. Used for categorical models.
 }
 
-void Gaussian_sjk::writeParameters(std::ostream& out) const
+void Gaussian_sjk::writeParameters() const
 {
+  std::stringstream sstm;
   for (int k = 0; k < nbCluster_; ++k)
   {
-    out << "Class: " << k << std::endl;
-    out << "\tmean: " << param_[2 * k    ] << std::endl;
-    out << "\tsd: "   << param_[2 * k + 1] << std::endl;
+    sstm << "Class: " << k << std::endl;
+    sstm << "\tmean: " << param_[2 * k    ] << std::endl;
+    sstm << "\tsd: "   << param_[2 * k + 1] << std::endl;
   }
+
+#ifdef MC_VERBOSE
+  std::cout << sstm.str() << std::endl;
+#endif
 }
 
 } // namespace mixt

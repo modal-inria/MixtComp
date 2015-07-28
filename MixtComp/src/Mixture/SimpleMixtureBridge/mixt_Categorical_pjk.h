@@ -52,7 +52,7 @@ class Categorical_pjk
     std::vector<std::string> paramNames() const;
     void setData(Vector<int>& data);
     void setModalities(int nbModalities);
-    void writeParameters(std::ostream& out) const;
+    void writeParameters() const;
 
     bool possibleNullProbability() const;
 

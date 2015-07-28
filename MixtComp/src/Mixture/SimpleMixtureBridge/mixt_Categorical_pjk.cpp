@@ -142,7 +142,7 @@ std::string Categorical_pjk::mStep(DegeneracyType& deg)
 
   if(param_.minCoeff() < epsilon)
   {
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
     std::cout << "param_:" << std::endl;
     std::cout << param_ << std::endl;
 #endif
@@ -201,16 +201,21 @@ void Categorical_pjk::setModalities(int nbModalities)
   param_.resize(nbCluster_ * nbModalities_);
 }
 
-void Categorical_pjk::writeParameters(std::ostream& out) const
+void Categorical_pjk::writeParameters() const
 {
+  std::stringstream sstm;
   for (int k = 0; k < nbCluster_; ++k)
   {
-    out << "Class: " << k << std::endl;
+    sstm << "Class: " << k << std::endl;
     for (int p = 0; p < nbModalities_; ++p)
     {
-      out << "\talpha_ "  << p << ": " << param_(k * nbModalities_ + p) << std::endl;
+      sstm << "\talpha_ "  << p << ": " << param_(k * nbModalities_ + p) << std::endl;
     }
   }
+
+#ifdef MC_VERBOSE
+  std::cout << sstm.str() << std::endl;
+#endif
 }
 
 bool Categorical_pjk::possibleNullProbability() const

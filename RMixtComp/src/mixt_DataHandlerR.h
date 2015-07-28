@@ -52,13 +52,11 @@ class DataHandlerR
     /** default constructor */
     DataHandlerR(Rcpp::List rList);
 
-    /** destructor */
-    virtual ~DataHandlerR();
-
     /** @return the number of samples (the number of rows of the data) */
     int nbSample() const {return nbSample_;}
+
         /** @return the number of variables (the number of columns of the data) */
-    int nbVariable() const {return nbVariables_;};
+    int nbVariable() const {return nbVariables_;}
 
     /** read a data file and its companion description file,
       and fill the infoMap_ (id -> model) and dataMap_ (id -> vector of positions)
@@ -66,8 +64,10 @@ class DataHandlerR
     std::string listData();
     
     /** @return the map with the idDatas and idModel of the models */
-    InfoMap const& info() const{return info_;};
-    void writeInfo(std::ostream& os) const;
+    InfoMap const& info() const{return info_;}
+
+    void writeInfo() const;
+
     /** write information on the localization of data in the rList */
     void writeDataMap() const;
 
@@ -80,14 +80,18 @@ class DataHandlerR
                  std::string& warnLog) const;
   private:
     int nbSample_;
+
     int nbVariables_;
+
     /** Store the informations  of the mixtures in the form (idData, idModel) with
      * - idData: an arbitrary idData for a model
      * - model: a string which can be converted in an existing model
      * @sa stringToMixture */
     InfoMap info_;
+
     /** map: id -> vector of positions in rList_, as typedef-ed above */
     DataMap dataMap_;
+
     /** A list of the mixtures transmitted by R, as named lists */
     Rcpp::List rList_;
 };

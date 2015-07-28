@@ -139,7 +139,7 @@ class IMixture
      *
      *  @param[out] stream to write the summary of parameters to
      */
-    virtual void writeParameters(std::ostream& out) const
+    virtual void writeParameters() const
     = 0;
 
     /**

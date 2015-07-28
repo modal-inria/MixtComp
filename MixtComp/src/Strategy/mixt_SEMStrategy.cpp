@@ -22,10 +22,6 @@
  *              iovleff, serge.iovleff@stkpp.org
  **/
 
-/** @file mixt_MixtureStrategy.cpp
- *  @brief In this file we implement the strategies for estimating mixture model.
- **/
-
 #include "mixt_SEMStrategy.h"
 #include "../Various/mixt_Timer.h"
 #include "../IO/mixt_IO.h"
@@ -77,23 +73,27 @@ SemStrategy::~SemStrategy()
 
 std::string SemStrategy::run()
 {
-  std::string allWarn; // collect warning strings from all the trials
+  std::string allWarn; // collect warning strings from all the trials, only returned if either maxLightDegTry or maxStrongDegTry are exhausted, whichever condition come first
   DegeneracyType currDeg = noDeg_; // current type of degeneracy
 
-  Vector<int> DegCount(nb_enum_DegeneracyType_);
+  RowVector<int> DegCount(nb_enum_DegeneracyType_);
   DegCount = 0;
 
   while(DegCount(lightDeg_) < maxLightDegTry && DegCount(strongDeg_) < maxStrongDegTry)
   {
-    std::string tryWarn; // warning for each trial
-#ifdef MC_DEBUG
-  std::cout << "SemStrategy::run(), after randomClassInit()" << std::endl;
-  std::cout << "*p_composer_->p_zi()" << std::endl;
-  std::cout << *p_composer_->p_zi() << std::endl;
+#ifdef MC_VERBOSE
+    std::cout << "SemStrategy, "
+              << "nb soft degeneracies: " << DegCount(lightDeg_) << ", "
+              << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl;
 #endif
 
-    if (currDeg == noDeg_ || currDeg == strongDeg_) // only reset everything when needed. softDeg_ does not trigger such a reinitialization
+    std::string tryWarn; // warning for each trial
+
+    if (currDeg == noDeg_ || currDeg == strongDeg_) // only reset everything at the first iteration, or when a strong degeneration has been detected
     {
+#ifdef MC_VERBOSE
+      std::cout << "SemStrategy::run, complete (re) initialization" << std::endl;
+#endif
       p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
 
       tryWarn = p_composer_->sStepNbAttempts(nbSamplingAttempts_, currDeg); // perform at max nbSamplingAttempts_ calls to p_composer_->sStep();
@@ -106,8 +106,8 @@ std::string SemStrategy::run()
              << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl
              << tryWarn;
         allWarn += sstm.str(); // append warning to global warning
-#ifdef MC_DEBUG_NEW
-        std::cout << sstm << std::endl;
+#ifdef MC_DEBUG
+        std::cout << sstm.str() << std::endl;
 #endif
         continue; // make another try
       }
@@ -124,8 +124,8 @@ std::string SemStrategy::run()
              << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl
              << tryWarn;
         allWarn += sstm.str(); // append warning to global warning
-#ifdef MC_DEBUG_NEW
-        std::cout << sstm << std::endl;
+#ifdef MC_DEBUG
+        std::cout << sstm.str() << std::endl;
 #endif
         continue; // make another try
       }
@@ -147,8 +147,8 @@ std::string SemStrategy::run()
            << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl
            << tryWarn;
       allWarn += sstm.str(); // append warning to global warning
-#ifdef MC_DEBUG_NEW
-        std::cout << sstm << std::endl;
+#ifdef MC_DEBUG
+        std::cout << sstm.str() << std::endl;
 #endif
       continue; // make another try
     }
@@ -169,8 +169,8 @@ std::string SemStrategy::run()
            << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl
            << tryWarn;
       allWarn += sstm.str(); // append warning to global warning
-#ifdef MC_DEBUG_NEW
-        std::cout << sstm << std::endl;
+#ifdef MC_DEBUG
+        std::cout << sstm.str() << std::endl;
 #endif
       continue; // make another try
     }

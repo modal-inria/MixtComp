@@ -106,7 +106,6 @@ dataParamGenerator <- function(nbSamplesLearn,
                                missingGaussian,
                                missingPoisson)
 {
-  cat("dataParamGenerator\n")
   proportions <- runif(nbClasses)
   proportions <- proportions / sum(proportions)
   write.table(proportions,
@@ -177,7 +176,6 @@ dataParamGenerator <- function(nbSamplesLearn,
                 col.names=FALSE)
   }
   
-  cat("dataGenerator\n")
   dataGenerator("dataGen/learn",
                 categoricalParams,
                 gaussianParams,

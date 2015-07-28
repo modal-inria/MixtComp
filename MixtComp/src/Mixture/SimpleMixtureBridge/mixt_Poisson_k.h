@@ -61,7 +61,7 @@ class Poisson_k
 
     void setModalities(int nbModalities);
 
-    void writeParameters(std::ostream& out) const;
+    void writeParameters() const;
 
     bool possibleNullProbability() const;
   private:

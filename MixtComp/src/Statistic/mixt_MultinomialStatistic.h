@@ -56,7 +56,7 @@ class MultinomialStatistic
                                                                                       uni);
       Real x = generator();
 
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       if (proportion.sum() < 1. - epsilon && 1. + epsilon < proportion.sum())
       {
         std::cout << "MultinomialStatistic::sample()" << std::endl;
@@ -87,7 +87,7 @@ class MultinomialStatistic
         }
         ++index;
       }
-#ifdef MC_DEBUG_NEW
+#ifdef MC_DEBUG
       std::cout << "MultinomialStatistic::sample, -1 value sampled" << std::endl;
 #endif
       return -1; // to accelerate sampling, no check have been computed on modalities to verify that is it actually a probability distribution

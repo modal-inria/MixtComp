@@ -34,18 +34,23 @@ class Timer
 {
   public:
     Timer(std::string timerName = "Timer");
-    ~Timer();
 
     /** Estimated time to finish all iterations */
     void iteration(int iteration,
                    int iterationMax);
+
     /** Time elapsed since creation of timer */
     double top(std::string message);
+
     void setName(std::string timerName);
+
   private:
     std::string timerName_;
+
     std::time_t creationTime_;
+
     std::time_t startTime_;
+
     std::time_t topTime_;
 };
 

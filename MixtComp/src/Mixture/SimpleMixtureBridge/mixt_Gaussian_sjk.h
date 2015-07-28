@@ -62,7 +62,7 @@ class Gaussian_sjk
 
     void setModalities(int nbModalities);
 
-    void writeParameters(std::ostream& out) const;
+    void writeParameters() const;
 
     bool possibleNullProbability() const {return false;} // no individual can possibly have a null probability
   private:

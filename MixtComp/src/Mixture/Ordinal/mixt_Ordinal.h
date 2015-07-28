@@ -430,14 +430,19 @@ class Ordinal : public IMixture
       return 1; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
     }
 
-    virtual void writeParameters(std::ostream& out) const
+    virtual void writeParameters() const
     {
+      std::stringstream sstm;
       for (int k = 0; k < nbClass_; ++k)
       {
-        out << "Class: " << k << std::endl;
-        out << "mu: " << mu_(k) << std::endl;
-        out << "pi_: " << pi_(k) << std::endl;
+        sstm << "Class: " << k << std::endl;
+        sstm << "mu: " << mu_(k) << std::endl;
+        sstm << "pi_: " << pi_(k) << std::endl;
       }
+
+#ifdef MC_VERBOSE
+      std::cout << sstm.str() << std::endl;
+#endif
     }
 
     virtual void exportDataParam() const

@@ -36,14 +36,15 @@ DataHandlerR::DataHandlerR(Rcpp::List rList) :
     rList_(rList)
 {}
 
-DataHandlerR::~DataHandlerR()
-{}
-
-void DataHandlerR::writeInfo(std::ostream& os) const
+void DataHandlerR::writeInfo() const
 {
   // show content
+#ifdef MC_VERBOSE
    for (InfoMap::const_iterator it = info_.begin(); it != info_.end(); ++it)
-     os << "name: " << it->first << ", model: " << it->second << std::endl;
+   {
+     std::cout << "name: " << it->first << ", model: " << it->second << std::endl;
+   }
+#endif
 }
 
 std::string DataHandlerR::listData()
@@ -95,12 +96,14 @@ std::string DataHandlerR::listData()
 
 void DataHandlerR::writeDataMap() const
 {
+#ifdef MC_VERBOSE
   std::cout << "Position of data in input: \n";
   for (DataMap::const_iterator it_id = dataMap_.begin(); it_id != dataMap_.end(); ++it_id)
   {
     std::cout << "\tname: " << (*it_id).first << "\n";
     std::cout << "\t\trList_ position: " << (*it_id).second << std::endl;
   }
+#endif
 }
 
 } /* namespace mixt */

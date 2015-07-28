@@ -48,7 +48,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   // create the data handler
   mixt::DataHandlerR handler(dataList);
   warnLog += handler.listData();
-  handler.writeInfo(std::cout);
+  handler.writeInfo();
   handler.writeDataMap();
   
   // create the data extractor
@@ -123,7 +123,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
 
       if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
       {
-        composer.writeParameters(std::cout);
+        composer.writeParameters();
         composer.exportDataParam<mixt::DataExtractorR,
                                  mixt::ParamExtractorR>(dataExtractor,
                                                         paramExtractor);
@@ -148,11 +148,13 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
   }
   
   mcMixture["warnLog"] = warnLog;
+#ifdef MC_VERBOSE
   if (warnLog.size() != 0)
   {
     std::cout << "!!! warnLog not empty !!!" << std::endl;
     std::cout << warnLog << std::endl;
   }
+#endif
 
   mcMixture["runTime"] = totalTimer.top("end of run");
   mcMixture["nbSample"] = handler.nbSample();

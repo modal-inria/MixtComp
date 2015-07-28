@@ -103,6 +103,7 @@ class MixtureBridge : public IMixture
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
     {}
+
     /** copy constructor */
     MixtureBridge(MixtureBridge const& bridge) :
       IMixture(bridge),
@@ -218,6 +219,7 @@ class MixtureBridge : public IMixture
 
       return warnLog;
     }
+
     /** This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
      * simulated by the framework itself because to do so we have to take into
@@ -228,6 +230,7 @@ class MixtureBridge : public IMixture
       sampler_.sampleIndividual(ind,
                                 (*p_zi())(ind));
     }
+
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
     virtual std::string mStep(DegeneracyType& deg)
@@ -242,6 +245,7 @@ class MixtureBridge : public IMixture
       }
       return warn;
     }
+
     /** This function should be used to store any results during the burn-in period
      *  @param iteration Provides the iteration number during the burn-in period
      */
@@ -266,6 +270,7 @@ class MixtureBridge : public IMixture
       writeDataCsv(fileNameB.str(), augData_.data_);
 #endif
     }
+
     /** This function should be used to store any intermediate results during
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
@@ -347,6 +352,7 @@ class MixtureBridge : public IMixture
 #endif
       return likelihood_.lnObservedProbability(i, k);
     }
+
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
@@ -354,12 +360,13 @@ class MixtureBridge : public IMixture
     {
       return mixture_.computeNbFreeParameters();
     }
+
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
-    virtual void writeParameters(std::ostream& out) const
+    virtual void writeParameters() const
     {
-      mixture_.writeParameters(out);
+      mixture_.writeParameters();
     }
 
     virtual void exportDataParam() const
@@ -389,34 +396,49 @@ class MixtureBridge : public IMixture
   protected:
     /** Pointer to the zik class label */
     Vector<int> const* p_zi_;
+
     /** Number of classes */
     int nbClass_;
+
     /** Current parameters of the mixture_ */
     Vector<Real> param_;
+
     /** The simple mixture to bridge with the composer */
     Mixture mixture_;
+
     /** The augmented data set */
     AugData augData_;
+
     /** Parameters transmitted by the user */
     std::string paramStr_;
+
     /** number of samples in the data set*/
     int nbSample_;
+
     /** confidence level used in computation of parameters and missing values statistics */
     Real confidenceLevel_;
+
     /** Sampler to generate values */
     Sampler sampler_;
+
     /** Statistics computer for missing data */
     DataStat dataStat_;
+
     /** Statistics storage for parameters */
     ConfIntParamStat<Real> paramStat_;
+
     /** Computation of the observed likelihood */
     Likelihood likelihood_;
+
     /** Pointer to the data handler */
     const DataHandler* p_handler_;
+
     /** Pointer to the data extractor */
     DataExtractor* p_dataExtractor_;
+
     /** Pointer to the param setter */
     const ParamSetter* p_paramSetter_;
+
     /** Pointer to the parameters extractor */
     ParamExtractor* p_paramExtractor_;
 };
