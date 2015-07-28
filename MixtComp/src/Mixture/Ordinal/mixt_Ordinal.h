@@ -268,7 +268,9 @@ class Ordinal : public IMixture
           sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << "."<< std::endl;
           warnLog += sstm.str();
           deg = lightDeg_; // this is a normal degeneracy for this model
+#ifdef MC_VERBOSE
           std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 0" << std::endl;
+#endif
         }
 
         if (pi_(k) > 1. - piThreshold)
@@ -290,6 +292,9 @@ class Ordinal : public IMixture
                << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
           warnLog += sstm.str();
           deg = strongDeg_; // this degeneracy is not normal for the model and must be reported as such
+#ifdef MC_VERBOSE
+          std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 1" << std::endl;
+#endif
         }
       }
 
