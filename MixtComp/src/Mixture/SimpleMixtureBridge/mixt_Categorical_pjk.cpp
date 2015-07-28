@@ -68,8 +68,14 @@ bool Categorical_pjk::checkParam() const
   {
     Real sum = param_.block(k * nbModalities_, 0,
                             nbModalities_    , 1).sum();
-    param_.block(k * nbModalities_, 0,
-                 nbModalities_    , 1) /= sum;
+    if (sum < 1. - epsilon || 1. < sum)
+    {
+#ifdef MC_VERBOSE
+      std::cout << "Categorical_pjk::checkParam, k:" << k << ", sum: " << sum << ", renormalization" << std::endl;
+#endif
+      param_.block(k * nbModalities_, 0,
+                   nbModalities_    , 1) /= sum;
+    }
   }
 
   return true;

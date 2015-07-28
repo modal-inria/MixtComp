@@ -207,6 +207,7 @@ class MixtureBridge : public IMixture
             augData_.dataRange_.max_ = nbModalities - 1;
             augData_.dataRange_.range_ = nbModalities;
           }
+          mixture_.checkParam(); // check that the parameters provided are correct, eventually evolve this function to provide a detailed error through the warnLog
   #ifdef MC_DEBUG
           std::cout << "\tparam set " << std::endl;
           std::cout << "\tnbParam: " << nbModalities << std::endl;
