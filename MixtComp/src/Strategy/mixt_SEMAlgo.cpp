@@ -76,16 +76,17 @@ std::string SEMAlgo::run(RunType runType,
 
     p_model_->eStep();
 
-    std::string sWarn = p_model_->sStepNbAttempts(nbSamplingAttempts_); // p_model_->sStep() called nbSamplingAttempts_ at most, to get enough individuals per class
-    if (sWarn.size() > 0)
+    std::string sWarn = p_model_->sStepNbAttempts(nbSamplingAttempts_,
+                                                  deg); // p_model_->sStep() called nbSamplingAttempts_ at most, to get enough individuals per class
+    if (deg != noDeg_)
     {
       return sWarn;
     }
 
     p_model_->samplingStep(); // each mixture samples its partially observed values
 
-    std::string warn = p_model_->mStep();
-    if (warn.size() > 0)
+    std::string warn = p_model_->mStep(deg);
+    if (deg != noDeg_)
     {
       return warn; // error reported in the mStep, terminate the SEM algo, and report it to the strategy.
     }

@@ -48,17 +48,16 @@ class SemStrategy
      *  @param p_composer the model to estimate
      **/
     SemStrategy(MixtureComposer* p_composer,
-                int nbTrialInInit,
                 int nbBurnInIter,
                 int nbIter,
                 int nbGibbsBurnInIter,
                 int nbGibbsIter,
                 int nbSamplingAttempts);
 
-    /** copy constructor */
+    /** non-trivial copy constructor */
     SemStrategy(SemStrategy const& strategy);
 
-    /** destructor */
+    /** non-trivial destructor */
     ~SemStrategy();
     
     /** run the strategy */
@@ -68,8 +67,6 @@ class SemStrategy
      /** reference on the main model */
     MixtureComposer* p_composer_;
     
-    /** number of estimation to try */
-    int nbTrialInInit_;
     /** number of burn in iteration for final Gibbs sampler */
     int nbGibbsBurnInIter_;
     /** number of iteration for final Gibbs sampler */

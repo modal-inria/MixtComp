@@ -115,7 +115,6 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
     {
       // create the appropriate strategy and transmit the parameters
       mixt::SemStrategy strategy(&composer,
-                                 mcStrategy["nbTrialInInit"],
                                  mcStrategy["nbBurnInIter"], // number of burn-in iterations
                                  mcStrategy["nbIter"], // number of iterations
                                  mcStrategy["nbGibbsBurnInIter"], // number of iterations for Gibbs sampler

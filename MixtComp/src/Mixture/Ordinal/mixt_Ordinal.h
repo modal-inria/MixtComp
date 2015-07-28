@@ -267,7 +267,7 @@ class Ordinal : public IMixture
           std::stringstream sstm;
           sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << "."<< std::endl;
           warnLog += sstm.str();
-          deg = softDeg_; // this is a normal degeneracy for this model
+          deg = lightDeg_; // this is a normal degeneracy for this model
           std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 0" << std::endl;
         }
 

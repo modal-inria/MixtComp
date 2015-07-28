@@ -74,12 +74,14 @@ class MixtureComposer
      * If, after nbSamplingAttempts there are not enough individuals per class, return
      * an error message.
      */
-    std::string sStepNbAttempts(int nbSamplingAttempts);
+    std::string sStepNbAttempts(int nbSamplingAttempts,
+                                DegeneracyType& deg);
 
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
+     *  @param[out] worstDeg worst degeneracy type incountered among all mixtures for this mStep
      **/
-    virtual std::string mStep();
+    virtual std::string mStep(DegeneracyType& worstDeg);
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model. Only called

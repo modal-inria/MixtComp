@@ -71,8 +71,9 @@ enum RunType
 enum DegeneracyType
 {
   noDeg_, // no degeneracy
-  softDeg_, // soft degeneracy, only the degenerating (class, variable) pair should be reinitialized
-  strongDeg_ // strong degeneracy, everything must be reinitialized
+  lightDeg_, // light degeneracy, only the degenerating (class, variable) pair should be reinitialized
+  strongDeg_, // strong degeneracy, everything must be reinitialized
+  nb_enum_DegeneracyType_ // number of modalities in this enum
 };
 
 } // namespace mixt

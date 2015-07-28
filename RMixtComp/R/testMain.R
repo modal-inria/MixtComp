@@ -107,8 +107,7 @@ testGenDataLearn <- function(nbClass = 2,
 #                   "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of strategy list
-  mcStrategy <- list(nbTrialInInit = 2,
-                     nbBurnInIter = nbBurnInIter,
+  mcStrategy <- list(nbBurnInIter = nbBurnInIter,
                      nbIter = 100,
                      nbGibbsBurnInIter = 100,
                      nbGibbsIter = 100)
@@ -166,8 +165,7 @@ testGenDataPredict <- function(param,
   #                   "dataGen/learn/categoricalDescriptor.csv"))
   
   # creation of strategy list
-  mcStrategy <- list(nbTrialInInit = 2,
-                     nbBurnInIter = nbBurnInIter,
+  mcStrategy <- list(nbBurnInIter = nbBurnInIter,
                      nbIter = 100,
                      nbGibbsBurnInIter = 100,
                      nbGibbsIter = 100)
@@ -241,8 +239,7 @@ testAERES <- function()
   resGetData <- getData(c("dataTest/AERES/data.csv",
                           "dataTest/AERES/desc.csv"))
   
-  mcStrategy <- list(nbTrialInInit = 2,
-                     nbBurnInIter = 100,
+  mcStrategy <- list(nbBurnInIter = 100,
                      nbIter = 100,
                      nbGibbsBurnInIter = 100,
                      nbGibbsIter = 100)

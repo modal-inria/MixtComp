@@ -217,19 +217,19 @@ Real MixtureComposer::lnCompletedLikelihood()
   return lnLikelihood;
 }
 
-std::string MixtureComposer::mStep()
+std::string MixtureComposer::mStep(DegeneracyType& worstDeg)
 {
   std::string warn;
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::mStep()" << std::endl;
 #endif
-  pStep(); // computation of the proportions, mStep for mixture parameters
-  DegeneracyType worstDeg = noDeg_;
+  pStep(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
+  worstDeg = noDeg_; // initialization of the worst degeneracy detected in mixtures
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
     DegeneracyType currDeg = noDeg_;
-    warn += (*it)->mStep(currDeg); // call mStep on each variable
-    worstDeg = std::max(currDeg, worstDeg);
+    std::string currWarn = (*it)->mStep(currDeg); // call mStep on each variable
+    worstDeg = std::max(currDeg, worstDeg); // update the worst degeneracy so far
   }
 #ifdef MC_DEBUG
   std::cout << "\twarn: " << warn << std::endl;
@@ -237,9 +237,11 @@ std::string MixtureComposer::mStep()
   return warn;
 }
 
-std::string MixtureComposer::sStepNbAttempts(int nbSamplingAttempts)
+std::string MixtureComposer::sStepNbAttempts(int nbSamplingAttempts,
+                                             DegeneracyType& deg)
 {
   std::string warnLog;
+  deg = noDeg_; // initialization of degeneracy type
   for (int iterSample = 0; iterSample < nbSamplingAttempts; ++iterSample) // sample until there are enough individuals per class, using default tik from IMixtureComposerBase::intializeMixtureParameters()
   {
     int nbIndPerClass = sStep();
@@ -262,6 +264,7 @@ std::string MixtureComposer::sStepNbAttempts(int nbSamplingAttempts)
              << " partition samplings before failure. The number of classes might be too important"
              << " relative to the number of individuals. Try decreasing the number of classes." << std::endl;
         warnLog += sstm.str();
+        deg = strongDeg_; // the degeneracy is strong as it requires a complete reboot of the SEM chain
       }
     }
   }

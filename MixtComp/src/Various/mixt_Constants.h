@@ -28,10 +28,10 @@
 
 namespace mixt
 {
+extern const int maxLightDegTry; // max number of light degeneracies allowed in a strategy run
+extern const int maxStrongDegTry; // max number of strong degeneracies allowed in a strategy run
 
 extern const Real minStat; // threshold to have equiprobabilities in categorical sampler
-extern const Real probaNonMisClass; // minimal in-sample probability to avoid rejection
-extern const int moduloMisClass; // modulo used to trigger misclassification step
 extern const int minIndPerClass; // minimal number of individual in a class to accept a z sampling
 extern const int nbSamplingAttempts; // number of sampling attempts, when a not enough individuals are sampled
 
