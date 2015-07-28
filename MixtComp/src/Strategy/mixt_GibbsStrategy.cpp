@@ -37,17 +37,6 @@ GibbsStrategy::GibbsStrategy(MixtureComposer* p_composer,
     nbIterGibbs_(nbIterGibbs)
 {}
 
-/** copy constructor */
-GibbsStrategy::GibbsStrategy(GibbsStrategy const& strategy) :
-    p_composer_(strategy.p_composer_),
-    nbBurnInIterGibbs_(strategy.nbBurnInIterGibbs_),
-    nbIterGibbs_(strategy.nbIterGibbs_)
-{}
-
-/** destructor */
-GibbsStrategy::~GibbsStrategy()
-{}
-
 std::string GibbsStrategy::run()
 {
   std::string warnLog;

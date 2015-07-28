@@ -42,12 +42,6 @@ class GibbsStrategy
     GibbsStrategy(MixtureComposer* p_composer,
                     int nbBurnInIter,
                     int nbIter);
-
-    /** copy constructor */
-    GibbsStrategy(GibbsStrategy const& strategy);
-
-    /** destructor */
-    virtual ~GibbsStrategy();
     
     /** run the strategy */
     std::string run();

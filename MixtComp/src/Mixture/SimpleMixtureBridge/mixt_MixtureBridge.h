@@ -81,7 +81,7 @@ class MixtureBridge : public IMixture
       IMixture(idName),
       p_zi_(p_zi),
       nbClass_(nbClass),
-      param_(),
+      param_(), // must be initialized here, as will immediately be resized in mixture_ constructor
       mixture_(nbClass,
                param_,
                p_zi),
@@ -230,9 +230,9 @@ class MixtureBridge : public IMixture
     }
     /** This function is equivalent to Mstep and must be defined to update parameters.
      */
-    virtual std::string mStep()
+    virtual std::string mStep(DegeneracyType& deg)
     {
-      std::string warn = mixture_.mStep();
+      std::string warn = mixture_.mStep(deg);
       if (warn.size() > 0)
       {
         warn =   std::string("Error in variable ")

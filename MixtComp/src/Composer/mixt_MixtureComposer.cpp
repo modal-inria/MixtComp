@@ -224,9 +224,12 @@ std::string MixtureComposer::mStep()
   std::cout << "MixtureComposer::mStep()" << std::endl;
 #endif
   pStep(); // computation of the proportions, mStep for mixture parameters
+  DegeneracyType worstDeg = noDeg_;
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
-    warn += (*it)->mStep(); // call mStep on each variable
+    DegeneracyType currDeg = noDeg_;
+    warn += (*it)->mStep(currDeg); // call mStep on each variable
+    worstDeg = std::max(currDeg, worstDeg);
   }
 #ifdef MC_DEBUG
   std::cout << "\twarn: " << warn << std::endl;

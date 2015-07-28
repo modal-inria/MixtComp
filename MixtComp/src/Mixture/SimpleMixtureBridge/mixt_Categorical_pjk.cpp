@@ -40,9 +40,6 @@ Categorical_pjk::Categorical_pjk(int nbCluster,
     // modalities are not known at the creation of the object, hence a call to setModality is needed later
 {}
 
-Categorical_pjk::~Categorical_pjk()
-{}
-
 Vector<bool> Categorical_pjk::acceptedType() const
 {
   Vector<bool> at(nb_enum_MisType_);
@@ -103,7 +100,7 @@ std::string Categorical_pjk::model() const
   return "Categorical_pjk";
 }
 
-std::string Categorical_pjk::mStep()
+std::string Categorical_pjk::mStep(DegeneracyType& deg)
 {
 #ifdef MC_DEBUG
     std::cout << "Gaussian_sjk::mStep" << std::endl;
@@ -141,6 +138,20 @@ std::string Categorical_pjk::mStep()
     {
       param_(k * nbModalities_ + p) = modalities[p];
     }
+  }
+
+  if(param_.minCoeff() < epsilon)
+  {
+#ifdef MC_DEBUG_NEW
+    std::cout << "param_:" << std::endl;
+    std::cout << param_ << std::endl;
+#endif
+    std::stringstream sstm;
+    sstm << "Categorical models must have strictly non-zero proportions. At least one class has at least one modality which proportion is "
+         << "estimated at 0. You can check whether you have both enough individuals regarding the number of classes you are asking for and "
+         << "that all of your modalities are encoded using contiguous integers starting at 0." << std::endl;
+    warn += sstm.str();
+    deg = strongDeg_;
   }
 
 #ifdef MC_DEBUG

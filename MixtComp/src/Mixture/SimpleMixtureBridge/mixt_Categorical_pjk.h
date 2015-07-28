@@ -27,6 +27,7 @@
 
 #include <vector>
 #include "../../LinAlg/mixt_LinAlg.h"
+#include "../../Various/mixt_Def.h"
 
 namespace mixt
 {
@@ -37,7 +38,6 @@ class Categorical_pjk
     Categorical_pjk(int nbCluster,
                     Vector<Real>& param,
                     Vector<int> const* p_zi);
-    ~Categorical_pjk();
 
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
@@ -48,7 +48,7 @@ class Categorical_pjk
     int maxVal() const;
     int minVal() const;
     std::string model() const;
-    std::string mStep();
+    std::string mStep(DegeneracyType& deg);
     std::vector<std::string> paramNames() const;
     void setData(Vector<int>& data);
     void setModalities(int nbModalities);

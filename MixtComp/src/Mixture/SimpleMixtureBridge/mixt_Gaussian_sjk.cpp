@@ -41,9 +41,6 @@ Gaussian_sjk::Gaussian_sjk(int nbCluster,
   param_.resize(2 * nbCluster);
 }
 
-Gaussian_sjk::~Gaussian_sjk()
-{}
-
 Vector<bool> Gaussian_sjk::acceptedType() const
 {
   Vector<bool> at(nb_enum_MisType_);
@@ -91,7 +88,7 @@ std::string Gaussian_sjk::model() const
   return "Gaussian_sjk";
 }
 
-std::string Gaussian_sjk::mStep()
+std::string Gaussian_sjk::mStep(DegeneracyType& deg)
 {
   std::string warn;
 #ifdef MC_DEBUG
@@ -154,6 +151,7 @@ std::string Gaussian_sjk::mStep()
            << " The data is not dispersed enough and values close to this mean might be repeated too often."
            << " Is this the case ? Have you considered using a Poisson model if you are counting occurrences of events ?" << std::endl;
       warn += sstm.str();
+      deg = strongDeg_;
     }
 
     param_(2 * k    ) = mean;

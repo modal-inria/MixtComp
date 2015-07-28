@@ -28,6 +28,7 @@
 #include <vector>
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_NormalStatistic.h"
+#include "../../Various/mixt_Def.h"
 
 namespace mixt
 {
@@ -38,7 +39,6 @@ class Gaussian_sjk
     Gaussian_sjk(int nbCluster,
                  Vector<Real>& param,
                  Vector<int> const* p_zi);
-    ~Gaussian_sjk();
 
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
@@ -52,7 +52,7 @@ class Gaussian_sjk
 
     /** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
      * using the biased estimator which corresponds to the maximum likelihood estimator */
-    std::string mStep();
+    std::string mStep(DegeneracyType& deg);
 
     Real minVal() const;
     Real maxVal() const;

@@ -58,22 +58,29 @@ SemStrategy::SemStrategy(MixtureComposer* p_composer,
 
 /** copy constructor */
 SemStrategy::SemStrategy(SemStrategy const& strategy) :
-    p_composer_(strategy.p_composer_),
-    nbTrialInInit_(strategy.nbTrialInInit_),
-    p_burnInAlgo_(strategy.p_burnInAlgo_),
-    p_longAlgo_(strategy.p_longAlgo_)
-{}
+    p_composer_        (strategy.p_composer_),
+    nbTrialInInit_     (strategy.nbTrialInInit_),
+    nbGibbsBurnInIter_ (strategy.nbGibbsBurnInIter_),
+    nbGibbsIter_       (strategy.nbGibbsIter_),
+    nbSamplingAttempts_(strategy.nbSamplingAttempts_)
+{
+  SEMAlgo& burnInAlgo = *strategy.p_burnInAlgo_;
+  SEMAlgo& longAlgo   = *strategy.p_longAlgo_  ;
+  p_burnInAlgo_ = new SEMAlgo(burnInAlgo);
+  p_longAlgo_   = new SEMAlgo(longAlgo);
+}
 
 /** destructor */
 SemStrategy::~SemStrategy()
 {
   if (p_burnInAlgo_) delete p_burnInAlgo_;
-  if (p_longAlgo_) delete p_longAlgo_;
+  if (p_longAlgo_  ) delete p_longAlgo_  ;
 }
 
 std::string SemStrategy::run()
 {
   std::string allWarn; // collect warning strings from all the trials
+  DegeneracyType currDeg = noDeg_; // current type of degeneracy
 
   for (int iTry = 0; iTry < nbTrialInInit_; ++iTry) // trials on the whole SEM chain
   {
@@ -84,34 +91,38 @@ std::string SemStrategy::run()
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
 
-    p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
-
-    tryWarn = p_composer_->sStepNbAttempts(nbSamplingAttempts_); // perform at max nbSamplingAttempts_ calls to p_composer_->sStep();
-    if (tryWarn.size() > 0)
+    if (currDeg == noDeg_ || currDeg == strongDeg_) // only reset everything when needed. softDeg_ does not trigger such a reinitialization
     {
-      std::stringstream sstm;
-      sstm << "SemStrategy error, initial partition, iTry: " << iTry << std::endl
-           << tryWarn;
-      allWarn += sstm.str(); // append warning to global warning
-      continue; // make another try
-    }
+      p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
 
-    p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+      tryWarn = p_composer_->sStepNbAttempts(nbSamplingAttempts_); // perform at max nbSamplingAttempts_ calls to p_composer_->sStep();
+      if (tryWarn.size() > 0)
+      {
+        std::stringstream sstm;
+        sstm << "SemStrategy error, initial partition, iTry: " << iTry << std::endl
+             << tryWarn;
+        allWarn += sstm.str(); // append warning to global warning
+        continue; // make another try
+      }
 
-    tryWarn = p_composer_->mStep(); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing()
-    if (tryWarn.size() > 0)
-    {
-      std::stringstream sstm;
-      sstm << "SemStrategy error, initial mStep, iTry: " << iTry << std::endl
-           << tryWarn;
-      allWarn += sstm.str(); // append warning to global warning
-      continue; // make another try
+      p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+
+      tryWarn = p_composer_->mStep(); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing()
+      if (tryWarn.size() > 0)
+      {
+        std::stringstream sstm;
+        sstm << "SemStrategy error, initial mStep, iTry: " << iTry << std::endl
+             << tryWarn;
+        allWarn += sstm.str(); // append warning to global warning
+        continue; // make another try
+      }
     }
 
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, SEM burn-in" << std::endl;
 #endif
     tryWarn = p_burnInAlgo_->run(burnIn_,
+                                 currDeg,
                                  0, // group
                                  3); // groupMax
     if (tryWarn.size() > 0) // an empty string means a successful run
@@ -127,6 +138,7 @@ std::string SemStrategy::run()
     std::cout << "SemStrategy::run, SEM run" << std::endl;
 #endif
     tryWarn = p_longAlgo_->run(run_,
+                               currDeg,
                                1, // group
                                3); // groupMax
     if (tryWarn.size() > 0) // an empty string means a successful run

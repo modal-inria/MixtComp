@@ -29,6 +29,7 @@
 #include <vector>
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_PoissonStatistic.h"
+#include "../../Various/mixt_Def.h"
 
 namespace mixt
 {
@@ -39,7 +40,6 @@ class Poisson_k
     Poisson_k(int nbCluster,
               Vector<Real>& param,
               Vector<int> const* p_zi);
-    ~Poisson_k();
 
     Vector<bool> acceptedType() const;
     bool checkParam() const {return true;}
@@ -51,7 +51,7 @@ class Poisson_k
 
     void setData(Vector<int>& data);
 
-    std::string mStep();
+    std::string mStep(DegeneracyType& deg);
 
     int maxVal() const;
     int minVal() const;

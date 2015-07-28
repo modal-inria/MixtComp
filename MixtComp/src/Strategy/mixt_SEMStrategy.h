@@ -59,7 +59,7 @@ class SemStrategy
     SemStrategy(SemStrategy const& strategy);
 
     /** destructor */
-    virtual ~SemStrategy();
+    ~SemStrategy();
     
     /** run the strategy */
     std::string run();

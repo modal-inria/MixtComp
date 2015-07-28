@@ -70,7 +70,7 @@ class IMixture
      *
      * @return empty string if mStep successful, or a detailed description of the eventual error
      */
-    virtual std::string mStep()
+    virtual std::string mStep(DegeneracyType& deg)
     = 0;
 
     /**

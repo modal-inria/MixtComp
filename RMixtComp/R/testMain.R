@@ -24,7 +24,7 @@ testLearnPredict <- function(regen = TRUE)
 
 testGenDataLearn <- function(nbClass = 2,
                              nbBurnInIter = 100,
-                             nbSampleLearn = 50,
+                             nbSampleLearn = 500,
                              nbSamplePredict = 100,
                              confidenceLevel = 0.95,
                              regen = TRUE)

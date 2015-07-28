@@ -40,9 +40,6 @@ Poisson_k::Poisson_k(int nbCluster,
   param_.resize(nbCluster);
 }
 
-Poisson_k::~Poisson_k()
-{}
-
 Vector<bool> Poisson_k::acceptedType() const
 {
   Vector<bool> at(nb_enum_MisType_);
@@ -90,7 +87,7 @@ std::string Poisson_k::model() const
   return "Poisson_k";
 }
 
-std::string Poisson_k::mStep()
+std::string Poisson_k::mStep(DegeneracyType& deg)
 {
   std::string warn;
 #ifdef MC_DEBUG
@@ -128,9 +125,16 @@ std::string Poisson_k::mStep()
 
     if (lambda < 0.)
     {
-      warn += "Poisson model has an estimated lambda parameter < 0."
-              " Your data contains negative values."
-              " Have you considered using a Gaussian model ?\n";
+      warn += "Poisson model has an estimated lambda parameter < 0. "
+              "Your data contains either negative values. "
+              "Have you considered using a Gaussian model ?\n";
+      deg = strongDeg_;
+    }
+    else if (0. <= lambda && lambda <= epsilon)
+    {
+      warn += "Poisson model has an estimated lambda parameter close to 0. "
+              "Your data contains too many identical values close to 0.\n";
+      deg = strongDeg_;
     }
 
     param_[k] = lambda;

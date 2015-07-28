@@ -222,7 +222,7 @@ class Ordinal : public IMixture
       augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
-    virtual std::string mStep()
+    virtual std::string mStep(DegeneracyType& deg)
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
@@ -237,7 +237,6 @@ class Ordinal : public IMixture
       zPerClass = 0.;
       for (int i = 0; i < nbInd_; ++i)
       {
-
 #ifdef MC_DEBUG
         std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
 #endif
@@ -265,6 +264,11 @@ class Ordinal : public IMixture
           std::cout << "Ordinal::mStep, class " << k << " has 0-degenerated" << std::endl;
 #endif
           sampleMuFreq(k, true);
+          std::stringstream sstm;
+          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << "."<< std::endl;
+          warnLog += sstm.str();
+          deg = softDeg_; // this is a normal degeneracy for this model
+          std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 0" << std::endl;
         }
 
         if (pi_(k) > 1. - piThreshold)
@@ -281,11 +285,11 @@ class Ordinal : public IMixture
   #endif
             }
           }
-//          std::stringstream sstm;
-//          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". Try using a categorical model, "
-//               << "if the number of modalities is not too high." << std::endl;
-//          warnLog += sstm.str();
-          pi_(k) = 1 - piThreshold; // forced upper bound for debugging purposes
+          std::stringstream sstm;
+          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". "
+               << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
+          warnLog += sstm.str();
+          deg = strongDeg_; // this degeneracy is not normal for the model and must be reported as such
         }
       }
 

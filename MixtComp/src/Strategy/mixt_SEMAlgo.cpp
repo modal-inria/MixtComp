@@ -40,13 +40,8 @@ SEMAlgo::SEMAlgo(MixtureComposer* p_model,
     nbSamplingAttempts_(nbSamplingAttempts)
 {}
 
-SEMAlgo::SEMAlgo(SEMAlgo const& algo) :
-    p_model_(algo.p_model_),
-    nbIterMax_(algo.nbIterMax_),
-    nbSamplingAttempts_(algo.nbSamplingAttempts_)
-{}
-
 std::string SEMAlgo::run(RunType runType,
+                         DegeneracyType& deg,
                          int group,
                          int groupMax)
 {
@@ -81,7 +76,7 @@ std::string SEMAlgo::run(RunType runType,
 
     p_model_->eStep();
 
-    std::string sWarn = p_model_->sStepNbAttempts(nbSamplingAttempts_); // p_model_->sStep()
+    std::string sWarn = p_model_->sStepNbAttempts(nbSamplingAttempts_); // p_model_->sStep() called nbSamplingAttempts_ at most, to get enough individuals per class
     if (sWarn.size() > 0)
     {
       return sWarn;
