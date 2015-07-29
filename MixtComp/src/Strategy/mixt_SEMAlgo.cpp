@@ -53,13 +53,13 @@ std::string SEMAlgo::run(RunType runType,
 
   if (runType == burnIn_)
   {
-    myTimer.setName("SEMAlgo::run(), burn-in");
+    myTimer.setName("SEM: burn-in");
     p_model_->storeSEMBurnIn(-1,
                              nbIterMax_ - 1); // export of the initial partition
   }
   else if (runType == run_)
   {
-    myTimer.setName("SEMAlgo::run(), run");
+    myTimer.setName("SEM: run");
   }
 
   for (int iter = 0; iter < nbIterMax_; ++iter)
