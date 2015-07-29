@@ -67,8 +67,11 @@ class Gaussian_sjk
     bool possibleNullProbability() const {return false;} // no individual can possibly have a null probability
   private:
     int nbCluster_;
+
     Vector<Real>& param_;
+
     Vector<Real>* p_data_;
+
     Vector<int> const* p_zi_;
 
     /** Statistic object to describe Poisson law */

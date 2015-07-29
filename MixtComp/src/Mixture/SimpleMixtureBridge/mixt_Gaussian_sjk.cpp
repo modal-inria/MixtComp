@@ -34,8 +34,8 @@ Gaussian_sjk::Gaussian_sjk(int nbCluster,
                            Vector<Real>& param,
                            Vector<int> const* p_zi) :
     nbCluster_(nbCluster),
-    p_data_(0),
     param_(param),
+    p_data_(0),
     p_zi_(p_zi)
 {
   param_.resize(2 * nbCluster);
