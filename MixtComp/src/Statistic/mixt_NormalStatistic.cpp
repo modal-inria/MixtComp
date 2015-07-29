@@ -30,38 +30,32 @@
 
 namespace mixt
 {
-
-typedef NormalStatistic::Type Type;
-
 NormalStatistic::NormalStatistic() :
-    rng_(long(this) + time(0))
+    rng_(size_t(this) + time(0))
 {}
 
-NormalStatistic::~NormalStatistic()
-{}
-
-Real NormalStatistic::cdf(Type x,
-                               Real mean,
-                               Real sd) const
+Real NormalStatistic::cdf(Real x,
+                          Real mean,
+                          Real sd) const
 {
   boost::math::normal norm(mean,
                            sd);
   Real proba = boost::math::cdf(norm,
-                                     x);
+                                x);
   return proba;
 }
 
 /** log pdf evaluated at individual x */
-Real NormalStatistic::lpdf(Type x,
-                                Real mean,
-                                Real sd) const
+Real NormalStatistic::lpdf(Real x,
+                           Real mean,
+                           Real sd) const
 {
   return -log(sd) - l2pi - 0.5 * pow((x - mean) / sd, 2);
 }
 
-Real NormalStatistic::pdf(Type x,
-                               Real mean,
-                               Real sd) const
+Real NormalStatistic::pdf(Real x,
+                          Real mean,
+                          Real sd) const
 {
   boost::math::normal norm(mean,
                            sd);
@@ -70,7 +64,7 @@ Real NormalStatistic::pdf(Type x,
   return proba;
 }
 
-Type NormalStatistic::sample(Real mean,
+Real NormalStatistic::sample(Real mean,
                              Real sd)
 {
   boost::normal_distribution<> norm(mean,
@@ -78,11 +72,11 @@ Type NormalStatistic::sample(Real mean,
   boost::variate_generator<boost::mt19937&,
                            boost::normal_distribution<> > generator(rng_,
                                                                     norm);
-  Type x = generator();
+  Real x = generator();
   return x;
 }
 
-Type NormalStatistic::sampleI(Real mean,
+Real NormalStatistic::sampleI(Real mean,
                               Real sd,
                               Real infBound,
                               Real supBound)
@@ -131,7 +125,7 @@ Type NormalStatistic::sampleI(Real mean,
   return z * sd + mean;
 }
 
-Type NormalStatistic::sampleIB(Real mean,
+Real NormalStatistic::sampleIB(Real mean,
                                Real sd,
                                Real infBound)
 {
@@ -141,7 +135,7 @@ Type NormalStatistic::sampleIB(Real mean,
   return z * sd + mean;
 }
 
-Type NormalStatistic::sampleSB(Real mean,
+Real NormalStatistic::sampleSB(Real mean,
                                Real sd,
                                Real supBound)
 {

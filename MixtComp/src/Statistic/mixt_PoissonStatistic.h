@@ -33,15 +33,14 @@ namespace mixt
 class PoissonStatistic
 {
   public:
-    typedef int Type;
-
     PoissonStatistic();
-    ~PoissonStatistic();
+
     /** pdf evaluated at individual x */
-    Real pdf(Type x,
-                  Real lambda) const;
+    Real pdf(int x,
+             Real lambda) const;
+
     /** Sample a value from a Poisson Law with parameter lambda */
-    Type sample(Real lambda);
+    int sample(Real lambda);
   private:
     /** Random number generator */
     boost::mt19937 rng_;

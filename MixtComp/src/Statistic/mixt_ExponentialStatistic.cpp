@@ -31,17 +31,12 @@
 namespace mixt
 {
 
-typedef ExponentialStatistic::Type Type;
-
 ExponentialStatistic::ExponentialStatistic() :
-    rng_(long(this) + time(0))
+    rng_(size_t(this) + time(0))
 {}
 
-ExponentialStatistic::~ExponentialStatistic()
-{}
-
-Real ExponentialStatistic::cdf(Type x,
-                                    Real lambda) const
+Real ExponentialStatistic::cdf(Real x,
+                               Real lambda) const
 {
   boost::math::exponential expo(lambda);
   Real proba = boost::math::cdf(expo,
@@ -49,8 +44,8 @@ Real ExponentialStatistic::cdf(Type x,
   return proba;
 }
 
-Real ExponentialStatistic::pdf(Type x,
-                                    Real lambda) const
+Real ExponentialStatistic::pdf(Real x,
+                               Real lambda) const
 {
   boost::math::exponential expo(lambda);
   Real proba = boost::math::pdf(expo,
@@ -58,13 +53,13 @@ Real ExponentialStatistic::pdf(Type x,
   return proba;
 }
 
-Type ExponentialStatistic::sample(Real lambda)
+Real ExponentialStatistic::sample(Real lambda)
 {
   boost::random::exponential_distribution<> expo(lambda);
   boost::variate_generator<boost::random::mt19937&,
                            boost::random::exponential_distribution<> > generator(rng_,
                                                                                  expo);
-  Type x = generator();
+  Real x = generator();
   return x;
 }
 

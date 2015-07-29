@@ -29,10 +29,10 @@
 
 namespace mixt
 {
-Categorical_pjk::Categorical_pjk(int nbCluster,
+Categorical_pjk::Categorical_pjk(int nbClass,
                                  Vector<Real>& param,
                                  Vector<int> const* p_zi) :
-    nbCluster_(nbCluster),
+    nbClass_(nbClass),
     nbModalities_(0),
     p_data_(0),
     param_(param),
@@ -64,7 +64,7 @@ bool Categorical_pjk::checkMinVal() const
 
 bool Categorical_pjk::checkParam() const
 {
-  for (int k = 0; k < nbCluster_; ++k)
+  for (int k = 0; k < nbClass_; ++k)
   {
     Real sum = param_.block(k * nbModalities_, 0,
                             nbModalities_    , 1).sum();
@@ -83,7 +83,7 @@ bool Categorical_pjk::checkParam() const
 
 int Categorical_pjk::computeNbFreeParameters() const
 {
-  return nbCluster_ * (nbModalities_ - 1);
+  return nbClass_ * (nbModalities_ - 1);
 }
 
 bool Categorical_pjk::hasModalities() const
@@ -117,7 +117,7 @@ std::string Categorical_pjk::mStep(DegeneracyType& deg)
 #endif
 
   std::string warn;
-  for (int k = 0; k < nbCluster_; ++k)
+  for (int k = 0; k < nbClass_; ++k)
   {
     Real nbSampleClass = 0.;
     Vector<Real> modalities(nbModalities_);
@@ -146,25 +146,27 @@ std::string Categorical_pjk::mStep(DegeneracyType& deg)
     }
   }
 
-  if(param_.minCoeff() < epsilon)
+  for (int k = 0; k < nbClass_; ++k)
   {
-#ifdef MC_DEBUG
-    std::cout << "param_:" << std::endl;
-    std::cout << param_ << std::endl;
-#endif
-    std::stringstream sstm;
-    sstm << "Categorical models must have strictly non-zero proportions. At least one class has at least one modality which proportion is "
-         << "estimated at 0. You can check whether you have both enough individuals regarding the number of classes you are asking for and "
-         << "that all of your modalities are encoded using contiguous integers starting at 0." << std::endl;
-    warn += sstm.str();
-    deg = strongDeg_;
+    for (int p = 0; p < nbModalities_; ++p)
+    {
+      if (param_(k * nbModalities_ + p) < epsilon)
+      {
+        std::stringstream sstm;
+        sstm << "Categorical models must have strictly non-zero proportions. In class " << k << " the proportion of the modality " << p << " (0-based numbering) "
+             << "has been estimated at 0. You can check whether you have both enough individuals regarding the number of classes you are asking for and "
+             << "that all of your modalities are encoded using contiguous integers starting at 0." << std::endl;
+        warn += sstm.str();
+        deg = strongDeg_;
+      }
+    }
   }
 
 #ifdef MC_DEBUG
   for (int p = 0; p < nbModalities_; ++p)
   {
     Real sum = 0.;
-    for (int k = 0; k < nbCluster_; ++k)
+    for (int k = 0; k < nbClass_; ++k)
     {
       sum += param_(k * nbModalities_ + p);
     }
@@ -180,8 +182,8 @@ std::string Categorical_pjk::mStep(DegeneracyType& deg)
 
 std::vector<std::string> Categorical_pjk::paramNames() const
 {
-  std::vector<std::string> names(nbCluster_ * nbModalities_);
-  for (int k = 0; k < nbCluster_; ++k)
+  std::vector<std::string> names(nbClass_ * nbModalities_);
+  for (int k = 0; k < nbClass_; ++k)
   {
     for (int p = 0; p < nbModalities_; ++p)
     {
@@ -204,13 +206,13 @@ void Categorical_pjk::setData(Vector<int>& data)
 void Categorical_pjk::setModalities(int nbModalities)
 {
   nbModalities_ = nbModalities;
-  param_.resize(nbCluster_ * nbModalities_);
+  param_.resize(nbClass_ * nbModalities_);
 }
 
 void Categorical_pjk::writeParameters() const
 {
   std::stringstream sstm;
-  for (int k = 0; k < nbCluster_; ++k)
+  for (int k = 0; k < nbClass_; ++k)
   {
     sstm << "Class: " << k << std::endl;
     for (int p = 0; p < nbModalities_; ++p)

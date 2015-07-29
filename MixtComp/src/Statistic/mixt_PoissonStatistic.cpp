@@ -31,23 +31,18 @@
 namespace mixt
 {
 
-typedef PoissonStatistic::Type Type;
-
 PoissonStatistic::PoissonStatistic() :
-    rng_(long(this) + time(0))
+    rng_(size_t(this) + time(0))
 {}
 
-PoissonStatistic::~PoissonStatistic()
-{}
-
-Real PoissonStatistic::pdf(Type x,
-                                Real lambda) const
+Real PoissonStatistic::pdf(int x,
+                           Real lambda) const
 {
   if (lambda > epsilon)
   {
     boost::math::poisson pois(lambda);
     Real proba = boost::math::pdf(pois,
-                                       x);
+                                  x);
     return proba;
   }
   else if (x == 0)
@@ -66,7 +61,7 @@ Real PoissonStatistic::pdf(Type x,
   }
 }
 
-Type PoissonStatistic::sample(Real lambda)
+int PoissonStatistic::sample(Real lambda)
 {
   if (lambda > epsilon)
   {
@@ -74,7 +69,7 @@ Type PoissonStatistic::sample(Real lambda)
     boost::variate_generator<boost::mt19937&,
                              boost::poisson_distribution<> > generator(rng_,
                                                                        pois);
-    Type x = generator();
+    int x = generator();
     return x;
   }
   else

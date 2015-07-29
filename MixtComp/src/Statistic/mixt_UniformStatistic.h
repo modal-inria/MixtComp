@@ -34,7 +34,6 @@ class UniformStatistic
 {
   public:
     UniformStatistic();
-    ~UniformStatistic();
 
     /** cdf evaluated at individual x */
     Real cdf(Real x,

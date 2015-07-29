@@ -35,46 +35,43 @@ namespace mixt
 class NormalStatistic
 {
   public:
-    typedef Real Type;
-
     NormalStatistic();
-    ~NormalStatistic();
 
     /** cdf evaluated at individual x */
-    Real cdf(Type x,
-                  Real mean,
-                  Real sd) const;
+    Real cdf(Real x,
+             Real mean,
+             Real sd) const;
 
     /** log pdf evaluated at individual x */
-    Real lpdf(Type x,
-                   Real mean,
-                   Real sd) const;
+    Real lpdf(Real x,
+              Real mean,
+              Real sd) const;
 
     /** pdf evaluated at individual x */
-    Real pdf(Type x,
-                  Real mean,
-                  Real sd) const;
+    Real pdf(Real x,
+             Real mean,
+             Real sd) const;
 
     /** Sample a value from a Normal Law with parameters mean and sd */
-    Type sample(Real mean,
+    Real sample(Real mean,
                 Real sd);
 
     /** Sample a value from a Normal Law with parameters mean and sd,
      * conditionned on being in the interval [infBound; supBound] */
-    Type sampleI(Real mean,
+    Real sampleI(Real mean,
                  Real sd,
                  Real leftBound,
                  Real rightBound);
 
     /** Sample a value from a Normal Law with parameters mean and sd,
      * conditionned on being in the interval [infBound; +inf] */
-    Type sampleIB(Real mean,
+    Real sampleIB(Real mean,
                   Real sd,
                   Real infBound);
 
     /** Sample a value from a Normal Law with parameters mean and sd,
      * conditionned on being in the interval [-inf; supBound] */
-    Type sampleSB(Real mean,
+    Real sampleSB(Real mean,
                   Real sd,
                   Real supBound);
 
@@ -93,6 +90,7 @@ class NormalStatistic
     boost::mt19937 rng_;
 
     UniformStatistic uniform_;
+
     ExponentialStatistic exponential_;
 };
 
