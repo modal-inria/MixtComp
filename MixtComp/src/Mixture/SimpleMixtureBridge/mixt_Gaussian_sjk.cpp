@@ -44,12 +44,12 @@ Gaussian_sjk::Gaussian_sjk(int nbCluster,
 Vector<bool> Gaussian_sjk::acceptedType() const
 {
   Vector<bool> at(nb_enum_MisType_);
-  at(0) = true; // present_,
-  at(1) = true;// missing_,
-  at(2) = false;// missingFiniteValues_,
-  at(3) = true;// missingIntervals_,
-  at(4) = true;// missingLUIntervals_,
-  at(5) = true;// missingRUIntervals_,
+  at(0) = true ; // present_,
+  at(1) = true ; // missing_,
+  at(2) = false; // missingFiniteValues_,
+  at(3) = true ; // missingIntervals_,
+  at(4) = true ; // missingLUIntervals_,
+  at(5) = true ; // missingRUIntervals_,
   return at;
 }
 
