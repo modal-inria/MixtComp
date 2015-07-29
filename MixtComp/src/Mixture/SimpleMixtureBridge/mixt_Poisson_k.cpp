@@ -123,19 +123,19 @@ std::string Poisson_k::mStep(DegeneracyType& deg)
     std::cout << "\tlambda: " << mean << std::endl;
 #endif
 
-    if (lambda < 0.)
-    {
-      warn += "Poisson model has an estimated lambda parameter < 0. "
-              "Your data contains either negative values. "
-              "Have you considered using a Gaussian model ?\n";
-      deg = strongDeg_;
-    }
-    else if (0. <= lambda && lambda <= epsilon)
-    {
-      warn += "Poisson model has an estimated lambda parameter close to 0. "
-              "Your data contains too many identical values close to 0.\n";
-      deg = strongDeg_;
-    }
+//    if (lambda < 0.)
+//    {
+//      warn += "Poisson model has an estimated lambda parameter < 0. "
+//              "Your data contains negative values. "
+//              "Have you considered using a Gaussian model ?\n";
+//      deg = strongDeg_;
+//    }
+//    else if (0. <= lambda && lambda <= epsilon)
+//    {
+//      warn += "Poisson model has an estimated lambda parameter close to 0. "
+//              "Your data contains too many identical values close to 0.\n";
+//      deg = strongDeg_;
+//    }
 
     param_[k] = lambda;
   }
