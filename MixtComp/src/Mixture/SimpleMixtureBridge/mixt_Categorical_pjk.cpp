@@ -139,6 +139,11 @@ std::string Categorical_pjk::mStep(DegeneracyType& deg)
       }
     }
 
+#ifdef MC_DEBUGNEW
+    std::cout << "modalities" << std::endl;
+    std::cout << modalities << std::endl;
+#endif
+
     modalities = modalities / nbSampleClass;
     for (int p = 0; p < nbModalities_; ++p)
     {
@@ -146,19 +151,23 @@ std::string Categorical_pjk::mStep(DegeneracyType& deg)
     }
   }
 
-//  if(param_.minCoeff() < epsilon)
-//  {
-//#ifdef MC_DEBUG
-//    std::cout << "param_:" << std::endl;
-//    std::cout << param_ << std::endl;
-//#endif
-//    std::stringstream sstm;
-//    sstm << "Categorical models must have strictly non-zero proportions. At least one class has at least one modality which proportion is "
-//         << "estimated at 0. You can check whether you have both enough individuals regarding the number of classes you are asking for and "
-//         << "that all of your modalities are encoded using contiguous integers starting at 0." << std::endl;
-//    warn += sstm.str();
-//    deg = strongDeg_;
-//  }
+  if(param_.minCoeff() < epsilon)
+  {
+#ifdef MC_DEBUGNEW
+    std::cout << "param_:" << std::endl;
+    std::cout << param_ << std::endl;
+#endif
+    std::stringstream sstm;
+    sstm << "Categorical models must have strictly non-zero proportions. At least one class has at least one modality which proportion is "
+         << "estimated at 0. You can check whether you have both enough individuals regarding the number of classes you are asking for and "
+         << "that all of your modalities are encoded using contiguous integers starting at 0." << std::endl;
+    warn += sstm.str();
+    deg = strongDeg_;
+  }
+  else
+  {
+    deg = noDeg_;
+  }
 
 #ifdef MC_DEBUG
   for (int p = 0; p < nbModalities_; ++p)

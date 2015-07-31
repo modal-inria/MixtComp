@@ -69,12 +69,15 @@ class SemStrategy
     
     /** number of burn in iteration for final Gibbs sampler */
     int nbGibbsBurnInIter_;
+
     /** number of iteration for final Gibbs sampler */
     int nbGibbsIter_;
+
     /** algorithm for burn-in */
     SEMAlgo* p_burnInAlgo_;
+
     /** algorithm for subsequent long run */
-    SEMAlgo* p_longAlgo_;
+    SEMAlgo* p_runAlgo_;
 
     int nbSamplingAttempts_;
 };

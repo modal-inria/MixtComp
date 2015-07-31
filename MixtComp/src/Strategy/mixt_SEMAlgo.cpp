@@ -32,10 +32,10 @@
 namespace mixt
 {
 
-SEMAlgo::SEMAlgo(MixtureComposer* p_model,
+SEMAlgo::SEMAlgo(MixtureComposer* p_composer,
                  int nbIterMax,
                  int nbSamplingAttempts) :
-    p_model_(p_model),
+    p_composer_(p_composer),
     nbIterMax_(nbIterMax),
     nbSamplingAttempts_(nbSamplingAttempts)
 {}
@@ -54,8 +54,8 @@ std::string SEMAlgo::run(RunType runType,
   if (runType == burnIn_)
   {
     myTimer.setName("SEM: burn-in");
-    p_model_->storeSEMBurnIn(-1,
-                             nbIterMax_ - 1); // export of the initial partition
+    p_composer_->storeSEMBurnIn(-1,
+                                nbIterMax_ - 1); // export of the initial partition
   }
   else if (runType == run_)
   {
@@ -64,7 +64,7 @@ std::string SEMAlgo::run(RunType runType,
 
   for (int iter = 0; iter < nbIterMax_; ++iter)
   {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUGNEW
     std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
 #endif
 
@@ -74,27 +74,57 @@ std::string SEMAlgo::run(RunType runType,
                   iter,
                   nbIterMax_ - 1);
 
-    p_model_->eStep();
+    p_composer_->eStep();
 
-    std::string sWarn = p_model_->sStepNbAttempts(nbSamplingAttempts_,
-                                                  deg); // p_model_->sStep() called nbSamplingAttempts_ at most, to get enough individuals per class
-    if (deg != noDeg_)
+    std::string sWarn;
+    for (int n = 0; n < nbSamplingAttempts_; ++n) // sStep, samplingStep and mStep until there is no degeneracy
     {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, degeneracy in p_model_->sStepNbAttempts" << std::endl;
+#ifdef MC_DEBUGNEW
+      std::cout << "SEMAlgo::run, n: " << n << std::endl;
 #endif
-      return sWarn;
-    }
 
-    p_model_->samplingStep(); // each mixture samples its partially observed values
+      int currMinIndPerClass = p_composer_->sStep(); // sStep performed
 
-    std::string mWarn = p_model_->mStep(deg);
-    if (deg != noDeg_)
-    {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, degeneracy in p_model_->mStep" << std::endl;
+#ifdef MC_DEBUGNEW
+      std::cout << "currMinIndPerClass: " << currMinIndPerClass << std::endl;
+      std::cout << "*p_composer_->p_zi()_" << std::endl;
+      std::cout << *p_composer_->p_zi() << std::endl;
 #endif
-      return mWarn; // error reported in the mStep, terminate the SEM algo, and report it to the strategy.
+
+      if (currMinIndPerClass < minIndPerClass) // min number of individuals per class tested
+      {
+#ifdef MC_DEBUGNEW
+        std::cout << "sStep, not enough individual per class." << std::endl;
+#endif
+
+        std::stringstream sstm;
+        sstm << "sStep, not enough individual per class." << std::endl;
+        sWarn += sstm.str();
+        continue;
+      }
+
+      p_composer_->samplingStep(); // each mixture samples its partially observed values
+
+      DegeneracyType currDeg;
+      std::string mWarn = p_composer_->mStep(currDeg);
+      if (currDeg == strongDeg_ && n < nbSamplingAttempts_ - 1) // strong degeneracy, but sampling steps remain: do another one
+      {
+  #ifdef MC_DEBUGNEW
+        std::cout << "degeneracy in p_model_->mStep, currDeg: " << currDeg << std::endl;
+  #endif
+
+        sWarn += mWarn;
+        continue;
+      }
+      else if (currDeg == strongDeg_ && n == nbSamplingAttempts_ - 1) // strong degeneracy at last iteration: exit and signal it to the strategy
+      {
+        deg = strongDeg_;
+        return sWarn;
+      }
+      else // no degeneracy, hence no need for further sampling
+      {
+        break;
+      }
     }
 
     if (runType == burnIn_)
@@ -102,8 +132,8 @@ std::string SEMAlgo::run(RunType runType,
 #ifdef MC_DEBUG
     std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
 #endif
-      p_model_->storeSEMBurnIn(iter,
-                               nbIterMax_ - 1);
+      p_composer_->storeSEMBurnIn(iter,
+                                  nbIterMax_ - 1);
     }
 
     if (runType == run_)
@@ -111,8 +141,8 @@ std::string SEMAlgo::run(RunType runType,
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
 #endif
-      p_model_->storeSEMRun(iter,
-                            nbIterMax_ - 1);
+      p_composer_->storeSEMRun(iter,
+                               nbIterMax_ - 1);
     }
   }
 

@@ -273,9 +273,8 @@ class Ordinal : public IMixture
 #endif
         }
 
-        if (pi_(k) > 1. - piThreshold)
+        if (pi_(k) > 1. - epsilon)
         {
-          pi_(k) = 1. - piThreshold;
 #ifdef MC_DEBUG
           std::cout << "Ordinal::mStep, class " << k << " has 1-degenerated" << std::endl;
 #endif
@@ -292,7 +291,7 @@ class Ordinal : public IMixture
           sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". "
                << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
           warnLog += sstm.str();
-//          deg = strongDeg_; // this degeneracy is not normal for the model and must be reported as such
+          deg = strongDeg_; // this degeneracy is not normal for the model and must be reported as such
 #ifdef MC_VERBOSE
           std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 1" << std::endl;
 #endif

@@ -237,43 +237,6 @@ std::string MixtureComposer::mStep(DegeneracyType& worstDeg)
   return warn;
 }
 
-std::string MixtureComposer::sStepNbAttempts(int nbSamplingAttempts,
-                                             DegeneracyType& deg)
-{
-  std::string warnLog;
-  deg = noDeg_; // initialization of degeneracy type
-  for (int iterSample = 0; iterSample < nbSamplingAttempts; ++iterSample) // sample until there are enough individuals per class, using default tik from IMixtureComposerBase::intializeMixtureParameters()
-  {
-    int nbIndPerClass = sStep();
-  #ifdef MC_DEBUG
-    std::cout << "MixtureComposer::sStepNbAttempts, iterSample: " << iterSample << std::endl;
-    std::cout << "nbIndPerClass: " << nbIndPerClass << std::endl;
-  #endif
-    if (nbIndPerClass > minIndPerClass)
-    {
-      break; // enough individuals in each class to carry on
-    }
-    else
-    {
-      if (iterSample == nbSamplingAttempts - 1) // on last attempt, detail the error in the error message
-      {
-#ifdef MC_DEBUG
-        std::cout << "MixtureComposer::sStepNbAttempts, all attempts exhausted" << std::endl;
-#endif
-        std::stringstream sstm;
-        sstm << "Sampling step problem in SEM. The class with the lowest number "
-             << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
-             << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
-             << " partition samplings before failure. The number of classes might be too important"
-             << " relative to the number of individuals. Try decreasing the number of classes." << std::endl;
-        warnLog += sstm.str();
-        deg = strongDeg_; // the degeneracy is strong as it requires a complete reboot of the SEM chain
-      }
-    }
-  }
-  return warnLog;
-}
-
 /* simulate zi for all individuals */
 int MixtureComposer::sStep()
 {
@@ -324,7 +287,7 @@ void MixtureComposer::eStep()
   {
     eStep(i);
   }
-#ifdef MC_DEBUG
+#ifdef MC_DEBUGNEW
   std::cout << "tik_:" << std::endl;
   std::cout << tik_ << std::endl;
 #endif

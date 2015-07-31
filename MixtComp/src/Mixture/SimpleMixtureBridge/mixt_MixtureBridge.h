@@ -236,6 +236,10 @@ class MixtureBridge : public IMixture
      */
     virtual std::string mStep(DegeneracyType& deg)
     {
+#ifdef MC_DEBUGNEW
+      std::cout << "mStep, idName_: " << idName_ << std::endl;
+#endif
+
       std::string warn = mixture_.mStep(deg);
       if (warn.size() > 0)
       {

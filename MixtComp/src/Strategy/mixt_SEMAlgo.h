@@ -36,7 +36,7 @@ class SEMAlgo
 {
   public:
     /** default constructor */
-    SEMAlgo(MixtureComposer* p_model,
+    SEMAlgo(MixtureComposer* p_composer,
             int nbIterMax,
             int nbSamplingAttempts);
 
@@ -48,7 +48,7 @@ class SEMAlgo
 
   private:
     /** pointer on the mixture model */
-    MixtureComposer* p_model_;
+    MixtureComposer* p_composer_;
 
     /** number of iterations of the algorithm */
     int nbIterMax_;

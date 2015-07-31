@@ -69,14 +69,6 @@ class MixtureComposer
     /** @return a constant reference on the vector of mixture */
     inline std::vector<IMixture*> const& v_mixtures() const {return v_mixtures_;}
 
-    /**
-     * Run sStep until there is at least minIndPerClass individuals per class.
-     * If, after nbSamplingAttempts there are not enough individuals per class, return
-     * an error message.
-     */
-    std::string sStepNbAttempts(int nbSamplingAttempts,
-                                DegeneracyType& deg);
-
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
      *  @param[out] worstDeg worst degeneracy type incountered among all mixtures for this mStep

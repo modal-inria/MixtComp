@@ -46,7 +46,7 @@ SemStrategy::SemStrategy(MixtureComposer* p_composer,
   p_burnInAlgo_ = new SEMAlgo(p_composer,
                               nbBurnInIter,
                               nbSamplingAttempts);
-  p_longAlgo_   = new SEMAlgo(p_composer,
+  p_runAlgo_    = new SEMAlgo(p_composer,
                               nbIter,
                               nbSamplingAttempts);
 }
@@ -59,16 +59,16 @@ SemStrategy::SemStrategy(SemStrategy const& strategy) :
     nbSamplingAttempts_(strategy.nbSamplingAttempts_)
 {
   SEMAlgo& burnInAlgo = *strategy.p_burnInAlgo_;
-  SEMAlgo& longAlgo   = *strategy.p_longAlgo_  ;
+  SEMAlgo& longAlgo   = *strategy.p_runAlgo_   ;
   p_burnInAlgo_ = new SEMAlgo(burnInAlgo);
-  p_longAlgo_   = new SEMAlgo(longAlgo);
+  p_runAlgo_    = new SEMAlgo(longAlgo);
 }
 
 /** destructor */
 SemStrategy::~SemStrategy()
 {
   if (p_burnInAlgo_) delete p_burnInAlgo_;
-  if (p_longAlgo_  ) delete p_longAlgo_  ;
+  if (p_runAlgo_   ) delete p_runAlgo_   ;
 }
 
 std::string SemStrategy::run()
@@ -89,15 +89,14 @@ std::string SemStrategy::run()
 
     std::string tryWarn; // warning for each trial
 
-    if (currDeg == noDeg_ || currDeg == strongDeg_) // only reset everything at the first iteration, or when a strong degeneration has been detected
+    if (currDeg == noDeg_ || currDeg == strongDeg_) // only reset everything at the first iteration, or when a strong degeneration has been detected in a previous iteration
     {
 #ifdef MC_VERBOSE
       std::cout << "SemStrategy::run, complete (re) initialization" << std::endl;
 #endif
       p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
 
-      tryWarn = p_composer_->sStepNbAttempts(nbSamplingAttempts_, currDeg); // perform at max nbSamplingAttempts_ calls to p_composer_->sStep();
-      if (currDeg != noDeg_)
+      if (p_composer_->sStep() < minIndPerClass)
       {
         ++DegCount(currDeg);
         std::stringstream sstm;
@@ -156,7 +155,7 @@ std::string SemStrategy::run()
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, SEM run" << std::endl;
 #endif
-    tryWarn = p_longAlgo_->run(run_,
+    tryWarn = p_runAlgo_->run(run_,
                                currDeg,
                                1, // group
                                3); // groupMax
