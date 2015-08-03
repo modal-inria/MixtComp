@@ -56,7 +56,7 @@ class MixtureComposer
     MixtureComposer(MixtureComposer const& composer);
 
     /** The registered mixtures will be deleted there.*/
-    virtual ~MixtureComposer();
+    ~MixtureComposer();
 
     /** Create the mixture model parameters. */
     void intializeMixtureParameters();
@@ -99,52 +99,52 @@ class MixtureComposer
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    virtual Real lnCompletedProbability(int i, int k);
+    Real lnCompletedProbability(int i, int k);
 
-    virtual Real lnObservedProbability(int i, int k);
+    Real lnObservedProbability(int i, int k);
 
     /** @return the value of the observed likelihood */
-    virtual Real lnObservedLikelihood();
+    Real lnObservedLikelihood();
 
     /** @return the value of the completed likelihood */
-    virtual Real lnCompletedLikelihood();
+    Real lnCompletedLikelihood();
 
     /** @return the value of the semi-completed likelihood (completion only for latent class) */
-    virtual Real lnSemiCompletedLikelihood();
+    Real lnSemiCompletedLikelihood();
 
     /** write the parameters of the model in the stream os. */
-    virtual void writeParameters() const;
+    void writeParameters() const;
 
     /** @brief compute the number of free parameters of the model.
      *  lookup on the mixtures and sum the nbFreeParameter.
      **/
-    virtual int nbFreeParameters() const;
+    int nbFreeParameters() const;
 
     /** @brief Simulation of all the latent variables and/or missing data
      *  excluding class labels.
      */
-    virtual void samplingStep();
-    virtual void samplingStep(int i);
+    void samplingStep();
+    void samplingStep(int i);
 
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
-    virtual void storeSEMBurnIn(int iteration,
-                               int iterationMax);
+    void storeSEMBurnIn(int iteration,
+                        int iterationMax);
 
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
-    virtual void storeSEMRun(int iteration,
-                             int iterationMax);
+    void storeSEMRun(int iteration,
+                     int iterationMax);
 
     /** @brief This step can be used to signal to the mixtures that they
      * must store data. This is usually called after the long algo, to
      * store data generated using the estimated parameters during a Gibbs sampling
      */
-    virtual void storeGibbsRun(int sample,
-                               int iteration,
-                               int iterationMax);
+    void storeGibbsRun(int sample,
+                       int iteration,
+                       int iterationMax);
 
     /** DataHandler is injected to take care of setting the values of the latent classes.
      * This avoids templating the whole composer with DataHandler type, as is currently done

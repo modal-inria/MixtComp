@@ -36,9 +36,6 @@ GaussianLikelihood::GaussianLikelihood(const Vector<Real>& param,
     augData_(augData)
 {}
 
-GaussianLikelihood::~GaussianLikelihood()
-{}
-
 Real GaussianLikelihood::lnCompletedProbability(int i, int k)
 {
 #ifdef MC_DEBUG

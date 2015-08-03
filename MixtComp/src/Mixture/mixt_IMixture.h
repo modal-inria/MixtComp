@@ -45,7 +45,7 @@ class IMixture
       idName_(idName)
     {};
 
-    /** Virtual destructor. */
+    /** Virtual destructor. Needed as IMixture will only be used as a base class. */
     virtual ~IMixture()
     {};
 

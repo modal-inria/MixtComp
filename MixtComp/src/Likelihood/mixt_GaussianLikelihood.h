@@ -38,8 +38,6 @@ class GaussianLikelihood
     GaussianLikelihood(const Vector<Real>& param,
                        const AugmentedData<Vector<Real> >& augData,
                        int nbClass);
-    /** Destructor */
-    virtual ~GaussianLikelihood();
 
     /** Compute the completed log-likelihood */
     Real lnCompletedProbability(int i, int k);

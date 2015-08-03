@@ -36,9 +36,6 @@ PoissonLikelihood::PoissonLikelihood(const Vector<Real>& param,
     augData_(augData)
 {}
 
-PoissonLikelihood::~PoissonLikelihood()
-{}
-
 Real PoissonLikelihood::lnCompletedProbability(int i, int k)
 {
 #ifdef MC_DEBUG

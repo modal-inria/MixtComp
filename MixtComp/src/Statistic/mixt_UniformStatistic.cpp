@@ -32,10 +32,7 @@ namespace mixt
 {
 
 UniformStatistic::UniformStatistic() :
-    rng_(long(this) + time(0))
-{}
-
-UniformStatistic::~UniformStatistic()
+    rng_(size_t(this) + time(0))
 {}
 
 Real UniformStatistic::cdf(Real x,

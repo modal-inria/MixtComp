@@ -35,7 +35,7 @@ namespace mixt
 class Categorical_pjk
 {
   public:
-    Categorical_pjk(int nbCluster,
+    Categorical_pjk(int nbClass,
                     Vector<Real>& param,
                     Vector<int> const* p_zi);
 
@@ -57,7 +57,7 @@ class Categorical_pjk
     bool possibleNullProbability() const;
 
   private:
-    int nbCluster_;
+    int nbClass_;
     int nbModalities_;
     Vector<int>* p_data_;
     Vector<Real>& param_;

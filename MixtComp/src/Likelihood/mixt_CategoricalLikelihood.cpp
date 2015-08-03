@@ -36,9 +36,6 @@ CategoricalLikelihood::CategoricalLikelihood(const Vector<Real>& param,
     augData_(augData)
 {}
 
-CategoricalLikelihood::~CategoricalLikelihood()
-{}
-
 Real CategoricalLikelihood::lnCompletedProbability(int i, int k)
 {
   int nbModalities = param_.rows() / nbClass_;

@@ -41,9 +41,8 @@ class MultinomialStatistic
   public:
 
     MultinomialStatistic() :
-      rng_(long(this) + time(0))
+      rng_(size_t(this) + time(0))
   {};
-    ~MultinomialStatistic() {};
 
     /** Sample a value from a multinomial law with coefficient of modalities provided */
     template<typename T>
