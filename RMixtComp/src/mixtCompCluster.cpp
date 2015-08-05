@@ -98,7 +98,6 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
   if (warnLog.size() == 0) // data is correct in descriptors, proceed with reading
   {
     mixt::MixtureComposer composer(handler.nbSample(),
-                                   handler.nbVariable(),
                                    nbClusters,
                                    confidenceLevel);
 
@@ -142,11 +141,11 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
         mcMixture["lnObservedLikelihood"] = lnObsLik;
         mcMixture["lnSemiCompletedLikelihood"] = lnSemiCompLik;
         mcMixture["lnCompletedLikelihood"] = lnCompLik;
-        mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
-        mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+        mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+        mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
 
         mcMixture["runTime"] = totalTimer.top("end of run");
-        mcMixture["nbSample"] = composer.nbSample();
+        mcMixture["nbInd"] = composer.nbInd();
         mcMixture["mode"] = "learn";
       }
     }

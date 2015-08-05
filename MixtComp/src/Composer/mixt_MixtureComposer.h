@@ -45,9 +45,8 @@ class MixtureComposer
     /** Constructor.
      * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      */
-    MixtureComposer(int nbSample,
-                    int nbVariable,
-                    int nbCluster,
+    MixtureComposer(int nbInd,
+                    int nbClass,
                     Real confidenceLevel);
 
     /** copy constructor.
@@ -61,7 +60,7 @@ class MixtureComposer
     /** Create the mixture model parameters. */
     void intializeMixtureParameters();
 
-    int nbSample() const {return nbSample_;}
+    int nbInd() const {return nbInd_;}
 
     /** @return  the zi class label */
     inline Vector<int> const* p_zi() const {return &zi_.data_;}
@@ -73,19 +72,20 @@ class MixtureComposer
      *  mixture parameters.
      *  @param[out] worstDeg worst degeneracy type incountered among all mixtures for this mStep
      **/
-    virtual std::string mStep(DegeneracyType& worstDeg);
+    std::string mStep();
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model. Only called
      *  by mStep
      **/
-    virtual void pStep();
+    void pStep();
 
-    /** Simulate zi accordingly to tik and replace tik by zik by calling cStep().
-     *  @return the minimal value of individuals in a class
+    /**
+     * Simulate zi accordingly to tik and replace tik by zik by calling cStep().
+     * @return the minimal value of individuals in a class
      **/
-    int sStep();
-    void sStep(int i);
+    void sStep(bool checkSampleCondition);
+    void sStep(int i, bool checkSampleCondition);
 
     /** compute Tik */
     void eStep();
@@ -120,11 +120,27 @@ class MixtureComposer
      **/
     int nbFreeParameters() const;
 
-    /** @brief Simulation of all the latent variables and/or missing data
-     *  excluding class labels.
+    /**
+     * Perform a sampling step
+     * @param checkSampleCondition indicates if there is a need to perform a check on the data or not
      */
-    void samplingStep();
-    void samplingStep(int i);
+    void samplingStep(bool checkSampleCondition);
+    void samplingStep(int i, bool checkSampleCondition);
+
+    /**
+     * Check if the data conditions are verified for all mixtures. Providing a log is required during
+     * initialization. The rejection sampling / Gibbs sampling will ensure that at later steps the
+     * data conditions are verified, hence there is no need to provide information to the user, and no
+     * log is required.
+     * @param[out] warnLog provides information on what condition has not been met
+     * */
+    Real checkSampleCondition(std::string* warnLog = NULL) const;
+
+    /**
+     * Check if there are enough individual in each class. Called by checkSampleCondition.
+     * @param[out] warnLog provides information on what condition has not been met
+     * */
+    Real checkNbIndPerClass(std::string* warnLog = NULL) const;
 
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
@@ -165,7 +181,7 @@ class MixtureComposer
       {
         paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
       }
-      dataStat_.resizeStatStorage(nbSample_);
+      dataStat_.resizeStatStorage(nbInd_);
 
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
       {
@@ -209,13 +225,13 @@ class MixtureComposer
 
       if (dataHandler.info().find("z_class") == dataHandler.info().end()) // z_class was not provided
       {
-        zi_.setAllMissing(nbSample_); // set every value state to missing_
+        zi_.setAllMissing(nbInd_); // set every value state to missing_
       }
       else // z_class was provided and its value is acquired in zi_
       {
         dataHandler.getData("z_class", // reserved name for the class
                             zi_,
-                            nbSample_,
+                            nbInd_,
                             dummyParam,
                             -minModality, // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
                             warnLog);
@@ -247,19 +263,19 @@ class MixtureComposer
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
        warnLog += sstm.str();
       }
-      if (zi_.dataRange_.hasRange_ == true || zi_.dataRange_.max_ > nbCluster_ - 1)
+      if (zi_.dataRange_.hasRange_ == true || zi_.dataRange_.max_ > nbClass_ - 1)
       {
        std::stringstream sstm;
        sstm << "The z_class latent class variable has a highest provided value of: "
             << minModality + zi_.dataRange_.max_
             << " while the maximal value can not exceed the number of class: "
-            << minModality + nbCluster_ - 1
+            << minModality + nbClass_ - 1
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
        warnLog += sstm.str();
       }
       zi_.dataRange_.min_ = 0; // real range provided by the parameters is enforced
-      zi_.dataRange_.max_ = nbCluster_ - 1;
-      zi_.dataRange_.range_ = nbCluster_;
+      zi_.dataRange_.max_ = nbClass_ - 1;
+      zi_.dataRange_.range_ = nbClass_;
 
       return warnLog;
     };
@@ -320,11 +336,11 @@ class MixtureComposer
     /** name of the latent class variable */
     std::string idName_;
 
-    /** number of cluster. */
-    int nbCluster_;
+    /** number of classes */
+    int nbClass_;
 
     /** Number of samples */
-    int nbSample_;
+    int nbInd_;
 
     /** The proportions of each class */
     Vector<Real> prop_;

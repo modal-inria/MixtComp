@@ -65,17 +65,6 @@ enum RunType
   run_,
 };
 
-/**
- * Types of degeneracy. The order is important as it is used in comparison of strenght of degeneracies.
- */
-enum DegeneracyType
-{
-  noDeg_, // no degeneracy
-  lightDeg_, // light degeneracy, only the degenerating (class, variable) pair should be reinitialized
-  strongDeg_, // strong degeneracy, everything must be reinitialized
-  nb_enum_DegeneracyType_ // number of modalities in this enum
-};
-
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

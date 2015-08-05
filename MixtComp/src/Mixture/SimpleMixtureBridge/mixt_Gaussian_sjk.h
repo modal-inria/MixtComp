@@ -36,7 +36,7 @@ namespace mixt
 class Gaussian_sjk
 {
   public:
-    Gaussian_sjk(int nbCluster,
+    Gaussian_sjk(int nbClass,
                  Vector<Real>& param,
                  Vector<int> const* p_zi);
 
@@ -52,7 +52,7 @@ class Gaussian_sjk
 
     /** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
      * using the biased estimator which corresponds to the maximum likelihood estimator */
-    std::string mStep(DegeneracyType& deg);
+    std::string mStep();
 
     Real minVal() const;
     Real maxVal() const;
@@ -65,8 +65,10 @@ class Gaussian_sjk
     void writeParameters() const;
 
     bool possibleNullProbability() const {return false;} // no individual can possibly have a null probability
+
+    Real checkSampleCondition(std::string* warnLog = NULL) const;
   private:
-    int nbCluster_;
+    int nbClass_;
 
     Vector<Real>& param_;
 

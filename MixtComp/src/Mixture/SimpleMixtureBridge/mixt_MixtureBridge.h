@@ -88,7 +88,8 @@ class MixtureBridge : public IMixture
       augData_(),
       nbSample_(0),
       confidenceLevel_(confidenceLevel),
-      sampler_(augData_,
+      sampler_(*this,
+               augData_,
                param_,
                nbClass),
       dataStat_(augData_,
@@ -167,15 +168,6 @@ class MixtureBridge : public IMixture
   #ifdef MC_DEBUG
           std::cout << "\tparam not set " << std::endl;
   #endif
-          if (augData_.misCount_(present_) < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
-          {
-            std::stringstream sstm;
-            sstm << "Variable: " << idName() << " only has " << augData_.misCount_(present_)
-                 << " present values. Maybe there is an error in the data encoding. If the variable truly has less than "
-                 << minNbPresentValues
-                 << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
-            warnLog += sstm.str();
-          }
           if (mixture_.hasModalities())
           {
             mixture_.setModalities(augData_.dataRange_.max_ + 1); // set the number of modalities
@@ -221,26 +213,29 @@ class MixtureBridge : public IMixture
       return warnLog;
     }
 
-    /** This function must be defined for simulation of all the latent variables
+    /**
+     * This function must be defined for simulation of all the latent variables
      * and/or missing data excluding class labels. The class labels will be
      * simulated by the framework itself because to do so we have to take into
-     * account all the mixture laws. do nothing by default.
+     * account all the mixture laws.
      */
-    virtual void samplingStep(int ind)
+    virtual void samplingStep(int ind, bool checkSampleCondition)
     {
       sampler_.sampleIndividual(ind,
-                                (*p_zi())(ind));
+                                (*p_zi())(ind),
+                                checkSampleCondition);
     }
 
-    /** This function is equivalent to Mstep and must be defined to update parameters.
+    /**
+     * Estimate parameters by maximum likelihood
      */
-    virtual std::string mStep(DegeneracyType& deg)
+    virtual std::string mStep()
     {
 #ifdef MC_DEBUGNEW
       std::cout << "mStep, idName_: " << idName_ << std::endl;
 #endif
 
-      std::string warn = mixture_.mStep(deg);
+      std::string warn = mixture_.mStep();
       if (warn.size() > 0)
       {
         warn =   std::string("Error in variable ")
@@ -251,8 +246,9 @@ class MixtureBridge : public IMixture
       return warn;
     }
 
-    /** This function should be used to store any results during the burn-in period
-     *  @param iteration Provides the iteration number during the burn-in period
+    /**
+     * This function should be used to store any results during the burn-in period
+     * @param iteration Provides the iteration number during the burn-in period
      */
     virtual void storeSEMBurnIn(int iteration,
                                int iterationMax)
@@ -397,6 +393,27 @@ class MixtureBridge : public IMixture
     bool possibleNullProbability() const {return mixture_.possibleNullProbability();}
 
     void removeMissing() {augData_.removeMissing();}
+
+    Real checkSampleCondition(std::string* warnLog = NULL) const
+    {
+      if (warnLog == NULL)
+      {
+        return mixture_.checkSampleCondition();
+      }
+      else
+      {
+        std::string warn;
+        Real proba = mixture_.checkSampleCondition(&warn);
+        if (warn.size() > 0)
+        {
+          std::stringstream sstm;
+          sstm << "checkSampleCondition, error in variable " << idName_ << std::endl
+               << warn;
+          *warnLog += sstm.str();
+        }
+        return proba;
+      }
+    }
 
   protected:
     /** Pointer to the zik class label */

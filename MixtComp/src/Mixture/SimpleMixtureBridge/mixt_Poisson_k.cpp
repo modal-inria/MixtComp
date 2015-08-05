@@ -29,15 +29,15 @@
 namespace mixt
 {
 
-Poisson_k::Poisson_k(int nbCluster,
+Poisson_k::Poisson_k(int nbClass,
                      Vector<Real>& param,
                      Vector<int> const* p_zi) :
-    nbCluster_(nbCluster),
+    nbClass_(nbClass),
     param_(param),
     p_data_(0),
     p_zi_(p_zi)
 {
-  param_.resize(nbCluster);
+  param_.resize(nbClass);
 }
 
 Vector<bool> Poisson_k::acceptedType() const
@@ -64,7 +64,7 @@ bool Poisson_k::checkMinVal() const
 
 int Poisson_k::computeNbFreeParameters() const
 {
-  return nbCluster_;
+  return nbClass_;
 }
 
 bool Poisson_k::hasModalities() const
@@ -87,7 +87,7 @@ std::string Poisson_k::model() const
   return "Poisson_k";
 }
 
-std::string Poisson_k::mStep(DegeneracyType& deg)
+std::string Poisson_k::mStep()
 {
   std::string warn;
 #ifdef MC_DEBUG
@@ -96,7 +96,7 @@ std::string Poisson_k::mStep(DegeneracyType& deg)
     std::cout << "zi_: " << zi_ << std::endl;
 #endif
 
-  for (int k = 0; k < nbCluster_; ++k)
+  for (int k = 0; k < nbClass_; ++k)
   {
     int nbSampleClass = 0; // number of samples in the current class
     Real sumClassMean = 0.;
@@ -123,20 +123,6 @@ std::string Poisson_k::mStep(DegeneracyType& deg)
     std::cout << "\tlambda: " << mean << std::endl;
 #endif
 
-    if (lambda < 0.)
-    {
-      warn += "Poisson model has an estimated lambda parameter < 0. "
-              "Your data contains negative values. "
-              "Have you considered using a Gaussian model ?\n";
-      deg = strongDeg_;
-    }
-    else if (0. <= lambda && lambda <= epsilon)
-    {
-      warn += "Poisson model has an estimated lambda parameter close to 0. "
-              "Your data contains too many identical values close to 0.\n";
-      deg = strongDeg_;
-    }
-
     param_[k] = lambda;
   }
   return warn;
@@ -144,8 +130,8 @@ std::string Poisson_k::mStep(DegeneracyType& deg)
 
 std::vector<std::string> Poisson_k::paramNames() const
 {
-  std::vector<std::string> names(nbCluster_);
-  for (int k = 0; k < nbCluster_; ++k)
+  std::vector<std::string> names(nbClass_);
+  for (int k = 0; k < nbClass_; ++k)
   {
     std::stringstream sstm;
     sstm << "k: "
@@ -169,7 +155,7 @@ void Poisson_k::setModalities(int nbModalities)
 void Poisson_k::writeParameters() const
 {
   std::stringstream sstm;
-  for (int k = 0; k < nbCluster_; ++k)
+  for (int k = 0; k < nbClass_; ++k)
   {
     sstm << "Class: " << k << std::endl;
     sstm << "\tlambda: " << param_[k] << std::endl;
@@ -190,6 +176,43 @@ bool Poisson_k::possibleNullProbability() const
   {
     return false;
   }
+}
+
+Real Poisson_k::checkSampleCondition(std::string* warnLog) const
+{
+  Real proba = 1.;
+  Vector<bool> nonZeroPresent(nbClass_);
+  nonZeroPresent = false;
+
+  for (int i = 0; i < p_data_->rows(); ++i)
+  {
+    if ((*p_data_)(i) > 0)
+    {
+      nonZeroPresent((*p_zi_)(i)) = true;
+    }
+  }
+
+  for (int k = 0; k < nbClass_; ++k)
+  {
+    if (nonZeroPresent(k) == false)
+    {
+      if (warnLog == NULL)
+      {
+        proba = 0.;
+      }
+      else
+      {
+        std::stringstream sstm;
+        sstm << "Poisson variables must have at least one non-zero individual per class. This is not the case for class: " << k
+             << "which contains only the 0 modality. If your data has too many individuals "
+             << "with a value of 0, a Poisson model can not describe it" << std::endl;
+        *warnLog += sstm.str();
+        proba = 0.;
+      }
+    }
+  }
+
+  return proba;
 }
 
 } // namespace mixt

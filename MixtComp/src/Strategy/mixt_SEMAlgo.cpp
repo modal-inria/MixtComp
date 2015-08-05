@@ -37,11 +37,11 @@ SEMAlgo::SEMAlgo(MixtureComposer* p_composer,
                  int nbSamplingAttempts) :
     p_composer_(p_composer),
     nbIterMax_(nbIterMax),
-    nbSamplingAttempts_(nbSamplingAttempts)
+    nbSamplingAttempts_(nbSamplingAttempts),
+    rejectSampler_(true)
 {}
 
 std::string SEMAlgo::run(RunType runType,
-                         DegeneracyType& deg,
                          int group,
                          int groupMax)
 {
@@ -49,6 +49,7 @@ std::string SEMAlgo::run(RunType runType,
   std::cout << "SEMAlgo::run" << std::endl;
 #endif
 
+  std::string warn;
   Timer myTimer;
 
   if (runType == burnIn_)
@@ -62,12 +63,9 @@ std::string SEMAlgo::run(RunType runType,
     myTimer.setName("SEM: run");
   }
 
-  for (int iter = 0; iter < nbIterMax_; ++iter)
+  int iter = 0;
+  while (iter < nbIterMax_)
   {
-#ifdef MC_DEBUGNEW
-    std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
-#endif
-
     myTimer.iteration(iter, nbIterMax_ - 1);
     writeProgress(group,
                   groupMax,
@@ -76,55 +74,27 @@ std::string SEMAlgo::run(RunType runType,
 
     p_composer_->eStep();
 
-    std::string sWarn;
-    for (int n = 0; n < nbSamplingAttempts_; ++n) // sStep, samplingStep and mStep until there is no degeneracy
+    if (rejectSampler_ == true) // use reject sampling
     {
-#ifdef MC_DEBUGNEW
-      std::cout << "SEMAlgo::run, n: " << n << std::endl;
-#endif
-
-      int currMinIndPerClass = p_composer_->sStep(); // sStep performed
-
-#ifdef MC_DEBUGNEW
-      std::cout << "currMinIndPerClass: " << currMinIndPerClass << std::endl;
-      std::cout << "*p_composer_->p_zi()_" << std::endl;
-      std::cout << *p_composer_->p_zi() << std::endl;
-#endif
-
-      if (currMinIndPerClass < minIndPerClass) // min number of individuals per class tested
+      p_composer_->sStep(false); // no checkSampleCondition performed, to increase speed of sampling
+      p_composer_->samplingStep(false);
+      Real sampleCond = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
+      if (sampleCond == 0.) // sampled value rejected, switch to Gibbs sampler
       {
-#ifdef MC_DEBUGNEW
-        std::cout << "sStep, not enough individual per class." << std::endl;
-#endif
-
-        std::stringstream sstm;
-        sstm << "sStep, not enough individual per class." << std::endl;
-        sWarn += sstm.str();
+        rejectSampler_ = false;
         continue;
       }
+    }
+    else // use Gibbs sampling
+    {
+      p_composer_->sStep(true); // checkSampleCondition is performed at each sampling, hence no need to call p_composer_->checkSampleCondition()
+      p_composer_->samplingStep(true);
+    }
 
-      p_composer_->samplingStep(); // each mixture samples its partially observed values
-
-      DegeneracyType currDeg;
-      std::string mWarn = p_composer_->mStep(currDeg);
-      if (currDeg == strongDeg_ && n < nbSamplingAttempts_ - 1) // strong degeneracy, but sampling steps remain: do another one
-      {
-  #ifdef MC_DEBUGNEW
-        std::cout << "degeneracy in p_model_->mStep, currDeg: " << currDeg << std::endl;
-  #endif
-
-        sWarn += mWarn;
-        continue;
-      }
-      else if (currDeg == strongDeg_ && n == nbSamplingAttempts_ - 1) // strong degeneracy at last iteration: exit and signal it to the strategy
-      {
-        deg = strongDeg_;
-        return sWarn;
-      }
-      else // no degeneracy, hence no need for further sampling
-      {
-        break;
-      }
+    warn = p_composer_->mStep();
+    if (warn.size() > 0)
+    {
+      return warn;
     }
 
     if (runType == burnIn_)
@@ -144,9 +114,11 @@ std::string SEMAlgo::run(RunType runType,
       p_composer_->storeSEMRun(iter,
                                nbIterMax_ - 1);
     }
+
+    ++iter;
   }
 
-  return std::string(); // success: return empty string
+  return warn; // success: return empty string
 }
 
 } // namespace mixt

@@ -22,20 +22,22 @@
  **/
 
 #include "mixt_GaussianSampler.h"
+#include "../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {
-GaussianSampler::GaussianSampler(AugmentedData<Vector<Real> >& augData,
+GaussianSampler::GaussianSampler(const IMixture& mixture,
+                                 AugmentedData<Vector<Real> >& augData,
                                  const Vector<Real>& param,
                                  int nbClass) :
+    mixture_(mixture),
     augData_(augData),
     param_(param)
 {}
 
-GaussianSampler::~GaussianSampler()
-{}
-
-void GaussianSampler::sampleIndividual(int i, int z_i)
+void GaussianSampler::sampleIndividual(int i,
+                                       int z_i,
+                                       bool checkSampleCondition)
 {
 #ifdef MC_DEBUG
   std::cout << "GaussianSampler::sampleIndividual" << std::endl;

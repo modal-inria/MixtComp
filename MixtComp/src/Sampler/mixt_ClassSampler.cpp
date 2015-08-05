@@ -23,21 +23,22 @@
 
 #include "mixt_ClassSampler.h"
 #include "../Various/mixt_Constants.h"
+#include "../Composer/mixt_MixtureComposer.h"
 
 namespace mixt
 {
-ClassSampler::ClassSampler(AugmentedData<Vector<int> >& zi,
+
+ClassSampler::ClassSampler(const MixtureComposer& composer,
+                           AugmentedData<Vector<int> >& zi,
                            const Matrix<Real>& tik,
                            int nbClass) :
+    composer_(composer),
     nbClass_(nbClass),
     zi_(zi),
     tik_(tik)
 {}
 
-ClassSampler::~ClassSampler()
-{}
-
-void ClassSampler::sampleIndividual(int i)
+void ClassSampler::sampleIndividual(int i, bool checkSampleCondition)
 {
 #ifdef MC_DEBUG
   std::cout << "ClassSampler::sampleIndividual" << std::endl;
@@ -46,7 +47,7 @@ void ClassSampler::sampleIndividual(int i)
 
   if (zi_.misData_(i).first != present_)
   {
-    int sampleVal;
+    int sampleVal = -1; // initialized with dummy value
 
 #ifdef MC_DEBUG
     std::cout << "present_" << std::endl;
@@ -59,8 +60,13 @@ void ClassSampler::sampleIndividual(int i)
 #ifdef MC_DEBUG
         std::cout << "missing_" << std::endl;
 #endif
-        sampleVal = multi_.sample(tik_.block(i, 0,         // position of first element
-                                             1, nbClass_)); // dimension of the vector to extract);
+        Vector<Real> modalities(nbClass_);
+        for (zi_.data_(i) = 0; zi_.data_(i) < nbClass_; ++zi_.data_(i)) // z_i changed in place to take all possible values
+        {
+          modalities(zi_.data_(i)) = tik_(i, zi_.data_(i)) * cdp(checkSampleCondition); // cdp value is 0 or 1, taking into account whether conditions on data are verified or not
+        }
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
       }
       break;
 
@@ -72,9 +78,6 @@ void ClassSampler::sampleIndividual(int i)
         Vector<Real> modalities(nbClass_);
         modalities = 0.;
 
-        Vector<Real> equiModalities(nbClass_);
-        equiModalities = 0.;
-
         for(std::vector<int>::const_iterator currMod = zi_.misData_(i).second.begin();
             currMod != zi_.misData_(i).second.end();
             ++currMod)
@@ -82,20 +85,11 @@ void ClassSampler::sampleIndividual(int i)
 #ifdef MC_DEBUG
           std::cout << "\tcurrMod: " << *currMod << std::endl;
 #endif
-          modalities(*currMod) = tik_(i, *currMod);
-          equiModalities(*currMod) = 1.;
+          zi_.data_(i) = *currMod;
+          modalities(*currMod) = tik_(i, *currMod) * cdp(checkSampleCondition);
         }
-        Real modSum = modalities.sum();
-        if (modSum < minStat)
-        {
-          equiModalities = equiModalities / equiModalities.sum();
-          sampleVal = multi_.sample(equiModalities);
-        }
-        else
-        {
-          modalities = modalities / modalities.sum();
-          sampleVal = multi_.sample(modalities);
-        }
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
       }
       break;
 
@@ -108,6 +102,18 @@ void ClassSampler::sampleIndividual(int i)
       break;
     }
     zi_.data_(i) = sampleVal;
+  }
+}
+
+Real ClassSampler::cdp(bool checkSampleCondition) const
+{
+  if (checkSampleCondition == true)
+  {
+    return composer_.checkSampleCondition();
+  }
+  else
+  {
+    return 1.;
   }
 }
 } // namespace mixt

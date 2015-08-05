@@ -22,20 +22,22 @@
  **/
 
 #include "mixt_PoissonSampler.h"
+#include "../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {
-PoissonSampler::PoissonSampler(AugmentedData<Vector<int> >& augData,
+PoissonSampler::PoissonSampler(const IMixture& mixture,
+                               AugmentedData<Vector<int> >& augData,
                                const Vector<Real>& param,
                                int nbClass) :
+    mixture_(mixture),
     augData_(augData),
     param_(param)
 {}
 
-PoissonSampler::~PoissonSampler()
-{}
-
-void PoissonSampler::sampleIndividual(int i, int z_i)
+void PoissonSampler::sampleIndividual(int i,
+                                      int z_i,
+                                      bool checkSampleCondition)
 {
 #ifdef MC_DEBUG
   std::cout << "PoissonSampler::sampleIndividual" << std::endl;

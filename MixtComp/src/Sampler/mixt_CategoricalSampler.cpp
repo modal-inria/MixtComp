@@ -23,21 +23,23 @@
 
 #include "mixt_CategoricalSampler.h"
 #include "../Various/mixt_Constants.h"
+#include "../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {
-CategoricalSampler::CategoricalSampler(AugmentedData<Vector<int> >& augData,
+CategoricalSampler::CategoricalSampler(const IMixture& mixture,
+                                       AugmentedData<Vector<int> >& augData,
                                        const Vector<Real>& param,
                                        int nbClass) :
+    mixture_(mixture),
     nbClass_(nbClass),
     augData_(augData),
     param_(param)
 {}
 
-CategoricalSampler::~CategoricalSampler()
-{}
-
-void CategoricalSampler::sampleIndividual(int i, int z_i)
+void CategoricalSampler::sampleIndividual(int i,
+                                          int z_i,
+                                          bool checkSampleCondition)
 {
 #ifdef MC_DEBUG
   std::cout << "CategoricalSampler::sampleIndividual" << std::endl;
@@ -68,9 +70,6 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
         Vector<Real> modalities(nbModalities);
         modalities = 0.;
 
-        Vector<Real> equiModalities(nbModalities);
-        equiModalities = 0.;
-
         for(std::vector<int>::const_iterator currMod = augData_.misData_(i).second.begin();
             currMod != augData_.misData_(i).second.end();
             ++currMod)
@@ -81,19 +80,10 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
           std::cout << "*currMod: " << *currMod << ", modalities.size(): " << modalities.size() << std::endl;
 #endif
           modalities(*currMod) = param_(z_i * nbModalities + *currMod);
-          equiModalities(*currMod) = 1.;
         }
-        Real modSum = modalities.sum();
-        if (modSum < minStat)
-        {
-          equiModalities = equiModalities / equiModalities.sum();
-          sampleVal = multi_.sample(equiModalities);
-        }
-        else
-        {
-          modalities = modalities / modalities.sum();
-          sampleVal = multi_.sample(modalities);
-        }
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
+
       }
       break;
 

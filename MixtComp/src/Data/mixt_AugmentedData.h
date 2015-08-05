@@ -61,9 +61,6 @@ class AugmentedData
     /** Missing value descriptor: type of missing, and list of parameters */
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
-    /** type of the complete structure for missing data */
-    typedef Vector<MisVal> MisData;
-
     AugmentedData() :
       nbSample_(0),
       misCount_(nb_enum_MisType_),
@@ -282,7 +279,7 @@ class AugmentedData
     DataType data_;
 
     /** data structure for partially observed values */
-    MisData misData_;
+    Vector<MisVal> misData_;
     /** total number of values */
     int nbSample_;
     /** Number of each type of missing data

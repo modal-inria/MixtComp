@@ -61,8 +61,18 @@ class IMixture
      * Simulation of latent variables and partially observed data
      *
      * @param ind index of the individual which data must be sampled
+     * @param checkSampleCondition check if conditions like the minimal number of individual in a class is verified
      */
-    virtual void samplingStep(int ind)
+    virtual void samplingStep(int ind,
+                              bool checkSampleCondition)
+    = 0;
+
+    /**
+     * Check if conditions on data are verified. For example, for a categorical model one must check that each modality
+     * is present at least one time in each class. This is invoked to avoid degeneracy.
+     * @return 0 if condition not verified and 1 if condition verified
+     * */
+    virtual Real checkSampleCondition(std::string* warnLog = NULL) const
     = 0;
 
     /**
@@ -70,7 +80,7 @@ class IMixture
      *
      * @return empty string if mStep successful, or a detailed description of the eventual error
      */
-    virtual std::string mStep(DegeneracyType& deg)
+    virtual std::string mStep()
     = 0;
 
     /**

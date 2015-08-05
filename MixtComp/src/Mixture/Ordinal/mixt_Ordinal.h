@@ -104,15 +104,6 @@ class Ordinal : public IMixture
       {
         if (mode == learning_)
         {
-          if (augData_.misCount_(present_) < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
-          {
-            std::stringstream sstm;
-            sstm << "Variable: " << idName() << " only has " << augData_.misCount_(present_)
-                 << " present values. Maybe there is an error in the data encoding. If the variable truly has less than "
-                 << minNbPresentValues
-                 << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
-            warnLog += sstm.str();
-          }
           nbModalities_ = augData_.dataRange_.max_ + 1; // since an offset has been applied during getData, modalities are 0-based
         }
         else // prediction mode
@@ -201,7 +192,7 @@ class Ordinal : public IMixture
       }
     }
 
-    virtual void samplingStep(int ind)
+    virtual void samplingStep(int ind, bool checkSampleCondition)
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::samplingStep" << std::endl;
@@ -222,7 +213,7 @@ class Ordinal : public IMixture
       augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
-    virtual std::string mStep(DegeneracyType& deg)
+    virtual std::string mStep()
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
@@ -267,33 +258,8 @@ class Ordinal : public IMixture
           std::stringstream sstm;
           sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << "."<< std::endl;
           warnLog += sstm.str();
-          deg = lightDeg_; // this is a normal degeneracy for this model
 #ifdef MC_VERBOSE
           std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 0" << std::endl;
-#endif
-        }
-
-        if (pi_(k) > 1. - epsilon)
-        {
-#ifdef MC_DEBUG
-          std::cout << "Ordinal::mStep, class " << k << " has 1-degenerated" << std::endl;
-#endif
-          for (int i = 0; i < nbInd_; ++i)
-          {
-            if ((*p_zi_)(i) == k)
-            {
-  #ifdef MC_DEBUG
-              std::cout << "1-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
-  #endif
-            }
-          }
-          std::stringstream sstm;
-          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". "
-               << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
-          warnLog += sstm.str();
-          deg = strongDeg_; // this degeneracy is not normal for the model and must be reported as such
-#ifdef MC_VERBOSE
-          std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 1" << std::endl;
 #endif
         }
       }
@@ -559,6 +525,42 @@ class Ordinal : public IMixture
       at(4) = false;// missingLUIntervals_,
       at(5) = false;// missingRUIntervals_,
       return at;
+    }
+
+    Real checkSampleCondition(std::string* warnLog = NULL) const
+    {
+      Real proba = 1.;
+
+      Vector<bool> nonZ1Present(nbClass_); // is there at least a z non equal to 1 in one individual in each class ?
+      nonZ1Present = false;
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        if (path_(i).nbZ() < path_(i).nbNode_)
+        {
+          nonZ1Present((*p_zi_)(i)) = true;
+        }
+      }
+
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        if (nonZ1Present(k) == false)
+        {
+          if (warnLog == NULL)
+          {
+            proba = 0.;
+          }
+          else
+          {
+            std::stringstream sstm;
+            sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". "
+                 << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
+            *warnLog += sstm.str();
+            proba = 0.;
+          }
+        }
+      }
+
+      return proba;
     }
 
   private:

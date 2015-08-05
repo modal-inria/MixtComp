@@ -37,7 +37,7 @@ namespace mixt
 class Poisson_k
 {
   public:
-    Poisson_k(int nbCluster,
+    Poisson_k(int nbClass,
               Vector<Real>& param,
               Vector<int> const* p_zi);
 
@@ -51,7 +51,7 @@ class Poisson_k
 
     void setData(Vector<int>& data);
 
-    std::string mStep(DegeneracyType& deg);
+    std::string mStep();
 
     int maxVal() const;
     int minVal() const;
@@ -64,8 +64,10 @@ class Poisson_k
     void writeParameters() const;
 
     bool possibleNullProbability() const;
+
+    Real checkSampleCondition(std::string* warnLog = NULL) const;
   private:
-    int nbCluster_;
+    int nbClass_;
     Vector<Real>& param_;
     Vector<int>* p_data_;
     Vector<int> const* p_zi_;

@@ -48,7 +48,7 @@ class Categorical_pjk
     int maxVal() const;
     int minVal() const;
     std::string model() const;
-    std::string mStep(DegeneracyType& deg);
+    std::string mStep();
     std::vector<std::string> paramNames() const;
     void setData(Vector<int>& data);
     void setModalities(int nbModalities);
@@ -56,9 +56,10 @@ class Categorical_pjk
 
     bool possibleNullProbability() const;
 
+    Real checkSampleCondition(std::string* warnLog = NULL) const;
   private:
     int nbClass_;
-    int nbModalities_;
+    int nbModality_;
     Vector<int>* p_data_;
     Vector<Real>& param_;
     Vector<int> const* p_zi_;

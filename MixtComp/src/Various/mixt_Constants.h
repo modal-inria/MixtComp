@@ -28,20 +28,18 @@
 
 namespace mixt
 {
-extern const int maxLightDegTry; // max number of light degeneracies allowed in a strategy run
-extern const int maxStrongDegTry; // max number of strong degeneracies allowed in a strategy run
+extern const int maxSoftDegTry; // max number of light degeneracies allowed in a strategy run
+extern const int maxStrongDegTry; // number of sampling in initial reject sampling in SEMStrategy, when not enough individuals are sampled per class, for example
 
-extern const Real minStat; // threshold to have equiprobabilities in categorical sampler
-extern const int minIndPerClass; // minimal number of individual in a class to accept a z sampling
 extern const int nbSamplingAttempts; // number of sampling attempts, when a not enough individuals are sampled
 
 extern const Real epsilon; // very small value of real to check for near zero values
 extern const Real logEpsilon; // log of very small value
 
-extern const int minModality; // minimal modality for categorical models
+extern const int minModality; // minimal modality for categorical models (for example, 0-based or 1-based numbering)
+extern const int minIndPerClass; // minimum number of individuals per class
 extern const Real pi; // pi
 extern const Real l2pi; // constant used in pdf computation for normal law
-extern const int minNbPresentValues; // minimum number of present values
 extern const int nbClusterMax; // maximum number of clusters that can be asked
 extern const std::string progressFile; // progress file name
 extern const Real minInf; // value of log(0)

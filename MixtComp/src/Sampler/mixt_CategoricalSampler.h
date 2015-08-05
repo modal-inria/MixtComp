@@ -32,18 +32,27 @@
 namespace mixt
 {
 
+class IMixture;
+
 class CategoricalSampler
 {
   public:
-    CategoricalSampler(AugmentedData<Vector<int> >& augData,
+    CategoricalSampler(const IMixture& mixture,
+                       AugmentedData<Vector<int> >& augData,
                        const Vector<Real>& param,
                        int nbClass);
-    ~CategoricalSampler();
+
     /** Sample new values for the missing variables of the given individual */
-    void sampleIndividual(int i, int z_i);
+    void sampleIndividual(int i,
+                          int z_i,
+                          bool checkSampleCondition);
   private:
+    const IMixture& mixture_;
+
     int nbClass_;
+
     AugmentedData<Vector<int> >& augData_;
+
     const Vector<Real>& param_;
 
     MultinomialStatistic multi_;

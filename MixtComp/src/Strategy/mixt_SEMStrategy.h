@@ -63,7 +63,7 @@ class SemStrategy
     /** run the strategy */
     std::string run();
     
-  protected:
+  private:
      /** reference on the main model */
     MixtureComposer* p_composer_;
     
