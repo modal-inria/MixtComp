@@ -26,6 +26,7 @@
 
 #include "../LinAlg/mixt_LinAlg.h"
 #include <boost/random/mersenne_twister.hpp>
+#include "mixt_UniformStatistic.h"
 
 namespace mixt
 {
@@ -41,9 +42,17 @@ class PoissonStatistic
 
     /** Sample a value from a Poisson Law with parameter lambda */
     int sample(Real lambda);
+
+    /**
+     * Sample a non-zero value
+     * */
+    int nonZeroSample(Real lambda);
   private:
     /** Random number generator */
     boost::mt19937 rng_;
+
+    /** Uniform sampler used for nonZeroSample */
+    UniformStatistic uniform_;
 };
 
 } // namespace mixt

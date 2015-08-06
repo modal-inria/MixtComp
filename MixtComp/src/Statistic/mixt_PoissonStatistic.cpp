@@ -78,4 +78,18 @@ int PoissonStatistic::sample(Real lambda)
   }
 }
 
+int PoissonStatistic::nonZeroSample(Real lambda)
+{
+  Real u = uniform_.sample(0., 1.);
+  Real cdf = 0.;
+  int currMod = 0; // modality 0 is ignored
+  Real coeff = 1. / (1. - pdf(0, lambda)); // coeff to take the condition that x != 0 into account
+  while(cdf < u)
+  {
+    ++currMod;
+    cdf += pdf(currMod, lambda) * coeff;
+  }
+  return currMod;
+}
+
 } // namespace mixt

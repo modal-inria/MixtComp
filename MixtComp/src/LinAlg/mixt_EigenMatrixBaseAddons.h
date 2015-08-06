@@ -132,6 +132,16 @@ exp() const
                                             internal::scalar_exp_op<Scalar>());
 }
 
+/** Element-wise exp computation */
+const CwiseUnaryOp<internal::scalar_abs_op<Scalar>,
+                   const Derived>
+abs() const
+{
+  return Eigen::CwiseUnaryOp<Eigen::internal::scalar_abs_op<Scalar>,
+                             const Derived>(derived(),
+                                            internal::scalar_abs_op<Scalar>());
+}
+
 iterator begin()
 {
   return Iterator(0,
