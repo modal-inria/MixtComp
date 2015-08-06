@@ -43,19 +43,18 @@ class ClassSampler
 
     /**
      * Sample new values for the missing variables of the given individual. Using MixtureComposer::checkSampleCondition
-     * to check if each value of z_i is valid or not. checkSampleCondition = true during Gibbs sampling, and false during rejection sampling
+     * to check if each value of z_i is valid or not. Used during sampling, and false during rejection sampling
      * @param i individual for which z must be sampled
-     * @param checkSampleCondition whether to call or not the checkSampleCondition in MixtureComposer
      * */
-    void sampleIndividual(int i, bool checkSampleCondition);
-  private:
-    /**
-     * Proxy function to write a single version of sampleIndividual usable
-     * with both values of checkSampleCondition.
-     * @param checkSampleCondition whether to call or not the checkSampleCondition in MixtureComposer
-     * */
-    Real cdp(bool checkSampleCondition) const;
+    void sStepCheck  (int i);
 
+    /**
+     * Sample new values for the missing variables of the given individual. Do not uses MixtureComposer::checkSampleCondition
+     * to speed-up the sampling process. Used during rejection sampling.
+     * @param i individual for which z must be sampled
+     * */
+    void sStepNoCheck(int i);
+  private:
     /** Constant pointer to the composer of which this ClassSampler is a member of */
     const MixtureComposer& composer_;
 

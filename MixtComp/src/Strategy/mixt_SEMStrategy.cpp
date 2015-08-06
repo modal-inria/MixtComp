@@ -76,7 +76,7 @@ std::string SemStrategy::run()
   for (int n = 0; n < nbSamplingAttempts_; ++n) // multiple initialization attempts
   {
     p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
-    p_composer_->sStep(false); // initialization is done by reject sampling, no need for checkSampleCondition flag
+    p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
     p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
     std::string mWarn = p_composer_->mStep(); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing(). Warnlog is updated to trigger resample in case of soft degeneracy.
 
@@ -168,9 +168,9 @@ std::string SemStrategy::run()
   #ifdef MC_DEBUG
       std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
   #endif
-      p_composer_->sStep(false);
-      p_composer_->samplingStep(false);
-      p_composer_->eStep(false);
+      p_composer_->sStepNoCheck();
+      p_composer_->samplingStepNoCheck();
+      p_composer_->eStep();
     }
 
 #ifdef MC_DEBUG

@@ -224,7 +224,7 @@ std::string MixtureComposer::mStep()
   return warn;
 }
 
-void MixtureComposer::sStep(bool checkSampleCondition)
+void MixtureComposer::sStepCheck()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::sStep" << std::endl;
@@ -232,7 +232,7 @@ void MixtureComposer::sStep(bool checkSampleCondition)
 
   for (int i = 0; i < nbInd_; ++i)
   {
-    sStep(i, checkSampleCondition);
+    sStepCheck(i);
   }
 
 #ifdef MC_DEBUG
@@ -241,9 +241,31 @@ void MixtureComposer::sStep(bool checkSampleCondition)
 #endif
 }
 
-void MixtureComposer::sStep(int i, bool checkSampleCondition)
+void MixtureComposer::sStepCheck(int i)
 {
-  sampler_.sampleIndividual(i, checkSampleCondition);
+  sampler_.sStepCheck(i);
+}
+
+void MixtureComposer::sStepNoCheck()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStep" << std::endl;
+#endif
+
+  for (int i = 0; i < nbInd_; ++i)
+  {
+    sStepNoCheck(i);
+  }
+
+#ifdef MC_DEBUG
+  std::cout << "zi_.data_: " << std::endl;
+  std::cout << zi_.data_ << std::endl;
+#endif
+}
+
+void MixtureComposer::sStepNoCheck(int i)
+{
+  sampler_.sStepNoCheck(i);
 }
 
 void MixtureComposer::eStep()
@@ -350,7 +372,7 @@ int MixtureComposer::nbFreeParameters() const
   return sum;
 }
 
-void MixtureComposer::samplingStep(bool checkSampleCondition)
+void MixtureComposer::samplingStepCheck()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::samplingStep" << std::endl;
@@ -358,11 +380,11 @@ void MixtureComposer::samplingStep(bool checkSampleCondition)
 
   for (int i = 0; i < nbInd_; ++i)
   {
-    samplingStep(i, checkSampleCondition);
+    samplingStepCheck(i);
   }
 }
 
-void MixtureComposer::samplingStep(int i, bool checkSampleCondition)
+void MixtureComposer::samplingStepCheck(int i)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::samplingStep, single individual" << std::endl;
@@ -372,7 +394,33 @@ void MixtureComposer::samplingStep(int i, bool checkSampleCondition)
 #ifdef MC_DEBUG
 std::cout << (*it)->idName() << std::endl;
 #endif
-    (*it)->samplingStep(i, checkSampleCondition);
+    (*it)->samplingStepCheck(i);
+  }
+}
+
+void MixtureComposer::samplingStepNoCheck()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::samplingStep" << std::endl;
+#endif
+
+  for (int i = 0; i < nbInd_; ++i)
+  {
+    samplingStepNoCheck(i);
+  }
+}
+
+void MixtureComposer::samplingStepNoCheck(int i)
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::samplingStep, single individual" << std::endl;
+#endif
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+#ifdef MC_DEBUG
+std::cout << (*it)->idName() << std::endl;
+#endif
+    (*it)->samplingStepNoCheck(i);
   }
 }
 
@@ -511,8 +559,8 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter,
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs)
     {
       eStep(i);
-      sStep(i, false);
-      samplingStep(i, false);
+      sStepNoCheck(i);
+      samplingStepNoCheck(i);
       storeGibbsRun(i,
                     iterGibbs,
                     nbGibbsIter - 1);

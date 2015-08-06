@@ -192,7 +192,28 @@ class Ordinal : public IMixture
       }
     }
 
-    virtual void samplingStep(int ind, bool checkSampleCondition)
+    virtual void samplingStepCheck(int ind)
+    {
+#ifdef MC_DEBUG
+      std::cout << "Ordinal::samplingStep" << std::endl;
+      std::cout << "ind: " << ind << std::endl;
+      std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
+#endif
+      if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
+      {
+        path_(ind).forwardSamplePath(mu_((*p_zi_)(ind)),
+                                     pi_((*p_zi_)(ind)));
+      }
+      else // perform one round of Gibbs sampler for the designated individual
+      {
+        path_(ind).samplePath(mu_((*p_zi_)(ind)),
+                              pi_((*p_zi_)(ind)),
+                              sizeTupleBOS);
+      }
+      augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
+    }
+
+    virtual void samplingStepNoCheck(int ind)
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::samplingStep" << std::endl;

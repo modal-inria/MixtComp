@@ -84,8 +84,11 @@ class MixtureComposer
      * Simulate zi accordingly to tik and replace tik by zik by calling cStep().
      * @return the minimal value of individuals in a class
      **/
-    void sStep(bool checkSampleCondition);
-    void sStep(int i, bool checkSampleCondition);
+    void sStepNoCheck();
+    void sStepNoCheck(int i);
+
+    void sStepCheck();
+    void sStepCheck(int i);
 
     /** compute Tik */
     void eStep();
@@ -124,8 +127,11 @@ class MixtureComposer
      * Perform a sampling step
      * @param checkSampleCondition indicates if there is a need to perform a check on the data or not
      */
-    void samplingStep(bool checkSampleCondition);
-    void samplingStep(int i, bool checkSampleCondition);
+    void samplingStepNoCheck();
+    void samplingStepNoCheck(int i);
+
+    void samplingStepCheck();
+    void samplingStepCheck(int i);
 
     /**
      * Check if the data conditions are verified for all mixtures. Providing a log is required during

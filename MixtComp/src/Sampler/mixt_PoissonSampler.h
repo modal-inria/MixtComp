@@ -42,9 +42,10 @@ class PoissonSampler
                    int nbClass);
 
     /** Sample new values for the missing variables of the given individual */
-    void sampleIndividual(int i,
-                          int z_i,
-                          bool checkSampleCondition);
+    void samplingStepCheck  (int i,
+                             int z_i);
+    void samplingStepNoCheck(int i,
+                             int z_i);
   private:
     const IMixture& mixture_;
 

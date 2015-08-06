@@ -213,17 +213,16 @@ class MixtureBridge : public IMixture
       return warnLog;
     }
 
-    /**
-     * This function must be defined for simulation of all the latent variables
-     * and/or missing data excluding class labels. The class labels will be
-     * simulated by the framework itself because to do so we have to take into
-     * account all the mixture laws.
-     */
-    virtual void samplingStep(int ind, bool checkSampleCondition)
+    virtual void samplingStepCheck(int ind)
     {
-      sampler_.sampleIndividual(ind,
-                                (*p_zi())(ind),
-                                checkSampleCondition);
+      sampler_.samplingStepCheck(ind,
+                                (*p_zi())(ind));
+    }
+
+    virtual void samplingStepNoCheck(int ind)
+    {
+      sampler_.samplingStepNoCheck(ind,
+                                (*p_zi())(ind));
     }
 
     /**

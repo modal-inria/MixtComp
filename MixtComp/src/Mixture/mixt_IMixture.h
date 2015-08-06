@@ -58,13 +58,21 @@ class IMixture
     }
 
     /**
-     * Simulation of latent variables and partially observed data
+     * Simulation of latent variables and partially observed data with values that
+     * verify checkSampleCondition.
      *
      * @param ind index of the individual which data must be sampled
-     * @param checkSampleCondition check if conditions like the minimal number of individual in a class is verified
      */
-    virtual void samplingStep(int ind,
-                              bool checkSampleCondition)
+    virtual void samplingStepCheck(int ind)
+    = 0;
+
+    /**
+     * Simulation of latent variables and partially observed data without verifying
+     * checkSampleCondition to speed-up the process.
+     *
+     * @param ind index of the individual which data must be sampled
+     */
+    virtual void samplingStepNoCheck(int ind)
     = 0;
 
     /**

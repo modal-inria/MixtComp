@@ -58,7 +58,7 @@ Real PoissonLikelihood::lnObservedProbability(int i, int k)
   std::cout << "\t(*p_param_): " << param_ << std::endl;
 #endif
   Real lambda = param_(k);
-  Real proba;
+  Real proba = minInf;
 
   switch(augData_.misData_(i).first)   // likelihood for present value
   {

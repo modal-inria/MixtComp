@@ -35,9 +35,15 @@ GaussianSampler::GaussianSampler(const IMixture& mixture,
     param_(param)
 {}
 
-void GaussianSampler::sampleIndividual(int i,
-                                       int z_i,
-                                       bool checkSampleCondition)
+void GaussianSampler::samplingStepCheck(int i,
+                                        int z_i)
+{
+  samplingStepNoCheck(i,
+                      z_i);
+}
+
+void GaussianSampler::samplingStepNoCheck(int i,
+                                          int z_i)
 {
 #ifdef MC_DEBUG
   std::cout << "GaussianSampler::sampleIndividual" << std::endl;
@@ -145,4 +151,5 @@ void GaussianSampler::sampleIndividual(int i,
     augData_.data_(i) = z;
   }
 }
+
 } // namespace mixt
