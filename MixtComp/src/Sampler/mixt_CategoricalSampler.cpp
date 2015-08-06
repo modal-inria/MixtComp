@@ -59,15 +59,19 @@ void CategoricalSampler::samplingStepCheck(int i,
     {
       case missing_:
       {
-        sampleVal = multi_.sample(param_.block(z_i * nbModalities, 0,  // position of first element
-                                               nbModalities      , 1)); // dimension of the vector to extract);
+        Vector<Real> modalities(nbModalities);
+        for (augData_.data_(i) = 0; augData_.data_(i) < nbModalities; ++augData_.data_(i)) // augData_.data_(i) changed in place to take all possible values
+        {
+          modalities(augData_.data_(i)) = param_(z_i * nbModalities + augData_.data_(i)) * mixture_.checkSampleCondition(); // checkSampleCondition value is 1 or 0, reflecting the fact that conditions on data are verified or not
+        }
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
       }
       break;
 
       case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
       {
-        Vector<Real> modalities(nbModalities);
-        modalities = 0.;
+        Vector<Real> modalities(nbModalities, 0.);
 
         for(std::vector<int>::const_iterator currMod = augData_.misData_(i).second.begin();
             currMod != augData_.misData_(i).second.end();
@@ -78,7 +82,8 @@ void CategoricalSampler::samplingStepCheck(int i,
           std::cout << "z_i * nbModalities + *currMod: " << z_i * nbModalities + *currMod << ", param_.size(): " << param_.size() << std::endl;
           std::cout << "*currMod: " << *currMod << ", modalities.size(): " << modalities.size() << std::endl;
 #endif
-          modalities(*currMod) = param_(z_i * nbModalities + *currMod);
+          augData_.data_(i) = *currMod;
+          modalities(*currMod) = param_(z_i * nbModalities + *currMod) * mixture_.checkSampleCondition();
         }
         modalities = modalities / modalities.sum();
         sampleVal = multi_.sample(modalities);
