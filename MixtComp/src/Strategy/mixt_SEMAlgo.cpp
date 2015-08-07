@@ -81,6 +81,9 @@ std::string SEMAlgo::run(RunType runType,
       Real sampleCond = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
       if (sampleCond == 0.) // sampled value rejected, switch to Gibbs sampler
       {
+#ifdef MC_DEBUGNEW
+        std::cout << "SEMAlgo::run, switch to Gibbs sampler" << std::endl;
+#endif
         rejectSampler_ = false;
         continue;
       }

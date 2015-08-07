@@ -453,11 +453,16 @@ Real MixtureComposer::checkSampleCondition(std::string* warnLog) const
 Real MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
 {
   Real proba = 1.;
-  Vector<int> nbIndPerClass(nbClass_);
-  nbIndPerClass = 0;
+  Vector<int> nbIndPerClass(nbClass_, 0);
   for (int i = 0; i < nbInd_; ++i)
   {
-    nbIndPerClass(i) += 1;
+#ifdef MC_DEBUGNEW
+    if (zi_.data_(i) < 0)
+    {
+      std::cout << "i:, " << i << " <<, zi_.data_(i): " << zi_.data_(i) << std::endl;
+    }
+#endif
+    nbIndPerClass(zi_.data_(i)) += 1;
   }
   int min = nbIndPerClass.minCoeff();
   if (min < minIndPerClass)

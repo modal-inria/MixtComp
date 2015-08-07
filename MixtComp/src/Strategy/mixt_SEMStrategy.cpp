@@ -85,10 +85,16 @@ std::string SemStrategy::run()
 
     if (mWarn.size() == 0 || proba == 1.) // correct sampling is not rejected
     {
+#ifdef MC_DEBUGNEW
+      std::cout << "SemStrategy::run, valid initialization" << std::endl;
+#endif
       break; // no need for further sampling
     }
     else if ((mWarn.size() > 0 || proba == 0.) && n == nbSamplingAttempts - 1) // error in mStep or conditions on sample at the last sampling
     {
+#ifdef MC_DEBUGNEW
+      std::cout << "SemStrategy::run, invalid initialization" << std::endl;
+#endif
       std::stringstream sstm;
       sstm << "SemStrategy initializations " << nbSamplingAttempts_ << " trials have failed. The error log from the last initialization "
            << "trial is: " << std::endl
