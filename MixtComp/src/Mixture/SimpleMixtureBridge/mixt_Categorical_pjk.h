@@ -56,7 +56,7 @@ class Categorical_pjk
 
     bool possibleNullProbability() const;
 
-    Real checkSampleCondition(std::string* warnLog = NULL) const;
+    int checkSampleCondition(std::string* warnLog = NULL) const;
   private:
     int nbClass_;
     int nbModality_;

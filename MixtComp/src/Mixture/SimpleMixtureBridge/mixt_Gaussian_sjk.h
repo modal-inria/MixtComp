@@ -66,7 +66,7 @@ class Gaussian_sjk
 
     bool possibleNullProbability() const {return false;} // no individual can possibly have a null probability
 
-    Real checkSampleCondition(std::string* warnLog = NULL) const;
+    int checkSampleCondition(std::string* warnLog = NULL) const;
   private:
     int nbClass_;
 

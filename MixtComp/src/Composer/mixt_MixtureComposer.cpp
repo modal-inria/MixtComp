@@ -424,9 +424,9 @@ std::cout << (*it)->idName() << std::endl;
   }
 }
 
-Real MixtureComposer::checkSampleCondition(std::string* warnLog) const
+int MixtureComposer::checkSampleCondition(std::string* warnLog) const
 {
-  Real probaCondition = 1.; // proba of condition on data given the completed data
+  int probaCondition = 1.; // proba of condition on data given the completed data
   if (warnLog == NULL)
   {
     probaCondition *= checkNbIndPerClass();
@@ -450,9 +450,9 @@ Real MixtureComposer::checkSampleCondition(std::string* warnLog) const
   return probaCondition;
 }
 
-Real MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
+int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
 {
-  Real proba = 1.;
+  int proba = 1;
   Vector<int> nbIndPerClass(nbClass_, 0);
   for (int i = 0; i < nbInd_; ++i)
   {
@@ -469,7 +469,7 @@ Real MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
   {
     if (warnLog == NULL)
     {
-      proba = 0.;
+      proba = 0;
     }
     else
     {
@@ -478,7 +478,7 @@ Real MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
            << "per class. This condition has not been met. Did you provide enough individuals in regard to the "
            << "number of classes you required ?" << std::endl;
       *warnLog += sstm.str();
-      proba = 0.;
+      proba = 0;
     }
   }
 

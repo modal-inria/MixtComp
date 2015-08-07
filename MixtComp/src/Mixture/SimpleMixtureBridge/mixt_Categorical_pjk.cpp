@@ -226,9 +226,9 @@ bool Categorical_pjk::possibleNullProbability() const
   }
 }
 
-Real Categorical_pjk::checkSampleCondition(std::string* warnLog) const
+int Categorical_pjk::checkSampleCondition(std::string* warnLog) const
 {
-  Real proba = 1.;
+  int proba = 1;
   Matrix<int> modality(nbClass_, nbModality_);
   modality = 0;
 
@@ -245,7 +245,7 @@ Real Categorical_pjk::checkSampleCondition(std::string* warnLog) const
       {
         if (warnLog == NULL)
         {
-          proba = 0.;
+          proba = 0;
         }
         else
         {
@@ -255,7 +255,7 @@ Real Categorical_pjk::checkSampleCondition(std::string* warnLog) const
                << "You can check whether you have enough individuals regarding the number of classes "
                << "and whether all of your modalities are encoded using contiguous integers starting at 0." << std::endl;
           *warnLog += sstm.str();
-          proba = 0.;
+          proba = 0;
         }
       }
     }

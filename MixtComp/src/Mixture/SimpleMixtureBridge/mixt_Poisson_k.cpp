@@ -178,9 +178,9 @@ bool Poisson_k::possibleNullProbability() const
   }
 }
 
-Real Poisson_k::checkSampleCondition(std::string* warnLog) const
+int Poisson_k::checkSampleCondition(std::string* warnLog) const
 {
-  Real proba = 1.;
+  int proba = 1;
   Vector<bool> nonZeroPresent(nbClass_);
   nonZeroPresent = false;
 
@@ -198,7 +198,7 @@ Real Poisson_k::checkSampleCondition(std::string* warnLog) const
     {
       if (warnLog == NULL)
       {
-        proba = 0.;
+        proba = 0;
       }
       else
       {
@@ -207,7 +207,7 @@ Real Poisson_k::checkSampleCondition(std::string* warnLog) const
              << "which contains only the 0 modality. If your data has too many individuals "
              << "with a value of 0, a Poisson model can not describe it" << std::endl;
         *warnLog += sstm.str();
-        proba = 0.;
+        proba = 0;
       }
     }
   }

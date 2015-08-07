@@ -393,7 +393,7 @@ class MixtureBridge : public IMixture
 
     void removeMissing() {augData_.removeMissing();}
 
-    Real checkSampleCondition(std::string* warnLog = NULL) const
+    int checkSampleCondition(std::string* warnLog = NULL) const
     {
       if (warnLog == NULL)
       {

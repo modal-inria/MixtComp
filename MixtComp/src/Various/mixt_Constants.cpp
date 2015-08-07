@@ -29,7 +29,7 @@
 
 namespace mixt
 {
-const int maxSoftDegTry = 100;
+const int maxWeakDegeneracyTrial = 100;
 const int nbSamplingAttempts = 20;
 
 const Real epsilon = 1.e-8;

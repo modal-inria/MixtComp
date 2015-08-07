@@ -80,7 +80,7 @@ class IMixture
      * is present at least one time in each class. This is invoked to avoid degeneracy.
      * @return 0 if condition not verified and 1 if condition verified
      * */
-    virtual Real checkSampleCondition(std::string* warnLog = NULL) const
+    virtual int checkSampleCondition(std::string* warnLog = NULL) const
     = 0;
 
     /**

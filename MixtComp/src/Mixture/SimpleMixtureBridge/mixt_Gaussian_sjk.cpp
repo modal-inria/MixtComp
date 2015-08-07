@@ -184,9 +184,9 @@ void Gaussian_sjk::writeParameters() const
 #endif
 }
 
-Real Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
+int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
 {
-  Real proba = 1.;
+  int proba = 1;
   Vector<int> nbIndPerClass(nbClass_);
   Vector<Real> min(nbClass_);
   Vector<Real> max(nbClass_);
@@ -208,7 +208,7 @@ Real Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
     {
       if (warnLog == NULL)
       {
-        proba = 0.;
+        proba = 0;
       }
       else
       {
@@ -216,7 +216,7 @@ Real Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
         sstm << "Gaussian variables must have at least two individuals per class. This is not the case for class: " << k << " "
              << "You can check whether you have enough individuals regarding the number of classes." << std::endl;
         *warnLog += sstm.str();
-        proba = 0.;
+        proba = 0;
       }
     }
 
@@ -224,7 +224,7 @@ Real Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
     {
       if (warnLog == NULL)
       {
-        proba = 0.;
+        proba = 0;
       }
       else
       {
@@ -233,7 +233,7 @@ Real Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
              << "contains only the value: " << max(k) << ". If some values are repeated often in this variable, maybe a Categorical or "
              << "a Poisson variable might describe it better." << std::endl;
         *warnLog += sstm.str();
-        proba = 0.;
+        proba = 0;
       }
     }
   }

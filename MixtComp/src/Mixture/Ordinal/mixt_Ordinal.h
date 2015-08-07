@@ -548,9 +548,9 @@ class Ordinal : public IMixture
       return at;
     }
 
-    Real checkSampleCondition(std::string* warnLog = NULL) const
+    int checkSampleCondition(std::string* warnLog = NULL) const
     {
-      Real proba = 1.;
+      int proba = 1;
 
       Vector<bool> nonZ1Present(nbClass_); // is there at least a z non equal to 1 in one individual in each class ?
       nonZ1Present = false;
@@ -568,7 +568,7 @@ class Ordinal : public IMixture
         {
           if (warnLog == NULL)
           {
-            proba = 0.;
+            proba = 0;
           }
           else
           {
@@ -576,7 +576,7 @@ class Ordinal : public IMixture
             sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". "
                  << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
             *warnLog += sstm.str();
-            proba = 0.;
+            proba = 0;
           }
         }
       }
