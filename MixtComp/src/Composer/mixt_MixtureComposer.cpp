@@ -434,7 +434,7 @@ int MixtureComposer::checkSampleCondition(std::string* warnLog) const
     {
       int currProba = (*it)->checkSampleCondition(); // no need for log generation -> faster evaluation of checkSampleCondition
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       if (currProba == 0)
       {
         std::cout << "MixtureComposer::checkSampleCondition, (*it)->idName(): " << (*it)->idName() << " has a 0 checkSampleCondition" << std::endl;
@@ -465,7 +465,7 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
   Vector<int> nbIndPerClass(nbClass_, 0);
   for (int i = 0; i < nbInd_; ++i)
   {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
     if (zi_.data_(i) < 0)
     {
       std::cout << "i:, " << i << " <<, zi_.data_(i): " << zi_.data_(i) << std::endl;
