@@ -206,6 +206,11 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
   {
     if (nbIndPerClass(k) < 2)
     {
+
+#ifdef MC_DEBUG
+      std::cout << "Gaussian_sjk::checkSampleCondition, nbIndPerClass(k) < 2" << std::endl;
+#endif
+
       if (warnLog == NULL)
       {
         proba = 0;
@@ -222,6 +227,11 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
 
     if (max(k) - min(k) == 0.)
     {
+
+#ifdef MC_DEBUG
+      std::cout << "Gaussian_sjk::checkSampleCondition, max(k) - min(k)" << std::endl;
+#endif
+
       if (warnLog == NULL)
       {
         proba = 0;

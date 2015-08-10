@@ -37,16 +37,17 @@ SEMAlgo::SEMAlgo(MixtureComposer* p_composer,
                  int nbSamplingAttempts) :
     p_composer_(p_composer),
     nbIterMax_(nbIterMax),
-    nbSamplingAttempts_(nbSamplingAttempts),
-    rejectSampler_(true)
+    nbSamplingAttempts_(nbSamplingAttempts)
 {}
 
 std::string SEMAlgo::run(RunType runType,
+                         RunProblemType& runPb,
+                         SamplerType sampler,
                          int group,
                          int groupMax)
 {
 #ifdef MC_DEBUG
-  std::cout << "SEMAlgo::run" << std::endl;
+  std::cout << "SEMAlgo::run, sampler: " << sampler << std::endl;
 #endif
 
   std::string warn;
@@ -74,29 +75,49 @@ std::string SEMAlgo::run(RunType runType,
 
     p_composer_->eStep();
 
-    if (rejectSampler_ == true) // use reject sampling
+    if (sampler == rejectSampler_) // use reject sampling
     {
       p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
       p_composer_->samplingStepNoCheck();
       Real sampleCond = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
+
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, sampleCond: " << sampleCond << std::endl;
+#endif
+
       if (sampleCond == 0.) // sampled value rejected, switch to Gibbs sampler
       {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
         std::cout << "SEMAlgo::run, switch to Gibbs sampler" << std::endl;
 #endif
-        rejectSampler_ = false;
-        continue;
+        runPb = invalidSampler_;
+        return warn;
       }
     }
     else // use Gibbs sampling
     {
       p_composer_->sStepCheck(); // checkSampleCondition is performed at each sampling, hence no need to call p_composer_->checkSampleCondition()
+
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, p_composer_->checkSampleCondition()" << std::endl;
+      std::cout << "p_composer_->checkSampleCondition(): " << p_composer_->checkSampleCondition() << std::endl;
+      std::cout << "end of check" << std::endl;
+#endif
+
       p_composer_->samplingStepCheck();
+
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, p_composer_->checkSampleCondition()" << std::endl;
+      std::cout << "p_composer_->checkSampleCondition(): " << p_composer_->checkSampleCondition() << std::endl;
+      std::cout << "end of check" << std::endl;
+#endif
+
     }
 
     warn = p_composer_->mStep();
     if (warn.size() > 0)
     {
+      runPb = weakDegeneracy_;
       return warn;
     }
 

@@ -65,6 +65,19 @@ enum RunType
   run_,
 };
 
+enum RunProblemType
+{
+  noProblem_,
+  weakDegeneracy_,
+  invalidSampler_
+};
+
+enum SamplerType
+{
+  rejectSampler_,
+  GibbsSampler_
+};
+
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

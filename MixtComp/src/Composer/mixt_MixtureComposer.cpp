@@ -278,7 +278,7 @@ void MixtureComposer::eStep()
   {
     eStep(i);
   }
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "tik_:" << std::endl;
   std::cout << tik_ << std::endl;
 #endif
@@ -426,13 +426,22 @@ std::cout << (*it)->idName() << std::endl;
 
 int MixtureComposer::checkSampleCondition(std::string* warnLog) const
 {
-  int probaCondition = 1.; // proba of condition on data given the completed data
+  int probaCondition = 1; // proba of condition on data given the completed data
   if (warnLog == NULL)
   {
     probaCondition *= checkNbIndPerClass();
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
-      probaCondition *= (*it)->checkSampleCondition(); // no need for log generation -> faster evaluation of checkSampleCondition
+      int currProba = (*it)->checkSampleCondition(); // no need for log generation -> faster evaluation of checkSampleCondition
+
+#ifdef MC_DEBUG
+      if (currProba == 0)
+      {
+        std::cout << "MixtureComposer::checkSampleCondition, (*it)->idName(): " << (*it)->idName() << " has a 0 checkSampleCondition" << std::endl;
+      }
+#endif
+
+      probaCondition *= currProba;
     }
   }
   else
@@ -456,7 +465,7 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
   Vector<int> nbIndPerClass(nbClass_, 0);
   for (int i = 0; i < nbInd_; ++i)
   {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
     if (zi_.data_(i) < 0)
     {
       std::cout << "i:, " << i << " <<, zi_.data_(i): " << zi_.data_(i) << std::endl;

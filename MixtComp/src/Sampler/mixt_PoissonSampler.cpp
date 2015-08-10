@@ -43,11 +43,11 @@ void PoissonSampler::samplingStepCheck(int i,
   std::cout << "\ti: " << i << ", z_i: " << z_i << std::endl;
 #endif
 
-  augData_.data_(i) = 0;
-  bool nonZeroSample = !mixture_.checkSampleCondition(); // check if the 0 value is authorized for this individual in the sample
-
   if (augData_.misData_(i).first != present_)
   {
+    augData_.data_(i) = 0;
+    bool nonZeroSample = !mixture_.checkSampleCondition(); // check if the 0 value is authorized for this individual in the sample
+
     int x = -1;
     Real lambda = param_(z_i);
 
@@ -68,6 +68,9 @@ void PoissonSampler::samplingStepCheck(int i,
         }
         else
         {
+#ifdef MC_DEBUG
+          std::cout << "PoissonSampler::samplingStepCheck, nonZeroSample" << std::endl;
+#endif
           x = poisson_.nonZeroSample(lambda);
         }
       }

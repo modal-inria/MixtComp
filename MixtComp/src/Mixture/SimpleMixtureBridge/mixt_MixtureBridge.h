@@ -230,7 +230,7 @@ class MixtureBridge : public IMixture
      */
     virtual std::string mStep()
     {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       std::cout << "mStep, idName_: " << idName_ << std::endl;
 #endif
 
@@ -395,6 +395,9 @@ class MixtureBridge : public IMixture
 
     int checkSampleCondition(std::string* warnLog = NULL) const
     {
+#ifdef MC_DEBUG
+      std::cout << "MixtureBridge::checkSampleCondition, idName_: " << idName_ << std::endl;
+#endif
       if (warnLog == NULL)
       {
         return mixture_.checkSampleCondition();

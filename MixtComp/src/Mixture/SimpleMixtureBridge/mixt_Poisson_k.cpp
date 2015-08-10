@@ -181,9 +181,8 @@ bool Poisson_k::possibleNullProbability() const
 int Poisson_k::checkSampleCondition(std::string* warnLog) const
 {
   int proba = 1;
-  Vector<bool> nonZeroPresent(nbClass_);
-  nonZeroPresent = false;
 
+  Vector<bool> nonZeroPresent(nbClass_, false);
   for (int i = 0; i < p_data_->rows(); ++i)
   {
     if ((*p_data_)(i) > 0)
@@ -192,10 +191,27 @@ int Poisson_k::checkSampleCondition(std::string* warnLog) const
     }
   }
 
+#ifdef MC_DEBUG
+  Vector<int> nbNonZero(nbClass_, 0);
+  for (int i = 0; i < p_data_->rows(); ++i)
+  {
+    if ((*p_data_)(i) > 0)
+    {
+      nbNonZero((*p_zi_)(i)) += 1;
+    }
+  }
+  std::cout << "Poisson_k::checkSampleCondition, nbNonZero: " << nbNonZero.transpose() << std::endl;
+#endif
+
   for (int k = 0; k < nbClass_; ++k)
   {
     if (nonZeroPresent(k) == false)
     {
+
+#ifdef MC_DEBUG
+      std::cout << "Poisson_k::checkSampleCondition, nonZeroPresent(k) == false" << std::endl;
+#endif
+
       if (warnLog == NULL)
       {
         proba = 0;

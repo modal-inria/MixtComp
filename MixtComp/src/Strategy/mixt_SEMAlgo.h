@@ -44,6 +44,8 @@ class SEMAlgo
      * run the algorithm
      * @return string describing the problem in case of soft degeneracy */
     std::string run(RunType runType,
+                    RunProblemType& runPb,
+                    SamplerType sampler,
                     int group,
                     int groupMax);
 
@@ -56,9 +58,6 @@ class SEMAlgo
 
     /** number of attempts before giving up on sampling */
     int nbSamplingAttempts_;
-
-    /** Use the Gibbs sampler instead of the reject sampler */
-    bool rejectSampler_;
 };
 } // namespace mixt
 

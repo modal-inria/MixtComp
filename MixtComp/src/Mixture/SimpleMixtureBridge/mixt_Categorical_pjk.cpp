@@ -138,7 +138,7 @@ std::string Categorical_pjk::mStep()
       }
     }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
     std::cout << "modalities" << std::endl;
     std::cout << modalities << std::endl;
 #endif
