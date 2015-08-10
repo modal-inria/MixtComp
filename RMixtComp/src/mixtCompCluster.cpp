@@ -117,8 +117,7 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
                                  mcStrategy["nbBurnInIter"], // number of burn-in iterations
                                  mcStrategy["nbIter"], // number of iterations
                                  mcStrategy["nbGibbsBurnInIter"], // number of iterations for Gibbs sampler
-                                 mcStrategy["nbGibbsIter"], // number of iterations for Gibbs sampler
-                                 mixt::nbSamplingAttempts); // number of sampling attempts for lowly populated classes
+                                 mcStrategy["nbGibbsIter"]); // number of iterations for Gibbs sampler
 
       // run the strategy
       mixt::Timer stratTimer("Strategy Run");

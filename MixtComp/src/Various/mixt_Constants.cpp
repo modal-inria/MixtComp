@@ -30,7 +30,7 @@
 namespace mixt
 {
 const int maxWeakDegeneracyTrial = 100;
-const int nbSamplingAttempts = 20;
+const int nbSamplingAttempts = 10000;
 
 const Real epsilon = 1.e-8;
 const Real logEpsilon = std::log(epsilon);

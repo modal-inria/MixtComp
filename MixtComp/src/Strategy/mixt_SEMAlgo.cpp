@@ -33,11 +33,9 @@ namespace mixt
 {
 
 SEMAlgo::SEMAlgo(MixtureComposer* p_composer,
-                 int nbIterMax,
-                 int nbSamplingAttempts) :
+                 int nbIter) :
     p_composer_(p_composer),
-    nbIterMax_(nbIterMax),
-    nbSamplingAttempts_(nbSamplingAttempts)
+    nbIter_(nbIter)
 {}
 
 std::string SEMAlgo::run(RunType runType,
@@ -57,7 +55,7 @@ std::string SEMAlgo::run(RunType runType,
   {
     myTimer.setName("SEM: burn-in");
     p_composer_->storeSEMBurnIn(-1,
-                                nbIterMax_ - 1); // export of the initial partition
+                                nbIter_ - 1); // export of the initial partition
   }
   else if (runType == run_)
   {
@@ -65,13 +63,13 @@ std::string SEMAlgo::run(RunType runType,
   }
 
   int iter = 0;
-  while (iter < nbIterMax_)
+  while (iter < nbIter_)
   {
-    myTimer.iteration(iter, nbIterMax_ - 1);
+    myTimer.iteration(iter, nbIter_ - 1);
     writeProgress(group,
                   groupMax,
                   iter,
-                  nbIterMax_ - 1);
+                  nbIter_ - 1);
 
     p_composer_->eStep();
 
@@ -126,7 +124,7 @@ std::string SEMAlgo::run(RunType runType,
     std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
 #endif
       p_composer_->storeSEMBurnIn(iter,
-                                  nbIterMax_ - 1);
+                                  nbIter_ - 1);
     }
 
     if (runType == run_)
@@ -135,7 +133,7 @@ std::string SEMAlgo::run(RunType runType,
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
 #endif
       p_composer_->storeSEMRun(iter,
-                               nbIterMax_ - 1);
+                               nbIter_ - 1);
     }
 
     ++iter;

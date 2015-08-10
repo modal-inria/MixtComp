@@ -51,8 +51,7 @@ class SemStrategy
                 int nbBurnInIter,
                 int nbIter,
                 int nbGibbsBurnInIter,
-                int nbGibbsIter,
-                int nbSamplingAttempts);
+                int nbGibbsIter);
 
     /** non-trivial copy constructor */
     SemStrategy(SemStrategy const& strategy);
@@ -78,8 +77,6 @@ class SemStrategy
 
     /** algorithm for subsequent long run */
     SEMAlgo* p_runAlgo_;
-
-    int nbSamplingAttempts_;
 };
 
 }  // namespace mixt

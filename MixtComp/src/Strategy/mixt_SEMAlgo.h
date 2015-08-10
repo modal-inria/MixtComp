@@ -37,8 +37,7 @@ class SEMAlgo
   public:
     /** default constructor */
     SEMAlgo(MixtureComposer* p_composer,
-            int nbIterMax,
-            int nbSamplingAttempts);
+            int nbIter);
 
     /**
      * run the algorithm
@@ -54,10 +53,7 @@ class SEMAlgo
     MixtureComposer* p_composer_;
 
     /** number of iterations of the algorithm */
-    int nbIterMax_;
-
-    /** number of attempts before giving up on sampling */
-    int nbSamplingAttempts_;
+    int nbIter_;
 };
 } // namespace mixt
 

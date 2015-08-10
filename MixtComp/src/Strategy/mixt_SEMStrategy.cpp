@@ -36,27 +36,22 @@ SemStrategy::SemStrategy(MixtureComposer* p_composer,
                          int nbBurnInIter,
                          int nbIter,
                          int nbGibbsBurnInIter,
-                         int nbGibbsIter,
-                         int nbSamplingAttempts) :
+                         int nbGibbsIter) :
     p_composer_(p_composer),
     nbGibbsBurnInIter_(nbGibbsBurnInIter),
-    nbGibbsIter_(nbGibbsIter),
-    nbSamplingAttempts_(nbSamplingAttempts)
+    nbGibbsIter_(nbGibbsIter)
 {
   p_burnInAlgo_ = new SEMAlgo(p_composer,
-                              nbBurnInIter,
-                              nbSamplingAttempts);
+                              nbBurnInIter);
   p_runAlgo_    = new SEMAlgo(p_composer,
-                              nbIter,
-                              nbSamplingAttempts);
+                              nbIter);
 }
 
 /** copy constructor */
 SemStrategy::SemStrategy(SemStrategy const& strategy) :
     p_composer_        (strategy.p_composer_        ),
     nbGibbsBurnInIter_ (strategy.nbGibbsBurnInIter_ ),
-    nbGibbsIter_       (strategy.nbGibbsIter_       ),
-    nbSamplingAttempts_(strategy.nbSamplingAttempts_)
+    nbGibbsIter_       (strategy.nbGibbsIter_       )
 {
   SEMAlgo& burnInAlgo = *strategy.p_burnInAlgo_;
   SEMAlgo& longAlgo   = *strategy.p_runAlgo_   ;
@@ -88,7 +83,7 @@ std::string SemStrategy::run()
 
     if (doInit == true)
     {
-      for (int n = 0; n < nbSamplingAttempts_; ++n) // multiple initialization attempts
+      for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
       {
         p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
         p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
@@ -114,7 +109,7 @@ std::string SemStrategy::run()
           std::cout << "SemStrategy::run, invalid initialization" << std::endl;
 #endif
           std::stringstream sstm;
-          sstm << "SemStrategy initializations " << nbSamplingAttempts_ << " trials have failed. The error log from the last initialization "
+          sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
                << "trial is: " << std::endl
                << sWarn;
           return sstm.str();

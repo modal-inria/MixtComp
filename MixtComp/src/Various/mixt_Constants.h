@@ -31,7 +31,7 @@ namespace mixt
 extern const int maxWeakDegeneracyTrial; // max number of light degeneracies allowed in a strategy run
 extern const int maxStrongDegTry; // number of sampling in initial reject sampling in SEMStrategy, when not enough individuals are sampled per class, for example
 
-extern const int nbSamplingAttempts; // number of sampling attempts, when a not enough individuals are sampled
+extern const int nbSamplingAttempts; // number of sampling attempts, when not enough individuals are sampled
 
 extern const Real epsilon; // very small value of real to check for near zero values
 extern const Real logEpsilon; // log of very small value
