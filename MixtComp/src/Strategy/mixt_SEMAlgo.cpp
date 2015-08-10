@@ -79,13 +79,13 @@ std::string SEMAlgo::run(RunType runType,
     {
       p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
       p_composer_->samplingStepNoCheck();
-      Real sampleCond = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
+      int sampleCond = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
 
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, sampleCond: " << sampleCond << std::endl;
 #endif
 
-      if (sampleCond == 0.) // sampled value rejected, switch to Gibbs sampler
+      if (sampleCond == 0) // sampled value rejected, switch to Gibbs sampler
       {
 #ifdef MC_DEBUG
         std::cout << "SEMAlgo::run, switch to Gibbs sampler" << std::endl;
@@ -111,7 +111,6 @@ std::string SEMAlgo::run(RunType runType,
       std::cout << "p_composer_->checkSampleCondition(): " << p_composer_->checkSampleCondition() << std::endl;
       std::cout << "end of check" << std::endl;
 #endif
-
     }
 
     warn = p_composer_->mStep();
@@ -142,6 +141,7 @@ std::string SEMAlgo::run(RunType runType,
     ++iter;
   }
 
+  runPb = noProblem_;
   return warn; // success: return empty string
 }
 

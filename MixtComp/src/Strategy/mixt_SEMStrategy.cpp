@@ -152,9 +152,10 @@ std::string SemStrategy::run()
     }
     else if (burnInProb == invalidSampler_)
     {
-#ifdef MC_DEBUG
-      std::cout << "SemStrategy::run, invalid sampler" << std::endl;
+#ifdef MC_VERBOSE
+      std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
 #endif
+
       doInit = true; // everything must be reinitialized so that the new sampler starts from a valid state
       nbDegeneracy = 0; // reinitialize the number of soft degeneracies
       sampler = GibbsSampler_; // switch to Gibbs sampling
@@ -187,6 +188,10 @@ std::string SemStrategy::run()
     }
     else if (runProb == invalidSampler_)
     {
+#ifdef MC_VERBOSE
+      std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
+#endif
+
       doInit = true; // all the variables must be reinitialized, as there are currently in an invalid state
       nbDegeneracy = 0; // reinitialize the number of soft degeneracies
       sampler = GibbsSampler_; // switch to Gibbs sampling

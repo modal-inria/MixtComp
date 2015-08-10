@@ -187,26 +187,21 @@ void Gaussian_sjk::writeParameters() const
 int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
 {
   int proba = 1;
-  Vector<int> nbIndPerClass(nbClass_);
-  Vector<Real> min(nbClass_);
-  Vector<Real> max(nbClass_);
-
-  nbIndPerClass = 0;
-  min =   std::numeric_limits<Real>::max();
-  max = - std::numeric_limits<Real>::max();
+  Vector<int> nbIndPerClass(nbClass_, 0);
+  Vector<Real> min(nbClass_,   std::numeric_limits<Real>::max());
+  Vector<Real> max(nbClass_, - std::numeric_limits<Real>::max());
 
   for (int i = 0; i < p_data_->rows(); ++i)
   {
     nbIndPerClass((*p_zi_)(i)) += 1;
     min((*p_zi_)(i)) = std::min((*p_data_)(i), min((*p_zi_)(i)));
-    max((*p_zi_)(i)) = std::max((*p_data_)(i), min((*p_zi_)(i)));
+    max((*p_zi_)(i)) = std::max((*p_data_)(i), max((*p_zi_)(i)));
   }
 
   for (int k = 0; k < nbClass_; ++k)
   {
     if (nbIndPerClass(k) < 2)
     {
-
 #ifdef MC_DEBUG
       std::cout << "Gaussian_sjk::checkSampleCondition, nbIndPerClass(k) < 2" << std::endl;
 #endif
