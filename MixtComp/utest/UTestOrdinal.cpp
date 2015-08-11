@@ -216,7 +216,8 @@ TEST(Ordinal, ArbitraryGibbs)
 {
   MultinomialStatistic multi;
   UniformStatistic uni;
-  int nbIter = 1000;
+  int nbIterBurnIn = 500;
+  int nbIterRun    = 500;
 
   int iniMin = 0;
   int iniMax = 4;
@@ -261,11 +262,24 @@ TEST(Ordinal, ArbitraryGibbs)
     BOSDisplayPath(path);
   #endif
 
-    for (int iter = 0; iter < nbIter; ++iter)
+    for (int iter = 0; iter < nbIterBurnIn; ++iter)
     {
   #ifdef MC_DEBUG
       std::cout << "ArbitraryGibbs, iter: " << iter << std::endl;
   #endif
+
+      path.samplePath(mu,
+                      pi,
+                      sizeTupleBOS,
+                      true);
+    }
+
+    for (int iter = 0; iter < nbIterRun; ++iter)
+    {
+  #ifdef MC_DEBUG
+      std::cout << "ArbitraryGibbs, iter: " << iter << std::endl;
+  #endif
+
       path.samplePath(mu,
                       pi,
                       sizeTupleBOS,
@@ -273,6 +287,7 @@ TEST(Ordinal, ArbitraryGibbs)
       int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
       computedProba(x) += 1.; // the new occurrence of x is stored
     }
+
     computedProba /= computedProba.sum();
     computedProba.maxCoeff(&computedMode);
 
