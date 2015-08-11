@@ -456,6 +456,47 @@ TEST(Ordinal, allZOneAuthorizedForward)
   ASSERT_LT(std::abs(nbZ.mean() - (nbModality - 2)), errorTolerance);
 }
 
+TEST(Ordinal, allZOneAuthorizedGibbs)
+{
+  int nbItBurnIn = 1000;
+  int nbItRun = 1000;
+  int nbModality = 4;
+  int mu = 1;
+  Real pi = 0.999; // high pi to ensure the maximum possible z = 1 nodes
+  Real errorTolerance = 0.05;
+
+  RowVector<Real> nbZ(nbItRun);
+
+  BOSPath path;
+  path.setInit(0, nbModality - 1);
+  path.setEnd (0, nbModality - 1); // no constraint on values
+
+  path.initPath(); // random init with all z = 0
+
+  for (int iter = 0; iter < nbItBurnIn; ++iter)
+  {
+    path.samplePath(mu,
+                    pi,
+                    sizeTupleBOS,
+                    false);
+  }
+
+  for (int iter = 0; iter < nbItRun; ++iter)
+  {
+    path.samplePath(mu,
+                    pi,
+                    sizeTupleBOS,
+                    false);
+    nbZ(iter) = path.nbZ();
+  }
+
+#ifdef MC_DEBUG
+  std::cout << "nbZ.mean(): " << nbZ.mean() << std::endl;
+#endif
+
+  ASSERT_LT(std::abs(nbZ.mean() - (nbModality - 2)), errorTolerance);
+}
+
 //TEST(Ordinal, tupleMultinomial)
 //{
 //  int mu = 0;
