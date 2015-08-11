@@ -85,15 +85,23 @@ std::string SemStrategy::run()
     {
       for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
       {
+#ifdef MC_DEBUGNEW
+        std::cout << "SemStrategy::run, n: " << n << std::endl;
+#endif
+
         p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
         p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
         p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
         std::string sWarn;
-        Real proba = p_composer_->checkSampleCondition(&sWarn);
+        int proba = p_composer_->checkSampleCondition(&sWarn);
 
-        if (proba == 1.) // correct sampling is not rejected
+        if (proba == 1) // correct sampling is not rejected
         {
+#ifdef MC_DEBUGNEW
+          std::cout << "SemStrategy::run, proba == 1" << std::endl;
+#endif
+
           std::string mWarn = p_composer_->mStep(); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing(). Warnlog is updated to trigger resample in case of soft degeneracy.
           if (mWarn.size() == 0)
           {

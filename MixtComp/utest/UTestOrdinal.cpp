@@ -268,7 +268,8 @@ TEST(Ordinal, ArbitraryGibbs)
   #endif
       path.samplePath(mu,
                       pi,
-                      sizeTupleBOS);
+                      sizeTupleBOS,
+                      true);
       int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
       computedProba(x) += 1.; // the new occurrence of x is stored
     }
@@ -331,7 +332,9 @@ TEST(Ordinal, forwardSamplePath)
 #ifdef MC_DEBUG
     std::cout << "forwardSamplePath, iter: " << iter << std::endl;
 #endif
-    path.forwardSamplePath(mu, pi);
+    path.forwardSamplePath(mu,
+                           pi,
+                           true);
     int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
     computedProba(x) += 1.; // the new occurrence of x is stored
   }
@@ -380,7 +383,8 @@ TEST(Ordinal, mStep)
     {
       path(i).samplePath(mu,
                          pi,
-                         sizeTupleBOS);
+                         sizeTupleBOS,
+                         true);
     }
   }
 
@@ -398,6 +402,43 @@ TEST(Ordinal, mStep)
 #endif
   ASSERT_EQ(mu, muEst);
   ASSERT_LT(std::abs(pi - piEst), errorTolerance);
+}
+
+TEST(Ordinal, allZOneAuthorizedForward)
+{
+  int nbSample = 1000;
+  int nbModality = 4;
+  int mu = 1;
+  Real pi = 0.999; // high pi to ensure the maximum possible z = 1 nodes
+  Real errorTolerance = 0.05;
+
+  RowVector<Real> nbZ(nbSample);
+
+  BOSPath path;
+  path.setInit(0, nbModality - 1);
+  path.setEnd (0, nbModality - 1); // no constraint on values
+
+  for (int n = 0; n < nbSample; ++n)
+  {
+    path.forwardSamplePath(mu,
+                           pi,
+                           false);
+    nbZ(n) = path.nbZ();
+
+#ifdef MC_DEBUG
+    std::cout << "n: " << n << std::endl;
+    for (int node = 0; node < nbModality - 1; ++node)
+    {
+      std::cout << path.c_(node).z_ << std::endl;
+    }
+#endif
+  }
+
+#ifdef MC_DEBUG
+  std::cout << "nbZ.mean(): " << nbZ.mean() << std::endl;
+#endif
+
+  ASSERT_LT(std::abs(nbZ.mean() - (nbModality - 2)), errorTolerance);
 }
 
 //TEST(Ordinal, tupleMultinomial)

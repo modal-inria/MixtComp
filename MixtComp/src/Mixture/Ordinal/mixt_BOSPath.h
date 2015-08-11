@@ -70,10 +70,14 @@ class BOSPath
                           int startIndex,
                           int sizeTuple,
                           std::list<Vector<BOSNode> >& pathList,
-                          Vector<Real>& probaVec) const;
+                          Vector<Real>& probaVec,
+                          bool allZOneAuthorized) const;
 
     /**
-     * Multinomial conditional probability distribution for the elements of the partition at a specific index
+     * Multinomial conditional probability distribution for the elements of the partition at a specific index.
+     * This is a recursive function that computes the conditional probabilities for each element in a node,
+     * and then call itself for the following node inside a tuple. At the end of the tuple, endMultinomial
+     * is called to push back tuples and proba at the end of pathList and probaList.
      *
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution
@@ -91,10 +95,11 @@ class BOSPath
                          Real logProba,
                          std::list<Vector<BOSNode> >& pathList,
                          std::list<Real>& probaList,
-                         Vector<BOSNode>& tuple) const;
+                         Vector<BOSNode>& tuple,
+                         bool allZOneAuthorized) const;
 
     /**
-     * Compute the conditional probability of the end condition given the last node, and fill pathList and probaList
+     * Compute the conditional probability of the end condition given the last node, and fill pathList and probaList.
      *
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution
@@ -105,11 +110,13 @@ class BOSPath
      */
     void endMultinomial(int mu,
                         Real pi,
+                        int startIndex,
                         int currIndex,
                         Real logProba,
                         const Vector<BOSNode>& tuple,
                         std::list<Vector<BOSNode> >& pathList,
-                        std::list<Real>& probaList) const;
+                        std::list<Real>& probaList,
+                        bool allZOneAuthorized) const;
 
     /**
      * Randomly initialize the path while being compatible with eInit and endCond constraints
@@ -122,22 +129,31 @@ class BOSPath
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution
      * @param sizeTupleMax maximum size of the tuple (number of contiguous nodes allowed to vary simultaneously)
+     * @param allOneAuthorized is it possible to sample all z in c_ at value 1 ?
      */
     void samplePath(int mu,
                     Real pi,
-                    int sizeTupleMax);
+                    int sizeTupleMax,
+                    bool allZOneAuthorized);
 
     /**
-     * Overwrite the complete path by sampling everything.
+     * Overwrite the complete path by sampling everything. Usually used when data is completely missing, or
+     * when the observed probability distribution must be estimated by numerous samplings.
      *
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution
+     * @param allOneAuthorized is it possible to sample all z in c_ at value 1 ?
      */
     void forwardSamplePath(int mu,
-                           Real pi);
+                           Real pi,
+                           bool allZOneAuthorized);
 
     /** Compute the number of z at 1 in path_ */
     int nbZ() const;
+
+    /**
+     * Check if all the z in the path are at 1 or not */
+    int allZOne() const;
 
     MultinomialStatistic multi_;
 };

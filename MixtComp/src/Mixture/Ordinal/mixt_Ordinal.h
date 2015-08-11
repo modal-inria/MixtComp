@@ -199,16 +199,30 @@ class Ordinal : public IMixture
       std::cout << "ind: " << ind << std::endl;
       std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
 #endif
+
+      int allOtherZOne = 1; // are the z in all other individuals in the same class at 1 ? In that case, current individual is not authorized to have all its z at 1
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        if (i != ind && (*p_zi_)(i) == (*p_zi_)(ind))
+        {
+          allOtherZOne *= path_(i).allZOne();
+        }
+      }
+      bool allZOneAuthorized;
+      (allOtherZOne == 1) ? (allZOneAuthorized = false) : (allZOneAuthorized = true);
+
       if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
       {
         path_(ind).forwardSamplePath(mu_((*p_zi_)(ind)),
-                                     pi_((*p_zi_)(ind)));
+                                     pi_((*p_zi_)(ind)),
+                                     allZOneAuthorized);
       }
       else // perform one round of Gibbs sampler for the designated individual
       {
         path_(ind).samplePath(mu_((*p_zi_)(ind)),
                               pi_((*p_zi_)(ind)),
-                              sizeTupleBOS);
+                              sizeTupleBOS,
+                              allZOneAuthorized);
       }
       augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
@@ -223,13 +237,15 @@ class Ordinal : public IMixture
       if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
       {
         path_(ind).forwardSamplePath(mu_((*p_zi_)(ind)),
-                                     pi_((*p_zi_)(ind)));
+                                     pi_((*p_zi_)(ind)),
+                                     true); // allZOneAuthorized, no check on number of z values during samplingStepNoCheck
       }
       else // perform one round of Gibbs sampler for the designated individual
       {
         path_(ind).samplePath(mu_((*p_zi_)(ind)),
                               pi_((*p_zi_)(ind)),
-                              sizeTupleBOS);
+                              sizeTupleBOS,
+                              true); // allZOneAuthorized, no check on number of z values during samplingStepNoCheck
       }
       augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
@@ -243,10 +259,9 @@ class Ordinal : public IMixture
       std::string warnLog;
 
       pi_ = 0.; // pi_ parameter is reinitialized
-      Vector<Real> nodePerClass(nbClass_); // total number of nodes in a class
-      nodePerClass = 0.; // counting the number of individual per class
-      Vector<Real> zPerClass(nbClass_);
-      zPerClass = 0.;
+      Vector<Real> nodePerClass(nbClass_, 0.); // total number of nodes in each class
+      Vector<Real> zPerClass   (nbClass_, 0.); // total of nodes with z = 1 in each class
+
       for (int i = 0; i < nbInd_; ++i)
       {
 #ifdef MC_DEBUG
@@ -271,14 +286,22 @@ class Ordinal : public IMixture
       {
         if (pi_(k) < piThreshold) // if piThreshold is too high, and a class has a high value of pi, individuals with z = 0 will be unable to switch, even if they belong to the new class
         {
-
-#ifdef MC_DEBUG
+#ifdef MC_DEBUGNEW
           std::cout << "Ordinal::mStep, class " << k << " has 0-degenerated" << std::endl;
+          for (int i = 0; i < nbInd_; ++i)
+          {
+            if ((*p_zi_)(i) == k)
+            {
+              std::cout << "i: " << i << ", zPerClass(k): " << zPerClass(k) << std::endl;
+            }
+          }
 #endif
+
           sampleMuFreq(k, true);
           std::stringstream sstm;
           sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << "."<< std::endl;
           warnLog += sstm.str();
+
 #ifdef MC_VERBOSE
           std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 0" << std::endl;
 #endif
@@ -341,7 +364,8 @@ class Ordinal : public IMixture
           {
             path_(i).samplePath(mu_((*p_zi_)(i)), // mu
                                 pi_((*p_zi_)(i)), // pi
-                                sizeTupleBOS); // sizeTuple
+                                sizeTupleBOS, // sizeTuple
+                                true); // allZOneAuthorized, contrarily to sampleMuFreq, those samplings occur before the global Gibbs sampler, and having all latent values at is not a problem
           }
         }
       }
@@ -359,7 +383,9 @@ class Ordinal : public IMixture
         nbInd = 0;
         for (int i = 0; i < nbSampleBOS; ++i)
         {
-          samplePath.forwardSamplePath(mu_(k), pi_(k)); // complete the individual
+          samplePath.forwardSamplePath(mu_(k), // complete the individual
+                                       pi_(k),
+                                       true); // allZOneAuthorized, to estimate probability distribution, all z can be sampled to 1
           nbInd(samplePath.c_(nbModalities_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / nbSampleBOS;
@@ -497,6 +523,7 @@ class Ordinal : public IMixture
 #ifdef MC_DEBUG
       std::cout << "Ordinal::removeMissing" << std::endl;
 #endif
+
       for (int i = 0; i < nbInd_; ++i)
       {
         path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
@@ -531,7 +558,8 @@ class Ordinal : public IMixture
 #endif
           path_(i).samplePath(mu_((*p_zi_)(i)), // mu
                               piInitBOS, // pi
-                              sizeTupleBOS); // sizeTuple
+                              sizeTupleBOS, // sizeTuple
+                              false); // in initialization, checkSampleCondition is called globally just after the removeMissing
         }
       }
     };
@@ -552,19 +580,15 @@ class Ordinal : public IMixture
     {
       int proba = 1;
 
-      Vector<bool> nonZ1Present(nbClass_); // is there at least a z non equal to 1 in one individual in each class ?
-      nonZ1Present = false;
+      Vector<int> allZOne(nbClass_, 1); // is there at least a z non equal to 1 in one individual in each class ?
       for (int i = 0; i < nbInd_; ++i)
       {
-        if (path_(i).nbZ() < path_(i).nbNode_)
-        {
-          nonZ1Present((*p_zi_)(i)) = true;
-        }
+        allZOne((*p_zi_)(i)) *= path_(i).allZOne();
       }
 
       for (int k = 0; k < nbClass_; ++k)
       {
-        if (nonZ1Present(k) == false)
+        if (allZOne(k) == 1)
         {
           if (warnLog == NULL)
           {
@@ -637,7 +661,8 @@ class Ordinal : public IMixture
 #endif
             path_(i).samplePath(mu_(k), // mu
                                 pi_(k), // pi
-                                sizeTupleBOS); // sizeTuple
+                                sizeTupleBOS, // sizeTuple
+                                false); // this is called during SEM, and a state compatible with a Gibbs must be sampled. Setting this flag to false is a simple way to achieve this
           }
         }
       }
