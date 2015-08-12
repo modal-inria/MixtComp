@@ -224,35 +224,15 @@ class Ordinal : public IMixture
 
     virtual std::string mStep()
     {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUGNEW
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
+      std::cout << "augData_.data_: " << augData_.data_.transpose() << std::endl;
+      std::cout << "zi_           : " << p_zi_->transpose() << std::endl;
 #endif
 
       std::string warnLog;
 
-      pi_ = 0.; // pi_ parameter is reinitialized
-      Vector<Real> nodePerClass(nbClass_, 0.); // total number of nodes in each class
-      Vector<Real> zPerClass   (nbClass_, 0.); // total of nodes with z = 1 in each class
-
-      for (int i = 0; i < nbInd_; ++i)
-      {
-#ifdef MC_DEBUG
-        std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
-#endif
-
-        int indClass = (*p_zi_)(i);
-        nodePerClass(indClass) += path_(i).nbNode_; // add all nodes of the individual
-        zPerClass(indClass) += path_(i).nbZ(); // add only z = 1 nodes of the individual
-      }
-
-#ifdef MC_DEBUG
-        std::cout << "nodePerClass" << std::endl;
-        std::cout << nodePerClass << std::endl;
-        std::cout << "zPerClass" << std::endl;
-        std::cout << zPerClass << std::endl;
-#endif
-
-      pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
+      mStepPi();
 
       for (int k = 0; k < nbClass_; ++k) // reboot degenerate classes
       {
@@ -269,7 +249,9 @@ class Ordinal : public IMixture
           }
 #endif
 
-          sampleMuFreq(k, true);
+          sampleMuFreq(k, true); // current mu is prohibited by "true" flag
+          mStepPiK(k); // new maximum likelihood estimation of pi, only for the 0-degenerated class
+
           std::stringstream sstm;
           sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << "."<< std::endl;
           warnLog += sstm.str();
@@ -280,8 +262,7 @@ class Ordinal : public IMixture
         }
       }
 
-      Matrix<Real> logLik(nbClass_, nbModalities_);
-      logLik = 0.;
+      Matrix<Real> logLik(nbClass_, nbModalities_, 0.);
 
       for (int mu = 0; mu < nbModalities_; ++mu) // mu obtained from maximization over all possible values
       {
@@ -301,14 +282,12 @@ class Ordinal : public IMixture
         mu_(k) = maxLik;
       }
 
-#ifdef MC_DEBUG
-      std::cout << "End of Ordinal::mStep" << std::endl;
+#ifdef MC_DEBUGNEW
+      std::cout << "Ordinal::mStep" << std::endl;
       std::cout << "logLik: " << std::endl;
       std::cout << logLik << std::endl;
-      std::cout << "mu_" << std::endl;
-      std::cout << mu_ << std::endl;
-      std::cout << "pi_" << std::endl;
-      std::cout << pi_ << std::endl;
+      std::cout << "mu_" << mu_.transpose() << std::endl;
+      std::cout << "pi_" << pi_.transpose() << std::endl;
 #endif
 
       return warnLog;
@@ -588,9 +567,8 @@ class Ordinal : public IMixture
         }
       }
 
-#ifdef MC_DEBUG
-      std::cout << "total freqMod: " << std::endl;
-      std::cout << freqMod << std::endl;
+#ifdef MC_DEBUGNEW
+      std::cout << "Ordinal::sampleMuFreq, k: " << k << ", freqMod: " << freqMod.transpose() << std::endl;
 #endif
 
       if (prohibitCurrentMu == true)
@@ -667,6 +645,50 @@ class Ordinal : public IMixture
                               sizeTupleBOS,
                               azo);
       }
+    }
+
+    /**
+     * Estimation of pi by maximum likelihood in all classes
+     * */
+    void mStepPi()
+    {
+      pi_ = 0.; // pi_ parameter is reinitialized
+
+      Vector<Real> nodePerClass(nbClass_, 0.); // total number of nodes in each class
+      Vector<Real> zPerClass   (nbClass_, 0.); // total of nodes with z = 1 in each class
+
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        int indClass = (*p_zi_)(i);
+        nodePerClass(indClass) += path_(i).nbNode_; // add all nodes of the individual
+        zPerClass(indClass) += path_(i).nbZ(); // add only z = 1 nodes of the individual
+      }
+
+      pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
+    }
+
+    /**
+     * Estimation of pi by maximum likelihood in a particular class
+     *
+     * @param k class for which the parameter pi should be estimated
+     * */
+    void mStepPiK(int k)
+    {
+      pi_(k) = 0.; // pi_ parameter is reinitialized for the current class
+
+      Real nodePerClass = 0.; // total number of nodes in class k
+      Real zPerClass    = 0.; // total of nodes with z = 1 in class k
+
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        if ((*p_zi_)(i) == k)
+        {
+          nodePerClass += path_(i).nbNode_; // add all nodes of the individual
+          zPerClass    += path_(i).nbZ(); // add only z = 1 nodes of the individual
+        }
+      }
+
+      pi_(k) = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
     }
 
     /** Pointer to the zik class label */

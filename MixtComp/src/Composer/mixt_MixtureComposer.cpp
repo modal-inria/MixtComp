@@ -234,11 +234,6 @@ void MixtureComposer::sStepCheck()
   {
     sStepCheck(i);
   }
-
-#ifdef MC_DEBUG
-  std::cout << "zi_.data_: " << std::endl;
-  std::cout << zi_.data_ << std::endl;
-#endif
 }
 
 void MixtureComposer::sStepCheck(int i)
