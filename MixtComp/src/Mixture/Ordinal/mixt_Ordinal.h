@@ -286,7 +286,7 @@ class Ordinal : public IMixture
       {
         if (pi_(k) < piThreshold) // if piThreshold is too high, and a class has a high value of pi, individuals with z = 0 will be unable to switch, even if they belong to the new class
         {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
           std::cout << "Ordinal::mStep, class " << k << " has 0-degenerated" << std::endl;
           for (int i = 0; i < nbInd_; ++i)
           {
@@ -520,10 +520,6 @@ class Ordinal : public IMixture
 
     void removeMissing()
     {
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::removeMissing" << std::endl;
-#endif
-
       for (int i = 0; i < nbInd_; ++i)
       {
         path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
@@ -535,14 +531,7 @@ class Ordinal : public IMixture
       }
 
 #ifdef MC_DEBUG
-      std::cout << "prop: " << std::endl;
-      std::cout << prop << std::endl;
-      std::cout << "muIni:" << std::endl;
-      std::cout << muIni << std::endl;
-      std::cout << "piIni:" << std::endl;
-      std::cout << piIni << std::endl;
-      std::cout << "(*p_zi_):" << std::endl;
-      std::cout << (*p_zi_) << std::endl;
+      std::cout << "Ordinal::removeMissing, mu_: " << mu_.transpose() << std::endl;
 #endif
 
       for (int i = 0; i < nbInd_; ++i)
@@ -559,7 +548,7 @@ class Ordinal : public IMixture
           path_(i).samplePath(mu_((*p_zi_)(i)), // mu
                               piInitBOS, // pi
                               sizeTupleBOS, // sizeTuple
-                              false); // in initialization, checkSampleCondition is called globally just after the removeMissing
+                              true); // in initialization, checkSampleCondition is called globally just after the removeMissing, so no need for early check
         }
       }
     };

@@ -58,6 +58,7 @@ O_TEST = $(SRC_TEST:%.cpp=%.o)
 EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
 SRC_UTEST = $(wildcard utest/*.cpp)
+# SRC_UTEST = utest/UTestNew.cpp
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 

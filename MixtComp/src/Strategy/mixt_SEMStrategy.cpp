@@ -85,7 +85,7 @@ std::string SemStrategy::run()
     {
       for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
       {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
         std::cout << "SemStrategy::run, n: " << n << std::endl;
 #endif
 
@@ -98,7 +98,7 @@ std::string SemStrategy::run()
 
         if (proba == 1) // correct sampling is not rejected
         {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
           std::cout << "SemStrategy::run, proba == 1" << std::endl;
 #endif
 
