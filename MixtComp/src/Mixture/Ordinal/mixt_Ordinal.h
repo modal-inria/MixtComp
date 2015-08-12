@@ -200,30 +200,10 @@ class Ordinal : public IMixture
       std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
 #endif
 
-      int allOtherZOne = 1; // are the z in all other individuals in the same class at 1 ? In that case, current individual is not authorized to have all its z at 1
-      for (int i = 0; i < nbInd_; ++i)
-      {
-        if (i != ind && (*p_zi_)(i) == (*p_zi_)(ind))
-        {
-          allOtherZOne *= path_(i).allZOne();
-        }
-      }
-      bool allZOneAuthorized;
-      (allOtherZOne == 1) ? (allZOneAuthorized = false) : (allZOneAuthorized = true);
-
-      if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
-      {
-        path_(ind).forwardSamplePath(mu_((*p_zi_)(ind)),
-                                     pi_((*p_zi_)(ind)),
-                                     allZOneAuthorized);
-      }
-      else // perform one round of Gibbs sampler for the designated individual
-      {
-        path_(ind).samplePath(mu_((*p_zi_)(ind)),
-                              pi_((*p_zi_)(ind)),
-                              sizeTupleBOS,
-                              allZOneAuthorized);
-      }
+      GibbsSampling(ind,
+                    mu_((*p_zi_)(ind)),
+                    pi_((*p_zi_)(ind)),
+                    false); // in samplingStepCheck, each sampling must result in a valid state
       augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
@@ -234,19 +214,11 @@ class Ordinal : public IMixture
       std::cout << "ind: " << ind << std::endl;
       std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
 #endif
-      if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
-      {
-        path_(ind).forwardSamplePath(mu_((*p_zi_)(ind)),
-                                     pi_((*p_zi_)(ind)),
-                                     true); // allZOneAuthorized, no check on number of z values during samplingStepNoCheck
-      }
-      else // perform one round of Gibbs sampler for the designated individual
-      {
-        path_(ind).samplePath(mu_((*p_zi_)(ind)),
-                              pi_((*p_zi_)(ind)),
-                              sizeTupleBOS,
-                              true); // allZOneAuthorized, no check on number of z values during samplingStepNoCheck
-      }
+
+      GibbsSampling(ind,
+                    mu_((*p_zi_)(ind)),
+                    pi_((*p_zi_)(ind)),
+                    true); // in samplingStepCheck, allZOneAuthorized, no check on number of z values during samplingStepNoCheck
       augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
@@ -357,15 +329,15 @@ class Ordinal : public IMixture
         piParamStatComputer_.setExpectationParam(); // estimate pi parameter using mode / expectation
         computeObservedProba(); // compute observed probabilities using estimated parameters
 
-        for (int i = 0; i < nbInd_; ++i) // Gibbs to avoid null proba of individuals, since the parameters have been changed by setExpectationParam()
+        for (int i = 0; i < nbInd_; ++i) // Gibbs to avoid null proba of individuals, since the parameters have been changed by setExpectationParam(), which does not perform a maximum likelihood estimate
         {
-          path_(i).initPath();
+          path_(i).initPath(); // reinitialization
           for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
           {
-            path_(i).samplePath(mu_((*p_zi_)(i)), // mu
-                                pi_((*p_zi_)(i)), // pi
-                                sizeTupleBOS, // sizeTuple
-                                true); // allZOneAuthorized, contrarily to sampleMuFreq, those samplings occur before the global Gibbs sampler, and having all latent values at is not a problem
+            GibbsSampling(i,
+                          mu_((*p_zi_)(i)), // mu
+                          pi_((*p_zi_)(i)), // pi
+                          true); // allZOneAuthorized, contrarily to sampleMuFreq, in storeSEMRun those samplings occur before the global Gibbs sampler, and having all latent values at is not a problem
           }
         }
       }
@@ -374,19 +346,19 @@ class Ordinal : public IMixture
     void computeObservedProba()
     {
       observedProba_.resize(nbClass_, nbModalities_);
-      BOSPath samplePath; // BOSPath used for the various samplings
-      samplePath.setInit(0, nbModalities_ - 1);
+      BOSPath path; // BOSPath used for the various samplings
+      path.setInit(0, nbModalities_ - 1);
       for (int k = 0; k < nbClass_; ++k)
       {
         RowVector<Real> nbInd(nbModalities_); // observed frequencies
-        samplePath.setEnd(k, k);
+        path.setEnd(k, k);
         nbInd = 0;
         for (int i = 0; i < nbSampleBOS; ++i)
         {
-          samplePath.forwardSamplePath(mu_(k), // complete the individual
-                                       pi_(k),
-                                       true); // allZOneAuthorized, to estimate probability distribution, all z can be sampled to 1
-          nbInd(samplePath.c_(nbModalities_ - 2).e_(0)) += 1.; // register the x value, for marginalization
+          path.forwardSamplePath(mu_(k), // complete the individual
+                                 pi_(k),
+                                 true); // allZOneAuthorized, to estimate probability distribution, all z can be sampled to 1
+          nbInd(path.c_(nbModalities_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / nbSampleBOS;
       }
@@ -545,10 +517,10 @@ class Ordinal : public IMixture
             BOSDisplayPath(path_(i));
           }
 #endif
-          path_(i).samplePath(mu_((*p_zi_)(i)), // mu
-                              piInitBOS, // pi
-                              sizeTupleBOS, // sizeTuple
-                              true); // in initialization, checkSampleCondition is called globally just after the removeMissing, so no need for early check
+          GibbsSampling(i,
+                        mu_((*p_zi_)(i)),
+                        piInitBOS,
+                        true); // in initialization, checkSampleCondition is called globally just after the removeMissing, so no need for early check
         }
       }
     };
@@ -648,12 +620,52 @@ class Ordinal : public IMixture
 #ifdef MC_DEBUG
             std::cout << "n: " << n << std::endl;
 #endif
-            path_(i).samplePath(mu_(k), // mu
-                                pi_(k), // pi
-                                sizeTupleBOS, // sizeTuple
-                                false); // this is called during SEM, and a state compatible with a Gibbs must be sampled. Setting this flag to false is a simple way to achieve this
+            GibbsSampling(i,
+                          mu_(k),
+                          pi_(k),
+                          false); // this is called during SEM, and a state compatible with a Gibbs must be sampled.
           }
         }
+      }
+    }
+
+    /**
+     * Perform one iteration of Gibbs sampling, insuring proper implementation of allZOneAuthorized flag
+     *
+     * @param allZOneAuthorized can this individual have all is z at 1, or must it have at least one z at 0 ?
+     * */
+    void GibbsSampling(int ind,
+                       int mu,
+                       Real pi,
+                       bool allZOneAuthorized)
+    {
+      bool azo = true; // flag for this particular individual, by default all z = 1 are authorized
+
+      if (!allZOneAuthorized)
+      {
+        int allOtherZOne = 1; // are the z in all other individuals in the same class at 1 ?
+        for (int i = 0; i < nbInd_; ++i)
+        {
+          if (i != ind && (*p_zi_)(i) == (*p_zi_)(ind))
+          {
+            allOtherZOne *= path_(i).allZOne();
+          }
+        }
+        (allOtherZOne == 1) ? (azo = false) : (azo = true); // all z = 1 authorized if at least one other individual in the class has not all z = 1
+      }
+
+      if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
+      {
+        path_(ind).forwardSamplePath(mu,
+                                     pi,
+                                     azo);
+      }
+      else // perform one round of Gibbs sampler for the designated individual
+      {
+        path_(ind).samplePath(mu_((*p_zi_)(ind)),
+                              pi_((*p_zi_)(ind)),
+                              sizeTupleBOS,
+                              azo);
       }
     }
 
