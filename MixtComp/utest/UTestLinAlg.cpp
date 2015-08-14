@@ -26,6 +26,17 @@
 
 using namespace mixt;
 
+/** Coefficient-wise inverse of a vector */
+TEST(Vector, CoeffInv)
+{
+  Vector<Real> vecA(3);
+  vecA << 1., 3., 7.;
+  Vector<Real> vecB(3);
+  vecB << 1. / 1., 1. / 3., 1. / 7.;
+
+  EXPECT_TRUE(vecA.cInv().isApprox(vecB));
+}
+
 // Test double inversion of a matrix
 TEST(Matrix, Inversion)
 {
