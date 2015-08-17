@@ -66,8 +66,9 @@ struct traits<Block<XprType, BlockRows, BlockCols, InnerPanel> > : traits<XprTyp
                          : ColsAtCompileTime != Dynamic ? int(ColsAtCompileTime)
                          : int(traits<XprType>::MaxColsAtCompileTime),
     XprTypeIsRowMajor = (int(traits<XprType>::Flags)&RowMajorBit) != 0,
-    IsRowMajor = (MaxRowsAtCompileTime==1&&MaxColsAtCompileTime!=1) ? 1
-               : (MaxColsAtCompileTime==1&&MaxRowsAtCompileTime!=1) ? 0
+    IsDense = is_same<StorageKind,Dense>::value,
+    IsRowMajor = (IsDense&&MaxRowsAtCompileTime==1&&MaxColsAtCompileTime!=1) ? 1
+               : (IsDense&&MaxColsAtCompileTime==1&&MaxRowsAtCompileTime!=1) ? 0
                : XprTypeIsRowMajor,
     HasSameStorageOrderAsXprType = (IsRowMajor == XprTypeIsRowMajor),
     InnerSize = IsRowMajor ? int(ColsAtCompileTime) : int(RowsAtCompileTime),
@@ -108,16 +109,7 @@ template<typename XprType, int BlockRows, int BlockCols, bool InnerPanel> class 
     typedef Impl Base;
     EIGEN_GENERIC_PUBLIC_INTERFACE(Block)
     EIGEN_INHERIT_ASSIGNMENT_OPERATORS(Block)
-
-    /** Assignment of a scalar */
-    inline
-    const Block<XprType, BlockRows, BlockCols, InnerPanel>&
-    operator=(const Scalar& scalar)
-    {
-      this->derived().setConstant(scalar);
-      return (*this);
-    }
-
+  
     /** Column or Row constructor
       */
     inline Block(XprType& xpr, Index i) : Impl(xpr,i)
