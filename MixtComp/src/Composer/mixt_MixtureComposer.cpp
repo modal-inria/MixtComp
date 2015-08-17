@@ -38,6 +38,7 @@ MixtureComposer::MixtureComposer(int nbInd,
     idName_("z_class"),
     nbClass_(nbClass),
     nbInd_(nbInd),
+    nbVar_(0),
     prop_(nbClass),
     tik_(nbInd,
          nbClass),
@@ -550,6 +551,7 @@ void MixtureComposer::storeGibbsRun(int sample,
 void MixtureComposer::registerMixture(IMixture* p_mixture)
 {
   v_mixtures_.push_back(p_mixture);
+  ++nbVar_;
 }
 
 void MixtureComposer::gibbsSampling(int nbGibbsIter,
@@ -647,6 +649,39 @@ void MixtureComposer::removeMissing()
   for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
     (*it)->removeMissing();
+  }
+}
+
+void MixtureComposer::E_kj(Matrix<Real>& ekj) const
+{
+  ekj.resize(nbClass_, nbVar_);
+  ekj = 0.;
+
+  for (int i = 0; i < nbInd_; ++i)
+  {
+    for(int j = 0; j < nbVar_; ++j)
+    {
+      Vector<Real> lnP(nbClass_); // ln(p(z_i = k, x_i^j))
+      Vector<Real> t_ik_j(nbClass_); // p(z_i = k / x_i^j)
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        lnP(k) = std::log(prop_(k)) + v_mixtures_[j]->lnObservedProbability(i, k);
+      }
+      t_ik_j.logToMulti(lnP);
+      Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
+
+#ifdef MC_DEBUGNEW
+      std::cout << "MixtureComposer::E_kj, i: " << i << ", v_mixtures_[j]->idName(): " << v_mixtures_[j]->idName() << std::endl
+                << "t_ik_j :" << t_ik_j.transpose() << std::endl
+                << "t_ink_j:" << t_ink_j.transpose() << std::endl;
+#endif
+
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        ekj(k, j) += - t_ik_j (k) * std::log(t_ik_j (k))
+                     - t_ink_j(k) * std::log(t_ink_j(k));
+      }
+    }
   }
 }
 

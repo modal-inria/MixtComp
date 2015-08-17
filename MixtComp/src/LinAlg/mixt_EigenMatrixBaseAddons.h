@@ -71,16 +71,15 @@ operator-(const Scalar& scalar) const
                                internal::scalar_add_op<Scalar>(-scalar));
 }
 
-///** Element-wise - between a scalar and a matrix */
-//friend inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-//                                 Derived>
-//operator-(const Scalar& scalar,
-//          const MatrixBase<Derived>& mat)
-//{
-//  return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-//                      Derived>(- mat.derived(),
-//                               internal::scalar_add_op<Scalar>(scalar));
-//}
+/** Element-wise - between a scalar and a matrix */
+friend inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+                                 CwiseUnaryOp<internal::scalar_opposite_op<Scalar>,
+                                              const Derived> >
+operator-(const Scalar& scalar,
+          const MatrixBase<Derived>& mat)
+{
+  return (-mat) + scalar;
+}
 
 /** Element-wise assignment of a scalar */
 inline MatrixBase<Derived>&

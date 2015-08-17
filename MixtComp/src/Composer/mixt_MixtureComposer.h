@@ -62,6 +62,8 @@ class MixtureComposer
 
     int nbInd() const {return nbInd_;}
 
+    int nbVar() const {return nbVar_;}
+
     /** @return  the zi class label */
     inline Vector<int> const* p_zi() const {return &zi_.data_;}
 
@@ -338,6 +340,45 @@ class MixtureComposer
 
     void lnObservedLikelihoodDebug();
 
+    /**
+     * Compute the "raw" class ID matrix E_kj
+     *
+     *@param[out] ekj matrix containing E_kj
+     * */
+    void E_kj(Matrix<Real>& ekj) const;
+
+    /**
+     * Compute the normalized IDClass matrix, using
+     *
+     *@value matrix containing the class id description
+     * */
+    template<typename MatType>
+    void IDClass(MatType& idc) const
+    {
+      Matrix<Real> ekj;
+      E_kj(ekj);
+      Vector<Real> sum = ekj.colwise().sum();
+
+      for(int j = 0; j < nbVar_; ++j)
+      {
+        for (int k = 0; k < nbClass_; ++k)
+        {
+          idc(k, j) = 1. - ekj(k, j) / sum(k);
+        }
+      }
+
+#ifdef MC_DEBUGNEW
+      std::cout << "MixtureComposer::IDClass" << std::endl;
+      std::cout << "ekj" << std::endl;
+      std::cout << ekj << std::endl;
+      std::cout << "sum" << std::endl;
+      std::cout << sum << std::endl;
+      std::cout << "idc" << std::endl;
+      std::cout << idc << std::endl;
+
+#endif
+    }
+
   private:
     /** name of the latent class variable */
     std::string idName_;
@@ -347,6 +388,9 @@ class MixtureComposer
 
     /** Number of samples */
     int nbInd_;
+
+    /** Number of variables */
+    int nbVar_;
 
     /** The proportions of each class */
     Vector<Real> prop_;
