@@ -50,6 +50,17 @@ operator-(const Scalar& scalar) const
                                      internal::scalar_add_op<Scalar>(-scalar));
 }
 
+/** Element-wise assignment of a scalar */
+inline MatrixBase<Derived>&
+operator=(const Scalar& scalar)
+{
+  (*this) = CwiseNullaryOp<Eigen::internal::scalar_constant_op<Scalar>,
+                           const Derived >(derived().rows(),
+                                           derived().cols(),
+                                           internal::scalar_constant_op<Scalar>(scalar));
+  return *this;
+}
+
 /** Element-wise += between matrix and scalar */
 inline MatrixBase<Derived>&
 operator+=(const Scalar& scalar)
