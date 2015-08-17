@@ -49,20 +49,23 @@ TEST(Vector, SubScalar)
                                bound);
     Vector<Real> vector(nbInd);
     Vector<Real> expectedSub(nbInd);
+
     for (int i = 0; i < nbInd; ++i)
     {
       vector(i) = uni.sample(- bound,
                                bound);
       expectedSub(i) = scalar - vector(i);
     }
+
 #ifdef MC_DEBUGNEW
     std::cout << t << std::endl;
+    std::cout << scalar << std::endl;
+    std::cout << vector.transpose() << std::endl;
     std::cout << expectedSub.transpose() << std::endl;
     std::cout << (scalar - vector).transpose() << std::endl;
+    std::cout << (testCorrect == true) << std::endl;
 #endif
-
-    testCorrect(t) = expectedSub.isApprox(scalar - vector);
   }
 
-ASSERT_EQ(testCorrect.isConstant(true), true);
+ASSERT_EQ(testCorrect, true);
 }

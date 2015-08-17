@@ -30,46 +30,56 @@
 typedef Iterator iterator;
 typedef ConstIterator const_iterator;
 
+/** Element-wise comparison to a scalar */
+inline bool operator==(const Scalar& scalar) const
+{
+  for(int j = 0; j < cols(); ++j)
+    for(int i = 0; i < rows(); ++i)
+      if(derived().coeff(i, j) != scalar)
+        return false;
+  return true;
+}
+
 /** Element-wise + between matrix and scalar */
 inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-                          const Derived>
+                          Derived>
 operator+(const Scalar& scalar) const
 {
   return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-                      const Derived>(derived(),
-                                     internal::scalar_add_op<Scalar>(scalar));
+                      Derived>(derived(),
+                               internal::scalar_add_op<Scalar>(scalar));
 }
 
 /** Element-wise + between a scalar and a matrix */
 friend inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-                                 const Derived>
+                                 Derived>
 operator+(const Scalar& scalar,
           const MatrixBase<Derived>& mat)
 {
   return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-                      const Derived>(mat.derived(),
-                                     internal::scalar_add_op<Scalar>(scalar));
+                      Derived>(mat.derived(),
+                               internal::scalar_add_op<Scalar>(scalar));
 }
 
 /** Element-wise - between matrix and scalar */
 inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-                          const Derived>
+                          Derived>
 operator-(const Scalar& scalar) const
 {
   return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-                      const Derived>(derived(),
-                                     internal::scalar_add_op<Scalar>(-scalar));
+                      Derived>(derived(),
+                               internal::scalar_add_op<Scalar>(-scalar));
 }
 
 /** Element-wise - between a scalar and a matrix */
 friend inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-                                 const Derived>
+                                 Derived>
 operator-(const Scalar& scalar,
           const MatrixBase<Derived>& mat)
 {
   return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
-                      const Derived>(- mat.derived(),
-                                     internal::scalar_add_op<Scalar>(scalar));
+                      Derived>(- mat.derived(),
+                               internal::scalar_add_op<Scalar>(scalar));
 }
 
 /** Element-wise assignment of a scalar */
@@ -77,9 +87,9 @@ inline MatrixBase<Derived>&
 operator=(const Scalar& scalar)
 {
   (*this) = CwiseNullaryOp<Eigen::internal::scalar_constant_op<Scalar>,
-                           const Derived >(derived().rows(),
-                                           derived().cols(),
-                                           internal::scalar_constant_op<Scalar>(scalar));
+                           Derived >(derived().rows(),
+                                     derived().cols(),
+                                     internal::scalar_constant_op<Scalar>(scalar));
   return *this;
 }
 
@@ -102,29 +112,29 @@ operator-=(const Scalar& scalar)
 /** Component-wise product */
 template<typename OtherDerived>
 inline const CwiseBinaryOp<Eigen::internal::scalar_product_op<Scalar, Scalar>,
-                           const Derived,
-                           const Derived>
+                           Derived,
+                           Derived>
 operator%(const MatrixBase<OtherDerived>& other) const
 {
-  return Eigen::CwiseBinaryOp<Eigen::internal::scalar_product_op<Scalar, Scalar>,
-                              const Derived,
-                              const OtherDerived>(derived(),
-                                                  other.derived(),
-                                                  Eigen::internal::scalar_product_op<Scalar, Scalar>());
+  return CwiseBinaryOp<internal::scalar_product_op<Scalar, Scalar>,
+                       Derived,
+                       OtherDerived>(derived(),
+                                     other.derived(),
+                                     internal::scalar_product_op<Scalar, Scalar>());
 }
 
 /** Component-wise quotient */
 template<typename OtherDerived>
-inline const CwiseBinaryOp<Eigen::internal::scalar_quotient_op<Scalar, Scalar>,
-                           const Derived,
-                           const Derived>
+inline const CwiseBinaryOp<internal::scalar_quotient_op<Scalar, Scalar>,
+                           Derived,
+                           Derived>
 operator/(const MatrixBase<OtherDerived>& other) const
 {
-  return Eigen::CwiseBinaryOp<Eigen::internal::scalar_quotient_op<Scalar, Scalar>,
-                              const Derived,
-                              const OtherDerived>(derived(),
-                                                  other.derived(),
-                                                  Eigen::internal::scalar_quotient_op<Scalar, Scalar>());
+  return CwiseBinaryOp<internal::scalar_quotient_op<Scalar, Scalar>,
+                       Derived,
+                       OtherDerived>(derived(),
+                                     other.derived(),
+                                     internal::scalar_quotient_op<Scalar, Scalar>());
 }
 
 /** Element-wise %= between matrices */
@@ -146,49 +156,49 @@ operator/=(const MatrixBase<OtherDerived>& other)
 }
 
 /** Element-wise log computation */
-const CwiseUnaryOp<internal::scalar_log_op<Scalar>,
-                   const Derived>
+inline const CwiseUnaryOp<internal::scalar_log_op<Scalar>,
+                          Derived>
 log() const
 {
-  return Eigen::CwiseUnaryOp<internal::scalar_log_op<Scalar>,
-                             const Derived>(derived(),
-                                            internal::scalar_log_op<Scalar>());
+  return CwiseUnaryOp<internal::scalar_log_op<Scalar>,
+                      Derived>(derived(),
+                               internal::scalar_log_op<Scalar>());
 }
 
 /** Element-wise exp computation */
-const CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
-                   const Derived>
+inline const CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
+                          Derived>
 exp() const
 {
-  return Eigen::CwiseUnaryOp<Eigen::internal::scalar_exp_op<Scalar>,
-                             const Derived>(derived(),
-                                            internal::scalar_exp_op<Scalar>());
+  return CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
+                      Derived>(derived(),
+                               internal::scalar_exp_op<Scalar>());
 }
 
 /** Element-wise abs computation */
-const CwiseUnaryOp<internal::scalar_abs_op<Scalar>,
-                   const Derived>
+inline const CwiseUnaryOp<internal::scalar_abs_op<Scalar>,
+                          Derived>
 abs() const
 {
-  return Eigen::CwiseUnaryOp<Eigen::internal::scalar_abs_op<Scalar>,
-                             const Derived>(derived(),
-                                            internal::scalar_abs_op<Scalar>());
+  return CwiseUnaryOp<internal::scalar_abs_op<Scalar>,
+                      Derived>(derived(),
+                               internal::scalar_abs_op<Scalar>());
 }
 
 /** Element-wise inverse computation */
-const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>,
-                   const Derived>
+inline const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>,
+                          Derived>
 cInv() const
 {
-  return Eigen::CwiseUnaryOp<Eigen::internal::scalar_inverse_op<Scalar>,
-                             const Derived>(derived(),
-                                            internal::scalar_inverse_op<Scalar>());
+  return CwiseUnaryOp<internal::scalar_inverse_op<Scalar>,
+                      Derived>(derived(),
+                               internal::scalar_inverse_op<Scalar>());
 }
 
 /** Element-wise + between a scalar and a matrix */
 friend inline const CwiseUnaryOp<internal::scalar_multiple_op<Scalar>,
                                  const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>,
-                                                    const Derived> >
+                                                    Derived> >
 operator/(const Scalar& scalar,
           const MatrixBase<Derived>& mat)
 {
@@ -245,7 +255,7 @@ void sort()
  * @value log of the sum of all components
  */
 template<typename OtherDerived>
-Scalar logToMulti(const MatrixBase<OtherDerived>& multi)
+Scalar logToMulti(const MatrixBase<OtherDerived>& multi) const
 {
   const_cast<MatrixBase<OtherDerived>& >(multi) = derived();
   Scalar max = multi.maxCoeff();
