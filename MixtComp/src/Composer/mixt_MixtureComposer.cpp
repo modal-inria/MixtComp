@@ -134,7 +134,7 @@ Real MixtureComposer::lnObservedLikelihood()
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
     RowVector<Real> dummy;
-    lnLikelihood += lnComp.row(i).logToMulti(dummy);
+    lnLikelihood += dummy.logToMulti(lnComp.row(i));
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
@@ -294,7 +294,7 @@ void MixtureComposer::eStep(int i)
     std::cout << "lnComp: " << lnComp << std::endl;
 #endif
 
-  lnComp.logToMulti(tik_.row(i));
+  tik_.row(i).logToMulti(lnComp);
 
 #ifdef MC_DEBUG
   std::cout << "\tmax: " << max << ", sum2: " << sum2 << std::endl;

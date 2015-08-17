@@ -245,6 +245,7 @@ void sort()
             derived().end());
 }
 
+
 /**
  * Computation of a multinomial distribution from log values of weights.
  * A common example of usage is the computations of the proportions t_ik
@@ -255,14 +256,14 @@ void sort()
  * @value log of the sum of all components
  */
 template<typename OtherDerived>
-Scalar logToMulti(const MatrixBase<OtherDerived>& multi) const
+Scalar logToMulti(const MatrixBase<OtherDerived>& multi)
 {
-  const_cast<MatrixBase<OtherDerived>& >(multi) = derived();
-  Scalar max = multi.maxCoeff();
-  const_cast<MatrixBase<OtherDerived>& >(multi) -= max;
-  const_cast<MatrixBase<OtherDerived>& >(multi) = multi.exp();
-  Scalar sum = multi.sum();
-  const_cast<MatrixBase<OtherDerived>& >(multi) = multi / sum;
+  derived() = multi;
+  Scalar max = derived().maxCoeff();
+  derived() -= max;
+  derived() = derived().exp();
+  Scalar sum = derived().sum();
+  derived() = derived() / sum;
 
   return max + std::log(sum);
 }

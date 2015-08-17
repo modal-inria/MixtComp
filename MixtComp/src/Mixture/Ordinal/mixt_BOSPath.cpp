@@ -128,7 +128,7 @@ void BOSPath::tupleMultinomial(int mu,
   std::cout << "logProba.size(): " << logProba.size() << std::endl;
 #endif
 
-  logProba.logToMulti(probaVec);
+  probaVec.logToMulti(logProba);
 }
 
 void BOSPath::nodeMultinomial(int mu,
