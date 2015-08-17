@@ -37,6 +37,37 @@ TEST(Vector, CoeffInv)
   EXPECT_TRUE(vecA.cInv().isApprox(vecB));
 }
 
+TEST(Vector, QuotientScalar)
+{
+  Vector<Real> vecA(3);
+  vecA << 1., 3., 7.;
+  Vector<Real> vecB(3);
+  vecB << 0.5, 1.5, 3.5;
+
+  EXPECT_TRUE((vecA / 2).isApprox(vecB));
+}
+
+TEST(Vector, ScalarQuotient)
+{
+  Vector<Real> vecA(3);
+  vecA << 1., 3., 7.;
+  Vector<Real> vecB(3);
+  vecB << 2. / 1., 2. / 3., 2. / 7.;
+
+  EXPECT_TRUE((2 / vecA).isApprox(vecB));
+}
+
+/** Coefficient-wise add a scalar to a vector */
+TEST(Vector, AddScalar)
+{
+  Vector<Real> vecA(3);
+  vecA << 1., 3., 7.;
+  Vector<Real> vecB(3);
+  vecB << 3., 5., 9.;
+
+  EXPECT_TRUE((2. + vecA).isApprox(vecB));
+}
+
 // Test double inversion of a matrix
 TEST(Matrix, Inversion)
 {

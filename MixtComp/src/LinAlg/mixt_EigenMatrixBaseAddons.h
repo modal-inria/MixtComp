@@ -40,6 +40,17 @@ operator+(const Scalar& scalar) const
                                      internal::scalar_add_op<Scalar>(scalar));
 }
 
+/** Element-wise + between a scalar and a matrix */
+friend inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+                                 const Derived>
+operator+(const Scalar& scalar,
+          const MatrixBase<Derived>& mat)
+{
+  return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+                      const Derived>(mat.derived(),
+                                     internal::scalar_add_op<Scalar>(scalar));
+}
+
 /** Element-wise - between matrix and scalar */
 inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
                           const Derived>
@@ -48,6 +59,17 @@ operator-(const Scalar& scalar) const
   return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
                       const Derived>(derived(),
                                      internal::scalar_add_op<Scalar>(-scalar));
+}
+
+/** Element-wise - between a scalar and a matrix */
+friend inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+                                 const Derived>
+operator-(const Scalar& scalar,
+          const MatrixBase<Derived>& mat)
+{
+  return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+                      const Derived>(- mat.derived(),
+                                     internal::scalar_add_op<Scalar>(scalar));
 }
 
 /** Element-wise += between matrix and scalar */
@@ -150,6 +172,16 @@ cInv() const
   return Eigen::CwiseUnaryOp<Eigen::internal::scalar_inverse_op<Scalar>,
                              const Derived>(derived(),
                                             internal::scalar_inverse_op<Scalar>());
+}
+
+/** Element-wise + between a scalar and a matrix */
+friend inline const CwiseUnaryOp<internal::scalar_multiple_op<Scalar>,
+                                 const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>,
+                                                    const Derived> >
+operator/(const Scalar& scalar,
+          const MatrixBase<Derived>& mat)
+{
+  return scalar * mat.cInv();
 }
 
 iterator begin()
