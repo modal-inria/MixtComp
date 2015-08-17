@@ -159,13 +159,11 @@ template<typename Derived> class MatrixBase
     template<typename OtherDerived>
     Derived& operator=(const ReturnByValue<OtherDerived>& other);
 
-#ifndef EIGEN_PARSED_BY_DOXYGEN
     template<typename ProductDerived, typename Lhs, typename Rhs>
     Derived& lazyAssign(const ProductBase<ProductDerived, Lhs,Rhs>& other);
 
     template<typename MatrixPower, typename Lhs, typename Rhs>
     Derived& lazyAssign(const MatrixPowerProduct<MatrixPower, Lhs,Rhs>& other);
-#endif // not EIGEN_PARSED_BY_DOXYGEN
 
     template<typename OtherDerived>
     Derived& operator+=(const MatrixBase<OtherDerived>& other);
@@ -445,14 +443,14 @@ template<typename Derived> class MatrixBase
 ///////// MatrixFunctions module /////////
 
     typedef typename internal::stem_function<Scalar>::type StemFunction;
-//    const MatrixExponentialReturnValue<Derived> exp() const;
+    const MatrixExponentialReturnValue<Derived> exp() const;
     const MatrixFunctionReturnValue<Derived> matrixFunction(StemFunction f) const;
     const MatrixFunctionReturnValue<Derived> cosh() const;
     const MatrixFunctionReturnValue<Derived> sinh() const;
     const MatrixFunctionReturnValue<Derived> cos() const;
     const MatrixFunctionReturnValue<Derived> sin() const;
     const MatrixSquareRootReturnValue<Derived> sqrt() const;
-//    const MatrixLogarithmReturnValue<Derived> log() const;
+    const MatrixLogarithmReturnValue<Derived> log() const;
     const MatrixPowerReturnValue<Derived> pow(const RealScalar& p) const;
 
 #ifdef EIGEN2_SUPPORT

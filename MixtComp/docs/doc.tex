@@ -1,0 +1,22 @@
+\documentclass{article}
+\title{MixtComp Programmer Guide}
+\author{Vincent KUBICKI}
+\date{17th August 2015}
+
+\begin{document}
+
+\maketitle
+
+\section{Linear Algebra}
+
+MixtComp abstracts dependance on numerical algebra library through the use of a LinAlg module. The current backed is Eigen, which is provided in the MixtComp package. The Matrix API is used, and capabilities from the Array API are provided mainly through the  which bridges numerical library capabilities to Eigen as its backend to provide numerical.
+
+\subsection{Updating Eigen}
+
+To update Eigen, one must first switch to the Eigen branch of the git repository, update Eigen, then switch back to the main branch and merge. This is necessary because Eigen needs to be patched to be used in MixtComp, and the patching is performed during the merge operation. This way, the Eigen branch is very simple and only consists of the direct updates on Eigen. delete the content of the eigen directory. One must take care not to delete the .cproject file as it is not a part of the Eigen project, and is used by Eclipse to track Eigen as a project in the MixtComp workspace. The content of the latest version of Eigen mu be dropped into the eigen directory.
+
+\section{Statistics}
+
+\section{To Do}
+
+\end{document}
