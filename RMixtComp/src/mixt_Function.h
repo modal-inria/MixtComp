@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2015
+/*  Copyright (C) Inria 2014
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,18 +17,22 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: March 24, 2015
+ *  Created on: Aug 18, 2015
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
+#ifndef MIXT_FUNCTION_H
+#define MIXT_FUNCTION_H
 
-#include "../src/Various/mixt_Constants.h"
-#include "../src/Mixture/Ordinal/mixt_BOSNode.h"
-#include "../src/Mixture/Ordinal/mixt_BOSPath.h"
-#include "../src/Statistic/mixt_MultinomialStatistic.h"
+#include "Rcpp.h"
+#include "MixtComp/src/Composer/mixt_MixtureComposer.h"
 
-#include "UTestFunction.h"
+namespace mixt
+{
 
-using namespace mixt;
+void IDClass(mixt::MixtureComposer& mc,
+             Rcpp::NumericMatrix& idc);
 
+} // namespace mixt
+
+#endif // MIXT_FUNCTION_H

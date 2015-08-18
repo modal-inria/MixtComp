@@ -60,7 +60,11 @@ class MixtureComposer
     /** Create the mixture model parameters. */
     void intializeMixtureParameters();
 
+    int nbClass() const {return nbClass_;}
+
     int nbInd() const {return nbInd_;}
+
+    int nbVar() const {return nbVar_;}
 
     /** @return  the zi class label */
     inline Vector<int> const* p_zi() const {return &zi_.data_;}
@@ -304,7 +308,7 @@ class MixtureComposer
       paramExtractor.exportParam("z_class",
                                  paramStat_.getStatStorage(),
                                  paramStat_.getLogStorage(),
-                                 paramNames(),
+                                 paramName(),
                                  confidenceLevel_);
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
       {
@@ -326,7 +330,12 @@ class MixtureComposer
                        int groupMax);
 
     /** @return names of the parameters */
-    std::vector<std::string> paramNames() const;
+    std::vector<std::string> paramName() const;
+
+    /**
+     * @return names of the mixtures
+     * */
+    std::vector<std::string> mixtureName() const;
 
     /**
      * Completion of the data using observed t_ik, to detect impossible observations. The observed tik are computed,
@@ -338,6 +347,20 @@ class MixtureComposer
 
     void lnObservedLikelihoodDebug();
 
+    /**
+     * Compute the "raw" class ID matrix E_kj
+     *
+     *@param[out] ekj matrix containing E_kj
+     * */
+    void E_kj(Matrix<Real>& ekj) const;
+
+    /**
+     * Compute the normalized IDClass matrix, using
+     *
+     *@param[out] idc matrix containing the class id description
+     * */
+    void IDClass(Matrix<Real>& idc) const;
+
   private:
     /** name of the latent class variable */
     std::string idName_;
@@ -347,6 +370,9 @@ class MixtureComposer
 
     /** Number of samples */
     int nbInd_;
+
+    /** Number of variables */
+    int nbVar_;
 
     /** The proportions of each class */
     Vector<Real> prop_;
