@@ -580,7 +580,7 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter,
   mapStep(); // z_i estimated by the mode at the end of the Gibbs Sampling
 }
 
-std::vector<std::string> MixtureComposer::paramNames() const
+std::vector<std::string> MixtureComposer::paramName() const
 {
   std::vector<std::string> names(nbClass_);
   for (int k = 0; k < nbClass_; ++k)
@@ -589,6 +589,17 @@ std::vector<std::string> MixtureComposer::paramNames() const
     sstm << "k: "
          << k + minModality;
     names[k] = sstm.str();
+  }
+
+  return names;
+}
+
+std::vector<std::string> MixtureComposer::mixtureName() const
+{
+  std::vector<std::string> names(nbVar_);
+  for (int j = 0; j < nbVar_; ++j)
+  {
+    names[j] = v_mixtures_[j]->idName();
   }
 
   return names;
@@ -683,6 +694,32 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const
       }
     }
   }
+}
+
+void MixtureComposer::IDClass(Matrix<Real>& idc) const
+{
+  idc.resize(nbClass_, nbVar_);
+  Matrix<Real> ekj;
+  E_kj(ekj);
+  Vector<Real> sum = ekj.colwise().sum();
+
+  for(int j = 0; j < nbVar_; ++j)
+  {
+    for (int k = 0; k < nbClass_; ++k)
+    {
+      idc(k, j) = 1. - ekj(k, j) / sum(k);
+    }
+  }
+
+#ifdef MC_DEBUGNEW
+  std::cout << "MixtureComposer::IDClass" << std::endl;
+  std::cout << "ekj" << std::endl;
+  std::cout << ekj << std::endl;
+  std::cout << "sum" << std::endl;
+  std::cout << sum << std::endl;
+  std::cout << "idc" << std::endl;
+  std::cout << idc << std::endl;
+#endif
 }
 
 } /* namespace mixt */

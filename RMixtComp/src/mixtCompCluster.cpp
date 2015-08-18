@@ -24,6 +24,7 @@
 #include "mixt_DataHandlerR.h"
 #include "mixt_DataExtractorR.h"
 #include "mixt_ParamExtractorR.h"
+#include "mixt_Function.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 #include "MixtComp/src/IO/mixt_ParamSetterDummy.h"
 #include "MixtComp/src/Various/mixt_Def.h"
@@ -147,9 +148,8 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
         mcMixture["nbInd"] = composer.nbInd();
         mcMixture["mode"] = "learn";
 
-        Rcpp::NumericMatrix idc(nbClass,
-                                composer.nbVar());
-        composer.IDClass(idc);
+        Rcpp::NumericMatrix idc;
+        mixt::IDClass(composer, idc);
         mcMixture["IDClass"] = idc;
       }
     }

@@ -60,6 +60,8 @@ class MixtureComposer
     /** Create the mixture model parameters. */
     void intializeMixtureParameters();
 
+    int nbClass() const {return nbClass_;}
+
     int nbInd() const {return nbInd_;}
 
     int nbVar() const {return nbVar_;}
@@ -306,7 +308,7 @@ class MixtureComposer
       paramExtractor.exportParam("z_class",
                                  paramStat_.getStatStorage(),
                                  paramStat_.getLogStorage(),
-                                 paramNames(),
+                                 paramName(),
                                  confidenceLevel_);
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
       {
@@ -328,7 +330,12 @@ class MixtureComposer
                        int groupMax);
 
     /** @return names of the parameters */
-    std::vector<std::string> paramNames() const;
+    std::vector<std::string> paramName() const;
+
+    /**
+     * @return names of the mixtures
+     * */
+    std::vector<std::string> mixtureName() const;
 
     /**
      * Completion of the data using observed t_ik, to detect impossible observations. The observed tik are computed,
@@ -350,34 +357,9 @@ class MixtureComposer
     /**
      * Compute the normalized IDClass matrix, using
      *
-     *@value matrix containing the class id description
+     *@param[out] idc matrix containing the class id description
      * */
-    template<typename MatType>
-    void IDClass(MatType& idc) const
-    {
-      Matrix<Real> ekj;
-      E_kj(ekj);
-      Vector<Real> sum = ekj.colwise().sum();
-
-      for(int j = 0; j < nbVar_; ++j)
-      {
-        for (int k = 0; k < nbClass_; ++k)
-        {
-          idc(k, j) = 1. - ekj(k, j) / sum(k);
-        }
-      }
-
-#ifdef MC_DEBUGNEW
-      std::cout << "MixtureComposer::IDClass" << std::endl;
-      std::cout << "ekj" << std::endl;
-      std::cout << ekj << std::endl;
-      std::cout << "sum" << std::endl;
-      std::cout << sum << std::endl;
-      std::cout << "idc" << std::endl;
-      std::cout << idc << std::endl;
-
-#endif
-    }
+    void IDClass(Matrix<Real>& idc) const;
 
   private:
     /** name of the latent class variable */

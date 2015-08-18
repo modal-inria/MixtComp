@@ -53,15 +53,6 @@ TEST(Vector, SubScalar)
     }
 
     testCorrect = ((scalar - vector) == expectedSub);
-
-#ifdef MC_DEBUGNEW
-    std::cout << t << std::endl;
-    std::cout << scalar << std::endl;
-    std::cout << vector.transpose() << std::endl;
-    std::cout << expectedSub.transpose() << std::endl;
-    std::cout << (scalar - vector).transpose() << std::endl;
-    std::cout << (testCorrect == true) << std::endl;
-#endif
   }
 
 ASSERT_EQ(testCorrect, true);
