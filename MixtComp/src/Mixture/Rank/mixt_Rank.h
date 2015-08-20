@@ -42,6 +42,20 @@ class Rank
      * while the Vector<int> describes the possible values, when needed. */
     typedef typename std::pair<MisType, Vector<int> > MisVal;
 
+    Rank();
+
+    void setNbPos(int nbPos);
+
+    /**
+     * Set the observed values for the individual
+     * @param pos position to be set
+     * @param type observed / partially observed / unobserved value
+     * @param val list of possible values for the partially observed data
+     * */
+    void setObserved(int pos,
+                     MisType type,
+                     const Vector<int> val);
+
     /**
      * Perform one round of Gibbs sampling for the partially observed data
      * @param mu central rank
@@ -57,20 +71,30 @@ class Rank
                    Real pi);
 
     /**
-     * Completed logprobability of the individual
+     * Completed log-probability of the individual
      * @param mu central rank
      * @param pi precision */
     Real lnCompletedProbability(const Vector<int>& mu,
                                 Real pi);
+
+    /** Uniform sample for partially observed valued and presentation order */
+    void removeMissing();
+
   private:
-    /* Description of the observed data, one MisVal per position in the rank */
+    /** Number of positions in the rank */
+    int nbPos_;
+
+    /** Description of the observed data, one MisVal per position in the rank */
     Vector<MisVal> obsData_;
 
-    /* Completed individual */
+    /** Completed individual */
     Vector<int> x_;
 
-    /* Presentation order */
+    /** Presentation order */
     Vector<int> y_;
+
+    /** Sampler for int */
+    MultinomialStatistics multi_;
 
 } // namespace mixt
 

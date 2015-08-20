@@ -26,4 +26,23 @@
 namespace mixt
 {
 
+Rank::Rank() :
+    nbPos_(0)
+{
+
+}
+
+void Rank::setNbPos(int nbPos)
+{
+  nbPos_ = nbPos;
+  obsData_.resize(nbPos);
+  x_.resize(nbPos);
+  y_.resize(nbPos);
+}
+
+void Rank::removeMissing()
+{
+
+}
+
 } // namespace mixt
