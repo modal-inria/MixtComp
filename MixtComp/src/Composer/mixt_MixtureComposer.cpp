@@ -32,25 +32,27 @@
 namespace mixt
 {
 
-MixtureComposer::MixtureComposer(int nbSample,
-                                 int nbVariable,
-                                 int nbCluster,
+MixtureComposer::MixtureComposer(int nbInd,
+                                 int nbClass,
                                  Real confidenceLevel) :
     idName_("z_class"),
-    nbCluster_(nbCluster),
-    nbSample_(nbSample),
-    prop_(nbCluster),
-    tik_(nbSample, nbCluster),
-    sampler_(zi_,
-            tik_,
-            nbCluster),
+    nbClass_(nbClass),
+    nbInd_(nbInd),
+    nbVar_(0),
+    prop_(nbClass),
+    tik_(nbInd,
+         nbClass),
+    sampler_(*this,
+             zi_,
+             tik_,
+             nbClass),
     paramStat_(prop_,
                confidenceLevel),
     dataStat_(zi_,
               confidenceLevel),
     confidenceLevel_(confidenceLevel)
 {
-  zi_.resizeArrays(nbSample);
+  zi_.resizeArrays(nbInd);
   intializeMixtureParameters(); // default values that will be overwritten either by pStep (learning), or eStepObserved (prediction)
 }
 
@@ -62,18 +64,16 @@ MixtureComposer::~MixtureComposer()
   }
 }
 
-/* Create the parameters of the  mixture model. */
 void MixtureComposer::intializeMixtureParameters()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::intializeMixtureParameters" << std::endl;
 #endif
-  prop_     = 1./(Real)nbCluster_;
-  tik_      = 1./(Real)nbCluster_;
+  prop_     = 1./(Real)nbClass_;
+  tik_      = 1./(Real)nbClass_;
   zi_.data_ = 0;
 }
 
-/** Compute the observed likelihood for a single individual, with the class fixed as a parameter */
 Real MixtureComposer::lnObservedProbability(int i, int k)
 {
 #ifdef MC_DEBUG
@@ -93,15 +93,13 @@ Real MixtureComposer::lnObservedProbability(int i, int k)
   return sum;
 }
 
-/** Observed data, and marginalization over classes
- * @return the value of the observed likelihood */
 void MixtureComposer::lnObservedLikelihoodDebug()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnObservedLikelihoodDebug() " << std::endl;
 #endif
 
-  for (int i = 0; i < nbSample_; ++i)
+  for (int i = 0; i < nbInd_; ++i)
   {
     for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
     {
@@ -113,33 +111,31 @@ void MixtureComposer::lnObservedLikelihoodDebug()
   }
 }
 
-/** Observed data, and marginalization over classes
- * @return the value of the observed likelihood */
 Real MixtureComposer::lnObservedLikelihood()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnObservedLikelihood() " << std::endl;
 #endif
   Real lnLikelihood = 0.;
-  Matrix<Real> lnComp(nbSample_,
-                      nbCluster_);
+  Matrix<Real> lnComp(nbInd_,
+                      nbClass_);
 
-  for (int k = 0; k < nbCluster_; ++k)
+  for (int k = 0; k < nbClass_; ++k)
   {
-    for (int i = 0; i < nbSample_; ++i)
+    for (int i = 0; i < nbInd_; ++i)
     {
       lnComp(i, k) = lnObservedProbability(i, k);
     }
   }
 
-  for (int i = 0; i < nbSample_; ++i) // sum is inside a log, hence the numerous steps for the computation
+  for (int i = 0; i < nbInd_; ++i) // sum is inside a log, hence the numerous steps for the computation
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
 #endif
     RowVector<Real> dummy;
-    lnLikelihood += lnComp.row(i).logToMulti(dummy);
+    lnLikelihood += dummy.logToMulti(lnComp.row(i));
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
     std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
@@ -152,8 +148,6 @@ Real MixtureComposer::lnObservedLikelihood()
   return lnLikelihood;
 }
 
-/** Completed latent classes, and marginalization over missing data
- * @return the value of the semi-completed likelihood (completion only for latent class) */
 Real MixtureComposer::lnSemiCompletedLikelihood()
 {
 #ifdef MC_DEBUG
@@ -162,7 +156,7 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
   Real lnLikelihood = 0.;
 
   // Compute the completed likelihood for the complete mixture model, using the completed data
-  for (int i = 0; i < nbSample_; ++i)
+  for (int i = 0; i < nbInd_; ++i)
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << ", lnComp(i, zi_[i]): " << lnComp(i, zi_[i]) << std::endl;
@@ -174,7 +168,6 @@ Real MixtureComposer::lnSemiCompletedLikelihood()
   return lnLikelihood;
 }
 
-/** Compute the completed likelihood for a single individual, with the class fixed as a parameter */
 Real MixtureComposer::lnCompletedProbability(int i, int k)
 {
 #ifdef MC_DEBUG
@@ -195,8 +188,6 @@ Real MixtureComposer::lnCompletedProbability(int i, int k)
   return sum;
 }
 
-/** Completed on both missing value and latent classes
- * @return the value of the completed likelihood for all data */
 Real MixtureComposer::lnCompletedLikelihood()
 {
 #ifdef MC_DEBUG
@@ -205,7 +196,7 @@ Real MixtureComposer::lnCompletedLikelihood()
   Real lnLikelihood = 0.;
 
   // Compute the completed likelihood for the complete mixture model, using the completed data
-  for (int i = 0; i < nbSample_; ++i)
+  for (int i = 0; i < nbInd_; ++i)
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << std::endl;
@@ -217,19 +208,16 @@ Real MixtureComposer::lnCompletedLikelihood()
   return lnLikelihood;
 }
 
-std::string MixtureComposer::mStep(DegeneracyType& worstDeg)
+std::string MixtureComposer::mStep()
 {
   std::string warn;
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::mStep()" << std::endl;
 #endif
   pStep(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
-  worstDeg = noDeg_; // initialization of the worst degeneracy detected in mixtures
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
-    DegeneracyType currDeg = noDeg_;
-    warn += (*it)->mStep(currDeg); // call mStep on each variable
-    worstDeg = std::max(currDeg, worstDeg); // update the worst degeneracy so far
+    warn += (*it)->mStep(); // call mStep on each variable
   }
 #ifdef MC_DEBUG
   std::cout << "\twarn: " << warn << std::endl;
@@ -237,90 +225,52 @@ std::string MixtureComposer::mStep(DegeneracyType& worstDeg)
   return warn;
 }
 
-std::string MixtureComposer::sStepNbAttempts(int nbSamplingAttempts,
-                                             DegeneracyType& deg)
-{
-  std::string warnLog;
-  deg = noDeg_; // initialization of degeneracy type
-  for (int iterSample = 0; iterSample < nbSamplingAttempts; ++iterSample) // sample until there are enough individuals per class, using default tik from IMixtureComposerBase::intializeMixtureParameters()
-  {
-    int nbIndPerClass = sStep();
-  #ifdef MC_DEBUG
-    std::cout << "MixtureComposer::sStepNbAttempts, iterSample: " << iterSample << std::endl;
-    std::cout << "nbIndPerClass: " << nbIndPerClass << std::endl;
-  #endif
-    if (nbIndPerClass > minIndPerClass)
-    {
-      break; // enough individuals in each class to carry on
-    }
-    else
-    {
-      if (iterSample == nbSamplingAttempts - 1) // on last attempt, detail the error in the error message
-      {
-#ifdef MC_DEBUG
-        std::cout << "MixtureComposer::sStepNbAttempts, all attempts exhausted" << std::endl;
-#endif
-        std::stringstream sstm;
-        sstm << "Sampling step problem in SEM. The class with the lowest number "
-             << "of individuals has " << nbIndPerClass << " individuals. Each class must have at least "
-             << minIndPerClass << " individuals. There has been " << nbSamplingAttempts
-             << " partition samplings before failure. The number of classes might be too important"
-             << " relative to the number of individuals. Try decreasing the number of classes." << std::endl;
-        warnLog += sstm.str();
-        deg = strongDeg_; // the degeneracy is strong as it requires a complete reboot of the SEM chain
-      }
-    }
-  }
-  return warnLog;
-}
-
-/* simulate zi for all individuals */
-int MixtureComposer::sStep()
+void MixtureComposer::sStepCheck()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::sStep" << std::endl;
 #endif
-  // simulate zi
-  for (int i = 0; i < nbSample_; ++i)
+
+  for (int i = 0; i < nbInd_; ++i)
   {
-    sStep(i);
+    sStepCheck(i);
   }
+}
+
+void MixtureComposer::sStepCheck(int i)
+{
+  sampler_.sStepCheck(i);
+}
+
+void MixtureComposer::sStepNoCheck()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStep" << std::endl;
+#endif
+
+  for (int i = 0; i < nbInd_; ++i)
+  {
+    sStepNoCheck(i);
+  }
+
 #ifdef MC_DEBUG
   std::cout << "zi_.data_: " << std::endl;
   std::cout << zi_.data_ << std::endl;
 #endif
-  Vector<int> indPerClass(nbCluster_);
-  indPerClass = 0;
-  for (int i = 0; i < nbSample_; ++i)
-  {
-#ifdef MC_DEBUG
-  std::cout << "i: " << i << ", zi_.data_(i): " << zi_.data_(i) << std::endl;
-  std::cout << "zi_.data_.size(): " << zi_.data_.size() << ", indPerClass.size(): " << indPerClass.size() << std::endl;
-#endif
-    indPerClass(zi_.data_(i)) += 1;
-  }
-  int minIndPerClass = indPerClass.minCoeff();
-#ifdef MC_DEBUG
-  std::cout << "\tindPerClass: " << indPerClass << std::endl;
-  std::cout << "\tminIndPerClass: " << minIndPerClass << std::endl;
-#endif
-  return minIndPerClass;
 }
 
-/* simulate zi for a particular individual */
-void MixtureComposer::sStep(int i)
+void MixtureComposer::sStepNoCheck(int i)
 {
-  sampler_.sampleIndividual(i);
+  sampler_.sStepNoCheck(i);
 }
 
-/* compute Tik, for all individuals */
 void MixtureComposer::eStep()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::eStep" << std::endl;
   std::cout << "prop_: " << prop_ << std::endl;
 #endif
-  for (int i = 0; i < nbSample_; ++i)
+  for (int i = 0; i < nbInd_; ++i)
   {
     eStep(i);
   }
@@ -330,14 +280,13 @@ void MixtureComposer::eStep()
 #endif
 }
 
-/* compute Tik, for a particular individual */
 void MixtureComposer::eStep(int i)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::eStep(i), i: " << i << std::endl;
 #endif
-  RowVector<Real> lnComp(nbCluster_);
-  for (int k = 0; k < nbCluster_; k++)
+  RowVector<Real> lnComp(nbClass_);
+  for (int k = 0; k < nbClass_; k++)
   {
     lnComp[k] = lnCompletedProbability(i, k);
   }
@@ -346,7 +295,7 @@ void MixtureComposer::eStep(int i)
     std::cout << "lnComp: " << lnComp << std::endl;
 #endif
 
-  lnComp.logToMulti(tik_.row(i));
+  tik_.row(i).logToMulti(lnComp);
 
 #ifdef MC_DEBUG
   std::cout << "\tmax: " << max << ", sum2: " << sum2 << std::endl;
@@ -354,7 +303,6 @@ void MixtureComposer::eStep(int i)
 #endif
 }
 
-/* Compute prop using the ML estimator, default implementation. */
 void MixtureComposer::pStep()
 {
 #ifdef MC_DEBUG
@@ -370,19 +318,17 @@ void MixtureComposer::pStep()
 #endif
 }
 
-/* Compute Zi using the Map estimator,default implementation. */
 void MixtureComposer::mapStep()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::mapStep" << std::endl;
 #endif
-  for (int i = 0; i < nbSample_; ++i)
+  for (int i = 0; i < nbInd_; ++i)
   {
     mapStep(i);
   }
 }
 
-/* Compute Zi using the Map estimator, default implementation. */
 void MixtureComposer::mapStep(int i)
 {
 #ifdef MC_DEBUG
@@ -409,13 +355,12 @@ void MixtureComposer::writeParameters() const
   }
 }
 
-// implement computeNbFreeParameters
 int MixtureComposer::nbFreeParameters() const
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::computeNbFreeParameters()" << std::endl;
 #endif
-  int sum = nbCluster_ - 1; // proportions
+  int sum = nbClass_ - 1; // proportions
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
   {
     sum+= (*it)->nbFreeParameter();
@@ -423,21 +368,19 @@ int MixtureComposer::nbFreeParameters() const
   return sum;
 }
 
-/* @brief Simulation of all the latent variables and/or missing data
- *  excluding class labels.
- */
-void MixtureComposer::samplingStep()
+void MixtureComposer::samplingStepCheck()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::samplingStep" << std::endl;
 #endif
-  for (int i = 0; i < nbSample_; ++i)
+
+  for (int i = 0; i < nbInd_; ++i)
   {
-    samplingStep(i);
+    samplingStepCheck(i);
   }
 }
 
-void MixtureComposer::samplingStep(int i)
+void MixtureComposer::samplingStepCheck(int i)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::samplingStep, single individual" << std::endl;
@@ -447,8 +390,104 @@ void MixtureComposer::samplingStep(int i)
 #ifdef MC_DEBUG
 std::cout << (*it)->idName() << std::endl;
 #endif
-    (*it)->samplingStep(i);
+    (*it)->samplingStepCheck(i);
   }
+}
+
+void MixtureComposer::samplingStepNoCheck()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::samplingStep" << std::endl;
+#endif
+
+  for (int i = 0; i < nbInd_; ++i)
+  {
+    samplingStepNoCheck(i);
+  }
+}
+
+void MixtureComposer::samplingStepNoCheck(int i)
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::samplingStep, single individual" << std::endl;
+#endif
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  {
+#ifdef MC_DEBUG
+std::cout << (*it)->idName() << std::endl;
+#endif
+    (*it)->samplingStepNoCheck(i);
+  }
+}
+
+int MixtureComposer::checkSampleCondition(std::string* warnLog) const
+{
+  int probaCondition = 1; // proba of condition on data given the completed data
+  if (warnLog == NULL)
+  {
+    probaCondition *= checkNbIndPerClass();
+    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+    {
+      int currProba = (*it)->checkSampleCondition(); // no need for log generation -> faster evaluation of checkSampleCondition
+
+#ifdef MC_DEBUG
+      if (currProba == 0)
+      {
+        std::cout << "MixtureComposer::checkSampleCondition, (*it)->idName(): " << (*it)->idName() << " has a 0 checkSampleCondition" << std::endl;
+      }
+#endif
+
+      probaCondition *= currProba;
+    }
+  }
+  else
+  {
+    std::string indLog;
+    probaCondition *= checkNbIndPerClass(&indLog);
+    *warnLog += indLog;
+    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+    {
+      std::string mixtLog;
+      probaCondition *= (*it)->checkSampleCondition(&mixtLog); // the global warnLog is not passed directly to the mixture, to avoid accidental wiping
+      *warnLog += mixtLog;
+    }
+  }
+  return probaCondition;
+}
+
+int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
+{
+  int proba = 1;
+  Vector<int> nbIndPerClass(nbClass_, 0);
+  for (int i = 0; i < nbInd_; ++i)
+  {
+#ifdef MC_DEBUG
+    if (zi_.data_(i) < 0)
+    {
+      std::cout << "i:, " << i << " <<, zi_.data_(i): " << zi_.data_(i) << std::endl;
+    }
+#endif
+    nbIndPerClass(zi_.data_(i)) += 1;
+  }
+  int min = nbIndPerClass.minCoeff();
+  if (min < minIndPerClass)
+  {
+    if (warnLog == NULL)
+    {
+      proba = 0;
+    }
+    else
+    {
+      std::stringstream sstm;
+      sstm << "MixtureComposer::checkNbIndPerClass, there must be at least " << minIndPerClass << " individuals "
+           << "per class. This condition has not been met. Did you provide enough individuals in regard to the "
+           << "number of classes you required ?" << std::endl;
+      *warnLog += sstm.str();
+      proba = 0;
+    }
+  }
+
+  return 1.;
 }
 
 void MixtureComposer::storeSEMBurnIn(int iteration,
@@ -509,10 +548,10 @@ void MixtureComposer::storeGibbsRun(int sample,
   }
 }
 
-/* register the mixture in the composer*/
 void MixtureComposer::registerMixture(IMixture* p_mixture)
 {
   v_mixtures_.push_back(p_mixture);
+  ++nbVar_;
 }
 
 void MixtureComposer::gibbsSampling(int nbGibbsIter,
@@ -521,18 +560,18 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter,
 {
   Timer myTimer;
   myTimer.setName("Gibbs: run (individuals count as iterations)");
-  for (int i = 0; i < nbSample_; ++i)
+  for (int i = 0; i < nbInd_; ++i)
   {
-    myTimer.iteration(i, nbSample_ - 1);
+    myTimer.iteration(i, nbInd_ - 1);
     writeProgress(group,
                   groupMax,
                   i,
-                  nbSample_ - 1);
+                  nbInd_ - 1);
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs)
     {
       eStep(i);
-      sStep(i);
-      samplingStep(i);
+      sStepNoCheck(i);
+      samplingStepNoCheck(i);
       storeGibbsRun(i,
                     iterGibbs,
                     nbGibbsIter - 1);
@@ -541,10 +580,10 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter,
   mapStep(); // z_i estimated by the mode at the end of the Gibbs Sampling
 }
 
-std::vector<std::string> MixtureComposer::paramNames() const
+std::vector<std::string> MixtureComposer::paramName() const
 {
-  std::vector<std::string> names(nbCluster_);
-  for (int k = 0; k < nbCluster_; ++k)
+  std::vector<std::string> names(nbClass_);
+  for (int k = 0; k < nbClass_; ++k)
   {
     std::stringstream sstm;
     sstm << "k: "
@@ -555,15 +594,26 @@ std::vector<std::string> MixtureComposer::paramNames() const
   return names;
 }
 
+std::vector<std::string> MixtureComposer::mixtureName() const
+{
+  std::vector<std::string> names(nbVar_);
+  for (int j = 0; j < nbVar_; ++j)
+  {
+    names[j] = v_mixtures_[j]->idName();
+  }
+
+  return names;
+}
+
 std::string MixtureComposer::eStepObserved()
 {
   std::string warnLog; // warnlog to be output
 
-  RowVector<Real> lnComp(nbCluster_);
-  for (int i = 0; i < nbSample_; ++i)
+  RowVector<Real> lnComp(nbClass_);
+  for (int i = 0; i < nbInd_; ++i)
   {
     std::string temWarnLog; // store the names of potentially problematic variables for this individual
-    for (int k = 0; k < nbCluster_; k++)
+    for (int k = 0; k < nbClass_; k++)
     {
       lnComp(k) = 0.;
       for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
@@ -611,6 +661,65 @@ void MixtureComposer::removeMissing()
   {
     (*it)->removeMissing();
   }
+}
+
+void MixtureComposer::E_kj(Matrix<Real>& ekj) const
+{
+  ekj.resize(nbClass_, nbVar_);
+  ekj = 0.;
+
+  for (int i = 0; i < nbInd_; ++i)
+  {
+    for(int j = 0; j < nbVar_; ++j)
+    {
+      Vector<Real> lnP(nbClass_); // ln(p(z_i = k, x_i^j))
+      Vector<Real> t_ik_j(nbClass_); // p(z_i = k / x_i^j)
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        lnP(k) = std::log(prop_(k)) + v_mixtures_[j]->lnObservedProbability(i, k);
+      }
+      t_ik_j.logToMulti(lnP);
+      Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
+
+#ifdef MC_DEBUGNEW
+      std::cout << "MixtureComposer::E_kj, i: " << i << ", v_mixtures_[j]->idName(): " << v_mixtures_[j]->idName() << std::endl
+                << "t_ik_j :" << t_ik_j.transpose() << std::endl
+                << "t_ink_j:" << t_ink_j.transpose() << std::endl;
+#endif
+
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        ekj(k, j) += - t_ik_j (k) * std::log(t_ik_j (k))
+                     - t_ink_j(k) * std::log(t_ink_j(k));
+      }
+    }
+  }
+}
+
+void MixtureComposer::IDClass(Matrix<Real>& idc) const
+{
+  idc.resize(nbClass_, nbVar_);
+  Matrix<Real> ekj;
+  E_kj(ekj);
+  Vector<Real> sum = ekj.colwise().sum();
+
+  for(int j = 0; j < nbVar_; ++j)
+  {
+    for (int k = 0; k < nbClass_; ++k)
+    {
+      idc(k, j) = 1. - ekj(k, j) / sum(k);
+    }
+  }
+
+#ifdef MC_DEBUGNEW
+  std::cout << "MixtureComposer::IDClass" << std::endl;
+  std::cout << "ekj" << std::endl;
+  std::cout << ekj << std::endl;
+  std::cout << "sum" << std::endl;
+  std::cout << sum << std::endl;
+  std::cout << "idc" << std::endl;
+  std::cout << idc << std::endl;
+#endif
 }
 
 } /* namespace mixt */

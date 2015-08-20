@@ -36,148 +36,175 @@ SemStrategy::SemStrategy(MixtureComposer* p_composer,
                          int nbBurnInIter,
                          int nbIter,
                          int nbGibbsBurnInIter,
-                         int nbGibbsIter,
-                         int nbSamplingAttempts) :
+                         int nbGibbsIter) :
     p_composer_(p_composer),
     nbGibbsBurnInIter_(nbGibbsBurnInIter),
-    nbGibbsIter_(nbGibbsIter),
-    nbSamplingAttempts_(nbSamplingAttempts)
+    nbGibbsIter_(nbGibbsIter)
 {
   p_burnInAlgo_ = new SEMAlgo(p_composer,
-                              nbBurnInIter,
-                              nbSamplingAttempts);
-  p_longAlgo_   = new SEMAlgo(p_composer,
-                              nbIter,
-                              nbSamplingAttempts);
+                              nbBurnInIter);
+  p_runAlgo_    = new SEMAlgo(p_composer,
+                              nbIter);
 }
 
 /** copy constructor */
 SemStrategy::SemStrategy(SemStrategy const& strategy) :
-    p_composer_        (strategy.p_composer_),
-    nbGibbsBurnInIter_ (strategy.nbGibbsBurnInIter_),
-    nbGibbsIter_       (strategy.nbGibbsIter_),
-    nbSamplingAttempts_(strategy.nbSamplingAttempts_)
+    p_composer_        (strategy.p_composer_        ),
+    nbGibbsBurnInIter_ (strategy.nbGibbsBurnInIter_ ),
+    nbGibbsIter_       (strategy.nbGibbsIter_       )
 {
   SEMAlgo& burnInAlgo = *strategy.p_burnInAlgo_;
-  SEMAlgo& longAlgo   = *strategy.p_longAlgo_  ;
+  SEMAlgo& longAlgo   = *strategy.p_runAlgo_   ;
   p_burnInAlgo_ = new SEMAlgo(burnInAlgo);
-  p_longAlgo_   = new SEMAlgo(longAlgo);
+  p_runAlgo_    = new SEMAlgo(longAlgo);
 }
 
 /** destructor */
 SemStrategy::~SemStrategy()
 {
   if (p_burnInAlgo_) delete p_burnInAlgo_;
-  if (p_longAlgo_  ) delete p_longAlgo_  ;
+  if (p_runAlgo_   ) delete p_runAlgo_   ;
 }
 
 std::string SemStrategy::run()
 {
-  std::string allWarn; // collect warning strings from all the trials, only returned if either maxLightDegTry or maxStrongDegTry are exhausted, whichever condition come first
-  DegeneracyType currDeg = noDeg_; // current type of degeneracy
+  bool doInit = true; // itinialization must be carried out during first iteration
+  SamplerType sampler = rejectSampler_; // rejectSampler is used until a problem occurs
+  int nbDegeneracy = 0; // number of "weak" degeneracies, for example with pi = 0 for the Ordinal model
+  std::string allWarn;
 
-  RowVector<int> DegCount(nb_enum_DegeneracyType_);
-  DegCount = 0;
-
-  while(DegCount(lightDeg_) < maxLightDegTry && DegCount(strongDeg_) < maxStrongDegTry)
+  while(nbDegeneracy < maxWeakDegeneracyTrial)
   {
 #ifdef MC_VERBOSE
-    std::cout << "SemStrategy, "
-              << "nb soft degeneracies: " << DegCount(lightDeg_) << ", "
-              << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl;
+    std::cout << "SemStrategy::run, nbDegeneracy: " << nbDegeneracy << ", maxSoftDegTry: " << maxWeakDegeneracyTrial << std::endl;
 #endif
 
-    std::string tryWarn; // warning for each trial
+    std::string tryWarn; // current trial warning
 
-    if (currDeg == noDeg_ || currDeg == strongDeg_) // only reset everything at the first iteration, or when a strong degeneration has been detected
+    if (doInit == true)
     {
-#ifdef MC_VERBOSE
-      std::cout << "SemStrategy::run, complete (re) initialization" << std::endl;
-#endif
-      p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
-
-      tryWarn = p_composer_->sStepNbAttempts(nbSamplingAttempts_, currDeg); // perform at max nbSamplingAttempts_ calls to p_composer_->sStep();
-      if (currDeg != noDeg_)
+      for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
       {
-        ++DegCount(currDeg);
-        std::stringstream sstm;
-        sstm << "SemStrategy error, initial partition, "
-             << "nb soft degeneracies: " << DegCount(lightDeg_) << ", "
-             << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl
-             << tryWarn;
-        allWarn += sstm.str(); // append warning to global warning
 #ifdef MC_DEBUG
-        std::cout << sstm.str() << std::endl;
+        std::cout << "SemStrategy::run, n: " << n << std::endl;
 #endif
-        continue; // make another try
-      }
 
-      p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+        p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_
+        p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
+        p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
-      tryWarn = p_composer_->mStep(currDeg); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing()
-      if (currDeg != noDeg_)
-      {
-        ++DegCount(currDeg);
-        std::stringstream sstm;
-        sstm << "SemStrategy error, initial mStep, "
-             << "nb soft degeneracies: " << DegCount(lightDeg_) << ", "
-             << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl
-             << tryWarn;
-        allWarn += sstm.str(); // append warning to global warning
+        std::string sWarn;
+        int proba = p_composer_->checkSampleCondition(&sWarn);
+
+        if (proba == 1) // correct sampling is not rejected
+        {
 #ifdef MC_DEBUG
-        std::cout << sstm.str() << std::endl;
+          std::cout << "SemStrategy::run, proba == 1" << std::endl;
 #endif
-        continue; // make another try
+
+          std::string mWarn = p_composer_->mStep(); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing(). Warnlog is updated to trigger resample in case of soft degeneracy.
+          if (mWarn.size() == 0)
+          {
+#ifdef MC_DEBUG
+            std::cout << "SemStrategy::run, valid initialization" << std::endl;
+#endif
+            break; // no need for further sampling
+          }
+        }
+        else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
+        {
+#ifdef MC_DEBUG
+          std::cout << "SemStrategy::run, invalid initialization" << std::endl;
+#endif
+          std::stringstream sstm;
+          sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
+               << "trial is: " << std::endl
+               << sWarn;
+          return sstm.str();
+        }
       }
+      doInit = false; // initialization should only been carried once (only exception is a switch of sampler)
     }
 
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, SEM burn-in" << std::endl;
 #endif
+
+    RunProblemType burnInProb;
     tryWarn = p_burnInAlgo_->run(burnIn_,
-                                 currDeg,
+                                 burnInProb,
+                                 sampler,
                                  0, // group
                                  3); // groupMax
-    if (currDeg != noDeg_)
+    if (burnInProb == weakDegeneracy_)
     {
-      ++DegCount(currDeg);
+#ifdef MC_DEBUG
+      std::cout << "SemStrategy::run, weak degeneracy" << std::endl;
+#endif
+      ++nbDegeneracy;
       std::stringstream sstm;
-      sstm << "SemStrategy error, SEM burn-in, "
-           << "nb soft degeneracies: " << DegCount(lightDeg_) << ", "
-           << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl
+      sstm << "SemStrategy error, SEM burn-in, nbDegeneracy: " << nbDegeneracy << std::endl
            << tryWarn;
       allWarn += sstm.str(); // append warning to global warning
+
 #ifdef MC_DEBUG
         std::cout << sstm.str() << std::endl;
 #endif
+
       continue; // make another try
+    }
+    else if (burnInProb == invalidSampler_)
+    {
+#ifdef MC_VERBOSE
+      std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
+#endif
+
+      doInit = true; // everything must be reinitialized so that the new sampler starts from a valid state
+      nbDegeneracy = 0; // reinitialize the number of soft degeneracies
+      sampler = GibbsSampler_; // switch to Gibbs sampling
+      continue;
     }
 
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, SEM run" << std::endl;
 #endif
-    tryWarn = p_longAlgo_->run(run_,
-                               currDeg,
-                               1, // group
-                               3); // groupMax
-    if (currDeg != noDeg_)
+
+    RunProblemType runProb;
+    tryWarn = p_runAlgo_->run(run_,
+                              runProb,
+                              sampler,
+                              1, // group
+                              3); // groupMax
+    if (runProb == weakDegeneracy_)
     {
-      ++DegCount(currDeg);
+      ++nbDegeneracy;
       std::stringstream sstm;
-      sstm << "SemStrategy error, SEM run, "
-           << "nb soft degeneracies: " << DegCount(lightDeg_) << ", "
-           << "nb strong degeneracies: " << DegCount(strongDeg_) << std::endl
+      sstm << "SemStrategy error, SEM run, nbDegeneracy: " << nbDegeneracy << std::endl
            << tryWarn;
       allWarn += sstm.str(); // append warning to global warning
+
 #ifdef MC_DEBUG
         std::cout << sstm.str() << std::endl;
 #endif
+
       continue; // make another try
+    }
+    else if (runProb == invalidSampler_)
+    {
+#ifdef MC_VERBOSE
+      std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
+#endif
+
+      doInit = true; // all the variables must be reinitialized, as there are currently in an invalid state
+      nbDegeneracy = 0; // reinitialize the number of soft degeneracies
+      sampler = GibbsSampler_; // switch to Gibbs sampling
+      continue;
     }
   
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, Gibbs burn-in" << std::endl;
 #endif
+
     Timer myTimer;
     myTimer.setName("Gibbs burn-in");
     for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
@@ -187,17 +214,20 @@ std::string SemStrategy::run()
                     3,
                     iterBurnInGibbs,
                     nbGibbsBurnInIter_ - 1);
+
   #ifdef MC_DEBUG
       std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
   #endif
-      p_composer_->sStep();
-      p_composer_->samplingStep();
+
+      p_composer_->sStepNoCheck();
+      p_composer_->samplingStepNoCheck();
       p_composer_->eStep();
     }
 
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, Gibbs run" << std::endl;
 #endif
+
     p_composer_->gibbsSampling(nbGibbsIter_,
                                3, // group
                                3); // groupMax

@@ -34,21 +34,32 @@
 namespace mixt
 {
 
+class IMixture;
+
 class GaussianSampler
 {
   public:
-    GaussianSampler(AugmentedData<Vector<Real> >& augData,
+    GaussianSampler(const IMixture& mixture,
+                    AugmentedData<Vector<Real> >& augData,
                     const Vector<Real>& param,
                     int nbClass);
-    ~GaussianSampler();
+
     /** Sample new values for the missing variables of the given individual */
-    void sampleIndividual(int i, int z_i);
+    void samplingStepCheck  (int i,
+                             int z_i);
+    void samplingStepNoCheck(int i,
+                             int z_i);
   private:
+    const IMixture& mixture_;
+
     AugmentedData<Vector<Real> >& augData_;
+
     const Vector<Real>& param_;
 
     UniformStatistic uniform_;
+
     NormalStatistic normal_;
+
     ExponentialStatistic exponential_;
 };
 

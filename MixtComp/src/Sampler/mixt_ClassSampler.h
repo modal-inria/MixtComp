@@ -31,18 +31,37 @@
 namespace mixt
 {
 
+class MixtureComposer; // forward declaration, as MixtureComposer has a ClassSampler member instance
+
 class ClassSampler
 {
   public:
-    ClassSampler(AugmentedData<Vector<int> >& zi,
+    ClassSampler(const MixtureComposer& composer,
+                 AugmentedData<Vector<int> >& zi,
                  const Matrix<Real>& tik,
                  int nbClass);
-    ~ClassSampler();
-    /** Sample new values for the missing variables of the given individual */
-    void sampleIndividual(int i);
+
+    /**
+     * Sample new values for the missing variables of the given individual. Using MixtureComposer::checkSampleCondition
+     * to check if each value of z_i is valid or not. Used during sampling, and false during rejection sampling
+     * @param i individual for which z must be sampled
+     * */
+    void sStepCheck  (int i);
+
+    /**
+     * Sample new values for the missing variables of the given individual. Do not uses MixtureComposer::checkSampleCondition
+     * to speed-up the sampling process. Used during rejection sampling.
+     * @param i individual for which z must be sampled
+     * */
+    void sStepNoCheck(int i);
   private:
+    /** Constant pointer to the composer of which this ClassSampler is a member of */
+    const MixtureComposer& composer_;
+
     int nbClass_;
+
     AugmentedData<Vector<int> >& zi_;
+
     const Matrix<Real>& tik_;
 
     MultinomialStatistic multi_;

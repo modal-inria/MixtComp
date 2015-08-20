@@ -29,28 +29,24 @@
 
 namespace mixt
 {
-const int maxLightDegTry = 100; // max number of light degeneracies allowed in a strategy run
-const int maxStrongDegTry = 10; // max number of strong degeneracies allowed in a strategy run
+const int maxWeakDegeneracyTrial = 100;
+const int nbSamplingAttempts = 10000;
 
-const Real minStat = 1.e-5; // threshold to have equiprobabilities in categorical sampler
-const int minIndPerClass = 3; // minimal number of individual in a class to accept a z sampling
-const int nbSamplingAttempts = 20; // number of sampling attempts, when not enough individuals are sampled
+const Real epsilon = 1.e-8;
+const Real logEpsilon = std::log(epsilon);
 
-const Real epsilon = 1.e-8; // very small value of real to check for near zero values
-const Real logEpsilon = std::log(epsilon); // log of very small value
+const int minModality = 1;
+const int minIndPerClass = 1;
+const Real pi = 3.141592653589793;
+const Real l2pi = 0.9189385332046727417;
+const int nbClusterMax = 30;
+const std::string progressFile = "progress";
+const Real minInf = std::log(0.);
 
-const int minModality = 1; // minimal modality for categorical models
-const Real pi = 3.141592653589793; // pi
-const Real l2pi = 0.9189385332046727417; // constant used in pdf computation for normal law, 1/2 * log(2 * pi)
-const int minNbPresentValues = 3; // minimum number of present values for a given variable below which data is considered uninformative
-const int nbClusterMax = 30; // maximum number of clusters that can be asked
-const std::string progressFile = "progress"; // progress file name
-const Real minInf = std::log(0.); // value of log(0)
-
-const int sizeTupleBOS = 2; // default size of tuple for Gibbs sampling in BOS model
-const int nbSampleBOS = 200000; // number of sample per class to estimate the observed probability
-const int nbGibbsIniBOS = 1000; // number of Gibbs sampling rounds in initialization to increase variability on z
-const Real piInitBOS = 0.99; // value of pi used in Gibbs for initialization
-const Real piThreshold = 0.005; //threshold on pi to detect degeneracy. Too high and classes are badly estimated, too low and individuals can not change class easily.
+const int sizeTupleBOS = 2;
+const int nbSampleBOS = 200000;
+const int nbGibbsIniBOS = 1000;
+const Real piInitBOS = 0.99;
+const Real piThreshold = 0.05;
 
 } // namespace mixt

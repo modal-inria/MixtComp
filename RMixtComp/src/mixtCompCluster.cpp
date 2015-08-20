@@ -24,6 +24,7 @@
 #include "mixt_DataHandlerR.h"
 #include "mixt_DataExtractorR.h"
 #include "mixt_ParamExtractorR.h"
+#include "mixt_Function.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 #include "MixtComp/src/IO/mixt_ParamSetterDummy.h"
 #include "MixtComp/src/Various/mixt_Def.h"
@@ -35,7 +36,7 @@
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List dataList,
                            Rcpp::List mcStrategy,
-                           int nbClusters,
+                           int nbClass,
                            double confidenceLevel)
 {
   mixt::Timer totalTimer("Total Run");
@@ -73,11 +74,11 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
                                                       confidenceLevel,
                                                       warnLog);
 
-  if (nbClusters < 0 || mixt::nbClusterMax < nbClusters)
+  if (nbClass < 0 || mixt::nbClusterMax < nbClass)
   {
     std::stringstream sstm;
     sstm << "Number of classes must be comprised between 1 and " << mixt::nbClusterMax
-         << ". The provided value, " << nbClusters << " does not comply." << std::endl;
+         << ". The provided value, " << nbClass << " does not comply." << std::endl;
     warnLog += sstm.str();
   }
 
@@ -98,13 +99,12 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
   if (warnLog.size() == 0) // data is correct in descriptors, proceed with reading
   {
     mixt::MixtureComposer composer(handler.nbSample(),
-                                   handler.nbVariable(),
-                                   nbClusters,
+                                   nbClass,
                                    confidenceLevel);
 
     mixt::Timer readTimer("Read Data");
     warnLog += manager.createMixtures(composer,
-                                      nbClusters);
+                                      nbClass);
     warnLog += composer.setDataParam<mixt::ParamSetterDummy,
                                      mixt::DataHandlerR>(paramSetter,
                                                          handler,
@@ -118,8 +118,7 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
                                  mcStrategy["nbBurnInIter"], // number of burn-in iterations
                                  mcStrategy["nbIter"], // number of iterations
                                  mcStrategy["nbGibbsBurnInIter"], // number of iterations for Gibbs sampler
-                                 mcStrategy["nbGibbsIter"], // number of iterations for Gibbs sampler
-                                 mixt::nbSamplingAttempts); // number of sampling attempts for lowly populated classes
+                                 mcStrategy["nbGibbsIter"]); // number of iterations for Gibbs sampler
 
       // run the strategy
       mixt::Timer stratTimer("Strategy Run");
@@ -134,7 +133,7 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
                                                         paramExtractor);
 
         // export the composer results to R through modifications of mcResults
-        mcMixture["nbCluster"] = nbClusters;
+        mcMixture["nbCluster"] = nbClass;
         mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
         mixt::Real lnObsLik = composer.lnObservedLikelihood();
         mixt::Real lnCompLik = composer.lnCompletedLikelihood();
@@ -142,12 +141,16 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
         mcMixture["lnObservedLikelihood"] = lnObsLik;
         mcMixture["lnSemiCompletedLikelihood"] = lnSemiCompLik;
         mcMixture["lnCompletedLikelihood"] = lnCompLik;
-        mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
-        mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbSample());
+        mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+        mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
 
         mcMixture["runTime"] = totalTimer.top("end of run");
-        mcMixture["nbSample"] = composer.nbSample();
+        mcMixture["nbInd"] = composer.nbInd();
         mcMixture["mode"] = "learn";
+
+        Rcpp::NumericMatrix idc;
+        mixt::IDClass(composer, idc);
+        mcMixture["IDClass"] = idc;
       }
     }
   }

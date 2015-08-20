@@ -23,21 +23,88 @@
 
 #include "mixt_CategoricalSampler.h"
 #include "../Various/mixt_Constants.h"
+#include "../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {
-CategoricalSampler::CategoricalSampler(AugmentedData<Vector<int> >& augData,
+CategoricalSampler::CategoricalSampler(const IMixture& mixture,
+                                       AugmentedData<Vector<int> >& augData,
                                        const Vector<Real>& param,
                                        int nbClass) :
+    mixture_(mixture),
     nbClass_(nbClass),
     augData_(augData),
     param_(param)
 {}
 
-CategoricalSampler::~CategoricalSampler()
-{}
+void CategoricalSampler::samplingStepCheck(int i,
+                                           int z_i)
+{
+#ifdef MC_DEBUG
+  std::cout << "CategoricalSampler::sampleIndividual" << std::endl;
+  std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
+#endif
 
-void CategoricalSampler::sampleIndividual(int i, int z_i)
+  if (augData_.misData_(i).first != present_)
+  {
+    int sampleVal;
+    int nbModalities = param_.rows() / nbClass_;
+
+#ifdef MC_DEBUG
+    std::cout << "CategoricalSampler::sampleIndividual" << std::endl;
+    std::cout << "i: " << i << ", z_i: " << z_i << std::endl;
+#endif
+
+    switch(augData_.misData_(i).first)
+    {
+      case missing_:
+      {
+        Vector<Real> modalities(nbModalities);
+        for (augData_.data_(i) = 0; augData_.data_(i) < nbModalities; ++augData_.data_(i)) // augData_.data_(i) changed in place to take all possible values
+        {
+          modalities(augData_.data_(i)) = param_(z_i * nbModalities + augData_.data_(i)) * mixture_.checkSampleCondition(); // checkSampleCondition value is 1 or 0, reflecting the fact that conditions on data are verified or not
+        }
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
+      }
+      break;
+
+      case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
+      {
+        Vector<Real> modalities(nbModalities, 0.);
+
+        for(std::vector<int>::const_iterator currMod = augData_.misData_(i).second.begin();
+            currMod != augData_.misData_(i).second.end();
+            ++currMod)
+        {
+#ifdef MC_DEBUG
+          std::cout << "\tcurrMod: " << *currMod << std::endl;
+          std::cout << "z_i * nbModalities + *currMod: " << z_i * nbModalities + *currMod << ", param_.size(): " << param_.size() << std::endl;
+          std::cout << "*currMod: " << *currMod << ", modalities.size(): " << modalities.size() << std::endl;
+#endif
+          augData_.data_(i) = *currMod;
+          modalities(*currMod) = param_(z_i * nbModalities + *currMod) * mixture_.checkSampleCondition();
+        }
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
+
+      }
+      break;
+
+      default:
+      {
+#ifdef MC_DEBUG
+          std::cout << "CategoricalSampler, missing value type unknown" << std::endl;
+#endif
+      }
+      break;
+    }
+    augData_.data_(i) = sampleVal;
+  }
+}
+
+void CategoricalSampler::samplingStepNoCheck(int i,
+                                             int z_i)
 {
 #ifdef MC_DEBUG
   std::cout << "CategoricalSampler::sampleIndividual" << std::endl;
@@ -68,9 +135,6 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
         Vector<Real> modalities(nbModalities);
         modalities = 0.;
 
-        Vector<Real> equiModalities(nbModalities);
-        equiModalities = 0.;
-
         for(std::vector<int>::const_iterator currMod = augData_.misData_(i).second.begin();
             currMod != augData_.misData_(i).second.end();
             ++currMod)
@@ -81,19 +145,10 @@ void CategoricalSampler::sampleIndividual(int i, int z_i)
           std::cout << "*currMod: " << *currMod << ", modalities.size(): " << modalities.size() << std::endl;
 #endif
           modalities(*currMod) = param_(z_i * nbModalities + *currMod);
-          equiModalities(*currMod) = 1.;
         }
-        Real modSum = modalities.sum();
-        if (modSum < minStat)
-        {
-          equiModalities = equiModalities / equiModalities.sum();
-          sampleVal = multi_.sample(equiModalities);
-        }
-        else
-        {
-          modalities = modalities / modalities.sum();
-          sampleVal = multi_.sample(modalities);
-        }
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
+
       }
       break;
 

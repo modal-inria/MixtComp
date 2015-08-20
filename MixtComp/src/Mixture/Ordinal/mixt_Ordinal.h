@@ -104,15 +104,6 @@ class Ordinal : public IMixture
       {
         if (mode == learning_)
         {
-          if (augData_.misCount_(present_) < minNbPresentValues) // Any variable with less than three samples will be rejected as not providing enough information for learning
-          {
-            std::stringstream sstm;
-            sstm << "Variable: " << idName() << " only has " << augData_.misCount_(present_)
-                 << " present values. Maybe there is an error in the data encoding. If the variable truly has less than "
-                 << minNbPresentValues
-                 << " present values, it should be removed from the study as it does not provide enough information." << std::endl;
-            warnLog += sstm.str();
-          }
           nbModalities_ = augData_.dataRange_.max_ + 1; // since an offset has been applied during getData, modalities are 0-based
         }
         else // prediction mode
@@ -201,105 +192,77 @@ class Ordinal : public IMixture
       }
     }
 
-    virtual void samplingStep(int ind)
+    virtual void samplingStepCheck(int ind)
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::samplingStep" << std::endl;
       std::cout << "ind: " << ind << std::endl;
       std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
 #endif
-      if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
-      {
-        path_(ind).forwardSamplePath(mu_((*p_zi_)(ind)),
-                                     pi_((*p_zi_)(ind)));
-      }
-      else // perform one round of Gibbs sampler for the designated individual
-      {
-        path_(ind).samplePath(mu_((*p_zi_)(ind)),
-                              pi_((*p_zi_)(ind)),
-                              sizeTupleBOS);
-      }
+
+      GibbsSampling(ind,
+                    mu_((*p_zi_)(ind)),
+                    pi_((*p_zi_)(ind)),
+                    false); // in samplingStepCheck, each sampling must result in a valid state
       augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
-    virtual std::string mStep(DegeneracyType& deg)
+    virtual void samplingStepNoCheck(int ind)
     {
 #ifdef MC_DEBUG
+      std::cout << "Ordinal::samplingStep" << std::endl;
+      std::cout << "ind: " << ind << std::endl;
+      std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
+#endif
+
+      GibbsSampling(ind,
+                    mu_((*p_zi_)(ind)),
+                    pi_((*p_zi_)(ind)),
+                    true); // in samplingStepCheck, allZOneAuthorized, no check on number of z values during samplingStepNoCheck
+      augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
+    }
+
+    virtual std::string mStep()
+    {
+#ifdef MC_DEBUGNEW
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
+      std::cout << "augData_.data_: " << augData_.data_.transpose() << std::endl;
+      std::cout << "zi_           : " << p_zi_->transpose() << std::endl;
 #endif
 
       std::string warnLog;
 
-      pi_ = 0.; // pi_ parameter is reinitialized
-      Vector<Real> nodePerClass(nbClass_); // total number of nodes in a class
-      nodePerClass = 0.; // counting the number of individual per class
-      Vector<Real> zPerClass(nbClass_);
-      zPerClass = 0.;
-      for (int i = 0; i < nbInd_; ++i)
-      {
-#ifdef MC_DEBUG
-        std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << ", path_(i).nbZ(): " << path_(i).nbZ() << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
-#endif
-
-        int indClass = (*p_zi_)(i);
-        nodePerClass(indClass) += path_(i).nbNode_; // add all nodes of the individual
-        zPerClass(indClass) += path_(i).nbZ(); // add only z = 1 nodes of the individual
-      }
-
-#ifdef MC_DEBUG
-        std::cout << "nodePerClass" << std::endl;
-        std::cout << nodePerClass << std::endl;
-        std::cout << "zPerClass" << std::endl;
-        std::cout << zPerClass << std::endl;
-#endif
-
-      pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
+      mStepPi();
 
       for (int k = 0; k < nbClass_; ++k) // reboot degenerate classes
       {
         if (pi_(k) < piThreshold) // if piThreshold is too high, and a class has a high value of pi, individuals with z = 0 will be unable to switch, even if they belong to the new class
         {
-
 #ifdef MC_DEBUG
           std::cout << "Ordinal::mStep, class " << k << " has 0-degenerated" << std::endl;
-#endif
-          sampleMuFreq(k, true);
-          std::stringstream sstm;
-          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << "."<< std::endl;
-          warnLog += sstm.str();
-          deg = lightDeg_; // this is a normal degeneracy for this model
-#ifdef MC_VERBOSE
-          std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 0" << std::endl;
-#endif
-        }
-
-        if (pi_(k) > 1. - piThreshold)
-        {
-#ifdef MC_DEBUG
-          std::cout << "Ordinal::mStep, class " << k << " has 1-degenerated" << std::endl;
-#endif
           for (int i = 0; i < nbInd_; ++i)
           {
             if ((*p_zi_)(i) == k)
             {
-  #ifdef MC_DEBUG
-              std::cout << "1-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << std::endl;
-  #endif
+              std::cout << "i: " << i << ", zPerClass(k): " << zPerClass(k) << std::endl;
             }
           }
+#endif
+
+          sampleMuFreq(k, true); // current mu is prohibited by "true" flag
+          mStepPiK(k); // new maximum likelihood estimation of pi, only for the 0-degenerated class
+
           std::stringstream sstm;
-          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". "
-               << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
+          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << "."<< std::endl;
           warnLog += sstm.str();
-          deg = strongDeg_; // this degeneracy is not normal for the model and must be reported as such
+
 #ifdef MC_VERBOSE
-          std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 1" << std::endl;
+          std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 0" << std::endl;
 #endif
         }
       }
 
-      Matrix<Real> logLik(nbClass_, nbModalities_);
-      logLik = 0.;
+      Matrix<Real> logLik(nbClass_, nbModalities_, 0.);
 
       for (int mu = 0; mu < nbModalities_; ++mu) // mu obtained from maximization over all possible values
       {
@@ -319,14 +282,12 @@ class Ordinal : public IMixture
         mu_(k) = maxLik;
       }
 
-#ifdef MC_DEBUG
-      std::cout << "End of Ordinal::mStep" << std::endl;
+#ifdef MC_DEBUGNEW
+      std::cout << "Ordinal::mStep" << std::endl;
       std::cout << "logLik: " << std::endl;
       std::cout << logLik << std::endl;
-      std::cout << "mu_" << std::endl;
-      std::cout << mu_ << std::endl;
-      std::cout << "pi_" << std::endl;
-      std::cout << pi_ << std::endl;
+      std::cout << "mu_" << mu_.transpose() << std::endl;
+      std::cout << "pi_" << pi_.transpose() << std::endl;
 #endif
 
       return warnLog;
@@ -347,14 +308,15 @@ class Ordinal : public IMixture
         piParamStatComputer_.setExpectationParam(); // estimate pi parameter using mode / expectation
         computeObservedProba(); // compute observed probabilities using estimated parameters
 
-        for (int i = 0; i < nbInd_; ++i) // Gibbs to avoid null proba of individuals, since the parameters have been changed by setExpectationParam()
+        for (int i = 0; i < nbInd_; ++i) // Gibbs to avoid null proba of individuals, since the parameters have been changed by setExpectationParam(), which does not perform a maximum likelihood estimate
         {
-          path_(i).initPath();
+          path_(i).initPath(); // reinitialization
           for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
           {
-            path_(i).samplePath(mu_((*p_zi_)(i)), // mu
-                                pi_((*p_zi_)(i)), // pi
-                                sizeTupleBOS); // sizeTuple
+            GibbsSampling(i,
+                          mu_((*p_zi_)(i)), // mu
+                          pi_((*p_zi_)(i)), // pi
+                          true); // allZOneAuthorized, contrarily to sampleMuFreq, in storeSEMRun those samplings occur before the global Gibbs sampler, and having all latent values at is not a problem
           }
         }
       }
@@ -363,17 +325,19 @@ class Ordinal : public IMixture
     void computeObservedProba()
     {
       observedProba_.resize(nbClass_, nbModalities_);
-      BOSPath samplePath; // BOSPath used for the various samplings
-      samplePath.setInit(0, nbModalities_ - 1);
+      BOSPath path; // BOSPath used for the various samplings
+      path.setInit(0, nbModalities_ - 1);
       for (int k = 0; k < nbClass_; ++k)
       {
         RowVector<Real> nbInd(nbModalities_); // observed frequencies
-        samplePath.setEnd(k, k);
+        path.setEnd(k, k);
         nbInd = 0;
         for (int i = 0; i < nbSampleBOS; ++i)
         {
-          samplePath.forwardSamplePath(mu_(k), pi_(k)); // complete the individual
-          nbInd(samplePath.c_(nbModalities_ - 2).e_(0)) += 1.; // register the x value, for marginalization
+          path.forwardSamplePath(mu_(k), // complete the individual
+                                 pi_(k),
+                                 true); // allZOneAuthorized, to estimate probability distribution, all z can be sampled to 1
+          nbInd(path.c_(nbModalities_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / nbSampleBOS;
       }
@@ -507,9 +471,6 @@ class Ordinal : public IMixture
 
     void removeMissing()
     {
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::removeMissing" << std::endl;
-#endif
       for (int i = 0; i < nbInd_; ++i)
       {
         path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
@@ -521,14 +482,7 @@ class Ordinal : public IMixture
       }
 
 #ifdef MC_DEBUG
-      std::cout << "prop: " << std::endl;
-      std::cout << prop << std::endl;
-      std::cout << "muIni:" << std::endl;
-      std::cout << muIni << std::endl;
-      std::cout << "piIni:" << std::endl;
-      std::cout << piIni << std::endl;
-      std::cout << "(*p_zi_):" << std::endl;
-      std::cout << (*p_zi_) << std::endl;
+      std::cout << "Ordinal::removeMissing, mu_: " << mu_.transpose() << std::endl;
 #endif
 
       for (int i = 0; i < nbInd_; ++i)
@@ -542,9 +496,10 @@ class Ordinal : public IMixture
             BOSDisplayPath(path_(i));
           }
 #endif
-          path_(i).samplePath(mu_((*p_zi_)(i)), // mu
-                              piInitBOS, // pi
-                              sizeTupleBOS); // sizeTuple
+          GibbsSampling(i,
+                        mu_((*p_zi_)(i)),
+                        piInitBOS,
+                        true); // in initialization, checkSampleCondition is called globally just after the removeMissing, so no need for early check
         }
       }
     };
@@ -559,6 +514,38 @@ class Ordinal : public IMixture
       at(4) = false;// missingLUIntervals_,
       at(5) = false;// missingRUIntervals_,
       return at;
+    }
+
+    int checkSampleCondition(std::string* warnLog = NULL) const
+    {
+      int proba = 1;
+
+      Vector<int> allZOne(nbClass_, 1); // is there at least a z non equal to 1 in one individual in each class ?
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        allZOne((*p_zi_)(i)) *= path_(i).allZOne();
+      }
+
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        if (allZOne(k) == 1)
+        {
+          if (warnLog == NULL)
+          {
+            proba = 0;
+          }
+          else
+          {
+            std::stringstream sstm;
+            sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". "
+                 << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
+            *warnLog += sstm.str();
+            proba = 0;
+          }
+        }
+      }
+
+      return proba;
     }
 
   private:
@@ -580,9 +567,8 @@ class Ordinal : public IMixture
         }
       }
 
-#ifdef MC_DEBUG
-      std::cout << "total freqMod: " << std::endl;
-      std::cout << freqMod << std::endl;
+#ifdef MC_DEBUGNEW
+      std::cout << "Ordinal::sampleMuFreq, k: " << k << ", freqMod: " << freqMod.transpose() << std::endl;
 #endif
 
       if (prohibitCurrentMu == true)
@@ -612,12 +598,97 @@ class Ordinal : public IMixture
 #ifdef MC_DEBUG
             std::cout << "n: " << n << std::endl;
 #endif
-            path_(i).samplePath(mu_(k), // mu
-                                pi_(k), // pi
-                                sizeTupleBOS); // sizeTuple
+            GibbsSampling(i,
+                          mu_(k),
+                          pi_(k),
+                          false); // this is called during SEM, and a state compatible with a Gibbs must be sampled.
           }
         }
       }
+    }
+
+    /**
+     * Perform one iteration of Gibbs sampling, insuring proper implementation of allZOneAuthorized flag
+     *
+     * @param allZOneAuthorized can this individual have all is z at 1, or must it have at least one z at 0 ?
+     * */
+    void GibbsSampling(int ind,
+                       int mu,
+                       Real pi,
+                       bool allZOneAuthorized)
+    {
+      bool azo = true; // flag for this particular individual, by default all z = 1 are authorized
+
+      if (!allZOneAuthorized)
+      {
+        int allOtherZOne = 1; // are the z in all other individuals in the same class at 1 ?
+        for (int i = 0; i < nbInd_; ++i)
+        {
+          if (i != ind && (*p_zi_)(i) == (*p_zi_)(ind))
+          {
+            allOtherZOne *= path_(i).allZOne();
+          }
+        }
+        (allOtherZOne == 1) ? (azo = false) : (azo = true); // all z = 1 authorized if at least one other individual in the class has not all z = 1
+      }
+
+      if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
+      {
+        path_(ind).forwardSamplePath(mu,
+                                     pi,
+                                     azo);
+      }
+      else // perform one round of Gibbs sampler for the designated individual
+      {
+        path_(ind).samplePath(mu_((*p_zi_)(ind)),
+                              pi_((*p_zi_)(ind)),
+                              sizeTupleBOS,
+                              azo);
+      }
+    }
+
+    /**
+     * Estimation of pi by maximum likelihood in all classes
+     * */
+    void mStepPi()
+    {
+      pi_ = 0.; // pi_ parameter is reinitialized
+
+      Vector<Real> nodePerClass(nbClass_, 0.); // total number of nodes in each class
+      Vector<Real> zPerClass   (nbClass_, 0.); // total of nodes with z = 1 in each class
+
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        int indClass = (*p_zi_)(i);
+        nodePerClass(indClass) += path_(i).nbNode_; // add all nodes of the individual
+        zPerClass(indClass) += path_(i).nbZ(); // add only z = 1 nodes of the individual
+      }
+
+      pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
+    }
+
+    /**
+     * Estimation of pi by maximum likelihood in a particular class
+     *
+     * @param k class for which the parameter pi should be estimated
+     * */
+    void mStepPiK(int k)
+    {
+      pi_(k) = 0.; // pi_ parameter is reinitialized for the current class
+
+      Real nodePerClass = 0.; // total number of nodes in class k
+      Real zPerClass    = 0.; // total of nodes with z = 1 in class k
+
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        if ((*p_zi_)(i) == k)
+        {
+          nodePerClass += path_(i).nbNode_; // add all nodes of the individual
+          zPerClass    += path_(i).nbZ(); // add only z = 1 nodes of the individual
+        }
+      }
+
+      pi_(k) = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
     }
 
     /** Pointer to the zik class label */

@@ -38,8 +38,6 @@ class PoissonLikelihood
     PoissonLikelihood(const Vector<Real>& param,
                       const AugmentedData<Vector<int> >& augData,
                       int nbClass);
-    /** Destructor */
-    virtual ~PoissonLikelihood();
 
     /** Compute the completed log-likelihood */
     Real lnCompletedProbability(int i, int k);

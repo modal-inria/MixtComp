@@ -1,0 +1,30 @@
+\documentclass{article}
+\title{MixtComp Programmer Guide}
+\author{Vincent KUBICKI}
+\date{17th August 2015}
+
+\begin{document}
+
+\maketitle
+
+\section{Linear Algebra}
+
+MixtComp abstracts dependance on an underlying numerical algebra library through the use of a mixt_LinAlg.h include. The current backed is Eigen, which is provided in the MixtComp package. The Matrix API is used, and capabilities from the Array API are provided mainly in the file mixt_EigenMatrixBaseAddons.h . This is necessary to avoid cWiseXXX() or .array() syntax. Hence the current API is a mix of both Eigen Matrix and Eigen Array API, to provide the most readable code possible.
+
+\subsection{Updating Eigen}
+
+To update Eigen, the following sequence must be followed:
+
+\begin{itemize}
+\item switch to the Eigen branch of the git repository
+\item update Eigen
+\item switch back to the main branch and merge
+\end{itemize}
+
+This is necessary because Eigen needs to be patched to be used in MixtComp, and the patching is performed during the merge operation. This way, the Eigen branch is very simple and only consists of the direct updates on Eigen. When updating Eigen, simply delete the content of the eigen directory, but be careful not to delete the .cproject file (or any .xxx file / directory for that matter). This file is not part of the Eigen project, and is used by Eclipse to track Eigen as a project in the MixtComp workspace.
+
+\section{Statistics}
+
+\section{To Do}
+
+\end{document}

@@ -51,8 +51,8 @@ std::string GibbsStrategy::run()
   {
     return warnLog;
   }
-  p_composer_->sStep(); // class are sampled using the observed probabilities, no minimum number of individual per class is required in prediction
-  p_composer_->samplingStep(); // in prediction, parameters are know, samplingStep is used instead of removeMissing
+  p_composer_->sStepNoCheck(); // class are sampled using the observed probabilities, no condition has to be verified on the sample
+  p_composer_->samplingStepNoCheck(); // in prediction, parameters are known, samplingStep is used instead of removeMissing. No condition has to be verified on the sample.
 
   Timer myTimer;
   myTimer.setName("Gibbs: burn-in");
@@ -67,8 +67,8 @@ std::string GibbsStrategy::run()
     std::cout << "GibbsStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
 #endif
     p_composer_->eStep();
-    p_composer_->sStep();
-    p_composer_->samplingStep();
+    p_composer_->sStepNoCheck();
+    p_composer_->samplingStepNoCheck();
   }
 
   p_composer_->gibbsSampling(nbIterGibbs_,

@@ -23,8 +23,82 @@
 
 #include "gtest/gtest.h"
 #include "../src/LinAlg/mixt_LinAlg.h"
+#include "../src/Statistic/mixt_UniformStatistic.h"
 
 using namespace mixt;
+
+/** Coefficient-wise substract a vector to a scalar */
+TEST(Vector, SubScalar)
+{
+  int nbTest = 10;
+  int nbInd = 10;
+  Vector<bool> testCorrect(nbTest, false);
+
+  Real bound = 1.e8;
+
+  UniformStatistic uni;
+
+  for (int t = 0; t < nbTest; ++t)
+  {
+    Real scalar = uni.sample(- bound,
+                               bound);
+    Vector<Real> vector(nbInd);
+    Vector<Real> expectedSub(nbInd);
+
+    for (int i = 0; i < nbInd; ++i)
+    {
+      vector(i) = uni.sample(- bound,
+                               bound);
+      expectedSub(i) = scalar - vector(i);
+    }
+
+    testCorrect = ((scalar - vector) == expectedSub);
+  }
+
+ASSERT_EQ(testCorrect, true);
+}
+
+/** Coefficient-wise inverse of a vector */
+TEST(Vector, CoeffInv)
+{
+  Vector<Real> vecA(3);
+  vecA << 1., 3., 7.;
+  Vector<Real> vecB(3);
+  vecB << 1. / 1., 1. / 3., 1. / 7.;
+
+  EXPECT_TRUE(vecA.cInv().isApprox(vecB));
+}
+
+TEST(Vector, QuotientScalar)
+{
+  Vector<Real> vecA(3);
+  vecA << 1., 3., 7.;
+  Vector<Real> vecB(3);
+  vecB << 0.5, 1.5, 3.5;
+
+  EXPECT_TRUE((vecA / 2).isApprox(vecB));
+}
+
+TEST(Vector, ScalarQuotient)
+{
+  Vector<Real> vecA(3);
+  vecA << 1., 3., 7.;
+  Vector<Real> vecB(3);
+  vecB << 2. / 1., 2. / 3., 2. / 7.;
+
+  EXPECT_TRUE((2 / vecA).isApprox(vecB));
+}
+
+/** Coefficient-wise add a scalar to a vector */
+TEST(Vector, AddScalar)
+{
+  Vector<Real> vecA(3);
+  vecA << 1., 3., 7.;
+  Vector<Real> vecB(3);
+  vecB << 3., 5., 9.;
+
+  EXPECT_TRUE((2. + vecA).isApprox(vecB));
+}
 
 // Test double inversion of a matrix
 TEST(Matrix, Inversion)

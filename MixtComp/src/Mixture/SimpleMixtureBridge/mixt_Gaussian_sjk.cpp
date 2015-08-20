@@ -30,15 +30,15 @@
 namespace mixt
 {
 
-Gaussian_sjk::Gaussian_sjk(int nbCluster,
+Gaussian_sjk::Gaussian_sjk(int nbClass,
                            Vector<Real>& param,
                            Vector<int> const* p_zi) :
-    nbCluster_(nbCluster),
+    nbClass_(nbClass),
     param_(param),
     p_data_(0),
     p_zi_(p_zi)
 {
-  param_.resize(2 * nbCluster);
+  param_.resize(2 * nbClass);
 }
 
 Vector<bool> Gaussian_sjk::acceptedType() const
@@ -65,7 +65,7 @@ bool Gaussian_sjk::checkMinVal() const
 
 int Gaussian_sjk::computeNbFreeParameters() const
 {
-  return 2 * nbCluster_;
+  return 2 * nbClass_;
 }
 
 bool Gaussian_sjk::hasModalities() const
@@ -88,7 +88,7 @@ std::string Gaussian_sjk::model() const
   return "Gaussian_sjk";
 }
 
-std::string Gaussian_sjk::mStep(DegeneracyType& deg)
+std::string Gaussian_sjk::mStep()
 {
   std::string warn;
 #ifdef MC_DEBUG
@@ -99,7 +99,7 @@ std::string Gaussian_sjk::mStep(DegeneracyType& deg)
   std::cout << "(*p_data_): " << (*p_data_) << std::endl;
 #endif
 
-  for (int k = 0; k < nbCluster_; ++k)
+  for (int k = 0; k < nbClass_; ++k)
   {
     Real mean = 0.;
     Real sd = 0.;
@@ -131,29 +131,6 @@ std::string Gaussian_sjk::mStep(DegeneracyType& deg)
     std::cout << "\tepsilon: " << epsilon << std::endl;
 #endif
 
-    if (sd < epsilon)
-    {
-#ifdef MC_DEBUG
-      std::cout << "\tnull estimated standard deviation" << std::endl;
-      std::cout << "(*p_data_): " << (*p_data_) << std::endl;
-
-      for (int i = 0; i < (*p_data_).rows(); ++i)
-      {
-        if ((*p_zi_)[i] == k)
-        {
-          std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i): " << (*p_data_)(i) << std::endl;
-        }
-      }
-#endif
-      std::stringstream sstm;
-      sstm << "Gaussian mixture model must have a non null standard deviation in each class. A class with estimated mean = "
-           << mean << " containing " << n << " samples has an estimated standard deviation of 0."
-           << " The data is not dispersed enough and values close to this mean might be repeated too often."
-           << " Is this the case ? Have you considered using a Poisson model if you are counting occurrences of events ?" << std::endl;
-      warn += sstm.str();
-      deg = strongDeg_;
-    }
-
     param_(2 * k    ) = mean;
     param_(2 * k + 1) = sd;
   }
@@ -166,8 +143,8 @@ std::string Gaussian_sjk::mStep(DegeneracyType& deg)
 
 std::vector<std::string> Gaussian_sjk::paramNames() const
 {
-  std::vector<std::string> names(nbCluster_ * 2);
-  for (int k = 0; k < nbCluster_; ++k)
+  std::vector<std::string> names(nbClass_ * 2);
+  for (int k = 0; k < nbClass_; ++k)
   {
     std::stringstream sstmMean, sstmSd;
     sstmMean << "k: "
@@ -195,7 +172,7 @@ void Gaussian_sjk::setModalities(int nbModalities)
 void Gaussian_sjk::writeParameters() const
 {
   std::stringstream sstm;
-  for (int k = 0; k < nbCluster_; ++k)
+  for (int k = 0; k < nbClass_; ++k)
   {
     sstm << "Class: " << k << std::endl;
     sstm << "\tmean: " << param_[2 * k    ] << std::endl;
@@ -205,6 +182,67 @@ void Gaussian_sjk::writeParameters() const
 #ifdef MC_VERBOSE
   std::cout << sstm.str() << std::endl;
 #endif
+}
+
+int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
+{
+  int proba = 1;
+  Vector<int> nbIndPerClass(nbClass_, 0);
+  Vector<Real> min(nbClass_,   std::numeric_limits<Real>::max());
+  Vector<Real> max(nbClass_, - std::numeric_limits<Real>::max());
+
+  for (int i = 0; i < p_data_->rows(); ++i)
+  {
+    nbIndPerClass((*p_zi_)(i)) += 1;
+    min((*p_zi_)(i)) = std::min((*p_data_)(i), min((*p_zi_)(i)));
+    max((*p_zi_)(i)) = std::max((*p_data_)(i), max((*p_zi_)(i)));
+  }
+
+  for (int k = 0; k < nbClass_; ++k)
+  {
+    if (nbIndPerClass(k) < 2)
+    {
+#ifdef MC_DEBUG
+      std::cout << "Gaussian_sjk::checkSampleCondition, nbIndPerClass(k) < 2" << std::endl;
+#endif
+
+      if (warnLog == NULL)
+      {
+        proba = 0;
+      }
+      else
+      {
+        std::stringstream sstm;
+        sstm << "Gaussian variables must have at least two individuals per class. This is not the case for class: " << k << " "
+             << "You can check whether you have enough individuals regarding the number of classes." << std::endl;
+        *warnLog += sstm.str();
+        proba = 0;
+      }
+    }
+
+    if (max(k) - min(k) == 0.)
+    {
+
+#ifdef MC_DEBUG
+      std::cout << "Gaussian_sjk::checkSampleCondition, max(k) - min(k)" << std::endl;
+#endif
+
+      if (warnLog == NULL)
+      {
+        proba = 0;
+      }
+      else
+      {
+        std::stringstream sstm;
+        sstm << "Gaussian variables must have a minimum amount of variability in each class. It seems that the class: " << k << " "
+             << "contains only the value: " << max(k) << ". If some values are repeated often in this variable, maybe a Categorical or "
+             << "a Poisson variable might describe it better." << std::endl;
+        *warnLog += sstm.str();
+        proba = 0;
+      }
+    }
+  }
+  return proba;
 }
 
 } // namespace mixt

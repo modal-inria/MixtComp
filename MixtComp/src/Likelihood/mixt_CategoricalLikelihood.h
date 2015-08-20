@@ -37,8 +37,6 @@ class CategoricalLikelihood
     CategoricalLikelihood(const Vector<Real>& param,
                           const AugmentedData<Vector<int> >& augData,
                           int nbClass);
-    /** Destructor */
-    virtual ~CategoricalLikelihood();
 
     /** Compute the completed log probability of individual i */
     Real lnCompletedProbability(int i, int k);

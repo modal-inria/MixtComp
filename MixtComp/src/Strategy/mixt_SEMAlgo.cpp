@@ -32,69 +32,90 @@
 namespace mixt
 {
 
-SEMAlgo::SEMAlgo(MixtureComposer* p_model,
-                 int nbIterMax,
-                 int nbSamplingAttempts) :
-    p_model_(p_model),
-    nbIterMax_(nbIterMax),
-    nbSamplingAttempts_(nbSamplingAttempts)
+SEMAlgo::SEMAlgo(MixtureComposer* p_composer,
+                 int nbIter) :
+    p_composer_(p_composer),
+    nbIter_(nbIter)
 {}
 
 std::string SEMAlgo::run(RunType runType,
-                         DegeneracyType& deg,
+                         RunProblemType& runPb,
+                         SamplerType sampler,
                          int group,
                          int groupMax)
 {
 #ifdef MC_DEBUG
-  std::cout << "SEMAlgo::run" << std::endl;
+  std::cout << "SEMAlgo::run, sampler: " << sampler << std::endl;
 #endif
 
+  std::string warn;
   Timer myTimer;
 
   if (runType == burnIn_)
   {
-    myTimer.setName("SEMAlgo::run(), burn-in");
-    p_model_->storeSEMBurnIn(-1,
-                             nbIterMax_ - 1); // export of the initial partition
+    myTimer.setName("SEM: burn-in");
+    p_composer_->storeSEMBurnIn(-1,
+                                nbIter_ - 1); // export of the initial partition
   }
   else if (runType == run_)
   {
-    myTimer.setName("SEMAlgo::run(), run");
+    myTimer.setName("SEM: run");
   }
 
-  for (int iter = 0; iter < nbIterMax_; ++iter)
+  int iter = 0;
+  while (iter < nbIter_)
   {
-#ifdef MC_DEBUG
-    std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
-#endif
-
-    myTimer.iteration(iter, nbIterMax_ - 1);
+    myTimer.iteration(iter, nbIter_ - 1);
     writeProgress(group,
                   groupMax,
                   iter,
-                  nbIterMax_ - 1);
+                  nbIter_ - 1);
 
-    p_model_->eStep();
+    p_composer_->eStep();
 
-    std::string sWarn = p_model_->sStepNbAttempts(nbSamplingAttempts_,
-                                                  deg); // p_model_->sStep() called nbSamplingAttempts_ at most, to get enough individuals per class
-    if (deg != noDeg_)
+    if (sampler == rejectSampler_) // use reject sampling
     {
+      p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
+      p_composer_->samplingStepNoCheck();
+      int sampleCond = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
+
 #ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, degeneracy in p_model_->sStepNbAttempts" << std::endl;
+      std::cout << "SEMAlgo::run, sampleCond: " << sampleCond << std::endl;
 #endif
-      return sWarn;
+
+      if (sampleCond == 0) // sampled value rejected, switch to Gibbs sampler
+      {
+#ifdef MC_DEBUG
+        std::cout << "SEMAlgo::run, switch to Gibbs sampler" << std::endl;
+#endif
+        runPb = invalidSampler_;
+        return warn;
+      }
+    }
+    else // use Gibbs sampling
+    {
+      p_composer_->sStepCheck(); // checkSampleCondition is performed at each sampling, hence no need to call p_composer_->checkSampleCondition()
+
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, p_composer_->checkSampleCondition()" << std::endl;
+      std::cout << "p_composer_->checkSampleCondition(): " << p_composer_->checkSampleCondition() << std::endl;
+      std::cout << "end of check" << std::endl;
+#endif
+
+      p_composer_->samplingStepCheck();
+
+#ifdef MC_DEBUG
+      std::cout << "SEMAlgo::run, p_composer_->checkSampleCondition()" << std::endl;
+      std::cout << "p_composer_->checkSampleCondition(): " << p_composer_->checkSampleCondition() << std::endl;
+      std::cout << "end of check" << std::endl;
+#endif
     }
 
-    p_model_->samplingStep(); // each mixture samples its partially observed values
-
-    std::string mWarn = p_model_->mStep(deg);
-    if (deg != noDeg_)
+    warn = p_composer_->mStep();
+    if (warn.size() > 0)
     {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, degeneracy in p_model_->mStep" << std::endl;
-#endif
-      return mWarn; // error reported in the mStep, terminate the SEM algo, and report it to the strategy.
+      runPb = weakDegeneracy_;
+      return warn;
     }
 
     if (runType == burnIn_)
@@ -102,8 +123,8 @@ std::string SEMAlgo::run(RunType runType,
 #ifdef MC_DEBUG
     std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
 #endif
-      p_model_->storeSEMBurnIn(iter,
-                               nbIterMax_ - 1);
+      p_composer_->storeSEMBurnIn(iter,
+                                  nbIter_ - 1);
     }
 
     if (runType == run_)
@@ -111,12 +132,15 @@ std::string SEMAlgo::run(RunType runType,
 #ifdef MC_DEBUG
       std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
 #endif
-      p_model_->storeSEMRun(iter,
-                            nbIterMax_ - 1);
+      p_composer_->storeSEMRun(iter,
+                               nbIter_ - 1);
     }
+
+    ++iter;
   }
 
-  return std::string(); // success: return empty string
+  runPb = noProblem_;
+  return warn; // success: return empty string
 }
 
 } // namespace mixt

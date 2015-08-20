@@ -23,21 +23,86 @@
 
 #include "mixt_ClassSampler.h"
 #include "../Various/mixt_Constants.h"
+#include "../Composer/mixt_MixtureComposer.h"
 
 namespace mixt
 {
-ClassSampler::ClassSampler(AugmentedData<Vector<int> >& zi,
+
+ClassSampler::ClassSampler(const MixtureComposer& composer,
+                           AugmentedData<Vector<int> >& zi,
                            const Matrix<Real>& tik,
                            int nbClass) :
+    composer_(composer),
     nbClass_(nbClass),
     zi_(zi),
     tik_(tik)
 {}
 
-ClassSampler::~ClassSampler()
-{}
+void ClassSampler::sStepCheck(int i)
+{
+  if (zi_.misData_(i).first != present_)
+  {
+    int sampleVal = -1; // initialized with dummy value
 
-void ClassSampler::sampleIndividual(int i)
+#ifdef MC_DEBUG
+    std::cout << "present_" << std::endl;
+#endif
+
+    switch(zi_.misData_(i).first)
+    {
+      case missing_:
+      {
+#ifdef MC_DEBUG
+        std::cout << "ClassSampler::sStepCheck, missing_, i: " << i << std::endl;
+#endif
+        RowVector<Real> modalities(nbClass_);
+        for (zi_.data_(i) = 0; zi_.data_(i) < nbClass_; ++zi_.data_(i)) // z_i changed in place to take all possible values
+        {
+          modalities(zi_.data_(i)) = tik_(i,
+                                          zi_.data_(i)) * composer_.checkSampleCondition(); // checkSampleCondition value is 1 or 0, reflecting the fact that conditions on data are verified or not
+        }
+#ifdef MC_DEBUG
+        std::cout << "modalities: " << modalities << std::endl;
+#endif
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
+      }
+      break;
+
+      case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
+      {
+#ifdef MC_DEBUG
+        std::cout << "ClassSampler::sStepCheck, missingFiniteValues_, i: " << i << std::endl;
+#endif
+        RowVector<Real> modalities(nbClass_, 0.);
+        for(std::vector<int>::const_iterator currMod = zi_.misData_(i).second.begin();
+            currMod != zi_.misData_(i).second.end();
+            ++currMod)
+        {
+#ifdef MC_DEBUG
+          std::cout << "\tcurrMod: " << *currMod << std::endl;
+#endif
+          zi_.data_(i) = *currMod;
+          modalities(*currMod) = tik_(i, *currMod) * composer_.checkSampleCondition();
+        }
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
+      }
+      break;
+
+      default:
+      {
+#ifdef MC_DEBUG
+          std::cout << "ClassSampler, missing value type unknown" << std::endl;
+#endif
+      }
+      break;
+    }
+    zi_.data_(i) = sampleVal;
+  }
+}
+
+void ClassSampler::sStepNoCheck(int i)
 {
 #ifdef MC_DEBUG
   std::cout << "ClassSampler::sampleIndividual" << std::endl;
@@ -46,7 +111,7 @@ void ClassSampler::sampleIndividual(int i)
 
   if (zi_.misData_(i).first != present_)
   {
-    int sampleVal;
+    int sampleVal = -1; // initialized with dummy value
 
 #ifdef MC_DEBUG
     std::cout << "present_" << std::endl;
@@ -59,7 +124,7 @@ void ClassSampler::sampleIndividual(int i)
 #ifdef MC_DEBUG
         std::cout << "missing_" << std::endl;
 #endif
-        sampleVal = multi_.sample(tik_.block(i, 0,         // position of first element
+        sampleVal = multi_.sample(tik_.block(i, 0       ,  // position of first element
                                              1, nbClass_)); // dimension of the vector to extract);
       }
       break;
@@ -69,11 +134,7 @@ void ClassSampler::sampleIndividual(int i)
 #ifdef MC_DEBUG
         std::cout << "missingFiniteValues_" << std::endl;
 #endif
-        Vector<Real> modalities(nbClass_);
-        modalities = 0.;
-
-        Vector<Real> equiModalities(nbClass_);
-        equiModalities = 0.;
+        Vector<Real> modalities(nbClass_, 0.);
 
         for(std::vector<int>::const_iterator currMod = zi_.misData_(i).second.begin();
             currMod != zi_.misData_(i).second.end();
@@ -83,19 +144,9 @@ void ClassSampler::sampleIndividual(int i)
           std::cout << "\tcurrMod: " << *currMod << std::endl;
 #endif
           modalities(*currMod) = tik_(i, *currMod);
-          equiModalities(*currMod) = 1.;
         }
-        Real modSum = modalities.sum();
-        if (modSum < minStat)
-        {
-          equiModalities = equiModalities / equiModalities.sum();
-          sampleVal = multi_.sample(equiModalities);
-        }
-        else
-        {
-          modalities = modalities / modalities.sum();
-          sampleVal = multi_.sample(modalities);
-        }
+        modalities = modalities / modalities.sum();
+        sampleVal = multi_.sample(modalities);
       }
       break;
 

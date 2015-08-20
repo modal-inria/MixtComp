@@ -31,17 +31,26 @@
 namespace mixt
 {
 
+class IMixture;
+
 class PoissonSampler
 {
   public:
-    PoissonSampler(AugmentedData<Vector<int> >& augData,
+    PoissonSampler(const IMixture& mixture,
+                   AugmentedData<Vector<int> >& augData,
                    const Vector<Real>& param,
                    int nbClass);
-    ~PoissonSampler();
+
     /** Sample new values for the missing variables of the given individual */
-    void sampleIndividual(int i, int z_i);
+    void samplingStepCheck  (int i,
+                             int z_i);
+    void samplingStepNoCheck(int i,
+                             int z_i);
   private:
+    const IMixture& mixture_;
+
     AugmentedData<Vector<int> >& augData_;
+
     const Vector<Real>& param_;
 
     /** Statistic object to describe Poisson law */

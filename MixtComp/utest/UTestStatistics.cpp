@@ -24,11 +24,14 @@
 #include "gtest/gtest.h"
 #include "../src/LinAlg/mixt_LinAlg.h"
 #include "../src/Statistic/mixt_MultinomialStatistic.h"
+#include "../src/Statistic/mixt_PoissonStatistic.h"
 #include "../src/Various/mixt_Constants.h"
 
 using namespace mixt;
 
-// Test double inversion of a matrix
+/**
+ * Test double inversion of a matrix
+ */
 TEST(Statistics, MultinomialSeed)
 {
   int nbMulti = 100;
@@ -56,3 +59,43 @@ TEST(Statistics, MultinomialSeed)
   ASSERT_GT(var, epsilon);
 }
 
+/**
+ * Test sampling Poisson conditional to non-zero value
+ * */
+TEST(Statistics, NonZeroPoissonSampling)
+{
+  int lambda = 5;
+  int nbInd = 1000000;
+  int nbBin = 100;
+
+  PoissonStatistic poisson;
+  RowVector<Real> sampleFreq(nbBin, 0.);
+  RowVector<Real> compFreq(nbBin, 0.);
+
+  for  (int i = 0; i < nbInd; ++i)
+  {
+    sampleFreq(poisson.nonZeroSample(lambda)) += 1.;
+  }
+
+  for (int p = 1; p < nbBin; ++p) // note that the modality 0 is ignored
+  {
+    compFreq(p) = poisson.pdf(p, lambda);
+  }
+
+  sampleFreq = sampleFreq / sampleFreq.sum();
+  compFreq   = compFreq   / compFreq  .sum();
+  RowVector<Real> error = sampleFreq - compFreq;
+  Real maxAbsError = error.abs().maxCoeff();
+
+#ifdef MC_DEBUG
+  std::cout << "sampleFreq" << std::endl;
+  std::cout << sampleFreq << std::endl;
+  std::cout << "compFreq" << std::endl;
+  std::cout << compFreq << std::endl;
+  std::cout << "error" << std::endl;
+  std::cout << error << std::endl;
+  std::cout << "maxAbsError: " << maxAbsError << std::endl;
+#endif
+
+  ASSERT_LT(maxAbsError, 1.e-3);
+}

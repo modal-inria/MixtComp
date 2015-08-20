@@ -36,25 +36,24 @@ class SEMAlgo
 {
   public:
     /** default constructor */
-    SEMAlgo(MixtureComposer* p_model,
-            int nbIterMax,
-            int nbSamplingAttempts);
+    SEMAlgo(MixtureComposer* p_composer,
+            int nbIter);
 
-    /** run the algorithm */
+    /**
+     * run the algorithm
+     * @return string describing the problem in case of soft degeneracy */
     std::string run(RunType runType,
-                    DegeneracyType& deg,
+                    RunProblemType& runPb,
+                    SamplerType sampler,
                     int group,
                     int groupMax);
 
   private:
     /** pointer on the mixture model */
-    MixtureComposer* p_model_;
+    MixtureComposer* p_composer_;
 
     /** number of iterations of the algorithm */
-    int nbIterMax_;
-
-    /** number of attempts before giving up on sampling */
-    int nbSamplingAttempts_;
+    int nbIter_;
 };
 } // namespace mixt
 

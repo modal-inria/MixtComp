@@ -45,7 +45,7 @@ class IMixture
       idName_(idName)
     {};
 
-    /** Virtual destructor. */
+    /** Virtual destructor. Needed as IMixture will only be used as a base class. */
     virtual ~IMixture()
     {};
 
@@ -58,11 +58,29 @@ class IMixture
     }
 
     /**
-     * Simulation of latent variables and partially observed data
+     * Simulation of latent variables and partially observed data with values that
+     * verify checkSampleCondition.
      *
      * @param ind index of the individual which data must be sampled
      */
-    virtual void samplingStep(int ind)
+    virtual void samplingStepCheck(int ind)
+    = 0;
+
+    /**
+     * Simulation of latent variables and partially observed data without verifying
+     * checkSampleCondition to speed-up the process.
+     *
+     * @param ind index of the individual which data must be sampled
+     */
+    virtual void samplingStepNoCheck(int ind)
+    = 0;
+
+    /**
+     * Check if conditions on data are verified. For example, for a categorical model one must check that each modality
+     * is present at least one time in each class. This is invoked to avoid degeneracy.
+     * @return 0 if condition not verified and 1 if condition verified
+     * */
+    virtual int checkSampleCondition(std::string* warnLog = NULL) const
     = 0;
 
     /**
@@ -70,7 +88,7 @@ class IMixture
      *
      * @return empty string if mStep successful, or a detailed description of the eventual error
      */
-    virtual std::string mStep(DegeneracyType& deg)
+    virtual std::string mStep()
     = 0;
 
     /**

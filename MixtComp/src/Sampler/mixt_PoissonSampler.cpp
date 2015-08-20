@@ -22,20 +22,74 @@
  **/
 
 #include "mixt_PoissonSampler.h"
+#include "../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {
-PoissonSampler::PoissonSampler(AugmentedData<Vector<int> >& augData,
+PoissonSampler::PoissonSampler(const IMixture& mixture,
+                               AugmentedData<Vector<int> >& augData,
                                const Vector<Real>& param,
                                int nbClass) :
+    mixture_(mixture),
     augData_(augData),
     param_(param)
 {}
 
-PoissonSampler::~PoissonSampler()
-{}
+void PoissonSampler::samplingStepCheck(int i,
+                                       int z_i)
+{
+#ifdef MC_DEBUG
+  std::cout << "PoissonSampler::sampleIndividual" << std::endl;
+  std::cout << "\ti: " << i << ", z_i: " << z_i << std::endl;
+#endif
 
-void PoissonSampler::sampleIndividual(int i, int z_i)
+  if (augData_.misData_(i).first != present_)
+  {
+    augData_.data_(i) = 0;
+    bool nonZeroSample = !mixture_.checkSampleCondition(); // check if the 0 value is authorized for this individual in the sample
+
+    int x = -1;
+    Real lambda = param_(z_i);
+
+#ifdef MC_DEBUG
+    std::cout << "\tlambda: " << lambda << std::endl;
+#endif
+
+    switch(augData_.misData_(i).first)
+    {
+      case missing_:
+      {
+#ifdef MC_DEBUG
+        std::cout << "\tmissing_" << std::endl;
+#endif
+        if (nonZeroSample == false)
+        {
+          x = poisson_.sample(lambda);
+        }
+        else
+        {
+#ifdef MC_DEBUG
+          std::cout << "PoissonSampler::samplingStepCheck, nonZeroSample" << std::endl;
+#endif
+          x = poisson_.nonZeroSample(lambda);
+        }
+      }
+      break;
+
+      default:
+      {}
+      break;
+    }
+
+#ifdef MC_DEBUG
+    std::cout << "\tsampled val: " << x << std::endl;
+#endif
+    augData_.data_(i) = x;
+  }
+}
+
+void PoissonSampler::samplingStepNoCheck(int i,
+                                         int z_i)
 {
 #ifdef MC_DEBUG
   std::cout << "PoissonSampler::sampleIndividual" << std::endl;
