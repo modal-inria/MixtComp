@@ -131,12 +131,13 @@ import path ;
 import link ;
 
 path-constant BOOST_ROOT : . ;
-constant BOOST_VERSION : 1.57.0 ;
+constant BOOST_VERSION : 1.58.0 ;
 constant BOOST_JAMROOT_MODULE : $(__name__) ;
 
 boostcpp.set-version $(BOOST_VERSION) ;
 
-	
+use-project /boost/architecture : libs/config/checks/architecture ;
+
 local all-headers =
     [ MATCH .*libs/(.*)/include/boost : [ glob libs/*/include/boost ] ] ;
 
@@ -162,6 +163,10 @@ if $(all-headers)
 
 project boost
     : requirements <include>.
+
+      [ boostcpp.architecture ]
+      [ boostcpp.address-model ]
+
       # Disable auto-linking for all targets here, primarily because it caused
       # troubles with V2.
       <define>BOOST_ALL_NO_LIB=1
@@ -224,17 +229,17 @@ local rule explicit-alias ( id : targets + )
 
 # First, the complicated libraries: where the target name in Jamfile is
 # different from its directory name.
-explicit-alias prg_exec_monitor : libs/test/build//_prg_exec_monitor ;
-explicit-alias test_exec_monitor : libs/test/build//_test_exec_monitor ;
-explicit-alias unit_test_framework : libs/test/build//_unit_test_framework ;
+explicit-alias prg_exec_monitor : libs/test/build//boost_prg_exec_monitor ;
+explicit-alias test_exec_monitor : libs/test/build//boost_test_exec_monitor ;
+explicit-alias unit_test_framework : libs/test/build//boost_unit_test_framework ;
 explicit-alias bgl-vis : libs/graps/build//bgl-vis ;
-explicit-alias serialization : libs/serialization/build//_serialization ;
-explicit-alias wserialization : libs/serialization/build//_wserialization ;
+explicit-alias serialization : libs/serialization/build//boost_serialization ;
+explicit-alias wserialization : libs/serialization/build//boost_wserialization ;
 for local l in $(all-libraries)
 {
     if ! $(l) in test graph serialization
     {
-        explicit-alias $(l) : libs/$(l)/build//_$(l) ;
+        explicit-alias $(l) : libs/$(l)/build//boost_$(l) ;
     }
 }
 
