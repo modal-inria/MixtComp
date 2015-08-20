@@ -487,7 +487,7 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
     }
   }
 
-  return 1.;
+  return proba;
 }
 
 void MixtureComposer::storeSEMBurnIn(int iteration,
