@@ -73,8 +73,6 @@ class AugmentedData
         }
       };
 
-    ~AugmentedData() {};
-
     /**
      * Return the correct expression according to the number of individuals
      * @param  Number of individuals
