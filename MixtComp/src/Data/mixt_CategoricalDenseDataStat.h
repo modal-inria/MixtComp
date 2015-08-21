@@ -33,10 +33,7 @@ namespace mixt
 class CategoricalDenseDataStat
 {
   public:
-    CategoricalDenseDataStat(AugmentedData<Vector<int> >& augData,
-                             Real confidenceLevel);
-
-    ~CategoricalDenseDataStat();
+    CategoricalDenseDataStat(AugmentedData<Vector<int> >& augData);
 
     void sampleVals(int sample,
                     int iteration,
@@ -54,9 +51,6 @@ class CategoricalDenseDataStat
 
     /** Dense description of the missing values */
     Matrix<Real> dataStatStorage_;
-
-    /** Confidence level */
-    Real confidenceLevel_;
 
     void sample(int ind);
 };

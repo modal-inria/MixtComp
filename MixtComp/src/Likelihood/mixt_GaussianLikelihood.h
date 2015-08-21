@@ -46,7 +46,6 @@ class GaussianLikelihood
     Real lnObservedProbability(int i, int k);
 
   private:
-    int nbClass_;
 
     /** Pointer to parameters table */
     const Vector<Real>& param_;

@@ -31,7 +31,6 @@ namespace mixt
 PoissonLikelihood::PoissonLikelihood(const Vector<Real>& param,
                                      const AugmentedData<Vector<int> >& augData,
                                      int nbClass) :
-    nbClass_(nbClass),
     param_(param),
     augData_(augData)
 {}
