@@ -26,9 +26,7 @@
 
 #include <iostream>
 #include <ctime>
-#include <boost/random/variate_generator.hpp>
-#include <boost/random/uniform_real_distribution.hpp>
-#include <boost/random/mersenne_twister.hpp>
+#include <boost/random.hpp>
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../IO/mixt_IO.h"
 #include "../Various/mixt_Constants.h"
@@ -91,6 +89,29 @@ class MultinomialStatistic
 #endif
       return -1; // to accelerate sampling, no check have been computed on modalities to verify that is it actually a probability distribution
     };
+
+    template <typename T>
+    void shuffle(T& data)
+    {
+      boost::random_number_generator<boost::mt19937> g(rng_);
+
+      std::random_shuffle(data.begin(),
+                          data.end(),
+                          g);
+    }
+
+    template <typename T>
+    Real entropy(const T& data)
+    {
+      Real h = 0.;
+      for(typename T::const_iterator it = data.begin();
+          it != data.end();
+          ++it)
+      {
+        h += *it * std::log(*it);
+      }
+      return h;
+    }
 
     /**
      * Uniform int sample

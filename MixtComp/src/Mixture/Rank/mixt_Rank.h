@@ -44,6 +44,7 @@ class Rank
 
     Rank();
 
+    /** Set the number of positions in the rank, used to resize storage */
     void setNbPos(int nbPos);
 
     /**

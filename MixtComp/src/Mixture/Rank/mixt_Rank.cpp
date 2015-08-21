@@ -42,7 +42,11 @@ void Rank::setNbPos(int nbPos)
 
 void Rank::removeMissing()
 {
-
+  for (int p = 0; p < nbPos_; ++p)
+  {
+    y_(p) = p;
+  }
+  multi_.shuffle(y_);
 }
 
 } // namespace mixt

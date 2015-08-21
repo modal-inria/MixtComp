@@ -4,5 +4,5 @@
 # CXXFLAGS = -O3 -DMC_DEBUG_NEW -Wall -mtune=core2
 
 # CXX = g++ -m64
-CXX = clang
+CXX = clang++
 CXXFLAGS = -O2 -g -DMC_DEBUGNEW -Wall

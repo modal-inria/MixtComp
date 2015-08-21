@@ -23,12 +23,8 @@
 
 #include "gtest/gtest.h"
 
-#include "../src/Various/mixt_Constants.h"
-#include "../src/Mixture/Ordinal/mixt_BOSNode.h"
-#include "../src/Mixture/Ordinal/mixt_BOSPath.h"
-#include "../src/Statistic/mixt_MultinomialStatistic.h"
-
-#include "UTestFunction.h"
+#include "../src/Statistic/mixt_Statistic.h"
 
 using namespace mixt;
+
 

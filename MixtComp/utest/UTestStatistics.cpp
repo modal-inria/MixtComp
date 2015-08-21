@@ -99,3 +99,62 @@ TEST(Statistics, NonZeroPoissonSampling)
 
   ASSERT_LT(maxAbsError, 1.e-3);
 }
+
+/**
+ * Test sampling Poisson conditional to non-zero value
+ * */
+TEST(Statistics, Shuffle)
+{
+  int nbPos = 10;
+  int nbSample = 10000;
+
+  Vector<int> ind(nbPos);
+  Matrix<int> res(nbSample,
+                  nbPos,
+                  -1);
+  Matrix<Real> proba(nbPos,
+                     nbPos,
+                     0.);
+  RowVector<Real> h(nbPos);
+
+  MultinomialStatistic multi;
+
+  for (int i = 0; i < nbSample; ++i)
+  {
+    for (int p = 0; p < nbPos; ++p)
+    {
+      ind(p) = p;
+    }
+
+    multi.shuffle(ind);
+
+    for (int p = 0; p < nbPos; ++p)
+    {
+      proba(ind(p), p) += 1.;
+    }
+
+    res.row(i) = ind;
+  }
+
+  proba /= nbSample;
+
+  for (int p = 0; p < nbPos; ++p)
+  {
+    h(p) = multi.entropy(proba.col(p));
+  }
+
+  RowVector<Real> expectedEntropy(nbPos, std::log(1. / nbPos));
+
+  Real maxErr = (h - expectedEntropy).abs().maxCoeff();
+
+#ifdef MC_DEBUG
+  std::cout << "proba" << std::endl;
+  std::cout << proba << std::endl;
+  std::cout << "h" << std::endl;
+  std::cout << h << std::endl;
+  std::cout << "expectedEntropy" << std::endl;
+  std::cout << expectedEntropy << std::endl;
+#endif
+
+  ASSERT_LT(maxErr, 0.01);
+}

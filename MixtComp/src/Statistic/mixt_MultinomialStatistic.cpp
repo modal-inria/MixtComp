@@ -21,7 +21,6 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <boost/random/uniform_int_distribution.hpp>
 #include "mixt_MultinomialStatistic.h"
 
 namespace mixt
