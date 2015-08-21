@@ -48,8 +48,7 @@ MixtureComposer::MixtureComposer(int nbInd,
              nbClass),
     paramStat_(prop_,
                confidenceLevel),
-    dataStat_(zi_,
-              confidenceLevel),
+    dataStat_(zi_),
     confidenceLevel_(confidenceLevel)
 {
   zi_.resizeArrays(nbInd);
@@ -487,7 +486,7 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
     }
   }
 
-  return 1.;
+  return proba;
 }
 
 void MixtureComposer::storeSEMBurnIn(int iteration,

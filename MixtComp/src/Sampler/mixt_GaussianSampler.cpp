@@ -30,7 +30,6 @@ GaussianSampler::GaussianSampler(const IMixture& mixture,
                                  AugmentedData<Vector<Real> >& augData,
                                  const Vector<Real>& param,
                                  int nbClass) :
-    mixture_(mixture),
     augData_(augData),
     param_(param)
 {}

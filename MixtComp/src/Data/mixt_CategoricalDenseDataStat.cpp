@@ -27,13 +27,9 @@
 namespace mixt
 {
 
-CategoricalDenseDataStat::CategoricalDenseDataStat(AugmentedData<Vector<int> >& augData,
-                                                   Real confidenceLevel) :
-    augData_(augData),
-    confidenceLevel_(confidenceLevel)
+CategoricalDenseDataStat::CategoricalDenseDataStat(AugmentedData<Vector<int> >& augData) :
+    augData_(augData)
 {}
-
-CategoricalDenseDataStat::~CategoricalDenseDataStat() {};
 
 void CategoricalDenseDataStat::sample(int ind)
 {

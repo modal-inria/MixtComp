@@ -24,7 +24,7 @@
 #ifndef MIXT_NORMALSTATISTIC_H
 #define MIXT_NORMALSTATISTIC_H
 
-#include <boost/random/mersenne_twister.hpp>
+#include <boost/random.hpp>
 #include "../LinAlg/mixt_LinAlg.h"
 #include "mixt_UniformStatistic.h"
 #include "mixt_ExponentialStatistic.h"

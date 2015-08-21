@@ -31,7 +31,6 @@ namespace mixt
 GaussianLikelihood::GaussianLikelihood(const Vector<Real>& param,
                                        const AugmentedData<Vector<Real> >& augData,
                                        int nbClass) :
-    nbClass_(nbClass),
     param_(param),
     augData_(augData)
 {}

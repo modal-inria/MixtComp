@@ -420,15 +420,21 @@ class Ordinal : public IMixture
       std::cout << "MixtureBridge: exportDataParam, idName(): " << idName() << std::endl;
 #endif
 
-      Matrix<Real> paramStatStorage(2 * nbClass_, muParamStatComputer_.getStatStorage().cols()); // aggregates both mu and pi values
-      Matrix<Real> paramLogStorage (2 * nbClass_, piParamStatComputer_.getLogStorage() .cols()); // aggregates both mu and pi logs
-      for (int k = 0; k < nbClass_; ++k)
+      int nbCol = muParamStatComputer_.getStatStorage().cols();
+      Matrix<Real> paramStatStorage(2 * nbClass_, nbCol); // aggregates both mu and pi values
+      Matrix<Real> paramLogStorage (2 * nbClass_, nbCol); // aggregates both mu and pi logs
+
+      for (int j = 0; j < nbCol; ++j)
       {
-        paramStatStorage.row(2 * k    ) = muParamStatComputer_.getStatStorage().row(k).cast<Real>();
-        paramStatStorage.row(2 * k + 1) = piParamStatComputer_.getStatStorage().row(k);
-        paramLogStorage .row(2 * k    ) = muParamStatComputer_.getLogStorage ().row(k).cast<Real>();
-        paramLogStorage .row(2 * k + 1) = piParamStatComputer_.getLogStorage ().row(k);
+        for (int k = 0; k < nbClass_; ++k)
+        {
+          paramStatStorage(2 * k    , j) = muParamStatComputer_.getStatStorage()(k, j);
+          paramStatStorage(2 * k + 1, j) = piParamStatComputer_.getStatStorage()(k, j);
+          paramLogStorage (2 * k    , j) = muParamStatComputer_.getLogStorage ()(k, j);
+          paramLogStorage (2 * k + 1, j) = piParamStatComputer_.getLogStorage ()(k, j);
+        }
       }
+
       p_dataExtractor_->exportVals(idName(),
                                    augData_,
                                    dataStatComputer_.getDataStatStorage()); // export the obtained data using the DataExtractor
