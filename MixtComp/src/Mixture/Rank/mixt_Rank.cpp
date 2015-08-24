@@ -22,12 +22,14 @@
  **/
 
 #include "mixt_Rank.h"
+#include "../LinAlg/mixt_Math.h"
 
 namespace mixt
 {
 
 Rank::Rank() :
-    nbPos_(0)
+    nbPos_(0),
+    lnFacNbPos_(0)
 {
 
 }
@@ -43,6 +45,8 @@ void Rank::setNbPos(int nbPos)
   {
     y_(p) = p;
   }
+
+  lnFacNbPos_ = - std::log(fac(nbPos_));
 }
 
 void Rank::removeMissing()
@@ -99,7 +103,7 @@ Real Rank::xGen(const Vector<int>& muP,
     x_(p) = x[p];
   }
 
-  return logProba;
+  return lnFacNbPos_ + logProba;
 }
 
 void Rank::switchRepresentation(const Vector<int>& mu ,
@@ -110,6 +114,96 @@ void Rank::switchRepresentation(const Vector<int>& mu ,
   {
     muP(mu(p)) = p;
   }
+}
+
+Real Rank::lnCompletedProbability(const Vector<int>& muP,
+                                  Real pi) const
+{
+  int a;
+  int g;
+
+  Vector<int> mu;
+  switchRepresentation(muP, mu);
+
+  AG(mu, a, g);
+
+  return lnFacNbPos_ + g * std::log(pi) + (a - g) * std::log(1. - pi);
+}
+
+void Rank::AG(const Vector<int>& mu,
+              int& a,
+              int& g) const
+{
+  int const m(mu.size());
+  int gplus(0),gmoins(0),gjmoinsb(0),gjplusb(0),index(0);
+  std::vector<int> ajmoins,ajplus,ajplusb,ajmoinsb,ajplusbIndex;
+  ajplusb.reserve(m);//le Aj+ en cours
+  ajmoinsb.reserve(m);//le Aj- en cours
+  ajplusbIndex.reserve(m);//les index du Aj+ en cours
+  ajplus.reserve(m*(m-1));//l'union de tt les Aj+
+  ajmoins.reserve(m*(m-1));//l'union de tt les Aj-
+
+  for(int j(1);j<m;j++)
+  {
+      gjmoinsb=0;
+      gjplusb=0;
+      for (int i(0);i<j;i++)
+      {
+          //calcul Aj-
+          if(positionRank(x_,y_[i]) < positionRank(x_,y_[j]))
+          {
+              ajmoins.push_back(i);
+              ajmoinsb.push_back(i);
+          }
+          else//calcul Aj+//if (positionRank(x,y[i])>positionRank(x,y[j]))
+          {
+              ajplusb.push_back(positionRank(x_,y_[i]));
+              ajplusbIndex.push_back(i);
+          }
+      }
+
+      if (ajplusb.size()>0)//si le Aj+ en cours est non vide, on rajoute l'index du min � Aj+
+      {
+          index=min_element(ajplusb.begin(), ajplusb.end())- ajplusb.begin();
+          ajplus.push_back(ajplusbIndex[index]);
+
+          //calcul de G+
+          if(positionRank(mu,y_[j]) < positionRank(mu,y_[ajplus[ajplus.size()-1]]))
+          {
+              gplus++;
+              gjplusb++;
+          }
+          ajplusb.erase(ajplusb.begin(),ajplusb.end());
+          ajplusbIndex.erase(ajplusbIndex.begin(),ajplusbIndex.end());
+      }
+      if (ajmoinsb.size()>0)//si le Aj- en cours est non vide on calcule G-
+      {
+          //calcul de G-
+          for (unsigned int i(0);i<ajmoinsb.size();i++)
+          {
+              if (positionRank(mu,y_[ajmoinsb[i]])<positionRank(mu,y_[j]))
+              {
+                  gmoins++;
+                  gjmoinsb++;
+              }
+          }
+          ajmoinsb.erase(ajmoinsb.begin(),ajmoinsb.end());
+
+      }
+  }
+
+  std::vector<int> comparaison(2,0);
+  a = ajmoins.size()+ajplus.size();
+  g = gmoins+gplus;
+}
+
+int Rank::positionRank(const Vector<int> x,
+                       int i) const
+{
+  int j(0);
+  while(x[j] != i)
+    j++;
+  return j;
 }
 
 } // namespace mixt

@@ -44,6 +44,12 @@ class Rank
 
     Rank();
 
+    /** Get the observed x value, for example for debugging purposes */
+    void getX(Vector<int>& x) const {x = x_;}
+
+    /** Get the presentation order, for example for debugging purposes */
+    void getY(Vector<int>& y) const {y = y_;}
+
     /** Set the number of positions in the rank, used to resize storage */
     void setNbPos(int nbPos);
 
@@ -76,7 +82,7 @@ class Rank
      * @param mu central rank
      * @param pi precision */
     Real lnCompletedProbability(const Vector<int>& mu,
-                                Real pi);
+                                Real pi) const;
 
     /** Uniform sample for partially observed valued and presentation order */
     void removeMissing();
@@ -100,15 +106,19 @@ class Rank
     void switchRepresentation(const Vector<int>& mu ,
                                     Vector<int>& muP) const;
 
-    /** Get the observed x value, for example for debugging purposes */
-    void getX(Vector<int>& x) const {x = x_;}
+    void AG(const Vector<int>& mu,
+            int& a,
+            int& g) const;
 
-    /** Get the presentation order, for example for debugging purposes */
-    void getY(Vector<int>& y) const {y = y_;}
+    int positionRank(const Vector<int> x,
+                     int i) const;
 
   private:
     /** Number of positions in the rank */
     int nbPos_;
+
+    /** log(1 / n!) to normalize completed probability */
+    Real lnFacNbPos_;
 
     /** Description of the observed data, one MisVal per position in the rank */
     Vector<MisVal> obsData_;

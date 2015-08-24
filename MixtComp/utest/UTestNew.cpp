@@ -68,7 +68,7 @@ TEST(Rank, switchRepresentation)
 TEST(Rank, xGen)
 {
   int nbPos = 4;
-  int nbSample = 10;
+  int nbSample = 100;
 
   bool allSorted = true;
 
@@ -85,7 +85,7 @@ TEST(Rank, xGen)
   for (int i = 0; i < nbSample; ++i)
   {
     rank.removeMissing(); // reinitialize the presentation order
-    Real lp = rank.xGen(muP, pi);
+    rank.xGen(muP, pi);
     Vector<int> x;
     rank.getX(x);
 
@@ -100,4 +100,33 @@ TEST(Rank, xGen)
   }
 
   ASSERT_EQ(allSorted, true);
+}
+
+TEST(Rank, lnCompletedProbability)
+{
+  int nbPos = 6;
+  int nbSample = 100;
+
+  Matrix<Real> proba(nbSample, 2);
+
+  Vector<int> mu (nbPos); // position -> modality representation
+  mu  << 4, 0, 3, 5, 1, 2;
+  Vector<int> muP(nbPos); // modality -> position representation
+  mu  << 1, 4, 5, 2, 0, 3;
+  Real pi = 0.3;
+
+  Rank rank;
+  rank.setNbPos(nbPos);
+
+  for (int i = 0; i < nbSample; ++i)
+  {
+    rank.removeMissing();
+    proba(i, 0) = rank.xGen(muP, pi);
+    proba(i, 1) = rank.lnCompletedProbability(mu, pi);
+  }
+
+#ifdef MC_DEBUGNEW
+  std::cout << "proba: " << std::endl;
+  std::cout << proba << std::endl;
+#endif
 }
