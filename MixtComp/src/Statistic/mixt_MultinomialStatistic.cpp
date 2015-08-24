@@ -26,6 +26,16 @@
 namespace mixt
 {
 
+MultinomialStatistic::MultinomialStatistic() :
+  rng_(size_t(this) + time(0)),
+  uni_(0.,
+       1.),
+  g_(rng_),
+  generator_(rng_,
+             uni_)
+{
+};
+
 int MultinomialStatistic::sampleInt(int low, int high)
 {
   boost::random::uniform_int_distribution<> uni(low,

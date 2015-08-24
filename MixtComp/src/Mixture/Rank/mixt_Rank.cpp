@@ -37,16 +37,79 @@ void Rank::setNbPos(int nbPos)
   nbPos_ = nbPos;
   obsData_.resize(nbPos);
   x_.resize(nbPos);
-  y_.resize(nbPos);
-}
 
-void Rank::removeMissing()
-{
+  y_.resize(nbPos);
   for (int p = 0; p < nbPos_; ++p)
   {
     y_(p) = p;
   }
+}
+
+void Rank::removeMissing()
+{
   multi_.shuffle(y_);
+}
+
+Real Rank::xGen(const Vector<int>& muP,
+                Real pi)
+{
+  Real logProba = 0.;
+
+  Real goodlp = std::log(     pi);
+  Real badlp  = std::log(1. - pi);
+
+  std::vector<int> x(1); // vector is suboptimal for insertion, but provides contiguous memory storage which will fit in CPU cache
+  x.reserve(nbPos_);
+
+  x[0] = y_(0);
+
+  for (int j = 1; j < nbPos_; ++j) // current element in the presentation order, or current size of the x vector
+  {
+    int currY = y_(j);
+    bool yPlaced = false;
+    for (int i = 0; i < j; ++i)
+    {
+      bool comparison = muP(currY) < muP(x[i]); // true if curr elem is correctly ordered
+
+      if (multi_.sampleBinomial(pi)) // is the comparison correct ?
+      {
+        logProba += goodlp;
+      }
+      else
+      {
+        comparison = !comparison;
+        logProba += badlp;
+      }
+
+      if (comparison) // element j must be placed here
+      {
+        x.insert(x.begin() + i, currY);
+        yPlaced = true;
+        break; // no need to test further position for j element
+      }
+    }
+    if (!yPlaced)
+    {
+      x.push_back(currY); // if element j has not been placed yet, it goes at the end of x
+    }
+  }
+
+  for (int p = 0; p < nbPos_; ++p)
+  {
+    x_(p) = x[p];
+  }
+
+  return logProba;
+}
+
+void Rank::switchRepresentation(const Vector<int>& mu ,
+                                      Vector<int>& muP) const
+{
+  muP.resize(mu.size());
+  for (int p = 0; p < nbPos_; ++p)
+  {
+    muP(mu(p)) = p;
+  }
 }
 
 } // namespace mixt

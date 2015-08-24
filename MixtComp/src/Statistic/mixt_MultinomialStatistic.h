@@ -38,20 +38,26 @@ class MultinomialStatistic
 {
   public:
 
-    MultinomialStatistic() :
-      rng_(size_t(this) + time(0))
-  {};
+    MultinomialStatistic();
+
+    /** Sample a value from a binomial law with  */
+    int sampleBinomial(Real proportion)
+    {
+      if (generator_() < proportion)
+      {
+        return 1;
+      }
+      else
+      {
+        return 0;
+      }
+    }
 
     /** Sample a value from a multinomial law with coefficient of modalities provided */
     template<typename T>
     int sample(const T& proportion)
     {
-      boost::random::uniform_real_distribution<> uni(0.,
-                                                     1.);
-      boost::variate_generator<boost::random::mt19937&,
-                               boost::random::uniform_real_distribution<> > generator(rng_,
-                                                                                      uni);
-      Real x = generator();
+      Real x = generator_();
 
 #ifdef MC_DEBUG
       if (proportion.sum() < 1. - epsilon && 1. + epsilon < proportion.sum())
@@ -93,11 +99,9 @@ class MultinomialStatistic
     template <typename T>
     void shuffle(T& data)
     {
-      boost::random_number_generator<boost::mt19937> g(rng_);
-
       std::random_shuffle(data.begin(),
                           data.end(),
-                          g);
+                          g_);
     }
 
     template <typename T>
@@ -124,6 +128,14 @@ class MultinomialStatistic
   private:
     /** Random number generator */
     boost::random::mt19937 rng_;
+
+    boost::random::uniform_real_distribution<> uni_;
+
+    boost::random_number_generator<boost::mt19937> g_;
+
+    boost::variate_generator<boost::random::mt19937&,
+                             boost::random::uniform_real_distribution<> > generator_;
+
 };
 
 } // namespace mixt

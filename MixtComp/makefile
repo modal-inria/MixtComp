@@ -36,6 +36,7 @@ SRC_MC += $(wildcard src/Data/*.cpp)
 SRC_MC += $(wildcard src/IO/*.cpp)
 SRC_MC += $(wildcard src/Likelihood/*.cpp)
 SRC_MC += $(wildcard src/Mixture/Ordinal/*.cpp)
+SRC_MC += $(wildcard src/Mixture/Rank/*.cpp)
 SRC_MC += $(wildcard src/Mixture/SimpleMixtureBridge/*.cpp)
 SRC_MC += $(wildcard src/Param/*.cpp)
 SRC_MC += $(wildcard src/Sampler/*.cpp)
@@ -57,8 +58,8 @@ O_TEST = $(SRC_TEST:%.cpp=%.o)
 # unit-test files
 EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
-SRC_UTEST = $(wildcard utest/*.cpp)
-# SRC_UTEST = utest/UTestNew.cpp
+# SRC_UTEST = $(wildcard utest/*.cpp)
+SRC_UTEST = utest/UTestNew.cpp
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 

@@ -21,8 +21,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_RANK
-#define MIXT_RANK
+#ifndef MIXT_RANK_H
+#define MIXT_RANK_H
 
 #include "../Various/mixt_Def.h"
 #include "../LinAlg/mixt_LinAlg.h"
@@ -40,7 +40,7 @@ class Rank
   public:
     /* Each element of the vector is a position in a rank. The MisType describe the type of observation (or lack of)
      * while the Vector<int> describes the possible values, when needed. */
-    typedef typename std::pair<MisType, Vector<int> > MisVal;
+    typedef std::pair<MisType, Vector<int> > MisVal;
 
     Rank();
 
@@ -81,6 +81,31 @@ class Rank
     /** Uniform sample for partially observed valued and presentation order */
     void removeMissing();
 
+    /**
+     * Sample an individual from parameters, a presentation order
+     * @param mu central rank, expressed in modality -> position representation
+     * @param pi precision
+     * @return log-probability of the sampled value
+     * */
+    Real xGen(const Vector<int>& muP,
+              Real pi);
+
+    /**
+     * Switch a rank representation from
+     * position -> modality
+     * to
+     * modality -> position
+     * and vice-versa
+     * */
+    void switchRepresentation(const Vector<int>& mu ,
+                                    Vector<int>& muP) const;
+
+    /** Get the observed x value, for example for debugging purposes */
+    void getX(Vector<int>& x) const {x = x_;}
+
+    /** Get the presentation order, for example for debugging purposes */
+    void getY(Vector<int>& y) const {y = y_;}
+
   private:
     /** Number of positions in the rank */
     int nbPos_;
@@ -95,8 +120,9 @@ class Rank
     Vector<int> y_;
 
     /** Sampler for int */
-    MultinomialStatistics multi_;
+    MultinomialStatistic multi_;
+};
 
 } // namespace mixt
 
-#endif // MIXT_BOSPATH
+#endif // MIXT_RANK_H

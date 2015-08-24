@@ -23,8 +23,81 @@
 
 #include "gtest/gtest.h"
 
-#include "../src/Statistic/mixt_Statistic.h"
+#include "../src/Mixture/Rank/mixt_Rank.h"
 
 using namespace mixt;
 
+TEST(Rank, switchRepresentation)
+{
+  int nbPos = 4;
+  int nbSample = 1000;
 
+  Rank rank;
+  rank.setNbPos(nbPos);
+  Vector<int> mu  (nbPos);
+  Vector<int> muP (nbPos);
+  Vector<int> muPP(nbPos);
+
+  MultinomialStatistic multi;
+
+  bool allCommute = true;
+
+  for (int p = 0; p < nbPos; ++p)
+  {
+    mu(p) = p;
+  }
+
+  for (int i = 0; i < nbSample; ++i)
+  {
+    multi.shuffle(mu);
+    rank.switchRepresentation(mu , muP );
+    rank.switchRepresentation(muP, muPP);
+
+    allCommute = ((muPP == mu) ? true : false);
+
+#ifdef MC_DEBUG
+    std::cout << "mu  : " << mu  .transpose() << std::endl;
+    std::cout << "muP : " << muP .transpose() << std::endl;
+    std::cout << "muPP: " << muPP.transpose() << std::endl;
+#endif
+  }
+
+  ASSERT_EQ(allCommute, true);
+}
+
+TEST(Rank, xGen)
+{
+  int nbPos = 4;
+  int nbSample = 10;
+
+  bool allSorted = true;
+
+  Vector<int> mu (nbPos); // position -> modality representation
+  mu  << 0, 3, 1, 2;
+  Vector<int> muP(nbPos); // modality -> position representation
+  muP << 0, 2, 3, 1;
+
+  Real pi = 0.9999; // pi high enough to get mu, no matter the y obtained in removeMissing
+
+  Rank rank;
+  rank.setNbPos(nbPos);
+
+  for (int i = 0; i < nbSample; ++i)
+  {
+    rank.removeMissing(); // reinitialize the presentation order
+    Real lp = rank.xGen(muP, pi);
+    Vector<int> x;
+    rank.getX(x);
+
+    if (mu != x)
+    {
+      allSorted = false;
+    }
+
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << ", lp: " << lp << ", x: " << x.transpose() << std::endl;
+#endif
+  }
+
+  ASSERT_EQ(allSorted, true);
+}

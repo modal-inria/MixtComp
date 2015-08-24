@@ -101,7 +101,7 @@ TEST(Statistics, NonZeroPoissonSampling)
 }
 
 /**
- * Test sampling Poisson conditional to non-zero value
+ * Test distribution obtained from MultinomialStatistic::shuffle
  * */
 TEST(Statistics, Shuffle)
 {
