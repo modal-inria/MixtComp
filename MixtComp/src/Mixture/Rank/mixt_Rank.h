@@ -45,11 +45,13 @@ class Rank
 
     Rank();
 
+    Rank(int nbPos);
+
     /** Get the observed x value, for example for debugging purposes */
-    void getX(Vector<int>& x) const {x = x_;}
+    const RankVal& getX() const {return x_;}
 
     /** Get the presentation order, for example for debugging purposes */
-    void getY(Vector<int>& y) const {y = y_;}
+    const Vector<int>& getY(Vector<int>& y) const {return y_;}
 
     /** Set the number of positions in the rank, used to resize storage */
     void setNbPos(int nbPos);
@@ -68,21 +70,21 @@ class Rank
      * Perform one round of Gibbs sampling for the partially observed data
      * @param mu central rank
      * @param pi precision */
-    void samplingX(const Vector<int>& mu,
+    void samplingX(const RankVal& mu,
                    Real pi);
 
     /**
      * Perform one round of Gibbs sampling for the presentation order
      * @param mu central rank
      * @param pi precision */
-    void samplingY(const Vector<int>& mu,
+    void samplingY(const RankVal& mu,
                    Real pi);
 
     /**
      * Completed log-probability of the individual
      * @param mu central rank
      * @param pi precision */
-    Real lnCompletedProbability(const Vector<int>& muP,
+    Real lnCompletedProbability(const RankVal& mu,
                                 Real pi) const;
 
     /** Uniform sample for partially observed valued and presentation order */
@@ -90,38 +92,16 @@ class Rank
 
     /**
      * Sample an individual from parameters, a presentation order
-     * @param mu central rank, expressed in modality -> position representation
+     * @param mu central rank
      * @param pi precision
      * @return log-probability of the sampled value
      * */
-    Real xGen(const Vector<int>& muP,
+    Real xGen(const RankVal& mu,
               Real pi);
 
-    /**
-     * Switch a rank representation from
-     * position -> modality
-     * to
-     * modality -> position
-     * and vice-versa
-     * */
-    void switchRepresentation(const Vector<int>& mu ,
-                                    Vector<int>& muP) const;
-
-    void xSwitch() {switchRepresentation(x_, xP_);}
-
-    void AG(const Vector<int>& mu,
+    void AG(const RankVal& mu,
             int& a,
             int& g) const;
-
-    Real oldLnCompletedProbability(const Vector<int>& muP,
-                                   Real pi) const;
-
-    void oldAG(const Vector<int>& mu,
-               int& a,
-               int& g) const;
-
-    int positionRank(const Vector<int>& x,
-                     int i) const;
 
   private:
     /** Number of positions in the rank */
@@ -134,10 +114,7 @@ class Rank
     Vector<MisVal> obsData_;
 
     /** Completed individual, position -> modality representation */
-    Vector<int> x_;
-
-    /** Completed individual, modality -> position representation */
-    Vector<int> xP_;
+    RankVal x_;
 
     /** Presentation order */
     Vector<int> y_;

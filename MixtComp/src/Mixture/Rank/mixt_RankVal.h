@@ -39,6 +39,10 @@ class RankVal
   public:
     RankVal();
 
+    RankVal(int nbPos);
+
+    bool operator==(const RankVal& rv);
+
     void setNbPos(int nbPos);
 
     /** Note that no check is performed on sizes to increase speed */

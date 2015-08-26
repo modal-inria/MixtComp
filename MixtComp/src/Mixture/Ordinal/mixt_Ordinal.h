@@ -224,7 +224,7 @@ class Ordinal : public IMixture
 
     virtual std::string mStep()
     {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
       std::cout << "augData_.data_: " << augData_.data_.transpose() << std::endl;
       std::cout << "zi_           : " << p_zi_->transpose() << std::endl;
@@ -282,7 +282,7 @@ class Ordinal : public IMixture
         mu_(k) = maxLik;
       }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       std::cout << "Ordinal::mStep" << std::endl;
       std::cout << "logLik: " << std::endl;
       std::cout << logLik << std::endl;
@@ -573,7 +573,7 @@ class Ordinal : public IMixture
         }
       }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       std::cout << "Ordinal::sampleMuFreq, k: " << k << ", freqMod: " << freqMod.transpose() << std::endl;
 #endif
 

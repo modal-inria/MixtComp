@@ -30,19 +30,29 @@ namespace mixt
 Rank::Rank() :
     nbPos_(0),
     lnFacNbPos_(0)
-{
+{}
 
+Rank::Rank(int nbPos) :
+    nbPos_(nbPos),
+    lnFacNbPos_(- std::log(fac(nbPos))),
+    x_(nbPos)
+{
+  obsData_.resize(nbPos);
+  y_.resize(nbPos);
+  for (int p = 0; p < nbPos_; ++p) // presentation order initialized, ready to be shuffled by removeMissing
+  {
+    y_(p) = p;
+  }
 }
 
 void Rank::setNbPos(int nbPos)
 {
   nbPos_ = nbPos;
   obsData_.resize(nbPos);
-  x_ .resize(nbPos);
-  xP_.resize(nbPos);
+  x_ .setNbPos(nbPos);
 
   y_.resize(nbPos);
-  for (int p = 0; p < nbPos_; ++p)
+  for (int p = 0; p < nbPos_; ++p) // presentation order initialized, ready to be shuffled by removeMissing
   {
     y_(p) = p;
   }
@@ -53,12 +63,16 @@ void Rank::setNbPos(int nbPos)
 void Rank::removeMissing()
 {
   multi_.shuffle(y_);
+
+#ifdef MC_DEBUG
+  std::cout << "y_: " << y_.transpose() << std::endl;
+#endif
 }
 
-Real Rank::xGen(const Vector<int>& muP,
+Real Rank::xGen(const RankVal& mu,
                 Real pi)
 {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   int a = 0;
   int g = 0;
 #endif
@@ -79,13 +93,13 @@ Real Rank::xGen(const Vector<int>& muP,
     bool yPlaced = false;
     for (int i = 0; i < j; ++i)
     {
-      bool comparison = muP(currY) < muP(x[i]); // true if curr elem is correctly ordered
+      bool comparison = mu.r()(currY) < mu.r()(x[i]); // true if curr elem is correctly ordered
 
       if (multi_.sampleBinomial(pi) == 1) // is the comparison correct ?
       {
         logProba += goodlp;
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
         ++a;
         ++g;
 #endif
@@ -95,7 +109,7 @@ Real Rank::xGen(const Vector<int>& muP,
         comparison = !comparison;
         logProba += badlp;
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
         ++a;
 #endif
       }
@@ -113,43 +127,31 @@ Real Rank::xGen(const Vector<int>& muP,
     }
   }
 
-  for (int p = 0; p < nbPos_; ++p)
-  {
-    x_(p) = x[p];
-  }
+  x_.setO(x);
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "Rank::xGen, a: " << a << ", g:" << g << std::endl;
 #endif
 
   return lnFacNbPos_ + logProba;
 }
 
-void Rank::switchRepresentation(const Vector<int>& mu ,
-                                      Vector<int>& muP) const
-{
-  for (int p = 0; p < nbPos_; ++p)
-  {
-    muP(mu(p)) = p;
-  }
-}
-
-Real Rank::lnCompletedProbability(const Vector<int>& muP,
+Real Rank::lnCompletedProbability(const RankVal& mu,
                                   Real pi) const
 {
   int a;
   int g;
 
-  AG(muP, a, g);
+  AG(mu, a, g);
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "Rank::lnCompletedProbability, a: " << a << ", g:" << g << std::endl;
 #endif
 
   return lnFacNbPos_ + g * std::log(pi) + (a - g) * std::log(1. - pi);
 }
 
-void Rank::AG(const Vector<int>& muP,
+void Rank::AG(const RankVal& mu,
               int& a,
               int& g) const
 {
@@ -167,9 +169,9 @@ void Rank::AG(const Vector<int>& muP,
     bool yPlaced = false;
     for (int i = 0; i < j; ++i)
     {
-      yPlaced = (xP_(currY) < xP_(x[i]));
+      yPlaced = (x_.r()(currY) < x_.r()(x[i]));
 
-      if (yPlaced == (muP(currY) < muP(x[i]))) // is the comparison correct, according to the order provided in mu ?
+      if (yPlaced == (mu.r()(currY) < mu.r()(x[i]))) // is the comparison correct, according to the order provided in mu ?
       {
         ++a;
         ++g;
@@ -191,94 +193,4 @@ void Rank::AG(const Vector<int>& muP,
     }
   }
 }
-
-Real Rank::oldLnCompletedProbability(const Vector<int>& muP,
-                                     Real pi) const
-{
-  int a;
-  int g;
-
-  Vector<int> mu(nbPos_);
-  switchRepresentation(muP, mu);
-  oldAG(mu, a, g);
-
-  return lnFacNbPos_ + g * std::log(pi) + (a - g) * std::log(1. - pi);
-}
-
-void Rank::oldAG(const Vector<int>& mu,
-                 int& a,
-                 int& g) const
-{
-  int const m(mu.size());
-  int gplus(0),gmoins(0),gjmoinsb(0),gjplusb(0),index(0);
-  std::vector<int> ajmoins,ajplus,ajplusb,ajmoinsb,ajplusbIndex;
-  ajplusb.reserve(m);//le Aj+ en cours
-  ajmoinsb.reserve(m);//le Aj- en cours
-  ajplusbIndex.reserve(m);//les index du Aj+ en cours
-  ajplus.reserve(m*(m-1));//l'union de tt les Aj+
-  ajmoins.reserve(m*(m-1));//l'union de tt les Aj-
-
-  for(int j(1);j<m;j++)
-  {
-      gjmoinsb=0;
-      gjplusb=0;
-      for (int i(0);i<j;i++)
-      {
-          //calcul Aj-
-          if(positionRank(x_,y_[i]) < positionRank(x_,y_[j]))
-          {
-              ajmoins.push_back(i);
-              ajmoinsb.push_back(i);
-          }
-          else//calcul Aj+//if (positionRank(x,y[i])>positionRank(x,y[j]))
-          {
-              ajplusb.push_back(positionRank(x_,y_[i]));
-              ajplusbIndex.push_back(i);
-          }
-      }
-
-      if (ajplusb.size()>0)//si le Aj+ en cours est non vide, on rajoute l'index du min � Aj+
-      {
-          index=min_element(ajplusb.begin(), ajplusb.end())- ajplusb.begin();
-          ajplus.push_back(ajplusbIndex[index]);
-
-          //calcul de G+
-          if(positionRank(mu,y_[j]) < positionRank(mu,y_[ajplus[ajplus.size()-1]]))
-          {
-              gplus++;
-              gjplusb++;
-          }
-          ajplusb.erase(ajplusb.begin(),ajplusb.end());
-          ajplusbIndex.erase(ajplusbIndex.begin(),ajplusbIndex.end());
-      }
-      if (ajmoinsb.size()>0)//si le Aj- en cours est non vide on calcule G-
-      {
-          //calcul de G-
-          for (unsigned int i(0);i<ajmoinsb.size();i++)
-          {
-              if (positionRank(mu,y_[ajmoinsb[i]])<positionRank(mu,y_[j]))
-              {
-                  gmoins++;
-                  gjmoinsb++;
-              }
-          }
-          ajmoinsb.erase(ajmoinsb.begin(),ajmoinsb.end());
-
-      }
-  }
-
-  std::vector<int> comparaison(2,0);
-  a = ajmoins.size()+ajplus.size();
-  g = gmoins+gplus;
-}
-
-int Rank::positionRank(const Vector<int>& x,
-                       int i) const
-{
-  int j(0);
-  while(x[j] != i)
-    j++;
-  return j;
-}
-
 } // namespace mixt

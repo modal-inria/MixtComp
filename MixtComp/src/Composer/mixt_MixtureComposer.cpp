@@ -680,7 +680,7 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const
       t_ik_j.logToMulti(lnP);
       Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       std::cout << "MixtureComposer::E_kj, i: " << i << ", v_mixtures_[j]->idName(): " << v_mixtures_[j]->idName() << std::endl
                 << "t_ik_j :" << t_ik_j.transpose() << std::endl
                 << "t_ink_j:" << t_ink_j.transpose() << std::endl;
@@ -710,7 +710,7 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const
     }
   }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "MixtureComposer::IDClass" << std::endl;
   std::cout << "ekj" << std::endl;
   std::cout << ekj << std::endl;

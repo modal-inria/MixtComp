@@ -29,6 +29,25 @@ RankVal::RankVal() :
     nbPos_(0)
 {}
 
+RankVal::RankVal(int nbPos) :
+    nbPos_(nbPos)
+{
+  ordering_.resize(nbPos);
+  ranking_.resize(nbPos);
+}
+
+bool RankVal::operator==(const RankVal& rv)
+{
+  if (rv.ordering_ == ordering_)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 void RankVal::setNbPos(int nbPos)
 {
   nbPos_ = nbPos;

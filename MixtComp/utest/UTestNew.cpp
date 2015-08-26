@@ -28,33 +28,36 @@
 
 using namespace mixt;
 
+/** Test RankVal::switchRepresentation using the property that it is an involution */
 TEST(Rank, switchRepresentation)
 {
   int nbPos = 4;
   int nbSample = 1000;
 
-  Rank rank;
-  rank.setNbPos(nbPos);
-  Vector<int> mu  (nbPos);
-  Vector<int> muP (nbPos);
-  Vector<int> muPP(nbPos);
+  RankVal mu;
+  mu.setNbPos(nbPos);
 
   MultinomialStatistic multi;
 
-  bool allCommute = true;
+  Vector<bool> involution(nbSample);
 
+  Vector<int> vec(nbPos);
   for (int p = 0; p < nbPos; ++p)
   {
-    mu(p) = p;
+    vec(p) = p;
   }
+  mu.setO(vec);
+
+  Vector<int> vecOut(nbPos);
 
   for (int i = 0; i < nbSample; ++i)
   {
-    multi.shuffle(mu);
-    rank.switchRepresentation(mu , muP );
-    rank.switchRepresentation(muP, muPP);
+    multi.shuffle(vec); // sample a new individual and assign it as an ordering representation
+    mu.setO(vec);
 
-    allCommute = ((muPP == mu) ? true : false);
+    mu.switchRepresentation(mu.r(), vecOut);
+
+    involution(i) = ((vec == vecOut) ? true : false);
 
 #ifdef MC_DEBUG
     std::cout << "mu  : " << mu  .transpose() << std::endl;
@@ -63,44 +66,35 @@ TEST(Rank, switchRepresentation)
 #endif
   }
 
-  ASSERT_EQ(allCommute, true);
+  ASSERT_EQ(involution, Vector<bool>(nbSample, true));
 }
 
+/** Test xGen, using the fact that for pi = 1, mu will be sampled no matter the presentation order */
 TEST(Rank, xGen)
 {
   int nbPos = 4;
   int nbSample = 100;
 
-  bool allSorted = true;
+  Vector<bool> sorted(nbSample);
+  Rank rank(nbPos); // rank which will be completed multiple time
+  RankVal RankOut(nbPos); // whill store the result of xGen
 
-  Vector<int> mu (nbPos); // position -> modality representation
-  mu  << 0, 3, 1, 2;
-  Vector<int> muP(nbPos); // modality -> position representation
-  muP << 0, 2, 3, 1;
-
-  Real pi = 0.9999; // pi high enough to get mu, no matter the y obtained in removeMissing
-
-  Rank rank;
-  rank.setNbPos(nbPos);
+  Vector<int> muVec(nbPos); // position -> modality representation
+  muVec << 0, 3, 1, 2;
+  RankVal mu(nbPos);
+  mu.setO(muVec);
+  Real pi = 1.; // pi high enough to get mu, no matter the y obtained in removeMissing
 
   for (int i = 0; i < nbSample; ++i)
   {
-    rank.removeMissing(); // reinitialize the presentation order
-    rank.xGen(muP, pi);
-    Vector<int> x;
-    rank.getX(x);
+    rank.removeMissing(); // shuffle the presentation order
+    rank.xGen(mu, pi);
+    RankOut = rank.getX();
 
-    if (mu != x)
-    {
-      allSorted = false;
-    }
-
-#ifdef MC_DEBUG
-    std::cout << "i: " << i << ", lp: " << lp << ", x: " << x.transpose() << std::endl;
-#endif
+    (RankOut == mu) ? (sorted(i) = true) : (sorted(i) = false);
   }
 
-  ASSERT_EQ(allSorted, true);
+  ASSERT_EQ(sorted, Vector<bool>(nbSample, true));
 }
 
 TEST(Rank, lnCompletedProbability)
@@ -108,12 +102,15 @@ TEST(Rank, lnCompletedProbability)
   int nbPos = 6;
   int nbSample = 100;
 
-  Matrix<Real> proba(nbSample, 3);
+  Real tolerance = 1e-8;
+  Vector<bool> sameProba(nbSample);
 
-  Vector<int> mu (nbPos); // position -> modality representation
-  mu  << 4, 0, 3, 5, 1, 2;
-  Vector<int> muP(nbPos); // modality -> position representation
-  mu  << 1, 4, 5, 2, 0, 3;
+  Matrix<Real> proba(nbSample, 2);
+
+  Vector<int> muVec (nbPos); // position -> modality representation
+  muVec << 4, 0, 3, 5, 1, 2;
+  RankVal mu(nbPos);
+  mu.setO(muVec);
   Real pi = 0.3;
 
   Rank rank;
@@ -122,18 +119,22 @@ TEST(Rank, lnCompletedProbability)
   for (int i = 0; i < nbSample; ++i)
   {
     rank.removeMissing();
-    proba(i, 0) = rank.xGen(muP, pi);
-    rank.xSwitch(); // xP_ will be needed in lnCompletedProbability
+    proba(i, 0) = rank.xGen(mu, pi);
     proba(i, 1) = rank.   lnCompletedProbability(mu, pi);
-    proba(i, 2) = rank.oldLnCompletedProbability(mu, pi);
+
+    (std::abs(proba(i, 0) - proba(i, 1)) < tolerance) ? (sameProba(i) = true) : (sameProba(i) = false);
   }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "proba: " << std::endl;
   std::cout << proba << std::endl;
 #endif
+
+  ASSERT_EQ(sameProba, Vector<bool>(nbSample, true));
 }
 
+/** Test RankVal::permutation, by doing multiple permutations and checking that ordering and ranking
+ * still coincide (using involution property, as in switchRepresentation test) */
 TEST(RankVal, permutation)
 {
   int nbPos = 10;
