@@ -108,7 +108,7 @@ TEST(Rank, lnCompletedProbability)
   int nbPos = 6;
   int nbSample = 100;
 
-  Matrix<Real> proba(nbSample, 2);
+  Matrix<Real> proba(nbSample, 3);
 
   Vector<int> mu (nbPos); // position -> modality representation
   mu  << 4, 0, 3, 5, 1, 2;
@@ -123,7 +123,9 @@ TEST(Rank, lnCompletedProbability)
   {
     rank.removeMissing();
     proba(i, 0) = rank.xGen(muP, pi);
-    proba(i, 1) = rank.lnCompletedProbability(mu, pi);
+    rank.xSwitch(); // xP_ will be needed in lnCompletedProbability
+    proba(i, 1) = rank.   lnCompletedProbability(mu, pi);
+    proba(i, 2) = rank.oldLnCompletedProbability(mu, pi);
   }
 
 #ifdef MC_DEBUGNEW

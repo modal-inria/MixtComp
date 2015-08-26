@@ -38,7 +38,8 @@ void Rank::setNbPos(int nbPos)
 {
   nbPos_ = nbPos;
   obsData_.resize(nbPos);
-  x_.resize(nbPos);
+  x_ .resize(nbPos);
+  xP_.resize(nbPos);
 
   y_.resize(nbPos);
   for (int p = 0; p < nbPos_; ++p)
@@ -57,6 +58,11 @@ void Rank::removeMissing()
 Real Rank::xGen(const Vector<int>& muP,
                 Real pi)
 {
+#ifdef MC_DEBUGNEW
+  int a = 0;
+  int g = 0;
+#endif
+
   Real logProba = 0.;
 
   Real goodlp = std::log(     pi);
@@ -75,14 +81,23 @@ Real Rank::xGen(const Vector<int>& muP,
     {
       bool comparison = muP(currY) < muP(x[i]); // true if curr elem is correctly ordered
 
-      if (multi_.sampleBinomial(pi)) // is the comparison correct ?
+      if (multi_.sampleBinomial(pi) == 1) // is the comparison correct ?
       {
         logProba += goodlp;
+
+#ifdef MC_DEBUGNEW
+        ++a;
+        ++g;
+#endif
       }
       else
       {
         comparison = !comparison;
         logProba += badlp;
+
+#ifdef MC_DEBUGNEW
+        ++a;
+#endif
       }
 
       if (comparison) // element j must be placed here
@@ -103,13 +118,16 @@ Real Rank::xGen(const Vector<int>& muP,
     x_(p) = x[p];
   }
 
+#ifdef MC_DEBUGNEW
+  std::cout << "Rank::xGen, a: " << a << ", g:" << g << std::endl;
+#endif
+
   return lnFacNbPos_ + logProba;
 }
 
 void Rank::switchRepresentation(const Vector<int>& mu ,
                                       Vector<int>& muP) const
 {
-  muP.resize(mu.size());
   for (int p = 0; p < nbPos_; ++p)
   {
     muP(mu(p)) = p;
@@ -122,17 +140,74 @@ Real Rank::lnCompletedProbability(const Vector<int>& muP,
   int a;
   int g;
 
-  Vector<int> mu;
-  switchRepresentation(muP, mu);
+  AG(muP, a, g);
 
-  AG(mu, a, g);
+#ifdef MC_DEBUGNEW
+  std::cout << "Rank::lnCompletedProbability, a: " << a << ", g:" << g << std::endl;
+#endif
 
   return lnFacNbPos_ + g * std::log(pi) + (a - g) * std::log(1. - pi);
 }
 
-void Rank::AG(const Vector<int>& mu,
+void Rank::AG(const Vector<int>& muP,
               int& a,
               int& g) const
+{
+  a = 0;
+  g = 0;
+
+  std::vector<int> x(1); // vector is suboptimal for insertion, but provides contiguous memory storage which will fit in CPU cache
+  x.reserve(nbPos_);
+
+  x[0] = y_(0);
+
+  for (int j = 1; j < nbPos_; ++j) // current element in the presentation order, or current size of the x vector
+  {
+    int currY = y_(j);
+    bool yPlaced = false;
+    for (int i = 0; i < j; ++i)
+    {
+      yPlaced = (xP_(currY) < xP_(x[i]));
+
+      if (yPlaced == (muP(currY) < muP(x[i]))) // is the comparison correct, according to the order provided in mu ?
+      {
+        ++a;
+        ++g;
+      }
+      else
+      {
+        ++a;
+      }
+
+      if (yPlaced)
+      {
+        x.insert(x.begin() + i, currY);
+        break;
+      }
+    }
+    if (!yPlaced)
+    {
+      x.push_back(currY); // if element j has not been placed yet, it goes at the end of x
+    }
+  }
+}
+
+Real Rank::oldLnCompletedProbability(const Vector<int>& muP,
+                                     Real pi) const
+{
+  int a;
+  int g;
+
+  Vector<int> mu(nbPos_);
+  switchRepresentation(muP, mu);
+  oldAG(mu, a, g);
+
+  return lnFacNbPos_ + g * std::log(pi) + (a - g) * std::log(1. - pi);
+}
+
+void Rank::oldAG(const Vector<int>& mu,
+                 int& a,
+                 int& g) const
 {
   int const m(mu.size());
   int gplus(0),gmoins(0),gjmoinsb(0),gjplusb(0),index(0);
@@ -197,7 +272,7 @@ void Rank::AG(const Vector<int>& mu,
   g = gmoins+gplus;
 }
 
-int Rank::positionRank(const Vector<int> x,
+int Rank::positionRank(const Vector<int>& x,
                        int i) const
 {
   int j(0);

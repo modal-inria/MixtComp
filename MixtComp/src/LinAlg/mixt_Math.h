@@ -21,21 +21,14 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_RANKFUNCTION_H
-#define MIXT_RANKFUNCTION_H
-
-#include "../LinAlg/mixt_LinAlg.h"
+#ifndef MIXT_MATH_H
+#define MIXT_MATH_H
 
 namespace mixt
 {
 
-namespace RankFunction
-{
+int fac(int n);
 
+}
 
-
-} // namespace RankFunction
-
-} // namespace mixt
-
-#endif // MIXT_RANKFUNCTION_H
+#endif // MIXT_LINALG_H

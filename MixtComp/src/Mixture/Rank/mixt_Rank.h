@@ -27,6 +27,7 @@
 #include "../Various/mixt_Def.h"
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Statistic/mixt_Statistic.h"
+#include "mixt_RankVal.h"
 
 namespace mixt
 {
@@ -81,7 +82,7 @@ class Rank
      * Completed log-probability of the individual
      * @param mu central rank
      * @param pi precision */
-    Real lnCompletedProbability(const Vector<int>& mu,
+    Real lnCompletedProbability(const Vector<int>& muP,
                                 Real pi) const;
 
     /** Uniform sample for partially observed valued and presentation order */
@@ -106,11 +107,20 @@ class Rank
     void switchRepresentation(const Vector<int>& mu ,
                                     Vector<int>& muP) const;
 
+    void xSwitch() {switchRepresentation(x_, xP_);}
+
     void AG(const Vector<int>& mu,
             int& a,
             int& g) const;
 
-    int positionRank(const Vector<int> x,
+    Real oldLnCompletedProbability(const Vector<int>& muP,
+                                   Real pi) const;
+
+    void oldAG(const Vector<int>& mu,
+               int& a,
+               int& g) const;
+
+    int positionRank(const Vector<int>& x,
                      int i) const;
 
   private:
@@ -123,8 +133,11 @@ class Rank
     /** Description of the observed data, one MisVal per position in the rank */
     Vector<MisVal> obsData_;
 
-    /** Completed individual */
+    /** Completed individual, position -> modality representation */
     Vector<int> x_;
+
+    /** Completed individual, modality -> position representation */
+    Vector<int> xP_;
 
     /** Presentation order */
     Vector<int> y_;
