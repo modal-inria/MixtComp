@@ -28,6 +28,7 @@
 #include "../src/Mixture/Rank/mixt_RankVal.h"
 #include "../src/LinAlg/mixt_Math.h"
 #include "../src/Mixture/Rank/mixt_RankIndividual.h"
+#include "../src/Mixture/Rank/mixt_Rank.h"
 
 using namespace mixt;
 
@@ -341,4 +342,34 @@ TEST(RankIndividual, gibbsY)
 #endif
 
   ASSERT_LT(KLDivergence, tolerance);
+}
+
+/** Test mStep by first generating individuals and then comparing the estimated central rank with the one used in the sampling.
+ * The Kendall tau distance is used as a measure of similarity. */
+TEST(Rank, mStep)
+{
+  int nbPos = 6;
+  int nbSample = 500;
+
+  RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
+  Vector<Vector<int> > data(nbSample); // will store the result of xGen
+
+  Vector<int> muVec(nbPos); // position -> modality representation
+  muVec << 0, 3, 1, 2, 5, 4;
+  RankVal mu(nbPos);
+  mu.setO(muVec);
+  Real pi = 0.3; // pi high enough to get mu, no matter the y obtained in removeMissing
+
+  for (int i = 0; i < nbSample; ++i)
+  {
+    rankIndividual.removeMissing(); // shuffle the presentation order
+    rankIndividual.xGen(mu, pi);
+    data(i) = rankIndividual.getX().o();
+  }
+
+  Rank rank(1,
+            500,
+            data,
+            mu,
+            pi);
 }
