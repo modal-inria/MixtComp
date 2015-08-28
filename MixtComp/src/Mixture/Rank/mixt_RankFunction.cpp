@@ -32,50 +32,6 @@ namespace mixt
 namespace RankFunction
 {
 
-void index2Vector(Vector<std::pair<Vector<int>, Real> >& res,
-                  Vector<int>& vec,
-                  const std::set<int>& remainingMod,
-                  int firstElem,
-                  int nbElem,
-                  int currPos,
-                  int nbPos)
-{
-  if (currPos == nbPos) // no more modalities to add in the vector
-  {
-    res(firstElem) = std::pair<Vector<int>, Real>(vec, 12.); // register current vector and its value
-  }
-  else
-  {
-    int nextNbElem = nbElem / (nbPos - currPos);
-    int indexMod = 0;
-    for (std::set<int>::const_iterator it = remainingMod.begin();
-         it != remainingMod.end();
-         ++it, ++indexMod) // iteration over the modality that have not yet been included in the vector
-    {
-      std::set<int> remainingModNew = remainingMod; // computation of the modalities available for the remaining of vec
-      for (std::set<int>::iterator itNew = remainingModNew.begin();
-           itNew != remainingModNew.end();
-           ++itNew)
-      {
-        if (*itNew == *it) // the current modality will not be available further down the vector
-        {
-          remainingModNew.erase(itNew);
-          break;
-        }
-      }
-
-      vec(currPos) = *it;
-      index2Vector(res,
-                   vec,
-                   remainingModNew,
-                   firstElem + indexMod * nextNbElem,
-                   nextNbElem,
-                   currPos + 1,
-                   nbPos);
-    }
-  }
-}
-
 } // namespace RankFunction
 
 } // namespace mixt

@@ -193,4 +193,127 @@ void Rank::AG(const RankVal& mu,
     }
   }
 }
+
+/**
+ * Perform one round of Gibbs sampling for the presentation order
+ * @param mu central rank
+ * @param pi precision */
+void Rank::samplingY(const RankVal& mu,
+                     Real pi)
+{
+  Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
+  Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
+
+  logProba(0) = lnCompletedProbability(mu, pi); // proba of current y
+
+  for (int p = 0; p < nbPos_ - 1; ++p)
+  {
+    permutationY(p);
+    logProba(1) = lnCompletedProbability(mu, pi);
+    proba.logToMulti(logProba);
+
+#ifdef MC_DEBUG
+    std::cout << "p: " << p << ", logProba: " << logProba.transpose() << ", proba: " << proba.transpose() << std::endl;
+#endif
+
+    if (multi_.sample(proba) == 1) // switch to permuted state ?
+    {
+      logProba(0) = logProba(1); // accept permutation
+    }
+    else
+    {
+      permutationY(p); // revert to previous state
+    }
+  }
+}
+
+void Rank::permutationY(int firstElem)
+{
+  int dummy = y_(firstElem);
+  y_(firstElem    ) = y_(firstElem + 1);
+  y_(firstElem + 1) = dummy;
+}
+
+void Rank::probaYgX(const RankVal& mu,
+                    Real pi,
+                    Vector<Vector<int> >& resVec,
+                    Vector<Real>& resProba)
+{
+  int nbInd = fac(nbPos_);
+
+  std::set<int> remainingMod;
+  for (int m = 0; m < nbPos_; ++m)
+  {
+    remainingMod.insert(m);
+  }
+
+  Vector<int> vec(nbPos_);
+  Vector<Real> logProba(nbInd);
+
+  recYgX(mu,
+         pi,
+         resVec,
+         logProba,
+         vec,
+         remainingMod,
+         0,
+         nbInd,
+         0,
+         nbPos_);
+
+  resProba.logToMulti(logProba); // from log of joint distribution to conditional distribution
+}
+
+void Rank::recYgX(const RankVal& mu,
+                  Real pi,
+                  Vector<Vector<int> >& resVec,
+                  Vector<Real>& resProba,
+                  Vector<int>& vec,
+                  const std::set<int>& remainingMod,
+                  int firstElem,
+                  int nbElem,
+                  int currPos,
+                  int nbPos)
+{
+  if (currPos == nbPos) // no more modalities to add in the vector
+  {
+    y_ = vec; // assignment to compute
+    resVec(firstElem) = vec;
+    resProba(firstElem) = lnCompletedProbability(mu, pi); // register current vector and its value
+  }
+  else
+  {
+    int nextNbElem = nbElem / (nbPos - currPos);
+    int indexMod = 0;
+    for (std::set<int>::const_iterator it = remainingMod.begin();
+         it != remainingMod.end();
+         ++it, ++indexMod) // iteration over the modality that have not yet been included in the vector
+    {
+      std::set<int> remainingModNew = remainingMod; // computation of the modalities available for the remaining of vec
+      for (std::set<int>::iterator itNew = remainingModNew.begin();
+           itNew != remainingModNew.end();
+           ++itNew)
+      {
+        if (*itNew == *it) // the current modality will not be available further down the vector
+        {
+          remainingModNew.erase(itNew);
+          break;
+        }
+      }
+
+      vec(currPos) = *it;
+      recYgX(mu,
+             pi,
+             resVec,
+             resProba,
+             vec,
+             remainingModNew,
+             firstElem + indexMod * nextNbElem,
+             nextNbElem,
+             currPos + 1,
+             nbPos);
+    }
+  }
+}
+
 } // namespace mixt

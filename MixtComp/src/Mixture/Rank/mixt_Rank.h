@@ -24,6 +24,8 @@
 #ifndef MIXT_RANK_H
 #define MIXT_RANK_H
 
+#include <set>
+
 #include "../Various/mixt_Def.h"
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Statistic/mixt_Statistic.h"
@@ -51,20 +53,16 @@ class Rank
     const RankVal& getX() const {return x_;}
 
     /** Get the presentation order, for example for debugging purposes */
-    const Vector<int>& getY(Vector<int>& y) const {return y_;}
+    const Vector<int>& getY() const {return y_;}
 
     /** Set the number of positions in the rank, used to resize storage */
     void setNbPos(int nbPos);
 
-    /**
-     * Set the observed values for the individual
-     * @param pos position to be set
-     * @param type observed / partially observed / unobserved value
-     * @param val list of possible values for the partially observed data
-     * */
-    void setObserved(int pos,
-                     MisType type,
-                     const Vector<int> val);
+    template<typename T>
+    void setO(const T& data){x_.setO(data);}
+
+    template<typename T>
+    void setR(const T& data){x_.setR(data);}
 
     /**
      * Perform one round of Gibbs sampling for the partially observed data
@@ -103,7 +101,25 @@ class Rank
             int& a,
             int& g) const;
 
+    void probaYgX(const RankVal& mu,
+                  Real pi,
+                  Vector<Vector<int> >& resVec,
+                  Vector<Real>& resProba);
+
+    void recYgX(const RankVal& mu,
+                Real pi,
+                Vector<Vector<int> >& resVec,
+                Vector<Real>& resProba,
+                Vector<int>& vec,
+                const std::set<int>& remainingMod,
+                int firstElem,
+                int nbElem,
+                int currPos,
+                int nbPos);
+
   private:
+    void permutationY(int firstElem);
+
     /** Number of positions in the rank */
     int nbPos_;
 

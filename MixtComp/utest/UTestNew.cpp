@@ -100,6 +100,8 @@ TEST(Rank, xGen)
   ASSERT_EQ(sorted, Vector<bool>(nbSample, true));
 }
 
+/** Computation of the joint probability p(x, y). Compare the probability obtained through directe computation with
+ * the proba obtained during the xGen sampling of x. */
 TEST(Rank, lnCompletedProbability)
 {
   int nbPos = 6;
@@ -110,7 +112,7 @@ TEST(Rank, lnCompletedProbability)
 
   Matrix<Real> proba(nbSample, 2);
 
-  Vector<int> muVec (nbPos); // position -> modality representation
+  Vector<int> muVec (nbPos);
   muVec << 4, 0, 3, 5, 1, 2;
   RankVal mu(nbPos);
   mu.setO(muVec);
@@ -123,7 +125,7 @@ TEST(Rank, lnCompletedProbability)
   {
     rank.removeMissing();
     proba(i, 0) = rank.xGen(mu, pi);
-    proba(i, 1) = rank.   lnCompletedProbability(mu, pi);
+    proba(i, 1) = rank.lnCompletedProbability(mu, pi);
 
     (std::abs(proba(i, 0) - proba(i, 1)) < tolerance) ? (sameProba(i) = true) : (sameProba(i) = false);
   }
@@ -202,39 +204,48 @@ TEST(Matrix, comparison)
   ASSERT_EQ(res, Vector<bool>(3, true));
 }
 
-TEST(RankFunction, index2Vector)
+/** Test if Rank::recYgX has produced a correct list of Y candidate using < comparator on consecutive values of result.
+ * Actual value of the conditional probability is not tested, but the lnCompletedProbability used in its computation
+ * already is tested elsewhere. */
+TEST(Rank, recYgX)
 {
-  int nbMod = 4;
-  int nbInd = fac(nbMod);
+  int nbPos = 4;
+  int nbInd = fac(nbPos);
 
-  std::set<int> remainingMod;
-  for (int m = 0; m < nbMod; ++m)
-  {
-    remainingMod.insert(m);
-  }
+  Rank rank(nbPos);
 
-  Vector<std::pair<Vector<int>, Real> > res(nbInd);
-  Vector<int> vec(nbMod);
+  Vector<int> muVec(nbPos);
+  muVec << 0, 3, 1, 2;
+  RankVal mu(nbPos);
 
-  RankFunction::index2Vector(res,
-                             vec,
-                             remainingMod,
-                             0,
-                             nbInd,
-                             0,
-                             nbMod);
+  Real pi = 0.3;
 
-  bool orderOK = true;
+  Vector<Vector<int> > resVec(nbInd);
+  Vector<Real> resProba(nbInd);
+
+  rank.probaYgX(mu,
+                pi,
+                resVec,
+                resProba);
+
+  bool sorted = true;
   for (int i = 0; i < nbInd - 1; ++i)
   {
-    if (!(res(i).first < res(i + 1).first))
+    if (!(resVec(i) <  resVec(i + 1)))
     {
-      orderOK = false;
+      sorted = false;
       break;
     }
   }
 
-  ASSERT_TRUE(orderOK);
+#ifdef MC_DEBUG
+  for (int i = 0; i < nbInd; ++i)
+  {
+    std::cout << "i: " << i << ", vec: " << resVec(i).transpose() << ", proba: " << resProba(i) << std::endl;
+  }
+#endif
+
+  EXPECT_TRUE(sorted);
 }
 
 ///** Test if the distribution of Y obtained using Gibbs sampling is significantly different to the real distribution
