@@ -32,7 +32,14 @@ namespace mixt
 namespace RankFunction
 {
 
-
+/** Recursive computation of */
+void index2Vector(Vector<std::pair<Vector<int>, Real> >& res,
+                  Vector<int>& vec,
+                  const std::set<int>& remainingMod,
+                  int firstElem,
+                  int nbElem,
+                  int currPos,
+                  int nbPos);
 
 } // namespace RankFunction
 

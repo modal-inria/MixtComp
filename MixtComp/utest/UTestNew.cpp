@@ -22,9 +22,12 @@
  **/
 
 #include "gtest/gtest.h"
+#include <map>
 
 #include "../src/Mixture/Rank/mixt_Rank.h"
+#include "../src/Mixture/Rank/mixt_RankFunction.h"
 #include "../src/Mixture/Rank/mixt_RankVal.h"
+#include "../src/LinAlg/mixt_Math.h"
 
 using namespace mixt;
 
@@ -167,6 +170,7 @@ TEST(RankVal, permutation)
 
   ASSERT_EQ(res, Vector<bool>(nbSample, true));
 }
+
 /** Test if the operator < between matrices of same size is correctly implemented */
 TEST(Matrix, comparison)
 {
@@ -198,6 +202,96 @@ TEST(Matrix, comparison)
   ASSERT_EQ(res, Vector<bool>(3, true));
 }
 
+TEST(RankFunction, index2Vector)
+{
+  int nbMod = 4;
+  int nbInd = fac(nbMod);
 
-  ASSERT_LT(b, a);
+  std::set<int> remainingMod;
+  for (int m = 0; m < nbMod; ++m)
+  {
+    remainingMod.insert(m);
+  }
+
+  Vector<std::pair<Vector<int>, Real> > res(nbInd);
+  Vector<int> vec(nbMod);
+
+  RankFunction::index2Vector(res,
+                             vec,
+                             remainingMod,
+                             0,
+                             nbInd,
+                             0,
+                             nbMod);
+
+  bool orderOK = true;
+  for (int i = 0; i < nbInd - 1; ++i)
+  {
+    if (!(res(i).first < res(i + 1).first))
+    {
+      orderOK = false;
+      break;
+    }
+  }
+
+  ASSERT_TRUE(orderOK);
 }
+
+///** Test if the distribution of Y obtained using Gibbs sampling is significantly different to the real distribution
+// * obtained through direct computation. Kullback–Leibler_divergence is used to quantify the difference. */
+//TEST(Rank, gibbsY)
+//{
+//  int nbPos = 5;
+//  int nbIterBurnIn = 500;
+//  int nbIterRun    = 50000;
+//
+//  Vector<int> dummyVec(nbPos);
+//
+//  Rank rank(nbPos);
+//  dummyVec << 2, 4, 3, 1, 0;
+//  rank.setO(dummyVec); // set observed value x
+//  rank.removeMissing(); // initialize y_ randomly
+//
+//  RankVal mu(nbPos);
+//  dummyVec << 0, 3, 1, 2, 4;
+//  mu.setO(dummyVec);
+//
+//  Real pi = 0.3;
+//
+//  std::map<Vector<int>, int> nbOccur; // sparse representation of the number of occurences of each presentation order
+//
+//  for (int i = 0; i < nbIterBurnIn; ++i)
+//  {
+//    rank.samplingY(mu, pi);
+//  }
+//
+//  for (int i = 0; i < nbIterRun; ++i)
+//  {
+//    rank.samplingY(mu, pi);
+//    dummyVec = rank.getY();
+//
+//    if (nbOccur.find(dummyVec) == nbOccur.end())
+//    {
+//      nbOccur[dummyVec] = 1; // first occurence
+//    } else
+//    {
+//      nbOccur[dummyVec] += 1;
+//    }
+//
+//#ifdef MC_DEBUG
+//    std::cout << "i: " << i << ", dummyVec: " << dummyVec.transpose() << std::endl;
+//#endif
+//  }
+//
+//  // computation of the
+//  for (int a = 0;)
+//
+//#ifdef MC_DEBUG
+//  for (std::map<Vector<int>, int>::const_iterator it = nbOccur.begin();
+//       it != nbOccur.end();
+//       ++it)
+//  {
+//    std::cout << "rank: " << it->first.transpose() << " , nb occurences: " << it->second << std::endl;
+//  }
+//#endif
+//}

@@ -67,10 +67,10 @@ template <typename DataHandler,
           typename ParamSetter,
           typename ParamExtractor>
 using PoissonBridge_k_m = MixtureBridge<Poisson_k_,
-                                              DataHandler,
-                                              DataExtractor,
-                                              ParamSetter,
-                                              ParamExtractor>;
+                                        DataHandler,
+                                        DataExtractor,
+                                        ParamSetter,
+                                        ParamExtractor>;
 
 } /* namespace mixt */
 
