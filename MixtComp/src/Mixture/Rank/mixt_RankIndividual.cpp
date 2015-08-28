@@ -21,18 +21,19 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_Rank.h"
+#include "mixt_RankIndividual.h"
+
 #include "../LinAlg/mixt_Math.h"
 
 namespace mixt
 {
 
-Rank::Rank() :
+RankIndividual::RankIndividual() :
     nbPos_(0),
     lnFacNbPos_(0)
 {}
 
-Rank::Rank(int nbPos) :
+RankIndividual::RankIndividual(int nbPos) :
     nbPos_(nbPos),
     lnFacNbPos_(- std::log(fac(nbPos))),
     x_(nbPos)
@@ -45,7 +46,7 @@ Rank::Rank(int nbPos) :
   }
 }
 
-void Rank::setNbPos(int nbPos)
+void RankIndividual::setNbPos(int nbPos)
 {
   nbPos_ = nbPos;
   obsData_.resize(nbPos);
@@ -60,7 +61,7 @@ void Rank::setNbPos(int nbPos)
   lnFacNbPos_ = - std::log(fac(nbPos_));
 }
 
-void Rank::removeMissing()
+void RankIndividual::removeMissing()
 {
   multi_.shuffle(y_);
 
@@ -69,7 +70,7 @@ void Rank::removeMissing()
 #endif
 }
 
-Real Rank::xGen(const RankVal& mu,
+Real RankIndividual::xGen(const RankVal& mu,
                 Real pi)
 {
 #ifdef MC_DEBUG
@@ -136,7 +137,7 @@ Real Rank::xGen(const RankVal& mu,
   return lnFacNbPos_ + logProba;
 }
 
-Real Rank::lnCompletedProbability(const RankVal& mu,
+Real RankIndividual::lnCompletedProbability(const RankVal& mu,
                                   Real pi) const
 {
   int a;
@@ -151,7 +152,7 @@ Real Rank::lnCompletedProbability(const RankVal& mu,
   return lnFacNbPos_ + g * std::log(pi) + (a - g) * std::log(1. - pi);
 }
 
-void Rank::AG(const RankVal& mu,
+void RankIndividual::AG(const RankVal& mu,
               int& a,
               int& g) const
 {
@@ -198,7 +199,7 @@ void Rank::AG(const RankVal& mu,
  * Perform one round of Gibbs sampling for the presentation order
  * @param mu central rank
  * @param pi precision */
-void Rank::samplingY(const RankVal& mu,
+void RankIndividual::samplingY(const RankVal& mu,
                      Real pi)
 {
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
@@ -227,14 +228,14 @@ void Rank::samplingY(const RankVal& mu,
   }
 }
 
-void Rank::permutationY(int firstElem)
+void RankIndividual::permutationY(int firstElem)
 {
   int dummy = y_(firstElem);
   y_(firstElem    ) = y_(firstElem + 1);
   y_(firstElem + 1) = dummy;
 }
 
-void Rank::probaYgX(const RankVal& mu,
+void RankIndividual::probaYgX(const RankVal& mu,
                     Real pi,
                     Vector<Vector<int> >& resVec,
                     Vector<Real>& resProba)
@@ -264,7 +265,7 @@ void Rank::probaYgX(const RankVal& mu,
   resProba.logToMulti(logProba); // from log of joint distribution to conditional distribution
 }
 
-void Rank::recYgX(const RankVal& mu,
+void RankIndividual::recYgX(const RankVal& mu,
                   Real pi,
                   Vector<Vector<int> >& resVec,
                   Vector<Real>& resProba,

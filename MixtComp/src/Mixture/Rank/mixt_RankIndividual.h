@@ -21,8 +21,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_RANK_H
-#define MIXT_RANK_H
+#ifndef MIXT_RANKINDIVIDUAL_H
+#define MIXT_RANKINDIVIDUAL_H
 
 #include <set>
 
@@ -38,16 +38,16 @@ namespace mixt
  * A rank is an object that contains everything needed to describe a particular individual. It contains both the observed and completed
  * values, as well as methods to compute the likelihood or to perform samplings.
  */
-class Rank
+class RankIndividual
 {
   public:
     /* Each element of the vector is a position in a rank. The MisType describe the type of observation (or lack of)
      * while the Vector<int> describes the possible values, when needed. */
     typedef std::pair<MisType, Vector<int> > MisVal;
 
-    Rank();
+    RankIndividual();
 
-    Rank(int nbPos);
+    RankIndividual(int nbPos);
 
     /** Get the observed x value, for example for debugging purposes */
     const RankVal& getX() const {return x_;}
@@ -141,4 +141,4 @@ class Rank
 
 } // namespace mixt
 
-#endif // MIXT_RANK_H
+#endif // MIXT_RANKINDIVIDUAL_H

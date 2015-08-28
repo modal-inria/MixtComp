@@ -24,15 +24,15 @@
 #include "gtest/gtest.h"
 #include <map>
 
-#include "../src/Mixture/Rank/mixt_Rank.h"
 #include "../src/Mixture/Rank/mixt_RankFunction.h"
 #include "../src/Mixture/Rank/mixt_RankVal.h"
 #include "../src/LinAlg/mixt_Math.h"
+#include "../src/Mixture/Rank/mixt_RankIndividual.h"
 
 using namespace mixt;
 
 /** Test RankVal::switchRepresentation using the property that it is an involution */
-TEST(Rank, switchRepresentation)
+TEST(RankIndividual, switchRepresentation)
 {
   int nbPos = 4;
   int nbSample = 1000;
@@ -73,13 +73,13 @@ TEST(Rank, switchRepresentation)
 }
 
 /** Test xGen, using the fact that for pi = 1, mu will be sampled no matter the presentation order */
-TEST(Rank, xGen)
+TEST(RankIndividual, xGen)
 {
   int nbPos = 4;
   int nbSample = 100;
 
   Vector<bool> sorted(nbSample);
-  Rank rank(nbPos); // rank which will be completed multiple time
+  RankIndividual rank(nbPos); // rank which will be completed multiple time
   RankVal RankOut(nbPos); // whill store the result of xGen
 
   Vector<int> muVec(nbPos); // position -> modality representation
@@ -102,7 +102,7 @@ TEST(Rank, xGen)
 
 /** Computation of the joint probability p(x, y). Compare the probability obtained through directe computation with
  * the proba obtained during the xGen sampling of x. */
-TEST(Rank, lnCompletedProbability)
+TEST(RankIndividual, lnCompletedProbability)
 {
   int nbPos = 6;
   int nbSample = 100;
@@ -118,7 +118,7 @@ TEST(Rank, lnCompletedProbability)
   mu.setO(muVec);
   Real pi = 0.3;
 
-  Rank rank;
+  RankIndividual rank;
   rank.setNbPos(nbPos);
 
   for (int i = 0; i < nbSample; ++i)
@@ -207,12 +207,12 @@ TEST(Matrix, comparison)
 /** Test if Rank::recYgX has produced a correct list of Y candidate using < comparator on consecutive values of result.
  * Actual value of the conditional probability is not tested, but the lnCompletedProbability used in its computation
  * already is tested elsewhere. */
-TEST(Rank, recYgX)
+TEST(RankIndividual, recYgX)
 {
   int nbPos = 4;
   int nbE = fac(nbPos);
 
-  Rank rank(nbPos);
+  RankIndividual rank(nbPos);
 
   Vector<int> muVec(nbPos);
   muVec << 0, 3, 1, 2;
@@ -250,7 +250,7 @@ TEST(Rank, recYgX)
 
 /** Test if the conditional distribution p(y / x) obtained using Gibbs sampling is significantly different from the distribution
  * obtained through direct computation. Kullback–Leibler_divergence quantifies this difference. */
-TEST(Rank, gibbsY)
+TEST(RankIndividual, gibbsY)
 {
   int nbPos = 5;
   int nbIterBurnIn = 500;
@@ -260,7 +260,7 @@ TEST(Rank, gibbsY)
 
   Vector<int> dummyVec(nbPos);
 
-  Rank rank(nbPos);
+  RankIndividual rank(nbPos);
   dummyVec << 2, 4, 3, 1, 0;
   rank.setO(dummyVec); // set observed value x
   rank.removeMissing(); // initialize y_ randomly
