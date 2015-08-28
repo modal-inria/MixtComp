@@ -210,7 +210,7 @@ TEST(Matrix, comparison)
 TEST(Rank, recYgX)
 {
   int nbPos = 4;
-  int nbInd = fac(nbPos);
+  int nbE = fac(nbPos);
 
   Rank rank(nbPos);
 
@@ -220,8 +220,8 @@ TEST(Rank, recYgX)
 
   Real pi = 0.3;
 
-  Vector<Vector<int> > resVec(nbInd);
-  Vector<Real> resProba(nbInd);
+  Vector<Vector<int> > resVec(nbE);
+  Vector<Real> resProba(nbE);
 
   rank.probaYgX(mu,
                 pi,
@@ -229,7 +229,7 @@ TEST(Rank, recYgX)
                 resProba);
 
   bool sorted = true;
-  for (int i = 0; i < nbInd - 1; ++i)
+  for (int i = 0; i < nbE - 1; ++i)
   {
     if (!(resVec(i) <  resVec(i + 1)))
     {
@@ -239,7 +239,7 @@ TEST(Rank, recYgX)
   }
 
 #ifdef MC_DEBUG
-  for (int i = 0; i < nbInd; ++i)
+  for (int i = 0; i < nbE; ++i)
   {
     std::cout << "i: " << i << ", vec: " << resVec(i).transpose() << ", proba: " << resProba(i) << std::endl;
   }
@@ -248,61 +248,97 @@ TEST(Rank, recYgX)
   EXPECT_TRUE(sorted);
 }
 
-///** Test if the distribution of Y obtained using Gibbs sampling is significantly different to the real distribution
-// * obtained through direct computation. Kullback–Leibler_divergence is used to quantify the difference. */
-//TEST(Rank, gibbsY)
-//{
-//  int nbPos = 5;
-//  int nbIterBurnIn = 500;
-//  int nbIterRun    = 50000;
-//
-//  Vector<int> dummyVec(nbPos);
-//
-//  Rank rank(nbPos);
-//  dummyVec << 2, 4, 3, 1, 0;
-//  rank.setO(dummyVec); // set observed value x
-//  rank.removeMissing(); // initialize y_ randomly
-//
-//  RankVal mu(nbPos);
-//  dummyVec << 0, 3, 1, 2, 4;
-//  mu.setO(dummyVec);
-//
-//  Real pi = 0.3;
-//
-//  std::map<Vector<int>, int> nbOccur; // sparse representation of the number of occurences of each presentation order
-//
-//  for (int i = 0; i < nbIterBurnIn; ++i)
-//  {
-//    rank.samplingY(mu, pi);
-//  }
-//
-//  for (int i = 0; i < nbIterRun; ++i)
-//  {
-//    rank.samplingY(mu, pi);
-//    dummyVec = rank.getY();
-//
-//    if (nbOccur.find(dummyVec) == nbOccur.end())
-//    {
-//      nbOccur[dummyVec] = 1; // first occurence
-//    } else
-//    {
-//      nbOccur[dummyVec] += 1;
-//    }
-//
-//#ifdef MC_DEBUG
-//    std::cout << "i: " << i << ", dummyVec: " << dummyVec.transpose() << std::endl;
-//#endif
-//  }
-//
-//  // computation of the
-//  for (int a = 0;)
-//
-//#ifdef MC_DEBUG
-//  for (std::map<Vector<int>, int>::const_iterator it = nbOccur.begin();
-//       it != nbOccur.end();
-//       ++it)
-//  {
-//    std::cout << "rank: " << it->first.transpose() << " , nb occurences: " << it->second << std::endl;
-//  }
-//#endif
-//}
+/** Test if the conditional distribution p(y / x) obtained using Gibbs sampling is significantly different from the distribution
+ * obtained through direct computation. Kullback–Leibler_divergence quantifies this difference. */
+TEST(Rank, gibbsY)
+{
+  int nbPos = 5;
+  int nbIterBurnIn = 500;
+  int nbIterRun    = 500000;
+  Real tolerance = 1.e-3;
+  int nbE = fac(nbPos); // number of random events
+
+  Vector<int> dummyVec(nbPos);
+
+  Rank rank(nbPos);
+  dummyVec << 2, 4, 3, 1, 0;
+  rank.setO(dummyVec); // set observed value x
+  rank.removeMissing(); // initialize y_ randomly
+
+  RankVal mu(nbPos);
+  dummyVec << 0, 3, 1, 2, 4;
+  mu.setO(dummyVec);
+
+  Real pi = 0.3;
+
+  std::map<Vector<int>, Real> empDist; // empirical distribution
+  std::map<Vector<int>, Real> calcDist; // calculated distribution
+
+  for (int i = 0; i < nbIterBurnIn; ++i)
+  {
+    rank.samplingY(mu, pi);
+  }
+
+  for (int i = 0; i < nbIterRun; ++i)
+  {
+    rank.samplingY(mu, pi);
+    dummyVec = rank.getY();
+
+    if (empDist.find(dummyVec) == empDist.end())
+    {
+      empDist[dummyVec] = 1.; // first occurrence
+    } else
+    {
+      empDist[dummyVec] += 1.;
+    }
+
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << ", dummyVec: " << dummyVec.transpose() << std::endl;
+#endif
+  }
+
+  for (std::map<Vector<int>, Real>::iterator it = empDist.begin();
+       it != empDist.end();
+       ++it) // renormalization of the empirical distribution
+  {
+    it->second /= nbIterRun;
+  }
+
+#ifdef MC_DEBUG
+  for (std::map<Vector<int>, int>::const_iterator it = empDist.begin();
+       it != empDist.end();
+       ++it)
+  {
+    std::cout << "rank: " << it->first.transpose() << " , nb occurences: " << it->second << std::endl;
+  }
+#endif
+
+  Vector<Vector<int> > resVec(nbE);
+  Vector<Real> resProba(nbE);
+  rank.probaYgX(mu,
+                pi,
+                resVec,
+                resProba);
+  for (int e = 0; e < nbE; ++e) // filling the map object used to compute the KL-divergence
+  {
+    calcDist[resVec(e)] = resProba(e);
+  }
+
+  Real KLDivergence = 0.; // computation of the Kullback–Leibler_divergence
+  for (std::map<Vector<int>, Real>::iterator it = empDist.begin();
+       it != empDist.end();
+       ++it)
+  {
+#ifdef MC_DEBUG
+    std::cout << "vec: " << it->first.transpose() << ", empDist: " << it->second << ", calcDist: " << calcDist[it->first] << std::endl;
+#endif
+
+    KLDivergence += it->second * (std::log(it->second) - std::log(calcDist[it->first]));
+  }
+
+#ifdef MC_DEBUG
+  std::cout << "KLDivergence: " << KLDivergence << std::endl;
+#endif
+
+  ASSERT_LT(KLDivergence, tolerance);
+}
