@@ -64,19 +64,15 @@ struct BridgeTraits<Gaussian_sjk_>
     typedef GaussianLikelihood Likelihood;
 };
 
-template<typename DataHandler,
-         typename DataExtractor,
-         typename ParamSetter,
-         typename ParamExtractor>
-struct GaussianBridge_sjk_m
-{
-   typedef MixtureBridge<Gaussian_sjk_,
-                         DataHandler,
-                         DataExtractor,
-                         ParamSetter,
-                         ParamExtractor> type;
-};
-
+template <typename DataHandler,
+          typename DataExtractor,
+          typename ParamSetter,
+          typename ParamExtractor>
+using GaussianBridge_sjk_m = MixtureBridge<Gaussian_sjk_,
+                                              DataHandler,
+                                              DataExtractor,
+                                              ParamSetter,
+                                              ParamExtractor>;
 } /* namespace mixt */
 
 #endif /* MIXT_GAUSSIANBRIDGE_H */
