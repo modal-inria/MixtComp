@@ -5,4 +5,4 @@
 
 # CXX = g++ -m64
 CXX = clang++
-CXXFLAGS = -O2 -g -DMC_DEBUGNEW -Wall
+CXXFLAGS = -std=c++11 -O2 -g -DMC_DEBUGNEW -Wall
