@@ -83,7 +83,7 @@ Real RankIndividual::xGen(const RankVal& mu,
   Real goodlp = std::log(     pi);
   Real badlp  = std::log(1. - pi);
 
-  std::vector<int> x(1); // vector is suboptimal for insertion, but provides contiguous memory storage which will fit in CPU cache
+  std::vector<int> x(1); // vector is suboptimal for insertion, but provides contiguous memory storage which will fit in CPU cache. std::list on the contrary does not guarantee contiguity for example.
   x.reserve(nbPos_);
 
   x[0] = y_(0);
@@ -91,7 +91,7 @@ Real RankIndividual::xGen(const RankVal& mu,
   for (int j = 1; j < nbPos_; ++j) // current element in the presentation order, or current size of the x vector
   {
     int currY = y_(j);
-    bool yPlaced = false;
+    bool yPlaced = false; // has currY been placed correctly ?
     for (int i = 0; i < j; ++i)
     {
       bool comparison = mu.r()(currY) < mu.r()(x[i]); // true if curr elem is correctly ordered
@@ -138,11 +138,10 @@ Real RankIndividual::xGen(const RankVal& mu,
 }
 
 Real RankIndividual::lnCompletedProbability(const RankVal& mu,
-                                            Real pi) const
+                                            Real pi,
+                                            int& a,
+                                            int& g) const
 {
-  int a;
-  int g;
-
   AG(mu, a, g);
 
 #ifdef MC_DEBUG
@@ -202,15 +201,16 @@ void RankIndividual::AG(const RankVal& mu,
 void RankIndividual::sampleY(const RankVal& mu,
                              Real pi)
 {
+  int a, g; // dummy variables
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
 
-  logProba(0) = lnCompletedProbability(mu, pi); // proba of current y
+  logProba(0) = lnCompletedProbability(mu, pi, a, g); // proba of current y
 
   for (int p = 0; p < nbPos_ - 1; ++p)
   {
     permutationY(p);
-    logProba(1) = lnCompletedProbability(mu, pi);
+    logProba(1) = lnCompletedProbability(mu, pi, a, g);
     proba.logToMulti(logProba);
 
 #ifdef MC_DEBUG
@@ -276,11 +276,12 @@ void RankIndividual::recYgX(const RankVal& mu,
                             int currPos,
                             int nbPos)
 {
+  int a, g; // dummy variables
   if (currPos == nbPos) // no more modalities to add in the vector
   {
     y_ = vec; // assignment to compute
     resVec(firstElem) = vec;
-    resProba(firstElem) = lnCompletedProbability(mu, pi); // register current vector and its value
+    resProba(firstElem) = lnCompletedProbability(mu, pi, a, g); // register current vector and its value
   }
   else
   {

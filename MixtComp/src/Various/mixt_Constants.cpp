@@ -49,4 +49,5 @@ const int nbGibbsIniBOS = 1000;
 const Real piInitBOS = 0.99;
 const Real piThreshold = 0.05;
 
+const int nbGibbsIterRank = 50;
 } // namespace mixt

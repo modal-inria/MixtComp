@@ -38,7 +38,6 @@ class Rank
 
     /** Constructor with data and parameters provided. useful for unit-testing. */
     Rank(int nbClass,
-         int nbInd,
          Vector<Vector<int> >& data,
          const RankVal& mu,
          Real pi);
@@ -47,7 +46,11 @@ class Rank
 
     Real lnCompletedProbability() const;
 
+    Real lnCompletedProbability(int& a, int& g) const;
+
     void sampleMu();
+
+    void mStep();
 
     const RankVal& getMu() const {return mu_;}
     const Real& getPi() const {return pi_;}

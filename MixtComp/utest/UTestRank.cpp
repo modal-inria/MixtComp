@@ -101,7 +101,7 @@ TEST(RankIndividual, xGen)
   ASSERT_EQ(sorted, Vector<bool>(nbSample, true));
 }
 
-/** Computation of the joint probability p(x, y). Compare the probability obtained through directe computation with
+/** Computation of the joint probability p(x, y). Compare the probability obtained through direct computation with
  * the proba obtained during the xGen sampling of x. */
 TEST(RankIndividual, lnCompletedProbability)
 {
@@ -122,11 +122,13 @@ TEST(RankIndividual, lnCompletedProbability)
   RankIndividual rank;
   rank.setNbPos(nbPos);
 
+  int a, g; // dummy variables
+
   for (int i = 0; i < nbSample; ++i)
   {
     rank.removeMissing();
     proba(i, 0) = rank.xGen(mu, pi);
-    proba(i, 1) = rank.lnCompletedProbability(mu, pi);
+    proba(i, 1) = rank.lnCompletedProbability(mu, pi, a, g);
 
     (std::abs(proba(i, 0) - proba(i, 1)) < tolerance) ? (sameProba(i) = true) : (sameProba(i) = false);
   }
@@ -344,8 +346,7 @@ TEST(RankIndividual, gibbsY)
   ASSERT_LT(KLDivergence, tolerance);
 }
 
-/** Test mStep by first generating individuals and then comparing the estimated central rank with the one used in the sampling.
- * The Kendall tau distance is used as a measure of similarity. */
+/** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
 TEST(Rank, sampleMu)
 {
   int nbPos = 6;
@@ -382,7 +383,6 @@ TEST(Rank, sampleMu)
 
   muEst.setO(muVec);
   Rank rank(1,
-            500,
             data,
             muEst,
             pi);
@@ -401,4 +401,70 @@ TEST(Rank, sampleMu)
   }
 
   ASSERT_TRUE(sampledResult.find(mu) != sampledResult.end());
+}
+
+/** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
+TEST(Rank, mStep)
+{
+  int nbPos = 7;
+  int nbSample = 500;
+  int nbIterburnIn = 500;
+  Real tolerance = 1.e-4;
+
+  std::set<RankVal> sampledResult; // store the sampled ranks
+
+  MultinomialStatistic multi;
+  UniformStatistic uni;
+
+  RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
+  Vector<Vector<int> > data(nbSample); // will store the result of xGen
+
+  Vector<int> muVec(nbPos); // position -> modality representation
+  muVec << 0, 3, 1, 2, 6, 5, 4;
+  RankVal mu(nbPos);
+  mu.setO(muVec);
+  Real pi = 1.;
+
+  for (int i = 0; i < nbSample; ++i)
+  {
+    rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
+    rankIndividual.xGen(mu, pi);
+    data(i) = rankIndividual.getX().o();
+
+#ifdef MC_DEBUGNEW
+    std::cout << "data(i): " << data(i).transpose() << std::endl;
+#endif
+  }
+
+  RankVal muEst(nbPos); // estimated mu
+  multi.shuffle(muVec); // randomly initialized
+  muEst.setO(muVec);
+  Real piEst = uni.sample(0.5, 1.); // estimated pi
+
+#ifdef MC_DEBUGNEW
+    std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
+#endif
+
+  Rank rank(1,
+            data,
+            muEst,
+            piEst);
+  rank.removeMissing();
+
+  for (int i = 0; i < nbIterburnIn; ++i)
+  {
+    rank.sampleMu();
+  }
+
+  rank.mStep();
+
+  muEst = rank.getMu();
+  piEst = rank.getPi();
+
+#ifdef MC_DEBUGNEW
+  std::cout << "Estimation:     mu: " << muEst.o().transpose() << ", pi : " << piEst << std::endl;
+#endif
+
+  ASSERT_EQ(mu, muEst);
+  ASSERT_LT(std::abs(pi - piEst), tolerance);
 }

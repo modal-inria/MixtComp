@@ -33,18 +33,17 @@ Rank::Rank(int nbClass) :
 {}
 
 Rank::Rank(int nbClass,
-           int nbInd,
            Vector<Vector<int> >& data,
            const RankVal& mu,
            Real pi) :
     nbClass_(nbClass),
-    nbInd_(nbInd),
+    nbInd_(data.size()),
     nbPos_(mu.getNbPos()),
     mu_(mu),
     pi_(pi)
 {
-  data_.resize(nbInd);
-  for (int i = 0; i < nbInd; ++i)
+  data_.resize(nbInd_);
+  for (int i = 0; i < nbInd_; ++i)
   {
     data_(i).setNbPos(nbPos_);
     data_(i).setO(data(i));
@@ -62,10 +61,28 @@ void Rank::removeMissing()
 Real Rank::lnCompletedProbability() const
 {
   Real logProba = 0.;
+  int a, g; // a and g are only used in the mStep, here they are dummy variables
 
   for (int i = 0; i < nbInd_; ++i)
   {
-    logProba += data_(i).lnCompletedProbability(mu_, pi_);
+    logProba += data_(i).lnCompletedProbability(mu_, pi_, a, g);
+  }
+
+  return logProba;
+}
+
+Real Rank::lnCompletedProbability(int& a, int& g) const
+{
+  Real logProba = 0.;
+  a = 0;
+  g = 0;
+
+  for (int i = 0; i < nbInd_; ++i)
+  {
+    int currA, currG;
+    logProba += data_(i).lnCompletedProbability(mu_, pi_, currA, currG);
+    a += currA;
+    g += currG;
   }
 
   return logProba;
@@ -99,5 +116,27 @@ void Rank::sampleMu()
       mu_.permutation(p); // revert to previous state
     }
   }
+}
+
+void Rank::mStep()
+{
+  Vector<RankVal> mu(nbGibbsIterRank);
+  Vector<Real> pi(nbGibbsIterRank);
+  Vector<Real> logProba(nbGibbsIterRank);
+
+  int a, g;
+  for (int i = 0; i < nbGibbsIterRank; ++i)
+  {
+    sampleMu();
+    mu(i) = mu_;
+    logProba(i) = lnCompletedProbability(a, g);
+    pi(i) = Real(g) / Real(a);
+  }
+
+  int bestTheta;
+  logProba.maxCoeff(&bestTheta);
+
+  mu_ = mu(bestTheta);
+  pi_ = pi(bestTheta);
 }
 } // namespace mixt

@@ -83,7 +83,9 @@ class RankIndividual
      * @param mu central rank
      * @param pi precision */
     Real lnCompletedProbability(const RankVal& mu,
-                                Real pi) const;
+                                Real pi,
+                                int& a,
+                                int& g) const;
 
     /** Uniform sample for partially observed valued and presentation order */
     void removeMissing();
