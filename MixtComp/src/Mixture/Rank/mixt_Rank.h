@@ -42,6 +42,9 @@ class Rank
          const RankVal& mu,
          Real pi);
 
+    const RankVal& getMu() const {return mu_;}
+    const Real& getPi() const {return pi_;}
+
     void removeMissing();
 
     Real lnCompletedProbability() const;
@@ -52,8 +55,7 @@ class Rank
 
     void mStep();
 
-    const RankVal& getMu() const {return mu_;}
-    const Real& getPi() const {return pi_;}
+    void samplingStep(int ind);
   private:
     int nbClass_;
 

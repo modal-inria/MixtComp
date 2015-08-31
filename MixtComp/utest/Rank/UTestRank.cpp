@@ -201,17 +201,18 @@ TEST(Rank, sampleMu)
 
   RankVal muEst(nbPos); // estimated mu
   multi.shuffle(muVec); // randomly initialized
+  muEst.setO(muVec);
 
 #ifdef MC_DEBUG
     std::cout << "muVec: " << muVec.transpose() << std::endl;
 #endif
 
-  muEst.setO(muVec);
+
   Rank rank(1,
             data,
             muEst,
             pi);
-  rank.removeMissing();
+  rank.removeMissing(); // uniform completion of y in individuals
 
   for (int i = 0; i < nbIterburnIn; ++i)
   {
@@ -232,7 +233,7 @@ TEST(Rank, sampleMu)
 TEST(Rank, mStep)
 {
   int nbPos = 7;
-  int nbSample = 5000;
+  int nbSample = 500;
   int nbIterburnIn = 500;
   Real tolerance = 1.e-4;
 
@@ -264,9 +265,9 @@ TEST(Rank, mStep)
   RankVal muEst(nbPos); // estimated mu
   multi.shuffle(muVec); // randomly initialized
   muEst.setO(muVec);
-  Real piEst = uni.sample(0.5, 1.); // estimated pi
+  Real piEst = uni.sample(0.5, 1.); // estimated pi randomly initialized too
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
     std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
 #endif
 
@@ -278,6 +279,10 @@ TEST(Rank, mStep)
 
   for (int i = 0; i < nbIterburnIn; ++i)
   {
+    for (int ind = 0; ind < nbSample; ++ind)
+    {
+      rank.samplingStep(ind);
+    }
     rank.sampleMu();
   }
 

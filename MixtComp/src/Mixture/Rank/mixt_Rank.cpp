@@ -131,6 +131,10 @@ void Rank::mStep()
     mu(i) = mu_;
     logProba(i) = lnCompletedProbability(a, g);
     pi(i) = Real(g) / Real(a);
+
+#ifdef MC_DEBUG
+    std::cout << "Rank::mStep, i: " << i << ", mu: " << mu(i).o().transpose() << ", pi: " << pi(i) << ", logProba: " << logProba(i) << std::endl;
+#endif
   }
 
   int bestTheta;
@@ -138,5 +142,10 @@ void Rank::mStep()
 
   mu_ = mu(bestTheta);
   pi_ = pi(bestTheta);
+}
+
+void Rank::samplingStep(int ind)
+{
+  data_(ind).sampleY(mu_, pi_);
 }
 } // namespace mixt

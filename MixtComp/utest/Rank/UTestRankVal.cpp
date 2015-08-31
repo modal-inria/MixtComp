@@ -33,7 +33,7 @@
 using namespace mixt;
 
 /** Test RankVal::permutation, by doing multiple permutations and checking that ordering and ranking
- * still coincide (using involution property, as in switchRepresentation test) */
+ * still coincide (using involution property, as in RankIndividual switchRepresentation test) */
 TEST(RankVal, permutation)
 {
   int nbPos = 10;
