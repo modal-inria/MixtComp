@@ -36,52 +36,66 @@ class ConstIterator : public std::iterator<std::random_access_iterator_tag,
                                           Scalar&>
 {
   public:
-    ConstIterator(int pos, const Derived& mat) :
-      pos_(pos),
+    ConstIterator(int i,
+                  int j,
+                  const Derived& mat) :
+      i_(i),
+      j_(j),
       rows_(mat.rows()),
-      cols_(mat.cols()),
       p_mat_(&mat)
     {}
 
-    ConstIterator(const ConstIterator& it) :
-      pos_(it.pos_),
-      rows_(it.rows_),
-      cols_(it.cols_),
-      p_mat_(it.p_mat_)
-    {}
-
     ConstIterator(const Iterator& it) :
-      pos_(it.pos_),
+      i_(it.i_),
+      j_(it.j_),
       rows_(it.rows_),
-      cols_(it.cols_),
       p_mat_(it.p_mat_)
     {}
-
-    ~ConstIterator() {}
 
     ConstIterator operator+(int i)
     {
-      return ConstIterator(pos_ + i, *p_mat_);
+      int posP, iP, jP;
+      posP = pos();
+      posP += i;
+      posToIn(posP, iP, jP);
+      return ConstIterator(iP, jP, *p_mat_);
     }
 
     ConstIterator operator-(int i)
     {
-      return ConstIterator(pos_ - i, *p_mat_);
+      int posP, iP, jP;
+      posP = pos();
+      posP -= i;
+      posToIn(posP, iP, jP);
+      return ConstIterator(iP, jP, *p_mat_);
     }
 
     int operator-(const ConstIterator& it)
     {
-      return pos_ - it.pos_;
+      return pos() - it.pos();
     }
 
     bool operator<(const ConstIterator& it)
     {
-      return pos_ < it.pos_;
+      if (j_ < it.j_)
+      {
+        return true;
+      }
+      else if (j_ > it.j_)
+      {
+        return false;
+      }
+      else if (i_ < it.i_) // in this case, j_ == it.j_, hence comparison must be done on i_
+      {
+        return true;
+      }
+
+      return false;
     }
 
     bool operator==(const ConstIterator& it)
     {
-      if (pos_ == it.pos_)
+      if (i_ == it.i_ && j_ == it.j_)
         return true;
       else
         return false;
@@ -89,7 +103,7 @@ class ConstIterator : public std::iterator<std::random_access_iterator_tag,
 
     bool operator!=(const ConstIterator& it)
     {
-      if (pos_ != it.pos_)
+      if (i_ != it.i_ || j_ != it.j_)
         return true;
       else
         return false;
@@ -100,42 +114,61 @@ class ConstIterator : public std::iterator<std::random_access_iterator_tag,
      */
     const Scalar operator*() const
     {
-      int i;
-      int j;
-      posToIn(i, j);
-      return (*p_mat_)(i, j);
+      return (*p_mat_)(i_, j_);
     }
 
     const Scalar* operator->() const
     {
-      int i;
-      int j;
-      posToIn(i, j);
-      return &(*p_mat_)(i, j);
+      return &(*p_mat_)(i_, j_);
     }
 
     const ConstIterator& operator++()
     {
-      ++pos_;
+      if (i_ < rows_ - 1) // row increment
+      {
+        ++i_;
+      }
+      else // column increment
+      {
+        i_ = 0;
+        ++j_;
+      }
       return *this;
     }
 
     const ConstIterator& operator--()
     {
-      --pos_;
+      if (i_ > 0)
+      {
+        --i_;
+      }
+      else
+      {
+        i_ = rows_ - 1;
+        --j_;
+      }
       return *this;
     }
 
-    int pos_;
+    int i_;
+    int j_;
     int rows_;
-    int cols_;
     const Derived* p_mat_;
 
-    /** updates indices from linear position */
-    void posToIn(int& i, int& j) const
+    void posToIn(int pos,
+                 int& i,
+                 int& j) const
     {
-      i = pos_ % rows_;
-      j = pos_ / rows_;
+      std::div_t divresult;
+      divresult = std::div(pos, rows_);
+
+      i = divresult.rem;
+      j = divresult.quot;
+    }
+
+    int pos() const
+    {
+      return j_ * rows_ + i_;
     }
 };
 

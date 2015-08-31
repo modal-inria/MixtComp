@@ -227,24 +227,28 @@ operator/(const Scalar& scalar,
 iterator begin()
 {
   return Iterator(0,
+                  0,
                   derived());
 }
 
 const_iterator begin() const
 {
   return ConstIterator(0,
+                       0,
                        derived());
 }
 
 iterator end()
 {
-  return Iterator(derived().rows() * derived().cols(),
+  return Iterator(0,
+                  derived().cols(),
                   derived());
 }
 
 const_iterator end() const
 {
-  return ConstIterator(derived().rows() * derived().cols(),
+  return ConstIterator(0,
+                       derived().cols(),
                        derived());
 }
 

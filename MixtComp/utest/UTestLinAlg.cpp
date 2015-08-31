@@ -110,13 +110,19 @@ TEST(Matrix, Inversion)
   EXPECT_TRUE(m.inverse().inverse().isApprox(m));
 }
 
-// Test the two types of Matrix iterators
+// Test the two types of Matrix iterators on complete matrices
 TEST(Matrix, iterator)
 {
   Matrix<int> a(3, 3);
   a << 1, 3, 7,
       13, 15, 5,
        1, 3, 0;
+
+#ifdef MC_DEBUG
+    std::cout << "a" << std::endl;
+    std::cout << a << std::endl;
+#endif
+
   Matrix<int> b(3, 3);
 
   Matrix<int>::const_iterator itA = a.begin();
@@ -127,6 +133,10 @@ TEST(Matrix, iterator)
       ++itA,
       ++itB)
   {
+#ifdef MC_DEBUG
+    std::cout << "*itA: " << *itA << std::endl;
+#endif
+
     *itB = *itA;
   }
 
