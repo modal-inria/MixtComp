@@ -28,6 +28,7 @@ namespace mixt
 Rank::Rank(int nbClass) :
     nbClass_(nbClass),
     nbInd_(0),
+    nbPos_(0),
     pi_(0.)
 {}
 
@@ -38,13 +39,14 @@ Rank::Rank(int nbClass,
            Real pi) :
     nbClass_(nbClass),
     nbInd_(nbInd),
+    nbPos_(mu.getNbPos()),
     mu_(mu),
     pi_(pi)
 {
   data_.resize(nbInd);
   for (int i = 0; i < nbInd; ++i)
   {
-    data_(i).setNbPos(data(i).size());
+    data_(i).setNbPos(nbPos_);
     data_(i).setO(data(i));
   }
 }
@@ -54,6 +56,48 @@ void Rank::removeMissing()
   for (int i = 0; i < nbInd_; ++i)
   {
     data_(i).removeMissing();
+  }
+}
+
+Real Rank::lnCompletedProbability() const
+{
+  Real logProba = 0.;
+
+  for (int i = 0; i < nbInd_; ++i)
+  {
+    logProba += data_(i).lnCompletedProbability(mu_, pi_);
+  }
+
+  return logProba;
+}
+
+/**
+ * Perform one round of Gibbs sampling for the central rank */
+void Rank::sampleMu()
+{
+  Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
+  Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
+
+  logProba(0) = lnCompletedProbability(); // proba of current mu
+
+  for (int p = 0; p < nbPos_ - 1; ++p)
+  {
+    mu_.permutation(p);
+    logProba(1) = lnCompletedProbability();
+    proba.logToMulti(logProba);
+
+#ifdef MC_DEBUG
+    std::cout << "p: " << p << ", logProba: " << logProba.transpose() << ", proba: " << proba.transpose() << std::endl;
+#endif
+
+    if (multi_.sample(proba) == 1) // switch to permuted state ?
+    {
+      logProba(0) = logProba(1); // accept permutation
+    }
+    else
+    {
+      mu_.permutation(p); // revert to previous state
+    }
   }
 }
 } // namespace mixt

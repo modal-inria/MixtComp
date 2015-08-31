@@ -41,9 +41,13 @@ class RankVal
 
     RankVal(int nbPos);
 
-    bool operator==(const RankVal& rv);
+    bool operator==(const RankVal& rv) const;
+
+    bool operator<(const RankVal& rv) const;
 
     void setNbPos(int nbPos);
+
+    int getNbPos() const {return nbPos_;}
 
     /** Note that no check is performed on sizes to increase speed */
     template<typename T>

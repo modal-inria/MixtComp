@@ -68,15 +68,15 @@ class RankIndividual
      * Perform one round of Gibbs sampling for the partially observed data
      * @param mu central rank
      * @param pi precision */
-    void samplingX(const RankVal& mu,
-                   Real pi);
+    void sampleX(const RankVal& mu,
+                 Real pi);
 
     /**
      * Perform one round of Gibbs sampling for the presentation order
      * @param mu central rank
      * @param pi precision */
-    void samplingY(const RankVal& mu,
-                   Real pi);
+    void sampleY(const RankVal& mu,
+                 Real pi);
 
     /**
      * Completed log-probability of the individual

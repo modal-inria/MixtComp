@@ -71,7 +71,7 @@ void RankIndividual::removeMissing()
 }
 
 Real RankIndividual::xGen(const RankVal& mu,
-                Real pi)
+                          Real pi)
 {
 #ifdef MC_DEBUG
   int a = 0;
@@ -138,7 +138,7 @@ Real RankIndividual::xGen(const RankVal& mu,
 }
 
 Real RankIndividual::lnCompletedProbability(const RankVal& mu,
-                                  Real pi) const
+                                            Real pi) const
 {
   int a;
   int g;
@@ -153,8 +153,8 @@ Real RankIndividual::lnCompletedProbability(const RankVal& mu,
 }
 
 void RankIndividual::AG(const RankVal& mu,
-              int& a,
-              int& g) const
+                        int& a,
+                        int& g) const
 {
   a = 0;
   g = 0;
@@ -199,8 +199,8 @@ void RankIndividual::AG(const RankVal& mu,
  * Perform one round of Gibbs sampling for the presentation order
  * @param mu central rank
  * @param pi precision */
-void RankIndividual::samplingY(const RankVal& mu,
-                     Real pi)
+void RankIndividual::sampleY(const RankVal& mu,
+                             Real pi)
 {
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
@@ -236,9 +236,9 @@ void RankIndividual::permutationY(int firstElem)
 }
 
 void RankIndividual::probaYgX(const RankVal& mu,
-                    Real pi,
-                    Vector<Vector<int> >& resVec,
-                    Vector<Real>& resProba)
+                              Real pi,
+                              Vector<Vector<int> >& resVec,
+                              Vector<Real>& resProba)
 {
   int nbInd = fac(nbPos_);
 
@@ -266,15 +266,15 @@ void RankIndividual::probaYgX(const RankVal& mu,
 }
 
 void RankIndividual::recYgX(const RankVal& mu,
-                  Real pi,
-                  Vector<Vector<int> >& resVec,
-                  Vector<Real>& resProba,
-                  Vector<int>& vec,
-                  const std::set<int>& remainingMod,
-                  int firstElem,
-                  int nbElem,
-                  int currPos,
-                  int nbPos)
+                            Real pi,
+                            Vector<Vector<int> >& resVec,
+                            Vector<Real>& resProba,
+                            Vector<int>& vec,
+                            const std::set<int>& remainingMod,
+                            int firstElem,
+                            int nbElem,
+                            int currPos,
+                            int nbPos)
 {
   if (currPos == nbPos) // no more modalities to add in the vector
   {

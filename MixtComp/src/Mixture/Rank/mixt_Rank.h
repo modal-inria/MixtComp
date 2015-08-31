@@ -44,10 +44,19 @@ class Rank
          Real pi);
 
     void removeMissing();
+
+    Real lnCompletedProbability() const;
+
+    void sampleMu();
+
+    const RankVal& getMu() const {return mu_;}
+    const Real& getPi() const {return pi_;}
   private:
     int nbClass_;
 
     int nbInd_;
+
+    int nbPos_;
 
     /** Data */
     Vector<RankIndividual> data_;
@@ -57,6 +66,8 @@ class Rank
 
     /** Parameter pi */
     Real pi_;
+
+    MultinomialStatistic multi_;
 };
 
 } // namespace mixt

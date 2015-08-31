@@ -277,12 +277,12 @@ TEST(RankIndividual, gibbsY)
 
   for (int i = 0; i < nbIterBurnIn; ++i)
   {
-    rank.samplingY(mu, pi);
+    rank.sampleY(mu, pi);
   }
 
   for (int i = 0; i < nbIterRun; ++i)
   {
-    rank.samplingY(mu, pi);
+    rank.sampleY(mu, pi);
     dummyVec = rank.getY();
 
     if (empDist.find(dummyVec) == empDist.end())
@@ -346,10 +346,16 @@ TEST(RankIndividual, gibbsY)
 
 /** Test mStep by first generating individuals and then comparing the estimated central rank with the one used in the sampling.
  * The Kendall tau distance is used as a measure of similarity. */
-TEST(Rank, mStep)
+TEST(Rank, sampleMu)
 {
   int nbPos = 6;
   int nbSample = 500;
+  int nbIterburnIn = 500;
+  int nbIterRun = 500;
+
+  std::set<RankVal> sampledResult; // store the sampled ranks
+
+  MultinomialStatistic multi;
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
   Vector<Vector<int> > data(nbSample); // will store the result of xGen
@@ -362,14 +368,37 @@ TEST(Rank, mStep)
 
   for (int i = 0; i < nbSample; ++i)
   {
-    rankIndividual.removeMissing(); // shuffle the presentation order
+    rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
     data(i) = rankIndividual.getX().o();
   }
 
+  RankVal muEst(nbPos); // estimated mu
+  multi.shuffle(muVec); // randomly initialized
+
+#ifdef MC_DEBUG
+    std::cout << "muVec: " << muVec.transpose() << std::endl;
+#endif
+
+  muEst.setO(muVec);
   Rank rank(1,
             500,
             data,
-            mu,
+            muEst,
             pi);
+  rank.removeMissing();
+
+  for (int i = 0; i < nbIterburnIn; ++i)
+  {
+    rank.sampleMu();
+    muEst = rank.getMu();
+  }
+
+  for (int i = 0; i < nbIterRun; ++i)
+  {
+    rank.sampleMu();
+    sampledResult.insert(rank.getMu());
+  }
+
+  ASSERT_TRUE(sampledResult.find(mu) != sampledResult.end());
 }

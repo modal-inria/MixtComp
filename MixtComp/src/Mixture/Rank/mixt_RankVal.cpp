@@ -36,7 +36,7 @@ RankVal::RankVal(int nbPos) :
   ranking_.resize(nbPos);
 }
 
-bool RankVal::operator==(const RankVal& rv)
+bool RankVal::operator==(const RankVal& rv) const
 {
   if (rv.ordering_ == ordering_)
   {
@@ -46,6 +46,11 @@ bool RankVal::operator==(const RankVal& rv)
   {
     return false;
   }
+}
+
+bool RankVal::operator<(const RankVal& rv) const
+{
+  return (ordering_ < rv.ordering_);
 }
 
 void RankVal::setNbPos(int nbPos)
