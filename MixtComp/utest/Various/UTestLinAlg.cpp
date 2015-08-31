@@ -22,8 +22,8 @@
  **/
 
 #include "gtest/gtest.h"
-#include "../src/LinAlg/mixt_LinAlg.h"
-#include "../src/Statistic/mixt_UniformStatistic.h"
+#include "../../src/LinAlg/mixt_LinAlg.h"
+#include "../../src/Statistic/mixt_UniformStatistic.h"
 
 using namespace mixt;
 

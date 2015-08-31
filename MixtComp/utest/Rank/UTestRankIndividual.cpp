@@ -24,48 +24,13 @@
 #include "gtest/gtest.h"
 #include <map>
 
-#include "../src/Mixture/Rank/mixt_RankFunction.h"
-#include "../src/Mixture/Rank/mixt_RankVal.h"
-#include "../src/LinAlg/mixt_Math.h"
-#include "../src/Mixture/Rank/mixt_RankIndividual.h"
-#include "../src/Mixture/Rank/mixt_Rank.h"
+#include "../../src/Mixture/Rank/mixt_RankFunction.h"
+#include "../../src/Mixture/Rank/mixt_RankVal.h"
+#include "../../src/LinAlg/mixt_Math.h"
+#include "../../src/Mixture/Rank/mixt_RankIndividual.h"
+#include "../../src/Mixture/Rank/mixt_Rank.h"
 
 using namespace mixt;
-
-/** Test RankVal::permutation, by doing multiple permutations and checking that ordering and ranking
- * still coincide (using involution property, as in switchRepresentation test) */
-TEST(RankVal, permutation)
-{
-  int nbPos = 10;
-  int nbPer = 100; // number of permutations to be tested
-  int nbSample = 1000;
-
-  Vector<bool> res(nbSample);
-
-  MultinomialStatistic multi;
-  RankVal rv;
-  rv.setNbPos(nbPos);
-
-  Vector<int> rank(nbPos);
-  for (int m = 0; m < nbPos; ++m)
-  {
-    rank(m) = m;
-  }
-  rv.setO(rank);
-
-  for (int i = 0; i < nbSample; ++i)
-  {
-    for (int p = 0; p < nbPer; ++p)
-    {
-      rv.permutation(multi.sampleInt(0, nbPos - 2));
-    }
-    Vector<int> oP(nbPos);
-    rv.switchRepresentation(rv.o(), oP);
-    res(i) = (oP == rv.r());
-  }
-
-  ASSERT_EQ(res, Vector<bool>(nbSample, true));
-}
 
 /** Test RankVal::switchRepresentation using the property that it is an involution */
 TEST(RankIndividual, switchRepresentation)

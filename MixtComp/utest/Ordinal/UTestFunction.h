@@ -24,7 +24,7 @@
 #ifndef UTESTFUNCTIONS
 #define UTESTFUNCTIONS
 
-#include "../src/Mixture/Ordinal/mixt_BOSPath.h"
+#include "../../src/Mixture/Ordinal/mixt_BOSPath.h"
 
 using namespace mixt;
 

@@ -24,11 +24,11 @@
 #include "gtest/gtest.h"
 #include <map>
 
-#include "../src/Mixture/Rank/mixt_RankFunction.h"
-#include "../src/Mixture/Rank/mixt_RankVal.h"
-#include "../src/LinAlg/mixt_Math.h"
-#include "../src/Mixture/Rank/mixt_RankIndividual.h"
-#include "../src/Mixture/Rank/mixt_Rank.h"
+#include "../../src/Mixture/Rank/mixt_RankFunction.h"
+#include "../../src/Mixture/Rank/mixt_RankVal.h"
+#include "../../src/LinAlg/mixt_Math.h"
+#include "../../src/Mixture/Rank/mixt_RankIndividual.h"
+#include "../../src/Mixture/Rank/mixt_Rank.h"
 
 using namespace mixt;
 
@@ -232,7 +232,7 @@ TEST(Rank, sampleMu)
 TEST(Rank, mStep)
 {
   int nbPos = 7;
-  int nbSample = 500;
+  int nbSample = 5000;
   int nbIterburnIn = 500;
   Real tolerance = 1.e-4;
 
@@ -248,7 +248,7 @@ TEST(Rank, mStep)
   muVec << 0, 3, 1, 2, 6, 5, 4;
   RankVal mu(nbPos);
   mu.setO(muVec);
-  Real pi = 0.8;
+  Real pi = 0.75;
 
   for (int i = 0; i < nbSample; ++i)
   {
@@ -266,7 +266,7 @@ TEST(Rank, mStep)
   muEst.setO(muVec);
   Real piEst = uni.sample(0.5, 1.); // estimated pi
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUGNEW
     std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
 #endif
 
@@ -286,7 +286,7 @@ TEST(Rank, mStep)
   muEst = rank.getMu();
   piEst = rank.getPi();
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUGNEW
   std::cout << "Estimation:     mu: " << muEst.o().transpose() << ", pi : " << piEst << std::endl;
 #endif
 
