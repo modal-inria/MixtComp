@@ -73,8 +73,80 @@ TEST(RankIndividual, switchRepresentation)
   ASSERT_EQ(involution, Vector<bool>(nbSample, true));
 }
 
+/** Test xGen, using the fact that for pi = 0.5 the distribution should be uniform. Kullback-Leibler divergence of uniform distribution from empirical distribution */
+TEST(RankIndividual, xGenP05)
+{
+  int nbPos = 4;
+  int nbSample = 1000000;
+  Real tolerance = 1.e-4;
+  int nbE = fac(nbPos);
+  Real logProba = - std::log(nbE);
+
+  RankIndividual rank(nbPos); // rank which will be completed multiple time
+  Vector<RankVal> RankOut(nbPos); // whill store the result of xGen
+
+  Vector<int> muVec(nbPos); // position -> modality representation
+  muVec << 0, 3, 1, 2;
+  RankVal mu(nbPos);
+  mu.setO(muVec);
+  Real pi = 0.5; // pi high enough to get mu, no matter the y obtained in removeMissing
+
+  std::map<Vector<int>, Real> empDist; // empirical distribution
+  Vector<int> tempRank(nbPos);
+
+  for (int i = 0; i < nbSample; ++i)
+  {
+    rank.removeMissing(); // shuffle the presentation order
+    rank.xGen(mu, pi);
+    tempRank = rank.getX().o();
+
+    if (empDist.find(tempRank) == empDist.end())
+    {
+      empDist[tempRank] = 1.; // first occurrence
+    } else
+    {
+      empDist[tempRank] += 1.;
+    }
+  }
+
+  for (std::map<Vector<int>, Real>::iterator it = empDist.begin();
+       it != empDist.end();
+       ++it) // renormalization of the empirical distribution
+  {
+    it->second /= nbSample;
+  }
+
+#ifdef MC_DEBUG
+  for (std::map<Vector<int>, Real>::iterator it = empDist.begin();
+       it != empDist.end();
+       ++it) // renormalization of the empirical distribution
+  {
+    std::cout << "vec: " << it->first.transpose() << ", proba: " << it->second << std::endl;
+  }
+#endif
+
+  Real KLDivergence = 0.; // computation of the Kullback–Leibler_divergence
+  for (std::map<Vector<int>, Real>::iterator it = empDist.begin();
+       it != empDist.end();
+       ++it)
+  {
+#ifdef MC_DEBUG
+    std::cout << "vec: " << it->first.transpose() << ", empDist: " << it->second << ", calcDist: " << calcDist[it->first] << std::endl;
+#endif
+
+    KLDivergence += it->second * (std::log(it->second) - logProba);
+  }
+
+#ifdef MC_DEBUG
+  std::cout << "KLDivergence: " << KLDivergence << std::endl;
+#endif
+
+  ASSERT_LT(KLDivergence, tolerance);
+  ASSERT_EQ(empDist.size(), nbE);
+}
+
 /** Test xGen, using the fact that for pi = 1, mu will be sampled no matter the presentation order */
-TEST(RankIndividual, xGen)
+TEST(RankIndividual, xGenP1)
 {
   int nbPos = 4;
   int nbSample = 100;
@@ -176,41 +248,10 @@ TEST(RankVal, permutation)
   ASSERT_EQ(res, Vector<bool>(nbSample, true));
 }
 
-/** Test if the operator < between matrices of same size is correctly implemented */
-TEST(Matrix, comparison)
-{
-  Vector<bool> res(3);
-  Matrix<int> a(2, 3);
-  Matrix<int> b(2, 3);
-
-  // case where one element in b is smaller than one element in a
-  a << 1, 3, 7,
-       13, 15, 21;
-  b << 1, 3, 5,
-       13, 15, 21;
-  res(0) = b < a;
-
-  // case where one element in a is smaller than one element in b
-  a << 1, 2, 7,
-       13, 15, 21;
-  b << 1, 3, 5,
-       13, 15, 21;
-  res(1) = a < b;
-
-  // case when the two matrices are equal
-  a << 1, 2, 7,
-       13, 15, 21;
-  b << 1, 2, 5,
-       13, 15, 21;
-  res(2) = !(a < b);
-
-  ASSERT_EQ(res, Vector<bool>(3, true));
-}
-
-/** Test if Rank::recYgX has produced a correct list of Y candidate using < comparator on consecutive values of result.
+/** Test if Rank::probaYgX (direct computation of distribution of Y / X) has produced a correct list of Y candidate using < comparator on consecutive values of result.
  * Actual value of the conditional probability is not tested, but the lnCompletedProbability used in its computation
  * already is tested elsewhere. */
-TEST(RankIndividual, recYgX)
+TEST(Rank, probaYgX)
 {
   int nbPos = 4;
   int nbE = fac(nbPos);
@@ -253,7 +294,7 @@ TEST(RankIndividual, recYgX)
 
 /** Test if the conditional distribution p(y / x) obtained using Gibbs sampling is significantly different from the distribution
  * obtained through direct computation. Kullback–Leibler_divergence quantifies this difference. */
-TEST(RankIndividual, gibbsY)
+TEST(Rank, gibbsY)
 {
   int nbPos = 5;
   int nbIterBurnIn = 500;
@@ -423,7 +464,7 @@ TEST(Rank, mStep)
   muVec << 0, 3, 1, 2, 6, 5, 4;
   RankVal mu(nbPos);
   mu.setO(muVec);
-  Real pi = 1.;
+  Real pi = 0.8;
 
   for (int i = 0; i < nbSample; ++i)
   {
@@ -431,7 +472,7 @@ TEST(Rank, mStep)
     rankIndividual.xGen(mu, pi);
     data(i) = rankIndividual.getX().o();
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
     std::cout << "data(i): " << data(i).transpose() << std::endl;
 #endif
   }
@@ -441,7 +482,7 @@ TEST(Rank, mStep)
   muEst.setO(muVec);
   Real piEst = uni.sample(0.5, 1.); // estimated pi
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
     std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
 #endif
 
@@ -461,7 +502,7 @@ TEST(Rank, mStep)
   muEst = rank.getMu();
   piEst = rank.getPi();
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "Estimation:     mu: " << muEst.o().transpose() << ", pi : " << piEst << std::endl;
 #endif
 

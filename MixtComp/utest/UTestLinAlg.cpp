@@ -176,3 +176,34 @@ TEST(Matrix, sort)
 
   ASSERT_EQ(a, b);
 }
+
+/** Test if the operator < between matrices of same size is correctly implemented */
+TEST(Matrix, comparison)
+{
+  Vector<bool> res(3);
+  Matrix<int> a(2, 3);
+  Matrix<int> b(2, 3);
+
+  // case where one element in b is smaller than one element in a
+  a << 1, 3, 7,
+       13, 15, 21;
+  b << 1, 3, 5,
+       13, 15, 21;
+  res(0) = b < a;
+
+  // case where one element in a is smaller than one element in b
+  a << 1, 2, 7,
+       13, 15, 21;
+  b << 1, 3, 5,
+       13, 15, 21;
+  res(1) = a < b;
+
+  // case when the two matrices are equal
+  a << 1, 2, 7,
+       13, 15, 21;
+  b << 1, 2, 5,
+       13, 15, 21;
+  res(2) = !(a < b);
+
+  ASSERT_EQ(res, Vector<bool>(3, true));
+}
