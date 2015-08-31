@@ -59,8 +59,8 @@ O_TEST = $(SRC_TEST:%.cpp=%.o)
 # unit-test files
 EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
-SRC_UTEST = $(wildcard utest/*.cpp)
-# SRC_UTEST = utest/UTestLinAlg.cpp
+# SRC_UTEST = $(wildcard utest/*.cpp)
+SRC_UTEST = utest/UTestRank.cpp
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 
@@ -83,6 +83,14 @@ allClean: # cleans MixtComp and all bundled libraries
 	find -L .. -type f -name "*.so" -exec rm -f {} \;
 	find -L .. -type f -name "*.exe" -exec rm -f {} \;
 	find -L .. -type f -name "*.dll" -exec rm -f {} \;
+
+cleanUTest: # only cleans MixtComp
+	find -L utest -type f -name "*.o" -exec rm -f {} \;
+	find -L utest -type f -name "*.d" -exec rm -f {} \;
+	find -L utest -type f -name "*.a" -exec rm -f {} \;
+	find -L utest -type f -name "*.so" -exec rm -f {} \;
+	find -L utest -type f -name "*.exe" -exec rm -f {} \;
+	find -L utest -type f -name "*.dll" -exec rm -f {} \;
 
 lib: $(LIB_MC)
 
