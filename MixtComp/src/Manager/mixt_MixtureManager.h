@@ -119,56 +119,56 @@ class MixtureManager
 
       if (idModel == "Categorical_pjk")
       {
-        typename CategoricalBridge_pjk_m<DataHandler,
-                                         DataExtractor,
-                                         ParamSetter,
-                                         ParamExtractor>::type* p_bridge = new typename CategoricalBridge_pjk_m<DataHandler,
-                                                                                                                DataExtractor,
-                                                                                                                ParamSetter,
-                                                                                                                ParamExtractor>::type(idName,
-                                                                                                                                      nbCluster,
-                                                                                                                                      composer.p_zi(),
-                                                                                                                                      p_handler_,
-                                                                                                                                      p_dataExtractor_,
-                                                                                                                                      p_paramSetter_,
-                                                                                                                                      p_paramExtractor_,
-                                                                                                                                      confidenceLevel);
+        CategoricalBridge_pjk_m<DataHandler,
+                                DataExtractor,
+                                ParamSetter,
+                                ParamExtractor>* p_bridge = new CategoricalBridge_pjk_m<DataHandler,
+                                                                                        DataExtractor,
+                                                                                        ParamSetter,
+                                                                                        ParamExtractor>(idName,
+                                                                                                        nbCluster,
+                                                                                                        composer.p_zi(),
+                                                                                                        p_handler_,
+                                                                                                        p_dataExtractor_,
+                                                                                                        p_paramSetter_,
+                                                                                                        p_paramExtractor_,
+                                                                                                        confidenceLevel);
         return p_bridge;
       }
       if (idModel == "Gaussian_sjk")
       {
-        typename GaussianBridge_sjk_m<DataHandler,
-                                      DataExtractor,
-                                      ParamSetter,
-                                      ParamExtractor>::type* p_bridge = new typename GaussianBridge_sjk_m<DataHandler,
-                                                                                                          DataExtractor,
-                                                                                                          ParamSetter,
-                                                                                                          ParamExtractor>::type(idName,
-                                                                                                                                nbCluster,
-                                                                                                                                composer.p_zi(),
-                                                                                                                                p_handler_,
-                                                                                                                                p_dataExtractor_,
-                                                                                                                                p_paramSetter_,
-                                                                                                                                p_paramExtractor_,
-                                                                                                                                confidenceLevel);
+        GaussianBridge_sjk_m<DataHandler,
+                             DataExtractor,
+                             ParamSetter,
+                             ParamExtractor>* p_bridge = new GaussianBridge_sjk_m<DataHandler,
+                                                                                  DataExtractor,
+                                                                                  ParamSetter,
+                                                                                  ParamExtractor>(idName,
+                                                                                                  nbCluster,
+                                                                                                  composer.p_zi(),
+                                                                                                  p_handler_,
+                                                                                                  p_dataExtractor_,
+                                                                                                  p_paramSetter_,
+                                                                                                  p_paramExtractor_,
+                                                                                                  confidenceLevel);
         return p_bridge;
       }
       if (idModel == "Poisson_k")
       {
-        typename PoissonBridge_k_m<DataHandler,
-                                   DataExtractor,
+        PoissonBridge_k_m<DataHandler,
+                          DataExtractor,
                                    ParamSetter,
-                                   ParamExtractor>::type* p_bridge = new typename PoissonBridge_k_m<DataHandler,
-                                                                                                    DataExtractor,
-                                                                                                    ParamSetter,
-                                                                                                    ParamExtractor>::type(idName,
-                                                                                                                          nbCluster,
-                                                                                                                          composer.p_zi(),
-                                                                                                                          p_handler_,
-                                                                                                                          p_dataExtractor_,
-                                                                                                                          p_paramSetter_,
-                                                                                                                          p_paramExtractor_,
-                                                                                                                          confidenceLevel);
+                                   ParamExtractor>* p_bridge = new PoissonBridge_k_m<DataHandler,
+                                                                                     DataExtractor,
+                                                                                     ParamSetter,
+                                                                                     ParamExtractor>(idName,
+                                                                                                     nbCluster,
+                                                                                                     composer.p_zi(),
+                                                                                                     p_handler_,
+                                                                                                     p_dataExtractor_,
+                                                                                                     p_paramSetter_,
+                                                                                                     p_paramExtractor_,
+                                                                                                     confidenceLevel);
         return p_bridge;
       }
       if (idModel == "Ordinal")

@@ -26,9 +26,7 @@
 
 #include <iostream>
 #include <ctime>
-#include <boost/random/variate_generator.hpp>
-#include <boost/random/uniform_real_distribution.hpp>
-#include <boost/random/mersenne_twister.hpp>
+#include <boost/random.hpp>
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../IO/mixt_IO.h"
 #include "../Various/mixt_Constants.h"
@@ -40,20 +38,26 @@ class MultinomialStatistic
 {
   public:
 
-    MultinomialStatistic() :
-      rng_(size_t(this) + time(0))
-  {};
+    MultinomialStatistic();
+
+    /** Sample a value from a binomial law with  */
+    int sampleBinomial(Real proportion)
+    {
+      if (generator_() < proportion)
+      {
+        return 1;
+      }
+      else
+      {
+        return 0;
+      }
+    }
 
     /** Sample a value from a multinomial law with coefficient of modalities provided */
     template<typename T>
     int sample(const T& proportion)
     {
-      boost::random::uniform_real_distribution<> uni(0.,
-                                                     1.);
-      boost::variate_generator<boost::random::mt19937&,
-                               boost::random::uniform_real_distribution<> > generator(rng_,
-                                                                                      uni);
-      Real x = generator();
+      Real x = generator_();
 
 #ifdef MC_DEBUG
       if (proportion.sum() < 1. - epsilon && 1. + epsilon < proportion.sum())
@@ -92,6 +96,27 @@ class MultinomialStatistic
       return -1; // to accelerate sampling, no check have been computed on modalities to verify that is it actually a probability distribution
     };
 
+    template <typename T>
+    void shuffle(T& data)
+    {
+      std::random_shuffle(data.begin(),
+                          data.end(),
+                          g_);
+    }
+
+    template <typename T>
+    Real entropy(const T& data)
+    {
+      Real h = 0.;
+      for(typename T::const_iterator it = data.begin();
+          it != data.end();
+          ++it)
+      {
+        h += *it * std::log(*it);
+      }
+      return h;
+    }
+
     /**
      * Uniform int sample
      * @param low lower bound of the support
@@ -103,6 +128,14 @@ class MultinomialStatistic
   private:
     /** Random number generator */
     boost::random::mt19937 rng_;
+
+    boost::random::uniform_real_distribution<> uni_;
+
+    boost::random_number_generator<boost::mt19937> g_;
+
+    boost::variate_generator<boost::random::mt19937&,
+                             boost::random::uniform_real_distribution<> > generator_;
+
 };
 
 } // namespace mixt

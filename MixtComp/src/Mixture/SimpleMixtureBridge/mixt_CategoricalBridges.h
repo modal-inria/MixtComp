@@ -64,19 +64,15 @@ struct BridgeTraits<Categorical_pjk_>
     typedef CategoricalLikelihood Likelihood;
 };
 
-template<typename DataHandler,
-         typename DataExtractor,
-         typename ParamSetter,
-         typename ParamExtractor>
-struct CategoricalBridge_pjk_m
-{
-   typedef MixtureBridge<Categorical_pjk_,
-                         DataHandler,
-                         DataExtractor,
-                         ParamSetter,
-                         ParamExtractor> type;
-};
-
+template <typename DataHandler,
+          typename DataExtractor,
+          typename ParamSetter,
+          typename ParamExtractor>
+using CategoricalBridge_pjk_m = MixtureBridge<Categorical_pjk_,
+                                              DataHandler,
+                                              DataExtractor,
+                                              ParamSetter,
+                                              ParamExtractor>;
 } /* namespace mixt */
 
 #endif /* MIXT_CATEGORICALBRIDGES_H */

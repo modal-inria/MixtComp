@@ -22,8 +22,8 @@
  **/
 
 #include "gtest/gtest.h"
-#include "../src/LinAlg/mixt_LinAlg.h"
-#include "../src/Statistic/mixt_UniformStatistic.h"
+#include "../../src/LinAlg/mixt_LinAlg.h"
+#include "../../src/Statistic/mixt_UniformStatistic.h"
 
 using namespace mixt;
 
@@ -110,13 +110,19 @@ TEST(Matrix, Inversion)
   EXPECT_TRUE(m.inverse().inverse().isApprox(m));
 }
 
-// Test the two types of Matrix iterators
+// Test the two types of Matrix iterators on complete matrices
 TEST(Matrix, iterator)
 {
   Matrix<int> a(3, 3);
   a << 1, 3, 7,
       13, 15, 5,
        1, 3, 0;
+
+#ifdef MC_DEBUG
+    std::cout << "a" << std::endl;
+    std::cout << a << std::endl;
+#endif
+
   Matrix<int> b(3, 3);
 
   Matrix<int>::const_iterator itA = a.begin();
@@ -127,6 +133,10 @@ TEST(Matrix, iterator)
       ++itA,
       ++itB)
   {
+#ifdef MC_DEBUG
+    std::cout << "*itA: " << *itA << std::endl;
+#endif
+
     *itB = *itA;
   }
 
@@ -165,4 +175,35 @@ TEST(Matrix, sort)
   a.sort();
 
   ASSERT_EQ(a, b);
+}
+
+/** Test if the operator < between matrices of same size is correctly implemented */
+TEST(Matrix, comparison)
+{
+  Vector<bool> res(3);
+  Matrix<int> a(2, 3);
+  Matrix<int> b(2, 3);
+
+  // case where one element in b is smaller than one element in a
+  a << 1, 3, 7,
+       13, 15, 21;
+  b << 1, 3, 5,
+       13, 15, 21;
+  res(0) = b < a;
+
+  // case where one element in a is smaller than one element in b
+  a << 1, 2, 7,
+       13, 15, 21;
+  b << 1, 3, 5,
+       13, 15, 21;
+  res(1) = a < b;
+
+  // case when the two matrices are equal
+  a << 1, 2, 7,
+       13, 15, 21;
+  b << 1, 2, 5,
+       13, 15, 21;
+  res(2) = !(a < b);
+
+  ASSERT_EQ(res, Vector<bool>(3, true));
 }

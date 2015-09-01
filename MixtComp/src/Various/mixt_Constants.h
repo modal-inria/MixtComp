@@ -50,6 +50,8 @@ extern const int nbGibbsIniBOS; // number of Gibbs sampling rounds in initializa
 extern const Real piInitBOS; // value of pi used in Gibbs used in initialization
 extern const Real piThreshold; //threashold on pi to detect degeneracy
 
+
+extern const int nbGibbsIterRank; // number of iterations in the Gibbs used in the estimation of mu
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2013-2014
+/*  Copyright (C) Inria 2015
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,37 +17,32 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Sept 4, 2014
+ *  Created on: August 24, 2015
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-/** @file mixt_Constant.cpp
- *  @brief In this file we define various constants
- **/
+#ifndef MIXT_RANKFUNCTION_H
+#define MIXT_RANKFUNCTION_H
 
-#include "mixt_Constants.h"
+#include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {
-const int maxWeakDegeneracyTrial = 100;
-const int nbSamplingAttempts = 10000;
 
-const Real epsilon = 1.e-8;
-const Real logEpsilon = std::log(epsilon);
+namespace RankFunction
+{
 
-const int minModality = 1;
-const int minIndPerClass = 1;
-const Real pi = 3.141592653589793;
-const Real l2pi = 0.9189385332046727417;
-const int nbClusterMax = 30;
-const std::string progressFile = "progress";
-const Real minInf = std::log(0.);
+/** Recursive computation of */
+void index2Vector(Vector<std::pair<Vector<int>, Real> >& res,
+                  Vector<int>& vec,
+                  const std::set<int>& remainingMod,
+                  int firstElem,
+                  int nbElem,
+                  int currPos,
+                  int nbPos);
 
-const int sizeTupleBOS = 2;
-const int nbSampleBOS = 200000;
-const int nbGibbsIniBOS = 1000;
-const Real piInitBOS = 0.99;
-const Real piThreshold = 0.05;
+} // namespace RankFunction
 
-const int nbGibbsIterRank = 50;
 } // namespace mixt
+
+#endif // MIXT_RANKFUNCTION_H

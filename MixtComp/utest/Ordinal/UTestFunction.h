@@ -17,18 +17,23 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: March 24, 2015
+ *  Created on: July 8, 2015
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
-#include <map>
+#ifndef UTESTFUNCTIONS
+#define UTESTFUNCTIONS
 
-#include "../src/Mixture/Rank/mixt_RankFunction.h"
-#include "../src/Mixture/Rank/mixt_RankVal.h"
-#include "../src/LinAlg/mixt_Math.h"
-#include "../src/Mixture/Rank/mixt_RankIndividual.h"
-#include "../src/Mixture/Rank/mixt_Rank.h"
+#include "../../src/Mixture/Ordinal/mixt_BOSPath.h"
 
 using namespace mixt;
 
+/**
+ * Single class estimation of parameters by maximization of likelihood
+ */
+void mStepBOS(const Vector<BOSPath>& path,
+              int& mu,
+              Real& pi,
+              int nbModalities);
+
+#endif

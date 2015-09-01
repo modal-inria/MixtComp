@@ -220,6 +220,6 @@ void sortIndex(const Container& in, Vector<int>& out)
   }
 }
 
-}
+} // namespace mixt
 
 #endif // MIXT_LINALG_H

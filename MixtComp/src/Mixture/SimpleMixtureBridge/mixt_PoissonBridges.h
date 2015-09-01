@@ -62,18 +62,15 @@ struct BridgeTraits<Poisson_k_>
     typedef PoissonLikelihood Likelihood;
 };
 
-template<typename DataHandler,
-         typename DataExtractor,
-         typename ParamSetter,
-         typename ParamExtractor>
-struct PoissonBridge_k_m
-{
-   typedef MixtureBridge<Poisson_k_,
-                         DataHandler,
-                         DataExtractor,
-                         ParamSetter,
-                         ParamExtractor> type;
-};
+template <typename DataHandler,
+          typename DataExtractor,
+          typename ParamSetter,
+          typename ParamExtractor>
+using PoissonBridge_k_m = MixtureBridge<Poisson_k_,
+                                        DataHandler,
+                                        DataExtractor,
+                                        ParamSetter,
+                                        ParamExtractor>;
 
 } /* namespace mixt */
 

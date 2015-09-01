@@ -40,6 +40,26 @@ inline bool operator==(const Scalar& scalar) const
   return true;
 }
 
+inline bool operator<(const Derived& rhs) const
+{
+  typename Derived::const_iterator lhsIt = derived().begin();
+  typename Derived::const_iterator rhsIt = rhs      .begin();
+  for (;
+       lhsIt != derived().end();
+       ++lhsIt, ++rhsIt)
+  {
+    if (*lhsIt < *rhsIt)
+    {
+      return true;
+    }
+    else if (*lhsIt > *rhsIt)
+    {
+      return false;
+    }
+  }
+  return false;
+}
+
 /** Element-wise + between matrix and scalar */
 inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
                           Derived>
@@ -207,24 +227,28 @@ operator/(const Scalar& scalar,
 iterator begin()
 {
   return Iterator(0,
+                  0,
                   derived());
 }
 
 const_iterator begin() const
 {
   return ConstIterator(0,
+                       0,
                        derived());
 }
 
 iterator end()
 {
-  return Iterator(derived().rows() * derived().cols(),
+  return Iterator(0,
+                  derived().cols(),
                   derived());
 }
 
 const_iterator end() const
 {
-  return ConstIterator(derived().rows() * derived().cols(),
+  return ConstIterator(0,
+                       derived().cols(),
                        derived());
 }
 

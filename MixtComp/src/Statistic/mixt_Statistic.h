@@ -17,23 +17,17 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: July 8, 2015
- *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: August 20, 2014
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef UTESTFUNCTIONS
-#define UTESTFUNCTIONS
+#ifndef MIXT_STATISTIC_H
+#define MIXT_STATISTIC_H
 
-#include "../src/Mixture/Ordinal/mixt_BOSPath.h"
+#include "mixt_ExponentialStatistic.h"
+#include "mixt_MultinomialStatistic.h"
+#include "mixt_NormalStatistic.h"
+#include "mixt_PoissonStatistic.h"
+#include "mixt_UniformStatistic.h"
 
-using namespace mixt;
-
-/**
- * Single class estimation of parameters by maximization of likelihood
- */
-void mStepBOS(const Vector<BOSPath>& path,
-              int& mu,
-              Real& pi,
-              int nbModalities);
-
-#endif
+#endif // MIXT_STATISTIC_H
