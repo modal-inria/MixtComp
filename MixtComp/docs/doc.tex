@@ -25,7 +25,15 @@ This is necessary because Eigen needs to be patched to be used in MixtComp, and 
 
 \section{Statistics}
 
-Boost is mainly used to provide statistical capabilities. Since Boost is quite huge and Jam is not very convenient, Boost files are note provided directly. It must be acquired from http://www.boost.org/users/download/, and the content of the archive must be expanded in the boost subdirectory.
+Boost is mainly used to provide statistical capabilities. Since Boost is quite huge and Jam is not very convenient, Boost files are note provided directly. It must be acquired from http://www.boost.org/users/download/, and the content of the archive must be expanded in the boost subdirectory. Since:
+
+\begin{itemize}
+\item Boost syntex is close to Standard Library syntax for much of the overlapping capacities
+\item Boost is only used for regex and probability distributions ...
+\item ... both of which being implemented in C++
+\end{itemize}
+
+a switch to C++11 might enable to get ride of Boost dependency altogether quite quickly.
 
 \section{To Do}
 
