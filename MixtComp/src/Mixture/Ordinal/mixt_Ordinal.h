@@ -24,6 +24,9 @@
 #ifndef MIXT_ORDINAL
 #define MIXT_ORDINAL
 
+#include "../Data/mixt_AugmentedData.h"
+#include "../Data/mixt_ConfIntDataStat.h"
+#include "../Param/mixt_ConfIntParamStat.h"
 #include "../mixt_IMixture.h"
 #include "mixt_BOSPath.h"
 
@@ -67,6 +70,47 @@ class Ordinal : public IMixture
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
     {}
+
+    /* Debug constructor with direct data set */
+    Ordinal(int nbClass,
+            int nbInd,
+            int nbModalities,
+            const Vector<int>* p_zi,
+            int mu,
+            Real pi) :
+        IMixture("dummy"),
+        p_zi_(p_zi),
+        nbClass_(nbClass),
+        nbModalities_(nbModalities),
+        nbInd_(nbInd),
+        mu_(nbClass, mu),
+        pi_(nbClass, pi),
+        dataStatComputer_(augData_,
+                          1.),
+        muParamStatComputer_(mu_,
+                             1.),
+        piParamStatComputer_(pi_,
+                             1.)
+    {
+      path_.resize(nbInd);
+      for (int i = 0; i < nbInd; ++i) // initialization of the paths
+      {
+        path_(i).setInit(0, nbModalities - 1);
+        path_(i).setEnd (0, nbModalities - 1); // no constraint on values
+        path_(i).initPath(); // random init, with uniform z = 0
+
+        for (int n = 0; n < nbGibbsIniBOS; ++n)
+        {
+          path_(i).samplePath(mu,
+                              pi,
+                              sizeTupleBOS,
+                              true); // allZOneAuthorized
+        }
+      }
+    }
+
+    const Vector<int>& mu() const {return mu_;}
+    const Vector<Real>& pi() const {return pi_;}
 
     std::string setDataParam(RunMode mode)
     {

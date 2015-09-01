@@ -23,14 +23,58 @@
 
 #include "gtest/gtest.h"
 
+#include "../Mixture/mixt_IMixture.h"
 #include "../../src/Various/mixt_Constants.h"
 #include "../../src/Mixture/Ordinal/mixt_BOSNode.h"
 #include "../../src/Mixture/Ordinal/mixt_BOSPath.h"
+#include "../../src/Mixture/Ordinal/mixt_Ordinal.h"
 #include "../../src/Statistic/mixt_MultinomialStatistic.h"
 #include "../../src/Statistic/mixt_UniformStatistic.h"
-#include "UTestFunction.h"
 
 using namespace mixt;
+
+/** Dummy IO class for debugging purposes */
+class DataHandler
+{
+  public:
+    template<typename DataType>
+    void getData(std::string const& idData,
+                 AugmentedData<DataType>& augData,
+                 int& nbSample,
+                 std::string& param,
+                 typename AugmentedData<DataType>::Type offset,
+                 std::string& warnLog) const {};
+};
+
+/** Dummy IO class for debugging purposes */
+class DataExtractor
+{
+  public:
+    template<typename DataType,
+             typename Type>
+    void exportVals(std::string idName,
+                    const AugmentedData<DataType>& augData,
+                    const Vector<RowVector<Type> >& stat) const {};
+};
+
+/** Dummy IO class for debugging purposes */
+class ParamSetter
+{
+  public:
+    void getParam(std::string idName,
+                      Vector<Real>& param) const {};
+};
+
+/** Dummy IO class for debugging purposes */
+class ParamExtractor
+{
+  public:
+    void exportParam(std::string idName,
+                     const Matrix<Real>& paramStat,
+                     const Matrix<Real>& paramsLog,
+                     const std::vector<std::string>& paramNames,
+                     const Real confidenceLevel) const {};
+};
 
 /**
  * Generate individuals that follows a distribution, and try to estimate it back
@@ -46,122 +90,30 @@ TEST(Ordinal, mStep)
   MultinomialStatistic multi;
   UniformStatistic uni;
 
-  RowVector<Real> prop(nbModalities);
-  prop = 1. / Real(nbModalities);
-#ifdef MC_DEBUG
-  std::cout << prop << std::endl;
-#endif
-  mu = multi.sample(prop);
+  mu = multi.sampleInt(0, nbModalities - 1);
   pi = uni.sample(0., 1.);
 
-  Vector<BOSPath> path(nbInd);
-  for (int i = 0; i < nbInd; ++i) // initialization of the paths
-  {
-    path(i).setInit(0, nbModalities - 1);
-    path(i).setEnd (0, nbModalities - 1); // no constraint on values
-    path(i).initPath(); // random init, with uniform z = 0
-
-    for (int n = 0; n < nbGibbsIniBOS; ++n)
-    {
-      path(i).samplePath(mu,
-                         pi,
-                         sizeTupleBOS,
-                         true);
-    }
-  }
-
-  int muEst; // estimated mu
-  Real piEst; // estimated pi
-
-  mStepBOS(path,
-           muEst,
-           piEst,
-           nbModalities);
+  Vector<int> z_i(nbInd, 0); // dummy class variable
+  Ordinal<DataHandler,
+          DataExtractor,
+          ParamSetter,
+          ParamExtractor> ordinal(1,
+                                  nbInd,
+                                  nbModalities,
+                                  &z_i,
+                                  mu,
+                                  pi);
+  ordinal.mStep();
+  Vector<int>  muEst = ordinal.mu(); // estimated mu
+  Vector<Real> piEst = ordinal.pi(); // estimated pi
 
 #ifdef MC_DEBUG
   std::cout << "mu: " << mu << ", muEst: " << muEst << std::endl;
   std::cout << "pi: " << pi << ", piEst: " << piEst << std::endl;
 #endif
-  ASSERT_EQ(mu, muEst);
-  ASSERT_LT(std::abs(pi - piEst), errorTolerance);
-}
 
-TEST(Ordinal, allZOneAuthorizedForward)
-{
-  int nbSample = 1000;
-  int nbModality = 4;
-  int mu = 1;
-  Real pi = 0.999; // high pi to ensure the maximum possible z = 1 nodes
-  Real errorTolerance = 0.05;
-
-  RowVector<Real> nbZ(nbSample);
-
-  BOSPath path;
-  path.setInit(0, nbModality - 1);
-  path.setEnd (0, nbModality - 1); // no constraint on values
-
-  for (int n = 0; n < nbSample; ++n)
-  {
-    path.forwardSamplePath(mu,
-                           pi,
-                           false);
-    nbZ(n) = path.nbZ();
-
-#ifdef MC_DEBUG
-    std::cout << "n: " << n << std::endl;
-    for (int node = 0; node < nbModality - 1; ++node)
-    {
-      std::cout << path.c_(node).z_ << std::endl;
-    }
-#endif
-  }
-
-#ifdef MC_DEBUG
-  std::cout << "nbZ.mean(): " << nbZ.mean() << std::endl;
-#endif
-
-  ASSERT_LT(std::abs(nbZ.mean() - (nbModality - 2)), errorTolerance);
-}
-
-TEST(Ordinal, allZOneAuthorizedGibbs)
-{
-  int nbItBurnIn = 1000;
-  int nbItRun = 1000;
-  int nbModality = 4;
-  int mu = 1;
-  Real pi = 0.999; // high pi to ensure the maximum possible z = 1 nodes
-  Real errorTolerance = 0.05;
-
-  RowVector<Real> nbZ(nbItRun);
-
-  BOSPath path;
-  path.setInit(0, nbModality - 1);
-  path.setEnd (0, nbModality - 1); // no constraint on values
-
-  path.initPath(); // random init with all z = 0
-
-  for (int iter = 0; iter < nbItBurnIn; ++iter)
-  {
-    path.samplePath(mu,
-                    pi,
-                    sizeTupleBOS,
-                    false);
-  }
-
-  for (int iter = 0; iter < nbItRun; ++iter)
-  {
-    path.samplePath(mu,
-                    pi,
-                    sizeTupleBOS,
-                    false);
-    nbZ(iter) = path.nbZ();
-  }
-
-#ifdef MC_DEBUG
-  std::cout << "nbZ.mean(): " << nbZ.mean() << std::endl;
-#endif
-
-  ASSERT_LT(std::abs(nbZ.mean() - (nbModality - 2)), errorTolerance);
+  ASSERT_EQ(mu, muEst(0));
+  ASSERT_LT(std::abs(pi - piEst(0)), errorTolerance);
 }
 
 //TEST(Ordinal, tupleMultinomial)

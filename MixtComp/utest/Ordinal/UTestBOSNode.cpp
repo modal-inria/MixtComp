@@ -28,7 +28,6 @@
 #include "../../src/Mixture/Ordinal/mixt_BOSPath.h"
 #include "../../src/Statistic/mixt_MultinomialStatistic.h"
 #include "../../src/Statistic/mixt_UniformStatistic.h"
-#include "UTestFunction.h"
 
 using namespace mixt;
 
@@ -85,7 +84,7 @@ TEST(BOSNode, partition2)
 /**
  * Computation of a partition
  */
-TEST(Ordinal, partition3)
+TEST(BOSNode, partition3)
 {
   Vector<int, 2> e;
   e << 6, 8;
