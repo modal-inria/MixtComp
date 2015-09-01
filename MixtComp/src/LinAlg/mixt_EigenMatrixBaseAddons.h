@@ -40,6 +40,16 @@ inline bool operator==(const Scalar& scalar) const
   return true;
 }
 
+/** Element-wise comparison to a scalar */
+inline bool operator!=(const Scalar& scalar) const
+{
+  for(int j = 0; j < cols(); ++j)
+    for(int i = 0; i < rows(); ++i)
+      if(derived().coeff(i, j) != scalar)
+        return true;
+  return false;
+}
+
 inline bool operator<(const Derived& rhs) const
 {
   typename Derived::const_iterator lhsIt = derived().begin();

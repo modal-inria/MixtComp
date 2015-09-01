@@ -88,7 +88,7 @@ void BOSPath::tupleMultinomial(int mu,
                                int sizeTuple,
                                std::list<Vector<BOSNode> >& pathList,
                                Vector<Real>& probaVec,
-                               bool allZOneAuthorized) const
+                               const Vector<bool, 2>& az) const
 {
 #ifdef MC_DEBUG
   std::cout << "BOSPath::tupleMultinomial" << std::endl;
@@ -97,6 +97,7 @@ void BOSPath::tupleMultinomial(int mu,
   std::list<Real> probaList;
   Vector<BOSNode> tuple(sizeTuple); // a specific path is used for this computation, instead of c
 
+  // tupleMultinomial is not recursive, but nodeMultinomial is, and allows easy handling of any size of tuple
   nodeMultinomial(mu,
                   pi,
                   startIndex,
@@ -105,7 +106,7 @@ void BOSPath::tupleMultinomial(int mu,
                   pathList,
                   probaList,
                   tuple,
-                  allZOneAuthorized); // a specific path is used for this computation, instead of c) const
+                  az); // a specific path is used for this computation, instead of c) const
 
   int nbPath = probaList.size(); // conversion from list of logs to categorical density distribution, similar to eStep conversion
 
@@ -139,7 +140,7 @@ void BOSPath::nodeMultinomial(int mu,
                               std::list<Vector<BOSNode> >& pathList,
                               std::list<Real>& probaList,
                               Vector<BOSNode>& tuple,
-                              bool allZOneAuthorized) const
+                              const Vector<bool, 2>& az) const
 {
   int tupleIndex = currIndex - startIndex; // relative index inside the tuple
 #ifdef MC_DEBUG
@@ -201,7 +202,7 @@ void BOSPath::nodeMultinomial(int mu,
                             pathList,
                             probaList,
                             tuple,
-                            allZOneAuthorized); // a specific path is used for this computation, instead of c) const
+                            az); // a specific path is used for this computation, instead of c) const
           }
           else // next element is the end condition. pathList and probaList must eventually be filled.
           {
@@ -213,7 +214,7 @@ void BOSPath::nodeMultinomial(int mu,
                            tuple,
                            pathList,
                            probaList,
-                           allZOneAuthorized);
+                           az);
           }
         }
         else // null probability result in no action
@@ -232,14 +233,11 @@ void BOSPath::endMultinomial(int mu,
                              const Vector<BOSNode>& tuple,
                              std::list<Vector<BOSNode> >& pathList,
                              std::list<Real>& probaList,
-                             bool allZOneAuthorized) const
+                             const Vector<bool, 2>& az) const
 {
-#ifdef MC_DEBUG
-  std::cout << "BOSPath::endMultinomial" << std::endl;
-#endif
   Vector<int, 2> lastSegment = tuple(tuple.size() - 1).e_;
 
-  if (allZOneAuthorized == false) // Shall we check that "if tuple is copied into c_, this will result in a c_ where all z = 1" ?
+  if (az != true) // Shall we check that "if tuple is copied into c_, this will result in a c_ where all z = 0 or z = 1" ?
   {
     int nbZOne = 0;
     for (int n = 0; n < nbNode_; ++n)
@@ -253,9 +251,14 @@ void BOSPath::endMultinomial(int mu,
         nbZOne += c_(n).z_;
       }
     }
-    if (nbZOne == nbNode_) // all z = 1, therefore the tuple can not be considered a correct candidate
+
+#ifdef MC_DEBUG
+    std::cout << "BOSPath::endMultinomial, az: " << az.transpose() << ", nbZOne: " << nbZOne << std::endl;
+#endif
+
+    if ((!az(0) && nbZOne == 0) || (!az(1) && nbZOne == nbNode_)) // all z = 1, therefore the tuple can not be considered a correct candidate
     {
-      return;
+      return; // this completion of the individual does not satisfy the constraints on the latent variable z
     }
   }
 
@@ -342,7 +345,7 @@ void BOSPath::initPath()
 void BOSPath::samplePath(int mu,
                          Real pi,
                          int sizeTupleMax,
-                         bool allZOneAuthorized)
+                         const Vector<bool, 2>& az)
 {
   int sizeTuple = std::min(nbNode_, sizeTupleMax);
 
@@ -366,7 +369,7 @@ void BOSPath::samplePath(int mu,
                      sizeTuple,
                      pathList,
                      probaVec,
-                     allZOneAuthorized);
+                     az);
 
     // sampling and replacement in the path
 #ifdef MC_DEBUG
@@ -407,7 +410,7 @@ void BOSPath::samplePath(int mu,
 
 void BOSPath::forwardSamplePath(int mu,
                                 Real pi,
-                                bool allZOneAuthorized)
+                                const Vector<bool, 2>& az)
 {
   Vector<int, 2> seg = eInit_;
   Vector<Real> currProba;
@@ -453,9 +456,9 @@ void BOSPath::forwardSamplePath(int mu,
       seg = currNode.e_;
     }
 
-    if (allZOneAuthorized || ((!allZOneAuthorized) && nbZ() < nbNode_))
+    if (!((az(0) && nbZ() == 0) || (az(1) && nbZ() == nbNode_)))
     {
-      break;
+      return;
     }
   }
 }
@@ -470,14 +473,14 @@ int BOSPath::nbZ() const
   return nz;
 }
 
-int BOSPath::allZOne() const
+bool BOSPath::allZ0() const
 {
-  int azo = 1;
-  for (int node = 0; node < nbNode_; ++node)
-  {
-    azo *= c_(node).z_;
-  }
-  return azo;
+  return nbZ() == 0;
+}
+
+bool BOSPath::allZ1() const
+{
+  return nbZ() == nbNode_;
 }
 
 void BOSDisplaySegNode(const BOSNode& node)

@@ -570,15 +570,31 @@ class Ordinal : public IMixture
     {
       int proba = 1;
 
-      Vector<int> allZOne(nbClass_, 1); // is there at least a z non equal to 1 in one individual in each class ?
+      Matrix<bool> az(nbClass_, 2, true); // are all z = 0 or all z = 1 in each class ?
       for (int i = 0; i < nbInd_; ++i)
       {
-        allZOne((*p_zi_)(i)) *= path_(i).allZOne();
+        az((*p_zi_)(i), 0) = az((*p_zi_)(i), 0) && path_(i).allZ0();
+        az((*p_zi_)(i), 1) = az((*p_zi_)(i), 1) && path_(i).allZ1();
       }
 
       for (int k = 0; k < nbClass_; ++k)
       {
-        if (allZOne(k) == 1)
+        if (az(k, 0) == true)
+        {
+          if (warnLog == NULL)
+          {
+            proba = 0;
+          }
+          else
+          {
+            std::stringstream sstm;
+            sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << ". "
+                 << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
+            *warnLog += sstm.str();
+            proba = 0;
+          }
+        }
+        else if (az(k, 1) == true)
         {
           if (warnLog == NULL)
           {
@@ -665,35 +681,38 @@ class Ordinal : public IMixture
     void GibbsSampling(int ind,
                        int mu,
                        Real pi,
-                       bool allZOneAuthorized)
+                       Vector<bool, 2> checkAZ)
     {
-      bool azo = true; // flag for this particular individual, by default all z = 1 are authorized
+      Vector<bool, 2> az; // flag for this particular individual, by default all z = 0 or all z = 1 are authorized
+      az = true;
 
-      if (!allZOneAuthorized)
+      if (checkAZ != false)
       {
-        int allOtherZOne = 1; // are the z in all other individuals in the same class at 1 ?
+        Vector<bool, 2> allOtherZOne = true; // are the z in all other individuals in the same class all at 0 or all at 1 ?
         for (int i = 0; i < nbInd_; ++i)
         {
           if (i != ind && (*p_zi_)(i) == (*p_zi_)(ind))
           {
-            allOtherZOne *= path_(i).allZOne();
+            allOtherZOne(0) = allOtherZOne(0) && path_(i).allZ0();
+            allOtherZOne(1) = allOtherZOne(1) && path_(i).allZ1();
           }
         }
-        (allOtherZOne == 1) ? (azo = false) : (azo = true); // all z = 1 authorized if at least one other individual in the class has not all z = 1
+        (checkAZ(0) && allOtherZOne(0)) ? (az(0) = false) : (az(0) = true); // all z = 1 authorized if at least one other individual in the class has not all z = 1
+        (checkAZ(1) && allOtherZOne(1)) ? (az(1) = false) : (az(1) = true); // all z = 1 authorized if at least one other individual in the class has not all z = 1
       }
 
       if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
       {
         path_(ind).forwardSamplePath(mu,
                                      pi,
-                                     azo);
+                                     az);
       }
       else // perform one round of Gibbs sampler for the designated individual
       {
         path_(ind).samplePath(mu_((*p_zi_)(ind)),
                               pi_((*p_zi_)(ind)),
                               sizeTupleBOS,
-                              azo);
+                              az);
       }
     }
 

@@ -71,7 +71,7 @@ class BOSPath
                           int sizeTuple,
                           std::list<Vector<BOSNode> >& pathList,
                           Vector<Real>& probaVec,
-                          bool allZOneAuthorized) const;
+                          const Vector<bool, 2>& az) const;
 
     /**
      * Multinomial conditional probability distribution for the elements of the partition at a specific index.
@@ -96,7 +96,7 @@ class BOSPath
                          std::list<Vector<BOSNode> >& pathList,
                          std::list<Real>& probaList,
                          Vector<BOSNode>& tuple,
-                         bool allZOneAuthorized) const;
+                         const Vector<bool, 2>& az) const;
 
     /**
      * Compute the conditional probability of the end condition given the last node, and fill pathList and probaList.
@@ -116,7 +116,7 @@ class BOSPath
                         const Vector<BOSNode>& tuple,
                         std::list<Vector<BOSNode> >& pathList,
                         std::list<Real>& probaList,
-                        bool allZOneAuthorized) const;
+                        const Vector<bool, 2>& az) const;
 
     /**
      * Randomly initialize the path while being compatible with eInit and endCond constraints
@@ -134,7 +134,7 @@ class BOSPath
     void samplePath(int mu,
                     Real pi,
                     int sizeTupleMax,
-                    bool allZOneAuthorized);
+                    const Vector<bool, 2>& az);
 
     /**
      * Overwrite the complete path by sampling everything. Usually used when data is completely missing, or
@@ -146,14 +146,15 @@ class BOSPath
      */
     void forwardSamplePath(int mu,
                            Real pi,
-                           bool allZOneAuthorized);
+                           const Vector<bool, 2>& az);
 
     /** Compute the number of z at 1 in path_ */
     int nbZ() const;
 
     /**
      * Check if all the z in the path are at 1 or not */
-    int allZOne() const;
+    bool allZ0() const;
+    bool allZ1() const;
 
     MultinomialStatistic multi_;
 };

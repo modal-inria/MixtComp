@@ -297,6 +297,8 @@ TEST(BOSPath, forwardSamplePath)
   ASSERT_EQ(mu, computedMode); // has the real mode been estimated correctly ?
 }
 
+/** pi is selected close to 1, but in forwardSamplePath all z = 0 and z = 1 cases are forbidden.
+ * The test checks if all z but one are at 1 in each individual. */
 TEST(BOSPath, allZOneAuthorizedForward)
 {
   int nbSample = 1000;
@@ -349,14 +351,17 @@ TEST(BOSPath, allZOneAuthorizedGibbs)
   path.setInit(0, nbModality - 1);
   path.setEnd (0, nbModality - 1); // no constraint on values
 
-  path.initPath(); // random init with all z = 0
+  path.initPath(); // random init with all z = 0, to ensure a valid complete individual
+
+  Vector<bool, 2> az;
+  az = false; // individual with all z = 0 and all z = 1 are forbidden
 
   for (int iter = 0; iter < nbItBurnIn; ++iter)
   {
     path.samplePath(mu,
                     pi,
                     sizeTupleBOS,
-                    false);
+                    az);
   }
 
   for (int iter = 0; iter < nbItRun; ++iter)
@@ -364,11 +369,11 @@ TEST(BOSPath, allZOneAuthorizedGibbs)
     path.samplePath(mu,
                     pi,
                     sizeTupleBOS,
-                    false);
+                    az);
     nbZ(iter) = path.nbZ();
   }
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUGNEW
   std::cout << "nbZ.mean(): " << nbZ.mean() << std::endl;
 #endif
 
