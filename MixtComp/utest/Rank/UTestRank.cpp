@@ -291,7 +291,7 @@ TEST(Rank, mStep)
   muEst = rank.getMu();
   piEst = rank.getPi();
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "Estimation:     mu: " << muEst.o().transpose() << ", pi : " << piEst << std::endl;
 #endif
 

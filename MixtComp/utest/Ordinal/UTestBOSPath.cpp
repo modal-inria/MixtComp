@@ -373,7 +373,7 @@ TEST(BOSPath, allZOneAuthorizedGibbs)
     nbZ(iter) = path.nbZ();
   }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "nbZ.mean(): " << nbZ.mean() << std::endl;
 #endif
 

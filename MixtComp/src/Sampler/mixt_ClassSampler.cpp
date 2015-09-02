@@ -52,9 +52,6 @@ void ClassSampler::sStepCheck(int i)
     {
       case missing_:
       {
-#ifdef MC_DEBUG
-        std::cout << "ClassSampler::sStepCheck, missing_, i: " << i << std::endl;
-#endif
         RowVector<Real> modalities(nbClass_);
         for (zi_.data_(i) = 0; zi_.data_(i) < nbClass_; ++zi_.data_(i)) // z_i changed in place to take all possible values
         {
@@ -62,10 +59,13 @@ void ClassSampler::sStepCheck(int i)
                                           zi_.data_(i)) * composer_.checkSampleCondition(); // checkSampleCondition value is 1 or 0, reflecting the fact that conditions on data are verified or not
         }
 #ifdef MC_DEBUG
-        std::cout << "modalities: " << modalities << std::endl;
+        std::cout << "ClassSampler::sStepCheck, missing_, i: " << i << ", modalities, raw: " << modalities << std::endl;
 #endif
         modalities = modalities / modalities.sum();
         sampleVal = multi_.sample(modalities);
+#ifdef MC_DEBUG
+        std::cout << "ClassSampler::sStepCheck, missing_, i: " << i << ", modalities: " << modalities << ", sampleVal: " << sampleVal << std::endl;
+#endif
       }
       break;
 
@@ -124,8 +124,7 @@ void ClassSampler::sStepNoCheck(int i)
 #ifdef MC_DEBUG
         std::cout << "missing_" << std::endl;
 #endif
-        sampleVal = multi_.sample(tik_.block(i, 0       ,  // position of first element
-                                             1, nbClass_)); // dimension of the vector to extract);
+        sampleVal = multi_.sample(tik_.row(i)); // the most simple case
       }
       break;
 

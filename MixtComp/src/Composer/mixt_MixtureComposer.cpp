@@ -463,7 +463,7 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
 #ifdef MC_DEBUG
     if (zi_.data_(i) < 0)
     {
-      std::cout << "i:, " << i << " <<, zi_.data_(i): " << zi_.data_(i) << std::endl;
+      std::cout << "MixtureComposer::checkNbIndPerClass, i: " << i << ", zi_.data_(i): " << zi_.data_(i) << ", tik(i): " << tik_.row(i) << std::endl;
     }
 #endif
     nbIndPerClass(zi_.data_(i)) += 1;

@@ -7,9 +7,15 @@
 
 \maketitle
 
+\section{Global algorithm}
+
 \section{Linear Algebra}
 
 MixtComp abstracts dependance on an underlying numerical algebra library through the use of a mixt_LinAlg.h include. The current backed is Eigen, which is provided in the MixtComp package. The Matrix API is used, and capabilities from the Array API are provided mainly in the file mixt_EigenMatrixBaseAddons.h . This is necessary to avoid cWiseXXX() or .array() syntax. Hence the current API is a mix of both Eigen Matrix and Eigen Array API, to provide the most readable code possible.
+
+\subsection{Usage}
+
+Initialisation can be done as: Vector<Real> myVec(2), or Vector<Real> myVec(2, 3.), to create a vector of two elements (and initialize it with the value 3. in the second case). Note that at the moment Vector<Real, 2> myVec(3.) is not supported. It is not possible to initialize a fixed-size vector at construction.
 
 \subsection{Updating Eigen}
 
@@ -33,8 +39,10 @@ Boost is mainly used to provide statistical capabilities. Since Boost is quite h
 \item ... both of which being implemented in C++
 \end{itemize}
 
-a switch to C++11 might enable to get ride of Boost dependency altogether quite quickly.
+A switch to C++11 might enable to get ride of Boost dependency altogether. At the moment, only the random number generation has been "imported" from Boost to the standard library. Computations of the pdf and cdf have not, but are not very hard to implement. So Boost is very well on its way out of MixtComp.
 
 \section{To Do}
+
+
 
 \end{document}

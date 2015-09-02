@@ -233,7 +233,7 @@ testGeyser <- function()
 
 testAERES <- function()
 {
-  nbClass <- 2
+  nbClass <- 4
   confidenceLevel <- 0.95
   
   resGetData <- getData(c("dataTest/AERES/data.csv",
