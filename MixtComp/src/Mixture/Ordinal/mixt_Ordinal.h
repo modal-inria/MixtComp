@@ -277,6 +277,10 @@ class Ordinal : public IMixture
       std::cout << "zi_           : " << p_zi_->transpose() << std::endl;
 #endif
 
+#ifdef MC_DEBUGNEW
+      std::cout << "Ordinal::mStep, idName: " << idName_ << ", mu: " << mu_.transpose() << std::endl;
+#endif
+
       std::string warnLog;
 
       mStepPi();
@@ -309,41 +313,7 @@ class Ordinal : public IMixture
         }
       }
 
-#ifdef MC_DEBUGNEW
-      Vector<int> muBack = mu_;
-#endif
-
-      Matrix<Real> logLik(nbClass_, nbModalities_, 0.);
-      for (int mu = 0; mu < nbModalities_; ++mu) // mu obtained from maximization over all possible values
-      {
-        for (int i = 0; i < nbInd_; ++i)
-        {
-          int indClass = (*p_zi_)(i);
-          logLik(indClass,
-                 mu) += path_(i).computeLogProba(mu,
-                                                 pi_(indClass));
-        }
-      }
-
-      for (int k = 0; k < nbClass_; ++k)
-      {
-        int maxLik;
-        logLik.row(k).maxCoeff(&maxLik);
-        mu_(k) = maxLik;
-      }
-
-#ifdef MC_DEBUGNEW
-      if (mu_ != muBack)
-      {
-        std::cout << "Ordinal::mStep, idName: " << idName_ << std::endl;
-        std::cout << "muBack: " << muBack << std::endl;
-        std::cout << "mu    : " << mu_ << std::endl;
-      }
-      std::cout << "Ordinal::mStep, logLik: " << std::endl;
-      std::cout << logLik << std::endl;
-      std::cout << "Ordinal::mStep, mu_" << mu_.transpose() << std::endl;
-      std::cout << "Ordinal::mStep, pi_" << pi_.transpose() << std::endl;
-#endif
+      mStepMu();
 
       return warnLog;
     }
@@ -727,6 +697,47 @@ class Ordinal : public IMixture
                               sizeTupleBOS,
                               az);
       }
+    }
+
+    void mStepMu()
+    {
+#ifdef MC_DEBUGNEW
+      Vector<int> muBack = mu_;
+#endif
+
+      Matrix<Real> logLik(nbClass_, nbModalities_, 0.);
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        int currClass = (*p_zi_)(i);
+        Real currPi = pi_(currClass);
+        RowVector<Real> probaInd(nbModalities_);
+        for (int mu = 0; mu < nbModalities_; ++mu) // mu obtained from maximization over all possible values
+        {
+          probaInd(mu) = path_(i).computeLogProba(mu,
+                                                  currPi);
+        }
+        logLik.row(currClass) += probaInd;
+      }
+
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        int maxLik;
+        logLik.row(k).maxCoeff(&maxLik);
+        mu_(k) = maxLik;
+      }
+
+#ifdef MC_DEBUGNEW
+      if (mu_ != muBack)
+      {
+        std::cout << "Ordinal::mStepMu, muBack: " << muBack.transpose() << std::endl;
+        std::cout << "Ordinal::mStepMu, mu    : " << mu_.transpose() << std::endl;
+        std::cout << "Ordinal::mStepMu, idName: " << idName_ << std::endl;
+      }
+      std::cout << "Ordinal::mStepMu, logLik: " << std::endl;
+      std::cout << logLik << std::endl;
+      std::cout << "Ordinal::mStepMu, mu_" << mu_.transpose() << std::endl;
+      std::cout << "Ordinal::mStepMu, pi_" << pi_.transpose() << std::endl;
+#endif
     }
 
     /**

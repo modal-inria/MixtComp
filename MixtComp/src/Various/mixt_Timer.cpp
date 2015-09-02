@@ -78,7 +78,7 @@ double Timer::top(std::string message)
 #ifdef MC_VERBOSE
   std::cout << timerName_ << " timer, " << message
             << ", time since last top: " << lastTopTime
-            << " s , time since creation: " << std::difftime(currTime, creationTime_) << " s" << std::endl;
+            << " s, time since creation: " << std::difftime(currTime, creationTime_) << " s" << std::endl;
 #endif
 
   std::time(&topTime_);
