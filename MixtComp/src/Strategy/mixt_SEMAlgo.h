@@ -42,11 +42,11 @@ class SEMAlgo
     /**
      * run the algorithm
      * @return string describing the problem in case of soft degeneracy */
-    std::string run(RunType runType,
-                    RunProblemType& runPb,
-                    SamplerType sampler,
-                    int group,
-                    int groupMax);
+    void run(RunType runType,
+             RunProblemType& runPb,
+             SamplerType sampler,
+             int group,
+             int groupMax);
 
   private:
     /** pointer on the mixture model */

@@ -51,7 +51,7 @@ class Poisson_k
 
     void setData(Vector<int>& data);
 
-    std::string mStep();
+    void mStep();
 
     int maxVal() const;
     int minVal() const;

@@ -48,7 +48,7 @@ class Categorical_pjk
     int maxVal() const;
     int minVal() const;
     std::string model() const;
-    std::string mStep();
+    void mStep();
     std::vector<std::string> paramNames() const;
     void setData(Vector<int>& data);
     void setModalities(int nbModalities);

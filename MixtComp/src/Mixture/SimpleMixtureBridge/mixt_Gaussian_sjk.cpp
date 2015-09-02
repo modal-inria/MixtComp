@@ -88,9 +88,8 @@ std::string Gaussian_sjk::model() const
   return "Gaussian_sjk";
 }
 
-std::string Gaussian_sjk::mStep()
+void Gaussian_sjk::mStep()
 {
-  std::string warn;
 #ifdef MC_DEBUG
   std::cout << "Gaussian_sjk::mStep" << std::endl;
 #endif
@@ -137,8 +136,6 @@ std::string Gaussian_sjk::mStep()
 #ifdef MC_DEBUG
   std::cout << "param_: " << param_ << std::endl;
 #endif
-
-  return warn;
 }
 
 std::vector<std::string> Gaussian_sjk::paramNames() const

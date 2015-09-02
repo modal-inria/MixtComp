@@ -87,9 +87,8 @@ std::string Poisson_k::model() const
   return "Poisson_k";
 }
 
-std::string Poisson_k::mStep()
+void Poisson_k::mStep()
 {
-  std::string warn;
 #ifdef MC_DEBUG
     std::cout << "Gaussian_sjk::mStep" << std::endl;
     std::cout << "(*p_data_): " << (*p_data_) << std::endl;
@@ -125,7 +124,6 @@ std::string Poisson_k::mStep()
 
     param_[k] = lambda;
   }
-  return warn;
 }
 
 std::vector<std::string> Poisson_k::paramNames() const

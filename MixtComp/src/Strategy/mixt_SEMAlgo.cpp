@@ -38,11 +38,11 @@ SEMAlgo::SEMAlgo(MixtureComposer* p_composer,
     nbIter_(nbIter)
 {}
 
-std::string SEMAlgo::run(RunType runType,
-                         RunProblemType& runPb,
-                         SamplerType sampler,
-                         int group,
-                         int groupMax)
+void SEMAlgo::run(RunType runType,
+                  RunProblemType& runPb,
+                  SamplerType sampler,
+                  int group,
+                  int groupMax)
 {
 #ifdef MC_DEBUG
   std::cout << "SEMAlgo::run, sampler: " << sampler << std::endl;
@@ -89,7 +89,7 @@ std::string SEMAlgo::run(RunType runType,
         std::cout << "SEMAlgo::run, switch to Gibbs sampler" << std::endl;
 #endif
         runPb = invalidSampler_;
-        return warn;
+        return;
       }
     }
     else // use Gibbs sampling
@@ -111,12 +111,7 @@ std::string SEMAlgo::run(RunType runType,
 #endif
     }
 
-    warn = p_composer_->mStep();
-    if (warn.size() > 0)
-    {
-      runPb = weakDegeneracy_;
-      return warn;
-    }
+    p_composer_->mStep();
 
     if (runType == burnIn_)
     {
@@ -140,7 +135,6 @@ std::string SEMAlgo::run(RunType runType,
   }
 
   runPb = noProblem_;
-  return warn; // success: return empty string
 }
 
 } // namespace mixt

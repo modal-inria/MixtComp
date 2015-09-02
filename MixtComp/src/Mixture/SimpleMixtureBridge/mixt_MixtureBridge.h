@@ -228,21 +228,12 @@ class MixtureBridge : public IMixture
     /**
      * Estimate parameters by maximum likelihood
      */
-    virtual std::string mStep()
+    virtual void mStep()
     {
 #ifdef MC_DEBUG
       std::cout << "mStep, idName_: " << idName_ << std::endl;
 #endif
-
-      std::string warn = mixture_.mStep();
-      if (warn.size() > 0)
-      {
-        warn =   std::string("Error in variable ")
-               + idName_
-               + ": \n"
-               + warn;
-      }
-      return warn;
+      mixture_.mStep();
     }
 
     /**

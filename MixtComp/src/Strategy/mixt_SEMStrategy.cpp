@@ -68,24 +68,13 @@ SemStrategy::~SemStrategy()
 
 std::string SemStrategy::run()
 {
-  bool doInit = true; // itinialization must be carried out during first iteration
   SamplerType sampler = rejectSampler_; // rejectSampler is used until a problem occurs
-  int nbDegeneracy = 0; // number of "weak" degeneracies, for example with pi = 0 for the Ordinal model
-  std::string allWarn;
 
-  while(nbDegeneracy < maxWeakDegeneracyTrial)
+  while(true) // first iteration with rejection sampler, second with GibbsSampler
   {
-#ifdef MC_VERBOSE
-    std::cout << "SemStrategy::run, nbDegeneracy: " << nbDegeneracy << ", maxSoftDegTry: " << maxWeakDegeneracyTrial << std::endl;
-#endif
-
-    std::string tryWarn; // current trial warning
-
-    if (doInit == true)
-    {
       for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
       {
-#ifdef MC_DEBUG
+#ifdef MC_DEBUGNEW
         std::cout << "SemStrategy::run, n: " << n << std::endl;
 #endif
 
@@ -102,14 +91,8 @@ std::string SemStrategy::run()
           std::cout << "SemStrategy::run, proba == 1" << std::endl;
 #endif
 
-          std::string mWarn = p_composer_->mStep(); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing(). Warnlog is updated to trigger resample in case of soft degeneracy.
-          if (mWarn.size() == 0)
-          {
-#ifdef MC_DEBUG
-            std::cout << "SemStrategy::run, valid initialization" << std::endl;
-#endif
-            break; // no need for further sampling
-          }
+          p_composer_->mStep(); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing().
+          break;
         }
         else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
         {
@@ -123,44 +106,23 @@ std::string SemStrategy::run()
           return sstm.str();
         }
       }
-      doInit = false; // initialization should only been carried once (only exception is a switch of sampler)
-    }
+
 
 #ifdef MC_DEBUG
     std::cout << "SemStrategy::run, SEM burn-in" << std::endl;
 #endif
 
     RunProblemType burnInProb;
-    tryWarn = p_burnInAlgo_->run(burnIn_,
-                                 burnInProb,
-                                 sampler,
-                                 0, // group
-                                 3); // groupMax
-    if (burnInProb == weakDegeneracy_)
-    {
-#ifdef MC_DEBUG
-      std::cout << "SemStrategy::run, weak degeneracy" << std::endl;
-#endif
-      ++nbDegeneracy;
-      std::stringstream sstm;
-      sstm << "SemStrategy error, SEM burn-in, nbDegeneracy: " << nbDegeneracy << std::endl
-           << tryWarn;
-      allWarn += sstm.str(); // append warning to global warning
-
-#ifdef MC_DEBUG
-        std::cout << sstm.str() << std::endl;
-#endif
-
-      continue; // make another try
-    }
-    else if (burnInProb == invalidSampler_)
+    p_burnInAlgo_->run(burnIn_,
+                       burnInProb,
+                       sampler,
+                       0, // group
+                       3); // groupMax
+    if (burnInProb == invalidSampler_)
     {
 #ifdef MC_VERBOSE
       std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
 #endif
-
-      doInit = true; // everything must be reinitialized so that the new sampler starts from a valid state
-      nbDegeneracy = 0; // reinitialize the number of soft degeneracies
       sampler = GibbsSampler_; // switch to Gibbs sampling
       continue;
     }
@@ -170,33 +132,16 @@ std::string SemStrategy::run()
 #endif
 
     RunProblemType runProb;
-    tryWarn = p_runAlgo_->run(run_,
-                              runProb,
-                              sampler,
-                              1, // group
-                              3); // groupMax
-    if (runProb == weakDegeneracy_)
-    {
-      ++nbDegeneracy;
-      std::stringstream sstm;
-      sstm << "SemStrategy error, SEM run, nbDegeneracy: " << nbDegeneracy << std::endl
-           << tryWarn;
-      allWarn += sstm.str(); // append warning to global warning
-
-#ifdef MC_DEBUG
-        std::cout << sstm.str() << std::endl;
-#endif
-
-      continue; // make another try
-    }
-    else if (runProb == invalidSampler_)
+    p_runAlgo_->run(run_,
+                    runProb,
+                    sampler,
+                    1, // group
+                    3); // groupMax
+    if (runProb == invalidSampler_)
     {
 #ifdef MC_VERBOSE
       std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
 #endif
-
-      doInit = true; // all the variables must be reinitialized, as there are currently in an invalid state
-      nbDegeneracy = 0; // reinitialize the number of soft degeneracies
       sampler = GibbsSampler_; // switch to Gibbs sampling
       continue;
     }
@@ -234,9 +179,6 @@ std::string SemStrategy::run()
 
     return std::string(); // if the last attempt is a success, ignore all warnings in allWarn and return an empty string
   }
-
-  allWarn += "Number of initialization attempts exhausted.\n";
-  return allWarn;
 }
 
 } // namespace mixt

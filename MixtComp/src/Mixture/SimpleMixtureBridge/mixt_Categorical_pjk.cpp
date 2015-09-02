@@ -105,7 +105,7 @@ std::string Categorical_pjk::model() const
   return "Categorical_pjk";
 }
 
-std::string Categorical_pjk::mStep()
+void Categorical_pjk::mStep()
 {
 #ifdef MC_DEBUG
     std::cout << "Gaussian_sjk::mStep" << std::endl;
@@ -115,7 +115,6 @@ std::string Categorical_pjk::mStep()
     std::cout << "(*p_zi_)_: " << (*p_zi_) << std::endl;
 #endif
 
-  std::string warn;
   for (int k = 0; k < nbClass_; ++k)
   {
     Real nbSampleClass = 0.;
@@ -164,8 +163,6 @@ std::string Categorical_pjk::mStep()
     }
   }
 #endif
-
-  return warn;
 }
 
 std::vector<std::string> Categorical_pjk::paramNames() const

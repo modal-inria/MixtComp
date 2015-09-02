@@ -207,21 +207,19 @@ Real MixtureComposer::lnCompletedLikelihood()
   return lnLikelihood;
 }
 
-std::string MixtureComposer::mStep()
+void MixtureComposer::mStep()
 {
-  std::string warn;
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::mStep()" << std::endl;
 #endif
   pStep(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
-    warn += (*it)->mStep(); // call mStep on each variable
+    (*it)->mStep(); // call mStep on each variable
   }
 #ifdef MC_DEBUG
   std::cout << "\twarn: " << warn << std::endl;
 #endif
-  return warn;
 }
 
 void MixtureComposer::sStepCheck()

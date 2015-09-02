@@ -68,7 +68,6 @@ enum RunType
 enum RunProblemType
 {
   noProblem_,
-  weakDegeneracy_,
   invalidSampler_
 };
 

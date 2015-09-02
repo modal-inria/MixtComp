@@ -249,7 +249,7 @@ class Ordinal : public IMixture
                     mu_((*p_zi_)(ind)),
                     pi_((*p_zi_)(ind)),
                     az); // in samplingStepCheck, each sampling must result in a valid state
-      augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
+      copyToData(ind);
     }
 
     virtual void samplingStepNoCheck(int ind)
@@ -266,10 +266,10 @@ class Ordinal : public IMixture
                     mu_((*p_zi_)(ind)),
                     pi_((*p_zi_)(ind)),
                     az); // in samplingStepCheck, allZOneAuthorized, no check on number of z values during samplingStepNoCheck
-      augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
+      copyToData(ind);
     }
 
-    virtual std::string mStep()
+    virtual void mStep()
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
@@ -281,41 +281,9 @@ class Ordinal : public IMixture
       std::cout << "Ordinal::mStep, idName: " << idName_ << ", mu: " << mu_.transpose() << std::endl;
 #endif
 
-      std::string warnLog;
-
       mStepPi();
 
-      for (int k = 0; k < nbClass_; ++k) // reboot degenerate classes
-      {
-        if (pi_(k) == 0.) // if piThreshold is too high, and a class has a high value of pi, individuals with z = 0 will be unable to switch, even if they belong to the new class
-        {
-#ifdef MC_DEBUG
-          std::cout << "Ordinal::mStep, class " << k << " has 0-degenerated" << std::endl;
-          for (int i = 0; i < nbInd_; ++i)
-          {
-            if ((*p_zi_)(i) == k)
-            {
-              std::cout << "i: " << i << ", zPerClass(k): " << zPerClass(k) << std::endl;
-            }
-          }
-#endif
-
-          sampleMuFreq(k, true); // current mu is prohibited by "true" flag
-          mStepPiK(k); // new maximum likelihood estimation of pi, only for the 0-degenerated class
-
-          std::stringstream sstm;
-          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << "."<< std::endl;
-          warnLog += sstm.str();
-
-#ifdef MC_VERBOSE
-          std::cout << "Variable: " << idName_ << " is an Ordinal model of which class : " << k << " has degenerated at pi = 0" << std::endl;
-#endif
-        }
-      }
-
       mStepMu();
-
-      return warnLog;
     }
 
     virtual void storeSEMBurnIn(int iteration,
@@ -505,12 +473,16 @@ class Ordinal : public IMixture
       for (int i = 0; i < nbInd_; ++i)
       {
         path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
+        copyToData(i);
       }
+
 
       for (int k = 0; k < nbClass_; ++k)
       {
-        sampleMuFreq(k, false); // mu is sampled from modalities frequencies, without taking current mu value into account
+        sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
       }
+
+      pi_ = piInitBOS;
 
 #ifdef MC_DEBUG
       std::cout << "Ordinal::removeMissing, mu_: " << mu_.transpose() << std::endl;
@@ -531,9 +503,10 @@ class Ordinal : public IMixture
           az = true;  // in initialization, checkSampleCondition is called globally just after the removeMissing, so no need for early check
           GibbsSampling(i,
                         mu_((*p_zi_)(i)),
-                        piInitBOS,
+                        pi_((*p_zi_)(i)),
                         az);
         }
+        copyToData(i);
       }
     };
 
@@ -603,8 +576,7 @@ class Ordinal : public IMixture
      * @param k class for which the mode must be simulated
      * @param prohibitCurrentMu shall the current value of mu be forbidden, for example if it lead to degeneracy in the mStep ?
      * */
-    void sampleMuFreq(int k,
-                      bool prohibitCurrentMu)
+    void sampleMuFreq(int k)
     {
       Vector<Real> freqMod(nbModalities_); // frequencies of completed values for the current class
       freqMod = 0.;
@@ -620,10 +592,6 @@ class Ordinal : public IMixture
       std::cout << "Ordinal::sampleMuFreq, k: " << k << ", freqMod: " << freqMod.transpose() << std::endl;
 #endif
 
-      if (prohibitCurrentMu == true)
-      {
-        freqMod(mu_(k)) = 0.; // current mu value is prohibited as it lead to degeneracy
-      }
       freqMod = freqMod / freqMod.sum(); // frequencies are renormalized to get a probability distribution
 
 #ifdef MC_DEBUG
@@ -632,28 +600,6 @@ class Ordinal : public IMixture
 #endif
 
       mu_(k) = multi_.sample(freqMod); // mu is sampled from this distribution
-      pi_(k) = piInitBOS; // pi is set high enough to avoid an immediate degeneracy
-
-      for (int i = 0; i < nbInd_; ++i) // have some samplePath calls to shake this up, and get some non zero z values inside the path
-      {
-        if ((*p_zi_)(i) == k)
-        {
-          path_(i).initPath(); // enforce all z = 0 and start fresh
-#ifdef MC_DEBUG
-          std::cout << "0-deg, k: " << k << ", i: " << i << ", augData_.data_(i): " << augData_.data_(i) << ", path_(i).computeLogProba(mu_(k), pi_(k)): " << path_(i).computeLogProba(mu_(k), pi_(k)) << std::endl;
-#endif
-          for (int n = 0; n < nbGibbsIniBOS; ++n) // same initialization than used in removeMisssing, to increase variability on z among individuals
-          {
-#ifdef MC_DEBUG
-            std::cout << "n: " << n << std::endl;
-#endif
-            GibbsSampling(i,
-                          mu_(k),
-                          pi_(k),
-                          false); // this is called during SEM, and a state compatible with a Gibbs must be sampled, so degeneracy cases are not authorized
-          }
-        }
-      }
     }
 
     /**
@@ -789,6 +735,12 @@ class Ordinal : public IMixture
       }
 
       pi_(k) = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
+    }
+
+    /** update the data using the last segment in c_. to be used after sampling in the BOSPath. */
+    void copyToData(int ind)
+    {
+      augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
     /** Pointer to the zik class label */
