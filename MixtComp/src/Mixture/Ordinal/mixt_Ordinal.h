@@ -277,7 +277,7 @@ class Ordinal : public IMixture
       std::cout << "zi_           : " << p_zi_->transpose() << std::endl;
 #endif
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       std::cout << "Ordinal::mStep, idName: " << idName_ << ", mu: " << mu_.transpose() << std::endl;
 #endif
 
@@ -701,7 +701,7 @@ class Ordinal : public IMixture
 
     void mStepMu()
     {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       Vector<int> muBack = mu_;
 #endif
 
@@ -719,14 +719,21 @@ class Ordinal : public IMixture
         logLik.row(currClass) += probaInd;
       }
 
+//      for (int k = 0; k < nbClass_; ++k)
+//      {
+//        int maxLik;
+//        logLik.row(k).maxCoeff(&maxLik);
+//        mu_(k) = maxLik;
+//      }
+
       for (int k = 0; k < nbClass_; ++k)
       {
-        int maxLik;
-        logLik.row(k).maxCoeff(&maxLik);
-        mu_(k) = maxLik;
+        RowVector<Real> proba;
+        proba.logToMulti(logLik.row(k));
+        mu_(k) = multi_.sample(proba);
       }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       if (mu_ != muBack)
       {
         std::cout << "Ordinal::mStepMu, muBack: " << muBack.transpose() << std::endl;
