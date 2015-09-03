@@ -235,7 +235,7 @@ TEST(Rank, mStep)
   int nbPos = 7;
   int nbSample = 500;
   int nbIterburnIn = 500;
-  Real tolerance = 1.e-4;
+  Real tolerance = 0.05;
 
   std::set<RankVal> sampledResult; // store the sampled ranks
 

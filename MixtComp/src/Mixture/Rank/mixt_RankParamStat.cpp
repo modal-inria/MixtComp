@@ -125,4 +125,10 @@ void RankParamStat::sampleParam(int iteration,
   }
 }
 
+void RankParamStat::setExpectationParam()
+{
+  mu_ = std::get<0>(statStorageMuPi_.front());
+  pi_ = std::get<2>(statStorageMuPi_.front())(0);
+}
+
 } // namespace mixt

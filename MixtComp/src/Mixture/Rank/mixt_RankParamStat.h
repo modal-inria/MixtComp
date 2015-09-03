@@ -40,7 +40,12 @@ class RankParamStat
                   Real& pi,
                   Real confidenceLevel);
 
-    const std::list<std::tuple<RankVal, Real, Vector<Real, 3> > >& getStatStorageMuPi() const {return statStorageMuPi_;}
+    /** This tuple is dedicated to Quentin Grimonprez, proud forefather of its usage among us, mere Modal Team member.
+     * May he be blessed for that. */
+    const std::list<std::tuple<RankVal,
+                               Real,
+                               Vector<Real,
+                                      3> > >& getStatStorageMuPi() const {return statStorageMuPi_;}
 
     const Vector<RankVal>& getLogStorageMu() const {return logStorageMu_;}
     const Vector<Real>&    getLogStoragePi() const {return logStoragePi_;}
