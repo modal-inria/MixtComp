@@ -31,7 +31,7 @@ This is necessary because Eigen needs to be patched to be used in MixtComp, and 
 
 \section{Statistics}
 
-Boost is mainly used to provide statistical capabilities. Since Boost is quite huge and Jam is not very convenient, Boost files are note provided directly. It must be acquired from http://www.boost.org/users/download/, and the content of the archive must be expanded in the boost subdirectory. Since:
+Boost is mainly used to provide statistical capabilities. Since Boost is quite huge and Jam is not very convenient, Boost files are note provided directly. It must be acquired from http://www.boost.org/users/download/, and the content of the archive must be expanded in a boost subdirectory alongside eigen, MixtComp, and RMixtComp. Since:
 
 \begin{itemize}
 \item Boost syntex is close to Standard Library syntax for much of the overlapping capacities
@@ -39,7 +39,7 @@ Boost is mainly used to provide statistical capabilities. Since Boost is quite h
 \item ... both of which being implemented in C++
 \end{itemize}
 
-A switch to C++11 might enable to get ride of Boost dependency altogether. At the moment, only the random number generation has been "imported" from Boost to the standard library. Computations of the pdf and cdf have not, but are not very hard to implement. So Boost is very well on its way out of MixtComp.
+A switch to C++11 might enable to get ride of Boost dependency altogether. At the moment, only the random number generation has been "imported" from Boost to the standard library. Computations of the pdf and cdf have not, but are not very hard to implement. So Boost is very well on its way out of MixtComp. Before switching, one must ensure that production machine have a recent enough version of gcc: http://stackoverflow.com/questions/12530406/is-gcc-4-7-and-gcc-4-8-buggy-about-regular-expressions/12665408#12665408 . Another temporary solution could be to install Boost from the Linux distribution repository or Cygwin, thus freeing the programmer from including / compiling it.
 
 \section{To Do}
 

@@ -44,8 +44,6 @@ class ConfIntParamStat
       confidenceLevel_(confidenceLevel)
     {};
 
-    ~ConfIntParamStat() {};
-
     void sampleParam(int iteration,
                      int iterationMax)
     {
@@ -68,14 +66,16 @@ class ConfIntParamStat
         std::cout << "\tp: " << p << std::endl;
     #endif
 
-          logStorage_.row(p).sort();
+          RowVector<Type> currRow = logStorage_.row(p);
+          currRow.sort();
+
           Real alpha = (1. - confidenceLevel_) / 2.;
           int realIndLow =        alpha  * iterationMax;
           int realIndHigh = (1. - alpha) * iterationMax;
 
-          statStorage_(p, 0) = logStorage_.row(p)(iterationMax / 2);
-          statStorage_(p, 1) = logStorage_.row(p)(realIndLow      );
-          statStorage_(p, 2) = logStorage_.row(p)(realIndHigh + 1 );
+          statStorage_(p, 0) = currRow(iterationMax / 2);
+          statStorage_(p, 1) = currRow(realIndLow      );
+          statStorage_(p, 2) = currRow(realIndHigh + 1 );
         }
       }
       else
@@ -112,6 +112,14 @@ class ConfIntParamStat
     const Matrix<Type>& getStatStorage() const {return statStorage_;};
     const Matrix<Type>& getLogStorage() const {return logStorage_;};
   private:
+    void sample(int iteration)
+    {
+      for (int p = 0; p < nbParam_; ++p)
+      {
+        logStorage_(p, iteration) = param_(p);;
+      }
+    }
+
     // number of iterations used to compute the statistics
     int nbIter_;
 
@@ -121,7 +129,9 @@ class ConfIntParamStat
     // Reference to param array
     Vector<Type>& param_;
 
-    /** Array to export the statistics at the last iteration */
+    /** Array to export the statistics at the last iteration
+     * first dimension: index of the parameter
+     * second dimension: median, left quantile, right quantile */
     Matrix<Type> statStorage_;
 
     /** Storage for iterations results,
@@ -132,13 +142,7 @@ class ConfIntParamStat
     /** Confidence level */
     Real confidenceLevel_;
 
-    void sample(int iteration)
-    {
-      for (int p = 0; p < nbParam_; ++p)
-      {
-        logStorage_(p, iteration) = param_(p);;
-      }
-    }
+
 };
 
 } // namespace mixt

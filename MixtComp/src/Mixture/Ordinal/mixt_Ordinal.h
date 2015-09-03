@@ -663,6 +663,10 @@ class Ordinal : public IMixture
                                                   currPi);
         }
         logLik.row(currClass) += probaInd;
+
+#ifdef MC_DEBUG
+        std::cout << "Ordinal::mStepMu, i: " << i << ", probaInd: " << probaInd << ", logLik.row(currClass): " << logLik.row(currClass) << std::endl;
+#endif
       }
 
 //      for (int k = 0; k < nbClass_; ++k)

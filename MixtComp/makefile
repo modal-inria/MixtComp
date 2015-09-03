@@ -59,11 +59,11 @@ O_TEST = $(SRC_TEST:%.cpp=%.o)
 # unit-test files
 EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
-SRC_UTEST += $(wildcard utest/*.cpp)
-SRC_UTEST += $(wildcard utest/Ordinal/*.cpp)
-# SRC_UTEST += $(wildcard utest/Rank/*.cpp)
-SRC_UTEST += $(wildcard utest/Various/*.cpp)
-SRC_UTEST += $(wildcard utest/UTestNew.cpp)
+#SRC_UTEST += $(wildcard utest/*.cpp)
+#SRC_UTEST += $(wildcard utest/Ordinal/*.cpp)
+SRC_UTEST += $(wildcard utest/Rank/*.cpp)
+#SRC_UTEST += $(wildcard utest/Various/*.cpp)
+#SRC_UTEST += $(wildcard utest/UTestNew.cpp)
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 
