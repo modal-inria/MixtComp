@@ -32,6 +32,15 @@
 
 using namespace mixt;
 
+TEST(RankVal, initializerConstructor)
+{
+  RankVal rv = {0, 1, 3, 2};
+  Vector<int> vecExpected(4);
+  vecExpected << 0, 1, 3, 2;
+
+  ASSERT_EQ(rv.o(), vecExpected);
+}
+
 /** Test RankVal::permutation, by doing multiple permutations and checking that ordering and ranking
  * still coincide (using involution property, as in RankIndividual switchRepresentation test) */
 TEST(RankVal, permutation)

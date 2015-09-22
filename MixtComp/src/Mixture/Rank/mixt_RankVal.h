@@ -24,6 +24,7 @@
 #ifndef MIXT_RANKVAL_H
 #define MIXT_RANKVAL_H
 
+#include <iostream>
 #include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
@@ -40,6 +41,9 @@ class RankVal
     RankVal();
 
     RankVal(int nbPos);
+
+    /** Set ordering via initializer list */
+    RankVal(const std::initializer_list<int>& il);
 
     bool operator==(const RankVal& rv) const;
 
@@ -99,6 +103,7 @@ class RankVal
 
     const Vector<int>& r() const {return ranking_;}
 
+    friend std::ostream& operator<<(std::ostream& os, const RankVal& rv);
   private:
     /** */
     int nbPos_;
@@ -109,6 +114,8 @@ class RankVal
     /** ranking representation */
     Vector<int> ranking_;
 };
+
+std::ostream& operator<<(std::ostream& os, const RankVal& rv);
 
 } // namespace mixt
 

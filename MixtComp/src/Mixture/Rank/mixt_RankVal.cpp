@@ -36,6 +36,25 @@ RankVal::RankVal(int nbPos) :
   ranking_.resize(nbPos);
 }
 
+RankVal::RankVal(const std::initializer_list<int>& il)
+{
+  nbPos_ = il.size();
+  ordering_.resize(nbPos_);
+  ranking_ .resize(nbPos_);
+
+  int i = 0;
+  for (std::initializer_list<int>::const_iterator it = il.begin(), itEnd = il.end();
+       it != itEnd;
+       ++it)
+  {
+    ordering_(i) = *it;
+    ++i;
+  }
+
+  switchRepresentation(ordering_,
+                       ranking_);
+}
+
 bool RankVal::operator==(const RankVal& rv) const
 {
   if (rv.ordering_ == ordering_)
@@ -79,6 +98,16 @@ void RankVal::permutation(int firstElem)
 
   ordering_(firstElem    ) = ordering_(firstElem + 1);
   ordering_(firstElem + 1) = dummyO;
+}
+
+std::ostream& operator<<(std::ostream& os, const RankVal& rv)
+{
+  os << rv.ordering_(0);
+  for (int i = 1, size = rv.ordering_.size(); i < size; ++i)
+  {
+    os << " " << rv.ordering_(i);
+  }
+  return os;
 }
 
 } // namespace mixt
