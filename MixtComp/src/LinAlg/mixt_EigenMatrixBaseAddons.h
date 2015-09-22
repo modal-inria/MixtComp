@@ -262,15 +262,6 @@ const_iterator end() const
                        derived());
 }
 
-/** General sort of data that is contiguous in memory (use of pointer to data and size).
- * Be advised against using it against subparts (i.e. blocks) of matrices which elements are
- * not stored contiguously */
-void sortContiguous()
-{
-  std::sort(derived().data(),
-            derived().data() + derived().size());
-}
-
 /** Sort function for non contiguous data, for example block. Slower than sortContiguous */
 void sort()
 {
@@ -278,6 +269,18 @@ void sort()
             derived().end());
 }
 
+/** Sorted indices of the container */
+template<typename Container>
+void sortIndex(Container& out) const
+{
+  out.resize(derived().size());
+  std::iota(out.begin(),
+            out.end(),
+            0);
+  std::sort(out.begin(),
+            out.end(),
+            [this](int left, int right) {return (*this)(left) < (*this)(right);});
+}
 
 /**
  * Computation of a multinomial distribution from log values of weights.

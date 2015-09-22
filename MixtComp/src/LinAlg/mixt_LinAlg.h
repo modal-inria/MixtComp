@@ -34,6 +34,11 @@ namespace mixt
  * by looping over individuals instead of variables */
 typedef double Real;
 
+/** Positive integer which encoding is enough to cover index every matrix in memory. At the moment
+ * int is used for indexing.
+ * http://stackoverflow.com/questions/1951519/when-to-use-stdsize-t */
+typedef size_t Size;
+
 template<typename T,
          int _Rows = Eigen::Dynamic,
          int _Cols = Eigen::Dynamic>
@@ -166,59 +171,6 @@ class RowVector : public Matrix<T, 1, _Cols>
       return *this;
     }
 };
-
-/** Constant operator, could be used to fix an object to a constant value if the assignment to a scalar has not been
- * defined. For example m = Constant(3, 3, 12.) to assign 12 to a 3x3 m object. */
-template<typename T>
-const Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>,
-                            const Eigen::Matrix<T,
-                                                Eigen::Dynamic,
-                                                Eigen::Dynamic> >
-Constant (int nrow, int ncol, const T& scalar)
-{
-  return Eigen::CwiseNullaryOp<Eigen::internal::scalar_constant_op<T>,
-                               const Eigen::Matrix<T,
-                                                   Eigen::Dynamic,
-                                                   Eigen::Dynamic> >(nrow,
-                                                                     ncol,
-                                                                     Eigen::internal::scalar_constant_op<T>(scalar));
-}
-
-/** Comparator for indexed pairs */
-template <typename pair>
-bool comparator(const pair& l, const pair& r)
-{
-  return l.first < r.first;
-};
-
-/** Sort keeping track of the indices, does not modify input,
- * introduces overhead, copy input data, copy indexes */
- template <typename Container>
-void sortIndex(const Container& in, Vector<int>& out)
-{
-  typedef typename std::pair<typename Container::Type, int> IntPair;
-
-  int nbElem = in.size();
-  out.resize(nbElem); // resizing the indices vector
-  std::vector<IntPair> sortVec(nbElem);
-  int n = 0;
-
-  for (int i = 0; i < in.rows(); ++i)
-  {
-    for (int j = 0; j < in.cols(); ++j)
-    {
-      sortVec[n] = IntPair(in(i, j), n);
-      ++n;
-    }
-  }
-
-  std::sort(sortVec.begin(), sortVec.end(), comparator<IntPair>);
-
-  for(int i = 0; i < nbElem; ++i)
-  {
-    out(i) = sortVec[i].second;
-  }
-}
 
 } // namespace mixt
 

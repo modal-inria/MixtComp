@@ -143,23 +143,6 @@ TEST(Matrix, iterator)
   ASSERT_EQ(a, b);
 }
 
-// Test the contiguous matrix sort
-TEST(Matrix, sortContiguous)
-{
-  Matrix<int> a(3, 3);
-  a << 1, 3, 7,
-      13, 15, 5,
-       -41, 3, -9;
-  Matrix<int> b(3, 3);
-  b << -41, 3, 7,
-       -9, 3, 13,
-       1, 5, 15;
-
-  a.sortContiguous();
-
-  ASSERT_EQ(a, b);
-}
-
 // Test the matrix sort
 TEST(Matrix, sort)
 {
@@ -175,6 +158,22 @@ TEST(Matrix, sort)
   a.sort();
 
   ASSERT_EQ(a, b);
+}
+
+// Test the matrix sortIndex
+TEST(Matrix, sortIndex)
+{
+  Matrix<int> a(3, 3);
+  a << 1, 3, 7,
+      13, 15, 5,
+       -41, -7, -9;
+  Vector<int> indComputed;
+  Vector<int> indExpected(3);
+  indExpected << 2, 0, 1;
+
+  a.col(1).sortIndex(indComputed);
+
+  ASSERT_EQ(indComputed, indExpected);
 }
 
 /** Test if the operator < between matrices of same size is correctly implemented */

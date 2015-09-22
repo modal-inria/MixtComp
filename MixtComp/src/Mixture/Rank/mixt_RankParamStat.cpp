@@ -88,7 +88,7 @@ void RankParamStat::sampleParam(int iteration,
     }
 
     Vector<int> index;
-    sortIndex(nb, index);
+    nb.sortIndex(index);
 
     Real cumSum = 0.;
     int i = 0;

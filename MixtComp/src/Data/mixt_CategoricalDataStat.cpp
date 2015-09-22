@@ -85,9 +85,8 @@ void CategoricalDataStat::sampleVals(int ind,
 
       stat_ /= Real(iterationMax + 1); // from count to probabilities
       Vector<int> indOrder; // to store indices of ascending order
-      sortIndex(stat_, indOrder);
+      stat_.sortIndex(indOrder);
       Real cumProb = 0.;
-
 
       for (int i = augData_.dataRange_.max_ - 1; // from the most probable modality ...
            i > -1; // ... to the least probable modality
