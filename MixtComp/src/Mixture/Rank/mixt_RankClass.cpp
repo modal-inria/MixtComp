@@ -32,11 +32,9 @@ namespace mixt
 //    pi_(0.)
 //{}
 
-RankClass::RankClass(int nbClass,
-                     Vector<RankIndividual>& data,
-                     const RankVal& mu,
-                     Real pi) :
-    currClass_(nbClass),
+RankClass::RankClass(Vector<RankIndividual>& data,
+                     RankVal& mu,
+                     Real& pi) :
     nbInd_(data.size()),
     nbPos_(mu.getNbPos()),
     data_(data),

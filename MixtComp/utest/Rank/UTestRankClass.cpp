@@ -186,10 +186,7 @@ TEST(RankClass, sampleMu)
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
   Vector<RankIndividual> data(nbSample); // will store the result of xGen
 
-  Vector<int> muVec(nbPos); // position -> modality representation
-  muVec << 0, 3, 1, 2, 5, 4;
-  RankVal mu(nbPos);
-  mu.setO(muVec);
+  RankVal mu = {0, 3, 1, 2, 5, 4}; // position -> modality representation
   Real pi = 0.3; // pi high enough to get mu, no matter the y obtained in removeMissing
 
   for (int i = 0; i < nbSample; ++i)
@@ -199,32 +196,30 @@ TEST(RankClass, sampleMu)
     data(i) = rankIndividual;
   }
 
-  RankVal muEst(nbPos); // estimated mu
-  multi.shuffle(muVec); // randomly initialized
+  Vector<int> muVec(nbPos);
+  std::iota(muVec.begin(), muVec.end(), 0);
+  multi.shuffle(muVec);
+  RankVal muEst(nbPos); // estimated mu is randomly initialized
   muEst.setO(muVec);
 
 #ifdef MC_DEBUG
     std::cout << "muVec: " << muVec.transpose() << std::endl;
 #endif
 
-
-
-  RankClass rank(1,
-            data,
-            muEst,
-            pi);
+  RankClass rank(data,
+                 muEst,
+                 pi);
   rank.removeMissing(); // uniform completion of y in individuals
 
   for (int i = 0; i < nbIterburnIn; ++i)
   {
     rank.sampleMu();
-    muEst = rank.getMu();
   }
 
   for (int i = 0; i < nbIterRun; ++i)
   {
     rank.sampleMu();
-    sampledResult.insert(rank.getMu());
+    sampledResult.insert(muEst);
   }
 
   ASSERT_TRUE(sampledResult.find(mu) != sampledResult.end());
@@ -246,10 +241,9 @@ TEST(RankClass, mStep)
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
   Vector<RankIndividual> data(nbSample); // will store the result of xGen
 
-  Vector<int> muVec(nbPos); // position -> modality representation
-  muVec << 0, 3, 1, 2, 6, 5, 4;
-  RankVal mu(nbPos);
-  mu.setO(muVec);
+
+
+  RankVal mu = {0, 3, 1, 2, 6, 5, 4}; // position -> modality representation
   Real pi = 0.75;
 
   for (int i = 0; i < nbSample; ++i)
@@ -263,8 +257,10 @@ TEST(RankClass, mStep)
 #endif
   }
 
-  RankVal muEst(nbPos); // estimated mu
+  Vector<int> muVec(nbPos);
+  std::iota(muVec.begin(), muVec.end(), 0);
   multi.shuffle(muVec); // randomly initialized
+  RankVal muEst(nbPos); // estimated mu
   muEst.setO(muVec);
   Real piEst = uni.sample(0.5, 1.); // estimated pi randomly initialized too
 
@@ -272,10 +268,9 @@ TEST(RankClass, mStep)
     std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
 #endif
 
-  RankClass rank(1,
-            data,
-            muEst,
-            piEst);
+  RankClass rank(data,
+                 muEst,
+                 piEst);
   rank.removeMissing();
 
   for (int i = 0; i < nbIterburnIn; ++i)
@@ -288,9 +283,6 @@ TEST(RankClass, mStep)
   }
 
   rank.mStep();
-
-  muEst = rank.getMu();
-  piEst = rank.getPi();
 
 #ifdef MC_DEBUG
   std::cout << "Estimation:     mu: " << muEst.o().transpose() << ", pi : " << piEst << std::endl;

@@ -46,10 +46,7 @@ TEST(RankParamStat, computeStat)
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
   Vector<RankIndividual> data(nbSample); // will store the result of xGen
 
-  Vector<int> muVec(nbPos); // ordering (position -> modality) representation
-  muVec << 0, 3, 1, 2, 4;
-  RankVal mu(nbPos);
-  mu.setO(muVec);
+  RankVal mu = {0, 3, 1, 2, 4}; // ordering (position -> modality) representation
   Real pi = 0.75;
 
   for (int i = 0; i < nbSample; ++i)
@@ -59,8 +56,10 @@ TEST(RankParamStat, computeStat)
     data(i) = rankIndividual;
   }
 
-  RankVal muEst(nbPos); // estimated mu
+  Vector<int> muVec(nbPos);
+  std::iota(muVec.begin(), muVec.end(), 0);
   multi.shuffle(muVec); // randomly initialized
+  RankVal muEst(nbPos); // estimated mu
   muEst.setO(muVec);
   Real piEst = uni.sample(0.5, 1.); // estimated pi randomly initialized too
 
@@ -69,10 +68,9 @@ TEST(RankParamStat, computeStat)
     std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
 #endif
 
-  RankClass rank(1,
-            data,
-            muEst,
-            piEst);
+  RankClass rank(data,
+                 muEst,
+                 piEst);
   rank.removeMissing();
 
   for (int i = 0; i < nbIterburnIn; ++i)
@@ -91,8 +89,6 @@ TEST(RankParamStat, computeStat)
       rank.samplingStep(ind);
     }
     rank.mStep();
-    muEst = rank.getMu();
-    piEst = rank.getPi();
     paramStat.sampleParam(i, nbIterRun - 1);
   }
 

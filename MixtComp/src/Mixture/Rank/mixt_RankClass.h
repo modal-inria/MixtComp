@@ -30,7 +30,7 @@
 namespace mixt
 {
 
-/** Class used to perform EM on a single variable with a single class */
+/** Class used to perform EM on a single variable with a single class. RankMixture contain an array of RankClass */
 class RankClass
 {
   public:
@@ -38,13 +38,9 @@ class RankClass
 //    RankClass(int nbClass);
 
     /** Constructor with data and parameters provided. useful for unit-testing. */
-    RankClass(int nbClass,
-              Vector<RankIndividual>& data,
-              const RankVal& mu,
-              Real pi);
-
-    const RankVal& getMu() const {return mu_;}
-    const Real& getPi() const {return pi_;}
+    RankClass(Vector<RankIndividual>& data,
+              RankVal& mu,
+              Real& pi);
 
     void removeMissing();
 
@@ -58,8 +54,6 @@ class RankClass
 
     void samplingStep(int ind);
   private:
-    int currClass_;
-
     int nbInd_;
 
     int nbPos_;
@@ -68,10 +62,10 @@ class RankClass
     Vector<RankIndividual>& data_;
 
     /** Parameter mu */
-    RankVal mu_;
+    RankVal& mu_;
 
     /** Parameter pi */
-    Real pi_;
+    Real& pi_;
 
     MultinomialStatistic multi_;
 };
