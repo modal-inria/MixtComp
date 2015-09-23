@@ -23,8 +23,8 @@
 
 #include "gtest/gtest.h"
 
+#include "../../src/Mixture/Rank/mixt_RankClass.h"
 #include "../Mixture/Rank/mixt_RankIndividual.h"
-#include "../Mixture/Rank/mixt_Rank.h"
 #include "../Mixture/Rank/mixt_RankParamStat.h"
 #include "../Statistic/mixt_Statistic.h"
 
@@ -69,7 +69,7 @@ TEST(RankParamStat, computeStat)
     std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
 #endif
 
-  Rank rank(1,
+  RankClass rank(1,
             data,
             muEst,
             piEst);

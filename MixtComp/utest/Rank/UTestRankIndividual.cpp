@@ -24,11 +24,11 @@
 #include "gtest/gtest.h"
 #include <map>
 
-#include "../../src/Mixture/Rank/mixt_RankFunction.h"
 #include "../../src/Mixture/Rank/mixt_RankVal.h"
 #include "../../src/LinAlg/mixt_Math.h"
+
+#include "../../src/Mixture/Rank/mixt_RankClass.h"
 #include "../../src/Mixture/Rank/mixt_RankIndividual.h"
-#include "../../src/Mixture/Rank/mixt_Rank.h"
 
 using namespace mixt;
 

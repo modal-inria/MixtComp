@@ -23,8 +23,8 @@
 
 #include "gtest/gtest.h"
 
+#include "../src/Mixture/Rank/mixt_RankClass.h"
 #include "../src/Statistic/mixt_Statistic.h"
-#include "../src/Mixture/Rank/mixt_Rank.h"
 #include "../src/Mixture/Rank/mixt_RankIndividual.h"
 #include "../src/Mixture/Rank/mixt_RankParamStat.h"
 

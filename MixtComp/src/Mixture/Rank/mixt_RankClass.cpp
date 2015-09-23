@@ -21,22 +21,22 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_Rank.h"
+#include "mixt_RankClass.h"
 
 namespace mixt
 {
-Rank::Rank(int nbClass) :
-    nbClass_(nbClass),
+RankClass::RankClass(int currClass) :
+    currClass_(currClass),
     nbInd_(0),
     nbPos_(0),
     pi_(0.)
 {}
 
-Rank::Rank(int nbClass,
+RankClass::RankClass(int nbClass,
            Vector<Vector<int> >& data,
            const RankVal& mu,
            Real pi) :
-    nbClass_(nbClass),
+    currClass_(nbClass),
     nbInd_(data.size()),
     nbPos_(mu.getNbPos()),
     mu_(mu),
@@ -50,7 +50,7 @@ Rank::Rank(int nbClass,
   }
 }
 
-void Rank::removeMissing()
+void RankClass::removeMissing()
 {
   for (int i = 0; i < nbInd_; ++i)
   {
@@ -58,7 +58,7 @@ void Rank::removeMissing()
   }
 }
 
-Real Rank::lnCompletedProbability() const
+Real RankClass::lnCompletedProbability() const
 {
   Real logProba = 0.;
   int a, g; // a and g are only used in the mStep, here they are dummy variables
@@ -71,7 +71,7 @@ Real Rank::lnCompletedProbability() const
   return logProba;
 }
 
-Real Rank::lnCompletedProbability(int& a, int& g) const
+Real RankClass::lnCompletedProbability(int& a, int& g) const
 {
   Real logProba = 0.;
   a = 0;
@@ -90,7 +90,7 @@ Real Rank::lnCompletedProbability(int& a, int& g) const
 
 /**
  * Perform one round of Gibbs sampling for the central rank */
-void Rank::sampleMu()
+void RankClass::sampleMu()
 {
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
@@ -118,7 +118,7 @@ void Rank::sampleMu()
   }
 }
 
-void Rank::mStep()
+void RankClass::mStep()
 {
   Vector<RankVal> mu(nbGibbsIterRank);
   Vector<Real> pi(nbGibbsIterRank);
@@ -144,7 +144,7 @@ void Rank::mStep()
   pi_ = pi(bestTheta);
 }
 
-void Rank::samplingStep(int ind)
+void RankClass::samplingStep(int ind)
 {
   data_(ind).sampleY(mu_, pi_);
 }

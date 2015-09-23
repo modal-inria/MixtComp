@@ -21,8 +21,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_RANK_H
-#define MIXT_RANK_H
+#ifndef MIXT_RANKCLASS_H
+#define MIXT_RANKCLASS_H
 
 #include "mixt_RankVal.h"
 #include "mixt_RankIndividual.h"
@@ -30,14 +30,14 @@
 namespace mixt
 {
 
-class Rank
+class RankClass
 {
   public:
     /** Default constructor */
-    Rank(int nbClass);
+    RankClass(int nbClass);
 
     /** Constructor with data and parameters provided. useful for unit-testing. */
-    Rank(int nbClass,
+    RankClass(int nbClass,
          Vector<Vector<int> >& data,
          const RankVal& mu,
          Real pi);
@@ -57,7 +57,7 @@ class Rank
 
     void samplingStep(int ind);
   private:
-    int nbClass_;
+    int currClass_;
 
     int nbInd_;
 
@@ -77,4 +77,4 @@ class Rank
 
 } // namespace mixt
 
-#endif // MIXT_RANK_H
+#endif // MIXT_RANKCLASS_H

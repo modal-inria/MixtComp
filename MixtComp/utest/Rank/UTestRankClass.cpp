@@ -24,18 +24,18 @@
 #include "gtest/gtest.h"
 #include <map>
 
-#include "../../src/Mixture/Rank/mixt_RankFunction.h"
 #include "../../src/Mixture/Rank/mixt_RankVal.h"
 #include "../../src/LinAlg/mixt_Math.h"
+
+#include "../../src/Mixture/Rank/mixt_RankClass.h"
 #include "../../src/Mixture/Rank/mixt_RankIndividual.h"
-#include "../../src/Mixture/Rank/mixt_Rank.h"
 
 using namespace mixt;
 
 /** Test if Rank::probaYgX (direct computation of distribution of Y / X) has produced a correct list of Y candidate using < comparator on consecutive values of result.
  * Actual value of the conditional probability is not tested, but the lnCompletedProbability used in its computation
  * already is tested elsewhere. */
-TEST(Rank, probaYgX)
+TEST(RankClass, probaYgX)
 {
   int nbPos = 4;
   int nbE = fac(nbPos);
@@ -78,7 +78,7 @@ TEST(Rank, probaYgX)
 
 /** Test if the conditional distribution p(y / x) obtained using Gibbs sampling is significantly different from the distribution
  * obtained through direct computation. Kullback–Leibler_divergence quantifies this difference. */
-TEST(Rank, gibbsY)
+TEST(RankClass, gibbsY)
 {
   int nbPos = 5;
   int nbIterBurnIn = 500;
@@ -172,7 +172,7 @@ TEST(Rank, gibbsY)
 }
 
 /** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
-TEST(Rank, sampleMu)
+TEST(RankClass, sampleMu)
 {
   int nbPos = 6;
   int nbSample = 500;
@@ -208,7 +208,7 @@ TEST(Rank, sampleMu)
 #endif
 
 
-  Rank rank(1,
+  RankClass rank(1,
             data,
             muEst,
             pi);
@@ -230,7 +230,7 @@ TEST(Rank, sampleMu)
 }
 
 /** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
-TEST(Rank, mStep)
+TEST(RankClass, mStep)
 {
   int nbPos = 7;
   int nbSample = 500;
@@ -271,7 +271,7 @@ TEST(Rank, mStep)
     std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
 #endif
 
-  Rank rank(1,
+  RankClass rank(1,
             data,
             muEst,
             piEst);

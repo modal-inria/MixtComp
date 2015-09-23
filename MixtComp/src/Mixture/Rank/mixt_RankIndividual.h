@@ -108,6 +108,9 @@ class RankIndividual
                   Vector<Vector<int> >& resVec,
                   Vector<Real>& resProba);
 
+    /** Compute the probability distribution of Y given X, to check the Gibbs sampling of Y given X.
+     * The Y are stored in resVec, the associated probabilities in resProba. The function is recursive
+     * to easily cover all possible cases and modifies the tail of the argument vec. */
     void recYgX(const RankVal& mu,
                 Real pi,
                 Vector<Vector<int> >& resVec,
@@ -120,6 +123,7 @@ class RankIndividual
                 int nbPos);
 
   private:
+    /** Permute the elements firstElem and firstElem + 1 in y_ */
     void permutationY(int firstElem);
 
     /** Number of positions in the rank */
