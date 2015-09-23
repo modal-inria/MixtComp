@@ -30,6 +30,7 @@
 
 using namespace mixt;
 
+/** Use RankParamStat to compute statistics on  */
 TEST(RankParamStat, computeStat)
 {
   int nbPos = 5;
@@ -37,7 +38,7 @@ TEST(RankParamStat, computeStat)
   int nbIterburnIn = 500;
   int nbIterRun = 500;
   Real confidenceLevel = 0.95;
-  Real tolerance = 1.e-4;
+  Real tolerance = 0.05;
 
   MultinomialStatistic multi;
   UniformStatistic uni;
@@ -45,7 +46,7 @@ TEST(RankParamStat, computeStat)
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
   Vector<Vector<int> > data(nbSample); // will store the result of xGen
 
-  Vector<int> muVec(nbPos); // position -> modality representation
+  Vector<int> muVec(nbPos); // ordering (position -> modality) representation
   muVec << 0, 3, 1, 2, 4;
   RankVal mu(nbPos);
   mu.setO(muVec);

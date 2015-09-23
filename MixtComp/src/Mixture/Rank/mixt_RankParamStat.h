@@ -53,7 +53,8 @@ class RankParamStat
     void sampleParam(int iteration,
                      int iterationMax);
 
-    /** Set mu and pi with the estimated value, at at the end of the SEM */
+    /** Set mu and pi with the estimated value, at the end of the SEM. The estimated value of mu is the mode, and the
+     * estimated value of pi is the mode among the values of pi sampled for the estimated mu. */
     void setExpectationParam();
   private:
     void sample(int iteration);

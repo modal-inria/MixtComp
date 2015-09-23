@@ -21,7 +21,9 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include<map>
+#include <algorithm>
+#include <iostream>
+#include <map>
 
 #include "mixt_RankParamStat.h"
 
@@ -55,8 +57,7 @@ void RankParamStat::sampleParam(int iteration,
   {
     sample(iterationMax); // last sampling
 
-    // For each RankVal, count the number of occurrences and create a list of pi values
-    std::map<RankVal, std::pair<int, std::list<Real> > > stat; // sparse storage used for
+    std::map<RankVal, std::pair<int, std::list<Real> > > stat; // sparse storage used to store the pi value for each mu
 
     for (int i = 0; i < iterationMax + 1; ++i)
     {
@@ -64,26 +65,31 @@ void RankParamStat::sampleParam(int iteration,
       stat[logStorageMu_(i)].second.push_back(logStoragePi_(i));
     }
 
-    int nbMu = stat.size();
+    int nbMu = stat.size(); // number of different values of mu that occurred during the run
 
     Vector<RankVal> mu(nbMu);     // transform sparse storage into contiguous storage
-    Vector<Vector<Real> > pi(nbMu);
-    Vector<int> nb(nbMu);
+    Vector<std::vector<Real> > pi(nbMu); // list of pi value for each mu
+    for (int m = 0; m < nbMu; ++m)
+    {
+      pi(m).reserve(iterationMax + 1);
+    }
+    Vector<int> nb(nbMu); // number of occurences of current value of mu
 
     int m = 0;
-    for (std::map<RankVal, std::pair<int, std::list<Real> > >::const_iterator it = stat.begin();
-         it != stat.end();
+    for (std::map<RankVal, std::pair<int, std::list<Real> > >::const_iterator it    = stat.begin(), // loop on values of mu
+                                                                              itEnd = stat.end();
+         it != itEnd;
          ++it, ++m)
     {
       mu(m) = it->first;
       nb(m) = it->second.first;
 
-      int p = 0;
-      for (std::list<Real>::const_iterator itP = it->second.second.begin();
-           itP != it->second.second.end();
-           ++itP, ++p)
+      for (std::list<Real>::const_iterator itP    = it->second.second.begin(), // loop on values of pi for the current value of mu
+                                           itPEnd = it->second.second.end();
+           itP != itPEnd;
+           ++itP)
       {
-        pi(m)(p) = *itP;
+        pi(m).push_back(*itP);
       }
     }
 
@@ -91,32 +97,32 @@ void RankParamStat::sampleParam(int iteration,
     nb.sortIndex(index);
 
     Real cumSum = 0.;
-    int i = 0;
-    while(cumSum < confidenceLevel_)
+    for (int muPos = nbMu - 1; muPos > -1; --muPos) // loop from the most to the less frequent values of mu
     {
-      int currInd = index(i);
+      int m = index(muPos); // index of current value of mu
 
-      pi(m).sort();
+      std::sort(pi(m).begin(), pi(m).end());
 
-      Real alpha = (1. - confidenceLevel_) / 2.;
-      int realIndLow =        alpha  * iterationMax;
+      Real alpha      = (1. - confidenceLevel_) / 2.;
+      int realIndLow  =       alpha  * iterationMax;
       int realIndHigh = (1. - alpha) * iterationMax;
 
-      Real proba = Real(nb(currInd)) / Real(iterationMax + 1);
+      Real proba = Real(nb(m)) / Real(iterationMax + 1);
 
       Vector<Real, 3> piProba;
-      piProba(0) = pi(m)(iterationMax / 2);
-      piProba(1) = pi(m)(realIndLow      );
-      piProba(2) = pi(m)(realIndHigh + 1 );
+      piProba(0) = pi(m)[iterationMax / 2];
+      piProba(1) = pi(m)[realIndLow      ];
+      piProba(2) = pi(m)[realIndHigh + 1 ];
 
       statStorageMuPi_.push_back(std::tuple<RankVal,
                                             Real,
-                                            Vector<Real, 3> >(mu(currInd),
+                                            Vector<Real, 3> >(mu(m),
                                                               proba,
                                                               piProba));
 
       cumSum += proba;
-      ++i;
+
+      if (cumSum > confidenceLevel_) break;
     }
   }
   else
