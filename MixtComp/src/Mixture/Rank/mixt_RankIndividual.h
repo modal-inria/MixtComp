@@ -47,6 +47,10 @@ class RankIndividual
 
     RankIndividual();
 
+    RankIndividual(const RankIndividual& ri);
+
+    RankIndividual& operator=(const RankIndividual& ri);
+
     RankIndividual(int nbPos);
 
     /** Get the observed x value, for example for debugging purposes */

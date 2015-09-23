@@ -44,7 +44,7 @@ TEST(RankParamStat, computeStat)
   UniformStatistic uni;
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
-  Vector<Vector<int> > data(nbSample); // will store the result of xGen
+  Vector<RankIndividual> data(nbSample); // will store the result of xGen
 
   Vector<int> muVec(nbPos); // ordering (position -> modality) representation
   muVec << 0, 3, 1, 2, 4;
@@ -56,7 +56,7 @@ TEST(RankParamStat, computeStat)
   {
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
-    data(i) = rankIndividual.getX().o();
+    data(i) = rankIndividual;
   }
 
   RankVal muEst(nbPos); // estimated mu

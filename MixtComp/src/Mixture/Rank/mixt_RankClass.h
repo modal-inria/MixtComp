@@ -30,17 +30,18 @@
 namespace mixt
 {
 
+/** Class used to perform EM on a single variable with a single class */
 class RankClass
 {
   public:
-    /** Default constructor */
-    RankClass(int nbClass);
+//    /** Default constructor */
+//    RankClass(int nbClass);
 
     /** Constructor with data and parameters provided. useful for unit-testing. */
     RankClass(int nbClass,
-         Vector<Vector<int> >& data,
-         const RankVal& mu,
-         Real pi);
+              Vector<RankIndividual>& data,
+              const RankVal& mu,
+              Real pi);
 
     const RankVal& getMu() const {return mu_;}
     const Real& getPi() const {return pi_;}
@@ -64,7 +65,7 @@ class RankClass
     int nbPos_;
 
     /** Data */
-    Vector<RankIndividual> data_;
+    Vector<RankIndividual>& data_;
 
     /** Parameter mu */
     RankVal mu_;

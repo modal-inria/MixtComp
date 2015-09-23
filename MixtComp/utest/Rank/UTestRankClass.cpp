@@ -184,7 +184,7 @@ TEST(RankClass, sampleMu)
   MultinomialStatistic multi;
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
-  Vector<Vector<int> > data(nbSample); // will store the result of xGen
+  Vector<RankIndividual> data(nbSample); // will store the result of xGen
 
   Vector<int> muVec(nbPos); // position -> modality representation
   muVec << 0, 3, 1, 2, 5, 4;
@@ -196,7 +196,7 @@ TEST(RankClass, sampleMu)
   {
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
-    data(i) = rankIndividual.getX().o();
+    data(i) = rankIndividual;
   }
 
   RankVal muEst(nbPos); // estimated mu
@@ -206,6 +206,7 @@ TEST(RankClass, sampleMu)
 #ifdef MC_DEBUG
     std::cout << "muVec: " << muVec.transpose() << std::endl;
 #endif
+
 
 
   RankClass rank(1,
@@ -243,7 +244,7 @@ TEST(RankClass, mStep)
   UniformStatistic uni;
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
-  Vector<Vector<int> > data(nbSample); // will store the result of xGen
+  Vector<RankIndividual> data(nbSample); // will store the result of xGen
 
   Vector<int> muVec(nbPos); // position -> modality representation
   muVec << 0, 3, 1, 2, 6, 5, 4;
@@ -255,7 +256,7 @@ TEST(RankClass, mStep)
   {
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
-    data(i) = rankIndividual.getX().o();
+    data(i) = rankIndividual;
 
 #ifdef MC_DEBUG
     std::cout << "data(i): " << data(i).transpose() << std::endl;

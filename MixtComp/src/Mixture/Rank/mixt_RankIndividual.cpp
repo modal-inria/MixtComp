@@ -29,9 +29,28 @@ namespace mixt
 {
 
 RankIndividual::RankIndividual() :
-    nbPos_(0),
-    lnFacNbPos_(0)
+  nbPos_(0),
+  lnFacNbPos_(0)
 {}
+
+RankIndividual::RankIndividual(const RankIndividual& ri) :
+  nbPos_(ri.nbPos_),
+  lnFacNbPos_(ri.lnFacNbPos_),
+  obsData_(ri.obsData_),
+  x_(ri.x_),
+  y_(ri.y_)
+{} // note that the state of multi_ is not copied and a new rng is created
+
+RankIndividual& RankIndividual::operator=(const RankIndividual& ri)
+{
+  nbPos_ = ri.nbPos_;
+  lnFacNbPos_ = ri.lnFacNbPos_;
+  obsData_ = ri.obsData_;
+  x_ = ri.x_;
+  y_ = ri.y_;
+
+  return *this;
+} // note that the state of multi_ is not copied and a new rng is created
 
 RankIndividual::RankIndividual(int nbPos) :
     nbPos_(nbPos),

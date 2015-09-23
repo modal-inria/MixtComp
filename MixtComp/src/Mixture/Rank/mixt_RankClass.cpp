@@ -25,30 +25,24 @@
 
 namespace mixt
 {
-RankClass::RankClass(int currClass) :
-    currClass_(currClass),
-    nbInd_(0),
-    nbPos_(0),
-    pi_(0.)
-{}
+//RankClass::RankClass(int currClass) :
+//    currClass_(currClass),
+//    nbInd_(0),
+//    nbPos_(0),
+//    pi_(0.)
+//{}
 
 RankClass::RankClass(int nbClass,
-           Vector<Vector<int> >& data,
-           const RankVal& mu,
-           Real pi) :
+                     Vector<RankIndividual>& data,
+                     const RankVal& mu,
+                     Real pi) :
     currClass_(nbClass),
     nbInd_(data.size()),
     nbPos_(mu.getNbPos()),
+    data_(data),
     mu_(mu),
     pi_(pi)
-{
-  data_.resize(nbInd_);
-  for (int i = 0; i < nbInd_; ++i)
-  {
-    data_(i).setNbPos(nbPos_);
-    data_(i).setO(data(i));
-  }
-}
+{}
 
 void RankClass::removeMissing()
 {
