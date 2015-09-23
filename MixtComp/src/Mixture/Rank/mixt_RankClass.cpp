@@ -32,7 +32,7 @@ namespace mixt
 //    pi_(0.)
 //{}
 
-RankClass::RankClass(Vector<RankIndividual>& data,
+RankClass::RankClass(const Vector<RankIndividual>& data,
                      RankVal& mu,
                      Real& pi) :
     nbInd_(data.size()),
@@ -41,14 +41,6 @@ RankClass::RankClass(Vector<RankIndividual>& data,
     mu_(mu),
     pi_(pi)
 {}
-
-void RankClass::removeMissing()
-{
-  for (int i = 0; i < nbInd_; ++i)
-  {
-    data_(i).removeMissing();
-  }
-}
 
 Real RankClass::lnCompletedProbability() const
 {
@@ -136,8 +128,4 @@ void RankClass::mStep()
   pi_ = pi(bestTheta);
 }
 
-void RankClass::samplingStep(int ind)
-{
-  data_(ind).sampleY(mu_, pi_);
-}
 } // namespace mixt

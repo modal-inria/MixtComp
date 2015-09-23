@@ -175,7 +175,7 @@ TEST(RankClass, gibbsY)
 TEST(RankClass, sampleMu)
 {
   int nbPos = 6;
-  int nbSample = 500;
+  int nbInd = 500;
   int nbIterburnIn = 500;
   int nbIterRun = 500;
 
@@ -184,12 +184,12 @@ TEST(RankClass, sampleMu)
   MultinomialStatistic multi;
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
-  Vector<RankIndividual> data(nbSample); // will store the result of xGen
+  Vector<RankIndividual> data(nbInd); // will store the result of xGen
 
   RankVal mu = {0, 3, 1, 2, 5, 4}; // position -> modality representation
   Real pi = 0.3; // pi high enough to get mu, no matter the y obtained in removeMissing
 
-  for (int i = 0; i < nbSample; ++i)
+  for (int i = 0; i < nbInd; ++i)
   {
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
@@ -209,7 +209,11 @@ TEST(RankClass, sampleMu)
   RankClass rank(data,
                  muEst,
                  pi);
-  rank.removeMissing(); // uniform completion of y in individuals
+
+  for (int i = 0; i < nbInd; ++i)
+  {
+    data(i).removeMissing();
+  }
 
   for (int i = 0; i < nbIterburnIn; ++i)
   {
@@ -229,7 +233,7 @@ TEST(RankClass, sampleMu)
 TEST(RankClass, mStep)
 {
   int nbPos = 7;
-  int nbSample = 500;
+  int nbInd = 500;
   int nbIterburnIn = 500;
   Real tolerance = 0.05;
 
@@ -239,14 +243,14 @@ TEST(RankClass, mStep)
   UniformStatistic uni;
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
-  Vector<RankIndividual> data(nbSample); // will store the result of xGen
+  Vector<RankIndividual> data(nbInd); // will store the result of xGen
 
 
 
   RankVal mu = {0, 3, 1, 2, 6, 5, 4}; // position -> modality representation
   Real pi = 0.75;
 
-  for (int i = 0; i < nbSample; ++i)
+  for (int i = 0; i < nbInd; ++i)
   {
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
@@ -271,13 +275,17 @@ TEST(RankClass, mStep)
   RankClass rank(data,
                  muEst,
                  piEst);
-  rank.removeMissing();
+
+  for (int i = 0; i < nbInd; ++i)
+  {
+    data(i).removeMissing();
+  }
 
   for (int i = 0; i < nbIterburnIn; ++i)
   {
-    for (int ind = 0; ind < nbSample; ++ind)
+    for (int ind = 0; ind < nbInd; ++ind)
     {
-      rank.samplingStep(ind);
+      data(ind).sampleY(muEst, piEst);
     }
     rank.sampleMu();
   }

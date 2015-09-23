@@ -34,7 +34,7 @@ using namespace mixt;
 TEST(RankParamStat, computeStat)
 {
   int nbPos = 5;
-  int nbSample = 500;
+  int nbInd = 500;
   int nbIterburnIn = 500;
   int nbIterRun = 500;
   Real confidenceLevel = 0.95;
@@ -44,12 +44,12 @@ TEST(RankParamStat, computeStat)
   UniformStatistic uni;
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
-  Vector<RankIndividual> data(nbSample); // will store the result of xGen
+  Vector<RankIndividual> data(nbInd); // will store the result of xGen
 
   RankVal mu = {0, 3, 1, 2, 4}; // ordering (position -> modality) representation
   Real pi = 0.75;
 
-  for (int i = 0; i < nbSample; ++i)
+  for (int i = 0; i < nbInd; ++i)
   {
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
@@ -71,22 +71,26 @@ TEST(RankParamStat, computeStat)
   RankClass rank(data,
                  muEst,
                  piEst);
-  rank.removeMissing();
+
+  for (int i = 0; i < nbInd; ++i)
+  {
+    data(i).removeMissing();
+  }
 
   for (int i = 0; i < nbIterburnIn; ++i)
   {
-    for (int ind = 0; ind < nbSample; ++ind)
+    for (int ind = 0; ind < nbInd; ++ind)
     {
-      rank.samplingStep(ind);
+      data(ind).sampleY(muEst, piEst);
     }
     rank.sampleMu();
   }
 
   for (int i = 0; i < nbIterRun; ++i)
   {
-    for (int ind = 0; ind < nbSample; ++ind)
+    for (int ind = 0; ind < nbInd; ++ind)
     {
-      rank.samplingStep(ind);
+      data(ind).sampleY(muEst, piEst);
     }
     rank.mStep();
     paramStat.sampleParam(i, nbIterRun - 1);

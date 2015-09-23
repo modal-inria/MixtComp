@@ -38,11 +38,9 @@ class RankClass
 //    RankClass(int nbClass);
 
     /** Constructor with data and parameters provided. useful for unit-testing. */
-    RankClass(Vector<RankIndividual>& data,
+    RankClass(const Vector<RankIndividual>& data,
               RankVal& mu,
               Real& pi);
-
-    void removeMissing();
 
     Real lnCompletedProbability() const;
 
@@ -51,15 +49,13 @@ class RankClass
     void sampleMu();
 
     void mStep();
-
-    void samplingStep(int ind);
   private:
     int nbInd_;
 
     int nbPos_;
 
     /** Data */
-    Vector<RankIndividual>& data_;
+    const Vector<RankIndividual>& data_;
 
     /** Parameter mu */
     RankVal& mu_;
