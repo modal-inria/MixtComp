@@ -24,6 +24,8 @@
 #ifndef MIXT_RANKCLASS_H
 #define MIXT_RANKCLASS_H
 
+#include <list>
+
 #include "mixt_RankVal.h"
 #include "mixt_RankIndividual.h"
 
@@ -39,6 +41,7 @@ class RankClass
 
     /** Constructor with data and parameters provided. useful for unit-testing. */
     RankClass(const Vector<RankIndividual>& data,
+              const std::list<int>& listInd,
               RankVal& mu,
               Real& pi);
 
@@ -56,6 +59,9 @@ class RankClass
 
     /** Data */
     const Vector<RankIndividual>& data_;
+
+    /** List of individuals among the data that belong to the class corresponding to this RankClass */
+    const std::list<int>& listInd_;
 
     /** Parameter mu */
     RankVal& mu_;

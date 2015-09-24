@@ -185,6 +185,7 @@ TEST(RankClass, sampleMu)
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
   Vector<RankIndividual> data(nbInd); // will store the result of xGen
+  std::list<int> listInd;
 
   RankVal mu = {0, 3, 1, 2, 5, 4}; // position -> modality representation
   Real pi = 0.3; // pi high enough to get mu, no matter the y obtained in removeMissing
@@ -194,6 +195,7 @@ TEST(RankClass, sampleMu)
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
     data(i) = rankIndividual;
+    listInd.push_back(i);
   }
 
   Vector<int> muVec(nbPos);
@@ -207,6 +209,7 @@ TEST(RankClass, sampleMu)
 #endif
 
   RankClass rank(data,
+                 listInd,
                  muEst,
                  pi);
 
@@ -244,8 +247,7 @@ TEST(RankClass, mStep)
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
   Vector<RankIndividual> data(nbInd); // will store the result of xGen
-
-
+  std::list<int> listInd;
 
   RankVal mu = {0, 3, 1, 2, 6, 5, 4}; // position -> modality representation
   Real pi = 0.75;
@@ -255,6 +257,7 @@ TEST(RankClass, mStep)
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
     data(i) = rankIndividual;
+    listInd.push_back(i);
 
 #ifdef MC_DEBUG
     std::cout << "data(i): " << data(i).transpose() << std::endl;
@@ -273,6 +276,7 @@ TEST(RankClass, mStep)
 #endif
 
   RankClass rank(data,
+                 listInd,
                  muEst,
                  piEst);
 

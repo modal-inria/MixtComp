@@ -25,19 +25,14 @@
 
 namespace mixt
 {
-//RankClass::RankClass(int currClass) :
-//    currClass_(currClass),
-//    nbInd_(0),
-//    nbPos_(0),
-//    pi_(0.)
-//{}
-
 RankClass::RankClass(const Vector<RankIndividual>& data,
+                     const std::list<int>& listInd,
                      RankVal& mu,
                      Real& pi) :
     nbInd_(data.size()),
     nbPos_(mu.getNbPos()),
     data_(data),
+    listInd_(listInd),
     mu_(mu),
     pi_(pi)
 {}
@@ -47,9 +42,11 @@ Real RankClass::lnCompletedProbability() const
   Real logProba = 0.;
   int a, g; // a and g are only used in the mStep, here they are dummy variables
 
-  for (int i = 0; i < nbInd_; ++i)
+  for (std::list<int>::const_iterator it = listInd_.begin(), itEnd = listInd_.end();
+       it != itEnd;
+       ++it)
   {
-    logProba += data_(i).lnCompletedProbability(mu_, pi_, a, g);
+    logProba += data_(*it).lnCompletedProbability(mu_, pi_, a, g);
   }
 
   return logProba;
@@ -61,10 +58,12 @@ Real RankClass::lnCompletedProbability(int& a, int& g) const
   a = 0;
   g = 0;
 
-  for (int i = 0; i < nbInd_; ++i)
+  for (std::list<int>::const_iterator it = listInd_.begin(), itEnd = listInd_.end();
+       it != itEnd;
+       ++it)
   {
     int currA, currG;
-    logProba += data_(i).lnCompletedProbability(mu_, pi_, currA, currG);
+    logProba += data_(*it).lnCompletedProbability(mu_, pi_, currA, currG);
     a += currA;
     g += currG;
   }

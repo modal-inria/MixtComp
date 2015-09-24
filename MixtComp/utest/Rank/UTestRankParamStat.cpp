@@ -45,6 +45,7 @@ TEST(RankParamStat, computeStat)
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
   Vector<RankIndividual> data(nbInd); // will store the result of xGen
+  std::list<int> listInd;
 
   RankVal mu = {0, 3, 1, 2, 4}; // ordering (position -> modality) representation
   Real pi = 0.75;
@@ -54,6 +55,7 @@ TEST(RankParamStat, computeStat)
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
     data(i) = rankIndividual;
+    listInd.push_back(i);
   }
 
   Vector<int> muVec(nbPos);
@@ -69,6 +71,7 @@ TEST(RankParamStat, computeStat)
 #endif
 
   RankClass rank(data,
+                 listInd,
                  muEst,
                  piEst);
 
