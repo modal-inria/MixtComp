@@ -26,7 +26,9 @@
 #ifndef MIXT_MIXTURECOMPOSER_H
 #define MIXT_MIXTURECOMPOSER_H
 
+#include <set>
 #include <vector>
+
 #include "../Sampler/mixt_ClassSampler.h"
 #include "../Mixture/mixt_IMixture.h"
 #include "../Various/mixt_Def.h"
@@ -67,10 +69,13 @@ class MixtureComposer
     int nbVar() const {return nbVar_;}
 
     /** @return  the zi class label */
-    inline Vector<int> const* p_zi() const {return &zi_.data_;}
+    const Vector<int>* p_zi() const {return &zi_.data_;}
+
+    /** @return  the zi class label */
+    const Vector<std::set<int> >& getClassInd() const {return classInd_;}
 
     /** @return a constant reference on the vector of mixture */
-    inline std::vector<IMixture*> const& v_mixtures() const {return v_mixtures_;}
+    const std::vector<IMixture*>& v_mixtures() const {return v_mixtures_;}
 
     /** Compute the proportions and the model parameters given the current tik
      *  mixture parameters.
@@ -356,6 +361,12 @@ class MixtureComposer
     void IDClass(Matrix<Real>& idc) const;
 
   private:
+    /** Use the zi to compute a vector with one element per class, each element contains
+     * the indices of individuals belonging to this class */
+    void updateListInd();
+
+    void printClassInd() const;
+
     /** name of the latent class variable */
     std::string idName_;
 
@@ -376,6 +387,10 @@ class MixtureComposer
 
     /** The zik class label */
     AugmentedData<Vector<int> > zi_;
+
+    /** A vector containing in each element a vector of the indices of individuals that
+     * belong to this class. Can be passed as an alternative to zi_ to a subtype of IMixture. */
+    Vector<std::set<int> > classInd_;
 
     /** class sampler */
     ClassSampler sampler_;

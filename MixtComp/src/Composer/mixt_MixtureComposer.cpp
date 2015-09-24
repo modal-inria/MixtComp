@@ -42,6 +42,7 @@ MixtureComposer::MixtureComposer(int nbInd,
     prop_(nbClass),
     tik_(nbInd,
          nbClass),
+    classInd_(nbClass),
     sampler_(*this,
              zi_,
              tik_,
@@ -71,6 +72,7 @@ void MixtureComposer::intializeMixtureParameters()
   prop_     = 1./(Real)nbClass_;
   tik_      = 1./(Real)nbClass_;
   zi_.data_ = 0;
+  updateListInd();
 }
 
 Real MixtureComposer::lnObservedProbability(int i, int k)
@@ -224,19 +226,23 @@ void MixtureComposer::mStep()
 
 void MixtureComposer::sStepCheck()
 {
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStep" << std::endl;
-#endif
-
   for (int i = 0; i < nbInd_; ++i)
   {
     sStepCheck(i);
   }
+
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStep" << std::endl;
+  std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
+  printClassInd();
+#endif
 }
 
 void MixtureComposer::sStepCheck(int i)
 {
+  classInd_(zi_.data_(i)).erase(i);
   sampler_.sStepCheck(i);
+  classInd_(zi_.data_(i)).insert(i);
 }
 
 void MixtureComposer::sStepNoCheck()
@@ -251,14 +257,17 @@ void MixtureComposer::sStepNoCheck()
   }
 
 #ifdef MC_DEBUG
-  std::cout << "zi_.data_: " << std::endl;
-  std::cout << zi_.data_ << std::endl;
+  std::cout << "MixtureComposer::sStep" << std::endl;
+  std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
+  printClassInd();
 #endif
 }
 
 void MixtureComposer::sStepNoCheck(int i)
 {
+  classInd_(zi_.data_(i)).erase(i);
   sampler_.sStepNoCheck(i);
+  classInd_(zi_.data_(i)).insert(i);
 }
 
 void MixtureComposer::eStep()
@@ -334,6 +343,7 @@ void MixtureComposer::mapStep(int i)
   int k;
   tik_.row(i).maxCoeff(&k);
   zi_.data_(i) = k;
+  updateListInd();
 }
 
 void MixtureComposer::writeParameters() const
@@ -667,6 +677,36 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const
   std::cout << "idc" << std::endl;
   std::cout << idc << std::endl;
 #endif
+}
+
+/** Use the zi to compute a vector with one element per class, each element contains
+ * the indices of individuals belonging to this class */
+void MixtureComposer::updateListInd()
+{
+  for (int k = 0; k < nbClass_; ++k)
+  {
+    classInd_(k).clear();
+  }
+
+  for (int i = 0; i < nbInd_; ++i)
+  {
+    classInd_(zi_.data_(i)).insert(i);
+  }
+}
+
+void MixtureComposer::printClassInd() const
+{
+  for (int k = 0; k < nbClass_; ++k)
+  {
+    std::cout << "k: " << k << ",";
+    for (std::set<int>::const_iterator it = classInd_(k).begin(), itEnd = classInd_(k).end();
+         it != itEnd;
+         ++it)
+    {
+      std::cout << " " << *it;
+    }
+    std::cout << std::endl;
+  }
 }
 
 } /* namespace mixt */
