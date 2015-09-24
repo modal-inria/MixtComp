@@ -176,13 +176,6 @@ class IMixture
     = 0;
 
     /**
-     * Is it possible to have null probability individuals ?
-     * @return true only if the model has null value for certain individuals
-     */
-    virtual bool possibleNullProbability() const
-    = 0;
-
-    /**
      * Crude removal of missing data by random sampling, prior to any parameter estimation. Used in
      * learning. In prediction parameters are known at initialization, and a samplingStep can be used.
      */

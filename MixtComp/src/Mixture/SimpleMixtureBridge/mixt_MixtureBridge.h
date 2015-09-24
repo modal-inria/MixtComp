@@ -73,7 +73,7 @@ class MixtureBridge : public IMixture
     MixtureBridge(std::string const& idName,
                   int nbClass,
                   Vector<int> const* p_zi,
-                  const DataHandler* p_handler_,
+                  const DataHandler* p_handler,
                   DataExtractor* p_extractor,
                   const ParamSetter* p_paramSetter,
                   ParamExtractor* p_paramExtractor,
@@ -99,7 +99,7 @@ class MixtureBridge : public IMixture
       likelihood_(param_,
                   augData_,
                   nbClass),
-      p_handler_(p_handler_),
+      p_handler_(p_handler),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
@@ -379,8 +379,6 @@ class MixtureBridge : public IMixture
      *  @return Pointer to zi.
      */
     Vector<int> const* p_zi() const {return p_zi_;}
-
-    bool possibleNullProbability() const {return mixture_.possibleNullProbability();}
 
     void removeMissing() {augData_.removeMissing();}
 

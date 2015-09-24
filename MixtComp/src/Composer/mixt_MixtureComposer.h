@@ -337,12 +337,6 @@ class MixtureComposer
      * */
     std::vector<std::string> mixtureName() const;
 
-    /**
-     * Completion of the data using observed t_ik, to detect impossible observations. The observed tik are computed,
-     * impossible individual are detected, and zi_ and missing variable are completed.
-     * @return string containing a description of the problematic combinations of data and models */
-    std::string eStepObserved();
-
     void removeMissing();
 
     void lnObservedLikelihoodDebug();

@@ -164,18 +164,6 @@ void Poisson_k::writeParameters() const
 #endif
 }
 
-bool Poisson_k::possibleNullProbability() const
-{
-  if (param_.minCoeff() < epsilon) // for null lambda, all non-null value have a 0 probability
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
 int Poisson_k::checkSampleCondition(std::string* warnLog) const
 {
   int proba = 1;

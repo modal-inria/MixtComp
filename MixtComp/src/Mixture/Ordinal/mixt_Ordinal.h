@@ -45,7 +45,7 @@ class Ordinal : public IMixture
     Ordinal(std::string const& idName,
             int nbClass,
             Vector<int> const* p_zi,
-            const DataHandler* p_handler_,
+            const DataHandler* p_handler,
             DataExtractor* p_extractor,
             const ParamSetter* p_paramSetter,
             ParamExtractor* p_paramExtractor,
@@ -65,7 +65,7 @@ class Ordinal : public IMixture
                            confidenceLevel),
       piParamStatComputer_(pi_,
                            confidenceLevel),
-      p_handler_(p_handler_),
+      p_handler_(p_handler),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
@@ -454,18 +454,6 @@ class Ordinal : public IMixture
         names[2 * k + 1] = sstmSd  .str();
       }
       return names;
-    }
-
-    bool possibleNullProbability() const
-    {
-      if (pi_.minCoeff() > epsilon)
-      {
-        return false;
-      }
-      else
-      {
-        return true; // a precision of 0 concentrates the probability on the mode ??? Therefore should be true ? -> Very long initialization ...
-      }
     }
 
     void removeMissing()

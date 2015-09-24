@@ -63,8 +63,6 @@ class Poisson_k
 
     void writeParameters() const;
 
-    bool possibleNullProbability() const;
-
     int checkSampleCondition(std::string* warnLog = NULL) const;
   private:
     int nbClass_;

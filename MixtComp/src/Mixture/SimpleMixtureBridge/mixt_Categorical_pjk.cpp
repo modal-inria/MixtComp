@@ -211,18 +211,6 @@ void Categorical_pjk::writeParameters() const
 #endif
 }
 
-bool Categorical_pjk::possibleNullProbability() const
-{
-  if (param_.minCoeff() < epsilon) // at least one proportion has been estimated at zero
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
 int Categorical_pjk::checkSampleCondition(std::string* warnLog) const
 {
   int proba = 1;

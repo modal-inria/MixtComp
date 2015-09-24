@@ -64,8 +64,6 @@ class Gaussian_sjk
 
     void writeParameters() const;
 
-    bool possibleNullProbability() const {return false;} // no individual can possibly have a null probability
-
     int checkSampleCondition(std::string* warnLog = NULL) const;
   private:
     int nbClass_;

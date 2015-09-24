@@ -46,12 +46,7 @@ std::string GibbsStrategy::run()
   std::cout << *p_composer_->p_zi() << std::endl;
 #endif
 
-  warnLog += p_composer_->eStepObserved(); // compute observed tik
-  if (warnLog.size() != 0) // impossible individuals detected, execution is aborted
-  {
-    return warnLog;
-  }
-  p_composer_->sStepNoCheck(); // class are sampled using the observed probabilities, no condition has to be verified on the sample
+  p_composer_->sStepNoCheck(); // class of each individual is sampled using the apriori proportions, no condition has to be verified on the sample
   p_composer_->samplingStepNoCheck(); // in prediction, parameters are known, samplingStep is used instead of removeMissing. No condition has to be verified on the sample.
 
   Timer myTimer;
