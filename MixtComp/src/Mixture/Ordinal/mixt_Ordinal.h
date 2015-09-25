@@ -399,7 +399,7 @@ class Ordinal : public IMixture
       {
         sstm << "Class: " << k << std::endl;
         sstm << "mu: " << mu_(k) << std::endl;
-        sstm << "pi_: " << pi_(k) << std::endl;
+        sstm << "pi: " << pi_(k) << std::endl;
       }
 
 #ifdef MC_VERBOSE

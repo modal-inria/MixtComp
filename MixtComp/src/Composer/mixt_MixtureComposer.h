@@ -72,7 +72,7 @@ class MixtureComposer
     const Vector<int>* p_zi() const {return &zi_.data_;}
 
     /** @return  the zi class label */
-    const Vector<std::set<int> >& getClassInd() const {return classInd_;}
+    const Vector<std::set<int> >& classInd() const {return classInd_;}
 
     /** @return a constant reference on the vector of mixture */
     const std::vector<IMixture*>& v_mixtures() const {return v_mixtures_;}

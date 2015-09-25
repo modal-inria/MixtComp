@@ -18,8 +18,8 @@
 /*
  *  Project:    MixtComp
  *  Created on: July 2, 2014
- *  Authors:    Serge IOVLEFF <serge.iovleff@inria.fr>
- *              Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
 

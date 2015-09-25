@@ -63,7 +63,7 @@
 //
 //if (std::regex_match(testStr, matches, reValue)) // value is present
 //{
-//#ifdef MC_DEBUGNEW
+//#ifdef MC_DEBUG
 //  std::cout << matches[1].str() << std::endl;
 //#endif
 ////}

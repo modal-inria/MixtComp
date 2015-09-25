@@ -77,7 +77,8 @@ class ParamExtractor
 };
 
 /**
- * Generate individuals that follows a distribution, and try to estimate it back
+ * Generate individuals that follows a distribution, and try to estimate it back. Note that the individual are generated
+ * in the constructor of Ordinal, which is a spacial constructor used for debugging.
  */
 TEST(Ordinal, mStep)
 {

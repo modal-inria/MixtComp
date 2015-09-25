@@ -27,6 +27,7 @@
 
 #include "../Mixture/SimpleMixtureBridge/mixt_MixtureBridge.h"
 #include "../Mixture/Ordinal/mixt_Ordinal.h"
+#include "../Mixture/Rank/mixt_RankMixture.h"
 #include "../Composer/mixt_MixtureComposer.h"
 
 namespace mixt
@@ -187,6 +188,25 @@ class MixtureManager
                                                                         p_paramSetter_,
                                                                         p_paramExtractor_,
                                                                         confidenceLevel);
+        return p_bridge;
+      }
+      if (idModel == "Rank")
+      {
+        RankMixture<DataHandler,
+                    DataExtractor,
+                    ParamSetter,
+                    ParamExtractor>* p_bridge = new RankMixture<DataHandler,
+                                                                DataExtractor,
+                                                                ParamSetter,
+                                                                ParamExtractor>(idName,
+                                                                                nbCluster,
+                                                                                composer.p_zi(),
+                                                                                composer.classInd(),
+                                                                                p_handler_,
+                                                                                p_dataExtractor_,
+                                                                                p_paramSetter_,
+                                                                                p_paramExtractor_,
+                                                                                confidenceLevel);
         return p_bridge;
       }
 
