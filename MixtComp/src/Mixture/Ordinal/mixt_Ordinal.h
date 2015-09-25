@@ -389,7 +389,7 @@ class Ordinal : public IMixture
 
     virtual int nbFreeParameter() const
     {
-      return 1; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
+      return nbClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
     }
 
     virtual void writeParameters() const

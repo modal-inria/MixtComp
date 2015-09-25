@@ -190,6 +190,11 @@ class MixtureComposer
     {
       std::string warnLog;
       warnLog += setProportion(paramSetter);
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        tik_.row(i) = prop_.transpose();
+      }
+
       warnLog += setZi(dataHandler, // dataHandler getData is called to fill zi_
                        mode);
       if (mode == prediction_) // in prediction, paramStatStorage_ will not be modified later during the run

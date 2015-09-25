@@ -70,7 +70,7 @@ class RankMixture : public IMixture
         class_.emplace_back(data_,
                             classInd_(k),
                             mu_(k),
-                            pi_(k)); // doing that means that mu and pi must not be resized in order to avoid incorrect behaviour at runtime
+                            pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
         paramStat_.emplace_back(mu_(k),
                                 pi_(k),
                                 confidenceLevel);
@@ -150,7 +150,7 @@ class RankMixture : public IMixture
 
     int nbFreeParameter() const
     {
-      return 1; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
+      return nbClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
     }
 
     void writeParameters() const
