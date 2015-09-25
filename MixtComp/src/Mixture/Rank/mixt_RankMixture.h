@@ -62,17 +62,19 @@ class RankMixture : public IMixture
         p_paramExtractor_(p_paramExtractor),
         confidenceLevel_(confidenceLevel),
         mu_(nbClass),
-        pi_(nbClass)
+        pi_(nbClass),
+        piParamStat_(pi_,
+                     confidenceLevel)
     {
       class_    .reserve(nbClass);
-      paramStat_.reserve(nbClass);
+      muParamStat_.reserve(nbClass);
       for (int k = 0; k < nbClass; ++k)
       {
         class_.emplace_back(data_,
                             classInd_(k),
                             mu_(k),
                             pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
-        paramStat_.emplace_back(mu_(k),
+        muParamStat_.emplace_back(mu_(k),
                                 pi_(k),
                                 confidenceLevel);
       }
@@ -115,7 +117,22 @@ class RankMixture : public IMixture
 
     void storeSEMRun(int iteration,
                              int iterationMax)
-    {}
+    {
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        muParamStat_(k).sampleParam(iteration, iterationMax);
+      }
+      piParamStat_.sampleParam(iteration, iterationMax);
+
+      if (iteration == iterationMax) // at last iteration, compute the observed probability distribution logProba_
+      {
+        for (int k = 0; k < nbClass_; ++k)
+        {
+          muParamStat_(k).setExpectationParam(); // estimate mu parameter using mode / expectation
+        }
+        piParamStat_.setExpectationParam(); // estimate pi parameter using mode / expectation
+      }
+    }
 
     void storeGibbsRun(int i,
                        int iteration,
@@ -191,6 +208,7 @@ class RankMixture : public IMixture
     std::string setDataParam(RunMode mode)
     {
       // setDataParam, rl_.setDim()
+      // in prediction: piParamStatComputer_.setParamStorage();
       return std::string();
     }
 
@@ -233,9 +251,11 @@ class RankMixture : public IMixture
      * Each element of the vector corresponds to a class */
     Vector<std::map<RankVal, Real> > observedProbaSampling_;
 
-    /** One element per class */
-    std::vector<RankClass> class_;
-    std::vector<RankParamStat> paramStat_;
+    /** Each element of the vector keeps track of statistics for one particular mu */
+    std::vector<RankParamStat> muParamStat_;
+
+    /** Compute the statistics on pi parameter */
+    ConfIntParamStat<Real> piParamStat_;
 };
 
 } // namespace mixt

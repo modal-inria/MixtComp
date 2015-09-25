@@ -77,8 +77,6 @@ Real RankClass::lnCompletedProbabilityInd(int i) const
   return data_(i).lnCompletedProbability(mu_, pi_, a, g);
 }
 
-/**
- * Perform one round of Gibbs sampling for the central rank */
 void RankClass::sampleMu()
 {
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state

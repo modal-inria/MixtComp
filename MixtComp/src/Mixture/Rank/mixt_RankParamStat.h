@@ -37,18 +37,14 @@ class RankParamStat
 {
   public:
     RankParamStat(RankVal& mu,
-                  Real& pi,
                   Real confidenceLevel);
 
-    /** This tuple is dedicated to Quentin Grimonprez, proud forefather of its usage among us, mere Modal Team member.
-     * May he be blessed for that. */
-    const std::list<std::tuple<RankVal,
-                               Real,
-                               Vector<Real,
-                                      3> > >& getStatStorageMuPi() const {return statStorageMuPi_;}
+    /** There used to be a tuple here, dedicated to Quentin Grimonprez, proud forefather of its usage among us, mere Modal Team member.
+     * But it was deemed unnecessary leading to its demise and ultimate obliteration with extreme prejudice.
+     * Of the tuple. Not of Quentin. */
+    const std::list<std::pair<RankVal, Real> >& statStorageMu() const {return statStorageMu_;}
 
-    const Vector<RankVal>& getLogStorageMu() const {return logStorageMu_;}
-    const Vector<Real>&    getLogStoragePi() const {return logStoragePi_;}
+    const Vector<RankVal>& logStorageMu() const {return logStorageMu_;}
 
     void sampleParam(int iteration,
                      int iterationMax);
@@ -60,19 +56,15 @@ class RankParamStat
     void sample(int iteration);
 
     RankVal& mu_;
-    Real& pi_;
 
     Real confidenceLevel_;
 
     /** Each element in the list contains a triplet <mu, frequency of mu, Vector (median, left quantile, right quantile) of pi>.
      * The confidenceLevel parameter act as a cutoff both for mu and pi. */
-    std::list<std::tuple<RankVal, Real, Vector<Real, 3> > > statStorageMuPi_;
+    std::list<std::pair<RankVal, Real> > statStorageMu_;
 
     /** Storage for iterations results, 1 value per iteration */
     Vector<RankVal> logStorageMu_;
-
-    /** Storage for iterations results, 1 value per iteration */
-    Vector<Real> logStoragePi_;
 };
 
 } // namespace mixt

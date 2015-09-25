@@ -51,8 +51,10 @@ class RankClass
 
     Real lnCompletedProbabilityInd(int i) const;
 
+    /** Perform one round of Gibbs sampling for the central rank */
     void sampleMu();
 
+    /** */
     void mStep();
   private:
     int nbInd_;
