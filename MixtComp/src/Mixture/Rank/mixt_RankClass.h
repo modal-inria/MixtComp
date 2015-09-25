@@ -24,7 +24,7 @@
 #ifndef MIXT_RANKCLASS_H
 #define MIXT_RANKCLASS_H
 
-#include <list>
+#include <set>
 
 #include "mixt_RankVal.h"
 #include "mixt_RankIndividual.h"
@@ -41,13 +41,15 @@ class RankClass
 
     /** Constructor with data and parameters provided. useful for unit-testing. */
     RankClass(const Vector<RankIndividual>& data,
-              const std::list<int>& listInd,
+              const std::set<int>& setInd,
               RankVal& mu,
               Real& pi);
 
     Real lnCompletedProbability() const;
 
     Real lnCompletedProbability(int& a, int& g) const;
+
+    Real lnCompletedProbabilityInd(int i) const;
 
     void sampleMu();
 
@@ -61,7 +63,7 @@ class RankClass
     const Vector<RankIndividual>& data_;
 
     /** List of individuals among the data that belong to the class corresponding to this RankClass */
-    const std::list<int>& listInd_;
+    const std::set<int>& setInd_;
 
     /** Parameter mu */
     RankVal& mu_;

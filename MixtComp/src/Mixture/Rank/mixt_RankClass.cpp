@@ -26,13 +26,13 @@
 namespace mixt
 {
 RankClass::RankClass(const Vector<RankIndividual>& data,
-                     const std::list<int>& listInd,
+                     const std::set<int>& setInd,
                      RankVal& mu,
                      Real& pi) :
     nbInd_(data.size()),
     nbPos_(mu.getNbPos()),
     data_(data),
-    listInd_(listInd),
+    setInd_(setInd),
     mu_(mu),
     pi_(pi)
 {}
@@ -42,7 +42,7 @@ Real RankClass::lnCompletedProbability() const
   Real logProba = 0.;
   int a, g; // a and g are only used in the mStep, here they are dummy variables
 
-  for (std::list<int>::const_iterator it = listInd_.begin(), itEnd = listInd_.end();
+  for (std::set<int>::const_iterator it = setInd_.begin(), itEnd = setInd_.end();
        it != itEnd;
        ++it)
   {
@@ -58,7 +58,7 @@ Real RankClass::lnCompletedProbability(int& a, int& g) const
   a = 0;
   g = 0;
 
-  for (std::list<int>::const_iterator it = listInd_.begin(), itEnd = listInd_.end();
+  for (std::set<int>::const_iterator it = setInd_.begin(), itEnd = setInd_.end();
        it != itEnd;
        ++it)
   {
@@ -69,6 +69,12 @@ Real RankClass::lnCompletedProbability(int& a, int& g) const
   }
 
   return logProba;
+}
+
+Real RankClass::lnCompletedProbabilityInd(int i) const
+{
+  int a, g; // a and g are only used in the mStep, here they are dummy variables
+  return data_(i).lnCompletedProbability(mu_, pi_, a, g);
 }
 
 /**
