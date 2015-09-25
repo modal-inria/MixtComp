@@ -325,14 +325,14 @@ class Ordinal : public IMixture
         RowVector<Real> nbInd(nbModalities_); // observed frequencies
         path.setEnd(k, k);
         nbInd = 0;
-        for (int i = 0; i < nbSampleBOS; ++i)
+        for (int i = 0; i < nbSampleObserved; ++i)
         {
           path.forwardSamplePath(mu_(k), // complete the individual
                                  pi_(k),
                                  true); // allZOneAuthorized, to estimate probability distribution, all z can be sampled to 1
           nbInd(path.c_(nbModalities_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
-        observedProba_.row(k) = nbInd / nbSampleBOS;
+        observedProba_.row(k) = nbInd / Real(nbSampleObserved);
       }
     }
 

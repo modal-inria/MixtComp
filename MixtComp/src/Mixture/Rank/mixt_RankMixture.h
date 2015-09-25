@@ -31,7 +31,8 @@
 namespace mixt
 {
 
-/** Class used to perform EM on a single variable with a single class. RankMixture contains an array of RankClass */
+/** RankMixture contains an array of RankClass. Each RankClass will have the responsibility to perform
+ * estimation of parameters and computation of the probability of individuals that belong to it. */
 template<typename DataHandler,
          typename DataExtractor,
          typename ParamSetter,

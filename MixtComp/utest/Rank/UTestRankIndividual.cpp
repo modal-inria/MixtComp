@@ -212,3 +212,40 @@ TEST(RankIndividual, lnCompletedProbability)
 
   ASSERT_EQ(sameProba, Vector<bool>(nbSample, true));
 }
+
+/** Estimate the observed probability distribution using independent samples. Compare the mode to the real
+ * parameter. */
+TEST(RankIndividual, observedProba)
+{
+  int nbPos = 6;
+  RankVal mu = {5, 1, 0, 4, 2, 3};
+  Real pi = 0.87;
+
+  RankIndividual rv(nbPos);
+  std::map<RankVal, Real> proba;
+
+  rv.observedProba(mu, pi, proba);
+
+  RankVal muEst = proba.begin()->first;
+  Real probaEst = proba.begin()->second;
+
+  for (std::map<RankVal, Real>::const_iterator it = proba.begin(), itEnd = proba.end();
+       it != itEnd;
+       ++it)
+  {
+#ifdef MC_DEBUG
+    std::cout << "RankVal: " << it->first << ", proba: " << it->second << std::endl;
+#endif
+    if (probaEst < it->second)
+    {
+      muEst = it->first;
+      probaEst = it->second;
+    }
+  }
+
+#ifdef MC_DEBUG
+    std::cout << "muEst: " << muEst << ", probaEst: " << probaEst << std::endl;
+#endif
+
+    ASSERT_EQ(mu, muEst);
+}

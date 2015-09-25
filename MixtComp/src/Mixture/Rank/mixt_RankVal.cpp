@@ -36,6 +36,13 @@ RankVal::RankVal(int nbPos) :
   ranking_.resize(nbPos);
 }
 
+void RankVal::operator=(const RankVal& rv)
+{
+  nbPos_ = rv.nbPos_;
+  ordering_ = rv.ordering_;
+  ranking_ = rv.ranking_;
+}
+
 RankVal::RankVal(const std::initializer_list<int>& il)
 {
   nbPos_ = il.size();

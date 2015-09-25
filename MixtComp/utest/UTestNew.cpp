@@ -23,7 +23,7 @@
 
 #include "gtest/gtest.h"
 
-#include "../src/Mixture/Rank/mixt_RankLikelihood.h"
+#include "../src/Mixture/Rank/mixt_RankIndividual.h"
 
 using namespace mixt;
 

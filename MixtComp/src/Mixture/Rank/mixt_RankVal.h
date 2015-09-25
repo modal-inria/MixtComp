@@ -45,6 +45,8 @@ class RankVal
     /** Set ordering via initializer list */
     RankVal(const std::initializer_list<int>& il);
 
+    void operator=(const RankVal& rv);
+
     bool operator==(const RankVal& rv) const;
 
     bool operator<(const RankVal& rv) const;

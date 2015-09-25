@@ -59,10 +59,7 @@ RankIndividual::RankIndividual(int nbPos) :
 {
   obsData_.resize(nbPos);
   y_.resize(nbPos);
-  for (int p = 0; p < nbPos_; ++p) // presentation order initialized, ready to be shuffled by removeMissing
-  {
-    y_(p) = p;
-  }
+  std::iota(y_.begin(), y_.end(), 0); // presentation order initialized, ready to be shuffled by removeMissing
 }
 
 void RankIndividual::setNbPos(int nbPos)
@@ -72,21 +69,24 @@ void RankIndividual::setNbPos(int nbPos)
   x_ .setNbPos(nbPos);
 
   y_.resize(nbPos);
-  for (int p = 0; p < nbPos_; ++p) // presentation order initialized, ready to be shuffled by removeMissing
-  {
-    y_(p) = p;
-  }
+  std::iota(y_.begin(), y_.end(), 0); // presentation order initialized, ready to be shuffled by removeMissing
 
   lnFacNbPos_ = - std::log(fac(nbPos_));
 }
 
 void RankIndividual::removeMissing()
 {
-  multi_.shuffle(y_);
+  yGen();
+  // add here uniform generation for partially observed data
 
 #ifdef MC_DEBUG
   std::cout << "y_: " << y_.transpose() << std::endl;
 #endif
+}
+
+void RankIndividual::yGen()
+{
+  multi_.shuffle(y_);
 }
 
 Real RankIndividual::xGen(const RankVal& mu,
@@ -334,6 +334,26 @@ void RankIndividual::recYgX(const RankVal& mu,
              currPos + 1,
              nbPos);
     }
+  }
+}
+
+void RankIndividual::observedProba(const RankVal& mu,
+                                   Real pi,
+                                   std::map<RankVal, Real>& proba)
+{
+  proba.clear();
+  for (int i = 0; i < nbSampleObserved; ++i)
+  {
+    yGen();
+    xGen(mu, pi);
+    proba[x_] += 1.;
+  }
+
+  for (std::map<RankVal, Real>::iterator it = proba.begin(), itEnd = proba.end();
+       it != itEnd;
+       ++it)
+  {
+    it->second /= Real(nbSampleObserved);
   }
 }
 

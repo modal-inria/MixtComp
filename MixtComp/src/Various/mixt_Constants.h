@@ -45,13 +45,13 @@ extern const std::string progressFile; // progress file name
 extern const Real minInf; // value of log(0)
 
 extern const int sizeTupleBOS; // default size of tuple for Gibbs sampling in BOS model
-extern const int nbSampleBOS; // number of sample per class to estimate the observed probability
 extern const int nbGibbsIniBOS; // number of Gibbs sampling rounds in initialization to increase variability on z
 extern const Real piInitBOS; // value of pi used in Gibbs used in initialization
 extern const Real piThreshold; //threashold on pi to detect degeneracy
 
-
 extern const int nbGibbsIterRank; // number of iterations in the Gibbs used in the estimation of mu
+
+extern const int nbSampleObserved; // number of sample per class to estimate the observed probability, for example in Ordinal or Rank data
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

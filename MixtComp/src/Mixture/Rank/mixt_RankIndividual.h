@@ -24,6 +24,7 @@
 #ifndef MIXT_RANKINDIVIDUAL_H
 #define MIXT_RANKINDIVIDUAL_H
 
+#include <map>
 #include <set>
 
 #include "../Various/mixt_Def.h"
@@ -94,8 +95,11 @@ class RankIndividual
     /** Uniform sample for partially observed valued and presentation order */
     void removeMissing();
 
+    /** Shuffle the presentation order y_*/
+    void yGen();
+
     /**
-     * Sample an individual from parameters, a presentation order
+     * Sample an individual from parameters, conditionaly to the current presentation order y_
      * @param mu central rank
      * @param pi precision
      * @return log-probability of the sampled value
@@ -125,6 +129,14 @@ class RankIndividual
                 int nbElem,
                 int currPos,
                 int nbPos);
+
+    /** Compute the observed probability distribution for mu and pi, by generating nbSampleObserved
+     * Independent observations and marginalizing over presentation order. This procedure is similar
+     * to what is used in the Ordinal model, and in contrast with the use of the harmonic mean estimator
+     * of the observed probability. */
+    void observedProba(const RankVal& mu,
+                       Real pi,
+                       std::map<RankVal, Real>& proba);
 
   private:
     /** Permute the elements firstElem and firstElem + 1 in y_ */

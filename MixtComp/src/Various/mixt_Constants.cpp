@@ -44,10 +44,11 @@ const std::string progressFile = "progress";
 const Real minInf = std::log(0.);
 
 const int sizeTupleBOS = 2;
-const int nbSampleBOS = 200000;
 const int nbGibbsIniBOS = 1000;
 const Real piInitBOS = 0.75;
 const Real piThreshold = 0.05;
 
 const int nbGibbsIterRank = 50;
+
+const int nbSampleObserved = 200000;
 } // namespace mixt
