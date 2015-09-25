@@ -127,7 +127,16 @@ class RankMixture : public IMixture
                                                      (*p_zi_)(i)));
       if (iteration == iterationMax)
       {
-        rl_.getHMean(observedProba_);
+//        rl_.getHMean(observedProba_); // harmonic mean computation method
+
+        RankIndividual ri(nbMod_);
+        observedProbaSampling_.resize(nbClass_);
+        for (int k = 0; k < nbClass_; ++k)
+        {
+          ri.observedProba(mu_(k),
+                           pi_(k),
+                           observedProbaSampling_(k));
+        }
       }
     }
 
@@ -138,7 +147,17 @@ class RankMixture : public IMixture
 
     virtual Real lnObservedProbability(int i, int k)
     {
-      return observedProba_(i, k);
+//      return observedProba_(i, k); // harmonic mean computation method
+
+      std::map<RankVal, Real>::iterator it = observedProbaSampling_(k).find(data_(i).x());
+      if (it == observedProbaSampling_(k).end()) // the current individual has not been observed during sampling
+      {
+        return minInf;
+      }
+      else
+      {
+        return std::log(it->second);
+      }
     }
 
     void removeMissing()
@@ -201,12 +220,18 @@ class RankMixture : public IMixture
     Vector<Real> pi_;
     Vector<RankIndividual> data_;
 
+    /** RankLikelihood object, used to for the harmonic mean estimation of the observed likelihood. */
     RankLikelihood rl_;
 
-    /** Matrix containing observed log probability distribution
+    /** Matrix containing observed log probability distribution, used in harmonic mean estimation
+     * of the observed probability
      * Individual in rows
      * Classes in columns */
-    Matrix<Real> observedProba_;
+    Matrix<Real> observedProbaHMean_;
+
+    /** Vector of map containing observed probability distribution, used in independent sampling estimation.
+     * Each element of the vector corresponds to a class */
+    Vector<std::map<RankVal, Real> > observedProbaSampling_;
 
     /** One element per class */
     std::vector<RankClass> class_;

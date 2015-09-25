@@ -98,7 +98,7 @@ TEST(RankIndividual, xGenP05)
   {
     rank.removeMissing(); // shuffle the presentation order
     rank.xGen(mu, pi);
-    tempRank = rank.getX().o();
+    tempRank = rank.x().o();
 
     if (empDist.find(tempRank) == empDist.end())
     {
@@ -165,7 +165,7 @@ TEST(RankIndividual, xGenP1)
   {
     rank.removeMissing(); // shuffle the presentation order
     rank.xGen(mu, pi);
-    RankOut = rank.getX();
+    RankOut = rank.x();
 
     (RankOut == mu) ? (sorted(i) = true) : (sorted(i) = false);
   }

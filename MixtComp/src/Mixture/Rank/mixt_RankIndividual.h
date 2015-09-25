@@ -55,10 +55,10 @@ class RankIndividual
     RankIndividual(int nbPos);
 
     /** Get the observed x value, for example for debugging purposes */
-    const RankVal& getX() const {return x_;}
+    const RankVal& x() const {return x_;}
 
     /** Get the presentation order, for example for debugging purposes */
-    const Vector<int>& getY() const {return y_;}
+    const Vector<int>& y() const {return y_;}
 
     /** Set the number of positions in the rank, used to resize storage */
     void setNbPos(int nbPos);

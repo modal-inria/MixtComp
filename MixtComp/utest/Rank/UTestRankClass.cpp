@@ -110,7 +110,7 @@ TEST(RankClass, gibbsY)
   for (int i = 0; i < nbIterRun; ++i)
   {
     rank.sampleY(mu, pi);
-    dummyVec = rank.getY();
+    dummyVec = rank.y();
 
     if (empDist.find(dummyVec) == empDist.end())
     {
