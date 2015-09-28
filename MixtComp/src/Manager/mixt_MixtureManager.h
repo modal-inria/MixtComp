@@ -40,8 +40,6 @@ template<typename DataHandler,
 class MixtureManager
 {
   public:
-    typedef typename DataHandler::InfoMap InfoMap;
-
     MixtureManager(const DataHandler* handler,
                    DataExtractor* p_dataExtractor,
                    const ParamSetter* p_paramSetter,
@@ -61,7 +59,10 @@ class MixtureManager
     {
       std::string warnLog;
       int nbVar = 0; // number of variables
-      for (typename InfoMap::const_iterator it=p_handler_->info().begin(); it!=p_handler_->info().end(); ++it)
+      for (std::map<std::string, std::string>::const_iterator it    = p_handler_->info().begin(),
+                                                              itEnd = p_handler_->info().end();
+           it != itEnd;
+           ++it)
       {
         std::string idName = it->first;
         std::string idModel = it->second;

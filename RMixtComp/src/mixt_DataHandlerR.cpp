@@ -40,7 +40,10 @@ void DataHandlerR::writeInfo() const
 {
   // show content
 #ifdef MC_VERBOSE
-   for (InfoMap::const_iterator it = info_.begin(); it != info_.end(); ++it)
+   for (std::map<std::string, std::string>::const_iterator it    = info_.begin(),
+                                                           itEnd = info_.end();
+        it != itEnd;
+        ++it)
    {
      std::cout << "name: " << it->first << ", model: " << it->second << std::endl;
    }
@@ -63,7 +66,7 @@ std::string DataHandlerR::listData()
     Rcpp::CharacterVector data = currList["data"];
 
     // add to info_, and perform various checks
-    std::pair<InfoMap::iterator, bool> ret; // parse descriptor file
+    std::pair<std::map<std::string, std::string>::iterator, bool> ret; // parse descriptor file
     ret = info_.insert(std::pair<std::string, std::string>(id, model)); // check if identifier is already present
     if (ret.second == false) // if name already exists, return a warning
     {
@@ -98,10 +101,13 @@ void DataHandlerR::writeDataMap() const
 {
 #ifdef MC_VERBOSE
   std::cout << "Position of data in input: \n";
-  for (DataMap::const_iterator it_id = dataMap_.begin(); it_id != dataMap_.end(); ++it_id)
+  for (std::map<std::string, int> ::const_iterator it    = dataMap_.begin(),
+                                                   itEnd = dataMap_.end();
+       it != itEnd;
+       ++it)
   {
-    std::cout << "\tname: " << (*it_id).first << "\n";
-    std::cout << "\t\trList_ position: " << (*it_id).second << std::endl;
+    std::cout << "\tname: " << it->first << "\n";
+    std::cout << "\t\trList_ position: " << it->second << std::endl;
   }
 #endif
 }

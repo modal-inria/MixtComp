@@ -119,6 +119,8 @@ class MisValParser
         mv.second.push_back(str2type<Type>(matches_[1].str()) + offset_);
         return;
       }
+
+      mv.first = missing_; // in all other cases data is considered completely missing
     }
 
   private:
