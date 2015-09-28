@@ -61,7 +61,7 @@ EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
 # SRC_UTEST += $(wildcard utest/*.cpp)
 # SRC_UTEST += $(wildcard utest/Ordinal/*.cpp)
-SRC_UTEST += $(wildcard utest/Rank/*.cpp)
+# SRC_UTEST += $(wildcard utest/Rank/*.cpp)
 # SRC_UTEST += $(wildcard utest/Various/*.cpp)
 SRC_UTEST += $(wildcard utest/UTestNew.cpp)
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
@@ -110,8 +110,8 @@ utest: $(EXE_UTEST)
 #$(EXE_UTEST): $(O_GTEST) $(O_UTEST)
 #	$(CXX) $^ $(LIB_MC) -o $@ -lpthread 
 
-$(EXE_UTEST): $(LIB_MC) $(O_GTEST) $(O_UTEST)
-	$(CXX) $^ $(LIB_MC) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
+$(EXE_UTEST): $(LIB_MC) $(LIB_RE) $(O_GTEST) $(O_UTEST)
+	$(CXX) $^ $(LIB_MC) $(LIB_RE) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 test: $(EXE_TEST)
 

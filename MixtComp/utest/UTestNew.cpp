@@ -23,7 +23,49 @@
 
 #include "gtest/gtest.h"
 
-#include "../src/Mixture/Rank/mixt_RankIndividual.h"
+#include <iostream>
+#include "boost/regex.hpp"
+
+// #include "../src/Data/mixt_MisValParser.h"
+#include "../src/IO/mixt_IO.h"
+#include "../src/LinAlg/mixt_LinAlg.h"
+#include "../src/Various/mixt_Def.h"
 
 using namespace mixt;
 
+//TEST(MisValParser, basicTest)
+//{
+//  MisValParser<Real> mvp(0);
+//  std::string str("    .3");
+//  Real res;
+//  std::pair<MisType, std::vector<Real> > dummy;
+//  mvp.parseStr(str, res, dummy);
+//
+//  ASSERT_EQ(res, str2type<Real>("0.3"));
+//}
+
+typedef std::pair<MisType, std::vector<Real> > MisVal;
+
+TEST(regex, basicTest)
+{
+  std::string strNumber_("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
+  std::string strBlank_(" *");
+
+  boost::regex reNumber_(strNumber_);
+  boost::regex reValue_(strBlank_ + // " *(-*[0-9.]+) *"
+                      strNumber_ +
+                      strBlank_);
+
+  Real v;
+  MisVal mv;
+  std::string str("  0.3 ");
+  boost::smatch matches_;
+
+  if (boost::regex_match(str, matches_, reValue_)) // value is present
+  {
+    v = str2type<Real>(matches_[1].str());
+    mv = MisVal(present_, std::vector<Real>());
+  }
+
+  ASSERT_EQ(v, str2type<Real>(str));
+}
