@@ -81,6 +81,21 @@ class MisValParser
         mv = MisVal(present_, std::vector<Type>());
         return;
       }
+
+      if (boost::regex_match(str, matches_, reFiniteValues_)) // only a finite number of values are acceptable
+      {
+        std::string::const_iterator start = str.begin();
+        std::string::const_iterator end   = str.end();
+        boost::smatch m;
+        MisVal misVal;
+        misVal.first = missingFiniteValues_;
+        while (boost::regex_search(start, end, m, reNumber_))
+        {
+          mv.second.push_back(str2type<Type>(m[0].str()) + offset_);
+          start = m[0].second;
+        }
+        return;
+      }
     }
 
   private:

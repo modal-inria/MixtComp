@@ -59,13 +59,29 @@ TEST(regex, basicTest)
   ASSERT_EQ(v, str2type<Real>(str));
 }
 
-TEST(MisValParser, basicTest)
+TEST(MisValParser, simpleValue)
 {
   MisValParser<Real> mvp(0);
   std::string str("    .3");
-  Real res;
-  std::pair<MisType, std::vector<Real> > dummy;
-  mvp.parseStr(str, res, dummy);
+  Real val;
+  std::pair<MisType, std::vector<Real> > vec;
+  mvp.parseStr(str, val, vec);
 
-  ASSERT_EQ(res, str2type<Real>("0.3"));
+  ASSERT_EQ(val, str2type<Real>("0.3"));
+}
+
+TEST(MisValParser, finiteValues)
+{
+  MisValParser<Real> mvp(0);
+  std::string str("{   .3 2.5 ,30 $  .6}");
+  Real val;
+  std::pair<MisType, std::vector<Real> > vec;
+  mvp.parseStr(str, val, vec);
+
+  std::vector<Real> expected {str2type<Real>("0.3"),
+                              str2type<Real>("2.5"),
+                              str2type<Real>("30."),
+                              str2type<Real>("0.6")};
+
+  ASSERT_EQ(vec.second, expected);
 }
