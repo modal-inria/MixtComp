@@ -105,6 +105,20 @@ class MisValParser
         mv.second[1] = str2type<Type>(matches_[2].str()) + offset_;
         return;
       }
+
+      if (boost::regex_match(str, matches_, reLuIntervals_)) // data is lower bounded
+      {
+        mv.first = missingLUIntervals_;
+        mv.second.push_back(str2type<Type>(matches_[1].str()) + offset_);
+        return;
+      }
+
+      if (boost::regex_match(str, matches_, reRuIntervals_)) // data is upper bounded
+      {
+        mv.first = missingRUIntervals_;
+        mv.second.push_back(str2type<Type>(matches_[1].str()) + offset_);
+        return;
+      }
     }
 
   private:

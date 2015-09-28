@@ -99,3 +99,29 @@ TEST(MisValParser, missingIntervals)
 
   ASSERT_EQ(vec.second, expected);
 }
+
+TEST(MisValParser, missingLUIntervals)
+{
+  MisValParser<Real> mvp(0);
+  std::string str("[  -inf : 12]");
+  Real val;
+  std::pair<MisType, std::vector<Real> > vec;
+  mvp.parseStr(str, val, vec);
+
+  std::vector<Real> expected {str2type<Real>("12")};
+
+  ASSERT_EQ(vec.second, expected);
+}
+
+TEST(MisValParser, missingRUIntervals)
+{
+  MisValParser<Real> mvp(0);
+  std::string str("[  16: +inf]");
+  Real val;
+  std::pair<MisType, std::vector<Real> > vec;
+  mvp.parseStr(str, val, vec);
+
+  std::vector<Real> expected {str2type<Real>("16")};
+
+  ASSERT_EQ(vec.second, expected);
+}
