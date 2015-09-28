@@ -44,7 +44,7 @@ class RankIndividual
   public:
     /* Each element of the vector is a position in a rank. The MisType describe the type of observation (or lack of)
      * while the Vector<int> describes the possible values, when needed. */
-    typedef std::pair<MisType, Vector<int> > MisVal;
+    typedef std::pair<MisType, std::vector<int> > MisVal;
 
     RankIndividual();
 
@@ -68,6 +68,8 @@ class RankIndividual
 
     template<typename T>
     void setR(const T& data){x_.setR(data);}
+
+    void setObsData(const Vector<MisVal>& v) {obsData_ = v;}
 
     /**
      * Perform one round of Gibbs sampling for the partially observed data

@@ -18,26 +18,29 @@
 /*
  *  Project:    MixtComp
  *  Created on: September 28, 2015
- *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
+#ifndef MIXT_RANKPARSER_H
+#define MIXT_RANKPARSER_H
 
-#include <iostream>
-#include "boost/regex.hpp"
-#include "../src/LinAlg/mixt_LinAlg.h"
-#include "../src/Mixture/Rank/mixt_RankParser.h"
+#include "../LinAlg/mixt_LinAlg.h"
+#include "mixt_RankIndividual.h"
 
-using namespace mixt;
-
-TEST(RankParser, basicTest)
+namespace mixt
 {
-  int nbMod = 4;
 
-  RankParser rp;
-  Vector<std::string> vecStr(3);
-  vecStr << "2 ! 4 ! 3 ! 1", "1 ! 4 ! 2 ! 3", "1 ! 2 ! 3 ! 4";
-  Vector<RankIndividual> vecInd;
+class RankParser
+{
+  public:
+    typedef std::pair<MisType, std::vector<int> > MisVal;
 
-  rp.parseStr(vecStr, nbMod, vecInd);
-}
+    std::string parseStr(const Vector<std::string>& vecStr,
+                         int nbMod,
+                         Vector<RankIndividual>& vecInd) const;
+
+};
+
+} // namespace mixt
+
+#endif // MIXT_RANKPARSER_H
