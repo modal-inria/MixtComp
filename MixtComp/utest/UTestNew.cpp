@@ -85,3 +85,17 @@ TEST(MisValParser, finiteValues)
 
   ASSERT_EQ(vec.second, expected);
 }
+
+TEST(MisValParser, missingIntervals)
+{
+  MisValParser<Real> mvp(0);
+  std::string str("[  9.5 :1.4]");
+  Real val;
+  std::pair<MisType, std::vector<Real> > vec;
+  mvp.parseStr(str, val, vec);
+
+  std::vector<Real> expected {str2type<Real>("9.5"),
+                              str2type<Real>("1.4")};
+
+  ASSERT_EQ(vec.second, expected);
+}

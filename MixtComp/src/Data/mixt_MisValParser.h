@@ -96,6 +96,15 @@ class MisValParser
         }
         return;
       }
+
+      if (boost::regex_match(str, matches_, reIntervals_)) // acceptable values provided by intervals
+      {
+        mv.first = missingIntervals_;
+        mv.second.resize(2);
+        mv.second[0] = str2type<Type>(matches_[1].str()) + offset_;
+        mv.second[1] = str2type<Type>(matches_[2].str()) + offset_;
+        return;
+      }
     }
 
   private:
