@@ -26,23 +26,12 @@
 #include <iostream>
 #include "boost/regex.hpp"
 
-// #include "../src/Data/mixt_MisValParser.h"
+#include "../src/Data/mixt_MisValParser.h"
 #include "../src/IO/mixt_IO.h"
 #include "../src/LinAlg/mixt_LinAlg.h"
 #include "../src/Various/mixt_Def.h"
 
 using namespace mixt;
-
-//TEST(MisValParser, basicTest)
-//{
-//  MisValParser<Real> mvp(0);
-//  std::string str("    .3");
-//  Real res;
-//  std::pair<MisType, std::vector<Real> > dummy;
-//  mvp.parseStr(str, res, dummy);
-//
-//  ASSERT_EQ(res, str2type<Real>("0.3"));
-//}
 
 typedef std::pair<MisType, std::vector<Real> > MisVal;
 
@@ -68,4 +57,15 @@ TEST(regex, basicTest)
   }
 
   ASSERT_EQ(v, str2type<Real>(str));
+}
+
+TEST(MisValParser, basicTest)
+{
+  MisValParser<Real> mvp(0);
+  std::string str("    .3");
+  Real res;
+  std::pair<MisType, std::vector<Real> > dummy;
+  mvp.parseStr(str, res, dummy);
+
+  ASSERT_EQ(res, str2type<Real>("0.3"));
 }
