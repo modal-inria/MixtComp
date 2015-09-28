@@ -17,7 +17,7 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: March 24, 2015
+ *  Created on: September 28, 2015
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
@@ -25,103 +25,5 @@
 
 #include <iostream>
 #include "boost/regex.hpp"
-
-#include "../src/Data/mixt_MisValParser.h"
-#include "../src/IO/mixt_IO.h"
 #include "../src/LinAlg/mixt_LinAlg.h"
-#include "../src/Various/mixt_Def.h"
-
-using namespace mixt;
-
-typedef std::pair<MisType, std::vector<Real> > MisVal;
-
-TEST(regex, basicTest)
-{
-  std::string strNumber_("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
-  std::string strBlank_(" *");
-
-  boost::regex reNumber_(strNumber_);
-  boost::regex reValue_(strBlank_ + // " *(-*[0-9.]+) *"
-                      strNumber_ +
-                      strBlank_);
-
-  Real v;
-  MisVal mv;
-  std::string str("  0.3 ");
-  boost::smatch matches_;
-
-  if (boost::regex_match(str, matches_, reValue_)) // value is present
-  {
-    v = str2type<Real>(matches_[1].str());
-    mv = MisVal(present_, std::vector<Real>());
-  }
-
-  ASSERT_EQ(v, str2type<Real>(str));
-}
-
-TEST(MisValParser, simpleValue)
-{
-  MisValParser<Real> mvp(0);
-  std::string str("    .3");
-  Real val;
-  std::pair<MisType, std::vector<Real> > vec;
-  mvp.parseStr(str, val, vec);
-
-  ASSERT_EQ(val, str2type<Real>("0.3"));
-}
-
-TEST(MisValParser, finiteValues)
-{
-  MisValParser<Real> mvp(0);
-  std::string str("{   .3 2.5 ,30 $  .6}");
-  Real val;
-  std::pair<MisType, std::vector<Real> > vec;
-  mvp.parseStr(str, val, vec);
-
-  std::vector<Real> expected {str2type<Real>("0.3"),
-                              str2type<Real>("2.5"),
-                              str2type<Real>("30."),
-                              str2type<Real>("0.6")};
-
-  ASSERT_EQ(vec.second, expected);
-}
-
-TEST(MisValParser, missingIntervals)
-{
-  MisValParser<Real> mvp(0);
-  std::string str("[  9.5 :1.4]");
-  Real val;
-  std::pair<MisType, std::vector<Real> > vec;
-  mvp.parseStr(str, val, vec);
-
-  std::vector<Real> expected {str2type<Real>("9.5"),
-                              str2type<Real>("1.4")};
-
-  ASSERT_EQ(vec.second, expected);
-}
-
-TEST(MisValParser, missingLUIntervals)
-{
-  MisValParser<Real> mvp(0);
-  std::string str("[  -inf : 12]");
-  Real val;
-  std::pair<MisType, std::vector<Real> > vec;
-  mvp.parseStr(str, val, vec);
-
-  std::vector<Real> expected {str2type<Real>("12")};
-
-  ASSERT_EQ(vec.second, expected);
-}
-
-TEST(MisValParser, missingRUIntervals)
-{
-  MisValParser<Real> mvp(0);
-  std::string str("[  16: +inf]");
-  Real val;
-  std::pair<MisType, std::vector<Real> > vec;
-  mvp.parseStr(str, val, vec);
-
-  std::vector<Real> expected {str2type<Real>("16")};
-
-  ASSERT_EQ(vec.second, expected);
-}
+#include "../src/Data/mixt_MisValParser.h"

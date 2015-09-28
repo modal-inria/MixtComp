@@ -75,8 +75,7 @@ class RankMixture : public IMixture
                             mu_(k),
                             pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
         muParamStat_.emplace_back(mu_(k),
-                                pi_(k),
-                                confidenceLevel);
+                                  confidenceLevel);
       }
     }
 
@@ -120,7 +119,7 @@ class RankMixture : public IMixture
     {
       for (int k = 0; k < nbClass_; ++k)
       {
-        muParamStat_(k).sampleParam(iteration, iterationMax);
+        muParamStat_[k].sampleParam(iteration, iterationMax);
       }
       piParamStat_.sampleParam(iteration, iterationMax);
 
@@ -128,7 +127,7 @@ class RankMixture : public IMixture
       {
         for (int k = 0; k < nbClass_; ++k)
         {
-          muParamStat_(k).setExpectationParam(); // estimate mu parameter using mode / expectation
+          muParamStat_[k].setExpectationParam(); // estimate mu parameter using mode / expectation
         }
         piParamStat_.setExpectationParam(); // estimate pi parameter using mode / expectation
       }
@@ -246,6 +245,8 @@ class RankMixture : public IMixture
      * Individual in rows
      * Classes in columns */
     Matrix<Real> observedProbaHMean_;
+
+    std::vector<RankClass> class_;
 
     /** Vector of map containing observed probability distribution, used in independent sampling estimation.
      * Each element of the vector corresponds to a class */
