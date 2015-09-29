@@ -64,13 +64,7 @@ class RankMixture : public IMixture
         mu_(nbClass),
         pi_(nbClass),
         piParamStat_(pi_,
-                     confidenceLevel),
-        acceptedTypes_({true,   // present_,
-                        false,  // missing_,
-                        false,  // missingFiniteValues_,
-                        false,  // missingIntervals_,
-                        false,  // missingLUIntervals_,
-                        false}) // missingRUIntervals
+                     confidenceLevel)
     {
       class_    .reserve(nbClass);
       muParamStat_.reserve(nbClass);
@@ -83,6 +77,13 @@ class RankMixture : public IMixture
         muParamStat_.emplace_back(mu_(k),
                                   confidenceLevel);
       }
+
+      acceptedType_ << true,   // present_,
+                       false,  // missing_,
+                       false,  // missingFiniteValues_,
+                       false,  // missingIntervals_,
+                       false,  // missingLUIntervals_,
+                       false; // missingRUIntervals
     }
 
     void samplingStepCheck(int ind)
@@ -212,19 +213,43 @@ class RankMixture : public IMixture
 
     std::string setDataParam(RunMode mode)
     {
+      std::string warnLog;
       // setDataParam, rl_.setDim()
       // in prediction: piParamStatComputer_.setParamStorage();
 
-//      checkMissingType(); // check if the missing data provided are compatible with the model
-//      sortAndCheckMissing(); // sort and check for duplicates in missing values descriptions
+      warnLog += checkMissingType();
 
-      return std::string();
+      return warnLog;
     }
 
     void exportDataParam() const
     {}
 
   private:
+    std::string checkMissingType()
+    {
+      std::string warnLog;
+
+      std::list<int> listInd;
+      for (int i = 0; i < nbInd_; ++i)
+      {
+        if (!data_(i).checkMissingType(acceptedType_))
+        {
+          listInd.push_back(i);
+        }
+      }
+
+      if (listInd.size() > 0)
+      {
+        std::stringstream sstm;
+        sstm << "Rank variable " << idName_ << " contains individual described by missing data type not implemented yet. "
+             << "The list of problematic individuals is: " << itString(listInd) << std::endl;
+        warnLog += sstm.str();
+      }
+
+      return warnLog;
+    }
+
     int nbClass_;
 
     /** Number of samples in the data set*/
@@ -268,7 +293,7 @@ class RankMixture : public IMixture
     /** Compute the statistics on pi parameter */
     ConfIntParamStat<Real> piParamStat_;
 
-    std::vector<bool> acceptedTypes_;
+    Vector<bool> acceptedType_;
 };
 
 } // namespace mixt

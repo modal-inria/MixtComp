@@ -144,6 +144,7 @@ class RankIndividual
                        Real pi,
                        std::map<RankVal, Real>& proba);
 
+    bool checkMissingType(const Vector<bool>& acceptedType) const;
   private:
     /** Permute the elements firstElem and firstElem + 1 in y_ */
     void permutationY(int firstElem);

@@ -249,3 +249,57 @@ TEST(RankIndividual, observedProba)
 
     ASSERT_EQ(mu, muEst);
 }
+
+TEST(RankIndividual, checkAcceptedTypeTrue)
+{
+  int nbPos;
+  Vector<std::string> vecStr(1);
+  vecStr << "0, 1, 3, 2";
+
+  Vector<RankIndividual> vecInd;
+
+  RankParser rp;
+
+  std::pair<MisType, std::vector<int> > misVal;
+
+  Vector<bool> acceptedType(nb_enum_MisType_);
+  acceptedType << true,  // present_
+                  false, // missing_
+                  false, // missingFiniteValues_
+                  false, // missingIntervals_
+                  false, // missingLUIntervals_
+                  false; // missingRUIntervals_
+
+  rp.parseStr(vecStr, 0, nbPos, vecInd);
+
+  bool isValid = vecInd(0).checkMissingType(acceptedType);
+
+  ASSERT_EQ(isValid, true);
+}
+
+TEST(RankIndividual, checkAcceptedTypeFalse)
+{
+  int nbPos;
+  Vector<std::string> vecStr(1);
+  vecStr << "{1 3}, [0:2], 3, 2";
+
+  Vector<RankIndividual> vecInd;
+
+  RankParser rp;
+
+  std::pair<MisType, std::vector<int> > misVal;
+
+  Vector<bool> acceptedType(nb_enum_MisType_);
+  acceptedType << true,  // present_
+                  false, // missing_
+                  false, // missingFiniteValues_
+                  false, // missingIntervals_
+                  false, // missingLUIntervals_
+                  false; // missingRUIntervals_
+
+  rp.parseStr(vecStr, 0, nbPos, vecInd);
+
+  bool isValid = vecInd(0).checkMissingType(acceptedType);
+
+  ASSERT_EQ(isValid, false);
+}

@@ -72,19 +72,25 @@ void writeDataCsv(std::string fileName, const Type& data)
 }
 
 /**
- * Print elements of an iterable object
+ * Sequentially output elements of iterable object to a string
  *
  * @param obj object to iterate on
  */
 template<typename Type>
-void itPrint(Type& obj)
+std::string itString(const Type& obj)
 {
-  for (typename Type::const_iterator it = obj.begin();
+  std::stringstream sstm;
+  typename Type::const_iterator it = obj.begin();
+  sstm << " " << *it;
+
+  for (;
        it != obj.end();
        ++it)
   {
-    std::cout << *it << std::endl;
+    sstm << " " << *it;
   }
+
+  return sstm.str();
 }
 
 } // namespace mixt

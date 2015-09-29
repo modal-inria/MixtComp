@@ -367,4 +367,17 @@ void RankIndividual::observedProba(const RankVal& mu,
   }
 }
 
+bool RankIndividual::checkMissingType(const Vector<bool>& acceptedType) const
+{
+  for (int p = 0; p < nbPos_; ++p)
+  {
+    if (acceptedType(obsData_(p).first) == false)
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 } // namespace mixt
