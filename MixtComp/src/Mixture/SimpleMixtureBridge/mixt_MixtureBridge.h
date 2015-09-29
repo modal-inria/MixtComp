@@ -86,7 +86,7 @@ class MixtureBridge : public IMixture
                param_,
                p_zi),
       augData_(),
-      nbSample_(0),
+      nbInd_(0),
       confidenceLevel_(confidenceLevel),
       sampler_(*this,
                augData_,
@@ -113,7 +113,7 @@ class MixtureBridge : public IMixture
       param_(bridge.param_),
       mixture_(bridge.mixture_),
       augData_(bridge.augData_),
-      nbSample_(bridge.nbSample_),
+      nbInd_(bridge.nbInd_),
       confidenceLevel_(bridge.confidenceLevel_),
       sampler_(bridge.sampler_),
       dataStat_(bridge.dataStat_),
@@ -139,7 +139,7 @@ class MixtureBridge : public IMixture
       std::string warnLog;
       p_handler_->getData(idName(),
                           augData_,
-                          nbSample_,
+                          nbInd_,
                           paramStr_,
                           (mixture_.hasModalities()) ? (-minModality) : (0), // minModality offset for categorical models
                           warnLog);
@@ -206,7 +206,7 @@ class MixtureBridge : public IMixture
   #endif
         }
 
-        dataStat_.resizeStatStorage(nbSample_);
+        dataStat_.resizeStatStorage(nbInd_);
       }
 
       return warnLog;
@@ -425,7 +425,7 @@ class MixtureBridge : public IMixture
     std::string paramStr_;
 
     /** number of samples in the data set*/
-    int nbSample_;
+    int nbInd_;
 
     /** confidence level used in computation of parameters and missing values statistics */
     Real confidenceLevel_;

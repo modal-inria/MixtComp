@@ -216,6 +216,13 @@ class RankMixture : public IMixture
       std::string warnLog;
       // setDataParam, rl_.setDim()
       // in prediction: piParamStatComputer_.setParamStorage();
+      Vector<std::string> dataStr;
+
+      p_handler_->getData(idName(),
+                          dataStr,
+                          nbInd_,
+                          paramStr_,
+                          warnLog);
 
       warnLog += checkMissingType();
 
@@ -294,6 +301,8 @@ class RankMixture : public IMixture
     ConfIntParamStat<Real> piParamStat_;
 
     Vector<bool> acceptedType_;
+
+    std::string paramStr_;
 };
 
 } // namespace mixt

@@ -48,7 +48,7 @@ class DataHandlerR
     DataHandlerR(Rcpp::List rList);
 
     /** @return the number of samples (the number of rows of the data) */
-    int nbSample() const {return nbSample_;}
+    int nbSample() const {return nbInd_;}
 
         /** @return the number of variables (the number of columns of the data) */
     int nbVariable() const {return nbVariables_;}
@@ -69,12 +69,20 @@ class DataHandlerR
     template<typename DataType>
     void getData(std::string const& idData,
                  AugmentedData<DataType>& augData,
-                 int& nbSample,
+                 int& nbInd,
                  std::string& param,
                  typename AugmentedData<DataType>::Type offset,
                  std::string& warnLog) const;
+
+    /** Basic version of getData that only retrieve a vector of std::string. The responsability to
+     * parse it is thus handed down to the calling structure. */
+    void getData(std::string const& idData,
+                 Vector<std::string>& dataStr,
+                 int& nbInd,
+                 std::string& param,
+                 std::string& warnLog) const;
   private:
-    int nbSample_;
+    int nbInd_;
 
     int nbVariables_;
 
@@ -94,7 +102,7 @@ class DataHandlerR
 template<typename DataType>
 void DataHandlerR::getData(std::string const& idData,
                            AugmentedData<DataType>& augData,
-                           int& nbSample,
+                           int& nbInd,
                            std::string& param,
                            typename AugmentedData<DataType>::Type offset,
                            std::string& warnLog) const
@@ -107,8 +115,8 @@ void DataHandlerR::getData(std::string const& idData,
   if (dataMap_.find(idData) != dataMap_.end()) // check if the data requested is present in the input data
   {
     int pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
-    nbSample = nbSample_;
-    augData.resizeArrays(nbSample_); // R has already enforced that all data has the same number of rows, and now all mixture are univariate
+    nbInd = nbInd_;
+    augData.resizeArrays(nbInd_); // R has already enforced that all data has the same number of rows, and now all mixture are univariate
 
     Rcpp::List currVar = rList_[pos]; // get current named list
     Rcpp::CharacterVector data = currVar("data");
@@ -117,7 +125,7 @@ void DataHandlerR::getData(std::string const& idData,
     Type val;
     MisVal misVal;
 
-    for (int i = 0; i < nbSample_; ++i)
+    for (int i = 0; i < nbInd_; ++i)
     {
       currStr = data[i];
 

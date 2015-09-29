@@ -31,7 +31,7 @@ namespace mixt
 {
 
 DataHandlerR::DataHandlerR(Rcpp::List rList) :
-    nbSample_(-1),
+    nbInd_(-1),
     nbVariables_(0),
     rList_(rList)
 {}
@@ -76,15 +76,15 @@ std::string DataHandlerR::listData()
     {
       warnLog += std::string("Variable: ") + id + std::string(" has 0 samples.");
     }
-    if (nbSample_ > 0 && nbSample_ != data.size())
+    if (nbInd_ > 0 && nbInd_ != data.size())
     {
       std::stringstream sstm;
       sstm << "Variable: " << id << " has " << data.size() << " individuals, while the previous variable had "
-           << nbSample_ << " individuals. All variables must have the same number of individuals." << std::endl;
+           << nbInd_ << " individuals. All variables must have the same number of individuals." << std::endl;
       warnLog += sstm.str();
     }
 
-    nbSample_ = data.size(); // overwritten, because check has already been performed on the R side
+    nbInd_ = data.size(); // overwritten, because check has already been performed on the R side
     dataMap_[id] = i; // dataMap_[id] created if not already existing
     ++nbVariables_;
 #ifdef MC_DEBUG
@@ -111,5 +111,34 @@ void DataHandlerR::writeDataMap() const
   }
 #endif
 }
+
+void DataHandlerR::getData(std::string const& idData,
+                           Vector<std::string>& dataStr,
+                           int& nbInd,
+                           std::string& param,
+                           std::string& warnLog) const
+{
+  if (dataMap_.find(idData) != dataMap_.end()) // check if the data requested is present in the input data
+  {
+    int pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
+    nbInd = nbInd_;
+    dataStr.resize(nbInd_); // R has already enforced that all data has the same number of rows, and now all mixture are univariate
+
+    Rcpp::List currVar = rList_[pos]; // get current named list
+    Rcpp::CharacterVector data = currVar("data");
+
+    for (int i = 0; i < nbInd_; ++i)
+    {
+      dataStr(i) = data[i];
+    }
+  }
+  else
+  {
+    std::stringstream sstm;
+    sstm << "Data from the variable: " << idData << " has been requested but is absent from the provided data. "
+         << "Please check that all the necessary data is provided." << std::endl;
+    warnLog += sstm.str();
+  }
+  }
 
 } /* namespace mixt */
