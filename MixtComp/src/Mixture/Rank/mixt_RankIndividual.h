@@ -48,11 +48,13 @@ class RankIndividual
 
     RankIndividual();
 
+    RankIndividual(int nbPos);
+
+    RankIndividual(const RankVal& rv);
+
     RankIndividual(const RankIndividual& ri);
 
     RankIndividual& operator=(const RankIndividual& ri);
-
-    RankIndividual(int nbPos);
 
     /** Get the observed x value, for example for debugging purposes */
     const RankVal& x() const {return x_;}
@@ -70,6 +72,8 @@ class RankIndividual
     void setR(const T& data){x_.setR(data);}
 
     void setObsData(const Vector<MisVal>& v) {obsData_ = v;}
+
+    const Vector<MisVal>& obsData() {return obsData_;}
 
     /**
      * Perform one round of Gibbs sampling for the partially observed data

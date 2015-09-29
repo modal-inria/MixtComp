@@ -25,19 +25,9 @@
 
 #include <iostream>
 #include "boost/regex.hpp"
+#include "../src/Data/mixt_MisValParser.h"
 #include "../src/LinAlg/mixt_LinAlg.h"
 #include "../src/Mixture/Rank/mixt_RankParser.h"
 
 using namespace mixt;
 
-TEST(RankParser, basicTest)
-{
-  int nbMod = 4;
-
-  RankParser rp;
-  Vector<std::string> vecStr(3);
-  vecStr << "2 ! 4 ! 3 ! 1", "1 ! 4 ! 2 ! 3", "1 ! 2 ! 3 ! 4";
-  Vector<RankIndividual> vecInd;
-
-  rp.parseStr(vecStr, nbMod, vecInd);
-}

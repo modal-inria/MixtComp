@@ -43,6 +43,7 @@ class MisValParser
     MisValParser(Type offset) :
         offset_(offset),
         strNumber_("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))"),
+        strQMark_("(\\?)"),
         strBlank_(" *"),
         strLeftPar_(" *\\[ *"),
         strRightPar_(" *\\] *"),
@@ -53,6 +54,9 @@ class MisValParser
         reValue_(strBlank_ + // " *(-*[0-9.]+) *"
                  strNumber_ +
                  strBlank_),
+        reMissing_(strBlank_ +
+                   strQMark_ +
+                   strBlank_),
         reFiniteValues_(" *\\{.*\\} *"),
         reIntervals_(strLeftPar_ + // " *\\[ *(-*[0-9.]+) *: *(-*[0-9.]+) *\\] *"
                      strNumber_ +
@@ -71,19 +75,27 @@ class MisValParser
                        strRightPar_)
     {}
 
-    void parseStr(const std::string& str,
+    bool parseStr(const std::string& str,
                   Type& v,
                   MisVal& mv)
     {
       if (boost::regex_match(str, matches_, reValue_)) // value is present
       {
         v = str2type<Type>(matches_[1].str()) + offset_;
-        mv = MisVal(present_, std::vector<Type>());
-        return;
+        mv.first = present_;
+        return true;
+      }
+
+      if (boost::regex_match(str, matches_, reMissing_)) // value is completely missing
+      {
+        v = Type(0);
+        mv.first = missing_; // in all other cases data is considered completely missing
+        return true;
       }
 
       if (boost::regex_match(str, matches_, reFiniteValues_)) // only a finite number of values are acceptable
       {
+        v = Type(0);
         std::string::const_iterator start = str.begin();
         std::string::const_iterator end   = str.end();
         boost::smatch m;
@@ -94,39 +106,46 @@ class MisValParser
           mv.second.push_back(str2type<Type>(m[0].str()) + offset_);
           start = m[0].second;
         }
-        return;
+        return true;
       }
 
       if (boost::regex_match(str, matches_, reIntervals_)) // acceptable values provided by intervals
       {
+        v = Type(0);
         mv.first = missingIntervals_;
         mv.second.resize(2);
         mv.second[0] = str2type<Type>(matches_[1].str()) + offset_;
         mv.second[1] = str2type<Type>(matches_[2].str()) + offset_;
-        return;
+        return true;
       }
 
       if (boost::regex_match(str, matches_, reLuIntervals_)) // data is lower bounded
       {
+        v = Type(0);
         mv.first = missingLUIntervals_;
         mv.second.push_back(str2type<Type>(matches_[1].str()) + offset_);
-        return;
+        return true;
       }
 
       if (boost::regex_match(str, matches_, reRuIntervals_)) // data is upper bounded
       {
+        v = Type(0);
         mv.first = missingRUIntervals_;
         mv.second.push_back(str2type<Type>(matches_[1].str()) + offset_);
-        return;
+        return true;
       }
 
-      mv.first = missing_; // in all other cases data is considered completely missing
+#ifdef MC_DEBUGNEW
+      std::cout << "MisValParser, read error" << std::endl;
+#endif
+      return false;
     }
 
   private:
     Type offset_;
 
     std::string strNumber_;
+    std::string strQMark_;
     std::string strBlank_;
     std::string strLeftPar_;
     std::string strRightPar_;
@@ -136,6 +155,7 @@ class MisValParser
 
     boost::regex reNumber_;
     boost::regex reValue_;
+    boost::regex reMissing_;
     boost::regex reFiniteValues_;
     boost::regex reIntervals_;
     boost::regex reLuIntervals_;

@@ -36,7 +36,8 @@ class RankParser
     typedef std::pair<MisType, std::vector<int> > MisVal;
 
     std::string parseStr(const Vector<std::string>& vecStr,
-                         int nbMod,
+                         int minMod,
+                         int& nbMod,
                          Vector<RankIndividual>& vecInd) const;
 
 };

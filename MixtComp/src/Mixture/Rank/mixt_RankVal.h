@@ -53,7 +53,7 @@ class RankVal
 
     void setNbPos(int nbPos);
 
-    int getNbPos() const {return nbPos_;}
+    int nbPos() const {return nbPos_;}
 
     /** Note that no check is performed on sizes to increase speed */
     template<typename T>

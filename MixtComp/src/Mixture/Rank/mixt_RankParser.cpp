@@ -28,46 +28,64 @@
 namespace mixt
 {
 std::string RankParser::parseStr(const Vector<std::string>& vecStr,
-                                 int nbMod,
+                                 int minMod,
+                                 int& nbMod,
                                  Vector<RankIndividual>& vecInd) const
 {
   int nbInd = vecStr.size();
   std::string warnLog;
 
   vecInd.resize(nbInd);
+
+  MisValParser<int> mvp(-minMod);
+
+  std::vector<std::string> strs;
+  boost::split(strs,
+               vecStr(0),
+               boost::is_any_of(rankPosSep));
+  nbMod = strs.size(); // number of modalities is deduced from the first individual and is not expected to vary from then on
+
+  Vector<int> o(nbMod);
+  Vector<MisVal> obsData(nbMod);
+
   for (int i = 0; i < nbInd; ++i)
   {
     vecInd(i).setNbPos(nbMod);
   }
 
-  MisValParser<int> mvp(-minModality);
-
-  std::vector<std::string> strs(nbMod);
-  Vector<int> o(nbMod);
-  Vector<MisVal> obsData(nbMod);
-
   for (int i = 0, iE = vecStr.size(); i < iE; ++i)
   {
     boost::split(strs,
                  vecStr(i),
-                 boost::is_any_of("!"));
+                 boost::is_any_of(rankPosSep));
 
     if (strs.size() != nbMod)
     {
       std::stringstream sstm;
-      sstm << "Individual i: " << i << " has less than " << nbMod << " modalities. Please check that all individuals in this Rank variable all have " << nbMod << " modalities." << std::endl;
+      sstm << "Individual i: " << i << " has " << strs.size() << " modalities, which is less than the previous individuals. They had "
+           << nbMod << " modalities. Please check that all individuals in this Rank variable all have the same number of modalities." << std::endl;
       warnLog += sstm.str();
-      break;
+      return warnLog;
     }
 
     for(int m = 0; m < nbMod; ++m)
     {
-      mvp.parseStr(strs[m],
-                   o(m),
-                   obsData(m));
+      bool isValid = mvp.parseStr(strs[m],
+                                  o(m),
+                                  obsData(m));
+
+      if (!isValid)
+      {
+        std::stringstream sstm;
+        sstm << "Individual i: " << i << " present an error. "
+             << strs[m] << " is not recognized as a valid format for a Rank position." << std::endl;
+        warnLog += sstm.str();
+        return warnLog;
+      }
     }
 
     vecInd(i).setO(o);
+
     vecInd(i).setObsData(obsData);
   }
 

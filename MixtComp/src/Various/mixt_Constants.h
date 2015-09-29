@@ -52,6 +52,8 @@ extern const Real piThreshold; //threashold on pi to detect degeneracy
 extern const int nbGibbsIterRank; // number of iterations in the Gibbs used in the estimation of mu
 
 extern const int nbSampleObserved; // number of sample per class to estimate the observed probability, for example in Ordinal or Rank data
+
+extern const std::string rankPosSep; // separator used in Rank positions
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

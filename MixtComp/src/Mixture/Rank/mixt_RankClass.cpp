@@ -30,7 +30,7 @@ RankClass::RankClass(const Vector<RankIndividual>& data,
                      RankVal& mu,
                      Real& pi) :
     nbInd_(data.size()),
-    nbPos_(mu.getNbPos()),
+    nbPos_(mu.nbPos()),
     data_(data),
     setInd_(setInd),
     mu_(mu),

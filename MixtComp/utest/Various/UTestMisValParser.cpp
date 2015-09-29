@@ -26,10 +26,10 @@
 #include <iostream>
 #include "boost/regex.hpp"
 
-#include "../src/Data/mixt_MisValParser.h"
-#include "../src/IO/mixt_IO.h"
-#include "../src/LinAlg/mixt_LinAlg.h"
-#include "../src/Various/mixt_Def.h"
+#include "../../src/Data/mixt_MisValParser.h"
+#include "../../src/IO/mixt_IO.h"
+#include "../../src/LinAlg/mixt_LinAlg.h"
+#include "../../src/Various/mixt_Def.h"
 
 using namespace mixt;
 
@@ -59,6 +59,27 @@ TEST(regex, basicTest)
   ASSERT_EQ(v, str2type<Real>(str));
 }
 
+TEST(regex, missingTest)
+{
+  std::string strQMark_("(\\?)");
+  std::string strBlank_(" *");
+
+  boost::regex reMissing_(strBlank_ +
+                          strQMark_ +
+                          strBlank_);
+
+  std::string inStr("  ? ");
+  std::string outStr;
+  boost::smatch matches_;
+
+  if (boost::regex_match(inStr, matches_, reMissing_)) // missing is present
+  {
+    outStr = matches_[1].str();
+  }
+
+  ASSERT_EQ(outStr, "?");
+}
+
 TEST(MisValParser, simpleValue)
 {
   MisValParser<Real> mvp(0);
@@ -68,6 +89,17 @@ TEST(MisValParser, simpleValue)
   mvp.parseStr(str, val, vec);
 
   ASSERT_EQ(val, str2type<Real>("0.3"));
+}
+
+TEST(MisValParser, missing)
+{
+  MisValParser<Real> mvp(0);
+  std::string str("?   ");
+  Real val;
+  std::pair<MisType, std::vector<Real> > misVal;
+  mvp.parseStr(str, val, misVal);
+
+  ASSERT_EQ(misVal.first, missing_);
 }
 
 TEST(MisValParser, finiteValues)

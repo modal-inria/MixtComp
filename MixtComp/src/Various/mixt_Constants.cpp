@@ -51,4 +51,6 @@ const Real piThreshold = 0.05;
 const int nbGibbsIterRank = 50;
 
 const int nbSampleObserved = 200000;
+
+const std::string rankPosSep = ",";
 } // namespace mixt

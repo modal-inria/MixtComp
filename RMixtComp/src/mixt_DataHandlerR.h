@@ -121,19 +121,29 @@ void DataHandlerR::getData(std::string const& idData,
     {
       currStr = data[i];
 
-      mvp.parseStr(currStr,
-                   val,
-                   misVal);
+      bool isValid = mvp.parseStr(currStr,
+                                  val,
+                                  misVal);
 
-      if (misVal.first == present_)
+      if (isValid)
       {
-        augData.setPresent(i, val);
-        continue;
+        if (misVal.first == present_)
+        {
+          augData.setPresent(i, val);
+          continue;
+        }
+        else
+        {
+          augData.setMissing(i, misVal);
+          continue;
+        }
       }
       else
       {
-        augData.setMissing(i, misVal);
-        continue;
+        std::stringstream sstm;
+        sstm << "In " << idData << "individual i: " << i << " present an error. "
+             << currStr << " is not recognized as a valid format." << std::endl;
+        warnLog += sstm.str();
       }
     }
   }

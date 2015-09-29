@@ -33,6 +33,26 @@ RankIndividual::RankIndividual() :
   lnFacNbPos_(0)
 {}
 
+RankIndividual::RankIndividual(int nbPos) :
+    nbPos_(nbPos),
+    lnFacNbPos_(- std::log(fac(nbPos))),
+    x_(nbPos)
+{
+  obsData_.resize(nbPos);
+  y_.resize(nbPos);
+  std::iota(y_.begin(), y_.end(), 0); // presentation order initialized, ready to be shuffled by removeMissing
+}
+
+RankIndividual::RankIndividual(const RankVal& rv) :
+    nbPos_(rv.nbPos()),
+    lnFacNbPos_(- std::log(fac(nbPos_))),
+    x_(rv)
+{
+  obsData_.resize(nbPos_);
+  y_.resize(nbPos_);
+  std::iota(y_.begin(), y_.end(), 0); // presentation order initialized, ready to be shuffled by removeMissing
+}
+
 RankIndividual::RankIndividual(const RankIndividual& ri) :
   nbPos_(ri.nbPos_),
   lnFacNbPos_(ri.lnFacNbPos_),
@@ -51,16 +71,6 @@ RankIndividual& RankIndividual::operator=(const RankIndividual& ri)
 
   return *this;
 } // note that the state of multi_ is not copied and a new rng is created
-
-RankIndividual::RankIndividual(int nbPos) :
-    nbPos_(nbPos),
-    lnFacNbPos_(- std::log(fac(nbPos))),
-    x_(nbPos)
-{
-  obsData_.resize(nbPos);
-  y_.resize(nbPos);
-  std::iota(y_.begin(), y_.end(), 0); // presentation order initialized, ready to be shuffled by removeMissing
-}
 
 void RankIndividual::setNbPos(int nbPos)
 {
