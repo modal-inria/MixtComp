@@ -129,7 +129,6 @@ class Ordinal : public IMixture
       augData_.computeRange();
 
       std::string tempLog  = augData_.checkMissingType(acceptedType()); // check if the missing data provided are compatible with the model
-                  tempLog += augData_.sortAndCheckMissing(); // sort and check for duplicates in missing values descriptions
 
       if(tempLog.size() > 0) // check on the missing values description
       {

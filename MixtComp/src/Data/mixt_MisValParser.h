@@ -99,24 +99,45 @@ class MisValParser
         std::string::const_iterator start = str.begin();
         std::string::const_iterator end   = str.end();
         boost::smatch m;
-        MisVal misVal;
-        misVal.first = missingFiniteValues_;
+
+        std::set<int> setVal;
         while (boost::regex_search(start, end, m, reNumber_))
         {
-          mv.second.push_back(str2type<Type>(m[0].str()) + offset_);
+          setVal.insert(str2type<Type>(m[0].str()) + offset_);
           start = m[0].second;
         }
+
+        mv.first = missingFiniteValues_;
+        for (std::set<int>::const_iterator it = setVal.begin(), itEnd = setVal.end(); it != itEnd; ++it)
+        {
+          mv.second.push_back(*it);
+        }
+
         return true;
       }
 
       if (boost::regex_match(str, matches_, reIntervals_)) // acceptable values provided by intervals
       {
         v = Type(0);
-        mv.first = missingIntervals_;
-        mv.second.resize(2);
-        mv.second[0] = str2type<Type>(matches_[1].str()) + offset_;
-        mv.second[1] = str2type<Type>(matches_[2].str()) + offset_;
-        return true;
+
+        std::set<int> setVal;
+        setVal.insert(str2type<Type>(matches_[1].str()) + offset_);
+        setVal.insert(str2type<Type>(matches_[2].str()) + offset_);
+
+        if (setVal.size() == 2)
+        {
+          mv.first = missingIntervals_;
+          mv.second.reserve(2);
+          for (std::set<int>::const_iterator it = setVal.begin(), itEnd = setVal.end(); it != itEnd; ++it)
+          {
+            mv.second.push_back(*it);
+          }
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       }
 
       if (boost::regex_match(str, matches_, reLuIntervals_)) // data is lower bounded

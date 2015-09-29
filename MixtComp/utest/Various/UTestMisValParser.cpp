@@ -42,8 +42,8 @@ TEST(regex, basicTest)
 
   boost::regex reNumber_(strNumber_);
   boost::regex reValue_(strBlank_ + // " *(-*[0-9.]+) *"
-                      strNumber_ +
-                      strBlank_);
+                        strNumber_ +
+                        strBlank_);
 
   Real v;
   MisVal mv;
@@ -156,4 +156,39 @@ TEST(MisValParser, missingRUIntervals)
   std::vector<Real> expected {str2type<Real>("16")};
 
   ASSERT_EQ(vec.second, expected);
+}
+
+TEST(MisValParser, repetedValues0)
+{
+  MisValParser<int> mvp(0);
+  std::string str("[  16: 17   ]");
+  int val;
+  std::pair<MisType, std::vector<int> > misVal;
+  bool isValid = mvp.parseStr(str, val, misVal);
+
+  ASSERT_EQ(isValid, true);
+}
+
+TEST(MisValParser, repetedValues1)
+{
+  MisValParser<int> mvp(0);
+  std::string str("[  16: 16   ]");
+  int val;
+  std::pair<MisType, std::vector<int> > misVal;
+  bool isValid = mvp.parseStr(str, val, misVal);
+
+  ASSERT_EQ(isValid, false);
+}
+
+TEST(MisValParser, sortedValues)
+{
+  MisValParser<int> mvp(0);
+  std::string str("[  18: 16   ]");
+  int val;
+  std::pair<MisType, std::vector<int> > misVal;
+  mvp.parseStr(str, val, misVal);
+
+  std::vector<int> expected({16, 18});
+
+  ASSERT_EQ(misVal.second, expected);
 }

@@ -240,39 +240,6 @@ class AugmentedData
     /** Remove the missing values by uniform samplings */
     void removeMissing();
 
-    /**
-     * In-place sort every descriptor of missing values, and check for duplicates, which are currently forbidden
-     * @return Description of the eventual error, otherwise empty string
-    */
-    std::string sortAndCheckMissing()
-    {
-      std::string warnLog;
-
-      for (int i = 0; i < nbSample_; ++i)
-      {
-        std::vector<Type>& currVec = misData_(i).second;
-        if (currVec.size() > 1)
-        {
-          std::sort(currVec.begin(),
-                    currVec.end());
-          for (unsigned int v = 0; v < currVec.size() - 1; ++ v)
-          {
-            if (currVec[v] == currVec[v + 1])
-            {
-              std::stringstream sstm;
-              sstm << "Individual " << i
-                   << " has duplicate value "
-                   << currVec[v]
-                   << " in its missing value description. This is never necessary and forbidden." << std::endl;
-              warnLog += sstm.str();
-            }
-          }
-        }
-      }
-
-      return warnLog;
-    }
-
     /** two dimensional data table, for example a Matrix<Real> */
     DataType data_;
 

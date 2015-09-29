@@ -145,7 +145,6 @@ class MixtureBridge : public IMixture
                           warnLog);
       augData_.computeRange();
       std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
-                  tempLog += augData_.sortAndCheckMissing(); // sort and check for duplicates in missing values descriptions
       if(tempLog.size() > 0) // check on the missing values description
       {
         std::stringstream sstm;

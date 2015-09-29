@@ -64,7 +64,13 @@ class RankMixture : public IMixture
         mu_(nbClass),
         pi_(nbClass),
         piParamStat_(pi_,
-                     confidenceLevel)
+                     confidenceLevel),
+        acceptedTypes_({true,   // present_,
+                        false,  // missing_,
+                        false,  // missingFiniteValues_,
+                        false,  // missingIntervals_,
+                        false,  // missingLUIntervals_,
+                        false}) // missingRUIntervals
     {
       class_    .reserve(nbClass);
       muParamStat_.reserve(nbClass);
@@ -208,6 +214,10 @@ class RankMixture : public IMixture
     {
       // setDataParam, rl_.setDim()
       // in prediction: piParamStatComputer_.setParamStorage();
+
+//      checkMissingType(); // check if the missing data provided are compatible with the model
+//      sortAndCheckMissing(); // sort and check for duplicates in missing values descriptions
+
       return std::string();
     }
 
@@ -257,6 +267,8 @@ class RankMixture : public IMixture
 
     /** Compute the statistics on pi parameter */
     ConfIntParamStat<Real> piParamStat_;
+
+    std::vector<bool> acceptedTypes_;
 };
 
 } // namespace mixt

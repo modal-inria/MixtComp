@@ -39,7 +39,6 @@ TEST(RankParamStat, computeStat)
   int nbIterburnIn = 500;
   int nbIterRun = 500;
   Real confidenceLevel = 0.95;
-  Real tolerance = 0.05;
 
   MultinomialStatistic multi;
   UniformStatistic uni;
