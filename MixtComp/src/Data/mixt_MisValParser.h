@@ -156,9 +156,6 @@ class MisValParser
         return true;
       }
 
-#ifdef MC_DEBUGNEW
-      std::cout << "MisValParser, read error" << std::endl;
-#endif
       return false;
     }
 

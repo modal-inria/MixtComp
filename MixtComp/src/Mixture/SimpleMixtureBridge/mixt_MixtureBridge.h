@@ -215,13 +215,13 @@ class MixtureBridge : public IMixture
     virtual void samplingStepCheck(int ind)
     {
       sampler_.samplingStepCheck(ind,
-                                (*p_zi())(ind));
+                                (*p_zi_)(ind));
     }
 
     virtual void samplingStepNoCheck(int ind)
     {
       sampler_.samplingStepNoCheck(ind,
-                                (*p_zi())(ind));
+                                (*p_zi_)(ind));
     }
 
     /**
@@ -373,11 +373,6 @@ class MixtureBridge : public IMixture
                                      mixture_.paramNames(),
                                      confidenceLevel_);
     }
-
-    /** This function can be used in derived classes to get class labels from the framework.
-     *  @return Pointer to zi.
-     */
-    Vector<int> const* p_zi() const {return p_zi_;}
 
     void removeMissing() {augData_.removeMissing();}
 

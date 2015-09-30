@@ -118,11 +118,11 @@ class RankMixture : public IMixture
     }
 
     void storeSEMBurnIn(int iteration,
-                                int iterationMax)
+                        int iterationMax)
     {}
 
     void storeSEMRun(int iteration,
-                             int iterationMax)
+                     int iterationMax)
     {
       for (int k = 0; k < nbClass_; ++k)
       {

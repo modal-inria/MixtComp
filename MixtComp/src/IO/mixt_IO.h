@@ -80,11 +80,14 @@ template<typename Type>
 std::string itString(const Type& obj)
 {
   std::stringstream sstm;
-  typename Type::const_iterator it = obj.begin();
-  sstm << " " << *it;
+  typename Type::const_iterator it    = obj.begin();
+  typename Type::const_iterator itEnd = obj.end();
+
+  sstm << *it;
+  ++it;
 
   for (;
-       it != obj.end();
+       it != itEnd;
        ++it)
   {
     sstm << " " << *it;
