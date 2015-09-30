@@ -35,30 +35,6 @@ using namespace mixt;
 
 typedef std::pair<MisType, std::vector<Real> > MisVal;
 
-TEST(regex, basicTest)
-{
-  std::string strNumber_("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
-  std::string strBlank_(" *");
-
-  boost::regex reNumber_(strNumber_);
-  boost::regex reValue_(strBlank_ + // " *(-*[0-9.]+) *"
-                        strNumber_ +
-                        strBlank_);
-
-  Real v;
-  MisVal mv;
-  std::string str("  0.3 ");
-  boost::smatch matches_;
-
-  if (boost::regex_match(str, matches_, reValue_)) // value is present
-  {
-    v = str2type<Real>(matches_[1].str());
-    mv = MisVal(present_, std::vector<Real>());
-  }
-
-  ASSERT_EQ(v, str2type<Real>(str));
-}
-
 TEST(regex, missingTest)
 {
   std::string strQMark_("(\\?)");
@@ -191,4 +167,15 @@ TEST(MisValParser, sortedValues)
   std::vector<int> expected({16, 18});
 
   ASSERT_EQ(misVal.second, expected);
+}
+
+TEST(MisValParser, simpleValueEng)
+{
+  MisValParser<Real> mvp(0);
+  std::string str("    8.40405864500071e-05 ");
+  Real val;
+  std::pair<MisType, std::vector<Real> > vec;
+  mvp.parseStr(str, val, vec);
+
+  ASSERT_EQ(val, str2type<Real>("8.40405864500071e-05"));
 }

@@ -219,6 +219,9 @@ int Categorical_pjk::checkSampleCondition(std::string* warnLog) const
 
   for (int i = 0; i < p_data_->rows(); ++i)
   {
+#ifdef MC_DEBUG
+    std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << std::endl;
+#endif
     modality((*p_zi_)(i), (*p_data_)(i)) += 1;
   }
 

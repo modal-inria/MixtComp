@@ -112,7 +112,7 @@ std::ostream& operator<<(std::ostream& os, const RankVal& rv)
   os << rv.ordering_(0);
   for (int i = 1, size = rv.ordering_.size(); i < size; ++i)
   {
-    os << " " << rv.ordering_(i);
+    os << "," << rv.ordering_(i);
   }
   return os;
 }

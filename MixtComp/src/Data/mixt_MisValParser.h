@@ -40,9 +40,10 @@ class MisValParser
     /** Missing value descriptor: type of missing, and list of parameters */
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
+    /** Note that https://regex101.com/ REALLY helps settings those regular expressions. */
     MisValParser(Type offset) :
         offset_(offset),
-        strNumber_("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))"),
+        strNumber_("((?:(?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))(?:e-\\d+)?)"),
         strQMark_("(\\?)"),
         strBlank_(" *"),
         strLeftPar_(" *\\[ *"),

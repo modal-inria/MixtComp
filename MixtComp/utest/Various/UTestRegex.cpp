@@ -25,47 +25,54 @@
 
 #include <regex>
 
-//// definitions of regular expressions to capture / reject numbers
-//std::string strNumber("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
-//std::string strBlank(" *");
-//std::string strLeftPar(" *\\[ *");
-//std::string strRightPar(" *\\] *");
-//std::string centralColon(" *: *");
-//std::string minusInf("-inf");
-//std::string plusInf("\\+inf");
-//
-//std::regex reNumber(strNumber);
-//std::regex reValue(strBlank + // " *(-*[0-9.]+) *"
-//                   strNumber +
-//                   strBlank);
-//std::regex reFiniteValues(" *\\{.*\\} *");
-//std::regex reIntervals(strLeftPar + // " *\\[ *(-*[0-9.]+) *: *(-*[0-9.]+) *\\] *"
-//                       strNumber +
-//                       centralColon +
-//                       strNumber +
-//                       strRightPar);
-//std::regex reLuIntervals(strLeftPar +  // " *\\[ *-inf *: *(-*[0-9.]+) *\\] *"
-//                         minusInf +
-//                         centralColon +
-//                         strNumber +
-//                         strRightPar);
-//std::regex reRuIntervals(strLeftPar + // " *\\[ *(-*[0-9.]+) *: *\\+inf *\\] *"
-//                         strNumber +
-//                         centralColon +
-//                         plusInf +
-//                         strRightPar);
-//
-//TEST(Regex, )
-//{
-//
-//std::string testStr = "   45  ";
-//std::smatch matches;
-//
-//if (std::regex_match(testStr, matches, reValue)) // value is present
-//{
-//#ifdef MC_DEBUG
-//  std::cout << matches[1].str() << std::endl;
-//#endif
-////}
-//
-//}
+TEST(regex, basicTest)
+{
+  std::string strNumber_("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
+  std::string strBlank_(" *");
+
+  boost::regex reNumber_(strNumber_);
+  boost::regex reValue_(strBlank_ + // " *(-*[0-9.]+) *"
+                        strNumber_ +
+                        strBlank_);
+
+  Real v;
+  MisVal mv;
+  std::string str("  0.3 ");
+  boost::smatch matches_;
+
+  if (boost::regex_match(str, matches_, reValue_)) // value is present
+  {
+    v = str2type<Real>(matches_[1].str());
+    mv = MisVal(present_, std::vector<Real>());
+  }
+
+  ASSERT_EQ(v, str2type<Real>(str));
+}
+
+TEST(regex, testEng)
+{
+  /** Missing value descriptor: type of missing, and list of parameters */
+  typedef typename std::pair<MisType, std::vector<Real> > MisVal;
+
+  std::string strNumber_("((?:(?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))(?:e-\\d+)?)");
+
+  std::string strBlank_(" *");
+
+  boost::regex reNumber_(strNumber_);
+  boost::regex reValue_(strBlank_ + // " *(-*[0-9.]+) *"
+                        strNumber_ +
+                        strBlank_);
+
+  Real v;
+  MisVal mv;
+  std::string str("  0.3e-5 ");
+  boost::smatch matches_;
+
+  if (boost::regex_match(str, matches_, reValue_)) // value is present
+  {
+    v = str2type<Real>(matches_[1].str());
+    mv = MisVal(present_, std::vector<Real>());
+  }
+
+  ASSERT_EQ(v, str2type<Real>(str));
+}
