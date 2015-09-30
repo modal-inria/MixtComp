@@ -79,6 +79,11 @@ void writeDataCsv(std::string fileName, const Type& data)
 template<typename Type>
 std::string itString(const Type& obj)
 {
+  if (obj.size() == 0)
+  {
+    return std::string();
+  }
+
   std::stringstream sstm;
   typename Type::const_iterator it    = obj.begin();
   typename Type::const_iterator itEnd = obj.end();

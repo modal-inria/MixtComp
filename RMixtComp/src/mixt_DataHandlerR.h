@@ -104,6 +104,9 @@ std::string DataHandlerR::getData(std::string const& idData,
                                   std::string& param,
                                   typename AugmentedData<DataType>::Type offset) const
 {
+#ifdef MC_DEBUG
+          std::cout << "DataHandlerR::getData, idData: " << idData << std::endl;
+#endif
   std::string warnLog;
   typedef typename AugmentedData<DataType>::Type Type;
   typedef typename AugmentedData<Matrix<Type> >::MisVal MisVal;
@@ -119,27 +122,34 @@ std::string DataHandlerR::getData(std::string const& idData,
     Rcpp::List currVar = rList_[pos]; // get current named list
     Rcpp::CharacterVector data = currVar("data");
 
-    std::string currStr;
-    Type val;
-    MisVal misVal;
-
     for (int i = 0; i < nbInd_; ++i)
     {
+      std::string currStr;
+      Type val;
+      MisVal misVal;
+
       currStr = data[i];
 
       bool isValid = mvp.parseStr(currStr,
                                   val,
                                   misVal);
-
       if (isValid)
       {
         if (misVal.first == present_)
         {
+#ifdef MC_DEBUG
+          std::cout << "idData: " << idData << ", i: " << i << ", val: " << val << ", misVal: " << itString(misVal.second)
+                    << ", present "<< std::endl;
+#endif
           augData.setPresent(i, val);
           continue;
         }
         else
         {
+#ifdef MC_DEBUG
+          std::cout << "idData: " << idData << ", i: " << i << ", val: " << val << ", misVal: " << itString(misVal.second)
+                    << ", missing "<< std::endl;
+#endif
           augData.setMissing(i, misVal);
           continue;
         }
