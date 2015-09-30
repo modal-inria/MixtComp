@@ -31,26 +31,3 @@
 
 using namespace mixt;
 
-TEST(RankParser, minMaxDetection)
-{
-  int nbPos;
-  Vector<std::string> vecStr(1);
-  vecStr << "{22 -8 1 2 3}, -1, 3, 38, 2";
-
-  Vector<RankIndividual> vecInd;
-
-  RankParser rp;
-
-  std::pair<MisType, std::vector<int> > misVal;
-
-  std::string resStr = rp.parseStr(vecStr,
-                                   1, // min modality
-                                   nbPos,
-                                   vecInd);
-
-#ifdef MC_DEBUG
-  std::cout << resStr << std::endl;
-#endif
-
-  ASSERT_GT(resStr.size(), 0);
-}

@@ -249,12 +249,11 @@ class MixtureComposer
       }
       else // z_class was provided and its value is acquired in zi_
       {
-        dataHandler.getData("z_class", // reserved name for the class
-                            zi_,
-                            nbInd_,
-                            dummyParam,
-                            -minModality, // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
-                            warnLog);
+        warnLog += dataHandler.getData("z_class", // reserved name for the class
+                                       zi_,
+                                       nbInd_,
+                                       dummyParam,
+                                       -minModality); // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
       }
 
       Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures

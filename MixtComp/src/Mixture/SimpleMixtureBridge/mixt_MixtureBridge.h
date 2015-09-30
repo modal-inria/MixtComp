@@ -137,12 +137,12 @@ class MixtureBridge : public IMixture
       std::cout << "MixtureBridge::setDataParam(), " << idName() << ", " << mixture_.model() << std::endl;
 #endif
       std::string warnLog;
-      p_handler_->getData(idName(),
-                          augData_,
-                          nbInd_,
-                          paramStr_,
-                          (mixture_.hasModalities()) ? (-minModality) : (0), // minModality offset for categorical models
-                          warnLog);
+      warnLog += p_handler_->getData(idName(),
+                                     augData_,
+                                     nbInd_,
+                                     paramStr_,
+                                     (mixture_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
+
       augData_.computeRange();
       std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
       if(tempLog.size() > 0) // check on the missing values description
@@ -187,7 +187,7 @@ class MixtureBridge : public IMixture
           if (mixture_.checkMaxVal() && mixture_.maxVal() < augData_.dataRange_.max_)
           {
             std::stringstream sstm;
-            sstm << "Variable: " << idName() << " requires a maximum value of " << ((mixture_.hasModalities()) ? (minModality) : (0)) + mixture_.maxVal()
+            sstm << "Variable: " << idName_ << " requires a maximum value of " << ((mixture_.hasModalities()) ? (minModality) : (0)) + mixture_.maxVal()
                  << " for the data during prediction. This maximum value usually corresponds to the maximum value used during the learning phase."
                  << " The maximum value in the data provided for prediction is : " << ((mixture_.hasModalities()) ? (minModality) : (0)) + augData_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();

@@ -120,12 +120,12 @@ class Ordinal : public IMixture
 
       std::string warnLog;
 
-      p_handler_->getData(idName(),
-                          augData_,
-                          nbInd_,
-                          paramStr_,
-                          -minModality, // ordinal data are modalities, offset enforces 0-based encoding through the whole mixture
-                          warnLog);
+      warnLog += p_handler_->getData(idName(),
+                                     augData_,
+                                     nbInd_,
+                                     paramStr_,
+                                     -minModality); // ordinal data are modalities, offset enforces 0-based encoding through the whole mixture
+
       augData_.computeRange();
 
       std::string tempLog  = augData_.checkMissingType(acceptedType()); // check if the missing data provided are compatible with the model

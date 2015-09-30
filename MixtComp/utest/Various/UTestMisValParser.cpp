@@ -111,9 +111,9 @@ TEST(MisValParser, finiteValues)
   mvp.parseStr(str, val, vec);
 
   std::vector<Real> expected {str2type<Real>("0.3"),
+                              str2type<Real>("0.6"),
                               str2type<Real>("2.5"),
-                              str2type<Real>("30."),
-                              str2type<Real>("0.6")};
+                              str2type<Real>("30.")};
 
   ASSERT_EQ(vec.second, expected);
 }
@@ -126,8 +126,8 @@ TEST(MisValParser, missingIntervals)
   std::pair<MisType, std::vector<Real> > vec;
   mvp.parseStr(str, val, vec);
 
-  std::vector<Real> expected {str2type<Real>("9.5"),
-                              str2type<Real>("1.4")};
+  std::vector<Real> expected {str2type<Real>("1.4"),
+                              str2type<Real>("9.5")};
 
   ASSERT_EQ(vec.second, expected);
 }

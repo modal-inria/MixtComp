@@ -35,7 +35,7 @@ template <typename Type>
 Type str2type(std::string s)
 {
   std::istringstream i(s);
-  double x;
+  Type x;
   i >> x;
   return x;
 }

@@ -27,6 +27,7 @@
 #include "mixt_RankClass.h"
 #include "mixt_RankLikelihood.h"
 #include "mixt_RankParamStat.h"
+#include "mixt_RankParser.h"
 
 namespace mixt
 {
@@ -144,7 +145,7 @@ class RankMixture : public IMixture
                        int iteration,
                        int iterationMax)
     {
-      rl_.observe(i,
+      rankLikelihood_.observe(i,
                   (*p_zi_)(i),
                   facNbMod_ * lnCompletedProbability(i,
                                                      (*p_zi_)(i)));
@@ -218,13 +219,29 @@ class RankMixture : public IMixture
       // in prediction: piParamStatComputer_.setParamStorage();
       Vector<std::string> dataStr;
 
-      p_handler_->getData(idName(),
-                          dataStr,
-                          nbInd_,
-                          paramStr_,
-                          warnLog);
+      warnLog += p_handler_->getData(idName(),
+                                     dataStr,
+                                     nbInd_,
+                                     paramStr_);
+
+      warnLog += rankParser_.parseStr(dataStr,
+                                      minModality,
+                                      nbMod_,
+                                      data_);
 
       warnLog += checkMissingType();
+
+      if (warnLog.size() > 0)
+      {
+        return warnLog;
+      }
+
+      if (mode == prediction_) // prediction mode
+      {
+        std::stringstream sstm;
+        sstm << "Variable: " << idName_ << " is modeled using Rank, which does does not yet support prediction." << std::endl;
+        warnLog += sstm.str();
+      }
 
       return warnLog;
     }
@@ -280,7 +297,10 @@ class RankMixture : public IMixture
     Vector<RankIndividual> data_;
 
     /** RankLikelihood object, used to for the harmonic mean estimation of the observed likelihood. */
-    RankLikelihood rl_;
+    RankLikelihood rankLikelihood_;
+
+    /** RankParser object, used to transform pitiful Vector<std::string> to glorious Vector<RankIndividual> */
+    RankParser rankParser_;
 
     /** Matrix containing observed log probability distribution, used in harmonic mean estimation
      * of the observed probability

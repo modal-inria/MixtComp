@@ -100,7 +100,7 @@ class MisValParser
         std::string::const_iterator end   = str.end();
         boost::smatch m;
 
-        std::set<int> setVal;
+        std::set<Type> setVal;
         while (boost::regex_search(start, end, m, reNumber_))
         {
           setVal.insert(str2type<Type>(m[0].str()) + offset_);
@@ -108,7 +108,10 @@ class MisValParser
         }
 
         mv.first = missingFiniteValues_;
-        for (std::set<int>::const_iterator it = setVal.begin(), itEnd = setVal.end(); it != itEnd; ++it)
+        for (typename std::set<Type>::const_iterator it    = setVal.begin(),
+                                                     itEnd = setVal.end();
+             it != itEnd;
+             ++it)
         {
           mv.second.push_back(*it);
         }
@@ -120,7 +123,7 @@ class MisValParser
       {
         v = Type(0);
 
-        std::set<int> setVal;
+        std::set<Type> setVal;
         setVal.insert(str2type<Type>(matches_[1].str()) + offset_);
         setVal.insert(str2type<Type>(matches_[2].str()) + offset_);
 
@@ -128,7 +131,10 @@ class MisValParser
         {
           mv.first = missingIntervals_;
           mv.second.reserve(2);
-          for (std::set<int>::const_iterator it = setVal.begin(), itEnd = setVal.end(); it != itEnd; ++it)
+          for (typename std::set<Type>::const_iterator it    = setVal.begin(),
+                                                       itEnd = setVal.end();
+               it != itEnd;
+               ++it)
           {
             mv.second.push_back(*it);
           }

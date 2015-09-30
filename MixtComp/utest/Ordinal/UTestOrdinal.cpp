@@ -38,12 +38,11 @@ class DataHandler
 {
   public:
     template<typename DataType>
-    void getData(std::string const& idData,
-                 AugmentedData<DataType>& augData,
-                 int& nbSample,
-                 std::string& param,
-                 typename AugmentedData<DataType>::Type offset,
-                 std::string& warnLog) const {};
+    std::string getData(std::string const& idData,
+                        AugmentedData<DataType>& augData,
+                        int& nbSample,
+                        std::string& param,
+                        typename AugmentedData<DataType>::Type offset) const {};
 };
 
 /** Dummy IO class for debugging purposes */

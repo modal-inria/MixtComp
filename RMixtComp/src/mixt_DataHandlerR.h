@@ -67,20 +67,18 @@ class DataHandlerR
     void writeDataMap() const;
 
     template<typename DataType>
-    void getData(std::string const& idData,
-                 AugmentedData<DataType>& augData,
-                 int& nbInd,
-                 std::string& param,
-                 typename AugmentedData<DataType>::Type offset,
-                 std::string& warnLog) const;
+    std::string getData(std::string const& idData,
+                        AugmentedData<DataType>& augData,
+                        int& nbInd,
+                        std::string& param,
+                        typename AugmentedData<DataType>::Type offset) const;
 
     /** Basic version of getData that only retrieve a vector of std::string. The responsability to
      * parse it is thus handed down to the calling structure. */
-    void getData(std::string const& idData,
-                 Vector<std::string>& dataStr,
-                 int& nbInd,
-                 std::string& param,
-                 std::string& warnLog) const;
+    std::string getData(std::string const& idData,
+                        Vector<std::string>& dataStr,
+                        int& nbInd,
+                        std::string& param) const;
   private:
     int nbInd_;
 
@@ -100,13 +98,13 @@ class DataHandlerR
 };
 
 template<typename DataType>
-void DataHandlerR::getData(std::string const& idData,
-                           AugmentedData<DataType>& augData,
-                           int& nbInd,
-                           std::string& param,
-                           typename AugmentedData<DataType>::Type offset,
-                           std::string& warnLog) const
+std::string DataHandlerR::getData(std::string const& idData,
+                                  AugmentedData<DataType>& augData,
+                                  int& nbInd,
+                                  std::string& param,
+                                  typename AugmentedData<DataType>::Type offset) const
 {
+  std::string warnLog;
   typedef typename AugmentedData<DataType>::Type Type;
   typedef typename AugmentedData<Matrix<Type> >::MisVal MisVal;
 
@@ -149,7 +147,7 @@ void DataHandlerR::getData(std::string const& idData,
       else
       {
         std::stringstream sstm;
-        sstm << "In " << idData << "individual i: " << i << " present an error. "
+        sstm << "In " << idData << ", individual i: " << i << " present an error. "
              << currStr << " is not recognized as a valid format." << std::endl;
         warnLog += sstm.str();
       }
@@ -162,6 +160,7 @@ void DataHandlerR::getData(std::string const& idData,
          << " Please check that all the necessary data is provided." << std::endl;
     warnLog += sstm.str();
   }
+  return warnLog;
 }
 
 } /* namespace mixt */
