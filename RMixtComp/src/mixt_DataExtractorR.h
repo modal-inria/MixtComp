@@ -28,6 +28,8 @@
 #include "Rcpp.h"
 #include "Eigen/Dense"
 
+#include "MixtComp/src/Mixture/Rank/mixt_RankIndividual.h"
+
 namespace mixt
 {
 
@@ -56,6 +58,10 @@ class DataExtractorR
     void exportVals(std::string idName,
                     const AugmentedData<Vector<int> >& augData,
                     const Vector<RowVector<int> >& dataStatStorage);
+
+    /** Export function for Rank model */
+    void exportVals(std::string idName,
+                    const Vector<RankIndividual>& data);
 
     Rcpp::List rcppReturnVal() const;
   private:

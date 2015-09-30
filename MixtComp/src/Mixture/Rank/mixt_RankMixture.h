@@ -58,7 +58,7 @@ class RankMixture : public IMixture
         p_zi_(p_zi),
         classInd_(classInd),
         p_handler_(p_handler),
-        p_extractor_(p_extractor),
+        p_dataExtractor_(p_extractor),
         p_paramSetter_(p_paramSetter),
         p_paramExtractor_(p_paramExtractor),
         confidenceLevel_(confidenceLevel),
@@ -247,7 +247,10 @@ class RankMixture : public IMixture
     }
 
     void exportDataParam() const
-    {}
+    {
+      p_dataExtractor_->exportVals(idName(),
+                                   data_); // export the obtained data using the DataExtractor
+    }
 
   private:
     std::string checkMissingType()
@@ -286,7 +289,7 @@ class RankMixture : public IMixture
     const Vector<std::set<int> >& classInd_;
 
     const DataHandler* p_handler_;
-    DataExtractor* p_extractor_;
+    DataExtractor* p_dataExtractor_;
     const ParamSetter* p_paramSetter_;
     ParamExtractor* p_paramExtractor_;
 

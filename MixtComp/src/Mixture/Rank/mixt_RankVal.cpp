@@ -107,6 +107,21 @@ void RankVal::permutation(int firstElem)
   ordering_(firstElem + 1) = dummyO;
 }
 
+std::string RankVal::str() const
+{
+  std::string res;
+  std::stringstream sstm;
+
+  for (int i = 1, size = ordering_.size(); i < size; ++i)
+  {
+    sstm << "," << ordering_(i);
+  }
+
+  res += sstm.str();
+
+  return res;
+}
+
 std::ostream& operator<<(std::ostream& os, const RankVal& rv)
 {
   os << rv.ordering_(0);

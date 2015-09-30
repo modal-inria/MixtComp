@@ -157,6 +157,21 @@ void DataExtractorR::exportVals(std::string idName,
                                      Rcpp::Named("stat") = missingData);
 };
 
+/** Export function for Rank model */
+void DataExtractorR::exportVals(std::string idName,
+                                const Vector<RankIndividual>& data)
+{
+  int nbInd = data.rows();
+  Rcpp::StringVector dataR(nbInd); // vector to store the completed data set
+
+  for (int i = 0, ie = nbInd; i < ie; ++i)
+  {
+    dataR(i) = data(i).x().str();
+  }
+
+  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR);
+}
+
 Rcpp::List DataExtractorR::rcppReturnVal() const
 {
   return data_;

@@ -106,6 +106,8 @@ class RankVal
     const Vector<int>& r() const {return ranking_;}
 
     friend std::ostream& operator<<(std::ostream& os, const RankVal& rv);
+
+    std::string str() const;
   private:
     /** */
     int nbPos_;
