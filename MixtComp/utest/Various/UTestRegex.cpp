@@ -23,31 +23,12 @@
 
 #include "gtest/gtest.h"
 
-#include <regex>
+#include "boost/regex.hpp"
+#include "../../src/LinAlg/mixt_LinAlg.h"
+#include "../../src/Various/mixt_Def.h"
+#include "../../src/IO/mixt_IO.h"
 
-TEST(regex, basicTest)
-{
-  std::string strNumber_("((?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))");
-  std::string strBlank_(" *");
-
-  boost::regex reNumber_(strNumber_);
-  boost::regex reValue_(strBlank_ + // " *(-*[0-9.]+) *"
-                        strNumber_ +
-                        strBlank_);
-
-  Real v;
-  MisVal mv;
-  std::string str("  0.3 ");
-  boost::smatch matches_;
-
-  if (boost::regex_match(str, matches_, reValue_)) // value is present
-  {
-    v = str2type<Real>(matches_[1].str());
-    mv = MisVal(present_, std::vector<Real>());
-  }
-
-  ASSERT_EQ(v, str2type<Real>(str));
-}
+using namespace mixt;
 
 TEST(regex, testEng)
 {
