@@ -59,6 +59,14 @@ class Iterator : public std::iterator<std::random_access_iterator_tag,
       return Iterator(iP, jP, *p_mat_);
     }
 
+    Iterator& operator+=(int i)
+    {
+      posToIn(pos() + i,
+    		  i_,
+			  j_);
+      return *this;
+    }
+
     Iterator operator-(int i)
     {
       int posP, iP, jP;
@@ -99,6 +107,34 @@ class Iterator : public std::iterator<std::random_access_iterator_tag,
         return false;
     }
 
+    bool operator>(const Iterator& it)
+    {
+      if (j_ > it.j_)
+      {
+        return true;
+      }
+      else if (j_ > it.j_)
+      {
+        return false;
+      }
+      else if (i_ > it.i_) // in this case, j_ == it.j_, hence comparison must be done on i_
+      {
+        return true;
+      }
+
+      return false;
+    }
+
+    bool operator>=(const Iterator& it)
+    {
+      if (!(*this < it))
+      {
+        return true;
+      }
+
+      return false;
+    }
+
     bool operator!=(const Iterator& it)
     {
       if (i_ != it.i_ || j_ != it.j_)
@@ -117,7 +153,7 @@ class Iterator : public std::iterator<std::random_access_iterator_tag,
       return &(*p_mat_)(i_, j_);
     }
 
-    const Iterator& operator++()
+    Iterator& operator++()
     {
       if (i_ < rows_ - 1) // row increment
       {
@@ -131,7 +167,7 @@ class Iterator : public std::iterator<std::random_access_iterator_tag,
       return *this;
     }
 
-    const Iterator& operator--()
+    Iterator& operator--()
     {
       if (i_ > 0)
       {

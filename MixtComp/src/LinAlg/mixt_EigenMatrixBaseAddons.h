@@ -24,6 +24,8 @@
 #ifndef MIXT_EIGENMATRIXBASEADDONS_H
 #define MIXT_EIGENMATRIXBASEADDONS_H
 
+//#include <numeric>
+
 #include "mixt_Iterator.h"
 #include "mixt_ConstIterator.h"
 
@@ -274,9 +276,12 @@ template<typename Container>
 void sortIndex(Container& out) const
 {
   out.resize(derived().size());
-  std::iota(out.begin(),
-            out.end(),
-            0);
+  for (int i = 0, ie = out.size();
+	   i < ie;
+	   ++i)
+  {
+	  out(i) = i;
+  }
   std::sort(out.begin(),
             out.end(),
             [this](int left, int right) {return (*this)(left) < (*this)(right);});

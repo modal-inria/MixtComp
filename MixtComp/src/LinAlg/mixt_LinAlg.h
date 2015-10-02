@@ -24,8 +24,8 @@
 #ifndef MIXT_LINALG_H
 #define MIXT_LINALG_H
 
-#include <Eigen/Dense>
 #include <vector>
+#include <Eigen/Dense>
 
 namespace mixt
 {

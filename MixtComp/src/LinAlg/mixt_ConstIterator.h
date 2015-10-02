@@ -61,6 +61,14 @@ class ConstIterator : public std::iterator<std::random_access_iterator_tag,
       return ConstIterator(iP, jP, *p_mat_);
     }
 
+    ConstIterator& operator+=(int i)
+    {
+      posToIn(pos() + i,
+    		  i_,
+			  j_);
+      return *this;
+    }
+
     ConstIterator operator-(int i)
     {
       int posP, iP, jP;
@@ -101,6 +109,34 @@ class ConstIterator : public std::iterator<std::random_access_iterator_tag,
         return false;
     }
 
+    bool operator>(const ConstIterator& it)
+    {
+      if (j_ > it.j_)
+      {
+        return true;
+      }
+      else if (j_ > it.j_)
+      {
+        return false;
+      }
+      else if (i_ > it.i_) // in this case, j_ == it.j_, hence comparison must be done on i_
+      {
+        return true;
+      }
+
+      return false;
+    }
+
+    bool operator>=(const ConstIterator& it)
+    {
+      if (!(*this < it))
+      {
+        return true;
+      }
+
+      return false;
+    }
+
     bool operator!=(const ConstIterator& it)
     {
       if (i_ != it.i_ || j_ != it.j_)
@@ -112,7 +148,7 @@ class ConstIterator : public std::iterator<std::random_access_iterator_tag,
     /**
      * returns const Scalar instead of const Scalar& to avoid error with temporaries
      */
-    const Scalar operator*() const
+    const Scalar& operator*() const
     {
       return (*p_mat_)(i_, j_);
     }

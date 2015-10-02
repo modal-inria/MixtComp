@@ -26,6 +26,7 @@ endif
 
 # generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
+# CXXFLAGS += -pthread -MD -MP -fPIC
 CXXFLAGS += -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
 CXXFLAGS += -DMC_VERBOSE
 
@@ -59,8 +60,8 @@ O_TEST = $(SRC_TEST:%.cpp=%.o)
 # unit-test files
 EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
-# SRC_UTEST += $(wildcard utest/Ordinal/*.cpp) $(wildcard utest/Rank/*.cpp) $(wildcard utest/Various/*.cpp)
-SRC_UTEST += $(wildcard utest/UTestNew.cpp)
+SRC_UTEST += $(wildcard utest/Ordinal/*.cpp) $(wildcard utest/Rank/*.cpp) $(wildcard utest/Various/*.cpp)
+# SRC_UTEST += $(wildcard utest/UTestNew.cpp)
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 
@@ -83,6 +84,14 @@ allClean: # cleans MixtComp and all bundled libraries
 	find -L .. -type f -name "*.so" -exec rm -f {} \;
 	find -L .. -type f -name "*.exe" -exec rm -f {} \;
 	find -L .. -type f -name "*.dll" -exec rm -f {} \;
+
+cleanTest:
+	find -L test -type f -name "*.o" -exec rm -f {} \;
+	find -L test -type f -name "*.d" -exec rm -f {} \;
+	find -L test -type f -name "*.a" -exec rm -f {} \;
+	find -L test -type f -name "*.so" -exec rm -f {} \;
+	find -L test -type f -name "*.exe" -exec rm -f {} \;
+	find -L test -type f -name "*.dll" -exec rm -f {} \;
 
 cleanUTest: # only cleans MixtComp
 	find -L utest -type f -name "*.o" -exec rm -f {} \;
@@ -112,8 +121,8 @@ $(EXE_UTEST): $(LIB_MC) $(LIB_RE) $(O_GTEST) $(O_UTEST)
 
 test: $(EXE_TEST)
 
-$(EXE_TEST): $(LIB_MC) $(O_TEST)
-	$(CXX) $^ $(LIB_MC) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
+$(EXE_TEST): $(O_TEST)
+	$(CXX) $^ -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 -include $(SRC_MC:%.cpp=%.d)
 -include $(SRC_RE:%.cpp=%.d)
