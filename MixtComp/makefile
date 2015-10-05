@@ -29,6 +29,7 @@ CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAdd
 # CXXFLAGS += -pthread -MD -MP -fPIC
 CXXFLAGS += -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
 CXXFLAGS += -DMC_VERBOSE
+CXXFLAGS += -std=c++11
 
 # library files
 LIB_MC = lib/libMixtComp.a
