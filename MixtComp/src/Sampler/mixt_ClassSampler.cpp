@@ -122,7 +122,7 @@ void ClassSampler::sStepNoCheck(int i)
       case missing_:
       {
 #ifdef MC_DEBUG
-        std::cout << "missing_" << std::endl;
+        std::cout << "missing_, i:" << i << ", tik_.row(i): " << tik_.row(i) <<  std::endl;
 #endif
         sampleVal = multi_.sample(tik_.row(i)); // the most simple case
       }

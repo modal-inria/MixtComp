@@ -60,6 +60,10 @@ class MultinomialStatistic
       Real x = generator_();
 
 #ifdef MC_DEBUG
+      std::cout << "proportion: " << proportion << ", x: " << x << std::endl;
+#endif
+
+#ifdef MC_DEBUG
       if (proportion.sum() < 1. - epsilon && 1. + epsilon < proportion.sum())
       {
         std::cout << "MultinomialStatistic::sample()" << std::endl;
@@ -73,28 +77,19 @@ class MultinomialStatistic
       Real cumProb = 0.; // cumulative probability
       int index = 0;
 
-      for(typename T::const_iterator it = proportion.begin();
-          it != proportion.end();
-          ++it)
+      for (int i = 0, ie = proportion.size();
+           i < ie;
+           ++i)
       {
-        cumProb += *it;
-#ifdef MC_DEBUG
-          std::cout << "x: " << x << ", cumpProb: " << cumProb << std::endl;
-#endif
+        cumProb += proportion[i];
         if (x < cumProb)
         {
-#ifdef MC_DEBUG
-          std::cout << "index: " << index << std::endl;
-#endif
           return index;
         }
         ++index;
       }
-#ifdef MC_DEBUG
-      std::cout << "MultinomialStatistic::sample, -1 value sampled" << std::endl;
-#endif
-      return -1; // to accelerate sampling, no check have been computed on modalities to verify that is it actually a probability distribution
-    };
+      return -1;
+    }
 
     template <typename T>
     void shuffle(T& data)

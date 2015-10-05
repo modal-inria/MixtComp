@@ -247,19 +247,17 @@ void MixtureComposer::sStepCheck(int i)
 
 void MixtureComposer::sStepNoCheck()
 {
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStep" << std::endl;
-#endif
-
   for (int i = 0; i < nbInd_; ++i)
   {
     sStepNoCheck(i);
   }
 
 #ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStep" << std::endl;
+  std::cout << "MixtureComposer::sStepNoCheck" << std::endl;
+  std::cout << "tik_: " << tik_.transpose() << std::endl;
   std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
   printClassInd();
+
 #endif
 }
 

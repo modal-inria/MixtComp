@@ -25,9 +25,8 @@
 
 #include <iostream>
 #include "boost/regex.hpp"
-#include "../src/Data/mixt_MisValParser.h"
 #include "../src/LinAlg/mixt_LinAlg.h"
-#include "../src/Mixture/Rank/mixt_RankParser.h"
+#include "../src/Sampler/mixt_ClassSampler.h"
 
 using namespace mixt;
 
