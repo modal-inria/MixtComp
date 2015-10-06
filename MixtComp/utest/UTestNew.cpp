@@ -30,3 +30,29 @@
 
 using namespace mixt;
 
+// Test the matrix sort on real number
+TEST(Matrix, sort)
+{
+  Vector<Real> a(3);
+  a << 0.2, 0.7, 0.3;
+
+  Vector<Real> b(3);
+  b << 0.2, 0.3, 0.7;
+
+  a.sort();
+
+#ifdef MC_DEBUGNEW
+  std::cout << "a: " << itString(a) << std::endl;
+#endif
+
+  ASSERT_EQ(a, b);
+}
+
+// Test the matrix sort
+TEST(itString, simpleTest)
+{
+  Vector<Real> a(3);
+  a << 0.2, 0.7, 0.3;
+
+  ASSERT_EQ(itString(a), "0.2 0.7 0.3");
+}

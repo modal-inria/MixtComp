@@ -35,14 +35,16 @@ class ParamExtractorR
   public:
     ParamExtractorR();
     ~ParamExtractorR();
-    void exportParam(std::string idName,
+    void exportParam(const std::string& idName,
+                     const std::string& paramName,
                      const Matrix<Real>& paramStat,
                      const Matrix<Real>& paramsLog,
                      const std::vector<std::string>& paramNames,
                      const Real confidenceLevel);
     Rcpp::List rcppReturnParam() const;
   private:
-    Rcpp::List param_;
+    std::list<std::string> paramName_;
+    std::list<Rcpp::List> param_;
 };
 
 } // namespace mixt

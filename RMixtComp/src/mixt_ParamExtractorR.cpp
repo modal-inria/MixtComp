@@ -34,7 +34,8 @@ ParamExtractorR::ParamExtractorR()
 ParamExtractorR::~ParamExtractorR()
 {}
 
-void ParamExtractorR::exportParam(std::string idName,
+void ParamExtractorR::exportParam(const std::string& idName,
+                                  const std::string& paramName,
                                   const Matrix<Real>& statStorage,
                                   const Matrix<Real>& logStorage,
                                   const std::vector<std::string>& paramNames,
@@ -111,10 +112,11 @@ void ParamExtractorR::exportParam(std::string idName,
     paramLogR.attr("dimnames") = dimnmsLog;
   }
   
-  Rcpp::List ls = Rcpp::List::create(Rcpp::Named("stat") = paramR   ,
-                                     Rcpp::Named("log")  = paramLogR);
+  Rcpp::List ls = Rcpp::List::create(Rcpp::Named(paramName) = Rcpp::List::create(Rcpp::Named("stat") = paramR   ,
+                                                                                 Rcpp::Named("log")  = paramLogR));
 
-  param_[idName] = ls;
+  paramName_.push_back(idName);
+  param_.push_back(ls);
 
 #ifdef MC_DEBUG
   std::cout << "ParamExtractorR::exportParam, param_.size():  " << param_.size() << std::endl;
@@ -123,7 +125,10 @@ void ParamExtractorR::exportParam(std::string idName,
 
 Rcpp::List ParamExtractorR::rcppReturnParam() const
 {
-  return param_;
+  Rcpp::List res = Rcpp::wrap(param_);
+  Rcpp::CharacterVector names = Rcpp::wrap(paramName_);
+  res.attr("names") = names ;;
+  return res;
 }
 
 } // namespace mixt

@@ -81,7 +81,7 @@ class MultinomialStatistic
            i < ie;
            ++i)
       {
-        cumProb += proportion[i];
+        cumProb += proportion(i);
         if (x < cumProb)
         {
           return index;
