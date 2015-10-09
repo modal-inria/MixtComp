@@ -52,6 +52,8 @@ class RankParamStat
     /** Set mu and pi with the estimated value, at the end of the SEM. The estimated value of mu is the mode, and the
      * estimated value of pi is the mode among the values of pi sampled for the estimated mu. */
     void setExpectationParam();
+
+    int nbPos() const {return mu_.nbPos();}
   private:
     void sample(int iteration);
 

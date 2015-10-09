@@ -25,6 +25,8 @@
 #define MIXT_PARAMEXTRACTORR_H
 
 #include "MixtComp/src/LinAlg/mixt_LinAlg.h"
+#include "MixtComp/src/Mixture/Rank/mixt_RankVal.h"
+#include "MixtComp/src/Mixture/Rank/mixt_RankParamStat.h"
 #include "Rcpp.h"
 
 namespace mixt
@@ -35,12 +37,22 @@ class ParamExtractorR
   public:
     ParamExtractorR();
     ~ParamExtractorR();
+
+    /** Extractor for ConfIntParamStat */
     void exportParam(const std::string& idName,
                      const std::string& paramName,
                      const Matrix<Real>& paramStat,
                      const Matrix<Real>& paramsLog,
                      const std::vector<std::string>& paramNames,
-                     const Real confidenceLevel);
+                     Real confidenceLevel);
+
+    /** Extractor for Rank data type */
+    void exportParam(const std::string& idName,
+                     const std::string& paramName,
+                     const std::vector<RankParamStat>& paramStat,
+                     const std::vector<std::string>& paramNames,
+                     Real confidenceLevel);
+
     Rcpp::List rcppReturnParam() const;
   private:
     std::list<std::string> paramName_;

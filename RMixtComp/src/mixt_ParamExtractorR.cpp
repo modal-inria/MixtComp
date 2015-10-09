@@ -39,7 +39,7 @@ void ParamExtractorR::exportParam(const std::string& idName,
                                   const Matrix<Real>& statStorage,
                                   const Matrix<Real>& logStorage,
                                   const std::vector<std::string>& paramNames,
-                                  const Real confidenceLevel)
+                                  Real confidenceLevel)
 {
 #ifdef MC_DEBUG
   std::cout << "ParamExtractorR::exportParam" << std::endl;
@@ -123,11 +123,80 @@ void ParamExtractorR::exportParam(const std::string& idName,
 #endif
 }
 
+/** Extractor for Rank data type */
+void ParamExtractorR::exportParam(const std::string& idName,
+                                  const std::string& paramName,
+                                  const std::vector<RankParamStat>& paramStat,
+                                  const std::vector<std::string>& paramNames,
+                                  Real confidenceLevel)
+{
+  Rcpp::CharacterVector rowsNames = Rcpp::wrap(paramNames) ; // names of the classes, used for both parameters values and logs
+
+  int nbClass = paramStat.size();
+
+  std::list<Rcpp::List> statCPP; // global list, of param descriptor, each element is the descriptor of a class
+
+  for (int k = 0; k < nbClass; ++k) // loop to create the parameters descriptor
+  {
+    int nbPos = paramStat[k].nbPos(); // get number of positions in rank
+
+    const std::list<std::pair<RankVal, Real> >& statStorageMu = paramStat[k].statStorageMu();
+    std::list<Rcpp::List> classProba; // list of pairs {vector representing rank, proba} for the current class
+
+    for (std::list<std::pair<RankVal, Real> >::const_iterator it = statStorageMu.begin(), ite = statStorageMu.end();
+         it != ite;
+         ++it)
+    {
+      const RankVal& rankCPP = it->first; // current rank in C++
+      Rcpp::IntegerVector rankR(nbPos); // current rank in R
+      for (int p = 0; p < nbPos; ++p)
+      {
+        rankR(p) = rankCPP.o()(p);
+      }
+      classProba.push_back(Rcpp::List::create(rankR,
+                                              it->second));
+    }
+    statCPP.push_back(Rcpp::wrap(classProba));
+  }
+
+  Rcpp::List statR = Rcpp::wrap(statCPP);
+  statR.attr("names") = rowsNames;
+
+  std::list<Rcpp::List> logCPP; // global list, of param descriptor, each element is the descriptor of a class
+
+  for (int k = 0; k < nbClass; ++k) // loop to create the parameters log
+  {
+    int nbPos = paramStat[k].nbPos(); // get number of positions in rank
+    const Vector<RankVal>& logStorageMu = paramStat[k].logStorageMu();
+
+    std::list<Rcpp::IntegerVector> classProba; // list of sampled mu for the current class
+    for (int i = 0, ie = logStorageMu.size(); i < ie; ++i)
+    {
+      const RankVal& rankCPP = logStorageMu(i); // current rank in C++
+      Rcpp::IntegerVector rankR(nbPos); // current rank in R
+      for (int p = 0; p < nbPos; ++p)
+      {
+        rankR(p) = rankCPP.o()(p);
+      }
+      classProba.push_back(rankR);
+    }
+  }
+
+  Rcpp::List logR = Rcpp::wrap(logCPP);
+  logR.attr("names") = rowsNames;
+
+  Rcpp::List ls = Rcpp::List::create(Rcpp::Named(paramName) = Rcpp::List::create(Rcpp::Named("stat") = statR,
+                                                                                 Rcpp::Named("log")  = logR));
+
+  paramName_.push_back(idName);
+  param_.push_back(ls);
+}
+
 Rcpp::List ParamExtractorR::rcppReturnParam() const
 {
   Rcpp::List res = Rcpp::wrap(param_);
   Rcpp::CharacterVector names = Rcpp::wrap(paramName_);
-  res.attr("names") = names ;;
+  res.attr("names") = names;
   return res;
 }
 

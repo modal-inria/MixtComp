@@ -250,6 +250,17 @@ class RankMixture : public IMixture
     {
       p_dataExtractor_->exportVals(idName(),
                                    data_); // export the obtained data using the DataExtractor
+      p_paramExtractor_->exportParam(idName_,
+                                     "mu",
+                                     muParamStat_,
+                                     muParamNames(),
+                                     confidenceLevel_);
+      p_paramExtractor_->exportParam(idName_,
+                                     "pi",
+                                     piParamStat_.getStatStorage(),
+                                     piParamStat_.getLogStorage(),
+                                     piParamNames(),
+                                     confidenceLevel_);
     }
 
   private:
@@ -275,6 +286,30 @@ class RankMixture : public IMixture
       }
 
       return warnLog;
+    }
+
+    std::vector<std::string> muParamNames() const
+    {
+      std::vector<std::string> names(nbClass_);
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        std::stringstream sstm;
+        sstm << "k: " << k + minModality << ", mu";
+        names[k] = sstm.str();
+      }
+      return names;
+    }
+
+    std::vector<std::string> piParamNames() const
+    {
+      std::vector<std::string> names(nbClass_);
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        std::stringstream sstm;
+        sstm << "k: " << k + minModality << ", pi";
+        names[k] = sstm.str();
+      }
+      return names;
     }
 
     int nbClass_;
