@@ -59,15 +59,17 @@ void ParamSetterR::getParam(std::string idName,
                             const std::string& paramName,
                             Vector<RankVal>& param) const
 {
-  Rcpp::List listCurrId = param_[idName];
-  Rcpp::List listCurrParam = listCurrId[paramName];
+  Rcpp::List listParam = param_[idName];
+  Rcpp::List listClass = listParam[paramName];
 
-  int nbClass = listCurrParam.size();
+  int nbClass = listClass.size();
   param.resize(nbClass); // listCurrParam contains one element per class
 
   for (int k = 0; k < nbClass; ++k)
   {
-    Rcpp::NumericVector currVec = listCurrParam(k);
+    Rcpp::List listPair = listClass(k);
+    Rcpp::List modePair = listPair(0);
+    Rcpp::NumericVector currVec = modePair(0);
     RankVal(k).setNbPos(currVec.size());
     RankVal(k).setO(currVec);
   }

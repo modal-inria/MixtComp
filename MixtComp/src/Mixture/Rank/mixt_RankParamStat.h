@@ -53,6 +53,8 @@ class RankParamStat
      * estimated value of pi is the mode among the values of pi sampled for the estimated mu. */
     void setExpectationParam();
 
+    void setParamStorage();
+
     int nbPos() const {return mu_.nbPos();}
   private:
     void sample(int iteration);

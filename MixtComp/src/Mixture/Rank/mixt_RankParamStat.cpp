@@ -101,4 +101,9 @@ void RankParamStat::setExpectationParam()
   mu_ = statStorageMu_.front().first;
 }
 
+void RankParamStat::setParamStorage()
+{
+  statStorageMu_.push_back(std::pair<RankVal, Real>(mu_, 1.));
+}
+
 } // namespace mixt
