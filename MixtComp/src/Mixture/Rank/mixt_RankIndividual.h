@@ -56,6 +56,8 @@ class RankIndividual
 
     RankIndividual& operator=(const RankIndividual& ri);
 
+    int nbPos() const {return nbPos_;}
+
     /** Get the observed x value, for example for debugging purposes */
     const RankVal& x() const {return x_;}
 

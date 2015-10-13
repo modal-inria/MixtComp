@@ -162,14 +162,22 @@ void DataExtractorR::exportVals(std::string idName,
                                 const Vector<RankIndividual>& data)
 {
   int nbInd = data.rows();
-  Rcpp::StringVector dataR(nbInd); // vector to store the completed data set
+  std::list<Rcpp::NumericVector> dataR; // List to store the completed data set
 
   for (int i = 0, ie = nbInd; i < ie; ++i)
   {
-    dataR(i) = data(i).x().str();
+    int nbPos = data(i).nbPos();
+    Rcpp::NumericVector rankR(nbPos);
+    for (int p = 0; p < nbPos; ++p)
+    {
+      rankR(p) = data(i).x().o()(p);
+    }
+
+    dataR.push_back(rankR);
   }
 
-  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR);
+  Rcpp::List ls = Rcpp::wrap(dataR);
+  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = ls);
 }
 
 Rcpp::List DataExtractorR::rcppReturnVal() const

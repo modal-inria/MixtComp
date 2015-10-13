@@ -37,4 +37,9 @@ void ParamSetterDummy::getParam(const std::string& idName,
                                 Vector<Real>& params) const
 {}
 
+void  ParamSetterDummy::getParam(std::string idName,
+                                 const std::string& paramName,
+                                 Vector<RankVal>& param) const
+{}
+
 } // namespace mixt

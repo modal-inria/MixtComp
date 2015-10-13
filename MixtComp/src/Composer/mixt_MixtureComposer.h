@@ -231,7 +231,7 @@ class MixtureComposer
 
     /** DataHandler is injected to take care of setting the values of the latent classes.
       * This avoids templating the whole composer with DataHandler type, as is currently done
-      * with the individual IMixtures.
+      * with the IMixture subtypes.
       * @param checkInd should be set to 1 if a minimum number of individual per class should be
       * enforced at sampling (true in learning, false in prediction) */
     template<typename DataHandler>

@@ -25,6 +25,7 @@
 #define MIXT_PARAMSETTERR_H
 
 #include "MixtComp/src/LinAlg/mixt_LinAlg.h"
+#include "MixtComp/src/Mixture/Rank/mixt_RankVal.h"
 #include "Rcpp.h"
 
 namespace mixt
@@ -34,10 +35,16 @@ class ParamSetterR
 {
   public:
     ParamSetterR(const Rcpp::List param);
+
     ~ParamSetterR();
+
     void getParam(std::string idName,
                   const std::string& paramName,
                   Vector<Real>& param) const;
+
+    void getParam(std::string idName,
+                  const std::string& paramName,
+                  Vector<RankVal>& param) const;
   private:
     const Rcpp::List param_;
 };

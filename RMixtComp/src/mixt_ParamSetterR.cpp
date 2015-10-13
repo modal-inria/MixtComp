@@ -55,4 +55,22 @@ void ParamSetterR::getParam(std::string idName,
 #endif
 }
 
+void ParamSetterR::getParam(std::string idName,
+                            const std::string& paramName,
+                            Vector<RankVal>& param) const
+{
+  Rcpp::List listCurrId = param_[idName];
+  Rcpp::List listCurrParam = listCurrId[paramName];
+
+  int nbClass = listCurrParam.size();
+  param.resize(nbClass); // listCurrParam contains one element per class
+
+  for (int k = 0; k < nbClass; ++k)
+  {
+    Rcpp::NumericVector currVec = listCurrParam(k);
+    RankVal(k).setNbPos(currVec.size());
+    RankVal(k).setO(currVec);
+  }
+}
+
 } // namespace mixt

@@ -219,12 +219,12 @@ class RankMixture : public IMixture
       // in prediction: piParamStatComputer_.setParamStorage();
       Vector<std::string> dataStr;
 
-      warnLog += p_handler_->getData(idName(),
+      warnLog += p_handler_->getData(idName(), // get the raw vector of strings
                                      dataStr,
                                      nbInd_,
                                      paramStr_);
 
-      warnLog += rankParser_.parseStr(dataStr,
+      warnLog += rankParser_.parseStr(dataStr, // convert the vector of strings to ranks
                                       minModality,
                                       nbMod_,
                                       data_);
@@ -238,9 +238,13 @@ class RankMixture : public IMixture
 
       if (mode == prediction_) // prediction mode
       {
-        std::stringstream sstm;
-        sstm << "Variable: " << idName_ << " is modeled using Rank, which does does not yet support prediction." << std::endl;
-        warnLog += sstm.str();
+        p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
+                                 "mu",
+                                 mu_);
+
+        p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
+                                 "pi",
+                                 pi_);
       }
 
       return warnLog;

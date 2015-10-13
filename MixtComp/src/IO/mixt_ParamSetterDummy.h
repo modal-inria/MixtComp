@@ -25,6 +25,7 @@
 #define MIXT_PARAMSETTERDUMMY_H
 
 #include "../LinAlg/mixt_LinAlg.h"
+#include "../Mixture/Rank/mixt_RankVal.h"
 
 namespace mixt
 {
@@ -33,10 +34,16 @@ class ParamSetterDummy
 {
   public:
     ParamSetterDummy();
+
     ~ParamSetterDummy();
+
     void getParam(const std::string& idName,
                   const std::string& paramName,
                   Vector<Real>& params) const;
+
+    void getParam(std::string idName,
+                  const std::string& paramName,
+                  Vector<RankVal>& param) const;
 };
 
 } // namespace mixt
