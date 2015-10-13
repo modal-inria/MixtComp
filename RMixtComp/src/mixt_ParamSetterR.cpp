@@ -34,10 +34,12 @@ ParamSetterR::~ParamSetterR()
 {}
 
 void ParamSetterR::getParam(std::string idName,
+                            const std::string& paramName,
                             Vector<Real>& param) const
 {
-  Rcpp::List logStat = param_[idName];
-  Rcpp::NumericMatrix currParam = logStat["stat"];
+  Rcpp::List listCurrId = param_[idName];
+  Rcpp::List listCurrParam = listCurrId[paramName];
+  Rcpp::NumericMatrix currParam = listCurrParam["stat"];
   int nRows = currParam.nrow();
   param.resize(nRows);
 

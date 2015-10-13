@@ -224,6 +224,7 @@ class Ordinal : public IMixture
     {
       Vector<Real> param;
       p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
+                               "muPi",
                                param);
       nbModalities_ = param.size() / (2 * nbClass_);
       mu_.resize(nbClass_);

@@ -174,7 +174,8 @@ class MixtureBridge : public IMixture
         }
         else // predict mode
         {
-          p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
+          p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
+                                   "NumericalParam",
                                    param_);
           int nbModalities = param_.rows() / nbClass_; // number of parameters for each cluster
           if (mixture_.hasModalities()) // all modalities might not be present in the predict set, and as such the real data range from the learning set must be used
@@ -364,7 +365,7 @@ class MixtureBridge : public IMixture
 #ifdef MC_DEBUG
       std::cout << "MixtureBridge: exportDataParam, idName(): " << idName() << std::endl;
 #endif
-      p_dataExtractor_->exportVals(idName(),
+      p_dataExtractor_->exportVals(idName_,
                                    augData_,
                                    dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
       p_paramExtractor_->exportParam(idName(),

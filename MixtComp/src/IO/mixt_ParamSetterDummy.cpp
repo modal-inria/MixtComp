@@ -32,7 +32,8 @@ ParamSetterDummy::ParamSetterDummy()
 ParamSetterDummy::~ParamSetterDummy()
 {}
 
-void ParamSetterDummy::getParam(std::string idName,
+void ParamSetterDummy::getParam(const std::string& idName,
+                                const std::string& paramName,
                                 Vector<Real>& params) const
 {}
 

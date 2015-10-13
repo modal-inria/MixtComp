@@ -223,6 +223,7 @@ class MixtureComposer
       std::string warnLog;
 
       paramSetter.getParam("z_class",
+                           "pi",
                            prop_);
 
       return warnLog;

@@ -34,7 +34,8 @@ class ParamSetterDummy
   public:
     ParamSetterDummy();
     ~ParamSetterDummy();
-    void getParam(std::string idName,
+    void getParam(const std::string& idName,
+                  const std::string& paramName,
                   Vector<Real>& params) const;
 };
 
