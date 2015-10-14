@@ -250,3 +250,23 @@ testAERES <- function()
                          nbClass,
                          confidenceLevel)
 }
+
+testRankWords <- function()
+{
+  nbClass <- 3
+  confidenceLevel <- 0.95
+  
+  resGetData <- getData(c("dataTest/words/data.csv",
+                          "dataTest/words/desc.csv"))
+  
+  mcStrategy <- list(nbBurnInIter = 100,
+                     nbIter = 100,
+                     nbGibbsBurnInIter = 100,
+                     nbGibbsIter = 100)
+  
+  # launch of the MixtComp algorithm
+  res <- mixtCompCluster(resGetData$lm,
+                         mcStrategy,
+                         nbClass,
+                         confidenceLevel)
+}
