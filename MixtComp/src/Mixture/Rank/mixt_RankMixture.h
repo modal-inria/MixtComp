@@ -53,7 +53,7 @@ class RankMixture : public IMixture
         IMixture(idName),
         nbClass_(nbClass),
         nbInd_(0),
-        nbMod_(0),
+        nbPos_(0),
         facNbMod_(0.),
         p_zi_(p_zi),
         classInd_(classInd),
@@ -79,6 +79,7 @@ class RankMixture : public IMixture
                                   confidenceLevel);
       }
 
+      acceptedType_.resize(nb_enum_MisType_);
       acceptedType_ << true,   // present_,
                        false,  // missing_,
                        false,  // missingFiniteValues_,
@@ -153,7 +154,7 @@ class RankMixture : public IMixture
       {
 //        rl_.getHMean(observedProba_); // harmonic mean computation method
 
-        RankIndividual ri(nbMod_);
+        RankIndividual ri(nbPos_);
         observedProbaSampling_.resize(nbClass_);
         for (int k = 0; k < nbClass_; ++k)
         {
@@ -226,8 +227,18 @@ class RankMixture : public IMixture
 
       warnLog += rankParser_.parseStr(dataStr, // convert the vector of strings to ranks
                                       minModality,
-                                      nbMod_,
+                                      nbPos_,
                                       data_);
+
+      MultinomialStatistic multi;
+      Vector<int> vec(nbPos_);
+      std::iota(vec.begin(), vec.end(), 0);
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        mu_[k].setNbPos(nbPos_);
+        multi.shuffle(vec);
+        mu_[k].setO(vec);
+      }
 
       warnLog += checkMissingType();
 
@@ -327,7 +338,7 @@ class RankMixture : public IMixture
     /** Number of samples in the data set*/
     int nbInd_;
 
-    int nbMod_;
+    int nbPos_;
     Real facNbMod_;
 
     const Vector<int>* p_zi_;
