@@ -146,10 +146,17 @@ class RankMixture : public IMixture
                        int iteration,
                        int iterationMax)
     {
+      if (iteration == 0)
+      {
+        rankLikelihood_.init(nbInd_,
+                             nbClass_,
+                             iterationMax - 1);
+      }
+
       rankLikelihood_.observe(i,
-                  (*p_zi_)(i),
-                  facNbMod_ * lnCompletedProbability(i,
-                                                     (*p_zi_)(i)));
+                              (*p_zi_)(i),
+                              facNbMod_ * lnCompletedProbability(i,
+                                                                 (*p_zi_)(i)));
       if (iteration == iterationMax)
       {
 //        rl_.getHMean(observedProba_); // harmonic mean computation method

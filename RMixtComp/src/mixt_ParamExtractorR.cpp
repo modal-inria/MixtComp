@@ -180,6 +180,7 @@ void ParamExtractorR::exportParam(const std::string& idName,
       }
       classProba.push_back(rankR);
     }
+    logCPP.push_back(Rcpp::wrap(classProba));
   }
 
   Rcpp::List logR = Rcpp::wrap(logCPP);

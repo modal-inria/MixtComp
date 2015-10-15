@@ -656,7 +656,7 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const
   idc.resize(nbClass_, nbVar_);
   Matrix<Real> ekj;
   E_kj(ekj);
-  Vector<Real> sum = ekj.colwise().sum();
+  Vector<Real> sum = ekj.rowwise().sum(); // normalization, class per class, over the variables
 
   for(int j = 0; j < nbVar_; ++j)
   {
