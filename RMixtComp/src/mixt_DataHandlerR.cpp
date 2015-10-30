@@ -32,7 +32,7 @@ namespace mixt
 
 DataHandlerR::DataHandlerR(Rcpp::List rList) :
     nbInd_(-1),
-    nbVariables_(0),
+    nbVar_(0),
     rList_(rList)
 {}
 
@@ -86,7 +86,7 @@ std::string DataHandlerR::listData()
 
     nbInd_ = data.size(); // overwritten, because check has already been performed on the R side
     dataMap_[id] = i; // dataMap_[id] created if not already existing
-    ++nbVariables_;
+    ++nbVar_;
 #ifdef MC_DEBUG
     std::cout << "DataHandlerR::readDataFromRListHelper()" << std::endl;
     std::cout << "\tid: " << id << std::endl;
@@ -140,6 +140,32 @@ std::string DataHandlerR::getData(std::string const& idData,
     warnLog += sstm.str();
   }
   return warnLog;
+}
+
+Rcpp::List DataHandlerR::rcppReturnType() const
+{
+  std::vector<std::string> listName;
+  std::vector<std::string> listType;
+  listName.reserve(nbVar_);
+  listType.reserve(nbVar_);
+
+  listName.push_back("z_class");
+  listType.push_back("LatentClass");
+
+  for (std::map<std::string, std::string>::const_iterator it    = info_.begin(),
+                                                          itEnd = info_.end();
+             it != itEnd;
+             ++it)
+  {
+    listName.push_back(it->first);
+    listType.push_back(it->second);
+  }
+
+  Rcpp::CharacterVector name = Rcpp::wrap(listName);
+  Rcpp::List type = Rcpp::wrap(listType);
+  type.attr("names") = name;
+
+  return type;
 }
 
 } /* namespace mixt */

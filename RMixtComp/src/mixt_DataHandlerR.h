@@ -51,7 +51,7 @@ class DataHandlerR
     int nbSample() const {return nbInd_;}
 
         /** @return the number of variables (the number of columns of the data) */
-    int nbVariable() const {return nbVariables_;}
+    int nbVariable() const {return nbVar_;}
 
     /** read a data file and its companion description file,
       and fill the infoMap_ (id -> model) and dataMap_ (id -> vector of positions)
@@ -79,10 +79,13 @@ class DataHandlerR
                         Vector<std::string>& dataStr,
                         int& nbInd,
                         std::string& param) const;
+
+    /** Return a Rcpp::List named list that contains the types of the variables */
+    Rcpp::List rcppReturnType() const;
   private:
     int nbInd_;
 
-    int nbVariables_;
+    int nbVar_;
 
     /** Store the informations  of the mixtures in the form (idData, idModel) with
      * - idData: an arbitrary idData for a model
@@ -90,7 +93,7 @@ class DataHandlerR
      * @sa stringToMixture */
     std::map<std::string, std::string> info_;
 
-    /** map: id -> vector of positions in rList_, as typedef-ed above */
+    /** map: id -> position in rList_, as typedef-ed above */
     std::map<std::string, int> dataMap_;
 
     /** A list of the mixtures transmitted by R, as named lists */

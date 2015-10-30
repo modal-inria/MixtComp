@@ -167,9 +167,12 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
   mcMixture["runTime"] = totalTimer.top("end of run");
   mcMixture["nbSample"] = handler.nbSample();
 
+  Rcpp::List type = handler.rcppReturnType();
   Rcpp::List data = dataExtractor.rcppReturnVal();
   Rcpp::List param = paramExtractor.rcppReturnParam();
-  mcVariable = Rcpp::List::create(Rcpp::Named("data") = data,
+
+  mcVariable = Rcpp::List::create(Rcpp::Named("type") = type,
+                                  Rcpp::Named("data") = data,
                                   Rcpp::Named("param") = param);
 
 
