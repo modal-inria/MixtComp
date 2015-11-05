@@ -644,8 +644,27 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const
 
       for (int k = 0; k < nbClass_; ++k)
       {
-        ekj(k, j) += - t_ik_j (k) * std::log(t_ik_j (k))
-                     - t_ink_j(k) * std::log(t_ink_j(k));
+        Real p, nP;
+
+        if (epsilon < t_ik_j(k))
+        {
+          p = - t_ik_j(k) * std::log(t_ik_j (k));
+        }
+        else
+        {
+          p = 0.;
+        }
+
+        if (epsilon < t_ink_j(k))
+        {
+          nP = - t_ink_j(k) * std::log(t_ink_j(k));
+        }
+        else
+        {
+          nP = 0.;
+        }
+
+        ekj(k, j) += p + nP;
       }
     }
   }
