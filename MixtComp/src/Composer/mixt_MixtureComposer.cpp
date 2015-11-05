@@ -672,25 +672,29 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const
 
 void MixtureComposer::IDClass(Matrix<Real>& idc) const
 {
+#ifdef MC_DEBUGNEW
+  std::cout << "MixtureComposer::IDClass" << std::endl;
+#endif
+
   idc.resize(nbClass_, nbVar_);
   Matrix<Real> ekj;
   E_kj(ekj);
-  Vector<Real> sum = ekj.rowwise().sum(); // normalization, class per class, over the variables
 
-  for(int j = 0; j < nbVar_; ++j)
+  for (int k = 0; k < nbClass_; ++k)
   {
-    for (int k = 0; k < nbClass_; ++k)
+    Real min = ekj.row(k).minCoeff();
+    Real max = ekj.row(k).maxCoeff();
+
+    for(int j = 0; j < nbVar_; ++j)
     {
-      idc(k, j) = 1. - ekj(k, j) / sum(k);
+      idc(k, j) = (max - ekj(k, j)) / (max - min);
+//      idc(k, j) = 1. - ekj(k, j) / ekj.row(k).sum();
     }
   }
 
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::IDClass" << std::endl;
+#ifdef MC_DEBUGNEW
   std::cout << "ekj" << std::endl;
   std::cout << ekj << std::endl;
-  std::cout << "sum" << std::endl;
-  std::cout << sum << std::endl;
   std::cout << "idc" << std::endl;
   std::cout << idc << std::endl;
 #endif
