@@ -112,19 +112,19 @@ paramTable = function(data){
   
   for (jP in 2:nbVar){
     j = jP - 1
-    if (typeList[[j]] == 'Categorical_pjk'){
-      out[,j] = paramCategorical(nbClass, param[[j]])
+    if (typeList[[jP]] == 'Categorical_pjk'){
+      out[,j] = paramCategorical(nbClass, param[[jP]])
     }
-    else if (typeList[[j]] == 'Gaussian_sjk'){
-      out[,j] = paramGaussian(nbClass, param[[j]])
+    else if (typeList[[jP]] == 'Gaussian_sjk'){
+      out[,j] = paramGaussian(nbClass, param[[jP]])
     }
-    else if (typeList[[j]] == 'Poisson_k')
+    else if (typeList[[jP]] == 'Poisson_k')
     {
-      out[,j] = paramPoisson(nbClass, param[[j]])
+      out[,j] = paramPoisson(nbClass, param[[jP]])
     }
     else
     {
-      out[,j] = paramUnknown(nbClass, param[[j]])
+      out[,j] = paramUnknown(nbClass, param[[jP]])
     }
   }
   return(out)
@@ -135,8 +135,9 @@ paramCategorical = function(nbClass, var){
   out = vector(mode = 'character', length = nbClass)
   nbModality = length(val) / nbClass
   for (k in 1:nbClass){
-    propStr = paste(val[((k - 1) * nbModality + 1) :
-                      ( k      * nbModality + 1)], collapse = ', ')
+    firstInd = ((k - 1) * nbModality + 1)
+    lastInd =    k      * nbModality
+    propStr = paste(val[firstInd:lastInd], collapse = ', ')
     out[k] = paste0('"alpha = [', propStr, ']"')
   }
   return(out)
