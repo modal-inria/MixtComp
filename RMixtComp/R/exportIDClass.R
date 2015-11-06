@@ -1,0 +1,170 @@
+writeIDClass = function(data){
+  cat(exportIDClass(data),
+      file = "IDClass.js",
+      sep = "",
+      fill = FALSE,
+      labels = NULL,
+      append = FALSE)
+}
+
+exportIDClass = function(data){
+  headerStr = paste("var IDData =",
+                    "",
+                    "{",
+                    sep = "\n")
+  
+  classStr = paste0("nbClass: ", extractNbClass(data), ",")
+  
+  piStr = paste0("pi: [", extractPi(data), "],")
+  
+  nbVarStr = paste0("nbVar: ", extractNBVar(data), ",")
+  
+  varNameStr = paste0("varName: [", extractVarName(data), "],")
+  
+  varTypeStr = paste0("varType: [", extractVarType(data), "],")
+  
+  eStr = paste0("e: [", extractID(data), "],")
+  
+  pStr = paste0("p: [", extractParam(data), "]")
+  
+  footerStr = "}"
+  
+  out = paste(headerStr,
+              classStr,
+              piStr,
+              nbVarStr,
+              varNameStr,
+              varTypeStr,
+              eStr,
+              pStr,
+              footerStr,
+              sep = "\n\n")
+  return(out);
+}
+
+extractNbClass = function(data){
+  return(data$mixture$nbCluster)
+}
+
+extractPi = function(data){
+  out = paste0(data$variable$param$z_class$pi$stat[1,1])
+  for (k in 2:data$mixture$nbCluster) {
+    out = paste0(out, ", ", data$variable$param$z_class$pi$stat[k,1])
+  }
+  return(out)
+}
+
+extractNBVar = function(data){
+  return(length(data$variable$param) - 1)
+}
+
+extractVarName = function(data){
+  nameList = names(data$variable$type)
+  out = paste0('\'', nameList[2], '\'')
+  for (j in 3:length(nameList)) {
+    out = paste0(out, ', \'', nameList[j],'\'')
+  }
+  return(out)
+}
+
+extractVarType = function(data){
+  typeList = data$variable$type
+  out = paste0('\'', typeList[2], '\'')
+  for (j in 3:length(typeList)) {
+    out = paste0(out, ', \'', typeList[j],'\'')
+  }
+  return(out)
+}
+
+extractID = function(data){
+  IDClass = data$mixture$IDClass
+  nbClass = nrow(IDClass)
+  vecRow = vector(mode = 'character', length = nbClass)
+  for (k in 1:nbClass){
+    rowStr = paste(IDClass[k,], collapse = ', ')
+    vecRow[k] = paste0('[', rowStr, ']')
+  }
+  out = paste(vecRow, collapse = ',\n')
+  return(out)
+}
+
+extractParam = function(data){
+  param = paramTable(data)
+  nbClass = nrow(param)
+  vecRow = vector(mode = 'character', length = nbClass)
+  for (k in 1:nbClass){
+    rowStr = paste(param[k,], collapse = ', ')
+    vecRow[k] = paste0('[', rowStr, ']')
+  }
+  out = paste(vecRow, collapse = ',\n')
+  return(out)
+}
+
+paramTable = function(data){
+  nbClass = data$mixture$nbCluster
+  param = data$variable$param
+  nbVar = length(param)
+  typeList = data$variable$type
+  
+  out = matrix(data = "",
+               nrow = nbClass,
+               ncol = nbVar - 1)
+  
+  for (jP in 2:nbVar){
+    j = jP - 1
+    if (typeList[[j]] == 'Categorical_pjk'){
+      out[,j] = paramCategorical(nbClass, param[[j]])
+    }
+    else if (typeList[[j]] == 'Gaussian_sjk'){
+      out[,j] = paramGaussian(nbClass, param[[j]])
+    }
+    else if (typeList[[j]] == 'Poisson_k')
+    {
+      out[,j] = paramPoisson(nbClass, param[[j]])
+    }
+    else
+    {
+      out[,j] = paramUnknown(nbClass, param[[j]])
+    }
+  }
+  return(out)
+}
+
+paramCategorical = function(nbClass, var){
+  val = var$NumericalParam$stat[,1]
+  out = vector(mode = 'character', length = nbClass)
+  nbModality = length(val) / nbClass
+  for (k in 1:nbClass){
+    propStr = paste(val[((k - 1) * nbModality + 1) :
+                      ( k      * nbModality + 1)], collapse = ', ')
+    out[k] = paste0('"alpha = [', propStr, ']"')
+  }
+  return(out)
+}
+
+paramGaussian = function(nbClass, var){
+  val = var$NumericalParam$stat[,1]
+  out = vector(mode = 'character', length = nbClass)
+  for (k in 1:nbClass){
+    firstInd = (k - 1) * 2 + 1
+    out[k] = paste0('"mu = ', val[firstInd], ', sigma = ', val[firstInd + 1], '"')
+  }
+  return(out)
+}
+
+paramPoisson = function(nbClass, var){
+  val = var$NumericalParam$stat[,1]
+  out = vector(mode = 'character', length = nbClass)
+  for (k in 1:nbClass){
+    out[k] = paste0('"lambda = ', val[k], '"')
+  }
+  return(out)
+}
+
+paramUnknown <- function(nbClass, var){
+  out = vector(mode = 'character', length = nbClass)
+  for (k in 1:nbClass){
+    out[k] = '"Parameter output not implemented yet"'
+  }
+  return(out)
+}

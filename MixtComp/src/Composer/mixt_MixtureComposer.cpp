@@ -672,7 +672,7 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const
 
 void MixtureComposer::IDClass(Matrix<Real>& idc) const
 {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "MixtureComposer::IDClass" << std::endl;
 #endif
 
@@ -692,7 +692,7 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const
     }
   }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "ekj" << std::endl;
   std::cout << ekj << std::endl;
   std::cout << "idc" << std::endl;
