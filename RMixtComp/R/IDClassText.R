@@ -48,7 +48,7 @@ IDClass
 
 <h2>Relative importance of variables in classes</h2>
 
-<div id='IDTable'></div>
+<div id='IDTable' style='overflow-x: auto;'></div>
 
 <h2>Parameters (click)</h2>
 <p id='IDParamK'>Class:</p>
@@ -83,7 +83,7 @@ out += '</tr>'
 
 for (k = 0; k < IDData.nbClass; ++k) {
 out += '<tr>'
-out += '<th>k: ' + (k + 1) + ', pi: ' + IDData.pi[k] + '</th>'
+out += '<th style=\"white-space: nowrap;\">k: ' + (k + 1) + ', pi: ' + IDData.pi[k] + '</th>'
 
 for (j = 0; j < IDData.nbVar; ++j) {
 out += '<td ' + styleColor(IDData.e[k][j]) + '>' + IDData.e[k][j] + '</td>'
