@@ -1,8 +1,13 @@
 webDemoPredict <- function(folderName)
 {
-  logConn <- file(paste(folderName,
-                        "out/log.txt",
-                        sep = "/"))
+  logConn     <- file(paste(folderName,
+                            "out/log.txt",
+                            sep = "/"))
+  
+  IDClassConn <- file(paste(folderName,
+                            "out/IDClass.html",
+                            sep = "/"))
+  
   load(paste(folderName,
              "in/output.RData",
              sep = "/"))
@@ -43,10 +48,13 @@ webDemoPredict <- function(folderName)
                       "out/output.RData",
                       sep = "/"))
     
+    writeIDClassJS(res,
+                   IDClassConn)
+    
     if (nchar(res$mixture$warnLog) > 0)
     {
       cat(res$mixture$warnLog,
-          file = fileConn,
+          file = logConn,
           sep = "")
       quit(save = "no", status = 1)
     }
@@ -57,8 +65,7 @@ webDemoPredict <- function(folderName)
           sep = "")
       quit(save = "no", status = 0)
     }
-
-
   }
   close(logConn)
+  close(IDClassConn)
 }

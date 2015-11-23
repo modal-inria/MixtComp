@@ -1,8 +1,13 @@
 webDemoLearn <- function(folderName)
 {
-  logConn <- file(paste(folderName,
-                        "out/log.txt",
-                        sep = "/"))
+  logConn      <- file(paste(folderName,
+                             "out/log.txt",
+                             sep = "/"))
+  
+  IDClassConn <- file(paste(folderName,
+                            "out/IDClass.html",
+                            sep = "/"))
+  
   iniContent <- read.table(paste(folderName,
                                  "in/param.ini",
                                  sep = "/"),
@@ -45,10 +50,13 @@ webDemoLearn <- function(folderName)
                       "out/output.RData",
                       sep = "/"))
     
+    writeIDClassJS(res,
+                   IDClassConn)
+    
     if (nchar(res$mixture$warnLog) > 0)
     {
       cat(res$mixture$warnLog,
-          file = fileConn,
+          file = logConn,
           sep = "")
       quit(save = "no", status = 1)
     }
@@ -61,4 +69,5 @@ webDemoLearn <- function(folderName)
     }
   }
   close(logConn)
+  close(IDClassConn)
 }

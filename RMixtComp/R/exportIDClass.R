@@ -1,10 +1,17 @@
-writeIDClass = function(data){
-  cat(exportIDClass(data),
-      file = "IDClass.js",
-      sep = "",
+writeIDClassHTML = function(data,
+                            fileName){
+  cat(headerStr,
+      exportIDClass(data),
+      footerStr,
+      file = fileName,
+      sep = "\n",
       fill = FALSE,
       labels = NULL,
       append = FALSE)
+}
+
+pStr = function(x){
+  return(format(round(x, 1), nsmall = 1))
 }
 
 exportIDClass = function(data){
@@ -81,7 +88,7 @@ extractID = function(data){
   nbClass = nrow(IDClass)
   vecRow = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
-    rowStr = paste(IDClass[k,], collapse = ', ')
+    rowStr = paste(pStr(IDClass[k,]), collapse = ', ')
     vecRow[k] = paste0('[', rowStr, ']')
   }
   out = paste(vecRow, collapse = ',\n')
@@ -138,7 +145,7 @@ paramCategorical = function(nbClass, var){
     firstInd = ((k - 1) * nbModality + 1)
     lastInd =    k      * nbModality
     propStr = paste(val[firstInd:lastInd], collapse = ', ')
-    out[k] = paste0('"alpha = [', propStr, ']"')
+    out[k] = paste0('\'alpha = [', propStr, ']\'')
   }
   return(out)
 }
@@ -148,7 +155,7 @@ paramGaussian = function(nbClass, var){
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
     firstInd = (k - 1) * 2 + 1
-    out[k] = paste0('"mu = ', val[firstInd], ', sigma = ', val[firstInd + 1], '"')
+    out[k] = paste0('\'mu = ', val[firstInd], ', sigma = ', val[firstInd + 1], '\'')
   }
   return(out)
 }
@@ -157,7 +164,7 @@ paramPoisson = function(nbClass, var){
   val = var$NumericalParam$stat[,1]
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
-    out[k] = paste0('"lambda = ', val[k], '"')
+    out[k] = paste0('\'lambda = ', val[k], '\'')
   }
   return(out)
 }
@@ -165,7 +172,7 @@ paramPoisson = function(nbClass, var){
 paramUnknown <- function(nbClass, var){
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
-    out[k] = '"Parameter output not implemented yet"'
+    out[k] = '\'Parameter output not implemented yet\''
   }
   return(out)
 }
