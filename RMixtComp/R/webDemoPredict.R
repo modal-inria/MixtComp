@@ -48,8 +48,8 @@ webDemoPredict <- function(folderName)
                       "out/output.RData",
                       sep = "/"))
     
-    writeIDClassJS(res,
-                   IDClassConn)
+    writeIDClassHTML(res,
+                     IDClassConn)
     
     if (nchar(res$mixture$warnLog) > 0)
     {
