@@ -3,15 +3,20 @@ dataGeneratorNewTest <- function() {
   
   var <- list()
   var$z_class <- list() # z_class must be the first variable in the list
+  var$Rank1 <- list()
   
   var$z_class$name <- "z_class"
   var$z_class$type <- "LatentClass"
   var$z_class$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
   
+  var$Rank1$name <- "Rank1"
+  var$Rank1$type <- "Rank"
+  var$Rank1$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
+  
   matStr <- dataGeneratorNew("dataGenNew/learn", # prefix
-                   500, # nbSample
-                   proportionMissing,
-                   var) # param
+                             500, # nbSample
+                             proportionMissing,
+                             var) # param
   
   write.table(matStr,
               file = "dataGenNew/learn/data.csv",
@@ -69,75 +74,19 @@ dataGeneratorNew <- function(prefix,
     else{ # z is observed
       dataStr[i, 1] = paste(z[i])
     }
+    
+    for (j in 2:nbVar) { # export values for other types
+      if (var[[j]]$type == "Rank") {
+        dataStr[i, j] <- rankGenerator()
+      }
+    }
   }
   
   matStr <- rbind(headerStr, dataStr)
   
   return(matStr)
-  
-  #   listMissing <- list()
-  #   nbMissingVal <- 0
-  #   
-  #   zGenerator(prefix,
-  #              z,
-  #              nbClasses,
-  #              missingZ)
-  #   
-  #   if (nbVariableCat > 0)
-  #   {
-  #     retList <- categoricalGenerator(prefix,
-  #                                     nbSamples,
-  #                                     nbVariableCat,
-  #                                     nbModalities,
-  #                                     z,
-  #                                     categoricalParams,
-  #                                     missingCategorical)
-  #     listMissing <- union(listMissing, retList[["listMissingInd"]])
-  #     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
-  #   }
-  #   
-  #   if (nbVariableGauss > 0)
-  #   {
-  #     retList <- gaussianGenerator(prefix,
-  #                                  nbSamples,
-  #                                  nbVariableGauss,
-  #                                  z,
-  #                                  gaussianParams,
-  #                                  missingGaussian)
-  #     listMissing <- union(listMissing, retList[["listMissingInd"]])
-  #     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
-  #   }
-  #   
-  #   if (nbVariablePoisson > 0)
-  #   {
-  #     retList <- poissonGenerator(prefix,
-  #                                 nbSamples,
-  #                                 nbVariablePoisson,
-  #                                 z,
-  #                                 poissonParams,
-  #                                 missingPoisson)
-  #     listMissing <- union(listMissing, retList[["listMissingInd"]])
-  #     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
-  #   }
-  #   
-  #   nbMissing <- length(listMissing)
-  #   nbTotalVal <- (nbSamples * (nbVariableCat + nbVariableGauss + nbVariablePoisson))
-  #   
-  #   fileConn <- file(paste(prefix,
-  #                          "dataStat.txt",
-  #                          sep = "/"))
-  #   cat("Missing individuals / Total individuals: ", nbMissing, " / ", nbSamples, "\n",
-  #       "Ratio missing individuals: ", nbMissing / nbSamples, "\n",
-  #       "Missing values / Total values: ", nbMissingVal, " / ", nbTotalVal, "\n",
-  #       "Ratio missing values: ", nbMissingVal / nbTotalVal, "\n",
-  #       file = fileConn,
-  #       sep = "")
-  #   close(fileConn)
-  #   
-  #   write.table(z,
-  #               file = paste(prefix,
-  #                            "classIn.csv",
-  #                            sep = "/"),
-  #               row.names=FALSE,
-  #               col.names=FALSE)
+}
+
+rankGenerator <- function() {
+  return("generator to be implemented")
 }
