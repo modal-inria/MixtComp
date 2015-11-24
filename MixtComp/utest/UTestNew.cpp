@@ -41,7 +41,7 @@ TEST(Matrix, sort)
 
   a.sort();
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "a: " << itString(a) << std::endl;
 #endif
 

@@ -40,53 +40,63 @@ ClassSampler::ClassSampler(const MixtureComposer& composer,
 
 void ClassSampler::sStepCheck(int i)
 {
+#ifdef MC_DEBUG
+    std::cout << "ClassSampler::sStepCheck" << std::endl;
+#endif
   if (zi_.misData_(i).first != present_)
   {
     int sampleVal = -1; // initialized with dummy value
-
-#ifdef MC_DEBUG
-    std::cout << "present_" << std::endl;
-#endif
 
     switch(zi_.misData_(i).first)
     {
       case missing_:
       {
-        RowVector<Real> modalities(nbClass_);
-        for (zi_.data_(i) = 0; zi_.data_(i) < nbClass_; ++zi_.data_(i)) // z_i changed in place to take all possible values
+        RowVector<Real> modalities(nbClass_, 0.);
+        RowVector<int> condition(nbClass_, 0);
+
+        for (int k = 0; k < nbClass_; ++k) // z_i changed in place to take all possible values
         {
-          modalities(zi_.data_(i)) = tik_(i,
-                                          zi_.data_(i)) * composer_.checkSampleCondition(); // checkSampleCondition value is 1 or 0, reflecting the fact that conditions on data are verified or not
+          zi_.data_(i) = k;
+          condition(k) = composer_.checkSampleCondition();
+          modalities(k) = tik_(i, k) * condition(k); // checkSampleCondition value is 1 or 0, reflecting the fact that conditions on data are verified or not
         }
-#ifdef MC_DEBUG
-        std::cout << "ClassSampler::sStepCheck, missing_, i: " << i << ", modalities, raw: " << modalities << std::endl;
-#endif
-        modalities = modalities / modalities.sum();
-        sampleVal = multi_.sample(modalities);
-#ifdef MC_DEBUG
-        std::cout << "ClassSampler::sStepCheck, missing_, i: " << i << ", modalities: " << modalities << ", sampleVal: " << sampleVal << std::endl;
-#endif
+
+        if (modalities.maxCoeff() < epsilon) // either tik or condition is null, for every class
+        {
+          condition.maxCoeff(&sampleVal);
+        }
+        else
+        {
+          modalities = modalities / modalities.sum();
+          sampleVal = multi_.sample(modalities);
+        }
       }
       break;
 
       case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
       {
-#ifdef MC_DEBUG
-        std::cout << "ClassSampler::sStepCheck, missingFiniteValues_, i: " << i << std::endl;
-#endif
         RowVector<Real> modalities(nbClass_, 0.);
+        RowVector<int> condition(nbClass_, 0);
+
         for(std::vector<int>::const_iterator currMod = zi_.misData_(i).second.begin();
             currMod != zi_.misData_(i).second.end();
             ++currMod)
         {
-#ifdef MC_DEBUG
-          std::cout << "\tcurrMod: " << *currMod << std::endl;
-#endif
-          zi_.data_(i) = *currMod;
-          modalities(*currMod) = tik_(i, *currMod) * composer_.checkSampleCondition();
+          int k = *currMod;
+          zi_.data_(i) = k;
+          condition(k) = composer_.checkSampleCondition();
+          modalities(k) = tik_(i, k) * condition(k);
         }
-        modalities = modalities / modalities.sum();
-        sampleVal = multi_.sample(modalities);
+
+        if (modalities.maxCoeff() < epsilon) // either tik or condition is null, for every class
+        {
+          condition.maxCoeff(&sampleVal);
+        }
+        else
+        {
+          modalities = modalities / modalities.sum();
+          sampleVal = multi_.sample(modalities);
+        }
       }
       break;
 

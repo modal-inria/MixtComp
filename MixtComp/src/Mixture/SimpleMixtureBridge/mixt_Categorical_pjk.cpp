@@ -229,8 +229,12 @@ int Categorical_pjk::checkSampleCondition(std::string* warnLog) const
   {
     for (int p = 0; p < nbModality_; ++p)
     {
-      if (modality(k, p) == 0) // each modality must be observerved at least once per class
+      if (modality(k, p) == 0) // each modality must be observed at least once per class
       {
+#ifdef MC_DEBUG
+        std::cout << "k: " << k << ", p: " << p << ", unobserved modality" << std::endl;
+#endif
+
         if (warnLog == NULL)
         {
           proba = 0;

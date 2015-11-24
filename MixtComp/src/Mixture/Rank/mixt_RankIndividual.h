@@ -107,7 +107,7 @@ class RankIndividual
     void yGen();
 
     /**
-     * Sample an individual from parameters, conditionaly to the current presentation order y_
+     * Sample an individual from parameters, conditionally to the current presentation order y_
      * @param mu central rank
      * @param pi precision
      * @return log-probability of the sampled value
@@ -158,7 +158,8 @@ class RankIndividual
     /** log(1 / n!) to normalize completed probability */
     Real lnFacNbPos_;
 
-    /** Description of the observed data, one MisVal per position in the rank */
+    /** Description of the observed data, one MisVal per position in the rank. Should
+     * this be implemented in "ordering" presentation ? */
     Vector<MisVal> obsData_;
 
     /** Completed individual, position -> modality representation */

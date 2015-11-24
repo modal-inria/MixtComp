@@ -75,7 +75,7 @@ std::string SemStrategy::run()
       for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
       {
 #ifdef MC_DEBUG
-        std::cout << "SemStrategy::run, n: " << n << std::endl;
+        std::cout << "SemStrategy::run, initialization, n: " << n << std::endl;
 #endif
 
         p_composer_->intializeMixtureParameters(); // reset prop_, tik_ and zi_.data_

@@ -195,7 +195,7 @@ int Poisson_k::checkSampleCondition(std::string* warnLog) const
     {
 
 #ifdef MC_DEBUG
-      std::cout << "Poisson_k::checkSampleCondition, nonZeroPresent(k) == false" << std::endl;
+      std::cout << "Poisson_k::checkSampleCondition, k: " << k << ", nonZeroPresent(k) == false" << std::endl;
 #endif
 
       if (warnLog == NULL)

@@ -428,7 +428,7 @@ std::cout << (*it)->idName() << std::endl;
 int MixtureComposer::checkSampleCondition(std::string* warnLog) const
 {
   int probaCondition = 1; // proba of condition on data given the completed data
-  if (warnLog == NULL)
+  if (warnLog == NULL) // if no description of the error is expected, to speed the treatment
   {
     probaCondition *= checkNbIndPerClass();
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
@@ -445,7 +445,7 @@ int MixtureComposer::checkSampleCondition(std::string* warnLog) const
       probaCondition *= currProba;
     }
   }
-  else
+  else // if error description is expected
   {
     std::string indLog;
     probaCondition *= checkNbIndPerClass(&indLog);
@@ -453,8 +453,16 @@ int MixtureComposer::checkSampleCondition(std::string* warnLog) const
     for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
     {
       std::string mixtLog;
-      probaCondition *= (*it)->checkSampleCondition(&mixtLog); // the global warnLog is not passed directly to the mixture, to avoid accidental wiping
+      int currProba = (*it)->checkSampleCondition(&mixtLog); // the global warnLog is not passed directly to the mixture, to avoid accidental wiping
+      probaCondition *= currProba;
       *warnLog += mixtLog;
+
+#ifdef MC_DEBUG
+      if (currProba == 0)
+      {
+        std::cout << "MixtureComposer::checkSampleCondition, (*it)->idName(): " << (*it)->idName() << " has a 0 checkSampleCondition" << std::endl;
+      }
+#endif
     }
   }
   return probaCondition;

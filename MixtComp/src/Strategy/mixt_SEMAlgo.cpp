@@ -65,6 +65,10 @@ void SEMAlgo::run(RunType runType,
   int iter = 0;
   while (iter < nbIter_)
   {
+#ifdef MC_DEBUG
+    std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
+#endif
+
     myTimer.iteration(iter, nbIter_ - 1);
     writeProgress(group,
                   groupMax,

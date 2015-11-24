@@ -112,7 +112,7 @@ Real RankIndividual::xGen(const RankVal& mu,
   Real goodlp = std::log(     pi);
   Real badlp  = std::log(1. - pi);
 
-  std::vector<int> x(1); // vector is suboptimal for insertion, but provides contiguous memory storage which will fit in CPU cache. std::list on the contrary does not guarantee contiguity for example.
+  std::vector<int> x(1); // vector is suboptimal for insertion, but provides contiguous memory storage which will fit in CPU cache. std::list on the contrary does not guarantee contiguity.
   x.reserve(nbPos_);
 
   x[0] = y_(0);
