@@ -1,15 +1,6 @@
 webDemoLearn <- function(folderName,
-                         webFolderName = "")
+                         webFolderName)
 {
-  if (webFolderName == "") # legacy code, no web folder name provided, output directory is then created on-the-fly
-  {
-    webFolderName = paste(folderName,
-                          "web",
-                          sep = "/")
-    dir.create(webFolderName,
-               showWarnings = FALSE)
-  }
-  
   logConn      <- file(paste(folderName,
                              "out/log.txt",
                              sep = "/"))
