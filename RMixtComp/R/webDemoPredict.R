@@ -4,9 +4,13 @@ webDemoPredict <- function(folderName)
                             "out/log.txt",
                             sep = "/"))
   
-  IDClassConn <- file(paste(folderName,
-                            "out/IDClass.html",
-                            sep = "/"))
+  IDHTMLFile <- paste(folderName,
+                      "out/IDClass.html",
+                      sep = "/")
+  
+  IDJSONFile <- paste(folderName,
+                      "web/IDData.json",
+                      sep = "/")
   
   load(paste(folderName,
              "in/output.RData",
@@ -49,7 +53,8 @@ webDemoPredict <- function(folderName)
                       sep = "/"))
     
     writeIDClassHTML(res,
-                     IDClassConn)
+                     IDHTMLFile,
+                     IDJSONFile)
     
     if (nchar(res$mixture$warnLog) > 0)
     {
@@ -67,5 +72,4 @@ webDemoPredict <- function(folderName)
     }
   }
   close(logConn)
-  close(IDClassConn)
 }
