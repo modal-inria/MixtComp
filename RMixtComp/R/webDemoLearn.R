@@ -1,5 +1,15 @@
-webDemoLearn <- function(folderName)
+webDemoLearn <- function(folderName,
+                         webFolderName = "")
 {
+  if (webFolderName == "") # legacy code, no web folder name provided, output directory is then created on-the-fly
+  {
+    webFolderName = paste(folderName,
+                          "web",
+                          sep = "/")
+    dir.create(webFolderName,
+               showWarnings = FALSE)
+  }
+  
   logConn      <- file(paste(folderName,
                              "out/log.txt",
                              sep = "/"))
@@ -8,8 +18,8 @@ webDemoLearn <- function(folderName)
                       "out/IDClass.html",
                       sep = "/")
   
-  IDJSONFile <- paste(folderName,
-                      "web/IDData.json",
+  IDJSONFile <- paste(webFolderName,
+                      "IDData.json",
                       sep = "/")
   
   iniContent <- read.table(paste(folderName,
