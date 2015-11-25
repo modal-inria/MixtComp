@@ -1,6 +1,7 @@
 writeIDClassHTML = function(data,
                             fileName){
   cat(headerStr,
+      varStr,
       exportIDClass(data),
       footerStr,
       file = fileName,
@@ -10,31 +11,30 @@ writeIDClassHTML = function(data,
       append = FALSE)
 }
 
+varStr = 'var IDData ='
+
 pStr = function(x){
   return(format(round(x, 1), nsmall = 1))
 }
 
 exportIDClass = function(data){
-  headerStr = paste("var IDData =",
-                    "",
-                    "{",
-                    sep = "\n")
+  headerStr = paste('{')
   
-  classStr = paste0("nbClass: ", extractNbClass(data), ",")
+  classStr = paste0('nbClass: ', extractNbClass(data), ',')
   
-  piStr = paste0("pi: [", extractPi(data), "],")
+  piStr = paste0('pi: [', extractPi(data), '],')
   
-  nbVarStr = paste0("nbVar: ", extractNBVar(data), ",")
+  nbVarStr = paste0('nbVar: ', extractNBVar(data), ',')
   
-  varNameStr = paste0("varName: [", extractVarName(data), "],")
+  varNameStr = paste0('varName: [', extractVarName(data), '],')
   
-  varTypeStr = paste0("varType: [", extractVarType(data), "],")
+  varTypeStr = paste0('varType: [', extractVarType(data), '],')
   
-  eStr = paste0("e: [", extractID(data), "],")
+  eStr = paste0('e: [', extractID(data), '],')
   
-  pStr = paste0("p: [", extractParam(data), "]")
+  pStr = paste0('p: [', extractParam(data), ']')
   
-  footerStr = "}"
+  footerStr = '}'
   
   out = paste(headerStr,
               classStr,
@@ -45,7 +45,7 @@ exportIDClass = function(data){
               eStr,
               pStr,
               footerStr,
-              sep = "\n\n")
+              sep = '\n\n')
   return(out);
 }
 
@@ -56,7 +56,7 @@ extractNbClass = function(data){
 extractPi = function(data){
   out = paste0(data$variable$param$z_class$pi$stat[1,1])
   for (k in 2:data$mixture$nbCluster) {
-    out = paste0(out, ", ", data$variable$param$z_class$pi$stat[k,1])
+    out = paste0(out, ', ', data$variable$param$z_class$pi$stat[k,1])
   }
   return(out)
 }
@@ -67,18 +67,18 @@ extractNBVar = function(data){
 
 extractVarName = function(data){
   nameList = names(data$variable$type)
-  out = paste0('\'', nameList[2], '\'')
+  out = paste0('"', nameList[2], '"')
   for (j in 3:length(nameList)) {
-    out = paste0(out, ', \'', nameList[j],'\'')
+    out = paste0(out, ', "', nameList[j],'"')
   }
   return(out)
 }
 
 extractVarType = function(data){
   typeList = data$variable$type
-  out = paste0('\'', typeList[2], '\'')
+  out = paste0('"', typeList[2], '"')
   for (j in 3:length(typeList)) {
-    out = paste0(out, ', \'', typeList[j],'\'')
+    out = paste0(out, ', "', typeList[j],'"')
   }
   return(out)
 }
@@ -145,7 +145,7 @@ paramCategorical = function(nbClass, var){
     firstInd = ((k - 1) * nbModality + 1)
     lastInd =    k      * nbModality
     propStr = paste(val[firstInd:lastInd], collapse = ', ')
-    out[k] = paste0('\'alpha = [', propStr, ']\'')
+    out[k] = paste0('"alpha = [', propStr, ']"')
   }
   return(out)
 }
@@ -155,7 +155,7 @@ paramGaussian = function(nbClass, var){
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
     firstInd = (k - 1) * 2 + 1
-    out[k] = paste0('\'mu = ', val[firstInd], ', sigma = ', val[firstInd + 1], '\'')
+    out[k] = paste0('"mu = ', val[firstInd], ', sigma = ', val[firstInd + 1], '"')
   }
   return(out)
 }
@@ -164,7 +164,7 @@ paramPoisson = function(nbClass, var){
   val = var$NumericalParam$stat[,1]
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
-    out[k] = paste0('\'lambda = ', val[k], '\'')
+    out[k] = paste0('"lambda = ', val[k], '"')
   }
   return(out)
 }
@@ -172,7 +172,7 @@ paramPoisson = function(nbClass, var){
 paramUnknown <- function(nbClass, var){
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
-    out[k] = '\'Parameter output not implemented yet\''
+    out[k] = '"Parameter output not implemented yet"'
   }
   return(out)
 }
