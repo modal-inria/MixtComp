@@ -1,19 +1,19 @@
-writeIDClass = function(data,
-                        fileNameHTML,
-                        fileNameJSON){
-  jsonStr = exportIDClass(data)
-  
+writeIDClassHTML = function(data,
+                            fileNameHTML) {
   cat(headerStr,
       varStr,
-      jsonStr,
+      exportIDClass(data),
       footerStr,
       file = fileNameHTML,
       sep = "\n",
       fill = FALSE,
       labels = NULL,
       append = FALSE)
-  
-  cat(jsonStr,
+}
+
+writeIDClassJSON = function(data,
+                            fileNameJSON) {
+  cat(exportIDClass(data),
       file = fileNameJSON,
       sep = "\n",
       fill = FALSE,
