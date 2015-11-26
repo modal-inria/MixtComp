@@ -4,6 +4,9 @@ dataGeneratorNewTest <- function() {
   var <- list()
   var$z_class <- list() # z_class must be the first variable in the list
   var$Rank1 <- list()
+  var$Rank1$param <- list()
+  var$Rank1$param[[1]] <- list()
+  var$Rank1$param[[2]] <- list()
   
   var$z_class$name <- "z_class"
   var$z_class$type <- "LatentClass"
@@ -11,7 +14,10 @@ dataGeneratorNewTest <- function() {
   
   var$Rank1$name <- "Rank1"
   var$Rank1$type <- "Rank"
-  var$Rank1$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
+  var$Rank1$param[[1]]$mu <- c(3, 4, 2, 1)
+  var$Rank1$param[[1]]$pi <- 0.8
+  var$Rank1$param[[2]]$mu <- c(1, 3, 2, 4)
+  var$Rank1$param[[2]]$pi <- 0.7
   
   res <- dataGeneratorNew("dataGenNew/learn", # prefix
                           500, # nbSample
@@ -57,8 +63,7 @@ dataGeneratorNew <- function(prefix,
                     var$z_class$param)
   z <- vector("integer",
               nbInd)
-  for (i in 1:nbInd)
-  {
+  for (i in 1:nbInd) {
     z[i] <- match(1, zDis[, i])
   }
   
@@ -84,13 +89,13 @@ dataGeneratorNew <- function(prefix,
     if (presentVar[1] == 1) { # z is missing
       dataStr[i, 1] = "?"
     }
-    else{ # z is observed
+    else { # z is observed
       dataStr[i, 1] = paste(z[i])
     }
     
     for (j in 2:nbVar) { # export values for other types
       if (var[[j]]$type == "Rank") {
-        dataStr[i, j] <- rankGenerator()
+        dataStr[i, j] <- rankGenerator(var[[j]]$param[[z[i]]])
       }
     }
   }
@@ -111,6 +116,9 @@ dataGeneratorNew <- function(prefix,
               descriptor = descMat))
 }
 
-rankGenerator <- function() {
-  return("generator to be implemented")
+rankGenerator <- function(param) {
+  muStr <- paste0(param$mu, collapse = ", ")
+  dataStr <- paste0("Data generated using mu: ", muStr,
+                    ", pi: ", param$pi)
+  return(dataStr)
 }
