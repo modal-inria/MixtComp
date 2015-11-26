@@ -1,12 +1,12 @@
 webDemoPredict <- function(folderName)
 {
-  logConn     <- file(paste(folderName,
-                            "out/log.txt",
-                            sep = "/"))
+  logConn      <- file(paste(folderName,
+                             "out/log.txt",
+                             sep = "/"))
   
-  IDClassConn <- file(paste(folderName,
-                            "out/IDClass.html",
-                            sep = "/"))
+  IDHTMLFile <- paste(folderName,
+                      "out/IDClass.html",
+                      sep = "/")
   
   load(paste(folderName,
              "in/output.RData",
@@ -49,7 +49,16 @@ webDemoPredict <- function(folderName)
                       sep = "/"))
     
     writeIDClassHTML(res,
-                     IDClassConn)
+                     IDHTMLFile)
+    
+    webFolderName <- Sys.getenv("WORKER_WEB_FOLDER")
+    if (nchar(webFolderName) > 0) {
+      IDJSONFile <- paste(webFolderName,
+                          "IDData.json",
+                          sep = "/")
+      writeIDClassJSON(res,
+                       IDJSONFile)
+    }
     
     if (nchar(res$mixture$warnLog) > 0)
     {
@@ -67,5 +76,4 @@ webDemoPredict <- function(folderName)
     }
   }
   close(logConn)
-  close(IDClassConn)
 }

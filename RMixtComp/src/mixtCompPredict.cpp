@@ -25,6 +25,7 @@
 #include "mixt_DataExtractorR.h"
 #include "mixt_ParamExtractorR.h"
 #include "mixt_ParamSetterR.h"
+#include "mixt_Function.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 #include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/Various/mixt_Timer.h"
@@ -142,6 +143,10 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
         mcMixture["runTime"] = totalTimer.top("end of run");
         mcMixture["nbInd"] = composer.nbInd();
         mcMixture["mode"] = "predict";
+
+        Rcpp::NumericMatrix idc;
+        mixt::IDClass(composer, idc);
+        mcMixture["IDClass"] = idc;
       }
     }
   }

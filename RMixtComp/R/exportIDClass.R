@@ -1,10 +1,20 @@
 writeIDClassHTML = function(data,
-                            fileName){
+                            fileNameHTML) {
   cat(headerStr,
       varStr,
       exportIDClass(data),
       footerStr,
-      file = fileName,
+      file = fileNameHTML,
+      sep = "\n",
+      fill = FALSE,
+      labels = NULL,
+      append = FALSE)
+}
+
+writeIDClassJSON = function(data,
+                            fileNameJSON) {
+  cat(exportIDClass(data),
+      file = fileNameJSON,
       sep = "\n",
       fill = FALSE,
       labels = NULL,
@@ -145,7 +155,7 @@ paramCategorical = function(nbClass, var){
     firstInd = ((k - 1) * nbModality + 1)
     lastInd =    k      * nbModality
     propStr = paste(val[firstInd:lastInd], collapse = ', ')
-    out[k] = paste0('"alpha = [', propStr, ']"')
+    out[k] = paste0('{"alpha" : "[', propStr, ']"}')
   }
   return(out)
 }
@@ -155,7 +165,7 @@ paramGaussian = function(nbClass, var){
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
     firstInd = (k - 1) * 2 + 1
-    out[k] = paste0('"mu = ', val[firstInd], ', sigma = ', val[firstInd + 1], '"')
+    out[k] = paste0('{"mu" : "', val[firstInd], '", "sigma" : "', val[firstInd + 1], '"}')
   }
   return(out)
 }
@@ -164,7 +174,7 @@ paramPoisson = function(nbClass, var){
   val = var$NumericalParam$stat[,1]
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
-    out[k] = paste0('"lambda = ', val[k], '"')
+    out[k] = paste0('{"lambda" : "', val[k], '"}')
   }
   return(out)
 }

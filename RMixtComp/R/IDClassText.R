@@ -114,7 +114,7 @@ console.log('k: ' + k + ', j: ' + j)
 $('#IDParamK').text('Class: ' + (k + 1))
 $('#IDParamVar').text('Variable: ' + IDData.varName[j])
 $('#IDParamVarType').text('Type: ' + IDData.varType[j])
-$('#IDParamParameters').text('Parameters: ' + IDData.p[k][j])
+$('#IDParamParameters').text('Parameters: ' + JSON.stringify(IDData.p[k][j]))
 
 elem.css('border-color', 'black')
 }
@@ -128,7 +128,7 @@ console.log('k: ' + k + ', j: ' + j)
 $('#IDParamKHover').text('Class: ' + (k + 1))
 $('#IDParamVarHover').text('Variable: ' + IDData.varName[j])
 $('#IDParamVarTypeHover').text('Type: ' + IDData.varType[j])
-$('#IDParamParametersHover').text('Parameters: ' + IDData.p[k][j])
+$('#IDParamParametersHover').text('Parameters: ' + JSON.stringify(IDData.p[k][j]))
 }
 
 $('td').hover(
