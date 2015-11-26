@@ -122,3 +122,14 @@ rankGenerator <- function(param) {
                     ", pi: ", param$pi)
   return(dataStr)
 }
+
+switchRepresentation <- function(inRank) {
+  nbMod <- length(inRank)
+  outRank <- vector(mode = "integer", length = nbMod)
+  
+  for (p in 1:nbMod) {
+    outRank[inRank[p]] = p;
+  }
+  
+  return(outRank)
+}
