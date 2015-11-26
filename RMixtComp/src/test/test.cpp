@@ -47,8 +47,13 @@ int main(int argc, char *argv[])
 //  R.parseEvalQ("webDemoLearn(\"/home/elvinz/Data/workspace/mixtcomp.master/RMixtComp/dataServer/exp_68\")");
 //  R.parseEvalQ("webDemoLearn(\"/home/elvinz/Data/analysis/150702 - crash paugam\")");
 
-  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/analysis/151123 - MixtComp crash\")");
-  R.parseEvalQ("source(\"main.R\")");
+//  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/analysis/151123 - MixtComp crash\")");
+//  R.parseEvalQ("source(\"main.R\")");
+
+  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/analysis/151126 - test webDemo\")");
+  R.parseEvalQ("library(RMixtComp)");
+  R.parseEvalQ("webDemoLearn(\".\")");
+  R.parseEvalQ("webDemoPredict(\".\")");
 
   exit(0);
 }
