@@ -13,13 +13,27 @@ dataGeneratorNewTest <- function() {
   var$Rank1$type <- "Rank"
   var$Rank1$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
   
-  matStr <- dataGeneratorNew("dataGenNew/learn", # prefix
-                             500, # nbSample
-                             proportionMissing,
-                             var) # param
+  res <- dataGeneratorNew("dataGenNew/learn", # prefix
+                          500, # nbSample
+                          proportionMissing,
+                          var) # param
   
-  write.table(matStr,
+  write.table(res$data,
               file = "dataGenNew/learn/data.csv",
+              append = FALSE,
+              quote = FALSE,
+              sep = ";",
+              eol = "\n",
+              na = "NA",
+              dec = ".",
+              row.names = FALSE,
+              col.names = FALSE,
+              qmethod = c("escape",
+                          "double"),
+              fileEncoding = "")
+  
+  write.table(res$desc,
+              file = "dataGenNew/learn/desc.csv",
               append = FALSE,
               quote = FALSE,
               sep = ";",
@@ -49,12 +63,11 @@ dataGeneratorNew <- function(prefix,
   }
   
   headerStr <- matrix(data = "",
-                      nrow = 2,
+                      nrow = 1,
                       ncol = nbVar)
   
   for (j in 1:nbVar) {
     headerStr[1, j] <- var[[j]]$name
-    headerStr[2, j] <- var[[j]]$type
   }
   
   dataStr <- matrix(data = "",
@@ -82,9 +95,20 @@ dataGeneratorNew <- function(prefix,
     }
   }
   
-  matStr <- rbind(headerStr, dataStr)
+  dataMat <- rbind(headerStr, dataStr)
   
-  return(matStr)
+  descStr <- matrix(data = "",
+                    nrow = 1,
+                    ncol = nbVar)
+  
+  for (j in 1:nbVar) {
+    descStr[1, j] <- var[[j]]$type
+  }
+  
+  descMat <- rbind(headerStr, descStr)
+  
+  return(list(data = dataMat,
+              descriptor = descMat))
 }
 
 rankGenerator <- function() {
