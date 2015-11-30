@@ -43,7 +43,7 @@ class MisValParser
     /** Note that https://regex101.com/ REALLY helps settings those regular expressions. */
     MisValParser(Type offset) :
         offset_(offset),
-        strNumber_("((?:(?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))(?:e-\\d+)?)"),
+        strNumber_("((?:(?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))(?:(?:e|E)-\\d+)?)"),
         strQMark_("(\\?)"),
         strBlank_(" *"),
         strLeftPar_(" *\\[ *"),
