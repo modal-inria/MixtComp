@@ -30,19 +30,19 @@ pStr = function(x){
 exportIDClass = function(data){
   headerStr = paste('{')
   
-  classStr = paste0('nbClass: ', extractNbClass(data), ',')
+  classStr = paste0('"nbClass": ', extractNbClass(data), ',')
   
-  piStr = paste0('pi: [', extractPi(data), '],')
+  piStr = paste0('"pi": [', extractPi(data), '],')
   
-  nbVarStr = paste0('nbVar: ', extractNBVar(data), ',')
+  nbVarStr = paste0('"nbVar": ', extractNBVar(data), ',')
   
-  varNameStr = paste0('varName: [', extractVarName(data), '],')
+  varNameStr = paste0('"varName": [', extractVarName(data), '],')
   
-  varTypeStr = paste0('varType: [', extractVarType(data), '],')
+  varTypeStr = paste0('"varType": [', extractVarType(data), '],')
   
-  eStr = paste0('e: [', extractID(data), '],')
+  eStr = paste0('"e": [', extractID(data), '],')
   
-  pStr = paste0('p: [', extractParam(data), ']')
+  pStr = paste0('"p": [', extractParam(data), ']')
   
   footerStr = '}'
   
