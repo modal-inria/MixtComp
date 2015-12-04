@@ -28,8 +28,9 @@ int main(int argc, char *argv[])
 {
   RInside R(argc, argv);              // create an embedded R instance
 //  R.parseEvalQ("library(methods)");
+    R.parseEvalQ("library(RMixtComp)");
 
-//  R.parseEvalQ("testGenDataLearn()");
+  R.parseEvalQ("testRank()");
 //  R.parseEvalQ("testLearnPredict()");
 //  R.parseEvalQ("testAERES()");
 
@@ -50,10 +51,9 @@ int main(int argc, char *argv[])
 //  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/analysis/151123 - MixtComp crash\")");
 //  R.parseEvalQ("source(\"main.R\")");
 
-  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/analysis/151126 - test webDemo\")");
-  R.parseEvalQ("library(RMixtComp)");
-  R.parseEvalQ("webDemoLearn(\".\")");
-  R.parseEvalQ("webDemoPredict(\".\")");
+//  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/analysis/151126 - test webDemo\")");
+//  R.parseEvalQ("webDemoLearn(\".\")");
+//  R.parseEvalQ("webDemoPredict(\".\")");
 
   exit(0);
 }
