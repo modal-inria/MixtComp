@@ -421,29 +421,14 @@ void BOSPath::forwardSamplePath(int mu,
     std::cout << "BOSPath::forwardSamplePath, nbSample: " << nbSample << std::endl;
 #endif
 
-    for (int n = 0; n < nbNode_; ++n)
+    for (int n = 0; n < nbNode_ - 1; ++n)
     {
       BOSNode& currNode = c_(n);
 
-      int nbElem = seg(1) - seg(0) + 1;
-      currProba.resize(nbElem);
-      for (int iY = 0;
-           iY < nbElem;
-           ++iY)
-      {
-        currNode.y_ = iY + seg(0);
-        currProba(iY) = std::exp(currNode.yLogProba(seg));
-      }
-      currNode.y_ = multi_.sample(currProba) + seg(0);
+      currNode.y_ = multi_.sampleInt(seg(0), seg(1));
       currNode.partition(seg);
 
-      currProba.resize(2);
-      for (int z = 0; z < 2; ++z)
-      {
-        currNode.z_ = z;
-        currProba(z) = std::exp(currNode.zLogProba(pi));
-      }
-      currNode.z_ = multi_.sample(currProba);
+      currNode.z_ = multi_.sampleBinomial(pi);
 
       currProba.resize(currNode.partSize_);
       for (int e = 0; e < currNode.partSize_; ++e)

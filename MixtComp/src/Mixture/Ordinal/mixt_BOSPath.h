@@ -124,7 +124,9 @@ class BOSPath
     void initPath();
 
     /**
-     * Performs a single step of Gibbs sampling across all elements in the search path
+     * Performs a single step of Gibbs sampling across all elements in the search path. sizeTupleMax provides
+     * the number of tuples to be sampled simultaneously. A minimum of two seems to be necessary to have a mixing
+     * Markov chain.
      *
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution

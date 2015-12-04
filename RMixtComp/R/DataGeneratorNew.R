@@ -1,28 +1,23 @@
 dataGeneratorNewTest <- function() {
   proportionMissing <- 0.2
+  nbInd <- 100
   
   var <- list()
-  var$z_class <- list() # z_class must be the first variable in the list
-  var$Rank1 <- list()
-  var$Rank1$param <- list()
-  var$Rank1$param[[1]] <- list()
-  var$Rank1$param[[2]] <- list()
   
-  var$z_class$name <- "z_class"
-  var$z_class$type <- "LatentClass"
-  var$z_class$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
-  
-  var$Rank1$name <- "Rank1"
-  var$Rank1$type <- "Rank"
-  var$Rank1$param[[1]]$mu <- c(3, 4, 2, 1)
-  var$Rank1$param[[1]]$pi <- 0.8
-  var$Rank1$param[[2]]$mu <- c(1, 3, 2, 4)
-  var$Rank1$param[[2]]$pi <- 0.7
+  var$z_class <- zParam()
+  var$Rank1 <- rankParam()
+  var$Ordinal1 <- ordinalParam()
   
   res <- dataGeneratorNew("dataGenNew/learn", # prefix
-                          500, # nbSample
+                          nbInd, # nbInd
                           proportionMissing,
                           var) # param
+  
+  write.table(res$z,
+              file = paste("dataGenNew/learn/classIn.csv",
+                           sep = "/"),
+              row.names=FALSE,
+              col.names=FALSE)
   
   write.table(res$data,
               file = "dataGenNew/learn/data.csv",
@@ -51,6 +46,50 @@ dataGeneratorNewTest <- function() {
               qmethod = c("escape",
                           "double"),
               fileEncoding = "")
+}
+
+zParam <- function() {
+  z_class <- list() # z_class must be the first variable in the list
+  
+  z_class$name <- "z_class"
+  z_class$type <- "LatentClass"
+  z_class$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
+  
+  return(z_class)
+}
+
+rankParam <- function() {
+  Rank <- list()
+  Rank$param <- list()
+  Rank$param[[1]] <- list()
+  Rank$param[[2]] <- list()
+  
+  Rank$name <- "Rank1"
+  Rank$type <- "Rank"
+  Rank$param[[1]]$mu <- c(3, 4, 2, 1)
+  Rank$param[[1]]$pi <- 0.8
+  Rank$param[[2]]$mu <- c(1, 3, 2, 4)
+  Rank$param[[2]]$pi <- 0.7
+  
+  return(Rank)
+}
+
+ordinalParam <- function() {
+  Ordinal <- list()
+  Ordinal$param <- list()
+  Ordinal$param[[1]] <- list()
+  Ordinal$param[[2]] <- list()
+  
+  Ordinal$name <- "Ordinal1"
+  Ordinal$type <- "Ordinal"
+  Ordinal$param[[1]]$nbMod <- 4
+  Ordinal$param[[1]]$mu <- 1
+  Ordinal$param[[1]]$pi <- 0.8
+  Ordinal$param[[2]]$nbMod <- 4
+  Ordinal$param[[2]]$mu <- 4
+  Ordinal$param[[2]]$pi <- 0.7
+  
+  return(Ordinal)
 }
 
 dataGeneratorNew <- function(prefix,
@@ -95,7 +134,12 @@ dataGeneratorNew <- function(prefix,
     
     for (j in 2:nbVar) { # export values for other types
       if (var[[j]]$type == "Rank") {
-        dataStr[i, j] <- rankGenerator(var[[j]]$param[[z[i]]])
+        dataStr[i, j] <- rankGenerator(FALSE,
+                                       var[[j]]$param[[z[i]]])
+      }
+      if (var[[j]]$type == "Ordinal") {
+        dataStr[i, j] <- OrdinalGenerator(FALSE,
+                                          var[[j]]$param[[z[i]]])
       }
     }
   }
@@ -112,7 +156,8 @@ dataGeneratorNew <- function(prefix,
   
   descMat <- rbind(headerStr, descStr)
   
-  return(list(data = dataMat,
+  return(list(z = z,
+              data = dataMat,
               descriptor = descMat))
 }
 
@@ -166,4 +211,59 @@ switchRepresentation <- function(inRank) {
   }
   
   return(outRank)
+}
+
+OrdinalGenerator <- function(missing,
+                             param) {
+  nbMod <- param$nbMod
+  x <- vector(mode = "integer", length = nbMod)
+  seg <- c(1, nbMod) # initial segment is the input
+  
+  for (n in 1:(nbMod - 1)) {
+    y <- sample(seg[1]:seg[2], 1) # uniform sampling of y
+    
+    firstIndSeg <- vector(mode = "integer", length = 3)
+    lengthSeg   <- vector(mode = "integer", length = 3)
+    distSeg     <- vector(mode = "integer", length = 3)
+    
+    firstIndSeg[1] <- seg[1]
+    lengthSeg[1] <- y - seg[1]
+    
+    firstIndSeg[2] <- y
+    lengthSeg[2] <- 1
+    
+    firstIndSeg[3] <- y + 1
+    lengthSeg[3] <- seg[2] - y
+    
+    for (i in 1:3) {
+      if (lengthSeg[i] > 0) {
+        distSeg[i] <- min(abs(param$mu - firstIndSeg[i]),
+                          abs(param$mu - (firstIndSeg[i] + lengthSeg[i] - 1)))
+      }
+      else {
+        distSeg[i] <- nbMod # this distance enforce that the segment will not be considered the closest if its length is 0
+      }
+    }
+    
+    z <- sample(x = 2,
+                size = 1,
+                prob = c(1. - param$pi,
+                         param$pi))
+    
+    e <- -1 # selected segment
+    if (z == 1) { # innacurate comparison, sample using length as proportions
+      proba <- distSeg / sum(distSeg)
+      e <- sample(x = 3,
+                  size = 1,
+                  prob = proba)
+    }
+    else { # find which non null segment is the closest
+      e <- which(distSeg == min(distSeg))[1]
+    }
+    
+    seg[1] <- firstIndSeg[e]
+    seg[2] <- firstIndSeg[e] + lengthSeg[e] - 1
+  }
+  
+  return(paste0(seg[1]))
 }
