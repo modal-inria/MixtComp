@@ -21,31 +21,33 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_PARAMSETTERDUMMY_H
-#define MIXT_PARAMSETTERDUMMY_H
-
-#include "../LinAlg/mixt_LinAlg.h"
-#include "../Mixture/Rank/mixt_RankVal.h"
+#include "Dummy.h"
 
 namespace mixt
 {
 
-class ParamSetterDummy
-{
-  public:
-    ParamSetterDummy();
+void ParamExtractorDummy::exportParam(const std::string& idName,
+                                      const std::string& paramName,
+                                      const Matrix<Real>& paramStat,
+                                      const Matrix<Real>& paramsLog,
+                                      const std::vector<std::string>& paramNames,
+                                      const Real confidenceLevel) const
+{};
 
-    ~ParamSetterDummy();
+ParamSetterDummy::ParamSetterDummy()
+{}
 
-    void getParam(const std::string& idName,
-                  const std::string& paramName,
-                  Vector<Real>& params) const;
+ParamSetterDummy::~ParamSetterDummy()
+{}
 
-    void getParam(std::string idName,
-                  const std::string& paramName,
-                  Vector<RankVal>& param) const;
-};
+void ParamSetterDummy::getParam(const std::string& idName,
+                                const std::string& paramName,
+                                Vector<Real>& params) const
+{}
+
+void  ParamSetterDummy::getParam(const std::string& idName,
+                                 const std::string& paramName,
+                                 Vector<RankVal>& param) const
+{}
 
 } // namespace mixt
-
-#endif // MIXT_PARAMEXTRACTORCSV_H

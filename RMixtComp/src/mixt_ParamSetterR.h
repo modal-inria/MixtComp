@@ -38,11 +38,11 @@ class ParamSetterR
 
     ~ParamSetterR();
 
-    void getParam(std::string idName,
+    void getParam(const std::string& idName,
                   const std::string& paramName,
                   Vector<Real>& param) const;
 
-    void getParam(std::string idName,
+    void getParam(const std::string& idName,
                   const std::string& paramName,
                   Vector<RankVal>& param) const;
   private:
