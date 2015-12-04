@@ -23,8 +23,10 @@
 
 #include "gtest/gtest.h"
 
-#include "../Mixture/mixt_IMixture.h"
+
+#include "../../src/IO/Dummy.h"
 #include "../../src/Various/mixt_Constants.h"
+#include "../../src/Mixture/mixt_IMixture.h"
 #include "../../src/Mixture/Ordinal/mixt_BOSNode.h"
 #include "../../src/Mixture/Ordinal/mixt_BOSPath.h"
 #include "../../src/Mixture/Ordinal/mixt_Ordinal.h"
@@ -32,48 +34,6 @@
 #include "../../src/Statistic/mixt_UniformStatistic.h"
 
 using namespace mixt;
-
-/** Dummy IO class for debugging purposes */
-class DataHandler
-{
-  public:
-    template<typename DataType>
-    std::string getData(std::string const& idData,
-                        AugmentedData<DataType>& augData,
-                        int& nbSample,
-                        std::string& param,
-                        typename AugmentedData<DataType>::Type offset) const {};
-};
-
-/** Dummy IO class for debugging purposes */
-class DataExtractor
-{
-  public:
-    template<typename DataType,
-             typename Type>
-    void exportVals(std::string idName,
-                    const AugmentedData<DataType>& augData,
-                    const Vector<RowVector<Type> >& stat) const {};
-};
-
-/** Dummy IO class for debugging purposes */
-class ParamSetter
-{
-  public:
-    void getParam(std::string idName,
-                      Vector<Real>& param) const {};
-};
-
-/** Dummy IO class for debugging purposes */
-class ParamExtractor
-{
-  public:
-    void exportParam(std::string idName,
-                     const Matrix<Real>& paramStat,
-                     const Matrix<Real>& paramsLog,
-                     const std::vector<std::string>& paramNames,
-                     const Real confidenceLevel) const {};
-};
 
 /**
  * Generate individuals that follows a distribution, and try to estimate it back. Note that the individual are generated
@@ -94,15 +54,15 @@ TEST(Ordinal, mStep)
   pi = uni.sample(0., 1.);
 
   Vector<int> z_i(nbInd, 0); // dummy class variable
-  Ordinal<DataHandler,
-          DataExtractor,
-          ParamSetter,
-          ParamExtractor> ordinal(1,
-                                  nbInd,
-                                  nbModalities,
-                                  &z_i,
-                                  mu,
-                                  pi);
+  Ordinal<DataHandlerDummy,
+          DataExtractorDummy,
+          ParamSetterDummy,
+          ParamExtractorDummy> ordinal(1,
+                                       nbInd,
+                                       nbModalities,
+                                       &z_i,
+                                       mu,
+                                       pi);
   ordinal.mStep();
   Vector<int>  muEst = ordinal.mu(); // estimated mu
   Vector<Real> piEst = ordinal.pi(); // estimated pi

@@ -33,7 +33,7 @@ ParamSetterR::ParamSetterR(const Rcpp::List param) :
 ParamSetterR::~ParamSetterR()
 {}
 
-void ParamSetterR::getParam(std::string idName,
+void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
                             Vector<Real>& param) const
 {
@@ -55,7 +55,7 @@ void ParamSetterR::getParam(std::string idName,
 #endif
 }
 
-void ParamSetterR::getParam(std::string idName,
+void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
                             Vector<RankVal>& param) const
 {

@@ -274,6 +274,9 @@ TEST(BOSPath, forwardSamplePath)
   std::cout << "expectedMode: " << expectedMode << std::endl;
 #endif
 
+  Vector<bool, 2> az;
+  az = true;
+
   for (int iter = 0; iter < nbIter; ++iter)
   {
 #ifdef MC_DEBUG
@@ -281,7 +284,7 @@ TEST(BOSPath, forwardSamplePath)
 #endif
     path.forwardSamplePath(mu,
                            pi,
-                           true);
+                           az);
     int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
     computedProba(x) += 1.; // the new occurrence of x is stored
   }
