@@ -22,12 +22,7 @@
  **/
 
 #include "gtest/gtest.h"
-
-#include "../../src/Various/mixt_Constants.h"
-#include "../../src/Mixture/Ordinal/mixt_BOSNode.h"
-#include "../../src/Mixture/Ordinal/mixt_BOSPath.h"
-#include "../../src/Statistic/mixt_MultinomialStatistic.h"
-#include "../../src/Statistic/mixt_UniformStatistic.h"
+#include "../../src/mixt_MixtComp.h"
 
 using namespace mixt;
 
@@ -268,10 +263,7 @@ TEST(BOSPath, forwardSamplePath)
 //  Real pi = 0.5;
 
 #ifdef MC_DEBUG
-  std::cout << "iniMin: " << iniMin << ", iniMax: " << iniMax << std::endl;
-  std::cout << "endMin: " << endMin << ", endMax: " << endMax << std::endl;
   std::cout << "mu: " << mu << ", pi: " << pi << std::endl;
-  std::cout << "expectedMode: " << expectedMode << std::endl;
 #endif
 
   Vector<bool, 2> az;

@@ -22,19 +22,8 @@
  **/
 
 #include "gtest/gtest.h"
-
-#include <iostream>
-#include "boost/regex.hpp"
-#include "../src/LinAlg/mixt_LinAlg.h"
-#include "../src/Sampler/mixt_ClassSampler.h"
+#include "../src/mixt_MixtComp.h"
 
 using namespace mixt;
 
-// Test the matrix sort
-TEST(itString, simpleTest)
-{
-  Vector<Real> a(3);
-  a << 0.2, 0.7, 0.3;
 
-  ASSERT_EQ(itString(a), "0.2 0.7 0.3");
-}
