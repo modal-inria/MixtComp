@@ -21,12 +21,12 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <src/IO/Dummy.h>
 #include "mixt_DataHandlerR.h"
 #include "mixt_DataExtractorR.h"
 #include "mixt_ParamExtractorR.h"
 #include "mixt_Function.h"
 #include "MixtComp/src/mixt_MixtComp.h"
+#include "MixtComp/src/IO/Dummy.h"
 #include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/Various/mixt_Timer.h"
 #include "MixtComp/src/Various/mixt_Constants.h"
