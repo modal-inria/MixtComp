@@ -57,3 +57,4 @@ TEST(regex, testEng)
 
   ASSERT_EQ(v, str2type<Real>(str));
 }
+

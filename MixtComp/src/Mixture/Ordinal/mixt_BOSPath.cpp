@@ -421,7 +421,7 @@ void BOSPath::forwardSamplePath(int mu,
     std::cout << "BOSPath::forwardSamplePath, nbSample: " << nbSample << std::endl;
 #endif
 
-    for (int n = 0; n < nbNode_ - 1; ++n)
+    for (int n = 0; n < nbNode_; ++n)
     {
       BOSNode& currNode = c_(n);
 

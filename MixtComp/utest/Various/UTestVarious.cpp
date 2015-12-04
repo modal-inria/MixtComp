@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2014
+/*  Copyright (C) Inria 2015
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,17 +17,23 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Apr 14, 2014
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: September 2, 2015
+ *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_MIXTCOMP_H
-#define MIXT_MIXTCOMP_H
+#include "gtest/gtest.h"
 
-#include "IO/Dummy.h"
-#include "Mixture/SimpleMixtureBridge/mixt_Clust_Traits.h"
-#include "Manager/mixt_MixtureManager.h"
-#include "Strategy/mixt_SEMStrategy.h"
-#include "Strategy/mixt_GibbsStrategy.h"
+#include "boost/regex.hpp"
+#include "../../src/LinAlg/mixt_LinAlg.h"
+#include "../../src/Various/mixt_Def.h"
+#include "../../src/IO/mixt_IO.h"
 
-#endif /* MIXT_MIXTCOMP_H */
+using namespace mixt;
+
+TEST(itString, simpleTest)
+{
+  Vector<Real> a(3);
+  a << 0.2, 0.7, 0.3;
+
+  ASSERT_EQ(itString(a), "0.2 0.7 0.3");
+}
