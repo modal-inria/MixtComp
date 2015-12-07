@@ -71,8 +71,6 @@ void MixtureComposer::intializeMixtureParameters()
 #endif
   prop_     = 1./(Real)nbClass_;
   tik_      = 1./(Real)nbClass_;
-  zi_.data_ = 0;
-  updateListInd();
 }
 
 Real MixtureComposer::lnObservedProbability(int i, int k)
@@ -232,7 +230,7 @@ void MixtureComposer::sStepCheck()
   }
 
 #ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStep" << std::endl;
+  std::cout << "MixtureComposer::sStepCheck" << std::endl;
   std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
   printClassInd();
 #endif
@@ -247,6 +245,12 @@ void MixtureComposer::sStepCheck(int i)
 
 void MixtureComposer::sStepNoCheck()
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStepNoCheck" << std::endl;
+  std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
+  printClassInd();
+#endif
+
   for (int i = 0; i < nbInd_; ++i)
   {
     sStepNoCheck(i);
@@ -254,10 +258,8 @@ void MixtureComposer::sStepNoCheck()
 
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::sStepNoCheck" << std::endl;
-  std::cout << "tik_: " << tik_.transpose() << std::endl;
   std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
   printClassInd();
-
 #endif
 }
 
@@ -482,6 +484,11 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
 #endif
     nbIndPerClass(zi_.data_(i)) += 1;
   }
+
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::checkNbIndPerClass, nbIndPerClass: " << itString(nbIndPerClass) << std::endl;
+#endif
+
   int min = nbIndPerClass.minCoeff();
   if (min < minIndPerClass)
   {

@@ -115,6 +115,9 @@ class RankMixture : public IMixture
     {
       for (int k = 0; k < nbClass_; ++k)
       {
+#ifdef MC_DEBUG
+        std::cout << "RankMixture::mStep, k: " << k << std::endl;
+#endif
         class_[k].mStep();
       }
     }
