@@ -90,20 +90,20 @@ class RankMixture : public IMixture
 
     void samplingStepCheck(int ind)
     {
-      for (int i = 0; i < nbInd_; ++i)
-      {
-        data_(i).sampleY(mu_((*p_zi_)(i)),
-                         pi_((*p_zi_)(i)));
-      }
+//      for (int i = 0; i < nbInd_; ++i) should not perform nbInd_ iterations ...
+//      {
+//        data_(i).sampleY(mu_((*p_zi_)(i)),
+//                         pi_((*p_zi_)(i)));
+//      }
     }
 
     void samplingStepNoCheck(int ind)
     {
-      for (int i = 0; i < nbInd_; ++i)
-      {
-        data_(i).sampleY(mu_((*p_zi_)(i)),
-                         pi_((*p_zi_)(i)));
-      }
+//      for (int i = 0; i < nbInd_; ++i)should not perform nbInd_ iterations ...
+//      {
+//        data_(i).sampleY(mu_((*p_zi_)(i)),
+//                         pi_((*p_zi_)(i)));
+//      }
     }
 
     int checkSampleCondition(std::string* warnLog = NULL) const

@@ -29,11 +29,11 @@
 #include <set>
 #include <vector>
 
+#include "../Data/mixt_ClassDataStat.h"
 #include "../Sampler/mixt_ClassSampler.h"
 #include "../Mixture/mixt_IMixture.h"
 #include "../Various/mixt_Def.h"
 #include "../Param/mixt_ConfIntParamStat.h"
-#include "../Data/mixt_CategoricalDenseDataStat.h"
 
 namespace mixt
 {
@@ -102,10 +102,6 @@ class MixtureComposer
     /** compute Tik */
     void eStep();
     void eStep(int i);
-
-    /** Compute zi using the Map estimator. */
-    void mapStep();
-    void mapStep(int i);
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
@@ -321,9 +317,7 @@ class MixtureComposer
     void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const
     {
 #ifdef MC_DEBUG
-      std::cout << "MixtureComposer::exportDataParam" << std::endl;
-      std::cout << "zi_data_" << std::endl;
-      std::cout << zi_.data_ << std::endl;
+      std::cout << "MixtureComposer::exportDataParam, zi_.data_: " << itString(zi_.data_) << std::endl;
 #endif
       dataExtractor.exportVals("z_class",
                                zi_,
@@ -421,7 +415,7 @@ class MixtureComposer
     ConfIntParamStat<Real> paramStat_;
 
     /** computer of the statistics on latent variables */
-    CategoricalDenseDataStat dataStat_;
+    ClassDataStat dataStat_;
 
     /** confidence level used for the computation of statistics */
     Real confidenceLevel_;

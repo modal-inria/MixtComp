@@ -21,8 +21,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_CATEGORICALDENSEDATASTAT_H
-#define MIXT_CATEGORICALDENSEDATASTAT_H
+#ifndef MIXT_CLASSDATASTAT_H
+#define MIXT_CLASSDATASTAT_H
 
 #include "../LinAlg/mixt_LinAlg.h"
 #include "mixt_AugmentedData.h"
@@ -30,10 +30,10 @@
 namespace mixt
 {
 
-class CategoricalDenseDataStat
+class ClassDataStat
 {
   public:
-    CategoricalDenseDataStat(AugmentedData<Vector<int> >& augData);
+    ClassDataStat(AugmentedData<Vector<int> >& augData);
 
     void sampleVals(int sample,
                     int iteration,
@@ -57,4 +57,4 @@ class CategoricalDenseDataStat
 
 } // namespace mixt
 
-#endif // MIXT_CATEGORICALDENSEDATASTAT_H
+#endif // MIXT_CLASSDATASTAT_H

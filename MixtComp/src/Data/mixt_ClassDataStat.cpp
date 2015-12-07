@@ -21,17 +21,18 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_CategoricalDenseDataStat.h"
+#include "mixt_ClassDataStat.h"
+
 #include "../Various/mixt_Constants.h"
 
 namespace mixt
 {
 
-CategoricalDenseDataStat::CategoricalDenseDataStat(AugmentedData<Vector<int> >& augData) :
+ClassDataStat::ClassDataStat(AugmentedData<Vector<int> >& augData) :
     augData_(augData)
 {}
 
-void CategoricalDenseDataStat::sample(int ind)
+void ClassDataStat::sample(int ind)
 {
   int currMod = augData_.data_(ind);
 #ifdef MC_DEBUG
@@ -45,7 +46,7 @@ void CategoricalDenseDataStat::sample(int ind)
   dataStatStorage_(ind, currMod) += 1.;
 }
 
-void CategoricalDenseDataStat::sampleVals(int ind,
+void ClassDataStat::sampleVals(int ind,
                                           int iteration,
                                           int iterationMax)
 {
@@ -70,13 +71,13 @@ void CategoricalDenseDataStat::sampleVals(int ind,
   }
 }
 
-void CategoricalDenseDataStat::imputeData(int ind)
+void ClassDataStat::imputeData(int ind)
 {
   if (augData_.misData_(ind).first != present_) // imputation by the mode
   {
     int mode;
     dataStatStorage_.row(ind).maxCoeff(&mode);
-    augData_.data_(ind) = dataStatStorage_(ind, mode);
+    augData_.data_(ind) = mode;
   }
 }
 
