@@ -1,5 +1,5 @@
 dataGeneratorNewTest <- function() {
-  proportionMissing <- 0.2
+  proportionMissing <- 1.0
   nbInd <- 100
   
   var <- list()

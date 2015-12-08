@@ -238,6 +238,11 @@ void MixtureComposer::sStepCheck()
 
 void MixtureComposer::sStepCheck(int i)
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStepCheck(int i), i: " << i << std::endl;
+  std::cout << "zi_.data_(i): " << zi_.data_(i) << std::endl;
+#endif
+
   classInd_(zi_.data_(i)).erase(i);
   sampler_.sStepCheck(i);
   classInd_(zi_.data_(i)).insert(i);
@@ -245,12 +250,6 @@ void MixtureComposer::sStepCheck(int i)
 
 void MixtureComposer::sStepNoCheck()
 {
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStepNoCheck" << std::endl;
-  std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
-  printClassInd();
-#endif
-
   for (int i = 0; i < nbInd_; ++i)
   {
     sStepNoCheck(i);
@@ -265,6 +264,11 @@ void MixtureComposer::sStepNoCheck()
 
 void MixtureComposer::sStepNoCheck(int i)
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStepNoCheck(int i), i: " << i << std::endl;
+  std::cout << "zi_.data_(i): " << zi_.data_(i) << std::endl;
+#endif
+
   classInd_(zi_.data_(i)).erase(i);
   sampler_.sStepNoCheck(i);
   classInd_(zi_.data_(i)).insert(i);
