@@ -3,7 +3,7 @@ testRank <- function(nbClass = 2,
                      nbSampleLearn = 50,
                      nbSamplePredict = 1000,
                      confidenceLevel = 0.95,
-                     regen = FALSE)
+                     regen = TRUE)
 {  
   if (regen == TRUE)
   {

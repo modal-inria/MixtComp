@@ -41,7 +41,7 @@ ClassSampler::ClassSampler(const MixtureComposer& composer,
 void ClassSampler::sStepCheck(int i)
 {
 #ifdef MC_DEBUG
-    std::cout << "ClassSampler::sStepCheck" << std::endl;
+    std::cout << "ClassSampler::sStepCheck, i: " << i << std::endl;
 #endif
   if (zi_.misData_(i).first != present_)
   {
@@ -115,8 +115,7 @@ void ClassSampler::sStepCheck(int i)
 void ClassSampler::sStepNoCheck(int i)
 {
 #ifdef MC_DEBUG
-  std::cout << "ClassSampler::sampleIndividual" << std::endl;
-  std::cout << "i: " << i << std::endl;
+    std::cout << "ClassSampler::sStepNoCheck, i: " << i << std::endl;
 #endif
 
   if (zi_.misData_(i).first != present_)

@@ -29,11 +29,11 @@
 #include <set>
 #include <vector>
 
+#include "../Data/mixt_ClassDataStat.h"
 #include "../Sampler/mixt_ClassSampler.h"
 #include "../Mixture/mixt_IMixture.h"
 #include "../Various/mixt_Def.h"
 #include "../Param/mixt_ConfIntParamStat.h"
-#include "../Data/mixt_CategoricalDenseDataStat.h"
 
 namespace mixt
 {
@@ -102,10 +102,6 @@ class MixtureComposer
     /** compute Tik */
     void eStep();
     void eStep(int i);
-
-    /** Compute zi using the Map estimator. */
-    void mapStep();
-    void mapStep(int i);
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
@@ -190,6 +186,11 @@ class MixtureComposer
     {
       std::string warnLog;
       warnLog += setProportion(paramSetter);
+
+#ifdef MC_DEBUG
+      std::cout << "MixtureComposer::setDataParam, prop_: " << itString(prop_) << std::endl;
+#endif
+
       for (int i = 0; i < nbInd_; ++i)
       {
         tik_.row(i) = prop_.transpose();
@@ -197,6 +198,8 @@ class MixtureComposer
 
       warnLog += setZi(dataHandler, // dataHandler getData is called to fill zi_
                        mode);
+      updateListInd();
+
       if (mode == prediction_) // in prediction, paramStatStorage_ will not be modified later during the run
       {
         paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
@@ -217,9 +220,6 @@ class MixtureComposer
     template<typename ParamSetter>
     std::string setProportion(const ParamSetter& paramSetter)
     {
-#ifdef MC_DEBUG
-      std::cout << "MixtureComposer::setProportion" << std::endl;
-#endif
       std::string warnLog;
 
       paramSetter.getParam("z_class",
@@ -238,24 +238,33 @@ class MixtureComposer
     std::string setZi(const DataHandler& dataHandler,
                       RunMode mode)
     {
-#ifdef MC_DEBUG
-      std::cout << "IMixtureComposerBase::setZi" << std::endl;
-#endif
       std::string warnLog;
       std::string dummyParam;
 
       if (dataHandler.info().find("z_class") == dataHandler.info().end()) // z_class was not provided
       {
+#ifdef MC_DEBUG
+        std::cout << "MixtureComposer::setZi, z_class not provided" << std::endl;
+#endif
+
         zi_.setAllMissing(nbInd_); // set every value state to missing_
       }
       else // z_class was provided and its value is acquired in zi_
       {
+#ifdef MC_DEBUG
+        std::cout << "MixtureComposer::setZi, z_class provided" << std::endl;
+#endif
+
         warnLog += dataHandler.getData("z_class", // reserved name for the class
                                        zi_,
                                        nbInd_,
                                        dummyParam,
                                        -minModality); // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
       }
+
+#ifdef MC_DEBUG
+      std::cout << "MixtureComposer::setZi, zi_.data_: " << itString(zi_.data_) << std::endl;
+#endif
 
       Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
       at(0) = true; // present_,
@@ -308,9 +317,7 @@ class MixtureComposer
     void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const
     {
 #ifdef MC_DEBUG
-      std::cout << "MixtureComposer::exportDataParam" << std::endl;
-      std::cout << "zi_data_" << std::endl;
-      std::cout << zi_.data_ << std::endl;
+      std::cout << "MixtureComposer::exportDataParam, zi_.data_: " << itString(zi_.data_) << std::endl;
 #endif
       dataExtractor.exportVals("z_class",
                                zi_,
@@ -408,7 +415,7 @@ class MixtureComposer
     ConfIntParamStat<Real> paramStat_;
 
     /** computer of the statistics on latent variables */
-    CategoricalDenseDataStat dataStat_;
+    ClassDataStat dataStat_;
 
     /** confidence level used for the computation of statistics */
     Real confidenceLevel_;

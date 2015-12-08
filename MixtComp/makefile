@@ -28,8 +28,7 @@ endif
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
 # CXXFLAGS += -pthread -MD -MP -fPIC
 CXXFLAGS += -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
-CXXFLAGS += -DMC_DEBUGNEW -DMC_VERBOSE
-CXXFLAGS += -std=c++11
+CXXFLAGS += -std=c++11 -DMC_VERBOSE # included here, because it is standard and we do not have access on Makevars on BigStat for example
 
 # library files
 LIB_MC = lib/libMixtComp.a

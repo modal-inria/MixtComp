@@ -71,8 +71,6 @@ void MixtureComposer::intializeMixtureParameters()
 #endif
   prop_     = 1./(Real)nbClass_;
   tik_      = 1./(Real)nbClass_;
-  zi_.data_ = 0;
-  updateListInd();
 }
 
 Real MixtureComposer::lnObservedProbability(int i, int k)
@@ -232,7 +230,7 @@ void MixtureComposer::sStepCheck()
   }
 
 #ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStep" << std::endl;
+  std::cout << "MixtureComposer::sStepCheck" << std::endl;
   std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
   printClassInd();
 #endif
@@ -240,6 +238,11 @@ void MixtureComposer::sStepCheck()
 
 void MixtureComposer::sStepCheck(int i)
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStepCheck(int i), i: " << i << std::endl;
+  std::cout << "zi_.data_(i): " << zi_.data_(i) << std::endl;
+#endif
+
   classInd_(zi_.data_(i)).erase(i);
   sampler_.sStepCheck(i);
   classInd_(zi_.data_(i)).insert(i);
@@ -254,15 +257,18 @@ void MixtureComposer::sStepNoCheck()
 
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::sStepNoCheck" << std::endl;
-  std::cout << "tik_: " << tik_.transpose() << std::endl;
   std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
   printClassInd();
-
 #endif
 }
 
 void MixtureComposer::sStepNoCheck(int i)
 {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStepNoCheck(int i), i: " << i << std::endl;
+  std::cout << "zi_.data_(i): " << zi_.data_(i) << std::endl;
+#endif
+
   classInd_(zi_.data_(i)).erase(i);
   sampler_.sStepNoCheck(i);
   classInd_(zi_.data_(i)).insert(i);
@@ -270,17 +276,13 @@ void MixtureComposer::sStepNoCheck(int i)
 
 void MixtureComposer::eStep()
 {
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::eStep" << std::endl;
-  std::cout << "prop_: " << prop_ << std::endl;
-#endif
   for (int i = 0; i < nbInd_; ++i)
   {
     eStep(i);
   }
 #ifdef MC_DEBUG
-  std::cout << "tik_:" << std::endl;
-  std::cout << tik_ << std::endl;
+  std::cout << "MixtureComposer::eStep, tik_:" << std::endl;
+  std::cout << tik_.transpose() << std::endl;
 #endif
 }
 
@@ -320,28 +322,6 @@ void MixtureComposer::pStep()
 #ifdef MC_DEBUG
   std::cout << "\tprop_: " << prop_ << std::endl;
 #endif
-}
-
-void MixtureComposer::mapStep()
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::mapStep" << std::endl;
-#endif
-  for (int i = 0; i < nbInd_; ++i)
-  {
-    mapStep(i);
-  }
-}
-
-void MixtureComposer::mapStep(int i)
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::mapStep, single individual" << std::endl;
-#endif
-  int k;
-  tik_.row(i).maxCoeff(&k);
-  zi_.data_(i) = k;
-  updateListInd();
 }
 
 void MixtureComposer::writeParameters() const
@@ -482,6 +462,11 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
 #endif
     nbIndPerClass(zi_.data_(i)) += 1;
   }
+
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::checkNbIndPerClass, nbIndPerClass: " << itString(nbIndPerClass) << std::endl;
+#endif
+
   int min = nbIndPerClass.minCoeff();
   if (min < minIndPerClass)
   {
@@ -537,16 +522,16 @@ void MixtureComposer::storeSEMRun(int iteration,
   }
 }
 
-void MixtureComposer::storeGibbsRun(int sample,
+void MixtureComposer::storeGibbsRun(int ind,
                                     int iteration,
                                     int iterationMax)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::storeGibbsRun" << std::endl;
-  std::cout << "sample: " << sample << ", iteration: " << iteration << ", iterationMax: " << iterationMax << std::endl;
+  std::cout << "sample: " << ind << ", iteration: " << iteration << ", iterationMax: " << iterationMax << std::endl;
 #endif
 
-  dataStat_.sampleVals(sample,
+  dataStat_.sampleVals(ind,
                        iteration,
                        iterationMax);
 
@@ -555,9 +540,24 @@ void MixtureComposer::storeGibbsRun(int sample,
 #ifdef MC_DEBUG
     std::cout << (*it)->idName() << std::endl;
 #endif
-    (*it)->storeGibbsRun(sample,
+    (*it)->storeGibbsRun(ind,
                          iteration,
                          iterationMax);
+  }
+
+  if (iteration == iterationMax)
+  {
+#ifdef MC_DEBUG
+    std::cout << "MixtureComposer::storeGibbsRun, before imputation, zi_.data_: " << itString(zi_.data_) << std::endl;
+#endif
+
+    classInd_(zi_.data_(ind)).erase(ind);
+    dataStat_.imputeData(ind); // impute the missing values using empirical mean or mode, depending of the model
+    classInd_(zi_.data_(ind)).insert(ind);
+
+#ifdef MC_DEBUG
+    std::cout << "MixtureComposer::storeGibbsRun, after imputation, zi_.data_ : " << itString(zi_.data_) << std::endl;
+#endif
   }
 }
 
@@ -590,7 +590,6 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter,
                     nbGibbsIter - 1);
     }
   }
-  mapStep(); // z_i estimated by the mode at the end of the Gibbs Sampling
 }
 
 std::vector<std::string> MixtureComposer::paramName() const

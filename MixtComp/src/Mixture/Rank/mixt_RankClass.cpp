@@ -107,6 +107,9 @@ void RankClass::sampleMu()
 
 void RankClass::mStep()
 {
+#ifdef MC_DEBUG
+    std::cout << "Rank::mStep, setInd_: " << itString(setInd_) << std::endl;
+#endif
   Vector<RankVal> mu(nbGibbsIterRank);
   Vector<Real> pi(nbGibbsIterRank);
   Vector<Real> logProba(nbGibbsIterRank);
@@ -129,6 +132,10 @@ void RankClass::mStep()
 
   mu_ = mu(bestTheta);
   pi_ = pi(bestTheta);
+
+#ifdef MC_DEBUG
+  std::cout << "RankClass::mStep, mu_: " << mu_ << ", pi_: " << pi_ << std::endl;
+#endif
 }
 
 } // namespace mixt
