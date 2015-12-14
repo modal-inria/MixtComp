@@ -133,6 +133,9 @@ void RankClass::mStep()
   mu_ = mu(bestTheta);
   pi_ = pi(bestTheta);
 
+  pi_ = std::max(pi_, 0.01);
+  pi_ = std::min(pi_, 0.99);
+
 #ifdef MC_DEBUG
   std::cout << "RankClass::mStep, mu_: " << mu_ << ", pi_: " << pi_ << std::endl;
 #endif

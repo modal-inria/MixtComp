@@ -53,7 +53,7 @@ class Ordinal : public IMixture
       IMixture(idName),
       p_zi_(p_zi),
       nbClass_(nbClass),
-      nbModalities_(0),
+      nbModality_(0),
       augData_(),
       nbInd_(0), // number of individuals will be set during setDataParam
       confidenceLevel_(confidenceLevel),
@@ -81,7 +81,7 @@ class Ordinal : public IMixture
         IMixture("dummy"),
         p_zi_(p_zi),
         nbClass_(nbClass),
-        nbModalities_(nbModalities),
+        nbModality_(nbModalities),
         nbInd_(nbInd),
         mu_(nbClass, mu),
         pi_(nbClass, pi),
@@ -147,7 +147,7 @@ class Ordinal : public IMixture
       {
         if (mode == learning_)
         {
-          nbModalities_ = augData_.dataRange_.max_ + 1; // since an offset has been applied during getData, modalities are 0-based
+          nbModality_ = augData_.dataRange_.max_ + 1; // since an offset has been applied during getData, modalities are 0-based
         }
         else // prediction mode
         {
@@ -156,10 +156,10 @@ class Ordinal : public IMixture
           muParamStatComputer_.setParamStorage();
           piParamStatComputer_.setParamStorage();
 
-          if (nbModalities_ - 1 < augData_.dataRange_.max_)
+          if (nbModality_ - 1 < augData_.dataRange_.max_)
           {
             std::stringstream sstm;
-            sstm << "Variable: " << idName() << " requires a maximum value of " << minModality + nbModalities_ - 1
+            sstm << "Variable: " << idName() << " requires a maximum value of " << minModality + nbModality_ - 1
                  << " for the data during prediction. This maximum value corresponds to the maximum value used during the learning phase."
                  << " The maximum value in the data provided for prediction is : " << minModality + augData_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();
@@ -167,8 +167,8 @@ class Ordinal : public IMixture
 
           // data range from learning is applied
           augData_.dataRange_.min_ = 0;
-          augData_.dataRange_.max_ = nbModalities_ - 1;
-          augData_.dataRange_.range_ = nbModalities_;
+          augData_.dataRange_.max_ = nbModality_ - 1;
+          augData_.dataRange_.range_ = nbModality_;
 
           computeObservedProba(); // parameters are know, so logProba can be computed immediately
         }
@@ -226,7 +226,7 @@ class Ordinal : public IMixture
       p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
                                "muPi",
                                param);
-      nbModalities_ = param.size() / (2 * nbClass_);
+      nbModality_ = param.size() / (2 * nbClass_);
       mu_.resize(nbClass_);
       pi_.resize(nbClass_);
       for (int k = 0; k < nbClass_; ++k)
@@ -317,12 +317,12 @@ class Ordinal : public IMixture
 
     void computeObservedProba()
     {
-      observedProba_.resize(nbClass_, nbModalities_);
+      observedProba_.resize(nbClass_, nbModality_);
       BOSPath path; // BOSPath used for the various samplings
-      path.setInit(0, nbModalities_ - 1);
+      path.setInit(0, nbModality_ - 1);
       for (int k = 0; k < nbClass_; ++k)
       {
-        RowVector<Real> nbInd(nbModalities_); // observed frequencies
+        RowVector<Real> nbInd(nbModality_); // observed frequencies
         path.setEnd(k, k);
         nbInd = 0;
         for (int i = 0; i < nbSampleObserved; ++i)
@@ -330,7 +330,7 @@ class Ordinal : public IMixture
           path.forwardSamplePath(mu_(k), // complete the individual
                                  pi_(k),
                                  true); // allZOneAuthorized, to estimate probability distribution, all z can be sampled to 1
-          nbInd(path.c_(nbModalities_ - 2).e_(0)) += 1.; // register the x value, for marginalization
+          nbInd(path.c_(nbModality_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / Real(nbSampleObserved);
       }
@@ -457,6 +457,12 @@ class Ordinal : public IMixture
       return names;
     }
 
+    /** removeMissing is usually called at the beginning of the SEMStrategy. All data are completed by sampling using dummy parameters, since no mStep has
+     * been performed. mStep in turns requires complete data, hence the need to bootstrap the process in some way. A similar initialization is to be found
+     * in the rank model, who also describe each observation with latent variables. Since BOSPath::initPath initializes all BOSPath with z = 0 to enforce
+     * validity, it is necessary to perform nbGibbsIniBOS iterations of GibbsSampling with a pi at piInitBOS to generate variability in z. This will ensure
+     * that pi will not likely be equal to 0 at the first mStep estimation. In any case, should this occur, the initialization will ultimately be
+     * rejected by a call to checkSampleCondition. */
     void removeMissing()
     {
       for (int i = 0; i < nbInd_; ++i)
@@ -567,8 +573,7 @@ class Ordinal : public IMixture
      * */
     void sampleMuFreq(int k)
     {
-      Vector<Real> freqMod(nbModalities_); // frequencies of completed values for the current class
-      freqMod = 0.;
+      Vector<Real> freqMod(nbModality_, 0.); // frequencies of completed values for the current class
       for (int i = 0; i < nbInd_; ++i) // compute distribution of values
       {
         if ((*p_zi_)(i) == k) // among individuals inside the degenerate class
@@ -581,7 +586,15 @@ class Ordinal : public IMixture
       std::cout << "Ordinal::sampleMuFreq, k: " << k << ", freqMod: " << freqMod.transpose() << std::endl;
 #endif
 
-      freqMod = freqMod / freqMod.sum(); // frequencies are renormalized to get a probability distribution
+      Real sum = freqMod.sum();
+      if (sum > epsilon)
+      {
+        freqMod = freqMod / sum;
+      }
+      else  // this is just to avoid a crash, as empty class are forbidden and will be detected later for resampling
+      {
+        freqMod = 1. / Real(nbModality_);
+      }
 
 #ifdef MC_DEBUG
       std::cout << "effective freqMod: " << std::endl;
@@ -640,13 +653,13 @@ class Ordinal : public IMixture
       Vector<int> muBack = mu_;
 #endif
 
-      Matrix<Real> logLik(nbClass_, nbModalities_, 0.);
+      Matrix<Real> logLik(nbClass_, nbModality_, 0.);
       for (int i = 0; i < nbInd_; ++i)
       {
         int currClass = (*p_zi_)(i);
         Real currPi = pi_(currClass);
-        RowVector<Real> probaInd(nbModalities_);
-        for (int mu = 0; mu < nbModalities_; ++mu) // mu obtained from maximization over all possible values
+        RowVector<Real> probaInd(nbModality_);
+        for (int mu = 0; mu < nbModality_; ++mu) // mu obtained from maximization over all possible values
         {
           probaInd(mu) = path_(i).computeLogProba(mu,
                                                   currPi);
@@ -733,7 +746,7 @@ class Ordinal : public IMixture
     /** update the data using the last segment in c_. to be used after sampling in the BOSPath. */
     void copyToData(int ind)
     {
-      augData_.data_(ind) = path_(ind).c_(nbModalities_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
+      augData_.data_(ind) = path_(ind).c_(nbModality_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
     /** Pointer to the zik class label */
@@ -743,7 +756,7 @@ class Ordinal : public IMixture
     int nbClass_;
 
     /** Number of modalities */
-    int nbModalities_;
+    int nbModality_;
 
     /** The augmented data set */
     AugmentedData<Vector<int> > augData_;

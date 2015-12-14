@@ -113,13 +113,26 @@ class RankMixture : public IMixture
 
     void mStep()
     {
+#ifdef MC_DEBUG
+      std::cout << "RankMixture::mStep" << std::endl;
       for (int k = 0; k < nbClass_; ++k)
       {
-#ifdef MC_DEBUG
-        std::cout << "RankMixture::mStep, k: " << k << std::endl;
+        std::cout << "Beginning mStep, k: " << k << ", mu_[k]: " << mu_[k] << ", pi_[k]: " << pi_[k] << std::endl;
+      }
 #endif
+
+      for (int k = 0; k < nbClass_; ++k)
+      {
         class_[k].mStep();
       }
+
+#ifdef MC_DEBUG
+      std::cout << "RankMixture::mStep" << std::endl;
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        std::cout << "ending mStep, k: " << k << ", mu_[k]: " << mu_[k] << ", pi_[k]: " << pi_[k] << std::endl;
+      }
+#endif
     }
 
     void storeSEMBurnIn(int iteration,
@@ -177,6 +190,10 @@ class RankMixture : public IMixture
 
     Real lnCompletedProbability(int i, int k)
     {
+#ifdef MC_DEBUG
+      std::cout << "RankMixture::lnCompletedProbability, i: " << i << ", k: " << k << std::endl;
+#endif
+
       return class_[k].lnCompletedProbabilityInd(i);
     }
 
