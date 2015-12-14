@@ -24,6 +24,16 @@ webDemoPredict <- function(folderName)
                         "out/output.RData",
                         sep = "/")
   
+  checkDimLog <- validDim(dataFile)
+  if (nchar(checkDimLog) > 0)
+  {
+    cat(checkDimLog,
+        file = logFile,
+        sep = "",
+        append = TRUE)
+    quit(save = "no", status = 1)
+  }
+  
   load(RDataFileIn)
   
   nbClass <- res$mixture$nbCluster
