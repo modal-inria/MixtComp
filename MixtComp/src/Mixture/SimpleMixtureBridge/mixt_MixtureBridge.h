@@ -228,7 +228,7 @@ class MixtureBridge : public IMixture
     /**
      * Estimate parameters by maximum likelihood
      */
-    virtual void mStep()
+    virtual void mStep(bool init)
     {
 #ifdef MC_DEBUG
       std::cout << "mStep, idName_: " << idName_ << std::endl;
@@ -241,7 +241,7 @@ class MixtureBridge : public IMixture
      * @param iteration Provides the iteration number during the burn-in period
      */
     virtual void storeSEMBurnIn(int iteration,
-                               int iterationMax)
+                                int iterationMax)
     {
 #ifdef MC_LOG
       std::stringstream fileNameA;

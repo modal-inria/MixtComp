@@ -91,7 +91,7 @@ std::string SemStrategy::run()
           std::cout << "SemStrategy::run, proba == 1" << std::endl;
 #endif
 
-          p_composer_->mStep(); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing().
+          p_composer_->mStep(true); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing().
           break;
         }
         else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt

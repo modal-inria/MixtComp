@@ -88,7 +88,7 @@ class IMixture
      *
      * @return empty string if mStep successful, or a detailed description of the eventual error
      */
-    virtual void mStep()
+    virtual void mStep(bool init)
     = 0;
 
     /**

@@ -207,7 +207,7 @@ Real MixtureComposer::lnCompletedLikelihood()
   return lnLikelihood;
 }
 
-void MixtureComposer::mStep()
+void MixtureComposer::mStep(bool init)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::mStep()" << std::endl;
@@ -215,7 +215,7 @@ void MixtureComposer::mStep()
   pStep(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
-    (*it)->mStep(); // call mStep on each variable
+    (*it)->mStep(init); // call mStep on each variable
   }
 #ifdef MC_DEBUG
   std::cout << "\twarn: " << warn << std::endl;

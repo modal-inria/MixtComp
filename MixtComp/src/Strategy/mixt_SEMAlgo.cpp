@@ -115,7 +115,7 @@ void SEMAlgo::run(RunType runType,
 #endif
     }
 
-    p_composer_->mStep();
+    p_composer_->mStep(false);
 
     if (runType == burnIn_)
     {

@@ -111,7 +111,7 @@ class RankMixture : public IMixture
       return 1;
     }
 
-    void mStep()
+    void mStep(bool init)
     {
 #ifdef MC_DEBUG
       std::cout << "RankMixture::mStep" << std::endl;
@@ -212,11 +212,36 @@ class RankMixture : public IMixture
       }
     }
 
+    /** One of the peculiarity of the ISR model is that the space of ranks on which to optimize the likelihood is very large. At each mStep, several candidate
+     * mu are sampled, and the one which maximizes the likelihood of the observations is used as the estimated parameter. The sampling method used is a
+     * Gibbs sampler, which is a Mrkov Chain that needs to be initialized. Similarly to what is done for the Ordinal model, mu and pi are initialized
+     * once all data has been completed. mu is chosen among all the mu of the class, while pi is initialized to a "neutral" value. */
     void removeMissing()
     {
       for (int i = 0; i < nbInd_; ++i)
       {
         data_(i).removeMissing();
+      }
+
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        MultinomialStatistic multi;
+        int sampleIndInClass = multi.sampleInt(0, classInd_.size());
+        int i = 0;
+        int sampledInd;
+        for (std::set<int>::const_iterator it = classInd_[k].begin(), itE = classInd_[k].end();
+             it != itE;
+             ++it)
+        {
+          if (i == sampleIndInClass)
+          {
+            sampledInd = *it;
+            break;
+          }
+          ++i;
+        }
+        mu_(k) = data_(sampledInd).x();
+        pi_(k) = piInitISR;
       }
     }
 
