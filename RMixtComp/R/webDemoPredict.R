@@ -24,7 +24,9 @@ webDemoPredict <- function(folderName)
                         "out/output.RData",
                         sep = "/")
   
-  checkDimLog <- validDim(dataFile)
+  checkDimLog <- validDim(dataFile,
+                          maxIndividual,
+                          maxVariable)
   if (nchar(checkDimLog) > 0)
   {
     cat(checkDimLog,
