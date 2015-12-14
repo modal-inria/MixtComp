@@ -1,5 +1,5 @@
 dataGeneratorNewTest <- function() {
-  proportionMissing <- 1.0
+  proportionMissing <- 0.
   nbInd <- 100
   
   var <- list()
@@ -54,6 +54,8 @@ zParam <- function() {
   z_class$name <- "z_class"
   z_class$type <- "LatentClass"
   z_class$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
+  z_class$allPresent <- TRUE
+  z_class$allMissing <- FALSE
   
   return(z_class)
 }
@@ -66,10 +68,10 @@ rankParam <- function() {
   
   Rank$name <- "Rank1"
   Rank$type <- "Rank"
-  Rank$param[[1]]$mu <- c(3, 4, 2, 1)
-  Rank$param[[1]]$pi <- 0.8
-  Rank$param[[2]]$mu <- c(1, 3, 2, 4)
-  Rank$param[[2]]$pi <- 0.7
+  Rank$param[[1]]$mu <- c(1, 2, 3, 4)
+  Rank$param[[1]]$pi <- 0.9
+  Rank$param[[2]]$mu <- c(4, 3, 2, 1)
+  Rank$param[[2]]$pi <- 0.9
   
   return(Rank)
 }
@@ -125,13 +127,13 @@ dataGeneratorNew <- function(prefix,
                          prob = c(proportionMissing,
                                   1. - proportionMissing)) # list of variables containing observed values for the current individual
     
-    if (presentVar[1] == 1) { # z is missing
+    if (presentVar[1] == 1 || var$z_class$allMissing) {
       dataStr[i, 1] = "?"
     }
-    else { # z is observed
+    else if (presentVar[1] == 2 || var$z_class$allPresent) {
       dataStr[i, 1] = paste(z[i])
     }
-    
+
     for (j in 2:nbVar) { # export values for other types
       if (var[[j]]$type == "Rank") {
         dataStr[i, j] <- rankGenerator(FALSE,
