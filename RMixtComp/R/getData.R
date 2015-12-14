@@ -24,14 +24,6 @@ getData <- function(...){
                              fill = FALSE,
                              comment.char = "",
                              stringsAsFactors = FALSE)
-    if (length(data) > maxVariable)
-    {
-      warnLog <- paste(warnLog,
-                       "There are ", length(data), " variables. However the maximum number of variables for this demonstration is ",
-                       maxVariable, " variables.\n",
-                       "Please try again with less variables.\n",
-                       sep = "")
-    }
     for (i in 1:length(descriptor)) # loop over columns of the descriptor
     {
       currId <- descriptor[1, i]

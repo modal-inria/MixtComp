@@ -1,34 +1,45 @@
 webDemoLearn <- function(folderName)
 {
-  logConn      <- file(paste(folderName,
-                             "out/log.txt",
-                             sep = "/"))
+  iniFile <- paste(folderName,
+                   "in/param.ini",
+                   sep = "/")
+  
+  dataFile <- paste(folderName,
+                    "in/data.csv",
+                    sep = "/")
+  
+  descFile <- paste(folderName,
+                    "in/descriptor.csv",
+                    sep = "/")
+  
+  logFile <- paste(folderName,
+                   "out/log.txt",
+                   sep = "/")
   
   IDHTMLFile <- paste(folderName,
                       "out/IDClass.html",
                       sep = "/")
   
-  iniContent <- read.table(paste(folderName,
-                                 "in/param.ini",
-                                 sep = "/"),
+  RDataFileOut <- paste(folderName,
+                        "out/output.RData",
+                        sep = "/")
+  
+  iniContent <- read.table(iniFile,
                            sep = "=",
                            strip.white = TRUE,
                            stringsAsFactors = FALSE)
   
   nbClass = iniContent[which(iniContent[, 1] == "nbCluster"), 2]
   
-  resGetData <- getData(c(paste(folderName,
-                                "in/data.csv",
-                                sep = "/"),
-                          paste(folderName,
-                                "in/descriptor.csv",
-                                sep = "/")))
+  resGetData <- getData(c(dataFile, descFile))
   
   if (nchar(resGetData$warnLog) > 0) # Were there errors when reading the data ?
   {
     cat(resGetData$warnLog,
-        file = logConn,
-        sep = "")
+        file = logFile,
+        sep = "",
+        append = TRUE)
+    quit(save = "no", status = 1)
   }
   else # run can be carried out
   {
@@ -46,9 +57,7 @@ webDemoLearn <- function(folderName)
                            0.95)
     
     save(res,
-         file = paste(folderName,
-                      "out/output.RData",
-                      sep = "/"))
+         file = RDataFileOut)
     
     writeIDClassHTML(res,
                      IDHTMLFile)
@@ -65,17 +74,18 @@ webDemoLearn <- function(folderName)
     if (nchar(res$mixture$warnLog) > 0)
     {
       cat(res$mixture$warnLog,
-          file = logConn,
-          sep = "")
+          file = logFile,
+          sep = "",
+          append = TRUE)
       quit(save = "no", status = 1)
     }
     else
     {
       cat("Run completed successfully",
-          file = logConn,
-          sep = "")
+          file = logFile,
+          sep = "",
+          append = TRUE)
       quit(save = "no", status = 0)
     }
   }
-  close(logConn)
 }
