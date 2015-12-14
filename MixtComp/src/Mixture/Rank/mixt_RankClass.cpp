@@ -30,7 +30,6 @@ RankClass::RankClass(const Vector<RankIndividual>& data,
                      RankVal& mu,
                      Real& pi) :
     nbInd_(data.size()),
-    nbPos_(mu.nbPos()),
     data_(data),
     setInd_(setInd),
     mu_(mu),
@@ -84,14 +83,14 @@ void RankClass::sampleMu()
 
   logProba(0) = lnCompletedProbability(); // proba of current mu
 
-  for (int p = 0; p < nbPos_ - 1; ++p)
+  for (int p = 0; p < mu_.nbPos() - 1; ++p)
   {
     mu_.permutation(p);
     logProba(1) = lnCompletedProbability();
     proba.logToMulti(logProba);
 
 #ifdef MC_DEBUG
-    std::cout << "p: " << p << ", logProba: " << logProba.transpose() << ", proba: " << proba.transpose() << std::endl;
+    std::cout << "RankClass::sampleMu, p: " << p << ", logProba: " << itString(logProba) << ", proba: " << itString(proba) << std::endl;
 #endif
 
     if (multi_.sample(proba) == 1) // switch to permuted state ?
@@ -108,7 +107,7 @@ void RankClass::sampleMu()
 void RankClass::mStep()
 {
 #ifdef MC_DEBUG
-    std::cout << "Rank::mStep, setInd_: " << itString(setInd_) << std::endl;
+    std::cout << "RankClass::mStep" << std::endl;
 #endif
   Vector<RankVal> mu(nbGibbsIterRank);
   Vector<Real> pi(nbGibbsIterRank);
@@ -123,7 +122,7 @@ void RankClass::mStep()
     pi(i) = Real(g) / Real(a);
 
 #ifdef MC_DEBUG
-    std::cout << "Rank::mStep, i: " << i << ", mu: " << mu(i).o().transpose() << ", pi: " << pi(i) << ", logProba: " << logProba(i) << std::endl;
+    std::cout << "Rank::mStep, i: " << i << ", mu: " << mu(i) << ", pi: " << pi(i) << ", logProba: " << logProba(i) << std::endl;
 #endif
   }
 

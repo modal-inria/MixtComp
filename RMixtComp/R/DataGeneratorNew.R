@@ -54,8 +54,8 @@ zParam <- function() {
   z_class$name <- "z_class"
   z_class$type <- "LatentClass"
   z_class$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
-  z_class$allPresent <- TRUE
-  z_class$allMissing <- FALSE
+  z_class$allPresent <- FALSE
+  z_class$allMissing <- TRUE
   
   return(z_class)
 }
@@ -69,9 +69,9 @@ rankParam <- function() {
   Rank$name <- "Rank1"
   Rank$type <- "Rank"
   Rank$param[[1]]$mu <- c(1, 2, 3, 4)
-  Rank$param[[1]]$pi <- 0.9
+  Rank$param[[1]]$pi <- 0.8
   Rank$param[[2]]$mu <- c(4, 3, 2, 1)
-  Rank$param[[2]]$pi <- 0.9
+  Rank$param[[2]]$pi <- 0.8
   
   return(Rank)
 }

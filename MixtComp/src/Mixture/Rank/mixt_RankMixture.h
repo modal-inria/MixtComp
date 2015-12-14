@@ -129,6 +129,9 @@ class RankMixture : public IMixture
 
       if (init) // mu is initialized through direct sampling in each class
       {
+#ifdef MC_DEBUG
+        std::cout << "RankMixture::mStep, init" << std::endl;
+#endif
         for (int k = 0; k < nbClass_; ++k)
         {
           MultinomialStatistic multi;
@@ -154,6 +157,9 @@ class RankMixture : public IMixture
       }
       else // as initialization has been performed, mStep is done among candidates obtained through Gibbs sampling
       {
+#ifdef MC_DEBUG
+        std::cout << "RankMixture::mStep, normal iteration" << std::endl;
+#endif
         for (int k = 0; k < nbClass_; ++k)
         {
           class_[k].mStep();
@@ -161,10 +167,9 @@ class RankMixture : public IMixture
       }
 
 #ifdef MC_DEBUG
-      std::cout << "RankMixture::mStep" << std::endl;
       for (int k = 0; k < nbClass_; ++k)
       {
-        std::cout << "ending mStep, k: " << k << ", mu_[k]: " << mu_[k] << ", pi_[k]: " << pi_[k] << std::endl;
+        std::cout << "RankMixture::mStep, k: " << k << ", mu_[k]: " << mu_[k] << ", pi_[k]: " << pi_[k] << std::endl;
       }
 #endif
     }

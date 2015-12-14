@@ -59,8 +59,6 @@ class RankClass
   private:
     int nbInd_;
 
-    int nbPos_;
-
     /** Data */
     const Vector<RankIndividual>& data_;
 
