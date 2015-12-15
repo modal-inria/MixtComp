@@ -92,16 +92,6 @@ class IMixture
     = 0;
 
     /**
-     * Storage / display of intermediate results during the SEM burn-in phase
-     *
-     * @param iteration SEM burn-in iteration number in the burn-in
-     * @param iterationMax maximum number of iterations
-     */
-    virtual void storeSEMBurnIn(int iteration,
-                                int iterationMax)
-    = 0;
-
-    /**
      * Storage of mixture parameters during SEM run phase
      *
      * @param iteration SEM run iteration number

@@ -54,8 +54,6 @@ void SEMAlgo::run(RunType runType,
   if (runType == burnIn_)
   {
     myTimer.setName("SEM: burn-in");
-    p_composer_->storeSEMBurnIn(-1,
-                                nbIter_ - 1); // export of the initial partition
   }
   else if (runType == run_)
   {
@@ -116,15 +114,6 @@ void SEMAlgo::run(RunType runType,
     }
 
     p_composer_->mStep(false);
-
-    if (runType == burnIn_)
-    {
-#ifdef MC_DEBUG
-    std::cout << "SEMAlgo::run, p_model_->storeShortRun" << std::endl;
-#endif
-      p_composer_->storeSEMBurnIn(iter,
-                                  nbIter_ - 1);
-    }
 
     if (runType == run_)
     {

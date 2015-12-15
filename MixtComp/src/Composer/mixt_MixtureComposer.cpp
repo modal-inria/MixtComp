@@ -488,23 +488,6 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
   return proba;
 }
 
-void MixtureComposer::storeSEMBurnIn(int iteration,
-                                     int iterationMax)
-{
-#ifdef MC_LOG
-  std::stringstream fileName;
-  fileName << "out/log/composer-";
-  fileName << iteration;
-  fileName << "-z_i.csv";
-  writeDataCsv(fileName.str(), *p_zi());
-#endif
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-    (*it)->storeSEMBurnIn(iteration,
-                          iterationMax);
-  }
-}
-
 void MixtureComposer::storeSEMRun(int iteration,
                                   int iterationMax)
 {

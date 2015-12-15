@@ -156,12 +156,6 @@ class MixtureComposer
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
-    void storeSEMBurnIn(int iteration,
-                        int iterationMax);
-
-    /**@brief This step can be used to signal to the mixtures that they must
-     * store results. This is usually called after a burn-in phase.
-     **/
     void storeSEMRun(int iteration,
                      int iterationMax);
 

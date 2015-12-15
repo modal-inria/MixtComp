@@ -286,9 +286,6 @@ class Ordinal : public IMixture
       mStepMu();
     }
 
-    virtual void storeSEMBurnIn(int iteration,
-                                int iterationMax) {} // nothing to be done here
-
     virtual void storeSEMRun(int iteration,
                              int iterationMax)
     {

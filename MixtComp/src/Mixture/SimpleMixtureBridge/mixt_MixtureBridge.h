@@ -236,32 +236,6 @@ class MixtureBridge : public IMixture
       mixture_.mStep();
     }
 
-    /**
-     * This function should be used to store any results during the burn-in period
-     * @param iteration Provides the iteration number during the burn-in period
-     */
-    virtual void storeSEMBurnIn(int iteration,
-                                int iterationMax)
-    {
-#ifdef MC_LOG
-      std::stringstream fileNameA;
-      fileNameA << "out/log/";
-      fileNameA << idName();
-      fileNameA << "-";
-      fileNameA << iteration;
-      fileNameA << "-param.csv";
-      writeDataCsv(fileNameA.str(), param_);
-
-      std::stringstream fileNameB;
-      fileNameB << "out/log/";
-      fileNameB << idName();
-      fileNameB << "-";
-      fileNameB << iteration;
-      fileNameB << "-data.csv";
-      writeDataCsv(fileNameB.str(), augData_.data_);
-#endif
-    }
-
     /** This function should be used to store any intermediate results during
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
