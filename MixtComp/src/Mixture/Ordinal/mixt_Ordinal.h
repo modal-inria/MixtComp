@@ -126,14 +126,18 @@ class Ordinal : public IMixture
                                      paramStr_,
                                      -minModality); // ordinal data are modalities, offset enforces 0-based encoding through the whole mixture
 
+#ifdef MC_DEBUGNEW
+      std::cout << "Ordinal::setDataParam, idName_: " << idName_ << ", data: " << itString(augData_.data_) << std::endl;
+#endif
+
       augData_.computeRange();
 
-      std::string tempLog  = augData_.checkMissingType(acceptedType()); // check if the missing data provided are compatible with the model
+      std::string missingLog  = augData_.checkMissingType(acceptedType()); // check if the missing data provided are compatible with the model
 
-      if(tempLog.size() > 0) // check on the missing values description
+      if(missingLog.size() > 0) // check on the missing values description
       {
         std::stringstream sstm;
-        sstm << "Variable " << idName() << " with Ordinal model has a problem with the descriptions of missing values.\n" << tempLog;
+        sstm << "Variable " << idName() << " with Ordinal model has a problem with the descriptions of missing values.\n" << missingLog;
         warnLog += sstm.str();
       }
       else if (augData_.dataRange_.min_ < 0) // modality encoding is 0-based
