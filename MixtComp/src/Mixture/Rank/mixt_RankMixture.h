@@ -190,38 +190,15 @@ class RankMixture : public IMixture
           muParamStat_[k].setExpectationParam(); // estimate mu parameter using mode / expectation
         }
         piParamStat_.setExpectationParam(); // estimate pi parameter using mode / expectation
+
+        computeObservedProba();
       }
     }
 
     void storeGibbsRun(int i,
                        int iteration,
                        int iterationMax)
-    {
-      if (iteration == 0)
-      {
-        rankLikelihood_.init(nbInd_,
-                             nbClass_,
-                             iterationMax - 1);
-      }
-
-      rankLikelihood_.observe(i,
-                              (*p_zi_)(i),
-                              facNbMod_ * lnCompletedProbability(i,
-                                                                 (*p_zi_)(i)));
-      if (iteration == iterationMax)
-      {
-//        rl_.getHMean(observedProba_); // harmonic mean computation method
-
-        RankIndividual ri(nbPos_);
-        observedProbaSampling_.resize(nbClass_);
-        for (int k = 0; k < nbClass_; ++k)
-        {
-          ri.observedProba(mu_(k),
-                           pi_(k),
-                           observedProbaSampling_(k));
-        }
-      }
-    }
+    {}
 
     Real lnCompletedProbability(int i, int k)
     {
@@ -324,6 +301,8 @@ class RankMixture : public IMixture
           muParamStat_[k].setParamStorage();
         }
         piParamStat_.setParamStorage();
+
+        computeObservedProba();
       }
 
       return warnLog;
@@ -393,6 +372,17 @@ class RankMixture : public IMixture
         names[k] = sstm.str();
       }
       return names;
+    }
+
+    void computeObservedProba() {
+      RankIndividual ri(nbPos_); // dummy rank individual used to compute a Vector<std::map<RankVal, Real> > for each class
+      observedProbaSampling_.resize(nbClass_);
+      for (int k = 0; k < nbClass_; ++k)
+      {
+        ri.observedProba(mu_(k),
+                         pi_(k),
+                         observedProbaSampling_(k));
+      }
     }
 
     int nbClass_;
