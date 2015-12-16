@@ -1,5 +1,13 @@
 ordinalGenerator <- function(missing,
                              param) {
+  seg <- ordinalGeneratorSeg(missing,
+                             param)
+  
+  return(paste0(seg[1]))
+}
+
+ordinalGeneratorSeg <- function(missing,
+                                param) {
   nbMod <- param$nbMod
   seg <- c(1, nbMod) # initial segment is the input
   
@@ -15,13 +23,13 @@ ordinalGenerator <- function(missing,
                      nbMod)
   }
   
-  cat("last seg: ", seg, "\n", sep = "")
-  
-  return(paste0(seg[1]))
+  return(seg)
 }
 
-ySample <- function(seg) {
-  return(sample(seg[1]:seg[2], 1)) # uniform sampling of y
+ySample <- function(seg) { # uniform sampling of y
+  segVal <- seg[1]:seg[2]
+  y <- segVal[sample(length(segVal), 1)]
+  return(y) 
 }
 
 zSample <- function(param) {
