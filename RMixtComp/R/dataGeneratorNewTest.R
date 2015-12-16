@@ -5,8 +5,8 @@ dataGeneratorNewTest <- function() {
   var <- list()
   
   var$z_class <- zParam()
-  #  var$Rank1 <- rankParam()
-  var$Ordinal1 <- ordinalParam()
+  var$Rank1 <- rankParam()
+  # var$Ordinal1 <- ordinalParam()
   
   res <- dataGeneratorNew("dataGenNew/learn", # prefix
                           nbInd, # nbInd
@@ -54,8 +54,8 @@ zParam <- function() {
   z_class$name <- "z_class"
   z_class$type <- "LatentClass"
   z_class$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
-  z_class$allPresent <- TRUE
-  z_class$allMissing <- FALSE
+  z_class$allPresent <- FALSE
+  z_class$allMissing <- TRUE
   
   return(z_class)
 }
