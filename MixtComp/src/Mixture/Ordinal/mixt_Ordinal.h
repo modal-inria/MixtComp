@@ -290,6 +290,7 @@ class Ordinal : public IMixture
       mStepMu();
     }
 
+    /** storeSEMRun sets new parameters at the last iteration of the SEM, before the Gibbs. */
     virtual void storeSEMRun(int iteration,
                              int iterationMax)
     {
@@ -301,18 +302,6 @@ class Ordinal : public IMixture
         muParamStatComputer_.setExpectationParam(); // estimate mu parameter using mode / expectation
         piParamStatComputer_.setExpectationParam(); // estimate pi parameter using mode / expectation
         computeObservedProba(); // compute observed probabilities using estimated parameters
-
-        for (int i = 0; i < nbInd_; ++i) // Gibbs to avoid null proba of individuals, since the parameters have been changed by setExpectationParam(), which does not perform a maximum likelihood estimate
-        {
-          path_(i).initPath(); // reinitialization
-          for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
-          {
-            GibbsSampling(i,
-                          mu_((*p_zi_)(i)), // mu
-                          pi_((*p_zi_)(i)), // pi
-                          true); // allZOneAuthorized, contrarily to sampleMuFreq, in storeSEMRun those samplings occur before the global Gibbs sampler, and having all latent values at is not a problem
-          }
-        }
       }
     }
 
@@ -472,13 +461,12 @@ class Ordinal : public IMixture
         copyToData(i);
       }
 
+      Vector<int> tempMu(nbClass_);
 
       for (int k = 0; k < nbClass_; ++k)
       {
-        sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
+        tempMu(k) = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
       }
-
-      pi_ = piInitBOS;
 
 #ifdef MC_DEBUG
       std::cout << "Ordinal::removeMissing, mu_: " << mu_.transpose() << std::endl;
@@ -498,8 +486,8 @@ class Ordinal : public IMixture
           Vector<bool, 2> az;
           az = true;  // in initialization, checkSampleCondition is called globally just after the removeMissing, so no need for early check
           GibbsSampling(i,
-                        mu_((*p_zi_)(i)),
-                        pi_((*p_zi_)(i)),
+                        tempMu((*p_zi_)(i)),
+                        piInitBOS,
                         az);
         }
         copyToData(i);
@@ -572,7 +560,7 @@ class Ordinal : public IMixture
      * @param k class for which the mode must be simulated
      * @param prohibitCurrentMu shall the current value of mu be forbidden, for example if it lead to degeneracy in the mStep ?
      * */
-    void sampleMuFreq(int k)
+    int sampleMuFreq(int k)
     {
       Vector<Real> freqMod(nbModality_, 0.); // frequencies of completed values for the current class
       for (int i = 0; i < nbInd_; ++i) // compute distribution of values
@@ -602,7 +590,7 @@ class Ordinal : public IMixture
       std::cout << freqMod << std::endl;
 #endif
 
-      mu_(k) = multi_.sample(freqMod); // mu is sampled from this distribution
+      return multi_.sample(freqMod); // mu is sampled from this distribution
     }
 
     /**

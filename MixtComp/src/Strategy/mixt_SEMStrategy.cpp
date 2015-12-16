@@ -150,6 +150,39 @@ std::string SemStrategy::run()
     std::cout << "SemStrategy::run, Gibbs burn-in" << std::endl;
 #endif
 
+    /* multiple initialization for the Gibbs, which are needed because of the imputation of parameters at the
+     * end of the SEM iterations just before. Latent variables might not be compatible with the new values of the
+     * parameters, hence the need to restart clean. Not that no mStep are performed here, since the parameters are
+     * now known and fixed. */
+    for (int n = 0; n < nbSamplingAttempts; ++n) //
+    {
+#ifdef MC_DEBUG
+      std::cout << "SemStrategy::run, initialization, n: " << n << std::endl;
+#endif
+
+      p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
+      p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+
+      std::string sWarn;
+      int proba = p_composer_->checkSampleCondition(&sWarn);
+
+      if (proba == 1) // correct sampling is not rejected
+      {
+        break;
+      }
+      else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
+      {
+#ifdef MC_DEBUG
+        std::cout << "SemStrategy::run, invalid initialization" << std::endl;
+#endif
+        std::stringstream sstm;
+        sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
+             << "trial is: " << std::endl
+             << sWarn;
+        return sstm.str();
+      }
+    }
+
     Timer myTimer;
     myTimer.setName("Gibbs burn-in");
     for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
