@@ -455,14 +455,7 @@ class Ordinal : public IMixture
      * rejected by a call to checkSampleCondition. */
     void removeMissing()
     {
-      for (int i = 0; i < nbInd_; ++i)
-      {
-        path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
-        copyToData(i);
-      }
-
       Vector<int> tempMu(nbClass_);
-
       for (int k = 0; k < nbClass_; ++k)
       {
         tempMu(k) = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
@@ -474,6 +467,7 @@ class Ordinal : public IMixture
 
       for (int i = 0; i < nbInd_; ++i)
       {
+        path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
         for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
         {
 #ifdef MC_DEBUG
@@ -521,32 +515,24 @@ class Ordinal : public IMixture
       {
         if (az(k, 0) == true)
         {
-          if (warnLog == NULL)
-          {
-            proba = 0;
-          }
-          else
+          proba = 0;
+          if (warnLog != NULL)
           {
             std::stringstream sstm;
             sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << ". "
                  << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
             *warnLog += sstm.str();
-            proba = 0;
           }
         }
-        else if (az(k, 1) == true)
+        if (az(k, 1) == true)
         {
-          if (warnLog == NULL)
-          {
-            proba = 0;
-          }
-          else
+          proba = 0;
+          if (warnLog != NULL)
           {
             std::stringstream sstm;
             sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". "
                  << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
             *warnLog += sstm.str();
-            proba = 0;
           }
         }
       }
