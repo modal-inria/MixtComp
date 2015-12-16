@@ -126,7 +126,7 @@ class Ordinal : public IMixture
                                      paramStr_,
                                      -minModality); // ordinal data are modalities, offset enforces 0-based encoding through the whole mixture
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
       std::cout << "Ordinal::setDataParam, idName_: " << idName_ << ", data: " << itString(augData_.data_) << std::endl;
 #endif
 
