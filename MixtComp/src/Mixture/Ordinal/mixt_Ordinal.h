@@ -629,8 +629,8 @@ class Ordinal : public IMixture
       }
       else // perform one round of Gibbs sampler for the designated individual
       {
-        path_(ind).samplePath(mu_((*p_zi_)(ind)),
-                              pi_((*p_zi_)(ind)),
+        path_(ind).samplePath(mu,
+                              pi,
                               sizeTupleBOS,
                               az);
       }
