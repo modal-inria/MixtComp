@@ -47,11 +47,7 @@ test.allSeg <- function() {
             seg <- c(currSeg$firstIndSeg[e],
                      currSeg$firstIndSeg[e] + currSeg$lengthSeg[e] - 1)
             
-            if (seg[1] != seg[2]) {
-              cat("i:", i, "j:", j, "y:", y, "z:", z, "m:", m, "\n")
-            }
-            
-            allTrue <- allTrue && (seg[1] == seg[2])
+            allTrue <- allTrue && (seg[1] <= seg[2])
           }
         }
       }

@@ -87,7 +87,7 @@ eSample <- function(z,
                     currSeg) {
   e <- -1
   if (z == 1) { # innacurate comparison, sample using length as proportions
-    proba <- currSeg$distSeg / sum(currSeg$distSeg)
+    proba <- currSeg$lengthSeg / sum(currSeg$lengthSeg)
     e <- sample(x = 3,
                 size = 1,
                 prob = proba)
