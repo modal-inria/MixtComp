@@ -91,7 +91,10 @@ std::string SemStrategy::run()
           std::cout << "SemStrategy::run, proba == 1" << std::endl;
 #endif
 
-          p_composer_->mStep(true); // first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing().
+          /** first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing(). The parameter
+           * true indicates that this is the first call to mStep, and therefore eventual Markov chains (as it is the case for the Rank model for example)
+           * should be initialized . */
+          p_composer_->mStep(true);
           break;
         }
         else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
@@ -157,7 +160,7 @@ std::string SemStrategy::run()
     for (int n = 0; n < nbSamplingAttempts; ++n) //
     {
 #ifdef MC_DEBUG
-      std::cout << "SemStrategy::run, initialization, n: " << n << std::endl;
+      std::cout << "SemStrategy::run, Gibbs initialization, n: " << n << std::endl;
 #endif
 
       p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
@@ -168,12 +171,15 @@ std::string SemStrategy::run()
 
       if (proba == 1) // correct sampling is not rejected
       {
+#ifdef MC_DEBUG
+        std::cout << "SemStrategy::run, Gibbs initialization validated" << std::endl;
+#endif
         break;
       }
       else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
       {
 #ifdef MC_DEBUG
-        std::cout << "SemStrategy::run, invalid initialization" << std::endl;
+        std::cout << "SemStrategy::run, Gibbs initialization invalid after " << n + 1 << " attempts." << std::endl;
 #endif
         std::stringstream sstm;
         sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
