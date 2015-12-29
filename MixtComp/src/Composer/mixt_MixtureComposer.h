@@ -349,7 +349,7 @@ class MixtureComposer
      * */
     std::vector<std::string> mixtureName() const;
 
-    void removeMissing();
+    void removeMissing(AlgoType algo);
 
     void lnObservedLikelihoodDebug();
 

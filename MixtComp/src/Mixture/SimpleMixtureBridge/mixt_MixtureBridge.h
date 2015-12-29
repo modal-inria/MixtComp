@@ -350,7 +350,7 @@ class MixtureBridge : public IMixture
                                      confidenceLevel_);
     }
 
-    void removeMissing() {augData_.removeMissing();}
+    void removeMissing(AlgoType algo) {augData_.removeMissing();}
 
     int checkSampleCondition(std::string* warnLog = NULL) const
     {

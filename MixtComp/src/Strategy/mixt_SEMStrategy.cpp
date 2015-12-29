@@ -80,7 +80,7 @@ std::string SemStrategy::run()
 
         p_composer_->intializeMixtureParameters(); // reset prop_ and tik_
         p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
-        p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+        p_composer_->removeMissing(SEM_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
         std::string sWarn;
         int proba = p_composer_->checkSampleCondition(&sWarn);
@@ -164,7 +164,7 @@ std::string SemStrategy::run()
 #endif
 
       p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
-      p_composer_->removeMissing(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+      p_composer_->removeMissing(Gibbs_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
       std::string sWarn;
       int proba = p_composer_->checkSampleCondition(&sWarn);

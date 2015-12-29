@@ -77,6 +77,12 @@ enum SamplerType
   GibbsSampler_
 };
 
+enum AlgoType
+{
+  SEM_,
+  Gibbs_
+};
+
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

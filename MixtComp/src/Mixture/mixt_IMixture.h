@@ -169,7 +169,7 @@ class IMixture
      * Crude removal of missing data by random sampling, prior to any parameter estimation. Used in
      * learning. In prediction parameters are known at initialization, and a samplingStep can be used.
      */
-    virtual void removeMissing()
+    virtual void removeMissing(AlgoType algo)
     = 0;
 
   protected:

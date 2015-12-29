@@ -224,7 +224,7 @@ class RankMixture : public IMixture
       }
     }
 
-    void removeMissing()
+    void removeMissing(AlgoType algo)
     {
       for (int i = 0; i < nbInd_; ++i)
       {
