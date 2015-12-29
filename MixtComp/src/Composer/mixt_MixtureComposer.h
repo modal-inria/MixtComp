@@ -117,9 +117,6 @@ class MixtureComposer
     /** @return the value of the completed likelihood */
     Real lnCompletedLikelihood();
 
-    /** @return the value of the semi-completed likelihood (completion only for latent class) */
-    Real lnSemiCompletedLikelihood();
-
     /** write the parameters of the model in the stream os. */
     void writeParameters() const;
 

@@ -147,7 +147,7 @@ Real MixtureComposer::lnObservedLikelihood()
   return lnLikelihood;
 }
 
-Real MixtureComposer::lnSemiCompletedLikelihood()
+Real MixtureComposer::lnCompletedLikelihood()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::lnSemiCompletedLikelihood() " << std::endl;
@@ -185,26 +185,6 @@ Real MixtureComposer::lnCompletedProbability(int i, int k)
   }
 
   return sum;
-}
-
-Real MixtureComposer::lnCompletedLikelihood()
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::lnCompletedLikelihood() " << std::endl;
-#endif
-  Real lnLikelihood = 0.;
-
-  // Compute the completed likelihood for the complete mixture model, using the completed data
-  for (int i = 0; i < nbInd_; ++i)
-  {
-#ifdef MC_DEBUG
-    std::cout << "i: " << i << std::endl;
-    std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
-#endif
-    lnLikelihood += lnCompletedProbability(i, zi_.data_(i));
-  }
-
-  return lnLikelihood;
 }
 
 void MixtureComposer::mStep(bool init)

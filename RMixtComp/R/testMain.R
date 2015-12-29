@@ -24,8 +24,8 @@ testLearnPredict <- function(regen = TRUE)
 
 testGenDataLearn <- function(nbClass = 2,
                              nbBurnInIter = 100,
-                             nbSampleLearn = 50,
-                             nbSamplePredict = 1000,
+                             nbSampleLearn = 100,
+                             nbSamplePredict = 100,
                              confidenceLevel = 0.95,
                              regen = TRUE)
 {  
@@ -127,7 +127,6 @@ testGenDataLearn <- function(nbClass = 2,
                              res$variable)
   print(confMat)
   cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
-      "lnSemiCompletedLikelihood: ", res$mixture$lnSemiCompletedLikelihood, "\n",
       "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
       sep = "")
   
@@ -187,7 +186,6 @@ testGenDataPredict <- function(param,
                              res$variable)
   print(confMat)
   cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
-      "lnSemiCompletedLikelihood: ", res$mixture$lnSemiCompletedLikelihood, "\n",
       "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
       sep = "")
   

@@ -133,12 +133,10 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
         mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
         mixt::Real lnObsLik = composer.lnObservedLikelihood();
         mixt::Real lnCompLik = composer.lnCompletedLikelihood();
-        mixt::Real lnSemiCompLik = composer.lnSemiCompletedLikelihood();
         mcMixture["lnObservedLikelihood"] = lnObsLik;
-        mcMixture["lnSemiCompletedLikelihood"] = lnSemiCompLik;
         mcMixture["lnCompletedLikelihood"] = lnCompLik;
-        mcMixture["BIC"] = lnObsLik      - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
-        mcMixture["ICL"] = lnSemiCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+        mcMixture["BIC"] = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+        mcMixture["ICL"] = lnCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
 
         mcMixture["runTime"] = totalTimer.top("end of run");
         mcMixture["nbInd"] = composer.nbInd();
