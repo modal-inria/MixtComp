@@ -64,7 +64,7 @@ class SemStrategy
     
     std::string initSEM();
     RunProblemType runSEM(SamplerType sampler);
-    std::string initGibbs();
+    void initGibbs();
     void runGibbs();
 
 

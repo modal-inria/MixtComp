@@ -85,11 +85,7 @@ std::string SemStrategy::run() {
     runSEM(GibbsSampler_);
   }
 
-  warnLog += initGibbs();
-  if (warnLog.size() > 0) {
-    return warnLog;
-  }
-
+  initGibbs();
   runGibbs();
 
   return warnLog;
@@ -147,36 +143,9 @@ RunProblemType SemStrategy::runSEM(SamplerType sampler) {
     return prob;
 }
 
-std::string SemStrategy::initGibbs() {
-  std::string warnLog;
-
-  /* multiple initialization for the Gibbs, which are needed because of the imputation of parameters at the
-   * end of the SEM iterations just before. Latent variables might not be compatible with the new values of the
-   * parameters, hence the need to restart clean. Not that no mStep are performed here, since the parameters are
-   * now known and fixed. */
-  for (int n = 0; n < nbSamplingAttempts; ++n) //
-  {
-    p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
-    p_composer_->removeMissing(Gibbs_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
-
-    std::string sWarn;
-    int proba = p_composer_->checkSampleCondition(&sWarn);
-
-    if (proba == 1) // correct sampling is not rejected
-    {
-      break;
-    }
-    else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
-    {
-      std::stringstream sstm;
-      sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
-           << "trial is: " << std::endl
-           << sWarn;
-      warnLog += sstm.str();
-    }
-  }
-
-  return warnLog;
+void SemStrategy::initGibbs() {
+  p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
+  p_composer_->removeMissing(Gibbs_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 }
 
 void SemStrategy::runGibbs() {

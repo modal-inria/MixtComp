@@ -40,11 +40,6 @@ GibbsStrategy::GibbsStrategy(MixtureComposer* p_composer,
 std::string GibbsStrategy::run()
 {
   std::string warnLog;
-#ifdef MC_DEBUG
-  std::cout << "SemStrategy::run(), after randomClassInit()" << std::endl;
-  std::cout << "*p_composer_->p_zi()" << std::endl;
-  std::cout << *p_composer_->p_zi() << std::endl;
-#endif
 
   p_composer_->sStepNoCheck(); // class of each individual is sampled using the apriori proportions, no condition has to be verified on the sample
   p_composer_->removeMissing(Gibbs_);
@@ -58,9 +53,7 @@ std::string GibbsStrategy::run()
                   1, // groupMax
                   iterBurnInGibbs,
                   nbBurnInIterGibbs_); // progress write in progress file
-#ifdef MC_DEBUG
-    std::cout << "GibbsStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
-#endif
+
     p_composer_->eStep();
     p_composer_->sStepNoCheck();
     p_composer_->samplingStepNoCheck();
@@ -69,11 +62,6 @@ std::string GibbsStrategy::run()
   p_composer_->gibbsSampling(nbIterGibbs_,
                              1, // group
                              1); // groupMax
-
-#ifdef MC_DEBUG
-  p_composer_->lnObservedLikelihoodDebug();
-#endif
-
   return warnLog;
 }
 
