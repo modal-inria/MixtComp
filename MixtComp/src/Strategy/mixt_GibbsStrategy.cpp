@@ -47,7 +47,7 @@ std::string GibbsStrategy::run()
 #endif
 
   p_composer_->sStepNoCheck(); // class of each individual is sampled using the apriori proportions, no condition has to be verified on the sample
-  p_composer_->samplingStepNoCheck(); // in prediction, parameters are known, samplingStep is used instead of removeMissing. No condition has to be verified on the sample.
+  p_composer_->removeMissing(Gibbs_);
 
   Timer myTimer;
   myTimer.setName("Gibbs: burn-in");
