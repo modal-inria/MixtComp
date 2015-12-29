@@ -62,6 +62,12 @@ class SemStrategy
     /** run the strategy */
     std::string run();
     
+    std::string initSEM();
+    RunProblemType runSEM(SamplerType sampler);
+    std::string initGibbs();
+    void runGibbs();
+
+
   private:
      /** reference on the main model */
     MixtureComposer* p_composer_;

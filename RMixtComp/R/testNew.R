@@ -34,7 +34,6 @@ testRank <- function(nbClass = 2,
                              res$variable)
   print(confMat)
   cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
-      "lnSemiCompletedLikelihood: ", res$mixture$lnSemiCompletedLikelihood, "\n",
       "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
       sep = "")
   

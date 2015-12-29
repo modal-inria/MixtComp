@@ -66,158 +66,138 @@ SemStrategy::~SemStrategy()
   if (p_runAlgo_   ) delete p_runAlgo_   ;
 }
 
-std::string SemStrategy::run()
-{
-  SamplerType sampler = rejectSampler_; // rejectSampler is used until a problem occurs
+std::string SemStrategy::run() {
+  std::string warnLog;
 
-  while(true) // first iteration with rejection sampler, second with GibbsSampler
+  warnLog += initSEM();
+  if (warnLog.size() > 0) {
+    return warnLog;
+  }
+
+  RunProblemType runProb = runSEM(rejectSampler_);
+  if (runProb == invalidSampler_) {
+
+#ifdef MC_VERBOSE
+      std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
+#endif
+
+    initSEM();
+    runSEM(GibbsSampler_);
+  }
+
+  warnLog += initGibbs();
+  if (warnLog.size() > 0) {
+    return warnLog;
+  }
+
+  runGibbs();
+
+  return warnLog;
+}
+
+std::string SemStrategy::initSEM() {
+  std::string warnLog;
+  for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
   {
-      for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
-      {
-#ifdef MC_DEBUG
-        std::cout << "SemStrategy::run, initialization, n: " << n << std::endl;
-#endif
+    p_composer_->intializeMixtureParameters(); // reset prop_ and tik_
+    p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
+    p_composer_->removeMissing(SEM_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
-        p_composer_->intializeMixtureParameters(); // reset prop_ and tik_
-        p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
-        p_composer_->removeMissing(SEM_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+    std::string sWarn;
+    int proba = p_composer_->checkSampleCondition(&sWarn);
 
-        std::string sWarn;
-        int proba = p_composer_->checkSampleCondition(&sWarn);
+    if (proba == 1) // correct sampling is not rejected
+    {
+      /** first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing(). The parameter
+       * true indicates that this is the first call to mStep, and therefore eventual Markov chains (as it is the case for the Rank model for example)
+       * should be initialized . */
+      p_composer_->mStep(true);
+      break;
+    }
+    else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
+    {
+      std::stringstream sstm;
+      sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
+           << "trial is: " << std::endl
+           << sWarn;
+      warnLog += sstm.str();
+    }
+  }
+  return warnLog;
+}
 
-        if (proba == 1) // correct sampling is not rejected
-        {
-#ifdef MC_DEBUG
-          std::cout << "SemStrategy::run, proba == 1" << std::endl;
-#endif
-
-          /** first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing(). The parameter
-           * true indicates that this is the first call to mStep, and therefore eventual Markov chains (as it is the case for the Rank model for example)
-           * should be initialized . */
-          p_composer_->mStep(true);
-          break;
-        }
-        else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
-        {
-#ifdef MC_DEBUG
-          std::cout << "SemStrategy::run, invalid initialization" << std::endl;
-#endif
-          std::stringstream sstm;
-          sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
-               << "trial is: " << std::endl
-               << sWarn;
-          return sstm.str();
-        }
-      }
-
-
-#ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, SEM burn-in" << std::endl;
-#endif
-
-    RunProblemType burnInProb;
+RunProblemType SemStrategy::runSEM(SamplerType sampler) {
+    RunProblemType prob = noProblem_;
     p_burnInAlgo_->run(burnIn_,
-                       burnInProb,
+                       prob,
                        sampler,
                        0, // group
                        3); // groupMax
-    if (burnInProb == invalidSampler_)
-    {
-#ifdef MC_VERBOSE
-      std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
-#endif
-      sampler = GibbsSampler_; // switch to Gibbs sampling
-      continue;
+
+    if (prob == invalidSampler_) {
+      return prob;
     }
 
-#ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, SEM run" << std::endl;
-#endif
-
-    RunProblemType runProb;
     p_runAlgo_->run(run_,
-                    runProb,
+                    prob,
                     sampler,
                     1, // group
                     3); // groupMax
-    if (runProb == invalidSampler_)
+
+    return prob;
+}
+
+std::string SemStrategy::initGibbs() {
+  std::string warnLog;
+
+  /* multiple initialization for the Gibbs, which are needed because of the imputation of parameters at the
+   * end of the SEM iterations just before. Latent variables might not be compatible with the new values of the
+   * parameters, hence the need to restart clean. Not that no mStep are performed here, since the parameters are
+   * now known and fixed. */
+  for (int n = 0; n < nbSamplingAttempts; ++n) //
+  {
+    p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
+    p_composer_->removeMissing(Gibbs_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+
+    std::string sWarn;
+    int proba = p_composer_->checkSampleCondition(&sWarn);
+
+    if (proba == 1) // correct sampling is not rejected
     {
-#ifdef MC_VERBOSE
-      std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
-#endif
-      sampler = GibbsSampler_; // switch to Gibbs sampling
-      continue;
+      break;
     }
-  
-#ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, Gibbs burn-in" << std::endl;
-#endif
-
-    /* multiple initialization for the Gibbs, which are needed because of the imputation of parameters at the
-     * end of the SEM iterations just before. Latent variables might not be compatible with the new values of the
-     * parameters, hence the need to restart clean. Not that no mStep are performed here, since the parameters are
-     * now known and fixed. */
-    for (int n = 0; n < nbSamplingAttempts; ++n) //
+    else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
     {
-#ifdef MC_DEBUG
-      std::cout << "SemStrategy::run, Gibbs initialization, n: " << n << std::endl;
-#endif
-
-      p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
-      p_composer_->removeMissing(Gibbs_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
-
-      std::string sWarn;
-      int proba = p_composer_->checkSampleCondition(&sWarn);
-
-      if (proba == 1) // correct sampling is not rejected
-      {
-#ifdef MC_DEBUG
-        std::cout << "SemStrategy::run, Gibbs initialization validated" << std::endl;
-#endif
-        break;
-      }
-      else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
-      {
-#ifdef MC_DEBUG
-        std::cout << "SemStrategy::run, Gibbs initialization invalid after " << n + 1 << " attempts." << std::endl;
-#endif
-        std::stringstream sstm;
-        sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
-             << "trial is: " << std::endl
-             << sWarn;
-        return sstm.str();
-      }
+      std::stringstream sstm;
+      sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
+           << "trial is: " << std::endl
+           << sWarn;
+      warnLog += sstm.str();
     }
-
-    Timer myTimer;
-    myTimer.setName("Gibbs burn-in");
-    for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
-    {
-      myTimer.iteration(iterBurnInGibbs, nbGibbsBurnInIter_ - 1);
-      writeProgress(2,
-                    3,
-                    iterBurnInGibbs,
-                    nbGibbsBurnInIter_ - 1);
-
-  #ifdef MC_DEBUG
-      std::cout << "SemStrategy::run(), iterBurnInGibbs: " << iterBurnInGibbs << std::endl;
-  #endif
-
-      p_composer_->sStepNoCheck();
-      p_composer_->samplingStepNoCheck();
-      p_composer_->eStep();
-    }
-
-#ifdef MC_DEBUG
-    std::cout << "SemStrategy::run, Gibbs run" << std::endl;
-#endif
-
-    p_composer_->gibbsSampling(nbGibbsIter_,
-                               3, // group
-                               3); // groupMax
-
-    return std::string(); // if the last attempt is a success, ignore all warnings in allWarn and return an empty string
   }
+
+  return warnLog;
+}
+
+void SemStrategy::runGibbs() {
+  Timer myTimer;
+  myTimer.setName("Gibbs burn-in");
+  for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
+  {
+    myTimer.iteration(iterBurnInGibbs, nbGibbsBurnInIter_ - 1);
+    writeProgress(2,
+                  3,
+                  iterBurnInGibbs,
+                  nbGibbsBurnInIter_ - 1);
+
+    p_composer_->sStepNoCheck();
+    p_composer_->samplingStepNoCheck();
+    p_composer_->eStep();
+  }
+
+  p_composer_->gibbsSampling(nbGibbsIter_,
+                             3, // group
+                             3); // groupMax
 }
 
 } // namespace mixt
