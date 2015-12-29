@@ -1,13 +1,13 @@
-testRank <- function(nbClass = 2,
-                     nbBurnInIter = 100,
-                     nbSampleLearn = 50,
-                     nbSamplePredict = 1000,
-                     confidenceLevel = 0.95,
-                     regen = TRUE)
+testNewLearn <- function(nbClass = 2,
+                         nbBurnInIter = 100,
+                         nbSampleLearn = 50,
+                         nbSamplePredict = 1000,
+                         confidenceLevel = 0.95,
+                         regen = TRUE)
 {  
   if (regen == TRUE)
   {
-    dataGeneratorNewTest()
+    dataGeneratorNewLearn()
   }
   
   resGetData <- getData(c("dataGenNew/learn/data.csv",
@@ -31,6 +31,56 @@ testRank <- function(nbClass = 2,
   
   confMat <- confusionMatrix(nbClass,
                              "dataGenNew/learn/classIn.csv",
+                             res$variable)
+  print(confMat)
+  cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
+      "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
+      sep = "")
+  
+  return(res)
+}
+
+testNewLearnPredict <- function(nbClass = 2,
+                                nbBurnInIter = 100,
+                                nbSampleLearn = 50,
+                                nbSamplePredict = 1000,
+                                confidenceLevel = 0.95,
+                                regen = TRUE)
+{
+  res <- testNewLearn(nbClass,
+                      nbBurnInIter,
+                      nbSampleLearn,
+                      nbSamplePredict,
+                      confidenceLevel,
+                      regen)
+  
+  if (regen == TRUE)
+  {
+    dataGeneratorNewPredict()
+  }
+  
+  resGetData <- getData(c("dataGenNew/predict/data.csv",
+                          "dataGenNew/predict/desc.csv"))
+  
+  # creation of strategy list
+  mcStrategy <- list(nbBurnInIter = nbBurnInIter,
+                     nbIter = 100,
+                     nbGibbsBurnInIter = 100,
+                     nbGibbsIter = 100)
+  
+  # launch of the MixtComp algorithm
+  res <- mixtCompPredict(resGetData$lm,
+                         res$variable$param,
+                         mcStrategy,
+                         nbClass,
+                         confidenceLevel)
+  if (nchar(res$mixture$warnLog) > 0)
+  {
+    warning(res$mixture$warnLog)
+  }
+  
+  confMat <- confusionMatrix(nbClass,
+                             "dataGenNew/predict/classIn.csv",
                              res$variable)
   print(confMat)
   cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",

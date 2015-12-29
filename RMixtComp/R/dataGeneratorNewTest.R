@@ -1,4 +1,4 @@
-dataGeneratorNewTest <- function() {
+dataGeneratorNewLearn <- function() {
   proportionMissing <- 0.
   nbInd <- 100
   
@@ -35,6 +35,56 @@ dataGeneratorNewTest <- function() {
   
   write.table(res$desc,
               file = "dataGenNew/learn/desc.csv",
+              append = FALSE,
+              quote = FALSE,
+              sep = ";",
+              eol = "\n",
+              na = "NA",
+              dec = ".",
+              row.names = FALSE,
+              col.names = FALSE,
+              qmethod = c("escape",
+                          "double"),
+              fileEncoding = "")
+}
+
+dataGeneratorNewPredict <- function() {
+  proportionMissing <- 0.
+  nbInd <- 100
+  
+  var <- list()
+  
+  var$z_class <- zParam()
+  var$Rank1 <- rankParam()
+  var$Ordinal1 <- ordinalParam()
+  
+  res <- dataGeneratorNew("dataGenNew/predict", # prefix
+                          nbInd, # nbInd
+                          proportionMissing,
+                          var) # param
+  
+  write.table(res$z,
+              file = paste("dataGenNew/predict/classIn.csv",
+                           sep = "/"),
+              row.names=FALSE,
+              col.names=FALSE)
+  
+  write.table(res$data,
+              file = "dataGenNew/predict/data.csv",
+              append = FALSE,
+              quote = FALSE,
+              sep = ";",
+              eol = "\n",
+              na = "NA",
+              dec = ".",
+              row.names = FALSE,
+              col.names = FALSE,
+              qmethod = c("escape",
+                          "double"),
+              fileEncoding = "")
+  
+  write.table(res$desc,
+              file = "dataGenNew/predict/desc.csv",
               append = FALSE,
               quote = FALSE,
               sep = ";",
