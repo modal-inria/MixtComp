@@ -151,7 +151,7 @@ class Ordinal : public IMixture
       {
         if (mode == learning_)
         {
-          nbModality_ = augData_.dataRange_.max_ + 1; // since an offset has been applied during getData, modalities are 0-based
+          nbModality_ = augData_.dataRange_.max_ + minModality; // since an offset has been applied during getData, modalities are 0-based
         }
         else // prediction mode
         {
@@ -169,10 +169,11 @@ class Ordinal : public IMixture
             warnLog += sstm.str();
           }
 
-          // data range from learning is applied
-          augData_.dataRange_.min_ = 0;
-          augData_.dataRange_.max_ = nbModality_ - 1;
-          augData_.dataRange_.range_ = nbModality_;
+          nbModality_ = augData_.dataRange_.range_;
+
+//          augData_.dataRange_.min_ = 0;
+//          augData_.dataRange_.max_ = nbModality_ - 1;
+//          augData_.dataRange_.range_ = nbModality_;
 
           computeObservedProba(); // parameters are know, so logProba can be computed immediately
         }
@@ -182,7 +183,6 @@ class Ordinal : public IMixture
         std::cout << augData_.data_ << std::endl;
 #endif
 
-        path_.resize(nbInd_);
         setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
 
         dataStatComputer_.resizeStatStorage(nbInd_);
@@ -201,6 +201,8 @@ class Ordinal : public IMixture
       std::cout << "Ordinal::setPath" << std::endl;
       std::cout << "path_.size(): " << path_.size() << std::endl;
 #endif
+      path_.resize(nbInd_);
+
       for (int i = 0; i < nbInd_; ++i)
       {
         path_(i).setInit(0,
@@ -230,7 +232,6 @@ class Ordinal : public IMixture
       p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
                                "muPi",
                                param);
-      nbModality_ = param.size() / (2 * nbClass_);
       mu_.resize(nbClass_);
       pi_.resize(nbClass_);
       for (int k = 0; k < nbClass_; ++k)

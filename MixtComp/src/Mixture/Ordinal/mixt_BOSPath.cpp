@@ -412,6 +412,11 @@ void BOSPath::forwardSamplePath(int mu,
                                 Real pi,
                                 const Vector<bool, 2>& az)
 {
+#ifdef MC_DEBUG
+    std::cout << "BOSPath::forwardSamplePath, mu: " << mu << ", pi: " << pi
+              << ", az: " << itString(az) << ", nbNode_: " << nbNode_ << std::endl;
+#endif
+
   Vector<int, 2> seg = eInit_;
   Vector<Real> currProba;
 
