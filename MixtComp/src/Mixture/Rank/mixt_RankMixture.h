@@ -254,6 +254,10 @@ class RankMixture : public IMixture
 
     std::string setDataParam(RunMode mode)
     {
+#ifdef MC_DEBUG
+      std::cout << "RankMixture::setDataParam" << std::endl;
+#endif
+
       std::string warnLog;
       // setDataParam, rl_.setDim()
       // in prediction: piParamStatComputer_.setParamStorage();

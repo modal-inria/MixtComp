@@ -59,6 +59,10 @@ void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
                             Vector<RankVal>& param) const
 {
+#ifdef MC_DEBUG
+  std::cout << "ParamSetterR::getParam, RankMixture, in" << std::endl;
+#endif
+
   Rcpp::List listParam = param_[idName];
   Rcpp::List listClass = listParam[paramName];
 
@@ -73,6 +77,10 @@ void ParamSetterR::getParam(const std::string& idName,
     RankVal(k).setNbPos(currVec.size());
     RankVal(k).setO(currVec);
   }
+
+#ifdef MC_DEBUG
+  std::cout << "ParamSetterR::getParam, RankMixture, out" << std::endl;
+#endif
 }
 
 } // namespace mixt

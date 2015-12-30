@@ -117,7 +117,7 @@ void DataExtractorR::exportVals(std::string idName,
     {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
-      currList.push_back(dataStatStorage(i)[0]); // expectation
+      currList.push_back(dataStatStorage(i)[0]); // median
       currList.push_back(dataStatStorage(i)[1]); // left bound
       currList.push_back(dataStatStorage(i)[2]); // right bound
 
@@ -145,7 +145,7 @@ void DataExtractorR::exportVals(std::string idName,
     {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
-      currList.push_back(dataStatStorage(i)[0]); // expectation
+      currList.push_back(dataStatStorage(i)[0]); // median
       currList.push_back(dataStatStorage(i)[1]); // left bound
       currList.push_back(dataStatStorage(i)[2]); // right bound
 

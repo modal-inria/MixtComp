@@ -55,8 +55,7 @@ class ParamExtractorR
 
     Rcpp::List rcppReturnParam() const;
   private:
-    std::list<std::string> paramName_;
-    std::list<Rcpp::List> param_;
+    std::map<std::string, std::map<std::string, Rcpp::List> > param_;
 };
 
 } // namespace mixt

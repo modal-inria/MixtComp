@@ -42,10 +42,7 @@ void ParamExtractorR::exportParam(const std::string& idName,
                                   Real confidenceLevel)
 {
 #ifdef MC_DEBUG
-  std::cout << "ParamExtractorR::exportParam" << std::endl;
-  std::cout << "idName: " << idName << std::endl;
-  std::cout << "params.rows(): " << statStorage.rows() << std::endl;
-  std::cout << "params.cols(): " << statStorage.cols() << std::endl;
+  std::cout << "ParamExtractorR::exportParam, idName: " << idName << ", paramName: " << paramName << std::endl;
 #endif
 
   Rcpp::CharacterVector rows(statStorage.rows()); // names of the parameters
@@ -53,7 +50,7 @@ void ParamExtractorR::exportParam(const std::string& idName,
 
   Real alpha = (1. - confidenceLevel) / 2.;
 
-  Rcpp::NumericMatrix paramR(statStorage.rows(),
+  Rcpp::NumericMatrix statR(statStorage.rows(),
                              statStorage.cols());
 
   // values setting
@@ -61,7 +58,7 @@ void ParamExtractorR::exportParam(const std::string& idName,
   {
     for (int j = 0; j < statStorage.cols(); ++j)
     {
-      paramR(i, j) = statStorage(i, j);
+      statR(i, j) = statStorage(i, j);
     }
   }
 
@@ -78,7 +75,7 @@ void ParamExtractorR::exportParam(const std::string& idName,
   }
   else if (statStorage.cols() == 3)
   {
-    cols.push_back("expectation");
+    cols.push_back("median");
     cols.push_back(  std::string("q ")
                    + type2str(alpha * 100.)
                    + std::string("%"));
@@ -88,9 +85,9 @@ void ParamExtractorR::exportParam(const std::string& idName,
   }
 
   Rcpp::List dimnms = Rcpp::List::create(rows, cols);
-  paramR.attr("dimnames") = dimnms;
+  statR.attr("dimnames") = dimnms;
 
-  Rcpp::NumericMatrix paramLogR;
+  Rcpp::NumericMatrix logR;
 
   if (logStorage.rows() > 0 && logStorage.cols()) // only if log has taken place, for example not during predict
   {
@@ -98,28 +95,29 @@ void ParamExtractorR::exportParam(const std::string& idName,
     std::cout << "paramsLogs: " << logStorage << std::endl;
 #endif
     // copy of the log data
-    paramLogR = Rcpp::NumericMatrix(logStorage.rows(),
+    logR = Rcpp::NumericMatrix(logStorage.rows(),
                                     logStorage.cols());
     for (int i = 0; i < logStorage.rows(); ++i)
     {
       for (int j = 0; j < logStorage.cols(); ++j)
       {
-        paramLogR(i, j) = logStorage(i, j);
+        logR(i, j) = logStorage(i, j);
       }
     }
     Rcpp::CharacterVector colsLog(logStorage.cols());
     Rcpp::List dimnmsLog = Rcpp::List::create(rows, colsLog);
-    paramLogR.attr("dimnames") = dimnmsLog;
+    logR.attr("dimnames") = dimnmsLog;
   }
-  
-  Rcpp::List ls = Rcpp::List::create(Rcpp::Named(paramName) = Rcpp::List::create(Rcpp::Named("stat") = paramR   ,
-                                                                                 Rcpp::Named("log")  = paramLogR));
-
-  paramName_.push_back(idName);
-  param_.push_back(ls);
 
 #ifdef MC_DEBUG
-  std::cout << "ParamExtractorR::exportParam, param_.size():  " << param_.size() << std::endl;
+  std::cout << "param_[idName].size(): " << param_[idName].size() << std::endl;
+#endif
+
+  param_[idName][paramName] = Rcpp::List::create(Rcpp::Named("stat") = statR,
+                                                 Rcpp::Named("log")  = logR);
+
+#ifdef MC_DEBUG
+  std::cout << "param_[idName].size(): " << param_[idName].size() << std::endl;
 #endif
 }
 
@@ -130,7 +128,11 @@ void ParamExtractorR::exportParam(const std::string& idName,
                                   const std::vector<std::string>& paramNames,
                                   Real confidenceLevel)
 {
-  Rcpp::CharacterVector rowsNames = Rcpp::wrap(paramNames) ; // names of the classes, used for both parameters values and logs
+#ifdef MC_DEBUG
+  std::cout << "ParamExtractorR::exportParam, idName: " << idName << ", paramName: " << paramName << std::endl;
+#endif
+
+  Rcpp::CharacterVector rowsNames = Rcpp::wrap(paramNames); // names of the classes, used for both parameters values and logs
 
   int nbClass = paramStat.size();
 
@@ -139,8 +141,7 @@ void ParamExtractorR::exportParam(const std::string& idName,
   for (int k = 0; k < nbClass; ++k) // loop to create the parameters descriptor
   {
     int nbPos = paramStat[k].nbPos(); // get number of positions in rank
-
-    const std::list<std::pair<RankVal, Real> >& statStorageMu = paramStat[k].statStorageMu();
+    const std::list<std::pair<RankVal, Real> >& statStorageMu = paramStat[k].statStorageMu(); // helper reference to point to current statStorage
     std::list<Rcpp::List> classProba; // list of pairs {vector representing rank, proba} for the current class
 
     for (std::list<std::pair<RankVal, Real> >::const_iterator it = statStorageMu.begin(), ite = statStorageMu.end();
@@ -167,9 +168,9 @@ void ParamExtractorR::exportParam(const std::string& idName,
   for (int k = 0; k < nbClass; ++k) // loop to create the parameters log
   {
     int nbPos = paramStat[k].nbPos(); // get number of positions in rank
-    const Vector<RankVal>& logStorageMu = paramStat[k].logStorageMu();
-
+    const Vector<RankVal>& logStorageMu = paramStat[k].logStorageMu(); // helper reference to point to current statStorage
     std::list<Rcpp::IntegerVector> classProba; // list of sampled mu for the current class
+
     for (int i = 0, ie = logStorageMu.size(); i < ie; ++i)
     {
       const RankVal& rankCPP = logStorageMu(i); // current rank in C++
@@ -186,18 +187,30 @@ void ParamExtractorR::exportParam(const std::string& idName,
   Rcpp::List logR = Rcpp::wrap(logCPP);
   logR.attr("names") = rowsNames;
 
-  Rcpp::List ls = Rcpp::List::create(Rcpp::Named(paramName) = Rcpp::List::create(Rcpp::Named("stat") = statR,
-                                                                                 Rcpp::Named("log")  = logR));
+#ifdef MC_DEBUG
+  std::cout << "param_[idName].size(): " << param_[idName].size() << std::endl;
+#endif
 
-  paramName_.push_back(idName);
-  param_.push_back(ls);
+  param_[idName][paramName] = Rcpp::List::create(Rcpp::Named("stat") = statR,
+                                                 Rcpp::Named("log")  = logR);
+
+#ifdef MC_DEBUG
+  std::cout << "param_[idName].size(): " << param_[idName].size() << std::endl;
+#endif
 }
 
 Rcpp::List ParamExtractorR::rcppReturnParam() const
 {
+#ifdef MC_DEBUG
+  std::cout << "ParamExtractorR::rcppReturnParam(), param_.size(): " << param_.size() << std::endl;
+#endif
+
   Rcpp::List res = Rcpp::wrap(param_);
-  Rcpp::CharacterVector names = Rcpp::wrap(paramName_);
-  res.attr("names") = names;
+
+#ifdef MC_DEBUG
+  std::cout << "ParamExtractorR::rcppReturnParam(), res.size(): " << res.size() << std::endl;
+#endif
+
   return res;
 }
 
