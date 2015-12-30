@@ -37,9 +37,13 @@ void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
                             Vector<Real>& param) const
 {
+#ifdef MC_DEBUGNEW
+  std::cout << "ParamSetterR::getParam, simple param, idName: " << idName << ", paramName: " << paramName << std::endl;
+#endif
+
   Rcpp::List listCurrId = param_[idName];
-  Rcpp::List listCurrParam = listCurrId[paramName];
-  Rcpp::NumericMatrix currParam = listCurrParam["stat"];
+  Rcpp::List listStatLog = listCurrId[paramName];
+  Rcpp::NumericMatrix currParam = listStatLog["stat"];
   int nRows = currParam.nrow();
   param.resize(nRows);
 
@@ -59,12 +63,13 @@ void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
                             Vector<RankVal>& param) const
 {
-#ifdef MC_DEBUG
-  std::cout << "ParamSetterR::getParam, RankMixture, in" << std::endl;
+#ifdef MC_DEBUGNEW
+  std::cout << "ParamSetterR::getParam, rank param, idName: " << idName << ", paramName: " << paramName << std::endl;
 #endif
 
   Rcpp::List listParam = param_[idName];
-  Rcpp::List listClass = listParam[paramName];
+  Rcpp::List listStatLog = listParam[paramName];
+  Rcpp::List listClass = listStatLog["stat"];
 
   int nbClass = listClass.size();
   param.resize(nbClass); // listCurrParam contains one element per class
@@ -72,13 +77,13 @@ void ParamSetterR::getParam(const std::string& idName,
   for (int k = 0; k < nbClass; ++k)
   {
     Rcpp::List listPair = listClass(k);
-    Rcpp::List modePair = listPair(0);
-    Rcpp::NumericVector currVec = modePair(0);
-    RankVal(k).setNbPos(currVec.size());
-    RankVal(k).setO(currVec);
+    Rcpp::List modePair = listPair(0); // take the mode of mu
+    Rcpp::NumericVector currVec = modePair(0); // extracting the vector value containing mu
+    RankVal(k).setNbPos(currVec.size()); // setting the storage size for mu
+    RankVal(k).setO(currVec); // setting the value of mu
   }
 
-#ifdef MC_DEBUG
+#ifdef MC_DEBUGNEW
   std::cout << "ParamSetterR::getParam, RankMixture, out" << std::endl;
 #endif
 }
