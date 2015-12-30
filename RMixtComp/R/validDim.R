@@ -16,8 +16,8 @@ generateDummyData <- function(fileName,
 
 #' Check if the data in fileName is smaller than the provided dimensions
 validDim <- function(fileName,
-                     maxCol = NA_integer_,
-                     maxRow = NA_integer_) {
+                     maxRow = NA_integer_,
+                     maxCol = NA_integer_) {
   warnLog <- ""
   
   mat <- read.table(fileName,
