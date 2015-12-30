@@ -160,6 +160,8 @@ class Ordinal : public IMixture
           muParamStatComputer_.setParamStorage();
           piParamStatComputer_.setParamStorage();
 
+          nbModality_ = augData_.dataRange_.range_;
+
           if (nbModality_ - 1 < augData_.dataRange_.max_)
           {
             std::stringstream sstm;
@@ -168,8 +170,6 @@ class Ordinal : public IMixture
                  << " The maximum value in the data provided for prediction is : " << minModality + augData_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();
           }
-
-          nbModality_ = augData_.dataRange_.range_;
 
 //          augData_.dataRange_.min_ = 0;
 //          augData_.dataRange_.max_ = nbModality_ - 1;
