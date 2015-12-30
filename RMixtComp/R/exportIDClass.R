@@ -197,7 +197,7 @@ paramOrdinal = function(nbClass, var){
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass) {
     firstInd = (k - 1) * 2 + 1
-    out[k] = paste0('{"ord mu" : "', as.integer(val[firstInd]), '", "pi" : "', val[firstInd + 1], '"}')
+    out[k] = paste0('{"mu" : "', as.integer(val[firstInd]), '", "pi" : "', val[firstInd + 1], '"}')
   }
   return(out)
 }
@@ -209,7 +209,7 @@ paramRank = function(nbClass, var){
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass) {
     collapsedMu = paste0(valMu[[k]][[1]][[1]], collapse = " ")
-    out[k] = paste0('{"rank mu" : "', collapsedMu,
+    out[k] = paste0('{"mu" : "', collapsedMu,
                     '", "pi" : "', valPi[k], '"}')
   }
   return(out)
