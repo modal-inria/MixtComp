@@ -79,8 +79,9 @@ void ParamSetterR::getParam(const std::string& idName,
     Rcpp::List listPair = listClass(k);
     Rcpp::List modePair = listPair(0); // take the mode of mu
     Rcpp::NumericVector currVec = modePair(0); // extracting the vector value containing mu
-    RankVal(k).setNbPos(currVec.size()); // setting the storage size for mu
-    RankVal(k).setO(currVec); // setting the value of mu
+
+    param(k).setNbPos(currVec.size()); // setting the storage size for mu
+    param(k).setO(currVec); // setting the value of mu
   }
 
 #ifdef MC_DEBUGNEW
