@@ -27,7 +27,7 @@ pStr = function(x){
   return(format(round(x, 1), nsmall = 1))
 }
 
-exportIDClass = function(data){
+exportIDClass = function(data) {
   headerStr = paste('{')
   
   classStr = paste0('"nbClass": ', extractNbClass(data), ',')
@@ -120,30 +120,42 @@ extractParam = function(data){
 paramTable = function(data){
   nbClass = data$mixture$nbCluster
   param = data$variable$param
-  nbVar = length(param)
   typeList = data$variable$type
+  nbVar = length(param)
+  varName = names(data$variable$type)
   
   out = matrix(data = "",
                nrow = nbClass,
                ncol = nbVar - 1)
   
-  for (jP in 2:nbVar){
-    j = jP - 1
-    if (typeList[[jP]] == 'Categorical_pjk'){
-      out[,j] = paramCategorical(nbClass, param[[jP]])
+  j = 1
+  for (jP in 1:nbVar) { # the first variable corresponds to the LatentClass, which is ignored in the IDClass table
+    currVar = varName[[jP]]
+    
+    if (typeList[[currVar]] == 'LatentClass') {
+      next
     }
-    else if (typeList[[jP]] == 'Gaussian_sjk'){
-      out[,j] = paramGaussian(nbClass, param[[jP]])
+    else if (typeList[currVar] == 'Categorical_pjk') {
+      out[,j] = paramCategorical(nbClass, param[[currVar]])
     }
-    else if (typeList[[jP]] == 'Poisson_k')
-    {
-      out[,j] = paramPoisson(nbClass, param[[jP]])
+    else if (typeList[currVar] == 'Gaussian_sjk') {
+      out[,j] = paramGaussian(nbClass, param[[currVar]])
     }
-    else
-    {
-      out[,j] = paramUnknown(nbClass, param[[jP]])
+    else if (typeList[currVar] == 'Poisson_k') {
+      out[,j] = paramPoisson(nbClass, param[[currVar]])
     }
+    else if (typeList[currVar] == 'Ordinal') {
+      out[,j] = paramOrdinal(nbClass, param[[currVar]])
+    }
+    else if (typeList[currVar] == 'Rank') {
+      out[,j] = paramRank(nbClass, param[[currVar]])
+    }
+    else {
+      out[,j] = paramUnknown(nbClass, param[[currVar]])
+    }
+    j = j + 1
   }
+  
   return(out)
 }
 
@@ -175,6 +187,30 @@ paramPoisson = function(nbClass, var){
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
     out[k] = paste0('{"lambda" : "', val[k], '"}')
+  }
+  return(out)
+}
+
+paramOrdinal = function(nbClass, var){
+  val = var$muPi$stat[,1]
+  
+  out = vector(mode = 'character', length = nbClass)
+  for (k in 1:nbClass) {
+    firstInd = (k - 1) * 2 + 1
+    out[k] = paste0('{"ord mu" : "', as.integer(val[firstInd]), '", "pi" : "', val[firstInd + 1], '"}')
+  }
+  return(out)
+}
+
+paramRank = function(nbClass, var){
+  valMu = var$mu$stat
+  valPi = var$pi$stat[,1]
+  
+  out = vector(mode = 'character', length = nbClass)
+  for (k in 1:nbClass) {
+    collapsedMu = paste0(valMu[[k]][[1]][[1]], collapse = " ")
+    out[k] = paste0('{"rank mu" : "', collapsedMu,
+                    '", "pi" : "', valPi[k], '"}')
   }
   return(out)
 }
