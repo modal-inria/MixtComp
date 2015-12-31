@@ -129,13 +129,10 @@ class RankMixture : public IMixture
 
       if (init) // mu is initialized through direct sampling in each class
       {
-#ifdef MC_DEBUG
-        std::cout << "RankMixture::mStep, init" << std::endl;
-#endif
         for (int k = 0; k < nbClass_; ++k)
         {
           MultinomialStatistic multi;
-          int sampleIndInClass = multi.sampleInt(0, classInd_[k].size()); // individual sampled inside the class
+          int sampleIndInClass = multi.sampleInt(0, classInd_[k].size() - 1); // individual sampled inside the class
 
           int i = 0;
           int sampleInd = -1;
@@ -151,11 +148,16 @@ class RankMixture : public IMixture
             }
           }
 
+#ifdef MC_DEBUG
+          std::cout << "RankMixture::mStep, init, k: " << k << ", classInd_[k].size(): " << classInd_[k].size() << ", "
+                    << "sampleIndInClass, : " << sampleIndInClass << ", sampleInd: " << sampleInd << std::endl;
+#endif
+
           mu_(k) = data_(sampleInd).x();
           pi_(k) = piInitISR;
         }
       }
-      else // as initialization has been performed, mStep is done among candidates obtained through Gibbs sampling
+      else // as initialization has been performed, mStep is done among candidates obtained through Gibbs sampling on mu, because space of mu is too large for direct optimization
       {
 #ifdef MC_DEBUG
         std::cout << "RankMixture::mStep, normal iteration" << std::endl;
