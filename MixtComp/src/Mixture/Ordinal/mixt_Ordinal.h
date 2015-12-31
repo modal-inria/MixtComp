@@ -496,7 +496,7 @@ class Ordinal : public IMixture
                         az);
         }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
         std::cout << "Ordinal::removeMissing, i: " << i << ", logProba: " << path_(i).computeLogProba(tempMu((*p_zi_)(i)), piInitBOS) << std::endl; // path_(i) contains a completed individual
 #endif
 

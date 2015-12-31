@@ -161,9 +161,10 @@ void SemStrategy::runGibbs() {
                   iterBurnInGibbs,
                   nbGibbsBurnInIter_ - 1);
 
+    p_composer_->eStep();
     p_composer_->sStepNoCheck(); // during Gibbs no check is performed, as there is no parameter estimation. Note the following samplingStepNoCheck().
     p_composer_->samplingStepNoCheck();
-    p_composer_->eStep();
+
   }
 
   p_composer_->gibbsSampling(nbGibbsIter_,

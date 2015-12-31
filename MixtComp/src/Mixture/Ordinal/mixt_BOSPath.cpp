@@ -125,7 +125,7 @@ void BOSPath::tupleMultinomial(int mu,
     logProba(i) = *it;
   }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   if (logProba.size() == 0) {
     std::cout << "BOSPath::tupleMultinomial, logProba.size() == 0, mu: " << mu << ", pi: " << pi << ", startIndex: " << startIndex << ", sizeTuple: " << sizeTuple << std::endl;
   }
