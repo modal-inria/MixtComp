@@ -37,7 +37,7 @@ void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
                             Vector<Real>& param) const
 {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "ParamSetterR::getParam, simple param, idName: " << idName << ", paramName: " << paramName << std::endl;
 #endif
 
@@ -63,7 +63,7 @@ void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
                             Vector<RankVal>& param) const
 {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "ParamSetterR::getParam, rank param, idName: " << idName << ", paramName: " << paramName << std::endl;
 #endif
 
@@ -84,7 +84,7 @@ void ParamSetterR::getParam(const std::string& idName,
     param(k).setO(currVec); // setting the value of mu
   }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "ParamSetterR::getParam, RankMixture, out" << std::endl;
 #endif
 }
