@@ -59,8 +59,9 @@ class MixtureComposer
     /** The registered mixtures will be deleted there.*/
     ~MixtureComposer();
 
-    /** Create the mixture model parameters. */
-    void intializeMixtureParameters();
+    void initializeProp();
+
+    void initializeTik();
 
     int nbClass() const {return nbClass_;}
 

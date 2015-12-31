@@ -466,7 +466,7 @@ class Ordinal : public IMixture
           tempMu(k) = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
         }
       }
-      else {
+      else if (algo == Gibbs_) {
         for (int k = 0; k < nbClass_; ++k) {
           tempMu(k) = mu_(k); // during the Gibbs phase, mu is already known and can be used for initialization
         }
@@ -495,6 +495,11 @@ class Ordinal : public IMixture
                         piInitBOS,
                         az);
         }
+
+#ifdef MC_DEBUGNEW
+        std::cout << "Ordinal::removeMissing, i: " << i << ", logProba: " << path_(i).computeLogProba(tempMu((*p_zi_)(i)), piInitBOS) << std::endl; // path_(i) contains a completed individual
+#endif
+
         copyToData(i);
       }
     };

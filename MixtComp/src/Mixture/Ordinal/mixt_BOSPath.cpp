@@ -103,7 +103,7 @@ void BOSPath::tupleMultinomial(int mu,
                   startIndex,
                   startIndex, // currIndex = startIndex for the first recursive call
                   0., // log(1), because proba is 1 at the beginning of first node of the tuple
-                  pathList,
+                  pathList, // paths will be appended to pathList, so that the function calling tupleMultinomial will be able to sample one using the corresponding probaList
                   probaList,
                   tuple,
                   az); // a specific path is used for this computation, instead of c) const
@@ -125,8 +125,10 @@ void BOSPath::tupleMultinomial(int mu,
     logProba(i) = *it;
   }
 
-#ifdef MC_DEBUG
-  std::cout << "logProba.size(): " << logProba.size() << std::endl;
+#ifdef MC_DEBUGNEW
+  if (logProba.size() == 0) {
+    std::cout << "BOSPath::tupleMultinomial, logProba.size() == 0, mu: " << mu << ", pi: " << pi << ", startIndex: " << startIndex << ", sizeTuple: " << sizeTuple << std::endl;
+  }
 #endif
 
   probaVec.logToMulti(logProba);

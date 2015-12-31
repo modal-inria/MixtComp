@@ -70,7 +70,7 @@ std::string SemStrategy::run() {
   std::string warnLog;
 
   warnLog += initSEM();
-  if (warnLog.size() > 0) {
+  if (warnLog.size() > 0) { // if no initialization is possible, for example if it is not possible to have individuals in all classes, on enough variability in classes
     return warnLog;
   }
 
@@ -95,7 +95,8 @@ std::string SemStrategy::initSEM() {
   std::string warnLog;
   for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
   {
-    p_composer_->intializeMixtureParameters(); // reset prop_ and tik_
+    p_composer_->initializeProp(); // reset prop
+    p_composer_->initializeTik(); //  reset tik_
     p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
     p_composer_->removeMissing(SEM_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
@@ -130,7 +131,7 @@ RunProblemType SemStrategy::runSEM(SamplerType sampler) {
                        0, // group
                        3); // groupMax
 
-    if (prob == invalidSampler_) {
+    if (prob == invalidSampler_) { // no run is performed if there is an error during the burn-in
       return prob;
     }
 
@@ -144,7 +145,8 @@ RunProblemType SemStrategy::runSEM(SamplerType sampler) {
 }
 
 void SemStrategy::initGibbs() {
-  p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
+  p_composer_->initializeTik(); // reset tik_
+  p_composer_->sStepNoCheck(); // during Gibbs no check is performed, as there is no parameter estimation
   p_composer_->removeMissing(Gibbs_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 }
 
@@ -159,7 +161,7 @@ void SemStrategy::runGibbs() {
                   iterBurnInGibbs,
                   nbGibbsBurnInIter_ - 1);
 
-    p_composer_->sStepNoCheck();
+    p_composer_->sStepNoCheck(); // during Gibbs no check is performed, as there is no parameter estimation. Note the following samplingStepNoCheck().
     p_composer_->samplingStepNoCheck();
     p_composer_->eStep();
   }

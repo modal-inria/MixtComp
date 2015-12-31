@@ -53,7 +53,8 @@ MixtureComposer::MixtureComposer(int nbInd,
     confidenceLevel_(confidenceLevel)
 {
   zi_.resizeArrays(nbInd);
-  intializeMixtureParameters(); // default values that will be overwritten either by pStep (learning), or eStepObserved (prediction)
+  initializeProp(); // default values that will be overwritten either by pStep (learning), or eStepObserved (prediction)
+  initializeTik();
 }
 
 MixtureComposer::~MixtureComposer()
@@ -64,12 +65,19 @@ MixtureComposer::~MixtureComposer()
   }
 }
 
-void MixtureComposer::intializeMixtureParameters()
+void MixtureComposer::initializeProp()
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::intializeMixtureParameters" << std::endl;
 #endif
   prop_     = 1./(Real)nbClass_;
+}
+
+void MixtureComposer::initializeTik()
+{
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::intializeMixtureParameters" << std::endl;
+#endif
   tik_      = 1./(Real)nbClass_;
 }
 
