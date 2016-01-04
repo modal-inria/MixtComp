@@ -24,6 +24,7 @@
 #ifndef MIXT_RANKINDIVIDUAL_H
 #define MIXT_RANKINDIVIDUAL_H
 
+#include <list>
 #include <map>
 #include <set>
 
@@ -36,8 +37,9 @@ namespace mixt
 {
 
 /**
- * A rank is an object that contains everything needed to describe a particular individual. It contains both the observed and completed
- * values, as well as methods to compute the likelihood or to perform samplings.
+ * A RankIndividual is an object that contains everything needed to describe a particular individual. It contains both the observed and completed
+ * values, as well as methods to compute the likelihood or to perform samplings. In contrast, the RankVal is the much more simplest representation
+ * of a rank, ignoring all probabilistic notions.
  */
 class RankIndividual
 {
@@ -139,7 +141,7 @@ class RankIndividual
                 int nbPos);
 
     /** Compute the observed probability distribution for mu and pi, by generating nbSampleObserved
-     * Independent observations and marginalizing over presentation order. This procedure is similar
+     * independent observations and marginalizing over presentation order. This procedure is similar
      * to what is used in the Ordinal model, and in contrast with the use of the harmonic mean estimator
      * of the observed probability. */
     void observedProba(const RankVal& mu,
@@ -148,6 +150,21 @@ class RankIndividual
 
     bool checkMissingType(const Vector<bool>& acceptedType) const;
 
+    /** Recursive function called by enumAllCompleted.
+     *
+     * @param currPos current position in the rank
+     * @param remainingMod set of modalities that have not yet been seen in the rank
+     * @param completedVec the completed rank from which recEnumComplete was called (complement remainingMod)
+     * @return The list of all the possible RankVal enumerated in sub calls */
+    std::list<RankVal> recEnumComplete(int currPos,
+                                       const std::set<int>& remainingMod,
+                                       const Vector<int>& completedVec) const;
+
+    /** Use the obsData_ information to compute all the possible completions for the individual. If there is no
+     * partially observed data, the method still is useful at providing a check of the observed individual. For
+     * a valid individual, the returned list must have at least one element, which is a copy of x_, otherwise,
+     * data is invalid, for example in the case 1,1,3. */
+    std::list<RankVal> enumCompleted() const;
   private:
     /** Permute the elements firstElem and firstElem + 1 in y_ */
     void permutationY(int firstElem);

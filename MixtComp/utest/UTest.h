@@ -17,18 +17,9 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: September 2, 2015
+ *  Created on: September 28, 2015
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "../UTest.h"
-
-using namespace mixt;
-
-TEST(itString, simpleTest)
-{
-  Vector<Real> a(3);
-  a << 0.2, 0.7, 0.3;
-
-  ASSERT_EQ(itString(a), "0.2 0.7 0.3");
-}
+#include "gtest/gtest.h"
+#include "../src/mixt_MixtComp.h"

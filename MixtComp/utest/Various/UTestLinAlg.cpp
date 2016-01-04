@@ -21,9 +21,7 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
-#include "../../src/LinAlg/mixt_LinAlg.h"
-#include "../../src/Statistic/mixt_UniformStatistic.h"
+#include "../UTest.h"
 
 using namespace mixt;
 

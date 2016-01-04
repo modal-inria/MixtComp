@@ -21,12 +21,7 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
-
-#include "boost/regex.hpp"
-#include "../../src/LinAlg/mixt_LinAlg.h"
-#include "../../src/Various/mixt_Def.h"
-#include "../../src/IO/mixt_IO.h"
+#include "../UTest.h"
 
 using namespace mixt;
 

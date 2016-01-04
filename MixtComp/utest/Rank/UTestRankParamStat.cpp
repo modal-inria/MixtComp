@@ -21,12 +21,7 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
-
-#include "../../src/Mixture/Rank/mixt_RankClass.h"
-#include "../Mixture/Rank/mixt_RankIndividual.h"
-#include "../Mixture/Rank/mixt_RankParamStat.h"
-#include "../Statistic/mixt_Statistic.h"
+#include "../UTest.h"
 
 using namespace mixt;
 

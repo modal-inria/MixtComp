@@ -21,9 +21,19 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
-#include "../src/mixt_MixtComp.h"
+#include "UTest.h"
 
 using namespace mixt;
 
 
+TEST(list, merge)
+{
+  std::list<int> a = {1, 2, 3};
+  std::list<int> b = {4, 5, 6};
+
+  a.merge(b);
+
+#ifdef MC_DEBUG
+  std::cout << "a: " << itString(a) << ", b: " << itString(b) << std::endl;
+#endif
+}

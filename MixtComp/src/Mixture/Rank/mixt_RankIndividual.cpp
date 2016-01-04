@@ -380,4 +380,35 @@ bool RankIndividual::checkMissingType(const Vector<bool>& acceptedType) const
   return true;
 }
 
+std::list<RankVal> RankIndividual::recEnumComplete(int currPos,
+                                                   const std::set<int>& remainingMod,
+                                                   const Vector<int>& completedVec) const {
+  std::list<RankVal> rankList;
+
+  if (currPos != nbPos_ - 1) {
+
+  }
+  else {
+
+  }
+
+  return rankList;
+}
+
+std::list<RankVal> RankIndividual::enumCompleted() const {
+  std::list<RankVal> rankList;
+  std::set<int> remainingMod;
+  Vector<int> completedVec(nbPos_, -1);
+
+  for (int i = 0; i < nbPos_; ++i) {
+    remainingMod.insert(i);
+  }
+
+  rankList = recEnumComplete(0, // currPos
+                             remainingMod, // remaining mod
+                             completedVec); // completedVec
+
+  return rankList;
+}
+
 } // namespace mixt

@@ -21,8 +21,7 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
-#include "../../src/mixt_MixtComp.h"
+#include "../UTest.h"
 
 using namespace mixt;
 

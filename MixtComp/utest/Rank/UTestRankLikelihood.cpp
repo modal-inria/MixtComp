@@ -21,9 +21,7 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
-
-#include "../../src/Mixture/Rank/mixt_RankLikelihood.h"
+#include "../UTest.h"
 
 using namespace mixt;
 

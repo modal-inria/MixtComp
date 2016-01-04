@@ -53,7 +53,7 @@ void RankParamStat::sampleParam(int iteration,
   {
     sample(iterationMax); // last sampling
 
-    std::map<RankVal, int> stat; // sparse counting of the occurences of mu
+    std::map<RankVal, int> stat; // sparse counting of the occurrences of mu
     for (int i = 0; i < iterationMax + 1; ++i)
     {
       stat[logStorageMu_(i)] += 1;

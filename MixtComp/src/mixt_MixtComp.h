@@ -25,9 +25,13 @@
 #define MIXT_MIXTCOMP_H
 
 #include "IO/Dummy.h"
+#include "Data/mixt_MisValParser.h"
+#include "LinAlg/mixt_Math.h"
 #include "Mixture/SimpleMixtureBridge/mixt_Clust_Traits.h"
 #include "Manager/mixt_MixtureManager.h"
 #include "Strategy/mixt_SEMStrategy.h"
 #include "Strategy/mixt_GibbsStrategy.h"
+
+#include "boost/regex.hpp"
 
 #endif /* MIXT_MIXTCOMP_H */
