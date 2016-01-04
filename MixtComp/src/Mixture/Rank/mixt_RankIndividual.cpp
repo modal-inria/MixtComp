@@ -21,8 +21,9 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_RankIndividual.h"
+#include<set>
 
+#include "mixt_RankIndividual.h"
 #include "../LinAlg/mixt_Math.h"
 
 namespace mixt
@@ -380,16 +381,73 @@ bool RankIndividual::checkMissingType(const Vector<bool>& acceptedType) const
   return true;
 }
 
+std::list<int> RankIndividual::candidateList(int currPos,
+                                             const std::set<int>& remainingMod) const {
+  std::list<int> candidateList;
+
+  if (obsData_(currPos).first == present_) { // if data is present
+    if (remainingMod.find(x_.o()(currPos)) != remainingMod.end()) { // only add the observed value if it is still available, to avoid duplication of value in completed individual
+      candidateList.push_back(x_.o()(currPos));
+    }
+  }
+  else if (obsData_(currPos).first == missing_) { // since value is unobserved, all candidates can be considered
+    for (std::set<int>::const_iterator it = remainingMod.begin(), itE = remainingMod.end();
+         it != itE;
+         ++it) {
+      candidateList.push_back(*it);
+    }
+  }
+  else if (obsData_(currPos).first == missingFiniteValues_) { // only add the intersection between what is possible and what is available
+    std::set_intersection(remainingMod.begin(), // compute the intersection between the remainingMod and the currently possible missing value
+                          remainingMod.end(),
+                          obsData_(currPos).second.begin(),
+                          obsData_(currPos).second.end(),
+                          std::back_inserter(candidateList));
+  }
+
+  return candidateList;
+}
+
 std::list<RankVal> RankIndividual::recEnumComplete(int currPos,
                                                    const std::set<int>& remainingMod,
                                                    const Vector<int>& completedVec) const {
+#ifdef MC_DEBUG
+  std::cout << "RankIndividual::recEnumComplete, currPos: " << currPos << ", "
+            << "remainingMod: " << itString(remainingMod) << ", "
+            << "completedVec: " << itString(completedVec) << std::endl;
+#endif
+
   std::list<RankVal> rankList;
 
-  if (currPos != nbPos_ - 1) {
+  if (currPos != nbPos_) { // recursive calls remain
+    std::list<int> cl = candidateList(currPos,
+                                      remainingMod);
 
+#ifdef MC_DEBUG
+    std::cout << "cl.size(): " << cl.size() << std::endl;
+#endif
+
+    for (std::list<int>::const_iterator it = cl.begin(), itE = cl.end();
+         it != itE;
+         ++it) {
+#ifdef MC_DEBUG
+      std::cout << "*it: " << *it << std::endl;
+#endif
+
+      std::set<int> subRemainingMod = remainingMod;
+      subRemainingMod.erase(*it);
+      Vector<int> subCompletedVec = completedVec;
+      subCompletedVec(currPos) = *it;
+
+      rankList.merge(recEnumComplete(currPos + 1,
+                                     subRemainingMod,
+                                     subCompletedVec));
+    }
   }
-  else {
-
+  else { // termination condition of the recursion
+    RankVal rv(nbPos_);
+    rv.setO(completedVec);
+    rankList.push_back(rv);
   }
 
   return rankList;

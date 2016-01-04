@@ -24,14 +24,18 @@
 #ifndef MIXT_MIXTCOMP_H
 #define MIXT_MIXTCOMP_H
 
+#include <algorithm>
+#include <iterator>
+
+#include "boost/regex.hpp"
+
 #include "IO/Dummy.h"
+#include "IO/mixt_IO.h"
 #include "Data/mixt_MisValParser.h"
 #include "LinAlg/mixt_Math.h"
 #include "Mixture/SimpleMixtureBridge/mixt_Clust_Traits.h"
 #include "Manager/mixt_MixtureManager.h"
 #include "Strategy/mixt_SEMStrategy.h"
 #include "Strategy/mixt_GibbsStrategy.h"
-
-#include "boost/regex.hpp"
 
 #endif /* MIXT_MIXTCOMP_H */

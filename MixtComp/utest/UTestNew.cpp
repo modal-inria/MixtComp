@@ -25,15 +25,30 @@
 
 using namespace mixt;
 
+typedef typename std::pair<MisType, std::vector<int> > MisVal;
 
-TEST(list, merge)
-{
-  std::list<int> a = {1, 2, 3};
-  std::list<int> b = {4, 5, 6};
+TEST(RAnkIndividual, recEnumComplete) {
+  int nbPos = 5;
 
-  a.merge(b);
+  Vector<int> o(nbPos);
+  o << 0,4,3,1,2;
+
+  Vector<MisVal> mv(nbPos);
+  mv(0) = MisVal(missing_, {});
+  mv(1) = MisVal(missing_, {});
+  mv(2) = MisVal(missing_, {});
+  mv(3) = MisVal(missing_, {});
+  mv(4) = MisVal(missing_, {});
+
+  RankIndividual rv(nbPos);
+  rv.setO(o);
+  rv.setObsData(mv);
+
+  std::list<RankVal> rvList = rv.enumCompleted();
 
 #ifdef MC_DEBUG
-  std::cout << "a: " << itString(a) << ", b: " << itString(b) << std::endl;
+  std::cout << "rvList.size(): " << rvList.size() << std::endl;
 #endif
+
+  ASSERT_EQ(rvList.size(), fac(nbPos));
 }

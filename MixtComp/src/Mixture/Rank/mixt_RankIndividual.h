@@ -150,6 +150,11 @@ class RankIndividual
 
     bool checkMissingType(const Vector<bool>& acceptedType) const;
 
+    /** Provide a list of possible values for a position considering the observed value and the set of
+     * possible values remaining. */
+    std::list<int> candidateList(int currPos,
+                                 const std::set<int>& remainingMod) const;
+
     /** Recursive function called by enumAllCompleted.
      *
      * @param currPos current position in the rank
