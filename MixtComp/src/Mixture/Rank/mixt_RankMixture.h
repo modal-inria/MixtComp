@@ -254,15 +254,27 @@ class RankMixture : public IMixture
 #endif
     }
 
-    std::string setDataParam(RunMode mode)
-    {
+    std::string checkData() const {
+      std::string warnLog;
+
+      for (int i = 0; i < nbInd_; ++i) {
+        if (data_(i).enumCompleted().size() == 0) {
+          std::stringstream sstm;
+          sstm << "In Rank variable " << idName_ << " the individual " << i + minModality << " is invalid. Please check if there are no repeated observed modalities "
+               << "for example." << std::endl;
+          warnLog += sstm.str();
+        }
+      }
+
+      return warnLog;
+    }
+
+    std::string setDataParam(RunMode mode) {
 #ifdef MC_DEBUG
       std::cout << "RankMixture::setDataParam" << std::endl;
 #endif
 
       std::string warnLog;
-      // setDataParam, rl_.setDim()
-      // in prediction: piParamStatComputer_.setParamStorage();
       Vector<std::string> dataStr;
 
       warnLog += p_handler_->getData(idName(), // get the raw vector of strings
@@ -275,11 +287,12 @@ class RankMixture : public IMixture
                                       nbPos_,
                                       data_);
 
+      warnLog += checkData(); // check if the individuals are valid and can be completed in at least one way
+
       MultinomialStatistic multi;
       Vector<int> vec(nbPos_);
       std::iota(vec.begin(), vec.end(), 0);
-      for (int k = 0; k < nbClass_; ++k)
-      {
+      for (int k = 0; k < nbClass_; ++k) {
         mu_[k].setNbPos(nbPos_);
         multi.shuffle(vec);
         mu_[k].setO(vec);
@@ -287,13 +300,11 @@ class RankMixture : public IMixture
 
       warnLog += checkMissingType();
 
-      if (warnLog.size() > 0)
-      {
+      if (warnLog.size() > 0) {
         return warnLog;
       }
 
-      if (mode == prediction_) // prediction mode
-      {
+      if (mode == prediction_) { // prediction mode
         p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
                                  "mu",
                                  mu_);
@@ -302,8 +313,7 @@ class RankMixture : public IMixture
                                  "pi",
                                  pi_);
 
-        for (int k = 0; k < nbClass_; ++k)
-        {
+        for (int k = 0; k < nbClass_; ++k) {
           muParamStat_[k].setParamStorage();
         }
         piParamStat_.setParamStorage();
