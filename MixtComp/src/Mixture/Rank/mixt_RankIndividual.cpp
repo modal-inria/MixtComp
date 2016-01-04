@@ -398,6 +398,10 @@ std::list<int> RankIndividual::candidateList(int currPos,
     }
   }
   else if (obsData_(currPos).first == missingFiniteValues_) { // only add the intersection between what is possible and what is available
+#ifdef MC_DEBUG
+    std::cout << "RankIndividual::candidateList, missingFiniteValues_, obsData_(currPos).second: " << itString(obsData_(currPos).second) << std::endl;
+#endif
+
     std::set_intersection(remainingMod.begin(), // compute the intersection between the remainingMod and the currently possible missing value
                           remainingMod.end(),
                           obsData_(currPos).second.begin(),

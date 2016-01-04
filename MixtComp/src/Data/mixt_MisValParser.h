@@ -101,7 +101,7 @@ class MisValParser
         std::string::const_iterator end   = str.end();
         boost::smatch m;
 
-        std::set<Type> setVal;
+        std::set<Type> setVal; // using a set allows for automatic sorting and duplicates deletion
         while (boost::regex_search(start, end, m, reNumber_))
         {
           setVal.insert(str2type<Type>(m[0].str()) + offset_);
