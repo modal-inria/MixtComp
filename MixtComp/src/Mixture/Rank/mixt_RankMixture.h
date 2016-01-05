@@ -254,21 +254,6 @@ class RankMixture : public IMixture
 #endif
     }
 
-    std::string checkData() const {
-      std::string warnLog;
-
-      for (int i = 0; i < nbInd_; ++i) {
-        if (data_(i).enumCompleted().size() == 0) {
-          std::stringstream sstm;
-          sstm << "In Rank variable " << idName_ << " the individual " << i + minModality << " is invalid. Please check if there are no repeated observed modalities "
-               << "for example." << std::endl;
-          warnLog += sstm.str();
-        }
-      }
-
-      return warnLog;
-    }
-
     std::string setDataParam(RunMode mode) {
 #ifdef MC_DEBUG
       std::cout << "RankMixture::setDataParam" << std::endl;
@@ -286,8 +271,6 @@ class RankMixture : public IMixture
                                       minModality,
                                       nbPos_,
                                       data_);
-
-      warnLog += checkData(); // check if the individuals are valid and can be completed in at least one way
 
       MultinomialStatistic multi;
       Vector<int> vec(nbPos_);

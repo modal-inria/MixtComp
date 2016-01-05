@@ -150,6 +150,14 @@ std::string RankParser::parseStr(const Vector<std::string>& vecStr,
 
     vecInd(i).setO(o);
     vecInd(i).setObsData(obsData);
+
+    if (vecInd(i).enumCompleted().size() == 0) {
+      std::stringstream sstm;
+      sstm << "Individual " << i << " which data is " << vecStr(i) << " is invalid.  Please check if there are no repeated "
+           << "observed modalities for example." << std::endl;
+      warnLog += sstm.str();
+    }
+
   }
 
   return warnLog;
