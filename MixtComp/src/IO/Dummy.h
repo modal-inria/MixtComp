@@ -26,7 +26,9 @@
 
 #include "../Data/mixt_AugmentedData.h"
 #include "../LinAlg/mixt_LinAlg.h"
+#include "../Mixture/Rank/mixt_RankIndividual.h"
 #include "../Mixture/Rank/mixt_RankVal.h"
+#include "../Mixture/Rank/mixt_RankParamStat.h"
 
 namespace mixt
 {
@@ -44,6 +46,11 @@ class DataHandlerDummy
     {
       return std::string();
     };
+
+    std::string getData(std::string const& idData,
+                        Vector<std::string>& dataStr,
+                        int& nbInd,
+                        std::string& paramStr) const;
 };
 
 /** Dummy IO class for debugging purposes */
@@ -55,6 +62,10 @@ class DataExtractorDummy
     void exportVals(std::string idName,
                     const AugmentedData<DataType>& augData,
                     const Vector<RowVector<Type> >& stat) const {};
+
+    /** Export function for Rank model */
+    void exportVals(std::string idName,
+                    const Vector<RankIndividual>& data) const;
 };
 
 /** Dummy IO class for debugging purposes */
@@ -67,6 +78,12 @@ class ParamExtractorDummy
                      const Matrix<Real>& paramLogStorage,
                      const std::vector<std::string>& paramNames,
                      const Real confidenceLevel) const;
+
+    void exportParam(const std::string& idName,
+                     const std::string& paramName,
+                     const std::vector<RankParamStat>& paramStat,
+                     const std::vector<std::string>& paramNames,
+                     Real confidenceLevel) const;
 };
 
 class ParamSetterDummy

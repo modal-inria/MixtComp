@@ -31,7 +31,6 @@
 
 namespace mixt
 {
-
 /** RankMixture contains an array of RankClass. Each RankClass will have the responsibility to perform
  * estimation of parameters and computation of the probability of individuals that belong to it. */
 template<typename DataHandler,
@@ -41,6 +40,8 @@ template<typename DataHandler,
 class RankMixture : public IMixture
 {
   public:
+    typedef std::pair<MisType, std::vector<int> > MisVal;
+
     RankMixture(std::string const& idName,
                 int nbClass,
                 const Vector<int>* p_zi,
@@ -86,6 +87,30 @@ class RankMixture : public IMixture
                        false,  // missingIntervals_,
                        false,  // missingLUIntervals_,
                        false; // missingRUIntervals
+    }
+
+    /** Debug constructor */
+    RankMixture(std::string const& idName,
+                const Vector<std::set<int> >& classInd,
+                const Vector<RankVal> mu,
+                const Vector<Real> pi,
+                const Vector<RankIndividual>& data,
+                const Vector<Vector<MisVal> >& obsData) :
+      IMixture(idName),
+      nbClass_(mu.size()),
+      nbPos_(mu(0).nbPos()),
+      classInd_(classInd),
+      mu_(mu),
+      pi_(pi),
+      data_(data),
+      piParamStat_(pi_,
+                   1.)
+    {
+      nbInd_ = data_.size();
+      for (int i = 0; i < nbInd_; ++i) {
+        data_(i).setObsData(obsData(i));
+        data_(i).removeMissing();
+      }
     }
 
     void samplingStepCheck(int ind)
@@ -211,17 +236,14 @@ class RankMixture : public IMixture
       return class_[k].lnCompletedProbabilityInd(i);
     }
 
-    virtual Real lnObservedProbability(int i, int k)
-    {
+    virtual Real lnObservedProbability(int i, int k) {
 //      return observedProba_(i, k); // harmonic mean computation method
 
       std::map<RankVal, Real>::iterator it = observedProbaSampling_(k).find(data_(i).x());
-      if (it == observedProbaSampling_(k).end()) // the current individual has not been observed during sampling
-      {
+      if (it == observedProbaSampling_(k).end()) { // the current individual has not been observed during sampling
         return minInf;
       }
-      else
-      {
+      else {
         return std::log(it->second);
       }
     }
@@ -324,6 +346,15 @@ class RankMixture : public IMixture
                                      confidenceLevel_);
     }
 
+    void computeObservedProba() {
+      RankIndividual ri(nbPos_); // dummy rank individual used to compute a Vector<std::map<RankVal, Real> > for each class
+      observedProbaSampling_.resize(nbClass_);
+      for (int k = 0; k < nbClass_; ++k) {
+        ri.observedProba(mu_(k),
+                         pi_(k),
+                         observedProbaSampling_(k));
+      }
+    }
   private:
     std::string checkMissingType()
     {
@@ -371,17 +402,6 @@ class RankMixture : public IMixture
         names[k] = sstm.str();
       }
       return names;
-    }
-
-    void computeObservedProba() {
-      RankIndividual ri(nbPos_); // dummy rank individual used to compute a Vector<std::map<RankVal, Real> > for each class
-      observedProbaSampling_.resize(nbClass_);
-      for (int k = 0; k < nbClass_; ++k)
-      {
-        ri.observedProba(mu_(k),
-                         pi_(k),
-                         observedProbaSampling_(k));
-      }
     }
 
     int nbClass_;

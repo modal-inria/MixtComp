@@ -27,6 +27,44 @@ using namespace mixt;
 
 typedef typename std::pair<MisType, std::vector<int> > MisVal;
 
+TEST(RankMixture, lnObservedProbability) {
+  int nbClass = 1;
+  int nbPos = 4;
+
+  Vector<std::set<int> > classInd(nbClass);
+  classInd(0).insert(0);
+
+  Vector<int> x0(nbPos);
+  x0 << 0, 1, 2, 3;
+  Vector<RankIndividual> data(1);
+  data(0).setNbPos(nbPos);
+  data(0).setO(x0);
+
+  Vector<Vector<MisVal> > obsData(1);
+  obsData(0) = Vector<MisVal>(nbPos, MisVal(missing_, {})); // all positions are missing
+
+  Vector<int> mu0(nbPos);
+  mu0 << 2, 3, 0, 1;
+  Vector<Real> pi(1);
+  pi(0) = 0.8;
+
+  Vector<RankVal> mu(nbClass);
+  mu(0).setNbPos(nbPos);
+  mu(0).setO(mu0);
+
+  RankMixture<DataHandlerDummy,
+              DataExtractorDummy,
+              ParamSetterDummy,
+              ParamExtractorDummy> rm("toto",
+                                      classInd,
+                                      mu,
+                                      pi,
+                                      data,
+                                      obsData);
+
+  rm.computeObservedProba();
+}
+
 TEST(RankIndividual, enumCompletedAllMissing) {
   int nbPos = 5;
 
