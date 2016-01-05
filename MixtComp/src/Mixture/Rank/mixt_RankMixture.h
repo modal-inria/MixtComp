@@ -239,13 +239,28 @@ class RankMixture : public IMixture
     virtual Real lnObservedProbability(int i, int k) {
 //      return observedProba_(i, k); // harmonic mean computation method
 
-      std::map<RankVal, Real>::iterator it = observedProbaSampling_(k).find(data_(i).x());
-      if (it == observedProbaSampling_(k).end()) { // the current individual has not been observed during sampling
-        return minInf;
+      std::list<RankVal> allCompleted = data_(i).enumCompleted(); // get the list of all possible completions of observation i
+      Vector<Real> allCompletedProba(allCompleted.size());
+
+      int c = 0;
+      for (std::list<RankVal>::const_iterator it = allCompleted.begin(), itE = allCompleted.end();
+           it != itE;
+           ++c, ++it) {
+        std::map<RankVal, Real>::iterator itM = observedProbaSampling_(k).find(*it);
+        if (itM == observedProbaSampling_(k).end()) { // the current individual has not been observed during sampling
+          allCompletedProba(c) = minInf;
+        }
+        else {
+          allCompletedProba(c) = std::log(itM->second);
+        }
       }
-      else {
-        return std::log(it->second);
-      }
+
+#ifdef MC_DEBUG
+      std::cout << "RankMixture::lnObservedProbability, allCompletedProba.size(): " << allCompletedProba.size() << ", allCompletedProba: " << itString(allCompletedProba) << std::endl;
+#endif
+
+      Vector<Real> dummy;
+      return dummy.logToMulti(allCompletedProba);
     }
 
     void removeMissing(AlgoType algo)

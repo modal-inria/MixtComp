@@ -25,6 +25,8 @@
 
 using namespace mixt;
 
+typedef typename std::pair<MisType, std::vector<int> > MisVal;
+
 /** Test RankVal::switchRepresentation using the property that it is an involution */
 TEST(RankIndividual, switchRepresentation)
 {
@@ -295,4 +297,108 @@ TEST(RankIndividual, checkAcceptedTypeFalse)
   bool isValid = vecInd(0).checkMissingType(acceptedType);
 
   ASSERT_EQ(isValid, false);
+}
+
+TEST(RankIndividual, enumCompletedAllMissing) {
+  int nbPos = 5;
+
+  Vector<int> o(nbPos);
+  o << 0,4,3,1,2;
+
+  Vector<MisVal> mv(nbPos);
+  mv(0) = MisVal(missing_, {});
+  mv(1) = MisVal(missing_, {});
+  mv(2) = MisVal(missing_, {});
+  mv(3) = MisVal(missing_, {});
+  mv(4) = MisVal(missing_, {});
+
+  RankIndividual rv(nbPos);
+  rv.setO(o);
+  rv.setObsData(mv);
+
+  std::list<RankVal> rvList = rv.enumCompleted();
+
+#ifdef MC_DEBUG
+  std::cout << "rvList.size(): " << rvList.size() << std::endl;
+#endif
+
+  ASSERT_EQ(rvList.size(), fac(nbPos));
+}
+
+TEST(RankIndividual, enumCompletedAllPresent) {
+  int nbPos = 5;
+
+  Vector<int> o(nbPos);
+  o << 0,4,3,1,2;
+
+  Vector<MisVal> mv(nbPos);
+  mv(0) = MisVal(present_, {});
+  mv(1) = MisVal(present_, {});
+  mv(2) = MisVal(present_, {});
+  mv(3) = MisVal(present_, {});
+  mv(4) = MisVal(present_, {});
+
+  RankIndividual rv(nbPos);
+  rv.setO(o);
+  rv.setObsData(mv);
+
+  std::list<RankVal> rvList = rv.enumCompleted();
+
+#ifdef MC_DEBUG
+  std::cout << "rvList.size(): " << rvList.size() << std::endl;
+#endif
+
+  ASSERT_EQ(rvList.size(), 1);
+}
+
+TEST(RankIndividual, invalidIndividual) {
+  int nbPos = 5;
+
+  Vector<int> o(nbPos);
+  o << 0,4,1,1,2;
+
+  Vector<MisVal> mv(nbPos);
+  mv(0) = MisVal(present_, {});
+  mv(1) = MisVal(present_, {});
+  mv(2) = MisVal(present_, {});
+  mv(3) = MisVal(present_, {});
+  mv(4) = MisVal(present_, {});
+
+  RankIndividual rv(nbPos);
+  rv.setO(o);
+  rv.setObsData(mv);
+
+  std::list<RankVal> rvList = rv.enumCompleted();
+
+#ifdef MC_DEBUG
+  std::cout << "rvList.size(): " << rvList.size() << std::endl;
+#endif
+
+  ASSERT_EQ(rvList.size(), 0);
+}
+
+TEST(RankIndividual, partiallyObserved) {
+  int nbPos = 5;
+
+  Vector<int> o(nbPos);
+  o << 0,4,1,3,2;
+
+  Vector<MisVal> mv(nbPos);
+  mv(0) = MisVal(present_, {});
+  mv(1) = MisVal(missingFiniteValues_, {1, 4}); // 2 completions will be possible by permuting 1 and 4 ordering
+  mv(2) = MisVal(missingFiniteValues_, {1, 4, 2});
+  mv(3) = MisVal(present_, {});
+  mv(4) = MisVal(present_, {});
+
+  RankIndividual rv(nbPos);
+  rv.setO(o);
+  rv.setObsData(mv);
+
+  std::list<RankVal> rvList = rv.enumCompleted();
+
+#ifdef MC_DEBUG
+  std::cout << "rvList.size(): " << rvList.size() << std::endl;
+#endif
+
+  ASSERT_EQ(rvList.size(), 2);
 }
