@@ -92,38 +92,51 @@ std::string SemStrategy::run() {
 }
 
 std::string SemStrategy::initSEM() {
+#ifdef MC_DEBUG
+  std::cout << "SemStrategy::initSEM" << std::endl;
+#endif
+
   std::string warnLog;
-  for (int n = 0; n < nbSamplingAttempts; ++n) // multiple initialization attempts
-  {
+
+  for (int n = 0; n < nbSamplingAttempts; ++n) { // multiple initialization attempts
+#ifdef MC_DEBUG
+    std::cout << "SemStrategy::initSEM, n: " << n << std::endl;
+#endif
+
     p_composer_->initializeProp(); // reset prop
     p_composer_->initializeTik(); //  reset tik_
     p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag
     p_composer_->removeMissing(SEM_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
-    std::string sWarn;
-    int proba = p_composer_->checkSampleCondition(&sWarn);
-
-    if (proba == 1) // correct sampling is not rejected
-    {
-      /** first estimation of parameters, based on completions by p_composer_->sStep() and p_composer_->removeMissing(). The parameter
-       * true indicates that this is the first call to mStep, and therefore eventual Markov chains (as it is the case for the Rank model for example)
-       * should be initialized . */
-      p_composer_->mStep(true);
-      break;
+    if (n < nbSamplingAttempts - 1) {
+      if (p_composer_->checkSampleCondition() == 1) { // log is not generated, since further trials are expected
+        p_composer_->mStep(true);
+        break;
+      }
     }
-    else if (n == nbSamplingAttempts - 1) // proba == 0 in during last initialization attempt
-    {
-      std::stringstream sstm;
-      sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
-           << "trial is: " << std::endl
-           << sWarn;
-      warnLog += sstm.str();
+    else { // last trial
+      std::string sWarn;
+      if (p_composer_->checkSampleCondition(&sWarn) == 1) { // log is generated only during last trial
+        p_composer_->mStep(true);
+      }
+      else {
+        std::stringstream sstm;
+        sstm << "SemStrategy initializations " << nbSamplingAttempts << " trials have failed. The error log from the last initialization "
+             << "trial is: " << std::endl
+             << sWarn;
+        warnLog += sstm.str();
+      }
     }
   }
+
   return warnLog;
 }
 
 RunProblemType SemStrategy::runSEM(SamplerType sampler) {
+#ifdef MC_DEBUG
+  std::cout << "SemStrategy::runSEM" << std::endl;
+#endif
+
     RunProblemType prob = noProblem_;
     p_burnInAlgo_->run(burnIn_,
                        prob,
@@ -146,7 +159,7 @@ RunProblemType SemStrategy::runSEM(SamplerType sampler) {
 
 void SemStrategy::initGibbs() {
   p_composer_->initializeTik(); // reset tik_
-  p_composer_->sStepNoCheck(); // during Gibbs no check is performed, as there is no parameter estimation
+  p_composer_->sStepNoCheck(); // during Gibbs no check is performed, as there is no parameter estimation. Note that checkSamplingCondition is not called either
   p_composer_->removeMissing(Gibbs_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 }
 

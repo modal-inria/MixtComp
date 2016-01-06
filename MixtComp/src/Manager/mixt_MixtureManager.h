@@ -119,8 +119,7 @@ class MixtureManager
       std::cout << "idName: " << idName << std::endl;
 #endif
 
-      if (idModel == "Categorical_pjk")
-      {
+      if (idModel == "Categorical_pjk") {
         CategoricalBridge_pjk_m<DataHandler,
                                 DataExtractor,
                                 ParamSetter,
@@ -138,8 +137,7 @@ class MixtureManager
                                                                                                         confidenceLevel);
         return p_bridge;
       }
-      if (idModel == "Gaussian_sjk")
-      {
+      if (idModel == "Gaussian_sjk") {
         GaussianBridge_sjk_m<DataHandler,
                              DataExtractor,
                              ParamSetter,
@@ -157,8 +155,7 @@ class MixtureManager
                                                                                                   confidenceLevel);
         return p_bridge;
       }
-      if (idModel == "Poisson_k")
-      {
+      if (idModel == "Poisson_k") {
         PoissonBridge_k_m<DataHandler,
                           DataExtractor,
                                    ParamSetter,
@@ -176,8 +173,7 @@ class MixtureManager
                                                                                                      confidenceLevel);
         return p_bridge;
       }
-      if (idModel == "Ordinal")
-      {
+      if (idModel == "Ordinal") {
         Ordinal<DataHandler,
                 DataExtractor,
                 ParamSetter,
@@ -195,8 +191,7 @@ class MixtureManager
                                                                         confidenceLevel);
         return p_bridge;
       }
-      if (idModel == "Rank")
-      {
+      if (idModel == "Rank") {
         RankMixture<DataHandler,
                     DataExtractor,
                     ParamSetter,

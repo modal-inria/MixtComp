@@ -200,9 +200,9 @@ void MixtureComposer::mStep(bool init)
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::mStep()" << std::endl;
 #endif
+
   pStep(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
-  for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  {
+  for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
     (*it)->mStep(init); // call mStep on each variable
   }
 #ifdef MC_DEBUG
@@ -212,8 +212,11 @@ void MixtureComposer::mStep(bool init)
 
 void MixtureComposer::sStepCheck()
 {
-  for (int i = 0; i < nbInd_; ++i)
-  {
+#ifdef MC_DEBUG
+  std::cout << "MixtureComposer::sStepCheck" << std::endl;
+#endif
+
+  for (int i = 0; i < nbInd_; ++i) {
     sStepCheck(i);
   }
 
@@ -228,7 +231,6 @@ void MixtureComposer::sStepCheck(int i)
 {
 #ifdef MC_DEBUG
   std::cout << "MixtureComposer::sStepCheck(int i), i: " << i << std::endl;
-  std::cout << "zi_.data_(i): " << zi_.data_(i) << std::endl;
 #endif
 
   classInd_(zi_.data_(i)).erase(i);
@@ -238,8 +240,7 @@ void MixtureComposer::sStepCheck(int i)
 
 void MixtureComposer::sStepNoCheck()
 {
-  for (int i = 0; i < nbInd_; ++i)
-  {
+  for (int i = 0; i < nbInd_; ++i) {
     sStepNoCheck(i);
   }
 
@@ -343,7 +344,7 @@ int MixtureComposer::nbFreeParameters() const
 void MixtureComposer::samplingStepCheck()
 {
 #ifdef MC_DEBUG
-  std::cout << "MixtureComposer::samplingStep" << std::endl;
+  std::cout << "MixtureComposer::samplingStepCheck" << std::endl;
 #endif
 
   for (int i = 0; i < nbInd_; ++i)
@@ -392,87 +393,62 @@ std::cout << (*it)->idName() << std::endl;
   }
 }
 
-int MixtureComposer::checkSampleCondition(std::string* warnLog) const
-{
-  int probaCondition = 1; // proba of condition on data given the completed data
-  if (warnLog == NULL) // if no description of the error is expected, to speed the treatment
-  {
-    probaCondition *= checkNbIndPerClass();
-    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-    {
-      int currProba = (*it)->checkSampleCondition(); // no need for log generation -> faster evaluation of checkSampleCondition
-
+int MixtureComposer::checkSampleCondition(std::string* warnLog) const {
+  if (warnLog == NULL) { // if no description of the error is expected, to speed the treatment
+    if (checkNbIndPerClass() == 0) {
 #ifdef MC_DEBUG
-      if (currProba == 0)
-      {
-        std::cout << "MixtureComposer::checkSampleCondition, (*it)->idName(): " << (*it)->idName() << " has a 0 checkSampleCondition" << std::endl;
-      }
+      std::cout << "MixtureComposer::checkSampleCondition, checkNbIndPerClass() == 0" << std::endl;
 #endif
 
-      probaCondition *= currProba;
+      return 0;
+    }
+    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+      if ((*it)->checkSampleCondition() == 0) {
+#ifdef MC_DEBUG
+        std::cout << "MixtureComposer::checkSampleCondition, idName: " << (*it)->idName() << ", checkSampleCondition() == 0" << std::endl;
+#endif
+
+        return 0; // no need for log generation -> faster evaluation of checkSampleCondition
+      }
     }
   }
-  else // if error description is expected
-  {
+  else { // if error description is expected
+    int probaCondition = 1; // proba of condition on data given the completed data
     std::string indLog;
     probaCondition *= checkNbIndPerClass(&indLog);
     *warnLog += indLog;
-    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-    {
+    for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
       std::string mixtLog;
       int currProba = (*it)->checkSampleCondition(&mixtLog); // the global warnLog is not passed directly to the mixture, to avoid accidental wiping
       probaCondition *= currProba;
       *warnLog += mixtLog;
-
-#ifdef MC_DEBUG
-      if (currProba == 0)
-      {
-        std::cout << "MixtureComposer::checkSampleCondition, (*it)->idName(): " << (*it)->idName() << " has a 0 checkSampleCondition" << std::endl;
-      }
-#endif
     }
+
+    return probaCondition;
   }
-  return probaCondition;
+
+  return 1;
 }
 
 int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
 {
-  int proba = 1;
-  Vector<int> nbIndPerClass(nbClass_, 0);
-  for (int i = 0; i < nbInd_; ++i)
-  {
-#ifdef MC_DEBUG
-    if (zi_.data_(i) < 0)
-    {
-      std::cout << "MixtureComposer::checkNbIndPerClass, i: " << i << ", zi_.data_(i): " << zi_.data_(i) << ", tik(i): " << tik_.row(i) << std::endl;
+  for (int k = 0; k < nbClass_; ++k) {
+    if (classInd_(k).size() > 0) {
+      continue;
     }
-#endif
-    nbIndPerClass(zi_.data_(i)) += 1;
-  }
+    else {
+      if (warnLog != NULL) {
+        std::stringstream sstm;
+        sstm << "MixtureComposer::checkNbIndPerClass, at least one class is empty. Did you provide more individuals "
+             << "that the number of classes ?" << std::endl;
+        *warnLog += sstm.str();
+      }
 
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::checkNbIndPerClass, nbIndPerClass: " << itString(nbIndPerClass) << std::endl;
-#endif
-
-  int min = nbIndPerClass.minCoeff();
-  if (min < minIndPerClass)
-  {
-    if (warnLog == NULL)
-    {
-      proba = 0;
-    }
-    else
-    {
-      std::stringstream sstm;
-      sstm << "MixtureComposer::checkNbIndPerClass, there must be at least " << minIndPerClass << " individuals "
-           << "per class. This condition has not been met. Did you provide enough individuals in regard to the "
-           << "number of classes you required ?" << std::endl;
-      *warnLog += sstm.str();
-      proba = 0;
+      return 0;
     }
   }
 
-  return proba;
+  return 1;
 }
 
 void MixtureComposer::storeSEMRun(int iteration,

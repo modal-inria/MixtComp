@@ -44,29 +44,17 @@ void SEMAlgo::run(RunType runType,
                   int group,
                   int groupMax)
 {
-#ifdef MC_DEBUG
-  std::cout << "SEMAlgo::run, sampler: " << sampler << std::endl;
-#endif
-
   std::string warn;
   Timer myTimer;
 
-  if (runType == burnIn_)
-  {
+  if (runType == burnIn_) {
     myTimer.setName("SEM: burn-in");
   }
-  else if (runType == run_)
-  {
+  else if (runType == run_) {
     myTimer.setName("SEM: run");
   }
 
-  int iter = 0;
-  while (iter < nbIter_)
-  {
-#ifdef MC_DEBUG
-    std::cout << "SEMAlgo::run, iter: " << iter << std::endl;
-#endif
-
+  for (int iter = 0; iter < nbIter_; ++nbIter_) {
     myTimer.iteration(iter, nbIter_ - 1);
     writeProgress(group,
                   groupMax,
@@ -75,51 +63,24 @@ void SEMAlgo::run(RunType runType,
 
     p_composer_->eStep();
 
-    if (sampler == rejectSampler_) // use reject sampling
-    {
+    if (sampler == rejectSampler_) { // use reject sampling
       p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
       p_composer_->samplingStepNoCheck();
       int sampleCond = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
 
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, i: " << iter << ", sampleCond: " << sampleCond << std::endl;
-#endif
-
-      if (sampleCond == 0) // sampled value rejected, switch to Gibbs sampler
-      {
-#ifdef MC_DEBUG
-        std::cout << "SEMAlgo::run, switch to Gibbs sampler" << std::endl;
-#endif
+      if (sampleCond == 0) { // sampled value rejected, switch to Gibbs sampler
         runPb = invalidSampler_;
         return;
       }
     }
-    else // use Gibbs sampling
-    {
+    else { // use Gibbs sampling
       p_composer_->sStepCheck(); // checkSampleCondition is performed at each sampling, hence no need to call p_composer_->checkSampleCondition()
-
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_composer_->checkSampleCondition()" << std::endl;
-      std::cout << "p_composer_->checkSampleCondition(): " << p_composer_->checkSampleCondition() << std::endl;
-      std::cout << "end of check" << std::endl;
-#endif
-
       p_composer_->samplingStepCheck();
-
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_composer_->checkSampleCondition()" << std::endl;
-      std::cout << "p_composer_->checkSampleCondition(): " << p_composer_->checkSampleCondition() << std::endl;
-      std::cout << "end of check" << std::endl;
-#endif
     }
 
     p_composer_->mStep(false);
 
-    if (runType == run_)
-    {
-#ifdef MC_DEBUG
-      std::cout << "SEMAlgo::run, p_model_->storeLongRun" << std::endl;
-#endif
+    if (runType == run_) {
       p_composer_->storeSEMRun(iter,
                                nbIter_ - 1);
     }
