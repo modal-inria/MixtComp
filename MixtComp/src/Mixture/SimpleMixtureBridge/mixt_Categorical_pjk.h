@@ -26,6 +26,8 @@
 #define MIXT_CATEGORICAL_PJK
 
 #include <vector>
+#include <set>
+
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Various/mixt_Def.h"
 
@@ -37,7 +39,8 @@ class Categorical_pjk
   public:
     Categorical_pjk(int nbClass,
                     Vector<Real>& param,
-                    Vector<int> const* p_zi);
+                    const Vector<int>* p_zi,
+                    const Vector<std::set<int> >& classInd);
 
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
@@ -60,7 +63,8 @@ class Categorical_pjk
     int nbModality_;
     Vector<int>* p_data_;
     Vector<Real>& param_;
-    Vector<int> const* p_zi_;
+    const Vector<int>* p_zi_;
+    const Vector<std::set<int> >& classInd_;
 };
 
 } // namespace mixt

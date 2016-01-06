@@ -31,12 +31,14 @@ namespace mixt
 {
 Categorical_pjk::Categorical_pjk(int nbClass,
                                  Vector<Real>& param,
-                                 Vector<int> const* p_zi) :
+                                 const Vector<int>* p_zi,
+                                 const Vector<std::set<int> >& classInd) :
     nbClass_(nbClass),
     nbModality_(0),
     p_data_(0),
     param_(param),
-    p_zi_(p_zi)
+    p_zi_(p_zi),
+    classInd_(classInd)
 {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
 
 Vector<bool> Categorical_pjk::acceptedType() const

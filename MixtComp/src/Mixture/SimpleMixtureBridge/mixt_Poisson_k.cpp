@@ -31,11 +31,13 @@ namespace mixt
 
 Poisson_k::Poisson_k(int nbClass,
                      Vector<Real>& param,
-                     Vector<int> const* p_zi) :
+                     const Vector<int>* p_zi,
+                     const Vector<std::set<int> >& classInd) :
     nbClass_(nbClass),
     param_(param),
     p_data_(0),
-    p_zi_(p_zi)
+    p_zi_(p_zi),
+    classInd_(classInd)
 {
   param_.resize(nbClass);
 }

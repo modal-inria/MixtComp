@@ -86,7 +86,8 @@ class MixtureBridge : public IMixture
       param_(), // must be initialized here, as will immediately be resized in mixture_ constructor
       mixture_(nbClass,
                param_,
-               p_zi),
+               p_zi,
+               classInd),
       augData_(),
       nbInd_(0),
       confidenceLevel_(confidenceLevel),

@@ -27,6 +27,8 @@
 #define MIXT_POISSON_K_H
 
 #include <vector>
+#include <set>
+
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_PoissonStatistic.h"
 #include "../../Various/mixt_Def.h"
@@ -39,7 +41,8 @@ class Poisson_k
   public:
     Poisson_k(int nbClass,
               Vector<Real>& param,
-              Vector<int> const* p_zi);
+              const Vector<int>* p_zi,
+              const Vector<std::set<int> >& classInd);
 
     Vector<bool> acceptedType() const;
     bool checkParam() const {return true;}
@@ -68,7 +71,8 @@ class Poisson_k
     int nbClass_;
     Vector<Real>& param_;
     Vector<int>* p_data_;
-    Vector<int> const* p_zi_;
+    const Vector<int>* p_zi_;
+    const Vector<std::set<int> >& classInd_;
 
     /** Statistic object to describe Poisson law */
     PoissonStatistic poisson_;

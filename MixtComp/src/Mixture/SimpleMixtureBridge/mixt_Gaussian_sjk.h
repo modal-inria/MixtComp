@@ -26,6 +26,8 @@
 #define MIXT_GAUSSIAN_SJK_H
 
 #include <vector>
+#include <set>
+
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_NormalStatistic.h"
 #include "../../Various/mixt_Def.h"
@@ -38,7 +40,8 @@ class Gaussian_sjk
   public:
     Gaussian_sjk(int nbClass,
                  Vector<Real>& param,
-                 Vector<int> const* p_zi);
+                 const Vector<int>* p_zi,
+                 const Vector<std::set<int> >& classInd);
 
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
@@ -72,7 +75,8 @@ class Gaussian_sjk
 
     Vector<Real>* p_data_;
 
-    Vector<int> const* p_zi_;
+    const Vector<int>* p_zi_;
+    const Vector<std::set<int> >& classInd_;
 
     /** Statistic object to describe Poisson law */
     NormalStatistic normal_;

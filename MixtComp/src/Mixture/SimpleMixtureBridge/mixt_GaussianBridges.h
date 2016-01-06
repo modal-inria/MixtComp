@@ -25,6 +25,8 @@
 #ifndef MIXT_GAUSSIANBRIDGE_H
 #define MIXT_GAUSSIANBRIDGE_H
 
+#include<set>
+
 #include "mixt_Gaussian_sjk.h"
 #include "../../Sampler/mixt_GaussianSampler.h"
 #include "../../Data/mixt_ConfIntDataStat.h"
