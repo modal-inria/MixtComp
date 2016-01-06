@@ -28,7 +28,7 @@
 namespace mixt
 {
 
-ClassSampler::ClassSampler(const MixtureComposer& composer,
+ClassSampler::ClassSampler(MixtureComposer& composer,
                            AugmentedData<Vector<int> >& zi,
                            const Matrix<Real>& tik,
                            int nbClass) :
@@ -52,7 +52,7 @@ void ClassSampler::sStepCheck(int i)
         RowVector<int> condition(nbClass_, 0);
 
         for (int k = 0; k < nbClass_; ++k) { // z_i changed in place to take all possible values
-          zi_.data_(i) = k;
+          composer_.setZAndClassInd(i, k);
           condition(k) = composer_.checkSampleCondition();
           modalities(k) = tik_(i, k) * condition(k); // checkSampleCondition value is 1 or 0, reflecting the fact that conditions on data are verified or not
         }
@@ -75,7 +75,7 @@ void ClassSampler::sStepCheck(int i)
              currMod != zi_.misData_(i).second.end();
              ++currMod) {
           int k = *currMod;
-          zi_.data_(i) = k;
+          composer_.setZAndClassInd(i, k);
           condition(k) = composer_.checkSampleCondition();
           modalities(k) = tik_(i, k) * condition(k);
         }
@@ -97,7 +97,7 @@ void ClassSampler::sStepCheck(int i)
       }
       break;
     }
-    zi_.data_(i) = sampleVal;
+    composer_.setZAndClassInd(i, sampleVal);
   }
 }
 
@@ -155,7 +155,7 @@ void ClassSampler::sStepNoCheck(int i)
       }
       break;
     }
-    zi_.data_(i) = sampleVal;
+    composer_.setZAndClassInd(i, sampleVal);
   }
 }
 } // namespace mixt

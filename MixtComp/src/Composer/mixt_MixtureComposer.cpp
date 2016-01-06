@@ -100,22 +100,10 @@ Real MixtureComposer::lnObservedProbability(int i, int k)
   return sum;
 }
 
-void MixtureComposer::lnObservedLikelihoodDebug()
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::lnObservedLikelihoodDebug() " << std::endl;
-#endif
-
-  for (int i = 0; i < nbInd_; ++i)
-  {
-    for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-    {
-      if ((*it)->lnObservedProbability(i, zi_.data_(i)) == minInf)
-      {
-        std::cout << "MixtureComposer::lnObservedLikelihoodDebug, minInf, i: " << i << ", zi_.data_(i): " << zi_.data_(i) << ", idName: " << (*it)->idName() << std::endl;
-      }
-    }
-  }
+void MixtureComposer::setZAndClassInd(int i, int k) {
+  classInd_(zi_.data_(i)).erase(i);
+  zi_.data_(i) = k;
+  classInd_(zi_.data_(i)).insert(i);
 }
 
 Real MixtureComposer::lnObservedLikelihood()
@@ -233,9 +221,7 @@ void MixtureComposer::sStepCheck(int i)
   std::cout << "MixtureComposer::sStepCheck(int i), i: " << i << std::endl;
 #endif
 
-  classInd_(zi_.data_(i)).erase(i);
   sampler_.sStepCheck(i);
-  classInd_(zi_.data_(i)).insert(i);
 }
 
 void MixtureComposer::sStepNoCheck()
@@ -257,9 +243,7 @@ void MixtureComposer::sStepNoCheck(int i)
   std::cout << "zi_.data_(i): " << zi_.data_(i) << std::endl;
 #endif
 
-  classInd_(zi_.data_(i)).erase(i);
   sampler_.sStepNoCheck(i);
-  classInd_(zi_.data_(i)).insert(i);
 }
 
 void MixtureComposer::eStep()
@@ -497,7 +481,7 @@ void MixtureComposer::storeGibbsRun(int ind,
     std::cout << "MixtureComposer::storeGibbsRun, before imputation, zi_.data_: " << itString(zi_.data_) << std::endl;
 #endif
 
-    classInd_(zi_.data_(ind)).erase(ind);
+    classInd_(zi_.data_(ind)).erase(ind); // this should be replaced by a call to setZAClassInd somehow
     dataStat_.imputeData(ind); // impute the missing values using empirical mean or mode, depending of the model
     classInd_(zi_.data_(ind)).insert(ind);
 
@@ -658,13 +642,11 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const
  * the indices of individuals belonging to this class */
 void MixtureComposer::updateListInd()
 {
-  for (int k = 0; k < nbClass_; ++k)
-  {
+  for (int k = 0; k < nbClass_; ++k) {
     classInd_(k).clear();
   }
 
-  for (int i = 0; i < nbInd_; ++i)
-  {
+  for (int i = 0; i < nbInd_; ++i) {
     classInd_(zi_.data_(i)).insert(i);
   }
 }

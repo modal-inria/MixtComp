@@ -75,6 +75,8 @@ class MixtureComposer
     /** @return  the zi class label */
     const Vector<std::set<int> >& classInd() const {return classInd_;}
 
+    void setZAndClassInd(int i, int k);
+
     /** @return a constant reference on the vector of mixture */
     const std::vector<IMixture*>& v_mixtures() const {return v_mixtures_;}
 
@@ -348,8 +350,6 @@ class MixtureComposer
     std::vector<std::string> mixtureName() const;
 
     void removeMissing(AlgoType algo);
-
-    void lnObservedLikelihoodDebug();
 
     /**
      * Compute the "raw" class ID matrix E_kj

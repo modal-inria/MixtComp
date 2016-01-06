@@ -36,7 +36,7 @@ class MixtureComposer; // forward declaration, as MixtureComposer has a ClassSam
 class ClassSampler
 {
   public:
-    ClassSampler(const MixtureComposer& composer,
+    ClassSampler(MixtureComposer& composer,
                  AugmentedData<Vector<int> >& zi,
                  const Matrix<Real>& tik,
                  int nbClass);
@@ -56,7 +56,7 @@ class ClassSampler
     void sStepNoCheck(int i);
   private:
     /** Constant pointer to the composer of which this ClassSampler is a member of */
-    const MixtureComposer& composer_;
+    MixtureComposer& composer_;
 
     int nbClass_;
 
