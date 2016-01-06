@@ -168,61 +168,29 @@ void Poisson_k::writeParameters() const
 
 int Poisson_k::checkSampleCondition(std::string* warnLog) const
 {
-  int proba = 1;
-
-  Vector<bool> nonZeroPresent(nbClass_, false);
-  for (int i = 0; i < p_data_->rows(); ++i)
-  {
-    if ((*p_data_)(i) > 0)
-    {
-      nonZeroPresent((*p_zi_)(i)) = true;
-    }
-  }
-
-#ifdef MC_DEBUG
-  Vector<int> nbNonZero(nbClass_, 0);
-  for (int i = 0; i < p_data_->rows(); ++i)
-  {
-    if ((*p_data_)(i) > 0)
-    {
-      nbNonZero((*p_zi_)(i)) += 1;
-    }
-  }
-  std::cout << "Poisson_k::checkSampleCondition, nbNonZero: " << nbNonZero.transpose() << std::endl;
-#endif
-
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    if (nonZeroPresent(k) == false)
-    {
-
-#ifdef MC_DEBUG
-      std::cout << "Poisson_k::checkSampleCondition, k: " << k << ", nonZeroPresent(k) == false" << std::endl;
-#endif
-
-      if (warnLog == NULL)
-      {
-        proba = 0;
-      }
-      else
-      {
-        std::stringstream sstm;
-        sstm << "Poisson variables must have at least one non-zero individual per class. This is not the case for class: " << k
-             << "which contains only the 0 modality. If your data has too many individuals "
-             << "with a value of 0, a Poisson model can not describe it" << std::endl;
-        *warnLog += sstm.str();
-        proba = 0;
+  for (int k = 0; k < nbClass_; ++k) {
+    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+         it != itE;
+         ++it) {
+      if ((*p_data_)(*it) > 0) {
+        goto endItK;
       }
     }
+
+    if (warnLog != NULL) {
+      std::stringstream sstm;
+      sstm << "Poisson variables must have at least one non-zero individual per class. At least one class "
+           << "only contains the 0 modality. If your data has too many individuals "
+           << "with a value of 0, a Poisson model can not describe it." << std::endl;
+      *warnLog += sstm.str();
+    }
+
+    return 0;
+
+    endItK:;
   }
 
-#ifdef MC_DEBUG
-  if (proba == 0) {
-    std::cout << "Poisson_k::checkSampleCondition, proba == 0" << std::endl;
-  }
-#endif
-
-  return proba;
+  return 1;
 }
 
 } // namespace mixt

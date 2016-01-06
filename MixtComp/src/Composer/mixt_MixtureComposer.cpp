@@ -243,7 +243,7 @@ void MixtureComposer::sStepNoCheck()
     sStepNoCheck(i);
   }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "MixtureComposer::sStepNoCheck" << itString(zi_.data_) << std::endl;
 //  printClassInd();
 #endif

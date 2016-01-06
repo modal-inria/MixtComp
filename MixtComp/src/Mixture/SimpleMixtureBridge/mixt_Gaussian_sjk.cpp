@@ -201,7 +201,7 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
     ++it;
     for (; it != itE; ++it) {
       if ((*p_data_)(*it) != previousElemClass) { // stop checking soon as there are two different values in the current class
-        goto endLoopK; // feared and loathed goto is used here as a kind of super break statement, see http://stackoverflow.com/questions/1257744/can-i-use-break-to-exit-multiple-nested-for-loops
+        goto endItK; // feared and loathed goto is used here as a kind of super break statement, see http://stackoverflow.com/questions/1257744/can-i-use-break-to-exit-multiple-nested-for-loops
       }
     }
 
@@ -214,7 +214,7 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
 
     return 0; // since goto was not activated, this means that at least one class is filled with identical values
 
-    endLoopK:;
+    endItK:;
   }
 
   return 1;
