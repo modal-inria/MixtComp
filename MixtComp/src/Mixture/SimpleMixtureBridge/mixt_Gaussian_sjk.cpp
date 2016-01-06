@@ -185,70 +185,39 @@ void Gaussian_sjk::writeParameters() const
 
 int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
 {
-  int proba = 1;
-  Vector<int> nbIndPerClass(nbClass_, 0);
-  Vector<Real> min(nbClass_,   std::numeric_limits<Real>::max());
-  Vector<Real> max(nbClass_, - std::numeric_limits<Real>::max());
-
-  for (int i = 0; i < p_data_->rows(); ++i)
-  {
-    nbIndPerClass((*p_zi_)(i)) += 1;
-    min((*p_zi_)(i)) = std::min((*p_data_)(i), min((*p_zi_)(i)));
-    max((*p_zi_)(i)) = std::max((*p_data_)(i), max((*p_zi_)(i)));
-  }
-
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    if (nbIndPerClass(k) < 2)
-    {
-#ifdef MC_DEBUG
-      std::cout << "Gaussian_sjk::checkSampleCondition, nbIndPerClass(k) < 2, k: " << k << std::endl;
-#endif
-
-      if (warnLog == NULL)
-      {
-        proba = 0;
-      }
-      else
-      {
+  for (int k = 0; k < nbClass_; ++k) {
+    if (classInd_(k).size() < 2) {
+      if (warnLog != NULL) {
         std::stringstream sstm;
-        sstm << "Gaussian variables must have at least two individuals per class. This is not the case for class: " << k << " "
+        sstm << "Gaussian variables must have at least two individuals per class. This is not the case for at least one class. "
              << "You can check whether you have enough individuals regarding the number of classes." << std::endl;
         *warnLog += sstm.str();
-        proba = 0;
+      }
+      return 0;
+    }
+
+    std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+    Real previousElemClass = (*p_data_)(*it);
+    ++it;
+    for (; it != itE; ++it) {
+      if ((*p_data_)(*it) != previousElemClass) { // stop checking soon as there are two different values in the current class
+        goto endLoopK; // feared and loathed goto is used here as a kind of super break statement, see http://stackoverflow.com/questions/1257744/can-i-use-break-to-exit-multiple-nested-for-loops
       }
     }
 
-    if (max(k) - min(k) == 0.)
-    {
-
-#ifdef MC_DEBUG
-      std::cout << "Gaussian_sjk::checkSampleCondition, max(k) - min(k)" << std::endl;
-#endif
-
-      if (warnLog == NULL)
-      {
-        proba = 0;
-      }
-      else
-      {
-        std::stringstream sstm;
-        sstm << "Gaussian variables must have a minimum amount of variability in each class. It seems that the class: " << k << " "
-             << "contains only the value: " << max(k) << ". If some values are repeated often in this variable, maybe a Categorical or "
-             << "a Poisson variable might describe it better." << std::endl;
-        *warnLog += sstm.str();
-        proba = 0;
-      }
+    if (warnLog != NULL) {
+      std::stringstream sstm;
+      sstm << "Gaussian variables must have a minimum amount of variability in each class. It seems that at least one class only contains the value: "
+           <<  previousElemClass << ". If some values are repeated often in this variable, maybe a Categorical or a Poisson variable might describe it better." << std::endl;
+      *warnLog += sstm.str();
     }
+
+    return 0; // since goto was not activated, this means that at least one class is filled with identical values
+
+    endLoopK:;
   }
 
-#ifdef MC_DEBUG
-  if (proba == 0) {
-    std::cout << "Gaussian_sjk::checkSampleCondition, proba == 0" << std::endl;
-  }
-#endif
-
-  return proba;
+  return 1;
 }
 
 } // namespace mixt

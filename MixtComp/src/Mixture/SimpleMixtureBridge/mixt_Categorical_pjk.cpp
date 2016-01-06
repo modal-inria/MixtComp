@@ -37,8 +37,7 @@ Categorical_pjk::Categorical_pjk(int nbClass,
     nbModality_(0),
     p_data_(0),
     param_(param),
-    p_zi_(p_zi),
-    classInd_(classInd)
+    p_zi_(p_zi)
 {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
 
 Vector<bool> Categorical_pjk::acceptedType() const
@@ -216,22 +215,22 @@ void Categorical_pjk::writeParameters() const
 int Categorical_pjk::checkSampleCondition(std::string* warnLog) const
 {
   int proba = 1;
-  Matrix<int> modality(nbClass_, nbModality_);
-  modality = 0;
+  Matrix<bool> modality(nbClass_, nbModality_);
+  modality = false;
 
-  for (int i = 0; i < p_data_->rows(); ++i)
+  for (int i = 0; i < p_data_->rows(); ++i) // checking that the matrix == true at each iteration for early return might be more time consuming than filling it at first
   {
 #ifdef MC_DEBUG
     std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << std::endl;
 #endif
-    modality((*p_zi_)(i), (*p_data_)(i)) += 1;
+    modality((*p_zi_)(i), (*p_data_)(i)) = true;
   }
 
   for (int k = 0; k < nbClass_; ++k)
   {
     for (int p = 0; p < nbModality_; ++p)
     {
-      if (modality(k, p) == 0) // each modality must be observed at least once per class
+      if (modality(k, p) == false) // each modality must be observed at least once per class
       {
 #ifdef MC_DEBUG
         std::cout << "k: " << k << ", p: " << p << ", unobserved modality" << std::endl;
