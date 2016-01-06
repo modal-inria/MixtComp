@@ -54,7 +54,7 @@ void SEMAlgo::run(RunType runType,
     myTimer.setName("SEM: run");
   }
 
-  for (int iter = 0; iter < nbIter_; ++nbIter_) {
+  for (int iter = 0; iter < nbIter_; ++iter) {
     myTimer.iteration(iter, nbIter_ - 1);
     writeProgress(group,
                   groupMax,
@@ -84,8 +84,6 @@ void SEMAlgo::run(RunType runType,
       p_composer_->storeSEMRun(iter,
                                nbIter_ - 1);
     }
-
-    ++iter;
   }
 
   runPb = noProblem_;
