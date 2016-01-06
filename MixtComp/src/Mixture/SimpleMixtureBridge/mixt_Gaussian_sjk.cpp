@@ -239,6 +239,13 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
       }
     }
   }
+
+#ifdef MC_DEBUG
+  if (proba == 0) {
+    std::cout << "Gaussian_sjk::checkSampleCondition, proba == 0" << std::endl;
+  }
+#endif
+
   return proba;
 }
 

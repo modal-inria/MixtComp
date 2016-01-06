@@ -243,10 +243,9 @@ void MixtureComposer::sStepNoCheck()
     sStepNoCheck(i);
   }
 
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStepNoCheck" << std::endl;
-  std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
-  printClassInd();
+#ifdef MC_DEBUGNEW
+  std::cout << "MixtureComposer::sStepNoCheck" << itString(zi_.data_) << std::endl;
+//  printClassInd();
 #endif
 }
 

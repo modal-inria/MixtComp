@@ -72,7 +72,8 @@ class MixtureBridge : public IMixture
      **/
     MixtureBridge(std::string const& idName,
                   int nbClass,
-                  Vector<int> const* p_zi,
+                  const Vector<int>* p_zi,
+                  const Vector<std::set<int> >& classInd,
                   const DataHandler* p_handler,
                   DataExtractor* p_extractor,
                   const ParamSetter* p_paramSetter,
@@ -80,6 +81,7 @@ class MixtureBridge : public IMixture
                   Real confidenceLevel) :
       IMixture(idName),
       p_zi_(p_zi),
+      classInd_(classInd),
       nbClass_(nbClass),
       param_(), // must be initialized here, as will immediately be resized in mixture_ constructor
       mixture_(nbClass,
@@ -104,28 +106,6 @@ class MixtureBridge : public IMixture
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor)
     {}
-
-    /** copy constructor */
-    MixtureBridge(MixtureBridge const& bridge) :
-      IMixture(bridge),
-      p_zi_(bridge.p_zi_),
-      nbClass_(bridge.nbClass_),
-      param_(bridge.param_),
-      mixture_(bridge.mixture_),
-      augData_(bridge.augData_),
-      nbInd_(bridge.nbInd_),
-      confidenceLevel_(bridge.confidenceLevel_),
-      sampler_(bridge.sampler_),
-      dataStat_(bridge.dataStat_),
-      paramStat_(bridge.paramStat_),
-      likelihood_(bridge.likelihood_),
-      p_handler_(bridge.p_handler_),
-      p_dataExtractor_(bridge.p_dataExtractor_),
-      p_paramSetter_(bridge.p_paramSetter_),
-      p_paramExtractor_(bridge.p_paramExtractor_)
-    {
-      mixture_.setData(augData_.data_);
-    }
 
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -378,7 +358,11 @@ class MixtureBridge : public IMixture
 
   protected:
     /** Pointer to the zik class label */
-    Vector<int> const* p_zi_;
+    const Vector<int>* p_zi_;
+
+    /** Reference to a vector containing in each element a set of the indices of individuals that
+     * belong to this class. Can be passed as an alternative to zi_ to a subtype of IMixture. */
+    const Vector<std::set<int> >& classInd_;
 
     /** Number of classes */
     int nbClass_;

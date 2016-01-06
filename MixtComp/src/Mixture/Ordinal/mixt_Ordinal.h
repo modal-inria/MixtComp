@@ -45,6 +45,7 @@ class Ordinal : public IMixture
     Ordinal(std::string const& idName,
             int nbClass,
             Vector<int> const* p_zi,
+            const Vector<std::set<int> >& classInd,
             const DataHandler* p_handler,
             DataExtractor* p_extractor,
             const ParamSetter* p_paramSetter,
@@ -52,6 +53,7 @@ class Ordinal : public IMixture
             Real confidenceLevel) :
       IMixture(idName),
       p_zi_(p_zi),
+      classInd_(classInd),
       nbClass_(nbClass),
       nbModality_(0),
       augData_(),
@@ -742,6 +744,10 @@ class Ordinal : public IMixture
 
     /** Pointer to the zik class label */
     Vector<int> const* p_zi_;
+
+    /** Reference to a vector containing in each element a set of the indices of individuals that
+     * belong to this class. Can be passed as an alternative to zi_ to a subtype of IMixture. */
+    const Vector<std::set<int> >& classInd_;
 
     /** Number of classes */
     int nbClass_;
