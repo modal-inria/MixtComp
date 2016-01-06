@@ -37,7 +37,8 @@ Categorical_pjk::Categorical_pjk(int nbClass,
     nbModality_(0),
     p_data_(0),
     param_(param),
-    p_zi_(p_zi)
+    p_zi_(p_zi),
+    classInd_(classInd)
 {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
 
 Vector<bool> Categorical_pjk::acceptedType() const
@@ -214,53 +215,36 @@ void Categorical_pjk::writeParameters() const
 
 int Categorical_pjk::checkSampleCondition(std::string* warnLog) const
 {
-  int proba = 1;
-  Matrix<bool> modality(nbClass_, nbModality_);
-  modality = false;
+  for (int k = 0; k < nbClass_; ++k) {
+    Vector<bool> modalityPresent(nbModality_, true);
+    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+         it != itE;
+         ++it) {
+      modalityPresent((*p_data_)(*it)) = true;
+      if (modalityPresent == true) {
+        goto endItK;
+      }
+    }
 
-  for (int i = 0; i < p_data_->rows(); ++i) // checking that the matrix == true at each iteration for early return might be more time consuming than filling it at first
-  {
-#ifdef MC_DEBUG
-    std::cout << "i: " << i << ", (*p_zi_)(i): " << (*p_zi_)(i) << std::endl;
-#endif
-    modality((*p_zi_)(i), (*p_data_)(i)) = true;
-  }
-
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    for (int p = 0; p < nbModality_; ++p)
-    {
-      if (modality(k, p) == false) // each modality must be observed at least once per class
-      {
-#ifdef MC_DEBUG
-        std::cout << "k: " << k << ", p: " << p << ", unobserved modality" << std::endl;
-#endif
-
-        if (warnLog == NULL)
-        {
-          proba = 0;
-        }
-        else
-        {
+    if (warnLog != NULL) {
+      for (int p = 0; p < nbModality_; ++p) {
+        if (modalityPresent(p) == false) {
           std::stringstream sstm;
           sstm << "Categorical variables must have one individual with each modality present in each class. "
                << "Modality: " << p << " is absent from class: " << k << " "
                << "You can check whether you have enough individuals regarding the number of classes "
                << "and whether all of your modalities are encoded using contiguous integers starting at 0." << std::endl;
           *warnLog += sstm.str();
-          proba = 0;
         }
       }
     }
+
+    return 0;
+
+    endItK:;
   }
 
-#ifdef MC_DEBUG
-  if (proba == 0) {
-    std::cout << "Categorical_pjk::checkSampleCondition, proba == 0" << std::endl;
-  }
-#endif
-
-  return proba;
+  return 1;
 }
 
 } // namespace mixt
