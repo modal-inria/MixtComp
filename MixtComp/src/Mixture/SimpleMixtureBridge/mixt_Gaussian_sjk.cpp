@@ -30,10 +30,12 @@
 namespace mixt
 {
 
-Gaussian_sjk::Gaussian_sjk(int nbClass,
+Gaussian_sjk::Gaussian_sjk(const std::string& idName,
+                           int nbClass,
                            Vector<Real>& param,
                            const Vector<int>* p_zi,
                            const Vector<std::set<int> >& classInd) :
+    idName_(idName),
     nbClass_(nbClass),
     param_(param),
     p_data_(0),
@@ -186,6 +188,10 @@ void Gaussian_sjk::writeParameters() const
 int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
 {
   for (int k = 0; k < nbClass_; ++k) {
+#ifdef MC_DEBUG
+    int i = -1;
+#endif
+
     if (classInd_(k).size() < 2) {
       if (warnLog != NULL) {
         std::stringstream sstm;
@@ -200,7 +206,17 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
     Real previousElemClass = (*p_data_)(*it);
     ++it;
     for (; it != itE; ++it) {
+#ifdef MC_DEBUG
+      ++i;
+#endif
+
       if ((*p_data_)(*it) != previousElemClass) { // stop checking soon as there are two different values in the current class
+#ifdef MC_DEBUG
+        if (1000 < i) {
+          std::cout << "Gaussian_sjk::checkSampleCondition, idName: " << idName_ << ", OK at i: " << i << std::endl;
+        }
+#endif
+
         goto endItK; // feared and loathed goto is used here as a kind of super break statement, see http://stackoverflow.com/questions/1257744/can-i-use-break-to-exit-multiple-nested-for-loops
       }
     }

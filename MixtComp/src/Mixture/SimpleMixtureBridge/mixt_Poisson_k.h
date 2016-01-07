@@ -39,7 +39,8 @@ namespace mixt
 class Poisson_k
 {
   public:
-    Poisson_k(int nbClass,
+    Poisson_k(const std::string& idName,
+              int nbClass,
               Vector<Real>& param,
               const Vector<int>* p_zi,
               const Vector<std::set<int> >& classInd);
@@ -68,6 +69,7 @@ class Poisson_k
 
     int checkSampleCondition(std::string* warnLog = NULL) const;
   private:
+    std::string idName_;
     int nbClass_;
     Vector<Real>& param_;
     Vector<int>* p_data_;

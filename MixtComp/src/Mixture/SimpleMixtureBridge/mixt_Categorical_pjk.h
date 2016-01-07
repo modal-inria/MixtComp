@@ -37,7 +37,8 @@ namespace mixt
 class Categorical_pjk
 {
   public:
-    Categorical_pjk(int nbClass,
+    Categorical_pjk(const std::string& idName,
+                    int nbClass,
                     Vector<Real>& param,
                     const Vector<int>* p_zi,
                     const Vector<std::set<int> >& classInd);
@@ -59,6 +60,7 @@ class Categorical_pjk
 
     int checkSampleCondition(std::string* warnLog = NULL) const;
   private:
+    std::string idName_;
     int nbClass_;
     int nbModality_;
     Vector<int>* p_data_;

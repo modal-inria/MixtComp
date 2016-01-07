@@ -29,10 +29,12 @@
 
 namespace mixt
 {
-Categorical_pjk::Categorical_pjk(int nbClass,
+Categorical_pjk::Categorical_pjk(const std::string& idName,
+                                 int nbClass,
                                  Vector<Real>& param,
                                  const Vector<int>* p_zi,
                                  const Vector<std::set<int> >& classInd) :
+    idName_(idName),
     nbClass_(nbClass),
     nbModality_(0),
     p_data_(0),
@@ -216,12 +218,26 @@ void Categorical_pjk::writeParameters() const
 int Categorical_pjk::checkSampleCondition(std::string* warnLog) const
 {
   for (int k = 0; k < nbClass_; ++k) {
+#ifdef MC_DEBUG
+    int i = -1;
+#endif
+
     Vector<bool> modalityPresent(nbModality_, true);
     for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
          ++it) {
+#ifdef MC_DEBUG
+      ++i;
+#endif
+
       modalityPresent((*p_data_)(*it)) = true;
       if (modalityPresent == true) {
+#ifdef MC_DEBUG
+        if (1000 < i) {
+          std::cout << "Categorical_pjk::checkSampleCondition, idName: " << idName_ << ", OK at i: " << i << std::endl;
+        }
+#endif
+
         goto endItK;
       }
     }

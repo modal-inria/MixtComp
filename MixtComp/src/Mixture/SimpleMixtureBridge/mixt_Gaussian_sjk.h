@@ -38,7 +38,8 @@ namespace mixt
 class Gaussian_sjk
 {
   public:
-    Gaussian_sjk(int nbClass,
+    Gaussian_sjk(const std::string& idName,
+                 int nbClass,
                  Vector<Real>& param,
                  const Vector<int>* p_zi,
                  const Vector<std::set<int> >& classInd);
@@ -69,6 +70,7 @@ class Gaussian_sjk
 
     int checkSampleCondition(std::string* warnLog = NULL) const;
   private:
+    std::string idName_;
     int nbClass_;
 
     Vector<Real>& param_;

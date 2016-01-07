@@ -84,7 +84,8 @@ class MixtureBridge : public IMixture
       classInd_(classInd),
       nbClass_(nbClass),
       param_(), // must be initialized here, as will immediately be resized in mixture_ constructor
-      mixture_(nbClass,
+      mixture_(idName,
+               nbClass,
                param_,
                p_zi,
                classInd),
@@ -340,6 +341,10 @@ class MixtureBridge : public IMixture
 #endif
       if (warnLog == NULL)
       {
+#ifdef MC_DEBUG
+        std::cout << "idName: " << idName_ << ": ";
+#endif
+
         return mixture_.checkSampleCondition();
       }
       else

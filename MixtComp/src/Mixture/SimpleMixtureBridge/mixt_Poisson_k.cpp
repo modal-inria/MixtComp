@@ -29,10 +29,12 @@
 namespace mixt
 {
 
-Poisson_k::Poisson_k(int nbClass,
+Poisson_k::Poisson_k(const std::string& idName,
+                     int nbClass,
                      Vector<Real>& param,
                      const Vector<int>* p_zi,
                      const Vector<std::set<int> >& classInd) :
+    idName_(idName),
     nbClass_(nbClass),
     param_(param),
     p_data_(0),
@@ -169,10 +171,24 @@ void Poisson_k::writeParameters() const
 int Poisson_k::checkSampleCondition(std::string* warnLog) const
 {
   for (int k = 0; k < nbClass_; ++k) {
+#ifdef MC_DEBUG
+    int i = -1;
+#endif
+
     for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
          ++it) {
+#ifdef MC_DEBUG
+      ++i;
+#endif
+
       if ((*p_data_)(*it) > 0) {
+#ifdef MC_DEBUG
+        if (1000 < i) {
+          std::cout << "Poisson_k::checkSampleCondition, idName: " << idName_ << ", OK at i: " << i << std::endl;
+        }
+#endif
+
         goto endItK;
       }
     }

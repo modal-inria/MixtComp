@@ -218,7 +218,7 @@ void MixtureComposer::sStepCheck()
 void MixtureComposer::sStepCheck(int i)
 {
 #ifdef MC_DEBUG
-  if (i % 1000 == 0) {
+  if (i % 1 == 0) {
     std::cout << "MixtureComposer::sStepCheck(int i), i: " << i << std::endl;
   }
 #endif
