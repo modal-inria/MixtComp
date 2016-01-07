@@ -310,6 +310,10 @@ class Ordinal : public IMixture
 
     void computeObservedProba()
     {
+#ifdef MC_DEBUG
+      std::cout << "Ordinal::computeObservedProba, mu: " << itString(mu_) << ", pi_: " << itString(pi_) << std::endl;
+#endif
+
       observedProba_.resize(nbClass_, nbModality_);
       BOSPath path; // BOSPath used for the various samplings
       path.setInit(0, nbModality_ - 1);
@@ -327,6 +331,10 @@ class Ordinal : public IMixture
         }
         observedProba_.row(k) = nbInd / Real(nbSampleObserved);
       }
+
+#ifdef MC_DEBUG
+      std::cout << "Ordinal::computeObservedProba, out" << std::endl;
+#endif
     }
 
     virtual void storeGibbsRun(int ind,
@@ -520,42 +528,39 @@ class Ordinal : public IMixture
 
     int checkSampleCondition(std::string* warnLog = NULL) const
     {
-      int proba = 1;
+      for (int k = 0; k < nbClass_; ++k) {
+        bool allZ0 = true;
+        bool allZ1 = true; // are all z = 0 or all z = 1 in the current class ?
+        for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+             it != itE;
+             ++it) {
+          int nbZ = path_(*it).nbZ();
 
-      Matrix<bool> az(nbClass_, 2, true); // are all z = 0 or all z = 1 in each class ?
-      for (int i = 0; i < nbInd_; ++i)
-      {
-        az((*p_zi_)(i), 0) = az((*p_zi_)(i), 0) && path_(i).allZ0();
-        az((*p_zi_)(i), 1) = az((*p_zi_)(i), 1) && path_(i).allZ1();
-      }
+          if (nbZ != 0) {
+            allZ0 = false;
+          }
+          if (nbZ != nbModality_ - 1) { // there is one less node than modalities
+            allZ1 = false;
+          }
 
-      for (int k = 0; k < nbClass_; ++k)
-      {
-        if (az(k, 0) == true)
-        {
-          proba = 0;
-          if (warnLog != NULL)
-          {
-            std::stringstream sstm;
-            sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 in class " << k << ". "
-                 << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
-            *warnLog += sstm.str();
+          if (allZ0 == false && allZ1 == false) { // there is enough variability on z in this class to ensure that pi will be estimated inside the open support
+            goto itKEnd;
           }
         }
-        if (az(k, 1) == true)
-        {
-          proba = 0;
-          if (warnLog != NULL)
-          {
-            std::stringstream sstm;
-            sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 1 in class " << k << ". "
-                 << "Try using a categorical model, if the number of modalities is not too high." << std::endl;
-            *warnLog += sstm.str();
-          }
+
+        if (warnLog != NULL) {
+          std::stringstream sstm;
+          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 or 1 in at least one class. "
+               << "If the number of modalities is quite low, try using a categorical model instead." << std::endl;
+          *warnLog += sstm.str();
         }
+
+        return 0;
+
+        itKEnd:;
       }
 
-      return proba;
+      return 1;
     }
 
   private:
