@@ -605,39 +605,45 @@ class Ordinal : public IMixture
     /**
      * Perform one iteration of Gibbs sampling, insuring proper implementation of allZOneAuthorized flag
      *
-     * @param sampleAZ are the condition z = 0 or z = 1 authorized on entire classes ?
+     * @param sampleAZ indicate if the condition all z = 0 or all z = 1 is authorized for the class containing ind
      * */
     void GibbsSampling(int ind,
                        int mu,
                        Real pi,
-                       Vector<bool, 2> sampleAZ)
-    {
-      Vector<bool, 2> az; // flag for this particular individual, by default all z = 0 or all z = 1 are authorized
-      az = true;
+                       Vector<bool, 2> sampleAZ) {
+      Vector<bool, 2> az; // flag for this particular individual, by default all z = 0 or all z = 1 are not authorized by default
+      az = false;
 
-      if (sampleAZ != true)
-      {
-        Vector<bool, 2> allOtherZOne = true; // are the z in all other individuals in the same class all at 0 or all at 1 ?
-        for (int i = 0; i < nbInd_; ++i)
-        {
-          if (i != ind && (*p_zi_)(i) == (*p_zi_)(ind))
-          {
-            allOtherZOne(0) = allOtherZOne(0) && path_(i).allZ0();
-            allOtherZOne(1) = allOtherZOne(1) && path_(i).allZ1();
+      if (sampleAZ != true) { // if all z = 0 is not authorized and all other individuals already have z = 0, then current individual can not have z = 0
+        int currClass = (*p_zi_)(ind);
+        for (std::set<int>::const_iterator it = classInd_(currClass).begin(), itE = classInd_(currClass).end();
+             it != itE;
+             ++it) {
+          if (*it != ind) { // check is performed on all in the class but the current ind
+            int nbZ = path_(*it).nbZ();
+            if (nbZ != 0) { // at least one other individual has a non zero number of z = 1, therefor...
+              az(0) = true; // ... current individual is authorized to have all its z = 0
+            }
+            if (nbZ != nbModality_ - 1) {
+              az(1) = true;
+            }
+
+            if (az == true) { // all values are authorized for current individual, stop checking
+              break;
+            }
           }
         }
-        (!sampleAZ(0) && allOtherZOne(0)) ? (az(0) = false) : (az(0) = true); // all z = 0 authorized if at least one other individual in the class has not all z = 1
-        (!sampleAZ(1) && allOtherZOne(1)) ? (az(1) = false) : (az(1) = true); // all z = 1 authorized if at least one other individual in the class has not all z = 1
+      }
+      else {
+        az = true; // since all z = 0 and all z = 1 are authorized in the class, they are authorized for ind
       }
 
-      if (augData_.misData_(ind).first == missing_) // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
-      {
+      if (augData_.misData_(ind).first == missing_) { // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
         path_(ind).forwardSamplePath(mu,
                                      pi,
                                      az);
       }
-      else // perform one round of Gibbs sampler for the designated individual
-      {
+      else { // perform one round of Gibbs sampler for the designated individual
         path_(ind).samplePath(mu,
                               pi,
                               sizeTupleBOS,
