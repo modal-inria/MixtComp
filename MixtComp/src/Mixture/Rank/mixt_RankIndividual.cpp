@@ -473,4 +473,14 @@ std::list<RankVal> RankIndividual::enumCompleted() const {
   return rankList;
 }
 
+bool RankIndividual::allMissing() const {
+  for (int p = 0; p < nbPos_; ++p) {
+    if (obsData_(p).first != missing_) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 } // namespace mixt

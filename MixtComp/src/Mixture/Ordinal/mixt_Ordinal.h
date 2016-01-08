@@ -634,7 +634,7 @@ class Ordinal : public IMixture
           }
         }
       }
-      else {
+      else { // Note that the case where sampleAZ(0) != sampleAZ(1) is NOT implemented correctly, but is of no use as of today requirements.
         az = true; // since all z = 0 and all z = 1 are authorized in the class, they are authorized for ind
       }
 

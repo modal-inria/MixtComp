@@ -170,6 +170,10 @@ class RankIndividual
      * a valid individual, the returned list must have at least one element, which is a copy of x_, otherwise,
      * data is invalid, for example in the case 1,1,3. */
     std::list<RankVal> enumCompleted() const;
+
+    /** Is the individual completely missing ? In that case its observed probability is 1. for example, whatever
+     * the parameters.  */
+    bool allMissing() const;
   private:
     /** Permute the elements firstElem and firstElem + 1 in y_ */
     void permutationY(int firstElem);

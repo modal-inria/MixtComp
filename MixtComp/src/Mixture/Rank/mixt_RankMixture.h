@@ -237,30 +237,37 @@ class RankMixture : public IMixture
     }
 
     virtual Real lnObservedProbability(int i, int k) {
-//      return observedProba_(i, k); // harmonic mean computation method
+      Real logProba;
 
-      std::list<RankVal> allCompleted = data_(i).enumCompleted(); // get the list of all possible completions of observation i
-      Vector<Real> allCompletedProba(allCompleted.size());
+      if (data_(i).allMissing()) {
+        logProba = 0.;
+      }
+      else {
+        std::list<RankVal> allCompleted = data_(i).enumCompleted(); // get the list of all possible completions of observation i
+        Vector<Real> allCompletedProba(allCompleted.size());
 
-      int c = 0;
-      for (std::list<RankVal>::const_iterator it = allCompleted.begin(), itE = allCompleted.end();
-           it != itE;
-           ++c, ++it) {
-        std::map<RankVal, Real>::iterator itM = observedProbaSampling_(k).find(*it);
-        if (itM == observedProbaSampling_(k).end()) { // the current individual has not been observed during sampling
-          allCompletedProba(c) = minInf;
+        int c = 0;
+        for (std::list<RankVal>::const_iterator it = allCompleted.begin(), itE = allCompleted.end();
+             it != itE;
+             ++c, ++it) {
+          std::map<RankVal, Real>::iterator itM = observedProbaSampling_(k).find(*it);
+          if (itM == observedProbaSampling_(k).end()) { // the current individual has not been observed during sampling
+            allCompletedProba(c) = minInf;
+          }
+          else {
+            allCompletedProba(c) = std::log(itM->second);
+          }
         }
-        else {
-          allCompletedProba(c) = std::log(itM->second);
-        }
+
+  #ifdef MC_DEBUG
+        std::cout << "RankMixture::lnObservedProbability, allCompletedProba.size(): " << allCompletedProba.size() << ", allCompletedProba: " << itString(allCompletedProba) << std::endl;
+  #endif
+
+        Vector<Real> dummy;
+        logProba = dummy.logToMulti(allCompletedProba);
       }
 
-#ifdef MC_DEBUG
-      std::cout << "RankMixture::lnObservedProbability, allCompletedProba.size(): " << allCompletedProba.size() << ", allCompletedProba: " << itString(allCompletedProba) << std::endl;
-#endif
-
-      Vector<Real> dummy;
-      return dummy.logToMulti(allCompletedProba);
+      return logProba;
     }
 
     void removeMissing(AlgoType algo)
