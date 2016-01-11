@@ -80,9 +80,17 @@ Real RankClass::lnObservedProbability(int i) const {
   Real logProba;
 
   if (data_(i).allMissing()) {
+#ifdef MC_DEBUG
+    std::cout << "RankClass::lnObservedProbability, allMissing" << std::endl;
+#endif
+
     logProba = 0.; // using enumCompleted on a completely missing individual might by computationally intractable for a high number of positions
   }
   else {
+#ifdef MC_DEBUG
+    std::cout << "RankClass::lnObservedProbability, enumCompleted" << std::endl;
+#endif
+
     std::list<RankVal> allCompleted = data_(i).enumCompleted(); // get the list of all possible completions of observation i
     Vector<Real> allCompletedProba(allCompleted.size()); // used to "linearize" the storage of probabilities from allCompleted
 
@@ -176,6 +184,7 @@ void RankClass::mStep()
 
 void RankClass::computeObservedProba() {
   RankIndividual ri(mu_.nbPos()); // dummy rank individual used to compute a Vector<std::map<RankVal, Real> > for each class
+
   ri.observedProba(mu_,
                    pi_,
                    observedProbaSampling_);
