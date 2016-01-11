@@ -76,6 +76,40 @@ Real RankClass::lnCompletedProbabilityInd(int i) const
   return data_(i).lnCompletedProbability(mu_, pi_, a, g);
 }
 
+Real RankClass::lnObservedProbability(int i) const {
+  Real logProba;
+
+  if (data_(i).allMissing()) {
+    logProba = 0.; // using enumCompleted on a completely missing individual might by computationally intractable for a high number of positions
+  }
+  else {
+    std::list<RankVal> allCompleted = data_(i).enumCompleted(); // get the list of all possible completions of observation i
+    Vector<Real> allCompletedProba(allCompleted.size()); // used to "linearize" the storage of probabilities from allCompleted
+
+    int c = 0;
+    for (std::list<RankVal>::const_iterator it = allCompleted.begin(), itE = allCompleted.end();
+         it != itE;
+         ++c, ++it) {
+      std::map<RankVal, Real>::const_iterator itM = observedProbaSampling_.find(*it); // has the current completion been observed in computeObservedProba ?
+      if (itM == observedProbaSampling_.end()) { // the current individual has not been observed during sampling
+        allCompletedProba(c) = minInf;
+      }
+      else {
+        allCompletedProba(c) = std::log(itM->second);
+      }
+    }
+
+#ifdef MC_DEBUG
+    std::cout << "RankMixture::lnObservedProbability, allCompletedProba.size(): " << allCompletedProba.size() << ", allCompletedProba: " << itString(allCompletedProba) << std::endl;
+#endif
+
+    Vector<Real> dummy;
+    logProba = dummy.logToMulti(allCompletedProba); // compute the observed logproba by summing all the completed logproba
+  }
+
+  return logProba;
+}
+
 void RankClass::sampleMu()
 {
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
@@ -138,6 +172,13 @@ void RankClass::mStep()
 #ifdef MC_DEBUG
   std::cout << "RankClass::mStep, mu_: " << mu_ << ", pi_: " << pi_ << std::endl;
 #endif
+}
+
+void RankClass::computeObservedProba() {
+  RankIndividual ri(mu_.nbPos()); // dummy rank individual used to compute a Vector<std::map<RankVal, Real> > for each class
+  ri.observedProba(mu_,
+                   pi_,
+                   observedProbaSampling_);
 }
 
 } // namespace mixt

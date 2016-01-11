@@ -237,37 +237,7 @@ class RankMixture : public IMixture
     }
 
     virtual Real lnObservedProbability(int i, int k) {
-      Real logProba;
-
-      if (data_(i).allMissing()) {
-        logProba = 0.;
-      }
-      else {
-        std::list<RankVal> allCompleted = data_(i).enumCompleted(); // get the list of all possible completions of observation i
-        Vector<Real> allCompletedProba(allCompleted.size());
-
-        int c = 0;
-        for (std::list<RankVal>::const_iterator it = allCompleted.begin(), itE = allCompleted.end();
-             it != itE;
-             ++c, ++it) {
-          std::map<RankVal, Real>::iterator itM = observedProbaSampling_(k).find(*it);
-          if (itM == observedProbaSampling_(k).end()) { // the current individual has not been observed during sampling
-            allCompletedProba(c) = minInf;
-          }
-          else {
-            allCompletedProba(c) = std::log(itM->second);
-          }
-        }
-
-  #ifdef MC_DEBUG
-        std::cout << "RankMixture::lnObservedProbability, allCompletedProba.size(): " << allCompletedProba.size() << ", allCompletedProba: " << itString(allCompletedProba) << std::endl;
-  #endif
-
-        Vector<Real> dummy;
-        logProba = dummy.logToMulti(allCompletedProba);
-      }
-
-      return logProba;
+      return class_[k].lnObservedProbability(i);
     }
 
     void removeMissing(AlgoType algo)
@@ -369,12 +339,8 @@ class RankMixture : public IMixture
     }
 
     void computeObservedProba() {
-      RankIndividual ri(nbPos_); // dummy rank individual used to compute a Vector<std::map<RankVal, Real> > for each class
-      observedProbaSampling_.resize(nbClass_);
       for (int k = 0; k < nbClass_; ++k) {
-        ri.observedProba(mu_(k),
-                         pi_(k),
-                         observedProbaSampling_(k));
+        class_[k].computeObservedProba();
       }
     }
   private:
@@ -461,10 +427,6 @@ class RankMixture : public IMixture
     Matrix<Real> observedProbaHMean_;
 
     std::vector<RankClass> class_;
-
-    /** Vector of map containing observed probability distribution, used in independent sampling estimation.
-     * Each element of the vector corresponds to a class */
-    Vector<std::map<RankVal, Real> > observedProbaSampling_;
 
     /** Each element of the vector keeps track of statistics for one particular mu */
     std::vector<RankParamStat> muParamStat_;

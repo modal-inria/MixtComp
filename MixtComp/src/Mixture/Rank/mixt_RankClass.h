@@ -51,11 +51,15 @@ class RankClass
 
     Real lnCompletedProbabilityInd(int i) const;
 
+    Real lnObservedProbability(int i) const;
+
     /** Perform one round of Gibbs sampling for the central rank */
     void sampleMu();
 
     /** */
     void mStep();
+
+    void computeObservedProba();
   private:
     int nbInd_;
 
@@ -72,6 +76,10 @@ class RankClass
     Real& pi_;
 
     MultinomialStatistic multi_;
+
+    /** Vector of map containing observed probability distribution, used in independent sampling estimation.
+     * Each element of the vector corresponds to a class */
+    std::map<RankVal, Real> observedProbaSampling_;
 };
 
 } // namespace mixt

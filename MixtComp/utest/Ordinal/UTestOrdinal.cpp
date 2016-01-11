@@ -44,6 +44,12 @@ TEST(Ordinal, mStep)
   pi = uni.sample(0., 1.);
 
   Vector<int> z_i(nbInd, 0); // dummy class variable
+  Vector<std::set<int> > classInd(1);
+
+  for (int i = 0; i < nbInd; ++i) {
+    classInd(0).insert(i);
+  }
+
   Ordinal<DataHandlerDummy,
           DataExtractorDummy,
           ParamSetterDummy,
@@ -51,6 +57,7 @@ TEST(Ordinal, mStep)
                                        nbInd,
                                        nbModalities,
                                        &z_i,
+                                       classInd,
                                        mu,
                                        pi);
 

@@ -78,10 +78,12 @@ class Ordinal : public IMixture
             int nbInd,
             int nbModalities,
             const Vector<int>* p_zi,
+            const Vector<std::set<int> >& classInd,
             int mu,
             Real pi) :
         IMixture("dummy"),
         p_zi_(p_zi),
+        classInd_(classInd),
         nbClass_(nbClass),
         nbModality_(nbModalities),
         nbInd_(nbInd),
