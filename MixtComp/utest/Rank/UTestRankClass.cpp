@@ -293,7 +293,7 @@ TEST(RankClass, mStep)
 
   for (int i = 0; i < nbIterburnIn; ++i) {
     for (int ind = 0; ind < nbInd; ++ind) {
-      data(ind).sampleY(muEst, piEst);
+      data(ind).sampleY(muEst, piEst); // no sampleX is performed as the completion obtained through xGen is used
     }
     rank.sampleMu();
   }
