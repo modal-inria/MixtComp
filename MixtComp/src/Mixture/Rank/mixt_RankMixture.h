@@ -113,22 +113,20 @@ class RankMixture : public IMixture
       }
     }
 
-    void samplingStepCheck(int ind)
+    void samplingStepCheck(int i)
     {
-//      for (int i = 0; i < nbInd_; ++i) should not perform nbInd_ iterations ...
-//      {
-//        data_(i).sampleY(mu_((*p_zi_)(i)),
-//                         pi_((*p_zi_)(i)));
-//      }
+        data_(i).sampleY(mu_((*p_zi_)(i)),
+                         pi_((*p_zi_)(i)));
+        data_(i).sampleX(mu_((*p_zi_)(i)),
+                         pi_((*p_zi_)(i)));
     }
 
-    void samplingStepNoCheck(int ind)
+    void samplingStepNoCheck(int i)
     {
-//      for (int i = 0; i < nbInd_; ++i)should not perform nbInd_ iterations ...
-//      {
-//        data_(i).sampleY(mu_((*p_zi_)(i)),
-//                         pi_((*p_zi_)(i)));
-//      }
+        data_(i).sampleY(mu_((*p_zi_)(i)),
+                         pi_((*p_zi_)(i)));
+        data_(i).sampleX(mu_((*p_zi_)(i)),
+                         pi_((*p_zi_)(i)));
     }
 
     /** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class */

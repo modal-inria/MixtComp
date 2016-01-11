@@ -41,7 +41,6 @@ RankIndividual::RankIndividual(int nbPos) :
 {
   obsData_.resize(nbPos);
   y_.resize(nbPos);
-  std::iota(y_.begin(), y_.end(), 0); // presentation order initialized, ready to be shuffled by removeMissing
 }
 
 RankIndividual::RankIndividual(const RankVal& rv) :
@@ -51,7 +50,6 @@ RankIndividual::RankIndividual(const RankVal& rv) :
 {
   obsData_.resize(nbPos_);
   y_.resize(nbPos_);
-  std::iota(y_.begin(), y_.end(), 0); // presentation order initialized, ready to be shuffled by removeMissing
 }
 
 RankIndividual::RankIndividual(const RankIndividual& ri) :
@@ -88,15 +86,27 @@ void RankIndividual::setNbPos(int nbPos)
 void RankIndividual::removeMissing()
 {
   yGen();
-  // add here uniform generation for partially observed data
 
-#ifdef MC_DEBUG
-  std::cout << "y_: " << y_.transpose() << std::endl;
-#endif
+  if (allMissing() == true) { // no need for enumeration if everything is missing, shuffling will do the job faster
+    Vector<int> xVec(nbPos_);
+    std::iota(xVec.begin(), xVec.end(), 0);
+    x_.setO(xVec);
+  }
+  else { // uniform sampling on all the possible completions
+    std::list<RankVal> rankList = enumCompleted();
+
+    MultinomialStatistic multi;
+    int sampledIndex = multi.sampleInt(0, rankList.size() - 1);
+    std::list<RankVal>::const_iterator it = rankList.begin();
+    std::advance(it, sampledIndex);
+
+    x_ = *it;
+  }
 }
 
 void RankIndividual::yGen()
 {
+  std::iota(y_.begin(), y_.end(), 0);
   multi_.shuffle(y_);
 }
 
@@ -222,6 +232,11 @@ void RankIndividual::AG(const RankVal& mu,
       x.push_back(currY); // if element j has not been placed yet, it goes at the end of x
     }
   }
+}
+
+void RankIndividual::sampleX(const RankVal& mu,
+                             Real pi) {
+
 }
 
 /**
@@ -387,6 +402,10 @@ std::list<int> RankIndividual::candidateList(int currPos,
 
   if (obsData_(currPos).first == present_) { // if data is present
     if (remainingMod.find(x_.o()(currPos)) != remainingMod.end()) { // only add the observed value if it is still available, to avoid duplication of value in completed individual
+#ifdef MC_DEBUG
+      std::cout << "RankIndividual::candidateList, present_, x_.o(): " << itString(x_.o()) << std::endl;
+#endif
+
       candidateList.push_back(x_.o()(currPos));
     }
   }
@@ -424,7 +443,7 @@ std::list<RankVal> RankIndividual::recEnumComplete(int currPos,
   std::list<RankVal> rankList;
 
   if (currPos != nbPos_) { // recursive calls remain
-    std::list<int> cl = candidateList(currPos,
+    std::list<int> cl = candidateList(currPos, // compute the list of possible modalities for the current position, considering the observation
                                       remainingMod);
 
 #ifdef MC_DEBUG
@@ -435,7 +454,7 @@ std::list<RankVal> RankIndividual::recEnumComplete(int currPos,
          it != itE;
          ++it) {
 #ifdef MC_DEBUG
-      std::cout << "*it: " << *it << std::endl;
+      std::cout << "cl, *it: " << *it << std::endl;
 #endif
 
       std::set<int> subRemainingMod = remainingMod;
@@ -449,6 +468,10 @@ std::list<RankVal> RankIndividual::recEnumComplete(int currPos,
     }
   }
   else { // termination condition of the recursion
+#ifdef MC_DEBUG
+    std::cout << "RankIndividual::recEnumComplete, termination" << std::endl;
+#endif
+
     RankVal rv(nbPos_);
     rv.setO(completedVec);
     rankList.push_back(rv);

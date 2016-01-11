@@ -377,7 +377,7 @@ TEST(RankIndividual, invalidIndividual) {
   ASSERT_EQ(rvList.size(), 0);
 }
 
-TEST(RankIndividual, partiallyObserved) {
+TEST(RankIndividual, enumCompletedPartial1) {
   int nbPos = 5;
 
   Vector<int> o(nbPos);
@@ -401,4 +401,25 @@ TEST(RankIndividual, partiallyObserved) {
 #endif
 
   ASSERT_EQ(rvList.size(), 2);
+}
+
+TEST(RankIndividual, enumCompletedPartial2) {
+  int nbPos = 5;
+
+  RankIndividual rankIndividual(nbPos);
+  Vector<int> xVec(nbPos);
+  xVec << 3, 4, 2, 0, 1;
+  Vector<MisVal> obsData(nbPos);
+  obsData(0) = MisVal(present_, {});
+  obsData(1) = MisVal(missingFiniteValues_, {2, 4});
+  obsData(2) = MisVal(missingFiniteValues_, {2, 4});
+  obsData(3) = MisVal(missing_, {});
+  obsData(4) = MisVal(present_, {});
+
+  rankIndividual.setO(xVec);
+  rankIndividual.setObsData(obsData);
+
+  std::list<RankVal> listCompleted = rankIndividual.enumCompleted();
+
+  ASSERT_EQ(listCompleted.size(), 2);
 }

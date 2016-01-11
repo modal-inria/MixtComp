@@ -309,4 +309,16 @@ Scalar logToMulti(const MatrixBase<OtherDerived>& multi)
   return max + std::log(sum);
 }
 
+template<typename Type>
+void copyIterable(const Type& other) {
+  derived().resize(other.size());
+
+  int currCoeff = 0;
+  for (typename Type::const_iterator it = other.begin(), itE = other.end();
+       it != itE;
+       ++it, ++currCoeff) {
+    derived()(currCoeff) = *it;
+  }
+}
+
 #endif // MIXT_EIGENMATRIXBASEADDONS_H
