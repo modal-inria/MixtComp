@@ -89,35 +89,35 @@ class RankMixture : public IMixture
                        false; // missingRUIntervals
     }
 
-    /** Debug constructor */
-    RankMixture(std::string const& idName,
-                const Vector<std::set<int> >& classInd,
-                const Vector<RankVal> mu,
-                const Vector<Real> pi,
-                const Vector<RankIndividual>& data,
-                const Vector<Vector<MisVal> >& obsData) :
-      IMixture(idName),
-      nbClass_(mu.size()),
-      nbPos_(mu(0).nbPos()),
-      classInd_(classInd),
-      mu_(mu),
-      pi_(pi),
-      data_(data),
-      piParamStat_(pi_,
-                   1.) {
-      nbInd_ = data_.size();
-      for (int i = 0; i < nbInd_; ++i) {
-        data_(i).setObsData(obsData(i));
-        data_(i).removeMissing();
-      }
-
-      for (int k = 0; k < nbClass_; ++k) {
-        class_.emplace_back(data_,
-                            classInd_(k),
-                            mu_(k),
-                            pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
-      }
-    }
+//    /** Debug constructor */
+//    RankMixture(std::string const& idName,
+//                const Vector<std::set<int> >& classInd,
+//                const Vector<RankVal> mu,
+//                const Vector<Real> pi,
+//                const Vector<RankIndividual>& data,
+//                const Vector<Vector<MisVal> >& obsData) :
+//      IMixture(idName),
+//      nbClass_(mu.size()),
+//      nbPos_(mu(0).nbPos()),
+//      classInd_(classInd),
+//      mu_(mu),
+//      pi_(pi),
+//      data_(data),
+//      piParamStat_(pi_,
+//                   1.) {
+//      nbInd_ = data_.size();
+//      for (int i = 0; i < nbInd_; ++i) {
+//        data_(i).setObsData(obsData(i));
+//        data_(i).removeMissing();
+//      }
+//
+//      for (int k = 0; k < nbClass_; ++k) {
+//        class_.emplace_back(data_,
+//                            classInd_(k),
+//                            mu_(k),
+//                            pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
+//      }
+//    }
 
     void samplingStepCheck(int i)
     {

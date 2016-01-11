@@ -85,6 +85,11 @@ void RankIndividual::setNbPos(int nbPos)
 
 void RankIndividual::removeMissing()
 {
+#ifdef MC_DEBUG
+    std::cout << "RankIndividual::removeMissing" << std::endl;
+#endif
+
+  std::iota(y_.begin(), y_.end(), 0);
   yGen();
 
   if (allMissing() == true) { // no need for enumeration if everything is missing, shuffling will do the job faster
@@ -95,8 +100,7 @@ void RankIndividual::removeMissing()
   else { // uniform sampling on all the possible completions
     std::list<RankVal> rankList = enumCompleted();
 
-    MultinomialStatistic multi;
-    int sampledIndex = multi.sampleInt(0, rankList.size() - 1);
+    int sampledIndex = multi_.sampleInt(0, rankList.size() - 1);
     std::list<RankVal>::const_iterator it = rankList.begin();
     std::advance(it, sampledIndex);
 
@@ -106,7 +110,6 @@ void RankIndividual::removeMissing()
 
 void RankIndividual::yGen()
 {
-  std::iota(y_.begin(), y_.end(), 0);
   multi_.shuffle(y_);
 }
 
@@ -116,6 +119,10 @@ Real RankIndividual::xGen(const RankVal& mu,
 #ifdef MC_DEBUG
   int a = 0;
   int g = 0;
+#endif
+
+#ifdef MC_DEBUG
+  std::cout << "RankIndividual::xGen, mu: " << mu << ", pi: " << pi << ", y_: " << itString(y_) << std::endl;
 #endif
 
   Real logProba = 0.;
@@ -185,7 +192,7 @@ Real RankIndividual::lnCompletedProbability(const RankVal& mu,
   AG(mu, a, g);
 
 #ifdef MC_DEBUG
-  std::cout << "Rank::lnCompletedProbability, a: " << a << ", g:" << g << std::endl;
+  std::cout << "Rank::lnCompletedProbability, a: " << a << ", g:" << g << ", y_: " << itString(y_) << std::endl;
 #endif
 
   return lnFacNbPos_ + g * std::log(pi) + (a - g) * std::log(1. - pi);
@@ -193,8 +200,11 @@ Real RankIndividual::lnCompletedProbability(const RankVal& mu,
 
 void RankIndividual::AG(const RankVal& mu,
                         int& a,
-                        int& g) const
-{
+                        int& g) const {
+#ifdef MC_DEBUG
+  std::cout << "Rank::AG, y_: " << itString(y_) << ", mu.r(): " << itString(mu.r()) << ", x_.r(): " << itString(x_.r()) << std::endl;
+#endif
+
   a = 0;
   g = 0;
 
@@ -206,29 +216,25 @@ void RankIndividual::AG(const RankVal& mu,
   for (int j = 1; j < nbPos_; ++j) // current element in the presentation order, or current size of the x vector
   {
     int currY = y_(j);
-    bool yPlaced = false;
-    for (int i = 0; i < j; ++i)
-    {
+    bool yPlaced = false; // y not considered at correct position until proven so
+
+    for (int i = 0; i < j; ++i) {
       yPlaced = (x_.r()(currY) < x_.r()(x[i]));
 
-      if (yPlaced == (mu.r()(currY) < mu.r()(x[i]))) // is the comparison correct, according to the order provided in mu ?
-      {
+      if (yPlaced == (mu.r()(currY) < mu.r()(x[i]))) { // is the comparison correct, according to the order provided in mu ?
         ++a;
         ++g;
       }
-      else
-      {
+      else {
         ++a;
       }
 
-      if (yPlaced)
-      {
+      if (yPlaced) {
         x.insert(x.begin() + i, currY);
         break;
       }
     }
-    if (!yPlaced)
-    {
+    if (!yPlaced) {
       x.push_back(currY); // if element j has not been placed yet, it goes at the end of x
     }
   }
@@ -373,6 +379,10 @@ void RankIndividual::observedProba(const RankVal& mu,
     yGen();
     xGen(mu, pi);
     proba[x_] += 1.;
+
+#ifdef MC_DEBUG
+    std::cout << "RankIndividual::observedProba, i: " << i << ", x_: " << x_ << std::endl;
+#endif
   }
 
   for (std::map<RankVal, Real>::iterator it = proba.begin(), itEnd = proba.end();

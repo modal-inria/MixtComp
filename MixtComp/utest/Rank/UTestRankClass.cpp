@@ -25,6 +25,8 @@
 
 using namespace mixt;
 
+typedef typename std::pair<MisType, std::vector<int> > MisVal;
+
 /** Test if Rank::probaYgX (direct computation of distribution of Y / X) has produced a correct list of Y candidate using < comparator on consecutive values of result.
  * Actual value of the conditional probability is not tested, but the lnCompletedProbability used in its computation
  * already is tested elsewhere. */
@@ -34,10 +36,14 @@ TEST(RankClass, probaYgX)
   int nbE = fac(nbPos);
 
   RankIndividual rank(nbPos);
+  Vector<MisVal> obsData(nbPos, MisVal(missing_, {}));
+  rank.setObsData(obsData);
+  rank.removeMissing();
 
   Vector<int> muVec(nbPos);
   muVec << 0, 3, 1, 2;
   RankVal mu(nbPos);
+  mu.setO(muVec);
 
   Real pi = 0.3;
 
@@ -177,50 +183,59 @@ TEST(RankClass, sampleMu)
   MultinomialStatistic multi;
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
+  Vector<MisVal> obsData(nbPos, MisVal(missing_, {}));
+  rankIndividual.setObsData(obsData);
+
   Vector<RankIndividual> data(nbInd); // will store the result of xGen
-  std::set<int> setInd;
+  std::set<int> classInd;
 
   RankVal mu = {0, 3, 1, 2, 5, 4}; // position -> modality representation
-  Real pi = 0.3; // pi high enough to get mu, no matter the y obtained in removeMissing
+  Real pi = 0.7; // pi high enough to get mu, no matter the y obtained in removeMissing
 
-  for (int i = 0; i < nbInd; ++i)
-  {
+  for (int i = 0; i < nbInd; ++i) {
     rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     rankIndividual.xGen(mu, pi);
+
     data(i) = rankIndividual;
-    setInd.insert(i);
+
+#ifdef MC_DEBUG
+    std::cout << "data(i).x(): " << data(i).x() << std::endl;
+#endif
+
+    classInd.insert(i);
   }
 
   Vector<int> muVec(nbPos);
-  std::iota(muVec.begin(), muVec.end(), 0);
+  std::iota(muVec.begin(), muVec.end(), 0); // estimated mu is randomly initialized
   multi.shuffle(muVec);
-  RankVal muEst(nbPos); // estimated mu is randomly initialized
+  RankVal muEst(nbPos);
   muEst.setO(muVec);
 
 #ifdef MC_DEBUG
-    std::cout << "muVec: " << muVec.transpose() << std::endl;
+    std::cout << "muEst: " << muEst << std::endl;
 #endif
 
   RankClass rank(data,
-                 setInd,
+                 classInd,
                  muEst,
                  pi);
 
-  for (int i = 0; i < nbInd; ++i)
-  {
-    data(i).removeMissing();
-  }
-
-  for (int i = 0; i < nbIterburnIn; ++i)
-  {
+  for (int i = 0; i < nbIterburnIn; ++i) {
     rank.sampleMu();
   }
 
-  for (int i = 0; i < nbIterRun; ++i)
-  {
+  for (int i = 0; i < nbIterRun; ++i) {
     rank.sampleMu();
     sampledResult.insert(muEst);
   }
+
+#ifdef MC_DEBUG
+  for (std::set<RankVal>::const_iterator it = sampledResult.begin(), itE = sampledResult.end();
+       it != itE;
+       ++it) {
+    std::cout << *it << std::endl;
+  }
+#endif
 
   ASSERT_TRUE(sampledResult.find(mu) != sampledResult.end());
 }
@@ -239,21 +254,24 @@ TEST(RankClass, mStep)
   UniformStatistic uni;
 
   RankIndividual rankIndividual(nbPos); // rank which will be completed multiple time
+  Vector<MisVal> obsData(nbPos, MisVal(missing_, {}));
+  rankIndividual.setObsData(obsData);
+
   Vector<RankIndividual> data(nbInd); // will store the result of xGen
   std::set<int> setInd;
 
   RankVal mu = {0, 3, 1, 2, 6, 5, 4}; // position -> modality representation
   Real pi = 0.75;
 
-  for (int i = 0; i < nbInd; ++i)
-  {
-    rankIndividual.removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
-    rankIndividual.xGen(mu, pi);
+  for (int i = 0; i < nbInd; ++i) {
     data(i) = rankIndividual;
+
+    data(i).removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
+    data(i).xGen(mu, pi);
     setInd.insert(i);
 
 #ifdef MC_DEBUG
-    std::cout << "data(i): " << data(i).transpose() << std::endl;
+    std::cout << "data(i): " << data(i).x() << std::endl;
 #endif
   }
 
@@ -273,15 +291,8 @@ TEST(RankClass, mStep)
                  muEst,
                  piEst);
 
-  for (int i = 0; i < nbInd; ++i)
-  {
-    data(i).removeMissing();
-  }
-
-  for (int i = 0; i < nbIterburnIn; ++i)
-  {
-    for (int ind = 0; ind < nbInd; ++ind)
-    {
+  for (int i = 0; i < nbIterburnIn; ++i) {
+    for (int ind = 0; ind < nbInd; ++ind) {
       data(ind).sampleY(muEst, piEst);
     }
     rank.sampleMu();
@@ -295,4 +306,36 @@ TEST(RankClass, mStep)
 
   ASSERT_EQ(mu, muEst);
   ASSERT_LT(std::abs(pi - piEst), tolerance);
+}
+
+TEST(RankClass, lnObservedProbability) {
+  int nbPos = 4;
+
+  std::set<int> setInd;
+  setInd.insert(0);
+
+  Vector<int> x(nbPos);
+  x << 0, 1, 2, 3;
+  Vector<MisVal> obsData(nbPos, MisVal(missing_, {}));
+
+  Vector<RankIndividual> data(1);
+  data(0).setNbPos(nbPos);
+  data(0).setO(x);
+  data(0).setObsData(obsData);
+
+  Vector<int> muVec(nbPos);
+  muVec << 2, 3, 0, 1;
+  Real pi = 0.8;
+
+  RankVal mu(nbPos);
+  mu.setO(muVec);
+
+  RankClass rc(data,
+               setInd,
+               mu,
+               pi);
+
+  rc.computeObservedProba();
+
+  ASSERT_EQ(rc.lnObservedProbability(0), 0.);
 }

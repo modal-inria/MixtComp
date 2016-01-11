@@ -52,10 +52,8 @@ RankVal::RankVal(const std::initializer_list<int>& il)
   int i = 0;
   for (std::initializer_list<int>::const_iterator it = il.begin(), itEnd = il.end();
        it != itEnd;
-       ++it)
-  {
+       ++it, ++i) {
     ordering_(i) = *it;
-    ++i;
   }
 
   switchRepresentation(ordering_,

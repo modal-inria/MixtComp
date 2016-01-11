@@ -125,8 +125,7 @@ void RankClass::sampleMu()
 
   logProba(0) = lnCompletedProbability(); // proba of current mu
 
-  for (int p = 0; p < mu_.nbPos() - 1; ++p)
-  {
+  for (int p = 0; p < mu_.nbPos() - 1; ++p) {
     mu_.permutation(p);
     logProba(1) = lnCompletedProbability();
     proba.logToMulti(logProba);
@@ -135,12 +134,10 @@ void RankClass::sampleMu()
     std::cout << "RankClass::sampleMu, p: " << p << ", logProba: " << itString(logProba) << ", proba: " << itString(proba) << std::endl;
 #endif
 
-    if (multi_.sample(proba) == 1) // switch to permuted state ?
-    {
+    if (multi_.sample(proba) == 1) { // switch to permuted state ?
       logProba(0) = logProba(1); // accept permutation
     }
-    else
-    {
+    else {
       mu_.permutation(p); // revert to previous state
     }
   }
@@ -184,10 +181,17 @@ void RankClass::mStep()
 
 void RankClass::computeObservedProba() {
   RankIndividual ri(mu_.nbPos()); // dummy rank individual used to compute a Vector<std::map<RankVal, Real> > for each class
+  Vector<MisVal> obsData(mu_.nbPos(), MisVal(missing_, {}));
+  ri.setObsData(obsData);
+  ri.removeMissing();
 
   ri.observedProba(mu_,
                    pi_,
                    observedProbaSampling_);
+
+#ifdef MC_DEBUG
+  std::cout << "RankClass::computeObservedProba, observedProbaSampling_.size(): " << observedProbaSampling_.size() << std::endl;
+#endif
 }
 
 } // namespace mixt

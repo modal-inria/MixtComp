@@ -78,6 +78,9 @@ TEST(RankIndividual, xGenP05)
   Real logProba = - std::log(nbE);
 
   RankIndividual rank(nbPos); // rank which will be completed multiple time
+  Vector<MisVal> obsData(nbPos, MisVal(missing_, {}));
+  rank.setObsData(obsData);
+
   Vector<RankVal> RankOut(nbPos); // whill store the result of xGen
 
   Vector<int> muVec(nbPos); // position -> modality representation
@@ -148,6 +151,9 @@ TEST(RankIndividual, xGenP1)
 
   Vector<bool> sorted(nbSample);
   RankIndividual rank(nbPos); // rank which will be completed multiple time
+  Vector<MisVal> obsData(nbPos, MisVal(missing_, {}));
+  rank.setObsData(obsData);
+
   RankVal RankOut(nbPos); // whill store the result of xGen
 
   Vector<int> muVec(nbPos); // position -> modality representation
@@ -186,8 +192,9 @@ TEST(RankIndividual, lnCompletedProbability)
   mu.setO(muVec);
   Real pi = 0.3;
 
-  RankIndividual rank;
-  rank.setNbPos(nbPos);
+  RankIndividual rank(nbPos);
+  Vector<MisVal> obsData(nbPos, MisVal(missing_, {}));
+  rank.setObsData(obsData);
 
   int a, g; // dummy variables
 
@@ -217,6 +224,10 @@ TEST(RankIndividual, observedProba)
   Real pi = 0.87;
 
   RankIndividual rv(nbPos);
+  Vector<MisVal> obsData(nbPos, MisVal(missing_, {}));
+  rv.setObsData(obsData);
+  rv.removeMissing();
+
   std::map<RankVal, Real> proba;
 
   rv.observedProba(mu, pi, proba);
@@ -226,13 +237,11 @@ TEST(RankIndividual, observedProba)
 
   for (std::map<RankVal, Real>::const_iterator it = proba.begin(), itEnd = proba.end();
        it != itEnd;
-       ++it)
-  {
+       ++it) {
 #ifdef MC_DEBUG
     std::cout << "RankVal: " << it->first << ", proba: " << it->second << std::endl;
 #endif
-    if (probaEst < it->second)
-    {
+    if (probaEst < it->second) { // comparison to current mode
       muEst = it->first;
       probaEst = it->second;
     }
