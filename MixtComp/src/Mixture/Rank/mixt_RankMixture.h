@@ -104,12 +104,18 @@ class RankMixture : public IMixture
       pi_(pi),
       data_(data),
       piParamStat_(pi_,
-                   1.)
-    {
+                   1.) {
       nbInd_ = data_.size();
       for (int i = 0; i < nbInd_; ++i) {
         data_(i).setObsData(obsData(i));
         data_(i).removeMissing();
+      }
+
+      for (int k = 0; k < nbClass_; ++k) {
+        class_.emplace_back(data_,
+                            classInd_(k),
+                            mu_(k),
+                            pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
       }
     }
 
@@ -237,6 +243,10 @@ class RankMixture : public IMixture
     }
 
     virtual Real lnObservedProbability(int i, int k) {
+#ifdef MC_DEBUG
+    std::cout << "RankMixture::lnObservedProbability, i: " << i << ", k: " << k << std::endl;
+#endif
+
       return class_[k].lnObservedProbability(i);
     }
 
@@ -339,6 +349,10 @@ class RankMixture : public IMixture
     }
 
     void computeObservedProba() {
+#ifdef MC_DEBUG
+      std::cout << "RankMixture::computeObservedProba"<< std::endl;
+#endif
+
       for (int k = 0; k < nbClass_; ++k) {
         class_[k].computeObservedProba();
       }
