@@ -204,3 +204,18 @@ TEST(Matrix, comparison)
 
   ASSERT_EQ(res, Vector<bool>(3, true));
 }
+
+TEST(Vector, importIterable) {
+  std::list<Real> list;
+  list.push_back(3.);
+  list.push_back(12.);
+  list.push_back(5.);
+
+  Vector<Real> vec;
+  vec.copyIterable(list);
+
+  Vector<Real> expectedVec(3);
+  expectedVec << 3., 12., 5.;
+
+  ASSERT_EQ(vec, expectedVec);
+}

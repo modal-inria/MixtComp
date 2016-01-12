@@ -181,10 +181,9 @@ void RankClass::mStep()
 
 void RankClass::computeObservedProba() {
   RankIndividual ri(mu_.nbPos()); // dummy rank individual used to compute a Vector<std::map<RankVal, Real> > for each class
-  Vector<MisVal> obsData(mu_.nbPos(), MisVal(missing_, {}));
+  Vector<MisVal> obsData(mu_.nbPos(), MisVal(missing_, {})); // individual is completely missing, so that remove missing will reinitialize everything upon call
   ri.setObsData(obsData);
   ri.removeMissing();
-
   ri.observedProba(mu_,
                    pi_,
                    observedProbaSampling_);

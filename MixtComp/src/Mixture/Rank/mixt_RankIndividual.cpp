@@ -85,8 +85,8 @@ void RankIndividual::setNbPos(int nbPos)
 
 void RankIndividual::removeMissing()
 {
-#ifdef MC_DEBUG
-    std::cout << "RankIndividual::removeMissing" << std::endl;
+#ifdef MC_DEBUGNEW
+    std::cout << "RankIndividual::removeMissing, x_: " << x_ << ", y_: " << itString(y_) << std::endl;
 #endif
 
   std::iota(y_.begin(), y_.end(), 0);
@@ -371,11 +371,9 @@ void RankIndividual::recYgX(const RankVal& mu,
 
 void RankIndividual::observedProba(const RankVal& mu,
                                    Real pi,
-                                   std::map<RankVal, Real>& proba)
-{
+                                   std::map<RankVal, Real>& proba) {
   proba.clear();
-  for (int i = 0; i < nbSampleObserved; ++i)
-  {
+  for (int i = 0; i < nbSampleObserved; ++i) {
     yGen();
     xGen(mu, pi);
     proba[x_] += 1.;
@@ -387,8 +385,7 @@ void RankIndividual::observedProba(const RankVal& mu,
 
   for (std::map<RankVal, Real>::iterator it = proba.begin(), itEnd = proba.end();
        it != itEnd;
-       ++it)
-  {
+       ++it) {
     it->second /= Real(nbSampleObserved);
   }
 }
