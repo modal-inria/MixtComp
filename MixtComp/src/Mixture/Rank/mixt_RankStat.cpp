@@ -21,26 +21,27 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include "mixt_RankStat.h"
+
 #include <algorithm>
 #include <iostream>
 #include <map>
 
-#include "mixt_RankParamStat.h"
 
 namespace mixt
 {
-RankParamStat::RankParamStat(RankVal& mu,
+RankStat::RankStat(RankVal& mu,
                              Real confidenceLevel) :
     mu_(mu),
     confidenceLevel_(confidenceLevel)
 {}
 
-void RankParamStat::sample(int iteration)
+void RankStat::sample(int iteration)
 {
   logStorageMu_(iteration) = mu_;
 }
 
-void RankParamStat::sampleParam(int iteration,
+void RankStat::sampleValue(int iteration,
                                 int iterationMax)
 {
   if (iteration == 0)
@@ -96,12 +97,12 @@ void RankParamStat::sampleParam(int iteration,
   }
 }
 
-void RankParamStat::setExpectationParam()
+void RankStat::setExpectationParam()
 {
   mu_ = statStorageMu_.front().first;
 }
 
-void RankParamStat::setParamStorage()
+void RankStat::setParamStorage()
 {
   statStorageMu_.push_back(std::pair<RankVal, Real>(mu_, 1.));
 }

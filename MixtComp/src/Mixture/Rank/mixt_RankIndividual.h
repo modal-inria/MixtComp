@@ -61,6 +61,9 @@ class RankIndividual
     /** Get the observed x value, for example for debugging purposes */
     const RankVal& x() const {return x_;}
 
+    /** Get the observed x value, for example for debugging purposes */
+    RankVal& xModif() {return x_;}
+
     /** Get the presentation order, for example for debugging purposes */
     const Vector<int>& y() const {return y_;}
 
@@ -73,7 +76,7 @@ class RankIndividual
     template<typename T>
     void setR(const T& data){x_.setR(data);}
 
-    void setObsData(const Vector<MisVal>& v) {obsData_ = v;}
+    void setObsData(const Vector<MisVal>& v);
 
     const Vector<MisVal>& obsData() {return obsData_;}
 
@@ -169,6 +172,10 @@ class RankIndividual
      * data is invalid, for example in the case 1,1,3. */
     std::list<RankVal> enumCompleted() const;
 
+    /** Is the individual completely observed ? This is used to determine if statistics for a partially observed
+     * individual have to be computed / exported */
+    bool allPresent() const;
+
     /** Is the individual completely missing ? In that case its observed probability is 1. for example, whatever
      * the parameters.  */
     bool allMissing() const;
@@ -201,6 +208,10 @@ class RankIndividual
 
     /** Sampler for int */
     MultinomialStatistic multi_;
+
+    bool allPresent_;
+
+    bool allMissing_;
 };
 
 } // namespace mixt

@@ -124,7 +124,7 @@ void ParamExtractorR::exportParam(const std::string& idName,
 /** Extractor for Rank data type */
 void ParamExtractorR::exportParam(const std::string& idName,
                                   const std::string& paramName,
-                                  const std::vector<RankParamStat>& paramStat,
+                                  const std::vector<RankStat>& paramStat,
                                   const std::vector<std::string>& paramNames,
                                   Real confidenceLevel)
 {

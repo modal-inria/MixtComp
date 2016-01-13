@@ -49,7 +49,7 @@ void ParamExtractorDummy::exportParam(const std::string& idName,
 
 void ParamExtractorDummy::exportParam(const std::string& idName,
                                       const std::string& paramName,
-                                      const std::vector<RankParamStat>& paramStat,
+                                      const std::vector<RankStat>& paramStat,
                                       const std::vector<std::string>& paramNames,
                                       Real confidenceLevel) const {
 }

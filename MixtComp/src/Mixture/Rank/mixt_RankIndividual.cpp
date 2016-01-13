@@ -31,13 +31,17 @@ namespace mixt
 
 RankIndividual::RankIndividual() :
   nbPos_(0),
-  lnFacNbPos_(0)
+  lnFacNbPos_(0),
+  allMissing_(true),
+  allPresent_(true)
 {}
 
 RankIndividual::RankIndividual(int nbPos) :
     nbPos_(nbPos),
     lnFacNbPos_(- std::log(fac(nbPos))),
-    x_(nbPos)
+    x_(nbPos),
+    allMissing_(true),
+    allPresent_(true)
 {
   obsData_.resize(nbPos);
   y_.resize(nbPos);
@@ -46,7 +50,9 @@ RankIndividual::RankIndividual(int nbPos) :
 RankIndividual::RankIndividual(const RankVal& rv) :
     nbPos_(rv.nbPos()),
     lnFacNbPos_(- std::log(fac(nbPos_))),
-    x_(rv)
+    x_(rv),
+    allMissing_(true),
+    allPresent_(true)
 {
   obsData_.resize(nbPos_);
   y_.resize(nbPos_);
@@ -57,7 +63,9 @@ RankIndividual::RankIndividual(const RankIndividual& ri) :
   lnFacNbPos_(ri.lnFacNbPos_),
   obsData_(ri.obsData_),
   x_(ri.x_),
-  y_(ri.y_)
+  y_(ri.y_),
+  allMissing_(ri.allMissing_),
+  allPresent_(ri.allPresent_)
 {} // note that the state of multi_ is not copied and a new rng is created
 
 RankIndividual& RankIndividual::operator=(const RankIndividual& ri)
@@ -523,13 +531,11 @@ std::list<RankVal> RankIndividual::enumCompleted() const {
 }
 
 bool RankIndividual::allMissing() const {
-  for (int p = 0; p < nbPos_; ++p) {
-    if (obsData_(p).first != missing_) {
-      return false;
-    }
-  }
+  return allMissing_;
+}
 
-  return true;
+bool RankIndividual::allPresent() const {
+  return allPresent_;
 }
 
 /** Is a value authorized for a particular MisVal ? */
@@ -567,6 +573,24 @@ bool RankIndividual::checkPermutation(int pos) const {
   }
 
   return isValid;
+}
+
+void RankIndividual::setObsData(const Vector<MisVal>& v) {
+  obsData_ = v;
+
+  for (int p = 0; p < nbPos_; ++p) {
+    if (obsData_(p).first != missing_) {
+      allMissing_ = false;
+      break;
+    }
+  }
+
+  for (int p = 0; p < nbPos_; ++p) {
+    if (obsData_(p).first != present_) {
+      allPresent_ = false;
+      break;
+    }
+  }
 }
 
 } // namespace mixt

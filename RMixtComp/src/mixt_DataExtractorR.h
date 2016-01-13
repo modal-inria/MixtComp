@@ -29,6 +29,7 @@
 #include "Eigen/Dense"
 
 #include "MixtComp/src/Mixture/Rank/mixt_RankIndividual.h"
+#include "MixtComp/src/Mixture/Rank/mixt_RankStat.h"
 
 namespace mixt
 {
@@ -61,7 +62,8 @@ class DataExtractorR
 
     /** Export function for Rank model */
     void exportVals(std::string idName,
-                    const Vector<RankIndividual>& data);
+                    const Vector<RankIndividual>& data,
+                    const std::vector<RankStat>& dataStat);
 
     Rcpp::List rcppReturnVal() const;
   private:

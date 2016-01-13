@@ -159,17 +159,16 @@ void DataExtractorR::exportVals(std::string idName,
 
 /** Export function for Rank model */
 void DataExtractorR::exportVals(std::string idName,
-                                const Vector<RankIndividual>& data)
+                                const Vector<RankIndividual>& data,
+                                const std::vector<RankStat>& dataStat)
 {
   int nbInd = data.rows();
   std::list<Rcpp::NumericVector> dataR; // List to store the completed data set
 
-  for (int i = 0, ie = nbInd; i < ie; ++i)
-  {
+  for (int i = 0, ie = nbInd; i < ie; ++i) {
     int nbPos = data(i).nbPos();
     Rcpp::NumericVector rankR(nbPos);
-    for (int p = 0; p < nbPos; ++p)
-    {
+    for (int p = 0; p < nbPos; ++p) {
       rankR(p) = data(i).x().o()(p);
     }
 

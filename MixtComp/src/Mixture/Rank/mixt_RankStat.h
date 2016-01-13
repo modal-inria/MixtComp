@@ -33,11 +33,11 @@ namespace mixt
 {
 
 /** Compute statistics for a single class. Use a vector of those for a mixture. */
-class RankParamStat
+class RankStat
 {
   public:
-    RankParamStat(RankVal& mu,
-                  Real confidenceLevel);
+    RankStat(RankVal& mu,
+             Real confidenceLevel);
 
     /** There used to be a tuple here, dedicated to Quentin Grimonprez, proud forefather of its usage among us, mere Modal Team member.
      * But it was deemed unnecessary leading to its demise and ultimate obliteration with extreme prejudice.
@@ -46,7 +46,7 @@ class RankParamStat
 
     const Vector<RankVal>& logStorageMu() const {return logStorageMu_;}
 
-    void sampleParam(int iteration,
+    void sampleValue(int iteration,
                      int iterationMax);
 
     /** Set mu and pi with the estimated value, at the end of the SEM. The estimated value of mu is the mode, and the

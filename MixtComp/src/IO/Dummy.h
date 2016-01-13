@@ -27,8 +27,8 @@
 #include "../Data/mixt_AugmentedData.h"
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Mixture/Rank/mixt_RankIndividual.h"
+#include "../Mixture/Rank/mixt_RankStat.h"
 #include "../Mixture/Rank/mixt_RankVal.h"
-#include "../Mixture/Rank/mixt_RankParamStat.h"
 
 namespace mixt
 {
@@ -81,7 +81,7 @@ class ParamExtractorDummy
 
     void exportParam(const std::string& idName,
                      const std::string& paramName,
-                     const std::vector<RankParamStat>& paramStat,
+                     const std::vector<RankStat>& paramStat,
                      const std::vector<std::string>& paramNames,
                      Real confidenceLevel) const;
 };

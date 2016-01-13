@@ -27,7 +27,7 @@ using namespace mixt;
 
 /** Use RankParamStat to compute statistics on mu and pi. Use the setExpectationParam to make a comparison
  * with the real parameters */
-TEST(RankParamStat, computeStat)
+TEST(RankStat, computeStat)
 {
   int nbPos = 5;
   int nbInd = 500;
@@ -64,7 +64,7 @@ TEST(RankParamStat, computeStat)
   muEst.setO(muVec);
   Real piEst = uni.sample(0.5, 1.); // estimated pi randomly initialized too
 
-  RankParamStat paramStat(muEst, confidenceLevel); // stat computer on muEst and piEst
+  RankStat paramStat(muEst, confidenceLevel); // stat computer on muEst and piEst
 
 #ifdef MC_DEBUG
     std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
@@ -87,7 +87,7 @@ TEST(RankParamStat, computeStat)
       data(ind).sampleY(muEst, piEst);
     }
     rank.mStep();
-    paramStat.sampleParam(i, nbIterRun - 1);
+    paramStat.sampleValue(i, nbIterRun - 1);
   }
 
   paramStat.setExpectationParam();

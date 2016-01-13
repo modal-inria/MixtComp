@@ -26,8 +26,8 @@
 
 #include "mixt_RankClass.h"
 #include "mixt_RankLikelihood.h"
-#include "mixt_RankParamStat.h"
 #include "mixt_RankParser.h"
+#include "mixt_RankStat.h"
 
 namespace mixt
 {
@@ -210,7 +210,7 @@ class RankMixture : public IMixture
     {
       for (int k = 0; k < nbClass_; ++k)
       {
-        muParamStat_[k].sampleParam(iteration, iterationMax);
+        muParamStat_[k].sampleValue(iteration, iterationMax);
       }
       piParamStat_.sampleParam(iteration, iterationMax);
 
@@ -228,8 +228,15 @@ class RankMixture : public IMixture
 
     void storeGibbsRun(int i,
                        int iteration,
-                       int iterationMax)
-    {}
+                       int iterationMax) {
+      if (!data_(i).allPresent()) {
+        dataStat_[i].sampleValue(iteration, iterationMax);
+
+        if (iteration == iterationMax) { // at last iteration, compute the observed probability distribution logProba_
+          dataStat_[i].setExpectationParam();
+        }
+      }
+    }
 
     Real lnCompletedProbability(int i, int k)
     {
@@ -326,13 +333,19 @@ class RankMixture : public IMixture
         computeObservedProba();
       }
 
+      dataStat_.reserve(nbInd_);
+      for (int i = 0; i < nbInd_; ++i) {
+        dataStat_.emplace_back(data_(i).xModif(), confidenceLevel_);
+      }
+
       return warnLog;
     }
 
     void exportDataParam() const
     {
       p_dataExtractor_->exportVals(idName(),
-                                   data_); // export the obtained data using the DataExtractor
+                                   data_,
+                                   dataStat_);
       p_paramExtractor_->exportParam(idName_,
                                      "mu",
                                      muParamStat_,
@@ -441,7 +454,10 @@ class RankMixture : public IMixture
     std::vector<RankClass> class_;
 
     /** Each element of the vector keeps track of statistics for one particular mu */
-    std::vector<RankParamStat> muParamStat_;
+    std::vector<RankStat> muParamStat_;
+
+    /** Each element of the vector keeps track of statistics for one particular individual */
+    std::vector<RankStat> dataStat_;
 
     /** Compute the statistics on pi parameter */
     ConfIntParamStat<Real> piParamStat_;
