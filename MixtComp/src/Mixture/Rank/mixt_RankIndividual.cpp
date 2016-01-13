@@ -85,7 +85,7 @@ void RankIndividual::setNbPos(int nbPos)
 
 void RankIndividual::removeMissing()
 {
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
     std::cout << "RankIndividual::removeMissing, x_: " << x_ << ", y_: " << itString(y_) << std::endl;
 #endif
 
@@ -242,7 +242,30 @@ void RankIndividual::AG(const RankVal& mu,
 
 void RankIndividual::sampleX(const RankVal& mu,
                              Real pi) {
+  int a, g; // dummy variables
+  Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
+  Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
 
+  logProba(0) = lnCompletedProbability(mu, pi, a, g); // proba of current y
+
+  for (int p = 0; p < nbPos_ - 1; ++p) {
+    if (checkPermutation(p)) { // the main difference with sampleY is that here permutation only happens if they are authorized by the observation
+      x_.permutation(p);
+      logProba(1) = lnCompletedProbability(mu, pi, a, g);
+      proba.logToMulti(logProba);
+
+  #ifdef MC_DEBUG
+      std::cout << "p: " << p << ", logProba: " << logProba.transpose() << ", proba: " << proba.transpose() << std::endl;
+  #endif
+
+      if (multi_.sample(proba) == 1) { // switch to permuted state ?
+        logProba(0) = logProba(1); // accept permutation
+      }
+      else {
+        x_.permutation(p); // revert to previous state
+      }
+    }
+  }
 }
 
 /**
@@ -250,16 +273,14 @@ void RankIndividual::sampleX(const RankVal& mu,
  * @param mu central rank
  * @param pi precision */
 void RankIndividual::sampleY(const RankVal& mu,
-                             Real pi)
-{
+                             Real pi) {
   int a, g; // dummy variables
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
 
   logProba(0) = lnCompletedProbability(mu, pi, a, g); // proba of current y
 
-  for (int p = 0; p < nbPos_ - 1; ++p)
-  {
+  for (int p = 0; p < nbPos_ - 1; ++p) {
     permutationY(p);
     logProba(1) = lnCompletedProbability(mu, pi, a, g);
     proba.logToMulti(logProba);
@@ -268,12 +289,10 @@ void RankIndividual::sampleY(const RankVal& mu,
     std::cout << "p: " << p << ", logProba: " << logProba.transpose() << ", proba: " << proba.transpose() << std::endl;
 #endif
 
-    if (multi_.sample(proba) == 1) // switch to permuted state ?
-    {
+    if (multi_.sample(proba) == 1) { // switch to permuted state ?
       logProba(0) = logProba(1); // accept permutation
     }
-    else
-    {
+    else {
       permutationY(p); // revert to previous state
     }
   }
@@ -511,6 +530,43 @@ bool RankIndividual::allMissing() const {
   }
 
   return true;
+}
+
+/** Is a value authorized for a particular MisVal ? */
+bool RankIndividual::isAuthorized(int value,
+                                  const MisVal& misval) const {
+  bool isValid = false; // false until proven true
+
+  switch(misval.first) { // the present_ case is not considered as it forbids any permutation
+    case missing_: {
+      isValid = true; // any value is acceptable for a completely missing observation
+    }
+    break;
+
+    case missingFiniteValues_: {
+      if (std::find(misval.second.begin(),
+                    misval.second.end(),
+                    value) != misval.second.end()) { // is value among the authorized values ?
+        isValid = true;
+      }
+    }
+    break;
+  }
+
+  return isValid; // default value
+}
+
+bool RankIndividual::checkPermutation(int pos) const {
+  bool isValid = false;
+
+  if (isAuthorized(x_.o()(pos),
+                   obsData_(pos + 1)) &&
+      isAuthorized(x_.o()(pos + 1),
+                   obsData_(pos))) { // are the
+    isValid = true;
+  }
+
+  return isValid;
 }
 
 } // namespace mixt

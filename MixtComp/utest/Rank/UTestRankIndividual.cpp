@@ -432,3 +432,106 @@ TEST(RankIndividual, enumCompletedPartial2) {
 
   ASSERT_EQ(listCompleted.size(), 2);
 }
+
+TEST(RankIndividual, checkPermutation) {
+  int nbPos = 5;
+
+  RankIndividual rankIndividual(nbPos);
+  Vector<int> xVec(nbPos);
+  xVec << 0, 1, 2, 3, 4;
+  Vector<MisVal> obsData(nbPos);
+  obsData(0) = MisVal(missingFiniteValues_, {0, 1});
+  obsData(1) = MisVal(missing_, {});
+  obsData(2) = MisVal(missingFiniteValues_, {1, 2,});
+  obsData(3) = MisVal(present_, {});
+  obsData(4) = MisVal(missingFiniteValues_, {3, 4});
+  rankIndividual.setO(xVec);
+  rankIndividual.setObsData(obsData); // no removeMissing called to be sure of the state of x_
+
+  Vector<bool> isValid(nbPos - 1);
+
+  for (int p = 0; p < nbPos - 1; ++p) {
+    isValid(p) = rankIndividual.checkPermutation(p);
+  }
+
+  Vector<bool> expectedVec(nbPos - 1);
+  expectedVec << true, true, false, false;
+
+  ASSERT_EQ(isValid, expectedVec);
+}
+
+/** To test for sampleY and sampleX, a Gibbs sampling is performed on a RankIndividual with partially observed data.
+ * The mode of the distribution of completed individual is known and is checked at the end of a Gibbs sampling
+ * that calls both sampleY and sampleX. Initialization of the Gibbs is performed randomly using removeMissing. */
+TEST(RankIndividual, sampleX) {
+  int nbPos = 5;
+  int nbIterationBurnIn = 1000;
+  int nbIteration = 1000;
+
+  Vector<int> muVec(nbPos);
+  muVec << 0, 1, 2, 3, 4;
+  RankVal mu(nbPos);
+  mu.setO(muVec);
+
+  Real pi = 0.8;
+
+  RankIndividual rankIndividual(nbPos);
+  Vector<int> xVec(nbPos);
+  xVec << 0, 1, 2, 3, 4;
+  Vector<MisVal> obsData(nbPos);
+  obsData(0) = MisVal(missingFiniteValues_, {0, 1});
+  obsData(1) = MisVal(missingFiniteValues_, {0, 1, 2});
+  obsData(2) = MisVal(missingFiniteValues_, {1, 2,});
+  obsData(3) = MisVal(missingFiniteValues_, {3, 4});
+  obsData(4) = MisVal(missingFiniteValues_, {3, 4});
+  rankIndividual.setO(xVec);
+  rankIndividual.setObsData(obsData);
+  rankIndividual.removeMissing();
+
+#ifdef MC_DEBUG
+  std::cout << "initialization, rankIndividual : " << rankIndividual.x() << std::endl;
+#endif
+
+  std::map<RankVal, int> rankCount;
+
+  for (int i = 0; i < nbIterationBurnIn; ++i) {
+#ifdef MC_DEBUG
+  std::cout << "gibbs burn-in, i: " << i << ", rankIndividual : " << rankIndividual.x() << std::endl;
+#endif
+
+    rankIndividual.sampleY(mu, pi);
+    rankIndividual.sampleX(mu, pi);
+  }
+
+  for (int i = 0; i < nbIteration; ++i) {
+#ifdef MC_DEBUG
+  std::cout << "gibbs run, i: " << i << ", rankIndividual : " << rankIndividual.x() << std::endl;
+#endif
+
+    rankIndividual.sampleY(mu, pi);
+    rankIndividual.sampleX(mu, pi);
+
+    if (rankCount.find(rankIndividual.x()) == rankCount.end()) {
+      rankCount[rankIndividual.x()] = 1;
+    }
+    else {
+      rankCount[rankIndividual.x()] += 1;
+    }
+  }
+
+  std::map<RankVal, int>::const_iterator it = rankCount.begin(), itE = rankCount.end();
+  RankVal mode = it->first;
+  int modeCount = it->second;
+  for (; it != itE; ++it) { // find the mode
+    if (it->second > modeCount) { // new mode found
+      mode = it->first;
+      modeCount = it->second;
+    }
+  }
+
+#ifdef MC_DEBUG
+  std::cout << "filteredProba: " << itString(filteredProba) << ", lnObservedDirectSampling: " << lnObservedDirectSampling << std::endl;
+#endif
+
+  ASSERT_EQ(mu, mode);
+}

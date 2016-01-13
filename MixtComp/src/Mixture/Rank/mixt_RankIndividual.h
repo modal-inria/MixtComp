@@ -172,9 +172,16 @@ class RankIndividual
     /** Is the individual completely missing ? In that case its observed probability is 1. for example, whatever
      * the parameters.  */
     bool allMissing() const;
+
+    /** Check if the modalities in positions pos and pos + 1 can be permuted */
+    bool checkPermutation(int pos) const;
   private:
     /** Permute the elements firstElem and firstElem + 1 in y_ */
     void permutationY(int firstElem);
+
+    /** Is a value authorized for a particular MisVal describing */
+    bool isAuthorized(int value,
+                      const MisVal& misval) const;
 
     /** Number of positions in the rank */
     int nbPos_;
