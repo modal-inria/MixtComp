@@ -27,9 +27,7 @@
 
 #include "mixt_Constants.h"
 
-namespace mixt
-{
-const int maxWeakDegeneracyTrial = 100;
+namespace mixt {
 const int nbSamplingAttempts = 10000;
 
 const Real epsilon = 1.e-8;

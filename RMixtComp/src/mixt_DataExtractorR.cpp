@@ -38,40 +38,25 @@ DataExtractorR::~DataExtractorR()
 /** Export function for categorical model */
 void DataExtractorR::exportVals(std::string idName,
                                 const AugmentedData<Vector<int> >& augData,
-                                const Vector<std::vector<std::pair<int, Real> > >& dataStatStorage)
-{
-#ifdef MC_DEBUG
-  std::cout << "DataExtractorR::exportVals, int" << std::endl;
-#endif
+                                const Vector<std::vector<std::pair<int, Real> > >& dataStatStorage) {
   Rcpp::IntegerVector dataR(augData.data_.rows()); // vector to store the completed data set
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
-  for (int i = 0; i < augData.data_.rows(); ++i)
-  {
-#ifdef MC_DEBUG
-    std::cout << "\ti: " << i << std::endl;
-#endif
+  for (int i = 0; i < augData.data_.rows(); ++i) {
     dataR(i) = augData.data_(i); // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
-    if (augData.misData_(i).first != present_)
-    {
-#ifdef MC_DEBUG
-      std::cout << "not present_" << std::endl;
-#endif
+
+    if (augData.misData_(i).first != present_) {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // store position, R matrices rows start at 1
-#ifdef MC_DEBUG
-      std::cout << "dataStatStorage.elt(i).size(): " << dataStatStorage(i).size() << std::endl;
-#endif
+
       for (std::vector<std::pair<int, Real> >::const_iterator itVec = dataStatStorage(i).begin();
            itVec != dataStatStorage(i).end();
-           ++itVec)
-      {
-#ifdef MC_DEBUG
-        std::cout << "itVec.first: " << itVec.first << ", itVec.second: " << itVec.second << std::endl;
-#endif
-        currList.push_back(itVec->first + minModality); // current modality
-        currList.push_back(itVec->second); // probability of the modality
+           ++itVec) {
+
+        currList.push_back(Rcpp::List::create(itVec->first + minModality,  // current modality)
+                                              itVec->second)); // probability of the modality
       }
+
       missingData.push_back(currList);
     }
   }
@@ -160,23 +145,46 @@ void DataExtractorR::exportVals(std::string idName,
 /** Export function for Rank model */
 void DataExtractorR::exportVals(std::string idName,
                                 const Vector<RankIndividual>& data,
-                                const std::vector<RankStat>& dataStat)
-{
+                                const std::vector<RankStat>& dataStat) {
   int nbInd = data.rows();
-  std::list<Rcpp::NumericVector> dataR; // List to store the completed data set
+  int nbPos = data(0).nbPos();
+
+  std::list<Rcpp::NumericVector> dataR; // List to store the completed data set, on element per individual
+  std::list<Rcpp::List> statR; // List to store the statistics on partially observed data, one element per partially observed individual
 
   for (int i = 0, ie = nbInd; i < ie; ++i) {
-    int nbPos = data(i).nbPos();
     Rcpp::NumericVector rankR(nbPos);
     for (int p = 0; p < nbPos; ++p) {
       rankR(p) = data(i).x().o()(p);
     }
-
     dataR.push_back(rankR);
+
+    if (!data(i).allPresent()) {
+      const std::list<std::pair<RankVal, Real> >& statStorageMu = dataStat[i].statStorageMu(); // helper reference to point to current statStorage
+      std::list<Rcpp::List> individualProba; // list of pairs {vector representing rank, proba} for the current individual
+
+      individualProba.push_back(i); // first element in the list is the index
+
+      for (std::list<std::pair<RankVal, Real> >::const_iterator it = statStorageMu.begin(), ite = statStorageMu.end();
+           it != ite;
+           ++it) {
+        const RankVal& rankCPP = it->first; // current rank in C++
+        Rcpp::IntegerVector rankR(nbPos); // current rank in R
+        for (int p = 0; p < nbPos; ++p) {
+          rankR(p) = rankCPP.o()(p);
+        }
+        individualProba.push_back(Rcpp::List::create(rankR,
+                                                     it->second));
+      }
+
+      statR.push_back(Rcpp::wrap(individualProba));
+    }
   }
 
-  Rcpp::List ls = Rcpp::wrap(dataR);
-  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = ls);
+  Rcpp::List lsData = Rcpp::wrap(dataR);
+  Rcpp::List lsStat = Rcpp::wrap(statR);
+  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = lsData,
+                                     Rcpp::Named("stat") = lsStat);
 }
 
 Rcpp::List DataExtractorR::rcppReturnVal() const

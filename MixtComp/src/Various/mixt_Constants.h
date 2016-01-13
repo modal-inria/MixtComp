@@ -26,11 +26,7 @@
 
 #include "../LinAlg/mixt_LinAlg.h" // for the definition of Real type
 
-namespace mixt
-{
-extern const int maxWeakDegeneracyTrial; // max number of light degeneracies allowed in a strategy run
-extern const int maxStrongDegTry; // number of sampling in initial reject sampling in SEMStrategy, when not enough individuals are sampled per class, for example
-
+namespace mixt {
 extern const int nbSamplingAttempts; // number of sampling attempts, when not enough individuals are sampled
 
 extern const Real epsilon; // very small value of real to check for near zero values
