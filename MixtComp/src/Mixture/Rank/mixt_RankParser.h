@@ -33,8 +33,6 @@ namespace mixt
 class RankParser
 {
   public:
-    typedef std::pair<MisType, std::vector<int> > MisVal;
-
     std::string parseStr(const Vector<std::string>& vecStr,
                          int minMod,
                          int& nbMod,

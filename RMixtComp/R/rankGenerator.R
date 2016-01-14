@@ -1,5 +1,27 @@
+rankTestGenerator <- function() {
+  rankTestParam <- list(mu = c(1, 4, 2, 3),
+                        pi = 0.8)
+  rankTestMissing <- FALSE
+  rankTestX <- rankFullGenerator(rankTestParam)
+  
+  rankTestStr <- rankHideData(rankTestMissing,
+                              rankTestX)
+  
+  return(rankTestStr)
+}
+
 rankGenerator <- function(missing,
                           param) {
+
+  x <- rankFullGenerator(param)
+  
+  xStr <- rankHideData(missing,
+                       x)
+  
+  return(xStr)
+}
+
+rankFullGenerator <- function(param) {
   nbPos <- length(param$mu)
   muRanking <-  switchRepresentation(param$mu) # mu in ranking representation instead of ordering representation
   y <- sample(nbPos)
@@ -32,11 +54,7 @@ rankGenerator <- function(missing,
     }
   }
   
-  xStr <- paste(x,
-                sep = "",
-                collapse = ", ")
-  
-  return(xStr)
+  return(x)
 }
 
 switchRepresentation <- function(inRank) {
@@ -48,4 +66,48 @@ switchRepresentation <- function(inRank) {
   }
   
   return(outRank)
+}
+
+rankHideData <- function(missing,
+                         x) {
+  nbPos <- length(x)
+  
+  xStr <- vector(mode = 'character', length = nbPos)
+  
+  isMissing <- sample(c(FALSE, TRUE), size = 1) # 0.5 proba of a completely missing value
+  isMissingFiniteValues <- sample(c(FALSE, TRUE), size = 1) # 0.5 proba of finitely many possible values
+  
+  for (p in 1:nbPos) {
+      xStr[p] <- p
+  }
+  
+  if(isMissingFiniteValues) {
+    firstIndex <- sample(1:(nbPos - 1), size = 1)
+    lastIndex <- firstIndex + sample(nbPos - firstIndex, size = 1)
+    
+    missingStr <- paste(firstIndex:lastIndex,
+                        sep = " ",
+                        collapse = " ")
+    missingStr <- paste("{",
+                        missingStr,
+                        "}",
+                        sep = "")
+    
+    for (p in 1:nbPos) {
+      if (p %in% firstIndex:lastIndex) {
+        xStr[p] <- missingStr
+      }
+    }
+  }
+  
+  if(isMissing) {
+    indexMissing <- sample(nbPos, size = 1)
+    xStr[indexMissing] <- "?"
+  }
+  
+  xStr <- paste(xStr,
+                sep = "",
+                collapse = ", ")
+  
+  return(xStr)
 }
