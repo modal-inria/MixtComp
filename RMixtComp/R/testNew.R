@@ -3,10 +3,8 @@ testNewLearn <- function(nbClass = 2,
                          nbSampleLearn = 50,
                          nbSamplePredict = 1000,
                          confidenceLevel = 0.95,
-                         regen = TRUE)
-{  
-  if (regen == TRUE)
-  {
+                         regen = TRUE) {  
+  if (regen == TRUE) {
     dataGeneratorNewLearn()
   }
   
@@ -24,8 +22,7 @@ testNewLearn <- function(nbClass = 2,
                          mcStrategy,
                          nbClass,
                          confidenceLevel)
-  if (nchar(res$mixture$warnLog) > 0)
-  {
+  if (nchar(res$mixture$warnLog) > 0) {
     warning(res$mixture$warnLog)
   }
   
@@ -45,8 +42,7 @@ testNewLearnPredict <- function(nbClass = 2,
                                 nbSampleLearn = 50,
                                 nbSamplePredict = 1000,
                                 confidenceLevel = 0.95,
-                                regen = TRUE)
-{
+                                regen = TRUE) {
   res <- testNewLearn(nbClass,
                       nbBurnInIter,
                       nbSampleLearn,
@@ -54,8 +50,7 @@ testNewLearnPredict <- function(nbClass = 2,
                       confidenceLevel,
                       regen)
   
-  if (regen == TRUE)
-  {
+  if (regen == TRUE) {
     dataGeneratorNewPredict()
   }
   
@@ -74,8 +69,7 @@ testNewLearnPredict <- function(nbClass = 2,
                          mcStrategy,
                          nbClass,
                          confidenceLevel)
-  if (nchar(res$mixture$warnLog) > 0)
-  {
+  if (nchar(res$mixture$warnLog) > 0) {
     warning(res$mixture$warnLog)
   }
   

@@ -82,8 +82,8 @@ class RankMixture : public IMixture
 
       acceptedType_.resize(nb_enum_MisType_);
       acceptedType_ << true,   // present_,
-                       false,  // missing_,
-                       false,  // missingFiniteValues_,
+                       true,  // missing_,
+                       true,  // missingFiniteValues_,
                        false,  // missingIntervals_,
                        false,  // missingLUIntervals_,
                        false; // missingRUIntervals
@@ -369,21 +369,17 @@ class RankMixture : public IMixture
       }
     }
   private:
-    std::string checkMissingType()
-    {
+    std::string checkMissingType() {
       std::string warnLog;
 
       std::list<int> listInd;
-      for (int i = 0; i < nbInd_; ++i)
-      {
-        if (!data_(i).checkMissingType(acceptedType_))
-        {
+      for (int i = 0; i < nbInd_; ++i) {
+        if (!data_(i).checkMissingType(acceptedType_)) {
           listInd.push_back(i);
         }
       }
 
-      if (listInd.size() > 0)
-      {
+      if (listInd.size() > 0) {
         std::stringstream sstm;
         sstm << "Rank variable " << idName_ << " contains individual described by missing data type not implemented yet. "
              << "The list of problematic individuals is: " << itString(listInd) << std::endl;

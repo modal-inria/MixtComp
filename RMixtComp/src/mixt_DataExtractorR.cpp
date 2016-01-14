@@ -155,13 +155,13 @@ void DataExtractorR::exportVals(std::string idName,
   for (int i = 0, ie = nbInd; i < ie; ++i) {
     Rcpp::NumericVector rankR(nbPos);
     for (int p = 0; p < nbPos; ++p) {
-      rankR(p) = data(i).x().o()(p);
+      rankR(p) = data(i).x().o()(p) + minModality;
     }
     dataR.push_back(rankR);
 
     if (!data(i).allPresent()) {
       const std::list<std::pair<RankVal, Real> >& statStorageMu = dataStat[i].statStorageMu(); // helper reference to point to current statStorage
-      std::list<Rcpp::List> individualProba; // list of pairs {vector representing rank, proba} for the current individual
+      Rcpp::List individualProba; // list of pairs {vector representing rank, proba} for the current individual
 
       individualProba.push_back(i); // first element in the list is the index
 
@@ -171,7 +171,7 @@ void DataExtractorR::exportVals(std::string idName,
         const RankVal& rankCPP = it->first; // current rank in C++
         Rcpp::IntegerVector rankR(nbPos); // current rank in R
         for (int p = 0; p < nbPos; ++p) {
-          rankR(p) = rankCPP.o()(p);
+          rankR(p) = rankCPP.o()(p) + minModality;
         }
         individualProba.push_back(Rcpp::List::create(rankR,
                                                      it->second));

@@ -78,14 +78,14 @@ rankHideData <- function(missing,
   isMissingFiniteValues <- sample(c(FALSE, TRUE), size = 1) # 0.5 proba of finitely many possible values
   
   for (p in 1:nbPos) {
-      xStr[p] <- p
+      xStr[p] <- x[p]
   }
   
   if(isMissingFiniteValues) {
     firstIndex <- sample(1:(nbPos - 1), size = 1)
     lastIndex <- firstIndex + sample(nbPos - firstIndex, size = 1)
     
-    missingStr <- paste(firstIndex:lastIndex,
+    missingStr <- paste(x[firstIndex:lastIndex],
                         sep = " ",
                         collapse = " ")
     missingStr <- paste("{",

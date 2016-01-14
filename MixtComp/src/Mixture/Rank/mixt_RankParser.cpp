@@ -46,14 +46,12 @@ std::string RankParser::parseStr(const Vector<std::string>& vecStr,
                boost::is_any_of(rankPosSep));
   nbPos = strs.size();
 
-  Vector<int> o(nbPos); // ordering for a particular individual
-  Vector<MisVal> obsData(nbPos); // observed data for a particular individual
-
   for (int i = 0; i < nbInd; ++i) {
-    vecInd(i).setNbPos(nbPos);
-  }
+    Vector<int> o(nbPos);
+    Vector<MisVal> obsData(nbPos);
 
-  for (int i = 0, iE = vecStr.size(); i < iE; ++i) {
+    vecInd(i).setNbPos(nbPos);
+
     boost::split(strs,
                  vecStr(i),
                  boost::is_any_of(rankPosSep));
@@ -140,8 +138,16 @@ std::string RankParser::parseStr(const Vector<std::string>& vecStr,
     vecInd(i).setObsData(obsData);
 
     if (vecInd(i).enumCompleted().size() == 0) {
+#ifdef MC_DEBUG
+      std::cout << "o: " << itString(o) << std::endl;
+      std::cout << "obsData: " << std::endl;
+      for (int p = 0; p < nbPos; ++p) {
+        std::cout << "p: " << p << ", MisType: " << obsData(p).first << ", values: " << itString(obsData(p).second) << std::endl;
+      }
+#endif
+
       std::stringstream sstm;
-      sstm << "Individual " << i << " which data is " << vecStr(i) << " is invalid.  Please check if there are no repeated "
+      sstm << "Individual " << i << " which data is " << vecStr(i) << " is invalid. Please check if there are no repeated "
            << "observed modalities for example." << std::endl;
       warnLog += sstm.str();
     }
