@@ -1,7 +1,5 @@
-dataGeneratorNewLearn <- function() {
-  proportionMissing <- 0.
-  nbInd <- 100
-  
+dataGeneratorNewLearn <- function(nbInd,
+                                  proportionPresent) {
   var <- list()
   
   var$z_class <- zParam()
@@ -10,7 +8,7 @@ dataGeneratorNewLearn <- function() {
   
   res <- dataGeneratorNew("dataGenNew/learn", # prefix
                           nbInd, # nbInd
-                          proportionMissing,
+                          proportionPresent,
                           var) # param
   
   write.table(res$z,
@@ -48,10 +46,8 @@ dataGeneratorNewLearn <- function() {
               fileEncoding = "")
 }
 
-dataGeneratorNewPredict <- function() {
-  proportionMissing <- 0.
-  nbInd <- 100
-  
+dataGeneratorNewPredict <- function(nbInd,
+                                    proportionPresent) {
   var <- list()
   
   var$z_class <- zParam()
@@ -60,7 +56,7 @@ dataGeneratorNewPredict <- function() {
   
   res <- dataGeneratorNew("dataGenNew/predict", # prefix
                           nbInd, # nbInd
-                          proportionMissing,
+                          proportionPresent,
                           var) # param
   
   write.table(res$z,

@@ -1,6 +1,6 @@
 dataGeneratorNew <- function(prefix,
                              nbInd,
-                             proportionMissing,
+                             proportionPresent,
                              var) {
   nbVar <- length(var) # number of variables including the latent class
   zDis <- rmultinom(nbInd,
@@ -25,11 +25,11 @@ dataGeneratorNew <- function(prefix,
                     ncol = nbVar)
   
   for (i in 1:nbInd) {
-    presentVar <- sample(2,
+    presentVar <- sample(c(FALSE, TRUE),
                          size = nbVar,
                          replace = TRUE,
-                         prob = c(proportionMissing,
-                                  1. - proportionMissing)) # list of variables containing observed values for the current individual
+                         prob = c(1. - proportionPresent,
+                                  proportionPresent)) # list of variables containing observed values for the current individual
     
     if (presentVar[1] == 1 || var$z_class$allMissing) {
       dataStr[i, 1] = "?"
@@ -40,11 +40,11 @@ dataGeneratorNew <- function(prefix,
 
     for (j in 2:nbVar) { # export values for other types
       if (var[[j]]$type == "Rank") {
-        dataStr[i, j] <- rankGenerator(FALSE,
+        dataStr[i, j] <- rankGenerator(presentVar[j],
                                        var[[j]]$param[[z[i]]])
       }
       if (var[[j]]$type == "Ordinal") {
-        dataStr[i, j] <- ordinalGenerator(FALSE,
+        dataStr[i, j] <- ordinalGenerator(presentVar[j],
                                           var[[j]]$param[[z[i]]])
       }
     }

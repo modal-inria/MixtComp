@@ -1,11 +1,14 @@
 testNewLearn <- function(nbClass = 2,
+                         nbInd = 100,
+                         proportionPresent = 0.7,
                          nbBurnInIter = 100,
                          nbSampleLearn = 50,
                          nbSamplePredict = 1000,
                          confidenceLevel = 0.95,
                          regen = TRUE) {  
   if (regen == TRUE) {
-    dataGeneratorNewLearn()
+    dataGeneratorNewLearn(nbInd,
+                          proportionPresent)
   }
   
   resGetData <- getData(c("dataGenNew/learn/data.csv",
@@ -38,12 +41,16 @@ testNewLearn <- function(nbClass = 2,
 }
 
 testNewLearnPredict <- function(nbClass = 2,
+                                nbInd = 100,
+                                proportionPresent = 0.7,
                                 nbBurnInIter = 100,
                                 nbSampleLearn = 50,
                                 nbSamplePredict = 1000,
                                 confidenceLevel = 0.95,
                                 regen = TRUE) {
   res <- testNewLearn(nbClass,
+                      nbInd,
+                      proportionPresent,
                       nbBurnInIter,
                       nbSampleLearn,
                       nbSamplePredict,
@@ -51,7 +58,8 @@ testNewLearnPredict <- function(nbClass = 2,
                       regen)
   
   if (regen == TRUE) {
-    dataGeneratorNewPredict()
+    dataGeneratorNewPredict(nbInd,
+                            proportionPresent)
   }
   
   resGetData <- getData(c("dataGenNew/predict/data.csv",

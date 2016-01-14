@@ -10,12 +10,12 @@ rankTestGenerator <- function() {
   return(rankTestStr)
 }
 
-rankGenerator <- function(missing,
+rankGenerator <- function(present,
                           param) {
 
   x <- rankFullGenerator(param)
   
-  xStr <- rankHideData(missing,
+  xStr <- rankHideData(present,
                        x)
   
   return(xStr)
@@ -68,41 +68,42 @@ switchRepresentation <- function(inRank) {
   return(outRank)
 }
 
-rankHideData <- function(missing,
+rankHideData <- function(present,
                          x) {
   nbPos <- length(x)
   
   xStr <- vector(mode = 'character', length = nbPos)
   
-  isMissing <- sample(c(FALSE, TRUE), size = 1) # 0.5 proba of a completely missing value
-  isMissingFiniteValues <- sample(c(FALSE, TRUE), size = 1) # 0.5 proba of finitely many possible values
-  
   for (p in 1:nbPos) {
       xStr[p] <- x[p]
   }
   
-  if(isMissingFiniteValues) {
-    firstIndex <- sample(1:(nbPos - 1), size = 1)
-    lastIndex <- firstIndex + sample(nbPos - firstIndex, size = 1)
+  if(!present) {
+    isMissing <- sample(3, size = 1) # 1: missing, 2: missingFiniteValues, 3: both
     
-    missingStr <- paste(x[firstIndex:lastIndex],
-                        sep = " ",
-                        collapse = " ")
-    missingStr <- paste("{",
-                        missingStr,
-                        "}",
-                        sep = "")
-    
-    for (p in 1:nbPos) {
-      if (p %in% firstIndex:lastIndex) {
-        xStr[p] <- missingStr
+    if(isMissing %in% c(2, 3)) {
+      firstIndex <- sample(1:(nbPos - 1), size = 1)
+      lastIndex <- firstIndex + sample(nbPos - firstIndex, size = 1)
+      
+      missingStr <- paste(x[firstIndex:lastIndex],
+                          sep = " ",
+                          collapse = " ")
+      missingStr <- paste("{",
+                          missingStr,
+                          "}",
+                          sep = "")
+      
+      for (p in 1:nbPos) {
+        if (p %in% firstIndex:lastIndex) {
+          xStr[p] <- missingStr
+        }
       }
     }
-  }
-  
-  if(isMissing) {
-    indexMissing <- sample(nbPos, size = 1)
-    xStr[indexMissing] <- "?"
+    
+    if(isMissing %in% c(1, 3)) {
+      indexMissing <- sample(nbPos, size = 1)
+      xStr[indexMissing] <- "?"
+    }
   }
   
   xStr <- paste(xStr,
