@@ -24,27 +24,25 @@ dataGeneratorNew <- function(prefix,
                     nrow = nbInd,
                     ncol = nbVar)
   
+  nbPresentVar <- round(nbVar * proportionPresent)
+  
   for (i in 1:nbInd) {
-    presentVar <- sample(c(FALSE, TRUE),
-                         size = nbVar,
-                         replace = TRUE,
-                         prob = c(1. - proportionPresent,
-                                  proportionPresent)) # list of variables containing observed values for the current individual
+    presentVar <- sample(1:nbVar, nbPresentVar)
     
-    if (presentVar[1] == 1 || var$z_class$allMissing) {
+    if (!(1 %in% presentVar) || var$z_class$allMissing) {
       dataStr[i, 1] = "?"
     }
-    else if (presentVar[1] == 2 || var$z_class$allPresent) {
+    else if ((1 %in% presentVar) || var$z_class$allPresent) {
       dataStr[i, 1] = paste(z[i])
     }
 
     for (j in 2:nbVar) { # export values for other types
       if (var[[j]]$type == "Rank") {
-        dataStr[i, j] <- rankGenerator(presentVar[j],
+        dataStr[i, j] <- rankGenerator(j %in% presentVar,
                                        var[[j]]$param[[z[i]]])
       }
       if (var[[j]]$type == "Ordinal") {
-        dataStr[i, j] <- ordinalGenerator(presentVar[j],
+        dataStr[i, j] <- ordinalGenerator(j %in% presentVar,
                                           var[[j]]$param[[z[i]]])
       }
     }

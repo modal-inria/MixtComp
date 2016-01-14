@@ -1,13 +1,29 @@
-ordinalGenerator <- function(missing,
-                             param) {
-  seg <- ordinalGeneratorSeg(missing,
-                             param)
+ordinalTestGenerator <- function() {
+  ordinalTestParam <- list(nbMod = 5,
+                           mu = 3,
+                           pi = 0.8)
+  ordinalTestPresent <- FALSE
+  ordinalTestX <- ordinalFullGenerator(ordinalTestParam)
   
-  return(paste0(seg[1]))
+  ordinalTestStr <- ordinalHideData(ordinalTestPresent,
+                                    ordinalTestParam,
+                                    ordinalTestX)
+  
+  return(ordinalTestStr)
 }
 
-ordinalGeneratorSeg <- function(missing,
-                                param) {
+ordinalGenerator <- function(present,
+                             param) {
+  x <- ordinalFullGenerator(param)
+  
+  xStr <- ordinalHideData(present,
+                          param,
+                          x)
+  
+  return(xStr)
+}
+
+ordinalFullGenerator <- function(param) {
   nbMod <- param$nbMod
   seg <- c(1, nbMod) # initial segment is the input
   
@@ -23,7 +39,7 @@ ordinalGeneratorSeg <- function(missing,
                      nbMod)
   }
   
-  return(seg)
+  return(seg[1])
 }
 
 ySample <- function(seg) { # uniform sampling of y
@@ -105,4 +121,33 @@ eSample <- function(z,
   }
   
   return(e)
+}
+
+ordinalHideData <- function(present,
+                            param,
+                            x) {
+  if(present) {
+    return(paste0(x))
+  }
+  else {
+    isMissing <- sample(2, size = 1) # 1: missing, 2: missingInterval
+
+    if (isMissing == 1) {
+      return("?")
+    }
+    else {
+      firstIndex <- sample(1:(param$nbMod - 1), size = 1)
+      lastIndex <- firstIndex + sample(param$nbMod - firstIndex, size = 1)
+      
+      missingStr <- paste(firstIndex,
+                          lastIndex,
+                          sep = " ",
+                          collapse = " ")
+      missingStr <- paste("[",
+                          missingStr,
+                          "]",
+                          sep = "")
+      return(missingStr)
+    }
+  }
 }
