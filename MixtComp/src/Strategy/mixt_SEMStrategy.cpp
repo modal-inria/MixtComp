@@ -76,7 +76,6 @@ std::string SemStrategy::run() {
 
   RunProblemType runProb = runSEM(rejectSampler_);
   if (runProb == invalidSampler_) {
-
 #ifdef MC_VERBOSE
       std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
 #endif
@@ -92,17 +91,9 @@ std::string SemStrategy::run() {
 }
 
 std::string SemStrategy::initSEM() {
-#ifdef MC_DEBUG
-  std::cout << "SemStrategy::initSEM" << std::endl;
-#endif
-
   std::string warnLog;
 
   for (int n = 0; n < nbSamplingAttempts; ++n) { // multiple initialization attempts
-#ifdef MC_DEBUG
-    std::cout << "SemStrategy::initSEM, n: " << n << std::endl;
-#endif
-
     p_composer_->initializeProp(); // reset prop
     p_composer_->initializeTik(); //  reset tik_
     p_composer_->sStepNoCheck(); // initialization is done by reject sampling, no need for checkSampleCondition flag

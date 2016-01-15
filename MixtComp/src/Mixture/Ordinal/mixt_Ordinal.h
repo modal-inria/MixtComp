@@ -449,8 +449,7 @@ class Ordinal : public IMixture
      * validity, it is necessary to perform nbGibbsIniBOS iterations of GibbsSampling with a pi at piInitBOS to generate variability in z. This will ensure
      * that pi will not likely be equal to 0 at the first mStep estimation. In any case, should this occur, the initialization will ultimately be
      * rejected by a call to checkSampleCondition. */
-    void removeMissing(AlgoType algo)
-    {
+    void removeMissing(AlgoType algo) {
       Vector<int> tempMu(nbClass_);
 
       if (algo == SEM_) {
@@ -464,22 +463,9 @@ class Ordinal : public IMixture
         }
       }
 
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::removeMissing, mu_: " << mu_.transpose() << std::endl;
-#endif
-
-      for (int i = 0; i < nbInd_; ++i)
-      {
+      for (int i = 0; i < nbInd_; ++i) {
         path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
-        for (int n = 0; n < nbGibbsIniBOS; ++n) // n rounds of Gibbs sampling to increase variability on z
-        {
-#ifdef MC_DEBUG
-          if (idName_ == "Ordinal1" && i == 0)
-          {
-            std::cout << "n: " << n << std::endl;
-            BOSDisplayPath(path_(i));
-          }
-#endif
+        for (int n = 0; n < nbGibbsIniBOS; ++n) { // n rounds of Gibbs sampling to increase variability on z
           Vector<bool, 2> az;
           az = true;  // in initialization, checkSampleCondition is called globally just after the removeMissing, so no need for early check
           GibbsSampling(i,
@@ -487,10 +473,6 @@ class Ordinal : public IMixture
                         piInitBOS,
                         az);
         }
-
-#ifdef MC_DEBUG
-        std::cout << "Ordinal::removeMissing, i: " << i << ", logProba: " << path_(i).computeLogProba(tempMu((*p_zi_)(i)), piInitBOS) << std::endl; // path_(i) contains a completed individual
-#endif
 
         copyToData(i);
       }
@@ -562,10 +544,6 @@ class Ordinal : public IMixture
         }
       }
 
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::sampleMuFreq, k: " << k << ", freqMod: " << freqMod.transpose() << std::endl;
-#endif
-
       Real sum = freqMod.sum();
       if (sum > epsilon)
       {
@@ -575,11 +553,6 @@ class Ordinal : public IMixture
       {
         freqMod = 1. / Real(nbModality_);
       }
-
-#ifdef MC_DEBUG
-      std::cout << "effective freqMod: " << std::endl;
-      std::cout << freqMod << std::endl;
-#endif
 
       return multi_.sample(freqMod); // mu is sampled from this distribution
     }

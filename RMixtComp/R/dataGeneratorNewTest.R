@@ -3,8 +3,24 @@ dataGeneratorNewLearn <- function(nbInd,
   var <- list()
   
   var$z_class <- zParam()
+  
   var$Rank1 <- rankParam()
+  
+  var$Rank1$name <- "Rank1"
+  
   var$Ordinal1 <- ordinalParam()
+#   var$Ordinal2 <- ordinalParam()
+#   var$Ordinal3 <- ordinalParam()
+#   var$Ordinal4 <- ordinalParam()
+#   var$Ordinal5 <- ordinalParam()
+#   var$Ordinal6 <- ordinalParam()
+  
+  var$Ordinal1$name <- "Ordinal1"
+#   var$Ordinal2$name <- "Ordinal2"
+#   var$Ordinal3$name <- "Ordinal3"
+#   var$Ordinal4$name <- "Ordinal4"
+#   var$Ordinal5$name <- "Ordinal5"
+#   var$Ordinal6$name <- "Ordinal6"
   
   res <- dataGeneratorNew("dataGenNew/learn", # prefix
                           nbInd, # nbInd
@@ -101,7 +117,7 @@ zParam <- function() {
   z_class$type <- "LatentClass"
   z_class$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
   z_class$allPresent <- FALSE
-  z_class$allMissing <- FALSE
+  z_class$allMissing <- TRUE
   
   return(z_class)
 }
@@ -112,7 +128,6 @@ rankParam <- function() {
   Rank$param[[1]] <- list()
   Rank$param[[2]] <- list()
   
-  Rank$name <- "Rank1"
   Rank$type <- "Rank"
   Rank$param[[1]]$mu <- c(1, 2, 3, 4)
   Rank$param[[1]]$pi <- 0.8
@@ -128,7 +143,6 @@ ordinalParam <- function() {
   Ordinal$param[[1]] <- list()
   Ordinal$param[[2]] <- list()
   
-  Ordinal$name <- "Ordinal1"
   Ordinal$type <- "Ordinal"
   Ordinal$param[[1]]$nbMod <- 4
   Ordinal$param[[1]]$mu <- 1
