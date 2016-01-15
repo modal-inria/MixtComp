@@ -140,6 +140,7 @@ ordinalHideData <- function(present,
       lastIndex <- firstIndex + sample(param$nbMod - firstIndex, size = 1)
       
       missingStr <- paste(firstIndex,
+                          ":",
                           lastIndex,
                           sep = " ",
                           collapse = " ")

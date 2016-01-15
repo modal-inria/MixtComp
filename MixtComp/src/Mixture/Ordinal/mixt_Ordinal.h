@@ -116,12 +116,7 @@ class Ordinal : public IMixture
     const Vector<int>& mu() const {return mu_;}
     const Vector<Real>& pi() const {return pi_;}
 
-    std::string setDataParam(RunMode mode)
-    {
-#ifdef MC_DEBUG
-        std::cout << "Ordinal::setDataParam" << std::endl;
-#endif
-
+    std::string setDataParam(RunMode mode) {
       std::string warnLog;
 
       warnLog += p_handler_->getData(idName(),
@@ -130,35 +125,30 @@ class Ordinal : public IMixture
                                      paramStr_,
                                      -minModality); // ordinal data are modalities, offset enforces 0-based encoding through the whole mixture
 
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::setDataParam, idName_: " << idName_ << ", data: " << itString(augData_.data_) << std::endl;
-#endif
+      if (warnLog.size() > 0) {
+        return warnLog;
+      }
 
       augData_.computeRange();
 
-      std::string missingLog  = augData_.checkMissingType(acceptedType()); // check if the missing data provided are compatible with the model
+      std::string missingLog = augData_.checkMissingType(acceptedType()); // check if the missing data provided are compatible with the model
 
-      if(missingLog.size() > 0) // check on the missing values description
-      {
+      if(missingLog.size() > 0) { // check on the missing values description
         std::stringstream sstm;
         sstm << "Variable " << idName() << " with Ordinal model has a problem with the descriptions of missing values.\n" << missingLog;
         warnLog += sstm.str();
       }
-      else if (augData_.dataRange_.min_ < 0) // modality encoding is 0-based
-      {
+      else if (augData_.dataRange_.min_ < 0) { // modality encoding is 0-based
         std::stringstream sstm;
         sstm << "Variable: " << idName() << " is described by an Ordinal model which requires a minimum value of 0 in either provided values or bounds."
              << " The minimum value currently provided is : " << augData_.dataRange_.min_ << std::endl;
         warnLog += sstm.str();
       }
-      else // minimum value requirements have been met, whether the mode is learning or prediction
-      {
-        if (mode == learning_)
-        {
+      else { // minimum value requirements have been met, whether the mode is learning or prediction
+        if (mode == learning_) {
           nbModality_ = augData_.dataRange_.max_ + minModality; // since an offset has been applied during getData, modalities are 0-based
         }
-        else // prediction mode
-        {
+        else { // prediction mode
           setParam(); // set nbModalities_, mu_ and pi_ using p_paramSetter_
 
           muParamStatComputer_.setParamStorage();
@@ -166,8 +156,7 @@ class Ordinal : public IMixture
 
           nbModality_ = augData_.dataRange_.range_;
 
-          if (nbModality_ - 1 < augData_.dataRange_.max_)
-          {
+          if (nbModality_ - 1 < augData_.dataRange_.max_) {
             std::stringstream sstm;
             sstm << "Variable: " << idName() << " requires a maximum value of " << minModality + nbModality_ - 1
                  << " for the data during prediction. This maximum value corresponds to the maximum value used during the learning phase."
@@ -175,17 +164,8 @@ class Ordinal : public IMixture
             warnLog += sstm.str();
           }
 
-//          augData_.dataRange_.min_ = 0;
-//          augData_.dataRange_.max_ = nbModality_ - 1;
-//          augData_.dataRange_.range_ = nbModality_;
-
           computeObservedProba(); // parameters are know, so logProba can be computed immediately
         }
-
-#ifdef MC_DEBUG
-        std::cout << "augData_.data_" << std::endl;
-        std::cout << augData_.data_ << std::endl;
-#endif
 
         setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
 

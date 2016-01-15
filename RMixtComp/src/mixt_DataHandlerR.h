@@ -105,28 +105,22 @@ std::string DataHandlerR::getData(std::string const& idData,
                                   AugmentedData<DataType>& augData,
                                   int& nbInd,
                                   std::string& param,
-                                  typename AugmentedData<DataType>::Type offset) const
-{
-#ifdef MC_DEBUG
-          std::cout << "DataHandlerR::getData, idData: " << idData << std::endl;
-#endif
+                                  typename AugmentedData<DataType>::Type offset) const {
   std::string warnLog;
   typedef typename AugmentedData<DataType>::Type Type;
   typedef typename AugmentedData<Matrix<Type> >::MisVal MisVal;
 
   MisValParser<Type> mvp(offset);
 
-  if (dataMap_.find(idData) != dataMap_.end()) // check if the data requested is present in the input data
-  {
+  if (dataMap_.find(idData) != dataMap_.end()) { // check if the data requested is present in the input data
     int pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
-    nbInd = nbInd_;
+    nbInd = nbInd_; // return the number of individuals
     augData.resizeArrays(nbInd_); // R has already enforced that all data has the same number of rows, and now all mixture are univariate
 
     Rcpp::List currVar = rList_[pos]; // get current named list
     Rcpp::CharacterVector data = currVar("data");
 
-    for (int i = 0; i < nbInd_; ++i)
-    {
+    for (int i = 0; i < nbInd_; ++i) {
       std::string currStr;
       Type val;
       MisVal misVal;
@@ -136,29 +130,17 @@ std::string DataHandlerR::getData(std::string const& idData,
       bool isValid = mvp.parseStr(currStr,
                                   val,
                                   misVal);
-      if (isValid)
-      {
-        if (misVal.first == present_)
-        {
-#ifdef MC_DEBUG
-          std::cout << "idData: " << idData << ", i: " << i << ", val: " << val << ", misVal: " << itString(misVal.second)
-                    << ", present "<< std::endl;
-#endif
+      if (isValid) {
+        if (misVal.first == present_) {
           augData.setPresent(i, val);
           continue;
         }
-        else
-        {
-#ifdef MC_DEBUG
-          std::cout << "idData: " << idData << ", i: " << i << ", val: " << val << ", misVal: " << itString(misVal.second)
-                    << ", missing "<< std::endl;
-#endif
+        else {
           augData.setMissing(i, misVal);
           continue;
         }
       }
-      else
-      {
+      else {
         std::stringstream sstm;
         sstm << "In " << idData << ", individual i: " << i << " present an error. "
              << currStr << " is not recognized as a valid format." << std::endl;
@@ -166,8 +148,7 @@ std::string DataHandlerR::getData(std::string const& idData,
       }
     }
   }
-  else
-  {
+  else {
     std::stringstream sstm;
     sstm << "Data from the variable: " << idData << " has been requested but is absent from the provided data."
          << " Please check that all the necessary data is provided." << std::endl;

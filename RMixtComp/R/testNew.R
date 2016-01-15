@@ -1,5 +1,5 @@
 testNewLearn <- function(nbClass = 2,
-                         nbInd = 100,
+                         nbInd = 1000,
                          proportionPresent = 0.7,
                          nbBurnInIter = 100,
                          nbSampleLearn = 50,
