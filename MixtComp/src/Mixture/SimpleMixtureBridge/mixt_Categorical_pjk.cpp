@@ -218,26 +218,12 @@ void Categorical_pjk::writeParameters() const
 int Categorical_pjk::checkSampleCondition(std::string* warnLog) const
 {
   for (int k = 0; k < nbClass_; ++k) {
-#ifdef MC_DEBUG
-    int i = -1;
-#endif
-
-    Vector<bool> modalityPresent(nbModality_, true);
+    Vector<bool> modalityPresent(nbModality_, false);
     for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
          ++it) {
-#ifdef MC_DEBUG
-      ++i;
-#endif
-
       modalityPresent((*p_data_)(*it)) = true;
-      if (modalityPresent == true) {
-#ifdef MC_DEBUG
-        if (1000 < i) {
-          std::cout << "Categorical_pjk::checkSampleCondition, idName: " << idName_ << ", OK at i: " << i << std::endl;
-        }
-#endif
-
+      if (modalityPresent == true) { // stop all checks on current class
         goto endItK;
       }
     }
