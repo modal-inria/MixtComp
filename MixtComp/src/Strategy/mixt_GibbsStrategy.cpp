@@ -41,7 +41,6 @@ std::string GibbsStrategy::run()
 {
   std::string warnLog;
 
-  p_composer_->sStepNoCheck(); // class of each individual is sampled using the apriori proportions, no condition has to be verified on the sample
   p_composer_->removeMissing(Gibbs_);
 
   Timer myTimer;

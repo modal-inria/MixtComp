@@ -192,7 +192,6 @@ class MixtureComposer
 
       warnLog += setZi(dataHandler, // dataHandler getData is called to fill zi_
                        mode);
-      updateListInd();
 
       if (mode == prediction_) // in prediction, paramStatStorage_ will not be modified later during the run
       {

@@ -549,11 +549,12 @@ std::vector<std::string> MixtureComposer::mixtureName() const
   return names;
 }
 
-/** removeMissing only complete values in the mixtures, as completion for z is usually performed by calling sStepNoCheck(). */
-void MixtureComposer::removeMissing(AlgoType algo)
-{
-  for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
+void MixtureComposer::removeMissing(AlgoType algo) {
+  initializeTik();
+  sStepNoCheck();
+  updateListInd();
+
+  for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
     (*it)->removeMissing(algo);
   }
 }
