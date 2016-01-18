@@ -286,6 +286,8 @@ void BOSPath::initPath()
     c_(i).e_ = c_(i).part_(sampleSeg);
     currSeg = c_(i).e_; // initial segment used for next node
   }
+
+  computeNbZ();
 }
 
 void BOSPath::samplePath(int mu,
@@ -322,6 +324,8 @@ void BOSPath::samplePath(int mu,
       c_[startIndex + currNode] = (*it)(currNode);
     }
   }
+
+  computeNbZ();
 }
 
 void BOSPath::forwardSamplePath(int mu,
@@ -355,29 +359,27 @@ void BOSPath::forwardSamplePath(int mu,
 
     if (!((zCond == allZ0Forbidden_ && nbZ() == 0) || (zCond == allZ1Forbidden_ && nbZ() == nbNode_)))
     {
+      computeNbZ();
       return; // individual is valid, no need for further sample
     }
   }
 }
 
-int BOSPath::nbZ() const
-{
-  int nz = 0;
-  for (int node = 0; node < nbNode_; ++node)
-  {
-    nz += c_(node).z_;
+void BOSPath::computeNbZ() {
+  nbZ_ = 0;
+  for (int node = 0; node < nbNode_; ++node) {
+    nbZ_ += c_(node).z_;
   }
-  return nz;
-}
 
-bool BOSPath::allZ0() const
-{
-  return nbZ() == 0;
-}
-
-bool BOSPath::allZ1() const
-{
-  return nbZ() == nbNode_;
+  if (nbZ_ == 0) {
+    allZ_ = allZ0_;
+  }
+  else if (nbZ_ == nbNode_) {
+    allZ_ = allZ1_;
+  }
+  else {
+    allZ_ = mixZ0Z1_;
+  }
 }
 
 void BOSDisplaySegNode(const BOSNode& node)

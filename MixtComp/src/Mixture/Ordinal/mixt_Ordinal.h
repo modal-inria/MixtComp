@@ -498,13 +498,22 @@ class Ordinal : public IMixture
         for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
              it != itE;
              ++it) {
-          int nbZ = path_(*it).nbZ();
+          switch(path_(*it).allZ()) {
+            case allZ0_: {
+              allZ1 = false;
+            }
+            break;
 
-          if (nbZ != 0) {
-            allZ0 = false;
-          }
-          if (nbZ != nbModality_ - 1) { // there is one less node than modalities
-            allZ1 = false;
+            case allZ1_: {
+              allZ0 = false;
+            }
+            break;
+
+            case mixZ0Z1_: {
+              allZ0 = false;
+              allZ1 = false;
+            }
+            break;
           }
 
           if (allZ0 == false && allZ1 == false) { // there is enough variability on z in this class to ensure that pi will be estimated inside the open support
@@ -577,12 +586,16 @@ class Ordinal : public IMixture
              it != itE;
              ++it) {
           if (*it != ind) { // check is performed on all in the class but the current ind
-            int nbZ = path_(*it).nbZ();
-            if (nbZ != 0) { // at least one other individual has a non zero number of z = 1, therefor...
-              allOtherZO = false; // ... current individual is authorized to have all its z = 0
-            }
-            if (nbZ != nbModality_ - 1) {
-              allOtherZ1 = false;
+            switch (path_(*it).allZ()) {
+              case allZ0_: {
+                allOtherZO = false; // ... current individual is authorized to have all its z = 0
+              }
+              break;
+
+              case allZ1_: {
+                allOtherZ1 = false; // ... current individual is authorized to have all its z = 0
+              }
+              break;
             }
 
             if (allOtherZO == false && allOtherZ1 == false) { // all values are authorized for current individual, stop checking
@@ -669,15 +682,13 @@ class Ordinal : public IMixture
     /**
      * Estimation of pi by maximum likelihood in all classes
      * */
-    void mStepPi()
-    {
+    void mStepPi() {
       pi_ = 0.; // pi_ parameter is reinitialized
 
       Vector<Real> nodePerClass(nbClass_, 0.); // total number of nodes in each class
       Vector<Real> zPerClass   (nbClass_, 0.); // total of nodes with z = 1 in each class
 
-      for (int i = 0; i < nbInd_; ++i)
-      {
+      for (int i = 0; i < nbInd_; ++i) {
         int indClass = (*p_zi_)(i);
         zPerClass   (indClass) += path_(i).nbZ()   ; // add only z = 1 nodes of the individual
         nodePerClass(indClass) += path_(i).nbNode(); // add all nodes of the individual

@@ -32,16 +32,16 @@ namespace mixt
 RankIndividual::RankIndividual() :
   nbPos_(0),
   lnFacNbPos_(0),
-  allMissing_(true),
-  allPresent_(true)
+  allPresent_(true),
+  allMissing_(true)
 {}
 
 RankIndividual::RankIndividual(int nbPos) :
     nbPos_(nbPos),
     lnFacNbPos_(- std::log(fac(nbPos))),
     x_(nbPos),
-    allMissing_(true),
-    allPresent_(true)
+    allPresent_(true),
+    allMissing_(true)
 {
   obsData_.resize(nbPos);
   y_.resize(nbPos);
@@ -51,8 +51,8 @@ RankIndividual::RankIndividual(const RankVal& rv) :
     nbPos_(rv.nbPos()),
     lnFacNbPos_(- std::log(fac(nbPos_))),
     x_(rv),
-    allMissing_(true),
-    allPresent_(true)
+    allPresent_(true),
+    allMissing_(true)
 {
   obsData_.resize(nbPos_);
   y_.resize(nbPos_);
@@ -528,14 +528,6 @@ std::list<RankVal> RankIndividual::enumCompleted() const {
                              completedVec); // completedVec
 
   return rankList;
-}
-
-bool RankIndividual::allMissing() const {
-  return allMissing_;
-}
-
-bool RankIndividual::allPresent() const {
-  return allPresent_;
 }
 
 /** Is a value authorized for a particular MisVal ? */

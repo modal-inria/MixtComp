@@ -39,6 +39,12 @@ enum zCondition {
   allZAuthorized_
 };
 
+enum allZ {
+  allZ0_,
+  allZ1_,
+  mixZ0Z1_
+};
+
 class BOSPath
 {
   public:
@@ -153,13 +159,12 @@ class BOSPath
                            Real pi,
                            zCondition zCond);
 
-    /** Compute the number of z at 1 in path_ */
-    int nbZ() const;
-
     /**
      * Check if all the z in the path are at 1 or not */
-    bool allZ0() const;
-    bool allZ1() const;
+    allZ allZ() const {return allZ_;}
+
+    /** Compute the number of z at 1 in path_ */
+    int nbZ() const {return nbZ_;}
 
     const Vector<int, 2>& eInit() const {return eInit_;}
     const Vector<BOSNode>& c() const {return c_;}
@@ -168,6 +173,8 @@ class BOSPath
     int nbNode() const {return nbNode_;}
 
   private:
+    void computeNbZ();
+
     MultinomialStatistic multi_;
 
     Vector<int, 2> eInit_;
@@ -175,9 +182,9 @@ class BOSPath
     Vector<int, 2> endCond_;
 
     int nbNode_;
+    int nbZ_;
 
-    bool allZ0_;
-    bool allZ1_;
+    enum allZ allZ_;
 };
 
 /**

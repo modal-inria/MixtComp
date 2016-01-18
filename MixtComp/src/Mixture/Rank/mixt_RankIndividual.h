@@ -175,11 +175,11 @@ class RankIndividual
 
     /** Is the individual completely observed ? This is used to determine if statistics for a partially observed
      * individual have to be computed / exported */
-    bool allPresent() const;
+    bool allPresent() const {return allPresent_;}
 
     /** Is the individual completely missing ? In that case its observed probability is 1. for example, whatever
      * the parameters.  */
-    bool allMissing() const;
+    bool allMissing() const {return allMissing_;}
 
     /** Check if the modalities in positions pos and pos + 1 can be permuted */
     bool checkPermutation(int pos) const;
