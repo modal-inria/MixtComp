@@ -549,7 +549,7 @@ std::vector<std::string> MixtureComposer::mixtureName() const
   return names;
 }
 
-void MixtureComposer::removeMissing(AlgoType algo) {
+void MixtureComposer::removeMissing(initParam algo) {
   initializeTik();
   sStepNoCheck();
   updateListInd();

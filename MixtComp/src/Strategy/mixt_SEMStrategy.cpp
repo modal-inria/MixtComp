@@ -95,7 +95,7 @@ std::string SemStrategy::initSEM() {
 
   for (int n = 0; n < nbSamplingAttempts; ++n) { // multiple initialization attempts
     p_composer_->initializeProp(); // reset prop
-    p_composer_->removeMissing(SEM_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+    p_composer_->removeMissing(initParam_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
     if (n < nbSamplingAttempts - 1) {
       if (p_composer_->checkSampleCondition() == 1) { // log is not generated, since further trials are expected
@@ -147,7 +147,7 @@ RunProblemType SemStrategy::runSEM(SamplerType sampler) {
 }
 
 void SemStrategy::initGibbs() {
-  p_composer_->removeMissing(Gibbs_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+  p_composer_->removeMissing(keepParam_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 }
 
 void SemStrategy::runGibbs() {

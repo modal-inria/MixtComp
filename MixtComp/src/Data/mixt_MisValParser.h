@@ -28,7 +28,7 @@
 #include "boost/regex.hpp"
 
 #include "../IO/mixt_IO.h"
-#include "../Various/mixt_Def.h"
+#include "../Various/mixt_Enum.h"
 
 namespace mixt
 {

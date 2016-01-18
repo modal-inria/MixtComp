@@ -31,7 +31,7 @@
 
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_PoissonStatistic.h"
-#include "../../Various/mixt_Def.h"
+#include "../../Various/mixt_Enum.h"
 
 namespace mixt
 {

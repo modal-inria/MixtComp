@@ -25,7 +25,7 @@
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../IO/mixt_IO.h"
-#include "../../Various/mixt_Def.h"
+#include "../../Various/mixt_Enum.h"
 
 namespace mixt
 {

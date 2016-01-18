@@ -77,10 +77,9 @@ enum SamplerType
   GibbsSampler_
 };
 
-enum AlgoType
-{
-  SEM_,
-  Gibbs_
+enum initParam {
+  initParam_,
+  keepParam_
 };
 
 } // namespace mixt

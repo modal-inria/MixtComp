@@ -31,12 +31,13 @@
 #include <vector>
 #include <map>
 #include <Rcpp.h>
+
 #include "boost/regex.hpp"
 #include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 #include "MixtComp/src/Data/mixt_AugmentedData.h"
 #include "MixtComp/src/Data/mixt_MisValParser.h"
-#include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/IO/mixt_IO.h"
+#include "MixtComp/src/Various/mixt_Enum.h"
 
 namespace mixt
 {

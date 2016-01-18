@@ -27,11 +27,11 @@
 #include "mixt_Function.h"
 #include "MixtComp/src/mixt_MixtComp.h"
 #include "MixtComp/src/IO/Dummy.h"
-#include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/Various/mixt_Timer.h"
 #include "MixtComp/src/Various/mixt_Constants.h"
 #include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 #include "MixtComp/src/IO/mixt_IO.h"
+#include "MixtComp/src/Various/mixt_Enum.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List dataList,

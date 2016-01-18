@@ -29,7 +29,8 @@
 #include <set>
 
 #include "../../LinAlg/mixt_LinAlg.h"
-#include "../../Various/mixt_Def.h"
+
+#include "../../Various/mixt_Enum.h"
 
 namespace mixt
 {

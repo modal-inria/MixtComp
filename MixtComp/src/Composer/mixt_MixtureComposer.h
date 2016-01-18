@@ -32,7 +32,7 @@
 #include "../Data/mixt_ClassDataStat.h"
 #include "../Sampler/mixt_ClassSampler.h"
 #include "../Mixture/mixt_IMixture.h"
-#include "../Various/mixt_Def.h"
+#include "../Various/mixt_Enum.h"
 #include "../Param/mixt_ConfIntParamStat.h"
 
 namespace mixt
@@ -348,7 +348,7 @@ class MixtureComposer
      * */
     std::vector<std::string> mixtureName() const;
 
-    void removeMissing(AlgoType algo);
+    void removeMissing(initParam algo);
 
     /**
      * Compute the "raw" class ID matrix E_kj

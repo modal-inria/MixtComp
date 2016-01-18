@@ -28,8 +28,9 @@
 #include <map>
 #include <set>
 
-#include "../Various/mixt_Def.h"
 #include "../LinAlg/mixt_LinAlg.h"
+
+#include "../../Various/mixt_Enum.h"
 #include "../Statistic/mixt_Statistic.h"
 #include "mixt_RankVal.h"
 

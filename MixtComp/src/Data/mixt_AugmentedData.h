@@ -29,10 +29,10 @@
 #include <utility>
 #include <vector>
 #include "../LinAlg/mixt_LinAlg.h"
-#include "../Various/mixt_Def.h"
 #include "../Various/mixt_Constants.h"
 #include "../Statistic/mixt_UniformStatistic.h"
 #include "../Statistic/mixt_MultinomialStatistic.h"
+#include "../Various/mixt_Enum.h"
 
 namespace mixt
 {

@@ -23,8 +23,8 @@
 
 #include <iostream>
 #include "mixt_DataExtractorR.h"
-#include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/LinAlg/mixt_LinAlg.h"
+#include "MixtComp/src/Various/mixt_Enum.h"
 
 namespace mixt
 {

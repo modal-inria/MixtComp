@@ -41,7 +41,7 @@ std::string GibbsStrategy::run()
 {
   std::string warnLog;
 
-  p_composer_->removeMissing(Gibbs_);
+  p_composer_->removeMissing(keepParam_);
 
   Timer myTimer;
   myTimer.setName("Gibbs: burn-in");

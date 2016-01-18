@@ -24,7 +24,7 @@
 #include "mixt_Poisson_k.h"
 #include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
-#include "../../Various/mixt_Def.h"
+#include "../../Various/mixt_Enum.h"
 
 namespace mixt
 {

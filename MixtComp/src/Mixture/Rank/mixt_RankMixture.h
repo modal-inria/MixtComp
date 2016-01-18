@@ -255,7 +255,7 @@ class RankMixture : public IMixture
       return class_[k].lnObservedProbability(i);
     }
 
-    void removeMissing(AlgoType algo)
+    void removeMissing(initParam algo)
     {
       for (int i = 0; i < nbInd_; ++i)
       {

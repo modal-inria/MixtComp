@@ -27,8 +27,8 @@
 #include "mixt_ParamSetterR.h"
 #include "mixt_Function.h"
 #include "MixtComp/src/mixt_MixtComp.h"
-#include "MixtComp/src/Various/mixt_Def.h"
 #include "MixtComp/src/Various/mixt_Timer.h"
+#include "MixtComp/src/Various/mixt_Enum.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompPredict(Rcpp::List dataList,

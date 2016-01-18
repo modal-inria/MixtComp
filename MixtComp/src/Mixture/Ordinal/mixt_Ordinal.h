@@ -451,15 +451,15 @@ class Ordinal : public IMixture
      * validity, it is necessary to perform nbGibbsIniBOS iterations of GibbsSampling with a pi at piInitBOS to generate variability in z. This will ensure
      * that pi will not likely be equal to 0 at the first mStep estimation. In any case, should this occur, the initialization will ultimately be
      * rejected by a call to checkSampleCondition. */
-    void removeMissing(AlgoType algo) {
+    void removeMissing(initParam algo) {
       Vector<int> tempMu(nbClass_);
 
-      if (algo == SEM_) {
+      if (algo == initParam_) {
         for (int k = 0; k < nbClass_; ++k) {
           tempMu(k) = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
         }
       }
-      else if (algo == Gibbs_) {
+      else if (algo == keepParam_) {
         for (int k = 0; k < nbClass_; ++k) {
           tempMu(k) = mu_(k); // during the Gibbs phase, mu is already known and can be used for initialization
         }

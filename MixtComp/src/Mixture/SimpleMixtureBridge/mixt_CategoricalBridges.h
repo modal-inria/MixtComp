@@ -25,7 +25,7 @@
 #ifndef MIXT_CATEGORICALBRIDGES_H
 #define MIXT_CATEGORICALBRIDGES_H
 
-#include "../../Various/mixt_Def.h"
+#include "../../Various/mixt_Enum.h"
 #include "mixt_Categorical_pjk.h"
 #include "../../Sampler/mixt_CategoricalSampler.h"
 #include "../../Data/mixt_CategoricalDataStat.h"

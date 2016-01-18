@@ -22,7 +22,7 @@
  **/
 
 #include "mixt_PoissonLikelihood.h"
-#include "../Various/mixt_Def.h"
+#include "../Various/mixt_Enum.h"
 #include "../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
