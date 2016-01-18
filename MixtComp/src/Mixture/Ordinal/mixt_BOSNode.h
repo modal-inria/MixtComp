@@ -42,7 +42,7 @@ class BOSNode
     Vector<int, 2> e_; // final segment for current iteration, as an index of the partition
 
     /**
-     * Compute the probability of a given segment conditionaly to the partition and y of the node
+     * Compute the probability of a given segment conditionally to the partition and y of the node
      *
      * @param mu localization parameter (mode) of the distribution
      * @param pi precision parameter of the distribution

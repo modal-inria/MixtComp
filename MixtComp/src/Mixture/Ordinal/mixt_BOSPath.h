@@ -36,14 +36,11 @@ namespace mixt
 class BOSPath
 {
   public:
-    Vector<int, 2> eInit_;
-    Vector<BOSNode> c_;
-    Vector<int, 2> endCond_;
-
-    int nbNode_;
-
     void setInit(int a, int b);
     void setEnd(int a, int b);
+
+    /** Used for debug / test, because in a standard run, should be initialized using removeMissing */
+    void setC(const Vector<BOSNode>& c);
 
     /**
      * Joint probability on the whole BOSPath (path + end condition)
@@ -158,7 +155,20 @@ class BOSPath
     bool allZ0() const;
     bool allZ1() const;
 
+    const Vector<int, 2>& eInit() const {return eInit_;}
+    const Vector<BOSNode>& c() const {return c_;}
+    const Vector<int, 2>& endCond() const {return endCond_;}
+
+    int nbNode() const {return nbNode_;}
+
+  private:
     MultinomialStatistic multi_;
+
+    Vector<int, 2> eInit_;
+    Vector<BOSNode> c_;
+    Vector<int, 2> endCond_;
+
+    int nbNode_;
 };
 
 /**

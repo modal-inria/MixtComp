@@ -37,10 +37,16 @@ TEST(BOSPath, computeLogProba0)
   path.setInit(0, 1);
   path.setEnd(0, 1);
 
-  path.c_(0).y_ = 1; // second element y picked, proba 0.5
-  path.c_(0).z_ = 1; // comparison is perfect, proba 0.5
-  path.c_(0).partition(path.eInit_); // computation of the partition
-  path.c_(0).e_ << 1, 1; // segment is {1}, proba 1.
+  Vector<int, 2> eInit;
+  eInit << 0, 1;
+
+  Vector<BOSNode> c(1);
+  c(0).y_ = 1; // second element y picked, proba 0.5
+  c(0).z_ = 1; // comparison is perfect, proba 0.5
+  c(0).partition(eInit); // computation of the partition
+  c(0).e_ << 1, 1; // segment is {1}, proba 1.
+
+  path.setC(c);
 
   Real expectedProba = std::log(0.5 * 0.5 * 1.);
   Real computedProba = path.computeLogProba(mu,
@@ -61,15 +67,22 @@ TEST(BOSPath, computeLogProba1)
   path.setInit(0, 2);
   path.setEnd(0, 0);
 
-  path.c_(0).y_ = 1; // y, middle element y picked, proba 1./3.
-  path.c_(0).z_ = 0; // z, comparison is imperfect, proba 0.5
-  path.c_(0).partition(path.eInit_); // computation of the partition
-  path.c_(0).e_ << 0, 0; // e, left segment {0, 0} selected, proba 0.33 (all have the same size)
+  Vector<int, 2> eInit;
+  eInit << 0, 2;
 
-  path.c_(1).y_ = 0; // y, only one element to choose from, proba 1.
-  path.c_(1).z_ = 1; // z, comparison is perfect, proba 0.5
-  path.c_(1).partition(path.c_(0).e_); // computation of the partition
-  path.c_(1).e_ << 0, 0; // e, only one segment in partition, with proba 1.
+  Vector<BOSNode> c(2);
+
+  c(0).y_ = 1; // y, middle element y picked, proba 1./3.
+  c(0).z_ = 0; // z, comparison is imperfect, proba 0.5
+  c(0).partition(eInit); // computation of the partition
+  c(0).e_ << 0, 0; // e, left segment {0, 0} selected, proba 0.33 (all have the same size)
+
+  c(1).y_ = 0; // y, only one element to choose from, proba 1.
+  c(1).z_ = 1; // z, comparison is perfect, proba 0.5
+  c(1).partition(path.c()(0).e_); // computation of the partition
+  c(1).e_ << 0, 0; // e, only one segment in partition, with proba 1.
+
+  path.setC(c);
 
   Real expectedProba = std::log(1./3. * 0.5 * 1./3. *
                                 1.    * 0.5 * 1.);
@@ -109,8 +122,8 @@ TEST(BOSPath, initPath)
 
     path.initPath();
 
-    if (!(path.endCond_(0)                <= path.c_(path.nbNode_ - 1).e_(0) &&
-        path.c_(path.nbNode_ - 1).e_(0) <= path.endCond_(1)                    ))
+    if (!(path.endCond()(0)             <= path.c()(path.nbNode() - 1).e_(0) &&
+        path.c()(path.nbNode() - 1).e_(0) <= path.endCond()(1)                  ))
     {
       validPath = false;
     }
@@ -210,7 +223,7 @@ TEST(BOSPath, ArbitraryGibbs)
                       pi,
                       sizeTupleBOS,
                       true);
-      int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
+      int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
       computedProba(x) += 1.; // the new occurrence of x is stored
     }
 
@@ -276,7 +289,7 @@ TEST(BOSPath, forwardSamplePath)
     path.forwardSamplePath(mu,
                            pi,
                            az);
-    int x = path.c_(path.nbNode_-1).e_(0); // x is sampled here
+    int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
     computedProba(x) += 1.; // the new occurrence of x is stored
   }
   computedProba /= computedProba.sum();

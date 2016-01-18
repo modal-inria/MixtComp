@@ -309,7 +309,7 @@ class Ordinal : public IMixture
           path.forwardSamplePath(mu_(k), // complete the individual
                                  pi_(k),
                                  true); // allZOneAuthorized, to estimate probability distribution, all z can be sampled to 1
-          nbInd(path.c_(nbModality_ - 2).e_(0)) += 1.; // register the x value, for marginalization
+          nbInd(path.c()(nbModality_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / Real(nbSampleObserved);
       }
@@ -671,8 +671,8 @@ class Ordinal : public IMixture
       for (int i = 0; i < nbInd_; ++i)
       {
         int indClass = (*p_zi_)(i);
-        zPerClass   (indClass) += path_(i).nbZ()  ; // add only z = 1 nodes of the individual
-        nodePerClass(indClass) += path_(i).nbNode_; // add all nodes of the individual
+        zPerClass   (indClass) += path_(i).nbZ()   ; // add only z = 1 nodes of the individual
+        nodePerClass(indClass) += path_(i).nbNode(); // add all nodes of the individual
       }
 
       pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
@@ -705,7 +705,7 @@ class Ordinal : public IMixture
     /** update the data using the last segment in c_. to be used after sampling in the BOSPath. */
     void copyToData(int ind)
     {
-      augData_.data_(ind) = path_(ind).c_(nbModality_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
+      augData_.data_(ind) = path_(ind).c()(nbModality_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
     /** Pointer to the zik class label */

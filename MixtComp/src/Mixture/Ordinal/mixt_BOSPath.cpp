@@ -42,6 +42,10 @@ void BOSPath::setEnd(int a, int b)
   endCond_(1) = b;
 };
 
+void BOSPath::setC(const Vector<BOSNode>& c) {
+  c_ = c;
+}
+
 Real BOSPath::computeLogProba(int mu,
                               Real pi) const
 {
@@ -490,11 +494,11 @@ void BOSDisplaySegNode(const BOSNode& node)
 
 void BOSDisplayPath(const BOSPath& path)
 {
-  std::cout << "path.eInit_(0): " << path.eInit_(0) << ", path.eInit_(1): " << path.eInit_(1) << std::endl;
-  for (int node = 0; node < path.c_.size(); ++node)
+  std::cout << "path.eInit()(0): " << path.eInit()(0) << ", path.eInit()(1): " << path.eInit()(1) << std::endl;
+  for (int node = 0; node < path.c().size(); ++node)
   {
     std::cout << "node: " << node << std::endl;
-    BOSDisplaySegNode(path.c_(node));
+    BOSDisplaySegNode(path.c()(node));
   }
 }
 
