@@ -210,7 +210,7 @@ TEST(BOSPath, ArbitraryGibbs)
       path.samplePath(mu,
                       pi,
                       sizeTupleBOS,
-                      true);
+                      allZAuthorized_);
     }
 
     for (int iter = 0; iter < nbIterRun; ++iter)
@@ -222,7 +222,7 @@ TEST(BOSPath, ArbitraryGibbs)
       path.samplePath(mu,
                       pi,
                       sizeTupleBOS,
-                      true);
+                      allZAuthorized_);
       int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
       computedProba(x) += 1.; // the new occurrence of x is stored
     }
@@ -278,9 +278,6 @@ TEST(BOSPath, forwardSamplePath)
   std::cout << "mu: " << mu << ", pi: " << pi << std::endl;
 #endif
 
-  Vector<bool, 2> az;
-  az = true;
-
   for (int iter = 0; iter < nbIter; ++iter)
   {
 #ifdef MC_DEBUG
@@ -288,7 +285,7 @@ TEST(BOSPath, forwardSamplePath)
 #endif
     path.forwardSamplePath(mu,
                            pi,
-                           az);
+                           allZAuthorized_);
     int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
     computedProba(x) += 1.; // the new occurrence of x is stored
   }
@@ -324,7 +321,7 @@ TEST(BOSPath, allZOneAuthorizedForward)
   {
     path.forwardSamplePath(mu,
                            pi,
-                           false);
+                           allZ1Forbidden_);
     nbZ(n) = path.nbZ();
 
 #ifdef MC_DEBUG
@@ -360,15 +357,12 @@ TEST(BOSPath, allZOneAuthorizedGibbs)
 
   path.initPath(); // random init with all z = 0, to ensure a valid complete individual
 
-  Vector<bool, 2> az;
-  az = false; // individual with all z = 0 and all z = 1 are forbidden
-
   for (int iter = 0; iter < nbItBurnIn; ++iter)
   {
     path.samplePath(mu,
                     pi,
                     sizeTupleBOS,
-                    az);
+                    allZ1Forbidden_);
   }
 
   for (int iter = 0; iter < nbItRun; ++iter)
@@ -376,7 +370,7 @@ TEST(BOSPath, allZOneAuthorizedGibbs)
     path.samplePath(mu,
                     pi,
                     sizeTupleBOS,
-                    az);
+                    allZ1Forbidden_);
     nbZ(iter) = path.nbZ();
   }
 

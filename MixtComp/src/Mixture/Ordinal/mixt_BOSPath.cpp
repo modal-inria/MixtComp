@@ -49,9 +49,6 @@ void BOSPath::setC(const Vector<BOSNode>& c) {
 Real BOSPath::computeLogProba(int mu,
                               Real pi) const
 {
-#ifdef MC_DEBUG
-  std::cout << "BOSPath::computeProba" << std::endl;
-#endif
   Real logProba = 0.; // The initial probability of being in any of the member of the input interval is 1
 
   int lastSeg = c_(nbNode_ - 1).e_(0); // last segment only contains one element
@@ -59,9 +56,6 @@ Real BOSPath::computeLogProba(int mu,
   {
     for (int node = 0; node < nbNode_; ++node) // loop over each BOSNode in c
     {
-#ifdef MC_DEBUG
-      std::cout << "node: " << node << std::endl;
-#endif
       Real yLogProba;
       if (node == 0)
       {
@@ -74,9 +68,6 @@ Real BOSPath::computeLogProba(int mu,
       Real zLogProba = c_(node).zLogProba(pi);
       Real eLogProba = c_(node).eLogProba(mu,
                                  pi);
-#ifdef MC_DEBUG
-      std::cout << "yLogProba: " << yLogProba << ", zLogProba: " << zLogProba << ", eLogProba: " << eLogProba << std::endl;
-#endif
       logProba += yLogProba + zLogProba + eLogProba;
     }
   }
@@ -92,12 +83,8 @@ void BOSPath::tupleMultinomial(int mu,
                                int sizeTuple,
                                std::list<Vector<BOSNode> >& pathList,
                                Vector<Real>& probaVec,
-                               const Vector<bool, 2>& az) const
+                               zCondition zCond) const
 {
-#ifdef MC_DEBUG
-  std::cout << "BOSPath::tupleMultinomial" << std::endl;
-#endif
-
   std::list<Real> probaList;
   Vector<BOSNode> tuple(sizeTuple); // a specific path is used for this computation, instead of c
 
@@ -110,30 +97,17 @@ void BOSPath::tupleMultinomial(int mu,
                   pathList, // paths will be appended to pathList, so that the function calling tupleMultinomial will be able to sample one using the corresponding probaList
                   probaList,
                   tuple,
-                  az); // a specific path is used for this computation, instead of c) const
+                  zCond); // a specific path is used for this computation, instead of c) const
 
   int nbPath = probaList.size(); // conversion from list of logs to categorical density distribution, similar to eStep conversion
-
-#ifdef MC_DEBUG
-  std::cout << "nbPath: " << nbPath << std::endl;
-#endif
 
   Vector<Real> logProba(nbPath);
   std::list<Real>::const_iterator it = probaList.begin();
   for (int i = 0; i < nbPath; ++i, ++it)
   {
-#ifdef MC_DEBUG
-    std::cout << "i: " << i << " / " << nbPath << std::endl;
-#endif
 
     logProba(i) = *it;
   }
-
-#ifdef MC_DEBUG
-  if (logProba.size() == 0) {
-    std::cout << "BOSPath::tupleMultinomial, logProba.size() == 0, mu: " << mu << ", pi: " << pi << ", startIndex: " << startIndex << ", sizeTuple: " << sizeTuple << std::endl;
-  }
-#endif
 
   probaVec.logToMulti(logProba);
 }
@@ -146,16 +120,9 @@ void BOSPath::nodeMultinomial(int mu,
                               std::list<Vector<BOSNode> >& pathList,
                               std::list<Real>& probaList,
                               Vector<BOSNode>& tuple,
-                              const Vector<bool, 2>& az) const
+                              zCondition zCond) const
 {
   int tupleIndex = currIndex - startIndex; // relative index inside the tuple
-#ifdef MC_DEBUG
-  std::cout << "BOSPath::nodeMultinomial, startIndex: " << startIndex
-            << ", currIndex: " << currIndex
-            << ", tupleIndex: " << tupleIndex
-            << ", tuple.size(): " << tuple.size()
-            << ", logProba: " << logProba << std::endl;
-#endif
 
   Vector<int, 2> firstSeg;
   if (tupleIndex == 0) // is this the beginning of the tuple ?
@@ -173,11 +140,6 @@ void BOSPath::nodeMultinomial(int mu,
   {
     firstSeg = tuple(tupleIndex - 1).e_;
   }
-
-#ifdef MC_DEBUG
-  std::cout << "firstSeg" << std::endl;
-  std::cout << firstSeg << std::endl;
-#endif
 
   for (tuple(tupleIndex).y_ = firstSeg(0)    ;
        tuple(tupleIndex).y_ < firstSeg(1) + 1;
@@ -208,7 +170,7 @@ void BOSPath::nodeMultinomial(int mu,
                             pathList,
                             probaList,
                             tuple,
-                            az); // a specific path is used for this computation, instead of c) const
+                            zCond); // a specific path is used for this computation, instead of c) const
           }
           else // next element is the end condition. pathList and probaList must eventually be filled.
           {
@@ -220,7 +182,7 @@ void BOSPath::nodeMultinomial(int mu,
                            tuple,
                            pathList,
                            probaList,
-                           az);
+                           zCond);
           }
         }
         else // null probability result in no action
@@ -239,11 +201,11 @@ void BOSPath::endMultinomial(int mu,
                              const Vector<BOSNode>& tuple,
                              std::list<Vector<BOSNode> >& pathList,
                              std::list<Real>& probaList,
-                             const Vector<bool, 2>& az) const
+                             zCondition zCond) const
 {
   Vector<int, 2> lastSegment = tuple(tuple.size() - 1).e_;
 
-  if (az != true) // Shall we check that "if tuple is copied into c_, this will result in a c_ where all z = 0 or z = 1" ?
+  if (zCond != allZAuthorized_) // Shall we check that "if tuple is copied into c_, this will result in a c_ where all z = 0 or z = 1" ?
   {
     int nbZOne = 0;
     for (int n = 0; n < nbNode_; ++n)
@@ -258,11 +220,7 @@ void BOSPath::endMultinomial(int mu,
       }
     }
 
-#ifdef MC_DEBUG
-    std::cout << "BOSPath::endMultinomial, az: " << az.transpose() << ", nbZOne: " << nbZOne << std::endl;
-#endif
-
-    if ((!az(0) && nbZOne == 0) || (!az(1) && nbZOne == nbNode_)) // all z = 1, therefore the tuple can not be considered a correct candidate
+    if ((zCond == allZ0Forbidden_ && nbZOne == 0) || (zCond == allZ1Forbidden_ && nbZOne == nbNode_)) // all z = 1, therefore the tuple can not be considered a correct candidate
     {
       return; // this completion of the individual does not satisfy the constraints on the latent variable z
     }
@@ -270,9 +228,6 @@ void BOSPath::endMultinomial(int mu,
 
   if (currIndex < nbNode_) // is this end condition a node ? In this case, the conditional probabilities must be computed inside that node
   {
-#ifdef MC_DEBUG
-    std::cout << "not the last node" << std::endl;
-#endif
     BOSNode endNode = c_(currIndex); // copy of the ending node
     endNode.partition(lastSegment); // computation of the partition in the ending node, using the resulting segment of the last node of the tuple
 
@@ -305,17 +260,10 @@ void BOSPath::endMultinomial(int mu,
 
 void BOSPath::initPath()
 {
-#ifdef MC_DEBUG
-  std::cout << "initPath" << std::endl;
-  std::cout << "endCond_(0): " << endCond_(0) << ", endCond_(1): " << endCond_(1) << std::endl;
-#endif
   Vector<int, 2> currSeg = eInit_;
 
   for (int i = 0; i < nbNode_; ++i) // loop to fill all the elements of the path
   {
-#ifdef MC_DEBUG
-    std::cout << "i: " << i << std::endl;
-#endif
     c_(i).y_ = multi_.sampleInt(currSeg(0), currSeg(1)); // uniform sampling of z
     c_(i).partition(currSeg); // compute the partition, where y cuts into currSeg
     c_(i).z_ = 0; // comparisons are all blind in initialization
@@ -334,37 +282,21 @@ void BOSPath::initPath()
     }
     segProba /= segProba.sum();
     int sampleSeg = multi_.sample(segProba);
-#ifdef MC_DEBUG
-    std::cout << "segProba" << std::endl;
-    std::cout << segProba << std::endl;
-    std::cout << "sampleSeg: " << sampleSeg << std::endl;
-#endif
+
     c_(i).e_ = c_(i).part_(sampleSeg);
     currSeg = c_(i).e_; // initial segment used for next node
-#ifdef MC_DEBUG
-    std::cout << "currNode" << std::endl;
-    BOSDisplaySegNode(c_(i));
-#endif
   }
 }
 
 void BOSPath::samplePath(int mu,
                          Real pi,
                          int sizeTupleMax,
-                         const Vector<bool, 2>& az)
+                         zCondition zCond)
 {
   int sizeTuple = std::min(nbNode_, sizeTupleMax);
 
-#ifdef MC_DEBUG
-  std::cout << "BOSPath::samplePath, nbNode_: " << nbNode_ << ", sizeTupleMax: " << sizeTupleMax << ", sizeTuple: " << sizeTuple << std::endl;
-#endif
-
   for (int startIndex = 0; startIndex < nbNode_ - sizeTuple + 1; ++startIndex)
   {
-#ifdef MC_DEBUG
-    std::cout << "node: " << startIndex << " / " << nbNode_ - sizeTuple + 1 << std::endl;
-#endif
-
     // computation of the possible node values and associated probabilities
     std::list<Vector<BOSNode> > pathList;
     Vector<Real> probaVec;
@@ -375,25 +307,9 @@ void BOSPath::samplePath(int mu,
                      sizeTuple,
                      pathList,
                      probaVec,
-                     az);
+                     zCond);
 
     // sampling and replacement in the path
-#ifdef MC_DEBUG
-    std::cout << "probaVec.size(): " << probaVec.size() << std::endl;
-    std::cout << "pathList.size(): " << pathList.size() << std::endl;
-    std::cout << "probaVec: " << probaVec << std::endl;
-    std::cout << "pathList" << std::endl;
-    for(std::list<Vector<BOSNode, 2> >::iterator it = pathList.begin();
-        it != pathList.end();
-        ++it)
-    {
-      for (int currNode = 0; currNode < sizeTuple; ++currNode) // copy sampled tuple inside the path
-      {
-        std::cout << "displaySegNode: " << currNode << std::endl;
-        BOSDisplaySegNode((*it)(currNode));
-      }
-    }
-#endif
 
     int pathSampled = multi_.sample(probaVec); // sample one the path provided by tupleMultinomial
     std::list<Vector<BOSNode> >::const_iterator it = pathList.begin();
@@ -405,33 +321,18 @@ void BOSPath::samplePath(int mu,
     {
       c_[startIndex + currNode] = (*it)(currNode);
     }
-
-#ifdef MC_DEBUG
-    std::cout << "end of node iteration inside samplePath, displayPath:" << std::endl;
-    BOSDisplayPath(*this);
-#endif
-
   }
 }
 
 void BOSPath::forwardSamplePath(int mu,
                                 Real pi,
-                                const Vector<bool, 2>& az)
+                                zCondition zCond)
 {
-#ifdef MC_DEBUG
-    std::cout << "BOSPath::forwardSamplePath, mu: " << mu << ", pi: " << pi
-              << ", az: " << itString(az) << ", nbNode_: " << nbNode_ << std::endl;
-#endif
-
   Vector<int, 2> seg = eInit_;
   Vector<Real> currProba;
 
   while (true) // pi = 1 results in an infinite loop, but this is not an admissible value for pi (and should have been rejected earlier in any code)
   {
-#ifdef MC_DEBUG
-    std::cout << "BOSPath::forwardSamplePath, nbSample: " << nbSample << std::endl;
-#endif
-
     for (int n = 0; n < nbNode_; ++n)
     {
       BOSNode& currNode = c_(n);
@@ -452,9 +353,9 @@ void BOSPath::forwardSamplePath(int mu,
       seg = currNode.e_;
     }
 
-    if (!((az(0) && nbZ() == 0) || (az(1) && nbZ() == nbNode_)))
+    if (!((zCond == allZ0Forbidden_ && nbZ() == 0) || (zCond == allZ1Forbidden_ && nbZ() == nbNode_)))
     {
-      return;
+      return; // individual is valid, no need for further sample
     }
   }
 }

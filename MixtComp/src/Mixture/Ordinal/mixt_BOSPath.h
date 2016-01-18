@@ -33,6 +33,12 @@
 namespace mixt
 {
 
+enum zCondition {
+  allZ0Forbidden_,
+  allZ1Forbidden_,
+  allZAuthorized_
+};
+
 class BOSPath
 {
   public:
@@ -68,7 +74,7 @@ class BOSPath
                           int sizeTuple,
                           std::list<Vector<BOSNode> >& pathList,
                           Vector<Real>& probaVec,
-                          const Vector<bool, 2>& az) const;
+                          zCondition zCond) const;
 
     /**
      * Multinomial conditional probability distribution for the elements of the partition at a specific index.
@@ -93,7 +99,7 @@ class BOSPath
                          std::list<Vector<BOSNode> >& pathList,
                          std::list<Real>& probaList,
                          Vector<BOSNode>& tuple,
-                         const Vector<bool, 2>& az) const;
+                         zCondition zCond) const;
 
     /**
      * Compute the conditional probability of the end condition given the last node, and fill pathList and probaList.
@@ -113,7 +119,7 @@ class BOSPath
                         const Vector<BOSNode>& tuple,
                         std::list<Vector<BOSNode> >& pathList,
                         std::list<Real>& probaList,
-                        const Vector<bool, 2>& az) const;
+                        zCondition zCond) const;
 
     /**
      * Randomly initialize the path while being compatible with eInit and endCond constraints
@@ -133,7 +139,7 @@ class BOSPath
     void samplePath(int mu,
                     Real pi,
                     int sizeTupleMax,
-                    const Vector<bool, 2>& az);
+                    zCondition zCond);
 
     /**
      * Overwrite the complete path by sampling everything. Usually used when data is completely missing, or
@@ -145,7 +151,7 @@ class BOSPath
      */
     void forwardSamplePath(int mu,
                            Real pi,
-                           const Vector<bool, 2>& az);
+                           zCondition zCond);
 
     /** Compute the number of z at 1 in path_ */
     int nbZ() const;
@@ -169,6 +175,9 @@ class BOSPath
     Vector<int, 2> endCond_;
 
     int nbNode_;
+
+    bool allZ0_;
+    bool allZ1_;
 };
 
 /**

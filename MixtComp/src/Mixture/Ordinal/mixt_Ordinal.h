@@ -33,6 +33,11 @@
 namespace mixt
 {
 
+enum checkSample {
+  checkZ_,
+  noCheckZ_
+};
+
 template<typename DataHandler,
          typename DataExtractor,
          typename ParamSetter,
@@ -108,7 +113,7 @@ class Ordinal : public IMixture
           path_(i).samplePath(mu,
                               pi,
                               sizeTupleBOS,
-                              true); // allZOneAuthorized
+                              allZAuthorized_);
         }
       }
     }
@@ -232,12 +237,11 @@ class Ordinal : public IMixture
       std::cout << "ind: " << ind << std::endl;
       std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
 #endif
-      Vector<bool, 2> az;
-      az = false;
+
       GibbsSampling(ind,
                     mu_((*p_zi_)(ind)),
                     pi_((*p_zi_)(ind)),
-                    az); // in samplingStepCheck, each sampling must result in a valid state
+                    checkZ_); // in samplingStepCheck, each sampling must result in a valid state
       copyToData(ind);
     }
 
@@ -249,12 +253,10 @@ class Ordinal : public IMixture
       std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
 #endif
 
-      Vector<bool, 2> az;
-      az = true;
       GibbsSampling(ind,
                     mu_((*p_zi_)(ind)),
                     pi_((*p_zi_)(ind)),
-                    az); // in samplingStepCheck, allZOneAuthorized, no check on number of z values during samplingStepNoCheck
+                    noCheckZ_); // in samplingStepCheck, allZOneAuthorized, no check on number of z values during samplingStepNoCheck
       copyToData(ind);
     }
 
@@ -308,7 +310,7 @@ class Ordinal : public IMixture
         {
           path.forwardSamplePath(mu_(k), // complete the individual
                                  pi_(k),
-                                 true); // allZOneAuthorized, to estimate probability distribution, all z can be sampled to 1
+                                 allZAuthorized_); // to estimate probability distribution, all z can be sampled to 1
           nbInd(path.c()(nbModality_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / Real(nbSampleObserved);
@@ -466,12 +468,10 @@ class Ordinal : public IMixture
       for (int i = 0; i < nbInd_; ++i) {
         path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
         for (int n = 0; n < nbGibbsIniBOS; ++n) { // n rounds of Gibbs sampling to increase variability on z
-          Vector<bool, 2> az;
-          az = true;  // in initialization, checkSampleCondition is called globally just after the removeMissing, so no need for early check
           GibbsSampling(i,
                         tempMu((*p_zi_)(i)),
                         piInitBOS,
-                        az);
+                        noCheckZ_);
         }
 
         copyToData(i);
@@ -565,11 +565,13 @@ class Ordinal : public IMixture
     void GibbsSampling(int ind,
                        int mu,
                        Real pi,
-                       Vector<bool, 2> sampleAZ) {
-      Vector<bool, 2> az; // flag for this particular individual, by default all z = 0 or all z = 1 are not authorized by default
-      az = false;
+                       checkSample globalCheckSample) {
+      zCondition zCond = allZAuthorized_; // by default, everything will be authorized for the z sampled value
 
-      if (sampleAZ != true) { // if all z = 0 is not authorized and all other individuals already have z = 0, then current individual can not have z = 0
+      if (globalCheckSample == checkZ_) { // if all z = 0 is not authorized and all other individuals already have z = 0, then current individual can not have z = 0
+        bool allOtherZO = true; // are all z in other individuals equal to 0 ?
+        bool allOtherZ1 = true; // are all z in other individuals equal to 0 ?
+
         int currClass = (*p_zi_)(ind);
         for (std::set<int>::const_iterator it = classInd_(currClass).begin(), itE = classInd_(currClass).end();
              it != itE;
@@ -577,32 +579,38 @@ class Ordinal : public IMixture
           if (*it != ind) { // check is performed on all in the class but the current ind
             int nbZ = path_(*it).nbZ();
             if (nbZ != 0) { // at least one other individual has a non zero number of z = 1, therefor...
-              az(0) = true; // ... current individual is authorized to have all its z = 0
+              allOtherZO = false; // ... current individual is authorized to have all its z = 0
             }
             if (nbZ != nbModality_ - 1) {
-              az(1) = true;
+              allOtherZ1 = false;
             }
 
-            if (az == true) { // all values are authorized for current individual, stop checking
-              break;
+            if (allOtherZO == false && allOtherZ1 == false) { // all values are authorized for current individual, stop checking
+              goto endTest;
             }
           }
         }
-      }
-      else { // Note that the case where sampleAZ(0) != sampleAZ(1) is NOT implemented correctly, but is of no use as of today requirements.
-        az = true; // since all z = 0 and all z = 1 are authorized in the class, they are authorized for ind
+
+        if (allOtherZO == true) {
+          zCond = allZ0Forbidden_;
+        }
+        else if (allOtherZ1 == true) {
+          zCond = allZ1Forbidden_;
+        }
+
+        endTest:;
       }
 
       if (augData_.misData_(ind).first == missing_) { // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
         path_(ind).forwardSamplePath(mu,
                                      pi,
-                                     az);
+                                     zCond);
       }
       else { // perform one round of Gibbs sampler for the designated individual
         path_(ind).samplePath(mu,
                               pi,
                               sizeTupleBOS,
-                              az);
+                              zCond);
       }
     }
 
