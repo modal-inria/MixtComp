@@ -260,7 +260,7 @@ class Ordinal : public IMixture
       copyToData(ind);
     }
 
-    virtual void mStep(bool init)
+    virtual void mStep()
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;

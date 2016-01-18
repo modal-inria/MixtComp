@@ -146,63 +146,10 @@ class RankMixture : public IMixture
      * Gibbs sampler, which is a Markov Chain sampler that needs to be initialized. This is slightly different to the Ordinal model case, where the initialization
      * of the parameters is only here to ensure that all individuals are valid (not all z at 0). In the Rank model initialization, mu is chosen among all the
      * observed values of the class, while pi is initialized to a "neutral" value. */
-    void mStep(bool init)
-    {
-#ifdef MC_DEBUG
-      std::cout << "RankMixture::mStep" << std::endl;
-      for (int k = 0; k < nbClass_; ++k)
-      {
-        std::cout << "Beginning mStep, k: " << k << ", mu_[k]: " << mu_[k] << ", pi_[k]: " << pi_[k] << std::endl;
+    void mStep() {
+      for (int k = 0; k < nbClass_; ++k) {
+        class_[k].mStep();
       }
-#endif
-
-      if (init) // mu is initialized through direct sampling in each class
-      {
-        for (int k = 0; k < nbClass_; ++k)
-        {
-          MultinomialStatistic multi;
-          int sampleIndInClass = multi.sampleInt(0, classInd_[k].size() - 1); // individual sampled inside the class
-
-          int i = 0;
-          int sampleInd = -1;
-          for (std::set<int>::const_iterator it  = classInd_[k].begin(),
-                                             itE = classInd_[k].end();
-               it != itE;
-               ++it, ++i)
-          {
-            if (i == sampleIndInClass)
-            {
-              sampleInd = *it;
-              break;
-            }
-          }
-
-#ifdef MC_DEBUG
-          std::cout << "RankMixture::mStep, init, k: " << k << ", classInd_[k].size(): " << classInd_[k].size() << ", "
-                    << "sampleIndInClass, : " << sampleIndInClass << ", sampleInd: " << sampleInd << std::endl;
-#endif
-
-          mu_(k) = data_(sampleInd).x();
-          pi_(k) = piInitISR;
-        }
-      }
-      else // as initialization has been performed, mStep is done among candidates obtained through Gibbs sampling on mu, because space of mu is too large for direct optimization
-      {
-#ifdef MC_DEBUG
-        std::cout << "RankMixture::mStep, normal iteration" << std::endl;
-#endif
-        for (int k = 0; k < nbClass_; ++k)
-        {
-          class_[k].mStep();
-        }
-      }
-
-#ifdef MC_DEBUG
-      for (int k = 0; k < nbClass_; ++k)
-      {
-        std::cout << "RankMixture::mStep, k: " << k << ", mu_[k]: " << mu_[k] << ", pi_[k]: " << pi_[k] << std::endl;
-      }
-#endif
     }
 
     void storeSEMRun(int iteration,
@@ -255,11 +202,31 @@ class RankMixture : public IMixture
       return class_[k].lnObservedProbability(i);
     }
 
-    void removeMissing(initParam algo)
-    {
-      for (int i = 0; i < nbInd_; ++i)
-      {
+    void removeMissing(initParam init) {
+      for (int i = 0; i < nbInd_; ++i) {
         data_(i).removeMissing();
+      }
+
+      if (init == initParam_) { // mu is initialized through direct sampling in each class
+        for (int k = 0; k < nbClass_; ++k) {
+          MultinomialStatistic multi;
+          int sampleIndInClass = multi.sampleInt(0, classInd_[k].size() - 1); // individual sampled inside the class
+
+          int i = 0;
+          int sampleInd = -1;
+          for (std::set<int>::const_iterator it  = classInd_[k].begin(),
+                                             itE = classInd_[k].end();
+               it != itE;
+               ++it, ++i) {
+            if (i == sampleIndInClass) {
+              sampleInd = *it;
+              break;
+            }
+          }
+
+          mu_(k) = data_(sampleInd).x();
+          pi_(k) = piInitISR;
+        }
       }
     }
 

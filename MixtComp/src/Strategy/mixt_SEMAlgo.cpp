@@ -78,7 +78,7 @@ void SEMAlgo::run(RunType runType,
       p_composer_->samplingStepCheck();
     }
 
-    p_composer_->mStep(false);
+    p_composer_->mStep();
 
     if (runType == run_) {
       p_composer_->storeSEMRun(iter,

@@ -210,7 +210,7 @@ class MixtureBridge : public IMixture
     /**
      * Estimate parameters by maximum likelihood
      */
-    virtual void mStep(bool init)
+    virtual void mStep()
     {
 #ifdef MC_DEBUG
       std::cout << "mStep, idName_: " << idName_ << std::endl;

@@ -84,7 +84,7 @@ class MixtureComposer
      *  mixture parameters.
      *  @param[out] worstDeg worst degeneracy type incountered among all mixtures for this mStep
      **/
-    void mStep(bool init);
+    void mStep();
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model. Only called
