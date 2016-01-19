@@ -490,8 +490,7 @@ class Ordinal : public IMixture
       return at;
     }
 
-    int checkSampleCondition(std::string* warnLog = NULL) const
-    {
+    int checkSampleCondition(std::string* warnLog = NULL) const {
       for (int k = 0; k < nbClass_; ++k) {
         bool allZ0 = true;
         bool allZ1 = true; // are all z = 0 or all z = 1 in the current class ?
@@ -578,7 +577,7 @@ class Ordinal : public IMixture
       zCondition zCond = allZAuthorized_; // by default, everything will be authorized for the z sampled value
 
       if (globalCheckSample == checkZ_) { // if all z = 0 is not authorized and all other individuals already have z = 0, then current individual can not have z = 0
-        bool allOtherZO = true; // are all z in other individuals equal to 0 ?
+        bool allOtherZ0 = true; // are all z in other individuals equal to 0 ?
         bool allOtherZ1 = true; // are all z in other individuals equal to 0 ?
 
         int currClass = (*p_zi_)(ind);
@@ -588,23 +587,28 @@ class Ordinal : public IMixture
           if (*it != ind) { // check is performed on all in the class but the current ind
             switch (path_(*it).allZ()) {
               case allZ0_: {
-                allOtherZO = false; // ... current individual is authorized to have all its z = 0
+                allOtherZ1 = false; // ... current individual is authorized to have all its z = 1
               }
               break;
 
               case allZ1_: {
-                allOtherZ1 = false; // ... current individual is authorized to have all its z = 0
+                allOtherZ0 = false; // ... current individual is authorized to have all its z = 0
               }
               break;
+
+              case mixZ0Z1_: {
+                allOtherZ0 = false;
+                allOtherZ1 = false;
+              }
             }
 
-            if (allOtherZO == false && allOtherZ1 == false) { // all values are authorized for current individual, stop checking
+            if (allOtherZ0 == false && allOtherZ1 == false) { // all values are authorized for current individual, stop checking
               goto endTest;
             }
           }
         }
 
-        if (allOtherZO == true) {
+        if (allOtherZ0 == true) {
           zCond = allZ0Forbidden_;
         }
         else if (allOtherZ1 == true) {
