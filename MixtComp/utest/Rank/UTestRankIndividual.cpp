@@ -499,8 +499,8 @@ TEST(RankIndividual, sampleX) {
   std::cout << "gibbs burn-in, i: " << i << ", rankIndividual : " << rankIndividual.x() << std::endl;
 #endif
 
-    rankIndividual.sampleY(mu, pi);
-    rankIndividual.sampleX(mu, pi);
+    rankIndividual.sampleY(mu, pi, allGAuthorized_);
+    rankIndividual.sampleX(mu, pi, allGAuthorized_);
   }
 
   for (int i = 0; i < nbIteration; ++i) {
@@ -508,8 +508,8 @@ TEST(RankIndividual, sampleX) {
   std::cout << "gibbs run, i: " << i << ", rankIndividual : " << rankIndividual.x() << std::endl;
 #endif
 
-    rankIndividual.sampleY(mu, pi);
-    rankIndividual.sampleX(mu, pi);
+    rankIndividual.sampleY(mu, pi, allGAuthorized_);
+    rankIndividual.sampleX(mu, pi, allGAuthorized_);
 
     if (rankCount.find(rankIndividual.x()) == rankCount.end()) {
       rankCount[rankIndividual.x()] = 1;

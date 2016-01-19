@@ -357,9 +357,10 @@ void BOSPath::forwardSamplePath(int mu,
       seg = currNode.e_;
     }
 
+    computeNbZ();
+
     if (!((zCond == allZ0Forbidden_ && nbZ() == 0) || (zCond == allZ1Forbidden_ && nbZ() == nbNode_)))
     {
-      computeNbZ();
       return; // individual is valid, no need for further sample
     }
   }

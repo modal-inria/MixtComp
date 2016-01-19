@@ -38,7 +38,7 @@ void GaussianSampler::samplingStepCheck(int i,
                                         int z_i)
 {
   samplingStepNoCheck(i,
-                      z_i);
+                      z_i); // there is no check, because the value is sampled in a continuum of values
 }
 
 void GaussianSampler::samplingStepNoCheck(int i,

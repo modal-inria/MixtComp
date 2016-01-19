@@ -1,9 +1,9 @@
 testNewLearn <- function(nbClass = 2,
-                         nbInd = 1000,
+                         nbInd = 100,
                          proportionPresent = 0.8,
                          nbBurnInIter = 100,
                          nbSampleLearn = 50,
-                         nbSamplePredict = 1000,
+                         nbSamplePredict = 100,
                          confidenceLevel = 0.95,
                          regen = TRUE) {  
   if (regen == TRUE) {

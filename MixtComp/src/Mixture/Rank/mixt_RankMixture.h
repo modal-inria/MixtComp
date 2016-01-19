@@ -89,55 +89,102 @@ class RankMixture : public IMixture
                        false; // missingRUIntervals
     }
 
-//    /** Debug constructor */
-//    RankMixture(std::string const& idName,
-//                const Vector<std::set<int> >& classInd,
-//                const Vector<RankVal> mu,
-//                const Vector<Real> pi,
-//                const Vector<RankIndividual>& data,
-//                const Vector<Vector<MisVal> >& obsData) :
-//      IMixture(idName),
-//      nbClass_(mu.size()),
-//      nbPos_(mu(0).nbPos()),
-//      classInd_(classInd),
-//      mu_(mu),
-//      pi_(pi),
-//      data_(data),
-//      piParamStat_(pi_,
-//                   1.) {
-//      nbInd_ = data_.size();
-//      for (int i = 0; i < nbInd_; ++i) {
-//        data_(i).setObsData(obsData(i));
-//        data_(i).removeMissing();
-//      }
-//
-//      for (int k = 0; k < nbClass_; ++k) {
-//        class_.emplace_back(data_,
-//                            classInd_(k),
-//                            mu_(k),
-//                            pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
-//      }
-//    }
+    void samplingStepCheck(int ind) {
+      gCondition gCond = allGAuthorized_; // by default, everything will be authorized for the number of correct comparisons
 
-    void samplingStepCheck(int i)
-    {
-        data_(i).sampleY(mu_((*p_zi_)(i)),
-                         pi_((*p_zi_)(i)));
-        data_(i).sampleX(mu_((*p_zi_)(i)),
-                         pi_((*p_zi_)(i)));
+      bool allOtherGO = true; // are all comparisons in other individuals correct ?
+      bool allOtherGA = true; // are all comparisons in other individuals incorrect ?
+
+      int currClass = (*p_zi_)(ind);
+      for (std::set<int>::const_iterator it = classInd_(currClass).begin(), itE = classInd_(currClass).end();
+           it != itE;
+           ++it) {
+        if (*it != ind) { // check is performed on all in the class but the current ind
+          int A, G;
+          data_(ind).AG(mu_((*p_zi_)(*it)), A, G);
+
+          if (A == 0) {
+            allOtherGA = false;
+          }
+          else if (A == G) {
+            allOtherGO = false;
+          }
+          else {
+            allOtherGA = false;
+            allOtherGO = false;
+          }
+
+          if (allOtherGO == false && allOtherGA == false) { // all values are authorized for current individual, stop checking
+            goto endTest; // goto is overkill is here, but is present to keep the same structure as in BOSPath::GibbsSampling, for example
+          }
+        }
+      }
+
+      if (allOtherGO == true) {
+        gCond = Geq0Forbidden_;
+      }
+      else if (allOtherGA == true) {
+        gCond = GeqAForbidden_;
+      }
+
+      endTest:;
+
+      data_(ind).sampleY(mu_((*p_zi_)(ind)),
+                       pi_((*p_zi_)(ind)),
+                       gCond);
+      data_(ind).sampleX(mu_((*p_zi_)(ind)),
+                       pi_((*p_zi_)(ind)),
+                       gCond);
     }
 
-    void samplingStepNoCheck(int i)
-    {
+    void samplingStepNoCheck(int i) {
         data_(i).sampleY(mu_((*p_zi_)(i)),
-                         pi_((*p_zi_)(i)));
+                         pi_((*p_zi_)(i)),
+                         allGAuthorized_);
         data_(i).sampleX(mu_((*p_zi_)(i)),
-                         pi_((*p_zi_)(i)));
+                         pi_((*p_zi_)(i)),
+                         allGAuthorized_);
     }
 
     /** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class */
-    int checkSampleCondition(std::string* warnLog = NULL) const
-    {
+    int checkSampleCondition(std::string* warnLog = NULL) const {
+      for (int k = 0; k < nbClass_; ++k) {
+        bool Geq0 = true; // are all comparisons incorrect ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
+        bool GeqA = true; // are all comparisons correct ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
+
+        for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+             it != itE;
+             ++it) {
+          int A, G;
+          data_(*it).AG(mu_(k), A, G);
+          if (A == 0) {
+            GeqA = false;
+          }
+          else if (A == G) {
+            Geq0 = false;
+          }
+          else {
+            GeqA = false;
+            Geq0 = false;
+          }
+
+          if (Geq0 == false && GeqA == false) { // there is enough variability on the validities of comparisons in this class to ensure that pi will be estimated inside the open support
+            goto itKEnd;
+          }
+        }
+
+        if (warnLog != NULL) {
+          std::stringstream sstm;
+          sstm << "Error in variable: " << idName_ << " with Rank model. The comparisons are uniformly correct or invalid in at least one class. "
+               << "If the number of different observed values is quite low, try using a categorical model instead." << std::endl;
+          *warnLog += sstm.str();
+        }
+
+        return 0;
+
+        itKEnd:;
+      }
+
       return 1;
     }
 

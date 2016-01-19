@@ -301,9 +301,9 @@ TEST(BOSPath, forwardSamplePath)
   ASSERT_EQ(mu, computedMode); // has the real mode been estimated correctly ?
 }
 
-/** pi is selected close to 1, but in forwardSamplePath all z = 0 and z = 1 cases are forbidden.
+/** pi is selected close to 1, but in forwardSamplePath all z = 1 cases are forbidden.
  * The test checks if all z but one are at 1 in each individual. */
-TEST(BOSPath, allZOneAuthorizedForward)
+TEST(BOSPath, allZOneForbiddenForward)
 {
   int nbSample = 1000;
   int nbModality = 4;

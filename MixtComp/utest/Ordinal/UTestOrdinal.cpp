@@ -61,7 +61,7 @@ TEST(Ordinal, mStep)
                                        mu,
                                        pi);
 
-  ordinal.mStep(SEM_);
+  ordinal.mStep();
   Vector<int>  muEst = ordinal.mu(); // estimated mu
   Vector<Real> piEst = ordinal.pi(); // estimated pi
 

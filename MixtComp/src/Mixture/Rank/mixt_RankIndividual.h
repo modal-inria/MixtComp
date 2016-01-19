@@ -39,6 +39,12 @@ namespace mixt
 
 typedef std::pair<MisType, std::vector<int> > MisVal;
 
+enum gCondition {
+  Geq0Forbidden_,
+  GeqAForbidden_,
+  allGAuthorized_
+};
+
 /**
  * A RankIndividual is an object that contains everything needed to describe a particular individual. It contains both the observed and completed
  * values, as well as methods to compute the likelihood or to perform samplings. In contrast, the RankVal is the much more simplest representation
@@ -86,14 +92,16 @@ class RankIndividual
      * @param mu central rank
      * @param pi precision */
     void sampleX(const RankVal& mu,
-                 Real pi);
+                 Real pi,
+                 gCondition gCond);
 
     /**
      * Perform one round of Gibbs sampling for the presentation order
      * @param mu central rank
      * @param pi precision */
     void sampleY(const RankVal& mu,
-                 Real pi);
+                 Real pi,
+                 gCondition gCond);
 
     /**
      * Completed log-probability of the individual

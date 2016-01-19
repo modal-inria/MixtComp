@@ -77,14 +77,14 @@ TEST(RankStat, computeStat)
 
   for (int i = 0; i < nbIterburnIn; ++i) {
     for (int ind = 0; ind < nbInd; ++ind) {
-      data(ind).sampleY(muEst, piEst);
+      data(ind).sampleY(muEst, piEst, allGAuthorized_);
     }
     rank.sampleMu();
   }
 
   for (int i = 0; i < nbIterRun; ++i) {
     for (int ind = 0; ind < nbInd; ++ind) {
-      data(ind).sampleY(muEst, piEst);
+      data(ind).sampleY(muEst, piEst, allGAuthorized_);
     }
     rank.mStep();
     paramStat.sampleValue(i, nbIterRun - 1);

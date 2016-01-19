@@ -249,7 +249,8 @@ void RankIndividual::AG(const RankVal& mu,
 }
 
 void RankIndividual::sampleX(const RankVal& mu,
-                             Real pi) {
+                             Real pi,
+                             gCondition gCond) {
   int a, g; // dummy variables
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
@@ -281,7 +282,8 @@ void RankIndividual::sampleX(const RankVal& mu,
  * @param mu central rank
  * @param pi precision */
 void RankIndividual::sampleY(const RankVal& mu,
-                             Real pi) {
+                             Real pi,
+                             gCondition gCond) {
   int a, g; // dummy variables
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
