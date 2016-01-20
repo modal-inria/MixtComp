@@ -251,26 +251,50 @@ void RankIndividual::AG(const RankVal& mu,
 void RankIndividual::sampleX(const RankVal& mu,
                              Real pi,
                              gCondition gCond) {
-  int a, g; // dummy variables
+  int A, G; // dummy variables
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
 
-  logProba(0) = lnCompletedProbability(mu, pi, a, g); // proba of current y
+  logProba(0) = lnCompletedProbability(mu, pi, A, G); // proba of current y
 
   for (int p = 0; p < nbPos_ - 1; ++p) {
     if (checkPermutation(p)) { // the main difference with sampleY is that here permutation only happens if they are authorized by the observation
+      bool sampleCheck = true; // is the permutation respectful of the sample conditions ?
+      bool acceptPermutation = false; // is it necessary to revert x_ ?
+
       x_.permutation(p);
-      logProba(1) = lnCompletedProbability(mu, pi, a, g);
-      proba.logToMulti(logProba);
+      logProba(1) = lnCompletedProbability(mu, pi, A, G);
 
-  #ifdef MC_DEBUG
-      std::cout << "p: " << p << ", logProba: " << logProba.transpose() << ", proba: " << proba.transpose() << std::endl;
-  #endif
+      switch (gCond) {
+        case Geq0Forbidden_: {
+          if (G == 0) {
+            sampleCheck = false;
+          }
+        }
+        break;
 
-      if (multi_.sample(proba) == 1) { // switch to permuted state ?
+        case GeqAForbidden_: {
+          if (G == A) {
+            sampleCheck = false;
+          }
+        }
+        break;
+      }
+
+      if (sampleCheck) {
+        proba.logToMulti(logProba);
+        if (multi_.sample(proba) == 1) { // switch to permuted state ?
+          acceptPermutation = true;
+        }
+        else {
+          acceptPermutation = false;
+        }
+      }
+
+      if (acceptPermutation) {
         logProba(0) = logProba(1); // accept permutation
       }
-      else {
+      if (!acceptPermutation) {
         x_.permutation(p); // revert to previous state
       }
     }
@@ -284,25 +308,49 @@ void RankIndividual::sampleX(const RankVal& mu,
 void RankIndividual::sampleY(const RankVal& mu,
                              Real pi,
                              gCondition gCond) {
-  int a, g; // dummy variables
+  int A, G; // dummy variables
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
 
-  logProba(0) = lnCompletedProbability(mu, pi, a, g); // proba of current y
+  logProba(0) = lnCompletedProbability(mu, pi, A, G); // proba of current y
 
   for (int p = 0; p < nbPos_ - 1; ++p) {
+    bool sampleCheck = true; // is the permutation respectful of the sample conditions ?
+    bool acceptPermutation = false; // is it necessary to revert x_ ?
+
     permutationY(p);
-    logProba(1) = lnCompletedProbability(mu, pi, a, g);
-    proba.logToMulti(logProba);
+    logProba(1) = lnCompletedProbability(mu, pi, A, G);
 
-#ifdef MC_DEBUG
-    std::cout << "p: " << p << ", logProba: " << logProba.transpose() << ", proba: " << proba.transpose() << std::endl;
-#endif
+    switch (gCond) {
+      case Geq0Forbidden_: {
+        if (G == 0) {
+          sampleCheck = false;
+        }
+      }
+      break;
 
-    if (multi_.sample(proba) == 1) { // switch to permuted state ?
+      case GeqAForbidden_: {
+        if (G == A) {
+          sampleCheck = false;
+        }
+      }
+      break;
+    }
+
+    if (sampleCheck) {
+      proba.logToMulti(logProba);
+      if (multi_.sample(proba) == 1) { // switch to permuted state ?
+        acceptPermutation = true;
+      }
+      else {
+        acceptPermutation = false;
+      }
+    }
+
+    if (acceptPermutation) {
       logProba(0) = logProba(1); // accept permutation
     }
-    else {
+    if (!acceptPermutation) {
       permutationY(p); // revert to previous state
     }
   }
