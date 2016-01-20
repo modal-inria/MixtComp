@@ -161,7 +161,7 @@ class BOSPath
 
     /**
      * Check if all the z in the path are at 1 or not */
-    allZ allZ() const {return allZ_;}
+    enum allZ allZ() const {return allZ_;}
 
     /** Compute the number of z at 1 in path_ */
     int nbZ() const {return nbZ_;}
