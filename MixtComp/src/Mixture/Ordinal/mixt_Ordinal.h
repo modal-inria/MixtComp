@@ -172,6 +172,13 @@ class Ordinal : public IMixture
           computeObservedProba(); // parameters are know, so logProba can be computed immediately
         }
 
+        if (nbModality_ <= 2) {
+          std::stringstream sstm;
+          sstm << "Variable: " << idName() << " requires a minimum of 3 modalities. If you have less modalities than that, you must use a "
+               << "Categorical model."<< std::endl;
+          warnLog += sstm.str();
+        }
+
         setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
 
         dataStatComputer_.resizeStatStorage(nbInd_);
