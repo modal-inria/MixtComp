@@ -143,26 +143,22 @@ void RankClass::sampleMu()
   }
 }
 
-void RankClass::mStep()
-{
-#ifdef MC_DEBUG
-    std::cout << "RankClass::mStep" << std::endl;
-#endif
+void RankClass::mStep() {
   Vector<RankVal> mu(nbGibbsIterRank);
   Vector<Real> pi(nbGibbsIterRank);
   Vector<Real> logProba(nbGibbsIterRank);
 
   int a, g;
-  for (int i = 0; i < nbGibbsIterRank; ++i)
-  {
+  int i = 0;
+  while (i < nbGibbsIterRank) {
     sampleMu();
     mu(i) = mu_;
     logProba(i) = lnCompletedProbability(a, g);
     pi(i) = Real(g) / Real(a);
 
-#ifdef MC_DEBUG
-    std::cout << "Rank::mStep, i: " << i << ", mu: " << mu(i) << ", pi: " << pi(i) << ", logProba: " << logProba(i) << std::endl;
-#endif
+    if (0 < g && g < a) {
+      ++i; // only register current mu and pi if they are valid
+    }
   }
 
   int bestTheta;
@@ -170,13 +166,6 @@ void RankClass::mStep()
 
   mu_ = mu(bestTheta);
   pi_ = pi(bestTheta);
-
-  pi_ = std::max(pi_, 0.01);
-  pi_ = std::min(pi_, 0.99);
-
-#ifdef MC_DEBUG
-  std::cout << "RankClass::mStep, mu_: " << mu_ << ", pi_: " << pi_ << std::endl;
-#endif
 }
 
 void RankClass::computeObservedProba() {
