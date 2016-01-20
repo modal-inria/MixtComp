@@ -30,6 +30,7 @@ GaussianSampler::GaussianSampler(const IMixture& mixture,
                                  AugmentedData<Vector<Real> >& augData,
                                  const Vector<Real>& param,
                                  int nbClass) :
+    mixture_(mixture),
     augData_(augData),
     param_(param)
 {}
@@ -37,45 +38,72 @@ GaussianSampler::GaussianSampler(const IMixture& mixture,
 void GaussianSampler::samplingStepCheck(int i,
                                         int z_i)
 {
-  samplingStepNoCheck(i,
-                      z_i); // there is no check, because the value is sampled in a continuum of values
+  if (augData_.misData_(i).first != present_) {
+    do {
+      Real z;
+      Real mean  = param_(2 * z_i    );
+      Real sd    = param_(2 * z_i + 1);
+
+      switch(augData_.misData_(i).first) {
+        case missing_: {
+          z = normal_.sample(mean,
+                             sd);
+        }
+        break;
+
+        case missingIntervals_: {
+          Real infBound = augData_.misData_(i).second[0];
+          Real supBound = augData_.misData_(i).second[1];
+
+          z = normal_.sampleI(mean,
+                              sd,
+                              infBound,
+                              supBound);
+        }
+        break;
+
+        case missingLUIntervals_: { // missingLUIntervals
+          Real supBound = augData_.misData_(i).second[0];
+          z = normal_.sampleSB(mean,
+                               sd,
+                               supBound);
+        }
+        break;
+
+        case missingRUIntervals_: { // missingRUIntervals
+          Real infBound = augData_.misData_(i).second[0];
+          z = normal_.sampleIB(mean,
+                               sd,
+                               infBound);
+        }
+        break;
+
+        default: {
+        }
+        break;
+      }
+
+      augData_.data_(i) = z;
+    }
+    while(mixture_.checkSampleCondition() == 0);
+  }
 }
 
 void GaussianSampler::samplingStepNoCheck(int i,
-                                          int z_i)
-{
-#ifdef MC_DEBUG
-  std::cout << "GaussianSampler::sampleIndividual" << std::endl;
-  std::cout << "\ti: " << i << ", z_i: " << z_i << std::endl;
-#endif
-
-  if (augData_.misData_(i).first != present_)
-  {
+                                          int z_i) {
+  if (augData_.misData_(i).first != present_) {
     Real z;
     Real mean  = param_(2 * z_i    );
     Real sd    = param_(2 * z_i + 1);
 
-#ifdef MC_DEBUG
-    std::cout << "\tmean: " << mean << ", sd: " << sd << std::endl;
-#endif
-
-    switch(augData_.misData_(i).first)
-    {
-      case missing_:
-      {
-#ifdef MC_DEBUG
-        std::cout << "\tmissing_" << std::endl;
-#endif
+    switch(augData_.misData_(i).first) {
+      case missing_: {
         z = normal_.sample(mean,
                            sd);
       }
       break;
 
-      case missingIntervals_:
-      {
-#ifdef MC_DEBUG
-        std::cout << "\tmissingIntervals_" << std::endl;
-#endif
+      case missingIntervals_: {
         Real infBound = augData_.misData_(i).second[0];
         Real supBound = augData_.misData_(i).second[1];
 
@@ -83,70 +111,30 @@ void GaussianSampler::samplingStepNoCheck(int i,
                             sd,
                             infBound,
                             supBound);
-#ifdef MC_DEBUG
-        if (!(infBound < z < supBound))
-        {
-          std::cout << "\tmissingIntervals, sampling error" << std::endl;
-          std::cout << "\tinfBound: " << infBound << std::endl;
-          std::cout << "\tsupBound: " << supBound << std::endl;
-          std::cout << "\tz: " << z << std::endl;
-        }
-#endif
       }
       break;
 
-      case missingLUIntervals_: // missingLUIntervals
-      {
-#ifdef MC_DEBUG
-        std::cout << "\tmissingLUIntervals_" << std::endl;
-#endif
+      case missingLUIntervals_: { // missingLUIntervals
         Real supBound = augData_.misData_(i).second[0];
         z = normal_.sampleSB(mean,
                              sd,
                              supBound);
-#ifdef MC_DEBUG
-        if (!(z < supBound))
-        {
-          std::cout << "\tmissingLUIntervals_, sampling error" << std::endl;
-          std::cout << "\tsupBound: " << supBound << std::endl;
-          std::cout << "\tz: " << z << std::endl;
-        }
-#endif
       }
       break;
 
-      case missingRUIntervals_: // missingRUIntervals
-      {
-#ifdef MC_DEBUG
-        std::cout << "\tmissingRUIntervals_" << std::endl;
-#endif
+      case missingRUIntervals_: { // missingRUIntervals
         Real infBound = augData_.misData_(i).second[0];
         z = normal_.sampleIB(mean,
                              sd,
                              infBound);
-#ifdef MC_DEBUG
-        if (!(infBound < z))
-        {
-          std::cout << "\tmissingRUIntervals_, sampling error" << std::endl;
-          std::cout << "\tinfBound: " << infBound << std::endl;
-          std::cout << "\tz: " << z << std::endl;
-        }
-#endif
       }
       break;
 
-      default:
-      {
-#ifdef MC_DEBUG
-        std::cout << "\tunsupported missing value type" << std::endl;
-#endif
+      default: {
       }
       break;
     }
 
-#ifdef MC_DEBUG
-    std::cout << "\tsampled val: " << z * sd + mean << std::endl;
-#endif
     augData_.data_(i) = z;
   }
 }

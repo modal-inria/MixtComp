@@ -45,7 +45,7 @@ void PoissonSampler::samplingStepCheck(int i,
 
   if (augData_.misData_(i).first != present_)
   {
-    augData_.data_(i) = 0;
+    augData_.data_(i) = 0; // check if 0 is an acceptable value value
     bool nonZeroSample = !mixture_.checkSampleCondition(); // check if the 0 value is authorized for this individual in the sample
 
     int x = -1;

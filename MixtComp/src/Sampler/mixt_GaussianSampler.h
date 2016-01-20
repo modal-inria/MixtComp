@@ -50,6 +50,8 @@ class GaussianSampler
     void samplingStepNoCheck(int i,
                              int z_i);
   private:
+    const IMixture& mixture_;
+
     AugmentedData<Vector<Real> >& augData_;
 
     const Vector<Real>& param_;
