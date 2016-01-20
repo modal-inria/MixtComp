@@ -330,15 +330,12 @@ void BOSPath::samplePath(int mu,
 
 void BOSPath::forwardSamplePath(int mu,
                                 Real pi,
-                                zCondition zCond)
-{
+                                zCondition zCond) {
   Vector<int, 2> seg = eInit_;
   Vector<Real> currProba;
 
-  while (true) // pi = 1 results in an infinite loop, but this is not an admissible value for pi (and should have been rejected earlier in any code)
-  {
-    for (int n = 0; n < nbNode_; ++n)
-    {
+  while (true) { // pi = 1 results in an infinite loop, but this is not an admissible value for pi (and should have been rejected earlier in any code)
+    for (int n = 0; n < nbNode_; ++n) {
       BOSNode& currNode = c_(n);
 
       currNode.y_ = multi_.sampleInt(seg(0), seg(1));
@@ -347,8 +344,7 @@ void BOSPath::forwardSamplePath(int mu,
       currNode.z_ = multi_.sampleBinomial(pi);
 
       currProba.resize(currNode.partSize_);
-      for (int e = 0; e < currNode.partSize_; ++e)
-      {
+      for (int e = 0; e < currNode.partSize_; ++e) {
         currNode.e_ = currNode.part_(e);
         currProba(e) = std::exp(currNode.eLogProba(mu, pi));
       }
@@ -359,9 +355,25 @@ void BOSPath::forwardSamplePath(int mu,
 
     computeNbZ();
 
-    if (!((zCond == allZ0Forbidden_ && nbZ() == 0) || (zCond == allZ1Forbidden_ && nbZ() == nbNode_)))
-    {
-      return; // individual is valid, no need for further sample
+    switch (zCond) {
+      case allZAuthorized_: {
+        return;
+      }
+      break;
+
+      case allZ0Forbidden_: {
+        if (nbZ() != 0) {
+          return;
+        }
+      }
+      break;
+
+      case allZ1Forbidden_: {
+        if (nbZ() != nbNode_) {
+          return;
+        }
+      }
+      break;
     }
   }
 }
