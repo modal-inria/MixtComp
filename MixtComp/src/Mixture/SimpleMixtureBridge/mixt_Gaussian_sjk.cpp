@@ -33,13 +33,11 @@ namespace mixt
 Gaussian_sjk::Gaussian_sjk(const std::string& idName,
                            int nbClass,
                            Vector<Real>& param,
-                           const Vector<int>* p_zi,
                            const Vector<std::set<int> >& classInd) :
     idName_(idName),
     nbClass_(nbClass),
     param_(param),
     p_data_(0),
-    p_zi_(p_zi),
     classInd_(classInd)
 {
   param_.resize(2 * nbClass);

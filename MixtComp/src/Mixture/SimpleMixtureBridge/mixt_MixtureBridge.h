@@ -87,7 +87,6 @@ class MixtureBridge : public IMixture
       mixture_(idName,
                nbClass,
                param_,
-               p_zi,
                classInd),
       augData_(),
       nbInd_(0),

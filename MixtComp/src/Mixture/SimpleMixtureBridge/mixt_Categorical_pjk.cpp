@@ -32,7 +32,6 @@ namespace mixt
 Categorical_pjk::Categorical_pjk(const std::string& idName,
                                  int nbClass,
                                  Vector<Real>& param,
-                                 const Vector<int>* p_zi,
                                  const Vector<std::set<int> >& classInd) :
     idName_(idName),
     nbClass_(nbClass),

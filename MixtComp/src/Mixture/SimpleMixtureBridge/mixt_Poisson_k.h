@@ -42,7 +42,6 @@ class Poisson_k
     Poisson_k(const std::string& idName,
               int nbClass,
               Vector<Real>& param,
-              const Vector<int>* p_zi,
               const Vector<std::set<int> >& classInd);
 
     Vector<bool> acceptedType() const;
@@ -73,7 +72,6 @@ class Poisson_k
     int nbClass_;
     Vector<Real>& param_;
     Vector<int>* p_data_;
-    const Vector<int>* p_zi_;
     const Vector<std::set<int> >& classInd_;
 
     /** Statistic object to describe Poisson law */

@@ -41,7 +41,6 @@ class Gaussian_sjk
     Gaussian_sjk(const std::string& idName,
                  int nbClass,
                  Vector<Real>& param,
-                 const Vector<int>* p_zi,
                  const Vector<std::set<int> >& classInd);
 
     Vector<bool> acceptedType() const;
@@ -77,7 +76,6 @@ class Gaussian_sjk
 
     Vector<Real>* p_data_;
 
-    const Vector<int>* p_zi_;
     const Vector<std::set<int> >& classInd_;
 
     /** Statistic object to describe Poisson law */
