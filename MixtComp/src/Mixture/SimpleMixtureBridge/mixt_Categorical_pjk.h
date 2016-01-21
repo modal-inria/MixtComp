@@ -66,7 +66,6 @@ class Categorical_pjk
     int nbModality_;
     Vector<int>* p_data_;
     Vector<Real>& param_;
-    const Vector<int>* p_zi_;
     const Vector<std::set<int> >& classInd_;
 };
 

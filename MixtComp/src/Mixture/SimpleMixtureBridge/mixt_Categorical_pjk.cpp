@@ -39,7 +39,6 @@ Categorical_pjk::Categorical_pjk(const std::string& idName,
     nbModality_(0),
     p_data_(0),
     param_(param),
-    p_zi_(p_zi),
     classInd_(classInd)
 {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
 
@@ -109,64 +108,22 @@ std::string Categorical_pjk::model() const
   return "Categorical_pjk";
 }
 
-void Categorical_pjk::mStep()
-{
-#ifdef MC_DEBUG
-    std::cout << "Gaussian_sjk::mStep" << std::endl;
-#endif
-#ifdef MC_DEBUG
-    std::cout << "(*p_data_): " << (*p_data_) << std::endl;
-    std::cout << "(*p_zi_)_: " << (*p_zi_) << std::endl;
-#endif
+void Categorical_pjk::mStep() {
+  for (int k = 0; k < nbClass_; ++k) {
+    Vector<Real> modalities(nbModality_, 0.);
 
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    Real nbSampleClass = 0.;
-    Vector<Real> modalities(nbModality_);
-    modalities = 0.;
-
-    for (int i = 0; i < (*p_data_).rows(); ++i)
-    {
-#ifdef MC_DEBUG
-    std::cout << "\tk:  " << k << ", i: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << std::endl;
-#endif
-      if ((*p_zi_)[i] == k)
-      {
-        int currVal = (*p_data_)(i);
-        nbSampleClass += 1.;
-#ifdef MC_DEBUG
-        std::cout << "\tcurrVal: " << currVal << ", modalities.size(): " << modalities.size() << std::endl;
-#endif
-        modalities[currVal] += 1.;
-      }
+    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+         it != itE;
+         ++it) {
+      modalities((*p_data_)(*it)) += 1.;
     }
 
-#ifdef MC_DEBUG
-    std::cout << "modalities" << std::endl;
-    std::cout << modalities << std::endl;
-#endif
+    modalities = modalities / Real(classInd_(k).size());
 
-    modalities = modalities / nbSampleClass;
-    for (int p = 0; p < nbModality_; ++p)
-    {
-      param_(k * nbModality_ + p) = modalities[p];
+    for (int p = 0; p < nbModality_; ++p) {
+      param_(k * nbModality_ + p) = modalities(p);
     }
   }
-
-#ifdef MC_DEBUG
-  for (int p = 0; p < nbModality_; ++p)
-  {
-    Real sum = 0.;
-    for (int k = 0; k < nbClass_; ++k)
-    {
-      sum += param_(k * nbModality_ + p);
-    }
-    if (sum < epsilon)
-    {
-      std::cout << "probability of modality: " << p << " is 0 in every classes" << std::endl;
-    }
-  }
-#endif
 }
 
 std::vector<std::string> Categorical_pjk::paramNames() const
