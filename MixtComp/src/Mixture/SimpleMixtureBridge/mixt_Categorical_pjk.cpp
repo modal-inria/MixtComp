@@ -172,8 +172,7 @@ void Categorical_pjk::writeParameters() const
 #endif
 }
 
-int Categorical_pjk::checkSampleCondition(std::string* warnLog) const
-{
+int Categorical_pjk::checkSampleCondition(std::string* warnLog) const {
   for (int k = 0; k < nbClass_; ++k) {
     Vector<bool> modalityPresent(nbModality_, false);
     for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();

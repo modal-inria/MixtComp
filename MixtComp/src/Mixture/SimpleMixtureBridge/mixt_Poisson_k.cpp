@@ -91,42 +91,16 @@ std::string Poisson_k::model() const
   return "Poisson_k";
 }
 
-void Poisson_k::mStep()
-{
-#ifdef MC_DEBUG
-    std::cout << "Gaussian_sjk::mStep" << std::endl;
-    std::cout << "(*p_data_): " << (*p_data_) << std::endl;
-    std::cout << "zi_: " << zi_ << std::endl;
-#endif
-
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    int nbSampleClass = 0; // number of samples in the current class
-    Real sumClassMean = 0.;
-    Real lambda = 0.;
-
-    for (int i = 0; i < (*p_data_).rows(); ++i)
-    {
-#ifdef MC_DEBUG
-    std::cout << "\tk:  " << k << ", i: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << std::endl;
-#endif
-      if ((*p_zi_)[i] == k)
-      {
-        int currVal = (*p_data_)(i);
-        sumClassMean += currVal;
-        nbSampleClass += 1;
-      }
+void Poisson_k::mStep() {
+  for (int k = 0; k < nbClass_; ++k) {
+    Real sumClass = 0.;
+    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+         it != itE;
+         ++it) {
+      sumClass += (*p_data_)(*it);
     }
-    lambda = sumClassMean / Real(nbSampleClass);
 
-#ifdef MC_DEBUG
-    std::cout << "k: " << k << std::endl;
-    std::cout << "\tnbSampleClass: " << nbSampleClass << std::endl;
-    std::cout << "\tsumClassMean: " << sumClassMean << std::endl;
-    std::cout << "\tlambda: " << mean << std::endl;
-#endif
-
-    param_[k] = lambda;
+    param_(k) = sumClass / Real(classInd_(k).size());
   }
 }
 

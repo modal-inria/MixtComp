@@ -92,54 +92,28 @@ std::string Gaussian_sjk::model() const
   return "Gaussian_sjk";
 }
 
-void Gaussian_sjk::mStep()
-{
-#ifdef MC_DEBUG
-  std::cout << "Gaussian_sjk::mStep" << std::endl;
-#endif
-#ifdef MC_DEBUG
-  std::cout << "(*p_zi_): " << (*p_zi_) << std::endl;
-  std::cout << "(*p_data_): " << (*p_data_) << std::endl;
-#endif
-
-  for (int k = 0; k < nbClass_; ++k)
-  {
+void Gaussian_sjk::mStep() {
+  for (int k = 0; k < nbClass_; ++k) {
     Real mean = 0.;
     Real sd = 0.;
     Real M2 = 0.;
     int n = 0;
-#ifdef MC_DEBUG
-    std::cout << "\tk:  " << k << std::endl;
-#endif
-    for (int i = 0; i < (*p_data_).rows(); ++i)
-    {
-      if ((*p_zi_)[i] == k)
-      {
-#ifdef MC_DEBUG
-        std::cout << "\ti: " << i << ", (*p_zi_)[i]: " << (*p_zi_)[i] << ", (*p_data_)(i)" << (*p_data_)(i) << std::endl;
-#endif
-        ++n;
-        Real x = (*p_data_)(i);
-        Real delta = x - mean;
-        mean = mean + delta / Real(n);
-        M2 = M2 + delta * (x - mean);
-      }
-    }
-    sd = std::sqrt(M2 / Real(n));
 
-#ifdef MC_DEBUG
-    std::cout << "k: " << k << std::endl;
-    std::cout << "\tmean: " << mean << std::endl;
-    std::cout << "\tsd: " << sd << std::endl;
-    std::cout << "\tepsilon: " << epsilon << std::endl;
-#endif
+    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+         it != itE;
+         ++it) {
+      ++n;
+      Real x = (*p_data_)(*it);
+      Real delta = x - mean;
+      mean = mean + delta / Real(n);
+      M2 = M2 + delta * (x - mean);
+    }
+
+    sd = std::sqrt(M2 / Real(n));
 
     param_(2 * k    ) = mean;
     param_(2 * k + 1) = sd;
   }
-#ifdef MC_DEBUG
-  std::cout << "param_: " << param_ << std::endl;
-#endif
 }
 
 std::vector<std::string> Gaussian_sjk::paramNames() const
