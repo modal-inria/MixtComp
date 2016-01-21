@@ -70,9 +70,12 @@ int Gaussian_sjk::computeNbFreeParameters() const
   return 2 * nbClass_;
 }
 
-bool Gaussian_sjk::hasModalities() const
-{
+bool Gaussian_sjk::hasModalities() const {
   return false;
+}
+
+int Gaussian_sjk::nbModality() const {
+  return -1;
 }
 
 Real Gaussian_sjk::maxVal() const

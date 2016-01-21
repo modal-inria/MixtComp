@@ -46,10 +46,10 @@ class Gaussian_sjk
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
     bool checkMinVal() const;
-    bool checkParam() const {return true;}
     int computeNbFreeParameters() const;
 
     bool hasModalities() const;
+    int nbModality() const;
 
     void setData(Vector<Real>& data);
 

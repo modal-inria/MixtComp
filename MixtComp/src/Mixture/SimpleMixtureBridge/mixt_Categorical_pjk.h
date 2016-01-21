@@ -46,9 +46,9 @@ class Categorical_pjk
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
     bool checkMinVal() const;
-    bool checkParam() const;
     int computeNbFreeParameters() const;
     bool hasModalities() const;
+    int nbModality() const;
     int maxVal() const;
     int minVal() const;
     std::string model() const;

@@ -69,9 +69,11 @@ int Poisson_k::computeNbFreeParameters() const
   return nbClass_;
 }
 
-bool Poisson_k::hasModalities() const
-{
+bool Poisson_k::hasModalities() const {
   return false;
+}
+int Poisson_k::nbModality() const {
+  return -1;
 }
 
 int Poisson_k::maxVal() const

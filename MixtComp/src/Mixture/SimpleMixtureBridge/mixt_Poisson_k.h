@@ -45,12 +45,12 @@ class Poisson_k
               const Vector<std::set<int> >& classInd);
 
     Vector<bool> acceptedType() const;
-    bool checkParam() const {return true;}
     bool checkMaxVal() const;
     bool checkMinVal() const;
     int computeNbFreeParameters() const;
 
     bool hasModalities() const;
+    int nbModality() const;
 
     void setData(Vector<int>& data);
 

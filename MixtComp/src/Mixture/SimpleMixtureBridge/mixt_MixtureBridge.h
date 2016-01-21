@@ -114,9 +114,6 @@ class MixtureBridge : public IMixture
      */
     std::string setDataParam(RunMode mode)
     {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::setDataParam(), " << idName() << ", " << mixture_.model() << std::endl;
-#endif
       std::string warnLog;
       warnLog += p_handler_->getData(idName(),
                                      augData_,
@@ -145,9 +142,6 @@ class MixtureBridge : public IMixture
 
         if (mode == learning_) // learning mode
         {
-  #ifdef MC_DEBUG
-          std::cout << "\tparam not set " << std::endl;
-  #endif
           if (mixture_.hasModalities())
           {
             mixture_.setModalities(augData_.dataRange_.max_ + 1); // set the number of modalities
@@ -180,12 +174,6 @@ class MixtureBridge : public IMixture
             augData_.dataRange_.max_ = nbModalities - 1;
             augData_.dataRange_.range_ = nbModalities;
           }
-          mixture_.checkParam(); // check that the parameters provided are correct, eventually evolve this function to provide a detailed error through the warnLog
-  #ifdef MC_DEBUG
-          std::cout << "\tparam set " << std::endl;
-          std::cout << "\tnbParam: " << nbModalities << std::endl;
-          std::cout << "\tparam_: " << param_ << std::endl;
-  #endif
         }
 
         dataStat_.resizeStatStorage(nbInd_);
@@ -211,9 +199,6 @@ class MixtureBridge : public IMixture
      */
     virtual void mStep()
     {
-#ifdef MC_DEBUG
-      std::cout << "mStep, idName_: " << idName_ << std::endl;
-#endif
       mixture_.mStep();
     }
 
@@ -222,30 +207,12 @@ class MixtureBridge : public IMixture
      *  @param iteration Provides the iteration number beginning after the burn-in period.
      */
     virtual void storeSEMRun(int iteration,
-                             int iterationMax)
-    {
+                             int iterationMax) {
       paramStat_.sampleParam(iteration,
                              iterationMax);
-      if (iteration == iterationMax)
-      {
+      if (iteration == iterationMax) {
+        paramStat_.normalizeParam(nbClass_, mixture_.nbModality());
         paramStat_.setExpectationParam(); // set parameter to mode / expectation
-        mixture_.checkParam(); // since estimated have not been estimated by maximum likelihood, but by statistics on the SEM chain, the values must be checked
-#ifdef MC_DEBUG
-        std::cout << "MixtureBridge::storeSEMRun" << std::endl;
-        int nbModalities = param_.cols() / nbCluster_;
-        for (int p = 0; p < nbModalities; ++p)
-        {
-          Real sum = 0.;
-          for (int k = 0; k < nbCluster_; ++k)
-          {
-            sum += param_[k * nbModalities + p];
-          }
-          if (sum < epsilon)
-          {
-            std::cout << "probability of modality: " << p << " is 0 in every classes" << std::endl;
-          }
-        }
-#endif
       }
     }
 
@@ -253,12 +220,6 @@ class MixtureBridge : public IMixture
                                int iteration,
                                int iterationMax)
     {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::storeData, for " << idName()
-                << ", sample: " << sample
-                << ", iteration: " << iteration
-                << ", iterationMax: " << iterationMax << std::endl;
-#endif
       dataStat_.sampleVals(sample,
                                    iteration,
                                    iterationMax);
@@ -275,12 +236,6 @@ class MixtureBridge : public IMixture
      */
     virtual Real lnCompletedProbability(int i, int k)
     {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::lnCompletedLikelihood(), getParameters" << std::endl;
-      std::cout << "\tidName: " << idName() << std::endl;
-      std::cout << "\tparam: " << std::endl;
-      std::cout << param_ << std::endl;
-#endif
       return likelihood_.lnCompletedProbability(i, k);
     }
 
@@ -290,12 +245,6 @@ class MixtureBridge : public IMixture
      */
     virtual Real lnObservedProbability(int i, int k)
     {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::lnObservedLikelihood(), getParameters" << std::endl;
-      std::cout << "\tidName: " << idName() << std::endl;
-      std::cout << "\tparam: " << std::endl;
-      std::cout << param_ << std::endl;
-#endif
       return likelihood_.lnObservedProbability(i, k);
     }
 
@@ -317,9 +266,6 @@ class MixtureBridge : public IMixture
 
     virtual void exportDataParam() const
     {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge: exportDataParam, idName(): " << idName() << std::endl;
-#endif
       p_dataExtractor_->exportVals(idName_,
                                    augData_,
                                    dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
@@ -335,15 +281,8 @@ class MixtureBridge : public IMixture
 
     int checkSampleCondition(std::string* warnLog = NULL) const
     {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge::checkSampleCondition, idName_: " << idName_ << std::endl;
-#endif
       if (warnLog == NULL)
       {
-#ifdef MC_DEBUG
-        std::cout << "idName: " << idName_ << ": ";
-#endif
-
         return mixture_.checkSampleCondition();
       }
       else

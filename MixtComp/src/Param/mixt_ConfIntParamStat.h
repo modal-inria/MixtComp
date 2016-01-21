@@ -94,19 +94,28 @@ class ConfIntParamStat
     }
 
     /** fill the parameters with estimators of the expectation, to be used in the Gibbs sampling */
-    void setExpectationParam()
-    {
-    #ifdef MC_DEBUG
-      std::cout << "SimpleParamStat::setExpectationParam" << std::endl;
-    #endif
-      for (int i = 0; i < nbParam_; ++i)
-      {
+    void setExpectationParam() {
+      for (int i = 0; i < nbParam_; ++i) {
         param_(i) = statStorage_(i, 0); // imputation by the mean
       }
-    #ifdef MC_DEBUG
-      std::cout << "(*p_param_): " << (*p_param_) << std::endl;
-      std::cout << "(*p_paramStatStorage_): " << statStorage_ << std::endl;
-    #endif
+    }
+
+    /** Perform renormalization on statStorage. Useful for categorical modes where umputed parameters must
+     * sum to 1 */
+    void normalizeParam(int nbClass, int nbModality) {
+      if (nbModality > 1) {
+        for (int j = 0; j < statStorage_.cols(); ++j) {
+          for (int k = 0; k < nbClass; ++k) {
+            Type sumClass = 0;
+            for (int p = 0; p < nbModality; ++p) {
+              sumClass += statStorage_(k * nbModality + p, j);
+            }
+            for (int p = 0; p < nbModality; ++p) {
+              statStorage_(k * nbModality + p, j) /= sumClass;
+            }
+          }
+        }
+      }
     }
 
     const Matrix<Type>& getStatStorage() const {return statStorage_;};

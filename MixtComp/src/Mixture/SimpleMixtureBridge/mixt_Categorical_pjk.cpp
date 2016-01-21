@@ -63,33 +63,17 @@ bool Categorical_pjk::checkMinVal() const
   return true;
 }
 
-bool Categorical_pjk::checkParam() const
-{
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    Real sum = param_.block(k * nbModality_, 0,
-                            nbModality_    , 1).sum();
-    if (sum < 1. - epsilon || 1. < sum)
-    {
-#ifdef MC_VERBOSE
-      std::cout << "Categorical_pjk::checkParam, k:" << k << ", sum: " << sum << ", renormalization" << std::endl;
-#endif
-      param_.block(k * nbModality_, 0,
-                   nbModality_    , 1) /= sum;
-    }
-  }
-
-  return true;
-}
-
 int Categorical_pjk::computeNbFreeParameters() const
 {
   return nbClass_ * (nbModality_ - 1);
 }
 
-bool Categorical_pjk::hasModalities() const
-{
+bool Categorical_pjk::hasModalities() const {
   return true;
+}
+
+int Categorical_pjk::nbModality() const {
+  return nbModality_;
 }
 
 int Categorical_pjk::maxVal() const
