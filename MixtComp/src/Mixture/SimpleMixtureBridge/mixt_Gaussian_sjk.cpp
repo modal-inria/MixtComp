@@ -93,7 +93,7 @@ std::string Gaussian_sjk::model() const
   return "Gaussian_sjk";
 }
 
-void Gaussian_sjk::mStep() {
+void Gaussian_sjk::mStep(EstimatorType bias) {
   for (int k = 0; k < nbClass_; ++k) {
     Real mean = 0.;
     Real sd = 0.;
@@ -114,6 +114,12 @@ void Gaussian_sjk::mStep() {
 
     param_(2 * k    ) = mean;
     param_(2 * k + 1) = sd;
+  }
+
+  if (bias == biased_) {
+    for (int k = 0; k < nbClass_; ++k) {
+      param_(2 * k + 1) = std::max(epsilon, param_(2 * k + 1));
+    }
   }
 }
 

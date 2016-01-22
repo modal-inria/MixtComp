@@ -60,8 +60,12 @@ class SemStrategy
     /** run the strategy */
     std::string run();
     
-    std::string initSEM();
-    RunProblemType runSEM(SamplerType sampler);
+    std::string initSEMCheck();
+    void initSEMNoCheck();
+
+    RunProblemType runSEMCheck(SamplerType sampler);
+    void runSEMNoCheck();
+
     void initGibbs();
     void runGibbs();
 

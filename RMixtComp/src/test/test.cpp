@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
 //    R.parseEvalQ("testNewLearn()");
 //    R.parseEvalQ("testNewLearn(regen = FALSE)");
 //    R.parseEvalQ("testNewLearnPredict()");
-//    R.parseEvalQ("testGenDataLearn()");
-    R.parseEvalQ("testLearnPredict()");
+    R.parseEvalQ("testGenDataLearn()");
+//    R.parseEvalQ("testLearnPredict()");
 //    R.parseEvalQ("testAERES()");
 
 //    R.parseEvalQ("testRankWords()");

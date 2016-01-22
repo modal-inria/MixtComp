@@ -193,9 +193,9 @@ class RankMixture : public IMixture
      * Gibbs sampler, which is a Markov Chain sampler that needs to be initialized. This is slightly different to the Ordinal model case, where the initialization
      * of the parameters is only here to ensure that all individuals are valid (not all z at 0). In the Rank model initialization, mu is chosen among all the
      * observed values of the class, while pi is initialized to a "neutral" value. */
-    void mStep() {
+    void mStep(EstimatorType bias) {
       for (int k = 0; k < nbClass_; ++k) {
-        class_[k].mStep();
+        class_[k].mStep(bias);
       }
     }
 

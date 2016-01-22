@@ -31,6 +31,7 @@
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_NormalStatistic.h"
 #include "../../Various/mixt_Enum.h"
+#include "../../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {
@@ -55,7 +56,7 @@ class Gaussian_sjk
 
     /** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
      * using the biased estimator which corresponds to the maximum likelihood estimator */
-    void mStep();
+    void mStep(EstimatorType bias);
 
     Real minVal() const;
     Real maxVal() const;

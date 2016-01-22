@@ -30,11 +30,14 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Enum.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class IMixture
-{
+enum EstimatorType {
+  biased_,
+  unBiased_
+};
+
+class IMixture {
   public:
     /**
      * Constructor with identification character
@@ -52,8 +55,7 @@ class IMixture
     /**
      * Return the Id of the mixture
      * @return Id of the mixture*/
-    std::string const& idName() const
-    {
+    std::string const& idName() const {
       return idName_;
     }
 
@@ -88,7 +90,7 @@ class IMixture
      *
      * @return empty string if mStep successful, or a detailed description of the eventual error
      */
-    virtual void mStep()
+    virtual void mStep(EstimatorType bias)
     = 0;
 
     /**

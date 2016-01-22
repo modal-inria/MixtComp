@@ -143,7 +143,7 @@ void RankClass::sampleMu()
   }
 }
 
-void RankClass::mStep() {
+void RankClass::mStep(EstimatorType bias) {
   Vector<RankVal> mu(nbGibbsIterRank);
   Vector<Real> pi(nbGibbsIterRank);
   Vector<Real> logProba(nbGibbsIterRank);
@@ -166,6 +166,11 @@ void RankClass::mStep() {
 
   mu_ = mu(bestTheta);
   pi_ = pi(bestTheta);
+
+  if (bias == biased_) {
+    pi_ = std::max(epsilon, pi_         );
+    pi_ = std::min(pi_    , 1. - epsilon);
+  }
 }
 
 void RankClass::computeObservedProba() {

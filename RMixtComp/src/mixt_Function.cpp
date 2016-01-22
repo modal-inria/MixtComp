@@ -73,6 +73,12 @@ void paramRToCpp(const Rcpp::List& RParam,
   if(RParam.containsElementNamed("nbGibbsBurnInIter")){
     CppParam.nbGibbsIter_ = RParam["nbGibbsIter"];
   }
+  if(RParam.containsElementNamed("parameterEdgeAuthorized")){
+    bool bias = RParam["parameterEdgeAuthorized"];
+    if (bias == true) {
+      CppParam.bias_ = biased_;
+    }
+  }
 }
 
 } // namespace mixt

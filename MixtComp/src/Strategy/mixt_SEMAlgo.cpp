@@ -38,13 +38,11 @@ SEMAlgo::SEMAlgo(MixtureComposer* p_composer,
     nbIter_(nbIter)
 {}
 
-void SEMAlgo::run(RunType runType,
-                  RunProblemType& runPb,
-                  SamplerType sampler,
-                  int group,
-                  int groupMax)
-{
-  std::string warn;
+void SEMAlgo::runCheck(RunType runType,
+                       RunProblemType& runPb,
+                       SamplerType sampler,
+                       int group,
+                       int groupMax) {
   Timer myTimer;
 
   if (runType == burnIn_) {
@@ -78,7 +76,7 @@ void SEMAlgo::run(RunType runType,
       p_composer_->samplingStepCheck();
     }
 
-    p_composer_->mStep();
+    p_composer_->mStep(unBiased_);
 
     if (runType == run_) {
       p_composer_->storeSEMRun(iter,
@@ -87,6 +85,39 @@ void SEMAlgo::run(RunType runType,
   }
 
   runPb = noProblem_;
+}
+
+void SEMAlgo::runNoCheck(RunType runType,
+                         int group,
+                         int groupMax) {
+  Timer myTimer;
+
+  if (runType == burnIn_) {
+    myTimer.setName("SEM: burn-in");
+  }
+  else if (runType == run_) {
+    myTimer.setName("SEM: run");
+  }
+
+  for (int iter = 0; iter < nbIter_; ++iter) {
+    myTimer.iteration(iter, nbIter_ - 1);
+    writeProgress(group,
+                  groupMax,
+                  iter,
+                  nbIter_ - 1);
+
+    p_composer_->eStep();
+
+    p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
+    p_composer_->samplingStepNoCheck();
+
+    p_composer_->mStep(biased_);
+
+    if (runType == run_) {
+      p_composer_->storeSEMRun(iter,
+                               nbIter_ - 1);
+    }
+  }
 }
 
 } // namespace mixt

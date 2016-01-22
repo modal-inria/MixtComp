@@ -29,8 +29,8 @@
 #include <set>
 
 #include "../../LinAlg/mixt_LinAlg.h"
-
 #include "../../Various/mixt_Enum.h"
+#include "../../Mixture/mixt_IMixture.h"
 
 namespace mixt
 {
@@ -52,7 +52,7 @@ class Categorical_pjk
     int maxVal() const;
     int minVal() const;
     std::string model() const;
-    void mStep();
+    void mStep(EstimatorType bias);
     std::vector<std::string> paramNames() const;
     void setData(Vector<int>& data);
     void setModalities(int nbModalities);

@@ -197,9 +197,8 @@ class MixtureBridge : public IMixture
     /**
      * Estimate parameters by maximum likelihood
      */
-    virtual void mStep()
-    {
-      mixture_.mStep();
+    virtual void mStep(EstimatorType bias) {
+      mixture_.mStep(bias);
     }
 
     /** This function should be used to store any intermediate results during

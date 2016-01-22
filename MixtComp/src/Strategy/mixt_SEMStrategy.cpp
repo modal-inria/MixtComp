@@ -28,8 +28,7 @@
 #include "../Various/mixt_Various.h"
 #include "../Various/mixt_Constants.h"
 
-namespace mixt
-{
+namespace mixt {
 
 /** default constructor */
 SemStrategy::SemStrategy(MixtureComposer* p_composer,
@@ -61,19 +60,30 @@ SemStrategy::~SemStrategy() {
 std::string SemStrategy::run() {
   std::string warnLog;
 
-  warnLog += initSEM();
-  if (warnLog.size() > 0) { // if no initialization is possible, for example if it is not possible to have individuals in all classes, on enough variability in classes
-    return warnLog;
-  }
+  switch(param_.bias_) {
+    case unBiased_: {
+      warnLog += initSEMCheck();
+      if (warnLog.size() > 0) { // if no initialization is possible, for example if it is not possible to have individuals in all classes, on enough variability in classes
+        return warnLog;
+      }
 
-  RunProblemType runProb = runSEM(rejectSampler_);
-  if (runProb == invalidSampler_) {
-#ifdef MC_VERBOSE
-      std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
-#endif
+      RunProblemType runProb = runSEMCheck(rejectSampler_);
+      if (runProb == invalidSampler_) {
+    #ifdef MC_VERBOSE
+          std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
+    #endif
 
-    initSEM();
-    runSEM(GibbsSampler_);
+        initSEMCheck();
+        runSEMCheck(GibbsSampler_);
+      }
+    }
+    break;
+
+    case biased_: {
+      initSEMNoCheck();
+      runSEMNoCheck();
+    }
+    break;
   }
 
   initGibbs();
@@ -82,7 +92,7 @@ std::string SemStrategy::run() {
   return warnLog;
 }
 
-std::string SemStrategy::initSEM() {
+std::string SemStrategy::initSEMCheck() {
   std::string warnLog;
 
   for (int n = 0; n < nbSamplingAttempts; ++n) { // multiple initialization attempts
@@ -91,14 +101,14 @@ std::string SemStrategy::initSEM() {
 
     if (n < nbSamplingAttempts - 1) {
       if (p_composer_->checkSampleCondition() == 1) { // log is not generated, since further trials are expected
-        p_composer_->mStep(); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
+        p_composer_->mStep(unBiased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
         break;
       }
     }
     else { // last trial, will generate a descriptive log if not successful
       std::string sWarn;
       if (p_composer_->checkSampleCondition(&sWarn) == 1) { // log is generated only during last trial
-        p_composer_->mStep(); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
+        p_composer_->mStep(unBiased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
       }
       else {
         std::stringstream sstm;
@@ -113,29 +123,41 @@ std::string SemStrategy::initSEM() {
   return warnLog;
 }
 
-RunProblemType SemStrategy::runSEM(SamplerType sampler) {
-#ifdef MC_DEBUG
-  std::cout << "SemStrategy::runSEM" << std::endl;
-#endif
+void SemStrategy::initSEMNoCheck() {
+  p_composer_->initializeProp(); // reset prop
+  p_composer_->removeMissing(initParam_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+  p_composer_->mStep(biased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
+}
 
-    RunProblemType prob = noProblem_;
-    p_burnInAlgo_->run(burnIn_,
+RunProblemType SemStrategy::runSEMCheck(SamplerType sampler) {
+  RunProblemType prob = noProblem_;
+  p_burnInAlgo_->runCheck(burnIn_,
+                          prob,
+                          sampler,
+                          0, // group
+                          3); // groupMax
+
+  if (prob == invalidSampler_) { // no run is performed if there is an error during the burn-in
+    return prob;
+  }
+
+  p_runAlgo_->runCheck(run_,
                        prob,
                        sampler,
-                       0, // group
+                       1, // group
                        3); // groupMax
 
-    if (prob == invalidSampler_) { // no run is performed if there is an error during the burn-in
-      return prob;
-    }
+  return prob;
+}
 
-    p_runAlgo_->run(run_,
-                    prob,
-                    sampler,
-                    1, // group
-                    3); // groupMax
+void SemStrategy::runSEMNoCheck() {
+  p_burnInAlgo_->runNoCheck(burnIn_,
+                            0, // group
+                            3); // groupMax
 
-    return prob;
+  p_runAlgo_->runNoCheck(run_,
+                         1, // group
+                         3); // groupMax
 }
 
 void SemStrategy::initGibbs() {

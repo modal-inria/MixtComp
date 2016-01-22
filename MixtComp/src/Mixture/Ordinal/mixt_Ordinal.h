@@ -24,6 +24,8 @@
 #ifndef MIXT_ORDINAL
 #define MIXT_ORDINAL
 
+#include <algorithm>
+
 #include "../Data/mixt_AugmentedData.h"
 #include "../Data/mixt_ConfIntDataStat.h"
 #include "../Param/mixt_ConfIntParamStat.h"
@@ -267,20 +269,8 @@ class Ordinal : public IMixture
       copyToData(ind);
     }
 
-    virtual void mStep()
-    {
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::mStep, idName_: " << idName_ << std::endl;
-      std::cout << "augData_.data_: " << augData_.data_.transpose() << std::endl;
-      std::cout << "zi_           : " << p_zi_->transpose() << std::endl;
-#endif
-
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::mStep, idName: " << idName_ << ", mu: " << mu_.transpose() << std::endl;
-#endif
-
-      mStepPi();
-
+    virtual void mStep(EstimatorType bias) {
+      mStepPi(bias);
       mStepMu();
     }
 
@@ -638,62 +628,30 @@ class Ordinal : public IMixture
       }
     }
 
-    void mStepMu()
-    {
-#ifdef MC_DEBUG
-      Vector<int> muBack = mu_;
-#endif
-
+    void mStepMu() {
       Matrix<Real> logLik(nbClass_, nbModality_, 0.);
-      for (int i = 0; i < nbInd_; ++i)
-      {
+      for (int i = 0; i < nbInd_; ++i) {
         int currClass = (*p_zi_)(i);
         Real currPi = pi_(currClass);
         RowVector<Real> probaInd(nbModality_);
-        for (int mu = 0; mu < nbModality_; ++mu) // mu obtained from maximization over all possible values
-        {
+        for (int mu = 0; mu < nbModality_; ++mu) { // mu obtained from maximization over all possible values
           probaInd(mu) = path_(i).computeLogProba(mu,
                                                   currPi);
         }
         logLik.row(currClass) += probaInd;
-
-#ifdef MC_DEBUG
-        std::cout << "Ordinal::mStepMu, i: " << i << ", probaInd: " << probaInd << ", logLik.row(currClass): " << logLik.row(currClass) << std::endl;
-#endif
       }
 
-//      for (int k = 0; k < nbClass_; ++k)
-//      {
-//        int maxLik;
-//        logLik.row(k).maxCoeff(&maxLik);
-//        mu_(k) = maxLik;
-//      }
-
-      for (int k = 0; k < nbClass_; ++k)
-      {
+      for (int k = 0; k < nbClass_; ++k) {
         RowVector<Real> proba;
         proba.logToMulti(logLik.row(k));
         mu_(k) = multi_.sample(proba);
       }
-
-#ifdef MC_DEBUG
-      if (mu_ != muBack)
-      {
-        std::cout << "Ordinal::mStepMu, muBack: " << muBack.transpose() << std::endl;
-        std::cout << "Ordinal::mStepMu, mu    : " << mu_.transpose() << std::endl;
-        std::cout << "Ordinal::mStepMu, idName: " << idName_ << std::endl;
-      }
-      std::cout << "Ordinal::mStepMu, logLik: " << std::endl;
-      std::cout << logLik << std::endl;
-      std::cout << "Ordinal::mStepMu, mu_" << mu_.transpose() << std::endl;
-      std::cout << "Ordinal::mStepMu, pi_" << pi_.transpose() << std::endl;
-#endif
     }
 
     /**
      * Estimation of pi by maximum likelihood in all classes
      * */
-    void mStepPi() {
+    void mStepPi(EstimatorType bias) {
       pi_ = 0.; // pi_ parameter is reinitialized
 
       Vector<Real> nodePerClass(nbClass_, 0.); // total number of nodes in each class
@@ -706,6 +664,13 @@ class Ordinal : public IMixture
       }
 
       pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
+
+      if (bias == biased_) {
+        for (int k = 0; k < nbClass_; ++k) {
+          pi_(k) = std::max(epsilon, pi_(k)      );
+          pi_(k) = std::min(pi_(k) , 1. - epsilon);
+        }
+      }
     }
 
     /**

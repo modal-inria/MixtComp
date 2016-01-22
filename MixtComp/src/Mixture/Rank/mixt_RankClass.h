@@ -28,6 +28,7 @@
 
 #include "mixt_RankVal.h"
 #include "mixt_RankIndividual.h"
+#include "../mixt_IMixture.h"
 
 namespace mixt
 {
@@ -57,7 +58,7 @@ class RankClass
     void sampleMu();
 
     /** */
-    void mStep();
+    void mStep(EstimatorType bias);
 
     void computeObservedProba();
   private:

@@ -27,8 +27,8 @@
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Various/mixt_Enum.h"
 
-namespace mixt
-{
+namespace mixt {
+
 Categorical_pjk::Categorical_pjk(const std::string& idName,
                                  int nbClass,
                                  Vector<Real>& param,
@@ -91,7 +91,7 @@ std::string Categorical_pjk::model() const
   return "Categorical_pjk";
 }
 
-void Categorical_pjk::mStep() {
+void Categorical_pjk::mStep(EstimatorType bias) {
   for (int k = 0; k < nbClass_; ++k) {
     Vector<Real> modalities(nbModality_, 0.);
 
@@ -105,6 +105,15 @@ void Categorical_pjk::mStep() {
 
     for (int p = 0; p < nbModality_; ++p) {
       param_(k * nbModality_ + p) = modalities(p);
+    }
+  }
+
+  if (bias == biased_) {
+    for (int k = 0; k < nbClass_; ++k) {
+      for (int p = 0; p < nbModality_; ++p) {
+        param_(k * nbModality_ + p) = std::max(param_(k * nbModality_ + p), epsilon                     );
+        param_(k * nbModality_ + p) = std::min(1. - epsilon               , param_(k * nbModality_ + p));
+      }
     }
   }
 }

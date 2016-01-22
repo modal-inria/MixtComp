@@ -33,6 +33,8 @@ struct StrategyParam {
     int nbIter_ = -1;
     int nbGibbsBurnInIter_ = -1;
     int nbGibbsIter_ = -1;
+
+    EstimatorType bias_ = unBiased_;
 };
 
 }  // namespace mixt

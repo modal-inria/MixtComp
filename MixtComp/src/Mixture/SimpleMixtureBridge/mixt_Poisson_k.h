@@ -29,6 +29,7 @@
 #include <vector>
 #include <set>
 
+#include "../mixt_IMixture.h"
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Statistic/mixt_PoissonStatistic.h"
 #include "../../Various/mixt_Enum.h"
@@ -54,7 +55,7 @@ class Poisson_k
 
     void setData(Vector<int>& data);
 
-    void mStep();
+    void mStep(EstimatorType bias);
 
     int maxVal() const;
     int minVal() const;
