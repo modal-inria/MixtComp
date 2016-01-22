@@ -30,11 +30,9 @@ namespace mixt
 
 /** default constructor */
 GibbsStrategy::GibbsStrategy(MixtureComposer* p_composer,
-                             int nbBurnInIterGibbs,
-                             int nbIterGibbs) :
+                             const StrategyParam& param) :
     p_composer_(p_composer),
-    nbBurnInIterGibbs_(nbBurnInIterGibbs),
-    nbIterGibbs_(nbIterGibbs)
+    param_(param)
 {}
 
 std::string GibbsStrategy::run()
@@ -45,20 +43,20 @@ std::string GibbsStrategy::run()
 
   Timer myTimer;
   myTimer.setName("Gibbs: burn-in");
-  for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbBurnInIterGibbs_; ++iterBurnInGibbs)
+  for (int it = 0; it < param_.nbGibbsBurnInIter_; ++it)
   {
-    myTimer.iteration(iterBurnInGibbs, nbBurnInIterGibbs_ - 1);
+    myTimer.iteration(it, param_.nbGibbsBurnInIter_ - 1);
     writeProgress(0, // group
                   1, // groupMax
-                  iterBurnInGibbs,
-                  nbBurnInIterGibbs_); // progress write in progress file
+                  it,
+                  param_.nbGibbsBurnInIter_); // progress write in progress file
 
     p_composer_->eStep();
     p_composer_->sStepNoCheck();
     p_composer_->samplingStepNoCheck();
   }
 
-  p_composer_->gibbsSampling(nbIterGibbs_,
+  p_composer_->gibbsSampling(param_.nbGibbsIter_,
                              1, // group
                              1); // groupMax
   return warnLog;

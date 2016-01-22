@@ -25,6 +25,7 @@
 #define MIXT_GIBBSSTRATEGY_H
 
 #include "../Composer/mixt_MixtureComposer.h"
+#include "../Strategy/mixt_StrategyParam.h"
 
 namespace mixt
 {
@@ -40,8 +41,7 @@ class GibbsStrategy
      *  @param p_composer the model to estimate
      **/
     GibbsStrategy(MixtureComposer* p_composer,
-                    int nbBurnInIter,
-                    int nbIter);
+                  const StrategyParam& param);
     
     /** run the strategy */
     std::string run();
@@ -50,8 +50,7 @@ class GibbsStrategy
      /** reference on the main model */
     mixt::MixtureComposer* p_composer_;
 
-    int nbBurnInIterGibbs_;
-    int nbIterGibbs_;
+    const StrategyParam& param_;
 };
 
 }  // namespace mixt

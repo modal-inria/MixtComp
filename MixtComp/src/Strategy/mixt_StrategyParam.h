@@ -1,5 +1,7 @@
+
+
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2014
+/*  Copyright (C) Inria 2016
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,26 +19,22 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Aug 18, 2015
+ *  Created on: January 22, 2016
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_FUNCTION_H
-#define MIXT_FUNCTION_H
+#ifndef MIXT_STRATEGYPARAM_H
+#define MIXT_STRATEGYPARAM_H
 
-#include "Rcpp.h"
-#include "MixtComp/src/Composer/mixt_MixtureComposer.h"
-#include "MixtComp/src/Strategy/mixt_StrategyParam.h"
+namespace mixt {
 
-namespace mixt
-{
+struct StrategyParam {
+    int nbBurnInIter_ = -1;
+    int nbIter_ = -1;
+    int nbGibbsBurnInIter_ = -1;
+    int nbGibbsIter_ = -1;
+};
 
-void IDClass(mixt::MixtureComposer& mc,
-             Rcpp::NumericMatrix& idc);
+}  // namespace mixt
 
-void paramRToCpp(const Rcpp::List& RParam,
-                 StrategyParam& CppParam);
-
-} // namespace mixt
-
-#endif // MIXT_FUNCTION_H
+#endif /* MIXT_STRATEGYPARAM_H */

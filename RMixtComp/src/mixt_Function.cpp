@@ -27,8 +27,7 @@ namespace mixt
 {
 
 void IDClass(mixt::MixtureComposer& mc,
-             Rcpp::NumericMatrix& idc)
-{
+             Rcpp::NumericMatrix& idc) {
   idc = Rcpp::NumericMatrix(mc.nbClass(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
                             mc.nbVar());
 
@@ -41,27 +40,39 @@ void IDClass(mixt::MixtureComposer& mc,
   std::vector<std::string> rowName = mc.paramName();
   std::vector<std::string> colName = mc.mixtureName();
 
-  for (int j = 0; j < mc.nbVar(); ++j)
-  {
-    for (int k = 0; k < mc.nbClass(); ++k)
-    {
+  for (int j = 0; j < mc.nbVar(); ++j) {
+    for (int k = 0; k < mc.nbClass(); ++k) {
       idc(k, j) = IDClass(k, j);
     }
   }
 
-  for (int k = 0; k < mc.nbClass(); ++k)
-  {
+  for (int k = 0; k < mc.nbClass(); ++k) {
     row(k) = rowName[k];
   }
 
-  for (int j = 0; j < mc.nbVar(); ++j)
-  {
+  for (int j = 0; j < mc.nbVar(); ++j) {
     col(j) = colName[j];
   }
 
   Rcpp::List dimnms = Rcpp::List::create(row,
                                          col);
   idc.attr("dimnames") = dimnms;
+}
+
+void paramRToCpp(const Rcpp::List& RParam,
+                 StrategyParam& CppParam) {
+  if(RParam.containsElementNamed("nbBurnInIter")){
+    CppParam.nbBurnInIter_ = RParam["nbBurnInIter"];
+  }
+  if(RParam.containsElementNamed("nbIter")){
+    CppParam.nbIter_ = RParam["nbIter"];
+  }
+  if(RParam.containsElementNamed("nbGibbsBurnInIter")){
+    CppParam.nbGibbsBurnInIter_ = RParam["nbGibbsBurnInIter"];
+  }
+  if(RParam.containsElementNamed("nbGibbsBurnInIter")){
+    CppParam.nbGibbsIter_ = RParam["nbGibbsIter"];
+  }
 }
 
 } // namespace mixt

@@ -33,35 +33,27 @@ namespace mixt
 
 /** default constructor */
 SemStrategy::SemStrategy(MixtureComposer* p_composer,
-                         int nbBurnInIter,
-                         int nbIter,
-                         int nbGibbsBurnInIter,
-                         int nbGibbsIter) :
+                         const StrategyParam& param) :
     p_composer_(p_composer),
-    nbGibbsBurnInIter_(nbGibbsBurnInIter),
-    nbGibbsIter_(nbGibbsIter)
-{
+    param_(param) {
   p_burnInAlgo_ = new SEMAlgo(p_composer,
-                              nbBurnInIter);
+                              param.nbBurnInIter_);
   p_runAlgo_    = new SEMAlgo(p_composer,
-                              nbIter);
+                              param.nbIter_);
 }
 
 /** copy constructor */
 SemStrategy::SemStrategy(SemStrategy const& strategy) :
-    p_composer_        (strategy.p_composer_        ),
-    nbGibbsBurnInIter_ (strategy.nbGibbsBurnInIter_ ),
-    nbGibbsIter_       (strategy.nbGibbsIter_       )
-{
-  SEMAlgo& burnInAlgo = *strategy.p_burnInAlgo_;
-  SEMAlgo& longAlgo   = *strategy.p_runAlgo_   ;
-  p_burnInAlgo_ = new SEMAlgo(burnInAlgo);
-  p_runAlgo_    = new SEMAlgo(longAlgo);
+    p_composer_(strategy.p_composer_),
+    param_(strategy.param_) {
+  p_burnInAlgo_ = new SEMAlgo(p_composer_,
+                              param_.nbBurnInIter_);
+  p_runAlgo_    = new SEMAlgo(p_composer_,
+                              param_.nbIter_);
 }
 
 /** destructor */
-SemStrategy::~SemStrategy()
-{
+SemStrategy::~SemStrategy() {
   if (p_burnInAlgo_) delete p_burnInAlgo_;
   if (p_runAlgo_   ) delete p_runAlgo_   ;
 }
@@ -153,13 +145,13 @@ void SemStrategy::initGibbs() {
 void SemStrategy::runGibbs() {
   Timer myTimer;
   myTimer.setName("Gibbs burn-in");
-  for (int iterBurnInGibbs = 0; iterBurnInGibbs < nbGibbsBurnInIter_; ++iterBurnInGibbs)
-  {
-    myTimer.iteration(iterBurnInGibbs, nbGibbsBurnInIter_ - 1);
+  for (int it = 0; it < param_.nbGibbsBurnInIter_; ++it) {
+    myTimer.iteration(it,
+                      param_.nbGibbsBurnInIter_ - 1);
     writeProgress(2,
                   3,
-                  iterBurnInGibbs,
-                  nbGibbsBurnInIter_ - 1);
+                  it,
+                  param_.nbGibbsBurnInIter_ - 1);
 
     p_composer_->eStep();
     p_composer_->sStepNoCheck(); // during Gibbs no check is performed, as there is no parameter estimation. Note the following samplingStepNoCheck().
@@ -167,7 +159,7 @@ void SemStrategy::runGibbs() {
 
   }
 
-  p_composer_->gibbsSampling(nbGibbsIter_,
+  p_composer_->gibbsSampling(param_.nbGibbsIter_,
                              3, // group
                              3); // groupMax
 }

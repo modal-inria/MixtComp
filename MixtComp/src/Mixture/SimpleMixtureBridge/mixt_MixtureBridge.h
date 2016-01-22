@@ -211,7 +211,9 @@ class MixtureBridge : public IMixture
       paramStat_.sampleParam(iteration,
                              iterationMax);
       if (iteration == iterationMax) {
-        paramStat_.normalizeParam(nbClass_, mixture_.nbModality());
+        if (mixture_.hasModalities()) {
+          paramStat_.normalizeParam(nbClass_, mixture_.nbModality()); // enforce that estimated proportions sum to 1
+        }
         paramStat_.setExpectationParam(); // set parameter to mode / expectation
       }
     }

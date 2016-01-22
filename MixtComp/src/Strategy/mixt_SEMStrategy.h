@@ -32,6 +32,7 @@
 #define MIXT_MIXTURESTRATEGY_H
 
 #include "../Composer/mixt_MixtureComposer.h"
+#include "../Strategy/mixt_StrategyParam.h"
 #include "mixt_SEMAlgo.h"
 
 namespace mixt
@@ -48,10 +49,7 @@ class SemStrategy
      *  @param p_composer the model to estimate
      **/
     SemStrategy(MixtureComposer* p_composer,
-                int nbBurnInIter,
-                int nbIter,
-                int nbGibbsBurnInIter,
-                int nbGibbsIter);
+                const StrategyParam& param);
 
     /** non-trivial copy constructor */
     SemStrategy(SemStrategy const& strategy);
@@ -72,11 +70,7 @@ class SemStrategy
      /** reference on the main model */
     MixtureComposer* p_composer_;
     
-    /** number of burn in iteration for final Gibbs sampler */
-    int nbGibbsBurnInIter_;
-
-    /** number of iteration for final Gibbs sampler */
-    int nbGibbsIter_;
+    const StrategyParam& param_;
 
     /** algorithm for burn-in */
     SEMAlgo* p_burnInAlgo_;

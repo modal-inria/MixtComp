@@ -27,8 +27,6 @@
 #include "mixt_ParamSetterR.h"
 #include "mixt_Function.h"
 #include "MixtComp/src/mixt_MixtComp.h"
-#include "MixtComp/src/Various/mixt_Timer.h"
-#include "MixtComp/src/Various/mixt_Enum.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompPredict(Rcpp::List dataList,
@@ -111,10 +109,13 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
 
     if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
     {
+      mixt::StrategyParam param;
+      paramRToCpp(mcStrategy,
+                  param);
+
       // create the appropriate strategy and transmit the parameters
       mixt::GibbsStrategy strategy(&composer,
-                                   mcStrategy["nbGibbsBurnInIter"], // number of iterations for Gibbs sampler
-                                   mcStrategy["nbGibbsIter"]); // number of iterations for Gibbs sampler);
+                                   param); // number of iterations for Gibbs sampler);
 
       // run the strategy
       mixt::Timer stratTimer("Strategy Run");

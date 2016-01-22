@@ -26,12 +26,6 @@
 #include "mixt_ParamExtractorR.h"
 #include "mixt_Function.h"
 #include "MixtComp/src/mixt_MixtComp.h"
-#include "MixtComp/src/IO/Dummy.h"
-#include "MixtComp/src/Various/mixt_Timer.h"
-#include "MixtComp/src/Various/mixt_Constants.h"
-#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
-#include "MixtComp/src/IO/mixt_IO.h"
-#include "MixtComp/src/Various/mixt_Enum.h"
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompCluster(Rcpp::List dataList,
@@ -113,12 +107,13 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
 
     if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
     {
+      mixt::StrategyParam param;
+      paramRToCpp(mcStrategy,
+                  param);
+
       // create the appropriate strategy and transmit the parameters
       mixt::SemStrategy strategy(&composer,
-                                 mcStrategy["nbBurnInIter"], // number of burn-in iterations
-                                 mcStrategy["nbIter"], // number of iterations
-                                 mcStrategy["nbGibbsBurnInIter"], // number of iterations for Gibbs sampler
-                                 mcStrategy["nbGibbsIter"]); // number of iterations for Gibbs sampler
+                                 param); // number of iterations for Gibbs sampler
 
       // run the strategy
       mixt::Timer stratTimer("Strategy Run");
