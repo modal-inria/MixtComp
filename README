@@ -1,20 +1,28 @@
-Prerequisite
+Prerequisites, all platforms
 ---
 
-The following packages should be installed in R: Rcpp RInside truncnorm shape
+R must be installed, along with the following packages from the CRAN: Rcpp RInside truncnorm shape.
 
-Build and install in R
+The C++ library Boost is required, but is too big to be provided in the git repository. It must be downloaded from http://www.boost.org/ as an archive, and its content must be extracted in the boost subdirectory. The project directories hierarchy will then look like:
+
+boost
+  boost
+  doc
+  libs
+  more
+  status
+  tools
+eigen
+gtest
+MixtComp
+RMixtComp
+
+Prerequisites, OSX
 ---
 
-From the commande line:
-  go to RMixtComp
-  execute make
+The developper tools must be installed, by typing "xcode-select --install" in a terminal. This will provide a C++ compiler and a build toolchain.
 
-From Rstudio:
-  open the project file RMixtComp/RMixtComp.Rproj
-  press control + shift + b
-  
-Debug
+Build and install
 ---
 
-When using the command-line make, a test program is created in RMixtComp/src/test . Executing it through gdb (via Eclipse for example) allows for easy debugging of RMixtComp.
+After the initial "git --clone", or after any update via "git pull" for example, the code must be rebuilt. To handle the various dependencies correctly, is is necessary to rebuild MixtComp by calling "./mcUpdate.sh" which is in the same directory as this present document. The script will clean just enough location to ensure a proper build without taking too long to complete.

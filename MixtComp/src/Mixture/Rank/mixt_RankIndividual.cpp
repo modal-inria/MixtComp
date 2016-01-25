@@ -64,8 +64,8 @@ RankIndividual::RankIndividual(const RankIndividual& ri) :
   obsData_(ri.obsData_),
   x_(ri.x_),
   y_(ri.y_),
-  allMissing_(ri.allMissing_),
-  allPresent_(ri.allPresent_)
+  allPresent_(ri.allPresent_),
+  allMissing_(ri.allMissing_)
 {} // note that the state of multi_ is not copied and a new rng is created
 
 RankIndividual& RankIndividual::operator=(const RankIndividual& ri)
@@ -262,8 +262,8 @@ void RankIndividual::sampleX(const RankVal& mu,
       bool sampleCheck = true; // is the permutation respectful of the sample conditions ?
       bool acceptPermutation = false; // is it necessary to revert x_ ?
 
-      x_.permutation(p);
-      logProba(1) = lnCompletedProbability(mu, pi, A, G);
+      x_.permutation(p); // permutation is performed
+      logProba(1) = lnCompletedProbability(mu, pi, A, G); // proba is computed for alpha, and A and G are computed to check if the individual is valid
 
       switch (gCond) {
         case Geq0Forbidden_: {
@@ -277,6 +277,10 @@ void RankIndividual::sampleX(const RankVal& mu,
           if (G == A) {
             sampleCheck = false;
           }
+        }
+        break;
+
+        case allGAuthorized_: { // if everything is authorized, sampleCheck stays true
         }
         break;
       }
@@ -333,6 +337,10 @@ void RankIndividual::sampleY(const RankVal& mu,
         if (G == A) {
           sampleCheck = false;
         }
+      }
+      break;
+
+      case allGAuthorized_: {
       }
       break;
     }
