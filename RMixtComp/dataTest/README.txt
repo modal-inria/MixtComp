@@ -1,1 +1,0 @@
-This folder contains data for specific tests.
