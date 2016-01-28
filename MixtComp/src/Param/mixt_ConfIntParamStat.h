@@ -103,16 +103,14 @@ class ConfIntParamStat
     /** Perform renormalization on statStorage. Useful for categorical modes where umputed parameters must
      * sum to 1 */
     void normalizeParam(int nbClass, int nbModality) {
-      if (nbModality > 1) {
-        for (int j = 0; j < statStorage_.cols(); ++j) {
-          for (int k = 0; k < nbClass; ++k) {
-            Type sumClass = 0;
-            for (int p = 0; p < nbModality; ++p) {
-              sumClass += statStorage_(k * nbModality + p, j);
-            }
-            for (int p = 0; p < nbModality; ++p) {
-              statStorage_(k * nbModality + p, j) /= sumClass;
-            }
+      for (int j = 0; j < statStorage_.cols(); ++j) {
+        for (int k = 0; k < nbClass; ++k) {
+          Type sumClass = 0;
+          for (int p = 0; p < nbModality; ++p) {
+            sumClass += statStorage_(k * nbModality + p, j);
+          }
+          for (int p = 0; p < nbModality; ++p) {
+            statStorage_(k * nbModality + p, j) /= sumClass;
           }
         }
       }
