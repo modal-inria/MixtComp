@@ -176,31 +176,22 @@ class MixtureComposer
              typename DataHandler>
     std::string setDataParam(const ParamSetter& paramSetter,
                              const DataHandler& dataHandler,
-                             RunMode mode)
-    {
+                             RunMode mode) {
       std::string warnLog;
       warnLog += setProportion(paramSetter);
 
-#ifdef MC_DEBUG
-      std::cout << "MixtureComposer::setDataParam, prop_: " << itString(prop_) << std::endl;
-#endif
-
-      for (int i = 0; i < nbInd_; ++i)
-      {
+      for (int i = 0; i < nbInd_; ++i) {
         tik_.row(i) = prop_.transpose();
       }
 
-      warnLog += setZi(dataHandler, // dataHandler getData is called to fill zi_
-                       mode);
+      warnLog += setZi(dataHandler); // dataHandler getData is called to fill zi_
 
-      if (mode == prediction_) // in prediction, paramStatStorage_ will not be modified later during the run
-      {
+      if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
         paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
       }
       dataStat_.resizeStatStorage(nbInd_);
 
-      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-      {
+      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
         warnLog += (*it)->setDataParam(mode);
       }
 
@@ -211,8 +202,7 @@ class MixtureComposer
      * This avoids templating the whole composer with DataHandler type, as is currently done
      * with the individual IMixtures. */
     template<typename ParamSetter>
-    std::string setProportion(const ParamSetter& paramSetter)
-    {
+    std::string setProportion(const ParamSetter& paramSetter) {
       std::string warnLog;
 
       paramSetter.getParam("z_class",
@@ -228,36 +218,20 @@ class MixtureComposer
       * @param checkInd should be set to 1 if a minimum number of individual per class should be
       * enforced at sampling (true in learning, false in prediction) */
     template<typename DataHandler>
-    std::string setZi(const DataHandler& dataHandler,
-                      RunMode mode)
-    {
+    std::string setZi(const DataHandler& dataHandler) {
       std::string warnLog;
       std::string dummyParam;
 
-      if (dataHandler.info().find("z_class") == dataHandler.info().end()) // z_class was not provided
-      {
-#ifdef MC_DEBUG
-        std::cout << "MixtureComposer::setZi, z_class not provided" << std::endl;
-#endif
-
+      if (dataHandler.info().find("z_class") == dataHandler.info().end()) { // z_class was not provided
         zi_.setAllMissing(nbInd_); // set every value state to missing_
       }
-      else // z_class was provided and its value is acquired in zi_
-      {
-#ifdef MC_DEBUG
-        std::cout << "MixtureComposer::setZi, z_class provided" << std::endl;
-#endif
-
+      else { // z_class was provided and its value is acquired in zi_
         warnLog += dataHandler.getData("z_class", // reserved name for the class
                                        zi_,
                                        nbInd_,
                                        dummyParam,
                                        -minModality); // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
       }
-
-#ifdef MC_DEBUG
-      std::cout << "MixtureComposer::setZi, zi_.data_: " << itString(zi_.data_) << std::endl;
-#endif
 
       Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
       at(0) = true; // present_,
@@ -268,15 +242,13 @@ class MixtureComposer
       at(5) = false;// missingRUIntervals_,
 
       std::string tempLog = zi_.checkMissingType(at); // check if the missing data provided are compatible with the model
-      if(tempLog.size() > 0)
-      {
+      if(tempLog.size() > 0) {
        std::stringstream sstm;
        sstm << "Variable " << idName_ << " contains latent classes and has unsupported missing value types.\n" << tempLog;
        warnLog += sstm.str();
       }
       zi_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
-      if (zi_.dataRange_.min_ < 0)
-      {
+      if (zi_.dataRange_.min_ < 0) {
        std::stringstream sstm;
        sstm << "The z_class latent class variable has a lowest provided value of: "
             << minModality + zi_.dataRange_.min_
@@ -285,8 +257,7 @@ class MixtureComposer
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
        warnLog += sstm.str();
       }
-      if (zi_.dataRange_.hasRange_ == true || zi_.dataRange_.max_ > nbClass_ - 1)
-      {
+      if (zi_.dataRange_.hasRange_ == true || zi_.dataRange_.max_ > nbClass_ - 1) {
        std::stringstream sstm;
        sstm << "The z_class latent class variable has a highest provided value of: "
             << minModality + zi_.dataRange_.max_
@@ -307,11 +278,7 @@ class MixtureComposer
      **/
     template<typename DataExtractor,
              typename ParamExtractor>
-    void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const
-    {
-#ifdef MC_DEBUG
-      std::cout << "MixtureComposer::exportDataParam, zi_.data_: " << itString(zi_.data_) << std::endl;
-#endif
+    void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const {
       dataExtractor.exportVals("z_class",
                                zi_,
                                tik_);
@@ -321,8 +288,7 @@ class MixtureComposer
                                  paramStat_.getLogStorage(),
                                  paramName(),
                                  confidenceLevel_);
-      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-      {
+      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
         (*it)->exportDataParam();
       }
     };

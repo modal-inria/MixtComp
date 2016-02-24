@@ -153,10 +153,6 @@ Real MixtureComposer::lnCompletedLikelihood()
   // Compute the completed likelihood for the complete mixture model, using the completed data
   for (int i = 0; i < nbInd_; ++i)
   {
-#ifdef MC_DEBUG
-    std::cout << "i: " << i << ", zi_[i]: " << zi_[i] << ", lnComp(i, zi_[i]): " << lnComp(i, zi_[i]) << std::endl;
-    std::cout << "lnComp.row(i): " << lnComp.row(i) << std::endl;
-#endif
     lnLikelihood += lnObservedProbability(i, zi_.data_(i));
   }
 
@@ -165,19 +161,12 @@ Real MixtureComposer::lnCompletedLikelihood()
 
 Real MixtureComposer::lnCompletedProbability(int i, int k)
 {
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::lnCompletedLikelihood(int i, int k), i: " << i << ", k: " << k << std::endl;
-  std::cout << "prop_.size(): " << prop_.size() << std::endl;
-#endif
   Real sum = std::log(prop_[k]);
 
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
   {
     Real logProba = (*it)->lnCompletedProbability(i, k);
     sum += logProba;
-#ifdef MC_DEBUG
-    std::cout << (*it)->idName() << ", sum: " << sum << std::endl;
-#endif
   }
 
   return sum;
