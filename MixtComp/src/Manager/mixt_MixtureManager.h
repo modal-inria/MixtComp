@@ -67,15 +67,6 @@ class MixtureManager
         std::string idName = it->first;
         std::string idModel = it->second;
 
-#ifdef MC_DEBUG
-        std::cout << "MixtureManager::createMixtures, "
-        		      << "idName: " << idName
-				          << ", model: " << model
-				          << ", idModel: " << idModel << std::endl;
-        std::cout << "composer.p_pk(): " << composer.p_pk()
-                  << ", *composer.p_pk(): " << *composer.p_pk() << std::endl;
-#endif
-
         IMixture* p_mixture = createMixture(idModel,
                                             idName,
                                             composer,
@@ -114,11 +105,6 @@ class MixtureManager
                             int nbCluster,
                             Real confidenceLevel)
     {
-#ifdef MC_DEBUG
-      std::cout << "MixtureManager::createMixture" << std::endl;
-      std::cout << "idName: " << idName << std::endl;
-#endif
-
       if (idModel == "Categorical_pjk") {
         CategoricalBridge_pjk_m<DataHandler,
                                 DataExtractor,

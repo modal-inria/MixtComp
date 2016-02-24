@@ -40,6 +40,9 @@ class PoissonStatistic
     Real pdf(int x,
              Real lambda) const;
 
+    Real lpdf(int x,
+              Real lambda) const;
+
     /** Sample a value from a Poisson Law with parameter lambda */
     int sample(Real lambda);
 

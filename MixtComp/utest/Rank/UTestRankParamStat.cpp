@@ -66,10 +66,6 @@ TEST(RankStat, computeStat)
 
   RankStat paramStat(muEst, confidenceLevel); // stat computer on muEst and piEst
 
-#ifdef MC_DEBUG
-    std::cout << "Initialisation: mu: " << muVec.transpose() << ", pi: " << piEst << std::endl;
-#endif
-
   RankClass rank(data,
                  setInd,
                  muEst,
@@ -86,15 +82,11 @@ TEST(RankStat, computeStat)
     for (int ind = 0; ind < nbInd; ++ind) {
       data(ind).sampleY(muEst, piEst, allGAuthorized_);
     }
-    rank.mStep();
+    rank.mStep(unBiased_);
     paramStat.sampleValue(i, nbIterRun - 1);
   }
 
   paramStat.setExpectationParam();
-
-#ifdef MC_DEBUG
-  std::cout << "Estimation:     mu: " << muEst.o().transpose() << ", pi : " << piEst << std::endl;
-#endif
 
   ASSERT_EQ(mu, muEst);
 }

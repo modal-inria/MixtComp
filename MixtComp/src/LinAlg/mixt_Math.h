@@ -24,10 +24,13 @@
 #ifndef MIXT_MATH_H
 #define MIXT_MATH_H
 
-namespace mixt
-{
+#include "mixt_Typedef.h"
+
+namespace mixt {
 
 int fac(int n);
+
+Real logFac(int n);
 
 }
 

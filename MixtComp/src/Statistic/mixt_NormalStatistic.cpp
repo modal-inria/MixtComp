@@ -118,6 +118,9 @@ Real NormalStatistic::sampleI(Real mean,
   {
     z = sideSampler(lower, upper);
   }
+  else {
+    z = std::numeric_limits<Real>::signaling_NaN();; // the case is impossible
+  }
 
 #ifdef MC_DEBUG
   std::cout << "z * sd + mean: " << z * sd + mean << std::endl;

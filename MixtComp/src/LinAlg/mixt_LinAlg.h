@@ -26,18 +26,7 @@
 
 #include <vector>
 #include <Eigen/Dense>
-
-namespace mixt
-{
-
-/** Eigen storage is column-major by default, which suits the main way of accessing data,
- * by looping over individuals instead of variables */
-typedef double Real;
-
-/** Positive integer which encoding is enough to cover index every matrix in memory. At the moment
- * int is used for indexing.
- * http://stackoverflow.com/questions/1951519/when-to-use-stdsize-t */
-typedef size_t Size;
+#include "mixt_Typedef.h"
 
 template<typename T,
          int _Rows = Eigen::Dynamic,
@@ -127,6 +116,20 @@ class Vector : public Matrix<T, _Rows, 1>
                                                                          Eigen::internal::scalar_constant_op<T>(scalar));
       return *this;
     }
+
+    /** Initializer list assignment */
+    Vector& operator=(const std::initializer_list<T>& list)
+    {
+      int size = list.size();
+      this->resize(size);
+      typename std::initializer_list<T>::const_iterator it = list.begin();
+      for (int i = 0, ie = size; i < ie; ++i)
+      {
+        (*this)(i) = *it;
+        ++it;
+      }
+      return *this;
+    }
 };
 
 template<typename T, int _Cols = Eigen::Dynamic>
@@ -170,8 +173,20 @@ class RowVector : public Matrix<T, 1, _Cols>
                                                                          Eigen::internal::scalar_constant_op<T>(scalar));
       return *this;
     }
-};
 
-} // namespace mixt
+    /** Initializer list assignment */
+    RowVector& operator=(const std::initializer_list<T>& list)
+    {
+      int size = list.size();
+      this->resize(size);
+      typename std::initializer_list<T>::const_iterator it = list.begin();
+      for (int i = 0, ie = size; i < ie; ++i)
+      {
+        (*this)(i) = *it;
+        ++it;
+      }
+      return *this;
+    }
+};
 
 #endif // MIXT_LINALG_H

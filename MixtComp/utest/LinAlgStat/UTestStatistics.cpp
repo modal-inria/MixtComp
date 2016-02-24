@@ -154,3 +154,18 @@ TEST(Statistics, Shuffle)
 
   ASSERT_LT(maxErr, 0.01);
 }
+
+TEST(Math, LogFactorial) {
+  int nbValue = 10;
+  Vector<Real> factoValue(nbValue);
+
+  for (int i = 0; i < nbValue; ++i) {
+    factoValue(i) = logFac(i);
+  }
+
+  Vector<Real> expectedFactoValue(10);
+  expectedFactoValue << 1., 1., 2., 6., 24., 120., 720., 5040., 40320., 362880.;
+  expectedFactoValue = expectedFactoValue.log();
+
+  ASSERT_EQ(expectedFactoValue.isApprox(factoValue), true);
+}

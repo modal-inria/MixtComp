@@ -26,6 +26,7 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/poisson_distribution.hpp>
 #include <boost/math/distributions/poisson.hpp>
+#include "../LinAlg/mixt_Math.h"
 #include "../Various/mixt_Constants.h"
 
 namespace mixt
@@ -36,29 +37,16 @@ PoissonStatistic::PoissonStatistic() :
 {}
 
 Real PoissonStatistic::pdf(int x,
-                           Real lambda) const
-{
-  if (lambda > epsilon)
-  {
+                           Real lambda) const {
     boost::math::poisson pois(lambda);
     Real proba = boost::math::pdf(pois,
                                   x);
     return proba;
-  }
-  else if (x == 0)
-  {
-#ifdef MC_DEBUG
-    std::cout << "Lambda very close to 0., for x = 0 -> proba is 1" << std::endl;
-#endif
-    return 1.;
-  }
-  else
-  {
-#ifdef MC_DEBUG
-    std::cout << "Lambda very close to 0., for x = 1 -> proba is 0" << std::endl;
-#endif
-    return 0.;
-  }
+}
+
+Real PoissonStatistic::lpdf(int x,
+                           Real lambda) const {
+    return Real(x) * std::log(lambda) - lambda - logFac(x);
 }
 
 int PoissonStatistic::sample(Real lambda)

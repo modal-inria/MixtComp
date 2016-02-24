@@ -33,6 +33,7 @@
 #include "IO/mixt_IO.h"
 #include "Data/mixt_MisValParser.h"
 #include "LinAlg/mixt_Math.h"
+#include "LinAlg/mixt_Typedef.h"
 #include "Mixture/SimpleMixtureBridge/mixt_Clust_Traits.h"
 #include "Manager/mixt_MixtureManager.h"
 #include "Strategy/mixt_SEMStrategy.h"

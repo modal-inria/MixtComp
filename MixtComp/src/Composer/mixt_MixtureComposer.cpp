@@ -190,104 +190,46 @@ void MixtureComposer::mStep(EstimatorType bias) {
   }
 }
 
-void MixtureComposer::sStepCheck()
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStepCheck" << std::endl;
-#endif
-
+void MixtureComposer::sStepCheck() {
   for (int i = 0; i < nbInd_; ++i) {
     sStepCheck(i);
   }
-
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStepCheck" << std::endl;
-  std::cout << "zi_.data_: " << zi_.data_.transpose() << std::endl;
-  printClassInd();
-#endif
 }
 
-void MixtureComposer::sStepCheck(int i)
-{
-#ifdef MC_DEBUG
-  if (i % 1 == 0) {
-    std::cout << "MixtureComposer::sStepCheck(int i), i: " << i << std::endl;
-  }
-#endif
-
+void MixtureComposer::sStepCheck(int i) {
   sampler_.sStepCheck(i);
 }
 
-void MixtureComposer::sStepNoCheck()
-{
+void MixtureComposer::sStepNoCheck() {
   for (int i = 0; i < nbInd_; ++i) {
     sStepNoCheck(i);
   }
-
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStepNoCheck" << itString(zi_.data_) << std::endl;
-//  printClassInd();
-#endif
 }
 
-void MixtureComposer::sStepNoCheck(int i)
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::sStepNoCheck(int i), i: " << i << std::endl;
-  std::cout << "zi_.data_(i): " << zi_.data_(i) << std::endl;
-#endif
-
+void MixtureComposer::sStepNoCheck(int i) {
   sampler_.sStepNoCheck(i);
 }
 
-void MixtureComposer::eStep()
-{
-  for (int i = 0; i < nbInd_; ++i)
-  {
+void MixtureComposer::eStep() {
+  for (int i = 0; i < nbInd_; ++i) {
     eStep(i);
   }
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::eStep, tik_:" << std::endl;
-  std::cout << tik_.transpose() << std::endl;
-#endif
 }
 
-void MixtureComposer::eStep(int i)
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::eStep(i), i: " << i << std::endl;
-#endif
+void MixtureComposer::eStep(int i) {
   RowVector<Real> lnComp(nbClass_);
-  for (int k = 0; k < nbClass_; k++)
-  {
+  for (int k = 0; k < nbClass_; k++) {
     lnComp[k] = lnCompletedProbability(i, k);
   }
 
-#ifdef MC_DEBUG
-    std::cout << "lnComp: " << lnComp << std::endl;
-#endif
-
   tik_.row(i).logToMulti(lnComp);
-
-#ifdef MC_DEBUG
-  std::cout << "\tmax: " << max << ", sum2: " << sum2 << std::endl;
-  std::cout << "tik_.row(i): " << tik_.row(i) << std::endl;
-#endif
 }
 
-void MixtureComposer::pStep()
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::pStep" << std::endl;
-#endif
-  for (int i = 0; i < zi_.data_.rows(); ++i)
-  {
+void MixtureComposer::pStep() {
+  for (int i = 0; i < zi_.data_.rows(); ++i) {
     prop_[zi_.data_(i)] += 1.;
   }
   prop_ = prop_ / prop_.sum();
-#ifdef MC_DEBUG
-  std::cout << "\tprop_: " << prop_ << std::endl;
-#endif
 }
 
 void MixtureComposer::writeParameters() const

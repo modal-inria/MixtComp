@@ -269,10 +269,6 @@ TEST(RankClass, mStep)
     data(i).removeMissing(); // shuffle the presentation order, to get the correct marginal distribution corresponding to (mu, pi)
     data(i).xGen(mu, pi);
     setInd.insert(i);
-
-#ifdef MC_DEBUG
-    std::cout << "data(i): " << data(i).x() << std::endl;
-#endif
   }
 
   Vector<int> muVec(nbPos);
@@ -298,11 +294,7 @@ TEST(RankClass, mStep)
     rank.sampleMu();
   }
 
-  rank.mStep();
-
-#ifdef MC_DEBUG
-  std::cout << "Estimation:     mu: " << muEst.o().transpose() << ", pi : " << piEst << std::endl;
-#endif
+  rank.mStep(unBiased_);
 
   ASSERT_EQ(mu, muEst);
   ASSERT_LT(std::abs(pi - piEst), tolerance);

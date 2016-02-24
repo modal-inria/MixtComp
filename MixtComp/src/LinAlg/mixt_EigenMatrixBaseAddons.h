@@ -69,6 +69,26 @@ inline bool operator<(const Derived& rhs) const
       return false;
     }
   }
+  return false; // equality of all terms
+}
+
+inline bool operator>(const Derived& rhs) const
+{
+  typename Derived::const_iterator lhsIt = derived().begin();
+  typename Derived::const_iterator rhsIt = rhs      .begin();
+  for (;
+       lhsIt != derived().end();
+       ++lhsIt, ++rhsIt)
+  {
+    if (*lhsIt > *rhsIt)
+    {
+      return true;
+    }
+    else if (*lhsIt < *rhsIt)
+    {
+      return false;
+    }
+  }
   return false;
 }
 
@@ -290,11 +310,11 @@ void sortIndex(Container& out) const
 /**
  * Computation of a multinomial distribution from log values of weights.
  * A common example of usage is the computations of the proportions t_ik
- * from the logProbabilities. A const-cast is used to allow usage of temporary object !
+ * from the logProbabilities.
  *
  * @param log vector of log values
  * @param[out] multi multinomial distribution
- * @value log of the sum of all components
+ * @value log of the marginal probability
  */
 template<typename OtherDerived>
 Scalar logToMulti(const MatrixBase<OtherDerived>& multi)
@@ -305,6 +325,20 @@ Scalar logToMulti(const MatrixBase<OtherDerived>& multi)
   derived() = derived().exp();
   Scalar sum = derived().sum();
   derived() = derived() / sum;
+
+  return max + std::log(sum);
+}
+
+/** Compute the sum of the exponential values of the elements. This is similar
+ * to the scalar output by logToMulti except that it is computed on the current
+ * Vector */
+Scalar mixtureLogProba() const
+{
+  Derived other = derived();
+  Scalar max = other.maxCoeff();
+  other -= max;
+  other = other.exp();
+  Scalar sum = other.sum();
 
   return max + std::log(sum);
 }

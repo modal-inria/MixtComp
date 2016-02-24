@@ -17,21 +17,26 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: August 24, 2015
+ *  Created on: February 24, 2016
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <cmath>
-#include "mixt_Math.h"
+#ifndef MIXT_TYPEDEF_H
+#define MIXT_TYPEDEF_H
+
+#include <cstdlib>
 
 namespace mixt {
 
-int fac(int n) {
-  return tgamma(n + 1);
+/** Eigen storage is column-major by default, which suits the main way of accessing data,
+ * by looping over individuals instead of variables */
+typedef double Real;
+
+/** Positive integer which encoding is enough to cover index every matrix in memory. At the moment
+ * int is used for indexing.
+ * http://stackoverflow.com/questions/1951519/when-to-use-stdsize-t */
+typedef size_t Size;
+
 }
 
-Real logFac(int n) {
-  return lgamma(n + 1);
-}
-
-}
+#endif // MIXT_TYPEDEF_H

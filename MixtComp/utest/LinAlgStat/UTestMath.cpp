@@ -17,21 +17,22 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: August 24, 2015
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: July 9, 2015
+ *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <cmath>
-#include "mixt_Math.h"
+#include "../UTest.h"
 
-namespace mixt {
+TEST(Math, Factorial) {
+  int nbValue = 10;
+  Vector<int> factoValue(nbValue);
 
-int fac(int n) {
-  return tgamma(n + 1);
-}
+  for (int i = 0; i < nbValue; ++i) {
+    factoValue(i) = fac(i);
+  }
 
-Real logFac(int n) {
-  return lgamma(n + 1);
-}
+  Vector<int> expectedFactoValue(10);
+  expectedFactoValue << 1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880;
 
+  ASSERT_EQ(expectedFactoValue, factoValue);
 }
