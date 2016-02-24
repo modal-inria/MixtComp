@@ -17,7 +17,7 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: February 24, 2014
+ *  Created on: February 24, 2016
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
@@ -25,6 +25,29 @@
 
 namespace mixt {
 
+void ZClassInd::setNbInd(int nbInd) {
+  nbInd_ = nbInd;
+  zi_.resizeArrays(nbInd);
+}
 
+void ZClassInd::computeRange() {
+  zi_.computeRange();
+}
+
+void ZClassInd::setRange(int min, int max, int range) {
+  zi_.dataRange_.min_   = min; // real range provided by the parameters is enforced
+  zi_.dataRange_.max_   = max;
+  zi_.dataRange_.range_ = range;
+}
+
+void ZClassInd::setAllMissing() {
+  zi_.setAllMissing(nbInd_);
+}
+
+void ZClassInd::setZAndClassInd(int i, int k) {
+  classInd_(zi_.data_(i)).erase(i);
+  zi_.data_(i) = k;
+  classInd_(zi_.data_(i)).insert(i);
+}
 
 } /* namespace mixt */

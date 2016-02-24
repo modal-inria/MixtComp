@@ -34,6 +34,8 @@ namespace mixt {
  * hence it is better that a single class be in charge of keeping those two aspects in sync. */
 class ZClassInd {
   public:
+    void setNbInd(int nbInd);
+
     /** Ask the zi_ member to compute its range */
     void computeRange();
 
@@ -42,10 +44,18 @@ class ZClassInd {
 
     void setAllMissing();
 
-
     /** The DataHandler initializes zi_, and classInd_ is updated. */
     template<typename DataHandler>
-    void setZi(const DataHandler& dataHandler);
+    std::string setZi(const DataHandler& dataHandler) {
+      std::string warnLog;
+      std::string dummyParam;
+
+      warnLog += dataHandler.getData("z_class", // reserved name for the class
+                                     zi_,
+                                     nbInd_,
+                                     dummyParam,
+                                     -minModality); // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
+    }
 
     /** The class of a particular individual is modified */
     void setZAndClassInd(int i, int k);
@@ -54,6 +64,8 @@ class ZClassInd {
     const Vector<std::set<int> >& classInd() {return classInd_;}
 
   private:
+    int nbInd_;
+
     /** The zik class label */
     AugmentedData<Vector<int> > zi_;
 
