@@ -24,7 +24,9 @@
 #ifndef MIXT_CLASSDATASTAT_H
 #define MIXT_CLASSDATASTAT_H
 
+
 #include "../LinAlg/mixt_LinAlg.h"
+#include "../Composer/mixt_ZClassInd.h"
 #include "mixt_AugmentedData.h"
 
 namespace mixt
@@ -33,7 +35,7 @@ namespace mixt
 class ClassDataStat
 {
   public:
-    ClassDataStat(AugmentedData<Vector<int> >& augData);
+    ClassDataStat(ZClassInd& zClassInd);
 
     void sampleVals(int sample,
                     int iteration,
@@ -43,11 +45,11 @@ class ClassDataStat
 
     const Matrix<Real>& getDataStatStorage() const {return dataStatStorage_;}
 
-    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd, augData_.dataRange_.max_ + 1);}
+    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd, zClassInd_.zi().dataRange_.max_ + 1);}
 
   private:
     /** Reference to augmented data */
-    AugmentedData<Vector<int> >& augData_;
+    ZClassInd& zClassInd_;
 
     /** Dense description of the missing values */
     Matrix<Real> dataStatStorage_;

@@ -22,37 +22,33 @@
  **/
 
 #include "mixt_ClassSampler.h"
-#include "../Various/mixt_Constants.h"
 #include "../Composer/mixt_MixtureComposer.h"
+#include "../Various/mixt_Constants.h"
 
 namespace mixt
 {
 
-ClassSampler::ClassSampler(MixtureComposer& composer,
-                           AugmentedData<Vector<int> >& zi,
+ClassSampler::ClassSampler(const MixtureComposer& composer,
+                           ZClassInd& zClassInd,
                            const Matrix<Real>& tik,
                            int nbClass) :
     composer_(composer),
     nbClass_(nbClass),
-    zi_(zi),
+    zClassInd_(zClassInd),
     tik_(tik)
 {}
 
-void ClassSampler::sStepCheck(int i)
-{
-#ifdef MC_DEBUG
-    std::cout << "ClassSampler::sStepCheck, i: " << i << std::endl;
-#endif
-  if (zi_.misData_(i).first != present_) {
+void ClassSampler::sStepCheck(int i) {
+  if (zClassInd_.zi().misData_(i).first != present_) {
     int sampleVal = -1; // initialized with dummy value
 
-    switch(zi_.misData_(i).first) {
+    switch(zClassInd_.zi().misData_(i).first) {
       case missing_: {
         RowVector<Real> modalities(nbClass_, 0.);
         RowVector<int> condition(nbClass_, 0);
 
         for (int k = 0; k < nbClass_; ++k) { // z_i changed in place to take all possible values
-          composer_.setZAndClassInd(i, k);
+          zClassInd_.setZAndClassInd(i, k);
           condition(k) = composer_.checkSampleCondition();
           modalities(k) = tik_(i, k) * condition(k); // checkSampleCondition value is 1 or 0, reflecting the fact that conditions on data are verified or not
         }
@@ -71,11 +67,11 @@ void ClassSampler::sStepCheck(int i)
         RowVector<Real> modalities(nbClass_, 0.);
         RowVector<int> condition(nbClass_, 0);
 
-        for (std::vector<int>::const_iterator currMod = zi_.misData_(i).second.begin();
-             currMod != zi_.misData_(i).second.end();
+        for (std::vector<int>::const_iterator currMod = zClassInd_.zi().misData_(i).second.begin();
+             currMod != zClassInd_.zi().misData_(i).second.end();
              ++currMod) {
           int k = *currMod;
-          composer_.setZAndClassInd(i, k);
+          zClassInd_.setZAndClassInd(i, k);
           condition(k) = composer_.checkSampleCondition();
           modalities(k) = tik_(i, k) * condition(k);
         }
@@ -90,56 +86,29 @@ void ClassSampler::sStepCheck(int i)
       }
       break;
 
-      default: {
-#ifdef MC_DEBUG
-          std::cout << "ClassSampler, missing value type unknown" << std::endl;
-#endif
-      }
+      default: {}
       break;
     }
-    composer_.setZAndClassInd(i, sampleVal);
+    zClassInd_.setZAndClassInd(i, sampleVal);
   }
 }
 
-void ClassSampler::sStepNoCheck(int i)
-{
-#ifdef MC_DEBUG
-    std::cout << "ClassSampler::sStepNoCheck, i: " << i << std::endl;
-#endif
-
-  if (zi_.misData_(i).first != present_)
-  {
+void ClassSampler::sStepNoCheck(int i) {
+  if (zClassInd_.zi().misData_(i).first != present_) {
     int sampleVal = -1; // initialized with dummy value
 
-#ifdef MC_DEBUG
-    std::cout << "present_" << std::endl;
-#endif
-
-    switch(zi_.misData_(i).first)
-    {
-      case missing_:
-      {
-#ifdef MC_DEBUG
-        std::cout << "missing_, i:" << i << ", tik_.row(i): " << tik_.row(i) <<  std::endl;
-#endif
+    switch(zClassInd_.zi().misData_(i).first) {
+      case missing_: {
         sampleVal = multi_.sample(tik_.row(i)); // the most simple case
       }
       break;
 
-      case missingFiniteValues_: // renormalize proba distribution on allowed sampling values
-      {
-#ifdef MC_DEBUG
-        std::cout << "missingFiniteValues_" << std::endl;
-#endif
+      case missingFiniteValues_: { // renormalize proba distribution on allowed sampling values
         Vector<Real> modalities(nbClass_, 0.);
 
-        for(std::vector<int>::const_iterator currMod = zi_.misData_(i).second.begin();
-            currMod != zi_.misData_(i).second.end();
-            ++currMod)
-        {
-#ifdef MC_DEBUG
-          std::cout << "\tcurrMod: " << *currMod << std::endl;
-#endif
+        for(std::vector<int>::const_iterator currMod = zClassInd_.zi().misData_(i).second.begin();
+            currMod != zClassInd_.zi().misData_(i).second.end();
+            ++currMod) {
           modalities(*currMod) = tik_(i, *currMod);
         }
         modalities = modalities / modalities.sum();
@@ -147,15 +116,10 @@ void ClassSampler::sStepNoCheck(int i)
       }
       break;
 
-      default:
-      {
-#ifdef MC_DEBUG
-          std::cout << "ClassSampler, missing value type unknown" << std::endl;
-#endif
-      }
+      default: {}
       break;
     }
-    composer_.setZAndClassInd(i, sampleVal);
+    zClassInd_.setZAndClassInd(i, sampleVal);
   }
 }
 } // namespace mixt

@@ -217,8 +217,7 @@ class AugmentedData
       ++nbSample_;
     }
 
-    void setMissing(int i, const MisVal& val)
-    {
+    void setMissing(int i, const MisVal& val) {
       data_(i) = std::numeric_limits<int>::quiet_NaN(); // set to quiet nan, for types that supports it. For int, the returned value would be 0 ...
       misData_(i) = val;
       ++misCount_(val.first);
@@ -226,13 +225,11 @@ class AugmentedData
     }
 
     /** set all individuals to be completely missing, for example for the latent class in unsupervised learning */
-    void setAllMissing(int nbInd)
-    {
+    void setAllMissing(int nbInd) {
       resizeArrays(nbInd);
       MisVal misVal;
       misVal.first = missing_; // description of completely missing individual
-      for (int i = 0; i < nbInd; ++i)
-      {
+      for (int i = 0; i < nbInd; ++i) {
         setMissing(i, misVal);
       }
     }

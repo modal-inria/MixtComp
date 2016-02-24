@@ -29,6 +29,7 @@
 #include <set>
 #include <vector>
 
+#include "mixt_ZClassInd.h"
 #include "../Data/mixt_ClassDataStat.h"
 #include "../Sampler/mixt_ClassSampler.h"
 #include "../Mixture/mixt_IMixture.h"
@@ -70,12 +71,10 @@ class MixtureComposer
     int nbVar() const {return nbVar_;}
 
     /** @return  the zi class label */
-    const Vector<int>* p_zi() const {return &zi_.data_;}
+    const Vector<int>* p_zi() const {return &(zClassInd_.zi().data_);}
 
     /** @return  the zi class label */
-    const Vector<std::set<int> >& classInd() const {return classInd_;}
-
-    void setZAndClassInd(int i, int k);
+    const Vector<std::set<int> >& classInd() const {return zClassInd_.classInd();}
 
     /** @return a constant reference on the vector of mixture */
     const std::vector<IMixture*>& v_mixtures() const {return v_mixtures_;}
@@ -223,52 +222,38 @@ class MixtureComposer
       std::string dummyParam;
 
       if (dataHandler.info().find("z_class") == dataHandler.info().end()) { // z_class was not provided
-        zi_.setAllMissing(nbInd_); // set every value state to missing_
+        zClassInd_.setAllMissing(); // set every value state to missing_
       }
       else { // z_class was provided and its value is acquired in zi_
-        warnLog += dataHandler.getData("z_class", // reserved name for the class
-                                       zi_,
-                                       nbInd_,
-                                       dummyParam,
-                                       -minModality); // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
+        warnLog += zClassInd_.setZi(dataHandler);
       }
 
-      Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
-      at(0) = true; // present_,
-      at(1) = true;// missing_,
-      at(2) = true;// missingFiniteValues_,
-      at(3) = false;// missingIntervals_,
-      at(4) = false;// missingLUIntervals_,
-      at(5) = false;// missingRUIntervals_,
-
-      std::string tempLog = zi_.checkMissingType(at); // check if the missing data provided are compatible with the model
+      std::string tempLog = zClassInd_.checkMissingType(); // check if the missing data provided are compatible with the model
       if(tempLog.size() > 0) {
        std::stringstream sstm;
        sstm << "Variable " << idName_ << " contains latent classes and has unsupported missing value types.\n" << tempLog;
        warnLog += sstm.str();
       }
-      zi_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
-      if (zi_.dataRange_.min_ < 0) {
+      zClassInd_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
+      if (zClassInd_.zi().dataRange_.min_ < 0) {
        std::stringstream sstm;
        sstm << "The z_class latent class variable has a lowest provided value of: "
-            << minModality + zi_.dataRange_.min_
+            << minModality + zClassInd_.zi().dataRange_.min_
             << " while the minimal value has to be: "
             << minModality
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
        warnLog += sstm.str();
       }
-      if (zi_.dataRange_.hasRange_ == true || zi_.dataRange_.max_ > nbClass_ - 1) {
+      if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nbClass_ - 1) {
        std::stringstream sstm;
        sstm << "The z_class latent class variable has a highest provided value of: "
-            << minModality + zi_.dataRange_.max_
+            << minModality + zClassInd_.zi().dataRange_.max_
             << " while the maximal value can not exceed the number of class: "
             << minModality + nbClass_ - 1
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
        warnLog += sstm.str();
       }
-      zi_.dataRange_.min_ = 0; // real range provided by the parameters is enforced
-      zi_.dataRange_.max_ = nbClass_ - 1;
-      zi_.dataRange_.range_ = nbClass_;
+      zClassInd_.setRange(0, nbClass_ - 1, nbClass_);
 
       return warnLog;
     };
@@ -280,7 +265,7 @@ class MixtureComposer
              typename ParamExtractor>
     void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const {
       dataExtractor.exportVals("z_class",
-                               zi_,
+                               zClassInd_.zi(),
                                tik_);
       paramExtractor.exportParam("z_class",
                                  "pi",
@@ -331,10 +316,6 @@ class MixtureComposer
     void IDClass(Matrix<Real>& idc) const;
 
   private:
-    /** Use the zi to compute a vector with one element per class, each element contains
-     * the indices of individuals belonging to this class */
-    void updateListInd();
-
     void printClassInd() const;
 
     /** name of the latent class variable */
@@ -355,12 +336,8 @@ class MixtureComposer
     /** The tik probabilities */
     Matrix<Real> tik_;
 
-    /** The zik class label */
-    AugmentedData<Vector<int> > zi_;
-
-    /** A vector containing in each element a vector of the indices of individuals that
-     * belong to this class. Can be passed as an alternative to zi_ to a subtype of IMixture. */
-    Vector<std::set<int> > classInd_;
+    /** Combination of zi_ and ClassInd_ */
+    ZClassInd zClassInd_;
 
     /** class sampler */
     ClassSampler sampler_;

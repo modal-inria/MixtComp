@@ -42,17 +42,16 @@ MixtureComposer::MixtureComposer(int nbInd,
     prop_(nbClass),
     tik_(nbInd,
          nbClass),
-    classInd_(nbClass),
     sampler_(*this,
-             zi_,
+             zClassInd_,
              tik_,
              nbClass),
     paramStat_(prop_,
                confidenceLevel),
-    dataStat_(zi_),
+    dataStat_(zClassInd_),
     confidenceLevel_(confidenceLevel)
 {
-  zi_.resizeArrays(nbInd);
+  zClassInd_.setIndClass(nbInd, nbClass);
   initializeProp(); // default values that will be overwritten either by pStep (learning), or eStepObserved (prediction)
   initializeTik();
 }
@@ -100,12 +99,6 @@ Real MixtureComposer::lnObservedProbability(int i, int k)
   return sum;
 }
 
-void MixtureComposer::setZAndClassInd(int i, int k) {
-  classInd_(zi_.data_(i)).erase(i);
-  zi_.data_(i) = k;
-  classInd_(zi_.data_(i)).insert(i);
-}
-
 Real MixtureComposer::lnObservedLikelihood()
 {
 #ifdef MC_DEBUG
@@ -151,9 +144,8 @@ Real MixtureComposer::lnCompletedLikelihood()
   Real lnLikelihood = 0.;
 
   // Compute the completed likelihood for the complete mixture model, using the completed data
-  for (int i = 0; i < nbInd_; ++i)
-  {
-    lnLikelihood += lnObservedProbability(i, zi_.data_(i));
+  for (int i = 0; i < nbInd_; ++i) {
+    lnLikelihood += lnObservedProbability(i, zClassInd_.zi().data_(i));
   }
 
   return lnLikelihood;
@@ -215,8 +207,8 @@ void MixtureComposer::eStep(int i) {
 }
 
 void MixtureComposer::pStep() {
-  for (int i = 0; i < zi_.data_.rows(); ++i) {
-    prop_[zi_.data_(i)] += 1.;
+  for (int i = 0; i < zClassInd_.zi().data_.rows(); ++i) {
+    prop_(zClassInd_.zi().data_(i)) += 1.;
   }
   prop_ = prop_ / prop_.sum();
 }
@@ -342,7 +334,7 @@ int MixtureComposer::checkSampleCondition(std::string* warnLog) const {
 int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
 {
   for (int k = 0; k < nbClass_; ++k) {
-    if (classInd_(k).size() > 0) {
+    if (zClassInd_.classInd()(k).size() > 0) {
       continue;
     }
     else {
@@ -379,40 +371,19 @@ void MixtureComposer::storeSEMRun(int iteration,
 
 void MixtureComposer::storeGibbsRun(int ind,
                                     int iteration,
-                                    int iterationMax)
-{
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::storeGibbsRun" << std::endl;
-  std::cout << "sample: " << ind << ", iteration: " << iteration << ", iterationMax: " << iterationMax << std::endl;
-#endif
-
+                                    int iterationMax) {
   dataStat_.sampleVals(ind,
                        iteration,
                        iterationMax);
 
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-#ifdef MC_DEBUG
-    std::cout << (*it)->idName() << std::endl;
-#endif
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
     (*it)->storeGibbsRun(ind,
                          iteration,
                          iterationMax);
   }
 
-  if (iteration == iterationMax)
-  {
-#ifdef MC_DEBUG
-    std::cout << "MixtureComposer::storeGibbsRun, before imputation, zi_.data_: " << itString(zi_.data_) << std::endl;
-#endif
-
-    classInd_(zi_.data_(ind)).erase(ind); // this should be replaced by a call to setZAClassInd somehow
+  if (iteration == iterationMax) {
     dataStat_.imputeData(ind); // impute the missing values using empirical mean or mode, depending of the model
-    classInd_(zi_.data_(ind)).insert(ind);
-
-#ifdef MC_DEBUG
-    std::cout << "MixtureComposer::storeGibbsRun, after imputation, zi_.data_ : " << itString(zi_.data_) << std::endl;
-#endif
   }
 }
 
@@ -475,7 +446,6 @@ std::vector<std::string> MixtureComposer::mixtureName() const
 void MixtureComposer::removeMissing(initParam algo) {
   initializeTik();
   sStepNoCheck();
-  updateListInd();
 
   for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
     (*it)->removeMissing(algo);
@@ -536,10 +506,6 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const
 
 void MixtureComposer::IDClass(Matrix<Real>& idc) const
 {
-#ifdef MC_DEBUG
-  std::cout << "MixtureComposer::IDClass" << std::endl;
-#endif
-
   idc.resize(nbClass_, nbVar_);
   Matrix<Real> ekj;
   E_kj(ekj);
@@ -555,26 +521,6 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const
 //      idc(k, j) = 1. - ekj(k, j) / ekj.row(k).sum();
     }
   }
-
-#ifdef MC_DEBUG
-  std::cout << "ekj" << std::endl;
-  std::cout << ekj << std::endl;
-  std::cout << "idc" << std::endl;
-  std::cout << idc << std::endl;
-#endif
-}
-
-/** Use the zi to compute a vector with one element per class, each element contains
- * the indices of individuals belonging to this class */
-void MixtureComposer::updateListInd()
-{
-  for (int k = 0; k < nbClass_; ++k) {
-    classInd_(k).clear();
-  }
-
-  for (int i = 0; i < nbInd_; ++i) {
-    classInd_(zi_.data_(i)).insert(i);
-  }
 }
 
 void MixtureComposer::printClassInd() const
@@ -582,7 +528,7 @@ void MixtureComposer::printClassInd() const
   for (int k = 0; k < nbClass_; ++k)
   {
     std::cout << "k: " << k << ",";
-    for (std::set<int>::const_iterator it = classInd_(k).begin(), itEnd = classInd_(k).end();
+    for (std::set<int>::const_iterator it = zClassInd_.classInd()(k).begin(), itEnd = zClassInd_.classInd()(k).end();
          it != itEnd;
          ++it)
     {

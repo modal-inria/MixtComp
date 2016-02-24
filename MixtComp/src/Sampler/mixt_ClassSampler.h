@@ -24,6 +24,7 @@
 #ifndef MIXT_CLASSSAMPLER_H
 #define MIXT_CLASSSAMPLER_H
 
+#include "../Composer/mixt_ZClassInd.h"
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_MultinomialStatistic.h"
@@ -31,13 +32,13 @@
 namespace mixt
 {
 
-class MixtureComposer; // forward declaration, as MixtureComposer has a ClassSampler member instance
+class MixtureComposer;
 
 class ClassSampler
 {
   public:
-    ClassSampler(MixtureComposer& composer,
-                 AugmentedData<Vector<int> >& zi,
+    ClassSampler(const MixtureComposer& composer,
+                 ZClassInd& ZClassInd,
                  const Matrix<Real>& tik,
                  int nbClass);
 
@@ -55,12 +56,11 @@ class ClassSampler
      * */
     void sStepNoCheck(int i);
   private:
-    /** Constant pointer to the composer of which this ClassSampler is a member of */
-    MixtureComposer& composer_;
+    const MixtureComposer& composer_;
 
     int nbClass_;
 
-    AugmentedData<Vector<int> >& zi_;
+    ZClassInd& zClassInd_;
 
     const Matrix<Real>& tik_;
 

@@ -25,9 +25,11 @@
 
 namespace mixt {
 
-void ZClassInd::setNbInd(int nbInd) {
+void ZClassInd::setIndClass(int nbInd, int nbClass) {
   nbInd_ = nbInd;
+  nbClass_ = nbClass;
   zi_.resizeArrays(nbInd);
+  classInd_.resize(nbClass);
 }
 
 void ZClassInd::computeRange() {
@@ -43,6 +45,19 @@ void ZClassInd::setRange(int min, int max, int range) {
 void ZClassInd::setAllMissing() {
   zi_.setAllMissing(nbInd_);
 }
+
+std::string ZClassInd::checkMissingType() {
+  Vector<bool> at(nb_enum_MisType_); // authorized missing values, should mimic what is found in categorical mixtures
+  at(0) = true; // present_,
+  at(1) = true;// missing_,
+  at(2) = true;// missingFiniteValues_,
+  at(3) = false;// missingIntervals_,
+  at(4) = false;// missingLUIntervals_,
+  at(5) = false;// missingRUIntervals_,
+
+  return zi_.checkMissingType(at);
+}
+
 
 void ZClassInd::setZAndClassInd(int i, int k) {
   classInd_(zi_.data_(i)).erase(i);
