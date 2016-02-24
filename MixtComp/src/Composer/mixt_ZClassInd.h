@@ -65,6 +65,8 @@ class ZClassInd {
       for (int i = 0; i < nbInd_; ++i) {
         classInd_(zi_.data_(i)).insert(i);
       }
+
+      return warnLog;
     }
 
     /** The class of a particular individual is modified */
@@ -72,6 +74,8 @@ class ZClassInd {
 
     const AugmentedData<Vector<int> >& zi() const {return zi_;}
     const Vector<std::set<int> >& classInd() const {return classInd_;}
+
+    void printState() const;
 
   private:
     int nbInd_;

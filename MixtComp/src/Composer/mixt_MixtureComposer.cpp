@@ -395,19 +395,17 @@ void MixtureComposer::registerMixture(IMixture* p_mixture)
 
 void MixtureComposer::gibbsSampling(int nbGibbsIter,
                                     int group,
-                                    int groupMax)
-{
+                                    int groupMax) {
   Timer myTimer;
   myTimer.setName("Gibbs: run (individuals count as iterations)");
-  for (int i = 0; i < nbInd_; ++i)
-  {
+  for (int i = 0; i < nbInd_; ++i) {
     myTimer.iteration(i, nbInd_ - 1);
     writeProgress(group,
                   groupMax,
                   i,
                   nbInd_ - 1);
-    for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs)
-    {
+
+    for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
       eStep(i);
       sStepNoCheck(i);
       samplingStepNoCheck(i);
@@ -523,19 +521,8 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const
   }
 }
 
-void MixtureComposer::printClassInd() const
-{
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    std::cout << "k: " << k << ",";
-    for (std::set<int>::const_iterator it = zClassInd_.classInd()(k).begin(), itEnd = zClassInd_.classInd()(k).end();
-         it != itEnd;
-         ++it)
-    {
-      std::cout << " " << *it;
-    }
-    std::cout << std::endl;
-  }
+void MixtureComposer::printClassInd() const {
+  zClassInd_.printState();
 }
 
 } /* namespace mixt */

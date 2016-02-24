@@ -58,11 +58,25 @@ std::string ZClassInd::checkMissingType() {
   return zi_.checkMissingType(at);
 }
 
-
 void ZClassInd::setZAndClassInd(int i, int k) {
   classInd_(zi_.data_(i)).erase(i);
+  classInd_(k           ).insert(i);
   zi_.data_(i) = k;
-  classInd_(zi_.data_(i)).insert(i);
+}
+
+void ZClassInd::printState() const {
+  std::cout << "zi_: " << itString(zi_.data_) << std::endl;
+
+  for (int k = 0; k < nbClass_; ++k) {
+    std::cout << "k: " << k << ",";
+    for (std::set<int>::const_iterator it    = classInd_(k).begin(),
+                                       itEnd = classInd_(k).end();
+         it != itEnd;
+         ++it) {
+      std::cout << " " << *it;
+    }
+    std::cout << std::endl;
+  }
 }
 
 } /* namespace mixt */

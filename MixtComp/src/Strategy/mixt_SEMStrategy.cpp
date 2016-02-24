@@ -69,9 +69,9 @@ std::string SemStrategy::run() {
 
       RunProblemType runProb = runSEMCheck(rejectSampler_);
       if (runProb == invalidSampler_) {
-    #ifdef MC_VERBOSE
+#ifdef MC_VERBOSE
           std::cout << "SemStrategy::run, switch to Gibbs sampler" << std::endl;
-    #endif
+#endif
 
         initSEMCheck();
         runSEMCheck(GibbsSampler_);

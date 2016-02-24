@@ -61,7 +61,7 @@ void ClassDataStat::imputeData(int ind) {
   if (zClassInd_.zi().misData_(ind).first != present_) { // imputation by the mode
     int mode;
     dataStatStorage_.row(ind).maxCoeff(&mode);
-    zClassInd_.setIndClass(ind, mode);
+    zClassInd_.setZAndClassInd(ind, mode);
   }
 }
 

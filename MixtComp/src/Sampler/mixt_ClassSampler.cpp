@@ -67,8 +67,9 @@ void ClassSampler::sStepCheck(int i) {
         RowVector<Real> modalities(nbClass_, 0.);
         RowVector<int> condition(nbClass_, 0);
 
-        for (std::vector<int>::const_iterator currMod = zClassInd_.zi().misData_(i).second.begin();
-             currMod != zClassInd_.zi().misData_(i).second.end();
+        for (std::vector<int>::const_iterator currMod = zClassInd_.zi().misData_(i).second.begin(),
+                                              endMod  = zClassInd_.zi().misData_(i).second.end();
+             currMod != endMod;
              ++currMod) {
           int k = *currMod;
           zClassInd_.setZAndClassInd(i, k);
@@ -106,8 +107,9 @@ void ClassSampler::sStepNoCheck(int i) {
       case missingFiniteValues_: { // renormalize proba distribution on allowed sampling values
         Vector<Real> modalities(nbClass_, 0.);
 
-        for(std::vector<int>::const_iterator currMod = zClassInd_.zi().misData_(i).second.begin();
-            currMod != zClassInd_.zi().misData_(i).second.end();
+        for(std::vector<int>::const_iterator currMod = zClassInd_.zi().misData_(i).second.begin(),
+                                             endMod  = zClassInd_.zi().misData_(i).second.end();
+            currMod != endMod;
             ++currMod) {
           modalities(*currMod) = tik_(i, *currMod);
         }
