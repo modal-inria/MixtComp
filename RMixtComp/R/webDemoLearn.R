@@ -1,5 +1,4 @@
-webDemoLearn <- function(folderName)
-{
+webDemoLearn <- function(folderName) {
   iniFile <- paste(folderName,
                    "in/param.ini",
                    sep = "/")
@@ -27,8 +26,7 @@ webDemoLearn <- function(folderName)
   checkDimLog <- validDim(dataFile,
                           maxIndividual,
                           maxVariable)
-  if (nchar(checkDimLog) > 0)
-  {
+  if (nchar(checkDimLog) > 0) {
     cat(checkDimLog,
         file = logFile,
         sep = "",
@@ -41,20 +39,26 @@ webDemoLearn <- function(folderName)
                            strip.white = TRUE,
                            stringsAsFactors = FALSE)
   
-  nbClass = iniContent[which(iniContent[, 1] == "nbCluster"), 2]
+  nbClass <- iniContent[which(iniContent[, 1] == "nbCluster"), 2]
+  
+  if (nbClass > 30) {
+    cat("The maximum number of classes in the demo version of MixtComp on BigStat is 30.",
+        file = logFile,
+        sep = "",
+        append = TRUE)
+    quit(save = "no", status = 1)
+  }
   
   resGetData <- getData(c(dataFile, descFile))
   
-  if (nchar(resGetData$warnLog) > 0) # Were there errors when reading the data ?
-  {
+  if (nchar(resGetData$warnLog) > 0) { # Were there errors when reading the data ?
     cat(resGetData$warnLog,
         file = logFile,
         sep = "",
         append = TRUE)
     quit(save = "no", status = 1)
   }
-  else # run can be carried out
-  {
+  else { # run can be carried out
     # creation of strategy list
     mcStrategy <- list(nbTrialInInit = 2,
                        nbBurnInIter = 100,
@@ -83,16 +87,14 @@ webDemoLearn <- function(folderName)
                        IDJSONFile)
     }
     
-    if (nchar(res$mixture$warnLog) > 0)
-    {
+    if (nchar(res$mixture$warnLog) > 0) {
       cat(res$mixture$warnLog,
           file = logFile,
           sep = "",
           append = TRUE)
       quit(save = "no", status = 1)
     }
-    else
-    {
+    else {
       cat("Run completed successfully",
           file = logFile,
           sep = "",

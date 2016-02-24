@@ -68,14 +68,6 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
                                                       confidenceLevel,
                                                       warnLog);
 
-  if (nbClass < 0 || mixt::nbClusterMax < nbClass)
-  {
-    std::stringstream sstm;
-    sstm << "Number of classes must be comprised between 1 and " << mixt::nbClusterMax
-         << ". The provided value, " << nbClass << " does not comply." << std::endl;
-    warnLog += sstm.str();
-  }
-
   if (confidenceLevel < 0. || 1. < confidenceLevel)
   {
     std::stringstream sstm;

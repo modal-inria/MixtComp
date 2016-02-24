@@ -36,7 +36,6 @@ const Real logEpsilon = std::log(epsilon);
 const int minModality = 1;
 const Real pi = 3.141592653589793;
 const Real l2pi = 0.9189385332046727417;
-const int nbClusterMax = 30;
 const std::string progressFile = "progress";
 const Real minInf = std::log(0.);
 
