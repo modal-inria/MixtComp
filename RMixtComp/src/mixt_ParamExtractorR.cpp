@@ -25,22 +25,20 @@
 #include "MixtComp/src/IO/mixt_IO.h"
 #include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 
-namespace mixt
-{
+namespace mixt {
 
-ParamExtractorR::ParamExtractorR()
-{}
+void ParamExtractorR::setNbMixture(int nbMixture) {
+  mixtureName_.resize(nbMixture);
+  param_.resize(nbMixture);
+}
 
-ParamExtractorR::~ParamExtractorR()
-{}
-
-void ParamExtractorR::exportParam(const std::string& idName,
+void ParamExtractorR::exportParam(int indexMixture,
+                                  const std::string& idName,
                                   const std::string& paramName,
                                   const Matrix<Real>& statStorage,
                                   const Matrix<Real>& logStorage,
                                   const std::vector<std::string>& paramNames,
-                                  Real confidenceLevel)
-{
+                                  Real confidenceLevel) {
   Rcpp::CharacterVector rows(statStorage.rows()); // names of the parameters
   Rcpp::CharacterVector cols; // names for expectation and confidence interval values
 
@@ -50,27 +48,22 @@ void ParamExtractorR::exportParam(const std::string& idName,
                              statStorage.cols());
 
   // values setting
-  for (int i = 0; i < statStorage.rows(); ++i)
-  {
-    for (int j = 0; j < statStorage.cols(); ++j)
-    {
+  for (int i = 0; i < statStorage.rows(); ++i) {
+    for (int j = 0; j < statStorage.cols(); ++j) {
       statR(i, j) = statStorage(i, j);
     }
   }
 
   // names setting for rows
-  for (int i = 0; i < statStorage.rows(); ++i)
-  {
+  for (int i = 0; i < statStorage.rows(); ++i) {
     rows[i] = paramNames[i];
   }
 
   // names setting for cols
-  if (statStorage.cols() == 1)
-  {
+  if (statStorage.cols() == 1) {
     cols.push_back("value");
   }
-  else if (statStorage.cols() == 3)
-  {
+  else if (statStorage.cols() == 3) {
     cols.push_back("median");
     cols.push_back(  std::string("q ")
                    + type2str(alpha * 100.)
@@ -85,15 +78,12 @@ void ParamExtractorR::exportParam(const std::string& idName,
 
   Rcpp::NumericMatrix logR;
 
-  if (logStorage.rows() > 0 && logStorage.cols()) // only if log has taken place, for example not during predict
-  {
+  if (logStorage.rows() > 0 && logStorage.cols()) {// only if log has taken place, for example not during predict
     // copy of the log data
     logR = Rcpp::NumericMatrix(logStorage.rows(),
                                     logStorage.cols());
-    for (int i = 0; i < logStorage.rows(); ++i)
-    {
-      for (int j = 0; j < logStorage.cols(); ++j)
-      {
+    for (int i = 0; i < logStorage.rows(); ++i) {
+      for (int j = 0; j < logStorage.cols(); ++j) {
         logR(i, j) = logStorage(i, j);
       }
     }
@@ -102,17 +92,18 @@ void ParamExtractorR::exportParam(const std::string& idName,
     logR.attr("dimnames") = dimnmsLog;
   }
 
-  param_[idName][paramName] = Rcpp::List::create(Rcpp::Named("stat") = statR,
-                                                 Rcpp::Named("log")  = logR);
+  mixtureName_[indexMixture] = idName;
+  param_[indexMixture][paramName] = Rcpp::List::create(Rcpp::Named("stat") = statR,
+                                                       Rcpp::Named("log")  = logR);
 }
 
 /** Extractor for Rank data type */
-void ParamExtractorR::exportParam(const std::string& idName,
+void ParamExtractorR::exportParam(int indexMixture,
+                                  const std::string& idName,
                                   const std::string& paramName,
                                   const std::vector<RankStat>& paramStat,
                                   const std::vector<std::string>& paramNames,
-                                  Real confidenceLevel)
-{
+                                  Real confidenceLevel) {
   Rcpp::CharacterVector rowsNames = Rcpp::wrap(paramNames); // names of the classes, used for both parameters values and logs
 
   int nbClass = paramStat.size();
@@ -120,19 +111,16 @@ void ParamExtractorR::exportParam(const std::string& idName,
 
   std::list<Rcpp::List> statCPP; // global list, of param descriptor, each element is the descriptor of a class
 
-  for (int k = 0; k < nbClass; ++k) // loop to create the parameters descriptor
-  {
+  for (int k = 0; k < nbClass; ++k)  { // loop to create the parameters descriptor
     const std::list<std::pair<RankVal, Real> >& statStorageMu = paramStat[k].statStorageMu(); // helper reference to point to current statStorage
     std::list<Rcpp::List> classProba; // list of pairs {vector representing rank, proba} for the current class
 
     for (std::list<std::pair<RankVal, Real> >::const_iterator it = statStorageMu.begin(), ite = statStorageMu.end();
          it != ite;
-         ++it)
-    {
+         ++it) {
       const RankVal& rankCPP = it->first; // current rank in C++
       Rcpp::IntegerVector rankR(nbPos); // current rank in R
-      for (int p = 0; p < nbPos; ++p)
-      {
+      for (int p = 0; p < nbPos; ++p) {
         rankR(p) = rankCPP.o()(p);
       }
       classProba.push_back(Rcpp::List::create(rankR,
@@ -146,18 +134,15 @@ void ParamExtractorR::exportParam(const std::string& idName,
 
   std::list<Rcpp::List> logCPP; // global list, of param descriptor, each element is the descriptor of a class
 
-  for (int k = 0; k < nbClass; ++k) // loop to create the parameters log
-  {
+  for (int k = 0; k < nbClass; ++k) { // loop to create the parameters log
     int nbPos = paramStat[k].nbPos(); // get number of positions in rank
     const Vector<RankVal>& logStorageMu = paramStat[k].logStorageMu(); // helper reference to point to current statStorage
     std::list<Rcpp::IntegerVector> classProba; // list of sampled mu for the current class
 
-    for (int i = 0, ie = logStorageMu.size(); i < ie; ++i)
-    {
+    for (int i = 0, ie = logStorageMu.size(); i < ie; ++i) {
       const RankVal& rankCPP = logStorageMu(i); // current rank in C++
       Rcpp::IntegerVector rankR(nbPos); // current rank in R
-      for (int p = 0; p < nbPos; ++p)
-      {
+      for (int p = 0; p < nbPos; ++p) {
         rankR(p) = rankCPP.o()(p);
       }
       classProba.push_back(rankR);
@@ -168,15 +153,16 @@ void ParamExtractorR::exportParam(const std::string& idName,
   Rcpp::List logR = Rcpp::wrap(logCPP);
   logR.attr("names") = rowsNames;
 
-  param_[idName][paramName] = Rcpp::List::create(Rcpp::Named("stat") = statR,
-                                                 Rcpp::Named("log")  = logR);
+  mixtureName_[indexMixture] = idName;
+  param_[indexMixture][paramName] = Rcpp::List::create(Rcpp::Named("stat") = statR,
+                                                       Rcpp::Named("log")  = logR);
 }
 
-Rcpp::List ParamExtractorR::rcppReturnParam() const
-{
-  Rcpp::List res = Rcpp::wrap(param_);
-
-  return res;
+Rcpp::List ParamExtractorR::rcppReturnParam() const {
+  Rcpp::CharacterVector mixtureNameR = Rcpp::wrap(mixtureName_);
+  Rcpp::List paramR = Rcpp::wrap(param_);
+  paramR.attr("names") = mixtureNameR;
+  return paramR;
 }
 
 } // namespace mixt

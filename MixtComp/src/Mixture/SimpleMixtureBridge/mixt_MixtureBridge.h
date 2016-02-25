@@ -274,7 +274,8 @@ class MixtureBridge : public IMixture
                                    idName_,
                                    augData_,
                                    dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
-      p_paramExtractor_->exportParam(idName(),
+      p_paramExtractor_->exportParam(indexMixture_,
+                                     idName(),
                                      "NumericalParam",
                                      paramStat_.getStatStorage(),
                                      paramStat_.getLogStorage(),

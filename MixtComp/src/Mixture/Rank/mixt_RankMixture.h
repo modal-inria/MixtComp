@@ -363,12 +363,14 @@ class RankMixture : public IMixture
                                    idName(),
                                    data_,
                                    dataStat_);
-      p_paramExtractor_->exportParam(idName_,
+      p_paramExtractor_->exportParam(indexMixture_,
+                                     idName_,
                                      "mu",
                                      muParamStat_,
                                      muParamNames(),
                                      confidenceLevel_);
-      p_paramExtractor_->exportParam(idName_,
+      p_paramExtractor_->exportParam(indexMixture_,
+                                     idName_,
                                      "pi",
                                      piParamStat_.getStatStorage(),
                                      piParamStat_.getLogStorage(),

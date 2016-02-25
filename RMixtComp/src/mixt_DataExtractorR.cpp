@@ -187,7 +187,7 @@ void DataExtractorR::exportVals(int indexMixture,
                                            Rcpp::Named("stat") = lsStat);
 }
 
-Rcpp::List DataExtractorR::rcppReturnVal() {
+Rcpp::List DataExtractorR::rcppReturnVal() const {
   Rcpp::CharacterVector mixtureNameR = Rcpp::wrap(mixtureName_);
   Rcpp::List dataR = Rcpp::wrap(data_);
   dataR.attr("names") = mixtureNameR;

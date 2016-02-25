@@ -29,17 +29,15 @@
 #include "MixtComp/src/Mixture/Rank/mixt_RankVal.h"
 #include "Rcpp.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class ParamExtractorR
-{
+class ParamExtractorR {
   public:
-    ParamExtractorR();
-    ~ParamExtractorR();
+    void setNbMixture(int nbMixture);
 
     /** Extractor for ConfIntParamStat */
-    void exportParam(const std::string& idName,
+    void exportParam(int indexMixture,
+                     const std::string& idName,
                      const std::string& paramName,
                      const Matrix<Real>& paramStat,
                      const Matrix<Real>& paramsLog,
@@ -47,7 +45,8 @@ class ParamExtractorR
                      Real confidenceLevel);
 
     /** Extractor for Rank data type */
-    void exportParam(const std::string& idName,
+    void exportParam(int indexMixture,
+                     const std::string& idName,
                      const std::string& paramName,
                      const std::vector<RankStat>& paramStat,
                      const std::vector<std::string>& paramNames,
@@ -55,7 +54,8 @@ class ParamExtractorR
 
     Rcpp::List rcppReturnParam() const;
   private:
-    std::map<std::string, std::map<std::string, Rcpp::List> > param_;
+    std::vector<std::string> mixtureName_;
+    std::vector<std::map<std::string, Rcpp::List> > param_;
 };
 
 } // namespace mixt

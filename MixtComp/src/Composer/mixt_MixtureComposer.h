@@ -268,7 +268,8 @@ class MixtureComposer
                                "z_class",
                                zClassInd_.zi(),
                                tik_);
-      paramExtractor.exportParam("z_class",
+      paramExtractor.exportParam(0,
+                                 "z_class",
                                  "pi",
                                  paramStat_.getStatStorage(),
                                  paramStat_.getLogStorage(),

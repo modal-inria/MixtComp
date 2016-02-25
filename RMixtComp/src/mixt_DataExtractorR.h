@@ -69,7 +69,7 @@ class DataExtractorR
                     const Vector<RankIndividual>& data,
                     const std::vector<RankStat>& dataStat);
 
-    Rcpp::List rcppReturnVal();
+    Rcpp::List rcppReturnVal() const;
   private:
     std::vector<std::string> mixtureName_;
     std::vector<Rcpp::List> data_;

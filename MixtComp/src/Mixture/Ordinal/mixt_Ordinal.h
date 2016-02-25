@@ -420,7 +420,8 @@ class Ordinal : public IMixture
                                    idName(),
                                    augData_,
                                    dataStatComputer_.getDataStatStorage()); // export the obtained data using the DataExtractor
-      p_paramExtractor_->exportParam(idName(),
+      p_paramExtractor_->exportParam(indexMixture_,
+                                     idName(),
                                      "muPi",
                                      paramStatStorage,
                                      paramLogStorage,
