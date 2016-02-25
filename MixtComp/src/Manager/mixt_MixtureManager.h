@@ -30,15 +30,13 @@
 #include "../Mixture/Rank/mixt_RankMixture.h"
 #include "../Composer/mixt_MixtureComposer.h"
 
-namespace mixt
-{
+namespace mixt {
 
 template<typename DataHandler,
          typename DataExtractor,
          typename ParamSetter,
          typename ParamExtractor>
-class MixtureManager
-{
+class MixtureManager {
   public:
     MixtureManager(const DataHandler* handler,
                    DataExtractor* p_dataExtractor,
@@ -51,42 +49,37 @@ class MixtureManager
       p_paramSetter_(p_paramSetter),
       p_paramExtractor_(p_paramExtractor),
       confidenceLevel_(confidenceLevel),
-      warnLog_(warnLog)
-    {}
+      warnLog_(warnLog) {}
 
     std::string createMixtures(MixtureComposer& composer,
-                               int nbCluster)
-    {
+                               int nbCluster) {
       std::string warnLog;
-      int nbVar = 0; // number of variables
+      int indexMixture = 0; // number of variables
       for (std::map<std::string, std::string>::const_iterator it    = p_handler_->info().begin(),
                                                               itEnd = p_handler_->info().end();
            it != itEnd;
-           ++it)
-      {
+           ++it) {
         std::string idName = it->first;
         std::string idModel = it->second;
 
         IMixture* p_mixture = createMixture(idModel,
+                                            indexMixture,
                                             idName,
                                             composer,
                                             nbCluster,
                                             confidenceLevel_);
-        if (p_mixture)
-        {
+        if (p_mixture) {
           composer.registerMixture(p_mixture);
-          ++nbVar;
+          ++indexMixture;
         }
-        else if (idModel != "LatentClass")
-        {
+        else if (idModel != "LatentClass") {
           std::stringstream sstm;
           sstm << "The model " << idModel << " has been selected to describe the variable " << idName
                << " but it is not implemented yet. Please choose an available model for this variable." << std::endl;
           warnLog += sstm.str();
         }
       }
-      if (nbVar == 0)
-      {
+      if (indexMixture == 0) {
         std::stringstream sstm;
         sstm << "No valid variable in the input. Please check the descriptor file." << std::endl;
         warnLog += sstm.str();
@@ -100,11 +93,11 @@ class MixtureManager
      *  @param nbCluster number of cluster of the model
      **/
     IMixture* createMixture(std::string const& idModel,
+                            int indexMixture,
                             std::string const& idName,
                             MixtureComposer& composer,
                             int nbCluster,
-                            Real confidenceLevel)
-    {
+                            Real confidenceLevel) {
       if (idModel == "Categorical_pjk") {
         CategoricalBridge_pjk_m<DataHandler,
                                 DataExtractor,
@@ -112,7 +105,8 @@ class MixtureManager
                                 ParamExtractor>* p_bridge = new CategoricalBridge_pjk_m<DataHandler,
                                                                                         DataExtractor,
                                                                                         ParamSetter,
-                                                                                        ParamExtractor>(idName,
+                                                                                        ParamExtractor>(indexMixture,
+                                                                                                        idName,
                                                                                                         nbCluster,
                                                                                                         composer.p_zi(),
                                                                                                         composer.classInd(),
@@ -130,7 +124,8 @@ class MixtureManager
                              ParamExtractor>* p_bridge = new GaussianBridge_sjk_m<DataHandler,
                                                                                   DataExtractor,
                                                                                   ParamSetter,
-                                                                                  ParamExtractor>(idName,
+                                                                                  ParamExtractor>(indexMixture,
+                                                                                                  idName,
                                                                                                   nbCluster,
                                                                                                   composer.p_zi(),
                                                                                                   composer.classInd(),
@@ -148,7 +143,8 @@ class MixtureManager
                                    ParamExtractor>* p_bridge = new PoissonBridge_k_m<DataHandler,
                                                                                      DataExtractor,
                                                                                      ParamSetter,
-                                                                                     ParamExtractor>(idName,
+                                                                                     ParamExtractor>(indexMixture,
+                                                                                                     idName,
                                                                                                      nbCluster,
                                                                                                      composer.p_zi(),
                                                                                                      composer.classInd(),
@@ -166,7 +162,8 @@ class MixtureManager
                 ParamExtractor>* p_bridge = new Ordinal<DataHandler,
                                                         DataExtractor,
                                                         ParamSetter,
-                                                        ParamExtractor>(idName,
+                                                        ParamExtractor>(indexMixture,
+                                                                        idName,
                                                                         nbCluster,
                                                                         composer.p_zi(),
                                                                         composer.classInd(),
@@ -184,7 +181,8 @@ class MixtureManager
                     ParamExtractor>* p_bridge = new RankMixture<DataHandler,
                                                                 DataExtractor,
                                                                 ParamSetter,
-                                                                ParamExtractor>(idName,
+                                                                ParamExtractor>(indexMixture,
+                                                                                idName,
                                                                                 nbCluster,
                                                                                 composer.p_zi(),
                                                                                 composer.classInd(),

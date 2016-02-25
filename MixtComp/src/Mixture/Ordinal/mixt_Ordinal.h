@@ -49,7 +49,8 @@ class Ordinal : public IMixture
   public:
 
     /** constructor **/
-    Ordinal(std::string const& idName,
+    Ordinal(int indexMixture,
+            std::string const& idName,
             int nbClass,
             Vector<int> const* p_zi,
             const Vector<std::set<int> >& classInd,
@@ -58,7 +59,8 @@ class Ordinal : public IMixture
             const ParamSetter* p_paramSetter,
             ParamExtractor* p_paramExtractor,
             Real confidenceLevel) :
-      IMixture(idName),
+      IMixture(indexMixture,
+               idName),
       p_zi_(p_zi),
       classInd_(classInd),
       nbClass_(nbClass),
@@ -88,7 +90,8 @@ class Ordinal : public IMixture
             const Vector<std::set<int> >& classInd,
             int mu,
             Real pi) :
-        IMixture("dummy"),
+        IMixture(0,
+                 "dummy"),
         p_zi_(p_zi),
         classInd_(classInd),
         nbClass_(nbClass),

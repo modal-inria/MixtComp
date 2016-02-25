@@ -70,7 +70,8 @@ class MixtureBridge : public IMixture
      *  @param idName id name of the mixture
      *  @param nbCluster number of cluster
      **/
-    MixtureBridge(std::string const& idName,
+    MixtureBridge(int indexMixture,
+                  std::string const& idName,
                   int nbClass,
                   const Vector<int>* p_zi,
                   const Vector<std::set<int> >& classInd,
@@ -79,7 +80,8 @@ class MixtureBridge : public IMixture
                   const ParamSetter* p_paramSetter,
                   ParamExtractor* p_paramExtractor,
                   Real confidenceLevel) :
-      IMixture(idName),
+      IMixture(indexMixture,
+               idName),
       p_zi_(p_zi),
       classInd_(classInd),
       nbClass_(nbClass),

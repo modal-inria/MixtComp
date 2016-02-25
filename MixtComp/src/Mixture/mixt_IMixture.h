@@ -44,7 +44,8 @@ class IMixture {
      *
      * @param idName Identification string of the mixture provided by the framework
      */
-    IMixture(std::string const& idName) :
+    IMixture(int indexMixture, std::string const& idName) :
+      indexMixture_(indexMixture),
       idName_(idName)
     {};
 
@@ -175,6 +176,9 @@ class IMixture {
     = 0;
 
   protected:
+    /** Index of the mixture, useful to write the results at the correct place in th output. */
+    int indexMixture_;
+
     /** Id name of the mixture */
     std::string idName_;
 };

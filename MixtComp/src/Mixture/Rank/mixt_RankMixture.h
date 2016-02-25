@@ -42,7 +42,8 @@ class RankMixture : public IMixture
   public:
     typedef std::pair<MisType, std::vector<int> > MisVal;
 
-    RankMixture(std::string const& idName,
+    RankMixture(int indexMixture,
+                std::string const& idName,
                 int nbClass,
                 const Vector<int>* p_zi,
                 const Vector<std::set<int> >& classInd,
@@ -51,7 +52,8 @@ class RankMixture : public IMixture
                 const ParamSetter* p_paramSetter,
                 ParamExtractor* p_paramExtractor,
                 Real confidenceLevel) :
-        IMixture(idName),
+        IMixture(indexMixture,
+                 idName),
         nbClass_(nbClass),
         nbInd_(0),
         nbPos_(0),
