@@ -31,8 +31,7 @@
 Rcpp::List mixtCompCluster(Rcpp::List dataList,
                            Rcpp::List mcStrategy,
                            int nbClass,
-                           double confidenceLevel)
-{
+                           double confidenceLevel) {
   mixt::Timer totalTimer("Total Run");
 
   // string to log warnings
@@ -47,7 +46,7 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
   warnLog += handler.listData();
   handler.writeInfo();
   handler.writeDataMap();
-  
+
   // create the data extractor
   mixt::DataExtractorR dataExtractor;
 
@@ -68,22 +67,19 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
                                                       confidenceLevel,
                                                       warnLog);
 
-  if (confidenceLevel < 0. || 1. < confidenceLevel)
-  {
+  if (confidenceLevel < 0. || 1. < confidenceLevel) {
     std::stringstream sstm;
     sstm << "ConfidenceLevel should be in the interval [0;1], but current value is: " << confidenceLevel << std::endl;
     warnLog += sstm.str();
   }
 
-  if (handler.nbSample() < 1 || handler.nbVariable() < 1)
-  {
+  if (handler.nbSample() < 1 || handler.nbVariable() < 1) {
     std::stringstream sstm;
     sstm << "No valid data provided. Please check the descriptor file." << std::endl;
     warnLog += sstm.str();
   }
 
-  if (warnLog.size() == 0) // data is correct in descriptors, proceed with reading
-  {
+  if (warnLog.size() == 0) { // data is correct in descriptors, proceed with reading
     mixt::MixtureComposer composer(handler.nbSample(),
                                    nbClass,
                                    confidenceLevel);
@@ -97,8 +93,9 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
                                                          mixt::learning_);
     readTimer.top("data has been read");
 
-    if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
-    {
+    if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
+      dataExtractor.setNbMixture(handler.nbVariable() + 1); // +1 is to take into account the LatentClass at position 0
+
       mixt::StrategyParam param;
       paramRToCpp(mcStrategy,
                   param);
@@ -112,8 +109,7 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
       warnLog += strategy.run();
       stratTimer.top("strategy run complete");
 
-      if (warnLog.size() == 0) // all data has been read, checked and transmitted to the mixtures
-      {
+      if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
         composer.writeParameters();
         composer.exportDataParam<mixt::DataExtractorR,
                                  mixt::ParamExtractorR>(dataExtractor,
@@ -142,8 +138,7 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
 
   mcMixture["warnLog"] = warnLog;
 #ifdef MC_VERBOSE
-  if (warnLog.size() != 0)
-  {
+  if (warnLog.size() != 0) {
     std::cout << "!!! warnLog not empty !!!" << std::endl;
     std::cout << warnLog << std::endl;
   }

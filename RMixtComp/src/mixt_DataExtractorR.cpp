@@ -26,17 +26,16 @@
 #include "MixtComp/src/LinAlg/mixt_LinAlg.h"
 #include "MixtComp/src/Various/mixt_Enum.h"
 
-namespace mixt
-{
+namespace mixt {
 
-DataExtractorR::DataExtractorR()
-{}
-
-DataExtractorR::~DataExtractorR()
-{}
+void DataExtractorR::setNbMixture(int nbMixture) {
+  mixtureName_.resize(nbMixture);
+  data_.resize(nbMixture);
+}
 
 /** Export function for categorical model */
-void DataExtractorR::exportVals(std::string idName,
+void DataExtractorR::exportVals(int indexMixture,
+                                std::string idName,
                                 const AugmentedData<Vector<int> >& augData,
                                 const Vector<std::vector<std::pair<int, Real> > >& dataStatStorage) {
   Rcpp::IntegerVector dataR(augData.data_.rows()); // vector to store the completed data set
@@ -61,45 +60,44 @@ void DataExtractorR::exportVals(std::string idName,
     }
   }
 
-  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
-                                     Rcpp::Named("stat") = missingData);
+  mixtureName_[indexMixture] = idName;
+  data_[indexMixture] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
+                                           Rcpp::Named("stat") = missingData);
 }
 
 /** Export function for classes (called from the composer) */
-void DataExtractorR::exportVals(std::string idName,
+void DataExtractorR::exportVals(int indexMixture,
+                                std::string idName,
                                 const AugmentedData<Vector<int> >& augData,
-                                const Matrix<Real>& tikC)
-{
+                                const Matrix<Real>& tikC) {
   Rcpp::IntegerVector dataR(tikC.rows()); // vector to store the completed data set
   Rcpp::NumericMatrix tikR(tikC.rows(),
                            tikC.cols()); // the empirical tik are completely exported, instead of the predominant modalities as in other categorical variables
 
-  for (int i = 0; i < tikC.rows(); ++i)
-  {
+  for (int i = 0; i < tikC.rows(); ++i) {
     dataR(i) = augData.data_(i) + 1; // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
-    for (int j = 0; j < tikC.cols(); ++j)
-    {
+    for (int j = 0; j < tikC.cols(); ++j) {
       tikR(i, j) = tikC(i, j);
     }
   }
-  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
-                                     Rcpp::Named("stat") = tikR);
+
+  mixtureName_[indexMixture] = idName;
+  data_[indexMixture] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
+                                           Rcpp::Named("stat") = tikR);
 }
 
 /** Export function for gaussian model */
-void DataExtractorR::exportVals(std::string idName,
+void DataExtractorR::exportVals(int indexMixture,
+                                std::string idName,
                                 const AugmentedData<Vector<Real> >& augData,
-                                const Vector<RowVector<Real> >& dataStatStorage)
-{
+                                const Vector<RowVector<Real> >& dataStatStorage) {
   Rcpp::NumericVector dataR(augData.data_.rows()); // vector to store the completed data set
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
-  for (int i = 0; i < augData.data_.rows(); ++i)
-  {
+  for (int i = 0; i < augData.data_.rows(); ++i) {
     dataR(i) = augData.data_(i);
-    if (augData.misData_(i).first != present_)
-    {
+    if (augData.misData_(i).first != present_) {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
       currList.push_back(dataStatStorage(i)[0]); // median
@@ -110,24 +108,23 @@ void DataExtractorR::exportVals(std::string idName,
     }
   }
 
-  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
-                                     Rcpp::Named("stat") = missingData);
+  mixtureName_[indexMixture] = idName;
+  data_[indexMixture] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
+                                           Rcpp::Named("stat") = missingData);
 }
 
 /** Export function for Poisson model */
-void DataExtractorR::exportVals(std::string idName,
+void DataExtractorR::exportVals(int indexMixture,
+                                std::string idName,
                                 const AugmentedData<Vector<int> >& augData,
-                                const Vector<RowVector<int> >& dataStatStorage)
-{
+                                const Vector<RowVector<int> >& dataStatStorage) {
   Rcpp::IntegerVector dataR(augData.data_.rows()); // vector to store the completed data set
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
-  for (int i = 0; i < augData.data_.rows(); ++i)
-  {
+  for (int i = 0; i < augData.data_.rows(); ++i) {
     dataR(i) = augData.data_(i);
-    if (augData.misData_(i).first != present_)
-    {
+    if (augData.misData_(i).first != present_) {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
       currList.push_back(dataStatStorage(i)[0]); // median
@@ -138,12 +135,14 @@ void DataExtractorR::exportVals(std::string idName,
     }
   }
 
-  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
-                                     Rcpp::Named("stat") = missingData);
+  mixtureName_[indexMixture] = idName;
+  data_[indexMixture] = Rcpp::List::create(Rcpp::Named("completed") = dataR,
+                                           Rcpp::Named("stat") = missingData);
 };
 
 /** Export function for Rank model */
-void DataExtractorR::exportVals(std::string idName,
+void DataExtractorR::exportVals(int indexMixture,
+                                std::string idName,
                                 const Vector<RankIndividual>& data,
                                 const std::vector<RankStat>& dataStat) {
   int nbInd = data.rows();
@@ -181,15 +180,18 @@ void DataExtractorR::exportVals(std::string idName,
     }
   }
 
+  mixtureName_[indexMixture] = idName;
   Rcpp::List lsData = Rcpp::wrap(dataR);
   Rcpp::List lsStat = Rcpp::wrap(statR);
-  data_[idName] = Rcpp::List::create(Rcpp::Named("completed") = lsData,
-                                     Rcpp::Named("stat") = lsStat);
+  data_[indexMixture] = Rcpp::List::create(Rcpp::Named("completed") = lsData,
+                                           Rcpp::Named("stat") = lsStat);
 }
 
-Rcpp::List DataExtractorR::rcppReturnVal() const
-{
-  return data_;
+Rcpp::List DataExtractorR::rcppReturnVal() {
+  Rcpp::CharacterVector mixtureNameR = Rcpp::wrap(mixtureName_);
+  Rcpp::List dataR = Rcpp::wrap(data_);
+  dataR.attr("names") = mixtureNameR;
+  return dataR;
 }
 
 } // namespace mixt

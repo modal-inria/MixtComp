@@ -264,7 +264,8 @@ class MixtureComposer
     template<typename DataExtractor,
              typename ParamExtractor>
     void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const {
-      dataExtractor.exportVals("z_class",
+      dataExtractor.exportVals(0,
+                               "z_class",
                                zClassInd_.zi(),
                                tik_);
       paramExtractor.exportParam("z_class",

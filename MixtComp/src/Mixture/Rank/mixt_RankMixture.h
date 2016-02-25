@@ -359,7 +359,8 @@ class RankMixture : public IMixture
 
     void exportDataParam() const
     {
-      p_dataExtractor_->exportVals(idName(),
+      p_dataExtractor_->exportVals(indexMixture_,
+                                   idName(),
                                    data_,
                                    dataStat_);
       p_paramExtractor_->exportParam(idName_,

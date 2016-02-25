@@ -41,10 +41,6 @@ void ParamExtractorR::exportParam(const std::string& idName,
                                   const std::vector<std::string>& paramNames,
                                   Real confidenceLevel)
 {
-#ifdef MC_DEBUG
-  std::cout << "ParamExtractorR::exportParam, idName: " << idName << ", paramName: " << paramName << std::endl;
-#endif
-
   Rcpp::CharacterVector rows(statStorage.rows()); // names of the parameters
   Rcpp::CharacterVector cols; // names for expectation and confidence interval values
 
@@ -91,9 +87,6 @@ void ParamExtractorR::exportParam(const std::string& idName,
 
   if (logStorage.rows() > 0 && logStorage.cols()) // only if log has taken place, for example not during predict
   {
-#ifdef MC_DEBUG
-    std::cout << "paramsLogs: " << logStorage << std::endl;
-#endif
     // copy of the log data
     logR = Rcpp::NumericMatrix(logStorage.rows(),
                                     logStorage.cols());
@@ -109,16 +102,8 @@ void ParamExtractorR::exportParam(const std::string& idName,
     logR.attr("dimnames") = dimnmsLog;
   }
 
-#ifdef MC_DEBUG
-  std::cout << "param_[idName].size(): " << param_[idName].size() << std::endl;
-#endif
-
   param_[idName][paramName] = Rcpp::List::create(Rcpp::Named("stat") = statR,
                                                  Rcpp::Named("log")  = logR);
-
-#ifdef MC_DEBUG
-  std::cout << "param_[idName].size(): " << param_[idName].size() << std::endl;
-#endif
 }
 
 /** Extractor for Rank data type */

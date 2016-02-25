@@ -416,7 +416,8 @@ class Ordinal : public IMixture
         }
       }
 
-      p_dataExtractor_->exportVals(idName(),
+      p_dataExtractor_->exportVals(indexMixture_,
+                                   idName(),
                                    augData_,
                                    dataStatComputer_.getDataStatStorage()); // export the obtained data using the DataExtractor
       p_paramExtractor_->exportParam(idName(),

@@ -450,49 +450,34 @@ void MixtureComposer::removeMissing(initParam algo) {
   }
 }
 
-void MixtureComposer::E_kj(Matrix<Real>& ekj) const
-{
+void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
   ekj.resize(nbClass_, nbVar_);
   ekj = 0.;
 
-  for (int i = 0; i < nbInd_; ++i)
-  {
-    for(int j = 0; j < nbVar_; ++j)
-    {
+  for (int i = 0; i < nbInd_; ++i) {
+    for(int j = 0; j < nbVar_; ++j) {
       Vector<Real> lnP(nbClass_); // ln(p(z_i = k, x_i^j))
       Vector<Real> t_ik_j(nbClass_); // p(z_i = k / x_i^j)
-      for (int k = 0; k < nbClass_; ++k)
-      {
+      for (int k = 0; k < nbClass_; ++k) {
         lnP(k) = std::log(prop_(k)) + v_mixtures_[j]->lnObservedProbability(i, k);
       }
-      t_ik_j.logToMulti(lnP);
+      t_ik_j.logToMulti(lnP); // "observed" t_ik, for the variable j
       Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
 
-#ifdef MC_DEBUG
-      std::cout << "MixtureComposer::E_kj, i: " << i << ", v_mixtures_[j]->idName(): " << v_mixtures_[j]->idName() << std::endl
-                << "t_ik_j :" << t_ik_j.transpose() << std::endl
-                << "t_ink_j:" << t_ink_j.transpose() << std::endl;
-#endif
-
-      for (int k = 0; k < nbClass_; ++k)
-      {
+      for (int k = 0; k < nbClass_; ++k) {
         Real p, nP;
 
-        if (epsilon < t_ik_j(k))
-        {
+        if (epsilon < t_ik_j(k)) {
           p = - t_ik_j(k) * std::log(t_ik_j (k));
         }
-        else
-        {
+        else {
           p = 0.;
         }
 
-        if (epsilon < t_ink_j(k))
-        {
+        if (epsilon < t_ink_j(k)) {
           nP = - t_ink_j(k) * std::log(t_ink_j(k));
         }
-        else
-        {
+        else {
           nP = 0.;
         }
 
@@ -502,19 +487,16 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const
   }
 }
 
-void MixtureComposer::IDClass(Matrix<Real>& idc) const
-{
+void MixtureComposer::IDClass(Matrix<Real>& idc) const {
   idc.resize(nbClass_, nbVar_);
   Matrix<Real> ekj;
   E_kj(ekj);
 
-  for (int k = 0; k < nbClass_; ++k)
-  {
+  for (int k = 0; k < nbClass_; ++k) {
     Real min = ekj.row(k).minCoeff();
     Real max = ekj.row(k).maxCoeff();
 
-    for(int j = 0; j < nbVar_; ++j)
-    {
+    for(int j = 0; j < nbVar_; ++j) {
       idc(k, j) = (max - ekj(k, j)) / (max - min);
 //      idc(k, j) = 1. - ekj(k, j) / ekj.row(k).sum();
     }

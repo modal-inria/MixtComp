@@ -63,7 +63,7 @@ class MixtureManager {
         std::string idModel = it->second;
 
         IMixture* p_mixture = createMixture(idModel,
-                                            indexMixture,
+                                            indexMixture + 1, // +1 to take into account that LatentClass is at position 0 int the data output
                                             idName,
                                             composer,
                                             nbCluster,
