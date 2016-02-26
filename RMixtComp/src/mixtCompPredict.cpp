@@ -97,8 +97,8 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
     readTimer.top("data has been read");
 
     if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
-      dataExtractor .setNbMixture(handler.nbVariable() + 1); // +1 is to take into account the LatentClass at position 0
-      paramExtractor.setNbMixture(handler.nbVariable() + 1); // +1 is to take into account the LatentClass at position 0
+      dataExtractor .setNbMixture(handler.nbVariable());
+      paramExtractor.setNbMixture(handler.nbVariable());
 
       mixt::StrategyParam param;
       paramRToCpp(mcStrategy,

@@ -47,6 +47,8 @@ void DataHandlerR::writeInfo() const {
 }
 
 std::string DataHandlerR::listData() {
+  bool LatentClassProvided = false;
+
   std::string warnLog;
   for (int i = 0; i < rList_.size(); ++i) {
     Rcpp::List currList = rList_[i];
@@ -74,7 +76,16 @@ std::string DataHandlerR::listData() {
     nbInd_ = data.size(); // overwritten, because check has already been performed on the R side
     dataMap_[id] = i; // dataMap_[id] created if not already existing
     ++nbVar_;
+
+    if (model == "LatentClass") {
+      LatentClassProvided = true;
+    }
   }
+
+  if (!LatentClassProvided) {
+    ++nbVar_; // albeit LatentClass has not been provided by the user, it is still a variable in the analysis
+  }
+
   return warnLog;
 }
 
