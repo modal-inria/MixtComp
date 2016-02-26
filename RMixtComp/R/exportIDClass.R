@@ -129,11 +129,11 @@ paramTable = function(data){
                ncol = nbVar - 1)
   
   j = 1
-  for (jP in 1:nbVar) { # the first variable corresponds to the LatentClass, which is ignored in the IDClass table
+  for (jP in 1:nbVar) {
     currVar = varName[[jP]]
     
     if (typeList[[currVar]] == 'LatentClass') {
-      next
+      next # the first variable corresponds to the LatentClass, which is ignored in the IDClass table
     }
     else if (typeList[currVar] == 'Categorical_pjk') {
       out[,j] = paramCategorical(nbClass, param[[currVar]])

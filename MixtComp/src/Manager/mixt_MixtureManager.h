@@ -54,7 +54,7 @@ class MixtureManager {
     std::string createMixtures(MixtureComposer& composer,
                                int nbCluster) {
       std::string warnLog;
-      int indexMixture = 0; // number of variables
+      int indexMixture = 0; // index of current variable
       for (std::map<std::string, std::string>::const_iterator it    = p_handler_->info().begin(),
                                                               itEnd = p_handler_->info().end();
            it != itEnd;
@@ -62,21 +62,23 @@ class MixtureManager {
         std::string idName = it->first;
         std::string idModel = it->second;
 
-        IMixture* p_mixture = createMixture(idModel,
-                                            indexMixture + 1, // +1 to take into account that LatentClass is at position 0 int the data output
-                                            idName,
-                                            composer,
-                                            nbCluster,
-                                            confidenceLevel_);
-        if (p_mixture) {
-          composer.registerMixture(p_mixture);
-          ++indexMixture;
-        }
-        else if (idModel != "LatentClass") {
-          std::stringstream sstm;
-          sstm << "The model " << idModel << " has been selected to describe the variable " << idName
-               << " but it is not implemented yet. Please choose an available model for this variable." << std::endl;
-          warnLog += sstm.str();
+        if (idModel != "LatentClass") { // LatentClass type is managed directly in the composer
+          IMixture* p_mixture = createMixture(idModel,
+                                              indexMixture + 1, // +1 to take into account that LatentClass is at position 0 int the data output
+                                              idName,
+                                              composer,
+                                              nbCluster,
+                                              confidenceLevel_);
+          if (p_mixture) {
+            composer.registerMixture(p_mixture);
+            ++indexMixture;
+          }
+          else {
+            std::stringstream sstm;
+            sstm << "The model " << idModel << " has been selected to describe the variable " << idName
+                 << " but it is not implemented yet. Please choose an available model for this variable." << std::endl;
+            warnLog += sstm.str();
+          }
         }
       }
       if (indexMixture == 0) {

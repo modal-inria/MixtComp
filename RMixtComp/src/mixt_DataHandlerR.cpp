@@ -27,8 +27,7 @@
 
 #include "mixt_DataHandlerR.h"
 
-namespace mixt
-{
+namespace mixt {
 
 DataHandlerR::DataHandlerR(Rcpp::List rList) :
     nbInd_(-1),
@@ -36,29 +35,20 @@ DataHandlerR::DataHandlerR(Rcpp::List rList) :
     rList_(rList)
 {}
 
-void DataHandlerR::writeInfo() const
-{
-  // show content
+void DataHandlerR::writeInfo() const {
 #ifdef MC_VERBOSE
    for (std::map<std::string, std::string>::const_iterator it    = info_.begin(),
                                                            itEnd = info_.end();
         it != itEnd;
-        ++it)
-   {
+        ++it) {
      std::cout << "name: " << it->first << ", model: " << it->second << std::endl;
    }
 #endif
 }
 
-std::string DataHandlerR::listData()
-{
-#ifdef MC_DEBUG
-  std::cout << "DataHandlerR::listData()" << std::endl;
-  std::cout << "rList_.size(): " << rList_.size() << std::endl;
-#endif
+std::string DataHandlerR::listData() {
   std::string warnLog;
-  for (int i = 0; i < rList_.size(); ++i)
-  {
+  for (int i = 0; i < rList_.size(); ++i) {
     Rcpp::List currList = rList_[i];
 
     std::string model = currList["model"];
@@ -68,16 +58,13 @@ std::string DataHandlerR::listData()
     // add to info_, and perform various checks
     std::pair<std::map<std::string, std::string>::iterator, bool> ret; // parse descriptor file
     ret = info_.insert(std::pair<std::string, std::string>(id, model)); // check if identifier is already present
-    if (ret.second == false) // if name already exists, return a warning
-    {
+    if (ret.second == false) { // if name already exists, return a warning
       warnLog += std::string("Several variables bear the same name: ") + id + std::string(", while only a variable per name is allowed.\n");
     }
-    if (data.size() == 0)
-    {
+    if (data.size() == 0) {
       warnLog += std::string("Variable: ") + id + std::string(" has 0 samples.");
     }
-    if (nbInd_ > 0 && nbInd_ != data.size())
-    {
+    if (nbInd_ > 0 && nbInd_ != data.size()) {
       std::stringstream sstm;
       sstm << "Variable: " << id << " has " << data.size() << " individuals, while the previous variable had "
            << nbInd_ << " individuals. All variables must have the same number of individuals." << std::endl;
@@ -87,25 +74,17 @@ std::string DataHandlerR::listData()
     nbInd_ = data.size(); // overwritten, because check has already been performed on the R side
     dataMap_[id] = i; // dataMap_[id] created if not already existing
     ++nbVar_;
-#ifdef MC_DEBUG
-    std::cout << "DataHandlerR::readDataFromRListHelper()" << std::endl;
-    std::cout << "\tid: " << id << std::endl;
-    std::cout << "\tmodel: " << model << std::endl;
-    std::cout << "\trList pos: " << i << std::endl;
-#endif
   }
   return warnLog;
 }
 
-void DataHandlerR::writeDataMap() const
-{
+void DataHandlerR::writeDataMap() const {
 #ifdef MC_VERBOSE
   std::cout << "Position of data in input: \n";
   for (std::map<std::string, int> ::const_iterator it    = dataMap_.begin(),
                                                    itEnd = dataMap_.end();
        it != itEnd;
-       ++it)
-  {
+       ++it) {
     std::cout << "\tname: " << it->first << "\n";
     std::cout << "\t\trList_ position: " << it->second << std::endl;
   }
@@ -115,11 +94,9 @@ void DataHandlerR::writeDataMap() const
 std::string DataHandlerR::getData(std::string const& idData,
                            Vector<std::string>& dataStr,
                            int& nbInd,
-                           std::string& param) const
-{
+                           std::string& param) const {
   std::string warnLog;
-  if (dataMap_.find(idData) != dataMap_.end()) // check if the data requested is present in the input data
-  {
+  if (dataMap_.find(idData) != dataMap_.end()) { // check if the data requested is present in the input data
     int pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
     nbInd = nbInd_;
     dataStr.resize(nbInd_); // R has already enforced that all data has the same number of rows, and now all mixture are univariate
@@ -127,13 +104,11 @@ std::string DataHandlerR::getData(std::string const& idData,
     Rcpp::List currVar = rList_[pos]; // get current named list
     Rcpp::CharacterVector data = currVar("data");
 
-    for (int i = 0; i < nbInd_; ++i)
-    {
+    for (int i = 0; i < nbInd_; ++i) {
       dataStr(i) = data[i];
     }
   }
-  else
-  {
+  else {
     std::stringstream sstm;
     sstm << "Data from the variable: " << idData << " has been requested but is absent from the provided data. "
          << "Please check that all the necessary data is provided." << std::endl;
@@ -142,23 +117,23 @@ std::string DataHandlerR::getData(std::string const& idData,
   return warnLog;
 }
 
-Rcpp::List DataHandlerR::rcppReturnType() const
-{
+Rcpp::List DataHandlerR::rcppReturnType() const {
   std::vector<std::string> listName;
   std::vector<std::string> listType;
   listName.reserve(nbVar_);
   listType.reserve(nbVar_);
 
-  listName.push_back("z_class");
+  listName.push_back("z_class"); // z_class is always pushed first in the results
   listType.push_back("LatentClass");
 
   for (std::map<std::string, std::string>::const_iterator it    = info_.begin(),
                                                           itEnd = info_.end();
              it != itEnd;
-             ++it)
-  {
-    listName.push_back(it->first);
-    listType.push_back(it->second);
+             ++it) {
+    if (it->second != "LatentClass") { // z_class is always pushed first
+      listName.push_back(it->first);
+      listType.push_back(it->second);
+    }
   }
 
   Rcpp::CharacterVector name = Rcpp::wrap(listName);
