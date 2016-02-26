@@ -121,7 +121,7 @@ paramTable = function(data){
   nbClass = data$mixture$nbCluster
   param = data$variable$param
   typeList = data$variable$type
-  nbVar = length(param)
+  nbVar = length(data$variable$type)
   varName = names(data$variable$type)
   
   out = matrix(data = "",
