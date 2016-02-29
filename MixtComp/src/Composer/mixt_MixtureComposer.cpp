@@ -489,18 +489,25 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 
 void MixtureComposer::IDClass(Matrix<Real>& idc) const {
   idc.resize(nbClass_, nbVar_);
-  Matrix<Real> ekj;
-  E_kj(ekj);
 
-  for (int k = 0; k < nbClass_; ++k) {
-    Real min = ekj.row(k).minCoeff();
-    Real max = ekj.row(k).maxCoeff();
+  if (nbClass_ > 1) {
+    Matrix<Real> ekj;
+    E_kj(ekj);
 
-    for(int j = 0; j < nbVar_; ++j) {
-      idc(k, j) = (max - ekj(k, j)) / (max - min);
-//      idc(k, j) = 1. - ekj(k, j) / ekj.row(k).sum();
+    for (int k = 0; k < nbClass_; ++k) {
+      Real min = ekj.row(k).minCoeff();
+      Real max = ekj.row(k).maxCoeff();
+
+      for(int j = 0; j < nbVar_; ++j) {
+        idc(k, j) = (max - ekj(k, j)) / (max - min);
+  //      idc(k, j) = 1. - ekj(k, j) / ekj.row(k).sum();
+      }
     }
   }
+  else {
+    idc = 1.;
+  }
+
 }
 
 void MixtureComposer::printClassInd() const {
