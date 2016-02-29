@@ -64,8 +64,8 @@ extractNbClass = function(data){
 }
 
 extractPi = function(data){
-  out = paste0(data$variable$param$z_class$pi$stat[1,1])
-  if (k > 1) {
+  out = paste0(data$variable$param$z_class$pi$stat[1,1])  # output of the first class
+  if (data$mixture$nbCluster > 1) { # output only if there are more than one class
     for (k in 2:data$mixture$nbCluster) {
       out = paste0(out, ', ', data$variable$param$z_class$pi$stat[k,1])
     }
