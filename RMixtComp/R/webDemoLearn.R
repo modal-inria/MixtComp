@@ -75,31 +75,31 @@ webDemoLearn <- function(folderName) {
     save(res,
          file = RDataFileOut)
     
-    writeIDClassHTML(res,
-                     IDHTMLFile)
-    
-    webFolderName <- Sys.getenv("WORKER_WEB_FOLDER")
-    if (nchar(webFolderName) > 0) {
-      IDJSONFile <- paste(webFolderName,
-                          "IDData.json",
-                          sep = "/")
-      writeIDClassJSON(res,
-                       IDJSONFile)
-    }
-    
-    if (nchar(res$mixture$warnLog) > 0) {
-      cat(res$mixture$warnLog,
-          file = logFile,
-          sep = "",
-          append = TRUE)
-      quit(save = "no", status = 1)
-    }
-    else {
+    if (nchar(res$mixture$warnLog) == 0) {
+      writeIDClassHTML(res,
+                       IDHTMLFile)
+      
+      webFolderName <- Sys.getenv("WORKER_WEB_FOLDER")
+      if (nchar(webFolderName) > 0) {
+        IDJSONFile <- paste(webFolderName,
+                            "IDData.json",
+                            sep = "/")
+        writeIDClassJSON(res,
+                         IDJSONFile)
+      }
+      
       cat("Run completed successfully",
           file = logFile,
           sep = "",
           append = TRUE)
       quit(save = "no", status = 0)
+    }
+    else {
+      cat(res$mixture$warnLog,
+          file = logFile,
+          sep = "",
+          append = TRUE)
+      quit(save = "no", status = 1)
     }
   }
 }

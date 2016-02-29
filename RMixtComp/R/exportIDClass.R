@@ -65,8 +65,10 @@ extractNbClass = function(data){
 
 extractPi = function(data){
   out = paste0(data$variable$param$z_class$pi$stat[1,1])
-  for (k in 2:data$mixture$nbCluster) {
-    out = paste0(out, ', ', data$variable$param$z_class$pi$stat[k,1])
+  if (k > 1) {
+    for (k in 2:data$mixture$nbCluster) {
+      out = paste0(out, ', ', data$variable$param$z_class$pi$stat[k,1])
+    }
   }
   return(out)
 }
