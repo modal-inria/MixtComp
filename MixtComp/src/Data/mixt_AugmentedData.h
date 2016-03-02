@@ -197,19 +197,10 @@ class AugmentedData
       {
         dataRange_ = Range<Type>(min, max);
       }
-#ifdef MC_DEBUG
-      std::cout << "AugmentedData::computeRange" << std::endl;
-      std::cout << "min: " << min << ", max: " << max << std::endl;
-#endif
     }
 
     void setPresent(int i, Type val)
     {
-#ifdef MC_DEBUG
-      std::cout << "AugmentedData::setPresent" << std::endl;
-      std::cout << "data_.rows(): " << data_.rows() << std::endl;
-      std::cout << "misData_.rows(): " << misData_.rows() << std::endl;
-#endif
       data_(i) = val;
       misData_(i) = MisVal(present_,
                            std::vector<Type>());

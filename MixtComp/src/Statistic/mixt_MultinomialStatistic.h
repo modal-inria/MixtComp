@@ -59,21 +59,6 @@ class MultinomialStatistic
     {
       Real x = generator_();
 
-#ifdef MC_DEBUG
-      std::cout << "proportion: " << proportion << ", x: " << x << std::endl;
-#endif
-
-#ifdef MC_DEBUG
-      if (proportion.sum() < 1. - epsilon && 1. + epsilon < proportion.sum())
-      {
-        std::cout << "MultinomialStatistic::sample()" << std::endl;
-        std::cout << "proportion" << std::endl;
-        itPrint(proportion);
-        std::cout << "proportion does not describe a probability distribution" << std::endl;
-        std::cout << "x: " << x << std::endl;
-      }
-#endif
-
       Real cumProb = 0.; // cumulative probability
       int index = 0;
 

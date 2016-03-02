@@ -76,11 +76,6 @@ void AugmentedData<Vector<Real> >::removeMissing()
 
         case missingIntervals_:
         {
-#ifdef MC_DEBUG
-          std::cout << "AugmentedData<Matrix<Real> >::removeMissing" << std::endl;
-          std::cout << "case missingIntervals_" << std::endl;
-          std::cout << "misData_(i).second.size(): " << misData_(i).second.size() << std::endl;
-#endif
           Real infBound = misData_(i).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
           Real supBound = misData_(i).second[1];
           sampleVal = uniform_.sample(infBound,
@@ -133,20 +128,13 @@ void AugmentedData<Vector<Real> >::removeMissing()
 template<>
 void AugmentedData<Vector<int> >::removeMissing()
 {
-#ifdef MC_DEBUG
-  std::cout << "AugmentedData<Matrix<int> >::removeMissing" << std::endl;
-#endif
-
   for (int i = 0; i < misData_.rows(); ++i)
   {
     if (misData_(i).first != present_)
     {
       int sampleVal;
       int nbModalities = dataRange_.range_;
-#ifdef MC_DEBUG
-      std::cout << "i: " << i << ", j: " << j << std::endl;
-      std::cout << "firstModality: " << firstModality << ", nbModalities: " << nbModalities << std::endl;
-#endif
+
       switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
       {
         case present_:
@@ -170,9 +158,6 @@ void AugmentedData<Vector<int> >::removeMissing()
               itParam != misData_(i).second.end();
               ++itParam)
           {
-#ifdef MC_DEBUG
-          std::cout << "\tproba: " << proba << std::endl;
-#endif
             modalities[*itParam] = proba;
           }
           sampleVal = multi_.sample(modalities);
