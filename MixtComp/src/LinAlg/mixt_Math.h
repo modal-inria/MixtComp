@@ -26,12 +26,8 @@
 
 #include "mixt_Typedef.h"
 
-namespace mixt {
-
 int fac(int n);
 
 Real logFac(int n);
-
-}
 
 #endif // MIXT_LINALG_H

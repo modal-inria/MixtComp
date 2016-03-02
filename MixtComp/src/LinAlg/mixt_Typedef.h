@@ -26,8 +26,6 @@
 
 #include <cstdlib>
 
-namespace mixt {
-
 /** Eigen storage is column-major by default, which suits the main way of accessing data,
  * by looping over individuals instead of variables */
 typedef double Real;
@@ -36,7 +34,5 @@ typedef double Real;
  * int is used for indexing.
  * http://stackoverflow.com/questions/1951519/when-to-use-stdsize-t */
 typedef size_t Size;
-
-}
 
 #endif // MIXT_TYPEDEF_H

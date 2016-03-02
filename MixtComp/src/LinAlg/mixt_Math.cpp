@@ -24,14 +24,10 @@
 #include <cmath>
 #include "mixt_Math.h"
 
-namespace mixt {
-
 int fac(int n) {
   return tgamma(n + 1);
 }
 
 Real logFac(int n) {
   return lgamma(n + 1);
-}
-
 }

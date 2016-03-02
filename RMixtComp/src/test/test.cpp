@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 //    R.parseEvalQ("testNewLearn()");
 //    R.parseEvalQ("testNewLearn(regen = FALSE)");
 //    R.parseEvalQ("testNewLearnPredict()");
-//    R.parseEvalQ("testGenDataLearn()");
+    R.parseEvalQ("testGenDataLearn()");
 //    R.parseEvalQ("testLearnPredict()");
 //    R.parseEvalQ("testAERES()");
 
@@ -49,8 +49,8 @@ int main(int argc, char *argv[]) {
 //    R.parseEvalQ("setwd(\"/Users/kubicki/Documents/analysis/151214 - données Etienne Gibbs trop lent\")");
 //    R.parseEvalQ("source(\"test_mixtcomp.R\")");
 
-    R.parseEvalQ("setwd(\"/Users/kubicki/Documents/analysis/160226 - crash Christophe\")");
-    R.parseEvalQ("source(\"test_mixtcomp.R\")");
+//    R.parseEvalQ("setwd(\"/Users/kubicki/Documents/analysis/160226 - crash Christophe\")");
+//    R.parseEvalQ("source(\"test_mixtcomp.R\")");
 
 //    R.parseEvalQ("webDemoLearn(\"/home/elvinz/Data/workspace/mixtcomp.master/RMixtComp/dataServer/exp_68\")");
 //    R.parseEvalQ("webDemoLearn(\"/home/elvinz/Data/analysis/150702 - crash paugam\")");
