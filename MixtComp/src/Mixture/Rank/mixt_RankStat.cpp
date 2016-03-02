@@ -28,35 +28,29 @@
 #include <map>
 
 
-namespace mixt
-{
+namespace mixt {
+
 RankStat::RankStat(RankVal& mu,
                              Real confidenceLevel) :
     mu_(mu),
-    confidenceLevel_(confidenceLevel)
-{}
+    confidenceLevel_(confidenceLevel) {}
 
-void RankStat::sample(int iteration)
-{
+void RankStat::sample(int iteration) {
   logStorageMu_(iteration) = mu_;
 }
 
 void RankStat::sampleValue(int iteration,
-                                int iterationMax)
-{
-  if (iteration == 0)
-  {
+                           int iterationMax) {
+  if (iteration == 0) {
     logStorageMu_.resize(iterationMax + 1);
 
     sample(0); // first sampling, on each parameter
   }
-  else if (iteration == iterationMax)
-  {
+  else if (iteration == iterationMax) {
     sample(iterationMax); // last sampling
 
     std::map<RankVal, int> stat; // sparse counting of the occurrences of mu
-    for (int i = 0; i < iterationMax + 1; ++i)
-    {
+    for (int i = 0; i < iterationMax + 1; ++i) {
       stat[logStorageMu_(i)] += 1;
     }
     int nbMu = stat.size();
@@ -68,8 +62,7 @@ void RankStat::sampleValue(int iteration,
     for (std::map<RankVal, int>::const_iterator it    = stat.begin(), // loop on values of mu
                                                 itEnd = stat.end();
          it != itEnd;
-         ++it, ++m)
-    {
+         ++it, ++m) {
       mu(m) = it->first;
       nb(m) = it->second;
     }
@@ -78,8 +71,7 @@ void RankStat::sampleValue(int iteration,
     nb.sortIndex(index);
 
     Real cumSum = 0.;
-    for (int muPos = nbMu - 1; muPos > -1; --muPos) // loop from the most to the less frequent values of mu
-    {
+    for (int muPos = nbMu - 1; muPos > -1; --muPos) { // loop from the most to the less frequent values of mu
       int m = index(muPos); // index of current value of mu
 
       Real proba = Real(nb(m)) / Real(iterationMax + 1);
@@ -90,20 +82,19 @@ void RankStat::sampleValue(int iteration,
 
       if (cumSum > confidenceLevel_) break;
     }
+
+    logStorageMu_.resize(0); // clear memory
   }
-  else
-  {
+  else {
     sample(iteration);
   }
 }
 
-void RankStat::setExpectationParam()
-{
+void RankStat::setExpectationParam() {
   mu_ = statStorageMu_.front().first;
 }
 
-void RankStat::setParamStorage()
-{
+void RankStat::setParamStorage() {
   statStorageMu_.push_back(std::pair<RankVal, Real>(mu_, 1.));
 }
 

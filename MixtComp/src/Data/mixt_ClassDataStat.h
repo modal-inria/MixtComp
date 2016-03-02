@@ -37,6 +37,8 @@ class ClassDataStat
   public:
     ClassDataStat(ZClassInd& zClassInd);
 
+    void setNbIndividual(int nbInd) {dataStatStorage_.resize(nbInd, zClassInd_.zi().dataRange_.max_ + 1);}
+
     void sampleVals(int sample,
                     int iteration,
                     int iterationMax);
@@ -44,8 +46,6 @@ class ClassDataStat
     void imputeData(int ind);
 
     const Matrix<Real>& getDataStatStorage() const {return dataStatStorage_;}
-
-    void resizeStatStorage(int nbInd) {dataStatStorage_.resize(nbInd, zClassInd_.zi().dataRange_.max_ + 1);}
 
   private:
     /** Reference to augmented data */

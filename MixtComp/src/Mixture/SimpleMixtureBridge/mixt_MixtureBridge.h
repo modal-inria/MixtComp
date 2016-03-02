@@ -114,8 +114,7 @@ class MixtureBridge : public IMixture
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    std::string setDataParam(RunMode mode)
-    {
+    std::string setDataParam(RunMode mode) {
       std::string warnLog;
       warnLog += p_handler_->getData(idName(),
                                      augData_,
@@ -125,60 +124,51 @@ class MixtureBridge : public IMixture
 
       augData_.computeRange();
       std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
-      if(tempLog.size() > 0) // check on the missing values description
-      {
+      if(tempLog.size() > 0) { // check on the missing values description
         std::stringstream sstm;
         sstm << "Variable " << idName() << " with model " << mixture_.model() << " has a problem with the descriptions of missing values.\n" << tempLog;
         warnLog += sstm.str();
       }
-      else if (mixture_.checkMinVal() && augData_.dataRange_.min_ < mixture_.minVal()) // test the requirement for the data (and bounds) to be above a specified value
-      {
+      else if (mixture_.checkMinVal() && augData_.dataRange_.min_ < mixture_.minVal()) { // test the requirement for the data (and bounds) to be above a specified value
         std::stringstream sstm;
         sstm << "Variable: " << idName() << " requires a minimum value of " << mixture_.minVal()
              << " in either provided values or bounds. The minimum value currently provided is : " << augData_.dataRange_.min_ << std::endl;
         warnLog += sstm.str();
       }
-      else // minimum value requirements have been met, whether the mode is learning or prediction
-      {
+      else { // minimum value requirements have been met, whether the mode is learning or prediction
         mixture_.setData(augData_.data_);
 
-        if (mode == learning_) // learning mode
-        {
-          if (mixture_.hasModalities())
-          {
+        if (mode == learning_) { // learning mode
+          if (mixture_.hasModalities()) {
             mixture_.setModalities(augData_.dataRange_.max_ + 1); // set the number of modalities
           }
         }
-        else // predict mode
-        {
+        else { // predict mode
           p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
                                    "NumericalParam",
                                    param_);
           int nbModalities = param_.rows() / nbClass_; // number of parameters for each cluster
-          if (mixture_.hasModalities()) // all modalities might not be present in the predict set, and as such the real data range from the learning set must be used
-          {
+          if (mixture_.hasModalities()) { // all modalities might not be present in the predict set, and as such the real data range from the learning set must be used
             mixture_.setModalities(nbModalities);
           }
           paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object
           // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
           // in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
-          if (mixture_.checkMaxVal() && mixture_.maxVal() < augData_.dataRange_.max_)
-          {
+          if (mixture_.checkMaxVal() && mixture_.maxVal() < augData_.dataRange_.max_) {
             std::stringstream sstm;
             sstm << "Variable: " << idName_ << " requires a maximum value of " << ((mixture_.hasModalities()) ? (minModality) : (0)) + mixture_.maxVal()
                  << " for the data during prediction. This maximum value usually corresponds to the maximum value used during the learning phase."
                  << " The maximum value in the data provided for prediction is : " << ((mixture_.hasModalities()) ? (minModality) : (0)) + augData_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();
           }
-          if (mixture_.hasModalities()) // now that predict observed values have been checked, the real data range must be used for all data
-          {
+          if (mixture_.hasModalities()) { // now that predict observed values have been checked, the real data range must be used for all data
             augData_.dataRange_.min_ = 0;
             augData_.dataRange_.max_ = nbModalities - 1;
             augData_.dataRange_.range_ = nbModalities;
           }
         }
 
-        dataStat_.resizeStatStorage(nbInd_);
+        dataStat_.setNbIndividual(nbInd_);
       }
 
       return warnLog;

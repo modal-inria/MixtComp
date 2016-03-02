@@ -186,7 +186,7 @@ class Ordinal : public IMixture
 
         setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
 
-        dataStatComputer_.resizeStatStorage(nbInd_);
+        dataStatComputer_.setNbIndividual(nbInd_);
       }
 
       return warnLog;

@@ -234,20 +234,11 @@ class RankMixture : public IMixture
       }
     }
 
-    Real lnCompletedProbability(int i, int k)
-    {
-#ifdef MC_DEBUG
-      std::cout << "RankMixture::lnCompletedProbability, i: " << i << ", k: " << k << std::endl;
-#endif
-
+    Real lnCompletedProbability(int i, int k) {
       return class_[k].lnCompletedProbabilityInd(i);
     }
 
     virtual Real lnObservedProbability(int i, int k) {
-#ifdef MC_DEBUG
-    std::cout << "RankMixture::lnObservedProbability, i: " << i << ", k: " << k << std::endl;
-#endif
-
       return class_[k].lnObservedProbability(i);
     }
 
@@ -300,10 +291,6 @@ class RankMixture : public IMixture
     }
 
     std::string setDataParam(RunMode mode) {
-#ifdef MC_DEBUG
-      std::cout << "RankMixture::setDataParam" << std::endl;
-#endif
-
       std::string warnLog;
       Vector<std::string> dataStr;
 
@@ -357,8 +344,7 @@ class RankMixture : public IMixture
       return warnLog;
     }
 
-    void exportDataParam() const
-    {
+    void exportDataParam() const {
       p_dataExtractor_->exportVals(indexMixture_,
                                    idName(),
                                    data_,
@@ -379,10 +365,6 @@ class RankMixture : public IMixture
     }
 
     void computeObservedProba() {
-#ifdef MC_DEBUG
-      std::cout << "RankMixture::computeObservedProba"<< std::endl;
-#endif
-
       for (int k = 0; k < nbClass_; ++k) {
         class_[k].computeObservedProba();
       }

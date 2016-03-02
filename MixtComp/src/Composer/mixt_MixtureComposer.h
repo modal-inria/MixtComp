@@ -188,7 +188,7 @@ class MixtureComposer
       if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
         paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
       }
-      dataStat_.resizeStatStorage(nbInd_);
+      dataStat_.setNbIndividual(nbInd_);
 
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
         warnLog += (*it)->setDataParam(mode);
