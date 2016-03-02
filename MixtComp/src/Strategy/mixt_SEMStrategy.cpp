@@ -165,23 +165,13 @@ void SemStrategy::initGibbs() {
 }
 
 void SemStrategy::runGibbs() {
-  Timer myTimer;
-  myTimer.setName("Gibbs burn-in");
-  for (int it = 0; it < param_.nbGibbsBurnInIter_; ++it) {
-    myTimer.iteration(it,
-                      param_.nbGibbsBurnInIter_ - 1);
-    writeProgress(2,
-                  3,
-                  it,
-                  param_.nbGibbsBurnInIter_ - 1);
+  p_composer_->gibbsSampling(doNotSampleData_,
+                             param_.nbGibbsBurnInIter_,
+                             2, // group
+                             3); // groupMax
 
-    p_composer_->eStep();
-    p_composer_->sStepNoCheck(); // during Gibbs no check is performed, as there is no parameter estimation. Note the following samplingStepNoCheck().
-    p_composer_->samplingStepNoCheck();
-
-  }
-
-  p_composer_->gibbsSampling(param_.nbGibbsIter_,
+  p_composer_->gibbsSampling(sampleData_,
+                             param_.nbGibbsIter_,
                              3, // group
                              3); // groupMax
 }

@@ -36,14 +36,17 @@
 #include "../Various/mixt_Enum.h"
 #include "../Param/mixt_ConfIntParamStat.h"
 
-namespace mixt
-{
+namespace mixt {
 
 typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
 typedef std::vector<IMixture*>::iterator MixtIterator;
 
-class MixtureComposer
-{
+enum GibbsSampleData {
+  doNotSampleData_,
+  sampleData_
+};
+
+class MixtureComposer {
   public:
     /** Constructor.
      * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
@@ -289,7 +292,8 @@ class MixtureComposer
     void registerMixture(IMixture* mixture);
 
     /** Gibbs sampling, one individual at a time */
-    void gibbsSampling(int nbGibbsIter,
+    void gibbsSampling(GibbsSampleData sample,
+                       int nbGibbsIter,
                        int group,
                        int groupMax);
 

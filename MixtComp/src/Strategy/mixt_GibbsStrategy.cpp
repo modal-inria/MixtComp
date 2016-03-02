@@ -41,22 +41,13 @@ std::string GibbsStrategy::run()
 
   p_composer_->removeMissing(keepParam_);
 
-  Timer myTimer;
-  myTimer.setName("Gibbs: burn-in");
-  for (int it = 0; it < param_.nbGibbsBurnInIter_; ++it)
-  {
-    myTimer.iteration(it, param_.nbGibbsBurnInIter_ - 1);
-    writeProgress(0, // group
-                  1, // groupMax
-                  it,
-                  param_.nbGibbsBurnInIter_); // progress write in progress file
+  p_composer_->gibbsSampling(doNotSampleData_,
+                             param_.nbGibbsBurnInIter_,
+                             0, // group
+                             1); // groupMax
 
-    p_composer_->eStep();
-    p_composer_->sStepNoCheck();
-    p_composer_->samplingStepNoCheck();
-  }
-
-  p_composer_->gibbsSampling(param_.nbGibbsIter_,
+  p_composer_->gibbsSampling(sampleData_,
+                             param_.nbGibbsIter_,
                              1, // group
                              1); // groupMax
   return warnLog;

@@ -29,8 +29,7 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Various.h"
 
-namespace mixt
-{
+namespace mixt {
 
 MixtureComposer::MixtureComposer(int nbInd,
                                  int nbClass,
@@ -393,11 +392,18 @@ void MixtureComposer::registerMixture(IMixture* p_mixture)
   ++nbVar_;
 }
 
-void MixtureComposer::gibbsSampling(int nbGibbsIter,
+void MixtureComposer::gibbsSampling(GibbsSampleData sample,
+                                    int nbGibbsIter,
                                     int group,
                                     int groupMax) {
   Timer myTimer;
-  myTimer.setName("Gibbs: run (individuals count as iterations)");
+  if (sample == sampleData_) {
+    myTimer.setName("Gibbs: run (individuals count as iterations)");
+  }
+  else {
+    myTimer.setName("Gibbs: burn-in (individuals count as iterations)");
+  }
+
   for (int i = 0; i < nbInd_; ++i) {
     myTimer.iteration(i, nbInd_ - 1);
     writeProgress(group,
@@ -409,9 +415,12 @@ void MixtureComposer::gibbsSampling(int nbGibbsIter,
       eStep(i);
       sStepNoCheck(i);
       samplingStepNoCheck(i);
-      storeGibbsRun(i,
-                    iterGibbs,
-                    nbGibbsIter - 1);
+
+      if (sample == sampleData_) {
+        storeGibbsRun(i,
+                      iterGibbs,
+                      nbGibbsIter - 1);
+      }
     }
   }
 }
