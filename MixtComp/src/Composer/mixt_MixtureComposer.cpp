@@ -142,6 +142,7 @@ void MixtureComposer::mStep(EstimatorType bias) {
 }
 
 void MixtureComposer::sStepCheck() {
+  #pragma omp parallel for
   for (int i = 0; i < nbInd_; ++i) {
     sStepCheck(i);
   }
@@ -152,6 +153,7 @@ void MixtureComposer::sStepCheck(int i) {
 }
 
 void MixtureComposer::sStepNoCheck() {
+  #pragma omp parallel for
   for (int i = 0; i < nbInd_; ++i) {
     sStepNoCheck(i);
   }
@@ -212,6 +214,7 @@ int MixtureComposer::nbFreeParameters() const
 
 void MixtureComposer::samplingStepCheck()
 {
+  #pragma omp parallel for
   for (int i = 0; i < nbInd_; ++i)
   {
     samplingStepCheck(i);
@@ -228,6 +231,7 @@ void MixtureComposer::samplingStepCheck(int i)
 
 void MixtureComposer::samplingStepNoCheck()
 {
+  #pragma omp parallel for
   for (int i = 0; i < nbInd_; ++i)
   {
     samplingStepNoCheck(i);
@@ -355,10 +359,7 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
 
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
       eStep(i);
-      #pragma omp critical(sStepNoCheck)
-      {
-        sStepNoCheck(i);
-      }
+      sStepNoCheck(i);
       samplingStepNoCheck(i);
 
       if (sample == sampleData_) {

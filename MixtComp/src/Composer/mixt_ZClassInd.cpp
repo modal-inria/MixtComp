@@ -59,8 +59,11 @@ std::string ZClassInd::checkMissingType() {
 }
 
 void ZClassInd::setZAndClassInd(int i, int k) {
-  classInd_(zi_.data_(i)).erase(i);
-  classInd_(k           ).insert(i);
+  #pragma omp critical(setZAndClassInd)
+  {
+    classInd_(zi_.data_(i)).erase(i);
+    classInd_(k           ).insert(i);
+  }
   zi_.data_(i) = k;
 }
 
