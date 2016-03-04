@@ -25,12 +25,15 @@
 
 #include "../Various/mixt_Constants.h"
 
-namespace mixt
-{
+namespace mixt {
 
 ClassDataStat::ClassDataStat(ZClassInd& zClassInd) :
-    zClassInd_(zClassInd)
-{}
+    zClassInd_(zClassInd) {}
+
+void ClassDataStat::setNbIndividual(int nbInd) {
+  dataStatStorage_.resize(nbInd,
+                          zClassInd_.zi().dataRange_.max_ + 1);
+}
 
 void ClassDataStat::sample(int ind) {
   int currMod = zClassInd_.zi().data_(ind);
@@ -41,7 +44,7 @@ void ClassDataStat::sampleVals(int ind,
                                int iteration,
                                int iterationMax) {
   if (zClassInd_.zi().misData_(ind).first != present_) {
-    if (iteration == 0) { // clear the temporary statistical object
+    if (iteration == 0) {
       dataStatStorage_.row(ind) = 0.; // initialize storage for individual
 
       sample(ind); // first sampling
@@ -49,7 +52,7 @@ void ClassDataStat::sampleVals(int ind,
     else if (iteration == iterationMax) { // export the statistics to dataStatStorage
       sample(ind); // last sampling
 
-      dataStatStorage_ /= Real(iterationMax + 1); // from count to frequencies
+      dataStatStorage_.row(ind) /= Real(iterationMax + 1); // from count to frequencies
     }
     else { // any other iteration: juste store the current value
       sample(ind);

@@ -29,15 +29,13 @@
 #include "../Composer/mixt_ZClassInd.h"
 #include "mixt_AugmentedData.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class ClassDataStat
-{
+class ClassDataStat {
   public:
     ClassDataStat(ZClassInd& zClassInd);
 
-    void setNbIndividual(int nbInd) {dataStatStorage_.resize(nbInd, zClassInd_.zi().dataRange_.max_ + 1);}
+    void setNbIndividual(int nbInd);
 
     void sampleVals(int sample,
                     int iteration,
