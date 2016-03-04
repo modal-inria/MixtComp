@@ -355,7 +355,10 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
 
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
       eStep(i);
-      sStepNoCheck(i);
+      #pragma omp critical(sStepNoCheck)
+      {
+        sStepNoCheck(i);
+      }
       samplingStepNoCheck(i);
 
       if (sample == sampleData_) {
