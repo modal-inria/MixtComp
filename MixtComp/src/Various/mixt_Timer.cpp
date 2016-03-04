@@ -60,7 +60,7 @@ void Timer::iteration(int iteration,
     std::time(&currTime);
     double timePerIt = std::difftime(currTime, startTime_) / (double)iteration;
 
-#ifdef MC_VERBOSE
+#ifdef MC_TIMERVERBOSE
     std::cout << timerName_ << " timer" << std::endl;
     std::cout << "iteration: " << iteration << "/" << iterationMax << std::endl;
     std::cout << "Mean time per iteration: " << timePerIt << std::endl;
