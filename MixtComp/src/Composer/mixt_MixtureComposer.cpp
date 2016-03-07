@@ -212,36 +212,27 @@ int MixtureComposer::nbFreeParameters() const
   return sum;
 }
 
-void MixtureComposer::samplingStepCheck()
-{
-  #pragma omp parallel for
-  for (int i = 0; i < nbInd_; ++i)
-  {
+void MixtureComposer::samplingStepCheck() {
+  for (int i = 0; i < nbInd_; ++i) {
     samplingStepCheck(i);
   }
 }
 
-void MixtureComposer::samplingStepCheck(int i)
-{
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
+void MixtureComposer::samplingStepCheck(int i) {
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
     (*it)->samplingStepCheck(i);
   }
 }
 
-void MixtureComposer::samplingStepNoCheck()
-{
+void MixtureComposer::samplingStepNoCheck() {
   #pragma omp parallel for
-  for (int i = 0; i < nbInd_; ++i)
-  {
+  for (int i = 0; i < nbInd_; ++i) {
     samplingStepNoCheck(i);
   }
 }
 
-void MixtureComposer::samplingStepNoCheck(int i)
-{
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
+void MixtureComposer::samplingStepNoCheck(int i) {
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
     (*it)->samplingStepNoCheck(i);
   }
 }
