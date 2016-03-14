@@ -34,14 +34,9 @@ webDemoLearn <- function(folderName) {
     quit(save = "no", status = 1)
   }
   
-  iniContent <- read.table(iniFile,
-                           sep = "=",
-                           strip.white = TRUE,
-                           stringsAsFactors = FALSE)
+  paramList <- parseINI(iniFile)
   
-  nbClass <- iniContent[which(iniContent[, 1] == "nbCluster"), 2]
-  
-  if (nbClass > 30) {
+  if (paramList$nbClass > 30) {
     cat("The maximum number of classes in the demo version of MixtComp on BigStat is 30.",
         file = logFile,
         sep = "",
@@ -64,12 +59,13 @@ webDemoLearn <- function(folderName) {
                        nbBurnInIter = 100,
                        nbIter = 100,
                        nbGibbsBurnInIter = 100,
-                       nbGibbsIter = 100)
+                       nbGibbsIter = 100,
+                       parameterEdgeAuthorized = paramList$parameterEdgeAuthorized)
     
     # launch the MixtComp algorithm
     res <- mixtCompCluster(resGetData$lm,
                            mcStrategy,
-                           nbClass,
+                           paramList$nbClass,
                            0.95)
     
     save(res,
