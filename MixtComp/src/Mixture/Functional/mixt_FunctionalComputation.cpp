@@ -17,22 +17,16 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: February 24, 2016
+ *  Created on: March 21, 2016
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_TYPEDEF_H
-#define MIXT_TYPEDEF_H
+#include "mixt_FunctionalComputation.h"
 
-#include <cstdlib>
+namespace mixt {
 
-/** Eigen storage is column-major by default, which suits the main way of accessing data,
- * by looping over individuals instead of variables */
-typedef double Real;
+void VandermondeMatrix(vecIndex n) {
 
-/** Positive integer which encoding is enough to cover index every matrix in memory. At the moment
- * int is used for indexing.
- * http://stackoverflow.com/questions/1951519/when-to-use-stdsize-t */
-typedef std::size_t vecIndex;
+}
 
-#endif // MIXT_TYPEDEF_H
+} // namespace mixt
