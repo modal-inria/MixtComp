@@ -59,12 +59,14 @@ class DataExtractorDummy
   public:
     template<typename DataType,
              typename Type>
-    void exportVals(std::string idName,
+    void exportVals(int indexMixture,
+                    std::string idName,
                     const AugmentedData<DataType>& augData,
                     const Vector<RowVector<Type> >& stat) const {};
 
     /** Export function for Rank model */
-    void exportVals(std::string idName,
+    void exportVals(int indexMixture,
+                    std::string idName,
                     const Vector<RankIndividual>& data) const;
 };
 
@@ -72,14 +74,16 @@ class DataExtractorDummy
 class ParamExtractorDummy
 {
   public:
-    void exportParam(const std::string& idName,
+    void exportParam(int indexMixture,
+                     const std::string& idName,
                      const std::string& paramName,
                      const Matrix<Real>& paramStatStorage,
                      const Matrix<Real>& paramLogStorage,
                      const std::vector<std::string>& paramNames,
                      const Real confidenceLevel) const;
 
-    void exportParam(const std::string& idName,
+    void exportParam(int indexMixture,
+                     const std::string& idName,
                      const std::string& paramName,
                      const std::vector<RankStat>& paramStat,
                      const std::vector<std::string>& paramNames,
