@@ -34,12 +34,14 @@ std::string DataHandlerDummy::getData(std::string const& idName,
 }
 
 /** Export function for Rank model */
-void DataExtractorDummy::exportVals(std::string idName,
+void DataExtractorDummy::exportVals(int indexMixture,
+                                    std::string idName,
                                     const Vector<RankIndividual>& data) const {
 
 }
 
-void ParamExtractorDummy::exportParam(const std::string& idName,
+void ParamExtractorDummy::exportParam(int indexMixture,
+                                      const std::string& idName,
                                       const std::string& paramName,
                                       const Matrix<Real>& paramStat,
                                       const Matrix<Real>& paramsLog,
@@ -47,7 +49,8 @@ void ParamExtractorDummy::exportParam(const std::string& idName,
                                       const Real confidenceLevel) const
 {}
 
-void ParamExtractorDummy::exportParam(const std::string& idName,
+void ParamExtractorDummy::exportParam(int indexMixture,
+                                      const std::string& idName,
                                       const std::string& paramName,
                                       const std::vector<RankStat>& paramStat,
                                       const std::vector<std::string>& paramNames,
