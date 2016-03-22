@@ -56,7 +56,7 @@ TEST(Functional, regression) {
   Matrix<Real> design(nObs, degree + 1);
 
   Vector<Real> beta(degree + 1);
-  beta << 6, -4, 12, 5; // 5 x**3 + 12 x**3 - 4 x + 6
+  beta << 6, -4, 12, 5; // 5 x**3 + 12 x**2 - 4 x + 6
   Vector<Real> betaEstimated;
 
   NormalStatistic normal;
@@ -76,6 +76,55 @@ TEST(Functional, regression) {
   regression(design,
              y,
              betaEstimated);
+
+  ASSERT_EQ(true, betaEstimated.isApprox(beta, epsilon));
+}
+
+TEST(Functional, subRegression) {
+  int degree = 2;
+  int nObs = 100;
+  int nSub = 3;
+
+  Real xMin = -50.;
+  Real xMax = 50.;
+
+  Vector<Real> x(nObs);
+  Vector<Real> y(nObs, 0.);
+
+  Matrix<Real> design(nObs, degree + 1);
+
+  Matrix<Real> beta(nSub, degree + 1);
+  beta.row(0) << 6, -4, 12; // 12 x**2 - 4 x + 6
+  beta.row(1) << 9, 1, -3; // -3 x**2 - x + 9
+  beta.row(2) << -25, 25, 75; // -3 x**2 - x + 9
+
+  Matrix<Real> betaEstimated;
+
+  MultinomialStatistic multi;
+  NormalStatistic normal;
+  UniformStatistic uni;
+
+  Vector<std::list<int> > w(nSub);
+
+  for (int i = 0; i < nObs; ++i) {
+    x(i) = uni.sample(xMin, xMax);
+    int currW = multi.sampleInt(0, nSub - 1);
+
+    w(currW).push_back(i);
+
+    for (int p = 0; p < degree + 1; ++p) {
+      y(i) += beta(currW, p) * pow(x(i), p);
+    }
+  }
+
+  VandermondeMatrix(x,
+                    degree,
+                    design);
+
+  subRegression(design,
+                y,
+                w,
+                betaEstimated);
 
   ASSERT_EQ(true, betaEstimated.isApprox(beta, epsilon));
 }

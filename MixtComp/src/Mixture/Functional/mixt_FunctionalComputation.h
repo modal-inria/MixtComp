@@ -24,6 +24,7 @@
 #ifndef MIXT_FUNCTIONALCOMPUTATION
 #define MIXT_FUNCTIONALCOMPUTATION
 
+#include <list>
 #include "LinAlg/mixt_LinAlg.h"
 
 namespace mixt {
@@ -38,6 +39,11 @@ void regression(const Matrix<Real>& design,
                 betaType& beta) {
   beta = (design.transpose() * design).inverse() * design.transpose() * y;
 }
+
+void subRegression(const Matrix<Real>& design,
+                   const Vector<Real>& y,
+                   const Vector<std::list<int> >& w,
+                   Matrix<Real>& beta);
 
 } // namespace mixt
 

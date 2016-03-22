@@ -21,6 +21,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <iostream>
 #include "mixt_FunctionalComputation.h"
 
 namespace mixt {
@@ -37,6 +38,36 @@ void VandermondeMatrix(const Vector<Real>& timeStep,
   }
 }
 
+void subRegression(const Matrix<Real>& design,
+                   const Vector<Real>& y,
+                   const Vector<std::list<int> >& w,
+                   Matrix<Real>& beta) {
+  int nCoeff = design.cols(); // degree + 1
+  int nSub = w.size();
+  beta.resize(nSub, nCoeff);
+  Matrix<Real> subDesign; // design matrix reconstituted for each particular subregression
+  Vector<Real> subY; // y vector for each particular subregression
+  RowVector<Real> subBeta;
+  for (int p = 0; p < nSub; p++) {
+    int nbIndSubReg = w(p).size();
+    subDesign.resize(nbIndSubReg, nCoeff);
+    subY.resize(nbIndSubReg);
+
+    int i = 0;
+    for (std::list<int>::const_iterator it  = w(p).begin(),
+                                        itE = w(p).end();
+         it != itE;
+         ++it, ++i) {
+      subDesign.row(i) = design.row(*it);
+      subY(i) = y(*it);
+    }
+
+    regression(subDesign,
+               subY,
+               subBeta);
+
+    beta.row(p) = subBeta;
+  }
 }
 
 } // namespace mixt
