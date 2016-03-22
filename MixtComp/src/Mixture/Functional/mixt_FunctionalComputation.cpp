@@ -37,10 +37,6 @@ void VandermondeMatrix(const Vector<Real>& timeStep,
   }
 }
 
-void regression(const Matrix<Real>& design,
-                const Vector<Real>& y,
-                Vector<Real>& beta) {
-  beta = (design.transpose() * design).inverse() * design.transpose() * y;
 }
 
 } // namespace mixt

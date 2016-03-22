@@ -30,7 +30,6 @@ TEST(Functional, Vandermonde) {
   timeStep << 2., 12.;
 
   int degree = 2;
-
   Matrix<Real> vm;
 
   VandermondeMatrix(timeStep,
@@ -66,10 +65,13 @@ TEST(Functional, regression) {
   for (int i = 0; i < nObs; ++i) {
     x(i) = uni.sample(xMin, xMax);
     for (int p = 0; p < degree + 1; ++p) {
-      design(i, p) = pow(x(i), p);
       y(i) += beta(p) * pow(x(i), p);
     }
   }
+
+  VandermondeMatrix(x,
+                    degree,
+                    design);
 
   regression(design,
              y,

@@ -32,9 +32,12 @@ void VandermondeMatrix(const Vector<Real>& timeStep,
                        int degree,
                        Matrix<Real>& mat);
 
+template<typename betaType>
 void regression(const Matrix<Real>& design,
                 const Vector<Real>& y,
-                Vector<Real>& beta);
+                betaType& beta) {
+  beta = (design.transpose() * design).inverse() * design.transpose() * y;
+}
 
 } // namespace mixt
 
