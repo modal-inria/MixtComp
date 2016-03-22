@@ -27,7 +27,7 @@ endif
 # generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
 # CXXFLAGS += -pthread -MD -MP -fPIC
-CXXFLAGS += -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
+CXXFLAGS += -Isrc -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
 CXXFLAGS += -std=c++11 -DMC_VERBOSE # included here, because it is standard and we do not have access on Makevars on BigStat for example
 
 # library files
@@ -37,6 +37,7 @@ SRC_MC += $(wildcard src/Data/*.cpp)
 SRC_MC += $(wildcard src/IO/*.cpp)
 SRC_MC += $(wildcard src/Likelihood/*.cpp)
 SRC_MC += $(wildcard src/LinAlg/*.cpp)
+SRC_MC += $(wildcard src/Mixture/Functional/*.cpp)
 SRC_MC += $(wildcard src/Mixture/Ordinal/*.cpp)
 SRC_MC += $(wildcard src/Mixture/Rank/*.cpp)
 SRC_MC += $(wildcard src/Mixture/SimpleMixtureBridge/*.cpp)
@@ -60,7 +61,7 @@ O_TEST = $(SRC_TEST:%.cpp=%.o)
 # unit-test files
 EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
-SRC_UTEST += $(wildcard utest/Functional/*.cpp) $(wildcard utest/Ordinal/*.cpp) $(wildcard utest/Rank/*.cpp) $(wildcard utest/Various/*.cpp)
+# SRC_UTEST += $(wildcard utest/Functional/*.cpp) $(wildcard utest/Ordinal/*.cpp) $(wildcard utest/Rank/*.cpp) $(wildcard utest/Various/*.cpp)
 SRC_UTEST += $(wildcard utest/UTestNew.cpp)
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)

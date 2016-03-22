@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2015
+/*  Copyright (C) Inria 2016
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,8 +25,16 @@
 
 namespace mixt {
 
-void VandermondeMatrix(vecIndex n) {
-
+void VandermondeMatrix(const Vector<Real>& timeStep,
+                       int degree,
+                       Matrix<Real>& mat) {
+  int nStep = timeStep.size();
+  mat.resize(nStep, degree + 1);
+  for (int k = 0; k < degree + 1; ++k) {
+    for (int i = 0; i < nStep; ++i) {
+      mat(i, k) = pow(timeStep(i), k);
+    }
+  }
 }
 
 } // namespace mixt

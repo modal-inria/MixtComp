@@ -24,10 +24,14 @@
 #ifndef MIXT_FUNCTIONALCOMPUTATION
 #define MIXT_FUNCTIONALCOMPUTATION
 
+#include "LinAlg/mixt_LinAlg.h"
+
 namespace mixt {
 
-void VandermondeMatrix(vecIndex n);
+void VandermondeMatrix(const Vector<Real>& timeStep,
+                       int degree,
+                       Matrix<Real>& mat);
 
 } // namespace mixt
 
-#endif // MIXT_ORDINAL
+#endif // MIXT_FUNCTIONALCOMPUTATION

@@ -30,9 +30,4 @@
  * by looping over individuals instead of variables */
 typedef double Real;
 
-/** Positive integer which encoding is enough to cover index every matrix in memory. At the moment
- * int is used for indexing.
- * http://stackoverflow.com/questions/1951519/when-to-use-stdsize-t */
-typedef std::size_t vecIndex;
-
 #endif // MIXT_TYPEDEF_H

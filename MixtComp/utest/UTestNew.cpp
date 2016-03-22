@@ -24,3 +24,22 @@
 #include "UTest.h"
 
 using namespace mixt;
+
+TEST(Functional, Vandermonde) {
+  Vector<Real> timeStep(2);
+  timeStep << 2., 12.;
+
+  int degree = 2;
+
+  Matrix<Real> vm;
+
+  VandermondeMatrix(timeStep,
+                    degree,
+                    vm);
+
+  Matrix<Real> expectedVm(2, 3);
+  expectedVm << 1., 2., 4.,
+                1., 12., 144.;
+
+  ASSERT_EQ(true, vm.isApprox(expectedVm));
+}
