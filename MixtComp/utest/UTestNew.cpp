@@ -43,3 +43,37 @@ TEST(Functional, Vandermonde) {
 
   ASSERT_EQ(true, vm.isApprox(expectedVm));
 }
+
+TEST(Functional, regression) {
+  int degree = 3;
+  int nObs = 100;
+
+  Real xMin = -50.;
+  Real xMax = 50.;
+
+  Vector<Real> x(nObs);
+  Vector<Real> y(nObs, 0.);
+
+  Matrix<Real> design(nObs, degree + 1);
+
+  Vector<Real> beta(degree + 1);
+  beta << 6, -4, 12, 5; // 5 x**3 + 12 x**3 - 4 x + 6
+  Vector<Real> betaEstimated;
+
+  NormalStatistic normal;
+  UniformStatistic uni;
+
+  for (int i = 0; i < nObs; ++i) {
+    x(i) = uni.sample(xMin, xMax);
+    for (int p = 0; p < degree + 1; ++p) {
+      design(i, p) = pow(x(i), p);
+      y(i) += beta(p) * pow(x(i), p);
+    }
+  }
+
+  regression(design,
+             y,
+             betaEstimated);
+
+  ASSERT_EQ(true, betaEstimated.isApprox(beta, epsilon));
+}

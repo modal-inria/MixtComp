@@ -32,6 +32,10 @@ void VandermondeMatrix(const Vector<Real>& timeStep,
                        int degree,
                        Matrix<Real>& mat);
 
+void regression(const Matrix<Real>& design,
+                const Vector<Real>& y,
+                Vector<Real>& beta);
+
 } // namespace mixt
 
 #endif // MIXT_FUNCTIONALCOMPUTATION
