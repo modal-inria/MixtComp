@@ -57,12 +57,12 @@ void costFunction(const Vector<Real>& t,
                   const Vector<std::list<int> >& w,
                   Real& cost);
 
-Real gradCostFunction(const Vector<Real>& t,
+void gradCostFunction(const Vector<Real>& t,
                       const Vector<Real>& alpha,
                       const Matrix<Real>& value,
                       const Vector<Real>& sumExpValue,
                       const Vector<std::list<int> >& w,
-                      Real& cost);
+                      Vector<Real>& gradCost);
 
 } // namespace mixt
 
