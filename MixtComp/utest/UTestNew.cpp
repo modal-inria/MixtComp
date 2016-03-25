@@ -128,3 +128,76 @@ TEST(Functional, subRegression) {
 
   ASSERT_EQ(true, betaEstimated.isApprox(beta, epsilon));
 }
+
+TEST(Functional, costAndGrad) {
+  int nTime = 5;
+  int nParam = 4;
+  Real delta = epsilon;
+
+  int nSub = nParam / 2;
+
+  Vector<Real> t(nTime);
+  t << 0., 1., 2., 3., 4.;
+
+  Vector<std::list<int> > w(nSub);
+  w(0).push_back(0);
+  w(0).push_back(1);
+  w(1).push_back(2);
+  w(1).push_back(3);
+  w(1).push_back(4);
+
+  Vector<Real> alpha0(nParam);
+  alpha0 << -1., 0.5, 1., -0.5;
+
+  Matrix<Real> value;
+  Vector<Real> sumExpValue;
+
+  timeValue(t,
+            alpha0,
+            value,
+            sumExpValue);
+
+  Vector<Real> fdGrad(nParam); // finite differences gradient
+  Vector<Real> computedGrad; // analytical gradient
+
+  gradCostFunction(t,
+                   alpha0,
+                   value,
+                   sumExpValue,
+                   w,
+                   computedGrad);
+
+  Real c0; // base cost
+
+  costFunction(t,
+               alpha0,
+               value,
+               sumExpValue,
+               w,
+               c0);
+
+  for (int s = 0; s < nParam; ++s) {
+    Real c1;
+    Vector<Real> alpha1 = alpha0;
+    alpha1(s) += delta;
+
+    timeValue(t,
+              alpha1,
+              value,
+              sumExpValue);
+
+    costFunction(t,
+                 alpha1,
+                 value,
+                 sumExpValue,
+                 w,
+                 c1);
+
+    fdGrad(s) = (c1 - c0) / epsilon;
+  }
+
+  std::cout << "fdGrad: " << itString(fdGrad) << std::endl;
+  std::cout << "computedGrad: " << itString(computedGrad) << std::endl;
+
+  ASSERT_EQ(true, computedGrad.isApprox(fdGrad));
+}

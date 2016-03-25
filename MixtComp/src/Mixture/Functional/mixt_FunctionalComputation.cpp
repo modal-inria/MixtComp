@@ -78,6 +78,7 @@ void timeValue(const Vector<Real>& t,
   int nSub = alpha.size() / 2;
 
   value.resize(nT, nSub);
+  sumExpValue.resize(nT);
 
   for (int s = 0; s < nSub; ++s) {
     for (int j = 0; j < nT; ++j) {
