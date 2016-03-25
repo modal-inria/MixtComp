@@ -70,4 +70,78 @@ void subRegression(const Matrix<Real>& design,
   }
 }
 
+void timeValue(const Vector<Real>& t,
+               const Vector<Real>& alpha,
+               Matrix<Real>& value,
+               Vector<Real>& sumExpValue) {
+  int nT = t.size();
+  int nSub = alpha.size() / 2;
+
+  value.resize(nT, nSub);
+
+  for (int s = 0; s < nSub; ++s) {
+    for (int j = 0; j < nT; ++j) {
+      int regFirstInd = 2 * s;
+      value(j, s) = alpha(regFirstInd + 1) * t(j) + alpha(regFirstInd);
+    }
+  }
+
+  Vector<Real> dummy;
+  for (int i = 0; i < nT; ++i) {
+    sumExpValue(i) = dummy.logToMulti(value.row(i));
+  }
+}
+
+void costFunction(const Vector<Real>& t,
+                  const Vector<Real>& alpha,
+                  const Matrix<Real>& value,
+                  const Vector<Real>& sumExpValue,
+                  const Vector<std::list<int> >& w,
+                  Real& cost) {
+  cost = 0;
+  int nSub = w.size(); // number of subregressions
+
+  for (int s = 0; s < nSub; ++s) {
+    for (std::list<int>::const_iterator it  = w(s).begin(),
+                                        ite = w(s).end();
+         it != ite;
+         ++it) {
+      cost += value(*it, s) - sumExpValue(*it);
+    }
+  }
+}
+
+void gradCostFunction(const Vector<Real>& t,
+                      const Vector<Real>& alpha,
+                      const Matrix<Real>& value,
+                      const Vector<Real>& sumExpValue,
+                      const Vector<std::list<int> >& w,
+                      Vector<Real>& gradCost) {
+  int nT = t.size();
+  int nParam = alpha.size();
+  int nSub = w.size(); // number of subregressions
+  gradCost.resize(nParam);
+  gradCost = 0.;
+
+  for (int p = 0; p < nParam; ++p) { // currently computed index in the gradient
+    int varDeriv = p / 2; // current alpha index
+    int varDerivSub = p % 2; // 0 or 1, indicating which alpha among the pair in varDeriv
+
+    for (int s = 0; s < nSub; ++s) {
+      for (std::list<int>::const_iterator it  = w(s).begin(),
+                                          ite = w(s).end();
+           it != ite;
+           ++it) {
+        if (varDeriv == s) {
+          gradCost(p) += varDerivSub ? t(*it) : 1.;
+        }
+      }
+    }
+
+    for (int j = 0; j < nT; ++j) {
+      gradCost(p) += (varDerivSub ? t(j) : 1.) * value(j, varDeriv) / sumExpValue(j);
+    }
+  }
+}
+
 } // namespace mixt

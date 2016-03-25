@@ -45,6 +45,25 @@ void subRegression(const Matrix<Real>& design,
                    const Vector<std::list<int> >& w,
                    Matrix<Real>& beta);
 
+void timeValue(const Vector<Real>& t,
+               const Vector<Real>& alpha,
+               Matrix<Real>& value,
+               Vector<Real>& sumExpValue);
+
+void costFunction(const Vector<Real>& t,
+                  const Vector<Real>& alpha,
+                  const Matrix<Real>& value,
+                  const Vector<Real>& sumExpValue,
+                  const Vector<std::list<int> >& w,
+                  Real& cost);
+
+Real gradCostFunction(const Vector<Real>& t,
+                      const Vector<Real>& alpha,
+                      const Matrix<Real>& value,
+                      const Vector<Real>& sumExpValue,
+                      const Vector<std::list<int> >& w,
+                      Real& cost);
+
 } // namespace mixt
 
 #endif // MIXT_FUNCTIONALCOMPUTATION
