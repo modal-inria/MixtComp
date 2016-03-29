@@ -108,16 +108,17 @@ void costFunction(const Vector<Real>& t,
          it != ite;
          ++it) {
       cost += value(*it, s);
-//      cost += - logSumExpValue(*it);
+      cost += - logSumExpValue(*it);
     }
   }
 }
 
 void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
-                      const Vector<Real>& sumExpValue,
+                      const Vector<Real>& logSumExpValue,
                       const Vector<std::list<int> >& w,
                       Vector<Real>& gradCost) {
+  int nT = t.size();
   int nParam = 2 * value.cols();
   gradCost.resize(nParam);
   gradCost = 0.;
@@ -131,7 +132,10 @@ void gradCostFunction(const Vector<Real>& t,
          it != ite;
          ++it) {
         gradCost(p) += varDerivSub ? t(*it) : 1.;
-//        gradCost(p) += - (varDerivSub ? t(*it) : 1.) * std::exp(value(*it, varDeriv)) / std::exp(sumExpValue(*it));
+    }
+
+    for (int j = 0; j < nT; ++j) { // denominator term does not depend on lambda, and there is one term per timestep
+      gradCost(p) += - (varDerivSub ? t(j) : 1.) * std::exp(value(j, varDeriv)) / std::exp(logSumExpValue(j));
     }
   }
 }

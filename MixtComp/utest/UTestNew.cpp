@@ -136,10 +136,74 @@ TEST(Functional, smallTest) {
   ASSERT_NEAR(4, std::exp(dummy.logToMulti(a)), epsilon);
 }
 
+TEST(Functional, costAndGrad1SubReg) {
+  int nTime = 4;
+  int nParam = 2;
+  Real delta = epsilon;
+
+  int nSub = nParam / 2;
+
+  Vector<Real> t(nTime);
+  t << 0., 1., 2., 3.;
+
+  Vector<std::list<int> > w(nSub);
+  w(0).push_back(0);
+  w(0).push_back(1);
+  w(0).push_back(2);
+  w(0).push_back(3);
+
+  Vector<Real> alpha0(nParam);
+  alpha0 << -1., 0.5;
+
+  Matrix<Real> value;
+  Vector<Real> sumExpValue;
+  Vector<Real> fdGrad(nParam); // finite differences gradient
+  Vector<Real> computedGrad; // analytical gradient
+  Real c0; // base cost
+
+  timeValue(t,
+            alpha0,
+            value,
+            sumExpValue);
+
+  costFunction(t,
+               value,
+               sumExpValue,
+               w,
+               c0);
+
+  gradCostFunction(t,
+                   value,
+                   sumExpValue,
+                   w,
+                   computedGrad);
+
+  for (int s = 0; s < nParam; ++s) {
+    Real c1;
+    Vector<Real> alpha1 = alpha0;
+    alpha1(s) += delta;
+
+    timeValue(t,
+              alpha1,
+              value,
+              sumExpValue);
+
+    costFunction(t,
+                 value,
+                 sumExpValue,
+                 w,
+                 c1);
+
+    fdGrad(s) = (c1 - c0) / delta;
+  }
+
+  ASSERT_EQ(true, computedGrad.isApprox(fdGrad, epsilon));
+}
+
 TEST(Functional, costAndGrad) {
   int nTime = 4;
   int nParam = 4;
-  Real delta = 1e-4;
+  Real delta = epsilon;
 
   int nSub = nParam / 2;
 
@@ -197,5 +261,5 @@ TEST(Functional, costAndGrad) {
     fdGrad(s) = (c1 - c0) / delta;
   }
 
-  ASSERT_EQ(true, computedGrad.isApprox(fdGrad));
+  ASSERT_EQ(true, computedGrad.isApprox(fdGrad, 1e-4));
 }

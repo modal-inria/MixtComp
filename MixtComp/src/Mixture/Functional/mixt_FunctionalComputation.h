@@ -52,13 +52,13 @@ void timeValue(const Vector<Real>& t,
 
 void costFunction(const Vector<Real>& t,
                   const Matrix<Real>& value,
-                  const Vector<Real>& sumExpValue,
+                  const Vector<Real>& logSumExpValue,
                   const Vector<std::list<int> >& w,
                   Real& cost);
 
 void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
-                      const Vector<Real>& sumExpValue,
+                      const Vector<Real>& logSumExpValue,
                       const Vector<std::list<int> >& w,
                       Vector<Real>& gradCost);
 
