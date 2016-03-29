@@ -129,52 +129,54 @@ TEST(Functional, subRegression) {
   ASSERT_EQ(true, betaEstimated.isApprox(beta, epsilon));
 }
 
+TEST(Functional, smallTest) {
+  Vector<Real> a(4, 0.);
+
+  Vector<Real> dummy;
+  ASSERT_NEAR(4, std::exp(dummy.logToMulti(a)), epsilon);
+}
+
 TEST(Functional, costAndGrad) {
-  int nTime = 5;
+  int nTime = 4;
   int nParam = 4;
-  Real delta = epsilon;
+  Real delta = 1e-4;
 
   int nSub = nParam / 2;
 
   Vector<Real> t(nTime);
-  t << 0., 1., 2., 3., 4.;
+  t << 0., 1., 2., 3.;
 
   Vector<std::list<int> > w(nSub);
   w(0).push_back(0);
   w(0).push_back(1);
   w(1).push_back(2);
   w(1).push_back(3);
-  w(1).push_back(4);
 
   Vector<Real> alpha0(nParam);
   alpha0 << -1., 0.5, 1., -0.5;
 
   Matrix<Real> value;
   Vector<Real> sumExpValue;
+  Vector<Real> fdGrad(nParam); // finite differences gradient
+  Vector<Real> computedGrad; // analytical gradient
+  Real c0; // base cost
 
   timeValue(t,
             alpha0,
             value,
             sumExpValue);
 
-  Vector<Real> fdGrad(nParam); // finite differences gradient
-  Vector<Real> computedGrad; // analytical gradient
-
-  gradCostFunction(t,
-                   alpha0,
-                   value,
-                   sumExpValue,
-                   w,
-                   computedGrad);
-
-  Real c0; // base cost
-
   costFunction(t,
-               alpha0,
                value,
                sumExpValue,
                w,
                c0);
+
+  gradCostFunction(t,
+                   value,
+                   sumExpValue,
+                   w,
+                   computedGrad);
 
   for (int s = 0; s < nParam; ++s) {
     Real c1;
@@ -187,17 +189,13 @@ TEST(Functional, costAndGrad) {
               sumExpValue);
 
     costFunction(t,
-                 alpha1,
                  value,
                  sumExpValue,
                  w,
                  c1);
 
-    fdGrad(s) = (c1 - c0) / epsilon;
+    fdGrad(s) = (c1 - c0) / delta;
   }
-
-  std::cout << "fdGrad: " << itString(fdGrad) << std::endl;
-  std::cout << "computedGrad: " << itString(computedGrad) << std::endl;
 
   ASSERT_EQ(true, computedGrad.isApprox(fdGrad));
 }

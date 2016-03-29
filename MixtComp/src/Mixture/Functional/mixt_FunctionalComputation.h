@@ -48,17 +48,15 @@ void subRegression(const Matrix<Real>& design,
 void timeValue(const Vector<Real>& t,
                const Vector<Real>& alpha,
                Matrix<Real>& value,
-               Vector<Real>& sumExpValue);
+               Vector<Real>& logSumExpValue);
 
 void costFunction(const Vector<Real>& t,
-                  const Vector<Real>& alpha,
                   const Matrix<Real>& value,
                   const Vector<Real>& sumExpValue,
                   const Vector<std::list<int> >& w,
                   Real& cost);
 
 void gradCostFunction(const Vector<Real>& t,
-                      const Vector<Real>& alpha,
                       const Matrix<Real>& value,
                       const Vector<Real>& sumExpValue,
                       const Vector<std::list<int> >& w,

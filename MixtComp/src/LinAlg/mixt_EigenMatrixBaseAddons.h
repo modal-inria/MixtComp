@@ -317,28 +317,13 @@ void sortIndex(Container& out) const
  * @value log of the marginal probability
  */
 template<typename OtherDerived>
-Scalar logToMulti(const MatrixBase<OtherDerived>& multi)
-{
+Scalar logToMulti(const MatrixBase<OtherDerived>& multi) {
   derived() = multi;
   Scalar max = derived().maxCoeff();
   derived() -= max;
   derived() = derived().exp();
   Scalar sum = derived().sum();
   derived() = derived() / sum;
-
-  return max + std::log(sum);
-}
-
-/** Compute the sum of the exponential values of the elements. This is similar
- * to the scalar output by logToMulti except that it is computed on the current
- * Vector */
-Scalar mixtureLogProba() const
-{
-  Derived other = derived();
-  Scalar max = other.maxCoeff();
-  other -= max;
-  other = other.exp();
-  Scalar sum = other.sum();
 
   return max + std::log(sum);
 }
