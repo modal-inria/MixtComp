@@ -62,11 +62,25 @@ Real deriv1Var(int subReg,
                const Vector<Real>& t,
                const Matrix<Real>& value);
 
+Real deriv2Var(int subReg0,
+               int subRegInd0,
+               int subReg1,
+               int subRegInd1,
+               int j,
+               const Vector<Real>& t,
+               const Matrix<Real>& value);
+
 void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,
                       const Vector<std::list<int> >& w,
                       Vector<Real>& gradCost);
+
+void hessianCostFunction(const Vector<Real>& t,
+                         const Matrix<Real>& value,
+                         const Vector<Real>& logSumExpValue,
+                         const Vector<std::list<int> >& w,
+                         Matrix<Real>& hessianCost);
 
 } // namespace mixt
 

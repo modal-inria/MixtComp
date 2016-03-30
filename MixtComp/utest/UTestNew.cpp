@@ -263,3 +263,102 @@ TEST(Functional, costAndGrad) {
 
   ASSERT_EQ(true, computedGrad.isApprox(fdGrad, 1e-4));
 }
+
+TEST(Functional, hessian) {
+  int nTime = 4;
+  int nParam = 4;
+  Real delta = epsilon;
+
+  int nSub = nParam / 2;
+
+  Vector<Real> t(nTime);
+  t << 0., 1., 2., 3.;
+
+  Vector<std::list<int> > w(nSub);
+  w(0).push_back(0);
+  w(0).push_back(1);
+  w(1).push_back(2);
+  w(1).push_back(3);
+
+  Vector<Real> alpha0(nParam);
+  alpha0 << -1., 0.5, 1., -0.5;
+
+  Matrix<Real> value;
+  Vector<Real> sumExpValue;
+  Matrix<Real> fdHessian(nParam, nParam); // finite differences gradient
+  Matrix<Real> computedHessian; // analytical gradient
+  Real c00; // base cost
+
+  timeValue(t,
+            alpha0,
+            value,
+            sumExpValue);
+
+  costFunction(t,
+               value,
+               sumExpValue,
+               w,
+               c00);
+
+  hessianCostFunction(t,
+                      value,
+                      sumExpValue,
+                      w,
+                      computedHessian);
+
+  for (int row = 0; row < nParam; ++row) {
+    for (int col = 0; col < nParam; ++col) {
+      Real c01;
+      Real c10;
+      Real c11;
+
+      Vector<Real> alpha1;
+
+      alpha1 = alpha0;
+      alpha1(row) += delta;
+      timeValue(t,
+                alpha1,
+                value,
+                sumExpValue);
+      costFunction(t,
+                   value,
+                   sumExpValue,
+                   w,
+                   c10);
+
+      alpha1 = alpha0;
+      alpha1(col) += delta;
+      timeValue(t,
+                alpha1,
+                value,
+                sumExpValue);
+      costFunction(t,
+                   value,
+                   sumExpValue,
+                   w,
+                   c01);
+
+      alpha1 = alpha0;
+      alpha1(row) += delta;
+      alpha1(col) += delta;
+      timeValue(t,
+                alpha1,
+                value,
+                sumExpValue);
+      costFunction(t,
+                   value,
+                   sumExpValue,
+                   w,
+                   c11);
+
+      fdHessian(row, col) = (c11 - c01 - c10 + c00) / (delta * delta);
+    }
+  }
+
+  std::cout << "computedHessian: " << std::endl;
+  std::cout << computedHessian << std::endl;
+  std::cout << "fdHessian: " << std::endl;
+  std::cout << fdHessian << std::endl;
+
+  ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
+}

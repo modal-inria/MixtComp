@@ -121,6 +121,28 @@ Real deriv1Var(int subReg,
   return (subRegInd ? t(j) : 1.) * std::exp(value(j, subReg));
 }
 
+Real deriv2Var(int subReg0,
+               int subRegInd0,
+               int subReg1,
+               int subRegInd1,
+               int j,
+               const Vector<Real>& t,
+               const Matrix<Real>& value) {
+  Real res = 0;
+
+  if (subReg0 == subReg1) {
+    res = std::exp(value(j, subReg0));
+    if (subRegInd0 == 1) {
+      res *= t(j);
+    }
+    if (subRegInd1 == 1) {
+      res *= t(j);
+    }
+  }
+
+  return res;
+}
+
 void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,
@@ -144,6 +166,55 @@ void gradCostFunction(const Vector<Real>& t,
 
     for (int j = 0; j < nT; ++j) { // denominator term does not depend on lambda, and there is one term per timestep
       gradCost(p) += - deriv1Var(subReg, subRegInd, j, t, value) / std::exp(logSumExpValue(j));
+    }
+  }
+}
+
+void hessianCostFunction(const Vector<Real>& t,
+                         const Matrix<Real>& value,
+                         const Vector<Real>& logSumExpValue,
+                         const Vector<std::list<int> >& w,
+                         Matrix<Real>& hessianCost) {
+  int nT = t.size();
+  int nParam = 2 * value.cols();
+  hessianCost.resize(nParam, nParam);
+  hessianCost = 0.;
+
+  for (int pRow = 0; pRow < nParam; ++pRow) { // currently computed row
+    for (int pCol = pRow; pCol < nParam; ++pCol) { // upper triangular part of the symmetric hessian matrix
+      int subReg0 = pRow / 2; // current alpha index
+      int subRegInd0 = pRow % 2; // 0 or 1, indicating which alpha among the pair in varDeriv
+      int subReg1 = pCol / 2;
+      int subRegInd1 = pCol % 2;
+
+      for (int j = 0; j < nT; ++j) { // denominator term does not depend on lambda, and there is one term per timestep
+        hessianCost(pRow, pCol) += deriv2Var(subReg0,
+                                             subRegInd0,
+                                             subReg1,
+                                             subRegInd1,
+                                             j,
+                                             t,
+                                             value);
+        Real deriv0 = deriv1Var(subReg0,
+                                subRegInd0,
+                                j,
+                                t,
+                                value);
+        Real deriv1 = deriv1Var(subReg1,
+                                subRegInd1,
+                                j,
+                                t,
+                                value);;
+        hessianCost(pRow, pCol) = deriv0 * deriv1;
+
+        hessianCost(pRow, pCol) /= - pow(std::exp(logSumExpValue(j)), 2);
+      }
+    }
+  }
+
+  for (int pRow = 0; pRow < nParam; ++pRow) {
+    for (int pCol = 0; pCol < pRow; ++pCol) {
+      hessianCost(pRow, pCol) = hessianCost(pCol, pRow);
     }
   }
 }
