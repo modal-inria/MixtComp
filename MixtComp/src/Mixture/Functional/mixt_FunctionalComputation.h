@@ -56,6 +56,12 @@ void costFunction(const Vector<Real>& t,
                   const Vector<std::list<int> >& w,
                   Real& cost);
 
+Real deriv1Var(int subReg,
+               int subRegInd,
+               int j,
+               const Vector<Real>& t,
+               const Matrix<Real>& value);
+
 void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,

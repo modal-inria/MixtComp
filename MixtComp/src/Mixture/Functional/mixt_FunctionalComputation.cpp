@@ -113,6 +113,14 @@ void costFunction(const Vector<Real>& t,
   }
 }
 
+Real deriv1Var(int subReg,
+               int subRegInd,
+               int j,
+               const Vector<Real>& t,
+               const Matrix<Real>& value) {
+  return (subRegInd ? t(j) : 1.) * std::exp(value(j, subReg));
+}
+
 void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,
@@ -124,18 +132,18 @@ void gradCostFunction(const Vector<Real>& t,
   gradCost = 0.;
 
   for (int p = 0; p < nParam; ++p) { // currently computed coefficient in the gradient
-    int varDeriv = p / 2; // current alpha index
-    int varDerivSub = p % 2; // 0 or 1, indicating which alpha among the pair in varDeriv
+    int subReg = p / 2; // current alpha index
+    int subRegInd = p % 2; // 0 or 1, indicating which alpha among the pair in varDeriv
 
-    for (std::list<int>::const_iterator it  = w(varDeriv).begin(),
-                                        ite = w(varDeriv).end();
+    for (std::list<int>::const_iterator it  = w(subReg).begin(),
+                                        ite = w(subReg).end();
          it != ite;
          ++it) {
-        gradCost(p) += varDerivSub ? t(*it) : 1.;
+        gradCost(p) += subRegInd ? t(*it) : 1.;
     }
 
     for (int j = 0; j < nT; ++j) { // denominator term does not depend on lambda, and there is one term per timestep
-      gradCost(p) += - (varDerivSub ? t(j) : 1.) * std::exp(value(j, varDeriv)) / std::exp(logSumExpValue(j));
+      gradCost(p) += - deriv1Var(subReg, subRegInd, j, t, value) / std::exp(logSumExpValue(j));
     }
   }
 }
