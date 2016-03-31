@@ -56,6 +56,10 @@ void costFunction(const Vector<Real>& t,
                   const Vector<std::list<int> >& w,
                   Real& cost);
 
+Real costFunctionDebug(const Vector<Real>& t,
+                       const Vector<Real>& alpha,
+                       const Vector<std::list<int> >& w);
+
 Real deriv1Var(int subReg,
                int subRegInd,
                int j,
@@ -81,6 +85,16 @@ void hessianCostFunction(const Vector<Real>& t,
                          const Vector<Real>& logSumExpValue,
                          const Vector<std::list<int> >& w,
                          Matrix<Real>& hessianCost);
+
+void initAlpha(int nParam,
+               const Vector<Real>& t,
+               Vector<Real>& alpha);
+
+void updateAlpha(int nParam,
+                 const Vector<Real>& t,
+                 const Vector<std::list<int> >& w,
+                 Vector<Real>& alpha);
+
 
 } // namespace mixt
 

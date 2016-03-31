@@ -357,3 +357,37 @@ TEST(Functional, hessian) {
 
   ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
 }
+
+TEST(Functional, optim) {
+  int nTime = 4;
+  int nParam = 4;
+  int nIter = 10;
+
+  int nSub = nParam / 2;
+
+  Vector<Real> t(nTime);
+  t << 0., 1., 2., 3.;
+
+  Vector<std::list<int> > w(nSub);
+  w(0).push_back(0);
+  w(0).push_back(1);
+  w(1).push_back(2);
+  w(1).push_back(3);
+
+  Vector<Real> alpha;
+
+  initAlpha(nParam,
+            t,
+            alpha);
+  std::cout << "alpha: " << itString(alpha) << std::endl;
+  std::cout << costFunctionDebug(t, alpha, w) << std::endl;
+
+  for (int i = 0; i < nIter; ++i) {
+    updateAlpha(nParam,
+                t,
+                w,
+                alpha);
+    std::cout << "alpha: " << itString(alpha) << std::endl;
+    std::cout << costFunctionDebug(t, alpha, w) << std::endl;
+  }
+}

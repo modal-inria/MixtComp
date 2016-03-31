@@ -22,7 +22,9 @@
  **/
 
 #include <iostream>
+#include "Statistic/mixt_Statistic.h"
 #include "IO/mixt_IO.h"
+
 #include "mixt_FunctionalComputation.h"
 
 namespace mixt {
@@ -111,6 +113,28 @@ void costFunction(const Vector<Real>& t,
       cost += - logSumExpValue(*it);
     }
   }
+}
+
+Real costFunctionDebug(const Vector<Real>& t,
+                       const Vector<Real>& alpha,
+                       const Vector<std::list<int> >& w) {
+  Real cost;
+
+  Matrix<Real> value;
+  Vector<Real> sumExpValue;
+
+  timeValue(t,
+            alpha,
+            value,
+            sumExpValue);
+
+  costFunction(t,
+               value,
+               sumExpValue,
+               w,
+               cost);
+
+  return cost;
 }
 
 Real deriv1Var(int subReg,
@@ -223,6 +247,51 @@ void hessianCostFunction(const Vector<Real>& t,
       hessianCost(pRow, pCol) = hessianCost(pCol, pRow);
     }
   }
+}
+
+void initAlpha(int nParam,
+               const Vector<Real>& t,
+               Vector<Real>& alpha) {
+  int lastT = t.size() - 1;
+
+  MultinomialStatistic multi;
+  UniformStatistic uni;
+
+  alpha.resize(nParam);
+  int nSubReg = nParam / 2;
+  for (int r = 0; r < nSubReg; ++r) {
+    alpha(r) = (multi.sampleBinomial(0.5) == 1) ? 1 : -1;
+    alpha(r + 1) = - alpha(r) * uni.sample(t(0), t(lastT));
+  }
+}
+
+void updateAlpha(int nParam,
+                 const Vector<Real>& t,
+                 const Vector<std::list<int> >& w,
+                 Vector<Real>& alpha) {
+  Matrix<Real> value;
+  Vector<Real> sumExpValue;
+  Vector<Real> grad;
+  Matrix<Real> hessian(nParam, nParam);
+
+  timeValue(t,
+            alpha,
+            value,
+            sumExpValue);
+
+  gradCostFunction(t,
+                   value,
+                   sumExpValue,
+                   w,
+                   grad);
+
+  hessianCostFunction(t,
+                      value,
+                      sumExpValue,
+                      w,
+                      hessian);
+
+  alpha = alpha - hessian.inverse() * grad;
 }
 
 } // namespace mixt
