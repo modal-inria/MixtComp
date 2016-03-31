@@ -260,8 +260,8 @@ void initAlpha(int nParam,
   alpha.resize(nParam);
   int nSubReg = nParam / 2;
   for (int r = 0; r < nSubReg; ++r) {
-    alpha(r) = (multi.sampleBinomial(0.5) == 1) ? 1 : -1;
-    alpha(r + 1) = - alpha(r) * uni.sample(t(0), t(lastT));
+    alpha(2 * r + 1) = (multi.sampleBinomial(0.5) == 1) ? 1 : -1;
+    alpha(2 * r    ) = - alpha(2 * r + 1) * uni.sample(t(0), t(lastT));
   }
 }
 
@@ -291,6 +291,9 @@ void updateAlpha(int nParam,
                       w,
                       hessian);
 
+  std::cout << "grad: " << itString(grad) << std::endl;
+  std::cout << "hessian: " << std::endl;
+  std::cout << hessian << std::endl;
   alpha = alpha - hessian.inverse() * grad;
 }
 

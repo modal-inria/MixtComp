@@ -380,7 +380,7 @@ TEST(Functional, optim) {
             t,
             alpha);
   std::cout << "alpha: " << itString(alpha) << std::endl;
-  std::cout << costFunctionDebug(t, alpha, w) << std::endl;
+  std::cout << "cost: " << costFunctionDebug(t, alpha, w) << std::endl;
 
   for (int i = 0; i < nIter; ++i) {
     updateAlpha(nParam,
@@ -388,6 +388,6 @@ TEST(Functional, optim) {
                 w,
                 alpha);
     std::cout << "alpha: " << itString(alpha) << std::endl;
-    std::cout << costFunctionDebug(t, alpha, w) << std::endl;
+    std::cout << "cost: " << costFunctionDebug(t, alpha, w) << std::endl;
   }
 }
