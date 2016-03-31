@@ -294,6 +294,7 @@ void updateAlpha(int nParam,
   std::cout << "grad: " << itString(grad) << std::endl;
   std::cout << "hessian: " << std::endl;
   std::cout << hessian << std::endl;
+  std::cout << "hessian.determinant(): " << hessian.determinant() << std::endl;
   alpha = alpha - hessian.inverse() * grad;
 }
 

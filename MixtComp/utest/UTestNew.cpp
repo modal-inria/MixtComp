@@ -272,13 +272,16 @@ TEST(Functional, hessian) {
   int nSub = nParam / 2;
 
   Vector<Real> t(nTime);
-  t << 0., 1., 2., 3.;
-
   Vector<std::list<int> > w(nSub);
-  w(0).push_back(0);
-  w(0).push_back(1);
-  w(1).push_back(2);
-  w(1).push_back(3);
+  for (int i = 0; i < nTime; ++i) {
+    t(i) = i;
+    if (i < nTime / 2) {
+      w(0).push_back(i);
+    }
+    else {
+      w(1).push_back(i);
+    }
+  }
 
   Vector<Real> alpha0(nParam);
   alpha0 << -1., 0.5, 1., -0.5;
@@ -359,26 +362,29 @@ TEST(Functional, hessian) {
 }
 
 TEST(Functional, optim) {
-  int nTime = 4;
+  int nTime = 1000;
   int nParam = 4;
   int nIter = 10;
 
   int nSub = nParam / 2;
 
   Vector<Real> t(nTime);
-  t << 0., 1., 2., 3.;
-
   Vector<std::list<int> > w(nSub);
-  w(0).push_back(0);
-  w(0).push_back(1);
-  w(1).push_back(2);
-  w(1).push_back(3);
+  for (int i = 0; i < nTime; ++i) {
+    t(i) = i;
+    if (i < nTime / 2) {
+      w(0).push_back(i);
+    }
+    else {
+      w(1).push_back(i);
+    }
+  }
 
   Vector<Real> alpha;
-
   initAlpha(nParam,
             t,
             alpha);
+
   std::cout << "alpha: " << itString(alpha) << std::endl;
   std::cout << "cost: " << costFunctionDebug(t, alpha, w) << std::endl;
 
