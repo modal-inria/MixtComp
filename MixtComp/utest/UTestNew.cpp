@@ -267,7 +267,7 @@ TEST(Functional, costAndGrad) {
 TEST(Functional, hessian) {
   int nTime = 4;
   int nParam = 4;
-  Real delta = epsilon;
+  Real delta = 1e-5;
 
   int nSub = nParam / 2;
 
@@ -354,11 +354,6 @@ TEST(Functional, hessian) {
       fdHessian(row, col) = (c11 - c01 - c10 + c00) / (delta * delta);
     }
   }
-
-  std::cout << "computedHessian: " << std::endl;
-  std::cout << computedHessian << std::endl;
-  std::cout << "fdHessian: " << std::endl;
-  std::cout << fdHessian << std::endl;
 
   ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
 }
