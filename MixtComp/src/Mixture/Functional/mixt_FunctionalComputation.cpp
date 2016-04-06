@@ -90,9 +90,9 @@ void timeValue(const Vector<Real>& t,
     }
   }
 
-  Vector<Real> dummy;
   for (int j = 0; j < nT; ++j) {
-    logSumExpValue(j) = dummy.logToMulti(value.row(j));
+    value.row(j) -= value.row(j).maxCoeff();
+    logSumExpValue(j) = std::log(value.row(j).exp().sum());
   }
 }
 
