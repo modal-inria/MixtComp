@@ -43,7 +43,7 @@ void VandermondeMatrix(const Vector<Real>& timeStep,
 
 void subRegression(const Matrix<Real>& design,
                    const Vector<Real>& y,
-                   const Vector<std::list<int> >& w,
+                   const Vector<std::set<int> >& w,
                    Matrix<Real>& beta) {
   int nCoeff = design.cols(); // degree + 1
   int nSub = w.size();
@@ -57,8 +57,8 @@ void subRegression(const Matrix<Real>& design,
     subY.resize(nbIndSubReg);
 
     int i = 0;
-    for (std::list<int>::const_iterator it  = w(p).begin(),
-                                        itE = w(p).end();
+    for (std::set<int>::const_iterator it  = w(p).begin(),
+                                       itE = w(p).end();
          it != itE;
          ++it, ++i) {
       subDesign.row(i) = design.row(*it);
@@ -90,7 +90,7 @@ void timeValue(const Vector<Real>& t,
     }
   }
 
-  for (int j = 0; j < nT; ++j) {
+  for (int j = 0; j < nT; ++j) { // why wasn't logToMulti used here ???
     value.row(j) -= value.row(j).maxCoeff();
     logSumExpValue(j) = std::log(value.row(j).exp().sum());
   }
@@ -295,7 +295,93 @@ void updateAlpha(int nParam,
   std::cout << "hessian: " << std::endl;
   std::cout << hessian << std::endl;
   std::cout << "hessian.determinant(): " << hessian.determinant() << std::endl;
+
+//  Vector<Real> delta = - hessian.inverse() * grad;
+//  delta /= delta.norm();
+//  alpha = alpha + delta;
+
   alpha = alpha - hessian.inverse() * grad;
+}
+
+void computeKappa(Real t,
+                  const Matrix<Real>& alpha,
+                  Vector<Real>& kappa) {
+  int nSub = alpha.rows();
+  Vector<Real> logValue(nSub);
+  for (int k = 0; k < nSub; ++k) {
+    logValue(k) = alpha(k, 0) + alpha(k, 1) * t;
+  }
+  kappa.logToMulti(logValue);
+}
+
+Real sampleW(Real t,
+             const Matrix<Real>& alpha,
+             MultinomialStatistic& multi) {
+  Vector<Real> kappa;
+  computeKappa(t, alpha, kappa);
+  return multi.sample(kappa);
+}
+
+Real sampleYGW(Real t,
+               int w,
+               const Matrix<Real>& beta,
+               NormalStatistic& normal) { // NormalStatistic is provided to avoid multiple calls to constructor / destructor
+  return normal.sample(beta(w, 0) + beta(w, 1) * t, beta(w, 2));
+}
+
+void sampleY(const Vector<Real>& t,
+             const Matrix<Real>& alpha,
+             const Matrix<Real>& beta,
+             Vector<Real>& y) {
+  int nTime = t.size();
+  MultinomialStatistic multi;
+  NormalStatistic normal;
+
+  for (int i = 0; i < nTime; ++i) {
+    int currT = t(i);
+    int currW = sampleW(currT,
+                        alpha,
+                        multi);
+    y(i) = sampleYGW(currT,
+                     currW,
+                     beta,
+                     normal);
+  }
+}
+
+Real logProbaXGW(Real t,
+                 Real y,
+                 int w,
+                 const Matrix<Real>& beta,
+                 NormalStatistic& normal) {
+  return normal.lpdf(y,
+                     beta(w, 0) + beta(w, 1) * t,
+                     beta(w, 2));
+}
+
+void sampleW(const Vector<Real>& t,
+             const Vector<Real>& y,
+             const Matrix<Real>& alpha,
+             const Matrix<Real>& beta,
+             Vector<std::set<int> >& w) {
+  int nTime = t.size();
+  int nSub = alpha.rows();
+  MultinomialStatistic multi;
+  NormalStatistic normal;
+  Vector<Real> kappa;
+  Vector<Real> lpXW(nSub); // joint probability p(x, w)
+  Vector<Real> pWGX(nSub); // conditional probability p(w / x)
+
+  for (int i = 0; i < nTime; ++i) {
+    int currT = t(i);
+    Real currY = y(i);
+    computeKappa(currT, alpha, kappa);
+    for (int currW = 0; currW < nSub; ++currW) {
+      lpXW(currW) = std::log(kappa(currW)) + logProbaXGW(currT, currY, currW, beta, normal);
+    }
+    pWGX.logToMulti(lpXW);
+    w(multi.sample(pWGX)).insert(i);
+  }
 }
 
 } // namespace mixt

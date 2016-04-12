@@ -25,6 +25,7 @@
 #define MIXT_FUNCTIONALCOMPUTATION
 
 #include <list>
+#include <set>
 #include "LinAlg/mixt_LinAlg.h"
 
 namespace mixt {
@@ -42,7 +43,7 @@ void regression(const Matrix<Real>& design,
 
 void subRegression(const Matrix<Real>& design,
                    const Vector<Real>& y,
-                   const Vector<std::list<int> >& w,
+                   const Vector<std::set<int> >& w,
                    Matrix<Real>& beta);
 
 void timeValue(const Vector<Real>& t,

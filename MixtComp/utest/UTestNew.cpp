@@ -104,13 +104,13 @@ TEST(Functional, subRegression) {
   NormalStatistic normal;
   UniformStatistic uni;
 
-  Vector<std::list<int> > w(nSub);
+  Vector<std::set<int> > w(nSub);
 
   for (int i = 0; i < nObs; ++i) {
     x(i) = uni.sample(xMin, xMax);
     int currW = multi.sampleInt(0, nSub - 1);
 
-    w(currW).push_back(i);
+    w(currW).insert(i);
 
     for (int p = 0; p < degree + 1; ++p) {
       y(i) += beta(currW, p) * pow(x(i), p);
