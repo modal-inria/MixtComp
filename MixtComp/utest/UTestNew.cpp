@@ -30,13 +30,14 @@ TEST(Functional, Vandermonde) {
   timeStep << 2., 12.;
 
   int nCoeff = 3;
+  int nObs = 2;
   Matrix<Real> vm;
 
   VandermondeMatrix(timeStep,
                     nCoeff,
                     vm);
 
-  Matrix<Real> expectedVm(2, 3);
+  Matrix<Real> expectedVm(nObs, nCoeff);
   expectedVm << 1., 2., 4.,
                 1., 12., 144.;
 
@@ -164,10 +165,6 @@ TEST(Functional, subRegression) {
                 w,
                 betaEstimated);
 
-  std::cout << "beta" << std::endl;
-  std::cout << beta << std::endl;
-  std::cout << "betaEstimated" << std::endl;
-  std::cout << betaEstimated << std::endl;
   ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-3));
 }
 
@@ -403,39 +400,94 @@ TEST(Functional, hessian) {
   ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
 }
 
-TEST(Functional, optim) {
+TEST(Functional, optimRealCase) {
   int nTime = 1000;
-  int nParam = 4;
-  int nIter = 10;
+  int nSub = 2;
+  int nIter = 10; // number of iterations in the optimization process
+  int nCoeff = 2;
+  Real xMax = 50.;
 
-  int nSub = nParam / 2;
+  int nParam = nSub * 2;
 
   Vector<Real> t(nTime);
-  Vector<std::list<int> > w(nSub);
   for (int i = 0; i < nTime; ++i) {
-    t(i) = i;
-    if (i < nTime / 2) {
-      w(0).push_back(i);
-    }
-    else {
-      w(1).push_back(i);
-    }
+    t(i) = i * xMax / nTime;
   }
 
-  Vector<Real> alpha;
-  initAlpha(nParam,
-            t,
-            alpha);
+  Vector<Real> alpha(nParam); // alpha is linearized in a single vector, for easier looping
+  alpha <<  25., -1.,
+           -25.,  1.;
 
-  std::cout << "alpha: " << itString(alpha) << std::endl;
-  std::cout << "cost: " << costFunctionDebug(t, alpha, w) << std::endl;
+  Vector<Real> w(nTime);
+  Vector<Real> y(nTime, 0.);
 
-  for (int i = 0; i < nIter; ++i) {
-    updateAlpha(nParam,
-                t,
-                w,
-                alpha);
-    std::cout << "alpha: " << itString(alpha) << std::endl;
-    std::cout << "cost: " << costFunctionDebug(t, alpha, w) << std::endl;
+  Matrix<Real> beta(nSub, nCoeff + 1);
+  beta.row(0) << 0. ,  1., 1.; // y =  x      + N(0, 1)
+  beta.row(1) << 50., -1., 1.; // y = -x + 50 + N(0, 1)
+
+  Matrix<Real> logValue;
+  Vector<Real> logSumExpValue;
+  timeValue(t,
+            alpha,
+            logValue,
+            logSumExpValue);
+
+  MultinomialStatistic multi;
+  NormalStatistic normal;
+
+  Matrix<Real> kappa(nTime, nSub);
+
+  for (int i = 0; i < nTime; ++i) {
+    kappa.row(i) = logValue.row(i).exp() / std::exp(logSumExpValue(i));
+    w(i) = multi.sample(kappa.row(i)); // sample the subregression
+    for (int p = 0; p < nCoeff; ++p) {
+      y(i) += beta(w(i), p) * pow(t(i), p);
+    }
+    y(i) += normal.sample(0, beta(w(i), nCoeff));
+
+    // distribution de lambda en fonction de alpha
+    // tirage de w
+    //
   }
+
+  std::cout << "kappa: " << kappa << std::endl;
+  std::cout << "w: " << itString(w) << std::endl;
+  std::cout << "y: " << itString(y) << std::endl;
 }
+
+//TEST(Functional, optim) {
+//  int nTime = 1000;
+//  int nParam = 4;
+//  int nIter = 10;
+//
+//  int nSub = nParam / 2;
+//
+//  Vector<Real> t(nTime);
+//  Vector<std::list<int> > w(nSub);
+//  for (int i = 0; i < nTime; ++i) {
+//    t(i) = i;
+//    if (i < nTime / 2) {
+//      w(0).push_back(i);
+//    }
+//    else {
+//      w(1).push_back(i);
+//    }
+//  }
+//
+//  Vector<Real> alpha; // alpha is linearized in a single vector, for easier looping
+//  initAlpha(nParam,
+//            t,
+//            alpha);
+//
+//  std::cout << "alpha: " << itString(alpha) << std::endl;
+//  std::cout << "cost: " << costFunctionDebug(t, alpha, w) << std::endl;
+//
+//  for (int i = 0; i < nIter; ++i) {
+//    updateAlpha(nParam,
+//                t,
+//                w,
+//                alpha);
+//    std::cout << "alpha: " << itString(alpha) << std::endl;
+//    std::cout << "cost: " << costFunctionDebug(t, alpha, w) << std::endl;
+//  }
+//}

@@ -83,7 +83,7 @@ void subRegression(const Matrix<Real>& design,
 
 void timeValue(const Vector<Real>& t,
                const Vector<Real>& alpha,
-               Matrix<Real>& value,
+               Matrix<Real>& logValue,
                Vector<Real>& logSumExpValue);
 
 void costFunction(const Vector<Real>& t,

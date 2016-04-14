@@ -74,24 +74,24 @@ void subRegression(const Matrix<Real>& design,
 
 void timeValue(const Vector<Real>& t,
                const Vector<Real>& alpha,
-               Matrix<Real>& value,
+               Matrix<Real>& logValue,
                Vector<Real>& logSumExpValue) {
   int nT = t.size();
   int nSub = alpha.size() / 2;
 
-  value.resize(nT, nSub);
+  logValue.resize(nT, nSub);
   logSumExpValue.resize(nT);
 
   for (int s = 0; s < nSub; ++s) {
     for (int j = 0; j < nT; ++j) {
       int regFirstInd = 2 * s;
-      value(j, s) = alpha(regFirstInd) + alpha(regFirstInd + 1) * t(j);
+      logValue(j, s) = alpha(regFirstInd) + alpha(regFirstInd + 1) * t(j);
     }
   }
 
   for (int j = 0; j < nT; ++j) { // why wasn't logToMulti used here ???
-    value.row(j) -= value.row(j).maxCoeff();
-    logSumExpValue(j) = std::log(value.row(j).exp().sum());
+    logValue.row(j) -= logValue.row(j).maxCoeff(); // ... because the indidividual logs need to be translated too
+    logSumExpValue(j) = std::log(logValue.row(j).exp().sum());
   }
 }
 
