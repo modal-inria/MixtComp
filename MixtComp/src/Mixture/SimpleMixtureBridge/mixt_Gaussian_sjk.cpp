@@ -22,6 +22,7 @@
  **/
 
 #include "mixt_Gaussian_sjk.h"
+#include "LinAlg/mixt_Math.h"
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../IO/mixt_IO.h"
@@ -95,22 +96,13 @@ std::string Gaussian_sjk::model() const
 
 void Gaussian_sjk::mStep(EstimatorType bias) {
   for (int k = 0; k < nbClass_; ++k) {
-    Real mean = 0.;
-    Real sd = 0.;
-    Real M2 = 0.;
-    int n = 0;
+    Real mean;
+    Real sd;
 
-    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
-         it != itE;
-         ++it) {
-      ++n;
-      Real x = (*p_data_)(*it);
-      Real delta = x - mean;
-      mean = mean + delta / Real(n);
-      M2 = M2 + delta * (x - mean);
-    }
-
-    sd = std::sqrt(M2 / Real(n));
+    meanSD(classInd_(k),
+           *p_data_,
+           mean,
+           sd);
 
     param_(2 * k    ) = mean;
     param_(2 * k + 1) = sd;

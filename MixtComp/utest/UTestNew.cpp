@@ -29,11 +29,11 @@ TEST(Functional, Vandermonde) {
   Vector<Real> timeStep(2);
   timeStep << 2., 12.;
 
-  int degree = 2;
+  int nCoeff = 3;
   Matrix<Real> vm;
 
   VandermondeMatrix(timeStep,
-                    degree,
+                    nCoeff,
                     vm);
 
   Matrix<Real> expectedVm(2, 3);
@@ -43,8 +43,8 @@ TEST(Functional, Vandermonde) {
   ASSERT_EQ(true, vm.isApprox(expectedVm));
 }
 
-TEST(Functional, regression) {
-  int degree = 3;
+TEST(Functional, regressionNoNoise) {
+  int nCoeff = 4;
   int nObs = 100;
 
   Real xMin = -50.;
@@ -53,10 +53,10 @@ TEST(Functional, regression) {
   Vector<Real> x(nObs);
   Vector<Real> y(nObs, 0.);
 
-  Matrix<Real> design(nObs, degree + 1);
+  Matrix<Real> design(nObs, nCoeff);
 
-  Vector<Real> beta(degree + 1);
-  beta << 6, -4, 12, 5; // 5 x**3 + 12 x**2 - 4 x + 6
+  Vector<Real> beta(nCoeff + 1); // +1 for the standard deviation
+  beta << 6, -4, 12, 5, 0; // 5 x**3 + 12 x**2 - 4 x + 6, standard deviation is 0
   Vector<Real> betaEstimated;
 
   NormalStatistic normal;
@@ -64,13 +64,13 @@ TEST(Functional, regression) {
 
   for (int i = 0; i < nObs; ++i) {
     x(i) = uni.sample(xMin, xMax);
-    for (int p = 0; p < degree + 1; ++p) {
+    for (int p = 0; p < nCoeff + 1; ++p) {
       y(i) += beta(p) * pow(x(i), p);
     }
   }
 
   VandermondeMatrix(x,
-                    degree,
+                    nCoeff,
                     design);
 
   regression(design,
@@ -81,7 +81,7 @@ TEST(Functional, regression) {
 }
 
 TEST(Functional, subRegression) {
-  int degree = 2;
+  int nCoeff = 3;
   int nObs = 100;
   int nSub = 3;
 
@@ -91,12 +91,12 @@ TEST(Functional, subRegression) {
   Vector<Real> x(nObs);
   Vector<Real> y(nObs, 0.);
 
-  Matrix<Real> design(nObs, degree + 1);
+  Matrix<Real> design(nObs, nCoeff + 1);
 
-  Matrix<Real> beta(nSub, degree + 1);
-  beta.row(0) << 6, -4, 12; // 12 x**2 - 4 x + 6
-  beta.row(1) << 9, 1, -3; // -3 x**2 - x + 9
-  beta.row(2) << -25, 25, 75; // -3 x**2 - x + 9
+  Matrix<Real> beta(nSub, nCoeff + 1);
+  beta.row(0) << 6, -4, 12, 0.; // 12 x**2 - 4 x + 6, sd = 0
+  beta.row(1) << 9, 1, -3, 0.; // -3 x**2 - x + 9, sd = 0
+  beta.row(2) << -25, 25, 75, 0.; // -3 x**2 - x + 9, sd = 0
 
   Matrix<Real> betaEstimated;
 
@@ -104,21 +104,21 @@ TEST(Functional, subRegression) {
   NormalStatistic normal;
   UniformStatistic uni;
 
-  Vector<std::set<int> > w(nSub);
+  Vector<std::list<int> > w(nSub);
 
   for (int i = 0; i < nObs; ++i) {
     x(i) = uni.sample(xMin, xMax);
     int currW = multi.sampleInt(0, nSub - 1);
 
-    w(currW).insert(i);
+    w(currW).push_back(i);
 
-    for (int p = 0; p < degree + 1; ++p) {
+    for (int p = 0; p < nCoeff + 1; ++p) {
       y(i) += beta(currW, p) * pow(x(i), p);
     }
   }
 
   VandermondeMatrix(x,
-                    degree,
+                    nCoeff,
                     design);
 
   subRegression(design,

@@ -22,6 +22,7 @@
  **/
 
 #include <iostream>
+#include "LinAlg/mixt_Math.h"
 #include "Statistic/mixt_Statistic.h"
 #include "IO/mixt_IO.h"
 
@@ -30,11 +31,11 @@
 namespace mixt {
 
 void VandermondeMatrix(const Vector<Real>& timeStep,
-                       int degree,
+                       int nCoeff,
                        Matrix<Real>& mat) {
   int nStep = timeStep.size();
-  mat.resize(nStep, degree + 1);
-  for (int k = 0; k < degree + 1; ++k) {
+  mat.resize(nStep, nCoeff);
+  for (int k = 0; k < nCoeff; ++k) {
     for (int i = 0; i < nStep; ++i) {
       mat(i, k) = pow(timeStep(i), k);
     }
@@ -43,11 +44,11 @@ void VandermondeMatrix(const Vector<Real>& timeStep,
 
 void subRegression(const Matrix<Real>& design,
                    const Vector<Real>& y,
-                   const Vector<std::set<int> >& w,
+                   const Vector<std::list<int> >& w,
                    Matrix<Real>& beta) {
   int nCoeff = design.cols(); // degree + 1
   int nSub = w.size();
-  beta.resize(nSub, nCoeff);
+  beta.resize(nSub, nCoeff + 1); // +1 in size is for storing the standard deviation in the last coefficient
   Matrix<Real> subDesign; // design matrix reconstituted for each particular subregression
   Vector<Real> subY; // y vector for each particular subregression
   RowVector<Real> subBeta;
@@ -57,8 +58,8 @@ void subRegression(const Matrix<Real>& design,
     subY.resize(nbIndSubReg);
 
     int i = 0;
-    for (std::set<int>::const_iterator it  = w(p).begin(),
-                                       itE = w(p).end();
+    for (std::list<int>::const_iterator it  = w(p).begin(),
+                                        itE = w(p).end();
          it != itE;
          ++it, ++i) {
       subDesign.row(i) = design.row(*it);
@@ -67,9 +68,7 @@ void subRegression(const Matrix<Real>& design,
 
     regression(subDesign,
                subY,
-               subBeta);
-
-    beta.row(p) = subBeta;
+               beta.row(p));
   }
 }
 
@@ -363,7 +362,7 @@ void sampleW(const Vector<Real>& t,
              const Vector<Real>& y,
              const Matrix<Real>& alpha,
              const Matrix<Real>& beta,
-             Vector<std::set<int> >& w) {
+             Vector<std::list<int> >& w) {
   int nTime = t.size();
   int nSub = alpha.rows();
   MultinomialStatistic multi;
@@ -380,7 +379,7 @@ void sampleW(const Vector<Real>& t,
       lpXW(currW) = std::log(kappa(currW)) + logProbaXGW(currT, currY, currW, beta, normal);
     }
     pWGX.logToMulti(lpXW);
-    w(multi.sample(pWGX)).insert(i);
+    w(multi.sample(pWGX)).push_back(i);
   }
 }
 

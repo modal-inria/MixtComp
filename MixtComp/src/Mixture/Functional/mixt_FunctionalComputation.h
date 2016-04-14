@@ -31,19 +31,54 @@
 namespace mixt {
 
 void VandermondeMatrix(const Vector<Real>& timeStep,
-                       int degree,
+                       int nCoeff,
                        Matrix<Real>& mat);
+
+template<typename betaType>
+void estimateSD(const Matrix<Real>& subDesign,
+                const Vector<Real>& subY,
+                betaType& subBeta) {
+  int nI = subDesign.rows();
+  int nCoeff = subBeta.size() - 1; // last element is the standard deviation
+
+  Vector<Real> error(nI);
+
+  for (int i = 0; i < nI; ++i) {
+    error(i) = 0;
+    for (int c = 0; c < nCoeff; ++c) {
+      error(i) += subDesign.row(i)(c) * subBeta(c);
+    }
+    error(i) -= subY(i);
+  }
+
+  Real mean;
+  meanSD(error,
+         mean,
+         subBeta(nCoeff)); // standard deviation stored at the end of beta
+}
 
 template<typename betaType>
 void regression(const Matrix<Real>& design,
                 const Vector<Real>& y,
-                betaType& beta) {
-  beta = (design.transpose() * design).inverse() * design.transpose() * y;
+                const betaType& betaIn) {
+  betaType& beta = const_cast<betaType&>(betaIn); // without the const_cast it is impossible to access a row which is a temporary object requiring a const in the argument
+  int nCoeff = design.cols();
+  beta.resize(nCoeff + 1);
+
+  Vector<Real> betaCoeff = (design.transpose() * design).inverse() * design.transpose() * y;
+
+  for (int c = 0; c < nCoeff; ++c) {
+    beta(c) = betaCoeff(c);
+  }
+
+  estimateSD(design,
+             y,
+             beta); // standard deviation is stored in the last coefficient of vector beta
 }
 
 void subRegression(const Matrix<Real>& design,
                    const Vector<Real>& y,
-                   const Vector<std::set<int> >& w,
+                   const Vector<std::list<int> >& w,
                    Matrix<Real>& beta);
 
 void timeValue(const Vector<Real>& t,

@@ -24,10 +24,59 @@
 #ifndef MIXT_MATH_H
 #define MIXT_MATH_H
 
+#include <cmath>
 #include "mixt_Typedef.h"
 
 int fac(int n);
 
 Real logFac(int n);
+
+template<typename T>
+void meanSD(const T& data,
+            Real& mean,
+            Real& sd) {
+  mean = 0.;
+  sd = 0.;
+  Real M2 = 0.;
+  int n = 0;
+
+  for (typename T::const_iterator it  = data.begin(),
+                                  itE = data.end();
+       it != itE;
+       ++it) {
+    ++n;
+    Real x = *it;
+    Real delta = x - mean;
+    mean = mean + delta / Real(n);
+    M2 = M2 + delta * (x - mean);
+  }
+
+  sd = std::sqrt(M2 / Real(n));
+}
+
+template<typename indType,
+         typename T>
+void meanSD(const indType& listInd,
+            const T& data,
+            Real& mean,
+            Real& sd) {
+  mean = 0.;
+  sd = 0.;
+  Real M2 = 0.;
+  int n = 0;
+
+  for (typename indType::const_iterator it  = listInd.begin(),
+                                        itE = listInd.end();
+       it != itE;
+       ++it) {
+    ++n;
+    Real x = data(*it);
+    Real delta = x - mean;
+    mean = mean + delta / Real(n);
+    M2 = M2 + delta * (x - mean);
+  }
+
+  sd = std::sqrt(M2 / Real(n));
+}
 
 #endif // MIXT_LINALG_H
