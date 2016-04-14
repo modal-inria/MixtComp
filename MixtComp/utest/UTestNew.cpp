@@ -64,7 +64,7 @@ TEST(Functional, regressionNoNoise) {
 
   for (int i = 0; i < nObs; ++i) {
     x(i) = uni.sample(xMin, xMax);
-    for (int p = 0; p < nCoeff + 1; ++p) {
+    for (int p = 0; p < nCoeff; ++p) {
       y(i) += beta(p) * pow(x(i), p);
     }
   }
@@ -80,9 +80,47 @@ TEST(Functional, regressionNoNoise) {
   ASSERT_EQ(true, betaEstimated.isApprox(beta, epsilon));
 }
 
+TEST(Functional, regressionNoise) {
+  int nCoeff = 4;
+  int nObs = 100000;
+
+  Real xMin = -50.;
+  Real xMax = 50.;
+
+  Vector<Real> x(nObs);
+  Vector<Real> y(nObs, 0.);
+
+  Matrix<Real> design(nObs, nCoeff);
+
+  Vector<Real> beta(nCoeff + 1); // +1 for the standard deviation
+  beta << 6, -4, 12, 5, 1; // 5 x**3 + 12 x**2 - 4 x + 6, standard deviation is 12
+  Vector<Real> betaEstimated;
+
+  NormalStatistic normal;
+  UniformStatistic uni;
+
+  for (int i = 0; i < nObs; ++i) {
+    x(i) = uni.sample(xMin, xMax);
+    for (int p = 0; p < nCoeff; ++p) {
+      y(i) += beta(p) * pow(x(i), p);
+    }
+    y(i) += normal.sample(0, beta(nCoeff));
+  }
+
+  VandermondeMatrix(x,
+                    nCoeff,
+                    design);
+
+  regression(design,
+             y,
+             betaEstimated);
+
+  ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-3));
+}
+
 TEST(Functional, subRegression) {
   int nCoeff = 3;
-  int nObs = 100;
+  int nObs = 100000;
   int nSub = 3;
 
   Real xMin = -50.;
@@ -91,12 +129,12 @@ TEST(Functional, subRegression) {
   Vector<Real> x(nObs);
   Vector<Real> y(nObs, 0.);
 
-  Matrix<Real> design(nObs, nCoeff + 1);
+  Matrix<Real> design(nObs, nCoeff);
 
   Matrix<Real> beta(nSub, nCoeff + 1);
-  beta.row(0) << 6, -4, 12, 0.; // 12 x**2 - 4 x + 6, sd = 0
-  beta.row(1) << 9, 1, -3, 0.; // -3 x**2 - x + 9, sd = 0
-  beta.row(2) << -25, 25, 75, 0.; // -3 x**2 - x + 9, sd = 0
+  beta.row(0) << 6, -4, 12, 1.; // 12 x**2 - 4 x + 6, sd = 1
+  beta.row(1) << 9, 1, -3, 2; // -3 x**2 - x + 9, sd = 2
+  beta.row(2) << -25, 25, 75, 3; // -3 x**2 - x + 9, sd = 3
 
   Matrix<Real> betaEstimated;
 
@@ -109,12 +147,12 @@ TEST(Functional, subRegression) {
   for (int i = 0; i < nObs; ++i) {
     x(i) = uni.sample(xMin, xMax);
     int currW = multi.sampleInt(0, nSub - 1);
-
     w(currW).push_back(i);
 
-    for (int p = 0; p < nCoeff + 1; ++p) {
+    for (int p = 0; p < nCoeff; ++p) {
       y(i) += beta(currW, p) * pow(x(i), p);
     }
+    y(i) += normal.sample(0, beta(currW, nCoeff));
   }
 
   VandermondeMatrix(x,
@@ -126,7 +164,11 @@ TEST(Functional, subRegression) {
                 w,
                 betaEstimated);
 
-  ASSERT_EQ(true, betaEstimated.isApprox(beta, epsilon));
+  std::cout << "beta" << std::endl;
+  std::cout << beta << std::endl;
+  std::cout << "betaEstimated" << std::endl;
+  std::cout << betaEstimated << std::endl;
+  ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-3));
 }
 
 TEST(Functional, smallTest) {
