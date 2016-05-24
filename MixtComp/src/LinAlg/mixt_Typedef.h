@@ -29,5 +29,6 @@
 /** Eigen storage is column-major by default, which suits the main way of accessing data,
  * by looping over individuals instead of variables */
 typedef double Real;
+typedef std::size_t Index;
 
 #endif // MIXT_TYPEDEF_H

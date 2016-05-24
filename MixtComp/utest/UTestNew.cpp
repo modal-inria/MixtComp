@@ -29,8 +29,8 @@ TEST(Functional, Vandermonde) {
   Vector<Real> timeStep(2);
   timeStep << 2., 12.;
 
-  int nCoeff = 3;
-  int nObs = 2;
+  Index nCoeff = 3;
+  Index nObs = 2;
   Matrix<Real> vm;
 
   VandermondeMatrix(timeStep,
@@ -45,8 +45,8 @@ TEST(Functional, Vandermonde) {
 }
 
 TEST(Functional, regressionNoNoise) {
-  int nCoeff = 4;
-  int nObs = 100;
+  Index nCoeff = 4;
+  Index nObs = 100;
 
   Real xMin = -50.;
   Real xMax = 50.;
@@ -63,9 +63,9 @@ TEST(Functional, regressionNoNoise) {
   NormalStatistic normal;
   UniformStatistic uni;
 
-  for (int i = 0; i < nObs; ++i) {
+  for (Index i = 0; i < nObs; ++i) {
     x(i) = uni.sample(xMin, xMax);
-    for (int p = 0; p < nCoeff; ++p) {
+    for (Index p = 0; p < nCoeff; ++p) {
       y(i) += beta(p) * pow(x(i), p);
     }
   }
@@ -82,8 +82,8 @@ TEST(Functional, regressionNoNoise) {
 }
 
 TEST(Functional, regressionNoise) {
-  int nCoeff = 4;
-  int nObs = 100000;
+  Index nCoeff = 4;
+  Index nObs = 100000;
 
   Real xMin = -50.;
   Real xMax = 50.;
@@ -100,9 +100,9 @@ TEST(Functional, regressionNoise) {
   NormalStatistic normal;
   UniformStatistic uni;
 
-  for (int i = 0; i < nObs; ++i) {
+  for (Index i = 0; i < nObs; ++i) {
     x(i) = uni.sample(xMin, xMax);
-    for (int p = 0; p < nCoeff; ++p) {
+    for (Index p = 0; p < nCoeff; ++p) {
       y(i) += beta(p) * pow(x(i), p);
     }
     y(i) += normal.sample(0, beta(nCoeff));
@@ -120,9 +120,9 @@ TEST(Functional, regressionNoise) {
 }
 
 TEST(Functional, subRegression) {
-  int nCoeff = 3;
-  int nObs = 100000;
-  int nSub = 3;
+  Index nCoeff = 3;
+  Index nObs = 100000;
+  Index nSub = 3;
 
   Real xMin = -50.;
   Real xMax = 50.;
@@ -143,14 +143,14 @@ TEST(Functional, subRegression) {
   NormalStatistic normal;
   UniformStatistic uni;
 
-  Vector<std::list<int> > w(nSub);
+  Vector<std::list<Index> > w(nSub);
 
-  for (int i = 0; i < nObs; ++i) {
+  for (Index i = 0; i < nObs; ++i) {
     x(i) = uni.sample(xMin, xMax);
-    int currW = multi.sampleInt(0, nSub - 1);
+    Index currW = multi.sampleInt(0, nSub - 1);
     w(currW).push_back(i);
 
-    for (int p = 0; p < nCoeff; ++p) {
+    for (Index p = 0; p < nCoeff; ++p) {
       y(i) += beta(currW, p) * pow(x(i), p);
     }
     y(i) += normal.sample(0, beta(currW, nCoeff));
@@ -176,16 +176,16 @@ TEST(Functional, smallTest) {
 }
 
 TEST(Functional, costAndGrad1SubReg) {
-  int nTime = 4;
-  int nParam = 2;
+  Index nTime = 4;
+  Index nParam = 2;
   Real delta = epsilon;
 
-  int nSub = nParam / 2;
+  Index nSub = nParam / 2;
 
   Vector<Real> t(nTime);
   t << 0., 1., 2., 3.;
 
-  Vector<std::list<int> > w(nSub);
+  Vector<std::list<Index> > w(nSub);
   w(0).push_back(0);
   w(0).push_back(1);
   w(0).push_back(2);
@@ -217,7 +217,7 @@ TEST(Functional, costAndGrad1SubReg) {
                    w,
                    computedGrad);
 
-  for (int s = 0; s < nParam; ++s) {
+  for (Index s = 0; s < nParam; ++s) {
     Real c1;
     Vector<Real> alpha1 = alpha0;
     alpha1(s) += delta;
@@ -240,16 +240,16 @@ TEST(Functional, costAndGrad1SubReg) {
 }
 
 TEST(Functional, costAndGrad) {
-  int nTime = 4;
-  int nParam = 4;
+  Index nTime = 4;
+  Index nParam = 4;
   Real delta = epsilon;
 
-  int nSub = nParam / 2;
+  Index nSub = nParam / 2;
 
   Vector<Real> t(nTime);
   t << 0., 1., 2., 3.;
 
-  Vector<std::list<int> > w(nSub);
+  Vector<std::list<Index> > w(nSub);
   w(0).push_back(0);
   w(0).push_back(1);
   w(1).push_back(2);
@@ -281,7 +281,7 @@ TEST(Functional, costAndGrad) {
                    w,
                    computedGrad);
 
-  for (int s = 0; s < nParam; ++s) {
+  for (Index s = 0; s < nParam; ++s) {
     Real c1;
     Vector<Real> alpha1 = alpha0;
     alpha1(s) += delta;
@@ -304,15 +304,15 @@ TEST(Functional, costAndGrad) {
 }
 
 TEST(Functional, hessian) {
-  int nTime = 4;
-  int nParam = 4;
+  Index nTime = 4;
+  Index nParam = 4;
   Real delta = 1e-5;
 
-  int nSub = nParam / 2;
+  Index nSub = nParam / 2;
 
   Vector<Real> t(nTime);
-  Vector<std::list<int> > w(nSub);
-  for (int i = 0; i < nTime; ++i) {
+  Vector<std::list<Index> > w(nSub);
+  for (Index i = 0; i < nTime; ++i) {
     t(i) = i;
     if (i < nTime / 2) {
       w(0).push_back(i);
@@ -348,8 +348,8 @@ TEST(Functional, hessian) {
                       w,
                       computedHessian);
 
-  for (int row = 0; row < nParam; ++row) {
-    for (int col = 0; col < nParam; ++col) {
+  for (Index row = 0; row < nParam; ++row) {
+    for (Index col = 0; col < nParam; ++col) {
       Real c01;
       Real c10;
       Real c11;
@@ -400,17 +400,17 @@ TEST(Functional, hessian) {
   ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
 }
 
-TEST(Functional, optimRealCase) {
-  int nTime = 1000;
-  int nSub = 2;
-  int nIter = 10; // number of iterations in the optimization process
-  int nCoeff = 2;
+TEST(Functional, optimRealSimpleCase) {
+  Index nTime = 1000;
+  Index nSub = 2; // number of subregression in the generation / estimation phases
+  Index nIter = 10; // number of iterations in the optimization process
+  Index nCoeff = 2; // order of each subregression
   Real xMax = 50.;
 
-  int nParam = nSub * 2;
+  Index nParam = nSub * 2; // regression order for
 
   Vector<Real> t(nTime);
-  for (int i = 0; i < nTime; ++i) {
+  for (Index i = 0; i < nTime; ++i) {
     t(i) = i * xMax / nTime;
   }
 
@@ -418,7 +418,7 @@ TEST(Functional, optimRealCase) {
   alpha <<  25., -1.,
            -25.,  1.;
 
-  Vector<Real> w(nTime);
+  Vector<std::list<Index> > w(nSub);
   Vector<Real> y(nTime, 0.);
 
   Matrix<Real> beta(nSub, nCoeff + 1);
@@ -436,35 +436,114 @@ TEST(Functional, optimRealCase) {
   NormalStatistic normal;
 
   Matrix<Real> kappa(nTime, nSub);
-
-  for (int i = 0; i < nTime; ++i) {
+  for (Index i = 0; i < nTime; ++i) {
     kappa.row(i) = logValue.row(i).exp() / std::exp(logSumExpValue(i));
-    w(i) = multi.sample(kappa.row(i)); // sample the subregression
-    for (int p = 0; p < nCoeff; ++p) {
-      y(i) += beta(w(i), p) * pow(t(i), p);
-    }
-    y(i) += normal.sample(0, beta(w(i), nCoeff));
+    Index currW = multi.sample(kappa.row(i));
+    w(currW).push_back(i); // sample the subregression
 
-    // distribution de lambda en fonction de alpha
-    // tirage de w
-    //
+    for (Index p = 0; p < nCoeff; ++p) { // sample the y(t) value, knowing the subregression at t
+      y(i) += beta(currW, p) * pow(t(i), p);
+    }
+    y(i) += normal.sample(0, beta(currW, nCoeff));
   }
 
-  std::cout << "kappa: " << kappa << std::endl;
-  std::cout << "w: " << itString(w) << std::endl;
-  std::cout << "y: " << itString(y) << std::endl;
+  Matrix<Real> lambda;
+  computeLambda(t,
+                y,
+                alpha,
+                beta,
+                lambda);
+
+  Vector<Real> estimatedAlpha(nParam, 0.); // all alpha coefficient initialized at 0
+//  Vector<Real> estimatedAlpha = alpha; // alpha initialized using the solution
+
+  for (Index i = 0; i < nIter; ++i) {
+    updateAlpha(nParam,
+                t,
+                w,
+                estimatedAlpha);
+    std::cout << "i: " << i << ", alpha: " << itString(alpha) << std::endl;
+  }
 }
 
-//TEST(Functional, optim) {
-//  int nTime = 1000;
-//  int nParam = 4;
-//  int nIter = 10;
+//TEST(Functional, optimRealCase) {
+//  Index nTime = 1000;
+//  Index nSub = 2; // number of subregression in the generation / estimation phases
+//  Index nIter = 10; // number of iterations in the optimization process
+//  Index nCoeff = 2; // order of each subregression
+//  Real xMax = 50.;
 //
-//  int nSub = nParam / 2;
+//  Index nParam = nSub * 2; // regression order for
 //
 //  Vector<Real> t(nTime);
-//  Vector<std::list<int> > w(nSub);
-//  for (int i = 0; i < nTime; ++i) {
+//  for (Index i = 0; i < nTime; ++i) {
+//    t(i) = i * xMax / nTime;
+//  }
+//
+//  Vector<Real> alpha(nParam); // alpha is linearized in a single vector, for easier looping
+//  alpha <<  25., -1.,
+//           -25.,  1.;
+//
+//  Vector<Real> w(nTime);
+//  Vector<Real> y(nTime, 0.);
+//
+//  Matrix<Real> beta(nSub, nCoeff + 1);
+//  beta.row(0) << 0. ,  1., 1.; // y =  x      + N(0, 1)
+//  beta.row(1) << 50., -1., 1.; // y = -x + 50 + N(0, 1)
+//
+//  Matrix<Real> logValue;
+//  Vector<Real> logSumExpValue;
+//  timeValue(t,
+//            alpha,
+//            logValue,
+//            logSumExpValue);
+//
+//  MultinomialStatistic multi;
+//  NormalStatistic normal;
+//
+//  Matrix<Real> kappa(nTime, nSub);
+//  for (Index i = 0; i < nTime; ++i) {
+//    kappa.row(i) = logValue.row(i).exp() / std::exp(logSumExpValue(i));
+//    w(i) = multi.sample(kappa.row(i)); // sample the subregression
+//    for (Index p = 0; p < nCoeff; ++p) {
+//      y(i) += beta(w(i), p) * pow(t(i), p);
+//    }
+//    y(i) += normal.sample(0, beta(w(i), nCoeff));
+//  }
+//
+//  Matrix<Real> lambda;
+//  computeLambda(t,
+//                y,
+//                alpha,
+//                beta,
+//                lambda);
+//
+//  Vector<std::list<Index> > postW(nSub);
+//  for (Index i = 0; i < nTime; ++i) {
+//    postW(multi.sample(lambda.row(i))).push_back(i); // w is resampled, now using the a posteriori probability, to take Indexo account the error term sampled at each time
+//  }
+//
+//  Vector<Real> estimatedAlpha(nParam, 0.);
+//
+//  for (Index i = 0; i < nIter; ++i) {
+//    updateAlpha(nParam,
+//                t,
+//                postW,
+//                estimatedAlpha);
+//    std::cout << "i: " << i << ", alpha: " << itString(alpha) << std::endl;
+//  }
+//}
+
+//TEST(Functional, optim) {
+//  Index nTime = 1000;
+//  Index nParam = 4;
+//  Index nIter = 10;
+//
+//  Index nSub = nParam / 2;
+//
+//  Vector<Real> t(nTime);
+//  Vector<std::list<Index> > w(nSub);
+//  for (Index i = 0; i < nTime; ++i) {
 //    t(i) = i;
 //    if (i < nTime / 2) {
 //      w(0).push_back(i);
@@ -482,7 +561,7 @@ TEST(Functional, optimRealCase) {
 //  std::cout << "alpha: " << itString(alpha) << std::endl;
 //  std::cout << "cost: " << costFunctionDebug(t, alpha, w) << std::endl;
 //
-//  for (int i = 0; i < nIter; ++i) {
+//  for (Index i = 0; i < nIter; ++i) {
 //    updateAlpha(nParam,
 //                t,
 //                w,
