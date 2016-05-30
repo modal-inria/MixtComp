@@ -90,13 +90,13 @@ void timeValue(const Vector<Real>& t,
   }
 
   for (Index j = 0; j < nT; ++j) { // why wasn't logToMulti used here ???
-    logValue.row(j) -= logValue.row(j).maxCoeff(); // ... because the indidividual logs need to be translated too
+    logValue.row(j) -= logValue.row(j).maxCoeff(); // ... because the individual logs need to be translated too
     logSumExpValue(j) = std::log(logValue.row(j).exp().sum());
   }
 }
 
 void costFunction(const Vector<Real>& t,
-                  const Matrix<Real>& value,
+                  const Matrix<Real>& logValue,
                   const Vector<Real>& logSumExpValue,
                   const Vector<std::list<Index> >& w,
                   Real& cost) {
@@ -108,7 +108,7 @@ void costFunction(const Vector<Real>& t,
                                         ite = w(s).end();
          it != ite;
          ++it) {
-      cost += value(*it, s);
+      cost += logValue(*it, s);
       cost += - logSumExpValue(*it);
     }
   }
@@ -174,17 +174,18 @@ void gradCostFunction(const Vector<Real>& t,
   Index nT = t.size();
   Index nParam = 2 * value.cols();
   gradCost.resize(nParam);
-  gradCost = 0.;
 
   for (Index p = 0; p < nParam; ++p) { // currently computed coefficient in the gradient
     Index subReg = p / 2; // current alpha index
     Index subRegInd = p % 2; // 0 or 1, indicating which alpha among the pair in varDeriv
 
+    Real addComp = 0.;
+    Real divComp = 0.;
     for (std::list<Index>::const_iterator it  = w(subReg).begin(),
-                                        ite = w(subReg).end();
+                                          ite = w(subReg).end();
          it != ite;
          ++it) {
-        gradCost(p) += subRegInd ? t(*it) : 1.;
+        addComp += subRegInd ? t(*it) : 1.;
     }
 
     for (Index j = 0; j < nT; ++j) { // denominator term does not depend on lambda, and there is one term per timestep
@@ -194,8 +195,10 @@ void gradCostFunction(const Vector<Real>& t,
                           j,
                           t,
                           value);
-      gradCost(p) += - u0 / u;
+      divComp += - u0 / u;
     }
+
+    gradCost(p) = addComp + divComp;
   }
 }
 
@@ -211,6 +214,55 @@ void hessianCostFunction(const Vector<Real>& t,
 
   for (Index pRow = 0; pRow < nParam; ++pRow) { // currently computed row
     for (Index pCol = pRow; pCol < nParam; ++pCol) { // upper triangular part of the symmetric hessian matrix
+      Index subReg0 = pRow / 2; // current alpha index
+      Index subRegInd0 = pRow % 2; // 0 or 1, indicating which alpha among the pair in varDeriv
+      Index subReg1 = pCol / 2;
+      Index subRegInd1 = pCol % 2;
+
+      for (Index j = 0; j < nT; ++j) { // denominator term does not depend on lambda, and there is one term per timestep
+        Real u = std::exp(logSumExpValue(j));
+        Real u01 = deriv2Var(subReg0,
+                             subRegInd0,
+                             subReg1,
+                             subRegInd1,
+                             j,
+                             t,
+                             value);
+        Real u0 = deriv1Var(subReg0,
+                            subRegInd0,
+                            j,
+                            t,
+                            value);
+        Real u1 = deriv1Var(subReg1,
+                            subRegInd1,
+                            j,
+                            t,
+                            value);
+
+        hessianCost(pRow, pCol) += - (u01 * u - u0 * u1) / pow(u, 2);
+      }
+    }
+  }
+
+  for (Index pRow = 0; pRow < nParam; ++pRow) { // symmetrization of the matrix
+    for (Index pCol = 0; pCol < pRow; ++pCol) {
+      hessianCost(pRow, pCol) = hessianCost(pCol, pRow);
+    }
+  }
+}
+
+void hessianCostFunctionNoSym(const Vector<Real>& t,
+                              const Matrix<Real>& value,
+                              const Vector<Real>& logSumExpValue,
+                              const Vector<std::list<Index> >& w,
+                              Matrix<Real>& hessianCost) {
+  Index nT = t.size();
+  Index nParam = 2 * value.cols();
+  hessianCost.resize(nParam, nParam);
+  hessianCost = 0.;
+
+  for (Index pRow = 0; pRow < nParam; ++pRow) { // currently computed row
+    for (Index pCol = 0; pCol < nParam; ++pCol) { // upper triangular part of the symmetric hessian matrix
       Index subReg0 = pRow / 2; // current alpha index
       Index subRegInd0 = pRow % 2; // 0 or 1, indicating which alpha among the pair in varDeriv
       Index subReg1 = pCol / 2;
@@ -267,41 +319,69 @@ void initAlpha(Index nParam,
 void updateAlpha(Index nParam,
                  const Vector<Real>& t,
                  const Vector<std::list<Index> >& w,
-                 Vector<Real>& alpha) {
-  Matrix<Real> value;
-  Vector<Real> sumExpValue;
-  Vector<Real> grad;
-  Matrix<Real> hessian(nParam, nParam);
+                 Vector<Real>& alpha,
+                 Real& alpha_k,
+                 Real& costCurr,
+                 Vector<Real>& gradCurr) {
+  Real c1 = 1e-4;
+  Real c2 = 0.1;
+  Real varFactor = 2.;
+  Index nIt = 40.; // currently number of iterations fixed... switch to tolerance condition ?
 
-  timeValue(t,
-            alpha,
-            value,
-            sumExpValue);
+  bool cond1; // is there enough variation in the cost function ?
+  bool cond2; // is there enough variation in the gradient ?
 
-  gradCostFunction(t,
-                   value,
-                   sumExpValue,
-                   w,
-                   grad);
+  Matrix<Real> logValue;
+  Vector<Real> logSumExpValue;
 
-  hessianCostFunction(t,
-                      value,
-                      sumExpValue,
-                      w,
-                      hessian);
+  Vector<Real> alphaCandidate;
+  Real costCandidate;
+  Vector<Real> gradCandidate;
+  Vector<Real> searchDir = gradCurr / gradCurr.norm(); // get search direction from gradient. Since this is a maximization, the gradient is considered, and not the opposite of the gradient
+  Real projGradCurr = searchDir.dot(gradCurr);
 
-  std::cout << "grad: " << itString(grad) << std::endl;
-  std::cout << "hessian: " << std::endl;
-  std::cout << hessian << std::endl;
-  std::cout << "hessian.determinant(): " << hessian.determinant() << std::endl;
+  for (int i = 0; i < nIt; ++i) { // line search algorithm using Wolfe condition for selection of step size
+    alphaCandidate = alpha + alpha_k * searchDir;
 
-  std::cout << "grad.dot(hessian.inverse() * grad): " << grad.dot(hessian.inverse() * grad) << std::endl;
+    timeValue(t,
+              alphaCandidate,
+              logValue,
+              logSumExpValue);
 
-//  Vector<Real> delta = - hessian.inverse() * grad;
-//  delta /= delta.norm();
-//  alpha = alpha + delta;
+    costFunction(t,
+                 logValue,
+                 logSumExpValue,
+                 w,
+                 costCandidate);
 
-  alpha = alpha - hessian.inverse() * grad;
+    gradCostFunction(t,
+                     logValue,
+                     logSumExpValue,
+                     w,
+                     gradCandidate);
+
+    Real projGradCandidate = searchDir.dot(gradCandidate);
+    cond1 = costCurr <= costCandidate + c1 * alpha_k * projGradCurr;
+    cond2 = projGradCandidate <= c2 * projGradCurr;
+    std::cout << "i: " << i << ", costCandidate: " << costCandidate << ", cond1: " << cond1 << ", cond2: " << cond2 << std::endl;
+
+    if (!cond2) { // priority is put on having a large step
+      alpha_k *= varFactor; // shorten step size
+      std::cout << "increase alpha_k to: " << alpha_k << std::endl;
+    }
+    else if (!cond1) { // increase step size
+      alpha_k /= varFactor;
+      std::cout << "increase alpha_k to: " << alpha_k << std::endl;
+    }
+    else {
+      std::cout << "leave alpha_k as it is: " << alpha_k << std::endl;
+      break;
+    }
+  }
+
+  alpha = alphaCandidate;
+  costCurr = costCandidate;
+  gradCurr = gradCandidate;
 }
 
 void computeKappa(Real t,

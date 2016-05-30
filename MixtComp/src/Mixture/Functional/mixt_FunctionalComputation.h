@@ -87,7 +87,7 @@ void timeValue(const Vector<Real>& t,
                Vector<Real>& logSumExpValue);
 
 void costFunction(const Vector<Real>& t,
-                  const Matrix<Real>& value,
+                  const Matrix<Real>& logValue,
                   const Vector<Real>& logSumExpValue,
                   const Vector<std::list<Index> >& w,
                   Real& cost);
@@ -122,6 +122,12 @@ void hessianCostFunction(const Vector<Real>& t,
                          const Vector<std::list<Index> >& w,
                          Matrix<Real>& hessianCost);
 
+void hessianCostFunctionNoSym(const Vector<Real>& t,
+                              const Matrix<Real>& value,
+                              const Vector<Real>& logSumExpValue,
+                              const Vector<std::list<Index> >& w,
+                              Matrix<Real>& hessianCost);
+
 void initAlpha(Index nParam,
                const Vector<Real>& t,
                Vector<Real>& alpha);
@@ -129,7 +135,10 @@ void initAlpha(Index nParam,
 void updateAlpha(Index nParam,
                  const Vector<Real>& t,
                  const Vector<std::list<Index> >& w,
-                 Vector<Real>& alpha);
+                 Vector<Real>& alpha,
+                 Real& alpha_k,
+                 Real& costCurr,
+                 Vector<Real>& gradCurr);
 
 void computeLambda(const Vector<Real>& t,
                    const Vector<Real>& y,

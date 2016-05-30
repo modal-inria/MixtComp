@@ -403,10 +403,12 @@ TEST(Functional, hessian) {
 TEST(Functional, optimRealSimpleCase) {
   Index nTime = 1000;
   Index nSub = 2; // number of subregression in the generation / estimation phases
-  Index nIter = 10; // number of iterations in the optimization process
+  Index nIter = 100000; // number of iterations in the optimization process
   Index nCoeff = 2; // order of each subregression
   Real xMax = 50.;
+  Real alphaSlope = 0.5;
 
+  Real alpha0 = xMax / 2.;
   Index nParam = nSub * 2; // regression order for
 
   Vector<Real> t(nTime);
@@ -415,15 +417,17 @@ TEST(Functional, optimRealSimpleCase) {
   }
 
   Vector<Real> alpha(nParam); // alpha is linearized in a single vector, for easier looping
-  alpha <<  25., -1.,
-           -25.,  1.;
+  alpha <<  alpha0 * alphaSlope, -alphaSlope,
+           -alpha0 * alphaSlope,  alphaSlope;
+  std::cout << "Initial alpha" << std::endl;
+  std::cout << itString(alpha) << std::endl;
 
   Vector<std::list<Index> > w(nSub);
   Vector<Real> y(nTime, 0.);
 
   Matrix<Real> beta(nSub, nCoeff + 1);
-  beta.row(0) << 0. ,  1., 1.; // y =  x      + N(0, 1)
-  beta.row(1) << 50., -1., 1.; // y = -x + 50 + N(0, 1)
+  beta.row(0) <<  0.,  1., 0.; // y =  x      + N(0, 1)
+  beta.row(1) << 50., -1., 0.; // y = -x + 50 + N(0, 1)
 
   Matrix<Real> logValue;
   Vector<Real> logSumExpValue;
@@ -431,9 +435,14 @@ TEST(Functional, optimRealSimpleCase) {
             alpha,
             logValue,
             logSumExpValue);
+  std::cout << "logValue" << std::endl;
+  std::cout << logValue << std::endl;
+  std::cout << "logSumExpValue" << std::endl;
+  std::cout << itString(logSumExpValue) << std::endl;
 
   MultinomialStatistic multi;
   NormalStatistic normal;
+  UniformStatistic uni;
 
   Matrix<Real> kappa(nTime, nSub);
   for (Index i = 0; i < nTime; ++i) {
@@ -447,6 +456,13 @@ TEST(Functional, optimRealSimpleCase) {
     y(i) += normal.sample(0, beta(currW, nCoeff));
   }
 
+//  for (Index sub = 0; sub < nSub; ++sub) {
+//    std::cout << "sub: " << sub << std::endl;
+//    std::cout << itString(w(sub)) << std::endl;
+//  }
+//  std::cout << "y" << std::endl;
+//  std::cout << itString(y) << std::endl;
+
   Matrix<Real> lambda;
   computeLambda(t,
                 y,
@@ -454,15 +470,42 @@ TEST(Functional, optimRealSimpleCase) {
                 beta,
                 lambda);
 
+//  Vector<Real> estimatedAlpha(nParam);
+//  for (Index i = 0; i < nParam; ++i) {
+//    estimatedAlpha(i) = uni.sample(-20., 20.);
+//  }
+//  std::cout << "estimated alpha : " << itString(estimatedAlpha) << std::endl;
   Vector<Real> estimatedAlpha(nParam, 0.); // all alpha coefficient initialized at 0
 //  Vector<Real> estimatedAlpha = alpha; // alpha initialized using the solution
 
-  for (Index i = 0; i < nIter; ++i) {
+  Real alpha_k = 1.;
+  Real costCurr;
+  Vector<Real> gradCurr;
+
+  timeValue(t,
+            estimatedAlpha,
+            logValue,
+            logSumExpValue);
+  costFunction(t,
+               logValue,
+               logSumExpValue,
+               w,
+               costCurr);
+  gradCostFunction(t,
+                   logValue,
+                   logSumExpValue,
+                   w,
+                   gradCurr);
+
+  for (Index iter = 0; iter < nIter; ++iter) {
     updateAlpha(nParam,
                 t,
                 w,
-                estimatedAlpha);
-    std::cout << "i: " << i << ", alpha: " << itString(alpha) << std::endl;
+                estimatedAlpha,
+                alpha_k,
+                costCurr,
+                gradCurr);
+    std::cout << "iter: " << iter << ", estimatedAlpha: " << itString(estimatedAlpha) << ", costCurr: " << costCurr << ", gradCurr: " << itString(gradCurr) << std::endl;
   }
 }
 
