@@ -27,7 +27,7 @@ endif
 # generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
 # CXXFLAGS += -pthread -MD -MP -fPIC
-CXXFLAGS += -Isrc -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
+CXXFLAGS += -Isrc -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include -I../nlopt-2.4.2/api
 CXXFLAGS += -std=c++11 -DMC_VERBOSE # included here, because it is standard and we do not have access on Makevars on BigStat for example
 
 # library files
@@ -53,9 +53,12 @@ LIB_RE = lib/libRegex.a
 SRC_RE = $(wildcard ../boost/libs/regex/src/*.cpp)
 O_RE = $(SRC_RE:%.cpp=%.o)
 
+# optimization library
+# LIB_OPT = lib/libnlopt_cxx.a
+
 # sample test
 EXE_TEST = test/test
-SRC_TEST = test/mcTest.cpp
+SRC_TEST = test/03-optimization.cpp
 O_TEST = $(SRC_TEST:%.cpp=%.o)
 
 # unit-test files
@@ -107,6 +110,10 @@ lib: $(LIB_MC)
 $(LIB_MC): $(O_MC)
 	$(AR) $(ARFLAGS) $@ $^
 
+# $(LIB_OPT): # optimization is an integral part of mixtcomp, as opposed to regex for example. Therefor the rule to build it are simpler.
+#	cd ../nlopt-2.4.2; ./configure --with-cxx && make
+#	cp ../nlopt-2.4.2/.libs/libnlopt_cxx.a lib
+
 libRE: $(LIB_RE)
 
 $(LIB_RE): $(O_RE)
@@ -114,16 +121,13 @@ $(LIB_RE): $(O_RE)
 	
 utest: $(EXE_UTEST)
 
-#$(EXE_UTEST): $(O_GTEST) $(O_UTEST)
-#	$(CXX) $^ $(LIB_MC) -o $@ -lpthread 
-
 $(EXE_UTEST): $(LIB_MC) $(LIB_RE) $(O_GTEST) $(O_UTEST)
 	$(CXX) $^ $(LIB_MC) $(LIB_RE) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 test: $(EXE_TEST)
 
-$(EXE_TEST): $(O_TEST)
-	$(CXX) $^ -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
+$(EXE_TEST): $(LIB_MC) $(O_TEST)
+	$(CXX) $^ -lpthread $(LIB_MC) -lnlopt_cxx -o $@ # linker only, as cpp file is compiled by automatic rule
 
 -include $(SRC_MC:%.cpp=%.d)
 -include $(SRC_RE:%.cpp=%.d)
