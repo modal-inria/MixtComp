@@ -30,6 +30,11 @@
 
 namespace mixt {
 
+typedef struct {
+    Vector<Real>* t_;
+    Vector<std::list<Index> >* w_;
+} CostData;
+
 void VandermondeMatrix(const Vector<Real>& timeStep,
                        Index nCoeff,
                        Matrix<Real>& mat);
@@ -145,6 +150,10 @@ void computeLambda(const Vector<Real>& t,
                    const Vector<Real>& alpha,
                    const Matrix<Real>& beta,
                    Matrix<Real>& lambda);
+
+double myvfunc(const std::vector<double>& alpha,
+               std::vector<double>& grad,
+               void* my_func_data);
 
 } // namespace mixt
 

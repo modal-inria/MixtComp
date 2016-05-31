@@ -399,3 +399,82 @@ TEST(Functional, hessian) {
 
   ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
 }
+
+TEST(Functional, optimRealSimpleCaseNLOpt) {
+  Index nTime = 100000;
+  Index nSub = 2; // number of subregression in the generation / estimation phases
+  Index nCoeff = 2; // order of each subregression
+  Real xMax = 50.;
+  Real alphaSlope = 0.5;
+
+  Real alpha0 = xMax / 2.;
+  Index nParam = nSub * 2; // regression order for
+
+  Vector<Real> t(nTime);
+  for (Index i = 0; i < nTime; ++i) {
+    t(i) = i * xMax / nTime;
+  }
+
+  Vector<Real> alpha(nParam); // alpha is linearized in a single vector, for easier looping
+  alpha <<  alpha0 * alphaSlope, -alphaSlope,
+           -alpha0 * alphaSlope,  alphaSlope;
+
+  Vector<std::list<Index> > w(nSub);
+  Vector<Real> y(nTime, 0.);
+
+  Matrix<Real> beta(nSub, nCoeff + 1);
+  beta.row(0) <<  0.,  1., 0.; // y =  x      + N(0, 1)
+  beta.row(1) << 50., -1., 0.; // y = -x + 50 + N(0, 1)
+
+  Matrix<Real> logValue;
+  Vector<Real> logSumExpValue;
+  timeValue(t,
+            alpha,
+            logValue,
+            logSumExpValue);
+
+  MultinomialStatistic multi;
+  NormalStatistic normal;
+  UniformStatistic uni;
+
+  Matrix<Real> kappa(nTime, nSub);
+  for (Index i = 0; i < nTime; ++i) {
+    kappa.row(i) = logValue.row(i).exp() / std::exp(logSumExpValue(i));
+    Index currW = multi.sample(kappa.row(i));
+    w(currW).push_back(i); // sample the subregression
+
+    for (Index p = 0; p < nCoeff; ++p) { // sample the y(t) value, knowing the subregression at t
+      y(i) += beta(currW, p) * pow(t(i), p);
+    }
+    y(i) += normal.sample(0, beta(currW, nCoeff));
+  }
+
+  Matrix<Real> lambda;
+  computeLambda(t,
+                y,
+                alpha,
+                beta,
+                lambda);
+
+//  nlopt::opt opt(nlopt::LD_MMA, nParam);
+  nlopt::opt opt(nlopt::LD_LBFGS, nParam);
+  std::vector<double> estimatedAlpha(nParam);
+  for (Index i = 0; i < nParam; ++i) {
+    estimatedAlpha[i] = 0.;
+  }
+  CostData cData;
+  cData.t_ = &t;
+  cData.w_ = &w;
+
+  opt.set_max_objective(myvfunc, &cData);
+//  opt.set_maxeval(10);
+  double minf;
+  opt.optimize(estimatedAlpha, minf);
+
+  Vector<Real> estimatedAlphaVector(nParam);
+  for (Index i = 0; i < nParam; ++i) {
+    estimatedAlphaVector(i) = estimatedAlpha[i];
+  }
+
+  ASSERT_EQ(true, estimatedAlphaVector.isApprox(alpha, 0.1));
+}

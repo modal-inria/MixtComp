@@ -499,4 +499,44 @@ void computeLambda(const Vector<Real>& t,
   }
 }
 
+double myvfunc(const std::vector<double>& alpha, std::vector<double>& grad, void* my_func_data) {
+  double cost;
+  CostData* cData = (CostData*) my_func_data;
+  Matrix<Real> logValue;
+  Vector<Real> logSumExpValue;
+
+  Index size = alpha.size();
+  Vector<Real> x(size);
+  for (Index i = 0; i < size; ++i) {
+    x(i) = alpha[i];
+  }
+
+  timeValue(*cData->t_,
+            x,
+            logValue,
+            logSumExpValue);
+
+  costFunction(*cData->t_,
+               logValue,
+               logSumExpValue,
+               *cData->w_,
+               cost);
+
+  if (!grad.empty()) {
+    Vector<Real> xGrad(size);
+
+    gradCostFunction(*cData->t_,
+                     logValue,
+                     logSumExpValue,
+                     *cData->w_,
+                     xGrad);
+
+    for (Index i = 0; i < size; ++i) {
+      grad[i] = xGrad(i);
+    }
+  }
+
+  return cost;
+}
+
 } // namespace mixt

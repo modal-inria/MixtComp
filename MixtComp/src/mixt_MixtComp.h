@@ -29,6 +29,8 @@
 
 #include "boost/regex.hpp"
 
+#include <nlopt.hpp>
+
 #include "IO/Dummy.h"
 #include "IO/mixt_IO.h"
 #include "Data/mixt_MisValParser.h"
