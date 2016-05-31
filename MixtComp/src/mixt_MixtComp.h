@@ -29,7 +29,7 @@
 
 #include "boost/regex.hpp"
 
-#include <nlopt.hpp>
+#include <nlopt.h>
 
 #include "IO/Dummy.h"
 #include "IO/mixt_IO.h"

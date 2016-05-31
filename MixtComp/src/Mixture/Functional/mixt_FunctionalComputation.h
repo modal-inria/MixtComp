@@ -33,6 +33,7 @@ namespace mixt {
 typedef struct {
     Vector<Real>* t_;
     Vector<std::list<Index> >* w_;
+    Index nParam_;
 } CostData;
 
 void VandermondeMatrix(const Vector<Real>& timeStep,
@@ -87,7 +88,8 @@ void subRegression(const Matrix<Real>& design,
                    Matrix<Real>& beta);
 
 void timeValue(const Vector<Real>& t,
-               const Vector<Real>& alpha,
+               int nParam,
+               const double* alpha,
                Matrix<Real>& logValue,
                Vector<Real>& logSumExpValue);
 
@@ -119,7 +121,7 @@ void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,
                       const Vector<std::list<Index> >& w,
-                      std::vector<double>& gradCost);
+                      double* gradCost);
 
 void hessianCostFunction(const Vector<Real>& t,
                          const Matrix<Real>& value,
@@ -147,12 +149,14 @@ void initAlpha(Index nParam,
 
 void computeLambda(const Vector<Real>& t,
                    const Vector<Real>& y,
-                   const Vector<Real>& alpha,
+                   int nParam,
+                   const double* alpha,
                    const Matrix<Real>& beta,
                    Matrix<Real>& lambda);
 
-double optiFunc(const std::vector<double>& alpha,
-                std::vector<double>& grad,
+double optiFunc(unsigned nParam,
+                const double* alpha,
+                double* grad,
                 void* my_func_data);
 
 } // namespace mixt

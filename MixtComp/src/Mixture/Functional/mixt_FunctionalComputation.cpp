@@ -73,11 +73,12 @@ void subRegression(const Matrix<Real>& design,
 }
 
 void timeValue(const Vector<Real>& t,
-               const Vector<Real>& alpha,
+               int nParam,
+               const double* alpha,
                Matrix<Real>& logValue,
                Vector<Real>& logSumExpValue) {
   Index nT = t.size();
-  Index nSub = alpha.size() / 2;
+  Index nSub = nParam / 2;
 
   logValue.resize(nT, nSub);
   logSumExpValue.resize(nT);
@@ -85,7 +86,7 @@ void timeValue(const Vector<Real>& t,
   for (Index s = 0; s < nSub; ++s) {
     for (Index j = 0; j < nT; ++j) {
       Index regFirstInd = 2 * s;
-      logValue(j, s) = alpha(regFirstInd) + alpha(regFirstInd + 1) * t(j);
+      logValue(j, s) = alpha[regFirstInd] + alpha[regFirstInd + 1] * t(j);
     }
   }
 
@@ -112,28 +113,6 @@ void costFunction(const Vector<Real>& t,
       cost += - logSumExpValue(*it);
     }
   }
-}
-
-Real costFunctionDebug(const Vector<Real>& t,
-                       const Vector<Real>& alpha,
-                       const Vector<std::list<Index> >& w) {
-  Real cost;
-
-  Matrix<Real> value;
-  Vector<Real> sumExpValue;
-
-  timeValue(t,
-            alpha,
-            value,
-            sumExpValue);
-
-  costFunction(t,
-               value,
-               sumExpValue,
-               w,
-               cost);
-
-  return cost;
 }
 
 Real deriv1Var(Index subReg,
@@ -170,10 +149,9 @@ void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,
                       const Vector<std::list<Index> >& w,
-                      std::vector<Real>& gradCost) {
+                      double* gradCost) {
   Index nT = t.size();
   Index nParam = 2 * value.cols();
-  gradCost.resize(nParam);
 
   for (Index p = 0; p < nParam; ++p) { // currently computed coefficient in the gradient
     Index subReg = p / 2; // current alpha index
@@ -474,7 +452,8 @@ void sampleW(const Vector<Real>& t,
 
 void computeLambda(const Vector<Real>& t,
                    const Vector<Real>& y,
-                   const Vector<Real>& alpha,
+                   int nParam,
+                   const double* alpha,
                    const Matrix<Real>& beta,
                    Matrix<Real>& lambda) {
   Index nTime = t.size();
@@ -488,6 +467,7 @@ void computeLambda(const Vector<Real>& t,
   Vector<Real> logSumExpValue;
   Vector<Real> logProba(nSub);
   timeValue(t,
+            nParam,
             alpha,
             logValue,
             logSumExpValue);
@@ -499,22 +479,18 @@ void computeLambda(const Vector<Real>& t,
   }
 }
 
-double optiFunc(const std::vector<double>& alpha,
-                std::vector<double>& grad,
+double optiFunc(unsigned nParam,
+                const double* alpha,
+                double* grad,
                 void* my_func_data) {
   double cost;
   CostData* cData = (CostData*) my_func_data;
   Matrix<Real> logValue;
   Vector<Real> logSumExpValue;
 
-  Index size = alpha.size();
-  Vector<Real> x(size);
-  for (Index i = 0; i < size; ++i) {
-    x(i) = alpha[i];
-  }
-
   timeValue(*cData->t_,
-            x,
+            nParam,
+            alpha,
             logValue,
             logSumExpValue);
 
@@ -524,7 +500,7 @@ double optiFunc(const std::vector<double>& alpha,
                *cData->w_,
                cost);
 
-  if (!grad.empty()) {
+  if (grad != NULL) {
     gradCostFunction(*cData->t_,
                      logValue,
                      logSumExpValue,

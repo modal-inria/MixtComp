@@ -191,17 +191,17 @@ TEST(Functional, costAndGrad1SubReg) {
   w(0).push_back(2);
   w(0).push_back(3);
 
-  Vector<Real> alpha0(nParam);
-  alpha0 << -1., 0.5;
+  double alpha0[] = {-1., 0.5};
 
   Matrix<Real> value;
   Vector<Real> sumExpValue;
   Vector<Real> fdGrad(nParam); // finite differences gradient
   Vector<Real> computedGrad(nParam); // analytical gradient
-  std::vector<double> computedGradVec;
+  double computedGradVec[nParam];
   Real c0; // base cost
 
   timeValue(t,
+            nParam,
             alpha0,
             value,
             sumExpValue);
@@ -220,10 +220,14 @@ TEST(Functional, costAndGrad1SubReg) {
 
   for (Index s = 0; s < nParam; ++s) {
     Real c1;
-    Vector<Real> alpha1 = alpha0;
-    alpha1(s) += delta;
+    double alpha1[nParam];
+    for (Index i = 0; i < nParam; ++i) {
+      alpha1[i] = alpha0[i];
+    }
+    alpha1[s] += delta;
 
     timeValue(t,
+              nParam,
               alpha1,
               value,
               sumExpValue);
@@ -260,17 +264,17 @@ TEST(Functional, costAndGrad) {
   w(1).push_back(2);
   w(1).push_back(3);
 
-  Vector<Real> alpha0(nParam);
-  alpha0 << -1., 0.5, 1., -0.5;
+  double alpha0[] = {-1., 0.5, 1., -0.5};
 
   Matrix<Real> value;
   Vector<Real> sumExpValue;
   Vector<Real> fdGrad(nParam); // finite differences gradient
   Vector<Real> computedGrad(nParam); // analytical gradient
-  std::vector<double> computedGradVec;
+  double computedGradVec[nParam];
   Real c0; // base cost
 
   timeValue(t,
+            nParam,
             alpha0,
             value,
             sumExpValue);
@@ -289,10 +293,14 @@ TEST(Functional, costAndGrad) {
 
   for (Index s = 0; s < nParam; ++s) {
     Real c1;
-    Vector<Real> alpha1 = alpha0;
-    alpha1(s) += delta;
+    double alpha1[nParam];
+    for (Index i = 0; i < nParam; ++i) {
+      alpha1[i] = alpha0[i];
+    }
+    alpha1[s] += delta;
 
     timeValue(t,
+              nParam,
               alpha1,
               value,
               sumExpValue);
@@ -332,8 +340,7 @@ TEST(Functional, hessian) {
     }
   }
 
-  Vector<Real> alpha0(nParam);
-  alpha0 << -1., 0.5, 1., -0.5;
+  double alpha0[] = {-1., 0.5, 1., -0.5};
 
   Matrix<Real> value;
   Vector<Real> sumExpValue;
@@ -342,6 +349,7 @@ TEST(Functional, hessian) {
   Real c00; // base cost
 
   timeValue(t,
+            nParam,
             alpha0,
             value,
             sumExpValue);
@@ -364,11 +372,14 @@ TEST(Functional, hessian) {
       Real c10;
       Real c11;
 
-      Vector<Real> alpha1;
+      double alpha1[nParam];
+      for (Index i = 0; i < nParam; ++i) {
+        alpha1[i] = alpha0[i];
+      }
+      alpha1[row] += delta;
 
-      alpha1 = alpha0;
-      alpha1(row) += delta;
       timeValue(t,
+                nParam,
                 alpha1,
                 value,
                 sumExpValue);
@@ -378,9 +389,13 @@ TEST(Functional, hessian) {
                    w,
                    c10);
 
-      alpha1 = alpha0;
-      alpha1(col) += delta;
+      for (Index i = 0; i < nParam; ++i) {
+        alpha1[i] = alpha0[i];
+      }
+      alpha1[col] += delta;
+
       timeValue(t,
+                nParam,
                 alpha1,
                 value,
                 sumExpValue);
@@ -390,10 +405,14 @@ TEST(Functional, hessian) {
                    w,
                    c01);
 
-      alpha1 = alpha0;
-      alpha1(row) += delta;
-      alpha1(col) += delta;
+      for (Index i = 0; i < nParam; ++i) {
+        alpha1[i] = alpha0[i];
+      }
+      alpha1[row] += delta;
+      alpha1[col] += delta;
+
       timeValue(t,
+                nParam,
                 alpha1,
                 value,
                 sumExpValue);
@@ -425,9 +444,8 @@ TEST(Functional, optimRealSimpleCaseNLOpt) {
     t(i) = i * xMax / nTime;
   }
 
-  Vector<Real> alpha(nParam); // alpha is linearized in a single vector, for easier looping
-  alpha <<  alpha0 * alphaSlope, -alphaSlope,
-           -alpha0 * alphaSlope,  alphaSlope;
+  double alpha[] = { alpha0 * alphaSlope, -alphaSlope, // alpha is linearized in a single vector, for easier looping
+                    -alpha0 * alphaSlope,  alphaSlope};
 
   Vector<std::list<Index> > w(nSub);
   Vector<Real> y(nTime, 0.);
@@ -439,6 +457,7 @@ TEST(Functional, optimRealSimpleCaseNLOpt) {
   Matrix<Real> logValue;
   Vector<Real> logSumExpValue;
   timeValue(t,
+            nParam,
             alpha,
             logValue,
             logSumExpValue);
@@ -462,29 +481,35 @@ TEST(Functional, optimRealSimpleCaseNLOpt) {
   Matrix<Real> lambda;
   computeLambda(t,
                 y,
+                nParam,
                 alpha,
                 beta,
                 lambda);
 
-//  nlopt::opt opt(nlopt::LD_MMA, nParam);
-  nlopt::opt opt(nlopt::LD_LBFGS, nParam);
-  std::vector<double> estimatedAlpha(nParam);
+  double estimatedAlpha[nParam];
   for (Index i = 0; i < nParam; ++i) {
     estimatedAlpha[i] = 0.;
   }
   CostData cData;
   cData.t_ = &t;
   cData.w_ = &w;
-
-  opt.set_max_objective(optiFunc, &cData);
-//  opt.set_maxeval(10);
+  cData.nParam_ = nParam;
   double minf;
-  opt.optimize(estimatedAlpha, minf);
 
-  Vector<Real> estimatedAlphaVector(nParam);
+  nlopt_opt opt;
+  opt = nlopt_create(NLOPT_LD_LBFGS, nParam); /* algorithm and dimensionality */
+  nlopt_set_max_objective(opt, optiFunc, &cData);
+  nlopt_optimize(opt, estimatedAlpha, &minf);
+
+  nlopt_destroy(opt);
+
+  bool isApprox = true;
   for (Index i = 0; i < nParam; ++i) {
-    estimatedAlphaVector(i) = estimatedAlpha[i];
+    if (0.1 < std::abs((estimatedAlpha[i] - alpha[i]) / alpha[i])) {
+      isApprox = false;
+      break;
+    }
   }
 
-  ASSERT_EQ(true, estimatedAlphaVector.isApprox(alpha, 0.1));
+  ASSERT_EQ(true, isApprox);
 }
