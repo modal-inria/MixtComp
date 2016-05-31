@@ -197,7 +197,8 @@ TEST(Functional, costAndGrad1SubReg) {
   Matrix<Real> value;
   Vector<Real> sumExpValue;
   Vector<Real> fdGrad(nParam); // finite differences gradient
-  Vector<Real> computedGrad; // analytical gradient
+  Vector<Real> computedGrad(nParam); // analytical gradient
+  std::vector<double> computedGradVec;
   Real c0; // base cost
 
   timeValue(t,
@@ -215,7 +216,7 @@ TEST(Functional, costAndGrad1SubReg) {
                    value,
                    sumExpValue,
                    w,
-                   computedGrad);
+                   computedGradVec);
 
   for (Index s = 0; s < nParam; ++s) {
     Real c1;
@@ -234,6 +235,10 @@ TEST(Functional, costAndGrad1SubReg) {
                  c1);
 
     fdGrad(s) = (c1 - c0) / delta;
+  }
+
+  for (Index i = 0; i < nParam; ++i) {
+    computedGrad(i) = computedGradVec[i];
   }
 
   ASSERT_EQ(true, computedGrad.isApprox(fdGrad, epsilon));
@@ -261,7 +266,8 @@ TEST(Functional, costAndGrad) {
   Matrix<Real> value;
   Vector<Real> sumExpValue;
   Vector<Real> fdGrad(nParam); // finite differences gradient
-  Vector<Real> computedGrad; // analytical gradient
+  Vector<Real> computedGrad(nParam); // analytical gradient
+  std::vector<double> computedGradVec;
   Real c0; // base cost
 
   timeValue(t,
@@ -279,7 +285,7 @@ TEST(Functional, costAndGrad) {
                    value,
                    sumExpValue,
                    w,
-                   computedGrad);
+                   computedGradVec);
 
   for (Index s = 0; s < nParam; ++s) {
     Real c1;
@@ -298,6 +304,10 @@ TEST(Functional, costAndGrad) {
                  c1);
 
     fdGrad(s) = (c1 - c0) / delta;
+  }
+
+  for (Index i = 0; i < nParam; ++i) {
+    computedGrad(i) = computedGradVec[i];
   }
 
   ASSERT_EQ(true, computedGrad.isApprox(fdGrad, 1e-4));
@@ -466,7 +476,7 @@ TEST(Functional, optimRealSimpleCaseNLOpt) {
   cData.t_ = &t;
   cData.w_ = &w;
 
-  opt.set_max_objective(myvfunc, &cData);
+  opt.set_max_objective(optiFunc, &cData);
 //  opt.set_maxeval(10);
   double minf;
   opt.optimize(estimatedAlpha, minf);

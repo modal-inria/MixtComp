@@ -170,7 +170,7 @@ void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,
                       const Vector<std::list<Index> >& w,
-                      Vector<Real>& gradCost) {
+                      std::vector<Real>& gradCost) {
   Index nT = t.size();
   Index nParam = 2 * value.cols();
   gradCost.resize(nParam);
@@ -198,7 +198,7 @@ void gradCostFunction(const Vector<Real>& t,
       divComp += - u0 / u;
     }
 
-    gradCost(p) = addComp + divComp;
+    gradCost[p] = addComp + divComp;
   }
 }
 
@@ -316,73 +316,73 @@ void initAlpha(Index nParam,
   }
 }
 
-void updateAlpha(Index nParam,
-                 const Vector<Real>& t,
-                 const Vector<std::list<Index> >& w,
-                 Vector<Real>& alpha,
-                 Real& alpha_k,
-                 Real& costCurr,
-                 Vector<Real>& gradCurr) {
-  Real c1 = 1e-4;
-  Real c2 = 0.1;
-  Real varFactor = 2.;
-  Index nIt = 40.; // currently number of iterations fixed... switch to tolerance condition ?
-
-  bool cond1; // is there enough variation in the cost function ?
-  bool cond2; // is there enough variation in the gradient ?
-
-  Matrix<Real> logValue;
-  Vector<Real> logSumExpValue;
-
-  Vector<Real> alphaCandidate;
-  Real costCandidate;
-  Vector<Real> gradCandidate;
-  Vector<Real> searchDir = gradCurr / gradCurr.norm(); // get search direction from gradient. Since this is a maximization, the gradient is considered, and not the opposite of the gradient
-  Real projGradCurr = searchDir.dot(gradCurr);
-
-  for (int i = 0; i < nIt; ++i) { // line search algorithm using Wolfe condition for selection of step size
-    alphaCandidate = alpha + alpha_k * searchDir;
-
-    timeValue(t,
-              alphaCandidate,
-              logValue,
-              logSumExpValue);
-
-    costFunction(t,
-                 logValue,
-                 logSumExpValue,
-                 w,
-                 costCandidate);
-
-    gradCostFunction(t,
-                     logValue,
-                     logSumExpValue,
-                     w,
-                     gradCandidate);
-
-    Real projGradCandidate = searchDir.dot(gradCandidate);
-    cond1 = costCurr <= costCandidate + c1 * alpha_k * projGradCurr;
-    cond2 = projGradCandidate <= c2 * projGradCurr;
-    std::cout << "i: " << i << ", costCandidate: " << costCandidate << ", cond1: " << cond1 << ", cond2: " << cond2 << std::endl;
-
-    if (!cond2) { // priority is put on having a large step
-      alpha_k *= varFactor; // shorten step size
-      std::cout << "increase alpha_k to: " << alpha_k << std::endl;
-    }
-    else if (!cond1) { // increase step size
-      alpha_k /= varFactor;
-      std::cout << "increase alpha_k to: " << alpha_k << std::endl;
-    }
-    else {
-      std::cout << "leave alpha_k as it is: " << alpha_k << std::endl;
-      break;
-    }
-  }
-
-  alpha = alphaCandidate;
-  costCurr = costCandidate;
-  gradCurr = gradCandidate;
-}
+//void updateAlpha(Index nParam,
+//                 const Vector<Real>& t,
+//                 const Vector<std::list<Index> >& w,
+//                 Vector<Real>& alpha,
+//                 Real& alpha_k,
+//                 Real& costCurr,
+//                 Vector<Real>& gradCurr) {
+//  Real c1 = 1e-4;
+//  Real c2 = 0.1;
+//  Real varFactor = 2.;
+//  Index nIt = 40.; // currently number of iterations fixed... switch to tolerance condition ?
+//
+//  bool cond1; // is there enough variation in the cost function ?
+//  bool cond2; // is there enough variation in the gradient ?
+//
+//  Matrix<Real> logValue;
+//  Vector<Real> logSumExpValue;
+//
+//  Vector<Real> alphaCandidate;
+//  Real costCandidate;
+//  Vector<Real> gradCandidate;
+//  Vector<Real> searchDir = gradCurr / gradCurr.norm(); // get search direction from gradient. Since this is a maximization, the gradient is considered, and not the opposite of the gradient
+//  Real projGradCurr = searchDir.dot(gradCurr);
+//
+//  for (int i = 0; i < nIt; ++i) { // line search algorithm using Wolfe condition for selection of step size
+//    alphaCandidate = alpha + alpha_k * searchDir;
+//
+//    timeValue(t,
+//              alphaCandidate,
+//              logValue,
+//              logSumExpValue);
+//
+//    costFunction(t,
+//                 logValue,
+//                 logSumExpValue,
+//                 w,
+//                 costCandidate);
+//
+//    gradCostFunction(t,
+//                     logValue,
+//                     logSumExpValue,
+//                     w,
+//                     gradCandidate);
+//
+//    Real projGradCandidate = searchDir.dot(gradCandidate);
+//    cond1 = costCurr <= costCandidate + c1 * alpha_k * projGradCurr;
+//    cond2 = projGradCandidate <= c2 * projGradCurr;
+//    std::cout << "i: " << i << ", costCandidate: " << costCandidate << ", cond1: " << cond1 << ", cond2: " << cond2 << std::endl;
+//
+//    if (!cond2) { // priority is put on having a large step
+//      alpha_k *= varFactor; // shorten step size
+//      std::cout << "increase alpha_k to: " << alpha_k << std::endl;
+//    }
+//    else if (!cond1) { // increase step size
+//      alpha_k /= varFactor;
+//      std::cout << "increase alpha_k to: " << alpha_k << std::endl;
+//    }
+//    else {
+//      std::cout << "leave alpha_k as it is: " << alpha_k << std::endl;
+//      break;
+//    }
+//  }
+//
+//  alpha = alphaCandidate;
+//  costCurr = costCandidate;
+//  gradCurr = gradCandidate;
+//}
 
 void computeKappa(Real t,
                   const Matrix<Real>& alpha,
@@ -499,7 +499,9 @@ void computeLambda(const Vector<Real>& t,
   }
 }
 
-double myvfunc(const std::vector<double>& alpha, std::vector<double>& grad, void* my_func_data) {
+double optiFunc(const std::vector<double>& alpha,
+                std::vector<double>& grad,
+                void* my_func_data) {
   double cost;
   CostData* cData = (CostData*) my_func_data;
   Matrix<Real> logValue;
@@ -523,17 +525,11 @@ double myvfunc(const std::vector<double>& alpha, std::vector<double>& grad, void
                cost);
 
   if (!grad.empty()) {
-    Vector<Real> xGrad(size);
-
     gradCostFunction(*cData->t_,
                      logValue,
                      logSumExpValue,
                      *cData->w_,
-                     xGrad);
-
-    for (Index i = 0; i < size; ++i) {
-      grad[i] = xGrad(i);
-    }
+                     grad);
   }
 
   return cost;

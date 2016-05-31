@@ -119,7 +119,7 @@ void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,
                       const Vector<std::list<Index> >& w,
-                      Vector<Real>& gradCost);
+                      std::vector<double>& gradCost);
 
 void hessianCostFunction(const Vector<Real>& t,
                          const Matrix<Real>& value,
@@ -137,13 +137,13 @@ void initAlpha(Index nParam,
                const Vector<Real>& t,
                Vector<Real>& alpha);
 
-void updateAlpha(Index nParam,
-                 const Vector<Real>& t,
-                 const Vector<std::list<Index> >& w,
-                 Vector<Real>& alpha,
-                 Real& alpha_k,
-                 Real& costCurr,
-                 Vector<Real>& gradCurr);
+//void updateAlpha(Index nParam,
+//                 const Vector<Real>& t,
+//                 const Vector<std::list<Index> >& w,
+//                 Vector<Real>& alpha,
+//                 Real& alpha_k,
+//                 Real& costCurr,
+//                 Vector<Real>& gradCurr);
 
 void computeLambda(const Vector<Real>& t,
                    const Vector<Real>& y,
@@ -151,9 +151,9 @@ void computeLambda(const Vector<Real>& t,
                    const Matrix<Real>& beta,
                    Matrix<Real>& lambda);
 
-double myvfunc(const std::vector<double>& alpha,
-               std::vector<double>& grad,
-               void* my_func_data);
+double optiFunc(const std::vector<double>& alpha,
+                std::vector<double>& grad,
+                void* my_func_data);
 
 } // namespace mixt
 
