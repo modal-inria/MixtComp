@@ -122,7 +122,7 @@ $(LIB_RE): $(O_RE)
 utest: $(EXE_UTEST)
 
 $(EXE_UTEST): $(LIB_MC) $(LIB_RE) $(O_GTEST) $(O_UTEST)
-	$(CXX) $^ $(LIB_MC) $(LIB_RE) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
+	$(CXX) $^ $(LIB_MC) $(LIB_RE) -lnlopt_cxx -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 test: $(EXE_TEST)
 
