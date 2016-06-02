@@ -50,10 +50,12 @@ void subRegression(const Matrix<Real>& design,
   Index nCoeff = design.cols(); // degree + 1
   Index nSub = w.size(); // number of sub regressions
   beta.resize(nSub, nCoeff);
+  sd.resize(nSub);
   Matrix<Real> subDesign; // design matrix reconstituted for each particular subregression
   Vector<Real> subY; // y vector for each particular subregression
   RowVector<Real> subBeta;
-  for (Index p = 0; p < nSub; p++) {
+
+  for (Index p = 0; p < nSub; ++p) {
     Index nbIndSubReg = w(p).size();
     subDesign.resize(nbIndSubReg, nCoeff);
     subY.resize(nbIndSubReg);
