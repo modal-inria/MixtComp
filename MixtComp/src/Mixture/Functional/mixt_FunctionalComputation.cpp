@@ -30,14 +30,14 @@
 
 namespace mixt {
 
-void VandermondeMatrix(const Vector<Real>& timeStep,
+void vandermondeMatrix(const Vector<Real>& t,
                        Index nCoeff,
-                       Matrix<Real>& mat) {
-  Index nStep = timeStep.size();
-  mat.resize(nStep, nCoeff);
+                       Matrix<Real>& vandermonde) {
+  Index nStep = t.size();
+  vandermonde.resize(nStep, nCoeff);
   for (Index k = 0; k < nCoeff; ++k) {
     for (Index i = 0; i < nStep; ++i) {
-      mat(i, k) = pow(timeStep(i), k);
+      vandermonde(i, k) = pow(t(i), k);
     }
   }
 }
@@ -45,10 +45,11 @@ void VandermondeMatrix(const Vector<Real>& timeStep,
 void subRegression(const Matrix<Real>& design,
                    const Vector<Real>& y,
                    const Vector<std::list<Index> >& w,
-                   Matrix<Real>& beta) {
+                   Matrix<Real>& beta,
+                   Vector<Real>& sd) {
   Index nCoeff = design.cols(); // degree + 1
-  Index nSub = w.size();
-  beta.resize(nSub, nCoeff + 1); // +1 in size is for storing the standard deviation in the last coefficient
+  Index nSub = w.size(); // number of sub regressions
+  beta.resize(nSub, nCoeff);
   Matrix<Real> subDesign; // design matrix reconstituted for each particular subregression
   Vector<Real> subY; // y vector for each particular subregression
   RowVector<Real> subBeta;
@@ -59,7 +60,7 @@ void subRegression(const Matrix<Real>& design,
 
     Index i = 0;
     for (std::list<Index>::const_iterator it  = w(p).begin(),
-                                        itE = w(p).end();
+                                          itE = w(p).end();
          it != itE;
          ++it, ++i) {
       subDesign.row(i) = design.row(*it);
@@ -68,7 +69,8 @@ void subRegression(const Matrix<Real>& design,
 
     regression(subDesign,
                subY,
-               beta.row(p));
+               beta.row(p),
+               sd(p));
   }
 }
 
@@ -361,17 +363,6 @@ void initAlpha(Index nParam,
 //  costCurr = costCandidate;
 //  gradCurr = gradCandidate;
 //}
-
-void computeKappa(Real t,
-                  const Matrix<Real>& alpha,
-                  Vector<Real>& kappa) {
-  Index nSub = alpha.rows();
-  Vector<Real> logValue(nSub);
-  for (Index k = 0; k < nSub; ++k) {
-    logValue(k) = alpha(k, 0) + alpha(k, 1) * t;
-  }
-  kappa.logToMulti(logValue);
-}
 
 Real sampleW(Real t,
              const Matrix<Real>& alpha,
