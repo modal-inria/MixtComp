@@ -84,44 +84,48 @@ TEST(Functional, regressionNoNoise) {
   ASSERT_NEAR(0., sdEstimated, epsilon);
 }
 
-//TEST(Functional, regressionNoise) {
-//  Index nCoeff = 4;
-//  Index nObs = 100000;
-//
-//  Real xMin = -50.;
-//  Real xMax = 50.;
-//
-//  Vector<Real> x(nObs);
-//  Vector<Real> y(nObs, 0.);
-//
-//  Matrix<Real> design(nObs, nCoeff);
-//
-//  Vector<Real> beta(nCoeff + 1); // +1 for the standard deviation
-//  beta << 6, -4, 12, 5, 1; // 5 x**3 + 12 x**2 - 4 x + 6, standard deviation is 12
-//  Vector<Real> betaEstimated;
-//
-//  NormalStatistic normal;
-//  UniformStatistic uni;
-//
-//  for (Index i = 0; i < nObs; ++i) {
-//    x(i) = uni.sample(xMin, xMax);
-//    for (Index p = 0; p < nCoeff; ++p) {
-//      y(i) += beta(p) * pow(x(i), p);
-//    }
-//    y(i) += normal.sample(0, beta(nCoeff));
-//  }
-//
-//  vandermondeMatrix(x,
-//                    nCoeff,
-//                    design);
-//
-//  regression(design,
-//             y,
-//             betaEstimated);
-//
-//  ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-3));
-//}
-//
+TEST(Functional, regressionNoise) {
+  Index nCoeff = 4;
+  Index nObs = 100000;
+
+  Real xMin = -50.;
+  Real xMax = 50.;
+
+  Vector<Real> x(nObs);
+  Vector<Real> y(nObs, 0.);
+
+  Matrix<Real> design(nObs, nCoeff);
+
+  Vector<Real> beta(nCoeff); // +1 for the standard deviation
+  beta << 6, -4, 12, 5; // 5 x**3 + 12 x**2 - 4 x + 6
+  Real sd = 1.; // standard deviation is 1.
+  Real sdEstimated;
+  Vector<Real> betaEstimated;
+
+  NormalStatistic normal;
+  UniformStatistic uni;
+
+  for (Index i = 0; i < nObs; ++i) {
+    x(i) = uni.sample(xMin, xMax);
+    for (Index p = 0; p < nCoeff; ++p) {
+      y(i) += beta(p) * pow(x(i), p);
+    }
+    y(i) += normal.sample(0., sd);
+  }
+
+  vandermondeMatrix(x,
+                    nCoeff,
+                    design);
+
+  regression(design,
+             y,
+             betaEstimated,
+             sdEstimated);
+
+  ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-3));
+  ASSERT_NEAR(sd, sdEstimated, 0.01);
+}
+
 //TEST(Functional, subRegression) {
 //  Index nCoeff = 3;
 //  Index nObs = 100000;
