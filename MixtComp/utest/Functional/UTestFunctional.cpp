@@ -25,7 +25,7 @@
 
 using namespace mixt;
 
-TEST(Functional, Vandermonde) {
+TEST(FunctionalComputation, Vandermonde) {
   Vector<Real> timeStep(2);
   timeStep << 2., 12.;
 
@@ -44,7 +44,7 @@ TEST(Functional, Vandermonde) {
   ASSERT_EQ(true, vm.isApprox(expectedVm));
 }
 
-TEST(Functional, regressionNoNoise) {
+TEST(FunctionalComputation, regressionNoNoise) {
   Index nCoeff = 4;
   Index nObs = 100;
 
@@ -84,7 +84,7 @@ TEST(Functional, regressionNoNoise) {
   ASSERT_NEAR(0., sdEstimated, epsilon);
 }
 
-TEST(Functional, regressionNoise) {
+TEST(FunctionalComputation, regressionNoise) {
   Index nCoeff = 4;
   Index nObs = 100000;
 
@@ -126,7 +126,7 @@ TEST(Functional, regressionNoise) {
   ASSERT_NEAR(sd, sdEstimated, 0.01);
 }
 
-TEST(Functional, subRegression) {
+TEST(FunctionalComputation, subRegression) {
   Index nCoeff = 4;
   Index nObs = 100000;
   Index nSub = 3;
@@ -181,14 +181,14 @@ TEST(Functional, subRegression) {
   ASSERT_EQ(true, sdEstimated.isApprox(sd, 0.01));
 }
 
-TEST(Functional, smallTest) {
+TEST(FunctionalComputation, smallTest) {
   Vector<Real> a(4, 0.);
 
   Vector<Real> dummy;
   ASSERT_NEAR(4, std::exp(dummy.logToMulti(a)), epsilon);
 }
 
-TEST(Functional, costAndGrad1SubReg) {
+TEST(FunctionalComputation, costAndGrad1SubReg) {
   Index nTime = 4;
   Index nParam = 2;
   Real delta = epsilon;
@@ -261,7 +261,7 @@ TEST(Functional, costAndGrad1SubReg) {
   ASSERT_EQ(true, computedGrad.isApprox(fdGrad, epsilon));
 }
 
-TEST(Functional, costAndGrad) {
+TEST(FunctionalComputation, costAndGrad) {
   Index nTime = 4;
   Index nParam = 4;
   Real delta = epsilon;
@@ -334,7 +334,7 @@ TEST(Functional, costAndGrad) {
   ASSERT_EQ(true, computedGrad.isApprox(fdGrad, 1e-4));
 }
 
-TEST(Functional, hessian) {
+TEST(FunctionalComputation, hessian) {
   Index nTime = 4;
   Index nParam = 4;
   Real delta = 1e-5;
@@ -442,7 +442,7 @@ TEST(Functional, hessian) {
   ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
 }
 
-TEST(Functional, optimRealSimpleCaseNLOpt) {
+TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
   Index nTime = 100000;
   Index nSub = 2; // number of subregression in the generation / estimation phases
   Index nCoeff = 2; // order of each subregression
@@ -513,7 +513,6 @@ TEST(Functional, optimRealSimpleCaseNLOpt) {
   opt = nlopt_create(NLOPT_LD_LBFGS, nParam); /* algorithm and dimensionality */
   nlopt_set_max_objective(opt, optiFunc, &cData);
   nlopt_optimize(opt, estimatedAlpha, &minf);
-
   nlopt_destroy(opt);
 
   bool isApprox = true;
