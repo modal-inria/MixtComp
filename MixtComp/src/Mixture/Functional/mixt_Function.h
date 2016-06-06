@@ -37,6 +37,8 @@ class Function {
                 const Vector<Real>& x,
                 const Vector<std::list<Index> >& w);
 
+    void computeVandermonde(Index nCoeff);
+
     Real lnCompletedProbability(const Matrix<Real>& alpha,
                                 const Matrix<Real>& beta,
                                 const Vector<Real>& sd);
@@ -53,6 +55,9 @@ class Function {
 
     /** Subregression to which each time step belong. Has same size as t_. */
     Vector<std::list<Index> > w_;
+
+    /** Vandermonde matrix, to be computed once and for all as soon as data is known, for example just after a setData. */
+    Matrix<Real> vandermonde_;
 };
 
 } // namespace mixt

@@ -34,6 +34,10 @@ void Function::setVal(const Vector<Real>& t,
   w_ = w;
 }
 
+void Function::computeVandermonde(Index nCoeff) {
+  vandermondeMatrix(t_, nCoeff, vandermonde_);
+}
+
 Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
                                       const Matrix<Real>& beta,
                                       const Vector<Real>& sd) {
@@ -46,16 +50,13 @@ Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
     computeKappa(t_(i), alpha, kappa.row(i));
   }
 
-  Matrix<Real> vandermonde(nTime_, nCoeff);
-  vandermondeMatrix(t_, nCoeff, vandermonde);
-
   NormalStatistic normal;
   for (Index s = 0; s < nSub; ++s) {
     for (std::list<Index>::const_iterator it  = w_(s).begin(),
                                           itE = w_(s).end();
          it != itE;
          ++it) {
-      Real currExpectation = vandermonde.row(*it).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
+      Real currExpectation = vandermonde_.row(*it).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
       logProba += normal.lpdf(x_(*it), currExpectation, sd(s));
     }
   }
