@@ -370,7 +370,7 @@ Real sampleW(Real t,
              const Matrix<Real>& alpha,
              MultinomialStatistic& multi) {
   Vector<Real> kappa;
-  computeKappa(t, alpha, kappa);
+  kappaMatrix(t, alpha, kappa);
   return multi.sample(kappa);
 }
 
@@ -434,7 +434,7 @@ void sampleW(const Vector<Real>& t,
   for (Index i = 0; i < nTime; ++i) {
     Index currT = t(i);
     Real currY = y(i);
-    computeKappa(currT, alpha, kappa);
+    kappaMatrix(currT, alpha, kappa);
     for (Index currW = 0; currW < nSub; ++currW) {
       lpXW(currW) = std::log(kappa(currW)) + logProbaXGW(currT, currY, currW, beta, normal);
     }

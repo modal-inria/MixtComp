@@ -38,17 +38,19 @@ void Function::computeVandermonde(Index nCoeff) {
   vandermondeMatrix(t_, nCoeff, vandermonde_);
 }
 
+void Function::computeKappa(const Matrix<Real>& alpha) {
+  Index nSub = alpha.rows();
+  kappa_.resize(nTime_, nSub);
+  for (Index i = 0; i < nTime_; ++i) {
+    kappaMatrix(t_(i), alpha, kappa_.row(i));
+  }
+}
+
 Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
                                       const Matrix<Real>& beta,
                                       const Vector<Real>& sd) {
   Real logProba = 0.;
   Index nSub = alpha.rows();
-  Index nCoeff = beta.cols();
-
-  Matrix<Real> kappa(nTime_, nSub);
-  for (Index i = 0; i < nTime_; ++i) {
-    computeKappa(t_(i), alpha, kappa.row(i));
-  }
 
   NormalStatistic normal;
   for (Index s = 0; s < nSub; ++s) {

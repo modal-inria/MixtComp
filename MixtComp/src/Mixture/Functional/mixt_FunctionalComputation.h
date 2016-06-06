@@ -38,9 +38,9 @@ typedef struct {
 } CostData;
 
 template<typename kappaType>
-void computeKappa(Real t,
-                  const Matrix<Real>& alpha,
-                  const kappaType& kappaIn) {
+void kappaMatrix(Real t,
+                 const Matrix<Real>& alpha,
+                 const kappaType& kappaIn) {
   kappaType& kappa = const_cast<kappaType&>(kappaIn); // without the const_cast it is impossible to access a row which is a temporary object requiring a const in the argument
 
   Index nSub = alpha.rows();

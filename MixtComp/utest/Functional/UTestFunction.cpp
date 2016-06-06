@@ -88,6 +88,7 @@ TEST(Functional, lnCompletedProbability) {
 
     function.setVal(t, x, w);
     function.computeVandermonde(nCoeff);
+    function.computeKappa(alpha);
     if (mode < function.lnCompletedProbability(alpha, beta, sd)) {
       mode = function.lnCompletedProbability(alpha, beta, sd);
     }
