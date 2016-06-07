@@ -75,4 +75,17 @@ Real Function::lnCompletedProbability() {
   return logProba;
 }
 
+Real Function::lnObservedProbability() {
+  Real logProba = 0.;
+
+  NormalStatistic normal;
+  for (Index i = 0; i < nTime_; ++i) {
+    for (Index s = 0; s < nSub_; ++s) {
+      logProba += jointLogProba_(i, s); // every possible value of w is taken into account
+    }
+  }
+
+  return logProba;
+}
+
 } // namespace mixt

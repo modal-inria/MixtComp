@@ -47,7 +47,8 @@ class Function {
 
     Real lnCompletedProbability();
 
-    void lnObservedProbability();
+    Real lnObservedProbability();
+
   private:
     Index nTime_;
     Index nSub_;
