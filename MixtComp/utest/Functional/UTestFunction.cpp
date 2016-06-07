@@ -70,14 +70,19 @@ TEST(Functional, lnCompletedProbability) {
 
   Real mode = std::numeric_limits<Real>::lowest();
 
+  Matrix<Real> kappa(nTime, nSub);
+  Real logKappaMaxSum = 0.;
+  for (Index i = 0; i < nTime; ++i) {
+    kappa.row(i) = logValue.row(i).exp() / std::exp(logSumExpValue(i));
+    logKappaMaxSum += std::log(kappa.row(i).maxCoeff());
+  }
+
   for (Index o = 0; o < nObs; ++o) { // loop over the observations
     Vector<std::list<Index> > w(nSub);
     Vector<Real> x(nTime, 0.);
     Function function;
-    Matrix<Real> kappa(nTime, nSub);
 
-    for (Index i = 0; i < nTime; ++i) { // deterministic computation of w, to have better control over the transitions
-      kappa.row(i) = logValue.row(i).exp() / std::exp(logSumExpValue(i));
+    for (Index i = 0; i < nTime; ++i) {
       Index currSub = multi.sample(kappa.row(i));
       w(currSub).push_back(i);
       for (Index p = 0; p < nCoeff; ++p) {
@@ -88,13 +93,15 @@ TEST(Functional, lnCompletedProbability) {
 
     function.setVal(t, x, w);
     function.computeVandermonde(nCoeff);
-    function.computeKappa(alpha);
-    if (mode < function.lnCompletedProbability(alpha, beta, sd)) {
-      mode = function.lnCompletedProbability(alpha, beta, sd);
+    function.computeJointLogProba(alpha, beta, sd);
+
+    Real logProba = function.lnCompletedProbability();
+    if (mode < logProba) {
+      mode = logProba;
     }
   }
 
-  Real expectedMode = nTime * (normal.lpdf(0., 0., sdVar));
+  Real expectedMode = nTime * (normal.lpdf(0., 0., sdVar)) + logKappaMaxSum;
   ASSERT_GT(expectedMode, mode);
   ASSERT_NEAR(expectedMode, mode, 0.05);
 }

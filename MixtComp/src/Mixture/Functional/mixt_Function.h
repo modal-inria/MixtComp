@@ -41,13 +41,16 @@ class Function {
 
     void computeKappa(const Matrix<Real>& alpha);
 
-    Real lnCompletedProbability(const Matrix<Real>& alpha,
-                                const Matrix<Real>& beta,
-                                const Vector<Real>& sd);
+    void computeJointLogProba(const Matrix<Real>& alpha,
+                              const Matrix<Real>& beta,
+                              const Vector<Real>& sd);
+
+    Real lnCompletedProbability();
 
     void lnObservedProbability();
   private:
     Index nTime_;
+    Index nSub_;
 
     /** List of time values. */
     Vector<Real> t_;
@@ -62,8 +65,9 @@ class Function {
      * and columns are coefficients in the regression. */
     Matrix<Real> vandermonde_;
 
-    /** A priori probability of belonging to each subregression at each time step. Rows are timesteps, columns are subregressions. */
-    Matrix<Real> kappa_;
+    /** Joint probability ln(p(x, w)). Used in both E step and S step, and therefore cached. Rows are time steps, and columns are
+     * subregressions. */
+    Matrix<Real> jointLogProba_;
 };
 
 } // namespace mixt

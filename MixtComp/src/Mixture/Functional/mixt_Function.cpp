@@ -29,6 +29,7 @@ void Function::setVal(const Vector<Real>& t,
                       const Vector<Real>& x,
                       const Vector<std::list<Index> >& w) {
   nTime_ = t.size();
+  nSub_ = w.size();
   t_ = t;
   x_ = x;
   w_ = w;
@@ -38,28 +39,36 @@ void Function::computeVandermonde(Index nCoeff) {
   vandermondeMatrix(t_, nCoeff, vandermonde_);
 }
 
-void Function::computeKappa(const Matrix<Real>& alpha) {
-  Index nSub = alpha.rows();
-  kappa_.resize(nTime_, nSub);
+void Function::computeJointLogProba(const Matrix<Real>& alpha,
+                                    const Matrix<Real>& beta,
+                                    const Vector<Real>& sd) {
+  jointLogProba_.resize(nTime_, nSub_);
+  NormalStatistic normal;
+  Vector<Real> currKappa(nSub_);
   for (Index i = 0; i < nTime_; ++i) {
-    kappaMatrix(t_(i), alpha, kappa_.row(i));
+    kappaMatrix(t_(i), alpha, currKappa);
+
+    for (Index s = 0; s < nSub_; ++s) {
+      Real currExpectation = vandermonde_.row(i).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
+      Real logAPosteriori = normal.lpdf(x_(i), currExpectation, sd(s));
+
+      Real logAPriori = std::log(currKappa(s));
+
+      jointLogProba_(i, s) = logAPriori + logAPosteriori;
+    }
   }
 }
 
-Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
-                                      const Matrix<Real>& beta,
-                                      const Vector<Real>& sd) {
+Real Function::lnCompletedProbability() {
   Real logProba = 0.;
-  Index nSub = alpha.rows();
 
   NormalStatistic normal;
-  for (Index s = 0; s < nSub; ++s) {
+  for (Index s = 0; s < nSub_; ++s) {
     for (std::list<Index>::const_iterator it  = w_(s).begin(),
                                           itE = w_(s).end();
          it != itE;
          ++it) {
-      Real currExpectation = vandermonde_.row(*it).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
-      logProba += normal.lpdf(x_(*it), currExpectation, sd(s));
+      logProba += jointLogProba_(*it, s); // only the completed value of w is taken into account
     }
   }
 
