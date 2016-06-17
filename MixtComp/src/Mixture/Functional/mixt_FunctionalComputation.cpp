@@ -504,4 +504,36 @@ double optiFunc(unsigned nParam,
   return cost;
 }
 
+double optiFunctionalClass(unsigned nParam,
+                           const double* alpha,
+                           double* grad,
+                           void* my_func_data) {
+  double cost;
+  FunctionalClass* cData = (FunctionalClass*) my_func_data;
+//  Matrix<Real> logValue;
+//  Vector<Real> logSumExpValue;
+//
+//  timeValue(*cData->t_,
+//            nParam,
+//            alpha,
+//            logValue,
+//            logSumExpValue);
+//
+//  costFunction(*cData->t_,
+//               logValue,
+//               logSumExpValue,
+//               *cData->w_,
+//               cost);
+//
+//  if (grad != NULL) {
+//    gradCostFunction(*cData->t_,
+//                     logValue,
+//                     logSumExpValue,
+//                     *cData->w_,
+//                     grad);
+//  }
+
+  return cost;
+}
+
 } // namespace mixt

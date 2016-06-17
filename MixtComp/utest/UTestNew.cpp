@@ -25,3 +25,16 @@
 
 using namespace mixt;
 
+TEST (FunctionClass, VectorDataAccess) {
+  Index sizeVec = 4;
+
+  Vector<Real> alphaVec(sizeVec, 0.);
+
+  double* alphaDouble = alphaVec.data();
+
+  for (Index i = 0; i < sizeVec; ++i) {
+    alphaDouble[i] = i;
+  }
+
+  ASSERT_NEAR((sizeVec - 1.) / 2., alphaVec.mean(), epsilon);
+}

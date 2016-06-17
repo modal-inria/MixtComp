@@ -39,8 +39,6 @@ class Function {
 
     void computeVandermonde(Index nCoeff);
 
-    void computeKappa(const Matrix<Real>& alpha);
-
     void computeJointLogProba(const Matrix<Real>& alpha,
                               const Matrix<Real>& beta,
                               const Vector<Real>& sd);
@@ -48,6 +46,14 @@ class Function {
     Real lnCompletedProbability();
 
     Real lnObservedProbability();
+
+    void sampleW();
+
+    void removeMissing();
+
+    double costAndGrad(unsigned nParam,
+                       const double* alpha,
+                       double* grad) const;
 
   private:
     Index nTime_;
@@ -69,6 +75,9 @@ class Function {
     /** Joint probability ln(p(x, w)). Used in both E step and S step, and therefore cached. Rows are time steps, and columns are
      * subregressions. */
     Matrix<Real> jointLogProba_;
+
+    NormalStatistic normal_;
+    MultinomialStatistic multi_;
 };
 
 } // namespace mixt

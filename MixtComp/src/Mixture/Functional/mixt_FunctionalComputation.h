@@ -31,6 +31,8 @@
 
 namespace mixt {
 
+class FunctionalClass; // forward declaration to avoid cyclical inclusion
+
 typedef struct {
     Vector<Real>* t_;
     Vector<std::list<Index> >* w_;
@@ -172,6 +174,11 @@ double optiFunc(unsigned nParam,
                 const double* alpha,
                 double* grad,
                 void* my_func_data);
+
+double optiFunctionalClass(unsigned nParam,
+                           const double* alpha,
+                           double* grad,
+                           void* my_func_data);
 
 } // namespace mixt
 

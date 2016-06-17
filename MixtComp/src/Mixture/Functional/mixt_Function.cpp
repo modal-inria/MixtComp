@@ -81,11 +81,63 @@ Real Function::lnObservedProbability() {
   NormalStatistic normal;
   for (Index i = 0; i < nTime_; ++i) {
     for (Index s = 0; s < nSub_; ++s) {
-      logProba += jointLogProba_(i, s); // every possible value of w is taken into account
+      logProba += jointLogProba_(i, s); // every possible value of w is taken into account, to marginalize over w
     }
   }
 
   return logProba;
+}
+
+void Function::sampleW() {
+  for (Index s = 0; s < nSub_; ++s) {
+    w_(s).clear();
+  }
+
+  Vector<Real> currProba;
+  for (Index i = 0; i < nTime_; ++i) {
+    currProba.logToMulti(jointLogProba_.row(i));
+    w_(multi_.sample(currProba)).push_back(i);
+  }
+}
+
+void Function::removeMissing() {
+  for (Index s = 0; s < nSub_; ++s) {
+    w_(s).clear();
+  }
+
+  for (Index i = 0; i < nTime_; ++i) {
+    w_(multi_.sampleInt(0, nSub_ - 1)).push_back(i);
+  }
+}
+
+double Function::costAndGrad(unsigned nParam,
+                             const double* alpha,
+                             double* grad) const {
+  double cost;
+  Matrix<Real> logValue;
+  Vector<Real> logSumExpValue;
+
+  timeValue(t_,
+            nParam,
+            alpha,
+            logValue,
+            logSumExpValue);
+
+  costFunction(t_,
+               logValue,
+               logSumExpValue,
+               w_,
+               cost);
+
+  if (grad != NULL) {
+    gradCostFunction(t_,
+                     logValue,
+                     logSumExpValue,
+                     w_,
+                     grad);
+  }
+
+  return cost;
 }
 
 } // namespace mixt
