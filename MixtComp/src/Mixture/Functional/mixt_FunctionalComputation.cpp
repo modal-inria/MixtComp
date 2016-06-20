@@ -26,6 +26,7 @@
 #include "Statistic/mixt_Statistic.h"
 #include "IO/mixt_IO.h"
 
+#include "mixt_FunctionalClass.h"
 #include "mixt_FunctionalComputation.h"
 
 namespace mixt {
@@ -506,32 +507,17 @@ double optiFunc(unsigned nParam,
 
 double optiFunctionalClass(unsigned nParam,
                            const double* alpha,
-                           double* grad,
+                           double* gradDouble,
                            void* my_func_data) {
-  double cost;
-  FunctionalClass* cData = (FunctionalClass*) my_func_data;
-//  Matrix<Real> logValue;
-//  Vector<Real> logSumExpValue;
-//
-//  timeValue(*cData->t_,
-//            nParam,
-//            alpha,
-//            logValue,
-//            logSumExpValue);
-//
-//  costFunction(*cData->t_,
-//               logValue,
-//               logSumExpValue,
-//               *cData->w_,
-//               cost);
-//
-//  if (grad != NULL) {
-//    gradCostFunction(*cData->t_,
-//                     logValue,
-//                     logSumExpValue,
-//                     *cData->w_,
-//                     grad);
-//  }
+  Real cost;
+  FunctionalClass* funcClass = (FunctionalClass*) my_func_data;
+  Vector<Real> gradVec(nParam, 0.);
+
+  cost = funcClass->gradCost(nParam, alpha, gradVec);
+
+  for (Index i = 0; i < nParam; ++i) {
+    gradDouble[i] = gradVec(i);
+  }
 
   return cost;
 }

@@ -32,19 +32,19 @@ namespace mixt {
 
 class FunctionalClass {
   public:
-    FunctionalClass(Index nInd,
-                    const Vector<Function>& data,
+    FunctionalClass(const Vector<Function>& data,
                     const std::set<Index>& setInd,
                     Vector<Real>& alpha,
                     Matrix<Real>& beta);
 
     void mStep();
 
-    void gradCost();
+    double gradCost(Index nParam,
+                    const double* alpha,
+                    Vector<Real>& grad);
 
+    const Vector<Real>& getAlpha() {return alpha_;}
   private:
-    Index nInd_;
-
     /** Data */
     const Vector<Function>& data_;
 

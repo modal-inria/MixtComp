@@ -27,12 +27,10 @@
 
 namespace mixt {
 
-FunctionalClass::FunctionalClass(Index nInd,
-                                 const Vector<Function>& data,
+FunctionalClass::FunctionalClass(const Vector<Function>& data,
                                  const std::set<Index>& setInd,
                                  Vector<Real>& alpha,
                                  Matrix<Real>& beta) :
-    nInd_(nInd),
     data_(data),
     setInd_(setInd),
     alpha_(alpha),
@@ -49,19 +47,27 @@ void FunctionalClass::mStep() {
   nlopt_destroy(opt);
 }
 
-void FunctionalClass::gradCost() {
-  Index nParam = alpha_.size();
-  Vector<Real> gradTotal(nParam, 0.);
-  Vector<Real> gradInd  (nParam, 0.);
+double FunctionalClass::gradCost(Index nParam,
+                                 const double* alpha,
+                                 Vector<Real>& grad) {
+  Real cost = 0.;
+  Vector<Real> gradInd(nParam, 0.);
+
+  for (Index i = 0; i < nParam; ++i) {
+    alpha_(i) = alpha[i];
+  }
+
   for (std::set<Index>::const_iterator it  = setInd_.begin(),
                                        itE = setInd_.end();
        it != itE;
        ++it) {
-    data_(*it).costAndGrad(nParam,
-                           alpha_.data(),
-                           gradInd.data());
-    gradTotal += gradInd;
+    cost += data_(*it).costAndGrad(nParam,
+                                   alpha_.data(),
+                                   gradInd.data());
+    grad += gradInd;
   }
+
+  return cost;
 }
 
 } // namespace mixt

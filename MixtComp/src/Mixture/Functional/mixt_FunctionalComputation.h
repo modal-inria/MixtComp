@@ -175,9 +175,11 @@ double optiFunc(unsigned nParam,
                 double* grad,
                 void* my_func_data);
 
+/** Since nlopt does not work with pointers to member function, this external helper function has been created. An opaque
+ * pointer to */
 double optiFunctionalClass(unsigned nParam,
                            const double* alpha,
-                           double* grad,
+                           double* gradDouble,
                            void* my_func_data);
 
 } // namespace mixt

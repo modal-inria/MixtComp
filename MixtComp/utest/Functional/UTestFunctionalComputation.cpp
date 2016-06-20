@@ -491,14 +491,6 @@ TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
     y(i) += normal.sample(0, beta(currW, nCoeff));
   }
 
-  Matrix<Real> lambda;
-  computeLambda(t,
-                y,
-                nParam,
-                alpha,
-                beta,
-                lambda);
-
   double estimatedAlpha[nParam];
   for (Index i = 0; i < nParam; ++i) {
     estimatedAlpha[i] = 0.;
