@@ -58,7 +58,7 @@ class MisValParser
         reMissing_(strBlank_ +
                    strQMark_ +
                    strBlank_),
-        reFiniteValues_(" *\\{.*\\} *"),
+        reFiniteValues_(" *\\{.*\\} *"), // enclosing {} are detected first, then the interior is parsed for the list of values. In the interior, any separator between the numbers will work
         reIntervals_(strLeftPar_ + // " *\\[ *(-*[0-9.]+) *: *(-*[0-9.]+) *\\] *"
                      strNumber_ +
                      centralColon_ +

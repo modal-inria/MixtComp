@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2015
+/*  Copyright (C) Inria 2016
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,12 +17,23 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: January 5, 2016
- *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: June 20, 2016
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "../UTest.h"
+#ifndef MIXT_FUNCTIONALMIXTURE
+#define MIXT_FUNCTIONALMIXTURE
 
-using namespace mixt;
+namespace mixt {
 
+template<typename DataHandler,
+         typename DataExtractor,
+         typename ParamSetter,
+         typename ParamExtractor>
+class FunctionalMixture : public IMixture {
 
+};
+
+} // namespace mixt
+
+#endif // MIXT_FUNCTIONALMIXTURE

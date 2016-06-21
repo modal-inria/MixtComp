@@ -25,16 +25,85 @@
 
 using namespace mixt;
 
-TEST (FunctionClass, VectorDataAccess) {
-  Index sizeVec = 4;
+TEST(FunctionalParser, sandbox) {
+  std::string data = "22 :rger 4";
+  std::stringstream convertor(data);
 
-  Vector<Real> alphaVec(sizeVec, 0.);
+  Index a;
+  std::string dummy;
+  Index b;
 
-  double* alphaDouble = alphaVec.data();
+  convertor >> a >> dummy >> b;
 
-  for (Index i = 0; i < sizeVec; ++i) {
-    alphaDouble[i] = i;
+  if(convertor.fail() == true) {
+      std::cout << "fail" << std::endl;
+  }
+  else {
+    std::cout << "a: " << a << std::endl;
+    std::cout << "b: " << b << std::endl;
+  }
+}
+
+TEST(FunctionalParser, sandbox2) {
+  std::string data = "AraK 22 4.0";
+  std::stringstream convertor(data);
+  std::string name;
+  int age;
+  double gpa;
+
+  convertor >> name >> age >> gpa;
+
+  if(convertor.fail() == true) {
+      // if the data string is not well-formatted do what ever you want here
   }
 
-  ASSERT_NEAR((sizeVec - 1.) / 2., alphaVec.mean(), epsilon);
+  std::cout << "name: " << name << ", age: " << age << ", gpa: " << gpa << std::endl;
+}
+
+TEST(FunctionalParser, sandbox3) {
+  std::string str("abc,def,sdfsd,sdfsdf,fsdfsd,fd");
+  char split_char = ',';
+
+  // work
+  std::istringstream split(str);
+  std::vector<std::string> tokens;
+  for (std::string each; std::getline(split, each, split_char); tokens.push_back(each));
+
+  std::cout << tokens.size() << std::endl;
+}
+
+TEST(FunctionalParser, sandbox4) {
+  std::string str("12:5");
+
+  std::istringstream split(str);
+  std::string x;
+  std::string t;
+  Real num;
+
+  std::getline(split, x, ':');
+//  std::getline(split, t, ':');
+  split >> t;
+
+  std::cout << "x: " << x << std::endl;
+  std::cout << "t: " << t << std::endl;
+
+  if (x.size() == 0) {
+    std::cout << "x has size 0" << std::endl;
+  }
+
+  if (t.size() == 0) {
+    std::cout << "t has size 0" << std::endl;
+  }
+
+  num = str2type<Real>(x);
+}
+
+TEST(FunctionalParser, sandbox5) {
+//  char sentence [] = "Rudolph is 12 years old";
+  char sentence [] = "12:5";
+  char str [20];
+  int i;
+
+  sscanf (sentence,"%s %*s %d",str,&i);
+  printf ("%s -> %d\n",str,i);
 }
