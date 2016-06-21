@@ -28,6 +28,7 @@
 #include "mixt_Constants.h"
 
 namespace mixt {
+
 const int nbSamplingAttempts = 10000;
 
 const Real epsilon = 1.e-8;
@@ -50,4 +51,5 @@ const int nbGibbsIterRank = 50;
 const int nbSampleObserved = 10000;
 
 const std::string rankPosSep = ",";
+
 } // namespace mixt

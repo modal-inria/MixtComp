@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2016
+/*  Copyright (C) Inria 2013-2014
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,36 +17,21 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: June 20, 2016
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: August 25, 2014
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
  **/
 
-#include <boost/algorithm/string.hpp>
-
-#include "Data/mixt_MisValParser.h"
-#include "mixt_FunctionalParser.h"
+#include <string>
 
 namespace mixt {
 
-std::string parseFunctionalStr(const Vector<std::string>& vecStr,
-                               Index minMod,
-                               Index& nbMod,
-                               Vector<Function>& vecInd) {
-  std::string warnLog;
-
-  Index nInd = vecStr.size();
-  vecInd.resize(nInd);
-
-  MisValParser<Real> mvp(0.); // no need for offset as data is continuous
-
-  std::vector<std::string> strs;
-  for (Index i = 0; i < nInd; ++i) {
-    boost::split(strs,
-                 vecStr(i),
-                 boost::is_any_of(rankPosSep));
-  }
-
-  return warnLog;
-}
+const std::string strNumber = "((?:(?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))(?:(?:e|E)-\\d+)?)"; // note the multiple non-capturing groups, as only the overall group is capturing
+const std::string strQMark = "(\\?)";
+const std::string strBlank = " *";
+const std::string strLeftPar = " *\\[ *";
+const std::string strRightPar = " *\\] *";
+const std::string strCentralColon = " *: *";
+const std::string strMinusInf = "-inf";
+const std::string strPlusInf = "\\+inf";
 
 } // namespace mixt

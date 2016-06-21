@@ -27,6 +27,7 @@
 #include "../LinAlg/mixt_LinAlg.h" // for the definition of Real type
 
 namespace mixt {
+
 extern const int nbSamplingAttempts; // number of sampling attempts, when not enough individuals are sampled
 
 extern const Real epsilon; // very small value of real to check for near zero values
@@ -49,6 +50,7 @@ extern const int nbGibbsIterRank; // number of iterations in the Gibbs used in t
 extern const int nbSampleObserved; // number of sample per class to estimate the observed probability, for example in Ordinal or Rank data
 
 extern const std::string rankPosSep; // separator used in Rank positions
+
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

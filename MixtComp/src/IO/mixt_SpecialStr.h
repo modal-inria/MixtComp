@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2016
+/*  Copyright (C) Inria 2013-2014
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,36 +17,26 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: June 20, 2016
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *  Created on: August 25, 2014
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
  **/
 
-#include <boost/algorithm/string.hpp>
+#ifndef MIXT_SPECIALSTR
+#define MIXT_SPECIALSTR
 
-#include "Data/mixt_MisValParser.h"
-#include "mixt_FunctionalParser.h"
+#include <string>
 
 namespace mixt {
 
-std::string parseFunctionalStr(const Vector<std::string>& vecStr,
-                               Index minMod,
-                               Index& nbMod,
-                               Vector<Function>& vecInd) {
-  std::string warnLog;
-
-  Index nInd = vecStr.size();
-  vecInd.resize(nInd);
-
-  MisValParser<Real> mvp(0.); // no need for offset as data is continuous
-
-  std::vector<std::string> strs;
-  for (Index i = 0; i < nInd; ++i) {
-    boost::split(strs,
-                 vecStr(i),
-                 boost::is_any_of(rankPosSep));
-  }
-
-  return warnLog;
-}
+extern const std::string strNumber;
+extern const std::string strQMark;
+extern const std::string strBlank;
+extern const std::string strLeftPar;
+extern const std::string strRightPar;
+extern const std::string strCentralColon;
+extern const std::string strMinusInf;
+extern const std::string strPlusInf;
 
 } // namespace mixt
+
+#endif // MIXT_SPECIALSTR

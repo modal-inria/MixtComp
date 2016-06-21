@@ -27,8 +27,9 @@
 #include <iostream>
 #include "boost/regex.hpp"
 
-#include "../IO/mixt_IO.h"
-#include "../Various/mixt_Enum.h"
+#include "IO/mixt_IO.h"
+#include "IO/mixt_SpecialStr.h"
+#include "Various/mixt_Enum.h"
 
 namespace mixt
 {
@@ -40,40 +41,33 @@ class MisValParser
     /** Missing value descriptor: type of missing, and list of parameters */
     typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
-    /** Note that https://regex101.com/ REALLY helps settings those regular expressions. */
+    /** Note that https://regex101.com/ REALLY helps settings those regular expressions.  Note that since raw strings are not used, and as such
+     * escape characters have to be doubled, which impairs test on regex101 for example. */
     MisValParser(Type offset) :
         offset_(offset),
-        strNumber_("((?:(?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))(?:(?:e|E)-\\d+)?)"),
-        strQMark_("(\\?)"),
-        strBlank_(" *"),
-        strLeftPar_(" *\\[ *"),
-        strRightPar_(" *\\] *"),
-        centralColon_(" *: *"),
-        minusInf_("-inf"),
-        plusInf_("\\+inf"),
-        reNumber_(strNumber_),
-        reValue_(strBlank_ + // " *(-*[0-9.]+) *"
-                 strNumber_ +
-                 strBlank_),
-        reMissing_(strBlank_ +
-                   strQMark_ +
-                   strBlank_),
+        reNumber_(strNumber),
+        reValue_(strBlank + // " *(-*[0-9.]+) *"
+                 strNumber +
+                 strBlank),
+        reMissing_(strBlank +
+                   strQMark +
+                   strBlank),
         reFiniteValues_(" *\\{.*\\} *"), // enclosing {} are detected first, then the interior is parsed for the list of values. In the interior, any separator between the numbers will work
-        reIntervals_(strLeftPar_ + // " *\\[ *(-*[0-9.]+) *: *(-*[0-9.]+) *\\] *"
-                     strNumber_ +
-                     centralColon_ +
-                     strNumber_ +
-                     strRightPar_),
-        reLuIntervals_(strLeftPar_ +  // " *\\[ *-inf *: *(-*[0-9.]+) *\\] *"
-                       minusInf_ +
-                       centralColon_ +
-                       strNumber_ +
-                       strRightPar_),
-        reRuIntervals_(strLeftPar_ + // " *\\[ *(-*[0-9.]+) *: *\\+inf *\\] *"
-                       strNumber_ +
-                       centralColon_ +
-                       plusInf_ +
-                       strRightPar_)
+        reIntervals_(strLeftPar + // " *\\[ *(-*[0-9.]+) *: *(-*[0-9.]+) *\\] *"
+                     strNumber +
+                     strCentralColon +
+                     strNumber +
+                     strRightPar),
+        reLuIntervals_(strLeftPar +  // " *\\[ *-inf *: *(-*[0-9.]+) *\\] *"
+                       strMinusInf +
+                       strCentralColon +
+                       strNumber +
+                       strRightPar),
+        reRuIntervals_(strLeftPar + // " *\\[ *(-*[0-9.]+) *: *\\+inf *\\] *"
+                       strNumber +
+                       strCentralColon +
+                       strPlusInf +
+                       strRightPar)
     {}
 
     bool parseStr(const std::string& str,
@@ -168,15 +162,6 @@ class MisValParser
 
   private:
     Type offset_;
-
-    std::string strNumber_;
-    std::string strQMark_;
-    std::string strBlank_;
-    std::string strLeftPar_;
-    std::string strRightPar_;
-    std::string centralColon_;
-    std::string minusInf_;
-    std::string plusInf_;
 
     boost::regex reNumber_;
     boost::regex reValue_;
