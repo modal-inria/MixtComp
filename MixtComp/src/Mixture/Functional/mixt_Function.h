@@ -62,6 +62,9 @@ class Function {
                        const double* alpha,
                        double* grad) const;
 
+    const Vector<Real>& t() {return t_;}
+    const Vector<Real>& x() {return x_;}
+
   private:
     Index nTime_;
     Index nSub_;
