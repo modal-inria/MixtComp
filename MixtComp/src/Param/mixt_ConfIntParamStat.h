@@ -148,8 +148,6 @@ class ConfIntParamStat
 
     /** Confidence level */
     Real confidenceLevel_;
-
-
 };
 
 } // namespace mixt

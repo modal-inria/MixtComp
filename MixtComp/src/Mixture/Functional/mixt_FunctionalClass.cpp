@@ -29,14 +29,27 @@ namespace mixt {
 
 FunctionalClass::FunctionalClass(const Vector<Function>& data,
                                  const std::set<Index>& setInd,
-                                 Vector<Real>& alpha,
-                                 Matrix<Real>& beta) :
+                                 Real confidenceLevel) :
     data_(data),
-    setInd_(setInd),
-    alpha_(alpha),
-    beta_(beta) {}
+    setInd_(setInd) {}
+
+void FunctionalClass::setSize(Index nSub,
+                              Index nCoeff) {
+  alpha_.resize(nSub * 2); // remember that storage is linear for alpha, two coefficients per subregression
+  beta_.resize(nSub, nCoeff);
+  sd_.resize(nSub);
+
+  alpha_ = 0.; // initialization is useful as the optimization is an iterative process
+  beta_ = 0.;
+  sd_ = 0.;
+}
 
 void FunctionalClass::mStep() {
+  mStepAlpha();
+  // mStepBetaEpsilon();
+}
+
+void FunctionalClass::mStepAlpha() {
   Index nParam = alpha_.size();
   double minf;
 

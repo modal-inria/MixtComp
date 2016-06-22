@@ -44,7 +44,7 @@ class IMixture {
      *
      * @param idName Identification string of the mixture provided by the framework
      */
-    IMixture(int indexMixture, std::string const& idName) :
+    IMixture(Index indexMixture, std::string const& idName) :
       indexMixture_(indexMixture),
       idName_(idName)
     {};
@@ -66,7 +66,7 @@ class IMixture {
      *
      * @param ind index of the individual which data must be sampled
      */
-    virtual void samplingStepCheck(int ind)
+    virtual void samplingStepCheck(Index ind)
     = 0;
 
     /**
@@ -75,7 +75,7 @@ class IMixture {
      *
      * @param ind index of the individual which data must be sampled
      */
-    virtual void samplingStepNoCheck(int ind)
+    virtual void samplingStepNoCheck(Index ind)
     = 0;
 
     /**
@@ -83,7 +83,7 @@ class IMixture {
      * is present at least one time in each class. This is invoked to avoid degeneracy.
      * @return 0 if condition not verified and 1 if condition verified
      * */
-    virtual int checkSampleCondition(std::string* warnLog = NULL) const
+    virtual Index checkSampleCondition(std::string* warnLog = NULL) const
     = 0;
 
     /**
@@ -101,8 +101,8 @@ class IMixture {
      * @param iterationMax maximum number of iterations
      * period.
      */
-    virtual void storeSEMRun(int iteration,
-                             int iterationMax)
+    virtual void storeSEMRun(Index iteration,
+                             Index iterationMax)
     = 0;
 
     /**
@@ -112,9 +112,9 @@ class IMixture {
      * @param iteration Gibbs iteration
      * @param iterationMax maximum number of iterations
      */
-    virtual void storeGibbsRun(int i,
-                               int iteration,
-                               int iterationMax)
+    virtual void storeGibbsRun(Index i,
+                               Index iteration,
+                               Index iterationMax)
     = 0;
 
     /**
@@ -124,7 +124,7 @@ class IMixture {
      * @param k class
      * @return value of the completed likelihood in log scale
      */
-    virtual Real lnCompletedProbability(int i, int k)
+    virtual Real lnCompletedProbability(Index i, Index k)
     = 0;
 
     /**
@@ -134,7 +134,7 @@ class IMixture {
      * @param k class
      * @return value of the observed likelihood in log scale
      */
-    virtual Real lnObservedProbability(int i, int k)
+    virtual Real lnObservedProbability(Index i, Index k)
     = 0;
 
     /**
@@ -142,7 +142,7 @@ class IMixture {
      *
      *  @return Number of free parameters
      */
-    virtual int nbFreeParameter() const
+    virtual Index nbFreeParameter() const
     = 0;
 
     /**
@@ -177,7 +177,7 @@ class IMixture {
 
   protected:
     /** Index of the mixture, useful to write the results at the correct place in th output. */
-    int indexMixture_;
+    Index indexMixture_;
 
     /** Id name of the mixture */
     std::string idName_;

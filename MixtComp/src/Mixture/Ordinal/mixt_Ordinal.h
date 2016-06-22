@@ -372,7 +372,7 @@ class Ordinal : public IMixture
       return std::numeric_limits<Real>:: signaling_NaN(); // fail case
     }
 
-    virtual int nbFreeParameter() const
+    virtual Index nbFreeParameter() const
     {
       return nbClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
     }
@@ -492,7 +492,7 @@ class Ordinal : public IMixture
       return at;
     }
 
-    int checkSampleCondition(std::string* warnLog = NULL) const {
+    Index checkSampleCondition(std::string* warnLog = NULL) const {
       for (int k = 0; k < nbClass_; ++k) {
         bool allZ0 = true;
         bool allZ1 = true; // are all z = 0 or all z = 1 in the current class ?

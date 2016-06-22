@@ -245,7 +245,7 @@ class MixtureBridge : public IMixture
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
-    virtual int nbFreeParameter() const
+    virtual Index nbFreeParameter() const
     {
       return mixture_.computeNbFreeParameters();
     }
@@ -275,7 +275,7 @@ class MixtureBridge : public IMixture
 
     void removeMissing(initParam algo) {augData_.removeMissing();}
 
-    int checkSampleCondition(std::string* warnLog = NULL) const
+    Index checkSampleCondition(std::string* warnLog = NULL) const
     {
       if (warnLog == NULL)
       {

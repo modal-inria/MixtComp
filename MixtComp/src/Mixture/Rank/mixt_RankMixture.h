@@ -148,8 +148,8 @@ class RankMixture : public IMixture
                          allGAuthorized_);
     }
 
-    /** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class */
-    int checkSampleCondition(std::string* warnLog = NULL) const {
+    /** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */
+    Index checkSampleCondition(std::string* warnLog = NULL) const {
       for (int k = 0; k < nbClass_; ++k) {
         bool Geq0 = true; // are all comparisons incorrect ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
         bool GeqA = true; // are all comparisons correct ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
@@ -270,7 +270,7 @@ class RankMixture : public IMixture
       }
     }
 
-    int nbFreeParameter() const
+    Index nbFreeParameter() const
     {
       return nbClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
     }

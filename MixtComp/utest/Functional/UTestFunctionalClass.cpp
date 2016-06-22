@@ -81,16 +81,15 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   std::set<Index> setInd;
   setInd.insert(0);
 
-  Vector<Real> alphaEstimated(nParam, 0.);
+
   FunctionalClass funcClass(data,
                             setInd,
-                            alphaEstimated,
-                            beta);
-  alphaEstimated = funcClass.getAlpha();
+                            0.95);
+  funcClass.setSize(nSub, nCoeff);
 
-  funcClass.mStep();
+  funcClass.mStepAlpha();
 
-  ASSERT_EQ(true, alphaEstimated.isApprox(alpha, 0.1));
+  ASSERT_EQ(true, funcClass.alpha().isApprox(alpha, 0.1));
 }
 
 TEST(FunctionalClass, optimOneclassMultipleInd) {
@@ -152,14 +151,12 @@ TEST(FunctionalClass, optimOneclassMultipleInd) {
     setInd.insert(ind);
   }
 
-  Vector<Real> alphaEstimated(nParam, 0.);
   FunctionalClass funcClass(data,
                             setInd,
-                            alphaEstimated,
-                            beta);
-  alphaEstimated = funcClass.getAlpha();
+                            0.95);
+  funcClass.setSize(nSub, nCoeff);
 
-  funcClass.mStep();
+  funcClass.mStepAlpha();
 
-  ASSERT_EQ(true, alphaEstimated.isApprox(alpha, 0.1));
+  ASSERT_EQ(true, funcClass.alpha().isApprox(alpha, 0.1));
 }

@@ -25,6 +25,7 @@
 #define MIXT_FUNCTIONALCLASS
 
 #include "LinAlg/mixt_LinAlg.h"
+#include "Param/mixt_ConfIntParamStat.h"
 #include "mixt_Function.h"
 #include "mixt_FunctionalComputation.h"
 
@@ -34,16 +35,22 @@ class FunctionalClass {
   public:
     FunctionalClass(const Vector<Function>& data,
                     const std::set<Index>& setInd,
-                    Vector<Real>& alpha,
-                    Matrix<Real>& beta);
+                    Real confidenceLevel);
+
+    void setSize(Index nSub,
+                 Index nCoeff);
 
     void mStep();
+
+    void mStepAlpha();
 
     double gradCost(Index nParam,
                     const double* alpha,
                     Vector<Real>& grad);
 
-    const Vector<Real>& getAlpha() {return alpha_;}
+    const Vector<Real>& alpha() {return alpha_;}
+    const Matrix<Real>& beta() {return beta_;}
+    const Vector<Real>& sd()  {return sd_;}
   private:
     /** Data */
     const Vector<Function>& data_;
@@ -51,10 +58,21 @@ class FunctionalClass {
     /** List of individuals among the data that belong to the class corresponding to this RankClass. */
     const std::set<Index>& setInd_;
 
-    /** Parameter alpha for current class. Not set as const since mStep will modify it. */
-    Vector<Real>& alpha_;
+    /** Parameter alpha for current class. Not set as const since mStep will modify it. It is not stored in a matrix, because nlopt is used,
+     * and serializing everything in a vector is the standard modus operandi. */
+    Vector<Real> alpha_;
 
-    Matrix<Real>& beta_;
+    /** Rows are sub-regression, columns are coefficients. */
+    Matrix<Real> beta_;
+
+    /** One coefficient per sub-regression */
+    Vector<Real> sd_;
+
+//    /** Contrarily to what is done in the Rank model for example, here the parameter estimation is done
+//     * directly inside class. */
+//    ConfIntParamStat<Real> alphaParamStat_;
+//    ConfIntParamStat<Real> betaParamStat_;
+//    ConfIntParamStat<Real> epsilonParamStat_;
 };
 
 } // namespace mixt
