@@ -32,10 +32,17 @@ namespace mixt {
 
 class Function {
   public:
+    void setSize(Index nT,
+                 Index nSub);
+
     /** Set all internal values, useful for unit testing */
     void setVal(const Vector<Real>& t,
                 const Vector<Real>& x,
                 const Vector<std::list<Index> >& w);
+
+    void setValTime(Index i,
+                    Real t,
+                    Real x);
 
     void computeVandermonde(Index nCoeff);
 

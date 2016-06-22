@@ -103,9 +103,9 @@ void DataHandlerR::writeDataMap() const {
 }
 
 std::string DataHandlerR::getData(std::string const& idData,
-                           Vector<std::string>& dataStr,
-                           int& nbInd,
-                           std::string& param) const {
+                                  Vector<std::string>& dataStr,
+                                  int& nbInd,
+                                  std::string& param) const {
   std::string warnLog;
   if (dataMap_.find(idData) != dataMap_.end()) { // check if the data requested is present in the input data
     int pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData

@@ -25,6 +25,15 @@
 
 namespace mixt {
 
+void Function::setSize(Index nT,
+                       Index nSub) {
+  nTime_ = nT;
+  nSub_ = nSub;
+  t_.resize(nT);
+  x_.resize(nT);
+  w_.resize(nSub);
+}
+
 void Function::setVal(const Vector<Real>& t,
                       const Vector<Real>& x,
                       const Vector<std::list<Index> >& w) {
@@ -33,6 +42,13 @@ void Function::setVal(const Vector<Real>& t,
   t_ = t;
   x_ = x;
   w_ = w;
+}
+
+void Function::setValTime(Index i,
+                          Real t,
+                          Real x) {
+  t_(i) = t;
+  x_(i) = x;
 }
 
 void Function::computeVandermonde(Index nCoeff) {

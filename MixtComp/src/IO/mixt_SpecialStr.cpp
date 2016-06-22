@@ -21,7 +21,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
  **/
 
-#include <string>
+#include "mixt_SpecialStr.h"
 
 namespace mixt {
 

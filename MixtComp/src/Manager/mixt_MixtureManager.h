@@ -25,10 +25,10 @@
 #ifndef MIXT_MIXTUREMANAGER_H
 #define MIXT_MIXTUREMANAGER_H
 
-#include "../Mixture/SimpleMixtureBridge/mixt_MixtureBridge.h"
-#include "../Mixture/Ordinal/mixt_Ordinal.h"
-#include "../Mixture/Rank/mixt_RankMixture.h"
-#include "../Composer/mixt_MixtureComposer.h"
+#include "Composer/mixt_MixtureComposer.h"
+#include "Mixture/SimpleMixtureBridge/mixt_MixtureBridge.h"
+#include "Mixture/Ordinal/mixt_Ordinal.h"
+#include "Mixture/Rank/mixt_RankMixture.h"
 
 namespace mixt {
 
