@@ -57,8 +57,9 @@ void Function::computeVandermonde(Index nCoeff) {
 
 void Function::computeJointLogProba(const Matrix<Real>& alpha,
                                     const Matrix<Real>& beta,
-                                    const Vector<Real>& sd) {
-  jointLogProba_.resize(nTime_, nSub_);
+                                    const Vector<Real>& sd,
+                                    Matrix<Real>& jointLogProba) const {
+  jointLogProba.resize(nTime_, nSub_);
   NormalStatistic normal;
   Vector<Real> currKappa(nSub_);
   for (Index i = 0; i < nTime_; ++i) {
@@ -70,48 +71,59 @@ void Function::computeJointLogProba(const Matrix<Real>& alpha,
 
       Real logAPriori = std::log(currKappa(s));
 
-      jointLogProba_(i, s) = logAPriori + logAPosteriori;
+      jointLogProba(i, s) = logAPriori + logAPosteriori;
     }
   }
 }
 
-Real Function::lnCompletedProbability() {
+Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
+                                      const Matrix<Real>& beta,
+                                      const Vector<Real>& sd) const {
   Real logProba = 0.;
 
-  NormalStatistic normal;
+  Matrix<Real> jointLogProba;
+  computeJointLogProba(alpha, beta, sd, jointLogProba);
   for (Index s = 0; s < nSub_; ++s) {
     for (std::list<Index>::const_iterator it  = w_(s).begin(),
                                           itE = w_(s).end();
          it != itE;
          ++it) {
-      logProba += jointLogProba_(*it, s); // only the completed value of w is taken into account
+      logProba += jointLogProba(*it, s); // only the completed value of w is taken into account
     }
   }
 
   return logProba;
 }
 
-Real Function::lnObservedProbability() {
+Real Function::lnObservedProbability(const Matrix<Real>& alpha,
+                                     const Matrix<Real>& beta,
+                                     const Vector<Real>& sd) const {
   Real logProba = 0.;
 
-  NormalStatistic normal;
+  Matrix<Real> jointLogProba;
+  computeJointLogProba(alpha, beta, sd, jointLogProba);
   for (Index i = 0; i < nTime_; ++i) {
     for (Index s = 0; s < nSub_; ++s) {
-      logProba += jointLogProba_(i, s); // every possible value of w is taken into account, to marginalize over w
+      logProba += jointLogProba(i, s); // every possible value of w is taken into account, to marginalize over w
     }
   }
 
   return logProba;
 }
 
-void Function::sampleW() {
+void Function::sampleW(const Matrix<Real>& alpha,
+                       const Matrix<Real>& beta,
+                       const Vector<Real>& sd) {
+  Matrix<Real> jointLogProba;
+  computeJointLogProba(alpha, beta, sd, jointLogProba);
+
   for (Index s = 0; s < nSub_; ++s) {
     w_(s).clear();
   }
 
   Vector<Real> currProba;
   for (Index i = 0; i < nTime_; ++i) {
-    currProba.logToMulti(jointLogProba_.row(i));
+    currProba.logToMulti(jointLogProba.row(i));
     w_(multi_.sample(currProba)).push_back(i);
   }
 }

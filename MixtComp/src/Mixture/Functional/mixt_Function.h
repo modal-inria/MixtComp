@@ -46,15 +46,17 @@ class Function {
 
     void computeVandermonde(Index nCoeff);
 
-    void computeJointLogProba(const Matrix<Real>& alpha,
-                              const Matrix<Real>& beta,
-                              const Vector<Real>& sd);
+    Real lnCompletedProbability(const Matrix<Real>& alpha,
+                                const Matrix<Real>& beta,
+                                const Vector<Real>& sd) const;
 
-    Real lnCompletedProbability();
+    Real lnObservedProbability(const Matrix<Real>& alpha,
+                               const Matrix<Real>& beta,
+                               const Vector<Real>& sd) const;
 
-    Real lnObservedProbability();
-
-    void sampleW();
+    void sampleW(const Matrix<Real>& alpha,
+                 const Matrix<Real>& beta,
+                 const Vector<Real>& sd);
 
     void removeMissing();
 
@@ -66,6 +68,11 @@ class Function {
     const Vector<Real>& x() {return x_;}
 
   private:
+    void computeJointLogProba(const Matrix<Real>& alpha,
+                              const Matrix<Real>& beta,
+                              const Vector<Real>& sd,
+                              Matrix<Real>& jointLogProba) const;
+
     Index nTime_;
     Index nSub_;
 
@@ -81,10 +88,6 @@ class Function {
     /** Vandermonde matrix, to be computed once and for all as soon as data is known, for example just after a setData. Rows are time steps,
      * and columns are coefficients in the regression. */
     Matrix<Real> vandermonde_;
-
-    /** Joint probability ln(p(x, w)). Used in both E step and S step, and therefore cached. Rows are time steps, and columns are
-     * subregressions. */
-    Matrix<Real> jointLogProba_;
 
     NormalStatistic normal_;
     MultinomialStatistic multi_;

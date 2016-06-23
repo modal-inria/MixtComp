@@ -93,9 +93,8 @@ TEST(Functional, lnCompletedProbability) {
 
     function.setVal(t, x, w);
     function.computeVandermonde(nCoeff);
-    function.computeJointLogProba(alpha, beta, sd);
 
-    Real logProba = function.lnCompletedProbability();
+    Real logProba = function.lnCompletedProbability(alpha, beta, sd);
     if (mode < logProba) {
       mode = logProba;
     }
