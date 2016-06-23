@@ -30,7 +30,7 @@
 namespace mixt {
 
 std::string parseFunctionalStr(Index nSub,
-                               const Vector<std::string>& vecStr,
+                               const Vector<std::string>& dataStr,
                                Vector<Function>& vecInd);
 
 } // namespace mixt

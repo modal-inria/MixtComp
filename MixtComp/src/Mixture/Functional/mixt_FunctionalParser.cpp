@@ -29,11 +29,11 @@
 namespace mixt {
 
 std::string parseFunctionalStr(Index nSub,
-                               const Vector<std::string>& vecStr,
+                               const Vector<std::string>& dataStr,
                                Vector<Function>& vecInd) {
   std::string warnLog;
 
-  Index nInd = vecStr.size();
+  Index nInd = dataStr.size();
   vecInd.resize(nInd);
 
   MisValParser<Real> mvp(0.); // no need for offset as data is continuous
@@ -46,7 +46,7 @@ std::string parseFunctionalStr(Index nSub,
   std::vector<std::string> strs;
   for (Index ind = 0; ind < nInd; ++ind) {
     boost::split(strs,
-                 vecStr(ind),
+                 dataStr(ind),
                  boost::is_any_of(rankPosSep)); // same separator used as for values in Rank model
 
     Index nTime = strs.size();

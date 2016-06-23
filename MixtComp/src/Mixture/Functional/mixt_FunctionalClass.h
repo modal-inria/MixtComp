@@ -40,6 +40,10 @@ class FunctionalClass {
     void setSize(Index nSub,
                  Index nCoeff);
 
+    void setParam(const Vector<Real>& alpha,
+                  const Matrix<Real>& beta,
+                  const Vector<Real>& sd);
+
     void mStep();
 
     void mStepAlpha();

@@ -45,6 +45,7 @@ class FunctionalMixture : public IMixture {
         IMixture(indexMixture,
                  idName),
         nClass_(nClass),
+        nSub_(0),
         nInd_(0),
         p_zi_(p_zi),
         classInd_(classInd),
@@ -55,7 +56,7 @@ class FunctionalMixture : public IMixture {
         confidenceLevel_(confidenceLevel) {
       class_.reserve(nClass_);
       for (Index k = 0; k < nClass_; ++k) {
-        class_.emplace_back(data_,
+        class_.emplace_back(vecInd_,
                             classInd_(k),
                             confidenceLevel_);
       }
@@ -74,7 +75,7 @@ class FunctionalMixture : public IMixture {
     };
 
     void samplingStepNoCheck(Index i) {
-      data_(i).sampleW(class_[(*p_zi_)(i)].alpha(),
+      vecInd_(i).sampleW(class_[(*p_zi_)(i)].alpha(),
                        class_[(*p_zi_)(i)].beta (),
                        class_[(*p_zi_)(i)].sd   ());
     };
@@ -98,13 +99,13 @@ class FunctionalMixture : public IMixture {
                        Index iterationMax) {};
 
     Real lnCompletedProbability(Index i, Index k) {
-      return data_(i).lnCompletedProbability(class_[(*p_zi_)(i)].alpha(),
+      return vecInd_(i).lnCompletedProbability(class_[(*p_zi_)(i)].alpha(),
                                              class_[(*p_zi_)(i)].beta (),
                                              class_[(*p_zi_)(i)].sd   ());
     }
 
     Real lnObservedProbability(Index i, Index k)  {
-      return data_(i).lnObservedProbability(class_[(*p_zi_)(i)].alpha(),
+      return vecInd_(i).lnObservedProbability(class_[(*p_zi_)(i)].alpha(),
                                             class_[(*p_zi_)(i)].beta (),
                                             class_[(*p_zi_)(i)].sd   ());
     }
@@ -117,7 +118,43 @@ class FunctionalMixture : public IMixture {
       // once the number of subregressions is known, loop over the class_ and apply setSize
       // also loop on the individuals and call Function::setSize
       // do not forget to call Function::computeVandermonde once t vectors are known
-      return "";
+
+      std::string warnLog;
+      Vector<std::string> dataStr;
+
+      warnLog += p_handler_->getData(idName(), // get the raw vector of strings
+                                     dataStr,
+                                     nInd_,
+                                     paramStr_);
+
+      // get the value of nSub by parsing paramStr_
+
+      warnLog += parseFunctionalStr(nSub_,
+                                    dataStr, // convert the vector of strings to ranks
+                                    vecInd_);
+
+      warnLog += checkMissingType();
+
+      if (warnLog.size() > 0) {
+        return warnLog;
+      }
+
+      if (mode == prediction_) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
+        Vector<Real> alphaLinearized;
+        p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
+                                 "alpha",
+                                 alphaLinearized);
+
+//        p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
+//                                 "pi",
+//                                 pi_);
+
+        // call setParam here, to set everything
+      }
+
+      // datastat will be setup here when partially observed value will be supported
+
+      return warnLog;
     }
 
     void exportDataParam() const {
@@ -125,8 +162,8 @@ class FunctionalMixture : public IMixture {
     };
 
     void removeMissing(initParam algo) {
-      for (Vector<Function>::iterator it  = data_.begin(),
-                                            itE = data_.end();
+      for (Vector<Function>::iterator it  = vecInd_.begin(),
+                                      itE = vecInd_.end();
            it != itE;
            ++it) {
         it->removeMissing();
@@ -134,12 +171,19 @@ class FunctionalMixture : public IMixture {
     };
 
   private:
+    std::string checkMissingType() {
+      std::string warnLog;
+      // to be populated with checks
+      return warnLog;
+    }
+
     Index nInd_;
     Index nClass_;
+    Index nSub_;
     Real confidenceLevel_;
 
     /** Data */
-    Vector<Function> data_;
+    Vector<Function> vecInd_;
 
     const Vector<Index>* p_zi_;
     const Vector<std::set<Index> >& classInd_;
@@ -152,6 +196,8 @@ class FunctionalMixture : public IMixture {
     std::vector<FunctionalClass> class_;
 
     Vector<bool> acceptedType_;
+
+    std::string paramStr_;
 };
 
 } // namespace mixt
