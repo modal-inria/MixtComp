@@ -238,15 +238,15 @@ class MixtureComposer {
        warnLog += sstm.str();
       }
       zClassInd_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
-      if (zClassInd_.zi().dataRange_.min_ < 0) {
-       std::stringstream sstm;
-       sstm << "The z_class latent class variable has a lowest provided value of: "
-            << minModality + zClassInd_.zi().dataRange_.min_
-            << " while the minimal value has to be: "
-            << minModality
-            << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
-       warnLog += sstm.str();
-      }
+//      if (zClassInd_.zi().dataRange_.min_ < 0) {
+//       std::stringstream sstm;
+//       sstm << "The z_class latent class variable has a lowest provided value of: "
+//            << minModality + zClassInd_.zi().dataRange_.min_
+//            << " while the minimal value has to be: "
+//            << minModality
+//            << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+//       warnLog += sstm.str();
+//      }
       if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nbClass_ - 1) {
        std::stringstream sstm;
        sstm << "The z_class latent class variable has a highest provided value of: "

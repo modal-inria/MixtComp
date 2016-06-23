@@ -104,7 +104,7 @@ void DataHandlerR::writeDataMap() const {
 
 std::string DataHandlerR::getData(std::string const& idData,
                                   Vector<std::string>& dataStr,
-                                  int& nbInd,
+                                  Index& nbInd,
                                   std::string& param) const {
   std::string warnLog;
   if (dataMap_.find(idData) != dataMap_.end()) { // check if the data requested is present in the input data

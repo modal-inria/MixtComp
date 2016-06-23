@@ -23,6 +23,8 @@
 
 #include "../UTest.h"
 
+using namespace mixt;
+
 /** Coefficient-wise substract a vector to a scalar */
 TEST(Vector, SubScalar)
 {
@@ -226,4 +228,19 @@ TEST (LinAlg, VectorDataAccess) {
   }
 
   ASSERT_NEAR((sizeVec - 1.) / 2., alphaVec.mean(), epsilon);
+}
+
+TEST(Vector, importIterable) {
+  std::list<Real> list;
+  list.push_back(3.);
+  list.push_back(12.);
+  list.push_back(5.);
+
+  Vector<Real> vec;
+  vec.copyIterable(list);
+
+  Vector<Real> expectedVec(3);
+  expectedVec << 3., 12., 5.;
+
+  ASSERT_EQ(vec, expectedVec);
 }

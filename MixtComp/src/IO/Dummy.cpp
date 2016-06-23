@@ -28,19 +28,19 @@ namespace mixt
 
 std::string DataHandlerDummy::getData(std::string const& idName,
                                       Vector<std::string>& dataStr,
-                                      int& nbInd,
+                                      Index& nbInd,
                                       std::string& paramStr) const {
   return std::string();
 }
 
 /** Export function for Rank model */
-void DataExtractorDummy::exportVals(int indexMixture,
+void DataExtractorDummy::exportVals(Index indexMixture,
                                     std::string idName,
                                     const Vector<RankIndividual>& data) const {
 
 }
 
-void ParamExtractorDummy::exportParam(int indexMixture,
+void ParamExtractorDummy::exportParam(Index indexMixture,
                                       const std::string& idName,
                                       const std::string& paramName,
                                       const Matrix<Real>& paramStat,
@@ -49,7 +49,7 @@ void ParamExtractorDummy::exportParam(int indexMixture,
                                       const Real confidenceLevel) const
 {}
 
-void ParamExtractorDummy::exportParam(int indexMixture,
+void ParamExtractorDummy::exportParam(Index indexMixture,
                                       const std::string& idName,
                                       const std::string& paramName,
                                       const std::vector<RankStat>& paramStat,

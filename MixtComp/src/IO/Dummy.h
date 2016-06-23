@@ -40,7 +40,7 @@ class DataHandlerDummy
     template<typename DataType>
     std::string getData(std::string const& idData,
                         AugmentedData<DataType>& augData,
-                        int& nbSample,
+                        Index& nbSample,
                         std::string& param,
                         typename AugmentedData<DataType>::Type offset) const
     {
@@ -49,7 +49,7 @@ class DataHandlerDummy
 
     std::string getData(std::string const& idData,
                         Vector<std::string>& dataStr,
-                        int& nbInd,
+                        Index& nbInd,
                         std::string& paramStr) const;
 };
 
@@ -59,13 +59,13 @@ class DataExtractorDummy
   public:
     template<typename DataType,
              typename Type>
-    void exportVals(int indexMixture,
+    void exportVals(Index indexMixture,
                     std::string idName,
                     const AugmentedData<DataType>& augData,
                     const Vector<RowVector<Type> >& stat) const {};
 
     /** Export function for Rank model */
-    void exportVals(int indexMixture,
+    void exportVals(Index indexMixture,
                     std::string idName,
                     const Vector<RankIndividual>& data) const;
 };
@@ -74,7 +74,7 @@ class DataExtractorDummy
 class ParamExtractorDummy
 {
   public:
-    void exportParam(int indexMixture,
+    void exportParam(Index indexMixture,
                      const std::string& idName,
                      const std::string& paramName,
                      const Matrix<Real>& paramStatStorage,
@@ -82,7 +82,7 @@ class ParamExtractorDummy
                      const std::vector<std::string>& paramNames,
                      const Real confidenceLevel) const;
 
-    void exportParam(int indexMixture,
+    void exportParam(Index indexMixture,
                      const std::string& idName,
                      const std::string& paramName,
                      const std::vector<RankStat>& paramStat,

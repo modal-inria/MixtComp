@@ -33,10 +33,7 @@ TEST(Gaussian_sjk, OKSample) {
   param << 3. , 1.,
            10., 1.;
 
-  Vector<int> z(nbInd);
-  z << 0, 1, 0, 1;
-
-  Vector<std::set<int> > classInd(nbClass);
+  Vector<std::set<Index> > classInd(nbClass);
   classInd(0) = {0, 2};
   classInd(1) = {1, 3};
 
@@ -45,9 +42,9 @@ TEST(Gaussian_sjk, OKSample) {
 
   std::string warnLog;
 
-  Gaussian_sjk mixture(nbClass,
+  Gaussian_sjk mixture("Gaussian",
+                       nbClass,
                        param,
-                       &z,
                        classInd);
 
   mixture.setData(data);
@@ -68,10 +65,7 @@ TEST(Gaussian_sjk, nullVarianceSample) {
   param << 3. , 1.,
            10., 1.;
 
-  Vector<int> z(nbInd);
-  z << 0, 1, 0, 1;
-
-  Vector<std::set<int> > classInd(nbClass);
+  Vector<std::set<Index> > classInd(nbClass);
   classInd(0) = {0, 2};
   classInd(1) = {1, 3};
 
@@ -80,9 +74,9 @@ TEST(Gaussian_sjk, nullVarianceSample) {
 
   std::string warnLog;
 
-  Gaussian_sjk mixture(nbClass,
+  Gaussian_sjk mixture("Gaussian",
+                       nbClass,
                        param,
-                       &z,
                        classInd);
 
   mixture.setData(data);
@@ -103,10 +97,7 @@ TEST(Gaussian_sjk, smallClass) {
   param << 3. , 1.,
            10., 1.;
 
-  Vector<int> z(nbInd);
-  z << 0, 1, 0, 0;
-
-  Vector<std::set<int> > classInd(nbClass);
+  Vector<std::set<Index> > classInd(nbClass);
   classInd(0) = {0, 2, 3};
   classInd(1) = {1};
 
@@ -115,9 +106,9 @@ TEST(Gaussian_sjk, smallClass) {
 
   std::string warnLog;
 
-  Gaussian_sjk mixture(nbClass,
+  Gaussian_sjk mixture("Gaussian",
+                       nbClass,
                        param,
-                       &z,
                        classInd);
 
   mixture.setData(data);

@@ -70,11 +70,11 @@ class MixtureBridge : public IMixture
      *  @param idName id name of the mixture
      *  @param nbCluster number of cluster
      **/
-    MixtureBridge(int indexMixture,
+    MixtureBridge(Index indexMixture,
                   std::string const& idName,
-                  int nbClass,
-                  const Vector<int>* p_zi,
-                  const Vector<std::set<int> >& classInd,
+                  Index nbClass,
+                  const Vector<Index>* p_zi,
+                  const Vector<std::set<Index> >& classInd,
                   const DataHandler* p_handler,
                   DataExtractor* p_extractor,
                   const ParamSetter* p_paramSetter,
@@ -174,13 +174,13 @@ class MixtureBridge : public IMixture
       return warnLog;
     }
 
-    virtual void samplingStepCheck(int ind)
+    virtual void samplingStepCheck(Index ind)
     {
       sampler_.samplingStepCheck(ind,
                                 (*p_zi_)(ind));
     }
 
-    virtual void samplingStepNoCheck(int ind)
+    virtual void samplingStepNoCheck(Index ind)
     {
       sampler_.samplingStepNoCheck(ind,
                                 (*p_zi_)(ind));
@@ -197,8 +197,8 @@ class MixtureBridge : public IMixture
      *  various iterations after the burn-in period.
      *  @param iteration Provides the iteration number beginning after the burn-in period.
      */
-    virtual void storeSEMRun(int iteration,
-                             int iterationMax) {
+    virtual void storeSEMRun(Index iteration,
+                             Index iterationMax) {
       paramStat_.sampleParam(iteration,
                              iterationMax);
       if (iteration == iterationMax) {
@@ -210,13 +210,13 @@ class MixtureBridge : public IMixture
       }
     }
 
-    virtual void storeGibbsRun(int sample,
-                               int iteration,
-                               int iterationMax)
+    virtual void storeGibbsRun(Index sample,
+                               Index iteration,
+                               Index iterationMax)
     {
       dataStat_.sampleVals(sample,
-                                   iteration,
-                                   iterationMax);
+                           iteration,
+                           iterationMax);
       if (iteration == iterationMax)
       {
         dataStat_.imputeData(sample); // impute the missing values using empirical mean or mode, depending of the model
@@ -228,7 +228,7 @@ class MixtureBridge : public IMixture
      * unknown values
      * @return the completed log-likelihood
      */
-    virtual Real lnCompletedProbability(int i, int k)
+    virtual Real lnCompletedProbability(Index i, Index k)
     {
       return likelihood_.lnCompletedProbability(i, k);
     }
@@ -237,7 +237,7 @@ class MixtureBridge : public IMixture
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
-    virtual Real lnObservedProbability(int i, int k)
+    virtual Real lnObservedProbability(Index i, Index k)
     {
       return likelihood_.lnObservedProbability(i, k);
     }
@@ -298,11 +298,11 @@ class MixtureBridge : public IMixture
 
   protected:
     /** Pointer to the zik class label */
-    const Vector<int>* p_zi_;
+    const Vector<Index>* p_zi_;
 
     /** Reference to a vector containing in each element a set of the indices of individuals that
      * belong to this class. Can be passed as an alternative to zi_ to a subtype of IMixture. */
-    const Vector<std::set<int> >& classInd_;
+    const Vector<std::set<Index> >& classInd_;
 
     /** Number of classes */
     int nbClass_;
@@ -320,7 +320,7 @@ class MixtureBridge : public IMixture
     std::string paramStr_;
 
     /** number of samples in the data set*/
-    int nbInd_;
+    Index nbInd_;
 
     /** confidence level used in computation of parameters and missing values statistics */
     Real confidenceLevel_;

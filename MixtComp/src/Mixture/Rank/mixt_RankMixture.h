@@ -42,11 +42,11 @@ class RankMixture : public IMixture
   public:
     typedef std::pair<MisType, std::vector<int> > MisVal;
 
-    RankMixture(int indexMixture,
+    RankMixture(Index indexMixture,
                 std::string const& idName,
                 int nbClass,
-                const Vector<int>* p_zi,
-                const Vector<std::set<int> >& classInd,
+                const Vector<Index>* p_zi,
+                const Vector<std::set<Index> >& classInd,
                 const DataHandler* p_handler,
                 DataExtractor* p_extractor,
                 const ParamSetter* p_paramSetter,
@@ -91,14 +91,15 @@ class RankMixture : public IMixture
                        false; // missingRUIntervals
     }
 
-    void samplingStepCheck(int ind) {
+    void samplingStepCheck(Index ind) {
       gCondition gCond = allGAuthorized_; // by default, everything will be authorized for the number of correct comparisons
 
       bool allOtherGO = true; // are all comparisons in other individuals correct ?
       bool allOtherGA = true; // are all comparisons in other individuals incorrect ?
 
       int currClass = (*p_zi_)(ind);
-      for (std::set<int>::const_iterator it = classInd_(currClass).begin(), itE = classInd_(currClass).end();
+      for (std::set<Index>::const_iterator it  = classInd_(currClass).begin(),
+                                           itE = classInd_(currClass).end();
            it != itE;
            ++it) {
         if (*it != ind) { // check is performed on all in the class but the current ind
@@ -139,7 +140,7 @@ class RankMixture : public IMixture
                        gCond);
     }
 
-    void samplingStepNoCheck(int i) {
+    void samplingStepNoCheck(Index i) {
         data_(i).sampleY(mu_((*p_zi_)(i)),
                          pi_((*p_zi_)(i)),
                          allGAuthorized_);
@@ -154,7 +155,8 @@ class RankMixture : public IMixture
         bool Geq0 = true; // are all comparisons incorrect ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
         bool GeqA = true; // are all comparisons correct ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
 
-        for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+        for (std::set<Index>::const_iterator it  = classInd_(k).begin(),
+                                             itE = classInd_(k).end();
              it != itE;
              ++it) {
           int A, G;
@@ -201,8 +203,8 @@ class RankMixture : public IMixture
       }
     }
 
-    void storeSEMRun(int iteration,
-                     int iterationMax)
+    void storeSEMRun(Index iteration,
+                     Index iterationMax)
     {
       for (int k = 0; k < nbClass_; ++k)
       {
@@ -222,9 +224,9 @@ class RankMixture : public IMixture
       }
     }
 
-    void storeGibbsRun(int i,
-                       int iteration,
-                       int iterationMax) {
+    void storeGibbsRun(Index i,
+                       Index iteration,
+                       Index iterationMax) {
       if (!data_(i).allPresent()) {
         dataStat_[i].sampleValue(iteration, iterationMax);
 
@@ -234,11 +236,11 @@ class RankMixture : public IMixture
       }
     }
 
-    Real lnCompletedProbability(int i, int k) {
+    Real lnCompletedProbability(Index i, Index k) {
       return class_[k].lnCompletedProbabilityInd(i);
     }
 
-    virtual Real lnObservedProbability(int i, int k) {
+    virtual Real lnObservedProbability(Index i, Index k) {
       return class_[k].lnObservedProbability(i);
     }
 
@@ -254,8 +256,8 @@ class RankMixture : public IMixture
 
           int i = 0;
           int sampleInd = -1;
-          for (std::set<int>::const_iterator it  = classInd_[k].begin(),
-                                             itE = classInd_[k].end();
+          for (std::set<Index>::const_iterator it  = classInd_[k].begin(),
+                                               itE = classInd_[k].end();
                it != itE;
                ++it, ++i) {
             if (i == sampleIndInClass) {
@@ -417,13 +419,13 @@ class RankMixture : public IMixture
     int nbClass_;
 
     /** Number of samples in the data set*/
-    int nbInd_;
+    Index nbInd_;
 
     int nbPos_;
     Real facNbMod_;
 
-    const Vector<int>* p_zi_;
-    const Vector<std::set<int> >& classInd_;
+    const Vector<Index>* p_zi_;
+    const Vector<std::set<Index> >& classInd_;
 
     const DataHandler* p_handler_;
     DataExtractor* p_dataExtractor_;

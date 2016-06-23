@@ -27,30 +27,70 @@
 #include "../Data/mixt_AugmentedData.h"
 #include "../LinAlg/mixt_LinAlg.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class CategoricalLikelihood
-{
+template<typename Type>
+class CategoricalLikelihood {
   public:
     /** Constructor */
     CategoricalLikelihood(const Vector<Real>& param,
-                          const AugmentedData<Vector<int> >& augData,
-                          int nbClass);
+                          const AugmentedData<Vector<Type> >& augData,
+                          Index nbClass) :
+        nbClass_(nbClass),
+        param_(param),
+        augData_(augData){}
 
     /** Compute the completed log probability of individual i */
-    Real lnCompletedProbability(int i, int k);
+    Real lnCompletedProbability(Index i, Index k) {
+      Index nbModalities = param_.rows() / nbClass_;
+      Index ind = k * nbModalities + augData_.data_(i);
+
+      Real proba = param_(ind);
+
+      return std::log(proba);
+    }
 
     /** Compute the observed log probability of individual i */
-    Real lnObservedProbability(int i, int k);
+    Real lnObservedProbability(Index i, Index k) {
+      Index nbModalities = param_.rows() / nbClass_;
+      Real proba;
+
+      switch (augData_.misData_(i).first) {
+        case present_: { // likelihood for present data
+          proba = param_(k * nbModalities + augData_.data_(i));
+        }
+        break;
+
+        case missing_: { // no contribution to the observed likelihood
+          proba = 1.;
+        }
+        break;
+
+        case missingFiniteValues_: { // adding the contributions of the various modalities
+          proba = 0.;
+
+          for (typename std::vector<Type>::const_iterator itMiss = augData_.misData_(i).second.begin();
+               itMiss != augData_.misData_(i).second.end();
+               ++itMiss) {
+            proba += param_(k * nbModalities + *itMiss);
+          }
+        }
+        break;
+
+        default: {}
+        break;
+      }
+      return std::log(proba);
+    }
 
   private:
-    int nbClass_;
+    Index nbClass_;
+
     /** Pointer to parameters table */
     const Vector<Real>& param_;
 
     /** Pointer to AugmentedData, to get the lists of missing and partially observed values */
-    const AugmentedData<Vector<int> >& augData_;
+    const AugmentedData<Vector<Type> >& augData_;
 };
 
 } /* namespace mixt */

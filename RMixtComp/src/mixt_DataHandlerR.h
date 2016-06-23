@@ -70,7 +70,7 @@ class DataHandlerR
     template<typename DataType>
     std::string getData(std::string const& idData,
                         AugmentedData<DataType>& augData,
-                        int& nbInd,
+                        Index& nbInd,
                         std::string& param,
                         typename AugmentedData<DataType>::Type offset) const;
 
@@ -78,7 +78,7 @@ class DataHandlerR
      * parse it is thus handed down to the calling structure. */
     std::string getData(std::string const& idData,
                         Vector<std::string>& dataStr,
-                        int& nbInd,
+                        Index& nbInd,
                         std::string& param) const;
 
     /** Return a Rcpp::List named list that contains the types of the variables */
@@ -104,7 +104,7 @@ class DataHandlerR
 template<typename DataType>
 std::string DataHandlerR::getData(std::string const& idData,
                                   AugmentedData<DataType>& augData,
-                                  int& nbInd,
+                                  Index& nbInd,
                                   std::string& param,
                                   typename AugmentedData<DataType>::Type offset) const {
   std::string warnLog;

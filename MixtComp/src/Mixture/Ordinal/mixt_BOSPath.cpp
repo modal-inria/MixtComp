@@ -47,22 +47,17 @@ void BOSPath::setC(const Vector<BOSNode>& c) {
 }
 
 Real BOSPath::computeLogProba(int mu,
-                              Real pi) const
-{
+                              Real pi) const {
   Real logProba = 0.; // The initial probability of being in any of the member of the input interval is 1
 
   int lastSeg = c_(nbNode_ - 1).e_(0); // last segment only contains one element
-  if (endCond_(0) <= lastSeg && lastSeg <= endCond_(1)) // is the path compatible with the provided condition ?
-  {
-    for (int node = 0; node < nbNode_; ++node) // loop over each BOSNode in c
-    {
+  if (endCond_(0) <= lastSeg && lastSeg <= endCond_(1)) { // is the path compatible with the provided condition ?
+    for (int node = 0; node < nbNode_; ++node) { // loop over each BOSNode in c
       Real yLogProba;
-      if (node == 0)
-      {
+      if (node == 0) {
         yLogProba = c_(node).yLogProba(eInit_); // yProba based on initial segment
       }
-      else
-      {
+      else {
         yLogProba = c_(node).yLogProba(c_(node - 1).e_); // yProba based on previous iteration segment
       }
       Real zLogProba = c_(node).zLogProba(pi);
@@ -71,8 +66,9 @@ Real BOSPath::computeLogProba(int mu,
       logProba += yLogProba + zLogProba + eLogProba;
     }
   }
-  else // conditional probability of verifying condition given the path is null
+  else { // conditional probability of verifying condition given the path is null
       logProba = minInf;
+  }
 
   return logProba;
 }

@@ -32,10 +32,7 @@ TEST(Poisson_k, OKSample) {
   Vector<Real> param(nbClass);
   param << 3, 1;
 
-  Vector<int> z(nbInd);
-  z << 0, 1, 0, 1;
-
-  Vector<std::set<int> > classInd(nbClass);
+  Vector<std::set<Index> > classInd(nbClass);
   classInd(0) = {0, 2};
   classInd(1) = {1, 3};
 
@@ -44,9 +41,9 @@ TEST(Poisson_k, OKSample) {
 
   std::string warnLog;
 
-  Poisson_k mixture(nbClass,
+  Poisson_k mixture("Poisson",
+                    nbClass,
                     param,
-                    &z,
                     classInd);
 
   mixture.setData(data);
@@ -66,10 +63,7 @@ TEST(Poisson_k, 0OnlyClass) {
   Vector<Real> param(nbClass);
   param << 3, 1;
 
-  Vector<int> z(nbInd);
-  z << 0, 1, 0, 1;
-
-  Vector<std::set<int> > classInd(nbClass);
+  Vector<std::set<Index> > classInd(nbClass);
   classInd(0) = {0, 2};
   classInd(1) = {1, 3};
 
@@ -78,9 +72,9 @@ TEST(Poisson_k, 0OnlyClass) {
 
   std::string warnLog;
 
-  Poisson_k mixture(nbClass,
+  Poisson_k mixture("Poisson",
+                    nbClass,
                     param,
-                    &z,
                     classInd);
 
   mixture.setData(data);

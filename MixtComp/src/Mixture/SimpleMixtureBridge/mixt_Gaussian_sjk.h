@@ -42,7 +42,7 @@ class Gaussian_sjk
     Gaussian_sjk(const std::string& idName,
                  int nbClass,
                  Vector<Real>& param,
-                 const Vector<std::set<int> >& classInd);
+                 const Vector<std::set<Index> >& classInd);
 
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
@@ -77,7 +77,7 @@ class Gaussian_sjk
 
     Vector<Real>* p_data_;
 
-    const Vector<std::set<int> >& classInd_;
+    const Vector<std::set<Index> >& classInd_;
 
     /** Statistic object to describe Poisson law */
     NormalStatistic normal_;

@@ -68,7 +68,7 @@ void DataExtractorR::exportVals(int indexMixture,
 /** Export function for classes (called from the composer) */
 void DataExtractorR::exportVals(int indexMixture,
                                 std::string idName,
-                                const AugmentedData<Vector<int> >& augData,
+                                const AugmentedData<Vector<Index> >& augData,
                                 const Matrix<Real>& tikC) {
   Rcpp::IntegerVector dataR(tikC.rows()); // vector to store the completed data set
   Rcpp::NumericMatrix tikR(tikC.rows(),

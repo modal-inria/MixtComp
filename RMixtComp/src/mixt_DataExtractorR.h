@@ -48,7 +48,7 @@ class DataExtractorR
     /** Export function for classes (called from the composer) */
     void exportVals(int indexMixture,
                     std::string idName,
-                    const AugmentedData<Vector<int> >& augData,
+                    const AugmentedData<Vector<Index> >& augData,
                     const Matrix<Real>& tik);
 
     /** Export function for gaussian model */

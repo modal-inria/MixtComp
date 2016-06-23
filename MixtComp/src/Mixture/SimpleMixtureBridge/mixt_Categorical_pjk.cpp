@@ -32,7 +32,7 @@ namespace mixt {
 Categorical_pjk::Categorical_pjk(const std::string& idName,
                                  int nbClass,
                                  Vector<Real>& param,
-                                 const Vector<std::set<int> >& classInd) :
+                                 const Vector<std::set<Index> >& classInd) :
     idName_(idName),
     nbClass_(nbClass),
     nbModality_(0),
@@ -95,7 +95,7 @@ void Categorical_pjk::mStep(EstimatorType bias) {
   for (int k = 0; k < nbClass_; ++k) {
     Vector<Real> modalities(nbModality_, 0.);
 
-    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+    for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
          ++it) {
       modalities((*p_data_)(*it)) += 1.;
@@ -167,7 +167,7 @@ void Categorical_pjk::writeParameters() const
 int Categorical_pjk::checkSampleCondition(std::string* warnLog) const {
   for (int k = 0; k < nbClass_; ++k) {
     Vector<bool> modalityPresent(nbModality_, false);
-    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+    for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
          ++it) {
       modalityPresent((*p_data_)(*it)) = true;

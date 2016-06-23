@@ -26,18 +26,18 @@
 using namespace mixt;
 
 TEST(Categorical_pjk, OKSample) {
-  int nbClass = 2;
-  int nbInd = 4;
-  int nbModality = 2;
+  Index nbClass = 2;
+  Index nbInd = 4;
+  Index nbModality = 2;
 
   Vector<Real> param(nbModality * nbClass);
   param << 0.2, 0.8,
            0.7, 0.3;
 
-  Vector<int> z(nbInd);
+  Vector<Index> z(nbInd);
   z << 0, 1, 0, 1;
 
-  Vector<std::set<int> > classInd(nbClass);
+  Vector<std::set<Index> > classInd(nbClass);
   classInd(0) = {0, 2};
   classInd(1) = {1, 3};
 
@@ -46,9 +46,9 @@ TEST(Categorical_pjk, OKSample) {
 
   std::string warnLog;
 
-  Poisson_k mixture(nbClass,
+  Poisson_k mixture("Poisson",
+                    nbClass,
                     param,
-                    &z,
                     classInd);
 
   mixture.setData(data);
@@ -70,10 +70,10 @@ TEST(Categorical_pjk, MissingModality) {
   param << 0.2, 0.8,
            0.7, 0.3;
 
-  Vector<int> z(nbInd);
+  Vector<Index> z(nbInd);
   z << 0, 1, 0, 1;
 
-  Vector<std::set<int> > classInd(nbClass);
+  Vector<std::set<Index> > classInd(nbClass);
   classInd(0) = {0, 2};
   classInd(1) = {1, 3};
 
@@ -82,9 +82,9 @@ TEST(Categorical_pjk, MissingModality) {
 
   std::string warnLog;
 
-  Poisson_k mixture(nbClass,
+  Poisson_k mixture("Poisson",
+                    nbClass,
                     param,
-                    &z,
                     classInd);
 
   mixture.setData(data);

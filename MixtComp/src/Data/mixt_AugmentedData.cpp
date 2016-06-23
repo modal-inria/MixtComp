@@ -48,6 +48,16 @@ Range<int>::Range(int min,
 {}
 
 template<>
+Range<Index>::Range(Index min,
+                    Index max,
+                    bool hasRange) :
+    min_(min),
+    max_(max),
+    range_(max - min + 1), // used to store the number of modalities, for example,
+    hasRange_(hasRange)
+{}
+
+template<>
 void AugmentedData<Vector<Real> >::removeMissing()
 {
   for (int i = 0; i < misData_.rows(); ++i)
@@ -155,6 +165,54 @@ void AugmentedData<Vector<int> >::removeMissing()
           Vector<Real> modalities(nbModalities);
           modalities = 0.;
           for(std::vector<int>::const_iterator itParam = misData_(i).second.begin();
+              itParam != misData_(i).second.end();
+              ++itParam)
+          {
+            modalities[*itParam] = proba;
+          }
+          sampleVal = multi_.sample(modalities);
+        }
+        break;
+
+        default: // other types of intervals not present in integer data
+        {}
+        break;
+      }
+      data_(i) = sampleVal;
+    }
+  }
+}
+
+template<>
+void AugmentedData<Vector<Index> >::removeMissing()
+{
+  for (int i = 0; i < misData_.rows(); ++i)
+  {
+    if (misData_(i).first != present_)
+    {
+      int sampleVal;
+      int nbModalities = dataRange_.range_;
+
+      switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
+      {
+        case present_:
+        {}
+        break;
+
+        case missing_:
+        {
+          Vector<Real> modalities(nbModalities);
+          modalities = 1. / nbModalities;
+          sampleVal = multi_.sample(modalities);
+        }
+        break;
+
+        case missingFiniteValues_:
+        {
+          Real proba = 1. / misData_(i).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
+          Vector<Real> modalities(nbModalities);
+          modalities = 0.;
+          for(std::vector<Index>::const_iterator itParam = misData_(i).second.begin();
               itParam != misData_(i).second.end();
               ++itParam)
           {

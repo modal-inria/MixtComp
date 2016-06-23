@@ -41,7 +41,7 @@ class Categorical_pjk
     Categorical_pjk(const std::string& idName,
                     int nbClass,
                     Vector<Real>& param,
-                    const Vector<std::set<int> >& classInd);
+                    const Vector<std::set<Index> >& classInd);
 
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
@@ -65,7 +65,7 @@ class Categorical_pjk
     int nbModality_;
     Vector<int>* p_data_;
     Vector<Real>& param_;
-    const Vector<std::set<int> >& classInd_;
+    const Vector<std::set<Index> >& classInd_;
 };
 
 } // namespace mixt

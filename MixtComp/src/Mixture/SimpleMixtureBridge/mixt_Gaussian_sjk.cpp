@@ -34,7 +34,7 @@ namespace mixt
 Gaussian_sjk::Gaussian_sjk(const std::string& idName,
                            int nbClass,
                            Vector<Real>& param,
-                           const Vector<std::set<int> >& classInd) :
+                           const Vector<std::set<Index> >& classInd) :
     idName_(idName),
     nbClass_(nbClass),
     param_(param),
@@ -175,7 +175,7 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
       return 0;
     }
 
-    std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+    std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
     Real previousElemClass = (*p_data_)(*it);
     ++it;
     for (; it != itE; ++it) {

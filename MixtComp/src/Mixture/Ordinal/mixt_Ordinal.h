@@ -49,11 +49,11 @@ class Ordinal : public IMixture
   public:
 
     /** constructor **/
-    Ordinal(int indexMixture,
+    Ordinal(Index indexMixture,
             std::string const& idName,
-            int nbClass,
-            Vector<int> const* p_zi,
-            const Vector<std::set<int> >& classInd,
+            Index nbClass,
+            Vector<Index> const* p_zi,
+            const Vector<std::set<Index> >& classInd,
             const DataHandler* p_handler,
             DataExtractor* p_extractor,
             const ParamSetter* p_paramSetter,
@@ -83,11 +83,11 @@ class Ordinal : public IMixture
     {}
 
     /* Debug constructor with direct data set */
-    Ordinal(int nbClass,
-            int nbInd,
-            int nbModalities,
-            const Vector<int>* p_zi,
-            const Vector<std::set<int> >& classInd,
+    Ordinal(Index nbClass,
+            Index nbInd,
+            Index nbModalities,
+            const Vector<Index>* p_zi,
+            const Vector<std::set<Index> >& classInd,
             int mu,
             Real pi) :
         IMixture(0,
@@ -242,7 +242,7 @@ class Ordinal : public IMixture
       }
     }
 
-    virtual void samplingStepCheck(int ind)
+    virtual void samplingStepCheck(Index ind)
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::samplingStep" << std::endl;
@@ -257,7 +257,7 @@ class Ordinal : public IMixture
       copyToData(ind);
     }
 
-    virtual void samplingStepNoCheck(int ind)
+    virtual void samplingStepNoCheck(Index ind)
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::samplingStep" << std::endl;
@@ -278,8 +278,8 @@ class Ordinal : public IMixture
     }
 
     /** storeSEMRun sets new parameters at the last iteration of the SEM, before the Gibbs. */
-    virtual void storeSEMRun(int iteration,
-                             int iterationMax)
+    virtual void storeSEMRun(Index iteration,
+                             Index iterationMax)
     {
       muParamStatComputer_.sampleParam(iteration, iterationMax);
       piParamStatComputer_.sampleParam(iteration, iterationMax);
@@ -321,9 +321,9 @@ class Ordinal : public IMixture
 #endif
     }
 
-    virtual void storeGibbsRun(int ind,
-                               int iteration,
-                               int iterationMax)
+    virtual void storeGibbsRun(Index ind,
+                               Index iteration,
+                               Index iterationMax)
     {
       dataStatComputer_.sampleVals(ind,
                                    iteration,
@@ -334,7 +334,7 @@ class Ordinal : public IMixture
       }
     }
 
-    virtual Real lnCompletedProbability(int i, int k)
+    virtual Real lnCompletedProbability(Index i, Index k)
     {
       return path_(i).computeLogProba(mu_(k), pi_(k)); // path_(i) contains a completed individual
     }
@@ -343,7 +343,7 @@ class Ordinal : public IMixture
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
-    virtual Real lnObservedProbability(int i, int k)
+    virtual Real lnObservedProbability(Index i, Index k)
     {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::lnobservedProbability" << std::endl;
@@ -496,7 +496,7 @@ class Ordinal : public IMixture
       for (int k = 0; k < nbClass_; ++k) {
         bool allZ0 = true;
         bool allZ1 = true; // are all z = 0 or all z = 1 in the current class ?
-        for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+        for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
              it != itE;
              ++it) {
           switch(path_(*it).allZ()) {
@@ -583,7 +583,8 @@ class Ordinal : public IMixture
         bool allOtherZ1 = true; // are all z in other individuals equal to 0 ?
 
         int currClass = (*p_zi_)(ind);
-        for (std::set<int>::const_iterator it = classInd_(currClass).begin(), itE = classInd_(currClass).end();
+        for (std::set<Index>::const_iterator it  = classInd_(currClass).begin(),
+                                             itE = classInd_(currClass).end();
              it != itE;
              ++it) {
           if (*it != ind) { // check is performed on all in the class but the current ind
@@ -709,11 +710,11 @@ class Ordinal : public IMixture
     }
 
     /** Pointer to the zik class label */
-    Vector<int> const* p_zi_;
+    Vector<Index> const* p_zi_;
 
     /** Reference to a vector containing in each element a set of the indices of individuals that
      * belong to this class. Can be passed as an alternative to zi_ to a subtype of IMixture. */
-    const Vector<std::set<int> >& classInd_;
+    const Vector<std::set<Index> >& classInd_;
 
     /** Number of classes */
     int nbClass_;
@@ -733,7 +734,7 @@ class Ordinal : public IMixture
     Matrix<Real> observedProba_;
 
     /** Number of samples in the data set*/
-    int nbInd_;
+    Index nbInd_;
 
     /** Optional string parameters */
     std::string paramStr_;

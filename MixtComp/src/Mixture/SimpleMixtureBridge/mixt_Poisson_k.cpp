@@ -32,7 +32,7 @@ namespace mixt
 Poisson_k::Poisson_k(const std::string& idName,
                      int nbClass,
                      Vector<Real>& param,
-                     const Vector<std::set<int> >& classInd) :
+                     const Vector<std::set<Index> >& classInd) :
     idName_(idName),
     nbClass_(nbClass),
     param_(param),
@@ -94,7 +94,7 @@ std::string Poisson_k::model() const
 void Poisson_k::mStep(EstimatorType bias) {
   for (int k = 0; k < nbClass_; ++k) {
     Real sumClass = 0.;
-    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+    for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
          ++it) {
       sumClass += (*p_data_)(*it);
@@ -155,7 +155,7 @@ int Poisson_k::checkSampleCondition(std::string* warnLog) const
     int i = -1;
 #endif
 
-    for (std::set<int>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+    for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
          ++it) {
 #ifdef MC_DEBUG

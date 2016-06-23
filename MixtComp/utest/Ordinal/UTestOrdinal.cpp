@@ -43,8 +43,8 @@ TEST(Ordinal, mStep)
   mu = multi.sampleInt(0, nbModalities - 1);
   pi = uni.sample(0., 1.);
 
-  Vector<int> z_i(nbInd, 0); // dummy class variable
-  Vector<std::set<int> > classInd(1);
+  Vector<Index> z_i(nbInd, 0); // dummy class variable
+  Vector<std::set<Index> > classInd(1);
 
   for (int i = 0; i < nbInd; ++i) {
     classInd(0).insert(i);

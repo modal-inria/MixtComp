@@ -37,17 +37,18 @@
 namespace mixt
 {
 
-template <typename DataType>
-class Range
-{
+template <typename Type>
+class Range {
   public:
-    Range(DataType min = std::numeric_limits<int>::quiet_NaN(),
-          DataType max = std::numeric_limits<int>::quiet_NaN(),
+    Range(Type min = std::numeric_limits<Type>::quiet_NaN(),
+          Type max = std::numeric_limits<Type>::quiet_NaN(),
           bool hasRange = false);
+
     ~Range(){};
-    DataType min_;
-    DataType max_;
-    DataType range_;
+
+    Type min_;
+    Type max_;
+    Type range_;
     bool hasRange_;
 };
 
@@ -233,11 +234,14 @@ class AugmentedData
 
     /** data structure for partially observed values */
     Vector<MisVal> misData_;
+
     /** total number of values */
     int nbSample_;
+
     /** Number of each type of missing data
      * Order of indices */
     Vector<int> misCount_;
+
     /** available data ranges, one pair per data column */
     Range<Type> dataRange_;
 

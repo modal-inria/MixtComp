@@ -43,7 +43,7 @@ TEST(RankStat, computeStat)
   rankIndividual.setObsData(obsData);
 
   Vector<RankIndividual> data(nbInd); // will store the result of xGen
-  std::set<int> setInd;
+  std::set<Index> setInd;
 
   RankVal mu = {0, 3, 1, 2, 4}; // ordering (position -> modality) representation
   Real pi = 0.75;

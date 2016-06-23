@@ -42,7 +42,7 @@ class RankClass
 
     /** Constructor with data and parameters provided. useful for unit-testing. */
     RankClass(const Vector<RankIndividual>& data,
-              const std::set<int>& setInd,
+              const std::set<Index>& setInd,
               RankVal& mu,
               Real& pi);
 
@@ -68,7 +68,7 @@ class RankClass
     const Vector<RankIndividual>& data_;
 
     /** List of individuals among the data that belong to the class corresponding to this RankClass */
-    const std::set<int>& setInd_;
+    const std::set<Index>& setInd_;
 
     /** Parameter mu */
     RankVal& mu_;

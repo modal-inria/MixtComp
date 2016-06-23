@@ -25,4 +25,42 @@
 
 using namespace mixt;
 
-
+/**
+ * Simple case with three modalities and imprecision
+ */
+//TEST(BOSPath, computeLogProba1)
+//{
+//  int mu = 1; // mode
+//  Real pi = 0.5; // precision
+//
+//  BOSPath path;
+//  path.setInit(0, 2);
+//  path.setEnd(0, 0);
+//
+//  Vector<int, 2> eInit;
+//  eInit << 0, 2;
+//
+//  Vector<BOSNode> c(2);
+//
+//  c(0).y_ = 1; // y, middle element y picked, proba 1./3.
+//  c(0).z_ = 0; // z, comparison is imperfect, proba 0.5
+//  c(0).partition(eInit); // computation of the partition
+//  c(0).e_ << 0, 0; // e, left segment {0, 0} selected, proba 0.33 (all have the same size)
+//
+//  c(1).y_ = 0; // y, only one element to choose from, proba 1.
+//  c(1).z_ = 1; // z, comparison is perfect, proba 0.5
+//  c(1).partition(path.c()(0).e_); // computation of the partition
+//  c(1).e_ << 0, 0; // e, only one segment in partition, with proba 1.
+//
+//  path.setC(c);
+//
+//  Real expectedProba = std::log(1./3. * 0.5 * 1./3. *
+//                                1.    * 0.5 * 1.);
+//  Real computedProba = path.computeLogProba(mu, pi);
+//
+//#ifdef MC_DEBUG
+//  std::cout << "expectedProba: " << expectedProba << std::endl;
+//  std::cout << "proba: " << computedProba << std::endl;
+//#endif
+//  ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
+//}

@@ -187,7 +187,7 @@ TEST(RankClass, sampleMu)
   rankIndividual.setObsData(obsData);
 
   Vector<RankIndividual> data(nbInd); // will store the result of xGen
-  std::set<int> classInd;
+  std::set<Index> classInd;
 
   RankVal mu = {0, 3, 1, 2, 5, 4}; // position -> modality representation
   Real pi = 0.7; // pi high enough to get mu, no matter the y obtained in removeMissing
@@ -258,7 +258,7 @@ TEST(RankClass, mStep)
   rankIndividual.setObsData(obsData);
 
   Vector<RankIndividual> data(nbInd); // will store the result of xGen
-  std::set<int> setInd;
+  std::set<Index> setInd;
 
   RankVal mu = {0, 3, 1, 2, 6, 5, 4}; // position -> modality representation
   Real pi = 0.75;
@@ -303,7 +303,7 @@ TEST(RankClass, mStep)
 TEST(RankClass, lnObservedProbability) {
   int nbPos = 4;
 
-  std::set<int> setInd;
+  std::set<Index> setInd;
   setInd.insert(0);
 
   Vector<int> x(nbPos);

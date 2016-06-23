@@ -43,7 +43,7 @@ class Poisson_k
     Poisson_k(const std::string& idName,
               int nbClass,
               Vector<Real>& param,
-              const Vector<std::set<int> >& classInd);
+              const Vector<std::set<Index> >& classInd);
 
     Vector<bool> acceptedType() const;
     bool checkMaxVal() const;
@@ -73,7 +73,7 @@ class Poisson_k
     int nbClass_;
     Vector<Real>& param_;
     Vector<int>* p_data_;
-    const Vector<std::set<int> >& classInd_;
+    const Vector<std::set<Index> >& classInd_;
 
     /** Statistic object to describe Poisson law */
     PoissonStatistic poisson_;

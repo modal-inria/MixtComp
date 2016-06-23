@@ -61,7 +61,7 @@ struct BridgeTraits<Categorical_pjk_>
     /** Sampler to be used for this specific mixture model */
     typedef CategoricalSampler Sampler;
     /** Type of Likelihood */
-    typedef CategoricalLikelihood Likelihood;
+    typedef CategoricalLikelihood<int> Likelihood;
 };
 
 template <typename DataHandler,

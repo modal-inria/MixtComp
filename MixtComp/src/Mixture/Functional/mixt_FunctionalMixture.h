@@ -67,14 +67,30 @@ class FunctionalMixture : public IMixture {
                        false; // missingRUIntervals
     }
 
-    void samplingStepCheck(int ind) {};
+    void samplingStepCheck(Index ind) {};
+    void samplingStepNoCheck(Index ind) {};
+    Index checkSampleCondition(std::string* warnLog = NULL) const {return 0;}
+    void mStep(EstimatorType bias) {};
+    void storeSEMRun(Index iteration,
+                     Index iterationMax) {};
+    void storeGibbsRun(Index i,
+                       Index iteration,
+                       Index iterationMax) {};
+    Real lnCompletedProbability(Index i, Index k) {return 0.;}
+    Real lnObservedProbability(Index i, Index k)  {return 0.;}
+    Index nbFreeParameter() const {return 0;}
+    void writeParameters() const {};
+    std::string setDataParam(RunMode mode) {return "";}
+    void exportDataParam() const {};
+    void removeMissing(initParam algo) {};
   private:
     Index nInd_;
     Index nClass_;
     Real confidenceLevel_;
 
     /** Data */
-    const Vector<Function>& data_;
+    Vector<Function> data_;
+
     const Vector<std::set<Index> >& classInd_;
 
     const DataHandler* p_handler_;

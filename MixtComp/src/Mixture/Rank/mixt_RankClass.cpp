@@ -26,7 +26,7 @@
 namespace mixt
 {
 RankClass::RankClass(const Vector<RankIndividual>& data,
-                     const std::set<int>& setInd,
+                     const std::set<Index>& setInd,
                      RankVal& mu,
                      Real& pi) :
     nbInd_(data.size()),
@@ -41,7 +41,7 @@ Real RankClass::lnCompletedProbability() const
   Real logProba = 0.;
   int a, g; // a and g are only used in the mStep, here they are dummy variables
 
-  for (std::set<int>::const_iterator it = setInd_.begin(), itEnd = setInd_.end();
+  for (std::set<Index>::const_iterator it = setInd_.begin(), itEnd = setInd_.end();
        it != itEnd;
        ++it)
   {
@@ -57,7 +57,7 @@ Real RankClass::lnCompletedProbability(int& a, int& g) const
   a = 0;
   g = 0;
 
-  for (std::set<int>::const_iterator it = setInd_.begin(), itEnd = setInd_.end();
+  for (std::set<Index>::const_iterator it = setInd_.begin(), itEnd = setInd_.end();
        it != itEnd;
        ++it)
   {
