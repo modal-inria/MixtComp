@@ -27,6 +27,7 @@
 
 #include "Composer/mixt_MixtureComposer.h"
 #include "Mixture/SimpleMixtureBridge/mixt_MixtureBridge.h"
+#include "Mixture/Functional/mixt_FunctionalMixture.h"
 #include "Mixture/Ordinal/mixt_Ordinal.h"
 #include "Mixture/Rank/mixt_RankMixture.h"
 
@@ -52,9 +53,9 @@ class MixtureManager {
       warnLog_(warnLog) {}
 
     std::string createMixtures(MixtureComposer& composer,
-                               int nbCluster) {
+                               Index nbCluster) {
       std::string warnLog;
-      int indexMixture = 0; // index of current variable
+      Index indexMixture = 0; // index of current variable
       for (std::map<std::string, std::string>::const_iterator it    = p_handler_->info().begin(),
                                                               itEnd = p_handler_->info().end();
            it != itEnd;
@@ -95,10 +96,10 @@ class MixtureManager {
      *  @param nbCluster number of cluster of the model
      **/
     IMixture* createMixture(std::string const& idModel,
-                            int indexMixture,
+                            Index indexMixture,
                             std::string const& idName,
                             MixtureComposer& composer,
-                            int nbCluster,
+                            Index nbCluster,
                             Real confidenceLevel) {
       if (idModel == "Categorical_pjk") {
         CategoricalBridge_pjk_m<DataHandler,
@@ -155,6 +156,24 @@ class MixtureManager {
                                                                                                      p_paramSetter_,
                                                                                                      p_paramExtractor_,
                                                                                                      confidenceLevel);
+        return p_bridge;
+      }
+      if (idModel == "Functional") {
+        FunctionalMixture<DataHandler,
+                          DataExtractor,
+                          ParamSetter,
+                          ParamExtractor>* p_bridge = new FunctionalMixture<DataHandler,
+                                                                            DataExtractor,
+                                                                            ParamSetter,
+                                                                            ParamExtractor>(indexMixture,
+                                                                                            idName,
+                                                                                            nbCluster,
+                                                                                            composer.classInd(),
+                                                                                            p_handler_,
+                                                                                            p_dataExtractor_,
+                                                                                            p_paramSetter_,
+                                                                                            p_paramExtractor_,
+                                                                                            confidenceLevel);
         return p_bridge;
       }
       if (idModel == "Ordinal") {

@@ -72,21 +72,21 @@ class ZClassInd {
     /** The class of a particular individual is modified */
     void setZAndClassInd(int i, int k);
 
-    const AugmentedData<Vector<int> >& zi() const {return zi_;}
-    const Vector<std::set<int> >& classInd() const {return classInd_;}
+    const AugmentedData<Vector<Index> >& zi() const {return zi_;}
+    const Vector<std::set<Index> >& classInd() const {return classInd_;}
 
     void printState() const;
 
   private:
-    int nbInd_;
-    int nbClass_;
+    Index nbInd_;
+    Index nbClass_;
 
     /** The zik class label */
-    AugmentedData<Vector<int> > zi_;
+    AugmentedData<Vector<Index> > zi_;
 
     /** A vector containing in each element a vector of the indices of individuals that
      * belong to this class. Can be passed as an alternative to zi_ to a subtype of IMixture. */
-    Vector<std::set<int> > classInd_;
+    Vector<std::set<Index> > classInd_;
 };
 
 } /* namespace mixt */

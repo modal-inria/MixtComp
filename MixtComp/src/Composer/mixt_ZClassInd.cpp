@@ -72,8 +72,8 @@ void ZClassInd::printState() const {
 
   for (int k = 0; k < nbClass_; ++k) {
     std::cout << "k: " << k << ",";
-    for (std::set<int>::const_iterator it    = classInd_(k).begin(),
-                                       itEnd = classInd_(k).end();
+    for (std::set<Index>::const_iterator it    = classInd_(k).begin(),
+                                         itEnd = classInd_(k).end();
          it != itEnd;
          ++it) {
       std::cout << " " << *it;

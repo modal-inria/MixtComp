@@ -74,10 +74,10 @@ class MixtureComposer {
     int nbVar() const {return nbVar_;}
 
     /** @return  the zi class label */
-    const Vector<int>* p_zi() const {return &(zClassInd_.zi().data_);}
+    const Vector<Index>* p_zi() const {return &(zClassInd_.zi().data_);}
 
     /** @return  the zi class label */
-    const Vector<std::set<int> >& classInd() const {return zClassInd_.classInd();}
+    const Vector<std::set<Index> >& classInd() const {return zClassInd_.classInd();}
 
     /** @return a constant reference on the vector of mixture */
     const std::vector<IMixture*>& v_mixtures() const {return v_mixtures_;}

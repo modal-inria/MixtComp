@@ -39,7 +39,7 @@ void FunctionalClass::setSize(Index nSub,
   beta_.resize(nSub, nCoeff);
   sd_.resize(nSub);
 
-  alpha_ = 0.; // initialization is useful as the optimization is an iterative process
+  alpha_ = 0.; // initialization is mandatory as the optimization is an iterative process
   beta_ = 0.;
   sd_ = 0.;
 }
