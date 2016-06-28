@@ -426,7 +426,8 @@ class Ordinal : public IMixture
                                      paramStatStorage,
                                      paramLogStorage,
                                      paramNames(),
-                                     confidenceLevel_);
+                                     confidenceLevel_,
+                                     "");
     }
 
     std::vector<std::string> paramNames() const

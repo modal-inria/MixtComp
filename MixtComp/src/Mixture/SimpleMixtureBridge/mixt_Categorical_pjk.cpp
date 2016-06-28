@@ -21,11 +21,15 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include "boost/regex.hpp"
+
+#include "IO/mixt_IO.h"
+#include "IO/mixt_SpecialStr.h"
+#include "Various/mixt_Constants.h"
+#include "LinAlg/mixt_LinAlg.h"
+#include "Various/mixt_Enum.h"
+
 #include "mixt_Categorical_pjk.h"
-#include "../../IO/mixt_IO.h"
-#include "../../Various/mixt_Constants.h"
-#include "../../LinAlg/mixt_LinAlg.h"
-#include "../../Various/mixt_Enum.h"
 
 namespace mixt {
 
@@ -35,14 +39,12 @@ Categorical_pjk::Categorical_pjk(const std::string& idName,
                                  const Vector<std::set<Index> >& classInd) :
     idName_(idName),
     nbClass_(nbClass),
-    nbModality_(0),
+    nModality_(0),
     p_data_(0),
     param_(param),
-    classInd_(classInd)
-{} // modalities are not known at the creation of the object, hence a call to setModality is needed later
+    classInd_(classInd) {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
 
-Vector<bool> Categorical_pjk::acceptedType() const
-{
+Vector<bool> Categorical_pjk::acceptedType() const {
   Vector<bool> at(nb_enum_MisType_);
   at(0) = true ; // present_,
   at(1) = true ; // missing_,
@@ -53,47 +55,13 @@ Vector<bool> Categorical_pjk::acceptedType() const
   return at;
 }
 
-bool Categorical_pjk::checkMaxVal() const
-{
-  return true;
-}
-
-bool Categorical_pjk::checkMinVal() const
-{
-  return true;
-}
-
-int Categorical_pjk::computeNbFreeParameters() const
-{
-  return nbClass_ * (nbModality_ - 1);
-}
-
-bool Categorical_pjk::hasModalities() const {
-  return true;
-}
-
-int Categorical_pjk::nbModality() const {
-  return nbModality_;
-}
-
-int Categorical_pjk::maxVal() const
-{
-  return nbModality_ - 1;
-}
-
-int Categorical_pjk::minVal() const
-{
-  return 0;
-}
-
-std::string Categorical_pjk::model() const
-{
-  return "Categorical_pjk";
+int Categorical_pjk::computeNbFreeParameters() const {
+  return nbClass_ * (nModality_ - 1);
 }
 
 void Categorical_pjk::mStep(EstimatorType bias) {
   for (int k = 0; k < nbClass_; ++k) {
-    Vector<Real> modalities(nbModality_, 0.);
+    Vector<Real> modalities(nModality_, 0.);
 
     for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
@@ -103,70 +71,107 @@ void Categorical_pjk::mStep(EstimatorType bias) {
 
     modalities = modalities / Real(classInd_(k).size());
 
-    for (int p = 0; p < nbModality_; ++p) {
-      param_(k * nbModality_ + p) = modalities(p);
+    for (int p = 0; p < nModality_; ++p) {
+      param_(k * nModality_ + p) = modalities(p);
     }
   }
 
   if (bias == biased_) {
     for (int k = 0; k < nbClass_; ++k) {
-      for (int p = 0; p < nbModality_; ++p) {
-        param_(k * nbModality_ + p) = std::max(param_(k * nbModality_ + p), epsilon                     );
-        param_(k * nbModality_ + p) = std::min(1. - epsilon               , param_(k * nbModality_ + p));
+      for (int p = 0; p < nModality_; ++p) {
+        param_(k * nModality_ + p) = std::max(param_(k * nModality_ + p), epsilon                     );
+        param_(k * nModality_ + p) = std::min(1. - epsilon              , param_(k * nModality_ + p)  );
       }
     }
   }
 }
 
-std::vector<std::string> Categorical_pjk::paramNames() const
-{
-  std::vector<std::string> names(nbClass_ * nbModality_);
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    for (int p = 0; p < nbModality_; ++p)
-    {
+std::vector<std::string> Categorical_pjk::paramNames() const {
+  std::vector<std::string> names(nbClass_ * nModality_);
+  for (int k = 0; k < nbClass_; ++k) {
+    for (int p = 0; p < nModality_; ++p) {
       std::stringstream sstm;
       sstm << "k: "
            << k + minModality
            << ", modality: "
            << p + minModality;
-      names[k * nbModality_ + p] = sstm.str();
+      names[k * nModality_ + p] = sstm.str();
     }
   }
   return names;
 }
 
-void Categorical_pjk::setData(Vector<int>& data)
-{
-  p_data_ = &data;
-}
+std::string Categorical_pjk::setData(std::string& paramStr,
+                                     AugmentedData<Vector<int> >& augData) {
+  std::string warnLog;
 
-void Categorical_pjk::setModalities(int nbModalities)
-{
-  nbModality_ = nbModalities;
-  param_.resize(nbClass_ * nbModality_);
-}
+  p_data_ = &(augData.data_);
 
-void Categorical_pjk::writeParameters() const
-{
-  std::stringstream sstm;
-  for (int k = 0; k < nbClass_; ++k)
-  {
-    sstm << "Class: " << k << std::endl;
-    for (int p = 0; p < nbModality_; ++p)
-    {
-      sstm << "\talpha_ "  << p << ": " << param_(k * nbModality_ + p) << std::endl;
+  if (paramStr.size() == 0) { // During learning without parameter space descriptor. Parameter space is deduced.
+    nModality_ = augData.dataRange_.max_ + 1;
+    param_.resize(nbClass_ * nModality_);
+
+    std::stringstream sstm;
+    sstm << "nModality: " << nModality_ << std::endl;
+    paramStr = sstm.str(); // paramStr must be generated from the data, for future use and export for prediction
+  }
+  else { // During learning with parameter space descriptor, or in prediction
+    std::string nModStr = std::string("nModality: *") + strInteger;
+    boost::regex nModRe(nModStr);
+    boost::smatch matchesVal;
+
+    if (boost::regex_match(paramStr, matchesVal, nModRe)) { // value is present
+      nModality_ = str2type<int>(matchesVal[1].str());
+    }
+    else {
+      std::stringstream sstm;
+      sstm << "Variable: " << idName_ << " parameter string is not in the correct format, which should be \"nModality: x\" "
+           << "with x the number of modalities in the variable." << std::endl;
+      warnLog += sstm.str();
+    }
+
+    if (nModality_ <= augData.dataRange_.max_) { // check if the range of data is within the parameter space. As > 0 is checked systematically, here only the higher bound is checked
+      std::stringstream sstm;
+      sstm << "Variable: " << idName_ << " requires a maximum value of : " << nModality_ - 1 + minModality << " in either provided values or bounds. "
+           << "The maximum currently provided value is : " << augData.dataRange_.max_ + minModality << std::endl;
+      warnLog += sstm.str();
     }
   }
 
-#ifdef MC_VERBOSE
-  std::cout << sstm.str() << std::endl;
+  if (augData.dataRange_.min_ < 0) { // Neither in learning nor in prediction are sub zero values valid
+    std::stringstream sstm;
+    sstm << "Variable: " << idName_ << " requires a minimum value of : " << minModality << " in either provided values or bounds. "
+         << "The minimum value currently provided is : " << augData.dataRange_.min_ + minModality << std::endl;
+    warnLog += sstm.str();
+  }
+
+  // Once everything has been set, adjust the range of data to align with the parameter space
+  augData.dataRange_.min_ = 0;
+  augData.dataRange_.max_ = nModality_ - 1;
+  augData.dataRange_.range_ = nModality_;
+
+#ifdef MC_DEBUGNEW
+  std::cout << idName_ << ", augData.dataRange_.min_: " << augData.dataRange_.min_ << std::endl;
+  std::cout << idName_ << ", augData.dataRange_.max_: " << augData.dataRange_.max_ << std::endl;
+  std::cout << idName_ << ", augData.dataRange_.range_: " << augData.dataRange_.range_ << std::endl;
 #endif
+
+  return warnLog;
+}
+
+void Categorical_pjk::writeParameters() const {
+  std::stringstream sstm;
+  for (int k = 0; k < nbClass_; ++k) {
+    sstm << "Class: " << k << std::endl;
+    for (int p = 0; p < nModality_; ++p) {
+      sstm << "\talpha_ "  << p << ": " << param_(k * nModality_ + p) << std::endl;
+    }
+  }
 }
 
 int Categorical_pjk::checkSampleCondition(std::string* warnLog) const {
   for (int k = 0; k < nbClass_; ++k) {
-    Vector<bool> modalityPresent(nbModality_, false);
+    Vector<bool> modalityPresent(nModality_, false);
     for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
          ++it) {
@@ -177,7 +182,7 @@ int Categorical_pjk::checkSampleCondition(std::string* warnLog) const {
     }
 
     if (warnLog != NULL) {
-      for (int p = 0; p < nbModality_; ++p) {
+      for (int p = 0; p < nModality_; ++p) {
         if (modalityPresent(p) == false) {
           std::stringstream sstm;
           sstm << "Categorical variables must have one individual with each modality present in each class. "
@@ -195,6 +200,11 @@ int Categorical_pjk::checkSampleCondition(std::string* warnLog) const {
   }
 
   return 1;
+}
+
+
+bool Categorical_pjk::hasModalities() const {
+  return true;
 }
 
 } // namespace mixt

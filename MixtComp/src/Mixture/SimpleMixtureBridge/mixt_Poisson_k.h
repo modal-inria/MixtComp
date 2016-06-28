@@ -30,15 +30,14 @@
 #include <set>
 
 #include "../mixt_IMixture.h"
-#include "../../LinAlg/mixt_LinAlg.h"
-#include "../../Statistic/mixt_PoissonStatistic.h"
-#include "../../Various/mixt_Enum.h"
+#include "Data/mixt_AugmentedData.h"
+#include "LinAlg/mixt_LinAlg.h"
+#include "Statistic/mixt_PoissonStatistic.h"
+#include "Various/mixt_Enum.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class Poisson_k
-{
+class Poisson_k {
   public:
     Poisson_k(const std::string& idName,
               int nbClass,
@@ -46,24 +45,17 @@ class Poisson_k
               const Vector<std::set<Index> >& classInd);
 
     Vector<bool> acceptedType() const;
-    bool checkMaxVal() const;
-    bool checkMinVal() const;
+
     int computeNbFreeParameters() const;
 
     bool hasModalities() const;
-    int nbModality() const;
 
-    void setData(Vector<int>& data);
+    std::string setData(const std::string& paramStr,
+                        AugmentedData<Vector<int> >& augData);
 
     void mStep(EstimatorType bias);
 
-    int maxVal() const;
-    int minVal() const;
-    std::string model() const;
-
     std::vector<std::string> paramNames() const;
-
-    void setModalities(int nbModalities);
 
     void writeParameters() const;
 

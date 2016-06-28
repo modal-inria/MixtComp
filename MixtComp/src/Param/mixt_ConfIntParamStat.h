@@ -24,17 +24,19 @@
 #ifndef MIXT_CONFINTPARAMSTAT_H
 #define MIXT_CONFINTPARAMSTAT_H
 
-#include "../LinAlg/mixt_LinAlg.h"
+#include "boost/regex.hpp"
 
-namespace mixt
-{
+#include "LinAlg/mixt_LinAlg.h"
+#include "IO/mixt_IO.h"
+#include "IO/mixt_SpecialStr.h"
+
+namespace mixt {
 
 /**
  * Computation of confidence interval on parameters. Templated for int or Real cases.
  * */
 template<typename Type>
-class ConfIntParamStat
-{
+class ConfIntParamStat {
   public:
     ConfIntParamStat(Vector<Type>& param,
                      Real confidenceLevel) :
@@ -61,11 +63,6 @@ class ConfIntParamStat
 
         for (int p = 0; p < nbParam_; ++p)
         {
-    #ifdef MC_DEBUG
-        std::cout << "SimpleParamStat::sampleParam: " << std::endl;
-        std::cout << "\tp: " << p << std::endl;
-    #endif
-
           RowVector<Type> currRow = logStorage_.row(p);
           currRow.sort();
 
@@ -102,15 +99,29 @@ class ConfIntParamStat
 
     /** Perform renormalization on statStorage. Useful for categorical modes where umputed parameters must
      * sum to 1 */
-    void normalizeParam(int nbClass, int nbModality) {
-      for (int j = 0; j < statStorage_.cols(); ++j) {
-        for (int k = 0; k < nbClass; ++k) {
-          Type sumClass = 0;
-          for (int p = 0; p < nbModality; ++p) {
-            sumClass += statStorage_(k * nbModality + p, j);
-          }
-          for (int p = 0; p < nbModality; ++p) {
-            statStorage_(k * nbModality + p, j) /= sumClass;
+    void normalizeParam(const std::string& paramStr) {
+      int nModality = 0;
+
+      std::string nModStr = std::string("nModality: *") + strInteger;
+      boost::regex nModRe(nModStr);
+      boost::smatch matchesVal;
+
+      if (boost::regex_match(paramStr, matchesVal, nModRe)) { // value is present
+        nModality = str2type<int>(matchesVal[1].str());
+      }
+
+      if (nModality > 0) {
+        int nClass = param_.size() / nModality;
+
+        for (int j = 0; j < statStorage_.cols(); ++j) {
+          for (int k = 0; k < nClass; ++k) {
+            Type sumClass = 0;
+            for (int p = 0; p < nModality; ++p) {
+              sumClass += statStorage_(k * nModality + p, j);
+            }
+            for (int p = 0; p < nModality; ++p) {
+              statStorage_(k * nModality + p, j) /= sumClass;
+            }
           }
         }
       }

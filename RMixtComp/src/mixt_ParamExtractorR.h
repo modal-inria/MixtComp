@@ -42,7 +42,8 @@ class ParamExtractorR {
                      const Matrix<Real>& paramStat,
                      const Matrix<Real>& paramsLog,
                      const std::vector<std::string>& paramNames,
-                     Real confidenceLevel);
+                     Real confidenceLevel,
+                     const std::string& paramStr);
 
     /** Extractor for Rank data type */
     void exportParam(int indexMixture,
@@ -50,7 +51,8 @@ class ParamExtractorR {
                      const std::string& paramName,
                      const std::vector<RankStat>& paramStat,
                      const std::vector<std::string>& paramNames,
-                     Real confidenceLevel);
+                     Real confidenceLevel,
+                     const std::string& paramStr);
 
     Rcpp::List rcppReturnParam() const;
   private:

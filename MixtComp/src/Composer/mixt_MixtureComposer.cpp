@@ -190,7 +190,7 @@ void MixtureComposer::writeParameters() const
 {
 #ifdef MC_VERBOSE
   std::cout << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
-  std::cout << "Composer proportions = " << prop_ << std::endl;
+  std::cout << "Composer proportions = " << itString(prop_) << std::endl;
 #endif
 
   for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)

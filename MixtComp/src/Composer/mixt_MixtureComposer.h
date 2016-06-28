@@ -277,7 +277,8 @@ class MixtureComposer {
                                  paramStat_.getStatStorage(),
                                  paramStat_.getLogStorage(),
                                  paramName(),
-                                 confidenceLevel_);
+                                 confidenceLevel_,
+                                 "");
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
         (*it)->exportDataParam();
       }

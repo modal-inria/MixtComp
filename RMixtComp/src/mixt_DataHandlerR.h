@@ -39,20 +39,18 @@
 #include "MixtComp/src/IO/mixt_IO.h"
 #include "MixtComp/src/Various/mixt_Enum.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class DataHandlerR
-{
+class DataHandlerR {
   public:
     /** default constructor */
     DataHandlerR(Rcpp::List rList);
 
     /** @return the number of samples (the number of rows of the data) */
-    int nbSample() const {return nbInd_;}
+    Index nbSample() const {return nbInd_;}
 
         /** @return the number of variables (the number of columns of the data) */
-    int nbVariable() const {return nbVar_;}
+    Index nbVariable() const {return nbVar_;}
 
     /** read a data file and its companion description file,
       and fill the infoMap_ (id -> model) and dataMap_ (id -> vector of positions)
@@ -71,22 +69,22 @@ class DataHandlerR
     std::string getData(std::string const& idData,
                         AugmentedData<DataType>& augData,
                         Index& nbInd,
-                        std::string& param,
+                        std::string& paramStr,
                         typename AugmentedData<DataType>::Type offset) const;
 
     /** Basic version of getData that only retrieve a vector of std::string. The responsability to
-     * parse it is thus handed down to the calling structure. */
+     * parse it is thus handed down to the calling structure. This is useful for advanced models, like Rank or Functional.*/
     std::string getData(std::string const& idData,
                         Vector<std::string>& dataStr,
                         Index& nbInd,
-                        std::string& param) const;
+                        std::string& paramStr) const;
 
     /** Return a Rcpp::List named list that contains the types of the variables */
     Rcpp::List rcppReturnType() const;
   private:
-    int nbInd_;
+    Index nbInd_;
 
-    int nbVar_;
+    Index nbVar_;
 
     /** Store the informations  of the mixtures in the form (idData, idModel) with
      * - idData: an arbitrary idData for a model
@@ -105,7 +103,7 @@ template<typename DataType>
 std::string DataHandlerR::getData(std::string const& idData,
                                   AugmentedData<DataType>& augData,
                                   Index& nbInd,
-                                  std::string& param,
+                                  std::string& paramStr,
                                   typename AugmentedData<DataType>::Type offset) const {
   std::string warnLog;
   typedef typename AugmentedData<DataType>::Type Type;
@@ -114,14 +112,19 @@ std::string DataHandlerR::getData(std::string const& idData,
   MisValParser<Type> mvp(offset);
 
   if (dataMap_.find(idData) != dataMap_.end()) { // check if the data requested is present in the input data
-    int pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
+    Index pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
     nbInd = nbInd_; // return the number of individuals
     augData.resizeArrays(nbInd_); // R has already enforced that all data has the same number of rows, and now all mixture are univariate
 
     Rcpp::List currVar = rList_[pos]; // get current named list
-    Rcpp::CharacterVector data = currVar("data");
+    Rcpp::CharacterVector data = currVar("data"); // get the data field in the Rcpp object
 
-    for (int i = 0; i < nbInd_; ++i) {
+    paramStr = Rcpp::as<std::string>(currVar("param"));
+#ifdef MC_DEBUGNEW
+    std::cout << "idData: " << idData << ", paramStr: " << paramStr << std::endl;
+#endif
+
+    for (Index i = 0; i < nbInd_; ++i) {
       std::string currStr;
       Type val;
       MisVal misVal;
@@ -151,8 +154,8 @@ std::string DataHandlerR::getData(std::string const& idData,
   }
   else {
     std::stringstream sstm;
-    sstm << "Data from the variable: " << idData << " has been requested but is absent from the provided data."
-         << " Please check that all the necessary data is provided." << std::endl;
+    sstm << "Data from the variable: " << idData << " has been requested but is absent from the provided data. "
+         << "Please check that all the necessary data is provided." << std::endl;
     warnLog += sstm.str();
   }
   return warnLog;

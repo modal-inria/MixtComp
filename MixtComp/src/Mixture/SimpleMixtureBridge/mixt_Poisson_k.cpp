@@ -26,8 +26,7 @@
 #include "../../Various/mixt_Constants.h"
 #include "../../Various/mixt_Enum.h"
 
-namespace mixt
-{
+namespace mixt {
 
 Poisson_k::Poisson_k(const std::string& idName,
                      int nbClass,
@@ -37,13 +36,11 @@ Poisson_k::Poisson_k(const std::string& idName,
     nbClass_(nbClass),
     param_(param),
     p_data_(0),
-    classInd_(classInd)
-{
+    classInd_(classInd) {
   param_.resize(nbClass);
 }
 
-Vector<bool> Poisson_k::acceptedType() const
-{
+Vector<bool> Poisson_k::acceptedType() const {
   Vector<bool> at(nb_enum_MisType_);
   at(0) = true; // present_,
   at(1) = true;// missing_,
@@ -54,41 +51,12 @@ Vector<bool> Poisson_k::acceptedType() const
   return at;
 }
 
-bool Poisson_k::checkMaxVal() const
-{
-  return false;
-}
-
-bool Poisson_k::checkMinVal() const
-{
-  return true;
-}
-
-int Poisson_k::computeNbFreeParameters() const
-{
+int Poisson_k::computeNbFreeParameters() const {
   return nbClass_;
 }
 
 bool Poisson_k::hasModalities() const {
   return false;
-}
-int Poisson_k::nbModality() const {
-  return -1;
-}
-
-int Poisson_k::maxVal() const
-{
-  return 0;
-}
-
-int Poisson_k::minVal() const
-{
-  return 0;
-}
-
-std::string Poisson_k::model() const
-{
-  return "Poisson_k";
 }
 
 void Poisson_k::mStep(EstimatorType bias) {
@@ -110,11 +78,9 @@ void Poisson_k::mStep(EstimatorType bias) {
   }
 }
 
-std::vector<std::string> Poisson_k::paramNames() const
-{
+std::vector<std::string> Poisson_k::paramNames() const {
   std::vector<std::string> names(nbClass_);
-  for (int k = 0; k < nbClass_; ++k)
-  {
+  for (int k = 0; k < nbClass_; ++k) {
     std::stringstream sstm;
     sstm << "k: "
          << k + minModality
@@ -124,51 +90,36 @@ std::vector<std::string> Poisson_k::paramNames() const
   return names;
 }
 
-void Poisson_k::setData(Vector<int>& data)
-{
-  p_data_ = &data;
+std::string Poisson_k::setData(const std::string& paramStr,
+                               AugmentedData<Vector<int> >& augData) {
+  std::string warnLog;
+
+  p_data_ = &(augData.data_);
+
+  if (augData.dataRange_.min_ < 0) {
+    std::stringstream sstm;
+    sstm << "Variable: " << idName_ << " requires a minimum value of : " << minModality << " in either provided values or bounds. "
+         << "The minimum value currently provided is : " << augData.dataRange_.min_ + minModality << std::endl;
+    warnLog += sstm.str();
+  }
+
+  return warnLog;
 }
 
-void Poisson_k::setModalities(int nbModalities)
-{
-  // does nothing. Used for categorical models.
-}
-
-void Poisson_k::writeParameters() const
-{
+void Poisson_k::writeParameters() const {
   std::stringstream sstm;
-  for (int k = 0; k < nbClass_; ++k)
-  {
+  for (int k = 0; k < nbClass_; ++k) {
     sstm << "Class: " << k << std::endl;
     sstm << "\tlambda: " << param_[k] << std::endl;
   }
-
-#ifdef MC_VERBOSE
-  std::cout << sstm.str() << std::endl;
-#endif
 }
 
-int Poisson_k::checkSampleCondition(std::string* warnLog) const
-{
+int Poisson_k::checkSampleCondition(std::string* warnLog) const {
   for (int k = 0; k < nbClass_; ++k) {
-#ifdef MC_DEBUG
-    int i = -1;
-#endif
-
     for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
          it != itE;
          ++it) {
-#ifdef MC_DEBUG
-      ++i;
-#endif
-
       if ((*p_data_)(*it) > 0) {
-#ifdef MC_DEBUG
-        if (1000 < i) {
-          std::cout << "Poisson_k::checkSampleCondition, idName: " << idName_ << ", OK at i: " << i << std::endl;
-        }
-#endif
-
         goto endItK;
       }
     }

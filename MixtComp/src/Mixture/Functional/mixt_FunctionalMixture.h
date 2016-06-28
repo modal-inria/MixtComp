@@ -76,8 +76,8 @@ class FunctionalMixture : public IMixture {
 
     void samplingStepNoCheck(Index i) {
       vecInd_(i).sampleW(class_[(*p_zi_)(i)].alpha(),
-                       class_[(*p_zi_)(i)].beta (),
-                       class_[(*p_zi_)(i)].sd   ());
+                         class_[(*p_zi_)(i)].beta (),
+                         class_[(*p_zi_)(i)].sd   ());
     };
 
     Index checkSampleCondition(std::string* warnLog = NULL) const {return 0;}
@@ -100,14 +100,14 @@ class FunctionalMixture : public IMixture {
 
     Real lnCompletedProbability(Index i, Index k) {
       return vecInd_(i).lnCompletedProbability(class_[(*p_zi_)(i)].alpha(),
-                                             class_[(*p_zi_)(i)].beta (),
-                                             class_[(*p_zi_)(i)].sd   ());
+                                               class_[(*p_zi_)(i)].beta (),
+                                               class_[(*p_zi_)(i)].sd   ());
     }
 
     Real lnObservedProbability(Index i, Index k)  {
       return vecInd_(i).lnObservedProbability(class_[(*p_zi_)(i)].alpha(),
-                                            class_[(*p_zi_)(i)].beta (),
-                                            class_[(*p_zi_)(i)].sd   ());
+                                              class_[(*p_zi_)(i)].beta (),
+                                              class_[(*p_zi_)(i)].sd   ());
     }
 
     Index nbFreeParameter() const {return 0;}

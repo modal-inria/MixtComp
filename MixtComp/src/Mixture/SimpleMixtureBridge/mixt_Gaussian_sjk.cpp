@@ -21,15 +21,16 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_Gaussian_sjk.h"
+#include "Data/mixt_AugmentedData.h"
 #include "LinAlg/mixt_Math.h"
-#include "../../LinAlg/mixt_LinAlg.h"
-#include "../../Various/mixt_Constants.h"
-#include "../../IO/mixt_IO.h"
-#include "../../Various/mixt_Enum.h"
+#include "LinAlg/mixt_LinAlg.h"
+#include "Various/mixt_Constants.h"
+#include "IO/mixt_IO.h"
+#include "Various/mixt_Enum.h"
 
-namespace mixt
-{
+#include "mixt_Gaussian_sjk.h"
+
+namespace mixt {
 
 Gaussian_sjk::Gaussian_sjk(const std::string& idName,
                            int nbClass,
@@ -39,13 +40,11 @@ Gaussian_sjk::Gaussian_sjk(const std::string& idName,
     nbClass_(nbClass),
     param_(param),
     p_data_(0),
-    classInd_(classInd)
-{
+    classInd_(classInd) {
   param_.resize(2 * nbClass);
 }
 
-Vector<bool> Gaussian_sjk::acceptedType() const
-{
+Vector<bool> Gaussian_sjk::acceptedType() const {
   Vector<bool> at(nb_enum_MisType_);
   at(0) = true ; // present_,
   at(1) = true ; // missing_,
@@ -56,42 +55,12 @@ Vector<bool> Gaussian_sjk::acceptedType() const
   return at;
 }
 
-bool Gaussian_sjk::checkMaxVal() const
-{
-  return false;
-}
-
-bool Gaussian_sjk::checkMinVal() const
-{
-  return false;
-}
-
-int Gaussian_sjk::computeNbFreeParameters() const
-{
+int Gaussian_sjk::computeNbFreeParameters() const {
   return 2 * nbClass_;
 }
 
 bool Gaussian_sjk::hasModalities() const {
   return false;
-}
-
-int Gaussian_sjk::nbModality() const {
-  return -1;
-}
-
-Real Gaussian_sjk::maxVal() const
-{
-  return 0;
-}
-
-Real Gaussian_sjk::minVal() const
-{
-  return 0;
-}
-
-std::string Gaussian_sjk::model() const
-{
-  return "Gaussian_sjk";
 }
 
 void Gaussian_sjk::mStep(EstimatorType bias) {
@@ -115,11 +84,9 @@ void Gaussian_sjk::mStep(EstimatorType bias) {
   }
 }
 
-std::vector<std::string> Gaussian_sjk::paramNames() const
-{
+std::vector<std::string> Gaussian_sjk::paramNames() const {
   std::vector<std::string> names(nbClass_ * 2);
-  for (int k = 0; k < nbClass_; ++k)
-  {
+  for (int k = 0; k < nbClass_; ++k) {
     std::stringstream sstmMean, sstmSd;
     sstmMean << "k: "
              << k + minModality
@@ -133,38 +100,26 @@ std::vector<std::string> Gaussian_sjk::paramNames() const
   return names;
 }
 
-void Gaussian_sjk::setData(Vector<Real>& data)
-{
-  p_data_ = &data;
+std::string Gaussian_sjk::setData(const std::string& paramStr,
+                                  AugmentedData<Vector<Real> >& augData) {
+  std::string warnLog;
+
+  p_data_ = &(augData.data_);
+
+  return warnLog;
 }
 
-void Gaussian_sjk::setModalities(int nbModalities)
-{
-  // does nothing. Used for categorical models.
-}
-
-void Gaussian_sjk::writeParameters() const
-{
+void Gaussian_sjk::writeParameters() const {
   std::stringstream sstm;
-  for (int k = 0; k < nbClass_; ++k)
-  {
+  for (int k = 0; k < nbClass_; ++k) {
     sstm << "Class: " << k << std::endl;
     sstm << "\tmean: " << param_[2 * k    ] << std::endl;
     sstm << "\tsd: "   << param_[2 * k + 1] << std::endl;
   }
-
-#ifdef MC_VERBOSE
-  std::cout << sstm.str() << std::endl;
-#endif
 }
 
-int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
-{
+int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const {
   for (int k = 0; k < nbClass_; ++k) {
-#ifdef MC_DEBUG
-    int i = -1;
-#endif
-
     if (classInd_(k).size() < 2) {
       if (warnLog != NULL) {
         std::stringstream sstm;
@@ -179,17 +134,8 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const
     Real previousElemClass = (*p_data_)(*it);
     ++it;
     for (; it != itE; ++it) {
-#ifdef MC_DEBUG
-      ++i;
-#endif
 
       if ((*p_data_)(*it) != previousElemClass) { // stop checking soon as there are two different values in the current class
-#ifdef MC_DEBUG
-        if (1000 < i) {
-          std::cout << "Gaussian_sjk::checkSampleCondition, idName: " << idName_ << ", OK at i: " << i << std::endl;
-        }
-#endif
-
         goto endItK; // feared and loathed goto is used here as a kind of super break statement, see http://stackoverflow.com/questions/1257744/can-i-use-break-to-exit-multiple-nested-for-loops
       }
     }

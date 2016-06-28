@@ -30,7 +30,7 @@
 namespace mixt {
 
 DataHandlerR::DataHandlerR(Rcpp::List rList) :
-    nbInd_(-1),
+    nbInd_(0),
     nbVar_(0),
     rList_(rList)
 {}
@@ -50,7 +50,7 @@ std::string DataHandlerR::listData() {
   bool LatentClassProvided = false;
 
   std::string warnLog;
-  for (int i = 0; i < rList_.size(); ++i) {
+  for (Index i = 0; i < rList_.size(); ++i) {
     Rcpp::List currList = rList_[i];
 
     std::string model = currList["model"];
@@ -105,15 +105,20 @@ void DataHandlerR::writeDataMap() const {
 std::string DataHandlerR::getData(std::string const& idData,
                                   Vector<std::string>& dataStr,
                                   Index& nbInd,
-                                  std::string& param) const {
+                                  std::string& paramStr) const {
   std::string warnLog;
   if (dataMap_.find(idData) != dataMap_.end()) { // check if the data requested is present in the input data
-    int pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
+    Index pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
     nbInd = nbInd_;
     dataStr.resize(nbInd_); // R has already enforced that all data has the same number of rows, and now all mixture are univariate
 
     Rcpp::List currVar = rList_[pos]; // get current named list
     Rcpp::CharacterVector data = currVar("data");
+
+    paramStr = Rcpp::as<std::string>(currVar("param"));
+#ifdef MC_DEBUGNEW
+    std::cout << "idData: " << idData << ", paramStr: " << paramStr << std::endl;
+#endif
 
     for (int i = 0; i < nbInd_; ++i) {
       dataStr(i) = data[i];

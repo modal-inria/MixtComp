@@ -28,15 +28,14 @@
 #include <vector>
 #include <set>
 
-#include "../../LinAlg/mixt_LinAlg.h"
-#include "../../Various/mixt_Enum.h"
-#include "../../Mixture/mixt_IMixture.h"
+#include "Data/mixt_AugmentedData.h"
+#include "LinAlg/mixt_LinAlg.h"
+#include "Various/mixt_Enum.h"
+#include "Mixture/mixt_IMixture.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class Categorical_pjk
-{
+class Categorical_pjk {
   public:
     Categorical_pjk(const std::string& idName,
                     int nbClass,
@@ -44,25 +43,26 @@ class Categorical_pjk
                     const Vector<std::set<Index> >& classInd);
 
     Vector<bool> acceptedType() const;
-    bool checkMaxVal() const;
-    bool checkMinVal() const;
+
     int computeNbFreeParameters() const;
-    bool hasModalities() const;
-    int nbModality() const;
-    int maxVal() const;
-    int minVal() const;
-    std::string model() const;
+
     void mStep(EstimatorType bias);
+
     std::vector<std::string> paramNames() const;
-    void setData(Vector<int>& data);
-    void setModalities(int nbModalities);
+
+    std::string setData(std::string& paramStr,
+                        AugmentedData<Vector<int> >& augData);
+
     void writeParameters() const;
 
     int checkSampleCondition(std::string* warnLog = NULL) const;
+
+    bool hasModalities() const;
+
   private:
     std::string idName_;
     int nbClass_;
-    int nbModality_;
+    int nModality_;
     Vector<int>* p_data_;
     Vector<Real>& param_;
     const Vector<std::set<Index> >& classInd_;

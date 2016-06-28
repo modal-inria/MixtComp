@@ -33,11 +33,9 @@
 #include "../../Various/mixt_Enum.h"
 #include "../../Mixture/mixt_IMixture.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class Gaussian_sjk
-{
+class Gaussian_sjk {
   public:
     Gaussian_sjk(const std::string& idName,
                  int nbClass,
@@ -45,26 +43,19 @@ class Gaussian_sjk
                  const Vector<std::set<Index> >& classInd);
 
     Vector<bool> acceptedType() const;
-    bool checkMaxVal() const;
-    bool checkMinVal() const;
+
     int computeNbFreeParameters() const;
 
     bool hasModalities() const;
-    int nbModality() const;
 
-    void setData(Vector<Real>& data);
+    std::string setData(const std::string& paramStr,
+                        AugmentedData<Vector<Real> >& augData);
 
     /** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
      * using the biased estimator which corresponds to the maximum likelihood estimator */
     void mStep(EstimatorType bias);
 
-    Real minVal() const;
-    Real maxVal() const;
-    std::string model() const;
-
     std::vector<std::string> paramNames() const;
-
-    void setModalities(int nbModalities);
 
     void writeParameters() const;
 

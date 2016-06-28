@@ -356,14 +356,16 @@ class RankMixture : public IMixture
                                      "mu",
                                      muParamStat_,
                                      muParamNames(),
-                                     confidenceLevel_);
+                                     confidenceLevel_,
+                                     "");
       p_paramExtractor_->exportParam(indexMixture_,
                                      idName_,
                                      "pi",
                                      piParamStat_.getStatStorage(),
                                      piParamStat_.getLogStorage(),
                                      piParamNames(),
-                                     confidenceLevel_);
+                                     confidenceLevel_,
+                                     "");
     }
 
     void computeObservedProba() {

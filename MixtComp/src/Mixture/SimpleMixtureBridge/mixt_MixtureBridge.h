@@ -39,8 +39,7 @@
 #include "../../Various/mixt_Constants.h"
 #include "../../Param/mixt_ConfIntParamStat.h"
 
-namespace mixt
-{
+namespace mixt {
 
 template<int Id,
          typename DataHandler,
@@ -48,8 +47,7 @@ template<int Id,
          typename ParamSetter,
          typename ParamExtractor>
 
-class MixtureBridge : public IMixture
-{
+class MixtureBridge : public IMixture {
   public:
     // data type
     typedef typename BridgeTraits<Id>::Data Data;
@@ -107,8 +105,7 @@ class MixtureBridge : public IMixture
       p_handler_(p_handler),
       p_dataExtractor_(p_extractor),
       p_paramSetter_(p_paramSetter),
-      p_paramExtractor_(p_paramExtractor)
-    {}
+      p_paramExtractor_(p_paramExtractor) {}
 
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -121,51 +118,24 @@ class MixtureBridge : public IMixture
                                      nbInd_,
                                      paramStr_,
                                      (mixture_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
-
       augData_.computeRange();
       std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
+
       if(tempLog.size() > 0) { // check on the missing values description
         std::stringstream sstm;
-        sstm << "Variable " << idName() << " with model " << mixture_.model() << " has a problem with the descriptions of missing values.\n" << tempLog;
+        sstm << "Variable " << idName() << " has a problem with the descriptions of missing values." << std::endl << tempLog;
         warnLog += sstm.str();
       }
-      else if (mixture_.checkMinVal() && augData_.dataRange_.min_ < mixture_.minVal()) { // test the requirement for the data (and bounds) to be above a specified value
-        std::stringstream sstm;
-        sstm << "Variable: " << idName() << " requires a minimum value of " << mixture_.minVal()
-             << " in either provided values or bounds. The minimum value currently provided is : " << augData_.dataRange_.min_ << std::endl;
-        warnLog += sstm.str();
-      }
-      else { // minimum value requirements have been met, whether the mode is learning or prediction
-        mixture_.setData(augData_.data_);
+      else {
+        warnLog += mixture_.setData(paramStr_,
+                                    augData_);
 
-        if (mode == learning_) { // learning mode
-          if (mixture_.hasModalities()) {
-            mixture_.setModalities(augData_.dataRange_.max_ + 1); // set the number of modalities
-          }
-        }
-        else { // predict mode
+        if (mode == prediction_) {
           p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
                                    "NumericalParam",
                                    param_);
-          int nbModalities = param_.rows() / nbClass_; // number of parameters for each cluster
-          if (mixture_.hasModalities()) { // all modalities might not be present in the predict set, and as such the real data range from the learning set must be used
-            mixture_.setModalities(nbModalities);
-          }
-          paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object
-          // for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning
-          // in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
-          if (mixture_.checkMaxVal() && mixture_.maxVal() < augData_.dataRange_.max_) {
-            std::stringstream sstm;
-            sstm << "Variable: " << idName_ << " requires a maximum value of " << ((mixture_.hasModalities()) ? (minModality) : (0)) + mixture_.maxVal()
-                 << " for the data during prediction. This maximum value usually corresponds to the maximum value used during the learning phase."
-                 << " The maximum value in the data provided for prediction is : " << ((mixture_.hasModalities()) ? (minModality) : (0)) + augData_.dataRange_.max_ << std::endl;
-            warnLog += sstm.str();
-          }
-          if (mixture_.hasModalities()) { // now that predict observed values have been checked, the real data range must be used for all data
-            augData_.dataRange_.min_ = 0;
-            augData_.dataRange_.max_ = nbModalities - 1;
-            augData_.dataRange_.range_ = nbModalities;
-          }
+
+          paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
         }
 
         dataStat_.setNbIndividual(nbInd_);
@@ -174,16 +144,14 @@ class MixtureBridge : public IMixture
       return warnLog;
     }
 
-    virtual void samplingStepCheck(Index ind)
-    {
+    virtual void samplingStepCheck(Index ind) {
       sampler_.samplingStepCheck(ind,
-                                (*p_zi_)(ind));
+                                 (*p_zi_)(ind));
     }
 
-    virtual void samplingStepNoCheck(Index ind)
-    {
+    virtual void samplingStepNoCheck(Index ind) {
       sampler_.samplingStepNoCheck(ind,
-                                (*p_zi_)(ind));
+                                   (*p_zi_)(ind));
     }
 
     /**
@@ -202,23 +170,18 @@ class MixtureBridge : public IMixture
       paramStat_.sampleParam(iteration,
                              iterationMax);
       if (iteration == iterationMax) {
-        if (mixture_.hasModalities()) {
-          paramStat_.normalizeParam(nbClass_,
-                                    mixture_.nbModality()); // enforce that estimated proportions sum to 1
-        }
+        paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
         paramStat_.setExpectationParam(); // set parameter to mode / expectation
       }
     }
 
     virtual void storeGibbsRun(Index sample,
                                Index iteration,
-                               Index iterationMax)
-    {
+                               Index iterationMax) {
       dataStat_.sampleVals(sample,
                            iteration,
                            iterationMax);
-      if (iteration == iterationMax)
-      {
+      if (iteration == iterationMax) {
         dataStat_.imputeData(sample); // impute the missing values using empirical mean or mode, depending of the model
       }
     }
@@ -228,8 +191,7 @@ class MixtureBridge : public IMixture
      * unknown values
      * @return the completed log-likelihood
      */
-    virtual Real lnCompletedProbability(Index i, Index k)
-    {
+    virtual Real lnCompletedProbability(Index i, Index k) {
       return likelihood_.lnCompletedProbability(i, k);
     }
 
@@ -237,29 +199,25 @@ class MixtureBridge : public IMixture
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
-    virtual Real lnObservedProbability(Index i, Index k)
-    {
+    virtual Real lnObservedProbability(Index i, Index k) {
       return likelihood_.lnObservedProbability(i, k);
     }
 
     /** This function must return the number of free parameters.
      *  @return Number of free parameters
      */
-    virtual Index nbFreeParameter() const
-    {
+    virtual Index nbFreeParameter() const {
       return mixture_.computeNbFreeParameters();
     }
 
     /** This function can be used to write summary of parameters on to the output stream.
      * @param out Stream where you want to write the summary of parameters.
      */
-    virtual void writeParameters() const
-    {
+    virtual void writeParameters() const {
       mixture_.writeParameters();
     }
 
-    virtual void exportDataParam() const
-    {
+    virtual void exportDataParam() const {
       p_dataExtractor_->exportVals(indexMixture_,
                                    idName_,
                                    augData_,
@@ -270,23 +228,22 @@ class MixtureBridge : public IMixture
                                      paramStat_.getStatStorage(),
                                      paramStat_.getLogStorage(),
                                      mixture_.paramNames(),
-                                     confidenceLevel_);
+                                     confidenceLevel_,
+                                     paramStr_);
     }
 
-    void removeMissing(initParam algo) {augData_.removeMissing();}
+    void removeMissing(initParam algo) {
+      augData_.removeMissing();
+    }
 
-    Index checkSampleCondition(std::string* warnLog = NULL) const
-    {
-      if (warnLog == NULL)
-      {
+    Index checkSampleCondition(std::string* warnLog = NULL) const {
+      if (warnLog == NULL) {
         return mixture_.checkSampleCondition();
       }
-      else
-      {
+      else {
         std::string warn;
         Real proba = mixture_.checkSampleCondition(&warn);
-        if (warn.size() > 0)
-        {
+        if (warn.size() > 0) {
           std::stringstream sstm;
           sstm << "checkSampleCondition, error in variable " << idName_ << std::endl
                << warn;

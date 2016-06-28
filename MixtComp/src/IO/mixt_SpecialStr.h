@@ -29,6 +29,7 @@
 namespace mixt {
 
 extern const std::string strNumber;
+extern const std::string strInteger;
 extern const std::string strQMark;
 extern const std::string strBlank;
 extern const std::string strLeftPar;

@@ -38,7 +38,8 @@ void ParamExtractorR::exportParam(int indexMixture,
                                   const Matrix<Real>& statStorage,
                                   const Matrix<Real>& logStorage,
                                   const std::vector<std::string>& paramNames,
-                                  Real confidenceLevel) {
+                                  Real confidenceLevel,
+                                  const std::string& paramStr) {
   Rcpp::CharacterVector rows(statStorage.rows()); // names of the parameters
   Rcpp::CharacterVector cols; // names for expectation and confidence interval values
 
@@ -103,7 +104,8 @@ void ParamExtractorR::exportParam(int indexMixture,
                                   const std::string& paramName,
                                   const std::vector<RankStat>& paramStat,
                                   const std::vector<std::string>& paramNames,
-                                  Real confidenceLevel) {
+                                  Real confidenceLevel,
+                                  const std::string& paramStr) {
   Rcpp::CharacterVector rowsNames = Rcpp::wrap(paramNames); // names of the classes, used for both parameters values and logs
 
   int nbClass = paramStat.size();
