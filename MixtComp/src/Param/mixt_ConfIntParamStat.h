@@ -97,29 +97,29 @@ class ConfIntParamStat {
       }
     }
 
-    /** Perform renormalization on statStorage. Useful for categorical modes where umputed parameters must
+    /** Perform renormalization on statStorage. Useful for categorical modes where imputed parameters must
      * sum to 1 */
     void normalizeParam(const std::string& paramStr) {
-      int nModality = 0;
+      Index nModality = 0;
 
       std::string nModStr = std::string("nModality: *") + strInteger;
       boost::regex nModRe(nModStr);
       boost::smatch matchesVal;
 
       if (boost::regex_match(paramStr, matchesVal, nModRe)) { // value is present
-        nModality = str2type<int>(matchesVal[1].str());
+        nModality = str2type<Index>(matchesVal[1].str());
       }
 
       if (nModality > 0) {
-        int nClass = param_.size() / nModality;
+        Index nClass = param_.size() / nModality;
 
-        for (int j = 0; j < statStorage_.cols(); ++j) {
-          for (int k = 0; k < nClass; ++k) {
+        for (Index j = 0; j < statStorage_.cols(); ++j) {
+          for (Index k = 0; k < nClass; ++k) {
             Type sumClass = 0;
-            for (int p = 0; p < nModality; ++p) {
+            for (Index p = 0; p < nModality; ++p) {
               sumClass += statStorage_(k * nModality + p, j);
             }
-            for (int p = 0; p < nModality; ++p) {
+            for (Index p = 0; p < nModality; ++p) {
               statStorage_(k * nModality + p, j) /= sumClass;
             }
           }
@@ -127,22 +127,21 @@ class ConfIntParamStat {
       }
     }
 
-    const Matrix<Type>& getStatStorage() const {return statStorage_;};
-    const Matrix<Type>& getLogStorage() const {return logStorage_;};
+    const Matrix<Type>& getStatStorage() const {return statStorage_;}
+    const Matrix<Type>& getLogStorage() const {return logStorage_;}
+
   private:
-    void sample(int iteration)
-    {
-      for (int p = 0; p < nbParam_; ++p)
-      {
+    void sample(int iteration) {
+      for (int p = 0; p < nbParam_; ++p) {
         logStorage_(p, iteration) = param_(p);;
       }
     }
 
     // number of iterations used to compute the statistics
-    int nbIter_;
+    Index nbIter_;
 
     // number of parameters
-    int nbParam_;
+    Index nbParam_;
 
     // Reference to param array
     Vector<Type>& param_;

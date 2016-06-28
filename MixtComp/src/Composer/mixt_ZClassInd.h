@@ -34,7 +34,7 @@ namespace mixt {
  * hence it is better that a single class be in charge of keeping those two aspects in sync. */
 class ZClassInd {
   public:
-    void setIndClass(int nbInd, int nbClass);
+    void setIndClass(Index nbInd, Index nbClass);
 
     /** Ask the zi_ member to compute its range */
     void computeRange();
@@ -70,7 +70,7 @@ class ZClassInd {
     }
 
     /** The class of a particular individual is modified */
-    void setZAndClassInd(int i, int k);
+    void setZAndClassInd(Index i, Index k);
 
     const AugmentedData<Vector<Index> >& zi() const {return zi_;}
     const Vector<std::set<Index> >& classInd() const {return classInd_;}

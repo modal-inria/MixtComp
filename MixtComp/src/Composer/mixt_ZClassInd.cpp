@@ -25,7 +25,7 @@
 
 namespace mixt {
 
-void ZClassInd::setIndClass(int nbInd, int nbClass) {
+void ZClassInd::setIndClass(Index nbInd, Index nbClass) {
   nbInd_ = nbInd;
   nbClass_ = nbClass;
   zi_.resizeArrays(nbInd);
@@ -58,7 +58,7 @@ std::string ZClassInd::checkMissingType() {
   return zi_.checkMissingType(at);
 }
 
-void ZClassInd::setZAndClassInd(int i, int k) {
+void ZClassInd::setZAndClassInd(Index i, Index k) {
   #pragma omp critical(setZAndClassInd)
   {
     classInd_(zi_.data_(i)).erase(i);
@@ -70,7 +70,7 @@ void ZClassInd::setZAndClassInd(int i, int k) {
 void ZClassInd::printState() const {
   std::cout << "zi_: " << itString(zi_.data_) << std::endl;
 
-  for (int k = 0; k < nbClass_; ++k) {
+  for (Index k = 0; k < nbClass_; ++k) {
     std::cout << "k: " << k << ",";
     for (std::set<Index>::const_iterator it    = classInd_(k).begin(),
                                          itEnd = classInd_(k).end();

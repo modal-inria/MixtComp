@@ -40,17 +40,17 @@ void IDClass(mixt::MixtureComposer& mc,
   std::vector<std::string> rowName = mc.paramName();
   std::vector<std::string> colName = mc.mixtureName();
 
-  for (int j = 0; j < mc.nbVar(); ++j) {
-    for (int k = 0; k < mc.nbClass(); ++k) {
+  for (Index j = 0; j < mc.nbVar(); ++j) {
+    for (Index k = 0; k < mc.nbClass(); ++k) {
       idc(k, j) = IDClass(k, j);
     }
   }
 
-  for (int k = 0; k < mc.nbClass(); ++k) {
+  for (Index k = 0; k < mc.nbClass(); ++k) {
     row(k) = rowName[k];
   }
 
-  for (int j = 0; j < mc.nbVar(); ++j) {
+  for (Index j = 0; j < mc.nbVar(); ++j) {
     col(j) = colName[j];
   }
 

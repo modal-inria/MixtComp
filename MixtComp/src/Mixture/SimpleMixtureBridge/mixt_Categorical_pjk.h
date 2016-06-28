@@ -61,10 +61,15 @@ class Categorical_pjk {
 
   private:
     std::string idName_;
-    int nbClass_;
-    int nModality_;
+
+    Index nbClass_;
+
+    Index nModality_;
+
     Vector<int>* p_data_;
+
     Vector<Real>& param_;
+
     const Vector<std::set<Index> >& classInd_;
 };
 

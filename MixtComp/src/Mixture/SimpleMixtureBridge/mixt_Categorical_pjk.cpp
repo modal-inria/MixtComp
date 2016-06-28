@@ -60,7 +60,7 @@ int Categorical_pjk::computeNbFreeParameters() const {
 }
 
 void Categorical_pjk::mStep(EstimatorType bias) {
-  for (int k = 0; k < nbClass_; ++k) {
+  for (Index k = 0; k < nbClass_; ++k) {
     Vector<Real> modalities(nModality_, 0.);
 
     for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
@@ -71,14 +71,14 @@ void Categorical_pjk::mStep(EstimatorType bias) {
 
     modalities = modalities / Real(classInd_(k).size());
 
-    for (int p = 0; p < nModality_; ++p) {
+    for (Index p = 0; p < nModality_; ++p) {
       param_(k * nModality_ + p) = modalities(p);
     }
   }
 
   if (bias == biased_) {
-    for (int k = 0; k < nbClass_; ++k) {
-      for (int p = 0; p < nModality_; ++p) {
+    for (Index k = 0; k < nbClass_; ++k) {
+      for (Index p = 0; p < nModality_; ++p) {
         param_(k * nModality_ + p) = std::max(param_(k * nModality_ + p), epsilon                     );
         param_(k * nModality_ + p) = std::min(1. - epsilon              , param_(k * nModality_ + p)  );
       }
@@ -88,8 +88,8 @@ void Categorical_pjk::mStep(EstimatorType bias) {
 
 std::vector<std::string> Categorical_pjk::paramNames() const {
   std::vector<std::string> names(nbClass_ * nModality_);
-  for (int k = 0; k < nbClass_; ++k) {
-    for (int p = 0; p < nModality_; ++p) {
+  for (Index k = 0; k < nbClass_; ++k) {
+    for (Index p = 0; p < nModality_; ++p) {
       std::stringstream sstm;
       sstm << "k: "
            << k + minModality
@@ -112,7 +112,7 @@ std::string Categorical_pjk::setData(std::string& paramStr,
     param_.resize(nbClass_ * nModality_);
 
     std::stringstream sstm;
-    sstm << "nModality: " << nModality_ << std::endl;
+    sstm << "nModality: " << nModality_;
     paramStr = sstm.str(); // paramStr must be generated from the data, for future use and export for prediction
   }
   else { // During learning with parameter space descriptor, or in prediction
@@ -121,7 +121,7 @@ std::string Categorical_pjk::setData(std::string& paramStr,
     boost::smatch matchesVal;
 
     if (boost::regex_match(paramStr, matchesVal, nModRe)) { // value is present
-      nModality_ = str2type<int>(matchesVal[1].str());
+      nModality_ = str2type<Index>(matchesVal[1].str());
     }
     else {
       std::stringstream sstm;
@@ -161,18 +161,21 @@ std::string Categorical_pjk::setData(std::string& paramStr,
 
 void Categorical_pjk::writeParameters() const {
   std::stringstream sstm;
-  for (int k = 0; k < nbClass_; ++k) {
+  for (Index k = 0; k < nbClass_; ++k) {
     sstm << "Class: " << k << std::endl;
-    for (int p = 0; p < nModality_; ++p) {
+    for (Index p = 0; p < nModality_; ++p) {
       sstm << "\talpha_ "  << p << ": " << param_(k * nModality_ + p) << std::endl;
     }
   }
+
+  std::cout << sstm.str() << std::endl;
 }
 
 int Categorical_pjk::checkSampleCondition(std::string* warnLog) const {
-  for (int k = 0; k < nbClass_; ++k) {
+  for (Index k = 0; k < nbClass_; ++k) {
     Vector<bool> modalityPresent(nModality_, false);
-    for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+    for (std::set<Index>::const_iterator it  = classInd_(k).begin(),
+                                         itE = classInd_(k).end();
          it != itE;
          ++it) {
       modalityPresent((*p_data_)(*it)) = true;
@@ -182,7 +185,7 @@ int Categorical_pjk::checkSampleCondition(std::string* warnLog) const {
     }
 
     if (warnLog != NULL) {
-      for (int p = 0; p < nModality_; ++p) {
+      for (Index p = 0; p < nModality_; ++p) {
         if (modalityPresent(p) == false) {
           std::stringstream sstm;
           sstm << "Categorical variables must have one individual with each modality present in each class. "

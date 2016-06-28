@@ -51,8 +51,8 @@ class MixtureComposer {
     /** Constructor.
      * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      */
-    MixtureComposer(int nbInd,
-                    int nbClass,
+    MixtureComposer(Index nbInd,
+                    Index nbClass,
                     Real confidenceLevel);
 
     /** copy constructor.
@@ -67,11 +67,11 @@ class MixtureComposer {
 
     void initializeTik();
 
-    int nbClass() const {return nbClass_;}
+    Index nbClass() const {return nbClass_;}
 
-    int nbInd() const {return nbInd_;}
+    Index nbInd() const {return nbInd_;}
 
-    int nbVar() const {return nbVar_;}
+    Index nbVar() const {return nbVar_;}
 
     /** @return  the zi class label */
     const Vector<Index>* p_zi() const {return &(zClassInd_.zi().data_);}
@@ -329,13 +329,13 @@ class MixtureComposer {
     std::string idName_;
 
     /** number of classes */
-    int nbClass_;
+    Index nbClass_;
 
     /** Number of samples */
-    int nbInd_;
+    Index nbInd_;
 
     /** Number of variables */
-    int nbVar_;
+    Index nbVar_;
 
     /** The proportions of each class */
     Vector<Real> prop_;

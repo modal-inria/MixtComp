@@ -116,6 +116,8 @@ void Gaussian_sjk::writeParameters() const {
     sstm << "\tmean: " << param_[2 * k    ] << std::endl;
     sstm << "\tsd: "   << param_[2 * k + 1] << std::endl;
   }
+
+  std::cout << sstm.str() << std::endl;
 }
 
 int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const {

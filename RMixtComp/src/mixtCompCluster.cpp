@@ -111,7 +111,9 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
       stratTimer.top("strategy run complete");
 
       if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
+#ifdef MC_VERBOSE
         composer.writeParameters();
+#endif
         composer.exportDataParam<mixt::DataExtractorR,
                                  mixt::ParamExtractorR>(dataExtractor,
                                                         paramExtractor);

@@ -112,6 +112,8 @@ void Poisson_k::writeParameters() const {
     sstm << "Class: " << k << std::endl;
     sstm << "\tlambda: " << param_[k] << std::endl;
   }
+
+  std::cout << sstm.str() << std::endl;
 }
 
 int Poisson_k::checkSampleCondition(std::string* warnLog) const {

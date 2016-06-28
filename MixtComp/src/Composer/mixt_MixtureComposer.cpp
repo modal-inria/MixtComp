@@ -31,8 +31,8 @@
 
 namespace mixt {
 
-MixtureComposer::MixtureComposer(int nbInd,
-                                 int nbClass,
+MixtureComposer::MixtureComposer(Index nbInd,
+                                 Index nbClass,
                                  Real confidenceLevel) :
     idName_("z_class"),
     nbClass_(nbClass),
@@ -48,8 +48,8 @@ MixtureComposer::MixtureComposer(int nbInd,
     paramStat_(prop_,
                confidenceLevel),
     dataStat_(zClassInd_),
-    confidenceLevel_(confidenceLevel)
-{
+    confidenceLevel_(confidenceLevel) {
+  std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nbInd << ", nbClass: " << nbClass << std::endl;
   zClassInd_.setIndClass(nbInd, nbClass);
   initializeProp(); // default values that will be overwritten either by pStep (learning), or eStepObserved (prediction)
   initializeTik();
@@ -92,15 +92,15 @@ Real MixtureComposer::lnObservedLikelihood()
   Matrix<Real> lnComp(nbInd_,
                       nbClass_);
 
-  for (int k = 0; k < nbClass_; ++k)
+  for (Index k = 0; k < nbClass_; ++k)
   {
-    for (int i = 0; i < nbInd_; ++i)
+    for (Index i = 0; i < nbInd_; ++i)
     {
       lnComp(i, k) = lnObservedProbability(i, k);
     }
   }
 
-  for (int i = 0; i < nbInd_; ++i) // sum is inside a log, hence the numerous steps for the computation
+  for (Index i = 0; i < nbInd_; ++i) // sum is inside a log, hence the numerous steps for the computation
   {
     RowVector<Real> dummy;
     lnLikelihood += dummy.logToMulti(lnComp.row(i));
@@ -114,7 +114,7 @@ Real MixtureComposer::lnCompletedLikelihood()
   Real lnLikelihood = 0.;
 
   // Compute the completed likelihood for the complete mixture model, using the completed data
-  for (int i = 0; i < nbInd_; ++i) {
+  for (Index i = 0; i < nbInd_; ++i) {
     lnLikelihood += lnObservedProbability(i, zClassInd_.zi().data_(i));
   }
 
@@ -143,7 +143,7 @@ void MixtureComposer::mStep(EstimatorType bias) {
 
 void MixtureComposer::sStepCheck() {
   #pragma omp parallel for
-  for (int i = 0; i < nbInd_; ++i) {
+  for (Index i = 0; i < nbInd_; ++i) {
     sStepCheck(i);
   }
 }
@@ -154,7 +154,7 @@ void MixtureComposer::sStepCheck(int i) {
 
 void MixtureComposer::sStepNoCheck() {
   #pragma omp parallel for
-  for (int i = 0; i < nbInd_; ++i) {
+  for (Index i = 0; i < nbInd_; ++i) {
     sStepNoCheck(i);
   }
 }
@@ -165,14 +165,14 @@ void MixtureComposer::sStepNoCheck(int i) {
 
 void MixtureComposer::eStep() {
   #pragma omp parallel for
-  for (int i = 0; i < nbInd_; ++i) {
+  for (Index i = 0; i < nbInd_; ++i) {
     eStep(i);
   }
 }
 
 void MixtureComposer::eStep(int i) {
   RowVector<Real> lnComp(nbClass_);
-  for (int k = 0; k < nbClass_; k++) {
+  for (Index k = 0; k < nbClass_; k++) {
     lnComp(k) = lnCompletedProbability(i, k);
   }
 
@@ -180,24 +180,18 @@ void MixtureComposer::eStep(int i) {
 }
 
 void MixtureComposer::pStep() {
-  for (int i = 0; i < zClassInd_.zi().data_.rows(); ++i) {
+  for (Index i = 0; i < zClassInd_.zi().data_.rows(); ++i) {
     prop_(zClassInd_.zi().data_(i)) += 1.;
   }
   prop_ = prop_ / prop_.sum();
 }
 
-void MixtureComposer::writeParameters() const
-{
-#ifdef MC_VERBOSE
+void MixtureComposer::writeParameters() const {
   std::cout << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
   std::cout << "Composer proportions = " << itString(prop_) << std::endl;
-#endif
 
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
-#ifdef MC_VERBOSE
-    std::cout << "Parameters of the mixtures: " << (*it)->idName() << "\n";
-#endif
+  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+    std::cout << "Parameters of " << (*it)->idName() << "\n";
     (*it)->writeParameters();
   }
 }
@@ -213,7 +207,7 @@ int MixtureComposer::nbFreeParameters() const
 }
 
 void MixtureComposer::samplingStepCheck() {
-  for (int i = 0; i < nbInd_; ++i) {
+  for (Index i = 0; i < nbInd_; ++i) {
     samplingStepCheck(i);
   }
 }
@@ -226,7 +220,7 @@ void MixtureComposer::samplingStepCheck(int i) {
 
 void MixtureComposer::samplingStepNoCheck() {
   #pragma omp parallel for
-  for (int i = 0; i < nbInd_; ++i) {
+  for (Index i = 0; i < nbInd_; ++i) {
     samplingStepNoCheck(i);
   }
 }
@@ -268,7 +262,7 @@ int MixtureComposer::checkSampleCondition(std::string* warnLog) const {
 
 int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
 {
-  for (int k = 0; k < nbClass_; ++k) {
+  for (Index k = 0; k < nbClass_; ++k) {
     if (zClassInd_.classInd()(k).size() > 0) {
       continue;
     }
@@ -341,7 +335,7 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
   }
 
   #pragma omp parallel for
-  for (int i = 0; i < nbInd_; ++i) {
+  for (Index i = 0; i < nbInd_; ++i) {
     myTimer.iteration(i, nbInd_ - 1);
     writeProgress(group,
                   groupMax,
@@ -365,7 +359,7 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
 std::vector<std::string> MixtureComposer::paramName() const
 {
   std::vector<std::string> names(nbClass_);
-  for (int k = 0; k < nbClass_; ++k)
+  for (Index k = 0; k < nbClass_; ++k)
   {
     std::stringstream sstm;
     sstm << "k: "
@@ -379,7 +373,7 @@ std::vector<std::string> MixtureComposer::paramName() const
 std::vector<std::string> MixtureComposer::mixtureName() const
 {
   std::vector<std::string> names(nbVar_);
-  for (int j = 0; j < nbVar_; ++j)
+  for (Index j = 0; j < nbVar_; ++j)
   {
     names[j] = v_mixtures_[j]->idName();
   }
@@ -400,17 +394,17 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
   ekj.resize(nbClass_, nbVar_);
   ekj = 0.;
 
-  for (int i = 0; i < nbInd_; ++i) {
-    for(int j = 0; j < nbVar_; ++j) {
+  for (Index i = 0; i < nbInd_; ++i) {
+    for(Index j = 0; j < nbVar_; ++j) {
       Vector<Real> lnP(nbClass_); // ln(p(z_i = k, x_i^j))
       Vector<Real> t_ik_j(nbClass_); // p(z_i = k / x_i^j)
-      for (int k = 0; k < nbClass_; ++k) {
+      for (Index k = 0; k < nbClass_; ++k) {
         lnP(k) = std::log(prop_(k)) + v_mixtures_[j]->lnObservedProbability(i, k);
       }
       t_ik_j.logToMulti(lnP); // "observed" t_ik, for the variable j
       Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
 
-      for (int k = 0; k < nbClass_; ++k) {
+      for (Index k = 0; k < nbClass_; ++k) {
         Real p, nP;
 
         if (epsilon < t_ik_j(k)) {
@@ -440,11 +434,11 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const {
     Matrix<Real> ekj;
     E_kj(ekj);
 
-    for (int k = 0; k < nbClass_; ++k) {
+    for (Index k = 0; k < nbClass_; ++k) {
       Real min = ekj.row(k).minCoeff();
       Real max = ekj.row(k).maxCoeff();
 
-      for(int j = 0; j < nbVar_; ++j) {
+      for(Index j = 0; j < nbVar_; ++j) {
         idc(k, j) = (max - ekj(k, j)) / (max - min);
   //      idc(k, j) = 1. - ekj(k, j) / ekj.row(k).sum();
       }

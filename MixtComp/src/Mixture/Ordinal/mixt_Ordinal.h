@@ -387,9 +387,7 @@ class Ordinal : public IMixture
         sstm << "pi: " << pi_(k) << std::endl;
       }
 
-#ifdef MC_VERBOSE
       std::cout << sstm.str() << std::endl;
-#endif
     }
 
     virtual void exportDataParam() const

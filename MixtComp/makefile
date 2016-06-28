@@ -27,7 +27,7 @@ endif
 # generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
 # CXXFLAGS += -pthread -MD -MP -fPIC
-CXXFLAGS += -Isrc -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include -I../nlopt-2.4.2/api
+CXXFLAGS += -Isrc -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
 CXXFLAGS += -std=c++11 -DMC_VERBOSE # included here, because it is standard and we do not have access on Makevars on BigStat for example
 
 # library files
@@ -54,7 +54,7 @@ SRC_RE = $(wildcard ../boost/libs/regex/src/*.cpp)
 O_RE = $(SRC_RE:%.cpp=%.o)
 
 # optimization library
-# LIB_OPT = lib/libnlopt_cxx.a
+# LIB_OPT = lib/libnlopt.a
 
 # sample test
 EXE_TEST = test/test
