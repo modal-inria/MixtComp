@@ -23,8 +23,7 @@
 
 #include "Dummy.h"
 
-namespace mixt
-{
+namespace mixt {
 
 std::string DataHandlerDummy::getData(std::string const& idName,
                                       Vector<std::string>& dataStr,
@@ -36,9 +35,7 @@ std::string DataHandlerDummy::getData(std::string const& idName,
 /** Export function for Rank model */
 void DataExtractorDummy::exportVals(Index indexMixture,
                                     std::string idName,
-                                    const Vector<RankIndividual>& data) const {
-
-}
+                                    const Vector<RankIndividual>& data) const {}
 
 void ParamExtractorDummy::exportParam(Index indexMixture,
                                       const std::string& idName,
@@ -46,31 +43,27 @@ void ParamExtractorDummy::exportParam(Index indexMixture,
                                       const Matrix<Real>& paramStat,
                                       const Matrix<Real>& paramsLog,
                                       const std::vector<std::string>& paramNames,
-                                      const Real confidenceLevel) const
-{}
+                                      const Real confidenceLevel,
+                                      const std::string& paramStr) const {}
 
 void ParamExtractorDummy::exportParam(Index indexMixture,
                                       const std::string& idName,
                                       const std::string& paramName,
                                       const std::vector<RankStat>& paramStat,
                                       const std::vector<std::string>& paramNames,
-                                      Real confidenceLevel) const {
-}
+                                      Real confidenceLevel) const {}
 
-ParamSetterDummy::ParamSetterDummy()
-{}
+ParamSetterDummy::ParamSetterDummy() {}
 
-ParamSetterDummy::~ParamSetterDummy()
-{}
+ParamSetterDummy::~ParamSetterDummy() {}
 
 void ParamSetterDummy::getParam(const std::string& idName,
                                 const std::string& paramName,
-                                Vector<Real>& params) const
-{}
+                                Vector<Real>& params,
+                                const std::string& paramStr) const {}
 
 void  ParamSetterDummy::getParam(const std::string& idName,
                                  const std::string& paramName,
-                                 Vector<RankVal>& param) const
-{}
+                                 Vector<RankVal>& param) const {}
 
 } // namespace mixt

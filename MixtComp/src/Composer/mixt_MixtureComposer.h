@@ -207,9 +207,11 @@ class MixtureComposer {
     std::string setProportion(const ParamSetter& paramSetter) {
       std::string warnLog;
 
+      std::string dummy;
       paramSetter.getParam("z_class",
                            "pi",
-                           prop_);
+                           prop_,
+                           dummy); // no need for paramStr, as the parameter space is already described by nClass
 
       return warnLog;
     }

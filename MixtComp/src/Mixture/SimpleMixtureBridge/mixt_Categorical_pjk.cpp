@@ -150,12 +150,6 @@ std::string Categorical_pjk::setData(std::string& paramStr,
   augData.dataRange_.max_ = nModality_ - 1;
   augData.dataRange_.range_ = nModality_;
 
-#ifdef MC_DEBUGNEW
-  std::cout << idName_ << ", augData.dataRange_.min_: " << augData.dataRange_.min_ << std::endl;
-  std::cout << idName_ << ", augData.dataRange_.max_: " << augData.dataRange_.max_ << std::endl;
-  std::cout << idName_ << ", augData.dataRange_.range_: " << augData.dataRange_.range_ << std::endl;
-#endif
-
   return warnLog;
 }
 

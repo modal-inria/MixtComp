@@ -143,7 +143,8 @@ class FunctionalMixture : public IMixture {
         Vector<Real> alphaLinearized;
         p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
                                  "alpha",
-                                 alphaLinearized);
+                                 alphaLinearized,
+                                 paramStr_);
 
 //        p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
 //                                 "pi",

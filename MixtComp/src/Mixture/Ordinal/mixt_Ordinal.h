@@ -145,18 +145,18 @@ class Ordinal : public IMixture
 
       if(missingLog.size() > 0) { // check on the missing values description
         std::stringstream sstm;
-        sstm << "Variable " << idName() << " with Ordinal model has a problem with the descriptions of missing values.\n" << missingLog;
+        sstm << "Variable " << idName_ << " with Ordinal model has a problem with the descriptions of missing values." << std::endl << missingLog;
         warnLog += sstm.str();
       }
       else if (augData_.dataRange_.min_ < 0) { // modality encoding is 0-based
         std::stringstream sstm;
-        sstm << "Variable: " << idName() << " is described by an Ordinal model which requires a minimum value of 0 in either provided values or bounds."
-             << " The minimum value currently provided is : " << augData_.dataRange_.min_ << std::endl;
+        sstm << "Variable: " << idName_ << " is described by an Ordinal model which requires a minimum value of 0 in either provided values or bounds. "
+             << "The minimum value currently provided is : " << augData_.dataRange_.min_ + minModality << std::endl;
         warnLog += sstm.str();
       }
       else { // minimum value requirements have been met, whether the mode is learning or prediction
         if (mode == learning_) {
-          nbModality_ = augData_.dataRange_.max_ + minModality; // since an offset has been applied during getData, modalities are 0-based
+          nbModality_ = augData_.dataRange_.max_ + 1; // since an offset has been applied during getData, modalities are 0-based
         }
         else { // prediction mode
           setParam(); // set nbModalities_, mu_ and pi_ using p_paramSetter_
@@ -164,22 +164,22 @@ class Ordinal : public IMixture
           muParamStatComputer_.setParamStorage();
           piParamStatComputer_.setParamStorage();
 
-          nbModality_ = augData_.dataRange_.range_;
+          nbModality_ = augData_.dataRange_.range_; // deduction from data makes no sense here
 
           if (nbModality_ - 1 < augData_.dataRange_.max_) {
             std::stringstream sstm;
-            sstm << "Variable: " << idName() << " requires a maximum value of " << minModality + nbModality_ - 1
-                 << " for the data during prediction. This maximum value corresponds to the maximum value used during the learning phase."
-                 << " The maximum value in the data provided for prediction is : " << minModality + augData_.dataRange_.max_ << std::endl;
+            sstm << "Variable: " << idName_ << " requires a maximum value of " << minModality + nbModality_ - 1 << " "
+                 << "for the data during prediction. This maximum value corresponds to the maximum value used during the learning phase. "
+                 << "The maximum value in the data provided for prediction is : " << minModality + augData_.dataRange_.max_ << std::endl;
             warnLog += sstm.str();
           }
 
           computeObservedProba(); // parameters are know, so logProba can be computed immediately
         }
 
-        if (nbModality_ <= 2) {
+        if (nbModality_ < 3) {
           std::stringstream sstm;
-          sstm << "Variable: " << idName() << " requires a minimum of 3 modalities. If you have less modalities than that, you must use a "
+          sstm << "Variable: " << idName_ << " requires a minimum of 3 modalities. If you have less modalities than that, you must use a "
                << "Categorical model."<< std::endl;
           warnLog += sstm.str();
         }
@@ -232,7 +232,8 @@ class Ordinal : public IMixture
       Vector<Real> param;
       p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
                                "muPi",
-                               param);
+                               param,
+                               paramStr_);
       mu_.resize(nbClass_);
       pi_.resize(nbClass_);
       for (int k = 0; k < nbClass_; ++k)

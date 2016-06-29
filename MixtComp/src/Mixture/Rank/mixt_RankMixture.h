@@ -326,7 +326,8 @@ class RankMixture : public IMixture
 
         p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
                                  "pi",
-                                 pi_);
+                                 pi_,
+                                 paramStr_);
 
         for (int k = 0; k < nbClass_; ++k) {
           muParamStat_[k].setParamStorage();

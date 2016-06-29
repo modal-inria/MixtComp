@@ -95,7 +95,8 @@ void ParamExtractorR::exportParam(int indexMixture,
 
   mixtureName_[indexMixture] = idName;
   param_[indexMixture][paramName] = Rcpp::List::create(Rcpp::Named("stat") = statR,
-                                                       Rcpp::Named("log")  = logR);
+                                                       Rcpp::Named("log")  = logR,
+                                                       Rcpp::Named("paramStr") = paramStr);
 }
 
 /** Extractor for Rank data type */
@@ -157,7 +158,8 @@ void ParamExtractorR::exportParam(int indexMixture,
 
   mixtureName_[indexMixture] = idName;
   param_[indexMixture][paramName] = Rcpp::List::create(Rcpp::Named("stat") = statR,
-                                                       Rcpp::Named("log")  = logR);
+                                                       Rcpp::Named("log")  = logR,
+                                                       Rcpp::Named("paramStr") = paramStr);
 }
 
 Rcpp::List ParamExtractorR::rcppReturnParam() const {

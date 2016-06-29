@@ -30,20 +30,17 @@
 #include "../Mixture/Rank/mixt_RankStat.h"
 #include "../Mixture/Rank/mixt_RankVal.h"
 
-namespace mixt
-{
+namespace mixt {
 
 /** Dummy IO class for debugging purposes */
-class DataHandlerDummy
-{
+class DataHandlerDummy {
   public:
     template<typename DataType>
     std::string getData(std::string const& idData,
                         AugmentedData<DataType>& augData,
                         Index& nbSample,
                         std::string& param,
-                        typename AugmentedData<DataType>::Type offset) const
-    {
+                        typename AugmentedData<DataType>::Type offset) const {
       return std::string();
     };
 
@@ -54,8 +51,7 @@ class DataHandlerDummy
 };
 
 /** Dummy IO class for debugging purposes */
-class DataExtractorDummy
-{
+class DataExtractorDummy {
   public:
     template<typename DataType,
              typename Type>
@@ -71,8 +67,7 @@ class DataExtractorDummy
 };
 
 /** Dummy IO class for debugging purposes */
-class ParamExtractorDummy
-{
+class ParamExtractorDummy {
   public:
     void exportParam(Index indexMixture,
                      const std::string& idName,
@@ -80,7 +75,8 @@ class ParamExtractorDummy
                      const Matrix<Real>& paramStatStorage,
                      const Matrix<Real>& paramLogStorage,
                      const std::vector<std::string>& paramNames,
-                     const Real confidenceLevel) const;
+                     const Real confidenceLevel,
+                     const std::string& paramStr) const;
 
     void exportParam(Index indexMixture,
                      const std::string& idName,
@@ -90,8 +86,7 @@ class ParamExtractorDummy
                      Real confidenceLevel) const;
 };
 
-class ParamSetterDummy
-{
+class ParamSetterDummy {
   public:
     ParamSetterDummy();
 
@@ -99,7 +94,8 @@ class ParamSetterDummy
 
     void getParam(const std::string& idName,
                   const std::string& paramName,
-                  Vector<Real>& params) const;
+                  Vector<Real>& params,
+                  const std::string& paramStr) const;
 
     void getParam(const std::string& idName,
                   const std::string& paramName,

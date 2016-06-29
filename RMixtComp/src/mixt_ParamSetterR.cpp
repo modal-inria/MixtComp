@@ -35,38 +35,24 @@ ParamSetterR::~ParamSetterR()
 
 void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
-                            Vector<Real>& param) const
-{
-#ifdef MC_DEBUG
-  std::cout << "ParamSetterR::getParam, simple param, idName: " << idName << ", paramName: " << paramName << std::endl;
-#endif
-
+                            Vector<Real>& param,
+                            std::string& paramStr) const {
   Rcpp::List listCurrId = param_[idName];
   Rcpp::List listStatLog = listCurrId[paramName];
   Rcpp::NumericMatrix currParam = listStatLog["stat"];
   int nRows = currParam.nrow();
   param.resize(nRows);
 
-  for (int i = 0; i < nRows; ++i)
-  {
+  for (int i = 0; i < nRows; ++i) {
     param(i) = currParam(i, 0); // only the mode / expectation is used, quantile information is discarded
   }
 
-#ifdef MC_DEBUG
-  std::cout << "ParamSetterR::getParam, idName: " << idName << std::endl;
-  std::cout << "param:" << std::endl;
-  std::cout << param << std::endl;
-#endif
+  paramStr = Rcpp::as<std::string>(listStatLog("paramStr"));
 }
 
 void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
-                            Vector<RankVal>& param) const
-{
-#ifdef MC_DEBUG
-  std::cout << "ParamSetterR::getParam, rank param, idName: " << idName << ", paramName: " << paramName << std::endl;
-#endif
-
+                            Vector<RankVal>& param) const {
   Rcpp::List listParam = param_[idName];
   Rcpp::List listStatLog = listParam[paramName];
   Rcpp::List listClass = listStatLog["stat"];
@@ -74,8 +60,7 @@ void ParamSetterR::getParam(const std::string& idName,
   int nbClass = listClass.size();
   param.resize(nbClass); // listCurrParam contains one element per class
 
-  for (int k = 0; k < nbClass; ++k)
-  {
+  for (int k = 0; k < nbClass; ++k) {
     Rcpp::List listPair = listClass(k);
     Rcpp::List modePair = listPair(0); // take the mode of mu
     Rcpp::NumericVector currVec = modePair(0); // extracting the vector value containing mu
@@ -83,10 +68,6 @@ void ParamSetterR::getParam(const std::string& idName,
     param(k).setNbPos(currVec.size()); // setting the storage size for mu
     param(k).setO(currVec); // setting the value of mu
   }
-
-#ifdef MC_DEBUG
-  std::cout << "ParamSetterR::getParam, RankMixture, out" << std::endl;
-#endif
 }
 
 } // namespace mixt

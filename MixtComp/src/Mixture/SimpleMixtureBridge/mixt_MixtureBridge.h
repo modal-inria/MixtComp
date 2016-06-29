@@ -127,16 +127,19 @@ class MixtureBridge : public IMixture {
         warnLog += sstm.str();
       }
       else {
-        warnLog += mixture_.setData(paramStr_,
-                                    augData_);
-
         if (mode == prediction_) {
           p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
                                    "NumericalParam",
-                                   param_);
+                                   param_,
+                                   paramStr_); // note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
 
           paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
         }
+
+        warnLog += mixture_.setData(paramStr_,
+                                    augData_);
+
+
 
         dataStat_.setNbIndividual(nbInd_);
       }

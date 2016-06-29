@@ -28,11 +28,9 @@
 #include "MixtComp/src/Mixture/Rank/mixt_RankVal.h"
 #include "Rcpp.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class ParamSetterR
-{
+class ParamSetterR {
   public:
     ParamSetterR(const Rcpp::List param);
 
@@ -40,7 +38,8 @@ class ParamSetterR
 
     void getParam(const std::string& idName,
                   const std::string& paramName,
-                  Vector<Real>& param) const;
+                  Vector<Real>& param,
+                  std::string& paramStr) const;
 
     void getParam(const std::string& idName,
                   const std::string& paramName,
