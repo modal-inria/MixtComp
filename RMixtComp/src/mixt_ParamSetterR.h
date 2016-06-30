@@ -43,7 +43,8 @@ class ParamSetterR {
 
     void getParam(const std::string& idName,
                   const std::string& paramName,
-                  Vector<RankVal>& param) const;
+                  Vector<RankVal>& param,
+                  std::string& paramStr) const;
   private:
     const Rcpp::List param_;
 };

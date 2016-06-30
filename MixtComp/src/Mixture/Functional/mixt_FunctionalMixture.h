@@ -119,6 +119,8 @@ class FunctionalMixture : public IMixture {
       // also loop on the individuals and call Function::setSize
       // do not forget to call Function::computeVandermonde once t vectors are known
 
+      // In contrast with many other models, in FunctionalMixture the parameter space is never deduced. There is no way to deduce the number of subregressions desired by the user, nor the degree of the polynomials in those subregressions
+
       std::string warnLog;
       Vector<std::string> dataStr;
 

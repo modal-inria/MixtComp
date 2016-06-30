@@ -29,10 +29,10 @@
 
 namespace mixt {
 
-std::string RankParser::parseStr(const Vector<std::string>& vecStr,
-                                 int minMod,
-                                 int& nbPos,
-                                 Vector<RankIndividual>& vecInd) const {
+std::string parseRankStr(const Vector<std::string>& vecStr,
+                         int minMod,
+                         int& nbPos,
+                         Vector<RankIndividual>& vecInd) {
   int nbInd = vecStr.size();
   std::string warnLog;
 

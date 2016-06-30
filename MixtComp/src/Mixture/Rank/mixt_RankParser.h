@@ -27,18 +27,12 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "mixt_RankIndividual.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class RankParser
-{
-  public:
-    std::string parseStr(const Vector<std::string>& vecStr,
+std::string parseRankStr(const Vector<std::string>& vecStr,
                          int minMod,
                          int& nbMod,
-                         Vector<RankIndividual>& vecInd) const;
-
-};
+                         Vector<RankIndividual>& vecInd);
 
 } // namespace mixt
 

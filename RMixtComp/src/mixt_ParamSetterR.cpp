@@ -52,7 +52,8 @@ void ParamSetterR::getParam(const std::string& idName,
 
 void ParamSetterR::getParam(const std::string& idName,
                             const std::string& paramName,
-                            Vector<RankVal>& param) const {
+                            Vector<RankVal>& param,
+                            std::string& paramStr) const {
   Rcpp::List listParam = param_[idName];
   Rcpp::List listStatLog = listParam[paramName];
   Rcpp::List listClass = listStatLog["stat"];
@@ -68,6 +69,8 @@ void ParamSetterR::getParam(const std::string& idName,
     param(k).setNbPos(currVec.size()); // setting the storage size for mu
     param(k).setO(currVec); // setting the value of mu
   }
+
+  paramStr = Rcpp::as<std::string>(listStatLog("paramStr"));
 }
 
 } // namespace mixt

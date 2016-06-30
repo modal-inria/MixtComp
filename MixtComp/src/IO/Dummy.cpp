@@ -64,6 +64,7 @@ void ParamSetterDummy::getParam(const std::string& idName,
 
 void  ParamSetterDummy::getParam(const std::string& idName,
                                  const std::string& paramName,
-                                 Vector<RankVal>& param) const {}
+                                 Vector<RankVal>& param,
+                                 const std::string& paramStr) const {}
 
 } // namespace mixt

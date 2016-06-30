@@ -68,12 +68,10 @@ class RankMixture : public IMixture
         mu_(nbClass),
         pi_(nbClass),
         piParamStat_(pi_,
-                     confidenceLevel)
-    {
+                     confidenceLevel) {
       class_    .reserve(nbClass);
       muParamStat_.reserve(nbClass);
-      for (int k = 0; k < nbClass; ++k)
-      {
+      for (int k = 0; k < nbClass; ++k) {
         class_.emplace_back(data_,
                             classInd_(k),
                             mu_(k),
@@ -299,22 +297,12 @@ class RankMixture : public IMixture
                                      nbInd_,
                                      paramStr_);
 
-      warnLog += rankParser_.parseStr(dataStr, // convert the vector of strings to ranks
-                                      minModality,
-                                      nbPos_,
-                                      data_);
-
-      MultinomialStatistic multi;
-      Vector<int> vec(nbPos_);
-      std::iota(vec.begin(), vec.end(), 0);
-      for (int k = 0; k < nbClass_; ++k) {
-        mu_[k].setNbPos(nbPos_);
-        multi.shuffle(vec);
-        mu_[k].setO(vec);
-      }
+      warnLog += parseRankStr(dataStr, // convert the vector of strings to ranks
+                              minModality,
+                              nbPos_,
+                              data_);
 
       warnLog += checkMissingType();
-
       if (warnLog.size() > 0) {
         return warnLog;
       }
@@ -322,19 +310,53 @@ class RankMixture : public IMixture
       if (mode == prediction_) { // prediction mode
         p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
                                  "mu",
-                                 mu_);
+                                 mu_,
+                                 paramStr_);
 
+        std::string dummyStr;
         p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
                                  "pi",
                                  pi_,
-                                 paramStr_);
+                                 dummyStr);
 
         for (int k = 0; k < nbClass_; ++k) {
           muParamStat_[k].setParamStorage();
         }
         piParamStat_.setParamStorage();
+      }
 
-        computeObservedProba();
+      if (paramStr_.size() == 0) {
+        std::stringstream sstm;
+        sstm << "nModality: " << nbPos_;
+        paramStr_ = sstm.str(); // paramStr_ must be generated from the data, for future use and export for prediction
+      }
+      else {
+        int nPosStr = -1;
+
+        std::string nModStr = std::string("nModality: *") + strInteger; // parse paramStr here. If empty, deduce from data, if not empty, check that data UPPER BOUND is compatible with this information
+        boost::regex nModRe(nModStr);
+        boost::smatch matchesVal;
+
+        if (boost::regex_match(paramStr_, matchesVal, nModRe)) { // value is present
+          nPosStr = str2type<int>(matchesVal[1].str());
+        }
+        else {
+          std::stringstream sstm;
+          sstm << "Variable: " << idName_ << " parameter string is not in the correct format, which should be \"nModality: x\" "
+               << "with x the number of modalities in the variable." << std::endl;
+          warnLog += sstm.str();
+        }
+
+        if (nbPos_ != nPosStr) {
+          std::stringstream sstm;
+          sstm << "Variable: " << idName_ << " has " << nPosStr << " modalities per rank in its descriptor (or the descriptor from learning, in case of prediction) "
+               << "but has " << nbPos_ << " modalities in its data. Those two numbers must be equal." << std::endl;
+          warnLog += sstm.str();
+        }
+      }
+
+      if (warnLog.size() == 0 && mode == prediction_) {
+        computeObservedProba(); // parameters are known, therefore observed proba can be calculated right now
       }
 
       dataStat_.reserve(nbInd_);
@@ -356,7 +378,7 @@ class RankMixture : public IMixture
                                      muParamStat_,
                                      muParamNames(),
                                      confidenceLevel_,
-                                     "");
+                                     paramStr_);
       p_paramExtractor_->exportParam(indexMixture_,
                                      idName_,
                                      "pi",
@@ -441,9 +463,6 @@ class RankMixture : public IMixture
 
     /** RankLikelihood object, used to for the harmonic mean estimation of the observed likelihood. */
     RankLikelihood rankLikelihood_;
-
-    /** RankParser object, used to transform pitiful Vector<std::string> to glorious Vector<RankIndividual> */
-    RankParser rankParser_;
 
     /** Matrix containing observed log probability distribution, used in harmonic mean estimation
      * of the observed probability
