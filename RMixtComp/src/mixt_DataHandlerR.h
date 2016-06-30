@@ -119,10 +119,7 @@ std::string DataHandlerR::getData(std::string const& idData,
     Rcpp::List currVar = rList_[pos]; // get current named list
     Rcpp::CharacterVector data = currVar("data"); // get the data field in the Rcpp object
 
-    paramStr = Rcpp::as<std::string>(currVar("param"));
-#ifdef MC_DEBUGNEW
-    std::cout << "idData: " << idData << ", paramStr: " << paramStr << std::endl;
-#endif
+    paramStr = Rcpp::as<std::string>(currVar("paramStr"));
 
     for (Index i = 0; i < nbInd_; ++i) {
       std::string currStr;

@@ -2,13 +2,13 @@ addVariable <- function (lm,
                          data,
                          id,
                          model,
-                         param) {
+                         paramStr) {
   warnLog = "" # warnLog will contain the various possible error messages
   if (length(lm) == 0) { # first variable is automaticaly added
     lm[[1]] <- list(data = data,
                     model = model,
                     id = id,
-                    param = param)
+                    paramStr = paramStr)
   }
   else if (length(lm[[1]]$data) != length(data)) { # all variable must have the same number of individuals
     warnLog <- paste(warnLog,
@@ -20,7 +20,7 @@ addVariable <- function (lm,
     lm[[length(lm)+1]] <- list(data = data,
                                model = model,
                                id = id,
-                               param = param)
+                               paramStr = paramStr)
   }
 
   return(list(lm = lm,

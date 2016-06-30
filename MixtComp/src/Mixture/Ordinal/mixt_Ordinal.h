@@ -24,6 +24,8 @@
 #ifndef MIXT_ORDINAL
 #define MIXT_ORDINAL
 
+#include "boost/regex.hpp"
+
 #include <algorithm>
 
 #include "../Data/mixt_AugmentedData.h"
@@ -64,7 +66,7 @@ class Ordinal : public IMixture
       p_zi_(p_zi),
       classInd_(classInd),
       nbClass_(nbClass),
-      nbModality_(0),
+      nModality_(0),
       augData_(),
       nbInd_(0), // number of individuals will be set during setDataParam
       confidenceLevel_(confidenceLevel),
@@ -95,7 +97,7 @@ class Ordinal : public IMixture
         p_zi_(p_zi),
         classInd_(classInd),
         nbClass_(nbClass),
-        nbModality_(nbModalities),
+        nModality_(nbModalities),
         nbInd_(nbInd),
         mu_(nbClass, mu),
         pi_(nbClass, pi),
@@ -140,7 +142,6 @@ class Ordinal : public IMixture
       }
 
       augData_.computeRange();
-
       std::string missingLog = augData_.checkMissingType(acceptedType()); // check if the missing data provided are compatible with the model
 
       if(missingLog.size() > 0) { // check on the missing values description
@@ -148,46 +149,68 @@ class Ordinal : public IMixture
         sstm << "Variable " << idName_ << " with Ordinal model has a problem with the descriptions of missing values." << std::endl << missingLog;
         warnLog += sstm.str();
       }
-      else if (augData_.dataRange_.min_ < 0) { // modality encoding is 0-based
+
+      if (mode == prediction_) { // prediction mode
+        setParam(); // set mu_ and pi_ using p_paramSetter_. paramStr_ from getData might be overwritten here. nModality_ is not set here, as this will depend on the content of paramStr_
+
+        muParamStatComputer_.setParamStorage();
+        piParamStatComputer_.setParamStorage();
+      }
+
+      if (paramStr_.size() == 0) { // no paramStr_ provided in learning, parameters space is deduced from data. paramStr_ is generated.
+        nModality_ = augData_.dataRange_.max_ + 1;
+
+        std::stringstream sstm;
+        sstm << "nModality: " << nModality_;
+        paramStr_ = sstm.str(); // paramStr_ must be generated from the data, for future use and export for prediction
+      }
+      else { // paramStr_ has been provided. It must be parsed, and data validity must be checked, and data ranges must be extended to be compatible with
+        std::string nModStr = std::string("nModality: *") + strInteger; // parse paramStr here. If empty, deduce from data, if not empty, check that data UPPER BOUND is compatible with this information
+        boost::regex nModRe(nModStr);
+        boost::smatch matchesVal;
+
+        if (boost::regex_match(paramStr_, matchesVal, nModRe)) { // value is present
+          nModality_ = str2type<int>(matchesVal[1].str());
+        }
+        else {
+          std::stringstream sstm;
+          sstm << "Variable: " << idName_ << " parameter string is not in the correct format, which should be \"nModality: x\" "
+               << "with x the number of modalities in the variable." << std::endl;
+          warnLog += sstm.str();
+        }
+
+        if (nModality_ <= augData_.dataRange_.max_) {
+          std::stringstream sstm;
+          sstm << "Variable: " << idName_ << " requires a maximum value of " << minModality + nModality_ - 1 << " "
+               << "for the data during prediction. This maximum value corresponds to the maximum value used during the learning phase. "
+               << "The maximum value in the data provided for prediction is : " << minModality + augData_.dataRange_.max_ << std::endl;
+          warnLog += sstm.str();
+        }
+      }
+
+      if (augData_.dataRange_.min_ < 0) { // modality encoding is 0-based, so in any case, values below 0 are erroneous
         std::stringstream sstm;
         sstm << "Variable: " << idName_ << " is described by an Ordinal model which requires a minimum value of 0 in either provided values or bounds. "
              << "The minimum value currently provided is : " << augData_.dataRange_.min_ + minModality << std::endl;
         warnLog += sstm.str();
       }
-      else { // minimum value requirements have been met, whether the mode is learning or prediction
-        if (mode == learning_) {
-          nbModality_ = augData_.dataRange_.max_ + 1; // since an offset has been applied during getData, modalities are 0-based
-        }
-        else { // prediction mode
-          setParam(); // set nbModalities_, mu_ and pi_ using p_paramSetter_
 
-          muParamStatComputer_.setParamStorage();
-          piParamStatComputer_.setParamStorage();
-
-          nbModality_ = augData_.dataRange_.range_; // deduction from data makes no sense here
-
-          if (nbModality_ - 1 < augData_.dataRange_.max_) {
-            std::stringstream sstm;
-            sstm << "Variable: " << idName_ << " requires a maximum value of " << minModality + nbModality_ - 1 << " "
-                 << "for the data during prediction. This maximum value corresponds to the maximum value used during the learning phase. "
-                 << "The maximum value in the data provided for prediction is : " << minModality + augData_.dataRange_.max_ << std::endl;
-            warnLog += sstm.str();
-          }
-
-          computeObservedProba(); // parameters are know, so logProba can be computed immediately
-        }
-
-        if (nbModality_ < 3) {
-          std::stringstream sstm;
-          sstm << "Variable: " << idName_ << " requires a minimum of 3 modalities. If you have less modalities than that, you must use a "
-               << "Categorical model."<< std::endl;
-          warnLog += sstm.str();
-        }
-
-        setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
-
-        dataStatComputer_.setNbIndividual(nbInd_);
+      if (nModality_ < 3) {
+        std::stringstream sstm;
+        sstm << "Variable: " << idName_ << " requires a minimum of 3 modalities. If you have less modalities than that, you must use a "
+             << "Categorical model."<< std::endl;
+        warnLog += sstm.str();
       }
+
+      augData_.dataRange_.min_ = 0; // Once everything has been set, adjust the range of data to align with the parameter space
+      augData_.dataRange_.max_ = nModality_ - 1;
+      augData_.dataRange_.range_ = nModality_;
+
+      if (warnLog.size() == 0 && mode == prediction_) { // parameters are know, and data has been validated against paramStr_, so logProba can be computed immediately
+        computeObservedProba();
+      }
+      setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
+      dataStatComputer_.setNbIndividual(nbInd_);
 
       return warnLog;
     }
@@ -227,8 +250,7 @@ class Ordinal : public IMixture
     }
 
     /** get parameters from single table, then dispatch it to mu_ and pi_ */
-    void setParam()
-    {
+    void setParam() {
       Vector<Real> param;
       p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
                                "muPi",
@@ -236,8 +258,7 @@ class Ordinal : public IMixture
                                paramStr_);
       mu_.resize(nbClass_);
       pi_.resize(nbClass_);
-      for (int k = 0; k < nbClass_; ++k)
-      {
+      for (int k = 0; k < nbClass_; ++k) {
         mu_(k) = param(2 * k    );
         pi_(k) = param(2 * k + 1);
       }
@@ -299,12 +320,12 @@ class Ordinal : public IMixture
       std::cout << "Ordinal::computeObservedProba, mu: " << itString(mu_) << ", pi_: " << itString(pi_) << std::endl;
 #endif
 
-      observedProba_.resize(nbClass_, nbModality_);
+      observedProba_.resize(nbClass_, nModality_);
       BOSPath path; // BOSPath used for the various samplings
-      path.setInit(0, nbModality_ - 1);
+      path.setInit(0, nModality_ - 1);
       for (int k = 0; k < nbClass_; ++k)
       {
-        RowVector<Real> nbInd(nbModality_); // observed frequencies
+        RowVector<Real> nbInd(nModality_); // observed frequencies
         path.setEnd(k, k);
         nbInd = 0;
         for (int i = 0; i < nbSampleObserved; ++i)
@@ -312,7 +333,7 @@ class Ordinal : public IMixture
           path.forwardSamplePath(mu_(k), // complete the individual
                                  pi_(k),
                                  allZAuthorized_); // to estimate probability distribution, all z can be sampled to 1
-          nbInd(path.c()(nbModality_ - 2).e_(0)) += 1.; // register the x value, for marginalization
+          nbInd(path.c()(nModality_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / Real(nbSampleObserved);
       }
@@ -391,12 +412,7 @@ class Ordinal : public IMixture
       std::cout << sstm.str() << std::endl;
     }
 
-    virtual void exportDataParam() const
-    {
-#ifdef MC_DEBUG
-      std::cout << "MixtureBridge: exportDataParam, idName(): " << idName() << std::endl;
-#endif
-
+    virtual void exportDataParam() const {
       int nbColStat = muParamStatComputer_.getStatStorage().cols();
       Matrix<Real> paramStatStorage(2 * nbClass_, nbColStat); // aggregates both mu and pi values
       for (int j = 0; j < nbColStat; ++j) {
@@ -426,7 +442,7 @@ class Ordinal : public IMixture
                                      paramLogStorage,
                                      paramNames(),
                                      confidenceLevel_,
-                                     "");
+                                     paramStr_);
     }
 
     std::vector<std::string> paramNames() const
@@ -545,7 +561,7 @@ class Ordinal : public IMixture
      * */
     int sampleMuFreq(int k)
     {
-      Vector<Real> freqMod(nbModality_, 0.); // frequencies of completed values for the current class
+      Vector<Real> freqMod(nModality_, 0.); // frequencies of completed values for the current class
       for (int i = 0; i < nbInd_; ++i) // compute distribution of values
       {
         if ((*p_zi_)(i) == k) // among individuals inside the degenerate class
@@ -561,7 +577,7 @@ class Ordinal : public IMixture
       }
       else  // this is just to avoid a crash, as empty class are forbidden and will be detected later for resampling
       {
-        freqMod = 1. / Real(nbModality_);
+        freqMod = 1. / Real(nModality_);
       }
 
       return multi_.sample(freqMod); // mu is sampled from this distribution
@@ -635,12 +651,12 @@ class Ordinal : public IMixture
     }
 
     void mStepMu() {
-      Matrix<Real> logLik(nbClass_, nbModality_, 0.);
+      Matrix<Real> logLik(nbClass_, nModality_, 0.);
       for (int i = 0; i < nbInd_; ++i) {
         int currClass = (*p_zi_)(i);
         Real currPi = pi_(currClass);
-        RowVector<Real> probaInd(nbModality_);
-        for (int mu = 0; mu < nbModality_; ++mu) { // mu obtained from maximization over all possible values
+        RowVector<Real> probaInd(nModality_);
+        for (int mu = 0; mu < nModality_; ++mu) { // mu obtained from maximization over all possible values
           probaInd(mu) = path_(i).computeLogProba(mu,
                                                   currPi);
         }
@@ -706,7 +722,7 @@ class Ordinal : public IMixture
     /** update the data using the last segment in c_. to be used after sampling in the BOSPath. */
     void copyToData(int ind)
     {
-      augData_.data_(ind) = path_(ind).c()(nbModality_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
+      augData_.data_(ind) = path_(ind).c()(nModality_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
     /** Pointer to the zik class label */
@@ -720,7 +736,7 @@ class Ordinal : public IMixture
     int nbClass_;
 
     /** Number of modalities */
-    int nbModality_;
+    int nModality_;
 
     /** The augmented data set */
     AugmentedData<Vector<int> > augData_;

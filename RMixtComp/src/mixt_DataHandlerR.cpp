@@ -36,14 +36,12 @@ DataHandlerR::DataHandlerR(Rcpp::List rList) :
 {}
 
 void DataHandlerR::writeInfo() const {
-#ifdef MC_VERBOSE
    for (std::map<std::string, std::string>::const_iterator it    = info_.begin(),
                                                            itEnd = info_.end();
         it != itEnd;
         ++it) {
      std::cout << "name: " << it->first << ", model: " << it->second << std::endl;
    }
-#endif
 }
 
 std::string DataHandlerR::listData() {
@@ -115,10 +113,7 @@ std::string DataHandlerR::getData(std::string const& idData,
     Rcpp::List currVar = rList_[pos]; // get current named list
     Rcpp::CharacterVector data = currVar("data");
 
-    paramStr = Rcpp::as<std::string>(currVar("param"));
-#ifdef MC_DEBUGNEW
-    std::cout << "idData: " << idData << ", paramStr: " << paramStr << std::endl;
-#endif
+    paramStr = Rcpp::as<std::string>(currVar("paramStr"));
 
     for (int i = 0; i < nbInd_; ++i) {
       dataStr(i) = data[i];

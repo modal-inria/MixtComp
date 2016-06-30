@@ -118,6 +118,11 @@ class MixtureBridge : public IMixture {
                                      nbInd_,
                                      paramStr_,
                                      (mixture_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
+
+      if (warnLog.size() > 0) {
+        return warnLog;
+      }
+
       augData_.computeRange();
       std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
 
@@ -126,23 +131,20 @@ class MixtureBridge : public IMixture {
         sstm << "Variable " << idName() << " has a problem with the descriptions of missing values." << std::endl << tempLog;
         warnLog += sstm.str();
       }
-      else {
-        if (mode == prediction_) {
-          p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
-                                   "NumericalParam",
-                                   param_,
-                                   paramStr_); // note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
 
-          paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
-        }
+      if (mode == prediction_) {
+        p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
+                                 "NumericalParam",
+                                 param_,
+                                 paramStr_); // note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
 
-        warnLog += mixture_.setData(paramStr_,
-                                    augData_);
-
-
-
-        dataStat_.setNbIndividual(nbInd_);
+        paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
       }
+
+      warnLog += mixture_.setData(paramStr_, // checks on data bounds are made here
+                                  augData_);
+
+      dataStat_.setNbIndividual(nbInd_);
 
       return warnLog;
     }
