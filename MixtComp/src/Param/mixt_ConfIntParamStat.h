@@ -43,29 +43,34 @@ class ConfIntParamStat {
     ConfIntParamStat(ContainerType& param,
                      Real confidenceLevel) :
       nbIter_(0),
-      nbParam_(0),
+      nRows_(0),
+      nCols_(0),
+      nCoeff_(0),
       param_(param),
       confidenceLevel_(confidenceLevel) {};
 
-    void sampleParam(int iteration,
-                     int iterationMax) {
+    void sampleParam(Index iteration,
+                     Index iterationMax) {
       if (iteration == 0) {
-        nbParam_ = param_.rows();
-        logStorage_.resize(nbParam_, iterationMax + 1); // resize internal storage
-        statStorage_.resize(nbParam_, 3); // resize export storage
+        nRows_ = param_.rows(); // size of nbParam is know at the first sample and from there on will stay fixed
+        nCols_ = param_.cols();
+        nCoeff_ = nRows_ * nCols_;
+
+        logStorage_ .resize(nCoeff_, iterationMax + 1); // resize internal storage
+        statStorage_.resize(nCoeff_, 3               ); // resize export storage
 
         sample(0); // first sampling, on each parameter
       }
       else if (iteration == iterationMax) {
         sample(iterationMax); // last sampling
 
-        for (int p = 0; p < nbParam_; ++p) {
+        for (Index p = 0; p < nCoeff_; ++p) {
           RowVector<Type> currRow = logStorage_.row(p);
           currRow.sort();
 
           Real alpha = (1. - confidenceLevel_) / 2.;
-          int realIndLow =        alpha  * iterationMax;
-          int realIndHigh = (1. - alpha) * iterationMax;
+          Index realIndLow  =       alpha  * iterationMax;
+          Index realIndHigh = (1. - alpha) * iterationMax;
 
           statStorage_(p, 0) = currRow(iterationMax / 2);
           statStorage_(p, 1) = currRow(realIndLow      );
@@ -80,15 +85,25 @@ class ConfIntParamStat {
     /** Set the storage of parameters, for example in the prediction case where there is no M-Step, and no
      * statistics on the estimated parameters. */
     void setParamStorage() {
-      statStorage_.resize(param_.rows(),
+      nRows_ = param_.rows(); // size of nbParam is know at the first sample and from there on will stay fixed
+      nCols_ = param_.cols();
+      nCoeff_ = nRows_ * nCols_;
+
+      statStorage_.resize(nCoeff_,
                           1); // no quantiles have to be computed for imported parameters, hence the single column
-      statStorage_.col(0) = param_;
+      for (Index j = 0; j < nCols_; ++j) {
+        for (Index i = 0; i < nRows_; ++i) {
+          statStorage_(i * nCols_ + j, 0) = param_(i, j);
+        }
+      }
     }
 
     /** fill the parameters with estimators of the expectation, to be used in the Gibbs sampling */
     void setExpectationParam() {
-      for (int i = 0; i < nbParam_; ++i) {
-        param_(i) = statStorage_(i, 0); // imputation by the mean
+      for (Index j = 0; j < nCols_; ++j) {
+        for (Index i = 0; i < nRows_; ++i) {
+          param_(i, j) = statStorage_(i * nCols_ + j, 0);
+        }
       }
     }
 
@@ -123,12 +138,14 @@ class ConfIntParamStat {
     }
 
     const Matrix<Type>& getStatStorage() const {return statStorage_;}
-    const Matrix<Type>& getLogStorage() const {return logStorage_;}
+    const Matrix<Type>& getLogStorage()  const {return logStorage_ ;}
 
   private:
-    void sample(int iteration) {
-      for (int p = 0; p < nbParam_; ++p) {
-        logStorage_(p, iteration) = param_(p);;
+    void sample(Index iteration) {
+      for (Index j = 0; j < nCols_; ++j) {
+        for (Index i = 0; i < nRows_; ++i) {
+          logStorage_(i * nCols_ + j, iteration) = param_(i, j);
+        }
       }
     }
 
@@ -136,10 +153,12 @@ class ConfIntParamStat {
     Index nbIter_;
 
     // number of parameters
-    Index nbParam_;
+    Index nRows_;
+    Index nCols_;
+    Index nCoeff_;
 
     // Reference to param array
-    Vector<Type>& param_;
+    ContainerType& param_;
 
     /** Array to export the statistics at the last iteration
      * first dimension: index of the parameter
