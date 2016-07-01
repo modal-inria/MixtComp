@@ -29,6 +29,7 @@
 namespace mixt {
 
 std::string parseFunctionalStr(Index nSub,
+                               Index orderSub,
                                const Vector<std::string>& dataStr,
                                Vector<Function>& vecInd) {
   std::string warnLog;
@@ -79,6 +80,8 @@ std::string parseFunctionalStr(Index nSub,
 
       vecInd(ind).setValTime(i, t, x);
     }
+
+    vecInd(ind).computeVandermonde(orderSub);
   }
 
   return warnLog;

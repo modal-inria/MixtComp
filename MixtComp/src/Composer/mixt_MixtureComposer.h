@@ -355,7 +355,7 @@ class MixtureComposer {
     std::vector<IMixture*> v_mixtures_;
 
     /** computer parameters statistics */
-    ConfIntParamStat<Real> paramStat_;
+    ConfIntParamStat<Vector<Real> > paramStat_;
 
     /** computer of the statistics on latent variables */
     ClassDataStat dataStat_;

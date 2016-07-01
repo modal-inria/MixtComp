@@ -771,10 +771,10 @@ class Ordinal : public IMixture
     ConfIntDataStat<int> dataStatComputer_;
 
     /** Compute the statistics on mu parameter */
-    ConfIntParamStat<int> muParamStatComputer_;
+    ConfIntParamStat<Vector<int> > muParamStatComputer_;
 
     /** Compute the statistics on pi parameter */
-    ConfIntParamStat<Real> piParamStatComputer_;
+    ConfIntParamStat<Vector<Real> > piParamStatComputer_;
 
     /** Pointer to the data handler */
     const DataHandler* p_handler_;

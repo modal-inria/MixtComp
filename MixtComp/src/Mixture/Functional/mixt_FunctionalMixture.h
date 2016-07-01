@@ -160,23 +160,27 @@ class FunctionalMixture : public IMixture {
         Matrix<Real> alphaCurr(nSub_, 2);
         Matrix<Real> betaCurr(nSub_, orderSub_);
         Vector<Real> sdCurr(nSub_);
-
         for (Index k = 0; k < nClass_; ++k) {
           for (Index s = 0; s < nSub_; ++s) {
             for (Index c = 0; c < 2; ++c) {
-
+              alphaCurr(s, c) = alpha(k * nSub_ * 2 + s * 2 + c);
             }
           }
 
+          for (Index s = 0; s < nSub_; ++s) {
+            for (Index c = 0; c < orderSub_; ++c) {
+              betaCurr(s, c) = alpha(k * nSub_ * orderSub_ + s * orderSub_ + c);
+            }
+          }
 
+          for (Index s = 0; s < nSub_; ++s) {
+            sdCurr(s) = k * nSub_ + s;
+          }
 
           class_[k].setParam(alphaCurr,
                              betaCurr,
                              sdCurr);
         }
-
-        // delinearize everything
-        // call setParam here, using the delinearized versions
       }
 
       if (paramStr_.size() == 0) {
@@ -191,13 +195,13 @@ class FunctionalMixture : public IMixture {
       }
 
       warnLog += parseFunctionalStr(nSub_,
+                                    orderSub_,
                                     dataStr, // convert the vector of strings to ranks
                                     vecInd_);
       warnLog += checkMissingType();
       if (warnLog.size() > 0) {
         return warnLog;
       }
-      // do not forget to call Function::computeVandermonde once t vectors are known
 
       // datastat will be setup here when partially observed value will be supported
 
@@ -205,6 +209,7 @@ class FunctionalMixture : public IMixture {
     }
 
     void exportDataParam() const {
+      Matrix<Real> alpha(nClass_ * nSub_ * 2, 3); // linearized and concatenated version of
       // linearize and format the information provided by each class, and send it to the usual extractors, nothing fancy here ...
     };
 

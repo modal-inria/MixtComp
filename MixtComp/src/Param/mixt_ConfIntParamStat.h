@@ -35,34 +35,31 @@ namespace mixt {
 /**
  * Computation of confidence interval on parameters. Templated for int or Real cases.
  * */
-template<typename Type>
+template<typename ContainerType>
 class ConfIntParamStat {
   public:
-    ConfIntParamStat(Vector<Type>& param,
+    typedef typename ContainerType::Type Type;
+
+    ConfIntParamStat(ContainerType& param,
                      Real confidenceLevel) :
       nbIter_(0),
       nbParam_(0),
       param_(param),
-      confidenceLevel_(confidenceLevel)
-    {};
+      confidenceLevel_(confidenceLevel) {};
 
     void sampleParam(int iteration,
-                     int iterationMax)
-    {
-      if (iteration == 0)
-      {
+                     int iterationMax) {
+      if (iteration == 0) {
         nbParam_ = param_.rows();
         logStorage_.resize(nbParam_, iterationMax + 1); // resize internal storage
         statStorage_.resize(nbParam_, 3); // resize export storage
 
         sample(0); // first sampling, on each parameter
       }
-      else if (iteration == iterationMax)
-      {
+      else if (iteration == iterationMax) {
         sample(iterationMax); // last sampling
 
-        for (int p = 0; p < nbParam_; ++p)
-        {
+        for (int p = 0; p < nbParam_; ++p) {
           RowVector<Type> currRow = logStorage_.row(p);
           currRow.sort();
 
@@ -75,16 +72,14 @@ class ConfIntParamStat {
           statStorage_(p, 2) = currRow(realIndHigh + 1 );
         }
       }
-      else
-      {
+      else {
         sample(iteration); // standard sampling
       }
     }
 
     /** Set the storage of parameters, for example in the prediction case where there is no M-Step, and no
      * statistics on the estimated parameters. */
-    void setParamStorage()
-    {
+    void setParamStorage() {
       statStorage_.resize(param_.rows(),
                           1); // no quantiles have to be computed for imported parameters, hence the single column
       statStorage_.col(0) = param_;

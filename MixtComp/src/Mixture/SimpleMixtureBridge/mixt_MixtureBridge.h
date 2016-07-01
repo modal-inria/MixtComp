@@ -294,7 +294,7 @@ class MixtureBridge : public IMixture {
     DataStat dataStat_;
 
     /** Statistics storage for parameters */
-    ConfIntParamStat<Real> paramStat_;
+    ConfIntParamStat<Vector<Real> > paramStat_;
 
     /** Computation of the observed likelihood */
     Likelihood likelihood_;

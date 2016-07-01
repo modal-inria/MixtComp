@@ -478,7 +478,7 @@ class RankMixture : public IMixture
     std::vector<RankStat> dataStat_;
 
     /** Compute the statistics on pi parameter */
-    ConfIntParamStat<Real> piParamStat_;
+    ConfIntParamStat<Vector<Real> > piParamStat_;
 
     Vector<bool> acceptedType_;
 
