@@ -40,9 +40,15 @@ class FunctionalClass {
     void setSize(Index nSub,
                  Index nCoeff);
 
-    void setParam(const Vector<Real>& alpha,
-                  const Matrix<Real>& beta,
-                  const Vector<Real>& sd);
+    template<typename MatrixType,
+             typename VectorType>
+    void setParam(const MatrixType& alpha,
+                  const MatrixType& beta,
+                  const VectorType& sd) {
+      alpha_ = alpha;
+      beta_ = beta;
+      sd_ = sd;
+    }
 
     void mStep();
 

@@ -301,7 +301,6 @@ class RankMixture : public IMixture
                               minModality,
                               nbPos_,
                               data_);
-
       warnLog += checkMissingType();
       if (warnLog.size() > 0) {
         return warnLog;

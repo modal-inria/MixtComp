@@ -44,14 +44,6 @@ void FunctionalClass::setSize(Index nSub,
   sd_ = 0.;
 }
 
-void FunctionalClass::setParam(const Vector<Real>& alpha,
-                               const Matrix<Real>& beta,
-                               const Vector<Real>& sd) {
-  alpha_ = alpha;
-  beta_ = beta;
-  sd_ = sd;
-}
-
 void FunctionalClass::mStep() {
   mStepAlpha();
   // mStepBetaEpsilon();

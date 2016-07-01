@@ -44,16 +44,17 @@ class FunctionalMixture : public IMixture {
                       Real confidenceLevel) :
         IMixture(indexMixture,
                  idName),
+        nInd_(0),
         nClass_(nClass),
         nSub_(0),
-        nInd_(0),
+        orderSub_(0),
+        confidenceLevel_(confidenceLevel),
         p_zi_(p_zi),
         classInd_(classInd),
         p_handler_(p_handler),
         p_dataExtractor_(p_extractor),
         p_paramSetter_(p_paramSetter),
-        p_paramExtractor_(p_paramExtractor),
-        confidenceLevel_(confidenceLevel) {
+        p_paramExtractor_(p_paramExtractor) {
       class_.reserve(nClass_);
       for (Index k = 0; k < nClass_; ++k) {
         class_.emplace_back(vecInd_,
@@ -70,6 +71,11 @@ class FunctionalMixture : public IMixture {
                        false; // missingRUIntervals
     }
 
+    //** Dummy  constructor to check compilation */
+    FunctionalMixture(const Vector<std::set<Index> >& classInd) :
+      IMixture(0, "dummy"),
+      classInd_(classInd) {};
+
     void samplingStepCheck(Index i) {
       samplingStepNoCheck(i); // until check conditions are properly defined to avoid problems on every parameters
     };
@@ -80,7 +86,11 @@ class FunctionalMixture : public IMixture {
                          class_[(*p_zi_)(i)].sd   ());
     };
 
-    Index checkSampleCondition(std::string* warnLog = NULL) const {return 0;}
+    Index checkSampleCondition(std::string* warnLog = NULL) const {
+      // delegate the check to each class ?
+
+      return 0;
+    }
 
     void mStep(EstimatorType bias) {
       for (std::vector<FunctionalClass>::iterator it  = class_.begin(),
@@ -115,12 +125,6 @@ class FunctionalMixture : public IMixture {
     void writeParameters() const {};
 
     std::string setDataParam(RunMode mode) {
-      // once the number of subregressions is known, loop over the class_ and apply setSize
-      // also loop on the individuals and call Function::setSize
-      // do not forget to call Function::computeVandermonde once t vectors are known
-
-      // In contrast with many other models, in FunctionalMixture the parameter space is never deduced. There is no way to deduce the number of subregressions desired by the user, nor the degree of the polynomials in those subregressions
-
       std::string warnLog;
       Vector<std::string> dataStr;
 
@@ -129,31 +133,71 @@ class FunctionalMixture : public IMixture {
                                      nInd_,
                                      paramStr_);
 
-      // get the value of nSub by parsing paramStr_
+      if (mode == prediction_) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
+        Vector<Real> alpha, beta, sd, pi;
+
+        std::string dummyStr;
+        p_paramSetter_->getParam(idName_,
+                                 "alpha",
+                                 alpha,
+                                 dummyStr); // alpha is not parametrized by anything, only order one polynomials are used in the logistical regression
+
+        p_paramSetter_->getParam(idName_,
+                                 "beta",
+                                 beta,
+                                 paramStr_);
+
+        p_paramSetter_->getParam(idName_,
+                                 "sd",
+                                 sd,
+                                 dummyStr);
+
+        p_paramSetter_->getParam(idName_,
+                                 "pi",
+                                 pi,
+                                 dummyStr);
+
+        Matrix<Real> alphaCurr(nSub_, 2);
+        Matrix<Real> betaCurr(nSub_, orderSub_);
+        Vector<Real> sdCurr(nSub_);
+
+        for (Index k = 0; k < nClass_; ++k) {
+          for (Index s = 0; s < nSub_; ++s) {
+            for (Index c = 0; c < 2; ++c) {
+
+            }
+          }
+
+
+
+          class_[k].setParam(alphaCurr,
+                             betaCurr,
+                             sdCurr);
+        }
+
+        // delinearize everything
+        // call setParam here, using the delinearized versions
+      }
+
+      if (paramStr_.size() == 0) {
+        std::stringstream sstm;
+        sstm << "Variable: " << idName_ << " has no parameter description. This description is required, and must take the form "
+             << "\"nSub: x, orderSub: y\"" << std::endl;
+        warnLog += sstm.str();
+      }
+      else {
+        // get the value of nSub_ and orderSub_ by parsing paramStr_
+        // call setSize on each class
+      }
 
       warnLog += parseFunctionalStr(nSub_,
                                     dataStr, // convert the vector of strings to ranks
                                     vecInd_);
-
       warnLog += checkMissingType();
-
       if (warnLog.size() > 0) {
         return warnLog;
       }
-
-      if (mode == prediction_) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
-        Vector<Real> alphaLinearized;
-        p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
-                                 "alpha",
-                                 alphaLinearized,
-                                 paramStr_);
-
-//        p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
-//                                 "pi",
-//                                 pi_);
-
-        // call setParam here, to set everything
-      }
+      // do not forget to call Function::computeVandermonde once t vectors are known
 
       // datastat will be setup here when partially observed value will be supported
 
@@ -176,13 +220,14 @@ class FunctionalMixture : public IMixture {
   private:
     std::string checkMissingType() {
       std::string warnLog;
-      // to be populated with checks
+      // to be populated with checks. Each Function object must have a checkMissingType
       return warnLog;
     }
 
     Index nInd_;
     Index nClass_;
     Index nSub_;
+    Index orderSub_;
     Real confidenceLevel_;
 
     /** Data */
