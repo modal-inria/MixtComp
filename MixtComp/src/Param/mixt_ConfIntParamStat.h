@@ -108,9 +108,9 @@ class ConfIntParamStat {
       if (nModality > 0) {
         Index nClass = param_.size() / nModality;
 
-        for (Index j = 0; j < statStorage_.cols(); ++j) {
+        for (Index j = 0; j < statStorage_.cols(); ++j) { // note that the normalization is done column by column...
           for (Index k = 0; k < nClass; ++k) {
-            Type sumClass = 0;
+            Type sumClass = 0; // ... and class by class
             for (Index p = 0; p < nModality; ++p) {
               sumClass += statStorage_(k * nModality + p, j);
             }
