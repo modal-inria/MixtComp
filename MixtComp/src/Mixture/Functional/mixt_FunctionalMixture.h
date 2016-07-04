@@ -183,7 +183,7 @@ class FunctionalMixture : public IMixture {
         }
       }
 
-      if (paramStr_.size() == 0) {
+      if (paramStr_.size() == 0) { // Since the description is required, it is never necessary to generate a paramStr during a run
         std::stringstream sstm;
         sstm << "Variable: " << idName_ << " has no parameter description. This description is required, and must take the form "
              << "\"nSub: x, orderSub: y\"" << std::endl;
@@ -208,9 +208,62 @@ class FunctionalMixture : public IMixture {
       return warnLog;
     }
 
-    void exportDataParam() const {
-      Matrix<Real> alpha(nClass_ * nSub_ * 2, 3); // linearized and concatenated version of
-      // linearize and format the information provided by each class, and send it to the usual extractors, nothing fancy here ...
+    void exportDataParam() const { // linearize and format the information provided by each class, and send it to the usual extractors, nothing fancy here ...
+
+      // export the missing values here, when they will be support for them
+
+      Index sizeClassAlpha = nSub_ * 2;
+      Index sizeClassBeta  = nSub_ * orderSub_;
+      Index sizeClassSd = nSub_;
+
+      Index nObs = class_[0].alphaParamStat().getLogStorage().cols();
+
+      Matrix<Real> alphaStat(nClass_ * sizeClassAlpha, 3); // linearized and concatenated version of alpha
+      Matrix<Real> betaStat (nClass_ * sizeClassBeta , 3);
+      Matrix<Real> sdStat   (nClass_ * sizeClassSd   , 3);
+
+      Matrix<Real> alphaLog(nClass_ * sizeClassAlpha, nObs); // linearized and concatenated version of alpha
+      Matrix<Real> betaLog (nClass_ * sizeClassBeta , nObs);
+      Matrix<Real> sdLog   (nClass_ * sizeClassSd   , nObs);
+
+
+      for (Index k = 0; k < nClass_; ++k) {
+        alphaStat.block(k * sizeClassAlpha, 0, sizeClassAlpha, 3   ) = class_[k].alphaParamStat().getStatStorage();
+        alphaLog .block(k * sizeClassAlpha, 0, sizeClassAlpha, nObs) = class_[k].alphaParamStat().getLogStorage();
+
+        betaStat.block(k * sizeClassBeta, 0, sizeClassBeta, 3   ) = class_[k].betaParamStat().getStatStorage();
+        betaLog .block(k * sizeClassBeta, 0, sizeClassBeta, nObs) = class_[k].betaParamStat().getLogStorage();
+
+        sdStat.block(k * sizeClassSd, 0, sizeClassSd, 3   ) = class_[k].sdParamStat().getStatStorage();
+        sdLog .block(k * sizeClassSd, 0, sizeClassSd, nObs) = class_[k].sdParamStat().getLogStorage();
+      }
+
+      p_paramExtractor_->exportParam(indexMixture_,
+                                     idName_,
+                                     "alpha",
+                                     alphaStat,
+                                     alphaLog,
+                                     alphaParamNames(),
+                                     confidenceLevel_,
+                                     paramStr_);
+
+      p_paramExtractor_->exportParam(indexMixture_,
+                                     idName_,
+                                     "beta",
+                                     betaStat,
+                                     betaLog,
+                                     betaParamNames(),
+                                     confidenceLevel_,
+                                     paramStr_);
+
+      p_paramExtractor_->exportParam(indexMixture_,
+                                     idName_,
+                                     "sd",
+                                     sdStat,
+                                     sdLog,
+                                     sdParamNames(),
+                                     confidenceLevel_,
+                                     paramStr_);
     };
 
     void removeMissing(initParam algo) {
@@ -227,6 +280,48 @@ class FunctionalMixture : public IMixture {
       std::string warnLog;
       // to be populated with checks. Each Function object must have a checkMissingType
       return warnLog;
+    }
+
+    std::vector<std::string> alphaParamNames() const {
+      std::vector<std::string> names(nClass_ * nSub_ * 2);
+      for (Index k = 0; k < nClass_; ++k) {
+        for (Index s = 0; s < nSub_; ++s) {
+          std::stringstream sstm0;
+          sstm0 << "k: " << k << ", s: " << s << ", alpha0";
+          names[k * nSub_ * 2 + s * 2    ] = sstm0.str();
+
+          std::stringstream sstm;
+          sstm << "k: " << k << ", s: " << s << ", alpha1";
+          names[k * nSub_ * 2 + s * 2 + 1] = sstm.str();
+        }
+      }
+      return names;
+    }
+
+    std::vector<std::string> betaParamNames() const {
+      std::vector<std::string> names(nClass_ * nSub_ * orderSub_);
+      for (Index k = 0; k < nClass_; ++k) {
+        for (Index s = 0; s < nSub_; ++s) {
+          for (Index c = 0; c < orderSub_; ++c) {
+            std::stringstream sstm;
+            sstm << "k: " << k << ", s: " << s << ", c: " << c;
+            names[k * nSub_ * orderSub_ + s * orderSub_ + c] = sstm.str();
+          }
+        }
+      }
+      return names;
+    }
+
+    std::vector<std::string> sdParamNames() const {
+      std::vector<std::string> names(nClass_ * nSub_);
+      for (Index k = 0; k < nClass_; ++k) {
+        for (Index s = 0; s < nSub_; ++s) {
+          std::stringstream sstm;
+          sstm << "k: " << k << ", s: " << s;
+          names[k * nSub_ + s] = sstm.str();
+        }
+      }
+      return names;
     }
 
     Index nInd_;

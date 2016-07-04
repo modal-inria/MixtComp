@@ -58,9 +58,13 @@ class FunctionalClass {
                     const double* alpha,
                     Vector<Real>& grad);
 
-    const Vector<Real>& alpha() {return alpha_;}
-    const Matrix<Real>& beta() {return beta_;}
-    const Vector<Real>& sd()  {return sd_;}
+    const Matrix<Real>& alpha() const {return alpha_;}
+    const Matrix<Real>& beta()  const {return beta_ ;}
+    const Vector<Real>& sd()    const {return sd_   ;}
+
+    const ConfIntParamStat<Matrix<Real> >& alphaParamStat() const {return alphaParamStat_;}
+    const ConfIntParamStat<Matrix<Real> >& betaParamStat()  const {return betaParamStat_ ;}
+    const ConfIntParamStat<Vector<Real> >& sdParamStat()    const {return sdParamStat_   ;}
   private:
     /** Data */
     const Vector<Function>& data_;
@@ -70,7 +74,7 @@ class FunctionalClass {
 
     /** Parameter alpha for current class. Not set as const since mStep will modify it. It is not stored in a matrix, because nlopt is used,
      * and serializing everything in a vector is the standard modus operandi. */
-    Vector<Real> alpha_;
+    Matrix<Real> alpha_;
 
     /** Rows are sub-regression, columns are coefficients. */
     Matrix<Real> beta_;
@@ -78,11 +82,11 @@ class FunctionalClass {
     /** One coefficient per sub-regression */
     Vector<Real> sd_;
 
-//    /** Contrarily to what is done in the Rank model for example, here the parameter estimation is done
-//     * directly inside class. */
-//    ConfIntParamStat<Real> alphaParamStat_;
-//    ConfIntParamStat<Real> betaParamStat_;
-//    ConfIntParamStat<Real> epsilonParamStat_;
+    /** Contrarily to what is done in the Rank model for example, here the parameter estimation is done
+     * directly inside class. */
+    ConfIntParamStat<Matrix<Real> > alphaParamStat_;
+    ConfIntParamStat<Matrix<Real> > betaParamStat_;
+    ConfIntParamStat<Vector<Real> > sdParamStat_;
 };
 
 } // namespace mixt

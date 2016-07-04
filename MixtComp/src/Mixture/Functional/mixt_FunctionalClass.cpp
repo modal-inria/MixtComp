@@ -31,11 +31,14 @@ FunctionalClass::FunctionalClass(const Vector<Function>& data,
                                  const std::set<Index>& setInd,
                                  Real confidenceLevel) :
     data_(data),
-    setInd_(setInd) {}
+    setInd_(setInd),
+    alphaParamStat_(alpha_, confidenceLevel),
+    betaParamStat_(beta_, confidenceLevel),
+    sdParamStat_(sd_, confidenceLevel) {}
 
 void FunctionalClass::setSize(Index nSub,
                               Index nCoeff) {
-  alpha_.resize(nSub * 2); // remember that storage is linear for alpha, two coefficients per subregression
+  alpha_.resize(nSub, 2); // remember that storage is linear for alpha, two coefficients per subregression
   beta_.resize(nSub, nCoeff);
   sd_.resize(nSub);
 
