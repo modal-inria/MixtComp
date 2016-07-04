@@ -36,5 +36,3 @@ TEST(FunctionalMixture, compilation) {
                     ParamSetterDummy,
                     ParamExtractorDummy> dummyFunctionalMixture(classInd);
 }
-
-

@@ -169,34 +169,35 @@ TEST(FunctionalComputation, subRegression) {
   Vector<Index> nT(nSub, 0); // number of timesteps in each subregression
 
   for (Index s = 0; s < nSub; ++s) {
-//    nT(s) = w(s).size();
-//    design(s).resize(nT(s), nCoeff);
-//    y(s).resize(nT(s));
+    nT(s) = w(s).size();
+    design(s).resize(nT(s), nCoeff);
+    y(s).resize(nT(s));
   }
 
   for (Index s = 0; s < nSub; ++s) {
     Index i = 0;
+    y(s) = 0.;
     for (std::list<Index>::const_iterator it = w(s).begin(), itE = w(s).end();
         it != itE;
         ++it) {
-//      design(s).row(i) = vandermonde.row(*it);
+      design(s).row(i) = vandermonde.row(*it);
 
-//      for (Index p = 0; p < nCoeff; ++p) {
-//        y(i) += beta(s, p) * pow(t(*it), p);
-//      }
-//      y(i) += normal.sample(0, sd(s));
+      for (Index p = 0; p < nCoeff; ++p) {
+        y(s)(i) += beta(s, p) * pow(t(*it), p);
+      }
+      y(s)(i) += normal.sample(0, sd(s));
 
       ++i;
     }
   }
 
-//  subRegression(design,
-//                y,
-//                betaEstimated,
-//                sdEstimated);
-//
-//  ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-3));
-//  ASSERT_EQ(true, sdEstimated.isApprox(sd, 0.01));
+  subRegression(design,
+                y,
+                betaEstimated,
+                sdEstimated);
+
+  ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-3));
+  ASSERT_EQ(true, sdEstimated.isApprox(sd, 0.01));
 }
 
 TEST(FunctionalComputation, smallTest) {
