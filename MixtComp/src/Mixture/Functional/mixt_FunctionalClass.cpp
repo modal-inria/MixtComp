@@ -33,8 +33,8 @@ FunctionalClass::FunctionalClass(const Vector<Function>& data,
     data_(data),
     setInd_(setInd),
     alphaParamStat_(alpha_, confidenceLevel),
-    betaParamStat_(beta_, confidenceLevel),
-    sdParamStat_(sd_, confidenceLevel) {}
+    betaParamStat_ (beta_ , confidenceLevel),
+    sdParamStat_   (sd_   , confidenceLevel) {}
 
 void FunctionalClass::setSize(Index nSub,
                               Index nCoeff) {
@@ -49,38 +49,83 @@ void FunctionalClass::setSize(Index nSub,
 
 void FunctionalClass::mStep() {
   mStepAlpha();
-  // mStepBetaEpsilon();
+  mStepBetaEpsilon();
 }
 
 void FunctionalClass::mStepAlpha() {
-  Index nParam = alpha_.size();
+  Index nSub   = alpha_.rows();
+  Index nParam = 2 * nSub;
   double minf;
+
+  double alpha[nParam]; // linear version of alpha, to conform to nlopt argument format
+  for (Index s = 0; s < nSub; ++s) {
+    alpha[2 * s    ] = alpha_(s, 0);
+    alpha[2 * s + 1] = alpha_(s, 1);
+  }
 
   nlopt_opt opt;
   opt = nlopt_create(NLOPT_LD_LBFGS, nParam); /* algorithm and dimensionality */
   nlopt_set_max_objective(opt, optiFunctionalClass, this);
-  nlopt_optimize(opt, alpha_.data(), &minf);
+  nlopt_optimize(opt, alpha, &minf);
   nlopt_destroy(opt);
+
+  for (Index s = 0; s < nSub; ++s) {
+    alpha_(s, 0) = alpha[2 * s    ];
+    alpha_(s, 1) = alpha[2 * s + 1];
+  }
 }
 
-double FunctionalClass::gradCost(Index nParam,
-                                 const double* alpha,
-                                 Vector<Real>& grad) {
-  Real cost = 0.;
-  Vector<Real> gradInd(nParam, 0.);
+void FunctionalClass::mStepBetaEpsilon() {
+  // to create the complete design matrix and y for the class, the total number of timesteps over the class must be determined
+  // first create the design matrix by concatenating the design for the individuals in the class, by block-copying the relevant data
+  // same applies for y
 
-  for (Index i = 0; i < nParam; ++i) {
-    alpha_(i) = alpha[i];
+//  subRegression(design,
+//                y,
+//                const Vector<std::list<Index> >& w,
+//                Matrix<Real>& beta,
+//                Vector<Real>& sd)
+}
+
+void FunctionalClass::setParamStorage() {
+  alphaParamStat_.setParamStorage();
+  betaParamStat_ .setParamStorage();
+  sdParamStat_   .setParamStorage();
+}
+
+void FunctionalClass::setExpectationParam() {
+  alphaParamStat_.setExpectationParam();
+  betaParamStat_ .setExpectationParam();
+  sdParamStat_   .setExpectationParam();
+}
+
+void FunctionalClass::sampleParam(Index iteration,
+                                  Index iterationMax) {
+  alphaParamStat_.sampleParam(iteration, iterationMax);
+  betaParamStat_ .sampleParam(iteration, iterationMax);
+  sdParamStat_   .sampleParam(iteration, iterationMax);
+}
+
+double FunctionalClass::costAndGrad(Index nParam,
+                                    const double* alpha,
+                                    double* grad) {
+  Real cost = 0.;
+  double gradInd[nParam];
+
+  for (Index p = 0; p < nParam; ++p) {
+    grad[p] = 0.;
   }
 
   for (std::set<Index>::const_iterator it  = setInd_.begin(),
                                        itE = setInd_.end();
        it != itE;
-       ++it) {
+       ++it) { // each individual in current class adds a contribution to the gradient of alpha
     cost += data_(*it).costAndGrad(nParam,
-                                   alpha_.data(),
-                                   gradInd.data());
-    grad += gradInd;
+                                   alpha,
+                                   gradInd);
+    for (Index p = 0; p < nParam; ++p) {
+      grad[p] += gradInd[p];
+    }
   }
 
   return cost;

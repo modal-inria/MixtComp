@@ -74,7 +74,17 @@ class FunctionalMixture : public IMixture {
     //** Dummy  constructor to check compilation */
     FunctionalMixture(const Vector<std::set<Index> >& classInd) :
       IMixture(0, "dummy"),
-      classInd_(classInd) {};
+      nInd_(0),
+      nClass_(0),
+      nSub_(0),
+      orderSub_(0),
+      confidenceLevel_(0.),
+      p_zi_(NULL),
+      classInd_(classInd),
+      p_handler_(NULL),
+      p_dataExtractor_(NULL),
+      p_paramSetter_(NULL),
+      p_paramExtractor_(NULL) {};
 
     void samplingStepCheck(Index i) {
       samplingStepNoCheck(i); // until check conditions are properly defined to avoid problems on every parameters
@@ -93,20 +103,29 @@ class FunctionalMixture : public IMixture {
     }
 
     void mStep(EstimatorType bias) {
-      for (std::vector<FunctionalClass>::iterator it  = class_.begin(),
-                                                  itE = class_.end();
-           it != itE;
-           ++it) {
-        it->mStep();
+      for (Index k = 0; k < nClass_; ++k) {
+        class_[k].mStep();
       }
     };
 
     void storeSEMRun(Index iteration,
-                     Index iterationMax) {};
+                     Index iterationMax) {
+      for (Index k = 0; k < nClass_; ++k) {
+        class_[k].sampleParam(iteration, iterationMax);
+      }
+
+      if (iteration == iterationMax) {
+        for (Index k = 0; k < nClass_; ++k) {
+          class_[k].setExpectationParam();
+        }
+      }
+    };
 
     void storeGibbsRun(Index i,
                        Index iteration,
-                       Index iterationMax) {};
+                       Index iterationMax) {
+      // nothing until missing data is supported
+    };
 
     Real lnCompletedProbability(Index i, Index k) {
       return vecInd_(i).lnCompletedProbability(class_[(*p_zi_)(i)].alpha(),
@@ -180,6 +199,7 @@ class FunctionalMixture : public IMixture {
           class_[k].setParam(alphaCurr,
                              betaCurr,
                              sdCurr);
+          class_[k].setParamStorage();
         }
       }
 

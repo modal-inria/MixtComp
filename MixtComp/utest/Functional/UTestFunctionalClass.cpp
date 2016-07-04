@@ -25,6 +25,7 @@
 
 using namespace mixt;
 
+
 TEST(FunctionalClass, optimOneclassOneInd) {
   Index nTime = 100000;
   Index nSub = 2; // number of subregression in the generation / estimation phases
@@ -81,7 +82,6 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   std::set<Index> setInd;
   setInd.insert(0);
 
-
   FunctionalClass funcClass(data,
                             setInd,
                             0.95);
@@ -89,7 +89,13 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 
   funcClass.mStepAlpha();
 
-  ASSERT_EQ(true, funcClass.alpha().isApprox(alpha, 0.1));
+  Vector<Real> alphaComputed(nParam);
+  for (Index s = 0; s < nSub; ++s) {
+    alphaComputed(2 * s    ) = funcClass.alpha()(s, 0);
+    alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
+  }
+
+  ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 }
 
 TEST(FunctionalClass, optimOneclassMultipleInd) {
@@ -158,5 +164,11 @@ TEST(FunctionalClass, optimOneclassMultipleInd) {
 
   funcClass.mStepAlpha();
 
-  ASSERT_EQ(true, funcClass.alpha().isApprox(alpha, 0.1));
+  Vector<Real> alphaComputed(nParam);
+  for (Index s = 0; s < nSub; ++s) {
+    alphaComputed(2 * s    ) = funcClass.alpha()(s, 0);
+    alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
+  }
+
+  ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 }

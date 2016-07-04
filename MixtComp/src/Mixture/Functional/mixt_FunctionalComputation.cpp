@@ -43,35 +43,18 @@ void vandermondeMatrix(const Vector<Real>& t,
   }
 }
 
-void subRegression(const Matrix<Real>& design,
-                   const Vector<Real>& y,
-                   const Vector<std::list<Index> >& w,
+void subRegression(const Vector<Matrix<Real> >& design,
+                   const Vector<Vector<Real> >& y,
                    Matrix<Real>& beta,
                    Vector<Real>& sd) {
-  Index nCoeff = design.cols(); // degree + 1
-  Index nSub = w.size(); // number of sub regressions
+  Index nCoeff = design(0).cols(); // degree + 1
+  Index nSub = design.size(); // number of sub regressions
   beta.resize(nSub, nCoeff);
   sd.resize(nSub);
-  Matrix<Real> subDesign; // design matrix reconstituted for each particular subregression
-  Vector<Real> subY; // y vector for each particular subregression
-  RowVector<Real> subBeta;
 
   for (Index p = 0; p < nSub; ++p) {
-    Index nbIndSubReg = w(p).size();
-    subDesign.resize(nbIndSubReg, nCoeff);
-    subY.resize(nbIndSubReg);
-
-    Index i = 0;
-    for (std::list<Index>::const_iterator it  = w(p).begin(),
-                                          itE = w(p).end();
-         it != itE;
-         ++it, ++i) {
-      subDesign.row(i) = design.row(*it);
-      subY(i) = y(*it);
-    }
-
-    regression(subDesign,
-               subY,
+    regression(design(p),
+               y(p),
                beta.row(p),
                sd(p));
   }
@@ -507,17 +490,12 @@ double optiFunc(unsigned nParam,
 
 double optiFunctionalClass(unsigned nParam,
                            const double* alpha,
-                           double* gradDouble,
+                           double* grad,
                            void* my_func_data) {
   Real cost;
   FunctionalClass* funcClass = (FunctionalClass*) my_func_data;
-  Vector<Real> gradVec(nParam, 0.);
 
-  cost = funcClass->gradCost(nParam, alpha, gradVec);
-
-  for (Index i = 0; i < nParam; ++i) {
-    gradDouble[i] = gradVec(i);
-  }
+  cost = funcClass->costAndGrad(nParam, alpha, grad);
 
   return cost;
 }

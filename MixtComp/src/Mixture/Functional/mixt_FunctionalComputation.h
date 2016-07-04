@@ -97,9 +97,8 @@ void regression(const Matrix<Real>& design,
              sd); // standard deviation is stored in the last coefficient of vector beta
 }
 
-void subRegression(const Matrix<Real>& design,
-                   const Vector<Real>& y,
-                   const Vector<std::list<Index> >& w,
+void subRegression(const Vector<Matrix<Real> >& design,
+                   const Vector<Vector<Real> >& y,
                    Matrix<Real>& beta,
                    Vector<Real>& sd);
 
@@ -176,7 +175,7 @@ double optiFunc(unsigned nParam,
                 void* my_func_data);
 
 /** Since nlopt does not work with pointers to member function, this external helper function has been created. An opaque
- * pointer to */
+ * pointer to an object FunctionalClass has to be passed as the last argument. */
 double optiFunctionalClass(unsigned nParam,
                            const double* alpha,
                            double* gradDouble,

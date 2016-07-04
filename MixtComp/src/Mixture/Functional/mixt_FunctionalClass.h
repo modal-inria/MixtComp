@@ -54,9 +54,20 @@ class FunctionalClass {
 
     void mStepAlpha();
 
-    double gradCost(Index nParam,
-                    const double* alpha,
-                    Vector<Real>& grad);
+    void mStepBetaEpsilon();
+
+    void sampleParam();
+
+    void setExpectationParam();
+
+    void setParamStorage();
+
+    void sampleParam(Index iteration,
+                     Index iterationMax);
+
+    double costAndGrad(Index nParam,
+                       const double* alpha,
+                       double* grad);
 
     const Matrix<Real>& alpha() const {return alpha_;}
     const Matrix<Real>& beta()  const {return beta_ ;}
