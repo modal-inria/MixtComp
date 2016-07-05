@@ -30,6 +30,8 @@ namespace mixt {
 FunctionalClass::FunctionalClass(const Vector<Function>& data,
                                  const std::set<Index>& setInd,
                                  Real confidenceLevel) :
+    nSub_(0),
+    orderSub_(0),
     data_(data),
     setInd_(setInd),
     alphaParamStat_(alpha_, confidenceLevel),
@@ -37,9 +39,12 @@ FunctionalClass::FunctionalClass(const Vector<Function>& data,
     sdParamStat_   (sd_   , confidenceLevel) {}
 
 void FunctionalClass::setSize(Index nSub,
-                              Index nCoeff) {
+                              Index orderSub) {
+  nSub_ = nSub;
+  orderSub_ = orderSub;
+
   alpha_.resize(nSub, 2); // remember that storage is linear for alpha, two coefficients per subregression
-  beta_.resize(nSub, nCoeff);
+  beta_.resize(nSub, orderSub);
   sd_.resize(nSub);
 
   alpha_ = 0.; // initialization is mandatory as the optimization is an iterative process
@@ -49,7 +54,7 @@ void FunctionalClass::setSize(Index nSub,
 
 void FunctionalClass::mStep() {
   mStepAlpha();
-  mStepBetaEpsilon();
+  mStepBetaSd();
 }
 
 void FunctionalClass::mStepAlpha() {
@@ -64,9 +69,9 @@ void FunctionalClass::mStepAlpha() {
   }
 
   nlopt_opt opt;
-  opt = nlopt_create(NLOPT_LD_LBFGS, nParam); /* algorithm and dimensionality */
-  nlopt_set_max_objective(opt, optiFunctionalClass, this);
-  nlopt_optimize(opt, alpha, &minf);
+  opt = nlopt_create(NLOPT_LD_LBFGS, nParam); // algorithm and dimensionality
+  nlopt_set_max_objective(opt, optiFunctionalClass, this); // cost and grad function, data for the function
+  nlopt_optimize(opt, alpha, &minf); // launch the effective optimization run
   nlopt_destroy(opt);
 
   for (Index s = 0; s < nSub; ++s) {
@@ -75,16 +80,41 @@ void FunctionalClass::mStepAlpha() {
   }
 }
 
-void FunctionalClass::mStepBetaEpsilon() {
-  // to create the complete design matrix and y for the class, the total number of timesteps over the class must be determined
-  // first create the design matrix by concatenating the design for the individuals in the class, by block-copying the relevant data
-  // same applies for y
+void FunctionalClass::mStepBetaSd() {
+  Vector<Index> nTTotal(nSub_, 0);
+  for (Vector<Function>::const_iterator it = data_.begin(), itE = data_.end();
+       it != itE;
+       ++it) { // to create the complete design matrix and y for the class, the total number of timesteps over the class must be determined
+    for (Index s = 0; s < nSub_; ++s) {
+      nTTotal(s) += it->w().size();
+    }
+  }
 
-//  subRegression(design,
-//                y,
-//                const Vector<std::list<Index> >& w,
-//                Matrix<Real>& beta,
-//                Vector<Real>& sd)
+  Vector<Matrix<Real> > design(nSub_);
+  Vector<Vector<Real> > y(nSub_);
+  for (Index s = 0; s < nSub_; ++s) {
+    design(s).resize(nTTotal(s), orderSub_);
+    y(s).resize(nTTotal(s));
+
+    Index i = 0; // current row in the global design matrix
+    for (Vector<Function>::const_iterator itData = data_.begin(), itDataE = data_.end();
+         itData != itDataE;
+         ++itData) {
+      for (std::list<Index>::const_iterator itTime  = itData->w()(s).begin(),
+                                            itTimeE = itData->w()(s).end();
+           itTime != itTimeE;
+           ++itTime) {
+        design(s).row(i) = itData->vandermonde().row(*itTime);
+        y(s)(i) = itData->x()(*itTime);
+        ++i;
+      }
+    }
+  }
+
+  subRegression(design,
+                y,
+                beta_,
+                sd_);
 }
 
 void FunctionalClass::setParamStorage() {

@@ -64,9 +64,11 @@ class Function {
                        const double* alpha,
                        double* grad) const;
 
-    const Vector<Real>& t() {return t_;}
-    const Vector<Real>& x() {return x_;}
+    const Vector<Real>& t() const {return t_;}
+    const Vector<Real>& x() const {return x_;}
+    const Vector<std::list<Index> >& w() const {return w_;}
 
+    const Matrix<Real>& vandermonde() const {return vandermonde_;}
   private:
     void computeJointLogProba(const Matrix<Real>& alpha,
                               const Matrix<Real>& beta,

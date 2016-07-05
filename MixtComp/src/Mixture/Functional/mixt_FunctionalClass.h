@@ -38,7 +38,7 @@ class FunctionalClass {
                     Real confidenceLevel);
 
     void setSize(Index nSub,
-                 Index nCoeff);
+                 Index orderSub);
 
     template<typename MatrixType,
              typename VectorType>
@@ -54,7 +54,7 @@ class FunctionalClass {
 
     void mStepAlpha();
 
-    void mStepBetaEpsilon();
+    void mStepBetaSd();
 
     void sampleParam();
 
@@ -77,6 +77,9 @@ class FunctionalClass {
     const ConfIntParamStat<Matrix<Real> >& betaParamStat()  const {return betaParamStat_ ;}
     const ConfIntParamStat<Vector<Real> >& sdParamStat()    const {return sdParamStat_   ;}
   private:
+    Index nSub_;
+
+    Index orderSub_;
     /** Data */
     const Vector<Function>& data_;
 
