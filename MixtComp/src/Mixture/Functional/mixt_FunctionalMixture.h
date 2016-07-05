@@ -47,7 +47,7 @@ class FunctionalMixture : public IMixture {
         nInd_(0),
         nClass_(nClass),
         nSub_(0),
-        orderSub_(0),
+        nCoeff_(0),
         confidenceLevel_(confidenceLevel),
         p_zi_(p_zi),
         classInd_(classInd),
@@ -77,7 +77,7 @@ class FunctionalMixture : public IMixture {
       nInd_(0),
       nClass_(0),
       nSub_(0),
-      orderSub_(0),
+      nCoeff_(0),
       confidenceLevel_(0.),
       p_zi_(NULL),
       classInd_(classInd),
@@ -177,7 +177,7 @@ class FunctionalMixture : public IMixture {
                                  dummyStr);
 
         Matrix<Real> alphaCurr(nSub_, 2);
-        Matrix<Real> betaCurr(nSub_, orderSub_);
+        Matrix<Real> betaCurr(nSub_, nCoeff_);
         Vector<Real> sdCurr(nSub_);
         for (Index k = 0; k < nClass_; ++k) {
           for (Index s = 0; s < nSub_; ++s) {
@@ -187,8 +187,8 @@ class FunctionalMixture : public IMixture {
           }
 
           for (Index s = 0; s < nSub_; ++s) {
-            for (Index c = 0; c < orderSub_; ++c) {
-              betaCurr(s, c) = alpha(k * nSub_ * orderSub_ + s * orderSub_ + c);
+            for (Index c = 0; c < nCoeff_; ++c) {
+              betaCurr(s, c) = alpha(k * nSub_ * nCoeff_ + s * nCoeff_ + c);
             }
           }
 
@@ -215,7 +215,7 @@ class FunctionalMixture : public IMixture {
       }
 
       warnLog += parseFunctionalStr(nSub_,
-                                    orderSub_,
+                                    nCoeff_,
                                     dataStr, // convert the vector of strings to ranks
                                     vecInd_);
       warnLog += checkMissingType();
@@ -233,7 +233,7 @@ class FunctionalMixture : public IMixture {
       // export the missing values here, when they will be support for them
 
       Index sizeClassAlpha = nSub_ * 2;
-      Index sizeClassBeta  = nSub_ * orderSub_;
+      Index sizeClassBeta  = nSub_ * nCoeff_;
       Index sizeClassSd = nSub_;
 
       Index nObs = class_[0].alphaParamStat().getLogStorage().cols();
@@ -319,13 +319,13 @@ class FunctionalMixture : public IMixture {
     }
 
     std::vector<std::string> betaParamNames() const {
-      std::vector<std::string> names(nClass_ * nSub_ * orderSub_);
+      std::vector<std::string> names(nClass_ * nSub_ * nCoeff_);
       for (Index k = 0; k < nClass_; ++k) {
         for (Index s = 0; s < nSub_; ++s) {
-          for (Index c = 0; c < orderSub_; ++c) {
+          for (Index c = 0; c < nCoeff_; ++c) {
             std::stringstream sstm;
             sstm << "k: " << k << ", s: " << s << ", c: " << c;
-            names[k * nSub_ * orderSub_ + s * orderSub_ + c] = sstm.str();
+            names[k * nSub_ * nCoeff_ + s * nCoeff_ + c] = sstm.str();
           }
         }
       }
@@ -347,7 +347,7 @@ class FunctionalMixture : public IMixture {
     Index nInd_;
     Index nClass_;
     Index nSub_;
-    Index orderSub_;
+    Index nCoeff_;
     Real confidenceLevel_;
 
     /** Data */

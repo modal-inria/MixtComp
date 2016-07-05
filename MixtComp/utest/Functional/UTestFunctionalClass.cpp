@@ -25,7 +25,6 @@
 
 using namespace mixt;
 
-
 TEST(FunctionalClass, optimOneclassOneInd) {
   Index nTime = 100000;
   Index nSub = 2; // number of subregression in the generation / estimation phases
@@ -43,6 +42,9 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   Matrix<Real> beta(nSub, nCoeff + 1);
   beta.row(0) <<  0.,  1., 0.; // y =  x      + N(0, 1)
   beta.row(1) << 50., -1., 0.; // y = -x + 50 + N(0, 1)
+
+  Vector<Real> sd(nSub);
+  sd << 0.1, 1.;
 
   Vector<std::list<Index> > w(nSub);
   Vector<Real> x(nTime, 0.);
@@ -73,7 +75,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
     for (Index p = 0; p < nCoeff; ++p) { // sample the y(t) value, knowing the subregression at t
       x(i) += beta(currW, p) * pow(t(i), p);
     }
-    x(i) += normal.sample(0, beta(currW, nCoeff));
+    x(i) += normal.sample(0, sd(currW));
   }
 
   Vector<Function> data(1);
@@ -98,7 +100,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 }
 
-TEST(FunctionalClass, optimOneclassMultipleInd) {
+TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
   Index nTime = 10000;
   Index nInd = 10;
   Index nSub = 2; // number of subregression in the generation / estimation phases
@@ -113,9 +115,12 @@ TEST(FunctionalClass, optimOneclassMultipleInd) {
   alpha << alpha0 * alphaSlope, -alphaSlope, // alpha is linearized in a single vector, for easier looping
           -alpha0 * alphaSlope,  alphaSlope;
 
-  Matrix<Real> beta(nSub, nCoeff + 1);
-  beta.row(0) <<  0.,  1., 0.; // y =  x      + N(0, 1)
-  beta.row(1) << 50., -1., 0.; // y = -x + 50 + N(0, 1)
+  Matrix<Real> beta(nSub, nCoeff);
+  beta.row(0) <<  0.,  1.; // y =  x
+  beta.row(1) << 50., -1.; // y = -x + 50
+
+  Vector<Real> sd(nSub);
+  sd << 0.1, 1.;
 
   Vector<Function> data(nInd);
   std::set<Index> setInd;
@@ -150,10 +155,11 @@ TEST(FunctionalClass, optimOneclassMultipleInd) {
       for (Index p = 0; p < nCoeff; ++p) { // sample the y(t) value, knowing the subregression at t
         x(i) += beta(currW, p) * pow(t(i), p);
       }
-      x(i) += normal.sample(0, beta(currW, nCoeff));
+      x(i) += normal.sample(0, sd(currW));
     }
 
     data(ind).setVal(t, x, w);
+    data(ind).computeVandermonde(nCoeff);
     setInd.insert(ind);
   }
 
@@ -162,7 +168,7 @@ TEST(FunctionalClass, optimOneclassMultipleInd) {
                             0.95);
   funcClass.setSize(nSub, nCoeff);
 
-  funcClass.mStepAlpha();
+  funcClass.mStep();
 
   Vector<Real> alphaComputed(nParam);
   for (Index s = 0; s < nSub; ++s) {
@@ -171,4 +177,6 @@ TEST(FunctionalClass, optimOneclassMultipleInd) {
   }
 
   ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
+  ASSERT_EQ(true, funcClass.beta().isApprox(beta, 0.1));
+  ASSERT_EQ(true, funcClass.sd().isApprox(sd, 0.1));
 }

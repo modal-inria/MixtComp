@@ -38,7 +38,7 @@ class FunctionalClass {
                     Real confidenceLevel);
 
     void setSize(Index nSub,
-                 Index orderSub);
+                 Index nCoeff);
 
     template<typename MatrixType,
              typename VectorType>
@@ -79,7 +79,7 @@ class FunctionalClass {
   private:
     Index nSub_;
 
-    Index orderSub_;
+    Index nCoeff_;
     /** Data */
     const Vector<Function>& data_;
 
