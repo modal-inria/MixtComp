@@ -161,4 +161,20 @@ double FunctionalClass::costAndGrad(Index nParam,
   return cost;
 }
 
+Index FunctionalClass::checkSampleCondition() const {
+  Index nInd = data_.size();
+  Vector<Index> nTTot(nSub_, 0);
+
+  for (Index i = 0; i < nInd; ++i) {
+    for (Index s = 0; s < nSub_; ++s) {
+      nTTot(s) += data_(i).w()(s).size();
+      if (nTTot > nCoeff_) {
+        return 1;
+      }
+    }
+  }
+
+  return 0;
+}
+
 } // namespace mixt

@@ -52,6 +52,9 @@ inline bool operator!=(const Scalar& scalar) const
   return false;
 }
 
+/** Comparison between vectors / matrices. Note that this is not a component-wise comparison,
+ * but rather a form of order, like the alphabetical order between words. Comparaison stops at the first
+ * different coefficient. */
 inline bool operator<(const Derived& rhs) const
 {
   typename Derived::const_iterator lhsIt = derived().begin();
@@ -90,6 +93,32 @@ inline bool operator>(const Derived& rhs) const
     }
   }
   return false;
+}
+
+/** Component-wise comparison with a scalar. */
+inline bool operator>(Scalar rhs) const {
+  typename Derived::const_iterator lhsIt = derived().begin();
+  for (;
+       lhsIt != derived().end();
+       ++lhsIt) {
+    if (*lhsIt <= rhs) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** Component-wise comparison with a scalar. */
+inline bool operator<(Scalar rhs) const {
+  typename Derived::const_iterator lhsIt = derived().begin();
+  for (;
+       lhsIt != derived().end();
+       ++lhsIt) {
+    if (*lhsIt >= rhs) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /** Element-wise + between matrix and scalar */

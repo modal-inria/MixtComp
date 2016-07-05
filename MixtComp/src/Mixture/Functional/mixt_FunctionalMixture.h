@@ -97,9 +97,20 @@ class FunctionalMixture : public IMixture {
     };
 
     Index checkSampleCondition(std::string* warnLog = NULL) const {
-      // delegate the check to each class ?
+      Index sampleOK = 1;
+      for (Index k = 0; k < nClass_; ++k) {
+        std::string tempLog;
+        sampleOK *= class_[k].checkSampleCondition();
+      }
 
-      return 0;
+      if (sampleOK == 0) {
+        std::stringstream sstm;
+        sstm << "Error in variable: " << idName_ << " with Functional model. There are not enough timesteps in at least one subregression "
+             << "in at least one class." << std::endl;
+        *warnLog += sstm.str();
+      }
+
+      return sampleOK;
     }
 
     void mStep(EstimatorType bias) {
@@ -139,7 +150,11 @@ class FunctionalMixture : public IMixture {
                                               class_[(*p_zi_)(i)].sd   ());
     }
 
-    Index nbFreeParameter() const {return 0;}
+    Index nbFreeParameter() const {
+      return nClass_ * (  nSub_ * 2// alpha
+                        + nSub_ * nCoeff_// beta
+                        + nSub_ ); // sigma
+    }
 
     void writeParameters() const {};
 

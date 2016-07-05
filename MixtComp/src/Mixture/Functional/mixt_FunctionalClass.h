@@ -76,6 +76,8 @@ class FunctionalClass {
     const ConfIntParamStat<Matrix<Real> >& alphaParamStat() const {return alphaParamStat_;}
     const ConfIntParamStat<Matrix<Real> >& betaParamStat()  const {return betaParamStat_ ;}
     const ConfIntParamStat<Vector<Real> >& sdParamStat()    const {return sdParamStat_   ;}
+
+    Index checkSampleCondition() const;
   private:
     Index nSub_;
 
