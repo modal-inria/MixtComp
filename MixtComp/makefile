@@ -64,7 +64,7 @@ O_TEST = $(SRC_TEST:%.cpp=%.o)
 # unit-test files
 EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
-SRC_UTEST += $(wildcard utest/Functional/*.cpp)
+# SRC_UTEST += $(wildcard utest/Functional/*.cpp)
 # SRC_UTEST += $(wildcard utest/LinAlgStat/*.cpp)
 # SRC_UTEST += $(wildcard utest/Ordinal/*.cpp)
 # SRC_UTEST += $(wildcard utest/Rank/*.cpp)

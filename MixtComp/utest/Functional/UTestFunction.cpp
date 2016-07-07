@@ -25,7 +25,7 @@
 
 using namespace mixt;
 
-TEST(Functional, lnCompletedProbability) {
+TEST(Function, lnCompletedProbability) {
   Index nTime = 5;
   Index nObs = 100000;
   Index nSub = 2;
