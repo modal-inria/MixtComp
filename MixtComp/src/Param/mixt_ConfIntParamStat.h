@@ -112,7 +112,7 @@ class ConfIntParamStat {
     void normalizeParam(const std::string& paramStr) {
       Index nModality = 0;
 
-      std::string nModStr = std::string("nModality: *") + strInteger;
+      std::string nModStr = std::string("nModality: *") + strPositiveInteger;
       boost::regex nModRe(nModStr);
       boost::smatch matchesVal;
 

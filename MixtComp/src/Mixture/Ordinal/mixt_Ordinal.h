@@ -165,7 +165,7 @@ class Ordinal : public IMixture
         paramStr_ = sstm.str(); // paramStr_ must be generated from the data, for future use and export for prediction
       }
       else { // paramStr_ has been provided. It must be parsed, and data validity must be checked, and data ranges must be extended to be compatible with
-        std::string nModStr = std::string("nModality: *") + strInteger; // parse paramStr here. If empty, deduce from data, if not empty, check that data UPPER BOUND is compatible with this information
+        std::string nModStr = std::string("nModality: *") + strPositiveInteger; // parse paramStr here. If empty, deduce from data, if not empty, check that data UPPER BOUND is compatible with this information
         boost::regex nModRe(nModStr);
         boost::smatch matchesVal;
 

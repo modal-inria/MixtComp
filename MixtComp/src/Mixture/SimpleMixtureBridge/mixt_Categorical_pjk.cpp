@@ -116,7 +116,7 @@ std::string Categorical_pjk::setData(std::string& paramStr,
     paramStr = sstm.str(); // paramStr must be generated from the data, for future use and export for prediction
   }
   else { // During learning with parameter space descriptor, or in prediction
-    std::string nModStr = std::string("nModality: *") + strInteger;
+    std::string nModStr = std::string("nModality: *") + strPositiveInteger;
     boost::regex nModRe(nModStr);
     boost::smatch matchesVal;
 

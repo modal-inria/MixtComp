@@ -332,7 +332,7 @@ class RankMixture : public IMixture
       else {
         int nPosStr = -1;
 
-        std::string nModStr = std::string("nModality: *") + strInteger; // parse paramStr here. If empty, deduce from data, if not empty, check that data UPPER BOUND is compatible with this information
+        std::string nModStr = std::string("nModality: *") + strPositiveInteger; // parse paramStr here. If empty, deduce from data, if not empty, check that data UPPER BOUND is compatible with this information
         boost::regex nModRe(nModStr);
         boost::smatch matchesVal;
 

@@ -26,7 +26,7 @@
 namespace mixt {
 
 const std::string strNumber = "((?:(?:-|\\+)?(?:\\d+(?:\\.\\d*)?)|(?:\\.\\d+))(?:(?:e|E)-\\d+)?)"; // note the multiple non-capturing groups, as only the overall group is capturing
-const std::string strInteger = "(\\d+)";
+const std::string strPositiveInteger = "(\\d+)";
 const std::string strQMark = "(\\?)";
 const std::string strBlank = " *";
 const std::string strLeftPar = " *\\[ *";

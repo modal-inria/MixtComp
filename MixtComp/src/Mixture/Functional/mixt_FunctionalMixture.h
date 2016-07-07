@@ -219,15 +219,23 @@ class FunctionalMixture : public IMixture {
         }
       }
 
-      if (paramStr_.size() == 0) { // Since the description is required, it is never necessary to generate a paramStr during a run
-        std::stringstream sstm;
-        sstm << "Variable: " << idName_ << " has no parameter description. This description is required, and must take the form "
-             << "\"nSub: x, orderSub: y\"" << std::endl;
-        warnLog += sstm.str();
+      // get the value of nSub_ and nCoeff_ by parsing paramStr_
+      std::string paramReStr = std::string("nSub: *") + strPositiveInteger + std::string(", nCoeff: *") + strPositiveInteger;
+      boost::regex paramRe(paramReStr);
+      boost::smatch matches;
+      if (boost::regex_match(paramStr_, matches, paramRe)) { // value is present
+        nSub_ = str2type<Index>(matches[1].str());
+        nCoeff_ = str2type<Index>(matches[2].str());
+
+        for (Index k = 0; k < nClass_; ++k) { // call setSize on each class
+          class_[k].setSize(nSub_, nCoeff_);
+        }
       }
       else {
-        // get the value of nSub_ and orderSub_ by parsing paramStr_
-        // call setSize on each class
+        std::stringstream sstm;
+        sstm << "Variable: " << idName_ << " has no parameter description. This description is required, and must take the form "
+             << "\"nSub: x, nCoeff: y\"" << std::endl;
+        warnLog += sstm.str();
       }
 
       warnLog += parseFunctionalStr(nSub_,

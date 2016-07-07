@@ -27,7 +27,7 @@ using namespace mixt;
 
 TEST(FunctionalParser, validData) {
   Index nSub = 2; // useless in this context, but used in observation's setVal
-  Index orderSub = 2; // useless as well
+  Index nCoeff = 2; // useless as well
   Index nObs = 2;
 
   std::string warnLog;
@@ -39,7 +39,7 @@ TEST(FunctionalParser, validData) {
   vecStr(1) = "-5.4:2.3,-4.21:-3.";
 
   warnLog = parseFunctionalStr(nSub,
-                               orderSub,
+                               nCoeff,
                                vecStr,
                                vecInd);
 
@@ -48,7 +48,7 @@ TEST(FunctionalParser, validData) {
 
 TEST(FunctionalParser, timeMissing) {
   Index nSub = 2; // useless in this context, but used in observation's setVal
-  Index orderSub = 2; // useless as well
+  Index nCoeff = 2; // useless as well
   Index nObs = 2;
 
   std::string warnLog;
@@ -60,7 +60,7 @@ TEST(FunctionalParser, timeMissing) {
   vecStr(1) = "-5.4:2.3,-4.21:-3.";
 
   warnLog = parseFunctionalStr(nSub,
-                               orderSub,
+                               nCoeff,
                                vecStr,
                                vecInd);
 
@@ -69,7 +69,7 @@ TEST(FunctionalParser, timeMissing) {
 
 TEST(FunctionalParser, unsupportedMissing) {
   Index nSub = 2; // useless in this context, but used in observation's setVal
-  Index orderSub = 2;
+  Index nCoeff = 2;
   Index nObs = 2;
 
   std::string warnLog;
@@ -81,7 +81,7 @@ TEST(FunctionalParser, unsupportedMissing) {
   vecStr(1) = "-5.4:2.3,-4.21:-3.";
 
   warnLog = parseFunctionalStr(nSub,
-                               orderSub,
+                               nCoeff,
                                vecStr,
                                vecInd);
 
@@ -90,7 +90,7 @@ TEST(FunctionalParser, unsupportedMissing) {
 
 TEST(FunctionalParser, verifyValues) {
   Index nSub = 2; // useless in this context, but used in observation's setVal
-  Index orderSub = 2;
+  Index nCoeff = 2;
   Index nObs = 1;
   Index nTime = 3;
 
@@ -102,7 +102,7 @@ TEST(FunctionalParser, verifyValues) {
   vecStr(0) = "-8.:24.,13.:-3.,15.:90.3";
 
   parseFunctionalStr(nSub,
-                     orderSub,
+                     nCoeff,
                      vecStr,
                      vecInd);
 
