@@ -87,13 +87,11 @@ class FunctionalMixture : public IMixture {
       p_paramExtractor_(NULL) {};
 
     void samplingStepCheck(Index i) {
-      samplingStepNoCheck(i); // until check conditions are properly defined to avoid problems on every parameters
+      class_[(*p_zi_)(i)].samplingStepCheck(i);
     };
 
     void samplingStepNoCheck(Index i) {
-      vecInd_(i).sampleW(class_[(*p_zi_)(i)].alpha(),
-                         class_[(*p_zi_)(i)].beta (),
-                         class_[(*p_zi_)(i)].sd   ());
+      class_[(*p_zi_)(i)].samplingStepNoCheck(i);
     };
 
     Index checkSampleCondition(std::string* warnLog = NULL) const {
@@ -156,7 +154,10 @@ class FunctionalMixture : public IMixture {
                         + nSub_ ); // sigma
     }
 
-    void writeParameters() const {};
+    void writeParameters() const {
+      std::cout << "Functional parameters output not implemented. Parameters for model " << idName_ << " "
+                << "can not be displayed at the moment." << std::endl;
+    };
 
     std::string setDataParam(RunMode mode) {
       std::string warnLog;

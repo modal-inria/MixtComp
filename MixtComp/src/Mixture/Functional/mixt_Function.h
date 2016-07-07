@@ -54,9 +54,14 @@ class Function {
                                const Matrix<Real>& beta,
                                const Vector<Real>& sd) const;
 
-    void sampleW(const Matrix<Real>& alpha,
-                 const Matrix<Real>& beta,
-                 const Vector<Real>& sd);
+    void sampleWNoCheck(const Matrix<Real>& alpha,
+                        const Matrix<Real>& beta,
+                        const Vector<Real>& sd);
+
+    void sampleWCheck(const Matrix<Real>& alpha,
+                      const Matrix<Real>& beta,
+                      const Vector<Real>& sd,
+                      Vector<Index>& wTot);
 
     void removeMissing();
 

@@ -27,7 +27,7 @@
 
 namespace mixt {
 
-FunctionalClass::FunctionalClass(const Vector<Function>& data,
+FunctionalClass::FunctionalClass(Vector<Function>& data,
                                  const std::set<Index>& setInd,
                                  Real confidenceLevel) :
     nSub_(0),
@@ -177,4 +177,25 @@ Index FunctionalClass::checkSampleCondition() const {
   return 0;
 }
 
+void FunctionalClass::samplingStepNoCheck(Index i) {
+  data_(i).sampleWNoCheck(alpha_,
+                          beta_,
+                          sd_);
+}
+
+void FunctionalClass::samplingStepCheck(Index i) {
+  Vector<Index> nTot(nSub_, 0); // the total number of times for each subregression, over all individuals. Not that this computation could be cached to be more efficient.
+  for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
+       it != itE;
+       ++it) { // only loop on individuals in the same class
+    for (Index s = 0; s < nSub_; ++s) {
+      nTot(s) += data_(*it).w()(s).size();
+    }
+  }
+
+  data_(i).sampleWCheck(alpha_,
+                        beta_,
+                        sd_,
+                        nTot);
+}
 } // namespace mixt

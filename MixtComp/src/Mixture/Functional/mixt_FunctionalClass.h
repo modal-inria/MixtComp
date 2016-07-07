@@ -33,7 +33,7 @@ namespace mixt {
 
 class FunctionalClass {
   public:
-    FunctionalClass(const Vector<Function>& data,
+    FunctionalClass(Vector<Function>& data,
                     const std::set<Index>& setInd,
                     Real confidenceLevel);
 
@@ -77,13 +77,17 @@ class FunctionalClass {
     const ConfIntParamStat<Matrix<Real> >& betaParamStat()  const {return betaParamStat_ ;}
     const ConfIntParamStat<Vector<Real> >& sdParamStat()    const {return sdParamStat_   ;}
 
+    void samplingStepNoCheck(Index i);
+
+    void samplingStepCheck(Index i);
+
     Index checkSampleCondition() const;
   private:
     Index nSub_;
 
     Index nCoeff_;
-    /** Data */
-    const Vector<Function>& data_;
+    /** Data, not const because sampling has to occur at some point */
+    Vector<Function>& data_;
 
     /** List of individuals among the data that belong to the class corresponding to this RankClass. */
     const std::set<Index>& setInd_;
