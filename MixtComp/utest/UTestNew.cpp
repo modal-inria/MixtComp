@@ -67,13 +67,13 @@ TEST(Function, sampleWCheck) {
     x(i) += normal.sample(0., sd(0));
   }
 
+  function.setVal(t, x, w);
+  function.computeVandermonde(nCoeff);
+
   Vector<Index> nTot(nSub, 0); // the total number of times for each subregression, over all individuals. Not that this computation could be cached to be more efficient.
   for (Index s = 0; s < nSub; ++s) {
     nTot(s) += function.w()(s).size();
   }
-
-  function.setVal(t, x, w);
-  function.computeVandermonde(nCoeff);
 
   function.sampleWCheck(alpha,
                         beta,

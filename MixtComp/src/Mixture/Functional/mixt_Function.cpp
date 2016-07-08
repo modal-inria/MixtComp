@@ -135,10 +135,6 @@ void Function::sampleWCheck(const Matrix<Real>& alpha,
   Matrix<Real> jointLogProba;
   computeJointLogProba(alpha, beta, sd, jointLogProba);
 
-  for (Index s = 0; s < nSub_; ++s) {
-    w_(s).clear();
-  }
-
   Vector<Index> w0(nTime_, 0); // initial subregression of each timestep for current observation
   for (Index s = 0; s < nSub_; ++s) {
     for (std::list<Index>::const_iterator it = w_(s).begin(), itE = w_(s).end();
@@ -148,19 +144,23 @@ void Function::sampleWCheck(const Matrix<Real>& alpha,
     }
   }
 
+  for (Index s = 0; s < nSub_; ++s) {
+    w_(s).clear();
+  }
+
   Vector<Real> currProba;
   Index currW;
   for (Index i = 0; i < nTime_; ++i) {
     wTot(w0(i)) -= 1;
 
     if (wTot(w0(i)) < nSub_) { // conditions for regression will not be met. Do nothing and keep current timestep in the same subregression
+      w_(w0(i)).push_back(i);
       wTot(w0(i)) += 1;
     }
     else {
       currProba.logToMulti(jointLogProba.row(i));
       currW = multi_.sample(currProba);
       w_(currW).push_back(i);
-
       wTot(currW) += 1;
     }
   }
