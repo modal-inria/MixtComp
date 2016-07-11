@@ -45,17 +45,23 @@ dataGeneratorNew <- function(prefix,
         dataStr[i, j] <- ordinalGenerator(j %in% presentVar,
                                           var[[j]]$param[[z[i]]])
       }
+      if (var[[j]]$type == "Functional") {
+        dataStr[i, j] <- functionalGenerator(var[[j]]$param[[z[i]]])
+      }
     }
   }
   
   dataMat <- rbind(headerStr, dataStr)
   
   descStr <- matrix(data = "",
-                    nrow = 1,
+                    nrow = 2,
                     ncol = nbVar)
   
   for (j in 1:nbVar) {
     descStr[1, j] <- var[[j]]$type
+    if (exists("paramStr", where = var[[j]])) {
+      descStr[2, j] <- var[[j]]$paramStr
+    }
   }
   
   descMat <- rbind(headerStr, descStr)

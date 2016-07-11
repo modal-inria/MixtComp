@@ -2,8 +2,9 @@ dataGeneratorNewLearn <- function(nbInd,
                                   proportionPresent) {
   var <- list()
   var$z_class <- zParam()
-  var$Rank1 <- rankParam("Rank1")
-  var$Ordinal1 <- ordinalParam("Ordinal1")
+  # var$Rank1 <- rankParam("Rank1")
+  # var$Ordinal1 <- ordinalParam("Ordinal1")
+  var$Functional1 <- functionalParam("Functional1")
   
   res <- dataGeneratorNew("dataGenNew/learn", # prefix
                           nbInd, # nbInd
@@ -102,38 +103,4 @@ zParam <- function() {
   z_class$allMissing <- TRUE
   
   return(z_class)
-}
-
-rankParam <- function(name) {
-  Rank <- list()
-  Rank$param <- list()
-  Rank$param[[1]] <- list()
-  Rank$param[[2]] <- list()
-  
-  Rank$name <- name
-  Rank$type <- "Rank"
-  Rank$param[[1]]$mu <- c(1, 2, 3, 4)
-  Rank$param[[1]]$pi <- 0.8
-  Rank$param[[2]]$mu <- c(4, 3, 2, 1)
-  Rank$param[[2]]$pi <- 0.8
-  
-  return(Rank)
-}
-
-ordinalParam <- function(name) {
-  Ordinal <- list()
-  Ordinal$param <- list()
-  Ordinal$param[[1]] <- list()
-  Ordinal$param[[2]] <- list()
-  
-  Ordinal$name <- name
-  Ordinal$type <- "Ordinal"
-  Ordinal$param[[1]]$nbMod <- 4
-  Ordinal$param[[1]]$mu <- 1
-  Ordinal$param[[1]]$pi <- 0.8
-  Ordinal$param[[2]]$nbMod <- 4
-  Ordinal$param[[2]]$mu <- 4
-  Ordinal$param[[2]]$pi <- 0.8
-  
-  return(Ordinal)
 }
