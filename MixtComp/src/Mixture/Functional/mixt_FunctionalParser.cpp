@@ -38,11 +38,10 @@ std::string parseFunctionalStr(Index nSub,
   vecInd.resize(nInd);
 
   MisValParser<Real> mvp(0.); // no need for offset as data is continuous
-  std::string funcStr = strNumber + std::string(" *: *(.*)");
+  std::string funcStr = strNumber + std::string(" *: *") + strNumber; // string will be split between a number, :, and anything that follows. This will in turn be parsed in a second pass.
   boost::regex funcRe(funcStr);
   boost::regex numRe(strNumber);
   boost::smatch matchesInd;
-  boost::smatch matchesVal;
 
   std::vector<std::string> strs;
   for (Index ind = 0; ind < nInd; ++ind) {
@@ -59,16 +58,7 @@ std::string parseFunctionalStr(Index nSub,
 
       if (boost::regex_match(strs[i], matchesInd, funcRe)) { // value is present
         t = str2type<Real>(matchesInd[1].str());
-        if (boost::regex_match(matchesInd[2].str(), matchesVal, numRe)) {
-          x = str2type<Real>(matchesVal[1].str());
-        }
-        else {
-          std::stringstream sstm;
-          sstm << "Individual ind: " << ind << ", timestep i: " << i << ", x value is not a number. Missing values are not implemented "
-               << "at the moment. Therefore the value x must be numerical at each time t." << std::endl;
-          warnLog += sstm.str();
-          return warnLog;
-        }
+        x = str2type<Real>(matchesInd[2].str()); // at the moment, only a numerical value for x is supported
       }
       else {
         std::stringstream sstm;

@@ -248,6 +248,7 @@ class FunctionalMixture : public IMixture {
       }
 
       // datastat will be setup here when partially observed value will be supported
+      // should lnObservedProbability be computed here in prediction, as it is done for Ordinal and Rank ?
 
       return warnLog;
     }

@@ -28,12 +28,10 @@
 #include <sstream>
 #include <fstream>
 
-namespace mixt
-{
+namespace mixt {
 
 template <typename Type>
-Type str2type(std::string s)
-{
+Type str2type(std::string s) {
   std::istringstream i(s);
   Type x;
   i >> x;
@@ -41,8 +39,7 @@ Type str2type(std::string s)
 }
 
 template<typename Type>
-std::string type2str(const Type& value)
-{
+std::string type2str(const Type& value) {
     std::ostringstream oss;
     oss << value;
     return oss.str();
