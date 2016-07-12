@@ -167,7 +167,7 @@ void Function::sampleWCheck(const Matrix<Real>& alpha,
 }
 
 void Function::removeMissing() {
-  for (Index s = 0; s < nSub_; ++s) {
+  for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run
     w_(s).clear();
   }
 
