@@ -183,7 +183,7 @@ class FunctionalMixture : public IMixture {
         p_paramSetter_->getParam(idName_,
                                  "alpha",
                                  alpha,
-                                 dummyStr); // alpha is not parametrized by anything, only order one polynomials are used in the logistical regression
+                                 dummyStr); // alpha is not parameterized by anything, only order one polynomials are used in the logistical regression
 
         p_paramSetter_->getParam(idName_,
                                  "beta",

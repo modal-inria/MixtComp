@@ -1,7 +1,14 @@
-functionalParam <- function(name) {
-  alphaSlope <- 0.5
-  alpha0 <- 25.
+getLinEq <- function(pointA, pointB) {
+  a <- matrix(c(1., pointA[1],
+                1., pointB[1]),
+              2, 2, byrow = TRUE)
+  b <- c(pointA[2], pointB[2])
+  x <- solve(a, b)
   
+  return(x)
+}
+
+functionalParam <- function(name) {
   Functional <- list()
   Functional$param <- list()
   Functional$param[[1]] <- list()
@@ -11,21 +18,36 @@ functionalParam <- function(name) {
   Functional$type <- "Functional"
   Functional$paramStr <- "nSub: 2, nCoeff: 2"
   
-  Functional$param[[1]]$alpha <- matrix(c( alpha0 * alphaSlope, -alphaSlope,
-                                          -alpha0 * alphaSlope,  alphaSlope), 2, 2, byrow = TRUE)
-  Functional$param[[1]]$beta <- matrix(c(0., -0.5,
-                                         0., 0.5),
-                                       2, 2, byrow = TRUE)
+  coeffAlpha1 <- getLinEq(c(0.,  1.), c(25., 0.)) # first sub
+  coeffAlpha2 <- getLinEq(c(0., -1.), c(25., 0.)) # second sub
+  
+  coeffBeta11 <- getLinEq(c(0.,   0.), c(25., 10.)) # first class, first sub
+  coeffBeta12 <- getLinEq(c(25., 10.), c(50.,  0.)) # first class, second sub
+  
+  coeffBeta21 <- getLinEq(c(0., 10.), c(25.,  0.)) # second class, first sub
+  coeffBeta22 <- getLinEq(c(25., 0.), c(50., 10.)) # second class, second sub
+  
+  alpha <- matrix(c(coeffAlpha1[1], coeffAlpha1[2],
+                    coeffAlpha2[1], coeffAlpha2[2]),
+                  2, 2, byrow = TRUE)
+  
+  beta1 <- matrix(c(coeffBeta11[1], coeffBeta11[2],
+                    coeffBeta12[1], coeffBeta12[2]),
+                  2, 2, byrow = TRUE)
+  
+  beta2 <- matrix(c(coeffBeta21[1], coeffBeta21[2],
+                    coeffBeta22[1], coeffBeta22[2]),
+                  2, 2, byrow = TRUE)
+  
+  Functional$param[[1]]$alpha <- alpha
+  Functional$param[[1]]$beta <- beta1
   Functional$param[[1]]$sigma <- c(1., 1.)
   Functional$param[[1]]$nTime <- 20
   Functional$param[[1]]$tMin <- 0.
   Functional$param[[1]]$tMax <- 50.
   
-  Functional$param[[2]]$alpha <- matrix(c(-alpha0 * alphaSlope,  alphaSlope,
-                                           alpha0 * alphaSlope, -alphaSlope), 2, 2, byrow = TRUE)
-  Functional$param[[2]]$beta <- matrix(c(0., -0.9,
-                                         0., 0.9),
-                                       2, 2, byrow = TRUE)
+  Functional$param[[2]]$alpha <- alpha
+  Functional$param[[2]]$beta <- beta2
   Functional$param[[2]]$sigma <- c(1., 1.)
   Functional$param[[2]]$nTime <- 20
   Functional$param[[2]]$tMin <- 0.
