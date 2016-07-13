@@ -82,11 +82,13 @@ void FunctionalClass::mStepAlpha() {
 
 void FunctionalClass::mStepBetaSd() {
   Vector<Index> nTTotal(nSub_, 0);
-  for (Vector<Function>::const_iterator itData = data_.begin(), itDataE = data_.end();
+
+  for (std::set<Index>::const_iterator itData  = setInd_.begin(),
+                                       itDataE = setInd_.end();
        itData != itDataE;
        ++itData) { // to create the complete design matrix and y for the class, the total number of timesteps over the class must be determined
     for (Index s = 0; s < nSub_; ++s) {
-      nTTotal(s) += itData->w()(s).size();
+      nTTotal(s) += data_(*itData).w()(s).size();
     }
   }
 
@@ -97,15 +99,16 @@ void FunctionalClass::mStepBetaSd() {
     y(s).resize(nTTotal(s));
 
     Index i = 0; // current row in the global design matrix
-    for (Vector<Function>::const_iterator itData = data_.begin(), itDataE = data_.end();
+    for (std::set<Index>::const_iterator itData  = setInd_.begin(),
+                                         itDataE = setInd_.end();
          itData != itDataE;
          ++itData) {
-      for (std::list<Index>::const_iterator itTime  = itData->w()(s).begin(),
-                                            itTimeE = itData->w()(s).end();
+      for (std::list<Index>::const_iterator itTime  = data_(*itData).w()(s).begin(),
+                                            itTimeE = data_(*itData).w()(s).end();
            itTime != itTimeE;
            ++itTime) {
-        design(s).row(i) = itData->vandermonde().row(*itTime);
-        y(s)(i) = itData->x()(*itTime);
+        design(s).row(i) = data_(*itData).vandermonde().row(*itTime);
+        y(s)(i) = data_(*itData).x()(*itTime);
         ++i;
       }
     }

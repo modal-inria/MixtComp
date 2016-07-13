@@ -155,8 +155,16 @@ class FunctionalMixture : public IMixture {
     }
 
     void writeParameters() const {
-      std::cout << "Functional parameters output not implemented. Parameters for model " << idName_ << " "
-                << "can not be displayed at the moment." << std::endl;
+      std::stringstream sstm;
+
+      for (int k = 0; k < nClass_; ++k) {
+        sstm << "Class: " << k << std::endl;
+        sstm << "alpha: " << std::endl << class_[k].alpha() << std::endl;
+        sstm << "beta: " << std::endl << class_[k].beta() << std::endl;
+        sstm << "sigma: " << itString(class_[k].sd()) << std::endl;
+      }
+
+      std::cout << sstm.str() << std::endl;
     };
 
     std::string setDataParam(RunMode mode) {
