@@ -100,10 +100,12 @@ class FunctionalMixture : public IMixture {
         Index sampleOK = class_[k].checkSampleCondition();
 
         if (sampleOK == 0) {
-          std::stringstream sstm;
-          sstm << "Error in variable: " << idName_ << " with Functional model. There are not enough timesteps in at least one subregression "
-               << "in at least one class." << std::endl;
-          *warnLog += sstm.str();
+          if (warnLog != NULL) {
+            std::stringstream sstm;
+            sstm << "Error in variable: " << idName_ << " with Functional model. There are not enough timesteps in at least one subregression "
+                 << "in at least one class." << std::endl;
+            *warnLog += sstm.str();
+          }
 
           return 0;
         }
