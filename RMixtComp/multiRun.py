@@ -5,7 +5,7 @@ import subprocess
 
 nbRunMax = 100
 
-pattern = re.compile(r"Total Run timer, end of run, time since last top: [0-9]+ s, time since creation: [0-9]+ s")
+pattern = re.compile(r"lnCompletedLikelihood.*")
 
 
 for i in range(nbRunMax):

@@ -165,13 +165,14 @@ double FunctionalClass::costAndGrad(Index nParam,
 }
 
 Index FunctionalClass::checkSampleCondition() const {
-  Index nInd = data_.size();
   Vector<Index> nTTot(nSub_, 0);
 
-  for (Index i = 0; i < nInd; ++i) {
+  for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
+       it != itE;
+       ++it) { // only loop on individuals in the same class
     for (Index s = 0; s < nSub_; ++s) {
-      nTTot(s) += data_(i).w()(s).size();
-      if (nTTot > nCoeff_) {
+      nTTot(s) += data_(*it).w()(s).size();
+      if (nTTot > (nCoeff_ - 1)) { // stop checking as soon as sufficient conditions are met
         return 1;
       }
     }

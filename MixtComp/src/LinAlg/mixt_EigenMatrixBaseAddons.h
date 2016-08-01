@@ -55,43 +55,37 @@ inline bool operator!=(const Scalar& scalar) const
 /** Comparison between vectors / matrices. Note that this is not a component-wise comparison,
  * but rather a form of order, like the alphabetical order between words. Comparaison stops at the first
  * different coefficient. */
-inline bool operator<(const Derived& rhs) const
-{
+inline bool operator<(const Derived& rhs) const {
   typename Derived::const_iterator lhsIt = derived().begin();
   typename Derived::const_iterator rhsIt = rhs      .begin();
   for (;
        lhsIt != derived().end();
-       ++lhsIt, ++rhsIt)
-  {
-    if (*lhsIt < *rhsIt)
-    {
+       ++lhsIt, ++rhsIt) {
+    if (*lhsIt < *rhsIt) {
       return true;
     }
-    else if (*lhsIt > *rhsIt)
-    {
+    else if (*lhsIt > *rhsIt) {
       return false;
     }
   }
+
   return false; // equality of all terms
 }
 
-inline bool operator>(const Derived& rhs) const
-{
+inline bool operator>(const Derived& rhs) const {
   typename Derived::const_iterator lhsIt = derived().begin();
   typename Derived::const_iterator rhsIt = rhs      .begin();
   for (;
        lhsIt != derived().end();
-       ++lhsIt, ++rhsIt)
-  {
-    if (*lhsIt > *rhsIt)
-    {
+       ++lhsIt, ++rhsIt) {
+    if (*lhsIt > *rhsIt) {
       return true;
     }
-    else if (*lhsIt < *rhsIt)
-    {
+    else if (*lhsIt < *rhsIt) {
       return false;
     }
   }
+
   return false;
 }
 
@@ -102,7 +96,7 @@ inline bool operator>(Scalar rhs) const {
        lhsIt != derived().end();
        ++lhsIt) {
     if (*lhsIt <= rhs) {
-      return false;
+      return false; // exit as soon as sufficient conditions are met
     }
   }
   return true;
