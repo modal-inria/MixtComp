@@ -142,7 +142,6 @@ void MixtureComposer::mStep(EstimatorType bias) {
 }
 
 void MixtureComposer::sStepCheck() {
-  #pragma omp parallel for
   for (Index i = 0; i < nbInd_; ++i) {
     sStepCheck(i);
   }
