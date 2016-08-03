@@ -26,7 +26,6 @@ endif
 
 # generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
-# CXXFLAGS += -pthread -MD -MP -fPIC
 CXXFLAGS += -Isrc -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include -I../nlopt/api
 CXXFLAGS += -std=c++11 # included here, because it is standard and we do not have access on Makevars on BigStat for example
 
@@ -54,7 +53,7 @@ SRC_RE = $(wildcard ../boost/libs/regex/src/*.cpp)
 O_RE = $(SRC_RE:%.cpp=%.o)
 
 # optimization library
-LIB_OPT = ../nlopt/.libs/libnlopt.a
+LIB_NLOPT = ../nlopt/.libs/libnlopt.a
 
 # sample test
 EXE_TEST = test/test
@@ -112,24 +111,24 @@ cleanUTest: # only cleans MixtComp
 
 lib: $(LIB_MC)
 
-$(LIB_MC): $(O_MC) $(LIB_OPT) $(LIB_RE)
+$(LIB_MC): $(O_MC)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(LIB_RE): $(O_RE)
 	$(AR) $(ARFLAGS) $@ $^
 	
-$(LIB_OPT):
-	cd ../nlopt;./configure;make
+$(LIB_NLOPT):
+	cd ../nlopt;./configure CFLAGS=-fPIC;make
 	
 utest: $(EXE_UTEST)
 
-$(EXE_UTEST): $(LIB_MC) $(LIB_RE) $(O_GTEST) $(O_UTEST)
-	$(CXX) $^ $(LIB_MC) $(LIB_RE) $(LIB_OPT) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
+$(EXE_UTEST): $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) $(O_GTEST) $(O_UTEST)
+	$(CXX) $^ $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) $(LIB_OPT) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
-test: $(EXE_TEST)
+#test: $(EXE_TEST)
 
-$(EXE_TEST): $(LIB_MC) $(O_TEST)
-	$(CXX) $^ -lpthread $(LIB_MC) $(LIB_OPT) -o $@ # linker only, as cpp file is compiled by automatic rule
+#$(EXE_TEST): $(LIB_MC) $(O_TEST)
+#	$(CXX) $^ -lpthread $(LIB_MC) $(LIB_OPT) -o $@ # linker only, as cpp file is compiled by automatic rule
 
 -include $(SRC_MC:%.cpp=%.d)
 -include $(SRC_RE:%.cpp=%.d)

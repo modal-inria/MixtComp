@@ -26,6 +26,7 @@ INC_EIGEN = ../../eigen
 DIR_MC = ../../MixtComp
 LIB_MC = ../../MixtComp/lib/libMixtComp.a
 
+DIR_NLOPT = ../../nlopt
 INC_NLOPT = ../../nlopt/api
 LIB_NLOPT = ../../nlopt/.libs/libnlopt.a
 
@@ -55,6 +56,7 @@ all: $(SHLIB)
 $(SHLIB): pkglib
 
 pkglib:
-	(cd $(DIR_MC) && $(MAKE) lib)
-	(cd $(DIR_RE) && $(MAKE) lib)
-	(cd $(DIR_TEST) && $(MAKE) all)
+	cd $(DIR_MC);make lib
+	cd $(DIR_NLOPT);./configure CFLAGS=-fPIC;make
+	cd $(DIR_RE);make lib
+	cd $(DIR_TEST);make all
