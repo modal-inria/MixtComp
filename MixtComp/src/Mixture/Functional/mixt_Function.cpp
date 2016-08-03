@@ -172,7 +172,7 @@ void Function::removeMissing() {
   }
 
   for (Index i = 0; i < nTime_; ++i) {
-    w_(multi_.sampleInt(0, nSub_ - 1)).push_back(i);
+    w_(multi_.sampleInt(0, nSub_ - 1)).push_back(i); // w follows a uniform discrete law
   }
 }
 

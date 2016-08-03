@@ -183,9 +183,9 @@ int Categorical_pjk::checkSampleCondition(std::string* warnLog) const {
         if (modalityPresent(p) == false) {
           std::stringstream sstm;
           sstm << "Categorical variables must have one individual with each modality present in each class. "
-               << "Modality: " << p << " is absent from class: " << k << " "
+               << "Modality: " << p + minModality << " is absent from class: " << k << " "
                << "You can check whether you have enough individuals regarding the number of classes "
-               << "and whether all of your modalities are encoded using contiguous integers starting at 0." << std::endl;
+               << "and whether all of your modalities are encoded using contiguous integers starting at " << minModality << "." << std::endl;
           *warnLog += sstm.str();
         }
       }
