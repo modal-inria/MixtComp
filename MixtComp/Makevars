@@ -6,4 +6,4 @@
 # CXX = g++ -m64
 
 CXX = clang++
-CXXFLAGS = -O2 -g -DMC_DEBUGNEW -Wall -DMC_VERBOSE
+CXXFLAGS = -O0 -g -DMC_DEBUGNEW -Wall -DMC_VERBOSE

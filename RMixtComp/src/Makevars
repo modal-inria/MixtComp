@@ -22,17 +22,23 @@
 
 INC_BOOST = ../../boost
 INC_EIGEN = ../../eigen
+
 DIR_MC = ../../MixtComp
 LIB_MC = ../../MixtComp/lib/libMixtComp.a
+
+INC_NLOPT = ../../nlopt/api
+LIB_NLOPT = ../../nlopt/.libs/libnlopt.a
+
 DIR_RE = regex
 LIB_RE = regex/libRegex.a
+
 DIR_TEST = test
 
 # Flags for the cpp files at the root (as well as included headers, for example template classes) , i.e.
-PKG_CXXFLAGS = -std=c++11 -MD -MP -I../.. -I$(INC_BOOST) -I$(INC_EIGEN) -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -I$(DIR_MC)/src/LinAlg -I$(DIR_MC)/src
+PKG_CXXFLAGS = -std=c++11 -MD -MP -I../.. -I$(INC_BOOST) -I$(INC_EIGEN) -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -I$(DIR_MC)/src/LinAlg -I$(DIR_MC)/src -I$(INC_NLOPT)
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = $(LIB_MC) $(LIB_RE) -lnlopt
+PKG_LIBS = $(LIB_MC) $(LIB_RE) $(LIB_NLOPT)
 
 R_BUILD = T # Variable used to signal that the compilation occurs from inside R
 
