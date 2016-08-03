@@ -27,8 +27,8 @@ endif
 # generic build variables
 CXXFLAGS += -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC
 # CXXFLAGS += -pthread -MD -MP -fPIC
-CXXFLAGS += -Isrc -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include
-CXXFLAGS += -std=c++11 -DMC_VERBOSE # included here, because it is standard and we do not have access on Makevars on BigStat for example
+CXXFLAGS += -Isrc -Isrc/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include -I../nlopt/api
+CXXFLAGS += -std=c++11 # included here, because it is standard and we do not have access on Makevars on BigStat for example
 
 # library files
 LIB_MC = lib/libMixtComp.a
@@ -54,7 +54,7 @@ SRC_RE = $(wildcard ../boost/libs/regex/src/*.cpp)
 O_RE = $(SRC_RE:%.cpp=%.o)
 
 # optimization library
-# LIB_OPT = lib/libnlopt.a
+LIB_OPT = ../nlopt/.libs/libnlopt.a
 
 # sample test
 EXE_TEST = test/test
@@ -86,13 +86,13 @@ clean: # only cleans MixtComp
 	find -L . -type f -name "*.exe" -exec rm -f {} \;
 	find -L . -type f -name "*.dll" -exec rm -f {} \;
 
-allClean: # cleans MixtComp and all bundled libraries
-	find -L .. -type f -name "*.o" -exec rm -f {} \;
-	find -L .. -type f -name "*.d" -exec rm -f {} \;
-	find -L .. -type f -name "*.a" -exec rm -f {} \;
-	find -L .. -type f -name "*.so" -exec rm -f {} \;
-	find -L .. -type f -name "*.exe" -exec rm -f {} \;
-	find -L .. -type f -name "*.dll" -exec rm -f {} \;
+cleanAll: clean cleanNlopt cleanRe
+
+cleanNlopt:
+	cd ../nlopt;make clean
+
+cleanRe:
+	cd ../boost/libs/regex/src;rm -f *.o
 
 cleanTest:
 	find -L test -type f -name "*.o" -exec rm -f {} \;
@@ -112,27 +112,24 @@ cleanUTest: # only cleans MixtComp
 
 lib: $(LIB_MC)
 
-$(LIB_MC): $(O_MC)
+$(LIB_MC): $(O_MC) $(LIB_OPT) $(LIB_RE)
 	$(AR) $(ARFLAGS) $@ $^
-
-# $(LIB_OPT): # optimization is an integral part of mixtcomp, as opposed to regex for example. Therefor the rule to build it are simpler.
-#	cd ../nlopt-2.4.2; ./configure --with-cxx && make
-#	cp ../nlopt-2.4.2/.libs/libnlopt_cxx.a lib
-
-libRE: $(LIB_RE)
 
 $(LIB_RE): $(O_RE)
 	$(AR) $(ARFLAGS) $@ $^
 	
+$(LIB_OPT):
+	cd ../nlopt;./configure;make
+	
 utest: $(EXE_UTEST)
 
 $(EXE_UTEST): $(LIB_MC) $(LIB_RE) $(O_GTEST) $(O_UTEST)
-	$(CXX) $^ $(LIB_MC) $(LIB_RE) -lnlopt_cxx -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
+	$(CXX) $^ $(LIB_MC) $(LIB_RE) $(LIB_OPT) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 test: $(EXE_TEST)
 
 $(EXE_TEST): $(LIB_MC) $(O_TEST)
-	$(CXX) $^ -lpthread $(LIB_MC) -lnlopt_cxx -o $@ # linker only, as cpp file is compiled by automatic rule
+	$(CXX) $^ -lpthread $(LIB_MC) $(LIB_OPT) -o $@ # linker only, as cpp file is compiled by automatic rule
 
 -include $(SRC_MC:%.cpp=%.d)
 -include $(SRC_RE:%.cpp=%.d)
