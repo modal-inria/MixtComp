@@ -85,13 +85,16 @@ clean: # only cleans MixtComp
 	find -L . -type f -name "*.exe" -exec rm -f {} \;
 	find -L . -type f -name "*.dll" -exec rm -f {} \;
 
-cleanAll: clean cleanNlopt cleanRe
+cleanAll: clean cleanGTest cleanNlopt cleanRe
+
+cleanGTest:
+	cd ../gtest/src;rm -f *.o *.d
 
 cleanNlopt:
 	cd ../nlopt;make clean
 
 cleanRe:
-	cd ../boost/libs/regex/src;rm -f *.o
+	cd ../boost/libs/regex/src;rm -f *.o *.d
 
 cleanTest:
 	find -L test -type f -name "*.o" -exec rm -f {} \;
@@ -123,7 +126,7 @@ $(LIB_NLOPT):
 utest: $(EXE_UTEST)
 
 $(EXE_UTEST): $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) $(O_GTEST) $(O_UTEST)
-	$(CXX) $^ $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) $(LIB_OPT) -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
+	$(CXX) $^ -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 #test: $(EXE_TEST)
 

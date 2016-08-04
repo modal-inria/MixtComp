@@ -7,6 +7,9 @@ all:
 
 cleanAll: cleanNlopt cleanMixtComp cleanRe cleanRMCbase
 
+cleanGTest:
+	cd ../gtest/src;rm -f *.o *.d
+
 cleanNlopt:
 	cd ../nlopt;make clean
 
