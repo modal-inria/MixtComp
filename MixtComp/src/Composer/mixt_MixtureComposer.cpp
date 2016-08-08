@@ -281,17 +281,13 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
 }
 
 void MixtureComposer::storeSEMRun(int iteration,
-                                  int iterationMax)
-{
+                                  int iterationMax) {
   paramStat_.sampleParam(iteration,
                          iterationMax);
-  if (iteration == iterationMax)
-  {
-    // reinject the SEM estimated parameters into the mixture
-    paramStat_.setExpectationParam();
+  if (iteration == iterationMax){
+    paramStat_.setExpectationParam(); // replace pi by the median values
   }
-  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
+  for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
     (*it)->storeSEMRun(iteration,
                        iterationMax);
   }
@@ -304,14 +300,14 @@ void MixtureComposer::storeGibbsRun(int ind,
                        iteration,
                        iterationMax);
 
+  if (iteration == iterationMax) {
+    dataStat_.imputeData(ind); // impute the missing values using empirical mean or mode, depending of the model
+  }
+
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
     (*it)->storeGibbsRun(ind,
                          iteration,
                          iterationMax);
-  }
-
-  if (iteration == iterationMax) {
-    dataStat_.imputeData(ind); // impute the missing values using empirical mean or mode, depending of the model
   }
 }
 
@@ -382,7 +378,7 @@ std::vector<std::string> MixtureComposer::mixtureName() const
 
 void MixtureComposer::removeMissing(initParam algo) {
   initializeTik();
-  sStepNoCheck();
+  sStepNoCheck(); // uniform initialization of z
 
   for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
     (*it)->removeMissing(algo);

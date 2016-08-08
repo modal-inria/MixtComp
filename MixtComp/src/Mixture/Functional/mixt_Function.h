@@ -74,6 +74,8 @@ class Function {
     const Vector<std::list<Index> >& w() const {return w_;}
 
     const Matrix<Real>& vandermonde() const {return vandermonde_;}
+
+    void printProp() const;
   private:
     void computeJointLogProba(const Matrix<Real>& alpha,
                               const Matrix<Real>& beta,

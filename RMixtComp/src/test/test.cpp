@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
   RInside R(argc, argv);              // create an embedded R instance
     R.parseEvalQ("library(RMixtComp)");
 
-//    R.parseEvalQ("testNewLearn()");
+    R.parseEvalQ("testNewLearn()");
 //    R.parseEvalQ("testNewLearnPredict()");
 
 //    R.parseEvalQ("testNewLearn(regen = FALSE)");
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
 //    R.parseEvalQ("linAlg()");
 //    R.parseEvalQ("testRougeGorge()");
 
-      R.parseEvalQ("setwd(\"/Users/kubicki/Documents/160803 - debug MixtComp/160803 - Maxime\")");
-      R.parseEvalQ("source(\"test.R\")");
+//    R.parseEvalQ("setwd(\"/Users/kubicki/Documents/160803 - debug MixtComp/160803 - Maxime\")");
+//    R.parseEvalQ("source(\"test.R\")");
 
 //    R.parseEvalQ("setwd(\"C:/Users/Vincent KUBICKI/Data/analysis/150330 - test donn�es prostate/02 - crash en pr�diction\")");
 //    R.parseEvalQ("source(\"learn.R\")");

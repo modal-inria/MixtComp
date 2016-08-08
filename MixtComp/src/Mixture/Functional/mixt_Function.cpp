@@ -206,4 +206,16 @@ double Function::costAndGrad(unsigned nParam,
   return cost;
 }
 
+void Function::printProp() const {
+  Vector<Real> prop(nSub_, 0.);
+
+  for (Index s = 0; s < nSub_; ++s) {
+    prop(s) = w_(s).size();
+  }
+
+  prop = prop / prop.sum();
+
+  std::cout << "Prop of w: " << itString(prop) << std::endl;
+}
+
 } // namespace mixt

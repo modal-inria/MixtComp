@@ -29,14 +29,12 @@
 #include "../IO/mixt_IO.h"
 #include "../Various/mixt_Various.h"
 
-namespace mixt
-{
+namespace mixt {
 
 SEMAlgo::SEMAlgo(MixtureComposer* p_composer,
                  int nbIter) :
     p_composer_(p_composer),
-    nbIter_(nbIter)
-{}
+    nbIter_(nbIter) {}
 
 void SEMAlgo::runCheck(RunType runType,
                        RunProblemType& runPb,

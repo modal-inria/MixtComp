@@ -6,11 +6,16 @@ dataGeneratorNew <- function(prefix,
   zDis <- rmultinom(nbInd,
                     1,
                     var$z_class$param)
+  nIndClass <- numeric(length(var$z_class$param))
+  
   z <- vector("integer",
               nbInd)
   for (i in 1:nbInd) {
     z[i] <- match(1, zDis[, i])
+    nIndClass[z[i]] <- nIndClass[z[i]] + 1
   }
+  
+  cat("Number of observation per class: ", nIndClass, "\n")
   
   headerStr <- matrix(data = "",
                       nrow = 1,

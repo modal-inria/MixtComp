@@ -35,15 +35,14 @@
 #include "../Strategy/mixt_StrategyParam.h"
 #include "mixt_SEMAlgo.h"
 
-namespace mixt
-{
+namespace mixt {
+
 /**
  *  A SemStrategy is based on the following paradigm:
  *  - perform nbBurnIn iterations of the algo
  *  - perform a long run
  **/
-class SemStrategy
-{
+class SemStrategy {
   public:
     /** default constructor.
      *  @param p_composer the model to estimate

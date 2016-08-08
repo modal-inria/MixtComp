@@ -18,8 +18,7 @@
 /*
  *  Project:    MixtComp
  *  Created on: Nov 15, 2013
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
- *              iovleff, serge.iovleff@stkpp.org
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
 #ifndef MIXT_AUGMENTEDDATA_H
