@@ -103,9 +103,8 @@ Real Function::lnObservedProbability(const Matrix<Real>& alpha,
   Matrix<Real> jointLogProba;
   computeJointLogProba(alpha, beta, sd, jointLogProba);
   for (Index i = 0; i < nTime_; ++i) {
-    for (Index s = 0; s < nSub_; ++s) {
-      logProba += jointLogProba(i, s); // every possible value of w is taken into account, to marginalize over w
-    }
+    Vector<Real> dummy;
+    logProba += dummy.logToMulti(jointLogProba.row(i)); // every possible value of w is taken into account, to marginalize over w
   }
 
   return logProba;
