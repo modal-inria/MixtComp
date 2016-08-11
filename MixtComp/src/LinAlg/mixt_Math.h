@@ -26,6 +26,7 @@
 
 #include <cmath>
 #include "mixt_Typedef.h"
+#include "mixt_LinAlg.h"
 
 int fac(int n);
 
@@ -78,5 +79,14 @@ void meanSD(const indType& listInd,
 
   sd = std::sqrt(M2 / Real(n));
 }
+
+/** Compute log(a + b) even if a + b overflows, by removing the max value */
+template<typename Type>
+Real sumLog(const Type& vec) {
+  Real max = vec.maxCoeff();
+  Vector<Real> vecP = vec / max;
+  return std::log(vecP.sum()) + std::log(max);
+}
+
 
 #endif // MIXT_LINALG_H
