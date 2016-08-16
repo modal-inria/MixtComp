@@ -73,12 +73,10 @@ void MixtureComposer::initializeTik()
   tik_      = 1./(Real)nbClass_;
 }
 
-Real MixtureComposer::lnObservedProbability(int i, int k)
-{
+Real MixtureComposer::lnObservedProbability(int i, int k) const {
   Real sum = std::log(prop_[k]);
 
-  for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  {
+  for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
     Real logProba = (*it)->lnObservedProbability(i, k);
     sum += logProba;
   }
@@ -86,22 +84,35 @@ Real MixtureComposer::lnObservedProbability(int i, int k)
   return sum;
 }
 
-Real MixtureComposer::lnObservedLikelihood()
-{
-  Real lnLikelihood = 0.;
+void MixtureComposer::printObservedTik() const {
   Matrix<Real> lnComp(nbInd_,
                       nbClass_);
 
-  for (Index k = 0; k < nbClass_; ++k)
-  {
-    for (Index i = 0; i < nbInd_; ++i)
-    {
+  for (Index k = 0; k < nbClass_; ++k) {
+    for (Index i = 0; i < nbInd_; ++i) {
       lnComp(i, k) = lnObservedProbability(i, k);
     }
   }
 
-  for (Index i = 0; i < nbInd_; ++i) // sum is inside a log, hence the numerous steps for the computation
-  {
+  Matrix<Real> observedTik(nbInd_, nbClass_);
+  for (Index i = 0; i < nbInd_; ++i) { // sum is inside a log, hence the numerous steps for the computation
+    RowVector<Real> dummy;
+    observedTik.row(i).logToMulti(lnComp.row(i));
+  }
+}
+
+Real MixtureComposer::lnObservedLikelihood() {
+  Real lnLikelihood = 0.;
+  Matrix<Real> lnComp(nbInd_,
+                      nbClass_);
+
+  for (Index k = 0; k < nbClass_; ++k) {
+    for (Index i = 0; i < nbInd_; ++i) {
+      lnComp(i, k) = lnObservedProbability(i, k);
+    }
+  }
+
+  for (Index i = 0; i < nbInd_; ++i) { // sum is inside a log, hence the numerous steps for the computation
     RowVector<Real> dummy;
     lnLikelihood += dummy.logToMulti(lnComp.row(i));
   }
@@ -113,20 +124,17 @@ Real MixtureComposer::lnCompletedLikelihood()
 {
   Real lnLikelihood = 0.;
 
-  // Compute the completed likelihood for the complete mixture model, using the completed data
-  for (Index i = 0; i < nbInd_; ++i) {
+  for (Index i = 0; i < nbInd_; ++i) { // Compute the completed likelihood for the complete mixture model, using the completed data
     lnLikelihood += lnObservedProbability(i, zClassInd_.zi().data_(i));
   }
 
   return lnLikelihood;
 }
 
-Real MixtureComposer::lnCompletedProbability(int i, int k)
-{
+Real MixtureComposer::lnCompletedProbability(int i, int k) const {
   Real sum = std::log(prop_[k]);
 
-  for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  {
+  for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
     Real logProba = (*it)->lnCompletedProbability(i, k);
     sum += logProba;
   }

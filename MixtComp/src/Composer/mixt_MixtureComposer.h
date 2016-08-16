@@ -112,9 +112,9 @@ class MixtureComposer {
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    Real lnCompletedProbability(int i, int k);
+    Real lnCompletedProbability(int i, int k) const;
 
-    Real lnObservedProbability(int i, int k);
+    Real lnObservedProbability(int i, int k) const;
 
     /** @return the value of the observed likelihood */
     Real lnObservedLikelihood();
@@ -324,6 +324,7 @@ class MixtureComposer {
      * */
     void IDClass(Matrix<Real>& idc) const;
 
+    void printObservedTik() const;
   private:
     void printClassInd() const;
 

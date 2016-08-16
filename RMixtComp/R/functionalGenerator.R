@@ -1,3 +1,28 @@
+plotFunctional <- function(i) {
+  df <- read.csv(file = "dataGenNew/learn/data.csv",
+                 header = TRUE,
+                 sep = ";",
+                 as.is = TRUE)
+  lsSplit <- strsplit(df$Functional1[[i]], ",")
+  
+  mySplit <- function(x) {
+    return(strsplit(x, ":")[[1]])
+  }
+  
+  dataSplit <- lapply(lsSplit[[1]], mySplit)
+  
+  nPoints <- length(dataSplit)
+  x <- vector("numeric", nPoints)
+  y <- vector("numeric", nPoints)
+  
+  for (i in 1:nPoints) {
+    x[i] <- as.numeric(dataSplit[[i]][1])
+    y[i] <- as.numeric(dataSplit[[i]][2])
+  }
+  
+  plot(x, y)
+}
+
 getLinEq <- function(pointA, pointB) {
   a <- matrix(c(1., pointA[1],
                 1., pointB[1]),
@@ -18,8 +43,8 @@ functionalParam <- function(name) {
   Functional$type <- "Functional"
   Functional$paramStr <- "nSub: 2, nCoeff: 2"
   
-  coeffAlpha1 <- getLinEq(c(0.,  1.), c(25., 0.)) # first sub
-  coeffAlpha2 <- getLinEq(c(0., -1.), c(25., 0.)) # second sub
+  coeffAlpha1 <- getLinEq(c(0.,  100.), c(25., 0.)) # first sub
+  coeffAlpha2 <- getLinEq(c(0., -100.), c(25., 0.)) # second sub
   
   coeffBeta11 <- getLinEq(c(0.,   0.), c(25., 10.)) # first class, first sub
   coeffBeta12 <- getLinEq(c(25., 10.), c(50.,  0.)) # first class, second sub
@@ -39,16 +64,25 @@ functionalParam <- function(name) {
                     coeffBeta22[1], coeffBeta22[2]),
                   2, 2, byrow = TRUE)
   
+  sigma <- 0.01
+  
+  print("alpha")
+  print(alpha)
+  print("beta1")
+  print(beta1)
+  print("beta2")
+  print(beta2)
+  
   Functional$param[[1]]$alpha <- alpha
   Functional$param[[1]]$beta <- beta1
-  Functional$param[[1]]$sigma <- c(1., 1.)
+  Functional$param[[1]]$sigma <- c(sigma, sigma)
   Functional$param[[1]]$nTime <- 20
   Functional$param[[1]]$tMin <- 0.
   Functional$param[[1]]$tMax <- 50.
   
   Functional$param[[2]]$alpha <- alpha
   Functional$param[[2]]$beta <- beta2
-  Functional$param[[2]]$sigma <- c(1., 1.)
+  Functional$param[[2]]$sigma <- c(sigma, sigma)
   Functional$param[[2]]$nTime <- 20
   Functional$param[[2]]$tMin <- 0.
   Functional$param[[2]]$tMax <- 50.
