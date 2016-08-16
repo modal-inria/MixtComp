@@ -26,6 +26,7 @@
 #define MIXT_ZCLASSIND_H
 
 #include <set>
+#include "boost/regex.hpp"
 #include "../Data/mixt_AugmentedData.h"
 
 namespace mixt {
@@ -50,13 +51,22 @@ class ZClassInd {
     template<typename DataHandler>
     std::string setZi(const DataHandler& dataHandler) {
       std::string warnLog;
-      std::string dummyParam;
+      std::string paramStr;
 
       warnLog += dataHandler.getData("z_class", // reserved name for the class
                                      zi_,
                                      nbInd_,
-                                     dummyParam,
+                                     paramStr,
                                      -minModality); // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
+
+      boost::regex iniRe("fixedInitialization");
+      boost::smatch m;
+      std::string::const_iterator start = paramStr.begin();
+      std::string::const_iterator end   = paramStr.end();
+      boost::regex_search(start, end, m, iniRe);
+      if (m[0].str().size() > 0) {
+        zi_.setFixedInitialization();
+      }
 
       for (int k = 0; k < nbClass_; ++k) {
         classInd_(k).clear();

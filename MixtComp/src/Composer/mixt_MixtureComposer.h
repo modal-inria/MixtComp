@@ -235,28 +235,28 @@ class MixtureComposer {
 
       std::string tempLog = zClassInd_.checkMissingType(); // check if the missing data provided are compatible with the model
       if(tempLog.size() > 0) {
-       std::stringstream sstm;
-       sstm << "Variable " << idName_ << " contains latent classes and has unsupported missing value types.\n" << tempLog;
-       warnLog += sstm.str();
+        std::stringstream sstm;
+        sstm << "Variable " << idName_ << " contains latent classes and has unsupported missing value types.\n" << tempLog;
+        warnLog += sstm.str();
       }
       zClassInd_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
-//      if (zClassInd_.zi().dataRange_.min_ < 0) {
-//       std::stringstream sstm;
-//       sstm << "The z_class latent class variable has a lowest provided value of: "
-//            << minModality + zClassInd_.zi().dataRange_.min_
-//            << " while the minimal value has to be: "
-//            << minModality
-//            << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
-//       warnLog += sstm.str();
-//      }
+      if (zClassInd_.zi().dataRange_.min_ < 0) { // Since z is currently described using unsigned integer, there is no need for this check HOWEVER it might come in handy shall this condition changes
+        std::stringstream sstm;
+        sstm << "The z_class latent class variable has a lowest provided value of: "
+            << minModality + zClassInd_.zi().dataRange_.min_
+            << " while the minimal value has to be: "
+            << minModality
+            << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+        warnLog += sstm.str();
+      }
       if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nbClass_ - 1) {
-       std::stringstream sstm;
-       sstm << "The z_class latent class variable has a highest provided value of: "
+        std::stringstream sstm;
+        sstm << "The z_class latent class variable has a highest provided value of: "
             << minModality + zClassInd_.zi().dataRange_.max_
             << " while the maximal value can not exceed the number of class: "
             << minModality + nbClass_ - 1
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
-       warnLog += sstm.str();
+        warnLog += sstm.str();
       }
       zClassInd_.setRange(0, nbClass_ - 1, nbClass_);
 

@@ -4,7 +4,7 @@ dataGeneratorNewLearn <- function(nbInd,
   var$z_class <- zParam()
   # var$Rank1 <- rankParam("Rank1")
   # var$Ordinal1 <- ordinalParam("Ordinal1")
-  var$Functional1 <- functionalParam("Functional1")
+  var$Functional1 <- functionalParam1sub("Functional1")
   
   res <- dataGeneratorNew("dataGenNew/learn", # prefix
                           nbInd, # nbInd

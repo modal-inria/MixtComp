@@ -33,8 +33,7 @@
 #include "../Statistic/mixt_MultinomialStatistic.h"
 #include "../Various/mixt_Enum.h"
 
-namespace mixt
-{
+namespace mixt {
 
 template <typename Type>
 class Range {
@@ -52,8 +51,7 @@ class Range {
 };
 
 template <typename DataType>
-class AugmentedData
-{
+class AugmentedData {
   public:
     /** Base type of the data table, for example, Real */
     typedef typename DataType::Type Type;
@@ -65,10 +63,9 @@ class AugmentedData
       nbSample_(0),
       misCount_(nb_enum_MisType_),
       dataRange_(),
-      rangeUpdate_(false)
-      {
-        for (int i = 0; i < nb_enum_MisType_; ++i) // initialize counter for each type of missing value to 0
-        {
+      rangeUpdate_(false),
+      fixedInitialization_(false) {
+        for (int i = 0; i < nb_enum_MisType_; ++i) { // initialize counter for each type of missing value to 0
           misCount_(i) = 0;
         }
       };
@@ -78,15 +75,12 @@ class AugmentedData
      * @param  Number of individuals
      * @return "individual(s) has/have"
     */
-    std::string indExpression(int nbInd)
-    {
+    std::string indExpression(int nbInd) {
       std::string num;
-      if (misCount_(missing_) == 1)
-      {
+      if (misCount_(missing_) == 1) {
         num = " individual has a value ";
       }
-      else
-      {
+      else {
         num = " individuals have values ";
       }
       return num;
@@ -225,8 +219,28 @@ class AugmentedData
       }
     }
 
+    void removeMissing() {
+      if (fixedInitialization_) { // restore initialization values
+        data_ = initialData_;
+      }
+      else { // uniform sampling of the missing values, subject to the data bound constraints
+        removeMissingSample();
+      }
+    }
+
     /** Remove the missing values by uniform samplings */
-    void removeMissing();
+    void removeMissingSample();
+
+    void setFixedInitialization () {
+      fixedInitialization_ = true;
+      initialData_ = data_;
+
+      MisVal misVal;
+      misVal.first = missing_; // initialization is fixed, but algorithm is used in a normal fashion, all class labels still being considered missing
+      for (int i = 0; i < nbSample_; ++i) {
+        setMissing(i, misVal);
+      }
+    }
 
     /** two dimensional data table, for example a Matrix<Real> */
     DataType data_;
@@ -248,18 +262,23 @@ class AugmentedData
     /** boolean to know if range has already been updated */
     bool rangeUpdate_;
 
+    /** Is the initialization fixed ? If yes, the initial partition will be stored in initialData_. It will be restored to data_
+     * upon every call to removeMissing (instead of the uniform sampling). This configuration is usually used during debug to
+     * help diagnosing errors. */
+    bool fixedInitialization_;
+
+    /** Initial partition provided by the user. Only used when fixedInitialization_ == true. */
+    DataType initialData_;
+
     void rangeUpdate(Type& min,
                      Type& max,
-                     const Type& val)
-    {
-      if (!rangeUpdate_)
-      {
+                     const Type& val) {
+      if (!rangeUpdate_) {
         min = val;
         max = val;
         rangeUpdate_ = true;
       }
-      else
-      {
+      else {
         if (val < min) min = val;
         if (val > max) max = val;
       }

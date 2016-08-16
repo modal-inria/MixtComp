@@ -57,7 +57,7 @@ Range<Index>::Range(Index min,
 {}
 
 template<>
-void AugmentedData<Vector<Real> >::removeMissing()
+void AugmentedData<Vector<Real> >::removeMissingSample()
 {
   for (int i = 0; i < misData_.rows(); ++i)
   {
@@ -135,7 +135,7 @@ void AugmentedData<Vector<Real> >::removeMissing()
 }
 
 template<>
-void AugmentedData<Vector<int> >::removeMissing()
+void AugmentedData<Vector<int> >::removeMissingSample()
 {
   for (int i = 0; i < misData_.rows(); ++i)
   {
@@ -183,7 +183,7 @@ void AugmentedData<Vector<int> >::removeMissing()
 }
 
 template<>
-void AugmentedData<Vector<Index> >::removeMissing()
+void AugmentedData<Vector<Index> >::removeMissingSample()
 {
   for (int i = 0; i < misData_.rows(); ++i)
   {
