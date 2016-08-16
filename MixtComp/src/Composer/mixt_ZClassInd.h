@@ -57,7 +57,7 @@ class ZClassInd {
                                      zi_,
                                      nbInd_,
                                      paramStr,
-                                     -minModality); // an offset is immediately applied to the read data so that internally the classes encoding is 0 based
+                                     -minModality); // an offset is immediately applied to the data read so that internally the classes encoding is 0 based
 
       boost::regex iniRe("fixedInitialization");
       boost::smatch m;
