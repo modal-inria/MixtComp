@@ -131,11 +131,17 @@ Real MixtureComposer::lnCompletedLikelihood()
   return lnLikelihood;
 }
 
-Real MixtureComposer::lnCompletedProbability(int i, int k) const {
+Real MixtureComposer::lnCompletedProbability(int i, int k, ObservedCorrection correction) const {
   Real sum = std::log(prop_[k]);
+  Real logProba;
 
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
-    Real logProba = (*it)->lnCompletedProbability(i, k);
+    if (correction == enabledObservedCorrection_ && (*it)->observedCorrection()) {
+      logProba = (*it)->lnObservedProbability(i, k);
+    }
+    else {
+      logProba = (*it)->lnCompletedProbability(i, k);
+    }
     sum += logProba;
   }
 
@@ -170,17 +176,17 @@ void MixtureComposer::sStepNoCheck(int i) {
   sampler_.sStepNoCheck(i);
 }
 
-void MixtureComposer::eStep() {
+void MixtureComposer::eStep(ObservedCorrection correction) {
   #pragma omp parallel for
   for (Index i = 0; i < nbInd_; ++i) {
-    eStep(i);
+    eStepInd(i, correction);
   }
 }
 
-void MixtureComposer::eStep(int i) {
+void MixtureComposer::eStepInd(int i, ObservedCorrection correction) {
   RowVector<Real> lnComp(nbClass_);
   for (Index k = 0; k < nbClass_; k++) {
-    lnComp(k) = lnCompletedProbability(i, k);
+    lnComp(k) = lnCompletedProbability(i, k, correction);
   }
 
   tik_.row(i).logToMulti(lnComp);
@@ -346,7 +352,13 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
                   nbInd_ - 1);
 
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
-      eStep(i);
+      if (sample == doNotSampleData_ && iterGibbs == nbGibbsIter / 2) {
+        eStepInd(i, enabledObservedCorrection_);
+      }
+      else {
+        eStepInd(i, disabledObservedCorrection_);
+      }
+
       sStepNoCheck(i);
       samplingStepNoCheck(i);
 
@@ -384,7 +396,7 @@ std::vector<std::string> MixtureComposer::mixtureName() const
   return names;
 }
 
-void MixtureComposer::removeMissing(initParam algo) {
+void MixtureComposer::removeMissing(InitParam algo) {
   initializeTik();
   sStepNoCheck(); // uniform initialization of z
 

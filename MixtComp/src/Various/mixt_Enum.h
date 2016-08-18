@@ -24,13 +24,11 @@
 #ifndef MIXT_DEFS_H_
 #define MIXT_DEFS_H_
 
-namespace mixt
-{
+namespace mixt {
 
 /** Do not force member values with = assignment, otherwise NB_ENUM_MISTYPE will
  * not contain the number of elements in MisType */
-enum MisType
-{
+enum MisType {
   present_,
   missing_,
   missingFiniteValues_,
@@ -40,46 +38,45 @@ enum MisType
   nb_enum_MisType_
 };
 
-enum LikelihoodType
-{
+enum LikelihoodType {
   lnCompletedLikelihood_,
   lnObservedLikelihood_
 };
 
-enum RunMode
-{
+enum RunMode {
   learning_,
   prediction_
 };
 
-enum SimpleMixtureID
-{
+enum SimpleMixtureID {
   Categorical_pjk_,
   Gaussian_sjk_,
   Poisson_k_
 };
 
-enum RunType
-{
+enum RunType {
   burnIn_,
   run_,
 };
 
-enum RunProblemType
-{
+enum RunProblemType {
   noProblem_,
   invalidSampler_
 };
 
-enum SamplerType
-{
+enum SamplerType {
   rejectSampler_,
   GibbsSampler_
 };
 
-enum initParam {
+enum InitParam {
   initParam_,
   keepParam_
+};
+
+enum ObservedCorrection {
+  disabledObservedCorrection_,
+  enabledObservedCorrection_
 };
 
 } // namespace mixt

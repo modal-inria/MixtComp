@@ -66,8 +66,7 @@ class IMixture {
      *
      * @param ind index of the individual which data must be sampled
      */
-    virtual void samplingStepCheck(Index ind)
-    = 0;
+    virtual void samplingStepCheck(Index ind) = 0;
 
     /**
      * Simulation of latent variables and partially observed data without verifying
@@ -75,8 +74,7 @@ class IMixture {
      *
      * @param ind index of the individual which data must be sampled
      */
-    virtual void samplingStepNoCheck(Index ind)
-    = 0;
+    virtual void samplingStepNoCheck(Index ind) = 0;
 
     /**
      * Check if conditions on data are verified. For example, for a categorical model one must check that each modality
@@ -91,8 +89,7 @@ class IMixture {
      *
      * @return empty string if mStep successful, or a detailed description of the eventual error
      */
-    virtual void mStep(EstimatorType bias)
-    = 0;
+    virtual void mStep(EstimatorType bias) = 0;
 
     /**
      * Storage of mixture parameters during SEM run phase
@@ -102,8 +99,7 @@ class IMixture {
      * period.
      */
     virtual void storeSEMRun(Index iteration,
-                             Index iterationMax)
-    = 0;
+                             Index iterationMax) = 0;
 
     /**
      * Storage of mixture parameters during SEM run phase
@@ -114,8 +110,7 @@ class IMixture {
      */
     virtual void storeGibbsRun(Index i,
                                Index iteration,
-                               Index iterationMax)
-    = 0;
+                               Index iterationMax) = 0;
 
     /**
      * Computation of completed likelihood
@@ -124,8 +119,7 @@ class IMixture {
      * @param k class
      * @return value of the completed likelihood in log scale
      */
-    virtual Real lnCompletedProbability(Index i, Index k)
-    = 0;
+    virtual Real lnCompletedProbability(Index i, Index k) = 0;
 
     /**
      * Computation of observed likelihood
@@ -134,24 +128,21 @@ class IMixture {
      * @param k class
      * @return value of the observed likelihood in log scale
      */
-    virtual Real lnObservedProbability(Index i, Index k)
-    = 0;
+    virtual Real lnObservedProbability(Index i, Index k) = 0;
 
     /**
      * Computation of the number of free parameters.
      *
      *  @return Number of free parameters
      */
-    virtual Index nbFreeParameter() const
-    = 0;
+    virtual Index nbFreeParameter() const = 0;
 
     /**
      * This function can be used to write summary of parameters on to the output stream.
      *
      *  @param[out] stream to write the summary of parameters to
      */
-    virtual void writeParameters() const
-    = 0;
+    virtual void writeParameters() const = 0;
 
     /**
      * Initialization of the data and parameters
@@ -159,22 +150,20 @@ class IMixture {
      * @param mode run mode, for example learning or prediction
      * @return empty string if no errors, otherwise errors description
      */
-    virtual std::string setDataParam(RunMode mode)
-    = 0;
+    virtual std::string setDataParam(RunMode mode) = 0;
 
     /**
      * Export of parameters and data
      */
-    virtual void exportDataParam() const
-    = 0;
+    virtual void exportDataParam() const = 0;
 
     /**
      * Crude removal of missing data by random sampling, prior to any parameter estimation. Used in
      * learning. In prediction parameters are known at initialization, and a samplingStep can be used.
      */
-    virtual void removeMissing(initParam algo)
-    = 0;
+    virtual void removeMissing(InitParam algo) = 0;
 
+    virtual bool observedCorrection() = 0;
   protected:
     /** Index of the mixture, useful to write the results at the correct place in th output. */
     Index indexMixture_;

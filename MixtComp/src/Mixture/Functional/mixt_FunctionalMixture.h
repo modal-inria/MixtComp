@@ -322,7 +322,7 @@ class FunctionalMixture : public IMixture {
                                      paramStr_);
     };
 
-    void removeMissing(initParam algo) {
+    void removeMissing(InitParam algo) {
       for (Vector<Function>::iterator it  = vecInd_.begin(),
                                       itE = vecInd_.end();
            it != itE;
@@ -330,6 +330,8 @@ class FunctionalMixture : public IMixture {
         it->removeMissing();
       }
     };
+
+    bool observedCorrection() {return true;}
 
   private:
     std::string checkMissingType() {

@@ -242,7 +242,7 @@ class RankMixture : public IMixture
       return class_[k].lnObservedProbability(i);
     }
 
-    void removeMissing(initParam init) {
+    void removeMissing(InitParam init) {
       for (int i = 0; i < nbInd_; ++i) {
         data_(i).removeMissing();
       }
@@ -393,6 +393,9 @@ class RankMixture : public IMixture
         class_[k].computeObservedProba();
       }
     }
+
+    bool observedCorrection() {return false;}
+
   private:
     std::string checkMissingType() {
       std::string warnLog;

@@ -105,14 +105,14 @@ class MixtureComposer {
     void sStepCheck(int i);
 
     /** compute Tik */
-    void eStep();
-    void eStep(int i);
+    void eStep(ObservedCorrection correction);
+    void eStepInd(int i, ObservedCorrection correction);
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    Real lnCompletedProbability(int i, int k) const;
+    Real lnCompletedProbability(int i, int k, ObservedCorrection correction) const;
 
     Real lnObservedProbability(int i, int k) const;
 
@@ -308,7 +308,7 @@ class MixtureComposer {
      * */
     std::vector<std::string> mixtureName() const;
 
-    void removeMissing(initParam algo);
+    void removeMissing(InitParam algo);
 
     /**
      * Compute the "raw" class ID matrix E_kj

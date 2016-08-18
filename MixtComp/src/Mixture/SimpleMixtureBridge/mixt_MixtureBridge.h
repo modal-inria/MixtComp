@@ -237,7 +237,7 @@ class MixtureBridge : public IMixture {
                                      paramStr_);
     }
 
-    void removeMissing(initParam algo) {
+    void removeMissing(InitParam algo) {
       augData_.removeMissing();
     }
 
@@ -257,6 +257,8 @@ class MixtureBridge : public IMixture {
         return proba;
       }
     }
+
+    bool observedCorrection() {return true;}
 
   protected:
     /** Pointer to the zik class label */
