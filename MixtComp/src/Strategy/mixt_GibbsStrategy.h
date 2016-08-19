@@ -27,15 +27,13 @@
 #include "../Composer/mixt_MixtureComposer.h"
 #include "../Strategy/mixt_StrategyParam.h"
 
-namespace mixt
-{
+namespace mixt {
 /**
  *  A SemStrategy is based on the following paradigm:
  *  - perform nbBurnIn iterations of the algo
  *  - perform a long run
  **/
-class GibbsStrategy
-{
+class GibbsStrategy {
   public:
     /** default constructor.
      *  @param p_composer the model to estimate

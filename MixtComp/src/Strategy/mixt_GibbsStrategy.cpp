@@ -25,18 +25,15 @@
 #include "../Various/mixt_Timer.h"
 #include "../Various/mixt_Various.h"
 
-namespace mixt
-{
+namespace mixt {
 
 /** default constructor */
 GibbsStrategy::GibbsStrategy(MixtureComposer* p_composer,
                              const StrategyParam& param) :
     p_composer_(p_composer),
-    param_(param)
-{}
+    param_(param) {}
 
-std::string GibbsStrategy::run()
-{
+std::string GibbsStrategy::run() {
   std::string warnLog;
 
   p_composer_->removeMissing(keepParam_);

@@ -52,8 +52,11 @@ dataGeneratorNewPredict <- function(nbInd,
                                     proportionPresent) {
   var <- list()
   var$z_class <- zParam()
-  var$Rank1 <- rankParam("Rank1")
-  var$Ordinal1 <- ordinalParam("Ordinal1")
+  # var$z_class <- zParamFixedInit()
+  # var$Rank1 <- rankParam("Rank1")
+  # var$Ordinal1 <- ordinalParam("Ordinal1")
+  # var$Functional1 <- functionalParam1sub("Functional1")
+  var$Functional1 <- functionalParam2sub("Functional1")
   
   res <- dataGeneratorNew("dataGenNew/predict", # prefix
                           nbInd, # nbInd

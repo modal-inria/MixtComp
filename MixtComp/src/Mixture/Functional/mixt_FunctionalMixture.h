@@ -173,6 +173,7 @@ class FunctionalMixture : public IMixture {
     std::string setDataParam(RunMode mode) {
       std::string warnLog;
       Vector<std::string> dataStr;
+      Vector<Real> alpha, beta, sd;
 
       warnLog += p_handler_->getData(idName(), // get the raw vector of strings
                                      dataStr,
@@ -180,8 +181,6 @@ class FunctionalMixture : public IMixture {
                                      paramStr_);
 
       if (mode == prediction_) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
-        Vector<Real> alpha, beta, sd, pi;
-
         std::string dummyStr;
         p_paramSetter_->getParam(idName_,
                                  "alpha",
@@ -197,37 +196,6 @@ class FunctionalMixture : public IMixture {
                                  "sd",
                                  sd,
                                  dummyStr);
-
-        p_paramSetter_->getParam(idName_,
-                                 "pi",
-                                 pi,
-                                 dummyStr);
-
-        Matrix<Real> alphaCurr(nSub_, 2);
-        Matrix<Real> betaCurr(nSub_, nCoeff_);
-        Vector<Real> sdCurr(nSub_);
-        for (Index k = 0; k < nClass_; ++k) {
-          for (Index s = 0; s < nSub_; ++s) {
-            for (Index c = 0; c < 2; ++c) {
-              alphaCurr(s, c) = alpha(k * nSub_ * 2 + s * 2 + c);
-            }
-          }
-
-          for (Index s = 0; s < nSub_; ++s) {
-            for (Index c = 0; c < nCoeff_; ++c) {
-              betaCurr(s, c) = alpha(k * nSub_ * nCoeff_ + s * nCoeff_ + c);
-            }
-          }
-
-          for (Index s = 0; s < nSub_; ++s) {
-            sdCurr(s) = k * nSub_ + s;
-          }
-
-          class_[k].setParam(alphaCurr,
-                             betaCurr,
-                             sdCurr);
-          class_[k].setParamStorage();
-        }
       }
 
       // get the value of nSub_ and nCoeff_ by parsing paramStr_
@@ -247,6 +215,34 @@ class FunctionalMixture : public IMixture {
         sstm << "Variable: " << idName_ << " has no parameter description. This description is required, and must take the form "
              << "\"nSub: x, nCoeff: y\"" << std::endl;
         warnLog += sstm.str();
+      }
+
+      if (mode == prediction_ && warnLog.size() == 0) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
+        Matrix<Real> alphaCurr(nSub_, 2);
+        Matrix<Real> betaCurr(nSub_, nCoeff_);
+        Vector<Real> sdCurr(nSub_);
+        for (Index k = 0; k < nClass_; ++k) {
+          for (Index s = 0; s < nSub_; ++s) {
+            for (Index c = 0; c < 2; ++c) {
+              alphaCurr(s, c) = alpha(k * nSub_ * 2 + s * 2 + c);
+            }
+          }
+
+          for (Index s = 0; s < nSub_; ++s) {
+            for (Index c = 0; c < nCoeff_; ++c) {
+              betaCurr(s, c) = beta(k * nSub_ * nCoeff_ + s * nCoeff_ + c);
+            }
+          }
+
+          for (Index s = 0; s < nSub_; ++s) {
+            sdCurr(s) = sd(k * nSub_ + s);
+          }
+
+          class_[k].setParam(alphaCurr,
+                             betaCurr,
+                             sdCurr);
+          class_[k].setParamStorage();
+        }
       }
 
       warnLog += parseFunctionalStr(nSub_,

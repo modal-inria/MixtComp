@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
   RInside R(argc, argv);              // create an embedded R instance
     R.parseEvalQ("library(RMixtComp)");
 
-    R.parseEvalQ("testNewLearn()");
-//    R.parseEvalQ("testNewLearnPredict()");
+//    R.parseEvalQ("testNewLearn()");
+    R.parseEvalQ("testNewLearnPredict()");
 
 //    R.parseEvalQ("testNewLearn(regen = FALSE)");
 

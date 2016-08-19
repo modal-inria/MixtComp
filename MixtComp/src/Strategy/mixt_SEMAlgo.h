@@ -29,11 +29,9 @@
 #include "../Composer/mixt_MixtureComposer.h"
 #include "../Various/mixt_Enum.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class SEMAlgo
-{
+class SEMAlgo {
   public:
     /** default constructor */
     SEMAlgo(MixtureComposer* p_composer,
@@ -59,6 +57,7 @@ class SEMAlgo
     /** number of iterations of the algorithm */
     int nbIter_;
 };
+
 } // namespace mixt
 
 #endif /* MIXT_MIXTUREALGO_H */

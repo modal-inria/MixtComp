@@ -181,6 +181,7 @@ void MixtureComposer::eStep(ObservedCorrection correction) {
   for (Index i = 0; i < nbInd_; ++i) {
     eStepInd(i, correction);
   }
+
 }
 
 void MixtureComposer::eStepInd(int i, ObservedCorrection correction) {
