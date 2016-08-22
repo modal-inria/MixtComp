@@ -319,11 +319,15 @@ class FunctionalMixture : public IMixture {
     };
 
     void removeMissing(InitParam algo) {
+      Vector<Real> quantile;
+      globalQuantile(vecInd_, quantile);
+
       for (Vector<Function>::iterator it  = vecInd_.begin(),
                                       itE = vecInd_.end();
            it != itE;
            ++it) {
-        it->removeMissingUniformSampling();
+//        it->removeMissingUniformSampling();
+        it->removeMissingQuantile(quantile);
       }
     };
 

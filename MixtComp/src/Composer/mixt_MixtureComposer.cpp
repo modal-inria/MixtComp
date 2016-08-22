@@ -353,12 +353,14 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
                   nbInd_ - 1);
 
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
-      if (sample == doNotSampleData_ && iterGibbs == nbGibbsIter / 2) {
-        eStepInd(i, enabledObservedCorrection_);
-      }
-      else {
-        eStepInd(i, disabledObservedCorrection_);
-      }
+//      if (sample == doNotSampleData_ && iterGibbs == nbGibbsIter / 2) {
+//        eStepInd(i, enabledObservedCorrection_);
+//      }
+//      else {
+//        eStepInd(i, disabledObservedCorrection_);
+//      }
+
+      eStepInd(i, disabledObservedCorrection_);
 
       sStepNoCheck(i);
       samplingStepNoCheck(i);

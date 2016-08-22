@@ -53,3 +53,22 @@ TEST(regex, testEng)
   ASSERT_EQ(v, str2type<Real>(str));
 }
 
+TEST(regex, regex_search) {
+  std::string s1("This expression contains fixedInitialization, the word to be found.");
+  std::string s2("This expression does not contain the word to be found.");
+
+  boost::regex iniRe("fixedInitialization");
+  boost::smatch m1;
+  boost::smatch m2;
+
+  std::string::const_iterator start1 = s1.begin();
+  std::string::const_iterator end1   = s1.end();
+  boost::regex_search(start1, end1, m1, iniRe);
+
+  std::string::const_iterator start2 = s2.begin();
+  std::string::const_iterator end2   = s2.end();
+  boost::regex_search(start2, end2, m2, iniRe);
+
+  ASSERT_LT(0, m1[0].str().size());
+  ASSERT_EQ(0, m2[0].str().size());
+}

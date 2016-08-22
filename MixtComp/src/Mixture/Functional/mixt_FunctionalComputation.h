@@ -31,7 +31,7 @@
 
 namespace mixt {
 
-class FunctionalClass; // forward declaration to avoid cyclical inclusion
+class Function; // forward declaration
 
 typedef struct {
     Vector<Real>* t_;
@@ -180,6 +180,9 @@ double optiFunctionalClass(unsigned nParam,
                            const double* alpha,
                            double* gradDouble,
                            void* my_func_data);
+
+void globalQuantile(const Vector<Function>& vecInd,
+                    Vector<Real>& quantile);
 
 } // namespace mixt
 

@@ -36,3 +36,12 @@ TEST(Math, Factorial) {
 
   ASSERT_EQ(expectedFactoValue, factoValue);
 }
+
+TEST(Math, sumLog) {
+  Vector<Real> vec(4);
+  vec << 15., 1., 3., -7.;
+  Real resComputed = sumLog(vec);
+  Real resExpected = std::log(vec.sum());
+
+  ASSERT_NEAR(resExpected, resComputed, epsilon);
+}

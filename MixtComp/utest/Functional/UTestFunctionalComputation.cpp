@@ -536,3 +536,36 @@ TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
 
   ASSERT_EQ(true, isApprox);
 }
+
+TEST(FunctionalComputation, removeMissingQuantile) {
+  Index nInd = 1000;
+  Index nTime = 1000;
+  Index nSub = 3;
+
+  Real min = -20.;
+  Real max = 10.;
+
+  Vector<Function> vecInd(nInd);
+  Vector<Real> computedQuantile;
+
+  UniformStatistic uni;
+
+  for (Index i = 0; i < nInd; ++i) {
+    Vector<Real> t(nTime);
+    Vector<Real> x(nTime); // will not be used in this test
+    Vector<std::list<Index> > w(nSub); // will not be used in this test, except to detect the number of subregressions
+
+    for (Index currT = 0; currT < nTime; ++currT) {
+      t(currT) = uni.sample(min, max);
+    }
+
+    vecInd(i).setVal(t, x, w);
+  }
+
+  globalQuantile(vecInd, computedQuantile);
+
+  Vector<Real> expectedQuantile(nSub - 1);
+  expectedQuantile << -10., 0.;
+
+  ASSERT_EQ(true, computedQuantile.isApprox(expectedQuantile, 0.1));
+}

@@ -308,8 +308,7 @@ const_iterator end() const
 }
 
 /** Sort function for non contiguous data, for example block. Slower than sortContiguous */
-void sort()
-{
+void sort() {
   std::sort(derived().begin(),
             derived().end());
 }

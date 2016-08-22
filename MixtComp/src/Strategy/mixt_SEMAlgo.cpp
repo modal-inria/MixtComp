@@ -57,14 +57,14 @@ void SEMAlgo::runCheck(RunType runType,
                   iter,
                   nbIter_ - 1);
 
-    if (runType == burnIn_ && iter == nbIter_ / 2) {
-      p_composer_->eStep(enabledObservedCorrection_);
-    }
-    else {
-      p_composer_->eStep(disabledObservedCorrection_);
-    }
+//    if (runType == burnIn_ && iter == nbIter_ / 2) {
+//      p_composer_->eStep(enabledObservedCorrection_);
+//    }
+//    else {
+//      p_composer_->eStep(disabledObservedCorrection_);
+//    }
 
-//    p_composer_->eStep(enabledObservedCorrection_);
+    p_composer_->eStep(disabledObservedCorrection_);
 
     if (sampler == rejectSampler_) { // use reject sampling
       p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
@@ -111,14 +111,14 @@ void SEMAlgo::runNoCheck(RunType runType,
                   iter,
                   nbIter_ - 1);
 
-    if (runType == burnIn_ && iter == nbIter_ / 2) {
-      p_composer_->eStep(enabledObservedCorrection_);
-    }
-    else {
-      p_composer_->eStep(disabledObservedCorrection_);
-    }
+//    if (runType == burnIn_ && iter == nbIter_ / 2) {
+//      p_composer_->eStep(enabledObservedCorrection_);
+//    }
+//    else {
+//      p_composer_->eStep(disabledObservedCorrection_);
+//    }
 
-//    p_composer_->eStep(enabledObservedCorrection_);
+    p_composer_->eStep(disabledObservedCorrection_);
 
     p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
     p_composer_->samplingStepNoCheck();

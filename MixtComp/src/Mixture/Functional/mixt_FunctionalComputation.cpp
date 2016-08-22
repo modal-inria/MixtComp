@@ -500,4 +500,38 @@ double optiFunctionalClass(unsigned nParam,
   return cost;
 }
 
+void globalQuantile(const Vector<Function>& vecInd,
+                    Vector<Real>& quantile) {
+  Index nInd = vecInd.size();
+  Index nSub = vecInd(0).w().size();
+  quantile.resize(nSub - 1);
+  Index globalNTime = 0;
+  Index currNTime = 0;
+
+  for (Index i = 0; i < nInd; ++i) {
+    globalNTime += vecInd(i).t().size();
+  }
+
+  Vector<Real> globalT(globalNTime); // big vector containing all time values pooled together, to extract the quantiles
+  Index currStart = 0;
+
+  for (Index i = 0; i < nInd; ++i) {
+    currNTime = vecInd(i).t().size();
+
+    for (Index t = 0; t < currNTime; ++t) {
+      globalT(currStart + t) = vecInd(i).t()(t);
+    }
+
+    currStart += currNTime;
+  }
+
+  globalT.sort();
+
+  Index partitionSize = globalNTime / nSub;
+
+  for (Index s = 0; s < nSub - 1; ++s) {
+    quantile(s) = globalT((s + 1) * partitionSize);
+  }
+}
+
 } // namespace mixt
