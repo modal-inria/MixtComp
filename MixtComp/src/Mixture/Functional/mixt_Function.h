@@ -63,7 +63,9 @@ class Function {
                       const Vector<Real>& sd,
                       Vector<Index>& wTot);
 
-    void removeMissing();
+    void removeMissingUniformSampling();
+
+    void removeMissingQuantile(const Vector<Real>& quantiles);
 
     double costAndGrad(unsigned nParam,
                        const double* alpha,

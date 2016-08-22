@@ -165,13 +165,29 @@ void Function::sampleWCheck(const Matrix<Real>& alpha,
   }
 }
 
-void Function::removeMissing() {
+void Function::removeMissingUniformSampling() {
   for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run
     w_(s).clear();
   }
 
   for (Index i = 0; i < nTime_; ++i) {
     w_(multi_.sampleInt(0, nSub_ - 1)).push_back(i); // w follows a uniform discrete law
+  }
+}
+
+void Function::removeMissingQuantile(const Vector<Real>& quantiles) {
+  Index s;
+  for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run
+    w_(s).clear();
+  }
+
+  for (Index i = 0; i < nTime_; ++i) {
+    for (s = 0; s < nSub_ - 1; ++s) {
+      if (t_(i) < quantiles(s)) {
+        break;
+      }
+    }
+    w_(s).push_back(i);
   }
 }
 

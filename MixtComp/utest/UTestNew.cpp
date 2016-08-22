@@ -53,3 +53,4 @@ TEST(regex, regex_search) {
   ASSERT_LT(0, m1[0].str().size());
   ASSERT_EQ(0, m2[0].str().size());
 }
+

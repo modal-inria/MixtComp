@@ -323,7 +323,7 @@ class FunctionalMixture : public IMixture {
                                       itE = vecInd_.end();
            it != itE;
            ++it) {
-        it->removeMissing();
+        it->removeMissingUniformSampling();
       }
     };
 
