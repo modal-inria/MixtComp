@@ -131,17 +131,12 @@ Real MixtureComposer::lnCompletedLikelihood()
   return lnLikelihood;
 }
 
-Real MixtureComposer::lnCompletedProbability(int i, int k, ObservedCorrection correction) const {
+Real MixtureComposer::lnCompletedProbability(int i, int k) const {
   Real sum = std::log(prop_[k]);
   Real logProba;
 
   for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
-    if (correction == enabledObservedCorrection_ && (*it)->observedCorrection()) {
-      logProba = (*it)->lnObservedProbability(i, k);
-    }
-    else {
-      logProba = (*it)->lnCompletedProbability(i, k);
-    }
+    logProba = (*it)->lnCompletedProbability(i, k);
     sum += logProba;
   }
 
@@ -176,18 +171,18 @@ void MixtureComposer::sStepNoCheck(int i) {
   sampler_.sStepNoCheck(i);
 }
 
-void MixtureComposer::eStep(ObservedCorrection correction) {
+void MixtureComposer::eStep() {
   #pragma omp parallel for
   for (Index i = 0; i < nbInd_; ++i) {
-    eStepInd(i, correction);
+    eStepInd(i);
   }
 
 }
 
-void MixtureComposer::eStepInd(int i, ObservedCorrection correction) {
+void MixtureComposer::eStepInd(int i) {
   RowVector<Real> lnComp(nbClass_);
   for (Index k = 0; k < nbClass_; k++) {
-    lnComp(k) = lnCompletedProbability(i, k, correction);
+    lnComp(k) = lnCompletedProbability(i, k);
   }
 
   tik_.row(i).logToMulti(lnComp);
@@ -353,14 +348,7 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
                   nbInd_ - 1);
 
     for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
-//      if (sample == doNotSampleData_ && iterGibbs == nbGibbsIter / 2) {
-//        eStepInd(i, enabledObservedCorrection_);
-//      }
-//      else {
-//        eStepInd(i, disabledObservedCorrection_);
-//      }
-
-      eStepInd(i, disabledObservedCorrection_);
+      eStepInd(i);
 
       sStepNoCheck(i);
       samplingStepNoCheck(i);

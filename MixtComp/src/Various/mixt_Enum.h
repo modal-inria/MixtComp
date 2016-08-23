@@ -74,11 +74,6 @@ enum InitParam {
   keepParam_
 };
 
-enum ObservedCorrection {
-  disabledObservedCorrection_,
-  enabledObservedCorrection_
-};
-
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

@@ -105,14 +105,14 @@ class MixtureComposer {
     void sStepCheck(int i);
 
     /** compute Tik */
-    void eStep(ObservedCorrection correction);
-    void eStepInd(int i, ObservedCorrection correction);
+    void eStep();
+    void eStepInd(int i);
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
      *  @param k index of the component
      **/
-    Real lnCompletedProbability(int i, int k, ObservedCorrection correction) const;
+    Real lnCompletedProbability(int i, int k) const;
 
     Real lnObservedProbability(int i, int k) const;
 
