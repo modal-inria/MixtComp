@@ -217,11 +217,11 @@ TEST(FunctionalComputation, costAndGrad1SubReg) {
   Vector<Real> t(nTime);
   t << 0., 1., 2., 3.;
 
-  Vector<std::list<Index> > w(nSub);
-  w(0).push_back(0);
-  w(0).push_back(1);
-  w(0).push_back(2);
-  w(0).push_back(3);
+  Vector<std::set<Index> > w(nSub);
+  w(0).insert(0);
+  w(0).insert(1);
+  w(0).insert(2);
+  w(0).insert(3);
 
   double alpha0[] = {-1., 0.5};
 
@@ -290,11 +290,11 @@ TEST(FunctionalComputation, costAndGrad) {
   Vector<Real> t(nTime);
   t << 0., 1., 2., 3.;
 
-  Vector<std::list<Index> > w(nSub);
-  w(0).push_back(0);
-  w(0).push_back(1);
-  w(1).push_back(2);
-  w(1).push_back(3);
+  Vector<std::set<Index> > w(nSub);
+  w(0).insert(0);
+  w(0).insert(1);
+  w(1).insert(2);
+  w(1).insert(3);
 
   double alpha0[] = {-1., 0.5, 1., -0.5};
 
@@ -361,14 +361,14 @@ TEST(FunctionalComputation, hessian) {
   Index nSub = nParam / 2;
 
   Vector<Real> t(nTime);
-  Vector<std::list<Index> > w(nSub);
+  Vector<std::set<Index> > w(nSub);
   for (Index i = 0; i < nTime; ++i) {
     t(i) = i;
     if (i < nTime / 2) {
-      w(0).push_back(i);
+      w(0).insert(i);
     }
     else {
-      w(1).push_back(i);
+      w(1).insert(i);
     }
   }
 
@@ -479,7 +479,7 @@ TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
   double alpha[] = { alpha0 * alphaSlope, -alphaSlope, // alpha is linearized in a single vector, for easier looping
                     -alpha0 * alphaSlope,  alphaSlope};
 
-  Vector<std::list<Index> > w(nSub);
+  Vector<std::set<Index> > w(nSub);
   Vector<Real> y(nTime, 0.);
 
   Matrix<Real> beta(nSub, nCoeff + 1);
@@ -502,7 +502,7 @@ TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
   for (Index i = 0; i < nTime; ++i) {
     kappa.row(i) = logValue.row(i).exp() / std::exp(logSumExpValue(i));
     Index currW = multi.sample(kappa.row(i));
-    w(currW).push_back(i); // sample the subregression
+    w(currW).insert(i); // sample the subregression
 
     for (Index p = 0; p < nCoeff; ++p) { // sample the y(t) value, knowing the subregression at t
       y(i) += beta(currW, p) * pow(t(i), p);
@@ -553,7 +553,7 @@ TEST(FunctionalComputation, removeMissingQuantile) {
   for (Index i = 0; i < nInd; ++i) {
     Vector<Real> t(nTime);
     Vector<Real> x(nTime); // will not be used in this test
-    Vector<std::list<Index> > w(nSub); // will not be used in this test, except to detect the number of subregressions
+    Vector<std::set<Index> > w(nSub); // will not be used in this test, except to detect the number of subregressions
 
     for (Index currT = 0; currT < nTime; ++currT) {
       t(currT) = uni.sample(min, max);

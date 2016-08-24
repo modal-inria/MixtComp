@@ -46,7 +46,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   Vector<Real> sd(nSub);
   sd << 0.1, 1.;
 
-  Vector<std::list<Index> > w(nSub);
+  Vector<std::set<Index> > w(nSub);
   Vector<Real> x(nTime, 0.);
 
   Vector<Real> t(nTime);
@@ -70,7 +70,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   for (Index i = 0; i < nTime; ++i) {
     kappa.row(i) = logValue.row(i).exp() / std::exp(logSumExpValue(i));
     Index currW = multi.sample(kappa.row(i));
-    w(currW).push_back(i); // sample the subregression
+    w(currW).insert(i); // sample the subregression
 
     for (Index p = 0; p < nCoeff; ++p) { // sample the y(t) value, knowing the subregression at t
       x(i) += beta(currW, p) * pow(t(i), p);
@@ -126,7 +126,7 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
   std::set<Index> setInd;
 
   for (Index ind = 0; ind < nInd; ++ind) {
-    Vector<std::list<Index> > w(nSub);
+    Vector<std::set<Index> > w(nSub);
     Vector<Real> x(nTime, 0.);
 
     Vector<Real> t(nTime);
@@ -150,7 +150,7 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
     for (Index i = 0; i < nTime; ++i) {
       kappa.row(i) = logValue.row(i).exp() / std::exp(logSumExpValue(i));
       Index currW = multi.sample(kappa.row(i));
-      w(currW).push_back(i); // sample the subregression
+      w(currW).insert(i); // sample the subregression
 
       for (Index p = 0; p < nCoeff; ++p) { // sample the y(t) value, knowing the subregression at t
         x(i) += beta(currW, p) * pow(t(i), p);
@@ -200,12 +200,12 @@ TEST(FunctionalClass, checkNbDifferentValue) {
   for (Index i = 0; i < nInd; ++i) {
     Vector<Real> t(nTime);
     Vector<Real> x(nTime);
-    Vector<std::list<Index> > w(nSub);
+    Vector<std::set<Index> > w(nSub);
 
     for (Index currT = 0; currT < nTime; ++currT) {
       t(currT) = 12.; // all time values identical: that should be enough to trigger the error detection
       x(currT) = uni.sample(xMin, xMax);
-      w(multi.sampleInt(0, nSub - 1)).push_back(currT);
+      w(multi.sampleInt(0, nSub - 1)).insert(currT);
     }
 
     data(i).setVal(t, x, w);
@@ -246,7 +246,7 @@ TEST(FunctionalClass, checkNonNullSigma) {
   for (Index i = 0; i < nInd; ++i) {
     Vector<Real> t(nTime);
     Vector<Real> x(nTime);
-    Vector<std::list<Index> > w(nSub);
+    Vector<std::set<Index> > w(nSub);
     Matrix<Real> vandermonde;
 
     for (Index currT = 0; currT < nTime; ++currT) {
@@ -256,7 +256,7 @@ TEST(FunctionalClass, checkNonNullSigma) {
 
     for (Index currT = 0; currT < nTime; ++currT) {
       Index s = multi.sampleInt(0, nSub - 1);
-      w(s).push_back(currT);
+      w(s).insert(currT);
       x(currT) = vandermonde.row(currT).dot(beta.row(s)); // no noise is added and would result in a null estimated standard deviation. This will trigger the error detection.
     }
 

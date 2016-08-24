@@ -103,8 +103,8 @@ void FunctionalClass::mStepBetaSd() {
                                          itDataE = setInd_.end();
          itData != itDataE;
          ++itData) {
-      for (std::list<Index>::const_iterator itTime  = data_(*itData).w()(s).begin(),
-                                            itTimeE = data_(*itData).w()(s).end();
+      for (std::set<Index>::const_iterator itTime  = data_(*itData).w()(s).begin(),
+                                           itTimeE = data_(*itData).w()(s).end();
            itTime != itTimeE;
            ++itTime) {
         design(s).row(i) = data_(*itData).vandermonde().row(*itTime);
@@ -198,7 +198,7 @@ bool FunctionalClass::checkNbDifferentValue() const {
     for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
          it != itE;
          ++it) { // only loop on individuals in the current class
-      for (std::list<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
+      for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
           itW != itWE;
            ++itW) { // only loop on timesteps in the current subregression
         values.insert(data_(*it).t()(*itW));
@@ -221,7 +221,7 @@ bool FunctionalClass::checkNonNullSigma() const {
     for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
          it != itE;
          ++it) { // only loop on individuals in the current class
-      for (std::list<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
+      for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
           itW != itWE;
            ++itW) { // only loop on timesteps in the current subregression
         if (data_(*it).vandermonde().row(*itW).dot(beta_.row(s)) != data_(*it).x()(*itW)) { // this subregression has enough variability to be valid

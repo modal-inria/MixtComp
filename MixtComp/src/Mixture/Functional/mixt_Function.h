@@ -30,6 +30,8 @@
 
 namespace mixt {
 
+class FunctionalClass; // forward declaration used for sampleWCheck
+
 class Function {
   public:
     void setSize(Index nT,
@@ -38,7 +40,7 @@ class Function {
     /** Set all internal values, useful for unit testing */
     void setVal(const Vector<Real>& t,
                 const Vector<Real>& x,
-                const Vector<std::list<Index> >& w);
+                const Vector<std::set<Index> >& w);
 
     void setValTime(Index i,
                     Real t,
@@ -61,7 +63,7 @@ class Function {
     void sampleWCheck(const Matrix<Real>& alpha,
                       const Matrix<Real>& beta,
                       const Vector<Real>& sd,
-                      Vector<Index>& wTot);
+                      const FunctionalClass& fc);
 
     void removeMissingUniformSampling();
 
@@ -73,7 +75,7 @@ class Function {
 
     const Vector<Real>& t() const {return t_;}
     const Vector<Real>& x() const {return x_;}
-    const Vector<std::list<Index> >& w() const {return w_;}
+    const Vector<std::set<Index> >& w() const {return w_;}
 
     const Matrix<Real>& vandermonde() const {return vandermonde_;}
 
@@ -94,7 +96,7 @@ class Function {
     Vector<Real> x_;
 
     /** Subregression to which each time step belong. Has same size as t_. */
-    Vector<std::list<Index> > w_;
+    Vector<std::set<Index> > w_;
 
     /** Vandermonde matrix, to be computed once and for all as soon as data is known, for example just after a setData. Rows are time steps,
      * and columns are coefficients in the regression. */

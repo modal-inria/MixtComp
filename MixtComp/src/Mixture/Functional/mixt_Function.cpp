@@ -22,6 +22,7 @@
  **/
 
 #include "mixt_Function.h"
+#include "mixt_FunctionalClass.h"
 
 namespace mixt {
 
@@ -36,7 +37,7 @@ void Function::setSize(Index nT,
 
 void Function::setVal(const Vector<Real>& t,
                       const Vector<Real>& x,
-                      const Vector<std::list<Index> >& w) {
+                      const Vector<std::set<Index> >& w) {
   nTime_ = t.size();
   nSub_ = w.size();
   t_ = t;
@@ -84,8 +85,8 @@ Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
   Matrix<Real> jointLogProba;
   computeJointLogProba(alpha, beta, sd, jointLogProba);
   for (Index s = 0; s < nSub_; ++s) {
-    for (std::list<Index>::const_iterator it  = w_(s).begin(),
-                                          itE = w_(s).end();
+    for (std::set<Index>::const_iterator it  = w_(s).begin(),
+                                         itE = w_(s).end();
          it != itE;
          ++it) {
       logProba += jointLogProba(*it, s); // only the completed value of w is taken into account
@@ -123,7 +124,7 @@ void Function::sampleWNoCheck(const Matrix<Real>& alpha,
   Vector<Real> currProba;
   for (Index i = 0; i < nTime_; ++i) {
     currProba.logToMulti(jointLogProba.row(i));
-    w_(multi_.sample(currProba)).push_back(i);
+    w_(multi_.sample(currProba)).insert(i);
   }
 }
 
@@ -171,7 +172,7 @@ void Function::removeMissingUniformSampling() {
   }
 
   for (Index i = 0; i < nTime_; ++i) {
-    w_(multi_.sampleInt(0, nSub_ - 1)).push_back(i); // w follows a uniform discrete law
+    w_(multi_.sampleInt(0, nSub_ - 1)).insert(i); // w follows a uniform discrete law
   }
 }
 
@@ -187,7 +188,7 @@ void Function::removeMissingQuantile(const Vector<Real>& quantiles) {
         break;
       }
     }
-    w_(s).push_back(i);
+    w_(s).insert(i);
   }
 }
 

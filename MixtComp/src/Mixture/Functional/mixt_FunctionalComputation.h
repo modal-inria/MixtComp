@@ -35,7 +35,7 @@ class Function; // forward declaration
 
 typedef struct {
     Vector<Real>* t_;
-    Vector<std::list<Index> >* w_;
+    Vector<std::set<Index> >* w_;
     Index nParam_;
 } CostData;
 
@@ -111,12 +111,12 @@ void timeValue(const Vector<Real>& t,
 void costFunction(const Vector<Real>& t,
                   const Matrix<Real>& logValue,
                   const Vector<Real>& logSumExpValue,
-                  const Vector<std::list<Index> >& w,
+                  const Vector<std::set<Index> >& w,
                   Real& cost);
 
 Real costFunctionDebug(const Vector<Real>& t,
                        const Vector<Real>& alpha,
-                       const Vector<std::list<Index> >& w);
+                       const Vector<std::set<Index> >& w);
 
 Real deriv1Var(Index subReg,
                Index subRegInd,
@@ -135,19 +135,19 @@ Real deriv2Var(Index subReg0,
 void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,
-                      const Vector<std::list<Index> >& w,
+                      const Vector<std::set<Index> >& w,
                       double* gradCost);
 
 void hessianCostFunction(const Vector<Real>& t,
                          const Matrix<Real>& value,
                          const Vector<Real>& logSumExpValue,
-                         const Vector<std::list<Index> >& w,
+                         const Vector<std::set<Index> >& w,
                          Matrix<Real>& hessianCost);
 
 void hessianCostFunctionNoSym(const Vector<Real>& t,
                               const Matrix<Real>& value,
                               const Vector<Real>& logSumExpValue,
-                              const Vector<std::list<Index> >& w,
+                              const Vector<std::set<Index> >& w,
                               Matrix<Real>& hessianCost);
 
 void initAlpha(Index nParam,

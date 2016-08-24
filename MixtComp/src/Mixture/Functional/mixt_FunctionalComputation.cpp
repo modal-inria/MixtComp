@@ -87,14 +87,13 @@ void timeValue(const Vector<Real>& t,
 void costFunction(const Vector<Real>& t,
                   const Matrix<Real>& logValue,
                   const Vector<Real>& logSumExpValue,
-                  const Vector<std::list<Index> >& w,
+                  const Vector<std::set<Index> >& w,
                   Real& cost) {
   cost = 0.;
   Index nSub = w.size(); // number of subregressions
 
   for (Index s = 0; s < nSub; ++s) {
-    for (std::list<Index>::const_iterator it  = w(s).begin(),
-                                        ite = w(s).end();
+    for (std::set<Index>::const_iterator it  = w(s).begin(), ite = w(s).end();
          it != ite;
          ++it) {
       cost += logValue(*it, s);
@@ -136,7 +135,7 @@ Real deriv2Var(Index subReg0,
 void gradCostFunction(const Vector<Real>& t,
                       const Matrix<Real>& value,
                       const Vector<Real>& logSumExpValue,
-                      const Vector<std::list<Index> >& w,
+                      const Vector<std::set<Index> >& w,
                       double* gradCost) {
   Index nT = t.size();
   Index nParam = 2 * value.cols();
@@ -147,8 +146,8 @@ void gradCostFunction(const Vector<Real>& t,
 
     Real addComp = 0.;
     Real divComp = 0.;
-    for (std::list<Index>::const_iterator it  = w(subReg).begin(),
-                                          ite = w(subReg).end();
+    for (std::set<Index>::const_iterator it  = w(subReg).begin(),
+                                         ite = w(subReg).end();
          it != ite;
          ++it) {
         addComp += subRegInd ? t(*it) : 1.;
@@ -171,7 +170,7 @@ void gradCostFunction(const Vector<Real>& t,
 void hessianCostFunction(const Vector<Real>& t,
                          const Matrix<Real>& value,
                          const Vector<Real>& logSumExpValue,
-                         const Vector<std::list<Index> >& w,
+                         const Vector<std::set<Index> >& w,
                          Matrix<Real>& hessianCost) {
   Index nT = t.size();
   Index nParam = 2 * value.cols();
