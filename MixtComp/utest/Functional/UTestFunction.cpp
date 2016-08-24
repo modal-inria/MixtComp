@@ -163,7 +163,7 @@ TEST(Function, sampleWCheck) {
   ASSERT_EQ(nSub, function.w()(1).size());
 }
 
-TEST(Function, removeMissingUniformQuantile) {
+TEST(Function, removeMissingQuantile) {
   Index nTime = 5;
   Index nSub = 2;
 
@@ -182,7 +182,9 @@ TEST(Function, removeMissingUniformQuantile) {
   function.setVal(t, x, w);
   function.removeMissingQuantile(quantile);
 
-  for (int s = 0; s < nSub; ++s) {
-    std::cout << itString(function.w()(s)) << std::endl;
-  }
+  std::list<Index> w0 = {0, 3, 4};
+  std::list<Index> w1 = {1, 2};
+
+  ASSERT_EQ(w0, function.w()(0));
+  ASSERT_EQ(w1, function.w()(1));
 }
