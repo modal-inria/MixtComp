@@ -195,7 +195,6 @@ Index FunctionalClass::checkSampleCondition(std::string* warnLog) const {
 bool FunctionalClass::checkNbDifferentValue() const {
   for (Index s = 0; s < nSub_; ++s) {
     std::set<Real> values;
-
     for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
          it != itE;
          ++it) { // only loop on individuals in the current class
