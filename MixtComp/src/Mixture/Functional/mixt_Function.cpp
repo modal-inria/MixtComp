@@ -131,38 +131,31 @@ void Function::sampleWNoCheck(const Matrix<Real>& alpha,
 void Function::sampleWCheck(const Matrix<Real>& alpha,
                             const Matrix<Real>& beta,
                             const Vector<Real>& sd,
-                            Vector<Index>& wTot) {
+                            const FunctionalClass& fc) {
   Matrix<Real> jointLogProba;
   computeJointLogProba(alpha, beta, sd, jointLogProba);
 
-  Vector<Index> w0(nTime_, 0); // initial subregression of each timestep for current observation
+  Vector<Index> w0(nTime_);
   for (Index s = 0; s < nSub_; ++s) {
-    for (std::list<Index>::const_iterator it = w_(s).begin(), itE = w_(s).end();
-         it != itE;
-         ++it) {
+    for (std::set<Index>::const_iterator it = w_(s).begin(), itE = w_(s).end(); it != itE; ++it) { // building the list of labels
       w0(*it) = s;
     }
   }
 
-  for (Index s = 0; s < nSub_; ++s) {
-    w_(s).clear();
-  }
-
   Vector<Real> currProba;
-  Index currW;
   for (Index i = 0; i < nTime_; ++i) {
-    wTot(w0(i)) -= 1;
+    currProba.logToMulti(jointLogProba.row(i));
 
-    if (wTot(w0(i)) < nSub_) { // conditions for regression will not be met. Do nothing and keep current timestep in the same subregression
-      w_(w0(i)).push_back(i);
-      wTot(w0(i)) += 1;
+    for (Index s = 0; s < nSub_; ++s) {
+      w_(w0(i)).erase(i);
+      w_(s).insert(i);
+      w0(i) = s;
+
+      currProba *= fc.checkSampleCondition();
     }
-    else {
-      currProba.logToMulti(jointLogProba.row(i));
-      currW = multi_.sample(currProba);
-      w_(currW).push_back(i);
-      wTot(currW) += 1;
-    }
+    currProba /= currProba.sum();
+
+    w_(multi_.sample(currProba)).insert(i);
   }
 }
 

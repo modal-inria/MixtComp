@@ -245,18 +245,9 @@ void FunctionalClass::samplingStepNoCheck(Index i) {
 }
 
 void FunctionalClass::samplingStepCheck(Index i) {
-  Vector<Index> nTot(nSub_, 0); // the total number of times for each subregression, over all individuals. Not that this computation could be cached to be more efficient.
-  for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
-       it != itE;
-       ++it) { // only loop on individuals in the same class
-    for (Index s = 0; s < nSub_; ++s) {
-      nTot(s) += data_(*it).w()(s).size();
-    }
-  }
-
   data_(i).sampleWCheck(alpha_,
                         beta_,
                         sd_,
-                        nTot);
+                        *this);
 }
 } // namespace mixt
