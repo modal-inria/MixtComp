@@ -143,6 +143,8 @@ void Function::sampleWCheck(const Matrix<Real>& alpha,
   }
 
   Vector<Real> currProba;
+  Vector<Real> validValue(nSub_);
+  Vector<Real> sampleProba(nSub_);
   for (Index i = 0; i < nTime_; ++i) {
     currProba.logToMulti(jointLogProba.row(i));
 
@@ -151,11 +153,19 @@ void Function::sampleWCheck(const Matrix<Real>& alpha,
       w_(s).insert(i);
       w0(i) = s;
 
-      currProba *= fc.checkSampleCondition();
+      validValue(s) = fc.checkSampleCondition();
     }
-    currProba /= currProba.sum();
+    w_(w0(i)).erase(i);
+    sampleProba = currProba % validValue; // coefficient-wise multiplication
 
-    w_(multi_.sample(currProba)).insert(i);
+    if (sampleProba == 0.) { // might happen in some extreme cases
+      sampleProba = validValue / validValue.sum();
+    }
+    else {
+      sampleProba = sampleProba / sampleProba.sum();
+    }
+
+    w_(multi_.sample(sampleProba)).insert(i);
   }
 }
 
