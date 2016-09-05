@@ -1,4 +1,4 @@
-testNewLearn <- function(nbClass = 3,
+testNewLearn <- function(nbClass = 2,
                          nbInd = 100,
                          proportionPresent = 0.8,
                          nbBurnInIter = 100,
@@ -29,18 +29,18 @@ testNewLearn <- function(nbClass = 3,
     warning(res$mixture$warnLog)
   }
   
-  confMat <- confusionMatrix(nbClass,
-                             "dataGenNew/learn/classIn.csv",
-                             res$variable)
-  print(confMat)
-  cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
-      "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
-      sep = "")
+  # confMat <- confusionMatrix(nbClass,
+  #                            "dataGenNew/learn/classIn.csv",
+  #                            res$variable)
+  # print(confMat)
+  # cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
+  #     "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
+  #     sep = "")
   
   return(res)
 }
 
-testNewLearnPredict <- function(nbClass = 3,
+testNewLearnPredict <- function(nbClass = 2,
                                 nbInd = 100,
                                 proportionPresent = 0.7,
                                 nbBurnInIter = 100,

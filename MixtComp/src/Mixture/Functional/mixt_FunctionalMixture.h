@@ -289,7 +289,6 @@ class FunctionalMixture : public IMixture {
       Matrix<Real> sdLog   (nClass_ * sizeClassSd   , nObs);
 
       for (Index k = 0; k < nClass_; ++k) {
-        std::cout << "k: " << k << std::endl;
         alphaStat.block(k * sizeClassAlpha, 0,
                             sizeClassAlpha, nStat) = class_[k].alphaParamStat().getStatStorage();
         alphaLog .block(k * sizeClassAlpha, 0,
