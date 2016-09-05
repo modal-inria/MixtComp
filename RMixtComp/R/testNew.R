@@ -1,4 +1,4 @@
-testNewLearn <- function(nbClass = 2,
+testNewLearn <- function(nbClass = 3,
                          nbInd = 100,
                          proportionPresent = 0.8,
                          nbBurnInIter = 100,
@@ -40,7 +40,7 @@ testNewLearn <- function(nbClass = 2,
   return(res)
 }
 
-testNewLearnPredict <- function(nbClass = 2,
+testNewLearnPredict <- function(nbClass = 3,
                                 nbInd = 100,
                                 proportionPresent = 0.7,
                                 nbBurnInIter = 100,

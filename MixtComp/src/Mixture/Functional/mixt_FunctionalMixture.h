@@ -277,26 +277,33 @@ class FunctionalMixture : public IMixture {
       Index sizeClassBeta  = nSub_ * nCoeff_;
       Index sizeClassSd = nSub_;
 
-      Index nObs = class_[0].alphaParamStat().getLogStorage().cols();
+      Index nStat = class_[0].alphaParamStat().getStatStorage().cols();
+      Index nObs  = class_[0].alphaParamStat().getLogStorage() .cols(); // number of iterations in log
 
-      Matrix<Real> alphaStat(nClass_ * sizeClassAlpha, 3); // linearized and concatenated version of alpha
-      Matrix<Real> betaStat (nClass_ * sizeClassBeta , 3);
-      Matrix<Real> sdStat   (nClass_ * sizeClassSd   , 3);
+      Matrix<Real> alphaStat(nClass_ * sizeClassAlpha, nStat); // linearized and concatenated version of alpha
+      Matrix<Real> betaStat (nClass_ * sizeClassBeta , nStat);
+      Matrix<Real> sdStat   (nClass_ * sizeClassSd   , nStat);
 
       Matrix<Real> alphaLog(nClass_ * sizeClassAlpha, nObs); // linearized and concatenated version of alpha
       Matrix<Real> betaLog (nClass_ * sizeClassBeta , nObs);
       Matrix<Real> sdLog   (nClass_ * sizeClassSd   , nObs);
 
-
       for (Index k = 0; k < nClass_; ++k) {
-        alphaStat.block(k * sizeClassAlpha, 0, sizeClassAlpha, 3   ) = class_[k].alphaParamStat().getStatStorage();
-        alphaLog .block(k * sizeClassAlpha, 0, sizeClassAlpha, nObs) = class_[k].alphaParamStat().getLogStorage();
+        std::cout << "k: " << k << std::endl;
+        alphaStat.block(k * sizeClassAlpha, 0,
+                            sizeClassAlpha, nStat) = class_[k].alphaParamStat().getStatStorage();
+        alphaLog .block(k * sizeClassAlpha, 0,
+                            sizeClassAlpha, nObs)  = class_[k].alphaParamStat().getLogStorage();
 
-        betaStat.block(k * sizeClassBeta, 0, sizeClassBeta, 3   ) = class_[k].betaParamStat().getStatStorage();
-        betaLog .block(k * sizeClassBeta, 0, sizeClassBeta, nObs) = class_[k].betaParamStat().getLogStorage();
+        betaStat.block(k * sizeClassBeta, 0,
+                           sizeClassBeta, nStat) = class_[k].betaParamStat().getStatStorage();
+        betaLog .block(k * sizeClassBeta, 0,
+                           sizeClassBeta, nObs)  = class_[k].betaParamStat().getLogStorage();
 
-        sdStat.block(k * sizeClassSd, 0, sizeClassSd, 3   ) = class_[k].sdParamStat().getStatStorage();
-        sdLog .block(k * sizeClassSd, 0, sizeClassSd, nObs) = class_[k].sdParamStat().getLogStorage();
+        sdStat.block(k * sizeClassSd, 0,
+                         sizeClassSd, nStat) = class_[k].sdParamStat().getStatStorage();
+        sdLog .block(k * sizeClassSd, 0,
+                         sizeClassSd, nObs)  = class_[k].sdParamStat().getLogStorage();
       }
 
       p_paramExtractor_->exportParam(indexMixture_,
@@ -335,7 +342,6 @@ class FunctionalMixture : public IMixture {
                                       itE = vecInd_.end();
            it != itE;
            ++it) {
-//        it->removeMissingUniformSampling();
         it->removeMissingQuantile(quantile);
       }
     };
