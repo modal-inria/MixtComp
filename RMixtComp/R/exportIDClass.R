@@ -100,7 +100,7 @@ extractID = function(data){
   nbClass = nrow(IDClass)
   vecRow = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
-    rowStr = paste(pStr(IDClass[k,]), collapse = ', ')
+    rowStr = paste(IDClass[k,], collapse = ', ')
     vecRow[k] = paste0('[', rowStr, ']')
   }
   out = paste(vecRow, collapse = ',\n')

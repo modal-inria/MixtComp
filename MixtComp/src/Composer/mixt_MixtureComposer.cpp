@@ -427,7 +427,7 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
           nP = 0.;
         }
 
-        ekj(k, j) += p + nP;
+        ekj(k, j) += p;
       }
     }
   }
@@ -439,14 +439,16 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const {
   if (nbClass_ > 1) {
     Matrix<Real> ekj;
     E_kj(ekj);
+    Real den = nbInd_ * std::log(nbClass_);
 
     for (Index k = 0; k < nbClass_; ++k) {
-      Real min = ekj.row(k).minCoeff();
-      Real max = ekj.row(k).maxCoeff();
+  //    Real min = ekj.row(k).minCoeff();
+  //    Real max = ekj.row(k).maxCoeff();
 
       for(Index j = 0; j < nbVar_; ++j) {
-        idc(k, j) = (max - ekj(k, j)) / (max - min);
+  //      idc(k, j) = (max - ekj(k, j)) / (max - min);
   //      idc(k, j) = 1. - ekj(k, j) / ekj.row(k).sum();
+        idc(k, j) = ekj(k, j) / den;
       }
     }
   }
