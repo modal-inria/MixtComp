@@ -25,4 +25,44 @@
 
 using namespace mixt;
 
+/** Compute statistics on truncated distribution, using limit cases, where the truncation is numerically farthest from the mode. */
+TEST(NormalStatistic, expVarTruncated) {
+  Real mu = 12.;
+  Real sigma = 23.;
+  Real a = std::numeric_limits<Real>::lowest();
+  Real b = std::numeric_limits<Real>::max();
 
+  NormalStatistic normal;
+
+  Real computedMu, computedSigma;
+
+  normal.expVarTruncated(mu,
+                         sigma,
+                         a,
+                         b,
+                         computedMu,
+                         computedSigma);
+
+  ASSERT_NEAR(mu                , computedMu   , epsilon);
+  ASSERT_NEAR(std::pow(sigma, 2), computedSigma, epsilon);
+}
+
+/** Basic test for the unbounded sampler. Will be used as a template for more complex cases. */
+TEST(NormalStatistic, sample) {
+  Real mu = 12.;
+  Real sigma = 5.;
+  Index nSample = 1000000;
+  Real computedMu, computedSigma;
+
+  NormalStatistic normal;
+  Vector<Real> sampleVal(nSample);
+
+  for (Index i = 0; i < nSample; ++i) {
+    sampleVal(i) = normal.sample(mu, sigma);
+  }
+
+  meanSD(sampleVal, computedMu, computedSigma);
+
+  ASSERT_NEAR(mu   , computedMu   , 0.01);
+  ASSERT_NEAR(sigma, computedSigma, 0.01);
+}

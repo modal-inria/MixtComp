@@ -29,11 +29,9 @@
 #include "mixt_UniformStatistic.h"
 #include "mixt_ExponentialStatistic.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class NormalStatistic
-{
+class NormalStatistic {
   public:
     NormalStatistic();
 
@@ -74,6 +72,14 @@ class NormalStatistic
     Real sampleSB(Real mean,
                   Real sd,
                   Real supBound);
+
+    /** Compute expectation of a truncated normal law. Used in sampler debug for example. */
+    void expVarTruncated(Real mu,
+                         Real sigma,
+                         Real a,
+                         Real b,
+                         Real& truncMean,
+                         Real& truncVar);
 
   private:
     /** helper function to help sample on intervals */
