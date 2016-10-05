@@ -81,7 +81,6 @@ class NormalStatistic {
                            Real& truncMean,
                            Real& truncVar);
 
-  private:
     /** helper function to help sample on intervals */
     Real lbSampler(Real lower);
 
@@ -92,6 +91,7 @@ class NormalStatistic {
      * based on the spread between bounds*/
     Real sideSampler(Real lower, Real upper);
 
+  private:
     /** Random number generator */
     boost::mt19937 rng_;
 

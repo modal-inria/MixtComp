@@ -89,8 +89,7 @@ Real NormalStatistic::sampleI(Real mean,
     z = -sideSampler(-upper, -lower);
   }
   else if (lower < 0 && 0 < upper) {
-    if (upper - lower < sqrt(2. * pi)) // tight spread, need to use specific algorithm
-    {
+    if (upper - lower < sqrt(2. * pi)) { // tight spread, need to use specific algorithm
       z = lrbSampler(lower, upper);
     }
     else { // spread between bounds not important enough, traditional rejection sampling should work quickly
@@ -156,7 +155,7 @@ Real NormalStatistic::lrbSampler(Real lower, Real upper) {
     if (lower < 0. && 0. < upper) {
       rho = exp(-pow(z, 2));
     }
-    else if (upper < 0.) {
+    else if (upper < 0.) { // lrbSampler is called from sideSampler for that case to occur
       rho = exp((pow(upper, 2) - pow(z, 2))/2);
     }
     else if (0. < lower) {
@@ -176,7 +175,7 @@ Real NormalStatistic::sideSampler(Real lower, Real upper) {
 
   if (log(alpha) + alpha * lower / 2. > pow(lower, 2) / 2. - log(upper - lower)) { // test carried out in log, to avoid overflow
     do {
-      z = lbSampler(lower); // if upper is too far from lower, use lbSampler with rejection
+      z = lbSampler(lower); // if upper is far from lower, use lbSampler with rejection
     }
     while(upper < z);
   }
@@ -194,13 +193,13 @@ void NormalStatistic::expSigmaTruncated(Real mu,
                                         Real& truncMu,
                                         Real& truncSigma) {
   Real alpha = (a - mu) / sigma;
-  Real beta = (b - mu) / sigma;
+  Real beta  = (b - mu) / sigma;
 
   Real phiAlpha = pdf(alpha, 0., 1.);
-  Real phiBeta = pdf(beta, 0., 1.);
+  Real phiBeta  = pdf(beta , 0., 1.);
 
   Real PhiAlpha = cdf(alpha, 0., 1.);
-  Real PhiBeta = cdf(beta, 0., 1.);
+  Real PhiBeta  = cdf(beta , 0., 1.);
 
   Real z = PhiBeta - PhiAlpha;
 
