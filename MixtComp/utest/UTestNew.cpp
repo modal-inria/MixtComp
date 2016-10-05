@@ -36,15 +36,10 @@ TEST(NormalStatistic, expVarTruncated) {
 
   Real computedMu, computedSigma;
 
-  normal.expVarTruncated(mu,
-                         sigma,
-                         a,
-                         b,
-                         computedMu,
-                         computedSigma);
+  normal.expSigmaTruncated(mu, sigma, a, b, computedMu, computedSigma);
 
-  ASSERT_NEAR(mu                , computedMu   , epsilon);
-  ASSERT_NEAR(std::pow(sigma, 2), computedSigma, epsilon);
+  ASSERT_NEAR(mu   , computedMu   , epsilon);
+  ASSERT_NEAR(sigma, computedSigma, epsilon);
 }
 
 /** Basic test for the unbounded sampler. Will be used as a template for more complex cases. */
@@ -65,4 +60,29 @@ TEST(NormalStatistic, sample) {
 
   ASSERT_NEAR(mu   , computedMu   , 0.01);
   ASSERT_NEAR(sigma, computedSigma, 0.01);
+}
+
+TEST(NormalStatistic, sampleIUpperInf0) {
+  Real mu = 12.;
+  Real sigma = 5.;
+
+  Real a = 6.;
+  Real b = 9.;
+
+  Index nSample = 1000000;
+  Real expectedMu, expectedSigma, computedMu, computedSigma;
+
+  NormalStatistic normal;
+  Vector<Real> sampleVal(nSample);
+
+  for (Index i = 0; i < nSample; ++i) {
+    sampleVal(i) = normal.sampleI(mu, sigma, a, b);
+  }
+
+  normal.expSigmaTruncated(mu, sigma, a, b, expectedMu, expectedSigma);
+
+  meanSD(sampleVal, computedMu, computedSigma);
+
+  ASSERT_NEAR(expectedMu   , computedMu   , 0.01);
+  ASSERT_NEAR(expectedSigma, computedSigma, 0.01);
 }

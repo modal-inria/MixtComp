@@ -187,12 +187,12 @@ Real NormalStatistic::sideSampler(Real lower, Real upper) {
   return z;
 }
 
-void NormalStatistic::expVarTruncated(Real mu,
-                                      Real sigma,
-                                      Real a,
-                                      Real b,
-                                      Real& truncMean,
-                                      Real& truncVar) {
+void NormalStatistic::expSigmaTruncated(Real mu,
+                                        Real sigma,
+                                        Real a,
+                                        Real b,
+                                        Real& truncMu,
+                                        Real& truncSigma) {
   Real alpha = (a - mu) / sigma;
   Real beta = (b - mu) / sigma;
 
@@ -204,8 +204,8 @@ void NormalStatistic::expVarTruncated(Real mu,
 
   Real z = PhiBeta - PhiAlpha;
 
-  truncMean = mu + (phiAlpha - phiBeta) / z * sigma;
-  truncVar = pow(sigma, 2) * (1. + (alpha * phiAlpha - beta * phiBeta) / z - pow((phiAlpha - phiBeta) / z, 2));
+  truncMu = mu + (phiAlpha - phiBeta) / z * sigma;
+  truncSigma = sqrt(pow(sigma, 2) * (1. + (alpha * phiAlpha - beta * phiBeta) / z - pow((phiAlpha - phiBeta) / z, 2)));
 }
 
 } // namespace mixt
