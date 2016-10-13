@@ -1,3 +1,43 @@
+#'
+#' @title Import data from a csv file
+#' 
+#' @description Import the data file and descriptor file in the format required by \link{mixtCompCluster} and \link{mixtCompPredict} functions.
+#'
+#' @param ... a vector containing the names of the two files to import (see Details).
+#' 
+#' @return a list containing :
+#' \describe{
+#'   \item{lm}{imported dat for \link{mixtCompCluster} and \link{mixtCompPredict}}
+#'   \item{warnlog}{warning message}
+#' }
+#' 
+#' 
+#' @details 
+#' The functions \link{mixtCompCluster} and \link{mixtCompPredict} require two files : a data file and a descriptor file.
+#' 
+#' 
+#' In the data file is a csv file (; separator), each column corresponds to a variable. The first row contains the name of each variable. 
+#' Missing data are indicated by a \emph{?}.
+#' 
+#' The descriptor file is a csv file (; separator) containing 3 rows. The first row contains the names of the variables.
+#' This first row must be the same as the first row of the data file. The second row contains the model associated with each variables.
+#' Six models are available in RMixtComp : Gaussian_sjk, Categorical_pjk, Poisson_k, Functional, Rank, Ordinal.
+#' The third row is optional and contains parameters associated with each model. 
+#' In the case of a functional model, \emph{nSub: i, nCoeff: j} must be indicated where \emph{i} is the number
+#'  of subregressions in a functional data and \emph{j} the number of coefficients of each regression (2 = linear, 3 = quadratic, ...).
+#'
+#'
+#' @examples 
+#' \dontrun{
+#' dat <- getData(c("data.csv", "descriptor.csv")) 
+#' }
+#'
+#' @seealso \link{mixtCompCluster} \link{mixtCompPredict}
+#' 
+#' @author Vincent Kubicki
+#' 
+#' @export
+#'
 getData <- function(...) {
   argList <- list(...)
   lm <- list()

@@ -1,4 +1,4 @@
-library(shape)
+require(shape)
 
 confidenceInterval <- function(dataOut, nbSamples, level = 0.95)
 {
