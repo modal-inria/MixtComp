@@ -12,7 +12,7 @@ getData(...)
 \value{
 a list containing :
 \describe{
-  \item{lm}{imported dat for \link{mixtCompCluster} and \link{mixtCompPredict}}
+  \item{lm}{imported data for \link{mixtCompCluster} and \link{mixtCompPredict}}
   \item{warnlog}{warning message}
 }
 }

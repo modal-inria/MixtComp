@@ -17,21 +17,22 @@ mixtCompPredict(dataList, paramList, mcStrategy, nbClass, confidenceLevel)
 
 \item{nbClass}{the number of class of the mixture model.}
 
-\item{confidenceLevel}{level of confidence for interval of estimated parameters.}
+\item{confidenceLevel}{quantile for for confidence interval of estimated parameters.}
 }
 \value{
 A list containing 3 lists :
 \describe{
  \item{strategy}{a copy of \emph{mcStrategy} parameter.}
  \item{mixture}{information about the mixture.}
- \item{variable}{infoRmation about the estimated parameters (see \emph{Details}).}
+ \item{variable}{information about the estimated parameters (see \emph{Details}).}
 }
 }
 \description{
 Estimate the parameter of a mixture model or predict the cluster of new samples.
 }
 \details{
-#' 
+Details about the output object of \emph{mixtCompCluster} and \emph{mixtCompPredict} functions.
+
 \emph{mcStrategy} is a list containing the different number of iterations for the algorithm. 
 The algorithm is decomposed in a burn-in phase and a normal phase. 
 Estimates from the burn-in phase are not shown in output.
@@ -51,10 +52,57 @@ The output list \emph{mixture} contains the \emph{BIC}, \emph{ICL}, number of sa
 the number of class (\emph{nCluster}), the observed loglikelihood (\emph{lnObservedLikelihood}),
 the completed loglikelihood (\emph{lnCompletedLikelihood}), the number of free parameters of the mixture (\emph{nbFreeParameters}),
 the function used to create the output (\emph{mode} = "learn" for \link{mixtCompCluster} or "predict" for \link{mixtCompPredict}),
-something mathematic \emph{IdClass}, the execution time \emph{runTime} and the warnings generated \emph{warnlog}.
+something mathematic (\emph{IdClass}), the execution time (\emph{runTime}) and the warnings generated (\emph{warnlog}).
 
 
-The output list \emph{variable}
+The output list \emph{variable} contains 3 lists : \emph{data}, \emph{type} and \emph{param}. 
+Each of these lists contains a list for each variable (the name of each list is the name of the variable) and for the class of samples (\emph{z_class}).
+The \emph{type} list contains the model used for each variable. Each list of the \emph{data} list contains
+ the completed data in the \emph{completed} element. The estimated parameter can be find in the \emph{stat} 
+ element in the \emph{param} list (see Section \emph{View of an output object}).
+}
+\section{View of an output object}{
+
+Example of output object with variables names "variable1", "variable2",...
+
+\tabular{lll}{
+output  \cr
+|_______ \tab strategy \tab : mcStrategy object\cr
+| \cr
+|_______ \tab mixture \tab __ BIC \cr
+|        \tab         \tab|_ ICL\cr
+|        \tab         \tab|_ lnCompletedLikelihood\cr
+|        \tab         \tab|_ lnObservedLikelihood \cr
+|        \tab         \tab|_ IdClass  \cr
+|        \tab         \tab|_ mode \cr
+|        \tab         \tab|_ runTime \cr
+|        \tab         \tab|_ nbSample \cr
+|        \tab         \tab|_ nbInd  \cr
+|        \tab         \tab|_ nbFreeParameters \cr
+|        \tab         \tab|_ nbCluster \cr
+|        \tab         \tab|_ warnlog \cr
+}
+\tabular{lllll}{
+|  \cr
+|_______ \tab variable \tab __ type \tab __ z_class  \cr
+         \tab |        \tab         \tab |_ variable1  \cr
+         \tab |        \tab         \tab |_ variable2  \cr
+         \tab |        \tab         \tab |_ ...   \cr
+         \tab |   \cr
+         \tab |_ data \tab __ z_class \tab __ completed\cr
+         \tab |       \tab |          \tab |_ stat \cr
+         \tab |       \tab |_ variable1 \tab __ completed\cr
+         \tab |       \tab |            \tab |_ stat \cr
+         \tab |       \tab |_ ... \tab  \tab \cr
+         \tab | \tab \tab  \tab \cr
+         \tab |_ param \tab __ z_class \tab __ pi \tab __ stat\cr
+         \tab          \tab |          \tab       \tab |_ log \cr
+         \tab          \tab |          \tab       \tab |_ paramStr \cr
+         \tab          \tab |_ variable1 \tab __ NumericalParam \tab __ stat\cr
+         \tab          \tab |            \tab                   \tab |_ log \cr
+         \tab          \tab |            \tab                   \tab |_ paramStr \cr
+         \tab          \tab |_ ...       \tab                   \tab \cr
+}
 }
 \examples{
 \dontrun{

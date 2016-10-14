@@ -7,7 +7,7 @@
 #' 
 #' @return a list containing :
 #' \describe{
-#'   \item{lm}{imported dat for \link{mixtCompCluster} and \link{mixtCompPredict}}
+#'   \item{lm}{imported data for \link{mixtCompCluster} and \link{mixtCompPredict}}
 #'   \item{warnlog}{warning message}
 #' }
 #' 
@@ -17,7 +17,9 @@
 #' 
 #' 
 #' In the data file is a csv file (; separator), each column corresponds to a variable. The first row contains the name of each variable. 
-#' Missing data are indicated by a \emph{?}.
+#' Missing data are indicated by a \emph{?}. In the gaussian case, partial data can be provided through intervals denoted by 
+#' \emph{[a:b]} where \emph{a} (resp. \emph{b}) is a real or \emph{-inf} (resp. \emph{+inf}). 
+#' In the categorical and ordinal cases, \emph{}
 #' 
 #' The descriptor file is a csv file (; separator) containing 3 rows. The first row contains the names of the variables.
 #' This first row must be the same as the first row of the data file. The second row contains the model associated with each variables.
