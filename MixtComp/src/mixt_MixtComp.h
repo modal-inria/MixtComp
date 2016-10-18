@@ -40,6 +40,7 @@
 #include "Mixture/Functional/mixt_FunctionalComputation.h"
 #include "Mixture/Functional/mixt_FunctionalClass.h"
 #include "Mixture/Functional/mixt_FunctionalParser.h"
+#include "Mixture/Rank/mixt_RankParser.h"
 #include "Mixture/SimpleMixtureBridge/mixt_Clust_Traits.h"
 #include "Manager/mixt_MixtureManager.h"
 #include "Strategy/mixt_SEMStrategy.h"

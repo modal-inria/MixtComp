@@ -242,7 +242,7 @@ class AugmentedData {
       }
     }
 
-    /** two dimensional data table, for example a Matrix<Real> */
+    /** Completed data, usually a Vector, for example Vector<Index> or Vector<Real> */
     DataType data_;
 
     /** data structure for partially observed values */

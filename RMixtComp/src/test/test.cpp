@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
   RInside R(argc, argv);              // create an embedded R instance
     R.parseEvalQ("library(RMixtComp)");
 
-    R.parseEvalQ("testNewLearn()");
+//    R.parseEvalQ("testNewLearn()");
 //    R.parseEvalQ("testNewLearnPredict()");
 
 //    R.parseEvalQ("testNewLearn(regen = FALSE)");
@@ -43,6 +43,9 @@ int main(int argc, char *argv[]) {
 //    R.parseEvalQ("clustAuchan()");
 //    R.parseEvalQ("linAlg()");
 //    R.parseEvalQ("testRougeGorge()");
+
+      R.parseEvalQ("setwd(\"/Users/kubicki/Documents/160224 - NFID\")");
+      R.parseEvalQ("source(\"06 - analysis test.R\")");
 
 //    R.parseEvalQ("setwd(\"/Users/kubicki/Documents/160803 - debug MixtComp/160803 - Maxime\")");
 //    R.parseEvalQ("source(\"test.R\")");

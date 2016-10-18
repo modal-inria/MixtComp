@@ -36,7 +36,7 @@ GibbsStrategy::GibbsStrategy(MixtureComposer* p_composer,
 std::string GibbsStrategy::run() {
   std::string warnLog;
 
-  p_composer_->removeMissing(keepParam_);
+  p_composer_->removeMissing(keepParam_); // here a samplingStep might not be possible, because some models need a valid starting point for a samplingStep, and this can only be provided by removeMissing
 
   p_composer_->gibbsSampling(doNotSampleData_,
                              param_.nbGibbsBurnInIter_,
