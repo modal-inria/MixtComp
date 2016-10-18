@@ -42,11 +42,11 @@ void DataExtractorR::exportVals(int indexMixture,
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   for (int i = 0; i < augData.data_.rows(); ++i) {
-    dataR(i) = augData.data_(i); // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
+    dataR(i) = augData.data_(i) + minModality; // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
 
     if (augData.misData_(i).first != present_) {
       Rcpp::List currList; // storage for the current missing value
-      currList.push_back(i + 1); // store position, R matrices rows start at 1
+      currList.push_back(i + minIndex); // store position, R matrices rows start at 1
 
       for (std::vector<std::pair<int, Real> >::const_iterator itVec = dataStatStorage(i).begin();
            itVec != dataStatStorage(i).end();
@@ -75,7 +75,7 @@ void DataExtractorR::exportVals(int indexMixture,
                            tikC.cols()); // the empirical tik are completely exported, instead of the predominant modalities as in other categorical variables
 
   for (int i = 0; i < tikC.rows(); ++i) {
-    dataR(i) = augData.data_(i) + 1; // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
+    dataR(i) = augData.data_(i) + minModality; // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
     for (int j = 0; j < tikC.cols(); ++j) {
       tikR(i, j) = tikC(i, j);
     }
