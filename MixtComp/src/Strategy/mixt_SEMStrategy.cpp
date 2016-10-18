@@ -86,7 +86,6 @@ std::string SemStrategy::run() {
     break;
   }
 
-  initGibbs();
   runGibbs();
 
   return warnLog;
@@ -96,8 +95,8 @@ std::string SemStrategy::initSEMCheck() {
   std::string warnLog;
 
   for (int n = 0; n < nbSamplingAttempts; ++n) { // multiple initialization attempts
-    p_composer_->initializeProp(); // reset prop
-    p_composer_->removeMissing(initParam_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+    p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+    p_composer_->initParam(); // initialize Markov Chain for model parameters which need it
 
     if (n < nbSamplingAttempts - 1) {
       if (p_composer_->checkSampleCondition() == 1) { // log is not generated, since further trials are expected
@@ -124,8 +123,9 @@ std::string SemStrategy::initSEMCheck() {
 }
 
 void SemStrategy::initSEMNoCheck() {
-  p_composer_->initializeProp(); // reset prop
-  p_composer_->removeMissing(initParam_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+  p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+  p_composer_->initParam(); // initialize Markov Chain for model parameters which need it
+
   p_composer_->mStep(biased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
 }
 
@@ -160,17 +160,15 @@ void SemStrategy::runSEMNoCheck() {
                          3); // groupMax
 }
 
-void SemStrategy::initGibbs() {
-  p_composer_->removeMissing(keepParam_); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
-}
-
 void SemStrategy::runGibbs() {
-  p_composer_->gibbsSampling(doNotSampleData_,
+  p_composer_->gibbsSampling(performInitialization_,
+                             doNotSampleData_,
                              param_.nbGibbsBurnInIter_,
                              2, // group
                              3); // groupMax
 
-  p_composer_->gibbsSampling(sampleData_,
+  p_composer_->gibbsSampling(doNotPerformInitialization_,
+                             sampleData_,
                              param_.nbGibbsIter_,
                              3, // group
                              3); // groupMax

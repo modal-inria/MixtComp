@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 //    R.parseEvalQ("testNewLearn(regen = FALSE)");
 
 //    R.parseEvalQ("testGenDataLearn()");
-//    R.parseEvalQ("testLearnPredict()");
+    R.parseEvalQ("testLearnPredict()");
 //    R.parseEvalQ("testAERES()");
 
 //    R.parseEvalQ("testRankWords()");
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
 //    R.parseEvalQ("linAlg()");
 //    R.parseEvalQ("testRougeGorge()");
 
-      R.parseEvalQ("setwd(\"/Users/kubicki/Documents/160224 - NFID\")");
-      R.parseEvalQ("source(\"06 - analysis test.R\")");
+//    R.parseEvalQ("setwd(\"/Users/kubicki/Documents/160224 - NFID\")");
+//    R.parseEvalQ("source(\"06 - analysis test.R\")");
 
 //    R.parseEvalQ("setwd(\"/Users/kubicki/Documents/160803 - debug MixtComp/160803 - Maxime\")");
 //    R.parseEvalQ("source(\"test.R\")");

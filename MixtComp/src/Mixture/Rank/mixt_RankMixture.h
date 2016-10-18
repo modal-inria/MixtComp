@@ -138,13 +138,17 @@ class RankMixture : public IMixture
                        gCond);
     }
 
-    void samplingStepNoCheck(Index i) {
-        data_(i).sampleY(mu_((*p_zi_)(i)),
-                         pi_((*p_zi_)(i)),
-                         allGAuthorized_);
-        data_(i).sampleX(mu_((*p_zi_)(i)),
-                         pi_((*p_zi_)(i)),
-                         allGAuthorized_);
+    void samplingStepNoCheck(SamplerInitialization init, Index i) {
+      if (init == performInitialization_) {
+        initData(i);
+      }
+
+      data_(i).sampleY(mu_((*p_zi_)(i)),
+                       pi_((*p_zi_)(i)),
+                       allGAuthorized_);
+      data_(i).sampleX(mu_((*p_zi_)(i)),
+                       pi_((*p_zi_)(i)),
+                       allGAuthorized_);
     }
 
     /** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */
@@ -242,31 +246,32 @@ class RankMixture : public IMixture
       return class_[k].lnObservedProbability(i);
     }
 
-    void removeMissing(InitParam init) {
-      for (int i = 0; i < nbInd_; ++i) {
-        data_(i).removeMissing();
-      }
+    void initData(Index i) {
+      data_(i).removeMissing();
+    }
 
-      if (init == initParam_) { // mu is initialized through direct sampling in each class
-        for (int k = 0; k < nbClass_; ++k) {
-          MultinomialStatistic multi;
-          int sampleIndInClass = multi.sampleInt(0, classInd_[k].size() - 1); // individual sampled inside the class
+    /**
+     * mu is initialized through direct sampling in each class
+     */
+    void initParam() {
+      for (Index k = 0; k < nbClass_; ++k) {
+        MultinomialStatistic multi;
+        int sampleIndInClass = multi.sampleInt(0, classInd_[k].size() - 1); // individual sampled inside the class
 
-          int i = 0;
-          int sampleInd = -1;
-          for (std::set<Index>::const_iterator it  = classInd_[k].begin(),
-                                               itE = classInd_[k].end();
-               it != itE;
-               ++it, ++i) {
-            if (i == sampleIndInClass) {
-              sampleInd = *it;
-              break;
-            }
+        int i = 0;
+        int sampleInd = -1;
+        for (std::set<Index>::const_iterator it  = classInd_[k].begin(),
+                                             itE = classInd_[k].end();
+             it != itE;
+             ++it, ++i) {
+          if (i == sampleIndInClass) {
+            sampleInd = *it;
+            break;
           }
-
-          mu_(k) = data_(sampleInd).x();
-          pi_(k) = piInitISR;
         }
+
+        mu_(k) = data_(sampleInd).x();
+        pi_(k) = piInitISR;
       }
     }
 
