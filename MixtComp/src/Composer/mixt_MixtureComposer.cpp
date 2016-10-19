@@ -51,6 +51,10 @@ MixtureComposer::MixtureComposer(Index nbInd,
     confidenceLevel_(confidenceLevel) {
   std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nbInd << ", nbClass: " << nbClass << std::endl;
   zClassInd_.setIndClass(nbInd, nbClass);
+
+  std::stringstream sstm;
+  sstm << "nbModality: " << nbClass;
+  paramStr_ = sstm.str();
 }
 
 MixtureComposer::~MixtureComposer() {
@@ -281,6 +285,7 @@ void MixtureComposer::storeSEMRun(int iteration,
   paramStat_.sampleParam(iteration,
                          iterationMax);
   if (iteration == iterationMax){
+    paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
     paramStat_.setExpectationParam(); // replace pi by the median values
   }
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {

@@ -332,6 +332,8 @@ class MixtureComposer {
     /** name of the latent class variable */
     std::string idName_;
 
+    std::string paramStr_;
+
     /** number of classes */
     Index nbClass_;
 
