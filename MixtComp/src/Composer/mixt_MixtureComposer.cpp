@@ -51,26 +51,16 @@ MixtureComposer::MixtureComposer(Index nbInd,
     confidenceLevel_(confidenceLevel) {
   std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nbInd << ", nbClass: " << nbClass << std::endl;
   zClassInd_.setIndClass(nbInd, nbClass);
-  initializeProp(); // default values that will be overwritten either by pStep (learning), or eStepObserved (prediction)
-  initializeTik();
 }
 
-MixtureComposer::~MixtureComposer()
-{
-  for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it)
-  {
+MixtureComposer::~MixtureComposer() {
+  for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
     delete (*it);
   }
 }
 
-void MixtureComposer::initializeProp()
-{
-  prop_     = 1./(Real)nbClass_;
-}
-
-void MixtureComposer::initializeTik()
-{
-  tik_      = 1./(Real)nbClass_;
+void MixtureComposer::initializeTik() {
+  tik_ = 1. / nbClass_;
 }
 
 Real MixtureComposer::lnObservedProbability(int i, int k) const {
@@ -120,8 +110,7 @@ Real MixtureComposer::lnObservedLikelihood() {
   return lnLikelihood;
 }
 
-Real MixtureComposer::lnCompletedLikelihood()
-{
+Real MixtureComposer::lnCompletedLikelihood() {
   Real lnLikelihood = 0.;
 
   for (Index i = 0; i < nbInd_; ++i) { // Compute the completed likelihood for the complete mixture model, using the completed data
@@ -176,7 +165,6 @@ void MixtureComposer::eStep() {
   for (Index i = 0; i < nbInd_; ++i) {
     eStepInd(i);
   }
-
 }
 
 void MixtureComposer::eStepInd(int i) {
@@ -189,6 +177,7 @@ void MixtureComposer::eStepInd(int i) {
 }
 
 void MixtureComposer::pStep() {
+  prop_ = 0.;
   for (Index i = 0; i < zClassInd_.zi().data_.rows(); ++i) {
     prop_(zClassInd_.zi().data_(i)) += 1.;
   }
@@ -205,11 +194,9 @@ void MixtureComposer::writeParameters() const {
   }
 }
 
-int MixtureComposer::nbFreeParameters() const
-{
+int MixtureComposer::nbFreeParameters() const {
   int sum = nbClass_ - 1; // proportions
-  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
-  {
+  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
     sum+= (*it)->nbFreeParameter();
   }
   return sum;
@@ -227,16 +214,16 @@ void MixtureComposer::samplingStepCheck(int i) {
   }
 }
 
-void MixtureComposer::samplingStepNoCheck() {
+void MixtureComposer::samplingStepNoCheck(SamplerInitialization init) {
   #pragma omp parallel for
   for (Index i = 0; i < nbInd_; ++i) {
-    samplingStepNoCheck(i);
+    samplingStepNoCheck(init, i);
   }
 }
 
-void MixtureComposer::samplingStepNoCheck(int i) {
+void MixtureComposer::samplingStepNoCheck(SamplerInitialization init, int i) {
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-    (*it)->samplingStepNoCheck(i);
+    (*it)->samplingStepNoCheck(init, i);
   }
 }
 
@@ -269,8 +256,7 @@ int MixtureComposer::checkSampleCondition(std::string* warnLog) const {
   return 1;
 }
 
-int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const
-{
+int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const {
   for (Index k = 0; k < nbClass_; ++k) {
     if (zClassInd_.classInd()(k).size() > 0) {
       continue;
@@ -321,13 +307,13 @@ void MixtureComposer::storeGibbsRun(int ind,
   }
 }
 
-void MixtureComposer::registerMixture(IMixture* p_mixture)
-{
+void MixtureComposer::registerMixture(IMixture* p_mixture) {
   v_mixtures_.push_back(p_mixture);
   ++nbVar_;
 }
 
-void MixtureComposer::gibbsSampling(GibbsSampleData sample,
+void MixtureComposer::gibbsSampling(SamplerInitialization init,
+                                    GibbsSampleData sample,
                                     int nbGibbsIter,
                                     int group,
                                     int groupMax) {
@@ -341,6 +327,12 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
 
   #pragma omp parallel for
   for (Index i = 0; i < nbInd_; ++i) {
+    if (init == performInitialization_) {
+      initializeTik();
+      sStepNoCheck(i);
+      samplingStepNoCheck(performInitialization_, i);
+    }
+
     myTimer.iteration(i, nbInd_ - 1);
     writeProgress(group,
                   groupMax,
@@ -351,7 +343,7 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
       eStepInd(i);
 
       sStepNoCheck(i);
-      samplingStepNoCheck(i);
+      samplingStepNoCheck(doNotPerformInitialization_, i);
 
       if (sample == sampleData_) {
         storeGibbsRun(i,
@@ -362,11 +354,9 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample,
   }
 }
 
-std::vector<std::string> MixtureComposer::paramName() const
-{
+std::vector<std::string> MixtureComposer::paramName() const {
   std::vector<std::string> names(nbClass_);
-  for (Index k = 0; k < nbClass_; ++k)
-  {
+  for (Index k = 0; k < nbClass_; ++k) {
     std::stringstream sstm;
     sstm << "k: "
          << k + minModality;
@@ -376,23 +366,30 @@ std::vector<std::string> MixtureComposer::paramName() const
   return names;
 }
 
-std::vector<std::string> MixtureComposer::mixtureName() const
-{
+std::vector<std::string> MixtureComposer::mixtureName() const {
   std::vector<std::string> names(nbVar_);
-  for (Index j = 0; j < nbVar_; ++j)
-  {
+  for (Index j = 0; j < nbVar_; ++j) {
     names[j] = v_mixtures_[j]->idName();
   }
 
   return names;
 }
 
-void MixtureComposer::removeMissing(InitParam algo) {
+void MixtureComposer::initData() {
   initializeTik();
   sStepNoCheck(); // uniform initialization of z
 
   for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-    (*it)->removeMissing(algo);
+    #pragma omp parallel for
+    for (Index i = 0; i < nbInd_; ++i) {
+      (*it)->initData(i);
+    }
+  }
+}
+
+void MixtureComposer::initParam() {
+  for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+    (*it)->initParam();
   }
 }
 

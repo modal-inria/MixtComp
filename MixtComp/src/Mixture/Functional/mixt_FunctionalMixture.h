@@ -90,7 +90,11 @@ class FunctionalMixture : public IMixture {
       class_[(*p_zi_)(i)].samplingStepCheck(i);
     };
 
-    void samplingStepNoCheck(Index i) {
+    void samplingStepNoCheck(SamplerInitialization init, Index i) {
+      if (init == performInitialization_) {
+        initData(i);
+      }
+
       class_[(*p_zi_)(i)].samplingStepNoCheck(i);
     };
 
@@ -263,6 +267,8 @@ class FunctionalMixture : public IMixture {
         return warnLog;
       }
 
+      globalQuantile(vecInd_, quantile_);
+
       // datastat will be setup here when partially observed value will be supported
       // should lnObservedProbability be computed here in prediction, as it is done for Ordinal and Rank ?
 
@@ -333,17 +339,14 @@ class FunctionalMixture : public IMixture {
                                      paramStr_);
     };
 
-    void removeMissing(InitParam algo) {
-      Vector<Real> quantile;
-      globalQuantile(vecInd_, quantile);
-
-      for (Vector<Function>::iterator it  = vecInd_.begin(),
-                                      itE = vecInd_.end();
-           it != itE;
-           ++it) {
-        it->removeMissingQuantile(quantile);
-      }
+    void initData(Index i) {
+      vecInd_(i).removeMissingQuantile(quantile_);
     };
+
+    /**
+     * Parameters are estimated directly, hence no need for a specific initialization
+     */
+    void initParam() {};
 
     bool observedCorrection() {return true;}
 
@@ -404,6 +407,8 @@ class FunctionalMixture : public IMixture {
 
     /** Data */
     Vector<Function> vecInd_;
+
+    Vector<Real> quantile_;
 
     const Vector<Index>* p_zi_;
     const Vector<std::set<Index> >& classInd_;

@@ -154,7 +154,10 @@ class MixtureBridge : public IMixture {
                                  (*p_zi_)(ind));
     }
 
-    virtual void samplingStepNoCheck(Index ind) {
+    /**
+     * Note that initData is not called here, because sampling with param does not need a specific initialization
+     */
+    virtual void samplingStepNoCheck(SamplerInitialization init, Index ind) {
       sampler_.samplingStepNoCheck(ind,
                                    (*p_zi_)(ind));
     }
@@ -237,9 +240,11 @@ class MixtureBridge : public IMixture {
                                      paramStr_);
     }
 
-    void removeMissing(InitParam algo) {
-      augData_.removeMissing();
+    void initData(Index i) {
+      augData_.removeMissing(i);
     }
+
+    void initParam() {};
 
     Index checkSampleCondition(std::string* warnLog = NULL) const {
       if (warnLog == NULL) {

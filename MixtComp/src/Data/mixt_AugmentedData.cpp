@@ -57,176 +57,165 @@ Range<Index>::Range(Index min,
 {}
 
 template<>
-void AugmentedData<Vector<Real> >::removeMissingSample()
+void AugmentedData<Vector<Real> >::removeMissingSample(Index i)
 {
-  for (int i = 0; i < misData_.rows(); ++i)
+  if (misData_(i).first != present_)
   {
-    if (misData_(i).first != present_)
+    Real sampleVal;
+    switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
     {
-      Real sampleVal;
-      switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
+      case present_:
+      {}
+      break;
+
+      case missing_:
       {
-        case present_:
-        {}
-        break;
+        Real min = dataRange_.min_;
+        Real max = dataRange_.max_;
+        sampleVal = uniform_.sample(min,
+                                    max);
+      }
+      break;
 
-        case missing_:
+      case missingFiniteValues_: // no missing finite values for continuous data
+      {}
+      break;
+
+      case missingIntervals_:
+      {
+        Real infBound = misData_(i).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
+        Real supBound = misData_(i).second[1];
+        sampleVal = uniform_.sample(infBound,
+                                    supBound);
+      }
+      break;
+
+      case missingLUIntervals_:
+      {
+        Real min = dataRange_.min_;
+        Real supBound = misData_(i).second[0];
+        if (min < supBound)
         {
-          Real min = dataRange_.min_;
-          Real max = dataRange_.max_;
           sampleVal = uniform_.sample(min,
-                                      max);
-        }
-        break;
-
-        case missingFiniteValues_: // no missing finite values for continuous data
-        {}
-        break;
-
-        case missingIntervals_:
-        {
-          Real infBound = misData_(i).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
-          Real supBound = misData_(i).second[1];
-          sampleVal = uniform_.sample(infBound,
                                       supBound);
         }
-        break;
-
-        case missingLUIntervals_:
+        else
         {
-          Real min = dataRange_.min_;
-          Real supBound = misData_(i).second[0];
-          if (min < supBound)
-          {
-            sampleVal = uniform_.sample(min,
-                                        supBound);
-          }
-          else
-          {
-            sampleVal = supBound;
-          }
+          sampleVal = supBound;
         }
-        break;
-
-        case missingRUIntervals_:
-        {
-          Real infBound = misData_(i).second[0];
-          Real max = dataRange_.max_;
-          if (infBound < max)
-          {
-            sampleVal = uniform_.sample(infBound,
-                                        max);
-          }
-          else
-          {
-            sampleVal = infBound;
-          }
-        }
-        break;
-
-        default:
-        {}
-        break;
-
       }
-      data_(i) = sampleVal;
+      break;
+
+      case missingRUIntervals_:
+      {
+        Real infBound = misData_(i).second[0];
+        Real max = dataRange_.max_;
+        if (infBound < max)
+        {
+          sampleVal = uniform_.sample(infBound,
+                                      max);
+        }
+        else
+        {
+          sampleVal = infBound;
+        }
+      }
+      break;
+
+      default:
+      {}
+      break;
+
     }
+    data_(i) = sampleVal;
   }
 }
 
 template<>
-void AugmentedData<Vector<int> >::removeMissingSample()
-{
-  for (int i = 0; i < misData_.rows(); ++i)
+void AugmentedData<Vector<int> >::removeMissingSample(Index i) {
+  if (misData_(i).first != present_)
   {
-    if (misData_(i).first != present_)
+    int sampleVal;
+    int nbModalities = dataRange_.range_;
+
+    switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
     {
-      int sampleVal;
-      int nbModalities = dataRange_.range_;
+      case present_:
+      {}
+      break;
 
-      switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
+      case missing_:
       {
-        case present_:
-        {}
-        break;
-
-        case missing_:
-        {
-          Vector<Real> modalities(nbModalities);
-          modalities = 1. / nbModalities;
-          sampleVal = multi_.sample(modalities);
-        }
-        break;
-
-        case missingFiniteValues_:
-        {
-          Real proba = 1. / misData_(i).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
-          Vector<Real> modalities(nbModalities);
-          modalities = 0.;
-          for(std::vector<int>::const_iterator itParam = misData_(i).second.begin();
-              itParam != misData_(i).second.end();
-              ++itParam)
-          {
-            modalities[*itParam] = proba;
-          }
-          sampleVal = multi_.sample(modalities);
-        }
-        break;
-
-        default: // other types of intervals not present in integer data
-        {}
-        break;
+        Vector<Real> modalities(nbModalities);
+        modalities = 1. / nbModalities;
+        sampleVal = multi_.sample(modalities);
       }
-      data_(i) = sampleVal;
+      break;
+
+      case missingFiniteValues_:
+      {
+        Real proba = 1. / misData_(i).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
+        Vector<Real> modalities(nbModalities);
+        modalities = 0.;
+        for(std::vector<int>::const_iterator itParam = misData_(i).second.begin();
+            itParam != misData_(i).second.end();
+            ++itParam)
+        {
+          modalities[*itParam] = proba;
+        }
+        sampleVal = multi_.sample(modalities);
+      }
+      break;
+
+      default: // other types of intervals not present in integer data
+      {}
+      break;
     }
+    data_(i) = sampleVal;
   }
 }
 
 template<>
-void AugmentedData<Vector<Index> >::removeMissingSample()
-{
-  for (int i = 0; i < misData_.rows(); ++i)
+void AugmentedData<Vector<Index> >::removeMissingSample(Index i) {
+  if (misData_(i).first != present_)
   {
-    if (misData_(i).first != present_)
+    int sampleVal;
+    int nbModalities = dataRange_.range_;
+
+    switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
     {
-      int sampleVal;
-      int nbModalities = dataRange_.range_;
+      case present_:
+      {}
+      break;
 
-      switch(misData_(i).first) // (iterator on map)->(mapped element).(MisType)
+      case missing_:
       {
-        case present_:
-        {}
-        break;
-
-        case missing_:
-        {
-          Vector<Real> modalities(nbModalities);
-          modalities = 1. / nbModalities;
-          sampleVal = multi_.sample(modalities);
-        }
-        break;
-
-        case missingFiniteValues_:
-        {
-          Real proba = 1. / misData_(i).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
-          Vector<Real> modalities(nbModalities);
-          modalities = 0.;
-          for(std::vector<Index>::const_iterator itParam = misData_(i).second.begin();
-              itParam != misData_(i).second.end();
-              ++itParam)
-          {
-            modalities[*itParam] = proba;
-          }
-          sampleVal = multi_.sample(modalities);
-        }
-        break;
-
-        default: // other types of intervals not present in integer data
-        {}
-        break;
+        Vector<Real> modalities(nbModalities);
+        modalities = 1. / nbModalities;
+        sampleVal = multi_.sample(modalities);
       }
-      data_(i) = sampleVal;
+      break;
+
+      case missingFiniteValues_:
+      {
+        Real proba = 1. / misData_(i).second.size(); // (iterator on map)->(mapped element).(vector of parameters)
+        Vector<Real> modalities(nbModalities);
+        modalities = 0.;
+        for(std::vector<Index>::const_iterator itParam = misData_(i).second.begin();
+            itParam != misData_(i).second.end();
+            ++itParam)
+        {
+          modalities[*itParam] = proba;
+        }
+        sampleVal = multi_.sample(modalities);
+      }
+      break;
+
+      default: // other types of intervals not present in integer data
+      {}
+      break;
     }
+    data_(i) = sampleVal;
   }
 }
 

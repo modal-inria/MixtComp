@@ -65,7 +65,6 @@ class SemStrategy {
     RunProblemType runSEMCheck(SamplerType sampler);
     void runSEMNoCheck();
 
-    void initGibbs();
     void runGibbs();
 
 

@@ -37,6 +37,11 @@ enum EstimatorType {
   unBiased_
 };
 
+enum SamplerInitialization {
+  performInitialization_,
+  doNotPerformInitialization_,
+};
+
 class IMixture {
   public:
     /**
@@ -46,12 +51,10 @@ class IMixture {
      */
     IMixture(Index indexMixture, std::string const& idName) :
       indexMixture_(indexMixture),
-      idName_(idName)
-    {};
+      idName_(idName) {};
 
     /** Virtual destructor. Needed as IMixture will only be used as a base class. */
-    virtual ~IMixture()
-    {};
+    virtual ~IMixture() {};
 
     /**
      * Return the Id of the mixture
@@ -74,15 +77,14 @@ class IMixture {
      *
      * @param ind index of the individual which data must be sampled
      */
-    virtual void samplingStepNoCheck(Index ind) = 0;
+    virtual void samplingStepNoCheck(SamplerInitialization init, Index ind) = 0;
 
     /**
      * Check if conditions on data are verified. For example, for a categorical model one must check that each modality
      * is present at least one time in each class. This is invoked to avoid degeneracy.
      * @return 0 if condition not verified and 1 if condition verified
      * */
-    virtual Index checkSampleCondition(std::string* warnLog = NULL) const
-    = 0;
+    virtual Index checkSampleCondition(std::string* warnLog = NULL) const = 0;
 
     /**
      * Maximum-Likelihood estimation of the mixture parameters
@@ -128,7 +130,7 @@ class IMixture {
      * @param k class
      * @return value of the observed likelihood in log scale
      */
-    virtual Real lnObservedProbability(Index i, Index k) = 0;
+    virtual Real lnObservedProbability(Index ind, Index k) = 0;
 
     /**
      * Computation of the number of free parameters.
@@ -158,10 +160,15 @@ class IMixture {
     virtual void exportDataParam() const = 0;
 
     /**
-     * Crude removal of missing data by random sampling, prior to any parameter estimation. Used in
-     * learning. In prediction parameters are known at initialization, and a samplingStep can be used.
+     * Initialization of missing / latent data priori to any parameter knowledge. In prediction parameters are known at
+     * initialization, and a samplingStep is used.
      */
-    virtual void removeMissing(InitParam algo) = 0;
+    virtual void initData(Index ind) = 0;
+
+    /**
+     * Initialization of parameters. Useful for some parameters that use a Markov Chain which needs to be initialized.
+     */
+    virtual void initParam() = 0;
 
     virtual bool observedCorrection() = 0;
   protected:
