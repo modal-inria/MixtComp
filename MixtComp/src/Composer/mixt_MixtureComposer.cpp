@@ -177,6 +177,7 @@ void MixtureComposer::eStepInd(int i) {
 }
 
 void MixtureComposer::pStep() {
+  prop_ = 0.;
   for (Index i = 0; i < zClassInd_.zi().data_.rows(); ++i) {
     prop_(zClassInd_.zi().data_(i)) += 1.;
   }
