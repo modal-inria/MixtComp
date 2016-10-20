@@ -219,17 +219,17 @@ class AugmentedData {
       }
     }
 
-    void removeMissing() {
+    void removeMissing(Index i) {
       if (fixedInitialization_) { // restore initialization values
-        data_ = initialData_;
+        data_(i) = initialData_(i);
       }
       else { // uniform sampling of the missing values, subject to the data bound constraints
-        removeMissingSample();
+        removeMissingSample(i);
       }
     }
 
     /** Remove the missing values by uniform samplings */
-    void removeMissingSample();
+    void removeMissingSample(Index i);
 
     void setFixedInitialization () {
       fixedInitialization_ = true;
@@ -242,7 +242,7 @@ class AugmentedData {
       }
     }
 
-    /** two dimensional data table, for example a Matrix<Real> */
+    /** Completed data, usually a Vector, for example Vector<Index> or Vector<Real> */
     DataType data_;
 
     /** data structure for partially observed values */

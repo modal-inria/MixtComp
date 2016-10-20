@@ -61,7 +61,7 @@ void SEMAlgo::runCheck(RunType runType,
 
     if (sampler == rejectSampler_) { // use reject sampling
       p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
-      p_composer_->samplingStepNoCheck();
+      p_composer_->samplingStepNoCheck(doNotPerformInitialization_);
 
       int sampleCond = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
       if (sampleCond == 0) { // sampled value rejected, switch to Gibbs sampler
@@ -107,7 +107,7 @@ void SEMAlgo::runNoCheck(RunType runType,
     p_composer_->eStep();
 
     p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
-    p_composer_->samplingStepNoCheck();
+    p_composer_->samplingStepNoCheck(doNotPerformInitialization_);
 
     p_composer_->mStep(biased_);
 

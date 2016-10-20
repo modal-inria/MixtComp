@@ -54,7 +54,7 @@ void ClassDataStat::sampleVals(int ind,
 
       dataStatStorage_.row(ind) /= Real(iterationMax + 1); // from count to frequencies
     }
-    else { // any other iteration: juste store the current value
+    else { // any other iteration: just store the current value
       sample(ind);
     }
   }

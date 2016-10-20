@@ -152,6 +152,9 @@ paramTable = function(data){
     else if (typeList[currVar] == 'Rank') {
       out[,j] = paramRank(nbClass, param[[currVar]])
     }
+    else if (typeList[currVar] == 'Functional') {
+      out[,j] = paramFunctional(nbClass, param[[currVar]])
+    }
     else {
       out[,j] = paramUnknown(nbClass, param[[currVar]])
     }
@@ -213,6 +216,20 @@ paramRank = function(nbClass, var){
     collapsedMu = paste0(valMu[[k]][[1]][[1]], collapse = " ")
     out[k] = paste0('{"mu" : "', collapsedMu,
                     '", "pi" : "', valPi[k], '"}')
+  }
+  return(out)
+}
+
+paramFunctional = function(nbClass, var){
+  valAlpha = var$alpha$stat[,1]
+  valBeta = var$beta$stat[,1]
+  valSd = var$sd$stat[,1]
+  
+  out = vector(mode = 'character', length = nbClass)
+  for (k in 1:nbClass) {
+    out[k] = paste0('{"alpha" : "', valAlpha[k],
+                    '", "beta" : "', valBeta[k], 
+                    '", "sigma" :"', valSd[k], '"}')
   }
   return(out)
 }

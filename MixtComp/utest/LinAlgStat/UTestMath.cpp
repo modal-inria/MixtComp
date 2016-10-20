@@ -23,6 +23,8 @@
 
 #include "../UTest.h"
 
+using namespace mixt;
+
 TEST(Math, Factorial) {
   int nbValue = 10;
   Vector<int> factoValue(nbValue);

@@ -29,11 +29,9 @@
 #include "mixt_UniformStatistic.h"
 #include "mixt_ExponentialStatistic.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class NormalStatistic
-{
+class NormalStatistic {
   public:
     NormalStatistic();
 
@@ -75,7 +73,14 @@ class NormalStatistic
                   Real sd,
                   Real supBound);
 
-  private:
+    /** Compute expectation of a truncated normal law. Used in sampler debug for example. */
+    void expSigmaTruncated(Real mu,
+                           Real sigma,
+                           Real a,
+                           Real b,
+                           Real& truncMean,
+                           Real& truncVar);
+
     /** helper function to help sample on intervals */
     Real lbSampler(Real lower);
 
@@ -86,6 +91,7 @@ class NormalStatistic
      * based on the spread between bounds*/
     Real sideSampler(Real lower, Real upper);
 
+  private:
     /** Random number generator */
     boost::mt19937 rng_;
 

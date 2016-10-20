@@ -264,14 +264,7 @@ class Ordinal : public IMixture
       }
     }
 
-    virtual void samplingStepCheck(Index ind)
-    {
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::samplingStep" << std::endl;
-      std::cout << "ind: " << ind << std::endl;
-      std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
-#endif
-
+    virtual void samplingStepCheck(Index ind) {
       GibbsSampling(ind,
                     mu_((*p_zi_)(ind)),
                     pi_((*p_zi_)(ind)),
@@ -279,13 +272,11 @@ class Ordinal : public IMixture
       copyToData(ind);
     }
 
-    virtual void samplingStepNoCheck(Index ind)
-    {
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::samplingStep" << std::endl;
-      std::cout << "ind: " << ind << std::endl;
-      std::cout << "path_(ind).c_.size(): " << path_(ind).c_.size() << std::endl;
-#endif
+    virtual void samplingStepNoCheck(SamplerInitialization init, Index ind) {
+      if (init == performInitialization_) {
+        initData(ind);
+        initBOS(ind);
+      }
 
       GibbsSampling(ind,
                     mu_((*p_zi_)(ind)),
@@ -463,41 +454,40 @@ class Ordinal : public IMixture
       return names;
     }
 
-    /** removeMissing is usually called at the beginning of the SEMStrategy. All data are completed by sampling using dummy parameters, since no mStep has
+    /**
+     * removeMissing is usually called at the beginning of the SEMStrategy. All data are completed by sampling using dummy parameters, since no mStep has
      * been performed. mStep in turns requires complete data, hence the need to bootstrap the process in some way. A similar initialization is to be found
      * in the rank model, who also describe each observation with latent variables. Since BOSPath::initPath initializes all BOSPath with z = 0 to enforce
      * validity, it is necessary to perform nbGibbsIniBOS iterations of GibbsSampling with a pi at piInitBOS to generate variability in z. This will ensure
      * that pi will not likely be equal to 0 at the first mStep estimation. In any case, should this occur, the initialization will ultimately be
-     * rejected by a call to checkSampleCondition. */
-    void removeMissing(InitParam algo) {
-      Vector<int> tempMu(nbClass_);
-
-      if (algo == initParam_) {
-        for (int k = 0; k < nbClass_; ++k) {
-          tempMu(k) = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
-        }
-      }
-      else if (algo == keepParam_) {
-        for (int k = 0; k < nbClass_; ++k) {
-          tempMu(k) = mu_(k); // during the Gibbs phase, mu is already known and can be used for initialization
-        }
-      }
-
-      for (int i = 0; i < nbInd_; ++i) {
-        path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
-        for (int n = 0; n < nbGibbsIniBOS; ++n) { // n rounds of Gibbs sampling to increase variability on z
-          GibbsSampling(i,
-                        tempMu((*p_zi_)(i)),
-                        piInitBOS,
-                        noCheckZ_);
-        }
-
-        copyToData(i);
-      }
+     * rejected by a call to checkSampleCondition.
+     * */
+    void initData(Index i) {
+      path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
     };
 
-    Vector<bool> acceptedType()
-    {
+    void initParam() {
+      for (Index k = 0; k < nbClass_; ++k) {
+        mu_ = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
+      }
+
+      for (Index i = 0; i < nbInd_; ++i) {
+        initBOS(i);
+      }
+    }
+
+    void initBOS(Index i) {
+      for (int n = 0; n < nbGibbsIniBOS; ++n) { // n rounds of Gibbs sampling to increase variability on z
+        GibbsSampling(i,
+                      mu_((*p_zi_)(i)),
+                      piInitBOS,
+                      noCheckZ_);
+      }
+
+      copyToData(i);
+    }
+
+    Vector<bool> acceptedType() {
       Vector<bool> at(nb_enum_MisType_);
       at(0) = true; // present_,
       at(1) = true;// missing_,

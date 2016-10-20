@@ -35,6 +35,7 @@ const Real epsilon = 1.e-8;
 const Real logEpsilon = std::log(epsilon);
 
 const int minModality = 1;
+const int minIndex = 1;
 const Real pi = 3.141592653589793;
 const Real l2pi = 0.9189385332046727417;
 const std::string progressFile = "progress";

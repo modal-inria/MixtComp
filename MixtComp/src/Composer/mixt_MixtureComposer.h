@@ -63,8 +63,6 @@ class MixtureComposer {
     /** The registered mixtures will be deleted there.*/
     ~MixtureComposer();
 
-    void initializeProp();
-
     void initializeTik();
 
     Index nbClass() const {return nbClass_;}
@@ -134,8 +132,8 @@ class MixtureComposer {
      * Perform a sampling step
      * @param checkSampleCondition indicates if there is a need to perform a check on the data or not
      */
-    void samplingStepNoCheck();
-    void samplingStepNoCheck(int i);
+    void samplingStepNoCheck(SamplerInitialization init);
+    void samplingStepNoCheck(SamplerInitialization init, int i);
 
     void samplingStepCheck();
     void samplingStepCheck(int i);
@@ -295,7 +293,8 @@ class MixtureComposer {
     void registerMixture(IMixture* mixture);
 
     /** Gibbs sampling, one individual at a time */
-    void gibbsSampling(GibbsSampleData sample,
+    void gibbsSampling(SamplerInitialization init,
+                       GibbsSampleData sample,
                        int nbGibbsIter,
                        int group,
                        int groupMax);
@@ -308,7 +307,9 @@ class MixtureComposer {
      * */
     std::vector<std::string> mixtureName() const;
 
-    void removeMissing(InitParam algo);
+    void initData();
+
+    void initParam();
 
     /**
      * Compute the "raw" class ID matrix E_kj
@@ -330,6 +331,8 @@ class MixtureComposer {
 
     /** name of the latent class variable */
     std::string idName_;
+
+    std::string paramStr_;
 
     /** number of classes */
     Index nbClass_;

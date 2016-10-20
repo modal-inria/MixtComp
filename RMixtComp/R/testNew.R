@@ -29,13 +29,13 @@ testNewLearn <- function(nbClass = 2,
     warning(res$mixture$warnLog)
   }
   
-  # confMat <- confusionMatrix(nbClass,
-  #                            "dataGenNew/learn/classIn.csv",
-  #                            res$variable)
-  # print(confMat)
-  # cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
-  #     "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
-  #     sep = "")
+  confMat <- confusionMatrix(nbClass,
+                             "dataGenNew/learn/classIn.csv",
+                             res$variable)
+  print(confMat)
+  cat("lnObservedLikelihood: "     , res$mixture$lnObservedLikelihood     , "\n",
+      "lnCompletedLikelihood: "    , res$mixture$lnCompletedLikelihood    , "\n",
+      sep = "")
   
   return(res)
 }

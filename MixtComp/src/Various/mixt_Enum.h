@@ -69,11 +69,6 @@ enum SamplerType {
   GibbsSampler_
 };
 
-enum InitParam {
-  initParam_,
-  keepParam_
-};
-
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */
