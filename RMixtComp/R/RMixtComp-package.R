@@ -68,12 +68,12 @@ NULL
 #' @param paramList parameters of the mixture model (only for \emph{mixtCompPredict} function). Output \emph{$variable$param} from \emph{mixtCompCluster} function.
 #' @param mcStrategy a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
 #' @param nbClass the number of class of the mixture model.
-#' @param confidenceLevel quantile for for confidence interval of estimated parameters.
+#' @param confidenceLevel quantile for confidence interval of estimated parameters.
 #'
 #' @return A list containing 3 lists :
 #' \describe{
 #'  \item{strategy}{a copy of \emph{mcStrategy} parameter.}
-#'  \item{mixture}{information about the mixture.}
+#'  \item{mixture}{information about the mixture (see \emph{Details}).}
 #'  \item{variable}{information about the estimated parameters (see \emph{Details}).}
 #' }
 #' 
@@ -90,11 +90,12 @@ NULL
 #'   \item{nbGibbsIter}{Number of iterations of the Gibbs algorithm.}
 #'   \item{parameterEdgeAuthorized}{\emph{TRUE} or \emph{FALSE} (default value). 
 #'   If \emph{TRUE}, a bias is introduced by avoiding some non stable situation (a proportion = 0 for example) by using a minimal value (1e-8).
-#'   Using \emph{parameterEdgeAuthorized=TRUE} can significantly reduce the computation time. }
+#'   }
 #' }
 #' 
 #' 
 #' 
+#' @section Output object:
 #' The output list \emph{mixture} contains the \emph{BIC}, \emph{ICL}, number of samples (\emph{nbSample} or \emph{nbInd}),
 #' the number of class (\emph{nCluster}), the observed loglikelihood (\emph{lnObservedLikelihood}),
 #' the completed loglikelihood (\emph{lnCompletedLikelihood}), the number of free parameters of the mixture (\emph{nbFreeParameters}),
@@ -105,50 +106,60 @@ NULL
 #' The output list \emph{variable} contains 3 lists : \emph{data}, \emph{type} and \emph{param}. 
 #' Each of these lists contains a list for each variable (the name of each list is the name of the variable) and for the class of samples (\emph{z_class}).
 #' The \emph{type} list contains the model used for each variable. Each list of the \emph{data} list contains
-#'  the completed data in the \emph{completed} element. The estimated parameter can be find in the \emph{stat} 
+#'  the completed data in the \emph{completed} element and some statistics about them (\emph{stat}). The estimated parameter can be found in the \emph{stat} 
 #'  element in the \emph{param} list (see Section \emph{View of an output object}).
 #' 
 #' 
 #' @section View of an output object:
-#' Example of output object with variables names "variable1", "variable2",...
+#' Example of output object with variables named "categorical", "gaussian", "ordinal",...
 #' 
 #' \tabular{lll}{
 #' output  \cr
-#' |_______ \tab strategy \tab : mcStrategy object\cr
+#' |_______ \tab strategy \tab __ nbBurnInIter\cr
+#' |        \tab          \tab |__ nbIter\cr
+#' |        \tab          \tab |__ nbGibbsBurnInIter\cr
+#' |        \tab          \tab |__ nbGibbsIter\cr
+#' |        \tab          \tab |__ parameterEdgeAuthorized\cr
 #' | \cr
 #' |_______ \tab mixture \tab __ BIC \cr
-#' |        \tab         \tab|_ ICL\cr
-#' |        \tab         \tab|_ lnCompletedLikelihood\cr
-#' |        \tab         \tab|_ lnObservedLikelihood \cr
-#' |        \tab         \tab|_ IdClass  \cr
-#' |        \tab         \tab|_ mode \cr
-#' |        \tab         \tab|_ runTime \cr
-#' |        \tab         \tab|_ nbSample \cr
-#' |        \tab         \tab|_ nbInd  \cr
-#' |        \tab         \tab|_ nbFreeParameters \cr
-#' |        \tab         \tab|_ nbCluster \cr
-#' |        \tab         \tab|_ warnlog \cr
+#' |        \tab         \tab |_ ICL\cr
+#' |        \tab         \tab |_ lnCompletedLikelihood\cr
+#' |        \tab         \tab |_ lnObservedLikelihood \cr
+#' |        \tab         \tab |_ IdClass  \cr
+#' |        \tab         \tab |_ mode \cr
+#' |        \tab         \tab |_ runTime \cr
+#' |        \tab         \tab |_ nbSample \cr
+#' |        \tab         \tab |_ nbInd  \cr
+#' |        \tab         \tab |_ nbFreeParameters \cr
+#' |        \tab         \tab |_ nbCluster \cr
+#' |        \tab         \tab |_ warnlog \cr
 #' }
-#' \tabular{lllll}{
+#' \tabular{llllll}{
 #' |  \cr
 #' |_______ \tab variable \tab __ type \tab __ z_class  \cr
-#'          \tab |        \tab         \tab |_ variable1  \cr
-#'          \tab |        \tab         \tab |_ variable2  \cr
-#'          \tab |        \tab         \tab |_ ...   \cr
-#'          \tab |   \cr
-#'          \tab |_ data \tab __ z_class \tab __ completed\cr
-#'          \tab |       \tab |          \tab |_ stat \cr
-#'          \tab |       \tab |_ variable1 \tab __ completed\cr
-#'          \tab |       \tab |            \tab |_ stat \cr
-#'          \tab |       \tab |_ ... \tab  \tab \cr
-#'          \tab | \tab \tab  \tab \cr
-#'          \tab |_ param \tab __ z_class \tab __ pi \tab __ stat\cr
-#'          \tab          \tab |          \tab       \tab |_ log \cr
-#'          \tab          \tab |          \tab       \tab |_ paramStr \cr
-#'          \tab          \tab |_ variable1 \tab __ NumericalParam \tab __ stat\cr
-#'          \tab          \tab |            \tab                   \tab |_ log \cr
-#'          \tab          \tab |            \tab                   \tab |_ paramStr \cr
-#'          \tab          \tab |_ ...       \tab                   \tab \cr
+#'          \tab          \tab |       \tab |_ categorical \cr
+#'          \tab          \tab |       \tab |_ gaussian \cr
+#'          \tab          \tab |       \tab |_ ...   \cr
+#'          \tab          \tab |       \tab \cr
+#'          \tab          \tab |_ data \tab __ z_class \tab __ completed\cr
+#'          \tab          \tab |       \tab |          \tab |_ stat \cr
+#'          \tab          \tab |       \tab |_ categorical \tab __ completed\cr
+#'          \tab          \tab |       \tab |              \tab |_ stat \cr
+#'          \tab          \tab |       \tab |_ ...         \tab \cr
+#'          \tab          \tab |       \tab \cr
+#'          \tab          \tab |_ param \tab __ z_class \tab __ pi \tab __ stat\cr
+#'          \tab          \tab          \tab |          \tab       \tab |_ log \cr
+#'          \tab          \tab          \tab |          \tab       \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |_ categorical \tab __ NumericalParam \tab __ stat\cr
+#'          \tab          \tab          \tab |              \tab                   \tab |_ log \cr
+#'          \tab          \tab          \tab |              \tab                   \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |_ gaussian \tab __ NumericalParam \tab __ stat\cr
+#'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
+#'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |_ ordinal \tab __ muPi \tab __ stat\cr
+#'          \tab          \tab          \tab |          \tab         \tab |_ log \cr
+#'          \tab          \tab          \tab |          \tab         \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |_ ...     \tab         \tab \cr
 #' }                  
 #'                   
 #' @examples 
