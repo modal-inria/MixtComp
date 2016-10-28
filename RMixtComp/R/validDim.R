@@ -1,5 +1,5 @@
-#' Generate a random matrix of a given size and write it in the test directory. Used to
-#' test validDim
+# Generate a random matrix of a given size and write it in the test directory. Used to
+# test validDim
 generateDummyData <- function(fileName,
                               nRow,
                               nCol) {
@@ -14,7 +14,7 @@ generateDummyData <- function(fileName,
               col.names = FALSE)
 }
 
-#' Check if the data in fileName is smaller than the provided dimensions
+# Check if the data in fileName is smaller than the provided dimensions
 validDim <- function(fileName,
                      maxRow = NA_integer_,
                      maxCol = NA_integer_) {
