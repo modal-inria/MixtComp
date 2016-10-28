@@ -227,6 +227,7 @@ class MixtureBridge : public IMixture {
 
     virtual void exportDataParam() const {
       p_dataExtractor_->exportVals(indexMixture_,
+                                   mixture_.hasModalities(),
                                    idName_,
                                    augData_,
                                    dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor

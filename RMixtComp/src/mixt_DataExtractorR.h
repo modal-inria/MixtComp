@@ -41,6 +41,7 @@ class DataExtractorR
 
     /** Export function for categorical model */
     void exportVals(int indexMixture,
+                    bool hasModalities,
                     std::string idName,
                     const AugmentedData<Vector<int> >& augData,
                     const Vector<std::vector<std::pair<int, Real> > >& dataStatStorage);
@@ -53,12 +54,14 @@ class DataExtractorR
 
     /** Export function for gaussian model */
     void exportVals(int indexMixture,
+                    bool hasModalities,
                     std::string idName,
                     const AugmentedData<Vector<Real> >& augData,
                     const Vector<RowVector<Real> >& dataStatStorage);
 
-    /** Export function for Poisson model */
+    /** Export function for Ordinal and Poisson model */
     void exportVals(int indexMixture,
+                    bool hasModalities,
                     std::string idName,
                     const AugmentedData<Vector<int> >& augData,
                     const Vector<RowVector<int> >& dataStatStorage);

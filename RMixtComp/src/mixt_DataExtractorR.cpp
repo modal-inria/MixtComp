@@ -35,14 +35,16 @@ void DataExtractorR::setNbMixture(int nbMixture) {
 
 /** Export function for categorical model */
 void DataExtractorR::exportVals(int indexMixture,
+                                bool hasModalities,
                                 std::string idName,
                                 const AugmentedData<Vector<int> >& augData,
                                 const Vector<std::vector<std::pair<int, Real> > >& dataStatStorage) {
+  Index offset = hasModalities ? minModality : 0;
   Rcpp::IntegerVector dataR(augData.data_.rows()); // vector to store the completed data set
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   for (int i = 0; i < augData.data_.rows(); ++i) {
-    dataR(i) = augData.data_(i) + minModality; // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
+    dataR(i) = augData.data_(i) + offset; // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
 
     if (augData.misData_(i).first != present_) {
       Rcpp::List currList; // storage for the current missing value
@@ -52,7 +54,7 @@ void DataExtractorR::exportVals(int indexMixture,
            itVec != dataStatStorage(i).end();
            ++itVec) {
 
-        currList.push_back(Rcpp::List::create(itVec->first + minModality,  // current modality)
+        currList.push_back(Rcpp::List::create(itVec->first + offset,  // current modality)
                                               itVec->second)); // probability of the modality
       }
 
@@ -88,6 +90,7 @@ void DataExtractorR::exportVals(int indexMixture,
 
 /** Export function for gaussian model */
 void DataExtractorR::exportVals(int indexMixture,
+                                bool hasModalities,
                                 std::string idName,
                                 const AugmentedData<Vector<Real> >& augData,
                                 const Vector<RowVector<Real> >& dataStatStorage) {
@@ -113,23 +116,25 @@ void DataExtractorR::exportVals(int indexMixture,
                                            Rcpp::Named("stat") = missingData);
 }
 
-/** Export function for Poisson model */
+/** Export function for Ordinal and Poisson model */
 void DataExtractorR::exportVals(int indexMixture,
+                                bool hasModalities,
                                 std::string idName,
                                 const AugmentedData<Vector<int> >& augData,
                                 const Vector<RowVector<int> >& dataStatStorage) {
+  Index offset = hasModalities ? minModality : 0;
   Rcpp::IntegerVector dataR(augData.data_.rows()); // vector to store the completed data set
   Rcpp::List missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
   for (int i = 0; i < augData.data_.rows(); ++i) {
-    dataR(i) = augData.data_(i);
+    dataR(i) = augData.data_(i) + offset;
     if (augData.misData_(i).first != present_) {
       Rcpp::List currList; // storage for the current missing value
       currList.push_back(i + 1); // R matrices rows start at 1
-      currList.push_back(dataStatStorage(i)[0]); // median
-      currList.push_back(dataStatStorage(i)[1]); // left bound
-      currList.push_back(dataStatStorage(i)[2]); // right bound
+      currList.push_back(dataStatStorage(i)[0] + offset); // median
+      currList.push_back(dataStatStorage(i)[1] + offset); // left bound
+      currList.push_back(dataStatStorage(i)[2] + offset); // right bound
 
       missingData.push_back(currList);
     }
