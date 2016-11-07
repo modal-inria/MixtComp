@@ -408,7 +408,7 @@ class Ordinal : public IMixture
       Matrix<Real> paramStatStorage(2 * nbClass_, nbColStat); // aggregates both mu and pi values
       for (int j = 0; j < nbColStat; ++j) {
         for (int k = 0; k < nbClass_; ++k) {
-          paramStatStorage(2 * k    , j) = muParamStatComputer_.getStatStorage()(k, j);
+          paramStatStorage(2 * k    , j) = muParamStatComputer_.getStatStorage()(k, j) + minModality;
           paramStatStorage(2 * k + 1, j) = piParamStatComputer_.getStatStorage()(k, j);
         }
       }
@@ -417,12 +417,13 @@ class Ordinal : public IMixture
       Matrix<Real> paramLogStorage (2 * nbClass_, nbColLog); // aggregates both mu and pi logs
       for (int j = 0; j < nbColLog; ++j) {
         for (int k = 0; k < nbClass_; ++k) {
-          paramLogStorage (2 * k    , j) = muParamStatComputer_.getLogStorage ()(k, j);
+          paramLogStorage (2 * k    , j) = muParamStatComputer_.getLogStorage ()(k, j) + minModality;
           paramLogStorage (2 * k + 1, j) = piParamStatComputer_.getLogStorage ()(k, j);
         }
       }
 
       p_dataExtractor_->exportVals(indexMixture_,
+                                   true, // hasModalities
                                    idName(),
                                    augData_,
                                    dataStatComputer_.getDataStatStorage()); // export the obtained data using the DataExtractor
