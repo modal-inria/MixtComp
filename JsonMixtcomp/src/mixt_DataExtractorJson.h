@@ -21,19 +21,18 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_DATAEXTRACTORR_H
-#define MIXT_DATAEXTRACTORR_H
+#ifndef MIXT_DATAEXTRACTORJSON_H
+#define MIXT_DATAEXTRACTORJSON_H
 
-#include "MixtComp/src/Data/mixt_AugmentedData.h"
-#include "Eigen/Dense"
-
-#include "MixtComp/src/Mixture/Rank/mixt_RankIndividual.h"
-#include "MixtComp/src/Mixture/Rank/mixt_RankStat.h"
+#include "json.hpp"
+#include "../../MixtComp/src/Data/mixt_AugmentedData.h"
+#include "../../MixtComp/src/Mixture/Rank/mixt_RankIndividual.h"
+#include "../../MixtComp/src/Mixture/Rank/mixt_RankStat.h"
 
 namespace mixt
 {
 
-class DataExtractorR
+class DataExtractorJson
 {
   public:
     void setNbMixture(int nbMixture);
@@ -68,10 +67,10 @@ class DataExtractorR
                     const Vector<RankIndividual>& data,
                     const std::vector<RankStat>& dataStat);
 
-    Rcpp::List rcppReturnVal() const;
+    nlohmann::json jsonCppReturnVal() const;
   private:
     std::vector<std::string> mixtureName_;
-    std::vector<Rcpp::List> data_;
+    std::vector<nlohmann::json> data_;
 };
 
 } // namespace mixt
