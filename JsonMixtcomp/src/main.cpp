@@ -10,6 +10,9 @@
 #include "mixt_DataHandlerJson.h"
 #include "mixt_DataExtractorJson.h"
 #include "mixt_ParamExtractorJson.h"
+#include "mixt_Function_Json.h"
+
+#include "../../MixtComp/src/Various/mixt_Enum.h"
 #include "../../MixtComp/src/mixt_MixtComp.h"
 #include "../../MixtComp/src/IO/Dummy.h"
 
@@ -46,6 +49,15 @@ int main() {
     }
 
     /*#################################################################################################*/
+    mixt::Timer totalTimer("Total Run");
+
+    double confidenceLevel = j["confidenceLevel"];
+    const json& mcStrategy = j["mcStrategy"];
+    int nbClass = j["nbClass"];
+
+    // lists to export results
+    json mcMixture;
+    json mcVariable;
 
     // create the data handler
     mixt::DataHandlerJson handler(resGetData_lm);
@@ -62,7 +74,7 @@ int main() {
     // create the parameters extractor
     mixt::ParamExtractorJson paramExtractor;
 
-    double confidenceLevel = j["confidenceLevel"];
+
 
     // create the mixture manager
     mixt::MixtureManager<mixt::DataHandlerJson,
@@ -87,15 +99,96 @@ int main() {
       warnLog += sstm.str();
     }
 
+    if (warnLog.size() == 0) { // data is correct in descriptors, proceed with reading
+        mixt::MixtureComposer composer(handler.nbSample(),
+                                       nbClass,
+                                       confidenceLevel);
 
-    if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
-         dataExtractor .setNbMixture(handler.nbVariable());
-         paramExtractor.setNbMixture(handler.nbVariable());
+        mixt::Timer readTimer("Read Data");
+        warnLog += manager.createMixtures(composer,
+                                          nbClass);
+        std::cout<< mixt::learning_;
 
-//         mixt::StrategyParam param;
-//         paramRToCpp(mcStrategy,
-//                     param);
+        warnLog += composer.setDataParam<mixt::ParamSetterDummy,
+                                         mixt::DataHandlerJson>(paramSetter,
+                                                             handler,
+                                                             mixt::learning_);
+        readTimer.top("data has been read");
+
+
+        if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
+             dataExtractor .setNbMixture(handler.nbVariable());
+             paramExtractor.setNbMixture(handler.nbVariable());
+
+             mixt::StrategyParam param;
+             mixt::paramJsonToCpp(mcStrategy,
+                         param);
+             // create the appropriate strategy and transmit the parameters
+             mixt::SemStrategy strategy(&composer,
+                                        param); // number of iterations for Gibbs sampler
+
+             // run the strategy
+             mixt::Timer stratTimer("Strategy Run");
+             warnLog += strategy.run();
+             stratTimer.top("strategy run complete");
+             if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
+       #ifdef MC_VERBOSE
+               composer.writeParameters();
+       #endif
+               composer.exportDataParam<mixt::DataExtractorJson,
+                                        mixt::ParamExtractorJson>(dataExtractor,
+                                                               paramExtractor);
+
+               // export the composer results to R through modifications of mcResults
+               mcMixture["nbCluster"] = nbClass;
+               mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
+               Real lnObsLik = composer.lnObservedLikelihood();
+               Real lnCompLik = composer.lnCompletedLikelihood();
+               mcMixture["lnObservedLikelihood"] = lnObsLik;
+               mcMixture["lnCompletedLikelihood"] = lnCompLik;
+               mcMixture["BIC"] = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+               mcMixture["ICL"] = lnCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+
+               mcMixture["runTime"] = totalTimer.top("end of run");
+               mcMixture["nbInd"] = composer.nbInd();
+               mcMixture["mode"] = "learn";
+
+               json idc;
+               mixt::IDClass(composer, idc);
+               mcMixture["IDClass"] = idc;
+             }
+        }
     }
+    mcMixture["warnLog"] = warnLog;
+    #ifdef MC_VERBOSE
+      if (warnLog.size() != 0) {
+        std::cout << "!!! warnLog not empty !!!" << std::endl;
+        std::cout << warnLog << std::endl;
+      }
+    #endif
+
+    mcMixture["runTime"] = totalTimer.top("end of run");
+    mcMixture["nbSample"] = handler.nbSample();
+
+
+    json type = handler.jsonReturnType();
+    json data = dataExtractor.jsonReturnVal();
+    json param = paramExtractor.jsonReturnParam();
+
+    mcVariable["type"]  = type;
+    mcVariable["data"]  = data;
+    mcVariable["param"] = param;
+
+
+    json res;
+    res["strategy"] = mcStrategy ;
+    res["mixture"] = mcMixture;
+    res["variable"] = mcVariable;
+
+    std::string output_str = res.dump();
+    std::ofstream out("/home/etienne/cylande/retfor/livrable_2/data/working_data/test_json_output.json");
+    out << output_str;
+    out.close();
 
     return 0;
 }

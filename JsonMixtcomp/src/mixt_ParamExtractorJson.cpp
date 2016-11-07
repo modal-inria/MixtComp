@@ -148,7 +148,7 @@ void ParamExtractorJson::exportParam(int indexMixture,
 }
 
 
-nlohmann::json ParamExtractorJson::jsonCppReturnParam() const {
+nlohmann::json ParamExtractorJson::jsonReturnParam() const {
   nlohmann::json mixtureNameR = mixtureName_;
   nlohmann::json paramJson = param_;
 //  for (int i = 0; i < mixtureName_.size(); ++i) {

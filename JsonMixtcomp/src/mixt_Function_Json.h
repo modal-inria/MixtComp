@@ -34,7 +34,7 @@ namespace mixt
 void IDClass(mixt::MixtureComposer& mc,
              nlohmann::json& idc);
 
-void paramRToCpp(const nlohmann::json RParam,
+void paramJsonToCpp(const nlohmann::json& RParam,
                  StrategyParam& CppParam);
 
 } // namespace mixt

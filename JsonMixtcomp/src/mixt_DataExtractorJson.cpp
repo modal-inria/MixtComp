@@ -191,7 +191,7 @@ void DataExtractorJson::exportVals(int indexMixture,
 
 }
 
-nlohmann::json DataExtractorJson::jsonCppReturnVal() const {
+nlohmann::json DataExtractorJson::jsonReturnVal() const {
   nlohmann::json mixtureNameJson ;
   nlohmann::json dataJson;
 

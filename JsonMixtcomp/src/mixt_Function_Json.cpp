@@ -66,16 +66,12 @@ void paramJsonToCpp(const nlohmann::json& JsonParam,
   if (JsonParam.find("nbGibbsIter") != JsonParam.end()) {
       CppParam.nbGibbsIter_ = JsonParam["nbGibbsIter"];
     }
-  if () {
-      CppParam.nbBurnInIter_ = JsonParam["nbBurnInIter"];
-    }
   if(JsonParam.find("parameterEdgeAuthorized") != JsonParam.end()){
     bool bias = JsonParam["parameterEdgeAuthorized"];
     if (bias == true) {
       CppParam.bias_ = biased_;
     }
   }
-
 }
 
 } // namespace mixt

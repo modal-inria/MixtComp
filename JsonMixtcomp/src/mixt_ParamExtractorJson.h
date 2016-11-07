@@ -55,7 +55,7 @@ class ParamExtractorJson {
                      Real confidenceLevel,
                      const std::string& paramStr);
 
-    nlohmann::json jsonCppReturnParam() const;
+    nlohmann::json jsonReturnParam() const;
   private:
     std::vector<std::string> mixtureName_;
     std::vector<std::map<std::string, nlohmann::json> > param_;

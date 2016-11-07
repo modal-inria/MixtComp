@@ -67,7 +67,7 @@ class DataExtractorJson
                     const Vector<RankIndividual>& data,
                     const std::vector<RankStat>& dataStat);
 
-    nlohmann::json jsonCppReturnVal() const;
+    nlohmann::json jsonReturnVal() const;
   private:
     std::vector<std::string> mixtureName_;
     std::vector<nlohmann::json> data_;
