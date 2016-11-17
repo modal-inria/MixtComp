@@ -28,25 +28,29 @@ namespace mixt
 
 void IDClass(mixt::MixtureComposer& mc,
              nlohmann::json& idc) {
-  idc = nlohmann::json(mc.nbClass());
-  nlohmann::json idc_row(mc.nbVar());
+
+  nlohmann::json idc_row;
+  nlohmann::json idc_;
+
 
   Matrix<Real> IDClass;
   mc.IDClass(IDClass);
 
-  nlohmann::json row(mc.nbClass()); // names of the parameters
-  nlohmann::json col(mc.nbVar()); // names for expectation and confidence interval values
+  nlohmann::json row; // names of the parameters
+  nlohmann::json col; // names for expectation and confidence interval values
 
   std::vector<std::string> rowName = mc.paramName();
   std::vector<std::string> colName = mc.mixtureName();
+
+
 
   for (Index j = 0; j < mc.nbVar(); ++j) {
     for (Index k = 0; k < mc.nbClass(); ++k) {
       idc_row[rowName[k]] = IDClass(k, j);
     }
-    idc[j] = idc_row;
+    idc_[j] = idc_row;
   }
-
+  idc["idc"] = idc_ ;
   idc["colName"] = colName;
 
 }

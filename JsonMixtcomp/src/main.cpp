@@ -12,48 +12,28 @@
 #include "mixt_ParamExtractorJson.h"
 #include "mixt_Function_Json.h"
 
-#include "../../MixtComp/src/Various/mixt_Enum.h"
 #include "../../MixtComp/src/mixt_MixtComp.h"
-#include "../../MixtComp/src/IO/Dummy.h"
-
 
 using namespace nlohmann;
 
-int main() {
-    std::string warnLog;
+int main(int argc, char* argv[]) {
 
-    /*############################# lecture du fichier de données via rapidjson ################################*/
-
-    json j;
-    std::ifstream ifs("/home/etienne/cylande/retfor/livrable_2/data/working_data/test_json.json");
-    ifs >> j;
-
-    std::cout << "########  description du contenu du document d " << std::endl;
-    std::cout << " " << std::endl<< std::endl;
-
-    // description du contenu de j
-
-    for (json::iterator it = j.begin(); it != j.end(); ++it) {
-         std::cout << it.key() << " : " << it.value()  << "\n";
-    }
-
-    std::cout << " " << std::endl<< std::endl;
-    std::cout << "########  description du contenu du sous tableau resGetData_lm " << std::endl << std::endl;
-
-    // description du contenu du sous tableau resGetData_lm
-
-    json resGetData_lm = j["resGetData_lm"];
-    // iterate the array
-    for (json::iterator it = resGetData_lm.begin(); it != resGetData_lm.end(); ++it) {
-      std::cout << *it << '\n';
-    }
-
-    /*#################################################################################################*/
     mixt::Timer totalTimer("Total Run");
 
-    double confidenceLevel = j["confidenceLevel"];
-    const json& mcStrategy = j["mcStrategy"];
-    int nbClass = j["nbClass"];
+    std::string warnLog;
+    std::string json_file_input  = "./data/utest/arg_list_utest.json";
+    std::string json_file_output = "./data/utest/output_utest.json";
+
+    /*############################# lecture du fichier json contenant les arguments via rapidjson ################################*/
+
+    json argument_list;
+    std::ifstream ifs(json_file_input);
+    ifs >> argument_list;
+
+    json resGetData_lm     = argument_list["resGetData_lm"];
+    double confidenceLevel = argument_list["confidenceLevel"];
+    const json& mcStrategy = argument_list["mcStrategy"];
+    int nbClass            = argument_list["nbClass"];
 
     // lists to export results
     json mcMixture;
@@ -73,8 +53,6 @@ int main() {
 
     // create the parameters extractor
     mixt::ParamExtractorJson paramExtractor;
-
-
 
     // create the mixture manager
     mixt::MixtureManager<mixt::DataHandlerJson,
@@ -100,14 +78,14 @@ int main() {
     }
 
     if (warnLog.size() == 0) { // data is correct in descriptors, proceed with reading
+
         mixt::MixtureComposer composer(handler.nbSample(),
                                        nbClass,
                                        confidenceLevel);
 
         mixt::Timer readTimer("Read Data");
-        warnLog += manager.createMixtures(composer,
-                                          nbClass);
-        std::cout<< mixt::learning_;
+        warnLog += manager.createMixtures(composer,nbClass);
+
 
         warnLog += composer.setDataParam<mixt::ParamSetterDummy,
                                          mixt::DataHandlerJson>(paramSetter,
@@ -139,7 +117,7 @@ int main() {
                                         mixt::ParamExtractorJson>(dataExtractor,
                                                                paramExtractor);
 
-               // export the composer results to R through modifications of mcResults
+               // export the composer results through modifications of mcResults
                mcMixture["nbCluster"] = nbClass;
                mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
                Real lnObsLik = composer.lnObservedLikelihood();
@@ -167,26 +145,24 @@ int main() {
       }
     #endif
 
-    mcMixture["runTime"] = totalTimer.top("end of run");
+    mcMixture["runTime"]  = totalTimer.top("end of run");
     mcMixture["nbSample"] = handler.nbSample();
 
-
-    json type = handler.jsonReturnType();
-    json data = dataExtractor.jsonReturnVal();
+    json type  = handler       .jsonReturnType();
+    json data  = dataExtractor .jsonReturnVal();
     json param = paramExtractor.jsonReturnParam();
 
-    mcVariable["type"]  = type;
-    mcVariable["data"]  = data;
-    mcVariable["param"] = param;
+    mcVariable["type"]  = type  ;
+    mcVariable["data"]  = data  ;
+    mcVariable["param"] = param ;
 
+    json res_list;
+    res_list["strategy"] = mcStrategy ;
+    res_list["mixture"]  = mcMixture  ;
+    res_list["variable"] = mcVariable ;
 
-    json res;
-    res["strategy"] = mcStrategy ;
-    res["mixture"] = mcMixture;
-    res["variable"] = mcVariable;
-
-    std::string output_str = res.dump();
-    std::ofstream out("/home/etienne/cylande/retfor/livrable_2/data/working_data/test_json_output.json");
+    std::string output_str = res_list.dump();
+    std::ofstream out(json_file_output);
     out << output_str;
     out.close();
 

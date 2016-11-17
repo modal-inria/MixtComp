@@ -40,13 +40,12 @@ void ParamExtractorJson::exportParam(int indexMixture,
                                   const std::vector<std::string>& paramNames,
                                   Real confidenceLevel,
                                   const std::string& paramStr) {
-  nlohmann::json rows(statStorage.rows()); // names of the parameters
+  nlohmann::json rows; // names of the parameters
   nlohmann::json cols; // names for expectation and confidence interval values
-
 
   Real alpha = (1. - confidenceLevel) / 2.;
 
-  nlohmann::json statJson(statStorage.cols());
+  nlohmann::json statJson;
   nlohmann::json statJson_row;
   nlohmann::json colName;
 
@@ -70,12 +69,11 @@ void ParamExtractorJson::exportParam(int indexMixture,
 
   // names setting for rows
 
-
-  nlohmann::json logJson(logStorage.rows());
+  nlohmann::json logJson;
 
   if (logStorage.rows() > 0 && logStorage.cols()) {// only if log has taken place, for example not during predict
     // copy of the log data
-    nlohmann::json logJson_row(logStorage.cols());
+    nlohmann::json logJson_row;
 
     for (int i = 0; i < logStorage.rows(); ++i) {
       for (int j = 0; j < logStorage.cols(); ++j) {
@@ -111,7 +109,7 @@ void ParamExtractorJson::exportParam(int indexMixture,
          it != ite;
          ++it) {
       const RankVal& rankCPP = it->first; // current rank in C++
-      nlohmann::json rankJson(nbPos); // current rank in R
+      nlohmann::json rankJson; // current rank in R
       for (int p = 0; p < nbPos; ++p) {
         rankJson = rankCPP.o()(p);
       }
@@ -131,7 +129,7 @@ void ParamExtractorJson::exportParam(int indexMixture,
     std::list<nlohmann::json> classProba; // list of sampled mu for the current class
     for (int i = 0, ie = logStorageMu.size(); i < ie; ++i) {
       const RankVal& rankCPP = logStorageMu(i); // current rank in C++
-      nlohmann::json rankJson(nbPos); // current rank in R
+      nlohmann::json rankJson; // current rank in R
       for (int p = 0; p < nbPos; ++p) {
         rankJson[p] = rankCPP.o()(p);
       }
@@ -149,11 +147,11 @@ void ParamExtractorJson::exportParam(int indexMixture,
 
 
 nlohmann::json ParamExtractorJson::jsonReturnParam() const {
-  nlohmann::json mixtureNameR = mixtureName_;
-  nlohmann::json paramJson = param_;
-//  for (int i = 0; i < mixtureName_.size(); ++i) {
-//    paramJson[mixtureName_[i]] = param_[i];
-//  }
+  nlohmann::json paramJson;
+
+  for (int i = 0; i < mixtureName_.size(); ++i) {
+    paramJson[mixtureName_[i]] = param_[i];
+  }
   return paramJson;
 }
 

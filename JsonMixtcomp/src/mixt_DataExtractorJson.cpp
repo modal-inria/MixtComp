@@ -35,10 +35,12 @@ void DataExtractorJson::setNbMixture(int nbMixture) {
 
 /** Export function for categorical model */
 void DataExtractorJson::exportVals(int indexMixture,
-                                std::string idName,
-                                const AugmentedData<Vector<int> >& augData,
-                                const Vector<std::vector<std::pair<int, Real> > >& dataStatStorage) {
-  nlohmann::json dataJson(augData.data_.rows()); // vector to store the completed data set
+                                   bool hasModalities,
+                                   std::string idName,
+                                   const AugmentedData<Vector<int> >& augData,
+                                   const Vector<std::vector<std::pair<int, Real> > >& dataStatStorage) {
+  Index offset = hasModalities ? minModality : 0;
+  nlohmann::json dataJson; // vector to store the completed data set
   nlohmann::json missingData; // list to store all the missing values in a linear format
 
   for (int i = 0; i < augData.data_.rows(); ++i) {
@@ -70,10 +72,8 @@ void DataExtractorJson::exportVals(int indexMixture,
                                 std::string idName,
                                 const AugmentedData<Vector<Index> >& augData,
                                 const Matrix<Real>& tikC) {
-  nlohmann::json dataJson(tikC.rows()); // vector to store the completed data set
-  nlohmann::json tikJson(tikC.rows(),
-                           tikC.cols()); // the empirical tik are completely exported, instead of the predominant modalities as in other categorical variables
-
+  nlohmann::json dataJson; // vector to store the completed data set
+  nlohmann::json tikJson; // the empirical tik are completely exported, instead of the predominant modalities as in other categorical variables
   for (int i = 0; i < tikC.rows(); ++i) {
     dataJson[i] = augData.data_(i) + minModality; // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
     for (int j = 0; j < tikC.cols(); ++j) {
@@ -89,10 +89,11 @@ void DataExtractorJson::exportVals(int indexMixture,
 
 /** Export function for gaussian model */
 void DataExtractorJson::exportVals(int indexMixture,
-                                std::string idName,
-                                const AugmentedData<Vector<Real> >& augData,
-                                const Vector<RowVector<Real> >& dataStatStorage) {
-  nlohmann::json dataJson(augData.data_.rows()); // vector to store the completed data set
+                                   bool hasModalities,
+                                   std::string idName,
+                                   const AugmentedData<Vector<Real> >& augData,
+                                   const Vector<RowVector<Real> >& dataStatStorage) {
+  nlohmann::json dataJson; // vector to store the completed data set
   nlohmann::json missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
@@ -115,12 +116,14 @@ void DataExtractorJson::exportVals(int indexMixture,
 }
 
 
-/** Export function for Poisson model */
+/** Export function for Ordinal and Poisson model */
 void DataExtractorJson::exportVals(int indexMixture,
-                                std::string idName,
-                                const AugmentedData<Vector<int> >& augData,
-                                const Vector<RowVector<int> >& dataStatStorage) {
-  nlohmann::json dataJson(augData.data_.rows()); // vector to store the completed data set
+                                   bool hasModalities,
+                                   std::string idName,
+                                   const AugmentedData<Vector<int> >& augData,
+                                   const Vector<RowVector<int> >& dataStatStorage) {
+  Index offset = hasModalities ? minModality : 0;
+  nlohmann::json dataJson; // vector to store the completed data set
   nlohmann::json missingData; // list to store all the missing values in a linear format
 
   // basic copy of the data to the export object
@@ -137,12 +140,10 @@ void DataExtractorJson::exportVals(int indexMixture,
     }
   }
 
-
   mixtureName_[indexMixture] = idName;
   data_[indexMixture]["completed"] = dataJson;
   data_[indexMixture]["stat"] = missingData;
 }
-
 
 /** Export function for Rank model */
 void DataExtractorJson::exportVals(int indexMixture,
@@ -196,6 +197,7 @@ nlohmann::json DataExtractorJson::jsonReturnVal() const {
   nlohmann::json dataJson;
 
   for (int i = 0; i < mixtureName_.size(); ++i) {
+    std::cout << mixtureName_[i] << std::endl;
     dataJson[mixtureName_[i]] = data_[i];
   }
 

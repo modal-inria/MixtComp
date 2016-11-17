@@ -94,7 +94,7 @@ class DataHandlerJson {
      * @sa stringToMixture */
     std::map<std::string, std::string> info_;
 
-    /** map: id -> position in rList_, as typedef-ed above */
+    /** map: id -> position in dataList_, as typedef-ed above */
     std::map<std::string, int> dataMap_;
 //
     const nlohmann::json dataList_;
@@ -116,23 +116,19 @@ std::string DataHandlerJson::getData(std::string const& idData,
   if (dataMap_.find(idData) != dataMap_.end()) { // check if the data requested is present in the input data
     Index pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
     nbInd = nbInd_; // return the number of individuals
-    augData.resizeArrays(nbInd_); // R has already enforced that all data has the same number of rows, and now all mixture are univariate
-
+    augData.resizeArrays(nbInd_);
     nlohmann::json currVar = dataList_[pos]; // get current named list
     nlohmann::json data = currVar["data"]; // get the data field in the Rcpp object
-
     paramStr = currVar["paramStr"];
-
     for (Index i = 0; i < nbInd_; ++i) {
-      std::string currStr;
       Type val;
       MisVal misVal;
-
-      currStr = data[i];
+      std::string currStr = data[i].dump();
 
       bool isValid = mvp.parseStr(currStr,
                                   val,
                                   misVal);
+
       if (isValid) {
         if (misVal.first == present_) {
           augData.setPresent(i, val);
@@ -157,6 +153,7 @@ std::string DataHandlerJson::getData(std::string const& idData,
          << "Please check that all the necessary data is provided." << std::endl;
     warnLog += sstm.str();
   }
+
   return warnLog;
 }
 

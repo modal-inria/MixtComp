@@ -86,7 +86,7 @@ std::string DataHandlerJson::getData(std::string const& idData,
                                            std::string& paramStr) const {
   std::string warnLog;
   if (dataMap_.find(idData) != dataMap_.end()) { // check if the data requested is present in the input data
-    Index pos = dataMap_.at(idData); // get the index of the element of the rList_ corresponding to idData
+    Index pos = dataMap_.at(idData); // get the index of the element of the list corresponding to idData
     nbInd = nbInd_;
     dataStr.resize(nbInd_); // R has already enforced that all data has the same number of rows, and now all mixture are univariate
 
@@ -96,7 +96,7 @@ std::string DataHandlerJson::getData(std::string const& idData,
     paramStr = currVar["paramStr"];
 
     for (int i = 0; i < nbInd_; ++i) {
-      dataStr(i) = data[i];
+      dataStr(i) = data[i].dump();
     }
   }
   else {
