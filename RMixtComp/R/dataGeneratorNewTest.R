@@ -3,8 +3,8 @@ dataGeneratorNewLearn <- function(nbInd,
   var <- list()
   var$z_class <- zParam()
   # var$z_class <- zParamFixedInit()
-  # var$Rank1 <- rankParam("Rank1")
-  # var$Ordinal1 <- ordinalParam("Ordinal1")
+  var$Rank1 <- rankParam("Rank1")
+  var$Ordinal1 <- ordinalParam("Ordinal1")
   # var$Functional1 <- functionalParam1sub("Functional1")
   var$Functional1 <- functionalParam2sub("Functional1")
   
