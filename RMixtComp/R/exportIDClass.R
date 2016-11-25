@@ -80,8 +80,10 @@ extractNBVar = function(data){
 extractVarName = function(data){
   nameList = names(data$variable$type)
   out = paste0('"', nameList[2], '"')
-  for (j in 3:length(nameList)) {
-    out = paste0(out, ', "', nameList[j],'"')
+  if (length(nameList) > 2) {
+    for (j in 3:length(nameList)) {
+      out = paste0(out, ', "', nameList[j],'"')
+    }
   }
   return(out)
 }
@@ -89,8 +91,10 @@ extractVarName = function(data){
 extractVarType = function(data){
   typeList = data$variable$type
   out = paste0('"', typeList[2], '"')
-  for (j in 3:length(typeList)) {
-    out = paste0(out, ', "', typeList[j],'"')
+  if (length(typeList) > 2) {
+    for (j in 3:length(typeList)) {
+      out = paste0(out, ', "', typeList[j],'"')
+    }
   }
   return(out)
 }

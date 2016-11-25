@@ -333,7 +333,7 @@ void MixtureComposer::gibbsSampling(SamplerInitialization init,
   #pragma omp parallel for
   for (Index i = 0; i < nbInd_; ++i) {
     if (init == performInitialization_) {
-      initializeTik();
+      tik_.row(i) = 1. / nbClass_;
       sStepNoCheck(i);
       samplingStepNoCheck(performInitialization_, i);
     }
