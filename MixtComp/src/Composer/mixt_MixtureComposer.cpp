@@ -302,7 +302,7 @@ void MixtureComposer::storeGibbsRun(int ind,
                        iterationMax);
 
   if (iteration == iterationMax) {
-    dataStat_.imputeData(ind); // impute the missing values using empirical mean or mode, depending of the model
+    dataStat_.imputeData(ind, tik_); // impute the missing values using empirical mean or mode, depending of the model. Latest completed tik are replaced by observed tik
   }
 
   for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
