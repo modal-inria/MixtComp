@@ -29,6 +29,7 @@ TEST(DataHandlerJson, listData_getData)
   std::ifstream ifs(json_file_input);
   ifs >> argument_list;
   json resGetData_lm     = argument_list["resGetData_lm"];
+
   double confidenceLevel = argument_list["confidenceLevel"];
   const json& mcStrategy = argument_list["mcStrategy"];
   int nbClass            = argument_list["nbClass"];
@@ -66,15 +67,15 @@ TEST(DataHandlerJson, listData_getData)
 
   handler.getData("categorical1",dataStr, nbInd, paramStr);
   std::vector<std::string> dataStrVec(dataStr.data(), dataStr.data() + dataStr.size());
-  ASSERT_EQ(dataStrVec,std::vector<std::string> ({ "5", "6", "8", "4", "?", "9", "2", "7", "3", "10" }));
+  ASSERT_EQ(dataStrVec,std::vector<std::string> ({ "\"5\"", "\"6\"", "\"8\"", "\"4\"", "\"?\"", "\"9\"", "\"2\"", "\"7\"", "\"3\"", "\"10\"" }));
 
   handler.getData("poisson2",dataStr, nbInd, paramStr);
   dataStrVec = std::vector<std::string> (dataStr.data(), dataStr.data() + dataStr.size());
-  ASSERT_EQ(dataStrVec,std::vector<std::string> ( { "\"0\"", "\"0\"", "\"0\"", "\"0\"", "\"?\"", "\"?\"", "\"0\"", "\"0\"", "\"0\"", "\"0\"" }));
+  ASSERT_EQ(dataStrVec,std::vector<std::string> ( { "\"0\"", "\"?\"", "\"?\"", "\"0\"", "\"?\"", "\"?\"", "\"0\"", "\"?\"", "\"0\"", "\"0\"" }));
 
   handler.getData("ordinal3",dataStr, nbInd, paramStr);
   dataStrVec = std::vector<std::string> (dataStr.data(), dataStr.data() + dataStr.size());
-  ASSERT_EQ(dataStrVec,std::vector<std::string> ( { "\"7\"", "\"?\"", "\"3\"", "\"?\"", "\"?\"", "\"?\"", "\"9\"", "\"8\"", "\"?\"", "\"6\"" }));
+  ASSERT_EQ(dataStrVec,std::vector<std::string> ( { "\"7\"", "\"9\"", "\"8\"", "\"3\"", "\"5\"", "\"1\"", "\"6\"", "\"10\"", "\"2\"", "\"4\"" }));
 
   warnLog = handler.getData("absent_id_var",dataStr, nbInd, paramStr);
   ASSERT_EQ(warnLog, "Data from the variable: absent_id_var has been requested but is absent from the provided data. Please check that all the necessary data is provided.\n");
@@ -111,7 +112,6 @@ TEST(DataHandlerJson, jsonReturnType)
 
 TEST(DataExtractorJson, jsonReturnVal)
 {
-  mixt::Timer totalTimer("Total Run");
 
   // lists to export results
   json mcMixture;
@@ -155,81 +155,37 @@ TEST(DataExtractorJson, jsonReturnVal)
                                                       confidenceLevel,
                                                       warnLog);
 
+  mixt::MixtureComposer composer(handler.nbSample(),
+                               nbClass,
+                               confidenceLevel);
 
-      mixt::MixtureComposer composer(handler.nbSample(),
-                                     nbClass,
-                                     confidenceLevel);
+  warnLog += manager.createMixtures(composer,nbClass);
+  ASSERT_EQ(warnLog, "");
 
-      mixt::Timer readTimer("Read Data");
+  warnLog += composer.setDataParam<mixt::ParamSetterDummy,
+                                 mixt::DataHandlerJson>(paramSetter,
+                                                     handler,
+                                                     mixt::learning_);
+  ASSERT_EQ(warnLog, "");
 
-      warnLog += manager.createMixtures(composer,nbClass);
+  dataExtractor .setNbMixture(handler.nbVariable());
+  paramExtractor.setNbMixture(handler.nbVariable());
 
+  mixt::StrategyParam param;
+  mixt::paramJsonToCpp(mcStrategy, param);
+  mixt::SemStrategy strategy(&composer,param);
 
-      warnLog += composer.setDataParam<mixt::ParamSetterDummy,
-                                       mixt::DataHandlerJson>(paramSetter,
-                                                           handler,
-                                                           mixt::learning_);
-      readTimer.top("data has been read");
+  // run the strategy
+  warnLog += strategy.run();
+  ASSERT_EQ(warnLog, "");
 
-      if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
-           dataExtractor .setNbMixture(handler.nbVariable());
-           paramExtractor.setNbMixture(handler.nbVariable());
+  composer.exportDataParam<mixt::DataExtractorJson,
+                        mixt::ParamExtractorJson>(dataExtractor,
+                                               paramExtractor);
+  json idc;
+  mixt::IDClass(composer, idc);
 
-           mixt::StrategyParam param;
-           mixt::paramJsonToCpp(mcStrategy,
-                       param);
-           // create the appropriate strategy and transmit the parameters
-           mixt::SemStrategy strategy(&composer,
-                                      param); // number of iterations for Gibbs sampler
-
-           // run the strategy
-           mixt::Timer stratTimer("Strategy Run");
-           warnLog += strategy.run();
-           stratTimer.top("strategy run complete");
-           if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
-     #ifdef MC_VERBOSE
-             composer.writeParameters();
-     #endif
-             composer.exportDataParam<mixt::DataExtractorJson,
-                                      mixt::ParamExtractorJson>(dataExtractor,
-                                                             paramExtractor);
-
-             // export the composer results through modifications of mcResults
-             mcMixture["nbCluster"] = nbClass;
-             mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
-             Real lnObsLik = composer.lnObservedLikelihood();
-             Real lnCompLik = composer.lnCompletedLikelihood();
-             mcMixture["lnObservedLikelihood"] = lnObsLik;
-             mcMixture["lnCompletedLikelihood"] = lnCompLik;
-             mcMixture["BIC"] = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
-             mcMixture["ICL"] = lnCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
-
-             mcMixture["runTime"] = totalTimer.top("end of run");
-             mcMixture["nbInd"] = composer.nbInd();
-             mcMixture["mode"] = "learn";
-
-             json idc;
-             mixt::IDClass(composer, idc);
-             mcMixture["IDClass"] = idc;
-           }
-      }
-
-  mcMixture["warnLog"] = warnLog;
-  #ifdef MC_VERBOSE
-    if (warnLog.size() != 0) {
-      std::cout << "!!! warnLog not empty !!!" << std::endl;
-      std::cout << warnLog << std::endl;
-    }
-  #endif
-
-  mcMixture["runTime"]  = totalTimer.top("end of run");
-  mcMixture["nbSample"] = handler.nbSample();
-
-  json type  = handler       .jsonReturnType();
   json data  = dataExtractor .jsonReturnVal();
-  json param = paramExtractor.jsonReturnParam();
 
-  mcVariable["type"]  = type  ;
-  mcVariable["data"]  = data  ;
 }
 
