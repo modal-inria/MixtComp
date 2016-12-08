@@ -1,8 +1,8 @@
 CXX = clang++
-
+#
 # generic build variables
-CXXFLAGS += -fopenmp -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"LinAlg/mixt_EigenMatrixBaseAddons.h\" -fPIC
-CXXFLAGS += -I../MixtComp/src -I../MixtComp/src/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include -I../nlopt/api 
+CXXFLAGS += -fopenmp -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"LinAlg/mixt_EigenMatrixBaseAddons.h\" -fPIC 
+CXXFLAGS += -I../MixtComp/src -I../MixtComp/src/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include -I../nlopt/api -I../json-develop/src
 CXXFLAGS += -std=c++11 
 
 # library files
@@ -17,17 +17,24 @@ O_RE = $(SRC_RE:%.cpp=%.o)
 # optimization library
 LIB_NLOPT = ../nlopt/.libs/libnlopt.a
 
+# unit-test files
+EXE_UTEST = utest/utest
+SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
+SRC_UTEST += $(wildcard utest/*.cpp)
+
+O_GTEST = $(SRC_GTEST:%.cc=%.o)
+O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 
 SRC_JMC += $(wildcard src/*.cpp)
 O_JMC = $(SRC_JMC:%.cpp=%.o)
 
-all: $(O_JMC) $(LIB_MC) $(LIB_RE) $(LIB_NLOPT)
+all: $(O_JMC) $(LIB_MC) $(LIB_RE) $(LIB_NLOPT) 
 	$(CXX) $(CXXFLAGS) $^ -o JsonMixtcomp
 		 
 $(LIB_MC): 
 	cd ../MixtComp; make lib
 	
-clean: # only cleans MixtComp
+clean: # only cleans JMixtComp
 	find -L . -type f -name "*.o" -exec rm -f {} \;
 	find -L . -type f -name "*.d" -exec rm -f {} \;
 	find -L . -type f -name "*.a" -exec rm -f {} \;
@@ -35,6 +42,14 @@ clean: # only cleans MixtComp
 	find -L . -type f -name "*.exe" -exec rm -f {} \;
 	find -L . -type f -name "*.dll" -exec rm -f {} \;
 
+cleanUTest: # only cleans MixtComp
+	find -L utest -type f -name "*.o" -exec rm -f {} \;
+	find -L utest -type f -name "*.d" -exec rm -f {} \;
+	find -L utest -type f -name "*.a" -exec rm -f {} \;
+	find -L utest -type f -name "*.so" -exec rm -f {} \;
+	find -L utest -type f -name "*.exe" -exec rm -f {} \;
+	find -L utest -type f -name "*.dll" -exec rm -f {} \;
+	
 lib: $(LIB_JMC)
 
 $(LIB_JMC): $(O_JMC)
@@ -45,4 +60,12 @@ $(LIB_RE): $(O_RE)
 	
 $(LIB_NLOPT):
 	cd ../nlopt;./configure CFLAGS=-fPIC;make
+	
+utest: $(EXE_UTEST) 
+
+$(EXE_UTEST): $(O_GTEST) $(O_UTEST) $(LIB_JMC) $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) 
+	$(CXX) $(CXXFLAGS) $^ -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
+	
 -include $(SRC_JMC:%.cpp=%.d)
+-include $(SRC_GTEST:%.cc=%.d)
+

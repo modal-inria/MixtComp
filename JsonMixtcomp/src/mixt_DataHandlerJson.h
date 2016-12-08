@@ -123,12 +123,10 @@ std::string DataHandlerJson::getData(std::string const& idData,
     for (Index i = 0; i < nbInd_; ++i) {
       Type val;
       MisVal misVal;
-      std::string currStr = data[i].dump();
-
+      std::string currStr = data[i].get<std::string>();
       bool isValid = mvp.parseStr(currStr,
                                   val,
                                   misVal);
-
       if (isValid) {
         if (misVal.first == present_) {
           augData.setPresent(i, val);
