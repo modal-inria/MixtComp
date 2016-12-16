@@ -90,7 +90,7 @@ class MixtureComposer {
      *  as virtual in case we impose fixed proportions in derived model. Only called
      *  by mStep
      **/
-    void pStep();
+    void pStep(EstimatorType bias);
 
     /**
      * Simulate zi accordingly to tik and replace tik by zik by calling cStep().

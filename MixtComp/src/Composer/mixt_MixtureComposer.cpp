@@ -137,7 +137,7 @@ Real MixtureComposer::lnCompletedProbability(int i, int k) const {
 }
 
 void MixtureComposer::mStep(EstimatorType bias) {
-  pStep(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
+  pStep(bias); // computation of z_ik frequencies, which correspond to ML estimator of proportions
   for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
     (*it)->mStep(bias); // call mStep on each variable
   }
@@ -180,12 +180,19 @@ void MixtureComposer::eStepInd(int i) {
   tik_.row(i).logToMulti(lnComp);
 }
 
-void MixtureComposer::pStep() {
+void MixtureComposer::pStep(EstimatorType bias) {
   prop_ = 0.;
   for (Index i = 0; i < zClassInd_.zi().data_.rows(); ++i) {
     prop_(zClassInd_.zi().data_(i)) += 1.;
   }
   prop_ = prop_ / prop_.sum();
+
+  if (bias == biased_) {
+    for (Index k = 0; k < nbClass_; ++k) {
+      prop_(k) = std::max(prop_(k)    , epsilon );
+      prop_(k) = std::min(1. - epsilon, prop_(k));
+    }
+  }
 }
 
 void MixtureComposer::writeParameters() const {
