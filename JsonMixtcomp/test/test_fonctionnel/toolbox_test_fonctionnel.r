@@ -31,7 +31,7 @@ test_mixtcomp <- function(data_training,data_test,descriptor){
   
   dataPath <- "working_data/data_training_test_func.csv"
   descriptorPath <-"working_data/descriptor_test_func.csv"
-  write.table(data_training,file=dataPath,sep=";",row.names = F)
+  write.table(data_test,file=dataPath,sep=";",row.names = F)
   write.table(descriptor,file=descriptorPath,sep=";",row.names = F)
   resGetData <- getData(c(dataPath,descriptorPath))
   for(i in 1:length(resGetData$lm)){
@@ -44,5 +44,6 @@ test_mixtcomp <- function(data_training,data_test,descriptor){
   # Mixtcomp Predict
   
   system(paste("/home/etienne/cylande/mixtcomp/JsonMixtcomp/JsonMixtcomp", path_mixtcomp_predict_input,path_mixtcomp_predict_output,sep=" "))
+  result <- fromJSON(path_mixtcomp_predict_output)
   
 }

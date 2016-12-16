@@ -267,6 +267,7 @@ class MixtureComposer {
     template<typename DataExtractor,
              typename ParamExtractor>
     void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const {
+
       dataExtractor.exportVals(0,
                                "z_class",
                                zClassInd_.zi(),
@@ -279,9 +280,11 @@ class MixtureComposer {
                                  paramName(),
                                  confidenceLevel_,
                                  "");
+
       for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
         (*it)->exportDataParam();
       }
+
     };
 
     /** register a mixture to the composer.

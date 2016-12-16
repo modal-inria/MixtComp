@@ -148,6 +148,7 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
   res_list["mixture"]  = mcMixture  ;
   res_list["variable"] = mcVariable ;
 
+  std::cout << res_list["variable"]["param"]["z_class"]["pi"]["stat"]["median"];
   std::string output_str = res_list.dump();
   std::ofstream out(json_file_output);
   out << output_str;
@@ -311,8 +312,8 @@ std::string predict_mixtcomp(json argument_list,std::string json_file_output){
 int main(int argc, char* argv[]) {
 
   std::string warnLog;
-  std::string json_file_input  = "/home/etienne/cylande/mixtcomp/JsonMixtcomp/test/test_fonctionnel/working_data/mixtcomp_predict_input.json";
-  std::string json_file_output = "/home/etienne/cylande/mixtcomp/JsonMixtcomp/test/test_fonctionnel/working_data/mixtcomp_predict_output.json";
+  std::string json_file_input  = argv[1];
+  std::string json_file_output = argv[2];
 
   std::ifstream infile(json_file_input);
   if(infile.good() == false){
@@ -325,6 +326,7 @@ int main(int argc, char* argv[]) {
     std::string mode = argument_list["mode"];
 
     if(mode=="learn"){
+      std::cout << "#################################" << std::endl;
       warnLog += learn_mixtcomp(argument_list,json_file_output);
     } else if(mode=="predict"){
       warnLog += predict_mixtcomp(argument_list,json_file_output);

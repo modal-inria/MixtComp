@@ -26,6 +26,7 @@
 
 #include "MixtComp/src/Data/mixt_AugmentedData.h"
 #include "Eigen/Dense"
+#include <Rcpp.h>
 
 #include "MixtComp/src/Mixture/Rank/mixt_RankIndividual.h"
 #include "MixtComp/src/Mixture/Rank/mixt_RankStat.h"

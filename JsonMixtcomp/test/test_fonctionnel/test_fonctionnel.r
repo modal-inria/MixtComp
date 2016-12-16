@@ -3,7 +3,7 @@ source("/home/etienne/cylande/retfor/RetforJson/test/test_fonctionnel/toolbox_te
 # tests des warnlog
 
 results_warnlog = list()
-data_training <- matrix(c(rep(c(1,2),50),rep(c(0,10),25)),nr=50,nc=3)
+data_training <- matrix(c(rep(c(1,2),500),rep(c(0,10),250)),nr=500,nc=3)
 data_test     <- data_training[1:20,]
 data_test[,ncol(data_test)] <- "?"
 descriptor    <- matrix(c(rep("Categorical_pjk",2),rep("Poisson_k",1)),nr=1)
