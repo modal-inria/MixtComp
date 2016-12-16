@@ -41,7 +41,7 @@ class ClassDataStat {
                     int iteration,
                     int iterationMax);
 
-    void imputeData(int ind);
+    void imputeData(int ind, Matrix<Real>& tik);
 
     const Matrix<Real>& getDataStatStorage() const {return dataStatStorage_;}
 

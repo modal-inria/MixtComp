@@ -60,9 +60,10 @@ void ClassDataStat::sampleVals(int ind,
   }
 }
 
-void ClassDataStat::imputeData(int ind) {
+void ClassDataStat::imputeData(int ind, Matrix<Real>& tik) {
   if (zClassInd_.zi().misData_(ind).first != present_) { // imputation by the mode
     int mode;
+    tik.row(ind) = dataStatStorage_.row(ind); // completed tik from last sampling are replaced by observed tik
     dataStatStorage_.row(ind).maxCoeff(&mode);
     zClassInd_.setZAndClassInd(ind, mode);
   }
