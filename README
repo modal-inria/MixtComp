@@ -26,3 +26,14 @@ Build and install
 ---
 
 After the initial "git --clone", or after any update via "git pull" for example, the code must be rebuilt. To handle the various dependencies correctly, is is necessary to rebuild MixtComp by calling "./mcUpdate.sh" which is in the same directory as this present document. The script will clean just enough location to ensure a proper build without taking too long to complete.
+
+Test in RStudio
+---
+
+Launch R by loading the RStudio project. Press CRTL + SHIFT + B to build and load the package. Test the various modes using:
+out <- testGenDataLearn()
+out <- testLeanPredict()
+out <- testNewLearn()
+out <- testNewLearnPredict()
+
+The input and output files are generated in the dataGen (simple models) and dataGenNew (advanced models) directories. testGenDataLearn and testLeanPredict correspond to learning and the combination of learning and prediction for the simple models (normal, multinomial, Poisson). testNewLearn and testNewLearnPredict are the same, but for the more advanced models (rank, functional, ordinal).
