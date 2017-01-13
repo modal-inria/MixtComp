@@ -72,8 +72,6 @@ void DataExtractorR::exportVals(int indexMixture,
                                 std::string idName,
                                 const AugmentedData<Vector<Index> >& augData,
                                 const Matrix<Real>& tikC) {
-  writeDataCsv("tikCExportVals.csv", tikC);
-
   Rcpp::IntegerVector dataR(tikC.rows()); // vector to store the completed data set
   Rcpp::NumericMatrix tikR(tikC.rows(),
                            tikC.cols()); // the empirical tik are completely exported, instead of the predominant modalities as in other categorical variables
