@@ -1,0 +1,4 @@
+Missing individuals / Total individuals: 78 / 100
+Ratio missing individuals: 0.78
+Missing values / Total values: 117 / 900
+Ratio missing values: 0.13

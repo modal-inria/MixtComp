@@ -13,7 +13,7 @@ writeIDClassHTML = function(data,
 
 writeIDClassJSON = function(data,
                             fileNameJSON) {
-  cat(exportIDClass(data),
+  cat(exportIDClass2(data),
       file = fileNameJSON,
       sep = "\n",
       fill = FALSE,
@@ -58,6 +58,8 @@ exportIDClass = function(data) {
               sep = '\n\n')
   return(out);
 }
+
+
 
 extractNbClass = function(data){
   return(data$mixture$nbCluster)
