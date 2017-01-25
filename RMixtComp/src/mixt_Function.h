@@ -34,6 +34,9 @@ namespace mixt
 void IDClass(mixt::MixtureComposer& mc,
              Rcpp::NumericMatrix& idc);
 
+void matDelta(mixt::MixtureComposer& mc,
+              Rcpp::NumericMatrix& delta);
+
 void paramRToCpp(const Rcpp::List& RParam,
                  StrategyParam& CppParam);
 

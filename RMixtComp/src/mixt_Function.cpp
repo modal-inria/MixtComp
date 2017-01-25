@@ -59,6 +59,21 @@ void IDClass(mixt::MixtureComposer& mc,
   idc.attr("dimnames") = dimnms;
 }
 
+
+void matDelta(mixt::MixtureComposer& mc,
+              Rcpp::NumericMatrix& delta){
+  delta = Rcpp::NumericMatrix(mc.nbVar(), mc.nbVar());
+  
+  Matrix<Real> DELTA;
+  mc.Delta(DELTA);
+  for (Index j = 0; j < mc.nbVar(); ++j) {
+    for (Index h = 0; h < mc.nbVar(); ++h) {
+      delta(h, j) = DELTA(h, j);
+    }
+  }
+}
+
+
 void paramRToCpp(const Rcpp::List& RParam,
                  StrategyParam& CppParam) {
   if(RParam.containsElementNamed("nbBurnInIter")){

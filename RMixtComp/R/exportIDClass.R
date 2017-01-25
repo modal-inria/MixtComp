@@ -27,6 +27,41 @@ pStr = function(x){
   return(format(round(x, 1), nsmall = 1))
 }
 
+# Ancienne version (à supprimer si Vincent ok)
+# exportIDClass = function(data) {
+#   headerStr = paste('{')
+#   
+#   classStr = paste0('"nbClass": ', extractNbClass(data), ',')
+#   
+#   piStr = paste0('"pi": [', extractPi(data), '],')
+#   
+#   nbVarStr = paste0('"nbVar": ', extractNBVar(data), ',')
+#   
+#   varNameStr = paste0('"varName": [', extractVarName(data), '],')
+#   
+#   varTypeStr = paste0('"varType": [', extractVarType(data), '],')
+#   
+#   eStr = paste0('"e": [', extractID(data), '],')
+#   
+#   pStr = paste0('"p": [', extractParam(data), ']')
+#   
+#   footerStr = '}'
+#   
+#   out = paste(headerStr,
+#               classStr,
+#               piStr,
+#               nbVarStr,
+#               varNameStr,
+#               varTypeStr,
+#               eStr,
+#               pStr,
+#               footerStr,
+#               sep = '\n\n')
+#   return(out);
+# }
+
+
+
 exportIDClass = function(data) {
   headerStr = paste('{')
   
@@ -42,7 +77,20 @@ exportIDClass = function(data) {
   
   eStr = paste0('"e": [', extractID(data), '],')
   
-  pStr = paste0('"p": [', extractParam(data), ']')
+  pStr = paste0('"p": [', extractParam(data), '],')
+  
+  datavisu <- VisuTools(data)
+  
+  pvdiscrimclasses = paste0('"pvdiscrimclasses": ', toJSON(datavisu$pvdiscrim.classes), ',')
+  
+  pvdiscrimvbles = paste0('"pvdiscrimvbles": ', toJSON(datavisu$pvdiscrim.vbles), ',')
+  
+  delta = paste0('"delta": ', toJSON(datavisu$delta), ',')
+  
+  sigma = paste0('"sigma": ', toJSON(datavisu$sigma), ',')
+  
+  tiksorted = paste0('"tiksorted": ', toJSON(datavisu$tiksorted), '')
+  
   
   footerStr = '}'
   
@@ -54,11 +102,90 @@ exportIDClass = function(data) {
               varTypeStr,
               eStr,
               pStr,
+              pvdiscrimclasses,
+              pvdiscrimvbles,
+              delta,
+              sigma,
+              tiksorted,
               footerStr,
               sep = '\n\n')
   return(out);
 }
 
+ExtractedTik <- function(k, tik, z){
+  tmp <- tik[(z==k),]
+  rownames(tmp) <- which(z==k)
+  tmp <- tmp[order(tmp[,k], decreasing = T),]
+  tmp
+}
+
+VisuTools <- function(output){
+  n <- output$mixture$nbInd
+  d <- length(output$variable$type) - 1
+  names.vbles <- names(output$variable$type)[-1]
+  namesshort <- abbreviate(names.vbles, 6)
+  names(namesshort) <- NULL
+  G <- output$mixture$nbCluster
+  tik <- output$variable$data$z_class$stat
+  zhat <- output$variable$data$z_class$completed
+  # Pour le barplot des variables
+  pvdiscrim.vbles <- data.frame(names=names.vbles, 
+                                discrim=round(1 - colSums(output$mixture$IDClass), 4),
+                                shortnames= namesshort,
+                                type=paste(names.vbles, '<br>', as.character(output$variable$type)[-1], sep=""))
+  ordervbles <- order(pvdiscrim.vbles$discrim, decreasing = T)
+  pvdiscrim.vbles <- pvdiscrim.vbles[order(pvdiscrim.vbles$discrim, decreasing = T),]
+  pvdiscrim.vbles$colors <- col_numeric("Blues", domain = c(0,100))(ceiling(pvdiscrim.vbles$discrim*100))
+  pvdiscrim.vbles <- as.list(pvdiscrim.vbles)
+  pvdiscrim.vbles$titre <- "Discriminative level of the variables"
+  ## Pour le barplot des classes
+  pvdiscrim.classes <- data.frame(names=paste("class", 1:G, sep="."), discrim=round(1 - (-colSums(log(tik**tik)) / (nrow(tik) * exp(-1))), 4))
+  orderclass <- order(pvdiscrim.classes$discrim, decreasing = T)
+  pvdiscrim.classes <- pvdiscrim.classes[orderclass,]
+  pvdiscrim.classes$colors <- col_numeric("Blues", domain = c(0,100))(ceiling(pvdiscrim.classes$discrim*100))
+  pvdiscrim.classes <- as.list(pvdiscrim.classes)
+  pvdiscrim.classes$titre <- "Discriminative level of the classes"
+  ## Pour la heatmap des distances entre variables
+  output$mixture$delta <- output$mixture$delta[ordervbles,]
+  output$mixture$delta <- output$mixture$delta[,ordervbles]
+  delta <- list(x=pvdiscrim.vbles$shortnames,
+                y=pvdiscrim.vbles$shortnames,
+                z=round(1 - output$mixture$delta, 4),
+                titre="Clustering-based similarities between variables")
+  delta$textmat <- delta$z
+  for (j in 1:d)  delta$textmat[,j] <- paste("Similarity beween<br>", delta$y[j], " and ", delta$x, ": <br>", delta$z[,j], sep="")
+  delta$colors <- (col_numeric("Blues", domain = c(0,100))(range(delta$z*100)))
+  ## Pour la heatmap des distances entre classes
+  sigma <- list(x=paste("class", 1:G, sep="."), 
+                y=paste("class", 1:G, sep="."), 
+                z=1-sqrt(sapply(orderclass, function(k) colMeans(sweep(tik[,orderclass], 1, tik[,k], "-")**2))),
+                titre="Clustering-based similarities between classes")
+  sigma$textmat <- sigma$z
+  for (k in 1:G)  sigma$textmat[,k] <- paste("Similarity beween<br>", sigma$y[k], " and ", sigma$x, ": <br>", sigma$z[,k], sep="")
+  sigma$colors <- (col_numeric("Blues", domain = c(0,100))(range(sigma$z*100)))
+  ### Pour la heatmap des tik
+  tiksorted <- NULL
+  for (k in 1:G) tiksorted <- rbind(tiksorted, ExtractedTik(k, tik, zhat))
+  tiksorted <- list(x=paste("class", 1:G, sep="."),
+                    y=rownames(tiksorted),
+                    z=tiksorted,
+                    titre="Probabilities of classification")
+  tiksorted$colors <- (col_numeric("Blues", domain = c(0,100))(range(tiksorted$z*100)))
+  tiksorted$textmat <- tiksorted$z
+  for (j in 1:ncol(tiksorted$textmat)) tiksorted$textmat[,j] <- 
+    paste("Probability that <br> observation", 
+          rownames(tiksorted$z), 
+          " <br>belongs to class",
+          j, 
+          ": <br>",
+          round(tiksorted$z[,j],4))
+  
+  return(list(pvdiscrim.vbles=pvdiscrim.vbles,
+              pvdiscrim.classes=pvdiscrim.classes,
+              delta=delta,
+              sigma=sigma,
+              tiksorted=tiksorted))
+}
 
 
 extractNbClass = function(data){

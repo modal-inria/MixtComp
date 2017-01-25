@@ -317,6 +317,12 @@ class MixtureComposer {
      *@param[out] ekj matrix containing E_kj
      * */
     void E_kj(Matrix<Real>& ekj) const;
+   /**
+	* Added by Matt (Compute the matrix delta measuring the similarities between variables)
+*
+*@param[out] delta matrix of the distances between variables
+**/
+    void Delta(Matrix<Real>& delta) const;
 
     /**
      * Compute the normalized IDClass matrix, using
