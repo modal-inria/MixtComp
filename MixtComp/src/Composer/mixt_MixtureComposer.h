@@ -321,7 +321,7 @@ class MixtureComposer {
 	* Added by Matt (Compute the matrix delta measuring the similarities between variables)
 *
 *@param[out] delta matrix of the distances between variables
-**/
+**/	
     void Delta(Matrix<Real>& delta) const;
 
     /**

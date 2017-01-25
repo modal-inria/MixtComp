@@ -616,7 +616,7 @@ configure:16618: $? = 0
 configure:16627: result: yes
 configure:16641: checking for BSDgettimeofday
 configure:16641: gcc -o conftest -fPIC   conftest.c -lm  >&5
-/tmp/ccBcijEQ.o: In function `main':
+/tmp/ccarmlma.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `BSDgettimeofday'
 collect2: error: ld returned 1 exit status
 configure:16641: $? = 1
