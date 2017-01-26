@@ -19,6 +19,7 @@
  *  Project:    MixtComp
  *  Created on: July 2, 2014
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *              Matthieu Marbac <matthieu.marbac-lourdelle@inria.fr>
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
@@ -29,7 +30,7 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Various.h"
 
-namespace mixt {
+namespace mixt { 
 
 MixtureComposer::MixtureComposer(Index nbInd,
                                  Index nbClass,
