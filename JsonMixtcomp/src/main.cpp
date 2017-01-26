@@ -148,7 +148,6 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
   res_list["mixture"]  = mcMixture  ;
   res_list["variable"] = mcVariable ;
 
-  std::cout << res_list["variable"]["param"]["z_class"]["pi"]["stat"]["median"];
   std::string output_str = res_list.dump();
   std::ofstream out(json_file_output);
   out << output_str;
@@ -314,8 +313,8 @@ int main(int argc, char* argv[]) {
   std::string warnLog;
   std::string json_file_input  = argv[1];
   std::string json_file_output = argv[2];
-
   std::ifstream infile(json_file_input);
+
   if(infile.good() == false){
     warnLog += "the file "+json_file_input+" does not exist";
   } else {
@@ -325,10 +324,32 @@ int main(int argc, char* argv[]) {
     ifs >> argument_list;
     std::string mode = argument_list["mode"];
 
+//    Fork by_row = true or false
+
+    if (!(argument_list.find("by_row") != argument_list.end())) {
+         std::cout << "The 'by_row' boolean parameter can't be found in the 'argument_list' json list" << std::endl;
+         return 0;
+       }
+      bool by_row            = argument_list["by_row"].get<bool>();
+      if(by_row == true){
+        if (argument_list.find("data") != argument_list.end()) {
+          json data_input = argument_list["data"];
+          std::cout << data_input[0].size() <<std::endl;
+          for(int j = 0 ; j < data_input[0].size() ; j++){
+            for(int i = 0 ; i < data_input.size() ; i++){
+              argument_list["resGetData_lm"][j]["data"][i] = data_input[i][j].get<std::string>();
+            }
+          }
+        } else {
+          std::cout << "The 'by_row' parameter is equal to true but there is not 'data' element in the 'argument_list' json list" << std::endl;
+          return 0;
+        }
+      }
+
     if(mode=="learn"){
-      std::cout << "#################################" << std::endl;
       warnLog += learn_mixtcomp(argument_list,json_file_output);
     } else if(mode=="predict"){
+
       warnLog += predict_mixtcomp(argument_list,json_file_output);
     } else {
       warnLog += "the field [\"mode\"] contained in the json file "+ json_file_input +" must be either \"learn\" or \"predict\" but is: " + mode;
