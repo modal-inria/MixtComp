@@ -5,7 +5,7 @@ all:
 #	g++ -I/usr/share/R/include `Rscript -e "Rcpp:::CxxFlags()"` `Rscript -e "RInside:::CxxFlags()"` -O0 -pipe -g -Wall `Rscript -e "RInside:::LdFlags()"` src/test/test.cpp -L/usr/lib/R/lib -lR -lblas -llapack -o src/test/test
 
 
-cleanAll: cleanNlopt cleanMixtComp cleanRe cleanRMCbase
+cleanAll: cleanGTest cleanNlopt cleanMixtComp cleanRe cleanRMCbase cleanTest
 
 cleanGTest:
 	cd ../gtest/src;rm -f *.o *.d
