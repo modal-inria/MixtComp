@@ -14,3 +14,5 @@ colnames(data_test)     <- colnames(data_training)
 
 test_mixtcomp(data_training,data_test,descriptor)
   
+test_mixtcomp_by_row(data_training,data_test,descriptor)
+ 
