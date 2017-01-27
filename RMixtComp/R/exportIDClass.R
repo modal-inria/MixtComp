@@ -50,7 +50,7 @@ exportIDClass = function(data) {
   
   sigma = paste0('"sigma": ', extractDistSigma(data), ',')
   
-  tiksorted = paste0('"tiksorted": ', extractTiksorted(data), '')
+  ordertik = paste0('"tiksorted": ', extractOrderTik(data), '')
   
   footerStr = '}'
   
@@ -65,34 +65,32 @@ exportIDClass = function(data) {
               pvdiscrimvbles,
               delta,
               sigma,
-              tiksorted,
+              ordertik,
               footerStr,
               sep = '\n\n')
   return(out);
 }
 
 # Sort the tik of observations belonging to class k with decreasing order
-ExtractedTik <- function(k, tik, z){
-  tmp <- tik[(z==k),]
-  rownames(tmp) <- which(z==k)
-  tmp <- tmp[order(tmp[,k], decreasing = T),]
-  tmp
-}
 
-extractTiksorted = function(data){
-  tiksorted <- NULL
-  for (k in 1:data$mixture$nbCluster) tiksorted <- rbind(tiksorted, ExtractedTik(k, data$variable$data$z_class$stat, data$variable$data$z_class$completed))
-  return(toJSON(tiksorted))
+
+extractOrderTik = function(data){
+  return(
+    toJSON(
+      unlist(
+        sapply(1:data$mixture$nbCluster, 
+               function(k) order(data$variable$data$z_class$stat[,k] * (data$variable$data$z_class$completed == k ),
+                                 decreasing = T)[1:(table(data$variable$data$z_class$completed)[k])]
+        ))))
 }
 
 extractDistSigma = function(data){
-  
-  return(toJSON(round(1-sqrt(sapply(1:data$mixture$nbCluster,
-                                    function(k) colMeans(sweep(data$variable$data$z_class$stat,
-                                                               1,
-                                                               data$variable$data$z_class$stat[,k],
-                                                               "-")**2))
-                             ), 4)))
+  return(toJSON(round(sqrt(sapply(1:data$mixture$nbCluster,
+                                  function(k) colMeans(sweep(data$variable$data$z_class$stat,
+                                                             1,
+                                                             data$variable$data$z_class$stat[,k],
+                                                             "-")**2))
+  ), 4)))
 }
 
 extractDistDelta = function(data){
