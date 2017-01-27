@@ -119,3 +119,40 @@ getType <- function(outMixtcomp, with.z_class = FALSE)
   
   return(type)
 }
+
+#'
+#' @title Get the empiric tik
+#'
+#' @description Get the empiric tik
+#'
+#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.
+#'
+#' @return a matrix containing the tik for each individuals (in row) and each class (in column).
+#'
+#' @examples 
+#' \dontrun{
+#' # load the data
+#' resGetData <- getData(c("dataTrain.csv", "descriptor.csv")) 
+#' resGetNewData <- getData(c("dataTest.csv", "descriptor.csv")) 
+#' 
+#' # define the algorithm's parameters
+#' mcStrategy <- list(nbBurnInIter = 100,
+#' nbIter = 100,
+#' nbGibbsBurnInIter = 50,
+#' nbGibbsIter = 50,
+#' parameterEdgeAuthorized = FALSE)
+#' 
+#' # run RMixtCompt for clustering
+#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' 
+#' # get tik
+#' tik <- getTik(res)
+#' }
+#'
+#' @export
+#'
+getTik <- function(outMixtcomp)
+{
+  return(outMixtcomp$variable$data$z_class$stat)
+}
+
