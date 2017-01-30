@@ -1,10 +1,9 @@
 CXX = clang++
 CXXFLAGS += -O2 -g -std=c++11 -Wall -DMC_VERBOSE
-export R_BUILD
 
 #
 # generic build variables
-CXXFLAGS += -fopenmp -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"LinAlg/mixt_EigenMatrixBaseAddons.h\" -fPIC 
+CXXFLAGS += -fopenmp -pthread -MD -MP -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -fPIC 
 CXXFLAGS += -I../MixtComp/src -I../MixtComp/src/LinAlg -I../boost -I../eigen -I../gtest -I../gtest/include -I../nlopt/api -I../json-develop/src
 
 # library files
@@ -30,7 +29,8 @@ O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 SRC_JMC += $(wildcard src/*.cpp)
 O_JMC = $(SRC_JMC:%.cpp=%.o)
 
-
+R_BUILD = T # Variable used to signal that the compilation occurs from inside R
+export R_BUILD CXX CXXFLAGS
 
 all: $(O_JMC) $(LIB_MC) $(LIB_RE) $(LIB_NLOPT) 
 	$(CXX) $(CXXFLAGS) $^ -o JsonMixtcomp
