@@ -29,10 +29,10 @@
 namespace mixt {
 
 struct StrategyParam {
-    int nbBurnInIter_ = -1;
-    int nbIter_ = -1;
-    int nbGibbsBurnInIter_ = -1;
-    int nbGibbsIter_ = -1;
+    int nbBurnInIter_ = 100;
+    int nbIter_ = 100;
+    int nbGibbsBurnInIter_ = 100;
+    int nbGibbsIter_ = 100;
 
     EstimatorType bias_ = unBiased_;
 };
