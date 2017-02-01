@@ -50,7 +50,9 @@ exportIDClass = function(data) {
   
   sigma = paste0('"sigma": ', extractDistSigma(data), ',')
   
-  ordertik = paste0('"tiksorted": ', extractOrderTik(data), '')
+  ordertik = paste0('"tiksorted": ', extractOrderTik(data), ',')
+  
+  cibounds = paste0('"cibounds": ', extractCIbounds(data), '')
   
   footerStr = '}'
   
@@ -66,14 +68,21 @@ exportIDClass = function(data) {
               delta,
               sigma,
               ordertik,
+              cibounds,
               footerStr,
               sep = '\n\n')
   return(out);
 }
 
+
+# Extract the confidence interval and the mean for each variable
+# function extractCIboundsOneVbles is defined in file extractCIbounds.R
+extractCIbounds = function(data){
+  return(toJSON(lapply(names(output$variable$type)[-1],
+                       function(v) extractCIboundsOneVble(v, data))))
+}
+
 # Sort the tik of observations belonging to class k with decreasing order
-
-
 extractOrderTik = function(data){
   return(
     toJSON(

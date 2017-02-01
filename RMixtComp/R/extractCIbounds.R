@@ -1,0 +1,99 @@
+extractCIGaussianVble = function(var, data){
+  eval(parse(text = paste("theta <- matrix(output$variable$param$", 
+                          var,
+                          "$NumericalParam$stat[,1], ncol=2, byrow=TRUE)",
+                          sep="")))
+  out <- data.frame(class=paste("class",1:nrow(theta), sep="."),
+                    mean=theta[,1], 
+                    lower=qnorm(0.025, theta[,1], sqrt(theta[,2]))
+  )
+  return(out)
+}
+
+extractCIPoissonVble = function(var, data){
+  eval(parse(text = paste("theta <- output$variable$param$", 
+                          var,
+                          "$NumericalParam$stat[,1]",
+                          sep="")))
+  out <- data.frame(class=paste("class",1:length(theta), sep="."),
+                    mean=theta, 
+                    lower=qpois(0.025, theta), 
+                    upper=qpois(0.975, theta)
+  )
+  return(out)
+}
+
+extractCIMultiVble = function(var, data){
+  eval(parse(text = paste("theta <- matrix(output$variable$param$", 
+                          var,
+                          "$NumericalParam$stat[,1], nrow=output$mixture$nbCluster, byrow=TRUE)",
+                          sep="")))
+  
+  for (k in 1:nrow(theta)){
+    orderk <- order(theta[k,], decreasing=TRUE)
+    keep <- orderk[1:which(cumsum(theta[k, orderk])>0.95)[1]]
+    theta[k, -keep] <- 0
+  }
+  theta <- round(theta, 2)
+  out <- cbind(1:ncol(theta), as.data.frame(t(theta))) 
+  colnames(out) <- c("level", paste("class", 1:output$mixture$nbCluster, sep="."))
+  if (any(rowSums(out[,-1]) == 0)) out <- out[-which(rowSums(out[,-1]) == 0),]
+  return(out)
+}
+
+## To compute the mean curve per component
+functionalmeanVal <- function(Tt, alpha, beta){
+  weights <- alpha[,2] * Tt + alpha[,1]
+  weights <- weights - max(weights)
+  weights <- exp(weights) / sum(exp(weights))
+  sum((beta[,1] + beta[,2] * Tt) * weights)
+}
+
+## To compute the lower/upper bound of the 95%-level confidence interval of the curve per component
+functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
+  weights <- alpha[,1] + alpha[,2] * Tt
+  weights <- weights - max(weights)
+  weights <- exp(weights) / sum(exp(weights))
+  means <- beta[,1] + beta[,2] * Tt 
+  # Newton-Raphson to get the bound
+  u <-  qnorm(borne, means, sqrt(sigma))[which.max(weights)]
+  Fu <- function(u) (sum(weights * pnorm(u, means, sqrt(sigma)) ) - borne)
+  fu <- function(u) 2*sum(weights * dnorm(u, means, sqrt(sigma)) ) 
+  while (abs(Fu(u))> 0.00001)  u <- u - Fu(u) / fu(u) 
+  return(u)
+}
+extractCIFunctionnalVble = function(var, data){
+  ### Warnings, the range of the time must be found in the data set!!!!!
+  Tseq <- (1:400)
+  eval(parse(text = paste("param <- data$variable$param$", var,  sep="")))
+  G <- output$mixture$nbCluster
+  S <- length(param$sd$stat[,1])/G
+  alpha <- lapply(1:G, function(g) matrix(param$alpha$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),])
+  beta <- lapply(1:G, function(g) matrix(param$beta$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),])
+  sigma <- matrix(param$sd$stat[,1], nrow=G, ncol=S, byrow=TRUE)
+  if (S>1){
+    meancurve <- sapply(1:G, function(k) sapply(Tseq, functionalmeanVal, alpha=alpha[[k]], beta=beta[[k]]))
+    infcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.025, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,]))
+    supcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.975, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,]))
+  }else{
+    meancurve <- sapply(1:G, function(k) (beta[[k]][1] + beta[[k]][2] * Tseq))
+    infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k], sqrt(sigma[k,1])))
+    supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k], sqrt(sigma[k,1])))
+  }
+  out <- data.frame(Time=Tseq, meancurve, infcurve, supcurve)
+  colnames(out) <- c("Time",
+                     paste("mean.class", 1:G, sep="."), 
+                     paste("inf.class", 1:G, sep="."), 
+                     paste("sup.class", 1:G, sep="."))
+  return(out)
+}
+
+extractCIboundsOneVble = function(var, data){
+  out <- NULL
+  eval(parse(text=paste("type <- data$variable$type$", var,sep="")))
+  if (type == "Gaussian_sjk") out <- extractCIGaussianVble(var, data)
+  if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data)
+  if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data)
+  if (type == "Functional") out <-  extractCIFunctionnalVble(var, data)
+  return(out)
+}
