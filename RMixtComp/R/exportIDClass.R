@@ -94,16 +94,22 @@ extractOrderTik = function(data){
 }
 
 extractDistSigma = function(data){
-  return(toJSON(round(1 - sqrt(sapply(1:data$mixture$nbCluster,
-                                  function(k) colMeans(sweep(data$variable$data$z_class$stat,
-                                                             1,
-                                                             data$variable$data$z_class$stat[,k],
-                                                             "-")**2))
-  ), 4)))
+  sigma <- matrix(1, 1, 1) ### case with one class
+  if (data$mixture$nbCluster>1){
+    sigma <- round(1 - sqrt(sapply(1:data$mixture$nbCluster,
+                          function(k) colMeans(sweep(data$variable$data$z_class$stat,
+                                                     1,
+                                                     data$variable$data$z_class$stat[,k],
+                                                     "-")**2))
+    ), 4)
+  }
+  return(toJSON(sigma))
 }
 
 extractDistDelta = function(data){
-  return(toJSON(round(1 - data$mixture$delta, 4)))
+  delta <- round(1 - data$mixture$delta, 4)
+  if (is.numeric(delta)) delta <- matrix(1, 1, 1) ## case with one variable
+  return(toJSON(delta))
 }
 
 extractPvDiscrimClass = function(data){
