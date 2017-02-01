@@ -42,9 +42,9 @@ exportIDClass = function(data) {
   
   pStr = paste0('"p": [', extractParam(data), '],')
   
-  pvdiscrimclasses = paste0('"pvdiscrimclasses": ', extractPvDiscrimVbles(data), ',')
+  pvdiscrimclasses = paste0('"pvdiscrimclasses": ', extractPvDiscrimClass(data), ',')
   
-  pvdiscrimvbles = paste0('"pvdiscrimvbles": ', extractPvDiscrimClass(data), ',')
+  pvdiscrimvbles = paste0('"pvdiscrimvbles": ', extractPvDiscrimVbles(data), ',')
   
   delta = paste0('"delta": ', extractDistDelta(data), ',')
   
@@ -85,7 +85,7 @@ extractOrderTik = function(data){
 }
 
 extractDistSigma = function(data){
-  return(toJSON(round(sqrt(sapply(1:data$mixture$nbCluster,
+  return(toJSON(round(1 - sqrt(sapply(1:data$mixture$nbCluster,
                                   function(k) colMeans(sweep(data$variable$data$z_class$stat,
                                                              1,
                                                              data$variable$data$z_class$stat[,k],
@@ -104,7 +104,7 @@ extractPvDiscrimClass = function(data){
 
 
 extractPvDiscrimVbles = function(data){
-  return(toJSON(1 - colSums(data$mixture$IDClass), 4))
+  return(toJSON(unname(round(1 - colSums(data$mixture$IDClass), 4))))
 }
 
 extractNbClass = function(data){
