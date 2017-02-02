@@ -78,7 +78,7 @@ exportIDClass = function(data) {
 # Extract the confidence interval and the mean for each variable
 # function extractCIboundsOneVbles is defined in file extractCIbounds.R
 extractCIbounds = function(data){
-  return(toJSON(lapply(names(output$variable$type)[-1],
+  return(toJSON(lapply(names(data$variable$type)[-1],
                        function(v) extractCIboundsOneVble(v, data))))
 }
 

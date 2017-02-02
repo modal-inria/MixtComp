@@ -1,33 +1,15 @@
 extractCIGaussianVble = function(var, data){
-  eval(parse(text = paste("theta <- matrix(output$variable$param$", 
-                          var,
-                          "$NumericalParam$stat[,1], ncol=2, byrow=TRUE)",
-                          sep="")))
-  out <- data.frame(class=paste("class",1:nrow(theta), sep="."),
-                    mean=theta[,1], 
-                    lower=qnorm(0.025, theta[,1], sqrt(theta[,2]))
-  )
-  return(out)
+  theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], ncol=2, byrow=TRUE)
+  return(list(mean = theta[,1],lower = qnorm(0.025, theta[,1], sqrt(theta[,2]))))
 }
 
 extractCIPoissonVble = function(var, data){
-  eval(parse(text = paste("theta <- output$variable$param$", 
-                          var,
-                          "$NumericalParam$stat[,1]",
-                          sep="")))
-  out <- data.frame(class=paste("class",1:length(theta), sep="."),
-                    mean=theta, 
-                    lower=qpois(0.025, theta), 
-                    upper=qpois(0.975, theta)
-  )
-  return(out)
+  theta = data$variable$param[[var]]$NumericalParam$stat[,1]
+  return(list(mean = theta,lower = qpois(0.025, theta), upper=qpois(0.975, theta)))
 }
 
 extractCIMultiVble = function(var, data){
-  eval(parse(text = paste("theta <- matrix(output$variable$param$", 
-                          var,
-                          "$NumericalParam$stat[,1], nrow=output$mixture$nbCluster, byrow=TRUE)",
-                          sep="")))
+  theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], nrow=data$mixture$nbCluster, byrow=TRUE)
   
   for (k in 1:nrow(theta)){
     orderk <- order(theta[k,], decreasing=TRUE)
@@ -35,10 +17,9 @@ extractCIMultiVble = function(var, data){
     theta[k, -keep] <- 0
   }
   theta <- round(theta, 2)
-  out <- cbind(1:ncol(theta), as.data.frame(t(theta))) 
-  colnames(out) <- c("level", paste("class", 1:output$mixture$nbCluster, sep="."))
+  out = cbind(1:ncol(theta), t(theta))
   if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out[,-1]) == 0),]
-  return(out)
+  return(list(levels=out[,1], probs = t(out[,-1])))
 }
 
 ## To compute the mean curve per component
@@ -65,8 +46,8 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
 extractCIFunctionnalVble = function(var, data){
   ### Warnings, the range of the time must be found in the data set!!!!!
   Tseq <- (1:400)
-  eval(parse(text = paste("param <- data$variable$param$", var,  sep="")))
-  G <- output$mixture$nbCluster
+  param = data$variable$param[[var]]
+  G <- data$mixture$nbCluster
   S <- length(param$sd$stat[,1])/G
   alpha <- lapply(1:G, function(g) matrix(param$alpha$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),])
   beta <- lapply(1:G, function(g) matrix(param$beta$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),])
