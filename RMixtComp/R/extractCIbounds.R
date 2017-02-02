@@ -37,7 +37,7 @@ extractCIMultiVble = function(var, data){
   theta <- round(theta, 2)
   out <- cbind(1:ncol(theta), as.data.frame(t(theta))) 
   colnames(out) <- c("level", paste("class", 1:output$mixture$nbCluster, sep="."))
-  if (any(rowSums(out[,-1]) == 0)) out <- out[-which(rowSums(out[,-1]) == 0),]
+  if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out[,-1]) == 0),]
   return(out)
 }
 
