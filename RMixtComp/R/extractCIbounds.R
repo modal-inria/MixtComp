@@ -16,8 +16,10 @@ extractCIMultiVble = function(var, data){
     keep <- orderk[1:which(cumsum(theta[k, orderk])>0.95)[1]]
     theta[k, -keep] <- 0
   }
+  
   theta <- round(theta, 2)
   out = cbind(1:ncol(theta), t(theta))
+  # drop the levels that do not belong to the CI of all the classes
   if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out[,-1]) == 0),]
   return(list(levels=out[,1], probs = t(out[,-1])))
 }
