@@ -108,7 +108,7 @@ extractDistSigma = function(data){
 
 extractDistDelta = function(data){
   delta <- round(1 - data$mixture$delta, 4)
-  if (is.numeric(delta)) delta <- matrix(1, 1, 1) ## case with one variable
+  if (is.matrix(delta) == FALSE) delta <- matrix(1, 1, 1) ## case with one variable
   return(toJSON(delta))
 }
 
