@@ -1,9 +1,9 @@
 extractCIGaussianVble = function(var, data){
-  eval(parse(text = paste("theta <- matrix(output$variable$param$", 
-                          var,
-                          "$NumericalParam$stat[,1], ncol=2, byrow=TRUE)",
-                          sep="")))
-  out <- data.frame(class=paste("class",1:nrow(theta), sep="."),
+  theta <- matrix(output$variable$param[[var]]$NumericalParam$stat[,1],
+                  ncol=2,
+                  byrow=TRUE)
+  
+  out <- data.frame(class=paste("class", 1:nrow(theta), sep="."),
                     mean=theta[,1], 
                     lower=qnorm(0.025, theta[,1], sqrt(theta[,2]))
   )
@@ -11,11 +11,9 @@ extractCIGaussianVble = function(var, data){
 }
 
 extractCIPoissonVble = function(var, data){
-  eval(parse(text = paste("theta <- output$variable$param$", 
-                          var,
-                          "$NumericalParam$stat[,1]",
-                          sep="")))
-  out <- data.frame(class=paste("class",1:length(theta), sep="."),
+  theta <- output$variable$param[[var]]$NumericalParam$stat[,1]
+  
+  out <- data.frame(class=paste("class", 1:length(theta), sep="."),
                     mean=theta, 
                     lower=qpois(0.025, theta), 
                     upper=qpois(0.975, theta)
@@ -24,20 +22,23 @@ extractCIPoissonVble = function(var, data){
 }
 
 extractCIMultiVble = function(var, data){
-  eval(parse(text = paste("theta <- matrix(output$variable$param$", 
-                          var,
-                          "$NumericalParam$stat[,1], nrow=output$mixture$nbCluster, byrow=TRUE)",
-                          sep="")))
+  theta <- matrix(output$variable$param[[var]]$NumericalParam$stat[,1],
+                  nrow=output$mixture$nbCluster,
+                  byrow=TRUE)
   
   for (k in 1:nrow(theta)){
     orderk <- order(theta[k,], decreasing=TRUE)
     keep <- orderk[1:which(cumsum(theta[k, orderk])>0.95)[1]]
     theta[k, -keep] <- 0
   }
+  
   theta <- round(theta, 2)
   out <- cbind(1:ncol(theta), as.data.frame(t(theta))) 
   colnames(out) <- c("level", paste("class", 1:output$mixture$nbCluster, sep="."))
-  if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out[,-1]) == 0),]
+  
+  # drop the levels that do not belong to the CI of all the classes
+  if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out) == out[,1]),]
+  
   return(out)
 }
 
