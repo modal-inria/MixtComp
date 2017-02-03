@@ -20,7 +20,7 @@ extractCIMultiVble = function(var, data){
   theta <- round(theta, 2)
   out = cbind(1:ncol(theta), t(theta))
   # drop the levels that do not belong to the CI of all the classes
-  if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out[,-1]) == 0),]
+  if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out) == out[,1]),]
   return(list(levels=out[,1], probs = t(out[,-1])))
 }
 
@@ -45,6 +45,7 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
   while (abs(Fu(u))> 0.00001)  u <- u - Fu(u) / fu(u) 
   return(u)
 }
+
 extractCIFunctionnalVble = function(var, data){
   ### Warnings, the range of the time must be found in the data set!!!!!
   Tseq <- (1:400)

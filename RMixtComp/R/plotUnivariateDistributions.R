@@ -5,12 +5,12 @@ plotContinuousData <- function(output, var){
   data <- extractCIGaussianVble(var, output)
   ### End of part corresponding the JSON file
   p <- plot_ly(x=data$mean,
-               y=c(1:nrow(data)),
+               y=c(1:length(data$mean)),
                type="scatter",
                mode = 'markers',
                showlegend = FALSE,
                hoverinfo = "text",
-               text = paste("Class.", 1:ncol(data), "<br>",
+               text = paste("Class.", 1:length(data$mean), "<br>",
                             "Mean: ", round(data$mean,2), "<br>",
                             "CI-95%: [", round(data$lower,2),
                             ",", round(2*data$mean - data$lower,2),"]",sep="")
@@ -29,11 +29,10 @@ plotContinuousData <- function(output, var){
                         showgrid = F,
                         showline = FALSE,
                         showticklabels = T,
-                        tickvals=1:nrow(data),
+                        tickvals=1:length(data$mean),
                         tickcolor = 'rgb(127,127,127)',ticks="",
                         zeroline = FALSE))
-  p
-  for(i in 1:nrow(data)){
+  for(i in 1:length(data$mean)){
     p <- add_trace(p,
                    x = c(data$lower[i], 2*data$mean[i] - data$lower[i]),  # x0, x1
                    y = c(i, i),  # y0, y1
@@ -50,7 +49,7 @@ plotContinuousData <- function(output, var){
   print(p)
 }
 
-# Mean and 95%-level confidence intervals per class for a Gaussian Mixture
+# Mean and 95%-level confidence intervals per class for a Poisson Mixture
 plotIntegerData <- function(output, var){
   #### This part computes the element corresponding to variable "var" of
   #### the slot cibounds of the JSON file 
@@ -103,11 +102,11 @@ plotIntegerData <- function(output, var){
   print(p)
 }
 
-
+# Mode and 95%-level confidence intervals per class for a Multinomial Mixture
 plotCategoricalData <- function(output, var){
   data <- extractCIMultiVble(var, output)
   formattedW <- lapply(1:output$mixture$nbCluster, 
-                       function(k) list(y=data[,k+1],
+                       function(k) list(y=data$probs[k,],
                                         type='bar',
                                         hoverinfo = "text",
                                         text=paste("class",k,sep="."),
@@ -118,17 +117,17 @@ plotCategoricalData <- function(output, var){
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
               formattedW,
-              init=plot_ly(x = data$level)%>%
-                layout(title = "Mean curves and 95%-level confidence intervals per class",
+              init=plot_ly(x = data$levels)%>%
+                layout(title = "Mode and 95%-level confidence intervals per class",
                        paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
-                       xaxis = list(title = paste("Level of",var),
+                       xaxis = list(title = paste("Levels of",var),
                                     gridcolor = 'rgb(255,255,255)',
                                     showgrid = TRUE,
                                     showline = FALSE,
                                     showticklabels = TRUE,
                                     tickcolor = 'rgb(127,127,127)',
                                     ticks = 'outside',
-                                    tickvals=data$level,
+                                    tickvals=data$levels,
                                     zeroline = FALSE),
                        yaxis = list(title = "Probability",
                                     gridcolor = 'rgb(255,255,255)',
@@ -142,101 +141,7 @@ plotCategoricalData <- function(output, var){
   print(p)
 }
 
-
-# Mean and 95%-level confidence intervals per class for a Gaussian Mixture
-plotIntegerData <- function(output, var){
-  #### This part computes the element corresponding to variable "var" of
-  #### the slot cibounds of the JSON file 
-  data <- extractCIPoissonVble(var, output)
-  ### End of part corresponding the JSON file
-  p <- plot_ly(x=data$mean,
-               y=1:nrow(out),
-               type="scatter",
-               mode = 'markers',
-               showlegend = FALSE,
-               hoverinfo = "text",
-               text = paste("Class.", 1:nrow(out), "<br>",
-                            "Mean: ", round(data$mean,2), "<br>",
-                            "CI-95%: [", round(data$lower,2),
-                            ",", round(data$upper,2),"]",sep="")
-  )%>%
-    layout(title = "Mean and 95%-level confidence intervals per class",
-           paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
-           xaxis = list(title = var,
-                        gridcolor = 'rgb(255,255,255)',
-                        showgrid = TRUE,
-                        showline = FALSE,
-                        showticklabels = TRUE,
-                        tickcolor = 'rgb(127,127,127)',
-                        ticks = 'outside',
-                        zeroline = FALSE),
-           yaxis = list(title = "Classes",
-                        gridcolor = 'rgb(255,255,255)',
-                        showgrid = F,
-                        showline = FALSE,
-                        showticklabels = T,
-                        tickvals=1:nrow(out),
-                        tickcolor = 'rgb(127,127,127)',ticks="",
-                        zeroline = FALSE))
-  p
-  for(i in 1:nrow(out)){
-    p <- add_trace(p,
-                   x = c(data$lower[i], data$upper[i]),  # x0, x1
-                   y = c(i, i),  # y0, y1
-                   mode = "lines",
-                   line = list(color='rgba(0,100,80,0.4)',width = 20),
-                   showlegend = FALSE,
-                   hoverinfo = "text",
-                   text = paste("Class.", i, "<br>",
-                                "Mean: ", round(data$mean[i],2), "<br>",
-                                "CI-95%: [", round(data$lower[i],2),
-                                ",", round(data$upper[i],2),"]",sep="")
-    )
-  }
-  print(p)
-}
-
-
-plotCategoricalData <- function(output, var){
-  data <- extractCIMultiVble(var, output)
-  formattedW <- lapply(1:output$mixture$nbCluster, 
-                       function(k) list(y=data[,k+1],
-                                        type='bar',
-                                        hoverinfo = "text",
-                                        text=paste("class",k,sep="."),
-                                        showlegend=FALSE,
-                                        marker = list(line = list(color = 'black', width = 1.5)))
-  )
-  
-  # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
-  p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
-              formattedW,
-              init=plot_ly(x = data$level)%>%
-                layout(title = "Mean curves and 95%-level confidence intervals per class",
-                       paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
-                       xaxis = list(title = paste("Level of",var),
-                                    gridcolor = 'rgb(255,255,255)',
-                                    showgrid = TRUE,
-                                    showline = FALSE,
-                                    showticklabels = TRUE,
-                                    tickcolor = 'rgb(127,127,127)',
-                                    ticks = 'outside',
-                                    tickvals=data$level,
-                                    zeroline = FALSE),
-                       yaxis = list(title = "Probability",
-                                    gridcolor = 'rgb(255,255,255)',
-                                    showgrid = TRUE,
-                                    showline = FALSE,
-                                    showticklabels = TRUE,
-                                    tickcolor = 'rgb(127,127,127)',
-                                    ticks = 'outside',
-                                    zeroline = FALSE))
-  )
-  print(p)
-}
-
-
-
+# Mean and 95%-level confidence intervals per class for a Functional Mixture
 plotFunctionallData <- function(output, var){
   data <- extractCIFunctionnalVble(var, output)
   G <- output$mixture$nbCluster
@@ -282,4 +187,3 @@ plotFunctionallData <- function(output, var){
   )
   print(p)
 }
-

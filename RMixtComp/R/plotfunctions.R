@@ -72,7 +72,6 @@ plotDiscrimClass <- function(output, ylim=c(0,1)){
   visuClass
 }
 
-
 ### Heatmap of the similarities between variables about clustering
 ### The similarities between variables j and h is defined by 1 - Delta(j,h)
 ### Delta(j,h)^2 = (1/n) * sum_{i=1}^n sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2
@@ -92,8 +91,12 @@ heatmapVbles <- function(output){
   ## Character must be convert in factor (otherwise alphabetic order is considered)
   orderVbles <- order(pvDiscrim, decreasing = TRUE)
   namesVbles <- factor(namesVbles[orderVbles], levels=namesVbles[orderVbles])
-  similarities <- similarities[,orderVbles]
-  similarities <- similarities[orderVbles,]
+  if (length(namesVbles)>1){
+    similarities <- similarities[,orderVbles]
+    similarities <- similarities[orderVbles,]
+  }else{
+    similarities <- matrix(1, 1, 1)
+  }
   
   # Text to display
   textMous <- sapply(1:length(namesVbles),
@@ -120,8 +123,6 @@ heatmapVbles <- function(output){
   heatmap
 }
 
-
-
 ### Heatmap of the similarities between classes about clustering
 ### The similarities between classes k and g is defined by 1 - Sigma(k,g)
 ### Sigma(k,g)^2 = (1/n) * sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
@@ -144,8 +145,12 @@ heatmapClass <- function(output){
   ## Character must be convert in factor (otherwise alphabetic order is considered)
   orderClass <- order(pvDiscrim, decreasing = TRUE)
   namesClass <- factor(namesClass[orderClass], levels=namesClass[orderClass])
-  similarities <- similarities[,orderClass]
-  similarities <- similarities[orderClass, ]
+  if (output$mixture$nbCluster>1){
+    similarities <- similarities[,orderClass]
+    similarities <- similarities[orderClass, ]
+  }else{
+    similarities <- matrix(1, 1, 1)
+  }
   
   # Text to display
   textMous <- sapply(1:output$mixture$nbCluster, 
@@ -170,7 +175,6 @@ heatmapClass <- function(output){
   heatmap
 }
 
-
 ### Heatmap of the tik=P(Z_i=k|x_i) 
 ### Observation are sorted according to the hard partition then for each component
 ### they are sorted by decreasing order of their tik's
@@ -181,7 +185,7 @@ heatmapTikSorted <- function(output){
                                               decreasing = T)[1:(table(output$variable$data$z_class$completed)[k])]
   ))
   tiksorted <- output$variable$data$z_class$stat[orderTik,]
-  
+  if (output$mixture$nbCluster==1) tiksorted <- matrix(tiksorted, ncol=1)
   # Text to display
   textMous <- sapply(1:output$mixture$nbCluster, 
                      function(k) paste("Probability that <br> observation", 
@@ -213,7 +217,6 @@ heatmapTikSorted <- function(output){
     layout(title = "Probabilities of classification", showlegend = FALSE, yaxis=tuneyaxis, xaxis=list(ticks=""))
   heatmap
 }  
-
 
 ### Histogram of the misclassification probabilities 
 ### Missclassification probability of observation i is denoted err_i
