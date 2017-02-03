@@ -148,15 +148,15 @@ plotFunctionallData <- function(output, var){
   formattedW <- NULL
   for(k in 1:G){
     formattedW <- c(formattedW,  list(
-      list(y = data[,1+k+G], 
+      list(y = data$inf[k,], 
            type = 'scatter', mode = 'lines',
            line = list(color = 'transparent'),showlegend = FALSE,
            name = paste("95% lcl class",k,sep=".")),
-      list(y = data[,1+k+2*G], 
+      list(y = data$sup[k,], 
            type = 'scatter', mode = 'lines',
            fill = 'tonexty', fillcolor='rgba(0,100,80,0.4)', line = list(color = 'transparent'),
            showlegend = FALSE, name = paste("95% ucl class",k,sep=".")),
-      list(y = data[,1+k], 
+      list(y = data$mean[k,], 
            type = 'scatter', mode = 'lines',
            line = list(color=k, width = 4),showlegend = FALSE, 
            name = paste("mean class",k,sep="."))
@@ -165,7 +165,7 @@ plotFunctionallData <- function(output, var){
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
               formattedW,
-              init=plot_ly(x = data$Time)%>%
+              init=plot_ly(x = data$time)%>%
                 layout(title = "Mean curves and 95%-level confidence intervals per class",
                        paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
                        xaxis = list(title = "Time",

@@ -41,10 +41,15 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
   weights <- exp(weights) / sum(exp(weights))
   means <- beta[,1] + beta[,2] * Tt 
   # Newton-Raphson to get the bound
-  u <-  qnorm(borne, means, sqrt(sigma))[which.max(weights)]
+  u <-  sum(qnorm(borne, means, sqrt(sigma))*(weights))
   Fu <- function(u) (sum(weights * pnorm(u, means, sqrt(sigma)) ) - borne)
-  fu <- function(u) 2*sum(weights * dnorm(u, means, sqrt(sigma)) ) 
-  while (abs(Fu(u))> 0.00001)  u <- u - Fu(u) / fu(u) 
+  fu <- function(u) 2*sum(weights * dnorm(u, means, sqrt(sigma)) )
+  cond <- 1
+  while (cond ==1 ){
+    u <- u - Fu(u) / fu(u)
+    cond <- (abs(Fu(u))> 0.0001)
+    if (is.na(cond)){u <- qnorm(borne, means, sqrt(sigma))[which.max(weights)]; cond <- 0;}
+  }
   return(u)
 }
 
