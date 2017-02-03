@@ -197,7 +197,9 @@ nlohmann::json DataExtractorJson::jsonReturnVal() const {
   nlohmann::json dataJson;
 
   for (int i = 0; i < mixtureName_.size(); ++i) {
+#ifdef MC_VERBOSE
     std::cout << mixtureName_[i] << std::endl;
+#endif
     dataJson[mixtureName_[i]] = data_[i];
   }
 

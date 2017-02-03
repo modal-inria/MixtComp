@@ -94,7 +94,9 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
 
            // run the strategy
            mixt::Timer stratTimer("Strategy Run");
+#ifdef MC_VERBOSE
            std::cout << "run debute" << std::endl;
+#endif
            warnLog += strategy.run();
            stratTimer.top("strategy run complete");
            if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
