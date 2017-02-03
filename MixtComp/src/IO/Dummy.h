@@ -64,6 +64,14 @@ class DataExtractorDummy {
     void exportVals(Index indexMixture,
                     std::string idName,
                     const Vector<RankIndividual>& data) const;
+
+    /** Export function for Ordinal and Poisson model */
+    void exportVals(
+        int indexMixture,
+        bool hasModalities,
+        std::string idName,
+        const AugmentedData<Vector<int> >& augData,
+        const Vector<RowVector<int> >& dataStatStorage) const;
 };
 
 /** Dummy IO class for debugging purposes */

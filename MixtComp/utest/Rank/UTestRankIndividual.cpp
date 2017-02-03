@@ -262,8 +262,6 @@ TEST(RankIndividual, checkAcceptedTypeTrue)
 
   Vector<RankIndividual> vecInd;
 
-  RankParser rp;
-
   std::pair<MisType, std::vector<int> > misVal;
 
   Vector<bool> acceptedType(nb_enum_MisType_);
@@ -274,7 +272,7 @@ TEST(RankIndividual, checkAcceptedTypeTrue)
                   false, // missingLUIntervals_
                   false; // missingRUIntervals_
 
-  rp.parseStr(vecStr, 0, nbPos, vecInd);
+  parseRankStr(vecStr, 0, nbPos, vecInd);
 
   bool isValid = vecInd(0).checkMissingType(acceptedType);
 
@@ -289,8 +287,6 @@ TEST(RankIndividual, checkAcceptedTypeFalse)
 
   Vector<RankIndividual> vecInd;
 
-  RankParser rp;
-
   std::pair<MisType, std::vector<int> > misVal;
 
   Vector<bool> acceptedType(nb_enum_MisType_);
@@ -301,7 +297,7 @@ TEST(RankIndividual, checkAcceptedTypeFalse)
                   false, // missingLUIntervals_
                   false; // missingRUIntervals_
 
-  rp.parseStr(vecStr, 0, nbPos, vecInd);
+  parseRankStr(vecStr, 0, nbPos, vecInd);
 
   bool isValid = vecInd(0).checkMissingType(acceptedType);
 

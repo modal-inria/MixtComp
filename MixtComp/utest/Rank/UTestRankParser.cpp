@@ -28,7 +28,6 @@ using namespace mixt;
 TEST(RankParser, basicTest) {
   int nbMod = 4;
 
-  RankParser rp;
   Vector<std::string> vecStr(3);
   vecStr << "1 , 3 , 2 , 0",
             "0 , 3 , 1 , 2",
@@ -46,10 +45,10 @@ TEST(RankParser, basicTest) {
   vecIndExpected(2).setNbPos(4);
   vecIndExpected(2).setO(std::vector<int>({0 , 1 , 2 , 3}));
 
-  rp.parseStr(vecStr,
-              0, // minMod
-              nbMod,
-              vecIndComputed);
+  parseRankStr(vecStr,
+               0, // minMod
+               nbMod,
+               vecIndComputed);
 
   ASSERT_EQ(vecIndComputed(0).x(),
             vecIndExpected(0).x());
@@ -67,14 +66,12 @@ TEST(RankParser, minMaxDetection) {
 
   Vector<RankIndividual> vecInd;
 
-  RankParser rp;
-
   MisVal misVal;
 
-  std::string resStr = rp.parseStr(vecStr,
-                                   1, // min modality
-                                   nbPos,
-                                   vecInd);
+  std::string resStr = parseRankStr(vecStr,
+                                    1, // min modality
+                                    nbPos,
+                                    vecInd);
 
 #ifdef MC_DEBUG
   std::cout << resStr << std::endl;

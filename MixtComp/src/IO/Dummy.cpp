@@ -37,6 +37,15 @@ void DataExtractorDummy::exportVals(Index indexMixture,
                                     std::string idName,
                                     const Vector<RankIndividual>& data) const {}
 
+/** Export function for Ordinal and Poisson model */
+void DataExtractorDummy::exportVals(
+    int indexMixture,
+    bool hasModalities,
+    std::string idName,
+    const AugmentedData<Vector<int> >& augData,
+    const Vector<RowVector<int> >& dataStatStorage) const
+{}
+
 void ParamExtractorDummy::exportParam(Index indexMixture,
                                       const std::string& idName,
                                       const std::string& paramName,
