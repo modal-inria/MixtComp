@@ -56,12 +56,12 @@ plotIntegerData <- function(output, var){
   data <- extractCIPoissonVble(var, output)
   ### End of part corresponding the JSON file
   p <- plot_ly(x=data$mean,
-               y=1:nrow(out),
+               y=1:length(data$mean),
                type="scatter",
                mode = 'markers',
                showlegend = FALSE,
                hoverinfo = "text",
-               text = paste("Class.", 1:nrow(out), "<br>",
+               text = paste("Class.", 1:length(data$mean), "<br>",
                             "Mean: ", round(data$mean,2), "<br>",
                             "CI-95%: [", round(data$lower,2),
                             ",", round(data$upper,2),"]",sep="")
@@ -81,11 +81,11 @@ plotIntegerData <- function(output, var){
                         showgrid = F,
                         showline = FALSE,
                         showticklabels = T,
-                        tickvals=1:nrow(out),
+                        tickvals=1:length(data$mean),
                         tickcolor = 'rgb(127,127,127)',ticks="",
                         zeroline = FALSE))
   p
-  for(i in 1:nrow(out)){
+  for(i in 1:length(data$mean)){
     p <- add_trace(p,
                    x = c(data$lower[i], data$upper[i]),  # x0, x1
                    y = c(i, i),  # y0, y1
@@ -109,7 +109,7 @@ plotCategoricalData <- function(output, var){
                        function(k) list(y=data$probs[k,],
                                         type='bar',
                                         hoverinfo = "text",
-                                        text=paste("class",k,sep="."),
+                                        text=paste("class", k, sep="."),
                                         showlegend=FALSE,
                                         marker = list(line = list(color = 'black', width = 1.5)))
   )
