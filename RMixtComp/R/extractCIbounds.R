@@ -66,11 +66,13 @@ extractCIFunctionnalVble = function(var, data){
     infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k], sqrt(sigma[k,1])))
     supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k], sqrt(sigma[k,1])))
   }
-  out <- data.frame(Time=Tseq, meancurve, infcurve, supcurve)
-  colnames(out) <- c("Time",
-                     paste("mean.class", 1:G, sep="."), 
-                     paste("inf.class", 1:G, sep="."), 
-                     paste("sup.class", 1:G, sep="."))
+  
+  #out <- data.frame(Time=Tseq, meancurve, infcurve, supcurve)
+  #colnames(out) <- c("Time",
+  #                   paste("mean.class", 1:G, sep="."), 
+  #                   paste("inf.class", 1:G, sep="."), 
+  #                   paste("sup.class", 1:G, sep="."))
+  out = list(time=Tseq, mean=t(meancurve), inf=t(infcurve), sup=t(supcurve))
   return(out)
 }
 
