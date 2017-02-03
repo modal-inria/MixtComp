@@ -1,6 +1,8 @@
 extractCIGaussianVble = function(var, data){
   theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], ncol=2, byrow=TRUE)
-  return(list(mean = theta[,1],lower = qnorm(0.025, theta[,1], sqrt(theta[,2]))))
+  means = as.array(round(theta[,1], 3))
+  lowers = as.array(round(qnorm(0.025, theta[,1], sqrt(theta[,2])), 3))
+  return(list(mean = means,lower = lowers))
 }
 
 extractCIPoissonVble = function(var, data){
@@ -17,7 +19,7 @@ extractCIMultiVble = function(var, data){
     theta[k, -keep] <- 0
   }
   
-  theta <- round(theta, 2)
+  theta = round(theta, 2)
   out = cbind(1:ncol(theta), t(theta))
   # drop the levels that do not belong to the CI of all the classes
   if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out) == out[,1]),]
