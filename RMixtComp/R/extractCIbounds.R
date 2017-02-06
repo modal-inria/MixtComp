@@ -22,7 +22,7 @@ extractCIMultiVble = function(var, data){
   theta = round(theta, 2)
   out = cbind(1:ncol(theta), t(theta))
   # drop the levels that do not belong to the CI of all the classes
-  if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out) == out[,1]),]
+  if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out) == out[,1]),, drop = FALSE]
   return(list(levels=out[,1], probs = t(out[,-1])))
 }
 
@@ -55,7 +55,7 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
 
 extractCIFunctionnalVble = function(var, data){
   ### Warnings, the range of the time must be found in the data set!!!!!
-  Tseq <- (1:400)
+  Tseq <- unique(unlist(data$variable$data[[var]]$time))
   param = data$variable$param[[var]]
   G <- data$mixture$nbCluster
   S <- length(param$sd$stat[,1])/G
