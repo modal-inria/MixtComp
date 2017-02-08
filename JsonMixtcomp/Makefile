@@ -1,5 +1,5 @@
-CXX = clang++
-CXXFLAGS += -O2 -g -std=c++11 -Wall -DMC_VERBOSE
+CXX = g++
+CXXFLAGS += -O2 -g -std=c++11 -Wall
 
 #
 # generic build variables
@@ -11,7 +11,7 @@ LIB_MC = ../MixtComp/lib/libMixtComp.a
 LIB_JMC = lib/libJsonMixtComp.a
 
 # regex files
-LIB_RE = lib/libRegex.a
+LIB_RE = ../MixtComp/lib/libRegex.a
 SRC_RE = $(wildcard ../boost/libs/regex/src/*.cpp)
 O_RE = $(SRC_RE:%.cpp=%.o)
 
