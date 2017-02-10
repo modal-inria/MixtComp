@@ -80,6 +80,10 @@ class Function {
     const Matrix<Real>& vandermonde() const {return vandermonde_;}
 
     void printProp() const;
+
+    //Get
+    const Index& nTime() const {return nTime_;}
+
   private:
     void computeJointLogProba(const Matrix<Real>& alpha,
                               const Matrix<Real>& beta,

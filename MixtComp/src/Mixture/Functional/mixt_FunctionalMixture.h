@@ -165,7 +165,7 @@ class FunctionalMixture : public IMixture {
     }
 
     Index nbFreeParameter() const {
-      return nClass_ * (  nSub_ * 2// alpha
+      return nClass_ * (  (nSub_ -1) * 2// alpha (nSub_ -1 since alpha's are the parameters of a multivariate logistic regeression)
                         + nSub_ * nCoeff_// beta
                         + nSub_ ); // sigma
     }
@@ -276,8 +276,10 @@ class FunctionalMixture : public IMixture {
     }
 
     void exportDataParam() const { // linearize and format the information provided by each class, and send it to the usual extractors, nothing fancy here ...
-
-      // export the missing values here, when they will be support for them
+      p_dataExtractor_->exportVals(
+    		  indexMixture_,
+    		  idName_,
+			  vecInd_); // export the missing values here, when they will be support for them
 
       Index sizeClassAlpha = nSub_ * 2;
       Index sizeClassBeta  = nSub_ * nCoeff_;
