@@ -12,6 +12,19 @@
 - Put in place continuous integration
     - Add compilation flag to set random seed, to allow reproducibility of stochastic tests
 
+# Estimation problem
+- keep the test for degenerescency
+- remove the Gibbs
+    - how will the Ordinal model work without Gibbs ?
+    - it will not work.
+- remove parameterEdgeAuthorized
+    - it "worked" for problem of null variance and such
+    - it never worked for empty classes
+    - remove it altogether ?
+- launch multiple run if a degenerescency is detected
+- SEM will degenerate given enough time, so if the data is "correct", this should be rare, and fixed by relaunching
+- if degenerescency is systematic, the model is not correct and should be dropped. Running a Gibbs over a long time period will not solve anything.
+
 # Model
 
 - Missing data in support in Functional Model
