@@ -6,7 +6,7 @@ extractCIGaussianVble = function(var, data){
 }
 
 extractCIPoissonVble = function(var, data){
-  theta = data$variable$param[[var]]$NumericalParam$stat[,1]
+  theta = as.array(data$variable$param[[var]]$NumericalParam$stat[,1])
   return(list(mean = theta,lower = qpois(0.025, theta), upper=qpois(0.975, theta)))
 }
 
