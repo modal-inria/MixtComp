@@ -78,21 +78,31 @@ void paramRToCpp(const Rcpp::List& RParam,
                  StrategyParam& CppParam) {
   if(RParam.containsElementNamed("nbBurnInIter")){
     CppParam.nbBurnInIter_ = RParam["nbBurnInIter"];
+  }else{
+	  std::cout<<"Parameter nbBurnInIter not found, a value of 100 is used."<<std::endl;
   }
   if(RParam.containsElementNamed("nbIter")){
     CppParam.nbIter_ = RParam["nbIter"];
+  }else{
+	  std::cout<<"Parameter nbIter not found, a value of 100 is used."<<std::endl;
   }
   if(RParam.containsElementNamed("nbGibbsBurnInIter")){
     CppParam.nbGibbsBurnInIter_ = RParam["nbGibbsBurnInIter"];
+  }else{
+	  std::cout<<"Parameter nbGibbsBurnInIter not found, a value of 100 is used."<<std::endl;
   }
-  if(RParam.containsElementNamed("nbGibbsBurnInIter")){
+  if(RParam.containsElementNamed("nbGibbsIter")){
     CppParam.nbGibbsIter_ = RParam["nbGibbsIter"];
+  }else{
+	  std::cout<<"Parameter nbGibbsIter not found, a value of 100 is used."<<std::endl;
   }
   if(RParam.containsElementNamed("parameterEdgeAuthorized")){
     bool bias = RParam["parameterEdgeAuthorized"];
     if (bias == true) {
       CppParam.bias_ = biased_;
     }
+  }else{
+	  std::cout<<"Parameter parameterEdgeAuthorized not found, a value of FALSE is used."<<std::endl;
   }
 }
 

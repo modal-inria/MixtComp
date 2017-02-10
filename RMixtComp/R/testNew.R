@@ -18,7 +18,8 @@ testNewLearn <- function(nbClass = 2,
   mcStrategy <- list(nbBurnInIter = nbBurnInIter,
                      nbIter = 100,
                      nbGibbsBurnInIter = 100,
-                     nbGibbsIter = 100)
+                     nbGibbsIter = 100,
+                     parameterEdgeAuthorized = FALSE)
   
   # launch of the MixtComp algorithm
   res <- mixtCompCluster(resGetData$lm,
@@ -69,7 +70,8 @@ testNewLearnPredict <- function(nbClass = 2,
   mcStrategy <- list(nbBurnInIter = nbBurnInIter,
                      nbIter = 100,
                      nbGibbsBurnInIter = 100,
-                     nbGibbsIter = 100)
+                     nbGibbsIter = 100,
+                     parameterEdgeAuthorized = TRUE)
   
   # launch of the MixtComp algorithm
   res <- mixtCompPredict(resGetData$lm,
