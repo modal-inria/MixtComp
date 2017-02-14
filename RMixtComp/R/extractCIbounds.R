@@ -55,21 +55,21 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
 
 extractCIFunctionnalVble = function(var, data){
   ### Warnings, the range of the time must be found in the data set!!!!!
-  Tseq <- unique(unlist(data$variable$data[[var]]$time))
+  Tseq <- sort(unique(unlist(data$variable$data[[var]]$time)), decreasing = F)
   param = data$variable$param[[var]]
   G <- data$mixture$nbCluster
   S <- length(param$sd$stat[,1])/G
-  alpha <- lapply(1:G, function(g) matrix(param$alpha$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),])
-  beta <- lapply(1:G, function(g) matrix(param$beta$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),])
+  alpha <- lapply(1:G, function(g) matrix(param$alpha$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),, drop=FALSE])
+  beta <- lapply(1:G, function(g) matrix(param$beta$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),, drop=FALSE])
   sigma <- matrix(param$sd$stat[,1], nrow=G, ncol=S, byrow=TRUE)
   if (S>1){
     meancurve <- sapply(1:G, function(k) sapply(Tseq, functionalmeanVal, alpha=alpha[[k]], beta=beta[[k]]))
-    infcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.025, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,]))
-    supcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.975, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,]))
+    infcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.025, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,, drop=FALSE]))
+    supcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.975, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,, drop=FALSE]))
   }else{
     meancurve <- sapply(1:G, function(k) (beta[[k]][1] + beta[[k]][2] * Tseq))
-    infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k], sqrt(sigma[k,1])))
-    supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k], sqrt(sigma[k,1])))
+    infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
+    supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
   }
   
   #out <- data.frame(Time=Tseq, meancurve, infcurve, supcurve)

@@ -142,10 +142,28 @@ plotCategoricalData <- function(output, var){
 }
 
 # Mean and 95%-level confidence intervals per class for a Functional Mixture
-plotFunctionallData <- function(output, var){
+plotFunctionallData <- function(output, var, add.obs=FALSE, ylim=NULL, xlim=NULL){
+  # Computation of the Confidence Intervals (CI)
   data <- extractCIFunctionnalVble(var, output)
   G <- output$mixture$nbCluster
+  
+  # Computation of the bounds for x-axis and y-axis
+  if (is.null(xlim)) xlim <- range(sapply(1:length(output$variable$data[[var]]$time),
+                                          function(j) range(output$variable$data[[var]]$time[[j]]) ))
+  if (is.null(ylim)) ylim <- range(sapply(1:length(output$variable$data[[var]]$data),
+                                          function(j) range(output$variable$data[[var]]$data[[j]]) ))
   formattedW <- NULL
+  # observations are added for plot
+  if (add.obs){
+    for(i in 1:length(output$variable$data[[var]]$time)){
+      formattedW <- c(formattedW,  list(
+        list(x = output$variable$data[[var]]$time[[i]],
+             y = output$variable$data[[var]]$data[[i]], 
+             type = 'scatter', mode = 'lines',showlegend = FALSE,line = list(color='rgba(0,100,80,0.4)', width = 1) ))
+      )
+    }
+  }
+  # mean curves and CI are added
   for(k in 1:G){
     formattedW <- c(formattedW,  list(
       list(y = data$inf[k,], 
@@ -175,6 +193,7 @@ plotFunctionallData <- function(output, var){
                                     showticklabels = TRUE,
                                     tickcolor = 'rgb(127,127,127)',
                                     ticks = 'outside',
+                                    range=xlim,
                                     zeroline = FALSE),
                        yaxis = list(title = "Value",
                                     gridcolor = 'rgb(255,255,255)',
@@ -183,6 +202,7 @@ plotFunctionallData <- function(output, var){
                                     showticklabels = TRUE,
                                     tickcolor = 'rgb(127,127,127)',
                                     ticks = 'outside',
+                                    range=ylim,
                                     zeroline = FALSE))
   )
   print(p)
