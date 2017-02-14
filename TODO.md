@@ -1,3 +1,15 @@
+# discussion
+- deux types de dégénérescence, vraisemblance bornée ou pas
+- dans l'algo, pas de bornes, rajouter les bornes avant l'export de paramètres
+- si en prédiction, avec bornes partout, la variable devient muette
+- Est-ce qu'il ne vaudrait pas mieux initialiser les paramètres en tirant des individus, pour aller plus vite
+- Initialiser en générant une liste de z
+    - soit le modèle est capable d'estimer à partir d'un individu, et c'est le centre de la classes
+    - soit il peut pas (multinomial), et dans ce cas, il utilise toute la liste pour initialiser comme actuellement
+    - au pire des cas on est dans le cas actuel, et au mieux, on explore mieux l'espace
+- Si l'algo est plus rapide, on peut intégrer les initalisations multiples, et renvoyer à l'utilisateur seulement le meilleur.
+- Sortir les vraisemblances individuelles des individus, pour éviter d'avoir à lancer des prédictions à un individu
+
 # Bugs
 
 - Functional model seem to crash when edge authorized option is activated for the estimators
