@@ -150,8 +150,14 @@ plotFunctionalData <- function(output, var, add.obs=FALSE, ylim=NULL, xlim=NULL)
   # Computation of the bounds for x-axis and y-axis
   if (is.null(xlim)) xlim <- range(sapply(1:length(output$variable$data[[var]]$time),
                                           function(j) range(output$variable$data[[var]]$time[[j]]) ))
-  if (is.null(ylim)) ylim <- range(c(min(data$inf), max(data$sup), sapply(1:length(output$variable$data[[var]]$data),
-                                          function(j) range(output$variable$data[[var]]$data[[j]]) )))
+  if (is.null(ylim)){
+    if (add.obs){
+      ylim <- range(c(min(data$inf), max(data$sup), sapply(1:length(output$variable$data[[var]]$data),
+                                                           function(j) range(output$variable$data[[var]]$data[[j]]) )))  
+    }else{
+      ylim <- c(min(data$inf), max(data$sup))      
+    }
+  }
   formattedW <- NULL
   # observations are added for plot
   if (add.obs){
