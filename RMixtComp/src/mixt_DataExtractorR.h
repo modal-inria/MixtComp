@@ -30,6 +30,7 @@
 
 #include "MixtComp/src/Mixture/Rank/mixt_RankIndividual.h"
 #include "MixtComp/src/Mixture/Rank/mixt_RankStat.h"
+#include "MixtComp/src/Mixture/Functional/mixt_FunctionalClass.h"
 
 namespace mixt
 {
@@ -71,6 +72,11 @@ class DataExtractorR
                     std::string idName,
                     const Vector<RankIndividual>& data,
                     const std::vector<RankStat>& dataStat);
+
+    /** Export function for Functional model */
+    void exportVals(int indexMixture,
+                    std::string idName,
+                    const Vector<Function>& data);
 
     Rcpp::List rcppReturnVal() const;
   private:
