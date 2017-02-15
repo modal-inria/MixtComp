@@ -1,9 +1,12 @@
+/*--------------------------------------------------------------------*/
+/*  Copyright (C) Inria 2016
+*/
+
 /*
- * main.cpp
- *
- *  Created on: 21 oct. 2016
- *      Author: etienne
- */
+ *  Project:    JsonMixtComp
+ *  Created on: Dec 01, 2016
+ *  Author:     Etienne GOFFINET  <etienne.goffinet@inria.fr>
+ **/
 
 #include <iostream>
 #include "json.hpp"
@@ -32,8 +35,10 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
   // create the data handler
   mixt::DataHandlerJson handler(resGetData_lm);
   warnLog += handler.listData();
-  handler.writeInfo();
-  handler.writeDataMap();
+  #ifdef MC_VERBOSE
+    handler.writeInfo();
+    handler.writeDataMap();
+  #endif
 
   // create the data extractor
   mixt::DataExtractorJson dataExtractor;
@@ -182,8 +187,10 @@ std::string predict_mixtcomp(json argument_list,std::string json_file_output){
   // create the data handler
   mixt::DataHandlerJson handler(resGetData_lm);
   warnLog += handler.listData();
+#ifdef MC_VERBOSE
   handler.writeInfo();
   handler.writeDataMap();
+#endif
 
   // create the data extractor
   mixt::DataExtractorJson dataExtractor;
@@ -336,7 +343,6 @@ int main(int argc, char* argv[]) {
       if(by_row == true){
         if (argument_list.find("data") != argument_list.end()) {
           json data_input = argument_list["data"];
-          std::cout << data_input[0].size() <<std::endl;
           for(int j = 0 ; j < data_input[0].size() ; j++){
             for(int i = 0 ; i < data_input.size() ; i++){
               argument_list["resGetData_lm"][j]["data"][i] = data_input[i][j].get<std::string>();

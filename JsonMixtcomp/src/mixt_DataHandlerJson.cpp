@@ -1,9 +1,13 @@
+/*--------------------------------------------------------------------*/
+/*  Copyright (C) Inria 2016
+*/
+
 /*
- * mixt_DatahandlerJson.cpp
- *
- *  Created on: 25 oct. 2016
- *      Author: etienne
- */
+ *  Project:    JsonMixtComp
+ *  Created on: Dec 01, 2016
+ *  Author:     Etienne GOFFINET  <etienne.goffinet@inria.fr>
+ **/
+
 
 #include "mixt_DataHandlerJson.h"
 #include "json.hpp"
