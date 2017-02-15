@@ -45,7 +45,7 @@ clean: # only cleans JMixtComp
 	find -L . -type f -name "*.so" -exec rm -f {} \;
 	find -L . -type f -name "*.exe" -exec rm -f {} \;
 	find -L . -type f -name "*.dll" -exec rm -f {} \;
-	rm bin/JsonMixtComp
+	rm -f bin/JsonMixtComp
 
 cleanUTest: # only cleans utest
 	find -L utest -type f -name "*.o" -exec rm -f {} \;
