@@ -35,8 +35,9 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
   // create the data handler
   mixt::DataHandlerJson handler(resGetData_lm);
   warnLog += handler.listData();
+
+  handler.writeInfo();
   #ifdef MC_VERBOSE
-    handler.writeInfo();
     handler.writeDataMap();
   #endif
 
@@ -99,15 +100,15 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
 
            // run the strategy
            mixt::Timer stratTimer("Strategy Run");
-#ifdef MC_VERBOSE
-           std::cout << "run debute" << std::endl;
-#endif
+           #ifdef MC_VERBOSE
+             std::cout << "run debute" << std::endl;
+           #endif
            warnLog += strategy.run();
            stratTimer.top("strategy run complete");
            if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
-     #ifdef MC_VERBOSE
-             composer.writeParameters();
-     #endif
+             #ifdef MC_VERBOSE
+               composer.writeParameters();
+             #endif
              composer.exportDataParam<mixt::DataExtractorJson,
                                       mixt::ParamExtractorJson>(dataExtractor,
                                                              paramExtractor);
@@ -187,10 +188,10 @@ std::string predict_mixtcomp(json argument_list,std::string json_file_output){
   // create the data handler
   mixt::DataHandlerJson handler(resGetData_lm);
   warnLog += handler.listData();
-#ifdef MC_VERBOSE
   handler.writeInfo();
-  handler.writeDataMap();
-#endif
+  #ifdef MC_VERBOSE
+    handler.writeDataMap();
+  #endif
 
   // create the data extractor
   mixt::DataExtractorJson dataExtractor;
@@ -255,13 +256,15 @@ std::string predict_mixtcomp(json argument_list,std::string json_file_output){
 
            // run the strategy
            mixt::Timer stratTimer("Strategy Run");
-           std::cout << "run debute" << std::endl;
+           #ifdef MC_VERBOSE
+             std::cout << "run debute" << std::endl;
+           #endif
            warnLog += strategy.run();
            stratTimer.top("strategy run complete");
            if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
-     #ifdef MC_VERBOSE
-             composer.writeParameters();
-     #endif
+             #ifdef MC_VERBOSE
+               composer.writeParameters();
+             #endif
              composer.exportDataParam<mixt::DataExtractorJson,
                                       mixt::ParamExtractorJson>(dataExtractor,
                                                              paramExtractor);

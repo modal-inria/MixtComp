@@ -15,6 +15,7 @@
 #include "../../MixtComp/src/Data/mixt_AugmentedData.h"
 #include "../../MixtComp/src/Mixture/Rank/mixt_RankIndividual.h"
 #include "../../MixtComp/src/Mixture/Rank/mixt_RankStat.h"
+#include "../../MixtComp/src/Mixture/Functional/mixt_Function.h"
 
 namespace mixt
 {
@@ -56,6 +57,11 @@ class DataExtractorJson
                     std::string idName,
                     const Vector<RankIndividual>& data,
                     const std::vector<RankStat>& dataStat);
+
+    /** Export function for Functional model */
+    void exportVals(const Index&,
+    				const std::string&,
+					const Vector<mixt::Function>&);
 
     nlohmann::json jsonReturnVal() const;
   private:

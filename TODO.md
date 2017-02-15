@@ -57,6 +57,8 @@
     - strategy and number of classes
     - descriptor
     - this way you can edit the strategy and model parameters without editing the data file
+- in predict mode, can't read file path with : or ~ 
+- exportVals function for functional data
 
 # Visualization and post-processing
 

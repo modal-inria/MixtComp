@@ -181,14 +181,27 @@ void DataExtractorJson::exportVals(int indexMixture,
 
 }
 
+
+/** Export function for Functional model */
+void DataExtractorJson::exportVals(const Index&,
+		                           const std::string&,
+                                   const Vector<mixt::Function>&)
+{
+	/**
+	 * TO BE IMPLEMENTED
+	 */
+
+}
+
+
 nlohmann::json DataExtractorJson::jsonReturnVal() const {
   nlohmann::json mixtureNameJson ;
   nlohmann::json dataJson;
 
   for (int i = 0; i < mixtureName_.size(); ++i) {
-#ifdef MC_VERBOSE
-    std::cout << mixtureName_[i] << std::endl;
-#endif
+    #ifdef MC_VERBOSE
+      std::cout << mixtureName_[i] << std::endl;
+    #endif
     dataJson[mixtureName_[i]] = data_[i];
   }
 

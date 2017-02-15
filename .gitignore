@@ -13,8 +13,10 @@ RMixtComp/.Rbuildignore
 RMixtComp/R/RcppExports.R
 RMixtComp/src/RcppExports.cpp
 nohup.out
-bin
-lib
+bin/*
+JsonMixtcomp/bin/*
+!JsonMixtcomp/bin/empty
+lib/*
 test/test
 .metadata/*
 boost_1_56_0/*

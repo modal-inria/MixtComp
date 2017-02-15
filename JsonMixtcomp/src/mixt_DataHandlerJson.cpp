@@ -71,7 +71,6 @@ std::string DataHandlerJson::listData() {
 }
 
 void DataHandlerJson::writeDataMap() const {
-#ifdef MC_VERBOSE
   std::cout << "Position of data in input: \n";
   for (std::map<std::string, int> ::const_iterator it    = dataMap_.begin(),
                                                    itEnd = dataMap_.end();
@@ -80,7 +79,6 @@ void DataHandlerJson::writeDataMap() const {
     std::cout << "\tname: " << it->first << "\n";
     std::cout << "\t\trList_ position: " << it->second << std::endl;
   }
-#endif
 }
 
 
