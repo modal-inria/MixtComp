@@ -38,6 +38,7 @@
 #include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../Param/mixt_ConfIntParamStat.h"
+#include "../../JsonMixtcomp/src/mixt_DataExtractorJson.h"
 
 namespace mixt {
 
@@ -112,6 +113,7 @@ class MixtureBridge : public IMixture {
      *  that can be called directly to get the data.
      */
     std::string setDataParam(RunMode mode) {
+
       std::string warnLog;
       warnLog += p_handler_->getData(idName(),
                                      augData_,
@@ -122,7 +124,6 @@ class MixtureBridge : public IMixture {
       if (warnLog.size() > 0) {
         return warnLog;
       }
-
       augData_.computeRange();
       std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
 
