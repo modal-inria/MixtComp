@@ -46,11 +46,15 @@ SRC_MC += $(wildcard src/Statistic/*.cpp)
 SRC_MC += $(wildcard src/Strategy/*.cpp)
 SRC_MC += $(wildcard src/Various/*.cpp)
 O_MC = $(SRC_MC:%.cpp=%.o)
+D_MC = $(SRC_MC:%.cpp=%.d)
+ALL_MC = $(O_MC) $(D_MC) $(LIB_MC)
 
 # regex files
 LIB_RE = lib/libRegex.a
 SRC_RE = $(wildcard ../boost/libs/regex/src/*.cpp)
 O_RE = $(SRC_RE:%.cpp=%.o)
+D_RE = $(SRC_RE:%.cpp=%.d)
+ALL_RE = $(O_RE) $(D_RE) $(LIB_RE)
 
 # optimization library
 LIB_NLOPT = ../nlopt/.libs/libnlopt.a
@@ -59,6 +63,8 @@ LIB_NLOPT = ../nlopt/.libs/libnlopt.a
 EXE_TEST = test/test
 SRC_TEST = test/03-optimization.cpp
 O_TEST = $(SRC_TEST:%.cpp=%.o)
+D_TEST = $(SRC_TEST:%.cpp=%.d)
+ALL_TEST = $(O_TEST) $(D_TEST) $(EXE_TEST)
 
 # unit-test files
 EXE_UTEST = utest/utest
@@ -73,45 +79,35 @@ SRC_UTEST += $(wildcard utest/Various/*.cpp)
 SRC_UTEST += $(wildcard utest/UTestNew.cpp)
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
+D_GTEST = $(SRC_GTEST:%.cc=%.d)
+D_UTEST = $(SRC_UTEST:%.cpp=%.d)
+ALL_GTEST = $(O_GTEST) $(D_GTEST)
+ALL_UTEST = $(O_UTEST) $(D_UTEST) $(EXE_UTEST)
+
 
 # $(warning $(CXX)) # example of console output for debug
 # $(warning $(CXXFLAGS)) # example of console output for debug
 
 # make recipes
 clean: # only cleans MixtComp
-	find -L . -type f -name "*.o" -exec rm -f {} \;
-	find -L . -type f -name "*.d" -exec rm -f {} \;
-	find -L . -type f -name "*.a" -exec rm -f {} \;
-	find -L . -type f -name "*.so" -exec rm -f {} \;
-	find -L . -type f -name "*.exe" -exec rm -f {} \;
-	find -L . -type f -name "*.dll" -exec rm -f {} \;
+	rm -f $(ALL_MC)
 
 cleanAll: clean cleanGTest cleanNlopt cleanRe
 
 cleanGTest:
-	cd ../gtest/src;rm -f *.o *.d
+	rm -f $(ALL_GTEST)
 
 cleanNlopt:
 	cd ../nlopt;make clean
 
 cleanRe:
-	cd ../boost/libs/regex/src;rm -f *.o *.d
+	rm -f $(ALL_RE)
 
 cleanTest:
-	find -L test -type f -name "*.o" -exec rm -f {} \;
-	find -L test -type f -name "*.d" -exec rm -f {} \;
-	find -L test -type f -name "*.a" -exec rm -f {} \;
-	find -L test -type f -name "*.so" -exec rm -f {} \;
-	find -L test -type f -name "*.exe" -exec rm -f {} \;
-	find -L test -type f -name "*.dll" -exec rm -f {} \;
+	rm -f $(ALL_TEST)
 
-cleanUTest: # only cleans MixtComp
-	find -L utest -type f -name "*.o" -exec rm -f {} \;
-	find -L utest -type f -name "*.d" -exec rm -f {} \;
-	find -L utest -type f -name "*.a" -exec rm -f {} \;
-	find -L utest -type f -name "*.so" -exec rm -f {} \;
-	find -L utest -type f -name "*.exe" -exec rm -f {} \;
-	find -L utest -type f -name "*.dll" -exec rm -f {} \;
+cleanUTest: 
+	rm -f $(ALL_UTEST)
 
 lib: $(LIB_MC)
 
@@ -134,8 +130,8 @@ $(EXE_UTEST): $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) $(O_GTEST) $(O_UTEST)
 #$(EXE_TEST): $(LIB_MC) $(O_TEST)
 #	$(CXX) $^ -lpthread $(LIB_MC) $(LIB_OPT) -o $@ # linker only, as cpp file is compiled by automatic rule
 
--include $(SRC_MC:%.cpp=%.d)
--include $(SRC_RE:%.cpp=%.d)
--include $(SRC_TEST:%.cpp=%.d)
--include $(SRC_GTEST:%.cc=%.d)
--include $(SRC_UTEST:%.cpp=%.d)
+-include $(D_MC)
+-include $(D_RE)
+-include $(D_TEST)
+-include $(D_GTEST)
+-include $(D_UTEST)
