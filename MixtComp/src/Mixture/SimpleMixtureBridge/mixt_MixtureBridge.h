@@ -38,7 +38,6 @@
 #include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../Param/mixt_ConfIntParamStat.h"
-#include "../../JsonMixtcomp/src/mixt_DataExtractorJson.h"
 
 namespace mixt {
 
