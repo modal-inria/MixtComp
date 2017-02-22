@@ -1,0 +1,4 @@
+This package uses JsonMixtComp. It requires packages roxygen2 for genetaring the documentation and testthat for unit testing.
+
+1) Add JsonMixtComp exe (linux and windows) in inst/exeMixtComp
+2) add the new version of libnlopt-0.dll if necessary (nlopt for windows)

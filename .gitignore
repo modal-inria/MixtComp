@@ -8,7 +8,9 @@
 *.tar.gz
 *.d
 *.png
+*.json
 *.csv
+!RJsonMixtComp/inst/extdata/*.csv
 RMixtComp/.Rbuildignore
 RMixtComp/R/RcppExports.R
 RMixtComp/src/RcppExports.cpp
@@ -20,3 +22,4 @@ lib/*
 test/test
 .metadata/*
 boost_1_56_0/*
+progress

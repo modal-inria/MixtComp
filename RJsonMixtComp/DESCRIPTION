@@ -1,0 +1,14 @@
+Package: RJsonMixtComp
+Type: Package
+Title: MixtComp analysis
+Version: 0.1
+Date: 2017-02-22
+Author: Your Name Here
+Maintainer: Your Name Here <YourNameHere@inria.fr>
+Description: MixtComp analysis by InriaTech.
+License: file LICENCE
+Copyright: Inria for RJsonMixtComp, Inria - Lille 1 for Mixtcomp
+Imports: jsonlite
+Suggests:
+    testthat
+RoxygenNote: 6.0.1
