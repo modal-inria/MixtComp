@@ -49,6 +49,7 @@
 - Export data in functional Model
 - Refactor RMixtComp package files (R subdirectory)
 - Create a skeleton package which only uses the MixtComp binary, to ease transfer to the industrial clients
+- Clean the Makefile used in mcUpdate, so that it become similar to what is done in jsonmixtcomp and vanilla mixtcomp
 
 # Json
 
@@ -57,7 +58,7 @@
     - strategy and number of classes
     - descriptor
     - this way you can edit the strategy and model parameters without editing the data file
-- in predict mode, can't read file path with : or ~ 
+- in predict mode, can't read file path with : or ~
 - exportVals function for functional data
 
 # Visualization and post-processing

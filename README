@@ -1,21 +1,7 @@
 Prerequisites, all platforms
 ---
 
-R must be installed, along with the following packages from the CRAN: Rcpp RInside truncnorm shape.
-
-The C++ library Boost is required, but is too big to be provided in the git repository. It must be downloaded from http://www.boost.org/ as an archive, and its content must be extracted in the boost subdirectory. The project directories hierarchy will then look like:
-
-boost
-  boost
-  doc
-  libs
-  more
-  status
-  tools
-eigen
-gtest
-MixtComp
-RMixtComp
+R must be installed, along with the following packages from the CRAN: Rcpp RInside truncnorm shape RJSONIO plotly
 
 Prerequisites, OSX
 ---
