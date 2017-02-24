@@ -2,9 +2,9 @@ Package: RJsonMixtComp
 Type: Package
 Title: MixtComp analysis
 Version: 0.1
-Date: 2017-02-22
-Author: Your Name Here
-Maintainer: Your Name Here <YourNameHere@inria.fr>
+Date: 2017-02-24
+Author: Quentin Grimonprez
+Maintainer: Quentin Grimonprez <quentin.grimonprez@inria.fr>
 Description: MixtComp analysis by InriaTech.
 License: file LICENCE
 Copyright: Inria for RJsonMixtComp, Inria - Lille 1 for Mixtcomp

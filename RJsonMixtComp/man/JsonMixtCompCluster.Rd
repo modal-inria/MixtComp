@@ -11,7 +11,7 @@ JsonMixtCompPredict(dataList, mcStrategy, nbClass, confidenceLevel, jsonInputFil
                     jsonOutputFile, jsonMixtCompLearnFile)
 }
 \arguments{
-\item{dataList}{output of \link{getData} function.}
+\item{dataList}{\emph{lm} output of \link{getData} function.}
 
 \item{mcStrategy}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).}
 
@@ -38,26 +38,40 @@ Estimate the parameter of a mixture model or predict the cluster of new samples.
 }
 \details{
 Details about the output object of \emph{mixtCompCluster} and \emph{mixtCompPredict} functions.
+
+The path for outputs files must not contain ":" or "~".
+
+Rank data and functionnal data are currently not working.
 }
 \examples{
 \dontrun{
-# load the data
-resGetData <- getData(c("dataTrain.csv", "descriptor.csv")) 
-resGetNewData <- getData(c("dataTest.csv", "descriptor.csv")) 
+# get the path to the data of the package
+pathToData <- system.file("extdata", "data2.csv", package = "RJsonMixtComp")
+pathToDescriptor <- system.file("extdata", "descriptor2.csv", package = "RJsonMixtComp")
 
-# define the algorithm's parameters
-mcStrategy <- list(nbBurnInIter = 100,
-                   nbIter = 100,
-                   nbGibbsBurnInIter = 50,
-                   nbGibbsIter = 50,
-                   parameterEdgeAuthorized = FALSE)
+resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor)) 
 
-# run RMJsonixtCompt for clustering
-res <- JsonMixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+# learn
+resLearn <- JsonMixtCompCluster(dataList = resGetData$lm,
+                                mcStrategy = list(nbBurnInIter = 100, nbIter = 100, 
+                                                  nbGibbsBurnInIter = 100, nbGibbsIter = 100),
+                                nbClass = 2, confidenceLevel = 0.95, 
+                                jsonInputFile = "datalearn.json",
+                                jsonOutputFile = "reslearn.json")
 
-# run RJsonMixtCompt for predicting
-resPred <- JsonMixtCompCluster(resGetNewData$lm, res$variable$param, mcStrategy, nbClass = 2,
-                               confidenceLevel = 0.95)
+
+
+# predict : require a json file output from JsonMixtCompCluster ("reslearn.json" here)
+resPredict <- JsonMixtCompPredict(dataList = resGetData$lm,
+                                  mcStrategy = list(nbBurnInIter = 100, nbIter = 100, 
+                                                    nbGibbsBurnInIter = 100, nbGibbsIter = 100),
+                                  nbClass = 2, confidenceLevel = 0.95, 
+                                  jsonInputFile = "datalearn.json",
+                                  jsonOutputFile = "respredict.json",
+                                  jsonMixtCompLearnFile = "reslearn.json")
+
+# remove created files of the example
+file.remove(c("reslearn.json", "respredict.json", "datalearn.json"))
 }
 
 

@@ -12,20 +12,46 @@ Statistics analysis with MixtComp
 Package: \tab RJsonMixtComp\cr
 Type: \tab Package\cr
 Version: \tab 0.1\cr
-Date: \tab 2017-02-22\cr
+Date: \tab 2017-02-24\cr
 License: \tab  \cr
 }
 }
 \examples{
 \dontrun{
-# Do Stuff
+# get the path to the data of the package
+pathToData <- system.file("extdata", "data2.csv", package = "RJsonMixtComp")
+pathToDescriptor <- system.file("extdata", "descriptor2.csv", package = "RJsonMixtComp")
+
+resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor)) 
+
+# learn
+resLearn <- JsonMixtCompCluster(dataList = resGetData$lm,
+                                mcStrategy = list(nbBurnInIter = 100, nbIter = 100, 
+                                                  nbGibbsBurnInIter = 100, nbGibbsIter = 100),
+                                nbClass = 2, confidenceLevel = 0.95, 
+                                jsonInputFile = "datalearn.json",
+                                jsonOutputFile = "reslearn.json")
+
+
+
+# predict : require a json file output from JsonMixtCompCluster ("reslearn.json" here)
+resPredict <- JsonMixtCompPredict(dataList = resGetData$lm,
+                                  mcStrategy = list(nbBurnInIter = 100, nbIter = 100, 
+                                                    nbGibbsBurnInIter = 100, nbGibbsIter = 100),
+                                  nbClass = 2, confidenceLevel = 0.95, 
+                                  jsonInputFile = "datalearn.json",
+                                  jsonOutputFile = "respredict.json",
+                                  jsonMixtCompLearnFile = "reslearn.json")
+
+# remove created files of the example
+file.remove(c("reslearn.json", "respredict.json", "datalearn.json"))
 }
 
 
 }
 \author{
-Your Name Here
+Quentin Grimonprez
 
-Maintainer: Your Name Here <YourNameHere@inria.fr>
+Maintainer: Quentin Grimonprez <quentin.grimonprez@inria.fr>
 }
 \keyword{package}

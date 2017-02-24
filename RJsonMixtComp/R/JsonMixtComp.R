@@ -52,6 +52,9 @@ createJsonMixtCompFile <- function(outputJsonFile, dataList, nbClass, confidence
 #' @export
 JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, jsonInputFile, jsonOutputFile)
 {
+  checkModel(sapply(dataList, function(x){x$model}))
+  checkPath(jsonInputFile, jsonOutputFile)
+  
   createJsonMixtCompFile(jsonInputFile, dataList, nbClass, confidenceLevel, mcStrategy, mode = "learn")
   
   nameExe <- ifelse(Sys.info()["sysname"] == "Windows", "JsonMixtComp.exe", "JsonMixtComp")
@@ -60,6 +63,8 @@ JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
   system(paste(pathToJsonMixtComp, jsonInputFile, jsonOutputFile))
   
   resLearn <- fromJSON(jsonOutputFile)
+  
+  resLearn = convertJsonRobject(resLearn, confidenceLevel, mode = "learn")
   
   return(resLearn)
 }
@@ -99,25 +104,39 @@ JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
 #' 
 #' @details Details about the output object of \emph{mixtCompCluster} and \emph{mixtCompPredict} functions.
 #' 
+#' The path for outputs files must not contain ":" or "~".
+#' 
+#' Rank data and functionnal data are currently not working.
+#' 
 #' @examples 
 #' \dontrun{
-#' # load the data
-#' resGetData <- getData(c("dataTrain.csv", "descriptor.csv")) 
-#' resGetNewData <- getData(c("dataTest.csv", "descriptor.csv")) 
-#' 
-#' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    parameterEdgeAuthorized = FALSE)
-#' 
-#' # run RMJsonixtCompt for clustering
-#' res <- JsonMixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-#' 
-#' # run RJsonMixtCompt for predicting
-#' resPred <- JsonMixtCompCluster(resGetNewData$lm, res$variable$param, mcStrategy, nbClass = 2,
-#'                                confidenceLevel = 0.95)
+#' # get the path to the data of the package
+#' pathToData <- system.file("extdata", "data2.csv", package = "RJsonMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descriptor2.csv", package = "RJsonMixtComp")
+#'
+#' resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor)) 
+#'
+#' # learn
+#' resLearn <- JsonMixtCompCluster(dataList = resGetData$lm,
+#'                                 mcStrategy = list(nbBurnInIter = 100, nbIter = 100, 
+#'                                                   nbGibbsBurnInIter = 100, nbGibbsIter = 100),
+#'                                 nbClass = 2, confidenceLevel = 0.95, 
+#'                                 jsonInputFile = "datalearn.json",
+#'                                 jsonOutputFile = "reslearn.json")
+#'
+#'
+#'
+#' # predict : require a json file output from JsonMixtCompCluster ("reslearn.json" here)
+#' resPredict <- JsonMixtCompPredict(dataList = resGetData$lm,
+#'                                   mcStrategy = list(nbBurnInIter = 100, nbIter = 100, 
+#'                                                     nbGibbsBurnInIter = 100, nbGibbsIter = 100),
+#'                                   nbClass = 2, confidenceLevel = 0.95, 
+#'                                   jsonInputFile = "datalearn.json",
+#'                                   jsonOutputFile = "respredict.json",
+#'                                   jsonMixtCompLearnFile = "reslearn.json")
+#'
+#' # remove created files of the example
+#' file.remove(c("reslearn.json", "respredict.json", "datalearn.json"))
 #' }
 #' 
 #' 
@@ -125,7 +144,9 @@ JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
 #' @export
 JsonMixtCompPredict <- function(dataList, mcStrategy, nbClass, confidenceLevel, jsonInputFile, jsonOutputFile, jsonMixtCompLearnFile)
 {
-
+  checkModel(sapply(dataList, function(x){x$model}))
+  checkPath(jsonInputFile, jsonOutputFile, jsonMixtCompLearnFile)
+  
   createJsonMixtCompFile(jsonInputFile, dataList, nbClass, confidenceLevel, mcStrategy, mode = "predict", outMixtCompFile = jsonMixtCompLearnFile)
   
   
@@ -135,6 +156,8 @@ JsonMixtCompPredict <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
   system(paste(pathToJsonMixtComp, jsonInputFile, jsonOutputFile))
   
   resPredict <- fromJSON(jsonOutputFile)
+  
+  resPredict = convertJsonRobject(resPredict, confidenceLevel, mode = "predict")
   
   return(resPredict)
 }

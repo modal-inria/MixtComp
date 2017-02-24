@@ -10,7 +10,7 @@ createJsonMixtCompFile(outputJsonFile, dataList, nbClass,
   TRUE), mode = c("learn", "predict"), outMixtCompFile = NULL)
 }
 \arguments{
-\item{outputJsonFile}{output of \link{getData} function}
+\item{outputJsonFile}{\emph{lm} output of \link{getData} function}
 
 \item{dataList}{output of getData function.}
 
