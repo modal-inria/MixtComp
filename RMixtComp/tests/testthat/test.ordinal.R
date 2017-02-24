@@ -1,4 +1,6 @@
-test.allSeg <- function() {
+context("Test ordinal")
+
+test_that("allSeg", {
   nbPos <- 5
   allTrue <- TRUE
   
@@ -9,16 +11,11 @@ test.allSeg <- function() {
           for (m in 1:nbPos) {
             param <- list(mu = m)
             
-            currSeg <- allSeg(y,
-                              c(i, j),
-                              param,
-                              nbPos)
+            currSeg <- allSeg(y, c(i, j), param, nbPos)
             
-            e <- eSample(z,
-                         currSeg)
+            e <- eSample(z, currSeg)
             
-            seg <- c(currSeg$firstIndSeg[e],
-                     currSeg$firstIndSeg[e] + currSeg$lengthSeg[e] - 1)
+            seg <- c(currSeg$firstIndSeg[e], currSeg$firstIndSeg[e] + currSeg$lengthSeg[e] - 1)
             
             allTrue <- allTrue && (seg[1] <= seg[2])
           }
@@ -27,10 +24,12 @@ test.allSeg <- function() {
     }
   }
   
-  checkEquals(allTrue, TRUE)
-}
+  expect_equal(allTrue, TRUE)
+  
+})
 
-# test.ordinalGeneratorSeg <- function() {
+# DEPRECATED : seg retourne un élément de taille 1
+# test_that("ordinalGeneratorSeg",{
 #   nbTest <- 100
 #   nbMod <- 5
 #   
@@ -41,14 +40,14 @@ test.allSeg <- function() {
 #                   pi = runif(1),
 #                   nbMod = nbMod)
 #     
-# #    seg <- ordinalGeneratorSeg(FALSE,
-# #                               param)
+#     #    seg <- ordinalGeneratorSeg(FALSE,
+#     #                               param)
 #     
-#     seg <- ordinalFullGenerator(FALSE,
-#                                param)
+#     seg <- ordinalFullGenerator(param) 
 #     
 #     allTrue <- allTrue && (seg[1] == seg[2])
 #   }
 #   
-#   checkEquals(allTrue, TRUE)
-# }
+#   expect_equal(allTrue, TRUE)
+#   
+# })
