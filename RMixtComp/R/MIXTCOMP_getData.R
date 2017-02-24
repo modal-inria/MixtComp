@@ -1,4 +1,4 @@
-#'
+
 #' @title Import data from a csv file
 #' 
 #' @description Import the data file and the descriptor file in the format required by \link{mixtCompCluster} and \link{mixtCompPredict} functions.
@@ -64,9 +64,6 @@
 #' @seealso \link{mixtCompCluster} \link{mixtCompPredict}
 #' 
 #' @author Vincent Kubicki
-#' 
-#' @export
-#'
 getData <- function(...) {
   argList <- list(...)
   lm <- list()

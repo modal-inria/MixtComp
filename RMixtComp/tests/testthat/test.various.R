@@ -11,6 +11,6 @@ test_that("validDim", {
   expect_gt(nchar(validDim(testFile, 5, 12)), 0)
   expect_gt(nchar(validDim(testFile, 12, 5)), 0)
   expect_gt(nchar(validDim(testFile, 5, 5)), 0)
-  
+
   file.remove("mat.csv")
 })

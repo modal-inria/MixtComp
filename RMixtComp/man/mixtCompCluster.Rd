@@ -118,22 +118,23 @@ output  \cr
 
 \examples{
 \dontrun{
-# load the data
-resGetData <- getData(c("dataTrain.csv", "descriptor.csv")) 
-resGetNewData <- getData(c("dataTest.csv", "descriptor.csv")) 
+pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
+pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+
+resGetData <- getData(c(pathToData, pathToDescriptor))
 
 # define the algorithm's parameters
 mcStrategy <- list(nbBurnInIter = 100,
-nbIter = 100,
-nbGibbsBurnInIter = 50,
-nbGibbsIter = 50,
-parameterEdgeAuthorized = FALSE)
+                   nbIter = 100,
+                   nbGibbsBurnInIter = 50,
+                   nbGibbsIter = 50,
+                   parameterEdgeAuthorized = FALSE)
 
 # run RMixtCompt for clustering
 res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 
 # run RMixtCompt for predicting
-resPred <- mixtCompCluster(resGetNewData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 }
 
 

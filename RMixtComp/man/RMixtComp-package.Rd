@@ -14,32 +14,32 @@ data sets in a single mixture model.
 Package: \tab RMixtComp\cr
 Type: \tab Package\cr
 Version: \tab 0.1\cr
-Date: \tab 2016-10-10\cr
+Date: \tab 2017-02-24\cr
 License: \tab GPL (>=2) \cr
 }
 }
 \examples{
 \dontrun{
-# load the train data
-resGetData <- getData(c("dataTrain.csv", "descriptor.csv")) 
-# load the test data
-resGetNewData <- getData(c("dataTest.csv", "descriptor.csv")) 
+# path to files
+pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
+pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+
+resGetData <- getData(c(pathToData, pathToDescriptor))
+
 
 # define the algorithm's parameters
 mcStrategy <- list(nbBurnInIter = 100,
-nbIter = 100,
-nbGibbsBurnInIter = 50,
-nbGibbsIter = 50,
-parameterEdgeAuthorized = FALSE)
+                   nbIter = 100,
+                   nbGibbsBurnInIter = 50,
+                   nbGibbsIter = 50,
+                   parameterEdgeAuthorized = FALSE)
 
 # run RMixtCompt for clustering
 res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 
 # run RMixtCompt for predicting
-resPred <- mixtCompCluster(resGetNewData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 
-# run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 
 
 # Plot like Figure 1 (left)
