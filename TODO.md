@@ -10,6 +10,10 @@
 - Si l'algo est plus rapide, on peut intégrer les initalisations multiples, et renvoyer à l'utilisateur seulement le meilleur.
 - Sortir les vraisemblances individuelles des individus, pour éviter d'avoir à lancer des prédictions à un individu
 
+# Build
+
+- Nlopt should be built the same way boost regex is built. This would ensure a proper integration in the build system, and a faster build.
+
 # Bugs
 
 - Functional model seem to crash when edge authorized option is activated for the estimators

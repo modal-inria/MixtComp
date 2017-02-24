@@ -2,6 +2,12 @@ Prerequisites, all platforms
 ---
 
 R must be installed, along with the following packages from the CRAN: Rcpp RInside truncnorm shape RJSONIO plotly
+Those two command lines can perform the installation automatically in the ~/R directory
+add the following line to .bashrc: export R_LIBS="~/R"
+mkdir ~/R
+Rscript -e "install.packages(c(\"Rcpp\", \"RInside\", \"truncnorm\", \"shape\", \"RJSONIO\", \"plotly\"), repos = \"https://cran.univ-paris1.fr/\")"
+
+If you want a minimal installation of RMixtComp, you can edit both the DESCRIPTION and NAMESPACE files to keep only the Rcpp dependency.
 
 Prerequisites, OSX
 ---
