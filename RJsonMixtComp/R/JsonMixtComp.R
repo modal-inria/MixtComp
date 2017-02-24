@@ -64,7 +64,7 @@ JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
   
   resLearn <- fromJSON(jsonOutputFile)
   
-  resLearn = convertJsonRobject(resLearn, confidenceLevel)
+  resLearn = convertJsonRobject(resLearn, confidenceLevel, mode = "learn")
   
   return(resLearn)
 }
@@ -156,6 +156,8 @@ JsonMixtCompPredict <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
   system(paste(pathToJsonMixtComp, jsonInputFile, jsonOutputFile))
   
   resPredict <- fromJSON(jsonOutputFile)
+  
+  resPredict = convertJsonRobject(resPredict, confidenceLevel, mode = "predict")
   
   return(resPredict)
 }

@@ -1,6 +1,8 @@
 context("Test fonctionnel")
 
 test_that("Learn + predict", {
+  # skip("On le skip cette fois")
+  
   pathToData <- system.file("extdata", "data2.csv", package = "RJsonMixtComp")
   pathToDescriptor <- system.file("extdata", "descriptor2.csv", package = "RJsonMixtComp")
 
