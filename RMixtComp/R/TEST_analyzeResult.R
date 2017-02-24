@@ -1,5 +1,3 @@
-require(shape)
-
 confidenceInterval <- function(dataOut, nbSamples, level = 0.95)
 {
   listVars <- ls(dataOut[[2]]$data)

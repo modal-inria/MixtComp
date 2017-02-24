@@ -115,6 +115,7 @@ output  \cr
          \tab          \tab          \tab |_ ...     \tab         \tab \cr
 }
 }
+
 \examples{
 \dontrun{
 # load the data
@@ -138,10 +139,9 @@ resPred <- mixtCompCluster(resGetNewData$lm, res$variable$param, mcStrategy, nbC
 
 
 }
-\author{
-Vincent Kubicki
-}
 \seealso{
 \link{getData}
 }
-
+\author{
+Vincent Kubicki
+}

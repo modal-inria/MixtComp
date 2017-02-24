@@ -1,5 +1,3 @@
-library(RUnit)
-
 uTest <- function() {
   test.suite <- defineTestSuite('test',
                                dirs = file.path('R/test'))

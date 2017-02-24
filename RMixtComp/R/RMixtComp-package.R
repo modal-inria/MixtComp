@@ -42,6 +42,29 @@
 #' 
 #' # run RMixtCompt for predicting
 #' resPred <- mixtCompCluster(resGetNewData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' 
+#' # run RMixtCompt for clustering
+#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#'
+#'
+#' # Plot like Figure 1 (left)
+#' plotDiscrimVbles(res)
+#'
+#' # Plot like Figure 1 (right)
+#' plotDiscrimClass(res)
+#'
+#' # Plot like Figure 2 (left)
+#' heatmapVbles(res)
+#'
+#' # Plot like Figure 2 (right)
+#' heatmapClass(res)
+#'
+#' # Plot like Figure 3 (left)
+#' histMisclassif(res)
+#'
+#' # Plot like Figure 3 (right)
+#' heatmapTikSorted(res)
+#' 
 #' }
 #' 
 #' @seealso \link{mixtCompCluster} \link{mixtCompPredict}
