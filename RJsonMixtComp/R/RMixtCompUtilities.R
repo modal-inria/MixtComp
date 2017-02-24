@@ -2,8 +2,26 @@
 
 
 # getData -----------------------------------------------------------------
-
-# read a csv file of data and descriptor and create an R object
+#' @title Read data and descriptor files
+#'
+#' @description Read csv file of data and descriptor and create an R object for \link{JsonMixtCompCluster} and \link{JsonMixtCompPredict}.
+#' 
+#' @param ... a vector of two elements : the path to the data file and the path to the descriptor file.
+#' 
+#' @return a list
+#' 
+#' @seealso \link{JsonMixtCompCluster} \link{JsonMixtCompPredict}
+#' 
+#' 
+#' @examples 
+#' \dontrun{
+#' pathToData <- system.file("extdata", "data.csv", package = "RJsonMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RJsonMixtComp")
+#' 
+#' res <- getData(c(pathToData, pathToDescriptor))#' 
+#' }
+#' 
+#' @export
 getData <- function(...) {
   argList <- list(...)
   lm <- list()

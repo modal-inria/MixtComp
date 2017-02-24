@@ -11,7 +11,7 @@ JsonMixtCompPredict(dataList, mcStrategy, nbClass, confidenceLevel, jsonInputFil
                     jsonOutputFile, jsonMixtCompLearnFile)
 }
 \arguments{
-\item{dataList}{output of \link{getData} function.}
+\item{dataList}{\emph{lm} output of \link{getData} function.}
 
 \item{mcStrategy}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).}
 

@@ -3,5 +3,6 @@
 export(JsonMixtCompCluster)
 export(JsonMixtCompPredict)
 export(createJsonMixtCompFile)
+export(getData)
 import(jsonlite)
 importFrom(utils,read.table)
