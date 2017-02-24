@@ -37,6 +37,16 @@
 - SEM will degenerate given enough time, so if the data is "correct", this should be rare, and fixed by relaunching
 - if degenerescency is systematic, the model is not correct and should be dropped. Running a Gibbs over a long time period will not solve anything.
 
+# Output object
+- Gaussien :
+    Les statistiques des données complétées au format matriciel
+- Poisson :
+    Les statistiques des données complétées au format matriciel
+- Ordinal :
+    Les statistiques des données complétées sont manquantes
+- zclass
+    data\$z_class\$stat ajouter des noms de colonnes au tik
+
 # Model
 
 - Missing data in support in Functional Model
@@ -48,7 +58,6 @@
 
 - Export data in functional Model
 - Refactor RMixtComp package files (R subdirectory)
-- Create a skeleton package which only uses the MixtComp binary, to ease transfer to the industrial clients
 - Clean the Makefile used in mcUpdate, so that it become similar to what is done in jsonmixtcomp and vanilla mixtcomp
 
 # Json
@@ -60,7 +69,30 @@
     - this way you can edit the strategy and model parameters without editing the data file
 - in predict mode, can't read file path with : or ~
 - exportVals function for functional data
-
+- delta manquant dans $mixture
+- IDClass est transposée par rapport à la sortie de RMixtComp
+- Rank 
+    Problème de lecture des données de rangs (le même jeu de données marche avec RMixtComp)
+- Functional 
+    Problème de lecture des données fonctionnelles (le même jeu de données marche avec RMixtComp)
+- Categorical
+    données complété stat : retourne 0.52 0.52 au lieu d'une liste [[1]] 2 [[2]] 0.52
+    dans param\$categorical1\$NumericalParam\$stat est sous format de liste et non de matrice
+    dans param\$categorical1\$NumericalParam\$log est sous format de liste et non de matrice
+- Poisson
+    dans param\$poisson1\$NumericalParam\$log est sous format de liste et non de matrice
+    dans param\$poisson1\$NumericalParam\$stat est sous format de liste et non de matrice
+- Ordinal 
+    données complétées décalées tt de 1
+    dans param\$Ordinal1\$muPi\$log est sous format de liste et non de matrice
+    dans param\$Ordinal1\$muPi\$stat est sous format de liste et non de matrice
+- z_class
+    dans param\$z_class\$pi\$stat est sous format de liste et non de matrice
+    dans param\$z_class\$pi\$log est sous format de liste et non de matrice
+- gaussian
+    dans param\$gaussian1\$NumericalParam\$stat est sous format de liste et non de matrice
+    dans param\$gaussian1\$NumericalParam\$log est sous format de liste et non de matrice
+    
 # Visualization and post-processing
 
 # Long term
