@@ -52,6 +52,9 @@ createJsonMixtCompFile <- function(outputJsonFile, dataList, nbClass, confidence
 #' @export
 JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, jsonInputFile, jsonOutputFile)
 {
+  checkModel(sapply(dataList, function(x){x$model}))
+  checkPath(jsonInputFile, jsonOutputFile)
+  
   createJsonMixtCompFile(jsonInputFile, dataList, nbClass, confidenceLevel, mcStrategy, mode = "learn")
   
   nameExe <- ifelse(Sys.info()["sysname"] == "Windows", "JsonMixtComp.exe", "JsonMixtComp")
@@ -60,6 +63,8 @@ JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
   system(paste(pathToJsonMixtComp, jsonInputFile, jsonOutputFile))
   
   resLearn <- fromJSON(jsonOutputFile)
+  
+  resLearn = convertJsonRobject(resLearn, confidenceLevel)
   
   return(resLearn)
 }
@@ -99,6 +104,10 @@ JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
 #' 
 #' @details Details about the output object of \emph{mixtCompCluster} and \emph{mixtCompPredict} functions.
 #' 
+#' The path for outputs files must not contain ":" or "~".
+#' 
+#' Rank data and functionnal data are currently not working.
+#' 
 #' @examples 
 #' \dontrun{
 #' # load the data
@@ -125,7 +134,9 @@ JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
 #' @export
 JsonMixtCompPredict <- function(dataList, mcStrategy, nbClass, confidenceLevel, jsonInputFile, jsonOutputFile, jsonMixtCompLearnFile)
 {
-
+  checkModel(sapply(dataList, function(x){x$model}))
+  checkPath(jsonInputFile, jsonOutputFile, jsonMixtCompLearnFile)
+  
   createJsonMixtCompFile(jsonInputFile, dataList, nbClass, confidenceLevel, mcStrategy, mode = "predict", outMixtCompFile = jsonMixtCompLearnFile)
   
   
