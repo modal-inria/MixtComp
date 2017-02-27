@@ -43,11 +43,11 @@ PKG_LIBS = $(LIB_MC) $(LIB_RE) $(LIB_NLOPT)
 
 R_BUILD = T # Variable used to signal that the compilation occurs from inside R
 
-export R_BUILD CXX CXXFLAGS # flags needed for the compilation of librairies
+export R_BUILD CC CFLAGS CXX CXXFLAGS # flags needed for the compilation of librairies
 
 .PHONY: all pkglib
 
-## $(SHLIB) is the usual default target that is built automatically from all source 
+## $(SHLIB) is the usual default target that is built automatically from all source
 ## files in this directory. pkglib is an additional target for the libraries
 ## that will be installed in (PKGLIB) and which users can link against.
 

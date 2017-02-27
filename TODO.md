@@ -13,6 +13,10 @@
 # Build
 
 - Nlopt should be built the same way boost regex is built. This would ensure a proper integration in the build system, and a faster build.
+- There are a lot of complicated dependencies, which make mixtcomp hard to build on a system without root access
+    - would it be wise to split MixtComp in a base package which only requires Rccp, and a companion package which requires plotly and others ?
+- CC and CFLAGS variables should be exported, so that alternative C compilers could be provided the same way C++ compilers are. This could be useful for packages like nlopt
+    - this should be added to jsonmixtcomp
 
 # Bugs
 
@@ -75,9 +79,9 @@
 - exportVals function for functional data
 - delta manquant dans $mixture
 - IDClass est transposée par rapport à la sortie de RMixtComp
-- Rank 
+- Rank
     Problème de lecture des données de rangs (le même jeu de données marche avec RMixtComp)
-- Functional 
+- Functional
     Problème de lecture des données fonctionnelles (le même jeu de données marche avec RMixtComp)
 - Categorical
     données complété stat : retourne 0.52 0.52 au lieu d'une liste [[1]] 2 [[2]] 0.52
@@ -86,7 +90,7 @@
 - Poisson
     dans param\$poisson1\$NumericalParam\$log est sous format de liste et non de matrice
     dans param\$poisson1\$NumericalParam\$stat est sous format de liste et non de matrice
-- Ordinal 
+- Ordinal
     données complétées décalées tt de 1
     dans param\$Ordinal1\$muPi\$log est sous format de liste et non de matrice
     dans param\$Ordinal1\$muPi\$stat est sous format de liste et non de matrice
@@ -96,7 +100,7 @@
 - gaussian
     dans param\$gaussian1\$NumericalParam\$stat est sous format de liste et non de matrice
     dans param\$gaussian1\$NumericalParam\$log est sous format de liste et non de matrice
-    
+
 # Visualization and post-processing
 
 # Long term
