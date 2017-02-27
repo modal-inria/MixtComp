@@ -223,3 +223,28 @@ exportMisClass <- function(nbIterations)
        type = "l")
   dev.off()
 }
+
+plotFunctional <- function(i) {
+  df <- read.csv(file = "dataGenNew/learn/data.csv",
+                 header = TRUE,
+                 sep = ";",
+                 as.is = TRUE)
+  lsSplit <- strsplit(df$Functional1[[i]], ",")
+  
+  mySplit <- function(x) {
+    return(strsplit(x, ":")[[1]])
+  }
+  
+  dataSplit <- lapply(lsSplit[[1]], mySplit)
+  
+  nPoints <- length(dataSplit)
+  x <- vector("numeric", nPoints)
+  y <- vector("numeric", nPoints)
+  
+  for (i in 1:nPoints) {
+    x[i] <- as.numeric(dataSplit[[i]][1])
+    y[i] <- as.numeric(dataSplit[[i]][2])
+  }
+  
+  plot(x, y)
+}

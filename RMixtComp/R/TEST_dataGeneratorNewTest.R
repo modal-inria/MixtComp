@@ -124,3 +124,4 @@ zParamFixedInit <- function() {
   
   return(z_class)
 }
+
