@@ -67,12 +67,26 @@ TODO
 
 In the case of a functional model, \emph{nSub: i, nCoeff: j} must be indicated in the third row of the descriptor file.
 \emph{i} is the number of subregressions in a functional data and \emph{j} the number of coefficients
- of each regression (2 = linear, 3 = quadratic, ...).
+ of each regression (2 = linear, 3 = quadratic, ...). Missing data are not supported.
 }
 
 \examples{
 \dontrun{
-dat <- getData(c("data.csv", "descriptor.csv")) 
+# Case with csv file
+pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
+pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+
+out <- getData(c(pathToData, pathToDescriptor)) 
+
+# case with R object
+var <- list()
+var$z_class <- zParam()
+var$Gaussienne1 <- gaussianParam("Gaussian1")
+var$Categorical1 <- categoricalParam("Categorical1")
+
+dat <- dataGeneratorNew(100, 0.8, var) 
+
+out <- getData(list(dat$data, dat$descriptor)) 
 }
 
 }

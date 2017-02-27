@@ -50,7 +50,7 @@
 #' @section Functional data:
 #' In the case of a functional model, \emph{nSub: i, nCoeff: j} must be indicated in the third row of the descriptor file.
 #' \emph{i} is the number of subregressions in a functional data and \emph{j} the number of coefficients
-#'  of each regression (2 = linear, 3 = quadratic, ...).
+#'  of each regression (2 = linear, 3 = quadratic, ...). Missing data are not supported.
 #'
 #' 
 #' 
@@ -58,7 +58,21 @@
 #'
 #' @examples 
 #' \dontrun{
-#' dat <- getData(c("data.csv", "descriptor.csv")) 
+#' # Case with csv file
+#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' 
+#' out <- getData(c(pathToData, pathToDescriptor)) 
+#' 
+#' # Case with R object
+#' var <- list()
+#' var$z_class <- zParam()
+#' var$Gaussienne1 <- gaussianParam("Gaussian1")
+#' var$Categorical1 <- categoricalParam("Categorical1")
+#'
+#' dat <- dataGeneratorNew(100, 0.8, var) 
+#' 
+#' out <- getData(list(dat$data, dat$descriptor)) 
 #' }
 #'
 #' @seealso \link{mixtCompCluster} \link{mixtCompPredict}
@@ -72,33 +86,47 @@ getData <- function(...) {
   for (k in 1:length(argList)) {
     dataFile <- argList[[k]][1]
     descriptorFile <- argList[[k]][2]
-    data <- read.table(file = dataFile,
-                       header = TRUE,
-                       sep = ";",
-                       quote = "\"",
-                       dec = ".",
-                       fill = FALSE,
-                       comment.char = "",
-                       stringsAsFactors = FALSE,
-                       na.strings = "")
-    descriptor <- read.table(file = descriptorFile,
-                             header = FALSE,
-                             sep = ";",
-                             quote = "\"",
-                             dec = ".",
-                             fill = FALSE,
-                             comment.char = "",
-                             stringsAsFactors = FALSE)
-    for (i in 1:length(descriptor)) { # loop over columns of the descriptor
-      currId <- descriptor[1, i]
-      currModel <- descriptor[2, i]
-      if (dim(descriptor)[1] == 3) {
-        param <- descriptor[3, i] # a character string describing the parameter space, that will be parsed directly by the model
+    if(is.character(dataFile))
+    {
+      data <- read.table(file = dataFile,
+                         header = TRUE,
+                         sep = ";",
+                         quote = "\"",
+                         dec = ".",
+                         fill = FALSE,
+                         comment.char = "",
+                         stringsAsFactors = FALSE,
+                         na.strings = "")
+    }else{
+      data <- dataFile[[1]]
+    }
+    
+    if(is.character(descriptorFile))
+    {
+      descriptor <- read.table(file = descriptorFile,
+                               header = TRUE,
+                               sep = ";",
+                               quote = "\"",
+                               dec = ".",
+                               fill = FALSE,
+                               comment.char = "",
+                               stringsAsFactors = FALSE)
+    }else{
+      descriptor <- descriptorFile[[1]]  
+    }
+    
+    nameDesc <- colnames(descriptor)
+    
+    for (i in 1:length(nameDesc)) { # loop over columns of the descriptor
+      currId <- nameDesc[i]
+      currModel <- descriptor[1, i]
+      if (dim(descriptor)[1] == 2) {
+        param <- descriptor[2, i] # a character string describing the parameter space, that will be parsed directly by the model
       }
       else {
         param <- "" # a zero-sized parameter string will be interpreted by the model as "deduce the parameter space automatically"
       }
-      if (! descriptor[1, i] %in% names(data)) { # descriptor does not match data
+      if (! (currId %in% names(data))) { # descriptor does not match data
         warnLog <- paste(warnLog,
                          "Variable ", currId, " asked for in descriptor file ",
                          "but absent from the data file.\n",
@@ -118,7 +146,37 @@ getData <- function(...) {
       }
     }
   }
+  
+  return(list(lm = lm,
+              warnLog = warnLog))
+}
 
+
+addVariable <- function (lm,
+                         data,
+                         id,
+                         model,
+                         paramStr) {
+  warnLog = "" # warnLog will contain the various possible error messages
+  if (length(lm) == 0) { # first variable is automaticaly added
+    lm[[1]] <- list(data = data,
+                    model = model,
+                    id = id,
+                    paramStr = paramStr)
+  }
+  else if (length(lm[[1]]$data) != length(data)) { # all variable must have the same number of individuals
+    warnLog <- paste(warnLog,
+                     "Variable ", id, " has ", length(data), " individuals while other variables currently have: ",
+                     length(lm[[1]]$data), " individuals. All variables must have the same number of individuals.\n",
+                     sep = "")
+  }
+  else { # variable is fit to be added !
+    lm[[length(lm)+1]] <- list(data = data,
+                               model = model,
+                               id = id,
+                               paramStr = paramStr)
+  }
+  
   return(list(lm = lm,
               warnLog = warnLog))
 }
