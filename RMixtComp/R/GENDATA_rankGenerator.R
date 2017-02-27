@@ -1,15 +1,3 @@
-rankTestGenerator <- function() {
-  rankTestParam <- list(mu = c(1, 4, 2, 3),
-                        pi = 0.8)
-  rankTestPresent <- FALSE
-  rankTestX <- rankFullGenerator(rankTestParam)
-  
-  rankTestStr <- rankHideData(rankTestPresent,
-                              rankTestX)
-  
-  return(rankTestStr)
-}
-
 rankGenerator <- function(present,
                           param) {
   x <- rankFullGenerator(param)
