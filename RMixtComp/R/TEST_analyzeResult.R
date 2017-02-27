@@ -248,3 +248,23 @@ plotFunctional <- function(i) {
   
   plot(x, y)
 }
+
+confusionMatrix <- function(nbClass,
+                            classInFile,
+                            dataParam)
+{
+  classIn <- read.csv2(classInFile,
+                       header = FALSE,
+                       dec = ".")
+  matConf <- matrix(0,
+                    nbClass,
+                    nbClass)
+  for (i in 1:nrow(classIn))
+  {
+    matConf[classIn[i, 1],
+            dataParam$data$z_class$completed[i]] = matConf[classIn[i, 1],
+                                                           dataParam$data$z_class$completed[i]] + 1
+  }
+  
+  return(matConf)
+}
