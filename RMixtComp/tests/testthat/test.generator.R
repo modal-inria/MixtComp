@@ -12,6 +12,7 @@ test_that("poisson missing data",{
 })
 
 
+
 test_that("gaussian missing data",{
   
   for(i in 1:10)
@@ -37,6 +38,9 @@ test_that("gaussian missing data",{
   expect_equal(out, 0.5)
   
 })
+
+
+
 
 test_that("categorical missing data",{
   
@@ -70,6 +74,8 @@ test_that("categorical missing data",{
   expect_equal(out, "?")
 })
 
+
+
 test_that("test fonctionnel : dataGeneratorNew", {
   
   var <- list()
@@ -84,10 +90,18 @@ test_that("test fonctionnel : dataGeneratorNew", {
   dat <- dataGeneratorNew(100, 0.8, var) 
   
   expect_length(dat, 3)
-  expect_equal(dat$data[1,], c("z_class", "Rank1", "Ordinal1", "Functional1", "Poisson1", "Gaussian1", "Categorical1"))
-  expect_equal(dat$descriptor[1,], c("z_class", "Rank1", "Ordinal1", "Functional1", "Poisson1", "Gaussian1", "Categorical1"))
-  expect_equal(dat$descriptor[2,], c("LatentClass", "Rank", "Ordinal", "Functional", "Poisson_k", "Gaussian_sjk", "Categorical_pjk"))
-  expect_equal(dat$descriptor[3,], c("", "", "", "nSub: 1, nCoeff: 2", "", "", ""))
-  expect_equal(dim(dat$data), c(101, 7))
+  expect_equal(colnames(dat$data), c("z_class", "Rank1", "Ordinal1", "Functional1", "Poisson1", "Gaussian1", "Categorical1"))
+  expect_equal(colnames(dat$descriptor), c("z_class", "Rank1", "Ordinal1", "Functional1", "Poisson1", "Gaussian1", "Categorical1"))
+  expect_equal(as.character(dat$descriptor[1, 1]), "LatentClass")
+  expect_equal(as.character(dat$descriptor[1, 2]), "Rank")
+  expect_equal(as.character(dat$descriptor[1, 3]), "Ordinal")
+  expect_equal(as.character(dat$descriptor[1, 4]), "Functional")
+  expect_equal(as.character(dat$descriptor[1, 5]), "Poisson_k")
+  expect_equal(as.character(dat$descriptor[1, 6]), "Gaussian_sjk")
+  expect_equal(as.character(dat$descriptor[1, 7]), "Categorical_pjk")
+  for(i in (1:7)[-4])
+    expect_equal(as.character(dat$descriptor[2, i]), "")
+  expect_equal(as.character(dat$descriptor[2,4]), "nSub: 1, nCoeff: 2")
+  expect_equal(dim(dat$data), c(100, 7))
 })
 
