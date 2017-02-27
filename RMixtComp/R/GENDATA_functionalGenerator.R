@@ -60,12 +60,12 @@ functionalParam1sub <- function(name) {
   
   sigma <- 0.01
   
-  print("alpha")
-  print(alpha)
-  print("beta1")
-  print(beta1)
-  print("beta2")
-  print(beta2)
+  # print("alpha")
+  # print(alpha)
+  # print("beta1")
+  # print(beta1)
+  # print("beta2")
+  # print(beta2)
   
   Functional$param[[1]]$alpha <- alpha
   Functional$param[[1]]$beta <- beta1
@@ -117,12 +117,12 @@ functionalParam2sub <- function(name) {
   
   sigma <- 0.01
   
-  print("alpha")
-  print(alpha)
-  print("beta1")
-  print(beta1)
-  print("beta2")
-  print(beta2)
+  # print("alpha")
+  # print(alpha)
+  # print("beta1")
+  # print(beta1)
+  # print("beta2")
+  # print(beta2)
   
   Functional$param[[1]]$alpha <- alpha
   Functional$param[[1]]$beta <- beta1

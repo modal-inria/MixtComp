@@ -1,122 +1,34 @@
-completePoissonData <- function(nbSamples,
-                                nbVariables,
-                                z,
-                                params)
-{
-  vals <- matrix(nrow = nbSamples,
-                 ncol = nbVariables)
-  for (i in 1:nbSamples)
-  {
-    for (j in 1:nbVariables)
-    {
-      vals[i, j] <- rpois(1,
-                          lambda = params[z[i], j])
-    }
-  }
-  colnames(vals) <- paste("poisson",
-                          1:nbVariables,
-                          sep = "")
-  return(vals)
+poissonParam <- function(name) {
+  poisson <- list()
+  poisson$name <- name
+  poisson$type <- "Poisson_k"
+  poisson$param <- list()
+  poisson$param[[1]] <- 3
+  poisson$param[[2]] <- 8
+  
+  return(poisson)
 }
 
-missingPoissonData <- function(data,
-                               z,
-                               params,
-                               missingParams)
-{
-  listMissingInd <- list()
-  nbMissingVal <- 0
-  
-  for (i in 1:nrow(data))
-  {
-    nbVar <- ncol(data)
-    nbSampleVar <- sample(nbVar - 1, 1) # number of modalities to be drawn
-    sampledVar <- sort(sample(nbVar, nbSampleVar)) # modalities drawn
-    isMissing <- F
-    for (j in sampledVar)
-    {
-      missType <- match(1,
-                        rmultinom(1,
-                                  1,
-                                  missingParams))
-      if (missType == 2) # missing
-      {
-        data[i, j] <- "?"
-        isMissing <- T
-        nbMissingVal <- nbMissingVal + 1
-      }
-      if (isMissing == T)
-      {
-        listMissingInd <- append(listMissingInd, i)
-      }
-    }
-  }  
-  
-  return(list(data = data,
-              listMissingInd = listMissingInd,
-              nbMissingVal = nbMissingVal))
+
+poissonGenerator <- function(present, param) {
+  x <- poissonFullGenerator(param)
+
+  xStr <- poissonHideData(present, x)
+
+  return(xStr)
 }
 
-writePoissonData <- function(fileName,
-                              data)
+
+poissonFullGenerator <- function(param)
 {
-  write.table(data,
-              file = fileName,
-              quote = FALSE,
-              sep = ";",
-              row.names = FALSE,
-              dec = ".")
+  rpois(1, lambda = param)
 }
 
-writePoissonDataDescriptor <- function(fileName,
-                                        nbVariables)
-{
-  data <- matrix(nrow = 2, ncol = nbVariables)
-  data[1,] <- paste("poisson",
-                    1:nbVariables,
-                    sep = "")
-  data[2,] <- rep("Poisson_k", nbVariables)
-  
-  write.table(data,
-              file = fileName,
-              quote = FALSE,
-              sep = ";",
-              row.names = FALSE,
-              col.names = FALSE,
-              dec = ".")
-}
 
-poissonGenerator <- function(prefix,
-                             nbSamples,
-                             nbVariables,
-                             z,
-                             params,
-                             missingParams)
+poissonHideData <- function(present, x)
 {
-  data <- completePoissonData(nbSamples,
-                              nbVariables,
-                              z,
-                              params)
-  writePoissonData(paste(prefix,
-                         "poissonData.complete.csv",
-                         sep = "/"),
-                   data)
+  if(!present)
+    x <- "?"
   
-  retList <- missingPoissonData(data,
-                                z,
-                                params,
-                                missingParams)
-  
-  writePoissonData(paste(prefix,
-                          "poissonData.csv",
-                          sep = "/"),
-                    retList[["data"]])
-  
-  writePoissonDataDescriptor(paste(prefix,
-                                    "poissonDescriptor.csv",
-                                    sep = "/"),
-                              nbVariables)
-  
-  return(list(listMissingInd = retList[["listMissingInd"]],
-              nbMissingVal = retList[["nbMissingVal"]]))
+  return(x)
 }

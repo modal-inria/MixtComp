@@ -1,18 +1,14 @@
 ordinalParam <- function(name) {
   Ordinal <- list()
-  Ordinal$param <- list()
-  Ordinal$param[[1]] <- list()
-  Ordinal$param[[2]] <- list()
   
   Ordinal$name <- name
-  Ordinal$type <- "Ordinal"
-  Ordinal$param[[1]]$nbMod <- 4
-  Ordinal$param[[1]]$mu <- 1
-  Ordinal$param[[1]]$pi <- 0.8
-  Ordinal$param[[2]]$nbMod <- 4
-  Ordinal$param[[2]]$mu <- 4
-  Ordinal$param[[2]]$pi <- 0.8
   
+  Ordinal$type <- "Ordinal"
+  
+  Ordinal$param <- list()
+  Ordinal$param[[1]] <- list(nbMod = 4, mu = 1, pi = 0.8)
+  Ordinal$param[[2]] <- list(nbMod = 4, mu = 4, pi = 0.8)
+
   return(Ordinal)
 }
 

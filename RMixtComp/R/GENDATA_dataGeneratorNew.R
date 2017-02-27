@@ -53,7 +53,11 @@ dataGeneratorNew <- function(nbInd,
       dataStr[i, j] <- switch(var[[j]]$type,
                               "Rank" = rankGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
                               "Ordinal" = ordinalGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
-                              "Functional" = functionalGenerator(var[[j]]$param[[z[i]]]))
+                              "Functional" = functionalGenerator(var[[j]]$param[[z[i]]]),
+                              "Poisson_k" = poissonGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
+                              "Gaussian_sjk" = gaussianGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
+                              "Categorical_pjk" = categoricalGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]))
+
     }
   }
   
