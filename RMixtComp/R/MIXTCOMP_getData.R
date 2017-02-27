@@ -41,15 +41,20 @@
 #' 
 #' @section Ordinal Data:
 #' Ordinal data must be consecutive integer with 0 as minimal value. Missing data are indicated by a \emph{?}.
-#' For partial data, a list of possible values can be provided by \emph{{a_1,\dots,a_j}}, 
+#' For partial data, a list of possible values can be provided by \emph{\{a_1,\dots,a_j\}}, 
 #' where \emph{a_i} denotes a categorical value.
 #' 
 #' @section Rank data:
-#' TODO
+#' The format of a rank is: \emph{o_1, \dots, o_j} where o_1 is an integer corresponding to the the number of the object ranked in 1st position.
+#' For example: 4,2,1,3 means that the fourth object is ranked first then the second object is in second position and so on.
+#' Missing data can be specified by replacing and object by a \emph{?} or a list of potential object, for example: \emph{4, \{2 3\}, \{2 1\}, ?} means that 
+#' the object ranked in second position is either the object number 2 or the object number 3, then the object ranked in third position is either the object 2 or 1 and the last one can be anything.
+#' A totally missing rank is spedified by \emph{?,?,\dots,?}
 #' 
 #' @section Functional data:
-#' In the case of a functional model, \emph{nSub: i, nCoeff: j} must be indicated in the third row of the descriptor file.
-#' \emph{i} is the number of subregressions in a functional data and \emph{j} the number of coefficients
+#' The format of a fonctional data is: \emph{time_1:value_1,\dots, time_j:value_j}. Between individuals, functional data can have different length and different time.
+#' In the case of a functional model, \emph{nSub: i, nCoeff: k} must be indicated in the third row of the descriptor file.
+#' \emph{i} is the number of subregressions in a functional data and \emph{k} the number of coefficients
 #'  of each regression (2 = linear, 3 = quadratic, ...). Missing data are not supported.
 #'
 #' 
@@ -67,7 +72,7 @@
 #' # Case with R object
 #' var <- list()
 #' var$z_class <- zParam()
-#' var$Gaussienne1 <- gaussianParam("Gaussian1")
+#' var$Gaussian1 <- gaussianParam("Gaussian1")
 #' var$Categorical1 <- categoricalParam("Categorical1")
 #'
 #' dat <- dataGeneratorNew(100, 0.8, var) 
