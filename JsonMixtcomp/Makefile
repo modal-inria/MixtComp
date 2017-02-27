@@ -43,7 +43,7 @@ ALL_UTEST = $(SRC_UTEST) $(O_UTEST) $(D_UTEST) $(EXE_UTEST)
 ALL_GTEST = $(SRC_GTEST) $(O_GTEST) $(D_GTEST)
 
 R_BUILD = T # Variable used to signal that the compilation occurs from inside R
-export R_BUILD CXX CXXFLAGS
+export R_BUILD CC CFLAGS CXX CXXFLAGS
 
 all: $(O_JMC) $(LIB_MC) $(LIB_RE) $(LIB_NLOPT) 
 	$(CXX) $(CXXFLAGS) $^ -o $(EXE_JMC)
