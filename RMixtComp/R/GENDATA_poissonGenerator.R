@@ -1,15 +1,3 @@
-poissonParam <- function(name) {
-  poisson <- list()
-  poisson$name <- name
-  poisson$type <- "Poisson_k"
-  poisson$param <- list()
-  poisson$param[[1]] <- 3
-  poisson$param[[2]] <- 8
-  
-  return(poisson)
-}
-
-
 poissonGenerator <- function(present, param) {
   x <- poissonFullGenerator(param)
 

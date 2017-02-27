@@ -1,15 +1,3 @@
-categoricalParam <- function(name) {
-  categorical <- list()
-  categorical$name <- name
-  categorical$type <- "Categorical_pjk"
-  categorical$param <- list()
-  categorical$param[[1]] <- c(0.1, 0.2, 0.2, 0.5)
-  categorical$param[[2]] <- c(0.5, 0.3, 0.1, 0.1)
-  
-  return(categorical)
-}
-
-
 categoricalGenerator <- function(present, param) {
   x <- categoricalFullGenerator(param)
   

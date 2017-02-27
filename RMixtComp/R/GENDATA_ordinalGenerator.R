@@ -1,17 +1,3 @@
-ordinalParam <- function(name) {
-  Ordinal <- list()
-  
-  Ordinal$name <- name
-  
-  Ordinal$type <- "Ordinal"
-  
-  Ordinal$param <- list()
-  Ordinal$param[[1]] <- list(nbMod = 4, mu = 1, pi = 0.8)
-  Ordinal$param[[2]] <- list(nbMod = 4, mu = 4, pi = 0.8)
-
-  return(Ordinal)
-}
-
 ordinalTestGenerator <- function() {
   ordinalTestParam <- list(nbMod = 5,
                            mu = 3,

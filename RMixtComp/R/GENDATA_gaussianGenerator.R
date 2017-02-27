@@ -1,15 +1,3 @@
-gaussianParam <- function(name) {
-  gaussian <- list()
-  gaussian$name <- name
-  gaussian$type <- "Gaussian_sjk"
-  gaussian$param <- list()
-  gaussian$param[[1]] <- list(mean = 0, sd = 1)
-  gaussian$param[[2]] <- list(mean = 2, sd = 1)
-  
-  return(gaussian)
-}
-
-
 gaussianGenerator <- function(present, param) {
   x <- gaussianFullGenerator(param)
   
