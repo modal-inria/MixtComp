@@ -8,8 +8,7 @@ dataGeneratorNewLearn <- function(nbInd,
   var$Functional1 <- functionalParam1sub("Functional1")
   var$Functional1 <- functionalParam2sub("Functional1")
   
-  res <- dataGeneratorNew("dataGenNew/learn", # prefix
-                          nbInd, # nbInd
+  res <- dataGeneratorNew(nbInd, # nbInd
                           proportionPresent,
                           var) # param
   
@@ -58,8 +57,7 @@ dataGeneratorNewPredict <- function(nbInd,
   # var$Functional1 <- functionalParam1sub("Functional1")
   var$Functional1 <- functionalParam2sub("Functional1")
   
-  res <- dataGeneratorNew("dataGenNew/predict", # prefix
-                          nbInd, # nbInd
+  res <- dataGeneratorNew(nbInd, # nbInd
                           proportionPresent,
                           var) # param
   

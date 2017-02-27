@@ -1,15 +1,18 @@
-dataGeneratorNew <- function(prefix,
-                             nbInd,
+# @param nbInd number of individuals
+# @param proportionPresent proportion of present data
+# @param var list one element per variable containing the type of the variable ($type) and the associated parameters ($param : a list of param indexed by the number of the class) and the name ($name)
+#
+dataGeneratorNew <- function(nbInd,
                              proportionPresent,
                              var) {
   nbVar <- length(var) # number of variables including the latent class
-  zDis <- rmultinom(nbInd,
-                    1,
-                    var$z_class$param)
   nIndClass <- numeric(length(var$z_class$param))
   
-  z <- vector("integer",
-              nbInd)
+  
+  # create the partition
+  zDis <- rmultinom(nbInd, 1, var$z_class$param)
+  z <- vector("integer", nbInd)
+  
   for (i in 1:nbInd) {
     z[i] <- match(1, zDis[, i])
     nIndClass[z[i]] <- nIndClass[z[i]] + 1
@@ -17,22 +20,24 @@ dataGeneratorNew <- function(prefix,
   
   cat("Number of observation per class: ", nIndClass, "\n")
   
-  headerStr <- matrix(data = "",
-                      nrow = 1,
-                      ncol = nbVar)
   
-  for (j in 1:nbVar) {
+  
+  headerStr <- matrix(data = "", nrow = 1, ncol = nbVar)
+  
+  for (j in 1:nbVar)
     headerStr[1, j] <- var[[j]]$name
-  }
+
   
-  dataStr <- matrix(data = "",
-                    nrow = nbInd,
-                    ncol = nbVar)
+  dataStr <- matrix(data = "", nrow = nbInd,  ncol = nbVar)
   
-  nbPresentVar <- round(nbVar * proportionPresent)
   
   for (i in 1:nbInd) {
-    presentVar <- sample(1:nbVar, nbPresentVar)
+    presentVar <- which(rbinom(nbVar, 1, proportionPresent) == 1)
+    if(length(presentVar) == 0)
+    {
+      presentVar = sample(nbVar, 1)
+    }
+    
     
     if (!(1 %in% presentVar) || var$z_class$allMissing) {
       dataStr[i, 1] = "?"
@@ -40,21 +45,20 @@ dataGeneratorNew <- function(prefix,
     else if ((1 %in% presentVar) || var$z_class$allPresent) {
       dataStr[i, 1] = paste(z[i])
     }
-
+    
+    
+    
     for (j in 2:nbVar) { # export values for other types
-      if (var[[j]]$type == "Rank") {
-        dataStr[i, j] <- rankGenerator(j %in% presentVar,
-                                       var[[j]]$param[[z[i]]])
-      }
-      if (var[[j]]$type == "Ordinal") {
-        dataStr[i, j] <- ordinalGenerator(j %in% presentVar,
-                                          var[[j]]$param[[z[i]]])
-      }
-      if (var[[j]]$type == "Functional") {
-        dataStr[i, j] <- functionalGenerator(var[[j]]$param[[z[i]]])
-      }
+      
+      dataStr[i, j] <- switch(var[[j]]$type,
+                              "Rank" = rankGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
+                              "Ordinal" = ordinalGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
+                              "Functional" = functionalGenerator(var[[j]]$param[[z[i]]]))
     }
   }
+  
+  
+  
   
   dataMat <- rbind(headerStr, dataStr)
   
