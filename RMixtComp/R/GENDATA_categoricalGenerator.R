@@ -42,7 +42,7 @@ categoricalHideData <- function(present, x, param)
         x = "?"
       }else{
         nbModalitiesToDraw <- max(sample(2:(nbModalities-1), 1), 2)
-        modalities <- sample(nbModalities, nbModalitiesToDraw)
+        modalities <- sort(sample(nbModalities, nbModalitiesToDraw))
 
         x <- paste0("{",paste0(modalities, collapse = ","),"}")
       }
