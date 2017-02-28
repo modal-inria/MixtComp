@@ -3,7 +3,7 @@
 #' 
 #' @description Import the data file and the descriptor file in the format required by \link{mixtCompCluster} and \link{mixtCompPredict} functions.
 #'
-#' @param ... a vector containing the names of the two files to import (see Details).
+#' @param ... a vector containing the names of the two files to import: the data file in first position and the descriptor file in second. Or a list of two matrix: the data in first position and the descriptor in second position. The matrix must contains character element.
 #' 
 #' @return a list containing :
 #' \describe{
@@ -12,8 +12,9 @@
 #' }
 #' 
 #' 
-#' @details 
-#' The functions \link{mixtCompCluster} and \link{mixtCompPredict} require two files : a data file and a descriptor file.
+#' @details
+#'  
+#' There is two ways of loading data: with a data csv file and a descriptor csv file or with two matrix containing the data as characters.
 #' 
 #' 
 #' The data file is a csv file (; separator), each column corresponds to a variable. The first row contains the name of each variable.
