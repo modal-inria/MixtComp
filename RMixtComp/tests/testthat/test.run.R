@@ -21,17 +21,20 @@ test_that("run cluster/predict file csv",{
   # run RMixtCompt for predicting
   resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
   expect_equal(res$mixture$warnLog, "")
+  
 })
 
 
 test_that("run cluster/predict R object",{
-  pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-  pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+  var <- list()
+  var$z_class <- zParam()
+  var$Poisson1 <- poissonParam("Poisson1")
+  var$Gaussienne1 <- gaussianParam("Gaussian1")
+  var$Categorical1 <- categoricalParam("Categorical1")
   
-  data <- read.table(pathToData, header = TRUE, stringsAsFactors = FALSE, sep = ";")
-  descriptor <- read.table(pathToDescriptor, header = TRUE, stringsAsFactors = FALSE, sep = ";")
+  dat <- dataGeneratorNew(100, 0.8, var) 
   
-  resGetData <- getData(list(data, descriptor))
+  resGetData <- getData(list(dat$data, dat$descriptor))
   expect_equal(resGetData$warnLog, "")
   
   # define the algorithm's parameters
@@ -45,8 +48,20 @@ test_that("run cluster/predict R object",{
   res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
   expect_equal(res$mixture$warnLog, "")
   
-  # run RMixtCompt for predicting
-  resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-  expect_equal(res$mixture$warnLog, "")
+  confMat <- table(dat$z, res$variable$data$z_class$completed)
+  print(confMat)
   
+  
+  datPred <- dataGeneratorNew(100, 0.8, var)
+
+  resGetDataPred <- getData(list(datPred$data, datPred$descriptor))
+  expect_equal(resGetDataPred$warnLog, "")
+
+  # run RMixtCompt for predicting
+  resPred <- mixtCompPredict(resGetDataPred$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+  expect_equal(resPred$mixture$warnLog, "")
+  
+  confMat <- table(datPred$z, resPred$variable$data$z_class$completed)
+  print(confMat)
+
 })
