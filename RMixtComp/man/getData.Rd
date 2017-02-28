@@ -89,7 +89,7 @@ var$z_class <- zParam()
 var$Gaussian1 <- gaussianParam("Gaussian1")
 var$Categorical1 <- categoricalParam("Categorical1")
 
-dat <- dataGeneratorNew(100, 0.8, var) 
+dat <- dataGenerator(100, 0.8, var) 
 
 out <- getData(list(dat$data, dat$descriptor)) 
 }

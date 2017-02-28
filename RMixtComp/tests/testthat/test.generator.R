@@ -76,7 +76,7 @@ test_that("categorical missing data",{
 
 
 
-test_that("test fonctionnel : dataGeneratorNew", {
+test_that("test fonctionnel : dataGenerator", {
   
   var <- list()
   var$z_class <- zParam()
@@ -87,7 +87,7 @@ test_that("test fonctionnel : dataGeneratorNew", {
   var$Gaussienne1 <- gaussianParam("Gaussian1")
   var$Categorical1 <- categoricalParam("Categorical1")
   
-  dat <- dataGeneratorNew(100, 0.8, var) 
+  dat <- dataGenerator(100, 0.8, var) 
   
   expect_length(dat, 3)
   expect_equal(drop(colnames(dat$data)), c("z_class", "Rank1", "Ordinal1", "Functional1", "Poisson1", "Gaussian1", "Categorical1"))

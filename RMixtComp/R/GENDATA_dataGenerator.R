@@ -1,209 +1,83 @@
-# dataGenerator <- function(prefix,
-#                           categoricalParams,
-#                           gaussianParams,
-#                           poissonParams,
-#                           proportions,
-#                           nbSamples,
-#                           nbVariableCat,
-#                           nbModalities,
-#                           nbVariableGauss,
-#                           nbVariablePoisson,
-#                           nbClasses,
-#                           missingZ,
-#                           missingCategorical,
-#                           missingGaussian,
-#                           missingPoisson)
-# {
-#   zDis <- rmultinom(nbSamples,
-#                     1,
-#                     proportions)
-#   z <- vector("integer",
-#               nbSamples)
-#   for (i in 1:nbSamples)
-#   {
-#     z[i] <- match(1, zDis[, i])
-#   }
-#   
-#   listMissing <- list()
-#   nbMissingVal <- 0
-#   
-#   zGenerator(prefix,
-#              z,
-#              nbClasses,
-#              missingZ)
-#   
-#   if (nbVariableCat > 0)
-#   {
-#     retList <- categoricalGenerator(prefix,
-#                                     nbSamples,
-#                                     nbVariableCat,
-#                                     nbModalities,
-#                                     z,
-#                                     categoricalParams,
-#                                     missingCategorical)
-#     listMissing <- union(listMissing, retList[["listMissingInd"]])
-#     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
-#   }
-#   
-#   if (nbVariableGauss > 0)
-#   {
-#     retList <- gaussianGenerator(prefix,
-#                                  nbSamples,
-#                                  nbVariableGauss,
-#                                  z,
-#                                  gaussianParams,
-#                                  missingGaussian)
-#     listMissing <- union(listMissing, retList[["listMissingInd"]])
-#     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
-#   }
-#   
-#   if (nbVariablePoisson > 0)
-#   {
-#     retList <- poissonGenerator(prefix,
-#                                 nbSamples,
-#                                 nbVariablePoisson,
-#                                 z,
-#                                 poissonParams,
-#                                 missingPoisson)
-#     listMissing <- union(listMissing, retList[["listMissingInd"]])
-#     nbMissingVal <- nbMissingVal + retList[["nbMissingVal"]]
-#   }
-#   
-#   nbMissing <- length(listMissing)
-#   nbTotalVal <- (nbSamples * (nbVariableCat + nbVariableGauss + nbVariablePoisson))
-#   
-#   fileConn <- file(paste(prefix,
-#                          "dataStat.txt",
-#                          sep = "/"))
-#   cat("Missing individuals / Total individuals: ", nbMissing, " / ", nbSamples, "\n",
-#       "Ratio missing individuals: ", nbMissing / nbSamples, "\n",
-#       "Missing values / Total values: ", nbMissingVal, " / ", nbTotalVal, "\n",
-#       "Ratio missing values: ", nbMissingVal / nbTotalVal, "\n",
-#       file = fileConn,
-#       sep = "")
-#   close(fileConn)
-#   
-#   write.table(z,
-#               file = paste(prefix,
-#                            "classIn.csv",
-#                            sep = "/"),
-#               row.names=FALSE,
-#               col.names=FALSE)
-# }
-# 
-# dataParamGenerator <- function(nbSamplesLearn,
-#                                nbSamplesPredict,
-#                                nbVariableCat,
-#                                nbModalities,
-#                                nbVariableGauss,
-#                                maxMean,
-#                                maxSD,
-#                                nbVariablePoisson,
-#                                maxLambda,
-#                                nbClasses,
-#                                missingZ,
-#                                missingCategorical,
-#                                missingGaussian,
-#                                missingPoisson)
-# {
-#   proportions <- runif(nbClasses)
-#   proportions <- proportions / sum(proportions)
-#   write.table(proportions,
-#               file = "dataGen/param/proportions.csv",
-#               sep = ";",
-#               row.names=FALSE,
-#               col.names=FALSE)
-#   if (nbVariableCat > 0)
-#   {
-#     categoricalParams <- matrix(nrow = nbClasses * nbModalities,
-#                                 ncol = nbVariableCat)
-#     for (j in 1:nbVariableCat)
-#     {
-#       for (n in 1:nbClasses)
-#       {
-#         proba <- runif(nbModalities) # proba of each modality for the current class
-#         proba <- proba / sum(proba)
-#         categoricalParams[((n - 1) * nbModalities + 1) :
-#                           ( n      * nbModalities    ) , j] <- proba
-#       }
-#     }
-#     write.table(categoricalParams,
-#                 file = "dataGen/param/categoricalParams.csv",
-#                 sep = ";",
-#                 row.names=FALSE,
-#                 col.names=FALSE)
-#   }
-#   
-#   if (nbVariableGauss > 0)
-#   {
-#     gaussianParams <- matrix(nrow = 2 * nbClasses,
-#                              ncol = nbVariableGauss)
-#     for (j in 1:nbVariableGauss)
-#     {
-#       for (n in 1:nbClasses)
-#       {
-#         proba <- c(2. * maxMean * (runif(1) - 0.5),
-#                         maxSD   * runif(1))
-# #         proba <- c(2. * maxMean * (runif(1) - 0.5), # null variance version
-# #                    0)
-#         gaussianParams[((n - 1) * 2 + 1) :
-#                        ( n      * 2    ) , j] <- proba
-#       }
-#     }
-#     write.table(gaussianParams,
-#                 file = "dataGen/param/gaussianParams.csv",
-#                 sep = ";",
-#                 row.names=FALSE,
-#                 col.names=FALSE)
-#   }
-#   
-#   if (nbVariablePoisson > 0)
-#   {
-#     poissonParams <- matrix(nrow = nbClasses,
-#                             ncol = nbVariablePoisson)
-#     for (j in 1:nbVariablePoisson)
-#     {
-#       for (k in 1:nbClasses)
-#       {
-#         proba <- maxLambda * runif(1)
-#         poissonParams[k, j] <- proba
-#       }
-#     }
-#     write.table(poissonParams,
-#                 file = "dataGen/param/poissonParams.csv",
-#                 sep = ";",
-#                 row.names=FALSE,
-#                 col.names=FALSE)
-#   }
-#   
-#   dataGenerator("dataGen/learn",
-#                 categoricalParams,
-#                 gaussianParams,
-#                 poissonParams,
-#                 proportions,
-#                 nbSamplesLearn,
-#                 nbVariableCat,
-#                 nbModalities,
-#                 nbVariableGauss,
-#                 nbVariablePoisson,
-#                 nbClasses,
-#                 missingZ,
-#                 missingCategorical,
-#                 missingGaussian,
-#                 missingPoisson)
-#   dataGenerator("dataGen/predict",
-#                 categoricalParams,
-#                 gaussianParams,
-#                 poissonParams,
-#                 proportions,
-#                 nbSamplesPredict,
-#                 nbVariableCat,
-#                 nbModalities,
-#                 nbVariableGauss,
-#                 nbVariablePoisson,
-#                 nbClasses,
-#                 missingZ,
-#                 missingCategorical,
-#                 missingGaussian,
-#                 missingPoisson)
-# }
+# @param nbInd number of individuals
+# @param proportionPresent proportion of present data
+# @param var list one element per variable containing the type of the variable ($type) and the associated parameters ($param : a list of param indexed by the number of the class) and the name ($name)
+#
+dataGenerator <- function(nbInd,
+                             proportionPresent,
+                             var) {
+  nbVar <- length(var) # number of variables including the latent class
+  nIndClass <- numeric(length(var$z_class$param))
+  
+  
+  # create the partition
+  zDis <- rmultinom(nbInd, 1, var$z_class$param)
+  z <- vector("integer", nbInd)
+  
+  for (i in 1:nbInd) {
+    z[i] <- match(1, zDis[, i])
+    nIndClass[z[i]] <- nIndClass[z[i]] + 1
+  }
+  
+  cat("Number of observation per class: ", nIndClass, "\n")
+  
+  
+  
+  headerStr <- matrix(data = "", nrow = 1, ncol = nbVar)
+  
+  for (j in 1:nbVar)
+    headerStr[1, j] <- var[[j]]$name
+
+  
+  dataStr <- matrix(data = "", nrow = nbInd,  ncol = nbVar)
+  
+  
+  for (i in 1:nbInd) {
+    presentVar <- which(rbinom(nbVar, 1, proportionPresent) == 1)
+    if(length(presentVar) == 0)
+    {
+      presentVar = sample(nbVar, 1)
+    }
+    
+    
+    if (!(1 %in% presentVar) || var$z_class$allMissing) {
+      dataStr[i, 1] = "?"
+    }
+    else if ((1 %in% presentVar) || var$z_class$allPresent) {
+      dataStr[i, 1] = paste(z[i])
+    }
+    
+    
+    
+    for (j in 2:nbVar) { # export values for other types
+      
+      dataStr[i, j] <- switch(var[[j]]$type,
+                              "Rank" = rankGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
+                              "Ordinal" = ordinalGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
+                              "Functional" = functionalGenerator(var[[j]]$param[[z[i]]]),
+                              "Poisson_k" = poissonGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
+                              "Gaussian_sjk" = gaussianGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]),
+                              "Categorical_pjk" = categoricalGenerator(j %in% presentVar, var[[j]]$param[[z[i]]]))
+
+    }
+  }
+  
+  colnames(dataStr) = headerStr 
+
+  
+  descStr <- matrix(data = "",
+                    nrow = 2,
+                    ncol = nbVar)
+  
+  for (j in 1:nbVar) {
+    descStr[1, j] <- var[[j]]$type
+    if (exists("paramStr", where = var[[j]])) {
+      descStr[2, j] <- var[[j]]$paramStr
+    }
+  }
+  
+  colnames(descStr) = headerStr 
+
+  return(list(z = z,
+              data = dataStr,
+              descriptor = descStr))
+}

@@ -32,7 +32,7 @@ test_that("run cluster/predict R object",{
   var$Gaussienne1 <- gaussianParam("Gaussian1")
   var$Categorical1 <- categoricalParam("Categorical1")
   
-  dat <- dataGeneratorNew(100, 0.8, var) 
+  dat <- dataGenerator(100, 0.8, var) 
   
   resGetData <- getData(list(dat$data, dat$descriptor))
   expect_equal(resGetData$warnLog, "")
@@ -52,7 +52,7 @@ test_that("run cluster/predict R object",{
   print(confMat)
   
   
-  datPred <- dataGeneratorNew(100, 0.8, var)
+  datPred <- dataGenerator(100, 0.8, var)
 
   resGetDataPred <- getData(list(datPred$data, datPred$descriptor))
   expect_equal(resGetDataPred$warnLog, "")
