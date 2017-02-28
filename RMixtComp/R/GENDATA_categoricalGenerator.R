@@ -39,5 +39,5 @@ categoricalHideData <- function(present, x, param)
   }
   
   
-  return(x)
+  return(as.character(x))
 }

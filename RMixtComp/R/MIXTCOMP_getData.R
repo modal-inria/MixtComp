@@ -106,6 +106,7 @@ getData <- function(...) {
       data <- dataFile[[1]]
     }
     
+    
     if(is.character(descriptorFile))
     {
       descriptor <- read.table(file = descriptorFile,
@@ -117,7 +118,7 @@ getData <- function(...) {
                                comment.char = "",
                                stringsAsFactors = FALSE)
     }else{
-      descriptor <- descriptorFile[[1]]  
+      descriptor <- descriptorFile[[1]]
     }
     
     nameDesc <- colnames(descriptor)

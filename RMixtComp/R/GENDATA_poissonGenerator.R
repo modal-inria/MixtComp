@@ -18,5 +18,5 @@ poissonHideData <- function(present, x)
   if(!present)
     x <- "?"
   
-  return(x)
+  return(as.character(x))
 }

@@ -62,8 +62,7 @@ dataGeneratorNew <- function(nbInd,
   }
   
   colnames(dataStr) = headerStr 
-  dataStr = as.data.frame(dataStr)
-  
+
   
   descStr <- matrix(data = "",
                     nrow = 2,
@@ -77,8 +76,7 @@ dataGeneratorNew <- function(nbInd,
   }
   
   colnames(descStr) = headerStr 
-  descStr = as.data.frame(descStr)
-  
+
   return(list(z = z,
               data = dataStr,
               descriptor = descStr))
