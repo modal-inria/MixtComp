@@ -92,7 +92,8 @@ getData <- function(...) {
   for (k in 1:length(argList)) {
     dataFile <- argList[[k]][1]
     descriptorFile <- argList[[k]][2]
-    if(is.character(dataFile))
+    
+    if(!is.list(dataFile))
     {
       data <- read.table(file = dataFile,
                          header = TRUE,
@@ -108,7 +109,7 @@ getData <- function(...) {
     }
     
     
-    if(is.character(descriptorFile))
+    if(!is.list(descriptorFile))
     {
       descriptor <- read.table(file = descriptorFile,
                                header = TRUE,
@@ -133,7 +134,7 @@ getData <- function(...) {
       else {
         param <- "" # a zero-sized parameter string will be interpreted by the model as "deduce the parameter space automatically"
       }
-      if (! (currId %in% names(data))) { # descriptor does not match data
+      if (! (currId %in% colnames(data))) { # descriptor does not match data
         warnLog <- paste(warnLog,
                          "Variable ", currId, " asked for in descriptor file ",
                          "but absent from the data file.\n",
@@ -142,7 +143,7 @@ getData <- function(...) {
       else {
         # perform length check and generate named list for current variable
         res <- addVariable(lm,
-                           data[[currId]],
+                           data[,currId],
                            currId, # id
                            currModel, # model
                            param)
