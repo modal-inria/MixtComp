@@ -97,7 +97,7 @@ NULL
 #' \describe{
 #'  \item{strategy}{a copy of \emph{mcStrategy} parameter.}
 #'  \item{mixture}{information about the mixture (see \emph{Details}).}
-#'  \item{variable}{information about the estimated parameters (see \emph{Details}).}
+#'  \item{variable}{information about the estimated parameters and completed data (see \emph{Details}).}
 #' }
 #' 
 #' @details 
@@ -134,7 +134,7 @@ NULL
 #' 
 #' 
 #' @section View of an output object:
-#' Example of output object with variables named "categorical", "gaussian", "ordinal",...
+#' Example of output object with variables named "categorical", "gaussian", "ordinal", "rank", "functional" and "poisson".
 #' 
 #' \tabular{lll}{
 #' output  \cr
@@ -149,13 +149,14 @@ NULL
 #' |        \tab         \tab |_ lnCompletedLikelihood\cr
 #' |        \tab         \tab |_ lnObservedLikelihood \cr
 #' |        \tab         \tab |_ IdClass  \cr
+#' |        \tab         \tab |_ delta  \cr
 #' |        \tab         \tab |_ mode \cr
 #' |        \tab         \tab |_ runTime \cr
 #' |        \tab         \tab |_ nbSample \cr
 #' |        \tab         \tab |_ nbInd  \cr
 #' |        \tab         \tab |_ nbFreeParameters \cr
 #' |        \tab         \tab |_ nbCluster \cr
-#' |        \tab         \tab |_ warnlog \cr
+#' |        \tab         \tab |_ warnLog \cr
 #' }
 #' \tabular{llllll}{
 #' |  \cr
@@ -179,10 +180,28 @@ NULL
 #'          \tab          \tab          \tab |_ gaussian \tab __ NumericalParam \tab __ stat\cr
 #'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
 #'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |_ poisson  \tab __ NumericalParam \tab __ stat\cr
+#'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
+#'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
 #'          \tab          \tab          \tab |_ ordinal \tab __ muPi \tab __ stat\cr
 #'          \tab          \tab          \tab |          \tab         \tab |_ log \cr
 #'          \tab          \tab          \tab |          \tab         \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |_ ...     \tab         \tab \cr
+#'          \tab          \tab          \tab |_ functional \tab __ alpha \tab __ stat\cr
+#'          \tab          \tab          \tab |             \tab |        \tab |_ log \cr
+#'          \tab          \tab          \tab |             \tab |        \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |             \tab |_ beta  \tab __ stat\cr
+#'          \tab          \tab          \tab |             \tab |        \tab |_ log \cr
+#'          \tab          \tab          \tab |             \tab |        \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |             \tab |_ sd    \tab __ stat\cr
+#'          \tab          \tab          \tab |             \tab          \tab |_ log \cr
+#'          \tab          \tab          \tab |             \tab          \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |_ rank \tab __ mu \tab __ stat\cr
+#'          \tab          \tab          \tab         \tab |     \tab |_ log \cr
+#'          \tab          \tab          \tab         \tab |     \tab |_ paramStr \cr
+#'          \tab          \tab          \tab         \tab |_ pi \tab __ stat\cr
+#'          \tab          \tab          \tab         \tab       \tab |_ log \cr
+#'          \tab          \tab          \tab         \tab       \tab |_ paramStr \cr
+#'          \tab          \tab          \tab         \tab       \tab \cr
 #' }                  
 #'                   
 #' @examples 
