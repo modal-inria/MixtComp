@@ -22,6 +22,8 @@ test_that("run cluster/predict file csv",{
   resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
   expect_equal(res$mixture$warnLog, "")
   
+  file.remove("progress")
+  
 })
 
 
@@ -64,4 +66,5 @@ test_that("run cluster/predict R object",{
   confMat <- table(datPred$z, resPred$variable$data$z_class$completed)
   print(confMat)
 
+  file.remove("progress")
 })
