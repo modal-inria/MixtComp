@@ -1,3 +1,71 @@
+#' @name plotData
+#' @aliases plotFunctionalData plotCategoricalData plotIntegerData plotContinuousData
+#' 
+#' @title Mean and 95\%-level confidence intervals per class
+#' 
+#' @usage plotData(output, var, ...)
+#' plotContinuousData(output, var)
+#' plotIntegerData(output, var)
+#' plotCategoricalData(output, var)
+#' plotFunctionalData(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL)
+#' 
+#' @param output object returned by function \link{mixtCompCluster}
+#' @param var name of the variable
+#' @param ... other parameters (see \emph{Details})
+#' 
+#' @details For functional data, three other parameters are available:
+#' \describe{
+#'  \item{add.obs}{if TRUE, observations are added to the plot. Default = FALSE.}
+#'  \item{ylim}{ylim of the plot.}
+#'  \item{xlim}{xlim of the plot.}
+#' }
+#' 
+#' 
+#' @examples 
+#' \dontrun{
+#' # path to files
+#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' 
+#' resGetData <- getData(c(pathToData, pathToDescriptor))
+#' 
+#' 
+#' # define the algorithm's parameters
+#' mcStrategy <- list(nbBurnInIter = 100,
+#'                    nbIter = 100,
+#'                    nbGibbsBurnInIter = 50,
+#'                    nbGibbsIter = 50,
+#'                    parameterEdgeAuthorized = FALSE)
+#' 
+#' # run RMixtCompt for clustering
+#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' 
+#' # plot
+#' plotData(res, "gaussian1")
+#' plotContinuousData(res, "gaussian1")
+#' plotIntegerData(res, "poisson1")
+#' plotFunctionalData(res, "Functional1")
+#' plotCategoricalData(res, "categorical1")
+#' 
+#' } 
+#' 
+#' @author Matthieu MARBAC
+plotData <- function(output, var, ...)
+{
+  if(!(var%in%names(output$variable$type)))
+    stop("This variable does not exist in the mixture model.")
+  
+  type <- output$variable$type[[var]]
+  
+  switch(type,
+         "Gaussian_sjk" = plotContinuousData(output, var),
+         "Categorical_pjk" = plotCategoricalData(output, var),
+         "Poisson_k" = plotIntegerData(output, var),
+         "Functional" = plotFunctionalData(output, var, ...),
+         cat("Not yet implemented"))
+}
+
+
 # Mean and 95%-level confidence intervals per class for a Gaussian Mixture
 plotContinuousData <- function(output, var){
   #### This part computes the element corresponding to variable "var" of

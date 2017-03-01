@@ -15,7 +15,6 @@ Package: \tab RMixtComp\cr
 Type: \tab Package\cr
 Version: \tab 0.1\cr
 Date: \tab 2017-03-01\cr
-License: \tab GPL (>=2) \cr
 }
 }
 \examples{
@@ -67,7 +66,7 @@ heatmapTikSorted(res)
 \link{mixtCompCluster} \link{mixtCompPredict}
 }
 \author{
-Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ
+Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ, Serge IOVLEFF
 
 Maintainer: Vincent Kubicki  <vincent.kubicki@inria.fr>
 }
