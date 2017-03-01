@@ -1,4 +1,4 @@
-# discussion
+# Discussion
 - deux types de dégénérescence, vraisemblance bornée ou pas
 - dans l'algo, pas de bornes, rajouter les bornes avant l'export de paramètres
 - si en prédiction, avec bornes partout, la variable devient muette
@@ -10,6 +10,22 @@
 - Si l'algo est plus rapide, on peut intégrer les initalisations multiples, et renvoyer à l'utilisateur seulement le meilleur.
 - Sortir les vraisemblances individuelles des individus, pour éviter d'avoir à lancer des prédictions à un individu
 
+# Various
+
+- Remove all licence information from all files. Curently there is a licence header.
+
+# Performances
+
+- Computing log observed likelihood takes a lot of time. Are we sure that it is only computed once ?
+    - needed to compute BIC and ICL
+    - to compute IDClass
+    - to compute lnProbaGivenClass
+- Is it at least cached for the variables for which it takes a lot of time ?
+- Now that lnProbaGivenClass computes the detail of the log proba, its result could be cached and used in all the cases listed
+    - in learn, it should be called at the end of the SEM
+    - in predict, it should be called at the beginning of the Gibbs, once the parameters are known
+    - this centralize the caching in the composer, instead of delegating it to the mixture author
+
 # Build
 
 - Nlopt should be built the same way boost regex is built. This would ensure a proper integration in the build system, and a faster build.
@@ -17,6 +33,7 @@
     - would it be wise to split MixtComp in a base package which only requires Rccp, and a companion package which requires plotly and others ?
 - CC and CFLAGS variables should be exported, so that alternative C compilers could be provided the same way C++ compilers are. This could be useful for packages like nlopt
     - this should be added to jsonmixtcomp
+- Move all external libraries to a specific folder, to clearly separate them from the various MixtComp modules
 
 # Bugs
 

@@ -138,6 +138,10 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList,
         Rcpp::NumericMatrix idc;
         mixt::IDClass(composer, idc);
         mcMixture["IDClass"] = idc;
+
+        Rcpp::NumericMatrix pGC;
+        mixt::lnProbaGivenClass(composer, pGC);
+        mcMixture["lnProbaGivenClass"] = pGC;
       }
     }
   }
