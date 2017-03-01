@@ -1,3 +1,5 @@
+# This file contains functions to create the parameter object in the different examples and test of the package
+
 zParam <- function() {
   z_class <- list() # z_class must be the first variable in the list
   

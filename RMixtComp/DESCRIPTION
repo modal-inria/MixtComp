@@ -2,15 +2,15 @@ Package: RMixtComp
 Type: Package
 Title: Mixture Composer
 Version: 0.1
-Date: 2017-02-24
-Author: Vincent KUBICKI, Serge Iovleff
+Date: 2017-03-01
+Author: Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ
 Copyright: Inria
 Maintainer: Vincent KUBICKI <vincent.kubicki@inria.fr>
 Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets. The conditional independence property enable composing
     all the data sets in a single mixture model.
 License: GPL (>= 2)
-Imports: Rcpp, truncnorm, RInside, shape, RJSONIO, scales, plotly
-Suggests: testthat
+Imports: Rcpp, RJSONIO, scales, plotly
+Suggests: testthat, RInside
 LinkingTo: Rcpp
 RoxygenNote: 6.0.1
