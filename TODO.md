@@ -47,13 +47,9 @@
 
 # Output object
 - Gaussien :
-    Les statistiques des données complétées au format matriciel
-- Poisson :
-    Les statistiques des données complétées au format matriciel
-- Ordinal :
-    Les statistiques des données complétées sont manquantes
-- zclass
-    data\$z_class\$stat ajouter des noms de colonnes au tik
+    Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
+- Poisson/Ordinal :
+    Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
 
 # Model
 
@@ -64,7 +60,6 @@
 
 # R
 
-- Export data in functional Model
 - Refactor RMixtComp package files (R subdirectory)
 - Clean the Makefile used in mcUpdate, so that it become similar to what is done in jsonmixtcomp and vanilla mixtcomp
 

@@ -75,7 +75,13 @@ void DataExtractorR::exportVals(int indexMixture,
 	Rcpp::IntegerVector dataR(tikC.rows()); // vector to store the completed data set
 	Rcpp::NumericMatrix tikR(tikC.rows(),
 			tikC.cols()); // the empirical tik are completely exported, instead of the predominant modalities as in other categorical variables
-
+	
+	Rcpp::CharacterVector colNamesTikR(tikC.cols());
+	for(int i = 0; i < tikC.cols(); ++i){
+	  colNamesTikR(i) = std::string("k: ") + type2str(i+1);
+	}
+	colnames(tikR) = colNamesTikR;
+	
 	for (int i = 0; i < tikC.rows(); ++i) {
 		dataR(i) = augData.data_(i) + minModality; // direct data copy for all values. Imputation has already been carried out by the datastatcomputer at this point.
 		for (int j = 0; j < tikC.cols(); ++j) {
@@ -101,14 +107,15 @@ void DataExtractorR::exportVals(int indexMixture,
 	for (int i = 0; i < augData.data_.rows(); ++i) {
 		dataR(i) = augData.data_(i);
 		if (augData.misData_(i).first != present_) {
-			Rcpp::List currList; // storage for the current missing value
-			currList.push_back(i + 1); // R matrices rows start at 1
-			currList.push_back(dataStatStorage(i)[0]); // median
-			currList.push_back(dataStatStorage(i)[1]); // left bound
-			currList.push_back(dataStatStorage(i)[2]); // right bound
-
-			missingData.push_back(currList);
+			Rcpp::NumericVector currRow(4); // storage for the current missing value
+		  currRow(0) = i + 1; // R matrices rows start at 1
+		  currRow(1) = dataStatStorage(i)[0]; // median
+		  currRow(2) = dataStatStorage(i)[1]; // left bound
+		  currRow(3) = dataStatStorage(i)[2]; // right bound
+		  
+			missingData.push_back(currRow);
 		}
+		
 	}
 
 	mixtureName_[indexMixture] = idName;
@@ -130,13 +137,13 @@ void DataExtractorR::exportVals(int indexMixture,
 	for (int i = 0; i < augData.data_.rows(); ++i) {
 		dataR(i) = augData.data_(i) + offset;
 		if (augData.misData_(i).first != present_) {
-			Rcpp::List currList; // storage for the current missing value
-			currList.push_back(i + 1); // R matrices rows start at 1
-			currList.push_back(dataStatStorage(i)[0] + offset); // median
-			currList.push_back(dataStatStorage(i)[1] + offset); // left bound
-			currList.push_back(dataStatStorage(i)[2] + offset); // right bound
-
-			missingData.push_back(currList);
+			Rcpp::NumericVector currRow(4); // storage for the current missing value
+			currRow(0) = i + 1; // R matrices rows start at 1
+			currRow(1) = dataStatStorage(i)[0] + offset; // median
+			currRow(2) = dataStatStorage(i)[1] + offset; // left bound
+			currRow(3) = dataStatStorage(i)[2] + offset; // right bound
+			
+			missingData.push_back(currRow);
 		}
 	}
 
