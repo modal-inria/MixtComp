@@ -38,4 +38,3 @@ type <- getType(res)
 }
 
 }
-
