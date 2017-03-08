@@ -29,12 +29,12 @@
 #' # get completedData
 #' getCompletedData <- completed(res)
 #' }
-getCompletedData <- function(outMixtcomp, with.z_class = FALSE)
+getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 {
-  completedData <- do.call(cbind, lapply(outMixtcomp$variable$data, function(x){x$completed}))
+  completedData <- do.call(cbind, lapply(outMixtComp$variable$data, function(x){x$completed}))
   
   if(!with.z_class)
-    completedData = completedData[,-which(colnames(completedData)=="z_class")]
+    completedData = completedData[,-which(colnames(completedData)=="z_class"), drop = FALSE]
   
   return(as.data.frame(completedData))
 }
@@ -71,9 +71,9 @@ getCompletedData <- function(outMixtcomp, with.z_class = FALSE)
 #' # get class
 #' estimatedClass <- getZ_class(res)
 #' }
-getZ_class <- function(outMixtcomp)
+getZ_class <- function(outMixtComp)
 {
-  return(outMixtcomp$variable$data$z_class$completed)
+  return(outMixtComp$variable$data$z_class$completed)
 }
 
 
@@ -109,9 +109,9 @@ getZ_class <- function(outMixtcomp)
 #' # get type
 #' type <- getType(res)
 #' }
-getType <- function(outMixtcomp, with.z_class = FALSE)
+getType <- function(outMixtComp, with.z_class = FALSE)
 {
-  type <- unlist(outMixtcomp$variable$type)
+  type <- unlist(outMixtComp$variable$type)
   
   if(!with.z_class)
     type = type[-which(names(type)=="z_class")]
@@ -150,9 +150,9 @@ getType <- function(outMixtcomp, with.z_class = FALSE)
 #' # get tik
 #' tik <- getTik(res)
 #' }
-getTik <- function(outMixtcomp)
+getTik <- function(outMixtComp)
 {
-  return(outMixtcomp$variable$data$z_class$stat)
+  return(outMixtComp$variable$data$z_class$stat)
 }
 
 

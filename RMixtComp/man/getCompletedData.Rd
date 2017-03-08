@@ -4,12 +4,12 @@
 \alias{getCompletedData}
 \title{Get the completed data from MixtComp object}
 \usage{
-getCompletedData(outMixtcomp, with.z_class = FALSE)
+getCompletedData(outMixtComp, with.z_class = FALSE)
 }
 \arguments{
-\item{with.z_class}{if TRUE, z_class is returned with the data.}
-
 \item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}
+
+\item{with.z_class}{if TRUE, z_class is returned with the data.}
 }
 \value{
 a matrix with the data completed by MixtComp (z_class is in the first column and then variables are sorted in alphabetic order, it may differ from the original order of the data).

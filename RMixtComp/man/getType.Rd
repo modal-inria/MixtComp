@@ -4,12 +4,12 @@
 \alias{getType}
 \title{Get the type of model for each variable}
 \usage{
-getType(outMixtcomp, with.z_class = FALSE)
+getType(outMixtComp, with.z_class = FALSE)
 }
 \arguments{
-\item{with.z_class}{if TRUE, the type of z_class is returned.}
-
 \item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}
+
+\item{with.z_class}{if TRUE, the type of z_class is returned.}
 }
 \value{
 a vector containing the type of models associated with each individual.

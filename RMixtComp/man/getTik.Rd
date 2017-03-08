@@ -4,7 +4,7 @@
 \alias{getTik}
 \title{Get the empiric tik}
 \usage{
-getTik(outMixtcomp)
+getTik(outMixtComp)
 }
 \arguments{
 \item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}

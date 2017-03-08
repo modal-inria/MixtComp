@@ -4,7 +4,7 @@
 \alias{getZ_class}
 \title{Get the estimated class from MixtComp object}
 \usage{
-getZ_class(outMixtcomp)
+getZ_class(outMixtComp)
 }
 \arguments{
 \item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}
