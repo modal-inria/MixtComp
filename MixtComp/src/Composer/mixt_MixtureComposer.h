@@ -320,6 +320,8 @@ class MixtureComposer {
      * */
     void IDClass(Matrix<Real>& idc) const;
 
+    void lnProbaGivenClass(Matrix<Real>& idc) const;
+
     void printObservedTik() const;
   private:
     void printClassInd() const;

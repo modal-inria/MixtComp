@@ -9,8 +9,7 @@
 
 #include "mixt_Function.h"
 
-namespace mixt
-{
+namespace mixt {
 
 void IDClass(mixt::MixtureComposer& mc,
              Rcpp::NumericMatrix& idc) {
@@ -45,6 +44,20 @@ void IDClass(mixt::MixtureComposer& mc,
   idc.attr("dimnames") = dimnms;
 }
 
+void lnProbaGivenClass(mixt::MixtureComposer& mc,
+                       Rcpp::NumericMatrix& pGCR) {
+  pGCR = Rcpp::NumericMatrix(mc.nbInd(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
+                             mc.nbClass());
+
+  Matrix<Real> pGCCPP;
+  mc.lnProbaGivenClass(pGCCPP);
+
+  for (Index i = 0; i < mc.nbInd(); ++i) {
+    for (Index k = 0; k < mc.nbClass(); ++k) {
+      pGCR(i, k) = pGCCPP(i, k);
+    }
+  }
+}
 
 void matDelta(mixt::MixtureComposer& mc,
               Rcpp::NumericMatrix& delta){

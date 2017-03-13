@@ -483,7 +483,16 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const {
 	else {
 		idc = 1.;
 	}
+}
 
+void MixtureComposer::lnProbaGivenClass(Matrix<Real>& pGC) const {
+  pGC.resize(nbInd_, nbClass_);
+
+  for (Index i = 0; i < nbInd_; ++i) {
+    for(Index k = 0; k < nbClass_; ++k) {
+      pGC(i, k) = lnObservedProbability(i, k);
+    }
+  }
 }
 
 void MixtureComposer::printClassInd() const {

@@ -121,11 +121,14 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
         Rcpp::NumericMatrix idc;
         mixt::IDClass(composer, idc);
         mcMixture["IDClass"] = idc;
-        // Debut de ce que j'ai ajouté
+
+        Rcpp::NumericMatrix pGC;
+        mixt::lnProbaGivenClass(composer, pGC);
+        mcMixture["lnProbaGivenClass"] = pGC;
+
         Rcpp::NumericMatrix delta;
         mixt::matDelta(composer, delta);
         mcMixture["delta"] =delta;
-        // Fin de ce que j'ai ajouté
       }
     }
   }

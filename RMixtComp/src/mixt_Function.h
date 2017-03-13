@@ -20,6 +20,9 @@ namespace mixt
 void IDClass(mixt::MixtureComposer& mc,
              Rcpp::NumericMatrix& idc);
 
+void lnProbaGivenClass(mixt::MixtureComposer& mc,
+                       Rcpp::NumericMatrix& pGCR);
+
 void matDelta(mixt::MixtureComposer& mc,
               Rcpp::NumericMatrix& delta);
 
