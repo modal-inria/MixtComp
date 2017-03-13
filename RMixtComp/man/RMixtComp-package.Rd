@@ -13,8 +13,8 @@ data sets in a single mixture model.
 \tabular{ll}{
 Package: \tab RMixtComp\cr
 Type: \tab Package\cr
-Version: \tab 0.1\cr
-Date: \tab 2017-03-01\cr
+Version: \tab 0.2\cr
+Date: \tab 2017-03-13\cr
 }
 }
 \examples{
