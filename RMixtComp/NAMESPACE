@@ -1,6 +1,6 @@
 useDynLib(RMixtComp)
 exportPattern("^[[:alpha:]]+")
 import(Rcpp)
-import(RJSONIO)
+import(jsonlite)
 import(scales)
 import(plotly)
