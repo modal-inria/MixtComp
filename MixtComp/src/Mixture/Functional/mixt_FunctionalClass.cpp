@@ -70,7 +70,9 @@ void FunctionalClass::mStepAlpha() {
 
   nlopt_opt opt;
   opt = nlopt_create(NLOPT_LD_LBFGS, nParam); // algorithm and dimensionality
+  nlopt_set_maxeval(opt, maxIterationFunctional); // without setting this, the time required for computations could be subject to extreme variations
   nlopt_set_max_objective(opt, optiFunctionalClass, this); // cost and grad function, data for the function
+
   nlopt_optimize(opt, alpha, &minf); // launch the effective optimization run
   nlopt_destroy(opt);
 
@@ -152,7 +154,7 @@ double FunctionalClass::costAndGrad(Index nParam,
   for (std::set<Index>::const_iterator it  = setInd_.begin(),
                                        itE = setInd_.end();
        it != itE;
-       ++it) { // each individual in current class adds a contribution to the gradient of alpha
+       ++it) { // each individual in current class adds a contribution to both the cost and the gradient of alpha
     cost += data_(*it).costAndGrad(nParam,
                                    alpha,
                                    gradInd);

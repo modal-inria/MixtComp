@@ -51,6 +51,8 @@ const int nbGibbsIterRank = 50;
 
 const int nbSampleObserved = 10000;
 
+extern const int maxIterationFunctional = 10;
+
 const std::string rankPosSep = ",";
 
 } // namespace mixt

@@ -50,6 +50,8 @@ extern const int nbGibbsIterRank; // number of iterations in the Gibbs used in t
 
 extern const int nbSampleObserved; // number of sample per class to estimate the observed probability, for example in Ordinal or Rank data
 
+extern const int maxIterationFunctional; // maximum number of evaluation of cost function for optimization
+
 extern const std::string rankPosSep; // separator used in Rank positions
 
 } // namespace mixt

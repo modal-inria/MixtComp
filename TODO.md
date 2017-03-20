@@ -1,4 +1,5 @@
 # Discussion
+
 - deux types de dégénérescence, vraisemblance bornée ou pas
 - dans l'algo, pas de bornes, rajouter les bornes avant l'export de paramètres
 - si en prédiction, avec bornes partout, la variable devient muette
@@ -50,6 +51,7 @@
     - Add compilation flag to set random seed, to allow reproducibility of stochastic tests
 
 # Estimation problem
+
 - keep the test for degenerescency
 - remove the Gibbs
     - how will the Ordinal model work without Gibbs ?
@@ -63,6 +65,7 @@
 - if degenerescency is systematic, the model is not correct and should be dropped. Running a Gibbs over a long time period will not solve anything.
 
 # Output object
+
 - Gaussien :
     Les statistiques des données complétées au format matriciel
 - Poisson :
@@ -74,9 +77,11 @@
 
 # Model
 
-- Missing data in support in Functional Model
+- Functional Model
+    - Missing data in support in
 - Ordinal model
     - clarify if can be used with EdgeAuthorized or not. It seems it cannot. Test with generated data.
+    - apparently there are sometimes errors in the unit tests. Check those as they could explain other errors.
 - remove regex in data parsing. Will be faster but less tolerant to data format.
 
 # R
