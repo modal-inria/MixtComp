@@ -69,16 +69,16 @@ In the case of a functional model, \emph{nSub: i, nCoeff: j} must be indicated i
 \emph{i} is the number of subregressions in a functional data and \emph{j} the number of coefficients
  of each regression (2 = linear, 3 = quadratic, ...).
 }
+
 \examples{
 \dontrun{
 dat <- getData(c("data.csv", "descriptor.csv")) 
 }
 
 }
-\author{
-Vincent Kubicki
-}
 \seealso{
 \link{mixtCompCluster} \link{mixtCompPredict}
 }
-
+\author{
+Vincent Kubicki
+}

@@ -38,4 +38,3 @@ completedData <- completed(res)
 }
 
 }
-

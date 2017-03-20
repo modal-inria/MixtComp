@@ -1,7 +1,5 @@
-/*--------------------------------------------------------------------*/
-/*  Copyright (C) Inria 2016
-*/
-
+/* MixtComp version 2.0  - 13 march 2017
+ * Copyright (C) Inria - Lille 1 */
 /*
  *  Project:    JsonMixtComp
  *  Created on: Dec 01, 2016
