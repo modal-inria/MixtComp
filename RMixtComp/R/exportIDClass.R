@@ -114,9 +114,8 @@ extractDistDelta = function(data){
 
 extractPvDiscrimClass = function(data){
   tik <- data$variable$data$z_class$stat
-  return(toJSON(round(1 - (-colMeans(log(tik**tik)) / exp(-1)), 4)))
+  return(toJSON(unname(round(1 - (-colMeans(log(tik**tik)) / exp(-1)), 4))))
 }
-
 
 extractPvDiscrimVbles = function(data){
   return(toJSON(unname(round(1 - colSums(data$mixture$IDClass), 4))))
