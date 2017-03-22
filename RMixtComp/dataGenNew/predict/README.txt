@@ -1,1 +1,0 @@
-This folder contains the randomly generated data and assorted reports.
