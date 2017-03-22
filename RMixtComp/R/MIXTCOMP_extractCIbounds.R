@@ -23,7 +23,7 @@ extractCIMultiVble = function(var, data){
   out = cbind(1:ncol(theta), t(theta))
   # drop the levels that do not belong to the CI of all the classes
   if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out) == out[,1]),, drop = FALSE]
-  return(list(levels=out[,1], probs = t(out[,-1])))
+  return(list(levels=out[,1], probs = t(out[,-1, drop = FALSE])))
 }
 
 ## To compute the mean curve per component
