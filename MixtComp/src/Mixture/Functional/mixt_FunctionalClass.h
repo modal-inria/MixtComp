@@ -51,7 +51,7 @@ class FunctionalClass {
     void sampleParam(Index iteration,
                      Index iterationMax);
 
-    double costAndGrad(Index nParam,
+    double costAndGrad(Index nFreeParam,
                        const double* alpha,
                        double* grad);
 

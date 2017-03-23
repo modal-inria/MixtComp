@@ -45,26 +45,27 @@ void FunctionalClass::mStep() {
 
 void FunctionalClass::mStepAlpha() {
   Index nSub   = alpha_.rows();
-  Index nParam = 2 * nSub;
+  Index nFreeParam = 2 * (nSub - 1);
+  std::cout << "nFreeParam: " << nFreeParam << std::endl;
   double minf;
 
-  double alpha[nParam]; // linear version of alpha, to conform to nlopt argument format
-  for (Index s = 0; s < nSub; ++s) {
-    alpha[2 * s    ] = alpha_(s, 0);
-    alpha[2 * s + 1] = alpha_(s, 1);
+  double alpha[nFreeParam]; // linear version of alpha, to conform to nlopt argument format
+  for (Index s = 0; s < nSub - 1; ++s) {
+    alpha[2 * s    ] = alpha_(s + 1, 0);
+    alpha[2 * s + 1] = alpha_(s + 1, 1);
   }
 
   nlopt_opt opt;
-  opt = nlopt_create(NLOPT_LD_LBFGS, nParam); // algorithm and dimensionality
+  opt = nlopt_create(NLOPT_LD_LBFGS, nFreeParam); // algorithm and dimensionality
   nlopt_set_maxeval(opt, maxIterationFunctional); // without setting this, the time required for computations could be subject to extreme variations
   nlopt_set_max_objective(opt, optiFunctionalClass, this); // cost and grad function, data for the function
 
   nlopt_optimize(opt, alpha, &minf); // launch the effective optimization run
   nlopt_destroy(opt);
 
-  for (Index s = 0; s < nSub; ++s) {
-    alpha_(s, 0) = alpha[2 * s    ];
-    alpha_(s, 1) = alpha[2 * s + 1];
+  for (Index s = 0; s < nSub - 1; ++s) {
+    alpha_(s + 1, 0) = alpha[2 * s    ];
+    alpha_(s + 1, 1) = alpha[2 * s + 1];
   }
 }
 
@@ -127,12 +128,12 @@ void FunctionalClass::sampleParam(Index iteration,
   sdParamStat_   .sampleParam(iteration, iterationMax);
 }
 
-double FunctionalClass::costAndGrad(Index nParam,
+double FunctionalClass::costAndGrad(Index nFreeParam,
                                     const double* alpha,
                                     double* grad) {
   Real cost = 0.;
+  Index nParam = nFreeParam + 2;
   double gradInd[nParam];
-
   for (Index p = 0; p < nParam; ++p) {
     grad[p] = 0.;
   }
@@ -141,11 +142,12 @@ double FunctionalClass::costAndGrad(Index nParam,
                                        itE = setInd_.end();
        it != itE;
        ++it) { // each individual in current class adds a contribution to both the cost and the gradient of alpha
-    cost += data_(*it).costAndGrad(nParam,
-                                   alpha,
-                                   gradInd);
-    for (Index p = 0; p < nParam; ++p) {
-      grad[p] += gradInd[p];
+    cost += data_(*it).costAndGrad(
+        nParam,
+        alpha,
+        gradInd);
+    for (Index p = 0; p < nFreeParam; ++p) {
+      grad[p + 2] += gradInd[p];
     }
   }
 

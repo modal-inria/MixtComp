@@ -473,14 +473,14 @@ double optiFunc(unsigned nParam,
   return cost;
 }
 
-double optiFunctionalClass(unsigned nParam,
+double optiFunctionalClass(unsigned nFreeParam,
                            const double* alpha,
                            double* grad,
                            void* my_func_data) {
   Real cost;
   FunctionalClass* funcClass = (FunctionalClass*) my_func_data;
 
-  cost = funcClass->costAndGrad(nParam, alpha, grad);
+  cost = funcClass->costAndGrad(nFreeParam, alpha, grad);
 
   return cost;
 }
