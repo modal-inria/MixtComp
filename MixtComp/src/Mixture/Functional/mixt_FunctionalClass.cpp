@@ -46,7 +46,6 @@ void FunctionalClass::mStep() {
 void FunctionalClass::mStepAlpha() {
   Index nSub   = alpha_.rows();
   Index nFreeParam = 2 * (nSub - 1);
-  std::cout << "nFreeParam: " << nFreeParam << std::endl;
   double minf;
 
   double alpha[nFreeParam]; // linear version of alpha, to conform to nlopt argument format
