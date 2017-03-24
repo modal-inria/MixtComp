@@ -132,10 +132,18 @@ double FunctionalClass::costAndGrad(Index nFreeParam,
                                     const double* alpha,
                                     double* grad) {
   Real cost = 0.;
+  for (Index p = 0; p < nFreeParam; ++p) {
+    grad[p] = 0.;
+  }
+
   Index nParam = nFreeParam + 2;
   double gradInd[nParam];
-  for (Index p = 0; p < nParam; ++p) {
+  double alphaComplete[nParam]; // The whole code was created using the complete set of parameters. Using alphaComplete allows for immediate reuse.
+  alphaComplete[0] = 0.;
+  alphaComplete[1] = 0.;
+  for (Index p = 0; p < nFreeParam; ++p) {
     grad[p] = 0.;
+    alphaComplete[p + 2] = alpha[p];
   }
 
   for (std::set<Index>::const_iterator it  = setInd_.begin(),
@@ -144,10 +152,10 @@ double FunctionalClass::costAndGrad(Index nFreeParam,
        ++it) { // each individual in current class adds a contribution to both the cost and the gradient of alpha
     cost += data_(*it).costAndGrad(
         nParam,
-        alpha,
+        alphaComplete,
         gradInd);
     for (Index p = 0; p < nFreeParam; ++p) {
-      grad[p + 2] += gradInd[p];
+      grad[p] += gradInd[p + 2];
     }
   }
 
