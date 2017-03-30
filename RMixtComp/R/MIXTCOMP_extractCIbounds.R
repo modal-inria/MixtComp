@@ -30,31 +30,45 @@ extractCIMultiVble = function(var, data){
 functionalmeanVal <- function(Tt, alpha, beta){
   weights <- alpha[,2] * Tt + alpha[,1]
   weights <- weights - max(weights)
-  weights <- exp(weights) / sum(exp(weights))
+  weights <- exp(weights) / sum(exp(weights))  # To avoid numerical problems
+  weigths <- round(weights,4)
+  weights <- weigths/sum(weights)
   sum((beta[,1] + beta[,2] * Tt) * weights)
 }
+
+## Tool function for assessing the quantile for the functional model
+objectivefunctional <- function(x, pi, mu, s, seuil) (sum(pi*pnorm(x, mu, s)) - seuil)**2
 
 ## To compute the lower/upper bound of the 95%-level confidence interval of the curve per component
 functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
   weights <- alpha[,1] + alpha[,2] * Tt
   weights <- weights - max(weights)
   weights <- exp(weights) / sum(exp(weights))
+  # To avoid numerical problems
+  weigths <- round(weights,4)
+  weights <- weigths/sum(weights)
   means <- beta[,1] + beta[,2] * Tt 
   # Newton-Raphson to get the bound
-  u <-  sum(qnorm(borne, means, sqrt(sigma))*(weights))
-  Fu <- function(u) (sum(weights * pnorm(u, means, sqrt(sigma)) ) - borne)
-  fu <- function(u) 2*sum(weights * dnorm(u, means, sqrt(sigma)) )
-  cond <- 1
-  while (cond ==1 ){
-    u <- u - Fu(u) / fu(u)
-    cond <- (abs(Fu(u))> 0.0001)
-    if (is.na(cond)){u <- qnorm(borne, means, sqrt(sigma))[which.max(weights)]; cond <- 0;}
-  }
-  return(u)
+  # u <-  sum(qnorm(borne, means, sqrt(sigma))*(weights))
+  # Fu <- function(u) (sum(weights * pnorm(u, means, sqrt(sigma)) ) - borne)
+  # fu <- function(u) 2*sum(weights * dnorm(u, means, sqrt(sigma)) )
+  # cond <- 1
+  # while (cond ==1 ){
+  #   u <- u - Fu(u) / fu(u)
+  #   cond <- (abs(Fu(u))> 0.0001)
+  #   if (is.na(cond)){u <- qnorm(borne, means, sqrt(sigma))[which.max(weights)]; cond <- 0;}
+  # }
+  return(
+    optimize(objectivefunctional,
+             interval = range(qnorm(borne-0.001, means, sigma)[which(weights!=0)], qnorm(borne+0.001, means, sigma)[which(weights!=0)]),
+             pi=weights,
+             mu=means,
+             s=sigma,
+             seuil=borne)$minimum
+  )
 }
 
 extractCIFunctionnalVble = function(var, data){
-  ### Warnings, the range of the time must be found in the data set!!!!!
   Tseq <- sort(unique(unlist(data$variable$data[[var]]$time)), decreasing = F)
   param = data$variable$param[[var]]
   G <- data$mixture$nbCluster
