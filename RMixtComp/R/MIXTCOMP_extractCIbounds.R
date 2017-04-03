@@ -5,6 +5,28 @@ extractCIGaussianVble = function(var, data){
   return(list(mean = means,lower = lowers))
 }
 
+extractBoundsBoxplotNumericalVble <- function(var, data){
+  ordervari <- order(data$variable$data[[var]]$completed)
+  thresholds <- lapply(1:data$mixture$nbCluster,
+                       function(k, var, data, ordervari){
+                         tiksorted <- cumsum(data$variable$data$z_class$stat[ordervari,k]) / sum(data$variable$data$z_class$stat[,k])
+                         thresholds <- lapply(c(.05, .25, .5, .75, .95),
+                                              function(threshold, data, var, ordervari, tiksorted) data$variable$data[[var]]$completed[ordervari[which.min( abs(tiksorted - threshold) )]],
+                                              data=data,
+                                              var=var,
+                                              ordervari=ordervari,
+                                              tiksorted=tiksorted
+                         )
+                         names(thresholds) <- paste0("threshold", c(.05, .25, .5, .75, .95))
+                         return(thresholds)
+                       },
+                       var=var,
+                       data=data,
+                       ordervari=ordervari)
+  names(thresholds) <- paste0("class", 1:data$mixture$nbCluster)
+  return(thresholds)
+}
+
 extractCIPoissonVble = function(var, data){
   theta = as.array(data$variable$param[[var]]$NumericalParam$stat[,1])
   return(list(mean = theta,lower = qpois(0.025, theta), upper=qpois(0.975, theta)))
@@ -24,6 +46,21 @@ extractCIMultiVble = function(var, data){
   # drop the levels that do not belong to the CI of all the classes
   if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out) == out[,1]),, drop = FALSE]
   return(list(levels=out[,1], probs = t(out[,-1, drop = FALSE])))
+}
+
+extractBoundsBoxplotCategoricalVble <- function(var, data){
+  levels <- sort(unique(data$variable$data[[var]]$completed))
+  probs <- t(sapply(1:data$mixture$nbCluster, 
+                    function(k, tik, obs)
+                      sapply(levels,
+                             function(w, obs, level) sum(w * (obs == level)),
+                             w=tik[,k],
+                             obs=obs
+                      ) / sum(data$variable$data$z_class$stat[,k]),
+                    tik=data$variable$data$z_class$stat ,
+                    obs=data$variable$data[[var]]$completed
+  ))
+  return(list(levels=levels, probs=probs))
 }
 
 ## To compute the mean curve per component
@@ -97,10 +134,21 @@ extractCIFunctionnalVble = function(var, data){
 
 extractCIboundsOneVble = function(var, data){
   out <- NULL
-  eval(parse(text=paste("type <- data$variable$type$", var,sep="")))
+  #eval(parse(text=paste("type <- data$variable$type$", var,sep="")))
+  type <- output$variable$type[[var]]
   if (type == "Gaussian_sjk") out <- extractCIGaussianVble(var, data)
   if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data)
   if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data)
+  if (type == "Functional") out <-  extractCIFunctionnalVble(var, data)
+  return(out)
+}
+
+extractBoxplotInfoOneVble <- function(var, data){
+  out <- NULL
+#  eval(parse(text=paste("type <- data$variable$type$", var,sep="")))
+  type <- output$variable$type[[var]]
+  if ((type == "Gaussian_sjk") || (type == "Poisson_k")) out <- extractBoundsBoxplotNumericalVble(var, data)
+  if (type == "Categorical_pjk") out <-  extractBoundsBoxplotCategoricalVble(var, data)
   if (type == "Functional") out <-  extractCIFunctionnalVble(var, data)
   return(out)
 }

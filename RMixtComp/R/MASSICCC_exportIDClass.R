@@ -54,6 +54,8 @@ exportIDClass = function(data) {
   
   cibounds = paste0('"cibounds": ', extractCIbounds(data), '')
   
+  boxplotinfos = paste0('"cibounds": ', extractBoxplotInfo(data), '')
+  
   footerStr = '}'
   
   out = paste(headerStr,
@@ -69,6 +71,7 @@ exportIDClass = function(data) {
               sigma,
               ordertik,
               cibounds,
+              boxplotinfos,
               footerStr,
               sep = '\n\n')
   return(out);
@@ -80,6 +83,13 @@ exportIDClass = function(data) {
 extractCIbounds = function(data){
   return(toJSON(lapply(names(data$variable$type)[-1],
                        function(v) extractCIboundsOneVble(v, data))))
+}
+
+# Compute information used for drawing the boxplots (continuous and integer),
+# barplots (categorical) based on the probabilities of classification
+extractBoxplotInfo = function(data){
+  return(toJSON(lapply(names(data$variable$type)[-1],
+                       function(v) extractBoxplotInfoOneVble(v, data))))
 }
 
 # Sort the tik of observations belonging to class k with decreasing order

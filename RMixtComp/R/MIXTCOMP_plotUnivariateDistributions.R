@@ -1,11 +1,11 @@
-#' @name plotData
-#' @aliases plotFunctionalData plotCategoricalData plotIntegerData plotContinuousData
+#' @name plotDataCI
+#' @aliases plotFunctionalData plotCategoricalData plotCIIntegerData plotCIContinuousData
 #' 
 #' @title Mean and 95\%-level confidence intervals per class
 #' 
-#' @usage plotData(output, var, ...)
-#' plotContinuousData(output, var)
-#' plotIntegerData(output, var)
+#' @usage plotDataCI(output, var, ...)
+#' plotCIContinuousData(output, var)
+#' plotCIIntegerData(output, var)
 #' plotCategoricalData(output, var)
 #' plotFunctionalData(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL)
 #' 
@@ -41,16 +41,12 @@
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 #' 
 #' # plot
-#' plotData(res, "gaussian1")
-#' plotContinuousData(res, "gaussian1")
-#' plotIntegerData(res, "poisson1")
-#' plotFunctionalData(res, "Functional1")
-#' plotCategoricalData(res, "categorical1")
+#' plotDataCI(res, "gaussian1")
 #' 
 #' } 
 #' 
 #' @author Matthieu MARBAC
-plotData <- function(output, var, ...)
+plotDataCI <- function(output, var, ...)
 {
   if(!(var%in%names(output$variable$type)))
     stop("This variable does not exist in the mixture model.")
@@ -58,20 +54,16 @@ plotData <- function(output, var, ...)
   type <- output$variable$type[[var]]
   
   switch(type,
-         "Gaussian_sjk" = plotContinuousData(output, var),
-         "Categorical_pjk" = plotCategoricalData(output, var),
-         "Poisson_k" = plotIntegerData(output, var),
+         "Gaussian_sjk" = plotCIContinuousData(extractCIGaussianVble(var, output)),
+         "Categorical_pjk" = plotCategoricalData(extractCIMultiVble(var, output)),
+         "Poisson_k" = plotCIIntegerData(extractCIPoissonVble(var, output)),
          "Functional" = plotFunctionalData(output, var, ...),
          cat("Not yet implemented"))
 }
 
 
 # Mean and 95%-level confidence intervals per class for a Gaussian Mixture
-plotContinuousData <- function(output, var){
-  #### This part computes the element corresponding to variable "var" of
-  #### the slot cibounds of the JSON file 
-  data <- extractCIGaussianVble(var, output)
-  ### End of part corresponding the JSON file
+plotCIContinuousData <- function(data){
   p <- plot_ly(x=data$mean,
                y=c(1:length(data$mean)),
                type="scatter",
@@ -118,11 +110,7 @@ plotContinuousData <- function(output, var){
 }
 
 # Mean and 95%-level confidence intervals per class for a Poisson Mixture
-plotIntegerData <- function(output, var){
-  #### This part computes the element corresponding to variable "var" of
-  #### the slot cibounds of the JSON file 
-  data <- extractCIPoissonVble(var, output)
-  ### End of part corresponding the JSON file
+plotCIIntegerData <- function(data){
   p <- plot_ly(x=data$mean,
                y=1:length(data$mean),
                type="scatter",
@@ -171,9 +159,8 @@ plotIntegerData <- function(output, var){
 }
 
 # Mode and 95%-level confidence intervals per class for a Multinomial Mixture
-plotCategoricalData <- function(output, var){
-  data <- extractCIMultiVble(var, output)
-  formattedW <- lapply(1:output$mixture$nbCluster, 
+plotCategoricalData <- function(data){
+  formattedW <- lapply(1:nrow(data$probs), 
                        function(k) list(y=data$probs[k,],
                                         type='bar',
                                         hoverinfo = "text",
@@ -186,9 +173,9 @@ plotCategoricalData <- function(output, var){
   p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
               formattedW,
               init=plot_ly(x = data$levels)%>%
-                layout(title = "Mode and 95%-level confidence intervals per class",
+                layout(title = "Distribution per class",
                        paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
-                       xaxis = list(title = paste("Levels of",var),
+                       xaxis = list(title = "Levels",
                                     gridcolor = 'rgb(255,255,255)',
                                     showgrid = TRUE,
                                     showline = FALSE,

@@ -58,6 +58,7 @@ histMisclassif(res)
 
 # Plot like Figure 3 (right)
 heatmapTikSorted(res)
+
 }
 
 }
