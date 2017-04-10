@@ -54,7 +54,7 @@ exportIDClass = function(data) {
   
   cibounds = paste0('"cibounds": ', extractCIbounds(data), '')
   
-  boxplotinfos = paste0('"cibounds": ', extractBoxplotInfo(data), '')
+  boxplotinfos = paste0('"boxplotinfos": ', extractBoxplotInfo(data), '')
   
   footerStr = '}'
   
