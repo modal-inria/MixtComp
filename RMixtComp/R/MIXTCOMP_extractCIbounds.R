@@ -11,7 +11,7 @@ extractBoundsBoxplotNumericalVble = function(var, data) {
   
   orderedIndices = order(obs)
   cumsums = apply(tik[orderedIndices,], 2, cumsum)
-  cumsums = t(t(cumsums) / colSums(tik))
+  cumsums = t(t(cumsums) / cumsums[nrow(cumsums), ])
   thresholds = sapply(c(.05, .25, .5, .75, .95), function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], cumsums=cumsums)
   return(thresholds)
 }
