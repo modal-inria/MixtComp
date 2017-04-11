@@ -52,9 +52,7 @@ exportIDClass = function(data) {
   
   ordertik = paste0('"tiksorted": ', extractOrderTik(data), ',')
   
-  cibounds = paste0('"cibounds": ', extractCIbounds(data), '')
-  
-  boxplotinfos = paste0('"boxplotinfos": ', extractBoxplotInfo(data), '')
+  cibounds = paste0('"cibounds": ', extractBoxplotInfo(data), '')
   
   footerStr = '}'
   
@@ -71,7 +69,6 @@ exportIDClass = function(data) {
               sigma,
               ordertik,
               cibounds,
-              boxplotinfos,
               footerStr,
               sep = '\n\n')
   return(out);
