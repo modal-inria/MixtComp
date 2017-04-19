@@ -10,7 +10,7 @@ extractBoundsBoxplotNumericalVble = function(var, data) {
   tik = data$variable$data$z_class$stat
   
   orderedIndices = order(obs)
-  cumsums = apply(tik[orderedIndices,], 2, cumsum)
+  cumsums = apply(tik[orderedIndices, , drop=FALSE], 2, cumsum)
   cumsums = t(t(cumsums) / cumsums[nrow(cumsums), ])
   thresholds = sapply(c(.05, .25, .5, .75, .95), function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], cumsums=cumsums)
   return(thresholds)
@@ -114,12 +114,6 @@ extractCIFunctionnalVble = function(var, data){
     infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
     supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
   }
-  
-  #out <- data.frame(Time=Tseq, meancurve, infcurve, supcurve)
-  #colnames(out) <- c("Time",
-  #                   paste("mean.class", 1:G, sep="."), 
-  #                   paste("inf.class", 1:G, sep="."), 
-  #                   paste("sup.class", 1:G, sep="."))
   out = list(time=Tseq, mean=t(meancurve), inf=t(infcurve), sup=t(supcurve))
   return(out)
 }
