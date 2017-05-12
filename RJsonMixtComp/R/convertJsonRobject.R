@@ -85,7 +85,15 @@ convertParamLearn <- function(param, type)
   colnames(param[[nomObj]]$log) = rep("", ncol(param[[nomObj]]$log))
   
   param[[nomObj]]$stat = do.call(cbind, param[[nomObj]]$stat)
-  rownames(param[[nomObj]]$stat) = rownames(param[[nomObj]]$log)
+  
+  nomRow <- switch(type,
+                   "Ordinal" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj]]$stat)/2)), function(x){paste0(x, c(", mu:", ", pi"))})),
+                   "Gaussian_sjk" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj]]$stat)/2)), function(x){paste0(x, c(", mean:", ", sd"))})),
+                   "Categorical_pjk" = nomRowParamCateg(param),
+                   "Poisson_k" = paste0("k: ", 1:nrow(param[[nomObj]]$stat), ", lambda"),
+                   "LatentClass" = paste0("k: ", 1:nrow(param[[nomObj]]$stat)))
+  
+  rownames(param[[nomObj]]$stat) = nomRow
   
   return(param)
 }
