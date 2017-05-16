@@ -72,7 +72,6 @@ void matDelta(mixt::MixtureComposer& mc,
   }
 }
 
-
 void paramRToCpp(const Rcpp::List& RParam,
                  StrategyParam& CppParam) {
   if(RParam.containsElementNamed("nbBurnInIter")){

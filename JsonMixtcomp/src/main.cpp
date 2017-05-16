@@ -128,6 +128,15 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
              json idc;
              mixt::IDClass(composer, idc);
              mcMixture["IDClass"] = idc;
+
+             json pGC;
+             mixt::lnProbaGivenClass(composer, pGC);
+             mcMixture["lnProbaGivenClass"] = pGC;
+
+             json delta;
+             mixt::matDelta(composer, delta);
+             mcMixture["delta"] =delta;
+
            }
       }
   }
@@ -284,6 +293,15 @@ std::string predict_mixtcomp(json argument_list,std::string json_file_output){
              json idc;
              mixt::IDClass(composer, idc);
              mcMixture["IDClass"] = idc;
+
+             json pGC;
+             mixt::lnProbaGivenClass(composer, pGC);
+             mcMixture["lnProbaGivenClass"] = pGC;
+
+             json delta;
+             mixt::matDelta(composer, delta);
+             mcMixture["delta"] =delta;
+
            }
       }
   }
