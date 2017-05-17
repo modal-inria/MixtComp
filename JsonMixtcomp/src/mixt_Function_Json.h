@@ -21,6 +21,12 @@ namespace mixt
 void IDClass(mixt::MixtureComposer& mc,
              nlohmann::json& idc);
 
+void lnProbaGivenClass(mixt::MixtureComposer& mc,
+                       nlohmann::json&  pGCR);
+
+void matDelta(mixt::MixtureComposer& mc,
+              nlohmann::json& delta);
+
 void paramJsonToCpp(const nlohmann::json& RParam,
                  StrategyParam& CppParam);
 

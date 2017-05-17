@@ -10,7 +10,7 @@ extractBoundsBoxplotNumericalVble = function(var, data) {
   tik = data$variable$data$z_class$stat
   
   orderedIndices = order(obs)
-  cumsums = apply(matrix(tik[orderedIndices,], ncol=data$mixture$nbCluster), 2, cumsum)
+  cumsums = apply(tik[orderedIndices,, drop=F], 2, cumsum)
   cumsums = t(t(cumsums) / cumsums[nrow(cumsums), ])
   thresholds = sapply(c(.05, .25, .5, .75, .95), function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], cumsums=cumsums)
   return(matrix(thresholds, nrow=data$mixture$nbCluster))

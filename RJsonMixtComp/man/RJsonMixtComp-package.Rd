@@ -12,7 +12,7 @@ Statistics analysis with MixtComp
 Package: \tab RJsonMixtComp\cr
 Type: \tab Package\cr
 Version: \tab 0.1\cr
-Date: \tab 2017-02-24\cr
+Date: \tab 2017-05-10\cr
 License: \tab  \cr
 }
 }

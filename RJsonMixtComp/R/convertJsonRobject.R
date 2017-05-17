@@ -1,4 +1,13 @@
-# fonction pour mettre la sortie Json au même format que RMixtComp
+#'
+#' Transform JsonMixtComp output
+#'
+#' @param out output of JsonMixtComp
+#' @param confidenceLevel quantile for confidence interval of estimated parameters.
+#' @param mode "learn" or "predict"
+#' 
+#' @return list that looks like le output of RMixtCompPredict and RMixtCompCluster
+#' 
+#' @export
 convertJsonRobject <- function(out, confidenceLevel = 0.95, mode = c("learn", "predict"))
 {
   mode = match.arg(mode)
@@ -20,6 +29,14 @@ convertJsonRobject <- function(out, confidenceLevel = 0.95, mode = c("learn", "p
     out$variable$data[[nomVar]]$stat = convertDataStat(out$variable$data[[nomVar]]$stat, type[[nomVar]], confidenceLevel)
   }
   
+  # réordonner les variables : z_class en 1er + ordre alphabétique
+  ord <- order(names(out$variable$type))
+  indZ_class <- which(names(out$variable$type) == "z_class")
+  newOrd <- c(indZ_class, setdiff(ord, indZ_class))
+  
+  out$variable$type = out$variable$type[newOrd]
+  out$variable$param = out$variable$param[newOrd]
+  out$variable$data = out$variable$data[newOrd]
   
   return(out)
 }
@@ -68,7 +85,15 @@ convertParamLearn <- function(param, type)
   colnames(param[[nomObj]]$log) = rep("", ncol(param[[nomObj]]$log))
   
   param[[nomObj]]$stat = do.call(cbind, param[[nomObj]]$stat)
-  rownames(param[[nomObj]]$stat) = rownames(param[[nomObj]]$log)
+  
+  nomRow <- switch(type,
+                   "Ordinal" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj]]$stat)/2)), function(x){paste0(x, c(", mu:", ", pi"))})),
+                   "Gaussian_sjk" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj]]$stat)/2)), function(x){paste0(x, c(", mean:", ", sd"))})),
+                   "Categorical_pjk" = nomRowParamCateg(param),
+                   "Poisson_k" = paste0("k: ", 1:nrow(param[[nomObj]]$stat), ", lambda"),
+                   "LatentClass" = paste0("k: ", 1:nrow(param[[nomObj]]$stat)))
+  
+  rownames(param[[nomObj]]$stat) = nomRow
   
   return(param)
 }

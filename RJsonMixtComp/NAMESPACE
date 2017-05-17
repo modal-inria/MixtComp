@@ -2,6 +2,7 @@
 
 export(JsonMixtCompCluster)
 export(JsonMixtCompPredict)
+export(convertJsonRobject)
 export(createJsonMixtCompFile)
 export(getData)
 import(jsonlite)

@@ -42,6 +42,41 @@ void IDClass(mixt::MixtureComposer& mc,
 
 }
 
+void lnProbaGivenClass(mixt::MixtureComposer& mc,
+                       nlohmann::json& pGCR) {
+
+  nlohmann::json pGCR_row;
+  nlohmann::json pGCR_;
+
+  Matrix<Real> pGCCPP;
+  mc.lnProbaGivenClass(pGCCPP);
+
+  for (Index i = 0; i < mc.nbInd(); ++i) {
+    for (Index k = 0; k < mc.nbClass(); ++k) {
+      pGCR_row[k] = pGCCPP(i, k);
+    }
+    pGCR_[i] = pGCR_row;
+  }
+  pGCR = pGCR_;
+}
+
+void matDelta(mixt::MixtureComposer& mc,
+              nlohmann::json& delta){
+  nlohmann::json delta_row;
+  nlohmann::json delta_;
+
+  Matrix<Real> DELTA;
+  mc.Delta(DELTA);
+  for (Index j = 0; j < mc.nbVar(); ++j) {
+    for (Index h = 0; h < mc.nbVar(); ++h) {
+      delta_row[h] = DELTA(h, j);
+    }
+    delta_[j] = delta_row;
+  }
+  delta=delta_;
+}
+
+
 void paramJsonToCpp(const nlohmann::json& JsonParam,
                  StrategyParam& CppParam) {
 
