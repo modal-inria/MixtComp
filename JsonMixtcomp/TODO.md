@@ -13,18 +13,4 @@
     Problème de lecture des données fonctionnelles (le même jeu de données marche avec RMixtComp)
 - Categorical
     données complété stat : retourne 0.52 0.52 au lieu d'une liste [[1]] 2 [[2]] 0.52
-    dans param\$categorical1\$NumericalParam\$stat est sous format de liste et non de matrice
-    dans param\$categorical1\$NumericalParam\$log est sous format de liste et non de matrice
-- Poisson
-    dans param\$poisson1\$NumericalParam\$log est sous format de liste et non de matrice
-    dans param\$poisson1\$NumericalParam\$stat est sous format de liste et non de matrice
-- Ordinal
-    données complétées décalées tt de 1
-    dans param\$Ordinal1\$muPi\$log est sous format de liste et non de matrice
-    dans param\$Ordinal1\$muPi\$stat est sous format de liste et non de matrice
-- z_class
-    dans param\$z_class\$pi\$stat est sous format de liste et non de matrice
-    dans param\$z_class\$pi\$log est sous format de liste et non de matrice
-- gaussian
-    dans param\$gaussian1\$NumericalParam\$stat est sous format de liste et non de matrice
-    dans param\$gaussian1\$NumericalParam\$log est sous format de liste et non de matrice
+
