@@ -1,4 +1,5 @@
-source("/home/etienne/cylande/retfor/RetforJson/test/test_fonctionnel/toolbox_test_fonctionnel.r")
+
+setwd("/home/etienne/mixtcomp/JsonMixtcomp/test/test_fonctionnel")
 
 # tests des warnlog
 
@@ -16,3 +17,5 @@ test_mixtcomp(data_training,data_test,descriptor)
   
 test_mixtcomp_by_row(data_training,data_test,descriptor)
  
+test_mixtcomp_donnees_func()
+
