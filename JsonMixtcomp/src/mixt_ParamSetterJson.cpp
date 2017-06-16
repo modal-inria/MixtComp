@@ -33,6 +33,7 @@ void ParamSetterJson::getParam(const std::string& idName,
   for (int i = 0; i < nRows; ++i) {
     param(i) = currParam["median"][i].get<double>(); // only the mode / expectation is used, quantile information is discarded
   }
+  std::cout << std::endl;
 
   paramStr = listStatLog["paramStr"].get<std::string>();
 }
