@@ -4,6 +4,8 @@ To do list specific to MixtComp
 
 ## Precise modifications
 
+- in Predict mode with functional data, the logStorage_ (defined in mixt_ConfIntParamStat.h) isn't initialized in setParamStorage() (defined in mixt_ConfIntParamStat.h), unlike statStorage_ .. But exportDataParam() (defined in mixt_FunctionalMixture.h) tries to get it nonetheless : what's the role of logStorage_ in Predict Mode ? should it be initialized or should exportDataParam() be modified ?
+
 ### Order of implementation, each step should result in a working version of MixtComp
 - new initialization by partitioning and ordering, while keeping everything else as of today. This way the new initialization will benefit MixtComp while further updates are implemented
 - updated parameter normalization, as this can be used with parameterEdgeAuthorized = TRUE in current version
