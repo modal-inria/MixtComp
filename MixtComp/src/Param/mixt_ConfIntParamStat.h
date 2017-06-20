@@ -75,8 +75,8 @@ class ConfIntParamStat {
       nCols_ = param_.cols();
       nCoeff_ = nRows_ * nCols_;
 
-      statStorage_.resize(nCoeff_,
-                          1); // no quantiles have to be computed for imported parameters, hence the single column
+      statStorage_.resize(nCoeff_, 1); // no quantiles have to be computed for imported parameters, hence the single column
+      logStorage_.resize(nCoeff_, 0); // in prediction, there will be no other resize than that one
       for (Index j = 0; j < nCols_; ++j) {
         for (Index i = 0; i < nRows_; ++i) {
           statStorage_(i * nCols_ + j, 0) = param_(i, j);
