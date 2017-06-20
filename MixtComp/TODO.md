@@ -19,6 +19,7 @@ To do list specific to MixtComp
 - keep checkSampleCondition, except that in the implementation, only return false for unbounded likelihood
 	- the test must occur after samplingStep, to check that the completion is valid
 - add pushParametersToCache and pullParametersFromCache methods
+- composer.p_zi() and composer.classInd() are there in all mixture, why not include them in IMixture ?
 
 ### Mixture
 - When must the parameters be bounded ? For example, when a proportion is estimated at 0 ?
