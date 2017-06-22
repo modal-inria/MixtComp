@@ -7,8 +7,6 @@
  *  Author:     Etienne GOFFINET  <etienne.goffinet@inria.fr>
  **/
 
-
-
 #include <iostream>
 #include "mixt_DataExtractorJson.h"
 #include "../../MixtComp/src/LinAlg/mixt_LinAlg.h"
@@ -54,7 +52,6 @@ void DataExtractorJson::exportVals(int indexMixture,
   data_[indexMixture]["stat"] = missingData;
 }
 
-
 /** Export function for classes (called from the composer) */
 void DataExtractorJson::exportVals(int indexMixture,
                                 std::string idName,
@@ -73,7 +70,6 @@ void DataExtractorJson::exportVals(int indexMixture,
   data_[indexMixture]["completed"] = dataJson;
   data_[indexMixture]["stat"] = tikJson;
 }
-
 
 /** Export function for gaussian model */
 void DataExtractorJson::exportVals(int indexMixture,
@@ -145,7 +141,7 @@ void DataExtractorJson::exportVals(int indexMixture,
   std::list<nlohmann::json> statJson; // List to store the statistics on partially observed data, one element per partially observed individual
 
   for (int i = 0, ie = nbInd; i < ie; ++i) {
-    nlohmann::json rankJson(nbPos);
+    nlohmann::json rankJson;
     for (int p = 0; p < nbPos; ++p) {
       rankJson[p] = data(i).x().o()(p) + minModality;
     }
@@ -180,18 +176,35 @@ void DataExtractorJson::exportVals(int indexMixture,
 
 }
 
-
 /** Export function for Functional model */
-void DataExtractorJson::exportVals(const Index&,
-		                           const std::string&,
-                                   const Vector<mixt::Function>&)
-{
-	/**
-	 * TO BE IMPLEMENTED
-	 */
+
+void DataExtractorJson::exportVals(int indexMixture,
+    std::string idName,
+    const Vector<Function>& data){
+
+  int nbInd = data.rows();
+  std::list<nlohmann::json> dataJson; // List to store the completed data set, on element per individual
+  std::list<nlohmann::json> timeJson; // List to store the times where the function has been measured, on element per individual
+
+  for (int i = 0; i < nbInd; ++i) {
+    const int nbPos = data(i).nTime();
+    nlohmann::json ttJson;
+    nlohmann::json obsJson;
+    const Vector<Real> xtmp = data(i).x();
+    const Vector<Real> ttmp = data(i).t();
+    for (int p = 0; p < nbPos; ++p) {
+      obsJson[p] = xtmp(p);
+      ttJson[p] = ttmp(p);
+    }
+    dataJson.push_back(obsJson);
+    timeJson.push_back(ttJson);
+  }
+
+  mixtureName_[indexMixture] = idName;
+  data_[indexMixture]["data"] = dataJson;
+  data_[indexMixture]["time"] = timeJson;
 
 }
-
 
 nlohmann::json DataExtractorJson::jsonReturnVal() const {
   nlohmann::json mixtureNameJson ;

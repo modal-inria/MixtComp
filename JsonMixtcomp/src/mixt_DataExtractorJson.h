@@ -58,9 +58,9 @@ class DataExtractorJson
                     const std::vector<RankStat>& dataStat);
 
     /** Export function for Functional model */
-    void exportVals(const Index&,
-    				const std::string&,
-					const Vector<mixt::Function>&);
+    void exportVals(int indexMixture,
+        std::string idName,
+        const Vector<Function>& data);
 
     nlohmann::json jsonReturnVal() const;
   private:
