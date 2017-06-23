@@ -530,8 +530,6 @@ class Ordinal : public IMixture
       return 1;
     }
 
-    bool observedCorrection() {return false;}
-
   private:
     /**
      * Sample the next mu for the class k and initialize the individuals in the class using it.

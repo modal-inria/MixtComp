@@ -336,8 +336,6 @@ class FunctionalMixture : public IMixture {
      */
     void initParam() {};
 
-    bool observedCorrection() {return true;}
-
   private:
     std::string checkMissingType() {
       std::string warnLog;

@@ -152,11 +152,12 @@ class IMixture {
     virtual void initData(Index ind) = 0;
 
     /**
-     * Initialization of parameters. Useful for some parameters that use a Markov Chain which needs to be initialized.
+     * Initialization of parameters.
+     * Useful for some parameters that use a Markov Chain which needs to be initialized.
+     * Should be modified to take a vector of indices, one per class, indicating which individual to use
      */
     virtual void initParam() = 0;
 
-    virtual bool observedCorrection() = 0;
   protected:
     /** Index of the mixture, useful to write the results at the correct place in th output. */
     Index indexMixture_;

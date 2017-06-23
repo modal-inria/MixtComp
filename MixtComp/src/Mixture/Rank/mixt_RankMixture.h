@@ -385,8 +385,6 @@ class RankMixture : public IMixture
       }
     }
 
-    bool observedCorrection() {return false;}
-
   private:
     std::string checkMissingType() {
       std::string warnLog;

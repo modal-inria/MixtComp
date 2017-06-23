@@ -250,8 +250,6 @@ class MixtureBridge : public IMixture {
       }
     }
 
-    bool observedCorrection() {return true;}
-
   protected:
     /** Pointer to the zik class label */
     const Vector<Index>* p_zi_;
