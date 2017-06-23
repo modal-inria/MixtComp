@@ -2,6 +2,10 @@
 .Rhistory
 .RData
 .svn
+*.aux
+*.toc
+*.log
+*.synctex.gz
 *.o
 *.so
 *.a
