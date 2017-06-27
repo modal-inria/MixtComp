@@ -265,7 +265,7 @@ class FunctionalMixture : public IMixture {
       p_dataExtractor_->exportVals(
     		  indexMixture_,
     		  idName_,
-			  vecInd_); // export the missing values here, when they will be support for them
+			    vecInd_); // export the missing values here, when they will be support for them
 
       Index sizeClassAlpha = nSub_ * 2;
       Index sizeClassBeta  = nSub_ * nCoeff_;
@@ -328,13 +328,34 @@ class FunctionalMixture : public IMixture {
     };
 
     void initData(Index i) {
-      vecInd_(i).removeMissingQuantile(quantile_);
+      vecInd_(i).removeMissingQuantile(quantile_); // since initParam performs an mStep on a single individual, removeMissing must be called from initParam
     };
 
     /**
-     * Parameters are estimated directly, hence no need for a specific initialization
+     * @param initObs each element is the index of an individual used in initialization
      */
-    void initParam() {};
+    void initParam(const Vector<Index>& initObs) {
+      Vector<std::set<Index> > initClassInd(nClass_);
+      // backup the original setInt generate the setInd used for the computation
+
+      // loop for each individual:
+        // compute the quantiles used in this initialisation
+        // apply the quantiles for initialization
+
+//      for (Index k = 0; k < nClass_; ++k) {
+//        Vector<Real> quantile;
+//        globalQuantile(vecInd_, quantile);
+//
+//      }
+
+      // restore the original setInd object
+
+
+      // note that it is not necessary to restore the quantiles for
+//      for (Index i = 0; i < nInd_; ++i) {
+//        vecInd_(i).removeMissingQuantile(quantile); // since initParam performs an mStep on a single individual, removeMissing must be called from initParam
+//      }
+    };
 
   private:
     std::string checkMissingType() {
@@ -393,7 +414,6 @@ class FunctionalMixture : public IMixture {
 
     /** Data */
     Vector<Function> vecInd_;
-
     Vector<Real> quantile_;
 
     const Vector<Index>* p_zi_;

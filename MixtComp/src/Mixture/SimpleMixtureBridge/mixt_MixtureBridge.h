@@ -231,7 +231,7 @@ class MixtureBridge : public IMixture {
       augData_.removeMissing(i);
     }
 
-    void initParam() {};
+    void initParam(const Vector<Index>& initObs) {};
 
     Index checkSampleCondition(std::string* warnLog = NULL) const {
       if (warnLog == NULL) {

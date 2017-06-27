@@ -1,21 +1,13 @@
-To do list specific to MixtComp
+# Current
 
-# Urgent modification
+## Initialization
+- the mStep just after initParam will be suppressed, as it would erase the result of initParam
+	- what is need after initParam are eStep and sStep
+	- it is the case in both SEMAlgo::runCheck and SEMAlgo::runNoCheck at the moment, so everything is fine
+- Functionnal
+	- How to initialize alpha ? Are there no problem to initialize it from a single individual ?
 
-## Precise modifications
-
-- in Predict mode with functional data, the logStorage_ (defined in mixt_ConfIntParamStat.h) isn't initialized in setParamStorage() (defined in mixt_ConfIntParamStat.h), unlike statStorage_ .. But exportDataParam() (defined in mixt_FunctionalMixture.h) tries to get it nonetheless : what's the role of logStorage_ in Predict Mode ? should it be initialized or should exportDataParam() be modified ?
-
-### Order of implementation, each step should result in a working version of MixtComp
-- new initialization by partitioning and ordering, while keeping everything else as of today. This way the new initialization will benefit MixtComp while further updates are implemented
-- updated parameter normalization, as this can be used with parameterEdgeAuthorized = TRUE in current version
-- multiple initialization, without detection of degeneracy, only keeping the best run
-	- only strategy is no check with normalization
-- detection of degeneracy
-	- normalization
-- removal of Gibbs and all unused code (samplingStepCheck, etc ...)
-
-### IMixture
+## IMixture
 - remove samplingStepCheck
 - samplingStepNoCheck becomes samplingStep
 - keep checkSampleCondition, except that in the implementation, only return false for unbounded likelihood
@@ -23,17 +15,11 @@ To do list specific to MixtComp
 - add pushParametersToCache and pullParametersFromCache methods
 - composer.p_zi() and composer.classInd() are there in all mixture, why not include them in IMixture ?
 
-### Mixture
-- When must the parameters be bounded ? For example, when a proportion is estimated at 0 ?
-	- how to select the bound ? Relative to other values ?
-- Ordinal
-	- remove zCondition parameters
-	
-### Parameters normalization
-- Multinomial: add 1 / n to each proportion, then normalize, to avoid 0 valued proportions
-- For parameters with a dispersion value, 
+## removal of Gibbs
 
-### SemStrategy
+- Ordinal: remove zCondition parameters first, then modify until compilation
+
+## SemStrategy
 - initSEMCheck has to be removed and only initSEMNoCheck and runSEMNoCheck must be kept
 - launch 10 identical runs, compare the log observed likelihood and keep the better one
 	- how to keep all the parameters and of the last best run ?
@@ -44,15 +30,14 @@ To do list specific to MixtComp
 ## SemAlgo
 - only keep runNoCheck
 
-## Initialization
-
-- Est-ce qu'il ne vaudrait pas mieux initialiser les paramètres en tirant des individus, pour aller plus vite
-- Initialiser en générant une liste de z
-    - soit le modèle est capable d'estimer à partir d'un individu, et c'est le centre de la classes
-    - soit il peut pas (multinomial), et dans ce cas, il utilise plus d'éléments de la liste pour initialiser. Le cas limite étant de tout utiliser comme actuellement.
-    - au pire des cas on est dans le cas actuel, et au mieux, on explore mieux l'espace
-- Si l'algo est plus rapide, on peut intégrer les initalisations multiples, et renvoyer à l'utilisateur seulement le meilleur.
-- For Poisson, systematically add a constant to the sampled value. This way, the lambda parameter will not be 0 even if the sampled individual has a 0 value.
+## Order of implementation, each step should result in a working version of MixtComp
+- new initialization by partitioning and ordering, while keeping everything else as of today. This way the new initialization will benefit MixtComp while further updates are implemented
+- updated parameter normalization, as this can be used with parameterEdgeAuthorized = TRUE in current version
+- multiple initialization, without detection of degeneracy, only keeping the best run
+	- only strategy is no check with normalization
+- detection of degeneracy
+	- normalization
+- removal of Gibbs and all unused code (samplingStepCheck, etc ...)
 
 ## Multi run
 
@@ -63,6 +48,12 @@ To do list specific to MixtComp
 - si en prédiction, avec bornes partout, la variable devient muette
 - remove the Gibbs
 - export the number of degenerate run, so that an expert could reject if there are too many
+
+# Short Term
+
+## Precise modifications
+
+- in Predict mode with functional data, the logStorage_ (defined in mixt_ConfIntParamStat.h) isn't initialized in setParamStorage() (defined in mixt_ConfIntParamStat.h), unlike statStorage_ .. But exportDataParam() (defined in mixt_FunctionalMixture.h) tries to get it nonetheless : what's the role of logStorage_ in Predict Mode ? should it be initialized or should exportDataParam() be modified ?
 
 # Performances
 

@@ -239,7 +239,7 @@ class RankMixture : public IMixture
     /**
      * mu is initialized through direct sampling in each class
      */
-    void initParam() {
+    void initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nbClass_; ++k) {
         MultinomialStatistic multi;
         int sampleIndInClass = multi.sampleInt(0, classInd_[k].size() - 1); // individual sampled inside the class

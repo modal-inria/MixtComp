@@ -16,14 +16,15 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   Index nSub = 2; // number of subregression in the generation / estimation phases
   Index nCoeff = 2; // order of each subregression
   Real xMax = 50.;
-  Real alphaSlope = 0.5;
 
-  Real alpha0 = xMax / 2.;
+  Real alpha0 = - 1.;
+  Real alpha1 = - alpha0 * 2. / xMax;
+
   Index nParam = nSub * 2; // regression order for
 
   Vector<Real> alpha(nParam);
-  alpha << alpha0 * alphaSlope, -alphaSlope, // alpha is linearized in a single vector, for easier looping
-          -alpha0 * alphaSlope,  alphaSlope;
+  alpha << 0., 0., // alpha is linearized in a single vector, for easier looping
+           alpha0,  alpha1;
 
   Matrix<Real> beta(nSub, nCoeff + 1);
   beta.row(0) <<  0.,  1., 0.; // y =  x      + N(0, 1)
@@ -83,6 +84,9 @@ TEST(FunctionalClass, optimOneclassOneInd) {
     alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
   }
 
+  std::cout << "alpha: " << itString(alpha) << std::endl;
+  std::cout << "alphaComputed: " << itString(alphaComputed) << std::endl;
+
   ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 }
 
@@ -92,14 +96,15 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
   Index nSub = 2; // number of subregression in the generation / estimation phases
   Index nCoeff = 2; // order of each subregression
   Real xMax = 50.;
-  Real alphaSlope = 0.5;
 
-  Real alpha0 = xMax / 2.;
+  Real alpha0 = - 1.;
+  Real alpha1 = - alpha0 * 2. / xMax;
+
   Index nParam = nSub * 2; // regression order for
 
   Vector<Real> alpha(nParam);
-  alpha << alpha0 * alphaSlope, -alphaSlope, // alpha is linearized in a single vector, for easier looping
-          -alpha0 * alphaSlope,  alphaSlope;
+  alpha << 0., 0., // alpha is linearized in a single vector, for easier looping
+           alpha0, alpha1;
 
   Matrix<Real> beta(nSub, nCoeff);
   beta.row(0) <<  0.,  1.; // y =  x
@@ -161,6 +166,9 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
     alphaComputed(2 * s    ) = funcClass.alpha()(s, 0);
     alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
   }
+
+  std::cout << "alpha: " << itString(alpha) << std::endl;
+  std::cout << "alphaComputed: " << itString(alphaComputed) << std::endl;
 
   ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
   ASSERT_EQ(true, funcClass.beta().isApprox(beta, 0.1));

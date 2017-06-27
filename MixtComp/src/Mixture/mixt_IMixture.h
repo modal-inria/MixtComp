@@ -156,7 +156,7 @@ class IMixture {
      * Useful for some parameters that use a Markov Chain which needs to be initialized.
      * Should be modified to take a vector of indices, one per class, indicating which individual to use
      */
-    virtual void initParam() = 0;
+    virtual void initParam(const Vector<Index>& initObs) = 0;
 
   protected:
     /** Index of the mixture, useful to write the results at the correct place in th output. */

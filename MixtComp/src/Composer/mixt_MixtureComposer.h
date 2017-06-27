@@ -298,6 +298,9 @@ class MixtureComposer {
 
     void initData();
 
+    /**
+     * Sample an individual per class, to perform the initialization of each model.
+     */
     void initParam();
 
     /**

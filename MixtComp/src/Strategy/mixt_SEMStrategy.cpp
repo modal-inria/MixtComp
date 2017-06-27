@@ -84,14 +84,14 @@ std::string SemStrategy::initSEMCheck() {
 
     if (n < nbSamplingAttempts - 1) {
       if (p_composer_->checkSampleCondition() == 1) { // log is not generated, since further trials are expected
-        p_composer_->mStep(unBiased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
+//        p_composer_->mStep(unBiased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
         break;
       }
     }
     else { // last trial, will generate a descriptive log if not successful
       std::string sWarn;
       if (p_composer_->checkSampleCondition(&sWarn) == 1) { // log is generated only during last trial
-        p_composer_->mStep(unBiased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
+//        p_composer_->mStep(unBiased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
       }
       else {
         std::stringstream sstm;
@@ -110,7 +110,7 @@ void SemStrategy::initSEMNoCheck() {
   p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
   p_composer_->initParam(); // initialize Markov Chain for model parameters which need it
 
-  p_composer_->mStep(biased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
+//  p_composer_->mStep(biased_); // this mStep call ensure that all variable have a correct initialization of parameter, usable in the subsequent call to eStep
 }
 
 RunProblemType SemStrategy::runSEMCheck(SamplerType sampler) {

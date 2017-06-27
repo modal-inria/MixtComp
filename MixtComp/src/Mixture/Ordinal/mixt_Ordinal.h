@@ -453,7 +453,7 @@ class Ordinal : public IMixture
       path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
     };
 
-    void initParam() {
+    void initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nbClass_; ++k) {
         mu_ = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
       }

@@ -17,8 +17,8 @@ using namespace mixt;
 TEST(FunctionalMixture, compilation) {
   Vector<std::set<Index> > classInd;
 
-  FunctionalMixture<DataHandlerDummy,
-                    DataExtractorDummy,
-                    ParamSetterDummy,
-                    ParamExtractorDummy> dummyFunctionalMixture(classInd);
+//  FunctionalMixture<DataHandlerDummy,
+//                    DataExtractorDummy,
+//                    ParamSetterDummy,
+//                    ParamExtractorDummy> dummyFunctionalMixture(classInd);
 }

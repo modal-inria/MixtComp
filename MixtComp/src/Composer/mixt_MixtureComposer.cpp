@@ -387,8 +387,20 @@ void MixtureComposer::initData() {
 }
 
 void MixtureComposer::initParam() {
-	for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->initParam();
+  Vector<Index> allObs(nbInd_);
+  for (Index i = 0; i < nbInd_; ++i) {
+    allObs(i) = i;
+  }
+  MultinomialStatistic multi;
+  multi.shuffle(allObs);
+
+  Vector<Index> initObs(nbClass_); // observations used to initialize individuals
+  for (Index i = 0; i < nbClass_; ++i) {
+    initObs(i) = allObs(i);
+  }
+
+	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+		(*it)->initParam(initObs);
 	}
 }
 
@@ -397,7 +409,7 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 	ekj = 0.;
 
 	for (Index i = 0; i < nbInd_; ++i) {
-		for(Index j = 0; j < nbVar_; ++j) {
+		for (Index j = 0; j < nbVar_; ++j) {
 			Vector<Real> lnP(nbClass_); // ln(p(z_i = k, x_i^j))
 			Vector<Real> t_ik_j(nbClass_); // p(z_i = k / x_i^j)
 			for (Index k = 0; k < nbClass_; ++k) {
