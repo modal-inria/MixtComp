@@ -1,29 +1,50 @@
-extractCIGaussianVble = function(var, data){
+################################################################################
+### Confidence levels
+
+## Get
+extractCIboundsOneVble = function(var, data, class, grl){
+  out <- NULL
+  type <- data$variable$type[[var]]
+  if (type == "Gaussian_sjk") out <- extractCIGaussianVble(var, data, class, grl)
+  if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data, class, grl)
+  if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data, class, grl)
+  if (type == "Functional") out <-  extractCIFunctionnalVble(var, data, class, grl)
+  return(out)
+}
+
+## CI bounds for numerical variables (Gaussian or Poisson)
+extractCIGaussianVble = function(var, data, class, grl){
   theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], ncol=2, byrow=TRUE)
   means = as.array(round(theta[,1], 3))
   lowers = as.array(round(qnorm(0.025, theta[,1], sqrt(theta[,2])), 3))
-  return(list(mean = means,lower = lowers))
+  uppers = as.array(round(qnorm(0.975, theta[,1], sqrt(theta[,2])), 3))
+  means <- means[class]
+  lowers <- lowers[class]
+  uppers <- uppers[class]
+  if (grl){
+    means <- c(means, mean(data$variable$data[[var]]$completed))
+    bounds <- ceiling(c(0.025, 0.975) * length(data$variable$data[[var]]$completed))
+    tmp <- sort(data$variable$data[[var]]$completed)[bounds]
+    lowers <- c(lowers, tmp[1])
+    uppers <- c(uppers, tmp[2])
+  }
+  return(list(mean = means, lower = lowers, uppers=uppers))
 }
 
-extractBoundsBoxplotNumericalVble = function(var, data) {
-  obs = data$variable$data[[var]]$completed
-  tik = data$variable$data$z_class$stat
-  
-  orderedIndices = order(obs)
-  cumsums = apply(tik[orderedIndices,, drop=F], 2, cumsum)
-  cumsums = t(t(cumsums) / cumsums[nrow(cumsums), ])
-  thresholds = sapply(c(.05, .25, .5, .75, .95), function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], cumsums=cumsums)
-  return(matrix(thresholds, nrow=data$mixture$nbCluster))
+extractCIPoissonVble = function(var, data, class, grl){
+  theta <- as.array(data$variable$param[[var]]$NumericalParam$stat[class,1])
+  if (grl)  theta <- cbind(theta, mean(data$variable$data[[var]]$completed))
+  return(list(mean = theta, lower = qpois(0.025, theta), uppers=qpois(0.975, theta)))
 }
 
-extractCIPoissonVble = function(var, data){
-  theta = as.array(data$variable$param[[var]]$NumericalParam$stat[,1])
-  return(list(mean = theta,lower = qpois(0.025, theta), upper=qpois(0.975, theta)))
-}
-
-extractCIMultiVble = function(var, data){
+## Categorical variables
+extractCIMultiVble = function(var, data, class, grl){
   theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], nrow=data$mixture$nbCluster, byrow=TRUE)
-  
+  theta <- theta[class, ,drop=FALSE]
+  if (grl){
+    tmp <- table(data$variable$data[[var]]$completed)
+    theta <- rbind(theta, tmp/sum(tmp))
+  }
   for (k in 1:nrow(theta)){
     orderk <- order(theta[k,], decreasing=TRUE)
     keep <- orderk[1:which(cumsum(theta[k, orderk])>0.95)[1]]
@@ -37,25 +58,8 @@ extractCIMultiVble = function(var, data){
   return(list(levels=out[,1], probs = t(out[,-1, drop = FALSE])))
 }
 
-extractBoundsBoxplotCategoricalVble <- function(var, data) {
-  obs = data$variable$data[[var]]$completed
-  tik = data$variable$data$z_class$stat
-  
-  levels <- sort(unique(obs))
-  probs <- t(sapply(1:data$mixture$nbCluster, 
-                    function(k, tik, obs)
-                      sapply(levels,
-                             function(w, obs, level) sum(w * (obs == level)),
-                             w=tik[,k],
-                             obs=obs
-                      ) / sum(tik[,k]),
-                    tik=tik ,
-                    obs=obs
-  ))
-  return(list(levels=levels, probs=probs))
-}
-
-## To compute the mean curve per component
+## Functional variables
+# To compute the mean curve per component
 functionalmeanVal <- function(Tt, alpha, beta){
   weights <- alpha[,2] * Tt + alpha[,1]
   weights <- weights - max(weights)
@@ -65,10 +69,10 @@ functionalmeanVal <- function(Tt, alpha, beta){
   sum((beta[,1] + beta[,2] * Tt) * weights)
 }
 
-## Tool function for assessing the quantile for the functional model
+# Tool function for assessing the quantile for the functional model
 objectivefunctional <- function(x, pi, mu, s, seuil) (sum(pi*pnorm(x, mu, s)) - seuil)**2
 
-## To compute the lower/upper bound of the 95%-level confidence interval of the curve per component
+# To compute the lower/upper bound of the 95%-level confidence interval of the curve per component
 functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
   weights <- alpha[,1] + alpha[,2] * Tt
   weights <- weights - max(weights)
@@ -77,16 +81,6 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
   weigths <- round(weights,4)
   weights <- weigths/sum(weights)
   means <- beta[,1] + beta[,2] * Tt 
-  # Newton-Raphson to get the bound
-  # u <-  sum(qnorm(borne, means, sqrt(sigma))*(weights))
-  # Fu <- function(u) (sum(weights * pnorm(u, means, sqrt(sigma)) ) - borne)
-  # fu <- function(u) 2*sum(weights * dnorm(u, means, sqrt(sigma)) )
-  # cond <- 1
-  # while (cond ==1 ){
-  #   u <- u - Fu(u) / fu(u)
-  #   cond <- (abs(Fu(u))> 0.0001)
-  #   if (is.na(cond)){u <- qnorm(borne, means, sqrt(sigma))[which.max(weights)]; cond <- 0;}
-  # }
   return(
     optimize(objectivefunctional,
              interval = range(qnorm(borne-0.001, means, sigma)[which(weights!=0)], qnorm(borne+0.001, means, sigma)[which(weights!=0)]),
@@ -114,33 +108,74 @@ extractCIFunctionnalVble = function(var, data){
     infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
     supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
   }
-  
-  #out <- data.frame(Time=Tseq, meancurve, infcurve, supcurve)
-  #colnames(out) <- c("Time",
-  #                   paste("mean.class", 1:G, sep="."), 
-  #                   paste("inf.class", 1:G, sep="."), 
-  #                   paste("sup.class", 1:G, sep="."))
   out = list(time=Tseq, mean=t(meancurve), inf=t(infcurve), sup=t(supcurve))
   return(out)
 }
 
-extractCIboundsOneVble = function(var, data){
+
+############################################################################################
+#### Boxplots
+
+## Get
+extractBoxplotInfoOneVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE){
   out <- NULL
-  #eval(parse(text=paste("type <- data$variable$type$", var,sep="")))
   type <- data$variable$type[[var]]
-  if (type == "Gaussian_sjk") out <- extractCIGaussianVble(var, data)
-  if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data)
-  if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data)
+  if ((type == "Gaussian_sjk") || (type == "Poisson_k")) out <- extractBoundsBoxplotNumericalVble(var, data, class, grl)
+  if (type == "Categorical_pjk") out <-  extractBoundsBoxplotCategoricalVble(var, data, class, grl)
   if (type == "Functional") out <-  extractCIFunctionnalVble(var, data)
   return(out)
 }
 
-extractBoxplotInfoOneVble <- function(var, data){
-  out <- NULL
-#  eval(parse(text=paste("type <- data$variable$type$", var,sep="")))
-  type <- data$variable$type[[var]]
-  if ((type == "Gaussian_sjk") || (type == "Poisson_k")) out <- extractBoundsBoxplotNumericalVble(var, data)
-  if (type == "Categorical_pjk") out <-  extractBoundsBoxplotCategoricalVble(var, data)
-  if (type == "Functional") out <-  extractCIFunctionnalVble(var, data)
-  return(out)
+## Numerical variables 
+extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE) {
+  obs <- data$variable$data[[var]]$completed
+  tik <- data$variable$data$z_class$stat
+  orderedIndices <- order(obs)
+  cumsums <- apply(tik[orderedIndices,, drop=F], 2, cumsum)
+  cumsums <- t(t(cumsums) / cumsums[nrow(cumsums), ])
+  thresholds <- sapply(c(.05, .25, .5, .75, .95), 
+                       function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], 
+                       cumsums=cumsums)
+  thresholds <- matrix(thresholds, nrow=data$mixture$nbCluster)
+  thresholds <- thresholds[class, , drop=FALSE]
+  rownames(thresholds) <- paste("component", class)
+  colnames(thresholds) <- paste("quantil.", c(.05, .25, .5, .75, .95))
+  if (grl){
+    obs <- sort(data$variable$data[[var]]$completed, decreasing = FALSE)
+    tmp <- round(c(.05, .25, .5, .75, .95) * length(obs))
+    if (any(tmp==0)) tmp[which(tmp==0)] <- 1
+    if (any(tmp>length(obs))) tmp[which(tmp>length(obs))] <- length(obs)
+    thresholds <- rbind(thresholds, obs[tmp])
+    rownames(thresholds)[nrow(thresholds)] <- "general"
+  }
+  
+  return(thresholds)
 }
+
+## Categorical variables 
+extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE) {
+  obs <- data$variable$data[[var]]$completed
+  tik <- data$variable$data$z_class$stat
+  levels <- sort(unique(obs))
+  probs <- t(sapply(1:data$mixture$nbCluster, 
+                    function(k, tik, obs)
+                      sapply(levels,
+                             function(w, obs, level) sum(w * (obs == level)),
+                             w=tik[,k],
+                             obs=obs
+                      ) / sum(tik[,k]),
+                    tik=tik ,
+                    obs=obs
+  ))
+  probs <- probs[class, , drop=FALSE]
+  rownames(probs) <- paste("component", class)
+  colnames(probs) <- levels
+  if (grl){
+    obs <- sort(table(data$variable$data[[var]]$completed), decreasing = TRUE)
+    obs <- obs/sum(obs)
+    probs <- rbind(probs, obs)
+    rownames(probs)[nrow(probs)] <- "general"
+  }
+  return(list(levels=levels, probs=probs))
+}
+
