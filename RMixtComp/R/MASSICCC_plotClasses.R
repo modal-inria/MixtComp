@@ -4,7 +4,7 @@
 # Rows correspond to observations and column correspond to component
 # Here, few types of data are allowed: continuous or categorical
 # The other types of data must be implemented
-logmixcomp <- function(output){
+computelogtikmixcomp <- function(output){
   param <- output$variable$param
   x <- output$variable$data
   logtik <- matrix(0, length(x$z_class$completed), output$mixture$nbCluster)
@@ -34,7 +34,7 @@ logmixcomp <- function(output){
 # This function generates a sample from the model defined by the object output returned
 # by the R package Rmixtcomp
 rlogtikmixcomp <- function(output){
-  logmixcomp(output)
+  computelogtikmixcomp(output)
 }
 
 
@@ -52,6 +52,6 @@ rlogtikmixcomp <- function(output){
 
 clusvisMixcomp <- function(resmixcomp, sample.size=5000, maxit=10**3, nbrandomInit=12, nbcpu=3){
   logtik.estim <- rlogtikmixcomp(output)
-  out <- clusvis(logtik.estim, prop=resmixcomp$variable$param$z_class$pi$stat[,1], logtik.obs=logmixcomp(resmixcomp), maxit, nbrandomInit, nbcpu)
+  out <- clusvis(logtik.estim, prop=resmixcomp$variable$param$z_class$pi$stat[,1], logtik.obs=computelogtikmixcomp(resmixcomp), maxit, nbrandomInit, nbcpu)
   return(out)
 }
