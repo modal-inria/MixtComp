@@ -33,7 +33,7 @@ computelogtikmixcomp <- function(output){
 
 # This function generates a sample from the model defined by the object output returned
 # by the R package Rmixtcomp
-rlogtikmixcomp <- function(output){
+rlogtikmixcomp <- function(output, sample.size){
   computelogtikmixcomp(output)
 }
 

@@ -2,13 +2,13 @@
 ### Confidence levels
 
 ## Get
-extractCIboundsOneVble = function(var, data){
+extractCIboundsOneVble = function(var, data, class, grl){
   out <- NULL
   type <- data$variable$type[[var]]
-  if (type == "Gaussian_sjk") out <- extractCIGaussianVble(var, data)
-  if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data)
-  if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data)
-  if (type == "Functional") out <-  extractCIFunctionnalVble(var, data)
+  if (type == "Gaussian_sjk") out <- extractCIGaussianVble(var, data, class, grl)
+  if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data, class, grl)
+  if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data, class, grl)
+  if (type == "Functional") out <-  extractCIFunctionnalVble(var, data, class, grl)
   return(out)
 }
 
@@ -117,37 +117,43 @@ extractCIFunctionnalVble = function(var, data){
 #### Boxplots
 
 ## Get
-extractBoxplotInfoOneVble <- function(var, data){
+extractBoxplotInfoOneVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE){
   out <- NULL
   type <- data$variable$type[[var]]
-  if ((type == "Gaussian_sjk") || (type == "Poisson_k")) out <- extractBoundsBoxplotNumericalVble(var, data)
-  if (type == "Categorical_pjk") out <-  extractBoundsBoxplotCategoricalVble(var, data)
+  if ((type == "Gaussian_sjk") || (type == "Poisson_k")) out <- extractBoundsBoxplotNumericalVble(var, data, class, grl)
+  if (type == "Categorical_pjk") out <-  extractBoundsBoxplotCategoricalVble(var, data, class, grl)
   if (type == "Functional") out <-  extractCIFunctionnalVble(var, data)
   return(out)
 }
 
-## Numerical variables (mixture)
-extractBoundsBoxplotNumericalVble = function(var, data) {
-  obs = data$variable$data[[var]]$completed
-  tik = data$variable$data$z_class$stat
-  orderedIndices = order(obs)
-  cumsums = apply(tik[orderedIndices,, drop=F], 2, cumsum)
-  cumsums = t(t(cumsums) / cumsums[nrow(cumsums), ])
-  thresholds = sapply(c(.05, .25, .5, .75, .95), function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], cumsums=cumsums)
-  return(matrix(thresholds, nrow=data$mixture$nbCluster))
+## Numerical variables 
+extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE) {
+  obs <- data$variable$data[[var]]$completed
+  tik <- data$variable$data$z_class$stat
+  orderedIndices <- order(obs)
+  cumsums <- apply(tik[orderedIndices,, drop=F], 2, cumsum)
+  cumsums <- t(t(cumsums) / cumsums[nrow(cumsums), ])
+  thresholds <- sapply(c(.05, .25, .5, .75, .95), 
+                       function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], 
+                       cumsums=cumsums)
+  thresholds <- matrix(thresholds, nrow=data$mixture$nbCluster)
+  thresholds <- thresholds[class, , drop=FALSE]
+  rownames(thresholds) <- paste("component", class)
+  colnames(thresholds) <- paste("quantil.", c(.05, .25, .5, .75, .95))
+  if (grl){
+    obs <- sort(data$variable$data[[var]]$completed, decreasing = FALSE)
+    tmp <- round(c(.05, .25, .5, .75, .95) * length(obs))
+    if (any(tmp==0)) tmp[which(tmp==0)] <- 1
+    if (any(tmp>length(obs))) tmp[which(tmp>length(obs))] <- length(obs)
+    thresholds <- rbind(thresholds, obs[tmp])
+    rownames(thresholds)[nrow(thresholds)] <- "general"
+  }
+  
+  return(thresholds)
 }
 
-## Numerical variables (full dataset)
-extractBoundsBoxplotGrlNumericalVble <-  function(var, data) {
-  obs <- sort(data$variable$data[[var]]$completed, decreasing = FALSE)
-  threshold <- round(c(.05, .25, .5, .75, .95) * length(obs))
-  if (any(threshold==0)) threshold[which(threshold==0)] <- 1
-  if (any(threshold>length(obs))) threshold[which(threshold>length(obs))] <- length(obs)
-  return(obs[threshold])
-}
-
-## Categorical variables (mixture)
-extractBoundsBoxplotCategoricalVble <- function(var, data) {
+## Categorical variables 
+extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE) {
   obs <- data$variable$data[[var]]$completed
   tik <- data$variable$data$z_class$stat
   levels <- sort(unique(obs))
@@ -161,13 +167,15 @@ extractBoundsBoxplotCategoricalVble <- function(var, data) {
                     tik=tik ,
                     obs=obs
   ))
+  probs <- probs[class, , drop=FALSE]
+  rownames(probs) <- paste("component", class)
+  colnames(probs) <- levels
+  if (grl){
+    obs <- sort(table(data$variable$data[[var]]$completed), decreasing = TRUE)
+    obs <- obs/sum(obs)
+    probs <- rbind(probs, obs)
+    rownames(probs)[nrow(probs)] <- "general"
+  }
   return(list(levels=levels, probs=probs))
 }
 
-## Categorical variables (full dataset)
-extractBoundsBoxplotGrlCategoricalVble <- function(var, data) {
-  obs <-  sort(table(data$variable$data[[var]]$completed), decreasing = TRUE)
-  obs <- obs/sum(obs)
-  obs <- obs[1:(which(cumsum(obs) > 0.95)[1])]
-  return(list(levels=names(obs), probs=obs))
-}
