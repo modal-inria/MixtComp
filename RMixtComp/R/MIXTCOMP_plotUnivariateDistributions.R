@@ -46,7 +46,7 @@
 #' } 
 #' 
 #' @author Matthieu MARBAC
-plotDataCI <- function(output, var, ...)
+plotDataCI <- function(output, var, class=1:output$mixture$nbCluster, grl=FALSE,...)
 {
   if(!(var%in%names(output$variable$type)))
     stop("This variable does not exist in the mixture model.")
@@ -54,47 +54,57 @@ plotDataCI <- function(output, var, ...)
   type <- output$variable$type[[var]]
   
   switch(type,
-         "Gaussian_sjk" = plotCIContinuousData(extractCIGaussianVble(var, output)),
-         "Categorical_pjk" = plotCategoricalData(extractCIMultiVble(var, output)),
-         "Poisson_k" = plotCIIntegerData(extractCIPoissonVble(var, output)),
+         "Gaussian_sjk" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, class, grl),
+         "Categorical_pjk" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl),
+         "Poisson_k" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl),
          "Functional" = plotFunctionalData(output, var, ...),
          cat("Not yet implemented"))
 }
 
 
-# Mean and 95%-level confidence intervals per class for a Gaussian Mixture
-plotCIContinuousData <- function(data){
-  p <- plot_ly(x=data$mean,
+# Mean and 95% confidence level per class for a numeric variable (Gaussian or Poisson)
+plotCINumericData <- function(data, var, class, grl){
+  text1 <- paste0("Class.", class, "<br>",
+                 "Mean: ", round(data$mean[1:length(class)],2), "<br>",
+                 "CI-95%: [", round(data$lower[1:length(class)],2),
+                 ",", round(data$uppers[1:length(class)],2),"]")
+  if (grl) text1 <- c(text1, paste0("Grl <br>",
+                                    "Mean: ", round(data$mean[length(data$mean)],2), "<br>",
+                                    "CI-95%: [", round(data$lower[length(data$mean)],2),
+                                    ",", round(data$uppers[length(data$mean)],2),"]"))
+  p <- plot_ly(x=data$mean, 
                y=c(1:length(data$mean)),
                type="scatter",
                mode = 'markers',
                showlegend = FALSE,
                hoverinfo = "text",
-               text = paste("Class.", 1:length(data$mean), "<br>",
-                            "Mean: ", round(data$mean,2), "<br>",
-                            "CI-95%: [", round(data$lower,2),
-                            ",", round(2*data$mean - data$lower,2),"]",sep="")
+               text = text1
   )%>%layout(title = "Mean and 95%-level confidence intervals per class",
-           paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
-           xaxis = list(title = var,
-                        gridcolor = 'rgb(255,255,255)',
-                        showgrid = TRUE,
-                        showline = FALSE,
-                        showticklabels = TRUE,
-                        tickcolor = 'rgb(127,127,127)',
-                        ticks = 'outside',
-                        zeroline = FALSE),
-           yaxis = list(title = "Classes",
-                        gridcolor = 'rgb(255,255,255)',
-                        showgrid = F,
-                        showline = FALSE,
-                        showticklabels = T,
-                        tickvals=1:length(data$mean),
-                        tickcolor = 'rgb(127,127,127)',ticks="",
-                        zeroline = FALSE))
-  for(i in 1:length(data$mean)){
+             paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
+             xaxis = list(title = var,
+                          titlefont = list(
+                            family = "Arial, sans-serif",
+                            size = 18,
+                            color = "lightgrey"
+                          ),
+                          gridcolor = 'rgb(255,255,255)',
+                          showgrid = TRUE,
+                          showline = FALSE,
+                          showticklabels = TRUE,
+                          tickcolor = 'rgb(127,127,127)',
+                          ticks = 'outside',
+                          zeroline = FALSE,
+                          range=c(min(data$lower), max(data$uppers)) + c(-1,1) * abs(max(data$uppers)-min(data$lower))/10),
+             yaxis = list(title = var,
+                          gridcolor = 'rgb(255,255,255)',
+                          showgrid = F,
+                          showline = FALSE,
+                          showticklabels = F,
+                          tickcolor = 'rgb(127,127,127)',ticks="",
+                          zeroline = FALSE))
+  for(i in 1:length(class)){
     p <- add_trace(p,
-                   x = c(data$lower[i], 2*data$mean[i] - data$lower[i]),  # x0, x1
+                   x = c(data$lower[i], data$uppers[i]),  # x0, x1
                    y = c(i, i),  # y0, y1
                    mode = "lines",
                    line = list(color='rgba(0,100,80,0.4)',width = 20),
@@ -103,72 +113,95 @@ plotCIContinuousData <- function(data){
                    text = paste("Class.", i, "<br>",
                                 "Mean: ", round(data$mean[i],2), "<br>",
                                 "CI-95%: [", round(data$lower[i],2),
-                                ",", round(2*data$mean[i] - data$lower[i],2),"]",sep="")
+                                ",", round(data$uppers[i],2),"]",sep="")
     )
   }
-  print(p)
-}
-
-# Mean and 95%-level confidence intervals per class for a Poisson Mixture
-plotCIIntegerData <- function(data){
-  p <- plot_ly(x=data$mean,
-               y=1:length(data$mean),
-               type="scatter",
-               mode = 'markers',
-               showlegend = FALSE,
-               hoverinfo = "text",
-               text = paste("Class.", 1:length(data$mean), "<br>",
-                            "Mean: ", round(data$mean,2), "<br>",
-                            "CI-95%: [", round(data$lower,2),
-                            ",", round(data$upper,2),"]",sep="")
-  )%>%
-    layout(title = "Mean and 95%-level confidence intervals per class",
-           paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
-           xaxis = list(title = var,
-                        gridcolor = 'rgb(255,255,255)',
-                        showgrid = TRUE,
-                        showline = FALSE,
-                        showticklabels = TRUE,
-                        tickcolor = 'rgb(127,127,127)',
-                        ticks = 'outside',
-                        zeroline = FALSE),
-           yaxis = list(title = "Classes",
-                        gridcolor = 'rgb(255,255,255)',
-                        showgrid = F,
-                        showline = FALSE,
-                        showticklabels = T,
-                        tickvals=1:length(data$mean),
-                        tickcolor = 'rgb(127,127,127)',ticks="",
-                        zeroline = FALSE))
-  p
-  for(i in 1:length(data$mean)){
+  if (grl){
+    i <- length(data$lower)
     p <- add_trace(p,
-                   x = c(data$lower[i], data$upper[i]),  # x0, x1
+                   x = c(data$lower[i], data$uppers[i]),  # x0, x1
                    y = c(i, i),  # y0, y1
                    mode = "lines",
-                   line = list(color='rgba(0,100,80,0.4)',width = 20),
+                   line = list(color='rgba(100, 10,80,0.4)',width = 20),
                    showlegend = FALSE,
                    hoverinfo = "text",
                    text = paste("Class.", i, "<br>",
                                 "Mean: ", round(data$mean[i],2), "<br>",
                                 "CI-95%: [", round(data$lower[i],2),
-                                ",", round(data$upper[i],2),"]",sep="")
+                                ",", round(data$uppers[i],2),"]",sep="")
     )
   }
+  
   print(p)
 }
 
-# Mode and 95%-level confidence intervals per class for a Multinomial Mixture
-plotCategoricalData <- function(data){
-  formattedW <- lapply(1:nrow(data$probs), 
+# # Mean and 95%-level confidence intervals per class for a Poisson Mixture
+# plotCIIntegerData <- function(data, var, class, grl){
+#   p <- plot_ly(x=data$mean,
+#                y=1:length(data$mean),
+#                type="scatter",
+#                mode = 'markers',
+#                showlegend = FALSE,
+#                hoverinfo = "text",
+#                text = paste("Class.", 1:length(data$mean), "<br>",
+#                             "Mean: ", round(data$mean,2), "<br>",
+#                             "CI-95%: [", round(data$lower,2),
+#                             ",", round(data$upper,2),"]",sep="")
+#   )%>%
+#     layout(title = "Mean and 95%-level confidence intervals per class",
+#            paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
+#            xaxis = list(title = var,
+#                         gridcolor = 'rgb(255,255,255)',
+#                         showgrid = TRUE,
+#                         showline = FALSE,
+#                         showticklabels = TRUE,
+#                         tickcolor = 'rgb(127,127,127)',
+#                         ticks = 'outside',
+#                         zeroline = FALSE),
+#            yaxis = list(title = var,
+#                         gridcolor = 'rgb(255,255,255)',
+#                         showgrid = F,
+#                         showline = FALSE,
+#                         showticklabels = T,
+#                         tickvals=1:length(data$mean),
+#                         tickcolor = 'rgb(127,127,127)',ticks="",
+#                         zeroline = FALSE))
+#   p
+#   for(i in 1:length(data$mean)){
+#     p <- add_trace(p,
+#                    x = c(data$lower[i], data$upper[i]),  # x0, x1
+#                    y = c(i, i),  # y0, y1
+#                    mode = "lines",
+#                    line = list(color='rgba(0,100,80,0.4)',width = 20),
+#                    showlegend = FALSE,
+#                    hoverinfo = "text",
+#                    text = paste("Class.", i, "<br>",
+#                                 "Mean: ", round(data$mean[i],2), "<br>",
+#                                 "CI-95%: [", round(data$lower[i],2),
+#                                 ",", round(data$upper[i],2),"]",sep="")
+#     )
+#   }
+#   print(p)
+# }
+
+# Barplot for categorical data (only the levels included in the 95 confidence level for at least one component are plotted)
+plotCategoricalData <- function(data, var, class, grl){
+  formattedW <- lapply(1:length(class), 
                        function(k) list(y=data$probs[k,],
                                         type='bar',
                                         hoverinfo = "text",
-                                        text=paste("class", k, sep="."),
+                                        text=paste("class", class[k], sep="."),
                                         showlegend=FALSE,
                                         marker = list(line = list(color = 'black', width = 1.5)))
   )
-  
+  if (grl)
+    formattedW <- c(formattedW,
+                    list(list(y=data$probs[nrow(data$probs),],
+                         type='bar',
+                         hoverinfo = "text",
+                         text="grl",
+                         showlegend=FALSE,
+                         marker = list(line = list(color = 'red', width = 1.5)))))
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
               formattedW,
@@ -184,7 +217,7 @@ plotCategoricalData <- function(data){
                                     ticks = 'outside',
                                     tickvals=data$levels,
                                     zeroline = FALSE),
-                       yaxis = list(title = "Probability",
+                       yaxis = list(title = var,
                                     gridcolor = 'rgb(255,255,255)',
                                     showgrid = TRUE,
                                     showline = FALSE,
@@ -196,12 +229,11 @@ plotCategoricalData <- function(data){
   print(p)
 }
 
-# Mean and 95%-level confidence intervals per class for a Functional Mixture
+# Mean and 95% confidence level confidence  for functional data
 plotFunctionalData <- function(output, var, add.obs=FALSE, ylim=NULL, xlim=NULL){
   # Computation of the Confidence Intervals (CI)
   data <- extractCIFunctionnalVble(var, output)
   G <- output$mixture$nbCluster
-  
   # Computation of the bounds for x-axis and y-axis
   if (is.null(xlim)) xlim <- range(sapply(1:length(output$variable$data[[var]]$time),
                                           function(j) range(output$variable$data[[var]]$time[[j]]) ))

@@ -49,7 +49,7 @@ extractCIFunctionnalVbleDegSup <- function(var, data){
 }
 
 # Mean and 95%-level confidence intervals per class for a Functional Mixture
-plotFunctionalDataDegSup <- function(output, var, add.obs=FALSE, ylim=NULL, xlim=NULL){
+plotFunctionalDataDegSup <- function(output, var, class.set=1:output$mixture$nbCluster,add.obs=FALSE, ylim=NULL, xlim=NULL){
   # Computation of the Confidence Intervals (CI)
   data <- extractCIFunctionnalVbleDegSup(var, output)
   G <- output$mixture$nbCluster
@@ -77,7 +77,7 @@ plotFunctionalDataDegSup <- function(output, var, add.obs=FALSE, ylim=NULL, xlim
     }
   }
   # mean curves and CI are added
-  for(k in 1:G){
+  for(k in class.set){
     formattedW <- c(formattedW,  list(
       list(y = data$inf[k,], 
            type = 'scatter', mode = 'lines',
