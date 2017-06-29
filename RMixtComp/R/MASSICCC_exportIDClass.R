@@ -73,7 +73,7 @@ exportIDClass = function(data) {
               footerStr,
               sep = '\n\n')
   return(out);
-}
+} 
 
 
 # Extract the confidence interval and the mean for each variable
