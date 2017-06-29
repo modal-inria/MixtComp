@@ -16,14 +16,15 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   Index nSub = 2; // number of subregression in the generation / estimation phases
   Index nCoeff = 2; // order of each subregression
   Real xMax = 50.;
-  Real alphaSlope = 0.5;
 
-  Real alpha0 = xMax / 2.;
+  Real alpha1 = 0.5;
+  Real alpha0 = - alpha1 * xMax / 2.;
+
   Index nParam = nSub * 2; // regression order for
 
   Vector<Real> alpha(nParam);
-  alpha << alpha0 * alphaSlope, -alphaSlope, // alpha is linearized in a single vector, for easier looping
-          -alpha0 * alphaSlope,  alphaSlope;
+  alpha << 0., 0., // alpha is linearized in a single vector, for easier looping
+           alpha0, alpha1;
 
   Matrix<Real> beta(nSub, nCoeff + 1);
   beta.row(0) <<  0.,  1., 0.; // y =  x      + N(0, 1)
@@ -92,14 +93,15 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
   Index nSub = 2; // number of subregression in the generation / estimation phases
   Index nCoeff = 2; // order of each subregression
   Real xMax = 50.;
-  Real alphaSlope = 0.5;
 
-  Real alpha0 = xMax / 2.;
+  Real alpha1 = 0.5;
+  Real alpha0 = - alpha1 * xMax / 2.;
+
   Index nParam = nSub * 2; // regression order for
 
   Vector<Real> alpha(nParam);
-  alpha << alpha0 * alphaSlope, -alphaSlope, // alpha is linearized in a single vector, for easier looping
-          -alpha0 * alphaSlope,  alphaSlope;
+  alpha << 0., 0., // alpha is linearized in a single vector, for easier looping
+           alpha0, alpha1;
 
   Matrix<Real> beta(nSub, nCoeff);
   beta.row(0) <<  0.,  1.; // y =  x
