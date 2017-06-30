@@ -13,12 +13,13 @@
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
 #include <boost/math/distributions/uniform.hpp>
+#include "mixt_RNG.h"
 
 namespace mixt
 {
 
 UniformStatistic::UniformStatistic() :
-    rng_(size_t(this) + time(0))
+    rng_(seed(this))
 {}
 
 Real UniformStatistic::cdf(Real x,

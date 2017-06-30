@@ -8,17 +8,18 @@
  **/
 
 #include "mixt_MultinomialStatistic.h"
+#include "mixt_RNG.h"
 
 namespace mixt
 {
 
 MultinomialStatistic::MultinomialStatistic() :
-  rng_(size_t(this) + time(0)),
-  uni_(0.,
-       1.),
-  g_(rng_),
-  generator_(rng_,
-             uni_)
+    rng_(seed(this)),
+    uni_(0.,
+         1.),
+    g_(rng_),
+    generator_(rng_,
+               uni_)
 {
 };
 
