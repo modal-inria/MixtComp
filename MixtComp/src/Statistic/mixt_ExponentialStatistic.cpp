@@ -14,11 +14,13 @@
 #include <boost/random/exponential_distribution.hpp>
 #include <boost/math/distributions/exponential.hpp>
 
+#include "mixt_RNG.h"
+
 namespace mixt
 {
 
 ExponentialStatistic::ExponentialStatistic() :
-    rng_(size_t(this) + time(0))
+    rng_(seed(this))
 {}
 
 Real ExponentialStatistic::cdf(Real x,

@@ -17,8 +17,8 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   Index nCoeff = 2; // order of each subregression
   Real xMax = 50.;
 
-  Real alpha0 = - 1.;
-  Real alpha1 = - alpha0 * 2. / xMax;
+  Real alpha1 = 0.5;
+  Real alpha0 = - alpha1 * xMax / 2.;
 
   Index nParam = nSub * 2; // regression order for
 
@@ -97,8 +97,8 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
   Index nCoeff = 2; // order of each subregression
   Real xMax = 50.;
 
-  Real alpha0 = - 1.;
-  Real alpha1 = - alpha0 * 2. / xMax;
+  Real alpha1 = 0.5;
+  Real alpha0 = - alpha1 * xMax / 2.;
 
   Index nParam = nSub * 2; // regression order for
 

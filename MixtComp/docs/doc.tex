@@ -23,6 +23,18 @@ The MixtComp code is documented inline, but it might be difficult at times to ge
 
 \end{abstract}
 
+\section{Environment variables}
+
+The following environment variables are used:
+
+\begin{itemize}
+	\item MC_VERBOSE: change the level of details output to the standard output.
+	\item MC_DEBUG, MC_DEBUG_NEW:  some debug flags.
+	\item MC_DETERMINISTIC: change the seeding value, from pseudo-random to 0. Used to run the unit test in a deterministic way.
+\end{itemize}
+
+\section{Global algorithm}
+
 \section{Sequence of initialization}
 
 There are several objects that are key to the initialization of MixtComp. Some of those objects are template argument to templated classes. For example, a MixtureManager object needs a DataHandler type argument. But the DataHandler is an interface to read and transform data, so there must be different DataHandler to cover the various inputs. The first DataHandler that has been written was DataHandlerR, which transforms the data structure obtained from R in a data structure suitable for MixtComp.

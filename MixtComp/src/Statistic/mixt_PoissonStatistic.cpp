@@ -13,12 +13,13 @@
 #include <boost/math/distributions/poisson.hpp>
 #include "../LinAlg/mixt_Math.h"
 #include "../Various/mixt_Constants.h"
+#include "mixt_RNG.h"
 
 namespace mixt
 {
 
 PoissonStatistic::PoissonStatistic() :
-    rng_(size_t(this) + time(0))
+    rng_(seed(this))
 {}
 
 Real PoissonStatistic::pdf(int x,

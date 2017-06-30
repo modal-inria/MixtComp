@@ -37,7 +37,7 @@ const int nbGibbsIterRank = 50;
 
 const int nbSampleObserved = 10000;
 
-extern const int maxIterationFunctional = 10;
+extern const int maxIterationFunctional = 10000;
 
 const std::string rankPosSep = ",";
 

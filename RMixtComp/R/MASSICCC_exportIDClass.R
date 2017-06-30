@@ -51,8 +51,9 @@ exportIDClass = function(data) {
   sigma = paste0('"sigma": ', extractDistSigma(data), ',')
   
   ordertik = paste0('"tiksorted": ', extractOrderTik(data), ',')
-  
-  cibounds = paste0('"cibounds": ', extractBoxplotInfo(data), '')
+  # Mettre l'option grl=FALSE pour ne pas sauvegarder les informations sur la distribution generale de chaque variable
+  # Si grl=TRUE, la derniere ligne de chaque matrice correspond aux statistiques de la distribution generale
+  cibounds = paste0('"cibounds": ', extractBoxplotInfo(data, grl=TRUE), '')
   
   footerStr = '}'
   
@@ -72,7 +73,7 @@ exportIDClass = function(data) {
               footerStr,
               sep = '\n\n')
   return(out);
-}
+} 
 
 
 # Extract the confidence interval and the mean for each variable
@@ -84,9 +85,9 @@ extractCIbounds = function(data){
 
 # Compute information used for drawing the boxplots (continuous and integer),
 # barplots (categorical) based on the probabilities of classification
-extractBoxplotInfo = function(data){
+extractBoxplotInfo = function(data, grl=FALSE){
   return(toJSON(lapply(names(data$variable$type)[-1],
-                       function(v) extractBoxplotInfoOneVble(v, data))))
+                       function(v) extractBoxplotInfoOneVble(v, data, grl=grl))))
 }
 
 # Sort the tik of observations belonging to class k with decreasing order
