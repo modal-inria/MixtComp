@@ -51,10 +51,6 @@ class FunctionalClass {
     void sampleParam(Index iteration,
                      Index iterationMax);
 
-    double costAndGrad(Index nFreeParam,
-                       const double* alpha,
-                       double* grad);
-
     const Matrix<Real>& alpha() const {return alpha_;}
     const Matrix<Real>& beta()  const {return beta_ ;}
     const Vector<Real>& sd()    const {return sd_   ;}

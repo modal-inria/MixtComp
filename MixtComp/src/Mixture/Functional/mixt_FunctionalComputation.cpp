@@ -373,10 +373,11 @@ void computeLambda(const Vector<Real>& t,
   }
 }
 
-double optiFunc(unsigned nParam,
-                const double* alpha,
-                double* grad,
-                void* my_func_data) {
+double optiFunc(
+    unsigned nParam,
+    const double* alpha,
+    double* grad,
+    void* my_func_data) {
   double cost;
   CostData* cData = (CostData*) my_func_data;
   Matrix<Real> logValue;
@@ -405,20 +406,47 @@ double optiFunc(unsigned nParam,
   return cost;
 }
 
-double optiFunctionalClass(unsigned nFreeParam,
-                           const double* alpha,
-                           double* grad,
-                           void* my_func_data) {
-  Real cost;
-  FunctionalClass* funcClass = (FunctionalClass*) my_func_data;
+double optiFunctionalClass (
+    unsigned nFreeParam,
+    const double* alpha,
+    double* grad,
+    void* my_func_data) {
+  FuncData* funcData = (FuncData*) my_func_data;
 
-  cost = funcClass->costAndGrad(nFreeParam, alpha, grad);
+  Real cost = 0.;
+  for (Index p = 0; p < nFreeParam; ++p) {
+    grad[p] = 0.;
+  }
+
+  Index nParam = nFreeParam + 2;
+  double gradInd[nParam];
+  double alphaComplete[nParam]; // The whole code was created using the complete set of parameters. Using alphaComplete allows for immediate reuse.
+  alphaComplete[0] = 0.;
+  alphaComplete[1] = 0.;
+  for (Index p = 0; p < nFreeParam; ++p) {
+    grad[p] = 0.;
+    alphaComplete[p + 2] = alpha[p];
+  }
+
+  for (std::set<Index>::const_iterator it  = funcData->setInd_.begin(),
+                                       itE = funcData->setInd_.end();
+       it != itE;
+       ++it) { // each individual in current class adds a contribution to both the cost and the gradient of alpha
+    cost += funcData->data_(*it).costAndGrad(
+        nParam,
+        alphaComplete,
+        gradInd);
+    for (Index p = 0; p < nFreeParam; ++p) {
+      grad[p] += gradInd[p + 2];
+    }
+  }
 
   return cost;
 }
 
-void globalQuantile(const Vector<Function>& vecInd,
-                    Vector<Real>& quantile) {
+void globalQuantile(
+    const Vector<Function>& vecInd,
+    Vector<Real>& quantile) {
   Index nInd = vecInd.size();
   Index nSub = vecInd(0).w().size();
   quantile.resize(nSub - 1);

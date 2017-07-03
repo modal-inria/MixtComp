@@ -71,11 +71,11 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   std::set<Index> setInd;
   setInd.insert(0);
 
-  FunctionalClass funcClass(data,
-                            setInd,
-                            0.95);
+  FunctionalClass funcClass (
+      data,
+      setInd,
+      0.95);
   funcClass.setSize(nSub, nCoeff);
-
   funcClass.mStepAlpha();
 
   Vector<Real> alphaComputed(nParam);
@@ -154,11 +154,11 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
     setInd.insert(ind);
   }
 
-  FunctionalClass funcClass(data,
-                            setInd,
-                            0.95);
+  FunctionalClass funcClass(
+      data,
+      setInd,
+      0.95);
   funcClass.setSize(nSub, nCoeff);
-
   funcClass.mStep();
 
   Vector<Real> alphaComputed(nParam);
@@ -208,7 +208,10 @@ TEST(FunctionalClass, checkNbDifferentValue) {
     }
   }
 
-  FunctionalClass fc(data, setInd, confidenceLevel);
+  FunctionalClass fc (
+      data,
+      setInd,
+      confidenceLevel);
   fc.setSize(nSub, nCoeff);
   bool diffVal = fc.checkNbDifferentValue();
 
@@ -262,7 +265,10 @@ TEST(FunctionalClass, checkNonNullSigma) {
     }
   }
 
-  FunctionalClass fc(data, setInd, confidenceLevel);
+  FunctionalClass fc (
+      data,
+      setInd,
+      confidenceLevel);
   fc.setSize(nSub, nCoeff);
   fc.setParam(alpha, beta, sd);
   bool diffVal = fc.checkNonNullSigma();

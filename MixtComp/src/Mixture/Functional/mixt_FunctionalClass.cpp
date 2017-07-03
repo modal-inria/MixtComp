@@ -54,10 +54,13 @@ void FunctionalClass::mStepAlpha() {
     alpha[2 * s + 1] = alpha_(s + 1, 1);
   }
 
+  FuncData data {data_, setInd_};
+  FuncData* p_data = &data;
+
   nlopt_opt opt;
   opt = nlopt_create(NLOPT_LD_LBFGS, nFreeParam); // algorithm and dimensionality
   nlopt_set_maxeval(opt, maxIterationFunctional); // without setting this, the time required for computations could be subject to extreme variations
-  nlopt_set_max_objective(opt, optiFunctionalClass, this); // cost and grad function, data for the function
+  nlopt_set_max_objective(opt, optiFunctionalClass, p_data); // cost and grad function, data for the function
 
   nlopt_optimize(opt, alpha, &minf); // launch the effective optimization run
   nlopt_destroy(opt);
@@ -125,40 +128,6 @@ void FunctionalClass::sampleParam(Index iteration,
   alphaParamStat_.sampleParam(iteration, iterationMax);
   betaParamStat_ .sampleParam(iteration, iterationMax);
   sdParamStat_   .sampleParam(iteration, iterationMax);
-}
-
-double FunctionalClass::costAndGrad(Index nFreeParam,
-                                    const double* alpha,
-                                    double* grad) {
-  Real cost = 0.;
-  for (Index p = 0; p < nFreeParam; ++p) {
-    grad[p] = 0.;
-  }
-
-  Index nParam = nFreeParam + 2;
-  double gradInd[nParam];
-  double alphaComplete[nParam]; // The whole code was created using the complete set of parameters. Using alphaComplete allows for immediate reuse.
-  alphaComplete[0] = 0.;
-  alphaComplete[1] = 0.;
-  for (Index p = 0; p < nFreeParam; ++p) {
-    grad[p] = 0.;
-    alphaComplete[p + 2] = alpha[p];
-  }
-
-  for (std::set<Index>::const_iterator it  = setInd_.begin(),
-                                       itE = setInd_.end();
-       it != itE;
-       ++it) { // each individual in current class adds a contribution to both the cost and the gradient of alpha
-    cost += data_(*it).costAndGrad(
-        nParam,
-        alphaComplete,
-        gradInd);
-    for (Index p = 0; p < nFreeParam; ++p) {
-      grad[p] += gradInd[p + 2];
-    }
-  }
-
-  return cost;
 }
 
 Index FunctionalClass::checkSampleCondition(std::string* warnLog) const {
