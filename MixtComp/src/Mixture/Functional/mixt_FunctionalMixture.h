@@ -336,6 +336,9 @@ class FunctionalMixture : public IMixture {
      */
     void initParam(const Vector<Index>& initObs) {
       Vector<std::set<Index> > initClassInd(nClass_);
+      // setInd is constant, therefore the optimization code must be modified for a particular data
+      // subset of dat -> Vector<std::set<Index> > must be provided and classInd_ must not be used by default
+
       // backup the original setInt generate the setInd used for the computation
 
       // loop for each individual:
