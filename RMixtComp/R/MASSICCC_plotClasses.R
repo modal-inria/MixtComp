@@ -4,7 +4,7 @@
 # Rows correspond to observations and column correspond to component
 # Here, few types of data are allowed: continuous or categorical
 # The other types of data must be implemented
-computelogtikmixcomp <- function(output){
+computelogtikmixtcomp <- function(output){
   # param <- output$variable$param
   # x <- output$variable$data
   # logtik <- matrix(0, length(x$z_class$completed), output$mixture$nbCluster)
@@ -40,8 +40,8 @@ computelogtikmixcomp <- function(output){
 
 # This function generates a sample from the model defined by the object output returned
 # by the R package Rmixtcomp
-rlogtikmixcomp <- function(output, sample.size){
-  computelogtikmixcomp(output)
+rlogtikmixtcomp <- function(output, sample.size){
+  computelogtikmixtcomp(output)
 }
 
 
@@ -57,8 +57,8 @@ rlogtikmixcomp <- function(output, sample.size){
 ##' @param nbcpu numeric. It specifies the number of CPU (only for linux, R package parallel must by loaded).
 ##'
 
-clusvisMixcomp <- function(resmixcomp, sample.size=5000, maxit=10**3, nbrandomInit=12, nbcpu=1){
-  logtik.estim <- rlogtikmixcomp(output)
-  out <- clusvis(logtik.estim, prop=resmixcomp$variable$param$z_class$pi$stat[,1], logtik.obs=computelogtikmixcomp(resmixcomp), maxit, nbrandomInit, nbcpu)
+clusvisMixtcomp <- function(resmixtcomp, sample.size=5000, maxit=10**3, nbrandomInit=12, nbcpu=1){
+  #logtik.estim <- rlogtikmixtcomp(resmixtcomp)
+  out <- clusvis(computelogtikmixtcomp(resmixtcomp), prop=resmixtcomp$variable$param$z_class$pi$stat[,1], logtik.obs=computelogtikmixtcomp(resmixtcomp), maxit, nbrandomInit, nbcpu)
   return(out)
 }
