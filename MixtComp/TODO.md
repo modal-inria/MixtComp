@@ -92,11 +92,13 @@ To do list specific to MixtComp
 	- if a class is empty, its proportion will be estimated at 1e-8. BUT the estimation of the classes will not work as there are no observations. Crashes are to be expected.
 - Uncomment and correct SimpleMixture utest
 
-# Features
+# Various
 
-- Switch to Gitlab
-- Put in place continuous integration
-    - Add compilation flag to set random seed, to allow reproducibility of stochastic tests
+- Since the algorithm is stochastic, it is complicated to obtain reproducible results during unit testing and continuous integration.
+	- If the seeds of all RNG are fixed to the same value, then there is not enough variability in the generated data for the test to pass. Should the data be generated normally ?
+	- If rng are shared, then there will be race conditions in multi-threading runs
+	- So the deterministic approach is put on standby. mixt_RNG.h contains the seed generation.
+	- This also highlight the problem that the algorithm is dependent on the initialization of the RNG and this should be dealt with...
 
 # Estimation problem
 

@@ -13,11 +13,12 @@
 #include <boost/random/normal_distribution.hpp>
 #include <boost/math/distributions/normal.hpp>
 #include "../Various/mixt_Constants.h"
+#include "mixt_RNG.h"
 
 namespace mixt
 {
 NormalStatistic::NormalStatistic() :
-    rng_(size_t(this) + time(0))
+    rng_(seed(this))
 {}
 
 Real NormalStatistic::cdf(Real x,
