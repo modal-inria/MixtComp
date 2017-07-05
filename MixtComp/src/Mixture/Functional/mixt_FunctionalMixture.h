@@ -332,32 +332,12 @@ class FunctionalMixture : public IMixture {
     };
 
     /**
-     * @param initObs each element is the index of an individual used in initialization
+     * @param initObs element k contains the index of
      */
     void initParam(const Vector<Index>& initObs) {
-      Vector<std::set<Index> > initClassInd(nClass_);
-      // setInd is constant, therefore the optimization code must be modified for a particular data
-      // subset of dat -> Vector<std::set<Index> > must be provided and classInd_ must not be used by default
-
-      // backup the original setInt generate the setInd used for the computation
-
-      // loop for each individual:
-        // compute the quantiles used in this initialisation
-        // apply the quantiles for initialization
-
-//      for (Index k = 0; k < nClass_; ++k) {
-//        Vector<Real> quantile;
-//        globalQuantile(vecInd_, quantile);
-//
-//      }
-
-      // restore the original setInd object
-
-
-      // note that it is not necessary to restore the quantiles for
-//      for (Index i = 0; i < nInd_; ++i) {
-//        vecInd_(i).removeMissingQuantile(quantile); // since initParam performs an mStep on a single individual, removeMissing must be called from initParam
-//      }
+      for (Index k = 0; k < nClass_; ++k) {
+        class_[k].initParam(initObs(k));
+      }
     };
 
   private:

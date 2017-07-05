@@ -67,8 +67,11 @@ class Function {
 
     void printProp() const;
 
-    //Get
     const Index& nTime() const {return nTime_;}
+
+    /** Return the quantiles values only for the current Function object. As opposed to globalQuantile()
+     * which returns the global quantiles over all the sample. */
+    void quantile(Index nSub, Vector<Real>& quantile);
 
   private:
     void computeJointLogProba(const Matrix<Real>& alpha,

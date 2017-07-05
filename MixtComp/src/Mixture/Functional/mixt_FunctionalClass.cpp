@@ -39,11 +39,11 @@ void FunctionalClass::setSize(Index nSub,
 }
 
 void FunctionalClass::mStep() {
-  mStepAlpha();
-  mStepBetaSd();
+  mStepAlpha(setInd_);
+  mStepBetaSd(setInd_);
 }
 
-void FunctionalClass::mStepAlpha() {
+void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
   Index nSub   = alpha_.rows();
   Index nFreeParam = 2 * (nSub - 1);
   double minf;
@@ -54,7 +54,7 @@ void FunctionalClass::mStepAlpha() {
     alpha[2 * s + 1] = alpha_(s + 1, 1);
   }
 
-  FuncData data {data_, setInd_};
+  FuncData data {data_, setInd};
   FuncData* p_data = &data;
 
   nlopt_opt opt;
@@ -71,11 +71,11 @@ void FunctionalClass::mStepAlpha() {
   }
 }
 
-void FunctionalClass::mStepBetaSd() {
+void FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
   Vector<Index> nTTotal(nSub_, 0);
 
-  for (std::set<Index>::const_iterator itData  = setInd_.begin(),
-                                       itDataE = setInd_.end();
+  for (std::set<Index>::const_iterator itData  = setInd.begin(),
+                                       itDataE = setInd.end();
        itData != itDataE;
        ++itData) { // to create the complete design matrix and y for the class, the total number of timesteps over the class must be determined
     for (Index s = 0; s < nSub_; ++s) {
@@ -90,8 +90,8 @@ void FunctionalClass::mStepBetaSd() {
     y(s).resize(nTTotal(s));
 
     Index i = 0; // current row in the global design matrix
-    for (std::set<Index>::const_iterator itData  = setInd_.begin(),
-                                         itDataE = setInd_.end();
+    for (std::set<Index>::const_iterator itData  = setInd.begin(),
+                                         itDataE = setInd.end();
          itData != itDataE;
          ++itData) {
       for (std::set<Index>::const_iterator itTime  = data_(*itData).w()(s).begin(),
@@ -105,10 +105,23 @@ void FunctionalClass::mStepBetaSd() {
     }
   }
 
-  subRegression(design,
-                y,
-                beta_,
-                sd_);
+  subRegression(
+      design,
+      y,
+      beta_,
+      sd_);
+}
+
+void FunctionalClass::initParam(Index obs) {
+  std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
+  initInd.insert(obs);
+
+  Vector<Real> quantile;
+  data_(obs).quantile(nSub_, quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
+  data_(obs).removeMissingQuantile(quantile);
+
+  mStepAlpha(initInd);
+  mStepBetaSd(initInd);
 }
 
 void FunctionalClass::setParamStorage() {

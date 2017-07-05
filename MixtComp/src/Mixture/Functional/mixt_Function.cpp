@@ -223,4 +223,18 @@ void Function::printProp() const {
   std::cout << "Prop of w: " << itString(prop) << std::endl;
 }
 
+void Function::quantile(Index nSub, Vector<Real>& quantile) {
+  quantile.resize(nSub - 1);
+
+  Vector<Real> sortedT = t_; // copy of t to be sorted, as sorted time are not required by the model
+
+  sortedT.sort();
+
+  Index partitionSize = nTime_ / nSub;
+
+  for (Index s = 0; s < nSub - 1; ++s) {
+    quantile(s) = sortedT((s + 1) * partitionSize);
+  }
+}
+
 } // namespace mixt
