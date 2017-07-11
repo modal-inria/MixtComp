@@ -11,10 +11,11 @@
 #include <fstream>
 
 int main(int argc, char *argv[]) {
+	std::cout << "toto" << std::endl;
   RInside R(argc, argv);              // create an embedded R instance
-  R.parseEvalQ("library(RMixtComp)");
-  R.parseEvalQ("library(FunctionAnalysis)");
-  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/160519 - Vallourec/170213 - R launch and post\")");
-  R.parseEvalQ("f07Learn(\"data/170222 - multivariate\"");
+//  R.parseEvalQ("library(RMixtComp)");
+  R.parseEvalQ("setwd(\"/home/elvinz/Documents/170705 - test\")");
+//  R.parseEvalQ("gdfgdgdfdf");
+  R.parseEvalQ("source(\"test.R\")");
   exit(0);
 }

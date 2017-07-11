@@ -387,17 +387,23 @@ void MixtureComposer::initData() {
 }
 
 void MixtureComposer::initParam() {
-  Vector<Index> allObs(nbInd_);
-  for (Index i = 0; i < nbInd_; ++i) {
-    allObs(i) = i;
-  }
-  MultinomialStatistic multi;
-  multi.shuffle(allObs);
+	UniformStatistic uni;
+	for (Index k = 0; k < nbClass_; ++k) {
+		prop_(k) = uni.sample(0., 1.);
+	}
+	prop_ = prop_ / prop_.sum();
 
-  Vector<Index> initObs(nbClass_); // observations used to initialize individuals
-  for (Index i = 0; i < nbClass_; ++i) {
-    initObs(i) = allObs(i);
-  }
+	Vector<Index> allObs(nbInd_);
+	for (Index i = 0; i < nbInd_; ++i) {
+		allObs(i) = i;
+	}
+	MultinomialStatistic multi;
+	multi.shuffle(allObs);
+
+	Vector<Index> initObs(nbClass_); // observations used to initialize individuals
+	for (Index i = 0; i < nbClass_; ++i) {
+		initObs(i) = allObs(i);
+	}
 
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		(*it)->initParam(initObs);

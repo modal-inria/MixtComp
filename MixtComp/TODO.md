@@ -10,6 +10,7 @@
 	- for example when a functional does not have enough points to estimate all the subregressions ?
 - The uniform initialization seems useless now that one observation is used to initialize the parameters
 	- is it so that only that one observation shall be uniformly completed ?
+	- it is useful, because every individual need to be completed for the eStep (and not just for the mStep)
 
 ## IMixture
 - remove samplingStepCheck
