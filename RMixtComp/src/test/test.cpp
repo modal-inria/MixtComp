@@ -14,8 +14,10 @@ int main(int argc, char *argv[]) {
 	std::cout << "toto" << std::endl;
   RInside R(argc, argv);              // create an embedded R instance
 //  R.parseEvalQ("library(RMixtComp)");
-  R.parseEvalQ("setwd(\"/home/elvinz/Documents/170705 - test\")");
+//  R.parseEvalQ("setwd(\"/home/elvinz/Documents/170705 - test\")");
 //  R.parseEvalQ("gdfgdgdfdf");
+
+  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/170616 - mise à plat MixtComp/170705 - func test data\")");
   R.parseEvalQ("source(\"test.R\")");
   exit(0);
 }
