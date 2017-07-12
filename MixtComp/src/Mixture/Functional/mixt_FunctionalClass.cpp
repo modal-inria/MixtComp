@@ -117,10 +117,18 @@ void FunctionalClass::initParam(Index obs) {
   initInd.insert(obs);
 
   Vector<Real> quantile;
-  data_(obs).quantile(nSub_, quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
-  data_(obs).removeMissingQuantile(quantile);
+  data_(obs).quantile(quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
 
-  mStepAlpha(initInd);
+
+
+  for (std::set<Index>::const_iterator itData  = setInd_.begin(),
+                                       itDataE = setInd_.end();
+       itData != itDataE;
+       ++itData) {
+    data_(*itData).removeMissingQuantile(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
+  }
+
+  mStepAlpha(initInd); // partial initialization using only the individual that represent this class
   mStepBetaSd(initInd);
 }
 

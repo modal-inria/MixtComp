@@ -448,11 +448,13 @@ void globalQuantile(
     const Vector<Function>& vecInd,
     Vector<Real>& quantile) {
   Index nInd = vecInd.size();
-  Index nSub = vecInd(0).w().size();
-  quantile.resize(nSub - 1);
+  Index nSub = vecInd(0).nSub();
+  Index nQuantile = nSub + 1;
+
+  quantile.resize(nQuantile);
+
   Index globalNTime = 0;
   Index currNTime = 0;
-
   for (Index i = 0; i < nInd; ++i) {
     globalNTime += vecInd(i).t().size();
   }
@@ -472,10 +474,13 @@ void globalQuantile(
 
   globalT.sort();
 
-  Index partitionSize = globalNTime / nSub;
+  Real quantileSize = 1. / nSub;
 
-  for (Index s = 0; s < nSub - 1; ++s) {
-    quantile(s) = globalT((s + 1) * partitionSize);
+  quantile(0) = globalT(0);
+  quantile(nQuantile - 1) = globalT(globalNTime - 1);
+
+  for (Index q = 1; q < nQuantile - 1; ++q) {
+    quantile(q) = globalT(q * quantileSize * (globalNTime - 1));
   }
 }
 

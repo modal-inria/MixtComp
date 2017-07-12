@@ -166,18 +166,26 @@ void Function::removeMissingUniformSampling() {
 }
 
 void Function::removeMissingQuantile(const Vector<Real>& quantiles) {
-  Index s;
+  Index nQuantile = quantiles.size();
   for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run
     w_(s).clear();
   }
 
   for (Index i = 0; i < nTime_; ++i) {
-    for (s = 0; s < nSub_ - 1; ++s) {
-      if (t_(i) < quantiles(s)) {
-        break;
+    if (t_(i) < quantiles(1)) {
+      w_(0).insert(i);
+    }
+    else if (quantiles(nQuantile - 2) < t_(i)) {
+      w_(nQuantile - 2).insert(i);
+    }
+    else {
+      for (Index q = 1; q < nQuantile - 2; ++q) {
+        if (quantiles(q) < t_(i)) {
+          w_(q).insert(i);
+          break;
+        }
       }
     }
-    w_(s).insert(i);
   }
 }
 
@@ -223,17 +231,21 @@ void Function::printProp() const {
   std::cout << "Prop of w: " << itString(prop) << std::endl;
 }
 
-void Function::quantile(Index nSub, Vector<Real>& quantile) {
-  quantile.resize(nSub - 1);
+void Function::quantile(Vector<Real>& quantile) {
+  Index nQuantile = nSub_ + 1;
+  quantile.resize(nQuantile);
 
   Vector<Real> sortedT = t_; // copy of t to be sorted, as sorted time are not required by the model
 
   sortedT.sort();
 
-  Index partitionSize = nTime_ / nSub;
+  Real quantileSize = 1. / nSub_;
 
-  for (Index s = 0; s < nSub - 1; ++s) {
-    quantile(s) = sortedT((s + 1) * partitionSize);
+  quantile(0) = sortedT(0);
+  quantile(nQuantile - 1) = sortedT(nTime_ - 1);
+
+  for (Index q = 1; q < nQuantile - 1; ++q) {
+    quantile(q) = sortedT(q * quantileSize * (nTime_ - 1));
   }
 }
 

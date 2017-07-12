@@ -71,8 +71,9 @@ class Function {
 
     /** Return the quantiles values only for the current Function object. As opposed to globalQuantile()
      * which returns the global quantiles over all the sample. */
-    void quantile(Index nSub, Vector<Real>& quantile);
+    void quantile(Vector<Real>& quantile);
 
+    Index nSub() const {return nSub_;}
   private:
     void computeJointLogProba(const Matrix<Real>& alpha,
                               const Matrix<Real>& beta,
