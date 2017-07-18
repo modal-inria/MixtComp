@@ -37,11 +37,11 @@
 
 ## Order of implementation, each step should result in a working version of MixtComp
 - new initialization by partitioning and ordering, while keeping everything else as of today. This way the new initialization will benefit MixtComp while further updates are implemented
+- detection of degeneracy, and clean stop of the run, so the user can launch it again
+	- normalization
 - updated parameter normalization, as this can be used with parameterEdgeAuthorized = TRUE in current version
 - multiple initialization, without detection of degeneracy, only keeping the best run
 	- only strategy is no check with normalization
-- detection of degeneracy
-	- normalization
 - removal of Gibbs and all unused code (samplingStepCheck, etc ...)
 
 ## Multi run

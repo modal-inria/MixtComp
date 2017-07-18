@@ -187,6 +187,59 @@ void Function::removeMissingQuantile(const Vector<Real>& quantiles) {
       }
     }
   }
+
+#ifdef MC_DEBUGNEW
+  Index nW = 0; // total number of assigned w, to check that all times have been assigned
+  for (Index s = 0; s < nSub_; ++s) {
+    nW += w_(s).size();
+  }
+  std::cout << "nW: " << nW << ", nTime_: " << nTime_ << std::endl;
+#endif
+}
+
+void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
+  for (Index s = 0; s < nSub_; ++s) { // clearing is necessary, as removeMissing will be called at several points during the run
+    w_(s).clear();
+  }
+
+  Vector<Real> midPoints(nSub_);
+  Vector<Real> proba(nSub_);
+
+  for (Index s = 0; s < nSub_; ++s) {
+    midPoints(s) = (quantiles(s + 1) + quantiles(s)) / 2.;
+  }
+
+  for (Index i = 0; i < nTime_; ++i) {
+    Real currT = t_(i);
+    proba = 0.;
+
+    if (currT < midPoints(0)) {
+      proba(0) = 1.;
+    }
+    else if (midPoints(nSub_ - 1) < currT) {
+      proba(nSub_ - 1) = 1.;
+    }
+    else {
+      for (Index s = 0; s < nSub_ - 1; ++s) {
+        Real disLeft  = currT - midPoints(s);
+        Real disRight = midPoints(s + 1) - currT;
+        proba(s    ) = disRight / (disLeft + disRight);
+        proba(s + 1) = disLeft  / (disLeft + disRight);
+      }
+    }
+
+    Index currW = multi_.sample(proba);
+    w_(currW).insert(i);
+  }
+
+#ifdef MC_DEBUGNEW
+  Index nW = 0; // total number of assigned w, to check that all times have been assigned
+  for (Index s = 0; s < nSub_; ++s) {
+    nW += w_(s).size();
+    std::cout << itString(w_(s)) << std::endl;
+  }
+  std::cout << "nW: " << nW << ", nTime_: " << nTime_ << std::endl;
+#endif
 }
 
 double Function::costAndGrad(unsigned nParam,

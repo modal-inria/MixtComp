@@ -228,10 +228,12 @@ void MixtureComposer::samplingStepNoCheck(SamplerInitialization init, int i) {
 int MixtureComposer::checkSampleCondition(std::string* warnLog) const {
 	if (warnLog == NULL) { // if no description of the error is expected, to speed the treatment
 		if (checkNbIndPerClass() == 0) {
+		  std::cout << "!!! Empty class" << std::endl;
 			return 0;
 		}
 		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 			if ((*it)->checkSampleCondition() == 0) {
+			  std::cout << "!!! check sample fail in model" << std::endl;
 				return 0; // no need for log generation -> faster evaluation of checkSampleCondition
 			}
 		}
@@ -408,6 +410,8 @@ void MixtureComposer::initParam() {
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		(*it)->initParam(initObs);
 	}
+
+	writeParameters();
 }
 
 void MixtureComposer::E_kj(Matrix<Real>& ekj) const {

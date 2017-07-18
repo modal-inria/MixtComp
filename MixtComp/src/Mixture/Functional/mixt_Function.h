@@ -55,6 +55,13 @@ class Function {
 
     void removeMissingQuantile(const Vector<Real>& quantiles);
 
+    /**
+     * Similar to removeMissingQuantile, except that the subregression
+     * labels are sampled so as to avoid clean separation between the classes.
+     * This makes the model impossible to estimate on the dataset, as an infinity
+     * of model would maximize the likelihood. */
+    void removeMissingQuantileMixing(const Vector<Real>& quantiles);
+
     double costAndGrad(unsigned nParam,
                        const double* alpha,
                        double* grad) const;

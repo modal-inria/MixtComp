@@ -328,7 +328,7 @@ class FunctionalMixture : public IMixture {
     };
 
     void initData(Index i) {
-      vecInd_(i).removeMissingQuantile(quantile_); // since initParam performs an mStep on a single individual, removeMissing must be called from initParam
+      vecInd_(i).removeMissingQuantileMixing(quantile_); // since initParam performs an mStep on a single individual, removeMissing must be called from initParam
     };
 
     /**

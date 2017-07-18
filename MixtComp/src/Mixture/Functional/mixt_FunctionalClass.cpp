@@ -125,7 +125,7 @@ void FunctionalClass::initParam(Index obs) {
                                        itDataE = setInd_.end();
        itData != itDataE;
        ++itData) {
-    data_(*itData).removeMissingQuantile(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
+    data_(*itData).removeMissingQuantileMixing(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
   }
 
   mStepAlpha(initInd); // partial initialization using only the individual that represent this class
