@@ -248,7 +248,7 @@ void BOSPath::initPath()
   {
     c_(i).y_ = multi_.sampleInt(currSeg(0), currSeg(1)); // uniform sampling of z
     c_(i).partition(currSeg); // compute the partition, where y cuts into currSeg
-    c_(i).z_ = 0; // comparisons are all blind in initialization
+    c_(i).z_ = 0; // comparisons are all blind in initialization, that is why in initParam a Gibbs is performed, otherwise the first mStep would estimate
     Vector<Real> segProba(c_(i).partSize_); // vector of proba of each segment in the partition
     for (int s = 0; s < c_(i).partSize_; ++s) // computation of the allowed segments
     {

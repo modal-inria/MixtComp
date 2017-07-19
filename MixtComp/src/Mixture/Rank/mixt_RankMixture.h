@@ -241,23 +241,23 @@ class RankMixture : public IMixture
      */
     void initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nbClass_; ++k) {
-        MultinomialStatistic multi;
-        int sampleIndInClass = multi.sampleInt(0, classInd_[k].size() - 1); // individual sampled inside the class
+//        MultinomialStatistic multi;
+//        int sampleIndInClass = multi.sampleInt(0, classInd_[k].size() - 1); // individual sampled inside the class
+//
+//        int i = 0;
+//        int sampleInd = -1;
+//        for (std::set<Index>::const_iterator it  = classInd_[k].begin(),
+//                                             itE = classInd_[k].end();
+//             it != itE;
+//             ++it, ++i) {
+//          if (i == sampleIndInClass) {
+//            sampleInd = *it;
+//            break;
+//          }
+//        }
 
-        int i = 0;
-        int sampleInd = -1;
-        for (std::set<Index>::const_iterator it  = classInd_[k].begin(),
-                                             itE = classInd_[k].end();
-             it != itE;
-             ++it, ++i) {
-          if (i == sampleIndInClass) {
-            sampleInd = *it;
-            break;
-          }
-        }
-
-        mu_(k) = data_(sampleInd).x();
-        pi_(k) = piInitISR;
+        mu_(k) = data_(initObs(k)).x();
+        pi_(k) = 0.5 * (1. + 1. / nbClass_);
       }
     }
 
