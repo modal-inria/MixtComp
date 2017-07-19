@@ -261,7 +261,7 @@ class Ordinal : public IMixture
     virtual void samplingStepNoCheck(SamplerInitialization init, Index ind) {
       if (init == performInitialization_) {
         initData(ind);
-        initBOS(ind);
+        initBOS(ind, piInitBOS);
       }
 
       GibbsSampling(ind,
@@ -455,20 +455,22 @@ class Ordinal : public IMixture
 
     void initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nbClass_; ++k) {
-        mu_ = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
+//        mu_ = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
+        mu_(k) = augData_.data_(initObs(k)); // representative element used is the same for each variable for a given class
       }
 
       for (Index i = 0; i < nbInd_; ++i) {
-        initBOS(i);
+        initBOS(i, 1. / nbClass_);
       }
     }
 
-    void initBOS(Index i) {
+    void initBOS(Index i, Real piInit) {
       for (int n = 0; n < nbGibbsIniBOS; ++n) { // n rounds of Gibbs sampling to increase variability on z
-        GibbsSampling(i,
-                      mu_((*p_zi_)(i)),
-                      piInitBOS,
-                      noCheckZ_);
+        GibbsSampling(
+            i,
+            mu_((*p_zi_)(i)),
+            piInit,
+            noCheckZ_);
       }
 
       copyToData(i);

@@ -208,6 +208,7 @@ void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
   for (Index s = 0; s < nSub_; ++s) {
     midPoints(s) = (quantiles(s + 1) + quantiles(s)) / 2.;
   }
+  std::cout << "midPoints: " << itString(midPoints) << std::endl;
 
   for (Index i = 0; i < nTime_; ++i) {
     Real currT = t_(i);
@@ -227,6 +228,8 @@ void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
         proba(s + 1) = disLeft  / (disLeft + disRight);
       }
     }
+
+    std::cout << "currT: " << currT << ", proba: " << itString(proba) << std::endl;
 
     Index currW = multi_.sample(proba);
     w_(currW).insert(i);
