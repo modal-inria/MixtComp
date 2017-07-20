@@ -190,4 +190,21 @@ bool Categorical_pjk::hasModalities() const {
   return true;
 }
 
+void Categorical_pjk::initParam(const Vector<Index>& initObs) {
+  Real constantTerm = 1. / nbClass_; // this could also be based on the number of observations, to get a Bayesian justification
+  param_ = 0.;
+
+  for (Index k = 0; k < nbClass_; ++k) {
+    Vector<Real> currProp(nModality_, constantTerm); // proportions for current class
+    currProp((*p_data_)(initObs(k))) = 1.;
+    currProp = currProp / currProp.sum();
+
+    Index baseClassIndex = k * nModality_;
+
+    for (Index m = 0; m < nModality_; ++m) {
+      param_(m + baseClassIndex) = currProp(m);
+    }
+  }
+}
+
 } // namespace mixt
