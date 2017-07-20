@@ -179,6 +179,14 @@ void Function::removeMissingQuantile(const Vector<Real>& quantiles) {
     }
     w_(s).insert(i);
   }
+
+#ifdef MC_DEBUGNEW
+  Index nW = 0; // total number of assigned w, to check that all times have been assigned
+  for (Index s = 0; s < nSub_; ++s) {
+    nW += w_(s).size();
+  }
+  std::cout << "nW: " << nW << ", nTime_: " << nTime_ << std::endl;
+#endif
 }
 
 double Function::costAndGrad(unsigned nParam,
