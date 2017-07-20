@@ -62,3 +62,25 @@ clusvisMixtcomp <- function(resmixtcomp, sample.size=5000, maxit=10**3, nbrandom
   out <- clusvis(computelogtikmixtcomp(resmixtcomp), prop=resmixtcomp$variable$param$z_class$pi$stat[,1], logtik.obs=computelogtikmixtcomp(resmixtcomp), maxit, nbrandomInit, nbcpu)
   return(out)
 }
+
+###################################################################################
+##' This function is a wrapper around the plotDensityClusVisu function of the ClusVisu package. It generates
+##' a component interpretation graph using the visualization information returned by the clusvisMixtcomp function.
+##'
+##'
+##' @param visInfo list. The parameters estimated by the clusvisMixtcomp function.
+##'
+plotComponentClusVis <- function(visInfo) {
+  plotDensityClusVisu(visInfo, add.obs=F, positionlegend="bottomright", xlim=range(visInfo$centers[,1])+c(-4,6), ylim=range(visInfo$centers[,2])+c(-6,4))
+}
+
+###################################################################################
+##' This function is a wrapper around the plotDensityClusVisu function of the ClusVisu package. It generates
+##' a scatter-plot of the observation memberships using the visualization information returned by the clusvisMixtcomp function.
+##'
+##'
+##' @param visInfo list. The parameters estimated by the clusvisMixtcomp function.
+##'
+plotObservationsClusVis <- function(visInfo) {
+  plotDensityClusVisu(visInfo, add.obs=T, positionlegend="bottomright", xlim=range(visInfo$y[,1])+c(0,2), ylim=range(visInfo$y[,2])+c(-2,0))
+}
