@@ -19,9 +19,10 @@ int fac(int n);
 Real logFac(int n);
 
 template<typename T>
-void meanSD(const T& data,
-            Real& mean,
-            Real& sd) {
+void meanSD(
+    const T& data,
+    Real& mean,
+    Real& sd) {
   mean = 0.;
   sd = 0.;
   Real M2 = 0.;
@@ -41,12 +42,15 @@ void meanSD(const T& data,
   sd = std::sqrt(M2 / Real(n));
 }
 
+/**
+ * Similar to the other meanSD, except that a sub-sample of data is used to compute */
 template<typename indType,
          typename T>
-void meanSD(const indType& listInd,
-            const T& data,
-            Real& mean,
-            Real& sd) {
+void meanSD(
+    const indType& listInd,
+    const T& data,
+    Real& mean,
+    Real& sd) {
   mean = 0.;
   sd = 0.;
   Real M2 = 0.;

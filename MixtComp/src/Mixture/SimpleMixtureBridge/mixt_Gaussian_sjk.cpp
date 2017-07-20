@@ -143,4 +143,15 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const {
   return 1;
 }
 
+void Gaussian_sjk::initParam(const Vector<Index>& initObs) {
+  Real sampleMean, sampleSd;
+  meanSD((*p_data_), sampleMean, sampleSd); // computation of sample standard deviation
+  Real classSd = sampleSd / nbClass_; // variance per class
+
+  for (Index k = 0; k < nbClass_; ++k) {
+    param_(2 * k    ) = (*p_data_)(initObs(k)); // mean is obtained from a sampled value
+    param_(2 * k + 1) = classSd;
+  }
+}
+
 } // namespace mixt

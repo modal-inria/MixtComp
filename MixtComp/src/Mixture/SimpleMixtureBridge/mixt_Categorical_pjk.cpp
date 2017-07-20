@@ -196,7 +196,7 @@ void Categorical_pjk::initParam(const Vector<Index>& initObs) {
 
   for (Index k = 0; k < nbClass_; ++k) {
     Vector<Real> currProp(nModality_, constantTerm); // proportions for current class
-    currProp((*p_data_)(initObs(k))) = 1.;
+    currProp((*p_data_)(initObs(k))) += 1.;
     currProp = currProp / currProp.sum();
 
     Index baseClassIndex = k * nModality_;
