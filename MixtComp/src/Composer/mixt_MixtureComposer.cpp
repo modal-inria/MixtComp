@@ -313,7 +313,8 @@ void MixtureComposer::registerMixture(IMixture* p_mixture) {
 	++nbVar_;
 }
 
-void MixtureComposer::gibbsSampling(SamplerInitialization init,
+void MixtureComposer::gibbsSampling(
+    SamplerInitialization init,
 		GibbsSampleData sample,
 		int nbGibbsIter,
 		int group,
@@ -328,10 +329,10 @@ void MixtureComposer::gibbsSampling(SamplerInitialization init,
 
 #pragma omp parallel for
 	for (Index i = 0; i < nbInd_; ++i) {
-		if (init == performInitialization_) {
-			tik_.row(i) = 1. / nbClass_;
+		if (init == callInitDataIfMarkovChain_) { // at this point, no latent variables are know, so no conditional information can be used to determine the class
+		  tik_.row(i) = prop_; // the proportions are the marginal probability of the class over everything else, including the observed variables. Note that the observed probability could be used to compute observed tik to take the observed value into account, but its computation could be difficult, depending of the variable.
 			sStepNoCheck(i);
-			samplingStepNoCheck(performInitialization_, i);
+			samplingStepNoCheck(callInitDataIfMarkovChain_, i); // since the class is known, the rest of the completion can be carried out
 		}
 
 		myTimer.iteration(i, nbInd_ - 1);
@@ -344,7 +345,7 @@ void MixtureComposer::gibbsSampling(SamplerInitialization init,
 			eStepInd(i);
 
 			sStepNoCheck(i);
-			samplingStepNoCheck(doNotPerformInitialization_, i);
+			samplingStepNoCheck(doNotCallInitData_, i);
 
 			if (sample == sampleData_) {
 				storeGibbsRun(i,
