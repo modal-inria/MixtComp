@@ -114,6 +114,7 @@ void FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
 
 void FunctionalClass::initParam(Index obs) {
   mStep();
+
 //  std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
 //  initInd.insert(obs);
 //

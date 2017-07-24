@@ -188,7 +188,7 @@ void Function::removeMissingQuantile(const Vector<Real>& quantiles) {
     }
   }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   Index nW = 0; // total number of assigned w, to check that all times have been assigned
   for (Index s = 0; s < nSub_; ++s) {
     nW += w_(s).size();
@@ -235,7 +235,7 @@ void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
     w_(currW).insert(i);
   }
 
-#ifdef MC_DEBUGNEW
+#ifdef MC_DEBUG
   std::cout << "Function::removeMissingQuantileMixing" << std::endl;
   Index nW = 0; // total number of assigned w, to check that all times have been assigned
   for (Index s = 0; s < nSub_; ++s) {
