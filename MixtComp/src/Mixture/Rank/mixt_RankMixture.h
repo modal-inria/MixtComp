@@ -125,7 +125,7 @@ class RankMixture : public IMixture
     }
 
     void samplingStepNoCheck(SamplerInitialization init, Index i) {
-      if (init == performInitialization_) {
+      if (init == callInitDataIfMarkovChain_) {
         initData(i);
       }
 

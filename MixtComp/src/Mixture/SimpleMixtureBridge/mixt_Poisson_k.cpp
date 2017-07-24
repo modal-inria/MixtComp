@@ -128,4 +128,11 @@ int Poisson_k::checkSampleCondition(std::string* warnLog) const {
   return 1;
 }
 
+void Poisson_k::initParam(const Vector<Index>& initObs) {
+  std::cout << "Poisson_k::initParam" << std::endl;
+  for (Index k = 0; k < nbClass_; ++k) {
+    param_(k) = std::max(poissonInitMinAlpha, Real((*p_data_)(initObs(k))));
+  }
+};
+
 } // namespace mixt

@@ -144,6 +144,8 @@ int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const {
 }
 
 void Gaussian_sjk::initParam(const Vector<Index>& initObs) {
+  std::cout << "Gaussian_sjk::initParam" << std::endl;
+
   Real sampleMean, sampleSd;
   meanSD((*p_data_), sampleMean, sampleSd); // computation of sample standard deviation
   Real classSd = sampleSd / nbClass_; // variance per class

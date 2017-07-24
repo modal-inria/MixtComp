@@ -77,10 +77,6 @@ class FunctionalMixture : public IMixture {
     };
 
     void samplingStepNoCheck(SamplerInitialization init, Index i) {
-      if (init == performInitialization_) {
-        initData(i);
-      }
-
       class_[(*p_zi_)(i)].samplingStepNoCheck(i);
     };
 

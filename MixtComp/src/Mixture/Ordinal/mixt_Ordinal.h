@@ -259,9 +259,9 @@ class Ordinal : public IMixture
     }
 
     virtual void samplingStepNoCheck(SamplerInitialization init, Index ind) {
-      if (init == performInitialization_) {
+      if (init == callInitDataIfMarkovChain_) {
         initData(ind);
-        initBOS(ind, piInitBOS);
+        initBOS(ind);
       }
 
       GibbsSampling(ind,
@@ -457,19 +457,23 @@ class Ordinal : public IMixture
       for (Index k = 0; k < nbClass_; ++k) {
 //        mu_ = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
         mu_(k) = augData_.data_(initObs(k)); // representative element used is the same for each variable for a given class
+        pi_(k) = 1. / nbClass_;
       }
 
       for (Index i = 0; i < nbInd_; ++i) {
-        initBOS(i, 1. / nbClass_);
+        initBOS(i); // Gibbs sampling iterations to avoid estimating too closely to 0 in first iterations
       }
     }
 
-    void initBOS(Index i, Real piInit) {
+    /**
+     * During initialization of observation, z is set to 0, to avoid generating 0 probability individuals.
+     * However, a mStep performed on such a data set would always yield an estimated value of 0 for z. */
+    void initBOS(Index i) {
       for (int n = 0; n < nbGibbsIniBOS; ++n) { // n rounds of Gibbs sampling to increase variability on z
         GibbsSampling(
             i,
             mu_((*p_zi_)(i)),
-            piInit,
+            pi_((*p_zi_)(i)),
             noCheckZ_);
       }
 

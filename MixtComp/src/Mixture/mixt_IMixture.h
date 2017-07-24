@@ -23,9 +23,15 @@ enum EstimatorType {
   unBiased_
 };
 
+/**
+ * During Gibbs sampling, it is necessary to perform an initialization just before the burn-in,
+ * because the mstep might break the Markov chains used to sample the latent variables of the observations.
+ * The estimation might for example result in 0 probability observations. By providing samplerPerformInitialization_
+ * to samplingStep, a complete initialization occur, otherwise with samplerDoNotPerformInitialization_
+ * only the sampling procedure is performed. */
 enum SamplerInitialization {
-  performInitialization_,
-  doNotPerformInitialization_,
+  callInitDataIfMarkovChain_,
+  doNotCallInitData_,
 };
 
 class IMixture {

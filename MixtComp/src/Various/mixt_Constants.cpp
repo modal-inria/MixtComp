@@ -37,8 +37,10 @@ const int nbGibbsIterRank = 50;
 
 const int nbSampleObserved = 10000;
 
-extern const int maxIterationFunctional = 10000;
+const int maxIterationFunctional = 10000;
 
 const std::string rankPosSep = ",";
+
+const Real poissonInitMinAlpha = 0.5;
 
 } // namespace mixt

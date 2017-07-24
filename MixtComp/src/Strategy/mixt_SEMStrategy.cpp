@@ -145,13 +145,16 @@ void SemStrategy::runSEMNoCheck() {
 }
 
 void SemStrategy::runGibbs() {
-  p_composer_->gibbsSampling(performInitialization_,
+
+  // note that initData is not called. Since parameters are known, using them result in a more efficient initialization
+
+  p_composer_->gibbsSampling(callInitDataIfMarkovChain_,
                              doNotSampleData_,
                              param_.nbGibbsBurnInIter_,
                              2, // group
                              3); // groupMax
 
-  p_composer_->gibbsSampling(doNotPerformInitialization_,
+  p_composer_->gibbsSampling(doNotCallInitData_,
                              sampleData_,
                              param_.nbGibbsIter_,
                              3, // group
