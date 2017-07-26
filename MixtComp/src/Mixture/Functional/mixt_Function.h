@@ -50,11 +50,6 @@ class Function {
                         const Matrix<Real>& beta,
                         const Vector<Real>& sd);
 
-    void sampleWCheck(const Matrix<Real>& alpha,
-                      const Matrix<Real>& beta,
-                      const Vector<Real>& sd,
-                      const FunctionalClass& fc);
-
     void removeMissingUniformSampling();
 
     void removeMissingQuantile(const Vector<Real>& quantiles);

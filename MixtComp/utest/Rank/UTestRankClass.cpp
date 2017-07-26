@@ -280,7 +280,7 @@ TEST(RankClass, mStep)
     rank.sampleMu();
   }
 
-  rank.mStep(unBiased_);
+  rank.mStep();
 
   ASSERT_EQ(mu, muEst);
   ASSERT_LT(std::abs(pi - piEst), tolerance);

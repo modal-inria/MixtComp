@@ -68,7 +68,7 @@ TEST(RankStat, computeStat)
     for (int ind = 0; ind < nbInd; ++ind) {
       data(ind).sampleY(muEst, piEst, allGAuthorized_);
     }
-    rank.mStep(unBiased_);
+    rank.mStep();
     paramStat.sampleValue(i, nbIterRun - 1);
   }
 
