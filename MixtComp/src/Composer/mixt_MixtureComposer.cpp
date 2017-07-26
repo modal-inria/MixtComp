@@ -18,7 +18,8 @@
 
 namespace mixt { 
 
-MixtureComposer::MixtureComposer(Index nbInd,
+MixtureComposer::MixtureComposer(
+    Index nbInd,
 		Index nbClass,
 		Real confidenceLevel) :
 						idName_("z_class"),

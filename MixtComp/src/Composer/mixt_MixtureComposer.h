@@ -37,9 +37,10 @@ class MixtureComposer {
     /** Constructor.
      * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      */
-    MixtureComposer(Index nbInd,
-                    Index nbClass,
-                    Real confidenceLevel);
+    MixtureComposer(
+        Index nbInd,
+        Index nbClass,
+        Real confidenceLevel);
 
     /** copy constructor.
      *  @param composer the composer to copy

@@ -19,7 +19,6 @@
 
 #include "../Composer/mixt_MixtureComposer.h"
 #include "../Strategy/mixt_StrategyParam.h"
-#include "mixt_SEMAlgo.h"
 
 namespace mixt {
 
@@ -37,27 +36,21 @@ class SemStrategy {
     
     /** run the strategy */
     std::string run();
-    
-    std::string initSEMCheck();
-    void initSEMNoCheck();
 
-    RunProblemType runSEMCheck(SamplerType sampler);
-    void runSEMNoCheck();
-
-    void runGibbs();
-
+    /**
+     * run the algorithm, only kept during the transition, as an archive
+     * @return string describing the problem in case of soft degeneracy */
+    std::string runSEM(
+        RunType runType,
+        Index nIter,
+        int group,
+        int groupMax);
 
   private:
      /** reference on the main model */
     MixtureComposer* p_composer_;
     
     const StrategyParam& param_;
-
-    /** algorithm for burn-in */
-    SEMAlgo burnInAlgo_;
-
-    /** algorithm for subsequent long run */
-    SEMAlgo runAlgo_;
 };
 
 }  // namespace mixt
