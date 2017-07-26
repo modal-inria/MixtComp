@@ -332,9 +332,34 @@ class FunctionalMixture : public IMixture {
      */
     void initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nClass_; ++k) {
-        class_[k].initParam(initObs(k));
+        class_[k].initParamOneInd(initObs(k));
       }
+      std::cout << "One ind estimator:" << std::endl;
+      writeParameters();
+      printTik();
+
+//      for (Index k = 0; k < nClass_; ++k) {
+//        class_[k].initParamAllInd(initObs(k));
+//      }
+//      std::cout << "All ind estimator:" << std::endl;
+//      writeParameters();
+//      printTik();
     };
+
+    /**
+     * This is for debug only
+     */
+    void printTik() {
+      for (Index i = 0; i < nInd_; ++i) {
+        Vector<Real> completedProba(nClass_);
+        Vector<Real> tik(nClass_);
+        for (Index k = 0; k < nClass_; ++k) {
+          completedProba(k) = lnCompletedProbability(i, k);
+        }
+        tik.logToMulti(completedProba);
+        std::cout << itString(tik) << std::endl;
+      }
+    }
 
   private:
     std::string checkMissingType() {

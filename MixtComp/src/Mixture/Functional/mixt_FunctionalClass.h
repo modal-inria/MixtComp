@@ -42,7 +42,9 @@ class FunctionalClass {
 
     void mStepBetaSd(const std::set<Index>& setInd);
 
-    void initParam(Index obs);
+    void initParamAllInd(Index obs);
+
+    void initParamOneInd(Index obs);
 
     void sampleParam();
 

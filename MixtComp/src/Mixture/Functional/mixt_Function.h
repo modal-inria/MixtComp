@@ -34,6 +34,10 @@ class Function {
 
     void computeVandermonde(Index nCoeff);
 
+    /**
+     * Similar to lnObservedProbability, except that there is no summation over all possible
+     * values of w. Only the completed value is considered.
+     */
     Real lnCompletedProbability(const Matrix<Real>& alpha,
                                 const Matrix<Real>& beta,
                                 const Vector<Real>& sd) const;
