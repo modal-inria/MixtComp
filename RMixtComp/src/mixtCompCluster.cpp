@@ -14,36 +14,30 @@
 #include "MixtComp/src/mixt_MixtComp.h"
 
 // [[Rcpp::export]]
-Rcpp::List mixtCompCluster(Rcpp::List dataList,
-                           Rcpp::List mcStrategy,
-                           int nbClass,
-                           double confidenceLevel) {
+Rcpp::List mixtCompCluster(
+    Rcpp::List dataList,
+    Rcpp::List mcStrategy,
+    int nbClass,
+    double confidenceLevel) {
   mixt::Timer totalTimer("Total Run");
 
-  // string to log warnings
-  std::string warnLog;
+  std::string warnLog; // string to log warnings
 
-  // lists to export results
-  Rcpp::List mcMixture;
+  Rcpp::List mcMixture; // lists to export results
   Rcpp::List mcVariable;
 
-  // create the data handler
-  mixt::DataHandlerR handler(dataList);
+  mixt::DataHandlerR handler(dataList); // create the data handler
   warnLog += handler.listData();
   handler.writeInfo();
   handler.writeDataMap();
 
-  // create the data extractor
-  mixt::DataExtractorR dataExtractor;
+  mixt::DataExtractorR dataExtractor; // create the data extractor
 
-  // create the parameters setter
-  mixt::ParamSetterDummy paramSetter;
+  mixt::ParamSetterDummy paramSetter; // create the parameters setter
 
-  // create the parameters extractor
-  mixt::ParamExtractorR paramExtractor;
+  mixt::ParamExtractorR paramExtractor; // create the parameters extractor
 
-  // create the mixture manager
-  mixt::MixtureManager<mixt::DataHandlerR,
+  mixt::MixtureManager<mixt::DataHandlerR, // create the mixture manager
                        mixt::DataExtractorR,
                        mixt::ParamSetterDummy,
                        mixt::ParamExtractorR> manager(&handler,
@@ -52,6 +46,8 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
                                                       &paramExtractor,
                                                       confidenceLevel,
                                                       warnLog);
+
+  // Basic checks
 
   if (confidenceLevel < 0. || 1. < confidenceLevel) {
     std::stringstream sstm;
@@ -65,82 +61,95 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
     warnLog += sstm.str();
   }
 
-  if (warnLog.size() == 0) { // data is correct in descriptors, proceed with reading
-    mixt::MixtureComposer composer(handler.nbSample(),
-                                   nbClass,
-                                   confidenceLevel);
+  if (0 < warnLog.size()) {
+    mcMixture["warnLog"] = warnLog;
 
-    mixt::Timer readTimer("Read Data");
-    warnLog += manager.createMixtures(composer,
-                                      nbClass);
-    warnLog += composer.setDataParam<mixt::ParamSetterDummy,
-                                     mixt::DataHandlerR>(paramSetter,
-                                                         handler,
-                                                         mixt::learning_);
-    readTimer.top("data has been read");
-
-    if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
-      dataExtractor .setNbMixture(handler.nbVariable());
-      paramExtractor.setNbMixture(handler.nbVariable());
-
-      mixt::StrategyParam param;
-      paramRToCpp(mcStrategy,
-                  param);
-
-      // create the appropriate strategy and transmit the parameters
-      mixt::SemStrategy strategy(&composer,
-                                 param); // number of iterations for Gibbs sampler
-
-      // run the strategy
-      mixt::Timer stratTimer("Strategy Run");
-      warnLog += strategy.run();
-      stratTimer.top("strategy run complete");
-
-      if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
-#ifdef MC_VERBOSE
-        composer.writeParameters();
-#endif
-        composer.exportDataParam<mixt::DataExtractorR,
-                                 mixt::ParamExtractorR>(dataExtractor,
-                                                        paramExtractor);
-
-        // export the composer results to R through modifications of mcResults
-        mcMixture["nbCluster"] = nbClass;
-        mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
-        Real lnObsLik = composer.lnObservedLikelihood();
-        Real lnCompLik = composer.lnCompletedLikelihood();
-        mcMixture["lnObservedLikelihood"] = lnObsLik;
-        mcMixture["lnCompletedLikelihood"] = lnCompLik;
-        mcMixture["BIC"] = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
-        mcMixture["ICL"] = lnCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
-
-        mcMixture["runTime"] = totalTimer.top("end of run");
-        mcMixture["nbInd"] = composer.nbInd();
-        mcMixture["mode"] = "learn";
-
-        Rcpp::NumericMatrix idc;
-        mixt::IDClass(composer, idc);
-        mcMixture["IDClass"] = idc;
-
-        Rcpp::NumericMatrix pGC;
-        mixt::lnProbaGivenClass(composer, pGC);
-        mcMixture["lnProbaGivenClass"] = pGC;
-
-        Rcpp::NumericMatrix delta;
-        mixt::matDelta(composer, delta);
-        mcMixture["delta"] =delta;
-      }
-    }
+    return Rcpp::List::create(
+        Rcpp::Named("strategy") = mcStrategy,
+        Rcpp::Named("mixture") = mcMixture,
+        Rcpp::Named("variable") = mcVariable);
   }
 
-  mcMixture["warnLog"] = warnLog;
-#ifdef MC_VERBOSE
-  if (warnLog.size() != 0) {
-    std::cout << "!!! warnLog not empty !!!" << std::endl;
-    std::cout << warnLog << std::endl;
-  }
-#endif
+  // Create the composer and read the data
 
+  mixt::MixtureComposer composer(handler.nbSample(),
+                                 nbClass,
+                                 confidenceLevel);
+
+  mixt::Timer readTimer("Read Data");
+  warnLog += manager.createMixtures(composer,
+                                    nbClass);
+  warnLog += composer.setDataParam<mixt::ParamSetterDummy,
+                                   mixt::DataHandlerR>(paramSetter,
+                                                       handler,
+                                                       mixt::learning_);
+  readTimer.top("data has been read");
+
+  if (0 < warnLog.size()) {
+    mcMixture["warnLog"] = warnLog;
+
+    return Rcpp::List::create(
+        Rcpp::Named("strategy") = mcStrategy,
+        Rcpp::Named("mixture") = mcMixture,
+        Rcpp::Named("variable") = mcVariable);
+  }
+
+  // Create the Strategy
+
+  dataExtractor .setNbMixture(handler.nbVariable());
+  paramExtractor.setNbMixture(handler.nbVariable());
+
+  mixt::StrategyParam strategyParam;
+  paramRToCpp(mcStrategy, strategyParam);
+
+  mixt::SemStrategy strategy(&composer, // create the appropriate strategy and transmit the parameters
+                             strategyParam); // number of iterations for Gibbs sampler
+
+  // Run the strategy
+
+  mixt::Timer stratTimer("Strategy Run");
+  warnLog += strategy.run();
+  stratTimer.top("strategy run complete");
+
+  if (0 < warnLog.size()) {
+    mcMixture["warnLog"] = warnLog;
+
+    return Rcpp::List::create(
+        Rcpp::Named("strategy") = mcStrategy,
+        Rcpp::Named("mixture") = mcMixture,
+        Rcpp::Named("variable") = mcVariable);
+  }
+
+  // Run has been successful, export everything
+
+  composer.exportDataParam<mixt::DataExtractorR,
+                           mixt::ParamExtractorR>(dataExtractor,
+                                                  paramExtractor);
+
+  mcMixture["nbCluster"] = nbClass; // export the composer results to R through modifications of mcResults
+  mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
+  Real lnObsLik = composer.lnObservedLikelihood();
+  Real lnCompLik = composer.lnCompletedLikelihood();
+  mcMixture["lnObservedLikelihood"] = lnObsLik;
+  mcMixture["lnCompletedLikelihood"] = lnCompLik;
+  mcMixture["BIC"] = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+  mcMixture["ICL"] = lnCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+
+  mcMixture["runTime"] = totalTimer.top("end of run");
+  mcMixture["nbInd"] = composer.nbInd();
+  mcMixture["mode"] = "learn";
+
+  Rcpp::NumericMatrix idc;
+  mixt::IDClass(composer, idc);
+  mcMixture["IDClass"] = idc;
+
+  Rcpp::NumericMatrix pGC;
+  mixt::lnProbaGivenClass(composer, pGC);
+  mcMixture["lnProbaGivenClass"] = pGC;
+
+  Rcpp::NumericMatrix delta;
+  mixt::matDelta(composer, delta);
+  mcMixture["delta"] = delta;
   mcMixture["runTime"] = totalTimer.top("end of run");
   mcMixture["nbSample"] = handler.nbSample();
 
@@ -148,12 +157,13 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList,
   Rcpp::List data = dataExtractor.rcppReturnVal();
   Rcpp::List param = paramExtractor.rcppReturnParam();
 
-  mcVariable = Rcpp::List::create(Rcpp::Named("type") = type,
-                                  Rcpp::Named("data") = data,
-                                  Rcpp::Named("param") = param);
+  mcVariable = Rcpp::List::create(
+      Rcpp::Named("type") = type,
+      Rcpp::Named("data") = data,
+      Rcpp::Named("param") = param);
 
-
-  return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy,
-                            Rcpp::Named("mixture") = mcMixture,
-                            Rcpp::Named("variable") = mcVariable);
+  return Rcpp::List::create(
+      Rcpp::Named("strategy") = mcStrategy,
+      Rcpp::Named("mixture") = mcMixture,
+      Rcpp::Named("variable") = mcVariable);
 }
