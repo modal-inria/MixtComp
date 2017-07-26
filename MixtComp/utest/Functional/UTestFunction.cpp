@@ -95,6 +95,8 @@ TEST(Function, removeMissingQuantile) {
   Index nTime = 5;
   Index nSub = 2;
 
+  Index nQuantile = nSub + 1;
+
   Vector<Real> t(nTime);
   t << -5., 16., 45., 1., -3.;
 
@@ -103,8 +105,8 @@ TEST(Function, removeMissingQuantile) {
 
   Vector<std::set<Index> > w(nSub);
 
-  Vector<Real> quantile(nSub - 1);
-  quantile << 2.3;
+  Vector<Real> quantile(nQuantile);
+  quantile << -5., 2.3, 45.;
 
   Function function;
   function.setVal(t, x, w);

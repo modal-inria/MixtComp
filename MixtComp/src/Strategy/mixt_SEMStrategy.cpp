@@ -17,31 +17,13 @@
 namespace mixt {
 
 /** default constructor */
-SemStrategy::SemStrategy(MixtureComposer* p_composer,
-                         const StrategyParam& param) :
-    p_composer_(p_composer),
-    param_(param) {
-  p_burnInAlgo_ = new SEMAlgo(p_composer,
-                              param.nbBurnInIter_);
-  p_runAlgo_    = new SEMAlgo(p_composer,
-                              param.nbIter_);
-}
-
-/** copy constructor */
-SemStrategy::SemStrategy(SemStrategy const& strategy) :
-    p_composer_(strategy.p_composer_),
-    param_(strategy.param_) {
-  p_burnInAlgo_ = new SEMAlgo(p_composer_,
-                              param_.nbBurnInIter_);
-  p_runAlgo_    = new SEMAlgo(p_composer_,
-                              param_.nbIter_);
-}
-
-/** destructor */
-SemStrategy::~SemStrategy() {
-  if (p_burnInAlgo_) delete p_burnInAlgo_;
-  if (p_runAlgo_   ) delete p_runAlgo_   ;
-}
+SemStrategy::SemStrategy(
+    MixtureComposer* p_composer,
+    const StrategyParam& param) :
+        p_composer_(p_composer),
+        param_(param),
+        burnInAlgo_(p_composer, param.nbBurnInIter_),
+        runAlgo_(p_composer, param.nbIter_) {}
 
 std::string SemStrategy::run() {
   std::string warnLog;
@@ -115,50 +97,56 @@ void SemStrategy::initSEMNoCheck() {
 
 RunProblemType SemStrategy::runSEMCheck(SamplerType sampler) {
   RunProblemType prob = noProblem_;
-  p_burnInAlgo_->runCheck(burnIn_,
-                          prob,
-                          sampler,
-                          0, // group
-                          3); // groupMax
+  burnInAlgo_.runCheck(
+      burnIn_,
+      prob,
+      sampler,
+      0, // group
+      3); // groupMax
 
   if (prob == invalidSampler_) { // no run is performed if there is an error during the burn-in
     return prob;
   }
 
-  p_runAlgo_->runCheck(run_,
-                       prob,
-                       sampler,
-                       1, // group
-                       3); // groupMax
+  runAlgo_.runCheck(
+      run_,
+      prob,
+      sampler,
+      1, // group
+      3); // groupMax
 
   return prob;
 }
 
 void SemStrategy::runSEMNoCheck() {
-  p_burnInAlgo_->runNoCheck(burnIn_,
-                            0, // group
-                            3); // groupMax
+  burnInAlgo_.runNoCheck(
+      burnIn_,
+      0, // group
+      3); // groupMax
 
-  p_runAlgo_->runNoCheck(run_,
-                         1, // group
-                         3); // groupMax
+  runAlgo_.runNoCheck(
+      run_,
+      1, // group
+      3); // groupMax
 }
 
 void SemStrategy::runGibbs() {
 
   // note that initData is not called. Since parameters are known, using them result in a more efficient initialization
 
-  p_composer_->gibbsSampling(callInitDataIfMarkovChain_,
-                             doNotSampleData_,
-                             param_.nbGibbsBurnInIter_,
-                             2, // group
-                             3); // groupMax
+  p_composer_->gibbsSampling(
+      callInitDataIfMarkovChain_,
+      doNotSampleData_,
+      param_.nbGibbsBurnInIter_,
+      2, // group
+      3); // groupMax
 
-  p_composer_->gibbsSampling(doNotCallInitData_,
-                             sampleData_,
-                             param_.nbGibbsIter_,
-                             3, // group
-                             3); // groupMax
+  p_composer_->gibbsSampling(
+      doNotCallInitData_,
+      sampleData_,
+      param_.nbGibbsIter_,
+      3, // group
+      3); // groupMax
 }
 
 } // namespace mixt

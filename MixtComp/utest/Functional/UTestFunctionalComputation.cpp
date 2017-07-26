@@ -531,6 +531,8 @@ TEST(FunctionalComputation, removeMissingQuantile) {
   Real min = -20.;
   Real max = 10.;
 
+  Index nQuantile = nSub + 1;
+
   Vector<Function> vecInd(nInd);
   Vector<Real> computedQuantile;
 
@@ -550,8 +552,8 @@ TEST(FunctionalComputation, removeMissingQuantile) {
 
   globalQuantile(vecInd, computedQuantile);
 
-  Vector<Real> expectedQuantile(nSub - 1);
-  expectedQuantile << -10., 0.;
+  Vector<Real> expectedQuantile(nQuantile);
+  expectedQuantile << -20., -10., 0., 10.;
 
   ASSERT_EQ(true, computedQuantile.isApprox(expectedQuantile, 0.1));
 }

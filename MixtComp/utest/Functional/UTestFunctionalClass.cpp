@@ -76,7 +76,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
       setInd,
       0.95);
   funcClass.setSize(nSub, nCoeff);
-  funcClass.mStepAlpha();
+  funcClass.mStepAlpha(setInd);
 
   Vector<Real> alphaComputed(nParam);
   for (Index s = 0; s < nSub; ++s) {

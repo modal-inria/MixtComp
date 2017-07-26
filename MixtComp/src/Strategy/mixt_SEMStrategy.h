@@ -33,14 +33,7 @@ class SemStrategy {
     /** default constructor.
      *  @param p_composer the model to estimate
      **/
-    SemStrategy(MixtureComposer* p_composer,
-                const StrategyParam& param);
-
-    /** non-trivial copy constructor */
-    SemStrategy(SemStrategy const& strategy);
-
-    /** non-trivial destructor */
-    ~SemStrategy();
+    SemStrategy(MixtureComposer* p_composer, const StrategyParam& param);
     
     /** run the strategy */
     std::string run();
@@ -61,10 +54,10 @@ class SemStrategy {
     const StrategyParam& param_;
 
     /** algorithm for burn-in */
-    SEMAlgo* p_burnInAlgo_;
+    SEMAlgo burnInAlgo_;
 
     /** algorithm for subsequent long run */
-    SEMAlgo* p_runAlgo_;
+    SEMAlgo runAlgo_;
 };
 
 }  // namespace mixt

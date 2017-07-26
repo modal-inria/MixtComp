@@ -1,16 +1,9 @@
 # Initialization
 
-- the mStep just after initParam will be suppressed, as it would erase the result of initParam
-	- what is needed after initParam are eStep and sStep
-	- it is the case in both SEMAlgo::runCheck and SEMAlgo::runNoCheck at the moment, so everything is fine
-- Functional
-	- How to initialize alpha ? Are there no problem to initialize it from a single individual ?
 - What to do when an individual is not suited for initialization ?
 	- for example when a functional does not have enough points to estimate all the subregressions ?
 	- those are extreme cases that at present would result in a crash
-- The uniform initialization seems useless now that one observation is used to initialize the parameters
-	- is it so that only that one observation shall be uniformly completed ?
-	- it is useful, because every individual need to be completed for the eStep (and not just for the mStep)
+	- initParam should return a string explaining any problem it encountered
 
 # IMixture
 
