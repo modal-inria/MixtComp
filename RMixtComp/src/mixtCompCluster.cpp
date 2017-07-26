@@ -96,7 +96,7 @@ Rcpp::List mixtCompCluster(
 
   // Create the Strategy
 
-  dataExtractor .setNbMixture(handler.nbVariable());
+  dataExtractor .setNbMixture(handler.nbVariable()); // all data has been read, checked and transmitted to the mixtures
   paramExtractor.setNbMixture(handler.nbVariable());
 
   mixt::StrategyParam strategyParam;
