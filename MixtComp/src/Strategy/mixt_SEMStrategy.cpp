@@ -36,14 +36,14 @@ std::string SemStrategy::run() {
         param_.nbBurnInIter_,
         0, // group
         3); // groupMax
-    if (0 < warnLog.size()) break;
+    if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
     warnLog = runSEM(
         run_,
         param_.nbIter_,
         1, // group
         3); // groupMax
-    if (0 < warnLog.size()) break;
+    if (0 < warnLog.size()) continue;
 
     // parameters will be saved here, when the option to cache restore / parameters will be implemented
 
