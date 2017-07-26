@@ -49,7 +49,7 @@ bool Gaussian_sjk::hasModalities() const {
   return false;
 }
 
-void Gaussian_sjk::mStep(EstimatorType bias) {
+void Gaussian_sjk::mStep() {
   for (int k = 0; k < nbClass_; ++k) {
     Real mean;
     Real sd;
@@ -61,12 +61,6 @@ void Gaussian_sjk::mStep(EstimatorType bias) {
 
     param_(2 * k    ) = mean;
     param_(2 * k + 1) = sd;
-  }
-
-  if (bias == biased_) {
-    for (int k = 0; k < nbClass_; ++k) {
-      param_(2 * k + 1) = std::max(epsilon, param_(2 * k + 1));
-    }
   }
 }
 

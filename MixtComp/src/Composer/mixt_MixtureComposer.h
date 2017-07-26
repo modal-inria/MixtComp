@@ -71,13 +71,13 @@ class MixtureComposer {
      *  mixture parameters.
      *  @param[out] worstDeg worst degeneracy type incountered among all mixtures for this mStep
      **/
-    void mStep(EstimatorType bias);
+    void mStep();
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model. Only called
      *  by mStep
      **/
-    void pStep(EstimatorType bias);
+    void pStep();
 
     /**
      * Simulate zi accordingly to tik and replace tik by zik by calling cStep().

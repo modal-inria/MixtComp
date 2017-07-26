@@ -32,7 +32,7 @@ class Categorical_pjk {
 
     int computeNbFreeParameters() const;
 
-    void mStep(EstimatorType bias);
+    void mStep();
 
     std::vector<std::string> paramNames() const;
 

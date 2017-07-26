@@ -18,11 +18,6 @@
 
 namespace mixt {
 
-enum EstimatorType {
-  biased_,
-  unBiased_
-};
-
 /**
  * During Gibbs sampling, it is necessary to perform an initialization just before the burn-in,
  * because the mstep might break the Markov chains used to sample the latent variables of the observations.
@@ -83,7 +78,7 @@ class IMixture {
      *
      * @return empty string if mStep successful, or a detailed description of the eventual error
      */
-    virtual void mStep(EstimatorType bias) = 0;
+    virtual void mStep() = 0;
 
     /**
      * Storage of mixture parameters during SEM run phase

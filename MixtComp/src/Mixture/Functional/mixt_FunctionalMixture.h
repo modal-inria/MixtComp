@@ -109,7 +109,7 @@ class FunctionalMixture : public IMixture {
       return 1;
     }
 
-    void mStep(EstimatorType bias) {
+    void mStep() {
       for (Index k = 0; k < nClass_; ++k) {
         class_[k].mStep();
       }

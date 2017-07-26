@@ -39,7 +39,7 @@ class Gaussian_sjk {
 
     /** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
      * using the biased estimator which corresponds to the maximum likelihood estimator */
-    void mStep(EstimatorType bias);
+    void mStep();
 
     std::vector<std::string> paramNames() const;
 

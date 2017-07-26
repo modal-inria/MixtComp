@@ -45,7 +45,7 @@ bool Poisson_k::hasModalities() const {
   return false;
 }
 
-void Poisson_k::mStep(EstimatorType bias) {
+void Poisson_k::mStep() {
   for (int k = 0; k < nbClass_; ++k) {
     Real sumClass = 0.;
     for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
@@ -55,12 +55,6 @@ void Poisson_k::mStep(EstimatorType bias) {
     }
 
     param_(k) = sumClass / Real(classInd_(k).size());
-  }
-
-  if (bias == biased_) {
-    for (int k = 0; k < nbClass_; ++k) {
-      param_(k) = std::max(epsilon, param_(k));
-    }
   }
 }
 

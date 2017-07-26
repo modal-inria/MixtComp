@@ -45,7 +45,7 @@ int Categorical_pjk::computeNbFreeParameters() const {
   return nbClass_ * (nModality_ - 1);
 }
 
-void Categorical_pjk::mStep(EstimatorType bias) {
+void Categorical_pjk::mStep() {
   for (Index k = 0; k < nbClass_; ++k) {
     Vector<Real> modalities(nModality_, 0.);
 
@@ -59,15 +59,6 @@ void Categorical_pjk::mStep(EstimatorType bias) {
 
     for (Index p = 0; p < nModality_; ++p) {
       param_(k * nModality_ + p) = modalities(p);
-    }
-  }
-
-  if (bias == biased_) {
-    for (Index k = 0; k < nbClass_; ++k) {
-      for (Index p = 0; p < nModality_; ++p) {
-        param_(k * nModality_ + p) = std::max(param_(k * nModality_ + p), epsilon                     );
-        param_(k * nModality_ + p) = std::min(1. - epsilon              , param_(k * nModality_ + p)  );
-      }
     }
   }
 }

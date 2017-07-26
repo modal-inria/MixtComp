@@ -37,7 +37,7 @@ class Poisson_k {
     std::string setData(const std::string& paramStr,
                         AugmentedData<Vector<int> >& augData);
 
-    void mStep(EstimatorType bias);
+    void mStep();
 
     std::vector<std::string> paramNames() const;
 

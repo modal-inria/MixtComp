@@ -271,8 +271,8 @@ class Ordinal : public IMixture
       copyToData(ind);
     }
 
-    virtual void mStep(EstimatorType bias) {
-      mStepPi(bias);
+    virtual void mStep() {
+      mStepPi();
       mStepMu();
     }
 
@@ -656,7 +656,7 @@ class Ordinal : public IMixture
     /**
      * Estimation of pi by maximum likelihood in all classes
      * */
-    void mStepPi(EstimatorType bias) {
+    void mStepPi() {
       pi_ = 0.; // pi_ parameter is reinitialized
 
       Vector<Real> nodePerClass(nbClass_, 0.); // total number of nodes in each class
@@ -669,13 +669,6 @@ class Ordinal : public IMixture
       }
 
       pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
-
-      if (bias == biased_) {
-        for (int k = 0; k < nbClass_; ++k) {
-          pi_(k) = std::max(epsilon, pi_(k)      );
-          pi_(k) = std::min(pi_(k) , 1. - epsilon);
-        }
-      }
     }
 
     /**
