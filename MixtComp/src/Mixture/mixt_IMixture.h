@@ -51,20 +51,14 @@ class IMixture {
     }
 
     /**
-     * Simulation of latent variables and partially observed data with values that
-     * verify checkSampleCondition.
-     *
-     * @param ind index of the individual which data must be sampled
-     */
-    virtual void samplingStepCheck(Index ind) = 0;
-
-    /**
      * Simulation of latent variables and partially observed data without verifying
      * checkSampleCondition to speed-up the process.
      *
      * @param ind index of the individual which data must be sampled
      */
-    virtual void samplingStepNoCheck(SamplerInitialization init, Index ind) = 0;
+    virtual void samplingStepNoCheck(
+        SamplerInitialization init,
+        Index ind) = 0;
 
     /**
      * Check if conditions on data are verified. For example, for a categorical model one must check that each modality
@@ -87,8 +81,9 @@ class IMixture {
      * @param iterationMax maximum number of iterations
      * period.
      */
-    virtual void storeSEMRun(Index iteration,
-                             Index iterationMax) = 0;
+    virtual void storeSEMRun(
+        Index iteration,
+        Index iterationMax) = 0;
 
     /**
      * Storage of mixture parameters during SEM run phase
@@ -97,9 +92,10 @@ class IMixture {
      * @param iteration Gibbs iteration
      * @param iterationMax maximum number of iterations
      */
-    virtual void storeGibbsRun(Index i,
-                               Index iteration,
-                               Index iterationMax) = 0;
+    virtual void storeGibbsRun(
+        Index i,
+        Index iteration,
+        Index iterationMax) = 0;
 
     /**
      * Computation of completed likelihood
@@ -108,7 +104,9 @@ class IMixture {
      * @param k class
      * @return value of the completed likelihood in log scale
      */
-    virtual Real lnCompletedProbability(Index i, Index k) = 0;
+    virtual Real lnCompletedProbability(
+        Index i,
+        Index k) = 0;
 
     /**
      * Computation of observed likelihood
@@ -117,7 +115,9 @@ class IMixture {
      * @param k class
      * @return value of the observed likelihood in log scale
      */
-    virtual Real lnObservedProbability(Index ind, Index k) = 0;
+    virtual Real lnObservedProbability(
+        Index ind,
+        Index k) = 0;
 
     /**
      * Computation of the number of free parameters.

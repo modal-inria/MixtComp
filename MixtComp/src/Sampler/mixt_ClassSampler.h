@@ -29,13 +29,6 @@ class ClassSampler
                  int nbClass);
 
     /**
-     * Sample new values for the missing variables of the given individual. Using MixtureComposer::checkSampleCondition
-     * to check if each value of z_i is valid or not. Used during sampling, and false during rejection sampling
-     * @param i individual for which z must be sampled
-     * */
-    void sStepCheck  (int i);
-
-    /**
      * Sample new values for the missing variables of the given individual. Do not uses MixtureComposer::checkSampleCondition
      * to speed-up the sampling process. Used during rejection sampling.
      * @param i individual for which z must be sampled

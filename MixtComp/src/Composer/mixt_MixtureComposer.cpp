@@ -131,16 +131,6 @@ void MixtureComposer::mStep() {
 	}
 }
 
-void MixtureComposer::sStepCheck() {
-	for (Index i = 0; i < nbInd_; ++i) {
-		sStepCheck(i);
-	}
-}
-
-void MixtureComposer::sStepCheck(int i) {
-	sampler_.sStepCheck(i);
-}
-
 void MixtureComposer::sStepNoCheck() {
 #pragma omp parallel for
 	for (Index i = 0; i < nbInd_; ++i) {
@@ -195,18 +185,6 @@ int MixtureComposer::nbFreeParameters() const {
 		sum+= (*it)->nbFreeParameter();
 	}
 	return sum;
-}
-
-void MixtureComposer::samplingStepCheck() {
-	for (Index i = 0; i < nbInd_; ++i) {
-		samplingStepCheck(i);
-	}
-}
-
-void MixtureComposer::samplingStepCheck(int i) {
-	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->samplingStepCheck(i);
-	}
 }
 
 void MixtureComposer::samplingStepNoCheck(SamplerInitialization init) {

@@ -86,9 +86,6 @@ class MixtureComposer {
     void sStepNoCheck();
     void sStepNoCheck(int i);
 
-    void sStepCheck();
-    void sStepCheck(int i);
-
     /** compute Tik */
     void eStep();
     void eStepInd(int i);
@@ -121,9 +118,6 @@ class MixtureComposer {
      */
     void samplingStepNoCheck(SamplerInitialization init);
     void samplingStepNoCheck(SamplerInitialization init, int i);
-
-    void samplingStepCheck();
-    void samplingStepCheck(int i);
 
     /**
      * Check if the data conditions are verified for all mixtures. Providing a log is required during

@@ -72,10 +72,6 @@ class FunctionalMixture : public IMixture {
       p_paramSetter_(NULL),
       p_paramExtractor_(NULL) {};
 
-    void samplingStepCheck(Index i) {
-      class_[(*p_zi_)(i)].samplingStepCheck(i);
-    };
-
     void samplingStepNoCheck(SamplerInitialization init, Index i) {
       class_[(*p_zi_)(i)].samplingStepNoCheck(i);
     };

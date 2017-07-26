@@ -228,15 +228,9 @@ bool FunctionalClass::checkNonNullSigma() const {
 }
 
 void FunctionalClass::samplingStepNoCheck(Index i) {
-  data_(i).sampleWNoCheck(alpha_,
-                          beta_,
-                          sd_);
-}
-
-void FunctionalClass::samplingStepCheck(Index i) {
-  data_(i).sampleWCheck(alpha_,
-                        beta_,
-                        sd_,
-                        *this);
+  data_(i).sampleWNoCheck(
+      alpha_,
+      beta_,
+      sd_);
 }
 } // namespace mixt

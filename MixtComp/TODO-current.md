@@ -22,6 +22,10 @@
 	- those are extreme cases that at present would result in a crash
 	- initParam should return a string explaining any problem it encountered
 
+# Unbounded likelihood
+
+- even if unbounded likelihood is the only reason to abort a run, the emptying of a class should remain a reason to abort a run. It impacts every variable.
+
 # IMixture
 
 - remove samplingStepCheck
@@ -35,6 +39,7 @@
 # removal of Gibbs
 
 - Ordinal: remove zCondition parameters first, then modify until compilation
+- All samplingStepCheck code can be removed from the samplers as it will never be called again
 
 # Order of implementation, each step should result in a working version of MixtComp
 

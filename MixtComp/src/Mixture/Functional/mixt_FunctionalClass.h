@@ -65,8 +65,6 @@ class FunctionalClass {
 
     void samplingStepNoCheck(Index i);
 
-    void samplingStepCheck(Index i);
-
     Index checkSampleCondition(std::string* warnLog = NULL) const;
     bool checkNbDifferentValue() const;
     bool checkNonNullSigma() const;

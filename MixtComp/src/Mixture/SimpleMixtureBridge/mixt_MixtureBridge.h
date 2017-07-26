@@ -135,13 +135,8 @@ class MixtureBridge : public IMixture {
       return warnLog;
     }
 
-    virtual void samplingStepCheck(Index ind) {
-      sampler_.samplingStepCheck(ind,
-                                 (*p_zi_)(ind));
-    }
-
     virtual void samplingStepNoCheck(SamplerInitialization init, Index ind) {
-      // Note that initData is not called here, because sampling with param does not need a specific initialization
+// Note that initData is not called here, because sampling with param does not need a specific initialization
 //      if (init == samplerPerformInitialization_) {
 //        initData(ind);
 //      }

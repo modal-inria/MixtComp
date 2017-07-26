@@ -97,9 +97,10 @@ Real Function::lnObservedProbability(const Matrix<Real>& alpha,
   return logProba;
 }
 
-void Function::sampleWNoCheck(const Matrix<Real>& alpha,
-                              const Matrix<Real>& beta,
-                              const Vector<Real>& sd) {
+void Function::sampleWNoCheck(
+    const Matrix<Real>& alpha,
+    const Matrix<Real>& beta,
+    const Vector<Real>& sd) {
   Matrix<Real> jointLogProba;
   computeJointLogProba(alpha, beta, sd, jointLogProba);
 
@@ -111,47 +112,6 @@ void Function::sampleWNoCheck(const Matrix<Real>& alpha,
   for (Index i = 0; i < nTime_; ++i) {
     currProba.logToMulti(jointLogProba.row(i));
     w_(multi_.sample(currProba)).insert(i);
-  }
-}
-
-void Function::sampleWCheck(const Matrix<Real>& alpha,
-                            const Matrix<Real>& beta,
-                            const Vector<Real>& sd,
-                            const FunctionalClass& fc) {
-  Matrix<Real> jointLogProba;
-  computeJointLogProba(alpha, beta, sd, jointLogProba);
-
-  Vector<Index> w0(nTime_);
-  for (Index s = 0; s < nSub_; ++s) {
-    for (std::set<Index>::const_iterator it = w_(s).begin(), itE = w_(s).end(); it != itE; ++it) { // building the list of labels
-      w0(*it) = s;
-    }
-  }
-
-  Vector<Real> currProba;
-  Vector<Real> validValue(nSub_);
-  Vector<Real> sampleProba(nSub_);
-  for (Index i = 0; i < nTime_; ++i) {
-    currProba.logToMulti(jointLogProba.row(i));
-
-    for (Index s = 0; s < nSub_; ++s) {
-      w_(w0(i)).erase(i);
-      w_(s).insert(i);
-      w0(i) = s;
-
-      validValue(s) = fc.checkSampleCondition();
-    }
-    w_(w0(i)).erase(i);
-    sampleProba = currProba % validValue; // coefficient-wise multiplication
-
-    if (sampleProba == 0.) { // might happen in some extreme cases
-      sampleProba = validValue / validValue.sum();
-    }
-    else {
-      sampleProba = sampleProba / sampleProba.sum();
-    }
-
-    w_(multi_.sample(sampleProba)).insert(i);
   }
 }
 
