@@ -1,4 +1,4 @@
-functionalGenerator <- function(param) {
+functionalGenerator <- function(present, param) {
   nSub <- nrow(param$alpha)
   nCoeff <- ncol(param$beta)
 
@@ -32,7 +32,6 @@ functionalGenerator <- function(param) {
   
   return(xStr)
 }
-
 
 logToMulti <- function(logIn) {
   max <- max(logIn);

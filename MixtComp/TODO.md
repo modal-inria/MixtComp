@@ -95,6 +95,7 @@ To do list specific to MixtComp
 # Architecture
 
 - The whole trait system for the SimpleMixtureBridge might be greatly simplified if the mixture type, provided as a template argument of MixtureBridge, could in turn provide the types. BridgeTrait and its specialization would become unnecessary and all the information about mixture could be centralized in the header files of the various simple models.
+- There is no rational to separate sStep and samplingStep, they should be merged.
 
 # Various
 
