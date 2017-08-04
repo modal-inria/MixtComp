@@ -23,9 +23,15 @@ functionalInterPolyGenerator <- function(present, param) {
   
   for (i in 1:param$nTime) {
     x <- runif(1, param$tMin, param$tMax)
+  }
+  
+  x <- sort(x)
+  
+  for (i in 1:param$nTime) {
     t <- evalFunc(a, x) + rnorm(1, mean = 0, sd = param$sd)
     timeObs[i] <- paste(x, t, sep = ":")
   }
+  
 
   xStr <- paste(timeObs, collapse = ",")
   
