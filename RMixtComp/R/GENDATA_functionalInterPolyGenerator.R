@@ -29,7 +29,7 @@ functionalInterPolyGenerator <- function(present, param) {
   
   for (i in 1:param$nTime) {
     x <- evalFunc(a, t[i]) + rnorm(1, mean = 0, sd = param$sd)
-    timeObs[i] <- paste(t, x, sep = ":")
+    timeObs[i] <- paste(t[i], x, sep = ":")
   }
   
   xStr <- paste(timeObs, collapse = ",")
