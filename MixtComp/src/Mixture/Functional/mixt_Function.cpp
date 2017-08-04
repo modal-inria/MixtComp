@@ -202,7 +202,6 @@ void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
     nW += w_(s).size();
     std::cout << itString(w_(s)) << std::endl;
   }
-  std::cout << "nW: " << nW << ", nTime_: " << nTime_ << std::endl;
 #endif
 }
 

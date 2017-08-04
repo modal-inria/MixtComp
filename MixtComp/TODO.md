@@ -95,6 +95,11 @@
 	- if a class is empty, its proportion will be estimated at 1e-8. BUT the estimation of the classes will not work as there are no observations. Crashes are to be expected.
 - Uncomment and correct SimpleMixture utest
 
+# Architecture
+
+- The whole trait system for the SimpleMixtureBridge might be greatly simplified if the mixture type, provided as a template argument of MixtureBridge, could in turn provide the types. BridgeTrait and its specialization would become unnecessary and all the information about mixture could be centralized in the header files of the various simple models.
+- There is no rational to separate sStep and samplingStep, they should be merged.
+
 # Various
 
 - Since the algorithm is stochastic, it is complicated to obtain reproducible results during unit testing and continuous integration.
@@ -127,7 +132,8 @@
 # Model
 
 - Functional Model
-    - Missing data in support in
+    - Missing data in support
+    - The identifiability of the model is not enforced. Opposite ranks with symmetric values (around 0.5) of dispersion would yield the same model.
 - Ordinal model
     - clarify if can be used with EdgeAuthorized or not. It seems it cannot. Test with generated data.
     - apparently there are sometimes errors in the unit tests. Check those as they could explain other errors.

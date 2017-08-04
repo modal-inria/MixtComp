@@ -34,6 +34,7 @@ gaussianParam <- function(name) {
   gaussian <- list()
   gaussian$name <- name
   gaussian$type <- "Gaussian_sjk"
+  gaussian$generator <- gaussianGenerator
   gaussian$param <- list()
   gaussian$param[[1]] <- list(mean = 0, sd = 1)
   gaussian$param[[2]] <- list(mean = 2, sd = 1)
@@ -45,6 +46,7 @@ poissonParam <- function(name) {
   poisson <- list()
   poisson$name <- name
   poisson$type <- "Poisson_k"
+  poisson$generator <- poissonGenerator
   poisson$param <- list()
   poisson$param[[1]] <- 3
   poisson$param[[2]] <- 8
@@ -54,10 +56,9 @@ poissonParam <- function(name) {
 
 ordinalParam <- function(name) {
   Ordinal <- list()
-  
   Ordinal$name <- name
-  
   Ordinal$type <- "Ordinal"
+  Ordinal$generator <- ordinalGenerator
   
   Ordinal$param <- list()
   Ordinal$param[[1]] <- list(nbMod = 4, mu = 1, pi = 0.8)
@@ -70,6 +71,7 @@ categoricalParam <- function(name) {
   categorical <- list()
   categorical$name <- name
   categorical$type <- "Categorical_pjk"
+  categorical$generator <- categoricalGenerator 
   categorical$param <- list()
   categorical$param[[1]] <- c(0.1, 0.2, 0.2, 0.5)
   categorical$param[[2]] <- c(0.5, 0.3, 0.1, 0.1)
@@ -85,6 +87,7 @@ rankParam <- function(name) {
   
   Rank$name <- name
   Rank$type <- "Rank"
+  Rank$generator <- rankGenerator
   Rank$param[[1]]$mu <- c(1, 2, 3, 4)
   Rank$param[[1]]$pi <- 0.8
   Rank$param[[2]]$mu <- c(4, 3, 2, 1)
@@ -102,6 +105,7 @@ functionalParam1sub <- function(name) {
   
   Functional$name <- name
   Functional$type <- "Functional"
+  Functional$generator <- functionalGenerator
   Functional$paramStr <- "nSub: 1, nCoeff: 2"
   
   coeffAlpha1 <- getLinEq(c(0.,  100.), c(25., 0.)) # first sub
@@ -153,6 +157,7 @@ functionalParam2sub <- function(name) {
   
   Functional$name <- name
   Functional$type <- "Functional"
+  Functional$generator <- functionalGenerator
   Functional$paramStr <- "nSub: 2, nCoeff: 2"
   
   coeffAlpha1 <- getLinEq(c(0.,  100.), c(25., 0.)) # first sub
@@ -202,7 +207,6 @@ functionalParam2sub <- function(name) {
   return(Functional)
 }
 
-
 getLinEq <- function(pointA, pointB) {
   a <- matrix(c(1., pointA[1],
                 1., pointB[1]),
@@ -211,4 +215,31 @@ getLinEq <- function(pointA, pointB) {
   x <- solve(a, b)
   
   return(x)
+}
+
+functionalInterPolyParam <- function(name) {
+  Functional <- list(
+    name = name,
+    type = "Functional",
+    generator = functionalInterPolyGenerator,
+    paramStr = "nSub: 2, nCoeff: 2",
+    param = list())
+  
+  Functional$param[[1]] <- list(
+    x = c(0., 10., 20.),
+    y = c(0., 10., 0.),
+    sd = 0.1,
+    tMin = 0.,
+    tMax = 20.,
+    nTime = 100)
+  
+  Functional$param[[2]] <- list(
+    x = c(0., 10., 20.),
+    y = c(10., 0., 10.),
+    sd = 0.1,
+    tMin = 0.,
+    tMax = 20.,
+    nTime = 100)
+  
+  return(Functional)
 }
