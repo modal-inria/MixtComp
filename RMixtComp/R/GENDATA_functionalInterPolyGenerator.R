@@ -20,16 +20,16 @@ functionalInterPolyGenerator <- function(present, param) {
   nCoeff <- length(param$x)
   v <- vandermonde(param$x, nCoeff)
   a <- solve(v, param$y)
-  x <- vector(mode = "numeric", length = param$nTime)
+  t <- vector(mode = "numeric", length = param$nTime)
   
   for (i in 1:param$nTime) {
-    x[i] <- runif(1, param$tMin, param$tMax)
+    t[i] <- runif(1, param$tMin, param$tMax)
   }
-  x <- sort(x)
+  t <- sort(t)
   
   for (i in 1:param$nTime) {
-    t <- evalFunc(a, x[i]) + rnorm(1, mean = 0, sd = param$sd)
-    timeObs[i] <- paste(x, t, sep = ":")
+    x <- evalFunc(a, t[i]) + rnorm(1, mean = 0, sd = param$sd)
+    timeObs[i] <- paste(t, x, sep = ":")
   }
   
   xStr <- paste(timeObs, collapse = ",")

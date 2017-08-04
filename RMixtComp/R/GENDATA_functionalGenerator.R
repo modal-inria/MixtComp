@@ -8,6 +8,10 @@ functionalGenerator <- function(present, param) {
   
   for (i in 1:param$nTime) {
     t[i] <- runif(1, param$tMin, param$tMax)
+  }
+  t <- sort(t)
+
+  for (i in 1:param$nTime) {
     logKappa <- vector("numeric", nSub)
     
     for (s in 1:nSub) {
