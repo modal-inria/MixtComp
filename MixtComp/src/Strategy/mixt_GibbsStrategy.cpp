@@ -25,17 +25,20 @@ std::string GibbsStrategy::run() {
 
   // note that initData is not called. Since parameters are known, using them result in a more efficient initialization
 
-  p_composer_->gibbsSampling(callInitDataIfMarkovChain_,
-                             doNotSampleData_,
-                             param_.nbGibbsBurnInIter_,
-                             0, // group
-                             1); // groupMax
+  p_composer_->gibbsSampling(
+      callInitDataIfMarkovChain_,
+      doNotSampleData_,
+      param_.nbGibbsBurnInIter_,
+      0, // group
+      1); // groupMax
 
-  p_composer_->gibbsSampling(doNotCallInitData_,
-                             sampleData_,
-                             param_.nbGibbsIter_,
-                             1, // group
-                             1); // groupMax
+  p_composer_->gibbsSampling(
+      doNotCallInitData_,
+      sampleData_,
+      param_.nbGibbsIter_,
+      1, // group
+      1); // groupMax
+
   return warnLog;
 }
 

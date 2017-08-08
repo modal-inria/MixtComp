@@ -42,10 +42,11 @@ void Function::computeVandermonde(Index nCoeff) {
   vandermondeMatrix(t_, nCoeff, vandermonde_);
 }
 
-void Function::computeJointLogProba(const Matrix<Real>& alpha,
-                                    const Matrix<Real>& beta,
-                                    const Vector<Real>& sd,
-                                    Matrix<Real>& jointLogProba) const {
+void Function::computeJointLogProba(
+    const Matrix<Real>& alpha,
+    const Matrix<Real>& beta,
+    const Vector<Real>& sd,
+    Matrix<Real>& jointLogProba) const {
   jointLogProba.resize(nTime_, nSub_);
   NormalStatistic normal;
   Vector<Real> currKappa(nSub_);
@@ -63,9 +64,10 @@ void Function::computeJointLogProba(const Matrix<Real>& alpha,
   }
 }
 
-Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
-                                      const Matrix<Real>& beta,
-                                      const Vector<Real>& sd) const {
+Real Function::lnCompletedProbability(
+    const Matrix<Real>& alpha,
+    const Matrix<Real>& beta,
+    const Vector<Real>& sd) const {
   Real logProba = 0.;
 
   Matrix<Real> jointLogProba;
@@ -82,9 +84,10 @@ Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
   return logProba;
 }
 
-Real Function::lnObservedProbability(const Matrix<Real>& alpha,
-                                     const Matrix<Real>& beta,
-                                     const Vector<Real>& sd) const {
+Real Function::lnObservedProbability(
+    const Matrix<Real>& alpha,
+    const Matrix<Real>& beta,
+    const Vector<Real>& sd) const {
   Real logProba = 0.;
 
   Matrix<Real> jointLogProba;

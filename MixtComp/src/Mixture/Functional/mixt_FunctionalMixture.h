@@ -131,15 +131,17 @@ class FunctionalMixture : public IMixture {
     };
 
     Real lnCompletedProbability(Index i, Index k) {
-      return vecInd_(i).lnCompletedProbability(class_[k].alpha(),
-                                               class_[k].beta (),
-                                               class_[k].sd   ());
+      return vecInd_(i).lnCompletedProbability(
+          class_[k].alpha(),
+          class_[k].beta (),
+          class_[k].sd   ());
     }
 
     Real lnObservedProbability(Index i, Index k)  {
-      return vecInd_(i).lnObservedProbability(class_[k].alpha(),
-                                              class_[k].beta (),
-                                              class_[k].sd   ());
+      return vecInd_(i).lnObservedProbability(
+          class_[k].alpha(),
+          class_[k].beta (),
+          class_[k].sd   ());
     }
 
     Index nbFreeParameter() const {
