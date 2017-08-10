@@ -14,20 +14,17 @@
 #include "MixtComp/src/Composer/mixt_MixtureComposer.h"
 #include "MixtComp/src/Strategy/mixt_StrategyParam.h"
 
-namespace mixt
-{
+namespace mixt {
 
-void IDClass(mixt::MixtureComposer& mc,
-             Rcpp::NumericMatrix& idc);
+void IDClass(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& idc);
 
-void lnProbaGivenClass(mixt::MixtureComposer& mc,
-                       Rcpp::NumericMatrix& pGCR);
+void observedTik(mixt::MixtureComposer& mc, Rcpp::NumericVector& oikR);
 
-void matDelta(mixt::MixtureComposer& mc,
-              Rcpp::NumericMatrix& delta);
+void lnProbaGivenClass(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& pGCR);
 
-void paramRToCpp(const Rcpp::List& RParam,
-                 StrategyParam& CppParam);
+void matDelta(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& delta);
+
+void paramRToCpp(const Rcpp::List& RParam, StrategyParam& CppParam);
 
 } // namespace mixt
 

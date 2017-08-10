@@ -122,6 +122,8 @@ Rcpp::List mixtCompCluster(
 
   // Run has been successful, export everything
 
+  composer.writeParameters();
+
   composer.exportDataParam<mixt::DataExtractorR,
                            mixt::ParamExtractorR>(dataExtractor,
                                                   paramExtractor);
@@ -146,6 +148,10 @@ Rcpp::List mixtCompCluster(
   Rcpp::NumericMatrix pGC;
   mixt::lnProbaGivenClass(composer, pGC);
   mcMixture["lnProbaGivenClass"] = pGC;
+
+  Rcpp::NumericVector oTik;
+  mixt::observedTik(composer, oTik);
+  mcMixture["observedTik"] = oTik;
 
   Rcpp::NumericMatrix delta;
   mixt::matDelta(composer, delta);

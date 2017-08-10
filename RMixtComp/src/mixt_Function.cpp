@@ -44,10 +44,12 @@ void IDClass(mixt::MixtureComposer& mc,
   idc.attr("dimnames") = dimnms;
 }
 
-void lnProbaGivenClass(mixt::MixtureComposer& mc,
-                       Rcpp::NumericMatrix& pGCR) {
-  pGCR = Rcpp::NumericMatrix(mc.nbInd(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
-                             mc.nbClass());
+void lnProbaGivenClass(
+    mixt::MixtureComposer& mc,
+    Rcpp::NumericMatrix& pGCR) {
+  pGCR = Rcpp::NumericMatrix(
+      mc.nbInd(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
+      mc.nbClass());
 
   Matrix<Real> pGCCPP;
   mc.lnProbaGivenClass(pGCCPP);
@@ -55,6 +57,21 @@ void lnProbaGivenClass(mixt::MixtureComposer& mc,
   for (Index i = 0; i < mc.nbInd(); ++i) {
     for (Index k = 0; k < mc.nbClass(); ++k) {
       pGCR(i, k) = pGCCPP(i, k);
+    }
+  }
+}
+
+void observedTik(
+    mixt::MixtureComposer& mc,
+    Rcpp::NumericVector& oikR) {
+  oikR = Rcpp::NumericVector(mc.nbInd()); // no resize in Rcpp::NumericMatrix, hence the call to the constructor
+
+  Vector<Real> oikCPP;
+  mc.observedTik(oikCPP);
+
+  for (Index i = 0; i < mc.nbInd(); ++i) {
+    for (Index k = 0; k < mc.nbClass(); ++k) {
+      oikR(i) = oikCPP(i);
     }
   }
 }
