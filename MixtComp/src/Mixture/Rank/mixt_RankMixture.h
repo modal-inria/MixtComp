@@ -124,17 +124,15 @@ class RankMixture : public IMixture
                        gCond);
     }
 
-    void samplingStepNoCheck(SamplerInitialization init, Index i) {
-      if (init == callInitDataIfMarkovChain_) {
-        initData(i);
-      }
-
-      data_(i).sampleY(mu_((*p_zi_)(i)),
-                       pi_((*p_zi_)(i)),
-                       allGAuthorized_);
-      data_(i).sampleX(mu_((*p_zi_)(i)),
-                       pi_((*p_zi_)(i)),
-                       allGAuthorized_);
+    void samplingStepNoCheck(Index i) {
+      data_(i).sampleY(
+          mu_((*p_zi_)(i)),
+          pi_((*p_zi_)(i)),
+          allGAuthorized_);
+      data_(i).sampleX(
+          mu_((*p_zi_)(i)),
+          pi_((*p_zi_)(i)),
+          allGAuthorized_);
     }
 
     /** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */

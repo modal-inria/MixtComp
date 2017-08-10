@@ -22,21 +22,22 @@ MixtureComposer::MixtureComposer(
     Index nbInd,
 		Index nbClass,
 		Real confidenceLevel) :
-						idName_("z_class"),
-						nbClass_(nbClass),
-						nbInd_(nbInd),
-						nbVar_(0),
-						prop_(nbClass),
-						tik_(nbInd,
-								nbClass),
-								sampler_(*this,
-										zClassInd_,
-										tik_,
-										nbClass),
-										paramStat_(prop_,
-												confidenceLevel),
-												dataStat_(zClassInd_),
-												confidenceLevel_(confidenceLevel) {
+		    idName_("z_class"),
+		    nbClass_(nbClass),
+		    nbInd_(nbInd),
+		    nbVar_(0),
+		    prop_(nbClass),
+		    tik_(nbInd, nbClass),
+		    sampler_(
+		        *this,
+		        zClassInd_,
+		        tik_,
+		        nbClass),
+		    paramStat_(
+		        prop_,
+		        confidenceLevel),
+		        dataStat_(zClassInd_),
+		        confidenceLevel_(confidenceLevel) {
 	std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nbInd << ", nbClass: " << nbClass << std::endl;
 	zClassInd_.setIndClass(nbInd, nbClass);
 
@@ -66,9 +67,16 @@ Real MixtureComposer::lnObservedProbability(int i, int k) const {
 	return sum;
 }
 
-void MixtureComposer::printObservedTik() const {
-	Matrix<Real> lnComp(nbInd_,
-			nbClass_);
+void MixtureComposer::printTik() const {
+  std::cout << "Sampled t_ik" << std::endl;
+  std::cout << tik_ << std::endl;
+}
+
+void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
+  oZMode.resize(nbInd_);
+  Matrix<Real> observedTik(nbInd_, nbClass_);
+
+	Matrix<Real> lnComp(nbInd_, nbClass_);
 
 	for (Index k = 0; k < nbClass_; ++k) {
 		for (Index i = 0; i < nbInd_; ++i) {
@@ -76,17 +84,22 @@ void MixtureComposer::printObservedTik() const {
 		}
 	}
 
-	Matrix<Real> observedTik(nbInd_, nbClass_);
+  Index mode;
 	for (Index i = 0; i < nbInd_; ++i) { // sum is inside a log, hence the numerous steps for the computation
 		RowVector<Real> dummy;
 		observedTik.row(i).logToMulti(lnComp.row(i));
+		observedTik.row(i).maxCoeff(&mode);
+
+		oZMode(i) = mode;
 	}
+
+//  std::cout << "Computed t_ik" << std::endl;
+//  std::cout << observedTik << std::endl;
 }
 
 Real MixtureComposer::lnObservedLikelihood() {
 	Real lnLikelihood = 0.;
-	Matrix<Real> lnComp(nbInd_,
-			nbClass_);
+	Matrix<Real> lnComp(nbInd_, nbClass_);
 
 	for (Index k = 0; k < nbClass_; ++k) {
 		for (Index i = 0; i < nbInd_; ++i) {
@@ -148,8 +161,8 @@ void MixtureComposer::eStep() {
 		eStepInd(i);
 	}
 
-	std::cout << "MixtureComposer::eStep, tik" << std::endl;
-	std::cout << tik_ << std::endl;
+//	std::cout << "MixtureComposer::eStep, tik" << std::endl;
+//	std::cout << tik_ << std::endl;
 }
 
 void MixtureComposer::eStepInd(int i) {
@@ -187,16 +200,16 @@ int MixtureComposer::nbFreeParameters() const {
 	return sum;
 }
 
-void MixtureComposer::samplingStepNoCheck(SamplerInitialization init) {
+void MixtureComposer::samplingStepNoCheck() {
 #pragma omp parallel for
 	for (Index i = 0; i < nbInd_; ++i) {
-		samplingStepNoCheck(init, i);
+		samplingStepNoCheck(i);
 	}
 }
 
-void MixtureComposer::samplingStepNoCheck(SamplerInitialization init, int i) {
+void MixtureComposer::samplingStepNoCheck(int i) {
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->samplingStepNoCheck(init, i);
+		(*it)->samplingStepNoCheck(i);
 	}
 }
 
@@ -251,9 +264,11 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const {
 	return 1;
 }
 
-void MixtureComposer::storeSEMRun(int iteration,
+void MixtureComposer::storeSEMRun(
+    int iteration,
 		int iterationMax) {
-	paramStat_.sampleParam(iteration,
+	paramStat_.sampleParam(
+	    iteration,
 			iterationMax);
 	if (iteration == iterationMax){
 		paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
@@ -265,10 +280,12 @@ void MixtureComposer::storeSEMRun(int iteration,
 	}
 }
 
-void MixtureComposer::storeGibbsRun(int ind,
+void MixtureComposer::storeGibbsRun(
+    int ind,
 		int iteration,
 		int iterationMax) {
-	dataStat_.sampleVals(ind,
+	dataStat_.sampleVals(
+	    ind,
 			iteration,
 			iterationMax);
 
@@ -277,7 +294,8 @@ void MixtureComposer::storeGibbsRun(int ind,
 	}
 
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->storeGibbsRun(ind,
+		(*it)->storeGibbsRun(
+		    ind,
 				iteration,
 				iterationMax);
 	}
@@ -289,7 +307,6 @@ void MixtureComposer::registerMixture(IMixture* p_mixture) {
 }
 
 void MixtureComposer::gibbsSampling(
-    SamplerInitialization init,
 		GibbsSampleData sample,
 		int nbGibbsIter,
 		int group,
@@ -304,14 +321,9 @@ void MixtureComposer::gibbsSampling(
 
 #pragma omp parallel for
 	for (Index i = 0; i < nbInd_; ++i) {
-		if (init == callInitDataIfMarkovChain_) { // at this point, no latent variables are know, so no conditional information can be used to determine the class
-		  tik_.row(i) = prop_; // the proportions are the marginal probability of the class over everything else, including the observed variables. Note that the observed probability could be used to compute observed tik to take the observed value into account, but its computation could be difficult, depending of the variable.
-			sStepNoCheck(i);
-			samplingStepNoCheck(callInitDataIfMarkovChain_, i); // since the class is known, the rest of the completion can be carried out
-		}
-
 		myTimer.iteration(i, nbInd_ - 1);
-		writeProgress(group,
+		writeProgress(
+		    group,
 				groupMax,
 				i,
 				nbInd_ - 1);
@@ -320,10 +332,11 @@ void MixtureComposer::gibbsSampling(
 			eStepInd(i);
 
 			sStepNoCheck(i);
-			samplingStepNoCheck(doNotCallInitData_, i);
+			samplingStepNoCheck(i);
 
 			if (sample == sampleData_) {
-				storeGibbsRun(i,
+				storeGibbsRun(
+				    i,
 						iterGibbs,
 						nbGibbsIter - 1);
 			}
@@ -353,8 +366,8 @@ std::vector<std::string> MixtureComposer::mixtureName() const {
 }
 
 void MixtureComposer::initData() {
-	initializeTik();
-	sStepNoCheck(); // uniform initialization of z
+	initializeTik(); // note that if initData is called during a Gibbs, the proportions could have been used, but this would complicate the code for little benefits
+	sStepNoCheck(); // since tik are uniform, this sStep corresponds to an uniform initialization of z
 
 	for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 #pragma omp parallel for
@@ -365,7 +378,7 @@ void MixtureComposer::initData() {
 }
 
 void MixtureComposer::initParam() {
-  prop_ = 1. / nbClass_; // this is roughly equivalent to an estimation by maximization of likelihood
+  prop_ = 1. / nbClass_; // this is roughly equivalent to an estimation by maximization of likelihood, considering that proportions in all t_ik are equal
 
 	Vector<Index> initObs(nbClass_); // observations used to initialize individuals
 	for (Index k = 0; k < nbClass_; ++k) {

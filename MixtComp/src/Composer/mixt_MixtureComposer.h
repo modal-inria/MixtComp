@@ -116,8 +116,8 @@ class MixtureComposer {
      * Perform a sampling step
      * @param checkSampleCondition indicates if there is a need to perform a check on the data or not
      */
-    void samplingStepNoCheck(SamplerInitialization init);
-    void samplingStepNoCheck(SamplerInitialization init, int i);
+    void samplingStepNoCheck();
+    void samplingStepNoCheck(int i);
 
     /**
      * Check if the data conditions are verified for all mixtures. Providing a log is required during
@@ -277,11 +277,11 @@ class MixtureComposer {
     void registerMixture(IMixture* mixture);
 
     /** Gibbs sampling, one individual at a time */
-    void gibbsSampling(SamplerInitialization init,
-                       GibbsSampleData sample,
-                       int nbGibbsIter,
-                       int group,
-                       int groupMax);
+    void gibbsSampling(
+        GibbsSampleData sample,
+        int nbGibbsIter,
+        int group,
+        int groupMax);
 
     /** @return names of the parameters */
     std::vector<std::string> paramName() const;
@@ -305,10 +305,10 @@ class MixtureComposer {
      * */
     void E_kj(Matrix<Real>& ekj) const;
    /**
-	* Added by Matt (Compute the matrix delta measuring the similarities between variables)
-*
-*@param[out] delta matrix of the distances between variables
-**/	
+	  * Added by Matt (Compute the matrix delta measuring the similarities between variables)
+    *
+    *@param[out] delta matrix of the distances between variables
+    **/
     void Delta(Matrix<Real>& delta) const;
 
     /**
@@ -320,7 +320,9 @@ class MixtureComposer {
 
     void lnProbaGivenClass(Matrix<Real>& idc) const;
 
-    void printObservedTik() const;
+    void printTik() const;
+
+    void observedTik(Vector<Real>& observedTik) const;
   private:
     void printClassInd() const;
 

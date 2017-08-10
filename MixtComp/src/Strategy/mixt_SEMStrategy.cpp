@@ -47,19 +47,23 @@ std::string SemStrategy::run() {
 
     // parameters will be saved here, when the option to cache restore / parameters will be implemented
 
+    p_composer_->initData();
+
     p_composer_->gibbsSampling(
-        callInitDataIfMarkovChain_,
         doNotSampleData_,
         param_.nbGibbsBurnInIter_,
         2, // group
         3); // groupMax
 
     p_composer_->gibbsSampling(
-        doNotCallInitData_,
         sampleData_,
         param_.nbGibbsIter_,
         3, // group
         3); // groupMax
+
+//    Matrix<Real> dummy;
+//    p_composer_->printTik();
+//    p_composer_->observedTik(dummy);
 
     return warnLog; // at the moment, stop the loop at the first completed run, this will evolve later
   }
@@ -94,7 +98,7 @@ std::string SemStrategy::runSEM(
     p_composer_->eStep();
 
     p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
-    p_composer_->samplingStepNoCheck(doNotCallInitData_);
+    p_composer_->samplingStepNoCheck();
 
     int sampleCond = p_composer_->checkSampleCondition(&warnLog); // since we are not in initialization, no need for log
     if (sampleCond == 0) {

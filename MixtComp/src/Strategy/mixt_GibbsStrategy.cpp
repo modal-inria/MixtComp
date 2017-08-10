@@ -23,17 +23,25 @@ GibbsStrategy::GibbsStrategy(
 std::string GibbsStrategy::run() {
   std::string warnLog;
 
-  // note that initData is not called. Since parameters are known, using them result in a more efficient initialization
+  /**
+   * Even if they are known at that point, it is not possible to use the parameters for complete initialization,
+   * because the class has to be sampled first. And, without completion, no eStep can be performed to get the proper
+   * t_ik (consistently computing the observed tik is not possible for all variables). So, the order of initialization is:
+   * - call initData to complete all observations, including z values
+   * - perform eStep
+   * - perform sStep
+   * - perform samplingStep
+   * */
+
+  p_composer_->initData();
 
   p_composer_->gibbsSampling(
-      callInitDataIfMarkovChain_,
       doNotSampleData_,
       param_.nbGibbsBurnInIter_,
       0, // group
       1); // groupMax
 
   p_composer_->gibbsSampling(
-      doNotCallInitData_,
       sampleData_,
       param_.nbGibbsIter_,
       1, // group

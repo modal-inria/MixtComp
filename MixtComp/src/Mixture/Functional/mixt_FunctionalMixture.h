@@ -72,7 +72,7 @@ class FunctionalMixture : public IMixture {
       p_paramSetter_(NULL),
       p_paramExtractor_(NULL) {};
 
-    void samplingStepNoCheck(SamplerInitialization init, Index i) {
+    void samplingStepNoCheck(Index i) {
       class_[(*p_zi_)(i)].samplingStepNoCheck(i);
     };
 
@@ -168,27 +168,31 @@ class FunctionalMixture : public IMixture {
       Vector<std::string> dataStr;
       Vector<Real> alpha, beta, sd;
 
-      warnLog += p_handler_->getData(idName(), // get the raw vector of strings
-                                     dataStr,
-                                     nInd_,
-                                     paramStr_);
+      warnLog += p_handler_->getData(
+          idName(), // get the raw vector of strings
+          dataStr,
+          nInd_,
+          paramStr_);
 
       if (mode == prediction_) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
         std::string dummyStr;
-        p_paramSetter_->getParam(idName_,
-                                 "alpha",
-                                 alpha,
-                                 dummyStr); // alpha is not parameterized by anything, only order one polynomials are used in the logistical regression
+        p_paramSetter_->getParam(
+            idName_,
+            "alpha",
+            alpha,
+            dummyStr); // alpha is not parameterized by anything, only order one polynomials are used in the logistical regression
 
-        p_paramSetter_->getParam(idName_,
-                                 "beta",
-                                 beta,
-                                 paramStr_);
+        p_paramSetter_->getParam(
+            idName_,
+            "beta",
+            beta,
+            paramStr_);
 
-        p_paramSetter_->getParam(idName_,
-                                 "sd",
-                                 sd,
-                                 dummyStr);
+        p_paramSetter_->getParam(
+            idName_,
+            "sd",
+            sd,
+            dummyStr);
       }
 
       // get the value of nSub_ and nCoeff_ by parsing paramStr_
@@ -231,17 +235,19 @@ class FunctionalMixture : public IMixture {
             sdCurr(s) = sd(k * nSub_ + s);
           }
 
-          class_[k].setParam(alphaCurr,
-                             betaCurr,
-                             sdCurr);
+          class_[k].setParam(
+              alphaCurr,
+              betaCurr,
+              sdCurr);
           class_[k].setParamStorage();
         }
       }
 
-      warnLog += parseFunctionalStr(nSub_,
-                                    nCoeff_,
-                                    dataStr, // convert the vector of strings to ranks
-                                    vecInd_);
+      warnLog += parseFunctionalStr(
+          nSub_,
+          nCoeff_,
+          dataStr, // convert the vector of strings to ranks
+          vecInd_);
       warnLog += checkMissingType();
       if (warnLog.size() > 0) {
         return warnLog;
@@ -331,17 +337,8 @@ class FunctionalMixture : public IMixture {
     void initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nClass_; ++k) {
         class_[k].initParamOneInd(initObs(k));
+//        class_[k].initParamAllInd(initObs(k)); // old initializer, where all individuals of the class are used to initialize the parameters
       }
-      std::cout << "One ind estimator:" << std::endl;
-      writeParameters();
-      printTik();
-
-//      for (Index k = 0; k < nClass_; ++k) {
-//        class_[k].initParamAllInd(initObs(k));
-//      }
-//      std::cout << "All ind estimator:" << std::endl;
-//      writeParameters();
-//      printTik();
     };
 
     /**

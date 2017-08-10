@@ -328,16 +328,16 @@ void sampleW(const Vector<Real>& t,
   Index nSub = alpha.rows();
   MultinomialStatistic multi;
   NormalStatistic normal;
-  Vector<Real> kappa;
+  Vector<Real> logKappa;
   Vector<Real> lpXW(nSub); // joIndex probability p(x, w)
   Vector<Real> pWGX(nSub); // conditional probability p(w / x)
 
   for (Index i = 0; i < nTime; ++i) {
     Index currT = t(i);
     Real currY = y(i);
-    kappaMatrix(currT, alpha, kappa);
+    logKappaMatrix(currT, alpha, logKappa);
     for (Index currW = 0; currW < nSub; ++currW) {
-      lpXW(currW) = std::log(kappa(currW)) + logProbaXGW(currT, currY, currW, beta, normal);
+      lpXW(currW) = logKappa(currW) + logProbaXGW(currT, currY, currW, beta, normal);
     }
     pWGX.logToMulti(lpXW);
     w(multi.sample(pWGX)).push_back(i);

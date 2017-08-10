@@ -18,17 +18,6 @@
 
 namespace mixt {
 
-/**
- * During Gibbs sampling, it is necessary to perform an initialization just before the burn-in,
- * because the mstep might break the Markov chains used to sample the latent variables of the observations.
- * The estimation might for example result in 0 probability observations. By providing samplerPerformInitialization_
- * to samplingStep, a complete initialization occur, otherwise with samplerDoNotPerformInitialization_
- * only the sampling procedure is performed. */
-enum SamplerInitialization {
-  callInitDataIfMarkovChain_,
-  doNotCallInitData_,
-};
-
 class IMixture {
   public:
     /**
@@ -56,9 +45,7 @@ class IMixture {
      *
      * @param ind index of the individual which data must be sampled
      */
-    virtual void samplingStepNoCheck(
-        SamplerInitialization init,
-        Index ind) = 0;
+    virtual void samplingStepNoCheck(Index ind) = 0;
 
     /**
      * Check if conditions on data are verified. For example, for a categorical model one must check that each modality

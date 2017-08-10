@@ -34,6 +34,21 @@ void kappaMatrix(
   kappa.logToMulti(logValue);
 }
 
+template<typename kappaType>
+void logKappaMatrix(
+    Real t,
+    const Matrix<Real>& alpha,
+    const kappaType& kappaIn) {
+  kappaType& kappa = const_cast<kappaType&>(kappaIn); // without the const_cast it is impossible to access a row which is a temporary object requiring a const in the argument
+
+  Index nSub = alpha.rows();
+  Vector<Real> logValue(nSub);
+  for (Index k = 0; k < nSub; ++k) {
+    logValue(k) = alpha(k, 0) + alpha(k, 1) * t;
+  }
+  kappa.logProbaToLogMulti(logValue);
+}
+
 void vandermondeMatrix(const Vector<Real>& t,
                        Index nCoeff,
                        Matrix<Real>& vandermonde);

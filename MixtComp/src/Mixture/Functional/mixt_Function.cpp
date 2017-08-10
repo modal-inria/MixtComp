@@ -49,15 +49,15 @@ void Function::computeJointLogProba(
     Matrix<Real>& jointLogProba) const {
   jointLogProba.resize(nTime_, nSub_);
   NormalStatistic normal;
-  Vector<Real> currKappa(nSub_);
+  Vector<Real> currLogKappa(nSub_);
   for (Index i = 0; i < nTime_; ++i) {
-    kappaMatrix(t_(i), alpha, currKappa);
+    logKappaMatrix(t_(i), alpha, currLogKappa);
 
     for (Index s = 0; s < nSub_; ++s) {
       Real currExpectation = vandermonde_.row(i).dot(beta.row(s)); // since the completed probability is computed, only the current subregression is taken into account in the computation
       Real logAPosteriori = normal.lpdf(x_(i), currExpectation, sd(s));
 
-      Real logAPriori = std::log(currKappa(s));
+      Real logAPriori = currLogKappa(s);
 
       jointLogProba(i, s) = logAPriori + logAPosteriori;
     }

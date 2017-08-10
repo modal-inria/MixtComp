@@ -113,7 +113,7 @@ void FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
 }
 
 void FunctionalClass::initParamAllInd(Index obs) {
-  mStep();
+  mStep(); // note that obs is not used
 }
 
 void FunctionalClass::initParamOneInd(Index obs) {
