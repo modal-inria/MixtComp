@@ -275,8 +275,7 @@ void MixtureComposer::storeSEMRun(
 		paramStat_.setExpectationParam(); // replace pi by the median values
 	}
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->storeSEMRun(iteration,
-				iterationMax);
+		(*it)->storeSEMRun(iteration, iterationMax);
 	}
 }
 

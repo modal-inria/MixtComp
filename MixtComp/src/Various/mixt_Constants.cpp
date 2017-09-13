@@ -33,7 +33,8 @@ const Real piInitBOS = 0.9;
 const Real piInitISR = 0.75;
 const Real piThreshold = 0.05;
 
-const int nbGibbsIterRank = 50;
+const int nbGibbsIterRankMStep = 50;
+const Index nbGibbsIniISR = 100;
 
 const int nbSampleObserved = 10000;
 

@@ -234,9 +234,7 @@ void RankIndividual::AG(const RankVal& mu,
   }
 }
 
-void RankIndividual::sampleX(const RankVal& mu,
-                             Real pi,
-                             gCondition gCond) {
+void RankIndividual::sampleX(const RankVal& mu, Real pi) {
   int A, G; // dummy variables
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
@@ -244,47 +242,15 @@ void RankIndividual::sampleX(const RankVal& mu,
   logProba(0) = lnCompletedProbability(mu, pi, A, G); // proba of current y
 
   for (int p = 0; p < nbPos_ - 1; ++p) {
-    if (checkPermutation(p)) { // the main difference with sampleY is that here permutation only happens if they are authorized by the observation
-      bool sampleCheck = true; // is the permutation respectful of the sample conditions ?
-      bool acceptPermutation = false; // is it necessary to revert x_ ?
-
+    if (checkPermutation(p)) { // the main difference with sampleY is that here permutation only happens if they are authorized in the observed data
       x_.permutation(p); // permutation is performed
       logProba(1) = lnCompletedProbability(mu, pi, A, G); // proba is computed for alpha, and A and G are computed to check if the individual is valid
 
-      switch (gCond) {
-        case Geq0Forbidden_: {
-          if (G == 0) {
-            sampleCheck = false;
-          }
-        }
-        break;
-
-        case GeqAForbidden_: {
-          if (G == A) {
-            sampleCheck = false;
-          }
-        }
-        break;
-
-        case allGAuthorized_: { // if everything is authorized, sampleCheck stays true
-        }
-        break;
-      }
-
-      if (sampleCheck) {
-        proba.logToMulti(logProba);
-        if (multi_.sample(proba) == 1) { // switch to permuted state ?
-          acceptPermutation = true;
-        }
-        else {
-          acceptPermutation = false;
-        }
-      }
-
-      if (acceptPermutation) {
+      proba.logToMulti(logProba);
+      if (multi_.sample(proba) == 1) { // switch to permuted state ?
         logProba(0) = logProba(1); // accept permutation
       }
-      if (!acceptPermutation) {
+      else {
         x_.permutation(p); // revert to previous state
       }
     }
@@ -295,9 +261,7 @@ void RankIndividual::sampleX(const RankVal& mu,
  * Perform one round of Gibbs sampling for the presentation order
  * @param mu central rank
  * @param pi precision */
-void RankIndividual::sampleY(const RankVal& mu,
-                             Real pi,
-                             gCondition gCond) {
+void RankIndividual::sampleY(const RankVal& mu, Real pi) {
   int A, G; // dummy variables
   Vector<Real, 2> logProba; // first element: current log proba, second element: logProba of permuted state
   Vector<Real, 2> proba   ; // multinomial distribution obtained from the logProba
@@ -305,108 +269,75 @@ void RankIndividual::sampleY(const RankVal& mu,
   logProba(0) = lnCompletedProbability(mu, pi, A, G); // proba of current y
 
   for (int p = 0; p < nbPos_ - 1; ++p) {
-    bool sampleCheck = true; // is the permutation respectful of the sample conditions ?
     bool acceptPermutation = false; // is it necessary to revert x_ ?
 
     permutationY(p);
     logProba(1) = lnCompletedProbability(mu, pi, A, G);
 
-    switch (gCond) {
-      case Geq0Forbidden_: {
-        if (G == 0) {
-          sampleCheck = false;
-        }
-      }
-      break;
-
-      case GeqAForbidden_: {
-        if (G == A) {
-          sampleCheck = false;
-        }
-      }
-      break;
-
-      case allGAuthorized_: {
-      }
-      break;
-    }
-
-    if (sampleCheck) {
-      proba.logToMulti(logProba);
-      if (multi_.sample(proba) == 1) { // switch to permuted state ?
-        acceptPermutation = true;
-      }
-      else {
-        acceptPermutation = false;
-      }
-    }
-
-    if (acceptPermutation) {
+    proba.logToMulti(logProba);
+    if (multi_.sample(proba) == 1) { // switch to permuted state ?
       logProba(0) = logProba(1); // accept permutation
     }
-    if (!acceptPermutation) {
+    else {
       permutationY(p); // revert to previous state
     }
   }
 }
 
-void RankIndividual::permutationY(int firstElem)
-{
+void RankIndividual::permutationY(int firstElem) {
   int dummy = y_(firstElem);
   y_(firstElem    ) = y_(firstElem + 1);
   y_(firstElem + 1) = dummy;
 }
 
-void RankIndividual::probaYgX(const RankVal& mu,
-                              Real pi,
-                              Vector<Vector<int> >& resVec,
-                              Vector<Real>& resProba)
-{
+void RankIndividual::probaYgX(
+    const RankVal& mu,
+    Real pi,
+    Vector<Vector<int> >& resVec,
+    Vector<Real>& resProba) {
   int nbInd = fac(nbPos_);
 
   std::set<int> remainingMod;
-  for (int m = 0; m < nbPos_; ++m)
-  {
+  for (int m = 0; m < nbPos_; ++m) {
     remainingMod.insert(m);
   }
 
   Vector<int> vec(nbPos_);
   Vector<Real> logProba(nbInd);
 
-  recYgX(mu,
-         pi,
-         resVec,
-         logProba,
-         vec,
-         remainingMod,
-         0,
-         nbInd,
-         0,
-         nbPos_);
+  recYgX(
+      mu,
+      pi,
+      resVec,
+      logProba,
+      vec,
+      remainingMod,
+      0,
+      nbInd,
+      0,
+      nbPos_);
 
   resProba.logToMulti(logProba); // from log of joint distribution to conditional distribution
 }
 
-void RankIndividual::recYgX(const RankVal& mu,
-                            Real pi,
-                            Vector<Vector<int> >& resVec,
-                            Vector<Real>& resProba,
-                            Vector<int>& vec,
-                            const std::set<int>& remainingMod,
-                            int firstElem,
-                            int nbElem,
-                            int currPos,
-                            int nbPos)
-{
+void RankIndividual::recYgX(
+    const RankVal& mu,
+    Real pi,
+    Vector<Vector<int> >& resVec,
+    Vector<Real>& resProba,
+    Vector<int>& vec,
+    const std::set<int>& remainingMod,
+    int firstElem,
+    int nbElem,
+    int currPos,
+    int nbPos) {
   int a, g; // dummy variables
-  if (currPos == nbPos) // no more modalities to add in the vector
-  {
+  if (currPos == nbPos) { // no more modalities to add in the vector
     y_ = vec; // assignment to compute
     resVec(firstElem) = vec;
     resProba(firstElem) = lnCompletedProbability(mu, pi, a, g); // register current vector and its value
   }
-  else
-  {
+  else {
     int nextNbElem = nbElem / (nbPos - currPos);
     int indexMod = 0;
     for (std::set<int>::const_iterator it = remainingMod.begin();

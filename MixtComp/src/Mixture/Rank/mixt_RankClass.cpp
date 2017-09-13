@@ -130,13 +130,13 @@ void RankClass::sampleMu()
 }
 
 void RankClass::mStep() {
-  Vector<RankVal> mu(nbGibbsIterRank);
-  Vector<Real> pi(nbGibbsIterRank);
-  Vector<Real> logProba(nbGibbsIterRank);
+  Vector<RankVal> mu(nbGibbsIterRankMStep);
+  Vector<Real> pi(nbGibbsIterRankMStep);
+  Vector<Real> logProba(nbGibbsIterRankMStep);
 
   int a, g;
   int i = 0;
-  while (i < nbGibbsIterRank) {
+  while (i < nbGibbsIterRankMStep) {
     sampleMu();
     mu(i) = mu_;
     logProba(i) = lnCompletedProbability(a, g);

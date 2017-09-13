@@ -32,7 +32,8 @@ extern const Real piInitBOS; // value of pi used in Gibbs used in initialization
 extern const Real piInitISR; // value of pi used in ISR initialization
 extern const Real piThreshold; //threashold on pi to detect degeneracy
 
-extern const int nbGibbsIterRank; // number of iterations in the Gibbs used in the estimation of mu
+extern const int nbGibbsIterRankMStep; // number of iterations in the Gibbs used in the estimation of mu
+extern const Index nbGibbsIniISR; // number of iterations in the initializing Gibbs
 
 extern const int nbSampleObserved; // number of sample per class to estimate the observed probability, for example in Ordinal or Rank data
 

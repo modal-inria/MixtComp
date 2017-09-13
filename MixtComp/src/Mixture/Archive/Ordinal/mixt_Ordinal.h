@@ -258,24 +258,6 @@ class Ordinal : public IMixture
       copyToData(ind);
     }
 
-    virtual void samplingStepNoCheck(SamplerInitialization init, Index ind) {
-      if (init == callInitDataIfMarkovChain_) {
-        initData(ind);
-        initBOS(ind);
-      }
-
-      GibbsSampling(ind,
-                    mu_((*p_zi_)(ind)),
-                    pi_((*p_zi_)(ind)),
-                    noCheckZ_); // in samplingStepCheck, allZOneAuthorized, no check on number of z values during samplingStepNoCheck
-      copyToData(ind);
-    }
-
-    virtual void mStep() {
-      mStepPi();
-      mStepMu();
-    }
-
     /** storeSEMRun sets new parameters at the last iteration of the SEM, before the Gibbs. */
     virtual void storeSEMRun(Index iteration,
                              Index iterationMax)

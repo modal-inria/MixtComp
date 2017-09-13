@@ -75,64 +75,13 @@ class RankMixture : public IMixture
                        false; // missingRUIntervals
     }
 
-    void samplingStepCheck(Index ind) {
-      gCondition gCond = allGAuthorized_; // by default, everything will be authorized for the number of correct comparisons
-
-      bool allOtherGO = true; // are all comparisons in other individuals correct ?
-      bool allOtherGA = true; // are all comparisons in other individuals incorrect ?
-
-      int currClass = (*p_zi_)(ind);
-      for (std::set<Index>::const_iterator it  = classInd_(currClass).begin(),
-                                           itE = classInd_(currClass).end();
-           it != itE;
-           ++it) {
-        if (*it != ind) { // check is performed on all in the class but the current ind
-          int A, G;
-          data_(ind).AG(mu_((*p_zi_)(*it)), A, G);
-
-          if (A == 0) {
-            allOtherGA = false;
-          }
-          else if (A == G) {
-            allOtherGO = false;
-          }
-          else {
-            allOtherGA = false;
-            allOtherGO = false;
-          }
-
-          if (allOtherGO == false && allOtherGA == false) { // all values are authorized for current individual, stop checking
-            goto endTest; // goto is overkill is here, but is present to keep the same structure as in BOSPath::GibbsSampling, for example
-          }
-        }
-      }
-
-      if (allOtherGO == true) {
-        gCond = Geq0Forbidden_;
-      }
-      else if (allOtherGA == true) {
-        gCond = GeqAForbidden_;
-      }
-
-      endTest:;
-
-      data_(ind).sampleY(mu_((*p_zi_)(ind)),
-                       pi_((*p_zi_)(ind)),
-                       gCond);
-      data_(ind).sampleX(mu_((*p_zi_)(ind)),
-                       pi_((*p_zi_)(ind)),
-                       gCond);
-    }
-
     void samplingStepNoCheck(Index i) {
       data_(i).sampleY(
           mu_((*p_zi_)(i)),
-          pi_((*p_zi_)(i)),
-          allGAuthorized_);
+          pi_((*p_zi_)(i)));
       data_(i).sampleX(
           mu_((*p_zi_)(i)),
-          pi_((*p_zi_)(i)),
-          allGAuthorized_);
+          pi_((*p_zi_)(i)));
     }
 
     /** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */
@@ -239,23 +188,14 @@ class RankMixture : public IMixture
      */
     void initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nbClass_; ++k) {
-//        MultinomialStatistic multi;
-//        int sampleIndInClass = multi.sampleInt(0, classInd_[k].size() - 1); // individual sampled inside the class
-//
-//        int i = 0;
-//        int sampleInd = -1;
-//        for (std::set<Index>::const_iterator it  = classInd_[k].begin(),
-//                                             itE = classInd_[k].end();
-//             it != itE;
-//             ++it, ++i) {
-//          if (i == sampleIndInClass) {
-//            sampleInd = *it;
-//            break;
-//          }
-//        }
-
         mu_(k) = data_(initObs(k)).x();
         pi_(k) = 0.5 * (1. + 1. / nbClass_);
+      }
+
+      for (Index i = 0; i < nbInd_; ++i) {
+        for (Index n = 0; n < nbGibbsIniISR; ++n) {
+          samplingStepNoCheck(i);
+        }
       }
     }
 
