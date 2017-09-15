@@ -59,9 +59,8 @@ void MixtureComposer::initializeTik() {
 Real MixtureComposer::lnObservedProbability(int i, int k) const {
 	Real sum = std::log(prop_[k]);
 
-	for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
-		Real logProba = (*it)->lnObservedProbability(i, k);
-		sum += logProba;
+	for (Index j = 0; j < nbVar_; ++j) { // use the cache
+	  sum += observedProbabilityCache_(j)(i, k);
 	}
 
 	return sum;
@@ -118,7 +117,7 @@ Real MixtureComposer::lnObservedLikelihood() {
 Real MixtureComposer::lnCompletedLikelihood() {
 	Real lnLikelihood = 0.;
 
-	for (Index i = 0; i < nbInd_; ++i) { // Compute the completed likelihood for the complete mixture model, using the completed data
+	for (Index i = 0; i < nbInd_; ++i) { // completion is only on the latent class, latent data in models is marginalized over
 		lnLikelihood += lnObservedProbability(i, zClassInd_.zi().data_(i));
 	}
 
@@ -264,19 +263,35 @@ int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const {
 	return 1;
 }
 
-void MixtureComposer::storeSEMRun(
-    int iteration,
-		int iterationMax) {
-	paramStat_.sampleParam(
-	    iteration,
-			iterationMax);
-	if (iteration == iterationMax){
-		paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
-		paramStat_.setExpectationParam(); // replace pi by the median values
-	}
+void MixtureComposer::storeSEMRun(int iteration, int iterationMax) {
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		(*it)->storeSEMRun(iteration, iterationMax);
 	}
+
+	paramStat_.sampleParam(iteration, iterationMax);
+
+  if (iteration == iterationMax){
+    paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
+    paramStat_.setExpectationParam(); // replace pi by the median values
+    setObservedProbaCache(); // now that every parameters have been estimated, it is possible to compute and cache the lnObservedProbability
+  }
+}
+
+void MixtureComposer::setObservedProbaCache() {
+  observedProbabilityCache_.resize(nbVar_);
+
+  for (Index j = 0; j < nbVar_; ++j) {
+    observedProbabilityCache_(j) = Matrix<Real>(nbInd_, nbClass_);
+    observedProbabilityCache_(j) = 0.;
+  }
+
+  for (Index j = 0; j < nbVar_; ++j) {
+    for (Index i = 0; i < nbInd_; ++i) {
+      for (Index k = 0; k < nbClass_; ++k) {
+        observedProbabilityCache_(j)(i, k) = v_mixtures_[j]->lnObservedProbability(i, k);
+      }
+    }
+  }
 }
 
 void MixtureComposer::storeGibbsRun(
@@ -409,7 +424,7 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 			Vector<Real> lnP(nbClass_); // ln(p(z_i = k, x_i^j))
 			Vector<Real> t_ik_j(nbClass_); // p(z_i = k / x_i^j)
 			for (Index k = 0; k < nbClass_; ++k) {
-				lnP(k) = std::log(prop_(k)) + v_mixtures_[j]->lnObservedProbability(i, k);
+			  lnP(k) = std::log(prop_(k)) + observedProbabilityCache_(j)(i, k);
 			}
 			t_ik_j.logToMulti(lnP); // "observed" t_ik, for the variable j
 			Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
@@ -446,7 +461,7 @@ void MixtureComposer::Delta(Matrix<Real>& delta) const {
 		for (Index j = 0; j < nbVar_; ++j){
 			Vector<Real> lnP(nbClass_); // ln(p(z_i = k, x_i^j))
 			for (Index k = 0; k < nbClass_; ++k) {
-				lnP(k) = std::log(prop_(k)) + v_mixtures_[j]->lnObservedProbability(i, k);
+				lnP(k) = std::log(prop_(k)) + observedProbabilityCache_(j)(i, k);
 			}
 			probacond.col(j).logToMulti(lnP); // "observed" t_ik, for the variable j
 		}

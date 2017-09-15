@@ -159,6 +159,11 @@ class MixtureComposer {
                              const DataHandler& dataHandler,
                              RunMode mode) {
       std::string warnLog;
+
+      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+        warnLog += (*it)->setDataParam(mode);
+      }
+
       warnLog += setProportion(paramSetter);
 
       for (int i = 0; i < nbInd_; ++i) {
@@ -169,12 +174,9 @@ class MixtureComposer {
 
       if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
         paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
+        setObservedProbaCache(); // now that every parameters are known, it is possible to compute and cache the lnObservedProbability
       }
       dataStat_.setNbIndividual(nbInd_);
-
-      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-        warnLog += (*it)->setDataParam(mode);
-      }
 
       return warnLog;
     }
@@ -323,6 +325,8 @@ class MixtureComposer {
     void printTik() const;
 
     void observedTik(Vector<Real>& observedTik) const;
+
+    void setObservedProbaCache();
   private:
     void printClassInd() const;
 
@@ -363,6 +367,13 @@ class MixtureComposer {
 
     /** confidence level used for the computation of statistics */
     Real confidenceLevel_;
+
+    /**
+     * Cached observed log probability. The access is done via:
+     * observedProbabilityCache_(variable)(individual, class) to more or less match the t_ik access
+     * pattern.
+     * */
+    Vector<Matrix<Real> > observedProbabilityCache_;
 };
 
 } /* namespace mixt */
