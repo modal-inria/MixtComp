@@ -105,14 +105,13 @@ Rcpp::List mixtCompPredict(
   paramRToCpp(mcStrategy,
               strategyParam);
 
-  mixt::GibbsStrategy strategy(&composer, // create the appropriate strategy and transmit the parameters
-                               strategyParam); // number of iterations for Gibbs sampler);
+  mixt::GibbsStrategy strategy(&composer, strategyParam, 0);
 
   // Run the strategy
 
-  mixt::Timer stratTimer("Strategy Run");
+  mixt::Timer stratTimer("Gibbs Strategy Run");
   warnLog += strategy.run();
-  stratTimer.top("strategy run complete");
+  stratTimer.top("Gibbs strategy run complete");
 
   if (0 < warnLog.size()) {
     mcMixture["warnLog"] = warnLog;

@@ -94,7 +94,7 @@ Rcpp::List mixtCompCluster(
         Rcpp::Named("variable") = mcVariable);
   }
 
-  // Create the Strategy
+  // Create the SEM strategy
 
   dataExtractor .setNbMixture(handler.nbVariable()); // all data has been read, checked and transmitted to the mixtures
   paramExtractor.setNbMixture(handler.nbVariable());
@@ -102,14 +102,19 @@ Rcpp::List mixtCompCluster(
   mixt::StrategyParam strategyParam;
   paramRToCpp(mcStrategy, strategyParam);
 
-  mixt::SemStrategy strategy(&composer, // create the appropriate strategy and transmit the parameters
-                             strategyParam); // number of iterations for Gibbs sampler
+  // Run the SEM strategy
 
-  // Run the strategy
+  mixt::SemStrategy semStrategy(&composer, strategyParam);
+  mixt::Timer semStratTimer("SEM Strategy Run");
+  warnLog += semStrategy.run();
+  semStratTimer.top("SEM strategy run complete");
 
-  mixt::Timer stratTimer("Strategy Run");
-  warnLog += strategy.run();
-  stratTimer.top("strategy run complete");
+  // Run the Gibbs strategy
+
+  mixt::GibbsStrategy gibbsStrategy(&composer, strategyParam, 2);
+  mixt::Timer gibbsStratTimer("Gibbs Strategy Run");
+  warnLog += gibbsStrategy.run();
+  gibbsStratTimer.top("Gibbs strategy run complete");
 
   if (0 < warnLog.size()) {
     mcMixture["warnLog"] = warnLog;
@@ -151,9 +156,9 @@ Rcpp::List mixtCompCluster(
   mixt::lnProbaGivenClass(composer, pGC);
   mcMixture["lnProbaGivenClass"] = pGC;
 
-  Rcpp::NumericVector oTik;
-  mixt::observedTik(composer, oTik);
-  mcMixture["observedTik"] = oTik;
+//  Rcpp::NumericVector oTik;
+//  mixt::observedTik(composer, oTik);
+//  mcMixture["observedTik"] = oTik;
 
   Rcpp::NumericMatrix delta;
   mixt::matDelta(composer, delta);
