@@ -154,8 +154,6 @@ class RankMixture : public IMixture
           muParamStat_[k].setExpectationParam(); // estimate mu parameter using mode / expectation
         }
         piParamStat_.setExpectationParam(); // estimate pi parameter using mode / expectation
-
-        computeObservedProba();
       }
     }
 
@@ -191,7 +189,9 @@ class RankMixture : public IMixture
         mu_(k) = data_(initObs(k)).x();
         pi_(k) = 0.5 * (1. + 1. / nbClass_);
       }
+    }
 
+    virtual void initializeMarkovChain() {
       for (Index i = 0; i < nbInd_; ++i) {
         for (Index n = 0; n < nbGibbsIniISR; ++n) {
           samplingStepNoCheck(i);
@@ -199,8 +199,7 @@ class RankMixture : public IMixture
       }
     }
 
-    Index nbFreeParameter() const
-    {
+    Index nbFreeParameter() const {
       return nbClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
     }
 
@@ -281,10 +280,6 @@ class RankMixture : public IMixture
                << "but has " << nbPos_ << " modalities in its data. Those two numbers must be equal." << std::endl;
           warnLog += sstm.str();
         }
-      }
-
-      if (warnLog.size() == 0 && mode == prediction_) {
-        computeObservedProba(); // parameters are known, therefore observed proba can be calculated right now
       }
 
       dataStat_.reserve(nbInd_);

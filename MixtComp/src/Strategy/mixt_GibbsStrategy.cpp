@@ -16,36 +16,30 @@ namespace mixt {
 /** default constructor */
 GibbsStrategy::GibbsStrategy(
     MixtureComposer* p_composer,
-    const StrategyParam& param) :
+    const StrategyParam& param,
+    Index startGroup) :
         p_composer_(p_composer),
-        param_(param) {}
+        param_(param),
+        startGroup_(startGroup) {}
 
 std::string GibbsStrategy::run() {
   std::string warnLog;
 
-  /**
-   * Even if they are known at that point, it is not possible to use the parameters for complete initialization,
-   * because the class has to be sampled first. And, without completion, no eStep can be performed to get the proper
-   * t_ik (consistently computing the observed tik is not possible for all variables). So, the order of initialization is:
-   * - call initData to complete all observations, including z values
-   * - perform eStep
-   * - perform sStep
-   * - perform samplingStep
-   * */
-
   p_composer_->initData();
+
+  p_composer_->initializeLatent();
 
   p_composer_->gibbsSampling(
       doNotSampleData_,
       param_.nbGibbsBurnInIter_,
-      0, // group
-      1); // groupMax
+      0 + startGroup_, // group
+      1 + startGroup_); // groupMax
 
   p_composer_->gibbsSampling(
       sampleData_,
       param_.nbGibbsIter_,
-      1, // group
-      1); // groupMax
+      1 + startGroup_, // group
+      1 + startGroup_); // groupMax
 
   return warnLog;
 }

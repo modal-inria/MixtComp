@@ -54,44 +54,45 @@ class MixtureBridge : public IMixture {
      *  @param idName id name of the mixture
      *  @param nbCluster number of cluster
      **/
-    MixtureBridge(Index indexMixture,
-                  std::string const& idName,
-                  Index nbClass,
-                  const Vector<Index>* p_zi,
-                  const Vector<std::set<Index> >& classInd,
-                  const DataHandler* p_handler,
-                  DataExtractor* p_extractor,
-                  const ParamSetter* p_paramSetter,
-                  ParamExtractor* p_paramExtractor,
-                  Real confidenceLevel) :
-      IMixture(indexMixture,
-               idName),
-      p_zi_(p_zi),
-      classInd_(classInd),
-      nbClass_(nbClass),
-      param_(), // must be initialized here, as will immediately be resized in mixture_ constructor
-      mixture_(idName,
-               nbClass,
-               param_,
-               classInd),
-      augData_(),
-      nbInd_(0),
-      confidenceLevel_(confidenceLevel),
-      sampler_(*this,
-               augData_,
-               param_,
-               nbClass),
-      dataStat_(augData_,
-                confidenceLevel),
-      paramStat_(param_,
-                 confidenceLevel),
-      likelihood_(param_,
-                  augData_,
-                  nbClass),
-      p_handler_(p_handler),
-      p_dataExtractor_(p_extractor),
-      p_paramSetter_(p_paramSetter),
-      p_paramExtractor_(p_paramExtractor) {}
+    MixtureBridge(
+        Index indexMixture,
+        std::string const& idName,
+        Index nbClass,
+        const Vector<Index>* p_zi,
+        const Vector<std::set<Index> >& classInd,
+        const DataHandler* p_handler,
+        DataExtractor* p_extractor,
+        const ParamSetter* p_paramSetter,
+        ParamExtractor* p_paramExtractor,
+        Real confidenceLevel) :
+          IMixture(indexMixture, idName),
+          p_zi_(p_zi),
+          classInd_(classInd),
+          nbClass_(nbClass),
+          param_(), // must be initialized here, as will immediately be resized in mixture_ constructor
+          mixture_(
+              idName,
+              nbClass,
+              param_,
+              classInd),
+          augData_(),
+          nbInd_(0),
+          confidenceLevel_(confidenceLevel),
+          sampler_(
+              *this,
+              augData_,
+              param_,
+              nbClass),
+          dataStat_(augData_, confidenceLevel),
+          paramStat_(param_, confidenceLevel),
+          likelihood_(
+              param_,
+              augData_,
+              nbClass),
+          p_handler_(p_handler),
+          p_dataExtractor_(p_extractor),
+          p_paramSetter_(p_paramSetter),
+          p_paramExtractor_(p_paramExtractor) {}
 
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
@@ -245,6 +246,12 @@ class MixtureBridge : public IMixture {
       }
     }
 
+    /**
+     * The observed probability is fast to compute for simple models. There is no need to
+     * precompute an empirical distribution. */
+    virtual void computeObservedProba() {};
+
+    virtual void initializeMarkovChain() {};
   protected:
     /** Pointer to the zik class label */
     const Vector<Index>* p_zi_;

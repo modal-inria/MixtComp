@@ -77,12 +77,12 @@ Rcpp::List mixtCompCluster(
                                  confidenceLevel);
 
   mixt::Timer readTimer("Read Data");
-  warnLog += manager.createMixtures(composer,
-                                    nbClass);
+  warnLog += manager.createMixtures(composer, nbClass);
   warnLog += composer.setDataParam<mixt::ParamSetterDummy,
-                                   mixt::DataHandlerR>(paramSetter,
-                                                       handler,
-                                                       mixt::learning_);
+                                   mixt::DataHandlerR>(
+                                       paramSetter,
+                                       handler,
+                                       mixt::learning_);
   readTimer.top("data has been read");
 
   if (0 < warnLog.size()) {
@@ -136,6 +136,8 @@ Rcpp::List mixtCompCluster(
   mcMixture["lnCompletedLikelihood"] = lnCompLik;
   mcMixture["BIC"] = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
   mcMixture["ICL"] = lnCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+
+  std::cout << "lnObservedLikelihood: " << lnObsLik << std::endl << std::endl;
 
   mcMixture["runTime"] = totalTimer.top("end of run");
   mcMixture["nbInd"] = composer.nbInd();

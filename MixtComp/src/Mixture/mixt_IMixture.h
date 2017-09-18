@@ -24,7 +24,7 @@ class IMixture {
      * Constructor with identification character
      *
      * @param idName Identification string of the mixture provided by the framework
-     */
+     * */
     IMixture(Index indexMixture, std::string const& idName) :
       indexMixture_(indexMixture),
       idName_(idName) {};
@@ -34,7 +34,8 @@ class IMixture {
 
     /**
      * Return the Id of the mixture
-     * @return Id of the mixture*/
+     * @return Id of the mixture
+     * */
     std::string const& idName() const {
       return idName_;
     }
@@ -44,7 +45,7 @@ class IMixture {
      * checkSampleCondition to speed-up the process.
      *
      * @param ind index of the individual which data must be sampled
-     */
+     * */
     virtual void samplingStepNoCheck(Index ind) = 0;
 
     /**
@@ -58,7 +59,7 @@ class IMixture {
      * Maximum-Likelihood estimation of the mixture parameters
      *
      * @return empty string if mStep successful, or a detailed description of the eventual error
-     */
+     * */
     virtual void mStep() = 0;
 
     /**
@@ -67,7 +68,7 @@ class IMixture {
      * @param iteration SEM run iteration number
      * @param iterationMax maximum number of iterations
      * period.
-     */
+     * */
     virtual void storeSEMRun(
         Index iteration,
         Index iterationMax) = 0;
@@ -78,7 +79,7 @@ class IMixture {
      * @param i individual
      * @param iteration Gibbs iteration
      * @param iterationMax maximum number of iterations
-     */
+     * */
     virtual void storeGibbsRun(
         Index i,
         Index iteration,
@@ -90,7 +91,7 @@ class IMixture {
      * @param i individual
      * @param k class
      * @return value of the completed likelihood in log scale
-     */
+     * */
     virtual Real lnCompletedProbability(
         Index i,
         Index k) = 0;
@@ -101,7 +102,7 @@ class IMixture {
      * @param i individual
      * @param k class
      * @return value of the observed likelihood in log scale
-     */
+     * */
     virtual Real lnObservedProbability(
         Index ind,
         Index k) = 0;
@@ -109,15 +110,11 @@ class IMixture {
     /**
      * Computation of the number of free parameters.
      *
-     *  @return Number of free parameters
-     */
+     * @return Number of free parameters
+     * */
     virtual Index nbFreeParameter() const = 0;
 
-    /**
-     * This function can be used to write summary of parameters on to the output stream.
-     *
-     *  @param[out] stream to write the summary of parameters to
-     */
+    /** This function can be used to print a summary of parameters. */
     virtual void writeParameters() const = 0;
 
     /**
@@ -125,12 +122,12 @@ class IMixture {
      *
      * @param mode run mode, for example learning or prediction
      * @return empty string if no errors, otherwise errors description
-     */
+     * */
     virtual std::string setDataParam(RunMode mode) = 0;
 
     /**
      * Export of parameters and data
-     */
+     * */
     virtual void exportDataParam() const = 0;
 
     /**
@@ -143,9 +140,17 @@ class IMixture {
      * Initialization of parameters.
      * Useful for some parameters that use a Markov Chain which needs to be initialized.
      * Should be modified to take a vector of indices, one per class, indicating which individual to use
-     */
+     * */
     virtual void initParam(const Vector<Index>& initObs) = 0;
 
+    /**
+     * Compute and cache the empirical observed distribution for the models that need it.
+     * This is currently the case for the BOS and ISR algorithms.
+     * */
+    virtual void computeObservedProba() = 0;
+
+    /** Initialize the Markov Chain for models that contains one for their latent variables. */
+    virtual void initializeMarkovChain() = 0;
   protected:
     /** Index of the mixture, useful to write the results at the correct place in th output. */
     Index indexMixture_;

@@ -31,6 +31,8 @@ std::string SemStrategy::run() {
     p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
     p_composer_->initParam(); // initialize parameters for each model, usually singling out a single observation as the center of each class
 
+    p_composer_->initializeLatent();
+
     warnLog = runSEM(
         burnIn_,
         param_.nbBurnInIter_,
@@ -44,26 +46,6 @@ std::string SemStrategy::run() {
         1, // group
         3); // groupMax
     if (0 < warnLog.size()) continue;
-
-    // parameters will be saved here, when the option to cache restore / parameters will be implemented
-
-    p_composer_->initData();
-
-    p_composer_->gibbsSampling(
-        doNotSampleData_,
-        param_.nbGibbsBurnInIter_,
-        2, // group
-        3); // groupMax
-
-    p_composer_->gibbsSampling(
-        sampleData_,
-        param_.nbGibbsIter_,
-        3, // group
-        3); // groupMax
-
-//    Matrix<Real> dummy;
-//    p_composer_->printTik();
-//    p_composer_->observedTik(dummy);
 
     return warnLog; // at the moment, stop the loop at the first completed run, this will evolve later
   }

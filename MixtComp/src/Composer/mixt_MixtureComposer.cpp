@@ -52,10 +52,6 @@ MixtureComposer::~MixtureComposer() {
 	}
 }
 
-void MixtureComposer::initializeTik() {
-	tik_ = 1. / nbClass_;
-}
-
 Real MixtureComposer::lnObservedProbability(int i, int k) const {
 	Real sum = std::log(prop_[k]);
 
@@ -73,7 +69,7 @@ void MixtureComposer::printTik() const {
 
 void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
   oZMode.resize(nbInd_);
-  Matrix<Real> observedTik(nbInd_, nbClass_);
+  Matrix<Real> observedTikMat(nbInd_, nbClass_);
 
 	Matrix<Real> lnComp(nbInd_, nbClass_);
 
@@ -86,8 +82,8 @@ void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
   Index mode;
 	for (Index i = 0; i < nbInd_; ++i) { // sum is inside a log, hence the numerous steps for the computation
 		RowVector<Real> dummy;
-		observedTik.row(i).logToMulti(lnComp.row(i));
-		observedTik.row(i).maxCoeff(&mode);
+		observedTikMat.row(i).logToMulti(lnComp.row(i));
+		observedTikMat.row(i).maxCoeff(&mode);
 
 		oZMode(i) = mode;
 	}
@@ -273,7 +269,6 @@ void MixtureComposer::storeSEMRun(int iteration, int iterationMax) {
   if (iteration == iterationMax){
     paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
     paramStat_.setExpectationParam(); // replace pi by the median values
-    setObservedProbaCache(); // now that every parameters have been estimated, it is possible to compute and cache the lnObservedProbability
   }
 }
 
@@ -380,7 +375,7 @@ std::vector<std::string> MixtureComposer::mixtureName() const {
 }
 
 void MixtureComposer::initData() {
-	initializeTik(); // note that if initData is called during a Gibbs, the proportions could have been used, but this would complicate the code for little benefits
+  tik_ = 1. / nbClass_;
 	sStepNoCheck(); // since tik are uniform, this sStep corresponds to an uniform initialization of z
 
 	for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
@@ -520,6 +515,48 @@ void MixtureComposer::lnProbaGivenClass(Matrix<Real>& pGC) const {
 
 void MixtureComposer::printClassInd() const {
 	zClassInd_.printState();
+}
+
+void MixtureComposer::computeObservedProba() {
+  for (Index j = 0; j < nbVar_; ++j) {
+    v_mixtures_[j]->computeObservedProba();
+  }
+}
+
+void MixtureComposer::initializeLatent() {
+  computeObservedProba(); // whether the Gibbs comes after a SEM or is used in prediction, parameters are known at that point
+  setObservedProbaCache();
+  eStepObserved();
+  sStepNoCheck();
+  initializeMarkovChain();
+  samplingStepNoCheck();
+}
+
+void MixtureComposer::initializeMarkovChain() {
+  for (Index j = 0; j < nbVar_; ++j) {
+    v_mixtures_[j]->initializeMarkovChain();
+  }
+}
+
+void MixtureComposer::eStepObserved() {
+#pragma omp parallel for
+  for (Index i = 0; i < nbInd_; ++i) {
+    eStepObservedInd(i);
+  }
+}
+
+void MixtureComposer::eStepObservedInd(Index i) {
+  RowVector<Real> lnComp(nbClass_);
+  for (Index k = 0; k < nbClass_; k++) {
+    lnComp(k) = lnObservedProbability(i, k); // main difference with eStepObservedInd
+  }
+
+  if (minInf < lnComp.minCoeff()) {
+    tik_.row(i).logToMulti(lnComp);
+  }
+  else {
+    tik_.row(i) = prop_;
+  }
 }
 
 } /* namespace mixt */

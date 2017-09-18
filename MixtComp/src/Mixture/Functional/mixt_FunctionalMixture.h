@@ -18,29 +18,29 @@ template<typename DataHandler,
          typename ParamExtractor>
 class FunctionalMixture : public IMixture {
   public:
-    FunctionalMixture(Index indexMixture,
-                      std::string const& idName,
-                      Index nClass,
-                      const Vector<Index>* p_zi,
-                      const Vector<std::set<Index> >& classInd,
-                      const DataHandler* p_handler,
-                      DataExtractor* p_extractor,
-                      const ParamSetter* p_paramSetter,
-                      ParamExtractor* p_paramExtractor,
-                      Real confidenceLevel) :
-        IMixture(indexMixture,
-                 idName),
-        nInd_(0),
-        nClass_(nClass),
-        nSub_(0),
-        nCoeff_(0),
-        confidenceLevel_(confidenceLevel),
-        p_zi_(p_zi),
-        classInd_(classInd),
-        p_handler_(p_handler),
-        p_dataExtractor_(p_extractor),
-        p_paramSetter_(p_paramSetter),
-        p_paramExtractor_(p_paramExtractor) {
+    FunctionalMixture(
+        Index indexMixture,
+        std::string const& idName,
+        Index nClass,
+        const Vector<Index>* p_zi,
+        const Vector<std::set<Index> >& classInd,
+        const DataHandler* p_handler,
+        DataExtractor* p_extractor,
+        const ParamSetter* p_paramSetter,
+        ParamExtractor* p_paramExtractor,
+        Real confidenceLevel) :
+          IMixture(indexMixture, idName),
+          nInd_(0),
+          nClass_(nClass),
+          nSub_(0),
+          nCoeff_(0),
+          confidenceLevel_(confidenceLevel),
+          p_zi_(p_zi),
+          classInd_(classInd),
+          p_handler_(p_handler),
+          p_dataExtractor_(p_extractor),
+          p_paramSetter_(p_paramSetter),
+          p_paramExtractor_(p_paramExtractor) {
       class_.reserve(nClass_);
       for (Index k = 0; k < nClass_; ++k) {
         class_.emplace_back(vecInd_,
@@ -356,6 +356,10 @@ class FunctionalMixture : public IMixture {
       }
     }
 
+    /** No need to precompute an empirical distribution. */
+    virtual void computeObservedProba() {};
+
+    virtual void initializeMarkovChain() {};
   private:
     std::string checkMissingType() {
       std::string warnLog;

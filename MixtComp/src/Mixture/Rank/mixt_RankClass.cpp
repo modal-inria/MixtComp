@@ -159,13 +159,10 @@ void RankClass::computeObservedProba() {
   Vector<MisVal> obsData(mu_.nbPos(), MisVal(missing_, {})); // individual is completely missing, so that remove missing will reinitialize everything upon call
   ri.setObsData(obsData);
   ri.removeMissing();
-  ri.observedProba(mu_,
-                   pi_,
-                   observedProbaSampling_);
-
-#ifdef MC_DEBUG
-  std::cout << "RankClass::computeObservedProba, observedProbaSampling_.size(): " << observedProbaSampling_.size() << std::endl;
-#endif
+  ri.observedProba(
+      mu_,
+      pi_,
+      observedProbaSampling_);
 }
 
 } // namespace mixt

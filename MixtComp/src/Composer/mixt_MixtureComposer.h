@@ -50,8 +50,6 @@ class MixtureComposer {
     /** The registered mixtures will be deleted there.*/
     ~MixtureComposer();
 
-    void initializeTik();
-
     Index nbClass() const {return nbClass_;}
 
     Index nbInd() const {return nbInd_;}
@@ -174,8 +172,8 @@ class MixtureComposer {
 
       if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
         paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
-        setObservedProbaCache(); // now that every parameters are known, it is possible to compute and cache the lnObservedProbability
       }
+
       dataStat_.setNbIndividual(nbInd_);
 
       return warnLog;
@@ -327,6 +325,26 @@ class MixtureComposer {
     void observedTik(Vector<Real>& observedTik) const;
 
     void setObservedProbaCache();
+
+    /**
+     * Ask for every model that needs it to compute an empirical observed distribution.
+     */
+    void computeObservedProba();
+
+    /**
+     * Every steps to be completed to initialize latent variables once parameters are known
+     * and uniform initialization of data has been performed. */
+    void initializeLatent();
+
+    /**
+     * Similar to eStep, except that observed probability are used. Useful during initialization
+     * when individuals have not been completed using the real model.
+     */
+    void eStepObserved();
+    void eStepObservedInd(Index i);
+
+    /** Call initializeMarkovChain on all variables. */
+    void initializeMarkovChain();
   private:
     void printClassInd() const;
 

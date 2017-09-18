@@ -192,9 +192,6 @@ class Ordinal : public IMixture
       augData_.dataRange_.max_ = nModality_ - 1;
       augData_.dataRange_.range_ = nModality_;
 
-      if (warnLog.size() == 0 && mode == prediction_) { // parameters are know, and data has been validated against paramStr_, so logProba can be computed immediately
-        computeObservedProba();
-      }
       setPath(); // initialize the BOSPath vector elements with data gathered from the AugmentedData
       dataStatComputer_.setNbIndividual(nbInd_);
 
@@ -269,37 +266,26 @@ class Ordinal : public IMixture
       {
         muParamStatComputer_.setExpectationParam(); // estimate mu parameter using mode / expectation
         piParamStatComputer_.setExpectationParam(); // estimate pi parameter using mode / expectation
-        computeObservedProba(); // compute observed probabilities using estimated parameters
       }
     }
 
-    void computeObservedProba()
-    {
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::computeObservedProba, mu: " << itString(mu_) << ", pi_: " << itString(pi_) << std::endl;
-#endif
-
+    void computeObservedProba() {
       observedProba_.resize(nbClass_, nModality_);
       BOSPath path; // BOSPath used for the various samplings
       path.setInit(0, nModality_ - 1);
-      for (int k = 0; k < nbClass_; ++k)
-      {
+      for (int k = 0; k < nbClass_; ++k) {
         RowVector<Real> nbInd(nModality_); // observed frequencies
         path.setEnd(k, k);
         nbInd = 0;
-        for (int i = 0; i < nbSampleObserved; ++i)
-        {
-          path.forwardSamplePath(mu_(k), // complete the individual
-                                 pi_(k),
-                                 allZAuthorized_); // to estimate probability distribution, all z can be sampled to 1
+        for (int i = 0; i < nbSampleObserved; ++i) {
+          path.forwardSamplePath(
+              mu_(k), // complete the individual
+              pi_(k),
+              allZAuthorized_); // to estimate probability distribution, all z can be sampled to 1
           nbInd(path.c()(nModality_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / Real(nbSampleObserved);
       }
-
-#ifdef MC_DEBUG
-      std::cout << "Ordinal::computeObservedProba, out" << std::endl;
-#endif
     }
 
     virtual void storeGibbsRun(Index ind,
@@ -324,8 +310,7 @@ class Ordinal : public IMixture
      * This function must be defined to return the observed likelihood
      * @return the observed log-likelihood
      */
-    virtual Real lnObservedProbability(Index i, Index k)
-    {
+    virtual Real lnObservedProbability(Index i, Index k) {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::lnobservedProbability" << std::endl;
       std::cout << "observedProba_.rows(): " << observedProba_.rows() << ", observedProba_.cols(): " << observedProba_.cols() << std::endl;
@@ -441,7 +426,9 @@ class Ordinal : public IMixture
         mu_(k) = augData_.data_(initObs(k)); // representative element used is the same for each variable for a given class
         pi_(k) = 1. / nbClass_;
       }
+    }
 
+    virtual void initializeMarkovChain() {
       for (Index i = 0; i < nbInd_; ++i) {
         initBOS(i); // Gibbs sampling iterations to avoid estimating too closely to 0 in first iterations
       }
