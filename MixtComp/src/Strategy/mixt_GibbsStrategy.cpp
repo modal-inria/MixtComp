@@ -26,7 +26,6 @@ std::string GibbsStrategy::run() {
   std::string warnLog;
 
   p_composer_->initData();
-
   p_composer_->initializeLatent();
 
   p_composer_->gibbsSampling(
