@@ -20,93 +20,80 @@
 #include "../mixt_IMixture.h"
 #include "mixt_BOSPath.h"
 
-namespace mixt
-{
-
-enum checkSample {
-  checkZ_,
-  noCheckZ_
-};
+namespace mixt {
 
 template<typename DataHandler,
          typename DataExtractor,
          typename ParamSetter,
          typename ParamExtractor>
-class Ordinal : public IMixture
-{
+class Ordinal : public IMixture {
   public:
-
     /** constructor **/
-    Ordinal(Index indexMixture,
-            std::string const& idName,
-            Index nbClass,
-            Vector<Index> const* p_zi,
-            const Vector<std::set<Index> >& classInd,
-            const DataHandler* p_handler,
-            DataExtractor* p_extractor,
-            const ParamSetter* p_paramSetter,
-            ParamExtractor* p_paramExtractor,
-            Real confidenceLevel) :
-      IMixture(indexMixture,
-               idName),
-      p_zi_(p_zi),
-      classInd_(classInd),
-      nbClass_(nbClass),
-      nModality_(0),
-      augData_(),
-      nbInd_(0), // number of individuals will be set during setDataParam
-      confidenceLevel_(confidenceLevel),
-      mu_(nbClass),
-      pi_(nbClass),
-      dataStatComputer_(augData_,
-                        confidenceLevel),
-      muParamStatComputer_(mu_,
-                           confidenceLevel),
-      piParamStatComputer_(pi_,
-                           confidenceLevel),
-      p_handler_(p_handler),
-      p_dataExtractor_(p_extractor),
-      p_paramSetter_(p_paramSetter),
-      p_paramExtractor_(p_paramExtractor)
-    {}
+    Ordinal(
+        Index indexMixture,
+        std::string const& idName,
+        Index nbClass,
+        Vector<Index> const* p_zi,
+        const Vector<std::set<Index> >& classInd,
+        const DataHandler* p_handler,
+        DataExtractor* p_extractor,
+        const ParamSetter* p_paramSetter,
+        ParamExtractor* p_paramExtractor,
+        Real confidenceLevel) :
+          IMixture(indexMixture, idName),
+          p_zi_(p_zi),
+          classInd_(classInd),
+          nbClass_(nbClass),
+          nModality_(0),
+          augData_(),
+          nbInd_(0), // number of individuals will be set during setDataParam
+          confidenceLevel_(confidenceLevel),
+          mu_(nbClass),
+          pi_(nbClass),
+          dataStatComputer_(augData_, confidenceLevel),
+          muParamStatComputer_(mu_, confidenceLevel),
+          piParamStatComputer_(pi_, confidenceLevel),
+          p_handler_(p_handler),
+          p_dataExtractor_(p_extractor),
+          p_paramSetter_(p_paramSetter),
+          p_paramExtractor_(p_paramExtractor)
+  {}
 
     /* Debug constructor with direct data set */
-    Ordinal(Index nbClass,
-            Index nbInd,
-            Index nbModalities,
-            const Vector<Index>* p_zi,
-            const Vector<std::set<Index> >& classInd,
-            int mu,
-            Real pi) :
-        IMixture(0,
-                 "dummy"),
-        p_zi_(p_zi),
-        classInd_(classInd),
-        nbClass_(nbClass),
-        nModality_(nbModalities),
-        nbInd_(nbInd),
-        mu_(nbClass, mu),
-        pi_(nbClass, pi),
-        dataStatComputer_(augData_,
-                          1.),
-        muParamStatComputer_(mu_,
-                             1.),
-        piParamStatComputer_(pi_,
-                             1.)
-    {
+    Ordinal(
+        Index nbClass,
+        Index nbInd,
+        Index nbModalities,
+        const Vector<Index>* p_zi,
+        const Vector<std::set<Index> >& classInd,
+        int mu,
+        Real pi) :
+          IMixture(0, "dummy"),
+          p_zi_(p_zi),
+          classInd_(classInd),
+          nbClass_(nbClass),
+          nModality_(nbModalities),
+          nbInd_(nbInd),
+          mu_(nbClass, mu),
+          pi_(nbClass, pi),
+          dataStatComputer_(augData_, 1.),
+          muParamStatComputer_(mu_, 1.),
+          piParamStatComputer_(pi_, 1.),
+          p_handler_(NULL),
+          p_dataExtractor_(NULL),
+          p_paramSetter_(NULL),
+          p_paramExtractor_(NULL){
       path_.resize(nbInd);
-      for (int i = 0; i < nbInd; ++i) // initialization of the paths
-      {
+      for (int i = 0; i < nbInd; ++i) { // initialization of the paths
         path_(i).setInit(0, nbModalities - 1);
         path_(i).setEnd (0, nbModalities - 1); // no constraint on values
         path_(i).initPath(); // random init, with uniform z = 0
 
-        for (int n = 0; n < nbGibbsIniBOS; ++n)
-        {
-          path_(i).samplePath(mu,
-                              pi,
-                              sizeTupleBOS,
-                              allZAuthorized_);
+        for (int n = 0; n < nbGibbsIniBOS; ++n) {
+          path_(i).samplePath(
+              mu,
+              pi,
+              sizeTupleBOS);
         }
       }
     }
@@ -117,11 +104,12 @@ class Ordinal : public IMixture
     std::string setDataParam(RunMode mode) {
       std::string warnLog;
 
-      warnLog += p_handler_->getData(idName(),
-                                     augData_,
-                                     nbInd_,
-                                     paramStr_,
-                                     -minModality); // ordinal data are modalities, offset enforces 0-based encoding through the whole mixture
+      warnLog += p_handler_->getData(
+          idName(),
+          augData_,
+          nbInd_,
+          paramStr_,
+          -minModality); // ordinal data are modalities, offset enforces 0-based encoding through the whole mixture
 
       if (warnLog.size() > 0) {
         return warnLog;
@@ -202,30 +190,25 @@ class Ordinal : public IMixture
      * Use information in AugmentedData to set the values of every path in path_. Called at the end
      * of setDataParam
      * */
-    void setPath()
-    {
+    void setPath() {
 #ifdef MC_DEBUG
       std::cout << "Ordinal::setPath" << std::endl;
       std::cout << "path_.size(): " << path_.size() << std::endl;
 #endif
       path_.resize(nbInd_);
 
-      for (int i = 0; i < nbInd_; ++i)
-      {
+      for (int i = 0; i < nbInd_; ++i) {
         path_(i).setInit(0,
                          augData_.dataRange_.max_); // every initial segment is the same and spans all the modalities
-        if (augData_.misData_(i).first == present_) // final value is set
-        {
+        if (augData_.misData_(i).first == present_) { // final value is set
           path_(i).setEnd(augData_.data_(i),
                           augData_.data_(i));
         }
-        else if (augData_.misData_(i).first == missing_)
-        {
+        else if (augData_.misData_(i).first == missing_) {
           path_(i).setEnd(0,
                           augData_.dataRange_.max_); // final interval is the same as initial interval
         }
-        else if (augData_.misData_(i).first == missingIntervals_)
-        {
+        else if (augData_.misData_(i).first == missingIntervals_) {
           path_(i).setEnd(augData_.misData_(i).second[0],
                           augData_.misData_(i).second[1]); // bounds of the interval are provided
         }
@@ -235,10 +218,11 @@ class Ordinal : public IMixture
     /** get parameters from single table, then dispatch it to mu_ and pi_ */
     void setParam() {
       Vector<Real> param;
-      p_paramSetter_->getParam(idName(), // parameters are set using results from previous run
-                               "muPi",
-                               param,
-                               paramStr_);
+      p_paramSetter_->getParam(
+          idName(), // parameters are set using results from previous run
+          "muPi",
+          param,
+          paramStr_);
       mu_.resize(nbClass_);
       pi_.resize(nbClass_);
       for (int k = 0; k < nbClass_; ++k) {
@@ -247,23 +231,31 @@ class Ordinal : public IMixture
       }
     }
 
-    virtual void samplingStepCheck(Index ind) {
-      GibbsSampling(ind,
-                    mu_((*p_zi_)(ind)),
-                    pi_((*p_zi_)(ind)),
-                    checkZ_); // in samplingStepCheck, each sampling must result in a valid state
+    /**
+     * The sampling sequence is:
+     * - Ordinal::samplingStepNoCheck
+     * - Ordinal::GibbsSampling
+     * - either BOSPath::forwardSamplePath
+     * - or BOSPath::samplePath, samples a set of latent variables, from the distribution provided by BOSPath::tupleMultinomial
+     *   - BOSPath::tupleMultinomial, generates the various cases by calling tupleMultinomial, then compute a multinomial distribution
+     *   - nodeMultinomial, recursive function, computes the probability of a path
+     *   - endMultinomial, returns the probability of current configuration
+     * */
+    virtual void samplingStepNoCheck(Index ind) {
+      GibbsSampling(
+          ind,
+          mu_((*p_zi_)(ind)),
+          pi_((*p_zi_)(ind))); // in samplingStepCheck, each sampling must result in a valid state
       copyToData(ind);
     }
 
     /** storeSEMRun sets new parameters at the last iteration of the SEM, before the Gibbs. */
     virtual void storeSEMRun(Index iteration,
-                             Index iterationMax)
-    {
+                             Index iterationMax) {
       muParamStatComputer_.sampleParam(iteration, iterationMax);
       piParamStatComputer_.sampleParam(iteration, iterationMax);
 
-      if (iteration == iterationMax) // at last iteration, compute the observed probability distribution logProba_
-      {
+      if (iteration == iterationMax) { // at last iteration, compute the observed probability distribution logProba_
         muParamStatComputer_.setExpectationParam(); // estimate mu parameter using mode / expectation
         piParamStatComputer_.setExpectationParam(); // estimate pi parameter using mode / expectation
       }
@@ -280,29 +272,27 @@ class Ordinal : public IMixture
         for (int i = 0; i < nbSampleObserved; ++i) {
           path.forwardSamplePath(
               mu_(k), // complete the individual
-              pi_(k),
-              allZAuthorized_); // to estimate probability distribution, all z can be sampled to 1
+              pi_(k)); // to estimate probability distribution, all z can be sampled to 1
           nbInd(path.c()(nModality_ - 2).e_(0)) += 1.; // register the x value, for marginalization
         }
         observedProba_.row(k) = nbInd / Real(nbSampleObserved);
       }
     }
 
-    virtual void storeGibbsRun(Index ind,
-                               Index iteration,
-                               Index iterationMax)
-    {
-      dataStatComputer_.sampleVals(ind,
-                                   iteration,
-                                   iterationMax); // ConfIntStat called to sample value
-      if (iteration == iterationMax)
-      {
+    virtual void storeGibbsRun(
+        Index ind,
+        Index iteration,
+        Index iterationMax) {
+      dataStatComputer_.sampleVals(
+          ind,
+          iteration,
+          iterationMax); // ConfIntStat called to sample value
+      if (iteration == iterationMax) {
         dataStatComputer_.imputeData(ind); // impute the missing values using empirical mean
       }
     }
 
-    virtual Real lnCompletedProbability(Index i, Index k)
-    {
+    virtual Real lnCompletedProbability(Index i, Index k) {
       return path_(i).computeLogProba(mu_(k), pi_(k)); // path_(i) contains a completed individual
     }
 
@@ -316,21 +306,18 @@ class Ordinal : public IMixture
       std::cout << "observedProba_.rows(): " << observedProba_.rows() << ", observedProba_.cols(): " << observedProba_.cols() << std::endl;
       std::cout << "augData_.data_(i): " << augData_.data_(i) << std::endl;
 #endif
-      if (augData_.misData_(i).first == present_) //
-      {
+      if (augData_.misData_(i).first == present_) { //
         return std::log(observedProba_(k, augData_.data_(i))); // marginalized only over c_i
       }
-      else if (augData_.misData_(i).first == missing_) // marginalized over c_i and all modalities: proba is 1.
-      {
+      else if (augData_.misData_(i).first == missing_) { // marginalized over c_i and all modalities: proba is 1.
         return 0.;
       }
-      else if (augData_.misData_(i).first == missingIntervals_) // marginalized over c_i and the observed interval
-      {
+      else if (augData_.misData_(i).first == missingIntervals_) { // marginalized over c_i and the observed interval
         Real proba = 0;
-        for (int p = augData_.misData_(i).second[0];
-             p < augData_.misData_(i).second[1] + 1;
-             ++p)
-        {
+        for (
+            int p = augData_.misData_(i).second[0];
+            p < augData_.misData_(i).second[1] + 1;
+            ++p) {
           proba += observedProba_(k, p);
         }
         return std::log(proba);
@@ -338,16 +325,13 @@ class Ordinal : public IMixture
       return std::numeric_limits<Real>:: signaling_NaN(); // fail case
     }
 
-    virtual Index nbFreeParameter() const
-    {
+    virtual Index nbFreeParameter() const {
       return nbClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
     }
 
-    virtual void writeParameters() const
-    {
+    virtual void writeParameters() const {
       std::stringstream sstm;
-      for (int k = 0; k < nbClass_; ++k)
-      {
+      for (int k = 0; k < nbClass_; ++k) {
         sstm << "Class: " << k << std::endl;
         sstm << "mu: " << mu_(k) << std::endl;
         sstm << "pi: " << pi_(k) << std::endl;
@@ -375,26 +359,26 @@ class Ordinal : public IMixture
         }
       }
 
-      p_dataExtractor_->exportVals(indexMixture_,
-                                   true, // hasModalities
-                                   idName(),
-                                   augData_,
-                                   dataStatComputer_.getDataStatStorage()); // export the obtained data using the DataExtractor
-      p_paramExtractor_->exportParam(indexMixture_,
-                                     idName(),
-                                     "muPi",
-                                     paramStatStorage,
-                                     paramLogStorage,
-                                     paramNames(),
-                                     confidenceLevel_,
-                                     paramStr_);
+      p_dataExtractor_->exportVals(
+          indexMixture_,
+          true, // hasModalities
+          idName(),
+          augData_,
+          dataStatComputer_.getDataStatStorage()); // export the obtained data using the DataExtractor
+      p_paramExtractor_->exportParam(
+          indexMixture_,
+          idName(),
+          "muPi",
+          paramStatStorage,
+          paramLogStorage,
+          paramNames(),
+          confidenceLevel_,
+          paramStr_);
     }
 
-    std::vector<std::string> paramNames() const
-    {
+    std::vector<std::string> paramNames() const {
       std::vector<std::string> names(nbClass_ * 2);
-      for (int k = 0; k < nbClass_; ++k)
-      {
+      for (int k = 0; k < nbClass_; ++k) {
         std::stringstream sstmMean, sstmSd;
         sstmMean << "k: "
                  << k + minModality
@@ -409,12 +393,10 @@ class Ordinal : public IMixture
     }
 
     /**
-     * removeMissing is usually called at the beginning of the SEMStrategy. All data are completed by sampling using dummy parameters, since no mStep has
-     * been performed. mStep in turns requires complete data, hence the need to bootstrap the process in some way. A similar initialization is to be found
-     * in the rank model, who also describe each observation with latent variables. Since BOSPath::initPath initializes all BOSPath with z = 0 to enforce
-     * validity, it is necessary to perform nbGibbsIniBOS iterations of GibbsSampling with a pi at piInitBOS to generate variability in z. This will ensure
-     * that pi will not likely be equal to 0 at the first mStep estimation. In any case, should this occur, the initialization will ultimately be
-     * rejected by a call to checkSampleCondition.
+     * initData is called at the beginning of of SemStrategy or GibbsStrategy. It does not use
+     * any parameters. Since BOSPath::initPath initializes all BOSPath with z = 0 to enforce
+     * validity, initializeMarkovChain which is called after will ensure more variability in the
+     * latent variables.
      * */
     void initData(Index i) {
       path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
@@ -422,7 +404,6 @@ class Ordinal : public IMixture
 
     void initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nbClass_; ++k) {
-//        mu_ = sampleMuFreq(k); // mu is sampled from modalities frequencies, without taking current mu value into account
         mu_(k) = augData_.data_(initObs(k)); // representative element used is the same for each variable for a given class
         pi_(k) = 1. / nbClass_;
       }
@@ -442,10 +423,8 @@ class Ordinal : public IMixture
         GibbsSampling(
             i,
             mu_((*p_zi_)(i)),
-            pi_((*p_zi_)(i)),
-            noCheckZ_);
+            pi_((*p_zi_)(i)));
       }
-
       copyToData(i);
     }
 
@@ -462,12 +441,14 @@ class Ordinal : public IMixture
 
     Index checkSampleCondition(std::string* warnLog = NULL) const {
       for (int k = 0; k < nbClass_; ++k) {
-        bool allZ0 = true;
-        bool allZ1 = true; // are all z = 0 or all z = 1 in the current class ?
-        for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
-             it != itE;
-             ++it) {
-          switch(path_(*it).allZ()) {
+        bool allZ0 = true; // are all z = 0 in the current class ?
+        bool allZ1 = true; // are all z = 1 in the current class ?
+        for (
+            std::set<Index>::const_iterator it  = classInd_(k).begin(),
+                                            itE = classInd_(k).end();
+            it != itE;
+            ++it) {
+          switch(path_(*it).allZ()) { // what can be deduced from the current path ?
             case allZ0_: {
               allZ1 = false;
             }
@@ -478,7 +459,7 @@ class Ordinal : public IMixture
             }
             break;
 
-            case mixZ0Z1_: {
+            case mixZ0Z1_: { // this ensure an immediate end of testing
               allZ0 = false;
               allZ1 = false;
             }
@@ -486,11 +467,11 @@ class Ordinal : public IMixture
           }
 
           if (allZ0 == false && allZ1 == false) { // there is enough variability on z in this class to ensure that pi will be estimated inside the open support
-            goto itKEnd;
+            goto itKEnd; // no need to further examine the content of individual paths
           }
-        }
+        } // end of the loop on all observations
 
-        if (warnLog != NULL) {
+        if (warnLog != NULL) { // this portion of code is reached if and only if all paths returned allZ0_ or if all paths returned allZ1_
           std::stringstream sstm;
           sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 or 1 in at least one class. "
                << "If the number of modalities is quite low, try using a categorical model instead." << std::endl;
@@ -499,7 +480,7 @@ class Ordinal : public IMixture
 
         return 0;
 
-        itKEnd:;
+        itKEnd:; // reached only if and only if all values of z have been observed in the current class
       }
 
       return 1;
@@ -511,24 +492,19 @@ class Ordinal : public IMixture
      * @param k class for which the mode must be simulated
      * @param prohibitCurrentMu shall the current value of mu be forbidden, for example if it lead to degeneracy in the mStep ?
      * */
-    int sampleMuFreq(int k)
-    {
+    int sampleMuFreq(int k) {
       Vector<Real> freqMod(nModality_, 0.); // frequencies of completed values for the current class
-      for (int i = 0; i < nbInd_; ++i) // compute distribution of values
-      {
-        if ((*p_zi_)(i) == k) // among individuals inside the degenerate class
-        {
+      for (int i = 0; i < nbInd_; ++i) { // compute distribution of values
+        if ((*p_zi_)(i) == k) { // among individuals inside the degenerate class
           freqMod(augData_.data_(i)) += 1.; // completed values are used
         }
       }
 
       Real sum = freqMod.sum();
-      if (sum > epsilon)
-      {
+      if (sum > epsilon) {
         freqMod = freqMod / sum;
       }
-      else  // this is just to avoid a crash, as empty class are forbidden and will be detected later for resampling
-      {
+      else { // this is just to avoid a crash, as empty class are forbidden and will be detected later for resampling
         freqMod = 1. / Real(nModality_);
       }
 
@@ -540,68 +516,32 @@ class Ordinal : public IMixture
      *
      * @param sampleAZ indicate if the condition all z = 0 or all z = 1 is authorized for the class containing ind
      * */
-    void GibbsSampling(int ind,
-                       int mu,
-                       Real pi,
-                       checkSample globalCheckSample) {
-      zCondition zCond = allZAuthorized_; // by default, everything will be authorized for the z sampled value
-
-      if (globalCheckSample == checkZ_) { // if all z = 0 is not authorized and all other individuals already have z = 0, then current individual can not have z = 0
-        bool allOtherZ0 = true; // are all z in other individuals equal to 0 ?
-        bool allOtherZ1 = true; // are all z in other individuals equal to 0 ?
-
-        int currClass = (*p_zi_)(ind);
-        for (std::set<Index>::const_iterator it  = classInd_(currClass).begin(),
-                                             itE = classInd_(currClass).end();
-             it != itE;
-             ++it) {
-          if (*it != ind) { // check is performed on all in the class but the current ind
-            switch (path_(*it).allZ()) {
-              case allZ0_: {
-                allOtherZ1 = false; // ... current individual is authorized to have all its z = 1
-              }
-              break;
-
-              case allZ1_: {
-                allOtherZ0 = false; // ... current individual is authorized to have all its z = 0
-              }
-              break;
-
-              case mixZ0Z1_: {
-                allOtherZ0 = false;
-                allOtherZ1 = false;
-              }
-            }
-
-            if (allOtherZ0 == false && allOtherZ1 == false) { // all values are authorized for current individual, stop checking
-              goto endTest;
-            }
-          }
-        }
-
-        if (allOtherZ0 == true) {
-          zCond = allZ0Forbidden_;
-        }
-        else if (allOtherZ1 == true) {
-          zCond = allZ1Forbidden_;
-        }
-
-        endTest:;
-      }
-
+    void GibbsSampling(
+        int ind,
+        int mu,
+        Real pi) {
       if (augData_.misData_(ind).first == missing_) { // if individual is completely missing, use samplePathForward instead of samplePath to accelerate computation
-        path_(ind).forwardSamplePath(mu,
-                                     pi,
-                                     zCond);
+        path_(ind).forwardSamplePath(
+            mu,
+            pi);
       }
       else { // perform one round of Gibbs sampler for the designated individual
-        path_(ind).samplePath(mu,
-                              pi,
-                              sizeTupleBOS,
-                              zCond);
+        path_(ind).samplePath(
+            mu,
+            pi,
+            sizeTupleBOS);
       }
     }
 
+    void mStep() {
+      mStepMu();
+      mStepPi();
+    }
+
+    /**
+     * Estimation of mu is performed by an exhaustive
+     * computation of the likelihood for every value of mu to get the argmax
+     */
     void mStepMu() {
       Matrix<Real> logLik(nbClass_, nModality_, 0.);
       for (int i = 0; i < nbInd_; ++i) {
@@ -609,8 +549,7 @@ class Ordinal : public IMixture
         Real currPi = pi_(currClass);
         RowVector<Real> probaInd(nModality_);
         for (int mu = 0; mu < nModality_; ++mu) { // mu obtained from maximization over all possible values
-          probaInd(mu) = path_(i).computeLogProba(mu,
-                                                  currPi);
+          probaInd(mu) = path_(i).computeLogProba(mu, currPi);
         }
         logLik.row(currClass) += probaInd;
       }
@@ -645,17 +584,14 @@ class Ordinal : public IMixture
      *
      * @param k class for which the parameter pi should be estimated
      * */
-    void mStepPiK(int k)
-    {
+    void mStepPiK(int k) {
       pi_(k) = 0.; // pi_ parameter is reinitialized for the current class
 
       Real nodePerClass = 0.; // total number of nodes in class k
       Real zPerClass    = 0.; // total of nodes with z = 1 in class k
 
-      for (int i = 0; i < nbInd_; ++i)
-      {
-        if ((*p_zi_)(i) == k)
-        {
+      for (int i = 0; i < nbInd_; ++i) {
+        if ((*p_zi_)(i) == k) {
           zPerClass    += path_(i).nbZ()  ; // add only z = 1 nodes of the individual
           nodePerClass += path_(i).nbNode_; // add all nodes of the individual
         }
@@ -665,8 +601,7 @@ class Ordinal : public IMixture
     }
 
     /** update the data using the last segment in c_. to be used after sampling in the BOSPath. */
-    void copyToData(int ind)
-    {
+    void copyToData(int ind) {
       augData_.data_(ind) = path_(ind).c()(nModality_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
     }
 
