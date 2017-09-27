@@ -486,6 +486,11 @@ class Ordinal : public IMixture {
       return 1;
     }
 
+    void mStep() {
+      mStepMu();
+      mStepPi();
+    }
+
   private:
     /**
      * Sample the next mu for the class k and initialize the individuals in the class using it.
@@ -531,11 +536,6 @@ class Ordinal : public IMixture {
             pi,
             sizeTupleBOS);
       }
-    }
-
-    void mStep() {
-      mStepMu();
-      mStepPi();
     }
 
     /**

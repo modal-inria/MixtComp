@@ -87,21 +87,18 @@ TEST(RankClass, gibbsY)
   std::map<Vector<int>, Real> empDist; // empirical distribution
   std::map<Vector<int>, Real> calcDist; // calculated distribution
 
-  for (int i = 0; i < nbIterBurnIn; ++i)
-  {
-    rank.sampleY(mu, pi, allGAuthorized_);
+  for (int i = 0; i < nbIterBurnIn; ++i) {
+    rank.sampleY(mu, pi);
   }
 
-  for (int i = 0; i < nbIterRun; ++i)
-  {
-    rank.sampleY(mu, pi, allGAuthorized_);
+  for (int i = 0; i < nbIterRun; ++i) {
+    rank.sampleY(mu, pi);
     dummyVec = rank.y();
 
-    if (empDist.find(dummyVec) == empDist.end())
-    {
+    if (empDist.find(dummyVec) == empDist.end()) {
       empDist[dummyVec] = 1.; // first occurrence
-    } else
-    {
+    }
+    else {
       empDist[dummyVec] += 1.;
     }
 
@@ -275,7 +272,7 @@ TEST(RankClass, mStep)
 
   for (int i = 0; i < nbIterburnIn; ++i) {
     for (int ind = 0; ind < nbInd; ++ind) {
-      data(ind).sampleY(muEst, piEst, allGAuthorized_); // no sampleX is performed as the completion obtained through xGen is used
+      data(ind).sampleY(muEst, piEst); // no sampleX is performed as the completion obtained through xGen is used
     }
     rank.sampleMu();
   }
