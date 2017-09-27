@@ -36,8 +36,8 @@ gaussianParam <- function(name) {
   gaussian$type <- "Gaussian_sjk"
   gaussian$generator <- gaussianGenerator
   gaussian$param <- list()
-  gaussian$param[[1]] <- list(mean = 0, sd = 1)
-  gaussian$param[[2]] <- list(mean = 2, sd = 1)
+  gaussian$param[[1]] <- list(mean = -5, sd = 1)
+  gaussian$param[[2]] <- list(mean = 5, sd = 1)
   
   return(gaussian)
 }
@@ -48,13 +48,13 @@ poissonParam <- function(name) {
   poisson$type <- "Poisson_k"
   poisson$generator <- poissonGenerator
   poisson$param <- list()
-  poisson$param[[1]] <- 3
-  poisson$param[[2]] <- 8
+  poisson$param[[1]] <- 1
+  poisson$param[[2]] <- 10
   
   return(poisson)
 }
 
-ordinalParam <- function(name) {
+ordinalParam1 <- function(name) {
   Ordinal <- list()
   Ordinal$name <- name
   Ordinal$type <- "Ordinal"
@@ -67,7 +67,20 @@ ordinalParam <- function(name) {
   return(Ordinal)
 }
 
-categoricalParam <- function(name) {
+ordinalParam2 <- function(name) {
+  Ordinal <- list()
+  Ordinal$name <- name
+  Ordinal$type <- "Ordinal"
+  Ordinal$generator <- ordinalGenerator
+  
+  Ordinal$param <- list()
+  Ordinal$param[[1]] <- list(nbMod = 4, mu = 5, pi = 0.8)
+  Ordinal$param[[2]] <- list(nbMod = 4, mu = 2, pi = 0.8)
+  
+  return(Ordinal)
+}
+
+categoricalParam1 <- function(name) {
   categorical <- list()
   categorical$name <- name
   categorical$type <- "Categorical_pjk"
@@ -75,6 +88,18 @@ categoricalParam <- function(name) {
   categorical$param <- list()
   categorical$param[[1]] <- c(0.1, 0.2, 0.2, 0.5)
   categorical$param[[2]] <- c(0.5, 0.3, 0.1, 0.1)
+  
+  return(categorical)
+}
+
+categoricalParam2 <- function(name) {
+  categorical <- list()
+  categorical$name <- name
+  categorical$type <- "Categorical_pjk"
+  categorical$generator <- categoricalGenerator 
+  categorical$param <- list()
+  categorical$param[[1]] <- c(0.6, 0.1, 0.1, 0.2)
+  categorical$param[[2]] <- c(0.1, 0.05, 0.8, 0.05)
   
   return(categorical)
 }

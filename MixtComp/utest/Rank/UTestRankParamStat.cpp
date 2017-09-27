@@ -11,8 +11,10 @@
 
 using namespace mixt;
 
-/** Use RankParamStat to compute statistics on mu and pi. Use the setExpectationParam to make a comparison
- * with the real parameters */
+/**
+ * Use RankParamStat to compute statistics on mu and pi. Use the setExpectationParam to make a comparison
+ * with the real parameters
+ * */
 TEST(RankStat, computeStat)
 {
   int nbPos = 5;
