@@ -29,57 +29,6 @@ zParamFixedInit <- function() {
   return(z_class)
 }
 
-
-gaussianParam <- function(name) {
-  gaussian <- list()
-  gaussian$name <- name
-  gaussian$type <- "Gaussian_sjk"
-  gaussian$generator <- gaussianGenerator
-  gaussian$param <- list()
-  gaussian$param[[1]] <- list(mean = -5, sd = 1)
-  gaussian$param[[2]] <- list(mean = 5, sd = 1)
-  
-  return(gaussian)
-}
-
-poissonParam <- function(name) {
-  poisson <- list()
-  poisson$name <- name
-  poisson$type <- "Poisson_k"
-  poisson$generator <- poissonGenerator
-  poisson$param <- list()
-  poisson$param[[1]] <- 1
-  poisson$param[[2]] <- 10
-  
-  return(poisson)
-}
-
-ordinalParam1 <- function(name) {
-  Ordinal <- list()
-  Ordinal$name <- name
-  Ordinal$type <- "Ordinal"
-  Ordinal$generator <- ordinalGenerator
-  
-  Ordinal$param <- list()
-  Ordinal$param[[1]] <- list(nbMod = 4, mu = 1, pi = 0.8)
-  Ordinal$param[[2]] <- list(nbMod = 4, mu = 4, pi = 0.8)
-  
-  return(Ordinal)
-}
-
-ordinalParam2 <- function(name) {
-  Ordinal <- list()
-  Ordinal$name <- name
-  Ordinal$type <- "Ordinal"
-  Ordinal$generator <- ordinalGenerator
-  
-  Ordinal$param <- list()
-  Ordinal$param[[1]] <- list(nbMod = 4, mu = 5, pi = 0.8)
-  Ordinal$param[[2]] <- list(nbMod = 4, mu = 2, pi = 0.8)
-  
-  return(Ordinal)
-}
-
 categoricalParam1 <- function(name) {
   categorical <- list()
   categorical$name <- name
@@ -104,23 +53,50 @@ categoricalParam2 <- function(name) {
   return(categorical)
 }
 
-rankParam <- function(name) {
-  Rank <- list()
-  Rank$param <- list()
-  Rank$param[[1]] <- list()
-  Rank$param[[2]] <- list()
+categoricalParamRandom <- function(name) {
+  nbModalities <- 4
+  param1 <- runif(4)
+  param1 <- param1 / sum(param1)
+  param2 <- runif(4)
+  param2 <- param2 / sum(param2)
   
-  Rank$name <- name
-  Rank$type <- "Rank"
-  Rank$generator <- rankGenerator
-  Rank$param[[1]]$mu <- c(1, 2, 3, 4)
-  Rank$param[[1]]$pi <- 0.8
-  Rank$param[[2]]$mu <- c(4, 3, 2, 1)
-  Rank$param[[2]]$pi <- 0.8
+  categorical <- list()
+  categorical$name <- name
+  categorical$type <- "Categorical_pjk"
+  categorical$generator <- categoricalGenerator 
+  categorical$param <- list()
+  categorical$param[[1]] <- param1
+  categorical$param[[2]] <- param2
   
-  return(Rank)
+  return(categorical)
 }
 
+functionalInterPolyParam <- function(name) {
+  Functional <- list(
+    name = name,
+    type = "Functional",
+    generator = functionalInterPolyGenerator,
+    paramStr = "nSub: 2, nCoeff: 2",
+    param = list())
+  
+  Functional$param[[1]] <- list(
+    x = c(0., 10., 20.),
+    y = c(0., 10., 0.),
+    sd = 0.1,
+    tMin = 0.,
+    tMax = 20.,
+    nTime = 100)
+  
+  Functional$param[[2]] <- list(
+    x = c(0., 10., 20.),
+    y = c(10., 0., 10.),
+    sd = 0.1,
+    tMin = 0.,
+    tMax = 20.,
+    nTime = 100)
+  
+  return(Functional)
+}
 
 functionalParam1sub <- function(name) {
   Functional <- list()
@@ -232,6 +208,18 @@ functionalParam2sub <- function(name) {
   return(Functional)
 }
 
+gaussianParam <- function(name) {
+  gaussian <- list()
+  gaussian$name <- name
+  gaussian$type <- "Gaussian_sjk"
+  gaussian$generator <- gaussianGenerator
+  gaussian$param <- list()
+  gaussian$param[[1]] <- list(mean = -5, sd = 1)
+  gaussian$param[[2]] <- list(mean = 5, sd = 1)
+  
+  return(gaussian)
+}
+
 getLinEq <- function(pointA, pointB) {
   a <- matrix(c(1., pointA[1],
                 1., pointB[1]),
@@ -242,29 +230,87 @@ getLinEq <- function(pointA, pointB) {
   return(x)
 }
 
-functionalInterPolyParam <- function(name) {
-  Functional <- list(
-    name = name,
-    type = "Functional",
-    generator = functionalInterPolyGenerator,
-    paramStr = "nSub: 2, nCoeff: 2",
-    param = list())
+ordinalParam1 <- function(name) {
+  Ordinal <- list()
+  Ordinal$name <- name
+  Ordinal$type <- "Ordinal"
+  Ordinal$generator <- ordinalGenerator
   
-  Functional$param[[1]] <- list(
-    x = c(0., 10., 20.),
-    y = c(0., 10., 0.),
-    sd = 0.1,
-    tMin = 0.,
-    tMax = 20.,
-    nTime = 100)
+  Ordinal$param <- list()
+  Ordinal$param[[1]] <- list(nbMod = 4, mu = 1, pi = 0.8)
+  Ordinal$param[[2]] <- list(nbMod = 4, mu = 4, pi = 0.8)
   
-  Functional$param[[2]] <- list(
-    x = c(0., 10., 20.),
-    y = c(10., 0., 10.),
-    sd = 0.1,
-    tMin = 0.,
-    tMax = 20.,
-    nTime = 100)
+  return(Ordinal)
+}
+
+ordinalParam2 <- function(name) {
+  Ordinal <- list()
+  Ordinal$name <- name
+  Ordinal$type <- "Ordinal"
+  Ordinal$generator <- ordinalGenerator
   
-  return(Functional)
+  Ordinal$param <- list()
+  Ordinal$param[[1]] <- list(nbMod = 4, mu = 5, pi = 0.8)
+  Ordinal$param[[2]] <- list(nbMod = 4, mu = 2, pi = 0.8)
+  
+  return(Ordinal)
+}
+
+ordinalParamRandom <- function(name) {
+  nMod <- 4
+  
+  Ordinal <- list()
+  Ordinal$name <- name
+  Ordinal$type <- "Ordinal"
+  Ordinal$generator <- ordinalGenerator
+  
+  Ordinal$param <- list()
+  Ordinal$param[[1]] <- list(nbMod = nMod, mu = sample(1:nMod, 1), pi = runif(1))
+  Ordinal$param[[2]] <- list(nbMod = nMod, mu = sample(1:nMod, 1), pi = runif(1))
+  
+  return(Ordinal)
+}
+
+poissonParam <- function(name) {
+  poisson <- list()
+  poisson$name <- name
+  poisson$type <- "Poisson_k"
+  poisson$generator <- poissonGenerator
+  poisson$param <- list()
+  poisson$param[[1]] <- 1
+  poisson$param[[2]] <- 10
+  
+  return(poisson)
+}
+
+poissonParamRandom <- function(name) {
+  valMin <- 0.1
+  valMax <- 15.0
+  
+  poisson <- list()
+  poisson$name <- name
+  poisson$type <- "Poisson_k"
+  poisson$generator <- poissonGenerator
+  poisson$param <- list()
+  poisson$param[[1]] <- runif(n = 1, min = valMin, max = valMax)
+  poisson$param[[2]] <- runif(n = 1, min = valMin, max = valMax)
+  
+  return(poisson)
+}
+
+rankParam <- function(name) {
+  Rank <- list()
+  Rank$param <- list()
+  Rank$param[[1]] <- list()
+  Rank$param[[2]] <- list()
+  
+  Rank$name <- name
+  Rank$type <- "Rank"
+  Rank$generator <- rankGenerator
+  Rank$param[[1]]$mu <- c(1, 2, 3, 4)
+  Rank$param[[1]]$pi <- 0.8
+  Rank$param[[2]]$mu <- c(4, 3, 2, 1)
+  Rank$param[[2]]$pi <- 0.8
+  
+  return(Rank)
 }
