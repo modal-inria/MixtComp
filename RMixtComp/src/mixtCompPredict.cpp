@@ -96,19 +96,17 @@ Rcpp::List mixtCompPredict(
         Rcpp::Named("variable") = mcVariable);
   }
 
-  // Create the Strategy
+  // Get the parameters
 
   dataExtractor .setNbMixture(handler.nbVariable()); // all data has been read, checked and transmitted to the mixtures
   paramExtractor.setNbMixture(handler.nbVariable());
 
   mixt::StrategyParam strategyParam;
-  paramRToCpp(mcStrategy,
-              strategyParam);
+  paramRToCpp(mcStrategy, strategyParam);
+
+	// Run the Gibbs strategy
 
   mixt::GibbsStrategy strategy(&composer, strategyParam, 0);
-
-  // Run the strategy
-
   mixt::Timer stratTimer("Gibbs Strategy Run");
   warnLog += strategy.run();
   stratTimer.top("Gibbs strategy run complete");
@@ -123,6 +121,8 @@ Rcpp::List mixtCompPredict(
   }
 
   // Run has been successful, export everything
+
+  composer.writeParameters();
 
   composer.exportDataParam<mixt::DataExtractorR,
                            mixt::ParamExtractorR>(dataExtractor,
@@ -151,6 +151,9 @@ Rcpp::List mixtCompPredict(
   mixt::lnProbaGivenClass(composer, pGC);
   mcMixture["lnProbaGivenClass"] = pGC;
 
+  Rcpp::NumericMatrix delta;
+  mixt::matDelta(composer, delta);
+  mcMixture["delta"] = delta;
   mcMixture["runTime"] = totalTimer.top("end of run");
   mcMixture["nbSample"] = handler.nbSample();
 

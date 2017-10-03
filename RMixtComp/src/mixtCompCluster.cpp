@@ -94,7 +94,7 @@ Rcpp::List mixtCompCluster(
         Rcpp::Named("variable") = mcVariable);
   }
 
-  // Create the SEM strategy
+  // Get the parameters
 
   dataExtractor .setNbMixture(handler.nbVariable()); // all data has been read, checked and transmitted to the mixtures
   paramExtractor.setNbMixture(handler.nbVariable());
@@ -155,10 +155,6 @@ Rcpp::List mixtCompCluster(
   Rcpp::NumericMatrix pGC;
   mixt::lnProbaGivenClass(composer, pGC);
   mcMixture["lnProbaGivenClass"] = pGC;
-
-//  Rcpp::NumericVector oTik;
-//  mixt::observedTik(composer, oTik);
-//  mcMixture["observedTik"] = oTik;
 
   Rcpp::NumericMatrix delta;
   mixt::matDelta(composer, delta);
