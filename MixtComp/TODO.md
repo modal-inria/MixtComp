@@ -1,5 +1,34 @@
 # Current
 
+## SemStrategy
+
+- should be capable of returning a boolean indicating that at least 1 run has been completed successfully
+	- a string is already returned, that should be enough
+	- the string might contain the result of the last run, if all were unsuccessful
+- if SEMAlgo only contains a single function, that function should be part of the Strategy, no need for an addditional object
+
+## Unbounded likelihood
+
+- even if unbounded likelihood is the only reason to abort a run, the emptying of a class should remain a reason to abort a run. It impacts every variable.
+
+## IMixture
+
+- keep checkSampleCondition, except that in the implementation, only return false for unbounded likelihood
+	- the test must occur after samplingStep, to check that the completion is valid
+	- this is not a priority
+- add pushParametersToCache and pullParametersFromCache methods
+- composer.p_zi() and composer.classInd() are there in all mixture, why not include them in IMixture ?
+
+## Multi run
+
+- only end the computation if the likelihood is unbound.
+	- For example, not when a a proportion in a categorical model is 0.
+	- end it if the standard deviation is 0
+	- all those checks must be made in checkSampleCondition
+- dans l'algo, pas de bornes, rajouter les bornes avant l'export de paramètres
+- si en prédiction, avec bornes partout, la variable devient muette
+- remove the Gibbs
+
 ## Initialization
 
 - the mStep just after initParam will be suppressed, as it would erase the result of initParam
@@ -13,6 +42,7 @@
 - The uniform initialization seems useless now that one observation is used to initialize the parameters
 	- is it so that only that one observation shall be uniformly completed ?
 	- it is useful, because every individual need to be completed for the eStep (and not just for the mStep)
+- The initialization sequence uses one individual per class. In semi-supervized problems one must ensure that the constraints are applied and the selected individual can belong to the class.
 
 ## IMixture
 
@@ -22,10 +52,7 @@
 	- the test must occur after samplingStep, to check that the completion is valid
 - add pushParametersToCache and pullParametersFromCache methods
 - composer.p_zi() and composer.classInd() are there in all mixture, why not include them in IMixture ?
-
-## removal of Gibbs
-
-- Ordinal: remove zCondition parameters first, then modify until compilation
+- in IMixture::computeObservedProba, the number of samplings used are determined by constants, but they should increase when the complexity of the model increases
 
 ## SemStrategy
 
@@ -35,10 +62,6 @@
 	- note that only the SEM phase has to be run n times, not the Gibbs sampling
 	- each mixture has to be responsible for pushing / pulling the best parameters from a cache
 - this way, the data / param export at the end of the Gibbs is not affected
-
-## SemAlgo
-
-- only keep runNoCheck
 
 ## Order of implementation, each step should result in a working version of MixtComp
 
@@ -58,9 +81,12 @@
 - dans l'algo, pas de bornes, rajouter les bornes avant l'export de paramètres
 - si en prédiction, avec bornes partout, la variable devient muette
 - remove the Gibbs
-- export the number of degenerate run, so that an expert could reject if there are too many
+- export the number of degenerate run, so that an expert user could reject if there are too many
 
-# Short Term
+## Nomenclature
+
+- samplingStepNoCheck -> sampleLatent
+- sStep -> sampleClass
 
 ## Precise modifications
 
@@ -109,26 +135,10 @@
 	- This also highlight the problem that the algorithm is dependent on the initialization of the RNG and this should be dealt with...
 - remove regex in data parsing. Will be faster but less tolerant to data format.
 
-# Estimation problem
+# Input / Output
 
-- keep the test for degeneracy
-- remove the Gibbs
-    - how will the Ordinal model work without Gibbs ?
-    - it will not work.
-- remove parameterEdgeAuthorized
-    - it "worked" for problem of null variance and such
-    - it never worked for empty classes
-    - remove it altogether ?
-- launch multiple run if a degenerescency is detected
-- SEM will degenerate given enough time, so if the data is "correct", this should be rare, and fixed by relaunching
-- if degenerescency is systematic, the model is not correct and should be dropped. Running a Gibbs over a long time period will not solve anything.
-
-# Output object
-
-- Gaussien :
-    Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
-- Poisson/Ordinal :
-    Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
+- Gaussian: Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
+- Poisson / Ordinal: Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
 
 # Model
 
@@ -145,3 +155,11 @@
 
 - clarify if can be used with EdgeAuthorized or not. It seems it cannot. Test with generated data.
 - apparently there are sometimes errors in the unit tests. Check those as they could explain other errors.
+
+# Long Term
+
+- launch N identical runs, compare the log observed likelihood and keep the better one
+	- how to keep all the parameters and of the last best run ?
+	- note that only the SEM phase has to be run n times, not the Gibbs sampling
+	- each mixture has to be responsible for pushing / pulling the best parameters from a cache
+- this way, the data / param export at the end of the Gibbs is not affected
