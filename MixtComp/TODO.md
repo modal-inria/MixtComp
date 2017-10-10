@@ -107,6 +107,7 @@
 	- If rng are shared, then there will be race conditions in multi-threading runs
 	- So the deterministic approach is put on standby. mixt_RNG.h contains the seed generation.
 	- This also highlight the problem that the algorithm is dependent on the initialization of the RNG and this should be dealt with...
+- remove regex in data parsing. Will be faster but less tolerant to data format.
 
 # Estimation problem
 
@@ -131,10 +132,16 @@
 
 # Model
 
-- Functional Model
-    - Missing data in support
-    - The identifiability of the model is not enforced. Opposite ranks with symmetric values (around 0.5) of dispersion would yield the same model.
-- Ordinal model
-    - clarify if can be used with EdgeAuthorized or not. It seems it cannot. Test with generated data.
-    - apparently there are sometimes errors in the unit tests. Check those as they could explain other errors.
-- remove regex in data parsing. Will be faster but less tolerant to data format.
+## Functional
+
+- Missing data in support
+- Estimation has an infinite numer of solution if subregressions are not separated: check for that ?
+
+## Rank
+
+- The identifiability of the model is not enforced. Opposite ranks with symmetric values (around 0.5) of dispersion would yield the same model.
+
+## Ordinal model
+
+- clarify if can be used with EdgeAuthorized or not. It seems it cannot. Test with generated data.
+- apparently there are sometimes errors in the unit tests. Check those as they could explain other errors.
