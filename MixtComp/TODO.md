@@ -10,6 +10,9 @@
 ## Unbounded likelihood
 
 - even if unbounded likelihood is the only reason to abort a run, the emptying of a class should remain a reason to abort a run. It impacts every variable.
+- keep checkSampleCondition, except that in the implementation, only return false for unbounded likelihood
+	- the test must occur after samplingStep, to check that the completion is valid
+- if parameters on the limit of domain, for example proportion = 0, what bound should be applied ?
 
 ## IMixture
 
@@ -18,6 +21,7 @@
 	- this is not a priority
 - add pushParametersToCache and pullParametersFromCache methods
 - composer.p_zi() and composer.classInd() are there in all mixture, why not include them in IMixture ?
+- in IMixture::computeObservedProba, the number of samplings used are determined by constants, but they should increase when the complexity of the model increases
 
 ## Multi run
 
@@ -44,16 +48,6 @@
 	- it is useful, because every individual need to be completed for the eStep (and not just for the mStep)
 - The initialization sequence uses one individual per class. In semi-supervized problems one must ensure that the constraints are applied and the selected individual can belong to the class.
 
-## IMixture
-
-- remove samplingStepCheck
-- samplingStepNoCheck becomes samplingStep
-- keep checkSampleCondition, except that in the implementation, only return false for unbounded likelihood
-	- the test must occur after samplingStep, to check that the completion is valid
-- add pushParametersToCache and pullParametersFromCache methods
-- composer.p_zi() and composer.classInd() are there in all mixture, why not include them in IMixture ?
-- in IMixture::computeObservedProba, the number of samplings used are determined by constants, but they should increase when the complexity of the model increases
-
 ## SemStrategy
 
 - initSEMCheck has to be removed and only initSEMNoCheck and runSEMNoCheck must be kept
@@ -63,34 +57,16 @@
 	- each mixture has to be responsible for pushing / pulling the best parameters from a cache
 - this way, the data / param export at the end of the Gibbs is not affected
 
-## Order of implementation, each step should result in a working version of MixtComp
-
-- new initialization by partitioning and ordering, while keeping everything else as of today. This way the new initialization will benefit MixtComp while further updates are implemented
-- detection of degeneracy, and clean stop of the run, so the user can launch it again
-	- normalization
-- updated parameter normalization, as this can be used with parameterEdgeAuthorized = TRUE in current version
-- multiple initialization, without detection of degeneracy, only keeping the best run
-	- only strategy is no check with normalization
-- removal of Gibbs and all unused code (samplingStepCheck, etc ...)
-
 ## Multi run
 
-- only end the computation if the likelihood is unbound.
-	- For example, not when a a proportion in a categorical model is 0.
-	- end it if the standard deviation is 0
-- dans l'algo, pas de bornes, rajouter les bornes avant l'export de paramètres
 - si en prédiction, avec bornes partout, la variable devient muette
 - remove the Gibbs
 - export the number of degenerate run, so that an expert user could reject if there are too many
 
-## Nomenclature
+# Nomenclature
 
 - samplingStepNoCheck -> sampleLatent
 - sStep -> sampleClass
-
-## Precise modifications
-
-- in Predict mode with functional data, the logStorage_ (defined in mixt_ConfIntParamStat.h) isn't initialized in setParamStorage() (defined in mixt_ConfIntParamStat.h), unlike statStorage_ .. But exportDataParam() (defined in mixt_FunctionalMixture.h) tries to get it nonetheless : what's the role of logStorage_ in Predict Mode ? should it be initialized or should exportDataParam() be modified ?
 
 # Performances
 
@@ -103,6 +79,7 @@
     - in learn, it should be called at the end of the SEM
     - in predict, it should be called at the beginning of the Gibbs, once the parameters are known
     - this centralize the caching in the composer, instead of delegating it to the mixture author
+- remove regex in data parsing. Will be faster but less tolerant to data format.
 
 # Build
 
@@ -119,7 +96,6 @@
     - They do not support biased estimators and since the Gibbs is deactivated, null variance or similar errors could happen
 - parameterEdgeAuthorized limits the estimation by excluding the border of the parameter space
 	- if a class is empty, its proportion will be estimated at 1e-8. BUT the estimation of the classes will not work as there are no observations. Crashes are to be expected.
-- Uncomment and correct SimpleMixture utest
 
 # Architecture
 
@@ -133,7 +109,6 @@
 	- If rng are shared, then there will be race conditions in multi-threading runs
 	- So the deterministic approach is put on standby. mixt_RNG.h contains the seed generation.
 	- This also highlight the problem that the algorithm is dependent on the initialization of the RNG and this should be dealt with...
-- remove regex in data parsing. Will be faster but less tolerant to data format.
 
 # Input / Output
 
@@ -142,10 +117,15 @@
 
 # Model
 
+## Simple
+
+- Uncomment and correct SimpleMixture utest
+
 ## Functional
 
 - Missing data in support
 - Estimation has an infinite numer of solution if subregressions are not separated: check for that ?
+- in Predict mode with functional data, the logStorage_ (defined in mixt_ConfIntParamStat.h) isn't initialized in setParamStorage() (defined in mixt_ConfIntParamStat.h), unlike statStorage_ .. But exportDataParam() (defined in mixt_FunctionalMixture.h) tries to get it nonetheless : what's the role of logStorage_ in Predict Mode ? should it be initialized or should exportDataParam() be modified ?
 
 ## Rank
 
@@ -162,4 +142,5 @@
 	- how to keep all the parameters and of the last best run ?
 	- note that only the SEM phase has to be run n times, not the Gibbs sampling
 	- each mixture has to be responsible for pushing / pulling the best parameters from a cache
+	- add IMixture::pushParametersToCache and pullParametersFromCache methods
 - this way, the data / param export at the end of the Gibbs is not affected
