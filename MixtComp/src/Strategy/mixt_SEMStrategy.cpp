@@ -30,7 +30,7 @@ std::string SemStrategy::run() {
 
     p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
     p_composer_->initParam(); // initialize parameters for each model, usually singling out a single observation as the center of each class
-    p_composer_->initializeLatent();
+    p_composer_->initializeLatent(); // use observed probabilitity to initialize classes
 
     warnLog = runSEM(
         burnIn_,

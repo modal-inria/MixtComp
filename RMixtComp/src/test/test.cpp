@@ -7,17 +7,14 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <RInside.h>                    // for the embedded R via RInside
+#include <RInside.h> // for the embedded R via RInside
 #include <fstream>
 
 int main(int argc, char *argv[]) {
-	std::cout << "toto" << std::endl;
-  RInside R(argc, argv);              // create an embedded R instance
-//  R.parseEvalQ("library(RMixtComp)");
-//  R.parseEvalQ("setwd(\"/home/elvinz/Documents/170705 - test\")");
-//  R.parseEvalQ("gdfgdgdfdf");
+  RInside R(argc, argv); // create an embedded R instance
 
-  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/170616 - mise à plat MixtComp/170705 - func test data\")");
-  R.parseEvalQ("source(\"test.R\")");
+  R.parseEvalQ("setwd(\"/media/sf_Documents/160803 - debug MixtComp/171004 - Etienne Goffinet\")");
+  R.parseEvalQ("source(\"run.r\")");
+
   exit(0);
 }

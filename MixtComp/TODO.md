@@ -5,7 +5,7 @@
 - should be capable of returning a boolean indicating that at least 1 run has been completed successfully
 	- a string is already returned, that should be enough
 	- the string might contain the result of the last run, if all were unsuccessful
-- if SEMAlgo only contains a single function, that function should be part of the Strategy, no need for an addditional object
+- if SEMAlgo only contains a single function, that function should be part of the Strategy, no need for an additional object
 
 ## Unbounded likelihood
 

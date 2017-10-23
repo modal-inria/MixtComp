@@ -156,8 +156,8 @@ void MixtureComposer::eStep() {
 		eStepInd(i);
 	}
 
-//	std::cout << "MixtureComposer::eStep, tik" << std::endl;
-//	std::cout << tik_ << std::endl;
+	std::cout << "MixtureComposer::eStep, tik" << std::endl;
+	std::cout << tik_ << std::endl;
 }
 
 void MixtureComposer::eStepInd(int i) {
@@ -543,6 +543,9 @@ void MixtureComposer::eStepObserved() {
   for (Index i = 0; i < nbInd_; ++i) {
     eStepObservedInd(i);
   }
+
+  std::cout << "MixtureComposer::eStepObservedInd, tik" << std::endl;
+  std::cout << tik_ << std::endl;
 }
 
 void MixtureComposer::eStepObservedInd(Index i) {
