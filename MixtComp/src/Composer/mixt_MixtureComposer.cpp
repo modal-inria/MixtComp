@@ -386,7 +386,7 @@ void MixtureComposer::initData() {
 	}
 }
 
-void MixtureComposer::initParam() {
+std::string MixtureComposer::initParam() {
   prop_ = 1. / nbClass_; // this is roughly equivalent to an estimation by maximization of likelihood, considering that proportions in all t_ik are equal
 
 	Vector<Index> initObs(nbClass_); // observations used to initialize individuals
@@ -403,11 +403,27 @@ void MixtureComposer::initParam() {
 
 	std::cout << "initObs: " << itString(initObs) << std::endl;
 
+	std::string warnLog;
+
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->initParam(initObs);
+	  std::string varLog;
+	  varLog += (*it)->initParam(initObs);
+	  if (0 < warnLog.size()) {
+	    std::stringstream sstm;
+	    sstm << "Error(s) in variable: " << (*it)->idName() << ": " << std::endl << varLog << std::endl;
+	    warnLog += sstm.str();
+	  }
 	}
 
 	writeParameters();
+
+	if (0 < warnLog.size()) {
+	  std::stringstream sstm;
+	  sstm << "Errors in MixtureComposer::initParam: " << std::endl << warnLog;
+	  warnLog = sstm.str();
+	}
+
+	return warnLog;
 }
 
 void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
@@ -523,13 +539,18 @@ void MixtureComposer::computeObservedProba() {
   }
 }
 
-void MixtureComposer::initializeLatent() {
+std::string MixtureComposer::initializeLatent() {
+  std::string warnLog;
+
   computeObservedProba(); // whether the Gibbs comes after a SEM or is used in prediction, parameters are known at that point
   setObservedProbaCache();
   eStepObserved();
   sStepNoCheck();
   initializeMarkovChain();
   samplingStepNoCheck();
+  warnLog = checkSampleCondition();
+
+  return warnLog;
 }
 
 void MixtureComposer::initializeMarkovChain() {

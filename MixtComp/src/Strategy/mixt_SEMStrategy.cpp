@@ -29,8 +29,12 @@ std::string SemStrategy::run() {
     warnLog.clear(); // only the last warn log can be sent
 
     p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
-    p_composer_->initParam(); // initialize parameters for each model, usually singling out a single observation as the center of each class
-    p_composer_->initializeLatent(); // use observed probabilitity to initialize classes
+
+    warnLog = p_composer_->initParam(); // initialize parameters for each model, usually singling out a single observation as the center of each class
+    if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+
+    warnLog = p_composer_->initializeLatent(); // use observed probabilitity to initialize classes
+    if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
     warnLog = runSEM(
         burnIn_,
@@ -46,7 +50,7 @@ std::string SemStrategy::run() {
         3); // groupMax
     if (0 < warnLog.size()) continue;
 
-    return warnLog; // at the moment, stop the loop at the first completed run, this will evolve later
+    return ""; // at the moment, stop the loop at the first completed run, this will evolve later
   }
 
   return "";

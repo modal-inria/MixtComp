@@ -402,11 +402,13 @@ class Ordinal : public IMixture {
       path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
     };
 
-    void initParam(const Vector<Index>& initObs) {
+    std::string initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nbClass_; ++k) {
         mu_(k) = augData_.data_(initObs(k)); // representative element used is the same for each variable for a given class
         pi_(k) = 1. / nbClass_;
       }
+
+      return "";
     }
 
     virtual void initializeMarkovChain() {
@@ -505,13 +507,7 @@ class Ordinal : public IMixture {
         }
       }
 
-      Real sum = freqMod.sum();
-      if (sum > epsilon) {
-        freqMod = freqMod / sum;
-      }
-      else { // this is just to avoid a crash, as empty class are forbidden and will be detected later for resampling
-        freqMod = 1. / Real(nModality_);
-      }
+      freqMod = freqMod / freqMod.sum();
 
       return multi_.sample(freqMod); // mu is sampled from this distribution
     }

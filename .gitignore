@@ -27,3 +27,4 @@ test/test
 .metadata/*
 boost_1_56_0/*
 progress
+/.metadata/

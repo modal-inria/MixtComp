@@ -41,7 +41,7 @@ extern const int maxIterationFunctional; // maximum number of evaluation of cost
 
 extern const std::string rankPosSep; // separator used in Rank positions
 
-extern const Real poissonInitMinAlpha; // minimal value that can be used for alpha estimation in a Poisson distribution
+// extern const Real poissonInitMinAlpha; // minimal value that can be used for alpha estimation in a Poisson distribution
 
 extern const Index nSemTry; // number of SEM trials
 

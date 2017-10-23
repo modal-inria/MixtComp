@@ -122,11 +122,18 @@ int Poisson_k::checkSampleCondition(std::string* warnLog) const {
   return 1;
 }
 
-void Poisson_k::initParam(const Vector<Index>& initObs) {
+std::string Poisson_k::initParam(const Vector<Index>& initObs) {
   std::cout << "Poisson_k::initParam" << std::endl;
   for (Index k = 0; k < nbClass_; ++k) {
-    param_(k) = std::max(poissonInitMinAlpha, Real((*p_data_)(initObs(k))));
+    param_(k) = Real((*p_data_)(initObs(k)));
   }
+
+  std::stringstream sstm;
+  if (param_.minCoeff() == 0.0) {
+    sstm << "Too many observations equal to 0. The Poisson distribution will only model a variable that has enough values not equal to 0." << std::endl;
+  }
+
+  return sstm.str();
 };
 
 } // namespace mixt

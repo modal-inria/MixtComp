@@ -269,8 +269,6 @@ void RankIndividual::sampleY(const RankVal& mu, Real pi) {
   logProba(0) = lnCompletedProbability(mu, pi, A, G); // proba of current y
 
   for (int p = 0; p < nbPos_ - 1; ++p) {
-    bool acceptPermutation = false; // is it necessary to revert x_ ?
-
     permutationY(p);
     logProba(1) = lnCompletedProbability(mu, pi, A, G);
 

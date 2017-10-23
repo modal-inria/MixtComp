@@ -184,11 +184,13 @@ class RankMixture : public IMixture
     /**
      * mu is initialized through direct sampling in each class
      */
-    void initParam(const Vector<Index>& initObs) {
+    std::string initParam(const Vector<Index>& initObs) {
       for (Index k = 0; k < nbClass_; ++k) {
         mu_(k) = data_(initObs(k)).x();
         pi_(k) = 0.5 * (1. + 1. / nbClass_);
       }
+
+      return "";
     }
 
     virtual void initializeMarkovChain() {

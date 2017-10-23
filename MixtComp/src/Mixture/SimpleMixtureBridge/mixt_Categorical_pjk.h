@@ -45,7 +45,7 @@ class Categorical_pjk {
 
     bool hasModalities() const;
 
-    void initParam(const Vector<Index>& initObs);
+    std::string initParam(const Vector<Index>& initObs);
 
   private:
     std::string idName_;

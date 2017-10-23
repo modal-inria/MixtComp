@@ -181,7 +181,7 @@ bool Categorical_pjk::hasModalities() const {
   return true;
 }
 
-void Categorical_pjk::initParam(const Vector<Index>& initObs) {
+std::string Categorical_pjk::initParam(const Vector<Index>& initObs) {
   std::cout << "Categorical_pjk::initParam" << std::endl;
 
   Real constantTerm = 1. / nbClass_; // this could also be based on the number of observations, to get a Bayesian justification
@@ -198,6 +198,8 @@ void Categorical_pjk::initParam(const Vector<Index>& initObs) {
       param_(m + baseClassIndex) = currProp(m);
     }
   }
+
+  return "";
 }
 
 } // namespace mixt

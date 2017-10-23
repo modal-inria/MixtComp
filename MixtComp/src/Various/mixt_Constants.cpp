@@ -42,7 +42,7 @@ const int maxIterationFunctional = 10000;
 
 const std::string rankPosSep = ",";
 
-const Real poissonInitMinAlpha = 0.5;
+// const Real poissonInitMinAlpha = 0.5;
 
 const Index nSemTry = 10;
 

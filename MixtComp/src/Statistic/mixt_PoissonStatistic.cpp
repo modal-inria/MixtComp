@@ -35,21 +35,13 @@ Real PoissonStatistic::lpdf(int x,
     return Real(x) * std::log(lambda) - lambda - logFac(x);
 }
 
-int PoissonStatistic::sample(Real lambda)
-{
-  if (lambda > epsilon)
-  {
-    boost::poisson_distribution<> pois(lambda);
-    boost::variate_generator<boost::mt19937&,
-                             boost::poisson_distribution<> > generator(rng_,
-                                                                       pois);
-    int x = generator();
-    return x;
-  }
-  else
-  {
-    return 0;
-  }
+int PoissonStatistic::sample(Real lambda) {
+  boost::poisson_distribution<> pois(lambda);
+  boost::variate_generator<boost::mt19937&,
+                           boost::poisson_distribution<> > generator(rng_,
+                                                                     pois);
+  int x = generator();
+  return x;
 }
 
 int PoissonStatistic::nonZeroSample(Real lambda)

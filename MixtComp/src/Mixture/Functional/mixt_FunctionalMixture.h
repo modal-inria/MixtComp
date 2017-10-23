@@ -334,11 +334,15 @@ class FunctionalMixture : public IMixture {
     /**
      * @param initObs element k contains the index of
      */
-    void initParam(const Vector<Index>& initObs) {
+    std::string initParam(const Vector<Index>& initObs) {
+      std::string warnLog;
+
       for (Index k = 0; k < nClass_; ++k) {
-        class_[k].initParamOneInd(initObs(k));
+        warnLog += class_[k].initParamOneInd(initObs(k));
 //        class_[k].initParamAllInd(initObs(k)); // old initializer, where all individuals of the class are used to initialize the parameters
       }
+
+      return warnLog;
     };
 
     /**

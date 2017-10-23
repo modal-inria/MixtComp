@@ -296,7 +296,7 @@ class MixtureComposer {
     /**
      * Sample an individual per class, to perform the initialization of each model.
      */
-    void initParam();
+    std::string initParam();
 
     /**
      * Compute the "raw" class ID matrix E_kj
@@ -334,7 +334,7 @@ class MixtureComposer {
     /**
      * Every steps to be completed to initialize latent variables once parameters are known
      * and uniform initialization of data has been performed. */
-    void initializeLatent();
+    std::string initializeLatent();
 
     /**
      * Similar to eStep, except that observed probability are used. Useful during initialization

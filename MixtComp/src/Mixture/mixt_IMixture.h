@@ -141,7 +141,7 @@ class IMixture {
      * Useful for some parameters that use a Markov Chain which needs to be initialized.
      * Should be modified to take a vector of indices, one per class, indicating which individual to use
      * */
-    virtual void initParam(const Vector<Index>& initObs) = 0;
+    virtual std::string initParam(const Vector<Index>& initObs) = 0;
 
     /**
      * Compute and cache the empirical observed distribution for the models that need it.
