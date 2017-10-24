@@ -116,7 +116,7 @@ void FunctionalClass::initParamAllInd(Index obs) {
   mStep(); // note that obs is not used
 }
 
-std::string FunctionalClass::initParamOneInd(Index obs) {
+bool FunctionalClass::initParamOneInd(Index obs) {
   std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
   initInd.insert(obs);
 
@@ -133,12 +133,7 @@ std::string FunctionalClass::initParamOneInd(Index obs) {
   mStepAlpha(initInd); // partial initialization using only the individual that represent this class
   mStepBetaSd(initInd);
 
-  std::stringstream sstm;
-  if (beta_.minCoeff() == 0.0) { // at least one subregression has no variance
-    sstm << "At least one subregression has no variance, meaning that the data is not varied enough. This can occur when time series are constant or constant by intervals." << std::endl;
-  }
-
-  return sstm.str();
+  return (beta_.minCoeff() == 0.0) ? false : true;
 }
 
 void FunctionalClass::setParamStorage() {

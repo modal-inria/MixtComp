@@ -335,14 +335,18 @@ class FunctionalMixture : public IMixture {
      * @param initObs element k contains the index of
      */
     std::string initParam(const Vector<Index>& initObs) {
-      std::string warnLog;
 
+
+      bool hasVariance = false;
       for (Index k = 0; k < nClass_; ++k) {
-        warnLog += class_[k].initParamOneInd(initObs(k));
+        if (class_[k].initParamOneInd(initObs(k))) hasVariance = true;
 //        class_[k].initParamAllInd(initObs(k)); // old initializer, where all individuals of the class are used to initialize the parameters
       }
 
-      return warnLog;
+      std::stringstream sstm;
+      if(!hasVariance) sstm << "Not enough variability in the data. This happens too many observation are constant or piecewise constant." << std::endl;
+
+      return sstm.str();;
     };
 
     /**

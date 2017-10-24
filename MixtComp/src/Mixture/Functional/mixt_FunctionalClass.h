@@ -44,7 +44,7 @@ class FunctionalClass {
 
     void initParamAllInd(Index obs);
 
-    std::string initParamOneInd(Index obs);
+    bool initParamOneInd(Index obs);
 
     void sampleParam();
 
