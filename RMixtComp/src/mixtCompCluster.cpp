@@ -109,6 +109,15 @@ Rcpp::List mixtCompCluster(
   warnLog += semStrategy.run();
   semStratTimer.top("SEM strategy run complete");
 
+  if (0 < warnLog.size()) {
+    mcMixture["warnLog"] = warnLog;
+
+    return Rcpp::List::create(
+        Rcpp::Named("strategy") = mcStrategy,
+        Rcpp::Named("mixture") = mcMixture,
+        Rcpp::Named("variable") = mcVariable);
+  }
+
   // Run the Gibbs strategy
 
   mixt::GibbsStrategy gibbsStrategy(&composer, strategyParam, 2);
