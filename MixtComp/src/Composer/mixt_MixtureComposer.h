@@ -124,13 +124,13 @@ class MixtureComposer {
      * log is required.
      * @param[out] warnLog provides information on what condition has not been met
      * */
-    std::string checkSampleConditionLog() const;
+    std::string checkSampleCondition() const;
 
     /**
      * Check if there are enough individual in each class. Called by checkSampleCondition.
      * @param[out] warnLog provides information on what condition has not been met
      * */
-    int checkNbIndPerClass(std::string* warnLog = NULL) const;
+    std::string checkNbIndPerClass() const;
 
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.

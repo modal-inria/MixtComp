@@ -77,21 +77,16 @@ class FunctionalMixture : public IMixture {
     };
 
     std::string checkSampleCondition() const {
-    	for (Index k = 0; k < nClass_; ++k) {
-    		std::string tempLog;
-    		bool sampleOK = class_[k].checkSampleCondition();
-
-    		if (sampleOK) {
-    			std::stringstream sstm;
-    			sstm << "Error in variable: " << idName_ << " with Functional model, in at least one class. This can occur if " << std::endl;
-    			sstm << tempLog << std::endl;
-    			*warnLog += sstm.str();
-
-    			return 0;
+    		std::string classLog;
+    		for (Index k = 0; k < nClass_; ++k) {
+    			classLog += "Class: " + std::to_string(k) + ": " + class_[k].checkSampleCondition();
     		}
-    	}
 
-    	return "";
+    		if (0 < classLog.size()) {
+    			return "Error(s) in variable: " + idName_ + " with Functional model. The errors in the various classes are: " + eol + classLog;
+    		}
+
+    		return "";
     }
 
     void mStep() {

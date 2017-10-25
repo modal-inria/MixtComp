@@ -14,6 +14,8 @@
 
 namespace mixt {
 
+extern const std::string eol;
+
 extern const int nbSamplingAttempts; // number of sampling attempts, when not enough individuals are sampled
 
 extern const Real epsilon; // very small value of real to check for near zero values

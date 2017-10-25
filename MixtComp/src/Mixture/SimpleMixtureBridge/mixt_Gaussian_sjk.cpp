@@ -100,41 +100,28 @@ void Gaussian_sjk::writeParameters() const {
   std::cout << sstm.str() << std::endl;
 }
 
-int Gaussian_sjk::checkSampleCondition(std::string* warnLog) const {
-  for (int k = 0; k < nbClass_; ++k) {
-    if (classInd_(k).size() < 2) {
-      if (warnLog != NULL) {
-        std::stringstream sstm;
-        sstm << "Gaussian variables must have at least two individuals per class. This is not the case for at least one class. "
-             << "You can check whether you have enough individuals regarding the number of classes." << std::endl;
-        *warnLog += sstm.str();
-      }
-      return 0;
-    }
+std::string Gaussian_sjk::checkSampleCondition() const {
+	for (Index k = 0; k < nbClass_; ++k) {
+		if (classInd_(k).size() < 2) {
+			return "Gaussian variables must have at least two individuals per class. This is not the case for at least one class. You can check whether you have enough individuals regarding the number of classes." + eol;
+		}
 
-    std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
-    Real previousElemClass = (*p_data_)(*it);
-    ++it;
-    for (; it != itE; ++it) {
+		std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+		Real previousElemClass = (*p_data_)(*it);
+		++it;
+		for (; it != itE; ++it) {
+			if ((*p_data_)(*it) != previousElemClass) { // stop checking soon as there are two different values in the current class
+				goto endItK; // goto used as a kind of super break statement, see http://stackoverflow.com/questions/1257744/can-i-use-break-to-exit-multiple-nested-for-loops
+			}
+		}
 
-      if ((*p_data_)(*it) != previousElemClass) { // stop checking soon as there are two different values in the current class
-        goto endItK; // feared and loathed goto is used here as a kind of super break statement, see http://stackoverflow.com/questions/1257744/can-i-use-break-to-exit-multiple-nested-for-loops
-      }
-    }
+		return "Gaussian variables must have a minimum amount of variability in each class. It seems that at least one class only contains the value: "
+				+  std::to_string(previousElemClass) + ". If some values are repeated often in this variable, maybe a Categorical or a Poisson variable might describe it better." + eol;
 
-    if (warnLog != NULL) {
-      std::stringstream sstm;
-      sstm << "Gaussian variables must have a minimum amount of variability in each class. It seems that at least one class only contains the value: "
-           <<  previousElemClass << ". If some values are repeated often in this variable, maybe a Categorical or a Poisson variable might describe it better." << std::endl;
-      *warnLog += sstm.str();
-    }
+		endItK:;
+	}
 
-    return 0; // since goto was not activated, this means that at least one class is filled with identical values
-
-    endItK:;
-  }
-
-  return 1;
+	return "";
 }
 
 std::string Gaussian_sjk::initParam(const Vector<Index>& initObs) {

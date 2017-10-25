@@ -441,8 +441,8 @@ class Ordinal : public IMixture {
       return at;
     }
 
-    Index checkSampleCondition(std::string* warnLog = NULL) const {
-      for (int k = 0; k < nbClass_; ++k) {
+    std::string checkSampleCondition() const {
+      for (Index k = 0; k < nbClass_; ++k) {
         bool allZ0 = true; // are all z = 0 in the current class ?
         bool allZ1 = true; // are all z = 1 in the current class ?
         for (
@@ -473,19 +473,12 @@ class Ordinal : public IMixture {
           }
         } // end of the loop on all observations
 
-        if (warnLog != NULL) { // this portion of code is reached if and only if all paths returned allZ0_ or if all paths returned allZ1_
-          std::stringstream sstm;
-          sstm << "Error in variable: " << idName_ << " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 or 1 in at least one class. "
-               << "If the number of modalities is quite low, try using a categorical model instead." << std::endl;
-          *warnLog += sstm.str();
-        }
-
-        return 0;
+        return "Error in variable: " + idName_ + " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 or 1 in at least one class. If the number of modalities is quite low, try using a categorical model instead." + eol;
 
         itKEnd:; // reached only if and only if all values of z have been observed in the current class
       }
 
-      return 1;
+      return "";
     }
 
     void mStep() {

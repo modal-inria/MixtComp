@@ -96,30 +96,22 @@ void Poisson_k::writeParameters() const {
   std::cout << sstm.str() << std::endl;
 }
 
-int Poisson_k::checkSampleCondition(std::string* warnLog) const {
-  for (int k = 0; k < nbClass_; ++k) {
-    for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
-         it != itE;
-         ++it) {
-      if ((*p_data_)(*it) > 0) {
-        goto endItK;
-      }
-    }
+std::string Poisson_k::checkSampleCondition() const {
+	for (Index k = 0; k < nbClass_; ++k) {
+		for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+				it != itE;
+				++it) {
+			if ((*p_data_)(*it) > 0) {
+				goto endItK;
+			}
+		}
 
-    if (warnLog != NULL) {
-      std::stringstream sstm;
-      sstm << "Poisson variables must have at least one non-zero individual per class. At least one class "
-           << "only contains the 0 modality. If your data has too many individuals "
-           << "with a value of 0, a Poisson model can not describe it." << std::endl;
-      *warnLog += sstm.str();
-    }
+		return "Poisson variables must have at least one non-zero individual per class. Class: " + std::to_string(k) + " only contains the 0 modality. If your data has too many individuals with a value of 0, a Poisson model can not describe it." + eol;
 
-    return 0;
+		endItK:;
+	}
 
-    endItK:;
-  }
-
-  return 1;
+	return "";
 }
 
 std::string Poisson_k::initParam(const Vector<Index>& initObs) {

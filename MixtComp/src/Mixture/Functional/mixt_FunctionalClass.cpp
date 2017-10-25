@@ -155,32 +155,20 @@ void FunctionalClass::sampleParam(Index iteration,
   sdParamStat_   .sampleParam(iteration, iterationMax);
 }
 
-Index FunctionalClass::checkSampleCondition(std::string* warnLog) const {
-  if (warnLog == NULL) {
-    if (!(checkNbDifferentValue() && checkNonNullSigma())) {
-      return 0;
-    }
-  }
-  else {
-    std::stringstream sstm;
-    bool value = checkNbDifferentValue();
-    bool sd = checkNonNullSigma();
+std::string FunctionalClass::checkSampleCondition() const {
+	std::string warnLog;
+	bool value = checkNbDifferentValue();
+	bool sd = checkNonNullSigma();
 
-    if (!value) {
-      sstm << "Not enough different values for t. Is your data sampled at enough different timesteps ?" << std::endl;
-    }
+	if (!value) {
+		warnLog += "Not enough different values for t. Is your data sampled at enough different timesteps ?" + eol;
+	}
 
-    if (!sd) {
-      sstm << "Not enough different values for x. Is there enough variability in the output data ?" << std::endl;
-    }
+	if (!sd) {
+		warnLog += "Not enough different values for x. Is there enough variability in the output data ?" + eol;
+	}
 
-    if (!(value && sd)) {
-      *warnLog += sstm.str();
-      return 0;
-    }
-  }
-
-  return 1;
+	return warnLog;
 }
 
 bool FunctionalClass::checkNbDifferentValue() const {

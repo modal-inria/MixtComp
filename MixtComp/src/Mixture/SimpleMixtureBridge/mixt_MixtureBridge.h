@@ -231,21 +231,9 @@ class MixtureBridge : public IMixture {
       return warnLog;
     };
 
-    Index checkSampleCondition(std::string* warnLog = NULL) const {
-      if (warnLog == NULL) {
-        return mixture_.checkSampleCondition();
-      }
-      else {
-        std::string warn;
-        Real proba = mixture_.checkSampleCondition(&warn);
-        if (warn.size() > 0) {
-          std::stringstream sstm;
-          sstm << "checkSampleCondition, error in variable " << idName_ << std::endl
-               << warn;
-          *warnLog += sstm.str();
-        }
-        return proba;
-      }
+    std::string checkSampleCondition() const {
+    		std::string warnLog = mixture_.checkSampleCondition();
+    		return "checkSampleCondition, error in variable " + idName_ + eol + warnLog;
     }
 
     /**

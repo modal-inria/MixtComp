@@ -85,9 +85,9 @@ std::string SemStrategy::runSEM(
     p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
     p_composer_->samplingStepNoCheck();
 
-    int sampleCond = p_composer_->checkSampleCondition(&warnLog); // since we are not in initialization, no need for log
-    if (sampleCond == 0) {
-      return "warnLog";
+    std::string warnLog = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
+    if (0 < warnLog.size()) {
+      return warnLog;
     }
 
     p_composer_->mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously

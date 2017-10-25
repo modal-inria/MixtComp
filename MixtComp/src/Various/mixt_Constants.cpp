@@ -15,6 +15,8 @@
 
 namespace mixt {
 
+const std::string eol = "\n";
+
 const int nbSamplingAttempts = 10000;
 
 const Real epsilon = 1.e-8;

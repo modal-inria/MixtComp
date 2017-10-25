@@ -45,7 +45,7 @@ class Gaussian_sjk {
 
     void writeParameters() const;
 
-    int checkSampleCondition(std::string* warnLog = NULL) const;
+    std::string checkSampleCondition() const;
 
     std::string initParam(const Vector<Index>& initObs);
   private:

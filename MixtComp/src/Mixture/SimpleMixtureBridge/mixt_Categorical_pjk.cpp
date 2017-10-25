@@ -142,38 +142,32 @@ void Categorical_pjk::writeParameters() const {
   std::cout << sstm.str() << std::endl;
 }
 
-int Categorical_pjk::checkSampleCondition(std::string* warnLog) const {
-  for (Index k = 0; k < nbClass_; ++k) {
-    Vector<bool> modalityPresent(nModality_, false);
-    for (std::set<Index>::const_iterator it  = classInd_(k).begin(),
-                                         itE = classInd_(k).end();
-         it != itE;
-         ++it) {
-      modalityPresent((*p_data_)(*it)) = true;
-      if (modalityPresent == true) { // stop all checks on current class
-        goto endItK;
-      }
-    }
+std::string Categorical_pjk::checkSampleCondition() const {
+	for (Index k = 0; k < nbClass_; ++k) {
+		std::string warnLog;
+		Vector<bool> modalityPresent(nModality_, false);
+		for (std::set<Index>::const_iterator it  = classInd_(k).begin(),
+				itE = classInd_(k).end();
+				it != itE;
+				++it) {
+			modalityPresent((*p_data_)(*it)) = true;
+			if (modalityPresent == true) { // each modality is present i
+				goto endItK; // avoid further testing
+			}
+		}
 
-    if (warnLog != NULL) {
-      for (Index p = 0; p < nModality_; ++p) {
-        if (modalityPresent(p) == false) {
-          std::stringstream sstm;
-          sstm << "Categorical variables must have one individual with each modality present in each class. "
-               << "Modality: " << p + minModality << " is absent from class: " << k << " "
-               << "You can check whether you have enough individuals regarding the number of classes "
-               << "and whether all of your modalities are encoded using contiguous integers starting at " << minModality << "." << std::endl;
-          *warnLog += sstm.str();
-        }
-      }
-    }
+		for (Index p = 0; p < nModality_; ++p) {
+			if (modalityPresent(p) == false) {
+				warnLog += "Categorical variables must have one individual with each modality present in each class. Modality: " + std::to_string(p + minModality) + " is absent from class: " + std::to_string(k)
+					+ " You can check whether you have enough individuals regarding the number of classes and whether all of your modalities are encoded using contiguous integers starting at " + std::to_string(minModality) + "." + eol;
+			}
+		}
+		return warnLog;
 
-    return 0;
+		endItK:; // jump to avoid testing and output of log
+	}
 
-    endItK:;
-  }
-
-  return 1;
+	return "";
 }
 
 

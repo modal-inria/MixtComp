@@ -15,16 +15,14 @@
 #include "mixt_RankParser.h"
 #include "mixt_RankStat.h"
 
-namespace mixt
-{
+namespace mixt {
 /** RankMixture contains an array of RankClass. Each RankClass will have the responsibility to perform
  * estimation of parameters and computation of the probability of individuals that belong to it. */
 template<typename DataHandler,
          typename DataExtractor,
          typename ParamSetter,
          typename ParamExtractor>
-class RankMixture : public IMixture
-{
+class RankMixture : public IMixture {
   public:
     typedef std::pair<MisType, std::vector<int> > MisVal;
 
@@ -85,7 +83,7 @@ class RankMixture : public IMixture
     }
 
     /** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */
-    Index checkSampleCondition(std::string* warnLog = NULL) const {
+    std::string checkSampleCondition() const {
       for (int k = 0; k < nbClass_; ++k) {
         bool Geq0 = true; // are all comparisons incorrect ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
         bool GeqA = true; // are all comparisons correct ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
@@ -112,19 +110,12 @@ class RankMixture : public IMixture
           }
         }
 
-        if (warnLog != NULL) {
-          std::stringstream sstm;
-          sstm << "Error in variable: " << idName_ << " with Rank model. The comparisons are uniformly correct or invalid in at least one class. "
-               << "If the number of different observed values is quite low, try using a categorical model instead." << std::endl;
-          *warnLog += sstm.str();
-        }
+        return "Error in variable: " + idName_ + " with Rank model. The comparisons are uniformly correct or invalid in at least one class. If the number of different observed values is quite low, try using a categorical model instead." + eol;
 
-        return 0;
-
-        itKEnd:;
+        itKEnd:; // jumping here means that the return above is skipped, for the current class
       }
 
-      return 1;
+      return "";
     }
 
     /** One of the peculiarity of the ISR model is that the space of ranks on which to optimize the likelihood is very large. At each mStep, several candidate

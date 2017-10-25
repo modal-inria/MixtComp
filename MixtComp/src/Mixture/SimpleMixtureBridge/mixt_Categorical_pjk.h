@@ -41,7 +41,7 @@ class Categorical_pjk {
 
     void writeParameters() const;
 
-    int checkSampleCondition(std::string* warnLog = NULL) const;
+    std::string checkSampleCondition() const;
 
     bool hasModalities() const;
 
