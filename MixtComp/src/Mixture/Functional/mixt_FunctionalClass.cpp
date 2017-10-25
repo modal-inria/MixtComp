@@ -171,7 +171,7 @@ Index FunctionalClass::checkSampleCondition(std::string* warnLog) const {
     }
 
     if (!sd) {
-      sstm << "Not enough different values for t. Is your data sampled at enough different timesteps ?" << std::endl;
+      sstm << "Not enough different values for x. Is there enough variability in the output data ?" << std::endl;
     }
 
     if (!(value && sd)) {

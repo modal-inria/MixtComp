@@ -76,33 +76,22 @@ class FunctionalMixture : public IMixture {
       class_[(*p_zi_)(i)].samplingStepNoCheck(i);
     };
 
-    Index checkSampleCondition(std::string* warnLog) const {
-      if (warnLog == NULL) { // no need to generate a detailed log. This is useful during the Gibbs sampling to speed up computations.
-        for (Index k = 0; k < nClass_; ++k) {
-          Index sampleOK = class_[k].checkSampleCondition(NULL);
+    std::string checkSampleCondition() const {
+    	for (Index k = 0; k < nClass_; ++k) {
+    		std::string tempLog;
+    		bool sampleOK = class_[k].checkSampleCondition();
 
-          if (sampleOK == 0) {
-            return 0;
-          }
-        }
-      }
-      else {
-        for (Index k = 0; k < nClass_; ++k) {
-          std::string tempLog;
-          Index sampleOK = class_[k].checkSampleCondition(&tempLog);
+    		if (sampleOK) {
+    			std::stringstream sstm;
+    			sstm << "Error in variable: " << idName_ << " with Functional model, in at least one class. This can occur if " << std::endl;
+    			sstm << tempLog << std::endl;
+    			*warnLog += sstm.str();
 
-          if (sampleOK == 0) {
-              std::stringstream sstm;
-              sstm << "Error in variable: " << idName_ << " with Functional model, in at least one class." << std::endl;
-              sstm << tempLog << std::endl;
-              *warnLog += sstm.str();
+    			return 0;
+    		}
+    	}
 
-            return 0;
-          }
-        }
-      }
-
-      return 1;
+    	return "";
     }
 
     void mStep() {

@@ -53,7 +53,7 @@ class IMixture {
      * is present at least one time in each class. This is invoked to avoid degeneracy.
      * @return 0 if condition not verified and 1 if condition verified
      * */
-    virtual Index checkSampleCondition(std::string* warnLog = NULL) const = 0;
+    virtual std::string checkSampleCondition() const = 0;
 
     /**
      * Maximum-Likelihood estimation of the mixture parameters

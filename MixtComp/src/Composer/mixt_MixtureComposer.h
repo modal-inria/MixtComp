@@ -124,7 +124,7 @@ class MixtureComposer {
      * log is required.
      * @param[out] warnLog provides information on what condition has not been met
      * */
-    int checkSampleCondition(std::string* warnLog = NULL) const;
+    std::string checkSampleConditionLog() const;
 
     /**
      * Check if there are enough individual in each class. Called by checkSampleCondition.

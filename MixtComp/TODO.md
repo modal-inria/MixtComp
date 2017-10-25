@@ -1,3 +1,11 @@
+# Réunion 24 Octobre
+
+- Degeneracy condition that stops the algorithm
+    - Empty class
+    - Normal law
+    - Function distribution
+- IdName should be included by IMixture, not by the MixtureComposer
+
 # Current
 
 ## SemStrategy

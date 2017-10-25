@@ -110,6 +110,7 @@ Rcpp::List mixtCompCluster(
   semStratTimer.top("SEM strategy run complete");
 
   if (0 < warnLog.size()) {
+	std::cout << warnLog << std::endl;
     mcMixture["warnLog"] = warnLog;
 
     return Rcpp::List::create(

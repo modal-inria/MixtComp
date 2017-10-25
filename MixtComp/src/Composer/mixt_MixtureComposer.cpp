@@ -208,55 +208,29 @@ void MixtureComposer::samplingStepNoCheck(int i) {
 	}
 }
 
-int MixtureComposer::checkSampleCondition(std::string* warnLog) const {
-	if (warnLog == NULL) { // if no description of the error is expected, to speed the treatment
-		if (checkNbIndPerClass() == 0) {
-		  std::cout << "!!! Empty class" << std::endl;
-			return 0;
-		}
-		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-			if ((*it)->checkSampleCondition() == 0) {
-			  std::cout << "!!! check sample fail in model" << std::endl;
-				return 0; // no need for log generation -> faster evaluation of checkSampleCondition
-			}
-		}
-	}
-	else { // if error description is expected
-		int probaCondition = 1; // proba of condition on data given the completed data
-		std::string indLog;
-		probaCondition *= checkNbIndPerClass(&indLog);
-		*warnLog += indLog;
-		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-			std::string mixtLog;
-			int currProba = (*it)->checkSampleCondition(&mixtLog); // the global warnLog is not passed directly to the mixture, to avoid accidental wiping
-			probaCondition *= currProba;
-			*warnLog += mixtLog;
-		}
-
-		return probaCondition;
+std::string MixtureComposer::checkSampleCondition() const {
+	std::string warnLog = checkNbIndPerClass();
+	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+		warnLog += (*it)->checkSampleCondition(); // the global warnLog is not passed directly to the mixture, to avoid accidental wiping
 	}
 
-	return 1;
+	return warnLog;
 }
 
-int MixtureComposer::checkNbIndPerClass(std::string* warnLog) const {
+std::string MixtureComposer::checkNbIndPerClass() const {
 	for (Index k = 0; k < nbClass_; ++k) {
-		if (zClassInd_.classInd()(k).size() > 0) {
+		if (0 < zClassInd_.classInd()(k).size()) {
 			continue;
 		}
 		else {
-			if (warnLog != NULL) {
-				std::stringstream sstm;
-				sstm << "MixtureComposer::checkNbIndPerClass, at least one class is empty. Did you provide more individuals "
-						<< "that the number of classes ?" << std::endl;
-				*warnLog += sstm.str();
-			}
-
-			return 0;
+			std::stringstream sstm;
+			sstm << "MixtureComposer::checkNbIndPerClass: at least one class is empty. Maybe you provided more individuals "
+				<< "that the number of classes ?" << std::endl;
+			return sstm.str();
 		}
 	}
 
-	return 1;
+	return "";
 }
 
 void MixtureComposer::storeSEMRun(int iteration, int iterationMax) {
@@ -408,7 +382,7 @@ std::string MixtureComposer::initParam() {
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 	  std::string varLog;
 	  varLog += (*it)->initParam(initObs);
-	  if (0 < warnLog.size()) {
+	  if (0 < varLog.size()) {
 	    std::stringstream sstm;
 	    sstm << "Error(s) in variable: " << (*it)->idName() << ": " << std::endl << varLog << std::endl;
 	    warnLog += sstm.str();
