@@ -79,7 +79,10 @@ class FunctionalMixture : public IMixture {
     std::string checkSampleCondition() const {
     		std::string classLog;
     		for (Index k = 0; k < nClass_; ++k) {
-    			classLog += "Class: " + std::to_string(k) + ": " + class_[k].checkSampleCondition();
+    			std::string currClassLog = class_[k].checkSampleCondition();
+    			if (0 < currClassLog.size()) {
+    				classLog += "Class: " + std::to_string(k) + ": " + currClassLog;
+    			}
     		}
 
     		if (0 < classLog.size()) {
@@ -319,18 +322,15 @@ class FunctionalMixture : public IMixture {
      * @param initObs element k contains the index of
      */
     std::string initParam(const Vector<Index>& initObs) {
+    		for (Index k = 0; k < nClass_; ++k) {
+    			bool hasVariance = class_[k].initParamOneInd(initObs(k));
+    			std::cout << "hasVariance: " << hasVariance << std::endl;
+    			if (!hasVariance) {
+    				return "Not enough variability in the data. This happens if too many observed functions are constant or piecewise constant." + eol;
+    			}
+    		}
 
-
-      bool hasVariance = false;
-      for (Index k = 0; k < nClass_; ++k) {
-        if (class_[k].initParamOneInd(initObs(k))) hasVariance = true;
-//        class_[k].initParamAllInd(initObs(k)); // old initializer, where all individuals of the class are used to initialize the parameters
-      }
-
-      std::stringstream sstm;
-      if(!hasVariance) sstm << "Not enough variability in the data. This happens too many observation are constant or piecewise constant." << std::endl;
-
-      return sstm.str();;
+    		return "";
     };
 
     /**

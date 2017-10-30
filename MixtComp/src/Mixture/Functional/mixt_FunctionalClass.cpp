@@ -133,7 +133,7 @@ bool FunctionalClass::initParamOneInd(Index obs) {
   mStepAlpha(initInd); // partial initialization using only the individual that represent this class
   mStepBetaSd(initInd);
 
-  return (beta_.minCoeff() == 0.0) ? false : true;
+  return (0.0 < sd_.minCoeff()) ? true : false;
 }
 
 void FunctionalClass::setParamStorage() {

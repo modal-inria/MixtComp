@@ -233,7 +233,10 @@ class MixtureBridge : public IMixture {
 
     std::string checkSampleCondition() const {
     		std::string warnLog = mixture_.checkSampleCondition();
-    		return "checkSampleCondition, error in variable " + idName_ + eol + warnLog;
+    		if (0 < warnLog.size()) {
+    			return "checkSampleCondition, error in variable " + idName_ + eol + warnLog;
+    		}
+    		return "";
     }
 
     /**

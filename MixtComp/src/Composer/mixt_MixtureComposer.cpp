@@ -156,8 +156,8 @@ void MixtureComposer::eStep() {
 		eStepInd(i);
 	}
 
-	std::cout << "MixtureComposer::eStep, tik" << std::endl;
-	std::cout << tik_ << std::endl;
+//	std::cout << "MixtureComposer::eStep, tik" << std::endl;
+//	std::cout << tik_ << std::endl;
 }
 
 void MixtureComposer::eStepInd(int i) {
@@ -211,7 +211,7 @@ void MixtureComposer::samplingStepNoCheck(int i) {
 std::string MixtureComposer::checkSampleCondition() const {
 	std::string warnLog = checkNbIndPerClass();
 	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		warnLog += (*it)->checkSampleCondition(); // the global warnLog is not passed directly to the mixture, to avoid accidental wiping
+		warnLog += (*it)->checkSampleCondition();
 	}
 
 	return warnLog;
@@ -375,10 +375,7 @@ std::string MixtureComposer::initParam() {
 	  initObs(k) = *it;
 	}
 
-	std::cout << "initObs: " << itString(initObs) << std::endl;
-
 	std::string warnLog;
-
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 	  std::string varLog;
 	  varLog += (*it)->initParam(initObs);
@@ -388,8 +385,6 @@ std::string MixtureComposer::initParam() {
 	    warnLog += sstm.str();
 	  }
 	}
-
-	writeParameters();
 
 	if (0 < warnLog.size()) {
 	  std::stringstream sstm;
@@ -539,8 +534,8 @@ void MixtureComposer::eStepObserved() {
     eStepObservedInd(i);
   }
 
-  std::cout << "MixtureComposer::eStepObservedInd, tik" << std::endl;
-  std::cout << tik_ << std::endl;
+//  std::cout << "MixtureComposer::eStepObservedInd, tik" << std::endl;
+//  std::cout << tik_ << std::endl;
 }
 
 void MixtureComposer::eStepObservedInd(Index i) {

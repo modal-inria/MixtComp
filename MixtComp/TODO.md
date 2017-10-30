@@ -6,6 +6,19 @@
     - Function distribution
 - IdName should be included by IMixture, not by the MixtureComposer
 
+-- MixtComp :
+Arrêt de la chaîne quand elle arrive sur le bord de l'espace des paramètres sauf pour :
+    - catégorie de proba nulle
+    - ordinale de proba nulle
+Dans les cas d'arrêts de la chaîne, avoir un message d'erreur informatif.
+En prédiction, il faut gérer un individu inclassable.
+
+-- Mode sans échec :
+Il va modifier les données en accord avec l'utilisateur. Il reprend les logs de MixtComp et pose des questions à l'utilisateur pour créer un jeu de données qui va mieux pour MixtComp. L'utilisateur devra par exemple rentrer un niveau d'imprécision qu'il tolère sur la mesure de données. Si on ne peut pas prédire un individu, on propose de mettre des manquants aux variables qui gènent pour cet individu.
+
+données gaussiennes type "spike and slab" : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
+fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
+
 # Current
 
 ## SemStrategy
