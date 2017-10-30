@@ -61,6 +61,21 @@ void lnProbaGivenClass(
   }
 }
 
+void completedProbaLog(
+		mixt::MixtureComposer& mc,
+		Rcpp::NumericVector& completedProbabilityLogBurnIn,
+		Rcpp::NumericVector& completedProbabilityLogRun) {
+	completedProbabilityLogBurnIn = Rcpp::NumericVector(mc.completedProbabilityLogBurnIn().size());
+	completedProbabilityLogRun = Rcpp::NumericVector(mc.completedProbabilityLogRun().size());
+
+	for (Index i = 0; i < mc.completedProbabilityLogBurnIn().size(); ++i) {
+		completedProbabilityLogBurnIn(i) = mc.completedProbabilityLogBurnIn()(i);
+	}
+	for (Index i = 0; i < mc.completedProbabilityLogRun().size(); ++i) {
+		completedProbabilityLogRun(i) = mc.completedProbabilityLogRun()(i);
+	}
+}
+
 void observedTik(
     mixt::MixtureComposer& mc,
     Rcpp::NumericVector& oikR) {

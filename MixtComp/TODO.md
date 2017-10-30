@@ -1,24 +1,5 @@
 # Réunion 24 Octobre
 
-- Degeneracy condition that stops the algorithm
-    - Empty class
-    - Normal law
-    - Function distribution
-- IdName should be included by IMixture, not by the MixtureComposer
-
--- MixtComp :
-Arrêt de la chaîne quand elle arrive sur le bord de l'espace des paramètres sauf pour :
-    - catégorie de proba nulle
-    - ordinale de proba nulle
-Dans les cas d'arrêts de la chaîne, avoir un message d'erreur informatif.
-En prédiction, il faut gérer un individu inclassable.
-
--- Mode sans échec :
-Il va modifier les données en accord avec l'utilisateur. Il reprend les logs de MixtComp et pose des questions à l'utilisateur pour créer un jeu de données qui va mieux pour MixtComp. L'utilisateur devra par exemple rentrer un niveau d'imprécision qu'il tolère sur la mesure de données. Si on ne peut pas prédire un individu, on propose de mettre des manquants aux variables qui gènent pour cet individu.
-
-données gaussiennes type "spike and slab" : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
-fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
-
 - Export completed likelihood at each timestep in burnin and run to get indication of convergence
 
 # Current
@@ -30,13 +11,6 @@ fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur e
 	- the string might contain the result of the last run, if all were unsuccessful
 - if SEMAlgo only contains a single function, that function should be part of the Strategy, no need for an additional object
 
-## Unbounded likelihood
-
-- even if unbounded likelihood is the only reason to abort a run, the emptying of a class should remain a reason to abort a run. It impacts every variable.
-- keep checkSampleCondition, except that in the implementation, only return false for unbounded likelihood
-	- the test must occur after samplingStep, to check that the completion is valid
-- if parameters on the limit of domain, for example proportion = 0, what bound should be applied ?
-
 ## IMixture
 
 - keep checkSampleCondition, except that in the implementation, only return false for unbounded likelihood
@@ -45,7 +19,7 @@ fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur e
 - add pushParametersToCache and pullParametersFromCache methods
 - composer.p_zi() and composer.classInd() are there in all mixture, why not include them in IMixture ?
 - in IMixture::computeObservedProba, the number of samplings used are determined by constants, but they should increase when the complexity of the model increases
-
+ 
 ## Multi run
 
 - only end the computation if the likelihood is unbound.
@@ -160,6 +134,12 @@ fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur e
 - apparently there are sometimes errors in the unit tests. Check those as they could explain other errors.
 
 # Long Term
+
+données gaussiennes type "spike and slab" : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
+fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
+
+-- Mode sans échec :
+Il va modifier les données en accord avec l'utilisateur. Il reprend les logs de MixtComp et pose des questions à l'utilisateur pour créer un jeu de données qui va mieux pour MixtComp. L'utilisateur devra par exemple rentrer un niveau d'imprécision qu'il tolère sur la mesure de données. Si on ne peut pas prédire un individu, on propose de mettre des manquants aux variables qui gènent pour cet individu.
 
 - launch N identical runs, compare the log observed likelihood and keep the better one
 	- how to keep all the parameters and of the last best run ?

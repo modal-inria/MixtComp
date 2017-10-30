@@ -22,6 +22,11 @@ void observedTik(mixt::MixtureComposer& mc, Rcpp::NumericVector& oikR);
 
 void lnProbaGivenClass(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& pGCR);
 
+void completedProbaLog(
+		mixt::MixtureComposer& mc,
+		Rcpp::NumericVector& completedProbabilityLogBurnIn,
+		Rcpp::NumericVector& completedProbabilityLogRun);
+
 void matDelta(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& delta);
 
 void paramRToCpp(const Rcpp::List& RParam, StrategyParam& CppParam);

@@ -169,6 +169,14 @@ Rcpp::List mixtCompCluster(
   mixt::lnProbaGivenClass(composer, pGC);
   mcMixture["lnProbaGivenClass"] = pGC;
 
+  Rcpp::NumericVector completedProbabilityLogBurnIn, completedProbabilityLogRun;
+  mixt::completedProbaLog(
+		  composer,
+		  completedProbabilityLogBurnIn,
+		  completedProbabilityLogRun);
+  mcMixture["completedProbabilityLogBurnIn"] = completedProbabilityLogBurnIn;
+  mcMixture["completedProbabilityLogRun"] = completedProbabilityLogRun;
+
   Rcpp::NumericMatrix delta;
   mixt::matDelta(composer, delta);
   mcMixture["delta"] = delta;

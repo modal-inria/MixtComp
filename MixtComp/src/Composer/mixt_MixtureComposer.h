@@ -75,7 +75,7 @@ class MixtureComposer {
      *  as virtual in case we impose fixed proportions in derived model. Only called
      *  by mStep
      **/
-    void pStep();
+    void mStepPi();
 
     /**
      * Simulate zi accordingly to tik and replace tik by zik by calling cStep().
@@ -85,8 +85,8 @@ class MixtureComposer {
     void sStepNoCheck(int i);
 
     /** compute Tik */
-    void eStep();
-    void eStepInd(int i);
+    void eStepCompleted();
+    void eStepCompletedInd(int i);
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
@@ -135,8 +135,10 @@ class MixtureComposer {
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
-    void storeSEMRun(int iteration,
-                     int iterationMax);
+    void storeSEMRun(
+    		int iteration,
+        int iterationMax,
+		RunType runType);
 
     /** @brief This step can be used to signal to the mixtures that they
      * must store data. This is usually called after the long algo, to
@@ -187,10 +189,11 @@ class MixtureComposer {
       std::string warnLog;
 
       std::string dummy;
-      paramSetter.getParam("z_class",
-                           "pi",
-                           prop_,
-                           dummy); // no need for paramStr, as the parameter space is already described by nClass
+      paramSetter.getParam(
+    		  "z_class",
+			  "pi",
+			  prop_,
+			  dummy); // no need for paramStr, as the parameter space is already described by nClass
 
       return warnLog;
     }
@@ -345,6 +348,9 @@ class MixtureComposer {
 
     /** Call initializeMarkovChain on all variables. */
     void initializeMarkovChain();
+
+    const Vector<Real>& completedProbabilityLogBurnIn() {return completedProbabilityLogBurnIn_;}
+    const Vector<Real>& completedProbabilityLogRun() {return completedProbabilityLogRun_;}
   private:
     void printClassInd() const;
 
@@ -392,6 +398,15 @@ class MixtureComposer {
      * pattern.
      * */
     Vector<Matrix<Real> > observedProbabilityCache_;
+
+    /** Cached completed log probability for each individual, can be used to export the evolution of the completed likelihood of the data, iteration after iteration. */
+    Vector<Real> completedProbabilityCache_;
+
+    /** Cached completed log probability for each individual, can be used to export the evolution of the completed likelihood of the data, iteration after iteration. */
+    Vector<Real> completedProbabilityLogBurnIn_;
+
+    /** Cached completed log probability for each individual, can be used to export the evolution of the completed likelihood of the data, iteration after iteration. */
+    Vector<Real> completedProbabilityLogRun_;
 };
 
 } /* namespace mixt */

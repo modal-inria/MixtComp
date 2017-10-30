@@ -37,7 +37,8 @@ MixtureComposer::MixtureComposer(
 		        prop_,
 		        confidenceLevel),
 		        dataStat_(zClassInd_),
-		        confidenceLevel_(confidenceLevel) {
+		        confidenceLevel_(confidenceLevel),
+			completedProbabilityCache_(nbInd_) {
 	std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nbInd << ", nbClass: " << nbClass << std::endl;
 	zClassInd_.setIndClass(nbInd, nbClass);
 
@@ -63,13 +64,13 @@ Real MixtureComposer::lnObservedProbability(int i, int k) const {
 }
 
 void MixtureComposer::printTik() const {
-  std::cout << "Sampled t_ik" << std::endl;
-  std::cout << tik_ << std::endl;
+	std::cout << "Sampled t_ik" << std::endl;
+	std::cout << tik_ << std::endl;
 }
 
 void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
-  oZMode.resize(nbInd_);
-  Matrix<Real> observedTikMat(nbInd_, nbClass_);
+	oZMode.resize(nbInd_);
+	Matrix<Real> observedTikMat(nbInd_, nbClass_);
 
 	Matrix<Real> lnComp(nbInd_, nbClass_);
 
@@ -79,7 +80,7 @@ void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
 		}
 	}
 
-  Index mode;
+	Index mode;
 	for (Index i = 0; i < nbInd_; ++i) { // sum is inside a log, hence the numerous steps for the computation
 		RowVector<Real> dummy;
 		observedTikMat.row(i).logToMulti(lnComp.row(i));
@@ -88,8 +89,8 @@ void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
 		oZMode(i) = mode;
 	}
 
-//  std::cout << "Computed t_ik" << std::endl;
-//  std::cout << observedTik << std::endl;
+	//  std::cout << "Computed t_ik" << std::endl;
+	//  std::cout << observedTik << std::endl;
 }
 
 Real MixtureComposer::lnObservedLikelihood() {
@@ -133,7 +134,7 @@ Real MixtureComposer::lnCompletedProbability(int i, int k) const {
 }
 
 void MixtureComposer::mStep() {
-	pStep(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
+	mStepPi(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
 	for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
 		(*it)->mStep(); // call mStep on each variable
 	}
@@ -150,26 +151,26 @@ void MixtureComposer::sStepNoCheck(int i) {
 	sampler_.sStepNoCheck(i);
 }
 
-void MixtureComposer::eStep() {
+void MixtureComposer::eStepCompleted() {
 #pragma omp parallel for
 	for (Index i = 0; i < nbInd_; ++i) {
-		eStepInd(i);
+		eStepCompletedInd(i);
 	}
 
 //	std::cout << "MixtureComposer::eStep, tik" << std::endl;
 //	std::cout << tik_ << std::endl;
 }
 
-void MixtureComposer::eStepInd(int i) {
+void MixtureComposer::eStepCompletedInd(int i) {
 	RowVector<Real> lnComp(nbClass_);
 	for (Index k = 0; k < nbClass_; k++) {
 		lnComp(k) = lnCompletedProbability(i, k);
 	}
 
-	tik_.row(i).logToMulti(lnComp);
+	completedProbabilityCache_(i) = tik_.row(i).logToMulti(lnComp);
 }
 
-void MixtureComposer::pStep() {
+void MixtureComposer::mStepPi() {
 	prop_ = 0.;
 	for (Index i = 0; i < zClassInd_.zi().data_.rows(); ++i) {
 		prop_(zClassInd_.zi().data_(i)) += 1.;
@@ -233,17 +234,34 @@ std::string MixtureComposer::checkNbIndPerClass() const {
 	return "";
 }
 
-void MixtureComposer::storeSEMRun(int iteration, int iterationMax) {
+void MixtureComposer::storeSEMRun(
+		int iteration,
+		int iterationMax,
+		RunType runType) {
+	if (runType == burnIn_) {
+		if (iteration == 0) {
+			completedProbabilityLogBurnIn_.resize(iterationMax + 1);
+		}
+		completedProbabilityLogBurnIn_(iteration) = completedProbabilityCache_.sum();
+	}
+
+	if (runType == run_) {
+		if (iteration == 0) {
+			completedProbabilityLogRun_.resize(iterationMax + 1);
+		}
+		completedProbabilityLogRun_(iteration) = completedProbabilityCache_.sum();
+	}
+
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		(*it)->storeSEMRun(iteration, iterationMax);
 	}
 
 	paramStat_.sampleParam(iteration, iterationMax);
 
-  if (iteration == iterationMax){
-    paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
-    paramStat_.setExpectationParam(); // replace pi by the median values
-  }
+	if (iteration == iterationMax){
+		paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
+		paramStat_.setExpectationParam(); // replace pi by the median values
+	}
 }
 
 void MixtureComposer::setObservedProbaCache() {
@@ -264,11 +282,11 @@ void MixtureComposer::setObservedProbaCache() {
 }
 
 void MixtureComposer::storeGibbsRun(
-    int ind,
+		int ind,
 		int iteration,
 		int iterationMax) {
 	dataStat_.sampleVals(
-	    ind,
+			ind,
 			iteration,
 			iterationMax);
 
@@ -278,7 +296,7 @@ void MixtureComposer::storeGibbsRun(
 
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		(*it)->storeGibbsRun(
-		    ind,
+				ind,
 				iteration,
 				iterationMax);
 	}
@@ -312,7 +330,7 @@ void MixtureComposer::gibbsSampling(
 				nbInd_ - 1);
 
 		for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
-			eStepInd(i);
+			eStepCompletedInd(i);
 
 			sStepNoCheck(i);
 			samplingStepNoCheck(i);

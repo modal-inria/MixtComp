@@ -18,42 +18,42 @@ namespace mixt {
 
 /** default constructor */
 SemStrategy::SemStrategy(
-    MixtureComposer* p_composer,
-    const StrategyParam& param) :
-        p_composer_(p_composer),
-        param_(param) {}
+		MixtureComposer* p_composer,
+		const StrategyParam& param) :
+        		p_composer_(p_composer),
+			param_(param) {}
 
 std::string SemStrategy::run() {
-  std::string warnLog;
-  for (Index n = 0; n < nSemTry; ++n) {
-    warnLog.clear(); // only the last warn log can be sent
+	std::string warnLog;
+	for (Index n = 0; n < nSemTry; ++n) {
+		warnLog.clear(); // only the last warn log can be sent
 
-    p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+		p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 
-    warnLog = p_composer_->initParam(); // initialize parameters for each model, usually singling out an observation as the center of each class
-    if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+		warnLog = p_composer_->initParam(); // initialize parameters for each model, usually singling out an observation as the center of each class
+		if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
-    warnLog = p_composer_->initializeLatent(); // use observed probabilitity to initialize classes
-    if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+		warnLog = p_composer_->initializeLatent(); // use observed probabilitity to initialize classes
+		if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
-    warnLog = runSEM(
-        burnIn_,
-        param_.nbBurnInIter_,
-        0, // group
-        3); // groupMax
-    if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+		warnLog = runSEM(
+				burnIn_,
+				param_.nbBurnInIter_,
+				0, // group
+				3); // groupMax
+		if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
-    warnLog = runSEM(
-        run_,
-        param_.nbIter_,
-        1, // group
-        3); // groupMax
-    if (0 < warnLog.size()) continue;
+		warnLog = runSEM(
+				run_,
+				param_.nbIter_,
+				1, // group
+				3); // groupMax
+		if (0 < warnLog.size()) continue;
 
-    return ""; // at the moment, stop the loop at the first completed run, this will evolve later
-  }
+		return ""; // at the moment, stop the loop at the first completed run, this will evolve later
+	}
 
-  return warnLog;
+	return warnLog;
 }
 
 std::string SemStrategy::runSEM(
@@ -80,7 +80,7 @@ std::string SemStrategy::runSEM(
 				iter,
 				nIter - 1);
 
-		p_composer_->eStep();
+		p_composer_->eStepCompleted();
 
 		p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
 		p_composer_->samplingStepNoCheck();
@@ -93,9 +93,10 @@ std::string SemStrategy::runSEM(
 
 		p_composer_->mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously
 
-		if (runType == run_) {
-			p_composer_->storeSEMRun(iter, nIter - 1);
-		}
+		p_composer_->storeSEMRun(
+				iter,
+				nIter - 1,
+				runType);
 	}
 
 	return "";

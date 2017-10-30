@@ -122,24 +122,25 @@ std::string Categorical_pjk::setData(
 		warnLog += sstm.str();
 	}
 
-	if (mode == learning_) { // Check that all modalities have been observed at least once
-		Vector<bool> modalityPresent(nModality_, false);
-		for (Index i = 0; i < p_data_->size(); ++i) {
-			modalityPresent((*p_data_)(i)) = true;
-			if (modalityPresent == true) { // each modality is present i
-				break; // avoid further testing
-			}
-		}
-
-		if (modalityPresent != true) { // if at least one modality has been observed
-			for (Index p = 0; p < nModality_; ++p) {
-				if (modalityPresent(p) == false) {
-					warnLog += "Categorical variables must have one individual with each modality present in the sample. Modality: " + std::to_string(p + minModality) + " is not observed in your data set. You should check that all of your observed modalities are encoded using contiguous integers starting at "
-							+ std::to_string(minModality) + "." + eol;
-				}
-			}
-		}
-	}
+//  Code to check that all modalities have been observed at least once, which put a constraint on the data set, but allows for prediction in every cases
+//	if (mode == learning_) {
+//		Vector<bool> modalityPresent(nModality_, false);
+//		for (Index i = 0; i < p_data_->size(); ++i) {
+//			modalityPresent((*p_data_)(i)) = true;
+//			if (modalityPresent == true) { // each modality is present i
+//				break; // avoid further testing
+//			}
+//		}
+//
+//		if (modalityPresent != true) { // if at least one modality has been observed
+//			for (Index p = 0; p < nModality_; ++p) {
+//				if (modalityPresent(p) == false) {
+//					warnLog += "Categorical variables must have one individual with each modality present in the sample. Modality: " + std::to_string(p + minModality) + " is not observed in your data set. You should check that all of your observed modalities are encoded using contiguous integers starting at "
+//							+ std::to_string(minModality) + "." + eol;
+//				}
+//			}
+//		}
+//	}
 
 	// Once everything has been set, adjust the range of data to align with the parameter space
 	augData.dataRange_.min_ = 0;

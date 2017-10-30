@@ -61,4 +61,6 @@ testOrdinal <- function() {
   
   confMatSampled <- table(dat$z, resLearn$variable$data$z_class$completed)
   print(confMatSampled)
+  
+  # return(resLearn)
 }
