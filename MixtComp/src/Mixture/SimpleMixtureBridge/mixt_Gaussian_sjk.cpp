@@ -80,8 +80,10 @@ std::vector<std::string> Gaussian_sjk::paramNames() const {
   return names;
 }
 
-std::string Gaussian_sjk::setData(const std::string& paramStr,
-                                  AugmentedData<Vector<Real> >& augData) {
+std::string Gaussian_sjk::setData(
+	const std::string& paramStr,
+	AugmentedData<Vector<Real> >& augData,
+	RunMode mode) {
   std::string warnLog;
 
   p_data_ = &(augData.data_);

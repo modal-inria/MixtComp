@@ -21,6 +21,9 @@ Rcpp::List mixtCompPredict(
     Rcpp::List mcStrategy,
     int nbClass,
     double confidenceLevel) {
+
+	std::cout << "MixtComp, predict, version: " << mixt::version << std::endl;
+
   mixt::Timer totalTimer("Total Run");
 
   std::string warnLog; // string to log warnings

@@ -19,6 +19,8 @@ Il va modifier les données en accord avec l'utilisateur. Il reprend les logs de
 données gaussiennes type "spike and slab" : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
 fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
 
+- Export completed likelihood at each timestep in burnin and run to get indication of convergence
+
 # Current
 
 ## SemStrategy

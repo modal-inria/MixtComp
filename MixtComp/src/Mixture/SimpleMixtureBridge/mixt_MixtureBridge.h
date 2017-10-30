@@ -34,107 +34,110 @@ template<int Id,
          typename ParamExtractor>
 
 class MixtureBridge : public IMixture {
-  public:
-    // data type
-    typedef typename BridgeTraits<Id>::Data Data;
-    // augmented data type
-    typedef typename BridgeTraits<Id>::AugData AugData;
-    // statistics on DataStat computer
-    typedef typename BridgeTraits<Id>::DataStat DataStat;
-    // type of the data
-    typedef typename BridgeTraits<Id>::Type Type;
-    // type of Mixture
-    typedef typename BridgeTraits<Id>::Mixture Mixture;
-    // type of Sampler
-    typedef typename BridgeTraits<Id>::Sampler Sampler;
-    // type of Likelihood
-    typedef typename BridgeTraits<Id>::Likelihood Likelihood;
+	public:
+	// data type
+	typedef typename BridgeTraits<Id>::Data Data;
+	// augmented data type
+	typedef typename BridgeTraits<Id>::AugData AugData;
+	// statistics on DataStat computer
+	typedef typename BridgeTraits<Id>::DataStat DataStat;
+	// type of the data
+	typedef typename BridgeTraits<Id>::Type Type;
+	// type of Mixture
+	typedef typename BridgeTraits<Id>::Mixture Mixture;
+	// type of Sampler
+	typedef typename BridgeTraits<Id>::Sampler Sampler;
+	// type of Likelihood
+	typedef typename BridgeTraits<Id>::Likelihood Likelihood;
 
-    /** constructor.
-     *  @param idName id name of the mixture
-     *  @param nbCluster number of cluster
-     **/
-    MixtureBridge(
-        Index indexMixture,
-        std::string const& idName,
-        Index nbClass,
-        const Vector<Index>* p_zi,
-        const Vector<std::set<Index> >& classInd,
-        const DataHandler* p_handler,
-        DataExtractor* p_extractor,
-        const ParamSetter* p_paramSetter,
-        ParamExtractor* p_paramExtractor,
-        Real confidenceLevel) :
-          IMixture(indexMixture, idName),
-          p_zi_(p_zi),
-          classInd_(classInd),
-          nbClass_(nbClass),
-          param_(), // must be initialized here, as will immediately be resized in mixture_ constructor
-          mixture_(
-              idName,
-              nbClass,
-              param_,
-              classInd),
-          augData_(),
-          nbInd_(0),
-          confidenceLevel_(confidenceLevel),
-          sampler_(
-              *this,
-              augData_,
-              param_,
-              nbClass),
-          dataStat_(augData_, confidenceLevel),
-          paramStat_(param_, confidenceLevel),
-          likelihood_(
-              param_,
-              augData_,
-              nbClass),
-          p_handler_(p_handler),
-          p_dataExtractor_(p_extractor),
-          p_paramSetter_(p_paramSetter),
-          p_paramExtractor_(p_paramExtractor) {}
+	/** constructor.
+	 *  @param idName id name of the mixture
+	 *  @param nbCluster number of cluster
+	 **/
+	MixtureBridge(
+			Index indexMixture,
+			std::string const& idName,
+			Index nbClass,
+			const Vector<Index>* p_zi,
+			const Vector<std::set<Index> >& classInd,
+			const DataHandler* p_handler,
+			DataExtractor* p_extractor,
+			const ParamSetter* p_paramSetter,
+			ParamExtractor* p_paramExtractor,
+			Real confidenceLevel) :
+				IMixture(indexMixture, idName),
+				p_zi_(p_zi),
+				classInd_(classInd),
+				nbClass_(nbClass),
+				param_(), // must be initialized here, as will immediately be resized in mixture_ constructor
+				mixture_(
+					idName,
+					nbClass,
+					param_,
+					classInd),
+				augData_(),
+				nbInd_(0),
+				confidenceLevel_(confidenceLevel),
+				sampler_(
+					*this,
+					augData_,
+					param_,
+					nbClass),
+				dataStat_(augData_, confidenceLevel),
+				paramStat_(param_, confidenceLevel),
+				likelihood_(
+					param_,
+					augData_,
+					nbClass),
+				p_handler_(p_handler),
+				p_dataExtractor_(p_extractor),
+				p_paramSetter_(p_paramSetter),
+				p_paramExtractor_(p_paramExtractor) {}
 
     /** This function will be defined to set the data into your data containers.
      *  To facilitate data handling, framework provide templated functions,
      *  that can be called directly to get the data.
      */
-    std::string setDataParam(RunMode mode) {
+	std::string setDataParam(RunMode mode) {
+		std::string warnLog;
+		warnLog += p_handler_->getData(
+			idName(),
+			augData_,
+			nbInd_,
+			paramStr_,
+			(mixture_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
 
-      std::string warnLog;
-      warnLog += p_handler_->getData(idName(),
-                                     augData_,
-                                     nbInd_,
-                                     paramStr_,
-                                     (mixture_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
+		if (warnLog.size() > 0) {
+			return warnLog;
+		}
+		augData_.computeRange();
+		std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
 
-      if (warnLog.size() > 0) {
-        return warnLog;
-      }
-      augData_.computeRange();
-      std::string tempLog  = augData_.checkMissingType(mixture_.acceptedType()); // check if the missing data provided are compatible with the model
+		if(tempLog.size() > 0) { // check on the missing values description
+			std::stringstream sstm;
+			sstm << "Variable " << idName() << " has a problem with the descriptions of missing values." << std::endl << tempLog;
+			warnLog += sstm.str();
+		}
 
-      if(tempLog.size() > 0) { // check on the missing values description
-        std::stringstream sstm;
-        sstm << "Variable " << idName() << " has a problem with the descriptions of missing values." << std::endl << tempLog;
-        warnLog += sstm.str();
-      }
+		if (mode == prediction_) {
+			p_paramSetter_->getParam(
+				idName_, // parameters are set using results from previous run
+				"NumericalParam",
+				param_,
+				paramStr_); // note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
 
-      if (mode == prediction_) {
-        p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
-                                 "NumericalParam",
-                                 param_,
-                                 paramStr_); // note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
+			paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
+		}
 
-        paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at mixture_.setModalities(nbParam)
-      }
+		warnLog += mixture_.setData( // checks on data bounds are made here
+			paramStr_,
+			augData_,
+			mode);
 
-      warnLog += mixture_.setData(paramStr_, // checks on data bounds are made here
-                                  augData_);
+		dataStat_.setNbIndividual(nbInd_);
 
-      dataStat_.setNbIndividual(nbInd_);
-
-      return warnLog;
-    }
+		return warnLog;
+	}
 
     virtual void samplingStepNoCheck(Index ind) {
       sampler_.samplingStepNoCheck(

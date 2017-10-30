@@ -36,8 +36,10 @@ class Categorical_pjk {
 
     std::vector<std::string> paramNames() const;
 
-    std::string setData(std::string& paramStr,
-                        AugmentedData<Vector<int> >& augData);
+    std::string setData(
+    		std::string& paramStr,
+        AugmentedData<Vector<int> >& augData,
+		RunMode mode);
 
     void writeParameters() const;
 

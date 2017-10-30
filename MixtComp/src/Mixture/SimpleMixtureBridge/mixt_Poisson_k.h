@@ -34,8 +34,10 @@ class Poisson_k {
 
     bool hasModalities() const;
 
-    std::string setData(const std::string& paramStr,
-                        AugmentedData<Vector<int> >& augData);
+    std::string setData(
+    		const std::string& paramStr,
+		AugmentedData<Vector<int> >& augData,
+		RunMode mode);
 
     void mStep();
 

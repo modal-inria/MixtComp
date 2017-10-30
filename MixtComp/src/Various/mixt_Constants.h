@@ -14,6 +14,8 @@
 
 namespace mixt {
 
+extern const std::string version; // version number, see http://semver.org/
+
 extern const std::string eol;
 
 extern const int nbSamplingAttempts; // number of sampling attempts, when not enough individuals are sampled

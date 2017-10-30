@@ -19,6 +19,9 @@ Rcpp::List mixtCompCluster(
     Rcpp::List mcStrategy,
     int nbClass,
     double confidenceLevel) {
+
+	std::cout << "MixtComp, learn, version: " << mixt::version << std::endl;
+
   mixt::Timer totalTimer("Total Run");
 
   std::string warnLog; // string to log warnings

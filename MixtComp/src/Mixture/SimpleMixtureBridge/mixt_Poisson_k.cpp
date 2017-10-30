@@ -70,8 +70,10 @@ std::vector<std::string> Poisson_k::paramNames() const {
   return names;
 }
 
-std::string Poisson_k::setData(const std::string& paramStr,
-                               AugmentedData<Vector<int> >& augData) {
+std::string Poisson_k::setData(
+	const std::string& paramStr,
+    AugmentedData<Vector<int> >& augData,
+	RunMode mode) {
   std::string warnLog;
 
   p_data_ = &(augData.data_);
