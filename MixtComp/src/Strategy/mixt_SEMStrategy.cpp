@@ -57,47 +57,48 @@ std::string SemStrategy::run() {
 }
 
 std::string SemStrategy::runSEM(
-    RunType runType,
-    Index nIter,
-    int group,
-    int groupMax) {
-  std::string warnLog;
+		RunType runType,
+		Index nIter,
+		int group,
+		int groupMax) {
+	std::string warnLog;
 
-  Timer myTimer;
+	Timer myTimer;
 
-  if (runType == burnIn_) {
-    myTimer.setName("SEM: burn-in");
-  }
-  else if (runType == run_) {
-    myTimer.setName("SEM: run");
-  }
+	if (runType == burnIn_) {
+		myTimer.setName("SEM: burn-in");
+	}
+	else if (runType == run_) {
+		myTimer.setName("SEM: run");
+	}
 
-  for (Index iter = 0; iter < nIter; ++iter) {
-    myTimer.iteration(iter, nIter - 1);
-    writeProgress(
-        group,
-        groupMax,
-        iter,
-        nIter - 1);
+	for (Index iter = 0; iter < nIter; ++iter) {
+		myTimer.iteration(iter, nIter - 1);
+		writeProgress(
+				group,
+				groupMax,
+				iter,
+				nIter - 1);
 
-    p_composer_->eStep();
+		p_composer_->eStep();
 
-    p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
-    p_composer_->samplingStepNoCheck();
+		p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
+		p_composer_->samplingStepNoCheck();
 
-    std::string warnLog = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
-    if (0 < warnLog.size()) {
-      return warnLog;
-    }
+		std::string warnLog = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
+		if (0 < warnLog.size()) {
+			std::cout << "!!! Degeneracy detected !!!" << std::endl;
+			return warnLog;
+		}
 
-    p_composer_->mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously
+		p_composer_->mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously
 
-    if (runType == run_) {
-      p_composer_->storeSEMRun(iter, nIter - 1);
-    }
-  }
+		if (runType == run_) {
+			p_composer_->storeSEMRun(iter, nIter - 1);
+		}
+	}
 
-  return "";
+	return "";
 }
 
 } // namespace mixt

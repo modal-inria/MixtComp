@@ -8,10 +8,7 @@ testOrdinal <- function() {
   var$Ordinal1 <- ordinalParamRandom("Ordinal1") # validated
   var$Ordinal2 <- ordinalParamRandom("Ordinal2")
   var$Ordinal3 <- ordinalParamRandom("Ordinal3")
-  var$Ordinal4 <- ordinalParamRandom("Ordinal4")
-  var$Ordinal5 <- ordinalParamRandom("Ordinal5")
-  var$Ordinal6 <- ordinalParamRandom("Ordinal6")
-  
+
   # var$Rank1 <- rankParam("Rank1") # validated
   
   # var$Categorical0 <- categoricalParamRandom("Categorical0")

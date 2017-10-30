@@ -324,7 +324,6 @@ class FunctionalMixture : public IMixture {
     std::string initParam(const Vector<Index>& initObs) {
     		for (Index k = 0; k < nClass_; ++k) {
     			bool hasVariance = class_[k].initParamOneInd(initObs(k));
-    			std::cout << "hasVariance: " << hasVariance << std::endl;
     			if (!hasVariance) {
     				return "Not enough variability in the data. This happens if too many observed functions are constant or piecewise constant." + eol;
     			}
