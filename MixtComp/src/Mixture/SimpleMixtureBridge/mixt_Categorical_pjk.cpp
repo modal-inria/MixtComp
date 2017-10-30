@@ -162,6 +162,8 @@ void Categorical_pjk::writeParameters() const {
 }
 
 std::string Categorical_pjk::checkSampleCondition() const {
+	if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
+
 	for (Index k = 0; k < nbClass_; ++k) {
 		std::string warnLog;
 		Vector<bool> modalityPresent(nModality_, false);

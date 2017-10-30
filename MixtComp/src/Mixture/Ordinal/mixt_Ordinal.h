@@ -442,43 +442,45 @@ class Ordinal : public IMixture {
     }
 
     std::string checkSampleCondition() const {
-      for (Index k = 0; k < nbClass_; ++k) {
-        bool allZ0 = true; // are all z = 0 in the current class ?
-        bool allZ1 = true; // are all z = 1 in the current class ?
-        for (
-            std::set<Index>::const_iterator it  = classInd_(k).begin(),
-                                            itE = classInd_(k).end();
-            it != itE;
-            ++it) {
-          switch(path_(*it).allZ()) { // what can be deduced from the current path ?
-            case allZ0_: {
-              allZ1 = false;
-            }
-            break;
+    		if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
-            case allZ1_: {
-              allZ0 = false;
-            }
-            break;
+    		for (Index k = 0; k < nbClass_; ++k) {
+    			bool allZ0 = true; // are all z = 0 in the current class ?
+    			bool allZ1 = true; // are all z = 1 in the current class ?
+    			for (
+    					std::set<Index>::const_iterator it  = classInd_(k).begin(),
+						itE = classInd_(k).end();
+    					it != itE;
+    					++it) {
+    				switch(path_(*it).allZ()) { // what can be deduced from the current path ?
+    				case allZ0_: {
+    					allZ1 = false;
+    				}
+    				break;
 
-            case mixZ0Z1_: { // this ensure an immediate end of testing
-              allZ0 = false;
-              allZ1 = false;
-            }
-            break;
-          }
+    				case allZ1_: {
+    					allZ0 = false;
+    				}
+    				break;
 
-          if (allZ0 == false && allZ1 == false) { // there is enough variability on z in this class to ensure that pi will be estimated inside the open support
-            goto itKEnd; // no need to further examine the content of individual paths
-          }
-        } // end of the loop on all observations
+    				case mixZ0Z1_: { // this ensure an immediate end of testing
+    					allZ0 = false;
+    					allZ1 = false;
+    				}
+    				break;
+    				}
 
-        return "Error in variable: " + idName_ + " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 or 1 in at least one class. If the number of modalities is quite low, try using a categorical model instead." + eol;
+    				if (allZ0 == false && allZ1 == false) { // there is enough variability on z in this class to ensure that pi will be estimated inside the open support
+    					goto itKEnd; // no need to further examine the content of individual paths
+    				}
+    			} // end of the loop on all observations
 
-        itKEnd:; // reached only if and only if all values of z have been observed in the current class
-      }
+    			return "Error in variable: " + idName_ + " with Ordinal model. A latent variable (the accuracy z) is uniformly 0 or 1 in at least one class. If the number of modalities is quite low, try using a categorical model instead." + eol;
 
-      return "";
+    			itKEnd:; // reached only if and only if all values of z have been observed in the current class
+    		}
+
+    		return "";
     }
 
     void mStep() {

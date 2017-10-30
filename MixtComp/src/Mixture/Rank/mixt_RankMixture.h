@@ -84,38 +84,40 @@ class RankMixture : public IMixture {
 
     /** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */
     std::string checkSampleCondition() const {
-      for (int k = 0; k < nbClass_; ++k) {
-        bool Geq0 = true; // are all comparisons incorrect ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
-        bool GeqA = true; // are all comparisons correct ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
+    		if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
-        for (std::set<Index>::const_iterator it  = classInd_(k).begin(),
-                                             itE = classInd_(k).end();
-             it != itE;
-             ++it) {
-          int A, G;
-          data_(*it).AG(mu_(k), A, G);
-          if (A == 0) {
-            GeqA = false;
-          }
-          else if (A == G) {
-            Geq0 = false;
-          }
-          else {
-            GeqA = false;
-            Geq0 = false;
-          }
+    		for (int k = 0; k < nbClass_; ++k) {
+    			bool Geq0 = true; // are all comparisons incorrect ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
+    			bool GeqA = true; // are all comparisons correct ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
 
-          if (Geq0 == false && GeqA == false) { // there is enough variability on the validities of comparisons in this class to ensure that pi will be estimated inside the open support
-            goto itKEnd;
-          }
-        }
+    			for (std::set<Index>::const_iterator it  = classInd_(k).begin(),
+    					itE = classInd_(k).end();
+    					it != itE;
+    					++it) {
+    				int A, G;
+    				data_(*it).AG(mu_(k), A, G);
+    				if (A == 0) {
+    					GeqA = false;
+    				}
+    				else if (A == G) {
+    					Geq0 = false;
+    				}
+    				else {
+    					GeqA = false;
+    					Geq0 = false;
+    				}
 
-        return "Error in variable: " + idName_ + " with Rank model. The comparisons are uniformly correct or invalid in at least one class. If the number of different observed values is quite low, try using a categorical model instead." + eol;
+    				if (Geq0 == false && GeqA == false) { // there is enough variability on the validities of comparisons in this class to ensure that pi will be estimated inside the open support
+    					goto itKEnd;
+    				}
+    			}
 
-        itKEnd:; // jumping here means that the return above is skipped, for the current class
-      }
+    			return "Error in variable: " + idName_ + " with Rank model. The comparisons are uniformly correct or invalid in at least one class. If the number of different observed values is quite low, try using a categorical model instead." + eol;
 
-      return "";
+    			itKEnd:; // jumping here means that the return above is skipped, for the current class
+    		}
+
+    		return "";
     }
 
     /** One of the peculiarity of the ISR model is that the space of ranks on which to optimize the likelihood is very large. At each mStep, several candidate

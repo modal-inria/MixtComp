@@ -99,6 +99,8 @@ void Poisson_k::writeParameters() const {
 }
 
 std::string Poisson_k::checkSampleCondition() const {
+	if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
+
 	for (Index k = 0; k < nbClass_; ++k) {
 		for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
 				it != itE;
