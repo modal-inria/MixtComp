@@ -11,10 +11,13 @@
 #include <fstream>
 
 int main(int argc, char *argv[]) {
-  RInside R(argc, argv); // create an embedded R instance
+	RInside R(argc, argv); // create an embedded R instance
 
-  R.parseEvalQ("setwd(\"/media/sf_Documents/160803 - debug MixtComp/171004 - Etienne Goffinet\")");
-  R.parseEvalQ("source(\"run.r\")");
+	//  R.parseEvalQ("setwd(\"/media/sf_Documents/160803 - debug MixtComp/171004 - Etienne Goffinet\")");
+	//  R.parseEvalQ("source(\"run.r\")");
 
-  exit(0);
+	R.parseEvalQ("library(RMixtComp)");
+	R.parseEvalQ("testCategorical()");
+
+	exit(0);
 }

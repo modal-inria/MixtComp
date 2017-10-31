@@ -58,7 +58,7 @@ testCategorical <- function() {
     nbClass = 2,
     confidenceLevel = 0.95)
   
-  print(res$mixture$warnLog)
+  # print(resLearn$mixture$warnLog)
   
   confMatSampled <- table(dat$z, resLearn$variable$data$z_class$completed)
   print(confMatSampled)

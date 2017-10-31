@@ -91,8 +91,6 @@
 
 - Functional model seem to crash when edge authorized option is activated for the estimators
     - They do not support biased estimators and since the Gibbs is deactivated, null variance or similar errors could happen
-- parameterEdgeAuthorized limits the estimation by excluding the border of the parameter space
-	- if a class is empty, its proportion will be estimated at 1e-8. BUT the estimation of the classes will not work as there are no observations. Crashes are to be expected.
 
 # Architecture
 
