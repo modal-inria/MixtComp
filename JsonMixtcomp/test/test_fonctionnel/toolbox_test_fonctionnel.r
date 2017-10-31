@@ -44,7 +44,7 @@ test_mixtcomp <- function(data_training,data_test,descriptor){
   
   system(paste("/home/etienne/mixtcomp/JsonMixtcomp/bin/JsonMixtComp", path_mixtcomp_predict_input,path_mixtcomp_predict_output,sep=" "))
   result <- fromJSON(path_mixtcomp_predict_output)
-  
+  return(result)
 }
 
 test_mixtcomp_by_row <- function(data_training,data_test,descriptor){
