@@ -68,7 +68,6 @@ void CategoricalSampler::samplingStepNoCheck(int i,
         }
         modalities = modalities / modalities.sum();
         sampleVal = multi_.sample(modalities);
-
       }
       break;
 

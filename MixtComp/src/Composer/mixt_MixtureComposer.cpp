@@ -337,9 +337,9 @@ void MixtureComposer::gibbsSampling(
 
 			if (sample == sampleData_) {
 				storeGibbsRun(
-				    i,
-						iterGibbs,
-						nbGibbsIter - 1);
+					i,
+					iterGibbs,
+					nbGibbsIter - 1);
 			}
 		}
 	}
@@ -557,17 +557,19 @@ void MixtureComposer::eStepObserved() {
 }
 
 void MixtureComposer::eStepObservedInd(Index i) {
-  RowVector<Real> lnComp(nbClass_);
-  for (Index k = 0; k < nbClass_; k++) {
-    lnComp(k) = lnObservedProbability(i, k); // main difference with eStepObservedInd
-  }
+	RowVector<Real> lnComp(nbClass_);
+	for (Index k = 0; k < nbClass_; k++) {
+		lnComp(k) = lnObservedProbability(i, k); // main difference with eStepObservedInd
+	}
 
-  if (minInf < lnComp.minCoeff()) {
-    tik_.row(i).logToMulti(lnComp);
-  }
-  else {
-    tik_.row(i) = prop_;
-  }
+	if (minInf < lnComp.maxCoeff()) {
+		tik_.row(i).logToMulti(lnComp);
+	}
+	else {
+		std::cout << "MixtureComposer::eStepObservedInd, i: " << i << ", " << itString(lnComp) << std::endl;
+		std::cout << "!!! Individual i: " << i << " has a null observed probability !!!" << std::endl;
+		tik_.row(i) = prop_;
+	}
 }
 
 } /* namespace mixt */
