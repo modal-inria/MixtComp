@@ -367,7 +367,7 @@ std::vector<std::string> MixtureComposer::mixtureName() const {
 }
 
 void MixtureComposer::initData() {
-  tik_ = 1. / nbClass_;
+	tik_ = 1. / nbClass_;
 	sStepNoCheck(); // since tik are uniform, this sStep corresponds to an uniform initialization of z
 
 	for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {

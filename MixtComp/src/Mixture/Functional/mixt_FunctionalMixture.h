@@ -73,29 +73,29 @@ class FunctionalMixture : public IMixture {
       p_paramExtractor_(NULL) {};
 
     void samplingStepNoCheck(Index i) {
-      class_[(*p_zi_)(i)].samplingStepNoCheck(i);
+    	class_[(*p_zi_)(i)].samplingStepNoCheck(i);
     };
 
     std::string checkSampleCondition() const {
-    		std::string classLog;
-    		for (Index k = 0; k < nClass_; ++k) {
-    			std::string currClassLog = class_[k].checkSampleCondition();
-    			if (0 < currClassLog.size()) {
-    				classLog += "Class: " + std::to_string(k) + ": " + currClassLog;
-    			}
+    	std::string classLog;
+    	for (Index k = 0; k < nClass_; ++k) {
+    		std::string currClassLog = class_[k].checkSampleCondition();
+    		if (0 < currClassLog.size()) {
+    			classLog += "Class: " + std::to_string(k) + ": " + currClassLog;
     		}
+    	}
 
-    		if (0 < classLog.size()) {
-    			return "Error(s) in variable: " + idName_ + " with Functional model. The errors in the various classes are: " + eol + classLog;
-    		}
+    	if (0 < classLog.size()) {
+    		return "Error(s) in variable: " + idName_ + " with Functional model. The errors in the various classes are: " + eol + classLog;
+    	}
 
-    		return "";
+    	return "";
     }
 
     void mStep() {
-      for (Index k = 0; k < nClass_; ++k) {
-        class_[k].mStep();
-      }
+    	for (Index k = 0; k < nClass_; ++k) {
+    		class_[k].mStep();
+    	}
     };
 
     void storeSEMRun(Index iteration,
@@ -315,7 +315,7 @@ class FunctionalMixture : public IMixture {
     };
 
     void initData(Index i) {
-      vecInd_(i).removeMissingQuantileMixing(quantile_); // since initParam performs an mStep on a single individual, removeMissing must be called from initParam
+    	vecInd_(i).removeMissingQuantileMixing(quantile_); // since initParam performs an mStep on a single individual, removeMissing must be called from initParam
     };
 
     /**
