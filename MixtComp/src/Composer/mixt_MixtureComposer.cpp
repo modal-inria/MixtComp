@@ -140,14 +140,14 @@ void MixtureComposer::mStep() {
 	}
 }
 
-void MixtureComposer::sStepNoCheck() {
+void MixtureComposer::sampleZ() {
 #pragma omp parallel for
 	for (Index i = 0; i < nbInd_; ++i) {
-		sStepNoCheck(i);
+		sampleZ(i);
 	}
 }
 
-void MixtureComposer::sStepNoCheck(int i) {
+void MixtureComposer::sampleZ(int i) {
 	sampler_.sStepNoCheck(i);
 }
 
@@ -196,16 +196,16 @@ int MixtureComposer::nbFreeParameters() const {
 	return sum;
 }
 
-void MixtureComposer::samplingStepNoCheck() {
+void MixtureComposer::sampleUnobservedAndLatent() {
 #pragma omp parallel for
 	for (Index i = 0; i < nbInd_; ++i) {
-		samplingStepNoCheck(i);
+		sampleUnobservedAndLatent(i);
 	}
 }
 
-void MixtureComposer::samplingStepNoCheck(int i) {
+void MixtureComposer::sampleUnobservedAndLatent(int i) {
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->samplingStepNoCheck(i);
+		(*it)->sampleUnobservedAndLatent(i);
 	}
 }
 
@@ -332,8 +332,8 @@ void MixtureComposer::gibbsSampling(
 		for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
 			eStepCompletedInd(i);
 
-			sStepNoCheck(i);
-			samplingStepNoCheck(i);
+			sampleZ(i);
+			sampleUnobservedAndLatent(i);
 
 			if (sample == sampleData_) {
 				storeGibbsRun(
@@ -368,7 +368,7 @@ std::vector<std::string> MixtureComposer::mixtureName() const {
 
 void MixtureComposer::initData() {
 	tik_ = 1. / nbClass_;
-	sStepNoCheck(); // since tik are uniform, this sStep corresponds to an uniform initialization of z
+	sampleZ(); // since tik are uniform, this sStep corresponds to an uniform initialization of z
 
 	for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 #pragma omp parallel for
@@ -532,9 +532,9 @@ std::string MixtureComposer::initializeLatent() {
   computeObservedProba(); // whether the Gibbs comes after a SEM or is used in prediction, parameters are known at that point
   setObservedProbaCache();
   eStepObserved();
-  sStepNoCheck();
+  sampleZ();
   initializeMarkovChain();
-  samplingStepNoCheck();
+  sampleUnobservedAndLatent();
   warnLog = checkSampleCondition();
 
   return warnLog;

@@ -1,6 +1,6 @@
 # Réunion 24 Octobre
 
-- Export completed likelihood at each timestep in burnin and run to get indication of convergence
+- Export completed likelihood at each timestep in burn-in and run to get indication of convergence
 
 # Current
 
@@ -80,7 +80,7 @@
 
 # Build
 
-- Nlopt should be built the same way boost regex is built. This would ensure a proper integration in the build system, and a faster build.
+- Nlopt should be built the same way boost regex is built, that is, not using the makefile provided by nlopt. This would ensure a proper integration in the build system, and a faster build.
 - There are a lot of complicated dependencies, which make mixtcomp hard to build on a system without root access
     - would it be wise to split MixtComp in a base package which only requires Rccp, and a companion package which requires plotly and others ?
 - CC and CFLAGS variables should be exported, so that alternative C compilers could be provided the same way C++ compilers are. This could be useful for packages like nlopt
@@ -91,6 +91,7 @@
 
 - Functional model seem to crash when edge authorized option is activated for the estimators
     - They do not support biased estimators and since the Gibbs is deactivated, null variance or similar errors could happen
+- Crashes observed when running testOrdinal() in RMixtComp
 
 # Architecture
 

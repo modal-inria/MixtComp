@@ -82,8 +82,8 @@ std::string SemStrategy::runSEM(
 
 		p_composer_->eStepCompleted();
 
-		p_composer_->sStepNoCheck(); // no checkSampleCondition performed, to increase speed of sampling
-		p_composer_->samplingStepNoCheck();
+		p_composer_->sampleZ(); // no checkSampleCondition performed, to increase speed of sampling
+		p_composer_->sampleUnobservedAndLatent();
 
 		std::string warnLog = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
 		if (0 < warnLog.size()) {

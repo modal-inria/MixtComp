@@ -46,7 +46,7 @@ class IMixture {
      *
      * @param ind index of the individual which data must be sampled
      * */
-    virtual void samplingStepNoCheck(Index ind) = 0;
+    virtual void sampleUnobservedAndLatent(Index ind) = 0;
 
     /**
      * Check if conditions on data are verified. For example, for a categorical model one must check that each modality
@@ -69,9 +69,7 @@ class IMixture {
      * @param iterationMax maximum number of iterations
      * period.
      * */
-    virtual void storeSEMRun(
-        Index iteration,
-        Index iterationMax) = 0;
+    virtual void storeSEMRun(Index iteration, Index iterationMax) = 0;
 
     /**
      * Storage of mixture parameters during SEM run phase
@@ -92,9 +90,7 @@ class IMixture {
      * @param k class
      * @return value of the completed likelihood in log scale
      * */
-    virtual Real lnCompletedProbability(
-        Index i,
-        Index k) = 0;
+    virtual Real lnCompletedProbability(Index i, Index k) = 0;
 
     /**
      * Computation of observed likelihood
@@ -103,9 +99,7 @@ class IMixture {
      * @param k class
      * @return value of the observed likelihood in log scale
      * */
-    virtual Real lnObservedProbability(
-        Index ind,
-        Index k) = 0;
+    virtual Real lnObservedProbability(Index ind, Index k) = 0;
 
     /**
      * Computation of the number of free parameters.
@@ -151,6 +145,9 @@ class IMixture {
 
     /** Initialize the Markov Chain for models that contains one for their latent variables. */
     virtual void initializeMarkovChain() = 0;
+
+    /** Check if the real parameters are within the interior of their domain. */
+    virtual std::vector<bool> parametersInInterior() = 0;
   protected:
     /** Index of the mixture, useful to write the results at the correct place in th output. */
     Index indexMixture_;
