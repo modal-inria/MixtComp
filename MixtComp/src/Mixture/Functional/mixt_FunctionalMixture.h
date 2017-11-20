@@ -29,19 +29,19 @@ public:
 			DataExtractor* p_extractor,
 			const ParamSetter* p_paramSetter,
 			ParamExtractor* p_paramExtractor,
-			Real confidenceLevel) :
-				IMixture(indexMixture, idName),
-				nInd_(0),
-				nClass_(nClass),
-				nSub_(0),
-				nCoeff_(0),
-				confidenceLevel_(confidenceLevel),
-				p_zi_(p_zi),
-				classInd_(classInd),
-				p_handler_(p_handler),
-				p_dataExtractor_(p_extractor),
-				p_paramSetter_(p_paramSetter),
-				p_paramExtractor_(p_paramExtractor) {
+			Real confidenceLevel)
+: IMixture(indexMixture, idName),
+  nInd_(0),
+  nClass_(nClass),
+  nSub_(0),
+  nCoeff_(0),
+  confidenceLevel_(confidenceLevel),
+  p_zi_(p_zi),
+  classInd_(classInd),
+  p_handler_(p_handler),
+  p_dataExtractor_(p_extractor),
+  p_paramSetter_(p_paramSetter),
+  p_paramExtractor_(p_paramExtractor) {
 		class_.reserve(nClass_);
 		for (Index k = 0; k < nClass_; ++k) {
 			class_.emplace_back(vecInd_,
@@ -357,7 +357,16 @@ public:
 
 	virtual void initializeMarkovChain() {};
 
-	std::vector<bool> parametersInInterior() {return std::vector<bool>();}
+	std::vector<bool> parametersInInterior() {
+		std::vector<bool> res(nClass_);
+
+		for (Index k = 0; k < nClass_; ++k) {
+			res[k] = (class_[k].sd().minCoeff() == 0.0) ? false : true;
+		}
+
+		return res;
+	}
+
 private:
 	std::string checkMissingType() {
 		std::string warnLog;

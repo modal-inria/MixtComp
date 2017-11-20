@@ -250,7 +250,7 @@ public:
 
 	virtual void initializeMarkovChain() {};
 
-	std::vector<bool> parametersInInterior() {return std::vector<bool>();}
+	std::vector<bool> parametersInInterior() {return mixture_.parametersInInterior();}
 
 protected:
 	/** Pointer to the zik class label */

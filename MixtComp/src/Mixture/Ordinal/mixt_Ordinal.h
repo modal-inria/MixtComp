@@ -40,24 +40,24 @@ public:
 			DataExtractor* p_extractor,
 			const ParamSetter* p_paramSetter,
 			ParamExtractor* p_paramExtractor,
-			Real confidenceLevel) :
-				IMixture(indexMixture, idName),
-				p_zi_(p_zi),
-				classInd_(classInd),
-				nbClass_(nbClass),
-				nModality_(0),
-				augData_(),
-				nbInd_(0), // number of individuals will be set during setDataParam
-				confidenceLevel_(confidenceLevel),
-				mu_(nbClass),
-				pi_(nbClass),
-				dataStatComputer_(augData_, confidenceLevel),
-				muParamStatComputer_(mu_, confidenceLevel),
-				piParamStatComputer_(pi_, confidenceLevel),
-				p_handler_(p_handler),
-				p_dataExtractor_(p_extractor),
-				p_paramSetter_(p_paramSetter),
-				p_paramExtractor_(p_paramExtractor)
+			Real confidenceLevel)
+: IMixture(indexMixture, idName),
+  p_zi_(p_zi),
+  classInd_(classInd),
+  nClass_(nbClass),
+  nModality_(0),
+  augData_(),
+  nbInd_(0), // number of individuals will be set during setDataParam
+  confidenceLevel_(confidenceLevel),
+  mu_(nbClass),
+  pi_(nbClass),
+  dataStatComputer_(augData_, confidenceLevel),
+  muParamStatComputer_(mu_, confidenceLevel),
+  piParamStatComputer_(pi_, confidenceLevel),
+  p_handler_(p_handler),
+  p_dataExtractor_(p_extractor),
+  p_paramSetter_(p_paramSetter),
+  p_paramExtractor_(p_paramExtractor)
 {}
 
 	/* Debug constructor with direct data set */
@@ -72,7 +72,7 @@ public:
 				IMixture(0, "dummy"),
 				p_zi_(p_zi),
 				classInd_(classInd),
-				nbClass_(nbClass),
+				nClass_(nbClass),
 				nModality_(nbModalities),
 				nbInd_(nbInd),
 				mu_(nbClass, mu),
@@ -224,9 +224,9 @@ public:
 				"muPi",
 				param,
 				paramStr_);
-		mu_.resize(nbClass_);
-		pi_.resize(nbClass_);
-		for (int k = 0; k < nbClass_; ++k) {
+		mu_.resize(nClass_);
+		pi_.resize(nClass_);
+		for (int k = 0; k < nClass_; ++k) {
 			mu_(k) = param(2 * k    );
 			pi_(k) = param(2 * k + 1);
 		}
@@ -263,10 +263,10 @@ public:
 	}
 
 	void computeObservedProba() {
-		observedProba_.resize(nbClass_, nModality_);
+		observedProba_.resize(nClass_, nModality_);
 		BOSPath path; // BOSPath used for the various samplings
 		path.setInit(0, nModality_ - 1);
-		for (int k = 0; k < nbClass_; ++k) {
+		for (int k = 0; k < nClass_; ++k) {
 			RowVector<Real> nbInd(nModality_); // observed frequencies
 			path.setEnd(k, k);
 			nbInd = 0;
@@ -327,12 +327,12 @@ public:
 	}
 
 	virtual Index nbFreeParameter() const {
-		return nbClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
+		return nClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
 	}
 
 	virtual void writeParameters() const {
 		std::stringstream sstm;
-		for (int k = 0; k < nbClass_; ++k) {
+		for (int k = 0; k < nClass_; ++k) {
 			sstm << "Class: " << k << std::endl;
 			sstm << "mu: " << mu_(k) << std::endl;
 			sstm << "pi: " << pi_(k) << std::endl;
@@ -343,18 +343,18 @@ public:
 
 	virtual void exportDataParam() const {
 		int nbColStat = muParamStatComputer_.getStatStorage().cols();
-		Matrix<Real> paramStatStorage(2 * nbClass_, nbColStat); // aggregates both mu and pi values
+		Matrix<Real> paramStatStorage(2 * nClass_, nbColStat); // aggregates both mu and pi values
 		for (int j = 0; j < nbColStat; ++j) {
-			for (int k = 0; k < nbClass_; ++k) {
+			for (int k = 0; k < nClass_; ++k) {
 				paramStatStorage(2 * k    , j) = muParamStatComputer_.getStatStorage()(k, j) + minModality;
 				paramStatStorage(2 * k + 1, j) = piParamStatComputer_.getStatStorage()(k, j);
 			}
 		}
 
 		int nbColLog = muParamStatComputer_.getLogStorage().cols();
-		Matrix<Real> paramLogStorage (2 * nbClass_, nbColLog); // aggregates both mu and pi logs
+		Matrix<Real> paramLogStorage (2 * nClass_, nbColLog); // aggregates both mu and pi logs
 		for (int j = 0; j < nbColLog; ++j) {
-			for (int k = 0; k < nbClass_; ++k) {
+			for (int k = 0; k < nClass_; ++k) {
 				paramLogStorage (2 * k    , j) = muParamStatComputer_.getLogStorage ()(k, j) + minModality;
 				paramLogStorage (2 * k + 1, j) = piParamStatComputer_.getLogStorage ()(k, j);
 			}
@@ -378,8 +378,8 @@ public:
 	}
 
 	std::vector<std::string> paramNames() const {
-		std::vector<std::string> names(nbClass_ * 2);
-		for (int k = 0; k < nbClass_; ++k) {
+		std::vector<std::string> names(nClass_ * 2);
+		for (int k = 0; k < nClass_; ++k) {
 			std::stringstream sstmMean, sstmSd;
 			sstmMean << "k: "
 					<< k + minModality
@@ -404,9 +404,9 @@ public:
 	};
 
 	std::string initParam(const Vector<Index>& initObs) {
-		for (Index k = 0; k < nbClass_; ++k) {
+		for (Index k = 0; k < nClass_; ++k) {
 			mu_(k) = augData_.data_(initObs(k)); // representative element used is the same for each variable for a given class
-			pi_(k) = 1. / nbClass_;
+			pi_(k) = 1. / nClass_;
 		}
 
 		return "";
@@ -445,7 +445,7 @@ public:
 	std::string checkSampleCondition() const {
 		if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
-		for (Index k = 0; k < nbClass_; ++k) {
+		for (Index k = 0; k < nClass_; ++k) {
 			bool allZ0 = true; // are all z = 0 in the current class ?
 			bool allZ1 = true; // are all z = 1 in the current class ?
 			for (
@@ -489,7 +489,13 @@ public:
 		mStepPi();
 	}
 
-	std::vector<bool> parametersInInterior() {return std::vector<bool>();}
+	std::vector<bool> parametersInInterior() {
+		std::vector<bool> res(nClass_);
+		for (Index k = 0; k < nClass_; ++k) {
+			res[k] = (pi_(k) == 0.0 || pi_(k) == 1.0) ? false : true;
+		}
+		return res;
+	}
 
 private:
 	/**
@@ -537,7 +543,7 @@ private:
 	 * computation of the likelihood for every value of mu to get the argmax
 	 */
 	void mStepMu() {
-		Matrix<Real> logLik(nbClass_, nModality_, 0.);
+		Matrix<Real> logLik(nClass_, nModality_, 0.);
 		for (int i = 0; i < nbInd_; ++i) {
 			int currClass = (*p_zi_)(i);
 			Real currPi = pi_(currClass);
@@ -548,7 +554,7 @@ private:
 			logLik.row(currClass) += probaInd;
 		}
 
-		for (int k = 0; k < nbClass_; ++k) {
+		for (int k = 0; k < nClass_; ++k) {
 			RowVector<Real> proba;
 			proba.logToMulti(logLik.row(k));
 			mu_(k) = multi_.sample(proba);
@@ -561,8 +567,8 @@ private:
 	void mStepPi() {
 		pi_ = 0.; // pi_ parameter is reinitialized
 
-		Vector<Real> nodePerClass(nbClass_, 0.); // total number of nodes in each class
-		Vector<Real> zPerClass   (nbClass_, 0.); // total of nodes with z = 1 in each class
+		Vector<Real> nodePerClass(nClass_, 0.); // total number of nodes in each class
+		Vector<Real> zPerClass   (nClass_, 0.); // total of nodes with z = 1 in each class
 
 		for (int i = 0; i < nbInd_; ++i) {
 			int indClass = (*p_zi_)(i);
@@ -607,7 +613,7 @@ private:
 	const Vector<std::set<Index> >& classInd_;
 
 	/** Number of classes */
-	int nbClass_;
+	int nClass_;
 
 	/** Number of modalities */
 	int nModality_;

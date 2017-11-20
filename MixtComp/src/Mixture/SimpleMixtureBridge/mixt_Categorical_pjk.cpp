@@ -19,63 +19,65 @@
 
 namespace mixt {
 
-Categorical_pjk::Categorical_pjk(const std::string& idName,
-                                 int nbClass,
-                                 Vector<Real>& param,
-                                 const Vector<std::set<Index> >& classInd) :
-    idName_(idName),
-    nbClass_(nbClass),
-    nModality_(0),
-    p_data_(0),
-    param_(param),
-    classInd_(classInd) {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
+Categorical_pjk::Categorical_pjk(
+		const std::string& idName,
+		int nbClass,
+		Vector<Real>& param,
+		const Vector<std::set<Index> >& classInd)
+: idName_(idName),
+  nClass_(nbClass),
+  nModality_(0),
+  p_data_(0),
+  param_(param),
+  classInd_(classInd) {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
 
 Vector<bool> Categorical_pjk::acceptedType() const {
-  Vector<bool> at(nb_enum_MisType_);
-  at(0) = true ; // present_,
-  at(1) = true ; // missing_,
-  at(2) = true ; // missingFiniteValues_,
-  at(3) = false; // missingIntervals_,
-  at(4) = false; // missingLUIntervals_,
-  at(5) = false; // missingRUIntervals_,
-  return at;
+	Vector<bool> at(nb_enum_MisType_);
+	at(0) = true ; // present_,
+	at(1) = true ; // missing_,
+	at(2) = true ; // missingFiniteValues_,
+	at(3) = false; // missingIntervals_,
+	at(4) = false; // missingLUIntervals_,
+	at(5) = false; // missingRUIntervals_,
+	return at;
 }
 
 int Categorical_pjk::computeNbFreeParameters() const {
-  return nbClass_ * (nModality_ - 1);
+	return nClass_ * (nModality_ - 1);
 }
 
 void Categorical_pjk::mStep() {
-  for (Index k = 0; k < nbClass_; ++k) {
-    Vector<Real> modalities(nModality_, 0.);
+	for (Index k = 0; k < nClass_; ++k) {
+		Vector<Real> modalities(nModality_, 0.);
 
-    for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
-         it != itE;
-         ++it) {
-      modalities((*p_data_)(*it)) += 1.;
-    }
+		for (
+				std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+				it != itE;
+				++it) {
+			modalities((*p_data_)(*it)) += 1.;
+		}
 
-    modalities = modalities / Real(classInd_(k).size());
+		modalities = modalities / Real(classInd_(k).size());
 
-    for (Index p = 0; p < nModality_; ++p) {
-      param_(k * nModality_ + p) = modalities(p);
-    }
-  }
+		for (Index p = 0; p < nModality_; ++p) {
+			param_(k * nModality_ + p) = modalities(p);
+		}
+	}
 }
 
 std::vector<std::string> Categorical_pjk::paramNames() const {
-  std::vector<std::string> names(nbClass_ * nModality_);
-  for (Index k = 0; k < nbClass_; ++k) {
-    for (Index p = 0; p < nModality_; ++p) {
-      std::stringstream sstm;
-      sstm << "k: "
-           << k + minModality
-           << ", modality: "
-           << p + minModality;
-      names[k * nModality_ + p] = sstm.str();
-    }
-  }
-  return names;
+	std::vector<std::string> names(nClass_ * nModality_);
+	for (Index k = 0; k < nClass_; ++k) {
+		for (Index p = 0; p < nModality_; ++p) {
+			std::stringstream sstm;
+			sstm << "k: "
+					<< k + minModality
+					<< ", modality: "
+					<< p + minModality;
+			names[k * nModality_ + p] = sstm.str();
+		}
+	}
+	return names;
 }
 
 std::string Categorical_pjk::setData(
@@ -88,7 +90,7 @@ std::string Categorical_pjk::setData(
 
 	if (paramStr.size() == 0) { // During learning without parameter space descriptor. Parameter space is deduced.
 		nModality_ = augData.dataRange_.max_ + 1;
-		param_.resize(nbClass_ * nModality_);
+		param_.resize(nClass_ * nModality_);
 
 		paramStr = "nModality: " + std::to_string(nModality_); // paramStr must be generated from the data, for future use and export for prediction
 	}
@@ -122,25 +124,25 @@ std::string Categorical_pjk::setData(
 		warnLog += sstm.str();
 	}
 
-//  Code to check that all modalities have been observed at least once, which put a constraint on the data set, but allows for prediction in every cases
-//	if (mode == learning_) {
-//		Vector<bool> modalityPresent(nModality_, false);
-//		for (Index i = 0; i < p_data_->size(); ++i) {
-//			modalityPresent((*p_data_)(i)) = true;
-//			if (modalityPresent == true) { // each modality is present i
-//				break; // avoid further testing
-//			}
-//		}
-//
-//		if (modalityPresent != true) { // if at least one modality has been observed
-//			for (Index p = 0; p < nModality_; ++p) {
-//				if (modalityPresent(p) == false) {
-//					warnLog += "Categorical variables must have one individual with each modality present in the sample. Modality: " + std::to_string(p + minModality) + " is not observed in your data set. You should check that all of your observed modalities are encoded using contiguous integers starting at "
-//							+ std::to_string(minModality) + "." + eol;
-//				}
-//			}
-//		}
-//	}
+	//  Code to check that all modalities have been observed at least once, which put a constraint on the data set, but allows for prediction in every cases
+	//	if (mode == learning_) {
+	//		Vector<bool> modalityPresent(nModality_, false);
+	//		for (Index i = 0; i < p_data_->size(); ++i) {
+	//			modalityPresent((*p_data_)(i)) = true;
+	//			if (modalityPresent == true) { // each modality is present i
+	//				break; // avoid further testing
+	//			}
+	//		}
+	//
+	//		if (modalityPresent != true) { // if at least one modality has been observed
+	//			for (Index p = 0; p < nModality_; ++p) {
+	//				if (modalityPresent(p) == false) {
+	//					warnLog += "Categorical variables must have one individual with each modality present in the sample. Modality: " + std::to_string(p + minModality) + " is not observed in your data set. You should check that all of your observed modalities are encoded using contiguous integers starting at "
+	//							+ std::to_string(minModality) + "." + eol;
+	//				}
+	//			}
+	//		}
+	//	}
 
 	// Once everything has been set, adjust the range of data to align with the parameter space
 	augData.dataRange_.min_ = 0;
@@ -151,21 +153,21 @@ std::string Categorical_pjk::setData(
 }
 
 void Categorical_pjk::writeParameters() const {
-  std::stringstream sstm;
-  for (Index k = 0; k < nbClass_; ++k) {
-    sstm << "Class: " << k << std::endl;
-    for (Index p = 0; p < nModality_; ++p) {
-      sstm << "\talpha_ "  << p << ": " << param_(k * nModality_ + p) << std::endl;
-    }
-  }
+	std::stringstream sstm;
+	for (Index k = 0; k < nClass_; ++k) {
+		sstm << "Class: " << k << std::endl;
+		for (Index p = 0; p < nModality_; ++p) {
+			sstm << "\talpha_ "  << p << ": " << param_(k * nModality_ + p) << std::endl;
+		}
+	}
 
-  std::cout << sstm.str() << std::endl;
+	std::cout << sstm.str() << std::endl;
 }
 
 std::string Categorical_pjk::checkSampleCondition() const {
 	if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
-	for (Index k = 0; k < nbClass_; ++k) {
+	for (Index k = 0; k < nClass_; ++k) {
 		std::string warnLog;
 		Vector<bool> modalityPresent(nModality_, false);
 		for (std::set<Index>::const_iterator it  = classInd_(k).begin(),
@@ -181,7 +183,7 @@ std::string Categorical_pjk::checkSampleCondition() const {
 		for (Index p = 0; p < nModality_; ++p) {
 			if (modalityPresent(p) == false) {
 				warnLog += "Categorical variables must have one individual with each modality present in each class. Modality: " + std::to_string(p + minModality) + " is absent from class: " + std::to_string(k)
-					+ " You can check whether you have enough individuals regarding the number of classes and whether all of your modalities are encoded using contiguous integers starting at " + std::to_string(minModality) + "." + eol;
+				+ " You can check whether you have enough individuals regarding the number of classes and whether all of your modalities are encoded using contiguous integers starting at " + std::to_string(minModality) + "." + eol;
 			}
 		}
 		return warnLog;
@@ -194,28 +196,42 @@ std::string Categorical_pjk::checkSampleCondition() const {
 
 
 bool Categorical_pjk::hasModalities() const {
-  return true;
+	return true;
 }
 
 std::string Categorical_pjk::initParam(const Vector<Index>& initObs) {
-  std::cout << "Categorical_pjk::initParam" << std::endl;
+	std::cout << "Categorical_pjk::initParam" << std::endl;
 
-  Real constantTerm = 1. / nbClass_; // this could also be based on the number of observations, to get a Bayesian justification
-  param_ = 0.;
+	Real constantTerm = 1. / nClass_; // this could also be based on the number of observations, to get a Bayesian justification
+	param_ = 0.;
 
-  for (Index k = 0; k < nbClass_; ++k) {
-    Vector<Real> currProp(nModality_, constantTerm); // proportions for current class
-    currProp((*p_data_)(initObs(k))) += 1.;
-    currProp = currProp / currProp.sum();
+	for (Index k = 0; k < nClass_; ++k) {
+		Vector<Real> currProp(nModality_, constantTerm); // proportions for current class
+		currProp((*p_data_)(initObs(k))) += 1.;
+		currProp = currProp / currProp.sum();
 
-    Index baseClassIndex = k * nModality_;
+		Index baseClassIndex = k * nModality_;
 
-    for (Index m = 0; m < nModality_; ++m) {
-      param_(m + baseClassIndex) = currProp(m);
-    }
-  }
+		for (Index m = 0; m < nModality_; ++m) {
+			param_(m + baseClassIndex) = currProp(m);
+		}
+	}
 
-  return "";
+	return "";
+}
+
+std::vector<bool> Categorical_pjk::parametersInInterior() {
+	std::vector<bool> res(nClass_);
+
+	for (Index k = 0; k < nClass_; ++k) {
+		res[k] = (param_.block(
+				k * nModality_,
+				0,
+				nModality_,
+				1).minCoeff() == 0.0) ? false : true;
+	}
+
+	return res;
 }
 
 } // namespace mixt

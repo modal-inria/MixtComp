@@ -22,45 +22,48 @@
 namespace mixt {
 
 class Categorical_pjk {
-  public:
-    Categorical_pjk(const std::string& idName,
-                    int nbClass,
-                    Vector<Real>& param,
-                    const Vector<std::set<Index> >& classInd);
+public:
+	Categorical_pjk(
+			const std::string& idName,
+			int nbClass,
+			Vector<Real>& param,
+			const Vector<std::set<Index> >& classInd);
 
-    Vector<bool> acceptedType() const;
+	Vector<bool> acceptedType() const;
 
-    int computeNbFreeParameters() const;
+	int computeNbFreeParameters() const;
 
-    void mStep();
+	void mStep();
 
-    std::vector<std::string> paramNames() const;
+	std::vector<std::string> paramNames() const;
 
-    std::string setData(
-    		std::string& paramStr,
-        AugmentedData<Vector<int> >& augData,
-		RunMode mode);
+	std::string setData(
+			std::string& paramStr,
+			AugmentedData<Vector<int> >& augData,
+			RunMode mode);
 
-    void writeParameters() const;
+	void writeParameters() const;
 
-    std::string checkSampleCondition() const;
+	std::string checkSampleCondition() const;
 
-    bool hasModalities() const;
+	bool hasModalities() const;
 
-    std::string initParam(const Vector<Index>& initObs);
+	std::string initParam(const Vector<Index>& initObs);
 
-  private:
-    std::string idName_;
+	std::vector<bool> parametersInInterior();
 
-    Index nbClass_;
+private:
+	std::string idName_;
 
-    Index nModality_;
+	Index nClass_;
 
-    Vector<int>* p_data_;
+	Index nModality_;
 
-    Vector<Real>& param_;
+	Vector<int>* p_data_;
 
-    const Vector<std::set<Index> >& classInd_;
+	Vector<Real>& param_;
+
+	const Vector<std::set<Index> >& classInd_;
 };
 
 } // namespace mixt

@@ -35,24 +35,23 @@ public:
 			DataExtractor* p_extractor,
 			const ParamSetter* p_paramSetter,
 			ParamExtractor* p_paramExtractor,
-			Real confidenceLevel) :
-				IMixture(indexMixture,
-						idName),
-						nbClass_(nbClass),
-						nbInd_(0),
-						nbPos_(0),
-						facNbMod_(0.),
-						p_zi_(p_zi),
-						classInd_(classInd),
-						p_handler_(p_handler),
-						p_dataExtractor_(p_extractor),
-						p_paramSetter_(p_paramSetter),
-						p_paramExtractor_(p_paramExtractor),
-						confidenceLevel_(confidenceLevel),
-						mu_(nbClass),
-						pi_(nbClass),
-						piParamStat_(pi_,
-								confidenceLevel) {
+			Real confidenceLevel)
+	: IMixture(indexMixture,
+			idName),
+			nClass_(nbClass),
+			nbInd_(0),
+			nbPos_(0),
+			facNbMod_(0.),
+			p_zi_(p_zi),
+			classInd_(classInd),
+			p_handler_(p_handler),
+			p_dataExtractor_(p_extractor),
+			p_paramSetter_(p_paramSetter),
+			p_paramExtractor_(p_paramExtractor),
+			confidenceLevel_(confidenceLevel),
+			mu_(nbClass),
+			pi_(nbClass),
+			piParamStat_(pi_, confidenceLevel) {
 		class_    .reserve(nbClass);
 		muParamStat_.reserve(nbClass);
 		for (int k = 0; k < nbClass; ++k) {
@@ -86,7 +85,7 @@ public:
 	std::string checkSampleCondition() const {
 		if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
-		for (int k = 0; k < nbClass_; ++k) {
+		for (int k = 0; k < nClass_; ++k) {
 			bool Geq0 = true; // are all comparisons incorrect ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
 			bool GeqA = true; // are all comparisons correct ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
 
@@ -126,7 +125,7 @@ public:
 	 * of the parameters is only here to ensure that all individuals are valid (not all z at 0). In the Rank model initialization, mu is chosen among all the
 	 * observed values of the class, while pi is initialized to a "neutral" value. */
 	void mStep() {
-		for (int k = 0; k < nbClass_; ++k) {
+		for (int k = 0; k < nClass_; ++k) {
 			class_[k].mStep();
 		}
 	}
@@ -134,7 +133,7 @@ public:
 	void storeSEMRun(Index iteration,
 			Index iterationMax)
 	{
-		for (int k = 0; k < nbClass_; ++k)
+		for (int k = 0; k < nClass_; ++k)
 		{
 			muParamStat_[k].sampleValue(iteration, iterationMax);
 		}
@@ -142,7 +141,7 @@ public:
 
 		if (iteration == iterationMax) // at last iteration, compute the observed probability distribution logProba_
 		{
-			for (int k = 0; k < nbClass_; ++k)
+			for (int k = 0; k < nClass_; ++k)
 			{
 				muParamStat_[k].setExpectationParam(); // estimate mu parameter using mode / expectation
 			}
@@ -178,9 +177,9 @@ public:
 	 * mu is initialized through direct sampling in each class
 	 */
 	std::string initParam(const Vector<Index>& initObs) {
-		for (Index k = 0; k < nbClass_; ++k) {
+		for (Index k = 0; k < nClass_; ++k) {
 			mu_(k) = data_(initObs(k)).x();
-			pi_(k) = 0.5 * (1. + 1. / nbClass_);
+			pi_(k) = 0.5 * (1. + 1. / nClass_);
 		}
 
 		return "";
@@ -195,13 +194,13 @@ public:
 	}
 
 	Index nbFreeParameter() const {
-		return nbClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
+		return nClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
 	}
 
 	void writeParameters() const
 	{
 		std::stringstream sstm;
-		for (int k = 0; k < nbClass_; ++k)
+		for (int k = 0; k < nClass_; ++k)
 		{
 			sstm << "Class: " << k << std::endl;
 			sstm << "mu: " << mu_(k) << std::endl;
@@ -241,7 +240,7 @@ public:
 					pi_,
 					dummyStr);
 
-			for (int k = 0; k < nbClass_; ++k) {
+			for (int k = 0; k < nClass_; ++k) {
 				muParamStat_[k].setParamStorage();
 			}
 			piParamStat_.setParamStorage();
@@ -308,12 +307,18 @@ public:
 	}
 
 	void computeObservedProba() {
-		for (int k = 0; k < nbClass_; ++k) {
+		for (int k = 0; k < nClass_; ++k) {
 			class_[k].computeObservedProba();
 		}
 	}
 
-	std::vector<bool> parametersInInterior() {return std::vector<bool>();}
+	std::vector<bool> parametersInInterior() {
+		std::vector<bool> res(nClass_);
+		for (Index k = 0; k < nClass_; ++k) {
+			res[k] = (pi_(k) == 0.0 || pi_(k) == 1.0) ? false : true;
+		}
+		return res;
+	}
 
 private:
 	std::string checkMissingType() {
@@ -337,8 +342,8 @@ private:
 	}
 
 	std::vector<std::string> muParamNames() const {
-		std::vector<std::string> names(nbClass_);
-		for (int k = 0; k < nbClass_; ++k)
+		std::vector<std::string> names(nClass_);
+		for (int k = 0; k < nClass_; ++k)
 		{
 			std::stringstream sstm;
 			sstm << "k: " << k + minModality << ", mu";
@@ -348,8 +353,8 @@ private:
 	}
 
 	std::vector<std::string> piParamNames() const {
-		std::vector<std::string> names(nbClass_);
-		for (int k = 0; k < nbClass_; ++k)
+		std::vector<std::string> names(nClass_);
+		for (int k = 0; k < nClass_; ++k)
 		{
 			std::stringstream sstm;
 			sstm << "k: " << k + minModality << ", pi";
@@ -358,7 +363,7 @@ private:
 		return names;
 	}
 
-	int nbClass_;
+	int nClass_;
 
 	/** Number of samples in the data set*/
 	Index nbInd_;
