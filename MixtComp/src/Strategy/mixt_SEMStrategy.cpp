@@ -19,9 +19,9 @@ namespace mixt {
 /** default constructor */
 SemStrategy::SemStrategy(
 		MixtureComposer* p_composer,
-		const StrategyParam& param) :
-        		p_composer_(p_composer),
-			param_(param) {}
+		const StrategyParam& param)
+: p_composer_(p_composer),
+  param_(param) {}
 
 std::string SemStrategy::run() {
 	std::string warnLog;

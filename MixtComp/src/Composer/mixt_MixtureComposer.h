@@ -50,11 +50,11 @@ class MixtureComposer {
     /** The registered mixtures will be deleted there.*/
     ~MixtureComposer();
 
-    Index nbClass() const {return nbClass_;}
+    Index nbClass() const {return nClass_;}
 
-    Index nbInd() const {return nbInd_;}
+    Index nbInd() const {return nInd_;}
 
-    Index nbVar() const {return nbVar_;}
+    Index nbVar() const {return nVar_;}
 
     /** @return  the zi class label */
     const Vector<Index>* p_zi() const {return &(zClassInd_.zi().data_);}
@@ -166,7 +166,7 @@ class MixtureComposer {
 
       warnLog += setProportion(paramSetter);
 
-      for (int i = 0; i < nbInd_; ++i) {
+      for (int i = 0; i < nInd_; ++i) {
         tik_.row(i) = prop_.transpose();
       }
 
@@ -176,7 +176,7 @@ class MixtureComposer {
         paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
       }
 
-      dataStat_.setNbIndividual(nbInd_);
+      dataStat_.setNbIndividual(nInd_);
 
       return warnLog;
     }
@@ -231,16 +231,16 @@ class MixtureComposer {
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
         warnLog += sstm.str();
       }
-      if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nbClass_ - 1) {
+      if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nClass_ - 1) {
         std::stringstream sstm;
         sstm << "The z_class latent class variable has a highest provided value of: "
             << minModality + zClassInd_.zi().dataRange_.max_
             << " while the maximal value can not exceed the number of class: "
-            << minModality + nbClass_ - 1
+            << minModality + nClass_ - 1
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
         warnLog += sstm.str();
       }
-      zClassInd_.setRange(0, nbClass_ - 1, nbClass_);
+      zClassInd_.setRange(0, nClass_ - 1, nClass_);
 
       return warnLog;
     };
@@ -343,8 +343,8 @@ class MixtureComposer {
      * Similar to eStep, except that observed probability are used. Useful during initialization
      * when individuals have not been completed using the real model.
      */
-    void eStepObserved();
-    void eStepObservedInd(Index i);
+    std::string eStepObserved();
+    bool eStepObservedInd(Index i, const Matrix<bool>& parametersInInterior);
 
     /** Call initializeMarkovChain on all variables. */
     void initializeMarkovChain();
@@ -360,13 +360,13 @@ class MixtureComposer {
     std::string paramStr_;
 
     /** number of classes */
-    Index nbClass_;
+    Index nClass_;
 
     /** Number of samples */
-    Index nbInd_;
+    Index nInd_;
 
     /** Number of variables */
-    Index nbVar_;
+    Index nVar_;
 
     /** The proportions of each class */
     Vector<Real> prop_;

@@ -28,29 +28,30 @@ namespace mixt {
  *  - perform a long run
  **/
 class SemStrategy {
-  public:
-    /** default constructor.
-     *  @param p_composer the model to estimate
-     **/
-    SemStrategy(MixtureComposer* p_composer, const StrategyParam& param);
-    
-    /** run the strategy */
-    std::string run();
 
-    /**
-     * run the algorithm, only kept during the transition, as an archive
-     * @return string describing the problem in case of soft degeneracy */
-    std::string runSEM(
-        RunType runType,
-        Index nIter,
-        int group,
-        int groupMax);
+public:
+	/** default constructor.
+	 *  @param p_composer the model to estimate
+	 **/
+	SemStrategy(MixtureComposer* p_composer, const StrategyParam& param);
 
-  private:
-     /** reference on the main model */
-    MixtureComposer* p_composer_;
-    
-    const StrategyParam& param_;
+	/** run the strategy */
+	std::string run();
+
+	/**
+	 * run the algorithm, only kept during the transition, as an archive
+	 * @return string describing the problem in case of soft degeneracy */
+	std::string runSEM(
+			RunType runType,
+			Index nIter,
+			int group,
+			int groupMax);
+
+private:
+	/** reference on the main model */
+	MixtureComposer* p_composer_;
+
+	const StrategyParam& param_;
 };
 
 }  // namespace mixt
