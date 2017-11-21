@@ -554,7 +554,7 @@ std::string MixtureComposer::eStepObserved() {
 	for (Index j = 0; j < nVar_; ++j) {
 		std::vector<bool> pII = v_mixtures_[j]->parametersInInterior();
 		for (Index k = 0; k < nClass_; ++k) {
-			parametersInInterior(k, j) = pII[k];
+			parametersInInterior(j, k) = pII[k];
 		}
 	}
 
@@ -565,14 +565,14 @@ std::string MixtureComposer::eStepObserved() {
 
 	std::string tempWarnLog;
 	for (Index i = 0; i < nInd_; ++i) {
-		if (vecWarnLog[i]) {
+		if (!vecWarnLog[i]) {
 			tempWarnLog += "Observation " + std::to_string(i) + " has a 0 density of probability." + eol;
 		}
 	}
 
 	std::string warnLog;
 	if (0 < tempWarnLog.size()) {
-		warnLog = "Error in MixtureComposer::eStepObserved: " + eol;
+		warnLog = "Error in MixtureComposer::eStepObserved: " + eol + tempWarnLog;
 	}
 
 	//  std::cout << "MixtureComposer::eStepObservedInd, tik" << std::endl;
@@ -591,8 +591,8 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 		lnComp(k) = std::log(prop_[k]);
 
 		bool errorInObservability = false; // true means that at least in one class there is 0 proba while parameters are not on the boundary of the parameter space
-		for (Index j = 0; i < nVar_; ++j) {
-			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(k, j) == false) { // for this particular variable, the
+		for (Index j = 0; j < nVar_; ++j) {
+			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(j, k) == false) { // for this particular variable, the
 				errorInObservability = true;
 			}
 			currVar(k) = observedProbabilityCache_(j)(i, k);
