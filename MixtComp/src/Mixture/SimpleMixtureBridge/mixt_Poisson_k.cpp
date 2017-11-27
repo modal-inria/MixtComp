@@ -120,7 +120,6 @@ std::string Poisson_k::checkSampleCondition() const {
 }
 
 std::string Poisson_k::initParam(const Vector<Index>& initObs) {
-	std::cout << "Poisson_k::initParam" << std::endl;
 	for (Index k = 0; k < nClass_; ++k) {
 		param_(k) = Real((*p_data_)(initObs(k)));
 	}

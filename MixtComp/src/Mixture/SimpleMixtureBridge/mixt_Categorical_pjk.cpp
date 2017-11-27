@@ -200,8 +200,6 @@ bool Categorical_pjk::hasModalities() const {
 }
 
 std::string Categorical_pjk::initParam(const Vector<Index>& initObs) {
-	std::cout << "Categorical_pjk::initParam" << std::endl;
-
 	Real constantTerm = 1. / nClass_; // this could also be based on the number of observations, to get a Bayesian justification
 	param_ = 0.;
 

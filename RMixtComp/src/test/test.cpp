@@ -18,12 +18,12 @@ int main(int argc, char *argv[]) {
 
 	R.parseEvalQ("library(RMixtComp)");
 
-	R.parseEvalQ("testFunctional()");
-	R.parseEvalQ("testOrdinal()");
-	R.parseEvalQ("testRank()");
+//	R.parseEvalQ("testFunctional()");
+//	R.parseEvalQ("testOrdinal()");
+//	R.parseEvalQ("testRank()");
 	R.parseEvalQ("testCategorical()");
-	R.parseEvalQ("testGaussian()");
-	R.parseEvalQ("testPoisson()");
+//	R.parseEvalQ("testGaussian()");
+//	R.parseEvalQ("testPoisson()");
 
 	exit(0);
 }

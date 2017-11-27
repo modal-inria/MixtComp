@@ -155,8 +155,8 @@ void MixtureComposer::eStepCompleted() {
 		eStepCompletedInd(i);
 	}
 
-	//	std::cout << "MixtureComposer::eStep, tik" << std::endl;
-	//	std::cout << tik_ << std::endl;
+//	std::cout << "MixtureComposer::eStepCompleted, tik" << std::endl;
+//	std::cout << tik_ << std::endl;
 }
 
 void MixtureComposer::eStepCompletedInd(int i) {
@@ -166,6 +166,8 @@ void MixtureComposer::eStepCompletedInd(int i) {
 	}
 
 	completedProbabilityCache_(i) = tik_.row(i).logToMulti(lnComp);
+
+//	std::cout << "MixtureComposer::eStepCompleted, tik, i: " << i << ", " << itString(tik_.row(i)) << std::endl;
 }
 
 void MixtureComposer::mStepPi() {
@@ -592,7 +594,8 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 
 		bool errorInObservability = false; // true means that at least in one class there is 0 proba while parameters are not on the boundary of the parameter space
 		for (Index j = 0; j < nVar_; ++j) {
-			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(j, k) == false) { // for this particular variable, the
+			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(j, k) == true) { // for this particular variable, the
+				std::cout << "k: " << k << ", j: " << j << ", errorInObservability = true" << std::endl;
 				errorInObservability = true;
 			}
 			currVar(k) = observedProbabilityCache_(j)(i, k);
@@ -608,6 +611,8 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 	}
 
 	tik_.row(i).logToMulti(lnComp);
+
+//	std::cout << "MixtureComposer::eStepObservedInd, i: " << i << ", tik: " << itString(tik_.row(i)) << std::endl;
 
 	return isIndividualObservable;
 }
