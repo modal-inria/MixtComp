@@ -97,7 +97,7 @@ std::string DataHandlerJson::getData(std::string const& idData,
     paramStr = currVar["paramStr"];
 
     for (int i = 0; i < nbInd_; ++i) {
-      dataStr(i) = data[i].dump();
+      dataStr(i) = data[i].get<std::string>();
     }
   }
   else {

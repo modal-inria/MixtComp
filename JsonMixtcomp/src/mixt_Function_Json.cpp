@@ -81,22 +81,27 @@ void paramJsonToCpp(const nlohmann::json& JsonParam,
                  StrategyParam& CppParam) {
 
   if (JsonParam.find("nbBurnInIter") != JsonParam.end()) {
-    CppParam.nbBurnInIter_ = JsonParam["nbBurnInIter"];
+      CppParam.nbBurnInIter_ = JsonParam["nbBurnInIter"];
+  } else {
+      std::cout << "Parameter nbBurnInIter not found, a value of 100 is used." << std::endl;
   }
+
   if (JsonParam.find("nbIter") != JsonParam.end()) {
       CppParam.nbIter_ = JsonParam["nbIter"];
-    }
+  } else {
+      std::cout << "Parameter nbIter not found, a value of 100 is used." << std::endl;
+  }
+
   if (JsonParam.find("nbGibbsBurnInIter") != JsonParam.end()) {
       CppParam.nbGibbsBurnInIter_ = JsonParam["nbGibbsBurnInIter"];
-    }
+  } else {
+      std::cout<<"Parameter nbGibbsBurnInIter not found, a value of 100 is used."<<std::endl;
+  }
+
   if (JsonParam.find("nbGibbsIter") != JsonParam.end()) {
       CppParam.nbGibbsIter_ = JsonParam["nbGibbsIter"];
-    }
-  if(JsonParam.find("parameterEdgeAuthorized") != JsonParam.end()){
-    bool bias = JsonParam["parameterEdgeAuthorized"];
-    if (bias == true) {
-      CppParam.bias_ = biased_;
-    }
+  } else {
+      std::cout << "Parameter nbGibbsIter not found, a value of 100 is used." << std::endl;
   }
 }
 

@@ -129,14 +129,14 @@ void RankClass::sampleMu()
   }
 }
 
-void RankClass::mStep(EstimatorType bias) {
-  Vector<RankVal> mu(nbGibbsIterRank);
-  Vector<Real> pi(nbGibbsIterRank);
-  Vector<Real> logProba(nbGibbsIterRank);
+void RankClass::mStep() {
+  Vector<RankVal> mu(nbGibbsIterRankMStep);
+  Vector<Real> pi(nbGibbsIterRankMStep);
+  Vector<Real> logProba(nbGibbsIterRankMStep);
 
   int a, g;
   int i = 0;
-  while (i < nbGibbsIterRank) {
+  while (i < nbGibbsIterRankMStep) {
     sampleMu();
     mu(i) = mu_;
     logProba(i) = lnCompletedProbability(a, g);
@@ -152,11 +152,6 @@ void RankClass::mStep(EstimatorType bias) {
 
   mu_ = mu(bestTheta);
   pi_ = pi(bestTheta);
-
-  if (bias == biased_) {
-    pi_ = std::max(epsilon, pi_         );
-    pi_ = std::min(pi_    , 1. - epsilon);
-  }
 }
 
 void RankClass::computeObservedProba() {
@@ -164,13 +159,10 @@ void RankClass::computeObservedProba() {
   Vector<MisVal> obsData(mu_.nbPos(), MisVal(missing_, {})); // individual is completely missing, so that remove missing will reinitialize everything upon call
   ri.setObsData(obsData);
   ri.removeMissing();
-  ri.observedProba(mu_,
-                   pi_,
-                   observedProbaSampling_);
-
-#ifdef MC_DEBUG
-  std::cout << "RankClass::computeObservedProba, observedProbaSampling_.size(): " << observedProbaSampling_.size() << std::endl;
-#endif
+  ri.observedProba(
+      mu_,
+      pi_,
+      observedProbaSampling_);
 }
 
 } // namespace mixt

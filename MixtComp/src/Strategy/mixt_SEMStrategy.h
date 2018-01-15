@@ -19,7 +19,6 @@
 
 #include "../Composer/mixt_MixtureComposer.h"
 #include "../Strategy/mixt_StrategyParam.h"
-#include "mixt_SEMAlgo.h"
 
 namespace mixt {
 
@@ -29,42 +28,30 @@ namespace mixt {
  *  - perform a long run
  **/
 class SemStrategy {
-  public:
-    /** default constructor.
-     *  @param p_composer the model to estimate
-     **/
-    SemStrategy(MixtureComposer* p_composer,
-                const StrategyParam& param);
 
-    /** non-trivial copy constructor */
-    SemStrategy(SemStrategy const& strategy);
+public:
+	/** default constructor.
+	 *  @param p_composer the model to estimate
+	 **/
+	SemStrategy(MixtureComposer* p_composer, const StrategyParam& param);
 
-    /** non-trivial destructor */
-    ~SemStrategy();
-    
-    /** run the strategy */
-    std::string run();
-    
-    std::string initSEMCheck();
-    void initSEMNoCheck();
+	/** run the strategy */
+	std::string run();
 
-    RunProblemType runSEMCheck(SamplerType sampler);
-    void runSEMNoCheck();
+	/**
+	 * run the algorithm, only kept during the transition, as an archive
+	 * @return string describing the problem in case of soft degeneracy */
+	std::string runSEM(
+			RunType runType,
+			Index nIter,
+			int group,
+			int groupMax);
 
-    void runGibbs();
+private:
+	/** reference on the main model */
+	MixtureComposer* p_composer_;
 
-
-  private:
-     /** reference on the main model */
-    MixtureComposer* p_composer_;
-    
-    const StrategyParam& param_;
-
-    /** algorithm for burn-in */
-    SEMAlgo* p_burnInAlgo_;
-
-    /** algorithm for subsequent long run */
-    SEMAlgo* p_runAlgo_;
+	const StrategyParam& param_;
 };
 
 }  // namespace mixt

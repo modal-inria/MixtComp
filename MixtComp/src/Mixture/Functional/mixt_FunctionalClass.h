@@ -38,9 +38,13 @@ class FunctionalClass {
 
     void mStep();
 
-    void mStepAlpha();
+    void mStepAlpha(const std::set<Index>& setInd);
 
-    void mStepBetaSd();
+    void mStepBetaSd(const std::set<Index>& setInd);
+
+    void initParamAllInd(Index obs);
+
+    bool initParamOneInd(Index obs);
 
     void sampleParam();
 
@@ -50,10 +54,6 @@ class FunctionalClass {
 
     void sampleParam(Index iteration,
                      Index iterationMax);
-
-    double costAndGrad(Index nFreeParam,
-                       const double* alpha,
-                       double* grad);
 
     const Matrix<Real>& alpha() const {return alpha_;}
     const Matrix<Real>& beta()  const {return beta_ ;}
@@ -65,9 +65,7 @@ class FunctionalClass {
 
     void samplingStepNoCheck(Index i);
 
-    void samplingStepCheck(Index i);
-
-    Index checkSampleCondition(std::string* warnLog = NULL) const;
+    std::string checkSampleCondition() const;
     bool checkNbDifferentValue() const;
     bool checkNonNullSigma() const;
   private:

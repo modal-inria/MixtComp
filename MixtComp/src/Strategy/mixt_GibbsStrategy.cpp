@@ -14,25 +14,32 @@
 namespace mixt {
 
 /** default constructor */
-GibbsStrategy::GibbsStrategy(MixtureComposer* p_composer,
-                             const StrategyParam& param) :
-    p_composer_(p_composer),
-    param_(param) {}
+GibbsStrategy::GibbsStrategy(
+    MixtureComposer* p_composer,
+    const StrategyParam& param,
+    Index startGroup) :
+        p_composer_(p_composer),
+        param_(param),
+        startGroup_(startGroup) {}
 
 std::string GibbsStrategy::run() {
   std::string warnLog;
 
-  p_composer_->gibbsSampling(performInitialization_,
-                             doNotSampleData_,
-                             param_.nbGibbsBurnInIter_,
-                             0, // group
-                             1); // groupMax
+  p_composer_->initData();
+  p_composer_->initializeLatent();
 
-  p_composer_->gibbsSampling(doNotPerformInitialization_,
-                             sampleData_,
-                             param_.nbGibbsIter_,
-                             1, // group
-                             1); // groupMax
+  p_composer_->gibbsSampling(
+      doNotSampleData_,
+      param_.nbGibbsBurnInIter_,
+      0 + startGroup_, // group
+      1 + startGroup_); // groupMax
+
+  p_composer_->gibbsSampling(
+      sampleData_,
+      param_.nbGibbsIter_,
+      1 + startGroup_, // group
+      1 + startGroup_); // groupMax
+
   return warnLog;
 }
 

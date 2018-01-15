@@ -7,14 +7,23 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <RInside.h>                    // for the embedded R via RInside
+#include <RInside.h> // for the embedded R via RInside
 #include <fstream>
 
 int main(int argc, char *argv[]) {
-  RInside R(argc, argv);              // create an embedded R instance
-  R.parseEvalQ("library(RMixtComp)");
-  R.parseEvalQ("library(FunctionAnalysis)");
-  R.parseEvalQ("setwd(\"/Users/kubicki/Documents/160519 - Vallourec/170213 - R launch and post\")");
-  R.parseEvalQ("f07Learn(\"data/170222 - multivariate\"");
-  exit(0);
+	RInside R(argc, argv); // create an embedded R instance
+
+//	R.parseEvalQ(R"(setwd("/media/sf_Documents/160803 - debug MixtComp/171031 - Bug sur fonctionnels"))"); // note the use of string literals to avoid cluttering the R command with escape characters
+//	R.parseEvalQ(R"(source("run.r"))");
+
+	R.parseEvalQ("library(RMixtComp)");
+
+//	R.parseEvalQ("testFunctional()");
+//	R.parseEvalQ("testOrdinal()");
+//	R.parseEvalQ("testRank()");
+	R.parseEvalQ("testCategorical()");
+//	R.parseEvalQ("testGaussian()");
+//	R.parseEvalQ("testPoisson()");
+
+	exit(0);
 }

@@ -25,12 +25,13 @@ template<typename DataHandler,
          typename ParamExtractor>
 class MixtureManager {
   public:
-    MixtureManager(const DataHandler* handler,
-                   DataExtractor* p_dataExtractor,
-                   const ParamSetter* p_paramSetter,
-                   ParamExtractor* p_paramExtractor,
-                   Real confidenceLevel,
-                   std::string& warnLog) :
+    MixtureManager(
+        const DataHandler* handler,
+        DataExtractor* p_dataExtractor,
+        const ParamSetter* p_paramSetter,
+        ParamExtractor* p_paramExtractor,
+        Real confidenceLevel,
+        std::string& warnLog) :
       p_handler_(handler),
       p_dataExtractor_(p_dataExtractor),
       p_paramSetter_(p_paramSetter),
@@ -50,12 +51,13 @@ class MixtureManager {
         std::string idModel = it->second;
 
         if (idModel != "LatentClass") { // LatentClass type is managed directly in the composer
-          IMixture* p_mixture = createMixture(idModel,
-                                              indexMixture + 1, // +1 to take into account that LatentClass is at position 0 int the data output
-                                              idName,
-                                              composer,
-                                              nbCluster,
-                                              confidenceLevel_);
+          IMixture* p_mixture = createMixture(
+              idModel,
+              indexMixture + 1, // +1 to take into account that LatentClass is at position 0 int the data output
+              idName,
+              composer,
+              nbCluster,
+              confidenceLevel_);
           if (p_mixture) {
             composer.registerMixture(p_mixture);
             ++indexMixture;
@@ -81,12 +83,13 @@ class MixtureManager {
      *  @param idName name of the model
      *  @param nbCluster number of cluster of the model
      **/
-    IMixture* createMixture(std::string const& idModel,
-                            Index indexMixture,
-                            std::string const& idName,
-                            MixtureComposer& composer,
-                            Index nbCluster,
-                            Real confidenceLevel) {
+    IMixture* createMixture(
+        std::string const& idModel,
+        Index indexMixture,
+        std::string const& idName,
+        MixtureComposer& composer,
+        Index nbCluster,
+        Real confidenceLevel) {
       if (idModel == "Categorical_pjk") {
         CategoricalBridge_pjk_m<DataHandler,
                                 DataExtractor,

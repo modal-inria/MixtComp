@@ -24,8 +24,10 @@ class GibbsStrategy {
     /** default constructor.
      *  @param p_composer the model to estimate
      **/
-    GibbsStrategy(MixtureComposer* p_composer,
-                  const StrategyParam& param);
+    GibbsStrategy(
+        MixtureComposer* p_composer,
+        const StrategyParam& param,
+        Index startGroup);
     
     /** run the strategy */
     std::string run();
@@ -35,6 +37,9 @@ class GibbsStrategy {
     mixt::MixtureComposer* p_composer_;
 
     const StrategyParam& param_;
+
+    /** To help differentiate between a starting Gibbs, and a Gibbs that follows a SEM */
+    Index startGroup_;
 };
 
 }  // namespace mixt

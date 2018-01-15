@@ -22,41 +22,48 @@
 namespace mixt {
 
 class Categorical_pjk {
-  public:
-    Categorical_pjk(const std::string& idName,
-                    int nbClass,
-                    Vector<Real>& param,
-                    const Vector<std::set<Index> >& classInd);
+public:
+	Categorical_pjk(
+			const std::string& idName,
+			int nbClass,
+			Vector<Real>& param,
+			const Vector<std::set<Index> >& classInd);
 
-    Vector<bool> acceptedType() const;
+	Vector<bool> acceptedType() const;
 
-    int computeNbFreeParameters() const;
+	int computeNbFreeParameters() const;
 
-    void mStep(EstimatorType bias);
+	void mStep();
 
-    std::vector<std::string> paramNames() const;
+	std::vector<std::string> paramNames() const;
 
-    std::string setData(std::string& paramStr,
-                        AugmentedData<Vector<int> >& augData);
+	std::string setData(
+			std::string& paramStr,
+			AugmentedData<Vector<int> >& augData,
+			RunMode mode);
 
-    void writeParameters() const;
+	void writeParameters() const;
 
-    int checkSampleCondition(std::string* warnLog = NULL) const;
+	std::string checkSampleCondition() const;
 
-    bool hasModalities() const;
+	bool hasModalities() const;
 
-  private:
-    std::string idName_;
+	std::string initParam(const Vector<Index>& initObs);
 
-    Index nbClass_;
+	std::vector<bool> parametersInInterior();
 
-    Index nModality_;
+private:
+	std::string idName_;
 
-    Vector<int>* p_data_;
+	Index nClass_;
 
-    Vector<Real>& param_;
+	Index nModality_;
 
-    const Vector<std::set<Index> >& classInd_;
+	Vector<int>* p_data_;
+
+	Vector<Real>& param_;
+
+	const Vector<std::set<Index> >& classInd_;
 };
 
 } // namespace mixt

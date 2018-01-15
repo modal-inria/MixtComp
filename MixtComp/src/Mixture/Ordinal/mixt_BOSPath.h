@@ -16,14 +16,7 @@
 #include "mixt_BOSNode.h"
 #include "../Statistic/mixt_MultinomialStatistic.h"
 
-namespace mixt
-{
-
-enum zCondition {
-  allZ0Forbidden_,
-  allZ1Forbidden_,
-  allZAuthorized_
-};
+namespace mixt {
 
 enum allZ {
   allZ0_,
@@ -31,8 +24,7 @@ enum allZ {
   mixZ0Z1_
 };
 
-class BOSPath
-{
+class BOSPath {
   public:
     void setInit(int a, int b);
     void setEnd(int a, int b);
@@ -47,8 +39,7 @@ class BOSPath
      * @param pi precision parameter of the distribution
      * @return joint probability
      */
-    Real computeLogProba(int mu,
-                         Real pi) const;
+    Real computeLogProba(int mu, Real pi) const;
 
     /**
      * Multinomial conditional probability distribution for tuples inside the path
@@ -60,13 +51,13 @@ class BOSPath
      * @param[out] pathList list of the various path
      * @param[out] probaVec vector of the conditional probabilities of the paths in pathList
      */
-    void tupleMultinomial(int mu,
-                          Real pi,
-                          int startIndex,
-                          int sizeTuple,
-                          std::list<Vector<BOSNode> >& pathList,
-                          Vector<Real>& probaVec,
-                          zCondition zCond) const;
+    void tupleMultinomial(
+        int mu,
+        Real pi,
+        int startIndex,
+        int sizeTuple,
+        std::list<Vector<BOSNode> >& pathList,
+        Vector<Real>& probaVec) const;
 
     /**
      * Multinomial conditional probability distribution for the elements of the partition at a specific index.
@@ -81,17 +72,17 @@ class BOSPath
      * @param logProba the conditional log probability of the previous nodes inside the path
      * @param[out] pathList list of the various path
      * @param[out] probaList list of the conditional probabilities of the paths in pathList
-     * @param[out] tuple
+     * @param[out] tuple the complete path that is modified in place during the recursive call, initialized with the current BOSPath
      */
-    void nodeMultinomial(int mu,
-                         Real pi,
-                         int startIndex,
-                         int currIndex,
-                         Real logProba,
-                         std::list<Vector<BOSNode> >& pathList,
-                         std::list<Real>& probaList,
-                         Vector<BOSNode>& tuple,
-                         zCondition zCond) const;
+    void nodeMultinomial(
+        int mu,
+        Real pi,
+        int startIndex,
+        int currIndex,
+        Real logProba,
+        std::list<Vector<BOSNode> >& pathList,
+        std::list<Real>& probaList,
+        Vector<BOSNode>& tuple) const;
 
     /**
      * Compute the conditional probability of the end condition given the last node, and fill pathList and probaList.
@@ -103,15 +94,15 @@ class BOSPath
      * @param[out] pathList list of the various path
      * @param[out] probaList list of the conditional probabilities of the paths in pathList
      */
-    void endMultinomial(int mu,
-                        Real pi,
-                        int startIndex,
-                        int currIndex,
-                        Real logProba,
-                        const Vector<BOSNode>& tuple,
-                        std::list<Vector<BOSNode> >& pathList,
-                        std::list<Real>& probaList,
-                        zCondition zCond) const;
+    void endMultinomial(
+        int mu,
+        Real pi,
+        int startIndex,
+        int currIndex,
+        Real logProba,
+        const Vector<BOSNode>& tuple,
+        std::list<Vector<BOSNode> >& pathList,
+        std::list<Real>& probaList) const;
 
     /**
      * Randomly initialize the path while being compatible with eInit and endCond constraints
@@ -128,10 +119,10 @@ class BOSPath
      * @param sizeTupleMax maximum size of the tuple (number of contiguous nodes allowed to vary simultaneously)
      * @param allOneAuthorized is it possible to sample all z in c_ at value 1 ?
      */
-    void samplePath(int mu,
-                    Real pi,
-                    int sizeTupleMax,
-                    zCondition zCond);
+    void samplePath(
+        int mu,
+        Real pi,
+        int sizeTupleMax);
 
     /**
      * Overwrite the complete path by sampling everything. Usually used when data is completely missing, or
@@ -141,9 +132,7 @@ class BOSPath
      * @param pi precision parameter of the distribution
      * @param allOneAuthorized is it possible to sample all z in c_ at value 1 ?
      */
-    void forwardSamplePath(int mu,
-                           Real pi,
-                           zCondition zCond);
+    void forwardSamplePath(int mu, Real pi);
 
     /**
      * Check if all the z in the path are at 1 or not */

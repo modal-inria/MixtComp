@@ -44,10 +44,12 @@ void IDClass(mixt::MixtureComposer& mc,
   idc.attr("dimnames") = dimnms;
 }
 
-void lnProbaGivenClass(mixt::MixtureComposer& mc,
-                       Rcpp::NumericMatrix& pGCR) {
-  pGCR = Rcpp::NumericMatrix(mc.nbInd(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
-                             mc.nbClass());
+void lnProbaGivenClass(
+    mixt::MixtureComposer& mc,
+    Rcpp::NumericMatrix& pGCR) {
+  pGCR = Rcpp::NumericMatrix(
+      mc.nbInd(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
+      mc.nbClass());
 
   Matrix<Real> pGCCPP;
   mc.lnProbaGivenClass(pGCCPP);
@@ -55,6 +57,36 @@ void lnProbaGivenClass(mixt::MixtureComposer& mc,
   for (Index i = 0; i < mc.nbInd(); ++i) {
     for (Index k = 0; k < mc.nbClass(); ++k) {
       pGCR(i, k) = pGCCPP(i, k);
+    }
+  }
+}
+
+void completedProbaLog(
+		mixt::MixtureComposer& mc,
+		Rcpp::NumericVector& completedProbabilityLogBurnIn,
+		Rcpp::NumericVector& completedProbabilityLogRun) {
+	completedProbabilityLogBurnIn = Rcpp::NumericVector(mc.completedProbabilityLogBurnIn().size());
+	completedProbabilityLogRun = Rcpp::NumericVector(mc.completedProbabilityLogRun().size());
+
+	for (Index i = 0; i < mc.completedProbabilityLogBurnIn().size(); ++i) {
+		completedProbabilityLogBurnIn(i) = mc.completedProbabilityLogBurnIn()(i);
+	}
+	for (Index i = 0; i < mc.completedProbabilityLogRun().size(); ++i) {
+		completedProbabilityLogRun(i) = mc.completedProbabilityLogRun()(i);
+	}
+}
+
+void observedTik(
+    mixt::MixtureComposer& mc,
+    Rcpp::NumericVector& oikR) {
+  oikR = Rcpp::NumericVector(mc.nbInd()); // no resize in Rcpp::NumericMatrix, hence the call to the constructor
+
+  Vector<Real> oikCPP;
+  mc.observedTik(oikCPP);
+
+  for (Index i = 0; i < mc.nbInd(); ++i) {
+    for (Index k = 0; k < mc.nbClass(); ++k) {
+      oikR(i) = oikCPP(i);
     }
   }
 }
@@ -74,33 +106,32 @@ void matDelta(mixt::MixtureComposer& mc,
 
 void paramRToCpp(const Rcpp::List& RParam,
                  StrategyParam& CppParam) {
-  if(RParam.containsElementNamed("nbBurnInIter")){
+  if (RParam.containsElementNamed("nbBurnInIter")) {
     CppParam.nbBurnInIter_ = RParam["nbBurnInIter"];
-  }else{
-	  std::cout<<"Parameter nbBurnInIter not found, a value of 100 is used."<<std::endl;
   }
-  if(RParam.containsElementNamed("nbIter")){
+  else {
+	  std::cout << "Parameter nbBurnInIter not found, a value of 100 is used." << std::endl;
+  }
+
+  if (RParam.containsElementNamed("nbIter")) {
     CppParam.nbIter_ = RParam["nbIter"];
-  }else{
-	  std::cout<<"Parameter nbIter not found, a value of 100 is used."<<std::endl;
   }
-  if(RParam.containsElementNamed("nbGibbsBurnInIter")){
+  else {
+	  std::cout << "Parameter nbIter not found, a value of 100 is used." << std::endl;
+  }
+
+  if (RParam.containsElementNamed("nbGibbsBurnInIter")) {
     CppParam.nbGibbsBurnInIter_ = RParam["nbGibbsBurnInIter"];
-  }else{
+  }
+  else {
 	  std::cout<<"Parameter nbGibbsBurnInIter not found, a value of 100 is used."<<std::endl;
   }
-  if(RParam.containsElementNamed("nbGibbsIter")){
+
+  if (RParam.containsElementNamed("nbGibbsIter")) {
     CppParam.nbGibbsIter_ = RParam["nbGibbsIter"];
-  }else{
-	  std::cout<<"Parameter nbGibbsIter not found, a value of 100 is used."<<std::endl;
   }
-  if(RParam.containsElementNamed("parameterEdgeAuthorized")){
-    bool bias = RParam["parameterEdgeAuthorized"];
-    if (bias == true) {
-      CppParam.bias_ = biased_;
-    }
-  }else{
-	  std::cout<<"Parameter parameterEdgeAuthorized not found, a value of FALSE is used."<<std::endl;
+  else {
+	  std::cout << "Parameter nbGibbsIter not found, a value of 100 is used." << std::endl;
   }
 }
 

@@ -44,7 +44,7 @@ class RankClass
     void sampleMu();
 
     /** */
-    void mStep(EstimatorType bias);
+    void mStep();
 
     void computeObservedProba();
   private:

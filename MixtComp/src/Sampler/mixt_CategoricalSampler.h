@@ -28,9 +28,6 @@ class CategoricalSampler
                        const Vector<Real>& param,
                        int nbClass);
 
-    /** Sample new values for the missing variables of the given individual */
-    void samplingStepCheck  (int i,
-                             int z_i);
     void samplingStepNoCheck(int i,
                              int z_i);
   private:

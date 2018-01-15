@@ -20,16 +20,9 @@
 #include "../Statistic/mixt_Statistic.h"
 #include "mixt_RankVal.h"
 
-namespace mixt
-{
+namespace mixt {
 
 typedef std::pair<MisType, std::vector<int> > MisVal;
-
-enum gCondition {
-  Geq0Forbidden_,
-  GeqAForbidden_,
-  allGAuthorized_
-};
 
 /**
  * A RankIndividual is an object that contains everything needed to describe a particular individual. It contains both the observed and completed
@@ -77,26 +70,23 @@ class RankIndividual
      * Perform one round of Gibbs sampling for the partially observed data
      * @param mu central rank
      * @param pi precision */
-    void sampleX(const RankVal& mu,
-                 Real pi,
-                 gCondition gCond);
+    void sampleX(const RankVal& mu, Real pi);
 
     /**
      * Perform one round of Gibbs sampling for the presentation order
      * @param mu central rank
      * @param pi precision */
-    void sampleY(const RankVal& mu,
-                 Real pi,
-                 gCondition gCond);
+    void sampleY(const RankVal& mu, Real pi);
 
     /**
      * Completed log-probability of the individual
      * @param mu central rank
      * @param pi precision */
-    Real lnCompletedProbability(const RankVal& mu,
-                                Real pi,
-                                int& a,
-                                int& g) const;
+    Real lnCompletedProbability(
+        const RankVal& mu,
+        Real pi,
+        int& a,
+        int& g) const;
 
     /** Uniform sample for partially observed valued and presentation order */
     void removeMissing();

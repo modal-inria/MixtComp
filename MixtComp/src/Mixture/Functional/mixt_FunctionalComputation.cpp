@@ -267,74 +267,6 @@ void initAlpha(Index nParam,
   }
 }
 
-//void updateAlpha(Index nParam,
-//                 const Vector<Real>& t,
-//                 const Vector<std::list<Index> >& w,
-//                 Vector<Real>& alpha,
-//                 Real& alpha_k,
-//                 Real& costCurr,
-//                 Vector<Real>& gradCurr) {
-//  Real c1 = 1e-4;
-//  Real c2 = 0.1;
-//  Real varFactor = 2.;
-//  Index nIt = 40.; // currently number of iterations fixed... switch to tolerance condition ?
-//
-//  bool cond1; // is there enough variation in the cost function ?
-//  bool cond2; // is there enough variation in the gradient ?
-//
-//  Matrix<Real> logValue;
-//  Vector<Real> logSumExpValue;
-//
-//  Vector<Real> alphaCandidate;
-//  Real costCandidate;
-//  Vector<Real> gradCandidate;
-//  Vector<Real> searchDir = gradCurr / gradCurr.norm(); // get search direction from gradient. Since this is a maximization, the gradient is considered, and not the opposite of the gradient
-//  Real projGradCurr = searchDir.dot(gradCurr);
-//
-//  for (int i = 0; i < nIt; ++i) { // line search algorithm using Wolfe condition for selection of step size
-//    alphaCandidate = alpha + alpha_k * searchDir;
-//
-//    timeValue(t,
-//              alphaCandidate,
-//              logValue,
-//              logSumExpValue);
-//
-//    costFunction(t,
-//                 logValue,
-//                 logSumExpValue,
-//                 w,
-//                 costCandidate);
-//
-//    gradCostFunction(t,
-//                     logValue,
-//                     logSumExpValue,
-//                     w,
-//                     gradCandidate);
-//
-//    Real projGradCandidate = searchDir.dot(gradCandidate);
-//    cond1 = costCurr <= costCandidate + c1 * alpha_k * projGradCurr;
-//    cond2 = projGradCandidate <= c2 * projGradCurr;
-//    std::cout << "i: " << i << ", costCandidate: " << costCandidate << ", cond1: " << cond1 << ", cond2: " << cond2 << std::endl;
-//
-//    if (!cond2) { // priority is put on having a large step
-//      alpha_k *= varFactor; // shorten step size
-//      std::cout << "increase alpha_k to: " << alpha_k << std::endl;
-//    }
-//    else if (!cond1) { // increase step size
-//      alpha_k /= varFactor;
-//      std::cout << "increase alpha_k to: " << alpha_k << std::endl;
-//    }
-//    else {
-//      std::cout << "leave alpha_k as it is: " << alpha_k << std::endl;
-//      break;
-//    }
-//  }
-//
-//  alpha = alphaCandidate;
-//  costCurr = costCandidate;
-//  gradCurr = gradCandidate;
-//}
-
 Real sampleW(Real t,
              const Matrix<Real>& alpha,
              MultinomialStatistic& multi) {
@@ -396,16 +328,16 @@ void sampleW(const Vector<Real>& t,
   Index nSub = alpha.rows();
   MultinomialStatistic multi;
   NormalStatistic normal;
-  Vector<Real> kappa;
+  Vector<Real> logKappa;
   Vector<Real> lpXW(nSub); // joIndex probability p(x, w)
   Vector<Real> pWGX(nSub); // conditional probability p(w / x)
 
   for (Index i = 0; i < nTime; ++i) {
     Index currT = t(i);
     Real currY = y(i);
-    kappaMatrix(currT, alpha, kappa);
+    logKappaMatrix(currT, alpha, logKappa);
     for (Index currW = 0; currW < nSub; ++currW) {
-      lpXW(currW) = std::log(kappa(currW)) + logProbaXGW(currT, currY, currW, beta, normal);
+      lpXW(currW) = logKappa(currW) + logProbaXGW(currT, currY, currW, beta, normal);
     }
     pWGX.logToMulti(lpXW);
     w(multi.sample(pWGX)).push_back(i);
@@ -441,10 +373,11 @@ void computeLambda(const Vector<Real>& t,
   }
 }
 
-double optiFunc(unsigned nParam,
-                const double* alpha,
-                double* grad,
-                void* my_func_data) {
+double optiFunc(
+    unsigned nParam,
+    const double* alpha,
+    double* grad,
+    void* my_func_data) {
   double cost;
   CostData* cData = (CostData*) my_func_data;
   Matrix<Real> logValue;
@@ -473,26 +406,55 @@ double optiFunc(unsigned nParam,
   return cost;
 }
 
-double optiFunctionalClass(unsigned nFreeParam,
-                           const double* alpha,
-                           double* grad,
-                           void* my_func_data) {
-  Real cost;
-  FunctionalClass* funcClass = (FunctionalClass*) my_func_data;
+double optiFunctionalClass (
+    unsigned nFreeParam,
+    const double* alpha,
+    double* grad,
+    void* my_func_data) {
+  FuncData* funcData = (FuncData*) my_func_data;
 
-  cost = funcClass->costAndGrad(nFreeParam, alpha, grad);
+  Real cost = 0.;
+  for (Index p = 0; p < nFreeParam; ++p) {
+    grad[p] = 0.;
+  }
+
+  Index nParam = nFreeParam + 2;
+  double gradInd[nParam];
+  double alphaComplete[nParam]; // The whole code was created using the complete set of parameters. Using alphaComplete allows for immediate reuse.
+  alphaComplete[0] = 0.;
+  alphaComplete[1] = 0.;
+  for (Index p = 0; p < nFreeParam; ++p) {
+    grad[p] = 0.;
+    alphaComplete[p + 2] = alpha[p];
+  }
+
+  for (std::set<Index>::const_iterator it  = funcData->setInd_.begin(),
+                                       itE = funcData->setInd_.end();
+       it != itE;
+       ++it) { // each individual in current class adds a contribution to both the cost and the gradient of alpha
+    cost += funcData->data_(*it).costAndGrad(
+        nParam,
+        alphaComplete,
+        gradInd);
+    for (Index p = 0; p < nFreeParam; ++p) {
+      grad[p] += gradInd[p + 2];
+    }
+  }
 
   return cost;
 }
 
-void globalQuantile(const Vector<Function>& vecInd,
-                    Vector<Real>& quantile) {
+void globalQuantile(
+    const Vector<Function>& vecInd,
+    Vector<Real>& quantile) {
   Index nInd = vecInd.size();
-  Index nSub = vecInd(0).w().size();
-  quantile.resize(nSub - 1);
+  Index nSub = vecInd(0).nSub();
+  Index nQuantile = nSub + 1;
+
+  quantile.resize(nQuantile);
+
   Index globalNTime = 0;
   Index currNTime = 0;
-
   for (Index i = 0; i < nInd; ++i) {
     globalNTime += vecInd(i).t().size();
   }
@@ -512,10 +474,13 @@ void globalQuantile(const Vector<Function>& vecInd,
 
   globalT.sort();
 
-  Index partitionSize = globalNTime / nSub;
+  Real quantileSize = 1. / nSub;
 
-  for (Index s = 0; s < nSub - 1; ++s) {
-    quantile(s) = globalT((s + 1) * partitionSize);
+  quantile(0) = globalT(0);
+  quantile(nQuantile - 1) = globalT(globalNTime - 1);
+
+  for (Index q = 1; q < nQuantile - 1; ++q) {
+    quantile(q) = globalT(q * quantileSize * (globalNTime - 1));
   }
 }
 

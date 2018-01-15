@@ -195,8 +195,7 @@ TEST(BOSPath, ArbitraryGibbs)
 
       path.samplePath(mu,
                       pi,
-                      sizeTupleBOS,
-                      allZAuthorized_);
+                      sizeTupleBOS);
     }
 
     for (int iter = 0; iter < nbIterRun; ++iter)
@@ -207,8 +206,7 @@ TEST(BOSPath, ArbitraryGibbs)
 
       path.samplePath(mu,
                       pi,
-                      sizeTupleBOS,
-                      allZAuthorized_);
+                      sizeTupleBOS);
       int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
       computedProba(x) += 1.; // the new occurrence of x is stored
     }
@@ -269,9 +267,7 @@ TEST(BOSPath, forwardSamplePath)
 #ifdef MC_DEBUG
     std::cout << "forwardSamplePath, iter: " << iter << std::endl;
 #endif
-    path.forwardSamplePath(mu,
-                           pi,
-                           allZAuthorized_);
+    path.forwardSamplePath(mu, pi);
     int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
     computedProba(x) += 1.; // the new occurrence of x is stored
   }
@@ -285,84 +281,4 @@ TEST(BOSPath, forwardSamplePath)
 #endif
 
   ASSERT_EQ(mu, computedMode); // has the real mode been estimated correctly ?
-}
-
-/** pi is selected close to 1, but in forwardSamplePath all z = 1 cases are forbidden.
- * The test checks if all z but one are at 1 in each individual. */
-TEST(BOSPath, allZOneForbiddenForward)
-{
-  int nbSample = 1000;
-  int nbModality = 4;
-  int mu = 1;
-  Real pi = 0.999; // high pi to ensure the maximum possible z = 1 nodes
-  Real errorTolerance = 0.05;
-
-  RowVector<Real> nbZ(nbSample);
-
-  BOSPath path;
-  path.setInit(0, nbModality - 1);
-  path.setEnd (0, nbModality - 1); // no constraint on values
-
-  for (int n = 0; n < nbSample; ++n)
-  {
-    path.forwardSamplePath(mu,
-                           pi,
-                           allZ1Forbidden_);
-    nbZ(n) = path.nbZ();
-
-#ifdef MC_DEBUG
-    std::cout << "n: " << n << std::endl;
-    for (int node = 0; node < nbModality - 1; ++node)
-    {
-      std::cout << path.c_(node).z_ << std::endl;
-    }
-#endif
-  }
-
-#ifdef MC_DEBUG
-  std::cout << "nbZ.mean(): " << nbZ.mean() << std::endl;
-#endif
-
-  ASSERT_LT(std::abs(nbZ.mean() - (nbModality - 2)), errorTolerance);
-}
-
-TEST(BOSPath, allZOneAuthorizedGibbs)
-{
-  int nbItBurnIn = 1000;
-  int nbItRun = 1000;
-  int nbModality = 4;
-  int mu = 1;
-  Real pi = 0.999; // high pi to ensure the maximum possible z = 1 nodes
-  Real errorTolerance = 0.05;
-
-  RowVector<Real> nbZ(nbItRun);
-
-  BOSPath path;
-  path.setInit(0, nbModality - 1);
-  path.setEnd (0, nbModality - 1); // no constraint on values
-
-  path.initPath(); // random init with all z = 0, to ensure a valid complete individual
-
-  for (int iter = 0; iter < nbItBurnIn; ++iter)
-  {
-    path.samplePath(mu,
-                    pi,
-                    sizeTupleBOS,
-                    allZ1Forbidden_);
-  }
-
-  for (int iter = 0; iter < nbItRun; ++iter)
-  {
-    path.samplePath(mu,
-                    pi,
-                    sizeTupleBOS,
-                    allZ1Forbidden_);
-    nbZ(iter) = path.nbZ();
-  }
-
-#ifdef MC_DEBUG
-  std::cout << "nbZ.mean(): " << nbZ.mean() << std::endl;
-#endif
-
-  ASSERT_LT(std::abs(nbZ.mean() - (nbModality - 2)), errorTolerance);
 }

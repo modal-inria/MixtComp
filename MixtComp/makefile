@@ -84,7 +84,6 @@ D_UTEST = $(SRC_UTEST:%.cpp=%.d)
 ALL_GTEST = $(O_GTEST) $(D_GTEST)
 ALL_UTEST = $(O_UTEST) $(D_UTEST) $(EXE_UTEST)
 
-
 # $(warning $(CXX)) # example of console output for debug
 # $(warning $(CXXFLAGS)) # example of console output for debug
 

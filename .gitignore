@@ -2,6 +2,10 @@
 .Rhistory
 .RData
 .svn
+*.aux
+*.toc
+*.log
+*.synctex.gz
 *.o
 *.so
 *.a
@@ -23,3 +27,4 @@ test/test
 .metadata/*
 boost_1_56_0/*
 progress
+/.metadata/

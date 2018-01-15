@@ -320,6 +320,10 @@ void sortIndex(Container& out) const
  * A common example of usage is the computations of the proportions t_ik
  * from the logProbabilities.
  *
+ * This method modifies directly the calling object. This is why there are
+ * no return value nor reference output. derived() is the calling object being
+ * modified.
+ *
  * @param log vector of log values
  * @param[out] multi multinomial distribution
  * @value log of the marginal probability
@@ -334,6 +338,26 @@ Scalar logToMulti(const MatrixBase<OtherDerived>& multi) {
   derived() = derived() / sum;
 
   return max + std::log(sum);
+}
+
+/**
+ * Similar to logToMulti, except that the vector of log probability is exported.
+ * It is useful for cases where the proba is needed in a computation, rather
+ * than for sampling.
+ *
+ * Note that the calling object must be of the same type as the argument. It did not
+ * compile easily using MatrixBase<OtherDerived> as the type of exp.
+ */
+Scalar logProbaToLogMulti(const Derived& multi) {
+  derived() = multi;
+  Scalar max = derived().maxCoeff();
+  derived() -= max;
+
+  Derived exp(derived().exp());
+  Scalar logSum = std::log(exp.sum());
+  derived() -= logSum;
+
+  return max + logSum;
 }
 
 template<typename Type>
