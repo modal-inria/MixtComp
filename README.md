@@ -2,6 +2,8 @@
 
 ## All platforms
 
+### R
+
 R must be installed, along with the following packages from the CRAN: Rcpp, jsonlite, scales, plotly. Two packages are used for testing but are not required for installing RMixtComp: testthat is used to perform unit testing in R and RInside is used for testing procedure in C++.
 Those command lines can perform the installation automatically in the ~/R directory
 add the following line to .bashrc: export R_LIBS="~/R"
@@ -9,6 +11,10 @@ mkdir ~/R
 Rscript -e "install.packages(c(\"Rcpp\", \"scales\", \"jsonlite\", \"plotly\"), repos = \"https://cran.univ-paris1.fr/\")"
 
 If you want a minimal installation of RMixtComp, you can edit both the DESCRIPTION and NAMESPACE files to keep only the Rcpp dependency.
+
+### Boost
+
+The Boost library is required for MixtComp to compile. As it contains a lot of files, it would slow down git to version everything. Boost is thus distributed as an archive to be found in the boost subfolder of the repository. Simply unzip it in place.
 
 ## OSX
 
