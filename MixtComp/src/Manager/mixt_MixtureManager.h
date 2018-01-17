@@ -12,7 +12,10 @@
 #define MIXT_MIXTUREMANAGER_H
 
 #include "Composer/mixt_MixtureComposer.h"
-#include "Mixture/SimpleMixtureBridge/mixt_MixtureBridge.h"
+#include "Mixture/Simple/SimpleMixture.h"
+#include "Mixture/Simple/Categorical.h"
+#include "Mixture/Simple/Gaussian.h"
+#include "Mixture/Simple/Poisson.h"
 #include "Mixture/Functional/mixt_FunctionalMixture.h"
 #include "Mixture/Ordinal/mixt_Ordinal.h"
 #include "Mixture/Rank/mixt_RankMixture.h"
@@ -91,60 +94,78 @@ class MixtureManager {
         Index nbCluster,
         Real confidenceLevel) {
       if (idModel == "Categorical_pjk") {
-        CategoricalBridge_pjk_m<DataHandler,
-                                DataExtractor,
-                                ParamSetter,
-                                ParamExtractor>* p_bridge = new CategoricalBridge_pjk_m<DataHandler,
-                                                                                        DataExtractor,
-                                                                                        ParamSetter,
-                                                                                        ParamExtractor>(indexMixture,
-                                                                                                        idName,
-                                                                                                        nbCluster,
-                                                                                                        composer.p_zi(),
-                                                                                                        composer.classInd(),
-                                                                                                        p_handler_,
-                                                                                                        p_dataExtractor_,
-                                                                                                        p_paramSetter_,
-                                                                                                        p_paramExtractor_,
-                                                                                                        confidenceLevel);
+    	  	  SimpleMixture<
+			  Categorical,
+			  DataHandler,
+			  DataExtractor,
+			  ParamSetter,
+			  ParamExtractor>* p_bridge =
+					  new SimpleMixture<
+					  Categorical,
+				  DataHandler,
+				  DataExtractor,
+				  ParamSetter,
+				  ParamExtractor>(
+						  indexMixture,
+						  idName,
+						  nbCluster,
+						  composer.p_zi(),
+						  composer.classInd(),
+						  p_handler_,
+						  p_dataExtractor_,
+						  p_paramSetter_,
+						  p_paramExtractor_,
+						  confidenceLevel);
         return p_bridge;
       }
       if (idModel == "Gaussian_sjk") {
-        GaussianBridge_sjk_m<DataHandler,
-                             DataExtractor,
-                             ParamSetter,
-                             ParamExtractor>* p_bridge = new GaussianBridge_sjk_m<DataHandler,
-                                                                                  DataExtractor,
-                                                                                  ParamSetter,
-                                                                                  ParamExtractor>(indexMixture,
-                                                                                                  idName,
-                                                                                                  nbCluster,
-                                                                                                  composer.p_zi(),
-                                                                                                  composer.classInd(),
-                                                                                                  p_handler_,
-                                                                                                  p_dataExtractor_,
-                                                                                                  p_paramSetter_,
-                                                                                                  p_paramExtractor_,
-                                                                                                  confidenceLevel);
+    	  	  SimpleMixture<
+			  Gaussian,
+			  DataHandler,
+			  DataExtractor,
+			  ParamSetter,
+			  ParamExtractor>* p_bridge =
+					  new SimpleMixture<
+					  	  Gaussian,
+						  DataHandler,
+						  DataExtractor,
+						  ParamSetter,
+						  ParamExtractor>(
+								  indexMixture,
+								  idName,
+								  nbCluster,
+								  composer.p_zi(),
+								  composer.classInd(),
+								  p_handler_,
+								  p_dataExtractor_,
+								  p_paramSetter_,
+								  p_paramExtractor_,
+								  confidenceLevel);
         return p_bridge;
       }
       if (idModel == "Poisson_k") {
-        PoissonBridge_k_m<DataHandler,
-                          DataExtractor,
-                                   ParamSetter,
-                                   ParamExtractor>* p_bridge = new PoissonBridge_k_m<DataHandler,
-                                                                                     DataExtractor,
-                                                                                     ParamSetter,
-                                                                                     ParamExtractor>(indexMixture,
-                                                                                                     idName,
-                                                                                                     nbCluster,
-                                                                                                     composer.p_zi(),
-                                                                                                     composer.classInd(),
-                                                                                                     p_handler_,
-                                                                                                     p_dataExtractor_,
-                                                                                                     p_paramSetter_,
-                                                                                                     p_paramExtractor_,
-                                                                                                     confidenceLevel);
+	  	  SimpleMixture<
+		  	  Poisson,
+			  DataHandler,
+			  DataExtractor,
+			  ParamSetter,
+			  ParamExtractor>* p_bridge =
+					  new SimpleMixture<
+					  Poisson,
+					  DataHandler,
+					  DataExtractor,
+					  ParamSetter,
+					  ParamExtractor>(
+							  indexMixture,
+							  idName,
+							  nbCluster,
+							  composer.p_zi(),
+							  composer.classInd(),
+							  p_handler_,
+							  p_dataExtractor_,
+							  p_paramSetter_,
+							  p_paramExtractor_,
+							  confidenceLevel);
         return p_bridge;
       }
       if (idModel == "Functional") {

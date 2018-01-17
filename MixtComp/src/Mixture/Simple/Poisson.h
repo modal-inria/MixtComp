@@ -3,27 +3,31 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: November 6, 2014
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
- *              Serge IOVLEFF <serge.iovleff@inria.fr>
+ *  Created on: December 12, 2014
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_CATEGORICAL_PJK
-#define MIXT_CATEGORICAL_PJK
+#ifndef POISSON_H
+#define POISSON_H
 
 #include <vector>
 #include <set>
 
 #include "Data/mixt_AugmentedData.h"
-#include "LinAlg/mixt_LinAlg.h"
-#include "Various/mixt_Enum.h"
-#include "Mixture/mixt_IMixture.h"
+#include "Sampler/mixt_PoissonSampler.h"
+#include "Data/mixt_ConfIntDataStat.h"
+#include "Likelihood/mixt_PoissonLikelihood.h"
 
 namespace mixt {
 
-class Categorical_pjk {
+class Poisson {
 public:
-	Categorical_pjk(
+    typedef Vector<int> Data;
+    typedef ConfIntDataStat<int> DataStat;
+    typedef PoissonSampler Sampler;
+    typedef PoissonLikelihood Likelihood;
+
+	Poisson(
 			const std::string& idName,
 			int nbClass,
 			Vector<Real>& param,
@@ -33,20 +37,20 @@ public:
 
 	int computeNbFreeParameters() const;
 
+	bool hasModalities() const;
+
+	std::string setData(
+			const std::string& paramStr,
+			AugmentedData<Vector<int> >& augData,
+			RunMode mode);
+
 	void mStep();
 
 	std::vector<std::string> paramNames() const;
 
-	std::string setData(
-			std::string& paramStr,
-			AugmentedData<Vector<int> >& augData,
-			RunMode mode);
-
 	void writeParameters() const;
 
 	std::string checkSampleCondition() const;
-
-	bool hasModalities() const;
 
 	std::string initParam(const Vector<Index>& initObs);
 
@@ -54,18 +58,15 @@ public:
 
 private:
 	std::string idName_;
-
-	Index nClass_;
-
-	Index nModality_;
-
-	Vector<int>* p_data_;
-
+	int nClass_;
 	Vector<Real>& param_;
-
+	Vector<int>* p_data_;
 	const Vector<std::set<Index> >& classInd_;
+
+	/** Statistic object to describe Poisson law */
+	PoissonStatistic poisson_;
 };
 
 } // namespace mixt
 
-#endif
+#endif // MIXT_POISSON_K_H

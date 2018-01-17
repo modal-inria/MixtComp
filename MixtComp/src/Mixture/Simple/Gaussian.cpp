@@ -14,11 +14,11 @@
 #include "IO/mixt_IO.h"
 #include "Various/mixt_Enum.h"
 
-#include "mixt_Gaussian_sjk.h"
+#include "Gaussian.h"
 
 namespace mixt {
 
-Gaussian_sjk::Gaussian_sjk(
+Gaussian::Gaussian(
 		const std::string& idName,
 		int nbClass,
 		Vector<Real>& param,
@@ -31,7 +31,7 @@ Gaussian_sjk::Gaussian_sjk(
 	param_.resize(2 * nbClass);
 }
 
-Vector<bool> Gaussian_sjk::acceptedType() const {
+Vector<bool> Gaussian::acceptedType() const {
 	Vector<bool> at(nb_enum_MisType_);
 	at(0) = true ; // present_,
 	at(1) = true ; // missing_,
@@ -42,15 +42,15 @@ Vector<bool> Gaussian_sjk::acceptedType() const {
 	return at;
 }
 
-int Gaussian_sjk::computeNbFreeParameters() const {
+int Gaussian::computeNbFreeParameters() const {
 	return 2 * nClass_;
 }
 
-bool Gaussian_sjk::hasModalities() const {
+bool Gaussian::hasModalities() const {
 	return false;
 }
 
-void Gaussian_sjk::mStep() {
+void Gaussian::mStep() {
 	for (int k = 0; k < nClass_; ++k) {
 		Real mean;
 		Real sd;
@@ -65,7 +65,7 @@ void Gaussian_sjk::mStep() {
 	}
 }
 
-std::vector<std::string> Gaussian_sjk::paramNames() const {
+std::vector<std::string> Gaussian::paramNames() const {
 	std::vector<std::string> names(nClass_ * 2);
 	for (int k = 0; k < nClass_; ++k) {
 		std::stringstream sstmMean, sstmSd;
@@ -81,7 +81,7 @@ std::vector<std::string> Gaussian_sjk::paramNames() const {
 	return names;
 }
 
-std::string Gaussian_sjk::setData(
+std::string Gaussian::setData(
 		const std::string& paramStr,
 		AugmentedData<Vector<Real> >& augData,
 		RunMode mode) {
@@ -92,7 +92,7 @@ std::string Gaussian_sjk::setData(
 	return warnLog;
 }
 
-void Gaussian_sjk::writeParameters() const {
+void Gaussian::writeParameters() const {
 	std::stringstream sstm;
 	for (int k = 0; k < nClass_; ++k) {
 		sstm << "Class: " << k << std::endl;
@@ -103,7 +103,7 @@ void Gaussian_sjk::writeParameters() const {
 	std::cout << sstm.str() << std::endl;
 }
 
-std::string Gaussian_sjk::checkSampleCondition() const {
+std::string Gaussian::checkSampleCondition() const {
 	for (Index k = 0; k < nClass_; ++k) {
 		if (classInd_(k).size() < 2) {
 			return "Gaussian variables must have at least two individuals per class. This is not the case for at least one class. You can check whether you have enough individuals regarding the number of classes." + eol;
@@ -127,7 +127,7 @@ std::string Gaussian_sjk::checkSampleCondition() const {
 	return "";
 }
 
-std::string Gaussian_sjk::initParam(const Vector<Index>& initObs) {
+std::string Gaussian::initParam(const Vector<Index>& initObs) {
 	Real sampleMean, sampleSd;
 	meanSD((*p_data_), sampleMean, sampleSd); // computation of sample standard deviation
 	Real classSd = sampleSd / nClass_; // variance per class
@@ -147,7 +147,7 @@ std::string Gaussian_sjk::initParam(const Vector<Index>& initObs) {
 	return sstm.str();
 }
 
-std::vector<bool> Gaussian_sjk::parametersInInterior() {
+std::vector<bool> Gaussian::parametersInInterior() {
 	std::vector<bool> res(nClass_);
 	for (Index k = 0; k < nClass_; ++k) {
 		res[k] = (param_(2 * k + 1) == 0.0) ? false : true;

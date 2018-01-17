@@ -14,12 +14,11 @@
 #include "Various/mixt_Constants.h"
 #include "LinAlg/mixt_LinAlg.h"
 #include "Various/mixt_Enum.h"
-
-#include "mixt_Categorical_pjk.h"
+#include "Categorical.h"
 
 namespace mixt {
 
-Categorical_pjk::Categorical_pjk(
+Categorical::Categorical(
 		const std::string& idName,
 		int nbClass,
 		Vector<Real>& param,
@@ -31,7 +30,7 @@ Categorical_pjk::Categorical_pjk(
   param_(param),
   classInd_(classInd) {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
 
-Vector<bool> Categorical_pjk::acceptedType() const {
+Vector<bool> Categorical::acceptedType() const {
 	Vector<bool> at(nb_enum_MisType_);
 	at(0) = true ; // present_,
 	at(1) = true ; // missing_,
@@ -42,11 +41,11 @@ Vector<bool> Categorical_pjk::acceptedType() const {
 	return at;
 }
 
-int Categorical_pjk::computeNbFreeParameters() const {
+int Categorical::computeNbFreeParameters() const {
 	return nClass_ * (nModality_ - 1);
 }
 
-void Categorical_pjk::mStep() {
+void Categorical::mStep() {
 	for (Index k = 0; k < nClass_; ++k) {
 		Vector<Real> modalities(nModality_, 0.);
 
@@ -65,7 +64,7 @@ void Categorical_pjk::mStep() {
 	}
 }
 
-std::vector<std::string> Categorical_pjk::paramNames() const {
+std::vector<std::string> Categorical::paramNames() const {
 	std::vector<std::string> names(nClass_ * nModality_);
 	for (Index k = 0; k < nClass_; ++k) {
 		for (Index p = 0; p < nModality_; ++p) {
@@ -80,7 +79,7 @@ std::vector<std::string> Categorical_pjk::paramNames() const {
 	return names;
 }
 
-std::string Categorical_pjk::setData(
+std::string Categorical::setData(
 		std::string& paramStr,
 		AugmentedData<Vector<int> >& augData,
 		RunMode mode) {
@@ -152,7 +151,7 @@ std::string Categorical_pjk::setData(
 	return warnLog;
 }
 
-void Categorical_pjk::writeParameters() const {
+void Categorical::writeParameters() const {
 	std::stringstream sstm;
 	for (Index k = 0; k < nClass_; ++k) {
 		sstm << "Class: " << k << std::endl;
@@ -164,7 +163,7 @@ void Categorical_pjk::writeParameters() const {
 	std::cout << sstm.str() << std::endl;
 }
 
-std::string Categorical_pjk::checkSampleCondition() const {
+std::string Categorical::checkSampleCondition() const {
 	if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
 	for (Index k = 0; k < nClass_; ++k) {
@@ -195,11 +194,11 @@ std::string Categorical_pjk::checkSampleCondition() const {
 }
 
 
-bool Categorical_pjk::hasModalities() const {
+bool Categorical::hasModalities() const {
 	return true;
 }
 
-std::string Categorical_pjk::initParam(const Vector<Index>& initObs) {
+std::string Categorical::initParam(const Vector<Index>& initObs) {
 	Real constantTerm = 1. / nClass_; // this could also be based on the number of observations, to get a Bayesian justification
 	param_ = 0.;
 
@@ -218,7 +217,7 @@ std::string Categorical_pjk::initParam(const Vector<Index>& initObs) {
 	return "";
 }
 
-std::vector<bool> Categorical_pjk::parametersInInterior() {
+std::vector<bool> Categorical::parametersInInterior() {
 	std::vector<bool> res(nClass_);
 
 	for (Index k = 0; k < nClass_; ++k) {

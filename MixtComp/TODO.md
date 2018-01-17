@@ -1,5 +1,7 @@
 # Current
 
+- Incorporate Gaussian Sampler and Likelihood
+
 # Algorithm
 
 - in IMixture::computeObservedProba, the number of samplings used are determined by constants, but they should increase when the complexity of the model increases

@@ -7,14 +7,14 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_Poisson_k.h"
+#include <Mixture/Simple/Poisson.h>
 #include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../Various/mixt_Enum.h"
 
 namespace mixt {
 
-Poisson_k::Poisson_k(
+Poisson::Poisson(
 		const std::string& idName,
 		int nbClass,
 		Vector<Real>& param,
@@ -27,7 +27,7 @@ Poisson_k::Poisson_k(
 	param_.resize(nbClass);
 }
 
-Vector<bool> Poisson_k::acceptedType() const {
+Vector<bool> Poisson::acceptedType() const {
 	Vector<bool> at(nb_enum_MisType_);
 	at(0) = true; // present_,
 	at(1) = true;// missing_,
@@ -38,15 +38,15 @@ Vector<bool> Poisson_k::acceptedType() const {
 	return at;
 }
 
-int Poisson_k::computeNbFreeParameters() const {
+int Poisson::computeNbFreeParameters() const {
 	return nClass_;
 }
 
-bool Poisson_k::hasModalities() const {
+bool Poisson::hasModalities() const {
 	return false;
 }
 
-void Poisson_k::mStep() {
+void Poisson::mStep() {
 	for (int k = 0; k < nClass_; ++k) {
 		Real sumClass = 0.;
 		for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
@@ -59,7 +59,7 @@ void Poisson_k::mStep() {
 	}
 }
 
-std::vector<std::string> Poisson_k::paramNames() const {
+std::vector<std::string> Poisson::paramNames() const {
 	std::vector<std::string> names(nClass_);
 	for (int k = 0; k < nClass_; ++k) {
 		std::stringstream sstm;
@@ -71,7 +71,7 @@ std::vector<std::string> Poisson_k::paramNames() const {
 	return names;
 }
 
-std::string Poisson_k::setData(
+std::string Poisson::setData(
 		const std::string& paramStr,
 		AugmentedData<Vector<int> >& augData,
 		RunMode mode) {
@@ -89,7 +89,7 @@ std::string Poisson_k::setData(
 	return warnLog;
 }
 
-void Poisson_k::writeParameters() const {
+void Poisson::writeParameters() const {
 	std::stringstream sstm;
 	for (int k = 0; k < nClass_; ++k) {
 		sstm << "Class: " << k << std::endl;
@@ -99,7 +99,7 @@ void Poisson_k::writeParameters() const {
 	std::cout << sstm.str() << std::endl;
 }
 
-std::string Poisson_k::checkSampleCondition() const {
+std::string Poisson::checkSampleCondition() const {
 	if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
 	for (Index k = 0; k < nClass_; ++k) {
@@ -119,7 +119,7 @@ std::string Poisson_k::checkSampleCondition() const {
 	return "";
 }
 
-std::string Poisson_k::initParam(const Vector<Index>& initObs) {
+std::string Poisson::initParam(const Vector<Index>& initObs) {
 	for (Index k = 0; k < nClass_; ++k) {
 		param_(k) = Real((*p_data_)(initObs(k)));
 	}
@@ -132,7 +132,7 @@ std::string Poisson_k::initParam(const Vector<Index>& initObs) {
 	return sstm.str();
 };
 
-std::vector<bool> Poisson_k::parametersInInterior() {
+std::vector<bool> Poisson::parametersInInterior() {
 	std::vector<bool> res(nClass_);
 	for (Index k = 0; k < nClass_; ++k) {
 		res[k] = (param_(k) == 0.0) ? false : true;

@@ -28,8 +28,6 @@
 #include "Mixture/Functional/mixt_FunctionalParser.h"
 #include "Mixture/Rank/mixt_RankParser.h"
 #include "Mixture/Simple/SimpleMixture.h"
-#include "Mixture/Simple/Weibull.h"
-#include "Mixture/SimpleMixtureBridge/mixt_Clust_Traits.h"
 #include "Manager/mixt_MixtureManager.h"
 #include "Strategy/mixt_SEMStrategy.h"
 #include "Strategy/mixt_GibbsStrategy.h"

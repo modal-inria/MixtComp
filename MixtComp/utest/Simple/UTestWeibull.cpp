@@ -12,5 +12,10 @@
 using namespace mixt;
 
 TEST(Weibull, Instantiate) {
-	SimpleMixture<Weibull> w;
+//	SimpleMixture<
+//		Gaussian,
+//		DataHandlerDummy,
+//		DataExtractorDummy,
+//		ParamSetterDummy,
+//		ParamExtractorDummy> w;
 }

@@ -3,27 +3,31 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: November 6, 2014
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
- *              Serge IOVLEFF <serge.iovleff@inria.fr>
+ *  Created on: 15th of January, 2018
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_GAUSSIAN_SJK_H
-#define MIXT_GAUSSIAN_SJK_H
+#ifndef GAUSSIAN_H
+#define GAUSSIAN_H
 
 #include <vector>
 #include <set>
 
-#include "../../LinAlg/mixt_LinAlg.h"
-#include "../../Statistic/mixt_NormalStatistic.h"
-#include "../../Various/mixt_Enum.h"
-#include "../../Mixture/mixt_IMixture.h"
+#include "LinAlg/mixt_LinAlg.h"
+#include "Sampler/mixt_GaussianSampler.h"
+#include "Data/mixt_ConfIntDataStat.h"
+#include "Likelihood/mixt_GaussianLikelihood.h"
 
 namespace mixt {
 
-class Gaussian_sjk {
+class Gaussian {
 public:
-	Gaussian_sjk(
+	typedef Vector<Real> Data;
+    typedef ConfIntDataStat<Real> DataStat;
+    typedef GaussianSampler Sampler;
+    typedef GaussianLikelihood Likelihood;
+
+    Gaussian(
 			const std::string& idName,
 			int nbClass,
 			Vector<Real>& param,
@@ -53,6 +57,7 @@ public:
 	std::string initParam(const Vector<Index>& initObs);
 
 	std::vector<bool> parametersInInterior();
+
 private:
 	std::string idName_;
 	int nClass_;
@@ -67,6 +72,6 @@ private:
 	NormalStatistic normal_;
 };
 
-} // namespace mixt
+}
 
-#endif
+#endif /* MIXT_MIXTUREBRIDGE_H */
