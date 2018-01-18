@@ -60,4 +60,16 @@ Real Weibull::positiveNewtonRaphson(const Vector<Real>& x, Real currK, Real nIt)
 	}
 }
 
+Real Weibull::estimateLambda(const Vector<Real>& x, Real k) {
+	Index nObs = x.size();
+
+	Vector<Real> xk(nObs);
+	for (Index i = 0; i < nObs; ++i) {
+		xk(i) = std::pow(x(i), k);
+	}
+	Real sumxk = xk.sum();
+
+	return std::pow(1.0 / Real(nObs) * sumxk, 1.0 / k);
+}
+
 }

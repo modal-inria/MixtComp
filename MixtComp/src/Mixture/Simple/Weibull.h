@@ -28,6 +28,8 @@ public:
 	std::pair<Real, Real> evalFuncDeriv(const Vector<Real>& x, Real k);
 
 	Real positiveNewtonRaphson(const Vector<Real>& x, Real currK, Real nIt);
+
+	Real estimateLambda(const Vector<Real>& x, Real k);
 };
 
 }

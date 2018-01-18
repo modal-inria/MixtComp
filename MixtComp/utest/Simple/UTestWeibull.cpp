@@ -17,6 +17,7 @@ using namespace mixt;
 TEST(Weibull, EstimateK) {
 	Index nObs = 100000;
 
+	Real lambdaExpected = 1.0;
 	Real kExpected = 1.5;
 
 	WeibullStatistic weib;
@@ -24,10 +25,12 @@ TEST(Weibull, EstimateK) {
 
 	Vector<Real> x(nObs);
 	for (Index i = 0; i < nObs; ++i) {
-		x(i) = weib.sample(1.0, kExpected);
+		x(i) = weib.sample(lambdaExpected, kExpected);
 	}
 
 	Real kComputed = w.positiveNewtonRaphson(x, 10.0, 10);
+	Real lambdaComputed = w.estimateLambda(x, kExpected);
 
 	ASSERT_NEAR(kExpected, kComputed, 0.01);
+	ASSERT_NEAR(lambdaExpected, lambdaComputed, 0.01);
 }
