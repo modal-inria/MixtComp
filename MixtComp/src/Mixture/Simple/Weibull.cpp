@@ -10,6 +10,7 @@
 #include "Weibull.h"
 
 #include <cmath>
+#include <iostream>
 
 namespace mixt {
 
@@ -44,6 +45,19 @@ std::pair<Real, Real> Weibull::evalFuncDeriv(const Vector<Real>& x, Real k) {
 	Real df = (sumxklnxlnx * sumxk - sumxklnx * sumxklnx) / (sumxk * sumxk) + 1.0 / (k * k);
 
 	return std::pair<Real, Real>(f, df);
+}
+
+Real Weibull::positiveNewtonRaphson(const Vector<Real>& x, Real currK, Real nIt) {
+	if (nIt < 0)
+		return currK;
+	else {
+		std::pair<Real, Real> eval = evalFuncDeriv(x, currK);
+		Real candidate = currK - eval.first / eval.second;
+		if (0.0 < candidate)
+			return positiveNewtonRaphson(x, candidate  , nIt - 1);
+		else
+			return positiveNewtonRaphson(x, currK / 2.0, nIt - 1);
+	}
 }
 
 }

@@ -15,5 +15,6 @@
 #include "mixt_NormalStatistic.h"
 #include "mixt_PoissonStatistic.h"
 #include "mixt_UniformStatistic.h"
+#include "WeibullStatistic.h"
 
 #endif // MIXT_STATISTIC_H

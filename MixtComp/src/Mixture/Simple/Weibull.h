@@ -26,6 +26,8 @@ public:
 	 * Evaluate both the value and derivative of the
 	 */
 	std::pair<Real, Real> evalFuncDeriv(const Vector<Real>& x, Real k);
+
+	Real positiveNewtonRaphson(const Vector<Real>& x, Real currK, Real nIt);
 };
 
 }

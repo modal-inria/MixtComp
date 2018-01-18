@@ -1,6 +1,6 @@
 # Current
 
-- Incorporate Gaussian Sampler and Likelihood
+- Weibull with at least missing intervals of the type [a; +inf]
 
 # Algorithm
 
@@ -69,6 +69,7 @@
 # Performances
 
 - remove regex in data parsing. Will be faster but less tolerant to data format.
+- Statistics object generate a boost::variate_generator each time a variable is sampled. It should be possible to generate a vector of value, when the parameters do not vary.
 
 # Various
 
