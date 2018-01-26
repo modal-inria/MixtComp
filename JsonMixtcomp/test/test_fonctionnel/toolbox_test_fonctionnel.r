@@ -170,11 +170,6 @@ test_mixtcomp_donnees_func <- function(data_training,data_test,descriptor){
   
   system(paste("/home/etienne/mixtcomp/JsonMixtcomp/bin/JsonMixtComp", "working_data/mixtcomp_predict_input.json",path_mixtcomp_predict_output,sep=" "))
   
-  detach("package:RMixtComp", unload=TRUE)  
-  require(RMixtComp)
-  res_learn <- mixtCompCluster(dataList = resGetData$lm,mcStrategy = mcStrategy,nbClass = 2,confidenceLevel = 0.95)
-  res_pred <- mixtCompPredict(dataList = resGetData$lm,paramList = res_learn$variable$param,mcStrategy = mcStrategy,nbClass = 2,confidenceLevel = 0.95)
-  
   result <- fromJSON(path_mixtcomp_predict_output)
   
 }

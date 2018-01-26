@@ -14,7 +14,6 @@ colnames(descriptor)    <- colnames(data_training)
 colnames(data_test)     <- colnames(data_training)
 
 res <- test_mixtcomp(data_training,data_test,descriptor)
-res$variable$data$X3$completed
 
 test_mixtcomp_by_row(data_training,data_test,descriptor)
  
