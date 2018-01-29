@@ -1,0 +1,274 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.8.28)  6 JAN 2018 11:36
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**doc.tex
+(./doc.tex
+LaTeX2e <2016/02/01>
+Babel <3.9q> and hyphenation patterns for 81 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+No file doc.aux.
+\openout1 = `doc.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 6.
+LaTeX Font Info:    ... okay on input line 6.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 8.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 8.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 8.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 15.
+(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 15.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.15 	\item MC_
+               VERBOSE: change the level of details output to the standard o...
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 15.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 15.
+
+! LaTeX Error: Command \item invalid in math mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 	\item
+            MC_DEBUG, MC_DEBUG_NEW:  some debug flags.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 	\item M
+             C_DEBUG, MC_DEBUG_NEW:  some debug flags.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 	\item M
+             C_DEBUG, MC_DEBUG_NEW:  some debug flags.
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Command \item invalid in math mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.17 	\item
+            MC_DETERMINISTIC: change the seeding value, from pseudo-random t...
+
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.17 	\item M
+             C_DETERMINISTIC: change the seeding value, from pseudo-random t...
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.17 	\item M
+             C_DETERMINISTIC: change the seeding value, from pseudo-random t...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+
+Overfull \hbox (137.76517pt too wide) in paragraph at lines 15--17
+[]\OT1/cmr/m/n/10 MC$[]\OML/cmm/m/it/10 ERBOSE \OT1/cmr/m/n/10 : \OML/cmm/m/it/
+10 changethelevelofdetailsoutputtothestandardoutput:MC[]EBUG; MC[]EBUG[]EW \OT1
+/cmr/m/n/10 :
+ []
+
+! Extra }, or forgotten \endgroup.
+\par ...m \@noitemerr {\@@par }\fi \else {\@@par }
+                                                  \fi 
+l.17 	\item M
+             C_DETERMINISTIC: change the seeding value, from pseudo-random t...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.17 	\item MC_
+               DETERMINISTIC: change the seeding value, from pseudo-random t...
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+! LaTeX Error: Command \end{itemize} invalid in math mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.18 \end{itemize}
+                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.18 \end{itemize}
+                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+! LaTeX Error: Something's wrong--perhaps a missing \item.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.18 \end{itemize}
+                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.18 \end{itemize}
+                  
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+
+Overfull \hbox (188.95937pt too wide) in paragraph at lines 17--19
+[]\OT1/cmr/m/n/10 MC$[]\OML/cmm/m/it/10 ETERMINISTIC \OT1/cmr/m/n/10 : \OML/cmm
+/m/it/10 changetheseedingvalue; frompseudo \OMS/cmsy/m/n/10 ^^@ \OML/cmm/m/it/1
+0 randomto\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :Usedtoruntheunittestinadeterminist
+icway:$ 
+ []
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.24 ...algebra library through the use of a mixt_
+                                                  LinAlg.h include. The curr...
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.25 
+     
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+Overfull \hbox (1409.00522pt too wide) in paragraph at lines 24--25
+\OT1/cmr/m/n/10 through the use of a mixt$[]\OML/cmm/m/it/10 inAlg:hinclude:The
+currentbackedisEigen; whichisprovidedintheMixtComppackage:TheMatrixAPIisused; a
+ndcapabilitiesfromtheArrayAPIareprovidedmainlyinthefilemixt[]igenMatrixBaseAddo
+ns:h:ThisisnecessarytoavoidcWiseXXX\OT1/cmr/m/n/10 ()\OML/cmm/m/it/10 or:array\
+OT1/cmr/m/n/10 ()\OML/cmm/m/it/10 syntax:HencethecurrentAPIisamixofbothEigenMat
+rixandEigenArrayAPI; toprovidethemostreadablecodepossible:$ 
+ []
+
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+! You can't use `macro parameter character #' in horizontal mode.
+l.52 ...-buggy-about-regular-expressions/12665408#
+                                                  12665408 . Another tempora...
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+[2] (./doc.aux) ) 
+Here is how much of TeX's memory you used:
+ 245 strings out of 493029
+ 2713 string characters out of 6136234
+ 57083 words of memory out of 5000000
+ 3856 multiletter control sequences out of 15000+600000
+ 7587 words of font info for 27 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 23i,6n,19p,693b,187s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on doc.pdf (2 pages, 92097 bytes).
+PDF statistics:
+ 39 PDF objects out of 1000 (max. 8388607)
+ 27 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
