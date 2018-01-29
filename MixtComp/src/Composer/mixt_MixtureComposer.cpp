@@ -595,7 +595,7 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 		bool errorInObservability = false; // true means that at least in one class there is 0 proba while parameters are not on the boundary of the parameter space
 		for (Index j = 0; j < nVar_; ++j) {
 			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(j, k) == true) { // for this particular variable, the
-				std::cout << "k: " << k << ", j: " << j << ", errorInObservability = true" << std::endl;
+//				std::cout << "i: " << i << ", j: " << j << ", k: " << k << ", errorInObservability = true" << std::endl;
 				errorInObservability = true;
 			}
 			currVar(k) = observedProbabilityCache_(j)(i, k);

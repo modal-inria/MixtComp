@@ -33,6 +33,8 @@ std::string SemStrategy::run() {
 		warnLog = p_composer_->initParam(); // initialize parameters for each model, usually singling out an observation as the center of each class
 		if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
+//		p_composer_->writeParameters(); // for debugging purposes
+
 		warnLog = p_composer_->initializeLatent(); // use observed probabilitity to initialize classes
 		if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
