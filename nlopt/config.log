@@ -614,7 +614,7 @@ configure:16618: $? = 0
 configure:16627: result: yes
 configure:16641: checking for BSDgettimeofday
 configure:16641: gcc -std=gnu99 -o conftest -fPIC  -Wl,-Bsymbolic-functions -Wl,-z,relro conftest.c -lm  >&5
-/tmp/cconpDtd.o: In function `main':
+/tmp/cc09yn3M.o: In function `main':
 conftest.c:(.text+0xa): undefined reference to `BSDgettimeofday'
 collect2: error: ld returned 1 exit status
 configure:16641: $? = 1
@@ -793,6 +793,7 @@ config.status:1229: creating test/Makefile
 config.status:1229: creating swig/Makefile
 config.status:1229: creating swig/nlopt.scm
 config.status:1229: creating config.h
+config.status:1410: config.h is unchanged
 config.status:1458: executing depfiles commands
 config.status:1458: executing libtool commands
 
