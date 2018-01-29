@@ -1,6 +1,7 @@
-# Réunion 24 Octobre
+# Short Term
 
-- Export completed likelihood at each timestep in burn-in and run to get indication of convergence
+- Export the number of SEM Try, do give an indication if degeneracies occured or not.
+- In the first ClassSampler, before initParam, the number of observations per class is not checked, but the system needs at least one individual per class...
 
 # Current
 

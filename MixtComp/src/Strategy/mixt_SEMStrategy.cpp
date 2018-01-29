@@ -25,10 +25,15 @@ SemStrategy::SemStrategy(
 
 std::string SemStrategy::run() {
 	std::string warnLog;
+
 	for (Index n = 0; n < nSemTry; ++n) {
+		std::cout << "SemStrategy::run, attempt n: " << n << std::endl;
 		warnLog.clear(); // only the last warn log can be sent
 
 		p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+		warnLog = p_composer_->checkNbIndPerClass();
+		if (0 < warnLog.size()) continue;
+//		p_composer_->printClassInd();
 
 		warnLog = p_composer_->initParam(); // initialize parameters for each model, usually singling out an observation as the center of each class
 		if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
