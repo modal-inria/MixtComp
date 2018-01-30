@@ -44,7 +44,7 @@ class FunctionalClass {
 
     void initParamAllInd(Index obs);
 
-    bool initParamOneInd(Index obs);
+    std::string initParamOneInd(Index obs);
 
     void sampleParam();
 
@@ -70,8 +70,8 @@ class FunctionalClass {
      * This second case mainly occurs during initParam.
      */
     std::string checkSampleCondition(const std::set<Index>& setInd) const;
-    bool checkNbDifferentValue() const;
-    bool checkNonNullSigma() const;
+    bool checkNbDifferentValue(const std::set<Index>& setInd) const;
+    bool checkNonNullSigma(const std::set<Index>& setInd) const;
   private:
     Index nSub_;
 

@@ -116,9 +116,12 @@ void FunctionalClass::initParamAllInd(Index obs) {
   mStep(); // note that obs is not used
 }
 
-bool FunctionalClass::initParamOneInd(Index obs) {
+std::string FunctionalClass::initParamOneInd(Index obs) {
   std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
   initInd.insert(obs); // initInd is a single element set
+
+  std::string warnLog = checkSampleCondition(initInd);
+  if (0 < warnLog.size()) return warnLog;
 
   Vector<Real> quantile;
   data_(obs).quantile(quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
@@ -133,7 +136,7 @@ bool FunctionalClass::initParamOneInd(Index obs) {
   mStepAlpha(initInd); // partial initialization using only the individual that represent this class
   mStepBetaSd(initInd);
 
-  return (0.0 < sd_.minCoeff()) ? true : false;
+  return "";
 }
 
 void FunctionalClass::setParamStorage() {
@@ -157,8 +160,8 @@ void FunctionalClass::sampleParam(Index iteration,
 
 std::string FunctionalClass::checkSampleCondition(const std::set<Index>& setInd) const {
 	std::string warnLog;
-	bool value = checkNbDifferentValue();
-	bool sd = checkNonNullSigma();
+	bool value = checkNbDifferentValue(setInd);
+	bool sd = checkNonNullSigma(setInd);
 
 	if (!value) {
 		warnLog += "Not enough different values for t. Is your data sampled at enough different timesteps ?" + eol;
@@ -171,10 +174,10 @@ std::string FunctionalClass::checkSampleCondition(const std::set<Index>& setInd)
 	return warnLog;
 }
 
-bool FunctionalClass::checkNbDifferentValue() const {
+bool FunctionalClass::checkNbDifferentValue(const std::set<Index>& setInd) const {
   for (Index s = 0; s < nSub_; ++s) {
     std::set<Real> values;
-    for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
+    for (std::set<Index>::const_iterator it = setInd.begin(), itE = setInd.end();
          it != itE;
          ++it) { // only loop on individuals in the current class
       for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
@@ -195,9 +198,9 @@ bool FunctionalClass::checkNbDifferentValue() const {
   return true;
 }
 
-bool FunctionalClass::checkNonNullSigma() const {
+bool FunctionalClass::checkNonNullSigma(const std::set<Index>& setInd) const {
   for (Index s = 0; s < nSub_; ++s) {
-    for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
+    for (std::set<Index>::const_iterator it = setInd.begin(), itE = setInd.end();
          it != itE;
          ++it) { // only loop on individuals in the current class
       for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();

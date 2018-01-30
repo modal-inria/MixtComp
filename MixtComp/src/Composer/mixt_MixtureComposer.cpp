@@ -390,12 +390,12 @@ std::string MixtureComposer::initParam() {
 			++it;
 		}
 
-		initObs(k) = *it;
+		initObs(k) = *it; // select one observation per class, among the observations that have been uniformly sampled, using the proper constraint in the (semi) supervised test.
 	}
 
-	std::string warnLog;
+	std::string warnLog; // global warnLog
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		std::string varLog;
+		std::string varLog; // variable warnLog
 		varLog += (*it)->initParam(initObs);
 		if (0 < varLog.size()) {
 			std::stringstream sstm;
