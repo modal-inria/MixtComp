@@ -135,6 +135,9 @@
 
 # Long Term
 
+- If a class is emptied, the run should continue with one less class
+    - there should be a way to deactivate a class, that would be simpler than moving / resizing everything
+
 données gaussiennes type "spike and slab" : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
 fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
 

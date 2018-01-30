@@ -81,7 +81,7 @@ public:
 	std::string checkSampleCondition() const {
 		std::string classLog;
 		for (Index k = 0; k < nClass_; ++k) {
-			std::string currClassLog = class_[k].checkSampleCondition();
+			std::string currClassLog = class_[k].checkSampleCondition(classInd_(k));
 			if (0 < currClassLog.size()) {
 				classLog += "Class: " + std::to_string(k) + ": " + currClassLog;
 			}

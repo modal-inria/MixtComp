@@ -118,7 +118,7 @@ void FunctionalClass::initParamAllInd(Index obs) {
 
 bool FunctionalClass::initParamOneInd(Index obs) {
   std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
-  initInd.insert(obs);
+  initInd.insert(obs); // initInd is a single element set
 
   Vector<Real> quantile;
   data_(obs).quantile(quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
@@ -155,7 +155,7 @@ void FunctionalClass::sampleParam(Index iteration,
   sdParamStat_   .sampleParam(iteration, iterationMax);
 }
 
-std::string FunctionalClass::checkSampleCondition() const {
+std::string FunctionalClass::checkSampleCondition(const std::set<Index>& setInd) const {
 	std::string warnLog;
 	bool value = checkNbDifferentValue();
 	bool sd = checkNonNullSigma();
