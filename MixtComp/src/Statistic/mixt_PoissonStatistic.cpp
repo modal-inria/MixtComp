@@ -22,26 +22,37 @@ PoissonStatistic::PoissonStatistic() :
     rng_(seed(this))
 {}
 
-Real PoissonStatistic::pdf(int x,
-                           Real lambda) const {
+Real PoissonStatistic::pdf(int x, Real lambda) const {
     boost::math::poisson pois(lambda);
     Real proba = boost::math::pdf(pois,
                                   x);
     return proba;
 }
 
-Real PoissonStatistic::lpdf(int x,
-                           Real lambda) const {
-    return Real(x) * std::log(lambda) - lambda - logFac(x);
+Real PoissonStatistic::lpdf(int x, Real lambda) const {
+	if (0.0 < lambda) {
+		return Real(x) * std::log(lambda) - lambda - logFac(x);
+	}
+	else {
+		if (x == 0) return 0.0;
+		else return minInf;
+	}
+
+	// return Real(x) * std::log(lambda) - lambda - logFac(x);
 }
 
 int PoissonStatistic::sample(Real lambda) {
-  boost::poisson_distribution<> pois(lambda);
-  boost::variate_generator<boost::mt19937&,
-                           boost::poisson_distribution<> > generator(rng_,
-                                                                     pois);
-  int x = generator();
-  return x;
+	if (0.0 < lambda) {
+		  boost::poisson_distribution<> pois(lambda);
+		  boost::variate_generator<boost::mt19937&,
+		                           boost::poisson_distribution<> > generator(rng_,
+		                                                                     pois);
+		  int x = generator();
+		  return x;
+	}
+	else {
+		return 0;
+	}
 }
 
 int PoissonStatistic::nonZeroSample(Real lambda)

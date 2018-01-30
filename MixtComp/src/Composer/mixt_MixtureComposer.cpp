@@ -226,7 +226,7 @@ std::string MixtureComposer::checkNbIndPerClass() const {
 		else {
 			std::stringstream sstm;
 			sstm << "MixtureComposer::checkNbIndPerClass: at least one class is empty. Maybe you provided more individuals "
-					<< "that the number of classes ?" << std::endl;
+			     << "than the number of classes, or the constraints on the classes of the observations are too tight." << std::endl;
 			return sstm.str();
 		}
 	}

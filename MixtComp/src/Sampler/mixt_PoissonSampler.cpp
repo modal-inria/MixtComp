@@ -18,45 +18,23 @@ PoissonSampler::PoissonSampler(const IMixture& mixture,
                                int nbClass) :
     mixture_(mixture),
     augData_(augData),
-    param_(param)
-{}
+    param_(param) {}
 
-void PoissonSampler::samplingStepNoCheck(int i,
-                                         int z_i)
-{
-#ifdef MC_DEBUG
-  std::cout << "PoissonSampler::sampleIndividual" << std::endl;
-  std::cout << "\ti: " << i << ", z_i: " << z_i << std::endl;
-#endif
-
-  if (augData_.misData_(i).first != present_)
-  {
+void PoissonSampler::samplingStepNoCheck(int i, int z_i) {
+  if (augData_.misData_(i).first != present_) {
     int x;
     Real lambda = param_(z_i);
 
-#ifdef MC_DEBUG
-    std::cout << "\tlambda: " << lambda << std::endl;
-#endif
-
-    switch(augData_.misData_(i).first)
-    {
-      case missing_:
-      {
-#ifdef MC_DEBUG
-        std::cout << "\tmissing_" << std::endl;
-#endif
+    switch(augData_.misData_(i).first) {
+      case missing_: {
         x = poisson_.sample(lambda);
       }
       break;
 
-      default:
-      {}
+      default: {}
       break;
     }
 
-#ifdef MC_DEBUG
-    std::cout << "\tsampled val: " << x << std::endl;
-#endif
     augData_.data_(i) = x;
   }
 }
