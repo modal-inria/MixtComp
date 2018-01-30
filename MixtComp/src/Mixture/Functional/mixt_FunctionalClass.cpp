@@ -120,9 +120,6 @@ std::string FunctionalClass::initParamOneInd(Index obs) {
   std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
   initInd.insert(obs); // initInd is a single element set
 
-  std::string warnLog = checkSampleCondition(initInd);
-  if (0 < warnLog.size()) return warnLog;
-
   Vector<Real> quantile;
   data_(obs).quantile(quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
 
@@ -132,6 +129,9 @@ std::string FunctionalClass::initParamOneInd(Index obs) {
        ++itData) {
     data_(*itData).removeMissingQuantileMixing(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
   }
+
+  std::string warnLog = checkSampleCondition(initInd);
+  if (0 < warnLog.size()) return warnLog;
 
   mStepAlpha(initInd); // partial initialization using only the individual that represent this class
   mStepBetaSd(initInd);
@@ -176,16 +176,12 @@ std::string FunctionalClass::checkSampleCondition(const std::set<Index>& setInd)
 
 bool FunctionalClass::checkNbDifferentValue(const std::set<Index>& setInd) const {
   for (Index s = 0; s < nSub_; ++s) {
-    std::set<Real> values;
-    for (std::set<Index>::const_iterator it = setInd.begin(), itE = setInd.end();
-         it != itE;
-         ++it) { // only loop on individuals in the current class
-      for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
-          itW != itWE;
-           ++itW) { // only loop on timesteps in the current subregression
+    std::set<Real> values; // set has one record per different values
+    for (std::set<Index>::const_iterator it = setInd.begin(), itE = setInd.end(); it != itE; ++it) { // only loop on individuals in the current class
+      for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end(); itW != itWE; ++itW) { // only loop on timesteps in the current subregression
         values.insert(data_(*it).t()(*itW));
         if (nCoeff_ <= values.size()) { // this sub-regression is valid and has enough time steps
-          goto endIt;
+          goto endIt; // stop checking as soon as there are enough different time steps
         }
       }
     }

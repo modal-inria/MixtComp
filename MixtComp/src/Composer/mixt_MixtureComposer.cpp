@@ -532,13 +532,19 @@ std::string MixtureComposer::initializeLatent() {
 	computeObservedProba(); // whether the Gibbs comes after a SEM or is used in prediction, parameters are known at that point
 	setObservedProbaCache();
 	warnLog = eStepObserved();
-	if (0 < warnLog.size()) return warnLog;
+	if (0 < warnLog.size()) {
+		std::cout << "initializeLatent, eStepObserved failed." << std::endl;
+		return warnLog;
+	}
 
 	sampleZ();
 	initializeMarkovChain();
 	sampleUnobservedAndLatent();
 	warnLog = checkSampleCondition();
-	if (0 < warnLog.size()) return warnLog;
+	if (0 < warnLog.size()) {
+		std::cout << "initializeLatent, checkSampleCondition failed." << std::endl;
+		return warnLog;
+	}
 
 	return "";
 }
