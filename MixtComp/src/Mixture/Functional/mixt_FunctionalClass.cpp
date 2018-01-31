@@ -116,24 +116,32 @@ void FunctionalClass::initParamAllInd(Index obs) {
   mStep(); // note that obs is not used
 }
 
-bool FunctionalClass::initParamOneInd(Index obs) {
+std::string FunctionalClass::initParamOneInd(Index obs) {
   std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
-  initInd.insert(obs);
+  initInd.insert(obs); // initInd is a single element set
 
   Vector<Real> quantile;
   data_(obs).quantile(quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
+
+//  std::cout << itString(quantile) << std::endl;
 
   for (std::set<Index>::const_iterator itData  = setInd_.begin(),
                                        itDataE = setInd_.end();
        itData != itDataE;
        ++itData) {
-    data_(*itData).removeMissingQuantileMixing(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
+//    data_(*itData).removeMissingQuantileMixing(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
+	  data_(*itData).removeMissingQuantile(quantile);
   }
+
+//  data_(obs).printSubRegT();
+
+  std::string warnLog = checkSampleCondition(initInd);
+  if (0 < warnLog.size()) return warnLog;
 
   mStepAlpha(initInd); // partial initialization using only the individual that represent this class
   mStepBetaSd(initInd);
 
-  return (0.0 < sd_.minCoeff()) ? true : false;
+  return "";
 }
 
 void FunctionalClass::setParamStorage() {
@@ -155,10 +163,10 @@ void FunctionalClass::sampleParam(Index iteration,
   sdParamStat_   .sampleParam(iteration, iterationMax);
 }
 
-std::string FunctionalClass::checkSampleCondition() const {
+std::string FunctionalClass::checkSampleCondition(const std::set<Index>& setInd) const {
 	std::string warnLog;
-	bool value = checkNbDifferentValue();
-	bool sd = checkNonNullSigma();
+	bool value = checkNbDifferentValue(setInd);
+	bool sd = checkNonNullSigma(setInd);
 
 	if (!value) {
 		warnLog += "Not enough different values for t. Is your data sampled at enough different timesteps ?" + eol;
@@ -171,18 +179,14 @@ std::string FunctionalClass::checkSampleCondition() const {
 	return warnLog;
 }
 
-bool FunctionalClass::checkNbDifferentValue() const {
+bool FunctionalClass::checkNbDifferentValue(const std::set<Index>& setInd) const {
   for (Index s = 0; s < nSub_; ++s) {
-    std::set<Real> values;
-    for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
-         it != itE;
-         ++it) { // only loop on individuals in the current class
-      for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
-          itW != itWE;
-           ++itW) { // only loop on timesteps in the current subregression
+    std::set<Real> values; // set has one record per different values
+    for (std::set<Index>::const_iterator it = setInd.begin(), itE = setInd.end(); it != itE; ++it) { // only loop on individuals in the current class
+      for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end(); itW != itWE; ++itW) { // only loop on timesteps in the current subregression
         values.insert(data_(*it).t()(*itW));
         if (nCoeff_ <= values.size()) { // this sub-regression is valid and has enough time steps
-          goto endIt;
+          goto endIt; // stop checking as soon as there are enough different time steps
         }
       }
     }
@@ -195,9 +199,9 @@ bool FunctionalClass::checkNbDifferentValue() const {
   return true;
 }
 
-bool FunctionalClass::checkNonNullSigma() const {
+bool FunctionalClass::checkNonNullSigma(const std::set<Index>& setInd) const {
   for (Index s = 0; s < nSub_; ++s) {
-    for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
+    for (std::set<Index>::const_iterator it = setInd.begin(), itE = setInd.end();
          it != itE;
          ++it) { // only loop on individuals in the current class
       for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
