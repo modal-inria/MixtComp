@@ -592,7 +592,7 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 	for (Index k = 0; k < nClass_; k++) {
 		lnComp(k) = std::log(prop_[k]);
 
-		bool errorInObservability = false; // true means that at least in one class there is 0 proba while parameters are not on the boundary of the parameter space
+		bool errorInObservability = false; // true means that at least in one class there is a 0 proba while parameters are not on the boundary of the parameter space. This happens for models which sample values to compute observed probability. They might not sample every value, thus misattributing a 0 proba.
 		for (Index j = 0; j < nVar_; ++j) {
 			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(j, k) == true) { // for this particular variable, the
 				std::cout << "k: " << k << ", j: " << j << ", errorInObservability = true" << std::endl;
@@ -601,12 +601,12 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 			currVar(k) = observedProbabilityCache_(j)(i, k);
 		}
 
-		if (!errorInObservability) { // if the observed probability can be "trusted" as an indicator of the "completability" of the observation
+		if (!errorInObservability) { // if the observed probability can be "trusted" and can contribute to the computation of the observed probability
 			lnComp += currVar;
 		}
 	}
 
-	if (lnComp.maxCoeff() == minInf) {
+	if (lnComp.maxCoeff() == minInf) { // individual is not observable if its probability is 0 in every classes, in that case the run can not continue
 		isIndividualObservable = false;
 	}
 
