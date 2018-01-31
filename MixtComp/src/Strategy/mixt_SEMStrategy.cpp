@@ -25,16 +25,33 @@ SemStrategy::SemStrategy(
 
 std::string SemStrategy::run() {
 	std::string warnLog;
+
 	for (Index n = 0; n < nSemTry; ++n) {
+		std::cout << "SemStrategy::run, attempt n: " << n << std::endl;
 		warnLog.clear(); // only the last warn log can be sent
 
 		p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+		warnLog = p_composer_->checkNbIndPerClass();
+		if (0 < warnLog.size()) {
+			std::cout << "Not enough individuals per class." << std::endl;
+			continue;
+		}
+//		p_composer_->printClassInd();
 
 		warnLog = p_composer_->initParam(); // initialize parameters for each model, usually singling out an observation as the center of each class
-		if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+		if (0 < warnLog.size()) {
+			std::cout << "initParam failed." << std::endl;
+			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+		}
+
+		std::cout << "initParam successed." << std::endl;
+
+//		p_composer_->writeParameters(); // for debugging purposes
 
 		warnLog = p_composer_->initializeLatent(); // use observed probability to initialize classes
-		if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+		if (0 < warnLog.size()) {
+			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+		}
 
 		warnLog = runSEM(
 				burnIn_,
@@ -87,7 +104,7 @@ std::string SemStrategy::runSEM(
 
 		std::string warnLog = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
 		if (0 < warnLog.size()) {
-			std::cout << "!!! Degeneracy detected !!!" << std::endl;
+			std::cout << "Degeneracy detected." << std::endl;
 			return warnLog;
 		}
 

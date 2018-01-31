@@ -44,12 +44,12 @@ const Index nbGibbsIniISR = 100;
 
 const int nbSampleObserved = 10000;
 
-const int maxIterationFunctional = 10000;
+const int maxIterationFunctional = 100;
 
 const std::string rankPosSep = ",";
 
 // const Real poissonInitMinAlpha = 0.5;
 
-const Index nSemTry = 10;
+const Index nSemTry = 100;
 
 } // namespace mixt

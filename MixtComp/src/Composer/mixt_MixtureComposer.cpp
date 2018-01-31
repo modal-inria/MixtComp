@@ -222,7 +222,7 @@ std::string MixtureComposer::checkNbIndPerClass() const {
 		else {
 			std::stringstream sstm;
 			sstm << "MixtureComposer::checkNbIndPerClass: at least one class is empty. Maybe you provided more individuals "
-					<< "that the number of classes ?" << std::endl;
+			     << "than the number of classes, or the constraints on the classes of the observations are too tight." << std::endl;
 			return sstm.str();
 		}
 	}
@@ -386,12 +386,12 @@ std::string MixtureComposer::initParam() {
 			++it;
 		}
 
-		initObs(k) = *it;
+		initObs(k) = *it; // select one observation per class, among the observations that have been uniformly sampled, using the proper constraint in the (semi) supervised test.
 	}
 
-	std::string warnLog;
+	std::string warnLog; // global warnLog
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		std::string varLog;
+		std::string varLog; // variable warnLog
 		varLog += (*it)->initParam(initObs);
 		if (0 < varLog.size()) {
 			std::stringstream sstm;
@@ -528,13 +528,19 @@ std::string MixtureComposer::initializeLatent() {
 	computeObservedProba(); // whether the Gibbs comes after a SEM or is used in prediction, parameters are known at that point
 	setObservedProbaCache();
 	warnLog = eStepObserved();
-	if (0 < warnLog.size()) return warnLog;
+	if (0 < warnLog.size()) {
+		std::cout << "initializeLatent, eStepObserved failed." << std::endl;
+		return warnLog;
+	}
 
 	sampleZ();
 	initializeMarkovChain();
 	sampleUnobservedAndLatent();
 	warnLog = checkSampleCondition();
-	if (0 < warnLog.size()) return warnLog;
+	if (0 < warnLog.size()) {
+		std::cout << "initializeLatent, checkSampleCondition failed." << std::endl;
+		return warnLog;
+	}
 
 	return "";
 }
@@ -588,21 +594,20 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 	for (Index k = 0; k < nClass_; k++) {
 		lnComp(k) = std::log(prop_[k]);
 
-		bool errorInObservability = false; // true means that at least in one class there is 0 proba while parameters are not on the boundary of the parameter space
+		bool errorInObservability = false; // true means that at least in one class there is a 0 proba while parameters are not on the boundary of the parameter space. This happens for models which sample values to compute observed probability. They might not sample every value, thus misattributing a 0 proba.
 		for (Index j = 0; j < nVar_; ++j) {
 			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(j, k) == true) {
-				std::cout << "k: " << k << ", j: " << j << ", errorInObservability = true" << std::endl;
 				errorInObservability = true;
 			}
 			currVar(k) = observedProbabilityCache_(j)(i, k);
 		}
 
-		if (!errorInObservability) { // if the observed probability can be "trusted" as an indicator of the "completability" of the observation
+		if (!errorInObservability) { // if the observed probability can be "trusted" and can contribute to the computation of the observed probability
 			lnComp += currVar;
 		}
 	}
 
-	if (lnComp.maxCoeff() == minInf) {
+	if (lnComp.maxCoeff() == minInf) { // individual is not observable if its probability is 0 in every classes, in that case the run can not continue
 		isIndividualObservable = false;
 	}
 

@@ -81,7 +81,7 @@ public:
 	std::string checkSampleCondition() const {
 		std::string classLog;
 		for (Index k = 0; k < nClass_; ++k) {
-			std::string currClassLog = class_[k].checkSampleCondition();
+			std::string currClassLog = class_[k].checkSampleCondition(classInd_(k));
 			if (0 < currClassLog.size()) {
 				classLog += "Class: " + std::to_string(k) + ": " + currClassLog;
 			}
@@ -328,10 +328,8 @@ public:
 	 */
 	std::string initParam(const Vector<Index>& initObs) {
 		for (Index k = 0; k < nClass_; ++k) {
-			bool hasVariance = class_[k].initParamOneInd(initObs(k));
-			if (!hasVariance) {
-				return "Not enough variability in the data. This happens if too many observed functions are constant or piecewise constant." + eol;
-			}
+			std::string warnLog = class_[k].initParamOneInd(initObs(k));
+			if (0 < warnLog.size()) return warnLog;
 		}
 
 		return "";

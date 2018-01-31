@@ -351,9 +351,9 @@ class MixtureComposer {
 
     const Vector<Real>& completedProbabilityLogBurnIn() {return completedProbabilityLogBurnIn_;}
     const Vector<Real>& completedProbabilityLogRun() {return completedProbabilityLogRun_;}
-  private:
     void printClassInd() const;
 
+  private:
     /** name of the latent class variable */
     std::string idName_;
 

@@ -44,7 +44,7 @@ class FunctionalClass {
 
     void initParamAllInd(Index obs);
 
-    bool initParamOneInd(Index obs);
+    std::string initParamOneInd(Index obs);
 
     void sampleParam();
 
@@ -65,13 +65,18 @@ class FunctionalClass {
 
     void samplingStepNoCheck(Index i);
 
-    std::string checkSampleCondition() const;
-    bool checkNbDifferentValue() const;
-    bool checkNonNullSigma() const;
+    /**
+     * The setInd argument allows to pass either the real partition, or a temporary partition with a subset of observations.
+     * This second case mainly occurs during initParam.
+     */
+    std::string checkSampleCondition(const std::set<Index>& setInd) const;
+    bool checkNbDifferentValue(const std::set<Index>& setInd) const;
+    bool checkNonNullSigma(const std::set<Index>& setInd) const;
   private:
     Index nSub_;
 
     Index nCoeff_;
+
     /** Data, not const because sampling has to occur at some point */
     Vector<Function>& data_;
 

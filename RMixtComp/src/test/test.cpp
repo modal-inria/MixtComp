@@ -13,15 +13,15 @@
 int main(int argc, char *argv[]) {
 	RInside R(argc, argv); // create an embedded R instance
 
-//	R.parseEvalQ(R"(setwd("/media/sf_Documents/160803 - debug MixtComp/171031 - Bug sur fonctionnels"))"); // note the use of string literals to avoid cluttering the R command with escape characters
-//	R.parseEvalQ(R"(source("run.r"))");
+	R.parseEvalQ(R"(setwd("/media/sf_Documents/160803 - debug MixtComp/180130 - Fonctionnelles - Etienne"))"); // note the use of string literals to avoid cluttering the R command with escape characters
+	R.parseEvalQ(R"(source("run.r"))");
 
-	R.parseEvalQ("library(RMixtComp)");
+//	R.parseEvalQ("library(RMixtComp)");
 
 //	R.parseEvalQ("testFunctional()");
 //	R.parseEvalQ("testOrdinal()");
 //	R.parseEvalQ("testRank()");
-	R.parseEvalQ("testCategorical()");
+//	R.parseEvalQ("testCategorical()");
 //	R.parseEvalQ("testGaussian()");
 //	R.parseEvalQ("testPoisson()");
 

@@ -18,14 +18,18 @@ convertJsonRobject <- function(out, confidenceLevel = 0.95, mode = c("learn", "p
   nbClass <- out$mixture$nbCluster
   
   for(nomVar in names(type))
-  {
+  { 
+    if(type[nomVar]=="Functional"){
+      nCoeff <- as.numeric(strsplit(out$variable$param[[nomVar]]$alpha$paramStr,"nCoeff: ")[[1]][2])
+      nSub <- as.numeric(strsplit(strsplit(out$variable$param[[nomVar]]$alpha$paramStr,", nCoeff: ")[[1]][1],"nSub: ")[[1]][2])
+    }
     if(mode == "learn")
     {
-      out$variable$param[[nomVar]] = convertParamLearn(out$variable$param[[nomVar]], type[[nomVar]])
+      out$variable$param[[nomVar]] = convertParamLearn(out$variable$param[[nomVar]], type[[nomVar]],nbClass,nCoeff,nSub)
     }else{
       out$variable$param[[nomVar]] = convertParamPredict(out$variable$param[[nomVar]], type[[nomVar]])
     }
-
+    
     out$variable$data[[nomVar]]$stat = convertDataStat(out$variable$data[[nomVar]]$stat, type[[nomVar]], confidenceLevel)
   }
   
@@ -41,8 +45,6 @@ convertJsonRobject <- function(out, confidenceLevel = 0.95, mode = c("learn", "p
   return(out)
 }
 
-
-
 # La sortie IDClass de JsonMixtComp est transposée et séparée en 2 élément
 convertIDClass <- function(IDClass)
 {
@@ -51,8 +53,6 @@ convertIDClass <- function(IDClass)
   
   return(newIDClass)
 }
-
-
 
 # dataStat outMixtComp$variable$data$nomVar$stat
 convertDataStat <- function(dataStat, type, confidenceLevel)
@@ -70,34 +70,42 @@ convertDataStat <- function(dataStat, type, confidenceLevel)
   return(dataStat)
 }
 
-
-
-
 # param outMixtComp$variable$param$nomVar
-convertParamLearn <- function(param, type)
+convertParamLearn <- function(param, type,nbClass=1,nCoeff=1,nSub=1)
 {
   nomObj <- switch(type, 
                    "Ordinal" = "muPi",
                    "LatentClass" = "pi",
-                   "NumericalParam")
+                   "NumericalParam",
+                   "Functional"=c("alpha","beta","sd"))
   
-  param[[nomObj]]$log = do.call(rbind, param[[nomObj]]$log)
-  colnames(param[[nomObj]]$log) = rep("", ncol(param[[nomObj]]$log))
+  for(i in 1:length(nomObj)){
+    param[[nomObj[i]]]$log = do.call(rbind, param[[nomObj[i]]]$log)
+    colnames(param[[nomObj[i]]]$log) = rep("", ncol(param[[nomObj[i]]]$log))
+    param[[nomObj[i]]]$stat = do.call(cbind, param[[nomObj[i]]]$stat)
+    
+    rowname_func<- switch(nomObj[i], 
+                          "alpha"=apply(expand.grid(0:1,0:(nSub-1),0:(nbClass-1))[,3:1],1,function(x){paste0("k: ",x[1],", s: ",x[2],", alpha",x[3] )}) ,
+                          "beta" =apply(expand.grid(0:(nCoeff-1),0:(nSub-1),0:(nbClass-1))[,3:1],1,function(x){paste0("k: ",x[1],", s: ",x[2],", c: ",x[3] )}),
+                          "sd"   =apply(expand.grid(0:(nSub-1),0:(nbClass-1))[,2:1],1,function(x){paste0("k: ",x[1],", s: ",x[2])}),
+                          "other")
+    
+    nomRow <- switch(type,
+                     "Ordinal" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj[i]]]$stat)/2)), function(x){paste0(x, c(", mu:", ", pi"))})),
+                     "Gaussian_sjk" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj[i]]]$stat)/2)), function(x){paste0(x, c(", mean:", ", sd"))})),
+                     "Categorical_pjk" = nomRowParamCateg(param),
+                     "Poisson_k" = paste0("k: ", 1:nrow(param[[nomObj[i]]]$stat), ", lambda"),
+                     "LatentClass" = paste0("k: ", 1:nrow(param[[nomObj[i]]]$stat)),
+                     "Functional"= rowname_func)
+    
+    rownames(param[[nomObj[i]]]$stat) = nomRow
+  }
   
-  param[[nomObj]]$stat = do.call(cbind, param[[nomObj]]$stat)
   
-  nomRow <- switch(type,
-                   "Ordinal" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj]]$stat)/2)), function(x){paste0(x, c(", mu:", ", pi"))})),
-                   "Gaussian_sjk" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj]]$stat)/2)), function(x){paste0(x, c(", mean:", ", sd"))})),
-                   "Categorical_pjk" = nomRowParamCateg(param),
-                   "Poisson_k" = paste0("k: ", 1:nrow(param[[nomObj]]$stat), ", lambda"),
-                   "LatentClass" = paste0("k: ", 1:nrow(param[[nomObj]]$stat)))
   
-  rownames(param[[nomObj]]$stat) = nomRow
   
   return(param)
 }
-
 
 # param outMixtComp$variable$param$nomVar
 convertParamPredict <- function(param, type)
@@ -106,7 +114,7 @@ convertParamPredict <- function(param, type)
                    "Ordinal" = "muPi",
                    "LatentClass" = "pi",
                    "NumericalParam")
-
+  
   param[[nomObj]]$stat = matrix(param[[nomObj]]$stat$value, ncol = 1)
   colnames(param[[nomObj]]$stat) = "value"
   
@@ -127,6 +135,6 @@ convertParamPredict <- function(param, type)
 nomRowParamCateg <- function(param)
 {
   nModality <- as.numeric(gsub("nModality: ", "", param$NumericalParam$paramStr))
-
+  
   return(unlist(lapply(paste0("k: ", 1:(nrow(param$NumericalParam$stat)/nModality)), function(x){paste0(x, paste0(", modality: ", c(1:nModality)))})))
 }
