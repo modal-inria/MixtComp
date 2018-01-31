@@ -19,8 +19,8 @@ enum MisType {
   missing_,
   missingFiniteValues_,
   missingIntervals_,
-  missingLUIntervals_,
-  missingRUIntervals_,
+  missingLUIntervals_, // left unbounded interval, (-inf, a]
+  missingRUIntervals_, // right unbounded interval, [a, +inf)
   nb_enum_MisType_
 };
 

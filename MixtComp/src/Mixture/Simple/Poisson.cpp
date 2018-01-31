@@ -81,7 +81,7 @@ std::string Poisson::setData(
 
 	if (augData.dataRange_.min_ < 0) {
 		std::stringstream sstm;
-		sstm << "Variable: " << idName_ << " requires a minimum value of : " << minModality << " in either provided values or bounds. "
+		sstm << "Variable: " << idName_ << " requires a minimum value of 0 in either provided values or bounds. "
 				<< "The minimum value currently provided is : " << augData.dataRange_.min_ + minModality << std::endl;
 		warnLog += sstm.str();
 	}

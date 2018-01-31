@@ -21,28 +21,28 @@
 namespace mixt {
 
 class Gaussian {
-public:
-	typedef Vector<Real> Data;
+  public:
+    typedef Vector<Real> Data;
     typedef ConfIntDataStat<Real> DataStat;
     typedef GaussianSampler Sampler;
     typedef GaussianLikelihood Likelihood;
 
     Gaussian(
-			const std::string& idName,
-			int nbClass,
-			Vector<Real>& param,
-			const Vector<std::set<Index> >& classInd);
+        const std::string& idName,
+        int nbClass,
+        Vector<Real>& param,
+        const Vector<std::set<Index>>& classInd);
 
-	Vector<bool> acceptedType() const;
+    Vector<bool> acceptedType() const;
 
-	int computeNbFreeParameters() const;
+    int computeNbFreeParameters() const;
 
-	bool hasModalities() const;
+    bool hasModalities() const;
 
-	std::string setData(
-			const std::string& paramStr,
-			AugmentedData<Vector<Real> >& augData,
-			RunMode mode);
+    std::string setData(
+        const std::string& paramStr,
+        AugmentedData<Vector<Real> >& augData,
+        RunMode mode);
 
 	/** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
 	 * using the biased estimator which corresponds to the maximum likelihood estimator */
@@ -60,6 +60,7 @@ public:
 
 private:
 	std::string idName_;
+
 	int nClass_;
 
 	Vector<Real>& param_;

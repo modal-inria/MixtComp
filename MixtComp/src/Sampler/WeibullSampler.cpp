@@ -24,13 +24,18 @@ void WeibullSampler::samplingStepNoCheck(Index i, Index z_i) {
 	    Real lambda = param_(2 * z_i + 1);
 
 		switch(augData_.misData_(i).first) {
-		case missing_: {
-			x = weibull_.sample(k, lambda);
-		}
-		break;
+		  case missing_: {
+		    x = weibull_.sample(k, lambda);
+		  }
+		  break;
 
-		default: {}
-		break;
+		  case missingRUIntervals_: {
+		    x = weibull_.sampleIB(k, lambda, augData_.misData_(i).second[1]);
+		  }
+		  break;
+
+		  default: {}
+		  break;
 		}
 
 		augData_.data_(i) = x;

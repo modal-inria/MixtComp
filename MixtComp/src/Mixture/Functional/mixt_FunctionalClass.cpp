@@ -59,7 +59,7 @@ void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
 
   nlopt_opt opt;
   opt = nlopt_create(NLOPT_LD_LBFGS, nFreeParam); // algorithm and dimensionality
-  nlopt_set_maxeval(opt, maxIterationFunctional); // without setting this, the time required for computations could be subject to extreme variations
+  nlopt_set_maxeval(opt, maxIterationOptim); // without setting this, the time required for computations could be subject to extreme variations
   nlopt_set_max_objective(opt, optiFunctionalClass, p_data); // cost and grad function, data for the function
 
   nlopt_optimize(opt, alpha, &minf); // launch the effective optimization run

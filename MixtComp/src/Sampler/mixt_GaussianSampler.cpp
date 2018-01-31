@@ -60,8 +60,7 @@ void GaussianSampler::samplingStepNoCheck(int i,
       }
       break;
 
-      default: {
-      }
+      default: {}
       break;
     }
 

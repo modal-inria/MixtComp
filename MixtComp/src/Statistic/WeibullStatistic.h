@@ -35,7 +35,7 @@ public:
      * */
     Real sampleIB(Real k, Real lambda, Real infBound);
 
-    Real quantileIB(Real k, Real lambda, Real infBound, Real p);
+//    Real quantileIB(Real k, Real lambda, Real infBound, Real p);
 private:
 	/** Random number generator */
 	boost::random::mt19937 rng_;
