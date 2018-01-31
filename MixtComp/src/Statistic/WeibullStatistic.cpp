@@ -9,6 +9,7 @@
 
 #include "WeibullStatistic.h"
 #include "mixt_RNG.h"
+#include <boost/math/distributions/weibull.hpp>
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/weibull_distribution.hpp>
 
@@ -18,10 +19,30 @@ WeibullStatistic::WeibullStatistic() :
     rng_(seed(this))
 {}
 
-Real WeibullStatistic::sample(Real lambda, Real k) {
-  boost::random::weibull_distribution<> w(k, lambda);
-  boost::variate_generator<boost::mt19937&, boost::random::weibull_distribution<> > generator(rng_, w);
-  return generator();
+Real WeibullStatistic::cdf(Real k, Real lambda, Real x) const {
+	boost::math::weibull weib(k, lambda);
+	Real proba = boost::math::cdf(weib, x);
+	return proba;
+}
+
+Real WeibullStatistic::quantile(Real k, Real lambda, Real p) const {
+	boost::math::weibull weib(k, lambda);
+	Real x = boost::math::quantile(weib, x);
+	return x;
+}
+
+Real WeibullStatistic::sample(Real k, Real lambda) {
+	boost::random::weibull_distribution<> w(k, lambda);
+	boost::variate_generator<boost::mt19937&, boost::random::weibull_distribution<> > generator(rng_, w);
+	return generator();
+}
+
+Real WeibullStatistic::sampleIB(Real k, Real lambda, Real infBound) {
+	Real u = uniform_.sample(0., 1.);
+	Real cdfa = cdf(k, lambda, infBound);
+	Real uP = (1. - u) * cdfa + u;
+
+	return quantile(k, lambda, uP);
 }
 
 }

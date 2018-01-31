@@ -28,11 +28,7 @@ MixtureComposer::MixtureComposer(
   nVar_(0),
   prop_(nbClass),
   tik_(nbInd, nbClass),
-  sampler_(
-		  *this,
-		  zClassInd_,
-		  tik_,
-		  nbClass),
+  sampler_(zClassInd_, tik_, nbClass),
   paramStat_(prop_, confidenceLevel),
   dataStat_(zClassInd_),
   confidenceLevel_(confidenceLevel),
@@ -594,7 +590,7 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 
 		bool errorInObservability = false; // true means that at least in one class there is 0 proba while parameters are not on the boundary of the parameter space
 		for (Index j = 0; j < nVar_; ++j) {
-			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(j, k) == true) { // for this particular variable, the
+			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(j, k) == true) {
 				std::cout << "k: " << k << ", j: " << j << ", errorInObservability = true" << std::endl;
 				errorInObservability = true;
 			}

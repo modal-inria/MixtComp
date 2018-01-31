@@ -18,21 +18,16 @@
 namespace mixt
 {
 
-class IMixture;
-
 class CategoricalSampler
 {
   public:
-    CategoricalSampler(const IMixture& mixture,
-                       AugmentedData<Vector<int> >& augData,
+    CategoricalSampler(AugmentedData<Vector<int> >& augData,
                        const Vector<Real>& param,
                        int nbClass);
 
     void samplingStepNoCheck(int i,
                              int z_i);
   private:
-    const IMixture& mixture_;
-
     int nbClass_;
 
     AugmentedData<Vector<int> >& augData_;

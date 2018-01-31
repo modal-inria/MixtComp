@@ -12,11 +12,9 @@
 
 namespace mixt
 {
-PoissonSampler::PoissonSampler(const IMixture& mixture,
-                               AugmentedData<Vector<int> >& augData,
+PoissonSampler::PoissonSampler(AugmentedData<Vector<int> >& augData,
                                const Vector<Real>& param,
                                int nbClass) :
-    mixture_(mixture),
     augData_(augData),
     param_(param)
 {}

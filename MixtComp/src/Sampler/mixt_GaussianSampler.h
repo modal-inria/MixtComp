@@ -20,21 +20,16 @@
 namespace mixt
 {
 
-class IMixture;
-
 class GaussianSampler
 {
   public:
-    GaussianSampler(const IMixture& mixture,
-                    AugmentedData<Vector<Real> >& augData,
+    GaussianSampler(AugmentedData<Vector<Real> >& augData,
                     const Vector<Real>& param,
                     int nbClass);
 
     void samplingStepNoCheck(int i,
                              int z_i);
   private:
-    const IMixture& mixture_;
-
     AugmentedData<Vector<Real> >& augData_;
 
     const Vector<Real>& param_;

@@ -57,11 +57,7 @@ public:
 						augData_(),
 						nbInd_(0),
 						confidenceLevel_(confidenceLevel),
-				sampler_(
-						*this,
-						augData_,
-						param_,
-						nbClass),
+				sampler_(augData_, param_, nbClass),
 						dataStat_(augData_, confidenceLevel),
 						paramStat_(param_, confidenceLevel),
 				likelihood_(

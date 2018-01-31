@@ -23,8 +23,7 @@ class MixtureComposer;
 class ClassSampler
 {
   public:
-    ClassSampler(const MixtureComposer& composer,
-                 ZClassInd& ZClassInd,
+    ClassSampler(ZClassInd& ZClassInd,
                  const Matrix<Real>& tik,
                  int nbClass);
 
@@ -35,8 +34,6 @@ class ClassSampler
      * */
     void sStepNoCheck(int i);
   private:
-    const MixtureComposer& composer_;
-
     int nbClass_;
 
     ZClassInd& zClassInd_;

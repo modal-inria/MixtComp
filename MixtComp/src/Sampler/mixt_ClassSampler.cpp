@@ -14,11 +14,9 @@
 namespace mixt
 {
 
-ClassSampler::ClassSampler(const MixtureComposer& composer,
-                           ZClassInd& zClassInd,
+ClassSampler::ClassSampler(ZClassInd& zClassInd,
                            const Matrix<Real>& tik,
                            int nbClass) :
-    composer_(composer),
     nbClass_(nbClass),
     zClassInd_(zClassInd),
     tik_(tik)

@@ -221,7 +221,8 @@ std::vector<bool> Categorical::parametersInInterior() {
 	std::vector<bool> res(nClass_);
 
 	for (Index k = 0; k < nClass_; ++k) {
-		res[k] = (param_.block(
+		res[k] =
+			(param_.block(
 				k * nModality_,
 				0,
 				nModality_,

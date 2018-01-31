@@ -13,11 +13,9 @@
 
 namespace mixt
 {
-CategoricalSampler::CategoricalSampler(const IMixture& mixture,
-                                       AugmentedData<Vector<int> >& augData,
+CategoricalSampler::CategoricalSampler(AugmentedData<Vector<int> >& augData,
                                        const Vector<Real>& param,
                                        int nbClass) :
-    mixture_(mixture),
     nbClass_(nbClass),
     augData_(augData),
     param_(param)

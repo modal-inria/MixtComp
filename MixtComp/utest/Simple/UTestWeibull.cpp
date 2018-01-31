@@ -25,7 +25,7 @@ TEST(Weibull, EstimateK) {
 
 	Vector<Real> x(nObs);
 	for (Index i = 0; i < nObs; ++i) {
-		x(i) = weib.sample(lambdaExpected, kExpected);
+		x(i) = weib.sample(kExpected, lambdaExpected);
 	}
 
 	Real kComputed = w.positiveNewtonRaphson(x, 10.0, 10);

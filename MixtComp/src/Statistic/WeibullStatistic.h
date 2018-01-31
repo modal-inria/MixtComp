@@ -14,19 +14,33 @@
 #include <boost/random/mersenne_twister.hpp>
 #include "mixt_UniformStatistic.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class WeibullStatistic
-{
+class WeibullStatistic {
 public:
 	WeibullStatistic();
 
+    /** cdf evaluated at individual x */
+    Real cdf(Real k, Real lambda, Real x) const;
+
+    /** quantile corresponding pour proba p */
+    Real quantile(Real k, Real lambda, Real p) const;
+
     /** Sample a value from a Weibull Law with parameters lambda and k. */
-    Real sample(Real lambda, Real k);
+    Real sample(Real k, Real lambda);
+
+    /**
+     * Sample a value from a Weibull Law with parameters mean and sd,
+     * conditioned on being in the interval [infBound; +inf]
+     * */
+    Real sampleIB(Real k, Real lambda, Real infBound);
+
+    Real quantileIB(Real k, Real lambda, Real infBound, Real p);
 private:
 	/** Random number generator */
 	boost::random::mt19937 rng_;
+
+	UniformStatistic uniform_;
 };
 
 }

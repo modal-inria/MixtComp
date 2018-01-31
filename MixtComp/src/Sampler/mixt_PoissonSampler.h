@@ -22,16 +22,13 @@ class IMixture;
 class PoissonSampler
 {
   public:
-    PoissonSampler(const IMixture& mixture,
-                   AugmentedData<Vector<int> >& augData,
+    PoissonSampler(AugmentedData<Vector<int> >& augData,
                    const Vector<Real>& param,
                    int nbClass);
 
     void samplingStepNoCheck(int i,
                              int z_i);
   private:
-    const IMixture& mixture_;
-
     AugmentedData<Vector<int> >& augData_;
 
     const Vector<Real>& param_;
