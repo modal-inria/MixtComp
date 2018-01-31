@@ -138,29 +138,14 @@ void Function::removeMissingQuantile(const Vector<Real>& quantiles) {
 	}
 
 	for (Index i = 0; i < nTime_; ++i) {
-		if (t_(i) < quantiles(1)) {
-			w_(0).insert(i);
-		}
-		else if (quantiles(nQuantile - 2) < t_(i)) {
-			w_(nQuantile - 2).insert(i);
-		}
-		else {
-			for (Index q = 1; q < nQuantile - 2; ++q) {
-				if (quantiles(q) < t_(i)) {
-					w_(q).insert(i);
-					break;
-				}
+		Real currT = t_(i);
+		for (Index q = 1; q < nQuantile; ++q) {
+			if (currT <= quantiles(q)) {
+				w_(q - 1).insert(i);
+				break;
 			}
 		}
 	}
-
-#ifdef MC_DEBUG
-	Index nW = 0; // total number of assigned w, to check that all times have been assigned
-	for (Index s = 0; s < nSub_; ++s) {
-		nW += w_(s).size();
-	}
-	std::cout << "nW: " << nW << ", nTime_: " << nTime_ << std::endl;
-#endif
 }
 
 void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
@@ -199,15 +184,6 @@ void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
 		Index currW = multi_.sample(proba);
 		w_(currW).insert(i);
 	}
-
-#ifdef MC_DEBUG
-	std::cout << "Function::removeMissingQuantileMixing" << std::endl;
-	Index nW = 0; // total number of assigned w, to check that all times have been assigned
-	for (Index s = 0; s < nSub_; ++s) {
-		nW += w_(s).size();
-		std::cout << itString(w_(s)) << std::endl;
-	}
-#endif
 }
 
 double Function::costAndGrad(
@@ -271,6 +247,16 @@ void Function::quantile(Vector<Real>& quantile) {
 
 	for (Index q = 1; q < nQuantile - 1; ++q) {
 		quantile(q) = sortedT(q * quantileSize * (nTime_ - 1));
+	}
+}
+
+void Function::printSubRegT() const {
+	for (Index w = 0; w < nSub_; ++w) {
+		std::cout << "w: " << w << ": ";
+		for (std::set<Index>::const_iterator it = w_(w).begin(), itEnd = w_(w).end(); it != itEnd; ++it) {
+			std::cout << t_(*it) << ", ";
+		}
+		std::cout << std::endl;
 	}
 }
 

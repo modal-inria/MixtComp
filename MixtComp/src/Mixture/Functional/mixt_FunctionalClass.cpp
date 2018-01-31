@@ -123,12 +123,17 @@ std::string FunctionalClass::initParamOneInd(Index obs) {
   Vector<Real> quantile;
   data_(obs).quantile(quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
 
+//  std::cout << itString(quantile) << std::endl;
+
   for (std::set<Index>::const_iterator itData  = setInd_.begin(),
                                        itDataE = setInd_.end();
        itData != itDataE;
        ++itData) {
-    data_(*itData).removeMissingQuantileMixing(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
+//    data_(*itData).removeMissingQuantileMixing(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
+	  data_(*itData).removeMissingQuantile(quantile);
   }
+
+//  data_(obs).printSubRegT();
 
   std::string warnLog = checkSampleCondition(initInd);
   if (0 < warnLog.size()) return warnLog;
