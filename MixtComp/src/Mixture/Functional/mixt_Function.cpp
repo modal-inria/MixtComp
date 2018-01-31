@@ -217,6 +217,7 @@ double Function::costAndGrad(
 				grad);
 	}
 
+//	std::cout << "Function::costAndGrad, cost: " << cost << std::endl;
 	return cost;
 }
 
