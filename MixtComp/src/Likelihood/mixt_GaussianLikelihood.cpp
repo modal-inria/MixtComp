@@ -38,9 +38,6 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k) {
 
   switch(augData_.misData_(i).first) { // likelihood for present value
     case present_: {
-      Real mean  = param_(2 * k    );
-      Real sd    = param_(2 * k + 1);
-
       logProba = normal_.lpdf(augData_.data_(i),
                               mean,
                               sd);

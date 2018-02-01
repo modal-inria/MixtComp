@@ -118,6 +118,7 @@ class MixtureManager {
 						  confidenceLevel);
         return p_bridge;
       }
+
       if (idModel == "Gaussian_sjk") {
     	  	  SimpleMixture<
 			  Gaussian,
@@ -143,6 +144,7 @@ class MixtureManager {
 								  confidenceLevel);
         return p_bridge;
       }
+
       if (idModel == "Poisson_k") {
 	  	  SimpleMixture<
 		  	  Poisson,
@@ -168,6 +170,33 @@ class MixtureManager {
 							  confidenceLevel);
         return p_bridge;
       }
+
+      if (idModel == "Weibull") {
+        SimpleMixture<
+          Weibull,
+          DataHandler,
+          DataExtractor,
+          ParamSetter,
+          ParamExtractor>* p_bridge =
+              new SimpleMixture<
+              Weibull,
+              DataHandler,
+              DataExtractor,
+              ParamSetter,
+              ParamExtractor>(
+                  indexMixture,
+                  idName,
+                  nbCluster,
+                  composer.p_zi(),
+                  composer.classInd(),
+                  p_handler_,
+                  p_dataExtractor_,
+                  p_paramSetter_,
+                  p_paramExtractor_,
+                  confidenceLevel);
+        return p_bridge;
+      }
+
       if (idModel == "Functional") {
         FunctionalMixture<DataHandler,
                           DataExtractor,
@@ -187,6 +216,7 @@ class MixtureManager {
                                                                                             confidenceLevel);
         return p_bridge;
       }
+
       if (idModel == "Ordinal") {
         Ordinal<DataHandler,
                 DataExtractor,
@@ -206,6 +236,7 @@ class MixtureManager {
                                                                         confidenceLevel);
         return p_bridge;
       }
+
       if (idModel == "Rank") {
         RankMixture<DataHandler,
                     DataExtractor,

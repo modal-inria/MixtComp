@@ -45,4 +45,17 @@ Real WeibullStatistic::sampleIB(Real k, Real lambda, Real infBound) {
 	return quantile(k, lambda, uP);
 }
 
+Real WeibullStatistic::lpdf(Real k, Real lambda, Real x) {
+  Real logLambda = std::log(lambda);
+  return std::log(k) - logLambda + (k - 1.0) * (std::log(x) - logLambda) - std::pow(x / lambda, k);
+}
+
+Real WeibullStatistic::cdf(Real k, Real lambda, Real x) {
+  return 1.0 - std::exp(-std::pow(x / lambda, k));
+}
+
+Real WeibullStatistic::lcdf(Real k, Real lambda, Real x) {
+  return std::log(cdf(k, lambda, x));
+}
+
 }
