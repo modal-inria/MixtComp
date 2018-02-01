@@ -61,3 +61,15 @@ testGaussian <- function() {
   confMatSampled <- table(dat$z, resLearn$variable$data$z_class$completed)
   print(confMatSampled)
 }
+
+gaussianParam <- function(name) {
+  gaussian <- list()
+  gaussian$name <- name
+  gaussian$type <- "Gaussian_sjk"
+  gaussian$generator <- gaussianGenerator
+  gaussian$param <- list()
+  gaussian$param[[1]] <- list(mean = -5, sd = 1)
+  gaussian$param[[2]] <- list(mean = 5, sd = 1)
+  
+  return(gaussian)
+}

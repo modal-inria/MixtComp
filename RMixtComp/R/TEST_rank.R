@@ -61,3 +61,20 @@ testRank <- function() {
   confMatSampled <- table(dat$z, resLearn$variable$data$z_class$completed)
   print(confMatSampled)
 }
+
+rankParam <- function(name) {
+  Rank <- list()
+  Rank$param <- list()
+  Rank$param[[1]] <- list()
+  Rank$param[[2]] <- list()
+  
+  Rank$name <- name
+  Rank$type <- "Rank"
+  Rank$generator <- rankGenerator
+  Rank$param[[1]]$mu <- c(1, 2, 3, 4)
+  Rank$param[[1]]$pi <- 0.8
+  Rank$param[[2]]$mu <- c(4, 3, 2, 1)
+  Rank$param[[2]]$pi <- 0.8
+  
+  return(Rank)
+}

@@ -65,3 +65,45 @@ testCategorical <- function() {
   
   # return(resLearn)
 }
+
+categoricalParam1 <- function(name) {
+  categorical <- list()
+  categorical$name <- name
+  categorical$type <- "Categorical_pjk"
+  categorical$generator <- categoricalGenerator 
+  categorical$param <- list()
+  categorical$param[[1]] <- c(0.1, 0.2, 0.2, 0.5)
+  categorical$param[[2]] <- c(0.5, 0.3, 0.1, 0.1)
+  
+  return(categorical)
+}
+
+categoricalParam2 <- function(name) {
+  categorical <- list()
+  categorical$name <- name
+  categorical$type <- "Categorical_pjk"
+  categorical$generator <- categoricalGenerator 
+  categorical$param <- list()
+  categorical$param[[1]] <- c(0.6, 0.1, 0.1, 0.2)
+  categorical$param[[2]] <- c(0.1, 0.05, 0.8, 0.05)
+  
+  return(categorical)
+}
+
+categoricalParamRandom <- function(name) {
+  nbModalities <- 4
+  param1 <- runif(4)
+  param1 <- param1 / sum(param1)
+  param2 <- runif(4)
+  param2 <- param2 / sum(param2)
+  
+  categorical <- list()
+  categorical$name <- name
+  categorical$type <- "Categorical_pjk"
+  categorical$generator <- categoricalGenerator 
+  categorical$param <- list()
+  categorical$param[[1]] <- param1
+  categorical$param[[2]] <- param2
+  
+  return(categorical)
+}

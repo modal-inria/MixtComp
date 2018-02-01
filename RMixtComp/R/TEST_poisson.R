@@ -61,3 +61,30 @@ testPoisson <- function() {
   confMatSampled <- table(dat$z, resLearn$variable$data$z_class$completed)
   print(confMatSampled)
 }
+
+poissonParam <- function(name) {
+  poisson <- list()
+  poisson$name <- name
+  poisson$type <- "Poisson_k"
+  poisson$generator <- poissonGenerator
+  poisson$param <- list()
+  poisson$param[[1]] <- 1
+  poisson$param[[2]] <- 10
+  
+  return(poisson)
+}
+
+poissonParamRandom <- function(name) {
+  valMin <- 0.1
+  valMax <- 15.0
+  
+  poisson <- list()
+  poisson$name <- name
+  poisson$type <- "Poisson_k"
+  poisson$generator <- poissonGenerator
+  poisson$param <- list()
+  poisson$param[[1]] <- runif(n = 1, min = valMin, max = valMax)
+  poisson$param[[2]] <- runif(n = 1, min = valMin, max = valMax)
+  
+  return(poisson)
+}

@@ -17,8 +17,8 @@
 namespace mixt {
 
 class WeibullStatistic {
-public:
-	WeibullStatistic();
+  public:
+    WeibullStatistic();
 
     /** cdf evaluated at individual x */
     Real cdf(Real k, Real lambda, Real x) const;
@@ -41,11 +41,11 @@ public:
 
     Real lcdf(Real k, Real lambda, Real x);
 
-private:
-	/** Random number generator */
-	boost::random::mt19937 rng_;
+  private:
+    /** Random number generator */
+    boost::random::mt19937 rng_;
 
-	UniformStatistic uniform_;
+    UniformStatistic uniform_;
 };
 
 }
