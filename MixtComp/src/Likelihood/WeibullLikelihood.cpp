@@ -45,7 +45,7 @@ Real WeibullLikelihood::lnObservedProbability(Index i, Index k) {
 
     case missingRUIntervals_: {
       Real infBound = augData_.misData_(i).second[0];
-      Real infCdf = weibull_.lcdf(kParam, lambda, infBound);
+      Real infCdf = weibull_.cdf(kParam, lambda, infBound);
       logProba = std::log(1.0 - infCdf);
     }
     break;
