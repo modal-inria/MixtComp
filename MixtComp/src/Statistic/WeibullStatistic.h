@@ -35,6 +35,8 @@ class WeibullStatistic {
      * */
     Real sampleIB(Real k, Real lambda, Real infBound);
 
+    Real pdf(Real k, Real lambda, Real x);
+
     Real lpdf(Real k, Real lambda, Real x);
 
     Real cdf(Real k, Real lambda, Real x);

@@ -134,7 +134,7 @@ void Weibull::mStep() {
     Vector<Real> x(classInd_(k).size()); // the optimizer needs a particular format for the data
     Index currObsInClass = 0;
     for (std::set<Index>::const_iterator it = classInd_(k).begin(), itEnd = classInd_(k).end(); it != itEnd; ++it) {
-      x(currObsInClass) = *it;
+      x(currObsInClass) = (*p_data_)(*it);
       ++currObsInClass;
     }
 

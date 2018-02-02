@@ -25,17 +25,57 @@ TEST(Weibull, EstimateK) {
 	Vector<Real> param(0);
 	Vector<std::set<Index>> classInd;
 
-    WeibullStatistic weib;
-    Weibull w(idName, nClass, param, classInd);
-//
-//	Vector<Real> x(nObs);
-//	for (Index i = 0; i < nObs; ++i) {
-//		x(i) = weib.sample(kExpected, lambdaExpected);
-//	}
-//
-//	Real kComputed = w.positiveNewtonRaphson(x, 10.0, 10);
-//	Real lambdaComputed = w.estimateLambda(x, kExpected);
-//
-//	ASSERT_NEAR(kExpected, kComputed, 0.01);
-//	ASSERT_NEAR(lambdaExpected, lambdaComputed, 0.01);
+	WeibullStatistic weib;
+	Weibull w(idName, nClass, param, classInd);
+
+	Vector<Real> x(nObs);
+	for (Index i = 0; i < nObs; ++i) {
+		x(i) = weib.sample(kExpected, lambdaExpected);
+	}
+
+	Real kComputed = w.positiveNewtonRaphson(x, 10.0, 10);
+	Real lambdaComputed = w.estimateLambda(x, kExpected);
+
+	ASSERT_NEAR(kExpected, kComputed, 0.01);
+	ASSERT_NEAR(lambdaExpected, lambdaComputed, 0.01);
+}
+
+/**
+ * All data is marked as completely missing. The distribution is fixed. Missing data are completed, and the parameters are estimated.
+ * With enough observations, the estimated values should be close to the parameters used for sampling.
+ */
+TEST(Weibull, SampleAndEstimate) {
+	Index nObs = 100000;
+
+	Real kExpected = 1.5;
+	Real lambdaExpected = 1.0;
+	Index nClass = 1;
+
+	std::string idName = "dummy";
+	Vector<std::set<Index>> classInd;
+
+	AugmentedData<Vector<Real>> augData;
+	augData.setAllMissing(nObs);
+
+	Vector<Real> param(2);
+	param << kExpected, lambdaExpected;
+
+	Vector<Real> paramExpected = param;
+
+	Vector<std::set<Index>> setInd(nClass);
+	for (Index i = 0; i < nObs; ++i) {
+		setInd(0).insert(i);
+	}
+
+	WeibullSampler wsampler(augData, param, 1);
+	for (Index i = 0; i < nObs; ++i) {
+		wsampler.samplingStepNoCheck(i, 0);
+	}
+
+	Weibull weibull(idName, nClass, param, setInd);
+	weibull.setData("", augData, learning_);
+
+	weibull.mStep();
+
+	ASSERT_LT((param - paramExpected).norm(), 0.01);
 }
