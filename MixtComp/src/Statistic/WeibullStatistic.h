@@ -23,8 +23,12 @@ class WeibullStatistic {
     /** cdf evaluated at individual x */
     Real cdf(Real k, Real lambda, Real x) const;
 
+    /** cdf evaluated at individual x, when the distribution is truncated below a. */
+    Real cdfIB(Real k, Real lambda, Real a, Real x) const;
+
     /** quantile corresponding pour proba p */
     Real quantile(Real k, Real lambda, Real p) const;
+    Real quantileIB(Real k, Real lambda, Real a, Real p) const;
 
     /** Sample a value from a Weibull Law with parameters lambda and k. */
     Real sample(Real k, Real lambda);
@@ -33,15 +37,13 @@ class WeibullStatistic {
      * Sample a value from a Weibull Law with parameters mean and sd,
      * conditioned on being in the interval [infBound; +inf]
      * */
-    Real sampleIB(Real k, Real lambda, Real infBound);
+    Real sampleIB(Real k, Real lambda, Real a);
 
-    Real pdf(Real k, Real lambda, Real x);
+    Real pdf(Real k, Real lambda, Real x) const;
 
-    Real lpdf(Real k, Real lambda, Real x);
+    Real lpdf(Real k, Real lambda, Real x) const;
 
-    Real cdf(Real k, Real lambda, Real x);
-
-    Real lcdf(Real k, Real lambda, Real x);
+    Real lcdf(Real k, Real lambda, Real x) const;
 
   private:
     /** Random number generator */

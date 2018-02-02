@@ -30,7 +30,7 @@ void WeibullSampler::samplingStepNoCheck(Index i, Index z_i) {
 		  break;
 
 		  case missingRUIntervals_: {
-		    x = weibull_.sampleIB(k, lambda, augData_.misData_(i).second[1]);
+		    x = weibull_.sampleIB(k, lambda, augData_.misData_(i).second[0]);
 		  }
 		  break;
 

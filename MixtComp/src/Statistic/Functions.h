@@ -29,7 +29,7 @@ const A& quantile(const Vector<A>& v, Real p) {
  * Empiric computation of cdf, given observed data.
  */
 template<typename A>
-Real pdf(const Vector<A>& v, Real a) {
+Real cdf(const Vector<A>& v, Real a) {
 	Vector<A> sorted = v; // copy is necessary as sort is applied on mutable vector
 	sorted.sort();
 	Index size = v.size();

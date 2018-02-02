@@ -23,6 +23,7 @@ namespace mixt
 class RankClass
 {
   public:
+	typedef std::pair<MisType, std::vector<int> > MisVal;
 //    /** Default constructor */
 //    RankClass(int nbClass);
 

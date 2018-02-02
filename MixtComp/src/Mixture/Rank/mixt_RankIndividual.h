@@ -22,8 +22,6 @@
 
 namespace mixt {
 
-typedef std::pair<MisType, std::vector<int> > MisVal;
-
 /**
  * A RankIndividual is an object that contains everything needed to describe a particular individual. It contains both the observed and completed
  * values, as well as methods to compute the likelihood or to perform samplings. In contrast, the RankVal is the much more simplest representation
@@ -32,6 +30,9 @@ typedef std::pair<MisType, std::vector<int> > MisVal;
 class RankIndividual
 {
   public:
+
+	typedef std::pair<MisType, std::vector<int> > MisVal;
+
     RankIndividual();
 
     RankIndividual(int nbPos);

@@ -19,6 +19,8 @@ std::string parseRankStr(const Vector<std::string>& vecStr,
                          int minMod,
                          int& nbPos,
                          Vector<RankIndividual>& vecInd) {
+	typedef std::pair<MisType, std::vector<int> > MisVal;
+
   int nbInd = vecStr.size();
   std::string warnLog;
 
