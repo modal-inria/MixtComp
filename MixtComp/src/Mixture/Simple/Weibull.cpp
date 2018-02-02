@@ -196,9 +196,10 @@ std::string Weibull::initParam(const Vector<Index>& initObs) {
 
   for (Index k = 0; k < nClass_; ++k) {
     Real median = (*p_data_)(initObs(k));
+    Real lambda = 1.0 + median; // this is necessary, because std::log(std::log(2.0)) < 0
 
-    param_(2 * k    ) = std::log(std::log(2.0)) / std::log(median);
-    param_(2 * k + 1) = 1.0;
+    param_(2 * k    ) = std::log(std::log(2.0)) / (std::log(median) - std::log(lambda));
+    param_(2 * k + 1) = lambda;
 
     if (median == 0.0) {
       sstm << "Class " << k << " representative observation is 0.0. Too many observations are close to 0 to initialize properly a Weibull model." << std::endl;

@@ -87,7 +87,7 @@ TEST(Weibull, SampleAndEstimate) {
 TEST(Weibull, initParam) {
 	Index nObs = 100000;
 
-	Real medianExpected = 5.0;
+	Real medianExpected = 4.04;
 	Index nClass = 1;
 
 	std::string idName = "dummy";
@@ -120,6 +120,7 @@ TEST(Weibull, initParam) {
 
 	Real medianComputed = quantile(augData.data_, 0.5);
 
+	ASSERT_GT(param.minCoeff(), 0.0);
 	ASSERT_NEAR(medianExpected, medianComputed, 1.0);
 }
 
