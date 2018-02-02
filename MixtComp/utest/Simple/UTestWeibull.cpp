@@ -79,3 +79,46 @@ TEST(Weibull, SampleAndEstimate) {
 
 	ASSERT_LT((param - paramExpected).norm(), 0.01);
 }
+
+/**
+ * initParam is supposed to fix the value of the parameters so that the median of the distribution equals the representative observation.
+ * A Weibull variable is thus initialised, parameters are initialised via initParam, data is sampled, and median value is checked.
+ */
+TEST(Weibull, initParam) {
+	Index nObs = 100000;
+
+	Real medianExpected = 5.0;
+	Index nClass = 1;
+
+	std::string idName = "dummy";
+	Vector<std::set<Index>> classInd;
+
+	AugmentedData<Vector<Real>> augData;
+	augData.setAllMissing(nObs);
+	augData.setPresent(0, medianExpected); // the first observation will be used as representative
+
+	Vector<Real> param(2);
+	param << 0.0, 0.0;
+
+	Vector<std::set<Index>> setInd(nClass);
+	for (Index i = 0; i < nObs; ++i) {
+		setInd(0).insert(i);
+	}
+
+	Weibull weibull(idName, nClass, param, setInd);
+	weibull.setData("", augData, learning_);
+
+	Vector<Index> initObs(1);
+	initObs << 0;
+
+	weibull.initParam(initObs);
+
+	WeibullSampler wsampler(augData, param, 1);
+	for (Index i = 0; i < nObs; ++i) {
+		wsampler.samplingStepNoCheck(i, 0);
+	}
+
+	Real medianComputed = quantile(augData.data_, 0.5);
+
+	ASSERT_NEAR(medianExpected, medianComputed, 1.0);
+}
