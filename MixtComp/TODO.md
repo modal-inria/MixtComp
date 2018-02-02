@@ -3,6 +3,7 @@
 # Current
 
 - Weibull with at least missing intervals of the type [a; +inf]
+- Check that observed probabilities are not nan in the failing functional case
 
 # Algorithm
 

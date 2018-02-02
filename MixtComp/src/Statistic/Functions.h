@@ -14,10 +14,32 @@
 
 namespace mixt {
 
+/**
+ * Empiric computation of a quantile, given observed data.
+ */
 template<typename A>
-Real quantile(const Vector<A>& v) {
+const A& quantile(const Vector<A>& v, Real p) {
 	Vector<A> sorted = v; // copy is necessary as sort is applied on mutable vector
 	sorted.sort();
+	Index cutPoint = p * v.size();
+	return sorted(cutPoint);
+}
+
+/**
+ * Empiric computation of cdf, given observed data.
+ */
+template<typename A>
+Real pdf(const Vector<A>& v, Real a) {
+	Vector<A> sorted = v; // copy is necessary as sort is applied on mutable vector
+	sorted.sort();
+	Index size = v.size();
+
+	Index i = 0;
+	for (; i < size; ++i) {
+		if (a <= sorted(i)) break;
+	}
+
+	return Real(i) / Real(size - 1);
 }
 
 }

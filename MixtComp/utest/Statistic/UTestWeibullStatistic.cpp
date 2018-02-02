@@ -11,17 +11,13 @@
 
 using namespace mixt;
 
-/** Compute statistics on truncated distribution, using limit cases, where the truncation is numerically farthest from the mode. */
+/**
+ * Numerically check that pdf is the derivative of cdf, as per the definition.
+ * */
 TEST(WeibullStatistic, sampleIB) {
   Real k = 2.3;
   Real lambda = 0.9;
 
-  WeibullStatistic weibull;
+//  WeibullStatistic weibull;
 
-
-
-  normal.expSigmaTruncated(mu, sigma, a, b, computedMu, computedSigma);
-
-  ASSERT_NEAR(mu   , computedMu   , epsilon);
-  ASSERT_NEAR(sigma, computedSigma, epsilon);
 }

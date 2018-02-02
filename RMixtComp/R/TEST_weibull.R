@@ -2,7 +2,7 @@ testWeibull <- function() {
   var <- list()
   var$z_class <- zParam()
   
-  var$Gaussian1 <- weibullParam("Gaussian1")
+  var$Weibull1 <- weibullParam("Weibull1")
   
   dat <- dataGenerator(1000, 0.9, var)
   

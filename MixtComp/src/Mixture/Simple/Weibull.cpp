@@ -25,7 +25,7 @@ Weibull::Weibull(
 : idName_(idName),
   nClass_(nbClass),
   param_(param),
-  p_data_(0),
+  p_data_(NULL),
   classInd_(classInd) {
   param_.resize(2 * nbClass);
 }

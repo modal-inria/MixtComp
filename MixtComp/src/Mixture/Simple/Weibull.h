@@ -38,6 +38,7 @@ public:
         Index nbClass,
         Vector<Real>& param,
         const Vector<std::set<Index>>& classInd);
+
 	/**
 	 * Evaluate both the value and derivative of the residue of the equation verified by k.
 	 */
