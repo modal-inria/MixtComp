@@ -106,7 +106,7 @@ std::string SemStrategy::runSEM(
 		std::cout << "SemStrategy::runSEM, sampleZ." << std::endl;
 		p_composer_->sampleZ(); // no checkSampleCondition performed, to increase speed of sampling
 
-		std::cout << "SemStrategy::runSEM, sampleZ." << std::endl;
+		std::cout << "SemStrategy::runSEM, sampleUnobservedAndLatent." << std::endl;
 		p_composer_->sampleUnobservedAndLatent();
 
 		std::cout << "SemStrategy::runSEM, checkSampleCondition." << std::endl;
