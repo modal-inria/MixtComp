@@ -270,6 +270,7 @@ void MixtureComposer::setObservedProbaCache() {
 	}
 
 	for (Index j = 0; j < nVar_; ++j) {
+#pragma omp parallel for
 		for (Index i = 0; i < nInd_; ++i) {
 			for (Index k = 0; k < nClass_; ++k) {
 				observedProbabilityCache_(j)(i, k) = v_mixtures_[j]->lnObservedProbability(i, k);
