@@ -117,11 +117,9 @@ Real MixtureComposer::lnCompletedLikelihood() {
 
 Real MixtureComposer::lnCompletedProbability(int i, int k) const {
 	Real sum = std::log(prop_[k]); // the joint probability p(x, z) is computed
-	Real logProba;
 
 	for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
-		logProba = (*it)->lnCompletedProbability(i, k);
-		sum += logProba;
+		sum += (*it)->lnCompletedProbability(i, k);
 	}
 
 	return sum;
