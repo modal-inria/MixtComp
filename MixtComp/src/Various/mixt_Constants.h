@@ -43,7 +43,7 @@ extern const Index nbGibbsIniISR; // number of iterations in the initializing Gi
 
 extern const int nbSampleObserved; // number of sample per class to estimate the observed probability, for example in Ordinal or Rank data
 
-extern const int maxIterationOptim; // maximum number of evaluation of cost function for optimization in Functional and in Weibull
+extern const Index maxIterationOptim; // maximum number of evaluation of cost function for optimization in Functional and in Weibull
 
 extern const std::string rankPosSep; // separator used in Rank positions
 

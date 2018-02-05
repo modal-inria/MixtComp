@@ -127,8 +127,10 @@ Real MixtureComposer::lnCompletedProbability(int i, int k) const {
 
 void MixtureComposer::mStep() {
 	mStepPi(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
-	for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
-		(*it)->mStep(); // call mStep on each variable
+
+#pragma omp parallel for // note that this is the only case where parallelism is not performed over observations, but over individuals
+	for (Index v = 0; v < nVar_; ++v) {
+		v_mixtures_[v]->mStep(); // call mStep on each variable
 	}
 }
 
