@@ -104,7 +104,7 @@ std::string SemStrategy::runSEM(
 
 		std::string warnLog = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
 		if (0 < warnLog.size()) {
-			std::cout << "Degeneracy detected." << std::endl;
+			std::cout << "runSEM, checkSampleCondition failed." << std::endl;
 			return warnLog;
 		}
 

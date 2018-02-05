@@ -48,7 +48,7 @@ MixtureComposer::~MixtureComposer() {
 }
 
 Real MixtureComposer::lnObservedProbability(int i, int k) const {
-	Real sum = std::log(prop_[k]);
+	Real sum = std::log(prop_[k]); // the joint probability p(x, z) is computed here, and will be marginalized over z later, for example in observedTik method
 
 	for (Index j = 0; j < nVar_; ++j) { // use the cache
 		sum += observedProbabilityCache_(j)(i, k);
@@ -116,7 +116,7 @@ Real MixtureComposer::lnCompletedLikelihood() {
 }
 
 Real MixtureComposer::lnCompletedProbability(int i, int k) const {
-	Real sum = std::log(prop_[k]);
+	Real sum = std::log(prop_[k]); // the joint probability p(x, z) is computed
 	Real logProba;
 
 	for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
