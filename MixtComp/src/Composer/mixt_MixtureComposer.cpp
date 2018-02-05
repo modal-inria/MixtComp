@@ -261,6 +261,7 @@ void MixtureComposer::storeSEMRun(
 }
 
 void MixtureComposer::setObservedProbaCache() {
+	std::cout << "MixtureComposer::setObservedProbaCache, this operation could take some time..." << std::endl;
 	observedProbabilityCache_.resize(nVar_);
 
 	for (Index j = 0; j < nVar_; ++j) {
