@@ -23,7 +23,6 @@ int main(int argc, char *argv[]) {
 //	R.parseEvalQ("testCategorical()");
 //	R.parseEvalQ("testGaussian()");
 //	R.parseEvalQ("testPoisson()");
-
 //	R.parseEvalQ("testWeibull()");
 
 	exit(0);

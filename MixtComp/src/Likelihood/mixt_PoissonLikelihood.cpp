@@ -21,12 +21,12 @@ PoissonLikelihood::PoissonLikelihood(const Vector<Real>& param,
     augData_(augData)
 {}
 
-Real PoissonLikelihood::lnCompletedProbability(int i, int k) {
+Real PoissonLikelihood::lnCompletedProbability(int i, int k) const {
   return poisson_.lpdf(augData_.data_(i),
                        param_(k));;
 }
 
-Real PoissonLikelihood::lnObservedProbability(int i, int k) {
+Real PoissonLikelihood::lnObservedProbability(int i, int k) const {
   Real logProba;
 
   switch(augData_.misData_(i).first) {  // likelihood for present value

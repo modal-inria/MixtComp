@@ -26,10 +26,10 @@ class PoissonLikelihood
                       int nbClass);
 
     /** Compute the completed log-likelihood */
-    Real lnCompletedProbability(int i, int k);
+    Real lnCompletedProbability(int i, int k) const;
 
     /** Compute the observed log-likelihood */
-    Real lnObservedProbability(int i, int k);
+    Real lnObservedProbability(int i, int k) const;
 
   private:
     /** Pointer to parameters table */

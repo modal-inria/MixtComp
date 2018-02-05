@@ -119,14 +119,14 @@ public:
 		// nothing until missing data is supported
 	};
 
-	Real lnCompletedProbability(Index i, Index k) {
+	Real lnCompletedProbability(Index i, Index k) const {
 		return vecInd_(i).lnCompletedProbability(
 				class_[k].alpha(),
 				class_[k].beta (),
 				class_[k].sd   ());
 	}
 
-	Real lnObservedProbability(Index i, Index k)  {
+	Real lnObservedProbability(Index i, Index k) const{
 		return vecInd_(i).lnObservedProbability(
 				class_[k].alpha(),
 				class_[k].beta (),

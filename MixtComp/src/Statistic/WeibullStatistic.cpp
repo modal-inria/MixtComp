@@ -20,6 +20,9 @@ WeibullStatistic::WeibullStatistic()
 {}
 
 Real WeibullStatistic::quantile(Real k, Real lambda, Real p) const {
+	if (p == 1.0) {
+		std::cout << "p == 1" << std::endl;
+	}
 	boost::math::weibull weib(k, lambda);
 	Real x = boost::math::quantile(weib, p);
 	return x;

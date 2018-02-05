@@ -22,10 +22,10 @@ class WeibullLikelihood {
     WeibullLikelihood(const Vector<Real>& param, const AugmentedData<Vector<Real> >& augData, Index nbClass);
 
     /** Compute the completed log-likelihood */
-    Real lnCompletedProbability(Index i, Index k);
+    Real lnCompletedProbability(Index i, Index k) const;
 
     /** Compute the observed log-likelihood */
-    Real lnObservedProbability(Index i, Index k);
+    Real lnObservedProbability(Index i, Index k) const;
 
   private:
 
