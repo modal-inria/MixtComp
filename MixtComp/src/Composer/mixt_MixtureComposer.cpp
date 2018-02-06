@@ -130,7 +130,7 @@ Real MixtureComposer::lnCompletedProbability(int i, int k) const {
 void MixtureComposer::mStep() {
 	mStepPi(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
 	for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
-		(*it)->mStep(); // call mStep on each variable
+		(*it)->mStep(zClassInd_.classInd()); // call mStep on each variable
 	}
 }
 
@@ -201,14 +201,14 @@ void MixtureComposer::sampleUnobservedAndLatent() {
 
 void MixtureComposer::sampleUnobservedAndLatent(int i) {
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->sampleUnobservedAndLatent(i);
+		(*it)->sampleUnobservedAndLatent(i, zClassInd_.zi().data_(i));
 	}
 }
 
 std::string MixtureComposer::checkSampleCondition() const {
 	std::string warnLog = checkNbIndPerClass();
 	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		warnLog += (*it)->checkSampleCondition();
+		warnLog += (*it)->checkSampleCondition(zClassInd_.classInd());
 	}
 
 	return warnLog;
@@ -392,7 +392,7 @@ std::string MixtureComposer::initParam() {
 	std::string warnLog; // global warnLog
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		std::string varLog; // variable warnLog
-		varLog += (*it)->initParam(initObs);
+		varLog += (*it)->initParam(zClassInd_.classInd(), initObs);
 		if (0 < varLog.size()) {
 			std::stringstream sstm;
 			sstm << "Error(s) in variable: " << (*it)->idName() << ": " << std::endl << varLog << std::endl;

@@ -1,5 +1,9 @@
 # Short Term
 
+- remove p_zi and classInd as members of all mixtures
+- remove them from constructors
+- remove initParam
+
 # Current
 
 - Weibull with at least missing intervals of the type [a; +inf]

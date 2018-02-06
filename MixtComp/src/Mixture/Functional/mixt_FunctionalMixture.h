@@ -36,17 +36,13 @@ public:
   nSub_(0),
   nCoeff_(0),
   confidenceLevel_(confidenceLevel),
-  p_zi_(p_zi),
-  classInd_(classInd),
   p_handler_(p_handler),
   p_dataExtractor_(p_extractor),
   p_paramSetter_(p_paramSetter),
   p_paramExtractor_(p_paramExtractor) {
 		class_.reserve(nClass_);
 		for (Index k = 0; k < nClass_; ++k) {
-			class_.emplace_back(vecInd_,
-					classInd_(k),
-					confidenceLevel_);
+			class_.emplace_back(vecInd_, confidenceLevel_);
 		}
 
 		acceptedType_.resize(nb_enum_MisType_);
@@ -67,21 +63,19 @@ public:
 		nSub_(0),
 		nCoeff_(0),
 		confidenceLevel_(0.),
-		p_zi_(NULL),
-		classInd_(classInd),
 		p_handler_(NULL),
 		p_dataExtractor_(NULL),
 		p_paramSetter_(NULL),
 		p_paramExtractor_(NULL) {};
 
-	void sampleUnobservedAndLatent(Index i) {
-		class_[(*p_zi_)(i)].samplingStepNoCheck(i);
+	void sampleUnobservedAndLatent(Index i, Index k) {
+		class_[k].samplingStepNoCheck(i);
 	};
 
-	std::string checkSampleCondition() const {
+	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
 		std::string classLog;
 		for (Index k = 0; k < nClass_; ++k) {
-			std::string currClassLog = class_[k].checkSampleCondition(classInd_(k));
+			std::string currClassLog = class_[k].checkSampleCondition(classInd(k));
 			if (0 < currClassLog.size()) {
 				classLog += "Class: " + std::to_string(k) + ": " + currClassLog;
 			}
@@ -94,9 +88,9 @@ public:
 		return "";
 	}
 
-	void mStep() {
+	void mStep(const Vector<std::set<Index> >& classInd) {
 		for (Index k = 0; k < nClass_; ++k) {
-			class_[k].mStep();
+			class_[k].mStep(classInd(k));
 		}
 	};
 
@@ -326,9 +320,9 @@ public:
 	/**
 	 * @param initObs element k contains the index of
 	 */
-	std::string initParam(const Vector<Index>& initObs) {
+	std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) {
 		for (Index k = 0; k < nClass_; ++k) {
-			std::string warnLog = class_[k].initParamOneInd(initObs(k));
+			std::string warnLog = class_[k].initParamOneInd(classInd(k), initObs(k));
 			if (0 < warnLog.size()) return warnLog;
 		}
 
@@ -423,9 +417,6 @@ private:
 	/** Data */
 	Vector<Function> vecInd_;
 	Vector<Real> quantile_;
-
-	const Vector<Index>* p_zi_;
-	const Vector<std::set<Index> >& classInd_;
 
 	const DataHandler* p_handler_;
 	DataExtractor* p_dataExtractor_;

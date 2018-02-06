@@ -22,8 +22,7 @@ Poisson::Poisson(
 : idName_(idName),
   nClass_(nbClass),
   param_(param),
-  p_data_(0),
-  classInd_(classInd) {
+  p_data_(0) {
 	param_.resize(nbClass);
 }
 
@@ -46,16 +45,16 @@ bool Poisson::hasModalities() const {
 	return false;
 }
 
-void Poisson::mStep() {
+void Poisson::mStep(const Vector<std::set<Index>>& classInd) {
 	for (int k = 0; k < nClass_; ++k) {
 		Real sumClass = 0.;
-		for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
 				it != itE;
 				++it) {
 			sumClass += (*p_data_)(*it);
 		}
 
-		param_(k) = sumClass / Real(classInd_(k).size());
+		param_(k) = sumClass / Real(classInd(k).size());
 	}
 }
 
@@ -99,11 +98,11 @@ void Poisson::writeParameters() const {
 	std::cout << sstm.str() << std::endl;
 }
 
-std::string Poisson::checkSampleCondition() const {
+std::string Poisson::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
 	if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
 	for (Index k = 0; k < nClass_; ++k) {
-		for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
 				it != itE;
 				++it) {
 			if ((*p_data_)(*it) > 0) {

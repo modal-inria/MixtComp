@@ -14,12 +14,10 @@
 namespace mixt {
 
 FunctionalClass::FunctionalClass(Vector<Function>& data,
-                                 const std::set<Index>& setInd,
                                  Real confidenceLevel) :
     nSub_(0),
     nCoeff_(0),
     data_(data),
-    setInd_(setInd),
     alphaParamStat_(alpha_, confidenceLevel),
     betaParamStat_ (beta_ , confidenceLevel),
     sdParamStat_   (sd_   , confidenceLevel) {}
@@ -38,9 +36,9 @@ void FunctionalClass::setSize(Index nSub,
   sd_ = 0.;
 }
 
-void FunctionalClass::mStep() {
-  mStepAlpha(setInd_);
-  mStepBetaSd(setInd_);
+void FunctionalClass::mStep(const std::set<Index>& setInd) {
+  mStepAlpha(setInd);
+  mStepBetaSd(setInd);
 }
 
 void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
@@ -112,11 +110,11 @@ void FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
       sd_);
 }
 
-void FunctionalClass::initParamAllInd(Index obs) {
-  mStep(); // note that obs is not used
-}
+//void FunctionalClass::initParamAllInd(Index obs) {
+//  mStep(); // note that obs is not used
+//}
 
-std::string FunctionalClass::initParamOneInd(Index obs) {
+std::string FunctionalClass::initParamOneInd(const std::set<Index>& setInd, Index obs) {
   std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
   initInd.insert(obs); // initInd is a single element set
 
@@ -125,8 +123,8 @@ std::string FunctionalClass::initParamOneInd(Index obs) {
 
 //  std::cout << itString(quantile) << std::endl;
 
-  for (std::set<Index>::const_iterator itData  = setInd_.begin(),
-                                       itDataE = setInd_.end();
+  for (std::set<Index>::const_iterator itData  = setInd.begin(),
+                                       itDataE = setInd.end();
        itData != itDataE;
        ++itData) {
 //    data_(*itData).removeMissingQuantileMixing(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization

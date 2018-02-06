@@ -13,6 +13,7 @@
 #define MIXT_IMIXTURE_H
 
 #include <iostream>
+#include <set>
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Enum.h"
 
@@ -46,21 +47,21 @@ class IMixture {
      *
      * @param ind index of the individual which data must be sampled
      * */
-    virtual void sampleUnobservedAndLatent(Index ind) = 0;
+    virtual void sampleUnobservedAndLatent(Index ind, Index k) = 0;
 
     /**
      * Check if conditions on data are verified. For example, for a categorical model one must check that each modality
      * is present at least one time in each class. This is invoked to avoid degeneracy.
      * @return 0 if condition not verified and 1 if condition verified
      * */
-    virtual std::string checkSampleCondition() const = 0;
+    virtual std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const = 0;
 
     /**
      * Maximum-Likelihood estimation of the mixture parameters
      *
      * @return empty string if mStep successful, or a detailed description of the eventual error
      * */
-    virtual void mStep() = 0;
+    virtual void mStep(const Vector<std::set<Index>>& classInd) = 0;
 
     /**
      * Storage of mixture parameters during SEM run phase
@@ -135,7 +136,7 @@ class IMixture {
      * Useful for some parameters that use a Markov Chain which needs to be initialized.
      * Should be modified to take a vector of indices, one per class, indicating which individual to use
      * */
-    virtual std::string initParam(const Vector<Index>& initObs) = 0;
+    virtual std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) = 0;
 
     /**
      * Compute and cache the empirical observed distribution for the models that need it.

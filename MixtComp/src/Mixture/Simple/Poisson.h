@@ -44,13 +44,13 @@ public:
 			AugmentedData<Vector<int> >& augData,
 			RunMode mode);
 
-	void mStep();
+	void mStep(const Vector<std::set<Index>>& classInd);
 
 	std::vector<std::string> paramNames() const;
 
 	void writeParameters() const;
 
-	std::string checkSampleCondition() const;
+	std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
 
 	std::string initParam(const Vector<Index>& initObs);
 
@@ -61,7 +61,6 @@ private:
 	int nClass_;
 	Vector<Real>& param_;
 	Vector<int>* p_data_;
-	const Vector<std::set<Index> >& classInd_;
 
 	/** Statistic object to describe Poisson law */
 	PoissonStatistic poisson_;

@@ -26,8 +26,7 @@ Gaussian::Gaussian(
 : idName_(idName),
   nClass_(nbClass),
   param_(param),
-  p_data_(0),
-  classInd_(classInd) {
+  p_data_(0) {
 	param_.resize(2 * nbClass);
 }
 
@@ -50,12 +49,12 @@ bool Gaussian::hasModalities() const {
 	return false;
 }
 
-void Gaussian::mStep() {
+void Gaussian::mStep(const Vector<std::set<Index>>& classInd) {
 	for (int k = 0; k < nClass_; ++k) {
 		Real mean;
 		Real sd;
 
-		meanSD(classInd_(k),
+		meanSD(classInd(k),
 				*p_data_,
 				mean,
 				sd);
@@ -103,13 +102,13 @@ void Gaussian::writeParameters() const {
 	std::cout << sstm.str() << std::endl;
 }
 
-std::string Gaussian::checkSampleCondition() const {
+std::string Gaussian::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
 	for (Index k = 0; k < nClass_; ++k) {
-		if (classInd_(k).size() < 2) {
+		if (classInd(k).size() < 2) {
 			return "Gaussian variables must have at least two individuals per class. This is not the case for at least one class. You can check whether you have enough individuals regarding the number of classes." + eol;
 		}
 
-		std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+		std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
 		Real previousElemClass = (*p_data_)(*it);
 		++it;
 		for (; it != itE; ++it) {

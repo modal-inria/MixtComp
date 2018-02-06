@@ -45,8 +45,6 @@ public:
 			ParamExtractor* p_paramExtractor,
 			Real confidenceLevel) :
 				IMixture(indexMixture, idName),
-				p_zi_(p_zi),
-				classInd_(classInd),
 				nbClass_(nbClass),
 				param_(), // must be initialized here, as will immediately be resized in model_ constructor
 				model_(
@@ -116,17 +114,17 @@ public:
 		return warnLog;
 	}
 
-	virtual void sampleUnobservedAndLatent(Index ind) {
+	virtual void sampleUnobservedAndLatent(Index ind, Index k) {
 		sampler_.samplingStepNoCheck(
 				ind,
-				(*p_zi_)(ind));
+				k);
 	}
 
 	/**
 	 * Estimate parameters by maximum likelihood
 	 */
-	virtual void mStep() {
-		model_.mStep();
+	virtual void mStep(const Vector<std::set<Index> >& classInd) {
+		model_.mStep(classInd);
 	}
 
 	/** This function should be used to store any intermediate results during
@@ -207,14 +205,14 @@ public:
 		augData_.removeMissing(i);
 	}
 
-	std::string initParam(const Vector<Index>& initObs) {
+	std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) {
 		std::string warnLog;
 		warnLog = model_.initParam(initObs);
 		return warnLog;
 	};
 
-	std::string checkSampleCondition() const {
-		std::string warnLog = model_.checkSampleCondition();
+	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
+		std::string warnLog = model_.checkSampleCondition(classInd);
 		if (0 < warnLog.size()) {
 			return "checkSampleCondition, error in variable " + idName_ + eol + warnLog;
 		}
@@ -232,13 +230,6 @@ public:
 
 private:
 protected:
-	/** Pointer to the zik class label */
-	const Vector<Index>* p_zi_;
-
-	/** Reference to a vector containing in each element a set of the indices of individuals that
-	 * belong to this class. Can be passed as an alternative to zi_ to a subtype of IMixture. */
-	const Vector<std::set<Index> >& classInd_;
-
 	/** Number of classes */
 	int nbClass_;
 

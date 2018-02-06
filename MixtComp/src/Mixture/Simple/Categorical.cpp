@@ -27,8 +27,7 @@ Categorical::Categorical(
   nClass_(nbClass),
   nModality_(0),
   p_data_(0),
-  param_(param),
-  classInd_(classInd) {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
+  param_(param) {} // modalities are not known at the creation of the object, hence a call to setModality is needed later
 
 Vector<bool> Categorical::acceptedType() const {
 	Vector<bool> at(nb_enum_MisType_);
@@ -45,18 +44,18 @@ int Categorical::computeNbFreeParameters() const {
 	return nClass_ * (nModality_ - 1);
 }
 
-void Categorical::mStep() {
+void Categorical::mStep(const Vector<std::set<Index>>& classInd) {
 	for (Index k = 0; k < nClass_; ++k) {
 		Vector<Real> modalities(nModality_, 0.);
 
 		for (
-				std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+				std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
 				it != itE;
 				++it) {
 			modalities((*p_data_)(*it)) += 1.;
 		}
 
-		modalities = modalities / Real(classInd_(k).size());
+		modalities = modalities / Real(classInd(k).size());
 
 		for (Index p = 0; p < nModality_; ++p) {
 			param_(k * nModality_ + p) = modalities(p);
@@ -163,14 +162,14 @@ void Categorical::writeParameters() const {
 	std::cout << sstm.str() << std::endl;
 }
 
-std::string Categorical::checkSampleCondition() const {
+std::string Categorical::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
 	if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
 	for (Index k = 0; k < nClass_; ++k) {
 		std::string warnLog;
 		Vector<bool> modalityPresent(nModality_, false);
-		for (std::set<Index>::const_iterator it  = classInd_(k).begin(),
-				itE = classInd_(k).end();
+		for (std::set<Index>::const_iterator it  = classInd(k).begin(),
+				itE = classInd(k).end();
 				it != itE;
 				++it) {
 			modalityPresent((*p_data_)(*it)) = true;

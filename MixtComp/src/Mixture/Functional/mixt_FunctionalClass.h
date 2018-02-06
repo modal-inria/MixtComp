@@ -20,7 +20,6 @@ namespace mixt {
 class FunctionalClass {
   public:
     FunctionalClass(Vector<Function>& data,
-                    const std::set<Index>& setInd,
                     Real confidenceLevel);
 
     void setSize(Index nSub,
@@ -36,15 +35,15 @@ class FunctionalClass {
       sd_ = sd;
     }
 
-    void mStep();
+    void mStep(const std::set<Index>& setInd);
 
     void mStepAlpha(const std::set<Index>& setInd);
 
     void mStepBetaSd(const std::set<Index>& setInd);
 
-    void initParamAllInd(Index obs);
+//    void initParamAllInd(Index obs);
 
-    std::string initParamOneInd(Index obs);
+    std::string initParamOneInd(const std::set<Index>& setInd, Index obs);
 
     void sampleParam();
 
@@ -79,9 +78,6 @@ class FunctionalClass {
 
     /** Data, not const because sampling has to occur at some point */
     Vector<Function>& data_;
-
-    /** List of individuals among the data that belong to the class corresponding to this RankClass. */
-    const std::set<Index>& setInd_;
 
     /** Parameter alpha for current class. Not set as const since mStep will modify it. It is not stored in a matrix, because nlopt is used,
      * and serializing everything in a vector is the standard modus operandi. */

@@ -72,7 +72,7 @@ public:
 				false; // missingRUIntervals
 	}
 
-	void sampleUnobservedAndLatent(Index i) {
+	void sampleUnobservedAndLatent(Index i, Index k) {
 		data_(i).sampleY(
 				mu_((*p_zi_)(i)),
 				pi_((*p_zi_)(i)));
@@ -82,7 +82,7 @@ public:
 	}
 
 	/** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */
-	std::string checkSampleCondition() const {
+	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
 		if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
 		for (int k = 0; k < nClass_; ++k) {
@@ -124,7 +124,7 @@ public:
 	 * Gibbs sampler, which is a Markov Chain sampler that needs to be initialized. This is slightly different to the Ordinal model case, where the initialization
 	 * of the parameters is only here to ensure that all individuals are valid (not all z at 0). In the Rank model initialization, mu is chosen among all the
 	 * observed values of the class, while pi is initialized to a "neutral" value. */
-	void mStep() {
+	void mStep(const Vector<std::set<Index> >& classInd) {
 		for (int k = 0; k < nClass_; ++k) {
 			class_[k].mStep();
 		}
@@ -176,7 +176,7 @@ public:
 	/**
 	 * mu is initialized through direct sampling in each class
 	 */
-	std::string initParam(const Vector<Index>& initObs) {
+	std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) {
 		for (Index k = 0; k < nClass_; ++k) {
 			mu_(k) = data_(initObs(k)).x();
 			pi_(k) = 0.5 * (1. + 1. / nClass_);
@@ -188,7 +188,7 @@ public:
 	virtual void initializeMarkovChain() {
 		for (Index i = 0; i < nbInd_; ++i) {
 			for (Index n = 0; n < nbGibbsIniISR; ++n) {
-				sampleUnobservedAndLatent(i);
+				sampleUnobservedAndLatent(i, (*p_zi_)(i));
 			}
 		}
 	}

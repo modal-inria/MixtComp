@@ -25,8 +25,7 @@ Weibull::Weibull(
 : idName_(idName),
   nClass_(nbClass),
   param_(param),
-  p_data_(NULL),
-  classInd_(classInd) {
+  p_data_(NULL) {
   param_.resize(2 * nbClass);
 }
 
@@ -129,11 +128,11 @@ std::string Weibull::setData(
   return warnLog;
 }
 
-void Weibull::mStep() {
+void Weibull::mStep(const Vector<std::set<Index>>& classInd) {
   for (Index k = 0; k < nClass_; ++k) {
-    Vector<Real> x(classInd_(k).size()); // the optimizer needs a particular format for the data
+    Vector<Real> x(classInd(k).size()); // the optimizer needs a particular format for the data
     Index currObsInClass = 0;
-    for (std::set<Index>::const_iterator it = classInd_(k).begin(), itEnd = classInd_(k).end(); it != itEnd; ++it) {
+    for (std::set<Index>::const_iterator it = classInd(k).begin(), itEnd = classInd(k).end(); it != itEnd; ++it) {
       x(currObsInClass) = (*p_data_)(*it);
       ++currObsInClass;
     }
@@ -171,11 +170,11 @@ void Weibull::writeParameters() const {
   std::cout << sstm.str() << std::endl;
 }
 
-std::string Weibull::checkSampleCondition() const {
+std::string Weibull::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
 //  if (degeneracyAuthorizedForNonBoundedLikelihood) return ""; // Weibull pdf is unbounded, so this line should be commented out
 
   for (Index k = 0; k < nClass_; ++k) {
-    for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+    for (std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
         it != itE;
         ++it) {
       if ((*p_data_)(*it) > 0.0) {
