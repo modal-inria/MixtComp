@@ -81,11 +81,11 @@ test_that("test fonctionnel : dataGenerator", {
   var <- list()
   var$z_class <- zParam()
   var$Rank1 <- rankParam("Rank1")
-  var$Ordinal1 <- ordinalParam("Ordinal1")
+  var$Ordinal1 <- ordinalParam1("Ordinal1")
   var$Functional1 <- functionalParam1sub("Functional1")
   var$Poisson1 <- poissonParam("Poisson1")
   var$Gaussienne1 <- gaussianParam("Gaussian1")
-  var$Categorical1 <- categoricalParam("Categorical1")
+  var$Categorical1 <- categoricalParam1("Categorical1")
   
   dat <- dataGenerator(100, 0.8, var) 
   

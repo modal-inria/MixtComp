@@ -16,11 +16,11 @@ test_that("run cluster/predict file csv",{
   
   # run RMixtCompt for clustering
   res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-  expect_equal(res$mixture$warnLog, "")
+  expect_equal(res$mixture$warnLog, NULL)
   
   # run RMixtCompt for predicting
   resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-  expect_equal(res$mixture$warnLog, "")
+  expect_equal(resPred$mixture$warnLog, NULL)
   
   file.remove("progress")
   
@@ -32,7 +32,7 @@ test_that("run cluster/predict R object",{
   var$z_class <- zParam()
   var$Poisson1 <- poissonParam("Poisson1")
   var$Gaussienne1 <- gaussianParam("Gaussian1")
-  var$Categorical1 <- categoricalParam("Categorical1")
+  var$Categorical1 <- categoricalParam1("Categorical1")
   
   dat <- dataGenerator(100, 0.8, var) 
   
@@ -48,7 +48,7 @@ test_that("run cluster/predict R object",{
   
   # run RMixtCompt for clustering
   res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-  expect_equal(res$mixture$warnLog, "")
+  expect_equal(res$mixture$warnLog, NULL)
   
   confMat <- table(dat$z, res$variable$data$z_class$completed)
   print(confMat)
@@ -61,7 +61,7 @@ test_that("run cluster/predict R object",{
 
   # run RMixtCompt for predicting
   resPred <- mixtCompPredict(resGetDataPred$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-  expect_equal(resPred$mixture$warnLog, "")
+  expect_equal(resPred$mixture$warnLog, NULL)
   
   confMat <- table(datPred$z, resPred$variable$data$z_class$completed)
   print(confMat)
