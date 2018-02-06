@@ -15,6 +15,7 @@
 *.json
 *.csv
 !RJsonMixtComp/inst/extdata/*.csv
+!RMixtComp/inst/extdata/*.csv
 RMixtComp/.Rbuildignore
 RMixtComp/R/RcppExports.R
 RMixtComp/src/RcppExports.cpp

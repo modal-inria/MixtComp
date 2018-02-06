@@ -27,17 +27,32 @@ createJsonMixtCompFile <- function(outputJsonFile, dataList, nbClass, confidence
   if(is.null(outMixtCompFile) & mode == "predict")
     stop("For predict, param is required")
   
+  # unbox transform a vector of length 1 in a non vector object in json
+  # data must not be unbox when there is only one sample
+  # instead of using auto_unbox = TRUE, we manually precise what needs to be unboxed
   for(i in 1:length(dataList))
   {
     dataList[[i]]$data <- as.character(dataList[[i]]$data)
+    dataList[[i]]$model <- jsonlite::unbox(dataList[[i]]$model)
+    dataList[[i]]$id <- jsonlite::unbox(dataList[[i]]$id)
+    dataList[[i]]$paramStr <- jsonlite::unbox(dataList[[i]]$paramStr)
   }
   
+  if(is.null(mcStrategy$parameterEdgeAuthorized))
+    mcStrategy$parameterEdgeAuthorized = FALSE
+  
+  mcStrategy$nbBurnInIter = jsonlite::unbox(mcStrategy$nbBurnInIter)
+  mcStrategy$nbIter = jsonlite::unbox(mcStrategy$nbIter)
+  mcStrategy$nbGibbsBurnInIter = jsonlite::unbox(mcStrategy$nbGibbsBurnInIter)
+  mcStrategy$nbGibbsIter = jsonlite::unbox(mcStrategy$nbGibbsIte)
+  mcStrategy$parameterEdgeAuthorized = jsonlite::unbox(mcStrategy$parameterEdgeAuthorized)
   
   if(mode == "learn")
     arg_list_json <- toJSON(list(by_row = FALSE, resGetData_lm = dataList, mcStrategy = mcStrategy, nbClass = nbClass, confidenceLevel = confidenceLevel, mode = mode), auto_unbox = TRUE)
   
   if(mode == "predict")
-    arg_list_json <- toJSON(list(by_row = FALSE, resGetData_lm = dataList, mcStrategy = mcStrategy, nbClass = nbClass, confidenceLevel = confidenceLevel, pathParamList = outMixtCompFile, mode = mode), auto_unbox = TRUE)
+    arg_list_json <- toJSON(list(by_row = jsonlite::unbox(FALSE), resGetData_lm = dataList, mcStrategy = mcStrategy, nbClass = jsonlite::unbox(nbClass),
+                                 confidenceLevel = jsonlite::unbox(confidenceLevel), pathParamList = jsonlite::unbox(outMixtCompFile), mode = jsonlite::unbox(mode)))
   
   
   write(x = arg_list_json, outputJsonFile)

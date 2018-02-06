@@ -44,7 +44,7 @@ std::string SemStrategy::run() {
 			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 		}
 
-		std::cout << "initParam successed." << std::endl;
+		std::cout << "SemStrategy::run, initParam succeeded." << std::endl;
 
 //		p_composer_->writeParameters(); // for debugging purposes
 
@@ -52,6 +52,9 @@ std::string SemStrategy::run() {
 		if (0 < warnLog.size()) {
 			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 		}
+
+		std::cout << "SemStrategy::run initializeLatent succeeded." << std::endl;
+		std::cout << "SEM initialization complete. SEM run can start." << std::endl;
 
 		warnLog = runSEM(
 				burnIn_,
@@ -104,7 +107,7 @@ std::string SemStrategy::runSEM(
 
 		std::string warnLog = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
 		if (0 < warnLog.size()) {
-			std::cout << "Degeneracy detected." << std::endl;
+			std::cout << "runSEM, checkSampleCondition failed." << std::endl;
 			return warnLog;
 		}
 

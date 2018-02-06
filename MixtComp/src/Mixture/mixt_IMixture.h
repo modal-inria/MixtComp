@@ -91,7 +91,7 @@ class IMixture {
      * @param k class
      * @return value of the completed likelihood in log scale
      * */
-    virtual Real lnCompletedProbability(Index i, Index k) = 0;
+    virtual Real lnCompletedProbability(Index i, Index k) const = 0;
 
     /**
      * Computation of observed likelihood
@@ -100,7 +100,7 @@ class IMixture {
      * @param k class
      * @return value of the observed likelihood in log scale
      * */
-    virtual Real lnObservedProbability(Index ind, Index k) = 0;
+    virtual Real lnObservedProbability(Index ind, Index k) const = 0;
 
     /**
      * Computation of the number of free parameters.

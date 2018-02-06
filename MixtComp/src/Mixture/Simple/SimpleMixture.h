@@ -157,7 +157,7 @@ public:
 	 * unknown values
 	 * @return the completed log-likelihood
 	 */
-	virtual Real lnCompletedProbability(Index i, Index k) {
+	virtual Real lnCompletedProbability(Index i, Index k) const {
 		return likelihood_.lnCompletedProbability(i, k);
 	}
 
@@ -165,7 +165,7 @@ public:
 	 * This function must be defined to return the observed likelihood
 	 * @return the observed log-likelihood
 	 */
-	virtual Real lnObservedProbability(Index i, Index k) {
+	virtual Real lnObservedProbability(Index i, Index k) const {
 		return likelihood_.lnObservedProbability(i, k);
 	}
 

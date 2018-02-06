@@ -27,7 +27,7 @@ class CategoricalLikelihood {
         augData_(augData){}
 
     /** Compute the completed log probability of individual i */
-    Real lnCompletedProbability(Index i, Index k) {
+    Real lnCompletedProbability(Index i, Index k) const {
       Index nbModalities = param_.rows() / nbClass_;
       Index ind = k * nbModalities + augData_.data_(i);
 
@@ -37,7 +37,7 @@ class CategoricalLikelihood {
     }
 
     /** Compute the observed log probability of individual i */
-    Real lnObservedProbability(Index i, Index k) {
+    Real lnObservedProbability(Index i, Index k) const {
       Index nbModalities = param_.rows() / nbClass_;
       Real proba;
 

@@ -48,7 +48,7 @@ MixtureComposer::~MixtureComposer() {
 }
 
 Real MixtureComposer::lnObservedProbability(int i, int k) const {
-	Real sum = std::log(prop_[k]);
+	Real sum = std::log(prop_[k]); // the joint probability p(x, z) is computed here, and will be marginalized over z later, for example in observedTik method
 
 	for (Index j = 0; j < nVar_; ++j) { // use the cache
 		sum += observedProbabilityCache_(j)(i, k);
@@ -116,12 +116,10 @@ Real MixtureComposer::lnCompletedLikelihood() {
 }
 
 Real MixtureComposer::lnCompletedProbability(int i, int k) const {
-	Real sum = std::log(prop_[k]);
-	Real logProba;
+	Real sum = std::log(prop_[k]); // the joint probability p(x, z) is computed
 
 	for (ConstMixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
-		logProba = (*it)->lnCompletedProbability(i, k);
-		sum += logProba;
+		sum += (*it)->lnCompletedProbability(i, k);
 	}
 
 	return sum;
@@ -129,8 +127,10 @@ Real MixtureComposer::lnCompletedProbability(int i, int k) const {
 
 void MixtureComposer::mStep() {
 	mStepPi(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
-	for (MixtIterator it = v_mixtures_.begin() ; it != v_mixtures_.end(); ++it) {
-		(*it)->mStep(zClassInd_.classInd()); // call mStep on each variable
+
+#pragma omp parallel for // note that this is the only case where parallelism is not performed over observations, but over individuals
+	for (Index v = 0; v < nVar_; ++v) {
+		v_mixtures_[v]->mStep(zClassInd_.classInd()); // call mStep on each variable
 	}
 }
 
@@ -265,6 +265,7 @@ void MixtureComposer::storeSEMRun(
 }
 
 void MixtureComposer::setObservedProbaCache() {
+	std::cout << "MixtureComposer::setObservedProbaCache, this operation could take some time..." << std::endl;
 	observedProbabilityCache_.resize(nVar_);
 
 	for (Index j = 0; j < nVar_; ++j) {
@@ -273,6 +274,7 @@ void MixtureComposer::setObservedProbaCache() {
 	}
 
 	for (Index j = 0; j < nVar_; ++j) {
+#pragma omp parallel for
 		for (Index i = 0; i < nInd_; ++i) {
 			for (Index k = 0; k < nClass_; ++k) {
 				observedProbabilityCache_(j)(i, k) = v_mixtures_[j]->lnObservedProbability(i, k);
@@ -620,17 +622,11 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 	for (Index k = 0; k < nClass_; k++) {
 		lnComp(k) = std::log(prop_[k]);
 
-		bool errorInObservability = false; // true means that at least in one class there is a 0 proba while parameters are not on the boundary of the parameter space. This happens for models which sample values to compute observed probability. They might not sample every value, thus misattributing a 0 proba.
 		for (Index j = 0; j < nVar_; ++j) {
-			if (observedProbabilityCache_(j)(i, k) == minInf && parametersInInterior(j, k) == true) {
-				errorInObservability = true;
-			}
 			currVar(k) = observedProbabilityCache_(j)(i, k);
 		}
 
-		if (!errorInObservability) { // if the observed probability can be "trusted" and can contribute to the computation of the observed probability
-			lnComp += currVar;
-		}
+		lnComp += currVar;
 	}
 
 	if (lnComp.maxCoeff() == minInf) { // individual is not observable if its probability is 0 in every classes, in that case the run can not continue

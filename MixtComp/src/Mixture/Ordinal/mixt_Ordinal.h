@@ -293,7 +293,7 @@ public:
 		}
 	}
 
-	virtual Real lnCompletedProbability(Index i, Index k) {
+	virtual Real lnCompletedProbability(Index i, Index k) const {
 		return path_(i).computeLogProba(mu_(k), pi_(k)); // path_(i) contains a completed individual
 	}
 
@@ -301,7 +301,7 @@ public:
 	 * This function must be defined to return the observed likelihood
 	 * @return the observed log-likelihood
 	 */
-	virtual Real lnObservedProbability(Index i, Index k) {
+	virtual Real lnObservedProbability(Index i, Index k) const {
 #ifdef MC_DEBUG
 		std::cout << "Ordinal::lnobservedProbability" << std::endl;
 		std::cout << "observedProba_.rows(): " << observedProba_.rows() << ", observedProba_.cols(): " << observedProba_.cols() << std::endl;

@@ -161,11 +161,11 @@ public:
 		}
 	}
 
-	Real lnCompletedProbability(Index i, Index k) {
+	Real lnCompletedProbability(Index i, Index k) const {
 		return class_[k].lnCompletedProbabilityInd(i);
 	}
 
-	virtual Real lnObservedProbability(Index i, Index k) {
+	virtual Real lnObservedProbability(Index i, Index k) const {
 		return class_[k].lnObservedProbability(i);
 	}
 

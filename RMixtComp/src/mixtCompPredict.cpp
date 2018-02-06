@@ -7,6 +7,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+// #include <omp.h>
+
 #include "mixt_DataHandlerR.h"
 #include "mixt_DataExtractorR.h"
 #include "mixt_ParamExtractorR.h"
@@ -23,6 +25,7 @@ Rcpp::List mixtCompPredict(
     double confidenceLevel) {
 
 	std::cout << "MixtComp, predict, version: " << mixt::version << std::endl;
+//	std::cout<< "Number of threads: " << omp_get_num_threads() << std::endl;
 
   mixt::Timer totalTimer("Total Run");
 
