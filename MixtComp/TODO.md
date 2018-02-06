@@ -1,100 +1,84 @@
-To do list specific to MixtComp
+# Short Term
 
-# Urgent modification
+# Current
 
-## Precise modifications
+- Weibull with at least missing intervals of the type [a; +inf]
+- Check that observed probabilities are not nan in the failing functional case
 
-- in Predict mode with functional data, the logStorage_ (defined in mixt_ConfIntParamStat.h) isn't initialized in setParamStorage() (defined in mixt_ConfIntParamStat.h), unlike statStorage_ .. But exportDataParam() (defined in mixt_FunctionalMixture.h) tries to get it nonetheless : what's the role of logStorage_ in Predict Mode ? should it be initialized or should exportDataParam() be modified ?
+# Algorithm
 
-### Order of implementation, each step should result in a working version of MixtComp
-- new initialization by partitioning and ordering, while keeping everything else as of today. This way the new initialization will benefit MixtComp while further updates are implemented
-- updated parameter normalization, as this can be used with parameterEdgeAuthorized = TRUE in current version
-- multiple initialization, without detection of degeneracy, only keeping the best run
-	- only strategy is no check with normalization
-- detection of degeneracy
-	- normalization
-- removal of Gibbs and all unused code (samplingStepCheck, etc ...)
+- in IMixture::computeObservedProba, the number of samplings used are determined by constants, but they should increase when the complexity of the model increases
+- What to do when an individual is not suited for initialization ?
+    - for example when a functional does not have enough points to estimate all the subregressions ?
+    - those are extreme cases that at present would result in a crash
+- The initialization sequence uses one individual per class. In semi-supervized problems one must ensure that the constraints are applied and the selected individual can belong to the class.
 
-### IMixture
-- remove samplingStepCheck
-- samplingStepNoCheck becomes samplingStep
-- keep checkSampleCondition, except that in the implementation, only return false for unbounded likelihood
-	- the test must occur after samplingStep, to check that the completion is valid
-- add pushParametersToCache and pullParametersFromCache methods
+# Bugs
 
-### Mixture
-- When must the parameters be bounded ? For example, when a proportion is estimated at 0 ?
-	- how to select the bound ? Relative to other values ?
-- Ordinal
-	- remove zCondition parameters
-	
-### Parameters normalization
-- Multinomial: add 1 / n to each proportion, then normalize, to avoid 0 valued proportions
-- For parameters with a dispersion value, 
-
-### SemStrategy
-- initSEMCheck has to be removed and only initSEMNoCheck and runSEMNoCheck must be kept
-- launch 10 identical runs, compare the log observed likelihood and keep the better one
-	- how to keep all the parameters and of the last best run ?
-	- note that only the SEM phase has to be run n times, not the Gibbs sampling
-	- each mixture has to be responsible for pushing / pulling the best parameters from a cache
-- this way, the data / param export at the end of the Gibbs is not affected
-
-## SemAlgo
-- only keep runNoCheck
-
-## Initialization
-
-- Est-ce qu'il ne vaudrait pas mieux initialiser les paramètres en tirant des individus, pour aller plus vite
-- Initialiser en générant une liste de z
-    - soit le modèle est capable d'estimer à partir d'un individu, et c'est le centre de la classes
-    - soit il peut pas (multinomial), et dans ce cas, il utilise plus d'éléments de la liste pour initialiser. Le cas limite étant de tout utiliser comme actuellement.
-    - au pire des cas on est dans le cas actuel, et au mieux, on explore mieux l'espace
-- Si l'algo est plus rapide, on peut intégrer les initalisations multiples, et renvoyer à l'utilisateur seulement le meilleur.
-- For Poisson, systematically add a constant to the sampled value. This way, the lambda parameter will not be 0 even if the sampled individual has a 0 value.
-
-## Multi run
-
-- only end the computation if the likelihood is unbound.
-	- For example, not when a a proportion in a categorical model is 0.
-	- end it if the standard deviation is 0
-- dans l'algo, pas de bornes, rajouter les bornes avant l'export de paramètres
-- si en prédiction, avec bornes partout, la variable devient muette
-- remove the Gibbs
-- export the number of degenerate run, so that an expert could reject if there are too many
-
-# Performances
-
-- Computing log observed likelihood takes a lot of time. Are we sure that it is only computed once ?
-    - needed to compute BIC and ICL
-    - to compute IDClass
-    - to compute lnProbaGivenClass
-- Is it at least cached for the variables for which it takes a lot of time ?
-- Now that lnProbaGivenClass computes the detail of the log proba, its result could be cached and used in all the cases listed
-    - in learn, it should be called at the end of the SEM
-    - in predict, it should be called at the beginning of the Gibbs, once the parameters are known
-    - this centralize the caching in the composer, instead of delegating it to the mixture author
+- Functional model seem to crash when edge authorized option is activated for the estimators
+    - They do not support biased estimators and since the Gibbs is deactivated, null variance or similar errors could happen
+- Crashes observed when running testOrdinal() in RMixtComp
 
 # Build
 
-- Nlopt should be built the same way boost regex is built. This would ensure a proper integration in the build system, and a faster build.
+- Nlopt should be built the same way boost regex is built, that is, not using the makefile provided by nlopt. This would ensure a proper integration in the build system, and a faster build.
 - There are a lot of complicated dependencies, which make mixtcomp hard to build on a system without root access
     - would it be wise to split MixtComp in a base package which only requires Rccp, and a companion package which requires plotly and others ?
 - CC and CFLAGS variables should be exported, so that alternative C compilers could be provided the same way C++ compilers are. This could be useful for packages like nlopt
     - this should be added to jsonmixtcomp
 - Move all external libraries to a specific folder, to clearly separate them from the various MixtComp modules
 
-# Bugs
+# Input / Output
 
-- Functional model seem to crash when edge authorized option is activated for the estimators
-    - They do not support biased estimators and since the Gibbs is deactivated, null variance or similar errors could happen
-- parameterEdgeAuthorized limits the estimation by excluding the border of the parameter space
-	- if a class is empty, its proportion will be estimated at 1e-8. BUT the estimation of the classes will not work as there are no observations. Crashes are to be expected.
-- Uncomment and correct SimpleMixture utest
+- Gaussian: Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
+- Poisson / Ordinal: Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
 
-# Architecture
+# Long Term
 
-- The whole trait system for the SimpleMixtureBridge might be greatly simplified if the mixture type, provided as a template argument of MixtureBridge, could in turn provide the types. BridgeTrait and its specialization would become unnecessary and all the information about mixture could be centralized in the header files of the various simple models.
+- données gaussiennes type "spike and slab"
+    - on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
+    - fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
+- Mode sans échec :
+    - Il va modifier les données en accord avec l'utilisateur. Il reprend les logs de MixtComp et pose des questions à l'utilisateur pour créer un jeu de données qui va mieux pour MixtComp.
+    - L'utilisateur devra par exemple rentrer un niveau d'imprécision qu'il tolère sur la mesure de données. Si on ne peut pas prédire un individu, on propose de mettre des manquants aux variables qui gènent pour cet individu.
+- launch N identical runs, compare the log observed likelihood and keep the better one
+    - how to keep all the parameters and of the last best run ?
+    - note that only the SEM phase has to be run n times, not the Gibbs sampling
+    - each mixture has to be responsible for pushing / pulling the best parameters from a cache
+    - add IMixture::pushParametersToCache and pullParametersFromCache methods
+- this way, the data / param export at the end of the Gibbs is not affected
+
+# Model
+
+## SimpleMixtureBridge
+
+- Uncomment and correct SimpleMixtureBridge utest
+
+## Functional
+
+- Missing data in support
+- Estimation has an infinite numer of solution if subregressions are not separated: check for that ?
+- in Predict mode with functional data, the logStorage_ (defined in mixt_ConfIntParamStat.h) isn't initialized in setParamStorage() (defined in mixt_ConfIntParamStat.h), unlike statStorage_ .. But exportDataParam() (defined in mixt_FunctionalMixture.h) tries to get it nonetheless : what's the role of logStorage_ in Predict Mode ? should it be initialized or should exportDataParam() be modified ?
+
+## Rank
+
+- The identifiability of the model is not enforced. Opposite ranks with symmetric values (around 0.5) of dispersion would yield the same model.
+
+## Ordinal model
+
+- clarify if can be used with EdgeAuthorized or not. It seems it cannot. Test with generated data.
+- apparently there are sometimes errors in the unit tests. Check those as they could explain other errors.
+
+# Performances
+
+- remove regex in data parsing. Will be faster but less tolerant to data format.
+- Statistics object generate a boost::variate_generator each time a variable is sampled. It should be possible to generate a vector of value, when the parameters do not vary.
+
+- If a class is emptied, the run should continue with one less class
+    - there should be a way to deactivate a class, that would be simpler than moving / resizing everything
+
+données gaussiennes type "spike and slab" : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
+fonctionnelle constante : on demande un niveau d'imprécision à l'utilisateur et on remplace par un intervalle
 
 # Various
 
@@ -103,34 +87,3 @@ To do list specific to MixtComp
 	- If rng are shared, then there will be race conditions in multi-threading runs
 	- So the deterministic approach is put on standby. mixt_RNG.h contains the seed generation.
 	- This also highlight the problem that the algorithm is dependent on the initialization of the RNG and this should be dealt with...
-
-# Estimation problem
-
-- keep the test for degeneracy
-- remove the Gibbs
-    - how will the Ordinal model work without Gibbs ?
-    - it will not work.
-- remove parameterEdgeAuthorized
-    - it "worked" for problem of null variance and such
-    - it never worked for empty classes
-    - remove it altogether ?
-- launch multiple run if a degenerescency is detected
-- SEM will degenerate given enough time, so if the data is "correct", this should be rare, and fixed by relaunching
-- if degenerescency is systematic, the model is not correct and should be dropped. Running a Gibbs over a long time period will not solve anything.
-
-# Output object
-
-- Gaussien :
-    Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
-- Poisson/Ordinal :
-    Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
-
-# Model
-
-- Functional Model
-    - Missing data in support
-    - The identifiability of the model is not enforced. Opposite ranks with symmetric values (around 0.5) of dispersion would yield the same model.
-- Ordinal model
-    - clarify if can be used with EdgeAuthorized or not. It seems it cannot. Test with generated data.
-    - apparently there are sometimes errors in the unit tests. Check those as they could explain other errors.
-- remove regex in data parsing. Will be faster but less tolerant to data format.

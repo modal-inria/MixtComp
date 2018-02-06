@@ -16,10 +16,13 @@ namespace mixt
 {
 
 /**
- * Structure containing the values of an iteration of the BOS algorithm
+ * Structure containing the values of an iteration of the BOS algorithm.
+ * A node contains information on:
+ * - breaking point y
+ * - blindness of comparison z
+ * - final segment e
  */
-class BOSNode
-{
+class BOSNode {
   public:
     int y_; // breaking point
     Vector<Vector<int, 2> > part_; // partition is uniquely defined by e_ from previous iteration and by y_

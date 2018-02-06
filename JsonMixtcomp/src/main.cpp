@@ -89,21 +89,23 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
            dataExtractor .setNbMixture(handler.nbVariable());
            paramExtractor.setNbMixture(handler.nbVariable());
 
-           mixt::StrategyParam param;
-           mixt::paramJsonToCpp(mcStrategy,
-                       param);
+           mixt::StrategyParam strategyParam;
+           paramJsonToCpp(mcStrategy, strategyParam);
 
-           // create the appropriate strategy and transmit the parameters
-           mixt::SemStrategy strategy(&composer,
-                                      param); // number of iterations for Gibbs sampler
+           // Run the SEM strategy
 
-           // run the strategy
-           mixt::Timer stratTimer("Strategy Run");
-           #ifdef MC_VERBOSE
-             std::cout << "run debute" << std::endl;
-           #endif
-           warnLog += strategy.run();
-           stratTimer.top("strategy run complete");
+           mixt::SemStrategy semStrategy(&composer, strategyParam);
+           mixt::Timer semStratTimer("SEM Strategy Run");
+           warnLog += semStrategy.run();
+           semStratTimer.top("SEM strategy run complete");
+
+           // Run the Gibbs strategy
+
+           mixt::GibbsStrategy gibbsStrategy(&composer, strategyParam, 2);
+           mixt::Timer gibbsStratTimer("Gibbs Strategy Run");
+           warnLog += gibbsStrategy.run();
+           gibbsStratTimer.top("Gibbs strategy run complete");
+
            if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
              #ifdef MC_VERBOSE
                composer.writeParameters();
@@ -251,24 +253,21 @@ std::string predict_mixtcomp(json argument_list,std::string json_file_output){
       readTimer.top("data has been read");
 
       if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
-           dataExtractor .setNbMixture(handler.nbVariable());
-           paramExtractor.setNbMixture(handler.nbVariable());
+        dataExtractor .setNbMixture(handler.nbVariable()); // all data has been read, checked and transmitted to the mixtures
+        paramExtractor.setNbMixture(handler.nbVariable());
 
-           mixt::StrategyParam param;
-           mixt::paramJsonToCpp(mcStrategy,
-                       param);
+        mixt::StrategyParam strategyParam;
+        paramJsonToCpp(mcStrategy,
+                    strategyParam);
 
-           // create the appropriate strategy and transmit the parameters
-           mixt::GibbsStrategy  strategy(&composer,
-                                      param); // number of iterations for Gibbs sampler
+        mixt::GibbsStrategy strategy(&composer, strategyParam, 0);
 
-           // run the strategy
-           mixt::Timer stratTimer("Strategy Run");
-           #ifdef MC_VERBOSE
-             std::cout << "run debute" << std::endl;
-           #endif
-           warnLog += strategy.run();
-           stratTimer.top("strategy run complete");
+        // Run the strategy
+
+        mixt::Timer stratTimer("Gibbs Strategy Run");
+        warnLog += strategy.run();
+        stratTimer.top("Gibbs strategy run complete");
+
            if (warnLog.size() == 0) { // all data has been read, checked and transmitted to the mixtures
              #ifdef MC_VERBOSE
                composer.writeParameters();

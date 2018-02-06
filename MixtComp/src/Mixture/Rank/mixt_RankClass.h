@@ -23,6 +23,7 @@ namespace mixt
 class RankClass
 {
   public:
+	typedef std::pair<MisType, std::vector<int> > MisVal;
 //    /** Default constructor */
 //    RankClass(int nbClass);
 
@@ -44,7 +45,7 @@ class RankClass
     void sampleMu();
 
     /** */
-    void mStep(EstimatorType bias);
+    void mStep();
 
     void computeObservedProba();
   private:

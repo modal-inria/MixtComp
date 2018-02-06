@@ -64,10 +64,10 @@ void ParamExtractorR::exportParam(int indexMixture,
 
   Rcpp::NumericMatrix logR;
 
-  if (logStorage.rows() > 0 && logStorage.cols()) {// only if log has taken place, for example not during predict
+  if (logStorage.rows() > 0 && logStorage.cols()) { // only if log has taken place, for example not during predict
     // copy of the log data
     logR = Rcpp::NumericMatrix(logStorage.rows(),
-                                    logStorage.cols());
+                               logStorage.cols());
     for (int i = 0; i < logStorage.rows(); ++i) {
       for (int j = 0; j < logStorage.cols(); ++j) {
         logR(i, j) = logStorage(i, j);

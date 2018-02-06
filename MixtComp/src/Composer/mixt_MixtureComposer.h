@@ -37,9 +37,10 @@ class MixtureComposer {
     /** Constructor.
      * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
      */
-    MixtureComposer(Index nbInd,
-                    Index nbClass,
-                    Real confidenceLevel);
+    MixtureComposer(
+        Index nbInd,
+        Index nbClass,
+        Real confidenceLevel);
 
     /** copy constructor.
      *  @param composer the composer to copy
@@ -49,13 +50,11 @@ class MixtureComposer {
     /** The registered mixtures will be deleted there.*/
     ~MixtureComposer();
 
-    void initializeTik();
+    Index nbClass() const {return nClass_;}
 
-    Index nbClass() const {return nbClass_;}
+    Index nbInd() const {return nInd_;}
 
-    Index nbInd() const {return nbInd_;}
-
-    Index nbVar() const {return nbVar_;}
+    Index nbVar() const {return nVar_;}
 
     /** @return  the zi class label */
     const Vector<Index>* p_zi() const {return &(zClassInd_.zi().data_);}
@@ -70,27 +69,24 @@ class MixtureComposer {
      *  mixture parameters.
      *  @param[out] worstDeg worst degeneracy type incountered among all mixtures for this mStep
      **/
-    void mStep(EstimatorType bias);
+    void mStep();
 
     /** Compute proportions using the ML estimator, default implementation. Set
      *  as virtual in case we impose fixed proportions in derived model. Only called
      *  by mStep
      **/
-    void pStep(EstimatorType bias);
+    void mStepPi();
 
     /**
      * Simulate zi accordingly to tik and replace tik by zik by calling cStep().
      * @return the minimal value of individuals in a class
      **/
-    void sStepNoCheck();
-    void sStepNoCheck(int i);
-
-    void sStepCheck();
-    void sStepCheck(int i);
+    void sampleZ();
+    void sampleZ(int i);
 
     /** compute Tik */
-    void eStep();
-    void eStepInd(int i);
+    void eStepCompleted();
+    void eStepCompletedInd(int i);
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
@@ -118,11 +114,8 @@ class MixtureComposer {
      * Perform a sampling step
      * @param checkSampleCondition indicates if there is a need to perform a check on the data or not
      */
-    void samplingStepNoCheck(SamplerInitialization init);
-    void samplingStepNoCheck(SamplerInitialization init, int i);
-
-    void samplingStepCheck();
-    void samplingStepCheck(int i);
+    void sampleUnobservedAndLatent();
+    void sampleUnobservedAndLatent(int i);
 
     /**
      * Check if the data conditions are verified for all mixtures. Providing a log is required during
@@ -131,19 +124,21 @@ class MixtureComposer {
      * log is required.
      * @param[out] warnLog provides information on what condition has not been met
      * */
-    int checkSampleCondition(std::string* warnLog = NULL) const;
+    std::string checkSampleCondition() const;
 
     /**
      * Check if there are enough individual in each class. Called by checkSampleCondition.
      * @param[out] warnLog provides information on what condition has not been met
      * */
-    int checkNbIndPerClass(std::string* warnLog = NULL) const;
+    std::string checkNbIndPerClass() const;
 
     /**@brief This step can be used to signal to the mixtures that they must
      * store results. This is usually called after a burn-in phase.
      **/
-    void storeSEMRun(int iteration,
-                     int iterationMax);
+    void storeSEMRun(
+    		int iteration,
+        int iterationMax,
+		RunType runType);
 
     /** @brief This step can be used to signal to the mixtures that they
      * must store data. This is usually called after the long algo, to
@@ -164,9 +159,14 @@ class MixtureComposer {
                              const DataHandler& dataHandler,
                              RunMode mode) {
       std::string warnLog;
+
+      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+        warnLog += (*it)->setDataParam(mode);
+      }
+
       warnLog += setProportion(paramSetter);
 
-      for (int i = 0; i < nbInd_; ++i) {
+      for (int i = 0; i < nInd_; ++i) {
         tik_.row(i) = prop_.transpose();
       }
 
@@ -175,11 +175,8 @@ class MixtureComposer {
       if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
         paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
       }
-      dataStat_.setNbIndividual(nbInd_);
 
-      for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-        warnLog += (*it)->setDataParam(mode);
-      }
+      dataStat_.setNbIndividual(nInd_);
 
       return warnLog;
     }
@@ -192,10 +189,11 @@ class MixtureComposer {
       std::string warnLog;
 
       std::string dummy;
-      paramSetter.getParam("z_class",
-                           "pi",
-                           prop_,
-                           dummy); // no need for paramStr, as the parameter space is already described by nClass
+      paramSetter.getParam(
+    		  "z_class",
+			  "pi",
+			  prop_,
+			  dummy); // no need for paramStr, as the parameter space is already described by nClass
 
       return warnLog;
     }
@@ -233,16 +231,16 @@ class MixtureComposer {
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
         warnLog += sstm.str();
       }
-      if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nbClass_ - 1) {
+      if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nClass_ - 1) {
         std::stringstream sstm;
         sstm << "The z_class latent class variable has a highest provided value of: "
             << minModality + zClassInd_.zi().dataRange_.max_
             << " while the maximal value can not exceed the number of class: "
-            << minModality + nbClass_ - 1
+            << minModality + nClass_ - 1
             << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
         warnLog += sstm.str();
       }
-      zClassInd_.setRange(0, nbClass_ - 1, nbClass_);
+      zClassInd_.setRange(0, nClass_ - 1, nClass_);
 
       return warnLog;
     };
@@ -282,11 +280,11 @@ class MixtureComposer {
     void registerMixture(IMixture* mixture);
 
     /** Gibbs sampling, one individual at a time */
-    void gibbsSampling(SamplerInitialization init,
-                       GibbsSampleData sample,
-                       int nbGibbsIter,
-                       int group,
-                       int groupMax);
+    void gibbsSampling(
+        GibbsSampleData sample,
+        int nbGibbsIter,
+        int group,
+        int groupMax);
 
     /** @return names of the parameters */
     std::vector<std::string> paramName() const;
@@ -298,7 +296,10 @@ class MixtureComposer {
 
     void initData();
 
-    void initParam();
+    /**
+     * Sample an individual per class, to perform the initialization of each model.
+     */
+    std::string initParam();
 
     /**
      * Compute the "raw" class ID matrix E_kj
@@ -307,10 +308,10 @@ class MixtureComposer {
      * */
     void E_kj(Matrix<Real>& ekj) const;
    /**
-	* Added by Matt (Compute the matrix delta measuring the similarities between variables)
-*
-*@param[out] delta matrix of the distances between variables
-**/	
+	  * Added by Matt (Compute the matrix delta measuring the similarities between variables)
+    *
+    *@param[out] delta matrix of the distances between variables
+    **/
     void Delta(Matrix<Real>& delta) const;
 
     /**
@@ -322,23 +323,50 @@ class MixtureComposer {
 
     void lnProbaGivenClass(Matrix<Real>& idc) const;
 
-    void printObservedTik() const;
-  private:
+    void printTik() const;
+
+    void observedTik(Vector<Real>& observedTik) const;
+
+    void setObservedProbaCache();
+
+    /**
+     * Ask for every model that needs it to compute an empirical observed distribution.
+     */
+    void computeObservedProba();
+
+    /**
+     * Every steps to be completed to initialize latent variables once parameters are known
+     * and uniform initialization of data has been performed. */
+    std::string initializeLatent();
+
+    /**
+     * Similar to eStep, except that observed probability are used. Useful during initialization
+     * when individuals have not been completed using the real model.
+     */
+    std::string eStepObserved();
+    bool eStepObservedInd(Index i, const Matrix<bool>& parametersInInterior);
+
+    /** Call initializeMarkovChain on all variables. */
+    void initializeMarkovChain();
+
+    const Vector<Real>& completedProbabilityLogBurnIn() {return completedProbabilityLogBurnIn_;}
+    const Vector<Real>& completedProbabilityLogRun() {return completedProbabilityLogRun_;}
     void printClassInd() const;
 
+  private:
     /** name of the latent class variable */
     std::string idName_;
 
     std::string paramStr_;
 
     /** number of classes */
-    Index nbClass_;
+    Index nClass_;
 
     /** Number of samples */
-    Index nbInd_;
+    Index nInd_;
 
     /** Number of variables */
-    Index nbVar_;
+    Index nVar_;
 
     /** The proportions of each class */
     Vector<Real> prop_;
@@ -363,6 +391,22 @@ class MixtureComposer {
 
     /** confidence level used for the computation of statistics */
     Real confidenceLevel_;
+
+    /**
+     * Cached observed log probability. The access is done via:
+     * observedProbabilityCache_(variable)(individual, class) to more or less match the t_ik access
+     * pattern.
+     * */
+    Vector<Matrix<Real> > observedProbabilityCache_;
+
+    /** Cached completed log probability for each individual, can be used to export the evolution of the completed likelihood of the data, iteration after iteration. */
+    Vector<Real> completedProbabilityCache_;
+
+    /** Cached completed log probability for each individual, can be used to export the evolution of the completed likelihood of the data, iteration after iteration. */
+    Vector<Real> completedProbabilityLogBurnIn_;
+
+    /** Cached completed log probability for each individual, can be used to export the evolution of the completed likelihood of the data, iteration after iteration. */
+    Vector<Real> completedProbabilityLogRun_;
 };
 
 } /* namespace mixt */

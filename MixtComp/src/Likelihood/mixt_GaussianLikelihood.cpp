@@ -19,7 +19,7 @@ GaussianLikelihood::GaussianLikelihood(const Vector<Real>& param,
     param_(param),
     augData_(augData) {}
 
-Real GaussianLikelihood::lnCompletedProbability(int i, int k) {
+Real GaussianLikelihood::lnCompletedProbability(int i, int k) const {
   Real mean  = param_(2 * k    );
   Real sd    = param_(2 * k + 1);
 
@@ -30,7 +30,7 @@ Real GaussianLikelihood::lnCompletedProbability(int i, int k) {
   return logProba;
 }
 
-Real GaussianLikelihood::lnObservedProbability(int i, int k) {
+Real GaussianLikelihood::lnObservedProbability(int i, int k) const {
   Real mean  = param_(2 * k    );
   Real sd    = param_(2 * k + 1);
 
@@ -38,9 +38,6 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k) {
 
   switch(augData_.misData_(i).first) { // likelihood for present value
     case present_: {
-      Real mean  = param_(2 * k    );
-      Real sd    = param_(2 * k + 1);
-
       logProba = normal_.lpdf(augData_.data_(i),
                               mean,
                               sd);

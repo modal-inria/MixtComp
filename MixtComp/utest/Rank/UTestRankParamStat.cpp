@@ -11,8 +11,10 @@
 
 using namespace mixt;
 
-/** Use RankParamStat to compute statistics on mu and pi. Use the setExpectationParam to make a comparison
- * with the real parameters */
+/**
+ * Use RankParamStat to compute statistics on mu and pi. Use the setExpectationParam to make a comparison
+ * with the real parameters
+ * */
 TEST(RankStat, computeStat)
 {
   int nbPos = 5;
@@ -59,16 +61,16 @@ TEST(RankStat, computeStat)
 
   for (int i = 0; i < nbIterburnIn; ++i) {
     for (int ind = 0; ind < nbInd; ++ind) {
-      data(ind).sampleY(muEst, piEst, allGAuthorized_);
+      data(ind).sampleY(muEst, piEst);
     }
     rank.sampleMu();
   }
 
   for (int i = 0; i < nbIterRun; ++i) {
     for (int ind = 0; ind < nbInd; ++ind) {
-      data(ind).sampleY(muEst, piEst, allGAuthorized_);
+      data(ind).sampleY(muEst, piEst);
     }
-    rank.mStep(unBiased_);
+    rank.mStep();
     paramStat.sampleValue(i, nbIterRun - 1);
   }
 

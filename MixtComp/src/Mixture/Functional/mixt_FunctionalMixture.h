@@ -12,405 +12,431 @@
 
 namespace mixt {
 
-template<typename DataHandler,
-         typename DataExtractor,
-         typename ParamSetter,
-         typename ParamExtractor>
+template<
+typename DataHandler,
+typename DataExtractor,
+typename ParamSetter,
+typename ParamExtractor>
 class FunctionalMixture : public IMixture {
-  public:
-    FunctionalMixture(Index indexMixture,
-                      std::string const& idName,
-                      Index nClass,
-                      const Vector<Index>* p_zi,
-                      const Vector<std::set<Index> >& classInd,
-                      const DataHandler* p_handler,
-                      DataExtractor* p_extractor,
-                      const ParamSetter* p_paramSetter,
-                      ParamExtractor* p_paramExtractor,
-                      Real confidenceLevel) :
-        IMixture(indexMixture,
-                 idName),
-        nInd_(0),
-        nClass_(nClass),
-        nSub_(0),
-        nCoeff_(0),
-        confidenceLevel_(confidenceLevel),
-        p_zi_(p_zi),
-        classInd_(classInd),
-        p_handler_(p_handler),
-        p_dataExtractor_(p_extractor),
-        p_paramSetter_(p_paramSetter),
-        p_paramExtractor_(p_paramExtractor) {
-      class_.reserve(nClass_);
-      for (Index k = 0; k < nClass_; ++k) {
-        class_.emplace_back(vecInd_,
-                            classInd_(k),
-                            confidenceLevel_);
-      }
+public:
+	FunctionalMixture(
+			Index indexMixture,
+			std::string const& idName,
+			Index nClass,
+			const Vector<Index>* p_zi,
+			const Vector<std::set<Index> >& classInd,
+			const DataHandler* p_handler,
+			DataExtractor* p_extractor,
+			const ParamSetter* p_paramSetter,
+			ParamExtractor* p_paramExtractor,
+			Real confidenceLevel)
+: IMixture(indexMixture, idName),
+  nInd_(0),
+  nClass_(nClass),
+  nSub_(0),
+  nCoeff_(0),
+  confidenceLevel_(confidenceLevel),
+  p_zi_(p_zi),
+  classInd_(classInd),
+  p_handler_(p_handler),
+  p_dataExtractor_(p_extractor),
+  p_paramSetter_(p_paramSetter),
+  p_paramExtractor_(p_paramExtractor) {
+		class_.reserve(nClass_);
+		for (Index k = 0; k < nClass_; ++k) {
+			class_.emplace_back(vecInd_,
+					classInd_(k),
+					confidenceLevel_);
+		}
 
-      acceptedType_.resize(nb_enum_MisType_);
-      acceptedType_ << true , // present_,
-                       false, // missing_,
-                       false, // missingFiniteValues_,
-                       false, // missingIntervals_,
-                       false, // missingLUIntervals_,
-                       false; // missingRUIntervals
-    }
+		acceptedType_.resize(nb_enum_MisType_);
+		acceptedType_ <<
+				true , // present_,
+				false, // missing_,
+				false, // missingFiniteValues_,
+				false, // missingIntervals_,
+				false, // missingLUIntervals_,
+				false; // missingRUIntervals
+	}
 
-    //** Dummy  constructor to check compilation */
-    FunctionalMixture(const Vector<std::set<Index> >& classInd) :
-      IMixture(0, "dummy"),
-      nInd_(0),
-      nClass_(0),
-      nSub_(0),
-      nCoeff_(0),
-      confidenceLevel_(0.),
-      p_zi_(NULL),
-      classInd_(classInd),
-      p_handler_(NULL),
-      p_dataExtractor_(NULL),
-      p_paramSetter_(NULL),
-      p_paramExtractor_(NULL) {};
+	//** Dummy  constructor to check compilation */
+	FunctionalMixture(const Vector<std::set<Index> >& classInd) :
+		IMixture(0, "dummy"),
+		nInd_(0),
+		nClass_(0),
+		nSub_(0),
+		nCoeff_(0),
+		confidenceLevel_(0.),
+		p_zi_(NULL),
+		classInd_(classInd),
+		p_handler_(NULL),
+		p_dataExtractor_(NULL),
+		p_paramSetter_(NULL),
+		p_paramExtractor_(NULL) {};
 
-    void samplingStepCheck(Index i) {
-      class_[(*p_zi_)(i)].samplingStepCheck(i);
-    };
+	void sampleUnobservedAndLatent(Index i) {
+		class_[(*p_zi_)(i)].samplingStepNoCheck(i);
+	};
 
-    void samplingStepNoCheck(SamplerInitialization init, Index i) {
-      if (init == performInitialization_) {
-        initData(i);
-      }
+	std::string checkSampleCondition() const {
+		std::string classLog;
+		for (Index k = 0; k < nClass_; ++k) {
+			std::string currClassLog = class_[k].checkSampleCondition(classInd_(k));
+			if (0 < currClassLog.size()) {
+				classLog += "Class: " + std::to_string(k) + ": " + currClassLog;
+			}
+		}
 
-      class_[(*p_zi_)(i)].samplingStepNoCheck(i);
-    };
+		if (0 < classLog.size()) {
+			return "Error(s) in variable: " + idName_ + " with Functional model. The errors in the various classes are: " + eol + classLog;
+		}
 
-    Index checkSampleCondition(std::string* warnLog) const {
-      if (warnLog == NULL) { // no need to generate a detailed log. This is useful during the Gibbs sampling to speed up computations.
-        for (Index k = 0; k < nClass_; ++k) {
-          Index sampleOK = class_[k].checkSampleCondition(NULL);
+		return "";
+	}
 
-          if (sampleOK == 0) {
-            return 0;
-          }
-        }
-      }
-      else {
-        for (Index k = 0; k < nClass_; ++k) {
-          std::string tempLog;
-          Index sampleOK = class_[k].checkSampleCondition(&tempLog);
+	void mStep() {
+		for (Index k = 0; k < nClass_; ++k) {
+			class_[k].mStep();
+		}
+	};
 
-          if (sampleOK == 0) {
-              std::stringstream sstm;
-              sstm << "Error in variable: " << idName_ << " with Functional model, in at least one class." << std::endl;
-              sstm << tempLog << std::endl;
-              *warnLog += sstm.str();
+	void storeSEMRun(Index iteration,
+			Index iterationMax) {
+		for (Index k = 0; k < nClass_; ++k) {
+			class_[k].sampleParam(iteration, iterationMax);
+		}
 
-            return 0;
-          }
-        }
-      }
+		if (iteration == iterationMax) {
+			for (Index k = 0; k < nClass_; ++k) {
+				class_[k].setExpectationParam();
+			}
+		}
+	};
 
-      return 1;
-    }
+	void storeGibbsRun(Index i,
+			Index iteration,
+			Index iterationMax) {
+		// nothing until missing data is supported
+	};
 
-    void mStep(EstimatorType bias) {
-      for (Index k = 0; k < nClass_; ++k) {
-        class_[k].mStep();
-      }
-    };
+	Real lnCompletedProbability(Index i, Index k) const {
+		return vecInd_(i).lnCompletedProbability(
+				class_[k].alpha(),
+				class_[k].beta (),
+				class_[k].sd   ());
+	}
 
-    void storeSEMRun(Index iteration,
-                     Index iterationMax) {
-      for (Index k = 0; k < nClass_; ++k) {
-        class_[k].sampleParam(iteration, iterationMax);
-      }
+	Real lnObservedProbability(Index i, Index k) const{
+		return vecInd_(i).lnObservedProbability(
+				class_[k].alpha(),
+				class_[k].beta (),
+				class_[k].sd   ());
+	}
 
-      if (iteration == iterationMax) {
-        for (Index k = 0; k < nClass_; ++k) {
-          class_[k].setExpectationParam();
-        }
-      }
-    };
+	Index nbFreeParameter() const {
+		return nClass_ * (  (nSub_ -1) * 2// alpha (nSub_ -1 since alpha's are the parameters of a multivariate logistic regeression)
+				+ nSub_ * nCoeff_// beta
+				+ nSub_ ); // sigma
+	}
 
-    void storeGibbsRun(Index i,
-                       Index iteration,
-                       Index iterationMax) {
-      // nothing until missing data is supported
-    };
+	void writeParameters() const {
+		std::stringstream sstm;
 
-    Real lnCompletedProbability(Index i, Index k) {
-      return vecInd_(i).lnCompletedProbability(class_[k].alpha(),
-                                               class_[k].beta (),
-                                               class_[k].sd   ());
-    }
+		for (int k = 0; k < nClass_; ++k) {
+			sstm << "Class: " << k << std::endl;
+			sstm << "alpha: " << std::endl << class_[k].alpha() << std::endl;
+			sstm << "beta: " << std::endl << class_[k].beta() << std::endl;
+			sstm << "sigma: " << itString(class_[k].sd()) << std::endl;
+		}
 
-    Real lnObservedProbability(Index i, Index k)  {
-      return vecInd_(i).lnObservedProbability(class_[k].alpha(),
-                                              class_[k].beta (),
-                                              class_[k].sd   ());
-    }
+		std::cout << sstm.str() << std::endl;
+	};
 
-    Index nbFreeParameter() const {
-      return nClass_ * (  (nSub_ -1) * 2// alpha (nSub_ -1 since alpha's are the parameters of a multivariate logistic regeression)
-                        + nSub_ * nCoeff_// beta
-                        + nSub_ ); // sigma
-    }
+	std::string setDataParam(RunMode mode) {
+		std::string warnLog;
+		Vector<std::string> dataStr;
+		Vector<Real> alpha, beta, sd;
 
-    void writeParameters() const {
-      std::stringstream sstm;
+		warnLog += p_handler_->getData(
+				idName(), // get the raw vector of strings
+				dataStr,
+				nInd_,
+				paramStr_);
 
-      for (int k = 0; k < nClass_; ++k) {
-        sstm << "Class: " << k << std::endl;
-        sstm << "alpha: " << std::endl << class_[k].alpha() << std::endl;
-        sstm << "beta: " << std::endl << class_[k].beta() << std::endl;
-        sstm << "sigma: " << itString(class_[k].sd()) << std::endl;
-      }
+		if (mode == prediction_) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
+			std::string dummyStr;
+			p_paramSetter_->getParam(
+					idName_,
+					"alpha",
+					alpha,
+					dummyStr); // alpha is not parameterized by anything, only order one polynomials are used in the logistical regression
 
-      std::cout << sstm.str() << std::endl;
-    };
+			p_paramSetter_->getParam(
+					idName_,
+					"beta",
+					beta,
+					paramStr_);
 
-    std::string setDataParam(RunMode mode) {
-      std::string warnLog;
-      Vector<std::string> dataStr;
-      Vector<Real> alpha, beta, sd;
+			p_paramSetter_->getParam(
+					idName_,
+					"sd",
+					sd,
+					dummyStr);
+		}
 
-      warnLog += p_handler_->getData(idName(), // get the raw vector of strings
-                                     dataStr,
-                                     nInd_,
-                                     paramStr_);
+		// get the value of nSub_ and nCoeff_ by parsing paramStr_
+		std::string paramReStr = std::string("nSub: *") + strPositiveInteger + std::string(", nCoeff: *") + strPositiveInteger;
+		boost::regex paramRe(paramReStr);
+		boost::smatch matches;
+		if (boost::regex_match(paramStr_, matches, paramRe)) { // value is present
+			nSub_ = str2type<Index>(matches[1].str());
+			nCoeff_ = str2type<Index>(matches[2].str());
 
-      if (mode == prediction_) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
-        std::string dummyStr;
-        p_paramSetter_->getParam(idName_,
-                                 "alpha",
-                                 alpha,
-                                 dummyStr); // alpha is not parameterized by anything, only order one polynomials are used in the logistical regression
+			for (Index k = 0; k < nClass_; ++k) { // call setSize on each class
+				class_[k].setSize(nSub_, nCoeff_);
+			}
+		}
+		else {
+			std::stringstream sstm;
+			sstm << "Variable: " << idName_ << " has no parameter description. This description is required, and must take the form "
+					<< "\"nSub: x, nCoeff: y\"" << std::endl;
+			warnLog += sstm.str();
+		}
 
-        p_paramSetter_->getParam(idName_,
-                                 "beta",
-                                 beta,
-                                 paramStr_);
+		if (mode == prediction_ && warnLog.size() == 0) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
+			Matrix<Real> alphaCurr(nSub_, 2);
+			Matrix<Real> betaCurr(nSub_, nCoeff_);
+			Vector<Real> sdCurr(nSub_);
+			for (Index k = 0; k < nClass_; ++k) {
+				for (Index s = 0; s < nSub_; ++s) {
+					for (Index c = 0; c < 2; ++c) {
+						alphaCurr(s, c) = alpha(k * nSub_ * 2 + s * 2 + c);
+					}
+				}
 
-        p_paramSetter_->getParam(idName_,
-                                 "sd",
-                                 sd,
-                                 dummyStr);
-      }
+				for (Index s = 0; s < nSub_; ++s) {
+					for (Index c = 0; c < nCoeff_; ++c) {
+						betaCurr(s, c) = beta(k * nSub_ * nCoeff_ + s * nCoeff_ + c);
+					}
+				}
 
-      // get the value of nSub_ and nCoeff_ by parsing paramStr_
-      std::string paramReStr = std::string("nSub: *") + strPositiveInteger + std::string(", nCoeff: *") + strPositiveInteger;
-      boost::regex paramRe(paramReStr);
-      boost::smatch matches;
-      if (boost::regex_match(paramStr_, matches, paramRe)) { // value is present
-        nSub_ = str2type<Index>(matches[1].str());
-        nCoeff_ = str2type<Index>(matches[2].str());
+				for (Index s = 0; s < nSub_; ++s) {
+					sdCurr(s) = sd(k * nSub_ + s);
+				}
 
-        for (Index k = 0; k < nClass_; ++k) { // call setSize on each class
-          class_[k].setSize(nSub_, nCoeff_);
-        }
-      }
-      else {
-        std::stringstream sstm;
-        sstm << "Variable: " << idName_ << " has no parameter description. This description is required, and must take the form "
-             << "\"nSub: x, nCoeff: y\"" << std::endl;
-        warnLog += sstm.str();
-      }
+				class_[k].setParam(
+						alphaCurr,
+						betaCurr,
+						sdCurr);
+				class_[k].setParamStorage();
+			}
+		}
 
-      if (mode == prediction_ && warnLog.size() == 0) { // prediction mode, linearized versions of the parameters are fetched, and then distributed to the classes
-        Matrix<Real> alphaCurr(nSub_, 2);
-        Matrix<Real> betaCurr(nSub_, nCoeff_);
-        Vector<Real> sdCurr(nSub_);
-        for (Index k = 0; k < nClass_; ++k) {
-          for (Index s = 0; s < nSub_; ++s) {
-            for (Index c = 0; c < 2; ++c) {
-              alphaCurr(s, c) = alpha(k * nSub_ * 2 + s * 2 + c);
-            }
-          }
+		warnLog += parseFunctionalStr(
+				nSub_,
+				nCoeff_,
+				dataStr, // convert the vector of strings to ranks
+				vecInd_);
+		warnLog += checkMissingType();
+		if (warnLog.size() > 0) {
+			return warnLog;
+		}
 
-          for (Index s = 0; s < nSub_; ++s) {
-            for (Index c = 0; c < nCoeff_; ++c) {
-              betaCurr(s, c) = beta(k * nSub_ * nCoeff_ + s * nCoeff_ + c);
-            }
-          }
+		globalQuantile(vecInd_, quantile_);
 
-          for (Index s = 0; s < nSub_; ++s) {
-            sdCurr(s) = sd(k * nSub_ + s);
-          }
+		// datastat will be setup here when partially observed value will be supported
+		// should lnObservedProbability be computed here in prediction, as it is done for Ordinal and Rank ?
 
-          class_[k].setParam(alphaCurr,
-                             betaCurr,
-                             sdCurr);
-          class_[k].setParamStorage();
-        }
-      }
+		return warnLog;
+	}
 
-      warnLog += parseFunctionalStr(nSub_,
-                                    nCoeff_,
-                                    dataStr, // convert the vector of strings to ranks
-                                    vecInd_);
-      warnLog += checkMissingType();
-      if (warnLog.size() > 0) {
-        return warnLog;
-      }
+	void exportDataParam() const { // linearize and format the information provided by each class, and send it to the usual extractors, nothing fancy here ...
+		p_dataExtractor_->exportVals(
+				indexMixture_,
+				idName_,
+				vecInd_); // export the missing values here, when they will be support for them
 
-      globalQuantile(vecInd_, quantile_);
+		Index sizeClassAlpha = nSub_ * 2;
+		Index sizeClassBeta  = nSub_ * nCoeff_;
+		Index sizeClassSd = nSub_;
 
-      // datastat will be setup here when partially observed value will be supported
-      // should lnObservedProbability be computed here in prediction, as it is done for Ordinal and Rank ?
+		Index nStat = class_[0].alphaParamStat().getStatStorage().cols();
+		Index nObs  = class_[0].alphaParamStat().getLogStorage() .cols(); // number of iterations in log
 
-      return warnLog;
-    }
+		Matrix<Real> alphaStat(nClass_ * sizeClassAlpha, nStat); // linearized and concatenated version of alpha
+		Matrix<Real> betaStat (nClass_ * sizeClassBeta , nStat);
+		Matrix<Real> sdStat   (nClass_ * sizeClassSd   , nStat);
 
-    void exportDataParam() const { // linearize and format the information provided by each class, and send it to the usual extractors, nothing fancy here ...
-      p_dataExtractor_->exportVals(
-    		  indexMixture_,
-    		  idName_,
-			  vecInd_); // export the missing values here, when they will be support for them
+		Matrix<Real> alphaLog(nClass_ * sizeClassAlpha, nObs); // linearized and concatenated version of alpha
+		Matrix<Real> betaLog (nClass_ * sizeClassBeta , nObs);
+		Matrix<Real> sdLog   (nClass_ * sizeClassSd   , nObs);
 
-      Index sizeClassAlpha = nSub_ * 2;
-      Index sizeClassBeta  = nSub_ * nCoeff_;
-      Index sizeClassSd = nSub_;
+		for (Index k = 0; k < nClass_; ++k) {
+			alphaStat.block(k * sizeClassAlpha, 0,
+					sizeClassAlpha, nStat) = class_[k].alphaParamStat().getStatStorage();
+			alphaLog .block(k * sizeClassAlpha, 0,
+					sizeClassAlpha, nObs)  = class_[k].alphaParamStat().getLogStorage();
 
-      Index nStat = class_[0].alphaParamStat().getStatStorage().cols();
-      Index nObs  = class_[0].alphaParamStat().getLogStorage() .cols(); // number of iterations in log
+			betaStat.block(k * sizeClassBeta, 0,
+					sizeClassBeta, nStat) = class_[k].betaParamStat().getStatStorage();
+			betaLog .block(k * sizeClassBeta, 0,
+					sizeClassBeta, nObs)  = class_[k].betaParamStat().getLogStorage();
 
-      Matrix<Real> alphaStat(nClass_ * sizeClassAlpha, nStat); // linearized and concatenated version of alpha
-      Matrix<Real> betaStat (nClass_ * sizeClassBeta , nStat);
-      Matrix<Real> sdStat   (nClass_ * sizeClassSd   , nStat);
+			sdStat.block(k * sizeClassSd, 0,
+					sizeClassSd, nStat) = class_[k].sdParamStat().getStatStorage();
+			sdLog .block(k * sizeClassSd, 0,
+					sizeClassSd, nObs)  = class_[k].sdParamStat().getLogStorage();
+		}
 
-      Matrix<Real> alphaLog(nClass_ * sizeClassAlpha, nObs); // linearized and concatenated version of alpha
-      Matrix<Real> betaLog (nClass_ * sizeClassBeta , nObs);
-      Matrix<Real> sdLog   (nClass_ * sizeClassSd   , nObs);
+		p_paramExtractor_->exportParam(
+				indexMixture_,
+				idName_,
+				"alpha",
+				alphaStat,
+				alphaLog,
+				alphaParamNames(),
+				confidenceLevel_,
+				paramStr_);
 
-      for (Index k = 0; k < nClass_; ++k) {
-        alphaStat.block(k * sizeClassAlpha, 0,
-                            sizeClassAlpha, nStat) = class_[k].alphaParamStat().getStatStorage();
-        alphaLog .block(k * sizeClassAlpha, 0,
-                            sizeClassAlpha, nObs)  = class_[k].alphaParamStat().getLogStorage();
+		p_paramExtractor_->exportParam(
+				indexMixture_,
+				idName_,
+				"beta",
+				betaStat,
+				betaLog,
+				betaParamNames(),
+				confidenceLevel_,
+				paramStr_);
 
-        betaStat.block(k * sizeClassBeta, 0,
-                           sizeClassBeta, nStat) = class_[k].betaParamStat().getStatStorage();
-        betaLog .block(k * sizeClassBeta, 0,
-                           sizeClassBeta, nObs)  = class_[k].betaParamStat().getLogStorage();
+		p_paramExtractor_->exportParam(
+				indexMixture_,
+				idName_,
+				"sd",
+				sdStat,
+				sdLog,
+				sdParamNames(),
+				confidenceLevel_,
+				paramStr_);
+	};
 
-        sdStat.block(k * sizeClassSd, 0,
-                         sizeClassSd, nStat) = class_[k].sdParamStat().getStatStorage();
-        sdLog .block(k * sizeClassSd, 0,
-                         sizeClassSd, nObs)  = class_[k].sdParamStat().getLogStorage();
-      }
+	void initData(Index i) {
+		vecInd_(i).removeMissingQuantileMixing(quantile_); // since initParam performs an mStep on a single individual, removeMissing must be called from initParam
+	};
 
-      p_paramExtractor_->exportParam(indexMixture_,
-                                     idName_,
-                                     "alpha",
-                                     alphaStat,
-                                     alphaLog,
-                                     alphaParamNames(),
-                                     confidenceLevel_,
-                                     paramStr_);
+	/**
+	 * @param initObs element k contains the index of
+	 */
+	std::string initParam(const Vector<Index>& initObs) {
+		for (Index k = 0; k < nClass_; ++k) {
+			std::string warnLog = class_[k].initParamOneInd(initObs(k));
+			if (0 < warnLog.size()) return warnLog;
+		}
 
-      p_paramExtractor_->exportParam(indexMixture_,
-                                     idName_,
-                                     "beta",
-                                     betaStat,
-                                     betaLog,
-                                     betaParamNames(),
-                                     confidenceLevel_,
-                                     paramStr_);
+		return "";
+	};
 
-      p_paramExtractor_->exportParam(indexMixture_,
-                                     idName_,
-                                     "sd",
-                                     sdStat,
-                                     sdLog,
-                                     sdParamNames(),
-                                     confidenceLevel_,
-                                     paramStr_);
-    };
+	/**
+	 * This is for debug only
+	 */
+	void printTik() {
+		for (Index i = 0; i < nInd_; ++i) {
+			Vector<Real> completedProba(nClass_);
+			Vector<Real> tik(nClass_);
+			for (Index k = 0; k < nClass_; ++k) {
+				completedProba(k) = lnCompletedProbability(i, k);
+			}
+			tik.logToMulti(completedProba);
+			std::cout << itString(tik) << std::endl;
+		}
+	}
 
-    void initData(Index i) {
-      vecInd_(i).removeMissingQuantile(quantile_);
-    };
+	/** No need to precompute an empirical distribution. */
+	virtual void computeObservedProba() {};
 
-    /**
-     * Parameters are estimated directly, hence no need for a specific initialization
-     */
-    void initParam() {};
+	virtual void initializeMarkovChain() {};
 
-    bool observedCorrection() {return true;}
+	std::vector<bool> parametersInInterior() {
+		std::vector<bool> res(nClass_);
 
-  private:
-    std::string checkMissingType() {
-      std::string warnLog;
-      // to be populated with checks. Each Function object must have a checkMissingType
-      return warnLog;
-    }
+		for (Index k = 0; k < nClass_; ++k) {
+			res[k] = (class_[k].sd().minCoeff() == 0.0) ? false : true;
+		}
 
-    std::vector<std::string> alphaParamNames() const {
-      std::vector<std::string> names(nClass_ * nSub_ * 2);
-      for (Index k = 0; k < nClass_; ++k) {
-        for (Index s = 0; s < nSub_; ++s) {
-          std::stringstream sstm0;
-          sstm0 << "k: " << k << ", s: " << s << ", alpha0";
-          names[k * nSub_ * 2 + s * 2    ] = sstm0.str();
+		return res;
+	}
 
-          std::stringstream sstm;
-          sstm << "k: " << k << ", s: " << s << ", alpha1";
-          names[k * nSub_ * 2 + s * 2 + 1] = sstm.str();
-        }
-      }
-      return names;
-    }
+private:
+	std::string checkMissingType() {
+		std::string warnLog;
+		// to be populated with checks. Each Function object must have a checkMissingType
+		return warnLog;
+	}
 
-    std::vector<std::string> betaParamNames() const {
-      std::vector<std::string> names(nClass_ * nSub_ * nCoeff_);
-      for (Index k = 0; k < nClass_; ++k) {
-        for (Index s = 0; s < nSub_; ++s) {
-          for (Index c = 0; c < nCoeff_; ++c) {
-            std::stringstream sstm;
-            sstm << "k: " << k << ", s: " << s << ", c: " << c;
-            names[k * nSub_ * nCoeff_ + s * nCoeff_ + c] = sstm.str();
-          }
-        }
-      }
-      return names;
-    }
+	std::vector<std::string> alphaParamNames() const {
+		std::vector<std::string> names(nClass_ * nSub_ * 2);
+		for (Index k = 0; k < nClass_; ++k) {
+			for (Index s = 0; s < nSub_; ++s) {
+				std::stringstream sstm0;
+				sstm0 << "k: " << k << ", s: " << s << ", alpha0";
+				names[k * nSub_ * 2 + s * 2    ] = sstm0.str();
 
-    std::vector<std::string> sdParamNames() const {
-      std::vector<std::string> names(nClass_ * nSub_);
-      for (Index k = 0; k < nClass_; ++k) {
-        for (Index s = 0; s < nSub_; ++s) {
-          std::stringstream sstm;
-          sstm << "k: " << k << ", s: " << s;
-          names[k * nSub_ + s] = sstm.str();
-        }
-      }
-      return names;
-    }
+				std::stringstream sstm;
+				sstm << "k: " << k << ", s: " << s << ", alpha1";
+				names[k * nSub_ * 2 + s * 2 + 1] = sstm.str();
+			}
+		}
+		return names;
+	}
 
-    Index nInd_;
-    Index nClass_;
-    Index nSub_;
-    Index nCoeff_;
-    Real confidenceLevel_;
+	std::vector<std::string> betaParamNames() const {
+		std::vector<std::string> names(nClass_ * nSub_ * nCoeff_);
+		for (Index k = 0; k < nClass_; ++k) {
+			for (Index s = 0; s < nSub_; ++s) {
+				for (Index c = 0; c < nCoeff_; ++c) {
+					std::stringstream sstm;
+					sstm << "k: " << k << ", s: " << s << ", c: " << c;
+					names[k * nSub_ * nCoeff_ + s * nCoeff_ + c] = sstm.str();
+				}
+			}
+		}
+		return names;
+	}
 
-    /** Data */
-    Vector<Function> vecInd_;
+	std::vector<std::string> sdParamNames() const {
+		std::vector<std::string> names(nClass_ * nSub_);
+		for (Index k = 0; k < nClass_; ++k) {
+			for (Index s = 0; s < nSub_; ++s) {
+				std::stringstream sstm;
+				sstm << "k: " << k << ", s: " << s;
+				names[k * nSub_ + s] = sstm.str();
+			}
+		}
+		return names;
+	}
 
-    Vector<Real> quantile_;
+	Index nInd_;
+	Index nClass_;
+	Index nSub_;
+	Index nCoeff_;
+	Real confidenceLevel_;
 
-    const Vector<Index>* p_zi_;
-    const Vector<std::set<Index> >& classInd_;
+	/** Data */
+	Vector<Function> vecInd_;
+	Vector<Real> quantile_;
 
-    const DataHandler* p_handler_;
-    DataExtractor* p_dataExtractor_;
-    const ParamSetter* p_paramSetter_;
-    ParamExtractor* p_paramExtractor_;
+	const Vector<Index>* p_zi_;
+	const Vector<std::set<Index> >& classInd_;
 
-    std::vector<FunctionalClass> class_;
+	const DataHandler* p_handler_;
+	DataExtractor* p_dataExtractor_;
+	const ParamSetter* p_paramSetter_;
+	ParamExtractor* p_paramExtractor_;
 
-    Vector<bool> acceptedType_;
+	std::vector<FunctionalClass> class_;
 
-    std::string paramStr_;
+	Vector<bool> acceptedType_;
+
+	std::string paramStr_;
 };
 
 } // namespace mixt

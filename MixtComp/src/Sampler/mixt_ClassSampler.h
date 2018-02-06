@@ -23,17 +23,9 @@ class MixtureComposer;
 class ClassSampler
 {
   public:
-    ClassSampler(const MixtureComposer& composer,
-                 ZClassInd& ZClassInd,
+    ClassSampler(ZClassInd& ZClassInd,
                  const Matrix<Real>& tik,
                  int nbClass);
-
-    /**
-     * Sample new values for the missing variables of the given individual. Using MixtureComposer::checkSampleCondition
-     * to check if each value of z_i is valid or not. Used during sampling, and false during rejection sampling
-     * @param i individual for which z must be sampled
-     * */
-    void sStepCheck  (int i);
 
     /**
      * Sample new values for the missing variables of the given individual. Do not uses MixtureComposer::checkSampleCondition
@@ -42,8 +34,6 @@ class ClassSampler
      * */
     void sStepNoCheck(int i);
   private:
-    const MixtureComposer& composer_;
-
     int nbClass_;
 
     ZClassInd& zClassInd_;

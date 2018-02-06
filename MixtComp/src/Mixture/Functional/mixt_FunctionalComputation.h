@@ -19,16 +19,11 @@ namespace mixt {
 
 class Function; // forward declaration
 
-typedef struct {
-    Vector<Real>* t_;
-    Vector<std::set<Index> >* w_;
-    Index nParam_;
-} CostData;
-
 template<typename kappaType>
-void kappaMatrix(Real t,
-                 const Matrix<Real>& alpha,
-                 const kappaType& kappaIn) {
+void kappaMatrix(
+    Real t,
+    const Matrix<Real>& alpha,
+    const kappaType& kappaIn) {
   kappaType& kappa = const_cast<kappaType&>(kappaIn); // without the const_cast it is impossible to access a row which is a temporary object requiring a const in the argument
 
   Index nSub = alpha.rows();
@@ -37,6 +32,21 @@ void kappaMatrix(Real t,
     logValue(k) = alpha(k, 0) + alpha(k, 1) * t;
   }
   kappa.logToMulti(logValue);
+}
+
+template<typename kappaType>
+void logKappaMatrix(
+    Real t,
+    const Matrix<Real>& alpha,
+    const kappaType& kappaIn) {
+  kappaType& kappa = const_cast<kappaType&>(kappaIn); // without the const_cast it is impossible to access a row which is a temporary object requiring a const in the argument
+
+  Index nSub = alpha.rows();
+  Vector<Real> logValue(nSub);
+  for (Index k = 0; k < nSub; ++k) {
+    logValue(k) = alpha(k, 0) + alpha(k, 1) * t;
+  }
+  kappa.logProbaToLogMulti(logValue);
 }
 
 void vandermondeMatrix(const Vector<Real>& t,
@@ -155,20 +165,39 @@ void computeLambda(const Vector<Real>& t,
                    const Matrix<Real>& beta,
                    Matrix<Real>& lambda);
 
-double optiFunc(unsigned nParam,
-                const double* alpha,
-                double* grad,
-                void* my_func_data);
+/** CostData used in optiFunc function, which does optimization for a single function. */
+typedef struct {
+    Vector<Real>* t_;
+    Vector<std::set<Index> >* w_;
+    Index nParam_;
+} CostData;
 
-/** Since nlopt does not work with pointers to member function, this external helper function has been created. An opaque
+/** Function used as a parameter for nlopt.
+ * Simple optimization used to learn to use nlopt. */
+double optiFunc (
+    unsigned nParam,
+    const double* alpha,
+    double* grad,
+    void* my_func_data);
+
+/** Data structure that will be unpacked by optFunctionalClass. */
+typedef struct {
+    const Vector<Function>& data_;
+    const std::set<Index>& setInd_;
+} FuncData;
+
+/** Function used as an argument to nlopt
+ * Since nlopt does not work with pointers to member function, this external helper function has been created. An opaque
  * pointer to an object FunctionalClass has to be passed as the last argument. */
-double optiFunctionalClass(unsigned nFreeParam,
-                           const double* alpha,
-                           double* gradDouble,
-                           void* my_func_data);
+double optiFunctionalClass (
+    unsigned nFreeParam,
+    const double* alpha,
+    double* gradDouble,
+    void* my_func_data);
 
-void globalQuantile(const Vector<Function>& vecInd,
-                    Vector<Real>& quantile);
+void globalQuantile (
+    const Vector<Function>& vecInd,
+    Vector<Real>& quantile);
 
 } // namespace mixt
 

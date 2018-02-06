@@ -39,11 +39,11 @@ void FunctionalClass::setSize(Index nSub,
 }
 
 void FunctionalClass::mStep() {
-  mStepAlpha();
-  mStepBetaSd();
+  mStepAlpha(setInd_);
+  mStepBetaSd(setInd_);
 }
 
-void FunctionalClass::mStepAlpha() {
+void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
   Index nSub   = alpha_.rows();
   Index nFreeParam = 2 * (nSub - 1);
   double minf;
@@ -54,10 +54,13 @@ void FunctionalClass::mStepAlpha() {
     alpha[2 * s + 1] = alpha_(s + 1, 1);
   }
 
+  FuncData data {data_, setInd};
+  FuncData* p_data = &data;
+
   nlopt_opt opt;
   opt = nlopt_create(NLOPT_LD_LBFGS, nFreeParam); // algorithm and dimensionality
-  nlopt_set_maxeval(opt, maxIterationFunctional); // without setting this, the time required for computations could be subject to extreme variations
-  nlopt_set_max_objective(opt, optiFunctionalClass, this); // cost and grad function, data for the function
+  nlopt_set_maxeval(opt, maxIterationOptim); // without setting this, the time required for computations could be subject to extreme variations
+  nlopt_set_max_objective(opt, optiFunctionalClass, p_data); // cost and grad function, data for the function
 
   nlopt_optimize(opt, alpha, &minf); // launch the effective optimization run
   nlopt_destroy(opt);
@@ -68,11 +71,11 @@ void FunctionalClass::mStepAlpha() {
   }
 }
 
-void FunctionalClass::mStepBetaSd() {
+void FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
   Vector<Index> nTTotal(nSub_, 0);
 
-  for (std::set<Index>::const_iterator itData  = setInd_.begin(),
-                                       itDataE = setInd_.end();
+  for (std::set<Index>::const_iterator itData  = setInd.begin(),
+                                       itDataE = setInd.end();
        itData != itDataE;
        ++itData) { // to create the complete design matrix and y for the class, the total number of timesteps over the class must be determined
     for (Index s = 0; s < nSub_; ++s) {
@@ -87,8 +90,8 @@ void FunctionalClass::mStepBetaSd() {
     y(s).resize(nTTotal(s));
 
     Index i = 0; // current row in the global design matrix
-    for (std::set<Index>::const_iterator itData  = setInd_.begin(),
-                                         itDataE = setInd_.end();
+    for (std::set<Index>::const_iterator itData  = setInd.begin(),
+                                         itDataE = setInd.end();
          itData != itDataE;
          ++itData) {
       for (std::set<Index>::const_iterator itTime  = data_(*itData).w()(s).begin(),
@@ -102,10 +105,43 @@ void FunctionalClass::mStepBetaSd() {
     }
   }
 
-  subRegression(design,
-                y,
-                beta_,
-                sd_);
+  subRegression(
+      design,
+      y,
+      beta_,
+      sd_);
+}
+
+void FunctionalClass::initParamAllInd(Index obs) {
+  mStep(); // note that obs is not used
+}
+
+std::string FunctionalClass::initParamOneInd(Index obs) {
+  std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
+  initInd.insert(obs); // initInd is a single element set
+
+  Vector<Real> quantile;
+  data_(obs).quantile(quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
+
+//  std::cout << itString(quantile) << std::endl;
+
+  for (std::set<Index>::const_iterator itData  = setInd_.begin(),
+                                       itDataE = setInd_.end();
+       itData != itDataE;
+       ++itData) {
+//    data_(*itData).removeMissingQuantileMixing(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
+	  data_(*itData).removeMissingQuantile(quantile);
+  }
+
+//  data_(obs).printSubRegT();
+
+  std::string warnLog = checkSampleCondition(initInd);
+  if (0 < warnLog.size()) return warnLog;
+
+  mStepAlpha(initInd); // partial initialization using only the individual that represent this class
+  mStepBetaSd(initInd);
+
+  return "";
 }
 
 void FunctionalClass::setParamStorage() {
@@ -127,80 +163,30 @@ void FunctionalClass::sampleParam(Index iteration,
   sdParamStat_   .sampleParam(iteration, iterationMax);
 }
 
-double FunctionalClass::costAndGrad(Index nFreeParam,
-                                    const double* alpha,
-                                    double* grad) {
-  Real cost = 0.;
-  for (Index p = 0; p < nFreeParam; ++p) {
-    grad[p] = 0.;
-  }
+std::string FunctionalClass::checkSampleCondition(const std::set<Index>& setInd) const {
+	std::string warnLog;
+	bool value = checkNbDifferentValue(setInd);
+	bool sd = checkNonNullSigma(setInd);
 
-  Index nParam = nFreeParam + 2;
-  double gradInd[nParam];
-  double alphaComplete[nParam]; // The whole code was created using the complete set of parameters. Using alphaComplete allows for immediate reuse.
-  alphaComplete[0] = 0.;
-  alphaComplete[1] = 0.;
-  for (Index p = 0; p < nFreeParam; ++p) {
-    grad[p] = 0.;
-    alphaComplete[p + 2] = alpha[p];
-  }
+	if (!value) {
+		warnLog += "Not enough different values for t. Is your data sampled at enough different timesteps ?" + eol;
+	}
 
-  for (std::set<Index>::const_iterator it  = setInd_.begin(),
-                                       itE = setInd_.end();
-       it != itE;
-       ++it) { // each individual in current class adds a contribution to both the cost and the gradient of alpha
-    cost += data_(*it).costAndGrad(
-        nParam,
-        alphaComplete,
-        gradInd);
-    for (Index p = 0; p < nFreeParam; ++p) {
-      grad[p] += gradInd[p + 2];
-    }
-  }
+	if (!sd) {
+		warnLog += "Not enough different values for x. Is there enough variability in the output data ?" + eol;
+	}
 
-  return cost;
+	return warnLog;
 }
 
-Index FunctionalClass::checkSampleCondition(std::string* warnLog) const {
-  if (warnLog == NULL) {
-    if (!(checkNbDifferentValue() && checkNonNullSigma())) {
-      return 0;
-    }
-  }
-  else {
-    std::stringstream sstm;
-    bool value = checkNbDifferentValue();
-    bool sd = checkNonNullSigma();
-
-    if (!value) {
-      sstm << "Not enough different values for t. Is your data sampled at enough different timesteps ?" << std::endl;
-    }
-
-    if (!sd) {
-      sstm << "Not enough different values for t. Is your data sampled at enough different timesteps ?" << std::endl;
-    }
-
-    if (!(value && sd)) {
-      *warnLog += sstm.str();
-      return 0;
-    }
-  }
-
-  return 1;
-}
-
-bool FunctionalClass::checkNbDifferentValue() const {
+bool FunctionalClass::checkNbDifferentValue(const std::set<Index>& setInd) const {
   for (Index s = 0; s < nSub_; ++s) {
-    std::set<Real> values;
-    for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
-         it != itE;
-         ++it) { // only loop on individuals in the current class
-      for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
-          itW != itWE;
-           ++itW) { // only loop on timesteps in the current subregression
+    std::set<Real> values; // set has one record per different values
+    for (std::set<Index>::const_iterator it = setInd.begin(), itE = setInd.end(); it != itE; ++it) { // only loop on individuals in the current class
+      for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end(); itW != itWE; ++itW) { // only loop on timesteps in the current subregression
         values.insert(data_(*it).t()(*itW));
         if (nCoeff_ <= values.size()) { // this sub-regression is valid and has enough time steps
-          goto endIt;
+          goto endIt; // stop checking as soon as there are enough different time steps
         }
       }
     }
@@ -213,9 +199,9 @@ bool FunctionalClass::checkNbDifferentValue() const {
   return true;
 }
 
-bool FunctionalClass::checkNonNullSigma() const {
+bool FunctionalClass::checkNonNullSigma(const std::set<Index>& setInd) const {
   for (Index s = 0; s < nSub_; ++s) {
-    for (std::set<Index>::const_iterator it = setInd_.begin(), itE = setInd_.end();
+    for (std::set<Index>::const_iterator it = setInd.begin(), itE = setInd.end();
          it != itE;
          ++it) { // only loop on individuals in the current class
       for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
@@ -236,15 +222,9 @@ bool FunctionalClass::checkNonNullSigma() const {
 }
 
 void FunctionalClass::samplingStepNoCheck(Index i) {
-  data_(i).sampleWNoCheck(alpha_,
-                          beta_,
-                          sd_);
-}
-
-void FunctionalClass::samplingStepCheck(Index i) {
-  data_(i).sampleWCheck(alpha_,
-                        beta_,
-                        sd_,
-                        *this);
+  data_(i).sampleWNoCheck(
+      alpha_,
+      beta_,
+      sd_);
 }
 } // namespace mixt

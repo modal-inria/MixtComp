@@ -95,6 +95,8 @@ TEST(Function, removeMissingQuantile) {
   Index nTime = 5;
   Index nSub = 2;
 
+  Index nQuantile = nSub + 1;
+
   Vector<Real> t(nTime);
   t << -5., 16., 45., 1., -3.;
 
@@ -103,8 +105,8 @@ TEST(Function, removeMissingQuantile) {
 
   Vector<std::set<Index> > w(nSub);
 
-  Vector<Real> quantile(nSub - 1);
-  quantile << 2.3;
+  Vector<Real> quantile(nQuantile);
+  quantile << -5., 2.3, 45.;
 
   Function function;
   function.setVal(t, x, w);
@@ -115,67 +117,4 @@ TEST(Function, removeMissingQuantile) {
 
   ASSERT_EQ(w0, function.w()(0));
   ASSERT_EQ(w1, function.w()(1));
-}
-
-TEST(Function, sampleWCheck) {
-  Index nTime = 1000;
-  Index nSub = 2;
-  Index nCoeff = 1; // constant functions will be used
-  Real xMin = 0.;
-  Real xMax = 50.;
-  Real alphaSlope = 0.5;
-  Real sdVar = 0.1;
-
-  Real alpha0 = (xMax - xMin) / 2. + xMin;
-
-  Matrix<Real> beta(nSub, nCoeff);
-  beta << 0.,
-          10.;
-
-  Vector<Real> sd(nSub);
-  sd << sdVar, sdVar;
-
-  Vector<Real> t(nTime);
-  for (Index i = 0; i < nTime; ++i) {
-    t(i) = xMax * i / (nTime - 1.) + xMin;
-  }
-
-  Matrix<Real> alpha(nSub, 2);
-  alpha <<  alpha0 * alphaSlope, -alphaSlope, // alpha is linearized in a single vector, for easier looping
-           -alpha0 * alphaSlope,  alphaSlope;
-
-  Vector<std::set<Index> > w(nSub);
-  Vector<Real> x(nTime, 0.);
-  Vector<Function> function(1); // a single function is considered
-
-  MultinomialStatistic multi;
-  NormalStatistic normal;
-
-  Matrix<Real> vandermonde;
-  vandermondeMatrix(t, nCoeff, vandermonde);
-
-  for (Index i = 0; i < nTime; ++i) {
-    w(1).insert(i); // every points are assigned to the second subregression
-    x(i) = normal.sample(vandermonde.row(i).dot(beta.row(0)),
-                         sd(0)); // but data is generated using the first subregression at all timesteps, so that, without check, all w should switch to first subregression
-  }
-
-  function(0).setVal(t, x, w);
-  function(0).computeVandermonde(nCoeff);
-
-  std::set<Index> setInd;
-  setInd.insert(0);
-
-  FunctionalClass fc(function,
-                     setInd,
-                     0.95);
-  fc.setSize(nSub, nCoeff);
-  fc.setParam(alpha, beta, sd);
-
-  function(0).sampleWCheck(alpha,
-                           beta,
-                           sd,
-                           fc);
-
-  ASSERT_EQ(nCoeff, function(0).w()(1).size());
 }

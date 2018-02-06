@@ -1,4 +1,13 @@
 \documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
 \title{MixtComp Programmer Guide}
 \author{Vincent KUBICKI}
 \date{17th August 2015}
@@ -6,53 +15,78 @@
 \begin{document}
 
 \maketitle
+\tableofcontents
+
+\begin{abstract}
+
+The MixtComp code is documented inline, but it might be difficult at times to get the big picture. Some sequences, like the initialization of the computations, might be complex and vary from one model to another. Some models use straight forward analytical estimator, while some use Markov chains that need to be initialized. The architecture must accomodate all kind of situations while keeping complexity to a bearable level when implementing a new model. Hence there are key steps in the initializations, and a new model must dispatch its various steps using those provided steps.
+
+\end{abstract}
 
 \section{Environment variables}
 
 The following environment variables are used:
 
 \begin{itemize}
-	\item MC_VERBOSE: change the level of details output to the standard output.
-	\item MC_DEBUG, MC_DEBUG_NEW:  some debug flags.
-	\item MC_DETERMINISTIC: change the seeding value, from pseudo-random to 0. Used to run the unit test in a deterministic way.
+	\item MC{\_}VERBOSE: change the level of details output to the standard output.
+	\item MC{\_}DEBUG, MC{\_}DEBUG{\_}NEW:  some debug flags.
+	\item MC{\_}DETERMINISTIC: change the seeding value, from pseudo-random to 0. Used to run the unit test in a deterministic way.
 \end{itemize}
 
 \section{Global algorithm}
 
-\section{Linear Algebra}
+\section{Sequence of initialization}
 
-MixtComp abstracts dependance on an underlying numerical algebra library through the use of a mixt_LinAlg.h include. The current backed is Eigen, which is provided in the MixtComp package. The Matrix API is used, and capabilities from the Array API are provided mainly in the file mixt_EigenMatrixBaseAddons.h . This is necessary to avoid cWiseXXX() or .array() syntax. Hence the current API is a mix of both Eigen Matrix and Eigen Array API, to provide the most readable code possible.
+There are several objects that are key to the initialization of MixtComp. Some of those objects are template argument to templated classes. For example, a MixtureManager object needs a DataHandler type argument. But the DataHandler is an interface to read and transform data, so there must be different DataHandler to cover the various inputs. The first DataHandler that has been written was DataHandlerR, which transforms the data structure obtained from R in a data structure suitable for MixtComp.
 
-\subsection{Usage}
+The MixtureManager reads the list of models and instantiate the corresponding C++ objects (from classes that all inherit from IMixture). It then register it to the MixtureComposer which will take care of it from there to the end of the run.
 
-Initialisation can be done as: Vector<Real> myVec(2), or Vector<Real> myVec(2, 3.), to create a vector of two elements (and initialize it with the value 3. in the second case). Note that at the moment Vector<Real, 2> myVec(3.) is not supported. It is not possible to initialize a fixed-size vector at construction.
+MixtureComposer::setDataParam resize various arrays in the MixtureComposer, and then calls various IMixture setDataparam, which use the DataHandler they got at construction time to get the correct data, to get the parameters from the ParamSetter in prediction mode, and to resize all important arrays.
 
-\subsection{Updating Eigen}
+Note that setDataParam is not supposed to initialize computations. Because MixtComp might have to restart a computation (if a degeneracy is detected for example), and setDataParam is only called once at the beginning. The initialization at the start of each computation is instead managed by MixtureComposer::InitParam, which is called in the Strategy, and not during the global initialization.
 
-To update Eigen, the following sequence must be followed:
+initData and initParam are both called at the beginning of SemStrategy::initSEMCheck and SemStrategy::initSEMNoCheck.
 
-\begin{itemize}
-\item switch to the Eigen branch of the git repository
-\item update Eigen
-\item switch back to the main branch and merge
-\end{itemize}
-
-This is necessary because Eigen needs to be patched to be used in MixtComp, and the patching is performed during the merge operation. This way, the Eigen branch is very simple and only consists of the direct updates on Eigen. When updating Eigen, simply delete the content of the eigen directory, but be careful not to delete the .cproject file (or any .xxx file / directory for that matter). This file is not part of the Eigen project, and is used by Eclipse to track Eigen as a project in the MixtComp workspace.
-
-\section{Statistics}
-
-Boost is mainly used to provide statistical capabilities. Since Boost is quite huge and Jam is not very convenient, Boost files are note provided directly. It must be acquired from http://www.boost.org/users/download/, and the content of the archive must be expanded in a boost subdirectory alongside eigen, MixtComp, and RMixtComp. Since:
+The operations performed by all variables are:
 
 \begin{itemize}
-\item Boost syntex is close to Standard Library syntax for much of the overlapping capacities
-\item Boost is only used for regex and probability distributions ...
-\item ... both of which being implemented in C++
+\item getting the data from the DataHandler
+\item checking the data validity (its range for example)
+\item initializing various storages, including the storages for the statistics
 \end{itemize}
 
-A switch to C++11 might enable to get ride of Boost dependency altogether. At the moment, only the random number generation has been "imported" from Boost to the standard library. Computations of the pdf and cdf have not, but are not very hard to implement. So Boost is very well on its way out of MixtComp. Before switching, one must ensure that production machine have a recent enough version of gcc: http://stackoverflow.com/questions/12530406/is-gcc-4-7-and-gcc-4-8-buggy-about-regular-expressions/12665408#12665408 . Another temporary solution could be to install Boost from the Linux distribution repository or Cygwin, thus freeing the programmer from including / compiling it.
+The specific operations needed by the various models are described in the table \ref{tab:init}.
 
-\section{To Do}
+\begin{table}
+	
+\centering
 
+\begin{tabular}{|c|c|c|c|}
+	\hline 
+	&  setDataParam & initData & initParam \\ 
+	\hline 
+	SimpleMixtureBridge &  Nothing special. &  AugmentedData::removeMissing & Nothing. \\ 
+	\hline 
+	Functional & Parse data and parameters compute quantiles. &  Function::removeMissingQuantile & Nothing. \\ 
+	\hline 
+	Ordinal &  setPath set the head and tail of each path &  BOSPath::initPath & sampleMuFreq, then initBOS (GibbsSampling). \\ 
+	\hline 
+	Rank & Parse and check data. &  RankIndividual::removeMissing & mu initialized by direct sampling, no Gibbs performed. \\ 
+	\hline 
+\end{tabular} 
 
+\caption{Operations performed in the various steps of initialization, for each model}
+
+\label{tab:init}
+
+\end{table}
+
+\section{Questions}
+
+\begin{itemize}
+
+\item Why is there a Gibbs in initParam for Ordinal, but not for Rank ? Because there are possible 0 probability completed individuals for Ordinal, but not for Rank ?
+	
+\end{itemize}
 
 \end{document}

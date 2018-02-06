@@ -14,6 +14,12 @@
 
 namespace mixt {
 
+extern const std::string version; // version number, see http://semver.org/
+
+extern const bool degeneracyAuthorizedForNonBoundedLikelihood; // are degeneracies authorized for non bounded likelihood ?
+
+extern const std::string eol;
+
 extern const int nbSamplingAttempts; // number of sampling attempts, when not enough individuals are sampled
 
 extern const Real epsilon; // very small value of real to check for near zero values
@@ -32,13 +38,18 @@ extern const Real piInitBOS; // value of pi used in Gibbs used in initialization
 extern const Real piInitISR; // value of pi used in ISR initialization
 extern const Real piThreshold; //threashold on pi to detect degeneracy
 
-extern const int nbGibbsIterRank; // number of iterations in the Gibbs used in the estimation of mu
+extern const int nbGibbsIterRankMStep; // number of iterations in the Gibbs used in the estimation of mu
+extern const Index nbGibbsIniISR; // number of iterations in the initializing Gibbs
 
 extern const int nbSampleObserved; // number of sample per class to estimate the observed probability, for example in Ordinal or Rank data
 
-extern const int maxIterationFunctional; // maximum number of evaluation of cost function for optimization
+extern const Index maxIterationOptim; // maximum number of evaluation of cost function for optimization in Functional and in Weibull
 
 extern const std::string rankPosSep; // separator used in Rank positions
+
+// extern const Real poissonInitMinAlpha; // minimal value that can be used for alpha estimation in a Poisson distribution
+
+extern const Index nSemTry; // number of SEM trials
 
 } // namespace mixt
 

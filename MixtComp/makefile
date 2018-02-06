@@ -39,6 +39,7 @@ SRC_MC += $(wildcard src/LinAlg/*.cpp)
 SRC_MC += $(wildcard src/Mixture/Functional/*.cpp)
 SRC_MC += $(wildcard src/Mixture/Ordinal/*.cpp)
 SRC_MC += $(wildcard src/Mixture/Rank/*.cpp)
+SRC_MC += $(wildcard src/Mixture/Simple/*.cpp)
 SRC_MC += $(wildcard src/Mixture/SimpleMixtureBridge/*.cpp)
 SRC_MC += $(wildcard src/Param/*.cpp)
 SRC_MC += $(wildcard src/Sampler/*.cpp)
@@ -69,21 +70,21 @@ ALL_TEST = $(O_TEST) $(D_TEST) $(EXE_TEST)
 # unit-test files
 EXE_UTEST = utest/utest
 SRC_GTEST = ../gtest/src/gtest_main.cc ../gtest/src/gtest-all.cc
-SRC_UTEST += $(wildcard utest/Functional/*.cpp)
-SRC_UTEST += $(wildcard utest/LinAlgStat/*.cpp)
-SRC_UTEST += $(wildcard utest/Ordinal/*.cpp)
-SRC_UTEST += $(wildcard utest/Rank/*.cpp)
+# SRC_UTEST += $(wildcard utest/Functional/*.cpp)
+# SRC_UTEST += $(wildcard utest/LinAlgStat/*.cpp)
+# SRC_UTEST += $(wildcard utest/Ordinal/*.cpp)
+# SRC_UTEST += $(wildcard utest/Rank/*.cpp)
 SRC_UTEST += $(wildcard utest/Statistic/*.cpp)
-SRC_UTEST += $(wildcard utest/SimpleMixture/*.cpp)
-SRC_UTEST += $(wildcard utest/Various/*.cpp)
-SRC_UTEST += $(wildcard utest/UTestNew.cpp)
+SRC_UTEST += $(wildcard utest/Simple/*.cpp)
+# SRC_UTEST += $(wildcard utest/SimpleMixture/*.cpp)
+# SRC_UTEST += $(wildcard utest/Various/*.cpp)
+# SRC_UTEST += $(wildcard utest/UTestNew.cpp)
 O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 D_GTEST = $(SRC_GTEST:%.cc=%.d)
 D_UTEST = $(SRC_UTEST:%.cpp=%.d)
 ALL_GTEST = $(O_GTEST) $(D_GTEST)
 ALL_UTEST = $(O_UTEST) $(D_UTEST) $(EXE_UTEST)
-
 
 # $(warning $(CXX)) # example of console output for debug
 # $(warning $(CXXFLAGS)) # example of console output for debug

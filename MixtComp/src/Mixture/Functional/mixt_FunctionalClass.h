@@ -38,9 +38,13 @@ class FunctionalClass {
 
     void mStep();
 
-    void mStepAlpha();
+    void mStepAlpha(const std::set<Index>& setInd);
 
-    void mStepBetaSd();
+    void mStepBetaSd(const std::set<Index>& setInd);
+
+    void initParamAllInd(Index obs);
+
+    std::string initParamOneInd(Index obs);
 
     void sampleParam();
 
@@ -50,10 +54,6 @@ class FunctionalClass {
 
     void sampleParam(Index iteration,
                      Index iterationMax);
-
-    double costAndGrad(Index nFreeParam,
-                       const double* alpha,
-                       double* grad);
 
     const Matrix<Real>& alpha() const {return alpha_;}
     const Matrix<Real>& beta()  const {return beta_ ;}
@@ -65,15 +65,18 @@ class FunctionalClass {
 
     void samplingStepNoCheck(Index i);
 
-    void samplingStepCheck(Index i);
-
-    Index checkSampleCondition(std::string* warnLog = NULL) const;
-    bool checkNbDifferentValue() const;
-    bool checkNonNullSigma() const;
+    /**
+     * The setInd argument allows to pass either the real partition, or a temporary partition with a subset of observations.
+     * This second case mainly occurs during initParam.
+     */
+    std::string checkSampleCondition(const std::set<Index>& setInd) const;
+    bool checkNbDifferentValue(const std::set<Index>& setInd) const;
+    bool checkNonNullSigma(const std::set<Index>& setInd) const;
   private:
     Index nSub_;
 
     Index nCoeff_;
+
     /** Data, not const because sampling has to occur at some point */
     Vector<Function>& data_;
 

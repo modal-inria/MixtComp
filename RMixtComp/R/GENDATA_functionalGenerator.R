@@ -1,4 +1,4 @@
-functionalGenerator <- function(param) {
+functionalGenerator <- function(present, param) {
   nSub <- nrow(param$alpha)
   nCoeff <- ncol(param$beta)
 
@@ -8,6 +8,10 @@ functionalGenerator <- function(param) {
   
   for (i in 1:param$nTime) {
     t[i] <- runif(1, param$tMin, param$tMax)
+  }
+  t <- sort(t)
+
+  for (i in 1:param$nTime) {
     logKappa <- vector("numeric", nSub)
     
     for (s in 1:nSub) {
@@ -32,7 +36,6 @@ functionalGenerator <- function(param) {
   
   return(xStr)
 }
-
 
 logToMulti <- function(logIn) {
   max <- max(logIn);

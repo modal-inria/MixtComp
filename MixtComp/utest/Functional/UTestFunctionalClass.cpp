@@ -24,7 +24,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 
   Vector<Real> alpha(nParam);
   alpha << 0., 0., // alpha is linearized in a single vector, for easier looping
-           alpha0, alpha1;
+           alpha0,  alpha1;
 
   Matrix<Real> beta(nSub, nCoeff + 1);
   beta.row(0) <<  0.,  1., 0.; // y =  x      + N(0, 1)
@@ -71,18 +71,21 @@ TEST(FunctionalClass, optimOneclassOneInd) {
   std::set<Index> setInd;
   setInd.insert(0);
 
-  FunctionalClass funcClass(data,
-                            setInd,
-                            0.95);
+  FunctionalClass funcClass (
+      data,
+      setInd,
+      0.95);
   funcClass.setSize(nSub, nCoeff);
-
-  funcClass.mStepAlpha();
+  funcClass.mStepAlpha(setInd);
 
   Vector<Real> alphaComputed(nParam);
   for (Index s = 0; s < nSub; ++s) {
     alphaComputed(2 * s    ) = funcClass.alpha()(s, 0);
     alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
   }
+
+  std::cout << "alpha: " << itString(alpha) << std::endl;
+  std::cout << "alphaComputed: " << itString(alphaComputed) << std::endl;
 
   ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 }
@@ -151,11 +154,11 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
     setInd.insert(ind);
   }
 
-  FunctionalClass funcClass(data,
-                            setInd,
-                            0.95);
+  FunctionalClass funcClass(
+      data,
+      setInd,
+      0.95);
   funcClass.setSize(nSub, nCoeff);
-
   funcClass.mStep();
 
   Vector<Real> alphaComputed(nParam);
@@ -163,6 +166,9 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
     alphaComputed(2 * s    ) = funcClass.alpha()(s, 0);
     alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
   }
+
+  std::cout << "alpha: " << itString(alpha) << std::endl;
+  std::cout << "alphaComputed: " << itString(alphaComputed) << std::endl;
 
   ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
   ASSERT_EQ(true, funcClass.beta().isApprox(beta, 0.1));
@@ -202,7 +208,10 @@ TEST(FunctionalClass, checkNbDifferentValue) {
     }
   }
 
-  FunctionalClass fc(data, setInd, confidenceLevel);
+  FunctionalClass fc (
+      data,
+      setInd,
+      confidenceLevel);
   fc.setSize(nSub, nCoeff);
   bool diffVal = fc.checkNbDifferentValue();
 
@@ -256,7 +265,10 @@ TEST(FunctionalClass, checkNonNullSigma) {
     }
   }
 
-  FunctionalClass fc(data, setInd, confidenceLevel);
+  FunctionalClass fc (
+      data,
+      setInd,
+      confidenceLevel);
   fc.setSize(nSub, nCoeff);
   fc.setParam(alpha, beta, sd);
   bool diffVal = fc.checkNonNullSigma();

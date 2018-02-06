@@ -30,6 +30,5 @@ gaussianHideData <- function(present, x, param)
     
   }
   
-  
   return(as.character(x))
 }

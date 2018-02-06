@@ -15,6 +15,12 @@
 
 namespace mixt {
 
+const std::string version = "2.0.0";
+
+const bool degeneracyAuthorizedForNonBoundedLikelihood = true;
+
+const std::string eol = "\n";
+
 const int nbSamplingAttempts = 10000;
 
 const Real epsilon = 1.e-8;
@@ -33,12 +39,17 @@ const Real piInitBOS = 0.9;
 const Real piInitISR = 0.75;
 const Real piThreshold = 0.05;
 
-const int nbGibbsIterRank = 50;
+const int nbGibbsIterRankMStep = 50;
+const Index nbGibbsIniISR = 100;
 
 const int nbSampleObserved = 10000;
 
-extern const int maxIterationFunctional = 10000;
+const Index maxIterationOptim = 100;
 
 const std::string rankPosSep = ",";
+
+// const Real poissonInitMinAlpha = 0.5;
+
+const Index nSemTry = 100;
 
 } // namespace mixt

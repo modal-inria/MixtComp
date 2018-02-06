@@ -1,6 +1,6 @@
 
 setwd("/home/etienne/mixtcomp/JsonMixtcomp/test/test_fonctionnel")
-
+source("toolbox_test_fonctionnel.r")
 # tests des warnlog
 
 results_warnlog = list()
@@ -13,8 +13,8 @@ colnames(data_training) <- c("C1","C2","X3")
 colnames(descriptor)    <- colnames(data_training)
 colnames(data_test)     <- colnames(data_training)
 
-test_mixtcomp(data_training,data_test,descriptor)
-  
+res <- test_mixtcomp(data_training,data_test,descriptor)
+
 test_mixtcomp_by_row(data_training,data_test,descriptor)
  
 test_mixtcomp_donnees_func()
