@@ -69,6 +69,7 @@ class MixtureComposer {
      *  mixture parameters.
      *  @param[out] worstDeg worst degeneracy type incountered among all mixtures for this mStep
      **/
+    void mStep(const Vector<std::set<Index>>& classInd);
     void mStep();
 
     /** Compute proportions using the ML estimator, default implementation. Set
@@ -124,6 +125,7 @@ class MixtureComposer {
      * log is required.
      * @param[out] warnLog provides information on what condition has not been met
      * */
+    std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
     std::string checkSampleCondition() const;
 
     /**

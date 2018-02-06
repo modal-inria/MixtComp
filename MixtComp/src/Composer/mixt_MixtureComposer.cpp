@@ -125,13 +125,17 @@ Real MixtureComposer::lnCompletedProbability(int i, int k) const {
 	return sum;
 }
 
-void MixtureComposer::mStep() {
+void MixtureComposer::mStep(const Vector<std::set<Index>>& classInd) {
 	mStepPi(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
 
 #pragma omp parallel for // note that this is the only case where parallelism is not performed over observations, but over individuals
 	for (Index v = 0; v < nVar_; ++v) {
-		v_mixtures_[v]->mStep(zClassInd_.classInd()); // call mStep on each variable
+		v_mixtures_[v]->mStep(classInd); // call mStep on each variable
 	}
+}
+
+void MixtureComposer::mStep() {
+	mStep(zClassInd_.classInd());
 }
 
 void MixtureComposer::sampleZ() {
@@ -205,13 +209,17 @@ void MixtureComposer::sampleUnobservedAndLatent(int i) {
 	}
 }
 
-std::string MixtureComposer::checkSampleCondition() const {
-	std::string warnLog = checkNbIndPerClass(zClassInd_.classInd());
+std::string MixtureComposer::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
+	std::string warnLog = checkNbIndPerClass(classInd);
 	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		warnLog += (*it)->checkSampleCondition(zClassInd_.classInd());
+		warnLog += (*it)->checkSampleCondition(classInd);
 	}
 
 	return warnLog;
+}
+
+std::string MixtureComposer::checkSampleCondition() const {
+	return checkSampleCondition(zClassInd_.classInd());
 }
 
 std::string MixtureComposer::checkNbIndPerClass(const Vector<std::set<Index>>& classInd) const {
@@ -433,6 +441,10 @@ std::string MixtureComposer::initParamSubPartition(Real ratio) {
 		partialClassInd(multi.sampleInt(0, nClass_ - 1)).insert(i);
 	}
 
+	warnLog = checkSampleCondition(partialClassInd);
+	if (0 < warnLog.size()) return warnLog;
+
+	mStep(partialClassInd);
 
 	return warnLog;
 }
