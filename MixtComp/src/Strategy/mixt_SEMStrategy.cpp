@@ -38,7 +38,7 @@ std::string SemStrategy::run() {
 		}
 //		p_composer_->printClassInd();
 
-		warnLog = p_composer_->initParam(); // initialize parameters for each model, usually singling out an observation as the center of each class
+		warnLog = p_composer_->initParamRepresentativeIndividual(); // initialize parameters for each model, usually singling out an observation as the center of each class
 		if (0 < warnLog.size()) {
 			std::cout << "initParam failed." << std::endl;
 			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further

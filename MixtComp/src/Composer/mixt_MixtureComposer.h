@@ -130,6 +130,7 @@ class MixtureComposer {
      * Check if there are enough individual in each class. Called by checkSampleCondition.
      * @param[out] warnLog provides information on what condition has not been met
      * */
+    std::string checkNbIndPerClass(const Vector<std::set<Index>>& classInd) const;
     std::string checkNbIndPerClass() const;
 
     /**@brief This step can be used to signal to the mixtures that they must
@@ -299,7 +300,14 @@ class MixtureComposer {
     /**
      * Sample an individual per class, to perform the initialization of each model.
      */
-    std::string initParam();
+    std::string initParamRepresentativeIndividual();
+
+    /**
+     * Generate a partition of a subset of the data set. This is used to perform a partial mStep that adds variability to
+     * the initialization procedure.
+     * @param ratio n elements in subset / n elements in data set
+     */
+    std::string initParamSubPartition(Real ratio);
 
     /**
      * Compute the "raw" class ID matrix E_kj

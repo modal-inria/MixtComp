@@ -3,6 +3,7 @@
 - remove p_zi and classInd as members of all mixtures
 - remove them from constructors
 - remove initParam
+- re-enable rank and ordinal in mixture manager
 
 # Current
 

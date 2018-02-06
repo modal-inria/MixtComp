@@ -206,7 +206,7 @@ void MixtureComposer::sampleUnobservedAndLatent(int i) {
 }
 
 std::string MixtureComposer::checkSampleCondition() const {
-	std::string warnLog = checkNbIndPerClass();
+	std::string warnLog = checkNbIndPerClass(zClassInd_.classInd());
 	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		warnLog += (*it)->checkSampleCondition(zClassInd_.classInd());
 	}
@@ -214,9 +214,9 @@ std::string MixtureComposer::checkSampleCondition() const {
 	return warnLog;
 }
 
-std::string MixtureComposer::checkNbIndPerClass() const {
+std::string MixtureComposer::checkNbIndPerClass(const Vector<std::set<Index>>& classInd) const {
 	for (Index k = 0; k < nClass_; ++k) {
-		if (0 < zClassInd_.classInd()(k).size()) {
+		if (0 < classInd(k).size()) {
 			continue;
 		}
 		else {
@@ -228,6 +228,10 @@ std::string MixtureComposer::checkNbIndPerClass() const {
 	}
 
 	return "";
+}
+
+std::string MixtureComposer::checkNbIndPerClass() const {
+	return checkNbIndPerClass(zClassInd_.classInd());
 }
 
 void MixtureComposer::storeSEMRun(
@@ -374,7 +378,7 @@ void MixtureComposer::initData() {
 	}
 }
 
-std::string MixtureComposer::initParam() {
+std::string MixtureComposer::initParamRepresentativeIndividual() {
 	prop_ = 1. / nClass_; // this is roughly equivalent to an estimation by maximization of likelihood, considering that proportions in all t_ik are equal
 
 	Vector<Index> initObs(nClass_); // observations used to initialize individuals
@@ -405,6 +409,28 @@ std::string MixtureComposer::initParam() {
 		sstm << "Errors in MixtureComposer::initParam: " << std::endl << warnLog;
 		warnLog = sstm.str();
 	}
+
+	return warnLog;
+}
+
+std::string MixtureComposer::initParamSubPartition(Real ratio) {
+	std::string warnLog;
+	Vector<std::set<Index>> partialClassInd(nClass_);
+
+	Index nSubSet = Index(ratio * nInd_);
+
+	Vector<Index> allInd(nInd_);
+	for (Index i = 0; i < nInd_; ++i) {
+		allInd(i) = i;
+	}
+
+	MultinomialStatistic multi;
+	multi.shuffle(allInd);
+
+	for (Index i = 0; i < nSubSet; ++i) {
+		partialClassInd(multi.sampleInt(0, nClass_ - 1)).insert(i);
+	}
+
 
 	return warnLog;
 }
