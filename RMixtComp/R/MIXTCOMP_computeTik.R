@@ -5,9 +5,9 @@
 #   variables <- names(outputMixtComp$variable$param)[-1]
 #   proportion <- outputMixtComp$variable$param$z_class$pi$stat[,1]
 #   
-#   probaVariable <- lapply(variables, computeProbaOneVariable, outputMixtComp)
-#   
-#   tik <- Reduce("*", probaVariable)
+# probaVariable <- lapply(variables, function(x) {log(computeProbaOneVariable(x, outputMixtComp))})
+# 
+# tik <- exp(Reduce("+", probaVariable))
 #   tik = t(apply(tik, 1, function(x){x * proportion}))
 #   tik = tik/rowSums(tik)  
 #   

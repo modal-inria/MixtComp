@@ -1,6 +1,6 @@
-#' @param nbInd number of individuals
-#' @param proportionPresent proportion of present data
-#' @param var list one element per variable containing the type of the variable ($type) and the associated parameters ($param : a list of param indexed by the number of the class) and the name ($name)
+# @param nbInd number of individuals
+# @param proportionPresent proportion of present data
+# @param var list one element per variable containing the type of the variable ($type) and the associated parameters ($param : a list of param indexed by the number of the class) and the name ($name)
 dataGenerator <- function(
   nbInd,
   proportionPresent,

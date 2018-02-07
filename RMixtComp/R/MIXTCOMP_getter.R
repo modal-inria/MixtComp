@@ -20,8 +20,7 @@
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    parameterEdgeAuthorized = FALSE)
+#'                    nbGibbsIter = 50)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -62,8 +61,7 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    parameterEdgeAuthorized = FALSE)
+#'                    nbGibbsIter = 50)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -100,8 +98,7 @@ getZ_class <- function(outMixtComp)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    parameterEdgeAuthorized = FALSE)
+#'                    nbGibbsIter = 50)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -141,8 +138,7 @@ getType <- function(outMixtComp, with.z_class = FALSE)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    parameterEdgeAuthorized = FALSE)
+#'                    nbGibbsIter = 50)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -179,8 +175,7 @@ getTik <- function(outMixtComp)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    parameterEdgeAuthorized = FALSE)
+#'                    nbGibbsIter = 50)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -236,8 +231,7 @@ getParam <- function(varName, outMixtComp)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    parameterEdgeAuthorized = FALSE)
+#'                    nbGibbsIter = 50)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)

@@ -41,9 +41,6 @@ Estimates from the burn-in phase are not shown in output.
   \item{nbIter}{Number of iterations of the SEM algorithm.}
   \item{nbGibbsBurnInIter}{Number of iterations of the burn-in part of the Gibbs algorithm.}
   \item{nbGibbsIter}{Number of iterations of the Gibbs algorithm.}
-  \item{parameterEdgeAuthorized}{\emph{TRUE} or \emph{FALSE} (default value). 
-  If \emph{TRUE}, a bias is introduced by avoiding some non stable situation (a proportion = 0 for example) by using a minimal value (1e-8).
-  }
 }
 }
 \section{Output object}{
@@ -52,7 +49,8 @@ The output list \emph{mixture} contains the \emph{BIC}, \emph{ICL}, number of sa
 the number of class (\emph{nCluster}), the observed loglikelihood (\emph{lnObservedLikelihood}),
 the completed loglikelihood (\emph{lnCompletedLikelihood}), the number of free parameters of the mixture (\emph{nbFreeParameters}),
 the function used to create the output (\emph{mode} = "learn" for \link{mixtCompCluster} or "predict" for \link{mixtCompPredict}),
-something mathematic (\emph{IdClass}), the execution time (\emph{runTime}) and the warnings generated (\emph{warnlog}).
+something mathematic (\emph{IdClass}), the execution time (\emph{runTime}) and the warnings generated (\emph{warnlog}). 
+The convergence of the SEM can be checked with \emph{completedProbabilityLogBurnIn} and \emph{completedProbabilityLogRun}.
 
 
 The output list \emph{variable} contains 3 lists : \emph{data}, \emph{type} and \emph{param}. 
@@ -72,7 +70,6 @@ output  \cr
 |        \tab          \tab |__ nbIter\cr
 |        \tab          \tab |__ nbGibbsBurnInIter\cr
 |        \tab          \tab |__ nbGibbsIter\cr
-|        \tab          \tab |__ parameterEdgeAuthorized\cr
 | \cr
 |_______ \tab mixture \tab __ BIC \cr
 |        \tab         \tab |_ ICL\cr
@@ -146,8 +143,7 @@ resGetData <- getData(c(pathToData, pathToDescriptor))
 mcStrategy <- list(nbBurnInIter = 100,
                    nbIter = 100,
                    nbGibbsBurnInIter = 50,
-                   nbGibbsIter = 50,
-                   parameterEdgeAuthorized = FALSE)
+                   nbGibbsIter = 50)
 
 # run RMixtCompt for clustering
 res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)

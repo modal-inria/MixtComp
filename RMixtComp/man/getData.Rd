@@ -29,7 +29,7 @@ Others rows correspond to the different samples. See the section associated with
 
 The descriptor file is a csv file (; separator) containing 3 rows. The first row contains the names of the variables.
 This first row must be the same as the first row of the data file. The second row contains the model associated with each variables.
-Six models are available in RMixtComp : Gaussian_sjk, Categorical_pjk, Poisson_k, Functional, Rank, Ordinal.
+Six models are available in RMixtComp : \emph{Gaussian_sjk}, \emph{Categorical_pjk}, \emph{Poisson_k}, \emph{Functional}, \emph{Rank}, \emph{Ordinal}.
 The third row is optional and contains parameters associated with each model.
 }
 \section{Gaussian data}{

@@ -13,8 +13,7 @@ testWeibull <- function() {
     nbBurnInIter = 100,
     nbIter = 100,
     nbGibbsBurnInIter = 50,
-    nbGibbsIter = 50,
-    parameterEdgeAuthorized = TRUE)
+    nbGibbsIter = 50)
   
   # run RMixtCompt for clustering
   resLearn <- mixtCompCluster(
