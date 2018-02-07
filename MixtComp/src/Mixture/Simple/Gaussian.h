@@ -54,7 +54,7 @@ class Gaussian {
 
 	std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
 
-	std::string initParam(const Vector<Index>& initObs);
+	void initParam();
 
 	std::vector<bool> parametersInInterior();
 

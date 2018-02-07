@@ -78,7 +78,7 @@ public:
    * Formulae to be found here: https://en.wikipedia.org/wiki/Weibull_distribution
    * Median is easier to invert for Weibull than mean.
    */
-  std::string initParam(const Vector<Index>& initObs);
+  void initParam();
 
   std::vector<bool> parametersInInterior();
 

@@ -118,18 +118,7 @@ std::string Poisson::checkSampleCondition(const Vector<std::set<Index>>& classIn
 	return "";
 }
 
-std::string Poisson::initParam(const Vector<Index>& initObs) {
-	for (Index k = 0; k < nClass_; ++k) {
-		param_(k) = Real((*p_data_)(initObs(k)));
-	}
-
-	std::stringstream sstm;
-	if (param_.minCoeff() == 0.0) {
-		sstm << "Too many observations equal to 0. The Poisson distribution will only model a variable that has enough values not equal to 0." << std::endl;
-	}
-
-	return sstm.str();
-};
+void Poisson::initParam() {};
 
 std::vector<bool> Poisson::parametersInInterior() {
 	std::vector<bool> res(nClass_);

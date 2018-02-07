@@ -110,36 +110,8 @@ void FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
       sd_);
 }
 
-//void FunctionalClass::initParamAllInd(Index obs) {
-//  mStep(); // note that obs is not used
-//}
-
-std::string FunctionalClass::initParamOneInd(const std::set<Index>& setInd, Index obs) {
-  std::set<Index> initInd; // mStep will be performed on 1 obs subset of each class
-  initInd.insert(obs); // initInd is a single element set
-
-  Vector<Real> quantile;
-  data_(obs).quantile(quantile); // the observation used for initialization must contain timesteps in all subregression, hence the uniform partition
-
-//  std::cout << itString(quantile) << std::endl;
-
-  for (std::set<Index>::const_iterator itData  = setInd.begin(),
-                                       itDataE = setInd.end();
-       itData != itDataE;
-       ++itData) {
-//    data_(*itData).removeMissingQuantileMixing(quantile); // every individual in the same class is identically initialized, note that this erase and replace the initData initialization
-	  data_(*itData).removeMissingQuantile(quantile);
-  }
-
-//  data_(obs).printSubRegT();
-
-  std::string warnLog = checkSampleCondition(initInd);
-  if (0 < warnLog.size()) return warnLog;
-
-  mStepAlpha(initInd); // partial initialization using only the individual that represent this class
-  mStepBetaSd(initInd);
-
-  return "";
+void FunctionalClass::initParam() {
+	alpha_ = 0.;
 }
 
 void FunctionalClass::setParamStorage() {

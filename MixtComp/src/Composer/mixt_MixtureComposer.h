@@ -302,7 +302,7 @@ class MixtureComposer {
     /**
      * Sample an individual per class, to perform the initialization of each model.
      */
-    std::string initParamRepresentativeIndividual();
+    void initParam();
 
     /**
      * Generate a partition of a subset of the data set. This is used to perform a partial mStep that adds variability to
@@ -354,7 +354,7 @@ class MixtureComposer {
      * when individuals have not been completed using the real model.
      */
     std::string eStepObserved();
-    bool eStepObservedInd(Index i, const Matrix<bool>& parametersInInterior);
+    bool eStepObservedInd(Index i);
 
     /** Call initializeMarkovChain on all variables. */
     void initializeMarkovChain();

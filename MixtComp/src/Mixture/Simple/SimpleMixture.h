@@ -206,9 +206,8 @@ public:
 	}
 
 	std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) {
-		std::string warnLog;
-		warnLog = model_.initParam(initObs);
-		return warnLog;
+		model_.initParam();
+		return "";
 	};
 
 	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {

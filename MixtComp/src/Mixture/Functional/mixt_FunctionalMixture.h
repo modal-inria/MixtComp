@@ -322,8 +322,7 @@ public:
 	 */
 	std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) {
 		for (Index k = 0; k < nClass_; ++k) {
-			std::string warnLog = class_[k].initParamOneInd(classInd(k), initObs(k));
-			if (0 < warnLog.size()) return warnLog;
+			class_[k].initParam();
 		}
 
 		return "";

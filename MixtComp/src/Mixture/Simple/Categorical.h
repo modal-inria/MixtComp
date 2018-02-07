@@ -53,7 +53,7 @@ public:
 
 	bool hasModalities() const;
 
-	std::string initParam(const Vector<Index>& initObs);
+	void initParam();
 
 	std::vector<bool> parametersInInterior();
 

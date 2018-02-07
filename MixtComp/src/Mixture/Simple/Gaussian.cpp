@@ -126,25 +126,7 @@ std::string Gaussian::checkSampleCondition(const Vector<std::set<Index>>& classI
 	return "";
 }
 
-std::string Gaussian::initParam(const Vector<Index>& initObs) {
-	Real sampleMean, sampleSd;
-	meanSD((*p_data_), sampleMean, sampleSd); // computation of sample standard deviation
-	Real classSd = sampleSd / nClass_; // variance per class
-
-	bool hasVariance = false;
-	for (Index k = 0; k < nClass_; ++k) {
-		param_(2 * k    ) = (*p_data_)(initObs(k)); // mean is obtained from a sampled value
-		param_(2 * k + 1) = classSd;
-		if (0.0 < classSd) hasVariance = true;
-	}
-
-	std::stringstream sstm;
-	if (hasVariance == false) {
-		sstm << "Not enough variance. The data is accumulated around some values for at least one class, yet the Gaussian distribution needs some variability to adequately model a sample." << std::endl;
-	}
-
-	return sstm.str();
-}
+void Gaussian::initParam() {}
 
 std::vector<bool> Gaussian::parametersInInterior() {
 	std::vector<bool> res(nClass_);
