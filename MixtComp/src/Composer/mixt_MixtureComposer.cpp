@@ -402,6 +402,7 @@ std::string MixtureComposer::initParamSubPartition(Real ratio) {
 	Vector<std::set<Index>> partialClassInd(nClass_);
 
 	Index nSubSet = Index(ratio * nInd_);
+	std::cout << "MixtureComposer::initParamSubPartition, " << nSubSet << " observations used in parameter initialization." << std::endl;
 
 	Vector<Index> allInd(nInd_);
 	for (Index i = 0; i < nInd_; ++i) {
@@ -415,9 +416,9 @@ std::string MixtureComposer::initParamSubPartition(Real ratio) {
 		partialClassInd(multi.sampleInt(0, nClass_ - 1)).insert(allInd(i));
 	}
 
-	for (Index k = 0; k < nClass_; ++k) {
-		std::cout << "k: " << k << ", " << itString(partialClassInd(k)) << std::endl;
-	}
+//	for (Index k = 0; k < nClass_; ++k) {
+//		std::cout << "k: " << k << ", " << itString(partialClassInd(k)) << std::endl;
+//	}
 
 	warnLog = checkSampleCondition(partialClassInd);
 	if (0 < warnLog.size()) return warnLog;
@@ -589,8 +590,8 @@ std::string MixtureComposer::eStepObserved() {
 		warnLog = "Error in MixtureComposer::eStepObserved: " + eol + tempWarnLog;
 	}
 
-	std::cout << "MixtureComposer::eStepObservedInd, tik" << std::endl;
-	std::cout << tik_ << std::endl;
+//	std::cout << "MixtureComposer::eStepObservedInd, tik" << std::endl;
+//	std::cout << tik_ << std::endl;
 
 	return warnLog;
 }
@@ -612,10 +613,7 @@ bool MixtureComposer::eStepObservedInd(Index i) {
 		isIndividualObservable = false;
 	}
 
-	std::cout << "MixtureComposer::eStepObservedInd, i: " << i << ", lnComp: " << itString(lnComp) << std::endl;
 	tik_.row(i).logToMulti(lnComp);
-
-//	std::cout << "MixtureComposer::eStepObservedInd, i: " << i << ", tik: " << itString(tik_.row(i)) << std::endl;
 
 	return isIndividualObservable;
 }
