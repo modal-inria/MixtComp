@@ -40,8 +40,8 @@ void DataExtractorJson::exportVals(int indexMixture,
            itVec != dataStatStorage(i).end();
            ++itVec) {
 
-        currList.push_back(nlohmann::json (itVec->first + minModality,  // current modality)
-                                              itVec->second)); // probability of the modality
+        currList.push_back(nlohmann::json {itVec->first + minModality,  // current modality)
+                                              itVec->second}); // probability of the modality
       }
 
       missingData.push_back(currList);
