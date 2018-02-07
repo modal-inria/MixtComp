@@ -17,10 +17,10 @@ int main(int argc, char *argv[]) {
 //	R.parseEvalQ(R"(source("run.r"))");
 
 	R.parseEvalQ("library(RMixtComp)");
-	R.parseEvalQ("testFunctional()");
+//	R.parseEvalQ("testFunctional()");
 //	R.parseEvalQ("testOrdinal()");
 //	R.parseEvalQ("testRank()");
-//	R.parseEvalQ("testCategorical()");
+	R.parseEvalQ("testCategorical()");
 //	R.parseEvalQ("testGaussian()");
 //	R.parseEvalQ("testPoisson()");
 //	R.parseEvalQ("testWeibull()");

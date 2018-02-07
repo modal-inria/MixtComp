@@ -50,7 +50,7 @@ testOrdinal <- function() {
     nbIter = 100,
     nbGibbsBurnInIter = 50,
     nbGibbsIter = 50,
-    parameterEdgeAuthorized = TRUE)
+    ratioInitialization = 0.2)
   
   # run RMixtCompt for clustering
   resLearn <- mixtCompCluster(

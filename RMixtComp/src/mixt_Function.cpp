@@ -139,7 +139,7 @@ void paramRToCpp(const Rcpp::List& RParam, StrategyParam& CppParam) {
 			std::cout << "Parameter ratioInitialization must be within [0, 1], 0.1 is used." << std::endl;
 		}
 		else {
-			CppParam.ratioInitialization_ = RParam["nbGibbsBurnInIter"];
+			CppParam.ratioInitialization_ = RParam["ratioInitialization"];
 		}
 	}
 	else {
