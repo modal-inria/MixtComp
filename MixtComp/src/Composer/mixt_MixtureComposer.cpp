@@ -598,23 +598,21 @@ std::string MixtureComposer::eStepObserved() {
 bool MixtureComposer::eStepObservedInd(Index i) {
 	bool isIndividualObservable = true;
 
-	RowVector<Real> lnComp(nClass_);
-	RowVector<Real> currVar(nClass_);
+	RowVector<Real> lnComp(nClass_); // row vector, one index per class
 
 	for (Index k = 0; k < nClass_; k++) {
 		lnComp(k) = std::log(prop_[k]);
 
 		for (Index j = 0; j < nVar_; ++j) {
-			currVar(k) = observedProbabilityCache_(j)(i, k);
+			lnComp(k) += observedProbabilityCache_(j)(i, k);
 		}
-
-		lnComp += currVar;
 	}
 
 	if (lnComp.maxCoeff() == minInf) { // individual is not observable if its probability is 0 in every classes, in that case the run can not continue
 		isIndividualObservable = false;
 	}
 
+	std::cout << "MixtureComposer::eStepObservedInd, i: " << i << ", lnComp: " << itString(lnComp) << std::endl;
 	tik_.row(i).logToMulti(lnComp);
 
 //	std::cout << "MixtureComposer::eStepObservedInd, i: " << i << ", tik: " << itString(tik_.row(i)) << std::endl;
