@@ -183,7 +183,6 @@ Rcpp::List mixtCompCluster(
   Rcpp::NumericMatrix delta;
   mixt::matDelta(composer, delta);
   mcMixture["delta"] = delta;
-  mcMixture["runTime"] = totalTimer.top("end of run");
   mcMixture["nbSample"] = handler.nbSample();
 
   Rcpp::List type = handler.rcppReturnType();
