@@ -125,13 +125,17 @@ Real MixtureComposer::lnCompletedProbability(int i, int k) const {
 	return sum;
 }
 
-void MixtureComposer::mStep() {
+void MixtureComposer::mStep(const Vector<std::set<Index>>& classInd) {
 	mStepPi(); // computation of z_ik frequencies, which correspond to ML estimator of proportions
 
 #pragma omp parallel for // note that this is the only case where parallelism is not performed over observations, but over individuals
 	for (Index v = 0; v < nVar_; ++v) {
-		v_mixtures_[v]->mStep(); // call mStep on each variable
+		v_mixtures_[v]->mStep(classInd); // call mStep on each variable
 	}
+}
+
+void MixtureComposer::mStep() {
+	mStep(zClassInd_.classInd());
 }
 
 void MixtureComposer::sampleZ() {
@@ -201,22 +205,26 @@ void MixtureComposer::sampleUnobservedAndLatent() {
 
 void MixtureComposer::sampleUnobservedAndLatent(int i) {
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->sampleUnobservedAndLatent(i);
+		(*it)->sampleUnobservedAndLatent(i, zClassInd_.zi().data_(i));
 	}
 }
 
-std::string MixtureComposer::checkSampleCondition() const {
-	std::string warnLog = checkNbIndPerClass();
+std::string MixtureComposer::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
+	std::string warnLog = checkNbIndPerClass(classInd);
 	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		warnLog += (*it)->checkSampleCondition();
+		warnLog += (*it)->checkSampleCondition(classInd);
 	}
 
 	return warnLog;
 }
 
-std::string MixtureComposer::checkNbIndPerClass() const {
+std::string MixtureComposer::checkSampleCondition() const {
+	return checkSampleCondition(zClassInd_.classInd());
+}
+
+std::string MixtureComposer::checkNbIndPerClass(const Vector<std::set<Index>>& classInd) const {
 	for (Index k = 0; k < nClass_; ++k) {
-		if (0 < zClassInd_.classInd()(k).size()) {
+		if (0 < classInd(k).size()) {
 			continue;
 		}
 		else {
@@ -228,6 +236,10 @@ std::string MixtureComposer::checkNbIndPerClass() const {
 	}
 
 	return "";
+}
+
+std::string MixtureComposer::checkNbIndPerClass() const {
+	return checkNbIndPerClass(zClassInd_.classInd());
 }
 
 void MixtureComposer::storeSEMRun(
@@ -376,37 +388,42 @@ void MixtureComposer::initData() {
 	}
 }
 
-std::string MixtureComposer::initParam() {
+void MixtureComposer::initParam() {
 	prop_ = 1. / nClass_; // this is roughly equivalent to an estimation by maximization of likelihood, considering that proportions in all t_ik are equal
 
-	Vector<Index> initObs(nClass_); // observations used to initialize individuals
-	for (Index k = 0; k < nClass_; ++k) {
-		MultinomialStatistic multi;
-		Index sampleInd = multi.sampleInt(0, zClassInd_.classInd()(k).size() - 1);
-		std::set<Index>::const_iterator it = zClassInd_.classInd()(k).begin();
-		for (Index i = 0; i < sampleInd; ++i) {
-			++it;
-		}
-
-		initObs(k) = *it; // select one observation per class, among the observations that have been uniformly sampled, using the proper constraint in the (semi) supervised test.
-	}
-
-	std::string warnLog; // global warnLog
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		std::string varLog; // variable warnLog
-		varLog += (*it)->initParam(initObs);
-		if (0 < varLog.size()) {
-			std::stringstream sstm;
-			sstm << "Error(s) in variable: " << (*it)->idName() << ": " << std::endl << varLog << std::endl;
-			warnLog += sstm.str();
-		}
+		(*it)->initParam(zClassInd_.classInd(), 0);
+	}
+}
+
+std::string MixtureComposer::initParamSubPartition(Real ratio) {
+	std::string warnLog;
+
+	Vector<std::set<Index>> partialClassInd(nClass_);
+
+	Index nSubSet = Index(ratio * nInd_);
+	std::cout << "MixtureComposer::initParamSubPartition, " << nSubSet << " observations used in parameter initialization." << std::endl;
+
+	Vector<Index> allInd(nInd_);
+	for (Index i = 0; i < nInd_; ++i) {
+		allInd(i) = i;
 	}
 
-	if (0 < warnLog.size()) {
-		std::stringstream sstm;
-		sstm << "Errors in MixtureComposer::initParam: " << std::endl << warnLog;
-		warnLog = sstm.str();
+	MultinomialStatistic multi;
+	multi.shuffle(allInd);
+
+	for (Index i = 0; i < nSubSet; ++i) {
+		partialClassInd(multi.sampleInt(0, nClass_ - 1)).insert(allInd(i));
 	}
+
+//	for (Index k = 0; k < nClass_; ++k) {
+//		std::cout << "k: " << k << ", " << itString(partialClassInd(k)) << std::endl;
+//	}
+
+	warnLog = checkSampleCondition(partialClassInd);
+	if (0 < warnLog.size()) return warnLog;
+
+	mStep(partialClassInd);
 
 	return warnLog;
 }
@@ -556,17 +573,9 @@ void MixtureComposer::initializeMarkovChain() {
 std::string MixtureComposer::eStepObserved() {
 	std::vector<bool> vecWarnLog(nInd_); // since the for loop can be executed in parallel, the individual results are stored in a vector to avoid race conditions
 
-	Matrix<bool> parametersInInterior(nVar_, nClass_); // the computation is not dependent on the observation and is therefore cached
-	for (Index j = 0; j < nVar_; ++j) {
-		std::vector<bool> pII = v_mixtures_[j]->parametersInInterior();
-		for (Index k = 0; k < nClass_; ++k) {
-			parametersInInterior(j, k) = pII[k];
-		}
-	}
-
 #pragma omp parallel for
 	for (Index i = 0; i < nInd_; ++i) {
-		vecWarnLog[i] = eStepObservedInd(i, parametersInInterior);
+		vecWarnLog[i] = eStepObservedInd(i);
 	}
 
 	std::string tempWarnLog;
@@ -581,26 +590,23 @@ std::string MixtureComposer::eStepObserved() {
 		warnLog = "Error in MixtureComposer::eStepObserved: " + eol + tempWarnLog;
 	}
 
-	//  std::cout << "MixtureComposer::eStepObservedInd, tik" << std::endl;
-	//  std::cout << tik_ << std::endl;
+//	std::cout << "MixtureComposer::eStepObservedInd, tik" << std::endl;
+//	std::cout << tik_ << std::endl;
 
 	return warnLog;
 }
 
-bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersInInterior) {
+bool MixtureComposer::eStepObservedInd(Index i) {
 	bool isIndividualObservable = true;
 
-	RowVector<Real> lnComp(nClass_);
-	RowVector<Real> currVar(nClass_);
+	RowVector<Real> lnComp(nClass_); // row vector, one index per class
 
 	for (Index k = 0; k < nClass_; k++) {
 		lnComp(k) = std::log(prop_[k]);
 
 		for (Index j = 0; j < nVar_; ++j) {
-			currVar(k) = observedProbabilityCache_(j)(i, k);
+			lnComp(k) += observedProbabilityCache_(j)(i, k);
 		}
-
-		lnComp += currVar;
 	}
 
 	if (lnComp.maxCoeff() == minInf) { // individual is not observable if its probability is 0 in every classes, in that case the run can not continue
@@ -608,8 +614,6 @@ bool MixtureComposer::eStepObservedInd(Index i, const Matrix<bool>& parametersIn
 	}
 
 	tik_.row(i).logToMulti(lnComp);
-
-//	std::cout << "MixtureComposer::eStepObservedInd, i: " << i << ", tik: " << itString(tik_.row(i)) << std::endl;
 
 	return isIndividualObservable;
 }

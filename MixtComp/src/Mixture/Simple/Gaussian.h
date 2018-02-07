@@ -46,15 +46,15 @@ class Gaussian {
 
 	/** Algorithm based on http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance#Incremental_algorithm
 	 * using the biased estimator which corresponds to the maximum likelihood estimator */
-	void mStep();
+	void mStep(const Vector<std::set<Index>>& classInd);
 
 	std::vector<std::string> paramNames() const;
 
 	void writeParameters() const;
 
-	std::string checkSampleCondition() const;
+	std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
 
-	std::string initParam(const Vector<Index>& initObs);
+	void initParam();
 
 	std::vector<bool> parametersInInterior();
 
@@ -66,8 +66,6 @@ private:
 	Vector<Real>& param_;
 
 	Vector<Real>* p_data_;
-
-	const Vector<std::set<Index> >& classInd_;
 
 	/** Statistic object to describe Poisson law */
 	NormalStatistic normal_;

@@ -13,10 +13,11 @@
 namespace mixt {
 
 struct StrategyParam {
-    int nbBurnInIter_ = 100;
-    int nbIter_ = 100;
-    int nbGibbsBurnInIter_ = 100;
-    int nbGibbsIter_ = 100;
+    Index nbBurnInIter_ = 100;
+    Index nbIter_ = 100;
+    Index nbGibbsBurnInIter_ = 100;
+    Index nbGibbsIter_ = 100;
+    Real ratioInitialization_ = 0.1;
 };
 
 }  // namespace mixt

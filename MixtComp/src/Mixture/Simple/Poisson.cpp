@@ -22,8 +22,7 @@ Poisson::Poisson(
 : idName_(idName),
   nClass_(nbClass),
   param_(param),
-  p_data_(0),
-  classInd_(classInd) {
+  p_data_(0) {
 	param_.resize(nbClass);
 }
 
@@ -46,16 +45,16 @@ bool Poisson::hasModalities() const {
 	return false;
 }
 
-void Poisson::mStep() {
+void Poisson::mStep(const Vector<std::set<Index>>& classInd) {
 	for (int k = 0; k < nClass_; ++k) {
 		Real sumClass = 0.;
-		for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
 				it != itE;
 				++it) {
 			sumClass += (*p_data_)(*it);
 		}
 
-		param_(k) = sumClass / Real(classInd_(k).size());
+		param_(k) = sumClass / Real(classInd(k).size());
 	}
 }
 
@@ -99,11 +98,11 @@ void Poisson::writeParameters() const {
 	std::cout << sstm.str() << std::endl;
 }
 
-std::string Poisson::checkSampleCondition() const {
+std::string Poisson::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
 	if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
 	for (Index k = 0; k < nClass_; ++k) {
-		for (std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
 				it != itE;
 				++it) {
 			if ((*p_data_)(*it) > 0) {
@@ -119,18 +118,7 @@ std::string Poisson::checkSampleCondition() const {
 	return "";
 }
 
-std::string Poisson::initParam(const Vector<Index>& initObs) {
-	for (Index k = 0; k < nClass_; ++k) {
-		param_(k) = Real((*p_data_)(initObs(k)));
-	}
-
-	std::stringstream sstm;
-	if (param_.minCoeff() == 0.0) {
-		sstm << "Too many observations equal to 0. The Poisson distribution will only model a variable that has enough values not equal to 0." << std::endl;
-	}
-
-	return sstm.str();
-};
+void Poisson::initParam() {};
 
 std::vector<bool> Poisson::parametersInInterior() {
 	std::vector<bool> res(nClass_);

@@ -48,7 +48,8 @@ testRank <- function() {
     nbBurnInIter = 100,
     nbIter = 100,
     nbGibbsBurnInIter = 50,
-    nbGibbsIter = 50)
+    nbGibbsIter = 50,
+    ratioInitialization = 0.2)
   
   # run RMixtCompt for clustering
   resLearn <- mixtCompCluster(

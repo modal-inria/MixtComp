@@ -217,45 +217,45 @@ class MixtureManager {
         return p_bridge;
       }
 
-      if (idModel == "Ordinal") {
-        Ordinal<DataHandler,
-                DataExtractor,
-                ParamSetter,
-                ParamExtractor>* p_bridge = new Ordinal<DataHandler,
-                                                        DataExtractor,
-                                                        ParamSetter,
-                                                        ParamExtractor>(indexMixture,
-                                                                        idName,
-                                                                        nbCluster,
-                                                                        composer.p_zi(),
-                                                                        composer.classInd(),
-                                                                        p_handler_,
-                                                                        p_dataExtractor_,
-                                                                        p_paramSetter_,
-                                                                        p_paramExtractor_,
-                                                                        confidenceLevel);
-        return p_bridge;
-      }
+//      if (idModel == "Ordinal") {
+//        Ordinal<DataHandler,
+//                DataExtractor,
+//                ParamSetter,
+//                ParamExtractor>* p_bridge = new Ordinal<DataHandler,
+//                                                        DataExtractor,
+//                                                        ParamSetter,
+//                                                        ParamExtractor>(indexMixture,
+//                                                                        idName,
+//                                                                        nbCluster,
+//                                                                        composer.p_zi(),
+//                                                                        composer.classInd(),
+//                                                                        p_handler_,
+//                                                                        p_dataExtractor_,
+//                                                                        p_paramSetter_,
+//                                                                        p_paramExtractor_,
+//                                                                        confidenceLevel);
+//        return p_bridge;
+//      }
 
-      if (idModel == "Rank") {
-        RankMixture<DataHandler,
-                    DataExtractor,
-                    ParamSetter,
-                    ParamExtractor>* p_bridge = new RankMixture<DataHandler,
-                                                                DataExtractor,
-                                                                ParamSetter,
-                                                                ParamExtractor>(indexMixture,
-                                                                                idName,
-                                                                                nbCluster,
-                                                                                composer.p_zi(),
-                                                                                composer.classInd(),
-                                                                                p_handler_,
-                                                                                p_dataExtractor_,
-                                                                                p_paramSetter_,
-                                                                                p_paramExtractor_,
-                                                                                confidenceLevel);
-        return p_bridge;
-      }
+//      if (idModel == "Rank") {
+//        RankMixture<DataHandler,
+//                    DataExtractor,
+//                    ParamSetter,
+//                    ParamExtractor>* p_bridge = new RankMixture<DataHandler,
+//                                                                DataExtractor,
+//                                                                ParamSetter,
+//                                                                ParamExtractor>(indexMixture,
+//                                                                                idName,
+//                                                                                nbCluster,
+//                                                                                composer.p_zi(),
+//                                                                                composer.classInd(),
+//                                                                                p_handler_,
+//                                                                                p_dataExtractor_,
+//                                                                                p_paramSetter_,
+//                                                                                p_paramExtractor_,
+//                                                                                confidenceLevel);
+//        return p_bridge;
+//      }
 
       return 0;
     }

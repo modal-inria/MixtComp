@@ -69,6 +69,7 @@ class MixtureComposer {
      *  mixture parameters.
      *  @param[out] worstDeg worst degeneracy type incountered among all mixtures for this mStep
      **/
+    void mStep(const Vector<std::set<Index>>& classInd);
     void mStep();
 
     /** Compute proportions using the ML estimator, default implementation. Set
@@ -124,12 +125,14 @@ class MixtureComposer {
      * log is required.
      * @param[out] warnLog provides information on what condition has not been met
      * */
+    std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
     std::string checkSampleCondition() const;
 
     /**
      * Check if there are enough individual in each class. Called by checkSampleCondition.
      * @param[out] warnLog provides information on what condition has not been met
      * */
+    std::string checkNbIndPerClass(const Vector<std::set<Index>>& classInd) const;
     std::string checkNbIndPerClass() const;
 
     /**@brief This step can be used to signal to the mixtures that they must
@@ -299,7 +302,14 @@ class MixtureComposer {
     /**
      * Sample an individual per class, to perform the initialization of each model.
      */
-    std::string initParam();
+    void initParam();
+
+    /**
+     * Generate a partition of a subset of the data set. This is used to perform a partial mStep that adds variability to
+     * the initialization procedure.
+     * @param ratio n elements in subset / n elements in data set
+     */
+    std::string initParamSubPartition(Real ratio);
 
     /**
      * Compute the "raw" class ID matrix E_kj
@@ -344,7 +354,7 @@ class MixtureComposer {
      * when individuals have not been completed using the real model.
      */
     std::string eStepObserved();
-    bool eStepObservedInd(Index i, const Matrix<bool>& parametersInInterior);
+    bool eStepObservedInd(Index i);
 
     /** Call initializeMarkovChain on all variables. */
     void initializeMarkovChain();

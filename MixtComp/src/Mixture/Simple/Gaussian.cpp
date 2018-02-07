@@ -26,8 +26,7 @@ Gaussian::Gaussian(
 : idName_(idName),
   nClass_(nbClass),
   param_(param),
-  p_data_(0),
-  classInd_(classInd) {
+  p_data_(0) {
 	param_.resize(2 * nbClass);
 }
 
@@ -50,12 +49,12 @@ bool Gaussian::hasModalities() const {
 	return false;
 }
 
-void Gaussian::mStep() {
+void Gaussian::mStep(const Vector<std::set<Index>>& classInd) {
 	for (int k = 0; k < nClass_; ++k) {
 		Real mean;
 		Real sd;
 
-		meanSD(classInd_(k),
+		meanSD(classInd(k),
 				*p_data_,
 				mean,
 				sd);
@@ -103,13 +102,13 @@ void Gaussian::writeParameters() const {
 	std::cout << sstm.str() << std::endl;
 }
 
-std::string Gaussian::checkSampleCondition() const {
+std::string Gaussian::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
 	for (Index k = 0; k < nClass_; ++k) {
-		if (classInd_(k).size() < 2) {
+		if (classInd(k).size() < 2) {
 			return "Gaussian variables must have at least two individuals per class. This is not the case for at least one class. You can check whether you have enough individuals regarding the number of classes." + eol;
 		}
 
-		std::set<Index>::const_iterator it = classInd_(k).begin(), itE = classInd_(k).end();
+		std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
 		Real previousElemClass = (*p_data_)(*it);
 		++it;
 		for (; it != itE; ++it) {
@@ -127,25 +126,7 @@ std::string Gaussian::checkSampleCondition() const {
 	return "";
 }
 
-std::string Gaussian::initParam(const Vector<Index>& initObs) {
-	Real sampleMean, sampleSd;
-	meanSD((*p_data_), sampleMean, sampleSd); // computation of sample standard deviation
-	Real classSd = sampleSd / nClass_; // variance per class
-
-	bool hasVariance = false;
-	for (Index k = 0; k < nClass_; ++k) {
-		param_(2 * k    ) = (*p_data_)(initObs(k)); // mean is obtained from a sampled value
-		param_(2 * k + 1) = classSd;
-		if (0.0 < classSd) hasVariance = true;
-	}
-
-	std::stringstream sstm;
-	if (hasVariance == false) {
-		sstm << "Not enough variance. The data is accumulated around some values for at least one class, yet the Gaussian distribution needs some variability to adequately model a sample." << std::endl;
-	}
-
-	return sstm.str();
-}
+void Gaussian::initParam() {}
 
 std::vector<bool> Gaussian::parametersInInterior() {
 	std::vector<bool> res(nClass_);

@@ -64,13 +64,13 @@ public:
       AugmentedData<Vector<Real> >& augData,
       RunMode mode);
 
-  void mStep();
+  void mStep(const Vector<std::set<Index>>& classInd);
 
   std::vector<std::string> paramNames() const;
 
   void writeParameters() const;
 
-  std::string checkSampleCondition() const;
+  std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
 
   /**
    * The idea is to initialize the distribution in each class with the parameters lambda = 1, and a suitable value of k
@@ -78,7 +78,7 @@ public:
    * Formulae to be found here: https://en.wikipedia.org/wiki/Weibull_distribution
    * Median is easier to invert for Weibull than mean.
    */
-  std::string initParam(const Vector<Index>& initObs);
+  void initParam();
 
   std::vector<bool> parametersInInterior();
 
@@ -90,8 +90,6 @@ private:
   Vector<Real>& param_; // storage is linear, k0, lambda0, k1, lambda1, k2, lambda2, ...
 
   Vector<Real>* p_data_;
-
-  const Vector<std::set<Index> >& classInd_;
 };
 
 }

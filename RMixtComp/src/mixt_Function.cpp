@@ -104,35 +104,48 @@ void matDelta(mixt::MixtureComposer& mc,
   }
 }
 
-void paramRToCpp(const Rcpp::List& RParam,
-                 StrategyParam& CppParam) {
-  if (RParam.containsElementNamed("nbBurnInIter")) {
-    CppParam.nbBurnInIter_ = RParam["nbBurnInIter"];
-  }
-  else {
-	  std::cout << "Parameter nbBurnInIter not found, a value of 100 is used." << std::endl;
-  }
+void paramRToCpp(const Rcpp::List& RParam, StrategyParam& CppParam) {
+	if (RParam.containsElementNamed("nbBurnInIter")) {
+		CppParam.nbBurnInIter_ = RParam["nbBurnInIter"];
+	}
+	else {
+		std::cout << "Parameter nbBurnInIter not found, a value of 100 is used." << std::endl;
+	}
 
-  if (RParam.containsElementNamed("nbIter")) {
-    CppParam.nbIter_ = RParam["nbIter"];
-  }
-  else {
-	  std::cout << "Parameter nbIter not found, a value of 100 is used." << std::endl;
-  }
+	if (RParam.containsElementNamed("nbIter")) {
+		CppParam.nbIter_ = RParam["nbIter"];
+	}
+	else {
+		std::cout << "Parameter nbIter not found, a value of 100 is used." << std::endl;
+	}
 
-  if (RParam.containsElementNamed("nbGibbsBurnInIter")) {
-    CppParam.nbGibbsBurnInIter_ = RParam["nbGibbsBurnInIter"];
-  }
-  else {
-	  std::cout<<"Parameter nbGibbsBurnInIter not found, a value of 100 is used."<<std::endl;
-  }
+	if (RParam.containsElementNamed("nbGibbsBurnInIter")) {
+		CppParam.nbGibbsBurnInIter_ = RParam["nbGibbsBurnInIter"];
+	}
+	else {
+		std::cout<<"Parameter nbGibbsBurnInIter not found, a value of 100 is used."<<std::endl;
+	}
 
-  if (RParam.containsElementNamed("nbGibbsIter")) {
-    CppParam.nbGibbsIter_ = RParam["nbGibbsIter"];
-  }
-  else {
-	  std::cout << "Parameter nbGibbsIter not found, a value of 100 is used." << std::endl;
-  }
+	if (RParam.containsElementNamed("nbGibbsIter")) {
+		CppParam.nbGibbsIter_ = RParam["nbGibbsIter"];
+	}
+	else {
+		std::cout << "Parameter nbGibbsIter not found, a value of 100 is used." << std::endl;
+	}
+
+	if (RParam.containsElementNamed("ratioInitialization")) {
+		Real ratioInitialization = RParam["ratioInitialization"];
+		if (ratioInitialization < 0. || 1. < ratioInitialization) {
+			std::cout << "Parameter ratioInitialization must be within [0, 1], 0.1 is used." << std::endl;
+		}
+		else {
+			CppParam.ratioInitialization_ = RParam["ratioInitialization"];
+		}
+	}
+	else {
+		std::cout << "Parameter ratioInitialization not found, a value of 0.1 is used." << std::endl;
+	}
+
 }
 
 } // namespace mixt

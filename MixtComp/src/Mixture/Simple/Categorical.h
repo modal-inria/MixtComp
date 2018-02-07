@@ -38,7 +38,7 @@ public:
 
 	int computeNbFreeParameters() const;
 
-	void mStep();
+	void mStep(const Vector<std::set<Index>>& classInd);
 
 	std::vector<std::string> paramNames() const;
 
@@ -49,11 +49,11 @@ public:
 
 	void writeParameters() const;
 
-	std::string checkSampleCondition() const;
+	std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
 
 	bool hasModalities() const;
 
-	std::string initParam(const Vector<Index>& initObs);
+	void initParam();
 
 	std::vector<bool> parametersInInterior();
 
@@ -67,8 +67,6 @@ private:
 	Vector<int>* p_data_;
 
 	Vector<Real>& param_;
-
-	const Vector<std::set<Index> >& classInd_;
 };
 
 } // namespace mixt

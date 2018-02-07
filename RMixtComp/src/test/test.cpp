@@ -16,11 +16,11 @@ int main(int argc, char *argv[]) {
 //	R.parseEvalQ(R"(setwd("/media/sf_Documents/160803 - debug MixtComp/180130 - Fonctionnelles - Etienne"))"); // note the use of string literals to avoid cluttering the R command with escape characters
 //	R.parseEvalQ(R"(source("run.r"))");
 
-//	R.parseEvalQ("library(RMixtComp)");
+	R.parseEvalQ("library(RMixtComp)");
 //	R.parseEvalQ("testFunctional()");
 //	R.parseEvalQ("testOrdinal()");
 //	R.parseEvalQ("testRank()");
-//	R.parseEvalQ("testCategorical()");
+	R.parseEvalQ("testCategorical()");
 //	R.parseEvalQ("testGaussian()");
 //	R.parseEvalQ("testPoisson()");
 //	R.parseEvalQ("testWeibull()");

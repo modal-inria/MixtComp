@@ -242,7 +242,7 @@ public:
 	 *   - nodeMultinomial, recursive function, computes the probability of a path
 	 *   - endMultinomial, returns the probability of current configuration
 	 * */
-	virtual void sampleUnobservedAndLatent(Index ind) {
+	virtual void sampleUnobservedAndLatent(Index ind, Index k) {
 		GibbsSampling(
 				ind,
 				mu_((*p_zi_)(ind)),
@@ -403,7 +403,7 @@ public:
 		path_(i).initPath(); // remove missing use to initialize learn, and should therefore use BOSPath::initPath() which is parameters free. Problem is that z = 0 everywhere.
 	};
 
-	std::string initParam(const Vector<Index>& initObs) {
+	std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) {
 		for (Index k = 0; k < nClass_; ++k) {
 			mu_(k) = augData_.data_(initObs(k)); // representative element used is the same for each variable for a given class
 			pi_(k) = 1. / nClass_;
@@ -442,7 +442,7 @@ public:
 		return at;
 	}
 
-	std::string checkSampleCondition() const {
+	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
 		if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
 
 		for (Index k = 0; k < nClass_; ++k) {
@@ -484,7 +484,7 @@ public:
 		return "";
 	}
 
-	void mStep() {
+	void mStep(const Vector<std::set<Index> >& classInd) {
 		mStepMu();
 		mStepPi();
 	}
