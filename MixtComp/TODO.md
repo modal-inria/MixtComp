@@ -1,7 +1,5 @@
 # Short Term
 
-- initParamSubPartition must take semi supervised and supervised constraints into account
-    - sample all individual with uniform tik, then sample individual indices and assign them directly
 - remove p_zi and classInd as members of all mixtures
 - remove them from constructors
 - remove initParam
@@ -12,7 +10,6 @@
     - initParam in all mixtures should be adapted 
         - to do nothing if there is a closed expression for the estimator
         - perform a simple initialization
-- each mixture should provide the minimum number of individual per class, so when the ratio for sub sample for initialization is 0, max(min(number required), number selected by ratio) is used instead of 0
 - if parametersInInterior is not used anymore, it should be removed
 
 # Current
