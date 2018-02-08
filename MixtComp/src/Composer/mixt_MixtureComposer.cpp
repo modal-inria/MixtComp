@@ -16,7 +16,7 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Various.h"
 
-namespace mixt { 
+namespace mixt {
 
 MixtureComposer::MixtureComposer(
 		Index nbInd,
@@ -229,8 +229,9 @@ std::string MixtureComposer::checkNbIndPerClass(const Vector<std::set<Index>>& c
 		}
 		else {
 			std::stringstream sstm;
-			sstm << "MixtureComposer::checkNbIndPerClass: at least one class is empty. Maybe you provided more individuals "
-			     << "than the number of classes, or the constraints on the classes of the observations are too tight." << std::endl;
+			sstm << "MixtureComposer::checkNbIndPerClass: at least one class is empty. Maybe you asked for more classes "
+			     << "than the number of observations you provided. Or the constraints on the classes of each observations "
+				 << "in a (semi) supervised case are too tight." << std::endl;
 			return sstm.str();
 		}
 	}
