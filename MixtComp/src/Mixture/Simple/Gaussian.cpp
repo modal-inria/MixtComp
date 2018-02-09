@@ -7,6 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <cmath>
+
 #include "Data/mixt_AugmentedData.h"
 #include "LinAlg/mixt_Math.h"
 #include "LinAlg/mixt_LinAlg.h"
@@ -110,15 +112,16 @@ std::string Gaussian::checkSampleCondition(const Vector<std::set<Index>>& classI
 
 		std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
 		Real previousElemClass = (*p_data_)(*it);
+		Real eps = (*p_data_)(*it) * epsilon;
 		++it;
 		for (; it != itE; ++it) {
-			if ((*p_data_)(*it) != previousElemClass) { // stop checking soon as there are two different values in the current class
+			if (eps < (std::fabs((*p_data_)(*it) - previousElemClass))) { // stop checking soon as there are two different values in the current class
 				goto endItK; // goto used as a kind of super break statement, see http://stackoverflow.com/questions/1257744/can-i-use-break-to-exit-multiple-nested-for-loops
 			}
 		}
 
-		return "Gaussian variables must have a minimum amount of variability in each class. It seems that at least one class only contains the value: "
-				+  std::to_string(previousElemClass) + ". If some values are repeated often in this variable, maybe a Categorical or a Poisson variable might describe it better." + eol;
+		return "Gaussian variables must have a minimum relative variability of 1e-8 in each class. It seems that at least one class only contains values close to: "
+				+ std::to_string(previousElemClass) + ". If some values are repeated often in this variable, maybe a Categorical or a Poisson variable will describe it better." + eol;
 
 		endItK:;
 	}
