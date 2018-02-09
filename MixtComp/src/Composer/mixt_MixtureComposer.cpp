@@ -259,17 +259,17 @@ void MixtureComposer::storeSEMRun(
 			completedProbabilityLogRun_.resize(iterationMax + 1);
 		}
 		completedProbabilityLogRun_(iteration) = completedProbabilityCache_.sum();
-	}
 
-	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->storeSEMRun(iteration, iterationMax);
-	}
+		for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+			(*it)->storeSEMRun(iteration, iterationMax);
+		}
 
-	paramStat_.sampleParam(iteration, iterationMax);
+		paramStat_.sampleParam(iteration, iterationMax);
 
-	if (iteration == iterationMax){
-		paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
-		paramStat_.setExpectationParam(); // replace pi by the median values
+		if (iteration == iterationMax){
+			paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
+			paramStat_.setExpectationParam(); // replace pi by the median values
+		}
 	}
 }
 
