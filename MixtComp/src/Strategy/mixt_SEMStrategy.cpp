@@ -113,6 +113,7 @@ std::string SemStrategy::runSEM(
 		}
 
 		p_composer_->mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously
+//		p_composer_->writeParameters();
 
 		p_composer_->storeSEMRun(
 				iter,

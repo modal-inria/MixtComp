@@ -11,6 +11,8 @@
         - to do nothing if there is a closed expression for the estimator
         - perform a simple initialization
 - if parametersInInterior is not used anymore, it should be removed
+- When nan are detected after eStep (completed or observed), generate a specific error message that states that there is an error in the code, and that data could be submitted to the maintainer for analysis and debug.
+    - this would handle a major case of crashes gracefully
 
 # Current
 
@@ -71,6 +73,9 @@
 - Missing data in support
 - Estimation has an infinite numer of solution if subregressions are not separated: check for that ?
 - in Predict mode with functional data, the logStorage_ (defined in mixt_ConfIntParamStat.h) isn't initialized in setParamStorage() (defined in mixt_ConfIntParamStat.h), unlike statStorage_ .. But exportDataParam() (defined in mixt_FunctionalMixture.h) tries to get it nonetheless : what's the role of logStorage_ in Predict Mode ? should it be initialized or should exportDataParam() be modified ?
+- FunctionalClass::checkNbDifferentValue might not be powerful enough for the detection due to floating point arithmetics
+- FunctionalClass::checkNonNullSigma should use a relative epsilon juste like Gaussian to check for variability
+    - one way to easily deal with this should be to have mStep return a string, if the check is as complicated as an estimation...
 
 ## Rank
 
