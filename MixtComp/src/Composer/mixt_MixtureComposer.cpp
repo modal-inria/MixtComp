@@ -16,7 +16,7 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Various.h"
 
-namespace mixt { 
+namespace mixt {
 
 MixtureComposer::MixtureComposer(
 		Index nbInd,
@@ -229,8 +229,9 @@ std::string MixtureComposer::checkNbIndPerClass(const Vector<std::set<Index>>& c
 		}
 		else {
 			std::stringstream sstm;
-			sstm << "MixtureComposer::checkNbIndPerClass: at least one class is empty. Maybe you provided more individuals "
-			     << "than the number of classes, or the constraints on the classes of the observations are too tight." << std::endl;
+			sstm << "MixtureComposer::checkNbIndPerClass: at least one class is empty. Maybe you asked for more classes "
+			     << "than the number of observations you provided. Or the constraints on the classes of each observations "
+				 << "in a (semi) supervised case are too tight." << std::endl;
 			return sstm.str();
 		}
 	}
@@ -378,7 +379,7 @@ std::vector<std::string> MixtureComposer::mixtureName() const {
 
 void MixtureComposer::initData() {
 	tik_ = 1. / nClass_;
-	sampleZ(); // since tik are uniform, this sStep corresponds to an uniform initialization of z
+	sampleZ(); // since tik are uniform, this sStep corresponds to an uniform initialization of z. It takes into account the supervised / semisupervised constraints
 
 	for(MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 #pragma omp parallel for
@@ -413,7 +414,8 @@ std::string MixtureComposer::initParamSubPartition(Real ratio) {
 	multi.shuffle(allInd);
 
 	for (Index i = 0; i < nSubSet; ++i) {
-		partialClassInd(multi.sampleInt(0, nClass_ - 1)).insert(allInd(i));
+		Index currInd = allInd(i);
+		partialClassInd(zClassInd_.zi().data_(currInd)).insert(currInd);
 	}
 
 //	for (Index k = 0; k < nClass_; ++k) {
