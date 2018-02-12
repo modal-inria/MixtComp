@@ -73,6 +73,9 @@
 - Missing data in support
 - Estimation has an infinite numer of solution if subregressions are not separated: check for that ?
 - in Predict mode with functional data, the logStorage_ (defined in mixt_ConfIntParamStat.h) isn't initialized in setParamStorage() (defined in mixt_ConfIntParamStat.h), unlike statStorage_ .. But exportDataParam() (defined in mixt_FunctionalMixture.h) tries to get it nonetheless : what's the role of logStorage_ in Predict Mode ? should it be initialized or should exportDataParam() be modified ?
+- FunctionalClass::checkNbDifferentValue might not be powerful enough for the detection due to floating point arithmetics
+- FunctionalClass::checkNonNullSigma should use a relative epsilon juste like Gaussian to check for variability
+    - one way to easily deal with this should be to have mStep return a string, if the check is as complicated as an estimation...
 
 ## Rank
 

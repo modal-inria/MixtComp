@@ -177,12 +177,12 @@ std::string Weibull::checkSampleCondition(const Vector<std::set<Index>>& classIn
     for (std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
         it != itE;
         ++it) {
-      if ((*p_data_)(*it) > 0.0) {
+      if (epsilon < (*p_data_)(*it)) {
         goto endItK;
       }
     }
 
-    return "Weibull variables must have at least one non-zero individual per class. Class: " + std::to_string(k) + " only contains the 0.0 value. If your data has too many individuals with a value of 0.0, a Weibull model can not describe it." + eol;
+    return "Weibull variables must have at least one non-zero individual per class. Class: " + std::to_string(k) + " only contains values inferior to 1e-8. If your data has too many individuals with a value of 0.0, a Weibull model can not describe it." + eol;
 
     endItK:;
   }
