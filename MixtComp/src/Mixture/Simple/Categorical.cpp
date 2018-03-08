@@ -21,8 +21,7 @@ namespace mixt {
 Categorical::Categorical(
 		const std::string& idName,
 		int nbClass,
-		Vector<Real>& param,
-		const Vector<std::set<Index> >& classInd)
+		Vector<Real>& param)
 : idName_(idName),
   nClass_(nbClass),
   nModality_(0),

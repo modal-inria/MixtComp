@@ -31,8 +31,7 @@ public:
 	Categorical(
 			const std::string& idName,
 			int nbClass,
-			Vector<Real>& param,
-			const Vector<std::set<Index> >& classInd);
+			Vector<Real>& param);
 
 	Vector<bool> acceptedType() const;
 

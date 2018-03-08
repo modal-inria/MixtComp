@@ -37,8 +37,6 @@ public:
 			Index indexMixture,
 			std::string const& idName,
 			Index nbClass,
-			const Vector<Index>* p_zi,
-			const Vector<std::set<Index> >& classInd,
 			const DataHandler* p_handler,
 			DataExtractor* p_extractor,
 			const ParamSetter* p_paramSetter,
@@ -50,8 +48,7 @@ public:
 				model_(
 						idName,
 						nbClass,
-						param_,
-						classInd),
+						param_),
 						augData_(),
 						nbInd_(0),
 						confidenceLevel_(confidenceLevel),

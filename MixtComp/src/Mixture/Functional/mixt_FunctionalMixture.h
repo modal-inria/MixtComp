@@ -23,8 +23,6 @@ public:
 			Index indexMixture,
 			std::string const& idName,
 			Index nClass,
-			const Vector<Index>* p_zi,
-			const Vector<std::set<Index> >& classInd,
 			const DataHandler* p_handler,
 			DataExtractor* p_extractor,
 			const ParamSetter* p_paramSetter,

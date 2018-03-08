@@ -42,8 +42,7 @@ class MixtureManager {
       confidenceLevel_(confidenceLevel),
       warnLog_(warnLog) {}
 
-    std::string createMixtures(MixtureComposer& composer,
-                               Index nbCluster) {
+    std::string createMixtures(MixtureComposer& composer, Index nbCluster) {
       std::string warnLog;
       Index indexMixture = 0; // index of current variable
       for (std::map<std::string, std::string>::const_iterator it    = p_handler_->info().begin(),
@@ -58,7 +57,6 @@ class MixtureManager {
               idModel,
               indexMixture + 1, // +1 to take into account that LatentClass is at position 0 int the data output
               idName,
-              composer,
               nbCluster,
               confidenceLevel_);
           if (p_mixture) {
@@ -90,7 +88,6 @@ class MixtureManager {
         std::string const& idModel,
         Index indexMixture,
         std::string const& idName,
-        MixtureComposer& composer,
         Index nbCluster,
         Real confidenceLevel) {
       if (idModel == "Categorical_pjk") {
@@ -109,8 +106,6 @@ class MixtureManager {
 						  indexMixture,
 						  idName,
 						  nbCluster,
-						  composer.p_zi(),
-						  composer.classInd(),
 						  p_handler_,
 						  p_dataExtractor_,
 						  p_paramSetter_,
@@ -135,8 +130,6 @@ class MixtureManager {
 								  indexMixture,
 								  idName,
 								  nbCluster,
-								  composer.p_zi(),
-								  composer.classInd(),
 								  p_handler_,
 								  p_dataExtractor_,
 								  p_paramSetter_,
@@ -161,8 +154,6 @@ class MixtureManager {
 							  indexMixture,
 							  idName,
 							  nbCluster,
-							  composer.p_zi(),
-							  composer.classInd(),
 							  p_handler_,
 							  p_dataExtractor_,
 							  p_paramSetter_,
@@ -187,8 +178,6 @@ class MixtureManager {
                   indexMixture,
                   idName,
                   nbCluster,
-                  composer.p_zi(),
-                  composer.classInd(),
                   p_handler_,
                   p_dataExtractor_,
                   p_paramSetter_,
@@ -207,8 +196,6 @@ class MixtureManager {
                                                                             ParamExtractor>(indexMixture,
                                                                                             idName,
                                                                                             nbCluster,
-                                                                                            composer.p_zi(),
-                                                                                            composer.classInd(),
                                                                                             p_handler_,
                                                                                             p_dataExtractor_,
                                                                                             p_paramSetter_,

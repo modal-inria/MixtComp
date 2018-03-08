@@ -36,8 +36,7 @@ public:
     Weibull(
         const std::string& idName,
         Index nbClass,
-        Vector<Real>& param,
-        const Vector<std::set<Index>>& classInd);
+        Vector<Real>& param);
 
 	/**
 	 * Evaluate both the value and derivative of the residue of the equation verified by k.

@@ -1,7 +1,7 @@
 # Short Term
 
-- remove p_zi and classInd as members of all mixtures
 - remove them from constructors
+- remove composer reference in createMixture
 - remove initParam
 - re-enable rank and ordinal in mixture manager
 - initParam
