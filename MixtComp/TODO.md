@@ -1,8 +1,8 @@
 # Short Term
 
-- remove them from constructors
-- remove composer reference in createMixture
-- remove initParam
+- convert initParam from using a representative observation to simply initializing iterative estimators
+	- should it still need const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs as parameters in IMixture ?
+	
 - re-enable rank and ordinal in mixture manager
 - initParam
     - should only take const Vector<std::set<Index>>& classInd as parameter, and not the index of a representative individual
@@ -13,6 +13,7 @@
 - if parametersInInterior is not used anymore, it should be removed
 - When nan are detected after eStep (completed or observed), generate a specific error message that states that there is an error in the code, and that data could be submitted to the maintainer for analysis and debug.
     - this would handle a major case of crashes gracefully
+- mStep should return a string in case estimated standard deviations are too low
 
 # Current
 

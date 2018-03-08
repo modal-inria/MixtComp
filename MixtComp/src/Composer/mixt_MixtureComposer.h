@@ -300,7 +300,8 @@ class MixtureComposer {
     void initData();
 
     /**
-     * Sample an individual per class, to perform the initialization of each model.
+     * Initialize the parameters for models that requires it. For example models where the parameters areestimated through an iterative
+     * process, either an optimization (functional data model), or a sampling (rank data model).
      */
     void initParam();
 

@@ -190,7 +190,7 @@ std::string Weibull::checkSampleCondition(const Vector<std::set<Index>>& classIn
 }
 
 void Weibull::initParam() {
-	for (Index k = 0; k < nClass_; ++k) { // initialize with a valid starting point
+	for (Index k = 0; k < nClass_; ++k) { // initialize with an arbitraty, valid starting point
 		param_(2 * k) = 5.;
 		param_(2 * k + 1) = 1.;
 	}

@@ -134,7 +134,7 @@ class IMixture {
     /**
      * Initialization of parameters.
      * Useful for some parameters that use a Markov Chain which needs to be initialized.
-     * Or for models that use an iterator dolver that must be initialized before the first iteration.
+     * Or for models that use an iterator solver that must be initialized before the first iteration.
      * Should be modified to take a vector of indices, one per class, indicating which individual to use
      * */
     virtual std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) = 0;
