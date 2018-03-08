@@ -312,13 +312,13 @@ public:
 	};
 
 	void initData(Index i) {
-		vecInd_(i).removeMissingQuantileMixing(quantile_); // since initParam performs an mStep on a single individual, removeMissing must be called from initParam
+		vecInd_(i).removeMissingQuantileMixing(quantile_);
 	};
 
 	/**
 	 * @param initObs element k contains the index of
 	 */
-	std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) {
+	std::string initParam() {
 		for (Index k = 0; k < nClass_; ++k) {
 			class_[k].initParam();
 		}

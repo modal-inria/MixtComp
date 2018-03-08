@@ -98,19 +98,19 @@ class MixtureManager {
 			  ParamSetter,
 			  ParamExtractor>* p_bridge =
 					  new SimpleMixture<
-					  Categorical,
-				  DataHandler,
-				  DataExtractor,
-				  ParamSetter,
-				  ParamExtractor>(
-						  indexMixture,
-						  idName,
-						  nbCluster,
-						  p_handler_,
-						  p_dataExtractor_,
-						  p_paramSetter_,
-						  p_paramExtractor_,
-						  confidenceLevel);
+					  	  Categorical,
+						  DataHandler,
+						  DataExtractor,
+						  ParamSetter,
+						  ParamExtractor>(
+								  indexMixture,
+								  idName,
+								  nbCluster,
+								  p_handler_,
+								  p_dataExtractor_,
+								  p_paramSetter_,
+								  p_paramExtractor_,
+								  confidenceLevel);
         return p_bridge;
       }
 

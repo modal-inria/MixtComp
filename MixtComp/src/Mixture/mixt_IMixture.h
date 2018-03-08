@@ -137,7 +137,7 @@ class IMixture {
      * Or for models that use an iterator solver that must be initialized before the first iteration.
      * Should be modified to take a vector of indices, one per class, indicating which individual to use
      * */
-    virtual std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) = 0;
+    virtual std::string initParam() = 0;
 
     /**
      * Compute and cache the empirical observed distribution for the models that need it.

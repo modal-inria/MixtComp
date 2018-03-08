@@ -202,7 +202,7 @@ public:
 		augData_.removeMissing(i);
 	}
 
-	std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) {
+	std::string initParam() {
 		model_.initParam();
 		return "";
 	};

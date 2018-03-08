@@ -393,7 +393,7 @@ void MixtureComposer::initParam() {
 	prop_ = 1. / nClass_; // this is roughly equivalent to an estimation by maximization of likelihood, considering that proportions in all t_ik are equal
 
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->initParam(zClassInd_.classInd(), 0);
+		(*it)->initParam();
 	}
 }
 

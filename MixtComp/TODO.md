@@ -2,7 +2,7 @@
 
 - convert initParam from using a representative observation to simply initializing iterative estimators
 	- should it still need const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs as parameters in IMixture ?
-	
+- initParam should return void instead of a string, as it can never fail
 - re-enable rank and ordinal in mixture manager
 - initParam
     - should only take const Vector<std::set<Index>>& classInd as parameter, and not the index of a representative individual

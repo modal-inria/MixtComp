@@ -119,11 +119,13 @@ public:
 		return "";
 	}
 
-	/** One of the peculiarity of the ISR model is that the space of ranks on which to optimize the likelihood is very large. At each mStep, several candidate
+	/**
+	 * One of the peculiarity of the ISR model is that the space of ranks on which to optimize the likelihood is very large. At each mStep, several candidates
 	 * mu are sampled, and the one which maximizes the likelihood of the observations is used as the estimated parameter. The sampling method used is a
 	 * Gibbs sampler, which is a Markov Chain sampler that needs to be initialized. This is slightly different to the Ordinal model case, where the initialization
 	 * of the parameters is only here to ensure that all individuals are valid (not all z at 0). In the Rank model initialization, mu is chosen among all the
-	 * observed values of the class, while pi is initialized to a "neutral" value. */
+	 * observed values of the class, while pi is initialized to a "neutral" value.
+	 * */
 	void mStep(const Vector<std::set<Index> >& classInd) {
 		for (int k = 0; k < nClass_; ++k) {
 			class_[k].mStep();
