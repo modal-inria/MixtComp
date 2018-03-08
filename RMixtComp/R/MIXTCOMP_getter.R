@@ -185,20 +185,23 @@ getTik <- function(outMixtComp)
 #' }
 getParam <- function(varName, outMixtComp)
 {
-  
-  if(varName == "z_class")
-    return(outMixtComp$variable$param$z_class$pi$stat$median)
-  
   type <- outMixtComp$variable$type[[varName]]
+  
+  nbClass <- outMixtComp$mixture$nbCluster
+  
   param <- switch(type,
                   "Ordinal" = outMixtComp$variable$param[[varName]]$muPi$stat[,1],
-                  "Categorical_pjk" = outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1],
-                  "Gaussian_sjk" = outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1],
+                  "Categorical_pjk" = {
+                    nbModalities <- length(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1])/nbClass
+                    matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), paste0("modality ",1:nbModalities)))
+                    },
+                  "Gaussian_sjk" = matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), c("mean", "sd"))),
                   "Poisson_k" = outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1],
                   "Rank" = list(pi = outMixtComp$variable$param[[varName]]$pi$stat, mu = outMixtComp$variable$param[[varName]]$mu$stat),
                   "Functional" = list(alpha = outMixtComp$variable$param[[varName]]$alpha$stat[,1],
                                       beta = outMixtComp$variable$param[[varName]]$beta$stat[,1],
-                                      sd = outMixtComp$variable$param[[varName]]$sd$stat[,1]))
+                                      sd = outMixtComp$variable$param[[varName]]$sd$stat[,1]),
+                  "LatentClass" = outMixtComp$variable$param[[varName]]$pi$stat[,1])
   
   return(param)
 }

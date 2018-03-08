@@ -66,7 +66,12 @@ functionalmeanVal <- function(Tt, alpha, beta){
   weights <- exp(weights) / sum(exp(weights))  # To avoid numerical problems
   weigths <- round(weights,4)
   weights <- weigths/sum(weights)
-  sum((beta[,1] + beta[,2] * Tt) * weights)
+  
+  b <- 0
+  for(i in 1:ncol(beta))
+    b = b + beta[,i] * Tt^(i-1)
+
+  sum(b * weights)
 }
 
 # Tool function for assessing the quantile for the functional model
@@ -80,7 +85,11 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
   # To avoid numerical problems
   weigths <- round(weights,4)
   weights <- weigths/sum(weights)
-  means <- beta[,1] + beta[,2] * Tt 
+  means  <- 0
+  for(i in 1:ncol(beta))
+    means  = means  + beta[,i] * Tt^(i-1)
+
+  
   return(
     optimize(objectivefunctional,
              interval = range(qnorm(borne-0.001, means, sigma)[which(weights!=0)], qnorm(borne+0.001, means, sigma)[which(weights!=0)]),
@@ -92,19 +101,29 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
 }
 
 extractCIFunctionnalVble = function(var, data){
-  Tseq <- sort(unique(unlist(data$variable$data[[var]]$time)), decreasing = F)
+  Tseq <- sort(unique(unlist(data$variable$data[[var]]$time)), decreasing = FALSE)
   param = data$variable$param[[var]]
   G <- data$mixture$nbCluster
-  S <- length(param$sd$stat[,1])/G
-  alpha <- lapply(1:G, function(g) matrix(param$alpha$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),, drop=FALSE])
-  beta <- lapply(1:G, function(g) matrix(param$beta$stat[,1], ncol=2, byrow=TRUE)[((g-1)*S +1) : (g*S),, drop=FALSE])
-  sigma <- matrix(param$sd$stat[,1], nrow=G, ncol=S, byrow=TRUE)
-  if (S>1){
+  nSub <- length(param$sd$stat[,1])/G
+  nCoeff <- length(param$beta$stat[,1])/G/nSub
+  
+  alpha <- lapply(1:G, function(g) matrix(param$alpha$stat[,1], ncol=2, byrow=TRUE)[((g-1)*nSub +1) : (g*nSub),, drop=FALSE])
+  beta <- lapply(1:G, function(g) matrix(param$beta$stat[,1], ncol=nCoeff, byrow=TRUE)[((g-1)*nSub +1) : (g*nSub),, drop=FALSE])
+  sigma <- matrix(param$sd$stat[,1], nrow = G, ncol = nSub, byrow=TRUE)
+  if (nSub>1){
     meancurve <- sapply(1:G, function(k) sapply(Tseq, functionalmeanVal, alpha=alpha[[k]], beta=beta[[k]]))
     infcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.025, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,, drop=FALSE]))
     supcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundVal, borne=0.975, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,, drop=FALSE]))
   }else{
-    meancurve <- sapply(1:G, function(k) (beta[[k]][1] + beta[[k]][2] * Tseq))
+
+    
+    meancurve <- sapply(1:G, function(k) {
+      b <- 0
+      for(i in 1:nCoeff) 
+        b = b + beta[[k]][i] * Tseq^(i-1)
+      return(b)
+      })
+    
     infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
     supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
   }
