@@ -220,7 +220,7 @@ public:
 	 * precompute an empirical distribution. */
 	virtual void computeObservedProba() {};
 
-	virtual void initializeMarkovChain() {};
+	virtual void initializeMarkovChain(Index i, Index k) {};
 
 private:
 protected:

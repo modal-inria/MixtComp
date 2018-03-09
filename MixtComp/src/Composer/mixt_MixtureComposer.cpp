@@ -567,8 +567,11 @@ std::string MixtureComposer::initializeLatent() {
 }
 
 void MixtureComposer::initializeMarkovChain() {
-	for (Index j = 0; j < nVar_; ++j) {
-		v_mixtures_[j]->initializeMarkovChain();
+#pragma omp parallel for
+	for (Index i = 0; i < nInd_; ++i) {
+		for (Index j = 0; j < nVar_; ++j) {
+			v_mixtures_[j]->initializeMarkovChain(i, zClassInd_.zi().data_(i));
+		}
 	}
 }
 

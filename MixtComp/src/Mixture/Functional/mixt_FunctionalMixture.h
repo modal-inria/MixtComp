@@ -344,7 +344,7 @@ public:
 	/** No need to precompute an empirical distribution. */
 	virtual void computeObservedProba() {};
 
-	virtual void initializeMarkovChain() {};
+	virtual void initializeMarkovChain(Index i, Index k) {};
 
 private:
 	std::string checkMissingType() {

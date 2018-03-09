@@ -29,8 +29,6 @@ public:
 	RankMixture(Index indexMixture,
 			std::string const& idName,
 			int nbClass,
-			const Vector<Index>* p_zi,
-			const Vector<std::set<Index> >& classInd,
 			const DataHandler* p_handler,
 			DataExtractor* p_extractor,
 			const ParamSetter* p_paramSetter,
@@ -42,8 +40,6 @@ public:
 			nbInd_(0),
 			nbPos_(0),
 			facNbMod_(0.),
-			p_zi_(p_zi),
-			classInd_(classInd),
 			p_handler_(p_handler),
 			p_dataExtractor_(p_extractor),
 			p_paramSetter_(p_paramSetter),
@@ -56,7 +52,6 @@ public:
 		muParamStat_.reserve(nbClass);
 		for (int k = 0; k < nbClass; ++k) {
 			class_.emplace_back(data_,
-					classInd_(k),
 					mu_(k),
 					pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
 			muParamStat_.emplace_back(mu_(k),
@@ -74,11 +69,11 @@ public:
 
 	void sampleUnobservedAndLatent(Index i, Index k) {
 		data_(i).sampleY(
-				mu_((*p_zi_)(i)),
-				pi_((*p_zi_)(i)));
+				mu_(k),
+				pi_(k));
 		data_(i).sampleX(
-				mu_((*p_zi_)(i)),
-				pi_((*p_zi_)(i)));
+				mu_(k),
+				pi_(k));
 	}
 
 	/** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */
@@ -89,8 +84,8 @@ public:
 			bool Geq0 = true; // are all comparisons incorrect ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
 			bool GeqA = true; // are all comparisons correct ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
 
-			for (std::set<Index>::const_iterator it  = classInd_(k).begin(),
-					itE = classInd_(k).end();
+			for (std::set<Index>::const_iterator it  = classInd(k).begin(),
+					itE = classInd(k).end();
 					it != itE;
 					++it) {
 				int A, G;
@@ -176,22 +171,25 @@ public:
 	}
 
 	/**
-	 * mu is initialized through direct sampling in each class
+	 * Parameters are initialized using dummy values
 	 */
-	std::string initParam(const Vector<std::set<Index>>& classInd, const Vector<Index>& initObs) {
+	std::string initParam() {
+		std::vector<Index> v(nbPos_);
+		std::iota(v.begin(), v.end(), 0);
+		RankVal r(nbPos_);
+		r.setO(v);
+
 		for (Index k = 0; k < nClass_; ++k) {
-			mu_(k) = data_(initObs(k)).x();
-			pi_(k) = 0.5 * (1. + 1. / nClass_);
+			mu_(k) = r;
+			pi_(k) = 0.75;
 		}
 
 		return "";
 	}
 
-	virtual void initializeMarkovChain() {
-		for (Index i = 0; i < nbInd_; ++i) {
-			for (Index n = 0; n < nbGibbsIniISR; ++n) {
-				sampleUnobservedAndLatent(i, (*p_zi_)(i));
-			}
+	virtual void initializeMarkovChain(Index i, Index k) {
+		for (Index n = 0; n < nbGibbsIniISR; ++n) {
+			sampleUnobservedAndLatent(i, k);
 		}
 	}
 
@@ -364,9 +362,6 @@ private:
 
 	int nbPos_;
 	Real facNbMod_;
-
-	const Vector<Index>* p_zi_;
-	const Vector<std::set<Index> >& classInd_;
 
 	const DataHandler* p_handler_;
 	DataExtractor* p_dataExtractor_;

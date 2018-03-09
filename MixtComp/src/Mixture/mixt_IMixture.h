@@ -146,7 +146,7 @@ class IMixture {
     virtual void computeObservedProba() = 0;
 
     /** Initialize the Markov Chain for models that contains one for their latent variables. */
-    virtual void initializeMarkovChain() = 0;
+    virtual void initializeMarkovChain(Index i, Index k) = 0;
 
   protected:
     /** Index of the mixture, useful to write the results at the correct place in th output. */

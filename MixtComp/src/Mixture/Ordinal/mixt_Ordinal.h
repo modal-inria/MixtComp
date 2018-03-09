@@ -507,40 +507,40 @@ private:
 	 * computation of the likelihood for every value of mu to get the argmax
 	 */
 	void mStepMu() {
-		Matrix<Real> logLik(nClass_, nModality_, 0.);
-		for (int i = 0; i < nbInd_; ++i) {
-			int currClass = (*p_zi_)(i);
-			Real currPi = pi_(currClass);
-			RowVector<Real> probaInd(nModality_);
-			for (int mu = 0; mu < nModality_; ++mu) { // mu obtained from maximization over all possible values
-				probaInd(mu) = path_(i).computeLogProba(mu, currPi);
-			}
-			logLik.row(currClass) += probaInd;
-		}
-
-		for (int k = 0; k < nClass_; ++k) {
-			RowVector<Real> proba;
-			proba.logToMulti(logLik.row(k));
-			mu_(k) = multi_.sample(proba);
-		}
+//		Matrix<Real> logLik(nClass_, nModality_, 0.);
+//		for (int i = 0; i < nbInd_; ++i) {
+//			int currClass = (*p_zi_)(i);
+//			Real currPi = pi_(currClass);
+//			RowVector<Real> probaInd(nModality_);
+//			for (int mu = 0; mu < nModality_; ++mu) { // mu obtained from maximization over all possible values
+//				probaInd(mu) = path_(i).computeLogProba(mu, currPi);
+//			}
+//			logLik.row(currClass) += probaInd;
+//		}
+//
+//		for (int k = 0; k < nClass_; ++k) {
+//			RowVector<Real> proba;
+//			proba.logToMulti(logLik.row(k));
+//			mu_(k) = multi_.sample(proba);
+//		}
 	}
 
 	/**
 	 * Estimation of pi by maximum likelihood in all classes
 	 * */
 	void mStepPi() {
-		pi_ = 0.; // pi_ parameter is reinitialized
-
-		Vector<Real> nodePerClass(nClass_, 0.); // total number of nodes in each class
-		Vector<Real> zPerClass   (nClass_, 0.); // total of nodes with z = 1 in each class
-
-		for (int i = 0; i < nbInd_; ++i) {
-			int indClass = (*p_zi_)(i);
-			zPerClass   (indClass) += path_(i).nbZ()   ; // add only z = 1 nodes of the individual
-			nodePerClass(indClass) += path_(i).nbNode(); // add all nodes of the individual
-		}
-
-		pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
+//		pi_ = 0.; // pi_ parameter is reinitialized
+//
+//		Vector<Real> nodePerClass(nClass_, 0.); // total number of nodes in each class
+//		Vector<Real> zPerClass   (nClass_, 0.); // total of nodes with z = 1 in each class
+//
+//		for (int i = 0; i < nbInd_; ++i) {
+//			int indClass = (*p_zi_)(i);
+//			zPerClass   (indClass) += path_(i).nbZ()   ; // add only z = 1 nodes of the individual
+//			nodePerClass(indClass) += path_(i).nbNode(); // add all nodes of the individual
+//		}
+//
+//		pi_ = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
 	}
 
 	/**
@@ -549,19 +549,19 @@ private:
 	 * @param k class for which the parameter pi should be estimated
 	 * */
 	void mStepPiK(int k) {
-		pi_(k) = 0.; // pi_ parameter is reinitialized for the current class
-
-		Real nodePerClass = 0.; // total number of nodes in class k
-		Real zPerClass    = 0.; // total of nodes with z = 1 in class k
-
-		for (int i = 0; i < nbInd_; ++i) {
-			if ((*p_zi_)(i) == k) {
-				zPerClass    += path_(i).nbZ()  ; // add only z = 1 nodes of the individual
-				nodePerClass += path_(i).nbNode_; // add all nodes of the individual
-			}
-		}
-
-		pi_(k) = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
+//		pi_(k) = 0.; // pi_ parameter is reinitialized for the current class
+//
+//		Real nodePerClass = 0.; // total number of nodes in class k
+//		Real zPerClass    = 0.; // total of nodes with z = 1 in class k
+//
+//		for (int i = 0; i < nbInd_; ++i) {
+//			if ((*p_zi_)(i) == k) {
+//				zPerClass    += path_(i).nbZ()  ; // add only z = 1 nodes of the individual
+//				nodePerClass += path_(i).nbNode_; // add all nodes of the individual
+//			}
+//		}
+//
+//		pi_(k) = zPerClass / nodePerClass; // from accounts to frequencies of z -> maximum likelihood estimate of pi
 	}
 
 	/** update the data using the last segment in c_. to be used after sampling in the BOSPath. */
