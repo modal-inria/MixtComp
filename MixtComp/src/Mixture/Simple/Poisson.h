@@ -22,15 +22,12 @@ namespace mixt {
 
 class Poisson {
 public:
-    typedef Vector<int> Data;
-    typedef ConfIntDataStat<int> DataStat;
-    typedef PoissonSampler Sampler;
-    typedef PoissonLikelihood Likelihood;
+	typedef Vector<int> Data;
+	typedef ConfIntDataStat<int> DataStat;
+	typedef PoissonSampler Sampler;
+	typedef PoissonLikelihood Likelihood;
 
-	Poisson(
-			const std::string& idName,
-			int nbClass,
-			Vector<Real>& param);
+	Poisson(const std::string& idName, int nbClass, Vector<Real>& param);
 
 	Vector<bool> acceptedType() const;
 
@@ -38,10 +35,8 @@ public:
 
 	bool hasModalities() const;
 
-	std::string setData(
-			const std::string& paramStr,
-			AugmentedData<Vector<int> >& augData,
-			RunMode mode);
+	std::string setData(const std::string& paramStr,
+			AugmentedData<Vector<int> >& augData, RunMode mode);
 
 	void mStep(const Vector<std::set<Index>>& classInd);
 
@@ -49,7 +44,8 @@ public:
 
 	void writeParameters() const;
 
-	std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
+	std::string checkSampleCondition(
+			const Vector<std::set<Index>>& classInd) const;
 
 	void initParam();
 

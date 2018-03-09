@@ -14,25 +14,19 @@
 
 namespace mixt {
 
-Poisson::Poisson(
-		const std::string& idName,
-		int nbClass,
-		Vector<Real>& param)
-: idName_(idName),
-  nClass_(nbClass),
-  param_(param),
-  p_data_(0) {
+Poisson::Poisson(const std::string& idName, int nbClass, Vector<Real>& param) :
+		idName_(idName), nClass_(nbClass), param_(param), p_data_(0) {
 	param_.resize(nbClass);
 }
 
 Vector<bool> Poisson::acceptedType() const {
 	Vector<bool> at(nb_enum_MisType_);
 	at(0) = true; // present_,
-	at(1) = true;// missing_,
-	at(2) = false;// missingFiniteValues_,
-	at(3) = false;// missingIntervals_,
-	at(4) = false;// missingLUIntervals_,
-	at(5) = false;// missingRUIntervals_,
+	at(1) = true; // missing_,
+	at(2) = false; // missingFiniteValues_,
+	at(3) = false; // missingIntervals_,
+	at(4) = false; // missingLUIntervals_,
+	at(5) = false; // missingRUIntervals_,
 	return at;
 }
 
@@ -47,9 +41,8 @@ bool Poisson::hasModalities() const {
 void Poisson::mStep(const Vector<std::set<Index>>& classInd) {
 	for (int k = 0; k < nClass_; ++k) {
 		Real sumClass = 0.;
-		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
-				it != itE;
-				++it) {
+		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE =
+				classInd(k).end(); it != itE; ++it) {
 			sumClass += (*p_data_)(*it);
 		}
 
@@ -61,26 +54,24 @@ std::vector<std::string> Poisson::paramNames() const {
 	std::vector<std::string> names(nClass_);
 	for (int k = 0; k < nClass_; ++k) {
 		std::stringstream sstm;
-		sstm << "k: "
-				<< k + minModality
-				<< ", lambda";
+		sstm << "k: " << k + minModality << ", lambda";
 		names[k] = sstm.str();
 	}
 	return names;
 }
 
-std::string Poisson::setData(
-		const std::string& paramStr,
-		AugmentedData<Vector<int> >& augData,
-		RunMode mode) {
+std::string Poisson::setData(const std::string& paramStr,
+		AugmentedData<Vector<int> >& augData, RunMode mode) {
 	std::string warnLog;
 
 	p_data_ = &(augData.data_);
 
 	if (augData.dataRange_.min_ < 0) {
 		std::stringstream sstm;
-		sstm << "Variable: " << idName_ << " requires a minimum value of 0 in either provided values or bounds. "
-				<< "The minimum value currently provided is : " << augData.dataRange_.min_ + minModality << std::endl;
+		sstm << "Variable: " << idName_
+				<< " requires a minimum value of 0 in either provided values or bounds. "
+				<< "The minimum value currently provided is : "
+				<< augData.dataRange_.min_ + minModality << std::endl;
 		warnLog += sstm.str();
 	}
 
@@ -97,26 +88,32 @@ void Poisson::writeParameters() const {
 	std::cout << sstm.str() << std::endl;
 }
 
-std::string Poisson::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
-	if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
+std::string Poisson::checkSampleCondition(
+		const Vector<std::set<Index>>& classInd) const {
+	if (degeneracyAuthorizedForNonBoundedLikelihood)
+		return "";
 
 	for (Index k = 0; k < nClass_; ++k) {
-		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE = classInd(k).end();
-				it != itE;
-				++it) {
+		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE =
+				classInd(k).end(); it != itE; ++it) {
 			if ((*p_data_)(*it) > 0) {
 				goto endItK;
 			}
 		}
 
-		return "Poisson variables must have at least one non-zero individual per class. Class: " + std::to_string(k) + " only contains the 0 modality. If your data has too many individuals with a value of 0, a Poisson model can not describe it." + eol;
+		return "Poisson variables must have at least one non-zero individual per class. Class: "
+				+ std::to_string(k)
+				+ " only contains the 0 modality. If your data has too many individuals with a value of 0, a Poisson model can not describe it."
+				+ eol;
 
-		endItK:;
+		endItK: ;
 	}
 
 	return "";
 }
 
-void Poisson::initParam() {};
+void Poisson::initParam() {
+}
+;
 
 } // namespace mixt

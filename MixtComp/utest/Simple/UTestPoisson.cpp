@@ -11,64 +11,61 @@
 
 using namespace mixt;
 
-//TEST(Poisson_k, OKSample) {
-//  int nbClass = 2;
-//  int nbInd = 4;
-//
-//  Vector<Real> param(nbClass);
-//  param << 3, 1;
-//
-//  Vector<std::set<Index> > classInd(nbClass);
-//  classInd(0) = {0, 2};
-//  classInd(1) = {1, 3};
-//
-//  Vector<int> data(nbInd);
-//  data << 0, 1, 5, 6;
-//
-//  std::string warnLog;
-//
-//  Poisson_k mixture("Poisson",
-//                    nbClass,
-//                    param,
-//                    classInd);
-//
-//  mixture.setData(data);
-//  int proba = mixture.checkSampleCondition(&warnLog);
-//
-//#ifdef MC_DEBUG
-//  std::cout << "warnLog: " << warnLog << std::endl;
-//#endif
-//
-//  ASSERT_EQ(proba, 1);
-//}
-//
+/**
+ * Check that classes which do not contain 0 only values are validated.
+ */
+TEST(Poisson_k, OKSample) {
+	Index nbClass = 2;
+	Index nbInd = 4;
+
+	Vector<Real> param(nbClass);
+	param << 3, 1;
+
+	Vector<std::set<Index> > classInd(nbClass);
+	classInd(0) = {0, 2};
+	classInd(1) = {1, 3};
+
+	AugmentedData<Vector<int>> data;
+	data.resizeArrays(nbInd);
+	data.setPresent(0, 0);
+	data.setPresent(1, 1);
+	data.setPresent(2, 5);
+	data.setPresent(3, 6);
+
+	Poisson mixture("Poisson", nbClass, param);
+
+	mixture.setData("", data, learning_);
+	std::string warnLog = mixture.checkSampleCondition(classInd);
+
+	ASSERT_EQ(warnLog.size(), 0);
+}
+
+/**
+ * Check that classes which do not contain 0 only values are validated.
+ * This test is only meaningful if degeneracyAuthorizedForNonBoundedLikelihood = false
+ */
 //TEST(Poisson_k, 0OnlyClass) {
-//  int nbClass = 2;
-//  int nbInd = 4;
+//	Index nbClass = 2;
+//	Index nbInd = 4;
 //
-//  Vector<Real> param(nbClass);
-//  param << 3, 1;
+//	Vector<Real> param(nbClass);
+//	param << 3, 1;
 //
-//  Vector<std::set<Index> > classInd(nbClass);
-//  classInd(0) = {0, 2};
-//  classInd(1) = {1, 3};
+//	Vector<std::set<Index> > classInd(nbClass);
+//	classInd(0) = {0, 2};
+//	classInd(1) = {1, 3};
 //
-//  Vector<int> data(nbInd);
-//  data << 0, 1, 0, 6;
+//	AugmentedData<Vector<int>> data;
+//	data.resizeArrays(nbInd);
+//	data.setPresent(0, 0);
+//	data.setPresent(1, 1);
+//	data.setPresent(2, 0);
+//	data.setPresent(3, 6);
 //
-//  std::string warnLog;
+//	Poisson mixture("Poisson", nbClass, param);
 //
-//  Poisson_k mixture("Poisson",
-//                    nbClass,
-//                    param,
-//                    classInd);
+//	mixture.setData("", data, learning_);
+//	std::string warnLog = mixture.checkSampleCondition(classInd);
 //
-//  mixture.setData(data);
-//  int proba = mixture.checkSampleCondition(&warnLog);
-//
-//#ifdef MC_DEBUG
-//  std::cout << "warnLog: " << warnLog << std::endl;
-//#endif
-//
-//  ASSERT_EQ(proba, 0);
+//	ASSERT_GT(warnLog.size(), 0);
 //}

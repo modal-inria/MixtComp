@@ -18,80 +18,87 @@
 namespace mixt {
 
 class FunctionalClass {
-  public:
-    FunctionalClass(Vector<Function>& data,
-                    Real confidenceLevel);
+public:
+	FunctionalClass(Vector<Function>& data, Real confidenceLevel);
 
-    void setSize(Index nSub,
-                 Index nCoeff);
+	void setSize(Index nSub, Index nCoeff);
 
-    template<typename MatrixType,
-             typename VectorType>
-    void setParam(const MatrixType& alpha,
-                  const MatrixType& beta,
-                  const VectorType& sd) {
-      alpha_ = alpha;
-      beta_ = beta;
-      sd_ = sd;
-    }
+	template<typename MatrixType, typename VectorType>
+	void setParam(const MatrixType& alpha, const MatrixType& beta,
+			const VectorType& sd) {
+		alpha_ = alpha;
+		beta_ = beta;
+		sd_ = sd;
+	}
 
-    void mStep(const std::set<Index>& setInd);
+	void mStep(const std::set<Index>& setInd);
 
-    void mStepAlpha(const std::set<Index>& setInd);
+	void mStepAlpha(const std::set<Index>& setInd);
 
-    void mStepBetaSd(const std::set<Index>& setInd);
+	void mStepBetaSd(const std::set<Index>& setInd);
 
-    void initParam();
+	void initParam();
 
-    void sampleParam();
+	void sampleParam();
 
-    void setExpectationParam();
+	void setExpectationParam();
 
-    void setParamStorage();
+	void setParamStorage();
 
-    void sampleParam(Index iteration,
-                     Index iterationMax);
+	void sampleParam(Index iteration, Index iterationMax);
 
-    const Matrix<Real>& alpha() const {return alpha_;}
-    const Matrix<Real>& beta()  const {return beta_ ;}
-    const Vector<Real>& sd()    const {return sd_   ;}
+	const Matrix<Real>& alpha() const {
+		return alpha_;
+	}
+	const Matrix<Real>& beta() const {
+		return beta_;
+	}
+	const Vector<Real>& sd() const {
+		return sd_;
+	}
 
-    const ConfIntParamStat<Matrix<Real> >& alphaParamStat() const {return alphaParamStat_;}
-    const ConfIntParamStat<Matrix<Real> >& betaParamStat()  const {return betaParamStat_ ;}
-    const ConfIntParamStat<Vector<Real> >& sdParamStat()    const {return sdParamStat_   ;}
+	const ConfIntParamStat<Matrix<Real> >& alphaParamStat() const {
+		return alphaParamStat_;
+	}
+	const ConfIntParamStat<Matrix<Real> >& betaParamStat() const {
+		return betaParamStat_;
+	}
+	const ConfIntParamStat<Vector<Real> >& sdParamStat() const {
+		return sdParamStat_;
+	}
 
-    void samplingStepNoCheck(Index i);
+	void samplingStepNoCheck(Index i);
 
-    /**
-     * The setInd argument allows to pass either the real partition, or a temporary partition with a subset of observations.
-     * This second case mainly occurs during initParam.
-     */
-    std::string checkSampleCondition(const std::set<Index>& setInd) const;
-    bool checkNbDifferentValue(const std::set<Index>& setInd) const;
-    bool checkNonNullSigma(const std::set<Index>& setInd) const;
-  private:
-    Index nSub_;
+	/**
+	 * The setInd argument allows to pass either the real partition, or a temporary partition with a subset of observations.
+	 * This second case mainly occurs during initParam.
+	 */
+	std::string checkSampleCondition(const std::set<Index>& setInd) const;
+	bool checkNbDifferentValue(const std::set<Index>& setInd) const;
+	bool checkNonNullSigma(const std::set<Index>& setInd) const;
+private:
+	Index nSub_;
 
-    Index nCoeff_;
+	Index nCoeff_;
 
-    /** Data, not const because sampling has to occur at some point */
-    Vector<Function>& data_;
+	/** Data, not const because sampling has to occur at some point */
+	Vector<Function>& data_;
 
-    /** Parameter alpha for current class. Not set as const since mStep will modify it. It is not stored in a matrix, because nlopt is used,
-     * and serializing everything in a vector is the standard modus operandi. */
-    Matrix<Real> alpha_;
+	/** Parameter alpha for current class. Not set as const since mStep will modify it. It is not stored in a matrix, because nlopt is used,
+	 * and serializing everything in a vector is the standard modus operandi. */
+	Matrix<Real> alpha_;
 
-    /** Rows are sub-regression, columns are coefficients. */
-    Matrix<Real> beta_;
+	/** Rows are sub-regression, columns are coefficients. */
+	Matrix<Real> beta_;
 
-    /** One coefficient per sub-regression */
-    Vector<Real> sd_;
+	/** One coefficient per sub-regression */
+	Vector<Real> sd_;
 
-    /** Contrarily to what is done in the Rank model for example, here the parameter estimation is done
-     * directly inside class. */
-    ConfIntParamStat<Matrix<Real> > alphaParamStat_;
-    ConfIntParamStat<Matrix<Real> > betaParamStat_;
-    ConfIntParamStat<Vector<Real> > sdParamStat_;
+	/** Contrarily to what is done in the Rank model for example, here the parameter estimation is done
+	 * directly inside class. */
+	ConfIntParamStat<Matrix<Real> > alphaParamStat_;
+	ConfIntParamStat<Matrix<Real> > betaParamStat_;
+	ConfIntParamStat<Vector<Real> > sdParamStat_;
 };
 
 } // namespace mixt
