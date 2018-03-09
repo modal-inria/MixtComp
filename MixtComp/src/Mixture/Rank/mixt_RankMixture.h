@@ -18,85 +18,61 @@
 namespace mixt {
 /** RankMixture contains an array of RankClass. Each RankClass will have the responsibility to perform
  * estimation of parameters and computation of the probability of individuals that belong to it. */
-template<typename DataHandler,
-typename DataExtractor,
-typename ParamSetter,
-typename ParamExtractor>
-class RankMixture : public IMixture {
+template<typename DataHandler, typename DataExtractor, typename ParamSetter,
+		typename ParamExtractor>
+class RankMixture: public IMixture {
 public:
 	typedef std::pair<MisType, std::vector<int> > MisVal;
 
-	RankMixture(Index indexMixture,
-			std::string const& idName,
-			int nbClass,
-			const DataHandler* p_handler,
-			DataExtractor* p_extractor,
-			const ParamSetter* p_paramSetter,
-			ParamExtractor* p_paramExtractor,
-			Real confidenceLevel)
-	: IMixture(indexMixture,
-			idName),
-			nClass_(nbClass),
-			nbInd_(0),
-			nbPos_(0),
-			facNbMod_(0.),
-			p_handler_(p_handler),
-			p_dataExtractor_(p_extractor),
-			p_paramSetter_(p_paramSetter),
-			p_paramExtractor_(p_paramExtractor),
-			confidenceLevel_(confidenceLevel),
-			mu_(nbClass),
-			pi_(nbClass),
-			piParamStat_(pi_, confidenceLevel) {
-		class_    .reserve(nbClass);
+	RankMixture(Index indexMixture, std::string const& idName, int nbClass,
+			const DataHandler* p_handler, DataExtractor* p_extractor,
+			const ParamSetter* p_paramSetter, ParamExtractor* p_paramExtractor,
+			Real confidenceLevel) :
+			IMixture(indexMixture, idName), nClass_(nbClass), nbInd_(0), nbPos_(
+					0), facNbMod_(0.), p_handler_(p_handler), p_dataExtractor_(
+					p_extractor), p_paramSetter_(p_paramSetter), p_paramExtractor_(
+					p_paramExtractor), confidenceLevel_(confidenceLevel), mu_(
+					nbClass), pi_(nbClass), piParamStat_(pi_, confidenceLevel) {
+		class_.reserve(nbClass);
 		muParamStat_.reserve(nbClass);
 		for (int k = 0; k < nbClass; ++k) {
-			class_.emplace_back(data_,
-					mu_(k),
-					pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
-			muParamStat_.emplace_back(mu_(k),
-					confidenceLevel);
+			class_.emplace_back(data_, mu_(k), pi_(k)); // doing that means that classInd_, mu_ and pi_ must not be resized in order to avoid incorrect behaviour at runtime
+			muParamStat_.emplace_back(mu_(k), confidenceLevel);
 		}
 
 		acceptedType_.resize(nb_enum_MisType_);
 		acceptedType_ << true,   // present_,
-				true,  // missing_,
-				true,  // missingFiniteValues_,
-				false,  // missingIntervals_,
-				false,  // missingLUIntervals_,
-				false; // missingRUIntervals
+		true,  // missing_,
+		true,  // missingFiniteValues_,
+		false,  // missingIntervals_,
+		false,  // missingLUIntervals_,
+		false; // missingRUIntervals
 	}
 
 	void sampleUnobservedAndLatent(Index i, Index k) {
-		data_(i).sampleY(
-				mu_(k),
-				pi_(k));
-		data_(i).sampleX(
-				mu_(k),
-				pi_(k));
+		data_(i).sampleY(mu_(k), pi_(k));
+		data_(i).sampleX(mu_(k), pi_(k));
 	}
 
 	/** Note that MixtureComposer::checkNbIndPerClass already enforce that there is at least one observation per class, in order to properly estimate the proportions. */
-	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
-		if (degeneracyAuthorizedForNonBoundedLikelihood) return "";
+	std::string checkSampleCondition(
+			const Vector<std::set<Index> >& classInd) const {
+		if (degeneracyAuthorizedForNonBoundedLikelihood)
+			return "";
 
 		for (int k = 0; k < nClass_; ++k) {
 			bool Geq0 = true; // are all comparisons incorrect ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
 			bool GeqA = true; // are all comparisons correct ? This would lead to pi = 1 in a maximum likelihood estimation and is to be avoided.
 
-			for (std::set<Index>::const_iterator it  = classInd(k).begin(),
-					itE = classInd(k).end();
-					it != itE;
-					++it) {
+			for (std::set<Index>::const_iterator it = classInd(k).begin(), itE =
+					classInd(k).end(); it != itE; ++it) {
 				int A, G;
 				data_(*it).AG(mu_(k), A, G);
 				if (A == 0) {
 					GeqA = false;
-				}
-				else if (A == G) {
+				} else if (A == G) {
 					Geq0 = false;
-				}
-				else {
+				} else {
 					GeqA = false;
 					Geq0 = false;
 				}
@@ -106,9 +82,11 @@ public:
 				}
 			}
 
-			return "Error in variable: " + idName_ + " with Rank model. The comparisons are uniformly correct or invalid in at least one class. If the number of different observed values is quite low, try using a categorical model instead." + eol;
+			return "Error in variable: " + idName_
+					+ " with Rank model. The comparisons are uniformly correct or invalid in at least one class. If the number of different observed values is quite low, try using a categorical model instead."
+					+ eol;
 
-			itKEnd:; // jumping here means that the return above is skipped, for the current class
+			itKEnd: ; // jumping here means that the return above is skipped, for the current class
 		}
 
 		return "";
@@ -123,32 +101,26 @@ public:
 	 * */
 	void mStep(const Vector<std::set<Index> >& classInd) {
 		for (int k = 0; k < nClass_; ++k) {
-			class_[k].mStep();
+			class_[k].mStep(classInd(k));
 		}
 	}
 
-	void storeSEMRun(Index iteration,
-			Index iterationMax)
-	{
-		for (int k = 0; k < nClass_; ++k)
-		{
+	void storeSEMRun(Index iteration, Index iterationMax) {
+		for (int k = 0; k < nClass_; ++k) {
 			muParamStat_[k].sampleValue(iteration, iterationMax);
 		}
 		piParamStat_.sampleParam(iteration, iterationMax);
 
 		if (iteration == iterationMax) // at last iteration, compute the observed probability distribution logProba_
-		{
-			for (int k = 0; k < nClass_; ++k)
-			{
+				{
+			for (int k = 0; k < nClass_; ++k) {
 				muParamStat_[k].setExpectationParam(); // estimate mu parameter using mode / expectation
 			}
 			piParamStat_.setExpectationParam(); // estimate pi parameter using mode / expectation
 		}
 	}
 
-	void storeGibbsRun(Index i,
-			Index iteration,
-			Index iterationMax) {
+	void storeGibbsRun(Index i, Index iteration, Index iterationMax) {
 		if (!data_(i).allPresent()) {
 			dataStat_[i].sampleValue(iteration, iterationMax);
 
@@ -197,11 +169,9 @@ public:
 		return nClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
 	}
 
-	void writeParameters() const
-	{
+	void writeParameters() const {
 		std::stringstream sstm;
-		for (int k = 0; k < nClass_; ++k)
-		{
+		for (int k = 0; k < nClass_; ++k) {
 			sstm << "Class: " << k << std::endl;
 			sstm << "mu: " << mu_(k) << std::endl;
 			sstm << "pi: " << pi_(k) << std::endl;
@@ -215,14 +185,10 @@ public:
 		Vector<std::string> dataStr;
 
 		warnLog += p_handler_->getData(idName(), // get the raw vector of strings
-				dataStr,
-				nbInd_,
-				paramStr_);
+				dataStr, nbInd_, paramStr_);
 
 		warnLog += parseRankStr(dataStr, // convert the vector of strings to ranks
-				minModality,
-				nbPos_,
-				data_);
+				minModality, nbPos_, data_);
 		warnLog += checkMissingType();
 		if (warnLog.size() > 0) {
 			return warnLog;
@@ -230,15 +196,11 @@ public:
 
 		if (mode == prediction_) { // prediction mode
 			p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
-					"mu",
-					mu_,
-					paramStr_);
+					"mu", mu_, paramStr_);
 
 			std::string dummyStr;
 			p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
-					"pi",
-					pi_,
-					dummyStr);
+					"pi", pi_, dummyStr);
 
 			for (int k = 0; k < nClass_; ++k) {
 				muParamStat_[k].setParamStorage();
@@ -250,28 +212,32 @@ public:
 			std::stringstream sstm;
 			sstm << "nModality: " << nbPos_;
 			paramStr_ = sstm.str(); // paramStr_ must be generated from the data, for future use and export for prediction
-		}
-		else {
+		} else {
 			int nPosStr = -1;
 
-			std::string nModStr = std::string("nModality: *") + strPositiveInteger; // parse paramStr here. If empty, deduce from data, if not empty, check that data UPPER BOUND is compatible with this information
+			std::string nModStr = std::string("nModality: *")
+					+ strPositiveInteger; // parse paramStr here. If empty, deduce from data, if not empty, check that data UPPER BOUND is compatible with this information
 			boost::regex nModRe(nModStr);
 			boost::smatch matchesVal;
 
 			if (boost::regex_match(paramStr_, matchesVal, nModRe)) { // value is present
 				nPosStr = str2type<int>(matchesVal[1].str());
-			}
-			else {
+			} else {
 				std::stringstream sstm;
-				sstm << "Variable: " << idName_ << " parameter string is not in the correct format, which should be \"nModality: x\" "
-						<< "with x the number of modalities in the variable." << std::endl;
+				sstm << "Variable: " << idName_
+						<< " parameter string is not in the correct format, which should be \"nModality: x\" "
+						<< "with x the number of modalities in the variable."
+						<< std::endl;
 				warnLog += sstm.str();
 			}
 
 			if (nbPos_ != nPosStr) {
 				std::stringstream sstm;
-				sstm << "Variable: " << idName_ << " has " << nPosStr << " modalities per rank in its descriptor (or the descriptor from learning, in case of prediction) "
-						<< "but has " << nbPos_ << " modalities in its data. Those two numbers must be equal." << std::endl;
+				sstm << "Variable: " << idName_ << " has " << nPosStr
+						<< " modalities per rank in its descriptor (or the descriptor from learning, in case of prediction) "
+						<< "but has " << nbPos_
+						<< " modalities in its data. Those two numbers must be equal."
+						<< std::endl;
 				warnLog += sstm.str();
 			}
 		}
@@ -285,25 +251,12 @@ public:
 	}
 
 	void exportDataParam() const {
-		p_dataExtractor_->exportVals(indexMixture_,
-				idName(),
-				data_,
-				dataStat_);
-		p_paramExtractor_->exportParam(indexMixture_,
-				idName_,
-				"mu",
-				muParamStat_,
-				muParamNames(),
-				confidenceLevel_,
-				paramStr_);
-		p_paramExtractor_->exportParam(indexMixture_,
-				idName_,
-				"pi",
-				piParamStat_.getStatStorage(),
-				piParamStat_.getLogStorage(),
-				piParamNames(),
-				confidenceLevel_,
-				"");
+		p_dataExtractor_->exportVals(indexMixture_, idName(), data_, dataStat_);
+		p_paramExtractor_->exportParam(indexMixture_, idName_, "mu",
+				muParamStat_, muParamNames(), confidenceLevel_, paramStr_);
+		p_paramExtractor_->exportParam(indexMixture_, idName_, "pi",
+				piParamStat_.getStatStorage(), piParamStat_.getLogStorage(),
+				piParamNames(), confidenceLevel_, "");
 	}
 
 	void computeObservedProba() {
@@ -325,8 +278,10 @@ private:
 
 		if (listInd.size() > 0) {
 			std::stringstream sstm;
-			sstm << "Rank variable " << idName_ << " contains individual described by missing data type not implemented yet. "
-					<< "The list of problematic individuals is: " << itString(listInd) << std::endl;
+			sstm << "Rank variable " << idName_
+					<< " contains individual described by missing data type not implemented yet. "
+					<< "The list of problematic individuals is: "
+					<< itString(listInd) << std::endl;
 			warnLog += sstm.str();
 		}
 
@@ -335,8 +290,7 @@ private:
 
 	std::vector<std::string> muParamNames() const {
 		std::vector<std::string> names(nClass_);
-		for (int k = 0; k < nClass_; ++k)
-		{
+		for (int k = 0; k < nClass_; ++k) {
 			std::stringstream sstm;
 			sstm << "k: " << k + minModality << ", mu";
 			names[k] = sstm.str();
@@ -346,8 +300,7 @@ private:
 
 	std::vector<std::string> piParamNames() const {
 		std::vector<std::string> names(nClass_);
-		for (int k = 0; k < nClass_; ++k)
-		{
+		for (int k = 0; k < nClass_; ++k) {
 			std::stringstream sstm;
 			sstm << "k: " << k + minModality << ", pi";
 			names[k] = sstm.str();
