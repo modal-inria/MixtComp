@@ -14,271 +14,202 @@ using namespace mixt;
 /**
  * Simple case with two modalities
  */
-TEST(BOSPath, computeLogProba0)
-{
-  int mu = 1; // mode
-  Real pi = 0.5; // precision
+TEST(BOSPath, computeLogProba0) {
+	int mu = 1; // mode
+	Real pi = 0.5; // precision
 
-  BOSPath path;
-  path.setInit(0, 1);
-  path.setEnd(0, 1);
+	BOSPath path;
+	path.setInit(0, 1);
+	path.setEnd(0, 1);
 
-  Vector<int, 2> eInit;
-  eInit << 0, 1;
+	Vector<int, 2> eInit;
+	eInit << 0, 1;
 
-  Vector<BOSNode> c(1);
-  c(0).y_ = 1; // second element y picked, proba 0.5
-  c(0).z_ = 1; // comparison is perfect, proba 0.5
-  c(0).partition(eInit); // computation of the partition
-  c(0).e_ << 1, 1; // segment is {1}, proba 1.
+	Vector<BOSNode> c(1);
+	c(0).y_ = 1; // second element y picked, proba 0.5
+	c(0).z_ = 1; // comparison is perfect, proba 0.5
+	c(0).partition(eInit); // computation of the partition
+	c(0).e_ << 1, 1; // segment is {1}, proba 1.
 
-  path.setC(c);
+	path.setC(c);
 
-  Real expectedProba = std::log(0.5 * 0.5 * 1.);
-  Real computedProba = path.computeLogProba(mu,
-                                 pi);
+	Real expectedProba = std::log(0.5 * 0.5 * 1.);
+	Real computedProba = path.computeLogProba(mu, pi);
 
-  ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
+	ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
 }
 
 /**
  * Simple case with three modalities and imprecision
  */
-TEST(BOSPath, computeLogProba1)
-{
-  int mu = 1; // mode
-  Real pi = 0.5; // precision
+TEST(BOSPath, computeLogProba1) {
+	int mu = 1; // mode
+	Real pi = 0.5; // precision
 
-  BOSPath path;
-  path.setInit(0, 2);
-  path.setEnd(0, 0);
+	BOSPath path;
+	path.setInit(0, 2);
+	path.setEnd(0, 0);
 
-  Vector<int, 2> eInit;
-  eInit << 0, 2;
+	Vector<int, 2> eInit;
+	eInit << 0, 2;
 
-  Vector<BOSNode> c(2);
+	Vector<BOSNode> c(2);
 
-  c(0).y_ = 1; // y, middle element y picked, proba 1./3.
-  c(0).z_ = 0; // z, comparison is imperfect, proba 0.5
-  c(0).partition(eInit); // computation of the partition
-  c(0).e_ << 0, 0; // e, left segment {0, 0} selected, proba 0.33 (all have the same size)
+	c(0).y_ = 1; // y, middle element y picked, proba 1./3.
+	c(0).z_ = 0; // z, comparison is imperfect, proba 0.5
+	c(0).partition(eInit); // computation of the partition
+	c(0).e_ << 0, 0; // e, left segment {0, 0} selected, proba 0.33 (all have the same size)
 
-  c(1).y_ = 0; // y, only one element to choose from, proba 1.
-  c(1).z_ = 1; // z, comparison is perfect, proba 0.5
-  c(1).partition(path.c()(0).e_); // computation of the partition
-  c(1).e_ << 0, 0; // e, only one segment in partition, with proba 1.
+	c(1).y_ = 0; // y, only one element to choose from, proba 1.
+	c(1).z_ = 1; // z, comparison is perfect, proba 0.5
+	c(1).partition(path.c()(0).e_); // computation of the partition
+	c(1).e_ << 0, 0; // e, only one segment in partition, with proba 1.
 
-  path.setC(c);
+	path.setC(c);
 
-  Real expectedProba = std::log(1./3. * 0.5 * 1./3. *
-                                1.    * 0.5 * 1.);
-  Real computedProba = path.computeLogProba(mu, pi);
+	Real expectedProba = std::log(1. / 3. * 0.5 * 1. / 3. * 1. * 0.5 * 1.);
+	Real computedProba = path.computeLogProba(mu, pi);
 
-#ifdef MC_DEBUG
-  std::cout << "expectedProba: " << expectedProba << std::endl;
-  std::cout << "proba: " << computedProba << std::endl;
-#endif
-  ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
+	ASSERT_LT(std::abs(expectedProba - computedProba), epsilon);
 }
 
 /**
  * Multiple Tests of the initialization, using the piInitBos used in initialisation
  */
-TEST(BOSPath, initPath)
-{
-  BOSPath path;
-  int nbTest = 10000;
-  MultinomialStatistic multi;
+TEST(BOSPath, initPath) {
+	BOSPath path;
+	int nbTest = 10000;
+	MultinomialStatistic multi;
 
-  bool validPath = true;
-  bool zeroZ = true;
-  bool nonNulProba = true;
+	bool validPath = true;
+	bool zeroZ = true;
+	bool nonNulProba = true;
 
-  for (int i = 0; i < nbTest; ++i)
-  {
-    int ini0 = multi.sampleInt(0       , 9   );
-    int ini1 = multi.sampleInt(ini0 + 1, 10  );
-    int end0 = multi.sampleInt(ini0    , ini1);
-    int end1 = multi.sampleInt(end0    , ini1);
+	for (int i = 0; i < nbTest; ++i) {
+		int ini0 = multi.sampleInt(0, 9);
+		int ini1 = multi.sampleInt(ini0 + 1, 10);
+		int end0 = multi.sampleInt(ini0, ini1);
+		int end1 = multi.sampleInt(end0, ini1);
 
-    int mu = multi.sampleInt(ini0, ini1);
+		int mu = multi.sampleInt(ini0, ini1);
 
-    path.setInit(ini0, ini1);
-    path.setEnd (end0, end1);
+		path.setInit(ini0, ini1);
+		path.setEnd(end0, end1);
 
-    path.initPath();
+		path.initPath();
 
-    if (!(path.endCond()(0)             <= path.c()(path.nbNode() - 1).e_(0) &&
-        path.c()(path.nbNode() - 1).e_(0) <= path.endCond()(1)                  ))
-    {
-      validPath = false;
-    }
+		if (!(path.endCond()(0) <= path.c()(path.nbNode() - 1).e_(0)
+				&& path.c()(path.nbNode() - 1).e_(0) <= path.endCond()(1))) {
+			validPath = false;
+		}
 
-    Real logProba = path.computeLogProba(mu, piInitBOS);
-    if (logProba == minInf)
-    {
-#ifdef MC_DEBUG
-      std::cout << "logProba: " << logProba << std::endl;
-#endif
-      nonNulProba = false;
-    }
+		Real logProba = path.computeLogProba(mu, piInitBOS);
+		if (logProba == minInf) {
+			nonNulProba = false;
+		}
 
-    if (path.nbZ() > 0)
-    {
-      zeroZ = false;
-    }
-  }
+		if (path.nbZ() > 0) {
+			zeroZ = false;
+		}
+	}
 
-  ASSERT_EQ(validPath, true); // are all path generated valid ?
-  ASSERT_EQ(zeroZ, true); // are all z been initialized to 0 ?
-  ASSERT_EQ(nonNulProba, true); // do they all have a non zero probability ?
+	ASSERT_EQ(validPath, true); // are all path generated valid ?
+	ASSERT_EQ(zeroZ, true); // are all z been initialized to 0 ?
+	ASSERT_EQ(nonNulProba, true); // do they all have a non zero probability ?
 }
 
 /**
  * test the probability distribution generated by arbitrary BOS parameters.
  */
-TEST(BOSPath, ArbitraryGibbs)
-{
-  MultinomialStatistic multi;
-  UniformStatistic uni;
-  int nbIterBurnIn = 500;
-  int nbIterRun    = 500;
+TEST(BOSPath, ArbitraryGibbs) {
+	MultinomialStatistic multi;
+	UniformStatistic uni;
+	int nbIterBurnIn = 500;
+	int nbIterRun = 500;
 
-  int iniMin = 0;
-  int iniMax = 4;
+	int iniMin = 0;
+	int iniMax = 4;
 
 //  int minCond = multi.sampleInt(0      , initSeg(1));
 //  int maxCond = multi.sampleInt(minCond, initSeg(1));
-  int endMin = iniMin;
-  int endMax = iniMax;
+	int endMin = iniMin;
+	int endMax = iniMax;
 
-  BOSPath path;
-  path.setInit(iniMin, iniMax);
-  path.setEnd (endMin, endMax);
+	BOSPath path;
+	path.setInit(iniMin, iniMax);
+	path.setEnd(endMin, endMax);
 
-  bool correctExpectedMode = true;
+	bool correctExpectedMode = true;
 
-  for (int mu = endMin; mu <= iniMax; ++mu)
-  {
-    path.initPath();
-  #ifdef MC_DEBUG
-    std::cout << "initialization, displayPath(path)" << std::endl;
-    displayPath(path);
-  #endif
+	for (int mu = endMin; mu <= iniMax; ++mu) {
+		path.initPath();
 
-    Vector<Real> computedProba(iniMax - iniMin + 1);
-    computedProba = 0.;
-    int computedMode;
+		Vector<Real> computedProba(iniMax - iniMin + 1);
+		computedProba = 0.;
+		int computedMode;
 
-    Real pi = 0.5;
+		Real pi = 0.5;
 
-    int expectedMode = std::max(mu, endMin);
-    expectedMode = std::min(expectedMode, endMax);
+		int expectedMode = std::max(mu, endMin);
+		expectedMode = std::min(expectedMode, endMax);
 
-  #ifdef MC_DEBUG
-    std::cout << "iniMin: " << iniMin << ", iniMax: " << iniMax << std::endl;
-    std::cout << "endMin: " << endMin << ", endMax: " << endMax << std::endl;
-    std::cout << "mu: " << mu << ", pi: " << pi << std::endl;
-    std::cout << "expectedMode: " << expectedMode << std::endl;
-  #endif
+		for (int iter = 0; iter < nbIterBurnIn; ++iter) {
+			path.samplePath(mu, pi, sizeTupleBOS);
+		}
 
-  #ifdef MC_DEBUG
-    std::cout << "Initial path, displayPath: " << std::endl;
-    BOSDisplayPath(path);
-  #endif
+		for (int iter = 0; iter < nbIterRun; ++iter) {
+			path.samplePath(mu, pi, sizeTupleBOS);
+			int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
+			computedProba(x) += 1.; // the new occurrence of x is stored
+		}
 
-    for (int iter = 0; iter < nbIterBurnIn; ++iter)
-    {
-  #ifdef MC_DEBUG
-      std::cout << "ArbitraryGibbs, iter: " << iter << std::endl;
-  #endif
+		computedProba /= computedProba.sum();
+		computedProba.maxCoeff(&computedMode);
 
-      path.samplePath(mu,
-                      pi,
-                      sizeTupleBOS);
-    }
+		if (expectedMode != computedMode) {
+			correctExpectedMode = false;
+		}
+	}
 
-    for (int iter = 0; iter < nbIterRun; ++iter)
-    {
-  #ifdef MC_DEBUG
-      std::cout << "ArbitraryGibbs, iter: " << iter << std::endl;
-  #endif
-
-      path.samplePath(mu,
-                      pi,
-                      sizeTupleBOS);
-      int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
-      computedProba(x) += 1.; // the new occurrence of x is stored
-    }
-
-    computedProba /= computedProba.sum();
-    computedProba.maxCoeff(&computedMode);
-
-#ifdef MC_DEBUG
-    std::cout << "computedProba" << std::endl;
-    std::cout << computedProba << std::endl;
-#endif
-
-    if (expectedMode != computedMode)
-    {
-      correctExpectedMode = false;
-    }
-  }
-
-  ASSERT_EQ(correctExpectedMode, true); // has the real mode been estimated correctly ?
+	ASSERT_EQ(correctExpectedMode, true); // has the real mode been estimated correctly ?
 }
 
 /**
  * Test the probability distribution obtained from frequencies of forwardSamplePath
  */
-TEST(BOSPath, forwardSamplePath)
-{
-  MultinomialStatistic multi;
-  UniformStatistic uni;
-  int nbIter = 1e4;
+TEST(BOSPath, forwardSamplePath) {
+	MultinomialStatistic multi;
+	UniformStatistic uni;
+	int nbIter = 1e4;
 
-  int iniMin = 0;
-  int iniMax = 4;
+	int iniMin = 0;
+	int iniMax = 4;
 
 //  int minCond = multi.sampleInt(0      , initSeg(1));
 //  int maxCond = multi.sampleInt(minCond, initSeg(1));
-  int endMin = iniMin;
-  int endMax = iniMax;
+	int endMin = iniMin;
+	int endMax = iniMax;
 
-  BOSPath path;
-  path.setInit(iniMin, iniMax);
-  path.setEnd (endMin, endMax);
+	BOSPath path;
+	path.setInit(iniMin, iniMax);
+	path.setEnd(endMin, endMax);
 
-  Vector<Real> computedProba(iniMax - iniMin + 1);
-  computedProba = 0.;
-  int computedMode;
+	Vector<Real> computedProba(iniMax - iniMin + 1);
+	computedProba = 0.;
+	int computedMode;
 
-  int mu = multi.sampleInt(iniMin, iniMax);
-  Real pi = uni.sample(0., 1.);
+	int mu = multi.sampleInt(iniMin, iniMax);
+	Real pi = uni.sample(0., 1.);
 //  int mu = 2;
 //  Real pi = 0.5;
 
-#ifdef MC_DEBUG
-  std::cout << "mu: " << mu << ", pi: " << pi << std::endl;
-#endif
+	for (int iter = 0; iter < nbIter; ++iter) {
+		path.forwardSamplePath(mu, pi);
+		int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
+		computedProba(x) += 1.; // the new occurrence of x is stored
+	}
+	computedProba /= computedProba.sum();
+	computedProba.maxCoeff(&computedMode);
 
-  for (int iter = 0; iter < nbIter; ++iter)
-  {
-#ifdef MC_DEBUG
-    std::cout << "forwardSamplePath, iter: " << iter << std::endl;
-#endif
-    path.forwardSamplePath(mu, pi);
-    int x = path.c()(path.nbNode() - 1).e_(0); // x is sampled here
-    computedProba(x) += 1.; // the new occurrence of x is stored
-  }
-  computedProba /= computedProba.sum();
-  computedProba.maxCoeff(&computedMode);
-#ifdef MC_DEBUG
-  std::cout << "Final path, displayPath: " << std::endl;
-  displayPath(path);
-  std::cout << "computedProba" << std::endl;
-  std::cout << computedProba << std::endl;
-#endif
-
-  ASSERT_EQ(mu, computedMode); // has the real mode been estimated correctly ?
+	ASSERT_EQ(mu, computedMode); // has the real mode been estimated correctly ?
 }

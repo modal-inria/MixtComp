@@ -11,6 +11,7 @@
 
 # Short Term
 
+- reactivate all utest in UTestOrdinal.cpp
 - The current etimator of SEM based on median of estimators at each iteration is not robust.
 	- A parameter can be multivalued. When the individual medians are combined, the distribution obtained could potentially be very different from the every distribution observed during the SEM.
 - Weibull with at least missing intervals of the type [a; +inf]

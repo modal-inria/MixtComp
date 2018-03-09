@@ -15,74 +15,52 @@ using namespace mixt;
  * Generate individuals that follows a distribution, and try to estimate it back. Note that the individual are generated
  * in the constructor of Ordinal, which is a spacial constructor used for debugging.
  */
-TEST(Ordinal, mStep)
-{
-  int nbInd = 100;
-  int nbModalities = 4;
-  int mu;
-  Real pi;
-  Real errorTolerance = 0.05;
+TEST(Ordinal, mStep) {
+	int nbInd = 100;
+	int nbModalities = 4;
+	int mu;
+	Real pi;
+	Real errorTolerance = 0.05;
 
-  MultinomialStatistic multi;
-  UniformStatistic uni;
+	MultinomialStatistic multi;
+	UniformStatistic uni;
 
-  mu = multi.sampleInt(0, nbModalities - 1);
-  pi = uni.sample(0., 1.);
+	mu = multi.sampleInt(0, nbModalities - 1);
+	pi = uni.sample(0., 1.);
 
-  Vector<Index> z_i(nbInd, 0); // dummy class variable
-  Vector<std::set<Index> > classInd(1);
+	Vector<Index> z_i(nbInd, 0); // dummy class variable
+	Vector<std::set<Index> > classInd(1);
 
-  for (int i = 0; i < nbInd; ++i) {
-    classInd(0).insert(i);
-  }
+	for (int i = 0; i < nbInd; ++i) {
+		classInd(0).insert(i);
+	}
 
-  Ordinal<DataHandlerDummy,
-          DataExtractorDummy,
-          ParamSetterDummy,
-          ParamExtractorDummy> ordinal(1,
-                                       nbInd,
-                                       nbModalities,
-                                       &z_i,
-                                       classInd,
-                                       mu,
-                                       pi);
+	Ordinal<DataHandlerDummy, DataExtractorDummy, ParamSetterDummy,
+			ParamExtractorDummy> ordinal(1, nbInd, nbModalities, mu, pi);
 
-  ordinal.mStep();
-  Vector<int>  muEst = ordinal.mu(); // estimated mu
-  Vector<Real> piEst = ordinal.pi(); // estimated pi
+	ordinal.mStep(classInd);
+	Vector<int> muEst = ordinal.mu(); // estimated mu
+	Vector<Real> piEst = ordinal.pi(); // estimated pi
 
-#ifdef MC_DEBUG
-  std::cout << "mu: " << mu << ", muEst: " << muEst << std::endl;
-  std::cout << "pi: " << pi << ", piEst: " << piEst << std::endl;
-#endif
-
-  ASSERT_EQ(mu, muEst(0));
-  ASSERT_LT(std::abs(pi - piEst(0)), errorTolerance);
+	ASSERT_EQ(mu, muEst(0));
+	ASSERT_LT(std::abs(pi - piEst(0)), errorTolerance);
 }
 
-//TEST(Ordinal, tupleMultinomial)
-//{
-//  int mu = 0;
-//  Real pi = 0.5;
+//TEST(Ordinal, tupleMultinomial) {
+//	Index mu = 0;
+//	Real pi = 0.5;
 //
-//  BOSPath path;
-//  path.setInit(0, 2);
-//  path.setEnd(0, 2);
+//	BOSPath path;
+//	path.setInit(0, 2);
+//	path.setEnd(0, 2);
 //
-//  int index = 0; // index of the first node of the pair used in the computation
+//	int index = 0; // index of the first node of the pair used in the computation
 //
-//  std::list<Vector<BOSNode> > pathList;
-//  Vector<Real> probaVec;
-//  path.tupleMultinomial(mu,
-//                        pi,
-//                        index,
-//                        sizeTupleConst,
-//                        pathList,
-//                        probaVec);
-//#ifdef MC_DEBUG
-//  std::cout << probaVec << std::endl;
-//#endif
-//  ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
+//	std::list<Vector<BOSNode> > pathList;
+//	Vector<Real> probaVec;
+//	path.tupleMultinomial(mu, pi, index, sizeTupleConst, pathList, probaVec);
+//
+//	ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
 //}
 
 ///**
