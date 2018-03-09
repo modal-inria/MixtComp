@@ -222,8 +222,6 @@ public:
 
 	virtual void initializeMarkovChain() {};
 
-	std::vector<bool> parametersInInterior() {return model_.parametersInInterior();}
-
 private:
 protected:
 	/** Number of classes */

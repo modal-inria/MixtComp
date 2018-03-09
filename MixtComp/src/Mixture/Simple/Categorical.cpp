@@ -198,19 +198,4 @@ bool Categorical::hasModalities() const {
 
 void Categorical::initParam() {}
 
-std::vector<bool> Categorical::parametersInInterior() {
-	std::vector<bool> res(nClass_);
-
-	for (Index k = 0; k < nClass_; ++k) {
-		res[k] =
-			(param_.block(
-				k * nModality_,
-				0,
-				nModality_,
-				1).minCoeff() == 0.0) ? false : true;
-	}
-
-	return res;
-}
-
 } // namespace mixt

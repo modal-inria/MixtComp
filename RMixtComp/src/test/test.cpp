@@ -26,5 +26,6 @@ int main(int argc, char *argv[]) {
 //	R.parseEvalQ("testPoisson()");
 //	R.parseEvalQ("testWeibull()");
 
-	exit(0);
+//	exit(0);
+	return 0;
 }

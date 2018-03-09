@@ -119,12 +119,4 @@ std::string Poisson::checkSampleCondition(const Vector<std::set<Index>>& classIn
 
 void Poisson::initParam() {};
 
-std::vector<bool> Poisson::parametersInInterior() {
-	std::vector<bool> res(nClass_);
-	for (Index k = 0; k < nClass_; ++k) {
-		res[k] = (param_(k) == 0.0) ? false : true;
-	}
-	return res;
-}
-
 } // namespace mixt

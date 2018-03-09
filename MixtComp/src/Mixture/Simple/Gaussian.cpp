@@ -130,12 +130,4 @@ std::string Gaussian::checkSampleCondition(const Vector<std::set<Index>>& classI
 
 void Gaussian::initParam() {}
 
-std::vector<bool> Gaussian::parametersInInterior() {
-	std::vector<bool> res(nClass_);
-	for (Index k = 0; k < nClass_; ++k) {
-		res[k] = (param_(2 * k + 1) == 0.0) ? false : true;
-	}
-	return res;
-}
-
 } // namespace mixt

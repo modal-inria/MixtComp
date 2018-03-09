@@ -54,8 +54,6 @@ public:
 
 	void initParam();
 
-	std::vector<bool> parametersInInterior();
-
 private:
 	std::string idName_;
 

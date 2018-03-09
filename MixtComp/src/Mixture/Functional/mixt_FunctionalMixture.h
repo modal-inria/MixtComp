@@ -346,16 +346,6 @@ public:
 
 	virtual void initializeMarkovChain() {};
 
-	std::vector<bool> parametersInInterior() {
-		std::vector<bool> res(nClass_);
-
-		for (Index k = 0; k < nClass_; ++k) {
-			res[k] = (class_[k].sd().minCoeff() == 0.0) ? false : true;
-		}
-
-		return res;
-	}
-
 private:
 	std::string checkMissingType() {
 		std::string warnLog;

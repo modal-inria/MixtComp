@@ -34,16 +34,12 @@ public:
 			Index indexMixture,
 			std::string const& idName,
 			Index nbClass,
-			Vector<Index> const* p_zi,
-			const Vector<std::set<Index> >& classInd,
 			const DataHandler* p_handler,
 			DataExtractor* p_extractor,
 			const ParamSetter* p_paramSetter,
 			ParamExtractor* p_paramExtractor,
 			Real confidenceLevel)
 : IMixture(indexMixture, idName),
-  p_zi_(p_zi),
-  classInd_(classInd),
   nClass_(nbClass),
   nModality_(0),
   augData_(),
@@ -65,13 +61,9 @@ public:
 			Index nbClass,
 			Index nbInd,
 			Index nbModalities,
-			const Vector<Index>* p_zi,
-			const Vector<std::set<Index> >& classInd,
 			int mu,
 			Real pi) :
 				IMixture(0, "dummy"),
-				p_zi_(p_zi),
-				classInd_(classInd),
 				nClass_(nbClass),
 				nModality_(nbModalities),
 				nbInd_(nbInd),
@@ -245,8 +237,8 @@ public:
 	virtual void sampleUnobservedAndLatent(Index ind, Index k) {
 		GibbsSampling(
 				ind,
-				mu_((*p_zi_)(ind)),
-				pi_((*p_zi_)(ind))); // in samplingStepCheck, each sampling must result in a valid state
+				mu_(k),
+				pi_(k)); // in samplingStepCheck, each sampling must result in a valid state
 		copyToData(ind);
 	}
 
@@ -412,21 +404,19 @@ public:
 		return "";
 	}
 
-	virtual void initializeMarkovChain() {
-		for (Index i = 0; i < nbInd_; ++i) {
-			initBOS(i); // Gibbs sampling iterations to avoid estimating too closely to 0 in first iterations
-		}
+	virtual void initializeMarkovChain(Index i, Index k) {
+		initBOS(i, k); // Gibbs sampling iterations to avoid estimating too closely to 0 in first iterations
 	}
 
 	/**
 	 * During initialization of observation, z is set to 0, to avoid generating 0 probability individuals.
 	 * However, a mStep performed on such a data set would always yield an estimated value of 0 for z. */
-	void initBOS(Index i) {
+	void initBOS(Index i, Index k) {
 		for (int n = 0; n < nbGibbsIniBOS; ++n) { // n rounds of Gibbs sampling to increase variability on z
 			GibbsSampling(
 					i,
-					mu_((*p_zi_)(i)),
-					pi_((*p_zi_)(i)));
+					mu_(k),
+					pi_(k));
 		}
 		copyToData(i);
 	}
@@ -449,8 +439,8 @@ public:
 			bool allZ0 = true; // are all z = 0 in the current class ?
 			bool allZ1 = true; // are all z = 1 in the current class ?
 			for (
-					std::set<Index>::const_iterator it  = classInd_(k).begin(),
-					itE = classInd_(k).end();
+					std::set<Index>::const_iterator it  = classInd(k).begin(),
+					itE = classInd(k).end();
 					it != itE;
 					++it) {
 				switch(path_(*it).allZ()) { // what can be deduced from the current path ?
@@ -489,33 +479,7 @@ public:
 		mStepPi();
 	}
 
-	std::vector<bool> parametersInInterior() {
-		std::vector<bool> res(nClass_);
-		for (Index k = 0; k < nClass_; ++k) {
-			res[k] = (pi_(k) == 0.0 || pi_(k) == 1.0) ? false : true;
-		}
-		return res;
-	}
-
 private:
-	/**
-	 * Sample the next mu for the class k and initialize the individuals in the class using it.
-	 * @param k class for which the mode must be simulated
-	 * @param prohibitCurrentMu shall the current value of mu be forbidden, for example if it lead to degeneracy in the mStep ?
-	 * */
-	int sampleMuFreq(int k) {
-		Vector<Real> freqMod(nModality_, 0.); // frequencies of completed values for the current class
-		for (int i = 0; i < nbInd_; ++i) { // compute distribution of values
-			if ((*p_zi_)(i) == k) { // among individuals inside the degenerate class
-				freqMod(augData_.data_(i)) += 1.; // completed values are used
-			}
-		}
-
-		freqMod = freqMod / freqMod.sum();
-
-		return multi_.sample(freqMod); // mu is sampled from this distribution
-	}
-
 	/**
 	 * Perform one iteration of Gibbs sampling, insuring proper implementation of allZOneAuthorized flag
 	 *
@@ -604,13 +568,6 @@ private:
 	void copyToData(int ind) {
 		augData_.data_(ind) = path_(ind).c()(nModality_ - 2).e_(0); // copy of the data from last element of path to augData, which will be useful for the dataStatComputer_ to compute statistics
 	}
-
-	/** Pointer to the zik class label */
-	Vector<Index> const* p_zi_;
-
-	/** Reference to a vector containing in each element a set of the indices of individuals that
-	 * belong to this class. Can be passed as an alternative to zi_ to a subtype of IMixture. */
-	const Vector<std::set<Index> >& classInd_;
 
 	/** Number of classes */
 	int nClass_;

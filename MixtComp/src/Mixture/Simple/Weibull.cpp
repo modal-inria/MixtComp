@@ -196,15 +196,4 @@ void Weibull::initParam() {
 	}
 }
 
-std::vector<bool> Weibull::parametersInInterior() {
-  std::vector<bool> res(nClass_);
-  for (Index k = 0; k < nClass_; ++k) {
-    bool condOnK      = (param_(2 * k    ) == 0.0) ? false : true;
-    bool condOnLambda = (param_(2 * k + 1) == 0.0) ? false : true;
-
-    res[k] = condOnK && condOnLambda;
-  }
-  return res;
-}
-
 }

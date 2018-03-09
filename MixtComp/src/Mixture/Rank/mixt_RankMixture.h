@@ -314,14 +314,6 @@ public:
 		}
 	}
 
-	std::vector<bool> parametersInInterior() {
-		std::vector<bool> res(nClass_);
-		for (Index k = 0; k < nClass_; ++k) {
-			res[k] = (pi_(k) == 0.0 || pi_(k) == 1.0) ? false : true;
-		}
-		return res;
-	}
-
 private:
 	std::string checkMissingType() {
 		std::string warnLog;

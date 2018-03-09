@@ -148,8 +148,6 @@ class IMixture {
     /** Initialize the Markov Chain for models that contains one for their latent variables. */
     virtual void initializeMarkovChain() = 0;
 
-    /** Check if the real parameters are within the interior of their domain. */
-    virtual std::vector<bool> parametersInInterior() = 0;
   protected:
     /** Index of the mixture, useful to write the results at the correct place in th output. */
     Index indexMixture_;

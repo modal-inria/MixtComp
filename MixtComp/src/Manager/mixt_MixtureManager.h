@@ -214,8 +214,6 @@ class MixtureManager {
 //                                                        ParamExtractor>(indexMixture,
 //                                                                        idName,
 //                                                                        nbCluster,
-//                                                                        composer.p_zi(),
-//                                                                        composer.classInd(),
 //                                                                        p_handler_,
 //                                                                        p_dataExtractor_,
 //                                                                        p_paramSetter_,
