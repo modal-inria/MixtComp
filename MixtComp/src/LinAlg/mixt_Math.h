@@ -20,19 +20,14 @@ int fac(int n);
 Real logFac(int n);
 
 template<typename T>
-void meanSD(
-		const T& data,
-		Real& mean,
-		Real& sd) {
+void meanSD(const T& data, Real& mean, Real& sd) {
 	mean = 0.;
 	sd = 0.;
 	Real M2 = 0.;
 	int n = 0;
 
-	for (typename T::const_iterator it = data.begin(),
-			itE = data.end();
-			it != itE;
-			++it) {
+	for (typename T::const_iterator it = data.begin(), itE = data.end();
+			it != itE; ++it) {
 		++n;
 		Real x = *it;
 		Real delta = x - mean;
@@ -45,22 +40,15 @@ void meanSD(
 
 /**
  * Similar to the other meanSD, except that a sub-sample of data is used to compute */
-template<typename indType,
-typename T>
-void meanSD(
-		const indType& listInd,
-		const T& data,
-		Real& mean,
-		Real& sd) {
+template<typename indType, typename T>
+void meanSD(const indType& listInd, const T& data, Real& mean, Real& sd) {
 	mean = 0.;
 	sd = 0.;
 	Real M2 = 0.;
 	int n = 0;
 
-	for (typename indType::const_iterator it  = listInd.begin(),
-			itE = listInd.end();
-			it != itE;
-			++it) {
+	for (typename indType::const_iterator it = listInd.begin(), itE =
+			listInd.end(); it != itE; ++it) {
 		++n;
 		Real x = data(*it);
 		Real delta = x - mean;
@@ -79,5 +67,9 @@ Real sumLog(const Type& vec) {
 	return std::log(vecP.sum()) + std::log(max);
 }
 
+/**
+ * https://stackoverflow.com/questions/4010240/comparing-doubles
+ */
+bool realEqual(Real a, Real b);
 
 #endif // MIXT_LINALG_H

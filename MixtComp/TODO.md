@@ -13,6 +13,8 @@
 - The current estimator of SEM based on median of estimators at each iteration is not robust.
 	- A parameter can be multivalued. When the individual medians are combined, the distribution obtained could potentially be very different from the every distribution observed during the SEM.
 - Check that observed probabilities are not nan in the failing functional case
+- Add a flag "sampling used for observed probability computation"
+	- it means that if the observed proba is 0 in every class, the variable can be ignored during the assignation of z using observed proba
 
 # Algorithm
 
