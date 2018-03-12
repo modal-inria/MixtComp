@@ -352,6 +352,7 @@ public:
 
 	virtual void initializeMarkovChain(Index i, Index k) {};
 
+	virtual bool sampleApproximationOfObservedProba() {return false;}
 private:
 	std::string checkMissingType() {
 		std::string warnLog;

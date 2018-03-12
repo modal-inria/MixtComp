@@ -137,7 +137,7 @@ public:
 	 * Useful for some parameters that use a Markov Chain which needs to be initialized.
 	 * Or for models that use an iterator solver that must be initialized before the first iteration.
 	 * Should be modified to take a vector of indices, one per class, indicating which individual to use
-	 * */
+	 */
 	virtual void initParam() = 0;
 
 	/**
@@ -149,6 +149,12 @@ public:
 	/** Initialize the Markov Chain for models that contains one for their latent variables. */
 	virtual void initializeMarkovChain(Index i, Index k) = 0;
 
+	/**
+	 * Some model compute the observed probability using a sampler. It is possible that some values are never sampled,
+	 * despite the fact that their probability is not 0. When this case occur, the variable is ignored in the computation
+	 * of the observed probability.
+	 */
+	virtual bool sampleApproximationOfObservedProba() = 0;
 protected:
 	/** Index of the mixture, useful to write the results at the correct place in th output. */
 	Index indexMixture_;

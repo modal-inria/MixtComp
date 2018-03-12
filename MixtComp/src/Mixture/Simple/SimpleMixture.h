@@ -182,6 +182,7 @@ public:
 	}
 	;
 
+	virtual bool sampleApproximationOfObservedProba() {return false;}
 private:
 protected:
 	/** Number of classes */

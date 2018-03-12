@@ -265,6 +265,7 @@ public:
 		}
 	}
 
+	virtual bool sampleApproximationOfObservedProba() {return true;}
 private:
 	std::string checkMissingType() {
 		std::string warnLog;

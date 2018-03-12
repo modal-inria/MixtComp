@@ -605,12 +605,20 @@ bool MixtureComposer::eStepObservedInd(Index i) {
 	bool isIndividualObservable = true;
 
 	RowVector<Real> lnComp(nClass_); // row vector, one index per class
+	RowVector<Real> currVar(nClass_);
 
 	for (Index k = 0; k < nClass_; k++) {
 		lnComp(k) = std::log(prop_[k]);
+	}
 
-		for (Index j = 0; j < nVar_; ++j) {
-			lnComp(k) += observedProbabilityCache_(j)(i, k);
+
+	for (Index j = 0; j < nVar_; ++j) {
+		for (Index k = 0; k < nClass_; k++) {
+			currVar(k) = observedProbabilityCache_(j)(i, k);
+		}
+
+		if (minInf < currVar.maxCoeff() || !v_mixtures_[j]->sampleApproximationOfObservedProba()) {
+			lnComp += currVar;
 		}
 	}
 

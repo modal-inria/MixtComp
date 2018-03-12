@@ -427,6 +427,7 @@ public:
 		return "";
 	}
 
+	virtual bool sampleApproximationOfObservedProba() {return true;}
 private:
 	/**
 	 * Perform one iteration of Gibbs sampling, insuring proper implementation of allZOneAuthorized flag
