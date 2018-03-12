@@ -138,7 +138,7 @@ public:
 	 * Or for models that use an iterator solver that must be initialized before the first iteration.
 	 * Should be modified to take a vector of indices, one per class, indicating which individual to use
 	 * */
-	virtual std::string initParam() = 0;
+	virtual void initParam() = 0;
 
 	/**
 	 * Compute and cache the empirical observed distribution for the models that need it.

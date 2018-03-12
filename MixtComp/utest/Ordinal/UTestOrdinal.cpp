@@ -13,7 +13,7 @@ using namespace mixt;
 
 /**
  * Generate individuals that follows a distribution, and try to estimate it back. Note that the individual are generated
- * in the constructor of Ordinal, which is a spacial constructor used for debugging.
+ * in the constructor of Ordinal, which is a special constructor used for debugging.
  */
 TEST(Ordinal, mStep) {
 	int nbInd = 100;
@@ -46,22 +46,25 @@ TEST(Ordinal, mStep) {
 	ASSERT_LT(std::abs(pi - piEst(0)), errorTolerance);
 }
 
-//TEST(Ordinal, tupleMultinomial) {
-//	Index mu = 0;
-//	Real pi = 0.5;
-//
-//	BOSPath path;
-//	path.setInit(0, 2);
-//	path.setEnd(0, 2);
-//
-//	int index = 0; // index of the first node of the pair used in the computation
-//
-//	std::list<Vector<BOSNode> > pathList;
-//	Vector<Real> probaVec;
-//	path.tupleMultinomial(mu, pi, index, sizeTupleConst, pathList, probaVec);
-//
-//	ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
-//}
+/**
+ * Test if the number of combination
+ */
+TEST(Ordinal, tupleMultinomial) {
+	Index mu = 0;
+	Real pi = 0.5;
+
+	BOSPath path;
+	path.setInit(0, 2);
+	path.setEnd(0, 2);
+
+	Index index = 0; // index of the first node of the pair used in the computation
+
+	std::list<Vector<BOSNode> > pathList;
+	Vector<Real> probaVec;
+	path.tupleMultinomial(mu, pi, index, sizeTupleConst, pathList, probaVec);
+
+	ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
+}
 
 ///**
 // * Test if a null precision implies an equipartition of the sampled x value

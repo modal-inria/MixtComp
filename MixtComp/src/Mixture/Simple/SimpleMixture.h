@@ -156,9 +156,8 @@ public:
 		augData_.removeMissing(i);
 	}
 
-	std::string initParam() {
+	void initParam() {
 		model_.initParam();
-		return "";
 	}
 	;
 

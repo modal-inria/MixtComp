@@ -145,7 +145,7 @@ public:
 	/**
 	 * Parameters are initialized using dummy values
 	 */
-	std::string initParam() {
+	void initParam() {
 		std::vector<Index> v(nbPos_);
 		std::iota(v.begin(), v.end(), 0);
 		RankVal r(nbPos_);
@@ -155,8 +155,6 @@ public:
 			mu_(k) = r;
 			pi_(k) = 0.75;
 		}
-
-		return "";
 	}
 
 	virtual void initializeMarkovChain(Index i, Index k) {

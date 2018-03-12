@@ -2,14 +2,6 @@ testCategorical <- function() {
   var <- list()
   var$z_class <- zParam()
   
-  # var$Functional1 <- functionalParam2sub("Functional1")
-  # var$Functional1 <- functionalInterPolyParam("Functional1") # validated
-  
-  # var$Ordinal1 <- ordinalParamRandom("Ordinal1") # validated
-  # var$Ordinal2 <- ordinalParamRandom("Ordinal2")
-  
-  # var$Rank1 <- rankParam("Rank1") # validated
-  
   var$Categorical0 <- categoricalParamRandom("Categorical0")
   var$Categorical1 <- categoricalParamRandom("Categorical1")
   var$Categorical2 <- categoricalParamRandom("Categorical2")
@@ -30,14 +22,6 @@ testCategorical <- function() {
   var$Categorical17 <- categoricalParamRandom("Categorical17")
   var$Categorical18 <- categoricalParamRandom("Categorical18")
   var$Categorical19 <- categoricalParamRandom("Categorical19")
-  
-  # var$Gaussian1 <- gaussianParam("Gaussian1") # validated
-  
-  # var$Poisson0 <- poissonParamRandom("Poisson0")
-  # var$Poisson1 <- poissonParamRandom("Poisson1")
-  # var$Poisson2 <- poissonParamRandom("Poisson2")
-  # var$Poisson3 <- poissonParamRandom("Poisson3")
-  # var$Poisson4 <- poissonParamRandom("Poisson4")
   
   dat <- dataGenerator(1000, 0.9, var)
   
@@ -62,8 +46,6 @@ testCategorical <- function() {
   
   confMatSampled <- table(dat$z, resLearn$variable$data$z_class$completed)
   print(confMatSampled)
-  
-  # return(resLearn)
 }
 
 categoricalParam1 <- function(name) {

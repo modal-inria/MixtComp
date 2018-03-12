@@ -344,13 +344,11 @@ public:
 	}
 	;
 
-	std::string initParam() {
+	void initParam() {
 		for (Index k = 0; k < nClass_; ++k) {
 			mu_(k) = 0;
 			pi_(k) = 0.75;
 		}
-
-		return "";
 	}
 
 	virtual void initializeMarkovChain(Index i, Index k) {

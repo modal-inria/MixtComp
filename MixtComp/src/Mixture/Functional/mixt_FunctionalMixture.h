@@ -318,12 +318,10 @@ public:
 	/**
 	 * @param initObs element k contains the index of
 	 */
-	std::string initParam() {
+	void initParam() {
 		for (Index k = 0; k < nClass_; ++k) {
 			class_[k].initParam();
 		}
-
-		return "";
 	};
 
 	/**

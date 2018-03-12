@@ -127,14 +127,14 @@ public:
 			return p_bridge;
 		}
 
-		if (idModel == "Ordinal") {
-			Ordinal<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge =
-					new Ordinal<DataHandler, DataExtractor, ParamSetter,
-							ParamExtractor>(indexMixture, idName, nbCluster,
-							p_handler_, p_dataExtractor_, p_paramSetter_,
-							p_paramExtractor_, confidenceLevel);
-			return p_bridge;
-		}
+//		if (idModel == "Ordinal") {
+//			Ordinal<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge =
+//					new Ordinal<DataHandler, DataExtractor, ParamSetter,
+//							ParamExtractor>(indexMixture, idName, nbCluster,
+//							p_handler_, p_dataExtractor_, p_paramSetter_,
+//							p_paramExtractor_, confidenceLevel);
+//			return p_bridge;
+//		}
 
 		if (idModel == "Rank") {
 			RankMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge =

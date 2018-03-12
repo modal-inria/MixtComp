@@ -1,20 +1,17 @@
 # Current
 
 - initParam should return void instead of a string, as it can never fail
-
 - When nan are detected after eStep (completed or observed), generate a specific error message that states that there is an error in the code, and that data could be submitted to the maintainer for analysis and debug.
     - this would handle a major case of crashes gracefully
 - mStep should return a string in case estimated standard deviations are too low
 	- checkSampleCondition should only test if there are enough observation, while mStep should test if the estimated values are meaningful
 	- imperatively utest this, as it was a source of error with real data
-- reactivate all unit tests
 
 # Short Term
 
 - reactivate all utest in UTestOrdinal.cpp
-- The current etimator of SEM based on median of estimators at each iteration is not robust.
+- The current estimator of SEM based on median of estimators at each iteration is not robust.
 	- A parameter can be multivalued. When the individual medians are combined, the distribution obtained could potentially be very different from the every distribution observed during the SEM.
-- Weibull with at least missing intervals of the type [a; +inf]
 - Check that observed probabilities are not nan in the failing functional case
 
 # Algorithm

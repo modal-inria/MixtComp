@@ -27,7 +27,9 @@ public:
 	void setInit(int a, int b);
 	void setEnd(int a, int b);
 
-	/** Used for debug / test, because in a standard run, should be initialized using removeMissing */
+	/**
+	 * Used for debug / test, because in a standard run, should be initialized using removeMissing
+	 * */
 	void setC(const Vector<BOSNode>& c);
 
 	/**
@@ -36,11 +38,11 @@ public:
 	 * @param mu localization parameter (mode) of the distribution
 	 * @param pi precision parameter of the distribution
 	 * @return joint probability
-	 */
+	 * */
 	Real computeLogProba(int mu, Real pi) const;
 
 	/**
-	 * Multinomial conditional probability distribution for tuples inside the path
+	 * Multinomial conditional probability distribution for tuples inside the path.
 	 *
 	 * @param mu localization parameter (mode) of the distribution
 	 * @param pi precision parameter of the distribution
@@ -48,7 +50,7 @@ public:
 	 * @param sizeTuple size of the tuple
 	 * @param[out] pathList list of the various path
 	 * @param[out] probaVec vector of the conditional probabilities of the paths in pathList
-	 */
+	 * */
 	void tupleMultinomial(int mu, Real pi, int startIndex, int sizeTuple,
 			std::list<Vector<BOSNode> >& pathList,
 			Vector<Real>& probaVec) const;
@@ -56,7 +58,7 @@ public:
 	/**
 	 * Multinomial conditional probability distribution for the elements of the partition at a specific index.
 	 * This is a recursive function that computes the conditional probabilities for each element in a node,
-	 * and then call itself for the following node inside a tuple. At the end of the tuple, endMultinomial
+	 * and then calls itself for the following node inside a tuple. At the end of the tuple, endMultinomial
 	 * is called to push back tuples and proba at the end of pathList and probaList.
 	 *
 	 * @param mu localization parameter (mode) of the distribution
@@ -67,7 +69,7 @@ public:
 	 * @param[out] pathList list of the various path
 	 * @param[out] probaList list of the conditional probabilities of the paths in pathList
 	 * @param[out] tuple the complete path that is modified in place during the recursive call, initialized with the current BOSPath
-	 */
+	 * */
 	void nodeMultinomial(int mu, Real pi, int startIndex, int currIndex,
 			Real logProba, std::list<Vector<BOSNode> >& pathList,
 			std::list<Real>& probaList, Vector<BOSNode>& tuple) const;
@@ -115,12 +117,14 @@ public:
 	void forwardSamplePath(int mu, Real pi);
 
 	/**
-	 * Check if all the z in the path are at 1 or not */
+	 * Check if all the z in the path are at 1 or not
+	 * */
 	enum allZ allZ() const {
 		return allZ_;
 	}
 
-	/** Compute the number of z at 1 in path_ */
+	/** Compute the number of z at 1 in path_
+	 * */
 	int nbZ() const {
 		return nbZ_;
 	}
@@ -158,7 +162,7 @@ private:
  * Output a representation of the single node to std::cout
  *
  * @param[in] node
- */
+ * */
 void BOSDisplaySegNode(const BOSNode& node);
 
 /**
@@ -166,7 +170,7 @@ void BOSDisplaySegNode(const BOSNode& node);
  *
  * @param[in] eInit initial segment of the path
  * @param[in] c path
- */
+ * */
 void BOSDisplayPath(const BOSPath& path);
 
 } // namespace mixt
