@@ -38,7 +38,7 @@ bool Poisson::hasModalities() const {
 	return false;
 }
 
-void Poisson::mStep(const Vector<std::set<Index>>& classInd) {
+std::string Poisson::mStep(const Vector<std::set<Index>>& classInd) {
 	for (int k = 0; k < nClass_; ++k) {
 		Real sumClass = 0.;
 		for (std::set<Index>::const_iterator it = classInd(k).begin(), itE =
@@ -48,6 +48,8 @@ void Poisson::mStep(const Vector<std::set<Index>>& classInd) {
 
 		param_(k) = sumClass / Real(classInd(k).size());
 	}
+
+	return "";
 }
 
 std::vector<std::string> Poisson::paramNames() const {

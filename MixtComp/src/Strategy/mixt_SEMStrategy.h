@@ -41,11 +41,7 @@ public:
 	/**
 	 * run the algorithm, only kept during the transition, as an archive
 	 * @return string describing the problem in case of soft degeneracy */
-	std::string runSEM(
-			RunType runType,
-			Index nIter,
-			int group,
-			int groupMax);
+	std::string runSEM(RunType runType, Index nIter, int group, int groupMax);
 
 private:
 	/** reference on the main model */

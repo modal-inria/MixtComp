@@ -32,9 +32,13 @@ void FunctionalClass::setSize(Index nSub, Index nCoeff) {
 	sd_ = 0.;
 }
 
-void FunctionalClass::mStep(const std::set<Index>& setInd) {
+std::string FunctionalClass::mStep(const std::set<Index>& setInd) {
+	std::string warnLog;
+
 	mStepAlpha(setInd);
-	mStepBetaSd(setInd);
+	warnLog += mStepBetaSd(setInd);
+
+	return warnLog;
 }
 
 void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
@@ -65,7 +69,8 @@ void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
 	}
 }
 
-void FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
+std::string FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
+	std::string warnLog;
 	Vector<Index> nTTotal(nSub_, 0);
 
 	for (std::set<Index>::const_iterator itData = setInd.begin(), itDataE =
@@ -95,6 +100,14 @@ void FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
 	}
 
 	subRegression(design, y, beta_, sd_);
+
+	if (sd_.minCoeff() < epsilon) { // at least one coefficient is too small
+		warnLog +=
+				"At least one sub regression has a standard deviation less than the minimal accepted value: "
+						+ epsilonStr + eol;
+	}
+
+	return warnLog;
 }
 
 void FunctionalClass::initParam() {
@@ -123,17 +136,10 @@ std::string FunctionalClass::checkSampleCondition(
 		const std::set<Index>& setInd) const {
 	std::string warnLog;
 	bool value = checkNbDifferentValue(setInd);
-	bool sd = checkNonNullSigma(setInd);
 
 	if (!value) {
 		warnLog +=
 				"Not enough different values for t. Is your data sampled at enough different timesteps ?"
-						+ eol;
-	}
-
-	if (!sd) {
-		warnLog +=
-				"Not enough different values for x. Is there enough variability in the output data ?"
 						+ eol;
 	}
 
@@ -153,28 +159,6 @@ bool FunctionalClass::checkNbDifferentValue(
 				if (nCoeff_ <= values.size()) { // this sub-regression is valid and has enough time steps
 					goto endIt;
 					// stop checking as soon as there are enough different time steps
-				}
-			}
-		}
-
-		return false;
-
-		endIt: ;
-	}
-
-	return true;
-}
-
-bool FunctionalClass::checkNonNullSigma(const std::set<Index>& setInd) const {
-	for (Index s = 0; s < nSub_; ++s) {
-		for (std::set<Index>::const_iterator it = setInd.begin(), itE =
-				setInd.end(); it != itE; ++it) { // only loop on individuals in the current class
-			for (std::set<Index>::const_iterator itW =
-					data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
-					itW != itWE; ++itW) { // only loop on timesteps in the current subregression
-				if (data_(*it).vandermonde().row(*itW).dot(beta_.row(s))
-						!= data_(*it).x()(*itW)) { // this subregression has enough variability to be valid
-					goto endIt;
 				}
 			}
 		}

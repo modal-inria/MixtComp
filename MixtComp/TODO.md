@@ -15,6 +15,7 @@
 - Check that observed probabilities are not nan in the failing functional case
 - Add a flag "sampling used for observed probability computation"
 	- it means that if the observed proba is 0 in every class, the variable can be ignored during the assignation of z using observed proba
+- functional, check if there are enough different values in t
 
 # Algorithm
 

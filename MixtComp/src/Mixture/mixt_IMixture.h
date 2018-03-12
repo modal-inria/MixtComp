@@ -64,7 +64,7 @@ public:
 	 *
 	 * @return empty string if mStep successful, or a detailed description of the eventual error
 	 * */
-	virtual void mStep(const Vector<std::set<Index>>& classInd) = 0;
+	virtual std::string mStep(const Vector<std::set<Index>>& classInd) = 0;
 
 	/**
 	 * Storage of mixture parameters during SEM run phase

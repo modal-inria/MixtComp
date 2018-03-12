@@ -31,11 +31,11 @@ public:
 		sd_ = sd;
 	}
 
-	void mStep(const std::set<Index>& setInd);
+	std::string mStep(const std::set<Index>& setInd);
 
 	void mStepAlpha(const std::set<Index>& setInd);
 
-	void mStepBetaSd(const std::set<Index>& setInd);
+	std::string mStepBetaSd(const std::set<Index>& setInd);
 
 	void initParam();
 

@@ -19,5 +19,5 @@ Real logFac(int n) {
 }
 
 bool realEqual(Real a, Real b) {
-return (a == b || std::abs(a - b) < std::abs(std::min(a, b)) * std::numeric_limits<Real>::epsilon()) ;// Test 1: Very cheap, but can result in false negatives, Test 2: More expensive, but comprehensive
+	return (a == b || std::abs(a - b) < std::abs(std::min(a, b)) * std::numeric_limits<Real>::epsilon()) ; // Test 1: Very cheap, but can result in false negatives, Test 2: More expensive, but comprehensive
 }

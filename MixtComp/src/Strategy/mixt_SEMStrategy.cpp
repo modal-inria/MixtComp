@@ -17,11 +17,10 @@
 namespace mixt {
 
 /** default constructor */
-SemStrategy::SemStrategy(
-		MixtureComposer* p_composer,
-		const StrategyParam& param)
-: p_composer_(p_composer),
-  param_(param) {}
+SemStrategy::SemStrategy(MixtureComposer* p_composer,
+		const StrategyParam& param) :
+		p_composer_(p_composer), param_(param) {
+}
 
 std::string SemStrategy::run() {
 	std::string warnLog;
@@ -39,7 +38,8 @@ std::string SemStrategy::run() {
 //		p_composer_->printClassInd();
 
 		p_composer_->initParam(); // initialize iterative estimators
-		warnLog = p_composer_->initParamSubPartition(param_.ratioInitialization_); // initialize parameters for each model, by calling mStep(partialClassInd), so any iterative mStep must have been initialized previously
+		warnLog = p_composer_->initParamSubPartition(
+				param_.ratioInitialization_); // initialize parameters for each model, by calling mStep(partialClassInd), so any iterative mStep must have been initialized previously
 		if (0 < warnLog.size()) {
 			std::cout << "initParam failed." << std::endl;
 			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
@@ -54,22 +54,20 @@ std::string SemStrategy::run() {
 			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 		}
 
-		std::cout << "SemStrategy::run initializeLatent succeeded." << std::endl;
-		std::cout << "SEM initialization complete. SEM run can start." << std::endl;
+		std::cout << "SemStrategy::run initializeLatent succeeded."
+				<< std::endl;
+		std::cout << "SEM initialization complete. SEM run can start."
+				<< std::endl;
 
-		warnLog = runSEM(
-				burnIn_,
-				param_.nbBurnInIter_,
-				0, // group
+		warnLog = runSEM(burnIn_, param_.nbBurnInIter_, 0, // group
 				3); // groupMax
-		if (0 < warnLog.size()) continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+		if (0 < warnLog.size())
+			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
-		warnLog = runSEM(
-				run_,
-				param_.nbIter_,
-				1, // group
+		warnLog = runSEM(run_, param_.nbIter_, 1, // group
 				3); // groupMax
-		if (0 < warnLog.size()) continue;
+		if (0 < warnLog.size())
+			continue;
 
 		return ""; // at the moment, stop the loop at the first completed run, this will evolve later
 	}
@@ -77,10 +75,7 @@ std::string SemStrategy::run() {
 	return warnLog;
 }
 
-std::string SemStrategy::runSEM(
-		RunType runType,
-		Index nIter,
-		int group,
+std::string SemStrategy::runSEM(RunType runType, Index nIter, int group,
 		int groupMax) {
 	std::string warnLog;
 
@@ -88,37 +83,34 @@ std::string SemStrategy::runSEM(
 
 	if (runType == burnIn_) {
 		myTimer.setName("SEM: burn-in");
-	}
-	else if (runType == run_) {
+	} else if (runType == run_) {
 		myTimer.setName("SEM: run");
 	}
 
 	for (Index iter = 0; iter < nIter; ++iter) {
 		myTimer.iteration(iter, nIter - 1);
-		writeProgress(
-				group,
-				groupMax,
-				iter,
-				nIter - 1);
+		writeProgress(group, groupMax, iter, nIter - 1);
 
 		p_composer_->eStepCompleted();
 
 		p_composer_->sampleZ(); // no checkSampleCondition performed, to increase speed of sampling
 		p_composer_->sampleUnobservedAndLatent();
 
-		std::string warnLog = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
-		if (0 < warnLog.size()) {
+		std::string sampleWarnLog = p_composer_->checkSampleCondition(); // since we are not in initialization, no need for log
+		if (0 < sampleWarnLog.size()) {
 			std::cout << "runSEM, checkSampleCondition failed." << std::endl;
-			return warnLog;
+			return sampleWarnLog;
 		}
 
-		p_composer_->mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously
+		std::string mStepWarnLog = p_composer_->mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously
+		if (0 < mStepWarnLog.size()) {
+			std::cout << "runSEM, mStep failed." << std::endl;
+			return mStepWarnLog;
+		}
+
 //		p_composer_->writeParameters();
 
-		p_composer_->storeSEMRun(
-				iter,
-				nIter - 1,
-				runType);
+		p_composer_->storeSEMRun(iter, nIter - 1, runType);
 	}
 
 	return "";

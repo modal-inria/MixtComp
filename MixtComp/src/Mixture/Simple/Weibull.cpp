@@ -124,7 +124,7 @@ std::string Weibull::setData(const std::string& paramStr,
 	return warnLog;
 }
 
-void Weibull::mStep(const Vector<std::set<Index>>& classInd) {
+std::string Weibull::mStep(const Vector<std::set<Index>>& classInd) {
 	for (Index k = 0; k < nClass_; ++k) {
 		Vector<Real> x(classInd(k).size()); // the optimizer needs a particular format for the data
 		Index currObsInClass = 0;
@@ -140,6 +140,8 @@ void Weibull::mStep(const Vector<std::set<Index>>& classInd) {
 		param_(2 * k) = kParam;
 		param_(2 * k + 1) = lambda;
 	}
+
+	return "";
 }
 
 std::vector<std::string> Weibull::paramNames() const {

@@ -99,10 +99,12 @@ public:
 	 * of the parameters is only here to ensure that all individuals are valid (not all z at 0). In the Rank model initialization, mu is chosen among all the
 	 * observed values of the class, while pi is initialized to a "neutral" value.
 	 * */
-	void mStep(const Vector<std::set<Index> >& classInd) {
+	std::string mStep(const Vector<std::set<Index> >& classInd) {
 		for (int k = 0; k < nClass_; ++k) {
 			class_[k].mStep(classInd(k));
 		}
+
+		return "";
 	}
 
 	void storeSEMRun(Index iteration, Index iterationMax) {

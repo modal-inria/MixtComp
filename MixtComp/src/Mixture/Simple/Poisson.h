@@ -38,7 +38,7 @@ public:
 	std::string setData(const std::string& paramStr,
 			AugmentedData<Vector<int> >& augData, RunMode mode);
 
-	void mStep(const Vector<std::set<Index>>& classInd);
+	std::string mStep(const Vector<std::set<Index>>& classInd);
 
 	std::vector<std::string> paramNames() const;
 

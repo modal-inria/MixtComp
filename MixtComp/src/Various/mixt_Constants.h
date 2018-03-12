@@ -23,6 +23,7 @@ extern const std::string eol;
 extern const int nbSamplingAttempts; // number of sampling attempts, when not enough individuals are sampled
 
 extern const Real epsilon; // very small value of real to check for near zero values
+extern const std::string epsilonStr; // previous value, in scientific notation
 extern const Real logEpsilon; // log of very small value
 
 extern const int minModality; // minimal modality for categorical models (for example, 0-based or 1-based numbering)

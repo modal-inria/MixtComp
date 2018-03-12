@@ -86,10 +86,18 @@ public:
 		return "";
 	}
 
-	void mStep(const Vector<std::set<Index> >& classInd) {
+	std::string mStep(const Vector<std::set<Index> >& classInd) {
+		std::string warnLog;
+
 		for (Index k = 0; k < nClass_; ++k) {
-			class_[k].mStep(classInd(k));
+			std::string currLog;
+			currLog = class_[k].mStep(classInd(k));
+			if (0 < currLog.size()) {
+				warnLog += "Error in class " + std::to_string(k) + "." + eol + currLog;
+			}
 		}
+
+		return warnLog;
 	};
 
 	void storeSEMRun(Index iteration,

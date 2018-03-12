@@ -24,6 +24,7 @@ const std::string eol = "\n";
 const int nbSamplingAttempts = 10000;
 
 const Real epsilon = 1.e-8;
+const std::string epsilonStr = "1.e-8";
 const Real logEpsilon = std::log(epsilon);
 
 const int minModality = 1;

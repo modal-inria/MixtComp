@@ -23,32 +23,28 @@ namespace mixt {
 
 class Categorical {
 public:
-    typedef Vector<int> Data;
-    typedef CategoricalDataStat DataStat;
-    typedef CategoricalSampler Sampler;
-    typedef CategoricalLikelihood<int> Likelihood;
+	typedef Vector<int> Data;
+	typedef CategoricalDataStat DataStat;
+	typedef CategoricalSampler Sampler;
+	typedef CategoricalLikelihood<int> Likelihood;
 
-	Categorical(
-			const std::string& idName,
-			int nbClass,
-			Vector<Real>& param);
+	Categorical(const std::string& idName, int nbClass, Vector<Real>& param);
 
 	Vector<bool> acceptedType() const;
 
 	int computeNbFreeParameters() const;
 
-	void mStep(const Vector<std::set<Index>>& classInd);
+	std::string mStep(const Vector<std::set<Index>>& classInd);
 
 	std::vector<std::string> paramNames() const;
 
-	std::string setData(
-			std::string& paramStr,
-			AugmentedData<Vector<int> >& augData,
-			RunMode mode);
+	std::string setData(std::string& paramStr,
+			AugmentedData<Vector<int> >& augData, RunMode mode);
 
 	void writeParameters() const;
 
-	std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
+	std::string checkSampleCondition(
+			const Vector<std::set<Index>>& classInd) const;
 
 	bool hasModalities() const;
 

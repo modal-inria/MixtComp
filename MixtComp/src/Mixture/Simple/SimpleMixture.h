@@ -88,8 +88,8 @@ public:
 	/**
 	 * Estimate parameters by maximum likelihood
 	 */
-	virtual void mStep(const Vector<std::set<Index> >& classInd) {
-		model_.mStep(classInd);
+	virtual std::string mStep(const Vector<std::set<Index> >& classInd) {
+		return model_.mStep(classInd);
 	}
 
 	/** This function should be used to store any intermediate results during

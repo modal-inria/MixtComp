@@ -420,9 +420,11 @@ public:
 		return "";
 	}
 
-	void mStep(const Vector<std::set<Index> >& classInd) {
+	std::string mStep(const Vector<std::set<Index> >& classInd) {
 		mStepMu(classInd);
 		mStepPi(classInd);
+
+		return "";
 	}
 
 private:
