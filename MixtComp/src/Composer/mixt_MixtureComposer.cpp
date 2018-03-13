@@ -339,15 +339,18 @@ void MixtureComposer::setObservedProbaCache() {
 	}
 }
 
-void MixtureComposer::storeGibbsRun(int ind, int iteration, int iterationMax) {
-	dataStat_.sampleVals(ind, iteration, iterationMax);
+void MixtureComposer::storeGibbsRun(Index iteration, Index iterationMax) {
+	for (Index ind = 0; ind < nInd_; ++ind) {
+		dataStat_.sampleVals(ind, iteration, iterationMax);
 
-	if (iteration == iterationMax) {
-		dataStat_.imputeData(ind, tik_); // impute the missing values using empirical mean or mode, depending of the model. Latest completed tik are replaced by observed tik
-	}
+		if (iteration == iterationMax) {
+			dataStat_.imputeData(ind, tik_); // impute the missing values using empirical mean or mode, depending of the model. Latest completed tik are replaced by observed tik
+		}
 
-	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-		(*it)->storeGibbsRun(ind, iteration, iterationMax);
+		for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end();
+				++it) {
+			(*it)->storeGibbsRun(ind, iteration, iterationMax);
+		}
 	}
 }
 
@@ -360,25 +363,21 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample, int nbGibbsIter,
 		int group, int groupMax) {
 	Timer myTimer;
 	if (sample == sampleData_) {
-		myTimer.setName("Gibbs: run (individuals count as iterations)");
+		myTimer.setName("Gibbs: run");
 	} else {
-		myTimer.setName("Gibbs: burn-in (individuals count as iterations)");
+		myTimer.setName("Gibbs: burn-in");
 	}
 
-#pragma omp parallel for
-	for (Index i = 0; i < nInd_; ++i) {
-		myTimer.iteration(i, nInd_ - 1);
-		writeProgress(group, groupMax, i, nInd_ - 1);
+	for (Index iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
+		myTimer.iteration(iterGibbs, nbGibbsIter - 1);
+		writeProgress(group, groupMax, iterGibbs, nbGibbsIter - 1);
 
-		for (int iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
-			eStepCompletedInd(i);
+		eStepCompleted();
+		sampleZ();
+		sampleUnobservedAndLatent();
 
-			sampleZ(i);
-			sampleUnobservedAndLatent(i);
-
-			if (sample == sampleData_) {
-				storeGibbsRun(i, iterGibbs, nbGibbsIter - 1);
-			}
+		if (sample == sampleData_) {
+			storeGibbsRun(iterGibbs, nbGibbsIter - 1);
 		}
 	}
 }
