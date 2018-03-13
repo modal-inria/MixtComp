@@ -129,13 +129,15 @@ std::string MixtureComposer::mStep(const Vector<std::set<Index>>& classInd) {
 		std::string currLog;
 		currLog = v_mixtures_[v]->mStep(classInd); // call mStep on each variable
 		if (0 < currLog.size()) {
-			vecWarnLog[v] = "mStep error in variable: " + v_mixtures_[v]->idName() + eol + currLog + eol;
+			vecWarnLog[v] = "mStep error in variable: "
+					+ v_mixtures_[v]->idName() + eol + currLog + eol;
 		}
 	}
 
 	std::string warnLog;
-	for (std::vector<std::string>::const_iterator i = vecWarnLog.begin(); i != vecWarnLog.end(); ++i)
-	    warnLog += *i;
+	for (std::vector<std::string>::const_iterator i = vecWarnLog.begin();
+			i != vecWarnLog.end(); ++i)
+		warnLog += *i;
 
 	return warnLog;
 }
@@ -156,22 +158,50 @@ void MixtureComposer::sampleZ(int i) {
 }
 
 void MixtureComposer::eStepCompleted() {
+	std::vector<bool> correct(nInd_);
+
 #pragma omp parallel for
 	for (Index i = 0; i < nInd_; ++i) {
-		eStepCompletedInd(i);
+		correct[i] = eStepCompletedInd(i);
+	}
+
+	std::list<Index> listIndErr;
+	for (Index i = 0; i < nInd_; ++i) {
+		if (correct[i] == false)
+			listIndErr.push_back(i);
+	}
+
+	if (0 < listIndErr.size()) {
+		std::string listInd, warnLog;
+		for (std::list<Index>::const_iterator it = listIndErr.begin(), itEnd =
+				listIndErr.end(); it != itEnd; ++it) {
+			listInd += std::to_string(*it) + " ";
+		}
+		warnLog =
+				"An unexpected error has occurred in the computation of the completed probability of the individuals "
+						+ listInd
+						+ ". This kind of error is most likely the result of a bug. Please contact the maintainer and provide your data, descriptors and lauch script.";
+		throw(warnLog);
 	}
 
 //	std::cout << "MixtureComposer::eStepCompleted, tik" << std::endl;
 //	std::cout << tik_ << std::endl;
 }
 
-void MixtureComposer::eStepCompletedInd(int i) {
+bool MixtureComposer::eStepCompletedInd(int i) {
+	bool correct = true;
 	RowVector<Real> lnComp(nClass_);
 	for (Index k = 0; k < nClass_; k++) {
 		lnComp(k) = lnCompletedProbability(i, k);
 	}
 
-	completedProbabilityCache_(i) = tik_.row(i).logToMulti(lnComp);
+	if (minInf < lnComp.maxCoeff()) { // completed proba is non 0 in at least one class
+		completedProbabilityCache_(i) = tik_.row(i).logToMulti(lnComp);
+	} else { // there is an implementation error somewhere
+		correct = false;
+	}
+
+	return correct;
 
 //	std::cout << "MixtureComposer::eStepCompleted, tik, i: " << i << ", " << itString(tik_.row(i)) << std::endl;
 }
@@ -611,13 +641,13 @@ bool MixtureComposer::eStepObservedInd(Index i) {
 		lnComp(k) = std::log(prop_[k]);
 	}
 
-
 	for (Index j = 0; j < nVar_; ++j) {
 		for (Index k = 0; k < nClass_; k++) {
 			currVar(k) = observedProbabilityCache_(j)(i, k);
 		}
 
-		if (minInf < currVar.maxCoeff() || !v_mixtures_[j]->sampleApproximationOfObservedProba()) {
+		if (minInf < currVar.maxCoeff()
+				|| !v_mixtures_[j]->sampleApproximationOfObservedProba()) {
 			lnComp += currVar;
 		}
 	}

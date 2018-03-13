@@ -25,51 +25,55 @@ SemStrategy::SemStrategy(MixtureComposer* p_composer,
 std::string SemStrategy::run() {
 	std::string warnLog;
 
-	for (Index n = 0; n < nSemTry; ++n) {
-		std::cout << "SemStrategy::run, attempt n: " << n << std::endl;
-		warnLog.clear(); // only the last warn log can be sent
+	try {
+		for (Index n = 0; n < nSemTry; ++n) {
+			std::cout << "SemStrategy::run, attempt n: " << n << std::endl;
+			warnLog.clear(); // only the last warn log can be sent
 
-		p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
-		warnLog = p_composer_->checkNbIndPerClass();
-		if (0 < warnLog.size()) {
-			std::cout << "Not enough individuals per class." << std::endl;
-			continue;
-		}
+			p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
+			warnLog = p_composer_->checkNbIndPerClass();
+			if (0 < warnLog.size()) {
+				std::cout << "Not enough individuals per class." << std::endl;
+				continue;
+			}
 //		p_composer_->printClassInd();
 
-		p_composer_->initParam(); // initialize iterative estimators
-		warnLog = p_composer_->initParamSubPartition(
-				param_.ratioInitialization_); // initialize parameters for each model, by calling mStep(partialClassInd), so any iterative mStep must have been initialized previously
-		if (0 < warnLog.size()) {
-			std::cout << "initParam failed." << std::endl;
-			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+			p_composer_->initParam(); // initialize iterative estimators
+			warnLog = p_composer_->initParamSubPartition(
+					param_.ratioInitialization_); // initialize parameters for each model, by calling mStep(partialClassInd), so any iterative mStep must have been initialized previously
+			if (0 < warnLog.size()) {
+				std::cout << "initParam failed." << std::endl;
+				continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+			}
+
+			std::cout << "SemStrategy::run, initParam succeeded." << std::endl;
+
+			p_composer_->writeParameters(); // for debugging purposes
+
+			warnLog = p_composer_->initializeLatent(); // use observed probability to initialize classes
+			if (0 < warnLog.size()) {
+				continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+			}
+
+			std::cout << "SemStrategy::run initializeLatent succeeded."
+					<< std::endl;
+			std::cout << "SEM initialization complete. SEM run can start."
+					<< std::endl;
+
+			warnLog = runSEM(burnIn_, param_.nbBurnInIter_, 0, // group
+					3); // groupMax
+			if (0 < warnLog.size())
+				continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
+
+			warnLog = runSEM(run_, param_.nbIter_, 1, // group
+					3); // groupMax
+			if (0 < warnLog.size())
+				continue;
+
+			return ""; // at the moment, stop the loop at the first completed run, this will evolve later
 		}
-
-		std::cout << "SemStrategy::run, initParam succeeded." << std::endl;
-
-		p_composer_->writeParameters(); // for debugging purposes
-
-		warnLog = p_composer_->initializeLatent(); // use observed probability to initialize classes
-		if (0 < warnLog.size()) {
-			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
-		}
-
-		std::cout << "SemStrategy::run initializeLatent succeeded."
-				<< std::endl;
-		std::cout << "SEM initialization complete. SEM run can start."
-				<< std::endl;
-
-		warnLog = runSEM(burnIn_, param_.nbBurnInIter_, 0, // group
-				3); // groupMax
-		if (0 < warnLog.size())
-			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
-
-		warnLog = runSEM(run_, param_.nbIter_, 1, // group
-				3); // groupMax
-		if (0 < warnLog.size())
-			continue;
-
-		return ""; // at the moment, stop the loop at the first completed run, this will evolve later
+	} catch (const std::string& str) {
+		warnLog = str;
 	}
 
 	return warnLog;

@@ -87,7 +87,13 @@ class MixtureComposer {
 
     /** compute Tik */
     void eStepCompleted();
-    void eStepCompletedInd(int i);
+
+    /**
+     * The return object is a list of the variables for which the completed probability is null
+     * in every class. This only occurs if there is an implementation bug in the model. The kind of
+     * checks that are performed are similar to those performed in eStepObservedInd
+     */
+    bool eStepCompletedInd(int i);
 
     /** @return the value of the probability of the i-th sample in the k-th component.
      *  @param i index of the sample
