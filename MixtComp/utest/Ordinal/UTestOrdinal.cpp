@@ -49,22 +49,22 @@ TEST(Ordinal, mStep) {
 /**
  * Test if the number of combination
  */
-TEST(Ordinal, tupleMultinomial) {
-	Index mu = 0;
-	Real pi = 0.5;
-
-	BOSPath path;
-	path.setInit(0, 2);
-	path.setEnd(0, 2);
-
-	Index index = 0; // index of the first node of the pair used in the computation
-
-	std::list<Vector<BOSNode> > pathList;
-	Vector<Real> probaVec;
-	path.tupleMultinomial(mu, pi, index, sizeTupleConst, pathList, probaVec);
-
-	ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
-}
+//TEST(Ordinal, tupleMultinomial) {
+//	Index mu = 0;
+//	Real pi = 0.5;
+//
+//	BOSPath path;
+//	path.setInit(0, 2);
+//	path.setEnd(0, 2);
+//
+//	Index index = 0; // index of the first node of the pair used in the computation
+//
+//	std::list<Vector<BOSNode> > pathList;
+//	Vector<Real> probaVec;
+//	path.tupleMultinomial(mu, pi, index, sizeTupleConst, pathList, probaVec);
+//
+//	ASSERT_EQ(pathList.size(), 32); // is the size of pathList correct ?
+//}
 
 ///**
 // * Test if a null precision implies an equipartition of the sampled x value

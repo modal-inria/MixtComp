@@ -33,3 +33,18 @@ TEST(Math, sumLog) {
 
   ASSERT_NEAR(resExpected, resComputed, epsilon);
 }
+
+TEST(Math, differentValue) {
+	Real epsilon = 1.;
+	Index nVal = 5;
+	Index nDiffVal = 3;
+
+	Vector<Real> falseVec(nVal);
+	falseVec << 0.1, 0.2, 0.3, -10., -10.5;
+
+	Vector<Real> trueVec(nVal);
+	trueVec << 0.1, 0.2, 0.3, -10., -50.;
+
+	ASSERT_EQ(differentValue(falseVec, nDiffVal, epsilon), false);
+	ASSERT_EQ(differentValue(trueVec, nDiffVal, epsilon), true);
+}

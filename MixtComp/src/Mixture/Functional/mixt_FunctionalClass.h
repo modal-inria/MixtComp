@@ -75,7 +75,7 @@ public:
 	 */
 	std::string checkSampleCondition(const std::set<Index>& setInd) const;
 	bool checkNbDifferentValue(const std::set<Index>& setInd) const;
-	bool checkNonNullSigma(const std::set<Index>& setInd) const;
+
 private:
 	Index nSub_;
 

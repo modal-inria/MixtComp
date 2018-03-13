@@ -12,6 +12,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <list>
 #include "mixt_Typedef.h"
 #include "mixt_LinAlg.h"
 
@@ -71,5 +72,37 @@ Real sumLog(const Type& vec) {
  * https://stackoverflow.com/questions/4010240/comparing-doubles
  */
 bool realEqual(Real a, Real b);
+
+/**
+ * Check if there are at least n values which difference is at least epsilon.
+ */
+template<typename Type>
+bool differentValue(const Type& data, Index n, Real epsilon) {
+	std::list<Real> diffValues;
+
+	typename Type::const_iterator it = data.begin(), itE = data.end();
+	diffValues.push_back(*it);
+	++it;
+
+	for (; it != itE; ++it) {
+
+		for (std::list<Real>::const_iterator itL = diffValues.begin(), itLEnd =
+				diffValues.end(); itL != itLEnd; ++itL) {
+			if (std::abs(*it - *itL) < epsilon) {
+				goto endOuter;
+			}
+		}
+
+		diffValues.push_back(*it);
+
+		if (n <= diffValues.size()) {
+			return true;
+		}
+
+		endOuter: ;
+	}
+
+	return false;
+}
 
 #endif // MIXT_LINALG_H

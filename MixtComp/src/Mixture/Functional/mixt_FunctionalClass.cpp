@@ -139,8 +139,8 @@ std::string FunctionalClass::checkSampleCondition(
 
 	if (!value) {
 		warnLog +=
-				"Not enough different values for t. Is your data sampled at enough different timesteps ?"
-						+ eol;
+				"Not enough different values for t. Data points should be separated by at least "
+						+ epsilonStr + eol;
 	}
 
 	return warnLog;
@@ -149,23 +149,20 @@ std::string FunctionalClass::checkSampleCondition(
 bool FunctionalClass::checkNbDifferentValue(
 		const std::set<Index>& setInd) const {
 	for (Index s = 0; s < nSub_; ++s) {
-		std::set<Real> values; // set has one record per different values
+		std::list<Real> listT;
+
 		for (std::set<Index>::const_iterator it = setInd.begin(), itE =
 				setInd.end(); it != itE; ++it) { // only loop on individuals in the current class
 			for (std::set<Index>::const_iterator itW =
 					data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
 					itW != itWE; ++itW) { // only loop on timesteps in the current subregression
-				values.insert(data_(*it).t()(*itW));
-				if (nCoeff_ <= values.size()) { // this sub-regression is valid and has enough time steps
-					goto endIt;
-					// stop checking as soon as there are enough different time steps
-				}
+				listT.push_back(data_(*it).t()(*itW));
 			}
 		}
 
-		return false;
-
-		endIt: ;
+		if (!differentValue(listT, nCoeff_, epsilon)) {
+			return false;
+		}
 	}
 
 	return true;
