@@ -27,10 +27,6 @@ namespace mixt {
 typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
 typedef std::vector<IMixture*>::iterator MixtIterator;
 
-enum GibbsSampleData {
-	doNotSampleData_, sampleData_
-};
-
 class MixtureComposer {
 public:
 	/** Constructor.
@@ -289,7 +285,7 @@ public:
 	void registerMixture(IMixture* mixture);
 
 	/** Gibbs sampling, one individual at a time */
-	void gibbsSampling(GibbsSampleData sample, int nbGibbsIter, int group,
+	void gibbsSampling(RunType runType, int nbGibbsIter, int group,
 			int groupMax);
 
 	/** @return names of the parameters */

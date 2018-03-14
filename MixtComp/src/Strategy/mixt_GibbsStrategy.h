@@ -32,6 +32,10 @@ class GibbsStrategy {
     /** run the strategy */
     std::string run();
     
+	/**
+	 * run the algorithm, only kept during the transition, as an archive
+	 * @return string describing the problem in case of soft degeneracy */
+	std::string runGibbs(RunType runType, Index nIter, Index group, Index groupMax);
   protected:
      /** reference on the main model */
     mixt::MixtureComposer* p_composer_;

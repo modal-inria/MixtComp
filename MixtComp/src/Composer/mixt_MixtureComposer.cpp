@@ -359,13 +359,13 @@ void MixtureComposer::registerMixture(IMixture* p_mixture) {
 	++nVar_;
 }
 
-void MixtureComposer::gibbsSampling(GibbsSampleData sample, int nbGibbsIter,
+void MixtureComposer::gibbsSampling(RunType runType, int nbGibbsIter,
 		int group, int groupMax) {
 	Timer myTimer;
-	if (sample == sampleData_) {
-		myTimer.setName("Gibbs: run");
-	} else {
+	if (runType == burnIn_) {
 		myTimer.setName("Gibbs: burn-in");
+	} else {
+		myTimer.setName("Gibbs: run");
 	}
 
 	for (Index iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
@@ -376,7 +376,7 @@ void MixtureComposer::gibbsSampling(GibbsSampleData sample, int nbGibbsIter,
 		sampleZ();
 		sampleUnobservedAndLatent();
 
-		if (sample == sampleData_) {
+		if (runType == run_) {
 			storeGibbsRun(iterGibbs, nbGibbsIter - 1);
 		}
 	}

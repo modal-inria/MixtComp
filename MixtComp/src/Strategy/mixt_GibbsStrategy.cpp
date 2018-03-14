@@ -26,11 +26,11 @@ std::string GibbsStrategy::run() {
 		p_composer_->initData();
 		p_composer_->initializeLatent();
 
-		p_composer_->gibbsSampling(doNotSampleData_, param_.nbGibbsBurnInIter_,
+		p_composer_->gibbsSampling(burnIn_, param_.nbGibbsBurnInIter_,
 				0 + startGroup_, // group
 				1 + startGroup_); // groupMax
 
-		p_composer_->gibbsSampling(sampleData_, param_.nbGibbsIter_,
+		p_composer_->gibbsSampling(run_, param_.nbGibbsIter_,
 				1 + startGroup_, // group
 				1 + startGroup_); // groupMax
 	} catch (const std::string& str) {
@@ -38,6 +38,11 @@ std::string GibbsStrategy::run() {
 	}
 
 	return warnLog;
+}
+
+std::string GibbsStrategy::runGibbs(RunType runType, Index nIter, Index group, Index groupMax) {
+
+	return "";
 }
 
 } // namespace mixt
