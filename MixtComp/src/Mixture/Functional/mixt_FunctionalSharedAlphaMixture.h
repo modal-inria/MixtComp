@@ -72,7 +72,8 @@ public:
 	}
 
 	/**
-	 * This is the main implementation difference between Functional and FunctionalSharedAlpha.
+	 * This is the main implementation difference between Functional and FunctionalSharedAlpha. Note that
+	 * FunctionalClass::mStep is never called.
 	 */
 	std::string mStep(const Vector<std::set<Index> >& classInd) {
 		std::string warnLog;
@@ -86,8 +87,17 @@ public:
 			}
 		}
 
-		warnLog = class_[0].mStep(setAllObs); // perform the mStep in the first class using all the individuals
+		class_[0].mStepAlpha(setAllObs); // perform the mStep in the first class using all the individuals
 		broadcastAlpha(); // broadcast the results to all classes
+
+		for (Index k = 0; k < nClass_; ++k) { // build the set of all observations
+			std::string currLog;
+			currLog = class_[k].mStepBetaSd(classInd(k));
+			if (0 < currLog.size()) {
+				warnLog += "Error in class " + std::to_string(k) + "." + eol
+						+ currLog;
+			}
+		}
 
 		return warnLog;
 	}
@@ -98,7 +108,7 @@ public:
 	 */
 	void broadcastAlpha() {
 		Matrix<Real> alpha = class_[0].getAlpha();
-		for (Index k= 1; k < nClass_; ++k) {
+		for (Index k = 1; k < nClass_; ++k) {
 			class_[k].setAlpha(alpha);
 		}
 	}

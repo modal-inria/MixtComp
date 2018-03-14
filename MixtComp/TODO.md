@@ -16,8 +16,6 @@
 
 # Bugs
 
-- Functional model seem to crash when edge authorized option is activated for the estimators
-    - They do not support biased estimators and since the Gibbs is deactivated, null variance or similar errors could happen
 - Crashes observed when running testOrdinal() in RMixtComp
 
 # Build
