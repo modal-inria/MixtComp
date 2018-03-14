@@ -26,13 +26,11 @@ std::string GibbsStrategy::run() {
 		p_composer_->initData();
 		p_composer_->initializeLatent();
 
-		p_composer_->gibbsSampling(burnIn_, param_.nbGibbsBurnInIter_,
-				0 + startGroup_, // group
-				1 + startGroup_); // groupMax
+		runGibbs(burnIn_, param_.nbGibbsBurnInIter_, 0 + startGroup_, // group
+		1 + startGroup_); // groupMax
 
-		p_composer_->gibbsSampling(run_, param_.nbGibbsIter_,
-				1 + startGroup_, // group
-				1 + startGroup_); // groupMax
+		runGibbs(run_, param_.nbGibbsIter_, 1 + startGroup_, // group
+		1 + startGroup_); // groupMax
 	} catch (const std::string& str) {
 		warnLog = str;
 	}
@@ -40,9 +38,27 @@ std::string GibbsStrategy::run() {
 	return warnLog;
 }
 
-std::string GibbsStrategy::runGibbs(RunType runType, Index nIter, Index group, Index groupMax) {
+void GibbsStrategy::runGibbs(RunType runType, Index nIter, Index group,
+		Index groupMax) {
+	Timer myTimer;
+	if (runType == burnIn_) {
+		myTimer.setName("Gibbs: burn-in");
+	} else {
+		myTimer.setName("Gibbs: run");
+	}
 
-	return "";
+	for (Index iterGibbs = 0; iterGibbs < nIter; ++iterGibbs) {
+		myTimer.iteration(iterGibbs, nIter - 1);
+		writeProgress(group, groupMax, iterGibbs, nIter - 1);
+
+		p_composer_->eStepCompleted();
+		p_composer_->sampleZ();
+		p_composer_->sampleUnobservedAndLatent();
+
+		if (runType == run_) {
+			p_composer_->storeGibbsRun(iterGibbs, nIter - 1);
+		}
+	}
 }
 
 } // namespace mixt

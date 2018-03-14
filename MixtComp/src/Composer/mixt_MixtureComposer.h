@@ -284,10 +284,6 @@ public:
 	 **/
 	void registerMixture(IMixture* mixture);
 
-	/** Gibbs sampling, one individual at a time */
-	void gibbsSampling(RunType runType, int nbGibbsIter, int group,
-			int groupMax);
-
 	/** @return names of the parameters */
 	std::vector<std::string> paramName() const;
 

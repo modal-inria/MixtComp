@@ -359,29 +359,6 @@ void MixtureComposer::registerMixture(IMixture* p_mixture) {
 	++nVar_;
 }
 
-void MixtureComposer::gibbsSampling(RunType runType, int nbGibbsIter,
-		int group, int groupMax) {
-	Timer myTimer;
-	if (runType == burnIn_) {
-		myTimer.setName("Gibbs: burn-in");
-	} else {
-		myTimer.setName("Gibbs: run");
-	}
-
-	for (Index iterGibbs = 0; iterGibbs < nbGibbsIter; ++iterGibbs) {
-		myTimer.iteration(iterGibbs, nbGibbsIter - 1);
-		writeProgress(group, groupMax, iterGibbs, nbGibbsIter - 1);
-
-		eStepCompleted();
-		sampleZ();
-		sampleUnobservedAndLatent();
-
-		if (runType == run_) {
-			storeGibbsRun(iterGibbs, nbGibbsIter - 1);
-		}
-	}
-}
-
 std::vector<std::string> MixtureComposer::paramName() const {
 	std::vector<std::string> names(nClass_);
 	for (Index k = 0; k < nClass_; ++k) {
