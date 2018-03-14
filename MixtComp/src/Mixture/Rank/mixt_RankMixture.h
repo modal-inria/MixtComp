@@ -136,7 +136,7 @@ public:
 		return class_[k].lnCompletedProbabilityInd(i);
 	}
 
-	virtual Real lnObservedProbability(Index i, Index k) const {
+	Real lnObservedProbability(Index i, Index k) const {
 		return class_[k].lnObservedProbability(i);
 	}
 
@@ -159,7 +159,7 @@ public:
 		}
 	}
 
-	virtual void initializeMarkovChain(Index i, Index k) {
+	void initializeMarkovChain(Index i, Index k) {
 		for (Index n = 0; n < nbGibbsIniISR; ++n) {
 			sampleUnobservedAndLatent(i, k);
 		}
@@ -265,7 +265,7 @@ public:
 		}
 	}
 
-	virtual bool sampleApproximationOfObservedProba() {return true;}
+	bool sampleApproximationOfObservedProba() {return true;}
 private:
 	std::string checkMissingType() {
 		std::string warnLog;

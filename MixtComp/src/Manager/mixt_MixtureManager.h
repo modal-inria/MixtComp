@@ -17,7 +17,7 @@
 #include "Mixture/Simple/Gaussian.h"
 #include "Mixture/Simple/Poisson.h"
 #include "Mixture/Functional/mixt_FunctionalMixture.h"
-#include "Mixture/FunctionalSharedAlpha/mixt_FunctionalMixture.h"
+#include "Mixture/Functional/mixt_FunctionalSharedAlphaMixture.h"
 #include "Mixture/Ordinal/mixt_Ordinal.h"
 #include "Mixture/Rank/mixt_RankMixture.h"
 

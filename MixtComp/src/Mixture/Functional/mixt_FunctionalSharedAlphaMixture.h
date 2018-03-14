@@ -71,21 +71,37 @@ public:
 		return "";
 	}
 
+	/**
+	 * This is the main implementation difference between Functional and FunctionalSharedAlpha.
+	 */
 	std::string mStep(const Vector<std::set<Index> >& classInd) {
 		std::string warnLog;
 
-		for (Index k = 0; k < nClass_; ++k) {
-			std::string currLog;
-			currLog = class_[k].mStep(classInd(k));
-			if (0 < currLog.size()) {
-				warnLog += "Error in class " + std::to_string(k) + "." + eol
-						+ currLog;
+		std::set<Index> setAllObs;
+
+		for (Index k = 0; k < nClass_; ++k) { // build the set of all observations
+			for (std::set<Index>::const_iterator it = classInd(k).begin(),
+					itEnd = classInd(k).end(); it != itEnd; ++it) {
+				setAllObs.insert(*it);
 			}
 		}
+
+		warnLog = class_[0].mStep(setAllObs); // perform the mStep in the first class using all the individuals
+		broadcastAlpha(); // broadcast the results to all classes
 
 		return warnLog;
 	}
 	;
+
+	/**
+	 * Broadcast the alpha parameters from the first class to all classes.
+	 */
+	void broadcastAlpha() {
+		Matrix<Real> alpha = class_[0].getAlpha();
+		for (Index k= 1; k < nClass_; ++k) {
+			class_[k].setAlpha(alpha);
+		}
+	}
 
 	void storeSEMRun(Index iteration, Index iterationMax) {
 		for (Index k = 0; k < nClass_; ++k) {
@@ -292,15 +308,15 @@ public:
 	}
 
 	/** No need to precompute an empirical distribution. */
-	virtual void computeObservedProba() {
+	void computeObservedProba() {
 	}
 	;
 
-	virtual void initializeMarkovChain(Index i, Index k) {
+	void initializeMarkovChain(Index i, Index k) {
 	}
 	;
 
-	virtual bool sampleApproximationOfObservedProba() {
+	bool sampleApproximationOfObservedProba() {
 		return false;
 	}
 private:

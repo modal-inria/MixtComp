@@ -76,6 +76,13 @@ public:
 	std::string checkSampleCondition(const std::set<Index>& setInd) const;
 	bool checkNbDifferentValue(const std::set<Index>& setInd) const;
 
+	const Matrix<Real>& getAlpha() const {
+		return alpha_;
+	}
+
+	void setAlpha(const Matrix<Real>& alpha) {
+		alpha_ = alpha;
+	}
 private:
 	Index nSub_;
 

@@ -292,15 +292,15 @@ public:
 	}
 
 	/** No need to precompute an empirical distribution. */
-	virtual void computeObservedProba() {
+	void computeObservedProba() {
 	}
 	;
 
-	virtual void initializeMarkovChain(Index i, Index k) {
+	void initializeMarkovChain(Index i, Index k) {
 	}
 	;
 
-	virtual bool sampleApproximationOfObservedProba() {
+	bool sampleApproximationOfObservedProba() {
 		return false;
 	}
 private:

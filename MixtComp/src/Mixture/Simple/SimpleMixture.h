@@ -81,14 +81,14 @@ public:
 		return warnLog;
 	}
 
-	virtual void sampleUnobservedAndLatent(Index ind, Index k) {
+	void sampleUnobservedAndLatent(Index ind, Index k) {
 		sampler_.samplingStepNoCheck(ind, k);
 	}
 
 	/**
 	 * Estimate parameters by maximum likelihood
 	 */
-	virtual std::string mStep(const Vector<std::set<Index> >& classInd) {
+	std::string mStep(const Vector<std::set<Index> >& classInd) {
 		return model_.mStep(classInd);
 	}
 
@@ -96,7 +96,7 @@ public:
 	 *  various iterations after the burn-in period.
 	 *  @param iteration Provides the iteration number beginning after the burn-in period.
 	 */
-	virtual void storeSEMRun(Index iteration, Index iterationMax) {
+	void storeSEMRun(Index iteration, Index iterationMax) {
 		paramStat_.sampleParam(iteration, iterationMax);
 		if (iteration == iterationMax) {
 			paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
@@ -104,7 +104,7 @@ public:
 		}
 	}
 
-	virtual void storeGibbsRun(Index sample, Index iteration,
+	void storeGibbsRun(Index sample, Index iteration,
 			Index iterationMax) {
 		dataStat_.sampleVals(sample, iteration, iterationMax);
 		if (iteration == iterationMax) {
@@ -117,7 +117,7 @@ public:
 	 * unknown values
 	 * @return the completed log-likelihood
 	 */
-	virtual Real lnCompletedProbability(Index i, Index k) const {
+	Real lnCompletedProbability(Index i, Index k) const {
 		return likelihood_.lnCompletedProbability(i, k);
 	}
 
@@ -125,25 +125,25 @@ public:
 	 * This function must be defined to return the observed likelihood
 	 * @return the observed log-likelihood
 	 */
-	virtual Real lnObservedProbability(Index i, Index k) const {
+	Real lnObservedProbability(Index i, Index k) const {
 		return likelihood_.lnObservedProbability(i, k);
 	}
 
 	/** This function must return the number of free parameters.
 	 *  @return Number of free parameters
 	 */
-	virtual Index nbFreeParameter() const {
+	Index nbFreeParameter() const {
 		return model_.computeNbFreeParameters();
 	}
 
 	/** This function can be used to write summary of parameters on to the output stream.
 	 * @param out Stream where you want to write the summary of parameters.
 	 */
-	virtual void writeParameters() const {
+	void writeParameters() const {
 		model_.writeParameters();
 	}
 
-	virtual void exportDataParam() const {
+	void exportDataParam() const {
 		p_dataExtractor_->exportVals(indexMixture_, model_.hasModalities(),
 				idName_, augData_, dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
 		p_paramExtractor_->exportParam(indexMixture_, idName(),
@@ -174,15 +174,15 @@ public:
 	/**
 	 * The observed probability is fast to compute for simple models. There is no need to
 	 * precompute an empirical distribution. */
-	virtual void computeObservedProba() {
+	void computeObservedProba() {
 	}
 	;
 
-	virtual void initializeMarkovChain(Index i, Index k) {
+	void initializeMarkovChain(Index i, Index k) {
 	}
 	;
 
-	virtual bool sampleApproximationOfObservedProba() {return false;}
+	bool sampleApproximationOfObservedProba() {return false;}
 private:
 protected:
 	/** Number of classes */

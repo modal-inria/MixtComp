@@ -205,13 +205,13 @@ public:
 	 *   - nodeMultinomial, recursive function, computes the probability of a path
 	 *   - endMultinomial, returns the probability of current configuration
 	 * */
-	virtual void sampleUnobservedAndLatent(Index ind, Index k) {
+	void sampleUnobservedAndLatent(Index ind, Index k) {
 		GibbsSampling(ind, mu_(k), pi_(k)); // in samplingStepCheck, each sampling must result in a valid state
 		copyToData(ind);
 	}
 
 	/** storeSEMRun sets new parameters at the last iteration of the SEM, before the Gibbs. */
-	virtual void storeSEMRun(Index iteration, Index iterationMax) {
+	void storeSEMRun(Index iteration, Index iterationMax) {
 		muParamStatComputer_.sampleParam(iteration, iterationMax);
 		piParamStatComputer_.sampleParam(iteration, iterationMax);
 
@@ -238,14 +238,14 @@ public:
 		}
 	}
 
-	virtual void storeGibbsRun(Index ind, Index iteration, Index iterationMax) {
+	void storeGibbsRun(Index ind, Index iteration, Index iterationMax) {
 		dataStatComputer_.sampleVals(ind, iteration, iterationMax); // ConfIntStat called to sample value
 		if (iteration == iterationMax) {
 			dataStatComputer_.imputeData(ind); // impute the missing values using empirical mean
 		}
 	}
 
-	virtual Real lnCompletedProbability(Index i, Index k) const {
+	Real lnCompletedProbability(Index i, Index k) const {
 		return path_(i).computeLogProba(mu_(k), pi_(k)); // path_(i) contains a completed individual
 	}
 
@@ -253,7 +253,7 @@ public:
 	 * This function must be defined to return the observed likelihood
 	 * @return the observed log-likelihood
 	 */
-	virtual Real lnObservedProbability(Index i, Index k) const {
+	Real lnObservedProbability(Index i, Index k) const {
 #ifdef MC_DEBUG
 		std::cout << "Ordinal::lnobservedProbability" << std::endl;
 		std::cout << "observedProba_.rows(): " << observedProba_.rows() << ", observedProba_.cols(): " << observedProba_.cols() << std::endl;
@@ -274,11 +274,11 @@ public:
 		return std::numeric_limits<Real>::signaling_NaN(); // fail case
 	}
 
-	virtual Index nbFreeParameter() const {
+	Index nbFreeParameter() const {
 		return nClass_; // only the continuous pi_ parameter is taken into account, not the discrete mu_ parameter
 	}
 
-	virtual void writeParameters() const {
+	void writeParameters() const {
 		std::stringstream sstm;
 		for (int k = 0; k < nClass_; ++k) {
 			sstm << "Class: " << k << std::endl;
@@ -289,7 +289,7 @@ public:
 		std::cout << sstm.str() << std::endl;
 	}
 
-	virtual void exportDataParam() const {
+	void exportDataParam() const {
 		int nbColStat = muParamStatComputer_.getStatStorage().cols();
 		Matrix<Real> paramStatStorage(2 * nClass_, nbColStat); // aggregates both mu and pi values
 		for (int j = 0; j < nbColStat; ++j) {
@@ -351,7 +351,7 @@ public:
 		}
 	}
 
-	virtual void initializeMarkovChain(Index i, Index k) {
+	void initializeMarkovChain(Index i, Index k) {
 		initBOS(i, k); // Gibbs sampling iterations to avoid estimating too closely to 0 in first iterations
 	}
 
@@ -427,7 +427,7 @@ public:
 		return "";
 	}
 
-	virtual bool sampleApproximationOfObservedProba() {return true;}
+	bool sampleApproximationOfObservedProba() {return true;}
 private:
 	/**
 	 * Perform one iteration of Gibbs sampling, insuring proper implementation of allZOneAuthorized flag
