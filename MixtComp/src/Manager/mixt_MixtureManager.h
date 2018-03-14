@@ -17,6 +17,7 @@
 #include "Mixture/Simple/Gaussian.h"
 #include "Mixture/Simple/Poisson.h"
 #include "Mixture/Functional/mixt_FunctionalMixture.h"
+#include "Mixture/FunctionalSharedAlpha/mixt_FunctionalMixture.h"
 #include "Mixture/Ordinal/mixt_Ordinal.h"
 #include "Mixture/Rank/mixt_RankMixture.h"
 
@@ -120,6 +121,16 @@ public:
 		if (idModel == "Functional") {
 			FunctionalMixture<DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new FunctionalMixture<
+					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
+					indexMixture, idName, nbCluster, p_handler_,
+					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
+					confidenceLevel);
+			return p_bridge;
+		}
+
+		if (idModel == "FunctionalSharedAlpha") {
+			FunctionalSharedAlphaMixture<DataHandler, DataExtractor, ParamSetter,
+					ParamExtractor>* p_bridge = new FunctionalSharedAlphaMixture<
 					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
 					indexMixture, idName, nbCluster, p_handler_,
 					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,

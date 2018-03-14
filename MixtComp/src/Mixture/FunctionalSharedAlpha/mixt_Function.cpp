@@ -7,8 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_Function.h"
-#include "mixt_FunctionalClass.h"
+#include <Mixture/FunctionalSharedAlpha/mixt_Function.h>
+#include <Mixture/FunctionalSharedAlpha/mixt_FunctionalClass.h>
 
 namespace mixt {
 

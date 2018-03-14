@@ -7,16 +7,16 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_FUNCTIONALMIXTURE
-#define MIXT_FUNCTIONALMIXTURE
+#ifndef MIXT_FUNCTIONALSHAREDALPHAMIXTURE
+#define MIXT_FUNCTIONALSHAREDALPHAMIXTURE
 
 namespace mixt {
 
 template<typename DataHandler, typename DataExtractor, typename ParamSetter,
 		typename ParamExtractor>
-class FunctionalMixture: public IMixture {
+class FunctionalSharedAlphaMixture: public IMixture {
 public:
-	FunctionalMixture(Index indexMixture, std::string const& idName,
+	FunctionalSharedAlphaMixture(Index indexMixture, std::string const& idName,
 			Index nClass, const DataHandler* p_handler,
 			DataExtractor* p_extractor, const ParamSetter* p_paramSetter,
 			ParamExtractor* p_paramExtractor, Real confidenceLevel) :
@@ -39,7 +39,7 @@ public:
 	}
 
 	//** Dummy  constructor to check compilation */
-	FunctionalMixture(const Vector<std::set<Index> >& classInd) :
+	FunctionalSharedAlphaMixture(const Vector<std::set<Index> >& classInd) :
 			IMixture(0, "dummy"), nInd_(0), nClass_(0), nSub_(0), nCoeff_(0), confidenceLevel_(
 					0.), p_handler_(NULL), p_dataExtractor_(NULL), p_paramSetter_(
 					NULL), p_paramExtractor_(NULL) {

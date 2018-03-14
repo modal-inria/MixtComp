@@ -10,9 +10,9 @@
 #ifndef MIXT_FUNCTION
 #define MIXT_FUNCTION
 
+#include <Mixture/FunctionalSharedAlpha/mixt_FunctionalComputation.h>
 #include "LinAlg/mixt_LinAlg.h"
 #include "Statistic/mixt_Statistic.h"
-#include "mixt_FunctionalComputation.h"
 
 namespace mixt {
 
