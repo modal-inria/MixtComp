@@ -17,6 +17,8 @@ namespace mixt {
 
 const std::string version = "2.0.0";
 
+const char *deterministicEnvVar = "MC_DETERMINISTIC";
+
 const bool degeneracyAuthorizedForNonBoundedLikelihood = true;
 
 const std::string eol = "\n";

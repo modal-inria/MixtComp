@@ -16,6 +16,8 @@ namespace mixt {
 
 extern const std::string version; // version number, see http://semver.org/
 
+extern const char *deterministicEnvVar; // name of the env variable used to flag deterministic run
+
 extern const bool degeneracyAuthorizedForNonBoundedLikelihood; // are degeneracies authorized for non bounded likelihood ?
 
 extern const std::string eol;

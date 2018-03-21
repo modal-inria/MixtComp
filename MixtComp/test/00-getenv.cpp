@@ -15,14 +15,13 @@
  */
 int main() {
 //	const char *varName = "PATH";
-	const char *varName = "UNUSED_VAR";
+	const char *varName = "MC_DETERMINISTIC";
 
 	char *str_ptr = std::getenv(varName);
 
 	if (str_ptr == NULL) {
 		std::cout << varName << ": does not exist." << std::endl;
-	}
-	else {
+	} else {
 		std::cout << varName << ": " << str_ptr << std::endl;
 	}
 
