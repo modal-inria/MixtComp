@@ -14,34 +14,30 @@
 #include <boost/random/mersenne_twister.hpp>
 #include "mixt_UniformStatistic.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class PoissonStatistic
-{
-  public:
-    PoissonStatistic();
+class PoissonStatistic {
+public:
+	PoissonStatistic();
 
-    /** pdf evaluated at individual x */
-    Real pdf(int x,
-             Real lambda) const;
+	/** pdf evaluated at individual x */
+	Real pdf(int x, Real lambda) const;
 
-    Real lpdf(int x,
-              Real lambda) const;
+	Real lpdf(int x, Real lambda) const;
 
-    /** Sample a value from a Poisson Law with parameter lambda */
-    int sample(Real lambda);
+	/** Sample a value from a Poisson Law with parameter lambda */
+	int sample(Real lambda);
 
-    /**
-     * Sample a non-zero value
-     * */
-    int nonZeroSample(Real lambda);
-  private:
-    /** Random number generator */
-    boost::mt19937 rng_;
+	/**
+	 * Sample a non-zero value
+	 * */
+	int nonZeroSample(Real lambda);
+private:
+	/** Random number generator */
+	boost::mt19937 rng_;
 
-    /** Uniform sampler used for nonZeroSample */
-    UniformStatistic uniform_;
+	/** Uniform sampler used for nonZeroSample */
+	UniformStatistic uniform_;
 };
 
 } // namespace mixt

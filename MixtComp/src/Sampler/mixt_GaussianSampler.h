@@ -5,7 +5,7 @@
  *  Project:    MixtComp
  *  Created on: 14 feb. 2014
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
- *              iovleff, serge.iovleff@stkpp.org
+ *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
 #ifndef MIXT_GAUSSIANSAMPLER_H

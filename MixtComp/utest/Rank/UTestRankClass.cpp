@@ -168,7 +168,7 @@ TEST(RankClass, sampleMu) {
 
 /** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
 TEST(RankClass, mStep) {
-	int nbPos = 7;
+	int nbPos = 5;
 	int nbInd = 500;
 	int nbIterburnIn = 500;
 	Real tolerance = 0.05;
@@ -185,7 +185,7 @@ TEST(RankClass, mStep) {
 	Vector<RankIndividual> data(nbInd); // will store the result of xGen
 	std::set<Index> setInd;
 
-	RankVal mu = { 0, 3, 1, 2, 6, 5, 4 }; // position -> modality representation
+	RankVal mu = { 0, 3, 1, 2, 4 }; // position -> modality representation
 	Real pi = 0.75;
 
 	for (int i = 0; i < nbInd; ++i) {

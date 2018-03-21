@@ -11,15 +11,30 @@
 #define MIXT_RNG_H
 
 #include <cstddef>
+#include <iostream>
 
 namespace mixt {
 
+#ifdef MC_DETERMINISTIC
+
 template<class T>
 std::size_t seed(const T * const p_caller) {
-  return size_t(p_caller) + time(0);
-//    return 12;
-//    return 438968;
-};
+	static Index nCall = 0;
+	++nCall;
+//	std::cout << "seed, nCall: " << nCall << std::endl;
+	return nCall;
+}
+;
+
+#else
+
+template<class T>
+std::size_t seed(const T * const p_caller) {
+	return size_t(p_caller) + time(0);
+}
+;
+
+#endif
 
 } // namespace mixt
 

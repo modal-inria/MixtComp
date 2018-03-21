@@ -5,7 +5,7 @@
  *  Project:    MixtComp
  *  Created on: Sept 3, 2013
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
- *              iovleff, serge.iovleff@stkpp.org
+ *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
 #include "mixt_SEMStrategy.h"

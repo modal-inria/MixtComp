@@ -5,7 +5,7 @@
  *  Project:    MixtComp
  *  Created on: Mar 27, 2014
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
- *              iovleff, serge.iovleff@stkpp.org
+ *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
 #ifndef MIXT_CATEGORICALSAMPLER_H

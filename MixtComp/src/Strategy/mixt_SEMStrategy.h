@@ -4,8 +4,8 @@
 /*
  *  Project:    MixtComp
  *  Created on: Sept 3, 2013
- *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
- *              iovleff, serge.iovleff@stkpp.org,
+ *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
+ *              Serge IOVLEFF <serge.iovleff@inria.fr>
  *              Parmeet Bhatia <b..._DOT_p..._AT_gmail_Dot_com>
  **/
 
