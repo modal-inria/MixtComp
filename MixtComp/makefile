@@ -62,7 +62,7 @@ LIB_NLOPT = ../nlopt/.libs/libnlopt.a
 
 # sample test
 EXE_TEST = test/test
-SRC_TEST = test/03-optimization.cpp
+SRC_TEST = test/00-getenv.cpp
 O_TEST = $(SRC_TEST:%.cpp=%.o)
 D_TEST = $(SRC_TEST:%.cpp=%.d)
 ALL_TEST = $(O_TEST) $(D_TEST) $(EXE_TEST)
@@ -119,16 +119,16 @@ $(LIB_RE): $(O_RE)
 	
 $(LIB_NLOPT):
 	cd ../nlopt;./configure CFLAGS=-fPIC;make
+
+test: $(EXE_TEST)
+
+$(EXE_TEST): $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) $(O_TEST)
+	$(CXX) $^ -lpthread $(LIB_MC) $(LIB_OPT) -o $@ # linker only, as cpp file is compiled by automatic rule
 	
 utest: $(EXE_UTEST)
 
 $(EXE_UTEST): $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) $(O_GTEST) $(O_UTEST)
 	$(CXX) $^ -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
-
-#test: $(EXE_TEST)
-
-#$(EXE_TEST): $(LIB_MC) $(O_TEST)
-#	$(CXX) $^ -lpthread $(LIB_MC) $(LIB_OPT) -o $@ # linker only, as cpp file is compiled by automatic rule
 
 -include $(D_MC)
 -include $(D_RE)
