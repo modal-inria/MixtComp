@@ -122,12 +122,12 @@ $(LIB_NLOPT):
 
 test: $(EXE_TEST)
 
-$(EXE_TEST): $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) $(O_TEST)
-	$(CXX) $^ -lpthread $(LIB_MC) $(LIB_OPT) -o $@ # linker only, as cpp file is compiled by automatic rule
+$(EXE_TEST): $(O_TEST) $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) 
+	$(CXX) $^ -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 	
 utest: $(EXE_UTEST)
 
-$(EXE_UTEST): $(LIB_MC) $(LIB_NLOPT) $(LIB_RE) $(O_GTEST) $(O_UTEST)
+$(EXE_UTEST): $(O_GTEST) $(O_UTEST) $(LIB_MC) $(LIB_NLOPT) $(LIB_RE)
 	$(CXX) $^ -lpthread -o $@ # linker only, as cpp file is compiled by automatic rule
 
 -include $(D_MC)
