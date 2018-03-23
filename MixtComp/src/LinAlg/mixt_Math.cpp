@@ -11,7 +11,7 @@
 #include "mixt_Math.h"
 
 int fac(int n) {
-	return tgamma(n + 1);
+	return std::round(tgamma(n + 1));
 }
 
 Real logFac(int n) {
