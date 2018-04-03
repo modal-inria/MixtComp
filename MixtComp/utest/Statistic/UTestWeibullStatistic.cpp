@@ -15,19 +15,19 @@ using namespace mixt;
  * Numerically check that pdf is the derivative of cdf, as per the definition. And that lpdf is correctly computed.
  * */
 TEST(WeibullStatistic, DistributionFunctions) {
-  Real k = 2.3;
-  Real lambda = 0.9;
-  Real obs = 3.0;
+	Real k = 2.3;
+	Real lambda = 0.9;
+	Real obs = 3.0;
 
-  WeibullStatistic weibull;
+	WeibullStatistic weibull;
 
-  Real cdf1 = weibull.cdf(k, lambda, obs + epsilon);
-  Real cdf0 = weibull.cdf(k, lambda, obs);
+	Real cdf1 = weibull.cdf(k, lambda, obs + epsilon);
+	Real cdf0 = weibull.cdf(k, lambda, obs);
 
-  Real derivPDF = (cdf1 - cdf0) / epsilon;
-  Real directPDF = weibull.pdf(k, lambda, obs);
-  Real directLPDF = weibull.lpdf(k, lambda, obs);
+	Real derivPDF = (cdf1 - cdf0) / epsilon;
+	Real directPDF = weibull.pdf(k, lambda, obs);
+	Real directLPDF = weibull.lpdf(k, lambda, obs);
 
-  ASSERT_NEAR(derivPDF, directPDF, epsilon);
-  ASSERT_NEAR(std::log(directPDF), directLPDF, epsilon);
+	ASSERT_NEAR(derivPDF, directPDF, epsilon);
+	ASSERT_NEAR(std::log(directPDF), directLPDF, epsilon);
 }
