@@ -15,6 +15,7 @@
 #include "mixt_MultinomialStatistic.h"
 #include "mixt_NormalStatistic.h"
 #include "mixt_PoissonStatistic.h"
+#include "mixt_RNG.h"
 #include "mixt_UniformStatistic.h"
 #include "WeibullStatistic.h"
 

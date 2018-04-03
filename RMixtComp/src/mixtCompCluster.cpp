@@ -23,6 +23,7 @@ Rcpp::List mixtCompCluster(
     double confidenceLevel) {
 
 	std::cout << "MixtComp, learn, version: " << mixt::version << std::endl;
+	std::cout << "Deterministic mode: " << mixt::deterministicMode() << std::endl;
 //	std::cout<< "Number of threads: " << omp_get_num_threads() << std::endl;
 
   mixt::Timer totalTimer("Total Run");
