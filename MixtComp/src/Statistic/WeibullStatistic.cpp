@@ -15,9 +15,9 @@
 
 namespace mixt {
 
-WeibullStatistic::WeibullStatistic()
-: rng_(seed(this))
-{}
+WeibullStatistic::WeibullStatistic() :
+		rng_(seed(this)) {
+}
 
 Real WeibullStatistic::quantile(Real k, Real lambda, Real p) const {
 	if (p == 1.0) {
@@ -35,7 +35,8 @@ Real WeibullStatistic::quantileIB(Real k, Real lambda, Real a, Real p) const {
 
 Real WeibullStatistic::sample(Real k, Real lambda) {
 	boost::random::weibull_distribution<> w(k, lambda);
-	boost::variate_generator<boost::mt19937&, boost::random::weibull_distribution<> > generator(rng_, w);
+	boost::variate_generator<boost::mt19937&,
+			boost::random::weibull_distribution<> > generator(rng_, w);
 	return generator();
 }
 
@@ -52,7 +53,8 @@ Real WeibullStatistic::pdf(Real k, Real lambda, Real x) const {
 
 Real WeibullStatistic::lpdf(Real k, Real lambda, Real x) const {
 	Real logLambda = std::log(lambda);
-	return std::log(k) - logLambda + (k - 1.0) * (std::log(x) - logLambda) - std::pow(x / lambda, k);
+	return std::log(k) - logLambda + (k - 1.0) * (std::log(x) - logLambda)
+			- std::pow(x / lambda, k);
 }
 
 Real WeibullStatistic::cdf(Real k, Real lambda, Real x) const {
@@ -61,7 +63,7 @@ Real WeibullStatistic::cdf(Real k, Real lambda, Real x) const {
 
 Real WeibullStatistic::cdfIB(Real k, Real lambda, Real a, Real x) const {
 	Real cdfa = cdf(k, lambda, a);
-	return (cdf(k, lambda, x) - cdfa)/(1.0 - cdfa);
+	return (cdf(k, lambda, x) - cdfa) / (1.0 - cdfa);
 }
 
 Real WeibullStatistic::lcdf(Real k, Real lambda, Real x) const {

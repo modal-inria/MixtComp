@@ -16,39 +16,30 @@
 
 #include "mixt_RNG.h"
 
-namespace mixt
-{
+namespace mixt {
 
 ExponentialStatistic::ExponentialStatistic() :
-    rng_(seed(this))
-{}
-
-Real ExponentialStatistic::cdf(Real x,
-                               Real lambda) const
-{
-  boost::math::exponential expo(lambda);
-  Real proba = boost::math::cdf(expo,
-                                     x);
-  return proba;
+		rng_(seed(this)) {
 }
 
-Real ExponentialStatistic::pdf(Real x,
-                               Real lambda) const
-{
-  boost::math::exponential expo(lambda);
-  Real proba = boost::math::pdf(expo,
-                                     x);
-  return proba;
+Real ExponentialStatistic::cdf(Real x, Real lambda) const {
+	boost::math::exponential expo(lambda);
+	Real proba = boost::math::cdf(expo, x);
+	return proba;
 }
 
-Real ExponentialStatistic::sample(Real lambda)
-{
-  boost::random::exponential_distribution<> expo(lambda);
-  boost::variate_generator<boost::random::mt19937&,
-                           boost::random::exponential_distribution<> > generator(rng_,
-                                                                                 expo);
-  Real x = generator();
-  return x;
+Real ExponentialStatistic::pdf(Real x, Real lambda) const {
+	boost::math::exponential expo(lambda);
+	Real proba = boost::math::pdf(expo, x);
+	return proba;
+}
+
+Real ExponentialStatistic::sample(Real lambda) {
+	boost::random::exponential_distribution<> expo(lambda);
+	boost::variate_generator<boost::random::mt19937&,
+			boost::random::exponential_distribution<> > generator(rng_, expo);
+	Real x = generator();
+	return x;
 }
 
 } // namespace mixt

@@ -20,8 +20,8 @@
 namespace mixt {
 
 class MultinomialStatistic {
-public:
 
+public:
 	MultinomialStatistic();
 
 	/** Sample a value from a binomial law with  */
