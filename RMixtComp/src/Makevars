@@ -39,7 +39,7 @@ DIR_TEST = test
 PKG_CXXFLAGS = -std=c++11 -MD -MP -I../.. -I$(INC_BOOST) -I$(INC_EIGEN) -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -I$(DIR_MC)/src/LinAlg -I$(DIR_MC)/src -I$(INC_NLOPT)
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = $(LIB_MC) $(LIB_RE) $(LIB_NLOPT)
+PKG_LIBS = $(LIB_MC) $(LIB_NLOPT) $(LIB_RE)
 
 R_BUILD = T # Variable used to signal that the compilation occurs from inside R
 
@@ -55,8 +55,10 @@ all: $(SHLIB)
 
 $(SHLIB): pkglib
 
-pkglib:
+pkglib: $(LIB_NLOPT)
 	cd $(DIR_MC);make lib
-	cd $(DIR_NLOPT);./configure CFLAGS=-fPIC;make
 	cd $(DIR_RE);make lib
 	cd $(DIR_TEST);make all
+
+$(LIB_NLOPT):
+	cd $(DIR_NLOPT);./configure CFLAGS=-fPIC;make

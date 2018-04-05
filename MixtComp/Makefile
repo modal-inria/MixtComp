@@ -118,11 +118,8 @@ $(LIB_MC): $(O_MC)
 $(LIB_RE): $(O_RE)
 	$(AR) $(ARFLAGS) $@ $^
 	
-$(LIB_NLOPT): $(MAKEFILE_NLOPT)
-	cd ../nlopt;make
-
-$(MAKEFILE_NLOPT):
-	cd ../nlopt;./configure CFLAGS=-fPIC
+$(LIB_NLOPT):
+	cd ../nlopt;./configure CFLAGS=-fPIC;make
 
 test: $(EXE_TEST)
 
