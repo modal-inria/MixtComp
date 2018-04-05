@@ -17,11 +17,19 @@ namespace mixt {
 
 bool deterministicMode() {
 	static const char *str_ptr = std::getenv(deterministicEnvVar);
+	static bool detMode = (str_ptr == NULL) ? (false) : (true);
+	return detMode;
+}
+
+int detministicInitialSeed() {
+	const char *str_ptr = std::getenv(deterministicEnvVar);
 
 	if (str_ptr == NULL) {
-		return false;
+		return 0;
 	} else {
-		return true;
+		int seed = std::atoi(str_ptr);
+		std::cout << "Initial random seed value: " << seed << std::endl;
+		return seed;
 	}
 }
 

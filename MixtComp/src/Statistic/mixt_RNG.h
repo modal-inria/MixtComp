@@ -18,9 +18,11 @@ namespace mixt {
 
 bool deterministicMode();
 
+int detministicInitialSeed();
+
 template<class T>
 std::size_t seed(const T* const p_caller) {
-	static Index nCall = 0;
+	static Index nCall = detministicInitialSeed();
 
 	if (deterministicMode() == false) {
 		return size_t(p_caller) + time(0);

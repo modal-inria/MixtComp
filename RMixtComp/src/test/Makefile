@@ -15,7 +15,7 @@ RINSIDELIBS := 	$(shell echo 'RInside:::LdFlags()' | R --vanilla --slave)
 ## compiler etc settings used in default make rules
 CXX := $(shell R $(R_ARCH) CMD config CXX)
 CPPFLAGS :=	-Wall $(shell R $(R_ARCH) CMD config CPPFLAGS)
-CXXFLAGS := $(RCPPFLAGS) $(RCPPINCL) $(RINSIDEINCL) $(shell R CMD config CXXFLAGS)
+CXXFLAGS := -std=c++11 $(RCPPFLAGS) $(RCPPINCL) $(RINSIDEINCL) $(shell R CMD config CXXFLAGS)
 LDFLAGS	= # -s
 LDLIBS := $(RLDFLAGS) $(RBLAS) $(RLAPACK) $(RINSIDELIBS) $(RCPPLIBS)
 CC := $(shell R CMD config CXX)

@@ -59,6 +59,7 @@ ALL_RE = $(O_RE) $(D_RE) $(LIB_RE)
 
 # optimization library
 LIB_NLOPT = ../nlopt/.libs/libnlopt.a
+MAKEFILE_NLOPT = ../nlopt/Makefile
 
 # sample test
 EXE_TEST = test/test
@@ -117,8 +118,11 @@ $(LIB_MC): $(O_MC)
 $(LIB_RE): $(O_RE)
 	$(AR) $(ARFLAGS) $@ $^
 	
-$(LIB_NLOPT):
-	cd ../nlopt;./configure CFLAGS=-fPIC;make
+$(LIB_NLOPT): $(MAKEFILE_NLOPT)
+	cd ../nlopt;make
+
+$(MAKEFILE_NLOPT):
+	cd ../nlopt;./configure CFLAGS=-fPIC
 
 test: $(EXE_TEST)
 
