@@ -21,7 +21,7 @@ bool deterministicMode() {
 	return detMode;
 }
 
-int detministicInitialSeed() {
+int deterministicInitialSeed() {
 	const char *str_ptr = std::getenv(deterministicEnvVar);
 
 	if (str_ptr == NULL) {
