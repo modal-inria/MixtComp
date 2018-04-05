@@ -67,14 +67,13 @@ public:
 		}
 
 		if (mode == prediction_) {
-			p_paramSetter_->getParam(idName_, // parameters are set using results from previous run
-					"NumericalParam", param_, paramStr_); // note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
+			p_paramSetter_->getParam(idName_, "NumericalParam", param_,
+					paramStr_); // parameters are set using results from previous run, note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
 
 			paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at model_.setModalities(nbParam)
 		}
 
-		warnLog += model_.setData( // checks on data bounds are made here
-				paramStr_, augData_, mode);
+		warnLog += model_.setData(paramStr_, augData_, mode); // checks on data bounds are made here, if paramStr_.size() = 0, it might be completed here, for example using the number of modalities found in the data
 
 		dataStat_.setNbIndividual(nbInd_);
 
@@ -104,8 +103,7 @@ public:
 		}
 	}
 
-	void storeGibbsRun(Index sample, Index iteration,
-			Index iterationMax) {
+	void storeGibbsRun(Index sample, Index iteration, Index iterationMax) {
 		dataStat_.sampleVals(sample, iteration, iterationMax);
 		if (iteration == iterationMax) {
 			dataStat_.imputeData(sample); // impute the missing values using empirical mean or mode, depending of the model
@@ -182,7 +180,9 @@ public:
 	}
 	;
 
-	bool sampleApproximationOfObservedProba() {return false;}
+	bool sampleApproximationOfObservedProba() {
+		return false;
+	}
 private:
 protected:
 	/** Number of classes */

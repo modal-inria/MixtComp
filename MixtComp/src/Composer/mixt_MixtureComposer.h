@@ -185,29 +185,35 @@ public:
 			paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
 		}
 
+		paramStr_ = "nModality: " + std::to_string(nClass_);
+
 		dataStat_.setNbIndividual(nInd_);
 
 		return warnLog;
 	}
 
-	/** ParamSetter is injected to take care of setting the values of the proportions.
+	/**
+	 * ParamSetter is injected to take care of setting the values of the proportions.
 	 * This avoids templating the whole composer with DataHandler type, as is currently done
-	 * with the individual IMixtures. */
+	 * with the individual IMixtures.
+	 */
 	template<typename ParamSetter>
 	std::string setProportion(const ParamSetter& paramSetter) {
 		std::string warnLog;
 
 		std::string dummy;
-		paramSetter.getParam("z_class", "pi", prop_, dummy); // no need for paramStr, as the parameter space is already described by nClass
+		paramSetter.getParam("z_class", "pi", prop_, dummy); // paramStr_ is manually set at the end of setDataParam
 
 		return warnLog;
 	}
 
-	/** DataHandler is injected to take care of setting the values of the latent classes.
+	/**
+	 * DataHandler is injected to take care of setting the values of the latent classes.
 	 * This avoids templating the whole composer with DataHandler type, as is currently done
 	 * with the IMixture subtypes.
 	 * @param checkInd should be set to 1 if a minimum number of individual per class should be
-	 * enforced at sampling (true in learning, false in prediction) */
+	 * enforced at sampling (true in learning, false in prediction)
+	 */
 	template<typename DataHandler>
 	std::string setZi(const DataHandler& dataHandler) {
 		std::string warnLog;
