@@ -5,6 +5,7 @@
 - reactivate all utest in UTestOrdinal.cpp
 - The current estimator of SEM based on median of estimators at each iteration is not robust.
 	- A parameter can be multivalued. When the individual medians are combined, the distribution obtained could potentially be very different from the every distribution observed during the SEM.
+	- The same problem occured with the categorical proportions. The solution was to normalize the estimated parameters so that the coefficients sum to 1.
 
 # Algorithm
 
