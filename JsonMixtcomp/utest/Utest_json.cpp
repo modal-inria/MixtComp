@@ -5,9 +5,9 @@
  *      Author: etienne
  */
 
-#include "Utest.h"
 #include <iostream>
 #include "json.hpp"
+#include "gtest/gtest.h"
 #include "../src/mixt_DataHandlerJson.h"
 #include "../src/mixt_DataExtractorJson.h"
 #include "../src/mixt_ParamExtractorJson.h"

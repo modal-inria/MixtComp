@@ -39,8 +39,8 @@ O_GTEST = $(SRC_GTEST:%.cc=%.o)
 O_UTEST = $(SRC_UTEST:%.cpp=%.o)
 D_GTEST = $(SRC_GTEST:%.cc=%.d)
 D_UTEST = $(SRC_UTEST:%.cc=%.d)
-ALL_UTEST = $(SRC_UTEST) $(O_UTEST) $(D_UTEST) $(EXE_UTEST) 
-ALL_GTEST = $(SRC_GTEST) $(O_GTEST) $(D_GTEST)
+ALL_UTEST = $(O_UTEST) $(D_UTEST) $(EXE_UTEST) 
+ALL_GTEST = $(O_GTEST) $(D_GTEST)
 
 R_BUILD = T # Variable used to signal that the compilation occurs from inside R
 export R_BUILD CC CFLAGS CXX CXXFLAGS
@@ -89,4 +89,4 @@ $(EXE_UTEST): $(O_GTEST) $(O_UTEST) $(LIB_JMC) $(LIB_MC) $(LIB_NLOPT) $(LIB_RE)
 	
 -include $(D_JMC)
 -include $(D_GTEST)
-
+-include $(D_UTEST)
