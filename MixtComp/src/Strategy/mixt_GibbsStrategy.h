@@ -11,7 +11,7 @@
 #define MIXT_GIBBSSTRATEGY_H
 
 #include "../Composer/mixt_MixtureComposer.h"
-#include "../Strategy/mixt_StrategyParam.h"
+#include "mixt_StrategyParam.h"
 
 namespace mixt {
 /**

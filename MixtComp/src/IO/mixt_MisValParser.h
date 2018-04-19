@@ -13,9 +13,9 @@
 #include <iostream>
 #include "boost/regex.hpp"
 
-#include "IO/mixt_IO.h"
-#include "IO/mixt_SpecialStr.h"
-#include "Various/mixt_Enum.h"
+#include "mixt_IO.h"
+#include "mixt_SpecialStr.h"
+#include "../Various/mixt_Enum.h"
 
 namespace mixt
 {

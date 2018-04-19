@@ -10,8 +10,8 @@
 #include <boost/algorithm/string.hpp>
 
 #include "mixt_RankParser.h"
-#include "../Data/mixt_MisValParser.h"
-#include "../IO/mixt_IO.h"
+#include "../../IO/mixt_MisValParser.h"
+#include "../../IO/mixt_IO.h"
 
 namespace mixt {
 

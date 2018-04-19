@@ -19,7 +19,7 @@
 
 #include "IO/Dummy.h"
 #include "IO/mixt_IO.h"
-#include "Data/mixt_MisValParser.h"
+#include "IO/mixt_MisValParser.h"
 #include "LinAlg/mixt_Math.h"
 #include "LinAlg/mixt_Typedef.h"
 #include "Mixture/Functional/mixt_Function.h"

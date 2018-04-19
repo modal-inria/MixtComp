@@ -18,7 +18,7 @@
 #define MIXT_MIXTURESTRATEGY_H
 
 #include "../Composer/mixt_MixtureComposer.h"
-#include "../Strategy/mixt_StrategyParam.h"
+#include "mixt_StrategyParam.h"
 
 namespace mixt {
 

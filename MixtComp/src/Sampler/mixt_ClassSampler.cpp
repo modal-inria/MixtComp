@@ -8,7 +8,6 @@
  **/
 
 #include "mixt_ClassSampler.h"
-#include "../Composer/mixt_MixtureComposer.h"
 #include "../Various/mixt_Constants.h"
 
 namespace mixt

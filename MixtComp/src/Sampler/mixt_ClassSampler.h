@@ -10,7 +10,7 @@
 #ifndef MIXT_CLASSSAMPLER_H
 #define MIXT_CLASSSAMPLER_H
 
-#include "../Composer/mixt_ZClassInd.h"
+#include "../Data/mixt_ZClassInd.h"
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
 #include "../Statistic/mixt_MultinomialStatistic.h"

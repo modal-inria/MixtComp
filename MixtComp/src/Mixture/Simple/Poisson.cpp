@@ -7,7 +7,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <Mixture/Simple/Poisson.h>
+#include "Poisson.h"
 #include "../../IO/mixt_IO.h"
 #include "../../Various/mixt_Constants.h"
 #include "../../Various/mixt_Enum.h"

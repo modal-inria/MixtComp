@@ -9,7 +9,7 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include "Data/mixt_MisValParser.h"
+#include "../../IO/mixt_MisValParser.h"
 #include "mixt_FunctionalParser.h"
 
 namespace mixt {

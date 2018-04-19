@@ -15,7 +15,7 @@
 #include <set>
 #include <vector>
 
-#include "mixt_ZClassInd.h"
+#include "../Data/mixt_ZClassInd.h"
 #include "../Data/mixt_ClassDataStat.h"
 #include "../Sampler/mixt_ClassSampler.h"
 #include "../Mixture/mixt_IMixture.h"
