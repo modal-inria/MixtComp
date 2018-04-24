@@ -4,6 +4,7 @@ cmake_minimum_required (VERSION 3.5)
 
 
 ####### REQUIRED LIBRARIES
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../libraries/cmakeModule/")
 
 ## Boost
 find_package(Boost COMPONENTS regex random REQUIRED)
@@ -18,8 +19,14 @@ if (OPENMP_FOUND)
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
+
 ## nlopt
-set(NLOPT_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/../nlopt/.libs/libnlopt.a")
+find_package(NLOPT REQUIRED)
+include_directories(${NLOPT_INCLUDE_DIRS})
+
+
+## eigen 
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../eigen/")
 
 
 ## Google Test
@@ -62,12 +69,8 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
 ## -I
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../eigen/")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../nlopt/api/")
-include_directories(${Boost_INCLUDE_DIRS})
 
 ## others cxx flags
 SET(MATRIXBASE_PLUGIN_FLAGS -DEIGEN_MATRIXBASE_PLUGIN=\\"${CMAKE_CURRENT_SOURCE_DIR}/src/LinAlg/mixt_EigenMatrixBaseAddons.h\\")
