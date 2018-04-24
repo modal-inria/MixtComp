@@ -7,14 +7,22 @@
 R must be installed, along with the following packages from the CRAN: Rcpp, jsonlite, scales, plotly. Two packages are used for testing but are not required for installing RMixtComp: testthat is used to perform unit testing in R and RInside is used for testing procedure in C++.
 Those command lines can perform the installation automatically in the ~/R directory
 add the following line to .bashrc: export R_LIBS="~/R"
+```
 mkdir ~/R
 Rscript -e "install.packages(c(\"Rcpp\", \"scales\", \"jsonlite\", \"plotly\"), repos = \"https://cran.univ-paris1.fr/\")"
-
+```
 If you want a minimal installation of RMixtComp, you can edit both the DESCRIPTION and NAMESPACE files to keep only the Rcpp dependency.
 
-### Boost
+### External libraries
 
-The Boost library is required for MixtComp to compile. As it contains a lot of files, it would slow down git to version everything. Boost is thus distributed as an archive to be found in the boost subfolder of the repository. Simply unzip it in place.
+Boost and Nlopt libraries are required for MixtComp to compile. 
+
+You can install them with the following command on linux:
+```
+sudo apt-get install libboost-all-dev
+sudo apt-get install libnlopt-dev
+```
+
 
 ## OSX
 
@@ -32,8 +40,10 @@ If packages devtools and testthat are isntalled, you can run the testing procedu
 Tests are implemented in the tests/testthat folder of RMixtComp.
 
 For your own testing procedure, you can use the data and descriptor files provided in the package, their paths can be obtained using :
+```
 pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+```
 
 Or you can generate your own data using functions:
 
