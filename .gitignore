@@ -29,3 +29,5 @@ test/test
 boost_1_56_0/*
 progress
 /.metadata/
+nlopt/
+MixtComp/build
