@@ -14,10 +14,9 @@
 #include <map>
 #include <set>
 
-#include "../LinAlg/mixt_LinAlg.h"
-
+#include "../../LinAlg/mixt_LinAlg.h"
 #include "../../Various/mixt_Enum.h"
-#include "../Statistic/mixt_Statistic.h"
+#include "../../Statistic/mixt_Statistic.h"
 #include "mixt_RankVal.h"
 
 namespace mixt {

@@ -12,7 +12,7 @@
 
 #include <list>
 
-#include "../LinAlg/mixt_LinAlg.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 #include "mixt_RankVal.h"
 
 namespace mixt

@@ -10,7 +10,7 @@
 #ifndef MIXT_RANKPARSER_H
 #define MIXT_RANKPARSER_H
 
-#include "../LinAlg/mixt_LinAlg.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 #include "mixt_RankIndividual.h"
 
 namespace mixt {

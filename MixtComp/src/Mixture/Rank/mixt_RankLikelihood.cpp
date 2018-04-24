@@ -10,7 +10,7 @@
 #include <iostream>
 
 #include "mixt_RankLikelihood.h"
-#include "../Various/mixt_Constants.h"
+#include "../../Various/mixt_Constants.h"
 
 namespace mixt
 {

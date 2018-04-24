@@ -12,7 +12,7 @@
 
 #include <vector>
 
-#include "../LinAlg/mixt_LinAlg.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 
 namespace mixt
 {

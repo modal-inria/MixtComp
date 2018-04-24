@@ -11,7 +11,7 @@
 #define MIXT_RANKVAL_H
 
 #include <iostream>
-#include "../LinAlg/mixt_LinAlg.h"
+#include "../../LinAlg/mixt_LinAlg.h"
 
 namespace mixt {
 

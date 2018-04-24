@@ -10,7 +10,7 @@
 #include<set>
 
 #include "mixt_RankIndividual.h"
-#include "../LinAlg/mixt_Math.h"
+#include "../../LinAlg/mixt_Math.h"
 
 namespace mixt
 {
