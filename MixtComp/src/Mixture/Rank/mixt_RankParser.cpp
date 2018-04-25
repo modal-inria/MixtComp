@@ -94,6 +94,9 @@ std::string parseRankStr(const Vector<std::string>& vecStr,
 #endif
         }
         break;
+
+        default: {}
+        break;
       }
 
       if (min < 0) {

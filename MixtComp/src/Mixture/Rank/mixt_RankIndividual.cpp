@@ -522,6 +522,9 @@ bool RankIndividual::isAuthorized(int value,
       }
     }
     break;
+
+    default: {}
+    break;
   }
 
   return isValid; // default value
