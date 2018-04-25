@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.5)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../libraries/cmakeModule/")
 
 ## Boost
-find_package(Boost COMPONENTS regex random REQUIRED)
+find_package(Boost 1.58 COMPONENTS regex random REQUIRED)
 include_directories(${BOOST_INCLUDE_DIRS})
 
 ## openMP
@@ -18,7 +18,7 @@ include_directories(${BOOST_INCLUDE_DIRS})
 #endif()
 
 ## nlopt
-find_package(NLOPT REQUIRED)
+find_package(NLOPT 2.4.2 REQUIRED)
 include_directories(${NLOPT_INCLUDE_DIRS})
 
 ## armadillo
