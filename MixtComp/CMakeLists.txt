@@ -2,32 +2,31 @@ project (MixtComp)
 
 cmake_minimum_required (VERSION 3.5)
 
-
-####### REQUIRED LIBRARIES
+# REQUIRED LIBRARIES
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../libraries/cmakeModule/")
 
 ## Boost
 find_package(Boost COMPONENTS regex random REQUIRED)
 include_directories(${BOOST_INCLUDE_DIRS})
 
-
 ## openMP
-find_package(OpenMP REQUIRED)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-endif()
-
+#find_package(OpenMP REQUIRED)
+#if (OPENMP_FOUND)
+#    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+#    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+#    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+#endif()
 
 ## nlopt
 find_package(NLOPT REQUIRED)
 include_directories(${NLOPT_INCLUDE_DIRS})
 
+## armadillo
+find_package (Armadillo REQUIRED)
+include_directories (${ARMADILLO_INCLUDE_DIRS})
 
-## eigen 
+## eigen
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../eigen/")
-
 
 ## Google Test
 # Download and unpack googletest at configure time
@@ -62,8 +61,7 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
-
-####### COMPILATION FLAGS
+# COMPILATION FLAGS
 
 ## C++11
 set(CMAKE_CXX_STANDARD 11)
@@ -77,15 +75,12 @@ SET(MATRIXBASE_PLUGIN_FLAGS -DEIGEN_MATRIXBASE_PLUGIN=\\"${CMAKE_CURRENT_SOURCE_
 SET(OTHER_CXX_FLAGS "-fPIC")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${MATRIXBASE_PLUGIN_FLAGS} ${OTHER_CXX_FLAGS}")
 
-
-
-####### MixtComp library to compile
+# MIXTCOMP LIBRARY TO COMPILE
 add_subdirectory(src)
 
+# EXECUTABLES
 
-####### executables
 ## unit tests
 file(GLOB UTEST_SRC utest/*/*.cpp)
 add_executable(runUtest ${UTEST_SRC} utest/UTest.h)
-target_link_libraries(runUtest gtest_main MixtComp)
-
+target_link_libraries(runUtest gtest_main MixtComp ${Boost_LIBRARIES} ${NLOPT_LIBRARIES} ${ARMADILLO_LIBRARIES})

@@ -23,9 +23,9 @@ Rscript -e "install.packages(c(\"Rcpp\", \"scales\", \"jsonlite\", \"plotly\"), 
 ```
 If you want a minimal installation of RMixtComp, you can edit both the DESCRIPTION and NAMESPACE files to keep only the *Rcpp* dependency.
 
-### External libraries
+## Linux
 
-Boost and Nlopt libraries are required for MixtComp to compile. 
+Boost and Nlopt libraries are required for MixtComp to compile.
 
 You can install them with the following command on linux:
 ```
@@ -36,6 +36,12 @@ sudo apt-get install libnlopt-dev
 ## OSX
 
 The developper tools must be installed, by typing `xcode-select --install` in a terminal. This will provide a C++ compiler and a build toolchain.
+
+The additional libraries can be installed using Homebrew.
+
+```
+brew install cmake boost nlopt
+```
 
 ## Windows
 

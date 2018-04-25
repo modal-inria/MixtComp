@@ -15,7 +15,7 @@ add_subdirectory(Various)
 add_library(MixtComp INTERFACE)
 target_sources(MixtComp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/mixt_MixtComp.h)
 target_include_directories(MixtComp INTERFACE
-  "${CMAKE_CURRENT_SOURCE_DIR}" 
+  "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
 target_link_libraries(MixtComp INTERFACE Composer
@@ -29,6 +29,4 @@ target_link_libraries(MixtComp INTERFACE Composer
 								Sampler
 								Statistic
 								Strategy
-								Various
-								${Boost_LIBRARIES}
-								${NLOPT_LIBRARIES})
+								Various)
