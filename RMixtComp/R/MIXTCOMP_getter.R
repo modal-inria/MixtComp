@@ -20,7 +20,8 @@
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50)
+#'                    nbGibbsIter = 50,
+#'                    ratioInitialization = 0.1)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -61,7 +62,8 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50)
+#'                    nbGibbsIter = 50,
+#'                    ratioInitialization = 0.1)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -98,7 +100,8 @@ getZ_class <- function(outMixtComp)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50)
+#'                    nbGibbsIter = 50,
+#'                    ratioInitialization = 0.1)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -138,7 +141,8 @@ getType <- function(outMixtComp, with.z_class = FALSE)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50)
+#'                    nbGibbsIter = 50,
+#'                    ratioInitialization = 0.1)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -175,7 +179,8 @@ getTik <- function(outMixtComp)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50)
+#'                    nbGibbsIter = 50,
+#'                    ratioInitialization = 0.1)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -187,6 +192,12 @@ getParam <- function(varName, outMixtComp)
 {
   type <- outMixtComp$variable$type[[varName]]
   
+  if(is.null(type))
+  {
+    warning("Bad variable name.")
+    return(c())
+  }
+    
   nbClass <- outMixtComp$mixture$nbCluster
   
   param <- switch(type,
@@ -201,7 +212,9 @@ getParam <- function(varName, outMixtComp)
                   "Functional" = list(alpha = outMixtComp$variable$param[[varName]]$alpha$stat[,1],
                                       beta = outMixtComp$variable$param[[varName]]$beta$stat[,1],
                                       sd = outMixtComp$variable$param[[varName]]$sd$stat[,1]),
-                  "LatentClass" = outMixtComp$variable$param[[varName]]$pi$stat[,1])
+                  "LatentClass" = outMixtComp$variable$param[[varName]]$pi$stat[,1],
+                  "Weibull" = matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), c("k (shape)", "lambda (scale)"))),
+                  warning("Not yet implemented."))
   
   return(param)
 }
@@ -234,7 +247,8 @@ getParam <- function(varName, outMixtComp)
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50)
+#'                    nbGibbsIter = 50,
+#'                    ratioInitialization = 0.1)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
