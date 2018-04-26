@@ -30,7 +30,8 @@ resGetData <- getData(c(pathToData, pathToDescriptor))
 mcStrategy <- list(nbBurnInIter = 100,
                    nbIter = 100,
                    nbGibbsBurnInIter = 50,
-                   nbGibbsIter = 50)
+                   nbGibbsIter = 50,
+                   ratioInitialization = 0.1)
 
 # run RMixtCompt for clustering
 res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)

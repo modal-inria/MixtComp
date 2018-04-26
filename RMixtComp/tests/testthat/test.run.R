@@ -11,7 +11,8 @@ test_that("run cluster/predict file csv",{
   mcStrategy <- list(nbBurnInIter = 100,
                      nbIter = 100,
                      nbGibbsBurnInIter = 50,
-                     nbGibbsIter = 50)
+                     nbGibbsIter = 50,
+                     ratioInitialization = 0.2)
   
   # run RMixtCompt for clustering
   res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -42,7 +43,8 @@ test_that("run cluster/predict R object",{
   mcStrategy <- list(nbBurnInIter = 100,
                      nbIter = 100,
                      nbGibbsBurnInIter = 50,
-                     nbGibbsIter = 50)
+                     nbGibbsIter = 50,
+                     ratioInitialization = 0.2)
   
   # run RMixtCompt for clustering
   res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
