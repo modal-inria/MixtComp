@@ -102,38 +102,38 @@ inline bool operator<(Scalar rhs) const {
 }
 
 /** Element-wise + between matrix and scalar */
-inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+inline const CwiseUnaryOp<internal::scalar_sum_op<Scalar>,
                           Derived>
 operator+(const Scalar& scalar) const
 {
-  return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+  return CwiseUnaryOp<internal::scalar_sum_op<Scalar>,
                       Derived>(derived(),
-                               internal::scalar_add_op<Scalar>(scalar));
+                               internal::scalar_sum_op<Scalar>(scalar));
 }
 
 /** Element-wise + between a scalar and a matrix */
-friend inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+friend inline const CwiseUnaryOp<internal::scalar_sum_op<Scalar>,
                                  Derived>
 operator+(const Scalar& scalar,
           const MatrixBase<Derived>& mat)
 {
-  return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+  return CwiseUnaryOp<internal::scalar_sum_op<Scalar>,
                       Derived>(mat.derived(),
-                               internal::scalar_add_op<Scalar>(scalar));
+                               internal::scalar_sum_op<Scalar>(scalar));
 }
 
 /** Element-wise - between matrix and scalar */
-inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+inline const CwiseUnaryOp<internal::scalar_sum_op<Scalar>,
                           Derived>
 operator-(const Scalar& scalar) const
 {
-  return CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+  return CwiseUnaryOp<internal::scalar_sum_op<Scalar>,
                       Derived>(derived(),
-                               internal::scalar_add_op<Scalar>(-scalar));
+                               internal::scalar_sum_op<Scalar>(-scalar));
 }
 
 /** Element-wise - between a scalar and a matrix */
-friend inline const CwiseUnaryOp<internal::scalar_add_op<Scalar>,
+friend inline const CwiseUnaryOp<internal::scalar_sum_op<Scalar>,
                                  CwiseUnaryOp<internal::scalar_opposite_op<Scalar>,
                                               const Derived> >
 operator-(const Scalar& scalar,
@@ -215,25 +215,25 @@ operator/=(const MatrixBase<OtherDerived>& other)
   return *this;
 }
 
-/** Element-wise log computation */
-inline const CwiseUnaryOp<internal::scalar_log_op<Scalar>,
-                          Derived>
-log() const
-{
-  return CwiseUnaryOp<internal::scalar_log_op<Scalar>,
-                      Derived>(derived(),
-                               internal::scalar_log_op<Scalar>());
-}
+///** Element-wise log computation */
+//inline const CwiseUnaryOp<internal::scalar_log_op<Scalar>,
+//                          Derived>
+//log() const
+//{
+//  return CwiseUnaryOp<internal::scalar_log_op<Scalar>,
+//                      Derived>(derived(),
+//                               internal::scalar_log_op<Scalar>());
+//}
 
-/** Element-wise exp computation */
-inline const CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
-                          Derived>
-exp() const
-{
-  return CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
-                      Derived>(derived(),
-                               internal::scalar_exp_op<Scalar>());
-}
+///** Element-wise exp computation */
+//inline const CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
+//                          Derived>
+//exp() const
+//{
+//  return CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
+//                      Derived>(derived(),
+//                               internal::scalar_exp_op<Scalar>());
+//}
 
 /** Element-wise abs computation */
 inline const CwiseUnaryOp<internal::scalar_abs_op<Scalar>,
@@ -256,7 +256,7 @@ cInv() const
 }
 
 /** Element-wise + between a scalar and a matrix */
-friend inline const CwiseUnaryOp<internal::scalar_multiple_op<Scalar>,
+friend inline const CwiseUnaryOp<internal::scalar_product_op<Scalar>,
                                  const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>,
                                                     Derived> >
 operator/(const Scalar& scalar,
