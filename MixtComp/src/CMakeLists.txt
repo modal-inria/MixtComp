@@ -28,6 +28,9 @@ include_directories (${ARMADILLO_INCLUDE_DIRS})
 ## eigen
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../eigen/")
 
+# find_package(Eigen3 3.3 REQUIRED)
+# include_directories( ${EIGEN3_INCLUDE_DIR} )
+
 ## Google Test
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
@@ -73,7 +76,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/")
 ## others cxx flags
 SET(MATRIXBASE_PLUGIN_FLAGS -DEIGEN_MATRIXBASE_PLUGIN=\\"${CMAKE_CURRENT_SOURCE_DIR}/lib/LinAlg/mixt_EigenMatrixBaseAddons.h\\")
 SET(OTHER_CXX_FLAGS "-fPIC")
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${MATRIXBASE_PLUGIN_FLAGS} ${OTHER_CXX_FLAGS}")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MATRIXBASE_PLUGIN_FLAGS} ${OTHER_CXX_FLAGS}")
 
 # MIXTCOMP LIBRARY TO COMPILE
 add_subdirectory(lib)
