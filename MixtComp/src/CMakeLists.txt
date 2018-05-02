@@ -21,10 +21,6 @@ include_directories(${BOOST_INCLUDE_DIRS})
 find_package(NLOPT 2.4.2 REQUIRED)
 include_directories(${NLOPT_INCLUDE_DIRS})
 
-## armadillo
-find_package (Armadillo 8.400.0 REQUIRED)
-include_directories (${ARMADILLO_INCLUDE_DIRS})
-
 ## eigen
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../eigen/")
 
