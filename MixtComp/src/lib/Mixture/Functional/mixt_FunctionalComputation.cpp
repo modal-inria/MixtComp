@@ -66,7 +66,7 @@ void timeValue(const Vector<Real>& t,
 
   for (Index j = 0; j < nT; ++j) { // why wasn't logToMulti used here ???
     logValue.row(j) -= logValue.row(j).maxCoeff(); // ... because the individual logs need to be translated too
-    logSumExpValue(j) = std::log(logValue.row(j).exp().sum());
+    logSumExpValue(j) = std::log(logValue.row(j).array().exp().sum());
   }
 }
 

@@ -42,7 +42,7 @@ public:
 		int index = 0;
 
 		for (int i = 0, ie = proportion.size(); i < ie; ++i) {
-			cumProb += proportion(i);
+			cumProb += proportion.coeff(i);
 			if (x < cumProb) {
 				return index;
 			}

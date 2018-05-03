@@ -138,7 +138,7 @@ TEST(Math, LogFactorial) {
 
 	Vector<Real> expectedFactoValue(10);
 	expectedFactoValue << 1., 1., 2., 6., 24., 120., 720., 5040., 40320., 362880.;
-	expectedFactoValue = expectedFactoValue.log();
+	expectedFactoValue = expectedFactoValue.array().log().matrix();
 
 	ASSERT_EQ(expectedFactoValue.isApprox(factoValue), true);
 }

@@ -34,7 +34,7 @@ TEST(RankClass, probaYgX) {
 
 	Real pi = 0.3;
 
-	Vector<Vector<int> > resVec(nbE);
+	Vector < Vector<int> > resVec(nbE);
 	Vector<Real> resProba(nbE);
 
 	rank.probaYgX(mu, pi, resVec, resProba);
@@ -92,13 +92,12 @@ TEST(RankClass, gibbsY) {
 		}
 	}
 
-	for (std::map<Vector<int>, Real>::iterator it = empDist.begin();
-			it != empDist.end(); ++it) // renormalization of the empirical distribution
+	for (std::map<Vector<int>, Real>::iterator it = empDist.begin(); it != empDist.end(); ++it) // renormalization of the empirical distribution
 			{
 		it->second /= nbIterRun;
 	}
 
-	Vector<Vector<int> > resVec(nbE);
+	Vector < Vector<int> > resVec(nbE);
 	Vector<Real> resProba(nbE);
 	rank.probaYgX(mu, pi, resVec, resProba);
 	for (int e = 0; e < nbE; ++e) // filling the map object used to compute the KL-divergence
@@ -107,10 +106,8 @@ TEST(RankClass, gibbsY) {
 	}
 
 	Real KLDivergence = 0.; // computation of the Kullback–Leibler_divergence
-	for (std::map<Vector<int>, Real>::iterator it = empDist.begin();
-			it != empDist.end(); ++it) {
-		KLDivergence += it->second
-				* (std::log(it->second) - std::log(calcDist[it->first]));
+	for (std::map<Vector<int>, Real>::iterator it = empDist.begin(); it != empDist.end(); ++it) {
+		KLDivergence += it->second * (std::log(it->second) - std::log(calcDist[it->first]));
 	}
 
 	ASSERT_LT(KLDivergence, tolerance);
