@@ -4,8 +4,7 @@
 * **JsonMixtComp** Use MixtComp with json files input and output
 * **RMixtComp** R package linking MixtComp with Rcpp (internal use)
 * **RJsonMixtComp** R package using JsonMixtComp (for customers)
-* **libraries** folder containing external libraries
-* **eigen** external library for liner algebra
+* **libraries** external libraries and cmake scripts
 * **json-develop** external library to manage json files in C++
 
 # Prerequisites
@@ -29,7 +28,7 @@ Boost and Nlopt libraries are required for MixtComp to compile.
 
 You can install them with the following command on linux:
 ```
-sudo apt install cmake libboost-all-dev libnlopt-dev libeigen3-dev 
+sudo apt install cmake libboost-all-dev libnlopt-dev libeigen3-dev
 ```
 
 ## OSX
@@ -47,6 +46,8 @@ brew install cmake boost nlopt eigen
 Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rtools/).
 
 # Build and install
+
+TODO: update this section with correct information once the build system has completely been converted to CMake.
 
 After the initial `git --clone`, or after any update via `git pull` for example, the code must be rebuilt. To handle the various dependencies correctly, it is necessary to rebuild MixtComp by calling `./mcUpdate.sh` which is in the same directory as this present document. The script will clean just enough location to ensure a proper build without taking too long to complete.
 
