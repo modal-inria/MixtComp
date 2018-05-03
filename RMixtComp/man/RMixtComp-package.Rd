@@ -6,7 +6,7 @@
 \title{RMixtComp}
 \description{
 Mixture Composer is a project to build mixture models with heterogeneous data
-sets. The conditional independence property enable composing all the
+sets. The conditional independence property enables composing all the
 data sets in a single mixture model.
 }
 \details{
@@ -14,7 +14,7 @@ data sets in a single mixture model.
 Package: \tab RMixtComp\cr
 Type: \tab Package\cr
 Version: \tab 0.2\cr
-Date: \tab 2018-02-07\cr
+Date: \tab 2018-04-26\cr
 }
 }
 \examples{
@@ -30,7 +30,8 @@ resGetData <- getData(c(pathToData, pathToDescriptor))
 mcStrategy <- list(nbBurnInIter = 100,
                    nbIter = 100,
                    nbGibbsBurnInIter = 50,
-                   nbGibbsIter = 50)
+                   nbGibbsIter = 50,
+                   ratioInitialization = 0.1)
 
 # run RMixtCompt for clustering
 res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)

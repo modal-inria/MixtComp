@@ -2,7 +2,7 @@ Package: RMixtComp
 Type: Package
 Title: Mixture Composer
 Version: 0.2
-Date: 2018-02-07
+Date: 2018-04-26
 Author: Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ, Serge IOVLEFF
 Copyright: Inria
 Maintainer: Vincent KUBICKI <vincent.kubicki@inria.fr>

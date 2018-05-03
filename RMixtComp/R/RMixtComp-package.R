@@ -4,7 +4,7 @@
 #' @name RMixtComp-package
 #' @description  
 #' Mixture Composer is a project to build mixture models with heterogeneous data
-#' sets. The conditional independence property enable composing all the
+#' sets. The conditional independence property enables composing all the
 #' data sets in a single mixture model.
 #'
 #' 
@@ -13,7 +13,7 @@
 #' Package: \tab RMixtComp\cr
 #' Type: \tab Package\cr
 #' Version: \tab 0.2\cr
-#' Date: \tab 2018-02-07\cr
+#' Date: \tab 2018-04-26\cr
 #' }
 #' 
 #' 
@@ -35,7 +35,8 @@
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50)
+#'                    nbGibbsIter = 50,
+#'                    ratioInitialization = 0.1)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -109,28 +110,47 @@ NULL
 #'   \item{nbIter}{Number of iterations of the SEM algorithm.}
 #'   \item{nbGibbsBurnInIter}{Number of iterations of the burn-in part of the Gibbs algorithm.}
 #'   \item{nbGibbsIter}{Number of iterations of the Gibbs algorithm.}
+#'   \item{ratioInitialization}{Proportion of data used to initialize clusters (default = 0.1).}
 #' }
 #' 
 #' 
 #' 
 #' @section Output object:
-#' The output list \emph{mixture} contains the \emph{BIC}, \emph{ICL}, number of samples (\emph{nbSample} or \emph{nbInd}),
-#' the number of class (\emph{nCluster}), the observed loglikelihood (\emph{lnObservedLikelihood}),
-#' the completed loglikelihood (\emph{lnCompletedLikelihood}), the number of free parameters of the mixture (\emph{nbFreeParameters}),
-#' the function used to create the output (\emph{mode} = "learn" for \link{mixtCompCluster} or "predict" for \link{mixtCompPredict}),
-#' something mathematic (\emph{IdClass}), the execution time (\emph{runTime}) and the warnings generated (\emph{warnlog}). 
-#' The convergence of the SEM can be checked with \emph{completedProbabilityLogBurnIn} and \emph{completedProbabilityLogRun}.
+#' The output list contains three elements \emph{mixture}, \emph{variable} and \emph{strategy}. \emph{mixture} is a list containing some criterion and some parameters. \emph{strategy} contains the parameter \emph{mcStrategy}. 
+#' And \emph{variable} contains parameters and completed data.
+#' 
+#' The \emph{mixture} contains
+#' \describe{
+#'   \item{BIC}{value of BIC}
+#'   \item{ICL}{value of ICL}
+#'   \item{nbSample, nbInd}{number of samples in the dataset}
+#'   \item{nbCluster}{number of class of the mixture}
+#'   \item{nbFreeParameters}{number of free parameters of the mixture}
+#'   \item{lnObservedLikelihood}{observed loglikelihood}
+#'   \item{lnCompletedLikelihood}{completed loglikelihood}
+#'   \item{mode}{"predict" for \link{mixtCompPredict} gor "learn" for \link{mixtCompCluster}}
+#'   \item{IDClass}{entropy used to compute the discriminative power (see code of \link{plotDiscrimVbles})}
+#'   \item{delta}{entropy used to compute the similarities between variables (see code of \link{heatmapVbles})}
+#'   \item{completedProbabilityLogBurnIn}{evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
+#'   \item{completedProbabilityLogRun}{evolution of the completed log-probability  after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)} 
+#'   \item{warnLog}{contains warnings. Is NULL if there is no warning.}
+#'   \item{runTime}{execution time in seconds} 
+#'   \item{lnProbaGivenClass}{log-probability of x_i for each class}
+#' }
 #' 
 #' 
 #' The output list \emph{variable} contains 3 lists : \emph{data}, \emph{type} and \emph{param}. 
 #' Each of these lists contains a list for each variable (the name of each list is the name of the variable) and for the class of samples (\emph{z_class}).
 #' The \emph{type} list contains the model used for each variable. Each list of the \emph{data} list contains
 #'  the completed data in the \emph{completed} element and some statistics about them (\emph{stat}). The estimated parameter can be found in the \emph{stat} 
-#'  element in the \emph{param} list (see Section \emph{View of an output object}).
+#'  element in the \emph{param} list (see Section \emph{View of an output object}). For more details about the parameters of each model, you can refer to \link{rnorm}, \link{rpois}, \link{rweibull}, 
+#'  the report \emph{Model-based clustering for multivariate partial ranking data} from Julien Jacques and Christophe Biernacki for the ranking model,
+#'  \emph{Model-Based Clustering of Multivariate Ordinal Data Relying on a Stochastic Binary Search Algorithm} from Christophe Biernacki and Julien Jacques for the ordinal model and 
+#'  \emph{Piecewise Regression Mixture for Simultaneous Functional Data Clustering and Optimal Segmentation} from Faicel Chamroukhi for the functional model.
 #' 
 #' 
 #' @section View of an output object:
-#' Example of output object with variables named "categorical", "gaussian", "ordinal", "rank", "functional" and "poisson".
+#' Example of output object with variables named "categorical", "gaussian", "ordinal", "rank", "functional", "poisson" and "weibull".
 #' 
 #' \tabular{lll}{
 #' output  \cr
@@ -138,12 +158,13 @@ NULL
 #' |        \tab          \tab |__ nbIter\cr
 #' |        \tab          \tab |__ nbGibbsBurnInIter\cr
 #' |        \tab          \tab |__ nbGibbsIter\cr
+#' |        \tab          \tab |__ ratioInitialization\cr
 #' | \cr
 #' |_______ \tab mixture \tab __ BIC \cr
 #' |        \tab         \tab |_ ICL\cr
 #' |        \tab         \tab |_ lnCompletedLikelihood\cr
 #' |        \tab         \tab |_ lnObservedLikelihood \cr
-#' |        \tab         \tab |_ IdClass  \cr
+#' |        \tab         \tab |_ IDClass  \cr
 #' |        \tab         \tab |_ delta  \cr
 #' |        \tab         \tab |_ mode \cr
 #' |        \tab         \tab |_ runTime \cr
@@ -152,6 +173,9 @@ NULL
 #' |        \tab         \tab |_ nbFreeParameters \cr
 #' |        \tab         \tab |_ nbCluster \cr
 #' |        \tab         \tab |_ warnLog \cr
+#' |        \tab         \tab |_ completedProbabilityLogBurnIn \cr
+#' |        \tab         \tab |_ completedProbabilityLogRun \cr
+#' |        \tab         \tab |_ lnProbaGivenClass \cr
 #' }
 #' \tabular{llllll}{
 #' |  \cr
@@ -176,6 +200,9 @@ NULL
 #'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
 #'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
 #'          \tab          \tab          \tab |_ poisson  \tab __ NumericalParam \tab __ stat\cr
+#'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
+#'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |_ weibull  \tab __ NumericalParam \tab __ stat\cr
 #'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
 #'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
 #'          \tab          \tab          \tab |_ ordinal \tab __ muPi \tab __ stat\cr
@@ -210,7 +237,8 @@ NULL
 #' mcStrategy <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50)
+#'                    nbGibbsIter = 50,
+#'                    ratioInitialization = 0.1)
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
