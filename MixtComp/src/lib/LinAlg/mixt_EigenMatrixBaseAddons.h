@@ -146,6 +146,7 @@ friend const CwiseBinaryOp<internal::scalar_quotient_op<Scalar>, const ConstantR
 
 /**
  * VECTOR VECTOR OPERATIONS
+ * Note that since we use the matrix API, most of the matrix / matrix operations are already accessible directly via the API
  */
 
 /**

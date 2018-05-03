@@ -26,10 +26,8 @@ find_package (Armadillo 8.400.0 REQUIRED)
 include_directories (${ARMADILLO_INCLUDE_DIRS})
 
 ## eigen
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../eigen334/")
-
-# find_package(Eigen3 3.3 REQUIRED)
-# include_directories( ${EIGEN3_INCLUDE_DIR} )
+find_package(Eigen3 3.3 REQUIRED)
+include_directories( ${EIGEN3_INCLUDE_DIR} )
 
 ## Google Test
 # Download and unpack googletest at configure time
