@@ -51,7 +51,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 
 	Matrix<Real> kappa(nTime, nSub);
 	for (Index i = 0; i < nTime; ++i) {
-		kappa.row(i) = logValue.row(i).array().exp() / std::exp(logSumExpValue(i));
+		kappa.row(i) = logValue.row(i).expE() / std::exp(logSumExpValue(i));
 		Index currW = multi.sample(kappa.row(i));
 		w(currW).insert(i); // sample the subregression
 
@@ -125,7 +125,7 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
 
 		Matrix<Real> kappa(nTime, nSub);
 		for (Index i = 0; i < nTime; ++i) {
-			kappa.row(i) = logValue.row(i).array().exp() / std::exp(logSumExpValue(i));
+			kappa.row(i) = logValue.row(i).expE() / std::exp(logSumExpValue(i));
 			Index currW = multi.sample(kappa.row(i));
 			w(currW).insert(i); // sample the subregression
 

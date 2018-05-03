@@ -20,33 +20,27 @@ typedef ConstIterator const_iterator;
 
 /**
  * VECTOR OPERATIONS
+ * Note that E is added as a suffix to design elementwise operation, because exp() and log() are partially defined for matrix,
+ * but not completely implemented in Eigen.
  */
 
-///** Element-wise log computation */
-//inline const CwiseUnaryOp<internal::scalar_log_op<Scalar>,
-//                          Derived>
-//log() const
-//{
-//  return CwiseUnaryOp<internal::scalar_log_op<Scalar>,
-//                      Derived>(derived(),
-//                               internal::scalar_log_op<Scalar>());
-//}
-///** Element-wise exp computation */
-//inline const CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
-//                          Derived>
-//exp() const
-//{
-//  return CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
-//                      Derived>(derived(),
-//                               internal::scalar_exp_op<Scalar>());
-//}
-/** Element-wise abs computation */
-inline const CwiseUnaryOp<internal::scalar_abs_op<Scalar>, Derived> abs() const {
+/** log(v) */
+inline const CwiseUnaryOp<internal::scalar_log_op<Scalar>, Derived> logE() const {
+	return CwiseUnaryOp<internal::scalar_log_op<Scalar>, Derived>(derived(), internal::scalar_log_op<Scalar>());
+}
+
+/** exp(v) */
+inline const CwiseUnaryOp<internal::scalar_exp_op<Scalar>, Derived> expE() const {
+	return CwiseUnaryOp<internal::scalar_exp_op<Scalar>, Derived>(derived(), internal::scalar_exp_op<Scalar>());
+}
+
+/** abs(v) */
+inline const CwiseUnaryOp<internal::scalar_abs_op<Scalar>, Derived> absE() const {
 	return CwiseUnaryOp<internal::scalar_abs_op<Scalar>, Derived>(derived(), internal::scalar_abs_op<Scalar>());
 }
 
-/** Element-wise inverse computation */
-inline const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>, Derived> cInv() const {
+/** v^-1 */
+inline const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>, Derived> cInvE() const {
 	return CwiseUnaryOp<internal::scalar_inverse_op<Scalar>, Derived>(derived(), internal::scalar_inverse_op<Scalar>());
 }
 
@@ -149,11 +143,7 @@ friend const CwiseBinaryOp<internal::scalar_quotient_op<Scalar>, const ConstantR
  * Note that since we use the matrix API, most of the matrix / matrix operations are already accessible directly via the API
  */
 
-/**
- * Comparison between vectors / matrices. Note that this is not a component-wise comparison,
- * but rather a form of order, like the alphabetical order between words. Comparaison stops at the first
- * different coefficient.
- */
+/** v < v */
 inline bool operator<(const Derived& rhs) const {
 	typename Derived::const_iterator lhsIt = derived().begin();
 	typename Derived::const_iterator rhsIt = rhs.begin();
@@ -168,6 +158,7 @@ inline bool operator<(const Derived& rhs) const {
 	return false; // equality of all terms
 }
 
+/** v > v */
 inline bool operator>(const Derived& rhs) const {
 	typename Derived::const_iterator lhsIt = derived().begin();
 	typename Derived::const_iterator rhsIt = rhs.begin();
@@ -182,19 +173,19 @@ inline bool operator>(const Derived& rhs) const {
 	return false;
 }
 
-/** Component-wise product */
+/** v * v */
 template<typename OtherDerived>
 inline const CwiseBinaryOp<Eigen::internal::scalar_product_op<Scalar, Scalar>, Derived, Derived> operator%(const MatrixBase<OtherDerived>& other) const {
 	return CwiseBinaryOp<internal::scalar_product_op<Scalar, Scalar>, Derived, OtherDerived>(derived(), other.derived(), internal::scalar_product_op<Scalar, Scalar>());
 }
 
-/** Component-wise quotient */
+/** v / v */
 template<typename OtherDerived>
 inline const CwiseBinaryOp<internal::scalar_quotient_op<Scalar, Scalar>, Derived, Derived> operator/(const MatrixBase<OtherDerived>& other) const {
 	return CwiseBinaryOp<internal::scalar_quotient_op<Scalar, Scalar>, Derived, OtherDerived>(derived(), other.derived(), internal::scalar_quotient_op<Scalar, Scalar>());
 }
 
-/** Element-wise %= between matrices */
+/** v %= v */
 template<typename OtherDerived>
 inline MatrixBase<Derived>&
 operator%=(const MatrixBase<OtherDerived>& other) {
@@ -202,7 +193,7 @@ operator%=(const MatrixBase<OtherDerived>& other) {
 	return *this;
 }
 
-/** Element-wise /= between matrices */
+/** v /= v */
 template<typename OtherDerived>
 inline MatrixBase<Derived>&
 operator/=(const MatrixBase<OtherDerived>& other) {
@@ -263,7 +254,7 @@ Scalar logToMulti(const MatrixBase<OtherDerived>& multi) {
 	derived() = multi;
 	Scalar max = derived().maxCoeff();
 	derived() -= max;
-	derived() = derived().array().exp();
+	derived() = derived().expE();
 	Scalar sum = derived().sum();
 	derived() = derived() / sum;
 
@@ -283,7 +274,7 @@ Scalar logProbaToLogMulti(const Derived& multi) {
 	Scalar max = derived().maxCoeff();
 	derived() -= max;
 
-	Derived exp(derived().array().exp());
+	Derived exp(derived().expE());
 	Scalar logSum = std::log(exp.sum());
 	derived() -= logSum;
 

@@ -40,7 +40,7 @@ TEST(Vector, CoeffInv) {
 	Vector<Real> vecB(3);
 	vecB << 1. / 1., 1. / 3., 1. / 7.;
 
-	EXPECT_TRUE(vecA.cInv().isApprox(vecB));
+	EXPECT_TRUE(vecA.cInvE().isApprox(vecB));
 }
 
 TEST(Vector, QuotientScalar) {

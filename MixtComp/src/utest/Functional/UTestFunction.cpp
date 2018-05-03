@@ -59,7 +59,7 @@ TEST(Function, lnCompletedProbability) {
   Matrix<Real> kappa(nTime, nSub);
   Real logKappaMaxSum = 0.;
   for (Index i = 0; i < nTime; ++i) {
-    kappa.row(i) = logValue.row(i).array().exp() / std::exp(logSumExpValue(i));
+    kappa.row(i) = logValue.row(i).expE() / std::exp(logSumExpValue(i));
     logKappaMaxSum += std::log(kappa.row(i).maxCoeff());
   }
 

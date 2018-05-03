@@ -63,7 +63,7 @@ TEST(Statistics, NonZeroPoissonSampling) {
 	sampleFreq = sampleFreq / sampleFreq.sum();
 	compFreq = compFreq / compFreq.sum();
 	RowVector<Real> error = sampleFreq - compFreq;
-	Real maxAbsError = error.abs().maxCoeff();
+	Real maxAbsError = error.absE().maxCoeff();
 
 #ifdef MC_DEBUG
 	std::cout << "sampleFreq" << std::endl;
@@ -114,7 +114,7 @@ TEST(Statistics, Shuffle) {
 
 	RowVector<Real> expectedEntropy(nbPos, std::log(1. / nbPos));
 
-	Real maxErr = (h - expectedEntropy).abs().maxCoeff();
+	Real maxErr = (h - expectedEntropy).absE().maxCoeff();
 
 #ifdef MC_DEBUG
 	std::cout << "proba" << std::endl;
@@ -138,7 +138,7 @@ TEST(Math, LogFactorial) {
 
 	Vector<Real> expectedFactoValue(10);
 	expectedFactoValue << 1., 1., 2., 6., 24., 120., 720., 5040., 40320., 362880.;
-	expectedFactoValue = expectedFactoValue.array().log().matrix();
+	expectedFactoValue = expectedFactoValue.logE();
 
 	ASSERT_EQ(expectedFactoValue.isApprox(factoValue), true);
 }
