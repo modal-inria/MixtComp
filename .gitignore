@@ -2,6 +2,7 @@
 .Rhistory
 .RData
 .svn
+.DS_store
 *.aux
 *.toc
 *.log
@@ -28,4 +29,6 @@ test/test
 .metadata/*
 progress
 /.metadata/
-MixtComp/build
+MixtComp/release
+MixtComp/debug
+MixtComp/report.xml
