@@ -18,7 +18,43 @@
 typedef Iterator iterator;
 typedef ConstIterator const_iterator;
 
-/** Element-wise comparison to a scalar */
+/**
+ * VECTOR OPERATIONS
+ */
+
+///** Element-wise log computation */
+//inline const CwiseUnaryOp<internal::scalar_log_op<Scalar>,
+//                          Derived>
+//log() const
+//{
+//  return CwiseUnaryOp<internal::scalar_log_op<Scalar>,
+//                      Derived>(derived(),
+//                               internal::scalar_log_op<Scalar>());
+//}
+///** Element-wise exp computation */
+//inline const CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
+//                          Derived>
+//exp() const
+//{
+//  return CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
+//                      Derived>(derived(),
+//                               internal::scalar_exp_op<Scalar>());
+//}
+/** Element-wise abs computation */
+inline const CwiseUnaryOp<internal::scalar_abs_op<Scalar>, Derived> abs() const {
+	return CwiseUnaryOp<internal::scalar_abs_op<Scalar>, Derived>(derived(), internal::scalar_abs_op<Scalar>());
+}
+
+/** Element-wise inverse computation */
+inline const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>, Derived> cInv() const {
+	return CwiseUnaryOp<internal::scalar_inverse_op<Scalar>, Derived>(derived(), internal::scalar_inverse_op<Scalar>());
+}
+
+/**
+ * VECTOR SCALAR OPERATIONS
+ */
+
+/** v == s */
 inline bool operator==(const Scalar& scalar) const {
 	for (int j = 0; j < cols(); ++j)
 		for (int i = 0; i < rows(); ++i)
@@ -27,7 +63,7 @@ inline bool operator==(const Scalar& scalar) const {
 	return true;
 }
 
-/** Element-wise comparison to a scalar */
+/** v != s */
 inline bool operator!=(const Scalar& scalar) const {
 	for (int j = 0; j < cols(); ++j)
 		for (int i = 0; i < rows(); ++i)
@@ -36,9 +72,87 @@ inline bool operator!=(const Scalar& scalar) const {
 	return false;
 }
 
-/** Comparison between vectors / matrices. Note that this is not a component-wise comparison,
+/** v > s */
+inline bool operator>(Scalar rhs) const {
+	typename Derived::const_iterator lhsIt = derived().begin();
+	for (; lhsIt != derived().end(); ++lhsIt) {
+		if (*lhsIt <= rhs) {
+			return false; // exit as soon as sufficient conditions are met
+		}
+	}
+	return true;
+}
+
+/** v < s */
+inline bool operator<(Scalar rhs) const {
+	typename Derived::const_iterator lhsIt = derived().begin();
+	for (; lhsIt != derived().end(); ++lhsIt) {
+		if (*lhsIt >= rhs) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/** v + s */
+const CwiseBinaryOp<internal::scalar_sum_op<Scalar>, const Derived, const ConstantReturnType> operator+(const Scalar& scalar) const {
+	return CwiseBinaryOp<internal::scalar_sum_op<Scalar>, const Derived, const ConstantReturnType>(derived(), MatrixBase < Derived > ::Constant(rows(), cols(), scalar));
+}
+
+/** v - s */
+const CwiseBinaryOp<internal::scalar_difference_op<Scalar>, const Derived, const ConstantReturnType> operator-(const Scalar& scalar) const {
+	return CwiseBinaryOp<internal::scalar_difference_op<Scalar>, const Derived, const ConstantReturnType>(derived(), MatrixBase < Derived > ::Constant(rows(), cols(), scalar));
+}
+
+/** v = s */
+inline MatrixBase<Derived>&
+operator=(const Scalar& scalar) {
+	(*this) = CwiseNullaryOp<Eigen::internal::scalar_constant_op<Scalar>, Derived>(derived().rows(), derived().cols(), internal::scalar_constant_op < Scalar > (scalar));
+	return *this;
+}
+
+/** v += s */
+inline MatrixBase<Derived>&
+operator+=(const Scalar& scalar) {
+	(*this) = derived() + scalar;
+	return *this;
+}
+
+/** v -= s */
+inline MatrixBase<Derived>&
+operator-=(const Scalar& scalar) {
+	(*this) = derived() - scalar;
+	return *this;
+}
+
+/**
+ * SCALAR VECTOR OPERATIONS
+ */
+
+/** s + v */
+friend const CwiseBinaryOp<internal::scalar_sum_op<Scalar>, const ConstantReturnType, Derived> operator+(const Scalar& scalar, const MatrixBase<Derived>& mat) {
+	return CwiseBinaryOp<internal::scalar_sum_op<Scalar>, const ConstantReturnType, Derived>(MatrixBase < Derived > ::Constant(mat.rows(), mat.cols(), scalar), mat.derived());
+}
+
+/** s - v */
+friend const CwiseBinaryOp<internal::scalar_difference_op<Scalar>, const ConstantReturnType, Derived> operator-(const Scalar& scalar, const MatrixBase<Derived>& mat) {
+	return CwiseBinaryOp<internal::scalar_difference_op<Scalar>, const ConstantReturnType, Derived>(MatrixBase < Derived > ::Constant(mat.rows(), mat.cols(), scalar), mat.derived());
+}
+
+/** s / v */
+friend const CwiseBinaryOp<internal::scalar_quotient_op<Scalar>, const ConstantReturnType, Derived> operator/(const Scalar& scalar, const MatrixBase<Derived>& mat) {
+	return CwiseBinaryOp<internal::scalar_quotient_op<Scalar>, const ConstantReturnType, Derived>(MatrixBase < Derived > ::Constant(mat.rows(), mat.cols(), scalar), mat.derived());
+}
+
+/**
+ * VECTOR VECTOR OPERATIONS
+ */
+
+/**
+ * Comparison between vectors / matrices. Note that this is not a component-wise comparison,
  * but rather a form of order, like the alphabetical order between words. Comparaison stops at the first
- * different coefficient. */
+ * different coefficient.
+ */
 inline bool operator<(const Derived& rhs) const {
 	typename Derived::const_iterator lhsIt = derived().begin();
 	typename Derived::const_iterator rhsIt = rhs.begin();
@@ -67,101 +181,16 @@ inline bool operator>(const Derived& rhs) const {
 	return false;
 }
 
-/** Component-wise comparison with a scalar. */
-inline bool operator>(Scalar rhs) const {
-	typename Derived::const_iterator lhsIt = derived().begin();
-	for (; lhsIt != derived().end(); ++lhsIt) {
-		if (*lhsIt <= rhs) {
-			return false; // exit as soon as sufficient conditions are met
-		}
-	}
-	return true;
-}
-
-/** Component-wise comparison with a scalar. */
-inline bool operator<(Scalar rhs) const {
-	typename Derived::const_iterator lhsIt = derived().begin();
-	for (; lhsIt != derived().end(); ++lhsIt) {
-		if (*lhsIt >= rhs) {
-			return false;
-		}
-	}
-	return true;
-}
-
-const CwiseBinaryOp<internal::scalar_sum_op<Scalar>, const Derived,
-		const ConstantReturnType> operator+(const Scalar& scalar) const {
-	return CwiseBinaryOp<internal::scalar_sum_op<Scalar>, const Derived,
-			const ConstantReturnType>(derived(),
-			MatrixBase < Derived > ::Constant(rows(), cols(), scalar));
-}
-
-friend const CwiseBinaryOp<internal::scalar_sum_op<Scalar>,
-		const ConstantReturnType, Derived> operator+(const Scalar& scalar,
-		const MatrixBase<Derived>& mat) {
-	return CwiseBinaryOp<internal::scalar_sum_op<Scalar>,
-			const ConstantReturnType, Derived>(
-			MatrixBase < Derived > ::Constant(mat.rows(), mat.cols(), scalar),
-			mat.derived());
-}
-
-const CwiseBinaryOp<internal::scalar_sum_op<Scalar>, const Derived,
-		const ConstantReturnType> operator-(const Scalar& scalar) const {
-	return CwiseBinaryOp<internal::scalar_sum_op<Scalar>, const Derived,
-			const ConstantReturnType>(derived(),
-			MatrixBase < Derived > ::Constant(rows(), cols(), -scalar));
-}
-
-friend const CwiseBinaryOp<internal::scalar_sum_op<Scalar>,
-		const ConstantReturnType, Derived> operator-(const Scalar& scalar,
-		const MatrixBase<Derived>& mat) {
-	return CwiseBinaryOp<internal::scalar_sum_op<Scalar>,
-			const ConstantReturnType, Derived>(
-			MatrixBase < Derived > ::Constant(mat.rows(), mat.cols(), -scalar),
-			mat.derived());
-}
-
-/** Element-wise assignment of a scalar */
-inline MatrixBase<Derived>&
-operator=(const Scalar& scalar) {
-	(*this) = CwiseNullaryOp<Eigen::internal::scalar_constant_op<Scalar>,
-			Derived>(derived().rows(), derived().cols(),
-			internal::scalar_constant_op < Scalar > (scalar));
-	return *this;
-}
-
-/** Element-wise += between matrix and scalar */
-inline MatrixBase<Derived>&
-operator+=(const Scalar& scalar) {
-	(*this) = derived() + scalar;
-	return *this;
-}
-
-/** Element-wise -= between matrix and scalar */
-inline MatrixBase<Derived>&
-operator-=(const Scalar& scalar) {
-	(*this) = derived() - scalar;
-	return *this;
-}
-
 /** Component-wise product */
 template<typename OtherDerived>
-inline const CwiseBinaryOp<Eigen::internal::scalar_product_op<Scalar, Scalar>,
-		Derived, Derived> operator%(
-		const MatrixBase<OtherDerived>& other) const {
-	return CwiseBinaryOp<internal::scalar_product_op<Scalar, Scalar>, Derived,
-			OtherDerived>(derived(), other.derived(),
-			internal::scalar_product_op<Scalar, Scalar>());
+inline const CwiseBinaryOp<Eigen::internal::scalar_product_op<Scalar, Scalar>, Derived, Derived> operator%(const MatrixBase<OtherDerived>& other) const {
+	return CwiseBinaryOp<internal::scalar_product_op<Scalar, Scalar>, Derived, OtherDerived>(derived(), other.derived(), internal::scalar_product_op<Scalar, Scalar>());
 }
 
 /** Component-wise quotient */
 template<typename OtherDerived>
-inline const CwiseBinaryOp<internal::scalar_quotient_op<Scalar, Scalar>,
-		Derived, Derived> operator/(
-		const MatrixBase<OtherDerived>& other) const {
-	return CwiseBinaryOp<internal::scalar_quotient_op<Scalar, Scalar>, Derived,
-			OtherDerived>(derived(), other.derived(),
-			internal::scalar_quotient_op<Scalar, Scalar>());
+inline const CwiseBinaryOp<internal::scalar_quotient_op<Scalar, Scalar>, Derived, Derived> operator/(const MatrixBase<OtherDerived>& other) const {
+	return CwiseBinaryOp<internal::scalar_quotient_op<Scalar, Scalar>, Derived, OtherDerived>(derived(), other.derived(), internal::scalar_quotient_op<Scalar, Scalar>());
 }
 
 /** Element-wise %= between matrices */
@@ -180,53 +209,9 @@ operator/=(const MatrixBase<OtherDerived>& other) {
 	return *this;
 }
 
-///** Element-wise log computation */
-//inline const CwiseUnaryOp<internal::scalar_log_op<Scalar>,
-//                          Derived>
-//log() const
-//{
-//  return CwiseUnaryOp<internal::scalar_log_op<Scalar>,
-//                      Derived>(derived(),
-//                               internal::scalar_log_op<Scalar>());
-//}
-
-///** Element-wise exp computation */
-//inline const CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
-//                          Derived>
-//exp() const
-//{
-//  return CwiseUnaryOp<internal::scalar_exp_op<Scalar>,
-//                      Derived>(derived(),
-//                               internal::scalar_exp_op<Scalar>());
-//}
-
-/** Element-wise abs computation */
-inline const CwiseUnaryOp<internal::scalar_abs_op<Scalar>, Derived> abs() const {
-	return CwiseUnaryOp<internal::scalar_abs_op<Scalar>, Derived>(derived(),
-			internal::scalar_abs_op<Scalar>());
-}
-
-/** Element-wise inverse computation */
-inline const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>, Derived> cInv() const {
-	return CwiseUnaryOp<internal::scalar_inverse_op<Scalar>, Derived>(derived(),
-			internal::scalar_inverse_op<Scalar>());
-}
-
-///** Element-wise / between a scalar and a matrix */
-//friend inline const CwiseUnaryOp<internal::scalar_product_op<Scalar>,
-//		const CwiseUnaryOp<internal::scalar_inverse_op<Scalar>, Derived> > operator/(
-//		const Scalar& scalar, const MatrixBase<Derived>& mat) {
-//	return scalar * mat.cInv();
-//}
-
-friend const CwiseBinaryOp<internal::scalar_product_op<Scalar>,
-		const ConstantReturnType, Derived> operator/(const Scalar& scalar,
-		const MatrixBase<Derived>& mat) {
-	return CwiseBinaryOp<internal::scalar_product_op<Scalar>,
-			const ConstantReturnType, Derived>(
-			MatrixBase < Derived > ::Constant(mat.rows(), mat.cols(), scalar),
-			mat.derived().cInv());
-}
+/**
+ * ITERATORS, SORT, LOGTOMULTI
+ */
 
 iterator begin() {
 	return Iterator(0, 0, derived());
@@ -256,8 +241,7 @@ void sortIndex(Container& out) const {
 	for (int i = 0, ie = out.size(); i < ie; ++i) {
 		out(i) = i;
 	}
-	std::sort(out.begin(), out.end(),
-			[this](int left, int right) {return (*this)(left) < (*this)(right);});
+	std::sort(out.begin(), out.end(), [this](int left, int right) {return (*this)(left) < (*this)(right);});
 }
 
 /**
@@ -310,8 +294,7 @@ void copyIterable(const Type& other) {
 	derived().resize(other.size());
 
 	int currCoeff = 0;
-	for (typename Type::const_iterator it = other.begin(), itE = other.end();
-			it != itE; ++it, ++currCoeff) {
+	for (typename Type::const_iterator it = other.begin(), itE = other.end(); it != itE; ++it, ++currCoeff) {
 		derived()(currCoeff) = *it;
 	}
 }
