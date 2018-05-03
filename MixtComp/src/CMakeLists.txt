@@ -22,7 +22,7 @@ find_package(NLOPT 2.4.2 REQUIRED)
 include_directories(${NLOPT_INCLUDE_DIRS})
 
 ## eigen
-find_package(Eigen3 3.3 REQUIRED)
+find_package(Eigen3 REQUIRED) # TODO: add required version of compilation problems occur (putting 3.3 did not work on Ubuntu)
 include_directories( ${EIGEN3_INCLUDE_DIR} )
 
 ## Google Test
