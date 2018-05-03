@@ -29,8 +29,7 @@ Boost and Nlopt libraries are required for MixtComp to compile.
 
 You can install them with the following command on linux:
 ```
-sudo apt-get install libboost-all-dev
-sudo apt-get install libnlopt-dev
+sudo apt install cmake libboost-all-dev libnlopt-dev libeigen3-dev 
 ```
 
 ## OSX
@@ -40,7 +39,7 @@ The developper tools must be installed, by typing `xcode-select --install` in a 
 The additional libraries can be installed using Homebrew.
 
 ```
-brew install cmake boost nlopt
+brew install cmake boost nlopt eigen
 ```
 
 ## Windows
