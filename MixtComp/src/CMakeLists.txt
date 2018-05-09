@@ -1,4 +1,4 @@
-project (MixtComp)
+project (MixtComp CXX)
 
 cmake_minimum_required (VERSION 3.5)
 
@@ -74,6 +74,8 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MATRIXBASE_PLUGIN_FLAGS} ${OTHER_CXX_F
 
 # MIXTCOMP LIBRARY TO COMPILE
 add_subdirectory(lib)
+
+# EXPORT THE OBJECT FILES
 
 # EXECUTABLES
 

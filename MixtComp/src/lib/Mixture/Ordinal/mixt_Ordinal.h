@@ -14,10 +14,10 @@
 
 #include <algorithm>
 
-#include "../Data/mixt_AugmentedData.h"
-#include "../Data/mixt_ConfIntDataStat.h"
-#include "../Param/mixt_ConfIntParamStat.h"
-#include "../mixt_IMixture.h"
+#include "Data/mixt_AugmentedData.h"
+#include "Data/mixt_ConfIntDataStat.h"
+#include "Param/mixt_ConfIntParamStat.h"
+#include "Mixture/mixt_IMixture.h"
 #include "mixt_BOSPath.h"
 
 namespace mixt {
