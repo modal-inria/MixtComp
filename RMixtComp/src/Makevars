@@ -17,7 +17,7 @@
 #   Project:    MixtComp
 #   Created on: Feb 17, 2014
 #   Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
-#               Serge IOVLEFF <serge.iovleff@stkpp.org>
+#               Serge IOVLEFF <serge.iovleff@inria.fr>
 #------------------------------------------------------------------------
 
 INC_BOOST = ../../boost
@@ -41,7 +41,7 @@ PKG_CXXFLAGS = -std=c++11 -MD -MP -I../.. -I$(INC_BOOST) -I$(INC_EIGEN) -DEIGEN_
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_LIBS = $(LIB_MC) $(LIB_NLOPT) $(LIB_RE)
 
-R_BUILD = T # Variable used to signal that the compilation occurs from inside R
+R_BUILD = T # Variable used to signal that the compilation occurs from inside R, this should trigger use of particular variables. Not implemented yet with CMake.
 
 export R_BUILD LDFLAGS CC CFLAGS CXX CXXFLAGS # flags needed for the compilation of librairies
 
