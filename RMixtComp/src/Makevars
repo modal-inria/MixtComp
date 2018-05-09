@@ -20,30 +20,26 @@
 #               Serge IOVLEFF <serge.iovleff@inria.fr>
 #------------------------------------------------------------------------
 
-INC_BOOST = ../../boost
-INC_EIGEN = ../../eigen
+INC_BOOST = /usr/local/Cellar/boost/1.66.0/include/boost
+LIB_RE = /usr/local/Cellar/boost/1.66.0/lib/libboost_regex.a
+
+INC_EIGEN = /usr/local/Cellar/eigen/3.3.4/include/eigen3
+
+INC_NLOPT = /usr/local/Cellar/nlopt/2.4.2_2/include
+LIB_NLOPT = /usr/local/Cellar/nlopt/2.4.2_2/lib/libnlopt.a
 
 DIR_MC = ../../MixtComp
-LIB_MC = ../../MixtComp/lib/libMixtComp.a
-
-DIR_NLOPT = ../../nlopt
-INC_NLOPT = ../../nlopt/api
-LIB_NLOPT = ../../nlopt/.libs/libnlopt.a
-
-DIR_RE = regex
-LIB_RE = regex/libRegex.a
+LIB_MC = ../../MixtComp/release/lib/libMixtComp.a
 
 DIR_TEST = test
 
 # Flags for the cpp files at the root (as well as included headers, for example template classes) , i.e.
-PKG_CXXFLAGS = -std=c++11 -MD -MP -I../.. -I$(INC_BOOST) -I$(INC_EIGEN) -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -I$(DIR_MC)/src/LinAlg -I$(DIR_MC)/src -I$(INC_NLOPT)
+PKG_CXXFLAGS = -std=c++11 -MD -MP -I$(INC_BOOST) -I$(INC_EIGEN) -I$(INC_NLOPT) -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -I$(DIR_MC)/src/lib/LinAlg -I$(DIR_MC)/src/lib
 
 ## Use the R_HOME indirection to support installations of multiple R version
 PKG_LIBS = $(LIB_MC) $(LIB_NLOPT) $(LIB_RE)
 
-R_BUILD = T # Variable used to signal that the compilation occurs from inside R, this should trigger use of particular variables. Not implemented yet with CMake.
-
-export R_BUILD LDFLAGS CC CFLAGS CXX CXXFLAGS # flags needed for the compilation of librairies
+export LDFLAGS CC CFLAGS CXX CXXFLAGS # flags needed for the compilation of MixtComp
 
 .PHONY: all pkglib
 
@@ -55,10 +51,6 @@ all: $(SHLIB)
 
 $(SHLIB): pkglib
 
-pkglib: $(LIB_NLOPT)
-	cd $(DIR_MC);make lib
-	cd $(DIR_RE);make lib
+pkglib:
+	cd $(DIR_MC);./buildRelease.sh
 	cd $(DIR_TEST);make all
-
-$(LIB_NLOPT):
-	cd $(DIR_NLOPT);./configure CFLAGS=-fPIC;make
