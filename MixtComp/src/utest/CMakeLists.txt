@@ -39,5 +39,4 @@ target_link_libraries(runUtest
     MixtComp
     ${Boost_LIBRARIES}
     ${NLOPT_LIBRARIES}
-    ${ARMADILLO_LIBRARIES}
 )
