@@ -24,8 +24,7 @@ namespace mixt {
 template<typename Type>
 class Range {
 public:
-	Range(Type min = std::numeric_limits<Type>::quiet_NaN(), Type max =
-			std::numeric_limits<Type>::quiet_NaN(), bool hasRange = false);
+	Range(Type min = std::numeric_limits<Type>::quiet_NaN(), Type max = std::numeric_limits<Type>::quiet_NaN(), bool hasRange = false);
 
 	~Range() {
 	}
@@ -47,8 +46,7 @@ public:
 	typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
 	AugmentedData() :
-			nbSample_(0), misCount_(nb_enum_MisType_), dataRange_(), rangeUpdate_(
-					false), fixedInitialization_(false) {
+			nbSample_(0), misCount_(nb_enum_MisType_), dataRange_(), rangeUpdate_(false), fixedInitialization_(false) {
 		for (int i = 0; i < nb_enum_MisType_; ++i) { // initialize counter for each type of missing value to 0
 			misCount_(i) = 0;
 		}
@@ -79,53 +77,35 @@ public:
 		std::string warnLog;
 		if (listType(missing_) == false && misCount_(missing_) > 0) {
 			std::stringstream sstm;
-			sstm << "Non observed values are not supported for this model, yet "
-					<< misCount_(missing_) << indExpression(misCount_(missing_))
-					<< "completely missing." << std::endl;
+			sstm << "Non observed values are not supported for this model, yet " << misCount_(missing_) << indExpression(misCount_(missing_)) << "completely missing." << std::endl;
 			warnLog += sstm.str();
 		}
 
-		if (listType(missingFiniteValues_) == false
-				&& misCount_(missingFiniteValues_) > 0) {
+		if (listType(missingFiniteValues_) == false && misCount_(missingFiniteValues_) > 0) {
 			std::stringstream sstm;
-			sstm
-					<< "Partially observed values defined by list of possible values, {a, b, c, ... }, are not supported for this model, yet "
-					<< misCount_(missingFiniteValues_)
-					<< indExpression(misCount_(missingFiniteValues_))
-					<< "defined by list of possible values." << std::endl;
+			sstm << "Partially observed values defined by list of possible values, {a, b, c, ... }, are not supported for this model, yet " << misCount_(missingFiniteValues_)
+					<< indExpression(misCount_(missingFiniteValues_)) << "defined by list of possible values." << std::endl;
 			warnLog += sstm.str();
 		}
 
-		if (listType(missingIntervals_) == false
-				&& misCount_(missingIntervals_) > 0) {
+		if (listType(missingIntervals_) == false && misCount_(missingIntervals_) > 0) {
 			std::stringstream sstm;
-			sstm
-					<< "Partially observed values defined by interval, [a:b], are not supported for this model, yet "
-					<< misCount_(missingIntervals_)
-					<< indExpression(misCount_(missingIntervals_))
+			sstm << "Partially observed values defined by interval, [a:b], are not supported for this model, yet " << misCount_(missingIntervals_) << indExpression(misCount_(missingIntervals_))
 					<< "defined by interval." << std::endl;
 			warnLog += sstm.str();
 		}
 
-		if (listType(missingLUIntervals_) == false
-				&& misCount_(missingLUIntervals_) > 0) {
+		if (listType(missingLUIntervals_) == false && misCount_(missingLUIntervals_) > 0) {
 			std::stringstream sstm;
-			sstm
-					<< "Partially observed values defined by upper-bounded semi-interval, [-inf:a], are not supported for this model, yet "
-					<< misCount_(missingLUIntervals_)
-					<< indExpression(misCount_(missingLUIntervals_))
-					<< "defined by upper-bounded semi-interval." << std::endl;
+			sstm << "Partially observed values defined by upper-bounded semi-interval, [-inf:a], are not supported for this model, yet " << misCount_(missingLUIntervals_)
+					<< indExpression(misCount_(missingLUIntervals_)) << "defined by upper-bounded semi-interval." << std::endl;
 			warnLog += sstm.str();
 		}
 
-		if (listType(missingRUIntervals_) == false
-				&& misCount_(missingRUIntervals_) > 0) {
+		if (listType(missingRUIntervals_) == false && misCount_(missingRUIntervals_) > 0) {
 			std::stringstream sstm;
-			sstm
-					<< "Partially observed values defined by lower-bounded semi-interval, [a:+inf], are not supported for this model, yet "
-					<< misCount_(missingRUIntervals_)
-					<< indExpression(misCount_(missingRUIntervals_))
-					<< "defined by lower-bounded semi-interval." << std::endl;
+			sstm << "Partially observed values defined by lower-bounded semi-interval, [a:+inf], are not supported for this model, yet " << misCount_(missingRUIntervals_)
+					<< indExpression(misCount_(missingRUIntervals_)) << "defined by lower-bounded semi-interval." << std::endl;
 			warnLog += sstm.str();
 		}
 		return warnLog;
@@ -153,9 +133,7 @@ public:
 				 * carried on.
 				 */
 			default: {
-				for (typename std::vector<Type>::const_iterator it =
-						misData_(i).second.begin();
-						it != misData_(i).second.end(); ++it) {
+				for (typename std::vector<Type>::const_iterator it = misData_(i).second.begin(); it != misData_(i).second.end(); ++it) {
 					rangeUpdate(min, max, *it);
 				}
 			}

@@ -11,60 +11,52 @@
 
 namespace mixt {
 
-void IDClass(mixt::MixtureComposer& mc,
-             Rcpp::NumericMatrix& idc) {
-  idc = Rcpp::NumericMatrix(mc.nbClass(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
-                            mc.nbVar());
+void IDClass(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& idc) {
+	idc = Rcpp::NumericMatrix(mc.nbClass(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
+			mc.nbVar());
 
-  Matrix<Real> IDClass;
-  mc.IDClass(IDClass);
+	Matrix < Real > IDClass;
+	mc.IDClass(IDClass);
 
-  Rcpp::CharacterVector row(mc.nbClass()); // names of the parameters
-  Rcpp::CharacterVector col(mc.nbVar()); // names for expectation and confidence interval values
+	Rcpp::CharacterVector row(mc.nbClass()); // names of the parameters
+	Rcpp::CharacterVector col(mc.nbVar()); // names for expectation and confidence interval values
 
-  std::vector<std::string> rowName = mc.paramName();
-  std::vector<std::string> colName = mc.mixtureName();
+	std::vector < std::string > rowName = mc.paramName();
+	std::vector < std::string > colName = mc.mixtureName();
 
-  for (Index j = 0; j < mc.nbVar(); ++j) {
-    for (Index k = 0; k < mc.nbClass(); ++k) {
-      idc(k, j) = IDClass(k, j);
-    }
-  }
+	for (Index j = 0; j < mc.nbVar(); ++j) {
+		for (Index k = 0; k < mc.nbClass(); ++k) {
+			idc(k, j) = IDClass(k, j);
+		}
+	}
 
-  for (Index k = 0; k < mc.nbClass(); ++k) {
-    row(k) = rowName[k];
-  }
+	for (Index k = 0; k < mc.nbClass(); ++k) {
+		row(k) = rowName[k];
+	}
 
-  for (Index j = 0; j < mc.nbVar(); ++j) {
-    col(j) = colName[j];
-  }
+	for (Index j = 0; j < mc.nbVar(); ++j) {
+		col(j) = colName[j];
+	}
 
-  Rcpp::List dimnms = Rcpp::List::create(row,
-                                         col);
-  idc.attr("dimnames") = dimnms;
+	Rcpp::List dimnms = Rcpp::List::create(row, col);
+	idc.attr("dimnames") = dimnms;
 }
 
-void lnProbaGivenClass(
-    mixt::MixtureComposer& mc,
-    Rcpp::NumericMatrix& pGCR) {
-  pGCR = Rcpp::NumericMatrix(
-      mc.nbInd(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
-      mc.nbClass());
+void lnProbaGivenClass(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& pGCR) {
+	pGCR = Rcpp::NumericMatrix(mc.nbInd(), // no resize in Rcpp::NumericMatrix, hence the call to the constructor
+			mc.nbClass());
 
-  Matrix<Real> pGCCPP;
-  mc.lnProbaGivenClass(pGCCPP);
+	Matrix < Real > pGCCPP;
+	mc.lnProbaGivenClass(pGCCPP);
 
-  for (Index i = 0; i < mc.nbInd(); ++i) {
-    for (Index k = 0; k < mc.nbClass(); ++k) {
-      pGCR(i, k) = pGCCPP(i, k);
-    }
-  }
+	for (Index i = 0; i < mc.nbInd(); ++i) {
+		for (Index k = 0; k < mc.nbClass(); ++k) {
+			pGCR(i, k) = pGCCPP(i, k);
+		}
+	}
 }
 
-void completedProbaLog(
-		mixt::MixtureComposer& mc,
-		Rcpp::NumericVector& completedProbabilityLogBurnIn,
-		Rcpp::NumericVector& completedProbabilityLogRun) {
+void completedProbaLog(mixt::MixtureComposer& mc, Rcpp::NumericVector& completedProbabilityLogBurnIn, Rcpp::NumericVector& completedProbabilityLogRun) {
 	completedProbabilityLogBurnIn = Rcpp::NumericVector(mc.completedProbabilityLogBurnIn().size());
 	completedProbabilityLogRun = Rcpp::NumericVector(mc.completedProbabilityLogRun().size());
 
@@ -76,60 +68,53 @@ void completedProbaLog(
 	}
 }
 
-void observedTik(
-    mixt::MixtureComposer& mc,
-    Rcpp::NumericVector& oikR) {
-  oikR = Rcpp::NumericVector(mc.nbInd()); // no resize in Rcpp::NumericMatrix, hence the call to the constructor
+void observedTik(mixt::MixtureComposer& mc, Rcpp::NumericVector& oikR) {
+	oikR = Rcpp::NumericVector(mc.nbInd()); // no resize in Rcpp::NumericMatrix, hence the call to the constructor
 
-  Vector<Real> oikCPP;
-  mc.observedTik(oikCPP);
+	Vector < Real > oikCPP;
+	mc.observedTik(oikCPP);
 
-  for (Index i = 0; i < mc.nbInd(); ++i) {
-    for (Index k = 0; k < mc.nbClass(); ++k) {
-      oikR(i) = oikCPP(i);
-    }
-  }
+	for (Index i = 0; i < mc.nbInd(); ++i) {
+		for (Index k = 0; k < mc.nbClass(); ++k) {
+			oikR(i) = oikCPP(i);
+		}
+	}
 }
 
-void matDelta(mixt::MixtureComposer& mc,
-              Rcpp::NumericMatrix& delta){
-  delta = Rcpp::NumericMatrix(mc.nbVar(), mc.nbVar());
-  
-  Matrix<Real> DELTA;
-  mc.Delta(DELTA);
-  for (Index j = 0; j < mc.nbVar(); ++j) {
-    for (Index h = 0; h < mc.nbVar(); ++h) {
-      delta(h, j) = DELTA(h, j);
-    }
-  }
+void matDelta(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& delta) {
+	delta = Rcpp::NumericMatrix(mc.nbVar(), mc.nbVar());
+
+	Matrix < Real > DELTA;
+	mc.Delta(DELTA);
+	for (Index j = 0; j < mc.nbVar(); ++j) {
+		for (Index h = 0; h < mc.nbVar(); ++h) {
+			delta(h, j) = DELTA(h, j);
+		}
+	}
 }
 
 void paramRToCpp(const Rcpp::List& RParam, StrategyParam& CppParam) {
 	if (RParam.containsElementNamed("nbBurnInIter")) {
 		CppParam.nbBurnInIter_ = RParam["nbBurnInIter"];
-	}
-	else {
+	} else {
 		std::cout << "Parameter nbBurnInIter not found, a value of 100 is used." << std::endl;
 	}
 
 	if (RParam.containsElementNamed("nbIter")) {
 		CppParam.nbIter_ = RParam["nbIter"];
-	}
-	else {
+	} else {
 		std::cout << "Parameter nbIter not found, a value of 100 is used." << std::endl;
 	}
 
 	if (RParam.containsElementNamed("nbGibbsBurnInIter")) {
 		CppParam.nbGibbsBurnInIter_ = RParam["nbGibbsBurnInIter"];
-	}
-	else {
-		std::cout<<"Parameter nbGibbsBurnInIter not found, a value of 100 is used."<<std::endl;
+	} else {
+		std::cout << "Parameter nbGibbsBurnInIter not found, a value of 100 is used." << std::endl;
 	}
 
 	if (RParam.containsElementNamed("nbGibbsIter")) {
 		CppParam.nbGibbsIter_ = RParam["nbGibbsIter"];
-	}
-	else {
+	} else {
 		std::cout << "Parameter nbGibbsIter not found, a value of 100 is used." << std::endl;
 	}
 
@@ -137,12 +122,10 @@ void paramRToCpp(const Rcpp::List& RParam, StrategyParam& CppParam) {
 		Real ratioInitialization = RParam["ratioInitialization"];
 		if (ratioInitialization < 0. || 1. < ratioInitialization) {
 			std::cout << "Parameter ratioInitialization must be within [0, 1], 0.1 is used." << std::endl;
-		}
-		else {
+		} else {
 			CppParam.ratioInitialization_ = RParam["ratioInitialization"];
 		}
-	}
-	else {
+	} else {
 		std::cout << "Parameter ratioInitialization not found, a value of 0.1 is used." << std::endl;
 	}
 

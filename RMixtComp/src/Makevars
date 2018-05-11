@@ -20,7 +20,7 @@
 #               Serge IOVLEFF <serge.iovleff@inria.fr>
 #------------------------------------------------------------------------
 
-INC_BOOST = /usr/local/Cellar/boost/1.66.0/include/boost
+INC_BOOST = /usr/local/Cellar/boost/1.66.0/include
 LIB_RE = /usr/local/Cellar/boost/1.66.0/lib/libboost_regex.a
 
 INC_EIGEN = /usr/local/Cellar/eigen/3.3.4/include/eigen3

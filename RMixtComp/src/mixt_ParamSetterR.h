@@ -10,29 +10,23 @@
 #ifndef MIXT_PARAMSETTERR_H
 #define MIXT_PARAMSETTERR_H
 
-#include "MixtComp/src/LinAlg/mixt_LinAlg.h"
-#include "MixtComp/src/Mixture/Rank/mixt_RankVal.h"
+#include "LinAlg/mixt_LinAlg.h"
+#include "Mixture/Rank/mixt_RankVal.h"
 #include "Rcpp.h"
 
 namespace mixt {
 
 class ParamSetterR {
-  public:
-    ParamSetterR(const Rcpp::List param);
+public:
+	ParamSetterR(const Rcpp::List param);
 
-    ~ParamSetterR();
+	~ParamSetterR();
 
-    void getParam(const std::string& idName,
-                  const std::string& paramName,
-                  Vector<Real>& param,
-                  std::string& paramStr) const;
+	void getParam(const std::string& idName, const std::string& paramName, Vector<Real>& param, std::string& paramStr) const;
 
-    void getParam(const std::string& idName,
-                  const std::string& paramName,
-                  Vector<RankVal>& param,
-                  std::string& paramStr) const;
-  private:
-    const Rcpp::List param_;
+	void getParam(const std::string& idName, const std::string& paramName, Vector<RankVal>& param, std::string& paramStr) const;
+private:
+	const Rcpp::List param_;
 };
 
 } // namespace mixt

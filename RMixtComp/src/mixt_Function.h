@@ -11,8 +11,8 @@
 #define MIXT_FUNCTION_H
 
 #include "Rcpp.h"
-#include "MixtComp/src/Composer/mixt_MixtureComposer.h"
-#include "MixtComp/src/Strategy/mixt_StrategyParam.h"
+#include "Composer/mixt_MixtureComposer.h"
+#include "Strategy/mixt_StrategyParam.h"
 
 namespace mixt {
 
@@ -22,10 +22,7 @@ void observedTik(mixt::MixtureComposer& mc, Rcpp::NumericVector& oikR);
 
 void lnProbaGivenClass(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& pGCR);
 
-void completedProbaLog(
-		mixt::MixtureComposer& mc,
-		Rcpp::NumericVector& completedProbabilityLogBurnIn,
-		Rcpp::NumericVector& completedProbabilityLogRun);
+void completedProbaLog(mixt::MixtureComposer& mc, Rcpp::NumericVector& completedProbabilityLogBurnIn, Rcpp::NumericVector& completedProbabilityLogRun);
 
 void matDelta(mixt::MixtureComposer& mc, Rcpp::NumericMatrix& delta);
 

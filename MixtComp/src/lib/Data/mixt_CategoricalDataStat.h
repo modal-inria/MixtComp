@@ -13,41 +13,39 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "mixt_AugmentedData.h"
 
-namespace mixt
-{
+namespace mixt {
 
-class CategoricalDataStat
-{
-  public:
-    CategoricalDataStat(AugmentedData<Vector<int> >& augData,
-                        Real confidenceLevel);
+class CategoricalDataStat {
+public:
+	CategoricalDataStat(AugmentedData<Vector<int> >& augData, Real confidenceLevel);
 
-    void setNbIndividual(int nbInd);
+	void setNbIndividual(int nbInd);
 
-    void sampleVals(int sample,
-                    int iteration,
-                    int iterationMax);
-    void imputeData(int ind);
+	void sampleVals(int sample, int iteration, int iterationMax);
+	void imputeData(int ind);
 
-    const Vector<std::vector<std::pair<int, Real> > >& getDataStatStorage() const {return dataStatStorage_;};
+	const Vector<std::vector<std::pair<int, Real> > >& getDataStatStorage() const {
+		return dataStatStorage_;
+	}
+	;
 
-  private:
-    /** Reference to augmented data */
-    AugmentedData<Vector<int> >& augData_;
+private:
+	/** Reference to augmented data */
+	AugmentedData<Vector<int> >& augData_;
 
-    /** Sparse description of the missing values */
-    Vector<std::vector<std::pair<int, Real> > > dataStatStorage_;
+	/** Sparse description of the missing values */
+	Vector<std::vector<std::pair<int, Real> > > dataStatStorage_;
 
-    /** Vector of vectors to count sampled values across iterations, for the current individual,
-     * stat_(i)(n)
-     * i: individual
-     * n: sampled value */
-    Vector<Vector<Real> > stat_;
+	/** Vector of vectors to count sampled values across iterations, for the current individual,
+	 * stat_(i)(n)
+	 * i: individual
+	 * n: sampled value */
+	Vector<Vector<Real> > stat_;
 
-    /** Confidence level */
-    Real confidenceLevel_;
+	/** Confidence level */
+	Real confidenceLevel_;
 
-    void sample(int ind);
+	void sample(int ind);
 };
 
 } // namespace mixt

@@ -12,15 +12,13 @@
 #include "mixt_DataExtractorR.h"
 #include "mixt_ParamExtractorR.h"
 #include "mixt_Function.h"
-#include "MixtComp/src/mixt_MixtComp.h"
+#include "mixt_MixtComp.h"
 
 // [[Rcpp::export]]
-Rcpp::List mixtCompCluster(Rcpp::List dataList, Rcpp::List mcStrategy,
-		int nbClass, double confidenceLevel) {
+Rcpp::List mixtCompCluster(Rcpp::List dataList, Rcpp::List mcStrategy, int nbClass, double confidenceLevel) {
 
 	std::cout << "MixtComp, learn, version: " << mixt::version << std::endl;
-	std::cout << "Deterministic mode: " << mixt::deterministicMode()
-			<< std::endl;
+	std::cout << "Deterministic mode: " << mixt::deterministicMode() << std::endl;
 //	std::cout<< "Number of threads: " << omp_get_num_threads() << std::endl;
 
 	mixt::Timer totalTimer("Total Run");
@@ -42,53 +40,41 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList, Rcpp::List mcStrategy,
 	mixt::ParamExtractorR paramExtractor; // create the parameters extractor
 
 	mixt::MixtureManager<mixt::DataHandlerR, // create the mixture manager
-			mixt::DataExtractorR, mixt::ParamSetterDummy, mixt::ParamExtractorR> manager(
-			&handler, &dataExtractor, &paramSetter, &paramExtractor,
-			confidenceLevel, warnLog);
+			mixt::DataExtractorR, mixt::ParamSetterDummy, mixt::ParamExtractorR> manager(&handler, &dataExtractor, &paramSetter, &paramExtractor, confidenceLevel, warnLog);
 
 	// Basic checks
 
 	if (confidenceLevel < 0. || 1. < confidenceLevel) {
 		std::stringstream sstm;
-		sstm
-				<< "ConfidenceLevel should be in the interval [0;1], but current value is: "
-				<< confidenceLevel << std::endl;
+		sstm << "ConfidenceLevel should be in the interval [0;1], but current value is: " << confidenceLevel << std::endl;
 		warnLog += sstm.str();
 	}
 
 	if (handler.nbSample() < 1 || handler.nbVariable() < 1) {
 		std::stringstream sstm;
-		sstm << "No valid data provided. Please check the descriptor file."
-				<< std::endl;
+		sstm << "No valid data provided. Please check the descriptor file." << std::endl;
 		warnLog += sstm.str();
 	}
 
 	if (0 < warnLog.size()) {
 		mcMixture["warnLog"] = warnLog;
 
-		return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy,
-				Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") =
-						mcVariable);
+		return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy, Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") = mcVariable);
 	}
 
 	// Create the composer and read the data
 
-	mixt::MixtureComposer composer(handler.nbSample(), nbClass,
-			confidenceLevel);
+	mixt::MixtureComposer composer(handler.nbSample(), nbClass, confidenceLevel);
 
 	mixt::Timer readTimer("Read Data");
 	warnLog += manager.createMixtures(composer, nbClass);
-	warnLog +=
-			composer.setDataParam<mixt::ParamSetterDummy, mixt::DataHandlerR>(
-					paramSetter, handler, mixt::learning_);
+	warnLog += composer.setDataParam<mixt::ParamSetterDummy, mixt::DataHandlerR>(paramSetter, handler, mixt::learning_);
 	readTimer.top("data has been read");
 
 	if (0 < warnLog.size()) {
 		mcMixture["warnLog"] = warnLog;
 
-		return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy,
-				Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") =
-						mcVariable);
+		return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy, Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") = mcVariable);
 	}
 
 	// Get the parameters
@@ -110,9 +96,7 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList, Rcpp::List mcStrategy,
 		std::cout << warnLog << std::endl;
 		mcMixture["warnLog"] = warnLog;
 
-		return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy,
-				Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") =
-						mcVariable);
+		return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy, Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") = mcVariable);
 	}
 
 	// Run the Gibbs strategy
@@ -125,17 +109,14 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList, Rcpp::List mcStrategy,
 	if (0 < warnLog.size()) {
 		mcMixture["warnLog"] = warnLog;
 
-		return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy,
-				Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") =
-						mcVariable);
+		return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy, Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") = mcVariable);
 	}
 
 	// Run has been successful, export everything
 
 	composer.writeParameters();
 
-	composer.exportDataParam<mixt::DataExtractorR, mixt::ParamExtractorR>(
-			dataExtractor, paramExtractor);
+	composer.exportDataParam<mixt::DataExtractorR, mixt::ParamExtractorR>(dataExtractor, paramExtractor);
 
 	mcMixture["nbCluster"] = nbClass; // export the composer results to R through modifications of mcResults
 	mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
@@ -143,10 +124,8 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList, Rcpp::List mcStrategy,
 	Real lnCompLik = composer.lnCompletedLikelihood();
 	mcMixture["lnObservedLikelihood"] = lnObsLik;
 	mcMixture["lnCompletedLikelihood"] = lnCompLik;
-	mcMixture["BIC"] = lnObsLik
-			- 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
-	mcMixture["ICL"] = lnCompLik
-			- 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+	mcMixture["BIC"] = lnObsLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
+	mcMixture["ICL"] = lnCompLik - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
 
 	std::cout << "lnObservedLikelihood: " << lnObsLik << std::endl << std::endl;
 
@@ -162,10 +141,8 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList, Rcpp::List mcStrategy,
 	mixt::lnProbaGivenClass(composer, pGC);
 	mcMixture["lnProbaGivenClass"] = pGC;
 
-	Rcpp::NumericVector completedProbabilityLogBurnIn,
-			completedProbabilityLogRun;
-	mixt::completedProbaLog(composer, completedProbabilityLogBurnIn,
-			completedProbabilityLogRun);
+	Rcpp::NumericVector completedProbabilityLogBurnIn, completedProbabilityLogRun;
+	mixt::completedProbaLog(composer, completedProbabilityLogBurnIn, completedProbabilityLogRun);
 	mcMixture["completedProbabilityLogBurnIn"] = completedProbabilityLogBurnIn;
 	mcMixture["completedProbabilityLogRun"] = completedProbabilityLogRun;
 
@@ -178,12 +155,9 @@ Rcpp::List mixtCompCluster(Rcpp::List dataList, Rcpp::List mcStrategy,
 	Rcpp::List data = dataExtractor.rcppReturnVal();
 	Rcpp::List param = paramExtractor.rcppReturnParam();
 
-	mcVariable = Rcpp::List::create(Rcpp::Named("type") = type,
-			Rcpp::Named("data") = data, Rcpp::Named("param") = param);
+	mcVariable = Rcpp::List::create(Rcpp::Named("type") = type, Rcpp::Named("data") = data, Rcpp::Named("param") = param);
 
 	std::cout << "End of run." << std::endl;
 
-	return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy,
-			Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") =
-					mcVariable);
+	return Rcpp::List::create(Rcpp::Named("strategy") = mcStrategy, Rcpp::Named("mixture") = mcMixture, Rcpp::Named("variable") = mcVariable);
 }
