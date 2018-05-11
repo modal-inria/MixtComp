@@ -1,4 +1,4 @@
-# long file list initially generated with "find /dir -type f -follow -print"
+# long file list initially generated with "find . -type f -follow -print"
 # with "./" prefix deleted
 
 add_library(MixtComp

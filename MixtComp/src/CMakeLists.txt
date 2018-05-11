@@ -75,11 +75,5 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MATRIXBASE_PLUGIN_FLAGS} ${OTHER_CXX_F
 # MIXTCOMP LIBRARY TO COMPILE
 add_subdirectory(lib)
 
-# EXPORT THE OBJECT FILES
-
-# EXECUTABLES
-
 ## unit tests
-file(GLOB UTEST_SRC utest/*/*.cpp)
-add_executable(runUtest ${UTEST_SRC} utest/UTest.h)
-target_link_libraries(runUtest gtest_main MixtComp ${Boost_LIBRARIES} ${NLOPT_LIBRARIES} ${ARMADILLO_LIBRARIES})
+add_subdirectory(utest)
