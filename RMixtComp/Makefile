@@ -4,23 +4,10 @@ all:
 	R CMD INSTALL --no-multiarch --with-keep.source .
 #	g++ -I/usr/share/R/include `Rscript -e "Rcpp:::CxxFlags()"` `Rscript -e "RInside:::CxxFlags()"` -O0 -pipe -g -Wall `Rscript -e "RInside:::LdFlags()"` src/test/test.cpp -L/usr/lib/R/lib -lR -lblas -llapack -o src/test/test
 
-
-cleanAll: cleanGTest cleanNlopt cleanMixtComp cleanRe cleanRMCbase cleanTest
-
-cleanGTest:
-	cd ../gtest/src;rm -f *.o *.d
-
-cleanNlopt:
-	cd ../nlopt;make clean
+cleanAll: cleanMixtComp cleanRMCbase cleanTest
 
 cleanMixtComp:
-	find .. -type f -path "../MixtComp/*.o" -exec rm -f {} \;
-	find .. -type f -path "../MixtComp/*.d" -exec rm -f {} \;
-	find .. -type f -path "../MixtComp/*.a" -exec rm -f {} \;
-	find .. -type f -path "../MixtComp/*.so" -exec rm -f {} \;
-
-cleanRe:
-	cd ../boost/libs/regex/src;rm -f *.o
+	cd ../MixtComp; git clean -dfx debug release
 
 cleanRMCbase:
 	rm -f src/*.o

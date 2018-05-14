@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.5)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/cmakeModule/")
 
 ## Boost
-set(Boost_USE_STATIC_LIBS ON) # use .a instead of .so
+# set(Boost_USE_STATIC_LIBS ON) # use .a instead of .so
 find_package(Boost 1.58 COMPONENTS regex REQUIRED)
 include_directories(${BOOST_INCLUDE_DIRS})
 

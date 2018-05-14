@@ -26,7 +26,7 @@ If you want a minimal installation of RMixtComp, you can edit both the DESCRIPTI
 
 Boost and Nlopt libraries are required for MixtComp to compile.
 
-You can install them with the following command on linux:
+You can install them with the following command on Linux:
 ```
 sudo apt install cmake libboost-all-dev libnlopt-dev libeigen3-dev
 ```
@@ -47,9 +47,7 @@ Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rt
 
 # Build and install
 
-TODO: update this section with correct information once the build system has completely been converted to CMake.
-
-After the initial `git --clone`, or after any update via `git pull` for example, the code must be rebuilt. To handle the various dependencies correctly, it is necessary to rebuild MixtComp by calling `./mcUpdate.sh` which is in the same directory as this present document. The script will clean just enough location to ensure a proper build without taking too long to complete.
+After the initial `git --clone`, or after any update via `git pull` for example, the code must be rebuilt. To handle the various dependencies correctly, it is necessary to rebuild MixtComp by calling `./mcUpdate.sh` which is in the same directory as this present document. The script will clean just enough location to ensure a proper build without taking too long to complete. If compilation errors occur, for example cache errors, try running `./mcCleanUpdate.sh` which rebuild everything and take longer.
 
 # Test in RStudio
 
