@@ -1,0 +1,3 @@
+- to build, launch `./buildRelease.sh`
+- to clean, launch `./clean.sh`
+- the executable is built as `release/exec/JsonMixtComp`
