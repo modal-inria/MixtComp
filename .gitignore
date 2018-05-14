@@ -20,6 +20,9 @@
 RMixtComp/.Rbuildignore
 RMixtComp/R/RcppExports.R
 RMixtComp/src/RcppExports.cpp
+RMixtComp/src/Libvars
+RMixtComp/src/build
+RMixtComp/src/test/test
 nohup.out
 bin/*
 JsonMixtcomp/bin/*
@@ -31,4 +34,6 @@ progress
 /.metadata/
 MixtComp/release
 MixtComp/debug
+JsonMixtcomp/release
+JsonMixtcomp/debug
 MixtComp/report.xml
