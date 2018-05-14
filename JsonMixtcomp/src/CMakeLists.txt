@@ -55,9 +55,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../MixtComp/src/lib/")
 
 ## others cxx flags
-SET(MATRIXBASE_PLUGIN_FLAGS -DEIGEN_MATRIXBASE_PLUGIN=\\"${CMAKE_CURRENT_SOURCE_DIR}/../../MixtComp/src/lib/LinAlg/mixt_EigenMatrixBaseAddons.h\\")
-SET(OTHER_CXX_FLAGS "-fPIC")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MATRIXBASE_PLUGIN_FLAGS} ${OTHER_CXX_FLAGS}")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON) # to enable PIC on platforms that need it
+add_definitions(-DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE_CURRENT_SOURCE_DIR}/../../MixtComp/src/lib/LinAlg/mixt_EigenMatrixBaseAddons.h\")
 
 # MIXTCOMP LIBRARY TO COMPILE
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../MixtComp/src/lib/" "MixtComp")
