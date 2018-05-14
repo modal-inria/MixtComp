@@ -26,6 +26,25 @@ include_directories(${NLOPT_INCLUDE_DIRS})
 find_package(Eigen3 REQUIRED) # TODO: add required version of compilation problems occur (putting 3.3 did not work on Ubuntu)
 include_directories( ${EIGEN3_INCLUDE_DIR} )
 
+## json
+configure_file(CMakeLists.txt.in json-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+  RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download )
+if(result)
+  message(FATAL_ERROR "CMake step for json failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+  RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download )
+if(result)
+  message(FATAL_ERROR "Build step for json failed: ${result}")
+endif()
+
+# Add googletest directly to our build. This defines
+# the gtest and gtest_main targets.
+include_directories(${CMAKE_BINARY_DIR}/json-src/single_include/nlohmann)
+
 # COMPILATION FLAGS
 
 ## C++11
@@ -34,7 +53,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ## -I
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../MixtComp/src/lib/")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/json-develop/src")
 
 ## others cxx flags
 SET(MATRIXBASE_PLUGIN_FLAGS -DEIGEN_MATRIXBASE_PLUGIN=\\"${CMAKE_CURRENT_SOURCE_DIR}/../../MixtComp/src/lib/LinAlg/mixt_EigenMatrixBaseAddons.h\\")
