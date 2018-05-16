@@ -10,13 +10,9 @@
 #ifndef MIXT_VARIOUS_H_
 #define MIXT_VARIOUS_H_
 
-namespace mixt
-{
+namespace mixt {
 
-void writeProgress(int group,
-                   int groupMax,
-                   int iteration,
-                   int iterationMax);
+void writeProgress(int group, int groupMax, int iteration, int iterationMax);
 
 } // namespace mixt
 
