@@ -12,7 +12,7 @@
 using namespace mixt;
 
 TEST(FunctionalClass, optimOneclassOneInd) {
-	Index nTime = 100000;
+	Index nTime = 10000;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression
 	Real xMax = 50.;
@@ -81,7 +81,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 }
 
 TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
-	Index nTime = 10000;
+	Index nTime = 5000;
 	Index nInd = 10;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression

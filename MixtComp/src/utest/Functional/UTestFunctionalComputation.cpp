@@ -64,7 +64,7 @@ TEST(FunctionalComputation, regressionNoNoise) {
 
 TEST(FunctionalComputation, regressionNoise) {
 	Index nCoeff = 4;
-	Index nObs = 100000;
+	Index nObs = 20000;
 
 	Real xMin = -50.;
 	Real xMax = 50.;
@@ -101,7 +101,7 @@ TEST(FunctionalComputation, regressionNoise) {
 
 TEST(FunctionalComputation, subRegression) {
 	Index nCoeff = 4;
-	Index nObs = 100000;
+	Index nObs = 10000;
 	Index nSub = 3;
 
 	Real xMin = -50.;
