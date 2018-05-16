@@ -55,21 +55,21 @@ TEST(RankClass, probaYgX) {
  * obtained through direct computation. Kullback–Leibler_divergence quantifies this difference.
  * */
 TEST(RankClass, gibbsY) {
-	int nbPos = 5;
+	int nbPos = 4;
 	int nbIterBurnIn = 500;
-	int nbIterRun = 500000;
+	int nbIterRun = 100000;
 	Real tolerance = 1.e-3;
 	int nbE = fac(nbPos); // number of random events
 
 	Vector<int> dummyVec(nbPos);
 
 	RankIndividual rank(nbPos);
-	dummyVec << 2, 4, 3, 1, 0;
+	dummyVec << 2, 3, 1, 0;
 	rank.setO(dummyVec); // set observed value x
 	rank.removeMissing(); // initialize y_ randomly
 
 	RankVal mu(nbPos);
-	dummyVec << 0, 3, 1, 2, 4;
+	dummyVec << 0, 3, 1, 2;
 	mu.setO(dummyVec);
 
 	Real pi = 0.3;
@@ -115,10 +115,10 @@ TEST(RankClass, gibbsY) {
 
 /** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
 TEST(RankClass, sampleMu) {
-	int nbPos = 6;
+	int nbPos = 5;
 	int nbInd = 500;
-	int nbIterburnIn = 500;
-	int nbIterRun = 500;
+	int nbIterburnIn = 100;
+	int nbIterRun = 100;
 
 	std::set<RankVal> sampledResult; // store the sampled ranks
 
@@ -131,7 +131,7 @@ TEST(RankClass, sampleMu) {
 	Vector<RankIndividual> data(nbInd); // will store the result of xGen
 	std::set<Index> classInd;
 
-	RankVal mu = { 0, 3, 1, 2, 5, 4 }; // position -> modality representation
+	RankVal mu = { 0, 3, 1, 2, 4 }; // position -> modality representation
 	Real pi = 0.7; // pi high enough to get mu, no matter the y obtained in removeMissing
 
 	for (int i = 0; i < nbInd; ++i) {
@@ -166,8 +166,8 @@ TEST(RankClass, sampleMu) {
 /** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
 TEST(RankClass, mStep) {
 	int nbPos = 5;
-	int nbInd = 500;
-	int nbIterburnIn = 500;
+	int nbInd = 100;
+	int nbIterburnIn = 100;
 	Real tolerance = 0.05;
 
 	std::set<RankVal> sampledResult; // store the sampled ranks

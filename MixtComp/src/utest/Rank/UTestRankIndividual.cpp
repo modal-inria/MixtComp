@@ -58,8 +58,8 @@ TEST(RankIndividual, switchRepresentation)
 TEST(RankIndividual, xGenP05)
 {
   int nbPos = 4;
-  int nbSample = 1000000;
-  Real tolerance = 1.e-4;
+  int nbSample = 500000;
+  Real tolerance = 1.e-3;
   int nbE = fac(nbPos);
   Real logProba = - std::log(nbE);
 

@@ -19,9 +19,9 @@ typedef typename std::pair<MisType, std::vector<int> > MisVal;
  * */
 TEST(RankStat, computeStat) {
 	int nbPos = 5;
-	int nbInd = 500;
-	int nbIterburnIn = 500;
-	int nbIterRun = 500;
+	int nbInd = 200;
+	int nbIterburnIn = 100;
+	int nbIterRun = 100;
 	Real confidenceLevel = 0.95;
 
 	MultinomialStatistic multi;
