@@ -19,8 +19,14 @@ include_directories(${BOOST_INCLUDE_DIRS})
 #endif()
 
 ## nlopt
-find_package(NLOPT 2.4.2 REQUIRED)
-include_directories(${NLOPT_INCLUDE_DIRS})
+IF (WIN32 OR CYGWIN)
+	set(NLOPT_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt/api/")
+	set(NLOPT_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt/libnlopt.a")
+	include_directories(${NLOPT_INCLUDE_DIRS})
+ELSE()
+	find_package(NLOPT 2.4.2 REQUIRED)
+	include_directories(${NLOPT_INCLUDE_DIRS})
+ENDIF()
 
 ## eigen
 find_package(Eigen3 REQUIRED) # TODO: add required version of compilation problems occur (putting 3.3 did not work on Ubuntu)
