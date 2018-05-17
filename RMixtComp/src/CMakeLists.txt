@@ -17,7 +17,7 @@ find_package(Eigen3 REQUIRED) # TODO: add required version of compilation proble
 
 file(WRITE Libvars
     "EIGEN3_INCLUDE_DIR=${EIGEN3_INCLUDE_DIR}\n"
-    "BOOST_INCLUDE_DIRS=${BOOST_INCLUDE_DIRS}\n"
+    "Boost_INCLUDE_DIRS=${Boost_INCLUDE_DIRS}\n"
     "Boost_LIBRARIES=${Boost_LIBRARIES}\n"
     "NLOPT_INCLUDE_DIRS=${NLOPT_INCLUDE_DIRS}\n"
     "NLOPT_LIBRARIES=${NLOPT_LIBRARIES}\n"

@@ -1,4 +1,4 @@
-project (MixtComp CXX)
+project (JsonMixtComp CXX)
 
 cmake_minimum_required (VERSION 3.5)
 
@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../../li
 ## Boost
 # set(Boost_USE_STATIC_LIBS ON) # use .a instead of .so
 find_package(Boost 1.58 COMPONENTS regex REQUIRED)
-include_directories(${BOOST_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
 
 ## openMP
 #find_package(OpenMP REQUIRED)
