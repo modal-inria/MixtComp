@@ -116,7 +116,7 @@ TEST(RankClass, gibbsY) {
 /** Test sampleMu by first generating individuals, then performing sampleMu. The test checks if the real mu has been sampled at least once. */
 TEST(RankClass, sampleMu) {
 	int nbPos = 5;
-	int nbInd = 500;
+	int nbInd = 100;
 	int nbIterburnIn = 100;
 	int nbIterRun = 100;
 

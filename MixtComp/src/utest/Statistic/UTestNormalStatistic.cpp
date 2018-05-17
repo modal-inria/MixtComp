@@ -32,7 +32,7 @@ TEST(NormalStatistic, expVarTruncated) {
 TEST(NormalStatistic, sample) {
 	Real mu = 12.;
 	Real sigma = 5.;
-	Index nSample = 1000000;
+	Index nSample = 100000;
 	Real computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -55,7 +55,7 @@ TEST(NormalStatistic, lbSamplerLowerInf0) {
 	Real lower = -1.;
 	Real upper = std::numeric_limits<Real>::max();
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -80,7 +80,7 @@ TEST(NormalStatistic, lbSamplerLowerSup0) {
 	Real lower = 1.;
 	Real upper = std::numeric_limits<Real>::max();
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -105,7 +105,7 @@ TEST(NormalStatistic, lrbSamplerLowerInf0UpperSup0) {
 	Real lower = -0.5;
 	Real upper = 0.25;
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -130,7 +130,7 @@ TEST(NormalStatistic, lrbSamplerUpperInf0) {
 	Real lower = -0.5;
 	Real upper = -0.25;
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -155,7 +155,7 @@ TEST(NormalStatistic, lrbSamplerLowerSup0) {
 	Real lower = 0.25;
 	Real upper = 0.5;
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -180,7 +180,7 @@ TEST(NormalStatistic, sampleIUpperInf0) {
 	Real a = 6.;
 	Real b = 9.;
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -205,7 +205,7 @@ TEST(NormalStatistic, sampleILowerSup0) {
 	Real a = -5.;
 	Real b = 9.;
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -235,7 +235,7 @@ TEST(NormalStatistic, sampleITight) {
 	Real a = lower * sigma + mu;
 	Real b = upper * sigma + mu;
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -265,7 +265,7 @@ TEST(NormalStatistic, sampleIWide) {
 	Real a = lower * sigma + mu;
 	Real b = upper * sigma + mu;
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;
@@ -290,7 +290,7 @@ TEST(NormalStatistic, sampleIB) {
 	Real a = 30.;
 	Real b = std::numeric_limits<Real>::max();
 
-	Index nSample = 1000000;
+	Index nSample = 50000;
 	Real expectedMu, expectedSigma, computedMu, computedSigma;
 
 	NormalStatistic normal;

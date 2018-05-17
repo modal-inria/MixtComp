@@ -81,7 +81,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 }
 
 TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
-	Index nTime = 5000;
+	Index nTime = 500;
 	Index nInd = 10;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression

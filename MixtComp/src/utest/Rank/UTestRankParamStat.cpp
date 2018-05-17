@@ -18,9 +18,9 @@ typedef typename std::pair<MisType, std::vector<int> > MisVal;
  * with the real parameters
  * */
 TEST(RankStat, computeStat) {
-	int nbPos = 5;
-	int nbInd = 200;
-	int nbIterburnIn = 100;
+	int nbPos = 4;
+	int nbInd = 100;
+	int nbIterburnIn = 50;
 	int nbIterRun = 100;
 	Real confidenceLevel = 0.95;
 
@@ -34,7 +34,7 @@ TEST(RankStat, computeStat) {
 	Vector<RankIndividual> data(nbInd); // will store the result of xGen
 	std::set<Index> setInd;
 
-	RankVal mu = { 0, 3, 1, 2, 4 }; // ordering (position -> modality) representation
+	RankVal mu = { 0, 3, 1, 2 }; // ordering (position -> modality) representation
 	Real pi = 0.75;
 
 	for (int i = 0; i < nbInd; ++i) {

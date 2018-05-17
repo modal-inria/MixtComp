@@ -13,7 +13,7 @@ using namespace mixt;
 
 TEST(Function, lnCompletedProbability) {
   Index nTime = 5;
-  Index nObs = 100000;
+  Index nObs = 10000;
   Index nSub = 2;
   Index nCoeff = 4;
   Real xMin = 0.;

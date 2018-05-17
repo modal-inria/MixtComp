@@ -44,7 +44,7 @@ TEST(Statistics, MultinomialSeed) {
  * */
 TEST(Statistics, NonZeroPoissonSampling) {
 	int lambda = 5;
-	int nbInd = 1000000;
+	int nbInd = 600000;
 	int nbBin = 100;
 
 	PoissonStatistic poisson;
@@ -55,8 +55,7 @@ TEST(Statistics, NonZeroPoissonSampling) {
 		sampleFreq(poisson.nonZeroSample(lambda)) += 1.;
 	}
 
-	for (int p = 1; p < nbBin; ++p) // note that the modality 0 is ignored
-			{
+	for (int p = 1; p < nbBin; ++p) { // note that the modality 0 is ignored
 		compFreq(p) = poisson.pdf(p, lambda);
 	}
 
@@ -83,7 +82,7 @@ TEST(Statistics, NonZeroPoissonSampling) {
  * */
 TEST(Statistics, Shuffle) {
 	int nbPos = 10;
-	int nbSample = 10000;
+	int nbSample = 5000;
 
 	Vector<int> ind(nbPos);
 	Matrix<int> res(nbSample, nbPos, -1);

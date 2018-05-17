@@ -63,8 +63,8 @@ TEST(FunctionalComputation, regressionNoNoise) {
 }
 
 TEST(FunctionalComputation, regressionNoise) {
-	Index nCoeff = 4;
-	Index nObs = 20000;
+	Index nCoeff = 3;
+	Index nObs = 2000;
 
 	Real xMin = -50.;
 	Real xMax = 50.;
@@ -75,7 +75,7 @@ TEST(FunctionalComputation, regressionNoise) {
 	Matrix<Real> design(nObs, nCoeff);
 
 	Vector<Real> beta(nCoeff); // +1 for the standard deviation
-	beta << 6, -4, 12, 5; // 5 x**3 + 12 x**2 - 4 x + 6
+	beta << 6, -4, 12; // 12 x**2 - 4 x + 6
 	Real sd = 1.; // standard deviation is 1.
 	Real sdEstimated;
 	Vector<Real> betaEstimated;
@@ -95,13 +95,13 @@ TEST(FunctionalComputation, regressionNoise) {
 
 	regression(design, y, betaEstimated, sdEstimated);
 
-	ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-3));
+	ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-2));
 	ASSERT_NEAR(sd, sdEstimated, 0.01);
 }
 
 TEST(FunctionalComputation, subRegression) {
-	Index nCoeff = 4;
-	Index nObs = 20000;
+	Index nCoeff = 3;
+	Index nObs = 15000;
 	Index nSub = 3;
 
 	Real xMin = -50.;
@@ -112,9 +112,9 @@ TEST(FunctionalComputation, subRegression) {
 	Matrix<Real> vandermonde(nObs, nCoeff); // design matrix
 
 	Matrix<Real> beta(nSub, nCoeff);
-	beta.row(0) << 6, -4, 12, 1; // x**3 + 12 x**2 - 4 x + 6
-	beta.row(1) << 9, 1, -3, 2; // 2 x**3 - 3 x**2 - x + 9
-	beta.row(2) << -25, 25, 75, -4; // -4 x**3 + 75 x**2 + 25 x - 25
+	beta.row(0) << 6, -4, 12; //  12 x**2 - 4 x + 6
+	beta.row(1) << 9, 1, -3; //  - 3 x**2 - x + 9
+	beta.row(2) << -25, 25, 75; //  75 x**2 + 25 x - 25
 
 	Vector<Real> sd(nSub);
 	sd << 1, 2, 3;
@@ -163,7 +163,7 @@ TEST(FunctionalComputation, subRegression) {
 
 	subRegression(design, y, betaEstimated, sdEstimated);
 
-	ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-3));
+	ASSERT_EQ(true, betaEstimated.isApprox(beta, 1e-2));
 	ASSERT_EQ(true, sdEstimated.isApprox(sd, 0.01));
 }
 
@@ -352,7 +352,7 @@ TEST(FunctionalComputation, hessian) {
 }
 
 TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
-	Index nTime = 100000;
+	Index nTime = 5000;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression
 	Real xMax = 50.;
@@ -424,7 +424,7 @@ TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
 }
 
 TEST(FunctionalComputation, removeMissingQuantile) {
-	Index nInd = 1000;
+	Index nInd = 250;
 	Index nTime = 1000;
 	Index nSub = 3;
 

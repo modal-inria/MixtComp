@@ -15,7 +15,7 @@ using namespace mixt;
  * Estimation of k using Newton-Raphson.
  */
 TEST(Weibull, EstimateK) {
-	Index nObs = 100000;
+	Index nObs = 5000;
 
 	Real lambdaExpected = 1.0;
 	Real kExpected = 1.5;
@@ -44,7 +44,7 @@ TEST(Weibull, EstimateK) {
  * With enough observations, the estimated values should be close to the parameters used for sampling.
  */
 TEST(Weibull, SampleAndEstimate) {
-	Index nObs = 100000;
+	Index nObs = 30000;
 
 	Real kExpected = 1.5;
 	Real lambdaExpected = 1.0;
@@ -76,14 +76,14 @@ TEST(Weibull, SampleAndEstimate) {
 
 	weibull.mStep(setInd);
 
-	ASSERT_LT((param - paramExpected).norm(), 0.01);
+	ASSERT_LT((param - paramExpected).norm()/paramExpected.norm(), 0.01);
 }
 
 /**
  * Sample truncated data, compute some empirical cdf and quantile values, and compare them with what WeibullStatistic provides.
  */
 TEST(Weibull, truncated) {
-	Index nObs = 100000;
+	Index nObs = 10000;
 
 	Real kExpected = 5.0;
 	Real lambdaExpected = 1.0;
