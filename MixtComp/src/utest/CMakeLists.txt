@@ -38,5 +38,5 @@ target_link_libraries(runUtest
     gtest_main
     MixtComp
     ${Boost_LIBRARIES}
-    ${NLOPT_LIBRARIES}
+    nlopt
 )

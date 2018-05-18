@@ -20,11 +20,13 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 ## nlopt
 IF (WIN32 OR CYGWIN)
-	set(NLOPT_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt/api/")
-	set(NLOPT_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt/libnlopt.a")
+	set(NLOPT_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt/api")
+	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt" "nlopt")
 	include_directories(${NLOPT_INCLUDE_DIRS})
 ELSE()
 	find_package(NLOPT 2.4.2 REQUIRED)
+	add_library(nlopt IMPORTED)
+	set_target_properties(nlopt PROPERTIES IMPORTED_LOCATION ${NLOPT_LIBRARIES})
 	include_directories(${NLOPT_INCLUDE_DIRS})
 ENDIF()
 

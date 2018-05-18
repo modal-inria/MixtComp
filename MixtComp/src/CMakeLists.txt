@@ -3,7 +3,7 @@ project (MixtComp CXX)
 cmake_minimum_required (VERSION 3.5)
 
 # REQUIRED LIBRARIES
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/cmakeModule/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/cmakeModule")
 
 ## Boost
 # set(Boost_USE_STATIC_LIBS ON) # use .a instead of .so
@@ -20,14 +20,15 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 ## nlopt
 IF (WIN32 OR CYGWIN)
-	set(NLOPT_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt/api/")
-	set(NLOPT_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt/libnlopt.a")
+	set(NLOPT_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt/api")
+	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt" "nlopt")
 	include_directories(${NLOPT_INCLUDE_DIRS})
 ELSE()
 	find_package(NLOPT 2.4.2 REQUIRED)
+	add_library(nlopt IMPORTED)
+	set_target_properties(nlopt PROPERTIES IMPORTED_LOCATION ${NLOPT_LIBRARIES})
 	include_directories(${NLOPT_INCLUDE_DIRS})
 ENDIF()
-
 
 ## eigen
 find_package(Eigen3 REQUIRED) # TODO: add required version of compilation problems occur (putting 3.3 did not work on Ubuntu)

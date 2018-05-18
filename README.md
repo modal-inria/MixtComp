@@ -33,22 +33,17 @@ To install the necessary tools, user needs to install [cygwin](https://www.cygwi
 gcc, cmake, boost and eigen must be installed through the cygwin packages installer.
 
 ### Nlopt
-Nlopt is not available with cygwin and need to be installed by hand. Go to [nlopt website](https://nlopt.readthedocs.io/en/latest/#download-and-installation) and download the tar.gz archive.
-In this git repository, create a folder *nlopt* in the *libraires* folder. Extract the content of the archive (e.g. with [7-zip](https://www.7-zip.org/)) and put all the contents (api, auglag, ...) in the *nlopt* folder.
+
+Nlopt is not available with Cygwin and need to be installed by hand. Go to [nlopt website](https://nlopt.readthedocs.io/en/latest/#download-and-installation) and download the tar.gz archive.
+Extract the content of the archive (e.g. with [7-zip](https://www.7-zip.org/)) and put all the contents (api, auglag, ...) in the *nlopt* folder.
 Then download the [CMakeLists file](http://ab-initio.mit.edu/nlopt/CMakeLists.txt) and the [config.cmake.h.in file](http://ab-initio.mit.edu/nlopt/config.cmake.h.in) from this [page](https://nlopt.readthedocs.io/en/latest/NLopt_on_Windows/).
 
-Now, go in the *nlopt* folder and compile it by running:
-```
-cmake .
-cmake --build .
-```
-This will generate *libnlopt.a*.
-
+nlopt will then be built automatically when MixtComp or JSonMixtComp is built.
 
 ## Compilation & tests
 
 Run `./builDebug.sh` (resp. `./builRelease.sh`) to compile MixtComp in Debug (resp. Release) mode.
-Run `./utestDebug.sh` (resp. `utestRelease.sh`) to run unit tests in Debug (resp. Release) mode. 
+Run `./utestDebug.sh` (resp. `utestRelease.sh`) to run unit tests in Debug (resp. Release) mode.
 To clean the debug and release folders, run `./clean.sh`.
 
 
