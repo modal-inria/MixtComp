@@ -19,5 +19,5 @@ add_executable(JsonMixtComp
 target_link_libraries(JsonMixtComp
     MixtComp
     ${Boost_LIBRARIES}
-    ${NLOPT_LIBRARIES}
+    nlopt
 )
