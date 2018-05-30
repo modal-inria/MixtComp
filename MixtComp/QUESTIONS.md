@@ -1,1 +1,0 @@
-- With the current initialization of the functional model, are subregressions too neatly separated ? Global quantiles neatly separate everything, but logistic regression is not identifiable if data is perfectly separated.
