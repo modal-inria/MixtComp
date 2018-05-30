@@ -1,2 +1,0 @@
-The makefile does not currently handle all kinds of dependencies. If a header is modified, only the source files bearing the same name will be recompiled. A "make clean" might be useful in more complex cases.
-There is currently no enforced dependencies to build the examples. They need the debug and release versions of the objects files to have previously been generated.
