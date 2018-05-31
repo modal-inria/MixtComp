@@ -60,6 +60,19 @@ void lnProbaGivenClass(mixt::MixtureComposer& mc,
   pGCR = pGCR_;
 }
 
+void completedProbaLog(
+    mixt::MixtureComposer& mc,
+    nlohmann::json& completedProbabilityLogBurnIn,
+    nlohmann::json& completedProbabilityLogRun) {
+
+  for (Index i = 0; i < mc.completedProbabilityLogBurnIn().size(); ++i) {
+    completedProbabilityLogBurnIn[i] = mc.completedProbabilityLogBurnIn()(i);
+  }
+  for (Index i = 0; i < mc.completedProbabilityLogRun().size(); ++i) {
+    completedProbabilityLogRun[i] = mc.completedProbabilityLogRun()(i);
+  }
+}
+
 void matDelta(mixt::MixtureComposer& mc,
               nlohmann::json& delta){
   nlohmann::json delta_row;
@@ -103,6 +116,20 @@ void paramJsonToCpp(const nlohmann::json& JsonParam,
   } else {
       std::cout << "Parameter nbGibbsIter not found, a value of 100 is used." << std::endl;
   }
+
+  if (JsonParam.find("ratioInitialization") !=  JsonParam.end()) {
+    Real ratioInitialization = JsonParam["ratioInitialization"];
+    if (ratioInitialization < 0. || 1. < ratioInitialization) {
+      std::cout << "Parameter ratioInitialization must be within [0, 1], 0.1 is used." << std::endl;
+    }
+    else {
+      CppParam.ratioInitialization_ = JsonParam["ratioInitialization"];
+    }
+  }
+  else {
+    std::cout << "Parameter ratioInitialization not found, a value of 0.1 is used." << std::endl;
+  }
+
 }
 
 } // namespace mixt

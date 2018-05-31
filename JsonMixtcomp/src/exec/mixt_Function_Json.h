@@ -24,6 +24,11 @@ void IDClass(mixt::MixtureComposer& mc,
 void lnProbaGivenClass(mixt::MixtureComposer& mc,
                        nlohmann::json&  pGCR);
 
+void completedProbaLog(
+    mixt::MixtureComposer& mc,
+    nlohmann::json& completedProbabilityLogBurnIn,
+    nlohmann::json& completedProbabilityLogRun);
+
 void matDelta(mixt::MixtureComposer& mc,
               nlohmann::json& delta);
 

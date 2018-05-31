@@ -127,6 +127,11 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
              mcMixture["nbInd"] = composer.nbInd();
              mcMixture["mode"] = "learn";
 
+             nlohmann::json completedProbabilityLogBurnIn, completedProbabilityLogRun;
+             mixt::completedProbaLog(composer,completedProbabilityLogBurnIn,completedProbabilityLogRun);
+             mcMixture["completedProbabilityLogBurnIn"] = completedProbabilityLogBurnIn;
+             mcMixture["completedProbabilityLogRun"] = completedProbabilityLogRun;
+
              json idc;
              mixt::IDClass(composer, idc);
              mcMixture["IDClass"] = idc;
