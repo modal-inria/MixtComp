@@ -2,7 +2,7 @@
 % Please edit documentation in R/mixtcomp_hierachical_launch.R
 \name{create_subdirectories}
 \alias{create_subdirectories}
-\title{Title}
+\title{Create Subdirectories during the expand phase}
 \usage{
 create_subdirectories(dir, nClass)
 }
@@ -15,7 +15,7 @@ create_subdirectories(dir, nClass)
 void
 }
 \description{
-Title
+Create Subdirectories during the expand phase
 }
 \examples{
 create_subdirectories(getwd(),2)
