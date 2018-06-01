@@ -1,4 +1,4 @@
-
+library(RMixtComp)
 
 param <- list(
   x = c(0., 10., 20.),
@@ -14,7 +14,7 @@ for(i in 1:2000){
 }
 
 data <- cbind(data,rnorm(n = 2000,mean = c(0,5,10,100),sd=c(1,2,3,4)))
-
+colnames(data) = c("F1","X1")
 descriptor <-
   setNames(data.frame(matrix(
     ncol = ncol(data),
@@ -22,8 +22,8 @@ descriptor <-
     byrow = TRUE
   )), colnames(data))
 descriptor[1,] <-
-  c("Functional","Gaussian_pjk")
-descriptor[2, c("CA")] <- rep("nSub: 5, nCoeff: 2", 1)
+  c("Functional","Gaussian_sjk")
+descriptor[2, 1] <- rep("nSub: 5, nCoeff: 2", 1)
 
 write.table(
   data,
@@ -32,5 +32,5 @@ write.table(
   na = "",
   row.names = F
 )
-write.table(descriptor,file="data/descriptor.csv",sep=";",na = "")
+write.table(descriptor,file="data/descriptor.csv",sep=";",na = "",row.names = F)
 

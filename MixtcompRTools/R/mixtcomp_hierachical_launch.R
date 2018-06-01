@@ -14,6 +14,7 @@ extract_data_per_cluster <- function(dir) {
 launch_mixtcomp <- function(dir, nClass) {
   path_input <- paste0(dir, "/mixtcomp_input.json")
   path_output <- paste0(dir, "/mixtcomp_output.json")
+
   resGetData <- getData(c(
     paste0(dir, "/data_mixtcomp.csv"),
     paste0(dir, "/descriptor.csv")
@@ -34,7 +35,7 @@ launch_mixtcomp <- function(dir, nClass) {
       by_row = FALSE,
       resGetData_lm = resGetData$lm,
       mcStrategy = mcStrategy,
-      nbClass = n_class,
+      nbClass = nClass,
       confidenceLevel = 0.95,
       mode = "learn"
     ),
@@ -97,18 +98,18 @@ launch_Mixtcomp_Hierarchical <-
     if(is.null(output_dir)){output_dir = dirname(data_path)}
     data_name = basename(data_path)
     # If results dirs doesnt' exist, create it
-    newDir = paste0(output_dir, "/", data_name)
+    newDir = paste0(output_dir, "/", strsplit(data_name,".csv")[[1]])
     if (!dir.exists(newDir)) {
       dir.create(newDir)
       file.copy(descriptor_path, paste0(newDir, "/descriptor.csv"))
       file.copy(data_path, paste0(newDir, "/data_mixtcomp.csv"))
-      launch_mixtcomp(newDir,nClass)
+      launch_mixtcomp(dir = newDir,nClass = nClass)
     }
     # run expand on it
-
-    for (i in 1:depth) {
-      expand(newDir, nClass, data, descriptor)
-    }
+#
+#     for (i in 1:depth) {
+#       expand(newDir, nClass, data, descriptor)
+#     }
 
     cat("Hierarchical clustering complete !")
   }
