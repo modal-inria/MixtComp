@@ -12,6 +12,12 @@ extract_data_per_cluster <- function(dir) {
 }
 
 launch_mixtcomp <- function(dir, nClass) {
+  # Check if JsonMixtComp executable is available
+  paths = Sys.getenv("PATH")
+  if(!any(file.exists(paste0(strsplit(paths,":")[[1]],"/JsonMixtComp")))){
+    stop("JsonMixtComp cannot be called from MixtCompRTools.
+         In order to be callable, 'JsonMixtComp' must be stored in any of the folder designated by the paths contained in the environement variable PATH")
+  }
   path_input <- paste0(dir, "/mixtcomp_input.json")
   path_output <- paste0(dir, "/mixtcomp_output.json")
 
@@ -25,10 +31,11 @@ launch_mixtcomp <- function(dir, nClass) {
   }
 
   mcStrategy = list(
-    nbBurnInIter = 15,
-    nbIter = 15,
-    nbGibbsBurnInIter = 15,
-    nbGibbsIter = 15
+    nbBurnInIter = 2,
+    nbIter = 2,
+    nbGibbsBurnInIter = 2,
+    nbGibbsIter = 2,
+    ratioInitialization= 1
   )
   arg_list_json <- toJSON(
     list(
@@ -45,7 +52,7 @@ launch_mixtcomp <- function(dir, nClass) {
 
   ###### Mixtcomp run
 
-  cmd <- paste("../JsonMixtcomp", path_input, path_output)
+  cmd <- paste("JsonMixtComp", path_input, path_output)
   system(cmd)
 
 }
