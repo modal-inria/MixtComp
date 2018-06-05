@@ -1,4 +1,7 @@
 
+
+
+
 #' During the expand phase, cut data according to clusters and copy to subfolder
 #'
 #' @param dir A String
@@ -7,7 +10,8 @@
 #' @export
 #'
 #' @examples extract_data_per_cluster("data/data_mixtcomp/x.csv")
-extract_data_per_cluster <- function(dir){
+extract_data_per_cluster <- function(dir) {
+  print(dir)
   MixtCompOutput <- fromJSON(paste0(dir, "/mixtcomp_output.json"))
   data <-
     read.csv(paste0(dir, "/data_mixtcomp.csv"),
@@ -17,9 +21,14 @@ extract_data_per_cluster <- function(dir){
   for (i in 1:MixtCompOutput$mixture$nbCluster) {
     idx_cluster <-
       which(MixtCompOutput$variable$data$z_class$completed == i)
-    data_cluster <- data[idx_cluster, ]
+    data_cluster <- data[idx_cluster,]
     subdir <- paste0(dir, "/subcluster_", i)
-    write.table(data_cluster, paste0(subdir, "/data_mixtcomp.csv"),sep=";",row.names = F)
+    write.table(
+      data_cluster,
+      paste0(subdir, "/data_mixtcomp.csv"),
+      sep = ";",
+      row.names = F
+    )
     file.copy(paste0(dir, "/descriptor.csv"),
               paste0(subdir, "/descriptor.csv"))
   }
@@ -57,10 +66,10 @@ launch_mixtcomp <- function(dir, nClass) {
   }
 
   mcStrategy = list(
-    nbBurnInIter = 2,
-    nbIter = 2,
-    nbGibbsBurnInIter = 2,
-    nbGibbsIter = 2,
+    nbBurnInIter = 15,
+    nbIter = 15,
+    nbGibbsBurnInIter = 15,
+    nbGibbsIter = 15,
     ratioInitialization = 1
   )
   arg_list_json <- toJSON(
@@ -78,7 +87,12 @@ launch_mixtcomp <- function(dir, nClass) {
 
   ###### Mixtcomp run
 
-  cmd <- paste("JsonMixtComp", path_input, path_output)
+  cmd <-
+    paste(
+      "/home/etienne/Mixtcomp_Docker_Flask/bin/JsonMixtComp",
+      path_input,
+      path_output
+    )
   system(cmd)
 
 }
@@ -123,14 +137,16 @@ create_subdirectories <- function(dir, nClass) {
 #' @examples expand()
 expand <- function(dir, nClass) {
   existing_subdirs_in_current_dir <- list.dirs(dir, recursive = F)
+  print(dir)
+  print(existing_subdirs_in_current_dir)
   if (length(existing_subdirs_in_current_dir) > 0) {
     for (subdir in existing_subdirs_in_current_dir) {
-      expand(subdir)
+      expand(subdir, nClass)
     }
   } else {
     create_subdirectories(dir, nClass)
     extract_data_per_cluster(dir)
-    subdirs=paste0(dir,"/subcluster_",1:nClass)
+    subdirs = paste0(dir, "/subcluster_", 1:nClass)
 
     for (subdir in subdirs) {
       launch_mixtcomp(subdir, nClass)
@@ -165,6 +181,7 @@ launch_Mixtcomp_Hierarchical <-
     data_name = basename(data_path)
     # If results dirs doesnt' exist, create it
     newDir = paste0(output_dir, "/", strsplit(data_name, ".csv")[[1]])
+    print(newDir)
     if (!dir.exists(newDir)) {
       dir.create(newDir)
       file.copy(descriptor_path, paste0(newDir, "/descriptor.csv"))
@@ -172,14 +189,100 @@ launch_Mixtcomp_Hierarchical <-
       launch_mixtcomp(dir = newDir, nClass = nClass)
     }
     # run expand on it
-    #
-    #     for (i in 1:depth) {
-    #       expand(newDir, nClass, data, descriptor)
-    #     }
+
+    for (i in 1:depth) {
+      expand(newDir, nClass)
+    }
 
     cat("Hierarchical clustering complete !")
   }
 
-Aggregate_Clusters <- function(dir) {
+aggregate_clusters <- function(dir) {
+  # Si le dossier contient un fichier output
+  # Si le warnLog de ce fichier output est vide
+  # l'indicatif du cluster est l'indicatif précédent suivi du cluster actuel
+  # pour chaque sous cluster contenu dans ce dossier, l'indicatif est le
+  # nouvel indicatif suivi de - et de l'indicatif fourni par le clsuter suivant
+  print(dir)
+  output_path = paste0(dir, "/mixtcomp_output.json")
+  if (!file.exists(output_path)) {
+    return("")
+  }
+  output = fromJSON(paste0(dir, "/mixtcomp_output.json"))
+  if (output$mixture$warnLog != "") {
+    return("")
+  }
+
+  clusters = output$variable$data$z_class$completed
+
+  existing_subdirs_in_dir = list.dirs(dir, recursive = F)
+  if (length(existing_subdirs_in_dir) > 0) {
+    for (k in unique(clusters)) {
+      path_subdir = paste0(dir, "/subcluster_", k)
+      clusters[which(clusters == k)] = paste0(clusters[which(clusters ==
+                                                               k)], "-", aggregate_clusters(path_subdir))
+
+    }
+  }
+
+  return(clusters)
 
 }
+
+plot_functional_hierarchique <-
+  function(clusters,
+           var,
+           output,
+           depth,
+           max_nb_lines = 100) {
+    clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
+    data = output$variable$data[[var]]$data
+    time = output$variable$data[[var]]$time
+    unique_clusters = sort(unique(clusters))
+
+    pal = colorRampPalette(brewer.pal(11, "Spectral"))(length(unique_clusters))
+    p = plot_ly()
+    max_line_per_cluster = max(max_nb_lines %/% length(unique_clusters),2)
+    for (i in ((1:length(unique_clusters)))) {
+      data_cl = data[which(clusters == unique_clusters[i])]
+      time_cl = time[which(clusters == unique_clusters[i])]
+      p = p %>% add_trace(
+        y = data_cl[1][[1]],
+        x = time_cl[1][[1]],
+        type = "scatter",
+        mode = "lines",
+        legendgroup = unique_clusters[i],
+        name = unique_clusters[i],
+        showlegend = TRUE,
+        line = list(color = pal[i],
+                    width = 2)
+      )
+
+      for (k in 2:min(max_line_per_cluster,length(data_cl))) {
+        # print("#####")
+        # print(data_cl[k][[1]])
+        p = p %>% add_trace(
+          y = data_cl[k][[1]],
+          x = time_cl[k][[1]],
+          type = "scatter",
+          mode = "lines",
+          legendgroup = unique_clusters[i],
+          name = unique_clusters[i],
+          showlegend = FALSE,
+          line = list(color = pal[i],
+                      width = 2)
+        )
+
+      }
+    }
+    p = p %>%
+      layout(
+        title = paste0(
+          "Distribution of the variable ",var,
+          " in the sub-clustering of depth ", depth
+        ),
+        xaxis = list(title = "time"),
+        yaxis = list(title = var)
+      )
+    return(p)
+  }
