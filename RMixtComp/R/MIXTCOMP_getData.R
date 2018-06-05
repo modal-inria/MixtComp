@@ -63,8 +63,8 @@
 #' \emph{i} is the number of subregressions in a functional data and \emph{k} the number of coefficients
 #'  of each regression (2 = linear, 3 = quadratic, ...). Missing data are not supported.
 #'
-#' 
-#' 
+#' @section (semi-)supervised clustering:
+#' To perform a (semi-)supervised clustering, user can add a variable names \emph{z_class} in the data and descriptor files with \emph{LatentClass} as model in the descriptor file.
 #' 
 #'
 #' @examples 
