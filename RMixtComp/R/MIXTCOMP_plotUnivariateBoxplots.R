@@ -55,6 +55,7 @@ plotDataBoxplot <- function(output, var, ...)
   
   switch(type,
          "Gaussian_sjk" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output)),
+         "Weibull" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output)),
          "Categorical_pjk" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output)),
          "Poisson_k" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output)),
          "Functional" = plotFunctionalData(output, var, ...),

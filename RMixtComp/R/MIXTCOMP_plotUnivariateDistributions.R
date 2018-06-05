@@ -135,54 +135,6 @@ plotCINumericData <- function(data, var, class, grl){
   print(p)
 }
 
-# # Mean and 95%-level confidence intervals per class for a Poisson Mixture
-# plotCIIntegerData <- function(data, var, class, grl){
-#   p <- plot_ly(x=data$mean,
-#                y=1:length(data$mean),
-#                type="scatter",
-#                mode = 'markers',
-#                showlegend = FALSE,
-#                hoverinfo = "text",
-#                text = paste("Class.", 1:length(data$mean), "<br>",
-#                             "Mean: ", round(data$mean,2), "<br>",
-#                             "CI-95%: [", round(data$lower,2),
-#                             ",", round(data$upper,2),"]",sep="")
-#   )%>%
-#     layout(title = "Mean and 95%-level confidence intervals per class",
-#            paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
-#            xaxis = list(title = var,
-#                         gridcolor = 'rgb(255,255,255)',
-#                         showgrid = TRUE,
-#                         showline = FALSE,
-#                         showticklabels = TRUE,
-#                         tickcolor = 'rgb(127,127,127)',
-#                         ticks = 'outside',
-#                         zeroline = FALSE),
-#            yaxis = list(title = var,
-#                         gridcolor = 'rgb(255,255,255)',
-#                         showgrid = F,
-#                         showline = FALSE,
-#                         showticklabels = T,
-#                         tickvals=1:length(data$mean),
-#                         tickcolor = 'rgb(127,127,127)',ticks="",
-#                         zeroline = FALSE))
-#   p
-#   for(i in 1:length(data$mean)){
-#     p <- add_trace(p,
-#                    x = c(data$lower[i], data$upper[i]),  # x0, x1
-#                    y = c(i, i),  # y0, y1
-#                    mode = "lines",
-#                    line = list(color='rgba(0,100,80,0.4)',width = 20),
-#                    showlegend = FALSE,
-#                    hoverinfo = "text",
-#                    text = paste("Class.", i, "<br>",
-#                                 "Mean: ", round(data$mean[i],2), "<br>",
-#                                 "CI-95%: [", round(data$lower[i],2),
-#                                 ",", round(data$upper[i],2),"]",sep="")
-#     )
-#   }
-#   print(p)
-# }
 
 # Barplot for categorical data (only the levels included in the 95 confidence level for at least one component are plotted)
 plotCategoricalData <- function(data, var, class, grl){
