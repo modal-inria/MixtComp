@@ -3,14 +3,11 @@
 #' 
 #' @title Boxplot per class
 #' 
-#' @usage plotDataBoxplot(output, var, ...)
-#' plotContinuousData(output, var)
-#' plotIntegerData(output, var)
-#' plotCategoricalData(output, var)
-#' plotFunctionalData(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL)
+#' @usage plotDataBoxplot(output, var, grl = TRUE, ...)
 #' 
 #' @param output object returned by function \link{mixtCompCluster}
 #' @param var name of the variable
+#' @param grl if TRUE plot the general distribution of the data
 #' @param ... other parameters (see \emph{Details})
 #' 
 #' @details For functional data, three other parameters are available:
@@ -46,7 +43,7 @@
 #' } 
 #' 
 #' @author Matthieu MARBAC
-plotDataBoxplot <- function(output, var, ...)
+plotDataBoxplot <- function(output, var, grl = TRUE, ...)
 {
   if(!(var%in%names(output$variable$type)))
     stop("This variable does not exist in the mixture model.")
@@ -54,10 +51,10 @@ plotDataBoxplot <- function(output, var, ...)
   type <- output$variable$type[[var]]
   
   switch(type,
-         "Gaussian_sjk" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output)),
-         "Weibull" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output)),
-         "Categorical_pjk" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output)),
-         "Poisson_k" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output)),
+         "Gaussian_sjk" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$mixture$nbCluster, grl = grl)),
+         "Weibull" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$mixture$nbCluster, grl = grl)),
+         "Categorical_pjk" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output), var, class = 1:output$mixture$nbCluster, grl),
+         "Poisson_k" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$mixture$nbCluster, grl = grl)),
          "Functional" = plotFunctionalData(output, var, ...),
          cat("Not yet implemented"))
 }
@@ -70,7 +67,10 @@ plotBoxplotperClass <- function(bounds){
        ylim=c(0.2, nrow(bounds) + .8 ),
        xlab="value",
        ylab="class",
+       yaxt = "n",
        lab=c(10, nrow(bounds), 5))
+  ytick <- 1:nrow(bounds)
+  axis(side = 2, at = ytick, labels = rownames(bounds))
   # Boucle sur les classes
   for (k in 1:nrow(bounds)){
     # Lines horizontales

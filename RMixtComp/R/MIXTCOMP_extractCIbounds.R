@@ -176,7 +176,7 @@ extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$mixture$nb
                        cumsums=cumsums)
   thresholds <- matrix(thresholds, nrow=data$mixture$nbCluster)
   thresholds <- thresholds[class, , drop=FALSE]
-  rownames(thresholds) <- paste("component", class)
+  rownames(thresholds) <- paste("comp.", class)
   colnames(thresholds) <- paste("quantil.", c(.05, .25, .5, .75, .95))
   if (grl){
     obs <- sort(data$variable$data[[var]]$completed, decreasing = FALSE)
@@ -206,7 +206,7 @@ extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$mixture$
                     obs=obs
   ))
   probs <- probs[class, , drop=FALSE]
-  rownames(probs) <- paste("component", class)
+  rownames(probs) <- paste("comp.", class)
   colnames(probs) <- levels
   if (grl){
     obs <- sort(table(data$variable$data[[var]]$completed), decreasing = TRUE)

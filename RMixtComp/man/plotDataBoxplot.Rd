@@ -7,16 +7,14 @@
 \alias{plotBoxplotperClass}
 \title{Boxplot per class}
 \usage{
-plotDataBoxplot(output, var, ...)
-plotContinuousData(output, var)
-plotIntegerData(output, var)
-plotCategoricalData(output, var)
-plotFunctionalData(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL)
+plotDataBoxplot(output, var, grl = TRUE, ...)
 }
 \arguments{
 \item{output}{object returned by function \link{mixtCompCluster}}
 
 \item{var}{name of the variable}
+
+\item{grl}{if TRUE plot the general distribution of the data}
 
 \item{...}{other parameters (see \emph{Details})}
 }
