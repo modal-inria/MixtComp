@@ -5,29 +5,6 @@
 # Here, few types of data are allowed: continuous or categorical
 # The other types of data must be implemented
 computelogtikmixtcomp <- function(output){
-  # param <- output$variable$param
-  # x <- output$variable$data
-  # logtik <- matrix(0, length(x$z_class$completed), output$mixture$nbCluster)
-  # for (k in 1:output$mixture$nbCluster)  logtik[,k] <- log(param$z_class$pi$stat[k,1])
-  # 
-  # for (j in 2:length(x)){
-  #   if (output$variable$type[[j]] == "Gaussian_sjk"){
-  #     for (k in 1:ncol(logtik)){
-  #       tmp <- matrix(param[[j]]$NumericalParam$stat[,1], 2, output$mixture$nbCluster)
-  #       logtik[,k] <- logtik[,k] + dnorm(x[[j]]$completed, tmp[1,k], tmp[2,k], log=TRUE)
-  #     }
-  #   }
-  #   if (output$variable$type[[j]] == "Categorical_pjk"){
-  #     for (k in 1:ncol(logtik)){
-  #       tmp <- log(matrix(param[[j]]$NumericalParam$stat[,1], ncol=output$mixture$nbCluster))
-  #       logtik[,k] <- logtik[,k] + tmp[x[[j]]$completed, k]
-  #     }
-  #   }
-  #   
-  # }
-  # logtik <- sweep(logtik, 1, apply(logtik, 1, max), "-")
-  # logtik <- sweep(logtik, 1, log(rowSums(exp(logtik))), "-")
-  # logtik
   sweep(output$mixture$lnProbaGivenClass, 
         1,
         apply(output$mixture$lnProbaGivenClass,
