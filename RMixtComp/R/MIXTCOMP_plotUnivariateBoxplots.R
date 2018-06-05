@@ -71,7 +71,7 @@ plotBoxplotperClass <- function(bounds){
        ylab="class",
        lab=c(10, nrow(bounds), 5))
   # Boucle sur les classes
-  for (k in 1:length(bounds)){
+  for (k in 1:nrow(bounds)){
     # Lines horizontales
     lines(c(bounds[k,1], bounds[k,2]), c(k, k) )
     lines(c(bounds[k,2], bounds[k,4]), (-.3)* c(1, 1) + k )
@@ -85,28 +85,3 @@ plotBoxplotperClass <- function(bounds){
     lines(rep(bounds[k,5], 2), c(-.15,.15) + k)
   }
 }
-
-# bounds is a list
-# plotBoxplotperClass <- function(bounds){
-#   # Définition des paramètres du graphiques
-#   plot(NA,
-#        xlim=range(unlist(bounds)),
-#        ylim=c(0.2, length(bounds) + .8 ),
-#        xlab="value",
-#        ylab="class",
-#        lab=c(10, length(bounds), 5))
-#   # Boucle sur les classes
-#   for (k in 1:length(bounds)){
-#     # Lines horizontales
-#     lines(c(bounds[[k]][1], bounds[[k]][2]), c(k, k) )
-#     lines(c(bounds[[k]][2], bounds[[k]][4]), (-.3)* c(1, 1) + k )
-#     lines(c(bounds[[k]][2], bounds[[k]][4]), (.3)* c(1, 1) + k )
-#     lines(c(bounds[[k]][4], bounds[[k]][5]), c(k, k) )
-#     # Lines verticales
-#     lines(rep(bounds[[k]][1], 2), c(-.15,.15) + k)
-#     lines(rep(bounds[[k]][2], 2), c(-.3,.3) + k)
-#     lines(rep(bounds[[k]][3], 2), c(-.3,.3) + k, lwd=2)
-#     lines(rep(bounds[[k]][4], 2), c(-.3,.3) + k)
-#     lines(rep(bounds[[k]][5], 2), c(-.15,.15) + k)
-#   }
-# }
