@@ -77,15 +77,20 @@ getZ_class <- function(outMixtComp)
 }
 
 
-
-#' @title Get the type of model for each variable
+#' @name getType
+#' @aliases getVarNames
+#' 
+#' @title Getters
 #'
-#' @description Get the type of model for each variable
+#' @description Get the type of model, names for each variable
+#'
+#' @usage getType(outMixtComp, with.z_class = FALSE)
+#' getVarNames(outMixtComp, with.z_class = FALSE)
 #'
 #' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.
 #' @param with.z_class if TRUE, the type of z_class is returned.
 #'
-#' @return a vector containing the type of models associated with each individual.
+#' @return a vector containing the type of models, names associated with each individual.
 #'
 #' @examples 
 #' \dontrun{
@@ -108,6 +113,10 @@ getZ_class <- function(outMixtComp)
 #' 
 #' # get type
 #' type <- getType(res)
+#' 
+#' # get variable names
+#' varNames <- getVarNames(res)
+#' 
 #' }
 getType <- function(outMixtComp, with.z_class = FALSE)
 {
@@ -118,7 +127,6 @@ getType <- function(outMixtComp, with.z_class = FALSE)
   
   return(type)
 }
-
 
 #' @title Get the empiric tik
 #'

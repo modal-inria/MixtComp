@@ -2,9 +2,11 @@
 % Please edit documentation in R/MIXTCOMP_getter.R
 \name{getType}
 \alias{getType}
-\title{Get the type of model for each variable}
+\alias{getVarNames}
+\title{Getters}
 \usage{
 getType(outMixtComp, with.z_class = FALSE)
+getVarNames(outMixtComp, with.z_class = FALSE)
 }
 \arguments{
 \item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}
@@ -12,10 +14,10 @@ getType(outMixtComp, with.z_class = FALSE)
 \item{with.z_class}{if TRUE, the type of z_class is returned.}
 }
 \value{
-a vector containing the type of models associated with each individual.
+a vector containing the type of models, names associated with each individual.
 }
 \description{
-Get the type of model for each variable
+Get the type of model, names for each variable
 }
 \examples{
 \dontrun{
@@ -38,5 +40,9 @@ res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel =
 
 # get type
 type <- getType(res)
+
+# get variable names
+varNames <- getVarNames(res)
+
 }
 }
