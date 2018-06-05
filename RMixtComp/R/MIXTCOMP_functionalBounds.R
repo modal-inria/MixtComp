@@ -41,8 +41,8 @@ extractCIFunctionnalVbleDegSup <- function(var, data){
     infcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundValVbleDegSup, borne=0.025, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,, drop=FALSE]))
     supcurve <- sapply(1:G, function(k) sapply(Tseq, functionalboundValVbleDegSup, borne=0.975, alpha=alpha[[k]], beta=beta[[k]], sigma=sigma[k,, drop=FALSE]))
   }else{
-    infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
-    supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
+    infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k, drop=FALSE], sigma[k,1]))
+    supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k, drop=FALSE], sigma[k,1]))
   }
   out = list(time=Tseq, mean=t(meancurve), inf=t(infcurve), sup=t(supcurve))
   return(out)

@@ -17,8 +17,8 @@ extractCIboundsOneVble = function(var, data, class, grl){
 extractCIGaussianVble = function(var, data, class, grl){
   theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], ncol=2, byrow=TRUE)
   means = as.array(round(theta[,1], 3))
-  lowers = as.array(round(qnorm(0.025, theta[,1], sqrt(theta[,2])), 3))
-  uppers = as.array(round(qnorm(0.975, theta[,1], sqrt(theta[,2])), 3))
+  lowers = as.array(round(qnorm(0.025, theta[,1], theta[,2]), 3))
+  uppers = as.array(round(qnorm(0.975, theta[,1], theta[,2]), 3))
   means <- means[class]
   lowers <- lowers[class]
   uppers <- uppers[class]
@@ -143,8 +143,8 @@ extractCIFunctionnalVble = function(var, data){
       return(b)
       })
     
-    infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
-    supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k, drop=FALSE], sqrt(sigma[k,1])))
+    infcurve <- sapply(1:G, function(k) qnorm(0.025, meancurve[,k, drop=FALSE], sigma[k,1]))
+    supcurve <- sapply(1:G, function(k) qnorm(0.975, meancurve[,k, drop=FALSE], sigma[k,1]))
   }
   out = list(time=Tseq, mean=t(meancurve), inf=t(infcurve), sup=t(supcurve))
   return(out)
