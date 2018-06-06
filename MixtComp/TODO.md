@@ -14,11 +14,12 @@
 # Build
 
 - would it be wise to split MixtComp in a base package which only requires Rccp, and a companion package which requires plotly and others ?
+- is it possible to build a DETERMINISTIC version of RMixtComp ? for testing  with testthat for example.
 
 # Input / Output
 
-- Gaussian: Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
-- Poisson / Ordinal: Les statistiques des données complétées au format matriciel (liste de vecteurs en ce moment)
+- Gaussian: return statistics about completed data as a matrix instead of a list of vector 
+- Poisson / Ordinal: return statistics about completed data as a matrix instead of a list of vector
 
 # Model
 
@@ -40,7 +41,7 @@
 
 - apparently there are sometimes errors in the unit tests. Check those as they could explain other errors.
 - debug all utest in UTestOrdinal.cpp
-- Crashes observed when running testOrdinal() in RMixtComp
+- tests for Ordinal model in RMixtComp are disabled
 
 # Performances
 
