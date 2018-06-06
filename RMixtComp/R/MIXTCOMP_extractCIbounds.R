@@ -9,7 +9,7 @@ extractCIboundsOneVble = function(var, data, class, grl){
   if (type == "Weibull") out <- extractCIWeibullVble(var, data, class, grl)
   if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data, class, grl)
   if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data, class, grl)
-  if (type == "Functional") out <-  extractCIFunctionnalVble(var, data, class, grl)
+  if (type %in% c("Functional", "FunctionalSharedAlpha")) out <-  extractCIFunctionnalVble(var, data, class, grl)
   return(out)
 }
 
@@ -160,7 +160,7 @@ extractBoxplotInfoOneVble <- function(var, data, class=1:data$mixture$nbCluster,
   type <- data$variable$type[[var]]
   if ((type == "Gaussian_sjk") || (type == "Poisson_k")) out <- extractBoundsBoxplotNumericalVble(var, data, class, grl)
   if (type == "Categorical_pjk") out <-  extractBoundsBoxplotCategoricalVble(var, data, class, grl)
-  if (type == "Functional") out <-  extractCIFunctionnalVble(var, data)
+  if (type %in% c("Functional", "FunctionalSharedAlpha")) out <-  extractCIFunctionnalVble(var, data)
   return(out)
 }
 

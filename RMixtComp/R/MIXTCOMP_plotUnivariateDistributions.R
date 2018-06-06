@@ -59,6 +59,7 @@ plotDataCI <- function(output, var, class=1:output$mixture$nbCluster, grl=FALSE,
          "Categorical_pjk" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl),
          "Poisson_k" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl),
          "Functional" = plotFunctionalData(output, var, ...),
+         "FunctionalSharedAlpha" = plotFunctionalData(output, var, ...),
          cat("Not yet implemented"))
 }
 

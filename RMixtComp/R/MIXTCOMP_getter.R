@@ -220,6 +220,9 @@ getParam <- function(varName, outMixtComp)
                   "Functional" = list(alpha = outMixtComp$variable$param[[varName]]$alpha$stat[,1],
                                       beta = outMixtComp$variable$param[[varName]]$beta$stat[,1],
                                       sd = outMixtComp$variable$param[[varName]]$sd$stat[,1]),
+                  "FunctionalSharedAlpha" = list(alpha = outMixtComp$variable$param[[varName]]$alpha$stat[,1],
+                                                 beta = outMixtComp$variable$param[[varName]]$beta$stat[,1],
+                                                 sd = outMixtComp$variable$param[[varName]]$sd$stat[,1]),
                   "LatentClass" = outMixtComp$variable$param[[varName]]$pi$stat[,1],
                   "Weibull" = matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), c("k (shape)", "lambda (scale)"))),
                   warning("Not yet implemented."))

@@ -56,6 +56,7 @@ plotDataBoxplot <- function(output, var, grl = TRUE, ...)
          "Categorical_pjk" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output), var, class = 1:output$mixture$nbCluster, grl),
          "Poisson_k" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$mixture$nbCluster, grl = grl)),
          "Functional" = plotFunctionalData(output, var, ...),
+         "FunctionalSharedAlpha" = plotFunctionalData(output, var, ...),
          cat("Not yet implemented"))
 }
 
