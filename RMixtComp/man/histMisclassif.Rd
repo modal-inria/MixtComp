@@ -18,7 +18,7 @@ Histgrams of err_i's can be plot for a specific class, all classes or every clas
 \dontrun{
 # path to files
 pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 
 resGetData <- getData(c(pathToData, pathToDescriptor))
 

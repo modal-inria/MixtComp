@@ -11,7 +11,7 @@
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -53,7 +53,7 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -96,7 +96,7 @@ getZ_class <- function(outMixtComp)
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -140,7 +140,7 @@ getType <- function(outMixtComp, with.z_class = FALSE)
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -178,7 +178,7 @@ getTik <- function(outMixtComp)
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -246,7 +246,7 @@ getParam <- function(varName, outMixtComp)
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 

@@ -161,7 +161,8 @@ output  \cr
 \examples{
 \dontrun{
 pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
+pathToDescriptor2 <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 
 resGetData <- getData(c(pathToData, pathToDescriptor))
 
@@ -172,11 +173,16 @@ mcStrategy <- list(nbBurnInIter = 100,
                    nbGibbsIter = 50,
                    ratioInitialization = 0.1)
 
-# run RMixtCompt for clustering
+# run RMixtCompt for unsupervised clustering
 res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 
 # run RMixtCompt for predicting
 resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+
+# run RMixtCompt for predicting
+resGetData2 <- getData(c(pathToData, pathToDescriptor2))
+res <- mixtCompCluster(resGetData2$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+
 }
 
 

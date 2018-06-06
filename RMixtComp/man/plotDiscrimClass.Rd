@@ -19,7 +19,7 @@ Dk=  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
 \dontrun{
 # path to files
 pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 
 resGetData <- getData(c(pathToData, pathToDescriptor))
 

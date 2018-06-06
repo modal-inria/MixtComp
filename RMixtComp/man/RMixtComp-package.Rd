@@ -21,7 +21,7 @@ Date: \tab 2018-04-26\cr
 \dontrun{
 # path to files
 pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 
 resGetData <- getData(c(pathToData, pathToDescriptor))
 

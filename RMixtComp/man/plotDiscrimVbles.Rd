@@ -19,7 +19,7 @@ Cj=  - sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*lnK)
 \dontrun{
 # path to files
 pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 
 resGetData <- getData(c(pathToData, pathToDescriptor))
 

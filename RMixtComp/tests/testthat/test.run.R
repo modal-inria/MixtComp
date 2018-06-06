@@ -2,7 +2,7 @@ context("Run MixtComp")
 
 test_that("run cluster/predict file csv",{
   pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-  pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+  pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
   
   resGetData <- getData(c(pathToData, pathToDescriptor))
   expect_equal(resGetData$warnLog, "")
@@ -23,7 +23,6 @@ test_that("run cluster/predict file csv",{
   expect_equal(resPred$mixture$warnLog, NULL)
   
   file.remove("progress")
-  
 })
 
 

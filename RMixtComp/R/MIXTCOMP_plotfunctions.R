@@ -10,7 +10,7 @@
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -82,7 +82,7 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1)){
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -140,7 +140,7 @@ plotDiscrimClass <- function(output, ylim = c(0, 1)){
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -219,7 +219,7 @@ heatmapVbles <- function(output){
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -299,7 +299,7 @@ heatmapClass <- function(output){
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 
@@ -372,7 +372,7 @@ heatmapTikSorted <- function(output){
 #' \dontrun{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 #' 
 #' resGetData <- getData(c(pathToData, pathToDescriptor))
 #' 

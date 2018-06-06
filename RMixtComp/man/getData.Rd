@@ -91,7 +91,7 @@ To perform a (semi-)supervised clustering, user can add a variable names \emph{z
 \dontrun{
 # Case with csv file
 pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descriptor.csv", package = "RMixtComp")
+pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
 
 out <- getData(c(pathToData, pathToDescriptor)) 
 
