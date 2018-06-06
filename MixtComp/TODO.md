@@ -14,7 +14,6 @@
 # Build
 
 - would it be wise to split MixtComp in a base package which only requires Rccp, and a companion package which requires plotly and others ?
-- is it possible to build a DETERMINISTIC version of RMixtComp ? for testing  with testthat for example.
 
 # Input / Output
 
