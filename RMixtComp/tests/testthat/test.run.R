@@ -364,7 +364,7 @@ test_that("run cluster/predict R object",{
   # run RMixtCompt for predicting
   resPred <- mixtCompPredict(resGetDataPred$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
   expect_equal(resPred$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resPred), datPred$z), 0.9)
+  expect_gte(rand.index(getZ_class(resPred), datPred$z), 0.85)
 
   file.remove("progress")
 })
