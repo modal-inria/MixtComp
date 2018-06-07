@@ -59,8 +59,8 @@ The \emph{mixture} contains
   \item{lnObservedLikelihood}{observed loglikelihood}
   \item{lnCompletedLikelihood}{completed loglikelihood}
   \item{mode}{"predict" for \link{mixtCompPredict} gor "learn" for \link{mixtCompCluster}}
-  \item{IDClass}{entropy used to compute the discriminative power (see code of \link{plotDiscrimVbles})}
-  \item{delta}{entropy used to compute the similarities between variables (see code of \link{heatmapVbles})}
+  \item{IDClass}{entropy used to compute the discriminative power (see code of \emph{plotDiscrimVbles})}
+  \item{delta}{entropy used to compute the similarities between variables (see code of \emph{heatmapVbles})}
   \item{completedProbabilityLogBurnIn}{evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
   \item{completedProbabilityLogRun}{evolution of the completed log-probability  after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)} 
   \item{warnLog}{contains warnings. Is NULL if there is no warning.}

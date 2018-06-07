@@ -128,6 +128,16 @@ getType <- function(outMixtComp, with.z_class = FALSE)
   return(type)
 }
 
+getVarNames <- function(outMixtComp, with.z_class = FALSE)
+{
+  varNames <- names(outMixtComp$variable$type)
+  
+  if(!with.z_class)
+    varNames = varNames[varNames!="z_class"]
+  
+  return(varNames)
+}
+
 #' @title Get the empiric tik
 #'
 #' @description Get the empiric tik

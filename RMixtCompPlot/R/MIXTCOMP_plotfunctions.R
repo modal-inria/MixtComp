@@ -1,13 +1,16 @@
-#' @title Barplot of the discriminative power of the variables
+#' Barplot of the discriminative power of the variables
 #' 
 #' @details The discriminative power of variable j is defined by 1 - Cj
 #' Cj=  - sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*lnK)
 #' 
-#' @param output object returned by function \link{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompCluster}
 #' @param ylim vector of legnth 2 defining the range of y-axis
 #' 
 #' @examples 
 #' \dontrun{
+#' 
+#' library(RMixtComp)
+#' 
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
@@ -31,6 +34,8 @@
 #' }
 #' 
 #' @author Matthieu MARBAC
+#'
+#' @export
 plotDiscrimVbles <- function(output, ylim = c(0, 1)){
   ## Get information
   # names of variables
@@ -71,15 +76,19 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1)){
   visuVbles
 }
 
-#' @title Barplot of the discriminative power of the classes
+#' Barplot of the discriminative power of the classes
+#' 
 #' @details The discriminative power of class k is defined by 1 - Dk
 #' Dk=  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
 #' 
-#' @param output object returned by function \link{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompCluster}
 #' @param ylim vector of legnth 2 defining the range of y-axis
 #' 
 #' @examples 
 #' \dontrun{
+#' 
+#' library(RMixtComp)
+#' 
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
@@ -103,6 +112,8 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1)){
 #' }
 #' 
 #' @author Matthieu MARBAC
+#'
+#' @export
 plotDiscrimClass <- function(output, ylim = c(0, 1)){
   ## Get information
   # names of classes
@@ -129,15 +140,18 @@ plotDiscrimClass <- function(output, ylim = c(0, 1)){
   visuClass
 }
 
-#' @title Heatmap of the similarities between variables about clustering
+#' Heatmap of the similarities between variables about clustering
 #' 
 #' @details The similarities between variables j and h is defined by 1 - Delta(j,h)
 #' Delta(j,h)^2 = (1/n) * sum_{i=1}^n sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2
 #' 
-#' @param output object returned by function \link{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompCluster}
 #' 
 #' @examples 
 #' \dontrun{
+#' 
+#' library(RMixtComp)
+#' 
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
@@ -161,6 +175,8 @@ plotDiscrimClass <- function(output, ylim = c(0, 1)){
 #' }
 #' 
 #' @author Matthieu MARBAC
+#'
+#' @export
 heatmapVbles <- function(output){
   ## Get information
   # names of variables
@@ -208,15 +224,18 @@ heatmapVbles <- function(output){
   heatmap
 }
 
-#' @title Heatmap of the similarities between classes about clustering
+#' Heatmap of the similarities between classes about clustering
 #'
 #' @details The similarities between classes k and g is defined by 1 - Sigma(k,g)
 #' Sigma(k,g)^2 = (1/n) * sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
 #' 
-#' @param output object returned by function \link{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompCluster}
 #' 
 #' @examples 
 #' \dontrun{
+#' 
+#' library(RMixtComp)
+#' 
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
@@ -240,6 +259,8 @@ heatmapVbles <- function(output){
 #' } 
 #' 
 #' @author Matthieu MARBAC
+#'
+#' @export
 heatmapClass <- function(output){
   ## Get information
   # names of variables  
@@ -288,15 +309,18 @@ heatmapClass <- function(output){
   heatmap
 }
 
-#' @title Heatmap of the tik = P(Z_i=k|x_i)
+#' Heatmap of the tik = P(Z_i=k|x_i)
 #'  
 #' @details Observation are sorted according to the hard partition then for each component
 #' they are sorted by decreasing order of their tik's
 #' 
-#' @param output object returned by function \link{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompCluster}
 #' 
 #' @examples 
 #' \dontrun{
+#' 
+#' library(RMixtComp)
+#' 
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
@@ -320,6 +344,8 @@ heatmapClass <- function(output){
 #' }
 #' 
 #' @author Matthieu MARBAC
+#'
+#' @export
 heatmapTikSorted <- function(output){
   # orderTik, they are saved at slot ordertik of JSON file
   orderTik <- unlist(sapply(1:output$mixture$nbCluster, 
@@ -360,16 +386,19 @@ heatmapTikSorted <- function(output){
   heatmap
 }  
 
-#' @title Histogram of the misclassification probabilities 
+#' Histogram of the misclassification probabilities 
 #'
 #' @details Missclassification probability of observation i is denoted err_i
 #' err_i = 1 - max_{k={1,\ldots,K}} P(Z_i=k|x_i)
 #' Histgrams of err_i's can be plot for a specific class, all classes or every class
 #'
-#' @param output object returned by function \link{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompCluster}
 #' 
 #' @examples 
 #' \dontrun{
+#' 
+#' library(RMixtComp)
+#' 
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
@@ -393,6 +422,8 @@ heatmapTikSorted <- function(output){
 #' }
 #' 
 #' @author Matthieu MARBAC
+#'
+#' @export
 histMisclassif <- function(output){
   ## Get information
   z <- output$variable$data$z_class$completed

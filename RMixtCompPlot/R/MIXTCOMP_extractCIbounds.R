@@ -9,7 +9,7 @@ extractCIboundsOneVble = function(var, data, class, grl){
   if (type == "Weibull") out <- extractCIWeibullVble(var, data, class, grl)
   if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data, class, grl)
   if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data, class, grl)
-  if (type %in% c("Functional", "FunctionalSharedAlpha")) out <-  extractCIFunctionnalVble(var, data, class, grl)
+  if (type %in% c("Functional", "FunctionalSharedAlpha")) out <-  extractCIFunctionnalVble(var, data)
   return(out)
 }
 

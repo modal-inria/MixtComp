@@ -1,19 +1,18 @@
-#' Generate a functional observation using an interpolating polynomial instead of the generating model.
-#' This allows for a little more flexibility and convenience in specifying data than functionalGenerator
-#' which is currently bugged anyway.
-#'
-#' @param param A structure describing the points by which the interpolating polynomial is supposed to go through.
-#' @return The generated observation as a string.
-#' @examples
-#' param <- list(
-#'   x = c(0., 10., 20.),
-#'   y = c(0., 10., 0.),
-#'   sd = 0.1,
-#'   tMin = 0.,
-#'   tMax = 20.,
-#'   nTime = 100)
-#' functionalInterPolyGenerator(param)
-
+# Generate a functional observation using an interpolating polynomial instead of the generating model.
+# This allows for a little more flexibility and convenience in specifying data than functionalGenerator
+# which is currently bugged anyway.
+#
+# @param param A structure describing the points by which the interpolating polynomial is supposed to go through.
+# @return The generated observation as a string.
+# @examples
+# param <- list(
+#   x = c(0., 10., 20.),
+#   y = c(0., 10., 0.),
+#   sd = 0.1,
+#   tMin = 0.,
+#   tMax = 20.,
+#   nTime = 100)
+# functionalInterPolyGenerator(param)
 functionalInterPolyGenerator <- function(present, param) {
   timeObs <- vector("character", param$nTime)
   

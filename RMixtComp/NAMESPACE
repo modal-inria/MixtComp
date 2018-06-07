@@ -1,6 +1,6 @@
 useDynLib(RMixtComp)
 exportPattern("^[[:alpha:]]+")
 import(Rcpp)
-import(jsonlite)
-import(scales)
-import(plotly)
+importFrom("stats", "rbinom", "rmultinom", "rnorm", "rpois", "runif", "rweibull")
+importFrom("utils", "read.table")
+

@@ -1,5 +1,10 @@
+
 writeIDClassHTML = function(data,
                             fileNameHTML) {
+  headerStr = paste('{')
+  varStr = 'var IDData ='
+  footerStr = '}'
+  
   cat(headerStr,
       varStr,
       exportIDClass(data),
@@ -20,8 +25,6 @@ writeIDClassJSON = function(data,
       labels = NULL,
       append = FALSE)
 }
-
-varStr = 'var IDData ='
 
 pStr = function(x){
   return(format(round(x, 1), nsmall = 1))

@@ -2,24 +2,24 @@
 % Please edit documentation in R/MIXTCOMP_plotUnivariateDistributions.R
 \name{plotDataCI}
 \alias{plotDataCI}
-\alias{plotFunctionalData}
-\alias{plotCategoricalData}
-\alias{plotCIIntegerData}
-\alias{plotCIContinuousData}
 \title{Mean and 95\%-level confidence intervals per class}
 \usage{
-plotDataCI(output, var, ...)
-plotCIContinuousData(output, var)
-plotCIIntegerData(output, var)
-plotCategoricalData(output, var)
-plotFunctionalData(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL)
+plotDataCI(output, var, class = 1:output$mixture$nbCluster, grl = FALSE,
+  ...)
 }
 \arguments{
-\item{output}{object returned by function \link{mixtCompCluster}}
+\item{output}{object returned by function \emph{mixtCompCluster}}
 
 \item{var}{name of the variable}
 
+\item{class}{class to plot}
+
+\item{grl}{if TRUE plot the CI for the dataset and not only classes}
+
 \item{...}{other parameters (see \emph{Details})}
+}
+\description{
+Mean and 95\%-level confidence intervals per class
 }
 \details{
 For functional data, three other parameters are available:
@@ -31,6 +31,9 @@ For functional data, three other parameters are available:
 }
 \examples{
 \dontrun{
+
+library(RMixtComp)
+
 # path to files
 pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")

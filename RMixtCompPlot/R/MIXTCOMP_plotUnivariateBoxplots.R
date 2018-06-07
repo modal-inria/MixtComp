@@ -1,11 +1,6 @@
-#' @name plotDataBoxplot
-#' @aliases plotFunctionalData plotCategoricalData plotBoxplotperClass
+#' Boxplot per class
 #' 
-#' @title Boxplot per class
-#' 
-#' @usage plotDataBoxplot(output, var, grl = TRUE, ...)
-#' 
-#' @param output object returned by function \link{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompCluster}
 #' @param var name of the variable
 #' @param grl if TRUE plot the general distribution of the data
 #' @param ... other parameters (see \emph{Details})
@@ -20,6 +15,9 @@
 #' 
 #' @examples 
 #' \dontrun{
+#' 
+#' library(RMixtComp)
+#' 
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
@@ -43,6 +41,8 @@
 #' } 
 #' 
 #' @author Matthieu MARBAC
+#'
+#' @export
 plotDataBoxplot <- function(output, var, grl = TRUE, ...)
 {
   if(!(var%in%names(output$variable$type)))
