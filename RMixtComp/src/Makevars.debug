@@ -47,4 +47,4 @@ $(SHLIB): pkglib
 
 pkglib:
 	cd $(DIR_MC);./buildDebug.sh
-	cd $(DIR_TEST);make all
+

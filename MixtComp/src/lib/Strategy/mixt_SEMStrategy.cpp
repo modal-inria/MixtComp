@@ -115,7 +115,11 @@ std::string SemStrategy::runSEM(
 			return warnLog;
 		}
 
-		p_composer_->mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously
+		warnLog += p_composer_->mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously
+		if (0 < warnLog.size()) {
+			std::cout << "runSEM, mStep failed." << std::endl;
+			return warnLog;
+		}
 //		p_composer_->writeParameters();
 
 		p_composer_->storeSEMRun(
