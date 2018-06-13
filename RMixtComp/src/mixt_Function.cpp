@@ -97,36 +97,47 @@ void paramRToCpp(const Rcpp::List& RParam, StrategyParam& CppParam) {
 	if (RParam.containsElementNamed("nbBurnInIter")) {
 		CppParam.nbBurnInIter_ = RParam["nbBurnInIter"];
 	} else {
-		std::cout << "Parameter nbBurnInIter not found, a value of 100 is used." << std::endl;
+		std::cout << "Parameter nbBurnInIter not found, a default value of " + std::to_string(CppParam.nbBurnInIter_) + " is used." << std::endl;
 	}
 
 	if (RParam.containsElementNamed("nbIter")) {
 		CppParam.nbIter_ = RParam["nbIter"];
 	} else {
-		std::cout << "Parameter nbIter not found, a value of 100 is used." << std::endl;
+		std::cout << "Parameter nbIter not found, a default value of " + std::to_string(CppParam.nbIter_) + " is used." << std::endl;
 	}
 
 	if (RParam.containsElementNamed("nbGibbsBurnInIter")) {
 		CppParam.nbGibbsBurnInIter_ = RParam["nbGibbsBurnInIter"];
 	} else {
-		std::cout << "Parameter nbGibbsBurnInIter not found, a value of 100 is used." << std::endl;
+		std::cout << "Parameter nbGibbsBurnInIter not found, a default value of " + std::to_string(CppParam.nbGibbsBurnInIter_) + " is used." << std::endl;
 	}
 
 	if (RParam.containsElementNamed("nbGibbsIter")) {
 		CppParam.nbGibbsIter_ = RParam["nbGibbsIter"];
 	} else {
-		std::cout << "Parameter nbGibbsIter not found, a value of 100 is used." << std::endl;
+		std::cout << "Parameter nbGibbsIter not found, a default value of " + std::to_string(CppParam.nbGibbsIter_) + " is used." << std::endl;
 	}
 
-	if (RParam.containsElementNamed("ratioInitialization")) {
-		Real ratioInitialization = RParam["ratioInitialization"];
-		if (ratioInitialization < 0. || 1. < ratioInitialization) {
-			std::cout << "Parameter ratioInitialization must be within [0, 1], 0.1 is used." << std::endl;
+	if (RParam.containsElementNamed("nInitPerClass")) {
+		Index nInitPerClass = RParam["nInitPerClass"];
+		if (nInitPerClass < 0) {
+			std::cout << "nInitPerClass must be positive, a default value of " +  std::to_string(CppParam.nInitPerClass_) + " is used." << std::endl;
 		} else {
-			CppParam.nInitPerClass_ = RParam["nInitPerClass_"];
+			CppParam.nInitPerClass_ = nInitPerClass;
 		}
 	} else {
-		std::cout << "Parameter ratioInitialization not found, a value of 0.1 is used." << std::endl;
+		std::cout << "Parameter nInitPerClass not found, a default value of " +  std::to_string(CppParam.nInitPerClass_) + " is used." << std::endl;
+	}
+
+	if (RParam.containsElementNamed("nSemTry")) {
+		Index nSemTry = RParam["nSemTry"];
+		if (nSemTry < 1) {
+			std::cout << "nInitPerClass must be striclty positive, a default value of " +  std::to_string(CppParam.nSemTry_) + " is used." << std::endl;
+		} else {
+			CppParam.nSemTry_ = nSemTry;
+		}
+	} else {
+		std::cout << "Parameter nSemTry not found, a default value of " +  std::to_string(CppParam.nSemTry_) + " is used." << std::endl;
 	}
 
 }

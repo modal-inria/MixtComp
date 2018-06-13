@@ -18,6 +18,7 @@ struct StrategyParam {
     Index nbGibbsBurnInIter_ = 100;
     Index nbGibbsIter_ = 100;
     Index nInitPerClass_ = 10;
+    Index nSemTry_ = 20;
 };
 
 }  // namespace mixt

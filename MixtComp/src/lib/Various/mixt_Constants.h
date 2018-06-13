@@ -52,8 +52,6 @@ extern const std::string rankPosSep; // separator used in Rank positions
 
 // extern const Real poissonInitMinAlpha; // minimal value that can be used for alpha estimation in a Poisson distribution
 
-extern const Index nSemTry; // number of SEM trials
-
 } // namespace mixt
 
 #endif /* MIXT_CONSTANTS_H_ */

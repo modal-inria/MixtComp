@@ -26,7 +26,7 @@ SemStrategy::SemStrategy(
 std::string SemStrategy::run() {
 	std::string warnLog;
 
-	for (Index n = 0; n < nSemTry; ++n) {
+	for (Index n = 0; n < param_.nSemTry_; ++n) {
 		std::cout << "SemStrategy::run, attempt n: " << n << std::endl;
 		warnLog.clear(); // only the last warn log can be sent
 

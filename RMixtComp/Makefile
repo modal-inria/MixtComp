@@ -2,7 +2,7 @@ all:
 #	R CMD INSTALL --build .
 	Rscript -e "Rcpp::compileAttributes()"
 	R CMD INSTALL --no-multiarch --with-keep.source .
-	cd src/test;make all
+#	cd src/test;make all
 
 cleanAll: cleanMixtComp cleanRMCbase cleanTest
 

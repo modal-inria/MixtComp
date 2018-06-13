@@ -53,6 +53,4 @@ const std::string rankPosSep = ",";
 
 // const Real poissonInitMinAlpha = 0.5;
 
-const Index nSemTry = 100;
-
 } // namespace mixt
