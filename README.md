@@ -52,6 +52,9 @@ To clean the debug and release folders, run `./clean.sh`.
 ## R
 
 R must be installed, along with the following packages from the CRAN: *Rcpp*, *jsonlite*, *scales*, *plotly*. Two packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R and *RInside* is used for testing procedure in C++.
+
+*testthat* and *xml2* must be installed.
+
 Those command lines can perform the installation automatically in the ~/R directory
 add the following line to .bashrc file: export R_LIBS="~/R"
 ```
