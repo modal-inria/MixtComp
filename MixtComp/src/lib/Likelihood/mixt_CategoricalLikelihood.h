@@ -39,7 +39,7 @@ class CategoricalLikelihood {
     /** Compute the observed log probability of individual i */
     Real lnObservedProbability(Index i, Index k) const {
       Index nbModalities = param_.rows() / nbClass_;
-      Real proba;
+      Real proba = 0.;
 
       switch (augData_.misData_(i).first) {
         case present_: { // likelihood for present data
@@ -63,7 +63,9 @@ class CategoricalLikelihood {
         }
         break;
 
-        default: {}
+        default: {
+        	throw("CategoricalLikelihood::lnObservedProbability, error in missing data handling, please report to the maintainer.");
+        }
         break;
       }
       return std::log(proba);

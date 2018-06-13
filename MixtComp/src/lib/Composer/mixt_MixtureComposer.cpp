@@ -450,7 +450,8 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 			Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
 
 			for (Index k = 0; k < nClass_; ++k) {
-				Real p, nP;
+				Real p;
+//				Real nP;
 
 				if (epsilon < t_ik_j(k)) {
 					p = -t_ik_j(k) * std::log(t_ik_j(k));
@@ -459,9 +460,9 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 				}
 
 				if (epsilon < t_ink_j(k)) {
-					nP = -t_ink_j(k) * std::log(t_ink_j(k));
+//					nP = -t_ink_j(k) * std::log(t_ink_j(k));
 				} else {
-					nP = 0.;
+//					nP = 0.;
 				}
 
 				ekj(k, j) += p;

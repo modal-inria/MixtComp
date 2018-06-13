@@ -20,7 +20,7 @@ PoissonSampler::PoissonSampler(AugmentedData<Vector<int> >& augData,
 
 void PoissonSampler::samplingStepNoCheck(int i, int z_i) {
   if (augData_.misData_(i).first != present_) {
-    int x;
+    int x = 0;
     Real lambda = param_(z_i);
 
     switch(augData_.misData_(i).first) {
@@ -29,7 +29,9 @@ void PoissonSampler::samplingStepNoCheck(int i, int z_i) {
       }
       break;
 
-      default: {}
+      default: {
+    	  throw("PoissonSampler::samplingStepNoCheck, error in missing data handling, please report to the maintainer.");
+      }
       break;
     }
 

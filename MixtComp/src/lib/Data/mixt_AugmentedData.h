@@ -46,7 +46,7 @@ public:
 	typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
 	AugmentedData() :
-			nbSample_(0), misCount_(nb_enum_MisType_), dataRange_(), rangeUpdate_(false), fixedInitialization_(false) {
+			nbSample_(0), misCount_(nb_enum_MisType_), dataRange_(), fixedInitialization_(false) {
 		for (int i = 0; i < nb_enum_MisType_; ++i) { // initialize counter for each type of missing value to 0
 			misCount_(i) = 0;
 		}
@@ -117,14 +117,15 @@ public:
 	}
 
 	void computeRange() {
-		Type min;
-		Type max;
+		Type min = 0;
+		Type max = 0;
+		bool dataRangeUpdate = false;
 
 		for (int i = 0; i < misData_.rows(); ++i) {
 			switch (misData_(i).first) {
 			case present_: // data is present, range is updated directly
 			{
-				rangeUpdate(min, max, data_(i));
+				rangeUpdate(min, max, data_(i), dataRangeUpdate);
 			}
 				break;
 
@@ -134,13 +135,13 @@ public:
 				 */
 			default: {
 				for (typename std::vector<Type>::const_iterator it = misData_(i).second.begin(); it != misData_(i).second.end(); ++it) {
-					rangeUpdate(min, max, *it);
+					rangeUpdate(min, max, *it, dataRangeUpdate);
 				}
 			}
 				break;
 			}
 		}
-		if (rangeUpdate_ == true) {
+		if (dataRangeUpdate == true) {
 			dataRange_ = Range<Type>(min, max);
 		}
 	}
@@ -208,9 +209,6 @@ public:
 	Range<Type> dataRange_;
 
 private:
-	/** boolean to know if range has already been updated */
-	bool rangeUpdate_;
-
 	/** Is the initialization fixed ? If yes, the initial partition will be stored in initialData_. It will be restored to data_
 	 * upon every call to removeMissing (instead of the uniform sampling). This configuration is usually used during debug to
 	 * help diagnosing errors. */
@@ -219,11 +217,11 @@ private:
 	/** Initial partition provided by the user. Only used when fixedInitialization_ == true. */
 	DataType initialData_;
 
-	void rangeUpdate(Type& min, Type& max, const Type& val) {
-		if (!rangeUpdate_) {
+	void rangeUpdate(Type& min, Type& max, const Type& val, bool& dataRangeUpdate) {
+		if (!dataRangeUpdate) {
 			min = val;
 			max = val;
-			rangeUpdate_ = true;
+			dataRangeUpdate = true;
 		} else {
 			if (val < min)
 				min = val;

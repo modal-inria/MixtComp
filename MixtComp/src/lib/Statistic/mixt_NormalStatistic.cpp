@@ -105,7 +105,8 @@ Real NormalStatistic::lbSampler(Real lower) {
 }
 
 Real NormalStatistic::lrbSampler(Real lower, Real upper) {
-	Real z, u, rho;
+	Real z, u;
+	Real rho = 0.;
 	do {
 		z = uniform_.sample(lower, upper);
 
@@ -115,6 +116,8 @@ Real NormalStatistic::lrbSampler(Real lower, Real upper) {
 			rho = exp((pow(upper, 2) - pow(z, 2)) / 2);
 		} else if (0. < lower) {
 			rho = exp((pow(lower, 2) - pow(z, 2)) / 2);
+		} else {
+			throw("NormalStatistic::lrbSampler, unexpected case, please report to the maintainer.");
 		}
 
 		u = uniform_.sample(0., 1.);

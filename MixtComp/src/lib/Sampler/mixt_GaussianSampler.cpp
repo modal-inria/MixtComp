@@ -22,7 +22,7 @@ GaussianSampler::GaussianSampler(AugmentedData<Vector<Real> >& augData,
 void GaussianSampler::samplingStepNoCheck(int i,
                                           int z_i) {
   if (augData_.misData_(i).first != present_) {
-    Real z;
+    Real z = 0.;
     Real mean  = param_(2 * z_i    );
     Real sd    = param_(2 * z_i + 1);
 
@@ -60,7 +60,9 @@ void GaussianSampler::samplingStepNoCheck(int i,
       }
       break;
 
-      default: {}
+      default: {
+    	  throw("GaussianSampler::samplingStepNoCheck, error in missing data handling, please report to the maintainer.");
+      }
       break;
     }
 

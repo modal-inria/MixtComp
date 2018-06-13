@@ -19,7 +19,7 @@ WeibullSampler::WeibullSampler(AugmentedData<Vector<Real> >& augData, const Vect
 
 void WeibullSampler::samplingStepNoCheck(Index i, Index z_i) {
 	if (augData_.misData_(i).first != present_) {
-		Real x;
+		Real x = 0;
 	    Real k      = param_(2 * z_i    );
 	    Real lambda = param_(2 * z_i + 1);
 
@@ -34,7 +34,9 @@ void WeibullSampler::samplingStepNoCheck(Index i, Index z_i) {
 		  }
 		  break;
 
-		  default: {}
+		  default: {
+			  throw("WeibullSampler::samplingStepNoCheck, error in missing data handling, please report to the maintainer.");
+		  }
 		  break;
 		}
 

@@ -53,7 +53,9 @@ std::string parseRankStr(const Vector<std::string>& vecStr,
     }
 
     for(int p = 0; p < nbPos; ++p) {
-      int min, max;
+      int min = 0;
+      int max = 0;
+
       bool isValid = mvp.parseStr(strs[p],
                                   o(p),
                                   obsData(p));
@@ -62,22 +64,12 @@ std::string parseRankStr(const Vector<std::string>& vecStr,
         case present_: {
           min = o(p);
           max = o(p);
-#ifdef MC_DEBUG
-          std::cout << "present_" << std::endl;
-          std::cout << "min: " << min << std::endl;
-          std::cout << "max: " << max << std::endl;
-#endif
         }
         break;
 
         case missing_: {
           min = 0;
           max = nbPos - 1;
-#ifdef MC_DEBUG
-          std::cout << "missing_" << std::endl;
-          std::cout << "min: " << min << std::endl;
-          std::cout << "max: " << max << std::endl;
-#endif
         }
         break;
 
@@ -86,16 +78,12 @@ std::string parseRankStr(const Vector<std::string>& vecStr,
                                    obsData(p).second.end()));
           max = *(std::max_element(obsData(p).second.begin(),
                                    obsData(p).second.end()));
-#ifdef MC_DEBUG
-          std::cout << "missingFiniteValues_" << std::endl;
-          std::cout << "obsData(p): " << itString(obsData(p).second) << std::endl;
-          std::cout << "min: " << min << std::endl;
-          std::cout << "max: " << max << std::endl;
-#endif
         }
         break;
 
-        default: {}
+        default: {
+        	throw("parseRankStr, error in missing data handling, please report to the maintainer.");
+        }
         break;
       }
 
