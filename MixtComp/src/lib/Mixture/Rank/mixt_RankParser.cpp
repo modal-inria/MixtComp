@@ -82,7 +82,7 @@ std::string parseRankStr(const Vector<std::string>& vecStr,
         break;
 
         default: {
-        	throw("parseRankStr, error in missing data handling, please report to the maintainer.");
+        	return "Data in Rank must be of types: present, missing, or missing finite values. " + strs[p] + "is not valid.";
         }
         break;
       }
