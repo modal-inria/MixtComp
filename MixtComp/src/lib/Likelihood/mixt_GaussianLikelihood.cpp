@@ -34,7 +34,7 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k) const {
   Real mean  = param_(2 * k    );
   Real sd    = param_(2 * k + 1);
 
-  Real logProba;
+  Real logProba = 0.;
 
   switch(augData_.misData_(i).first) { // likelihood for present value
     case present_: {
@@ -80,7 +80,9 @@ Real GaussianLikelihood::lnObservedProbability(int i, int k) const {
     }
     break;
 
-    default: {}
+    default: {
+    	throw("GaussianLikelihood::lnObservedProbability, error in missing data handling, please report to the maintainer.");
+    }
     break;
   }
   return logProba;

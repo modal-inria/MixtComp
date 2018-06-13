@@ -30,7 +30,7 @@ Real WeibullLikelihood::lnObservedProbability(Index i, Index k) const {
   Real kParam = param_(2 * k    );
   Real lambda = param_(2 * k + 1);
 
-  Real logProba;
+  Real logProba = 0;
 
   switch(augData_.misData_(i).first) { // likelihood for present value
     case present_: {
@@ -50,7 +50,9 @@ Real WeibullLikelihood::lnObservedProbability(Index i, Index k) const {
     }
     break;
 
-    default: {}
+    default: {
+    	throw("WeibullLikelihood::lnObservedProbability, error in missing data handling, please report to the maintainer.");
+    }
     break;
   }
 

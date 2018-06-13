@@ -27,7 +27,7 @@ Real PoissonLikelihood::lnCompletedProbability(int i, int k) const {
 }
 
 Real PoissonLikelihood::lnObservedProbability(int i, int k) const {
-  Real logProba;
+  Real logProba = 0.;
 
   switch(augData_.misData_(i).first) {  // likelihood for present value
     case present_: {
@@ -41,7 +41,9 @@ Real PoissonLikelihood::lnObservedProbability(int i, int k) const {
     }
     break;
 
-    default: {}
+    default: {
+    	throw("PoissonLikelihood::PoissonLikelihood, error in missing data handling, please report to the maintainer.");
+    }
     break;
   }
 
