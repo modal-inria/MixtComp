@@ -31,7 +31,7 @@ void CategoricalSampler::samplingStepNoCheck(int i,
 
   if (augData_.misData_(i).first != present_)
   {
-    int sampleVal;
+    int sampleVal = 0;
     int nbModalities = param_.rows() / nbClass_;
 
 #ifdef MC_DEBUG
@@ -71,9 +71,7 @@ void CategoricalSampler::samplingStepNoCheck(int i,
 
       default:
       {
-#ifdef MC_DEBUG
-          std::cout << "CategoricalSampler, missing value type unknown" << std::endl;
-#endif
+    	  throw("CategoricalSampler::samplingStepNoCheck, error in missing data handling, please report to the maintainer.");
       }
       break;
     }

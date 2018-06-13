@@ -37,7 +37,7 @@ Range<std::ptrdiff_t>::Range(std::ptrdiff_t min, std::ptrdiff_t max, bool hasRan
 template<>
 void AugmentedData<Vector<Real> >::removeMissingSample(Index i) {
 	if (misData_(i).first != present_) {
-		Real sampleVal;
+		Real sampleVal = 0.;
 		switch (misData_(i).first) // (iterator on map)->(mapped element).(MisType)
 		{
 		case present_: {
@@ -86,6 +86,7 @@ void AugmentedData<Vector<Real> >::removeMissingSample(Index i) {
 			break;
 
 		default: {
+			throw("AugmentedData<Vector<Real> >::removeMissingSample, error in missing data handling, please report to the maintainer.");
 		}
 			break;
 
@@ -97,7 +98,7 @@ void AugmentedData<Vector<Real> >::removeMissingSample(Index i) {
 template<>
 void AugmentedData<Vector<int> >::removeMissingSample(Index i) {
 	if (misData_(i).first != present_) {
-		int sampleVal;
+		int sampleVal = 0;
 		int nbModalities = dataRange_.range_;
 
 		switch (misData_(i).first) // (iterator on map)->(mapped element).(MisType)
@@ -124,8 +125,8 @@ void AugmentedData<Vector<int> >::removeMissingSample(Index i) {
 		}
 			break;
 
-		default: // other types of intervals not present in integer data
-		{
+		default: {// other types of intervals not present in integer data
+			throw("AugmentedData<Vector<int> >::removeMissingSample, error in missing data handling, please report to the maintainer.");
 		}
 			break;
 		}
@@ -136,7 +137,7 @@ void AugmentedData<Vector<int> >::removeMissingSample(Index i) {
 template<>
 void AugmentedData<Vector<std::size_t> >::removeMissingSample(Index i) {
 	if (misData_(i).first != present_) {
-		int sampleVal;
+		int sampleVal = 0;
 		int nbModalities = dataRange_.range_;
 
 		switch (misData_(i).first) // (iterator on map)->(mapped element).(MisType)
@@ -165,6 +166,7 @@ void AugmentedData<Vector<std::size_t> >::removeMissingSample(Index i) {
 
 		default: // other types of intervals not present in integer data
 		{
+			throw("AugmentedData<Vector<std::size_t> >::removeMissingSample, error in missing data handling, please report to the maintainer.");
 		}
 			break;
 		}
@@ -175,7 +177,7 @@ void AugmentedData<Vector<std::size_t> >::removeMissingSample(Index i) {
 template<>
 void AugmentedData<Vector<std::ptrdiff_t> >::removeMissingSample(Index i) {
 	if (misData_(i).first != present_) {
-		int sampleVal;
+		int sampleVal = 0;
 		int nbModalities = dataRange_.range_;
 
 		switch (misData_(i).first) // (iterator on map)->(mapped element).(MisType)
@@ -204,6 +206,7 @@ void AugmentedData<Vector<std::ptrdiff_t> >::removeMissingSample(Index i) {
 
 		default: // other types of intervals not present in integer data
 		{
+			throw("AugmentedData<Vector<std::ptrdiff_t> >::removeMissingSample, error in missing data handling, please report to the maintainer.");
 		}
 			break;
 		}
