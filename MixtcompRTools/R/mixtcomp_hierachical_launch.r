@@ -197,6 +197,14 @@ launch_Mixtcomp_Hierarchical <-
     cat("Hierarchical clustering complete !")
   }
 
+#' Title
+#'
+#' @param dir
+#'
+#' @return
+#' @export
+#'
+#' @examples
 aggregate_clusters <- function(dir) {
   # Si le dossier contient un fichier output
   # Si le warnLog de ce fichier output est vide
@@ -229,12 +237,25 @@ aggregate_clusters <- function(dir) {
 
 }
 
+#' Title
+#'
+#' @param clusters
+#' @param var
+#' @param output
+#' @param depth
+#' @param max_nb_lines
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plot_functional_hierarchique <-
   function(clusters,
            var,
            output,
            depth,
            max_nb_lines = 100) {
+
     clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
     data = output$variable$data[[var]]$data
     time = output$variable$data[[var]]$time
@@ -246,6 +267,7 @@ plot_functional_hierarchique <-
     for (i in ((1:length(unique_clusters)))) {
       data_cl = data[which(clusters == unique_clusters[i])]
       time_cl = time[which(clusters == unique_clusters[i])]
+
       p = p %>% add_trace(
         y = data_cl[1][[1]],
         x = time_cl[1][[1]],
@@ -282,7 +304,8 @@ plot_functional_hierarchique <-
           " in the sub-clustering of depth ", depth
         ),
         xaxis = list(title = "time"),
-        yaxis = list(title = var)
+        yaxis = list(title = var),
+        plot_bgcolor='#8a8a5c'
       )
     return(p)
   }
