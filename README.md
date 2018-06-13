@@ -16,7 +16,7 @@ Boost, Eigen and Nlopt libraries are required for MixtComp to compile.
 
 You can install them with the following command on Linux:
 ```
-sudo apt install cmake libboost-all-dev libnlopt-dev libeigen3-dev
+sudo apt install cmake libboost-all-dev libnlopt-dev libeigen3-dev libxml2-dev
 ```
 
 ## OSX
