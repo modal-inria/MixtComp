@@ -311,7 +311,7 @@ public:
 	 * the initialization procedure.
 	 * @param ratio n elements in subset / n elements in data set
 	 */
-	std::string initParamSubPartition(Real ratio);
+	std::string initParamSubPartition(Index nInitPerClass);
 
 	/**
 	 * Compute the "raw" class ID matrix E_kj

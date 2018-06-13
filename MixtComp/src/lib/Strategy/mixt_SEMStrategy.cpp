@@ -39,7 +39,7 @@ std::string SemStrategy::run() {
 //		p_composer_->printClassInd();
 
 		p_composer_->initParam(); // initialize iterative estimators
-		warnLog = p_composer_->initParamSubPartition(param_.ratioInitialization_); // initialize parameters for each model, usually singling out an observation as the center of each class
+		warnLog = p_composer_->initParamSubPartition(param_.nInitPerClass_); // initialize parameters for each model, usually singling out an observation as the center of each class
 		if (0 < warnLog.size()) {
 			std::cout << "initParam failed." << std::endl;
 			continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further

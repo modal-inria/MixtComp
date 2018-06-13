@@ -17,7 +17,7 @@ struct StrategyParam {
     Index nbIter_ = 100;
     Index nbGibbsBurnInIter_ = 100;
     Index nbGibbsIter_ = 100;
-    Real ratioInitialization_ = 0.1;
+    Index nInitPerClass_ = 10;
 };
 
 }  // namespace mixt

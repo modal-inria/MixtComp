@@ -123,7 +123,7 @@ void paramRToCpp(const Rcpp::List& RParam, StrategyParam& CppParam) {
 		if (ratioInitialization < 0. || 1. < ratioInitialization) {
 			std::cout << "Parameter ratioInitialization must be within [0, 1], 0.1 is used." << std::endl;
 		} else {
-			CppParam.ratioInitialization_ = RParam["ratioInitialization"];
+			CppParam.nInitPerClass_ = RParam["nInitPerClass_"];
 		}
 	} else {
 		std::cout << "Parameter ratioInitialization not found, a value of 0.1 is used." << std::endl;

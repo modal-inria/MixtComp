@@ -399,13 +399,13 @@ void MixtureComposer::initParam() {
 	}
 }
 
-std::string MixtureComposer::initParamSubPartition(Real ratio) {
+std::string MixtureComposer::initParamSubPartition(Index nInitPerClass) {
 	std::string warnLog;
 
 	Vector<std::set<Index>> partialClassInd(nClass_);
+	Index nSubset = std::min(nInitPerClass * nClass_, nInd_);
 
-	Index nSubSet = Index(ratio * nInd_);
-	std::cout << "MixtureComposer::initParamSubPartition, " << nSubSet
+	std::cout << "MixtureComposer::initParamSubPartition, " << nSubset
 			<< " observations used in parameter initialization." << std::endl;
 
 	Vector<Index> allInd(nInd_);
@@ -416,7 +416,7 @@ std::string MixtureComposer::initParamSubPartition(Real ratio) {
 	MultinomialStatistic multi;
 	multi.shuffle(allInd);
 
-	for (Index i = 0; i < nSubSet; ++i) {
+	for (Index i = 0; i < nSubset; ++i) {
 		Index currInd = allInd(i);
 		partialClassInd(zClassInd_.zi().data_(currInd)).insert(currInd);
 	}
