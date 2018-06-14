@@ -17,11 +17,7 @@
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -59,11 +55,7 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -102,11 +94,7 @@ getZ_class <- function(outMixtComp)
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -156,11 +144,7 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -194,11 +178,7 @@ getTik <- function(outMixtComp)
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -265,11 +245,7 @@ getParam <- function(varName, outMixtComp)
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)

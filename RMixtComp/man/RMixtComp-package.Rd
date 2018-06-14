@@ -13,7 +13,7 @@ data sets in a single mixture model.
 \tabular{ll}{
 Package: \tab RMixtComp\cr
 Type: \tab Package\cr
-Version: \tab 0.2\cr
+Version: \tab 0.3\cr
 Date: \tab 2018-06-07\cr
 }
 }
@@ -31,7 +31,8 @@ mcStrategy <- list(nbBurnInIter = 100,
                    nbIter = 100,
                    nbGibbsBurnInIter = 50,
                    nbGibbsIter = 50,
-                   ratioInitialization = 0.1)
+                   nInitPerClass = 10,
+                   nSemTry = 20)
 
 # run RMixtCompt for clustering
 res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)

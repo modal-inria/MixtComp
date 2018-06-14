@@ -41,8 +41,10 @@ Estimates from the burn-in phase are not shown in output.
   \item{nbIter}{Number of iterations of the SEM algorithm.}
   \item{nbGibbsBurnInIter}{Number of iterations of the burn-in part of the Gibbs algorithm.}
   \item{nbGibbsIter}{Number of iterations of the Gibbs algorithm.}
-  \item{ratioInitialization}{Proportion of data used to initialize clusters (default = 0.1).}
+  \item{nInitPerClass}{Number of individuals used to initialize each cluster (default = 10).}
+  \item{nSemTry}{Number of try of the algorithm for avoiding an error.}
 }
+You can use a void list, i nthis case, default values are used.
 }
 \section{Output object}{
 
@@ -162,7 +164,7 @@ output  \cr
 \dontrun{
 pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-pathToDescriptor2 <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
+pathToDescriptor2 <- system.file("extdata", "descSupervised.csv", package = "RMixtComp")
 
 resGetData <- getData(c(pathToData, pathToDescriptor))
 
@@ -171,7 +173,8 @@ mcStrategy <- list(nbBurnInIter = 100,
                    nbIter = 100,
                    nbGibbsBurnInIter = 50,
                    nbGibbsIter = 50,
-                   ratioInitialization = 0.1)
+                   nInitPerClass = 10,
+                   nSemTry = 20)
 
 # run RMixtCompt for unsupervised clustering
 res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -179,7 +182,7 @@ res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel =
 # run RMixtCompt for predicting
 resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 
-# run RMixtCompt for predicting
+# run RMixtCompt for supervised clustering
 resGetData2 <- getData(c(pathToData, pathToDescriptor2))
 res <- mixtCompCluster(resGetData2$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 
