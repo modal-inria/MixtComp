@@ -1,6 +1,6 @@
 # Data format used in MixtComp
 
-There is two ways of loading data: with a data csv file and a descriptor csv file or with two matrix containing the data as characters.
+There is two ways of loading data: with a data csv file and a descriptor csv file or with two matrices containing the data as characters.
 
 ## Data file
 
@@ -13,6 +13,7 @@ Others rows correspond to the different samples. See the section associated with
 | $`x_{2,1}`$ | $`x_{2,2}`$ | $`x_{2,3}`$ | $`x_{2,4}`$ | $`x_{2,5}`$ |
 
 ## Descriptor file
+
 The descriptor file is a csv file (; separator) containing 3 rows. The first row contains the names of the variables used for clustering. It can contains less variables than the data file.
 The second row contains the model associated with each variables (see below for available models). The third row is optional and contains hyperparameters for some models.
  
@@ -23,6 +24,7 @@ The second row contains the model associated with each variables (see below for 
 
  
 ## Models
+
 Eight models are available in (R)MixtComp: 
 
   - **Gaussian_sjk** for real data. The model has two parameters the mean (*mu*) and the standard deviation (*sd*).
@@ -30,10 +32,11 @@ Eight models are available in (R)MixtComp:
   - **Poisson_k** for positive integer data. The model has one parameter (*lambda*) corresponding to mean and variance.
   - **Weibull** for positive real data (usually lifetime). The model has two parameters shape (*k*) and scale (*lambda*).
   - **Functional** for functional data. Between individuals, functional data can have different length and different time values. The model has 3 parameters: *alpha*, *beta* and *sd*. See the [article](https://chamroukhi.users.lmno.cnrs.fr/papers/Chamroukhi-PWRM-JournalClassif-2016.pdf) for mode details.
-  - **FunctionalSharedAlpha** variant of the Functional model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
+  - **FunctionalWithSharedAlpha** variant of the Functional model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
   - **Rank** for ranking data (sorted obejct). The model has two parameters, the central rank (*mu*) and the probability of making a wrong comparison (*pi*). See the [article](https://hal.inria.fr/hal-00743384) for more details.
   - **Ordinal** for quantitative data with an order between modalities (e.g. small < medium < large). The model has two parameters, the central modality (*mu*) and the probability of making a wrong comparison (*pi*). See the [article](https://hal.inria.fr/hal-01052447) for more details.
-  
+
+NB: the Ordinal model is DEPRECATED.
  
 ## Format
 
@@ -118,5 +121,34 @@ Descriptor file with functional variables:
 | Functional | FunctionalWithSharedAlpha | 
 |  nSub:4, nCoeff:2 | nSub:6, nCoeff:3 |  
 
+### Missing data summary
+
+|                                     | Categorical_pjk | Gaussian_sjk | Poisson_k  | Ordinal       | Weibull      |     Rank                 | Functional |  LatentClass  |
+| ----------------------------------- | :-------------: | :----------: | :--------: | :-----------: | :----------: | :----------------------: | :--------: | :-----------: |
+| Completely missing                  |  $`?`$          |  $`?`$       |  $`?`$     | $`?`$         | $`?`$        |  $`?,?,?,?`$             |            | $`?`$         | 
+| Finite number of values authorized  |  $`\{a,b,c\}`$  |              |            | $`\{a,b,c\}`$ |              |  $`4,\{1 2\},3,\{1 2\}`$ |            | $`\{a,b,c\}`$ |
+| Bounded interval                    |                 |  $`[a:b]`$   |            |               | $`[a:b]`$    |                          |            |               |
+| Right bounded interval              |                 | $`[-inf:b]`$ |            |               | $`[0:b]`$    |                          |            |               | 
+| Left bounded interval               |                 | $`[a:+inf]`$ |            |               | $`[a:+inf]`$ |                          |            |               |
+
+
 ### (Semi-)Supervised clustering
 To perform a (semi-)supervised clustering, user can add a variable named `z_class` in the data (with eventually some missing values) and descriptor files with LatentClass as model in the descriptor file.
+
+
+## Example
+
+data file
+```
+gauss1;categ1;pois1;weib1;ord1;rank1;funct1;z_class
+2.52235;1;5;3.78;{1,2};1,2,3,4;1:3.5,2:2.8,3:4.8,5:6.2,6:3.2;?
+0.81467;?;3;4.52;3;1,2,{3 4},{3 4};1:5.6,2:5.18,3:2.44,4:6.36,5:5.46;?
+[1.25:2.3];2;6;[0:3.2];2;?,?,?,?;1:3.34,2:3.14,3:4.79,4:3.84,5:6.4,6:1.88,7:2.95,8:3.44,9:4.04,10:1.88
+```
+
+descriptor file
+```
+gauss1;categ1;pois1;weib1;ord1;rank1;funct1;z_class
+Gaussian_sjk;Categorical_pjk;Poisson_k;Weibull;Ordinal;Rank;Functional;LatentClass
+;;;;;;nSub:2,nCoeff:2;
+```
