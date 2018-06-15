@@ -50,7 +50,7 @@ Missing data are indicated by a $`?`$. Partial data can be provided through inte
 
 ### Categorical & ordinal Data
 Modalities must be consecutive integer with 1 as minimal value. Missing data are indicated by a $`?`$.
-For partial data, a list of possible values can be provided by $`\{a_1,\dots,a_j\}`$, where $`a_i`$ denotes a modality.
+For partial data, a list of possible values can be provided by $`\{a_1,...,a_j\}`$, where $`a_i`$ denotes a modality.
  
 Categorical data before formatting:
 
@@ -98,14 +98,14 @@ $`[a:b]`$ where $`a`$ and $`b`$ are positive reals ($`b`$ can be +inf).
 
 
 ### Rank data
-The format of a rank is: $`o_1, \dots, o_j`$ where $`o_1`$ is an integer corresponding to the the number of the object ranked in 1st position.
+The format of a rank is: $`o_1,..., o_j`$ where $`o_1`$ is an integer corresponding to the the number of the object ranked in 1st position.
 For example: $`4,2,1,3`$ means that the fourth object is ranked first then the second object is in second position and so on.
 Missing data can be specified by replacing and object by a $`?`$ or a list of potential object, for example: $`4, \{2~3\}, \{2~1\}, ?`$ means that
 the object ranked in second position is either the object number 2 or the object number 3, then the object ranked in third position is either the object 2 or 1 and the last one can be anything.
-A totally missing rank is spedified by $`?,?,\dots,?`$.
+A totally missing rank is spedified by $`?,?,...,?`$.
 
 ### Functional data
-The format of a fonctional data is: $`time_1:value_1,\dots, time_j:value_j`$. Between individuals, functional data can have different length and different time values.
+The format of a fonctional data is: $`time_1:value_1,..., time_j:value_j`$. Between individuals, functional data can have different length and different time values.
 In the case of a functional model, `nSub: i, nCoeff: k` must be indicated in the third row of the descriptor file.
 $`i`$ is the number of subregressions in a functional data and k the number of coefficients of each regression (2 = linear, 3 = quadratic, ...). Missing data are not supported.
 
