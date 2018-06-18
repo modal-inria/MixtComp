@@ -126,7 +126,7 @@ Descriptor file with functional variables:
 |                                     | Categorical_pjk | Gaussian_sjk | Poisson_k  | Ordinal       | Weibull      |     Rank                 | Functional |  LatentClass  |
 | ----------------------------------- | :-------------: | :----------: | :--------: | :-----------: | :----------: | :----------------------: | :--------: | :-----------: |
 | Completely missing                  |  $`?`$          |  $`?`$       |  $`?`$     | $`?`$         | $`?`$        |  $`?,?,?,?`$             |            | $`?`$         | 
-| Finite number of values authorized  |  $`\{a,b,c\}`$  |              |            | $`\{a,b,c\}`$ |              |  $`4,\{1 2\},3,\{1 2\}`$ |            | $`\{a,b,c\}`$ |
+| Finite number of values authorized  |  $`\{a,b,c\}`$  |              |            | $`\{a,b,c\}`$ |              |  $`4,\{1~2\},3,\{1~2\}`$ |            | $`\{a,b,c\}`$ |
 | Bounded interval                    |                 |  $`[a:b]`$   |            |               | $`[a:b]`$    |                          |            |               |
 | Right bounded interval              |                 | $`[-inf:b]`$ |            |               | $`[0:b]`$    |                          |            |               | 
 | Left bounded interval               |                 | $`[a:+inf]`$ |            |               | $`[a:+inf]`$ |                          |            |               |

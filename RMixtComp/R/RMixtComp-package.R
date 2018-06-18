@@ -112,7 +112,7 @@ NULL
 #'   \item{nbFreeParameters}{number of free parameters of the mixture}
 #'   \item{lnObservedLikelihood}{observed loglikelihood}
 #'   \item{lnCompletedLikelihood}{completed loglikelihood}
-#'   \item{mode}{"predict" for \link{mixtCompPredict} gor "learn" for \link{mixtCompCluster}}
+#'   \item{mode}{"predict" for \link{mixtCompPredict} or "learn" for \link{mixtCompCluster}}
 #'   \item{IDClass}{entropy used to compute the discriminative power (see code of \emph{plotDiscrimVbles})}
 #'   \item{delta}{entropy used to compute the similarities between variables (see code of \emph{heatmapVbles})}
 #'   \item{completedProbabilityLogBurnIn}{evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
@@ -142,7 +142,8 @@ NULL
 #' |        \tab          \tab |__ nbIter\cr
 #' |        \tab          \tab |__ nbGibbsBurnInIter\cr
 #' |        \tab          \tab |__ nbGibbsIter\cr
-#' |        \tab          \tab |__ ratioInitialization\cr
+#' |        \tab          \tab |__ nInitPerClass\cr
+#' |        \tab          \tab |__ nSemTry\cr
 #' | \cr
 #' |_______ \tab mixture \tab __ BIC \cr
 #' |        \tab         \tab |_ ICL\cr
@@ -173,6 +174,8 @@ NULL
 #'          \tab          \tab |       \tab |_ categorical \tab __ completed\cr
 #'          \tab          \tab |       \tab |              \tab |_ stat \cr
 #'          \tab          \tab |       \tab |_ ...         \tab \cr
+#'          \tab          \tab |       \tab |_ functional \tab __ data\cr
+#'          \tab          \tab |       \tab               \tab |_ time \cr
 #'          \tab          \tab |       \tab \cr
 #'          \tab          \tab |_ param \tab __ z_class \tab __ pi \tab __ stat\cr
 #'          \tab          \tab          \tab |          \tab       \tab |_ log \cr
