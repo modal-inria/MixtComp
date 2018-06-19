@@ -9,17 +9,19 @@ test_that("Learn + predict", {
   
   expect_error(resLearn <- JsonMixtCompCluster(dataList = resGetData$lm, mcStrategy = list(nbBurnInIter = 100, 
                                                                                            nbIter = 100, 
-                                                                                           nbGibbsBurnInIter = 100, 
-                                                                                           nbGibbsIter = 100, 
-                                                                                           parameterEdgeAuthorized = TRUE),
+                                                                                           nbGibbsBurnInIter = 50, 
+                                                                                           nbGibbsIter = 50,
+                                                                                           nInitPerClass = 10,
+                                                                                           nSemTry = 10),
                                                nbClass = 1, confidenceLevel = 0.95, jsonInputFile = "datalearn.json", jsonOutputFile = "reslearn.json"), regexp = NA)
   
   
   expect_error(resPredict <- JsonMixtCompPredict(dataList = resGetData$lm, mcStrategy = list(nbBurnInIter = 100, 
                                                                                              nbIter = 100, 
-                                                                                             nbGibbsBurnInIter = 100, 
-                                                                                             nbGibbsIter = 100, 
-                                                                                             parameterEdgeAuthorized = TRUE),
+                                                                                             nbGibbsBurnInIter = 50, 
+                                                                                             nbGibbsIter = 50, 
+                                                                                             nInitPerClass = 10,
+                                                                                             nSemTry = 10),
                                                  nbClass = 1, confidenceLevel = 0.95, jsonInputFile = "datalearn.json", jsonOutputFile = "respredict.json",
                                                  jsonMixtCompLearnFile = "reslearn.json"), regexp = NA)
   
@@ -39,7 +41,8 @@ test_that("can predict with only one sample in the data set", {
                                                                               nbIter = 100,
                                                                               nbGibbsBurnInIter = 100,
                                                                               nbGibbsIter = 100,
-                                                                              parameterEdgeAuthorized = TRUE),
+                                                                              nInitPerClass = 10,
+                                                                              nSemTry = 10),
                                   nbClass = 1, confidenceLevel = 0.95, jsonInputFile = "datalearn.json", jsonOutputFile = "reslearn.json")
 
 
@@ -54,7 +57,8 @@ test_that("can predict with only one sample in the data set", {
                                                                                              nbIter = 100,
                                                                                              nbGibbsBurnInIter = 100,
                                                                                              nbGibbsIter = 100,
-                                                                                             parameterEdgeAuthorized = TRUE),
+                                                                                             nInitPerClass = 10,
+                                                                                             nSemTry = 10),
                                                  nbClass = 1, confidenceLevel = 0.95, jsonInputFile = "datalearn.json", jsonOutputFile = "respredict.json",
                                                  jsonMixtCompLearnFile = "reslearn.json"), regexp = NA)
 
