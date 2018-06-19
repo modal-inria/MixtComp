@@ -41,13 +41,13 @@ Details about the output object of \emph{mixtCompCluster} and \emph{mixtCompPred
 
 The path for outputs files must not contain ":" or "~".
 
-Rank data and functionnal data are currently not working.
+Rank data and ordinal data are currently not working.
 }
 \examples{
 \dontrun{
 # get the path to the data of the package
-pathToData <- system.file("extdata", "data2.csv", package = "RJsonMixtComp")
-pathToDescriptor <- system.file("extdata", "descriptor2.csv", package = "RJsonMixtComp")
+pathToData <- system.file("extdata", "data.csv", package = "RJsonMixtComp")
+pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RJsonMixtComp")
 
 resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor)) 
 

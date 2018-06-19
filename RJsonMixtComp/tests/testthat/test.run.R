@@ -1,8 +1,8 @@
 context("Test fonctionnel")
 
 test_that("Learn + predict", {
-  pathToData <- system.file("extdata", "data2.csv", package = "RJsonMixtComp")
-  pathToDescriptor <- system.file("extdata", "descriptor2.csv", package = "RJsonMixtComp")
+  pathToData <- system.file("extdata", "data.csv", package = "RJsonMixtComp")
+  pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RJsonMixtComp")
   
   resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor)) 
   
@@ -30,9 +30,8 @@ test_that("Learn + predict", {
 })
 
 test_that("can predict with only one sample in the data set", {
-
-  pathToData <- system.file("extdata", "data2.csv", package = "RJsonMixtComp")
-  pathToDescriptor <- system.file("extdata", "descriptor2.csv", package = "RJsonMixtComp")
+  pathToData <- system.file("extdata", "data.csv", package = "RJsonMixtComp")
+  pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RJsonMixtComp")
 
   resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor))
 

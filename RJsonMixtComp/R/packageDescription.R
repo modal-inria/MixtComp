@@ -31,8 +31,8 @@
 #' @examples 
 #' \dontrun{
 #' # get the path to the data of the package
-#' pathToData <- system.file("extdata", "data2.csv", package = "RJsonMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descriptor2.csv", package = "RJsonMixtComp")
+#' pathToData <- system.file("extdata", "data.csv", package = "RJsonMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RJsonMixtComp")
 #'
 #' resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor)) 
 #'

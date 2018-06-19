@@ -1,0 +1,3 @@
+z_class;Weibull1;Poisson1;Gaussian1;Categorical1;Functional1
+LatentClass;Weibull;Poisson_k;Gaussian_sjk;Categorical_pjk;Functional
+;;;;;nSub: 2, nCoeff: 2
