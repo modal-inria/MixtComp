@@ -32,7 +32,7 @@ Eight models are available in (R)MixtComp:
   - **Poisson_k** for positive integer data. The model has one parameter (*lambda*) corresponding to mean and variance.
   - **Weibull** for positive real data (usually lifetime). The model has two parameters shape (*k*) and scale (*lambda*).
   - **Functional** for functional data. Between individuals, functional data can have different length and different time values. The model has 3 parameters: *alpha*, *beta* and *sd*. See the [article](https://chamroukhi.users.lmno.cnrs.fr/papers/Chamroukhi-PWRM-JournalClassif-2016.pdf) for mode details.
-  - **FunctionalWithSharedAlpha** variant of the Functional model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
+  - **FunctionalSharedAlpha** variant of the Functional model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
   - **Rank** for ranking data (sorted obejct). The model has two parameters, the central rank (*mu*) and the probability of making a wrong comparison (*pi*). See the [article](https://hal.inria.fr/hal-00743384) for more details.
   - **Ordinal** for quantitative data with an order between modalities (e.g. small < medium < large). The model has two parameters, the central modality (*mu*) and the probability of making a wrong comparison (*pi*). See the [article](https://hal.inria.fr/hal-01052447) for more details.
 
@@ -118,7 +118,7 @@ Descriptor file with functional variables:
 
 | func1 | func2 |  
 | --- | --- |  
-| Functional | FunctionalWithSharedAlpha | 
+| Functional | FunctionalSharedAlpha | 
 |  nSub:4, nCoeff:2 | nSub:6, nCoeff:3 |  
 
 ### Missing data summary

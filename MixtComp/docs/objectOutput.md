@@ -1,5 +1,5 @@
 # Overview of output object
-Overview of output object with variables named *categorical*, *gaussian*, *ordinal*, *rank*, *functional*, *poisson* and *weibull* with model respectively *Categorical_pjk*, *Gaussian_sjk*, *Ordinal*, *Rank*, *Functional* (or *FunctionalWithSharedAlpha*), *Poisson_k* and *Weibull*.
+Overview of output object with variables named *categorical*, *gaussian*, *ordinal*, *rank*, *functional*, *poisson* and *weibull* with model respectively *Categorical_pjk*, *Gaussian_sjk*, *Ordinal*, *Rank*, *Functional* (or *FunctionalSharedAlpha*), *Poisson_k* and *Weibull*.
 The output object is a list of list, organized as follows:
 
 ```
@@ -150,7 +150,7 @@ It is a list where each element corresponds to a missing data, each of them is a
 Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
 It is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
 
-- **Functional** and **FunctionalWithSharedAlpha** 
+- **Functional** and **FunctionalSharedAlpha** 
 
 Two elements: *data* and *time*. *time* (resp. *data*) is a list containing the time (resp. value) vector of the functional for each samples.
 
@@ -204,7 +204,7 @@ Two lists (named *mu* and *pi*) of 3 elements: *stat*, *log*, *paramStr*.
 
 For the *pi* list (resp. *mu* list), *log* is matrix containing the estimated *pi* (resp. *mu*) parameter for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) (resp. mode) of the estimated pi (resp. mu) parameters. The median (resp. mode) parameters are the returned parameters. *paramStr* contains "nModality: J" where J is the length of the rank (number of sorted objects) dor tu *mu* list and "" for the *pi* list.
 
-- **Functional** and **FunctionalWithSharedAlpha** 
+- **Functional** and **FunctionalSharedAlpha** 
 
 Three lists (named *alpha*, *beta* and *sd*) of 3 elements: *stat*, *log*, *paramStr*.
 
