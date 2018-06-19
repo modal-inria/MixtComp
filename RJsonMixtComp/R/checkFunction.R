@@ -1,10 +1,10 @@
 # JsonMixtComp does not work with Functional and Rank data
 checkModel <- function(model)
 {
-  if("Functional"%in%model)
-    stop("Functional data are not  supported by RJsonMixtComp.")
+  if("Ordinal"%in%model)
+    stop("Ordinal model is deprecated.")
   if("Rank"%in%model)
-    stop("Rank data are not  supported by RJsonMixtComp.")
+    stop("Rank data are not supported by RJsonMixtComp.")
   
   return(TRUE)
 }
