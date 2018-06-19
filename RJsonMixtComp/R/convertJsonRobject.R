@@ -19,13 +19,17 @@ convertJsonRobject <- function(out, confidenceLevel = 0.95, mode = c("learn", "p
   
   for(nomVar in names(type))
   { 
-    if(type[nomVar]=="Functional"){
+    if(type[nomVar] %in% c("Functional", "FunctionalSharedAlpha"))
+    {
       nCoeff <- as.numeric(strsplit(out$variable$param[[nomVar]]$alpha$paramStr,"nCoeff: ")[[1]][2])
       nSub <- as.numeric(strsplit(strsplit(out$variable$param[[nomVar]]$alpha$paramStr,", nCoeff: ")[[1]][1],"nSub: ")[[1]][2])
+    }else{
+      nCoeff = nSub <- 1
     }
+    
     if(mode == "learn")
     {
-      out$variable$param[[nomVar]] = convertParamLearn(out$variable$param[[nomVar]], type[[nomVar]],nbClass,nCoeff,nSub)
+      out$variable$param[[nomVar]] = convertParamLearn(out$variable$param[[nomVar]], type[[nomVar]], nbClass, nCoeff, nSub)
     }else{
       out$variable$param[[nomVar]] = convertParamPredict(out$variable$param[[nomVar]], type[[nomVar]])
     }
@@ -70,33 +74,31 @@ convertDataStat <- function(dataStat, type, confidenceLevel)
   return(dataStat)
 }
 
+
 # param outMixtComp$variable$param$nomVar
-convertParamLearn <- function(param, type,nbClass=1,nCoeff=1,nSub=1)
+convertParamLearn <- function(param, type, nbClass = 1, nCoeff = 1, nSub = 1)
 {
   nomObj <- switch(type, 
                    "Ordinal" = "muPi",
                    "LatentClass" = "pi",
-                   "NumericalParam",
-                   "Functional"=c("alpha","beta","sd"))
+                   "Functional" = c("alpha", "beta", "sd"),
+                   "FunctionalSharedAlpha" = c("alpha", "beta", "sd"),
+                   "NumericalParam")
   
-  for(i in 1:length(nomObj)){
+  for(i in seq_along(nomObj))
+  {
     param[[nomObj[i]]]$log = do.call(rbind, param[[nomObj[i]]]$log)
     colnames(param[[nomObj[i]]]$log) = rep("", ncol(param[[nomObj[i]]]$log))
     param[[nomObj[i]]]$stat = do.call(cbind, param[[nomObj[i]]]$stat)
     
-    rowname_func<- switch(nomObj[i], 
-                          "alpha"=apply(expand.grid(0:1,0:(nSub-1),0:(nbClass-1))[,3:1],1,function(x){paste0("k: ",x[1],", s: ",x[2],", alpha",x[3] )}) ,
-                          "beta" =apply(expand.grid(0:(nCoeff-1),0:(nSub-1),0:(nbClass-1))[,3:1],1,function(x){paste0("k: ",x[1],", s: ",x[2],", c: ",x[3] )}),
-                          "sd"   =apply(expand.grid(0:(nSub-1),0:(nbClass-1))[,2:1],1,function(x){paste0("k: ",x[1],", s: ",x[2])}),
-                          "other")
-    
     nomRow <- switch(type,
-                     "Ordinal" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj[i]]]$stat)/2)), function(x){paste0(x, c(", mu:", ", pi"))})),
-                     "Gaussian_sjk" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj[i]]]$stat)/2)), function(x){paste0(x, c(", mean:", ", sd"))})),
+                     "Ordinal" = unlist(lapply(paste0("k: ", 1:nbClass), function(x){paste0(x, c(", mu:", ", pi"))})),
+                     "Gaussian_sjk" = unlist(lapply(paste0("k: ", 1:nbClass), function(x){paste0(x, c(", mean:", ", sd"))})),
                      "Categorical_pjk" = nomRowParamCateg(param),
-                     "Poisson_k" = paste0("k: ", 1:nrow(param[[nomObj[i]]]$stat), ", lambda"),
-                     "LatentClass" = paste0("k: ", 1:nrow(param[[nomObj[i]]]$stat)),
-                     "Functional"= rowname_func)
+                     "Poisson_k" = paste0("k: ", 1:nbClass, ", lambda"),
+                     "LatentClass" = paste0("k: ", 1:nbClass),
+                     "Functional"= nomRowParamFunctional(nomObj, nbClass, nSub, nCoeff),
+                     "FunctionalSharedAlpha"= nomRowParamFunctional(nomObj, nbClass, nSub, nCoeff))
     
     rownames(param[[nomObj[i]]]$stat) = nomRow
   }
@@ -137,4 +139,13 @@ nomRowParamCateg <- function(param)
   nModality <- as.numeric(gsub("nModality: ", "", param$NumericalParam$paramStr))
   
   return(unlist(lapply(paste0("k: ", 1:(nrow(param$NumericalParam$stat)/nModality)), function(x){paste0(x, paste0(", modality: ", c(1:nModality)))})))
+}
+
+
+nomRowParamFunctional <- function(nomObj, nbClass, nSub, nCoeff)
+{
+  switch(nomObj, 
+         "alpha"= apply(expand.grid(0:1,0:(nSub-1), 0:(nbClass-1))[,3:1], 1, function(x){paste0("k: ",x[1],", s: ",x[2],", alpha",x[3] )}),
+         "beta" = apply(expand.grid(0:(nCoeff-1), 0:(nSub-1), 0:(nbClass-1))[,3:1], 1, function(x){paste0("k: ",x[1],", s: ",x[2],", c: ",x[3] )}),
+         "sd"   = apply(expand.grid(0:(nSub-1), 0:(nbClass-1))[,2:1], 1, function(x){paste0("k: ",x[1],", s: ",x[2])}))
 }
