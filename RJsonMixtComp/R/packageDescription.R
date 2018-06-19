@@ -1,5 +1,16 @@
 # packages to import for the NAMESPACE file
 #' @import jsonlite
+# export functions from RMixtComp
+#' @export getBIC
+#' @export getCompletedData
+#' @export getData
+#' @export getICL
+#' @export getParam
+#' @export getTik
+#' @export getType
+#' @export getZ_class
+#' @export getVarNames
+#' 
 
 
 # functions to import for the NAMESPACE file.
