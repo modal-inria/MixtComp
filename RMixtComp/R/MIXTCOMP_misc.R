@@ -18,6 +18,7 @@
 #' # default values
 #' mcStrategy <- createMcStrategy(nbIter = 200)
 #' 
+#' @export
 createMcStrategy <- function(nbBurnInIter = 100, nbIter = 100, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20)
 {
   list(nbBurnInIter = nbBurnInIter,
@@ -30,14 +31,11 @@ createMcStrategy <- function(nbBurnInIter = 100, nbIter = 100, nbGibbsBurnInIter
 
 
 #' @name computeDiscrimPowerVar
-#' @aliases computeDiscrimPowerClass
 #' 
 #' @title Discriminative power
 #'
 #' @description Compute the discriminative power of each variable or classe
 #'
-#' @usage computeDiscrimPowerVar(outMixtComp)
-#' computeDiscrimPowerClass(outMixtComp)
 #'
 #' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
 #'
@@ -72,12 +70,14 @@ createMcStrategy <- function(nbBurnInIter = 100, nbIter = 100, nbGibbsBurnInIter
 #' computeDiscrimPowerClass(res)
 #' }
 #' 
+#' @export
 computeDiscrimPowerVar <- function(outMixtComp)
 {
   return(1-colSums(outMixtComp$mixture$IDClass))
 }
 
-
+#' @rdname computeDiscrimPowerVar
+#' @export
 computeDiscrimPowerClass <- function(outMixtComp)
 {
   return(1 -(-colMeans(log(outMixtComp$variable$data$z_class$stat**outMixtComp$variable$data$z_class$stat)) / exp(-1)))
@@ -85,14 +85,11 @@ computeDiscrimPowerClass <- function(outMixtComp)
 
 
 #' @name computeSimilarityVar
-#' @aliases computeSimilarityClass
 #' 
 #' @title Similarity
 #'
 #' @description Compute the similarity between variables (or classes)
 #'
-#' @usage computeSimilarityVar(outMixtComp)
-#' computeSimilarityClass(outMixtComp)
 #'
 #' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
 #'
@@ -123,6 +120,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' computeSimilarityClass(res)
 #' }
 #' 
+#' @export
 computeSimilarityVar <- function(outMixtComp)
 {
   varNames <- names(outMixtComp$variable$type)[names(outMixtComp$variable$type)!="z_class"]
@@ -133,7 +131,8 @@ computeSimilarityVar <- function(outMixtComp)
   return(simil)
 }
 
-
+#' @rdname computeSimilarityVar
+#' @export
 computeSimilarityClass <- function(outMixtComp)
 {
   simil <- 1-sqrt(sapply(1:outMixtComp$mixture$nbCluster,

@@ -7,7 +7,7 @@
 getTik(outMixtComp)
 }
 \arguments{
-\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}
+\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.}
 }
 \value{
 a matrix containing the tik for each individuals (in row) and each class (in column).
@@ -33,4 +33,5 @@ res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel =
 # get tik
 tik <- getTik(res)
 }
+
 }

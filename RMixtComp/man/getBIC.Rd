@@ -6,10 +6,11 @@
 \title{Get criterion value}
 \usage{
 getBIC(outMixtComp)
+
 getICL(outMixtComp)
 }
 \arguments{
-\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}
+\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.}
 }
 \value{
 value of the criterion
@@ -36,4 +37,5 @@ res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel =
 bic <- getBIC(res)
 icl <- getICL(res)
 }
+
 }

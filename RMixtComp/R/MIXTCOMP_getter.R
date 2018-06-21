@@ -2,7 +2,7 @@
 #'
 #' @description Get the completed data from MixtComp object
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.
+#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
 #' @param with.z_class if TRUE, z_class is returned with the data.
 #'
 #' @return  a matrix with the data completed by MixtComp (z_class is in the first column and then variables are sorted in alphabetic order, it may differ from the original order of the data).
@@ -25,6 +25,8 @@
 #' # get completedData
 #' getCompletedData <- completed(res)
 #' }
+#' 
+#' @export
 getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 {
   completedData <- do.call(cbind, lapply(outMixtComp$variable$data, function(x){x$completed}))
@@ -41,7 +43,7 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #'
 #' @description Get the estimated class from MixtComp object
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.
+#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
 #'
 #' @return a vector containing the estimated class for each individual.
 #'
@@ -63,6 +65,8 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' # get class
 #' estimatedClass <- getZ_class(res)
 #' }
+#' 
+#' @export
 getZ_class <- function(outMixtComp)
 {
   return(outMixtComp$variable$data$z_class$completed)
@@ -70,16 +74,13 @@ getZ_class <- function(outMixtComp)
 
 
 #' @name getType
-#' @aliases getVarNames
 #' 
 #' @title Getters
 #'
 #' @description Get the type of model, names for each variable
 #'
-#' @usage getType(outMixtComp, with.z_class = FALSE)
-#' getVarNames(outMixtComp, with.z_class = FALSE)
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.
+#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
 #' @param with.z_class if TRUE, the type of z_class is returned.
 #'
 #' @return a vector containing the type of models, names associated with each individual.
@@ -106,6 +107,8 @@ getZ_class <- function(outMixtComp)
 #' varNames <- getVarNames(res)
 #' 
 #' }
+#' 
+#' @export
 getType <- function(outMixtComp, with.z_class = FALSE)
 {
   type <- unlist(outMixtComp$variable$type)
@@ -116,6 +119,8 @@ getType <- function(outMixtComp, with.z_class = FALSE)
   return(type)
 }
 
+#' @rdname getType
+#' @export
 getVarNames <- function(outMixtComp, with.z_class = FALSE)
 {
   varNames <- names(outMixtComp$variable$type)
@@ -130,7 +135,7 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #'
 #' @description Get the empiric tik
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.
+#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
 #'
 #' @return a matrix containing the tik for each individuals (in row) and each class (in column).
 #'
@@ -152,6 +157,8 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' # get tik
 #' tik <- getTik(res)
 #' }
+#' 
+#' @export
 getTik <- function(outMixtComp)
 {
   return(outMixtComp$variable$data$z_class$stat)
@@ -164,7 +171,7 @@ getTik <- function(outMixtComp)
 #' @description Get the estimated parameter
 #'
 #' @param varName name of the variable to get parameter
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.
+#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
 #'
 #' @return the parameter of the variable
 #'
@@ -186,6 +193,8 @@ getTik <- function(outMixtComp)
 #' # get param
 #' param <- getParam("poisson1", res)
 #' }
+#' 
+#' @export
 getParam <- function(varName, outMixtComp)
 {
   type <- outMixtComp$variable$type[[varName]]
@@ -222,16 +231,13 @@ getParam <- function(varName, outMixtComp)
 
 
 #' @name getBIC
-#' @aliases getICL
 #' 
-#' @usage getBIC(outMixtComp)
-#' getICL(outMixtComp)
 #' 
 #' @title Get criterion value
 #'
 #' @description Get criterion value
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.
+#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
 #'
 #' @return value of the criterion
 #'
@@ -254,6 +260,8 @@ getParam <- function(varName, outMixtComp)
 #' bic <- getBIC(res)
 #' icl <- getICL(res)
 #' }
+#' 
+#' @export
 getBIC <- function(outMixtComp)
 {
   if(is.null(outMixtComp$mixture$BIC))
@@ -262,6 +270,8 @@ getBIC <- function(outMixtComp)
   return(outMixtComp$mixture$BIC)
 }
 
+#' @rdname getBIC
+#' @export
 getICL <- function(outMixtComp)
 {
   if(is.null(outMixtComp$mixture$ICL))

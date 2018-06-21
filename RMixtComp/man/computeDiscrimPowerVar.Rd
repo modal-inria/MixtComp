@@ -6,6 +6,7 @@
 \title{Discriminative power}
 \usage{
 computeDiscrimPowerVar(outMixtComp)
+
 computeDiscrimPowerClass(outMixtComp)
 }
 \arguments{

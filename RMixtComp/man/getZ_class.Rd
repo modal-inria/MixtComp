@@ -7,7 +7,7 @@
 getZ_class(outMixtComp)
 }
 \arguments{
-\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}
+\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.}
 }
 \value{
 a vector containing the estimated class for each individual.
@@ -33,4 +33,5 @@ res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel =
 # get class
 estimatedClass <- getZ_class(res)
 }
+
 }

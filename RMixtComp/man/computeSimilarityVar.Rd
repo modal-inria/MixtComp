@@ -6,6 +6,7 @@
 \title{Similarity}
 \usage{
 computeSimilarityVar(outMixtComp)
+
 computeSimilarityClass(outMixtComp)
 }
 \arguments{

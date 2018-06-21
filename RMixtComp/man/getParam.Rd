@@ -9,7 +9,7 @@ getParam(varName, outMixtComp)
 \arguments{
 \item{varName}{name of the variable to get parameter}
 
-\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}
+\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.}
 }
 \value{
 the parameter of the variable
@@ -35,4 +35,5 @@ res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel =
 # get param
 param <- getParam("poisson1", res)
 }
+
 }

@@ -249,5 +249,6 @@ NULL
 #' 
 #' @author Vincent Kubicki
 #' 
-#'
+#' @export mixtCompCluster
+#' @export mixtCompPredict
 NULL
