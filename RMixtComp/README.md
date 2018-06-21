@@ -1,7 +1,10 @@
 
 # Install RMixtComp
 
-## R
+
+## Requirements
+
+### R
 
 R must be installed, along with the following packages from the CRAN: *Rcpp*. Two packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report and *RInside* is used for testing procedure in C++.
 
@@ -14,15 +17,19 @@ Rscript -e "install.packages(c(\"Rcpp\"), repos = \"https://cran.univ-paris1.fr/
 Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\"), repos = \"https://cran.univ-paris1.fr/\")"
 ```
 
-## Windows
+### Windows
 
 Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rtools/). 
 
 **WARNING:** does not work for the moment. For windows, use RJsonMixtComp.
 
+
+
 ## Build and install
 
 After the initial `git --clone`, or after any update via `git pull` for example, the code must be rebuilt. To handle the various dependencies correctly, it is necessary to rebuild MixtComp by calling `./mcUpdate.sh` which is in the same directory as this present document. The script will clean just enough location to ensure a proper build without taking too long to complete. If compilation errors occur, for example cache errors, try running `./mcCleanUpdate.sh` which rebuild everything and take longer.
+
+
 
 ## Testing procedures
 
