@@ -10,12 +10,13 @@ sets. The conditional independence property enables composing all the
 data sets in a single mixture model.
 }
 \details{
-\tabular{ll}{
-Package: \tab RMixtComp\cr
-Type: \tab Package\cr
-Version: \tab 0.3\cr
-Date: \tab 2018-06-07\cr
-}
+Main functions are \link{getData} for reading data, \link{mixtcompCluster} for clustering, \link{mixtcompPredict} for predict the cluster of new samples with a model learned with \link{mixtcompCluster}. \link{createMcStrategy} gives you default values for required parameters.
+
+Getters are available to easily access some results (see. \link{mixtcompCluster} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getTik}, \link{getZ_class}, \link{getType}, \link{getVarNames}.
+
+You can compute discriminative power and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}
+
+All graphics functions are in the \link{RMixtCompPlot-package}.
 }
 \examples{
 \dontrun{
@@ -45,7 +46,7 @@ resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClas
 
 }
 \seealso{
-\link{mixtCompCluster} \link{mixtCompPredict}
+\link{getData} \link{mixtCompCluster}
 }
 \author{
 Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ, Serge IOVLEFF
