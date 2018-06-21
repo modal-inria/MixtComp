@@ -34,7 +34,7 @@
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 #' 
 #' # plot
-#' plotDataCI(res, "gaussian1")
+#' plotDataCI(res, "Gaussian1")
 #' 
 #' } 
 #' 
