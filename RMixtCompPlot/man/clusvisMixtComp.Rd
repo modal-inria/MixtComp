@@ -24,6 +24,9 @@ clusvisMixtComp(resmixtcomp, sample.size = 5000, maxit = 10^3,
 This function estimates the parameters used for visualization of model-based clustering performs with R package ClusVis 
 To achieve the parameter infernece, it automatically samples probabilities of classification from the model parameters
 }
+\details{
+See \link{plotComponentClusVis} and \link{plotObservationsClusVis} for graphics outputs.
+}
 \examples{
 \dontrun{
 
@@ -45,4 +48,7 @@ res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel =
 resvisu <- clusvisMixtComp(res)
 }
 
+}
+\seealso{
+\link{plotComponentClusVis} \link{plotObservationsClusVis}
 }

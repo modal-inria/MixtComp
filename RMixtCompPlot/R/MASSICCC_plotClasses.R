@@ -12,6 +12,8 @@
 #' @param nbcpu numeric. It specifies the number of CPU (only for linux, R package parallel must by loaded).
 #' @param estimateLogTik if TRUE, estimate the logtik. If FALSE, use the logtik returned by MixtComp
 #'
+#' @details
+#' See \link{plotComponentClusVis} and \link{plotObservationsClusVis} for graphics outputs.
 #'
 #' @examples
 #' \dontrun{
@@ -33,6 +35,8 @@
 #'
 #' resvisu <- clusvisMixtComp(res)
 #' }
+#'
+#' @seealso \link{plotComponentClusVis} \link{plotObservationsClusVis}
 #'
 #' @export
 clusvisMixtComp <- function(resmixtcomp, sample.size = 5000, maxit = 10**3, nbrandomInit = 12, nbcpu = 1, estimateLogTik = FALSE){
