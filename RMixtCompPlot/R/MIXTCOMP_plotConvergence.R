@@ -1,0 +1,118 @@
+#' Convergence of algorithm
+#' 
+#' Plot the evolution of the completed loglikelihood during the SEM algorithm. The vertical line denotes the end of the burn-in phase.
+#' 
+#' @param output object returned by function \emph{mixtCompCluster}
+#' @param ... graphical parameters
+#' 
+#' @details 
+#' This function can be used to check the convergence and choose the parameters nbBurnInIter and nbIter from mcStrategy.
+#' 
+#' @examples 
+#' \dontrun{
+#' 
+#' library(RMixtComp)
+#' 
+#' # path to files
+#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
+#' 
+#' resGetData <- getData(c(pathToData, pathToDescriptor))
+#' 
+#' 
+#' # define the algorithm's parameters
+#' mcStrategy <- createMcStrategy()
+#' 
+#' # run RMixtCompt for clustering
+#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' 
+#' # plot
+#' plotConvergence(res)
+#' 
+#' } 
+#' 
+#' @author Quentin Grimonprez
+#'
+#' @export
+plotConvergence <- function(output, ...)
+{
+  plot(c(output$mixture$completedProbabilityLogBurnIn, output$mixture$completedProbabilityLogRun), xlab = "Iteration",
+       ylab = "Completed loglikelihood", type = "l", main = "Completed loglikelihood during and after the burn-in period", ...)
+  abline(v = output$strategy$nbBurnInIter + 0.5, lty = "dotted", col = "red")
+}
+
+
+#' Evolution of parameters
+#' 
+#' Plot the evolution of estimated parameters after the burn-in phase.
+#' 
+#' @param output object returned by function \emph{mixtCompCluster}
+#' @param var name of the variable
+#' @param ... graphical parameters
+#' 
+#' 
+#' 
+#' @examples 
+#' \dontrun{
+#' 
+#' library(RMixtComp)
+#' 
+#' # path to files
+#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
+#' 
+#' resGetData <- getData(c(pathToData, pathToDescriptor))
+#' 
+#' 
+#' # define the algorithm's parameters
+#' mcStrategy <- createMcStrategy()
+#' 
+#' # run RMixtCompt for clustering
+#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' 
+#' # plot
+#' plotParamConvergence(res, "Gaussian1")
+#' plotParamConvergence(res, "Poisson1")
+#' 
+#' } 
+#' 
+#' @author Quentin Grimonprez
+#'
+#' @export
+plotParamConvergence <- function(output, var, ...)
+{
+  if(!(var%in%names(output$variable$type)))
+    stop("This variable does not exist in the mixture model.")
+  
+  type <- output$variable$type[[var]]
+  nbCluster <- output$mixture$nbCluster
+  
+  switch(type,
+         "Gaussian_sjk" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
+         "Weibull" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
+         "Categorical_pjk" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
+         "Poisson_k" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
+         "Rank" = plotLog(output$variable$param[[var]]$pi$log, nbCluster, var, ...),
+         warning(paste0("Not (yet) available for model ", type)))
+}
+
+
+
+plotLog <- function(paramLog, nbCluster, var, ...)
+{
+  nrowParam <- nrow(paramLog)
+  nbParamPerClass <- nrowParam/nbCluster
+  
+  par(mfrow = n2mfrow(nbParamPerClass))
+  for(i in 1:nbParamPerClass)
+  {
+    ind <- nbParamPerClass*(1:nbCluster) + (i-nbParamPerClass)
+    name <- rownames(paramLog)[ind[1]]
+    name <- gsub("^[^,]*, ", "", name)
+    
+    matplot(t(paramLog[ind,]), type = "l", main = paste0(var, " : ", name), xlab = "Iteration", ylab = name)
+    legend("left", paste0("class ", 1:nbCluster), lty = 1:5, col = 1:6)
+  }
+  par(mfrow = c(1, 1))
+}
+

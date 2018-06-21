@@ -1,6 +1,7 @@
 #' 
 #' @import jsonlite scales plotly ClusVis
-#' @importFrom graphics axis lines plot
+#' @importFrom grDevices n2mfrow
+#' @importFrom graphics axis lines plot abline legend matplot par
 #' @importFrom stats optimize pnorm qnorm qpois qweibull dnorm rnorm
 #'
 #' @title RMixtCompPlot
