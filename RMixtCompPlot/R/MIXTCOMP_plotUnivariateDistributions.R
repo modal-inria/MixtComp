@@ -54,7 +54,7 @@ plotDataCI <- function(output, var, class=1:output$mixture$nbCluster, grl=FALSE,
          "Poisson_k" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl),
          "Functional" = plotFunctionalData(output, var, ...),
          "FunctionalSharedAlpha" = plotFunctionalData(output, var, ...),
-         cat("Not yet implemented"))
+         warning(paste0("Not (yet) available for model ", type)))
 }
 
 

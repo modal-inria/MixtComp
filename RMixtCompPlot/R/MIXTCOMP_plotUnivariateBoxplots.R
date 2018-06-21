@@ -53,7 +53,7 @@ plotDataBoxplot <- function(output, var, grl = TRUE, ...)
          "Poisson_k" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$mixture$nbCluster, grl = grl)),
          "Functional" = plotFunctionalData(output, var, ...),
          "FunctionalSharedAlpha" = plotFunctionalData(output, var, ...),
-         cat("Not yet implemented"))
+         warning(paste0("Not (yet) available for model ", type)))
 }
 
 # here bounds is a matrix
