@@ -19,11 +19,7 @@
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -97,11 +93,7 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1)){
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -160,11 +152,7 @@ plotDiscrimClass <- function(output, ylim = c(0, 1)){
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -244,11 +232,7 @@ heatmapVbles <- function(output){
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -329,11 +313,7 @@ heatmapClass <- function(output){
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -407,11 +387,7 @@ heatmapTikSorted <- function(output){
 #' 
 #' 
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    ratioInitialization = 0.1)
+#' mcStrategy <- createMcStrategy()
 #' 
 #' # run RMixtCompt for clustering
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
