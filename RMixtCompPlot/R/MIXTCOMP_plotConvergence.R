@@ -93,6 +93,18 @@ plotParamConvergence <- function(output, var, ...)
          "Categorical_pjk" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
          "Poisson_k" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
          "Rank" = plotLog(output$variable$param[[var]]$pi$log, nbCluster, var, ...),
+         "Functional" = {plotLog(output$variable$param[[var]]$alpha$log, nbCluster, var, ...)
+           title("alpha", line = -1, outer = TRUE)
+           plotLog(output$variable$param[[var]]$beta$log, nbCluster, var, ...)
+           title("beta", line = -1, outer = TRUE)
+           plotLog(output$variable$param[[var]]$sd$log, nbCluster, var, ...)
+           title("sd", line = -1, outer = TRUE)},
+         "FunctionalSharedAlpha" = {plotLog(output$variable$param[[var]]$alpha$log, nbCluster, var, ...)
+           title("alpha", line = -1, outer = TRUE)
+           plotLog(output$variable$param[[var]]$beta$log, nbCluster, var, ...)
+           title("beta", line = -1, outer = TRUE)
+           plotLog(output$variable$param[[var]]$sd$log, nbCluster, var, ...)
+           title("sd", line = -1, outer = TRUE)},
          warning(paste0("Not (yet) available for model ", type)))
 }
 
