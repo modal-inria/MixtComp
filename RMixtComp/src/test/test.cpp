@@ -15,8 +15,8 @@ int main(int argc, char *argv[]) {
 
 //	R.parseEvalQ(R"(setwd("/home/elvinz/Documents/MixtCompBugData/180606 - Fares"))"); // note the use of string literals to avoid cluttering the R command with escape characters
 //	R.parseEvalQ(R"(setwd("/home/elvinz/Documents/MixtCompBugData/180607 - Iris"))");
-	R.parseEvalQ(R"(setwd("/home/elvinz/Documents/MixtCompBugData/180606 - Fares"))");
-	R.parseEvalQ(R"(source("model.R"))");
+//	R.parseEvalQ(R"(setwd("/home/elvinz/Documents/MixtCompBugData/180606 - Fares"))");
+//	R.parseEvalQ(R"(source("model.R"))");
 
 //	R.parseEvalQ("library(RMixtComp)");
 //	R.parseEvalQ("testFunctionalSharedAlpha()");
