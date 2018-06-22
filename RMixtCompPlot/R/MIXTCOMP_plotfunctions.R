@@ -332,8 +332,11 @@ heatmapTikSorted <- function(output){
                             function(k) order(output$variable$data$z_class$stat[,k] * (output$variable$data$z_class$completed == k ),
                                               decreasing = T)[1:(table(output$variable$data$z_class$completed)[k])]
   ))
+  
   tiksorted <- output$variable$data$z_class$stat[orderTik,]
-  if (output$mixture$nbCluster==1) tiksorted <- matrix(tiksorted, ncol=1)
+  if(output$mixture$nbCluster ==1 ) 
+    tiksorted <- matrix(tiksorted, ncol=1)
+  
   # Text to display
   textMous <- sapply(1:output$mixture$nbCluster, 
                      function(k) paste("Probability that <br> observation", 
@@ -345,6 +348,7 @@ heatmapTikSorted <- function(output){
   
   
   orderTik <- factor(as.character(orderTik), levels=as.character(orderTik))
+  
   ## heatmap
   tuneyaxis <- list(
     title = "",
@@ -357,9 +361,8 @@ heatmapTikSorted <- function(output){
   heatmap <- plot_ly(text=textMous,
                      hoverinfo='text',
                      z = as.table(tiksorted),
-                     x=paste("class", 1:output$mixture$nbCluster, sep="."),
-                     y=orderTik,
-                     colorscale = cbind(0:1,(col_numeric("Blues", domain = c(0,100))(range(output$variable$data$z_class$stat*100)))),
+                     x = paste("class", 1:output$mixture$nbCluster, sep="."),
+                     colorscale = cbind(0:1, (col_numeric("Blues", domain = c(0,100))(range(output$variable$data$z_class$stat*100)))),
                      type = "heatmap",
                      showscale = FALSE) %>%
     layout(title = "Probabilities of classification", showlegend = FALSE, yaxis=tuneyaxis, xaxis=list(ticks=""))
@@ -429,13 +432,13 @@ histMisclassif <- function(output){
   
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   histerrors <- Reduce(function(acc, curr)  do.call(add_histogram, c(list(p=acc),curr)),
-              formattedW,
-              init=plot_ly()%>%layout(
-                showlegend = T,
-                title = "Misclassification risk",
-                xaxis = list(domain = c(-0.09, 0.9), title="Probabilities of misclassification"),
-                yaxis = list(title = "Percentile of observations with <br> a misclassification risk less than x"),
-                updatemenus = list(list(y=0.6, x=-0.15,buttons = listbuttons)))
+                       formattedW,
+                       init=plot_ly()%>%layout(
+                         showlegend = T,
+                         title = "Misclassification risk",
+                         xaxis = list(domain = c(-0.09, 0.9), title="Probabilities of misclassification"),
+                         yaxis = list(title = "Percentile of observations with <br> a misclassification risk less than x"),
+                         updatemenus = list(list(y=0.6, x=-0.15,buttons = listbuttons)))
   )
   histerrors
 }
