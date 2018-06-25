@@ -29,7 +29,7 @@ To simplify notations, `DerivedModel` will describe a model that is derived from
 
 *Those methods must be implemented for every model in a non trivial way.*
 
-## std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const
+## std::string checkSampleCondition(const Vector\<std::set\<Index\>\>& classInd) const
 
 This is a method called to check that the data sampled in `sampleUnobservedAndLatent` is consistent with MixtComp general requirements that no estimated continuous quantity could be on the border of the parameter space.
 
