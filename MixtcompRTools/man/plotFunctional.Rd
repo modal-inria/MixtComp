@@ -2,13 +2,23 @@
 % Please edit documentation in R/functional_toolbox.r
 \name{plotFunctional}
 \alias{plotFunctional}
-\title{Title}
+\title{PLot functional data}
 \usage{
 plotFunctional(x, ...)
 }
 \arguments{
-\item{...}{}
+\item{x}{Functional data in mixtcomp string format}
+
+\item{...}{additional plot parameter}
+}
+\value{
+void
 }
 \description{
-Title
+PLot functional data
+}
+\examples{
+\dontrun{
+plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
+}
 }

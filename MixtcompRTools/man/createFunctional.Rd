@@ -2,13 +2,23 @@
 % Please edit documentation in R/functional_toolbox.r
 \name{createFunctional}
 \alias{createFunctional}
-\title{Title}
+\title{créé le format fonctionnel de mixtcomp}
 \usage{
 createFunctional(temps, valeur)
 }
 \arguments{
-\item{valeur}{}
+\item{temps}{vector of numeric}
+
+\item{valeur}{vector of numeric}
+}
+\value{
+The functional data formatted to the mixtcomp standard
 }
 \description{
-Title
+créé le format fonctionnel de mixtcomp
+}
+\examples{
+\dontrun{
+Mat = matrix(c(1,2,3,9,1,1.5,15,1000),ncol=2)
+convertFunctional(Mat[,1],Mat[,2])}
 }

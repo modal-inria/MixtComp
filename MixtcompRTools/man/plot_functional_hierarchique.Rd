@@ -2,13 +2,46 @@
 % Please edit documentation in R/mixtcomp_hierachical_launch.r
 \name{plot_functional_hierarchique}
 \alias{plot_functional_hierarchique}
-\title{Title}
+\alias{plot_functional_hierarchique}
+\title{Display a visual representation of a function variable among the clusters}
 \usage{
-plot_functional_hierarchique(clusters, var, output, depth, max_nb_lines = 100)
+plot_functional_hierarchique(clusters, var, data_func, depth,
+  max_nb_lines = 100)
+
+plot_functional_hierarchique(clusters, var, data_func, depth,
+  max_nb_lines = 100)
 }
 \arguments{
-\item{max_nb_lines}{}
+\item{clusters}{vector of the cluster associated to each observations}
+
+\item{var}{Which functional variable to be plotted}
+
+\item{depth}{The maximal depth of the clustering to be plotted}
+
+\item{max_nb_lines}{The maximal number of functional observations to plot}
+
+\item{data}{The data extracted from Mixtcomp output}
+
+\item{clusters}{vector of the clusters associated with data}
+
+\item{var}{The name of the functional data to plot}
+
+\item{output}{The output in which to find the data to plot}
+
+\item{depth}{maximum depth of the subclustering to plot}
+
+\item{max_nb_lines}{Defines the maximum number of lines to plot (default is 100)}
+}
+\value{
+A plotly plot
+
+a plotly plot
 }
 \description{
-Title
+Display a visual representation of a function variable among the clusters
+
+Plot functional data by clusters
+}
+\examples{
+plot_functional_hierarchique(dir_path_result)
 }

@@ -2,13 +2,20 @@
 % Please edit documentation in R/functional_toolbox.r
 \name{convertFunctional}
 \alias{convertFunctional}
-\title{Title}
+\title{Convert a mixtcomp string into 2-columns matrix}
 \usage{
 convertFunctional(x)
 }
 \arguments{
 \item{x}{}
 }
+\value{
+matrix
+}
 \description{
-Title
+Convert a mixtcomp string into 2-columns matrix
+}
+\examples{
+\dontrun{
+convertFunctional("1:5,1.5:12,1.999:2.9")}
 }

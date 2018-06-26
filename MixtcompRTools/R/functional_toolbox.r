@@ -1,65 +1,72 @@
-# convertis une fonctionnelle du format MixtComp à une amtrice de deux colonnes : temps et valeurs
-#' Title
+
+#' Convert a mixtcomp string into 2-columns matrix
 #'
 #' @param x
 #'
-#' @return
+#' @return matrix
 #' @export
 #'
 #' @examples
-convertFunctional <- function(x)
-{
+#' \dontrun{
+#' convertFunctional("1:5,1.5:12,1.999:2.9")}
+convertFunctional <- function(x){
   return(do.call(rbind, lapply(strsplit(strsplit(as.character(x), ",")[[1]], ":"), as.numeric)))
 }
 
-# créé le format fonctionnel de mixtcomp
-#' Title
+#' créé le format fonctionnel de mixtcomp
 #'
-#' @param temps
-#' @param valeur
+#' @param temps vector of numeric
+#' @param valeur vector of numeric
 #'
-#' @return
+#' @return The functional data formatted to the mixtcomp standard
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' Mat = matrix(c(1,2,3,9,1,1.5,15,1000),ncol=2)
+#' convertFunctional(Mat[,1],Mat[,2])}
 createFunctional <- function(temps, valeur)
 {
   return(paste(paste(temps, valeur, sep = ":"), collapse = ","))
 }
 
-# plot d'une fonctionnelle au format MixtComp
-#' Title
+
+#' PLot functional data
 #'
-#' @param x
-#' @param ...
+#' @param x Functional data in mixtcomp string format
+#' @param ... additional plot parameter
 #'
-#' @return
+#' @return void
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
+#' }
 plotFunctional <- function(x, ...)
 {
   newX <- convertFunctional(x)
 
-  plot(newX[,1], newX[,2], type = "s", ...)
+  return(graphics::plot(newX[,1], newX[,2], type = "s", ...))
 }
 
-#' Title
+
+#' lines functional data
 #'
-#' @param x
-#' @param ...
+#' @param x Functional data in mixtcomp string format
+#' @param ... additional plot parameter
 #'
-#' @return
+#' @return void
 #' @export
-#'
 #' @examples
+#' \dontrun{
+#' #' plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
+#' linesFunctional("1:7,3:4,6:11.78,9:5,12:12")
+#' }
 linesFunctional <- function(x, ...)
 {
   newX <- convertFunctional(x)
 
-  lines(newX[,1], newX[,2], type = "s", ...)
+  return(graphics::lines(newX[,1], newX[,2], type = "s", ...))
 }
 
-# data_path <- "../../clustering_on_fonctional/outputs/data_mixtcomp.csv"
-# data <- read.csv(data_path,sep=";")
-# convertFunctional(data[4,1])

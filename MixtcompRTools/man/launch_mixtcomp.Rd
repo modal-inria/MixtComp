@@ -20,5 +20,7 @@ Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
 the directory given by the dir param and with nClass number of clusters
 }
 \examples{
+\dontrun {
 launch_mixtcomp("data/data_mixtcomp",3)
+}
 }
