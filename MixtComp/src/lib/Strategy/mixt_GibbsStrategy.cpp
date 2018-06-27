@@ -23,14 +23,21 @@ std::string GibbsStrategy::run() {
 	std::string warnLog;
 
 	try {
-		p_composer_->initData();
-		p_composer_->initializeLatent();
+		for (Index n = 0; n < param_.nSemTry_; ++n) {
 
-		runGibbs(burnIn_, param_.nbGibbsBurnInIter_, 0 + startGroup_, // group
-		1 + startGroup_); // groupMax
+			p_composer_->initData();
+			warnLog = p_composer_->initializeLatent();
+			if (0 < warnLog.size())
+				continue;
 
-		runGibbs(run_, param_.nbGibbsIter_, 1 + startGroup_, // group
-		1 + startGroup_); // groupMax
+			runGibbs(burnIn_, param_.nbGibbsBurnInIter_, 0 + startGroup_, // group
+			1 + startGroup_); // groupMax
+
+			runGibbs(run_, param_.nbGibbsIter_, 1 + startGroup_, // group
+			1 + startGroup_); // groupMax
+
+			return "";
+		}
 	} catch (const std::string& str) {
 		warnLog = str;
 	}

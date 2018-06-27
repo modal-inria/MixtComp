@@ -1,10 +1,18 @@
+# To do
+
+- file pointers should be web pointers.
+
 # Abstract
 
-One of MixtComp strengths is the ability to easily add a new model. Since MixtComp uses the SEM algorithm, the API is rich, as functions are provided for initialization, validation of data. Some functions are useful for every models, while others are only here to provide funtionnality in specific cases. The most likely cases being a Markov chain internal to the model, but which needs to be initialized. The page [Algorithm Description](./MixtComp/docs/algoDesc.md) provides further information on where the various methods are called.
+One of MixtComp strengths is the ability to add models. The `IMixture` interface is rich (16 methods), as functions are provided for every aspect of model management. Some methods are useful for every models, while others are only here to provide functionality in specific cases. The page [Algorithm Description](./MixtComp/docs/algoDesc.md) provides further information on where the various methods are called from.
+
+The file [recap.ods](./MixtComp/docs/180308 - Initialization/recap.ods) provides a recap of the operations used by various methods in initialization.
+
+The folder [mise à jour majeur](./MixtComp/docs/170616 - mise à jour majeure) provides in-depth description of the initialization process.
 
 # Basic Concepts
 
-There is an `IMixture` interface class that describe all models. It is located in the `src/lib/Mixture/mixt_IMixture.h` file. Some methods are implemented, but most are virtual and must be implement in a derived class. This architectures allows for runtime polymorphism in the `MixtureComposer` class. Here, all the instanciated models are contained in `std::vector<IMixture*> v_mixtures_;`. It is then possible to apply the same process to all variables, independently of the actual implementation, as in:
+There is an `IMixture` interface class that describe all models. It is located in the `src/lib/Mixture/mixt_IMixture.h` file. Some methods are implemented, but most are virtual and must be implement in a derived class. This architectures allows for runtime polymorphism in the `MixtureComposer` class. Here, all the instantiated models are contained in `std::vector<IMixture*> v_mixtures_;`. It is then possible to apply the same process to all variables by looping over `v_mixtures_`, independently of the derived class, as in:
 
 ```
 std::string MixtureComposer::checkSampleCondition(
@@ -19,21 +27,38 @@ std::string MixtureComposer::checkSampleCondition(
 }
 ```
 
-which calls `checkSampleCondition(classInd)` for each variable, and concatenate the resulting string to `warnLog`.
+which calls `checkSampleCondition(classInd)` for each variable, and concatenates the resulting string to `warnLog`.
 
-To simplify notations, `DerivedModel` will describe a model that is derived from `IMixture` and implements all the requested virtual methods.
+To simplify notations, `DerivedModel` will describe from now on a model that is derived from `IMixture` and implements all the requested virtual methods.
 
-While IMixture is not a template class, `DerivedModel` must be, because `MixtureManager` is templated on `<typename DataHandler, typename DataExtractor, typename ParamSetter, typename ParamExtractor>`, and will pass references to a `DataHandler`, `DataExtractor`, `ParamSetter`, `ParamExtractor`. Those references will be used to inject / extract data to / from `DerivedModel`. This templating is used to provide various IO formats. There is a collection of those for R, another for Json. Should MixtComp interface with Python for example, a new batch of `DataHandler`, `DataExtractor`, `ParamSetter`, `ParamExtractor` will have to be written.
+While IMixture is not a template class, `DerivedModel` must be, because `MixtureManager` is templated by `<typename DataHandler, typename DataExtractor, typename ParamSetter, typename ParamExtractor>`, and will pass references to a `DataHandler`, `DataExtractor`, `ParamSetter`, `ParamExtractor` to any `IMixture`-derived model. Those references will be used to inject / extract data to / from `DerivedModel`. This templating is used to provide various wrappers to MixtComp. There is a collection of {`DataHandler`, `DataExtractor`, `ParamSetter`, `ParamExtractor`} for R, another for Json. Should MixtComp ever interface with Python for example, a new set of {`DataHandler`, `DataExtractor`, `ParamSetter`, `ParamExtractor`} classes will have to be written.
 
 # Implicit behaviour
 
 A lot of interactions with `DerivedModel` are carried out through the call to its methods. However, some behaviour is implicit and can not be deduced from the API.
 
-The parameters must be stored in `DerivedModel`. No other object will provide this information. In the similar way, the data used by `DerivedModel` is not stored anywhere else. Hence `DerivedModel` must track both parameters and data.
+The parameters for example must be stored in `DerivedModel`. No other object will provide this information. In a similar way, the data used by `DerivedModel` is not stored anywhere else. Hence `DerivedModel` must track both parameters and data.
 
 The initialization of the data in `DerivedModel` is a bit counter intuitive. One would expect data to be provided through a method call. This is not the case, for historical reasons. Instead, the `DataHandler` which was passed as a parameter of `DerivedModel` will be used. The method `DataHandler::getData` is called with the data to be modified passed as a reference. `DataHandler::getData` modifies it in place.
 
 # Specificities of Simple models
+
+There is a set of models with very common features:
+- Gaussian
+- Multinomial
+- Poisson
+- Weibull
+
+They are all template instantiations of `template<typename Model, typename DataHandler, typename DataExtractor, typename ParamSetter, typename ParamExtractor> class SimpleMixture: public IMixture`. They share the common traits of using `AugmentedData` for storing their data. The parameters are stored in `Vector<Real> param_;`. The differences among them is concentrated in the template type argument `Model`. A `Model` member object is stored in every Simple mixture: `Model model_;`. For example, the call to `mStep` is deferred to `Model::mStep`:
+
+```
+std::string mStep(const Vector<std::set<Index> >& classInd) {return model_.mStep(classInd);
+}
+```
+
+The simple models are then defined in different classes. For the Gaussian model, look in the file `src/lib/Mixture/Gaussian.h`
+
+The relevance of this historical architecture could be a subject of debate.
 
 # Common methods
 
@@ -48,6 +73,8 @@ For example, `Gaussian::checkSampleCondition` checks that there are at least two
 Note that `IMixture::mStep` also check the data. The difference is that `IMixture::checkSampleCondition` checks that it is possible to estimate at all, while `IMixture::mStep` checks the validity of the resulting estimation. In the case of the Gaussian model, `Gaussian::checkSampleCondition` checks the number of observations per class, while `IMixture::mStep` checks that the standard deviation is not too close to 0 (which would mean that the estimated model is degenerate). This separation is historical, because at one point `IMixture::mStep` was never supposed to fail. `IMixture::checkSampleCondition` and `IMixture::mStep` could be merged to simplify the API.
 
 `checkSampleCondition` should return an empty string if no problems have been detected, or a string containing a detailed description of the problem so that the user can check his data, change his model, or take any course of action that could remove the problem.
+
+*This method is called*
 
 ## std::string mStep(const Vector\<std::set\<Index\>\>& classInd)
 
@@ -87,7 +114,7 @@ Note that if the data type is complicated (not integer nor float), the data sent
 
 ## void exportDataParam() const
 
-This method is similar to `setDataParam`, but for data and param exports. Here, the data / param are exported using `DataExtractor::exportVals` and `ParamExtractor::exportParam`.
+This method is similar to `setDataParam`, but for data and param exports. Here, the data / param are exported using `DataExtractor::exportVals` and `ParamExtractor::exportParam`. `exportVals` and `exportParam` have been overloaded for the most common types. If one wants to add a new type of data export or if parameters are more complex, new overloaded versions of `exportVals` and `exportParam` must be implemented. That was the case for the Rank model, because there is a notion of "central rank", which did not exist for other models.
 
 ## ~IMixture()
 
@@ -97,7 +124,7 @@ Of course, if your custom model allocates data on the stack, do not forget to fr
 
 *Add example for each case.*
 
-Those methodes only need to be implemented in a non trivial way if the model has some special requirements.
+Those methods only need to be implemented in a non trivial way if the model has some special requirements.
 
 ## void sampleUnobservedAndLatent(Index ind, Index k)
 
