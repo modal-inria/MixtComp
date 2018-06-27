@@ -74,8 +74,6 @@ Note that `IMixture::mStep` also check the data. The difference is that `IMixtur
 
 `checkSampleCondition` should return an empty string if no problems have been detected, or a string containing a detailed description of the problem so that the user can check his data, change his model, or take any course of action that could remove the problem.
 
-*This method is called*
-
 ## std::string mStep(const Vector\<std::set\<Index\>\>& classInd)
 
 Performs the estimation of the parameters. The MixtComp algorithm guarantees that when `mStep` is called, all latent variables have already been initialized properly by `initializeMarkovChain` and `sampleUnobservedAndLatent`. Hence `mStep` can work on completed data. The maximum likelihood estimator of the parameters should provide the new parameter values.
@@ -121,8 +119,6 @@ This method is similar to `setDataParam`, but for data and param exports. Here, 
 Of course, if your custom model allocates data on the stack, do not forget to free everything that is needed in the virtual destructor.
 
 # Specialized methods
-
-*Add example for each case.*
 
 Those methods only need to be implemented in a non trivial way if the model has some special requirements.
 

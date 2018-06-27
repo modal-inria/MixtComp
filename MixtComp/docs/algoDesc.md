@@ -23,10 +23,10 @@ See the [mixtCompCluster.cpp](./RMixtComp/src/mixtCompCluster.cpp) file.
 
 # SemStrategy run
 
-Things can go wrong at various points in the algorithm, for example there can be errors in initialization, or degeneracy in the general execution. That is why there is a global loop that is run `param_.nSemTry_` times at maximum. If an iteration is completed, the loop is exited. If no iteration can be completed, the error in the last iteration is returned.
+Things can go wrong at various points in the algorithm, for example there can be errors in initialization, or degeneracy in the general execution. That is why there is a global loop that is run `param_.nSemTry_` times at maximum. If an iteration is completed, the loop is exited. If no iteration can be completed, the `std::string` error from the last iteration is returned.
 
 # GibbsStrategy run
 
-The GibbsStrategy can go wrong, for example if an individual has a 0 probability in every class. The difference with `SemStrategy` is that, once initialization has been performed, there can be no error, because parameters have already been estimated, therefor degeneracy is not a problem. There are `nSemTry_` for the initialization.
+The GibbsStrategy can go wrong, for example if an individual has a 0 probability in every class (there are `nSemTry_`). The difference with `SemStrategy` is that, once initialization has been performed, there can be no error, because parameters have already been estimated, therefor degeneracy is not a problem. This is why `GibbsStrategy::runGibbs` returns `void`, not a `std::string`.
 
 There is a try / catch exception handling, which main purpose is to avoid crashes. In a normal run, it is impossible for $t_{ik}$ values to be `nan`. However, errors in implementations in the model can lead to this. To avoid this kind of problems, an exception can be thrown from `MixtureComposer::eStepCompleted`. The program will then end normally, urging the user to contact the maintainer.
