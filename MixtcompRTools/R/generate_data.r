@@ -2,7 +2,7 @@
 generate_data <- function(size=1000) {
   param <- list(
     x = c(0., 10., 20.),
-    y = c(0., 10., 0.),
+    y = c(1., 10., 1.),
     sd = 0.1,
     tMin = 0.,
     tMax = 20.,
@@ -10,7 +10,9 @@ generate_data <- function(size=1000) {
   )
 
   data_func = c()
+  y_base = param$y
   for (i in 1:size) {
+    param$y= sample(1:10,size = 1)*y_base
     data_func <- c(data_func, functionalInterPolyGenerator(param = param))
   }
 

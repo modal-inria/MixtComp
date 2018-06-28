@@ -7,7 +7,7 @@ cut the data in clusters according to the clusters estimated by Mixtcomp and giv
 by an output contained in the dir parameter, create a set of subclusters, copy the data
 into them and launch Mixtcomp in each of them.}
 \usage{
-expand(dir, nClass)
+expand(dir, nClass, strategy)
 }
 \arguments{
 \item{dir}{The path of the directory to expand}
