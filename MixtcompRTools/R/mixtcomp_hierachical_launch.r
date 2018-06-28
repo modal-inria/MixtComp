@@ -5,7 +5,6 @@
 #' @param dir A String
 #'
 #' @return void
-#' @export
 #'
 #' @examples extract_data_per_cluster("data/data_mixtcomp/x.csv")
 extract_data_per_cluster <- function(dir) {
@@ -40,7 +39,6 @@ extract_data_per_cluster <- function(dir) {
 #' @param nClass Positive intege
 #'
 #' @return void
-#' @export
 #'
 #' @examples
 #' \dontrun {
@@ -106,7 +104,6 @@ launch_mixtcomp <- function(dir, nClass) {
 #' @param nClass A positive integer
 #'
 #' @return void
-#' @export
 #'
 #' @examples create_subdirectories(getwd(),2)
 create_subdirectories <- function(dir, nClass) {
@@ -135,7 +132,6 @@ create_subdirectories <- function(dir, nClass) {
 #' @param nClass The number of class for the Mixtcomp launches on the next subclusters
 #'
 #' @return void
-#' @export
 #'
 #' @examples expand()
 expand <- function(dir, nClass,strategy) {

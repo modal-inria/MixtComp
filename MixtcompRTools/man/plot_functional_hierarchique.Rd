@@ -2,46 +2,30 @@
 % Please edit documentation in R/visualisation.r
 \name{plot_functional_hierarchique}
 \alias{plot_functional_hierarchique}
-\alias{plot_functional_hierarchique}
-\title{Display a visual representation of a function variable among the clusters}
+\title{Plot functional data by clusters}
 \usage{
-plot_functional_hierarchique(clusters, var, data_func, depth,
-  max_nb_lines = 100)
-
 plot_functional_hierarchique(clusters, var, data_func, depth,
   max_nb_lines = 100)
 }
 \arguments{
-\item{clusters}{vector of the cluster associated to each observations}
-
-\item{var}{Which functional variable to be plotted}
-
-\item{depth}{The maximal depth of the clustering to be plotted}
-
-\item{max_nb_lines}{The maximal number of functional observations to plot}
-
-\item{data}{The data extracted from Mixtcomp output}
-
 \item{clusters}{vector of the clusters associated with data}
 
-\item{var}{The name of the functional data to plot}
+\item{var}{String, The name of the functional data to plot}
 
-\item{output}{The output in which to find the data to plot}
+\item{data_func}{list of two elements :time and data / Functional data extracted from Mixtcomp Output}
 
-\item{depth}{maximum depth of the subclustering to plot}
+\item{depth}{Positive Integer, maximum depth of the subclustering to plot}
 
-\item{max_nb_lines}{Defines the maximum number of lines to plot (default is 100)}
+\item{max_nb_lines}{Positive integer, Defines the maximum number of lines to plot (default is 100)}
 }
 \value{
-A plotly plot
-
 a plotly plot
 }
 \description{
-Display a visual representation of a function variable among the clusters
-
 Plot functional data by clusters
 }
-\examples{
-plot_functional_hierarchique(dir_path_result)
+\seealso{
+Other visualisation: \code{\link{plot_categorical_hierarchique}},
+  \code{\link{plot_proportion_hierarchique}},
+  \code{\link{plot_quality_pred_hierarchique}}
 }

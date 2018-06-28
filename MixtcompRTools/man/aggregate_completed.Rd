@@ -2,21 +2,25 @@
 % Please edit documentation in R/aggregate_results.r
 \name{aggregate_completed}
 \alias{aggregate_completed}
-\title{Aggregate the hierarchical clusters completed data}
+\title{Plot functional data by clusters}
 \usage{
-aggregate_completed(dir, var)
+aggregate_completed(dir, var, depth = NULL)
 }
 \arguments{
-\item{dir}{String, a path to the directory in which are the subclusters to be aggregated}
+\item{dir}{String, path of the directory in which to finc the nested clustering}
 
-\item{var}{The variable to be aggregated}
+\item{var}{String, The name of the functional data to plot}
+
+\item{depth}{Positive Integer or NULL, maximum depth of the subclustering to plot. If NULL, the maximal depth of the clusters is assumed.}
 }
 \value{
-void
+a plotly plot
 }
 \description{
-Aggregate the hierarchical clusters completed data
+Plot functional data by clusters
 }
-\examples{
-aggregate_clusters(dir_path_result)
+\seealso{
+Other results aggregation: \code{\link{aggregate_classification_probabilities}},
+  \code{\link{aggregate_clusters}},
+  \code{\link{aggregate_completed_max}}
 }

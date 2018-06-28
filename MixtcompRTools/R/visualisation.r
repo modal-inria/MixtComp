@@ -1,86 +1,13 @@
 
-#' Display a visual representation of a function variable among the clusters
-#'
-#' @param clusters vector of the cluster associated to each observations
-#' @param var Which functional variable to be plotted
-#' @param data The data extracted from Mixtcomp output
-#' @param depth The maximal depth of the clustering to be plotted
-#' @param max_nb_lines The maximal number of functional observations to plot
-#'
-#' @return A plotly plot
-#' @export
-#' @import RColorBrewer
-#' @import plotly
-#' @examples plot_functional_hierarchique(dir_path_result)
-plot_functional_hierarchique <-
-  function(clusters,
-           var,
-           output,
-           depth,
-           max_nb_lines = 100) {
-    clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
-    data = output$variable$data[[var]]$data
-    time = output$variable$data[[var]]$time
-    unique_clusters = sort(unique(clusters))
-
-    pal = grDevices::colorRampPalette(brewer.pal(11, "Spectral"))(length(unique_clusters))
-    p = plot_ly()
-    max_line_per_cluster = max(max_nb_lines %/% length(unique_clusters), 2)
-    for (i in ((1:length(unique_clusters)))) {
-      data_cl = data[which(clusters == unique_clusters[i])]
-      time_cl = time[which(clusters == unique_clusters[i])]
-
-      p = p %>% plotly::add_trace(
-        y = data_cl[1][[1]],
-        x = time_cl[1][[1]],
-        type = "scatter",
-        mode = "lines",
-        legendgroup = unique_clusters[i],
-        name = unique_clusters[i],
-        showlegend = TRUE,
-        line = list(color = pal[i],
-                    width = 2)
-      )
-
-      for (k in 2:min(max_line_per_cluster, length(data_cl))) {
-        p = p %>% plotly::add_trace(
-          y = data_cl[k][[1]],
-          x = time_cl[k][[1]],
-          type = "scatter",
-          mode = "lines",
-          legendgroup = unique_clusters[i],
-          name = unique_clusters[i],
-          showlegend = FALSE,
-          line = list(color = pal[i],
-                      width = 2)
-        )
-
-      }
-    }
-    p = p %>%
-      plotly::layout(
-        title = paste0(
-          "Distribution of the variable ",
-          var,
-          " in the sub-clustering of depth ",
-          depth
-        ),
-        xaxis = list(title = "time"),
-        yaxis = list(title = var),
-        plot_bgcolor = '#8a8a5c'
-      )
-    return(p)
-  }
-
-
 #' Plot functional data by clusters
 #'
 #' @param clusters vector of the clusters associated with data
-#' @param var The name of the functional data to plot
-#' @param output The output in which to find the data to plot
-#' @param depth maximum depth of the subclustering to plot
-#' @param max_nb_lines Defines the maximum number of lines to plot (default is 100)
+#' @param var String, The name of the functional data to plot
+#' @param data_func list of two elements :time and data / Functional data extracted from Mixtcomp Output
+#' @param depth Positive Integer, maximum depth of the subclustering to plot
+#' @param max_nb_lines Positive integer, Defines the maximum number of lines to plot (default is 100)
 #'
+#' @family visualisation
 #' @return a plotly plot
 #' @export
 #'
@@ -160,12 +87,13 @@ plot_functional_hierarchique <-
 #' Plot categorical data by clusters
 #'
 #' @param clusters vector of the clusters associated with data
-#' @param var The name of the categorical data to plot
+#' @param var String, The name of the categorical data to plot
 #' @param output The output in which to find the data to plot
-#' @param depth maximum depth of the subclustering to plot
-#' @param max_nb_lines Defines the maximum number of lines to plot (default is 100)
-#' @param dictionary the dictionary in which are stored the real names of the categorical data levels
+#' @param depth Positive Integer, maximum depth of the subclustering to plot
+#' @param max_nb_lines Positive Integer, Defines the maximum number of lines to plot (default is 100)
+#' @param dictionary List, the dictionary in which are stored the real names of the categorical data levels
 #'
+#' @family visualisation
 #' @return a plotly plot
 #' @export
 #'
@@ -232,12 +160,13 @@ plot_categorical_hierarchique <-
 #' Plot proportions by clusters
 #'
 #' @param clusters vector of the clusters associated with data
-#' @param var The name of the categorical data to plot
+#' @param var String, The name of the categorical data to plot
 #' @param output The output in which to find the data to plot
-#' @param depth maximum depth of the subclustering to plot
-#' @param max_nb_lines Defines the maximum number of lines to plot (default is 100)
-#' @param dictionary the dictionary in which are stored the real names of the categorical data levels
+#' @param depth Positive Integer, maximum depth of the subclustering to plot
+#' @param max_nb_lines Positive Integer, Defines the maximum number of lines to plot (default is 100)
+#' @param dictionary List, the dictionary in which are stored the real names of the categorical data levels
 #'
+#' @family visualisation
 #' @return a plotly plot
 #' @export
 #'
@@ -296,12 +225,13 @@ plot_proportion_hierarchique <-
 #' Plot quality of prediction by clusters
 #'
 #' @param clusters vector of the clusters associated with data
-#' @param var The name of the categorical data to plot
+#' @param var String, The name of the categorical data to plot
 #' @param output The output in which to find the data to plot
-#' @param depth maximum depth of the subclustering to plot
-#' @param max_nb_lines Defines the maximum number of lines to plot (default is 100)
-#' @param dictionary the dictionary in which are stored the real names of the categorical data levels
+#' @param depth Positive Integer, maximum depth of the subclustering to plot
+#' @param max_nb_lines Positive Integer, Defines the maximum number of lines to plot (default is 100)
+#' @param dictionary List, the dictionary in which are stored the real names of the categorical data levels
 #'
+#' @family visualisation
 #' @return a plotly plot
 #' @export
 #'

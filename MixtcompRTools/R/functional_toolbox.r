@@ -4,7 +4,6 @@
 #' @param x
 #'
 #' @return matrix
-#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -19,7 +18,6 @@ convertFunctional <- function(x){
 #' @param valeur vector of numeric
 #'
 #' @return The functional data formatted to the mixtcomp standard
-#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -37,7 +35,6 @@ createFunctional <- function(temps, valeur)
 #' @param ... additional plot parameter
 #'
 #' @return void
-#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -57,7 +54,6 @@ plotFunctional <- function(x, ...)
 #' @param ... additional plot parameter
 #'
 #' @return void
-#' @export
 #' @examples
 #' \dontrun{
 #' #' plotFunctional("1:5,3:2,6:9.78,9:4,12:25")

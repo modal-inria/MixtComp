@@ -10,13 +10,13 @@ plot_categorical_hierarchique(clusters, var, data, depth, max_nb_lines = 100,
 \arguments{
 \item{clusters}{vector of the clusters associated with data}
 
-\item{var}{The name of the categorical data to plot}
+\item{var}{String, The name of the categorical data to plot}
 
-\item{depth}{maximum depth of the subclustering to plot}
+\item{depth}{Positive Integer, maximum depth of the subclustering to plot}
 
-\item{max_nb_lines}{Defines the maximum number of lines to plot (default is 100)}
+\item{max_nb_lines}{Positive Integer, Defines the maximum number of lines to plot (default is 100)}
 
-\item{dictionary}{the dictionary in which are stored the real names of the categorical data levels}
+\item{dictionary}{List, the dictionary in which are stored the real names of the categorical data levels}
 
 \item{output}{The output in which to find the data to plot}
 }
@@ -25,4 +25,9 @@ a plotly plot
 }
 \description{
 Plot categorical data by clusters
+}
+\seealso{
+Other visualisation: \code{\link{plot_functional_hierarchique}},
+  \code{\link{plot_proportion_hierarchique}},
+  \code{\link{plot_quality_pred_hierarchique}}
 }

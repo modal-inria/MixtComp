@@ -1,10 +1,9 @@
 
-
-
 #' Aggregate the hierarchical clusters estimated
 #'
 #' @param dir String, a path to the directory in which are the subclusters to be aggregated
 #'
+#' @family results aggregation
 #' @return void
 #' @export
 #'
@@ -40,23 +39,17 @@ aggregate_clusters <- function(dir) {
   return(clusters)
 }
 
-
-
 #' Aggregate the hierarchical clusters completed data
 #'
 #' @param dir String, a path to the directory in which are the subclusters to be aggregated
-#' @param var The variable to be aggregated
+#' @param var String, The variable to be aggregated
 #'
+#' @family results aggregation
 #' @return void
-#' @export
 #'
 #' @examples aggregate_clusters(dir_path_result)
-aggregate_completed <- function(dir, var) {
-  # Si le dossier contient un fichier output
-  # Si le warnLog de ce fichier output est vide
-  # l'indicatif du cluster est l'indicatif précédent suivi du cluster actuel
-  # pour chaque sous cluster contenu dans ce dossier, l'indicatif est le
-  # nouvel indicatif suivi de - et de l'indicatif fourni par le clsuter suivant
+aggregate_completed_max <- function(dir, var) {
+
   print(dir)
   output_path = paste0(dir, "/mixtcomp_output.json")
   if (!file.exists(output_path)) {
@@ -85,20 +78,22 @@ aggregate_completed <- function(dir, var) {
 
 #' Plot functional data by clusters
 #'
-#' @param clusters vector of the clusters associated with data
-#' @param var The name of the functional data to plot
-#' @param output The output in which to find the data to plot
-#' @param depth maximum depth of the subclustering to plot
-#' @param max_nb_lines Defines the maximum number of lines to plot (default is 100)
+#' @param dir String, path of the directory in which to finc the nested clustering
+#' @param var String, The name of the functional data to plot
+#' @param depth Positive Integer or NULL, maximum depth of the subclustering to plot. If NULL, the maximal depth of the clusters is assumed.
 #'
+#' @family results aggregation
 #' @return a plotly plot
 #' @export
 #'
 #' @examples
-aggregate_completed_depth <-
+aggregate_completed <-
   function(dir,
            var,
-           depth) {
+           depth=NULL) {
+
+    if(is.null(depth))(return(aggregate_completed_max(dir,var)))
+
     output = fromJSON(paste0(dir, "/mixtcomp_output.json"))
     data_completed = output$variable$data[[var]]$completed
     if (depth == 0) {
@@ -121,14 +116,12 @@ aggregate_completed_depth <-
     return(data_completed)
   }
 
-
-
 #' Aggregate the classification probabilities estimated in the nested clustering
 #'
-#' @param clusters vector of the clusters associated with data
-#' @param dir String, a path to the directory in which are the subclusters to be aggregated
-#' @param depth maximum depth of the subclustering to plot
+#' @param dir String, path of the directory in which to finc the nested clustering
+#' @param depth Positive Integer, maximum depth of the subclustering to plot
 #'
+#' @family results aggregation
 #' @return a plotly plot
 #' @export
 #'

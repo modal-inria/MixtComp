@@ -1,3 +1,14 @@
+#' Helper function for Mixtcomp Input formatting
+#'
+#' @param lm
+#' @param data
+#' @param id
+#' @param model
+#' @param paramStr
+#'
+#' @return
+#'
+#' @examples
 addVariable <- function (lm, data, id, model, paramStr) {
   warnLog = "" # warnLog will contain the various possible error messages
   if (length(lm) == 0) {
@@ -41,7 +52,6 @@ addVariable <- function (lm, data, id, model, paramStr) {
 #' @param ...
 #'
 #' @return list of data
-#' @export
 #'
 #' @import utils
 #' @examples getData(c(data_path,descriptor_path))

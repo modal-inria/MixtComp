@@ -7,11 +7,9 @@
 aggregate_classification_probabilities(dir, depth)
 }
 \arguments{
-\item{dir}{String, a path to the directory in which are the subclusters to be aggregated}
+\item{dir}{String, path of the directory in which to finc the nested clustering}
 
-\item{depth}{maximum depth of the subclustering to plot}
-
-\item{clusters}{vector of the clusters associated with data}
+\item{depth}{Positive Integer, maximum depth of the subclustering to plot}
 }
 \value{
 a plotly plot
@@ -21,4 +19,9 @@ Aggregate the classification probabilities estimated in the nested clustering
 }
 \examples{
 dir = "data/generated_data"
+}
+\seealso{
+Other results aggregation: \code{\link{aggregate_clusters}},
+  \code{\link{aggregate_completed_max}},
+  \code{\link{aggregate_completed}}
 }

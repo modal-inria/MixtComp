@@ -1,4 +1,11 @@
 
+#' Generate data for testing
+#'
+#' @param size integer, number of observatios generated
+#'
+#' @return void
+#'
+#' @examples
 generate_data <- function(size=1000) {
   param <- list(
     x = c(0., 10., 20.),
