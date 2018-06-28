@@ -67,7 +67,7 @@ The \emph{mixture} contains
   \item{completedProbabilityLogRun}{evolution of the completed log-probability  after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)} 
   \item{warnLog}{contains warnings. Is NULL if there is no warning.}
   \item{runTime}{execution time in seconds} 
-  \item{lnProbaGivenClass}{log-probability of x_i for each class}
+  \item{lnProbaGivenClass}{log-proportion + log-probability of x_i for each class}
 }
 
 

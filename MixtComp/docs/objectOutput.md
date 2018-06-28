@@ -105,7 +105,7 @@ A copy of mcStrategy parameter.
 - **completedProbabilityLogRun** evolution of the completed log-probability after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)
 - **warnLog** contains warnings. NULL if there is no warning.
 - **runTime** execution time in seconds
-- **lnProbaGivenClass** log-probability of each samples for each class
+- **lnProbaGivenClass** log-(probability of each sample for each class times the proportion): $`\log(\pi_k)+\log(P(X_i|z_i=k))`$
 
 ## variable
 
