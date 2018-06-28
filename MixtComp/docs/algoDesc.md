@@ -18,9 +18,7 @@ Source [here](./MixtComp/src/lib/Strategy/mixt_SEMStrategy.cpp).
 
 The main difference between an SEM run and a Gibbs run is that estimations take place. Those estimation must be tracked, and they can also wrong. The SEMStrategy is similar, except that no estimation take place, and the parameters are fixed all along.
 
-Things can go wrong at various points in the algorithm, for example there can be errors in initialization, or degeneracy in the general execution. That is why there is a global loop that is run `param_.nSemTry_` times at maximum. If an iteration is completed, the loop is exited. If no iteration can be completed, the `std::string` error from the last iteration is returned.
-
-The general outline of the algorithm is:
+Things can go wrong at various points in the algorithm, for example there can be errors in initialization, or degeneracy in the general execution. That is why there is a global loop `for (Index n = 0; n < param_.nSemTry_; ++n)` that is run `param_.nSemTry_` times at maximum. If an iteration is completed, the loop is exited. If no iteration can be completed, the `std::string` error from the last iteration is returned.
 
 # GibbsStrategy run
 
