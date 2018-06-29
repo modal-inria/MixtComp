@@ -127,7 +127,7 @@ computeSimilarityVar <- function(outMixtComp)
   
   simil <- 1-outMixtComp$mixture$delta
   rownames(simil) = colnames(simil) = varNames
-
+  
   return(simil)
 }
 
@@ -136,8 +136,46 @@ computeSimilarityVar <- function(outMixtComp)
 computeSimilarityClass <- function(outMixtComp)
 {
   simil <- 1-sqrt(sapply(1:outMixtComp$mixture$nbCluster,
-                function(k) colMeans(sweep(outMixtComp$variable$data$z_class$stat, 1, outMixtComp$variable$data$z_class$stat[,k],"-")**2)))
+                         function(k) colMeans(sweep(outMixtComp$variable$data$z_class$stat, 1, outMixtComp$variable$data$z_class$stat[,k],"-")**2)))
   colnames(simil) = rownames(simil)
   
   return(simil)
 }
+
+
+#' @title Compute log(tik)
+#'
+#' @description Compute the log(tik)
+#'
+#'
+#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#'
+#' @return matrix with tik
+#' 
+#'
+#' @examples 
+#' \dontrun{
+#' # path to files
+#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
+#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
+#' 
+#' resGetData <- getData(c(pathToData, pathToDescriptor))
+#' 
+#' # define the algorithm's parameters
+#' mcStrategy <- createMcStrategy()
+#' 
+#' # run RMixtCompt for clustering
+#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' 
+#' logTik <- computeLogTik(res)
+#' }
+#' 
+#' @export
+computeLogTik <- function(output){
+  logTik <- sweep(output$mixture$lnProbaGivenClass, 
+                  1, apply(output$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
+                  "-")
+  
+  return(logTik)
+}
+
