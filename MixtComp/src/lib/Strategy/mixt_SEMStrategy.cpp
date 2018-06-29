@@ -31,7 +31,7 @@ std::string SemStrategy::run() {
 		warnLog.clear(); // only the last warn log can be sent
 
 		p_composer_->initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
-		warnLog = p_composer_->checkNbIndPerClass();
+		warnLog = p_composer_->checkNbIndPerClass(); // useless because a new check is performed in initParam TODO: remove if really useless
 		if (0 < warnLog.size()) {
 			std::cout << "Not enough individuals per class." << std::endl;
 			continue;
