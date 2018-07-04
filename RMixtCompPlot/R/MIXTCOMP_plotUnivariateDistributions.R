@@ -61,9 +61,9 @@ plotDataCI <- function(output, var, class=1:output$mixture$nbCluster, grl=FALSE,
 # Mean and 95% confidence level per class for a numeric variable (Gaussian or Poisson)
 plotCINumericData <- function(data, var, class, grl){
   text1 <- paste0("Class.", class, "<br>",
-                 "Mean: ", round(data$mean[1:length(class)],2), "<br>",
-                 "CI-95%: [", round(data$lower[1:length(class)],2),
-                 ",", round(data$uppers[1:length(class)],2),"]")
+                  "Mean: ", round(data$mean[1:length(class)],2), "<br>",
+                  "CI-95%: [", round(data$lower[1:length(class)],2),
+                  ",", round(data$uppers[1:length(class)],2),"]")
   if (grl) text1 <- c(text1, paste0("Grl <br>",
                                     "Mean: ", round(data$mean[length(data$mean)],2), "<br>",
                                     "CI-95%: [", round(data$lower[length(data$mean)],2),
@@ -145,11 +145,11 @@ plotCategoricalData <- function(data, var, class, grl){
   if (grl)
     formattedW <- c(formattedW,
                     list(list(y=data$probs[nrow(data$probs),],
-                         type='bar',
-                         hoverinfo = "text",
-                         text="grl",
-                         showlegend=FALSE,
-                         marker = list(line = list(color = 'red', width = 1.5)))))
+                              type='bar',
+                              hoverinfo = "text",
+                              text="grl",
+                              showlegend=FALSE,
+                              marker = list(line = list(color = 'red', width = 1.5)))))
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
               formattedW,
@@ -178,10 +178,15 @@ plotCategoricalData <- function(data, var, class, grl){
 }
 
 # Mean and 95% confidence level confidence  for functional data
-plotFunctionalData <- function(output, var, add.obs=FALSE, ylim=NULL, xlim=NULL){
+plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL){
+  G <- output$mixture$nbCluster
+  
+  if(is.null(classToPlot))
+    classToPlot = 1:G
+  
   # Computation of the Confidence Intervals (CI)
   data <- extractCIFunctionnalVble(var, output)
-  G <- output$mixture$nbCluster
+  
   # Computation of the bounds for x-axis and y-axis
   if (is.null(xlim)) xlim <- range(sapply(1:length(output$variable$data[[var]]$time),
                                           function(j) range(output$variable$data[[var]]$time[[j]]) ))
@@ -196,30 +201,47 @@ plotFunctionalData <- function(output, var, add.obs=FALSE, ylim=NULL, xlim=NULL)
   formattedW <- NULL
   # observations are added for plot
   if (add.obs){
+    partition <- output$variable$data$z_class$completed
+    
     for(i in 1:length(output$variable$data[[var]]$time)){
-      formattedW <- c(formattedW,  list(
-        list(x = output$variable$data[[var]]$time[[i]],
-             y = output$variable$data[[var]]$data[[i]], 
-             type = 'scatter', mode = 'lines',showlegend = FALSE,line = list(color='rgba(0,100,80,0.4)', width = 1) ))
-      )
+      if(partition[i]%in%classToPlot)
+      {
+        formattedW <- c(formattedW,  list(
+          list(x = output$variable$data[[var]]$time[[i]],
+               y = output$variable$data[[var]]$data[[i]], 
+               type = 'scatter', mode = 'lines', showlegend = FALSE, line = list(color = 'rgba(0,100,80,0.4)', width = 1)))
+        )
+      }
     }
+    
   }
   # mean curves and CI are added
-  for(k in 1:G){
-    formattedW <- c(formattedW,  list(
-      list(y = data$inf[k,], 
-           type = 'scatter', mode = 'lines',
-           line = list(color = 'transparent'),showlegend = FALSE,
-           name = paste("95% lcl class",k,sep=".")),
-      list(y = data$sup[k,], 
-           type = 'scatter', mode = 'lines',
-           fill = 'tonexty', fillcolor='rgba(0,100,80,0.4)', line = list(color = 'transparent'),
-           showlegend = FALSE, name = paste("95% ucl class",k,sep=".")),
-      list(y = data$mean[k,], 
-           type = 'scatter', mode = 'lines',
-           line = list(color=k, width = 4),showlegend = FALSE, 
-           name = paste("mean class",k,sep="."))
-    ))
+  for(k in classToPlot){
+    if(add.CI)
+    {
+      formattedW <- c(formattedW,  list(
+        list(y = data$inf[k,], 
+             type = 'scatter', mode = 'lines',
+             line = list(color = 'transparent'),showlegend = FALSE,
+             name = paste("95% lcl class",k,sep=".")),
+        list(y = data$sup[k,], 
+             type = 'scatter', mode = 'lines',
+             fill = 'tonexty', fillcolor='rgba(0,100,80,0.4)', line = list(color = 'transparent'),
+             showlegend = FALSE, name = paste("95% ucl class",k,sep=".")),
+        list(y = data$mean[k,], 
+             type = 'scatter', mode = 'lines',
+             line = list(color=k, width = 4),showlegend = FALSE, 
+             name = paste("mean class",k,sep="."))
+      ))
+    }else{
+      formattedW <- c(formattedW,  list(
+        list(y = data$mean[k,], 
+             type = 'scatter', mode = 'lines',
+             line = list(color=k, width = 4),showlegend = FALSE, 
+             name = paste("mean class",k,sep="."))
+      ))
+    }
+    
   }
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
