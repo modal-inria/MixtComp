@@ -25,8 +25,9 @@ Mean and 95\%-level confidence intervals per class
 For functional data, three other parameters are available:
 \describe{
  \item{add.obs}{if TRUE, observations are added to the plot. Default = FALSE.}
- \item{ylim}{ylim of the plot.}
+ \item{add.CI}{if FALSE, confidence intervals are removed from the plot. Default = TRUE.}
  \item{xlim}{xlim of the plot.}
+ \item{ylim}{ylim of the plot.}  
 }
 }
 \examples{

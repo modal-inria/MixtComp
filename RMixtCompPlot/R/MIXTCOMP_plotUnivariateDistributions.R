@@ -10,8 +10,9 @@
 #' @details For functional data, three other parameters are available:
 #' \describe{
 #'  \item{add.obs}{if TRUE, observations are added to the plot. Default = FALSE.}
-#'  \item{ylim}{ylim of the plot.}
+#'  \item{add.CI}{if FALSE, confidence intervals are removed from the plot. Default = TRUE.}
 #'  \item{xlim}{xlim of the plot.}
+#'  \item{ylim}{ylim of the plot.}  
 #' }
 #' 
 #' 
@@ -40,7 +41,7 @@
 #' 
 #' @author Matthieu MARBAC
 #' @export
-plotDataCI <- function(output, var, class=1:output$mixture$nbCluster, grl=FALSE,...)
+plotDataCI <- function(output, var, class = 1:output$mixture$nbCluster, grl = FALSE, ...)
 {
   if(!(var%in%names(output$variable$type)))
     stop("This variable does not exist in the mixture model.")
@@ -52,8 +53,8 @@ plotDataCI <- function(output, var, class=1:output$mixture$nbCluster, grl=FALSE,
          "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, class, grl),
          "Categorical_pjk" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl),
          "Poisson_k" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl),
-         "Functional" = plotFunctionalData(output, var, ...),
-         "FunctionalSharedAlpha" = plotFunctionalData(output, var, ...),
+         "Functional" = plotFunctionalData(output, var, classToPlot = class, ...),
+         "FunctionalSharedAlpha" = plotFunctionalData(output, var, classToPlot = class, ...),
          warning(paste0("Not (yet) available for model ", type)))
 }
 
