@@ -70,7 +70,8 @@ launch_mixtcomp <- function(dir, nClass) {
     nbIter = 15,
     nbGibbsBurnInIter = 15,
     nbGibbsIter = 15,
-    ratioInitialization = 1
+    nInitPerClass = length(resGetData$lm[[i]]$data)/nClass,
+    nSemTry = 20
   )
 
   arg_list_json <- jsonlite::toJSON(
@@ -90,7 +91,7 @@ launch_mixtcomp <- function(dir, nClass) {
 
   cmd <-
     paste(
-      "/home/etienne/Mixtcomp_Docker_Flask/bin/JsonMixtComp",
+      "JsonMixtComp",
       path_input,
       path_output
     )
@@ -196,10 +197,6 @@ expand <- function(dir, nClass,strategy) {
 #' @importFrom RMixtComp functionalInterPolyGenerator
 #'
 #' @examples launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
-#' \dontrun{
-#' launch_Mixtcomp_Hierarchical
-#'
-#' }
 #' @author Etienne Goffinet
 launch_Mixtcomp_Hierarchical <-
   function(data_path,
