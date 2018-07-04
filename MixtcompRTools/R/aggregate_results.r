@@ -106,7 +106,7 @@ aggregate_completed <-
         if (file.exists(paste0(subdir, "/mixtcomp_output.json"))) {
           next_output = fromJSON(paste0(subdir, "/mixtcomp_output.json"))
           if (next_output$mixture$warnLog == "") {
-            data_completed[which(clusters == cluster)] = aggregate_completed_depth(dir = subdir,
+            data_completed[which(clusters == cluster)] = aggregate_completed(dir = subdir,
                                                                                    var = var,
                                                                                    depth = depth - 1)
           }

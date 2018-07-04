@@ -6,6 +6,7 @@
 #' @param data_func list of two elements :time and data / Functional data extracted from Mixtcomp Output
 #' @param depth Positive Integer, maximum depth of the subclustering to plot
 #' @param max_nb_lines Positive integer, Defines the maximum number of lines to plot (default is 100)
+#' @param which_to_highlight String, the name of the cluster to select automatically in the plot
 #'
 #' @family visualisation
 #' @return a plotly plot
@@ -17,21 +18,29 @@ plot_functional_hierarchique <-
            var,
            data_func,
            depth,
-           max_nb_lines = 100) {
+           max_nb_lines = 100,
+           which_to_highlight = NULL,
+           ...) {
     clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
     time = data_func$time
     data = data_func$data
     unique_clusters = sort(unique(clusters))
+    max_line_per_cluster = max(max_nb_lines %/% length(unique_clusters), 2)
 
     pal = grDevices::colorRampPalette(brewer.pal(11, "Spectral"))(length(unique_clusters))
     p = plot_ly()
-    max_line_per_cluster = max(max_nb_lines %/% length(unique_clusters), 2)
 
     if (!is.null(dim(data))) {
       data = as.list(data.frame(t(data)))
     }
     if (!is.null(dim(time))) {
       time = as.list(data.frame(t(time)))
+    }
+    if(is.null(which_to_highlight)){
+      is_visible = rep(TRUE,length(unique_clusters))
+    } else {
+      is_visible = rep("legendonly",length(unique_clusters))
+      is_visible[unique_clusters==which_to_highlight] = "TRUE"
     }
 
     for (i in (1:length(unique_clusters))) {
@@ -47,12 +56,11 @@ plot_functional_hierarchique <-
         name = unique_clusters[i],
         showlegend = TRUE,
         line = list(color = pal[i],
-                    width = 2)
+                    width = 2),
+        visible=is_visible[i]
       )
 
       for (k in 2:min(max_line_per_cluster, length(data_cl))) {
-        # print("#####")
-        # print(data_cl[k][[1]])
         p = p %>% plotly::add_trace(
           y = data_cl[k][[1]],
           x = time_cl[k][[1]],
@@ -62,9 +70,9 @@ plot_functional_hierarchique <-
           name = unique_clusters[i],
           showlegend = FALSE,
           line = list(color = pal[i],
-                      width = 2)
+                      width = 2),
+          visible=is_visible[i]
         )
-
       }
     }
     p = p %>%
@@ -105,7 +113,8 @@ plot_categorical_hierarchique <-
            depth,
            max_nb_lines = 100,
            dictionary = NULL,
-           order_by = NULL) {
+           order_by = NULL,
+           source = NULL) {
     clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
     unique_clusters = sort(unique(clusters))
     pal = grDevices::colorRampPalette(brewer.pal(11, "Spectral"))(length(unique_clusters))
@@ -143,7 +152,8 @@ plot_categorical_hierarchique <-
       y = ~ as.numeric(df_2[, 2]),
       x = df_2$clusters,
       type = 'bar',
-      name = colnames(df_2)[2]
+      name = colnames(df_2)[2],
+      source=source
     )
 
     for (i in 3:ncol(df_2)) {
@@ -210,7 +220,6 @@ plot_proportion_hierarchique <-
       x = df_2$clusters,
       type = 'bar',
       name = colnames(df_2)[2],
-      showlegend = F,
       marker = list(
         color = 'rgb(255, 204, 102)',
         line = list(color = 'rgb(179, 119, 0)',
@@ -244,15 +253,6 @@ plot_quality_pred_hierarchique <-
            data_completed,
            depth,
            order_by = NULL) {
-    # path_results = "~/Alstom/Démo/visualisation/data/data_sample_1_5_3_23/"
-    # var="Degradation_type"
-    # clusters = aggregate_clusters(paste0(path_results,"data_mixtcomp"))
-    # output_mixtcomp = convertJsonRobject(fromJSON(paste0(path_results,"data_mixtcomp/mixtcomp_output.json")))
-    # data_func = output_mixtcomp$variable$data$Maneuver_Power
-    # data_mixtcomp = read.csv(paste0(path_results,"/data_mixtcomp.csv"),sep=";",stringsAsFactors = F,header=T)
-    # idx_test = which(data_mixtcomp[[var]]=="?")
-    # data_observed = read.table(paste0(path_results,"data_mixtcomp_complete.csv"),sep=";",header=T,stringsAsFactors = F)[[var]]
-    # data_completed = aggregate_completed(paste0(path_results,"data_mixtcomp"),var)
 
     clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
     unique_clusters = sort(unique(clusters))
@@ -315,7 +315,7 @@ plot_quality_pred_hierarchique <-
         line = list(color = 'rgb(25, 103, 25)',
                     width = 1.5)
       )
-    ) %>% layout(yaxis = list(title = '% of correct predictions in this cluster'))
+    ) %>% layout(yaxis = list(title = '% of correct predictions', xaxis=list(title="cluster")))
 
     return(p)
   }
