@@ -96,40 +96,48 @@ void paramJsonToCpp(const nlohmann::json& JsonParam,
   if (JsonParam.find("nbBurnInIter") != JsonParam.end()) {
       CppParam.nbBurnInIter_ = JsonParam["nbBurnInIter"];
   } else {
-      std::cout << "Parameter nbBurnInIter not found, a value of 100 is used." << std::endl;
+	  std::cout << "Parameter nbBurnInIter not found, a default value of " + std::to_string(CppParam.nbBurnInIter_) + " is used." << std::endl;
   }
 
   if (JsonParam.find("nbIter") != JsonParam.end()) {
       CppParam.nbIter_ = JsonParam["nbIter"];
   } else {
-      std::cout << "Parameter nbIter not found, a value of 100 is used." << std::endl;
+	  std::cout << "Parameter nbIter not found, a default value of " + std::to_string(CppParam.nbIter_) + " is used." << std::endl;
   }
 
   if (JsonParam.find("nbGibbsBurnInIter") != JsonParam.end()) {
       CppParam.nbGibbsBurnInIter_ = JsonParam["nbGibbsBurnInIter"];
   } else {
-      std::cout<<"Parameter nbGibbsBurnInIter not found, a value of 100 is used."<<std::endl;
+	  std::cout << "Parameter nbGibbsBurnInIter not found, a default value of " + std::to_string(CppParam.nbGibbsBurnInIter_) + " is used." << std::endl;
   }
 
   if (JsonParam.find("nbGibbsIter") != JsonParam.end()) {
       CppParam.nbGibbsIter_ = JsonParam["nbGibbsIter"];
   } else {
-      std::cout << "Parameter nbGibbsIter not found, a value of 100 is used." << std::endl;
+	std::cout << "Parameter nbGibbsIter not found, a default value of " + std::to_string(CppParam.nbGibbsIter_) + " is used." << std::endl;
   }
 
-  if (JsonParam.find("ratioInitialization") !=  JsonParam.end()) {
-    Real ratioInitialization = JsonParam["ratioInitialization"];
-    if (ratioInitialization < 0. || 1. < ratioInitialization) {
-      std::cout << "Parameter ratioInitialization must be within [0, 1], 0.1 is used." << std::endl;
-    }
-    else {
-      CppParam.ratioInitialization_ = JsonParam["ratioInitialization"];
-    }
-  }
-  else {
-    std::cout << "Parameter ratioInitialization not found, a value of 0.1 is used." << std::endl;
+  if (JsonParam.find("nInitPerClass") != JsonParam.end()) {
+	Index nInitPerClass = JsonParam["nInitPerClass"];
+	if (nInitPerClass < 0) {
+	  std::cout << "nInitPerClass must be positive, a default value of " +  std::to_string(CppParam.nInitPerClass_) + " is used." << std::endl;
+	} else {
+	  CppParam.nInitPerClass_ = nInitPerClass;
+	}
+  } else {
+    std::cout << "Parameter nInitPerClass not found, a default value of " +  std::to_string(CppParam.nInitPerClass_) + " is used." << std::endl;
   }
 
+  if (JsonParam.find("nSemTry") != JsonParam.end()) {
+    Index nSemTry = JsonParam["nSemTry"];
+      if (nSemTry < 1) {
+		std::cout << "nSemTry must be striclty positive, a default value of " +  std::to_string(CppParam.nSemTry_) + " is used." << std::endl;
+	  } else {
+		CppParam.nSemTry_ = nSemTry;
+	  }
+	} else {
+		std::cout << "Parameter nSemTry not found, a default value of " +  std::to_string(CppParam.nSemTry_) + " is used." << std::endl;
+	}
 }
 
 } // namespace mixt

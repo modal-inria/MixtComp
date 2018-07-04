@@ -132,7 +132,7 @@ void paramRToCpp(const Rcpp::List& RParam, StrategyParam& CppParam) {
 	if (RParam.containsElementNamed("nSemTry")) {
 		Index nSemTry = RParam["nSemTry"];
 		if (nSemTry < 1) {
-			std::cout << "nInitPerClass must be striclty positive, a default value of " +  std::to_string(CppParam.nSemTry_) + " is used." << std::endl;
+			std::cout << "nSemTry must be striclty positive, a default value of " +  std::to_string(CppParam.nSemTry_) + " is used." << std::endl;
 		} else {
 			CppParam.nSemTry_ = nSemTry;
 		}
