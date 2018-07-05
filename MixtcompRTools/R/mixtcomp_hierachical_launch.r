@@ -231,3 +231,52 @@ launch_Mixtcomp_Hierarchical <-
     cat("Hierarchical clustering complete !")
 
   }
+
+#' Launch the Mixtcomp prediction based on an existing hierarchical cluster
+#'
+#' @param data_path A string
+#' @param descriptor_path A string
+#' @param nClass Integer between 0 and 10
+#' @param depth Positive integer
+#' @param output_dir (optional) if not null, the results will be written in this directory.
+#' If Null, a directory with the name of the dataset will be created and used as output directory instead.
+#'
+#' @return void
+#' @export
+#' @importFrom RMixtComp functionalInterPolyGenerator
+#'
+#' @examples launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
+#' @author Etienne Goffinet
+launch_Mixtcomp_Hierarchical_predict <-
+  function(data_path,
+           descriptor_path,
+           nClass,
+           depth,
+           output_dir = NULL,
+           strategy=list(var=1,threshold_nInd=1,threshold_purity=2)) {
+    # Get directory of the data_path
+    if (is.null(output_dir)) {
+      output_dir = dirname(data_path)
+    }
+    data_name = basename(data_path)
+    # If output dirs doesnt' exist, create it
+    newDir = paste0(output_dir, "/", strsplit(data_name, ".csv")[[1]])
+    print(newDir)
+    if (!dir.exists(newDir)) {
+      dir.create(newDir)
+      file.copy(descriptor_path, paste0(newDir, "/descriptor.csv"))
+      file.copy(data_path, paste0(newDir, "/data_mixtcomp.csv"))
+      launch_mixtcomp(dir = newDir, nClass = nClass)
+    }
+    # run expand on it
+    if (depth == 0) {
+      cat("Hierarchical clustering complete !")
+      return()
+    }
+
+    for (i in 1:depth) {
+      expand(dir=newDir, nClass,strategy)
+    }
+    cat("Hierarchical clustering complete !")
+
+  }
