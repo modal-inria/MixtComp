@@ -1,5 +1,4 @@
 
-
 #' During the expand phase, cut data according to clusters and copy to subfolder
 #'
 #' @param dir A String
@@ -17,7 +16,7 @@ extract_data_per_cluster <- function(dir) {
   for (i in 1:MixtCompOutput$mixture$nbCluster) {
     idx_cluster <-
       which(MixtCompOutput$variable$data$z_class$completed == i)
-    data_cluster <- data[idx_cluster,]
+    data_cluster <- data[idx_cluster, ]
     subdir <- paste0(dir, "/subcluster_", i)
     print(paste0(subdir, "/data_mixtcomp.csv"))
 
@@ -70,7 +69,7 @@ launch_mixtcomp <- function(dir, nClass) {
     nbIter = 15,
     nbGibbsBurnInIter = 15,
     nbGibbsIter = 15,
-    nInitPerClass = length(resGetData$lm[[i]]$data)/nClass,
+    nInitPerClass = length(resGetData$lm[[i]]$data) / nClass,
     nSemTry = 20
   )
 
@@ -90,14 +89,81 @@ launch_mixtcomp <- function(dir, nClass) {
   ###### Mixtcomp run
 
   cmd <-
-    paste(
-      "JsonMixtComp",
-      path_input,
-      path_output
-    )
+    paste("JsonMixtComp",
+          path_input,
+          path_output)
   system(cmd)
 
   }
+
+#' Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
+#' the directory given by the dir param and with nClass number of clusters
+#'
+#' @param dir A String
+#' @param nClass Positive intege
+#'
+#' @return void
+#'
+#' @examples
+#' \dontrun {
+#' launch_mixtcomp("data/data_mixtcomp",3)
+#' }
+launch_mixtcomp_predict <- function(dir,path_param, nClass) {
+  # Check if JsonMixtComp executable is available
+  paths = Sys.getenv("PATH")
+  if (!any(file.exists(paste0(strsplit(paths, ":")[[1]], "/JsonMixtComp")))) {
+    stop(
+      "JsonMixtComp executable cannot be found.
+      In order to be callable, 'JsonMixtComp' must be stored in any of the folder designated by the paths contained in the environement variable PATH"
+    )
+  }
+
+  path_input <- paste0(dir, "/mixtcomp_input.json")
+  path_output <- paste0(dir, "/mixtcomp_output.json")
+
+  resGetData <- getData(c(
+    paste0(dir, "/data_mixtcomp.csv"),
+    paste0(dir, "/descriptor.csv")
+  ))
+
+  for (i in 1:length(resGetData$lm)) {
+    resGetData$lm[[i]]$data <- as.character(resGetData$lm[[i]]$data)
+  }
+
+  mcStrategy = list(
+    nbBurnInIter = 15,
+    nbIter = 15,
+    nbGibbsBurnInIter = 15,
+    nbGibbsIter = 15,
+    nInitPerClass = length(resGetData$lm[[i]]$data) / nClass,
+    nSemTry = 20
+  )
+
+  arg_list_json <-
+    toJSON(
+      list(
+        by_row = FALSE,
+        resGetData_lm = resGetData$lm,
+        mcStrategy = mcStrategy,
+        nbClass = nClass,
+        confidenceLevel = 0.95,
+        pathParamList = path_param,
+        mode = "predict"
+      ),
+      auto_unbox = T
+    )
+
+  write(x = arg_list_json, path_input)
+
+  ###### Mixtcomp run
+
+  cmd <-
+    paste("JsonMixtComp",
+          path_input,
+          path_output)
+  system(cmd)
+
+}
 
 #' Create Subdirectories during the expand phase
 #'
@@ -135,7 +201,7 @@ create_subdirectories <- function(dir, nClass) {
 #' @return void
 #'
 #' @examples expand()
-expand <- function(dir, nClass,strategy) {
+expand <- function(dir, nClass, strategy) {
   parallel = FALSE
   existing_subdirs_in_current_dir <- list.dirs(dir, recursive = F)
   print("#######################")
@@ -145,7 +211,7 @@ expand <- function(dir, nClass,strategy) {
   # If the directory already contains subdirectories, expand the subdirs
   if (length(existing_subdirs_in_current_dir) > 0) {
     for (subdir in existing_subdirs_in_current_dir) {
-      expand(subdir, nClass,strategy)
+      expand(subdir, nClass, strategy)
     }
   } else {
     # If no subdirectories exist, create them, extract data into them and launch mixtcomp.
@@ -154,7 +220,9 @@ expand <- function(dir, nClass,strategy) {
     print(strategy)
 
     print(MixtCompOutput$mixture$nbInd)
-    print(table(MixtCompOutput$variable$data[[strategy$var]]$completed) / MixtCompOutput$mixture$nbInd)
+    print(
+      table(MixtCompOutput$variable$data[[strategy$var]]$completed) / MixtCompOutput$mixture$nbInd
+    )
     if ((MixtCompOutput$mixture$nbInd > strategy$threshold_nInd) &
         (max(
           table(MixtCompOutput$variable$data[[strategy$var]]$completed) / MixtCompOutput$mixture$nbInd
@@ -194,7 +262,6 @@ expand <- function(dir, nClass,strategy) {
 #'
 #' @return void
 #' @export
-#' @importFrom RMixtComp functionalInterPolyGenerator
 #'
 #' @examples launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
 #' @author Etienne Goffinet
@@ -204,7 +271,9 @@ launch_Mixtcomp_Hierarchical <-
            nClass,
            depth,
            output_dir = NULL,
-           strategy=list(var=1,threshold_nInd=1,threshold_purity=2)) {
+           strategy = list(var = 1,
+                           threshold_nInd = 1,
+                           threshold_purity = 2)) {
     # Get directory of the data_path
     if (is.null(output_dir)) {
       output_dir = dirname(data_path)
@@ -226,7 +295,7 @@ launch_Mixtcomp_Hierarchical <-
     }
 
     for (i in 1:depth) {
-      expand(dir=newDir, nClass,strategy)
+      expand(dir = newDir, nClass, strategy)
     }
     cat("Hierarchical clustering complete !")
 
@@ -243,40 +312,14 @@ launch_Mixtcomp_Hierarchical <-
 #'
 #' @return void
 #' @export
-#' @importFrom RMixtComp functionalInterPolyGenerator
 #'
 #' @examples launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
 #' @author Etienne Goffinet
 launch_Mixtcomp_Hierarchical_predict <-
   function(data_path,
-           descriptor_path,
-           nClass,
-           depth,
-           output_dir = NULL,
-           strategy=list(var=1,threshold_nInd=1,threshold_purity=2)) {
-    # Get directory of the data_path
-    if (is.null(output_dir)) {
-      output_dir = dirname(data_path)
-    }
-    data_name = basename(data_path)
-    # If output dirs doesnt' exist, create it
-    newDir = paste0(output_dir, "/", strsplit(data_name, ".csv")[[1]])
-    print(newDir)
-    if (!dir.exists(newDir)) {
-      dir.create(newDir)
-      file.copy(descriptor_path, paste0(newDir, "/descriptor.csv"))
-      file.copy(data_path, paste0(newDir, "/data_mixtcomp.csv"))
-      launch_mixtcomp(dir = newDir, nClass = nClass)
-    }
-    # run expand on it
-    if (depth == 0) {
-      cat("Hierarchical clustering complete !")
-      return()
-    }
+           param_dir,
+           output_dir = NULL) {
 
-    for (i in 1:depth) {
-      expand(dir=newDir, nClass,strategy)
-    }
-    cat("Hierarchical clustering complete !")
+    launch_mixtcomp_predict(data_path,de)
 
   }

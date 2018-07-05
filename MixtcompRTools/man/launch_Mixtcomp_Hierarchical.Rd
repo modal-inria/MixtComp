@@ -28,10 +28,6 @@ Launch the Hierarchical Mixtcomp.
 }
 \examples{
 launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
-\dontrun{
-launch_Mixtcomp_Hierarchical
-
-}
 }
 \author{
 Etienne Goffinet

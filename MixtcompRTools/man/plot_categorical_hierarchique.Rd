@@ -5,7 +5,7 @@
 \title{Plot categorical data by clusters}
 \usage{
 plot_categorical_hierarchique(clusters, var, data, depth, max_nb_lines = 100,
-  dictionary = NULL, order_by = NULL)
+  dictionary = NULL, order_by = NULL, source = NULL)
 }
 \arguments{
 \item{clusters}{vector of the clusters associated with data}

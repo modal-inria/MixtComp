@@ -5,7 +5,7 @@
 \title{Plot functional data by clusters}
 \usage{
 plot_functional_hierarchique(clusters, var, data_func, depth,
-  max_nb_lines = 100)
+  max_nb_lines = 100, which_to_highlight = NULL, ...)
 }
 \arguments{
 \item{clusters}{vector of the clusters associated with data}
@@ -17,6 +17,8 @@ plot_functional_hierarchique(clusters, var, data_func, depth,
 \item{depth}{Positive Integer, maximum depth of the subclustering to plot}
 
 \item{max_nb_lines}{Positive integer, Defines the maximum number of lines to plot (default is 100)}
+
+\item{which_to_highlight}{String, the name of the cluster to select automatically in the plot}
 }
 \value{
 a plotly plot

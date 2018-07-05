@@ -1,4 +1,28 @@
 
+functionalInterPolyGenerator <- function(present, param) {
+  timeObs <- vector("character", param$nTime)
+
+  nCoeff <- length(param$x)
+  v <- vandermonde(param$x, nCoeff)
+  a <- solve(v, param$y)
+  t <- vector(mode = "numeric", length = param$nTime)
+
+  for (i in 1:param$nTime) {
+    t[i] <- runif(1, param$tMin, param$tMax)
+  }
+  t <- sort(t)
+
+  for (i in 1:param$nTime) {
+    x <- evalFunc(a, t[i]) + rnorm(1, mean = 0, sd = param$sd)
+    timeObs[i] <- paste(t[i], x, sep = ":")
+  }
+
+  xStr <- paste(timeObs, collapse = ",")
+
+  return(xStr)
+}
+
+
 #' Generate data for testing
 #'
 #' @param size integer, number of observatios generated
