@@ -65,10 +65,10 @@ launch_mixtcomp <- function(dir, nClass) {
   }
 
   mcStrategy = list(
-    nbBurnInIter = 15,
-    nbIter = 15,
-    nbGibbsBurnInIter = 15,
-    nbGibbsIter = 15,
+    nbBurnInIter = 2,
+    nbIter = 2,
+    nbGibbsBurnInIter = 2,
+    nbGibbsIter = 2,
     nInitPerClass = length(resGetData$lm[[i]]$data) / nClass,
     nSemTry = 20
   )
@@ -94,7 +94,7 @@ launch_mixtcomp <- function(dir, nClass) {
           path_output)
   system(cmd)
 
-  }
+}
 
 #' Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
 #' the directory given by the dir param and with nClass number of clusters
@@ -108,7 +108,7 @@ launch_mixtcomp <- function(dir, nClass) {
 #' \dontrun {
 #' launch_mixtcomp("data/data_mixtcomp",3)
 #' }
-launch_mixtcomp_predict <- function(dir,path_param, nClass) {
+launch_mixtcomp_predict <- function(param_dir, test_dir, nClass) {
   # Check if JsonMixtComp executable is available
   paths = Sys.getenv("PATH")
   if (!any(file.exists(paste0(strsplit(paths, ":")[[1]], "/JsonMixtComp")))) {
@@ -118,12 +118,12 @@ launch_mixtcomp_predict <- function(dir,path_param, nClass) {
     )
   }
 
-  path_input <- paste0(dir, "/mixtcomp_input.json")
-  path_output <- paste0(dir, "/mixtcomp_output.json")
+  path_input <- paste0(test_dir, "/mixtcomp_input.json")
+  path_output <- paste0(test_dir, "/mixtcomp_output.json")
 
   resGetData <- getData(c(
-    paste0(dir, "/data_mixtcomp.csv"),
-    paste0(dir, "/descriptor.csv")
+    paste0(test_dir,"/data_predict.csv"),
+    paste0(param_dir, "/descriptor.csv")
   ))
 
   for (i in 1:length(resGetData$lm)) {
@@ -131,10 +131,10 @@ launch_mixtcomp_predict <- function(dir,path_param, nClass) {
   }
 
   mcStrategy = list(
-    nbBurnInIter = 15,
-    nbIter = 15,
-    nbGibbsBurnInIter = 15,
-    nbGibbsIter = 15,
+    nbBurnInIter = 2,
+    nbIter = 2,
+    nbGibbsBurnInIter = 2,
+    nbGibbsIter = 2,
     nInitPerClass = length(resGetData$lm[[i]]$data) / nClass,
     nSemTry = 20
   )
@@ -147,7 +147,7 @@ launch_mixtcomp_predict <- function(dir,path_param, nClass) {
         mcStrategy = mcStrategy,
         nbClass = nClass,
         confidenceLevel = 0.95,
-        pathParamList = path_param,
+        pathParamList = paste0(param_dir,"/mixtcomp_output.json"),
         mode = "predict"
       ),
       auto_unbox = T
@@ -188,7 +188,7 @@ create_subdirectories <- function(dir, nClass) {
     dir.create(paste0(dir, "/subcluster_", i))
   }
 
-  }
+}
 
 #' Launch an expand phase : if the directory doesn't contain any subdirectories,
 #' cut the data in clusters according to the clusters estimated by Mixtcomp and given
@@ -320,6 +320,65 @@ launch_Mixtcomp_Hierarchical_predict <-
            param_dir,
            output_dir = NULL) {
 
-    launch_mixtcomp_predict(data_path,de)
+    # Get directory of the data_path
+    if (is.null(output_dir)) {
+      output_dir = dirname(data_path)
+    }
+    data_name = basename(data_path)
+    # If output dirs doesnt' exist, create it
+    newDir = paste0(output_dir, "/", strsplit(data_name, ".csv")[[1]])
+    print(newDir)
+    if (!dir.exists(newDir)) {
+      dir.create(newDir)
+      file.copy(data_path, paste0(newDir, "/data_predict.csv"))
+    }
 
+    expand_predict(newDir,param_dir)
+  }
+
+#' Launch the Mixtcomp prediction based on an existing hierarchical cluster
+#'
+#' @param data_path A string
+#' @param descriptor_path A string
+#' @param nClass Integer between 0 and 10
+#' @param depth Positive integer
+#' @param output_dir (optional) if not null, the results will be written in this directory.
+#' If Null, a directory with the name of the dataset will be created and used as output directory instead.
+#'
+#' @return void
+#' @export
+#'
+#' @examples launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
+#' @author Etienne Goffinet
+expand_predict <-
+  function(test_dir,
+           param_dir) {
+
+    print(paste0("test_dir : ",test_dir))
+
+    print(paste0("param_dir : ",param_dir))
+
+    output_learn = fromJSON(paste0(param_dir,"/mixtcomp_output.json"))
+    nbCluster = output$mixture$nbCluster
+    launch_mixtcomp_predict(param_dir = param_dir,test_dir =  test_dir, nbCluster)
+    data_predict = read.table(paste0(test_dir,"/data_predict.csv"),sep=";",stringsAsFactors = F,header = T)
+    subdirs_list = list.dirs(recursive = F,param_dir)
+
+    if(length(subdirs_list)>0){
+      output_predict = fromJSON(paste0(test_dir,"/mixtcomp_output.json"))
+      completed_clusters = output_predict$variable$data$z_class$completed
+      for(cluster in 1:nbCluster){
+        next_param_dir = paste0(param_dir,"/subcluster_",cluster)
+        if(file.exists(path_next_output)){
+          next_output_learn = fromJSON(paste0(next_param_dir,"/mixtcomp_output.json"))
+          if(next_output_learn$mixture$warnLog==""){
+            next_test_dir = paste0(test_dir,"/subcluster_",cluster)
+            data_next_predict = data_predict[which(completed_clusters==cluster),]
+            dir.create(next_test_dir)
+            write.table(data_next_predict,paste0(next_test_dir,"/data_predict.csv"),sep = ";",na = "",row.names = F)
+            expand_predict(test_dir = next_test_dir,param_dir = next_param_dir)
+          }
+        }
+      }
+    }
   }

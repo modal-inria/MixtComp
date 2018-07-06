@@ -30,7 +30,7 @@ functionalInterPolyGenerator <- function(present, param) {
 #' @return void
 #'
 #' @examples
-generate_data <- function(size=1000) {
+generate_data <- function(size=2000,ratio_test_training=0.4) {
   param <- list(
     x = c(0., 10., 20.),
     y = c(1., 10., 1.),
@@ -67,9 +67,19 @@ generate_data <- function(size=1000) {
     c("Functional", "Gaussian_sjk", "Categorical_pjk")
   descriptor[2, 1] <- rep("nSub: 5, nCoeff: 2", 1)
 
+  data_test = data[1:(ratio_test_training*size),]
+  data_training = data[((ratio_test_training*size)+1):size,]
+
   write.table(
-    data,
-    "data/generated_data.csv" ,
+    data_training,
+    "data/generated_data_training.csv" ,
+    sep = ";",
+    na = "",
+    row.names = F
+  )
+  write.table(
+    data_test,
+    "data/generated_data_test.csv" ,
     sep = ";",
     na = "",
     row.names = F
