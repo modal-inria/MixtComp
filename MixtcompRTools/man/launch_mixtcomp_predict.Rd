@@ -5,12 +5,12 @@
 \title{Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
 the directory given by the dir param and with nClass number of clusters}
 \usage{
-launch_mixtcomp_predict(dir, path_param, nClass)
+launch_mixtcomp_predict(param_dir, test_dir, nClass)
 }
 \arguments{
-\item{dir}{A String}
-
 \item{nClass}{Positive intege}
+
+\item{dir}{A String}
 }
 \value{
 void

@@ -21,6 +21,7 @@ plot_functional_hierarchique <-
            max_nb_lines = 100,
            which_to_highlight = NULL,
            ...) {
+    load("~/Démo/demo_data.rdata")
     clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
     time = data_func$time
     data = data_func$data
@@ -28,7 +29,6 @@ plot_functional_hierarchique <-
     max_line_per_cluster = max(max_nb_lines %/% length(unique_clusters), 2)
 
     pal = grDevices::colorRampPalette(brewer.pal(11, "Spectral"))(length(unique_clusters))
-    p = plot_ly()
 
     if (!is.null(dim(data))) {
       data = as.list(data.frame(t(data)))
@@ -43,9 +43,15 @@ plot_functional_hierarchique <-
       is_visible[unique_clusters==which_to_highlight] = "TRUE"
     }
 
+    p = plot_ly()
+
+    data_by_cluster = lapply(unique_clusters,function(x){data[which(clusters == x)]})
+    time_by_cluster = lapply(unique_clusters,function(x){time[which(clusters == x)]})
+
+    names(data_by_cluster) = unique_clusters
     for (i in (1:length(unique_clusters))) {
-      data_cl = data[which(clusters == unique_clusters[i])]
-      time_cl = time[which(clusters == unique_clusters[i])]
+      data_cl = data_by_cluster[[unique_clusters[i]]]
+      time_cl = time_by_cluster[[unique_clusters[i]]]
 
       p = p %>% plotly::add_trace(
         y = data_cl[1][[1]],

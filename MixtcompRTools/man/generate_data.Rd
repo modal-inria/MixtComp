@@ -4,7 +4,7 @@
 \alias{generate_data}
 \title{Generate data for testing}
 \usage{
-generate_data(size = 1000)
+generate_data(size = 2000, ratio_test_training = 0.4)
 }
 \arguments{
 \item{size}{integer, number of observatios generated}
