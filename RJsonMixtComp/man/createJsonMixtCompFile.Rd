@@ -6,8 +6,8 @@
 \usage{
 createJsonMixtCompFile(outputJsonFile, dataList, nbClass,
   confidenceLevel = 0.95, mcStrategy = list(nbBurnInIter = 100, nbIter =
-  100, nbGibbsBurnInIter = 100, nbGibbsIter = 100, parameterEdgeAuthorized =
-  TRUE), mode = c("learn", "predict"), outMixtCompFile = NULL)
+  100, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry =
+  5), mode = c("learn", "predict"), outMixtCompFile = NULL)
 }
 \arguments{
 \item{outputJsonFile}{\emph{lm} output of \link{getData} function}
