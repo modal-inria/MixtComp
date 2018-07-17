@@ -41,6 +41,9 @@ convertJsonRobject <- function(out, confidenceLevel = 0.95, mode = c("learn", "p
   out$variable$param = out$variable$param[newOrd]
   out$variable$data = out$variable$data[newOrd]
   
+  if(out$mixture$warnLog == "")
+    out$mixture$warnLog = NULL
+  
   return(out)
 }
 

@@ -78,7 +78,7 @@ JsonMixtCompCluster <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
   
   resLearn <- fromJSON(jsonOutputFile)
   
-  if(is.null(resLearn$mixture$warnLog))
+  if(resLearn$mixture$warnLog == "")
     resLearn = convertJsonRobject(resLearn, confidenceLevel, mode = "learn")
   
   return(resLearn)
@@ -172,7 +172,7 @@ JsonMixtCompPredict <- function(dataList, mcStrategy, nbClass, confidenceLevel, 
   
   resPredict <- fromJSON(jsonOutputFile)
   
-  if(is.null(resPredict$mixture$warnLog))
+  if(resPredict$mixture$warnLog == "")
     resPredict = convertJsonRobject(resPredict, confidenceLevel, mode = "predict")
   
   return(resPredict)
