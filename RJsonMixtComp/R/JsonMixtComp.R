@@ -18,9 +18,10 @@
 #' @export
 createJsonMixtCompFile <- function(outputJsonFile, dataList, nbClass, confidenceLevel = 0.95, mcStrategy = list(nbBurnInIter = 100, 
                                                                                                                 nbIter = 100, 
-                                                                                                                nbGibbsBurnInIter = 100, 
-                                                                                                                nbGibbsIter = 100, 
-                                                                                                                parameterEdgeAuthorized = TRUE), mode = c("learn", "predict"), outMixtCompFile = NULL)
+                                                                                                                nbGibbsBurnInIter = 50, 
+                                                                                                                nbGibbsIter = 50, 
+                                                                                                                nInitPerClass = 10,
+                                                                                                                nSemTry = 5), mode = c("learn", "predict"), outMixtCompFile = NULL)
 {
   
   mode = match.arg(mode)
@@ -38,14 +39,12 @@ createJsonMixtCompFile <- function(outputJsonFile, dataList, nbClass, confidence
     dataList[[i]]$paramStr <- jsonlite::unbox(dataList[[i]]$paramStr)
   }
   
-  if(is.null(mcStrategy$parameterEdgeAuthorized))
-    mcStrategy$parameterEdgeAuthorized = FALSE
-  
-  mcStrategy$nbBurnInIter = jsonlite::unbox(mcStrategy$nbBurnInIter)
-  mcStrategy$nbIter = jsonlite::unbox(mcStrategy$nbIter)
-  mcStrategy$nbGibbsBurnInIter = jsonlite::unbox(mcStrategy$nbGibbsBurnInIter)
-  mcStrategy$nbGibbsIter = jsonlite::unbox(mcStrategy$nbGibbsIte)
-  mcStrategy$parameterEdgeAuthorized = jsonlite::unbox(mcStrategy$parameterEdgeAuthorized)
+  mcStrategy$nbBurnInIter = jsonlite::unbox(ifelse(is.null(mcStrategy$nbBurnInIter), 100, mcStrategy$nbBurnInIter))
+  mcStrategy$nbIter = jsonlite::unbox(ifelse(is.null(mcStrategy$nbIter), 100, mcStrategy$nbIter))
+  mcStrategy$nbGibbsBurnInIter = jsonlite::unbox(ifelse(is.null(mcStrategy$nbGibbsBurnInIter), 50, mcStrategy$nbGibbsBurnInIter))
+  mcStrategy$nbGibbsIter = jsonlite::unbox(ifelse(is.null(mcStrategy$nbGibbsIter), 50, mcStrategy$nbGibbsIter))
+  mcStrategy$nInitPerClass = jsonlite::unbox(ifelse(is.null(mcStrategy$nInitPerClass), 10, mcStrategy$nInitPerClass))
+  mcStrategy$nSemTry = jsonlite::unbox(ifelse(is.null(mcStrategy$nSemTry), 5, mcStrategy$nSemTry))
   
   if(mode == "learn")
     arg_list_json <- toJSON(list(by_row = FALSE, resGetData_lm = dataList, mcStrategy = mcStrategy, nbClass = nbClass, confidenceLevel = confidenceLevel, mode = mode), auto_unbox = TRUE)
