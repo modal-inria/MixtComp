@@ -12,7 +12,7 @@ test_that("checkPath", {
 test_that("checkModel", {
   expect_error(checkModel("aaaaaaa", "Rank"))
   
-  expect_error(checkModel("aaaaaaa", "Functional"))
+  expect_error(checkModel("aaaaaaa", "Ordinal"))
   
   expect_equal(checkModel(c("aaaaaaa", "bbbbb")), TRUE)
 })
