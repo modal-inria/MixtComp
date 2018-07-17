@@ -26,14 +26,9 @@ convertJsonRobject <- function(out, confidenceLevel = 0.95, mode = c("learn", "p
     }else{
       nCoeff = nSub <- 1
     }
-    
-    if(mode == "learn")
-    {
-      out$variable$param[[nomVar]] = convertParamLearn(out$variable$param[[nomVar]], type[[nomVar]], nbClass, nCoeff, nSub)
-    }else{
-      out$variable$param[[nomVar]] = convertParamPredict(out$variable$param[[nomVar]], type[[nomVar]])
-    }
-    
+
+    out$variable$param[[nomVar]] = convertParam(out$variable$param[[nomVar]], type[[nomVar]], nbClass, nCoeff, nSub, mode)
+
     out$variable$data[[nomVar]]$stat = convertDataStat(out$variable$data[[nomVar]]$stat, type[[nomVar]], confidenceLevel)
   }
   
@@ -76,8 +71,10 @@ convertDataStat <- function(dataStat, type, confidenceLevel)
 
 
 # param outMixtComp$variable$param$nomVar
-convertParamLearn <- function(param, type, nbClass = 1, nCoeff = 1, nSub = 1)
+convertParam <- function(param, type, nbClass = 1, nCoeff = 1, nSub = 1, mode = c("learn", "predict"))
 {
+  mode = match.arg(mode)
+  
   nomObj <- switch(type, 
                    "Ordinal" = "muPi",
                    "LatentClass" = "pi",
@@ -87,18 +84,28 @@ convertParamLearn <- function(param, type, nbClass = 1, nCoeff = 1, nSub = 1)
   
   for(i in seq_along(nomObj))
   {
-    param[[nomObj[i]]]$log = do.call(rbind, param[[nomObj[i]]]$log)
-    colnames(param[[nomObj[i]]]$log) = rep("", ncol(param[[nomObj[i]]]$log))
-    param[[nomObj[i]]]$stat = do.call(cbind, param[[nomObj[i]]]$stat)
+    if(mode == "learn")
+    {
+      param[[nomObj[i]]]$log = do.call(rbind, param[[nomObj[i]]]$log)
+      colnames(param[[nomObj[i]]]$log) = rep("", ncol(param[[nomObj[i]]]$log))
+      param[[nomObj[i]]]$stat = do.call(cbind, param[[nomObj[i]]]$stat)
+    }
+    
+    if(mode == "predict")
+    {  
+      param[[nomObj[i]]]$stat = matrix(param[[nomObj[i]]]$stat$value, ncol = 1)
+      colnames(param[[nomObj[i]]]$stat) = "value"
+    }
     
     nomRow <- switch(type,
                      "Ordinal" = unlist(lapply(paste0("k: ", 1:nbClass), function(x){paste0(x, c(", mu:", ", pi"))})),
                      "Gaussian_sjk" = unlist(lapply(paste0("k: ", 1:nbClass), function(x){paste0(x, c(", mean:", ", sd"))})),
                      "Categorical_pjk" = nomRowParamCateg(param),
                      "Poisson_k" = paste0("k: ", 1:nbClass, ", lambda"),
+                     "Weibull" = unlist(lapply(paste0("k: ", 1:nbClass), function(x){paste0(x, c(", k:", ", lambda"))})),
                      "LatentClass" = paste0("k: ", 1:nbClass),
-                     "Functional"= nomRowParamFunctional(nomObj, nbClass, nSub, nCoeff),
-                     "FunctionalSharedAlpha"= nomRowParamFunctional(nomObj, nbClass, nSub, nCoeff))
+                     "Functional"= nomRowParamFunctional(nomObj[i], nbClass, nSub, nCoeff),
+                     "FunctionalSharedAlpha"= nomRowParamFunctional(nomObj[i], nbClass, nSub, nCoeff))
     
     rownames(param[[nomObj[i]]]$stat) = nomRow
   }
@@ -109,29 +116,6 @@ convertParamLearn <- function(param, type, nbClass = 1, nCoeff = 1, nSub = 1)
   return(param)
 }
 
-# param outMixtComp$variable$param$nomVar
-convertParamPredict <- function(param, type)
-{
-  nomObj <- switch(type, 
-                   "Ordinal" = "muPi",
-                   "LatentClass" = "pi",
-                   "NumericalParam")
-  
-  param[[nomObj]]$stat = matrix(param[[nomObj]]$stat$value, ncol = 1)
-  colnames(param[[nomObj]]$stat) = "value"
-  
-  
-  nomRow <- switch(type,
-                   "Ordinal" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj]]$stat)/2)), function(x){paste0(x, c(", mu:", ", pi"))})),
-                   "Gaussian_sjk" = unlist(lapply(paste0("k: ", 1:(nrow(param[[nomObj]]$stat)/2)), function(x){paste0(x, c(", mean:", ", sd"))})),
-                   "Categorical_pjk" = nomRowParamCateg(param),
-                   "Poisson_k" = paste0("k: ", 1:nrow(param[[nomObj]]$stat), ", lambda"),
-                   "LatentClass" = paste0("k: ", 1:nrow(param[[nomObj]]$stat)))
-  
-  rownames(param[[nomObj]]$stat) = nomRow
-  
-  return(param)
-}
 
 # param outMixtComp$variable$param$nomVar
 nomRowParamCateg <- function(param)
