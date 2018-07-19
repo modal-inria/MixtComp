@@ -285,7 +285,7 @@ TEST(NormalStatistic, sampleIWide) {
 
 TEST(NormalStatistic, sampleIB) {
 	Real mu = 25.;
-	Real sigma = 4.3;
+	Real sigma = 3.3;
 
 	Real a = 30.;
 	Real b = std::numeric_limits<Real>::max();
