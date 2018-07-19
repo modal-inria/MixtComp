@@ -29,6 +29,7 @@
 #include "Mixture/Rank/mixt_RankParser.h"
 #include "Mixture/Simple/SimpleMixture.h"
 #include "Mixture/Simple/Weibull.h"
+#include "Mixture/Simple/NegativeBinomial.h"
 #include "Manager/mixt_MixtureManager.h"
 #include "Statistic/mixt_Statistic.h"
 #include "Strategy/mixt_SEMStrategy.h"

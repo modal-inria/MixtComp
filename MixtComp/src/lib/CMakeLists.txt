@@ -59,13 +59,15 @@ add_library(MixtComp
     Mixture/Ordinal/mixt_Ordinal.h
     Mixture/Ordinal/mixt_BOSPath.cpp
     Mixture/Simple/Categorical.h
-    Mixture/Simple/Poisson.h
-    Mixture/Simple/Weibull.h
     Mixture/Simple/Categorical.cpp
-    Mixture/Simple/Gaussian.cpp
-    Mixture/Simple/Poisson.cpp
     Mixture/Simple/Gaussian.h
+    Mixture/Simple/Gaussian.cpp
+    Mixture/Simple/Poisson.h
+    Mixture/Simple/Poisson.cpp
+    Mixture/Simple/NegativeBinomial.h
+    Mixture/Simple/NegativeBinomial.cpp
     Mixture/Simple/SimpleMixture.h
+    Mixture/Simple/Weibull.h
     Mixture/Simple/Weibull.cpp
     Mixture/Rank/mixt_RankClass.h
     Mixture/Rank/mixt_RankLikelihood.cpp
