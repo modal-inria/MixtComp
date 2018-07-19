@@ -62,10 +62,10 @@ private:
 
 	Vector<Real>* p_data_;
 
-	/** Statistic object to describe Poisson law */
+	/** Statistic object to describe Normal law */
 	NormalStatistic normal_;
 };
 
 }
 
-#endif /* MIXT_MIXTUREBRIDGE_H */
+#endif /* GAUSSIAN_H */
