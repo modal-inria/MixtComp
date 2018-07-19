@@ -158,13 +158,25 @@ void MixtureComposer::sampleZ(int i) {
 }
 
 void MixtureComposer::eStepCompleted() {
-	std::vector<bool> correct(nInd_);
+	bool correct[nInd_]; // std::vector<bool> causes errors in parallel writes: https://stackoverflow.com/questions/33617421/write-concurrently-vectorbool and http://www.cplusplus.com/reference/vector/
 
 #pragma omp parallel for
 	for (Index i = 0; i < nInd_; ++i) {
-		correct[i] = eStepCompletedInd(i);
-	}
+		RowVector<Real> lnComp(nClass_);
 
+		bool correctVal = true;
+
+		for (Index k = 0; k < nClass_; k++) {
+			lnComp(k) = lnCompletedProbability(i, k);
+		}
+
+		if (minInf == lnComp.maxCoeff()) { // completed proba is non 0 in at least one class
+			correctVal = false;
+		}
+
+		completedProbabilityCache_(i) = tik_.row(i).logToMulti(lnComp);
+		correct[i] = correctVal;
+	}
 	std::list<Index> listIndErr;
 	for (Index i = 0; i < nInd_; ++i) {
 		if (correct[i] == false)
@@ -186,24 +198,6 @@ void MixtureComposer::eStepCompleted() {
 
 //	std::cout << "MixtureComposer::eStepCompleted, tik" << std::endl;
 //	std::cout << tik_ << std::endl;
-}
-
-bool MixtureComposer::eStepCompletedInd(int i) {
-	bool correct = true;
-	RowVector<Real> lnComp(nClass_);
-	for (Index k = 0; k < nClass_; k++) {
-		lnComp(k) = lnCompletedProbability(i, k);
-	}
-
-	if (minInf < lnComp.maxCoeff()) { // completed proba is non 0 in at least one class
-		completedProbabilityCache_(i) = tik_.row(i).logToMulti(lnComp);
-	} else { // there is an implementation error somewhere
-		correct = false;
-	}
-
-	return correct;
-
-//	std::cout << "MixtureComposer::eStepCompleted, tik, i: " << i << ", " << itString(tik_.row(i)) << std::endl;
 }
 
 void MixtureComposer::mStepPi() {

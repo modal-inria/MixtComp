@@ -32,3 +32,4 @@ RMixtComp/src/test/test
 RMixtComp/RMCtest.xml
 !RJsonMixtComp/inst/extdata/*.csv
 RJsonMixtComp/.Rbuildignore
+/.metadata/
