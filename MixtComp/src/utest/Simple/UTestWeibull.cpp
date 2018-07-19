@@ -73,6 +73,7 @@ TEST(Weibull, SampleAndEstimate) {
 
 	Weibull weibull(idName, nClass, param);
 	weibull.setData("", augData, learning_);
+	weibull.initParam();
 
 	weibull.mStep(setInd);
 
