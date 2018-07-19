@@ -40,12 +40,14 @@ add_library(MixtComp
     Sampler/mixt_CategoricalSampler.h
     Sampler/mixt_CategoricalSampler.cpp
     Sampler/mixt_GaussianSampler.h
-    Sampler/mixt_ClassSampler.cpp
-    Sampler/mixt_ClassSampler.h
     Sampler/mixt_GaussianSampler.cpp
-    Sampler/WeibullSampler.cpp
-    Sampler/mixt_PoissonSampler.h
+    Sampler/mixt_ClassSampler.h
+    Sampler/mixt_ClassSampler.cpp
     Sampler/WeibullSampler.h
+    Sampler/WeibullSampler.cpp
+    Sampler/NegativeBinomialSampler.h
+    Sampler/NegativeBinomialSampler.cpp
+    Sampler/mixt_PoissonSampler.h
     Sampler/mixt_PoissonSampler.cpp
     mixt_MixtComp.h
     Mixture/mixt_IMixture.h
