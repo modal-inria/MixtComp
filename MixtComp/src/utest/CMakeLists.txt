@@ -17,6 +17,7 @@ add_executable(runUtest
     Various/UTestMisValParser.cpp
     Various/UTestStandardLibrary.cpp
     Various/UTestRegex.cpp
+    Statistic/UTestNegativeBinomialStatistic.cpp
     Statistic/UTestWeibullStatistic.cpp
     Statistic/UTestNormalStatistic.cpp
     Statistic/UTestRNG.cpp

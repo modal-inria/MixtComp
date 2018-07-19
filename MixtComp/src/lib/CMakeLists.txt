@@ -86,21 +86,23 @@ add_library(MixtComp
     Mixture/Functional/mixt_FunctionalParser.cpp
     Mixture/Functional/mixt_FunctionalMixture.h
     Mixture/Functional/mixt_Function.h
+    Statistic/mixt_NormalStatistic.h
     Statistic/mixt_NormalStatistic.cpp
     Statistic/mixt_ExponentialStatistic.h
+    Statistic/mixt_ExponentialStatistic.cpp
     Statistic/mixt_RNG.h
-    Statistic/mixt_MultinomialStatistic.cpp
-    Statistic/WeibullStatistic.h
     Statistic/mixt_RNG.cpp
+    Statistic/WeibullStatistic.h
+    Statistic/WeibullStatistic.cpp
+    Statistic/NegativeBinomialStatistic.h
+    Statistic/NegativeBinomialStatistic.cpp    
     Statistic/mixt_PoissonStatistic.h
+    Statistic/mixt_PoissonStatistic.cpp
+    Statistic/mixt_UniformStatistic.h
     Statistic/mixt_UniformStatistic.cpp
     Statistic/mixt_MultinomialStatistic.h
-    Statistic/mixt_PoissonStatistic.cpp
-    Statistic/mixt_ExponentialStatistic.cpp
-    Statistic/mixt_UniformStatistic.h
+    Statistic/mixt_MultinomialStatistic.cpp 
     Statistic/Functions.h
-    Statistic/WeibullStatistic.cpp
-    Statistic/mixt_NormalStatistic.h
     Statistic/mixt_Statistic.h
     Data/mixt_CategoricalDataStat.h
     Data/mixt_ClassDataStat.h
