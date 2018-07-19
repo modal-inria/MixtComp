@@ -11,10 +11,12 @@ add_library(MixtComp
     LinAlg/mixt_Iterator.h
     Likelihood/mixt_CategoricalLikelihood.h
     Likelihood/WeibullLikelihood.h
-    Likelihood/mixt_PoissonLikelihood.h
     Likelihood/WeibullLikelihood.cpp
+    Likelihood/NegativeBinomialLikelihood.h
+    Likelihood/NegativeBinomialLikelihood.cpp
     Likelihood/mixt_GaussianLikelihood.h
     Likelihood/mixt_GaussianLikelihood.cpp
+    Likelihood/mixt_PoissonLikelihood.h
     Likelihood/mixt_PoissonLikelihood.cpp
     Composer/mixt_MixtureComposer.cpp
     Composer/mixt_MixtureComposer.h
