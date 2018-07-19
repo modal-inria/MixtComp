@@ -22,7 +22,7 @@ NegativeBinomialLikelihood::NegativeBinomialLikelihood(const Vector<Real>& param
 {}
 
 Real NegativeBinomialLikelihood::lnCompletedProbability(int i, int k) const {
-  return negativeBinomial_.lpdf(augData_.data_(i), size_t(param_(2 * k)), param_(2 * k + 1));
+  return negativeBinomial_.lpdf(augData_.data_(i), param_(2 * k), param_(2 * k + 1));
 }
 
 Real NegativeBinomialLikelihood::lnObservedProbability(int i, int k) const {
@@ -30,7 +30,7 @@ Real NegativeBinomialLikelihood::lnObservedProbability(int i, int k) const {
 
   switch(augData_.misData_(i).first) {  // likelihood for present value
     case present_: {
-      logProba = negativeBinomial_.lpdf(augData_.data_(i), size_t(param_(2 * k)), param_(2 * k + 1));
+      logProba = negativeBinomial_.lpdf(augData_.data_(i), param_(2 * k), param_(2 * k + 1));
     }
     break;
 

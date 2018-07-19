@@ -21,8 +21,8 @@ NegativeBinomialSampler::NegativeBinomialSampler(AugmentedData<Vector<int> >& au
 void NegativeBinomialSampler::samplingStepNoCheck(int i, int z_i) {
   if (augData_.misData_(i).first != present_) {
     int x = 0;
-    size_t n = param_(2*z_i);
-    Real p = param_(2*z_i+1);
+    Real n = param_(2 * z_i);
+    Real p = param_(2 * z_i + 1);
 
     switch(augData_.misData_(i).first) {
       case missing_: {

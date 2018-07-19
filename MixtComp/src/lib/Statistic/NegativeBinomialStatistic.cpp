@@ -22,21 +22,21 @@ NegativeBinomialStatistic::NegativeBinomialStatistic() :
 		rng_(seed(this)) {
 }
 
-Real NegativeBinomialStatistic::pdf(int x, size_t n, Real p) const {
+Real NegativeBinomialStatistic::pdf(int x, Real n, Real p) const {
 	boost::math::negative_binomial nBinom(n, p);
 	Real proba = boost::math::pdf(nBinom, x);
 	return proba;
 }
 
-Real NegativeBinomialStatistic::lpdf(int x, size_t n, Real p) const {
+Real NegativeBinomialStatistic::lpdf(int x, Real n, Real p) const {
 	if ((0.0 < p) & (p < 1.0)) {
-		return boost::math::lgamma(x+n) - boost::math::lgamma(n) - logFac(x) + Real(n) * std::log(p) + Real(x) * std::log(1.-p);
+		return boost::math::lgamma(x + n) - boost::math::lgamma(n) - logFac(x) + Real(n) * std::log(p) + Real(x) * std::log(1.-p);
 	} else {
 		return 0.0;
 	}
 }
 
-int NegativeBinomialStatistic::sample(size_t n, Real p) {
+int NegativeBinomialStatistic::sample(Real n, Real p) {
 		boost::random::negative_binomial_distribution<> nBinom(n, p);
 		boost::variate_generator<boost::mt19937&, boost::random::negative_binomial_distribution<> > generator(rng_, nBinom);
 		int x = generator();

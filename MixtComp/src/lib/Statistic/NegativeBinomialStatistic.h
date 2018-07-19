@@ -26,12 +26,12 @@ public:
 	NegativeBinomialStatistic();
 
 	/** pdf evaluated at individual x */
-	Real pdf(int x, size_t n, Real p) const;
+	Real pdf(int x, Real n, Real p) const;
 
-	Real lpdf(int x, size_t n, Real p) const;
+	Real lpdf(int x, Real n, Real p) const;
 
 	/** Sample a value from a Negative Binomial Law with parameter n and p */
-	int sample(size_t n, Real p);
+	int sample(Real n, Real p);
 
 
 private:

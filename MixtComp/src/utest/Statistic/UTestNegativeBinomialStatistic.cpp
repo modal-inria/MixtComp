@@ -15,7 +15,7 @@ using namespace mixt;
  * Numerically check that lpdf is the log of pdf
  * */
 TEST(NegativeBinomialStatistic, DistributionFunctions) {
-	size_t n = 10;
+	Real n = 10.5;
 	Real p = 0.6;
 	size_t obs = 3;
 
