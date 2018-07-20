@@ -32,7 +32,7 @@ Real NegativeBinomialStatistic::lpdf(int x, Real n, Real p) const {
 	if ((0.0 < p) & (p < 1.0)) {
 		return boost::math::lgamma(x + n) - boost::math::lgamma(n) - logFac(x) + Real(n) * std::log(p) + Real(x) * std::log(1.-p);
 	} else {
-		return 0.0;
+		return minInf;
 	}
 }
 
