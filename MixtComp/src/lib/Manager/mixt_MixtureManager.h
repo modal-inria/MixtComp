@@ -118,6 +118,16 @@ public:
 			return p_bridge;
 		}
 
+		if (idModel == "NegativeBinomial") {
+			SimpleMixture<NegativeBinomial, DataHandler, DataExtractor, ParamSetter,
+					ParamExtractor>* p_bridge = new SimpleMixture<NegativeBinomial,
+					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
+					indexMixture, idName, nbCluster, p_handler_,
+					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
+					confidenceLevel);
+			return p_bridge;
+		}
+
 		if (idModel == "Functional") {
 			FunctionalMixture<DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new FunctionalMixture<
