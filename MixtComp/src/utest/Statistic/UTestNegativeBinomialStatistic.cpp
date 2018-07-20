@@ -24,5 +24,33 @@ TEST(NegativeBinomialStatistic, DistributionFunctions) {
 	Real lpdf0 = std::log(nBinom.pdf(obs, n, p));
 	Real lpdf1 = nBinom.lpdf(obs, n, p);
 
-	ASSERT_NEAR(lpdf0, lpdf1, epsilon);
+	EXPECT_NEAR(lpdf0, lpdf1, epsilon);
+
+
+	// case p == 1
+	Real pdf0 = nBinom.pdf(0, n, 1.);
+	lpdf0 = nBinom.lpdf(0, n, 1.);
+
+	EXPECT_EQ(pdf0, 1.);
+	EXPECT_EQ(lpdf0, 0.);
+
+	Real pdf1 = nBinom.pdf(obs, n, 1.);
+	lpdf1 = nBinom.lpdf(obs, n, 1.);
+
+	EXPECT_EQ(pdf1, 0.);
+	EXPECT_EQ(lpdf1, minInf);
+
+	// case p == 0
+	pdf0 = nBinom.pdf(0, n, 0.);
+	lpdf0 = nBinom.lpdf(0, n, 0.);
+
+	EXPECT_EQ(pdf0, 0.);
+	EXPECT_EQ(lpdf0, minInf);
+
+	pdf1 = nBinom.pdf(obs, n, 0.);
+	lpdf1 = nBinom.lpdf(obs, n, 0.);
+
+	EXPECT_EQ(pdf1, 0.);
+	EXPECT_EQ(lpdf1, minInf);
+
 }
