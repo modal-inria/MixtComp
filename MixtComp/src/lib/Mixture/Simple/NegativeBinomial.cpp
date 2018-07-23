@@ -13,11 +13,12 @@
 #include "../../Various/mixt_Enum.h"
 #include <boost/math/special_functions/digamma.hpp>
 #include <boost/math/special_functions/trigamma.hpp>
+#include <boost/exception/diagnostic_information.hpp>
 
 namespace mixt {
 
 NegativeBinomial::NegativeBinomial(const std::string& idName, int nbClass, Vector<Real>& param) :
-		idName_(idName), nClass_(nbClass), param_(param), p_data_(0) {
+				idName_(idName), nClass_(nbClass), param_(param), p_data_(0) {
 	param_.resize(2 * nbClass);
 }
 
@@ -42,6 +43,7 @@ bool NegativeBinomial::hasModalities() const {
 
 std::string NegativeBinomial::mStep(const Vector<std::set<Index>>& classInd) {
 
+	std::string warnLog;
 	for (Index k = 0; k < nClass_; ++k) {
 		Vector<int> x(classInd(k).size()); // the optimizer needs a particular format for the data
 		Index currObsInClass = 0;
@@ -51,14 +53,27 @@ std::string NegativeBinomial::mStep(const Vector<std::set<Index>>& classInd) {
 			++currObsInClass;
 		}
 
-		Real nParam = estimateN(x, param_(2 * k)); // starting point is the current value of the parameter
-		Real pParam = estimateP(x, nParam);
+		try {
+			Real nParam = estimateN(x, param_(2 * k)); // starting point is the current value of the parameter
+			Real pParam = estimateP(x, nParam);
 
-		param_(2 * k) = nParam;
-		param_(2 * k + 1) = pParam;
+			param_(2 * k) = nParam;
+			param_(2 * k + 1) = pParam;
+
+			if ((1 - pParam  < epsilon) | (pParam < epsilon)) {
+				warnLog +=
+						"Negative Binomial variables must have a p value different from 0 or 1 in each class. It is not the case in class: "
+						+ std::to_string(k) + ". " + eol;
+			}
+		}catch(boost::exception &e){
+			warnLog += "Negative Binomial model, parameter n divergence in class: "
+					+ std::to_string(k)+ ". "+boost::diagnostic_information(e) + "."+ eol;
+		}
+
+
 	}
 
-	return "";
+	return warnLog;
 }
 
 
@@ -159,8 +174,6 @@ void NegativeBinomial::writeParameters() const {
 }
 
 std::string NegativeBinomial::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
-	if (degeneracyAuthorizedForNonBoundedLikelihood)
-		return "";
 
 	return "";
 }
