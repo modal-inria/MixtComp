@@ -215,6 +215,7 @@ getParam <- function(varName, outMixtComp)
                     },
                   "Gaussian_sjk" = matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), c("mean", "sd"))),
                   "Poisson_k" = outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1],
+                  "NegativeBinomial" = matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), c("n", "p"))),
                   "Rank" = list(pi = outMixtComp$variable$param[[varName]]$pi$stat, mu = outMixtComp$variable$param[[varName]]$mu$stat),
                   "Functional" = list(alpha = outMixtComp$variable$param[[varName]]$alpha$stat[,1],
                                       beta = outMixtComp$variable$param[[varName]]$beta$stat[,1],
