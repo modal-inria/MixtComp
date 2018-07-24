@@ -32,8 +32,7 @@ TEST(NegativeBinomial, EstimateK) {
 		x(i) = nbinom.sample(nExpected, pExpected);
 	}
 
-
-	Real nComputed = nb.positiveNewtonRaphson(x, 10.0, 10);
+	Real nComputed = nb.estimateN(x, 10.0);
 	Real pComputed = nb.estimateP(x, nExpected);
 
 	ASSERT_NEAR(nExpected, nComputed, 0.1);

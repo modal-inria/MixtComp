@@ -40,8 +40,6 @@ public:
 	 */
 	std::pair<Real, Real> evalFuncDeriv(const Vector<Real>& x, Real k) const;
 
-	Real positiveNewtonRaphson(const Vector<Real>& x, Real currK,
-			Real nIt) const;
 
 	/**
 	 * Data is passed as an argument to emphasize a functional approach and easier testing.

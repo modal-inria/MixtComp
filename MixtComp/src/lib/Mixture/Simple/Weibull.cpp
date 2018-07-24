@@ -12,6 +12,7 @@
 
 #include "Various/mixt_Constants.h"
 #include "Various/mixt_Enum.h"
+#include "LinAlg/mixt_Math.h"
 
 #include "Weibull.h"
 
@@ -57,22 +58,10 @@ std::pair<Real, Real> Weibull::evalFuncDeriv(const Vector<Real>& x,
 	return std::pair<Real, Real>(f, df);
 }
 
-Real Weibull::positiveNewtonRaphson(const Vector<Real>& x, Real currK,
-		Real nIt) const {
-	if (nIt < 0)
-		return currK;
-	else {
-		std::pair<Real, Real> eval = evalFuncDeriv(x, currK);
-		Real candidate = currK - eval.first / eval.second;
-		if (0.0 < candidate)
-			return positiveNewtonRaphson(x, candidate, nIt - 1);
-		else
-			return positiveNewtonRaphson(x, currK / 2.0, nIt - 1);
-	}
-}
 
 Real Weibull::estimateK(const Vector<Real>& x, Real k0) const {
-	return positiveNewtonRaphson(x, k0, maxIterationOptim);
+	std::function<std::pair<Real, Real>(const Vector<Real>&, Real)>  f = std::bind(&Weibull::evalFuncDeriv, this, std::placeholders::_1, std::placeholders::_2);
+	return positiveNewtonRaphson<Real>(x, k0, maxIterationOptim, f);
 }
 
 Real Weibull::estimateLambda(const Vector<Real>& x, Real k) const {

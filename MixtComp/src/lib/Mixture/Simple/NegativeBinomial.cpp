@@ -14,6 +14,7 @@
 #include <boost/math/special_functions/digamma.hpp>
 #include <boost/math/special_functions/trigamma.hpp>
 #include <boost/exception/diagnostic_information.hpp>
+#include "../../LinAlg/mixt_Math.h"
 
 namespace mixt {
 
@@ -76,20 +77,6 @@ std::string NegativeBinomial::mStep(const Vector<std::set<Index>>& classInd) {
 	return warnLog;
 }
 
-
-Real NegativeBinomial::estimateN(const Vector<int>& x, Real n0) const {
-	return positiveNewtonRaphson(x, n0, maxIterationOptim);
-}
-
-Real NegativeBinomial::estimateP(const Vector<int>& x, Real n) const {
-	Index nObs = x.size();
-	Real sumx = x.sum();
-	Real nNobs = n * nObs;
-
-	return(nNobs / (nNobs + sumx));
-}
-
-
 std::pair<Real, Real> NegativeBinomial::evalFuncDeriv(const Vector<int>& x, Real n) const {
 	Index nObs = x.size();
 
@@ -118,17 +105,19 @@ std::pair<Real, Real> NegativeBinomial::evalFuncDeriv(const Vector<int>& x, Real
 	return std::pair<Real, Real>(f, df);
 }
 
-Real NegativeBinomial::positiveNewtonRaphson(const Vector<int>& x, Real currN, Real nIt) const {
-	if (nIt < 0)
-		return currN;
-	else {
-		std::pair<Real, Real> eval = evalFuncDeriv(x, currN);
-		Real candidate = currN - eval.first / eval.second;
-		if (0.0 < candidate)
-			return positiveNewtonRaphson(x, candidate, nIt - 1);
-		else
-			return positiveNewtonRaphson(x, currN / 2.0, nIt - 1);
-	}
+
+
+Real NegativeBinomial::estimateN(const Vector<int>& x, Real n0) const {
+	std::function<std::pair<Real, Real>(const Vector<int>&, Real)>  f = std::bind(&NegativeBinomial::evalFuncDeriv, this, std::placeholders::_1, std::placeholders::_2);
+	return positiveNewtonRaphson<int>(x, n0, maxIterationOptim, f);
+}
+
+Real NegativeBinomial::estimateP(const Vector<int>& x, Real n) const {
+	Index nObs = x.size();
+	Real sumx = x.sum();
+	Real nNobs = n * nObs;
+
+	return(nNobs / (nNobs + sumx));
 }
 
 

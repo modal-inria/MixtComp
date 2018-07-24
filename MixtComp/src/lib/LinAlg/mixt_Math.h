@@ -13,6 +13,7 @@
 #include <cmath>
 #include <iostream>
 #include <list>
+#include <functional>
 #include "mixt_Typedef.h"
 #include "mixt_LinAlg.h"
 
@@ -103,6 +104,21 @@ bool differentValue(const Type& data, Index n, Real epsilon) {
 	}
 
 	return false;
+}
+
+template<typename T>
+Real positiveNewtonRaphson(const Vector<T>& x, Real currN, Real nIt, std::function<std::pair<Real, Real>(const Vector<T>&, Real)> evalFunc)
+{
+	if (nIt < 0)
+		return currN;
+	else {
+		std::pair<Real, Real> eval = evalFunc(x, currN);
+		Real candidate = currN - eval.first / eval.second;
+		if (0.0 < candidate)
+			return positiveNewtonRaphson(x, candidate, nIt - 1, evalFunc);
+		else
+			return positiveNewtonRaphson(x, currN / 2.0, nIt - 1, evalFunc);
+	}
 }
 
 #endif // MIXT_LINALG_H

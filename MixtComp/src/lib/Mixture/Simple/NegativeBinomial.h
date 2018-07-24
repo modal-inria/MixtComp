@@ -46,9 +46,6 @@ public:
 
 	std::pair<Real, Real> evalFuncDeriv(const Vector<int>& x, Real n) const;
 
-	Real positiveNewtonRaphson(const Vector<int>& x, Real currN, Real nIt) const;
-
-
 	std::vector<std::string> paramNames() const;
 
 	void writeParameters() const;
