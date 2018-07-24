@@ -25,16 +25,17 @@ The second row contains the model associated with each variables (see below for 
  
 ## Models
 
-Eight models are available in (R)MixtComp: 
+Nine models are available in (R)MixtComp: 
 
-  - **Gaussian_sjk** for real data. The model has two parameters the mean (*mu*) and the standard deviation (*sd*).
+  - **Gaussian_sjk** for real data. The model has two parameters: the mean (*mu*) and the standard deviation (*sd*).
   - **Categorical_pjk** for quantitative data. The model has one parameter per modality (the probability of the modality).
   - **Poisson_k** for positive integer data. The model has one parameter (*lambda*) corresponding to mean and variance.
-  - **Weibull** for positive real data (usually lifetime). The model has two parameters shape (*k*) and scale (*lambda*).
+  - **NegativeBinomial** for positive integer data. The model has two parameters: the number of success (*n*) and the probability of success (*p*).
+  - **Weibull** for positive real data (usually lifetime). The model has two parameters: shape (*k*) and scale (*lambda*).
   - **Functional** for functional data. Between individuals, functional data can have different length and different time values. The model has 3 parameters: *alpha*, *beta* and *sd*. See the [article](https://chamroukhi.users.lmno.cnrs.fr/papers/Chamroukhi-PWRM-JournalClassif-2016.pdf) for mode details.
   - **FunctionalSharedAlpha** variant of the Functional model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
-  - **Rank** for ranking data (sorted obejct). The model has two parameters, the central rank (*mu*) and the probability of making a wrong comparison (*pi*). See the [article](https://hal.inria.fr/hal-00743384) for more details.
-  - **Ordinal** for quantitative data with an order between modalities (e.g. small < medium < large). The model has two parameters, the central modality (*mu*) and the probability of making a wrong comparison (*pi*). See the [article](https://hal.inria.fr/hal-01052447) for more details.
+  - **Rank** for ranking data (sorted obejct). The model has two parameters: the central rank (*mu*) and the probability of making a wrong comparison (*pi*). See the [article](https://hal.inria.fr/hal-00743384) for more details.
+  - **Ordinal** for quantitative data with an order between modalities (e.g. small < medium < large). The model has two parameters: the central modality (*mu*) and the probability of making a wrong comparison (*pi*). See the [article](https://hal.inria.fr/hal-01052447) for more details.
 
 NB: the Ordinal model is DEPRECATED.
  
@@ -51,7 +52,7 @@ Missing data are indicated by a $`?`$. Partial data can be provided through inte
 | [-inf:0] | 3.28  | 
 
 
-### Categorical & ordinal Data
+### Categorical & Ordinal Data
 Modalities must be consecutive integer with 1 as minimal value. Missing data are indicated by a $`?`$.
 For partial data, a list of possible values can be provided by $`\{a_1,...,a_j\}`$, where $`a_i`$ denotes a modality.
  
@@ -76,8 +77,8 @@ after formatting:
 | 3 | {1,2} |
 | {1,3} | 3 |
 
-### Poisson Data
-Poisson data must be positive integer. Missing data are indicated by a $`?`$.
+### Poisson & NegativeBinomial Data
+Poisson and NegativeBinomial data must be positive integer. Missing data are indicated by a $`?`$.
 
 | pois1 |
 | --- | 
@@ -123,13 +124,13 @@ Descriptor file with functional variables:
 
 ### Missing data summary
 
-|                                     | Categorical_pjk | Gaussian_sjk | Poisson_k  | Ordinal       | Weibull      |     Rank                 | Functional |  LatentClass  |
-| ----------------------------------- | :-------------: | :----------: | :--------: | :-----------: | :----------: | :----------------------: | :--------: | :-----------: |
-| Completely missing                  |  $`?`$          |  $`?`$       |  $`?`$     | $`?`$         | $`?`$        |  $`?,?,?,?`$             |            | $`?`$         | 
-| Finite number of values authorized  |  $`\{a,b,c\}`$  |              |            | $`\{a,b,c\}`$ |              |  $`4,\{1~2\},3,\{1~2\}`$ |            | $`\{a,b,c\}`$ |
-| Bounded interval                    |                 |  $`[a:b]`$   |            |               | $`[a:b]`$    |                          |            |               |
-| Right bounded interval              |                 | $`[-inf:b]`$ |            |               | $`[0:b]`$    |                          |            |               | 
-| Left bounded interval               |                 | $`[a:+inf]`$ |            |               | $`[a:+inf]`$ |                          |            |               |
+|                                     | Categorical_pjk | Gaussian_sjk | Poisson_k  | NegativeBinomial | Ordinal       | Weibull      |     Rank                 | Functional |  LatentClass  |
+| ----------------------------------- | :-------------: | :----------: | :--------: | :--------------: | :-----------: | :----------: | :----------------------: | :--------: | :-----------: |
+| Completely missing                  |  $`?`$          |  $`?`$       |  $`?`$     | $`?`$            | $`?`$         | $`?`$        |  $`?,?,?,?`$             |            | $`?`$         | 
+| Finite number of values authorized  |  $`\{a,b,c\}`$  |              |            |                  | $`\{a,b,c\}`$ |              |  $`4,\{1~2\},3,\{1~2\}`$ |            | $`\{a,b,c\}`$ |
+| Bounded interval                    |                 |  $`[a:b]`$   |            |                  |               | $`[a:b]`$    |                          |            |               |
+| Right bounded interval              |                 | $`[-inf:b]`$ |            |                  |               | $`[0:b]`$    |                          |            |               | 
+| Left bounded interval               |                 | $`[a:+inf]`$ |            |                  |               | $`[a:+inf]`$ |                          |            |               |
 
 
 ### (Semi-)Supervised clustering
@@ -140,15 +141,15 @@ To perform a (semi-)supervised clustering, user can add a variable named `z_clas
 
 data file
 ```
-gauss1;categ1;pois1;weib1;ord1;rank1;funct1;z_class
-2.52235;1;5;3.78;{1,2};1,2,3,4;1:3.5,2:2.8,3:4.8,5:6.2,6:3.2;?
-0.81467;?;3;4.52;3;1,2,{3 4},{3 4};1:5.6,2:5.18,3:2.44,4:6.36,5:5.46;?
-[1.25:2.3];2;6;[0:3.2];2;?,?,?,?;1:3.34,2:3.14,3:4.79,4:3.84,5:6.4,6:1.88,7:2.95,8:3.44,9:4.04,10:1.88
+gauss1;categ1;pois1;negBin1;weib1;ord1;rank1;funct1;z_class
+2.52235;1;5;3;3.78;{1,2};1,2,3,4;1:3.5,2:2.8,3:4.8,5:6.2,6:3.2;?
+0.81467;?;3;5;4.52;3;1,2,{3 4},{3 4};1:5.6,2:5.18,3:2.44,4:6.36,5:5.46;?
+[1.25:2.3];2;6;?;[0:3.2];2;?,?,?,?;1:3.34,2:3.14,3:4.79,4:3.84,5:6.4,6:1.88,7:2.95,8:3.44,9:4.04,10:1.88
 ```
 
 descriptor file
 ```
-gauss1;categ1;pois1;weib1;ord1;rank1;funct1;z_class
-Gaussian_sjk;Categorical_pjk;Poisson_k;Weibull;Ordinal;Rank;Functional;LatentClass
-;;;;;;nSub:2,nCoeff:2;
+gauss1;categ1;pois1;negBin1;weib1;ord1;rank1;funct1;z_class
+Gaussian_sjk;Categorical_pjk;Poisson_k;NegativeBinomial;Weibull;Ordinal;Rank;Functional;LatentClass
+;;;;;;;nSub:2,nCoeff:2;
 ```

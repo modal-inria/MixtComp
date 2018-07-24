@@ -136,7 +136,8 @@ NULL
 #' 
 #' 
 #' @section View of an output object:
-#' Example of output object with variables named "categorical", "gaussian", "ordinal", "rank", "functional", "poisson" and "weibull".
+#' Example of output object with variables named "categorical", "gaussian", "ordinal", "rank", "functional", "poisson", "nBinom" and "weibull" with respectively
+#'  \emph{Categorical_pjk}, \emph{Gaussian_sjk}, \emph{Ordinal}, \emph{Rank}, \emph{Functional} (or \emph{FunctionalSharedAlpha}), \emph{Poisson_k}, \emph{NegativeBinomial} and \emph{Weibull} as model. 
 #' 
 #' \tabular{lll}{
 #' output  \cr
@@ -191,6 +192,9 @@ NULL
 #'          \tab          \tab          \tab |_ poisson  \tab __ NumericalParam \tab __ stat\cr
 #'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
 #'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
+#'          \tab          \tab          \tab |_ nBinom  \tab __ NumericalParam \tab __ stat\cr
+#'          \tab          \tab          \tab |          \tab                   \tab |_ log \cr
+#'          \tab          \tab          \tab |          \tab                   \tab |_ paramStr \cr
 #'          \tab          \tab          \tab |_ weibull  \tab __ NumericalParam \tab __ stat\cr
 #'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
 #'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
