@@ -8,13 +8,7 @@
 Statistics analysis with MixtComp
 }
 \details{
-\tabular{ll}{
-Package: \tab RJsonMixtComp\cr
-Type: \tab Package\cr
-Version: \tab 0.1\cr
-Date: \tab 2017-05-10\cr
-License: \tab  \cr
-}
+Use JsonMixtComp
 }
 \examples{
 \dontrun{

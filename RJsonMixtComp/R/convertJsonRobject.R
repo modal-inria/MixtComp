@@ -105,6 +105,7 @@ convertParam <- function(param, type, nbClass = 1, nCoeff = 1, nSub = 1, mode = 
                      "Gaussian_sjk" = unlist(lapply(paste0("k: ", 1:nbClass), function(x){paste0(x, c(", mean:", ", sd"))})),
                      "Categorical_pjk" = nomRowParamCateg(param),
                      "Poisson_k" = paste0("k: ", 1:nbClass, ", lambda"),
+                     "NegativeBinomial" = unlist(lapply(paste0("k: ", 1:nbClass), function(x){paste0(x, c(", n:", ", p"))})),
                      "Weibull" = unlist(lapply(paste0("k: ", 1:nbClass), function(x){paste0(x, c(", k:", ", lambda"))})),
                      "LatentClass" = paste0("k: ", 1:nbClass),
                      "Functional"= nomRowParamFunctional(nomObj[i], nbClass, nSub, nCoeff),
