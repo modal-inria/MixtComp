@@ -59,7 +59,7 @@ extractCINegBinomialVble = function(var, data, class, grl){
 
 extractCIWeibullVble = function(var, data, class, grl){
   theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], ncol=2, byrow=TRUE)
-  means = as.array(round(theta[,1], 3))
+  means = as.array(round(theta[,2]*gamma(1+1/theta[,1]), 3))
   lowers = as.array(round(qweibull(0.025, theta[,1], theta[,2]), 3))
   uppers = as.array(round(qweibull(0.975, theta[,1], theta[,2]), 3))
   means <- means[class]

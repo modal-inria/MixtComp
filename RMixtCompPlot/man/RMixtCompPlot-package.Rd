@@ -10,12 +10,7 @@ sets. The conditional independence property enables composing all the
 data sets in a single mixture model.
 }
 \details{
-\tabular{ll}{
-Package: \tab MixtCompPlot\cr
-Type: \tab Package\cr
-Version: \tab 0.1\cr
-Date: \tab 2018-06-07\cr
-}
+This package contains plot functions for MixtComp output.
 }
 \examples{
 \dontrun{

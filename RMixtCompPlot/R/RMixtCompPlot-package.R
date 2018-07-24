@@ -1,27 +1,21 @@
 #' 
 #' @import jsonlite scales plotly ClusVis
 #' @importFrom grDevices n2mfrow
-#' @importFrom graphics axis lines plot abline legend matplot par
-#' @importFrom stats optimize pnorm qnorm qpois qweibull dnorm rnorm
+#' @importFrom graphics axis lines plot abline legend matplot par title
+#' @importFrom stats optimize pnorm qnorm qpois qweibull dnorm rnorm qnbinom
 #'
 #' @title RMixtCompPlot
 #' @docType package
 #' @aliases RMixtCompPlot-package
 #' @name RMixtCompPlot-package
-#' @description  
+#' 
+#' @description
 #' Mixture Composer is a project to build mixture models with heterogeneous data
 #' sets. The conditional independence property enables composing all the
 #' data sets in a single mixture model.
-#'
 #' 
 #' @details
-#' \tabular{ll}{
-#' Package: \tab MixtCompPlot\cr
-#' Type: \tab Package\cr
-#' Version: \tab 0.1\cr
-#' Date: \tab 2018-06-07\cr
-#' }
-#' 
+#' This package contains plot functions for MixtComp output. 
 #' 
 #' @author Matthieu MARBAC, Quentin GRIMONPREZ
 #' 
