@@ -13,7 +13,7 @@
 #include "../Data/mixt_ZClassInd.h"
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
-#include "../Statistic/mixt_MultinomialStatistic.h"
+#include "../Mixture/Simple/Categorical/MultinomialStatistic.h"
 
 namespace mixt
 {

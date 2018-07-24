@@ -13,9 +13,9 @@
 
 #include "Composer/mixt_MixtureComposer.h"
 #include "Mixture/Simple/SimpleMixture.h"
-#include "Mixture/Simple/Categorical.h"
-#include "Mixture/Simple/Gaussian.h"
-#include "Mixture/Simple/Poisson.h"
+#include "Mixture/Simple/Categorical/Categorical.h"
+#include "Mixture/Simple/Gaussian/Gaussian.h"
+#include "Mixture/Simple/Poisson/Poisson.h"
 #include "Mixture/Functional/mixt_FunctionalMixture.h"
 #include "Mixture/Functional/mixt_FunctionalSharedAlphaMixture.h"
 #include "Mixture/Ordinal/mixt_Ordinal.h"

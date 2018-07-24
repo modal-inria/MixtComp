@@ -9,15 +9,6 @@ add_library(MixtComp
     LinAlg/mixt_EigenMatrixBaseAddons.h
     LinAlg/mixt_LinAlg.h
     LinAlg/mixt_Iterator.h
-    Likelihood/mixt_CategoricalLikelihood.h
-    Likelihood/WeibullLikelihood.h
-    Likelihood/WeibullLikelihood.cpp
-    Likelihood/NegativeBinomialLikelihood.h
-    Likelihood/NegativeBinomialLikelihood.cpp
-    Likelihood/mixt_GaussianLikelihood.h
-    Likelihood/mixt_GaussianLikelihood.cpp
-    Likelihood/mixt_PoissonLikelihood.h
-    Likelihood/mixt_PoissonLikelihood.cpp
     Composer/mixt_MixtureComposer.cpp
     Composer/mixt_MixtureComposer.h
     IO/mixt_IO.h
@@ -39,18 +30,8 @@ add_library(MixtComp
     Various/mixt_Constants.cpp
     Various/mixt_Various.h
     Manager/mixt_MixtureManager.h
-    Sampler/mixt_CategoricalSampler.h
-    Sampler/mixt_CategoricalSampler.cpp
-    Sampler/mixt_GaussianSampler.h
-    Sampler/mixt_GaussianSampler.cpp
     Sampler/mixt_ClassSampler.h
     Sampler/mixt_ClassSampler.cpp
-    Sampler/WeibullSampler.h
-    Sampler/WeibullSampler.cpp
-    Sampler/NegativeBinomialSampler.h
-    Sampler/NegativeBinomialSampler.cpp
-    Sampler/mixt_PoissonSampler.h
-    Sampler/mixt_PoissonSampler.cpp
     mixt_MixtComp.h
     Mixture/mixt_IMixture.h
     Mixture/Ordinal/mixt_BOSPath.h
@@ -58,17 +39,46 @@ add_library(MixtComp
     Mixture/Ordinal/mixt_BOSNode.cpp
     Mixture/Ordinal/mixt_Ordinal.h
     Mixture/Ordinal/mixt_BOSPath.cpp
-    Mixture/Simple/Categorical.h
-    Mixture/Simple/Categorical.cpp
-    Mixture/Simple/Gaussian.h
-    Mixture/Simple/Gaussian.cpp
-    Mixture/Simple/Poisson.h
-    Mixture/Simple/Poisson.cpp
-    Mixture/Simple/NegativeBinomial.h
-    Mixture/Simple/NegativeBinomial.cpp
     Mixture/Simple/SimpleMixture.h
-    Mixture/Simple/Weibull.h
-    Mixture/Simple/Weibull.cpp
+    Mixture/Simple/Categorical/Categorical.h
+    Mixture/Simple/Categorical/Categorical.cpp
+    Mixture/Simple/Categorical/CategoricalLikelihood.h
+    Mixture/Simple/Categorical/CategoricalSampler.h
+    Mixture/Simple/Categorical/CategoricalSampler.cpp
+    Mixture/Simple/Categorical/MultinomialStatistic.h
+    Mixture/Simple/Categorical/MultinomialStatistic.cpp 
+    Mixture/Simple/Poisson/Poisson.h
+    Mixture/Simple/Poisson/Poisson.cpp
+    Mixture/Simple/Poisson/PoissonLikelihood.h
+    Mixture/Simple/Poisson/PoissonLikelihood.cpp
+    Mixture/Simple/Poisson/PoissonSampler.h
+    Mixture/Simple/Poisson/PoissonSampler.cpp
+    Mixture/Simple/Poisson/PoissonStatistic.h
+    Mixture/Simple/Poisson/PoissonStatistic.cpp
+    Mixture/Simple/Gaussian/Gaussian.h
+    Mixture/Simple/Gaussian/Gaussian.cpp
+    Mixture/Simple/Gaussian/GaussianLikelihood.h
+    Mixture/Simple/Gaussian/GaussianLikelihood.cpp
+    Mixture/Simple/Gaussian/GaussianSampler.h
+    Mixture/Simple/Gaussian/GaussianSampler.cpp
+    Mixture/Simple/Gaussian/NormalStatistic.h
+    Mixture/Simple/Gaussian/NormalStatistic.cpp
+    Mixture/Simple/Weibull/Weibull.h
+    Mixture/Simple/Weibull/Weibull.cpp
+    Mixture/Simple/Weibull/WeibullLikelihood.h
+    Mixture/Simple/Weibull/WeibullLikelihood.cpp
+    Mixture/Simple/Weibull/WeibullSampler.h
+    Mixture/Simple/Weibull/WeibullSampler.cpp
+    Mixture/Simple/Weibull/WeibullStatistic.h
+    Mixture/Simple/Weibull/WeibullStatistic.cpp 
+    Mixture/Simple/NegativeBinomial/NegativeBinomial.h
+    Mixture/Simple/NegativeBinomial/NegativeBinomial.cpp
+    Mixture/Simple/NegativeBinomial/NegativeBinomialLikelihood.h
+    Mixture/Simple/NegativeBinomial/NegativeBinomialLikelihood.cpp
+    Mixture/Simple/NegativeBinomial/NegativeBinomialSampler.h
+    Mixture/Simple/NegativeBinomial/NegativeBinomialSampler.cpp
+    Mixture/Simple/NegativeBinomial/NegativeBinomialStatistic.h
+    Mixture/Simple/NegativeBinomial/NegativeBinomialStatistic.cpp   
     Mixture/Rank/mixt_RankClass.h
     Mixture/Rank/mixt_RankLikelihood.cpp
     Mixture/Rank/mixt_RankMixture.h
@@ -92,22 +102,12 @@ add_library(MixtComp
     Mixture/Functional/mixt_FunctionalParser.cpp
     Mixture/Functional/mixt_FunctionalMixture.h
     Mixture/Functional/mixt_Function.h
-    Statistic/mixt_NormalStatistic.h
-    Statistic/mixt_NormalStatistic.cpp
     Statistic/mixt_ExponentialStatistic.h
     Statistic/mixt_ExponentialStatistic.cpp
     Statistic/mixt_RNG.h
     Statistic/mixt_RNG.cpp
-    Statistic/WeibullStatistic.h
-    Statistic/WeibullStatistic.cpp
-    Statistic/NegativeBinomialStatistic.h
-    Statistic/NegativeBinomialStatistic.cpp    
-    Statistic/mixt_PoissonStatistic.h
-    Statistic/mixt_PoissonStatistic.cpp
     Statistic/mixt_UniformStatistic.h
     Statistic/mixt_UniformStatistic.cpp
-    Statistic/mixt_MultinomialStatistic.h
-    Statistic/mixt_MultinomialStatistic.cpp 
     Statistic/Functions.h
     Statistic/mixt_Statistic.h
     Data/mixt_CategoricalDataStat.h

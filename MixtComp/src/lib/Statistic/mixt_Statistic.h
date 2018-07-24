@@ -10,13 +10,12 @@
 #ifndef MIXT_STATISTIC_H
 #define MIXT_STATISTIC_H
 
+#include <Mixture/Simple/Categorical/MultinomialStatistic.h>
+#include <Mixture/Simple/Gaussian/NormalStatistic.h>
+#include <Mixture/Simple/Poisson/PoissonStatistic.h>
 #include "Functions.h"
 #include "mixt_ExponentialStatistic.h"
-#include "mixt_MultinomialStatistic.h"
-#include "mixt_NormalStatistic.h"
-#include "mixt_PoissonStatistic.h"
 #include "mixt_RNG.h"
 #include "mixt_UniformStatistic.h"
-#include "WeibullStatistic.h"
 
 #endif // MIXT_STATISTIC_H

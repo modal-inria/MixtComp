@@ -16,7 +16,7 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Constants.h"
 #include "../Statistic/mixt_UniformStatistic.h"
-#include "../Statistic/mixt_MultinomialStatistic.h"
+#include "../Mixture/Simple/Categorical/MultinomialStatistic.h"
 #include "../Various/mixt_Enum.h"
 
 namespace mixt {
