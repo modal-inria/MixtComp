@@ -53,6 +53,7 @@ plotDataCI <- function(output, var, class = 1:output$mixture$nbCluster, grl = FA
          "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, class, grl),
          "Categorical_pjk" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl),
          "Poisson_k" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl),
+         "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, class, grl),
          "Functional" = plotFunctionalData(output, var, classToPlot = class, ...),
          "FunctionalSharedAlpha" = plotFunctionalData(output, var, classToPlot = class, ...),
          warning(paste0("Not (yet) available for model ", type)))

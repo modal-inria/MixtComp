@@ -8,6 +8,7 @@ extractCIboundsOneVble = function(var, data, class, grl){
   if (type == "Gaussian_sjk") out <- extractCIGaussianVble(var, data, class, grl)
   if (type == "Weibull") out <- extractCIWeibullVble(var, data, class, grl)
   if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data, class, grl)
+  if (type == "NegativeBinomial") out <-  extractCINegBinomialVble(var, data, class, grl)
   if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data, class, grl)
   if (type %in% c("Functional", "FunctionalSharedAlpha")) out <-  extractCIFunctionnalVble(var, data)
   return(out)
@@ -36,6 +37,24 @@ extractCIPoissonVble = function(var, data, class, grl){
   theta <- as.array(data$variable$param[[var]]$NumericalParam$stat[class,1])
   if (grl)  theta <- cbind(theta, mean(data$variable$data[[var]]$completed))
   return(list(mean = theta, lower = qpois(0.025, theta), uppers=qpois(0.975, theta)))
+}
+
+extractCINegBinomialVble = function(var, data, class, grl){
+  theta <- matrix(data$variable$param[[var]]$NumericalParam$stat[,1], ncol = 2, byrow = TRUE)
+  means = as.array(round(theta[,1]*(1-theta[,2])/theta[,2], 3))
+  lowers = as.array(round(qnbinom(0.025, theta[,1], theta[,2]), 3))
+  uppers = as.array(round(qnbinom(0.975, theta[,1], theta[,2]), 3))
+  means <- means[class]
+  lowers <- lowers[class]
+  uppers <- uppers[class]
+  if (grl){
+    means <- c(means, mean(data$variable$data[[var]]$completed))
+    bounds <- ceiling(c(0.025, 0.975) * length(data$variable$data[[var]]$completed))
+    tmp <- sort(data$variable$data[[var]]$completed)[bounds]
+    lowers <- c(lowers, tmp[1])
+    uppers <- c(uppers, tmp[2])
+  }
+  return(list(mean = means, lower = lowers, uppers=uppers))
 }
 
 extractCIWeibullVble = function(var, data, class, grl){
@@ -158,7 +177,7 @@ extractCIFunctionnalVble = function(var, data){
 extractBoxplotInfoOneVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE){
   out <- NULL
   type <- data$variable$type[[var]]
-  if ((type == "Gaussian_sjk") || (type == "Poisson_k")) out <- extractBoundsBoxplotNumericalVble(var, data, class, grl)
+  if ((type == "Gaussian_sjk") || (type == "Poisson_k") || (type == "NegativeBinomial")) out <- extractBoundsBoxplotNumericalVble(var, data, class, grl)
   if (type == "Categorical_pjk") out <-  extractBoundsBoxplotCategoricalVble(var, data, class, grl)
   if (type %in% c("Functional", "FunctionalSharedAlpha")) out <-  extractCIFunctionnalVble(var, data)
   return(out)

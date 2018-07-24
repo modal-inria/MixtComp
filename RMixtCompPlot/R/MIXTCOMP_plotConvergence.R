@@ -87,11 +87,10 @@ plotParamConvergence <- function(output, var, ...)
   type <- output$variable$type[[var]]
   nbCluster <- output$mixture$nbCluster
   
+  type <- ifelse(type %in% c("Gaussian_sjk", "Weibull", "Categorical_pjk", "Poisson_k", "NegativeBinomial"), "Simple", type)
+  
   switch(type,
-         "Gaussian_sjk" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
-         "Weibull" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
-         "Categorical_pjk" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
-         "Poisson_k" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
+         "Simple" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
          "Rank" = plotLog(output$variable$param[[var]]$pi$log, nbCluster, var, ...),
          "Functional" = {plotLog(output$variable$param[[var]]$alpha$log, nbCluster, var, ...)
            title("alpha", line = -1, outer = TRUE)

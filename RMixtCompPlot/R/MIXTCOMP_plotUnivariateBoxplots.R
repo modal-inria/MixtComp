@@ -46,11 +46,11 @@ plotDataBoxplot <- function(output, var, grl = TRUE, ...)
   
   type <- output$variable$type[[var]]
   
+  type <- ifelse(type %in% c("Gaussian_sjk", "Weibull", "Poisson_k", "NegativeBinomial"), "Numerical", type)
+  
   switch(type,
-         "Gaussian_sjk" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$mixture$nbCluster, grl = grl)),
-         "Weibull" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$mixture$nbCluster, grl = grl)),
+         "Numerical" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$mixture$nbCluster, grl = grl)),
          "Categorical_pjk" = plotCategoricalData(extractBoundsBoxplotCategoricalVble(var, output), var, class = 1:output$mixture$nbCluster, grl),
-         "Poisson_k" = plotBoxplotperClass(extractBoundsBoxplotNumericalVble(var, output, class = 1:output$mixture$nbCluster, grl = grl)),
          "Functional" = plotFunctionalData(output, var, ...),
          "FunctionalSharedAlpha" = plotFunctionalData(output, var, ...),
          warning(paste0("Not (yet) available for model ", type)))
