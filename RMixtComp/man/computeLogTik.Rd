@@ -4,7 +4,7 @@
 \alias{computeLogTik}
 \title{Compute log(tik)}
 \usage{
-computeLogTik(output)
+computeLogTik(outMixtComp)
 }
 \arguments{
 \item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.}
