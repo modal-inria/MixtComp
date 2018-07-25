@@ -21,7 +21,7 @@ plot_functional_hierarchique <-
            max_nb_lines = 100,
            which_to_highlight = NULL,
            ...) {
-    load("~/Démo/demo_data.rdata")
+
     clusters = substr(clusters, 1, (2 * (depth - 1) + 1))
     time = data_func$time
     data = data_func$data

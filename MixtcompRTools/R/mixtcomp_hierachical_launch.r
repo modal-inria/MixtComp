@@ -380,3 +380,82 @@ expand_predict <-
       }
     }
   }
+
+#' Prune a hierarchical clsutering. The pruning can be done according to three different strategies
+#'
+#'  - The purity of the clusters : if a cluster is purer than a certain threshold then the subclusters are not useful
+#'  - The size of the cluster : below a certain size, a cluster should not have been subclusterized.
+#'  - The quality of the completion : Is the global completion more accurate with this subclusterization ? Aims at avoiding overfitting.
+#'
+#'  These strategies can be cumulated.
+#'
+#' @param dir A string, the path of the hierarchical clustering to prune
+#' @param purity_strategy a list of two elements, that defines which variable purity to check and according to which threshold (double between 0 and 1)
+#' @param cluster_size_strategy a list of one element that define the cluster size threshold.
+#' @param completion_quality_strategy a list of two elements, the variable to consider
+#'
+#' @return void
+#' @export
+#'
+#' @examples prune_hierarchy(..)
+#' @author Etienne Goffinet
+prune_hierarchy <-
+  function(dir,
+           purity_strategy = list(var = NULL,threshold=NULL),
+           cluster_size_strategy = list(threshold=NULL),
+           completion_quality_strategy = list(var=NULL,data_observed=NULL,test_dir=NULL)) {
+
+    list_subdir = list.dirs(path = dir,recursive = F,full.names = T)
+    if(length(list_subdir)>0){
+      # check the strategies
+
+      output = fromJSON(paste0(dir,"/mixtcomp_output.json"))
+
+      # Prune if needed
+      if(all(!is.null(unlist(purity_strategy)))){
+        purity = max(table(output$variable$data[[purity_strategy$var]]$completed)/output$mixture$nbInd)
+        if(purity > purity_strategy$threshold){
+          unlink(list_subdir,recursive = TRUE,force = TRUE)
+        }
+      }
+
+      if(!is.null(cluster_size_strategy$threshold)){
+        if(output$mixture$nbInd < cluster_size_strategy$threshold){
+          unlink(list_subdir,recursive = TRUE,force = TRUE)
+        }
+      }
+
+      if(all(!is.null(unlist(completion_quality_strategy)))){
+
+        current_error =
+        error_with_subdir
+      }
+
+      # Else, try to the prune the subdirectories
+      for (subdir in list_subdir) {
+        list_next_subdir = list.dirs(path = subdir,recursive = F,full.names = T)
+        if(length(list_next_subdir)>0){
+
+          prune_hierarchy(
+            subdir,
+            purity_strategy = purity_strategy,
+            cluster_size_strategy = cluster_size_strategy,
+            completion_quality_strategy = completion_quality_strategy
+          )
+
+          prune_hierarchy(
+            dir,
+            purity_strategy = purity_strategy,
+            cluster_size_strategy = cluster_size_strategy,
+            completion_quality_strategy = completion_quality_strategy
+          )
+
+        } else {
+          output_curdir = fromJSON(paste0())
+        }
+      }
+    } else {
+
+    }
+  }
+
