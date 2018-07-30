@@ -25,7 +25,7 @@ std::string GibbsStrategy::run() {
 	try {
 		for (Index n = 0; n < param_.nSemTry_; ++n) {
 
-			p_composer_->initData();
+			p_composer_->initData(); // TODO: check that this is really necessary in Gibbs
 			warnLog = p_composer_->initializeLatent();
 			if (0 < warnLog.size())
 				continue;

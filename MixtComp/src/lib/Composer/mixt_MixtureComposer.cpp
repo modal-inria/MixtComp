@@ -555,7 +555,7 @@ std::string MixtureComposer::initializeLatent() {
 	sampleZ();
 	initializeMarkovChain();
 	sampleUnobservedAndLatent();
-	warnLog = checkSampleCondition(); // TODO: might be useless, in this case, remove it
+//	warnLog = checkSampleCondition(); // TODO: might be useless, in this case, remove it
 	if (0 < warnLog.size()) {
 		std::cout << "initializeLatent, checkSampleCondition failed."
 				<< std::endl;
