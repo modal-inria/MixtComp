@@ -1,5 +1,5 @@
 # Overview of output object
-Overview of output object with variables named *categorical*, *gaussian*, *ordinal*, *rank*, *functional*, *poisson* and *weibull* with model respectively *Categorical_pjk*, *Gaussian_sjk*, *Ordinal*, *Rank*, *Functional* (or *FunctionalSharedAlpha*), *Poisson_k* and *Weibull*.
+Overview of output object with variables named *categorical*, *gaussian*, *ordinal*, *rank*, *functional*, *poisson*, *nBinom* and *weibull* with model respectively *Categorical_pjk*, *Gaussian_sjk*, *Ordinal*, *Rank*, *Functional* (or *FunctionalSharedAlpha*), *Poisson_k*, *NegativeBinomial* and *Weibull*.
 The output object is a list of list, organized as follows:
 
 ```
@@ -54,6 +54,9 @@ output
                           |__ poisson __ NumericalParam __ stat
                           |                            |__ log
                           |                            |__ paramStr
+                          |__ nBinom __ NumericalParam __ stat
+                          |                           |__ log
+                          |                           |__ paramStr
                           |__ weibull __ NumericalParam __ stat
                           |                            |__ log
                           |                            |__ paramStr
@@ -134,6 +137,11 @@ It is a list where each element corresponds to a missing data, each of them is a
 Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
 It is a list where each element corresponds to a missing data and contains a vector of 4 elements: index of the missing data, median, 2.5% quantile, 97.5% quantile (if the confidenceLevel parameter is set to 0.95) of imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
 
+- **NegativeBinomial**
+
+Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
+It is a list where each element corresponds to a missing data and contains a vector of 4 elements: index of the missing data, median, 2.5% quantile, 97.5% quantile (if the confidenceLevel parameter is set to 0.95) of imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
+
 - **Weibull**
 
 Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
@@ -184,6 +192,11 @@ A list (named *NumericalParam*) of 3 elements: *stat*, *log*, *paramStr*.
 
 *log* is matrix containing the estimated lambda parameter for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated parameters. The median parameters are the returned parameters. *paramStr* contains "".
 
+- **NegativeBinomial**
+
+A list (named *NumericalParam*) of 3 elements: *stat*, *log*, *paramStr*.
+
+*log* is matrix containing the estimated n and p parameters for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated parameters. The median parameters are the returned parameters. *paramStr* contains "".
 
 - **Weibull**
 

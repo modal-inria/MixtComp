@@ -13,9 +13,9 @@
 
 #include "Composer/mixt_MixtureComposer.h"
 #include "Mixture/Simple/SimpleMixture.h"
-#include "Mixture/Simple/Categorical.h"
-#include "Mixture/Simple/Gaussian.h"
-#include "Mixture/Simple/Poisson.h"
+#include "Mixture/Simple/Categorical/Categorical.h"
+#include "Mixture/Simple/Gaussian/Gaussian.h"
+#include "Mixture/Simple/Poisson/Poisson.h"
 #include "Mixture/Functional/mixt_FunctionalMixture.h"
 #include "Mixture/Functional/mixt_FunctionalSharedAlphaMixture.h"
 #include "Mixture/Ordinal/mixt_Ordinal.h"
@@ -111,6 +111,16 @@ public:
 		if (idModel == "Weibull") {
 			SimpleMixture<Weibull, DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new SimpleMixture<Weibull,
+					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
+					indexMixture, idName, nbCluster, p_handler_,
+					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
+					confidenceLevel);
+			return p_bridge;
+		}
+
+		if (idModel == "NegativeBinomial") {
+			SimpleMixture<NegativeBinomial, DataHandler, DataExtractor, ParamSetter,
+					ParamExtractor>* p_bridge = new SimpleMixture<NegativeBinomial,
 					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
 					indexMixture, idName, nbCluster, p_handler_,
 					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,

@@ -104,6 +104,32 @@ weibullParam <- function(name) {
   return(weibull)
 }
 
+# Negative Binomial -------------------------------------------------------
+
+nBinomParam <- function(name) {
+  nBinom <- list()
+  nBinom$name <- name
+  nBinom$type <- "NegativeBinomial"
+  nBinom$generator <- negativeBinomialGenerator
+  nBinom$param <- list()
+  nBinom$param[[1]] <- list(n = 2.0, p = 0.5)
+  nBinom$param[[2]] <- list(n = 10.0, p = 0.8)
+  
+  return(nBinom)
+}
+
+nBinomParamRandom <- function(name) {
+  nBinom <- list()
+  nBinom$name <- name
+  nBinom$type <- "NegativeBinomial"
+  nBinom$generator <- negativeBinomialGenerator
+  nBinom$param <- list()
+  nBinom$param[[1]] <- list(n = sum(rbinom(20, 1, 0.5)), p = runif(1, 0.3, 0.8))
+  nBinom$param[[2]] <- list(n = sum(rbinom(20, 1, 0.5)), p = runif(1, 0.3, 0.8))
+  
+  return(nBinom)
+}
+
 
 # rank --------------------------------------------------------------------
 

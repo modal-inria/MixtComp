@@ -7,7 +7,7 @@
 getCompletedData(outMixtComp, with.z_class = FALSE)
 }
 \arguments{
-\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} fucntions.}
+\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.}
 
 \item{with.z_class}{if TRUE, z_class is returned with the data.}
 }
@@ -35,4 +35,5 @@ res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel =
 # get completedData
 getCompletedData <- completed(res)
 }
+
 }

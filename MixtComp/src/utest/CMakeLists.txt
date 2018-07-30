@@ -13,10 +13,12 @@ add_executable(runUtest
     Simple/UTestCategorical.cpp
     Simple/UTestWeibull.cpp
     Simple/UTestGaussian.cpp
+    Simple/UTestNegativeBinomial.cpp
     Various/UTestVarious.cpp
     Various/UTestMisValParser.cpp
     Various/UTestStandardLibrary.cpp
     Various/UTestRegex.cpp
+    Statistic/UTestNegativeBinomialStatistic.cpp
     Statistic/UTestWeibullStatistic.cpp
     Statistic/UTestNormalStatistic.cpp
     Statistic/UTestRNG.cpp

@@ -29,7 +29,7 @@ Others rows correspond to the different samples. See the section associated with
 
 The descriptor file is a csv file (; separator) containing 3 rows. The first row contains the names of the variables.
 This first row must be the same as the first row of the data file. The second row contains the model associated with each variables.
-Eight models are available in RMixtComp: \emph{Gaussian_sjk}, \emph{Categorical_pjk}, \emph{Poisson_k}, \emph{Weibull}, \emph{Functional}, \emph{FunctionalSharedAlpha}, \emph{Rank}, \emph{Ordinal}. 
+Nine models are available in RMixtComp: \emph{Gaussian_sjk}, \emph{Categorical_pjk}, \emph{Poisson_k}, \emph{NegativeBinomial}, \emph{Weibull}, \emph{Functional}, \emph{FunctionalSharedAlpha}, \emph{Rank}, \emph{Ordinal}. 
 The \emph{FunctionalSharedAlpha} is a variant of the Functional model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
 The third row is optional and contains parameters associated with each model.
 }
@@ -47,9 +47,9 @@ For partial data, a list of possible values can be provided by \emph{{a_1,\dots,
 where \emph{a_i} denotes a categorical value.
 }
 
-\section{Poisson Data}{
+\section{Poisson and NegativeBinomial Data}{
 
-Poisson data must be positive integer. Missing data are indicated by a \emph{?}.
+Poisson and NegativeBinomial data must be positive integer. Missing data are indicated by a \emph{?}.
 }
 
 \section{Weibull Data}{

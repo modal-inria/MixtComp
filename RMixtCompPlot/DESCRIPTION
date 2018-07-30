@@ -1,8 +1,8 @@
 Package: RMixtCompPlot
 Type: Package
 Title: Plot functions for MixtComp
-Version: 0.11
-Date: 2018-06-07
+Version: 0.2
+Date: 2018-07-24
 Author: Matthieu MARBAC, Quentin GRIMONPREZ
 Copyright: Inria
 License: Internal use

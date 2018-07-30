@@ -15,9 +15,9 @@
 #include <set>
 #include <vector>
 
-#include "../Data/mixt_ZClassInd.h"
-#include "../Data/mixt_ClassDataStat.h"
-#include "../Sampler/mixt_ClassSampler.h"
+#include "mixt_ZClassInd.h"
+#include "mixt_ClassDataStat.h"
+#include "mixt_ClassSampler.h"
 #include "../Mixture/mixt_IMixture.h"
 #include "../Various/mixt_Enum.h"
 #include "../Param/mixt_ConfIntParamStat.h"

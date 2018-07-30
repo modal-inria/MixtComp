@@ -14,7 +14,7 @@
 #include <utility>
 #include "../../LinAlg/mixt_LinAlg.h"
 #include "mixt_BOSNode.h"
-#include "../../Statistic/mixt_MultinomialStatistic.h"
+#include "../../Statistic/MultinomialStatistic.h"
 
 namespace mixt {
 

@@ -32,7 +32,7 @@ TEST(Weibull, EstimateK) {
 		x(i) = weib.sample(kExpected, lambdaExpected);
 	}
 
-	Real kComputed = w.positiveNewtonRaphson(x, 10.0, 10);
+	Real kComputed = w.estimateK(x, 10.0);
 	Real lambdaComputed = w.estimateLambda(x, kExpected);
 
 	ASSERT_NEAR(kExpected, kComputed, 0.01);
@@ -73,6 +73,7 @@ TEST(Weibull, SampleAndEstimate) {
 
 	Weibull weibull(idName, nClass, param);
 	weibull.setData("", augData, learning_);
+	weibull.initParam();
 
 	weibull.mStep(setInd);
 
