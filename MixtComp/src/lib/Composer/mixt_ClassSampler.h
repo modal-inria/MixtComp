@@ -10,10 +10,10 @@
 #ifndef MIXT_CLASSSAMPLER_H
 #define MIXT_CLASSSAMPLER_H
 
-#include "../Data/mixt_ZClassInd.h"
+#include "mixt_ZClassInd.h"
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Data/mixt_AugmentedData.h"
-#include "../Mixture/Simple/Categorical/MultinomialStatistic.h"
+#include "../Statistic/MultinomialStatistic.h"
 
 namespace mixt
 {

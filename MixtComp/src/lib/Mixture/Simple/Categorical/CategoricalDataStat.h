@@ -10,8 +10,8 @@
 #ifndef MIXT_CATEGORICALDATASTAT_H
 #define MIXT_CATEGORICALDATASTAT_H
 
-#include "../LinAlg/mixt_LinAlg.h"
-#include "mixt_AugmentedData.h"
+#include "../../../LinAlg/mixt_LinAlg.h"
+#include "../../../Data/mixt_AugmentedData.h"
 
 namespace mixt {
 

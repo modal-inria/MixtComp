@@ -13,7 +13,7 @@
 
 #include <set>
 #include "boost/regex.hpp"
-#include "mixt_AugmentedData.h"
+#include "../Data/mixt_AugmentedData.h"
 
 namespace mixt {
 

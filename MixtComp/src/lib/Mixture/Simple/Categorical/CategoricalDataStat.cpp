@@ -7,8 +7,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "mixt_CategoricalDataStat.h"
-#include "../Various/mixt_Constants.h"
+#include <Mixture/Simple/Categorical/CategoricalDataStat.h>
+#include "../../../Various/mixt_Constants.h"
 
 namespace mixt {
 

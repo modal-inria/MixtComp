@@ -12,7 +12,7 @@
 
 #include "../LinAlg/mixt_LinAlg.h"
 #include "mixt_ZClassInd.h"
-#include "mixt_AugmentedData.h"
+#include "../Data/mixt_AugmentedData.h"
 
 namespace mixt {
 

@@ -8,7 +8,7 @@
  **/
 
 #include "MultinomialStatistic.h"
-#include "../../../Statistic/mixt_RNG.h"
+#include "mixt_RNG.h"
 
 namespace mixt {
 

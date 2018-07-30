@@ -13,7 +13,7 @@
 
 #include "../../../LinAlg/mixt_LinAlg.h"
 #include "../../../Data/mixt_AugmentedData.h"
-#include "MultinomialStatistic.h"
+#include "../../../Statistic/MultinomialStatistic.h"
 
 namespace mixt
 {

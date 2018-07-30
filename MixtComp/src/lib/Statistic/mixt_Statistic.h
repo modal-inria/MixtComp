@@ -10,8 +10,8 @@
 #ifndef MIXT_STATISTIC_H
 #define MIXT_STATISTIC_H
 
-#include <Mixture/Simple/Categorical/MultinomialStatistic.h>
-#include <Mixture/Simple/Gaussian/NormalStatistic.h>
+#include <Statistic/MultinomialStatistic.h>
+#include <Statistic/NormalStatistic.h>
 #include <Mixture/Simple/Poisson/PoissonStatistic.h>
 #include "Functions.h"
 #include "mixt_ExponentialStatistic.h"

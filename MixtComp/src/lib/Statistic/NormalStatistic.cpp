@@ -12,8 +12,8 @@
 #include <boost/random/normal_distribution.hpp>
 #include <boost/math/distributions/normal.hpp>
 #include "NormalStatistic.h"
-#include "../../../Various/mixt_Constants.h"
-#include "../../../Statistic/mixt_RNG.h"
+#include "../Various/mixt_Constants.h"
+#include "mixt_RNG.h"
 
 namespace mixt {
 

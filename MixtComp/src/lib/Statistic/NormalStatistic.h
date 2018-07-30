@@ -11,9 +11,9 @@
 #define MIXT_NORMALSTATISTIC_H
 
 #include <boost/random.hpp>
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../Statistic/mixt_UniformStatistic.h"
-#include "../../../Statistic/mixt_ExponentialStatistic.h"
+#include "../LinAlg/mixt_LinAlg.h"
+#include "mixt_UniformStatistic.h"
+#include "mixt_ExponentialStatistic.h"
 
 namespace mixt {
 

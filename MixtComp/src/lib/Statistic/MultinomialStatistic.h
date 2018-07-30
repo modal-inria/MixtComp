@@ -13,9 +13,9 @@
 #include <iostream>
 #include <ctime>
 #include <boost/random.hpp>
-#include "../../../LinAlg/mixt_LinAlg.h"
-#include "../../../IO/mixt_IO.h"
-#include "../../../Various/mixt_Constants.h"
+#include "../LinAlg/mixt_LinAlg.h"
+#include "../IO/mixt_IO.h"
+#include "../Various/mixt_Constants.h"
 
 namespace mixt {
 

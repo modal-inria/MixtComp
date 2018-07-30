@@ -15,7 +15,7 @@
 #include <set>
 
 #include "LinAlg/mixt_LinAlg.h"
-#include "Data/mixt_CategoricalDataStat.h"
+#include "CategoricalDataStat.h"
 #include "CategoricalSampler.h"
 #include "CategoricalLikelihood.h"
 
