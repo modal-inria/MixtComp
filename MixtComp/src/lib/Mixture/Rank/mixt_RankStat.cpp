@@ -13,75 +13,69 @@
 #include <iostream>
 #include <map>
 
-
 namespace mixt {
 
-RankStat::RankStat(RankVal& mu,
-                             Real confidenceLevel) :
-    mu_(mu),
-    confidenceLevel_(confidenceLevel) {}
-
-void RankStat::sample(int iteration) {
-  logStorageMu_(iteration) = mu_;
+RankStat::RankStat(RankVal& mu, Real confidenceLevel) :
+		mu_(mu), confidenceLevel_(confidenceLevel) {
 }
 
-void RankStat::sampleValue(int iteration,
-                           int iterationMax) {
-  if (iteration == 0) {
-    logStorageMu_.resize(iterationMax + 1);
+void RankStat::sample(int iteration) {
+	logStorageMu_(iteration) = mu_;
+}
 
-    sample(0); // first sampling, on each parameter
-  }
-  else if (iteration == iterationMax) {
-    sample(iterationMax); // last sampling
+void RankStat::sampleValue(int iteration, int iterationMax) {
+	if (iteration == 0) {
+		logStorageMu_.resize(iterationMax + 1);
 
-    std::map<RankVal, int> stat; // sparse counting of the occurrences of mu
-    for (int i = 0; i < iterationMax + 1; ++i) {
-      stat[logStorageMu_(i)] += 1;
-    }
-    int nbMu = stat.size();
+		sample(0); // first sampling, on each parameter
+	} else if (iteration == iterationMax) {
+		sample(iterationMax); // last sampling
 
-    Vector<RankVal> mu(nbMu); // transform sparse storage into contiguous storage which will be sortable
-    Vector<int> nb(nbMu); // number of occurrences of current value of mu
+		std::map<RankVal, int> stat; // sparse counting of the occurrences of mu
+		for (int i = 0; i < iterationMax + 1; ++i) {
+			stat[logStorageMu_(i)] += 1;
+		}
+		int nbMu = stat.size();
 
-    int m = 0;
-    for (std::map<RankVal, int>::const_iterator it    = stat.begin(), // loop on values of mu
-                                                itEnd = stat.end();
-         it != itEnd;
-         ++it, ++m) {
-      mu(m) = it->first;
-      nb(m) = it->second;
-    }
+		Vector<RankVal> mu(nbMu); // transform sparse storage into contiguous storage which will be sortable
+		Vector<int> nb(nbMu); // number of occurrences of current value of mu
 
-    Vector<int> index;
-    nb.sortIndex(index);
+		int m = 0;
+		for (std::map<RankVal, int>::const_iterator it = stat.begin(), // loop on values of mu
+		itEnd = stat.end(); it != itEnd; ++it, ++m) {
+			mu(m) = it->first;
+			nb(m) = it->second;
+		}
 
-    Real cumSum = 0.;
-    for (int muPos = nbMu - 1; muPos > -1; --muPos) { // loop from the most to the less frequent values of mu
-      int m = index(muPos); // index of current value of mu
+		Vector<int> index;
+		nb.sortIndex(index);
 
-      Real proba = Real(nb(m)) / Real(iterationMax + 1);
+		Real cumSum = 0.;
+		for (int muPos = nbMu - 1; muPos > -1; --muPos) { // loop from the most to the less frequent values of mu
+			int m = index(muPos); // index of current value of mu
 
-      statStorageMu_.push_back(std::pair<RankVal, Real>(mu(m), proba));
+			Real proba = Real(nb(m)) / Real(iterationMax + 1);
 
-      cumSum += proba;
+			statStorageMu_.push_back(std::pair<RankVal, Real>(mu(m), proba));
 
-      if (cumSum > confidenceLevel_) break;
-    }
+			cumSum += proba;
 
-    logStorageMu_.resize(0); // clear memory
-  }
-  else {
-    sample(iteration);
-  }
+			if (cumSum > confidenceLevel_)
+				break;
+		}
+
+		logStorageMu_.resize(0); // clear memory
+	} else {
+		sample(iteration);
+	}
 }
 
 void RankStat::setExpectationParam() {
-  mu_ = statStorageMu_.front().first;
+	mu_ = statStorageMu_.front().first;
 }
 
 void RankStat::setParamStorage() {
-  statStorageMu_.push_back(std::pair<RankVal, Real>(mu_, 1.));
+	statStorageMu_.push_back(std::pair<RankVal, Real>(mu_, 1.));
 }
 
 } // namespace mixt

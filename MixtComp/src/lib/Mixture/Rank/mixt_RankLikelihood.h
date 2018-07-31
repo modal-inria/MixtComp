@@ -14,30 +14,24 @@
 
 #include "../../LinAlg/mixt_LinAlg.h"
 
-namespace mixt
-{
+namespace mixt {
 
 /** Harmonic mean estimator of the marginal likelihood from observations of the
  * conditional likelihood */
-class RankLikelihood
-{
-  public:
-    void init(int nbInd,
-              int nbClass,
-              int nbObs);
+class RankLikelihood {
+public:
+	void init(int nbInd, int nbClass, int nbObs);
 
-    void observe(int i,
-                 int k,
-                 Real val);
+	void observe(int i, int k, Real val);
 
-    void getHMean(Matrix<Real>& mat) const;
+	void getHMean(Matrix<Real>& mat) const;
 
-  private:
-    int nbInd_;
-    int nbClass_;
-    int nbObs_;
+private:
+	int nbInd_;
+	int nbClass_;
+	int nbObs_;
 
-    Matrix<std::vector<Real> > storage_;
+	Matrix<std::vector<Real> > storage_;
 };
 
 } // namespace mixt
