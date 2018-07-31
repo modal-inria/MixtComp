@@ -32,3 +32,15 @@ The meaning of the various helper classes are:
 - `DataStat` provides statistical computation on missing data. It tracks sampled value and at the end computes statistics and imputed values.
 - `Sampler` samples the missing data.
 - `Likelihood` provides computation of observed and completed likelihood.
+
+Note that those classes can in turn rely on more low level statistical computation classes. Following on the `GaussianSampler` example, it contains a `NormalStatistic normal_`. This object instance provides sampling of a normal distribution. It is used for example in the `GaussianSampler::samplingStepNoCheck` method, to sample a completely missing gaussian value:
+
+```
+case missing_: {
+  z = normal_.sample(mean,
+                     sd);
+}
+break;
+```
+
+Note that creating a `NormalStatistic` object was not a `SimpleMixture` requirement, as all the code for sampling a normal distribution could have been written in the `GaussianSampler` class. However, it is such a low level statistical tool that it is highly likely to be used in several models. This is indeed the case, because the [Functional](MixtComp/src/lib/Mixture/Functional) uses it too.

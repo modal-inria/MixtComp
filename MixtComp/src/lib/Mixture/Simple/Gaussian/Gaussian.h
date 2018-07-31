@@ -61,9 +61,6 @@ private:
 	Vector<Real>& param_;
 
 	Vector<Real>* p_data_;
-
-	/** Statistic object to describe Normal law */
-	NormalStatistic normal_;
 };
 
 }
