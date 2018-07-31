@@ -118,5 +118,5 @@ plotFunctionalDataDegSup <- function(output, var, class.set=1:output$mixture$nbC
                                     range=ylim,
                                     zeroline = FALSE))
   )
-  print(p)
+  p
 }

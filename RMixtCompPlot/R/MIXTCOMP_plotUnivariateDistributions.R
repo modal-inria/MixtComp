@@ -130,7 +130,7 @@ plotCINumericData <- function(data, var, class, grl){
     )
   }
   
-  print(p)
+  p
 }
 
 
@@ -176,7 +176,7 @@ plotCategoricalData <- function(data, var, class, grl){
                                     ticks = 'outside',
                                     zeroline = FALSE))
   )
-  print(p)
+  p
 }
 
 # Mean and 95% confidence level confidence  for functional data
@@ -270,5 +270,5 @@ plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim =
                                     range=ylim,
                                     zeroline = FALSE))
   )
-  print(p)
+  p
 }
