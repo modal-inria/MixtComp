@@ -1,7 +1,3 @@
-# To do
-
-- file pointers should be web pointers.
-
 # Abstract
 
 One of MixtComp strengths is the ability to add models. The `IMixture` interface is rich (16 methods), as functions are provided for every aspect of model management. Some methods are useful for every models, while others are only here to provide functionality in specific cases. The page [Algorithm Description](./MixtComp/docs/algoDesc.md) provides further information on where the various methods are called from.
@@ -12,7 +8,7 @@ The folder [mise à jour majeur](./MixtComp/docs/170616 - mise à jour majeure) 
 
 # Basic Concepts
 
-There is an `IMixture` interface class that describe all models. It is located in the `src/lib/Mixture/mixt_IMixture.h` file. Some methods are implemented, but most are virtual and must be implement in a derived class. This architectures allows for runtime polymorphism in the `MixtureComposer` class. Here, all the instantiated models are contained in `std::vector<IMixture*> v_mixtures_;`. It is then possible to apply the same process to all variables by looping over `v_mixtures_`, independently of the derived class, as in:
+There is an `IMixture` interface class that describe all models. It is located in [mixt_IMixture.h](MixtComp/src/lib/Mixture/mixt_IMixture.h) file. Some methods are implemented, but most are virtual and must be implement in a derived class. This architectures allows for runtime polymorphism in the `MixtureComposer` class. Here, all the instantiated models are contained in `std::vector<IMixture*> v_mixtures_;`. It is then possible to apply the same process to all variables by looping over `v_mixtures_`, independently of the derived class, as in:
 
 ```
 std::string MixtureComposer::checkSampleCondition(
@@ -40,27 +36,6 @@ A lot of interactions with `DerivedModel` are carried out through the call to it
 The parameters for example must be stored in `DerivedModel`. No other object will provide this information. In a similar way, the data used by `DerivedModel` is not stored anywhere else. Hence `DerivedModel` must track both parameters and data.
 
 The initialization of the data in `DerivedModel` is a bit counter intuitive. One would expect data to be provided through a method call. This is not the case, for historical reasons. Instead, the `DataHandler` which was passed as a parameter of `DerivedModel` will be used. The method `DataHandler::getData` is called with the data to be modified passed as a reference. `DataHandler::getData` modifies it in place.
-
-# Specificities of Simple models
-
-*The article [SimpleMixture](SimpleMixture.md) provides a more detailed description of SimpleMixture.*
-
-There is a set of models with very common features:
-- Gaussian
-- Multinomial
-- Poisson
-- Weibull
-
-They are all template instantiations of `template<typename Model, typename DataHandler, typename DataExtractor, typename ParamSetter, typename ParamExtractor> class SimpleMixture: public IMixture`. They share the common traits of using `AugmentedData` for storing their data. The parameters are stored in `Vector<Real> param_;`. The differences among them is concentrated in the template type argument `Model`. A `Model` member object is stored in every Simple mixture: `Model model_;`. For example, the call to `mStep` is deferred to `Model::mStep`:
-
-```
-std::string mStep(const Vector<std::set<Index> >& classInd) {return model_.mStep(classInd);
-}
-```
-
-The simple models are then defined in different classes. For the Gaussian model, look in the file [mise à jour majeur](MixtComp/src/lib/Mixture/Gaussian.h).
-
-The relevance of this historical architecture could be a subject of debate, but the large amount of factored code helps when adding a new model.
 
 # Common methods
 
@@ -163,3 +138,30 @@ The difference with `initData` is that `initializeMarkovChain` is called after p
 ## bool sampleApproximationOfObservedProba()
 
 As mentioned in `computeObservedProba`, the observed probability could be 0 even if the observed probability is not 0. `sampleApproximationOfObservedProba` was a proposed solution to differentiate models in which the observed distribution is computed by sampling, and those for which it is computed using closed forms expressions. The idea is that a 0 probability from sampling could not be trusted and a 0 probability from closed form could be trusted. This was not a satisfactory solution, and this method is not used at the moment. The problem is that, no matter the parameters, there can be no 0 probability observations in Rank model for example. And, if the observed probability is 0 for an observation in every classe, MixtComp execution stops. This behaviour is legitimate for example if a particular modality has never been observed in the learning sample for categorical models. It is not legitimate for rank variables.
+
+# How to register a model
+
+Once a model has been written as a derived class of `IMixture`, MixtComp must be capable of instantiating it when it is encountered as a variable. The key class in this is `MixtureManager`, located at [mixt_MixtureManager.h](MixtComp/src/lib/Manager/mixt_MixtureManager.h). `MixtureManager::createMixtures` loop over all variables. `MixtureManager::createMixture` instantiate each model as a `IMixture*` pointer, using the name of the model as provided in the descriptor file.
+
+Hence a new model must be managed through a new entry in `MixtureManager::createMixture`.
+
+# Specificities of Simple models
+
+*The article [SimpleMixture](SimpleMixture.md) provides a more detailed description of SimpleMixture.*
+
+There is a set of models with very common features:
+- Gaussian
+- Multinomial
+- Poisson
+- Weibull
+
+They are all template instantiations of `template<typename Model, typename DataHandler, typename DataExtractor, typename ParamSetter, typename ParamExtractor> class SimpleMixture: public IMixture`. They share the common traits of using `AugmentedData` for storing their data. The parameters are stored in `Vector<Real> param_;`. The differences among them is concentrated in the template type argument `Model`. A `Model` member object is stored in every Simple mixture: `Model model_;`. For example, the call to `mStep` is deferred to `Model::mStep`:
+
+```
+std::string mStep(const Vector<std::set<Index> >& classInd) {return model_.mStep(classInd);
+}
+```
+
+The simple models are then defined in different classes. For the Gaussian model, look in the file [mise à jour majeur](MixtComp/src/lib/Mixture/Gaussian.h).
+
+The relevance of this historical architecture could be a subject of debate, but the large amount of factored code helps when adding a new model.
