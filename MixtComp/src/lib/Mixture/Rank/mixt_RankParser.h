@@ -15,10 +15,8 @@
 
 namespace mixt {
 
-std::string parseRankStr(const Vector<std::string>& vecStr,
-                         int minMod,
-                         int& nbMod,
-                         Vector<RankIndividual>& vecInd);
+std::string parseRankStr(const Vector<std::string>& vecStr, int minMod,
+		int& nbMod, Vector<RankIndividual>& vecInd);
 
 } // namespace mixt
 

@@ -60,9 +60,6 @@ private:
 	int nClass_; /// Number of classes
 	Vector<Real>& param_;
 	Vector<int>* p_data_;
-
-	/** Statistic object to describe Negative Binomial law */
-	NegativeBinomialStatistic negativeBinomial_;
 };
 
 } // namespace mixt

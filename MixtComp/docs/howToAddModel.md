@@ -43,6 +43,8 @@ The initialization of the data in `DerivedModel` is a bit counter intuitive. One
 
 # Specificities of Simple models
 
+*The article [SimpleMixture](SimpleMixture.md) provides a more detailed description of SimpleMixture.*
+
 There is a set of models with very common features:
 - Gaussian
 - Multinomial
@@ -56,9 +58,9 @@ std::string mStep(const Vector<std::set<Index> >& classInd) {return model_.mStep
 }
 ```
 
-The simple models are then defined in different classes. For the Gaussian model, look in the file `src/lib/Mixture/Gaussian.h`
+The simple models are then defined in different classes. For the Gaussian model, look in the file [mise à jour majeur](MixtComp/src/lib/Mixture/Gaussian.h).
 
-The relevance of this historical architecture could be a subject of debate.
+The relevance of this historical architecture could be a subject of debate, but the large amount of factored code helps when adding a new model.
 
 # Common methods
 

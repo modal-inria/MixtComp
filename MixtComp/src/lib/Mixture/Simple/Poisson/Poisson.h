@@ -54,9 +54,6 @@ private:
 	int nClass_;
 	Vector<Real>& param_;
 	Vector<int>* p_data_;
-
-	/** Statistic object to describe Poisson law */
-	PoissonStatistic poisson_;
 };
 
 } // namespace mixt
