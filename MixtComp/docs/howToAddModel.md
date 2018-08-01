@@ -143,7 +143,19 @@ As mentioned in `computeObservedProba`, the observed probability could be 0 even
 
 Once a model has been written as a derived class of `IMixture`, MixtComp must be capable of instantiating it when it is encountered as a variable. The key class in this is `MixtureManager`, located at [mixt_MixtureManager.h](MixtComp/src/lib/Manager/mixt_MixtureManager.h). `MixtureManager::createMixtures` loop over all variables. `MixtureManager::createMixture` instantiate each model as a `IMixture*` pointer, using the name of the model as provided in the descriptor file.
 
-Hence a new model must be managed through a new entry in `MixtureManager::createMixture`.
+Hence a new model must be managed through a new entry in `MixtureManager::createMixture`. Here is an example of entry, for a numerical variable described by a Gaussian distribution:
+
+```
+if (idModel == "Gaussian_sjk") {
+    SimpleMixture<Gaussian, DataHandler, DataExtractor, ParamSetter,
+            ParamExtractor>* p_bridge = new SimpleMixture<Gaussian,
+            DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
+            indexMixture, idName, nbCluster, p_handler_,
+            p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
+            confidenceLevel);
+    return p_bridge;
+}
+```
 
 # Specificities of Simple models
 
