@@ -174,6 +174,6 @@ std::string mStep(const Vector<std::set<Index> >& classInd) {return model_.mStep
 }
 ```
 
-The simple models are then defined in different classes. For the Gaussian model, look in the file [mise à jour majeur](MixtComp/src/lib/Mixture/Gaussian.h).
+The simple models are then defined in different classes. For the Gaussian model, look in the file [Gaussian.h](MixtComp/src/lib/Mixture/Gaussian.h).
 
 The relevance of this historical architecture could be a subject of debate, but the large amount of factored code helps when adding a new model.
