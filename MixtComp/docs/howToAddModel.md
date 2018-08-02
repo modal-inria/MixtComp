@@ -166,6 +166,7 @@ There is a set of models with very common features:
 - Multinomial
 - Poisson
 - Weibull
+- NegativeBinomial
 
 They are all template instantiations of `template<typename Model, typename DataHandler, typename DataExtractor, typename ParamSetter, typename ParamExtractor> class SimpleMixture: public IMixture`. They share the common traits of using `AugmentedData` for storing their data. The parameters are stored in `Vector<Real> param_;`. The differences among them is concentrated in the template type argument `Model`. A `Model` member object is stored in every Simple mixture: `Model model_;`. For example, the call to `mStep` is deferred to `Model::mStep`:
 
