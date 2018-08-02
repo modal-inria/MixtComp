@@ -67,3 +67,13 @@ Real GaussianLikelihood::lnCompletedProbability(int i, int k) const {
 `NormalStatistic::lpdf` is called here to compute the probability of the `i`-th observation, when its class is `k`.
 
 As a general rule of thumb if the model you are coding is very generic, and this is often the case for SimpleMixture models, try to isolate statistical computations in a Statistics object.
+
+# Other considerations
+
+`Model::acceptedType` is used in `SimpleMixture::setDataParam`:
+
+```
+std::string tempLog = augData_.checkMissingType(model_.acceptedType()); // check if the missing data provided are compatible with the model
+```
+
+The `Model::acceptedType` method provides a vector containing the type of missing data supported. It is used by `AugmentedData::checkMissingType` which will loop over all observations in the variable and check against the accepted missing type. If one observation is in a type that is not authorized, for example `[3:+inf]` for a categorical variable, a string will be returned to the user. He will be asked to check the data.
