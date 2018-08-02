@@ -1,3 +1,9 @@
+A simple model is a model which has a simple internal structure and which use is widespread. For example, the Gaussian model is a simple model. All the simple models in MixtComp share a similar structure. Their data is stored in an [AugmentedData](MixtComp/src/lib/Data/mixt_AugmentedData.h) instance, and the various computation are distributed among similar helper classes.
+
+A counter-example is the [Rank](MixtComp/src/lib/Mixture/Rank/mixt_RankMixture.h) model. It is much more complicated than a Gaussian model, and could not even use an `AugmentedData` instance to represent its data.
+
+So, as a rule a thumb, if your model is a canonical model, teached in undergrate courses, try to implement it as a Simple Mixture. Otherwise, entirely derive the model from IMixture.
+
 All simple models share the same architecture. At the core resides the `SimpleMixture` template class located at [SimpleMixture.h](MixtComp/src/lib/Mixture/Simple/SimpleMixture.h).
 
 # General description
