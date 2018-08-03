@@ -4,10 +4,12 @@
 \alias{heatmapClass}
 \title{Heatmap of the similarities between classes about clustering}
 \usage{
-heatmapClass(output)
+heatmapClass(output, ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}
+
+\item{...}{arguments to be passed to plot_ly}
 }
 \description{
 Heatmap of the similarities between classes about clustering

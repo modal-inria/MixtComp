@@ -61,7 +61,7 @@ plotDataCI <- function(output, var, class = 1:output$mixture$nbCluster, grl = FA
 
 
 # Mean and 95% confidence level per class for a numeric variable (Gaussian or Poisson)
-plotCINumericData <- function(data, var, class, grl){
+plotCINumericData <- function(data, var, class, grl, ...){
   text1 <- paste0("Class.", class, "<br>",
                   "Mean: ", round(data$mean[1:length(class)],2), "<br>",
                   "CI-95%: [", round(data$lower[1:length(class)],2),
@@ -76,7 +76,7 @@ plotCINumericData <- function(data, var, class, grl){
                mode = 'markers',
                showlegend = FALSE,
                hoverinfo = "text",
-               text = text1
+               text = text1, ...
   )%>%layout(title = "Mean and 95%-level confidence intervals per class",
              paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
              xaxis = list(title = var,
@@ -135,7 +135,7 @@ plotCINumericData <- function(data, var, class, grl){
 
 
 # Barplot for categorical data (only the levels included in the 95 confidence level for at least one component are plotted)
-plotCategoricalData <- function(data, var, class, grl){
+plotCategoricalData <- function(data, var, class, grl, ...){
   formattedW <- lapply(1:length(class), 
                        function(k) list(y=data$probs[k,],
                                         type='bar',
@@ -155,7 +155,7 @@ plotCategoricalData <- function(data, var, class, grl){
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
               formattedW,
-              init=plot_ly(x = data$levels)%>%
+              init=plot_ly(x = data$levels, ...)%>%
                 layout(title = "Distribution per class",
                        paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
                        xaxis = list(title = "Levels",
@@ -180,7 +180,7 @@ plotCategoricalData <- function(data, var, class, grl){
 }
 
 # Mean and 95% confidence level confidence  for functional data
-plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL){
+plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL, ...){
   G <- output$mixture$nbCluster
   
   if(is.null(classToPlot))
@@ -248,7 +248,7 @@ plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim =
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
               formattedW,
-              init=plot_ly(x = data$time)%>%
+              init=plot_ly(x = data$time, ...)%>%
                 layout(title = "Mean curves and 95%-level confidence intervals per class",
                        paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
                        xaxis = list(title = "Time",

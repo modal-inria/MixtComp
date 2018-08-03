@@ -4,10 +4,12 @@
 \alias{histMisclassif}
 \title{Histogram of the misclassification probabilities}
 \usage{
-histMisclassif(output)
+histMisclassif(output, ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}
+
+\item{...}{arguments to be passed to plot_ly}
 }
 \description{
 Histogram of the misclassification probabilities

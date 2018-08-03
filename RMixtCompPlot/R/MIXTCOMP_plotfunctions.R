@@ -5,6 +5,7 @@
 #' 
 #' @param output object returned by function \emph{mixtCompCluster}
 #' @param ylim vector of legnth 2 defining the range of y-axis
+#' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
 #' \dontrun{
@@ -32,7 +33,7 @@
 #' @author Matthieu MARBAC
 #'
 #' @export
-plotDiscrimVbles <- function(output, ylim = c(0, 1)){
+plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
   ## Get information
   # names of variables
   namesVbles <- names(output$variable$type)[names(output$variable$type) != "z_class"]
@@ -57,7 +58,7 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1)){
                        text = textMous,
                        hoverinfo='text',
                        marker = list(color = col_numeric("Blues", domain = c(0,100))(ceiling(pvDiscrim*100)), 
-                                     line = list(color = 'black', width = 1.5))
+                                     line = list(color = 'black', width = 1.5), ...)
   ) %>%
     layout(title = "Discriminative level of the variables",
            xaxis = list(title = ""),
@@ -79,6 +80,7 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1)){
 #' 
 #' @param output object returned by function \emph{mixtCompCluster}
 #' @param ylim vector of legnth 2 defining the range of y-axis
+#' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
 #' \dontrun{
@@ -106,7 +108,7 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1)){
 #' @author Matthieu MARBAC
 #'
 #' @export
-plotDiscrimClass <- function(output, ylim = c(0, 1)){
+plotDiscrimClass <- function(output, ylim = c(0, 1), ...){
   ## Get information
   # names of classes
   namesClass <- paste("class", 1:output$mixture$nbCluster, sep=".")
@@ -123,7 +125,7 @@ plotDiscrimClass <- function(output, ylim = c(0, 1)){
                        y = pvDiscrim,
                        type = 'bar',
                        marker = list(color = col_numeric("Blues", domain = c(0,100))(ceiling(pvDiscrim*100)), 
-                                     line = list(color = 'black', width = 1.5))
+                                     line = list(color = 'black', width = 1.5), ...)
   ) %>%
     layout(title = "Discriminative level of the classes",
            xaxis = list(title = ""),
@@ -138,6 +140,7 @@ plotDiscrimClass <- function(output, ylim = c(0, 1)){
 #' Delta(j,h)^2 = (1/n) * sum_{i=1}^n sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2
 #' 
 #' @param output object returned by function \emph{mixtCompCluster}
+#' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
 #' \dontrun{
@@ -165,7 +168,7 @@ plotDiscrimClass <- function(output, ylim = c(0, 1)){
 #' @author Matthieu MARBAC
 #'
 #' @export
-heatmapVbles <- function(output){
+heatmapVbles <- function(output, ...){
   ## Get information
   # names of variables
   namesVbles <- names(output$variable$type)[names(output$variable$type) != "z_class"]
@@ -207,7 +210,7 @@ heatmapVbles <- function(output){
                      y=namesShort,
                      colorscale = cbind(0:1,(col_numeric("Blues", domain = c(0,100))(range(similarities*100)))),
                      type = "heatmap",
-                     showscale = FALSE) %>%
+                     showscale = FALSE, ...) %>%
     layout(title = "Similarities between variables", showlegend = FALSE, yaxis=list(ticks=""), xaxis=list(ticks=""))
   heatmap
 }
@@ -218,6 +221,7 @@ heatmapVbles <- function(output){
 #' Sigma(k,g)^2 = (1/n) * sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
 #' 
 #' @param output object returned by function \emph{mixtCompCluster}
+#' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
 #' \dontrun{
@@ -245,7 +249,7 @@ heatmapVbles <- function(output){
 #' @author Matthieu MARBAC
 #'
 #' @export
-heatmapClass <- function(output){
+heatmapClass <- function(output, ...){
   ## Get information
   # names of variables  
   namesClass <- paste("class", 1:output$mixture$nbCluster, sep=".")
@@ -288,7 +292,7 @@ heatmapClass <- function(output){
                      y=namesClass,
                      colorscale = cbind(0:1,(col_numeric("Blues", domain = c(0,100))(range(similarities*100)))),
                      type = "heatmap",
-                     showscale = FALSE) %>%
+                     showscale = FALSE, ...) %>%
     layout(title = "Similarities between classes", showlegend = FALSE, yaxis=list(ticks=""), xaxis=list(ticks=""))
   heatmap
 }
@@ -299,6 +303,7 @@ heatmapClass <- function(output){
 #' they are sorted by decreasing order of their tik's
 #' 
 #' @param output object returned by function \emph{mixtCompCluster}
+#' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
 #' \dontrun{
@@ -326,7 +331,7 @@ heatmapClass <- function(output){
 #' @author Matthieu MARBAC
 #'
 #' @export
-heatmapTikSorted <- function(output){
+heatmapTikSorted <- function(output, ...){
   # orderTik, they are saved at slot ordertik of JSON file
   orderTik <- unlist(sapply(1:output$mixture$nbCluster, 
                             function(k) order(output$variable$data$z_class$stat[,k] * (output$variable$data$z_class$completed == k ),
@@ -364,7 +369,7 @@ heatmapTikSorted <- function(output){
                      x = paste("class", 1:output$mixture$nbCluster, sep="."),
                      colorscale = cbind(0:1, (col_numeric("Blues", domain = c(0,100))(range(output$variable$data$z_class$stat*100)))),
                      type = "heatmap",
-                     showscale = FALSE) %>%
+                     showscale = FALSE, ...) %>%
     layout(title = "Probabilities of classification", showlegend = FALSE, yaxis=tuneyaxis, xaxis=list(ticks=""))
   heatmap
 }  
@@ -376,6 +381,7 @@ heatmapTikSorted <- function(output){
 #' Histgrams of err_i's can be plot for a specific class, all classes or every class
 #'
 #' @param output object returned by function \emph{mixtCompCluster}
+#' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
 #' \dontrun{
@@ -403,7 +409,7 @@ heatmapTikSorted <- function(output){
 #' @author Matthieu MARBAC
 #'
 #' @export
-histMisclassif <- function(output){
+histMisclassif <- function(output, ...){
   ## Get information
   z <- output$variable$data$z_class$completed
   misclassifrisk <- 1 - apply(output$variable$data$z_class$stat, 1, max)
@@ -433,7 +439,7 @@ histMisclassif <- function(output){
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   histerrors <- Reduce(function(acc, curr)  do.call(add_histogram, c(list(p=acc),curr)),
                        formattedW,
-                       init=plot_ly()%>%layout(
+                       init=plot_ly(...)%>%layout(
                          showlegend = T,
                          title = "Misclassification risk",
                          xaxis = list(domain = c(-0.09, 0.9), title="Probabilities of misclassification"),
