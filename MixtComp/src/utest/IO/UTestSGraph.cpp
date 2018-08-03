@@ -12,7 +12,7 @@
 using namespace mixt;
 
 /** Coefficient-wise substract a vector to a scalar */
-TEST(SGraph, BasicIO) {
+TEST(SGraph, BasicIOVisitor) {
 	SGraph test;
 
 	std::string nameStr = "Quote";
@@ -24,4 +24,19 @@ TEST(SGraph, BasicIO) {
 	std::string resStr = boost::apply_visitor(SGraphPrintVis(), res);
 
 	ASSERT_EQ(testStr, resStr);
+}
+
+/** Coefficient-wise substract a vector to a scalar */
+TEST(SGraph, BasicIOGet) {
+	SGraph test;
+
+	std::string name = "Quote";
+	Real val = 12.0;
+
+	test.add_payload(name, val);
+
+	AlgType resAlg = test.get_payload(name);
+	Real res = boost::get<Real>(resAlg);
+
+	ASSERT_NEAR(val, res, epsilon);
 }
