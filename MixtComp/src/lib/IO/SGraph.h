@@ -12,6 +12,7 @@
 
 #include <map>
 #include "boost/variant.hpp"
+#include <LinAlg/mixt_LinAlg.h>
 
 namespace mixt {
 
@@ -19,7 +20,7 @@ namespace mixt {
  * boost::variant provides the equivalent of algebraic type. The main advantage vs polymorphism is that the syntax is lighter. The serialization graph is only used to carry the data from the depths of the model to
  * the IO module. Therefore using polymorphism would be overkill.
  */
-typedef typename boost::variant<int, std::string> myType;
+typedef typename boost::variant<Index, Real, std::string> AlgType;
 
 /**
  * Graph for data serialization. The main objective of this class is to allow building of the output data directly inside the models. The translation to the IO module is done at the end. This is in stark contrast with the previous
@@ -27,19 +28,44 @@ typedef typename boost::variant<int, std::string> myType;
  */
 class SGraph {
 public:
-	void add_payload(const std::string& name, const myType& data);
+	/** Generic method to add a basic type. Should be overloaded for complex types, for example matrices with row names and col names. */
+	void add_payload(const std::string& name, const AlgType& data);
 
 	void add_child(const std::string& name, const SGraph& child);
 
-	const std::map<std::string, myType>& get_payload() const {return payload_;}
+	const AlgType& get_payload(const std::string& name) {
+		return payload_[name];
+	}
+	const SGraph& get_child(const std::string& name) {
+		return children_[name];
+	}
 
-	const std::map<std::string, SGraph>& get_children() const {return children_;}
+	/** Map to loop over all payload elements.*/
+	const std::map<std::string, AlgType>& get_payload() const {
+		return payload_;
+	}
+
+	/** Map to loop over all children.*/
+	const std::map<std::string, SGraph>& get_children() const {
+		return children_;
+	}
 private:
 	/** Payload of current node.*/
-	std::map<std::string, myType> payload_;
+	std::map<std::string, AlgType> payload_;
 
 	/** Links to other nodes. */
 	std::map<std::string, SGraph> children_;
+};
+
+class SGraphPrintVis: public boost::static_visitor<std::string> {
+public:
+	std::string operator()(Index i) const {
+		return std::to_string(i);
+	}
+
+	std::string operator()(const std::string& str) const {
+		return str;
+	}
 };
 
 }

@@ -10,7 +10,11 @@
 #include "SGraph.h"
 
 namespace mixt {
-void SGraph::add_payload(const std::string& name, const myType& data) {
+void SGraph::add_payload(const std::string& name, const AlgType& data) {
+	payload_.insert(std::pair<std::string, AlgType>(name, data));
+}
 
+void SGraph::add_child(const std::string& name, const SGraph& data) {
+	children_.insert(std::pair<std::string, SGraph>(name, data));
 }
 }
