@@ -34,6 +34,7 @@ add_executable(runUtest
     Functional/UTestFunctionalClass.cpp
     Functional/UTestFunctionalMixture.cpp
     Functional/UTestFunctionalParser.cpp
+    IO/UTestSGraph.cpp
 )
 
 target_link_libraries(runUtest
