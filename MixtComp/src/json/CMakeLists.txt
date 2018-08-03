@@ -3,8 +3,8 @@
 
 add_executable(JMixtComp
     learn.cpp
-    GraphToJson.cpp
-    GraphToJson.h
+    GraphToJSon.cpp
+    GraphToJSon.h
 )
 
 target_link_libraries(JMixtComp
