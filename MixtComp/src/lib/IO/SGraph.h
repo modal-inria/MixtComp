@@ -10,6 +10,7 @@
 #ifndef SGRAPH_H
 #define SGRAPH_H
 
+#include <map>
 #include "boost/variant.hpp"
 
 namespace mixt {
