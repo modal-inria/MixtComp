@@ -11,16 +11,10 @@
 #define SGRAPH_H
 
 #include <map>
-#include "boost/variant.hpp"
+#include "AlgType.h"
 #include <LinAlg/mixt_LinAlg.h>
 
 namespace mixt {
-
-/**
- * boost::variant provides the equivalent of algebraic type. The main advantage vs polymorphism is that the syntax is lighter. The serialization graph is only used to carry the data from the depths of the model to
- * the IO module. Therefore using polymorphism would be overkill.
- */
-typedef typename boost::variant<Index, Real, std::string> AlgType;
 
 /**
  * Graph for data serialization. The main objective of this class is to allow building of the output data directly inside the models. The translation to the IO module is done at the end. This is in stark contrast with the previous
@@ -63,8 +57,22 @@ public:
 		return std::to_string(i);
 	}
 
+	std::string operator()(const Real r) const {
+		return std::to_string(r);
+	}
+
 	std::string operator()(const std::string& str) const {
 		return str;
+	}
+
+	std::string operator()(const Vector<Real>& vec) const {
+		//return itString(vec);
+		return "to be implemented";
+	}
+
+	std::string operator()(const Matrix<Real>& mat) const {
+		//return std::to_string(mat);
+		return "to be implemented";
 	}
 };
 

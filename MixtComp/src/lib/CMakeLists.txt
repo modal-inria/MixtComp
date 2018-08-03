@@ -18,6 +18,7 @@ add_library(MixtComp
 	IO/mixt_SpecialStr.cpp
 	IO/mixt_DataExtractorCsv.h
 	IO/Dummy.h
+	IO/AlgType.h
 	IO/SGraph.cpp
 	IO/SGraph.h
 	IO/mixt_SpecialStr.h

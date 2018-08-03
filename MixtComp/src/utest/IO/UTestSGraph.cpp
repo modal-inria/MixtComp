@@ -11,7 +11,7 @@
 
 using namespace mixt;
 
-/** Coefficient-wise substract a vector to a scalar */
+/** Visitor to get value. */
 TEST(SGraph, BasicIOVisitor) {
 	SGraph test;
 
@@ -26,7 +26,7 @@ TEST(SGraph, BasicIOVisitor) {
 	ASSERT_EQ(testStr, resStr);
 }
 
-/** Coefficient-wise substract a vector to a scalar */
+/** Get to get value. */
 TEST(SGraph, BasicIOGet) {
 	SGraph test;
 
