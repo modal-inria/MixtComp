@@ -16,5 +16,8 @@
 int main(int argc, char* argv[]) {
     mixt::SGraph graph;
     nlohmann::json j = GraphToJson(graph);
+
+    std::cout << "json mock learn executable OK." << std::endl;
+
     return 0;
 }

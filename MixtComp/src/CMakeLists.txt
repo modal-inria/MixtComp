@@ -67,6 +67,25 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
+## json
+configure_file(CMakeLists.txt.in json-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+  RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download )
+if(result)
+  message(FATAL_ERROR "CMake step for json failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+  RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download )
+if(result)
+  message(FATAL_ERROR "Build step for json failed: ${result}")
+endif()
+
+# Add googletest directly to our build. This defines
+# the gtest and gtest_main targets.
+include_directories(${CMAKE_BINARY_DIR}/json-src/single_include/nlohmann)
+
 # COMPILATION FLAGS
 
 ## C++11
@@ -85,3 +104,6 @@ add_subdirectory(lib)
 
 ## unit tests
 add_subdirectory(utest)
+
+# json interface
+add_subdirectory(json)

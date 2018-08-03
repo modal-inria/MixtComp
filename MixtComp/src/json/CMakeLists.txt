@@ -1,5 +1,5 @@
 # long file list initially generated with "find . -type f -follow -print"
-# with "./" prefix deleted, and some utest deactivated
+# with "./" prefix deleted
 
 add_executable(JMixtComp
     learn.cpp
