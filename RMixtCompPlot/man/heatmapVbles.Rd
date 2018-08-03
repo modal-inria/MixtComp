@@ -4,10 +4,12 @@
 \alias{heatmapVbles}
 \title{Heatmap of the similarities between variables about clustering}
 \usage{
-heatmapVbles(output)
+heatmapVbles(output, ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}
+
+\item{...}{arguments to be passed to plot_ly}
 }
 \description{
 Heatmap of the similarities between variables about clustering

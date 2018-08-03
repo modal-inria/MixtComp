@@ -49,7 +49,7 @@ extractCIFunctionnalVbleDegSup <- function(var, data){
 }
 
 # Mean and 95%-level confidence intervals per class for a Functional Mixture
-plotFunctionalDataDegSup <- function(output, var, class.set=1:output$mixture$nbCluster,add.obs=FALSE, ylim=NULL, xlim=NULL){
+plotFunctionalDataDegSup <- function(output, var, class.set=1:output$mixture$nbCluster,add.obs=FALSE, ylim=NULL, xlim=NULL, ...){
   # Computation of the Confidence Intervals (CI)
   data <- extractCIFunctionnalVbleDegSup(var, output)
   G <- output$mixture$nbCluster
@@ -96,7 +96,7 @@ plotFunctionalDataDegSup <- function(output, var, class.set=1:output$mixture$nbC
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
               formattedW,
-              init=plot_ly(x = data$time)%>%
+              init=plot_ly(x = data$time, ...)%>%
                 layout(title = "Mean curves and 95%-level confidence intervals per class",
                        paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
                        xaxis = list(title = "Time",

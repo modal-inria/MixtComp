@@ -4,10 +4,12 @@
 \alias{heatmapTikSorted}
 \title{Heatmap of the tik = P(Z_i=k|x_i)}
 \usage{
-heatmapTikSorted(output)
+heatmapTikSorted(output, ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}
+
+\item{...}{arguments to be passed to plot_ly}
 }
 \description{
 Heatmap of the tik = P(Z_i=k|x_i)
