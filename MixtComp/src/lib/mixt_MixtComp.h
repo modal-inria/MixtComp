@@ -20,6 +20,7 @@
 #include "IO/Dummy.h"
 #include "IO/mixt_IO.h"
 #include "IO/mixt_MisValParser.h"
+#include "IO/AlgType.h"
 #include "IO/SGraph.h"
 #include "LinAlg/mixt_Math.h"
 #include "LinAlg/mixt_Typedef.h"

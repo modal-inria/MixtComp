@@ -13,6 +13,10 @@
 #include "json.hpp"
 #include "mixt_MixtComp.h"
 
+namespace mixt {
+
 nlohmann::json GraphToJson(const mixt::SGraph& graph);
+
+}
 
 #endif

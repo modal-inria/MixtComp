@@ -14,10 +14,24 @@
 #include "mixt_MixtComp.h"
 
 int main(int argc, char* argv[]) {
-    mixt::SGraph graph;
-    nlohmann::json j = GraphToJson(graph);
+	mixt::SGraph graph;
+	nlohmann::json j = mixt::GraphToJson(graph);
 
-    std::cout << "json mock learn executable OK." << std::endl;
+	nlohmann::json k;
+	k["toto"] = "pouet";
 
-    return 0;
+	j["test"] = 12.;
+	j["test2"] = k;
+
+//    json res_list;
+    // build the list
+
+    std::string output_str = j.dump();
+    std::cout << output_str << std::endl;
+
+//    std::ofstream out(json_file_output);
+//    out << output_str;
+//    out.close();
+
+	return 0;
 }
