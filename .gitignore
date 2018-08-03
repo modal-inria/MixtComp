@@ -20,6 +20,8 @@ progress
 MixtComp/release
 MixtComp/debug
 MixtComp/report.xml
+JMixtcomp/release
+JMixtcomp/debug
 JsonMixtcomp/release
 JsonMixtcomp/debug
 !RMixtComp/inst/extdata/*.csv

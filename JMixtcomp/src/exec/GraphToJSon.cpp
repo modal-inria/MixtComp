@@ -11,7 +11,7 @@
 #include "json.hpp"
 #include "mixt_MixtComp.h"
 
-json learn_mixtcomp(const SGraph& graph){
-  json test;
+nlohmann::json GraphToJson(const mixt::SGraph& graph) {
+  nlohmann::json test;
   return test;
 }

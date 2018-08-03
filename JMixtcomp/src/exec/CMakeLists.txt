@@ -2,8 +2,9 @@
 # with "./" prefix deleted, and some utest deactivated
 
 add_executable(JMixtComp
-    main.cpp
-    main.h
+    learn.cpp
+    GraphToJson.cpp
+    GraphToJson.h
 )
 
 target_link_libraries(JMixtComp

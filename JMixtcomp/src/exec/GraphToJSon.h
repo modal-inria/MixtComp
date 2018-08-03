@@ -7,11 +7,12 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "gtest/gtest.h"
+#ifndef GRAPHTOJSON_H
+#define GRAPHTOJSON_H
 
-TEST(DataHandlerJson, listData_getData) {
-    std::string in = "toto";
-    str::string out = "toto";
+#include "json.hpp"
+#include "mixt_MixtComp.h"
 
-    ASSERT_EQ(in, out);
-}
+nlohmann::json GraphToJson(const mixt::SGraph& graph);
+
+#endif
