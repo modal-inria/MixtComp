@@ -13,7 +13,7 @@
 #include "json.hpp"
 #include "boost/variant.hpp"
 
-#include <LinAlg/mixt_LinAlg.h>
+#include <IO/NamedAlgebra.h>
 
 /**
  * Visitor for boost::variant, to perform the correct operation on every payload element in a SGraph
@@ -30,9 +30,9 @@ public:
 
 	void operator()(const std::string& str) const;
 
-	void operator()(const Vector<Real>& vec) const;
+	void operator()(const NamedVector<Real>& vec) const;
 
-	void operator()(const Matrix<Real>& mat) const;
+	void operator()(const NamedMatrix<Real>& mat) const;
 
 private:
 	nlohmann::json& j_;

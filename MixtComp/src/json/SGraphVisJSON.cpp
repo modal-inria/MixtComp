@@ -28,10 +28,10 @@ void SGraphVisJSON::operator()(const std::string& str) const {
 	j_[payloadName_] = str;
 }
 
-void SGraphVisJSON::operator()(const Vector<Real>& vec) const {
+void SGraphVisJSON::operator()(const NamedVector<Real>& vec) const {
 }
 
-void SGraphVisJSON::operator()(const Matrix<Real>& mat) const {
+void SGraphVisJSON::operator()(const NamedMatrix<Real>& mat) const {
 }
 
 }

@@ -12,6 +12,7 @@
 
 #include "boost/variant.hpp"
 #include <LinAlg/mixt_LinAlg.h>
+#include "NamedAlgebra.h"
 
 namespace mixt {
 
@@ -23,22 +24,9 @@ namespace mixt {
  * - std::string
  * - Matrix<Real>
  */
-typedef typename boost::variant<Index, Real, std::string, Vector<Real>,
-		Matrix<Real>> AlgType;
+typedef typename boost::variant<Index, Real, std::string, NamedVector<Real>,
+		NamedMatrix<Real>> AlgType;
 
 }
-
-template<typename Type>
-struct NamedVector {
-	std::string rowNames_;
-	Vector<Type> vec_;
-};
-
-template<typename Type>
-struct NamedMatrix {
-	std::string rowNames_;
-	std::string colNames_;
-	Matrix<Type> vec_;
-};
 
 #endif

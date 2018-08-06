@@ -24,12 +24,12 @@ std::string SGraphVisPrint::operator()(const std::string& str) const {
 	return str;
 }
 
-std::string SGraphVisPrint::operator()(const Vector<Real>& vec) const {
+std::string SGraphVisPrint::operator()(const NamedVector<Real>& vec) const {
 	//return itString(vec);
 	return "to be implemented";
 }
 
-std::string SGraphVisPrint::operator()(const Matrix<Real>& mat) const {
+std::string SGraphVisPrint::operator()(const NamedMatrix<Real>& mat) const {
 	//return std::to_string(mat);
 	return "to be implemented";
 }
