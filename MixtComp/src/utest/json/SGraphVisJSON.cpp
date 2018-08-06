@@ -43,8 +43,7 @@ TEST(SGraphVisJSON, integerInJSON) {
 	res = SGraphToJSON(g);
 
 	std::string computedRes = res.dump();
-	std::string expectedRes =
-			"{\"An integer\":12}";
+	std::string expectedRes = "{\"An integer\":12}";
 
 	ASSERT_EQ(computedRes, expectedRes);
 }
@@ -53,9 +52,9 @@ TEST(SGraphVisJSON, vectorInJSON) {
 	Vector<Real> val(3);
 	val << 1.0, 2.0, 3.0;
 
-	std::vector<std::string> colNames = {"riri", "fifi", "loulou"};
+	std::vector<std::string> colNames = { "riri", "fifi", "loulou" };
 
-	NamedVector<Real> ducks = {colNames, val};
+	NamedVector<Real> ducks = { colNames, val };
 
 	SGraph g;
 	g.add_payload("A named vector", ducks); // 12 can not be used directly, because it would be an int, and there will be an ambiguity as to whether it should be stored as a long or as a double
@@ -66,7 +65,30 @@ TEST(SGraphVisJSON, vectorInJSON) {
 
 	std::string computedRes = res.dump();
 	std::string expectedRes =
-			"{\"A named vector\":{\"data\":[1.0,2.0,3.0],\"rowNames\":[\"riri\",\"fifi\",\"loulou\"]}}";
+			"{\"A named vector\":{\"colNames\":[\"riri\",\"fifi\",\"loulou\"],\"data\":[1.0,2.0,3.0]}}";
+
+	ASSERT_EQ(computedRes, expectedRes);
+}
+
+TEST(SGraphVisJSON, matrixInJSON) {
+	Matrix<Real> mat(3, 3);
+	mat << 1., 2., 3., 4., 5., 6., 7, 8., 9.;
+
+	std::vector<std::string> rowNames = { "A", "B", "C" };
+	std::vector<std::string> colNames = { "1", "2", "3" };
+
+	NamedMatrix<Real> namedMat = { rowNames, colNames, mat };
+
+	SGraph g;
+	g.add_payload("A named matrix", namedMat); // 12 can not be used directly, because it would be an int, and there will be an ambiguity as to whether it should be stored as a long or as a double
+
+	nlohmann::json res;
+
+	res = SGraphToJSON(g);
+	std::string computedRes = res.dump();
+
+	std::string expectedRes =
+			"{\"A named matrix\":{\"colNames\":[\"1\",\"2\",\"3\"],\"data\":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],\"rowNames\":[\"A\",\"B\",\"C\"]}}";
 
 	ASSERT_EQ(computedRes, expectedRes);
 }

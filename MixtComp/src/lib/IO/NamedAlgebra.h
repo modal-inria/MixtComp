@@ -24,7 +24,7 @@ template<typename Type>
 struct NamedMatrix {
 	std::vector<std::string> rowNames_;
 	std::vector<std::string> colNames_;
-	Matrix<Type> vec_;
+	Matrix<Type> mat_;
 };
 
 }

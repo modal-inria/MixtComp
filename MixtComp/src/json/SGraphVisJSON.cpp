@@ -34,13 +34,30 @@ void SGraphVisJSON::operator()(const NamedVector<Real>& vec) const {
 	const double* rawData = vec.vec_.data();
 	std::vector<Real> data(rawData, rawData + vec.vec_.size());
 
-	res["rowNames"] = vec.colNames_;
+	res["colNames"] = vec.colNames_;
 	res["data"] = data;
 
 	j_[payloadName_] = res;
 }
 
 void SGraphVisJSON::operator()(const NamedMatrix<Real>& mat) const {
+	nlohmann::json res; // Since a matrix is an union of fields, it is contained in its own json object
+
+	Index nrow = mat.mat_.rows();
+	Index ncol = mat.mat_.cols();
+	std::vector<std::vector<Real>> data(nrow, std::vector<Real>(ncol));
+
+	for (Index i = 0; i < nrow; ++i) {
+		for (Index j = 0; j < ncol; ++j) {
+			data[i][j] = mat.mat_(i, j);
+		}
+	}
+
+	res["colNames"] = mat.colNames_;
+	res["rowNames"] = mat.rowNames_;
+	res["data"] = data;
+
+	j_[payloadName_] = res;
 }
 
 }
