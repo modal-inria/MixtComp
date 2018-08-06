@@ -11,7 +11,8 @@
 #include <map>
 
 #include "json.hpp"
-#include "SGraphToJSON.h"
+
+#include "JSONToSGraph.h"
 #include "SGraphVisJSON.h"
 
 namespace mixt {

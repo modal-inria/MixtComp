@@ -3,6 +3,8 @@
 
 add_library(JMixtComp
     jsonIO.h
+    JSONToSGraph.cpp
+    JSONToSGraph.h
     SGraphToJSON.cpp
     SGraphToJSON.h
     SGraphVisJSON.cpp
