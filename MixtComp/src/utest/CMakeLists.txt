@@ -2,39 +2,36 @@
 # with "./" prefix deleted, and some utest deactivated
 
 add_executable(runUtest
-    LinAlgStat/UTestMath.cpp
-    LinAlgStat/UTestStatistics.cpp
-    LinAlgStat/UTestLinAlg.cpp
-#    Archive/Ordinal/UTestBOSPath.cpp
-#    Archive/Ordinal/UTestBOSNode.cpp
-#    Archive/Ordinal/UTestOrdinal.cpp
+    json/SGraphVisJSON.cpp
+    lib/LinAlgStat/UTestMath.cpp
+    lib/LinAlgStat/UTestStatistics.cpp
+    lib/LinAlgStat/UTestLinAlg.cpp
     UTest.h
-    Simple/UTestPoisson.cpp
-    Simple/UTestCategorical.cpp
-    Simple/UTestWeibull.cpp
-    Simple/UTestGaussian.cpp
-    Simple/UTestNegativeBinomial.cpp
-    Various/UTestVarious.cpp
-    Various/UTestMisValParser.cpp
-    Various/UTestStandardLibrary.cpp
-    Various/UTestRegex.cpp
-    Statistic/UTestNegativeBinomialStatistic.cpp
-    Statistic/UTestWeibullStatistic.cpp
-    Statistic/UTestNormalStatistic.cpp
-    Statistic/UTestRNG.cpp
-    Rank/UTestRankIndividual.cpp
-    Rank/UTestRankParamStat.cpp
-    Rank/UTestRankParser.cpp
-    Rank/UTestRankVal.cpp
-    Rank/UTestRankClass.cpp
-    Rank/UTestRankLikelihood.cpp
-    UTestNew.cpp
-    Functional/UTestFunctionalComputation.cpp
-    Functional/UTestFunction.cpp
-    Functional/UTestFunctionalClass.cpp
-    Functional/UTestFunctionalMixture.cpp
-    Functional/UTestFunctionalParser.cpp
-    IO/UTestSGraph.cpp
+    lib/Simple/UTestPoisson.cpp
+    lib/Simple/UTestCategorical.cpp
+    lib/Simple/UTestWeibull.cpp
+    lib/Simple/UTestGaussian.cpp
+    lib/Simple/UTestNegativeBinomial.cpp
+    lib/Various/UTestVarious.cpp
+    lib/Various/UTestMisValParser.cpp
+    lib/Various/UTestStandardLibrary.cpp
+    lib/Various/UTestRegex.cpp
+    lib/Statistic/UTestNegativeBinomialStatistic.cpp
+    lib/Statistic/UTestWeibullStatistic.cpp
+    lib/Statistic/UTestNormalStatistic.cpp
+    lib/Statistic/UTestRNG.cpp
+    lib/Rank/UTestRankIndividual.cpp
+    lib/Rank/UTestRankParamStat.cpp
+    lib/Rank/UTestRankParser.cpp
+    lib/Rank/UTestRankVal.cpp
+    lib/Rank/UTestRankClass.cpp
+    lib/Rank/UTestRankLikelihood.cpp
+    lib/Functional/UTestFunctionalComputation.cpp
+    lib/Functional/UTestFunction.cpp
+    lib/Functional/UTestFunctionalClass.cpp
+    lib/Functional/UTestFunctionalMixture.cpp
+    lib/Functional/UTestFunctionalParser.cpp
+    lib/IO/UTestSGraph.cpp
 )
 
 target_link_libraries(runUtest

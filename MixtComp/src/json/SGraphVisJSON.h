@@ -20,7 +20,7 @@ namespace mixt {
 
 class SGraphVisJSON: public boost::static_visitor<> {
 public:
-	SGraphVisJSON(nlohmann::json& j);
+	SGraphVisJSON(nlohmann::json& j, const std::string& payloadName);
 
 	void operator()(Index i) const;
 
@@ -34,6 +34,7 @@ public:
 
 private:
 	nlohmann::json& j_;
+	const std::string& payloadName_;
 };
 
 }

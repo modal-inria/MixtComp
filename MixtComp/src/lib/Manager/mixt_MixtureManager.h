@@ -18,7 +18,6 @@
 #include "Mixture/Simple/Poisson/Poisson.h"
 #include "Mixture/Functional/mixt_FunctionalMixture.h"
 #include "Mixture/Functional/mixt_FunctionalSharedAlphaMixture.h"
-#include "Mixture/Ordinal/mixt_Ordinal.h"
 #include "Mixture/Rank/mixt_RankMixture.h"
 
 namespace mixt {

@@ -102,11 +102,6 @@ add_library(MixtComp
 	Mixture/Rank/mixt_RankStat.cpp
 	Mixture/Rank/mixt_RankParser.h
 	Mixture/Rank/mixt_RankIndividual.cpp
-	Mixture/Ordinal/mixt_BOSPath.h
-	Mixture/Ordinal/mixt_BOSNode.h
-	Mixture/Ordinal/mixt_BOSNode.cpp
-	Mixture/Ordinal/mixt_Ordinal.h
-	Mixture/Ordinal/mixt_BOSPath.cpp
 	Mixture/mixt_IMixture.h
 	Mixture/Functional/mixt_FunctionalMixture.h
 	Mixture/Functional/mixt_FunctionalClass.cpp
