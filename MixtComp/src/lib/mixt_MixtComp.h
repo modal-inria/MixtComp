@@ -22,6 +22,7 @@
 #include "IO/mixt_MisValParser.h"
 #include "IO/AlgType.h"
 #include "IO/SGraph.h"
+#include "IO/SGraphVisPrint.h"
 #include "LinAlg/mixt_Math.h"
 #include "LinAlg/mixt_Typedef.h"
 #include "Mixture/Functional/mixt_Function.h"

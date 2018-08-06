@@ -22,7 +22,7 @@ namespace mixt {
  */
 class SGraph {
 public:
-	/** Generic method to add a basic type. Should be overloaded for complex types, for example matrices with row names and col names. */
+	/** Generic method to add a basic type. */
 	void add_payload(const std::string& name, const AlgType& data);
 
 	void add_child(const std::string& name, const SGraph& child);
@@ -49,31 +49,6 @@ private:
 
 	/** Links to other nodes. */
 	std::map<std::string, SGraph> children_;
-};
-
-class SGraphPrintVis: public boost::static_visitor<std::string> {
-public:
-	std::string operator()(Index i) const {
-		return std::to_string(i);
-	}
-
-	std::string operator()(const Real r) const {
-		return std::to_string(r);
-	}
-
-	std::string operator()(const std::string& str) const {
-		return str;
-	}
-
-	std::string operator()(const Vector<Real>& vec) const {
-		//return itString(vec);
-		return "to be implemented";
-	}
-
-	std::string operator()(const Matrix<Real>& mat) const {
-		//return std::to_string(mat);
-		return "to be implemented";
-	}
 };
 
 }

@@ -21,7 +21,7 @@ TEST(SGraph, BasicIOVisitor) {
 	test.add_payload(nameStr, testStr);
 
 	AlgType res = test.get_payload(nameStr);
-	std::string resStr = boost::apply_visitor(SGraphPrintVis(), res);
+	std::string resStr = boost::apply_visitor(SGraphVisPrint(), res);
 
 	ASSERT_EQ(testStr, resStr);
 }

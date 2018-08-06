@@ -2,20 +2,23 @@
  * Copyright (C) Inria - Lille 1 */
 
 /*
- *  Project:    JMixtComp
+ *  Project:    MixtComp
  *  Created on: Aug 3, 2018
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef GRAPHTOJSON_H
-#define GRAPHTOJSON_H
+#ifndef SGRAPHTOJSON_H
+#define SGRAPHTOJSON_H
 
 #include "json.hpp"
 #include "mixt_MixtComp.h"
 
 namespace mixt {
 
-nlohmann::json GraphToJson(const mixt::SGraph& graph);
+/**
+ * nlohmann::json is recursive, and mixt::SGraph is recursive too. Translation should be easy.
+ */
+nlohmann::json SGraphToJSON(const mixt::SGraph& graph);
 
 }
 

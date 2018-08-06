@@ -2,20 +2,20 @@
  * Copyright (C) Inria - Lille 1 */
 
 /*
- *  Project:    JMixtComp
+ *  Project:    MixtComp
  *  Created on: Aug 3, 2018
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include "SGraphToJSON.h"
 #include <iostream>
 #include "json.hpp"
 
-#include "GraphToJSon.h"
 #include "mixt_MixtComp.h"
 
 int main(int argc, char* argv[]) {
 	mixt::SGraph graph;
-	nlohmann::json j = mixt::GraphToJson(graph);
+	nlohmann::json j = mixt::SGraphToJSON(graph);
 
 	nlohmann::json k;
 	k["toto"] = "pouet";

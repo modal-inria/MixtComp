@@ -21,6 +21,8 @@ add_library(MixtComp
 	IO/AlgType.h
 	IO/SGraph.cpp
 	IO/SGraph.h
+	IO/SGraphVisPrint.h
+	IO/SGraphVisPrint.cpp
 	IO/mixt_SpecialStr.h
 	Strategy/mixt_SEMStrategy.cpp
 	Strategy/mixt_StrategyParam.h
