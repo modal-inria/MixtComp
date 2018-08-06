@@ -11,6 +11,7 @@
 #include "mixt_MixtComp.h"
 
 namespace mixt {
+
 std::string SGraphVisPrint::operator()(Index i) const {
 	return std::to_string(i);
 }

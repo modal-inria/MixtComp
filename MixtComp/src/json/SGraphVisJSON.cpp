@@ -13,4 +13,25 @@
 
 namespace mixt {
 
+SGraphVisJSON::SGraphVisJSON(nlohmann::json& j): j_(j) {};
+
+void SGraphVisJSON::operator()(Index i) const {
+
+}
+
+void SGraphVisJSON::operator()(const Real r) const {
+
+}
+
+void SGraphVisJSON::operator()(const std::string& str) const {
+
+}
+
+void SGraphVisJSON::operator()(const Vector<Real>& vec) const {
+
+}
+void SGraphVisJSON::operator()(const Matrix<Real>& mat) const {
+
+}
+
 }
