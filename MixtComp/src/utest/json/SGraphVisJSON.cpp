@@ -28,7 +28,23 @@ TEST(SGraphVisJSON, basicJSON) {
 	res = SGraphToJSON(g);
 
 	std::string computedRes = res.dump();
-	std::string expectedRes = "{\"paramStr\":\"A parameter\",\"varA\":{\"A nested real\":12.0,\"A nested string\":\"Hello World !\"}}";
+	std::string expectedRes =
+			"{\"paramStr\":\"A parameter\",\"varA\":{\"A nested real\":12.0,\"A nested string\":\"Hello World !\"}}";
+
+	ASSERT_EQ(computedRes, expectedRes);
+}
+
+TEST(SGraphVisJSON, integerInJSON) {
+	SGraph g;
+	g.add_payload("An integer", Index(12)); // 12 can not be used directly, because it would be an int, and there will be an ambiguity as to whether it should be stored as a long or as a double
+
+	nlohmann::json res;
+
+	res = SGraphToJSON(g);
+
+	std::string computedRes = res.dump();
+	std::string expectedRes =
+			"{\"An integer\":12}";
 
 	ASSERT_EQ(computedRes, expectedRes);
 }
