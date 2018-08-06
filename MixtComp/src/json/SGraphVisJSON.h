@@ -11,7 +11,9 @@
 #define SGRAPHVISJSON_H
 
 #include "json.hpp"
-#include "mixt_MixtComp.h"
+#include "boost/variant.hpp"
+
+#include <LinAlg/mixt_LinAlg.h>
 
 /**
  * Visitor for boost::variant, to perform the correct operation on every payload element in a SGraph

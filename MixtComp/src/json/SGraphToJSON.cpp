@@ -11,19 +11,20 @@
 #include <map>
 
 #include "json.hpp"
-
-#include "mixt_MixtComp.h"
+#include "SGraphToJSON.h"
+#include "SGraphVisJSON.h"
 
 namespace mixt {
 
-nlohmann::json SGraphToJSON(const mixt::SGraph& graph) {
+nlohmann::json SGraphToJSON(const SGraph& graph) {
 	nlohmann::json res;
+
 	const std::map<std::string, AlgType>& payload = graph.get_payload();
 	for (std::map<std::string, AlgType>::const_iterator it = payload.begin(),
 			itEnd = payload.end(); it != itEnd; ++it) {
 		const std::pair<std::string, AlgType>& val = *it;
 
-		// TODO: convert to json using visitor and add to res
+		boost::apply_visitor(SGraphVisJSON(res, val.first), val.second);
 	}
 
 	const std::map<std::string, SGraph>& children = graph.get_children();

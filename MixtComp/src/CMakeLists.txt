@@ -93,17 +93,18 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ## -I
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/json/")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/")
 
 ## others cxx flags
 set(CMAKE_POSITION_INDEPENDENT_CODE ON) # to enable PIC on platforms that need it
 add_definitions(-DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE_CURRENT_SOURCE_DIR}/lib/LinAlg/mixt_EigenMatrixBaseAddons.h\")
 
+# json interface
+add_subdirectory(json)
+
 # MIXTCOMP LIBRARY TO COMPILE
 add_subdirectory(lib)
 
 ## unit tests
 add_subdirectory(utest)
-
-# json interface
-add_subdirectory(json)

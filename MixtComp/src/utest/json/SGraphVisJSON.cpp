@@ -9,9 +9,26 @@
 
 #include "gtest/gtest.h"
 #include "mixt_MixtComp.h"
+#include "jsonIO.h"
 
 using namespace mixt;
 
 TEST(SGraphVisJSON, basicJSON) {
+	SGraph g;
+	g.add_payload("paramStr", "A parameter");
 
+	SGraph child;
+	child.add_payload("A nested real", 12.0);
+	child.add_payload("A nested string", "Hello World !");
+
+	g.add_child("varA", child);
+
+	nlohmann::json res;
+
+	res = SGraphToJSON(g);
+
+	std::string computedRes = res.dump();
+	std::string expectedRes = "{\"paramStr\":\"A parameter\",\"varA\":{\"A nested real\":12.0,\"A nested string\":\"Hello World !\"}}";
+
+	ASSERT_EQ(computedRes, expectedRes);
 }

@@ -11,14 +11,15 @@
 #define SGRAPHTOJSON_H
 
 #include "json.hpp"
-#include "mixt_MixtComp.h"
+
+#include <IO/SGraph.h>
 
 namespace mixt {
 
 /**
  * nlohmann::json is recursive, and mixt::SGraph is recursive too. Translation should be easy.
  */
-nlohmann::json SGraphToJSON(const mixt::SGraph& graph);
+nlohmann::json SGraphToJSON(const SGraph& graph);
 
 }
 

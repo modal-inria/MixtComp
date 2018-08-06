@@ -9,8 +9,6 @@
 
 #include "SGraphVisJSON.h"
 
-#include "mixt_MixtComp.h"
-
 namespace mixt {
 
 SGraphVisJSON::SGraphVisJSON(nlohmann::json& j, const std::string& payloadName) :

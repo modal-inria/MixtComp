@@ -6,7 +6,6 @@ add_executable(runUtest
     lib/LinAlgStat/UTestMath.cpp
     lib/LinAlgStat/UTestStatistics.cpp
     lib/LinAlgStat/UTestLinAlg.cpp
-    UTest.h
     lib/Simple/UTestPoisson.cpp
     lib/Simple/UTestCategorical.cpp
     lib/Simple/UTestWeibull.cpp
@@ -36,6 +35,7 @@ add_executable(runUtest
 
 target_link_libraries(runUtest
     gtest_main
+    JMixtComp
     MixtComp
     ${Boost_LIBRARIES}
     nlopt
