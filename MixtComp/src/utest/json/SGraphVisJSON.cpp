@@ -48,3 +48,27 @@ TEST(SGraphVisJSON, integerInJSON) {
 
 	ASSERT_EQ(computedRes, expectedRes);
 }
+
+TEST(SGraphVisJSON, vectorInJSON) {
+	Vector<Real> val(3);
+	val << 1.0, 2.0, 3.0;
+
+	std::vector<std::string> colNames = {"riri", "fifi", "loulou"};
+
+	NamedVector<Real> ducks = {colNames, val};
+
+	SGraph g;
+	g.add_payload("A named vector", ducks); // 12 can not be used directly, because it would be an int, and there will be an ambiguity as to whether it should be stored as a long or as a double
+
+	nlohmann::json res;
+
+	res = SGraphToJSON(g);
+
+	std::cout << res.dump() << std::endl;
+
+//	std::string computedRes = res.dump();
+//	std::string expectedRes =
+//			"{\"An integer\":12}";
+//
+//	ASSERT_EQ(computedRes, expectedRes);
+}
