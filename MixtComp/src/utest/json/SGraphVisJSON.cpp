@@ -65,7 +65,7 @@ TEST(SGraphVisJSON, vectorInJSON) {
 
 	std::string computedRes = res.dump();
 	std::string expectedRes =
-			"{\"A named vector\":{\"colNames\":[\"riri\",\"fifi\",\"loulou\"],\"data\":[1.0,2.0,3.0]}}";
+			"{\"A named vector\":{\"colNames\":[\"riri\",\"fifi\",\"loulou\"],\"data\":[1.0,2.0,3.0],\"dtype\":\"Vector<Real>(3)\"}}";
 
 	ASSERT_EQ(computedRes, expectedRes);
 }
@@ -88,7 +88,7 @@ TEST(SGraphVisJSON, matrixInJSON) {
 	std::string computedRes = res.dump();
 
 	std::string expectedRes =
-			"{\"A named matrix\":{\"colNames\":[\"1\",\"2\",\"3\"],\"data\":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],\"rowNames\":[\"A\",\"B\",\"C\"]}}";
+			"{\"A named matrix\":{\"colNames\":[\"1\",\"2\",\"3\"],\"data\":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],\"dtype\":\"Matrix<Real>(3,3)\",\"rowNames\":[\"A\",\"B\",\"C\"]}}";
 
 	ASSERT_EQ(computedRes, expectedRes);
 }
