@@ -64,11 +64,9 @@ TEST(SGraphVisJSON, vectorInJSON) {
 
 	res = SGraphToJSON(g);
 
-	std::cout << res.dump() << std::endl;
+	std::string computedRes = res.dump();
+	std::string expectedRes =
+			"{\"A named vector\":{\"data\":[1.0,2.0,3.0],\"rowNames\":[\"riri\",\"fifi\",\"loulou\"]}}";
 
-//	std::string computedRes = res.dump();
-//	std::string expectedRes =
-//			"{\"An integer\":12}";
-//
-//	ASSERT_EQ(computedRes, expectedRes);
+	ASSERT_EQ(computedRes, expectedRes);
 }
