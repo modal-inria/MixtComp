@@ -17,6 +17,8 @@
 #include "mixt_Typedef.h"
 #include "mixt_LinAlg.h"
 
+namespace mixt {
+
 int fac(int n);
 
 Real logFac(int n);
@@ -107,8 +109,8 @@ bool differentValue(const Type& data, Index n, Real epsilon) {
 }
 
 template<typename T>
-Real positiveNewtonRaphson(const Vector<T>& x, Real currN, Real nIt, std::function<std::pair<Real, Real>(const Vector<T>&, Real)> evalFunc)
-{
+Real positiveNewtonRaphson(const Vector<T>& x, Real currN, Real nIt,
+		std::function<std::pair<Real, Real>(const Vector<T>&, Real)> evalFunc) {
 	if (nIt < 0)
 		return currN;
 	else {
@@ -119,6 +121,8 @@ Real positiveNewtonRaphson(const Vector<T>& x, Real currN, Real nIt, std::functi
 		else
 			return positiveNewtonRaphson(x, currN / 2.0, nIt - 1, evalFunc);
 	}
+}
+
 }
 
 #endif // MIXT_LINALG_H

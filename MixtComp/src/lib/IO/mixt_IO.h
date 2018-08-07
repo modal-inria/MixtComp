@@ -17,7 +17,7 @@
 namespace mixt {
 
 template <typename Type>
-Type str2type(std::string s) {
+Type str2type(const std::string& s) {
   std::istringstream i(s);
   Type x;
   i >> x;

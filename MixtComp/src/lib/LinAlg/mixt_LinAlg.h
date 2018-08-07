@@ -14,6 +14,8 @@
 #include <Eigen/Dense>
 #include "mixt_Typedef.h"
 
+namespace mixt {
+
 template<typename T, int _Rows = Eigen::Dynamic, int _Cols = Eigen::Dynamic>
 class Matrix: public Eigen::Matrix<T, _Rows, _Cols> {
 public:
@@ -157,5 +159,7 @@ public:
 		return *this;
 	}
 };
+
+}
 
 #endif // MIXT_LINALG_H

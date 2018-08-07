@@ -48,6 +48,7 @@ add_library(MixtComp
 	LinAlg/mixt_LinAlg.h
 	LinAlg/mixt_Iterator.h
 	LinAlg/mixt_EigenMatrixBaseAddons.h
+	LinAlg/mixt_Typedef.cpp
 	LinAlg/mixt_Typedef.h
 	LinAlg/mixt_Math.cpp
 	mixt_MixtComp.h

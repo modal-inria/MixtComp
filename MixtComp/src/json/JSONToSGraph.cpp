@@ -8,16 +8,27 @@
  **/
 
 #include <iostream>
+#include <boost/regex.hpp>
 
 #include "JSONToSGraph.h"
 
 namespace mixt {
 
+/**
+ * https://www.boost.org/doc/libs/1_67_0/libs/regex/doc/html/boost_regex/ref/regex_match.html
+ */
 SGraph JSONToSGraph(const nlohmann::json& json) {
 	SGraph res;
+	boost::regex vectorRE(R"(Vector<([a-zA-Z]+)>\(([0-9]+)\))");
+	boost::regex matrixRE(R"(Matrix<([a-zA-Z]+)>\(([0-9]+),([0-9]+)\))");
 
-	if (json.find("dtype") != json.end()) { // if there is a dtype string, that means that the current json represents a NamesAlgebra object, which requires a particular parsing
-			// parse vector / matrix
+	if (json.find("dtype") != json.end()) { // if there is a dtype string, that means that the current json represents a NamedAlgebra object, which requires a particular parsing
+		std::string dtype = json["dtype"].get<std::string>();
+		boost::cmatch what;
+		if (boost::regex_match(dtype.c_str(), what, vectorRE)) { // pattern match a vector
+			std::string dataType = what[1];
+			Index ncol = toIndex(what[2].str());
+		}
 	}
 
 	for (nlohmann::json::const_iterator it = json.begin(); it != json.end();

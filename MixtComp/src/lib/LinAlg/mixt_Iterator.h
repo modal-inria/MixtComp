@@ -20,173 +20,132 @@
  * It is accessible in MixtComp through the derived class mixt::Matrix.
  */
 
-class Iterator : public std::iterator<std::random_access_iterator_tag,
-                                      Scalar,
-                                      int,
-                                      Scalar*,
-                                      Scalar&>
-{
-  public:
-    Iterator(int i,
-             int j,
-             Derived& mat) :
-      i_(i),
-      j_(j),
-      rows_(mat.rows()),
-      p_mat_(&mat)
-    {}
+class Iterator: public std::iterator<std::random_access_iterator_tag, Scalar,
+		int, Scalar*, Scalar&> {
+public:
+	Iterator(int i, int j, Derived& mat) :
+			i_(i), j_(j), rows_(mat.rows()), p_mat_(&mat) {
+	}
 
-    Iterator operator+(int i)
-    {
-      int posP, iP, jP;
-      posP = pos();
-      posP += i;
-      posToIn(posP, iP, jP);
-      return Iterator(iP, jP, *p_mat_);
-    }
+	Iterator operator+(int i) {
+		int posP, iP, jP;
+		posP = pos();
+		posP += i;
+		posToIn(posP, iP, jP);
+		return Iterator(iP, jP, *p_mat_);
+	}
 
-    Iterator& operator+=(int i)
-    {
-      posToIn(pos() + i,
-    		  i_,
-			  j_);
-      return *this;
-    }
+	Iterator& operator+=(int i) {
+		posToIn(pos() + i, i_, j_);
+		return *this;
+	}
 
-    Iterator operator-(int i)
-    {
-      int posP, iP, jP;
-      posP = pos();
-      posP -= i;
-      posToIn(posP, iP, jP);
-      return Iterator(iP, jP, *p_mat_);
-    }
+	Iterator operator-(int i) {
+		int posP, iP, jP;
+		posP = pos();
+		posP -= i;
+		posToIn(posP, iP, jP);
+		return Iterator(iP, jP, *p_mat_);
+	}
 
-    int operator-(const Iterator& it)
-    {
-      return pos() - it.pos();
-    }
+	int operator-(const Iterator& it) {
+		return pos() - it.pos();
+	}
 
-    bool operator<(const Iterator& it)
-    {
-      if (j_ < it.j_)
-      {
-        return true;
-      }
-      else if (j_ > it.j_)
-      {
-        return false;
-      }
-      else if (i_ < it.i_) // in this case, j_ == it.j_, hence comparison must be done on i_
-      {
-        return true;
-      }
+	bool operator<(const Iterator& it) {
+		if (j_ < it.j_) {
+			return true;
+		} else if (j_ > it.j_) {
+			return false;
+		} else if (i_ < it.i_) // in this case, j_ == it.j_, hence comparison must be done on i_
+				{
+			return true;
+		}
 
-      return false;
-    }
+		return false;
+	}
 
-    bool operator==(const Iterator& it)
-    {
-      if (i_ == it.i_ && j_ == it.j_)
-        return true;
-      else
-        return false;
-    }
+	bool operator==(const Iterator& it) {
+		if (i_ == it.i_ && j_ == it.j_)
+			return true;
+		else
+			return false;
+	}
 
-    bool operator>(const Iterator& it)
-    {
-      if (j_ > it.j_)
-      {
-        return true;
-      }
-      else if (j_ > it.j_)
-      {
-        return false;
-      }
-      else if (i_ > it.i_) // in this case, j_ == it.j_, hence comparison must be done on i_
-      {
-        return true;
-      }
+	bool operator>(const Iterator& it) {
+		if (j_ > it.j_) {
+			return true;
+		} else if (j_ > it.j_) {
+			return false;
+		} else if (i_ > it.i_) // in this case, j_ == it.j_, hence comparison must be done on i_
+				{
+			return true;
+		}
 
-      return false;
-    }
+		return false;
+	}
 
-    bool operator>=(const Iterator& it)
-    {
-      if (!(*this < it))
-      {
-        return true;
-      }
+	bool operator>=(const Iterator& it) {
+		if (!(*this < it)) {
+			return true;
+		}
 
-      return false;
-    }
+		return false;
+	}
 
-    bool operator!=(const Iterator& it)
-    {
-      if (i_ != it.i_ || j_ != it.j_)
-        return true;
-      else
-        return false;
-    }
+	bool operator!=(const Iterator& it) {
+		if (i_ != it.i_ || j_ != it.j_)
+			return true;
+		else
+			return false;
+	}
 
-    Scalar& operator*() const
-    {
-      return (*p_mat_)(i_, j_);
-    }
+	Scalar& operator*() const {
+		return (*p_mat_)(i_, j_);
+	}
 
-    Scalar* operator->() const
-    {
-      return &(*p_mat_)(i_, j_);
-    }
+	Scalar* operator->() const {
+		return &(*p_mat_)(i_, j_);
+	}
 
-    Iterator& operator++()
-    {
-      if (i_ < rows_ - 1) // row increment
-      {
-        ++i_;
-      }
-      else // column increment
-      {
-        i_ = 0;
-        ++j_;
-      }
-      return *this;
-    }
+	Iterator& operator++() {
+		if (i_ < rows_ - 1) // row increment
+				{
+			++i_;
+		} else // column increment
+		{
+			i_ = 0;
+			++j_;
+		}
+		return *this;
+	}
 
-    Iterator& operator--()
-    {
-      if (i_ > 0)
-      {
-        --i_;
-      }
-      else
-      {
-        i_ = rows_ - 1;
-        --j_;
-      }
-      return *this;
-    }
+	Iterator& operator--() {
+		if (i_ > 0) {
+			--i_;
+		} else {
+			i_ = rows_ - 1;
+			--j_;
+		}
+		return *this;
+	}
 
-    int i_;
-    int j_;
-    int rows_;
-    Derived* p_mat_;
+	int i_;
+	int j_;
+	int rows_;
+	Derived* p_mat_;
 
-    void posToIn(int pos,
-                 int& i,
-                 int& j) const
-    {
-      std::div_t divresult;
-      divresult = std::div(pos, rows_);
+	void posToIn(int pos, int& i, int& j) const {
+		std::div_t divresult;
+		divresult = std::div(pos, rows_);
 
-      i = divresult.rem;
-      j = divresult.quot;
-    }
+		i = divresult.rem;
+		j = divresult.quot;
+	}
 
-    int pos() const
-    {
-      return j_ * rows_ + i_;
-    }
+	int pos() const {
+		return j_ * rows_ + i_;
+	}
 };
 
 #endif // MIXT_ITERATOR_H

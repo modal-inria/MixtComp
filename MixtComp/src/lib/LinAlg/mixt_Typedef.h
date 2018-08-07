@@ -11,6 +11,9 @@
 #define MIXT_TYPEDEF_H
 
 #include <cstdlib>
+#include <string>
+
+namespace mixt {
 
 /** Eigen storage is column-major by default, which suits the main way of accessing data,
  * by looping over individuals instead of variables */
@@ -18,5 +21,12 @@ typedef double Real;
 // typedef std::size_t Index;
 // typedef int Index;
 typedef std::ptrdiff_t Index;
+
+
+Real toReal(const std::string& s);
+
+Index toIndex(const std::string& s);
+
+}
 
 #endif // MIXT_TYPEDEF_H
