@@ -21,3 +21,12 @@ TEST(JSonToSGraph, basic) {
 
 	ASSERT_EQ(expectedJSON, computedJSON);
 }
+
+TEST(JSonToSGraph, VectorReal) {
+	nlohmann::json expectedJSON =
+			R"-({"A named vector":{"colNames":["riri","fifi","loulou"],"data":[1.0,2.0,3.0],"dtype":"Vector<Real>(3)"}})-"_json;
+
+	nlohmann::json computedJSON = SGraphToJSON(JSONToSGraph(expectedJSON));
+
+	ASSERT_EQ(expectedJSON, computedJSON);
+}
