@@ -16,8 +16,8 @@ using namespace mixt;
 TEST(JSonToSGraph, basic) {
 	nlohmann::json expectedJSON =
 			R"({"paramStr":"A parameter","varA":{"A nested real":12.0,"A nested string":"Hello World !"}})"_json;
-	SGraph graph = JSONToSGraph(expectedJSON);
-	nlohmann::json computedJSON = SGraphToJSON(graph);
+
+	nlohmann::json computedJSON = SGraphToJSON(JSONToSGraph(expectedJSON));
 
 	ASSERT_EQ(expectedJSON, computedJSON);
 }
