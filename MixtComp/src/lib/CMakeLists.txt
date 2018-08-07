@@ -9,6 +9,8 @@ add_library(MixtComp
 	Various/mixt_Constants.cpp
 	Various/mixt_Various.h
 	Various/mixt_Timer.cpp
+	Run/Learn.cpp
+	Run/Learn.h
 	IO/Dummy.cpp
 	IO/mixt_ParamExtractorCsv.h
 	IO/mixt_DataExtractorCsv.cpp
