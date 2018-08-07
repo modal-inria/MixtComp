@@ -16,7 +16,7 @@
 
 namespace mixt {
 
-SGraph JSONToSGraph(const nlohmann::json& graph);
+SGraph JSONToSGraph(const nlohmann::json& j);
 
 }
 

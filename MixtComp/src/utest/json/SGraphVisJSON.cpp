@@ -3,7 +3,7 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: June 3, 2016
+ *  Created on: August 6, 2018
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 

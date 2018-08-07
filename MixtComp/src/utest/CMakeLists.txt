@@ -3,6 +3,7 @@
 
 add_executable(runUtest
     json/SGraphVisJSON.cpp
+    json/JSONToSGraph.cpp
     lib/LinAlgStat/UTestMath.cpp
     lib/LinAlgStat/UTestStatistics.cpp
     lib/LinAlgStat/UTestLinAlg.cpp
