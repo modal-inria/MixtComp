@@ -7,10 +7,9 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef GRAPHVISJSON_H
-#define GRAPHVISJSON_H
+#ifndef SGRAPHVISPRINT_H
+#define SGRAPHVISPRINT_H
 
-#include "json.hpp"
 #include "mixt_MixtComp.h"
 
 namespace mixt {
