@@ -21,24 +21,17 @@ namespace mixt {
 /**
  * SimpleMixture is the new interface to add simple models. It is simpler than SimpleMixtureBridge which used class traits for no apparent benefit.
  */
-template<typename Model, typename DataHandler, typename DataExtractor,
-		typename ParamSetter, typename ParamExtractor>
+template<typename Model, typename DataHandler, typename DataExtractor, typename ParamSetter, typename ParamExtractor>
 class SimpleMixture: public IMixture {
 public:
 	/** constructor.
 	 *  @param idName id name of the mixture
 	 *  @param nbCluster number of cluster
 	 **/
-	SimpleMixture(Index indexMixture, std::string const& idName, Index nbClass,
-			const DataHandler* p_handler, DataExtractor* p_extractor,
-			const ParamSetter* p_paramSetter, ParamExtractor* p_paramExtractor,
-			Real confidenceLevel) :
-			IMixture(indexMixture, idName), nbClass_(nbClass), param_(), model_(
-					idName, nbClass, param_), augData_(), nbInd_(0), confidenceLevel_(
-					confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(
-					augData_, confidenceLevel), paramStat_(param_,
-					confidenceLevel), likelihood_(param_, augData_, nbClass), p_handler_(
-					p_handler), p_dataExtractor_(p_extractor), p_paramSetter_(
+	SimpleMixture(Index indexMixture, std::string const& idName, Index nbClass, const DataHandler* p_handler, DataExtractor* p_extractor, const ParamSetter* p_paramSetter,
+			ParamExtractor* p_paramExtractor, Real confidenceLevel) :
+			IMixture(indexMixture, idName), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), nbInd_(0), confidenceLevel_(confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(
+					augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_, augData_, nbClass), p_handler_(p_handler), p_dataExtractor_(p_extractor), p_paramSetter_(
 					p_paramSetter), p_paramExtractor_(p_paramExtractor) {
 	}
 
@@ -49,8 +42,7 @@ public:
 	 */
 	std::string setDataParam(RunMode mode, const std::vector<std::string>& data, const SGraph& param) {
 		std::string warnLog;
-		warnLog += p_handler_->getData(idName(), augData_, nbInd_, paramStr_,
-				(model_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
+		warnLog += p_handler_->getData(idName(), augData_, nbInd_, paramStr_, (model_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
 
 		if (warnLog.size() > 0) {
 			return warnLog;
@@ -60,15 +52,12 @@ public:
 
 		if (tempLog.size() > 0) { // check on the missing values description
 			std::stringstream sstm;
-			sstm << "Variable " << idName()
-					<< " has a problem with the descriptions of missing values."
-					<< std::endl << tempLog;
+			sstm << "Variable " << idName() << " has a problem with the descriptions of missing values." << std::endl << tempLog;
 			warnLog += sstm.str();
 		}
 
 		if (mode == prediction_) {
-			p_paramSetter_->getParam(idName_, "NumericalParam", param_,
-					paramStr_); // parameters are set using results from previous run, note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
+			p_paramSetter_->getParam(idName_, "NumericalParam", param_, paramStr_); // parameters are set using results from previous run, note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
 
 			paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at model_.setModalities(nbParam)
 		}
@@ -142,12 +131,8 @@ public:
 	}
 
 	void exportDataParam(SGraph& data, SGraph& param) const {
-		p_dataExtractor_->exportVals(indexMixture_, model_.hasModalities(),
-				idName_, augData_, dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
-		p_paramExtractor_->exportParam(indexMixture_, idName(),
-				"NumericalParam", paramStat_.getStatStorage(),
-				paramStat_.getLogStorage(), model_.paramNames(),
-				confidenceLevel_, paramStr_);
+		p_dataExtractor_->exportVals(indexMixture_, model_.hasModalities(), idName_, augData_, dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
+		p_paramExtractor_->exportParam(indexMixture_, idName(), "NumericalParam", paramStat_.getStatStorage(), paramStat_.getLogStorage(), model_.paramNames(), confidenceLevel_, paramStr_);
 	}
 
 	void initData(Index i) {
@@ -159,12 +144,10 @@ public:
 	}
 	;
 
-	std::string checkSampleCondition(
-			const Vector<std::set<Index> >& classInd) const {
+	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
 		std::string warnLog = model_.checkSampleCondition(classInd);
 		if (0 < warnLog.size()) {
-			return "checkSampleCondition, error in variable " + idName_ + eol
-					+ warnLog;
+			return "checkSampleCondition, error in variable " + idName_ + eol + warnLog;
 		}
 		return "";
 	}
