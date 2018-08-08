@@ -27,11 +27,12 @@ public:
 
 	void add_child(const std::string& name, const SGraph& child);
 
-	const AlgType& get_payload(const std::string& name) {
-		return payload_[name];
+	const AlgType& get_payload(const std::string& name) const {
+		return payload_.at(name);
 	}
-	const SGraph& get_child(const std::string& name) {
-		return children_[name];
+
+	const SGraph& get_child(const std::string& name) const {
+		return children_.at(name);
 	}
 
 	/** Map to loop over all payload elements.*/
