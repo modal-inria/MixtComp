@@ -47,7 +47,7 @@ public:
 	 * To facilitate data handling, framework provide templated functions,
 	 * that can be called directly to get the data.
 	 */
-	std::string setDataParam(RunMode mode) {
+	std::string setDataParam(RunMode mode, const std::vector<std::string>& data, const SGraph& param) {
 		std::string warnLog;
 		warnLog += p_handler_->getData(idName(), augData_, nbInd_, paramStr_,
 				(model_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
@@ -141,7 +141,7 @@ public:
 		model_.writeParameters();
 	}
 
-	void exportDataParam() const {
+	void exportDataParam(SGraph& data, SGraph& param) const {
 		p_dataExtractor_->exportVals(indexMixture_, model_.hasModalities(),
 				idName_, augData_, dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
 		p_paramExtractor_->exportParam(indexMixture_, idName(),

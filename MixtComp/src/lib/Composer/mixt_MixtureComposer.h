@@ -18,9 +18,11 @@
 #include "mixt_ZClassInd.h"
 #include "mixt_ClassDataStat.h"
 #include "mixt_ClassSampler.h"
-#include "../Mixture/mixt_IMixture.h"
-#include "../Various/mixt_Enum.h"
-#include "../Param/mixt_ConfIntParamStat.h"
+
+#include <IO/SGraph.h>
+#include <Mixture/mixt_IMixture.h>
+#include <Various/mixt_Enum.h>
+#include <Param/mixt_ConfIntParamStat.h>
 
 namespace mixt {
 
@@ -159,11 +161,14 @@ public:
 	template<typename ParamSetter, typename DataHandler>
 	std::string setDataParam(const ParamSetter& paramSetter,
 			const DataHandler& dataHandler, RunMode mode) {
+		SGraph dummyParam;
+		std::vector<std::string> dummyData;
+
 		std::string warnLog;
 
 		for (ConstMixtIterator it = v_mixtures_.begin();
 				it != v_mixtures_.end(); ++it) {
-			warnLog += (*it)->setDataParam(mode);
+			warnLog += (*it)->setDataParam(mode, dummyData, dummyParam);
 		}
 
 		warnLog += setProportion(paramSetter);
@@ -261,7 +266,8 @@ public:
 	template<typename DataExtractor, typename ParamExtractor>
 	void exportDataParam(DataExtractor& dataExtractor,
 			ParamExtractor& paramExtractor) const {
-
+		SGraph dummyData;
+		SGraph dummyParam;
 		dataExtractor.exportVals(0, "z_class", zClassInd_.zi(), tik_);
 		paramExtractor.exportParam(0, "z_class", "pi",
 				paramStat_.getStatStorage(), paramStat_.getLogStorage(),
@@ -269,7 +275,7 @@ public:
 
 		for (ConstMixtIterator it = v_mixtures_.begin();
 				it != v_mixtures_.end(); ++it) {
-			(*it)->exportDataParam();
+			(*it)->exportDataParam(dummyData, dummyParam);
 		}
 
 	}

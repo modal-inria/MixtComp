@@ -25,28 +25,35 @@ namespace mixt {
  */
 SGraph learn(const SGraph& data, const SGraph& desc, const SGraph& algo) {
 	SGraph res;
-
-	std::cout << "MixtComp, learn, version: " << version << std::endl;
-	std::cout << "Deterministic mode: " << deterministicMode() << std::endl;
-	//	std::cout<< "Number of threads: " << omp_get_num_threads() << std::endl;
-
-	Timer totalTimer("Total Run");
-
-	std::string warnLog; // string to log warnings
-
-	DataHandlerDummy datahandler;
-	DataExtractorDummy dataextractor;
-	ParamSetterDummy paramsetter;
-	ParamExtractorDummy paramextractor;
-
-	Real confidenceLevel = boost::get<Real>(
-			algo.get_payload("confidenceLevel"));
-
-	MixtureManager<DataHandlerDummy, // create the mixture manager
-			DataExtractorDummy, ParamSetterDummy, ParamExtractorDummy> manager(
-			&datahandler, &dataextractor, &paramsetter, &paramextractor,
-			confidenceLevel, warnLog);
-
+//
+//	std::cout << "MixtComp, learn, version: " << version << std::endl;
+//	std::cout << "Deterministic mode: " << deterministicMode() << std::endl;
+//	//	std::cout<< "Number of threads: " << omp_get_num_threads() << std::endl;
+//
+//	Timer totalTimer("Total Run");
+//
+//	std::string warnLog; // string to log warnings
+//
+//	DataHandlerDummy handler; // TODO: remove those classes that are only here for the transition to SGraph
+//	DataExtractorDummy dataextractor;
+//	ParamSetterDummy paramsetter;
+//	ParamExtractorDummy paramextractor;
+//
+//	Real nClass = boost::get<Real>(algo.get_payload("confidenceLevel"));
+//
+//	Real confidenceLevel = boost::get<Real>(algo.get_payload("confidenceLevel"));
+//
+//	MixtureManager<DataHandlerDummy, DataExtractorDummy, ParamSetterDummy, ParamExtractorDummy> manager(&handler, &dataextractor, &paramsetter, &paramextractor, confidenceLevel, warnLog);
+//
+//	// TODO: add the basic checks for confidence level existence and type, the nb of variables and observations
+//
+//	mixt::MixtureComposer composer(handler.nbSample(), nClass, confidenceLevel);
+//
+//	mixt::Timer readTimer("Read Data");
+//	warnLog += manager.createMixtures(composer, nClass);
+////	warnLog += composer.setDataParam<ParamSetterDummy, DataHandlerDummy>(paramsetter, handler, mixt::learning_);
+//	readTimer.top("data has been read");
+//
 	return res;
 }
 

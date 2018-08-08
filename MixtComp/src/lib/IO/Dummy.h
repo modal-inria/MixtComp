@@ -10,6 +10,9 @@
 #ifndef MIXT_PARAMSETTERDUMMY_H
 #define MIXT_PARAMSETTERDUMMY_H
 
+#include <map>
+#include <string>
+
 #include "../Data/mixt_AugmentedData.h"
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Mixture/Rank/mixt_RankIndividual.h"
@@ -34,6 +37,14 @@ class DataHandlerDummy {
                         Vector<std::string>& dataStr,
                         Index& nbInd,
                         std::string& paramStr) const;
+
+    Index nbSample() const;
+
+    const std::map<std::string, std::string>& info() const {
+    	return info_;
+    }
+  private:
+    std::map<std::string, std::string> info_;
 };
 
 /** Dummy IO class for debugging purposes */

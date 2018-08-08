@@ -18,6 +18,10 @@ std::string DataHandlerDummy::getData(std::string const& idName,
   return std::string();
 }
 
+Index DataHandlerDummy::nbSample() const {
+	return 12;
+}
+
 /** Export function for Rank model */
 void DataExtractorDummy::exportVals(Index indexMixture,
                                     std::string idName,

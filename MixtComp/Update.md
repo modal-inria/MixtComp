@@ -1,0 +1,17 @@
+- Méthode générale
+    - Conserver la méthode par template actuelle, pour ne pas avoir d'erreurs de compilation
+    - Ajouter les SGraph petit à petit
+    - Implémenter les bonnnes valeurs
+        - En priorité les SimpleMixture, pour faire des essais plus facilement
+        - Chercher dummyData, dummyParam
+    - Supprimer les templates
+- SGraph
+    - ajouter exist_child et exist_payload pour tester (renvoyer aussi le type si posible)
+    - ajouter test d'ajout d'entrée dupliquée, et générer une exception, ça ne doit pas rester silencieux.
+        - https://stackoverflow.com/questions/10732074/stl-map-allows-duplicate-pairs
+    - éviter toutes les recopies actuelles
+        - comme on ajoute les données dans des maps, on fait une recopie, parce que les stl utilisent des valeurs
+        - idéalement il faudrait stocker les données dans des pointeurs, par exemple shared_ptr
+        - faire cette modification quand tout marche, sinon ce sera trop complexe
+        - localisations des retours de SGraph
+            - IMixture::exportDataParam
