@@ -1,6 +1,8 @@
 - Méthode générale
     - Conserver la méthode par template actuelle, pour ne pas avoir d'erreurs de compilation
     - Ajouter les SGraph petit à petit
+    - Ajouter les fonctions de traduction std::vector<std::string> -> AugmentedData<Type>
+        - Gros du code déjà dans MisValParser
     - Implémenter les bonnnes valeurs
         - En priorité les SimpleMixture, pour faire des essais plus facilement
         - Chercher dummyData, dummyParam
