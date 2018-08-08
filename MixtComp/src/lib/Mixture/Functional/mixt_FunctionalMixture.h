@@ -10,6 +10,9 @@
 #ifndef MIXT_FUNCTIONALMIXTURE
 #define MIXT_FUNCTIONALMIXTURE
 
+#include "mixt_Function.h"
+#include "mixt_FunctionalClass.h"
+
 namespace mixt {
 
 template<typename DataHandler, typename DataExtractor, typename ParamSetter,
