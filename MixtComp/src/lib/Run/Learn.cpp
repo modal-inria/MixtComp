@@ -32,7 +32,8 @@ SGraph learn(const SGraph& data, const SGraph& desc, const SGraph& algo) {
 
 	std::string warnLog; // string to log warnings
 
-	Real confidenceLevel = boost::get<Real>(algo.get_payload("confidenceLevel"));
+	Real confidenceLevel = boost::get<Real>(
+			algo.get_payload("confidenceLevel"));
 
 	return res;
 }
