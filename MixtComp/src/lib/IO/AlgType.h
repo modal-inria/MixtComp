@@ -24,8 +24,7 @@ namespace mixt {
  * - std::string
  * - Matrix<Real>
  */
-typedef typename boost::variant<Index, Real, std::string, NamedVector<Real>,
-		NamedMatrix<Real>> AlgType;
+typedef typename boost::variant<Index, Real, std::string, NamedVector<Real>, NamedVector<Integer>, NamedMatrix<Real>> AlgType;
 
 }
 

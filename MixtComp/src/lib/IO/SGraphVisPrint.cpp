@@ -24,6 +24,11 @@ std::string SGraphVisPrint::operator()(const std::string& str) const {
 	return str;
 }
 
+std::string SGraphVisPrint::operator()(const NamedVector<Integer>& vec) const {
+	//return itString(vec);
+	return "to be implemented";
+}
+
 std::string SGraphVisPrint::operator()(const NamedVector<Real>& vec) const {
 	//return itString(vec);
 	return "to be implemented";

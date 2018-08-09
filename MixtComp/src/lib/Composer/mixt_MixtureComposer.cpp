@@ -18,8 +18,7 @@
 
 namespace mixt {
 
-MixtureComposer::MixtureComposer(Index nbInd, Index nbClass,
-		Real confidenceLevel) :
+MixtureComposer::MixtureComposer(Index nbInd, Index nbClass, Real confidenceLevel, const SGraph& algo, const SGraph& data, const SGraph& param) :
 		idName_("z_class"), nClass_(nbClass), nInd_(nbInd), nVar_(0), prop_(
 				nbClass), tik_(nbInd, nbClass), sampler_(zClassInd_, tik_,
 				nbClass), paramStat_(prop_, confidenceLevel), dataStat_(

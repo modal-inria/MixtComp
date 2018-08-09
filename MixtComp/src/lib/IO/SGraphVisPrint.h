@@ -22,6 +22,8 @@ public:
 
 	std::string operator()(const std::string& str) const;
 
+	std::string operator()(const NamedVector<Integer>& vec) const;
+
 	std::string operator()(const NamedVector<Real>& vec) const;
 
 	std::string operator()(const NamedMatrix<Real>& mat) const;

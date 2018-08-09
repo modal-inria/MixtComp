@@ -10,6 +10,7 @@
         - nbGibbsIter
     - nInitPerClass
     - nSemTry
+    - confidenceLevel
 
 - data
     - var1 (array of string)

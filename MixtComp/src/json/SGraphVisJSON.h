@@ -30,6 +30,8 @@ public:
 
 	void operator()(const std::string& str) const;
 
+	void operator()(const NamedVector<Integer>& vec) const;
+
 	void operator()(const NamedVector<Real>& vec) const;
 
 	void operator()(const NamedMatrix<Real>& mat) const;

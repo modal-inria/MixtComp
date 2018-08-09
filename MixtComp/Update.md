@@ -9,6 +9,8 @@
     - Supprimer les templates
 - JSONToSGraph
     - comment vérifier les types, par exemple que ctype est une chaîne de caractères ?
+- MixtureComposer
+    - supprimer les arguments redondants dans le constructeur
 - IMixture
     - nClass et nInd doivent être des const, fournis dès la construction
     - fournir aussi le type, sous forme de chaîne de caractère, utile pour la sortie, voir https://gitlab.inria.fr/kubicki/MixtComp/blob/master/MixtComp/docs/objectOutput.md

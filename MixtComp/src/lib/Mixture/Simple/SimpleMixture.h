@@ -63,7 +63,7 @@ public:
 
 			const NamedMatrix<Real>& stat = boost::get<NamedMatrix<Real>>(param.get_child("NumericalParam").get_payload("stat"));
 			Index nrow = stat.mat_.rows();
-			paramStr_ = param.get_child("NumericalParam").get_payload("paramStr");
+			paramStr_ = boost::get<std::string>(param.get_child("NumericalParam").get_payload("paramStr"));
 
 			param_.resize(nrow);
 			for (Index i = 0; i < nrow; ++i) {
@@ -152,7 +152,7 @@ public:
 		}
 		data.add_payload("completed", dataOut);
 
-		Index ncol = paramStat_.getStatStorage().ncol();
+		Index ncol = paramStat_.getStatStorage().cols();
 		std::vector<std::string> colNames(ncol);
 		Real alpha = (1. - confidenceLevel_) / 2.;
 

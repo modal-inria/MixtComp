@@ -17,6 +17,7 @@
 
 // [[Rcpp::export]]
 Rcpp::List mixtCompPredict(Rcpp::List dataList, Rcpp::List paramList, Rcpp::List mcStrategy, int nbClass, double confidenceLevel) {
+	mixt::SGraph dummySGraph;
 
 	std::cout << "MixtComp, predict, version: " << mixt::version << std::endl;
 	std::cout << "Deterministic mode: " << mixt::deterministicMode() << std::endl;
@@ -65,7 +66,7 @@ Rcpp::List mixtCompPredict(Rcpp::List dataList, Rcpp::List paramList, Rcpp::List
 
 	// Create the composer and read the data
 
-	mixt::MixtureComposer composer(handler.nbSample(), nbClass, confidenceLevel);
+	mixt::MixtureComposer composer(handler.nbSample(), nbClass, confidenceLevel, dummySGraph, dummySGraph, dummySGraph);
 
 	mixt::Timer readTimer("Read Data");
 	warnLog += manager.createMixtures(composer, nbClass);
