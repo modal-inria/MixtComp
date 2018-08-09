@@ -2,7 +2,7 @@
  * Copyright (C) Inria - Lille 1 */
 
 /*
- *  Project:    JMixtComp
+ *  Project:    MixtComp
  *  Created on: Aug 6, 2018
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/

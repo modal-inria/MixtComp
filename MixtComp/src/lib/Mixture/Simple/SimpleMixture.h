@@ -10,11 +10,12 @@
 #ifndef SIMPLEmodel_H
 #define SIMPLEmodel_H
 
-#include "Mixture/mixt_IMixture.h"
-#include "Data/mixt_AugmentedData.h"
-#include "IO/mixt_IO.h"
-#include "Various/mixt_Constants.h"
-#include "Param/mixt_ConfIntParamStat.h"
+#include <Mixture/mixt_IMixture.h>
+#include <Data/mixt_AugmentedData.h>
+#include <IO/mixt_IO.h>
+#include <IO/StringToAugmentedData.h>
+#include <Various/mixt_Constants.h>
+#include <Param/mixt_ConfIntParamStat.h>
 
 namespace mixt {
 
@@ -28,11 +29,11 @@ public:
 	 *  @param idName id name of the mixture
 	 *  @param nbCluster number of cluster
 	 **/
-	SimpleMixture(Index indexMixture, std::string const& idName, Index nbClass, const DataHandler* p_handler, DataExtractor* p_extractor, const ParamSetter* p_paramSetter,
+	SimpleMixture(Index indexMixture, std::string const& idName, Index nbClass, Index nInd, const DataHandler* p_handler, DataExtractor* p_extractor, const ParamSetter* p_paramSetter,
 			ParamExtractor* p_paramExtractor, Real confidenceLevel) :
-			IMixture(indexMixture, idName), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), nbInd_(0), confidenceLevel_(confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(
-					augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_, augData_, nbClass), p_handler_(p_handler), p_dataExtractor_(p_extractor), p_paramSetter_(
-					p_paramSetter), p_paramExtractor_(p_paramExtractor) {
+			IMixture(indexMixture, idName, nbClass, nInd), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), nbInd_(0), confidenceLevel_(confidenceLevel), sampler_(augData_,
+					param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_, augData_, nbClass), p_handler_(p_handler), p_dataExtractor_(
+					p_extractor), p_paramSetter_(p_paramSetter), p_paramExtractor_(p_paramExtractor) {
 	}
 
 	/**
@@ -42,7 +43,8 @@ public:
 	 */
 	std::string setDataParam(RunMode mode, const std::vector<std::string>& data, const SGraph& param) {
 		std::string warnLog;
-		warnLog += p_handler_->getData(idName(), augData_, nbInd_, paramStr_, (model_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
+//		warnLog += p_handler_->getData(idName(), augData_, nbInd_, paramStr_, (model_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
+		warnLog += StringToAugmentedData(idName_, data, augData_, (model_.hasModalities()) ? (-minModality) : (0));
 
 		if (warnLog.size() > 0) {
 			return warnLog;

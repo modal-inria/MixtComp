@@ -26,8 +26,8 @@ public:
 	 *
 	 * @param idName Identification string of the mixture provided by the framework
 	 * */
-	IMixture(Index indexMixture, std::string const& idName) :
-			indexMixture_(indexMixture), idName_(idName) {
+	IMixture(Index indexMixture, std::string const& idName, Index nClass, Index nInd) :
+			indexMixture_(indexMixture), idName_(idName), nClass_(nClass), nInd_(nInd) {
 	}
 	;
 
@@ -57,8 +57,7 @@ public:
 	 * is present at least one time in each class. This is invoked to avoid degeneracy.
 	 * @return 0 if condition not verified and 1 if condition verified
 	 * */
-	virtual std::string checkSampleCondition(
-			const Vector<std::set<Index>>& classInd) const = 0;
+	virtual std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const = 0;
 
 	/**
 	 * Maximum-Likelihood estimation of the mixture parameters
@@ -83,8 +82,7 @@ public:
 	 * @param iteration Gibbs iteration
 	 * @param iterationMax maximum number of iterations
 	 * */
-	virtual void storeGibbsRun(Index i, Index iteration,
-			Index iterationMax) = 0;
+	virtual void storeGibbsRun(Index i, Index iteration, Index iterationMax) = 0;
 
 	/**
 	 * Computation of completed likelihood
@@ -162,6 +160,9 @@ protected:
 
 	/** Id name of the mixture */
 	std::string idName_;
+
+	Index nClass_;
+	Index nInd_;
 };
 
 } // namespace mixt

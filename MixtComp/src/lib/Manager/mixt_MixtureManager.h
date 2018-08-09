@@ -79,11 +79,13 @@ public:
 	 **/
 	IMixture* createMixture(std::string const& idModel, Index indexMixture,
 			std::string const& idName, Index nbCluster, Real confidenceLevel) {
+		Index dummyNObs = 12;
+
 		if (idModel == "Categorical_pjk") {
 			SimpleMixture<Categorical, DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new SimpleMixture<Categorical,
 					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
-					indexMixture, idName, nbCluster, p_handler_,
+					indexMixture, idName, nbCluster, dummyNObs, p_handler_,
 					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
 					confidenceLevel);
 			return p_bridge;
@@ -93,7 +95,7 @@ public:
 			SimpleMixture<Gaussian, DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new SimpleMixture<Gaussian,
 					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
-					indexMixture, idName, nbCluster, p_handler_,
+					indexMixture, idName, nbCluster, dummyNObs, p_handler_,
 					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
 					confidenceLevel);
 			return p_bridge;
@@ -103,7 +105,7 @@ public:
 			SimpleMixture<Poisson, DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new SimpleMixture<Poisson,
 					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
-					indexMixture, idName, nbCluster, p_handler_,
+					indexMixture, idName, nbCluster, dummyNObs, p_handler_,
 					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
 					confidenceLevel);
 			return p_bridge;
@@ -113,7 +115,7 @@ public:
 			SimpleMixture<Weibull, DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new SimpleMixture<Weibull,
 					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
-					indexMixture, idName, nbCluster, p_handler_,
+					indexMixture, idName, nbCluster, dummyNObs, p_handler_,
 					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
 					confidenceLevel);
 			return p_bridge;
@@ -123,7 +125,7 @@ public:
 			SimpleMixture<NegativeBinomial, DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new SimpleMixture<NegativeBinomial,
 					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
-					indexMixture, idName, nbCluster, p_handler_,
+					indexMixture, idName, nbCluster, dummyNObs, p_handler_,
 					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
 					confidenceLevel);
 			return p_bridge;
@@ -133,7 +135,7 @@ public:
 			FunctionalMixture<DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new FunctionalMixture<
 					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
-					indexMixture, idName, nbCluster, p_handler_,
+					indexMixture, idName, nbCluster, dummyNObs, p_handler_,
 					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
 					confidenceLevel);
 			return p_bridge;
@@ -143,7 +145,7 @@ public:
 			FunctionalSharedAlphaMixture<DataHandler, DataExtractor, ParamSetter,
 					ParamExtractor>* p_bridge = new FunctionalSharedAlphaMixture<
 					DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
-					indexMixture, idName, nbCluster, p_handler_,
+					indexMixture, idName, nbCluster, dummyNObs, p_handler_,
 					p_dataExtractor_, p_paramSetter_, p_paramExtractor_,
 					confidenceLevel);
 			return p_bridge;
@@ -161,7 +163,7 @@ public:
 		if (idModel == "Rank") {
 			RankMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge =
 					new RankMixture<DataHandler, DataExtractor, ParamSetter,
-							ParamExtractor>(indexMixture, idName, nbCluster,
+							ParamExtractor>(indexMixture, idName, nbCluster, dummyNObs,
 							p_handler_, p_dataExtractor_, p_paramSetter_,
 							p_paramExtractor_, confidenceLevel);
 			return p_bridge;

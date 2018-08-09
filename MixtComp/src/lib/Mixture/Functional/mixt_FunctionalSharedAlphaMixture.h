@@ -19,10 +19,10 @@ template<typename DataHandler, typename DataExtractor, typename ParamSetter,
 class FunctionalSharedAlphaMixture: public IMixture {
 public:
 	FunctionalSharedAlphaMixture(Index indexMixture, std::string const& idName,
-			Index nClass, const DataHandler* p_handler,
+			Index nClass, Index nObs, const DataHandler* p_handler,
 			DataExtractor* p_extractor, const ParamSetter* p_paramSetter,
 			ParamExtractor* p_paramExtractor, Real confidenceLevel) :
-			IMixture(indexMixture, idName), nInd_(0), nClass_(nClass), nSub_(0), nCoeff_(
+			IMixture(indexMixture, idName, nClass, nObs), nInd_(0), nClass_(nClass), nSub_(0), nCoeff_(
 					0), confidenceLevel_(confidenceLevel), p_handler_(
 					p_handler), p_dataExtractor_(p_extractor), p_paramSetter_(
 					p_paramSetter), p_paramExtractor_(p_paramExtractor) {
@@ -42,7 +42,7 @@ public:
 
 	//** Dummy  constructor to check compilation */
 	FunctionalSharedAlphaMixture(const Vector<std::set<Index> >& classInd) :
-			IMixture(0, "dummy"), nInd_(0), nClass_(0), nSub_(0), nCoeff_(0), confidenceLevel_(
+			IMixture(0, "dummy", 0, 0), nInd_(0), nClass_(0), nSub_(0), nCoeff_(0), confidenceLevel_(
 					0.), p_handler_(NULL), p_dataExtractor_(NULL), p_paramSetter_(
 					NULL), p_paramExtractor_(NULL) {
 	}
