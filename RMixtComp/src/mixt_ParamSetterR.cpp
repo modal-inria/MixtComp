@@ -14,9 +14,6 @@ ParamSetterR::ParamSetterR(const Rcpp::List param) :
 		param_(param) {
 }
 
-ParamSetterR::~ParamSetterR() {
-}
-
 void ParamSetterR::getParam(const std::string& idName, const std::string& paramName, Vector<Real>& param, std::string& paramStr) const {
 	Rcpp::List listCurrId = param_[idName];
 	Rcpp::List listStatLog = listCurrId[paramName];

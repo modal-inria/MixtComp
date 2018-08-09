@@ -20,8 +20,6 @@ class ParamSetterR {
 public:
 	ParamSetterR(const Rcpp::List param);
 
-	~ParamSetterR();
-
 	void getParam(const std::string& idName, const std::string& paramName, Vector<Real>& param, std::string& paramStr) const;
 
 	void getParam(const std::string& idName, const std::string& paramName, Vector<RankVal>& param, std::string& paramStr) const;

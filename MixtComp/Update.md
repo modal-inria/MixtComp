@@ -11,18 +11,19 @@
     - comment vérifier les types, par exemple que ctype est une chaîne de caractères ?
 - IMixture
     - nClass et nInd doivent être des const, fournis dès la construction
+    - fournir aussi le type, sous forme de chaîne de caractère, utile pour la sortie, voir https://gitlab.inria.fr/kubicki/MixtComp/blob/master/MixtComp/docs/objectOutput.md
     - Comme le SGraph a été construit, c'est une information dont on dispose dès le début de l'algorithme
     - Supprimer les nClass et nInd dans les classes dérivées de IMixture (tous l'ont pour le moment)
         - les arguments nClass et nInd seront uniquement transmis au constructeur de IMixture
     - remplacer dummyNClass et dummyNInd dans MixtureManager, par les vraies valeurs
-- Modèles
-    - remplacer exportDataParam
 - paramStr
     - La version fournie dans desc.json doit être fournie à la création, dans le MixtureManager
     - La version lu à partir des paramètres doit être fournie dans setDataParam, quand le SGraph de paramètres est fournie
     - Le second si il existe, en prédiction, écrase le premier
 - DataHandler
     - La spécialisation pour Vector<std::string> devient inutile, les modèles devront se débrouiller avec le std::vector<std::string>, et en faire l'analyse syntaxique eux même.
+- Modèle
+    - chaque modèle doit fournir au constructeur IMixture une chaîne de caractère pour donner son type
 - SGraph
     - l'information nInd doit figurer au même niveau que nClass, et doit servir pour vérifications. On ne doit plus déduire le nombre d'individus.
     - ajouter exist_child et exist_payload pour tester (renvoyer aussi le type si posible)
@@ -39,3 +40,8 @@
     - Créer une fonction récursive de validation
         - vérifier les ncol et nrow
         - présence de tous les champs
+        - toutes les variables ont le même nombre d'individus (fourni en argument, au même titre que nClass)
+        - pour les noms de lignes / colonnes, soit il y en a 0, soit il y en a autant que de ligne / colonnes. Tout autre possibilité exclue.
+- Export données / param
+    - ajouter les stats pour les données
+        - pour les categorielles, faire comme les classes, fournir toutes les modalités sous forme de tableau, au lieu de la liste dégueu avec les 95 % comme actuellement

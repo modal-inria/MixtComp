@@ -59,7 +59,16 @@ public:
 		}
 
 		if (mode == prediction_) {
-			p_paramSetter_->getParam(idName_, "NumericalParam", param_, paramStr_); // parameters are set using results from previous run, note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
+//			p_paramSetter_->getParam(idName_, "NumericalParam", param_, paramStr_); // parameters are set using results from previous run, note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
+
+			const NamedMatrix<Real>& stat = boost::get<NamedMatrix<Real>>(param.get_child("NumericalParam").get_payload("stat"));
+			Index nrow = stat.mat_.rows();
+			paramStr_ = param.get_child("NumericalParam").get_payload("paramStr");
+
+			param_.resize(nrow);
+			for (Index i = 0; i < nrow; ++i) {
+				param_(i) = stat.mat_(i, 0); // only the mode / expectation is used, quantile information is discarded
+			}
 
 			paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at model_.setModalities(nbParam)
 		}
@@ -133,8 +142,34 @@ public:
 	}
 
 	void exportDataParam(SGraph& data, SGraph& param) const {
-		p_dataExtractor_->exportVals(indexMixture_, model_.hasModalities(), idName_, augData_, dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
-		p_paramExtractor_->exportParam(indexMixture_, idName(), "NumericalParam", paramStat_.getStatStorage(), paramStat_.getLogStorage(), model_.paramNames(), confidenceLevel_, paramStr_);
+//		p_dataExtractor_->exportVals(indexMixture_, model_.hasModalities(), idName_, augData_, dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
+//		p_paramExtractor_->exportParam(indexMixture_, idName(), "NumericalParam", paramStat_.getStatStorage(), paramStat_.getLogStorage(), model_.paramNames(), confidenceLevel_, paramStr_);
+
+		NamedVector<typename Model::Data::Type> dataOut;
+		dataOut.vec_ = augData_.data_; // not that no row names are provided
+		if (model_.hasModalities()) {
+			dataOut.vec_ += minModality;
+		}
+		data.add_payload("completed", dataOut);
+
+		Index ncol = paramStat_.getStatStorage().ncol();
+		std::vector<std::string> colNames(ncol);
+		Real alpha = (1. - confidenceLevel_) / 2.;
+
+		if (ncol == 1) { // predict
+			colNames[0] = "value";
+		} else { // learn
+			colNames[0] = "median";
+			colNames[1] = std::string("q ") + std::to_string((alpha * 100.)) + "%";
+			colNames[2] = std::string("q ") + std::to_string(((1. - alpha) * 100.)) + "%";
+		}
+
+		NamedMatrix<Real> paramOut; // all parameters are real at the moment,
+		paramOut.mat_ = paramStat_.getStatStorage();
+		paramOut.rowNames_ = model_.paramNames();
+		paramOut.colNames_ = colNames;
+		param.add_payload("stat", paramOut);
+		param.add_payload("paramStr", paramStr_);
 	}
 
 	void initData(Index i) {
