@@ -28,8 +28,7 @@ TEST(SGraphVisJSON, basicJSON) {
 	res = SGraphToJSON(g);
 
 	std::string computedRes = res.dump();
-	std::string expectedRes =
-			"{\"paramStr\":\"A parameter\",\"varA\":{\"A nested real\":12.0,\"A nested string\":\"Hello World !\"}}";
+	std::string expectedRes = R"({"paramStr":"A parameter","varA":{"A nested real":12.0,"A nested string":"Hello World !"}})";
 
 	ASSERT_EQ(computedRes, expectedRes);
 }
@@ -43,7 +42,7 @@ TEST(SGraphVisJSON, integerInJSON) {
 	res = SGraphToJSON(g);
 
 	std::string computedRes = res.dump();
-	std::string expectedRes = "{\"An integer\":12}";
+	std::string expectedRes = R"({"An integer":12})";
 
 	ASSERT_EQ(computedRes, expectedRes);
 }
@@ -64,8 +63,8 @@ TEST(SGraphVisJSON, vectorInJSON) {
 	res = SGraphToJSON(g);
 
 	std::string computedRes = res.dump();
-	std::string expectedRes =
-			"{\"A named vector\":{\"colNames\":[\"riri\",\"fifi\",\"loulou\"],\"data\":[1.0,2.0,3.0],\"dtype\":\"Vector<Real>(3)\"}}";
+	std::string expectedRes = R"-({"A named vector":{"ctype":"Vector","data":[1.0,2.0,3.0],"dtype":"Real","nrow":3,"rowNames":["riri","fifi","loulou"]}})-";
+
 
 	ASSERT_EQ(computedRes, expectedRes);
 }
@@ -88,7 +87,7 @@ TEST(SGraphVisJSON, matrixInJSON) {
 	std::string computedRes = res.dump();
 
 	std::string expectedRes =
-			"{\"A named matrix\":{\"colNames\":[\"1\",\"2\",\"3\"],\"data\":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],\"dtype\":\"Matrix<Real>(3,3)\",\"rowNames\":[\"A\",\"B\",\"C\"]}}";
+			R"-({"A named matrix":{"colNames":["1","2","3"],"ctype":"Matrix","data":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],"dtype":"Real","ncol":3,"nrow":3,"rowNames":["A","B","C"]}})-";
 
 	ASSERT_EQ(computedRes, expectedRes);
 }

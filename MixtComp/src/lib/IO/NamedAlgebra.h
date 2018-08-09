@@ -16,7 +16,7 @@ namespace mixt {
 
 template<typename Type>
 struct NamedVector {
-	std::vector<std::string> colNames_;
+	std::vector<std::string> rowNames_;
 	Vector<Type> vec_;
 };
 

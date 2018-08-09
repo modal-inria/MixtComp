@@ -24,7 +24,7 @@ TEST(JSONToSGraph, basic) {
 
 TEST(JSONToSGraph, VectorReal) {
 	nlohmann::json expectedJSON =
-			R"-({"A named vector":{"colNames":["riri","fifi","loulou"],"data":[1.0,2.0,3.0],"dtype":"Vector<Real>(3)"}})-"_json;
+			R"-({"A named vector":{"ctype":"Vector","data":[1.0,2.0,3.0],"dtype":"Real","nrow":3,"rowNames":["riri","fifi","loulou"]}})-"_json;
 
 	nlohmann::json computedJSON = SGraphToJSON(JSONToSGraph(expectedJSON));
 
@@ -33,7 +33,7 @@ TEST(JSONToSGraph, VectorReal) {
 
 TEST(JSONToSGraph, MatrixReal) {
 	nlohmann::json expectedJSON =
-			R"-({"A named matrix":{"colNames":["1","2","3"],"data":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],"dtype":"Matrix<Real>(3,3)","rowNames":["A","B","C"]}})-"_json;
+			R"-({"A named matrix":{"colNames":["1","2","3"],"ctype":"Matrix","data":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],"dtype":"Real","ncol":3,"nrow":3,"rowNames":["A","B","C"]}})-"_json;
 
 	nlohmann::json computedJSON = SGraphToJSON(JSONToSGraph(expectedJSON));
 

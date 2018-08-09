@@ -7,7 +7,24 @@
         - En priorité les SimpleMixture, pour faire des essais plus facilement
         - Chercher dummyData, dummyParam
     - Supprimer les templates
+- JSONToSGraph
+    - comment vérifier les types, par exemple que ctype est une chaîne de caractères ?
+- IMixture
+    - nClass et nInd doivent être des const, fournis dès la construction
+    - Comme le SGraph a été construit, c'est une information dont on dispose dès le début de l'algorithme
+    - Supprimer les nClass et nInd dans les classes dérivées de IMixture (tous l'ont pour le moment)
+        - les arguments nClass et nInd seront uniquement transmis au constructeur de IMixture
+    - remplacer dummyNClass et dummyNInd dans MixtureManager, par les vraies valeurs
+- Modèles
+    - remplacer exportDataParam
+- paramStr
+    - La version fournie dans desc.json doit être fournie à la création, dans le MixtureManager
+    - La version lu à partir des paramètres doit être fournie dans setDataParam, quand le SGraph de paramètres est fournie
+    - Le second si il existe, en prédiction, écrase le premier
+- DataHandler
+    - La spécialisation pour Vector<std::string> devient inutile, les modèles devront se débrouiller avec le std::vector<std::string>, et en faire l'analyse syntaxique eux même.
 - SGraph
+    - l'information nInd doit figurer au même niveau que nClass, et doit servir pour vérifications. On ne doit plus déduire le nombre d'individus.
     - ajouter exist_child et exist_payload pour tester (renvoyer aussi le type si posible)
     - ajouter test d'ajout d'entrée dupliquée, et générer une exception, ça ne doit pas rester silencieux.
         - https://stackoverflow.com/questions/10732074/stl-map-allows-duplicate-pairs
@@ -17,3 +34,8 @@
         - faire cette modification quand tout marche, sinon ce sera trop complexe
         - localisations des retours de SGraph
             - IMixture::exportDataParam
+        - dans tous les cas, c'est de l'implémentation interne, l'utilisateur ne doit pas avoir à gérer les shared_ptr, il faut toujorus renvoyer des références constantes sur l'objet contenu...
+        - le soucis ce sera pour les entrées, il faudra peut être passer à la main par des make_shared
+    - Créer une fonction récursive de validation
+        - vérifier les ncol et nrow
+        - présence de tous les champs

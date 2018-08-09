@@ -31,13 +31,15 @@ void SGraphVisJSON::operator()(const std::string& str) const {
 void SGraphVisJSON::operator()(const NamedVector<Real>& vec) const {
 	nlohmann::json res; // Since a vector is an union of fields, it is contained in its own json object
 
-	Index ncol = vec.vec_.size();
+	Index nrow = vec.vec_.size();
 	const double* rawData = vec.vec_.data();
 	std::vector<Real> data(rawData, rawData + vec.vec_.size());
 
-	res["colNames"] = vec.colNames_;
+	res["ctype"] = "Vector";
 	res["data"] = data;
-	res["dtype"] = std::string("Vector<Real>(") + std::to_string(ncol) + std::string(")");
+	res["dtype"] = "Real";
+	res["rowNames"] = vec.rowNames_;
+	res["nrow"] = nrow;
 
 	j_[payloadName_] = res;
 }
@@ -56,9 +58,12 @@ void SGraphVisJSON::operator()(const NamedMatrix<Real>& mat) const {
 	}
 
 	res["colNames"] = mat.colNames_;
-	res["rowNames"] = mat.rowNames_;
+	res["ctype"] = "Matrix";
 	res["data"] = data;
-	res["dtype"] = std::string("Matrix<Real>(") + std::to_string(nrow) + std::string(",") + std::to_string(ncol) + std::string(")");
+	res["dtype"] = "Real";
+	res["rowNames"] = mat.rowNames_;
+	res["ncol"] = ncol;
+	res["nrow"] = nrow;
 
 	j_[payloadName_] = res;
 }

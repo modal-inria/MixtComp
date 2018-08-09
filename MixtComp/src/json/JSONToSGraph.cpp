@@ -20,50 +20,46 @@ namespace mixt {
  */
 SGraph JSONToSGraph(const nlohmann::json& json) {
 	SGraph res;
-	boost::regex vectorRE(
-			R"(Vector<([a-zA-Z]+)>\(([0-9]+)\))");
-	boost::regex matrixRE(R"(Matrix<([a-zA-Z]+)>\(([0-9]+),([0-9]+)\))");
 
-	for (nlohmann::json::const_iterator it = json.begin(); it != json.end();
-			++it) { // if json is not a NamedAlgebra, simply loop over all elements
+	for (nlohmann::json::const_iterator it = json.begin(); it != json.end(); ++it) { // if json is not a NamedAlgebra, simply loop over all elements
 
 		if ((*it).is_object()) { // if object is a json, check wether the subobject is a NamedAlgebra or not
-			if ((*it).find("dtype") != (*it).end()) { // if there is a dtype string, that means that the current json represents a NamedAlgebra object, which requires a particular parsing
+			if ((*it).find("ctype") != (*it).end()) { // if there is a ctype string, that means that the current json represents a NamedAlgebra object, which requires a particular parsing
+				std::string ctype = (*it)["ctype"].get<std::string>();
 				std::string dtype = (*it)["dtype"].get<std::string>();
-				boost::cmatch what;
-				if (boost::regex_match(dtype.c_str(), what, vectorRE)) { // pattern match a Vector
-					std::string dataType = what[1];
-					Index ncol = toIndex(what[2].str());
-					std::vector<std::string> colNames = (*it)["colNames"].get<std::vector<std::string>>();
+				Index nrow = (*it)["nrow"].get<Index>();
 
-					if (dataType == "Real") { // Vector<Real>
+				if (ctype == "Vector") { // pattern match a Vector
+					std::vector<std::string> rowNames = (*it)["rowNames"].get<std::vector<std::string>>();
+
+					if (dtype == "Real") { // Vector<Real>
 						std::vector<Real> dataRaw = (*it)["data"].get<std::vector<Real>>();
-						if (dataRaw.size() != ncol) throw(it.key() + ": number of elements in data not the same as expected in dtype field");
-						Vector<Real> data(ncol);
-						for (Index i = 0; i < ncol; ++i) {
+
+						Vector<Real> data(nrow);
+						for (Index i = 0; i < nrow; ++i) {
 							data(i) = dataRaw[i];
 						}
 
-						NamedVector<Real> nv = {colNames, data};
+						NamedVector<Real> nv = { rowNames, data };
 						res.add_payload(it.key(), nv);
 					} else {
-						throw(it.key() + ": " + std::string(dataType) + " dtype not supported yet.");
+						throw(it.key() + ": " + std::string(dtype) + " dtype not supported yet.");
 					}
-				} else if (boost::regex_match(dtype.c_str(), what, matrixRE)) { // pattern match a Matrix
-					std::string dataType = what[1];
-					Index nrow = toIndex(what[2].str());
-					Index ncol = toIndex(what[3].str());
+
+				} else if (ctype == "Matrix") { // pattern match a Matrix
+					Index ncol = (*it)["nrow"].get<Index>();
 
 					std::vector<std::string> rowNames = (*it)["rowNames"].get<std::vector<std::string>>();
 					std::vector<std::string> colNames = (*it)["colNames"].get<std::vector<std::string>>();
 
-
-					if (dataType == "Real") { // Matrix<Real>
+					if (dtype == "Real") { // Matrix<Real>
 						std::vector<std::vector<Real>> dataRaw = (*it)["data"].get<std::vector<std::vector<Real>>>();
-						if (dataRaw.size() != nrow) throw(it.key() + ": number of rows in data not the same as expected in dtype field");
+
 						for (std::vector<std::vector<Real>>::const_iterator it2 = dataRaw.begin(), it2End = dataRaw.end(); it2 != it2End; ++it2) {
-							if ((*it2).size() != ncol) throw(it.key() + ": number of columns in data not the same as expected in dtype field");
+							if ((*it2).size() != ncol)
+								throw(it.key() + ": number of columns in data not the same as expected in dtype field");
 						}
+
 						Matrix<Real> data(nrow, ncol);
 						for (Index i = 0; i < ncol; ++i) {
 							for (Index j = 0; j < ncol; ++j) {
@@ -71,14 +67,14 @@ SGraph JSONToSGraph(const nlohmann::json& json) {
 							}
 						}
 
-						NamedMatrix<Real> nm = {rowNames, colNames, data};
+						NamedMatrix<Real> nm = { rowNames, colNames, data };
 						res.add_payload(it.key(), nm);
 					} else {
-						throw(it.key() + ": " + std::string(dataType) + " dtype not supported yet.");
+						throw(it.key() + ": " + dtype + " dtype not supported yet.");
 					}
 
 				} else { // get out of my lawn
-
+					throw(it.key() + ": " + ctype + " ctype not supported yet.");
 				}
 			} else { // recursive call
 				SGraph converted = JSONToSGraph(*it);
