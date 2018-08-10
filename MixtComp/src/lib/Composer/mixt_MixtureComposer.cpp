@@ -19,9 +19,8 @@
 namespace mixt {
 
 MixtureComposer::MixtureComposer(Index nbInd, Index nbClass, Real confidenceLevel, const SGraph& algo, const SGraph& data, const SGraph& param) :
-		gData_(data), gParam_(param), nClass_(algo.get_payload<Index>("nClass")), nInd_(algo.get_payload<Index>("nInd")), nVar_(0), prop_(nbClass), tik_(
-				nbInd, nbClass), sampler_(zClassInd_, tik_, nbClass), paramStat_(prop_, confidenceLevel), dataStat_(zClassInd_), confidenceLevel_(
-				boost::get<Real>(algo.get_payload("confidenceLevel"))), completedProbabilityCache_(nInd_) {
+		gData_(data), gParam_(param), nClass_(algo.get_payload<Index>("nClass")), nInd_(algo.get_payload<Index>("nInd")), nVar_(0), prop_(nbClass), tik_(nbInd, nbClass), sampler_(zClassInd_, tik_,
+				nbClass), paramStat_(prop_, confidenceLevel), dataStat_(zClassInd_), confidenceLevel_(boost::get<Real>(algo.get_payload("confidenceLevel"))), completedProbabilityCache_(nInd_) {
 	std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nbInd << ", nbClass: " << nbClass << std::endl;
 	zClassInd_.setIndClass(nInd_, nClass_);
 
@@ -53,9 +52,9 @@ void MixtureComposer::printTik() const {
 
 void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
 	oZMode.resize(nInd_);
-	Matrix < Real > observedTikMat(nInd_, nClass_);
+	Matrix<Real> observedTikMat(nInd_, nClass_);
 
-	Matrix < Real > lnComp(nInd_, nClass_);
+	Matrix<Real> lnComp(nInd_, nClass_);
 
 	for (Index k = 0; k < nClass_; ++k) {
 		for (Index i = 0; i < nInd_; ++i) {
@@ -65,7 +64,7 @@ void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
 
 	Index mode;
 	for (Index i = 0; i < nInd_; ++i) { // sum is inside a log, hence the numerous steps for the computation
-		RowVector < Real > dummy;
+		RowVector<Real> dummy;
 		observedTikMat.row(i).logToMulti(lnComp.row(i));
 		observedTikMat.row(i).maxCoeff(&mode);
 
@@ -78,7 +77,7 @@ void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
 
 Real MixtureComposer::lnObservedLikelihood() {
 	Real lnLikelihood = 0.;
-	Matrix < Real > lnComp(nInd_, nClass_);
+	Matrix<Real> lnComp(nInd_, nClass_);
 
 	for (Index k = 0; k < nClass_; ++k) {
 		for (Index i = 0; i < nInd_; ++i) {
@@ -87,7 +86,7 @@ Real MixtureComposer::lnObservedLikelihood() {
 	}
 
 	for (Index i = 0; i < nInd_; ++i) { // sum is inside a log, hence the numerous steps for the computation
-		RowVector < Real > dummy;
+		RowVector<Real> dummy;
 		lnLikelihood += dummy.logToMulti(lnComp.row(i));
 	}
 
@@ -155,7 +154,7 @@ void MixtureComposer::eStepCompleted() {
 
 #pragma omp parallel for
 	for (Index i = 0; i < nInd_; ++i) {
-		RowVector < Real > lnComp(nClass_);
+		RowVector<Real> lnComp(nClass_);
 
 		bool correctVal = true;
 
@@ -369,12 +368,12 @@ void MixtureComposer::initParam() {
 std::string MixtureComposer::initParamSubPartition(Index nInitPerClass) {
 	std::string warnLog;
 
-	Vector < std::set < Index >> partialClassInd(nClass_);
+	Vector<std::set<Index>> partialClassInd(nClass_);
 	Index nSubset = std::min(nInitPerClass * nClass_, nInd_);
 
 	std::cout << "MixtureComposer::initParamSubPartition, " << nSubset << " observations used in parameter initialization." << std::endl;
 
-	Vector < Index > allInd(nInd_);
+	Vector<Index> allInd(nInd_);
 	for (Index i = 0; i < nInd_; ++i) {
 		allInd(i) = i;
 	}
@@ -406,13 +405,13 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 
 	for (Index i = 0; i < nInd_; ++i) {
 		for (Index j = 0; j < nVar_; ++j) {
-			Vector < Real > lnP(nClass_); // ln(p(z_i = k, x_i^j))
-			Vector < Real > t_ik_j(nClass_); // p(z_i = k / x_i^j)
+			Vector<Real> lnP(nClass_); // ln(p(z_i = k, x_i^j))
+			Vector<Real> t_ik_j(nClass_); // p(z_i = k / x_i^j)
 			for (Index k = 0; k < nClass_; ++k) {
 				lnP(k) = std::log(prop_(k)) + observedProbabilityCache_(j)(i, k);
 			}
 			t_ik_j.logToMulti(lnP); // "observed" t_ik, for the variable j
-			Vector < Real > t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
+			Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
 
 			for (Index k = 0; k < nClass_; ++k) {
 				Real p;
@@ -441,9 +440,9 @@ void MixtureComposer::Delta(Matrix<Real>& delta) const {
 	delta.resize(nVar_, nVar_);
 	delta = 0.;
 	for (Index i = 0; i < nInd_; ++i) {
-		Matrix < Real > probacond(nClass_, nVar_); // P(Z_i=k|x_{ij}) k=1,...,K in row and j=1,...,d in column
+		Matrix<Real> probacond(nClass_, nVar_); // P(Z_i=k|x_{ij}) k=1,...,K in row and j=1,...,d in column
 		for (Index j = 0; j < nVar_; ++j) {
-			Vector < Real > lnP(nClass_); // ln(p(z_i = k, x_i^j))
+			Vector<Real> lnP(nClass_); // ln(p(z_i = k, x_i^j))
 			for (Index k = 0; k < nClass_; ++k) {
 				lnP(k) = std::log(prop_(k)) + observedProbabilityCache_(j)(i, k);
 			}
@@ -471,8 +470,8 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const {
 	idc.resize(nClass_, nVar_);
 
 	if (nClass_ > 1) {
-		Matrix < Real > ekj;
-		E_kj (ekj);
+		Matrix<Real> ekj;
+		E_kj(ekj);
 		Real den = nInd_ * std::log(nClass_);
 
 		for (Index k = 0; k < nClass_; ++k) {
@@ -571,8 +570,8 @@ std::string MixtureComposer::eStepObserved() {
 bool MixtureComposer::eStepObservedInd(Index i) {
 	bool isIndividualObservable = true;
 
-	RowVector < Real > lnComp(nClass_); // row vector, one index per class
-	RowVector < Real > currVar(nClass_);
+	RowVector<Real> lnComp(nClass_); // row vector, one index per class
+	RowVector<Real> currVar(nClass_);
 
 	for (Index k = 0; k < nClass_; k++) {
 		lnComp(k) = std::log(prop_[k]);
@@ -595,6 +594,31 @@ bool MixtureComposer::eStepObservedInd(Index i) {
 	tik_.row(i).logToMulti(lnComp);
 
 	return isIndividualObservable;
+}
+
+std::string MixtureComposer::setDataParam(RunMode mode) {
+	std::string warnLog;
+
+	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+		warnLog += (*it)->setDataParam(mode, gData_.get_payload<std::vector<std::string>>((*it)->idName()), gParam_.get_child((*it)->idName()));
+	}
+
+	warnLog += setZi(); // dataHandler getData is called to fill zi_
+
+	if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
+		warnLog += setProportion(); // note: paramStr_ is manually set at the end of setDataParam
+		paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
+	}
+
+//		for (int i = 0; i < nInd_; ++i) { // useless, new initialization performs and mStep, then an eStepObserved that fills tik_
+//			tik_.row(i) = prop_.transpose();
+//		}
+
+	paramStr_ = "nModality: " + std::to_string(nClass_);
+
+	dataStat_.setNbIndividual(nInd_);
+
+	return warnLog;
 }
 
 std::string MixtureComposer::setZi() {
@@ -626,6 +650,19 @@ std::string MixtureComposer::setZi() {
 		warnLog += sstm.str();
 	}
 	zClassInd_.setRange(0, nClass_ - 1, nClass_);
+
+	return warnLog;
+}
+
+std::string MixtureComposer::setProportion() {
+	std::string warnLog;
+
+	const NamedMatrix<Real>& stat = gParam_.get_child("z_class").get_child("pi").get_payload<NamedMatrix<Real>>("stat"); // only called in predict mode, therefor the payload exists
+	Index nrow = stat.mat_.rows();
+
+	for (Index i = 0; i < nrow; ++i) {
+		prop_(i) = stat.mat_(i, 0); // only the mode / expectation is used, quantile information is discarded
+	}
 
 	return warnLog;
 }

@@ -158,48 +158,14 @@ public:
 	 * with the individual IMixtures
 	 * @param checkInd should be set to 1 if a minimum number of individual per class should be
 	 * enforced at sampling (true in learning, false in prediction) */
-	template<typename ParamSetter, typename DataHandler>
-	std::string setDataParam(const ParamSetter& paramSetter,
-			const DataHandler& dataHandler, RunMode mode) {
-		std::string warnLog;
-
-		for (ConstMixtIterator it = v_mixtures_.begin();
-				it != v_mixtures_.end(); ++it) {
-			warnLog += (*it)->setDataParam(mode, gData_.get_payload<std::vector<std::string>>((*it)->idName()), gParam_.get_child((*it)->idName()));
-		}
-
-		warnLog += setZi(); // dataHandler getData is called to fill zi_
-
-		if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
-			warnLog += setProportion(paramSetter);
-			paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
-		}
-
-//		for (int i = 0; i < nInd_; ++i) { // useless, new initialization performs and mStep, then an eStepObserved that fills tik_
-//			tik_.row(i) = prop_.transpose();
-//		}
-
-		paramStr_ = "nModality: " + std::to_string(nClass_);
-
-		dataStat_.setNbIndividual(nInd_);
-
-		return warnLog;
-	}
+	std::string setDataParam(RunMode mode);
 
 	/**
 	 * ParamSetter is injected to take care of setting the values of the proportions.
 	 * This avoids templating the whole composer with DataHandler type, as is currently done
 	 * with the individual IMixtures.
 	 */
-	template<typename ParamSetter>
-	std::string setProportion(const ParamSetter& paramSetter) {
-		std::string warnLog;
-
-		std::string dummy;
-		paramSetter.getParam("z_class", "pi", prop_, dummy); // paramStr_ is manually set at the end of setDataParam
-
-		return warnLog;
-	}
+	std::string setProportion();
 
 	/**
 	 * DataHandler is injected to take care of setting the values of the latent classes.

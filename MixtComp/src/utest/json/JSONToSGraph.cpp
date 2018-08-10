@@ -14,8 +14,7 @@
 using namespace mixt;
 
 TEST(JSONToSGraph, basic) {
-	nlohmann::json expectedJSON =
-			R"({"paramStr":"A parameter","varA":{"A nested real":12.0,"A nested string":"Hello World !"}})"_json;
+	nlohmann::json expectedJSON = R"({"paramStr":"A parameter","varA":{"A nested real":12.0,"A nested string":"Hello World !"}})"_json;
 
 	nlohmann::json computedJSON = SGraphToJSON(JSONToSGraph(expectedJSON));
 
@@ -23,8 +22,7 @@ TEST(JSONToSGraph, basic) {
 }
 
 TEST(JSONToSGraph, VectorReal) {
-	nlohmann::json expectedJSON =
-			R"-({"A named vector":{"ctype":"Vector","data":[1.0,2.0,3.0],"dtype":"Real","nrow":3,"rowNames":["riri","fifi","loulou"]}})-"_json;
+	nlohmann::json expectedJSON = R"-({"A named vector":{"ctype":"Vector","data":[1.0,2.0,3.0],"dtype":"Real","nrow":3,"rowNames":["riri","fifi","loulou"]}})-"_json;
 
 	nlohmann::json computedJSON = SGraphToJSON(JSONToSGraph(expectedJSON));
 
@@ -41,8 +39,7 @@ TEST(JSONToSGraph, MatrixReal) {
 }
 
 TEST(JSONToSGraph, VectorOfString) {
-	nlohmann::json expectedJSON =
-			R"-({"var1":["12.0","-35.90","205.72"]})-"_json;
+	nlohmann::json expectedJSON = R"-({"var1":["12.0","-35.90","205.72"]})-"_json;
 
 	nlohmann::json computedJSON = SGraphToJSON(JSONToSGraph(expectedJSON));
 
