@@ -3,6 +3,7 @@
 .RData
 .svn
 .DS_store
+.recommenders
 *.aux
 *.toc
 *.log

@@ -34,7 +34,7 @@ public:
 	/** Constructor.
 	 * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
 	 */
-	MixtureComposer(Index nbInd, Index nbClass, Real confidenceLevel, const SGraph& algo, const SGraph& data, const SGraph& param);
+	MixtureComposer(const SGraph& algo, const SGraph& data, const SGraph& param);
 
 	/** copy constructor.
 	 *  @param composer the composer to copy
@@ -178,7 +178,11 @@ public:
 	 * and data
 	 **/
 	template<typename DataExtractor, typename ParamExtractor>
-	void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const {
+	SGraph exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const {
+		SGraph res;
+
+		res.add_child("algo", gAlgo_);
+
 		SGraph dummyData;
 		SGraph dummyParam;
 		dataExtractor.exportVals(0, "z_class", zClassInd_.zi(), tik_);
@@ -188,6 +192,7 @@ public:
 			(*it)->exportDataParam(dummyData, dummyParam);
 		}
 
+		return res;
 	}
 	;
 
@@ -279,6 +284,7 @@ public:
 	void printClassInd() const;
 
 private:
+	const SGraph& gAlgo_;
 	const SGraph& gData_;
 	const SGraph& gParam_;
 
@@ -292,6 +298,9 @@ private:
 
 	/** Number of variables */
 	Index nVar_;
+
+	/** confidence level used for the computation of statistics */
+	Real confidenceLevel_;
 
 	/** The proportions of each class */
 	Vector<Real> prop_;
@@ -314,8 +323,7 @@ private:
 	/** computer of the statistics on latent variables */
 	ClassDataStat dataStat_;
 
-	/** confidence level used for the computation of statistics */
-	Real confidenceLevel_;
+
 
 	/**
 	 * Cached observed log probability. The access is done via:

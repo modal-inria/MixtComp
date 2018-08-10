@@ -18,14 +18,15 @@
 
 namespace mixt {
 
-MixtureComposer::MixtureComposer(Index nbInd, Index nbClass, Real confidenceLevel, const SGraph& algo, const SGraph& data, const SGraph& param) :
-		gData_(data), gParam_(param), nClass_(algo.get_payload<Index>("nClass")), nInd_(algo.get_payload<Index>("nInd")), nVar_(0), prop_(nbClass), tik_(nbInd, nbClass), sampler_(zClassInd_, tik_,
-				nbClass), paramStat_(prop_, confidenceLevel), dataStat_(zClassInd_), confidenceLevel_(boost::get<Real>(algo.get_payload("confidenceLevel"))), completedProbabilityCache_(nInd_) {
-	std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nbInd << ", nbClass: " << nbClass << std::endl;
+MixtureComposer::MixtureComposer(const SGraph& algo, const SGraph& data, const SGraph& param) :
+		gAlgo_(algo), gData_(data), gParam_(param), nClass_(algo.get_payload<Index>("nClass")), nInd_(algo.get_payload<Index>("nInd")), nVar_(0), confidenceLevel_(
+				algo.get_payload<Real>("confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(zClassInd_), completedProbabilityCache_(
+				nInd_) {
+	std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nInd_ << ", nbClass: " << nClass_ << std::endl;
 	zClassInd_.setIndClass(nInd_, nClass_);
 
 	std::stringstream sstm;
-	sstm << "nbModality: " << nbClass;
+	sstm << "nbModality: " << nClass_;
 	paramStr_ = sstm.str();
 }
 
