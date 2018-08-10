@@ -55,6 +55,7 @@
         - pour les noms de lignes / colonnes, soit il y en a 0, soit il y en a autant que de ligne / colonnes. Tout autre possibilité exclue.
         - Vérifier qu'il y a au moins une variable dans desc, et que à chaque variable desc correspond une seule variable data
         - confidenceLevel < 0. || 1. < confidenceLevel
+    - ajouter une méthode clear(), qui permet de supprimer tout le contenu. Utili pour le SGraph de données pour gagner de la place
 - Export données / param
     - ajouter les stats pour les données
         - pour les categorielles, faire comme les classes, fournir toutes les modalités sous forme de tableau, au lieu de la liste dégueu avec les 95 % comme actuellement
