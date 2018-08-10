@@ -22,18 +22,16 @@ namespace mixt {
 /**
  * SimpleMixture is the new interface to add simple models. It is simpler than SimpleMixtureBridge which used class traits for no apparent benefit.
  */
-template<typename Model, typename DataHandler, typename DataExtractor, typename ParamSetter, typename ParamExtractor>
+template<typename Model>
 class SimpleMixture: public IMixture {
 public:
 	/** constructor.
 	 *  @param idName id name of the mixture
 	 *  @param nbCluster number of cluster
 	 **/
-	SimpleMixture(Index indexMixture, std::string const& idName, Index nbClass, Index nInd, const DataHandler* p_handler, DataExtractor* p_extractor, const ParamSetter* p_paramSetter,
-			ParamExtractor* p_paramExtractor, Real confidenceLevel) :
-			IMixture(idName, Model::name, nbClass, nInd), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), nbInd_(0), confidenceLevel_(confidenceLevel), sampler_(augData_,
-					param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_, augData_, nbClass), p_handler_(p_handler), p_dataExtractor_(
-					p_extractor), p_paramSetter_(p_paramSetter), p_paramExtractor_(p_paramExtractor) {
+	SimpleMixture(std::string const& idName, Index nbClass, Index nInd, Real confidenceLevel, const std::string& paramStr) :
+			IMixture(idName, Model::name, nbClass, nInd), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(paramStr), nbInd_(0), confidenceLevel_(confidenceLevel), sampler_(
+					augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_, augData_, nbClass) {
 	}
 
 	/**
@@ -142,9 +140,6 @@ public:
 	}
 
 	void exportDataParam(SGraph& data, SGraph& param) const {
-//		p_dataExtractor_->exportVals(indexMixture_, model_.hasModalities(), idName_, augData_, dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
-//		p_paramExtractor_->exportParam(indexMixture_, idName(), "NumericalParam", paramStat_.getStatStorage(), paramStat_.getLogStorage(), model_.paramNames(), confidenceLevel_, paramStr_);
-
 		NamedVector<typename Model::Data::Type> dataOut;
 		dataOut.vec_ = augData_.data_; // not that no row names are provided
 		if (model_.hasModalities()) {
@@ -237,18 +232,6 @@ protected:
 
 	/** Computation of the observed likelihood */
 	typename Model::Likelihood likelihood_;
-
-	/** Pointer to the data handler */
-	const DataHandler* p_handler_;
-
-	/** Pointer to the data extractor */
-	DataExtractor* p_dataExtractor_;
-
-	/** Pointer to the param setter */
-	const ParamSetter* p_paramSetter_;
-
-	/** Pointer to the parameters extractor */
-	ParamExtractor* p_paramExtractor_;
 };
 
 }

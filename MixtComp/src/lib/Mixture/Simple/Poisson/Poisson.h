@@ -22,7 +22,7 @@ namespace mixt {
 
 class Poisson {
 public:
-	std::string name = "Poisson";
+	static const std::string name;
 
 	typedef Vector<int> Data;
 	typedef ConfIntDataStat<int> DataStat;

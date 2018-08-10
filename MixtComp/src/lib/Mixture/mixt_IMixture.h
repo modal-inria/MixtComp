@@ -27,7 +27,7 @@ public:
 	 * @param idName Identification string of the mixture provided by the framework
 	 * */
 	IMixture(const std::string& idName, const std::string& modelType, Index nClass, Index nInd) :
-		idName_(idName), modelType_(modelType), nClass_(nClass), nInd_(nInd) {
+			idName_(idName), modelType_(modelType), nClass_(nClass), nInd_(nInd) {
 	}
 	;
 

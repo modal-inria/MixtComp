@@ -22,7 +22,7 @@ namespace mixt {
 
 class Gaussian {
 public:
-	std::string name = "Gaussian";
+	static const std::string name;
 
 	typedef Vector<Real> Data;
 	typedef ConfIntDataStat<Real> DataStat;

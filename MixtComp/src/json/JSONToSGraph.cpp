@@ -32,7 +32,27 @@ SGraph JSONToSGraph(const nlohmann::json& json) {
 				if (ctype == "Vector") { // pattern match a Vector
 					std::vector<std::string> rowNames = (*it)["rowNames"].get<std::vector<std::string>>();
 
-					if (dtype == "Real") { // Vector<Real>
+					if (dtype == "Index") {
+						std::vector<Index> dataRaw = (*it)["data"].get<std::vector<Index>>();
+
+						Vector<Index> data(nrow);
+						for (Index i = 0; i < nrow; ++i) {
+							data(i) = dataRaw[i];
+						}
+
+						NamedVector<Index> nv = { rowNames, data };
+						res.add_payload(it.key(), nv);
+					} else if (dtype == "Integer") {
+						std::vector<Integer> dataRaw = (*it)["data"].get<std::vector<Integer>>();
+
+						Vector<Integer> data(nrow);
+						for (Index i = 0; i < nrow; ++i) {
+							data(i) = dataRaw[i];
+						}
+
+						NamedVector<Integer> nv = { rowNames, data };
+						res.add_payload(it.key(), nv);
+					} else if (dtype == "Real") { // Vector<Real>
 						std::vector<Real> dataRaw = (*it)["data"].get<std::vector<Real>>();
 
 						Vector<Real> data(nrow);

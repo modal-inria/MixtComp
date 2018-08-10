@@ -13,7 +13,7 @@
 #include "Learn.h"
 #include <IO/Dummy.h>
 #include <LinAlg/mixt_LinAlg.h>
-#include <Manager/mixt_MixtureManager.h>
+#include <Manager/MixtureManager.h>
 #include <Statistic/mixt_RNG.h>
 #include <Various/mixt_Constants.h>
 #include <Various/mixt_Timer.h>

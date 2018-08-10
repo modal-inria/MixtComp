@@ -12,6 +12,8 @@
     - boucle sur desc pour instancier les variables
 - JSONToSGraph
     - comment vérifier les types, par exemple que ctype est une chaîne de caractères ?
+    - Eviter copies d'objects en créant d'abord le NamedVector, puis en éditant directement ses membres
+    - Il doit y avoir possibilité de templater les différents NamedVector, dans le SGraphVisJSON aussi d'ailleurs
 - MixtureComposer
     - supprimer les arguments redondants dans le constructeur
     - Une fois que les données ont été parsées, gData doit être vidé. Inutile de conserver les valeurs d'entrée en mémoire.
@@ -52,6 +54,7 @@
         - toutes les variables ont le même nombre d'individus (fourni en argument, au même titre que nClass)
         - pour les noms de lignes / colonnes, soit il y en a 0, soit il y en a autant que de ligne / colonnes. Tout autre possibilité exclue.
         - Vérifier qu'il y a au moins une variable dans desc, et que à chaque variable desc correspond une seule variable data
+        - confidenceLevel < 0. || 1. < confidenceLevel
 - Export données / param
     - ajouter les stats pour les données
         - pour les categorielles, faire comme les classes, fournir toutes les modalités sous forme de tableau, au lieu de la liste dégueu avec les 95 % comme actuellement

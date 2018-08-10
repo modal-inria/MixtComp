@@ -668,4 +668,58 @@ std::string MixtureComposer::setProportion() {
 	return warnLog;
 }
 
+SGraph MixtureComposer::exportDataParam() const {
+	SGraph res;
+
+	res.add_child("algo", gAlgo_);
+
+	SGraph mixture; // TODO: implement by copying code from RMixtComp
+	res.add_child("mixture", mixture);
+
+	SGraph type; // TODO: implement type extraction
+	SGraph data;
+	SGraph param;
+
+	SGraph zClassData;
+	zClassData.add_payload("completed", NamedVector<Index> { std::vector<std::string>(), zClassInd_.zi().data_ + minModality });
+	zClassData.add_payload("stat", NamedMatrix<Real> { std::vector<std::string>(), std::vector<std::string>(), tik_ });
+
+	SGraph zClassParam;
+	NamedMatrix<Real> piExport;
+
+	Index ncol = paramStat_.getStatStorage().cols();
+	std::vector<std::string> colNames(ncol);
+	Real alpha = (1. - confidenceLevel_) / 2.;
+
+	if (ncol == 1) { // predict
+		colNames[0] = "value";
+	} else { // learn
+		colNames[0] = "median";
+		colNames[1] = std::string("q ") + std::to_string((alpha * 100.)) + "%";
+		colNames[2] = std::string("q ") + std::to_string(((1. - alpha) * 100.)) + "%";
+	}
+
+	NamedMatrix<Real> paramOut = { paramName(), colNames, paramStat_.getStatStorage() };
+	zClassParam.add_payload("stat", paramOut);
+	zClassParam.add_payload("paramStr", paramStr_);
+
+	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+		std::string currName = (*it)->idName();
+
+		SGraph currData;
+		SGraph currParam;
+		(*it)->exportDataParam(currData, currParam);
+
+		type.add_payload(currName, (*it)->modelType());
+		data.add_child(currName, currData);
+		param.add_child(currName, currParam);
+	}
+
+	res.add_child("type", type);
+	res.add_child("data", data);
+	res.add_child("param", param);
+
+	return res;
+}
+
 } /* namespace mixt */

@@ -32,7 +32,7 @@
 #include "Mixture/Simple/SimpleMixture.h"
 #include "Mixture/Simple/Weibull/Weibull.h"
 #include "Mixture/Simple/NegativeBinomial/NegativeBinomial.h"
-#include "Manager/mixt_MixtureManager.h"
+#include "Manager/MixtureManager.h"
 #include "Statistic/mixt_Statistic.h"
 #include "Strategy/mixt_SEMStrategy.h"
 #include "Strategy/mixt_GibbsStrategy.h"

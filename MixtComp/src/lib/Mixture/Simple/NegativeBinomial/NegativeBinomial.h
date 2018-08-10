@@ -22,7 +22,7 @@ namespace mixt {
 
 class NegativeBinomial {
 public:
-	std::string name = "NegativeBinomial";
+	static const std::string name;
 
 	typedef Vector<int> Data;
 	typedef ConfIntDataStat<int> DataStat;

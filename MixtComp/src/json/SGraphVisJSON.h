@@ -32,6 +32,8 @@ public:
 
 	void operator()(const std::vector<std::string>& vec) const;
 
+	void operator()(const NamedVector<Index>& vec) const;
+
 	void operator()(const NamedVector<Integer>& vec) const;
 
 	void operator()(const NamedVector<Real>& vec) const;

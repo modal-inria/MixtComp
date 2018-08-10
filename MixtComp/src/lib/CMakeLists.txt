@@ -43,7 +43,8 @@ add_library(MixtComp
 	Statistic/NormalStatistic.h
 	Statistic/mixt_Statistic.h
 	Param/mixt_ConfIntParamStat.h
-	Manager/mixt_MixtureManager.h
+	Manager/MixtureManager.h
+	Manager/MixtureManager.cpp
 	LinAlg/mixt_ConstIterator.h
 	LinAlg/mixt_Math.h
 	LinAlg/mixt_LinAlg.h

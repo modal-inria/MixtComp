@@ -177,24 +177,7 @@ public:
 	/**@brief This step can be used to ask each mixture to export its model parameters
 	 * and data
 	 **/
-	template<typename DataExtractor, typename ParamExtractor>
-	SGraph exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const {
-		SGraph res;
-
-		res.add_child("algo", gAlgo_);
-
-		SGraph dummyData;
-		SGraph dummyParam;
-		dataExtractor.exportVals(0, "z_class", zClassInd_.zi(), tik_);
-		paramExtractor.exportParam(0, "z_class", "pi", paramStat_.getStatStorage(), paramStat_.getLogStorage(), paramName(), confidenceLevel_, "");
-
-		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-			(*it)->exportDataParam(dummyData, dummyParam);
-		}
-
-		return res;
-	}
-	;
+	SGraph exportDataParam() const;
 
 	/** register a mixture to the composer.
 	 *  When a mixture is registered, the composer:
@@ -322,8 +305,6 @@ private:
 
 	/** computer of the statistics on latent variables */
 	ClassDataStat dataStat_;
-
-
 
 	/**
 	 * Cached observed log probability. The access is done via:
