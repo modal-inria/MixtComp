@@ -22,6 +22,8 @@ namespace mixt {
 
 class Gaussian {
 public:
+	std::string name = "Gaussian";
+
 	typedef Vector<Real> Data;
 	typedef ConfIntDataStat<Real> DataStat;
 	typedef GaussianSampler Sampler;

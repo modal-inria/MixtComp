@@ -31,7 +31,7 @@ public:
 	 **/
 	SimpleMixture(Index indexMixture, std::string const& idName, Index nbClass, Index nInd, const DataHandler* p_handler, DataExtractor* p_extractor, const ParamSetter* p_paramSetter,
 			ParamExtractor* p_paramExtractor, Real confidenceLevel) :
-			IMixture(indexMixture, idName, nbClass, nInd), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), nbInd_(0), confidenceLevel_(confidenceLevel), sampler_(augData_,
+			IMixture(idName, Model::name, nbClass, nInd), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), nbInd_(0), confidenceLevel_(confidenceLevel), sampler_(augData_,
 					param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_, augData_, nbClass), p_handler_(p_handler), p_dataExtractor_(
 					p_extractor), p_paramSetter_(p_paramSetter), p_paramExtractor_(p_paramExtractor) {
 	}

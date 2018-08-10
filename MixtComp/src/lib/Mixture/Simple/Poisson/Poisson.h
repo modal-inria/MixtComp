@@ -22,6 +22,8 @@ namespace mixt {
 
 class Poisson {
 public:
+	std::string name = "Poisson";
+
 	typedef Vector<int> Data;
 	typedef ConfIntDataStat<int> DataStat;
 	typedef PoissonSampler Sampler;

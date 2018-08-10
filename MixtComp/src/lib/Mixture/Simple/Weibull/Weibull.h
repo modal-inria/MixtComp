@@ -28,6 +28,8 @@ namespace mixt {
 class Weibull {
 
 public:
+	std::string name = "Poisson";
+
 	typedef Vector<Real> Data;
 	typedef ConfIntDataStat<Real> DataStat;
 	typedef WeibullSampler Sampler;

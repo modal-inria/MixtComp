@@ -47,8 +47,10 @@
         - présence de tous les champs
         - toutes les variables ont le même nombre d'individus (fourni en argument, au même titre que nClass)
         - pour les noms de lignes / colonnes, soit il y en a 0, soit il y en a autant que de ligne / colonnes. Tout autre possibilité exclue.
+        - Vérifier qu'il y a au moins une variable dans desc, et que à chaque variable desc correspond une seule variable data
 - Export données / param
     - ajouter les stats pour les données
         - pour les categorielles, faire comme les classes, fournir toutes les modalités sous forme de tableau, au lieu de la liste dégueu avec les 95 % comme actuellement
 - Cas test
     - Créer à la main un json avec une variable décrite sur laquelle on veut estimer une loi normale, par exemple deux classes et une vingtaine d'observations générées à la main. Pour détecter les erreurs les plus flagrantes.
+    - Conserver ce cas test, et se débrouiller pour pouvoir faire un test unitaire dessus, par exemple en validant le json de sortie par rapport à un résultat attendu

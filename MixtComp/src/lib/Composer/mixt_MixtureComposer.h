@@ -130,16 +130,14 @@ public:
 	 * log is required.
 	 * @param[out] warnLog provides information on what condition has not been met
 	 * */
-	std::string checkSampleCondition(
-			const Vector<std::set<Index>>& classInd) const;
+	std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
 	std::string checkSampleCondition() const;
 
 	/**
 	 * Check if there are enough individual in each class. Called by checkSampleCondition.
 	 * @param[out] warnLog provides information on what condition has not been met
 	 * */
-	std::string checkNbIndPerClass(
-			const Vector<std::set<Index>>& classInd) const;
+	std::string checkNbIndPerClass(const Vector<std::set<Index>>& classInd) const;
 	std::string checkNbIndPerClass() const;
 
 	/**@brief This step can be used to signal to the mixtures that they must
@@ -180,17 +178,13 @@ public:
 	 * and data
 	 **/
 	template<typename DataExtractor, typename ParamExtractor>
-	void exportDataParam(DataExtractor& dataExtractor,
-			ParamExtractor& paramExtractor) const {
+	void exportDataParam(DataExtractor& dataExtractor, ParamExtractor& paramExtractor) const {
 		SGraph dummyData;
 		SGraph dummyParam;
 		dataExtractor.exportVals(0, "z_class", zClassInd_.zi(), tik_);
-		paramExtractor.exportParam(0, "z_class", "pi",
-				paramStat_.getStatStorage(), paramStat_.getLogStorage(),
-				paramName(), confidenceLevel_, "");
+		paramExtractor.exportParam(0, "z_class", "pi", paramStat_.getStatStorage(), paramStat_.getLogStorage(), paramName(), confidenceLevel_, "");
 
-		for (ConstMixtIterator it = v_mixtures_.begin();
-				it != v_mixtures_.end(); ++it) {
+		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 			(*it)->exportDataParam(dummyData, dummyParam);
 		}
 

@@ -24,7 +24,7 @@ public:
 			Index nClass, Index nObs, const DataHandler* p_handler,
 			DataExtractor* p_extractor, const ParamSetter* p_paramSetter,
 			ParamExtractor* p_paramExtractor, Real confidenceLevel) :
-			IMixture(indexMixture, idName, nClass, nObs), nInd_(0), nClass_(nClass), nSub_(0), nCoeff_(
+			IMixture(idName, "Functional", nClass, nObs), nInd_(0), nClass_(nClass), nSub_(0), nCoeff_(
 					0), confidenceLevel_(confidenceLevel), p_handler_(
 					p_handler), p_dataExtractor_(p_extractor), p_paramSetter_(
 					p_paramSetter), p_paramExtractor_(p_paramExtractor) {
@@ -219,7 +219,7 @@ public:
 	}
 
 	void exportDataParam(SGraph& data, SGraph& param) const { // linearize and format the information provided by each class, and send it to the usual extractors, nothing fancy here ...
-		p_dataExtractor_->exportVals(indexMixture_, idName_, vecInd_); // export the missing values here, when they will be support for them
+		p_dataExtractor_->exportVals(-12, idName_, vecInd_); // export the missing values here, when they will be support for them
 
 		Index sizeClassAlpha = nSub_ * 2;
 		Index sizeClassBeta = nSub_ * nCoeff_;
@@ -253,14 +253,14 @@ public:
 					class_[k].sdParamStat().getLogStorage();
 		}
 
-		p_paramExtractor_->exportParam(indexMixture_, idName_, "alpha",
+		p_paramExtractor_->exportParam(-12, idName_, "alpha",
 				alphaStat, alphaLog, alphaParamNames(), confidenceLevel_,
 				paramStr_);
 
-		p_paramExtractor_->exportParam(indexMixture_, idName_, "beta", betaStat,
+		p_paramExtractor_->exportParam(-12, idName_, "beta", betaStat,
 				betaLog, betaParamNames(), confidenceLevel_, paramStr_);
 
-		p_paramExtractor_->exportParam(indexMixture_, idName_, "sd", sdStat,
+		p_paramExtractor_->exportParam(-12, idName_, "sd", sdStat,
 				sdLog, sdParamNames(), confidenceLevel_, paramStr_);
 	}
 	;

@@ -29,7 +29,7 @@ public:
 			const DataHandler* p_handler, DataExtractor* p_extractor,
 			const ParamSetter* p_paramSetter, ParamExtractor* p_paramExtractor,
 			Real confidenceLevel) :
-			IMixture(indexMixture, idName, nbClass, nObs), nClass_(nbClass), nbInd_(0), nbPos_(
+			IMixture(idName, "Rank", nbClass, nObs), nClass_(nbClass), nbInd_(0), nbPos_(
 					0), facNbMod_(0.), p_handler_(p_handler), p_dataExtractor_(
 					p_extractor), p_paramSetter_(p_paramSetter), p_paramExtractor_(
 					p_paramExtractor), confidenceLevel_(confidenceLevel), mu_(
@@ -252,10 +252,10 @@ public:
 	}
 
 	void exportDataParam(SGraph& data, SGraph& param) const {
-		p_dataExtractor_->exportVals(indexMixture_, idName(), data_, dataStat_);
-		p_paramExtractor_->exportParam(indexMixture_, idName_, "mu",
+		p_dataExtractor_->exportVals(-12, idName(), data_, dataStat_);
+		p_paramExtractor_->exportParam(-12, idName_, "mu",
 				muParamStat_, muParamNames(), confidenceLevel_, paramStr_);
-		p_paramExtractor_->exportParam(indexMixture_, idName_, "pi",
+		p_paramExtractor_->exportParam(-12, idName_, "pi",
 				piParamStat_.getStatStorage(), piParamStat_.getLogStorage(),
 				piParamNames(), confidenceLevel_, "");
 	}

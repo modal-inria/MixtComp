@@ -26,8 +26,8 @@ public:
 	 *
 	 * @param idName Identification string of the mixture provided by the framework
 	 * */
-	IMixture(Index indexMixture, std::string const& idName, Index nClass, Index nInd) :
-			indexMixture_(indexMixture), idName_(idName), nClass_(nClass), nInd_(nInd) {
+	IMixture(const std::string& idName, const std::string& modelType, Index nClass, Index nInd) :
+		idName_(idName), modelType_(modelType), nClass_(nClass), nInd_(nInd) {
 	}
 	;
 
@@ -40,8 +40,12 @@ public:
 	 * Return the Id of the mixture
 	 * @return Id of the mixture
 	 * */
-	std::string const& idName() const {
+	const std::string& idName() const {
 		return idName_;
+	}
+
+	const std::string& modelType() const {
+		return modelType_;
 	}
 
 	/**
@@ -155,11 +159,11 @@ public:
 	 */
 	virtual bool sampleApproximationOfObservedProba() = 0;
 protected:
-	/** Index of the mixture, useful to write the results at the correct place in th output. */
-	Index indexMixture_;
-
 	/** Id name of the mixture */
 	std::string idName_;
+
+	/** Type of the model */
+	std::string modelType_;
 
 	Index nClass_;
 	Index nInd_;
