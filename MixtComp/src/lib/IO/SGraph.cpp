@@ -12,11 +12,13 @@
 namespace mixt {
 
 void SGraph::add_payload(const std::string& name, const AlgType& data) {
-	payload_.insert(std::pair<std::string, AlgType>(name, data));
+	std::pair<std::map<std::string, AlgType>::iterator, bool> res = payload_.insert(std::pair<std::string, AlgType>(name, data));
+	if (!res.second) throw std::string("Try to add duplicate key ") + name;
 }
 
 void SGraph::add_child(const std::string& name, const SGraph& data) {
-	children_.insert(std::pair<std::string, SGraph>(name, data));
+	std::pair<std::map<std::string, SGraph>::iterator, bool> res = children_.insert(std::pair<std::string, SGraph>(name, data));
+	if (!res.second) throw std::string("Try to add duplicate key ") + name;
 }
 
 bool SGraph::exist_payload(const std::string& name) const {

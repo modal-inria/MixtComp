@@ -8,6 +8,8 @@
         - Chercher dummyData, dummyParam
     - Supprimer les templates
     - pour la prédiction, fournir un SGraph param qui contient un child par variable, mais vide
+- MixtureManager
+    - boucle sur desc pour instancier les variables
 - JSONToSGraph
     - comment vérifier les types, par exemple que ctype est une chaîne de caractères ?
 - MixtureComposer
