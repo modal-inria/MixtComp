@@ -19,4 +19,14 @@ void SGraph::add_child(const std::string& name, const SGraph& data) {
 	children_.insert(std::pair<std::string, SGraph>(name, data));
 }
 
+bool SGraph::exist_payload(const std::string& name) const {
+	std::map<std::string, AlgType>::const_iterator it = payload_.find(name);
+	return it != payload_.end();
+}
+
+bool SGraph::exist_child(const std::string& name) const {
+	std::map<std::string, SGraph>::const_iterator it = children_.find(name);
+	return it != children_.end();
+}
+
 }

@@ -12,21 +12,6 @@
 
 using namespace mixt;
 
-/** Visitor to get value. */
-TEST(SGraph, BasicIOVisitor) {
-	SGraph test;
-
-	std::string nameStr = "Quote";
-	std::string testStr = "They shall not pass.";
-
-	test.add_payload(nameStr, testStr);
-
-	AlgType res = test.get_payload(nameStr);
-	std::string resStr = boost::apply_visitor(SGraphVisPrint(), res);
-
-	ASSERT_EQ(testStr, resStr);
-}
-
 /** Get to get value. */
 TEST(SGraph, BasicIOGet) {
 	SGraph test;
@@ -36,8 +21,7 @@ TEST(SGraph, BasicIOGet) {
 
 	test.add_payload(name, val);
 
-	AlgType resAlg = test.get_payload(name);
-	Real res = boost::get<Real>(resAlg);
+	Real res = test.get_payload<Real>(name);
 
 	ASSERT_NEAR(val, res, epsilon);
 }

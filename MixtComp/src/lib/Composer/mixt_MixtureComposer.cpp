@@ -19,8 +19,9 @@
 namespace mixt {
 
 MixtureComposer::MixtureComposer(Index nbInd, Index nbClass, Real confidenceLevel, const SGraph& algo, const SGraph& data, const SGraph& param) :
-		idName_("z_class"), nClass_(nbClass), nInd_(nbInd), nVar_(0), prop_(nbClass), tik_(nbInd, nbClass), sampler_(zClassInd_, tik_, nbClass), paramStat_(prop_, confidenceLevel), dataStat_(
-				zClassInd_), confidenceLevel_(confidenceLevel), completedProbabilityCache_(nInd_) {
+		gData_(data), gParam_(param), nClass_(algo.get_payload<Index>("nClass")), nInd_(algo.get_payload<Index>("nInd")), nVar_(0), prop_(nbClass), tik_(
+				nbInd, nbClass), sampler_(zClassInd_, tik_, nbClass), paramStat_(prop_, confidenceLevel), dataStat_(zClassInd_), confidenceLevel_(
+				boost::get<Real>(algo.get_payload("confidenceLevel"))), completedProbabilityCache_(nInd_) {
 	std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nbInd << ", nbClass: " << nbClass << std::endl;
 	zClassInd_.setIndClass(nInd_, nClass_);
 
@@ -594,6 +595,39 @@ bool MixtureComposer::eStepObservedInd(Index i) {
 	tik_.row(i).logToMulti(lnComp);
 
 	return isIndividualObservable;
+}
+
+std::string MixtureComposer::setZi() {
+	std::string warnLog;
+
+	if (!gData_.exist_payload("z_class")) { // z_class was not provided
+		zClassInd_.setAllMissing(); // set every value state to missing_
+	} else {
+		warnLog += zClassInd_.setZi(gData_.get_payload<std::vector<std::string>>("z_class"));
+	}
+
+	std::string tempLog = zClassInd_.checkMissingType(); // check if the missing data provided are compatible with the model
+	if (tempLog.size() > 0) {
+		std::stringstream sstm;
+		sstm << "Variable z_class contains latent classes and has unsupported missing value types.\n" << tempLog;
+		warnLog += sstm.str();
+	}
+	zClassInd_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
+	if (zClassInd_.zi().dataRange_.min_ < 0) { // Since z is currently described using unsigned integer, there is no need for this check HOWEVER it might come in handy shall this condition changes
+		std::stringstream sstm;
+		sstm << "The z_class latent class variable has a lowest provided value of: " << minModality + zClassInd_.zi().dataRange_.min_ << " while the minimal value has to be: " << minModality
+				<< ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+		warnLog += sstm.str();
+	}
+	if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nClass_ - 1) {
+		std::stringstream sstm;
+		sstm << "The z_class latent class variable has a highest provided value of: " << minModality + zClassInd_.zi().dataRange_.max_
+				<< " while the maximal value can not exceed the number of class: " << minModality + nClass_ - 1 << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+		warnLog += sstm.str();
+	}
+	zClassInd_.setRange(0, nClass_ - 1, nClass_);
+
+	return warnLog;
 }
 
 } /* namespace mixt */

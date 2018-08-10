@@ -34,33 +34,7 @@ public:
 	std::string checkMissingType();
 
 	/** The DataHandler initializes zi_, and classInd_ is updated. */
-	template<typename DataHandler>
-	std::string setZi(const DataHandler& dataHandler) {
-		std::string warnLog;
-		std::string paramStr;
-
-		warnLog += dataHandler.getData("z_class", // reserved name for the class
-				zi_, nbInd_, paramStr, -minModality); // an offset is immediately applied to the data read so that internally the classes encoding is 0 based
-
-		boost::regex iniRe("fixedInitialization");
-		boost::smatch m;
-		std::string::const_iterator start = paramStr.begin();
-		std::string::const_iterator end = paramStr.end();
-		boost::regex_search(start, end, m, iniRe);
-		if (m[0].str().size() > 0) {
-			zi_.setFixedInitialization();
-		}
-
-		for (int k = 0; k < nbClass_; ++k) {
-			classInd_(k).clear();
-		}
-
-		for (int i = 0; i < nbInd_; ++i) {
-			classInd_(zi_.data_(i)).insert(i);
-		}
-
-		return warnLog;
-	}
+	std::string setZi(const std::vector<std::string>& data);
 
 	/** The class of a particular individual is modified */
 	void setZAndClassInd(Index i, Index k);

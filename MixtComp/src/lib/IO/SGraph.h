@@ -31,9 +31,17 @@ public:
 		return payload_.at(name);
 	}
 
+	template<typename Type>
+	const Type& get_payload(const std::string& name) const {
+		return boost::get<Type>(payload_.at(name));
+	}
+
 	const SGraph& get_child(const std::string& name) const {
 		return children_.at(name);
 	}
+
+	bool exist_payload(const std::string& name) const;
+	bool exist_child(const std::string& name) const;
 
 	/** Map to loop over all payload elements.*/
 	const std::map<std::string, AlgType>& get_payload() const {

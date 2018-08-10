@@ -28,6 +28,10 @@ void SGraphVisJSON::operator()(const std::string& str) const {
 	j_[payloadName_] = str;
 }
 
+void SGraphVisJSON::operator()(const std::vector<std::string>& vec) const {
+	j_[payloadName_] = vec;
+}
+
 void SGraphVisJSON::operator()(const NamedVector<Integer>& vec) const {
 	nlohmann::json res; // Since a vector is an union of fields, it is contained in its own json object
 

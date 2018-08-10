@@ -61,9 +61,9 @@ public:
 		if (mode == prediction_) {
 //			p_paramSetter_->getParam(idName_, "NumericalParam", param_, paramStr_); // parameters are set using results from previous run, note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
 
-			const NamedMatrix<Real>& stat = boost::get<NamedMatrix<Real>>(param.get_child("NumericalParam").get_payload("stat"));
+			const NamedMatrix<Real>& stat = param.get_child("NumericalParam").get_payload<NamedMatrix<Real>>("stat");
 			Index nrow = stat.mat_.rows();
-			paramStr_ = boost::get<std::string>(param.get_child("NumericalParam").get_payload("paramStr"));
+			paramStr_ = param.get_child("NumericalParam").get_payload<std::string>("paramStr");
 
 			param_.resize(nrow);
 			for (Index i = 0; i < nrow; ++i) {

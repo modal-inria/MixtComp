@@ -90,6 +90,9 @@ SGraph JSONToSGraph(const nlohmann::json& json) {
 		} else if ((*it).is_string()) { // std::string
 			std::string val = (*it).get<std::string>();
 			res.add_payload(it.key(), val);
+		} else if ((*it).is_array()) { // array of string (only array supported at the moment)
+			std::vector<std::string> val = (*it).get<std::vector<std::string>>();
+			res.add_payload(it.key(), val);
 		} else {
 			throw(std::string((*it).type_name()) + " not supported yet.");
 		}

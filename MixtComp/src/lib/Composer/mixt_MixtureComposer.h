@@ -161,27 +161,23 @@ public:
 	template<typename ParamSetter, typename DataHandler>
 	std::string setDataParam(const ParamSetter& paramSetter,
 			const DataHandler& dataHandler, RunMode mode) {
-		SGraph dummyParam;
-		std::vector<std::string> dummyData;
-
 		std::string warnLog;
 
 		for (ConstMixtIterator it = v_mixtures_.begin();
 				it != v_mixtures_.end(); ++it) {
-			warnLog += (*it)->setDataParam(mode, dummyData, dummyParam);
+			warnLog += (*it)->setDataParam(mode, gData_.get_payload<std::vector<std::string>>((*it)->idName()), gParam_.get_child((*it)->idName()));
 		}
 
-		warnLog += setProportion(paramSetter);
-
-		for (int i = 0; i < nInd_; ++i) {
-			tik_.row(i) = prop_.transpose();
-		}
-
-		warnLog += setZi(dataHandler); // dataHandler getData is called to fill zi_
+		warnLog += setZi(); // dataHandler getData is called to fill zi_
 
 		if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
+			warnLog += setProportion(paramSetter);
 			paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
 		}
+
+//		for (int i = 0; i < nInd_; ++i) { // useless, new initialization performs and mStep, then an eStepObserved that fills tik_
+//			tik_.row(i) = prop_.transpose();
+//		}
 
 		paramStr_ = "nModality: " + std::to_string(nClass_);
 
@@ -212,53 +208,7 @@ public:
 	 * @param checkInd should be set to 1 if a minimum number of individual per class should be
 	 * enforced at sampling (true in learning, false in prediction)
 	 */
-	template<typename DataHandler>
-	std::string setZi(const DataHandler& dataHandler) {
-		std::string warnLog;
-		std::string dummyParam;
-
-		if (dataHandler.info().find("z_class") == dataHandler.info().end()) { // z_class was not provided
-			zClassInd_.setAllMissing(); // set every value state to missing_
-		} else { // z_class was provided and its value is acquired in zi_
-			warnLog += zClassInd_.setZi(dataHandler);
-		}
-
-		std::string tempLog = zClassInd_.checkMissingType(); // check if the missing data provided are compatible with the model
-		if (tempLog.size() > 0) {
-			std::stringstream sstm;
-			sstm << "Variable " << idName_
-					<< " contains latent classes and has unsupported missing value types.\n"
-					<< tempLog;
-			warnLog += sstm.str();
-		}
-		zClassInd_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
-		if (zClassInd_.zi().dataRange_.min_ < 0) { // Since z is currently described using unsigned integer, there is no need for this check HOWEVER it might come in handy shall this condition changes
-			std::stringstream sstm;
-			sstm
-					<< "The z_class latent class variable has a lowest provided value of: "
-					<< minModality + zClassInd_.zi().dataRange_.min_
-					<< " while the minimal value has to be: " << minModality
-					<< ". Please check the encoding of this variable to ensure proper bounds."
-					<< std::endl;
-			warnLog += sstm.str();
-		}
-		if (zClassInd_.zi().dataRange_.hasRange_ == true
-				|| zClassInd_.zi().dataRange_.max_ > nClass_ - 1) {
-			std::stringstream sstm;
-			sstm
-					<< "The z_class latent class variable has a highest provided value of: "
-					<< minModality + zClassInd_.zi().dataRange_.max_
-					<< " while the maximal value can not exceed the number of class: "
-					<< minModality + nClass_ - 1
-					<< ". Please check the encoding of this variable to ensure proper bounds."
-					<< std::endl;
-			warnLog += sstm.str();
-		}
-		zClassInd_.setRange(0, nClass_ - 1, nClass_);
-
-		return warnLog;
-	}
-	;
+	std::string setZi();
 
 	/**@brief This step can be used to ask each mixture to export its model parameters
 	 * and data
@@ -369,8 +319,8 @@ public:
 	void printClassInd() const;
 
 private:
-	/** name of the latent class variable */
-	std::string idName_;
+	const SGraph& gData_;
+	const SGraph& gParam_;
 
 	std::string paramStr_;
 

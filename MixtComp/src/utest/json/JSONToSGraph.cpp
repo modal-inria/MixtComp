@@ -39,3 +39,12 @@ TEST(JSONToSGraph, MatrixReal) {
 
 	ASSERT_EQ(expectedJSON, computedJSON);
 }
+
+TEST(JSONToSGraph, VectorOfString) {
+	nlohmann::json expectedJSON =
+			R"-({"var1":["12.0","-35.90","205.72"]})-"_json;
+
+	nlohmann::json computedJSON = SGraphToJSON(JSONToSGraph(expectedJSON));
+
+	ASSERT_EQ(expectedJSON, computedJSON);
+}

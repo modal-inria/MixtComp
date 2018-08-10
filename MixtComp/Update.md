@@ -7,6 +7,7 @@
         - En priorité les SimpleMixture, pour faire des essais plus facilement
         - Chercher dummyData, dummyParam
     - Supprimer les templates
+    - pour la prédiction, fournir un SGraph param qui contient un child par variable, mais vide
 - JSONToSGraph
     - comment vérifier les types, par exemple que ctype est une chaîne de caractères ?
 - MixtureComposer
@@ -18,6 +19,8 @@
     - Supprimer les nClass et nInd dans les classes dérivées de IMixture (tous l'ont pour le moment)
         - les arguments nClass et nInd seront uniquement transmis au constructeur de IMixture
     - remplacer dummyNClass et dummyNInd dans MixtureManager, par les vraies valeurs
+- AugmentedData
+    - supprimer tout ce qui a traît à FixedInitialization
 - paramStr
     - La version fournie dans desc.json doit être fournie à la création, dans le MixtureManager
     - La version lu à partir des paramètres doit être fournie dans setDataParam, quand le SGraph de paramètres est fournie
@@ -47,3 +50,5 @@
 - Export données / param
     - ajouter les stats pour les données
         - pour les categorielles, faire comme les classes, fournir toutes les modalités sous forme de tableau, au lieu de la liste dégueu avec les 95 % comme actuellement
+- Cas test
+    - Créer à la main un json avec une variable décrite sur laquelle on veut estimer une loi normale, par exemple deux classes et une vingtaine d'observations générées à la main. Pour détecter les erreurs les plus flagrantes.
