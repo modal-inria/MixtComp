@@ -10,8 +10,8 @@
 #ifndef MIXT_GIBBSSTRATEGY_H
 #define MIXT_GIBBSSTRATEGY_H
 
-#include "../Composer/mixt_MixtureComposer.h"
-#include "mixt_StrategyParam.h"
+#include <Composer/mixt_MixtureComposer.h>
+#include <IO/SGraph.h>
 
 namespace mixt {
 /**
@@ -20,30 +20,27 @@ namespace mixt {
  *  - perform a long run
  **/
 class GibbsStrategy {
-  public:
-    /** default constructor.
-     *  @param p_composer the model to estimate
-     **/
-    GibbsStrategy(
-        MixtureComposer* p_composer,
-        const StrategyParam& param,
-        Index startGroup);
-    
-    /** run the strategy */
-    std::string run();
-    
+public:
+	/** default constructor.
+	 *  @param p_composer the model to estimate
+	 **/
+	GibbsStrategy(MixtureComposer& composer, const SGraph& algo, Index startGroup);
+
+	/** run the strategy */
+	std::string run();
+
 	/**
 	 * run the algorithm, only kept during the transition, as an archive
 	 * @return string describing the problem in case of soft degeneracy */
 	void runGibbs(RunType runType, Index nIter, Index group, Index groupMax);
-  protected:
-     /** reference on the main model */
-    mixt::MixtureComposer* p_composer_;
+protected:
+	/** reference on the main model */
+	MixtureComposer& composer_;
 
-    const StrategyParam& param_;
+	const SGraph& algo_;
 
-    /** To help differentiate between a starting Gibbs, and a Gibbs that follows a SEM */
-    Index startGroup_;
+	/** To help differentiate between a starting Gibbs, and a Gibbs that follows a SEM */
+	Index startGroup_;
 };
 
 }  // namespace mixt

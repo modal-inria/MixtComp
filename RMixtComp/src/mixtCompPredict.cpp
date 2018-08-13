@@ -8,7 +8,6 @@
  **/
 
 // #include <omp.h>
-
 #include "mixt_Function.h"
 #include "mixt_MixtComp.h"
 

@@ -12,8 +12,8 @@
 
 #include <Mixture/mixt_IMixture.h>
 #include <Data/mixt_AugmentedData.h>
+#include <IO/IOFunctions.h>
 #include <IO/mixt_IO.h>
-#include <IO/StringToAugmentedData.h>
 #include <Various/mixt_Constants.h>
 #include <Param/mixt_ConfIntParamStat.h>
 

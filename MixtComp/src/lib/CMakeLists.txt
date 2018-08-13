@@ -11,7 +11,10 @@ add_library(MixtComp
 	Various/mixt_Timer.cpp
 	Run/Learn.cpp
 	Run/Learn.h
-	IO/StringToAugmentedData.h
+	Run/Predict.cpp
+	Run/Predict.h
+	IO/IOFunctions.h
+	IO/IOFunctions.cpp
 	IO/Dummy.cpp
 	IO/mixt_ParamExtractorCsv.h
 	IO/mixt_DataExtractorCsv.cpp
@@ -26,7 +29,6 @@ add_library(MixtComp
 	IO/SGraph.h
 	IO/mixt_SpecialStr.h
 	Strategy/mixt_SEMStrategy.cpp
-	Strategy/mixt_StrategyParam.h
 	Strategy/mixt_GibbsStrategy.cpp
 	Strategy/mixt_SEMStrategy.h
 	Strategy/mixt_GibbsStrategy.h

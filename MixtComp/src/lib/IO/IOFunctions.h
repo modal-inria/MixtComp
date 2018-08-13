@@ -16,6 +16,7 @@
 #include "mixt_MisValParser.h"
 #include <Data/mixt_AugmentedData.h>
 #include <LinAlg/mixt_LinAlg.h>
+#include "SGraph.h"
 
 namespace mixt {
 
@@ -57,6 +58,11 @@ std::string StringToAugmentedData(const std::string& idName, const std::vector<s
 	}
 	return warnLog;
 }
+
+/**
+ * Create a dummy SGraph to be used in learning.
+ */
+SGraph dummySGraph(const SGraph& desc);
 
 }
 

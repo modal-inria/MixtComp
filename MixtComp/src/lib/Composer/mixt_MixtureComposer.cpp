@@ -76,7 +76,7 @@ void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
 	//  std::cout << observedTik << std::endl;
 }
 
-Real MixtureComposer::lnObservedLikelihood() {
+Real MixtureComposer::lnObservedLikelihood() const {
 	Real lnLikelihood = 0.;
 	Matrix<Real> lnComp(nInd_, nClass_);
 
@@ -94,7 +94,7 @@ Real MixtureComposer::lnObservedLikelihood() {
 	return lnLikelihood;
 }
 
-Real MixtureComposer::lnCompletedLikelihood() {
+Real MixtureComposer::lnCompletedLikelihood() const {
 	Real lnLikelihood = 0.;
 
 	for (Index i = 0; i < nInd_; ++i) { // completion is only on the latent class, latent data in models is marginalized over
@@ -671,12 +671,7 @@ std::string MixtureComposer::setProportion() {
 SGraph MixtureComposer::exportDataParam() const {
 	SGraph res;
 
-	res.add_child("algo", gAlgo_);
-
-	SGraph mixture; // TODO: implement by copying code from RMixtComp
-	res.add_child("mixture", mixture);
-
-	SGraph type; // TODO: implement type extraction
+	SGraph type;
 	SGraph data;
 	SGraph param;
 
@@ -718,6 +713,46 @@ SGraph MixtureComposer::exportDataParam() const {
 	res.add_child("type", type);
 	res.add_child("data", data);
 	res.add_child("param", param);
+
+	return res;
+}
+
+SGraph MixtureComposer::exportMixture(Real runTime) const {
+	SGraph res;
+
+	std::vector<std::string> dummyNames;
+
+	Index nFreeParameters = nbFreeParameters();
+
+	res.add_payload("nbFreeParameters", nFreeParameters);
+	Real lnObsLik = lnObservedLikelihood();
+	Real lnCompLik = lnCompletedLikelihood();
+	res.add_payload("lnObservedLikelihood", lnObsLik);
+	res.add_payload("lnCompletedLikelihood", lnCompLik);
+	res.add_payload("BIC", lnObsLik - 0.5 * nFreeParameters * std::log(nInd_));
+	res.add_payload("ICL", lnCompLik - 0.5 * nFreeParameters * std::log(nInd_));
+
+	std::cout << "lnObservedLikelihood: " << lnObsLik << std::endl << std::endl;
+
+	res.add_payload("runTime", runTime);
+
+	NamedMatrix<Real> idclass = { paramName(), mixtureName(), Matrix<Real>() };
+	IDClass(idclass.mat_);
+	res.add_payload("IDClass", idclass);
+
+	NamedMatrix<Real> pGCCPP = {dummyNames, dummyNames, Matrix<Real>()};
+	lnProbaGivenClass(pGCCPP.mat_);
+	res.add_payload("lnProbaGivenClass", idclass);
+
+	NamedVector<Real> completedProbabilityLogBurnIn = {dummyNames, completedProbabilityLogBurnIn_};
+	res.add_payload("completedProbabilityLogBurnIn", completedProbabilityLogBurnIn);
+
+	NamedVector<Real> completedProbabilityLogRun = {dummyNames, completedProbabilityLogRun_};
+	res.add_payload("completedProbabilityLogRun", completedProbabilityLogRun);
+
+	NamedMatrix<Real> matDelta = {dummyNames, dummyNames, Matrix<Real>()};
+	Delta(matDelta.mat_);
+	res.add_payload("delta", matDelta);
 
 	return res;
 }

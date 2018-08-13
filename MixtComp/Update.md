@@ -55,6 +55,9 @@
         - pour les noms de lignes / colonnes, soit il y en a 0, soit il y en a autant que de ligne / colonnes. Tout autre possibilité exclue.
         - Vérifier qu'il y a au moins une variable dans desc, et que à chaque variable desc correspond une seule variable data
         - confidenceLevel < 0. || 1. < confidenceLevel
+        - Dans algo, vérifier que l'utilisateur a tout fourni
+        - Factoriser les fonctions de vérifications, notamment celles qui utilisent des bornes (positivité)
+        - Trouver une façon de vérifier le type
     - ajouter une méthode clear(), qui permet de supprimer tout le contenu. Utili pour le SGraph de données pour gagner de la place
 - Export données / param
     - ajouter les stats pour les données

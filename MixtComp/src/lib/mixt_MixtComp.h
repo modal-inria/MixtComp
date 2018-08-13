@@ -36,7 +36,6 @@
 #include "Statistic/mixt_Statistic.h"
 #include "Strategy/mixt_SEMStrategy.h"
 #include "Strategy/mixt_GibbsStrategy.h"
-#include "Strategy/mixt_StrategyParam.h"
 #include "Various/mixt_Timer.h"
 
 #endif /* MIXT_MIXTCOMP_H */

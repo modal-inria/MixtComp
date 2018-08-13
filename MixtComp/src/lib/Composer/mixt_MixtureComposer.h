@@ -103,10 +103,10 @@ public:
 	Real lnObservedProbability(int i, int k) const;
 
 	/** @return the value of the observed likelihood */
-	Real lnObservedLikelihood();
+	Real lnObservedLikelihood() const;
 
 	/** @return the value of the completed likelihood */
-	Real lnCompletedLikelihood();
+	Real lnCompletedLikelihood() const;
 
 	/** write the parameters of the model in the stream os. */
 	void writeParameters() const;
@@ -178,6 +178,12 @@ public:
 	 * and data
 	 **/
 	SGraph exportDataParam() const;
+
+	/**
+	 * Export the mixture part of the output, with model selection, likelihoods, etc... This was the final
+	 * part of the code in mixtCompCluster.cpp
+	 */
+	SGraph exportMixture(Real runTime) const;
 
 	/** register a mixture to the composer.
 	 *  When a mixture is registered, the composer:

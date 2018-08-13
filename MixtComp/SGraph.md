@@ -11,6 +11,7 @@
     - nInitPerClass
     - nSemTry
     - confidenceLevel
+    - mode ("learn" or "predict")
 
 - data
     - var1 (array of string)

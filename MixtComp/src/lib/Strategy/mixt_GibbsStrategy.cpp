@@ -8,32 +8,34 @@
  **/
 
 #include "mixt_GibbsStrategy.h"
-#include "../Various/mixt_Timer.h"
-#include "../Various/mixt_Various.h"
+#include <Various/mixt_Timer.h>
+#include <Various/mixt_Various.h>
 
 namespace mixt {
 
 /** default constructor */
-GibbsStrategy::GibbsStrategy(MixtureComposer* p_composer,
-		const StrategyParam& param, Index startGroup) :
-		p_composer_(p_composer), param_(param), startGroup_(startGroup) {
+GibbsStrategy::GibbsStrategy(MixtureComposer& composer, const SGraph& algo, Index startGroup) :
+		composer_(composer), algo_(algo), startGroup_(startGroup) {
 }
 
 std::string GibbsStrategy::run() {
 	std::string warnLog;
+	Index nSemTry = algo_.get_payload<Index>("nSemTry");
+	Index nbGibbsBurnInIter = algo_.get_payload<Index>("nbGibbsBurnInIter");
+	Index nbGibbsIter = algo_.get_payload<Index>("nbGibbsIter");
 
 	try {
-		for (Index n = 0; n < param_.nSemTry_; ++n) {
+		for (Index n = 0; n < nSemTry; ++n) {
 
-			p_composer_->initData(); // TODO: check that this is really necessary in Gibbs
-			warnLog = p_composer_->initializeLatent();
+			composer_.initData(); // TODO: check that this is really necessary in Gibbs
+			warnLog = composer_.initializeLatent();
 			if (0 < warnLog.size())
 				continue;
 
-			runGibbs(burnIn_, param_.nbGibbsBurnInIter_, 0 + startGroup_, // group
+			runGibbs(burnIn_, nbGibbsBurnInIter, 0 + startGroup_, // group
 			1 + startGroup_); // groupMax
 
-			runGibbs(run_, param_.nbGibbsIter_, 1 + startGroup_, // group
+			runGibbs(run_, nbGibbsIter, 1 + startGroup_, // group
 			1 + startGroup_); // groupMax
 
 			return "";
@@ -45,8 +47,7 @@ std::string GibbsStrategy::run() {
 	return warnLog;
 }
 
-void GibbsStrategy::runGibbs(RunType runType, Index nIter, Index group,
-		Index groupMax) {
+void GibbsStrategy::runGibbs(RunType runType, Index nIter, Index group, Index groupMax) {
 	Timer myTimer;
 	if (runType == burnIn_) {
 		myTimer.setName("Gibbs: burn-in");
@@ -58,12 +59,12 @@ void GibbsStrategy::runGibbs(RunType runType, Index nIter, Index group,
 		myTimer.iteration(iterGibbs, nIter - 1);
 		writeProgress(group, groupMax, iterGibbs, nIter - 1);
 
-		p_composer_->eStepCompleted();
-		p_composer_->sampleZ();
-		p_composer_->sampleUnobservedAndLatent();
+		composer_.eStepCompleted();
+		composer_.sampleZ();
+		composer_.sampleUnobservedAndLatent();
 
 		if (runType == run_) {
-			p_composer_->storeGibbsRun(iterGibbs, nIter - 1);
+			composer_.storeGibbsRun(iterGibbs, nIter - 1);
 		}
 	}
 }

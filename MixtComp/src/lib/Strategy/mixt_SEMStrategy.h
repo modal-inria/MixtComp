@@ -14,11 +14,10 @@
  *  mixture model.
  **/
 
-#ifndef MIXT_MIXTURESTRATEGY_H
-#define MIXT_MIXTURESTRATEGY_H
+#ifndef MIXT_SEMSTRATEGY_H
+#define MIXT_SEMSTRATEGY_H
 
 #include "../Composer/mixt_MixtureComposer.h"
-#include "mixt_StrategyParam.h"
 
 namespace mixt {
 
@@ -33,7 +32,7 @@ public:
 	/** default constructor.
 	 *  @param p_composer the model to estimate
 	 **/
-	SemStrategy(MixtureComposer* p_composer, const StrategyParam& param);
+	SemStrategy(MixtureComposer& composer, const SGraph& algo);
 
 	/** run the strategy */
 	std::string run();
@@ -45,9 +44,9 @@ public:
 
 private:
 	/** reference on the main model */
-	MixtureComposer* p_composer_;
+	MixtureComposer& composer_;
 
-	const StrategyParam& param_;
+	const SGraph& algo_;
 };
 
 }  // namespace mixt
