@@ -65,3 +65,5 @@
 - Cas test
     - Créer à la main un json avec une variable décrite sur laquelle on veut estimer une loi normale, par exemple deux classes et une vingtaine d'observations générées à la main. Pour détecter les erreurs les plus flagrantes.
     - Conserver ce cas test, et se débrouiller pour pouvoir faire un test unitaire dessus, par exemple en validant le json de sortie par rapport à un résultat attendu
+- json
+    - vérifier que mode existe, que c'est une chaîne de caractère et qu'il vaut learn ou predict
