@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 	std::string algoFile = argv[1];
 	std::string dataFile = argv[2];
 	std::string descFile = argv[3];
-	std::string outFile; // position 4 or 5 depends wether learn or predict mode
+	std::string outFile; // position 4 or 5 depends on whether learn or predict mode has been asked for
 
 	std::ifstream algoStream(algoFile);
 	std::ifstream dataStream(dataFile);
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 		} else if (mode == "predict") {
 
 		} else {
-			warnLog += "mode :" + mode + " not recognized" + eol;
+			warnLog += "mode :" + mode + " not recognized. Please choose learn or predict." + eol;
 		}
 
 		if (warnLog.size() > 0) {

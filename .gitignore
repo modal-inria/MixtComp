@@ -13,9 +13,6 @@
 *.a
 *.tar.gz
 *.d
-*.png
-*.json
-*.csv
 .metadata/*
 progress
 MixtComp/release

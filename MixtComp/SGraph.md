@@ -3,11 +3,10 @@
 - algo
     - nClass
     - nInd
-    - nIter
-        - nbBurnInIter
-        - nbIter
-        - nbGibbsBurnInIter
-        - nbGibbsIter
+    - nbBurnInIter
+    - nbIter
+    - nbGibbsBurnInIter
+    - nbGibbsIter
     - nInitPerClass
     - nSemTry
     - confidenceLevel
