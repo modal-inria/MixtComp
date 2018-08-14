@@ -10,6 +10,7 @@
     - pour la prédiction, fournir un SGraph param qui contient un child par variable, mais vide
 - MixtureManager
     - boucle sur desc pour instancier les variables
+    - activer toutes les mixtures (adapter leur code aussi, Rank et les deux Functionnal)
 - JSONToSGraph
     - comment vérifier les types, par exemple que ctype est une chaîne de caractères ?
     - Eviter copies d'objects en créant d'abord le NamedVector, puis en éditant directement ses membres

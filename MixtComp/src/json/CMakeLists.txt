@@ -11,11 +11,11 @@ add_library(JMixtComp
     SGraphVisJSON.h
 )
 
-add_executable(execJSON
-    execJSON.cpp
+add_executable(jmc
+    jmc.cpp
 )
 
-target_link_libraries(execJSON
+target_link_libraries(jmc
     MixtComp
     JMixtComp
     ${Boost_LIBRARIES}

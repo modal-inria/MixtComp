@@ -19,7 +19,12 @@
 using namespace mixt;
 
 int main(int argc, char* argv[]) {
-	std::cout << "JMixtComp, learn" << std::endl;
+	std::cout << "JMixtComp" << std::endl;
+
+	if (argc < 4) {
+		std::cout << "JMixtComp should be called with 3 parameters (paths to algo, data, desc, param) in learn and 4 parameters (paths to algo, data, desc, param) in predict. It has been called with " << argc - 1 << " parameters." << std::endl;
+		return 0;
+	}
 
 	std::string warnLog;
 	std::string algoFile = argv[1];
@@ -54,7 +59,10 @@ int main(int argc, char* argv[]) {
 			outFile = argv[4];
 			resG = learn(algoG, dataG, descG);
 		} else if (mode == "predict") {
-
+			if (argc != 5) {
+				std::cout << "JMixtComp should be called with 4 parameters (paths to algo, data, desc, param) in predict. It has been called with " << argc - 1 << " parameters." << std::endl;
+				return 0;
+			}
 		} else {
 			warnLog += "mode :" + mode + " not recognized. Please choose learn or predict." + eol;
 		}
