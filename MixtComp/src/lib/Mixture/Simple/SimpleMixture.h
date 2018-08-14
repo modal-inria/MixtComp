@@ -30,7 +30,7 @@ public:
 	 *  @param nbCluster number of cluster
 	 **/
 	SimpleMixture(std::string const& idName, Index nbClass, Index nInd, Real confidenceLevel, const std::string& paramStr) :
-			IMixture(idName, Model::name, nbClass, nInd), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(paramStr), nbInd_(0), confidenceLevel_(confidenceLevel), sampler_(
+			IMixture(idName, Model::name, nbClass, nInd), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(paramStr), nbInd_(nInd), confidenceLevel_(confidenceLevel), sampler_(
 					augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_, augData_, nbClass) {
 	}
 
