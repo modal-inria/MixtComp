@@ -1,6 +1,10 @@
 {
-    "varA": {
+    "varGaussian": {
         "type": "Gaussian",
+        "paramStr": ""
+    },
+    "varPoisson": {
+        "type": "Poisson",
         "paramStr": ""
     }
 }

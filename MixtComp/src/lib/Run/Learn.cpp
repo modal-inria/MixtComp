@@ -38,12 +38,14 @@ SGraph learn(const SGraph& algo, const SGraph& data, const SGraph& desc) {
 	std::string warnLog; // string to log warnings
 
 	// Create the composer and read the data
-
 	MixtureComposer composer(algo, data, param);
 
 	Timer readTimer("Read Data");
+	std::cout << "top" << std::endl;
 	warnLog += createAllMixtures(algo, desc, composer);
+	std::cout << "top" << std::endl;
 	warnLog += composer.setDataParam(learning_);
+	std::cout << "top" << std::endl;
 	readTimer.top("data has been read");
 
 	if (0 < warnLog.size()) {
