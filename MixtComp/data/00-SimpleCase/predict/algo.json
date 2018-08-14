@@ -1,6 +1,6 @@
 {
   "nClass": 2,
-  "nInd": 15,
+  "nInd": 2,
   "nbBurnInIter": 100,
   "nbIter": 100,
   "nbGibbsBurnInIter": 100,
