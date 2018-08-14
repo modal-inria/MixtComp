@@ -36,8 +36,8 @@ int main(int argc, char* argv[]) {
 	std::ifstream dataStream(dataFile);
 	std::ifstream descStream(descFile);
 
-	if (algoStream.good() == false || dataStream.good() == false || descStream || false) {
-		warnLog += "Check that algo: " + algoFile + ", data: " + dataFile + ", and desc: " + descFile + " paths are correct" + eol;
+	if (algoStream.good() == false || dataStream.good() == false || descStream.good() == false) {
+		std::cout << "Check that algo: " << algoFile << ", data: " << dataFile << ", and desc: " << descFile << " paths are correct" << std::endl;
 	} else {
 		nlohmann::json algoJSON;
 		algoStream >> algoJSON;
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 		descStream >> descJSON;
 		SGraph descG = JSONToSGraph(descJSON);
 
-		std::string mode = algoJSON["mode"].get<std::string>();
+		std::string mode = algoG.get_payload<std::string>("mode");
 
 		SGraph resG;
 
