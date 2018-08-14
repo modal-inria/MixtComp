@@ -24,10 +24,8 @@ namespace mixt {
 /**
  * The learn algorithm is encapsulated in a function.
  */
-SGraph predict(const SGraph& data, const SGraph& desc, const SGraph& algo) {
+SGraph predict(const SGraph& algo, const SGraph& data, const SGraph& desc, const SGraph& param) {
 	SGraph res;
-
-	SGraph param = dummySGraph(desc); // dummy SGraph to be provided as unused argument in setDataParam in learning
 
 	std::cout << "MixtComp, predict, version: " << version << std::endl;
 	std::cout << "Deterministic mode: " << deterministicMode() << std::endl;

@@ -159,12 +159,15 @@ public:
 			colNames[2] = std::string("q ") + std::to_string(((1. - alpha) * 100.)) + "%";
 		}
 
+		SGraph numericalParam;
 		NamedMatrix<Real> paramOut; // all parameters are real at the moment,
 		paramOut.mat_ = paramStat_.getStatStorage();
 		paramOut.rowNames_ = model_.paramNames();
 		paramOut.colNames_ = colNames;
-		param.add_payload("stat", paramOut);
-		param.add_payload("paramStr", paramStr_);
+		numericalParam.add_payload("stat", paramOut);
+		numericalParam.add_payload("paramStr", paramStr_);
+
+		param.add_child("NumericalParam", numericalParam);
 	}
 
 	void initData(Index i) {

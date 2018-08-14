@@ -17,7 +17,7 @@ namespace mixt {
 /**
  * The learn algorithm is encapsulated in this function.
  */
-SGraph predict(const SGraph& data, const SGraph& desc, const SGraph& algo);
+SGraph predict(const SGraph& algo, const SGraph& data, const SGraph& desc, const SGraph& param);
 
 }
 

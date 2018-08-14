@@ -676,11 +676,16 @@ SGraph MixtureComposer::exportDataParam() const {
 	SGraph data;
 	SGraph param;
 
+	type.add_payload("z_class", "LatentClass");
+
 	SGraph zClassData;
 	zClassData.add_payload("completed", NamedVector<Index> { std::vector<std::string>(), zClassInd_.zi().data_ + minModality });
 	zClassData.add_payload("stat", NamedMatrix<Real> { std::vector<std::string>(), std::vector<std::string>(), tik_ });
 
+	data.add_child("z_class", zClassData);
+
 	SGraph zClassParam;
+	SGraph pi;
 	NamedMatrix<Real> piExport;
 
 	Index ncol = paramStat_.getStatStorage().cols();
@@ -696,8 +701,11 @@ SGraph MixtureComposer::exportDataParam() const {
 	}
 
 	NamedMatrix<Real> paramOut = { paramName(), colNames, paramStat_.getStatStorage() };
-	zClassParam.add_payload("stat", paramOut);
-	zClassParam.add_payload("paramStr", paramStr_);
+	pi.add_payload("stat", paramOut);
+	pi.add_payload("paramStr", paramStr_);
+
+	zClassParam.add_child("pi", pi);
+	param.add_child("z_class", zClassParam);
 
 	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		std::string currName = (*it)->idName();

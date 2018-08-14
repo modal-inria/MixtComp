@@ -67,7 +67,7 @@ SGraph JSONToSGraph(const nlohmann::json& json) {
 					}
 
 				} else if (ctype == "Matrix") { // pattern match a Matrix
-					Index ncol = (*it)["nrow"].get<Index>();
+					Index ncol = (*it)["ncol"].get<Index>();
 
 					std::vector<std::string> rowNames = (*it)["rowNames"].get<std::vector<std::string>>();
 					std::vector<std::string> colNames = (*it)["colNames"].get<std::vector<std::string>>();
@@ -81,7 +81,7 @@ SGraph JSONToSGraph(const nlohmann::json& json) {
 						}
 
 						Matrix<Real> data(nrow, ncol);
-						for (Index i = 0; i < ncol; ++i) {
+						for (Index i = 0; i < nrow; ++i) {
 							for (Index j = 0; j < ncol; ++j) {
 								data(i, j) = dataRaw[i][j];
 							}

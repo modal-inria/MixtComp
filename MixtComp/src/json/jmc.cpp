@@ -14,6 +14,7 @@
 #include "JSONToSGraph.h"
 #include "SGraphToJSON.h"
 #include <Run/Learn.h>
+#include <Run/Predict.h>
 #include <Various/mixt_Constants.h>
 
 using namespace mixt;
@@ -22,7 +23,7 @@ int main(int argc, char* argv[]) {
 	std::cout << "JMixtComp" << std::endl;
 
 	if (argc < 4) {
-		std::cout << "JMixtComp should be called with 3 parameters (paths to algo, data, desc, param) in learn and 4 parameters (paths to algo, data, desc, param) in predict. It has been called with " << argc - 1 << " parameters." << std::endl;
+		std::cout << "JMixtComp should be called with 4 parameters (paths to algo, data, desc, resLearn) in learn and 5 parameters (paths to algo, data, desc, resLearn, resPredict) in predict. It has been called with " << argc - 1 << " parameters." << std::endl;
 		return 0;
 	}
 
@@ -30,7 +31,7 @@ int main(int argc, char* argv[]) {
 	std::string algoFile = argv[1];
 	std::string dataFile = argv[2];
 	std::string descFile = argv[3];
-	std::string outFile; // position 4 or 5 depends on whether learn or predict mode has been asked for
+	std::string resLearnFile = argv[4];
 
 	std::ifstream algoStream(algoFile);
 	std::ifstream dataStream(dataFile);
@@ -54,15 +55,30 @@ int main(int argc, char* argv[]) {
 		std::string mode = algoG.get_payload<std::string>("mode");
 
 		SGraph resG;
+		std::string resFile;
 
 		if (mode == "learn") {
-			outFile = argv[4];
+			resFile = resLearnFile;
 			resG = learn(algoG, dataG, descG);
 		} else if (mode == "predict") {
-			if (argc != 5) {
-				std::cout << "JMixtComp should be called with 4 parameters (paths to algo, data, desc, param) in predict. It has been called with " << argc - 1 << " parameters." << std::endl;
+			if (argc != 6) {
+				std::cout << "JMixtComp should be called with 5 parameters (paths to algo, data, desc, resLearn, resPredict) in predict. It has been called with " << argc - 1 << " parameters." << std::endl;
 				return 0;
 			}
+
+			resFile = argv[5];
+
+			std::ifstream resLearnStream(resLearnFile);
+			nlohmann::json resLearnJSON;
+			resLearnStream >> resLearnJSON;
+
+			try {
+				SGraph paramG = JSONToSGraph(resLearnJSON["variable"]["param"]);
+				resG = predict(algoG, dataG, descG, paramG);
+			} catch (const std::string& s) {
+				warnLog += s;
+			}
+
 		} else {
 			warnLog += "mode :" + mode + " not recognized. Please choose learn or predict." + eol;
 		}
@@ -72,7 +88,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		nlohmann::json resJ = SGraphToJSON(resG);
-		std::ofstream o(outFile);
+		std::ofstream o(resFile);
 		o << std::setw(4) << resJ << std::endl;
 	}
 

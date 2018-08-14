@@ -1,0 +1,10 @@
+{
+    "varGaussian": {
+        "type": "Gaussian",
+        "paramStr": "dummyStrTestGaussian"
+    },
+    "varPoisson": {
+        "type": "Poisson",
+        "paramStr": "dummyStrTestPoisson"
+    }
+}
