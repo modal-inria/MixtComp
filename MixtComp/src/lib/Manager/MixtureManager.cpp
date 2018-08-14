@@ -16,7 +16,7 @@ std::string createAllMixtures(const SGraph& algo, const SGraph& desc, MixtureCom
 
 	Index nClass = algo.get_payload<Index>("nClass");
 	Real confidenceLevel = algo.get_payload<Real>("confidenceLevel");
-	Index nObs = algo.get_payload<Index>("confidenceLevel");
+	Index nInd = algo.get_payload<Index>("nInd");
 
 	const std::map<std::string, SGraph>& allVar = desc.get_children();
 
@@ -26,7 +26,7 @@ std::string createAllMixtures(const SGraph& algo, const SGraph& desc, MixtureCom
 		std::string paramStr = it->second.get_payload<std::string>("paramStr");
 
 		if (idModel != "LatentClass") { // LatentClass type is managed directly in the composer
-			IMixture* p_mixture = createIndividualMixture(idModel, idName, nClass, nObs, confidenceLevel, paramStr);
+			IMixture* p_mixture = createIndividualMixture(idModel, idName, nClass, nInd, confidenceLevel, paramStr);
 			if (p_mixture) {
 				composer.registerMixture(p_mixture);
 			} else {

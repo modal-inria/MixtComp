@@ -22,7 +22,7 @@ MixtureComposer::MixtureComposer(const SGraph& algo, const SGraph& data, const S
 		gAlgo_(algo), gData_(data), gParam_(param), nClass_(algo.get_payload<Index>("nClass")), nInd_(algo.get_payload<Index>("nInd")), nVar_(0), confidenceLevel_(
 				algo.get_payload<Real>("confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(zClassInd_), completedProbabilityCache_(
 				nInd_) {
-	std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nInd_ << ", nbClass: " << nClass_ << std::endl;
+	std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
 	zClassInd_.setIndClass(nInd_, nClass_);
 
 	std::stringstream sstm;
@@ -601,6 +601,7 @@ std::string MixtureComposer::setDataParam(RunMode mode) {
 	std::string warnLog;
 
 	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+		std::cout << "MixtureComposer::setDataParam, " << (*it)->idName() << std::endl;
 		warnLog += (*it)->setDataParam(mode, gData_.get_payload<std::vector<std::string>>((*it)->idName()), gParam_.get_child((*it)->idName()));
 	}
 
@@ -740,17 +741,17 @@ SGraph MixtureComposer::exportMixture(Real runTime) const {
 	IDClass(idclass.mat_);
 	res.add_payload("IDClass", idclass);
 
-	NamedMatrix<Real> pGCCPP = {dummyNames, dummyNames, Matrix<Real>()};
+	NamedMatrix<Real> pGCCPP = { dummyNames, dummyNames, Matrix<Real>() };
 	lnProbaGivenClass(pGCCPP.mat_);
 	res.add_payload("lnProbaGivenClass", idclass);
 
-	NamedVector<Real> completedProbabilityLogBurnIn = {dummyNames, completedProbabilityLogBurnIn_};
+	NamedVector<Real> completedProbabilityLogBurnIn = { dummyNames, completedProbabilityLogBurnIn_ };
 	res.add_payload("completedProbabilityLogBurnIn", completedProbabilityLogBurnIn);
 
-	NamedVector<Real> completedProbabilityLogRun = {dummyNames, completedProbabilityLogRun_};
+	NamedVector<Real> completedProbabilityLogRun = { dummyNames, completedProbabilityLogRun_ };
 	res.add_payload("completedProbabilityLogRun", completedProbabilityLogRun);
 
-	NamedMatrix<Real> matDelta = {dummyNames, dummyNames, Matrix<Real>()};
+	NamedMatrix<Real> matDelta = { dummyNames, dummyNames, Matrix<Real>() };
 	Delta(matDelta.mat_);
 	res.add_payload("delta", matDelta);
 
