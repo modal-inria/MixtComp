@@ -1,11 +1,40 @@
 
+
+check_strategy <- function(strategy, resGetData) {
+
+  if(!is.null(strategy$var)){
+    vars_in_resGetData = unlist(lapply(resGetData$lm,function(x){x$id}))
+    print(vars_in_resGetData)
+    print(strategy)
+    if(!(strategy$var %in% vars_in_resGetData)){
+      return(list("error",paste0("Variable ",strategy$var," indicated in the strategy doesn't exist in the dataset")))
+    }
+
+    idx_var = which(strategy$var == vars_in_resGetData)
+    var_strategy_type = resGetData$lm[[idx_var]]$model
+    if(var_strategy_type != "Categorical_pjk"){
+      return(list("error",paste0("Variable ",strategy$var," is not indicated as Categorical in the descriptor file")))
+    }
+    data_var = resGetData$lm[[idx_var]]$data
+    data_var = data_var[which(data_var!="?")]
+    print(paste0("length data : ",length(resGetData$lm[[1]]$data)))
+    print(paste0("strategy nInd :", strategy$threshold_nInd))
+    print(paste0("purity : ",(max(table(data_var) / length(data_var)))))
+    print(paste0("strategy purity : ", strategy$threshold_purity))
+
+    if (max(table(data_var) / length(data_var)) > strategy$threshold_purity){return(list("","Strategy's terms not fulfilled"))}
+  }
+  if( length(resGetData$lm[[1]]$data) < strategy$threshold_nInd ) {return(list("","Strategy's terms not fulfilled"))}
+
+  return(list("",""))
+}
+
 #' During the expand phase, cut data according to clusters and copy to subfolder
 #'
 #' @param dir A String
 #'
 #' @return void
 #'
-#' @examples extract_data_per_cluster("data/data_mixtcomp/x.csv")
 extract_data_per_cluster <- function(dir) {
   MixtCompOutput <-
     jsonlite::fromJSON(paste0(dir, "/mixtcomp_output.json"))
@@ -36,14 +65,13 @@ extract_data_per_cluster <- function(dir) {
 #'
 #' @param dir A String
 #' @param nClass Positive intege
-#'
+#' @param strategy (optional) List of three elements which defines the strategy to follow during the hierarchical clustering.
+#' var (name of the categorical variable on which to base the strategy), threshold_nInd (the minimal number of observations in the dataset under which the subclustering cannot be accepted)
+#' threshold_purity (the maximal purity observed in the dataset above which the subclustering is not necessary). At each hierarchical iterations these elements will be tested.
+#' @param mcStrategy (optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)
 #' @return void
 #'
-#' @examples
-#' \dontrun {
-#' launch_mixtcomp("data/data_mixtcomp",3)
-#' }
-launch_mixtcomp <- function(dir, nClass, strategy) {
+launch_mixtcomp <- function(dir, nClass, strategy = NULL,mcStrategy=NULL) {
   # Check if JsonMixtComp executable is available
   paths = Sys.getenv("PATH")
   if (!any(file.exists(paste0(strsplit(paths, ":")[[1]], "/JsonMixtComp")))) {
@@ -61,35 +89,28 @@ launch_mixtcomp <- function(dir, nClass, strategy) {
   ))
 
   # Check the conditions on the number of Observations min and purity of the categorical variable
-  print(strategy)
-
-  data_categorical_strategy = resGetData$lm[[which(unlist(lapply(resGetData$lm,function(x){x$id}))==strategy$var)]]$data
-  data_categorical_strategy = data_categorical_strategy[which(data_categorical_strategy!="?")]
-
-  print(paste0("length data : ",length(resGetData$lm[[1]]$data)))
-  print(paste0("strategy nInd :", strategy$threshold_nInd))
-  print(paste0("purity : ",(max(table(data_categorical_strategy) / length(data_categorical_strategy)))))
-  print(paste0("strategy purity : ", strategy$threshold_purity))
-
-  if ((length(resGetData$lm[[1]]$data) < strategy$threshold_nInd) |
-      (max(
-        table(data_categorical_strategy) / length(data_categorical_strategy)
-      ) > strategy$threshold_purity)) {return("Strategy's terms not fulfilled")}
-
+  result_strategy = check_strategy(strategy = strategy,resGetData = resGetData)
+  if(result_strategy[[1]]=="error"){stop(result_strategy[[2]])}
+  if(result_strategy[[2]]!=""){print(result_strategy[[2]]);return(result_strategy[[2]])}
 
 
   for (i in 1:length(resGetData$lm)) {
     resGetData$lm[[i]]$data <- as.character(resGetData$lm[[i]]$data)
   }
 
-  mcStrategy = list(
-    nbBurnInIter = 15,
-    nbIter = 15,
-    nbGibbsBurnInIter = 15,
-    nbGibbsIter = 15,
-    nInitPerClass = length(resGetData$lm[[i]]$data),
-    nSemTry = 10
-  )
+  if(is.null(mcStrategy)){
+    mcStrategy = list(
+      nbBurnInIter = 15,
+      nbIter = 15,
+      nbGibbsBurnInIter = 15,
+      nbGibbsIter = 15,
+      nInitPerClass = length(resGetData$lm[[i]]$data) / nClass,
+      nSemTry = 10
+    )
+  } else {
+    mcStrategy$nInitPerClass = length(resGetData$lm[[i]]$data) / nClass
+    mcStrategy$nSemTry = 20
+  }
 
   arg_list_json <- jsonlite::toJSON(
     list(
@@ -117,16 +138,13 @@ launch_mixtcomp <- function(dir, nClass, strategy) {
 #' Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
 #' the directory given by the dir param and with nClass number of clusters
 #'
-#' @param dir A String
+#' @param param_dir A string defining the path of the directory in which to fint the parameters hierarchical tree on which the hierarchical predict will be based
+#' @param test_dir A String
 #' @param nClass Positive intege
 #'
 #' @return void
 #'
-#' @examples
-#' \dontrun {
-#' launch_mixtcomp("data/data_mixtcomp",3)
-#' }
-launch_mixtcomp_predict <- function(param_dir, test_dir, nClass) {
+launch_mixtcomp_predict <- function(param_dir, test_dir, nClass, mcStrategy) {
   # Check if JsonMixtComp executable is available
   paths = Sys.getenv("PATH")
   if (!any(file.exists(paste0(strsplit(paths, ":")[[1]], "/JsonMixtComp")))) {
@@ -148,17 +166,23 @@ launch_mixtcomp_predict <- function(param_dir, test_dir, nClass) {
     resGetData$lm[[i]]$data <- as.character(resGetData$lm[[i]]$data)
   }
 
-  mcStrategy = list(
-    nbBurnInIter = 15,
-    nbIter = 15,
-    nbGibbsBurnInIter = 15,
-    nbGibbsIter = 15,
-    nInitPerClass = length(resGetData$lm[[i]]$data) / nClass,
-    nSemTry = 20
-  )
+  if(is.null(mcStrategy)){
+    mcStrategy = list(
+      nbBurnInIter = 15,
+      nbIter = 15,
+      nbGibbsBurnInIter = 15,
+      nbGibbsIter = 15,
+      nInitPerClass = length(resGetData$lm[[i]]$data) / nClass,
+      nSemTry = 10
+    )
+  } else {
+    mcStrategy$nInitPerClass = length(resGetData$lm[[i]]$data) / nClass
+    mcStrategy$nSemTry = 20
+  }
+
 
   arg_list_json <-
-    toJSON(
+    jsonlite::toJSON(
       list(
         by_row = FALSE,
         resGetData_lm = resGetData$lm,
@@ -190,7 +214,6 @@ launch_mixtcomp_predict <- function(param_dir, test_dir, nClass) {
 #'
 #' @return void
 #'
-#' @examples create_subdirectories(getwd(),2)
 create_subdirectories <- function(dir, nClass) {
   if (!dir.exists(dir)) {
     stop(
@@ -215,12 +238,14 @@ create_subdirectories <- function(dir, nClass) {
 #'
 #' @param dir The path of the directory to expand
 #' @param nClass The number of class for the Mixtcomp launches on the next subclusters
-#'
+#' @param strategy (optional) List of three elements which defines the strategy to follow during the hierarchical clustering.
+#' var (name of the categorical variable on which to base the strategy), threshold_nInd (the minimal number of observations in the dataset under which the subclustering cannot be accepted)
+#' threshold_purity (the maximal purity observed in the dataset above which the subclustering is not necessary). At each hierarchical iterations these elements will be tested.
+#' @param mcStrategy (optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)
+#' @import doParallel parallel foreach
 #' @return void
 #'
-#' @examples expand()
-expand <- function(dir, nClass, strategy) {
-  parallel = TRUE
+expand <- function(dir, nClass, strategy=NULL, mcStrategy=NULL, nCore=1) {
   existing_subdirs_in_current_dir <- list.dirs(dir, recursive = F)
   print("#######################")
 
@@ -229,7 +254,7 @@ expand <- function(dir, nClass, strategy) {
   # If the directory already contains subdirectories, expand the subdirs
   if (length(existing_subdirs_in_current_dir) > 0) {
     for (subdir in existing_subdirs_in_current_dir) {
-      expand(subdir, nClass, strategy)
+      expand(subdir, nClass, strategy, mcStrategy = mcStrategy, nCore = nCore)
     }
   } else {
     # If no subdirectories exist, create them, extract data into them and launch mixtcomp.
@@ -246,15 +271,15 @@ expand <- function(dir, nClass, strategy) {
                      1:MixtCompOutput$mixture$nbCluster)
 
     # execute mixtcomp in parallel mode or not
-    if (parallel == FALSE) {
+    if (nCore == 1) {
       for (subdir in subdirs) {
-        launch_mixtcomp(subdir, nClass,strategy)
+        launch_mixtcomp(subdir, nClass,strategy = strategy,mcStrategy = mcStrategy)
       }
     } else {
       cl <- makeCluster(length(subdirs))
       registerDoParallel(cl)
       foreach(subdir = subdirs, .packages = 'mixtcompRTools') %dopar% {
-        launch_mixtcomp(subdir, nClass,strategy)
+        launch_mixtcomp(subdir, nClass,strategy=strategy,mcStrategy = mcStrategy)
       }
       stopCluster(cl)
     }
@@ -270,11 +295,13 @@ expand <- function(dir, nClass, strategy) {
 #' @param depth Positive integer
 #' @param output_dir (optional) if not null, the results will be written in this directory.
 #' If Null, a directory with the name of the dataset will be created and used as output directory instead.
-#'
+#' @param strategy (optional) List of three elements which defines the strategy to follow during the hierarchical clustering.
+#' var (name of the categorical variable on which to base the strategy), threshold_nInd (the minimal number of observations in the dataset under which the subclustering cannot be accepted)
+#' threshold_purity (the maximal purity observed in the dataset above which the subclustering is not necessary). At each hierarchical iterations these elements will be tested.
+#' @param mcStrategy (optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)
 #' @return void
 #' @export
 #'
-#' @examples launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
 #' @author Etienne Goffinet
 launch_Mixtcomp_Hierarchical <-
   function(data_path,
@@ -282,10 +309,13 @@ launch_Mixtcomp_Hierarchical <-
            nClass,
            depth,
            output_dir = NULL,
-           strategy = list(var = 1,
+           strategy = list(var = NULL,
                            threshold_nInd = 1,
-                           threshold_purity = 2)) {
+                           threshold_purity = 2),
+           mcStrategy=NULL,
+           nCore = 1) {
     # Get directory of the data_path
+
     if (is.null(output_dir)) {
       output_dir = dirname(data_path)
     }
@@ -293,11 +323,12 @@ launch_Mixtcomp_Hierarchical <-
     # If output dirs doesnt' exist, create it
     newDir = paste0(output_dir, "/", strsplit(data_name, ".csv")[[1]])
     print(newDir)
+
     if (!dir.exists(newDir)) {
       dir.create(newDir)
       file.copy(descriptor_path, paste0(newDir, "/descriptor.csv"))
       file.copy(data_path, paste0(newDir, "/data_mixtcomp.csv"))
-      launch_mixtcomp(dir = newDir, nClass = nClass, strategy=strategy)
+      launch_mixtcomp(dir = newDir, nClass = nClass, strategy=strategy, mcStrategy=mcStrategy)
     }
     # run expand on it
     if (depth == 0) {
@@ -306,30 +337,28 @@ launch_Mixtcomp_Hierarchical <-
     }
 
     for (i in 1:depth) {
-      expand(dir = newDir, nClass, strategy)
+      expand(dir = newDir, nClass = nClass, strategy = strategy,mcStrategy=mcStrategy,nCore = nCore)
     }
     cat("Hierarchical clustering complete !")
-
+    return()
   }
 
 #' Launch the Mixtcomp prediction based on an existing hierarchical cluster
 #'
 #' @param data_path A string
-#' @param descriptor_path A string
-#' @param nClass Integer between 0 and 10
-#' @param depth Positive integer
+#' @param param_dir A string defining the path of the directory in which to fint the parameters hierarchical tree on which the hierarchical predict will be based
 #' @param output_dir (optional) if not null, the results will be written in this directory.
 #' If Null, a directory with the name of the dataset will be created and used as output directory instead.
-#'
+#' @param mcStrategy (optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)
 #' @return void
 #' @export
 #'
-#' @examples launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
 #' @author Etienne Goffinet
 launch_Mixtcomp_Hierarchical_predict <-
   function(data_path,
            param_dir,
-           output_dir = NULL) {
+           output_dir = NULL,
+           mcStrategy=NULL) {
 
     # Get directory of the data_path
     if (is.null(output_dir)) {
@@ -344,31 +373,32 @@ launch_Mixtcomp_Hierarchical_predict <-
       file.copy(data_path, paste0(newDir, "/data_predict.csv"))
     }
 
-    expand_predict(newDir,param_dir)
+    expand_predict(newDir,param_dir,mcStrategy=mcStrategy)
   }
 
 
 expand_predict <-
   function(test_dir,
-           param_dir) {
+           param_dir,
+           mcStrategy = NULL) {
 
     print(paste0("test_dir : ",test_dir))
 
     print(paste0("param_dir : ",param_dir))
 
-    output_learn = fromJSON(paste0(param_dir,"/mixtcomp_output.json"))
+    output_learn = jsonlite::fromJSON(paste0(param_dir,"/mixtcomp_output.json"))
     nbCluster = output_learn$mixture$nbCluster
-    launch_mixtcomp_predict(param_dir = param_dir,test_dir =  test_dir, nbCluster)
+    launch_mixtcomp_predict(param_dir = param_dir,test_dir =  test_dir, nbCluster, mcStrategy)
     data_predict = read.table(paste0(test_dir,"/data_predict.csv"),sep=";",stringsAsFactors = F,header = T)
     subdirs_list = list.dirs(recursive = F,param_dir)
 
     if(length(subdirs_list)>0){
-      output_predict = fromJSON(paste0(test_dir,"/mixtcomp_output.json"))
+      output_predict = jsonlite::fromJSON(paste0(test_dir,"/mixtcomp_output.json"))
       completed_clusters = output_predict$variable$data$z_class$completed
       for(cluster in 1:nbCluster){
         next_param_dir = paste0(param_dir,"/subcluster_",cluster)
         if(file.exists(paste0(next_param_dir,"/mixtcomp_output.json"))){
-          next_output_learn = fromJSON(paste0(next_param_dir,"/mixtcomp_output.json"))
+          next_output_learn = jsonlite::fromJSON(paste0(next_param_dir,"/mixtcomp_output.json"))
           if(next_output_learn$mixture$warnLog==""){
             next_test_dir = paste0(test_dir,"/subcluster_",cluster)
             data_next_predict = data_predict[which(completed_clusters==cluster),]
@@ -392,26 +422,24 @@ expand_predict <-
 #' @param dir A string, the path of the hierarchical clustering to prune
 #' @param purity_strategy a list of two elements, that defines which variable purity to check and according to which threshold (double between 0 and 1)
 #' @param cluster_size_strategy a list of one element that define the cluster size threshold.
-#' @param completion_quality_strategy a list of two elements, the variable to consider
 #'
 #' @return void
 #' @export
 #'
-#' @examples prune_hierarchy(..)
 #' @author Etienne Goffinet
 prune_hierarchy <-
   function(dir,
            purity_strategy = list(var = NULL,threshold=NULL),
-           cluster_size_strategy = list(threshold=NULL),
-           completion_quality_strategy = list(var=NULL,data_observed=NULL,test_dir=NULL)) {
+           cluster_size_strategy = list(threshold=NULL)) {
 
     list_subdir = list.dirs(path = dir,recursive = F,full.names = T)
+
     if(length(list_subdir)>0){
       # check the strategies
 
-      output = fromJSON(paste0(dir,"/mixtcomp_output.json"))
+      output = jsonlite::fromJSON(paste0(dir,"/mixtcomp_output.json"))
 
-      # Prune if needed
+      # Apply purity strategy
       if(all(!is.null(unlist(purity_strategy)))){
         purity = max(table(output$variable$data[[purity_strategy$var]]$completed)/output$mixture$nbInd)
         if(purity > purity_strategy$threshold){
@@ -419,43 +447,24 @@ prune_hierarchy <-
         }
       }
 
+      # Apply cluster size strategy
       if(!is.null(cluster_size_strategy$threshold)){
         if(output$mixture$nbInd < cluster_size_strategy$threshold){
           unlink(list_subdir,recursive = TRUE,force = TRUE)
         }
       }
 
-      if(all(!is.null(unlist(completion_quality_strategy)))){
-
-        current_error =
-        error_with_subdir
-      }
-
       # Else, try to the prune the subdirectories
-      for (subdir in list_subdir) {
-        list_next_subdir = list.dirs(path = subdir,recursive = F,full.names = T)
-        if(length(list_next_subdir)>0){
-
+      list_subdir = list.dirs(path = dir,recursive = F,full.names = T)
+      if(length(list_subdir)>0){
+        for (subdir in list_subdir) {
           prune_hierarchy(
             subdir,
             purity_strategy = purity_strategy,
-            cluster_size_strategy = cluster_size_strategy,
-            completion_quality_strategy = completion_quality_strategy
+            cluster_size_strategy = cluster_size_strategy
           )
-
-          prune_hierarchy(
-            dir,
-            purity_strategy = purity_strategy,
-            cluster_size_strategy = cluster_size_strategy,
-            completion_quality_strategy = completion_quality_strategy
-          )
-
-        } else {
-          output_curdir = fromJSON(paste0())
         }
       }
-    } else {
-
     }
   }
 

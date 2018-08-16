@@ -17,9 +17,6 @@ void
 \description{
 Aggregate the hierarchical clusters completed data
 }
-\examples{
-aggregate_clusters(dir_path_result)
-}
 \seealso{
 Other results aggregation: \code{\link{aggregate_classification_probabilities}},
   \code{\link{aggregate_clusters}},

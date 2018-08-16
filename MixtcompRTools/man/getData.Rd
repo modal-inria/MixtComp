@@ -7,14 +7,11 @@
 getData(...)
 }
 \arguments{
-\item{...}{}
+\item{...}{List of arguments (usually equal to c(data_path, descriptor_path))}
 }
 \value{
 list of data
 }
 \description{
 Transform data into Mixtcomp accepted format
-}
-\examples{
-getData(c(data_path,descriptor_path))
 }

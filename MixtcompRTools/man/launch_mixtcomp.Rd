@@ -5,12 +5,18 @@
 \title{Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
 the directory given by the dir param and with nClass number of clusters}
 \usage{
-launch_mixtcomp(dir, nClass)
+launch_mixtcomp(dir, nClass, strategy = NULL, mcStrategy = NULL)
 }
 \arguments{
 \item{dir}{A String}
 
 \item{nClass}{Positive intege}
+
+\item{strategy}{(optional) List of three elements which defines the strategy to follow during the hierarchical clustering.
+var (name of the categorical variable on which to base the strategy), threshold_nInd (the minimal number of observations in the dataset under which the subclustering cannot be accepted)
+threshold_purity (the maximal purity observed in the dataset above which the subclustering is not necessary). At each hierarchical iterations these elements will be tested.}
+
+\item{mcStrategy}{(optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)}
 }
 \value{
 void
@@ -18,9 +24,4 @@ void
 \description{
 Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
 the directory given by the dir param and with nClass number of clusters
-}
-\examples{
-\dontrun {
-launch_mixtcomp("data/data_mixtcomp",3)
-}
 }

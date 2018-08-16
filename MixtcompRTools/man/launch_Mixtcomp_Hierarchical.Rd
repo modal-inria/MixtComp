@@ -5,8 +5,8 @@
 \title{Launch the Hierarchical Mixtcomp.}
 \usage{
 launch_Mixtcomp_Hierarchical(data_path, descriptor_path, nClass, depth,
-  output_dir = NULL, strategy = list(var = 1, threshold_nInd = 1,
-  threshold_purity = 2))
+  output_dir = NULL, strategy = list(var = NULL, threshold_nInd = 1,
+  threshold_purity = 2), mcStrategy = NULL, nCore = 1)
 }
 \arguments{
 \item{data_path}{A string}
@@ -19,15 +19,18 @@ launch_Mixtcomp_Hierarchical(data_path, descriptor_path, nClass, depth,
 
 \item{output_dir}{(optional) if not null, the results will be written in this directory.
 If Null, a directory with the name of the dataset will be created and used as output directory instead.}
+
+\item{strategy}{(optional) List of three elements which defines the strategy to follow during the hierarchical clustering.
+var (name of the categorical variable on which to base the strategy), threshold_nInd (the minimal number of observations in the dataset under which the subclustering cannot be accepted)
+threshold_purity (the maximal purity observed in the dataset above which the subclustering is not necessary). At each hierarchical iterations these elements will be tested.}
+
+\item{mcStrategy}{(optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)}
 }
 \value{
 void
 }
 \description{
 Launch the Hierarchical Mixtcomp.
-}
-\examples{
-launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
 }
 \author{
 Etienne Goffinet

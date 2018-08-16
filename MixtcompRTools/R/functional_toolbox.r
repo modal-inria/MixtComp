@@ -1,7 +1,7 @@
 
 #' Convert a mixtcomp string into 2-columns matrix
 #'
-#' @param x
+#' @param x a string containing a fonctional observation (cf example)
 #'
 #' @return matrix
 #'

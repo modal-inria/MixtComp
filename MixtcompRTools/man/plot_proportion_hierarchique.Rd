@@ -11,13 +11,11 @@ plot_proportion_hierarchique(clusters, var, data, depth, order_by = NULL)
 
 \item{var}{String, The name of the categorical data to plot}
 
+\item{data}{the data to be plotted}
+
 \item{depth}{Positive Integer, maximum depth of the subclustering to plot}
 
-\item{output}{The output in which to find the data to plot}
-
-\item{max_nb_lines}{Positive Integer, Defines the maximum number of lines to plot (default is 100)}
-
-\item{dictionary}{List, the dictionary in which are stored the real names of the categorical data levels}
+\item{order_by}{(optional) element among : size or purity, which define the order of the different cluster in the histogram.}
 }
 \value{
 a plotly plot
