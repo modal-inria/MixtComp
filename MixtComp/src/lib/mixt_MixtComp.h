@@ -33,6 +33,8 @@
 #include "Mixture/Simple/Weibull/Weibull.h"
 #include "Mixture/Simple/NegativeBinomial/NegativeBinomial.h"
 #include "Manager/MixtureManager.h"
+#include "Run/Learn.h"
+#include "Run/Predict.h"
 #include "Statistic/mixt_Statistic.h"
 #include "Strategy/mixt_SEMStrategy.h"
 #include "Strategy/mixt_GibbsStrategy.h"

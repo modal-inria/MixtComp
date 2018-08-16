@@ -60,6 +60,7 @@
         - Factoriser les fonctions de vérifications, notamment celles qui utilisent des bornes (positivité)
         - Trouver une façon de vérifier le type
     - ajouter une méthode clear(), qui permet de supprimer tout le contenu. Utili pour le SGraph de données pour gagner de la place
+    - pas besoin d'extraire à la main param. Pointer vers le json de sortie de l'apprentissage, et le code extrait le SGraph correspondant aux paramètres tout seul
 - Export données / param
     - ajouter les stats pour les données
         - pour les categorielles, faire comme les classes, fournir toutes les modalités sous forme de tableau, au lieu de la liste dégueu avec les 95 % comme actuellement

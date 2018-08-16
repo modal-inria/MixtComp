@@ -9,9 +9,10 @@
 
 // #include <omp.h>
 
+#include <Rcpp.h>
+
 #include<Run/Learn.h>
 
-#include "mixt_Function.h"
 #include "mixt_MixtComp.h"
 #include "SGraphToR.h"
 #include "RToSGraph.h"
@@ -25,7 +26,7 @@ Rcpp::List mixtCompCluster(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR,
 	SGraph descG = RToSGraph(descR);
 	SGraph paramG = RToSGraph(paramR);
 
-	SGraph resG = learn(algoG, dataG, descG, paramG);
+	SGraph resG = learn(algoG, dataG, descG);
 
 	Rcpp::List resL = SGraphToR(resG);
 

@@ -8,7 +8,9 @@
  **/
 
 // #include <omp.h>
-#include "mixt_Function.h"
+
+#include <Rcpp.h>
+
 #include "mixt_MixtComp.h"
 
 // [[Rcpp::export]]

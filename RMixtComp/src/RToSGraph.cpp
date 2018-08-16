@@ -13,5 +13,14 @@
 
 mixt::SGraph RToSGraph(const Rcpp::List& ls) {
 	mixt::SGraph res;
+	std::vector<std::string> names = ls.names();
+//	int test = ls.attr();
+
+	for (Rcpp::List::const_iterator it = ls.begin(), itEnd = ls.end(); it != itEnd; ++it) {
+		if (TYPEOF(*it) == VECSXP) { // is this always an Rcpp::List ?
+
+		}
+	}
+
 	return res;
 }
