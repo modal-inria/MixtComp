@@ -13,13 +13,14 @@
 using namespace mixt;
 
 TEST(AlgTypeVisitor, BasicTest) {
+	Index in = 12;
+
 	AlgType obj;
-	obj = Index(12);
+	obj = in;
 
 	Real res;
-	try {
-		boost::apply_visitor(AlgTypeVisitor<Real>(res), obj);
-	} catch (const std::string& s) {
-		std::cout << s << std::endl;
-	}
+
+	res = boost::apply_visitor(AlgTypeVisitor<Real>(), obj);
+
+	ASSERT_NEAR(Real(in), res, epsilon);
 }

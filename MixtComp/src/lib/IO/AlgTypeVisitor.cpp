@@ -14,38 +14,39 @@
 namespace mixt {
 
 template<>
-void translation<Index, Real>(const Index& in, Real& out) {
-	out = in; // use implicit conversion
+Real translation<Index, Real>(const Index& in) {
+	std::cout << "conversion performed" << std::endl;
+	return in;
 }
 
 template<>
-void translation<Index, Index>(const Index& in, Index& out) {
-	out = in;
+Index translation<Index, Index>(const Index& in) {
+	return in;
 }
 
 template<>
-void translation<Real, Real>(const Real& in, Real& out) {
-	out = in;
+std::string translation<std::string, std::string>(const std::string& in) {
+	return in;
 }
 
 template<>
-void translation<std::string, std::string>(const std::string& in, std::string& out) {
-	out = in;
+NamedVector<Real> translation<NamedVector<Real>, NamedVector<Real>>(const NamedVector<Real>& in) {
+	return in;
 }
 
 template<>
-void translation<NamedVector<Real>, NamedVector<Real>>(const NamedVector<Real>& in, NamedVector<Real>& out) {
-	out = in;
+NamedVector<Index> translation<NamedVector<Index>, NamedVector<Index>>(const NamedVector<Index>& in) {
+	return in;
 }
 
 template<>
-void translation<NamedVector<Index>, NamedVector<Index>>(const NamedVector<Index>& in, NamedVector<Index>& out) {
-	out = in;
+NamedVector<Integer> translation<NamedVector<Integer>, NamedVector<Integer>>(const NamedVector<Integer>& in) {
+	return in;
 }
 
 template<>
-void translation<NamedMatrix<Real>, NamedMatrix<Real>>(const NamedMatrix<Real>& in, NamedMatrix<Real>& out) {
-	out = in;
+NamedMatrix<Real> translation<NamedMatrix<Real>, NamedMatrix<Real>>(const NamedMatrix<Real>& in) {
+	return in;
 }
 
 }

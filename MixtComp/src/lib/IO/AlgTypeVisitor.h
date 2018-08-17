@@ -27,7 +27,7 @@ namespace mixt {
  * Non trivial conversion performed in function template specialization.
  */
 template<typename InType, typename OutType>
-void translation(const InType& in, OutType& out) {
+OutType translation(const InType& in) {
 	throw(std::string("Impossible conversion  between types."));
 }
 
@@ -38,41 +38,39 @@ void translation(const InType& in, OutType& out) {
  * The trivial translation is also taken care of :).
  */
 template<typename OutType>
-class AlgTypeVisitor: public boost::static_visitor<> {
+class AlgTypeVisitor: public boost::static_visitor<OutType> {
 public:
-	AlgTypeVisitor(OutType& out) :
-			out_(out) {
-	}
-	;
-
 	template<typename InType>
-	void operator()(const InType& i) const {
-		translation<InType, OutType>(i, out_);
+	OutType operator()(const InType& i) const {
+		return translation<InType, OutType>(i);
 	}
-
-private:
-	OutType& out_;
 };
 
-// Trivial specializations
+// non trivial translation
 
 template<>
-void translation<Index, Index>(const Index& in, Index& out);
+Real translation<Index, Real>(const Index& in);
+
+// trivial translations
+// Index, Real, std::string, std::vector<std::string>, NamedVector<Real>, NamedVector<Index>, NamedVector<Integer>, NamedMatrix<Real>
 
 template<>
-void translation<Real, Real>(const Real& in, Real& out);
+Index translation<Index, Index>(const Index& in);
 
 template<>
-void translation<std::string, std::string>(const std::string& in, std::string& out);
+std::string translation<std::string, std::string>(const std::string& in);
 
 template<>
-void translation<NamedVector<Real>, NamedVector<Real>>(const NamedVector<Real>& in, NamedVector<Real>& out);
+NamedVector<Real> translation<NamedVector<Real>, NamedVector<Real>>(const NamedVector<Real>& in);
 
 template<>
-void translation<NamedVector<Index>, NamedVector<Index>>(const NamedVector<Index>& in, NamedVector<Index>& out);
+NamedVector<Index> translation<NamedVector<Index>, NamedVector<Index>>(const NamedVector<Index>& in);
 
 template<>
-void translation<NamedMatrix<Real>, NamedMatrix<Real>>(const NamedMatrix<Real>& in, NamedMatrix<Real>& out);
+NamedVector<Integer> translation<NamedVector<Integer>, NamedVector<Integer>>(const NamedVector<Integer>& in);
+
+template<>
+NamedMatrix<Real> translation<NamedMatrix<Real>, NamedMatrix<Real>>(const NamedMatrix<Real>& in);
 
 }
 
