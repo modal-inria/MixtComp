@@ -10,9 +10,11 @@
 #ifndef SGRAPH_H
 #define SGRAPH_H
 
+#include <IO/AlgTypeVisitor.h>
 #include <map>
-#include "AlgType.h"
 #include <LinAlg/mixt_LinAlg.h>
+#include "AlgType.h"
+
 
 namespace mixt {
 
@@ -27,13 +29,14 @@ public:
 
 	void add_child(const std::string& name, const SGraph& child);
 
-	const AlgType& get_payload(const std::string& name) const {
-		return payload_.at(name);
-	}
-
 	template<typename Type>
 	const Type& get_payload(const std::string& name) const {
 		return boost::get<Type>(payload_.at(name));
+	}
+
+	template<typename Type>
+	const Type& get_payload_adv(const std::string& name) const {
+		boost::apply_visitor(AlgTypeVisitor<Type>(), payload_.at(name));
 	}
 
 	const SGraph& get_child(const std::string& name) const {
@@ -53,6 +56,8 @@ public:
 		return children_;
 	}
 private:
+	std::string dummyStr_;
+
 	/** Payload of current node.*/
 	std::map<std::string, AlgType> payload_;
 

@@ -31,6 +31,7 @@ add_executable(runUtest
     lib/Functional/UTestFunctionalClass.cpp
     lib/Functional/UTestFunctionalMixture.cpp
     lib/Functional/UTestFunctionalParser.cpp
+    lib/IO/UTestAlgTypeVisitor.cpp
     lib/IO/UTestSGraph.cpp
 )
 

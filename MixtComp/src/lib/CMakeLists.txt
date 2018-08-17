@@ -13,6 +13,8 @@ add_library(MixtComp
 	Run/Learn.h
 	Run/Predict.cpp
 	Run/Predict.h
+	IO/AlgTypeVisitor.cpp
+	IO/AlgTypeVisitor.h
 	IO/IOFunctions.h
 	IO/IOFunctions.cpp
 	IO/Dummy.cpp
