@@ -58,7 +58,13 @@ template<>
 Index translation<Index, Index>(const Index& in);
 
 template<>
+Real translation<Real, Real>(const Real& in);
+
+template<>
 std::string translation<std::string, std::string>(const std::string& in);
+
+template<>
+std::vector<std::string> translation<std::vector<std::string>, std::vector<std::string>>(const std::vector<std::string>& in);
 
 template<>
 NamedVector<Real> translation<NamedVector<Real>, NamedVector<Real>>(const NamedVector<Real>& in);

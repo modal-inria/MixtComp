@@ -605,6 +605,8 @@ std::string MixtureComposer::setDataParam(RunMode mode) {
 		warnLog += (*it)->setDataParam(mode, gData_.get_payload<std::vector<std::string>>((*it)->idName()), gParam_.get_child((*it)->idName()));
 	}
 
+	std::cout << "top" << std::endl;
+
 	warnLog += setZi(); // dataHandler getData is called to fill zi_
 
 	if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run

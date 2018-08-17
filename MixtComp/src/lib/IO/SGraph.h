@@ -30,13 +30,8 @@ public:
 	void add_child(const std::string& name, const SGraph& child);
 
 	template<typename Type>
-	const Type& get_payload(const std::string& name) const {
-		return boost::get<Type>(payload_.at(name));
-	}
-
-	template<typename Type>
-	const Type& get_payload_adv(const std::string& name) const {
-		boost::apply_visitor(AlgTypeVisitor<Type>(), payload_.at(name));
+	Type get_payload(const std::string& name) const {
+		return boost::apply_visitor(AlgTypeVisitor<Type>(), payload_.at(name));
 	}
 
 	const SGraph& get_child(const std::string& name) const {

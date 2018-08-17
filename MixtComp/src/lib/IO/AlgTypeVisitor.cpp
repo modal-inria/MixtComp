@@ -15,7 +15,6 @@ namespace mixt {
 
 template<>
 Real translation<Index, Real>(const Index& in) {
-	std::cout << "conversion performed" << std::endl;
 	return in;
 }
 
@@ -25,7 +24,17 @@ Index translation<Index, Index>(const Index& in) {
 }
 
 template<>
+Real translation<Real, Real>(const Real& in) {
+	return in;
+}
+
+template<>
 std::string translation<std::string, std::string>(const std::string& in) {
+	return in;
+}
+
+template<>
+std::vector<std::string> translation<std::vector<std::string>, std::vector<std::string>>(const std::vector<std::string>& in) {
 	return in;
 }
 
