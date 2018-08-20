@@ -13,5 +13,6 @@
 
 Rcpp::List SGraphToR(const mixt::SGraph& g) {
 	Rcpp::List res;
+
 	return res;
 }
