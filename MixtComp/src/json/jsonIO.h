@@ -10,8 +10,8 @@
 #ifndef JSONIO_H
 #define JSONIO_H
 
+#include "AlgTypeVisJSON.h"
 #include "JSONToSGraph.h"
 #include "SGraphToJSON.h"
-#include "SGraphVisJSON.h"
 
 #endif

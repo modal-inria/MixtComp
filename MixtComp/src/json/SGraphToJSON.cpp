@@ -7,13 +7,13 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <AlgTypeVisJSON.h>
 #include <iostream>
 #include <map>
 
 #include "json.hpp"
 
 #include "JSONToSGraph.h"
-#include "SGraphVisJSON.h"
 
 namespace mixt {
 
@@ -25,15 +25,14 @@ nlohmann::json SGraphToJSON(const SGraph& graph) {
 			itEnd = payload.end(); it != itEnd; ++it) {
 		const std::pair<std::string, AlgType>& val = *it;
 
-		boost::apply_visitor(SGraphVisJSON(res, val.first), val.second);
+		boost::apply_visitor(AlgTypeVisJSON(res, val.first), val.second);
 	}
 
 	const std::map<std::string, SGraph>& children = graph.get_children();
 	for (std::map<std::string, SGraph>::const_iterator it = children.begin(),
 			itEnd = children.end(); it != itEnd; ++it) {
 		const std::pair<std::string, SGraph>& val = *it;
-		const nlohmann::json& child = SGraphToJSON(val.second);
-		res[val.first] = child;
+		res[val.first] = SGraphToJSON(val.second);
 	}
 
 	return res;

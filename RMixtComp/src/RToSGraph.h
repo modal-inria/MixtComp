@@ -13,6 +13,8 @@
 #include "Rcpp.h"
 #include <IO/SGraph.h>
 
-mixt::SGraph RToSGraph(const Rcpp::List& ls);
+using namespace mixt;
+
+SGraph RToSGraph(const Rcpp::List& ls);
 
 #endif

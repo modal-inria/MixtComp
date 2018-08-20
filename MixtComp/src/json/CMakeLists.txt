@@ -2,13 +2,13 @@
 # with "./" prefix deleted
 
 add_library(JMixtComp
+    AlgTypeVisJSON.cpp
+    AlgTypeVisJSON.h
     jsonIO.h
     JSONToSGraph.cpp
     JSONToSGraph.h
     SGraphToJSON.cpp
     SGraphToJSON.h
-    SGraphVisJSON.cpp
-    SGraphVisJSON.h
 )
 
 add_executable(jmc

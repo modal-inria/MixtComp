@@ -7,32 +7,31 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "SGraphVisJSON.h"
+#include <AlgTypeVisJSON.h>
 
 namespace mixt {
 
-SGraphVisJSON::SGraphVisJSON(nlohmann::json& j, const std::string& payloadName) :
+AlgTypeVisJSON::AlgTypeVisJSON(nlohmann::json& j, const std::string& payloadName) :
 		j_(j), payloadName_(payloadName) {
 }
-;
 
-void SGraphVisJSON::operator()(Index i) const {
+void AlgTypeVisJSON::operator()(Index i) const {
 	j_[payloadName_] = i;
 }
 
-void SGraphVisJSON::operator()(const Real r) const {
+void AlgTypeVisJSON::operator()(const Real r) const {
 	j_[payloadName_] = r;
 }
 
-void SGraphVisJSON::operator()(const std::string& str) const {
+void AlgTypeVisJSON::operator()(const std::string& str) const {
 	j_[payloadName_] = str;
 }
 
-void SGraphVisJSON::operator()(const std::vector<std::string>& vec) const {
+void AlgTypeVisJSON::operator()(const std::vector<std::string>& vec) const {
 	j_[payloadName_] = vec;
 }
 
-void SGraphVisJSON::operator()(const NamedVector<Index>& vec) const {
+void AlgTypeVisJSON::operator()(const NamedVector<Index>& vec) const {
 	nlohmann::json res; // Since a vector is an union of fields, it is contained in its own json object
 
 	Index nrow = vec.vec_.size();
@@ -48,7 +47,7 @@ void SGraphVisJSON::operator()(const NamedVector<Index>& vec) const {
 	j_[payloadName_] = res;
 }
 
-void SGraphVisJSON::operator()(const NamedVector<Integer>& vec) const {
+void AlgTypeVisJSON::operator()(const NamedVector<Integer>& vec) const {
 	nlohmann::json res; // Since a vector is an union of fields, it is contained in its own json object
 
 	Index nrow = vec.vec_.size();
@@ -64,7 +63,7 @@ void SGraphVisJSON::operator()(const NamedVector<Integer>& vec) const {
 	j_[payloadName_] = res;
 }
 
-void SGraphVisJSON::operator()(const NamedVector<Real>& vec) const {
+void AlgTypeVisJSON::operator()(const NamedVector<Real>& vec) const {
 	nlohmann::json res; // Since a vector is an union of fields, it is contained in its own json object
 
 	Index nrow = vec.vec_.size();
@@ -80,7 +79,7 @@ void SGraphVisJSON::operator()(const NamedVector<Real>& vec) const {
 	j_[payloadName_] = res;
 }
 
-void SGraphVisJSON::operator()(const NamedMatrix<Real>& mat) const {
+void AlgTypeVisJSON::operator()(const NamedMatrix<Real>& mat) const {
 	nlohmann::json res; // Since a matrix is an union of fields, it is contained in its own json object
 
 	Index nrow = mat.mat_.rows();

@@ -9,18 +9,31 @@
 
 #include "Rcpp.h"
 #include <IO/SGraph.h>
+#include <LinAlg/mixt_LinAlg.h>
 #include "RToSGraph.h"
 
 mixt::SGraph RToSGraph(const Rcpp::List& ls) {
 	mixt::SGraph res;
-//	std::vector<std::string> names = ls.names();
-////	int test = ls.attr();
-//
-//	for (Rcpp::List::const_iterator it = ls.begin(), itEnd = ls.end(); it != itEnd; ++it) {
-//		if (TYPEOF(*it) == VECSXP) { // is this always an Rcpp::List ?
-//
-//		}
-//	}
+	std::vector < std::string > names;
 
-	return res;
+	SEXP dm = ls.attr("names");
+	if (!Rf_isNull(dm)) { // list must have named elements
+		std::cout << "input has names" << std::endl;
+		names = Rcpp::as < std::vector < std::string >> (ls.names());
+	} else {
+		throw(std::string("All list in input should be named lists (have named elements)."));
+	}
+
+	for (Index i = 0; i < ls.size(); ++i) {
+		SEXP currElem = ls[i];
+		if (TYPEOF(currElem) == VECSXP) { // recursive call
+			std::cout << "Rcpp::List detected." << std::endl;
+			res.add_child(names[i], RToSGraph(currElem));
+		} else if (TYPEOF(currElem) == STRSXP) { // contains a vector of strings
+			std::cout << "vector of strings detected." << std::endl;
+			res.add_payload(names[i], Rcpp::as < std::vector < std::string >> (currElem));
+	}
+}
+
+return res;
 }

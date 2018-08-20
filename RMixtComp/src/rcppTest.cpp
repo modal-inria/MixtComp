@@ -52,8 +52,14 @@ void rcppTest(SEXP elem) {
 
 // [[Rcpp::export]]
 Rcpp::List SGraphTest(Rcpp::List l) {
-	SGraph s = RToSGraph(l);
-	Rcpp::List res = SGraphToR(s);
+	Rcpp::List res;
+
+	try {
+		SGraph s = RToSGraph(l);
+		res = SGraphToR(s);
+	} catch (const std::string& s) {
+		res["warnLog"] = s;
+	}
 
 	return res;
 }

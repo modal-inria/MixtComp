@@ -7,8 +7,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef SGRAPHVISJSON_H
-#define SGRAPHVISJSON_H
+#ifndef JSON_ALGTYPEVISJSON_H
+#define JSON_ALGTYPEVISJSON_H
 
 #include "json.hpp"
 #include "boost/variant.hpp"
@@ -20,9 +20,9 @@
  */
 namespace mixt {
 
-class SGraphVisJSON: public boost::static_visitor<> {
+class AlgTypeVisJSON: public boost::static_visitor<> {
 public:
-	SGraphVisJSON(nlohmann::json& j, const std::string& payloadName);
+	AlgTypeVisJSON(nlohmann::json& j, const std::string& payloadName);
 
 	void operator()(Index i) const;
 
