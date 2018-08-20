@@ -15,6 +15,6 @@
 
 using namespace mixt;
 
-Rcpp::List SGraphToR(const mixt::SGraph& graph);
+Rcpp::List SGraphToR(const SGraph& graph);
 
 #endif

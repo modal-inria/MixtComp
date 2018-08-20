@@ -17,4 +17,6 @@ using namespace mixt;
 
 SGraph RToSGraph(const Rcpp::List& ls);
 
+void addCharacterVector(const std::string& name, SEXP s, SGraph& g);
+
 #endif

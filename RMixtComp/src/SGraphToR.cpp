@@ -12,14 +12,13 @@
 #include "AlgTypeVisR.h"
 #include "SGraphToR.h"
 
-Rcpp::List SGraphToR(const mixt::SGraph& graph) {
+Rcpp::List SGraphToR(const SGraph& graph) {
 	Rcpp::List res;
 
 	const std::map<std::string, AlgType>& payload = graph.get_payload();
 	for (std::map<std::string, AlgType>::const_iterator it = payload.begin(),
 			itEnd = payload.end(); it != itEnd; ++it) {
 		const std::pair<std::string, AlgType>& val = *it;
-
 		boost::apply_visitor(AlgTypeVisR(res, val.first), val.second);
 	}
 

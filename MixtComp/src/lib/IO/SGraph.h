@@ -50,6 +50,8 @@ public:
 	const std::map<std::string, SGraph>& get_children() const {
 		return children_;
 	}
+
+	void listElements() const;
 private:
 	std::string dummyStr_;
 
