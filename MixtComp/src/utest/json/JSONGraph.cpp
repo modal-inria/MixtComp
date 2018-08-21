@@ -50,3 +50,38 @@ TEST(JSONSGraph, combined) {
 
 	ASSERT_EQ(exp, comp);
 }
+
+TEST(JSONSGraph, NamedVectorReal) {
+	std::string exp = R"-({"A named vector":{"ctype":"Vector","data":[1.0,2.0,3.0],"dtype":"Real","nrow":3,"rowNames":["riri","fifi","loulou"]}})-";
+
+	JSONGraph g;
+
+	Vector<Real> vec(3);
+	vec << 1.0, 2.0, 3.0;
+	std::vector<std::string> rowNames = {"riri","fifi","loulou"};
+	NamedVector2<Real> nVec = {rowNames, vec};
+
+	g.add_payload({}, "A named vector", nVec);
+
+	std::string comp = g.get();
+
+	ASSERT_EQ(exp, comp);
+}
+
+TEST(JSONSGraph, NamedMatrixReal) {
+	std::string exp = R"-({"A named matrix":{"colNames":["1","2","3"],"ctype":"Matrix","data":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],"dtype":"Real","ncol":3,"nrow":3,"rowNames":["A","B","C"]}})-";
+
+	JSONGraph g;
+
+	Matrix<Real> mat(3, 3);
+	mat << 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0;
+	std::vector<std::string> rowNames = {"A","B","C"};
+	std::vector<std::string> colNames = {"1","2","3"};
+	NamedMatrix2<Real> nMat = {rowNames, colNames, mat};
+
+	g.add_payload({}, "A named matrix", nMat);
+
+	std::string comp = g.get();
+
+	ASSERT_EQ(exp, comp);
+}

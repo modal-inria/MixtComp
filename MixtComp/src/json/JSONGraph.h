@@ -15,9 +15,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <IO/NamedAlgebra2.h>
 #include <LinAlg/mixt_LinAlg.h>
 
 namespace mixt {
+
+template<typename InType, typename OutType>
+void translation2(const InType& in, OutType& out) {
+	out = in;
+}
 
 class JSONGraph {
 public:
@@ -48,7 +54,7 @@ private:
 		if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
 			std::cout << "adding payload" << std::endl;
 			// TODO: add translation code for types not supported out of the box by json (there is a mechanism for that...)
-			currLevel[name] = p;
+			translation2(p, currLevel[name]);
 		} else {
 			nlohmann::json& nextLevel = currLevel[path[currDepth]];
 
@@ -73,7 +79,7 @@ private:
 			if (currLevel[name].is_null()) {
 				throw(name + " object does not exist.");
 			}
-			p = currLevel[name];
+			translation2( currLevel[name], p);
 		} else {
 			const nlohmann::json& nextLevel = currLevel[path[currDepth]];
 			if (nextLevel.is_null()) { // if next level does not exist, create it
@@ -91,6 +97,15 @@ private:
 
 	nlohmann::json j_;
 };
+
+template<>
+void translation2(const NamedVector2<Real>& in, nlohmann::json& out);
+
+template<>
+void translation2(const NamedMatrix2<Real>& in, nlohmann::json& out);
+
+template<>
+void translation2(const nlohmann::json& in, NamedVector2<Real>& out);
 
 }
 
