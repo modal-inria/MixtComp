@@ -83,4 +83,9 @@ void translation2(const nlohmann::json& in, NamedMatrix2<Real>& out) {
 	}
 }
 
+template<>
+void translation2(const nlohmann::json& in, std::vector<std::string>& out) {
+	out = in.get<std::vector<std::string>>();
+}
+
 }

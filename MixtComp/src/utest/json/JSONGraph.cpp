@@ -15,7 +15,7 @@ using namespace mixt;
 
 TEST(JSONGraph, basicAdd0) {
 	JSONGraph g;
-	g.add_payload({}, "toto", 12);
+	g.add_payload( { }, "toto", 12);
 	std::string comp = g.get();
 	std::string exp = R"-({"toto":12})-";
 	ASSERT_EQ(comp, exp);
@@ -23,7 +23,7 @@ TEST(JSONGraph, basicAdd0) {
 
 TEST(JSONGraph, basicAdd1) {
 	JSONGraph g;
-	g.add_payload({"complex", "path"}, "toto", 12);
+	g.add_payload( { "complex", "path" }, "toto", 12);
 	std::string comp = g.get();
 	std::string exp = R"-({"complex":{"path":{"toto":12}}})-";
 	ASSERT_EQ(comp, exp);
@@ -32,9 +32,9 @@ TEST(JSONGraph, basicAdd1) {
 TEST(JSONGraph, basicGet) {
 	Index exp = 12;
 	JSONGraph g;
-	g.add_payload({"complex", "path"}, "toto", exp);
+	g.add_payload( { "complex", "path" }, "toto", exp);
 	Index comp;
-	g.get_payload({"complex", "path"}, "toto", comp);
+	g.get_payload( { "complex", "path" }, "toto", comp);
 	ASSERT_EQ(comp, exp);
 }
 
@@ -42,9 +42,9 @@ TEST(JSONSGraph, combined) {
 	std::string exp = R"({"paramStr":"A parameter","varA":{"A nested real":12.0,"A nested string":"Hello World !"}})";
 
 	JSONGraph g;
-	g.add_payload({}, "paramStr", "A parameter");
-	g.add_payload({"varA"}, "A nested real", 12.0);
-	g.add_payload({"varA"}, "A nested string", "Hello World !");
+	g.add_payload( { }, "paramStr", "A parameter");
+	g.add_payload( { "varA" }, "A nested real", 12.0);
+	g.add_payload( { "varA" }, "A nested string", "Hello World !");
 
 	std::string comp = g.get();
 
@@ -58,11 +58,11 @@ TEST(JSONSGraph, NamedVectorReal) {
 
 	Vector<Real> vec;
 	std::vector<std::string> rowNames;
-	NamedVector2<Real> nv = {rowNames, vec};
-	gIn.get_payload({}, "A named vector", nv);
+	NamedVector2<Real> nv = { rowNames, vec };
+	gIn.get_payload( { }, "A named vector", nv);
 
 	JSONGraph gOut;
-	gOut.add_payload({}, "A named vector", nv);
+	gOut.add_payload( { }, "A named vector", nv);
 	std::string comp = gOut.get();
 
 	ASSERT_EQ(exp, comp);
@@ -76,11 +76,26 @@ TEST(JSONSGraph, NamedMatrixReal) {
 	Matrix<Real> vec;
 	std::vector<std::string> rowNames;
 	std::vector<std::string> colNames;
-	NamedMatrix2<Real> nm = {rowNames, colNames, vec};
-	gIn.get_payload({}, "A named matrix", nm);
+	NamedMatrix2<Real> nm = { rowNames, colNames, vec };
+	gIn.get_payload( { }, "A named matrix", nm);
 
 	JSONGraph gOut;
-	gOut.add_payload({}, "A named matrix", nm);
+	gOut.add_payload( { }, "A named matrix", nm);
+	std::string comp = gOut.get();
+
+	ASSERT_EQ(exp, comp);
+}
+
+TEST(JSONSGraph, VectorOfString) {
+	std::string exp = R"-({"var1":["12.0","-35.90","205.72"]})-";
+	JSONGraph gIn;
+	gIn.set(exp);
+
+	std::vector<std::string> vec;
+	gIn.get_payload<std::vector<std::string>>( { }, "var1", vec);
+
+	JSONGraph gOut;
+	gOut.add_payload( { }, "var1", vec);
 	std::string comp = gOut.get();
 
 	ASSERT_EQ(exp, comp);

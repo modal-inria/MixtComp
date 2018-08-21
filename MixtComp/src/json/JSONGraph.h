@@ -110,6 +110,12 @@ void translation2(const NamedMatrix2<Real>& in, nlohmann::json& out);
 template<>
 void translation2(const nlohmann::json& in, NamedMatrix2<Real>& out);
 
+/**
+ * Specialization necessary to remove ambiguity on the = operator used for vector.
+ */
+template<>
+void translation2(const nlohmann::json& in, std::vector<std::string>& out);
+
 }
 
 #endif
