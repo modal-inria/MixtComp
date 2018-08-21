@@ -14,12 +14,17 @@
 namespace mixt {
 
 template<>
-Real translation<Index, Real>(const Index& in) {
+Index translation<Index, Index>(const Index& in) {
 	return in;
 }
 
 template<>
-Index translation<Index, Index>(const Index& in) {
+Index translation<Integer, Index>(const Integer& in) {
+	return in;
+}
+
+template<>
+Real translation<Index, Real>(const Index& in) {
 	return in;
 }
 

@@ -29,6 +29,8 @@ SGraph RToSGraph(const Rcpp::List& ls) {
 			res.add_child(names[i], RToSGraph(currElem));
 		} else if (TYPEOF(currElem) == STRSXP) { // contains a vector of strings
 			addCharacterVector(names[i], currElem, res);
+		} else if (TYPEOF(currElem) == INTSXP) {
+			addIntegerVector(names[i], currElem, res);
 		}
 	}
 
@@ -40,8 +42,26 @@ void addCharacterVector(const std::string& name, SEXP s, SGraph& g) {
 
 	SEXP currElemNames = cv.attr("names");
 	if (Rf_isNull(currElemNames) && cv.size() == 1) { // condition for the Vector to be considered a scalar
-		g.add_payload(name, Rcpp::as <std::string>(cv[0]));
+		g.add_payload(name, Rcpp::as < std::string > (cv[0]));
 	} else {
 		g.add_payload(name, Rcpp::as < std::vector < std::string >> (cv));
+	}
+}
+
+void addIntegerVector(const std::string& name, SEXP s, SGraph& g) {
+	Rcpp::IntegerVector cv(s);
+	Index nElem = cv.size();
+
+	SEXP currElemNames = cv.attr("names");
+	if (Rf_isNull(currElemNames) && cv.size() == 1) { // condition for the Vector to be considered a scalar
+		g.add_payload(name, Integer(cv[0])); //
+	} else {
+		Vector < Integer > vec(cv.size());
+
+		for (Index i = 0; i < nElem; ++i) {
+			vec(i) = cv[i];
+		}
+
+		g.add_payload(name, NamedVector<Integer> { Rcpp::as < std::vector < std::string >> (currElemNames), std::move(vec) });
 	}
 }

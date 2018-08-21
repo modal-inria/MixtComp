@@ -26,6 +26,8 @@ public:
 
 	void operator()(Index i) const;
 
+	void operator()(Integer i) const;
+
 	void operator()(const Real r) const;
 
 	void operator()(const std::string& str) const;

@@ -46,16 +46,14 @@ public:
 	}
 };
 
-// non trivial translation
+template<>
+Index translation<Index, Index>(const Index& in);
+
+template<>
+Integer translation<Index, Integer>(const Index& in);
 
 template<>
 Real translation<Index, Real>(const Index& in);
-
-// trivial translations
-// Index, Real, std::string, std::vector<std::string>, NamedVector<Real>, NamedVector<Index>, NamedVector<Integer>, NamedMatrix<Real>
-
-template<>
-Index translation<Index, Index>(const Index& in);
 
 template<>
 Real translation<Real, Real>(const Real& in);

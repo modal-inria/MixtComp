@@ -8,7 +8,7 @@ test_that("NumericVector",{
       a3 = "loulou"),
     b = list(
       b1 = list(
-        b11 = "dingo"
+        b11 = c("mickey", "dingo")
       )
     )
   )

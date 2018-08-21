@@ -17,6 +17,10 @@ void AlgTypeVisR::operator()(Index i) const {
 	l_[payloadName_] = i;
 }
 
+void AlgTypeVisR::operator()(Integer i) const {
+	l_[payloadName_] = i;
+}
+
 void AlgTypeVisR::operator()(const Real r) const {
 	l_[payloadName_] = r;
 }
@@ -30,17 +34,16 @@ void AlgTypeVisR::operator()(const std::vector<std::string>& vec) const {
 }
 
 void AlgTypeVisR::operator()(const NamedVector<Index>& vec) const {
-	std::cout << "not implemented yet" << std::endl;
+	std::cout << "AlgTypeVisR::operator not implemented yet for NamedVector<Index>. Called for " << payloadName << std::endl;
 }
 
 void AlgTypeVisR::operator()(const NamedVector<Integer>& vec) const {
-	std::cout << "not implemented yet" << std::endl;
+	std::cout << "AlgTypeVisR::operator not implemented yet for NamedVector<Integer>. Called for " << payloadName << std::endl;
 }
 
 void AlgTypeVisR::operator()(const NamedVector<Real>& vec) const {
-	std::cout << "not implemented yet" << std::endl;
+	std::cout << "AlgTypeVisR::operator not implemented yet for NamedVector<Real>. Called for " << payloadName << std::endl;
 }
 
 void AlgTypeVisR::operator()(const NamedMatrix<Real>& mat) const {
-	std::cout << "not implemented yet" << std::endl;
-}
+	std::cout << "AlgTypeVisR::operator not implemented yet for NamedMatrix<Real>. Called for " << payloadName << std::endl;

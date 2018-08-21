@@ -19,6 +19,10 @@ void AlgTypeVisJSON::operator()(Index i) const {
 	j_[payloadName_] = i;
 }
 
+void AlgTypeVisJSON::operator()(Integer i) const {
+	j_[payloadName_] = i;
+}
+
 void AlgTypeVisJSON::operator()(const Real r) const {
 	j_[payloadName_] = r;
 }

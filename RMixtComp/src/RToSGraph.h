@@ -17,6 +17,11 @@ using namespace mixt;
 
 SGraph RToSGraph(const Rcpp::List& ls);
 
+/**
+ * Note that there are no NamedVector<Integer>, therefor name attribute is always discarded.
+ */
 void addCharacterVector(const std::string& name, SEXP s, SGraph& g);
+
+void addIntegerVector(const std::string& name, SEXP s, SGraph& g);
 
 #endif
