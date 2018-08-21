@@ -4,6 +4,8 @@
 add_library(JMixtComp
     AlgTypeVisJSON.cpp
     AlgTypeVisJSON.h
+    JSONGraph.cpp
+    JSONGraph.h
     jsonIO.h
     JSONToSGraph.cpp
     JSONToSGraph.h

@@ -2,6 +2,7 @@
 # with "./" prefix deleted, and some utest deactivated
 
 add_executable(runUtest
+    json/JSONGraph.cpp
     json/SGraphVisJSON.cpp
     json/JSONToSGraph.cpp
     lib/LinAlgStat/UTestMath.cpp

@@ -3,16 +3,20 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: Aug 6, 2018
+ *  Created on: August 21, 2018
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef JSONIO_H
-#define JSONIO_H
-
 #include "JSONGraph.h"
-#include "AlgTypeVisJSON.h"
-#include "JSONToSGraph.h"
-#include "SGraphToJSON.h"
 
-#endif
+namespace mixt {
+
+void JSONGraph::set(const std::string& s) {
+	j_ = nlohmann::json::parse(s);
+}
+
+std::string JSONGraph::get() const {
+	return j_.dump();
+}
+
+}

@@ -7,6 +7,7 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include "json.hpp"

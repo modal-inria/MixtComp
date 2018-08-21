@@ -1,6 +1,6 @@
 context("IO")
 
-test_that("NumericVector",{
+test_that("CharacterVector",{
   input <- list(
     a = list(
       a1 = "riri",
@@ -15,5 +15,14 @@ test_that("NumericVector",{
   
   output <- SGraphTest(input)
 
+  expect_identical(input, output)
+})
+
+test_that("Integer",{
+  input <- list(
+    a = 12)
+  
+  output <- SGraphTest(input)
+  
   expect_identical(input, output)
 })
