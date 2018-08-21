@@ -37,3 +37,16 @@ TEST(JSONGraph, basicGet) {
 	g.get_payload({"complex", "path"}, "toto", comp);
 	ASSERT_EQ(comp, exp);
 }
+
+TEST(JSONSGraph, combined) {
+	std::string exp = R"({"paramStr":"A parameter","varA":{"A nested real":12.0,"A nested string":"Hello World !"}})";
+
+	JSONGraph g;
+	g.add_payload({}, "paramStr", "A parameter");
+	g.add_payload({"varA"}, "A nested real", 12.0);
+	g.add_payload({"varA"}, "A nested string", "Hello World !");
+
+	std::string comp = g.get();
+
+	ASSERT_EQ(exp, comp);
+}
