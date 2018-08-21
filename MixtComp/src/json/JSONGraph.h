@@ -79,7 +79,7 @@ private:
 			if (currLevel[name].is_null()) {
 				throw(name + " object does not exist.");
 			}
-			translation2( currLevel[name], p);
+			translation2(currLevel[name], p);
 		} else {
 			const nlohmann::json& nextLevel = currLevel[path[currDepth]];
 			if (nextLevel.is_null()) { // if next level does not exist, create it
@@ -102,10 +102,13 @@ template<>
 void translation2(const NamedVector2<Real>& in, nlohmann::json& out);
 
 template<>
+void translation2(const nlohmann::json& in, NamedVector2<Real>& out);
+
+template<>
 void translation2(const NamedMatrix2<Real>& in, nlohmann::json& out);
 
 template<>
-void translation2(const nlohmann::json& in, NamedVector2<Real>& out);
+void translation2(const nlohmann::json& in, NamedMatrix2<Real>& out);
 
 }
 

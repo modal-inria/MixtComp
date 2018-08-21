@@ -16,15 +16,15 @@ namespace mixt {
 
 template<typename Type>
 struct NamedVector2 {
-	const std::vector<std::string>& rowNames_;
-	const Vector<Type>& vec_;
+	std::vector<std::string>& rowNames_;
+	Vector<Type>& vec_;
 };
 
 template<typename Type>
 struct NamedMatrix2 {
-	const std::vector<std::string>& rowNames_;
-	const std::vector<std::string>& colNames_;
-	const Matrix<Type>& mat_;
+	std::vector<std::string>& rowNames_;
+	std::vector<std::string>& colNames_;
+	Matrix<Type>& mat_;
 };
 
 }

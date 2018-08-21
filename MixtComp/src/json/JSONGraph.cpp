@@ -33,6 +33,19 @@ void translation2(const NamedVector2<Real>& in, nlohmann::json& out) {
 }
 
 template<>
+void translation2(const nlohmann::json& in, NamedVector2<Real>& out) {
+	Index nrow = in.at("nrow").get<Index>();
+	out.vec_.resize(nrow);
+
+	out.rowNames_ = in.at("rowNames").get<std::vector<std::string>>();
+
+	std::vector<Real> dataRaw = in.at("data").get<std::vector<Real>>();
+	for (Index i = 0; i < nrow; ++i) {
+		out.vec_(i) = dataRaw[i];
+	}
+}
+
+template<>
 void translation2(const NamedMatrix2<Real>& in, nlohmann::json& out) {
 	Index nrow = in.mat_.rows();
 	Index ncol = in.mat_.cols();
@@ -54,8 +67,20 @@ void translation2(const NamedMatrix2<Real>& in, nlohmann::json& out) {
 }
 
 template<>
-void translation2(const nlohmann::json& in, NamedVector2<Real>& out) {
+void translation2(const nlohmann::json& in, NamedMatrix2<Real>& out) {
+	Index nrow = in.at("nrow").get<Index>();
+	Index ncol = in.at("ncol").get<Index>();
+	out.mat_.resize(nrow, ncol);
 
+	out.rowNames_ = in.at("rowNames").get<std::vector<std::string>>();
+	out.colNames_ = in.at("colNames").get<std::vector<std::string>>();
+
+	std::vector<std::vector<Real>> dataRaw = in.at("data").get<std::vector<std::vector<Real>>>();
+	for (Index j = 0; j < ncol; ++j) {
+		for (Index i = 0; i < nrow; ++i) {
+			out.mat_(i, j) = dataRaw[i][j];
+		}
+	}
 }
 
 }
