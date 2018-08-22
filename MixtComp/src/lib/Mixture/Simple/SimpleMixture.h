@@ -14,6 +14,7 @@
 #include <Data/mixt_AugmentedData.h>
 #include <IO/IOFunctions.h>
 #include <IO/mixt_IO.h>
+#include <IO/NamedAlgebra.h>
 #include <Various/mixt_Constants.h>
 #include <Param/mixt_ConfIntParamStat.h>
 
@@ -22,16 +23,17 @@ namespace mixt {
 /**
  * SimpleMixture is the new interface to add simple models. It is simpler than SimpleMixtureBridge which used class traits for no apparent benefit.
  */
-template<typename Model>
+template<typename Graph, typename Model>
 class SimpleMixture: public IMixture {
 public:
 	/** constructor.
 	 *  @param idName id name of the mixture
 	 *  @param nbCluster number of cluster
 	 **/
-	SimpleMixture(std::string const& idName, Index nbClass, Index nInd, Real confidenceLevel, const std::string& paramStr) :
-			IMixture(idName, Model::name, nbClass, nInd), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(paramStr), nbInd_(nInd), confidenceLevel_(confidenceLevel), sampler_(
-					augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_, augData_, nbClass) {
+	SimpleMixture(const Graph& data, const Graph& param, Graph& out, std::string const& idName, Index nbClass, Index nInd, Real confidenceLevel, const std::string& paramStr) :
+			IMixture(idName, Model::name, nbClass, nInd), dataG_(data), paramG_(param), outG_(out), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(paramStr), nbInd_(
+					nInd), confidenceLevel_(confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_,
+					augData_, nbClass) {
 	}
 
 	/**
@@ -39,10 +41,12 @@ public:
 	 * To facilitate data handling, framework provide templated functions,
 	 * that can be called directly to get the data.
 	 */
-	std::string setDataParam(RunMode mode, const std::vector<std::string>& data, const SGraph& param) {
+	std::string setDataParam(RunMode mode) {
 		std::string warnLog;
-//		warnLog += p_handler_->getData(idName(), augData_, nbInd_, paramStr_, (model_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
-		warnLog += StringToAugmentedData(idName_, data, augData_, (model_.hasModalities()) ? (-minModality) : (0));
+
+		std::vector<std::string> dataVecStr;
+		dataG_.get_payload( { }, idName_, dataVecStr);
+		warnLog += StringToAugmentedData(idName_, dataVecStr, augData_, (model_.hasModalities()) ? (-minModality) : (0));
 
 		if (warnLog.size() > 0) {
 			return warnLog;
@@ -57,11 +61,11 @@ public:
 		}
 
 		if (mode == prediction_) {
-//			p_paramSetter_->getParam(idName_, "NumericalParam", param_, paramStr_); // parameters are set using results from previous run, note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
-
-			const NamedMatrix<Real>& stat = param.get_child("NumericalParam").get_payload<NamedMatrix<Real>>("stat");
+			NamedMatrix<Real> stat;
+			paramG_.get_payload( { idName_, "NumericalParam" }, "stat", stat);
 			Index nrow = stat.mat_.rows();
-			paramStr_ = param.get_child("NumericalParam").get_payload<std::string>("paramStr");
+
+			paramG_.get_payload( { idName_, "NumericalParam" }, "paramStr", paramStr_);
 
 			param_.resize(nrow);
 			for (Index i = 0; i < nrow; ++i) {
@@ -139,13 +143,13 @@ public:
 		model_.writeParameters();
 	}
 
-	void exportDataParam(SGraph& data, SGraph& param) const {
+	void exportDataParam() const {
 		NamedVector<typename Model::Data::Type> dataOut;
 		dataOut.vec_ = augData_.data_; // not that no row names are provided
 		if (model_.hasModalities()) {
 			dataOut.vec_ += minModality;
 		}
-		data.add_payload("completed", dataOut);
+		outG_.add_payload({"variable", "data", idName_}, "completed", dataOut);
 
 		Index ncol = paramStat_.getStatStorage().cols();
 		std::vector<std::string> colNames(ncol);
@@ -159,15 +163,13 @@ public:
 			colNames[2] = std::string("q ") + std::to_string(((1. - alpha) * 100.)) + "%";
 		}
 
-		SGraph numericalParam;
 		NamedMatrix<Real> paramOut; // all parameters are real at the moment,
 		paramOut.mat_ = paramStat_.getStatStorage();
 		paramOut.rowNames_ = model_.paramNames();
 		paramOut.colNames_ = colNames;
-		numericalParam.add_payload("stat", paramOut);
-		numericalParam.add_payload("paramStr", paramStr_);
 
-		param.add_child("NumericalParam", numericalParam);
+		outG_.add_payload({"variable", "param", idName_}, "stat", paramOut);
+		outG_.add_payload({"variable", "param", idName_}, "paramStr", paramStr_);
 	}
 
 	void initData(Index i) {
@@ -203,6 +205,10 @@ public:
 	}
 private:
 protected:
+	const Graph& dataG_;
+	const Graph& paramG_;
+	Graph& outG_;
+
 	/** Number of classes */
 	int nbClass_;
 

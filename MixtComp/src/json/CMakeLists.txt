@@ -10,7 +10,6 @@ add_library(JMixtComp
     JSONTranslate.h
 )
 
-#[[
 add_executable(jmc
     jmc.cpp
 )
@@ -20,4 +19,3 @@ target_link_libraries(jmc
     JMixtComp
     ${Boost_LIBRARIES}
     nlopt)
-]]#

@@ -24,6 +24,18 @@ void JSONTranslate(const InType& in, OutType& out) {
 }
 
 template<>
+void JSONTranslate(const NamedVector<Index>& in, nlohmann::json& out);
+
+template<>
+void JSONTranslate(const nlohmann::json& in, NamedVector<Index>& out);
+
+template<>
+void JSONTranslate(const NamedVector<Integer>& in, nlohmann::json& out);
+
+template<>
+void JSONTranslate(const nlohmann::json& in, NamedVector<Integer>& out);
+
+template<>
 void JSONTranslate(const NamedVector<Real>& in, nlohmann::json& out);
 
 template<>

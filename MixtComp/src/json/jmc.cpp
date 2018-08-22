@@ -15,6 +15,7 @@
 #include <Run/Learn.h>
 #include <Run/Predict.h>
 #include <Various/mixt_Constants.h>
+#include "JSONGraph.h"
 
 using namespace mixt;
 
@@ -44,24 +45,24 @@ int main(int argc, char* argv[]) {
 		} else {
 			nlohmann::json algoJSON;
 			algoStream >> algoJSON;
-			SGraph algoG = JSONToSGraph(algoJSON);
+			JSONGraph algoG(algoJSON);
 
 			nlohmann::json dataJSON;
 			dataStream >> dataJSON;
-			SGraph dataG = JSONToSGraph(dataJSON);
+			JSONGraph dataG(dataJSON);
 
 			nlohmann::json descJSON;
 			descStream >> descJSON;
-			SGraph descG = JSONToSGraph(descJSON);
+			JSONGraph descG(descJSON);
 
-			std::string mode = algoG.get_payload < std::string > ("mode");
+			std::string mode = algoG.get_payload<std::string>({}, "mode");
 
-			SGraph resG;
+			JSONGraph resG;
 			std::string resFile;
 
 			if (mode == "learn") {
 				resFile = resLearnFile;
-				resG = learn(algoG, dataG, descG);
+				learn(algoG, dataG, descG, resG);
 			} else if (mode == "predict") {
 				if (argc != 6) {
 					std::cout << "JMixtComp should be called with 5 parameters (paths to algo, data, desc, resLearn, resPredict) in predict. It has been called with " << argc - 1 << " parameters."
@@ -76,8 +77,8 @@ int main(int argc, char* argv[]) {
 				resLearnStream >> resLearnJSON;
 
 				try {
-					SGraph paramG = JSONToSGraph(resLearnJSON["variable"]["param"]);
-					resG = predict(algoG, dataG, descG, paramG);
+					JSONGraph paramG(resLearnJSON["variable"]["param"]);
+					predict(algoG, dataG, descG, paramG, resG);
 				} catch (const std::string& s) {
 					warnLog += s;
 				}
@@ -87,12 +88,11 @@ int main(int argc, char* argv[]) {
 			}
 
 			if (warnLog.size() > 0) {
-				resG.add_payload("warnLog", warnLog);
+				resG.add_payload({}, "warnLog", warnLog);
 			}
 
-			nlohmann::json resJ = SGraphToJSON(resG);
 			std::ofstream o(resFile);
-			o << std::setw(4) << resJ << std::endl;
+			o << std::setw(4) << resG.getJ() << std::endl;
 		}
 	} catch (const std::string& s) {
 		std::cout << s << std::endl;

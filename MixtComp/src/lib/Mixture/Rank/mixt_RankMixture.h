@@ -14,7 +14,6 @@
 #include "mixt_RankLikelihood.h"
 #include "mixt_RankParser.h"
 #include "mixt_RankStat.h"
-#include <IO/SGraph.h>
 
 namespace mixt {
 /** RankMixture contains an array of RankClass. Each RankClass will have the responsibility to perform
@@ -181,7 +180,7 @@ public:
 		std::cout << sstm.str() << std::endl;
 	}
 
-	std::string setDataParam(RunMode mode, const std::vector<std::string>& data, const SGraph& param) {
+	std::string setDataParam(RunMode mode) {
 		std::string warnLog;
 		Vector<std::string> dataStr;
 
@@ -251,7 +250,7 @@ public:
 		return warnLog;
 	}
 
-	void exportDataParam(SGraph& data, SGraph& param) const {
+	void exportDataParam() const {
 		p_dataExtractor_->exportVals(-12, idName(), data_, dataStat_);
 		p_paramExtractor_->exportParam(-12, idName_, "mu",
 				muParamStat_, muParamNames(), confidenceLevel_, paramStr_);

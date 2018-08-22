@@ -10,8 +10,6 @@
 #ifndef MIXT_FUNCTIONALSHAREDALPHAMIXTURE
 #define MIXT_FUNCTIONALSHAREDALPHAMIXTURE
 
-#include <IO/SGraph.h>
-
 namespace mixt {
 
 template<typename DataHandler, typename DataExtractor, typename ParamSetter,
@@ -163,7 +161,7 @@ public:
 	}
 	;
 
-	std::string setDataParam(RunMode mode, const std::vector<std::string>& data, const SGraph& param) {
+	std::string setDataParam(RunMode mode) {
 		std::string warnLog;
 		Vector<std::string> dataStr;
 		Vector<Real> alpha, beta, sd;
@@ -242,7 +240,7 @@ public:
 		return warnLog;
 	}
 
-	void exportDataParam(SGraph& data, SGraph& param) const { // linearize and format the information provided by each class, and send it to the usual extractors, nothing fancy here ...
+	void exportDataParam() const { // linearize and format the information provided by each class, and send it to the usual extractors, nothing fancy here ...
 		p_dataExtractor_->exportVals(-12, idName_, vecInd_); // export the missing values here, when they will be support for them
 
 		Index sizeClassAlpha = nSub_ * 2;

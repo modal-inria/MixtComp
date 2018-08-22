@@ -19,19 +19,11 @@ add_library(MixtComp
     Composer/mixt_ZClassInd.h
     Composer/mixt_MixtureComposer.h
     IO/mixt_IO.h
-    IO/IOFunctions.cpp
     IO/mixt_MisValParser.h
     IO/NamedAlgebra.h
-    IO/Dummy.cpp
     IO/mixt_SpecialStr.h
     IO/mixt_SpecialStr.cpp
-    IO/mixt_ParamExtractorCsv.h
     IO/IOFunctions.h
-    IO/NamedAlgebra2.h
-    IO/mixt_ParamExtractorCsv.cpp
-    IO/mixt_DataExtractorCsv.cpp
-    IO/Dummy.h
-    IO/mixt_DataExtractorCsv.h
     Param/mixt_ConfIntParamStat.h
     Various/mixt_Timer.cpp
     Various/mixt_Enum.h
@@ -40,7 +32,6 @@ add_library(MixtComp
     Various/mixt_Constants.h
     Various/mixt_Constants.cpp
     Various/mixt_Various.h
-    Manager/MixtureManager.cpp
     Manager/MixtureManager.h
     mixt_MixtComp.h
     Mixture/mixt_IMixture.h
@@ -117,17 +108,11 @@ add_library(MixtComp
     Statistic/mixt_UniformStatistic.h
     Statistic/Functions.h
     Statistic/mixt_Statistic.h
-    Run/mixtCompPredict.cpp
-    Run/mixtCompCluster.cpp
     Run/Predict.h
-    Run/Learn.cpp
     Run/Learn.h
-    Run/Predict.cpp
     Data/mixt_AugmentedData.h
     Data/mixt_ConfIntDataStat.h
     Data/mixt_AugmentedData.cpp
     Strategy/mixt_SEMStrategy.h
-    Strategy/mixt_GibbsStrategy.cpp
-    Strategy/mixt_SEMStrategy.cpp
     Strategy/mixt_GibbsStrategy.h
 )

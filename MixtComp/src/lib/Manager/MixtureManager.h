@@ -8,30 +8,100 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#ifndef MIXT_MIXTUREMANAGER_H
-#define MIXT_MIXTUREMANAGER_H
+#ifndef LIB_MANAGER_MIXT_MIXTUREMANAGER_H
+#define LIB_MANAGER_MIXT_MIXTUREMANAGER_H
 
-#include "Composer/mixt_MixtureComposer.h"
-#include "Mixture/Simple/SimpleMixture.h"
-#include "Mixture/Simple/Categorical/Categorical.h"
-#include "Mixture/Simple/Gaussian/Gaussian.h"
-#include "Mixture/Simple/NegativeBinomial/NegativeBinomial.h"
-#include "Mixture/Simple/Poisson/Poisson.h"
-#include "Mixture/Simple/Weibull/Weibull.h"
-#include "Mixture/Functional/mixt_FunctionalMixture.h"
-#include "Mixture/Functional/mixt_FunctionalSharedAlphaMixture.h"
-#include "Mixture/Rank/mixt_RankMixture.h"
+#include <Composer/mixt_MixtureComposer.h>
+#include <Mixture/Simple/SimpleMixture.h>
+#include <Mixture/Simple/Categorical/Categorical.h>
+#include <Mixture/Simple/Gaussian/Gaussian.h>
+#include <Mixture/Simple/NegativeBinomial/NegativeBinomial.h>
+#include <Mixture/Simple/Poisson/Poisson.h>
+#include <Mixture/Simple/Weibull/Weibull.h>
+#include <Mixture/Functional/mixt_FunctionalMixture.h>
+#include <Mixture/Functional/mixt_FunctionalSharedAlphaMixture.h>
+#include <Mixture/Rank/mixt_RankMixture.h>
 
 namespace mixt {
 
-std::string createAllMixtures(const SGraph& algo, const SGraph& desc, MixtureComposer& composer);
+template<typename Graph>
+std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph& data, const Graph& param, Graph& out, MixtureComposer& composer) {
+	std::string warnLog;
 
-/** create a mixture and initialize it*
- *  @param idModel id of the model
- *  @param idName name of the model
- *  @param nbCluster number of cluster of the model
- **/
-IMixture* createIndividualMixture(std::string const& idModel, std::string const& idName, Index nbCluster, Index nObs, Real confidenceLevel, const std::string& paramStr);
+	Index nClass = algo.template get_payload<Index>( { }, "nClass");
+	Real confidenceLevel = algo.template get_payload<Real>( { }, "confidenceLevel");
+	Index nInd = algo.template get_payload<Index>( { }, "nInd");
+
+	std::list<std::string> varNames;
+	desc.name_payload( { }, varNames);
+
+	for (std::list<std::string>::const_iterator it = varNames.begin(), itEnd = varNames.end(); it != itEnd; ++it) {
+		std::string idName = *it;
+		std::string idModel = desc.template get_payload<std::string>( { *it }, "type");
+		std::string paramStr = desc.template get_payload<std::string>( { *it }, "paramStr");
+
+		if (idModel != "LatentClass") { // LatentClass type is managed directly in the composer
+			IMixture* p_mixture = NULL;
+
+			if (idModel == "Categorical") {
+				p_mixture = new SimpleMixture<Graph, Categorical>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+			}
+			else if (idModel == "Gaussian") {
+				p_mixture = new SimpleMixture<Graph, Gaussian>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+			}
+
+			else if (idModel == "Poisson") {
+				p_mixture = new SimpleMixture<Graph, Poisson>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+			}
+
+			else if (idModel == "Weibull") {
+				p_mixture = new SimpleMixture<Graph, Weibull>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+			}
+
+			else if (idModel == "NegativeBinomial") {
+				p_mixture = new SimpleMixture<Graph, NegativeBinomial>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+			}
+
+			//		if (idModel == "Functional") {
+			//			FunctionalMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge = new FunctionalMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>(idName,
+			//					nbCluster, dummyNObs, p_handler_, p_dataExtractor_, p_paramSetter_, p_paramExtractor_, confidenceLevel);
+			//			return p_bridge;
+			//		}
+
+			//		if (idModel == "FunctionalSharedAlpha") {
+			//			FunctionalSharedAlphaMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge = new FunctionalSharedAlphaMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>(
+			//					idName, nbCluster, dummyNObs, p_handler_, p_dataExtractor_, p_paramSetter_, p_paramExtractor_, confidenceLevel);
+			//			return p_bridge;
+			//		}
+
+			//		if (idModel == "Ordinal") {
+			//			Ordinal<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge =
+			//					new Ordinal<DataHandler, DataExtractor, ParamSetter,
+			//							ParamExtractor>(indexMixture, idName, nbCluster,
+			//							p_handler_, p_dataExtractor_, p_paramSetter_,
+			//							p_paramExtractor_, confidenceLevel);
+			//			return p_bridge;
+			//		}
+
+			//		if (idModel == "Rank") {
+			//			RankMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge = new RankMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>(idName, nbCluster,
+			//					dummyNObs, p_handler_, p_dataExtractor_, p_paramSetter_, p_paramExtractor_, confidenceLevel);
+			//			return p_bridge;
+			//		}
+
+			if (p_mixture) {
+				composer.registerMixture(p_mixture);
+			} else {
+				std::stringstream sstm;
+				sstm << "The model " << idModel << " has been selected to describe the variable " << idName << " but it is not implemented yet. Please choose an available model for this variable."
+						<< std::endl;
+				warnLog += sstm.str();
+			}
+		}
+	}
+
+	return warnLog;
+}
 
 } // namespace mixt
 

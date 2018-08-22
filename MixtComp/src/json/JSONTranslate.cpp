@@ -12,6 +12,58 @@
 namespace mixt {
 
 template<>
+void JSONTranslate(const NamedVector<Index>& in, nlohmann::json& out) {
+	Index nrow = in.vec_.size();
+	const Index* rawData = in.vec_.data();
+	std::vector<Index> data(rawData, rawData + in.vec_.size());
+
+	out["ctype"] = "Vector";
+	out["data"] = data;
+	out["dtype"] = "Index";
+	out["rowNames"] = in.rowNames_;
+	out["nrow"] = nrow;
+}
+
+template<>
+void JSONTranslate(const nlohmann::json& in, NamedVector<Index>& out) {
+	Index nrow = in.at("nrow").get<Index>();
+	out.vec_.resize(nrow);
+
+	out.rowNames_ = in.at("rowNames").get<std::vector<std::string>>();
+
+	std::vector<Index> dataRaw = in.at("data").get<std::vector<Index>>();
+	for (Index i = 0; i < nrow; ++i) {
+		out.vec_(i) = dataRaw[i];
+	}
+}
+
+template<>
+void JSONTranslate(const NamedVector<Integer>& in, nlohmann::json& out) {
+	Index nrow = in.vec_.size();
+	const Integer* rawData = in.vec_.data();
+	std::vector<Integer> data(rawData, rawData + in.vec_.size());
+
+	out["ctype"] = "Vector";
+	out["data"] = data;
+	out["dtype"] = "Integer";
+	out["rowNames"] = in.rowNames_;
+	out["nrow"] = nrow;
+}
+
+template<>
+void JSONTranslate(const nlohmann::json& in, NamedVector<Integer>& out) {
+	Index nrow = in.at("nrow").get<Index>();
+	out.vec_.resize(nrow);
+
+	out.rowNames_ = in.at("rowNames").get<std::vector<std::string>>();
+
+	std::vector<Integer> dataRaw = in.at("data").get<std::vector<Integer>>();
+	for (Index i = 0; i < nrow; ++i) {
+		out.vec_(i) = dataRaw[i];
+	}
+}
+
+template<>
 void JSONTranslate(const NamedVector<Real>& in, nlohmann::json& out) {
 	Index nrow = in.vec_.size();
 	const Real* rawData = in.vec_.data();

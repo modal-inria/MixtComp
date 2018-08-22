@@ -31,12 +31,14 @@ typedef std::vector<IMixture*>::iterator MixtIterator;
 class MixtureComposer {
 public:
 	/** Constructor.
+	 * See https://stackoverflow.com/questions/3786360/confusing-template-error for the .template syntax in the constructor
 	 * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
 	 */
 	template<typename Graph>
 	MixtureComposer(const Graph& algo) :
-			nClass_(algo.get_payload( { }, "nClass")), nInd_(algo.get_payload( { }, "nInd")), nVar_(0), confidenceLevel_(algo.get_payload( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_,
-					nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(zClassInd_), completedProbabilityCache_(nInd_) {
+			nClass_(algo.template get_payload<Index>( { }, "nClass")), nInd_(algo.template get_payload<Index>( { }, "nInd")), nVar_(0), confidenceLevel_(
+					algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(
+					zClassInd_), completedProbabilityCache_(nInd_) {
 		std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
 		zClassInd_.setIndClass(nInd_, nClass_);
 
@@ -219,7 +221,7 @@ public:
 	std::string setZi(Graph& data) {
 		std::string warnLog;
 
-		if (!data.exist_payload("z_class")) { // z_class was not provided
+		if (!data.exist_payload( { }, "z_class")) { // z_class was not provided
 			zClassInd_.setAllMissing(); // set every value state to missing_
 		} else {
 			warnLog += zClassInd_.setZi(data);
@@ -298,35 +300,35 @@ public:
 
 		Index nFreeParameters = nbFreeParameters();
 
-		g.add_payload({}, "nbFreeParameters", nFreeParameters);
+		g.add_payload( { }, "nbFreeParameters", nFreeParameters);
 		Real lnObsLik = lnObservedLikelihood();
 		Real lnCompLik = lnCompletedLikelihood();
-		g.add_payload({}, "lnObservedLikelihood", lnObsLik);
-		g.add_payload({}, "lnCompletedLikelihood", lnCompLik);
-		g.add_payload({}, "BIC", lnObsLik - 0.5 * nFreeParameters * std::log(nInd_));
-		g.add_payload({}, "ICL", lnCompLik - 0.5 * nFreeParameters * std::log(nInd_));
+		g.add_payload( { }, "lnObservedLikelihood", lnObsLik);
+		g.add_payload( { }, "lnCompletedLikelihood", lnCompLik);
+		g.add_payload( { }, "BIC", lnObsLik - 0.5 * nFreeParameters * std::log(nInd_));
+		g.add_payload( { }, "ICL", lnCompLik - 0.5 * nFreeParameters * std::log(nInd_));
 
 		std::cout << "lnObservedLikelihood: " << lnObsLik << std::endl << std::endl;
 
-		g.add_payload("runTime", runTime);
+		g.add_payload( { }, "runTime", runTime);
 
 		NamedMatrix<Real> idclass = { paramName(), mixtureName(), Matrix<Real>() };
 		IDClass(idclass.mat_);
-		g.add_payload({}, "IDClass", idclass);
+		g.add_payload( { }, "IDClass", idclass);
 
 		NamedMatrix<Real> pGCCPP = { dummyNames, dummyNames, Matrix<Real>() };
 		lnProbaGivenClass(pGCCPP.mat_);
-		g.add_payload({}, "lnProbaGivenClass", idclass);
+		g.add_payload( { }, "lnProbaGivenClass", idclass);
 
 		NamedVector<Real> completedProbabilityLogBurnIn = { dummyNames, completedProbabilityLogBurnIn_ };
-		g.add_payload({}, "completedProbabilityLogBurnIn", completedProbabilityLogBurnIn);
+		g.add_payload( { }, "completedProbabilityLogBurnIn", completedProbabilityLogBurnIn);
 
 		NamedVector<Real> completedProbabilityLogRun = { dummyNames, completedProbabilityLogRun_ };
-		g.add_payload({}, "completedProbabilityLogRun", completedProbabilityLogRun);
+		g.add_payload( { }, "completedProbabilityLogRun", completedProbabilityLogRun);
 
 		NamedMatrix<Real> matDelta = { dummyNames, dummyNames, Matrix<Real>() };
 		Delta(matDelta.mat_);
-		g.add_payload({}, "delta", matDelta);
+		g.add_payload( { }, "delta", matDelta);
 	}
 
 	/** register a mixture to the composer.
