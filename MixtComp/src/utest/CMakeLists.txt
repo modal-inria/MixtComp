@@ -3,8 +3,6 @@
 
 add_executable(runUtest
     json/JSONGraph.cpp
-    json/SGraphVisJSON.cpp
-    json/JSONToSGraph.cpp
     lib/LinAlgStat/UTestMath.cpp
     lib/LinAlgStat/UTestStatistics.cpp
     lib/LinAlgStat/UTestLinAlg.cpp
@@ -32,8 +30,6 @@ add_executable(runUtest
     lib/Functional/UTestFunctionalClass.cpp
     lib/Functional/UTestFunctionalMixture.cpp
     lib/Functional/UTestFunctionalParser.cpp
-    lib/IO/UTestAlgTypeVisitor.cpp
-    lib/IO/UTestSGraph.cpp
 )
 
 target_link_libraries(runUtest

@@ -58,7 +58,7 @@ TEST(JSONSGraph, NamedVectorReal) {
 
 	Vector<Real> vec;
 	std::vector<std::string> rowNames;
-	NamedVector2<Real> nv = { rowNames, vec };
+	NamedVector<Real> nv = { rowNames, vec };
 	gIn.get_payload( { }, "A named vector", nv);
 
 	JSONGraph gOut;
@@ -76,7 +76,7 @@ TEST(JSONSGraph, NamedMatrixReal) {
 	Matrix<Real> vec;
 	std::vector<std::string> rowNames;
 	std::vector<std::string> colNames;
-	NamedMatrix2<Real> nm = { rowNames, colNames, vec };
+	NamedMatrix<Real> nm = { rowNames, colNames, vec };
 	gIn.get_payload( { }, "A named matrix", nm);
 
 	JSONGraph gOut;

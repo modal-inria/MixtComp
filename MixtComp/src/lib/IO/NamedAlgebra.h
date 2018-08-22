@@ -3,12 +3,12 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: August 6, 2018
+ *  Created on: August 21, 2018
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef NAMEDVECTOR_H
-#define NAMEDVECTOR_H
+#ifndef LIB_IO_NAMEDALGEBRA_H
+#define LIB_IO_NAMEDALGEBRA_H
 
 #include <LinAlg/mixt_LinAlg.h>
 

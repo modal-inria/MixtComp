@@ -10,20 +10,15 @@
 #ifndef JSON_JSONGRAPH_H
 #define JSON_JSONGRAPH_H
 
+#include <IO/NamedAlgebra.h>
+#include <IO/NamedAlgebra.h>
 #include "json.hpp"
 
 #include <iostream>
-#include <string>
-#include <vector>
-#include <IO/NamedAlgebra2.h>
 #include <LinAlg/mixt_LinAlg.h>
+#include "JSONTranslate.h"
 
 namespace mixt {
-
-template<typename InType, typename OutType>
-void translation2(const InType& in, OutType& out) {
-	out = in;
-}
 
 class JSONGraph {
 public:
@@ -47,6 +42,18 @@ public:
 		get_payload(path, 0, j_, name, p);
 	}
 
+	/**
+	 * Get the payload as a return value. Useful in a few cases like filling values in a constructor.
+	 */
+	template<typename Type>
+	Type& get_payload(const std::vector<std::string>& path, const std::string& name) const {
+		Type val;
+		get_payload(path, 0, j_, name, val);
+		return val;
+	}
+
+	bool exist_payload(const std::vector<std::string>& path, const std::string& name) const;
+
 private:
 	template<typename Type>
 	void add_payload(const std::vector<std::string>& path, Index currDepth, nlohmann::json& currLevel, const std::string& name, const Type& p) {
@@ -54,7 +61,7 @@ private:
 		if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
 			std::cout << "adding payload" << std::endl;
 			// TODO: add translation code for types not supported out of the box by json (there is a mechanism for that...)
-			translation2(p, currLevel[name]);
+			JSONTranslate(p, currLevel[name]);
 		} else {
 			nlohmann::json& nextLevel = currLevel[path[currDepth]];
 
@@ -79,7 +86,7 @@ private:
 			if (currLevel[name].is_null()) {
 				throw(name + " object does not exist.");
 			}
-			translation2(currLevel[name], p);
+			JSONTranslate(currLevel[name], p);
 		} else {
 			const nlohmann::json& nextLevel = currLevel[path[currDepth]];
 			if (nextLevel.is_null()) { // if next level does not exist, create it
@@ -95,26 +102,10 @@ private:
 		}
 	}
 
+	bool exist_payload(const std::vector<std::string>& path, Index currDepth, const nlohmann::json& currLevel, const std::string& name) const;
+
 	nlohmann::json j_;
 };
-
-template<>
-void translation2(const NamedVector2<Real>& in, nlohmann::json& out);
-
-template<>
-void translation2(const nlohmann::json& in, NamedVector2<Real>& out);
-
-template<>
-void translation2(const NamedMatrix2<Real>& in, nlohmann::json& out);
-
-template<>
-void translation2(const nlohmann::json& in, NamedMatrix2<Real>& out);
-
-/**
- * Specialization necessary to remove ambiguity on the = operator used for vector.
- */
-template<>
-void translation2(const nlohmann::json& in, std::vector<std::string>& out);
 
 }
 

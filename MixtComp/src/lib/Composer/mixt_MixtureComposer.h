@@ -9,20 +9,19 @@
  *
  **/
 
-#ifndef MIXT_MIXTURECOMPOSER_H
-#define MIXT_MIXTURECOMPOSER_H
+#ifndef LIB_COMPOSER_MIXT_MIXTURECOMPOSER_H
+#define LIB_COMPOSER_MIXT_MIXTURECOMPOSER_H
 
 #include <set>
 #include <vector>
-
-#include "mixt_ZClassInd.h"
-#include "mixt_ClassDataStat.h"
-#include "mixt_ClassSampler.h"
-
-#include <IO/SGraph.h>
+#include <IO/NamedAlgebra.h>
+#include <LinAlg/mixt_LinAlg.h>
 #include <Mixture/mixt_IMixture.h>
 #include <Various/mixt_Enum.h>
 #include <Param/mixt_ConfIntParamStat.h>
+#include "mixt_ZClassInd.h"
+#include "mixt_ClassDataStat.h"
+#include "mixt_ClassSampler.h"
 
 namespace mixt {
 
@@ -34,12 +33,17 @@ public:
 	/** Constructor.
 	 * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
 	 */
-	MixtureComposer(const SGraph& algo, const SGraph& data, const SGraph& param);
+	template<typename Graph>
+	MixtureComposer(const Graph& algo) :
+			nClass_(algo.get_payload( { }, "nClass")), nInd_(algo.get_payload( { }, "nInd")), nVar_(0), confidenceLevel_(algo.get_payload( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_,
+					nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(zClassInd_), completedProbabilityCache_(nInd_) {
+		std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
+		zClassInd_.setIndClass(nInd_, nClass_);
 
-	/** copy constructor.
-	 *  @param composer the composer to copy
-	 */
-	MixtureComposer(MixtureComposer const& composer);
+		std::stringstream sstm;
+		sstm << "nbModality: " << nClass_;
+		paramStr_ = sstm.str();
+	}
 
 	/** The registered mixtures will be deleted there.*/
 	~MixtureComposer();
@@ -156,14 +160,53 @@ public:
 	 * with the individual IMixtures
 	 * @param checkInd should be set to 1 if a minimum number of individual per class should be
 	 * enforced at sampling (true in learning, false in prediction) */
-	std::string setDataParam(RunMode mode);
+	template<typename Graph>
+	std::string setDataParam(RunMode mode, const Graph& data, const Graph& param) {
+		std::string warnLog;
+
+		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+			std::cout << "MixtureComposer::setDataParam, " << (*it)->idName() << std::endl;
+			warnLog += (*it)->setDataParam(mode);
+		}
+
+		warnLog += setZi(data); // dataHandler getData is called to fill zi_
+
+		if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
+			warnLog += setProportion(param); // note: paramStr_ is manually set at the end of setDataParam
+			paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
+		}
+
+		//		for (int i = 0; i < nInd_; ++i) { // useless, new initialization performs and mStep, then an eStepObserved that fills tik_
+		//			tik_.row(i) = prop_.transpose();
+		//		}
+
+		paramStr_ = "nModality: " + std::to_string(nClass_);
+
+		dataStat_.setNbIndividual(nInd_);
+
+		return warnLog;
+	}
 
 	/**
 	 * ParamSetter is injected to take care of setting the values of the proportions.
 	 * This avoids templating the whole composer with DataHandler type, as is currently done
 	 * with the individual IMixtures.
 	 */
-	std::string setProportion();
+	template<typename Graph>
+	std::string setProportion(Graph& param) {
+		std::string warnLog;
+
+		NamedMatrix<Real> stat;
+		param.get_payload( { "z_class", "pi" }, "stat", stat); // only called in predict mode, therefore the payload exists
+
+		Index nrow = stat.mat_.rows();
+
+		for (Index i = 0; i < nrow; ++i) {
+			prop_(i) = stat.mat_(i, 0); // only the mode / expectation is used, quantile information is discarded
+		}
+
+		return warnLog;
+	}
 
 	/**
 	 * DataHandler is injected to take care of setting the values of the latent classes.
@@ -172,18 +215,119 @@ public:
 	 * @param checkInd should be set to 1 if a minimum number of individual per class should be
 	 * enforced at sampling (true in learning, false in prediction)
 	 */
-	std::string setZi();
+	template<typename Graph>
+	std::string setZi(Graph& data) {
+		std::string warnLog;
+
+		if (!data.exist_payload("z_class")) { // z_class was not provided
+			zClassInd_.setAllMissing(); // set every value state to missing_
+		} else {
+			warnLog += zClassInd_.setZi(data);
+		}
+
+		std::string tempLog = zClassInd_.checkMissingType(); // check if the missing data provided are compatible with the model
+		if (tempLog.size() > 0) {
+			std::stringstream sstm;
+			sstm << "Variable z_class contains latent classes and has unsupported missing value types.\n" << tempLog;
+			warnLog += sstm.str();
+		}
+		zClassInd_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
+		if (zClassInd_.zi().dataRange_.min_ < 0) { // Since z is currently described using unsigned integer, there is no need for this check HOWEVER it might come in handy shall this condition changes
+			std::stringstream sstm;
+			sstm << "The z_class latent class variable has a lowest provided value of: " << minModality + zClassInd_.zi().dataRange_.min_ << " while the minimal value has to be: " << minModality
+					<< ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+			warnLog += sstm.str();
+		}
+		if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nClass_ - 1) {
+			std::stringstream sstm;
+			sstm << "The z_class latent class variable has a highest provided value of: " << minModality + zClassInd_.zi().dataRange_.max_
+					<< " while the maximal value can not exceed the number of class: " << minModality + nClass_ - 1 << ". Please check the encoding of this variable to ensure proper bounds."
+					<< std::endl;
+			warnLog += sstm.str();
+		}
+		zClassInd_.setRange(0, nClass_ - 1, nClass_);
+
+		return warnLog;
+	}
 
 	/**@brief This step can be used to ask each mixture to export its model parameters
 	 * and data
 	 **/
-	SGraph exportDataParam() const;
+	template<typename Graph>
+	void exportDataParam(Graph& g) const {
+		g.add_payload( { "variable", "type" }, "z_class", "LatentClass");
+
+		g.add_payload( { "variable", "data", "z_class" }, "completed", NamedVector<Index> { std::vector<std::string>(), zClassInd_.zi().data_ + minModality });
+		g.add_payload( { "variable", "data", "z_class" }, "stat", NamedMatrix<Real> { std::vector<std::string>(), std::vector<std::string>(), tik_ });
+
+		NamedMatrix<Real> piExport;
+
+		Index ncol = paramStat_.getStatStorage().cols();
+		std::vector<std::string> colNames(ncol);
+		Real alpha = (1. - confidenceLevel_) / 2.;
+
+		if (ncol == 1) { // predict
+			colNames[0] = "value";
+		} else { // learn
+			colNames[0] = "median";
+			colNames[1] = std::string("q ") + std::to_string((alpha * 100.)) + "%";
+			colNames[2] = std::string("q ") + std::to_string(((1. - alpha) * 100.)) + "%";
+		}
+
+		NamedMatrix<Real> paramOut = { paramName(), colNames, paramStat_.getStatStorage() };
+
+		g.add_payload( { "variable", "param", "z_class", "pi" }, "stat", paramOut);
+		g.add_payload( { "variable", "param", "z_class", "pi" }, "paramStr", paramStr_);
+
+		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+			std::string currName = (*it)->idName();
+
+			(*it)->exportDataParam();
+
+			g.add_payload( { "variable", "type" }, currName, (*it)->modelType());
+		}
+	}
 
 	/**
 	 * Export the mixture part of the output, with model selection, likelihoods, etc... This was the final
 	 * part of the code in mixtCompCluster.cpp
 	 */
-	SGraph exportMixture(Real runTime) const;
+	template<typename Graph>
+	void exportMixture(Real runTime, Graph& g) const {
+		std::vector<std::string> dummyNames;
+
+		Index nFreeParameters = nbFreeParameters();
+
+		g.add_payload({}, "nbFreeParameters", nFreeParameters);
+		Real lnObsLik = lnObservedLikelihood();
+		Real lnCompLik = lnCompletedLikelihood();
+		g.add_payload({}, "lnObservedLikelihood", lnObsLik);
+		g.add_payload({}, "lnCompletedLikelihood", lnCompLik);
+		g.add_payload({}, "BIC", lnObsLik - 0.5 * nFreeParameters * std::log(nInd_));
+		g.add_payload({}, "ICL", lnCompLik - 0.5 * nFreeParameters * std::log(nInd_));
+
+		std::cout << "lnObservedLikelihood: " << lnObsLik << std::endl << std::endl;
+
+		g.add_payload("runTime", runTime);
+
+		NamedMatrix<Real> idclass = { paramName(), mixtureName(), Matrix<Real>() };
+		IDClass(idclass.mat_);
+		g.add_payload({}, "IDClass", idclass);
+
+		NamedMatrix<Real> pGCCPP = { dummyNames, dummyNames, Matrix<Real>() };
+		lnProbaGivenClass(pGCCPP.mat_);
+		g.add_payload({}, "lnProbaGivenClass", idclass);
+
+		NamedVector<Real> completedProbabilityLogBurnIn = { dummyNames, completedProbabilityLogBurnIn_ };
+		g.add_payload({}, "completedProbabilityLogBurnIn", completedProbabilityLogBurnIn);
+
+		NamedVector<Real> completedProbabilityLogRun = { dummyNames, completedProbabilityLogRun_ };
+		g.add_payload({}, "completedProbabilityLogRun", completedProbabilityLogRun);
+
+		NamedMatrix<Real> matDelta = { dummyNames, dummyNames, Matrix<Real>() };
+		Delta(matDelta.mat_);
+		g.add_payload({}, "delta", matDelta);
+	}
 
 	/** register a mixture to the composer.
 	 *  When a mixture is registered, the composer:
@@ -273,10 +417,6 @@ public:
 	void printClassInd() const;
 
 private:
-	const SGraph& gAlgo_;
-	const SGraph& gData_;
-	const SGraph& gParam_;
-
 	std::string paramStr_;
 
 	/** number of classes */

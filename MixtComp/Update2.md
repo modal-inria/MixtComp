@@ -1,0 +1,4 @@
+- Graph
+    - ajouter méthode pour extraire un sous arbre, utile pour l'xtraction de param
+    - possibilité d'utiliser une classe de traît qui fournit les noms des types pour templater, par exemple Real -> "Real"
+- Comme NamedVector et NamedMatrix utilisent des valeurs, on peut utiliser std::move pour transférer les contenus de matrices temporaires

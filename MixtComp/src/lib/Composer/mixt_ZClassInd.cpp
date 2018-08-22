@@ -66,21 +66,4 @@ void ZClassInd::printState() const {
 	}
 }
 
-std::string ZClassInd::setZi(const std::vector<std::string>& data) {
-	std::string warnLog;
-	std::string paramStr;
-
-	warnLog += StringToAugmentedData("z_class", data, zi_, -minModality);
-
-	for (int k = 0; k < nbClass_; ++k) {
-		classInd_(k).clear();
-	}
-
-	for (int i = 0; i < nbInd_; ++i) {
-		classInd_(zi_.data_(i)).insert(i);
-	}
-
-	return warnLog;
-}
-
 } /* namespace mixt */

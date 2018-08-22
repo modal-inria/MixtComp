@@ -13,7 +13,6 @@
 
 #include <iostream>
 #include <set>
-#include <IO/SGraph.h>
 #include <LinAlg/mixt_LinAlg.h>
 #include <Various/mixt_Enum.h>
 
@@ -122,12 +121,12 @@ public:
 	 * @param mode run mode, for example learning or prediction
 	 * @return empty string if no errors, otherwise errors description
 	 * */
-	virtual std::string setDataParam(RunMode mode, const std::vector<std::string>& data, const SGraph& param) = 0;
+	virtual std::string setDataParam(RunMode mode) = 0;
 
 	/**
 	 * Export of parameters and data
 	 * */
-	virtual void exportDataParam(SGraph& data, SGraph& param) const = 0;
+	virtual void exportDataParam() const = 0;
 
 	/**
 	 * Initialization of missing / latent data priori to any parameter knowledge. In prediction parameters are known at

@@ -12,8 +12,6 @@
 #include <fstream>
 #include "json.hpp"
 
-#include "JSONToSGraph.h"
-#include "SGraphToJSON.h"
 #include <Run/Learn.h>
 #include <Run/Predict.h>
 #include <Various/mixt_Constants.h>
@@ -56,7 +54,7 @@ int main(int argc, char* argv[]) {
 			descStream >> descJSON;
 			SGraph descG = JSONToSGraph(descJSON);
 
-			std::string mode = algoG.get_payload<std::string>("mode");
+			std::string mode = algoG.get_payload < std::string > ("mode");
 
 			SGraph resG;
 			std::string resFile;

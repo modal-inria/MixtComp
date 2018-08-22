@@ -59,11 +59,6 @@ std::string StringToAugmentedData(const std::string& idName, const std::vector<s
 	return warnLog;
 }
 
-/**
- * Create a dummy SGraph to be used in learning.
- */
-SGraph dummySGraph(const SGraph& desc);
-
 }
 
 #endif

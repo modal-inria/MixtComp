@@ -8,12 +8,13 @@
  *
  **/
 
-#ifndef MIXT_ZCLASSIND_H
-#define MIXT_ZCLASSIND_H
+#ifndef LIB_COMPOSER_MIXT_ZCLASSIND_H
+#define LIB_COMPOSER_MIXT_ZCLASSIND_H
 
 #include <set>
 #include "boost/regex.hpp"
-#include "../Data/mixt_AugmentedData.h"
+#include <Data/mixt_AugmentedData.h>
+#include <IO/IOFunctions.h>
 
 namespace mixt {
 
@@ -34,7 +35,26 @@ public:
 	std::string checkMissingType();
 
 	/** The DataHandler initializes zi_, and classInd_ is updated. */
-	std::string setZi(const std::vector<std::string>& data);
+	template<typename Graph>
+	std::string setZi(Graph& g) {
+		std::string warnLog;
+		std::string paramStr;
+
+		std::vector<std::string> data;
+		g.get_payload({}, "z_class", data);
+
+		warnLog += StringToAugmentedData("z_class", data, zi_, -minModality);
+
+		for (int k = 0; k < nbClass_; ++k) {
+			classInd_(k).clear();
+		}
+
+		for (int i = 0; i < nbInd_; ++i) {
+			classInd_(zi_.data_(i)).insert(i);
+		}
+
+		return warnLog;
+	}
 
 	/** The class of a particular individual is modified */
 	void setZAndClassInd(Index i, Index k);

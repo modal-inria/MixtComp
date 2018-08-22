@@ -11,8 +11,6 @@
 #define JSONIO_H
 
 #include "JSONGraph.h"
-#include "AlgTypeVisJSON.h"
-#include "JSONToSGraph.h"
-#include "SGraphToJSON.h"
+#include "JSONTranslate.h"
 
 #endif
