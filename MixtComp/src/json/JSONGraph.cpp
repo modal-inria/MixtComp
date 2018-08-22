@@ -71,9 +71,7 @@ void JSONGraph::name_payload(const std::vector<std::string>& path, std::list<std
 	go_to(path, j);
 
 	for (nlohmann::json::const_iterator it = j.begin(); it != j.end(); ++it) {
-		if (!it->is_object()) {
-			l.push_back(it.key());
-		}
+		l.push_back(it.key());
 	}
 }
 

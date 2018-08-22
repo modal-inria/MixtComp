@@ -100,3 +100,14 @@ TEST(JSONSGraph, VectorOfString) {
 
 	ASSERT_EQ(exp, comp);
 }
+
+TEST(JSONSGraph, name_payload) {
+	std::string exp = R"-({"var1":"12.0","varZ":"test"})-";
+	JSONGraph gIn;
+	gIn.set(exp);
+
+	std::list<std::string> l;
+	gIn.name_payload({}, l);
+
+	ASSERT_EQ(itString(l), std::string("var1 varZ"));
+}

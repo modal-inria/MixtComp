@@ -46,6 +46,8 @@ public:
 
 		std::vector<std::string> dataVecStr;
 		dataG_.get_payload( { }, idName_, dataVecStr);
+		std::cout << idName_ << std::endl;
+		itString(dataVecStr);
 		warnLog += StringToAugmentedData(idName_, dataVecStr, augData_, (model_.hasModalities()) ? (-minModality) : (0));
 
 		if (warnLog.size() > 0) {

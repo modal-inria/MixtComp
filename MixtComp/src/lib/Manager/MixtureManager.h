@@ -34,6 +34,9 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 
 	std::list<std::string> varNames;
 	desc.name_payload( { }, varNames);
+	std::cout << "Variables: " << itString(varNames) << std::endl;
+
+	std::cout << desc.get() << std::endl;
 
 	for (std::list<std::string>::const_iterator it = varNames.begin(), itEnd = varNames.end(); it != itEnd; ++it) {
 		std::string idName = *it;

@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 
 			if (mode == "learn") {
 				resFile = resLearnFile;
-				learn(algoG, dataG, descG, resG);
+				learn(algoG, descG, dataG, resG);
 			} else if (mode == "predict") {
 				if (argc != 6) {
 					std::cout << "JMixtComp should be called with 5 parameters (paths to algo, data, desc, resLearn, resPredict) in predict. It has been called with " << argc - 1 << " parameters."
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
 
 				try {
 					JSONGraph paramG(resLearnJSON["variable"]["param"]);
-					predict(algoG, dataG, descG, paramG, resG);
+					predict(algoG, descG, dataG, paramG, resG);
 				} catch (const std::string& s) {
 					warnLog += s;
 				}
