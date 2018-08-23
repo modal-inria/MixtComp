@@ -116,8 +116,8 @@ std::string learn_mixtcomp(json argument_list,std::string json_file_output){
              // export the composer results through modifications of mcResults
              mcMixture["nbCluster"] = nbClass;
              mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
-             Real lnObsLik = composer.lnObservedLikelihood();
-             Real lnCompLik = composer.lnCompletedLikelihood();
+             mixt::Real lnObsLik = composer.lnObservedLikelihood();
+             mixt::Real lnCompLik = composer.lnCompletedLikelihood();
              mcMixture["lnObservedLikelihood"] = lnObsLik;
              mcMixture["lnCompletedLikelihood"] = lnCompLik;
              mcMixture["BIC"] = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
@@ -283,8 +283,8 @@ std::string predict_mixtcomp(json argument_list,std::string json_file_output){
              // export the composer results through modifications of mcResults
              mcMixture["nbCluster"] = nbClass;
              mcMixture["nbFreeParameters"] = composer.nbFreeParameters();
-             Real lnObsLik = composer.lnObservedLikelihood();
-             Real lnCompLik = composer.lnCompletedLikelihood();
+             mixt::Real lnObsLik = composer.lnObservedLikelihood();
+             mixt::Real lnCompLik = composer.lnCompletedLikelihood();
              mcMixture["lnObservedLikelihood"] = lnObsLik;
              mcMixture["lnCompletedLikelihood"] = lnCompLik;
              mcMixture["BIC"] = lnObsLik  - 0.5 * composer.nbFreeParameters() * std::log(composer.nbInd());
