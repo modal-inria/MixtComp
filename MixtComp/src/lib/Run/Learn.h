@@ -22,7 +22,7 @@ namespace mixt {
  * The learn algorithm is encapsulated in this function.
  */
 template<typename Graph>
-void learn(const Graph& algo, const Graph& desc, const Graph& data, Graph& out) {
+void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) {
 	Graph param; // dummy Graph to be provided as unused argument in setDataParam in learning
 
 	std::cout << "MixtComp, learn, version: " << version << std::endl;

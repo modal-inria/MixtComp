@@ -23,7 +23,7 @@ namespace mixt {
  * The learn algorithm is encapsulated in this function.
  */
 template<typename Graph>
-void predict(const Graph& algo, const Graph& desc, const Graph& data, const Graph& param, Graph& out) {
+void predict(const Graph& algo, const Graph& data, const Graph& desc, const Graph& param, Graph& out) {
 	std::cout << "MixtComp, predict, version: " << version << std::endl;
 	std::cout << "Deterministic mode: " << deterministicMode() << std::endl;
 //	std::cout<< "Number of threads: " << omp_get_num_threads() << std::endl;

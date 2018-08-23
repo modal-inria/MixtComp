@@ -55,14 +55,14 @@ int main(int argc, char* argv[]) {
 			descStream >> descJSON;
 			JSONGraph descG(descJSON);
 
-			std::string mode = algoG.get_payload<std::string>({}, "mode");
+			std::string mode = algoG.get_payload<std::string>( { }, "mode");
 
 			JSONGraph resG;
 			std::string resFile;
 
 			if (mode == "learn") {
 				resFile = resLearnFile;
-				learn(algoG, descG, dataG, resG);
+				learn(algoG, dataG, descG, resG);
 			} else if (mode == "predict") {
 				if (argc != 6) {
 					std::cout << "JMixtComp should be called with 5 parameters (paths to algo, data, desc, resLearn, resPredict) in predict. It has been called with " << argc - 1 << " parameters."
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
 
 				try {
 					JSONGraph paramG(resLearnJSON["variable"]["param"]);
-					predict(algoG, descG, dataG, paramG, resG);
+					predict(algoG, dataG, descG, paramG, resG);
 				} catch (const std::string& s) {
 					warnLog += s;
 				}
@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
 			}
 
 			if (warnLog.size() > 0) {
-				resG.add_payload({}, "warnLog", warnLog);
+				resG.add_payload( { }, "warnLog", warnLog);
 			}
 
 			std::ofstream o(resFile);
