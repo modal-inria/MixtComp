@@ -7,14 +7,18 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+// #include <omp.h>
+
 #include <Rcpp.h>
+
+#include<Run/Learn.h>
 
 #include "mixt_MixtComp.h"
 
 using namespace mixt;
 
 // [[Rcpp::export]]
-Rcpp::List rcppTest(Rcpp::List l) {
-	Rcpp::List res;
+Rcpp::List mixtCompLearn(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List paramR) {
+  Rcpp::List res;
 	return res;
 }

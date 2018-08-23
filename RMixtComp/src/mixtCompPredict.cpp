@@ -11,6 +11,8 @@
 
 #include <Rcpp.h>
 
+#include<Run/Learn.h>
+
 #include "mixt_MixtComp.h"
 
 // [[Rcpp::export]]
