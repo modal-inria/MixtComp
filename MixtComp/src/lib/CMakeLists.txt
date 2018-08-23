@@ -10,6 +10,8 @@ add_library(MixtComp
     LinAlg/mixt_EigenMatrixBaseAddons.h
     LinAlg/mixt_LinAlg.h
     LinAlg/mixt_Iterator.h
+    LinAlg/names.cpp
+    LinAlg/names.h
     Composer/mixt_ClassDataStat.h
     Composer/mixt_ClassDataStat.cpp
     Composer/mixt_ClassSampler.cpp

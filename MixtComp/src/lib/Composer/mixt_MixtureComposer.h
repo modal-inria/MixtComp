@@ -300,35 +300,35 @@ public:
 
 		Index nFreeParameters = nbFreeParameters();
 
-		g.add_payload( { }, "nbFreeParameters", nFreeParameters);
+		g.add_payload( { "mixture" }, "nbFreeParameters", nFreeParameters);
 		Real lnObsLik = lnObservedLikelihood();
 		Real lnCompLik = lnCompletedLikelihood();
-		g.add_payload( { }, "lnObservedLikelihood", lnObsLik);
-		g.add_payload( { }, "lnCompletedLikelihood", lnCompLik);
-		g.add_payload( { }, "BIC", lnObsLik - 0.5 * nFreeParameters * std::log(nInd_));
-		g.add_payload( { }, "ICL", lnCompLik - 0.5 * nFreeParameters * std::log(nInd_));
+		g.add_payload( { "mixture" }, "lnObservedLikelihood", lnObsLik);
+		g.add_payload( { "mixture" }, "lnCompletedLikelihood", lnCompLik);
+		g.add_payload( { "mixture" }, "BIC", lnObsLik - 0.5 * nFreeParameters * std::log(nInd_));
+		g.add_payload( { "mixture" }, "ICL", lnCompLik - 0.5 * nFreeParameters * std::log(nInd_));
 
 		std::cout << "lnObservedLikelihood: " << lnObsLik << std::endl << std::endl;
 
-		g.add_payload( { }, "runTime", runTime);
+		g.add_payload( { "mixture" }, "runTime", runTime);
 
 		NamedMatrix<Real> idclass = { paramName(), mixtureName(), Matrix<Real>() };
 		IDClass(idclass.mat_);
-		g.add_payload( { }, "IDClass", idclass);
+		g.add_payload( { "mixture" }, "IDClass", idclass);
 
 		NamedMatrix<Real> pGCCPP = { dummyNames, dummyNames, Matrix<Real>() };
 		lnProbaGivenClass(pGCCPP.mat_);
-		g.add_payload( { }, "lnProbaGivenClass", idclass);
+		g.add_payload( { "mixture" }, "lnProbaGivenClass", idclass);
 
 		NamedVector<Real> completedProbabilityLogBurnIn = { dummyNames, completedProbabilityLogBurnIn_ };
-		g.add_payload( { }, "completedProbabilityLogBurnIn", completedProbabilityLogBurnIn);
+		g.add_payload( { "mixture" }, "completedProbabilityLogBurnIn", completedProbabilityLogBurnIn);
 
 		NamedVector<Real> completedProbabilityLogRun = { dummyNames, completedProbabilityLogRun_ };
-		g.add_payload( { }, "completedProbabilityLogRun", completedProbabilityLogRun);
+		g.add_payload( { "mixture" }, "completedProbabilityLogRun", completedProbabilityLogRun);
 
 		NamedMatrix<Real> matDelta = { dummyNames, dummyNames, Matrix<Real>() };
 		Delta(matDelta.mat_);
-		g.add_payload( { }, "delta", matDelta);
+		g.add_payload( { "mixture" }, "delta", matDelta);
 	}
 
 	/** register a mixture to the composer.

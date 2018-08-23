@@ -7,13 +7,16 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "JSONTranslate.h"
+#include <iostream>
+#include <LinAlg/mixt_LinAlg.h>
+#include "names.h"
 
 namespace mixt {
 
-template<>
-void JSONTranslate(const nlohmann::json& in, std::vector<std::string>& out) {
-	out = in.get<std::vector<std::string>>();
-}
+const std::string names<Index>::name = "Index";
+
+const std::string names<Integer>::name = "Integer";
+
+const std::string names<Real>::name = "Real";
 
 }

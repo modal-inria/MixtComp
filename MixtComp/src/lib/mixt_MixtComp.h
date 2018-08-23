@@ -21,6 +21,7 @@
 #include "IO/mixt_MisValParser.h"
 #include "LinAlg/mixt_Math.h"
 #include "LinAlg/mixt_Typedef.h"
+#include <LinAlg/names.h>
 #include "Mixture/Functional/mixt_Function.h"
 #include "Mixture/Functional/mixt_FunctionalComputation.h"
 #include "Mixture/Functional/mixt_FunctionalClass.h"

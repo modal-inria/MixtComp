@@ -46,8 +46,6 @@ public:
 
 		std::vector<std::string> dataVecStr;
 		dataG_.get_payload( { }, idName_, dataVecStr);
-		std::cout << idName_ << std::endl;
-		itString(dataVecStr);
 		warnLog += StringToAugmentedData(idName_, dataVecStr, augData_, (model_.hasModalities()) ? (-minModality) : (0));
 
 		if (warnLog.size() > 0) {
@@ -80,7 +78,6 @@ public:
 		warnLog += model_.setData(paramStr_, augData_, mode); // checks on data bounds are made here, if paramStr_.size() = 0, it might be completed here, for example using the number of modalities found in the data
 
 		dataStat_.setNbIndividual(nbInd_);
-
 		return warnLog;
 	}
 
@@ -170,8 +167,8 @@ public:
 		paramOut.rowNames_ = model_.paramNames();
 		paramOut.colNames_ = colNames;
 
-		outG_.add_payload({"variable", "param", idName_}, "stat", paramOut);
-		outG_.add_payload({"variable", "param", idName_}, "paramStr", paramStr_);
+		outG_.add_payload({"variable", "param", idName_, "NumericalParam"}, "stat", paramOut);
+		outG_.add_payload({"variable", "param", idName_, "NumericalParam"}, "paramStr", paramStr_);
 	}
 
 	void initData(Index i) {
