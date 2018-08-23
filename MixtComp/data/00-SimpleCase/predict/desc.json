@@ -6,5 +6,9 @@
     "varPoisson": {
         "type": "Poisson",
         "paramStr": ""
+    },
+    "varCategorical": {
+        "type": "Categorical",
+        "paramStr": ""
     }
 }
