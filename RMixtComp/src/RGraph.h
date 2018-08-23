@@ -25,11 +25,11 @@ class RGraph {
 public:
 	RGraph() {};
 
-	RGraph(const Rcpp::List& l);
+	RGraph(const Rcpp::List l);
 
-	void set(const Rcpp::List& s);
+	void set(const Rcpp::List s);
 
-	const Rcpp::List& getL() const {return l_;}
+	Rcpp::List getL() const {return l_;}
 
 	void getSubGraph(const std::vector<std::string>& path, RGraph& j) const;
 
@@ -70,16 +70,16 @@ public:
 	void name_payload(const std::vector<std::string>& path, std::list<std::string>& l) const;
 
 private:
-	void go_to(const std::vector<std::string>& path, Rcpp::List& l) const;
+	void go_to(const std::vector<std::string>& path, Rcpp::List l) const;
 
-	void go_to(const std::vector<std::string>& path, Index currDepth, const Rcpp::List& currLevel, Rcpp::List&) const;
+	void go_to(const std::vector<std::string>& path, Index currDepth, const Rcpp::List currLevel, Rcpp::List) const;
 
 	template<typename Type>
-	void add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List& currLevel, const std::string& name, const Type& p) {
+	void add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const Type& p) {
 		if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
-			RTranslate(p, currLevel[name]);
+		  currLevel[name] = p;
 		} else {
-			const Rcpp::List& nextLevel = currLevel[path[currDepth]];
+			Rcpp::List nextLevel = currLevel[path[currDepth]];
 
 			if (!Rf_isNull(nextLevel)) { // if next level does not exist, create it
 			  currLevel[path[currDepth]] = Rcpp::List();

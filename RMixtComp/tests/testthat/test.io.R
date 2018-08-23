@@ -13,7 +13,7 @@ test_that("CharacterVector",{
     )
   )
   
-  output <- SGraphTest(input)
+  output <- rcppTest(input)
 
   expect_identical(input, output)
 })
@@ -22,7 +22,7 @@ test_that("Integer",{
   input <- list(
     a = 12)
   
-  output <- SGraphTest(input)
+  output <- rcppTest(input)
   
   expect_identical(input, output)
 })

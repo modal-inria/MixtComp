@@ -10,11 +10,14 @@
 #include <Rcpp.h>
 
 #include "mixt_MixtComp.h"
+#include "RGraph.h"
 
 using namespace mixt;
 
 // [[Rcpp::export]]
-Rcpp::List rcppTest(Rcpp::List l) {
-	Rcpp::List res;
-	return res;
+Rcpp::List rcppTest() {
+  RGraph g;
+  g.add_payload({"bla", "bla"}, "nameOfPayload", 12.0);
+  
+	return g.getL();
 }

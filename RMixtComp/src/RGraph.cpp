@@ -11,11 +11,11 @@
 
 namespace mixt {
 
-RGraph::RGraph(const Rcpp::List& l) :
+RGraph::RGraph(const Rcpp::List l) :
 		l_(l) {
 }
 
-void RGraph::set(const Rcpp::List& j) {
+void RGraph::set(const Rcpp::List j) {
 	l_ = j;
 }
 
@@ -37,15 +37,15 @@ bool RGraph::exist_payload(const std::vector<std::string>& path, const std::stri
 	return true;
 }
 
-void RGraph::go_to(const std::vector<std::string>& path, Rcpp::List& l) const {
+void RGraph::go_to(const std::vector<std::string>& path, Rcpp::List l) const {
 	go_to(path, 0, l_, l);
 }
 
-void RGraph::go_to(const std::vector<std::string>& path, Index currDepth, const Rcpp::List& currLevel, Rcpp::List& l) const {
+void RGraph::go_to(const std::vector<std::string>& path, Index currDepth, const Rcpp::List currLevel, Rcpp::List l) const {
 	if (currDepth == path.size()) {
 		l = currLevel;
 	} else {
-		const Rcpp::List& nextLevel = currLevel[path[currDepth]];
+		Rcpp::List nextLevel = currLevel[path[currDepth]];
 		if (Rf_isNull(nextLevel)) { // if next level does not exist, create it
 			std::string askedPath;
 			for (Index i = 0; i < currDepth + 1; ++i) {
