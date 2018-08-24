@@ -1,39 +1,42 @@
-
-
-#' @title Convert an R object to json
-#'
-#' @description convert an R object to a json file to use with \link{JsonMixtCompPredict} function
-#'
-#' @param outMixtComp output object of \link{JsonMixtCompCluster} or \link{JsonMixtCompPredict}  functions.
-#' @param filename name of the variable to get parameter
-#'
-#' @export
-writeJsonParamFile <- function(outMixtComp, filename)
+createAlgoJson <- function(nClass, nInd, mcStrategy, confidenceLevel, mode, ...)
 {
+  unrequiredFields <- list(...)
+  toDelete <- names(unrequiredFields) %in% c("nClass", "nInd", "confidenceLevel", "mode", "nbBurnInIter",
+                                                "nbIter", "nbGibbsBurnInIter", "nbGibbsIter", "nInitPerClass", "nSemTry")
+  unrequiredFields = unrequiredFields[!toDelete]
   
-  # TODO ne marche qu'avec du gaussien
-  res2 <- outMixtComp
-  res2$mixture = NULL
-  res2$strategy = NULL
-  res2$variable$param$z_class$pi$log = NULL
-  res2$variable$data = NULL
+  algo = c(list(nClass = nClass, nInd = nInd), mcStrategy,
+           list(confidenceLevel = confidenceLevel, mode = mode), unrequiredFields)
   
-  varName <- setdiff(names(outMixtComp$variable$type), "z_class")
-  
-  res2$variable$param$z_class$pi$stat <- list(median = outMixtComp$variable$param$z_class$pi$stat[,1],
-                                              "q 2.5%" = outMixtComp$variable$param$z_class$pi$stat[,2],
-                                              "q 97.5%" = outMixtComp$variable$param$z_class$pi$stat[,3])
-  
-  
-  for(nom in varName)
+  return(toJSON(algo, auto_unbox = TRUE, pretty = TRUE))
+}
+
+# @param data a data.frame where each column corresponds to a variable 
+createDataJson <- function(data)
+{
+  data[,] = lapply(data[,], as.character)
+  toJSON(data, dataframe = "columns", auto_unbox = FALSE, pretty = TRUE)
+}
+
+
+convertDescriptorToList <- function(descriptor)
+{
+  lapply(descriptor, function(x)
   {
-    res2$variable$param[[nom]]$NumericalParam$stat <- list(median = outMixtComp$variable$param[[nom]]$NumericalParam$stat[,1],
-                                                           "q 2.5%" = outMixtComp$variable$param[[nom]]$NumericalParam$stat[,2],
-                                                           "q 97.5%" = outMixtComp$variable$param[[nom]]$NumericalParam$stat[,3])
+    element <- as.list(as.character(x))
     
-  }
-  
-  
-  write(x = jsonlite::toJSON(res2, auto_unbox = TRUE), filename)
-  
+    if(length(element) == 1) # if paramStr is not given
+      element = c(element, "")
+    
+    names(element) = c("type", "paramStr")
+    
+    return(element)
+  })
+}
+
+# @param descriptor a data.frame where each column corresponds to a variable. Each column contains the model and eventually supplementary parameters
+createDescriptorJson <- function(descriptor)
+{
+  descriptor <- convertDescriptorToList(descriptor)
+  toJSON(descriptor, auto_unbox = TRUE, pretty = TRUE)
 }
