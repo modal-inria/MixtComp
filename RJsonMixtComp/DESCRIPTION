@@ -2,7 +2,7 @@ Package: RJsonMixtComp
 Type: Package
 Title: MixtComp analysis
 Version: 0.3
-Date: 2018-08-24
+Date: 2018-08-27
 Author: Quentin Grimonprez
 Maintainer: Quentin Grimonprez <quentin.grimonprez@inria.fr>
 Description: MixtComp analysis by InriaTech.
