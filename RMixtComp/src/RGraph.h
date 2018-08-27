@@ -23,13 +23,18 @@ namespace mixt {
 
 class RGraph {
 public:
-	RGraph() {};
+	RGraph() {
+		l_ = Rcpp::List::create();
+	}
+	;
 
-	RGraph(const Rcpp::List l);
+	RGraph(const Rcpp::List& l);
 
-	void set(const Rcpp::List s);
+	void set(const Rcpp::List& s);
 
-	Rcpp::List getL() const {return l_;}
+	const Rcpp::List& getL() const {
+		return l_;
+	}
 
 	void getSubGraph(const std::vector<std::string>& path, RGraph& j) const;
 
@@ -72,26 +77,30 @@ public:
 private:
 	void go_to(const std::vector<std::string>& path, Rcpp::List l) const;
 
-	void go_to(const std::vector<std::string>& path, Index currDepth, const Rcpp::List currLevel, Rcpp::List) const;
+	void go_to(const std::vector<std::string>& path, Index currDepth, const Rcpp::List currLevel, Rcpp::List& l) const;
 
 	template<typename Type>
-	void add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const Type& p) {
+	Rcpp::List add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const Type& p) {
+		std::cout << "add_payload, currDepth: " << currDepth << std::endl;
 		if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
-		  currLevel[name] = p;
+			std::cout << "currDepth == path.size()" << currDepth << std::endl;
+			currLevel[name] = p;
+			return currLevel;
 		} else {
-			Rcpp::List nextLevel = currLevel[path[currDepth]];
-
-			if (!Rf_isNull(nextLevel)) { // if next level does not exist, create it
-			  currLevel[path[currDepth]] = Rcpp::List();
-			} else if (TYPEOF(nextLevel) != VECSXP) { // if it already exists but is not a json object, throw an exception
+			std::cout << "else" << std::endl;
+			if (!currLevel.containsElementNamed(path[currDepth].c_str())) { // if next level does not exist, create it
+				std::cout << "!Rf_isNull(nextLevel)" << currDepth << std::endl;
+				currLevel[path[currDepth]] = Rcpp::List::create();
+			} else if (TYPEOF(currLevel[path[currDepth]]) != VECSXP) { // if it already exists but is not a json object, throw an exception
 				std::string askedPath;
 				for (Index i = 0; i < currDepth + 1; ++i) {
 					askedPath + "/" + path[i];
 				}
 				throw(askedPath + " already exists and is not a json object.");
 			}
-
-			add_payload(path, currDepth + 1, nextLevel, name, p);
+			
+			Rcpp::List nextLevel = currLevel[path[currDepth]];
+			return add_payload(path, currDepth + 1, nextLevel, name, p);
 		}
 	}
 

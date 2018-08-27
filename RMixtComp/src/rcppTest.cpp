@@ -14,10 +14,32 @@
 
 using namespace mixt;
 
+Rcpp::List modifyList(Rcpp::List l) {
+  l["x"] = "x";
+  return l;
+}
+
+/**
+ * https://stackoverflow.com/questions/52006424/modifying-a-subsection-of-an-rcpplist-in-a-separate-function-by-reference
+ */
 // [[Rcpp::export]]
 Rcpp::List rcppTest() {
-  RGraph g;
-  g.add_payload({"bla", "bla"}, "nameOfPayload", 12.0);
+  Rcpp::List res;
+  res["a"] = Rcpp::List::create();
   
-	return g.getL();
+  res["a"] = modifyList(res["a"]);
+  
+  return res;
+}
+
+// [[Rcpp::export]]
+Rcpp::List rcppTest2(Rcpp::List l) {
+  
+  RGraph g(l);
+  g.add_payload({"a", "b"}, "payload", 23.0);
+  Rcpp::List res = g.getL();
+  
+  std::cout << "end of computation" << std::endl;
+  
+  return res;
 }
