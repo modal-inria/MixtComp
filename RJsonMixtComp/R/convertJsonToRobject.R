@@ -1,3 +1,16 @@
+# @param x result from MixtComp read with fromJSON
+convertOutput <- function(x)
+{
+  x = lapply(x, convertJsonElement)
+  if(any(sapply(x, is.list)))
+  {
+    x[sapply(x, is.list)] = lapply(x[sapply(x, is.list)], convertOutput)
+  }
+  
+  return(x)
+}
+
+
 convertJsonElement <- function(x)
 {
   if("ctype" %in% names(x))

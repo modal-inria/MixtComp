@@ -70,3 +70,61 @@ test_that("convert a vector from json", {
   expect_equal(out, expectedOut)  
 })
 
+
+
+test_that("convertOutput converts well", {
+  pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
+  pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
+  
+  data <- as.data.frame(fromJSON(pathToData))
+  descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+  
+  expect_error(res <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
+                                                                                        nbIter = 50,
+                                                                                        nbGibbsBurnInIter = 20,
+                                                                                        nbGibbsIter = 20,
+                                                                                        nInitPerClass = 10,
+                                                                                        nSemTry = 5),
+                                        confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json"), regexp = NA)
+  
+  res <- fromJSON("reslearn.json")
+  out <- convertOutput(res)
+  
+  # mixture 
+  expect_equal(out$mixture$BIC, res$mixture$BIC)
+  expect_equal(out$mixture$ICL, res$mixture$ICL)
+  expect_equal(out$mixture$runTime, res$mixture$runTime)
+  expect_equal(out$mixture$lnCompletedLikelihood, res$mixture$lnCompletedLikelihood)
+  expect_equal(out$mixture$lnObservedLikelihood, res$mixture$lnObservedLikelihood)
+  expect_equal(out$mixture$nbFreeParameters, res$mixture$nbFreeParameters)
+  expect_equal(class(out$mixture$IDClass), "matrix")
+  expect_equal(rownames(out$mixture$IDClass), res$mixture$IDClass$rowNames)
+  expect_equal(colnames(out$mixture$IDClass), res$mixture$IDClass$colNames)
+  expect_equal(class(out$mixture$delta), "matrix")
+  expect_equal(class(out$mixture$lnProbaGivenClass), "matrix")
+  expect_equal(rownames(out$mixture$lnProbaGivenClass), res$mixture$lnProbaGivenClass$rowNames)
+  expect_equal(colnames(out$mixture$lnProbaGivenClass), res$mixture$lnProbaGivenClass$colNames)
+  expect_length(out$mixture$completedProbabilityLogBurnIn, res$mixture$completedProbabilityLogBurnIn$nrow)
+  expect_length(out$mixture$completedProbabilityLogRun, res$mixture$completedProbabilityLogRun$nrow)
+  
+  # variable$type
+  expect_equal(out$variable$type, res$variable$type)
+  
+  # variable$param
+  expect_equal(class(out$variable$param$z_class$pi$stat), "matrix")
+  expect_equal(rownames(out$variable$param$z_class$pi$stat), res$variable$param$z_class$pi$stat$rowNames)
+  expect_equal(colnames(out$variable$param$z_class$pi$stat), res$variable$param$z_class$pi$stat$colNames)
+  expect_equal(out$variable$param$z_class$pi$paramStr, res$variable$param$z_class$pi$paramStr)
+  expect_equal(class(out$variable$param$varGaussian$NumericalParam$stat), "matrix")
+  expect_equal(rownames(out$variable$param$varGaussian$NumericalParam$stat), res$variable$param$varGaussian$NumericalParam$stat$rowNames)
+  expect_equal(colnames(out$variable$param$varGaussian$NumericalParam$stat), res$variable$param$varGaussian$NumericalParam$stat$colNames)
+  expect_equal(out$variable$param$varGaussian$NumericalParam$paramStr, res$variable$param$varGaussian$NumericalParam$paramStr)
+  
+  # variable$data
+  expect_equivalent(out$variable$data$z_class$stat, res$variable$data$z_class$stat$data)
+  expect_equal(out$variable$data$z_class$completed, res$variable$data$z_class$completed$data)
+  expect_equal(out$variable$data$varGaussian$completed, res$variable$data$varGaussian$completed$data)
+  
+  file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json", "progress")
+})
+
