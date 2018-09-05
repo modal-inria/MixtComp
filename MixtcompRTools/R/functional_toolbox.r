@@ -1,4 +1,3 @@
-
 #' Convert a mixtcomp string into 2-columns matrix
 #'
 #' @param x a string containing a fonctional observation (cf example)
@@ -6,45 +5,48 @@
 #' @return matrix
 #'
 #' @examples
-#' \dontrun{
-#' convertFunctional("1:5,1.5:12,1.999:2.9")}
+#' convertFunctional("1:5,1.5:12,1.999:2.9")
+#'
+#' @author Quentin Grimonprez
 convertFunctional <- function(x){
   return(do.call(rbind, lapply(strsplit(strsplit(as.character(x), ",")[[1]], ":"), as.numeric)))
 }
 
-#' créé le format fonctionnel de mixtcomp
+#' Create a functional in MixtComp format
 #'
-#' @param temps vector of numeric
-#' @param valeur vector of numeric
+#' @param time vector containing the time of the functional
+#' @param value vector containing the value of the functional
 #'
 #' @return The functional data formatted to the mixtcomp standard
 #'
 #' @examples
-#' \dontrun{
-#' Mat = matrix(c(1,2,3,9,1,1.5,15,1000),ncol=2)
-#' convertFunctional(Mat[,1],Mat[,2])}
-createFunctional <- function(temps, valeur)
+#' mat <- matrix(c(1, 2, 3, 9, 1, 1.5, 15, 1000), ncol=2)
+#' createFunctional(mat[,1], mat[,2])
+#'
+#' @author Quentin Grimonprez
+createFunctional <- function(time, value)
 {
-  return(paste(paste(temps, valeur, sep = ":"), collapse = ","))
+  return(paste(paste(time, value, sep = ":"), collapse = ","))
 }
 
 
-#' PLot functional data
+#' Plot functional data
 #'
 #' @param x Functional data in mixtcomp string format
 #' @param ... additional plot parameter
 #'
-#' @return void
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
 #' }
+#'
+#' @author Quentin Grimonprez
 plotFunctional <- function(x, ...)
 {
   newX <- convertFunctional(x)
 
-  return(graphics::plot(newX[,1], newX[,2], type = "s", ...))
+  return(plot(newX[,1], newX[,2], type = "s", ...))
 }
 
 
@@ -53,16 +55,17 @@ plotFunctional <- function(x, ...)
 #' @param x Functional data in mixtcomp string format
 #' @param ... additional plot parameter
 #'
-#' @return void
 #' @examples
-#' \dontrun{
-#' #' plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
+#' \donttest{
+#' plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
 #' linesFunctional("1:7,3:4,6:11.78,9:5,12:12")
 #' }
+#'
+#' @author Quentin Grimonprez
 linesFunctional <- function(x, ...)
 {
   newX <- convertFunctional(x)
 
-  return(graphics::lines(newX[,1], newX[,2], type = "s", ...))
+  return(lines(newX[,1], newX[,2], type = "s", ...))
 }
 
