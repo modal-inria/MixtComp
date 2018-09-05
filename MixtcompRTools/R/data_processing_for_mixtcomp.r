@@ -6,7 +6,7 @@
 #' @param model     Name of the model : "Gaussian_pjk", ..
 #' @param paramStr  Additional parameters as strings
 #'
-#' @return
+#' @author Vincent Kubicki
 #'
 addVariable <- function (lm, data, id, model, paramStr) {
   warnLog = "" # warnLog will contain the various possible error messages
@@ -51,6 +51,8 @@ addVariable <- function (lm, data, id, model, paramStr) {
 #' @param ... List of arguments (usually equal to c(data_path, descriptor_path))
 #'
 #' @return list of data
+#'
+#' @author Vincent Kubicki
 #'
 #' @import utils
 getData <- function(...) {
