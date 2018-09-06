@@ -8,6 +8,8 @@
 #' convertFunctional("1:5,1.5:12,1.999:2.9")
 #'
 #' @author Quentin Grimonprez
+#'
+#' @export
 convertFunctional <- function(x){
   return(do.call(rbind, lapply(strsplit(strsplit(as.character(x), ",")[[1]], ":"), as.numeric)))
 }
@@ -24,6 +26,8 @@ convertFunctional <- function(x){
 #' createFunctional(mat[,1], mat[,2])
 #'
 #' @author Quentin Grimonprez
+#'
+#' @export
 createFunctional <- function(time, value)
 {
   return(paste(paste(time, value, sep = ":"), collapse = ","))
@@ -37,11 +41,11 @@ createFunctional <- function(time, value)
 #'
 #'
 #' @examples
-#' \donttest{
 #' plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
-#' }
 #'
 #' @author Quentin Grimonprez
+#'
+#' @export
 plotFunctional <- function(x, ...)
 {
   newX <- convertFunctional(x)
@@ -56,12 +60,13 @@ plotFunctional <- function(x, ...)
 #' @param ... additional plot parameter
 #'
 #' @examples
-#' \donttest{
 #' plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
 #' linesFunctional("1:7,3:4,6:11.78,9:5,12:12")
-#' }
+#'
 #'
 #' @author Quentin Grimonprez
+#'
+#' @export
 linesFunctional <- function(x, ...)
 {
   newX <- convertFunctional(x)

@@ -20,3 +20,4 @@ Other results aggregation: \code{\link{aggregate_classification_probabilities}},
   \code{\link{aggregate_completed_max}},
   \code{\link{aggregate_completed}}
 }
+\concept{results aggregation}

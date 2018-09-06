@@ -24,3 +24,4 @@ Other results aggregation: \code{\link{aggregate_classification_probabilities}},
   \code{\link{aggregate_clusters}},
   \code{\link{aggregate_completed_max}}
 }
+\concept{results aggregation}

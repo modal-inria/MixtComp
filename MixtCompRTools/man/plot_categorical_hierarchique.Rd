@@ -4,8 +4,8 @@
 \alias{plot_categorical_hierarchique}
 \title{Plot categorical data by clusters}
 \usage{
-plot_categorical_hierarchique(clusters, var, data, depth, dictionary = NULL,
-  order_by = NULL, source = NULL)
+plot_categorical_hierarchique(clusters, var, data, depth,
+  dictionary = NULL, order_by = NULL, source = NULL)
 }
 \arguments{
 \item{clusters}{vector of the clusters associated with data}
@@ -33,3 +33,4 @@ Other visualisation: \code{\link{plot_functional_hierarchique}},
   \code{\link{plot_proportion_hierarchique}},
   \code{\link{plot_quality_pred_hierarchique}}
 }
+\concept{visualisation}

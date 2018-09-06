@@ -2,7 +2,7 @@
 % Please edit documentation in R/functional_toolbox.r
 \name{plotFunctional}
 \alias{plotFunctional}
-\title{PLot functional data}
+\title{Plot functional data}
 \usage{
 plotFunctional(x, ...)
 }
@@ -11,14 +11,13 @@ plotFunctional(x, ...)
 
 \item{...}{additional plot parameter}
 }
-\value{
-void
-}
 \description{
-PLot functional data
+Plot functional data
 }
 \examples{
-\dontrun{
 plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
+
 }
+\author{
+Quentin Grimonprez
 }

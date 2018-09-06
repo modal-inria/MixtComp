@@ -11,15 +11,15 @@ linesFunctional(x, ...)
 
 \item{...}{additional plot parameter}
 }
-\value{
-void
-}
 \description{
 lines functional data
 }
 \examples{
-\dontrun{
-#' plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
+plotFunctional("1:5,3:2,6:9.78,9:4,12:25")
 linesFunctional("1:7,3:4,6:11.78,9:5,12:12")
+
+
 }
+\author{
+Quentin Grimonprez
 }

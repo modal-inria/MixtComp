@@ -17,9 +17,9 @@ addVariable(lm, data, id, model, paramStr)
 
 \item{paramStr}{Additional parameters as strings}
 }
-\value{
-
-}
 \description{
 Helper function for Mixtcomp Input formatting
+}
+\author{
+Vincent Kubicki
 }

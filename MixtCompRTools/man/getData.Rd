@@ -15,3 +15,6 @@ list of data
 \description{
 Transform data into Mixtcomp accepted format
 }
+\author{
+Vincent Kubicki
+}

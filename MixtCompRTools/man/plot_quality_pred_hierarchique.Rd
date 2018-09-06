@@ -33,3 +33,4 @@ Other visualisation: \code{\link{plot_categorical_hierarchique}},
   \code{\link{plot_functional_hierarchique}},
   \code{\link{plot_proportion_hierarchique}}
 }
+\concept{visualisation}

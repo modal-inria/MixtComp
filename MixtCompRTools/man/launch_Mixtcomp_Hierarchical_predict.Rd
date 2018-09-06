@@ -4,8 +4,8 @@
 \alias{launch_Mixtcomp_Hierarchical_predict}
 \title{Launch the Mixtcomp prediction based on an existing hierarchical cluster}
 \usage{
-launch_Mixtcomp_Hierarchical_predict(data_path, param_dir, output_dir = NULL,
-  mcStrategy = NULL)
+launch_Mixtcomp_Hierarchical_predict(data_path, param_dir,
+  output_dir = NULL, mcStrategy = NULL)
 }
 \arguments{
 \item{data_path}{A string}

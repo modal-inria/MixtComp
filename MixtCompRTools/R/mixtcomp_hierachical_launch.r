@@ -278,7 +278,7 @@ expand <- function(dir, nClass, strategy=NULL, mcStrategy=NULL, nCore=1) {
     } else {
       cl <- makeCluster(length(subdirs))
       registerDoParallel(cl)
-      foreach(subdir = subdirs, .packages = 'mixtcompRTools') %dopar% {
+      foreach(subdir = subdirs, .packages = 'MixtCompRTools') %dopar% {
         launch_mixtcomp(subdir, nClass,strategy=strategy,mcStrategy = mcStrategy)
       }
       stopCluster(cl)
