@@ -17,9 +17,6 @@ If Null, a directory with the name of the dataset will be created and used as ou
 
 \item{mcStrategy}{(optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)}
 }
-\value{
-void
-}
 \description{
 Launch the Mixtcomp prediction based on an existing hierarchical cluster
 }

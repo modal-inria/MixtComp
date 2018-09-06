@@ -14,9 +14,6 @@ prune_hierarchy(dir, purity_strategy = list(var = NULL, threshold =
 
 \item{cluster_size_strategy}{a list of one element that define the cluster size threshold.}
 }
-\value{
-void
-}
 \description{
 - The purity of the clusters : if a cluster is purer than a certain threshold then the subclusters are not useful
  - The size of the cluster : below a certain size, a cluster should not have been subclusterized.

@@ -1,13 +1,13 @@
-#' Helper function for Mixtcomp Input formatting
-#'
-#' @param lm        list as container
-#' @param data      Vector of data
-#' @param id        Name of the variable
-#' @param model     Name of the model : "Gaussian_pjk", ..
-#' @param paramStr  Additional parameters as strings
-#'
-#' @author Vincent Kubicki
-#'
+# Helper function for Mixtcomp Input formatting
+#
+# @param lm        list as container
+# @param data      Vector of data
+# @param id        Name of the variable
+# @param model     Name of the model : "Gaussian_pjk", ..
+# @param paramStr  Additional parameters as strings
+#
+# @author Vincent Kubicki
+#
 addVariable <- function (lm, data, id, model, paramStr) {
   warnLog = "" # warnLog will contain the various possible error messages
   if (length(lm) == 0) {
@@ -46,15 +46,14 @@ addVariable <- function (lm, data, id, model, paramStr) {
               warnLog = warnLog))
 }
 
-#' Transform data into Mixtcomp accepted format
-#'
-#' @param ... List of arguments (usually equal to c(data_path, descriptor_path))
-#'
-#' @return list of data
-#'
-#' @author Vincent Kubicki
-#'
-#' @import utils
+# Transform data into Mixtcomp accepted format
+#
+# @param ... List of arguments (usually equal to c(data_path, descriptor_path))
+#
+# @return list of data
+#
+# @author Vincent Kubicki
+#
 getData <- function(...) {
   argList <- list(...)
   lm <- list()

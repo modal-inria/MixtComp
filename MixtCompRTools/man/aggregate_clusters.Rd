@@ -9,9 +9,6 @@ aggregate_clusters(dir)
 \arguments{
 \item{dir}{String, a path to the directory in which are the subclusters to be aggregated}
 }
-\value{
-void
-}
 \description{
 Aggregate the hierarchical clusters estimated
 }

@@ -1,3 +1,4 @@
+# @author Vincent Kubicki
 vandermonde <- function(vec, nCoeff) {
   v <- matrix(nrow = nCoeff, ncol = nCoeff)
   for (i in 1:nCoeff) {
@@ -8,6 +9,7 @@ vandermonde <- function(vec, nCoeff) {
   return(v)
 }
 
+# @author Vincent Kubicki
 evalFunc <- function(a, x) {
   nObs <- length(x)
   nCoeff <- length(a)
@@ -23,6 +25,7 @@ evalFunc <- function(a, x) {
   return(y)
 }
 
+# @author Vincent Kubicki
 functionalInterPolyGenerator <- function(present, param) {
   timeObs <- vector("character", param$nTime)
 
@@ -32,12 +35,12 @@ functionalInterPolyGenerator <- function(present, param) {
   t <- vector(mode = "numeric", length = param$nTime)
 
   for (i in 1:param$nTime) {
-    t[i] <- stats::runif(1, param$tMin, param$tMax)
+    t[i] <- runif(1, param$tMin, param$tMax)
   }
   t <- sort(t)
 
   for (i in 1:param$nTime) {
-    x <- evalFunc(a, t[i]) + stats::rnorm(1, mean = 0, sd = param$sd)
+    x <- evalFunc(a, t[i]) + rnorm(1, mean = 0, sd = param$sd)
     timeObs[i] <- paste(t[i], x, sep = ":")
   }
 
@@ -46,7 +49,7 @@ functionalInterPolyGenerator <- function(present, param) {
   return(xStr)
 }
 
-
+# @author Vincent Kubicki
 generate_data <- function(size = 2000,
                           ratio_test_training = 0.4,
                           path_dir_output = "",
@@ -68,7 +71,7 @@ generate_data <- function(size = 2000,
       c(data_func, functionalInterPolyGenerator(param = param))
   }
 
-  data_gaussian = stats::rnorm(n = size,
+  data_gaussian = rnorm(n = size,
                                mean = c(0, 5, 10, 100),
                                sd = 2)
 
@@ -80,7 +83,7 @@ generate_data <- function(size = 2000,
   data <- cbind(data_func, data_gaussian, data_categorical)
   colnames(data) = c("F1", "X1", "C1")
   descriptor <-
-    stats::setNames(data.frame(matrix(
+    setNames(data.frame(matrix(
       ncol = ncol(data),
       nrow = 2,
       byrow = TRUE

@@ -25,9 +25,8 @@ var (name of the categorical variable on which to base the strategy), threshold_
 threshold_purity (the maximal purity observed in the dataset above which the subclustering is not necessary). At each hierarchical iterations these elements will be tested.}
 
 \item{mcStrategy}{(optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)}
-}
-\value{
-void
+
+\item{nCore}{number of cores for parallelization}
 }
 \description{
 Launch the Hierarchical Mixtcomp.
