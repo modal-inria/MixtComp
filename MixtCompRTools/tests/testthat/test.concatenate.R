@@ -113,3 +113,40 @@ test_that("Concatenate Rank", {
   expect_equal(out$mu$paramStr, "nModality: 4")
 })
 
+test_that("Concatenate function", {
+  resParent <- list(mixture = list(nbInd = 10, nbCluster = 2),
+                    variable = list(type = list(z_class = "LatentClass", gauss = "Gaussian_sjk", cat = "Categorical_pjk", pois = "Poisson_k",
+                                                func = "Functional", weib = "Weibull", negbin = "NegativeBinomial", rank = "Rank"),
+                                    data = list(z_class = list(completed = rep(1:2, c(4, 6)))),
+                                    param = list(z_class = list(pi = list(stat = matrix(c(0.25, 0.75), nrow = 2, ncol = 3), paramStr = "")),
+                                                 gauss = list(NumericalParam = list(stat = matrix(1:4, nrow = 4, ncol = 3), paramStr = "")),
+                                                 cat = list(NumericalParam = list(stat = matrix(1:6, nrow = 6, ncol = 3), paramStr = "nModality: 3")),
+                                                 pois = list(NumericalParam = list(stat = matrix(1:2, nrow = 2, ncol = 3), paramStr = "")),
+                                                 func = list(alpha = list(stat = matrix(1:8, nrow = 8, ncol = 3,
+                                                                                        dimnames = list(c("k: 0, s: 0, alpha0", "k: 0, s: 0, alpha1", "k: 0, s: 1, alpha0", "k: 0, s: 1, alpha1",
+                                                                                                          "k: 1, s: 0, alpha0", "k: 1, s: 0, alpha1", "k: 1, s: 1, alpha0", "k: 1, s: 1, alpha1"), NULL)),
+                                                                          paramStr = "nSub: 2, nCoeff: 2"),
+                                                             beta = list(stat = matrix(1:8, nrow = 8, ncol = 3,
+                                                                                       dimnames = list(c("k: 0, s: 0, c: 0", "k: 0, s: 0, c: 1", "k: 0, s: 1, c: 0", "k: 0, s: 1, c: 1",
+                                                                                                         "k: 1, s: 0, c: 0", "k: 1, s: 0, c: 1", "k: 1, s: 1, c: 0", "k: 1, s: 1, c: 1"), NULL)),
+                                                                         paramStr = "nSub: 2, nCoeff: 2"),
+                                                             sd = list(stat = matrix(1:4, nrow = 4, ncol = 3,
+                                                                                     dimnames = list(c("k: 0, s: 0", "k: 0, s: 1", "k: 1, s: 0", "k: 1, s: 1"), NULL)),
+                                                                       paramStr = "nSub: 2, nCoeff: 2")),
+                                                 weib = list(NumericalParam = list(stat = matrix(1:4, nrow = 4, ncol = 3), paramStr = "")),
+                                                 negbin = list(NumericalParam = list(stat = matrix(1:4, nrow = 4, ncol = 3), paramStr = "")),
+                                                 rank = list(mu = list(stat = list("k: 1, mu" = list(c(3, 2, 1, 0), 0.8), "k: 2, mu" = list(c(0, 1, 2, 3), 0.6)), paramStr = "nModality: 4")))))
+
+
+  resChild <- resParent
+  resChild$mixture$nbInd = 6
+
+  classParentOfChild <- 2
+
+  out <- concatenateParam(resParent, resChild, classParentOfChild)
+
+  expect_equal(length(out), 8)
+  expect_true(all(sapply(out, is.list)))
+  expect_equal(names(out), c("z_class", "gauss", "cat", "pois", "func", "weib", "negbin", "rank"))
+  expect_equivalent(sapply(out, length), c(1, 1, 1, 1, 3, 1, 1, 1))
+})

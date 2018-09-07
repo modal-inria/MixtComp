@@ -1,3 +1,36 @@
+# Concatanation of param element of 2 MixtComp output
+#
+# During a hierarchical MixtComp, given the ouput oh the parent and one child, create the param output containing the model generated
+#
+# @param resParent result object of a MixtComp run.
+# @param resChild result object of a MixtComp run. This run is performed on the individuals of one cluster of resParent
+# @param classParentOfChild cluster of the parent used for the child
+#
+# @return a param output (in MixtComp format)
+#
+concatenateParam <- function(resParent, resChild, classParentOfChild)
+{
+  nbClassParent <- resParent$mixture$nbCluster
+  nbClassChild <- resChild$mixture$nbCluster
+
+  if((classParentOfChild <= 0) || (classParentOfChild > nbClassParent))
+    stop("Wrong classParentOfChild value.")
+
+  classParent <- resParent$variable$data$z_class$completed
+  nbIndChild <- resChild$mixture$nbInd
+
+  if(nbIndChild != sum(classParent == classParentOfChild))
+    stop("The size of the parent's cluster and the size of the child's clusters don't match.")
+
+  varName <- names(resParent$variable$param)
+  param <- list()
+  for(name in varName)
+    param[[name]] = concatenateParamOneModel(resParent$variable$param[[name]], resParent$variable$param[[name]], classParentOfChild, resParent$variable$type[[name]])
+
+  return(param)
+}
+
+
 # concatenation of two parameters output in one
 # paramParent = outPutMixtComp$variable$param$Variable
 # model = model associated with the variable ("Gaussian_sjk", ...)
@@ -11,7 +44,7 @@ concatenateParamOneModel <- function(paramParent, paramChild, classParentOfChild
                 "2NumParam" = concatenateParamNumeric2Param(paramParent, paramChild, classParentOfChild),
                 "Categorical_pjk" = concatenateParamPoisson(paramParent, paramChild, classParentOfChild),
                 "Functional" = concatenateParamFunctional(paramParent, paramChild, classParentOfChild),
-                "Poisson" = concatenateParamFunctional(paramParent, paramChild, classParentOfChild),
+                "Poisson_k" = concatenateParamPoisson(paramParent, paramChild, classParentOfChild),
                 "Rank" = concatenateParamRank(paramParent, paramChild, classParentOfChild))
 
   return(out)
