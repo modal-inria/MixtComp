@@ -1,4 +1,26 @@
-# Concatanation of param element of 2 MixtComp output
+computeModelLnCompletedLikelihood <- function(resParent, resChild, classParentOfChild)
+{
+  # likelihood from parent classification
+  partParent <- resParent$variable$data$z_class$completed
+
+  classParentToKeep <- (1:resParent$mixture$nbCluster)[-classParentOfChild]
+  lnCompLikelihoodParent <- 0
+  for(k in classParentToKeep)
+    lnCompLikelihoodParent = lnCompLikelihoodParent + sum(resParent$mixture$lnProbaGivenClass[partParent == k, k])
+
+
+  # likelihood from child classification
+  proportionParent <- resParent$variable$param$z_class$pi$stat[,1]
+
+  lnCompLikelihoodChild <- resChild$mixture$lnCompletedLikelihood + resChild$mixture$nbInd * log(proportionParent[classParentOfChild])
+
+
+  lnCompLikelihood <- lnCompLikelihoodParent + lnCompLikelihoodChild
+
+  return(lnCompLikelihood)
+}
+
+# Concatenation of param element of 2 MixtComp output
 #
 # During a hierarchical MixtComp, given the ouput oh the parent and one child, create the param output containing the model generated
 #
