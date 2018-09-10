@@ -47,7 +47,7 @@ concatenateParam <- function(resParent, resChild, classParentOfChild)
   varName <- names(resParent$variable$param)
   param <- list()
   for(name in varName)
-    param[[name]] = concatenateParamOneModel(resParent$variable$param[[name]], resParent$variable$param[[name]], classParentOfChild, resParent$variable$type[[name]])
+    param[[name]] = concatenateParamOneModel(resParent$variable$param[[name]], resChild$variable$param[[name]], classParentOfChild, resParent$variable$type[[name]])
 
   return(param)
 }
