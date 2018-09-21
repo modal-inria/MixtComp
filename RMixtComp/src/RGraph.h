@@ -57,7 +57,7 @@ public:
 		if (!Rf_isNull(l[name])) {
 			throw(name + " object does not exist.");
 		}
-		RTranslate(l[name], p);
+		RToCPPTranslate(l[name], p);
 	}
 
 	/**

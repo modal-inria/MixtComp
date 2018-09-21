@@ -20,8 +20,8 @@
 namespace mixt {
 
 template<typename InType, typename OutType>
-OutType RTranslate(const InType& in) {
-	return Rcpp::as<OutType>(in);
+void RToCPPTranslate(const InType& in, OutType& out) {
+	out = Rcpp::as<OutType>(in);
 }
 
 }
