@@ -79,17 +79,17 @@ private:
 
 	void go_to(const std::vector<std::string>& path, Index currDepth, const Rcpp::List& currLevel, Rcpp::List& l) const;
 
+	/**
+	 * Note that currLevel is a value and not a reference. This is different from what occurs in JSONGraph for example. The reason is detailed
+	 * in this post: https://stackoverflow.com/questions/52006424/modifying-a-subsection-of-an-rcpplist-in-a-separate-function-by-reference
+	 */
 	template<typename Type>
 	Rcpp::List add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const Type& p) {
-		std::cout << "add_payload, currDepth: " << currDepth << std::endl;
 		if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
-			std::cout << "currDepth == path.size()" << currDepth << std::endl;
 			currLevel[name] = p;
 			return currLevel;
 		} else {
-			std::cout << "else" << std::endl;
 			if (!currLevel.containsElementNamed(path[currDepth].c_str())) { // if next level does not exist, create it
-				std::cout << "!Rf_isNull(nextLevel)" << currDepth << std::endl;
 				currLevel[path[currDepth]] = Rcpp::List::create();
 			} else if (TYPEOF(currLevel[path[currDepth]]) != VECSXP) { // if it already exists but is not a json object, throw an exception
 				std::string askedPath;
@@ -98,9 +98,9 @@ private:
 				}
 				throw(askedPath + " already exists and is not a json object.");
 			}
-			
+
 			Rcpp::List nextLevel = currLevel[path[currDepth]];
-			currLevel[name] = add_payload(path, currDepth + 1, nextLevel, name, p);
+			currLevel[path[currDepth]] = add_payload(path, currDepth + 1, nextLevel, name, p);
 			return currLevel;
 		}
 	}
