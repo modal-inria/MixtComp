@@ -1,6 +1,6 @@
 context("IO")
 
-test_that("CharacterVector",{
+test_that("Nested list generation",{
   input <- list(
     a = list(
       a1 = "riri",
@@ -8,21 +8,21 @@ test_that("CharacterVector",{
       a3 = "loulou"),
     b = list(
       b1 = list(
-        b11 = c("mickey", "dingo")
+        b11 = "dingo"
       )
     )
   )
   
-  output <- rcppTest(input)
+  output <- rcppTest()
 
   expect_identical(input, output)
 })
 
-test_that("Integer",{
-  input <- list(
-    a = 12)
-  
-  output <- rcppTest(input)
-  
-  expect_identical(input, output)
-})
+# test_that("Integer",{
+#   input <- list(
+#     a = 12)
+#   
+#   output <- rcppTest(input)
+#   
+#   expect_identical(input, output)
+# })

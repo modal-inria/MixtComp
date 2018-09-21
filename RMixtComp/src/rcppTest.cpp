@@ -21,15 +21,29 @@ Rcpp::List modifyList(Rcpp::List l) {
 
 /**
  * https://stackoverflow.com/questions/52006424/modifying-a-subsection-of-an-rcpplist-in-a-separate-function-by-reference
+ *
+ *   input <- list(
+    a = list(
+      a1 = "riri",
+      a2 = "fifi",
+      a3 = "loulou"),
+    b = list(
+      b1 = list(
+        b11 = "dingo"
+      )
+    )
+  )
  */
 // [[Rcpp::export]]
 Rcpp::List rcppTest() {
-  Rcpp::List res;
-  res["a"] = Rcpp::List::create();
+  RGraph rg;
   
-  res["a"] = modifyList(res["a"]);
+  rg.add_payload({"a"}, "a1", "riri");
+  rg.add_payload({"a"}, "a2", "fifi");
+  rg.add_payload({"a"}, "a3", "loulou");
+  rg.add_payload({"b", "b1"}, "b11", "dingo");
   
-  return res;
+  return rg.getL();
 }
 
 // [[Rcpp::export]]
