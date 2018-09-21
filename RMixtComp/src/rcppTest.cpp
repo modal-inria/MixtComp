@@ -43,3 +43,12 @@ Rcpp::List rcppTest2(Rcpp::List l) {
   
   return res;
 }
+
+// [[Rcpp::export]]
+Rcpp::List rcppTest3() {
+  RGraph rg;
+
+  rg.add_payload({"path", "to", "enlightenment"}, "valueName" , "toto");
+
+  return rg.getL();
+}

@@ -43,7 +43,7 @@ public:
 	 */
 	template<typename Type>
 	void add_payload(const std::vector<std::string>& path, const std::string& name, const Type& p) {
-		add_payload(path, 0, l_, name, p);
+		l_ = add_payload(path, 0, l_, name, p);
 	}
 
 	/**
@@ -75,9 +75,9 @@ public:
 	void name_payload(const std::vector<std::string>& path, std::list<std::string>& l) const;
 
 private:
-	void go_to(const std::vector<std::string>& path, Rcpp::List l) const;
+	void go_to(const std::vector<std::string>& path, Rcpp::List& l) const;
 
-	void go_to(const std::vector<std::string>& path, Index currDepth, const Rcpp::List currLevel, Rcpp::List& l) const;
+	void go_to(const std::vector<std::string>& path, Index currDepth, const Rcpp::List& currLevel, Rcpp::List& l) const;
 
 	template<typename Type>
 	Rcpp::List add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const Type& p) {
@@ -100,7 +100,8 @@ private:
 			}
 			
 			Rcpp::List nextLevel = currLevel[path[currDepth]];
-			return add_payload(path, currDepth + 1, nextLevel, name, p);
+			currLevel[name] = add_payload(path, currDepth + 1, nextLevel, name, p);
+			return currLevel;
 		}
 	}
 
