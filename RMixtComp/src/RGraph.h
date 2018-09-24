@@ -54,7 +54,7 @@ public:
 		Rcpp::List l;
 		go_to(path, l);
 
-		if (!Rf_isNull(l[name])) {
+		if (Rf_isNull(l[name])) {
 			throw(name + " object does not exist.");
 		}
 		RToCPPTranslate(l[name], p);

@@ -28,3 +28,31 @@ Rcpp::List UTest1() {
 
 	return rg.getL();
 }
+
+/**
+ * https://stackoverflow.com/questions/52006424/modifying-a-subsection-of-an-rcpplist-in-a-separate-function-by-reference
+ */
+// [[Rcpp::export]]
+bool UTest2() {
+	RGraph rg;
+	rg.add_payload( { "a" }, "a1", "riri");
+
+	return rg.exist_payload({ "a" }, "a1");
+}
+
+// [[Rcpp::export]]
+std::string UTest3() {
+	RGraph rg;
+
+	rg.add_payload( { "a" }, "a1", "riri");
+
+	std::string res;
+
+	try {
+		rg.get_payload<std::string>({ "a" }, "a1", res);
+	} catch (const std::string& s) {
+		std::cout << "exception: " << s << std::endl;
+	}
+
+	return res;
+}

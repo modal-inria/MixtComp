@@ -14,22 +14,4 @@
 
 using namespace mixt;
 
-/**
- * https://stackoverflow.com/questions/52006424/modifying-a-subsection-of-an-rcpplist-in-a-separate-function-by-reference
- */
-// [[Rcpp::export]]
-bool manualTest1() {
-	RGraph rg;
-	rg.add_payload( { "a" }, "a1", "riri");
 
-	return rg.exist_payload({ "a" }, "a1");
-}
-
-// [[Rcpp::export]]
-std::string manualTest2() {
-	RGraph rg;
-
-	rg.add_payload( { "a" }, "a1", "riri");
-
-	return rg.get_payload<std::string>({ "a" }, "a1");
-}
