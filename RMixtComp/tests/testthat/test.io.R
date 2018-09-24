@@ -38,3 +38,12 @@ test_that("NumericVector IO", {
   
   expect_identical(l, output)
 })
+
+test_that("NumericMatrix IO", {
+  l <- list()
+  l$mat <- matrix(c(1, 2, 3, 4), nrow = 2)
+  
+  output <- UTest5(l)
+  
+  expect_identical(l, output)
+})

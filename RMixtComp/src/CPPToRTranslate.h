@@ -16,7 +16,9 @@
 #include <LinAlg/mixt_LinAlg.h>
 #include <LinAlg/names.h>
 #include <IO/NamedAlgebra.h>
-#include "types.h"
+
+#include "CPPToRMatrixType.h"
+#include "CPPToRVectorType.h"
 
 namespace mixt {
 
@@ -28,7 +30,7 @@ void CPPToRTranslate(const InType& in, SEXP& out) {
 template<typename T>
 void CPPToRTranslate(const NamedVector<T>& in, SEXP& out) {
 	Index nrow = in.vec_.size();
-	typename types<T>::ctype temp(nrow);
+	typename CPPToRVectorType<T>::ctype temp(nrow);
 
 	for (Index i = 0; i < nrow; ++i) {
 		temp[i] = in.vec_(i);
@@ -37,9 +39,41 @@ void CPPToRTranslate(const NamedVector<T>& in, SEXP& out) {
 	if (in.rowNames_.size() != 0) {
 		Rcpp::CharacterVector tempName(nrow);
 		for (Index i = 0; i < nrow; ++i) {
-			tempName[i] = in.rowNames_[i];
+			tempName(i) = in.rowNames_[i];
 		}
 		temp.attr("names") = tempName;
+	}
+
+	out = temp;
+}
+
+template<typename T>
+void CPPToRTranslate(const NamedMatrix<T>& in, SEXP& out) {
+	Index nrow = in.mat_.rows();
+	Index ncol = in.mat_.cols();
+
+	typename CPPToRMatrixType<T>::ctype temp(nrow);
+
+	for (Index i = 0; i < nrow; ++i) {
+		for (Index j = 0; j < ncol; ++j) {
+			temp(i, j) = in.mat_(i, j);
+		}
+	}
+
+	if (in.rowNames_.size() != 0) {
+		Rcpp::CharacterVector tempName(nrow);
+		for (Index i = 0; i < nrow; ++i) {
+			tempName[i] = in.rowNames_[i];
+		}
+		temp.attr("rownames") = tempName;
+	}
+
+	if (in.colNames_.size() != 0) {
+		Rcpp::CharacterVector tempName(nrow);
+		for (Index i = 0; i < ncol; ++i) {
+			tempName[i] = in.colNames_[i];
+		}
+		temp.attr("colnames") = tempName;
 	}
 
 	out = temp;

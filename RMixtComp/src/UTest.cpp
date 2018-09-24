@@ -68,3 +68,15 @@ Rcpp::List UTest4(const Rcpp::List& l) {
 
 	return rgOut.getL();
 }
+
+// [[Rcpp::export]]
+Rcpp::List UTest5(const Rcpp::List& l) {
+	RGraph rgIn(l);
+	NamedMatrix<Real> nm;
+	RGraph rgOut;
+
+	rgIn.get_payload( {}, "mat", nm);
+	rgOut.add_payload({}, "mat", nm);
+
+	return rgOut.getL();
+}

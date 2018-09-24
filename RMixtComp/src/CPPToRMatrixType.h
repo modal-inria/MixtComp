@@ -7,8 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef RMIXTCOMP_SRC_TYPES
-#define RMIXTCOMP_SRC_TYPES
+#ifndef RMIXTCOMP_SRC_CPPTORVECTORTYPE
+#define RMIXTCOMP_SRC_CPPTORVECTORTYPE
 
 #include <Rcpp.h>
 #include <LinAlg/mixt_LinAlg.h>
@@ -16,24 +16,24 @@
 namespace mixt {
 
 template<typename T>
-class types {};
+class CPPToRMatrixType {};
 
 template<>
-class types<Index> {
+class CPPToRMatrixType<Index> {
 public:
-	typedef Rcpp::IntegerVector ctype;
+	typedef Rcpp::IntegerMatrix ctype;
 };
 
 template<>
-class types<Integer> {
+class CPPToRMatrixType<Integer> {
 public:
-	typedef Rcpp::IntegerVector ctype;
+	typedef Rcpp::IntegerMatrix ctype;
 };
 
 template<>
-class types<Real> {
+class CPPToRMatrixType<Real> {
 public:
-	typedef Rcpp::NumericVector ctype;
+	typedef Rcpp::NumericMatrix ctype;
 };
 
 }
