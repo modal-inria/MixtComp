@@ -7,8 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef RGRAPH_H
-#define RGRAPH_H
+#ifndef RMIXTCOMP_SRC_RGRAPH_H
+#define RMIXTCOMP_SRC_RGRAPH_H
 
 #include <iostream>
 #include <list>
@@ -17,7 +17,8 @@
 #include <IO/NamedAlgebra.h>
 #include <LinAlg/mixt_LinAlg.h>
 
-#include "RTranslate.h"
+#include "CPPToRTranslate.h"
+#include "RToCPPTranslate.h"
 
 namespace mixt {
 
@@ -86,7 +87,12 @@ private:
 	template<typename Type>
 	Rcpp::List add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const Type& p) {
 		if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
-			currLevel[name] = p;
+			SEXP temp;
+			CPPToRTranslate(p, temp);
+			currLevel[name] = temp;
+
+//			CPPToRTranslate(p, currLevel[name]);
+//			currLevel[name] = p;
 			return currLevel;
 		} else {
 			if (!currLevel.containsElementNamed(path[currDepth].c_str())) { // if next level does not exist, create it
@@ -96,7 +102,7 @@ private:
 				for (Index i = 0; i < currDepth + 1; ++i) {
 					askedPath + "/" + path[i];
 				}
-				throw(askedPath + " already exists and is not a json object.");
+				throw(askedPath + " already exists and is not an R list.");
 			}
 
 			Rcpp::List nextLevel = currLevel[path[currDepth]];

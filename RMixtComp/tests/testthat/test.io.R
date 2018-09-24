@@ -30,20 +30,11 @@ test_that("get_payload", {
   expect_identical("riri", output)
 })
 
-# test_that("Nested list reading", {
-#   input <- list(
-#     a = list(
-#       a1 = "riri",
-#       a2 = "fifi",
-#       a3 = "loulou"),
-#     b = list(
-#       b1 = list(
-#         b11 = "dingo"
-#       )
-#     )
-#   )
-# 
-#   output <- rcppTest2(input)
-# 
-#   expect_identical(TRUE, output)
-# })
+test_that("NumericVector IO", {
+  l <- list()
+  l$This$is$Sparta <- c(a = 12, b = 12, c = 42.5)
+  
+  output <- UTest4(l)
+  
+  expect_identical(l, output)
+})

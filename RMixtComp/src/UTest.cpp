@@ -37,7 +37,7 @@ bool UTest2() {
 	RGraph rg;
 	rg.add_payload( { "a" }, "a1", "riri");
 
-	return rg.exist_payload({ "a" }, "a1");
+	return rg.exist_payload( { "a" }, "a1");
 }
 
 // [[Rcpp::export]]
@@ -49,10 +49,22 @@ std::string UTest3() {
 	std::string res;
 
 	try {
-		rg.get_payload<std::string>({ "a" }, "a1", res);
+		rg.get_payload<std::string>( { "a" }, "a1", res);
 	} catch (const std::string& s) {
 		std::cout << "exception: " << s << std::endl;
 	}
 
 	return res;
+}
+
+// [[Rcpp::export]]
+Rcpp::List UTest4(const Rcpp::List& l) {
+	RGraph rgIn(l);
+	NamedVector<Real> nv;
+	RGraph rgOut;
+
+	rgIn.get_payload( { "This", "is" }, "Sparta", nv);
+//	rgOut.add_payload({"This", "is"}, "Sparta", nv);
+
+	return rgOut.getL();
 }

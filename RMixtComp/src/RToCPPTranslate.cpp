@@ -7,7 +7,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "RTranslate.h"
+#include "RToCPPTranslate.h"
 
 namespace mixt {
 
