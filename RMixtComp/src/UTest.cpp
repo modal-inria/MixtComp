@@ -64,7 +64,7 @@ Rcpp::List UTest4(const Rcpp::List& l) {
 	RGraph rgOut;
 
 	rgIn.get_payload( { "This", "is" }, "Sparta", nv);
-//	rgOut.add_payload({"This", "is"}, "Sparta", nv);
+	rgOut.add_payload({"This", "is"}, "Sparta", nv);
 
 	return rgOut.getL();
 }

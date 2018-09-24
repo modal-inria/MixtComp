@@ -27,9 +27,22 @@ void CPPToRTranslate(const InType& in, SEXP& out) {
 
 template<typename T>
 void CPPToRTranslate(const NamedVector<T>& in, SEXP& out) {
-//	std::cout << "CPPToRTranslate, to be implemented." << std::endl;
-	// out = Rcpp::wrap(in);
-	out = Rcpp::wrap("To be implemented");
+	Index nrow = in.vec_.size();
+	typename types<T>::ctype temp(nrow);
+
+	for (Index i = 0; i < nrow; ++i) {
+		temp[i] = in.vec_(i);
+	}
+
+	if (in.rowNames_.size() != 0) {
+		Rcpp::CharacterVector tempName(nrow);
+		for (Index i = 0; i < nrow; ++i) {
+			tempName[i] = in.rowNames_[i];
+		}
+		temp.attr("names") = tempName;
+	}
+
+	out = temp;
 }
 
 }
