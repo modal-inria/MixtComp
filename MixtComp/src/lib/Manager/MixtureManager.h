@@ -36,8 +36,6 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 	desc.name_payload( { }, varNames);
 	std::cout << "Variables: " << itString(varNames) << std::endl;
 
-	std::cout << desc.get() << std::endl;
-
 	for (std::list<std::string>::const_iterator it = varNames.begin(), itEnd = varNames.end(); it != itEnd; ++it) {
 		std::string idName = *it;
 		std::string idModel = desc.template get_payload<std::string>( { *it }, "type");
