@@ -18,6 +18,7 @@
 
 using namespace mixt;
 
+// [[Rcpp::export]]
 Rcpp::List rmc(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List resLearnR) {
 	RGraph resRG;
 
@@ -56,16 +57,4 @@ Rcpp::List rmc(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List 
 	}
 
 	return resRG.getL();
-}
-
-// [[Rcpp::export]]
-Rcpp::List rmcLearn(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR) {
-	Rcpp::List resLearn;
-
-	return rmc(algoR, dataR, descR, resLearn);
-}
-
-// [[Rcpp::export]]
-Rcpp::List rmcPredict(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List resLearn) {
-	return rmc(algoR, dataR, descR, resLearn);
 }

@@ -51,7 +51,7 @@ simpleNormalTest <- function() {
     )
   )
   
-  res <- rmcLearn(algo, data, desc)
+  res <- rmc(algo, data, desc, list())
   
   Sys.unsetenv("MC_DETERMINISTIC")
   
