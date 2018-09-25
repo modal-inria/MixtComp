@@ -167,8 +167,9 @@ public:
 		std::string warnLog;
 
 		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
-			std::cout << "MixtureComposer::setDataParam, " << (*it)->idName() << std::endl;
+			std::cout << "MixtureComposer::setDataParam, " << (*it)->idName() << " started..." << std::endl;
 			warnLog += (*it)->setDataParam(mode);
+			std::cout << "... finished." << std::endl;
 		}
 
 		warnLog += setZi(data); // dataHandler getData is called to fill zi_
@@ -222,8 +223,10 @@ public:
 		std::string warnLog;
 
 		if (!data.exist_payload( { }, "z_class")) { // z_class was not provided
+			std::cout << "MixtureComposer::setZi, no class label provided." << std::endl;
 			zClassInd_.setAllMissing(); // set every value state to missing_
 		} else {
+			std::cout << "MixtureComposer::setZi, class label provided." << std::endl;
 			warnLog += zClassInd_.setZi(data);
 		}
 
@@ -288,6 +291,7 @@ public:
 
 			g.add_payload( { "variable", "type" }, currName, (*it)->modelType());
 		}
+
 	}
 
 	/**

@@ -30,7 +30,7 @@ bool RGraph::exist_payload(const std::vector<std::string>& path, const std::stri
 	Rcpp::List l;
 	go_to(path, l);
 
-	if (Rf_isNull(l[name])) {
+	if (!l.containsElementNamed(name.c_str())) {
 		return false;
 	}
 

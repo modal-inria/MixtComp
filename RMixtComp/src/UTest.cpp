@@ -80,3 +80,9 @@ Rcpp::List UTest5(const Rcpp::List& l) {
 
 	return rgOut.getL();
 }
+
+// [[Rcpp::export]]
+bool UTest6() {
+	RGraph dummy;
+	return dummy.exist_payload( { }, "z_class");
+}

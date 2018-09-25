@@ -118,7 +118,9 @@ public:
 		for (Index iter = 0; iter < nIter; ++iter) {
 			std::cout << "Iteration " << iter + 1 << std::endl;
 			myTimer.iteration(iter, nIter - 1);
+#ifdef MC_PROGRESS
 			writeProgress(group, groupMax, iter, nIter - 1);
+#endif
 
 			composer_.eStepCompleted();
 			composer_.sampleZ(); // no checkSampleCondition performed, to increase speed of sampling

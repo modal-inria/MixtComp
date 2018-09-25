@@ -1,4 +1,3 @@
-
 # Compile MixtComp
 
 MixtComp uses cmake to generate makefile.
@@ -39,3 +38,11 @@ Run `./builDebug.sh` (resp. `./builRelease.sh`) to compile MixtComp in Debug (re
 Run `./utestDebug.sh` (resp. `utestRelease.sh`) to run unit tests in Debug (resp. Release) mode.
 To clean the debug and release folders, run `./clean.sh`.
 
+# Compilation FLAGS
+
+Those compilation flags activate various behaviours in MixtComp.
+
+- `MC_DEBUG`: legacy macro which enables a lot of output
+- `MC_PROGRESS`: activates real time writing of a `progress` file in the current working directory. Used mainly in MASSICCC.
+- `MC_VERBOSE`: information on timer
+- `MC_TIMERVERBOSE`: more information on timer, including estimated remaining time

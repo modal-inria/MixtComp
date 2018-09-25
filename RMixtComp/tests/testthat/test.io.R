@@ -19,9 +19,15 @@ test_that("add_payload", {
 })
 
 test_that("exist_payload", {
-    output <- UTest2()
+  output <- UTest2()
   
   expect_identical(TRUE, output)
+})
+
+test_that("exist_payload, negative case", {
+  output <- UTest6()
+  
+  expect_identical(FALSE, output)
 })
 
 test_that("get_payload", {

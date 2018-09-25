@@ -22,7 +22,7 @@ Rcpp::List rmc(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List 
 	RGraph resRG;
 
 	try {
-		std::cout << "JMixtComp" << std::endl;
+		std::cout << "RMixtComp" << std::endl;
 
 		std::string warnLog;
 

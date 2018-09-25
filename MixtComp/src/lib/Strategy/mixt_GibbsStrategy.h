@@ -74,7 +74,9 @@ public:
 
 		for (Index iterGibbs = 0; iterGibbs < nIter; ++iterGibbs) {
 			myTimer.iteration(iterGibbs, nIter - 1);
+#ifdef MC_PROGRESS
 			writeProgress(group, groupMax, iterGibbs, nIter - 1);
+#endif
 
 			composer_.eStepCompleted();
 			composer_.sampleZ();

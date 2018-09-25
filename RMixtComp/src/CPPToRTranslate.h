@@ -69,7 +69,7 @@ void CPPToRTranslate(const NamedMatrix<T>& in, SEXP& out) {
 	}
 
 	if (in.colNames_.size() != 0) {
-		Rcpp::CharacterVector tempName(nrow);
+		Rcpp::CharacterVector tempName(ncol);
 		for (Index i = 0; i < ncol; ++i) {
 			tempName[i] = in.colNames_[i];
 		}

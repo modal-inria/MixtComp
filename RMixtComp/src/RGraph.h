@@ -26,6 +26,7 @@ class RGraph {
 public:
 	RGraph() {
 		l_ = Rcpp::List::create();
+		l_.attr("names") = std::vector<std::string>();
 	}
 	;
 
@@ -55,7 +56,7 @@ public:
 		Rcpp::List l;
 		go_to(path, l);
 
-		if (Rf_isNull(l[name])) {
+		if (!l.containsElementNamed(name.c_str())) {
 			throw(name + " object does not exist.");
 		}
 		RToCPPTranslate(l[name], p);
