@@ -47,7 +47,7 @@ test_that("NumericVector IO", {
 
 test_that("NumericMatrix IO", {
   l <- list()
-  l$mat <- matrix(c(1, 2, 3, 4), nrow = 2)
+  l$mat <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2)
   
   output <- UTest5(l)
   

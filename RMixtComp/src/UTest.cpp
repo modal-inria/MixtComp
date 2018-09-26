@@ -64,7 +64,7 @@ Rcpp::List UTest4(const Rcpp::List& l) {
 	RGraph rgOut;
 
 	rgIn.get_payload( { "This", "is" }, "Sparta", nv);
-	rgOut.add_payload({"This", "is"}, "Sparta", nv);
+	rgOut.add_payload( { "This", "is" }, "Sparta", nv);
 
 	return rgOut.getL();
 }
@@ -75,8 +75,8 @@ Rcpp::List UTest5(const Rcpp::List& l) {
 	NamedMatrix<Real> nm;
 	RGraph rgOut;
 
-	rgIn.get_payload( {}, "mat", nm);
-	rgOut.add_payload({}, "mat", nm);
+	rgIn.get_payload( { }, "mat", nm);
+	rgOut.add_payload( { }, "mat", nm);
 
 	return rgOut.getL();
 }

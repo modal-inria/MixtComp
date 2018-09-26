@@ -52,7 +52,7 @@ void CPPToRTranslate(const NamedMatrix<T>& in, SEXP& out) {
 	Index nrow = in.mat_.rows();
 	Index ncol = in.mat_.cols();
 
-	typename CPPToRMatrixType<T>::ctype temp(nrow);
+	typename CPPToRMatrixType<T>::ctype temp(nrow, ncol);
 
 	for (Index i = 0; i < nrow; ++i) {
 		for (Index j = 0; j < ncol; ++j) {
