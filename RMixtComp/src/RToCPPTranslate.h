@@ -48,6 +48,7 @@ void RToCPPTranslate(SEXP in, NamedVector<T>& out) {
 
 template<typename T>
 void RToCPPTranslate(SEXP in, NamedMatrix<T>& out) {
+	std::cout << "RToCPPTranslate" << std::endl;
 	typename CPPToRMatrixType<T>::ctype temp(in);
 
 	Index nrow = temp.rows();
@@ -55,14 +56,13 @@ void RToCPPTranslate(SEXP in, NamedMatrix<T>& out) {
 	out.mat_.resize(nrow, ncol);
 
 	std::vector<std::string> namesRowVec;
-	std::vector<std::string> namesColVec;
-	SEXP namesRowR = temp.attr("rownames");
-	SEXP namesColR = temp.attr("colnames");
-
+	SEXP namesRowR = rownames(temp);
 	if (!Rf_isNull(namesRowR)) {
 		out.rowNames_ = Rcpp::as<std::vector<std::string>>(namesRowR);
 	}
 
+	std::vector<std::string> namesColVec;
+	SEXP namesColR = colnames(temp);
 	if (!Rf_isNull(namesColR)) {
 		out.colNames_ = Rcpp::as<std::vector<std::string>>(namesColR);
 	}

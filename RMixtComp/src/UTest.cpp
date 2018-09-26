@@ -86,3 +86,22 @@ bool UTest6() {
 	RGraph dummy;
 	return dummy.exist_payload( { }, "z_class");
 }
+
+// [[Rcpp::export]]
+SEXP dummyTest() {
+	Index nrow = 2;
+	Index ncol = 3;
+
+	Rcpp::IntegerMatrix temp(nrow, ncol);
+
+	for (Index i = 0; i < nrow; ++i) {
+		for (Index j = 0; j < ncol; ++j) {
+			temp(i, j) = i * j;
+		}
+	}
+
+	rownames(temp) = Rcpp::CharacterVector::create("row1", "row2");
+	colnames(temp) = Rcpp::CharacterVector::create("col1", "col2", "col3");
+
+	return temp;
+}

@@ -37,11 +37,7 @@ void CPPToRTranslate(const NamedVector<T>& in, SEXP& out) {
 	}
 
 	if (in.rowNames_.size() != 0) {
-		Rcpp::CharacterVector tempName(nrow);
-		for (Index i = 0; i < nrow; ++i) {
-			tempName(i) = in.rowNames_[i];
-		}
-		temp.attr("names") = tempName;
+		temp.attr("names") = in.rowNames_;
 	}
 
 	out = temp;
@@ -65,7 +61,7 @@ void CPPToRTranslate(const NamedMatrix<T>& in, SEXP& out) {
 		for (Index i = 0; i < nrow; ++i) {
 			tempName[i] = in.rowNames_[i];
 		}
-		temp.attr("rownames") = tempName;
+		Rcpp::rownames(temp) = tempName;
 	}
 
 	if (in.colNames_.size() != 0) {
@@ -73,7 +69,7 @@ void CPPToRTranslate(const NamedMatrix<T>& in, SEXP& out) {
 		for (Index i = 0; i < ncol; ++i) {
 			tempName[i] = in.colNames_[i];
 		}
-		temp.attr("colnames") = tempName;
+		Rcpp::colnames(temp) = tempName;
 	}
 
 	out = temp;
