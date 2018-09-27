@@ -5,7 +5,7 @@ Sys.setenv(MC_DETERMINISTIC = 42)
 test_that("Hard coded simple test", {
   set.seed(42)
   
-  algo <- list(
+  algoLearn <- list(
     nClass = 2,
     nInd = 20,
     nbBurnInIter = 100,
@@ -18,7 +18,7 @@ test_that("Hard coded simple test", {
     mode = "learn"
   )
   
-  data <- list(
+  dataLearn <- list(
     var1 = c(
       "3.432200",
       "19.14747",
@@ -43,18 +43,53 @@ test_that("Hard coded simple test", {
     )
   )
   
-  z <- c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2)
+  descLearn <- list(var1 = list(type = "Gaussian",
+                                paramStr = ""))
   
-  desc <- list(var1 = list(type = "Gaussian",
-                           paramStr = ""))
+  zLearn <- c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2)
   
-  resLearn <- rmc(algo, data, desc, list())
+  resLearn <- rmc(algoLearn, dataLearn, descLearn, list())
   
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), z), 0.9)
+  expect_gte(rand.index(getZ_class(resLearn), zLearn), 0.9)
   
-  confMatSampled <- table(z, getZ_class(resLearn))
-  print(confMatSampled)
+  confMatSampledLearn <- table(zLearn, getZ_class(resLearn))
+  print(confMatSampledLearn)
+  
+  algoPredict <- list(
+    nClass = 2,
+    nInd = 6,
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
+    nInitPerClass = 3,
+    nSemTry = 20,
+    confidenceLevel = 0.95,
+    mode = "predict"
+  )
+  
+  dataPredict <- list(var1 = c(
+    "4.838457",
+    "19.90595",
+    "4.577347",
+    "21.19830",
+    "5.048325",
+    "20.46875"
+  ))
+  
+  descPredict <- list(var1 = list(type = "Gaussian",
+                                  paramStr = ""))
+  
+  zPredict <- c(1, 2, 1, 2, 1, 2)
+  
+  resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
+  
+  expect_equal(resPredict$mixture$warnLog, NULL)
+  expect_gte(rand.index(getZ_class(resPredict), zPredict), 0.9)
+  
+  confMatSampledPredict <- table(zPredict, getZ_class(resPredict))
+  print(confMatSampledPredict)
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")
