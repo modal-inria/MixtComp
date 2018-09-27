@@ -1,4 +1,4 @@
-context("Run MixtComp")
+context("Simple run")
 
 Sys.setenv(MC_DETERMINISTIC = 42)
 

@@ -2,33 +2,33 @@ context("Run MixtComp")
 
 Sys.setenv(MC_DETERMINISTIC = 42)
 
-# rand index from fossil
-rand.index <- function (group1, group2) 
-{
-  x <- abs(sapply(group1, function(x) x - group1))
-  x[x > 1] <- 1
-  y <- abs(sapply(group2, function(x) x - group2))
-  y[y > 1] <- 1
-  sg <- sum(abs(x - y))/2
-  bc <- choose(dim(x)[1], 2)
-  ri <- 1 - sg/bc
-  return(ri)
-}
-
 test_that("gaussian model works",{
   set.seed(42)
+  
+  nInd <- 1000
   
   var <- list()
   var$z_class <- zParam()
   
   var$Gaussian1 <- gaussianParam("Gaussian1")
   
-  dat <- dataGenerator(1000, 0.9, var)
+  resGen <- dataGeneratorNewIO(nInd, 0.9, var)
   
-  resGetData <- getData(list(dat$data, dat$descriptor))
+  algo <- list(
+    nClass = 2,
+    nInd = nInd,
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
+    nInitPerClass = 100,
+    nSemTry = 20,
+    confidenceLevel = 0.95,
+    mode = "learn"
+  )
   
-  # define the algorithm's parameters
-  mcStrategy <- createMcStrategy(nInitPerClass = 100)
+  data <- resGen$data
+  desc <- resGen$desc
   
   # run RMixtCompt for clustering
   resLearn <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
@@ -38,8 +38,6 @@ test_that("gaussian model works",{
   
   confMatSampled <- table(dat$z, getZ_class(resLearn))
   print(confMatSampled)
-  
-  file.remove("progress")
 })
 
 
@@ -70,8 +68,6 @@ test_that("poisson model works",{
   
   confMatSampled <- table(dat$z, getZ_class(resLearn))
   print(confMatSampled)
-  
-  file.remove("progress")
 })
 
 test_that("NegativeBinomial model works",{
@@ -149,8 +145,6 @@ test_that("categorical model works",{
   
   confMatSampled <- table(dat$z, getZ_class(resLearn))
   print(confMatSampled)
-  
-  file.remove("progress")
 })
 
 
@@ -177,8 +171,6 @@ test_that("weibull model works",{
 
   confMatSampled <- table(dat$z, getZ_class(resLearn))
   print(confMatSampled)
-
-  file.remove("progress")
 })
 
 test_that("rank model works",{
@@ -204,8 +196,6 @@ test_that("rank model works",{
 
   confMatSampled <- table(dat$z, getZ_class(resLearn))
   print(confMatSampled)
-
-  file.remove("progress")
 })
 
 
@@ -232,8 +222,6 @@ test_that("functional model works",{
 
   confMatSampled <- table(dat$z, getZ_class(resLearn))
   print(confMatSampled)
-
-  file.remove("progress")
 })
 
 
@@ -318,8 +306,6 @@ test_that("run cluster/predict file csv",{
   resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
   expect_equal(resPred$mixture$warnLog, NULL)
   expect_gte(rand.index(getZ_class(resPred), dat$z_class), 0.9)
-
-  file.remove("progress")
 })
 
 
@@ -355,8 +341,6 @@ test_that("run cluster/predict R object",{
   resPred <- mixtCompPredict(resGetDataPred$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
   expect_equal(resPred$mixture$warnLog, NULL)
   expect_gte(rand.index(getZ_class(resPred), datPred$z), 0.85)
-
-  file.remove("progress")
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")
