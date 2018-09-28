@@ -2,40 +2,7 @@ context("Run MixtComp")
 
 Sys.setenv(MC_DETERMINISTIC = 42)
 
-test_that("NegativeBinomial model works",{
-  set.seed(42)
-  
-  var <- list()
-  var$z_class <- zParam()
-  
-  var$nBinom0 <- nBinomParamRandom("nBinom0")
-  var$nBinom1 <- nBinomParamRandom("nBinom1")
-  var$nBinom2 <- nBinomParamRandom("nBinom2")
-  var$nBinom3 <- nBinomParamRandom("nBinom3")
-  var$nBinom4 <- nBinomParamRandom("nBinom4")
-  
-  
-  dat <- dataGenerator(10000, 0.9, var)
-  
-  resGetData <- getData(list(dat$data, dat$descriptor))
-  
-  # define the algorithm's parameters
-  mcStrategy <- createMcStrategy(nInitPerClass = 100)
-  
-  # run RMixtCompt for clustering
-  resLearn <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-  
-  expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), dat$z), 0.9)
-  
-  confMatSampled <- table(dat$z, getZ_class(resLearn))
-  print(confMatSampled)
-  
-  file.remove("progress")
-})
-
-
-test_that("categorical model works",{
+test_that("multinomial model works",{
   set.seed(42)
   
   var <- list()
