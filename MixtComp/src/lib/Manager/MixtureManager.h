@@ -44,7 +44,7 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 		if (idModel != "LatentClass") { // LatentClass type is managed directly in the composer
 			IMixture* p_mixture = NULL;
 
-			if (idModel == "Categorical") {
+			if (idModel == "Multinomial") {
 				p_mixture = new SimpleMixture<Graph, Categorical>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
 			else if (idModel == "Gaussian") {

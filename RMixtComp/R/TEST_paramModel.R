@@ -20,7 +20,7 @@ gaussianParam <- function(name) {
 poissonParam <- function(name) {
   poisson <- list()
   poisson$name <- name
-  poisson$type <- "Poisson_k"
+  poisson$type <- "Poisson"
   poisson$paramStr <- ""
   poisson$generator <- poissonGenerator
   poisson$param <- list()
@@ -36,7 +36,7 @@ poissonParamRandom <- function(name) {
   
   poisson <- list()
   poisson$name <- name
-  poisson$type <- "Poisson_k"
+  poisson$type <- "Poisson"
   poisson$paramStr <- ""
   poisson$generator <- poissonGenerator
   poisson$param <- list()
@@ -53,7 +53,7 @@ poissonParamRandom <- function(name) {
 categoricalParam1 <- function(name) {
   categorical <- list()
   categorical$name <- name
-  categorical$type <- "Categorical_pjk"
+  categorical$type <- "Categorical"
   categorical$paramStr <- ""
   categorical$generator <- categoricalGenerator 
   categorical$param <- list()
@@ -66,7 +66,7 @@ categoricalParam1 <- function(name) {
 categoricalParam2 <- function(name) {
   categorical <- list()
   categorical$name <- name
-  categorical$type <- "Categorical_pjk"
+  categorical$type <- "Multinomial"
   categorical$paramStr <- ""
   categorical$generator <- categoricalGenerator 
   categorical$param <- list()
@@ -85,7 +85,7 @@ categoricalParamRandom <- function(name) {
   
   categorical <- list()
   categorical$name <- name
-  categorical$type <- "Categorical_pjk"
+  categorical$type <- "Categorical"
   categorical$paramStr <- ""
   categorical$generator <- categoricalGenerator 
   categorical$param <- list()
@@ -149,7 +149,7 @@ rankParam <- function(name) {
   Rank$param[[2]] <- list()
   
   Rank$name <- name
-  Rank$type <- "Rank"
+  Rank$type <- "Rank_ISR"
   Rank$paramStr <- ""
   Rank$generator <- rankGenerator
   Rank$param[[1]]$mu <- c(1, 2, 3, 4)
