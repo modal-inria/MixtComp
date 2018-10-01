@@ -17,9 +17,6 @@ a plotly plot
 \description{
 Aggregate the classification probabilities estimated in the nested clustering
 }
-\examples{
-dir = "data/generated_data"
-}
 \seealso{
 Other results aggregation: \code{\link{aggregate_clusters}},
   \code{\link{aggregate_completed_max}},

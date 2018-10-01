@@ -1,13 +1,20 @@
 Package: mixtcompRTools
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
+Title: Mixtcomp Tools in R
+Version: 1.0
 Author: Etienne Goffinet
 Maintainer: The package maintainer <etienne.goffinet@inria.fr>
-Description: Add tools for Mixtcomp, originally essentially Hierarchical calls
-License: What license is it under?
+Description: Add tools for Mixtcomp,essentially Hierarchical calls. Allow to launch Mixtcomp Hierarchically, in both learn and predict mode.
+License: file LICENCE
 Encoding: UTF-8
 LazyData: true
-Imports: jsonlite, RMixtComp, grDevices, utils, RColorBrewer, plotly
+Imports: jsonlite, 
+    grDevices, 
+    utils, 
+    RColorBrewer, 
+    plotly,
+    doParallel,
+    stats,
+    foreach
 Suggests: testthat
 RoxygenNote: 6.0.1

@@ -7,7 +7,6 @@
 #' @return void
 #' @export
 #'
-#' @examples aggregate_clusters(dir_path_result)
 aggregate_clusters <- function(dir) {
   # Si le dossier contient un fichier output
   # Si le warnLog de ce fichier output est vide
@@ -47,7 +46,6 @@ aggregate_clusters <- function(dir) {
 #' @family results aggregation
 #' @return void
 #'
-#' @examples aggregate_clusters(dir_path_result)
 aggregate_completed_max <- function(dir, var) {
 
   print(dir)
@@ -86,7 +84,6 @@ aggregate_completed_max <- function(dir, var) {
 #' @return a plotly plot
 #' @export
 #'
-#' @examples
 aggregate_completed <-
   function(dir,
            var,
@@ -94,7 +91,7 @@ aggregate_completed <-
 
     if(is.null(depth))(return(aggregate_completed_max(dir,var)))
 
-    output = fromJSON(paste0(dir, "/mixtcomp_output.json"))
+    output = jsonlite::fromJSON(paste0(dir, "/mixtcomp_output.json"))
     data_completed = output$variable$data[[var]]$completed
     if (depth == 0) {
       return(data_completed)
@@ -104,7 +101,7 @@ aggregate_completed <-
         subdir = paste0(dir, "/subcluster_", cluster)
         print(subdir)
         if (file.exists(paste0(subdir, "/mixtcomp_output.json"))) {
-          next_output = fromJSON(paste0(subdir, "/mixtcomp_output.json"))
+          next_output = jsonlite::fromJSON(paste0(subdir, "/mixtcomp_output.json"))
           if (next_output$mixture$warnLog == "") {
             data_completed[which(clusters == cluster)] = aggregate_completed(dir = subdir,
                                                                                    var = var,
@@ -125,14 +122,12 @@ aggregate_completed <-
 #' @return a plotly plot
 #' @export
 #'
-#' @examples
-#' dir = "data/generated_data"
 aggregate_classification_probabilities <-
   function(dir,
            depth) {
     print(dir)
 
-    output = fromJSON(paste0(dir, "/mixtcomp_output.json"))
+    output = jsonlite::fromJSON(paste0(dir, "/mixtcomp_output.json"))
     probs = output$variable$data$z_class$stat
 
     if (depth == 0) {
@@ -143,7 +138,7 @@ aggregate_classification_probabilities <-
       for (cluster in 1:output$mixture$nbCluster) {
         subdir = paste0(dir, "/subcluster_", cluster)
         if (file.exists(paste0(subdir, "/mixtcomp_output.json"))) {
-          next_output = fromJSON(paste0(subdir, "/mixtcomp_output.json"))
+          next_output = jsonlite::fromJSON(paste0(subdir, "/mixtcomp_output.json"))
           if (next_output$mixture$warnLog == "") {
             probs_sub = aggregate_classification_probabilities(subdir, depth = depth - 1)
             probs_all_obs = matrix(0,

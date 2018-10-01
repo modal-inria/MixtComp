@@ -37,7 +37,7 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
   ## Get information
   # names of variables
   namesVbles <- names(output$variable$type)[names(output$variable$type) != "z_class"]
-  namesShort <- abbreviate(namesVbles, 6)
+  namesShort <- abbreviate(namesVbles, 6, use.classes = FALSE)
   # discriminative power (1 - Cj), saved at slot pvdiscrimclasses of JSON file
   pvDiscrim <- round(1-colSums(output$mixture$IDClass), 2)
   # Full names and type of the variables
@@ -172,7 +172,7 @@ heatmapVbles <- function(output, ...){
   ## Get information
   # names of variables
   namesVbles <- names(output$variable$type)[names(output$variable$type) != "z_class"]
-  namesShort <- abbreviate(namesVbles, 6)
+  namesShort <- abbreviate(namesVbles, 6, use.classes = FALSE)
   # similarities  (1 - delta), delta is saved at slot delta of JSON file
   similarities <- round(1 - output$mixture$delta, 2)
   

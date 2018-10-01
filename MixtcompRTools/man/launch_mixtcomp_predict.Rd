@@ -5,12 +5,14 @@
 \title{Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
 the directory given by the dir param and with nClass number of clusters}
 \usage{
-launch_mixtcomp_predict(param_dir, test_dir, nClass)
+launch_mixtcomp_predict(param_dir, test_dir, nClass, mcStrategy)
 }
 \arguments{
-\item{nClass}{Positive intege}
+\item{param_dir}{A string defining the path of the directory in which to fint the parameters hierarchical tree on which the hierarchical predict will be based}
 
-\item{dir}{A String}
+\item{test_dir}{A String}
+
+\item{nClass}{Positive intege}
 }
 \value{
 void
@@ -18,9 +20,4 @@ void
 \description{
 Launch Mixtcomp on a data_mixtcomp.csv and descriptor.csv files contained in
 the directory given by the dir param and with nClass number of clusters
-}
-\examples{
-\dontrun {
-launch_mixtcomp("data/data_mixtcomp",3)
-}
 }

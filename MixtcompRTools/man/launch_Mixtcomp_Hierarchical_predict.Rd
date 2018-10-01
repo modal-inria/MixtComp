@@ -4,28 +4,24 @@
 \alias{launch_Mixtcomp_Hierarchical_predict}
 \title{Launch the Mixtcomp prediction based on an existing hierarchical cluster}
 \usage{
-launch_Mixtcomp_Hierarchical_predict(data_path, param_dir, output_dir = NULL)
+launch_Mixtcomp_Hierarchical_predict(data_path, param_dir, output_dir = NULL,
+  mcStrategy = NULL)
 }
 \arguments{
 \item{data_path}{A string}
 
+\item{param_dir}{A string defining the path of the directory in which to fint the parameters hierarchical tree on which the hierarchical predict will be based}
+
 \item{output_dir}{(optional) if not null, the results will be written in this directory.
 If Null, a directory with the name of the dataset will be created and used as output directory instead.}
 
-\item{descriptor_path}{A string}
-
-\item{nClass}{Integer between 0 and 10}
-
-\item{depth}{Positive integer}
+\item{mcStrategy}{(optional) Additional parameters for mixtcomp launch (nbBurnInIter, nbIter nbGibbsBurnInIter, nbGibbsIter)}
 }
 \value{
 void
 }
 \description{
 Launch the Mixtcomp prediction based on an existing hierarchical cluster
-}
-\examples{
-launch_Mixtcomp_Hierarchical("data/data.csv","data/descriptor.csv",3,3)
 }
 \author{
 Etienne Goffinet

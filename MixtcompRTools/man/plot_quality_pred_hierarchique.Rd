@@ -12,13 +12,15 @@ plot_quality_pred_hierarchique(clusters, var, idx_test, data_observed,
 
 \item{var}{String, The name of the categorical data to plot}
 
+\item{idx_test}{vector of the index of the test data in the data_observed and data_completed}
+
+\item{data_observed}{Observed data to be compared with data_completed}
+
+\item{data_completed}{Completed data}
+
 \item{depth}{Positive Integer, maximum depth of the subclustering to plot}
 
-\item{output}{The output in which to find the data to plot}
-
-\item{max_nb_lines}{Positive Integer, Defines the maximum number of lines to plot (default is 100)}
-
-\item{dictionary}{List, the dictionary in which are stored the real names of the categorical data levels}
+\item{order_by}{(optional) element among : size, purity or quality, which define the order of the different cluster in the histogram.}
 }
 \value{
 a plotly plot

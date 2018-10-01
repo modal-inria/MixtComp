@@ -7,7 +7,15 @@
 addVariable(lm, data, id, model, paramStr)
 }
 \arguments{
-\item{paramStr}{}
+\item{lm}{list as container}
+
+\item{data}{Vector of data}
+
+\item{id}{Name of the variable}
+
+\item{model}{Name of the model : "Gaussian_pjk", ..}
+
+\item{paramStr}{Additional parameters as strings}
 }
 \value{
 

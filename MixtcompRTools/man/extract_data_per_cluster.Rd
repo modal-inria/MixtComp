@@ -15,6 +15,3 @@ void
 \description{
 During the expand phase, cut data according to clusters and copy to subfolder
 }
-\examples{
-extract_data_per_cluster("data/data_mixtcomp/x.csv")
-}

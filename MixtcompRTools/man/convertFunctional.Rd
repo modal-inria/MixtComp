@@ -7,7 +7,7 @@
 convertFunctional(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{a string containing a fonctional observation (cf example)}
 }
 \value{
 matrix

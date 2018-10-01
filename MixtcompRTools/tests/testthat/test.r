@@ -6,8 +6,9 @@ test_that("Expand handling", {
   expect_error(create_subdirectories("tests/wdir",nClass = 0))
   expect_error(create_subdirectories("tests/wdir/",nClass = 0))
 
-  random_2_5 <- sample(2:5,s=1)
-  create_subdirectories("wdir/",nClass = random_2_5)
-  expect_equal(length(list.dirs("wdir/",recursive = F)),random_2_5)
+  create_subdirectories("wdir/",nClass = 4)
+  expect_equal(length(list.dirs("wdir/",recursive = F)),4)
   unlink("wdir/",recursive=T)
 })
+
+

@@ -4,21 +4,23 @@
 \alias{plot_categorical_hierarchique}
 \title{Plot categorical data by clusters}
 \usage{
-plot_categorical_hierarchique(clusters, var, data, depth, max_nb_lines = 100,
-  dictionary = NULL, order_by = NULL, source = NULL)
+plot_categorical_hierarchique(clusters, var, data, depth, dictionary = NULL,
+  order_by = NULL, source = NULL)
 }
 \arguments{
 \item{clusters}{vector of the clusters associated with data}
 
 \item{var}{String, The name of the categorical data to plot}
 
+\item{data}{the data to be plotted}
+
 \item{depth}{Positive Integer, maximum depth of the subclustering to plot}
 
-\item{max_nb_lines}{Positive Integer, Defines the maximum number of lines to plot (default is 100)}
+\item{dictionary}{(optional) List, the dictionary in which are stored the real names of the categorical data levels}
 
-\item{dictionary}{List, the dictionary in which are stored the real names of the categorical data levels}
+\item{order_by}{(optional) element among : size or purity, which define the order of the different cluster in the histogram.}
 
-\item{output}{The output in which to find the data to plot}
+\item{source}{(optional) A string specifying the name of the source to be added to the plotly plot (in case the plot is used in a shiny app)}
 }
 \value{
 a plotly plot

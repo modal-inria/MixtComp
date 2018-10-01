@@ -17,6 +17,3 @@ void
 \description{
 Create Subdirectories during the expand phase
 }
-\examples{
-create_subdirectories(getwd(),2)
-}
