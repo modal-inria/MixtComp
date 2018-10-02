@@ -15,10 +15,7 @@
 
 namespace mixt {
 
-std::string parseFunctionalStr(Index nSub,
-                               Index nCoeff,
-                               const Vector<std::string>& dataStr,
-                               Vector<Function>& vecInd);
+std::string parseFunctionalStr(Index nSub, Index nCoeff, const std::vector<std::string>& dataStr, Vector<Function>& vecInd);
 
 } // namespace mixt
 

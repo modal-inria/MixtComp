@@ -75,6 +75,11 @@ void CPPToRTranslate(const NamedMatrix<T>& in, SEXP& out) {
 	out = temp;
 }
 
+template<typename T>
+void CPPToRTranslate(const std::vector<std::vector<T>>& in, SEXP& out) {
+	std::cout << "CPPToRTranslate(const std::vector<std::vector<T>>& in, SEXP& out) not implemented yet." << std::endl;
+}
+
 }
 
 #endif

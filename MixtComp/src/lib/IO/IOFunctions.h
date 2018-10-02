@@ -7,8 +7,8 @@
  *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef STRINGTOAUGMENTEDDATA_H
-#define STRINGTOAUGMENTEDDATA_H
+#ifndef LIB_IO_IOFUNCTIONS_H
+#define LIB_IO_IOFUNCTIONS_H
 
 #include <string>
 #include <vector>
@@ -57,6 +57,11 @@ std::string StringToAugmentedData(const std::string& idName, const std::vector<s
 	}
 	return warnLog;
 }
+
+/**
+ * Generate column names for quantile based outputs.
+ */
+void quantileNames(Index ncol, Real confidenceLevel, std::vector<std::string>& colNames);
 
 }
 

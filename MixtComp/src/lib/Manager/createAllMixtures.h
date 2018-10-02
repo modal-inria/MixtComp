@@ -8,8 +8,8 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#ifndef LIB_MANAGER_MIXT_MIXTUREMANAGER_H
-#define LIB_MANAGER_MIXT_MIXTUREMANAGER_H
+#ifndef LIB_MANAGER_CREATEALLMIXTURES_H
+#define LIB_MANAGER_CREATEALLMIXTURES_H
 
 #include <Composer/mixt_MixtureComposer.h>
 #include <Mixture/Simple/SimpleMixture.h>
@@ -63,11 +63,9 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 				p_mixture = new SimpleMixture<Graph, NegativeBinomial>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
 
-			//		if (idModel == "Functional") {
-			//			FunctionalMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge = new FunctionalMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>(idName,
-			//					nbCluster, dummyNObs, p_handler_, p_dataExtractor_, p_paramSetter_, p_paramExtractor_, confidenceLevel);
-			//			return p_bridge;
-			//		}
+			if (idModel == "Functional") {
+				p_mixture = new FunctionalMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+			}
 
 			//		if (idModel == "FunctionalSharedAlpha") {
 			//			FunctionalSharedAlphaMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge = new FunctionalSharedAlphaMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>(

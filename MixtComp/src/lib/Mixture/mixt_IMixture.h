@@ -8,8 +8,8 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#ifndef MIXT_IMIXTURE_H
-#define MIXT_IMIXTURE_H
+#ifndef LIB_MIXTURE_MIXT_IMIXTURE_H
+#define LIB_MIXTURE_MIXT_IMIXTURE_H
 
 #include <iostream>
 #include <set>

@@ -11,7 +11,7 @@
 #define LIB_RUN_PREDICT_H
 
 #include <LinAlg/mixt_LinAlg.h>
-#include <Manager/MixtureManager.h>
+#include <Manager/createAllMixtures.h>
 #include <Statistic/mixt_RNG.h>
 #include <Strategy/mixt_GibbsStrategy.h>
 #include <Various/mixt_Constants.h>

@@ -43,10 +43,10 @@
         - ...
     - param
         - var1
+            - paramStr
             - param A
                 - log (to be implemented)
                 - stat
-                - paramStr
             - param B
             - ...
         - var2

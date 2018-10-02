@@ -31,9 +31,9 @@ public:
 	 *  @param nbCluster number of cluster
 	 **/
 	SimpleMixture(const Graph& data, const Graph& param, Graph& out, std::string const& idName, Index nbClass, Index nInd, Real confidenceLevel, const std::string& paramStr) :
-			IMixture(idName, Model::name, nbClass, nInd), dataG_(data), paramG_(param), outG_(out), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(paramStr), nbInd_(
-					nInd), confidenceLevel_(confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_,
-					augData_, nbClass) {
+			IMixture(idName, Model::name, nbClass, nInd), dataG_(data), paramG_(param), outG_(out), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(
+					paramStr), nbInd_(nInd), confidenceLevel_(confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_,
+					confidenceLevel), likelihood_(param_, augData_, nbClass) {
 	}
 
 	/**
@@ -62,10 +62,10 @@ public:
 
 		if (mode == prediction_) {
 			NamedMatrix<Real> stat;
-			paramG_.get_payload( { idName_, "NumericalParam" }, "stat", stat);
+			paramG_.get_payload( { idName_ }, "stat", stat);
 			Index nrow = stat.mat_.rows();
 
-			paramG_.get_payload( { idName_, "NumericalParam" }, "paramStr", paramStr_);
+			paramG_.get_payload( { idName_ }, "paramStr", paramStr_);
 
 			param_.resize(nrow);
 			for (Index i = 0; i < nrow; ++i) {
@@ -148,27 +148,20 @@ public:
 		if (model_.hasModalities()) {
 			dataOut.vec_ += minModality;
 		}
-		outG_.add_payload({"variable", "data", idName_}, "completed", dataOut);
+		outG_.add_payload( { "variable", "data", idName_ }, "completed", dataOut);
 
 		Index ncol = paramStat_.getStatStorage().cols();
 		std::vector<std::string> colNames(ncol);
-		Real alpha = (1. - confidenceLevel_) / 2.;
 
-		if (ncol == 1) { // predict
-			colNames[0] = "value";
-		} else { // learn
-			colNames[0] = "median";
-			colNames[1] = std::string("q ") + std::to_string((alpha * 100.)) + "%";
-			colNames[2] = std::string("q ") + std::to_string(((1. - alpha) * 100.)) + "%";
-		}
+		quantileNames(ncol, confidenceLevel_, colNames);
 
 		NamedMatrix<Real> paramOut; // all parameters are real at the moment,
 		paramOut.mat_ = paramStat_.getStatStorage();
 		paramOut.rowNames_ = model_.paramNames();
 		paramOut.colNames_ = colNames;
 
-		outG_.add_payload({"variable", "param", idName_, "NumericalParam"}, "stat", paramOut);
-		outG_.add_payload({"variable", "param", idName_, "NumericalParam"}, "paramStr", paramStr_);
+		outG_.add_payload( { "variable", "param", idName_ }, "stat", paramOut);
+		outG_.add_payload( { "variable", "param", idName_ }, "paramStr", paramStr_);
 	}
 
 	void initData(Index i) {

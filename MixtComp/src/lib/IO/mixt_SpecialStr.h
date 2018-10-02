@@ -7,8 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
  **/
 
-#ifndef MIXT_SPECIALSTR
-#define MIXT_SPECIALSTR
+#ifndef LIB_IO_MIXT_SPECIALSTR
+#define LIB_IO_MIXT_SPECIALSTR
 
 #include <string>
 

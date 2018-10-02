@@ -37,8 +37,8 @@ public:
 	template<typename Graph>
 	MixtureComposer(const Graph& algo) :
 			nClass_(algo.template get_payload<Index>( { }, "nClass")), nInd_(algo.template get_payload<Index>( { }, "nInd")), nVar_(0), confidenceLevel_(
-					algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(
-					zClassInd_), completedProbabilityCache_(nInd_) {
+					algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_,
+					confidenceLevel_), dataStat_(zClassInd_), completedProbabilityCache_(nInd_) {
 		std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
 		zClassInd_.setIndClass(nInd_, nClass_);
 
@@ -239,15 +239,15 @@ public:
 		zClassInd_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
 		if (zClassInd_.zi().dataRange_.min_ < 0) { // Since z is currently described using unsigned integer, there is no need for this check HOWEVER it might come in handy shall this condition changes
 			std::stringstream sstm;
-			sstm << "The z_class latent class variable has a lowest provided value of: " << minModality + zClassInd_.zi().dataRange_.min_ << " while the minimal value has to be: " << minModality
-					<< ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
+			sstm << "The z_class latent class variable has a lowest provided value of: " << minModality + zClassInd_.zi().dataRange_.min_ << " while the minimal value has to be: "
+					<< minModality << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
 			warnLog += sstm.str();
 		}
 		if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nClass_ - 1) {
 			std::stringstream sstm;
 			sstm << "The z_class latent class variable has a highest provided value of: " << minModality + zClassInd_.zi().dataRange_.max_
-					<< " while the maximal value can not exceed the number of class: " << minModality + nClass_ - 1 << ". Please check the encoding of this variable to ensure proper bounds."
-					<< std::endl;
+					<< " while the maximal value can not exceed the number of class: " << minModality + nClass_ - 1
+					<< ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
 			warnLog += sstm.str();
 		}
 		zClassInd_.setRange(0, nClass_ - 1, nClass_);
@@ -262,26 +262,22 @@ public:
 	void exportDataParam(Graph& g) const {
 		g.add_payload( { "variable", "type" }, "z_class", "LatentClass");
 
-		g.add_payload( { "variable", "data", "z_class" }, "completed", NamedVector<Index> { std::vector<std::string>(), zClassInd_.zi().data_ + minModality });
-		g.add_payload( { "variable", "data", "z_class" }, "stat", NamedMatrix<Real> { std::vector<std::string>(), std::vector<std::string>(), tik_ });
+		NamedVector<Index> dataCompleted { std::vector<std::string>(), zClassInd_.zi().data_ + minModality };
+		NamedMatrix<Real> dataStat { std::vector<std::string>(), std::vector<std::string>(), tik_ };
+
+		g.add_payload( { "variable", "data", "z_class" }, "completed", dataCompleted);
+		g.add_payload( { "variable", "data", "z_class" }, "stat", dataStat);
 
 		NamedMatrix<Real> piExport;
 
 		Index ncol = paramStat_.getStatStorage().cols();
-		std::vector<std::string> colNames(ncol);
-		Real alpha = (1. - confidenceLevel_) / 2.;
+		std::vector<std::string> colNames;
 
-		if (ncol == 1) { // predict
-			colNames[0] = "value";
-		} else { // learn
-			colNames[0] = "median";
-			colNames[1] = std::string("q ") + std::to_string((alpha * 100.)) + "%";
-			colNames[2] = std::string("q ") + std::to_string(((1. - alpha) * 100.)) + "%";
-		}
+		quantileNames(ncol, confidenceLevel_, colNames);
 
-		NamedMatrix<Real> paramOut = { paramName(), colNames, paramStat_.getStatStorage() };
+		NamedMatrix<Real> paramStat { paramName(), colNames, paramStat_.getStatStorage() };
 
-		g.add_payload( { "variable", "param", "z_class", "pi" }, "stat", paramOut);
+		g.add_payload( { "variable", "param", "z_class", "pi" }, "stat", paramStat);
 		g.add_payload( { "variable", "param", "z_class", "pi" }, "paramStr", paramStr_);
 
 		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {

@@ -26,6 +26,7 @@ add_library(MixtComp
     IO/mixt_SpecialStr.h
     IO/mixt_SpecialStr.cpp
     IO/IOFunctions.h
+    IO/IOFunctions.cpp
     Param/mixt_ConfIntParamStat.h
     Various/mixt_Timer.cpp
     Various/mixt_Enum.h
@@ -34,7 +35,7 @@ add_library(MixtComp
     Various/mixt_Constants.h
     Various/mixt_Constants.cpp
     Various/mixt_Various.h
-    Manager/MixtureManager.h
+    Manager/createAllMixtures.h
     mixt_MixtComp.h
     Mixture/mixt_IMixture.h
     Mixture/Simple/Weibull/WeibullLikelihood.h
