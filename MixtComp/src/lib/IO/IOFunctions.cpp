@@ -15,8 +15,10 @@ void quantileNames(Index ncol, Real confidenceLevel, std::vector<std::string>& c
 	Real alpha = (1. - confidenceLevel) / 2.;
 
 	if (ncol == 1) { // predict
+		colNames.resize(1);
 		colNames[0] = "value";
 	} else { // learn
+		colNames.resize(3);
 		colNames[0] = "median";
 		colNames[1] = std::string("q ") + std::to_string((alpha * 100.)) + "%";
 		colNames[2] = std::string("q ") + std::to_string(((1. - alpha) * 100.)) + "%";

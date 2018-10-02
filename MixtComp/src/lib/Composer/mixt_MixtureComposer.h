@@ -260,6 +260,7 @@ public:
 	 **/
 	template<typename Graph>
 	void exportDataParam(Graph& g) const {
+
 		g.add_payload( { "variable", "type" }, "z_class", "LatentClass");
 
 		NamedVector<Index> dataCompleted { std::vector<std::string>(), zClassInd_.zi().data_ + minModality };
@@ -267,8 +268,6 @@ public:
 
 		g.add_payload( { "variable", "data", "z_class" }, "completed", dataCompleted);
 		g.add_payload( { "variable", "data", "z_class" }, "stat", dataStat);
-
-		NamedMatrix<Real> piExport;
 
 		Index ncol = paramStat_.getStatStorage().cols();
 		std::vector<std::string> colNames;
@@ -287,7 +286,6 @@ public:
 
 			g.add_payload( { "variable", "type" }, currName, (*it)->modelType());
 		}
-
 	}
 
 	/**

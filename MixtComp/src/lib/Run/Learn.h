@@ -76,7 +76,6 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 
 	Real runTime = totalTimer.top("end of run");
 	std::string mode = "learn";
-
 	composer.exportMixture(runTime, out);
 	composer.exportDataParam(out);
 }
