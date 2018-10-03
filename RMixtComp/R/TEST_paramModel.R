@@ -53,7 +53,7 @@ poissonParamRandom <- function(name) {
 categoricalParam1 <- function(name) {
   categorical <- list()
   categorical$name <- name
-  categorical$type <- "Categorical"
+  categorical$type <- "Multinomial"
   categorical$paramStr <- ""
   categorical$generator <- categoricalGenerator 
   categorical$param <- list()
@@ -85,7 +85,7 @@ categoricalParamRandom <- function(name) {
   
   categorical <- list()
   categorical$name <- name
-  categorical$type <- "Categorical"
+  categorical$type <- "Multinomial"
   categorical$paramStr <- ""
   categorical$generator <- categoricalGenerator 
   categorical$param <- list()

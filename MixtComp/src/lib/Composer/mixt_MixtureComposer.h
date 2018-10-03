@@ -260,7 +260,6 @@ public:
 	 **/
 	template<typename Graph>
 	void exportDataParam(Graph& g) const {
-
 		g.add_payload( { "variable", "type" }, "z_class", "LatentClass");
 
 		NamedVector<Index> dataCompleted { std::vector<std::string>(), zClassInd_.zi().data_ + minModality };
