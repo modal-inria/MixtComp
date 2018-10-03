@@ -14,6 +14,7 @@
 #include <list>
 #include "json.hpp"
 #include <IO/NamedAlgebra.h>
+#include <IO/IOFunctions.h>
 #include <LinAlg/mixt_LinAlg.h>
 #include "JSONTranslate.h"
 
@@ -52,7 +53,9 @@ public:
 		go_to(path, l);
 
 		if (l[name].is_null()) {
-			throw(name + " object does not exist.");
+			std::string cPath;
+			completePath(path, name, cPath);
+			throw(cPath + " object does not exist.");
 		}
 		JSONTranslate(l[name], p);
 	}

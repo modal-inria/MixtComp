@@ -63,6 +63,8 @@ std::string StringToAugmentedData(const std::string& idName, const std::vector<s
  */
 void quantileNames(Index ncol, Real confidenceLevel, std::vector<std::string>& colNames);
 
+void completePath(const std::vector<std::string>& path, const std::string& name, std::string& str);
+
 }
 
 #endif

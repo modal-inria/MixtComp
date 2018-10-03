@@ -57,7 +57,7 @@ void JSONGraph::go_to(const std::vector<std::string>& path, Index currDepth, con
 		if (nextLevel.is_null()) { // if next level does not exist, create it
 			std::string askedPath;
 			for (Index i = 0; i < currDepth + 1; ++i) {
-				askedPath + "/" + path[i];
+				askedPath += + "/" + path[i];
 			}
 			throw(askedPath + " path does not exist.");
 		}

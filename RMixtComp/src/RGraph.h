@@ -15,6 +15,7 @@
 #include <string>
 #include "Rcpp.h"
 #include <IO/NamedAlgebra.h>
+#include <IO/IOFunctions.h>
 #include <LinAlg/mixt_LinAlg.h>
 
 #include "CPPToRTranslate.h"
@@ -57,7 +58,9 @@ public:
 		go_to(path, l);
 
 		if (!l.containsElementNamed(name.c_str())) {
-			throw(name + " object does not exist.");
+			std::string cPath;
+			completePath(path, name, cPath);
+			throw(cPath + " object does not exist.");
 		}
 		RToCPPTranslate(l[name], p);
 	}

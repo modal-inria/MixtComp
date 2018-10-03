@@ -25,4 +25,12 @@ void quantileNames(Index ncol, Real confidenceLevel, std::vector<std::string>& c
 	}
 }
 
+void completePath(const std::vector<std::string>& path, const std::string& name, std::string& str) {
+	str = "";
+	for (std::vector<std::string>::const_iterator it = path.begin(), itEnd = path.end(); it != itEnd; ++it) {
+		str += "/" + *it;
+	}
+	str += "/" + name;
+}
+
 }
