@@ -6,8 +6,10 @@ add_library(JMixtComp
     JSONGraph.cpp
     JSONGraph.h
     jsonIO.h
-    JSONTranslate.cpp
-    JSONTranslate.h
+    JSONToCPPTranslate.cpp
+    JSONToCPPTranslate.h
+    CPPToJSONTranslate.cpp
+    CPPToJSONTranslate.h
 )
 
 add_executable(jmc

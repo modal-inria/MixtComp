@@ -69,7 +69,8 @@ TEST(JSONSGraph, NamedVectorReal) {
 }
 
 TEST(JSONSGraph, NamedMatrixReal) {
-	std::string exp = R"-({"A named matrix":{"colNames":["1","2","3"],"ctype":"Matrix","data":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],"dtype":"Real","ncol":3,"nrow":3,"rowNames":["A","B","C"]}})-";
+	std::string exp =
+			R"-({"A named matrix":{"colNames":["1","2","3"],"ctype":"Matrix","data":[[1.0,2.0,3.0],[4.0,5.0,6.0],[7.0,8.0,9.0]],"dtype":"Real","ncol":3,"nrow":3,"rowNames":["A","B","C"]}})-";
 	JSONGraph gIn;
 	gIn.set(exp);
 
@@ -107,7 +108,25 @@ TEST(JSONSGraph, name_payload) {
 	gIn.set(exp);
 
 	std::list<std::string> l;
-	gIn.name_payload({}, l);
+	gIn.name_payload( { }, l);
 
 	ASSERT_EQ(itString(l), std::string("var1 varZ"));
+}
+
+/**
+ * This is used in the data output of the Functional model
+ */
+TEST(JSONSGraph, VectorOfVectorOfReal) {
+	std::string exp = R"-({"var1":[[1.],[1., 5., 12.],[0., -42.]]})-";
+	JSONGraph gIn;
+	gIn.set(exp);
+
+	std::vector<std::vector<Real>> temp;
+	gIn.get_payload<std::vector<std::vector<Real>>>( { }, "var1", temp);
+
+//	JSONGraph gOut;
+//	gOut.add_payload( { }, "var1", temp);
+//	std::string comp = gOut.get();
+//
+//	ASSERT_EQ(exp, comp);
 }

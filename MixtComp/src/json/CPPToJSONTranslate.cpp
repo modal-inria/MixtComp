@@ -7,13 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "JSONTranslate.h"
+#include "CPPToJSONTranslate.h"
 
 namespace mixt {
-
-template<>
-void JSONTranslate(const nlohmann::json& in, std::vector<std::string>& out) {
-	out = in.get<std::vector<std::string>>();
-}
 
 }

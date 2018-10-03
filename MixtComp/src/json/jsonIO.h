@@ -7,10 +7,11 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef JSONIO_H
-#define JSONIO_H
+#ifndef JSON_JSONIO_H
+#define JSON_JSONIO_H
 
+#include "CPPToJSONTranslate.h"
 #include "JSONGraph.h"
-#include "JSONTranslate.h"
+#include "JSONToCPPTranslate.h"
 
 #endif

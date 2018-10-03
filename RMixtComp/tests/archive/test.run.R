@@ -27,61 +27,6 @@ test_that("rank model works",{
   print(confMatSampled)
 })
 
-
-test_that("functional model works",{
-  set.seed(42)
-
-  var <- list()
-  var$z_class <- zParam()
-
-  var$Functional1 <- functionalInterPolyParam("Functional1")
-
-  dat <- dataGenerator(200, 0.95, var)
-
-  resGetData <- getData(list(dat$data, dat$descriptor))
-
-  # define the algorithm's parameters
-  mcStrategy <- createMcStrategy(nInitPerClass = 20)
-
-  # run RMixtCompt for clustering
-  resLearn <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-
-  expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), dat$z), 0.9)
-
-  confMatSampled <- table(dat$z, getZ_class(resLearn))
-  print(confMatSampled)
-})
-
-
-test_that("functional model with shared alpha works",{
-  set.seed(42)
-
-  var <- list()
-  var$z_class <- zParam()
-
-  var$functionalSharedAlpha1 <- functionalSharedAlphaInterPolyParam("functionalSharedAlpha1")
-
-  dat <- dataGenerator(400, 0.9, var)
-
-  resGetData <- getData(list(dat$data, dat$descriptor))
-
-  # define the algorithm's parameters
-  mcStrategy <- createMcStrategy(nInitPerClass = 40)
-
-  # run RMixtCompt for clustering
-  resLearn <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-
-  expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), dat$z), 0.9)
-
-  confMatSampled <- table(dat$z, getZ_class(resLearn))
-  print(confMatSampled)
-
-  file.remove("progress")
-})
-
-
 test_that("ordinal model works",{
   skip("ordinal model is not working")
   set.seed(42)
