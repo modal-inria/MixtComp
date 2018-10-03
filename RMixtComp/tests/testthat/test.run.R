@@ -225,7 +225,7 @@ test_that("functional model works",{
   
   var$Functional1 <- functionalInterPolyParam("Functional1")
   
-  dat <- dataGeneratorNewIO(nInd, ratioPresent, var)
+  resGen <- dataGeneratorNewIO(nInd, ratioPresent, var)
   
   algo <- list(
     nClass = 2,
@@ -264,7 +264,7 @@ test_that("functional model with shared alpha works",{
   
   var$functionalSharedAlpha1 <- functionalSharedAlphaInterPolyParam("functionalSharedAlpha1")
   
-  dat <- dataGenerator(400, 0.9, var)
+  resGen <- dataGeneratorNewIO(400, 0.9, var)
   
   algo <- list(
     nClass = 2,

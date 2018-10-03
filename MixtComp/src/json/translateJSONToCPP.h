@@ -54,24 +54,6 @@ void translateJSONToCPP(const nlohmann::json& in, NamedMatrix<T>& out) {
 	}
 }
 
-//template<typename T>
-//void JSONToCPPTranslate(const nlohmann::json& in, std::vector<std::vector<T>>& out) {
-//	out = in.get<std::vector<std::vector<T>>>();
-//}
-
-//template<typename T>
-//void JSONTranslate(const std::vector<std::vector<T>>& in, nlohmann::json& out) {
-//	std::cout << "JSONTranslate(const std::vector<std::vector<T>>& in, nlohmann::json& out)" << std::endl;
-//	out.
-//}
-
-/**
- * Specialization necessary to remove ambiguity on the = operator used for vector.
- */
-//template<>
-//void JSONTranslate(const nlohmann::json& in, std::vector<std::string>& out);
-//
-//}
 }
 
 #endif

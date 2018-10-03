@@ -63,22 +63,13 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 				p_mixture = new SimpleMixture<Graph, NegativeBinomial>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
 
-			if (idModel == "Functional") {
+			if (idModel == "Func_CS") {
 				p_mixture = new FunctionalMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
 
-			if (idModel == "FunctionalSharedAlpha") {
+			if (idModel == "Func_SharedAlpha_CS") {
 				p_mixture = new FunctionalSharedAlphaMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
-
-			//		if (idModel == "Ordinal") {
-			//			Ordinal<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge =
-			//					new Ordinal<DataHandler, DataExtractor, ParamSetter,
-			//							ParamExtractor>(indexMixture, idName, nbCluster,
-			//							p_handler_, p_dataExtractor_, p_paramSetter_,
-			//							p_paramExtractor_, confidenceLevel);
-			//			return p_bridge;
-			//		}
 
 			//		if (idModel == "Rank") {
 			//			RankMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge = new RankMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>(idName, nbCluster,

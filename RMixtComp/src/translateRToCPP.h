@@ -74,11 +74,6 @@ void translateRToCPP(SEXP in, NamedMatrix<T>& out) {
 	}
 }
 
-//template<typename T>
-//void RToCPPTranslate(SEXP in, std::vector<std::vector<T>>& out) {
-//	std::cout << "RToCPPTranslate(SEXP in, std::vector<std::vector<T>>& out) not implemented yet." << std::endl;
-//}
-
 }
 
 #endif

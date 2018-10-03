@@ -11,15 +11,4 @@
 
 namespace mixt {
 
-//template<>
-//void JSONToCPPTranslate(const nlohmann::json& in, std::vector<std::string>& out) {
-//	out = in.get<std::vector<std::string>>();
-//}
-
-//template<typename T>
-//void JSONTranslate(const std::vector<std::vector<T>>& in, nlohmann::json& out) {
-//	std::cout << "JSONTranslate(const std::vector<std::vector<T>>& in, nlohmann::json& out)" << std::endl;
-//	out = in;
-//}
-
 }
