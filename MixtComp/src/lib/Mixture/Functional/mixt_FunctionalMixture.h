@@ -10,6 +10,7 @@
 #ifndef LIB_MIXTURE_FUNCTIONAL_MIXT_FUNCTIONALMIXTURE
 #define LIB_MIXTURE_FUNCTIONAL_MIXT_FUNCTIONALMIXTURE
 
+#include <vector>
 #include <Mixture/mixt_IMixture.h>
 #include <IO/IOFunctions.h>
 #include <IO/NamedAlgebra.h>
@@ -38,14 +39,6 @@ public:
 		false, // missingLUIntervals_,
 		false; // missingRUIntervals
 	}
-
-//	//** Dummy  constructor to check compilation */
-//	FunctionalMixture(const Vector<std::set<Index> >& classInd) :
-//			IMixture(0, "dummy", 0, 0), nInd_(0), nClass_(0), nSub_(0), nCoeff_(0), confidenceLevel_(0.), p_handler_(NULL), p_dataExtractor_(
-//			NULL), p_paramSetter_(
-//			NULL), p_paramExtractor_(NULL) {
-//	}
-//	;
 
 	void sampleUnobservedAndLatent(Index i, Index k) {
 		class_[k].samplingStepNoCheck(i);
