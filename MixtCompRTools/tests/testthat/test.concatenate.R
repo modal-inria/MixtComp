@@ -8,7 +8,7 @@ test_that("concatenate zclass", {
   out <- concatenateParamZclass(paramParent, paramChild, classParentOfChild)
 
   expect_equal(nrow(out$pi$stat), 5)
-  expect_equal(ncol(out$pi$stat), 3)
+  expect_equal(ncol(out$pi$stat), 1)
   expect_equal(out$pi$stat[,1], c(0.25, 0.1, 0.15, 0.2, 0.3))
   expect_equal(out$pi$paramStr, "")
 })
@@ -22,7 +22,7 @@ test_that("Concatenate Gaussian/Weibull/NegBin", {
   out <- concatenateParamNumeric2Param(paramParent, paramChild, classParentOfChild)
 
   expect_equal(nrow(out$NumericalParam$stat), 6)
-  expect_equal(ncol(out$NumericalParam$stat), 3)
+  expect_equal(ncol(out$NumericalParam$stat), 1)
   expect_equal(out$NumericalParam$stat[,1], c(3, 4, 4, 3, 2, 1))
   expect_equal(out$NumericalParam$paramStr, "")
 })
@@ -35,7 +35,7 @@ test_that("Concatenate Poisson", {
   out <- concatenateParamPoisson(paramParent, paramChild, classParentOfChild)
 
   expect_equal(nrow(out$NumericalParam$stat), 5)
-  expect_equal(ncol(out$NumericalParam$stat), 3)
+  expect_equal(ncol(out$NumericalParam$stat), 1)
   expect_equal(out$NumericalParam$stat[,1], c(1, 3, 4, 2, 1))
   expect_equal(out$NumericalParam$paramStr, "")
 })
@@ -48,7 +48,7 @@ test_that("Concatenate Categorical", {
   out <- concatenateParamCategorical(paramParent, paramChild, classParentOfChild)
 
   expect_equal(nrow(out$NumericalParam$stat), 15)
-  expect_equal(ncol(out$NumericalParam$stat), 3)
+  expect_equal(ncol(out$NumericalParam$stat), 1)
   expect_equal(out$NumericalParam$stat[,1], c(1:3, 7:12, 6:1))
   expect_equal(out$NumericalParam$paramStr, "nModality: 3")
 })
@@ -83,11 +83,11 @@ test_that("Concatenate Functional", {
   out <- concatenateParamFunctional(paramParent, paramChild, classParentOfChild)
 
   expect_equal(nrow(out$alpha$stat), 12)
-  expect_equal(ncol(out$alpha$stat), 3)
+  expect_equal(ncol(out$alpha$stat), 1)
   expect_equal(nrow(out$beta$stat), 12)
-  expect_equal(ncol(out$beta$stat), 3)
+  expect_equal(ncol(out$beta$stat), 1)
   expect_equal(nrow(out$sd$stat), 6)
-  expect_equal(ncol(out$sd$stat), 3)
+  expect_equal(ncol(out$sd$stat), 1)
   expect_equivalent(out$alpha$stat[,1], c(1:4, 8:1))
   expect_equivalent(out$beta$stat[,1], c(1:4, 8:1))
   expect_equivalent(out$sd$stat[,1], c(1:2, 4:1))
@@ -97,8 +97,10 @@ test_that("Concatenate Functional", {
 })
 
 test_that("Concatenate Rank", {
-  paramParent <- list(mu = list(stat = list("k: 1, mu" = list(c(3, 2, 1, 0), 0.8), "k: 2, mu" = list(c(0, 1, 2, 3), 0.6)), paramStr = "nModality: 4"))
-  paramChild <- list(mu = list(stat = list("k: 1, mu" = list(c(2, 1, 3, 0), 0.9), "k: 2, mu" = list(c(2, 3, 1, 0), 0.7)), paramStr = "nModality: 4"))
+  paramParent <- list(mu = list(stat = list("k: 1, mu" = list(c(3, 2, 1, 0), 0.8), "k: 2, mu" = list(c(0, 1, 2, 3), 0.6)), paramStr = "nModality: 4"),
+                      pi = list(stat = matrix(c(0.5, 0.8), nrow = 2, ncol = 3, dimnames = list(c("k: 1, pi", "k: 2, pi"), c("median", "q 2.5%", "q 97.5%"))), paramStr = ""))
+  paramChild <- list(mu = list(stat = list("k: 1, mu" = list(c(2, 1, 3, 0), 0.9), "k: 2, mu" = list(c(2, 3, 1, 0), 0.7)), paramStr = "nModality: 4"),
+                     pi = list(stat = matrix(c(0.7, 0.6), nrow = 2, ncol = 3, dimnames = list(c("k: 1, pi", "k: 2, pi"), c("median", "q 2.5%", "q 97.5%"))), paramStr = ""))
   classParentOfChild <- 2
 
   out <- concatenateParamRank(paramParent, paramChild, classParentOfChild)
@@ -111,6 +113,11 @@ test_that("Concatenate Rank", {
   expect_equal(out$mu$stat[[2]][[2]], 0.9)
   expect_equal(out$mu$stat[[3]][[2]], 0.7)
   expect_equal(out$mu$paramStr, "nModality: 4")
+
+  expect_equal(nrow(out$pi$stat), 3)
+  expect_equal(ncol(out$pi$stat), 1)
+  expect_equivalent(out$pi$stat[,1], c(0.5, 0.7, 0.6))
+  expect_equal(out$pi$paramStr, "")
 })
 
 test_that("Concatenate function", {
@@ -148,5 +155,5 @@ test_that("Concatenate function", {
   expect_equal(length(out), 8)
   expect_true(all(sapply(out, is.list)))
   expect_equal(names(out), c("z_class", "gauss", "cat", "pois", "func", "weib", "negbin", "rank"))
-  expect_equivalent(sapply(out, length), c(1, 1, 1, 1, 3, 1, 1, 1))
+  expect_equivalent(sapply(out, length), c(1, 1, 1, 1, 3, 1, 1, 2))
 })

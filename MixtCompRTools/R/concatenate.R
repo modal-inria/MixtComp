@@ -1,24 +1,37 @@
-computeModelLnCompletedLikelihood <- function(resParent, resChild, classParentOfChild)
+# Compute the new model with the given parent and child
+#
+# Compute the parameter of the model (in supervised) with the clusters of child replacing one cluster of the parent
+#
+# @param resParent result object of a MixtComp run.
+# @param resChild result object of a MixtComp run. This run is performed on the individuals of one cluster of resParent
+# @param classParentOfChild cluster of the parent used for the child
+# @param dataList output of getData
+# @param mcStrategy
+#
+# @return mixtComp res
+computeNewModel <- function(resParent, resChild, classParentOfChild, dataList, mcStrategy)
 {
-  # likelihood from parent classification
-  partParent <- resParent$variable$data$z_class$completed
+  oldZ_class = resParent$variable$data$z_class$completed
+  newZ_class = rep(NA, length(oldZ_class))
 
-  classParentToKeep <- (1:resParent$mixture$nbCluster)[-classParentOfChild]
-  lnCompLikelihoodParent <- 0
-  for(k in classParentToKeep)
-    lnCompLikelihoodParent = lnCompLikelihoodParent + sum(resParent$mixture$lnProbaGivenClass[partParent == k, k])
+  newZ_class[oldZ_class == classParentOfChild] = resChild$variable$data$z_class$completed + (resParent$mixture$nbCluster - 1)
+  newZ_class[oldZ_class != classParentOfChild] <- refactorCategoricalData(oldZ_class[oldZ_class != classParentOfChild],
+                                                                          unique(oldZ_class[oldZ_class != classParentOfChild]), seq_along(unique(oldZ_class[oldZ_class != classParentOfChild])))
 
+  z_classPresent <- any(sapply(dataList, function(x){x$id}) == "z_class")
+  if(z_classPresent)
+  {
+    dataList[[which(sapply(dataList, function(x){x$id}) == "z_class")]]$data = newZ_class
+  }else{
+    dataList[[length(dataList) + 1]]$data = list(data = newZ_class, id = "z_class", model = "LatentClass", paramStr = "")
+  }
 
-  # likelihood from child classification
-  proportionParent <- resParent$variable$param$z_class$pi$stat[,1]
+  res <- RMixtComp::mixtCompCluster(dataList,  mcStrategy, nbClass = resParent$mixture$nbCluster + 1, confidenceLevel = 0.95)
 
-  lnCompLikelihoodChild <- resChild$mixture$lnCompletedLikelihood + resChild$mixture$nbInd * log(proportionParent[classParentOfChild])
-
-
-  lnCompLikelihood <- lnCompLikelihoodParent + lnCompLikelihoodChild
-
-  return(lnCompLikelihood)
+  return(res)
 }
+
+
 
 # Concatenation of param element of 2 MixtComp output
 #
@@ -75,7 +88,7 @@ concatenateParamOneModel <- function(paramParent, paramChild, classParentOfChild
 
 concatenateParamZclass <- function(paramParent, paramChild, classParentOfChild)
 {
-  param <- list(pi = list(stat = rbind(paramParent$pi$stat[-classParentOfChild,], paramParent$pi$stat[classParentOfChild, 1] * paramChild$pi$stat), paramStr = ""))
+  param <- list(pi = list(stat = rbind(paramParent$pi$stat[-classParentOfChild, 1, drop = FALSE], paramParent$pi$stat[classParentOfChild, 1] * paramChild$pi$stat[, 1, drop = FALSE]), paramStr = ""))
 
   return(param)
 }
@@ -83,7 +96,7 @@ concatenateParamZclass <- function(paramParent, paramChild, classParentOfChild)
 # models with 2 parameters: for gaussian, weibull, negative binomial
 concatenateParamNumeric2Param <- function(paramParent, paramChild, classParentOfChild)
 {
-  param <- rbind(paramParent$NumericalParam$stat[-((2*classParentOfChild) - 1:0),], paramChild$NumericalParam$stat)
+  param <- rbind(paramParent$NumericalParam$stat[-((2*classParentOfChild) - 1:0), 1, drop = FALSE], paramChild$NumericalParam$stat[, 1, drop = FALSE])
   out <- list(NumericalParam = list(stat = param, paramStr = paramParent$NumericalParam$paramStr))
 
   return(out)
@@ -91,7 +104,7 @@ concatenateParamNumeric2Param <- function(paramParent, paramChild, classParentOf
 
 concatenateParamPoisson <- function(paramParent, paramChild, classParentOfChild)
 {
-  param <- rbind(paramParent$NumericalParam$stat[-classParentOfChild,], paramChild$NumericalParam$stat)
+  param <- rbind(paramParent$NumericalParam$stat[-classParentOfChild, 1, drop = FALSE], paramChild$NumericalParam$stat[, 1, drop = FALSE])
   out <- list(NumericalParam = list(stat = param, paramStr = paramParent$NumericalParam$paramStr))
 
   return(out)
@@ -100,7 +113,7 @@ concatenateParamPoisson <- function(paramParent, paramChild, classParentOfChild)
 concatenateParamCategorical <- function(paramParent, paramChild, classParentOfChild)
 {
   nbModality <- as.numeric(gsub("nModality: ", "", paramParent$NumericalParam$paramStr))
-  param <- rbind(paramParent$NumericalParam$stat[-(classParentOfChild*nbModality-0:(nbModality-1)),], paramChild$NumericalParam$stat)
+  param <- rbind(paramParent$NumericalParam$stat[-(classParentOfChild*nbModality-0:(nbModality-1)), 1, drop = FALSE], paramChild$NumericalParam$stat[, 1, drop = FALSE])
   out <- list(NumericalParam = list(stat = param, paramStr = paramParent$NumericalParam$paramStr))
 
   return(out)
@@ -113,7 +126,7 @@ concatenateParamFunctional <- function(paramParent, paramChild, classParentOfChi
   {
     classParent <- as.numeric(gsub("k: ", "", gsub(",.*$", "", rownames(paramParent[[name]]$stat)))) + 1
 
-    param <- rbind(paramParent[[name]]$stat[classParent != classParentOfChild,], paramChild[[name]]$stat)
+    param <- rbind(paramParent[[name]]$stat[classParent != classParentOfChild, 1, drop = FALSE], paramChild[[name]]$stat[, 1, drop = FALSE])
     out[[name]] = list(stat = param, paramStr = paramParent[[name]]$paramStr)
   }
 
@@ -124,7 +137,8 @@ concatenateParamFunctional <- function(paramParent, paramChild, classParentOfChi
 concatenateParamRank <- function(paramParent, paramChild, classParentOfChild)
 {
   param <- c(paramParent$mu$stat[-classParentOfChild], paramChild$mu$stat)
-  out <- list(mu = list(stat = param, paramStr = paramParent$mu$paramStr))
+  out <- list(mu = list(stat = param, paramStr = paramParent$mu$paramStr),
+              pi = list(stat =  rbind(paramParent$pi$stat[-classParentOfChild, 1, drop = FALSE], paramChild$pi$stat[, 1, drop = FALSE]),  paramStr = paramParent$pi$paramStr))
 
   return(out)
 }
