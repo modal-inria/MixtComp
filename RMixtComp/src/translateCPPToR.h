@@ -7,8 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef RMIXTCOMP_SRC_CPPTORTRANSLATE_H
-#define RMIXTCOMP_SRC_CPPTORTRANSLATE_H
+#ifndef RMIXTCOMP_SRC_TRANSLATECPPTOR_H
+#define RMIXTCOMP_SRC_TRANSLATECPPTOR_H
 
 #include "Rcpp.h"
 
@@ -23,12 +23,12 @@
 namespace mixt {
 
 template<typename InType>
-void CPPToRTranslate(const InType& in, SEXP& out) {
+void translateCPPToR(const InType& in, SEXP& out) {
 	out = Rcpp::wrap(in);
 }
 
 template<typename T>
-void CPPToRTranslate(const NamedVector<T>& in, SEXP& out) {
+void translateCPPToR(const NamedVector<T>& in, SEXP& out) {
 	Index nrow = in.vec_.size();
 	typename CPPToRVectorType<T>::ctype temp(nrow);
 
@@ -44,7 +44,7 @@ void CPPToRTranslate(const NamedVector<T>& in, SEXP& out) {
 }
 
 template<typename T>
-void CPPToRTranslate(const NamedMatrix<T>& in, SEXP& out) {
+void translateCPPToR(const NamedMatrix<T>& in, SEXP& out) {
 	Index nrow = in.mat_.rows();
 	Index ncol = in.mat_.cols();
 
@@ -76,7 +76,7 @@ void CPPToRTranslate(const NamedMatrix<T>& in, SEXP& out) {
 }
 
 template<typename T>
-void CPPToRTranslate(const std::vector<std::vector<T>>& in, SEXP& out) {
+void translateCPPToR(const std::vector<std::vector<T>>& in, SEXP& out) {
 	std::cout << "CPPToRTranslate(const std::vector<std::vector<T>>& in, SEXP& out) not implemented yet." << std::endl;
 }
 

@@ -3,11 +3,11 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: August 23, 2018
+ *  Created on: August 21, 2018
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "RToCPPTranslate.h"
+#include "translateCPPToJSON.h"
 
 namespace mixt {
 

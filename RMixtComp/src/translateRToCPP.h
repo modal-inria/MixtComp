@@ -7,8 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef RMIXTCOMP_SRC_RTOCPPTRANSLATE_H
-#define RMIXTCOMP_SRC_RTOCPPTRANSLATE_H
+#ifndef RMIXTCOMP_SRC_TRANSLATERTOCPP_H
+#define RMIXTCOMP_SRC_TRANSLATERTOCPP_H
 
 #include "Rcpp.h"
 
@@ -23,12 +23,12 @@
 namespace mixt {
 
 template<typename OutType>
-void RToCPPTranslate(SEXP in, OutType& out) {
+void translateRToCPP(SEXP in, OutType& out) {
 	out = Rcpp::as<OutType>(in);
 }
 
 template<typename T>
-void RToCPPTranslate(SEXP in, NamedVector<T>& out) {
+void translateRToCPP(SEXP in, NamedVector<T>& out) {
 	typename CPPToRVectorType<T>::ctype temp(in);
 
 	Index nrow = temp.length();
@@ -47,7 +47,7 @@ void RToCPPTranslate(SEXP in, NamedVector<T>& out) {
 }
 
 template<typename T>
-void RToCPPTranslate(SEXP in, NamedMatrix<T>& out) {
+void translateRToCPP(SEXP in, NamedMatrix<T>& out) {
 	std::cout << "RToCPPTranslate" << std::endl;
 	typename CPPToRMatrixType<T>::ctype temp(in);
 

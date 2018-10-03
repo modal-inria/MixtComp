@@ -3,11 +3,11 @@
 
 /*
  *  Project:    MixtComp
- *  Created on: August 21, 2018
+ *  Created on: September 24, 2018
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "CPPToJSONTranslate.h"
+#include "translateCPPToR.h"
 
 namespace mixt {
 

@@ -16,8 +16,8 @@
 #include <IO/NamedAlgebra.h>
 #include <IO/IOFunctions.h>
 #include <LinAlg/mixt_LinAlg.h>
-#include "CPPToJSONTranslate.h"
-#include "JSONToCPPTranslate.h"
+#include <translateCPPToJSON.h>
+#include <translateJSONToCPP.h>
 
 namespace mixt {
 
@@ -58,7 +58,7 @@ public:
 			completePath(path, name, cPath);
 			throw(cPath + " object does not exist.");
 		}
-		JSONToCPPTranslate(l[name], p);
+		translateJSONToCPP(l[name], p);
 	}
 
 	/**
@@ -83,7 +83,7 @@ private:
 	template<typename Type>
 	void add_payload(const std::vector<std::string>& path, Index currDepth, nlohmann::json& currLevel, const std::string& name, const Type& p) {
 		if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
-			CPPToJSONTranslate(p, currLevel[name]);
+			translateCPPToJSON(p, currLevel[name]);
 		} else {
 			nlohmann::json& nextLevel = currLevel[path[currDepth]];
 

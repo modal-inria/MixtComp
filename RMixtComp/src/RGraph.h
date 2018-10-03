@@ -18,8 +18,8 @@
 #include <IO/IOFunctions.h>
 #include <LinAlg/mixt_LinAlg.h>
 
-#include "CPPToRTranslate.h"
-#include "RToCPPTranslate.h"
+#include "translateCPPToR.h"
+#include "translateRToCPP.h"
 
 namespace mixt {
 
@@ -62,7 +62,7 @@ public:
 			completePath(path, name, cPath);
 			throw(cPath + " object does not exist.");
 		}
-		RToCPPTranslate(l[name], p);
+		translateRToCPP(l[name], p);
 	}
 
 	/**
@@ -92,7 +92,7 @@ private:
 	Rcpp::List add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const Type& p) {
 		if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
 			SEXP temp;
-			CPPToRTranslate(p, temp);
+			translateCPPToR(p, temp);
 			currLevel[name] = temp;
 
 //			CPPToRTranslate(p, currLevel[name]);

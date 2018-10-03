@@ -117,16 +117,16 @@ TEST(JSONSGraph, name_payload) {
  * This is used in the data output of the Functional model
  */
 TEST(JSONSGraph, VectorOfVectorOfReal) {
-	std::string exp = R"-({"var1":[[1.],[1., 5., 12.],[0., -42.]]})-";
+	std::string exp = R"-({"var1":[[1.0],[1.0,5.0,12.0],[0.0,-42.0]]})-";
 	JSONGraph gIn;
 	gIn.set(exp);
 
 	std::vector<std::vector<Real>> temp;
 	gIn.get_payload<std::vector<std::vector<Real>>>( { }, "var1", temp);
 
-//	JSONGraph gOut;
-//	gOut.add_payload( { }, "var1", temp);
-//	std::string comp = gOut.get();
-//
-//	ASSERT_EQ(exp, comp);
+	JSONGraph gOut;
+	gOut.add_payload( { }, "var1", temp);
+	std::string comp = gOut.get();
+
+	ASSERT_EQ(exp, comp);
 }

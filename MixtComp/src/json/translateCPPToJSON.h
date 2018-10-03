@@ -7,8 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef JSON_CPPTOJSONTRANSLATE_H
-#define JSON_CPPTOJSONTRANSLATE_H
+#ifndef JSON_TRANSLATECPPTOJSON_H
+#define JSON_TRANSLATECPPTOJSON_H
 
 #include <IO/NamedAlgebra.h>
 #include "json.hpp"
@@ -20,12 +20,12 @@
 namespace mixt {
 
 template<typename InType>
-void CPPToJSONTranslate(const InType& in, nlohmann::json& out) {
+void translateCPPToJSON(const InType& in, nlohmann::json& out) {
 	out = in;
 }
 
 template<typename T>
-void CPPToJSONTranslate(const NamedVector<T>& in, nlohmann::json& out) {
+void translateCPPToJSON(const NamedVector<T>& in, nlohmann::json& out) {
 	Index nrow = in.vec_.size();
 	const T* rawData = in.vec_.data();
 	std::vector<T> data(rawData, rawData + in.vec_.size());
@@ -38,7 +38,7 @@ void CPPToJSONTranslate(const NamedVector<T>& in, nlohmann::json& out) {
 }
 
 template<typename T>
-void CPPToJSONTranslate(const NamedMatrix<T>& in, nlohmann::json& out) {
+void translateCPPToJSON(const NamedMatrix<T>& in, nlohmann::json& out) {
 	Index nrow = in.mat_.rows();
 	Index ncol = in.mat_.cols();
 	std::vector<std::vector<T>> data(nrow, std::vector<Real>(ncol));

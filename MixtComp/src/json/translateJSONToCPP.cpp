@@ -7,7 +7,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <JSONToCPPTranslate.h>
+#include "translateJSONToCPP.h"
 
 namespace mixt {
 

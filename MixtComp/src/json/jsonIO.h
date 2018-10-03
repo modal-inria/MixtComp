@@ -10,8 +10,8 @@
 #ifndef JSON_JSONIO_H
 #define JSON_JSONIO_H
 
-#include "CPPToJSONTranslate.h"
 #include "JSONGraph.h"
-#include "JSONToCPPTranslate.h"
+#include "translateCPPToJSON.h"
+#include "translateJSONToCPP.h"
 
 #endif
