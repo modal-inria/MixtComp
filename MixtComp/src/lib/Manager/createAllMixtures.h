@@ -71,11 +71,9 @@ std::string createAllMixtures(const Graph& algo, const Graph& desc, const Graph&
 				p_mixture = new FunctionalSharedAlphaMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
 			}
 
-			//		if (idModel == "Rank") {
-			//			RankMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>* p_bridge = new RankMixture<DataHandler, DataExtractor, ParamSetter, ParamExtractor>(idName, nbCluster,
-			//					dummyNObs, p_handler_, p_dataExtractor_, p_paramSetter_, p_paramExtractor_, confidenceLevel);
-			//			return p_bridge;
-			//		}
+			if (idModel == "Rank_ISR") {
+				p_mixture = new RankMixture<Graph>(data, param, out, idName, nClass, nInd, confidenceLevel, paramStr);
+			}
 
 			if (p_mixture) {
 				composer.registerMixture(p_mixture);

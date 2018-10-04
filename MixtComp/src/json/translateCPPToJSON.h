@@ -41,7 +41,7 @@ template<typename T>
 void translateCPPToJSON(const NamedMatrix<T>& in, nlohmann::json& out) {
 	Index nrow = in.mat_.rows();
 	Index ncol = in.mat_.cols();
-	std::vector<std::vector<T>> data(nrow, std::vector<Real>(ncol));
+	std::vector<std::vector<T>> data(nrow, std::vector<T>(ncol));
 
 	for (Index i = 0; i < nrow; ++i) {
 		for (Index j = 0; j < ncol; ++j) {

@@ -31,8 +31,8 @@ public:
 	 *  @param nbCluster number of cluster
 	 **/
 	SimpleMixture(const Graph& data, const Graph& param, Graph& out, std::string const& idName, Index nbClass, Index nInd, Real confidenceLevel, const std::string& paramStr) :
-			IMixture(idName, Model::name, nbClass, nInd), dataG_(data), paramG_(param), outG_(out), nbClass_(nbClass), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(
-					paramStr), nbInd_(nInd), confidenceLevel_(confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_,
+			IMixture(idName, Model::name, nbClass, nInd), dataG_(data), paramG_(param), outG_(out), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(
+					paramStr), confidenceLevel_(confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_,
 					confidenceLevel), likelihood_(param_, augData_, nbClass) {
 	}
 
@@ -77,7 +77,7 @@ public:
 
 		warnLog += model_.setData(paramStr_, augData_, mode); // checks on data bounds are made here, if paramStr_.size() = 0, it might be completed here, for example using the number of modalities found in the data
 
-		dataStat_.setNbIndividual(nbInd_);
+		dataStat_.setNbIndividual(nInd_);
 		return warnLog;
 	}
 
@@ -201,9 +201,6 @@ protected:
 	const Graph& paramG_;
 	Graph& outG_;
 
-	/** Number of classes */
-	int nbClass_;
-
 	/** Current parameters of the model_ */
 	Vector<Real> param_;
 
@@ -215,9 +212,6 @@ protected:
 
 	/** Parameters transmitted by the user */
 	std::string paramStr_;
-
-	/** number of samples in the data set*/
-	Index nbInd_;
 
 	/** confidence level used in computation of parameters and missing values statistics */
 	Real confidenceLevel_;

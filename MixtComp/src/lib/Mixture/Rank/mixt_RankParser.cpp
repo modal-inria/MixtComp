@@ -15,8 +15,7 @@
 
 namespace mixt {
 
-std::string parseRankStr(const Vector<std::string>& vecStr, int minMod,
-		int& nbPos, Vector<RankIndividual>& vecInd) {
+std::string parseRankStr(const std::vector<std::string>& vecStr, int minMod, int& nbPos, Vector<RankIndividual>& vecInd) {
 	typedef std::pair<MisType, std::vector<int> > MisVal;
 
 	int nbInd = vecStr.size();
@@ -27,7 +26,7 @@ std::string parseRankStr(const Vector<std::string>& vecStr, int minMod,
 	MisValParser<int> mvp(-minMod);
 
 	std::vector<std::string> strs;
-	boost::split(strs, vecStr(0), // number of modalities is deduced from the first individual and a warning will be triggered if that is not the case
+	boost::split(strs, vecStr[0], // number of modalities is deduced from the first individual and a warning will be triggered if that is not the case
 	boost::is_any_of(rankPosSep));
 	nbPos = strs.size();
 
@@ -37,15 +36,12 @@ std::string parseRankStr(const Vector<std::string>& vecStr, int minMod,
 
 		vecInd(i).setNbPos(nbPos);
 
-		boost::split(strs, vecStr(i), boost::is_any_of(rankPosSep));
+		boost::split(strs, vecStr[i], boost::is_any_of(rankPosSep));
 
 		if (strs.size() != nbPos) {
 			std::stringstream sstm;
-			sstm << "Individual i: " << i << " has " << strs.size()
-					<< " modalities, which is less than the previous individuals. They all had "
-					<< nbPos
-					<< " modalities. Please check that all individuals in this Rank variable all have the same number of modalities."
-					<< std::endl;
+			sstm << "Individual i: " << i << " has " << strs.size() << " modalities, which is less than the previous individuals. They all had " << nbPos
+					<< " modalities. Please check that all individuals in this Rank variable all have the same number of modalities." << std::endl;
 			warnLog += sstm.str();
 			return warnLog;
 		}
@@ -70,44 +66,34 @@ std::string parseRankStr(const Vector<std::string>& vecStr, int minMod,
 				break;
 
 			case missingFiniteValues_: {
-				min = *(std::min_element(obsData(p).second.begin(),
-						obsData(p).second.end()));
-				max = *(std::max_element(obsData(p).second.begin(),
-						obsData(p).second.end()));
+				min = *(std::min_element(obsData(p).second.begin(), obsData(p).second.end()));
+				max = *(std::max_element(obsData(p).second.begin(), obsData(p).second.end()));
 			}
 				break;
 
 			default: {
-				return "Data in Rank must be of types: present, missing, or missing finite values. "
-						+ strs[p] + "is not valid.";
+				return "Data in Rank must be of types: present, missing, or missing finite values. " + strs[p] + "is not valid.";
 			}
 				break;
 			}
 
 			if (min < 0) {
 				std::stringstream sstm;
-				sstm << "Individual i: " << i << " in (0-based) position " << p
-						<< " has minimum value " << min + minModality
-						<< " which is forbidden. The lowest acceptable value is "
-						<< minModality << std::endl;
+				sstm << "Individual i: " << i << " in (0-based) position " << p << " has minimum value " << min + minModality
+						<< " which is forbidden. The lowest acceptable value is " << minModality << std::endl;
 				warnLog += sstm.str();
 			}
 
 			if (nbPos - 1 < max) {
 				std::stringstream sstm;
-				sstm << "Individual i: " << i << " in (0-based) position " << p
-						<< " has maximum value " << max + minModality
-						<< " which is forbidden. The lowest acceptable value is "
-						<< nbPos - 1 + minModality << std::endl;
+				sstm << "Individual i: " << i << " in (0-based) position " << p << " has maximum value " << max + minModality
+						<< " which is forbidden. The lowest acceptable value is " << nbPos - 1 + minModality << std::endl;
 				warnLog += sstm.str();
 			}
 
 			if (!isValid) {
 				std::stringstream sstm;
-				sstm << "Individual i: " << i << " present an error. "
-						<< strs[p]
-						<< " is not recognized as a valid format for a Rank position."
-						<< std::endl;
+				sstm << "Individual i: " << i << " present an error. " << strs[p] << " is not recognized as a valid format for a Rank position." << std::endl;
 				warnLog += sstm.str();
 			}
 		}
@@ -129,9 +115,8 @@ std::string parseRankStr(const Vector<std::string>& vecStr, int minMod,
 #endif
 
 			std::stringstream sstm;
-			sstm << "Individual " << i << " which data is " << vecStr(i)
-					<< " is invalid. Please check if there are no repeated "
-					<< "observed modalities for example." << std::endl;
+			sstm << "Individual " << i << " which data is " << vecStr[i] << " is invalid. Please check if there are no repeated " << "observed modalities for example."
+					<< std::endl;
 			warnLog += sstm.str();
 		}
 	}
