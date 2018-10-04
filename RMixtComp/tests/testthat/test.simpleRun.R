@@ -86,7 +86,7 @@ test_that("Hard coded simple test", {
   resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
   
   expect_equal(resPredict$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resPredict), zPredict), 0.9)
+  expect_gte(rand.index(getZ_class(resPredict), zPredict), 0.8)
   
   confMatSampledPredict <- table(zPredict, getZ_class(resPredict))
   print(confMatSampledPredict)
