@@ -199,7 +199,7 @@ public:
 				NamedMatrix<Real> rank;
 				paramG_.get_payload( { idName_, "mu", "stat", "k: " + std::to_string(k) }, "rank", rank);
 				mu_(k).setNbPos(rank.mat_.cols());
-				mu_(k).setO(rank.mat_.row(0)); // the most probable rank has been written in the first line of the rank matrix
+				mu_(k).setO(rank.mat_.row(0) - minModality); // the most probable rank has been written in the first line of the rank matrix
 			}
 
 			NamedMatrix<Real> pi;
@@ -265,12 +265,12 @@ public:
 
 			Index i = 0;
 			for (std::list<std::pair<RankVal, Real>>::const_iterator it = muStatStorage.begin(), itEnd = muStatStorage.end(); it != itEnd; ++it) {
-				rank.mat_.row(i) = it->first.o();
+				rank.mat_.row(i) = it->first.o() + minModality;
 				proba.vec_(i) = it->second;
 				++i;
 			}
 
-			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "rank", rank + minModality);
+			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "rank", rank);
 			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "proba", proba);
 		}
 
