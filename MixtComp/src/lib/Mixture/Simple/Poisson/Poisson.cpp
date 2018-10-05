@@ -14,6 +14,8 @@
 
 namespace mixt {
 
+const std::string Poisson::name = "Poisson";
+
 Poisson::Poisson(const std::string& idName, int nbClass, Vector<Real>& param) :
 		idName_(idName), nClass_(nbClass), param_(param), p_data_(0) {
 	param_.resize(nbClass);

@@ -4,7 +4,8 @@
 gaussianParam <- function(name) {
   gaussian <- list()
   gaussian$name <- name
-  gaussian$type <- "Gaussian_sjk"
+  gaussian$type <- "Gaussian"
+  gaussian$paramStr <- ""
   gaussian$generator <- gaussianGenerator
   gaussian$param <- list()
   gaussian$param[[1]] <- list(mean = -5, sd = 1)
@@ -19,7 +20,8 @@ gaussianParam <- function(name) {
 poissonParam <- function(name) {
   poisson <- list()
   poisson$name <- name
-  poisson$type <- "Poisson_k"
+  poisson$type <- "Poisson"
+  poisson$paramStr <- ""
   poisson$generator <- poissonGenerator
   poisson$param <- list()
   poisson$param[[1]] <- 1
@@ -34,7 +36,8 @@ poissonParamRandom <- function(name) {
   
   poisson <- list()
   poisson$name <- name
-  poisson$type <- "Poisson_k"
+  poisson$type <- "Poisson"
+  poisson$paramStr <- ""
   poisson$generator <- poissonGenerator
   poisson$param <- list()
   poisson$param[[1]] <- runif(n = 1, min = valMin, max = valMax)
@@ -50,7 +53,8 @@ poissonParamRandom <- function(name) {
 categoricalParam1 <- function(name) {
   categorical <- list()
   categorical$name <- name
-  categorical$type <- "Categorical_pjk"
+  categorical$type <- "Multinomial"
+  categorical$paramStr <- ""
   categorical$generator <- categoricalGenerator 
   categorical$param <- list()
   categorical$param[[1]] <- c(0.1, 0.2, 0.2, 0.5)
@@ -62,7 +66,8 @@ categoricalParam1 <- function(name) {
 categoricalParam2 <- function(name) {
   categorical <- list()
   categorical$name <- name
-  categorical$type <- "Categorical_pjk"
+  categorical$type <- "Multinomial"
+  categorical$paramStr <- ""
   categorical$generator <- categoricalGenerator 
   categorical$param <- list()
   categorical$param[[1]] <- c(0.6, 0.1, 0.1, 0.2)
@@ -80,7 +85,8 @@ categoricalParamRandom <- function(name) {
   
   categorical <- list()
   categorical$name <- name
-  categorical$type <- "Categorical_pjk"
+  categorical$type <- "Multinomial"
+  categorical$paramStr <- ""
   categorical$generator <- categoricalGenerator 
   categorical$param <- list()
   categorical$param[[1]] <- param1
@@ -96,6 +102,7 @@ weibullParam <- function(name) {
   weibull <- list()
   weibull$name <- name
   weibull$type <- "Weibull"
+  weibull$paramStr <- ""
   weibull$generator <- weibullGenerator
   weibull$param <- list()
   weibull$param[[1]] <- list(shape = 2.0, scale = 0.5)
@@ -110,6 +117,7 @@ nBinomParam <- function(name) {
   nBinom <- list()
   nBinom$name <- name
   nBinom$type <- "NegativeBinomial"
+  gaussian$paramStr <- ""
   nBinom$generator <- negativeBinomialGenerator
   nBinom$param <- list()
   nBinom$param[[1]] <- list(n = 2.0, p = 0.5)
@@ -122,6 +130,7 @@ nBinomParamRandom <- function(name) {
   nBinom <- list()
   nBinom$name <- name
   nBinom$type <- "NegativeBinomial"
+  nBinom$paramStr <- ""
   nBinom$generator <- negativeBinomialGenerator
   nBinom$param <- list()
   nBinom$param[[1]] <- list(n = sum(rbinom(20, 1, 0.5)), p = runif(1, 0.3, 0.8))
@@ -140,7 +149,8 @@ rankParam <- function(name) {
   Rank$param[[2]] <- list()
   
   Rank$name <- name
-  Rank$type <- "Rank"
+  Rank$type <- "Rank_ISR"
+  Rank$paramStr <- ""
   Rank$generator <- rankGenerator
   Rank$param[[1]]$mu <- c(1, 2, 3, 4)
   Rank$param[[1]]$pi <- 0.8
@@ -148,49 +158,4 @@ rankParam <- function(name) {
   Rank$param[[2]]$pi <- 0.8
   
   return(Rank)
-}
-
-
-# ordinal -----------------------------------------------------------------
-
-
-ordinalParam1 <- function(name) {
-  Ordinal <- list()
-  Ordinal$name <- name
-  Ordinal$type <- "Ordinal"
-  Ordinal$generator <- ordinalGenerator
-  
-  Ordinal$param <- list()
-  Ordinal$param[[1]] <- list(nbMod = 4, mu = 1, pi = 0.8)
-  Ordinal$param[[2]] <- list(nbMod = 4, mu = 4, pi = 0.8)
-  
-  return(Ordinal)
-}
-
-ordinalParam2 <- function(name) {
-  Ordinal <- list()
-  Ordinal$name <- name
-  Ordinal$type <- "Ordinal"
-  Ordinal$generator <- ordinalGenerator
-  
-  Ordinal$param <- list()
-  Ordinal$param[[1]] <- list(nbMod = 4, mu = 5, pi = 0.8)
-  Ordinal$param[[2]] <- list(nbMod = 4, mu = 2, pi = 0.8)
-  
-  return(Ordinal)
-}
-
-ordinalParamRandom <- function(name) {
-  nMod <- 4
-  
-  Ordinal <- list()
-  Ordinal$name <- name
-  Ordinal$type <- "Ordinal"
-  Ordinal$generator <- ordinalGenerator
-  
-  Ordinal$param <- list()
-  Ordinal$param[[1]] <- list(nbMod = nMod, mu = sample(1:nMod, 1), pi = runif(1))
-  Ordinal$param[[2]] <- list(nbMod = nMod, mu = sample(1:nMod, 1), pi = runif(1))
-  
-  return(Ordinal)
 }

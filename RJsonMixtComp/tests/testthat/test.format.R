@@ -1,114 +1,130 @@
 context("Test format")
 
-test_that("conversion of IDclass", {
-  pathToResult <- system.file("extdata", "reslearn.json", package = "RJsonMixtComp")
 
-  jsonFile <- fromJSON(pathToResult)
-
-  out <- convertIDClass(jsonFile$mixture$IDClass)
+test_that("convert a matrix from json", {
+  # named matrice
+  x <- list(colNames = c("varCategorical", "varGaussian", "varPoisson"), 
+            ctype ="Matrix",
+            data = matrix(1:6, nrow = 2, ncol = 3),
+            dtype = "Real",
+            ncol = 3,
+            nrow = 2,
+            rowNames = c("k: 1", "k: 2"))
   
-  expect_true(is.matrix(out))
-  expect_equal(ncol(out), length(jsonFile$variable$type)-1)
-  expect_equal(nrow(out), jsonFile$mixture$nbCluster)
+  expectedOut <- matrix(1:6, nrow = 2, ncol = 3, dimnames = list(x$rowNames, x$colNames))
+  
+  out <- convertJsonElement(x)
+  expect_equal(out, expectedOut)
+  
+  
+  # unnamed matrice
+  x$colNames = list()
+  x$rowNames = list()
+  
+  expectedOut <- matrix(1:6, nrow = 2, ncol = 3, dimnames = list(NULL, NULL))
+  
+  out <- convertJsonElement(x)
+  expect_equal(out, expectedOut)
+  
+  
+  # void matrice
+  x$nrow = 0
+  x$ncol = 0
+  x$data = list()
+  
+  expectedOut <- matrix(nrow = 0, ncol = 0, dimnames = list(NULL, NULL))
+  
+  out <- convertJsonElement(x)
+  expect_equal(out, expectedOut)
+})
+
+test_that("convert a vector from json", {
+  # unnamed vector
+  x <- list(ctype ="Vector",
+            data = 1:6,
+            dtype = "Real",
+            nrow = 6,
+            rowNames = list())
+  
+  expectedOut <- 1:6
+  
+  out <- convertJsonElement(x)
+  expect_equal(out, expectedOut)  
+  
+  
+  # named vector
+  x$rowNames = letters[1:6]
+  names(expectedOut) <- letters[1:6]
+  
+  out <- convertJsonElement(x)
+  expect_equal(out, expectedOut)  
+  
+  
+  # void case
+  x$nrow = 0
+  x$data = list()
+  x$rowNames = list()
+  
+  expectedOut <- c()
+  out <- convertJsonElement(x)
+  expect_equal(out, expectedOut)  
 })
 
 
-test_that("data stat colnames", {
-  pathToResult <- system.file("extdata", "reslearn.json", package = "RJsonMixtComp")
-  
-  jsonFile <- fromJSON(pathToResult)
-  
-  out <- convertDataStat(jsonFile$variable$data$Gaussian1$stat, "Gaussian_sjk", 0.95)
-  expect_equal(colnames(out), c("indice", "median", "q 2.5%", "q 97.5%"))
-  out <- convertDataStat(jsonFile$variable$data$Poisson1$stat, "Poisson_k", 0.95)
-  expect_equal(colnames(out), c("indice", "median", "q 2.5%", "q 97.5%"))
-  out <- convertDataStat(jsonFile$variable$data$Weibull1$stat, "Weibull", 0.95)
-  expect_equal(colnames(out), c("indice", "median", "q 2.5%", "q 97.5%"))
-  out <- convertDataStat(jsonFile$variable$data$z_class$stat, "LatentClass", 0.95)
-  expect_equal(colnames(out), paste0("k: ", 1:jsonFile$mixture$nbCluster))
 
+test_that("convertOutput converts well", {
+  pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
+  pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
+  
+  data <- as.data.frame(fromJSON(pathToData))
+  descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+  
+  expect_error(res <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
+                                                                                        nbIter = 50,
+                                                                                        nbGibbsBurnInIter = 20,
+                                                                                        nbGibbsIter = 20,
+                                                                                        nInitPerClass = 10,
+                                                                                        nSemTry = 5),
+                                        confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json"), regexp = NA)
+  
+  res <- fromJSON("reslearn.json")
+  out <- convertOutput(res)
+  
+  # mixture 
+  expect_equal(out$mixture$BIC, res$mixture$BIC)
+  expect_equal(out$mixture$ICL, res$mixture$ICL)
+  expect_equal(out$mixture$runTime, res$mixture$runTime)
+  expect_equal(out$mixture$lnCompletedLikelihood, res$mixture$lnCompletedLikelihood)
+  expect_equal(out$mixture$lnObservedLikelihood, res$mixture$lnObservedLikelihood)
+  expect_equal(out$mixture$nbFreeParameters, res$mixture$nbFreeParameters)
+  expect_equal(class(out$mixture$IDClass), "matrix")
+  expect_equal(rownames(out$mixture$IDClass), res$mixture$IDClass$rowNames)
+  expect_equal(colnames(out$mixture$IDClass), res$mixture$IDClass$colNames)
+  expect_equal(class(out$mixture$delta), "matrix")
+  expect_equal(class(out$mixture$lnProbaGivenClass), "matrix")
+  expect_equal(rownames(out$mixture$lnProbaGivenClass), res$mixture$lnProbaGivenClass$rowNames)
+  expect_equal(colnames(out$mixture$lnProbaGivenClass), res$mixture$lnProbaGivenClass$colNames)
+  expect_length(out$mixture$completedProbabilityLogBurnIn, res$mixture$completedProbabilityLogBurnIn$nrow)
+  expect_length(out$mixture$completedProbabilityLogRun, res$mixture$completedProbabilityLogRun$nrow)
+  
+  # variable$type
+  expect_equal(out$variable$type, res$variable$type)
+  
+  # variable$param
+  expect_equal(class(out$variable$param$z_class$pi$stat), "matrix")
+  expect_equal(rownames(out$variable$param$z_class$pi$stat), res$variable$param$z_class$pi$stat$rowNames)
+  expect_equal(colnames(out$variable$param$z_class$pi$stat), res$variable$param$z_class$pi$stat$colNames)
+  expect_equal(out$variable$param$z_class$pi$paramStr, res$variable$param$z_class$pi$paramStr)
+  expect_equal(class(out$variable$param$varGaussian$NumericalParam$stat), "matrix")
+  expect_equal(rownames(out$variable$param$varGaussian$NumericalParam$stat), res$variable$param$varGaussian$NumericalParam$stat$rowNames)
+  expect_equal(colnames(out$variable$param$varGaussian$NumericalParam$stat), res$variable$param$varGaussian$NumericalParam$stat$colNames)
+  expect_equal(out$variable$param$varGaussian$NumericalParam$paramStr, res$variable$param$varGaussian$NumericalParam$paramStr)
+  
+  # variable$data
+  expect_equivalent(out$variable$data$z_class$stat, res$variable$data$z_class$stat$data)
+  expect_equal(out$variable$data$z_class$completed, res$variable$data$z_class$completed$data)
+  expect_equal(out$variable$data$varGaussian$completed, res$variable$data$varGaussian$completed$data)
+  
+  file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json", "progress")
 })
 
-
-test_that("rownames for functional param", {
-
-  out <- nomRowParamFunctional("alpha", 2, 3, 4)
-  expect_length(out, 2*3*2)
-  expect_equal(out, c("k: 0, s: 0, alpha0", "k: 0, s: 0, alpha1", "k: 0, s: 1, alpha0", "k: 0, s: 1, alpha1", "k: 0, s: 2, alpha0", "k: 0, s: 2, alpha1", "k: 1, s: 0, alpha0", "k: 1, s: 0, alpha1", "k: 1, s: 1, alpha0",
-                      "k: 1, s: 1, alpha1", "k: 1, s: 2, alpha0", "k: 1, s: 2, alpha1"))
-  out <- nomRowParamFunctional("beta", 2, 3, 4)
-  expect_length(out, 2*3*4)
-  expect_equal(out, c("k: 0, s: 0, c: 0", "k: 0, s: 0, c: 1", "k: 0, s: 0, c: 2", "k: 0, s: 0, c: 3", "k: 0, s: 1, c: 0", "k: 0, s: 1, c: 1", "k: 0, s: 1, c: 2", "k: 0, s: 1, c: 3", "k: 0, s: 2, c: 0", "k: 0, s: 2, c: 1", "k: 0, s: 2, c: 2",
-                      "k: 0, s: 2, c: 3", "k: 1, s: 0, c: 0", "k: 1, s: 0, c: 1", "k: 1, s: 0, c: 2", "k: 1, s: 0, c: 3", "k: 1, s: 1, c: 0", "k: 1, s: 1, c: 1", "k: 1, s: 1, c: 2", "k: 1, s: 1, c: 3", "k: 1, s: 2, c: 0", "k: 1, s: 2, c: 1", 
-                      "k: 1, s: 2, c: 2", "k: 1, s: 2, c: 3"))
-  out <- nomRowParamFunctional("sd", 2, 3, 4)
-  expect_length(out, 2*3)
-  expect_equal(out, c("k: 0, s: 0", "k: 0, s: 1", "k: 0, s: 2", "k: 1, s: 0", "k: 1, s: 1", "k: 1, s: 2"))
-  
-})
-
-
-test_that("rownames for categorical param", {
-  pathToResult <- system.file("extdata", "reslearn.json", package = "RJsonMixtComp")
-  
-  jsonFile <- fromJSON(pathToResult)
-  
-  param <- jsonFile$variable$param$Categorical1
-  param$NumericalParam$stat = do.call(cbind, param$NumericalParam$stat)
-  
-  out <- nomRowParamCateg(param)
-  expect_equal(out, c("k: 1, modality: 1", "k: 1, modality: 2", "k: 1, modality: 3", "k: 1, modality: 4", "k: 2, modality: 1", "k: 2, modality: 2", "k: 2, modality: 3", "k: 2, modality: 4"))
-})
-
-
-test_that("convertParam", {
-  pathToResult <- system.file("extdata", "reslearn.json", package = "RJsonMixtComp")
-  
-  jsonFile <- fromJSON(pathToResult)
-  
-  nbClass <- jsonFile$mixture$nbCluster
-  nCoeff = nSub <- 2
-  nModality <- 4
-  
-  out <- convertParam(jsonFile$variable$param$Categorical1, "Categorical_pjk", nbClass, nCoeff, nSub, mode = "learn")
-  expect_equal(dim(out$NumericalParam$log), c(nbClass * nModality, jsonFile$strategy$nbIter))
-  expect_true(is.matrix(out$NumericalParam$stat))
-  expect_equal(dim(out$NumericalParam$stat), c(nbClass * nModality, 3))
-  expect_equal(rownames(out$NumericalParam$stat), c("k: 1, modality: 1", "k: 1, modality: 2", "k: 1, modality: 3", "k: 1, modality: 4", "k: 2, modality: 1", "k: 2, modality: 2", "k: 2, modality: 3", "k: 2, modality: 4"))
-  
-  out <- convertParam(jsonFile$variable$param$Gaussian1, "Gaussian_sjk", nbClass, nCoeff, nSub, mode = "learn")
-  expect_equal(dim(out$NumericalParam$log), c(nbClass * 2, jsonFile$strategy$nbIter))
-  expect_true(is.matrix(out$NumericalParam$stat))
-  expect_equal(dim(out$NumericalParam$stat), c(nbClass * 2, 3))
-  expect_equal(rownames(out$NumericalParam$stat), c("k: 1, mean:", "k: 1, sd", "k: 2, mean:", "k: 2, sd"))
-  
-  out <- convertParam(jsonFile$variable$param$Weibull1, "Weibull", nbClass, nCoeff, nSub, mode = "learn")
-  expect_equal(dim(out$NumericalParam$log), c(nbClass * 2, jsonFile$strategy$nbIter))
-  expect_true(is.matrix(out$NumericalParam$stat))
-  expect_equal(dim(out$NumericalParam$stat), c(nbClass * 2, 3))
-  expect_equal(rownames(out$NumericalParam$stat), c("k: 1, k:", "k: 1, lambda", "k: 2, k:", "k: 2, lambda"))
-  
-  out <- convertParam(jsonFile$variable$param$Poisson1, "Poisson_k", nbClass, nCoeff, nSub, mode = "learn")
-  expect_equal(dim(out$NumericalParam$log), c(nbClass, jsonFile$strategy$nbIter))
-  expect_true(is.matrix(out$NumericalParam$stat))
-  expect_equal(dim(out$NumericalParam$stat), c(nbClass, 3))
-  expect_equal(rownames(out$NumericalParam$stat), c("k: 1, lambda", "k: 2, lambda"))
-
-  out <- convertParam(jsonFile$variable$param$Functional1, "Functional", nbClass, nCoeff, nSub, mode = "learn")
-  expect_equal(dim(out$alpha$log), c(2 * nbClass * nSub, jsonFile$strategy$nbIter))
-  expect_equal(dim(out$beta$log), c(nCoeff * nbClass * nSub, jsonFile$strategy$nbIter))
-  expect_equal(dim(out$sd$log), c(nSub * nbClass, jsonFile$strategy$nbIter))
-  expect_true(is.matrix(out$alpha$stat))
-  expect_true(is.matrix(out$beta$stat))
-  expect_true(is.matrix(out$sd$stat))
-  expect_equal(dim(out$alpha$stat), c(2 * nbClass * nSub, 3))
-  expect_equal(dim(out$beta$stat), c(nCoeff * nbClass * nSub, 3))
-  expect_equal(dim(out$sd$stat), c(nbClass * nSub, 3))
-  expect_equal(rownames(out$alpha$stat), c("k: 0, s: 0, alpha0", "k: 0, s: 0, alpha1", "k: 0, s: 1, alpha0", "k: 0, s: 1, alpha1", "k: 1, s: 0, alpha0", "k: 1, s: 0, alpha1", "k: 1, s: 1, alpha0", "k: 1, s: 1, alpha1"))
-  expect_equal(rownames(out$beta$stat), c("k: 0, s: 0, c: 0", "k: 0, s: 0, c: 1", "k: 0, s: 1, c: 0", "k: 0, s: 1, c: 1", "k: 1, s: 0, c: 0", "k: 1, s: 0, c: 1", "k: 1, s: 1, c: 0", "k: 1, s: 1, c: 1"))
-  expect_equal(rownames(out$sd$stat), c("k: 0, s: 0", "k: 0, s: 1", "k: 1, s: 0", "k: 1, s: 1"))
-  
-})
-
-
-  

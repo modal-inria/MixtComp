@@ -7,8 +7,8 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#ifndef MIXT_CLASSSAMPLER_H
-#define MIXT_CLASSSAMPLER_H
+#ifndef LIB_COMPOSER_MIXT_CLASSSAMPLER_H
+#define LIB_COMPOSER_MIXT_CLASSSAMPLER_H
 
 #include "mixt_ZClassInd.h"
 #include "../LinAlg/mixt_LinAlg.h"

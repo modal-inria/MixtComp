@@ -1,0 +1,13 @@
+{
+  "nClass": 2,
+  "nInd": 15,
+  "nbBurnInIter": 100,
+  "nbIter": 100,
+  "nbGibbsBurnInIter": 100,
+  "nbGibbsIter": 100,
+  "nInitPerClass": 2,
+  "nSemTry": 10,
+  "confidenceLevel": 0.95,
+  "mode": "learn",
+  "notes": "You can add any note if you wish in unrequired fields like this one. They will be copied to the output also."
+}

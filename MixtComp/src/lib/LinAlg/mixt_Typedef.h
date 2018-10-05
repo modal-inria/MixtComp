@@ -22,6 +22,7 @@ typedef double Real;
 // typedef int Index;
 typedef std::ptrdiff_t Index;
 
+typedef int Integer;
 
 Real toReal(const std::string& s);
 

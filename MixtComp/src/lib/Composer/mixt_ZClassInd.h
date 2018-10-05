@@ -8,12 +8,13 @@
  *
  **/
 
-#ifndef MIXT_ZCLASSIND_H
-#define MIXT_ZCLASSIND_H
+#ifndef LIB_COMPOSER_MIXT_ZCLASSIND_H
+#define LIB_COMPOSER_MIXT_ZCLASSIND_H
 
 #include <set>
 #include "boost/regex.hpp"
-#include "../Data/mixt_AugmentedData.h"
+#include <Data/mixt_AugmentedData.h>
+#include <IO/IOFunctions.h>
 
 namespace mixt {
 
@@ -34,22 +35,15 @@ public:
 	std::string checkMissingType();
 
 	/** The DataHandler initializes zi_, and classInd_ is updated. */
-	template<typename DataHandler>
-	std::string setZi(const DataHandler& dataHandler) {
+	template<typename Graph>
+	std::string setZi(Graph& g) {
 		std::string warnLog;
 		std::string paramStr;
 
-		warnLog += dataHandler.getData("z_class", // reserved name for the class
-				zi_, nbInd_, paramStr, -minModality); // an offset is immediately applied to the data read so that internally the classes encoding is 0 based
+		std::vector<std::string> data;
+		g.get_payload({}, "z_class", data);
 
-		boost::regex iniRe("fixedInitialization");
-		boost::smatch m;
-		std::string::const_iterator start = paramStr.begin();
-		std::string::const_iterator end = paramStr.end();
-		boost::regex_search(start, end, m, iniRe);
-		if (m[0].str().size() > 0) {
-			zi_.setFixedInitialization();
-		}
+		warnLog += StringToAugmentedData("z_class", data, zi_, -minModality);
 
 		for (int k = 0; k < nbClass_; ++k) {
 			classInd_(k).clear();

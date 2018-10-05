@@ -10,36 +10,30 @@
 #ifndef SIMPLEmodel_H
 #define SIMPLEmodel_H
 
-#include "Mixture/mixt_IMixture.h"
-#include "Data/mixt_AugmentedData.h"
-#include "IO/mixt_IO.h"
-#include "Various/mixt_Constants.h"
-#include "Param/mixt_ConfIntParamStat.h"
+#include <Mixture/mixt_IMixture.h>
+#include <Data/mixt_AugmentedData.h>
+#include <IO/IOFunctions.h>
+#include <IO/mixt_IO.h>
+#include <IO/NamedAlgebra.h>
+#include <Various/mixt_Constants.h>
+#include <Param/mixt_ConfIntParamStat.h>
 
 namespace mixt {
 
 /**
  * SimpleMixture is the new interface to add simple models. It is simpler than SimpleMixtureBridge which used class traits for no apparent benefit.
  */
-template<typename Model, typename DataHandler, typename DataExtractor,
-		typename ParamSetter, typename ParamExtractor>
+template<typename Graph, typename Model>
 class SimpleMixture: public IMixture {
 public:
 	/** constructor.
 	 *  @param idName id name of the mixture
 	 *  @param nbCluster number of cluster
 	 **/
-	SimpleMixture(Index indexMixture, std::string const& idName, Index nbClass,
-			const DataHandler* p_handler, DataExtractor* p_extractor,
-			const ParamSetter* p_paramSetter, ParamExtractor* p_paramExtractor,
-			Real confidenceLevel) :
-			IMixture(indexMixture, idName), nbClass_(nbClass), param_(), model_(
-					idName, nbClass, param_), augData_(), nbInd_(0), confidenceLevel_(
-					confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(
-					augData_, confidenceLevel), paramStat_(param_,
-					confidenceLevel), likelihood_(param_, augData_, nbClass), p_handler_(
-					p_handler), p_dataExtractor_(p_extractor), p_paramSetter_(
-					p_paramSetter), p_paramExtractor_(p_paramExtractor) {
+	SimpleMixture(const Graph& data, const Graph& param, Graph& out, std::string const& idName, Index nbClass, Index nInd, Real confidenceLevel, const std::string& paramStr) :
+			IMixture(idName, Model::name, nbClass, nInd), dataG_(data), paramG_(param), outG_(out), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(
+					paramStr), confidenceLevel_(confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_,
+					confidenceLevel), likelihood_(param_, augData_, nbClass) {
 	}
 
 	/**
@@ -49,8 +43,10 @@ public:
 	 */
 	std::string setDataParam(RunMode mode) {
 		std::string warnLog;
-		warnLog += p_handler_->getData(idName(), augData_, nbInd_, paramStr_,
-				(model_.hasModalities()) ? (-minModality) : (0)); // minModality offset for categorical models
+
+		std::vector<std::string> dataVecStr;
+		dataG_.get_payload( { }, idName_, dataVecStr);
+		warnLog += StringToAugmentedData(idName_, dataVecStr, augData_, (model_.hasModalities()) ? (-minModality) : (0));
 
 		if (warnLog.size() > 0) {
 			return warnLog;
@@ -60,23 +56,28 @@ public:
 
 		if (tempLog.size() > 0) { // check on the missing values description
 			std::stringstream sstm;
-			sstm << "Variable " << idName()
-					<< " has a problem with the descriptions of missing values."
-					<< std::endl << tempLog;
+			sstm << "Variable " << idName() << " has a problem with the descriptions of missing values." << std::endl << tempLog;
 			warnLog += sstm.str();
 		}
 
 		if (mode == prediction_) {
-			p_paramSetter_->getParam(idName_, "NumericalParam", param_,
-					paramStr_); // parameters are set using results from previous run, note that in the prediction case, the eventual paramStr_ obtained from p_handler_->getData is overwritten by the one provided by the parameter structure from the learning
+			NamedMatrix<Real> stat;
+			paramG_.get_payload( { idName_ }, "stat", stat);
+			Index nrow = stat.mat_.rows();
+
+			paramG_.get_payload( { idName_ }, "paramStr", paramStr_);
+
+			param_.resize(nrow);
+			for (Index i = 0; i < nrow; ++i) {
+				param_(i) = stat.mat_(i, 0); // only the mode / expectation is used, quantile information is discarded
+			}
 
 			paramStat_.setParamStorage(); // paramStatStorage_ is set now, using dimensions of param_, and will not be modified during predict run by the paramStat_ object for some mixtures, there will be errors if the range of the data in prediction is different from the range of the data in learning in the case of modalities, this can not be performed earlier, as the max val is computed at model_.setModalities(nbParam)
 		}
 
 		warnLog += model_.setData(paramStr_, augData_, mode); // checks on data bounds are made here, if paramStr_.size() = 0, it might be completed here, for example using the number of modalities found in the data
 
-		dataStat_.setNbIndividual(nbInd_);
-
+		dataStat_.setNbIndividual(nInd_);
 		return warnLog;
 	}
 
@@ -142,12 +143,25 @@ public:
 	}
 
 	void exportDataParam() const {
-		p_dataExtractor_->exportVals(indexMixture_, model_.hasModalities(),
-				idName_, augData_, dataStat_.getDataStatStorage()); // export the obtained data using the DataExtractor
-		p_paramExtractor_->exportParam(indexMixture_, idName(),
-				"NumericalParam", paramStat_.getStatStorage(),
-				paramStat_.getLogStorage(), model_.paramNames(),
-				confidenceLevel_, paramStr_);
+		NamedVector<typename Model::Data::Type> dataOut;
+		dataOut.vec_ = augData_.data_; // not that no row names are provided
+		if (model_.hasModalities()) {
+			dataOut.vec_ += minModality;
+		}
+		outG_.add_payload( { "variable", "data", idName_ }, "completed", dataOut);
+
+		Index ncol = paramStat_.getStatStorage().cols();
+		std::vector<std::string> colNames(ncol);
+
+		quantileNames(ncol, confidenceLevel_, colNames);
+
+		NamedMatrix<Real> paramOut; // all parameters are real at the moment,
+		paramOut.mat_ = paramStat_.getStatStorage();
+		paramOut.rowNames_ = model_.paramNames();
+		paramOut.colNames_ = colNames;
+
+		outG_.add_payload( { "variable", "param", idName_ }, "stat", paramOut);
+		outG_.add_payload( { "variable", "param", idName_ }, "paramStr", paramStr_);
 	}
 
 	void initData(Index i) {
@@ -159,12 +173,10 @@ public:
 	}
 	;
 
-	std::string checkSampleCondition(
-			const Vector<std::set<Index> >& classInd) const {
+	std::string checkSampleCondition(const Vector<std::set<Index> >& classInd) const {
 		std::string warnLog = model_.checkSampleCondition(classInd);
 		if (0 < warnLog.size()) {
-			return "checkSampleCondition, error in variable " + idName_ + eol
-					+ warnLog;
+			return "checkSampleCondition, error in variable " + idName_ + eol + warnLog;
 		}
 		return "";
 	}
@@ -185,8 +197,9 @@ public:
 	}
 private:
 protected:
-	/** Number of classes */
-	int nbClass_;
+	const Graph& dataG_;
+	const Graph& paramG_;
+	Graph& outG_;
 
 	/** Current parameters of the model_ */
 	Vector<Real> param_;
@@ -199,9 +212,6 @@ protected:
 
 	/** Parameters transmitted by the user */
 	std::string paramStr_;
-
-	/** number of samples in the data set*/
-	Index nbInd_;
 
 	/** confidence level used in computation of parameters and missing values statistics */
 	Real confidenceLevel_;
@@ -217,18 +227,6 @@ protected:
 
 	/** Computation of the observed likelihood */
 	typename Model::Likelihood likelihood_;
-
-	/** Pointer to the data handler */
-	const DataHandler* p_handler_;
-
-	/** Pointer to the data extractor */
-	DataExtractor* p_dataExtractor_;
-
-	/** Pointer to the param setter */
-	const ParamSetter* p_paramSetter_;
-
-	/** Pointer to the parameters extractor */
-	ParamExtractor* p_paramExtractor_;
 };
 
 }

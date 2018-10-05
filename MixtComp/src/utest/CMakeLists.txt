@@ -2,8 +2,8 @@
 # with "./" prefix deleted, and some utest deactivated
 
 add_executable(runUtest
-    json/SGraphVisJSON.cpp
-    json/JSONToSGraph.cpp
+    json/JSONGraph.cpp
+    lib/LinAlgStat/names.cpp
     lib/LinAlgStat/UTestMath.cpp
     lib/LinAlgStat/UTestStatistics.cpp
     lib/LinAlgStat/UTestLinAlg.cpp
@@ -31,7 +31,6 @@ add_executable(runUtest
     lib/Functional/UTestFunctionalClass.cpp
     lib/Functional/UTestFunctionalMixture.cpp
     lib/Functional/UTestFunctionalParser.cpp
-    lib/IO/UTestSGraph.cpp
 )
 
 target_link_libraries(runUtest

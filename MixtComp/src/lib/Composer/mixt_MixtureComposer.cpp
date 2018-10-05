@@ -9,30 +9,15 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
+
+#include <Mixture/mixt_IMixture.h>
+#include <IO/mixt_IO.h>
+#include <Various/mixt_Timer.h>
+#include <LinAlg/mixt_LinAlg.h>
+#include <Various/mixt_Various.h>
 #include "mixt_MixtureComposer.h"
-#include "../Mixture/mixt_IMixture.h"
-#include "../IO/mixt_IO.h"
-#include "../Various/mixt_Timer.h"
-#include "../LinAlg/mixt_LinAlg.h"
-#include "../Various/mixt_Various.h"
 
 namespace mixt {
-
-MixtureComposer::MixtureComposer(Index nbInd, Index nbClass,
-		Real confidenceLevel) :
-		idName_("z_class"), nClass_(nbClass), nInd_(nbInd), nVar_(0), prop_(
-				nbClass), tik_(nbInd, nbClass), sampler_(zClassInd_, tik_,
-				nbClass), paramStat_(prop_, confidenceLevel), dataStat_(
-				zClassInd_), confidenceLevel_(confidenceLevel), completedProbabilityCache_(
-				nInd_) {
-	std::cout << "MixtureComposer::MixtureComposer, nbInd: " << nbInd
-			<< ", nbClass: " << nbClass << std::endl;
-	zClassInd_.setIndClass(nbInd, nbClass);
-
-	std::stringstream sstm;
-	sstm << "nbModality: " << nbClass;
-	paramStr_ = sstm.str();
-}
 
 MixtureComposer::~MixtureComposer() {
 	for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
@@ -80,7 +65,7 @@ void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
 	//  std::cout << observedTik << std::endl;
 }
 
-Real MixtureComposer::lnObservedLikelihood() {
+Real MixtureComposer::lnObservedLikelihood() const {
 	Real lnLikelihood = 0.;
 	Matrix<Real> lnComp(nInd_, nClass_);
 
@@ -98,7 +83,7 @@ Real MixtureComposer::lnObservedLikelihood() {
 	return lnLikelihood;
 }
 
-Real MixtureComposer::lnCompletedLikelihood() {
+Real MixtureComposer::lnCompletedLikelihood() const {
 	Real lnLikelihood = 0.;
 
 	for (Index i = 0; i < nInd_; ++i) { // completion is only on the latent class, latent data in models is marginalized over
@@ -111,8 +96,7 @@ Real MixtureComposer::lnCompletedLikelihood() {
 Real MixtureComposer::lnCompletedProbability(int i, int k) const {
 	Real sum = std::log(prop_[k]); // the joint probability p(x, z) is computed
 
-	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end();
-			++it) {
+	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		sum += (*it)->lnCompletedProbability(i, k);
 	}
 
@@ -129,14 +113,12 @@ std::string MixtureComposer::mStep(const Vector<std::set<Index>>& classInd) {
 		std::string currLog;
 		currLog = v_mixtures_[v]->mStep(classInd); // call mStep on each variable
 		if (0 < currLog.size()) {
-			vecWarnLog[v] = "mStep error in variable: "
-					+ v_mixtures_[v]->idName() + eol + currLog + eol;
+			vecWarnLog[v] = "mStep error in variable: " + v_mixtures_[v]->idName() + eol + currLog + eol;
 		}
 	}
 
 	std::string warnLog;
-	for (std::vector<std::string>::const_iterator i = vecWarnLog.begin();
-			i != vecWarnLog.end(); ++i)
+	for (std::vector<std::string>::const_iterator i = vecWarnLog.begin(); i != vecWarnLog.end(); ++i)
 		warnLog += *i;
 
 	return warnLog;
@@ -185,14 +167,11 @@ void MixtureComposer::eStepCompleted() {
 
 	if (0 < listIndErr.size()) {
 		std::string listInd, warnLog;
-		for (std::list<Index>::const_iterator it = listIndErr.begin(), itEnd =
-				listIndErr.end(); it != itEnd; ++it) {
+		for (std::list<Index>::const_iterator it = listIndErr.begin(), itEnd = listIndErr.end(); it != itEnd; ++it) {
 			listInd += std::to_string(*it) + " ";
 		}
-		warnLog =
-				"An unexpected error has occurred in the computation of the completed probability of the individuals "
-						+ listInd
-						+ ". This kind of error is most likely the result of a bug. Please contact the maintainer and provide your data, descriptors and lauch script.";
+		warnLog = "An unexpected error has occurred in the computation of the completed probability of the individuals " + listInd
+				+ ". This kind of error is most likely the result of a bug. Please contact the maintainer and provide your data, descriptors and lauch script.";
 		throw(warnLog);
 	}
 
@@ -209,12 +188,10 @@ void MixtureComposer::mStepPi() {
 }
 
 void MixtureComposer::writeParameters() const {
-	std::cout << "Composer nbFreeParameter = " << nbFreeParameters()
-			<< std::endl;
+	std::cout << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
 	std::cout << "Composer proportions = " << itString(prop_) << std::endl;
 
-	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end();
-			++it) {
+	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		std::cout << "Parameters of " << (*it)->idName() << "\n";
 		(*it)->writeParameters();
 	}
@@ -222,8 +199,7 @@ void MixtureComposer::writeParameters() const {
 
 int MixtureComposer::nbFreeParameters() const {
 	int sum = nClass_ - 1; // proportions
-	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end();
-			++it) {
+	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		sum += (*it)->nbFreeParameter();
 	}
 	return sum;
@@ -242,11 +218,9 @@ void MixtureComposer::sampleUnobservedAndLatent(int i) {
 	}
 }
 
-std::string MixtureComposer::checkSampleCondition(
-		const Vector<std::set<Index>>& classInd) const {
+std::string MixtureComposer::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {
 	std::string warnLog = checkNbIndPerClass(classInd);
-	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end();
-			++it) {
+	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 		warnLog += (*it)->checkSampleCondition(classInd);
 	}
 
@@ -257,18 +231,14 @@ std::string MixtureComposer::checkSampleCondition() const {
 	return checkSampleCondition(zClassInd_.classInd());
 }
 
-std::string MixtureComposer::checkNbIndPerClass(
-		const Vector<std::set<Index>>& classInd) const {
+std::string MixtureComposer::checkNbIndPerClass(const Vector<std::set<Index>>& classInd) const {
 	for (Index k = 0; k < nClass_; ++k) {
 		if (0 < classInd(k).size()) {
 			continue;
 		} else {
 			std::stringstream sstm;
-			sstm
-					<< "MixtureComposer::checkNbIndPerClass: at least one class is empty. Maybe you asked for more classes "
-					<< "than the number of observations you provided. Or the constraints on the classes of each observations "
-					<< "in a (semi) supervised case are too tight."
-					<< std::endl;
+			sstm << "MixtureComposer::checkNbIndPerClass: at least one class is empty. Maybe you asked for more classes "
+					<< "than the number of observations you provided. Or the constraints on the classes of each observations " << "in a (semi) supervised case are too tight." << std::endl;
 			return sstm.str();
 		}
 	}
@@ -280,25 +250,21 @@ std::string MixtureComposer::checkNbIndPerClass() const {
 	return checkNbIndPerClass(zClassInd_.classInd());
 }
 
-void MixtureComposer::storeSEMRun(int iteration, int iterationMax,
-		RunType runType) {
+void MixtureComposer::storeSEMRun(int iteration, int iterationMax, RunType runType) {
 	if (runType == burnIn_) {
 		if (iteration == 0) {
 			completedProbabilityLogBurnIn_.resize(iterationMax + 1);
 		}
-		completedProbabilityLogBurnIn_(iteration) =
-				completedProbabilityCache_.sum();
+		completedProbabilityLogBurnIn_(iteration) = completedProbabilityCache_.sum();
 	}
 
 	if (runType == run_) {
 		if (iteration == 0) {
 			completedProbabilityLogRun_.resize(iterationMax + 1);
 		}
-		completedProbabilityLogRun_(iteration) =
-				completedProbabilityCache_.sum();
+		completedProbabilityLogRun_(iteration) = completedProbabilityCache_.sum();
 
-		for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end();
-				++it) {
+		for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 			(*it)->storeSEMRun(iteration, iterationMax);
 		}
 
@@ -312,13 +278,11 @@ void MixtureComposer::storeSEMRun(int iteration, int iterationMax,
 }
 
 void MixtureComposer::setObservedProbaCache() {
-	std::cout
-			<< "MixtureComposer::setObservedProbaCache, this operation could take some time..."
-			<< std::endl;
+	std::cout << "MixtureComposer::setObservedProbaCache, this operation could take some time..." << std::endl;
 	observedProbabilityCache_.resize(nVar_);
 
 	for (Index j = 0; j < nVar_; ++j) {
-		observedProbabilityCache_(j) = Matrix<Real>(nInd_, nClass_);
+		observedProbabilityCache_(j) = Matrix < Real > (nInd_, nClass_);
 		observedProbabilityCache_(j) = 0.;
 	}
 
@@ -326,8 +290,7 @@ void MixtureComposer::setObservedProbaCache() {
 #pragma omp parallel for
 		for (Index i = 0; i < nInd_; ++i) {
 			for (Index k = 0; k < nClass_; ++k) {
-				observedProbabilityCache_(j)(i, k) =
-						v_mixtures_[j]->lnObservedProbability(i, k);
+				observedProbabilityCache_(j)(i, k) = v_mixtures_[j]->lnObservedProbability(i, k);
 			}
 		}
 	}
@@ -341,8 +304,7 @@ void MixtureComposer::storeGibbsRun(Index iteration, Index iterationMax) {
 			dataStat_.imputeData(ind, tik_); // impute the missing values using empirical mean or mode, depending of the model. Latest completed tik are replaced by observed tik
 		}
 
-		for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end();
-				++it) {
+		for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 			(*it)->storeGibbsRun(ind, iteration, iterationMax);
 		}
 	}
@@ -399,8 +361,7 @@ std::string MixtureComposer::initParamSubPartition(Index nInitPerClass) {
 	Vector<std::set<Index>> partialClassInd(nClass_);
 	Index nSubset = std::min(nInitPerClass * nClass_, nInd_);
 
-	std::cout << "MixtureComposer::initParamSubPartition, " << nSubset
-			<< " observations used in parameter initialization." << std::endl;
+	std::cout << "MixtureComposer::initParamSubPartition, " << nSubset << " observations used in parameter initialization." << std::endl;
 
 	Vector<Index> allInd(nInd_);
 	for (Index i = 0; i < nInd_; ++i) {
@@ -437,8 +398,7 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 			Vector<Real> lnP(nClass_); // ln(p(z_i = k, x_i^j))
 			Vector<Real> t_ik_j(nClass_); // p(z_i = k / x_i^j)
 			for (Index k = 0; k < nClass_; ++k) {
-				lnP(k) = std::log(prop_(k))
-						+ observedProbabilityCache_(j)(i, k);
+				lnP(k) = std::log(prop_(k)) + observedProbabilityCache_(j)(i, k);
 			}
 			t_ik_j.logToMulti(lnP); // "observed" t_ik, for the variable j
 			Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
@@ -474,8 +434,7 @@ void MixtureComposer::Delta(Matrix<Real>& delta) const {
 		for (Index j = 0; j < nVar_; ++j) {
 			Vector<Real> lnP(nClass_); // ln(p(z_i = k, x_i^j))
 			for (Index k = 0; k < nClass_; ++k) {
-				lnP(k) = std::log(prop_(k))
-						+ observedProbabilityCache_(j)(i, k);
+				lnP(k) = std::log(prop_(k)) + observedProbabilityCache_(j)(i, k);
 			}
 			probacond.col(j).logToMulti(lnP); // "observed" t_ik, for the variable j
 		}
@@ -484,8 +443,7 @@ void MixtureComposer::Delta(Matrix<Real>& delta) const {
 			for (Index j = 0; j < nVar_; ++j) {
 				for (Index h = j; h < nVar_; ++h) {
 					// Contribution of observation i to the distance between variables j and h for component k
-					delta(j, h) += (probacond(k, j) - probacond(k, h))
-							* (probacond(k, j) - probacond(k, h));
+					delta(j, h) += (probacond(k, j) - probacond(k, h)) * (probacond(k, j) - probacond(k, h));
 				}
 			}
 		}
@@ -557,8 +515,7 @@ std::string MixtureComposer::initializeLatent() {
 	sampleUnobservedAndLatent();
 //	warnLog = checkSampleCondition(); // TODO: might be useless, in this case, remove it
 	if (0 < warnLog.size()) {
-		std::cout << "initializeLatent, checkSampleCondition failed."
-				<< std::endl;
+		std::cout << "initializeLatent, checkSampleCondition failed." << std::endl;
 		return warnLog;
 	}
 
@@ -585,15 +542,13 @@ std::string MixtureComposer::eStepObserved() {
 	std::string tempWarnLog;
 	for (Index i = 0; i < nInd_; ++i) {
 		if (!vecWarnLog[i]) {
-			tempWarnLog += "Observation " + std::to_string(i)
-					+ " has a 0 density of probability." + eol;
+			tempWarnLog += "Observation " + std::to_string(i) + " has a 0 density of probability." + eol;
 		}
 	}
 
 	std::string warnLog;
 	if (0 < tempWarnLog.size()) {
-		warnLog = "Error in MixtureComposer::eStepObserved: " + eol
-				+ tempWarnLog;
+		warnLog = "Error in MixtureComposer::eStepObserved: " + eol + tempWarnLog;
 	}
 
 //	std::cout << "MixtureComposer::eStepObservedInd, tik" << std::endl;
@@ -617,8 +572,7 @@ bool MixtureComposer::eStepObservedInd(Index i) {
 			currVar(k) = observedProbabilityCache_(j)(i, k);
 		}
 
-		if (minInf < currVar.maxCoeff()
-				|| !v_mixtures_[j]->sampleApproximationOfObservedProba()) {
+		if (minInf < currVar.maxCoeff() || !v_mixtures_[j]->sampleApproximationOfObservedProba()) {
 			lnComp += currVar;
 		}
 	}

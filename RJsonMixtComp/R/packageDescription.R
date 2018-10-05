@@ -3,7 +3,6 @@
 # export functions from RMixtComp
 #' @export getBIC
 #' @export getCompletedData
-#' @export getData
 #' @export getICL
 #' @export getParam
 #' @export getTik
@@ -11,10 +10,6 @@
 #' @export getZ_class
 #' @export getVarNames
 #' 
-
-
-# functions to import for the NAMESPACE file.
-#' @importFrom utils read.table
 
 #' @title RJsonMixtComp
 #' @docType package
@@ -34,34 +29,28 @@
 #'  
 #' 
 #' @examples 
-#' \dontrun{
-#' # get the path to the data of the package
-#' pathToData <- system.file("extdata", "data.csv", package = "RJsonMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RJsonMixtComp")
-#'
-#' resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor)) 
-#'
-#' # learn
-#' resLearn <- JsonMixtCompCluster(dataList = resGetData$lm,
-#'                                 mcStrategy = list(nbBurnInIter = 100, nbIter = 100, 
-#'                                                   nbGibbsBurnInIter = 100, nbGibbsIter = 100),
-#'                                 nbClass = 2, confidenceLevel = 0.95, 
-#'                                 jsonInputFile = "datalearn.json",
-#'                                 jsonOutputFile = "reslearn.json")
-#'
-#'
-#'
-#' # predict : require a json file output from JsonMixtCompCluster ("reslearn.json" here)
-#' resPredict <- JsonMixtCompPredict(dataList = resGetData$lm,
-#'                                   mcStrategy = list(nbBurnInIter = 100, nbIter = 100, 
-#'                                                     nbGibbsBurnInIter = 100, nbGibbsIter = 100),
-#'                                   nbClass = 2, confidenceLevel = 0.95, 
-#'                                   jsonInputFile = "datalearn.json",
-#'                                   jsonOutputFile = "respredict.json",
-#'                                   jsonMixtCompLearnFile = "reslearn.json")
-#'
-#' # remove created files of the example
-#' file.remove(c("reslearn.json", "respredict.json", "datalearn.json"))
+#' \donttest{
+#' pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
+#' pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
+#' 
+#' data <- as.data.frame(fromJSON(pathToData))
+#' descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+#' strategy <- list(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 20,
+#'                  nbGibbsIter = 20, nInitPerClass = 10, nSemTry = 5)
+#' 
+#' resLearn <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = strategy,
+#'                               confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json")
+#' 
+#' 
+#' file.remove("./algo.json", "./descriptor.json", "./data.json")
+#' 
+#' resPredict <- JsonMixtCompPredict(data, descriptor, nClass = 2, mcStrategy = strategy,
+#'                                   confidenceLevel = 0.95, inputPath = ".", 
+#'                                   paramFile = "reslearn.json", outputFile = "respredict.json")
+#' 
+#' 
+#' file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json",
+#'             "respredict.json", "progress")
 #' }
 #' 
 #' 

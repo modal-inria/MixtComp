@@ -17,6 +17,8 @@
 
 namespace mixt {
 
+const std::string Weibull::name = "Weibull";
+
 Weibull::Weibull(const std::string& idName, Index nbClass, Vector<Real>& param) :
 		idName_(idName), nClass_(nbClass), param_(param), p_data_(NULL) {
 	param_.resize(2 * nbClass);

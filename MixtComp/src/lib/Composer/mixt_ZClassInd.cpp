@@ -7,6 +7,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
+#include <IO/IOFunctions.h>
 #include "mixt_ZClassInd.h"
 
 namespace mixt {

@@ -9,18 +9,19 @@
  *
  **/
 
-#ifndef MIXT_MIXTURECOMPOSER_H
-#define MIXT_MIXTURECOMPOSER_H
+#ifndef LIB_COMPOSER_MIXT_MIXTURECOMPOSER_H
+#define LIB_COMPOSER_MIXT_MIXTURECOMPOSER_H
 
 #include <set>
 #include <vector>
-
+#include <IO/NamedAlgebra.h>
+#include <LinAlg/mixt_LinAlg.h>
+#include <Mixture/mixt_IMixture.h>
+#include <Various/mixt_Enum.h>
+#include <Param/mixt_ConfIntParamStat.h>
 #include "mixt_ZClassInd.h"
 #include "mixt_ClassDataStat.h"
 #include "mixt_ClassSampler.h"
-#include "../Mixture/mixt_IMixture.h"
-#include "../Various/mixt_Enum.h"
-#include "../Param/mixt_ConfIntParamStat.h"
 
 namespace mixt {
 
@@ -30,14 +31,21 @@ typedef std::vector<IMixture*>::iterator MixtIterator;
 class MixtureComposer {
 public:
 	/** Constructor.
+	 * See https://stackoverflow.com/questions/3786360/confusing-template-error for the .template syntax in the constructor
 	 * @param nbCluster,nbSample,nbVariable number of clusters, samples and Variables
 	 */
-	MixtureComposer(Index nbInd, Index nbClass, Real confidenceLevel);
+	template<typename Graph>
+	MixtureComposer(const Graph& algo) :
+			nClass_(algo.template get_payload<Index>( { }, "nClass")), nInd_(algo.template get_payload<Index>( { }, "nInd")), nVar_(0), confidenceLevel_(
+					algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_,
+					confidenceLevel_), dataStat_(zClassInd_), completedProbabilityCache_(nInd_) {
+		std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
+		zClassInd_.setIndClass(nInd_, nClass_);
 
-	/** copy constructor.
-	 *  @param composer the composer to copy
-	 */
-	MixtureComposer(MixtureComposer const& composer);
+		std::stringstream sstm;
+		sstm << "nbModality: " << nClass_;
+		paramStr_ = sstm.str();
+	}
 
 	/** The registered mixtures will be deleted there.*/
 	~MixtureComposer();
@@ -101,10 +109,10 @@ public:
 	Real lnObservedProbability(int i, int k) const;
 
 	/** @return the value of the observed likelihood */
-	Real lnObservedLikelihood();
+	Real lnObservedLikelihood() const;
 
 	/** @return the value of the completed likelihood */
-	Real lnCompletedLikelihood();
+	Real lnCompletedLikelihood() const;
 
 	/** write the parameters of the model in the stream os. */
 	void writeParameters() const;
@@ -128,16 +136,14 @@ public:
 	 * log is required.
 	 * @param[out] warnLog provides information on what condition has not been met
 	 * */
-	std::string checkSampleCondition(
-			const Vector<std::set<Index>>& classInd) const;
+	std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const;
 	std::string checkSampleCondition() const;
 
 	/**
 	 * Check if there are enough individual in each class. Called by checkSampleCondition.
 	 * @param[out] warnLog provides information on what condition has not been met
 	 * */
-	std::string checkNbIndPerClass(
-			const Vector<std::set<Index>>& classInd) const;
+	std::string checkNbIndPerClass(const Vector<std::set<Index>>& classInd) const;
 	std::string checkNbIndPerClass() const;
 
 	/**@brief This step can be used to signal to the mixtures that they must
@@ -156,27 +162,26 @@ public:
 	 * with the individual IMixtures
 	 * @param checkInd should be set to 1 if a minimum number of individual per class should be
 	 * enforced at sampling (true in learning, false in prediction) */
-	template<typename ParamSetter, typename DataHandler>
-	std::string setDataParam(const ParamSetter& paramSetter,
-			const DataHandler& dataHandler, RunMode mode) {
+	template<typename Graph>
+	std::string setDataParam(RunMode mode, const Graph& data, const Graph& param) {
 		std::string warnLog;
 
-		for (ConstMixtIterator it = v_mixtures_.begin();
-				it != v_mixtures_.end(); ++it) {
+		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+			std::cout << "MixtureComposer::setDataParam, " << (*it)->idName() << " started..." << std::endl;
 			warnLog += (*it)->setDataParam(mode);
+			std::cout << "... finished." << std::endl;
 		}
 
-		warnLog += setProportion(paramSetter);
-
-		for (int i = 0; i < nInd_; ++i) {
-			tik_.row(i) = prop_.transpose();
-		}
-
-		warnLog += setZi(dataHandler); // dataHandler getData is called to fill zi_
+		warnLog += setZi(data); // dataHandler getData is called to fill zi_
 
 		if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
+			warnLog += setProportion(param); // note: paramStr_ is manually set at the end of setDataParam
 			paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
 		}
+
+		//		for (int i = 0; i < nInd_; ++i) { // useless, new initialization performs and mStep, then an eStepObserved that fills tik_
+		//			tik_.row(i) = prop_.transpose();
+		//		}
 
 		paramStr_ = "nModality: " + std::to_string(nClass_);
 
@@ -190,12 +195,18 @@ public:
 	 * This avoids templating the whole composer with DataHandler type, as is currently done
 	 * with the individual IMixtures.
 	 */
-	template<typename ParamSetter>
-	std::string setProportion(const ParamSetter& paramSetter) {
+	template<typename Graph>
+	std::string setProportion(Graph& param) {
 		std::string warnLog;
 
-		std::string dummy;
-		paramSetter.getParam("z_class", "pi", prop_, dummy); // paramStr_ is manually set at the end of setDataParam
+		NamedMatrix<Real> stat;
+		param.get_payload( { "z_class", "pi" }, "stat", stat); // only called in predict mode, therefore the payload exists
+
+		Index nrow = stat.mat_.rows();
+
+		for (Index i = 0; i < nrow; ++i) {
+			prop_(i) = stat.mat_(i, 0); // only the mode / expectation is used, quantile information is discarded
+		}
 
 		return warnLog;
 	}
@@ -207,73 +218,115 @@ public:
 	 * @param checkInd should be set to 1 if a minimum number of individual per class should be
 	 * enforced at sampling (true in learning, false in prediction)
 	 */
-	template<typename DataHandler>
-	std::string setZi(const DataHandler& dataHandler) {
+	template<typename Graph>
+	std::string setZi(Graph& data) {
 		std::string warnLog;
-		std::string dummyParam;
 
-		if (dataHandler.info().find("z_class") == dataHandler.info().end()) { // z_class was not provided
+		if (!data.exist_payload( { }, "z_class")) { // z_class was not provided
+			std::cout << "MixtureComposer::setZi, no class label provided." << std::endl;
 			zClassInd_.setAllMissing(); // set every value state to missing_
-		} else { // z_class was provided and its value is acquired in zi_
-			warnLog += zClassInd_.setZi(dataHandler);
+		} else {
+			std::cout << "MixtureComposer::setZi, class label provided." << std::endl;
+			warnLog += zClassInd_.setZi(data);
 		}
 
 		std::string tempLog = zClassInd_.checkMissingType(); // check if the missing data provided are compatible with the model
 		if (tempLog.size() > 0) {
 			std::stringstream sstm;
-			sstm << "Variable " << idName_
-					<< " contains latent classes and has unsupported missing value types.\n"
-					<< tempLog;
+			sstm << "Variable z_class contains latent classes and has unsupported missing value types.\n" << tempLog;
 			warnLog += sstm.str();
 		}
 		zClassInd_.computeRange(); // compute effective range of the data for checking, min and max will be set to 0 if data is completely missing
 		if (zClassInd_.zi().dataRange_.min_ < 0) { // Since z is currently described using unsigned integer, there is no need for this check HOWEVER it might come in handy shall this condition changes
 			std::stringstream sstm;
-			sstm
-					<< "The z_class latent class variable has a lowest provided value of: "
-					<< minModality + zClassInd_.zi().dataRange_.min_
-					<< " while the minimal value has to be: " << minModality
-					<< ". Please check the encoding of this variable to ensure proper bounds."
-					<< std::endl;
+			sstm << "The z_class latent class variable has a lowest provided value of: " << minModality + zClassInd_.zi().dataRange_.min_ << " while the minimal value has to be: "
+					<< minModality << ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
 			warnLog += sstm.str();
 		}
-		if (zClassInd_.zi().dataRange_.hasRange_ == true
-				|| zClassInd_.zi().dataRange_.max_ > nClass_ - 1) {
+		if (zClassInd_.zi().dataRange_.hasRange_ == true || zClassInd_.zi().dataRange_.max_ > nClass_ - 1) {
 			std::stringstream sstm;
-			sstm
-					<< "The z_class latent class variable has a highest provided value of: "
-					<< minModality + zClassInd_.zi().dataRange_.max_
-					<< " while the maximal value can not exceed the number of class: "
-					<< minModality + nClass_ - 1
-					<< ". Please check the encoding of this variable to ensure proper bounds."
-					<< std::endl;
+			sstm << "The z_class latent class variable has a highest provided value of: " << minModality + zClassInd_.zi().dataRange_.max_
+					<< " while the maximal value can not exceed the number of class: " << minModality + nClass_ - 1
+					<< ". Please check the encoding of this variable to ensure proper bounds." << std::endl;
 			warnLog += sstm.str();
 		}
 		zClassInd_.setRange(0, nClass_ - 1, nClass_);
 
 		return warnLog;
 	}
-	;
 
 	/**@brief This step can be used to ask each mixture to export its model parameters
 	 * and data
 	 **/
-	template<typename DataExtractor, typename ParamExtractor>
-	void exportDataParam(DataExtractor& dataExtractor,
-			ParamExtractor& paramExtractor) const {
+	template<typename Graph>
+	void exportDataParam(Graph& g) const {
+		g.add_payload( { "variable", "type" }, "z_class", "LatentClass");
 
-		dataExtractor.exportVals(0, "z_class", zClassInd_.zi(), tik_);
-		paramExtractor.exportParam(0, "z_class", "pi",
-				paramStat_.getStatStorage(), paramStat_.getLogStorage(),
-				paramName(), confidenceLevel_, "");
+		NamedVector<Index> dataCompleted { std::vector<std::string>(), zClassInd_.zi().data_ + minModality };
+		NamedMatrix<Real> dataStat { std::vector<std::string>(), std::vector<std::string>(), tik_ };
 
-		for (ConstMixtIterator it = v_mixtures_.begin();
-				it != v_mixtures_.end(); ++it) {
+		g.add_payload( { "variable", "data", "z_class" }, "completed", dataCompleted);
+		g.add_payload( { "variable", "data", "z_class" }, "stat", dataStat);
+
+		Index ncol = paramStat_.getStatStorage().cols();
+		std::vector<std::string> colNames;
+
+		quantileNames(ncol, confidenceLevel_, colNames);
+
+		NamedMatrix<Real> paramStat { paramName(), colNames, paramStat_.getStatStorage() };
+
+		g.add_payload( { "variable", "param", "z_class", "pi" }, "stat", paramStat);
+		g.add_payload( { "variable", "param", "z_class", "pi" }, "paramStr", paramStr_);
+
+		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+			std::string currName = (*it)->idName();
+
 			(*it)->exportDataParam();
-		}
 
+			g.add_payload( { "variable", "type" }, currName, (*it)->modelType());
+		}
 	}
-	;
+
+	/**
+	 * Export the mixture part of the output, with model selection, likelihoods, etc... This was the final
+	 * part of the code in mixtCompCluster.cpp
+	 */
+	template<typename Graph>
+	void exportMixture(Real runTime, Graph& g) const {
+		std::vector<std::string> dummyNames;
+
+		Index nFreeParameters = nbFreeParameters();
+
+		g.add_payload( { "mixture" }, "nbFreeParameters", nFreeParameters);
+		Real lnObsLik = lnObservedLikelihood();
+		Real lnCompLik = lnCompletedLikelihood();
+		g.add_payload( { "mixture" }, "lnObservedLikelihood", lnObsLik);
+		g.add_payload( { "mixture" }, "lnCompletedLikelihood", lnCompLik);
+		g.add_payload( { "mixture" }, "BIC", lnObsLik - 0.5 * nFreeParameters * std::log(nInd_));
+		g.add_payload( { "mixture" }, "ICL", lnCompLik - 0.5 * nFreeParameters * std::log(nInd_));
+
+		std::cout << "lnObservedLikelihood: " << lnObsLik << std::endl << std::endl;
+
+		g.add_payload( { "mixture" }, "runTime", runTime);
+
+		NamedMatrix<Real> idclass = { paramName(), mixtureName(), Matrix<Real>() };
+		IDClass(idclass.mat_);
+		g.add_payload( { "mixture" }, "IDClass", idclass);
+
+		NamedMatrix<Real> pGCCPP = { dummyNames, dummyNames, Matrix<Real>() };
+		lnProbaGivenClass(pGCCPP.mat_);
+		g.add_payload( { "mixture" }, "lnProbaGivenClass", idclass);
+
+		NamedVector<Real> completedProbabilityLogBurnIn = { dummyNames, completedProbabilityLogBurnIn_ };
+		g.add_payload( { "mixture" }, "completedProbabilityLogBurnIn", completedProbabilityLogBurnIn);
+
+		NamedVector<Real> completedProbabilityLogRun = { dummyNames, completedProbabilityLogRun_ };
+		g.add_payload( { "mixture" }, "completedProbabilityLogRun", completedProbabilityLogRun);
+
+		NamedMatrix<Real> matDelta = { dummyNames, dummyNames, Matrix<Real>() };
+		Delta(matDelta.mat_);
+		g.add_payload( { "mixture" }, "delta", matDelta);
+	}
 
 	/** register a mixture to the composer.
 	 *  When a mixture is registered, the composer:
@@ -363,9 +416,6 @@ public:
 	void printClassInd() const;
 
 private:
-	/** name of the latent class variable */
-	std::string idName_;
-
 	std::string paramStr_;
 
 	/** number of classes */
@@ -376,6 +426,9 @@ private:
 
 	/** Number of variables */
 	Index nVar_;
+
+	/** confidence level used for the computation of statistics */
+	Real confidenceLevel_;
 
 	/** The proportions of each class */
 	Vector<Real> prop_;
@@ -397,9 +450,6 @@ private:
 
 	/** computer of the statistics on latent variables */
 	ClassDataStat dataStat_;
-
-	/** confidence level used for the computation of statistics */
-	Real confidenceLevel_;
 
 	/**
 	 * Cached observed log probability. The access is done via:

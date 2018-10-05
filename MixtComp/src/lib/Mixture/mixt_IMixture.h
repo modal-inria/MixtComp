@@ -8,13 +8,13 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
-#ifndef MIXT_IMIXTURE_H
-#define MIXT_IMIXTURE_H
+#ifndef LIB_MIXTURE_MIXT_IMIXTURE_H
+#define LIB_MIXTURE_MIXT_IMIXTURE_H
 
 #include <iostream>
 #include <set>
-#include "../LinAlg/mixt_LinAlg.h"
-#include "../Various/mixt_Enum.h"
+#include <LinAlg/mixt_LinAlg.h>
+#include <Various/mixt_Enum.h>
 
 namespace mixt {
 
@@ -25,8 +25,8 @@ public:
 	 *
 	 * @param idName Identification string of the mixture provided by the framework
 	 * */
-	IMixture(Index indexMixture, std::string const& idName) :
-			indexMixture_(indexMixture), idName_(idName) {
+	IMixture(const std::string& idName, const std::string& modelType, Index nClass, Index nInd) :
+			idName_(idName), modelType_(modelType), nClass_(nClass), nInd_(nInd) {
 	}
 	;
 
@@ -39,8 +39,12 @@ public:
 	 * Return the Id of the mixture
 	 * @return Id of the mixture
 	 * */
-	std::string const& idName() const {
+	const std::string& idName() const {
 		return idName_;
+	}
+
+	const std::string& modelType() const {
+		return modelType_;
 	}
 
 	/**
@@ -56,8 +60,7 @@ public:
 	 * is present at least one time in each class. This is invoked to avoid degeneracy.
 	 * @return 0 if condition not verified and 1 if condition verified
 	 * */
-	virtual std::string checkSampleCondition(
-			const Vector<std::set<Index>>& classInd) const = 0;
+	virtual std::string checkSampleCondition(const Vector<std::set<Index>>& classInd) const = 0;
 
 	/**
 	 * Maximum-Likelihood estimation of the mixture parameters
@@ -82,8 +85,7 @@ public:
 	 * @param iteration Gibbs iteration
 	 * @param iterationMax maximum number of iterations
 	 * */
-	virtual void storeGibbsRun(Index i, Index iteration,
-			Index iterationMax) = 0;
+	virtual void storeGibbsRun(Index i, Index iteration, Index iterationMax) = 0;
 
 	/**
 	 * Computation of completed likelihood
@@ -156,11 +158,14 @@ public:
 	 */
 	virtual bool sampleApproximationOfObservedProba() = 0;
 protected:
-	/** Index of the mixture, useful to write the results at the correct place in th output. */
-	Index indexMixture_;
-
 	/** Id name of the mixture */
 	std::string idName_;
+
+	/** Type of the model */
+	std::string modelType_;
+
+	Index nClass_;
+	Index nInd_;
 };
 
 } // namespace mixt

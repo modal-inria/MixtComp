@@ -1,7 +1,7 @@
 functionalInterPolyParam <- function(name) {
   Functional <- list(
     name = name,
-    type = "Functional",
+    type = "Func_CS",
     generator = functionalInterPolyGenerator,
     paramStr = "nSub: 2, nCoeff: 2",
     param = list())
@@ -32,7 +32,7 @@ functionalParam1sub <- function(name) {
   Functional$param[[2]] <- list()
   
   Functional$name <- name
-  Functional$type <- "Functional"
+  Functional$type <- "Func_CS"
   Functional$generator <- functionalGenerator
   Functional$paramStr <- "nSub: 1, nCoeff: 2"
   
@@ -84,7 +84,7 @@ functionalParam2sub <- function(name) {
   Functional$param[[2]] <- list()
   
   Functional$name <- name
-  Functional$type <- "Functional"
+  Functional$type <- "Func_CS"
   Functional$generator <- functionalGenerator
   Functional$paramStr <- "nSub: 2, nCoeff: 2"
   

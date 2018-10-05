@@ -41,7 +41,10 @@ public:
 		return nbPos_;
 	}
 
-	/** Note that no check is performed on sizes to increase speed */
+	/**
+	 * Set ordering: position -> modality (the more intuitive way to represent a rank).
+	 * Note that no check is performed on sizes to increase speed
+	 * */
 	template<typename T>
 	void setO(const T& data) {
 		typename T::const_iterator itD = data.begin();
@@ -55,7 +58,10 @@ public:
 		switchRepresentation(ordering_, ranking_);
 	}
 
-	/** Note that no check is performed on sizes to increase speed */
+	/**
+	 * Set ranking: modality -> position
+	 * Note that no check is performed on sizes to increase speed
+	 * */
 	template<typename T>
 	void setR(const T& data) {
 		typename T::const_iterator itD = data.begin();

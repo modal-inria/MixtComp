@@ -18,6 +18,8 @@
 
 namespace mixt {
 
+const std::string Categorical::name = "Categorical";
+
 Categorical::Categorical(const std::string& idName, int nbClass,
 		Vector<Real>& param) :
 		idName_(idName), nClass_(nbClass), nModality_(0), p_data_(0), param_(

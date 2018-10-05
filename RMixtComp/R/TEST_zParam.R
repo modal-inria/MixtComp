@@ -5,6 +5,7 @@ zParam <- function() {
   
   z_class$name <- "z_class"
   z_class$type <- "LatentClass"
+  z_class$paramStr <- ""
   z_class$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
   #  z_class$param <- c(1.) # parameters for z_class are the mixture proportions
   z_class$allPresent <- FALSE
@@ -19,6 +20,7 @@ zParamFixedInit <- function() {
   
   z_class$name <- "z_class"
   z_class$type <- "LatentClass"
+  z_class$paramStr <- ""
   z_class$param <- c(0.3, 0.7) # parameters for z_class are the mixture proportions
   #  z_class$param <- c(1.) # parameters for z_class are the mixture proportions
   z_class$allPresent <- TRUE

@@ -4,8 +4,9 @@
 \alias{createMcStrategy}
 \title{create mcStrategy object}
 \usage{
-createMcStrategy(nbBurnInIter = 100, nbIter = 100, nbGibbsBurnInIter = 50,
-  nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20)
+createMcStrategy(nbBurnInIter = 100, nbIter = 100,
+  nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10,
+  nSemTry = 20)
 }
 \arguments{
 \item{nbBurnInIter}{Number of iterations of the burn-in part of the SEM algorithm.}

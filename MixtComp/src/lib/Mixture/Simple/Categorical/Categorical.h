@@ -22,7 +22,10 @@
 namespace mixt {
 
 class Categorical {
+
 public:
+	static const std::string name;
+
 	typedef Vector<int> Data;
 	typedef CategoricalDataStat DataStat;
 	typedef CategoricalSampler Sampler;

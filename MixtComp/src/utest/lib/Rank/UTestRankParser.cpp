@@ -17,8 +17,7 @@ typedef typename std::pair<MisType, std::vector<int> > MisVal;
 TEST(RankParser, basicTest) {
 	int nbMod = 4;
 
-	Vector<std::string> vecStr(3);
-	vecStr << "1 , 3 , 2 , 0", "0 , 3 , 1 , 2", "0 , 1 , 2 , 3";
+	std::vector<std::string> vecStr = { "1 , 3 , 2 , 0", "0 , 3 , 1 , 2", "0 , 1 , 2 , 3" };
 
 	Vector<RankIndividual> vecIndComputed; // result of parsing
 	Vector<RankIndividual> vecIndExpected(3); // expected result of parsing
@@ -32,8 +31,7 @@ TEST(RankParser, basicTest) {
 	vecIndExpected(2).setNbPos(4);
 	vecIndExpected(2).setO(std::vector<int>( { 0, 1, 2, 3 }));
 
-	parseRankStr(vecStr, 0, // minMod
-			nbMod, vecIndComputed);
+	parseRankStr(vecStr, 0, nbMod, vecIndComputed);
 
 	ASSERT_EQ(vecIndComputed(0).x(), vecIndExpected(0).x());
 	ASSERT_EQ(vecIndComputed(1).x(), vecIndExpected(1).x());
@@ -43,19 +41,13 @@ TEST(RankParser, basicTest) {
 /** This test checks that the minimal and maximal modalities are correct, that is in the interval [minModality, nbPos - minModality + 1] */
 TEST(RankParser, minMaxDetection) {
 	int nbPos;
-	Vector<std::string> vecStr(1);
-	vecStr << "{22 -8 1 2 3}, -1, 3, 38, 2";
+	std::vector<std::string> vecStr = { "{22 -8 1 2 3}, -1, 3, 38, 2" };
 
 	Vector<RankIndividual> vecInd;
 
 	MisVal misVal;
 
-	std::string resStr = parseRankStr(vecStr, 1, // min modality
-			nbPos, vecInd);
-
-#ifdef MC_DEBUG
-	std::cout << resStr << std::endl;
-#endif
+	std::string resStr = parseRankStr(vecStr, 1, nbPos, vecInd);
 
 	ASSERT_GT(resStr.size(), 0);
 }

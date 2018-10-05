@@ -1,68 +1,84 @@
 context("Test fonctionnel")
 
 test_that("Learn + predict", {
-  pathToData <- system.file("extdata", "data.csv", package = "RJsonMixtComp")
-  pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RJsonMixtComp")
+  pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
+  pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
   
-  resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor))
+  data <- as.data.frame(fromJSON(pathToData))
+  descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
   
-  resGetData$lm[[5]]$paramStr = "nSub: 3, nCoeff: 4"
-  expect_error(resLearn <- JsonMixtCompCluster(dataList = resGetData$lm, mcStrategy = list(nbBurnInIter = 50,
+  expect_error(resLearn <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
                                                                                            nbIter = 50,
                                                                                            nbGibbsBurnInIter = 20,
                                                                                            nbGibbsIter = 20,
                                                                                            nInitPerClass = 10,
                                                                                            nSemTry = 5),
-                                               nbClass = 2, confidenceLevel = 0.95, jsonInputFile = "datalearn.json", jsonOutputFile = "reslearn.json"), regexp = NA)
+                                             confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json"), regexp = NA)
+  
+  expect_true(file.exists("./algo.json"))
+  expect_true(file.exists("./descriptor.json"))
+  expect_true(file.exists("./data.json"))
+  expect_true(file.exists("reslearn.json"))
+  
+  file.remove("./algo.json", "./descriptor.json", "./data.json")
+ 
+  expect_error(resPredict <- JsonMixtCompPredict(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
+                                                                                                 nbIter = 50,
+                                                                                                 nbGibbsBurnInIter = 20,
+                                                                                                 nbGibbsIter = 20,
+                                                                                                 nInitPerClass = 10,
+                                                                                                 nSemTry = 5),
+                                                 confidenceLevel = 0.95, inputPath = ".", paramFile = "reslearn.json", outputFile = "respredict.json"), regexp = NA)
   
   
-  expect_true(is.matrix(resLearn$variable$param$Gaussian1$NumericalParam$stat))
+  expect_true(file.exists("./algo.json"))
+  expect_true(file.exists("./descriptor.json"))
+  expect_true(file.exists("./data.json"))
+  expect_true(file.exists("reslearn.json"))
+  expect_true(file.exists("respredict.json"))
   
-  expect_error(resPredict <- JsonMixtCompPredict(dataList = resGetData$lm, mcStrategy = list(nbBurnInIter = 50,
-                                                                                             nbIter = 50,
-                                                                                             nbGibbsBurnInIter = 20,
-                                                                                             nbGibbsIter = 20,
-                                                                                             nInitPerClass = 10,
-                                                                                             nSemTry = 5),
-                                                 nbClass = 2, confidenceLevel = 0.95, jsonInputFile = "datalearn.json", jsonOutputFile = "respredict.json",
-                                                 jsonMixtCompLearnFile = "reslearn.json"), regexp = NA)
-  
-  
-  file.remove(c("reslearn.json", "respredict.json", "datalearn.json", "progress"))
+  file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json", "respredict.json", "progress")
 })
 
 test_that("can predict with only one sample in the data set", {
-  pathToData <- system.file("extdata", "data.csv", package = "RJsonMixtComp")
-  pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RJsonMixtComp")
+  pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
+  pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
   
-  resGetData <- RJsonMixtComp:::getData(c(pathToData, pathToDescriptor))
+  data <- as.data.frame(fromJSON(pathToData))
+  descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
   
-  
-  resLearn <- JsonMixtCompCluster(dataList = resGetData$lm, mcStrategy = list(nbBurnInIter = 50,
-                                                                              nbIter = 50,
-                                                                              nbGibbsBurnInIter = 20,
-                                                                              nbGibbsIter = 20,
-                                                                              nInitPerClass = 10,
-                                                                              nSemTry = 5),
-                                  nbClass = 1, confidenceLevel = 0.95, jsonInputFile = "datalearn.json", jsonOutputFile = "reslearn.json")
-  
-  
-  
-  # keep only one sample
-  for(i in 1:length(resGetData$lm))
-  {
-    resGetData$lm[[i]]$data = resGetData$lm[[i]]$data[1]
-  }
-  
-  expect_error(resPredict <- JsonMixtCompPredict(dataList = resGetData$lm, mcStrategy = list(nbBurnInIter = 50,
+  expect_error(resLearn <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
                                                                                              nbIter = 50,
                                                                                              nbGibbsBurnInIter = 20,
                                                                                              nbGibbsIter = 20,
                                                                                              nInitPerClass = 10,
                                                                                              nSemTry = 5),
-                                                 nbClass = 1, confidenceLevel = 0.95, jsonInputFile = "datalearn.json", jsonOutputFile = "respredict.json",
-                                                 jsonMixtCompLearnFile = "reslearn.json"), regexp = NA)
+                                             confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json"), regexp = NA)
+
+  expect_true(file.exists("./algo.json"))
+  expect_true(file.exists("./descriptor.json"))
+  expect_true(file.exists("./data.json"))
+  expect_true(file.exists("reslearn.json"))
+  
+  file.remove("./algo.json", "./descriptor.json", "./data.json")
+  
+  # keep only one sample
+  data = data[1,]
+  
+  expect_error(resPredict <- JsonMixtCompPredict(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
+                                                                                                 nbIter = 50,
+                                                                                                 nbGibbsBurnInIter = 20,
+                                                                                                 nbGibbsIter = 20,
+                                                                                                 nInitPerClass = 10,
+                                                                                                 nSemTry = 5),
+                                                 confidenceLevel = 0.95, inputPath = ".", paramFile = "reslearn.json", outputFile = "respredict.json"), regexp = NA)
   
   
-  file.remove(c("reslearn.json", "respredict.json", "datalearn.json", "progress"))
+  expect_true(file.exists("./algo.json"))
+  expect_true(file.exists("./descriptor.json"))
+  expect_true(file.exists("./data.json"))
+  expect_true(file.exists("reslearn.json"))
+  expect_true(file.exists("respredict.json"))
+  
+  file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json", "respredict.json", "progress")
 })

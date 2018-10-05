@@ -1,0 +1,5 @@
+{
+    "varGaussian":     ["1.0", "10.0"],
+    "varPoisson":      ["3", "12"],
+    "varCategorical":  ["1", "2"]
+}

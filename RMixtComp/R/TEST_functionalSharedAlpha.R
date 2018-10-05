@@ -1,7 +1,7 @@
 functionalSharedAlphaInterPolyParam <- function(name) {
   functionalSharedAlpha <- list(
     name = name,
-    type = "FunctionalSharedAlpha",
+    type = "Func_SharedAlpha_CS",
     generator = functionalInterPolyGenerator,
     paramStr = "nSub: 2, nCoeff: 2",
     param = list())
@@ -32,7 +32,7 @@ functionalSharedAlphaParam1sub <- function(name) {
   functionalSharedAlpha$param[[2]] <- list()
   
   functionalSharedAlpha$name <- name
-  functionalSharedAlpha$type <- "FunctionalSharedAlpha"
+  functionalSharedAlpha$type <- "Func_SharedAlpha_CS"
   functionalSharedAlpha$generator <- functionalGenerator
   functionalSharedAlpha$paramStr <- "nSub: 1, nCoeff: 2"
   
@@ -84,7 +84,7 @@ functionalSharedAlphaParam2sub <- function(name) {
   functionalSharedAlpha$param[[2]] <- list()
   
   functionalSharedAlpha$name <- name
-  functionalSharedAlpha$type <- "FunctionalSharedAlpha"
+  functionalSharedAlpha$type <- "Func_SharedAlpha_CS"
   functionalSharedAlpha$generator <- functionalGenerator
   functionalSharedAlpha$paramStr <- "nSub: 2, nCoeff: 2"
   

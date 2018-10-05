@@ -18,6 +18,8 @@
 
 namespace mixt {
 
+const std::string NegativeBinomial::name = "NegativeBinomial";
+
 NegativeBinomial::NegativeBinomial(const std::string& idName, int nbClass, Vector<Real>& param) :
 				idName_(idName), nClass_(nbClass), param_(param), p_data_(0) {
 	param_.resize(2 * nbClass);

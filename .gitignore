@@ -3,6 +3,7 @@
 .RData
 .svn
 .DS_store
+.recommenders
 *.aux
 *.toc
 *.log
@@ -12,9 +13,6 @@
 *.a
 *.tar.gz
 *.d
-*.png
-*.json
-*.csv
 .metadata/*
 progress
 MixtComp/release
