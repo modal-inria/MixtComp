@@ -82,39 +82,4 @@ test_that("run cluster/predict file csv",{
   expect_gte(rand.index(getZ_class(resPred), dat$z_class), 0.9)
 })
 
-
-test_that("run cluster/predict R object",{
-  set.seed(42)
-
-  var <- list()
-  var$z_class <- zParam()
-  var$Poisson1 <- poissonParam("Poisson1")
-  var$Gaussienne1 <- gaussianParam("Gaussian1")
-  var$Categorical1 <- categoricalParam1("Categorical1")
-
-  dat <- dataGenerator(200, 0.9, var)
-
-  resGetData <- getData(list(dat$data, dat$descriptor))
-  expect_equal(resGetData$warnLog, "")
-
-  # define the algorithm's parameters
-  mcStrategy <- createMcStrategy(nInitPerClass = 20)
-
-  # run RMixtCompt for clustering
-  res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-  expect_equal(res$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(res), dat$z), 0.9)
-
-
-  datPred <- dataGenerator(100, 0.9, var)
-
-  resGetDataPred <- getData(list(datPred$data, datPred$descriptor))
-  expect_equal(resGetDataPred$warnLog, "")
-
-  # run RMixtCompt for predicting
-  resPred <- mixtCompPredict(resGetDataPred$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-  expect_equal(resPred$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resPred), datPred$z), 0.85)
-})
-
 Sys.unsetenv("MC_DETERMINISTIC")

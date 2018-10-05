@@ -181,13 +181,14 @@ test_that("weibull model works",{
   set.seed(42)
   
   nInd <- 1000
+  ratioPresent <- 0.95
   
   var <- list()
   var$z_class <- zParam()
   
   var$Weibull1 <- weibullParam("Weibull1")
   
-  resGen <- dataGeneratorNewIO(nInd, 0.95, var)
+  resGen <- dataGeneratorNewIO(nInd, ratioPresent, var)
   
   algo <- list(
     nClass = 2,
@@ -264,7 +265,7 @@ test_that("functional model with shared alpha works",{
   
   var$functionalSharedAlpha1 <- functionalSharedAlphaInterPolyParam("functionalSharedAlpha1")
   
-  resGen <- dataGeneratorNewIO(400, 0.9, var)
+  resGen <- dataGeneratorNewIO(nInd, ratioPresent, var)
   
   algo <- list(
     nClass = 2,
@@ -327,6 +328,61 @@ test_that("rank model works",{
   
   confMatSampled <- table(resGen$z, getZ_class(resLearn))
   print(confMatSampled)
+})
+
+test_that("run cluster/predict R object",{
+  set.seed(42)
+  
+  var <- list()
+  var$z_class <- zParam()
+  var$Poisson1 <- poissonParam("Poisson1")
+  var$Gaussienne1 <- gaussianParam("Gaussian1")
+  var$Categorical1 <- categoricalParam1("Categorical1")
+  
+  resGenLearn <- dataGeneratorNewIO(200, 0.9, var)
+  
+  algoLearn <- list(
+    nClass = 2,
+    nInd = 200,
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
+    nInitPerClass = 100,
+    nSemTry = 20,
+    confidenceLevel = 0.95,
+    mode = "learn"
+  )
+  
+  dataLearn <- resGenLearn$data
+  desc <- resGenLearn$desc
+  
+  resLearn <- rmc(algoLearn, dataLearn, desc, list()) # run RMixtCompt for clustering
+  
+  expect_equal(resLearn$mixture$warnLog, NULL)
+  expect_gte(rand.index(getZ_class(resLearn), resGenLearn$z), 0.9)
+  
+  resGenPredict <- dataGeneratorNewIO(100, 0.9, var)
+  
+  algoPredict <- list(
+    nClass = 2,
+    nInd = 100,
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
+    nInitPerClass = 100,
+    nSemTry = 20,
+    confidenceLevel = 0.95,
+    mode = "predict"
+  )
+  
+  dataPredict <- resGenPredict$data
+  
+  resPredict <- rmc(algoPredict, dataPredict, desc, resLearn) # run RMixtCompt for clustering
+
+  expect_equal(resPredict$mixture$warnLog, NULL)
+  expect_gte(rand.index(getZ_class(resPredict), resGenPredict$z), 0.85)
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")
