@@ -198,8 +198,9 @@ public:
 			for (Index k = 0; k < nClass_; ++k) {
 				NamedMatrix<Real> rank;
 				paramG_.get_payload( { idName_, "mu", "stat", "k: " + std::to_string(k) }, "rank", rank);
+				rank.mat_ -= minModality;
 				mu_(k).setNbPos(rank.mat_.cols());
-				mu_(k).setO(rank.mat_.row(0) - minModality); // the most probable rank has been written in the first line of the rank matrix
+				mu_(k).setO(rank.mat_.row(0)); // the most probable rank has been written in the first line of the rank matrix
 			}
 
 			NamedMatrix<Real> pi;
