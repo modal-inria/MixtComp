@@ -253,9 +253,9 @@ public:
 		for (Index i = 0; i < nInd_; ++i) {
 			exportData.mat_.row(i) = data_(i).x().o();
 		}
-		outG_.add_payload( { "data", idName_ }, "completed", exportData);
+		outG_.add_payload( { "variable", "data", idName_ }, "completed", exportData);
 
-		outG_.add_payload( { "param", idName_ }, "paramStr", paramStr_);
+		outG_.add_payload( { "variable", "param", idName_ }, "paramStr", paramStr_);
 
 		for (Index k = 0; k < nClass_; ++k) { // since the param is described by a composite data type, it is simpler to regroup by class
 			const std::list<std::pair<RankVal, Real>>& muStatStorage = muParamStat_[k].statStorageMu();
@@ -270,15 +270,15 @@ public:
 				++i;
 			}
 
-			outG_.add_payload( { "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "rank", rank);
-			outG_.add_payload( { "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "proba", proba);
+			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "rank", rank);
+			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "proba", proba);
 		}
 
 		Index nStat = piParamStat_.getStatStorage().cols();
 		std::vector<std::string> colNames;
 		quantileNames(nStat, confidenceLevel_, colNames);
 
-		outG_.add_payload( { "param", idName_, "pi" }, "stat", NamedMatrix<Real>( { piParamNames(), colNames, piParamStat_.getStatStorage() }));
+		outG_.add_payload( { "variable", "param", idName_, "pi" }, "stat", NamedMatrix<Real>( { piParamNames(), colNames, piParamStat_.getStatStorage() }));
 	}
 
 	void computeObservedProba() {

@@ -45,8 +45,7 @@ void RGraph::go_to(const std::vector<std::string>& path, Index currDepth, const 
 	if (currDepth == path.size()) {
 		l = currLevel;
 	} else {
-		const Rcpp::List& nextLevel = currLevel[path[currDepth]];
-		if (Rf_isNull(nextLevel)) { // if next level does not exist, create it
+		if (!currLevel.containsElementNamed(path[currDepth].c_str())) {
 			std::string askedPath;
 			for (Index i = 0; i < currDepth + 1; ++i) {
 				askedPath += + "/" + path[i];
@@ -54,7 +53,7 @@ void RGraph::go_to(const std::vector<std::string>& path, Index currDepth, const 
 			throw(askedPath + " path does not exist.");
 		}
 
-		go_to(path, currDepth + 1, nextLevel, l);
+		go_to(path, currDepth + 1, currLevel[path[currDepth]], l);
 	}
 }
 

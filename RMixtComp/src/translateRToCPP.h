@@ -48,7 +48,6 @@ void translateRToCPP(SEXP in, NamedVector<T>& out) {
 
 template<typename T>
 void translateRToCPP(SEXP in, NamedMatrix<T>& out) {
-	std::cout << "RToCPPTranslate" << std::endl;
 	typename CPPToRMatrixType<T>::ctype temp(in);
 
 	Index nrow = temp.rows();
