@@ -324,7 +324,7 @@ test_that("rank model works",{
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.8)
 
   confMatSampled <- table(resGen$z, getZ_class(resLearn))
   print(confMatSampled)
