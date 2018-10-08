@@ -2,6 +2,10 @@ project (MixtComp CXX)
 
 cmake_minimum_required (VERSION 3.5)
 
+# C++11
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # REQUIRED LIBRARIES
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/cmakeModule")
 
@@ -87,10 +91,6 @@ endif()
 include_directories(${CMAKE_BINARY_DIR}/json-src/single_include/nlohmann)
 
 # COMPILATION FLAGS
-
-## C++11
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ## -I
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/json/")

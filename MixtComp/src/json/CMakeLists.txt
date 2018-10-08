@@ -6,9 +6,7 @@ add_library(JMixtComp
     JSONGraph.cpp
     JSONGraph.h
     jsonIO.h
-    translateJSONToCPP.cpp
     translateJSONToCPP.h
-    translateCPPToJSON.cpp
     translateCPPToJSON.h
 )
 
