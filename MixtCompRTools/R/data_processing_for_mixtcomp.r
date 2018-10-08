@@ -46,14 +46,15 @@ addVariable <- function (lm, data, id, model, paramStr) {
               warnLog = warnLog))
 }
 
-# Transform data into Mixtcomp accepted format
-#
-# @param ... List of arguments (usually equal to c(data_path, descriptor_path))
-#
-# @return list of data
-#
-# @author Vincent Kubicki
-#
+#' Transform data into Mixtcomp accepted format
+#'
+#' @param ... List of arguments (usually equal to c(data_path, descriptor_path))
+#'
+#' @return list of data
+#'
+#' @author Vincent Kubicki
+#'
+#' @export
 getData <- function(...) {
   argList <- list(...)
   lm <- list()
