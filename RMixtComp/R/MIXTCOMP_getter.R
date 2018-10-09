@@ -131,11 +131,12 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
   return(varNames)
 }
 
-#' @title Get the empiric tik
+#' @title Get the tik
 #'
-#' @description Get the empiric tik
+#' @description Get the a posteriori probability to elong to each class for each individual
 #'
 #' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param log if TRUE, log(tik) are returned
 #'
 #' @return a matrix containing the tik for each individuals (in row) and each class (in column).
 #'
@@ -155,14 +156,28 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 #' 
 #' # get tik
-#' tik <- getTik(res)
+#' tikEmp <- getEmpiricTik(res)
+#' tik <- getTik(res, log = FALSE)
 #' }
 #' 
 #' @export
-getTik <- function(outMixtComp)
+getEmpiricTik <- function(outMixtComp)
 {
   return(outMixtComp$variable$data$z_class$stat)
 }
+
+#' @rdname getEmpiricTik
+#' @export
+getTik <- function(outMixtComp, log = TRUE){
+  logTik <- sweep(outMixtComp$mixture$lnProbaGivenClass, 
+                  1, apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
+                  "-")
+  if(!log)
+    return(exp(logTik))
+  
+  return(logTik)
+}
+
 
 
 

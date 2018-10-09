@@ -171,10 +171,12 @@ computeSimilarityClass <- function(outMixtComp)
 #' }
 #' 
 #' @export
-computeLogTik <- function(outMixtComp){
+getTik <- function(outMixtComp, log = TRUE){
   logTik <- sweep(outMixtComp$mixture$lnProbaGivenClass, 
                   1, apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
                   "-")
+  if(!log)
+    return(exp(logTik))
   
   return(logTik)
 }

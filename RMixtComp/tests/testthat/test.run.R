@@ -379,6 +379,8 @@ test_that("run cluster/predict R object",{
   expect_equivalent(getType(resLearn), c("Poisson", "Gaussian", "Multinomial", "NegativeBinomial", "Weibull", "Func_CS", "Func_SharedAlpha_CS", "Rank_ISR"))
   expect_equivalent(getVarNames(resLearn), c("Poisson1", "Gaussian1", "Categorical1", "nBinom1", "Weibull1", "Functional1", "functionalSharedAlpha1", "Rank1"))
   expect_silent(getTik(resLearn))
+  expect_equal(dim(getEmpiricTik(resLearn)), c(algoLearn$nInd, 2))
+  expect_silent(getEmpiricTik(resLearn))
   expect_equal(dim(getTik(resLearn)), c(algoLearn$nInd, 2))
   for(name in getVarNames(resLearn))
     expect_silent(getParam(resLearn, name))
