@@ -51,9 +51,9 @@ test_that("Hard coded simple test", {
   resLearn <- rmc(algoLearn, dataLearn, descLearn, list())
   
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), zLearn), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), zLearn), 0.9)
   
-  confMatSampledLearn <- table(zLearn, getZ_class(resLearn))
+  confMatSampledLearn <- table(zLearn, getPartition(resLearn))
   print(confMatSampledLearn)
   
   algoPredict <- list(
@@ -86,9 +86,9 @@ test_that("Hard coded simple test", {
   resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
   
   expect_equal(resPredict$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resPredict), zPredict), 0.8)
+  expect_gte(rand.index(getPartition(resPredict), zPredict), 0.8)
   
-  confMatSampledPredict <- table(zPredict, getZ_class(resPredict))
+  confMatSampledPredict <- table(zPredict, getPartition(resPredict))
   print(confMatSampledPredict)
 })
 
