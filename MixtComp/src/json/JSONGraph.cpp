@@ -57,12 +57,36 @@ void JSONGraph::go_to(const std::vector<std::string>& path, Index currDepth, con
 		if (nextLevel.is_null()) { // if next level does not exist, create it
 			std::string askedPath;
 			for (Index i = 0; i < currDepth + 1; ++i) {
-				askedPath += + "/" + path[i];
+				askedPath += +"/" + path[i];
 			}
 			throw(askedPath + " path does not exist.");
 		}
 
 		go_to(path, currDepth + 1, nextLevel, l);
+	}
+}
+
+void JSONGraph::addSubGraph(const std::vector<std::string>& path, const std::string& name, const JSONGraph& p) {
+	addSubGraph(path, 0, j_, name, p);
+}
+
+void JSONGraph::addSubGraph(const std::vector<std::string>& path, Index currDepth, nlohmann::json& currLevel, const std::string& name, const JSONGraph& p) {
+	if (currDepth == path.size()) { // currLevel is the right element in path, add the sub graph
+		currLevel[name] = p.getJ();
+	} else {
+		nlohmann::json& nextLevel = currLevel[path[currDepth]];
+
+		if (nextLevel.is_null()) { // if next level does not exist, create it
+			nextLevel = nlohmann::json();
+		} else if (!nextLevel.is_object()) { // if it already exists but is not a json object, throw an exception
+			std::string askedPath;
+			for (Index i = 0; i < currDepth + 1; ++i) {
+				askedPath + "/" + path[i];
+			}
+			throw(askedPath + " already exists and is not a json object.");
+		}
+
+		addSubGraph(path, currDepth + 1, nextLevel, name, p);
 	}
 }
 

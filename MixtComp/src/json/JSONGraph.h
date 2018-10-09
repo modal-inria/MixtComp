@@ -45,6 +45,8 @@ public:
 		add_payload(path, 0, j_, name, p);
 	}
 
+	void addSubGraph(const std::vector<std::string>& path, const std::string& name, const JSONGraph& p);
+
 	/**
 	 * Get the payload and write it in the destination argument.
 	 */
@@ -100,6 +102,8 @@ private:
 			add_payload(path, currDepth + 1, nextLevel, name, p);
 		}
 	}
+
+	void addSubGraph(const std::vector<std::string>& path, Index currDepth, nlohmann::json& currLevel, const std::string& name, const JSONGraph& p);
 
 	nlohmann::json j_;
 };

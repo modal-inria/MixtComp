@@ -130,3 +130,19 @@ TEST(JSONSGraph, VectorOfVectorOfReal) {
 
 	ASSERT_EQ(exp, comp);
 }
+
+TEST(JSONSGraph, AddSubGraph) {
+	std::string in = R"-({"var": "toto"})-";
+	std::string sub = R"-({"var": "sub-toto"})-";
+	std::string expected = R"-({"subG":{"var":"sub-toto"},"var":"toto"})-";
+
+	JSONGraph gIn;
+	gIn.set(in);
+
+	JSONGraph subG;
+	subG.set(sub);
+
+	gIn.addSubGraph({}, "subG", subG);
+
+	ASSERT_EQ(gIn.get(), expected);
+}

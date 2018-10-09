@@ -18,7 +18,7 @@
 
 namespace mixt {
 
-const std::string Categorical::name = "Categorical";
+const std::string Categorical::name = "Multinomial";
 
 Categorical::Categorical(const std::string& idName, int nbClass,
 		Vector<Real>& param) :
