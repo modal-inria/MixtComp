@@ -349,10 +349,10 @@ test_that("run cluster/predict R object",{
   algoLearn <- list(
     nClass = 2,
     nInd = 200,
-    nbBurnInIter = 20,
-    nbIter = 20,
-    nbGibbsBurnInIter = 20,
-    nbGibbsIter = 20,
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
@@ -367,6 +367,22 @@ test_that("run cluster/predict R object",{
   expect_equal(resLearn$mixture$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGenLearn$z), 0.9)
 
+  
+  # test that getter functions do not return warnings
+  expect_silent(getPartition(resLearn))
+  expect_silent(getBIC(resLearn))
+  expect_true(!is.na(getBIC(resLearn)))
+  expect_silent(getICL(resLearn))
+  expect_true(!is.na(getICL(resLearn)))
+  expect_silent(getPartition(resLearn))
+  expect_silent(getCompletedData(resLearn))
+  expect_equivalent(getType(resLearn), c("Poisson", "Gaussian", "Multinomial", "NegativeBinomial", "Weibull", "Func_CS", "Func_SharedAlpha_CS", "Rank_ISR"))
+  expect_equivalent(getVarNames(resLearn), c("Poisson1", "Gaussian1", "Categorical1", "nBinom1", "Weibull1", "Functional1", "functionalSharedAlpha1", "Rank1"))
+  expect_silent(getTik(resLearn))
+  expect_equal(dim(getTik(resLearn)), c(algoLearn$nInd, 2))
+  for(name in getVarNames(resLearn))
+    expect_silent(getParam(resLearn, name))
+  
   resGenPredict <- dataGeneratorNewIO(100, 0.9, var)
 
   algoPredict <- list(
