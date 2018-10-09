@@ -33,7 +33,7 @@ public:
 	typedef std::pair<MisType, std::vector<int> > MisVal;
 
 	RankMixture(const Graph& data, const Graph& param, Graph& out, std::string const& idName, Index nClass, Index nObs, Real confidenceLevel, const std::string& paramStr) :
-			IMixture(idName, "Rank", nClass, nObs), nbPos_(0), facNbMod_(0.), confidenceLevel_(confidenceLevel), dataG_(data), paramG_(param), outG_(out), mu_(nClass), pi_(nClass), piParamStat_(
+			IMixture(idName, "Rank_ISR", nClass, nObs), nbPos_(0), facNbMod_(0.), confidenceLevel_(confidenceLevel), dataG_(data), paramG_(param), outG_(out), mu_(nClass), pi_(nClass), piParamStat_(
 					pi_, confidenceLevel) {
 		class_.reserve(nClass);
 		muParamStat_.reserve(nClass);

@@ -67,6 +67,7 @@ void predict(const Graph& algo, const Graph& data, const Graph& desc, const Grap
 
 	composer.exportMixture(runTime, out);
 	composer.exportDataParam(out);
+	out.addSubGraph({}, "algo", algo);
 }
 
 }

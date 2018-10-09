@@ -48,7 +48,7 @@ void RGraph::go_to(const std::vector<std::string>& path, Index currDepth, const 
 		if (!currLevel.containsElementNamed(path[currDepth].c_str())) {
 			std::string askedPath;
 			for (Index i = 0; i < currDepth + 1; ++i) {
-				askedPath += + "/" + path[i];
+				askedPath += +"/" + path[i];
 			}
 			throw(askedPath + " path does not exist.");
 		}
@@ -63,6 +63,31 @@ void RGraph::name_payload(const std::vector<std::string>& path, std::list<std::s
 
 	std::vector<std::string> v = j.names();
 	std::copy(v.begin(), v.end(), std::back_inserter(l));
+}
+
+void RGraph::addSubGraph(const std::vector<std::string>& path, const std::string& name, const RGraph& p) {
+	l_ = addSubGraph(path, 0, l_, name, p);
+}
+
+Rcpp::List RGraph::addSubGraph(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const RGraph& p) const {
+	if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
+		currLevel[name] = p.getL();
+		return currLevel;
+	} else {
+		if (!currLevel.containsElementNamed(path[currDepth].c_str())) { // if next level does not exist, create it
+			currLevel[path[currDepth]] = Rcpp::List::create();
+		} else if (TYPEOF(currLevel[path[currDepth]]) != VECSXP) { // if it already exists but is not a json object, throw an exception
+			std::string askedPath;
+			for (Index i = 0; i < currDepth + 1; ++i) {
+				askedPath + "/" + path[i];
+			}
+			throw(askedPath + " already exists and is not an R list.");
+		}
+
+		Rcpp::List nextLevel = currLevel[path[currDepth]];
+		currLevel[path[currDepth]] = addSubGraph(path, currDepth + 1, nextLevel, name, p);
+		return currLevel;
+	}
 }
 
 }

@@ -49,6 +49,8 @@ public:
 		l_ = add_payload(path, 0, l_, name, p);
 	}
 
+	void addSubGraph(const std::vector<std::string>& path, const std::string& name, const RGraph& p);
+
 	/**
 	 * Get the payload and write it in the destination argument.
 	 */
@@ -89,7 +91,7 @@ private:
 	 * in this post: https://stackoverflow.com/questions/52006424/modifying-a-subsection-of-an-rcpplist-in-a-separate-function-by-reference
 	 */
 	template<typename Type>
-	Rcpp::List add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const Type& p) {
+	Rcpp::List add_payload(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const Type& p) const {
 		if (currDepth == path.size()) { // currLevel is the right element in path, add the payload
 			SEXP temp;
 			translateCPPToR(p, temp);
@@ -114,6 +116,8 @@ private:
 			return currLevel;
 		}
 	}
+
+	Rcpp::List addSubGraph(const std::vector<std::string>& path, Index currDepth, Rcpp::List currLevel, const std::string& name, const RGraph& p) const;
 
 	Rcpp::List l_;
 };

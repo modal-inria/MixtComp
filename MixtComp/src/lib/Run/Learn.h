@@ -78,6 +78,7 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 	std::string mode = "learn";
 	composer.exportMixture(runTime, out);
 	composer.exportDataParam(out);
+	out.addSubGraph({}, "algo", algo);
 }
 
 }
