@@ -1,8 +1,8 @@
 Package: RMixtComp
 Type: Package
 Title: Mixture Composer
-Version: 0.3.1
-Date: 2018-07-24
+Version: 0.4
+Date: 2018-09-09
 Author: Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ, Serge IOVLEFF
 Copyright: Inria
 License: Internal use
@@ -13,4 +13,4 @@ Description: Mixture Composer is a project to build mixture models with
 Imports: Rcpp
 Suggests: testthat, RInside, xml2
 LinkingTo: Rcpp
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
