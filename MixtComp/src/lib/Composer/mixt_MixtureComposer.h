@@ -175,7 +175,7 @@ public:
 		warnLog += setZi(data); // dataHandler getData is called to fill zi_
 
 		if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
-			warnLog += setProportion(param); // note: paramStr_ is manually set at the end of setDataParam
+			warnLog += setProportion(param); // note: paramStr_ is manually set at the end of setDataParam, it is never parsed at the moment
 			paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
 		}
 
@@ -200,7 +200,7 @@ public:
 		std::string warnLog;
 
 		NamedMatrix<Real> stat;
-		param.get_payload( { "z_class", "pi" }, "stat", stat); // only called in predict mode, therefore the payload exists
+		param.get_payload( { "z_class"}, "stat", stat); // only called in predict mode, therefore the payload exists
 
 		Index nrow = stat.mat_.rows();
 
@@ -275,8 +275,8 @@ public:
 
 		NamedMatrix<Real> paramStat { paramName(), colNames, paramStat_.getStatStorage() };
 
-		g.add_payload( { "variable", "param", "z_class", "pi" }, "stat", paramStat);
-		g.add_payload( { "variable", "param", "z_class", "pi" }, "paramStr", paramStr_);
+		g.add_payload( { "variable", "param", "z_class"}, "stat", paramStat);
+		g.add_payload( { "variable", "param", "z_class"}, "paramStr", paramStr_);
 
 		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 			std::string currName = (*it)->idName();
