@@ -5,18 +5,18 @@
 extractCIboundsOneVble = function(var, data, class, grl){
   out <- NULL
   type <- data$variable$type[[var]]
-  if (type == "Gaussian_sjk") out <- extractCIGaussianVble(var, data, class, grl)
+  if (type == "Gaussian") out <- extractCIGaussianVble(var, data, class, grl)
   if (type == "Weibull") out <- extractCIWeibullVble(var, data, class, grl)
-  if (type == "Poisson_k") out <-  extractCIPoissonVble(var, data, class, grl)
+  if (type == "Poisson") out <-  extractCIPoissonVble(var, data, class, grl)
   if (type == "NegativeBinomial") out <-  extractCINegBinomialVble(var, data, class, grl)
-  if (type == "Categorical_pjk") out <-  extractCIMultiVble(var, data, class, grl)
-  if (type %in% c("Functional", "FunctionalSharedAlpha")) out <-  extractCIFunctionnalVble(var, data)
+  if (type == "Multinomial") out <-  extractCIMultiVble(var, data, class, grl)
+  if (type %in% c("Func_CS", "Func_SharedAlpha_CS")) out <- extractCIFunctionnalVble(var, data)
   return(out)
 }
 
 ## CI bounds for numerical variables (Gaussian or Poisson)
 extractCIGaussianVble = function(var, data, class, grl){
-  theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], ncol=2, byrow=TRUE)
+  theta = matrix(data$variable$param[[var]]$stat[,1], ncol=2, byrow=TRUE)
   means = as.array(round(theta[,1], 3))
   lowers = as.array(round(qnorm(0.025, theta[,1], theta[,2]), 3))
   uppers = as.array(round(qnorm(0.975, theta[,1], theta[,2]), 3))
@@ -34,13 +34,13 @@ extractCIGaussianVble = function(var, data, class, grl){
 }
 
 extractCIPoissonVble = function(var, data, class, grl){
-  theta <- as.array(data$variable$param[[var]]$NumericalParam$stat[class,1])
+  theta <- as.array(data$variable$param[[var]]$stat[class,1])
   if (grl)  theta <- cbind(theta, mean(data$variable$data[[var]]$completed))
   return(list(mean = theta, lower = qpois(0.025, theta), uppers=qpois(0.975, theta)))
 }
 
 extractCINegBinomialVble = function(var, data, class, grl){
-  theta <- matrix(data$variable$param[[var]]$NumericalParam$stat[,1], ncol = 2, byrow = TRUE)
+  theta <- matrix(data$variable$param[[var]]$stat[,1], ncol = 2, byrow = TRUE)
   means = as.array(round(theta[,1]*(1-theta[,2])/theta[,2], 3))
   lowers = as.array(round(qnbinom(0.025, theta[,1], theta[,2]), 3))
   uppers = as.array(round(qnbinom(0.975, theta[,1], theta[,2]), 3))
@@ -58,7 +58,7 @@ extractCINegBinomialVble = function(var, data, class, grl){
 }
 
 extractCIWeibullVble = function(var, data, class, grl){
-  theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], ncol=2, byrow=TRUE)
+  theta = matrix(data$variable$param[[var]]$stat[,1], ncol=2, byrow=TRUE)
   means = as.array(round(theta[,2]*gamma(1+1/theta[,1]), 3))
   lowers = as.array(round(qweibull(0.025, theta[,1], theta[,2]), 3))
   uppers = as.array(round(qweibull(0.975, theta[,1], theta[,2]), 3))
@@ -77,7 +77,7 @@ extractCIWeibullVble = function(var, data, class, grl){
 
 ## Categorical variables
 extractCIMultiVble = function(var, data, class, grl){
-  theta = matrix(data$variable$param[[var]]$NumericalParam$stat[,1], nrow=data$mixture$nbCluster, byrow=TRUE)
+  theta = matrix(data$variable$param[[var]]$stat[,1], nrow=data$algo$nClass, byrow = TRUE)
   theta <- theta[class, ,drop=FALSE]
   if (grl){
     tmp <- table(data$variable$data[[var]]$completed)
@@ -141,7 +141,7 @@ functionalboundVal <- function(Tt, borne, alpha, beta, sigma){
 extractCIFunctionnalVble = function(var, data){
   Tseq <- sort(unique(unlist(data$variable$data[[var]]$time)), decreasing = FALSE)
   param = data$variable$param[[var]]
-  G <- data$mixture$nbCluster
+  G <- data$algo$nClass
   nSub <- length(param$sd$stat[,1])/G
   nCoeff <- length(param$beta$stat[,1])/G/nSub
   
@@ -174,17 +174,17 @@ extractCIFunctionnalVble = function(var, data){
 #### Boxplots
 
 ## Get
-extractBoxplotInfoOneVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE){
+extractBoxplotInfoOneVble <- function(var, data, class=1:data$algo$nClass, grl=FALSE){
   out <- NULL
   type <- data$variable$type[[var]]
-  if ((type == "Gaussian_sjk") || (type == "Poisson_k") || (type == "NegativeBinomial")) out <- extractBoundsBoxplotNumericalVble(var, data, class, grl)
-  if (type == "Categorical_pjk") out <-  extractBoundsBoxplotCategoricalVble(var, data, class, grl)
-  if (type %in% c("Functional", "FunctionalSharedAlpha")) out <-  extractCIFunctionnalVble(var, data)
+  if ((type == "Gaussian") || (type == "Poisson") || (type == "NegativeBinomial") || (type == "Weibull")) out <- extractBoundsBoxplotNumericalVble(var, data, class, grl)
+  if (type == "Multinomial") out <-  extractBoundsBoxplotCategoricalVble(var, data, class, grl)
+  if (type %in% c("Func_CS", "Func_SharedAlpha_CS")) out <-  extractCIFunctionnalVble(var, data)
   return(out)
 }
 
 ## Numerical variables 
-extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE) {
+extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$algo$nClass, grl=FALSE) {
   obs <- data$variable$data[[var]]$completed
   tik <- data$variable$data$z_class$stat
   orderedIndices <- order(obs)
@@ -193,7 +193,7 @@ extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$mixture$nb
   thresholds <- sapply(c(.05, .25, .5, .75, .95), 
                        function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], 
                        cumsums=cumsums)
-  thresholds <- matrix(thresholds, nrow=data$mixture$nbCluster)
+  thresholds <- matrix(thresholds, nrow=data$algo$nClass)
   thresholds <- thresholds[class, , drop=FALSE]
   rownames(thresholds) <- paste("comp.", class)
   colnames(thresholds) <- paste("quantil.", c(.05, .25, .5, .75, .95))
@@ -210,11 +210,11 @@ extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$mixture$nb
 }
 
 ## Categorical variables 
-extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$mixture$nbCluster, grl=FALSE) {
+extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$algo$nClass, grl=FALSE) {
   obs <- data$variable$data[[var]]$completed
   tik <- data$variable$data$z_class$stat
   levels <- sort(unique(obs))
-  probs <- t(sapply(1:data$mixture$nbCluster, 
+  probs <- t(sapply(1:data$algo$nClass, 
                     function(k, tik, obs)
                       sapply(levels,
                              function(w, obs, level) sum(w * (obs == level)),

@@ -16,7 +16,7 @@
 #' See \link{plotComponentClusVis} and \link{plotObservationsClusVis} for graphics outputs.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #'
@@ -44,9 +44,9 @@ clusvisMixtComp <- function(resmixtcomp, sample.size = 5000, maxit = 10**3, nbra
   if(estimateLogTik)
   {
     logtik.estim <- t(replicate(sample.size, rlogtikmixcomp(resmixtcomp)))
-    out <- clusvis(logtik.estim, prop=resmixtcomp$variable$param$z_class$pi$stat[,1], logtik.obs=logmixcomp(resmixtcomp), maxit, nbrandomInit, nbcpu)
+    out <- clusvis(logtik.estim, prop=resmixtcomp$variable$param$z_class$stat[,1], logtik.obs=logmixcomp(resmixtcomp), maxit, nbrandomInit, nbcpu)
   }else{
-    out <- clusvis(computelogtikmixtcomp(resmixtcomp), prop=resmixtcomp$variable$param$z_class$pi$stat[,1], logtik.obs=computelogtikmixtcomp(resmixtcomp), maxit, nbrandomInit, nbcpu)
+    out <- clusvis(computelogtikmixtcomp(resmixtcomp), prop=resmixtcomp$variable$param$z_class$stat[,1], logtik.obs=computelogtikmixtcomp(resmixtcomp), maxit, nbrandomInit, nbcpu)
   }
   
   return(out)
@@ -69,7 +69,7 @@ clusvisMixtComp <- function(resmixtcomp, sample.size = 5000, maxit = 10**3, nbra
 #' @param visInfo list. The parameters estimated by the clusvisMixtcomp function.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #'
@@ -142,19 +142,19 @@ rlogtikmixtcomp <- function(output, sample.size){
 logmixcomp <- function(output){
   param <- output$variable$param
   x <- output$variable$data
-  logtik <- matrix(0, length(x$z_class$completed), output$mixture$nbCluster)
-  for (k in 1:output$mixture$nbCluster)  logtik[,k] <- log(param$z_class$pi$stat[k,1])
+  logtik <- matrix(0, length(x$z_class$completed), output$algo$nClass)
+  for (k in 1:output$algo$nClass)  logtik[,k] <- log(param$z_class$stat[k,1])
   
   for (j in 2:length(x)){
-    if (output$variable$type[[j]] == "Gaussian_sjk"){
+    if (output$variable$type[[j]] == "Gaussian"){
       for (k in 1:ncol(logtik)){
-        tmp <- matrix(param[[j]]$NumericalParam$stat[,1], 2, output$mixture$nbCluster)
+        tmp <- matrix(param[[j]]$stat[,1], 2, output$algo$nClass)
         logtik[,k] <- logtik[,k] + dnorm(x[[j]]$completed, tmp[1,k], tmp[2,k], log=TRUE)
       }
     }
-    if (output$variable$type[[j]] == "Categorical_pjk"){
+    if (output$variable$type[[j]] == "Multinomial"){
       for (k in 1:ncol(logtik)){
-        tmp <- log(matrix(param[[j]]$NumericalParam$stat[,1], ncol=output$mixture$nbCluster))
+        tmp <- log(matrix(param[[j]]$stat[,1], ncol = output$algo$nClass))
         logtik[,k] <- logtik[,k] + tmp[x[[j]]$completed, k]
       }
     }
@@ -171,10 +171,10 @@ logmixcomp <- function(output){
 # The other types of data must be implemented
 dlogsinglemixcomp <- function(x, p, type, g){
   dlog <- rep(0, g)
-  if (type=="Gaussian_sjk"){
+  if (type=="Gaussian"){
     p <- matrix(p, g, 2)
     dlog <- dnorm(x, p[,1], p[,2], log = TRUE)
-  }else if (type == "Categorical_pjk"){
+  }else if (type == "Multinomial"){
     m <- length(p) / g
     p <- matrix(p, m, g)
     dlog <- log(p[x,])
@@ -189,9 +189,9 @@ dlogsinglemixcomp <- function(x, p, type, g){
 # The other types of data must be implemented
 rsinglemixcomp <- function(p, type, z, g, Tseq=NULL){
   x <- 0
-  if (type=="Gaussian_sjk"){
+  if (type=="Gaussian"){
     x <- rnorm(1, p[1+(z-1)*2], p[2+(z-1)*2])
-  }else if (type == "Categorical_pjk"){
+  }else if (type == "Multinomial"){
     m <- length(p) / g
     x <- sample(1:m, 1, prob=p[m*(z-1) + (1:m)])
   }else {
@@ -205,9 +205,9 @@ rsinglemixcomp <- function(p, type, z, g, Tseq=NULL){
 # This function generates a sample from the model defined by the object output returned
 # by the R package Rmixtcomp
 rmixcomp <- function(output){
-  z <- sample(1:output$mixture$nbCluster, 1, prob=output$variable$param$z_class$pi$stat[,1])
+  z <- sample(1:output$algo$nClass, 1, prob=output$variable$param$z_class$stat[,1])
   x <- sapply(1:(length(output$variable$param)-1),
-              function(j, output, z) rsinglemixcomp(output$variable$param[[j+1]]$NumericalParam$stat[,1], output$variable$type[[j+1]], z, output$mixture$nbCluster),
+              function(j, output, z) rsinglemixcomp(output$variable$param[[j+1]]$stat[,1], output$variable$type[[j+1]], z, output$algo$nClass),
               output=output,
               z=z)
   names(x) <- names(output$variable$type)[-1]
@@ -220,9 +220,9 @@ rmixcomp <- function(output){
 rlogtikmixcomp <- function(output){
   x=rmixcomp(output)
   dlog <- rowSums(sapply(1:(length(output$variable$param)-1),
-                         function(j, output, x) dlogsinglemixcomp(x[j], output$variable$param[[j+1]]$NumericalParam$stat[,1], output$variable$type[[j+1]], output$mixture$nbCluster),
+                         function(j, output, x) dlogsinglemixcomp(x[j], output$variable$param[[j+1]]$stat[,1], output$variable$type[[j+1]], output$algo$nClass),
                          output=output,
-                         x=x)) + log(output$variable$param$z_class$pi$stat[,1])
+                         x=x)) + log(output$variable$param$z_class$stat[,1])
   dlog <- dlog - max(dlog)
   dlog <- dlog - log(sum(exp(dlog)))
   return(dlog)

@@ -23,7 +23,7 @@
 #'  
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #'
 #' library(RMixtComp)
 #'

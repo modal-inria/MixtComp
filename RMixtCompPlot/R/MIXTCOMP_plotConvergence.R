@@ -9,7 +9,7 @@
 #' This function can be used to check the convergence and choose the parameters nbBurnInIter and nbIter from mcStrategy.
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #' 
@@ -37,8 +37,8 @@
 plotConvergence <- function(output, ...)
 {
   plot(c(output$mixture$completedProbabilityLogBurnIn, output$mixture$completedProbabilityLogRun), xlab = "Iteration",
-       ylab = "Completed loglikelihood", type = "l", main = "Completed loglikelihood during and after the burn-in period", ...)
-  abline(v = output$strategy$nbBurnInIter + 0.5, lty = "dotted", col = "red")
+       ylab = "Completed loglikelihood", type = "l", main = "Completed loglikelihood during and\n after the burn-in period", ...)
+  abline(v = output$algo$nbBurnInIter + 0.5, lty = "dotted", col = "red")
 }
 
 
@@ -53,7 +53,7 @@ plotConvergence <- function(output, ...)
 #' 
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #' 
@@ -85,20 +85,20 @@ plotParamConvergence <- function(output, var, ...)
     stop("This variable does not exist in the mixture model.")
   
   type <- output$variable$type[[var]]
-  nbCluster <- output$mixture$nbCluster
+  nbCluster <- output$algo$nClass
   
-  type <- ifelse(type %in% c("Gaussian_sjk", "Weibull", "Categorical_pjk", "Poisson_k", "NegativeBinomial"), "Simple", type)
+  type <- ifelse(type %in% c("Gaussian", "Weibull", "Multinomial", "Poisson", "NegativeBinomial"), "Simple", type)
   
   switch(type,
-         "Simple" = plotLog(output$variable$param[[var]]$NumericalParam$log, nbCluster, var, ...),
-         "Rank" = plotLog(output$variable$param[[var]]$pi$log, nbCluster, var, ...),
-         "Functional" = {plotLog(output$variable$param[[var]]$alpha$log, nbCluster, var, ...)
+         "Simple" = plotLog(output$variable$param[[var]]$log, nbCluster, var, ...),
+         "Rank_ISR" = plotLog(output$variable$param[[var]]$pi$log, nbCluster, var, ...),
+         "Func_CS" = {plotLog(output$variable$param[[var]]$alpha$log, nbCluster, var, ...)
            title("alpha", line = -1, outer = TRUE)
            plotLog(output$variable$param[[var]]$beta$log, nbCluster, var, ...)
            title("beta", line = -1, outer = TRUE)
            plotLog(output$variable$param[[var]]$sd$log, nbCluster, var, ...)
            title("sd", line = -1, outer = TRUE)},
-         "FunctionalSharedAlpha" = {plotLog(output$variable$param[[var]]$alpha$log, nbCluster, var, ...)
+         "Func_SharedAlpha_CS" = {plotLog(output$variable$param[[var]]$alpha$log, nbCluster, var, ...)
            title("alpha", line = -1, outer = TRUE)
            plotLog(output$variable$param[[var]]$beta$log, nbCluster, var, ...)
            title("beta", line = -1, outer = TRUE)
