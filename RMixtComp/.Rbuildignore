@@ -1,0 +1,15 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^./*.csv$
+^./*.json$
+doc
+.Rhistory
+cleanArchive.sh
+infiniteTest.sh
+mcRunRTest.sh
+testBuildRun.sh
+multiRun.scala
+multiRun.py
+progress
+genDataPackage.R
+Makefile

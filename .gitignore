@@ -18,10 +18,6 @@ progress
 MixtComp/release
 MixtComp/debug
 MixtComp/report.xml
-JsonMixtcomp/release
-JsonMixtcomp/debug
-!RMixtComp/inst/extdata/*.csv
-RMixtComp/.Rbuildignore
 RMixtComp/R/RcppExports.R
 RMixtComp/src/RcppExports.cpp
 RMixtComp/src/Libvars
@@ -31,3 +27,4 @@ RMixtComp/RMCtest.xml
 !RJsonMixtComp/inst/extdata/*.csv
 RJsonMixtComp/.Rbuildignore
 /.metadata/
+RemoteSystemsTempFiles
