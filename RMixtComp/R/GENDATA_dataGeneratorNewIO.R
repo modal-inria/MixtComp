@@ -1,17 +1,17 @@
-#' Generate a test case.
-#' 
-#' The var parameter must contain a list of sublists. There must be one sublist for each variable, and each must contains the following fields:
-#' - name
-#' - param, one parameter set per class
-#' - generator, a function that takes parameters
-#' - type
-#' - paramStr
-#' 
-#' The z_class variable is mandatory, so as to sample the latent class. It must be present as the first variable in the var parameter.
-#' 
-#' @param nbInd number of individuals
-#' @param proportionPresent proportion of present data, the rest will be sampled using the various types
-#' @param var list one element per variable
+# Generate a test case.
+# 
+# The var parameter must contain a list of sublists. There must be one sublist for each variable, and each must contains the following fields:
+# - name
+# - param, one parameter set per class
+# - generator, a function that takes parameters
+# - type
+# - paramStr
+# 
+# The z_class variable is mandatory, so as to sample the latent class. It must be present as the first variable in the var parameter.
+# 
+# @param nbInd number of individuals
+# @param proportionPresent proportion of present data, the rest will be sampled using the various types
+# @param var list one element per variable
 dataGeneratorNewIO <- function(
   nbInd,
   proportionPresent,
