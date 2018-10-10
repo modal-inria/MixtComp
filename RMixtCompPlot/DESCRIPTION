@@ -1,8 +1,8 @@
 Package: RMixtCompPlot
 Type: Package
 Title: Plot functions for MixtComp
-Version: 0.2
-Date: 2018-07-24
+Version: 0.4
+Date: 2018-09-09
 Author: Matthieu MARBAC, Quentin GRIMONPREZ
 Copyright: Inria
 License: Internal use
@@ -11,4 +11,4 @@ Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets. The conditional independence property enable composing
     all the data sets in a single mixture model.
 Imports: jsonlite, scales, plotly, ClusVis
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

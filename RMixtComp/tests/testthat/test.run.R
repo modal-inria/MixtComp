@@ -33,9 +33,9 @@ test_that("gaussian model works",{
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
-  confMatSampled <- table(resGen$z, getZ_class(resLearn))
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
 
@@ -74,9 +74,9 @@ test_that("poisson model works",{
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
-  confMatSampled <- table(resGen$z, getZ_class(resLearn))
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
 
@@ -115,9 +115,9 @@ test_that("NegativeBinomial model works",{
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
-  confMatSampled <- table(resGen$z, getZ_class(resLearn))
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
 
@@ -171,9 +171,9 @@ test_that("multinomial model works",{
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
-  confMatSampled <- table(resGen$z, getZ_class(resLearn))
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
 
@@ -209,9 +209,9 @@ test_that("weibull model works",{
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
-  confMatSampled <- table(resGen$z, getZ_class(resLearn))
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
 
@@ -247,9 +247,9 @@ test_that("functional model works",{
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
-  confMatSampled <- table(resGen$z, getZ_class(resLearn))
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
 
@@ -286,9 +286,9 @@ test_that("functional model with shared alpha works",{
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
-  confMatSampled <- table(resGen$z, getZ_class(resLearn))
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
 
@@ -324,9 +324,9 @@ test_that("rank model works",{
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGen$z), 0.8)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.8)
 
-  confMatSampled <- table(resGen$z, getZ_class(resLearn))
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
 
@@ -365,8 +365,26 @@ test_that("run cluster/predict R object",{
   resLearn <- rmc(algoLearn, dataLearn, desc, list()) # run RMixtCompt for clustering
 
   expect_equal(resLearn$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resLearn), resGenLearn$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGenLearn$z), 0.9)
 
+  
+  # test that getter functions do not return warnings
+  expect_silent(getPartition(resLearn))
+  expect_silent(getBIC(resLearn))
+  expect_true(!is.na(getBIC(resLearn)))
+  expect_silent(getICL(resLearn))
+  expect_true(!is.na(getICL(resLearn)))
+  expect_silent(getPartition(resLearn))
+  expect_silent(getCompletedData(resLearn))
+  expect_equivalent(getType(resLearn), c("Poisson", "Gaussian", "Multinomial", "NegativeBinomial", "Weibull", "Func_CS", "Func_SharedAlpha_CS", "Rank_ISR"))
+  expect_equivalent(getVarNames(resLearn), c("Poisson1", "Gaussian1", "Categorical1", "nBinom1", "Weibull1", "Functional1", "functionalSharedAlpha1", "Rank1"))
+  expect_silent(getTik(resLearn))
+  expect_equal(dim(getEmpiricTik(resLearn)), c(algoLearn$nInd, 2))
+  expect_silent(getEmpiricTik(resLearn))
+  expect_equal(dim(getTik(resLearn)), c(algoLearn$nInd, 2))
+  for(name in getVarNames(resLearn))
+    expect_silent(getParam(resLearn, name))
+  
   resGenPredict <- dataGeneratorNewIO(100, 0.9, var)
 
   algoPredict <- list(
@@ -387,7 +405,7 @@ test_that("run cluster/predict R object",{
   resPredict <- rmc(algoPredict, dataPredict, desc, resLearn) # run RMixtCompt for clustering
 
   expect_equal(resPredict$mixture$warnLog, NULL)
-  expect_gte(rand.index(getZ_class(resPredict), resGenPredict$z), 0.85)
+  expect_gte(rand.index(getPartition(resPredict), resGenPredict$z), 0.85)
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")

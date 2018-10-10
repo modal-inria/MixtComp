@@ -63,11 +63,11 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 #' 
 #' # get class
-#' estimatedClass <- getZ_class(res)
+#' estimatedClass <- getPartition(res)
 #' }
 #' 
 #' @export
-getZ_class <- function(outMixtComp)
+getPartition <- function(outMixtComp)
 {
   return(outMixtComp$variable$data$z_class$completed)
 }
@@ -131,11 +131,12 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
   return(varNames)
 }
 
-#' @title Get the empiric tik
+#' @title Get the tik
 #'
-#' @description Get the empiric tik
+#' @description Get the a posteriori probability to elong to each class for each individual
 #'
 #' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param log if TRUE, log(tik) are returned
 #'
 #' @return a matrix containing the tik for each individuals (in row) and each class (in column).
 #'
@@ -155,80 +156,29 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
 #' 
 #' # get tik
-#' tik <- getTik(res)
+#' tikEmp <- getEmpiricTik(res)
+#' tik <- getTik(res, log = FALSE)
 #' }
 #' 
 #' @export
-getTik <- function(outMixtComp)
+getEmpiricTik <- function(outMixtComp)
 {
   return(outMixtComp$variable$data$z_class$stat)
 }
 
-
-
-#' @title Get the estimated parameter
-#'
-#' @description Get the estimated parameter
-#'
-#' @param varName name of the variable to get parameter
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
-#'
-#' @return the parameter of the variable
-#'
-#' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
-#' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
-#' 
-#' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-#' 
-#' # get param
-#' param <- getParam("poisson1", res)
-#' }
-#' 
+#' @rdname getEmpiricTik
 #' @export
-getParam <- function(varName, outMixtComp)
-{
-  type <- outMixtComp$variable$type[[varName]]
+getTik <- function(outMixtComp, log = TRUE){
+  logTik <- sweep(outMixtComp$mixture$lnProbaGivenClass, 
+                  1, apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
+                  "-")
+  if(!log)
+    return(exp(logTik))
   
-  if(is.null(type))
-  {
-    warning("Bad variable name.")
-    return(c())
-  }
-    
-  nbClass <- outMixtComp$mixture$nbCluster
-  
-  param <- switch(type,
-                  "Ordinal" = outMixtComp$variable$param[[varName]]$muPi$stat[,1],
-                  "Categorical_pjk" = {
-                    nbModalities <- length(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1])/nbClass
-                    matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), paste0("modality ",1:nbModalities)))
-                    },
-                  "Gaussian_sjk" = matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), c("mean", "sd"))),
-                  "Poisson_k" = outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1],
-                  "NegativeBinomial" = matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), c("n", "p"))),
-                  "Rank" = list(pi = outMixtComp$variable$param[[varName]]$pi$stat, mu = outMixtComp$variable$param[[varName]]$mu$stat),
-                  "Functional" = list(alpha = outMixtComp$variable$param[[varName]]$alpha$stat[,1],
-                                      beta = outMixtComp$variable$param[[varName]]$beta$stat[,1],
-                                      sd = outMixtComp$variable$param[[varName]]$sd$stat[,1]),
-                  "FunctionalSharedAlpha" = list(alpha = outMixtComp$variable$param[[varName]]$alpha$stat[,1],
-                                                 beta = outMixtComp$variable$param[[varName]]$beta$stat[,1],
-                                                 sd = outMixtComp$variable$param[[varName]]$sd$stat[,1]),
-                  "LatentClass" = outMixtComp$variable$param[[varName]]$pi$stat[,1],
-                  "Weibull" = matrix(outMixtComp$variable$param[[varName]]$NumericalParam$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), c("k (shape)", "lambda (scale)"))),
-                  warning("Not yet implemented."))
-  
-  return(param)
+  return(logTik)
 }
+
+
 
 
 #' @name getBIC

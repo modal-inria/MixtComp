@@ -8,7 +8,7 @@
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #' 
@@ -83,7 +83,7 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #' 
@@ -111,7 +111,7 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
 plotDiscrimClass <- function(output, ylim = c(0, 1), ...){
   ## Get information
   # names of classes
-  namesClass <- paste("class", 1:output$mixture$nbCluster, sep=".")
+  namesClass <- paste("class", 1:output$algo$nClass, sep=".")
   # discriminative power (1 - Dk), saved at slot pvdiscrimvbles of JSON file
   pvDiscrim <-   round(1 - (-colMeans(log(output$variable$data$z_class$stat**output$variable$data$z_class$stat)) / exp(-1)), 2)
   
@@ -143,7 +143,7 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), ...){
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #' 
@@ -224,7 +224,7 @@ heatmapVbles <- function(output, ...){
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #' 
@@ -252,11 +252,11 @@ heatmapVbles <- function(output, ...){
 heatmapClass <- function(output, ...){
   ## Get information
   # names of variables  
-  namesClass <- paste("class", 1:output$mixture$nbCluster, sep=".")
+  namesClass <- paste("class", 1:output$algo$nClass, sep=".")
   # discriminative power (1 - Dk), saved at slot pvdiscrimvbles of JSON file
   pvDiscrim <-   round(1 - (-colMeans(log(output$variable$data$z_class$stat**output$variable$data$z_class$stat)) / exp(-1)), 2)
   # similarities  (1 - sigma), sigma is saved at slot sigma of JSON file
-  similarities <- round(1-sqrt(sapply(1:output$mixture$nbCluster,
+  similarities <- round(1-sqrt(sapply(1:output$algo$nClass,
                                       function(k) colMeans(sweep(output$variable$data$z_class$stat,
                                                                  1,
                                                                  output$variable$data$z_class$stat[,k],
@@ -267,7 +267,7 @@ heatmapClass <- function(output, ...){
   ## Character must be convert in factor (otherwise alphabetic order is considered)
   orderClass <- order(pvDiscrim, decreasing = TRUE)
   namesClass <- factor(namesClass[orderClass], levels=namesClass[orderClass])
-  if (output$mixture$nbCluster>1){
+  if (output$algo$nClass>1){
     similarities <- similarities[,orderClass]
     similarities <- similarities[orderClass, ]
   }else{
@@ -275,7 +275,7 @@ heatmapClass <- function(output, ...){
   }
   
   # Text to display
-  textMous <- sapply(1:output$mixture$nbCluster, 
+  textMous <- sapply(1:output$algo$nClass, 
                      function(k) paste("Similarity beween<br>",
                                        namesClass[k],
                                        " and ",
@@ -306,7 +306,7 @@ heatmapClass <- function(output, ...){
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #' 
@@ -333,17 +333,17 @@ heatmapClass <- function(output, ...){
 #' @export
 heatmapTikSorted <- function(output, ...){
   # orderTik, they are saved at slot ordertik of JSON file
-  orderTik <- unlist(sapply(1:output$mixture$nbCluster, 
+  orderTik <- unlist(sapply(1:output$algo$nClass, 
                             function(k) order(output$variable$data$z_class$stat[,k] * (output$variable$data$z_class$completed == k ),
                                               decreasing = T)[1:(table(output$variable$data$z_class$completed)[k])]
   ))
   
   tiksorted <- output$variable$data$z_class$stat[orderTik,]
-  if(output$mixture$nbCluster ==1 ) 
+  if(output$algo$nClass ==1 ) 
     tiksorted <- matrix(tiksorted, ncol=1)
   
   # Text to display
-  textMous <- sapply(1:output$mixture$nbCluster, 
+  textMous <- sapply(1:output$algo$nClass, 
                      function(k) paste("Probability that <br> observation", 
                                        orderTik, 
                                        " <br>belongs to class",
@@ -366,7 +366,7 @@ heatmapTikSorted <- function(output, ...){
   heatmap <- plot_ly(text=textMous,
                      hoverinfo='text',
                      z = as.table(tiksorted),
-                     x = paste("class", 1:output$mixture$nbCluster, sep="."),
+                     x = paste("class", 1:output$algo$nClass, sep="."),
                      colorscale = cbind(0:1, (col_numeric("Blues", domain = c(0,100))(range(output$variable$data$z_class$stat*100)))),
                      type = "heatmap",
                      showscale = FALSE, ...) %>%
@@ -384,7 +384,7 @@ heatmapTikSorted <- function(output, ...){
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #' 
@@ -413,7 +413,7 @@ histMisclassif <- function(output, ...){
   ## Get information
   z <- output$variable$data$z_class$completed
   misclassifrisk <- 1 - apply(output$variable$data$z_class$stat, 1, max)
-  G <- output$mixture$nbCluster
+  G <- output$algo$nClass
   
   ## Create the buttons for selecting some data
   # General: all data

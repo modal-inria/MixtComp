@@ -17,7 +17,7 @@
 #' 
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' 
 #' library(RMixtComp)
 #' 
@@ -41,7 +41,7 @@
 #' 
 #' @author Matthieu MARBAC
 #' @export
-plotDataCI <- function(output, var, class = 1:output$mixture$nbCluster, grl = FALSE, ...)
+plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, ...)
 {
   if(!(var%in%names(output$variable$type)))
     stop("This variable does not exist in the mixture model.")
@@ -49,13 +49,13 @@ plotDataCI <- function(output, var, class = 1:output$mixture$nbCluster, grl = FA
   type <- output$variable$type[[var]]
   
   switch(type,
-         "Gaussian_sjk" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, class, grl),
+         "Gaussian" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, class, grl),
          "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, class, grl),
-         "Categorical_pjk" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl),
-         "Poisson_k" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl),
+         "Multinomial" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl),
+         "Poisson" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl),
          "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, class, grl),
-         "Functional" = plotFunctionalData(output, var, classToPlot = class, ...),
-         "FunctionalSharedAlpha" = plotFunctionalData(output, var, classToPlot = class, ...),
+         "Func_CS" = plotFunctionalData(output, var, classToPlot = class, ...),
+         "Func_SharedAlpha_CS" = plotFunctionalData(output, var, classToPlot = class, ...),
          warning(paste0("Not (yet) available for model ", type)))
 }
 
@@ -181,7 +181,7 @@ plotCategoricalData <- function(data, var, class, grl, ...){
 
 # Mean and 95% confidence level confidence  for functional data
 plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL, ...){
-  G <- output$mixture$nbCluster
+  G <- output$algo$nClass
   
   if(is.null(classToPlot))
     classToPlot = 1:G

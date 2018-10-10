@@ -98,7 +98,7 @@ extractOrderTik = function(data){
   return(
     toJSON(
       unlist(
-        sapply(1:data$mixture$nbCluster, 
+        sapply(1:data$algo$nClass, 
                function(k) order(data$variable$data$z_class$stat[,k] * (data$variable$data$z_class$completed == k ),
                                  decreasing = T)[1:(table(data$variable$data$z_class$completed)[k])]
         ))))
@@ -106,8 +106,8 @@ extractOrderTik = function(data){
 
 extractDistSigma = function(data){
   sigma <- matrix(1, 1, 1) ### case with one class
-  if (data$mixture$nbCluster>1){
-    sigma <- round(1 - sqrt(sapply(1:data$mixture$nbCluster,
+  if (data$algo$nClass>1){
+    sigma <- round(1 - sqrt(sapply(1:data$algo$nClass,
                           function(k) colMeans(sweep(data$variable$data$z_class$stat,
                                                      1,
                                                      data$variable$data$z_class$stat[,k],
@@ -133,14 +133,14 @@ extractPvDiscrimVbles = function(data){
 }
 
 extractNbClass = function(data){
-  return(data$mixture$nbCluster)
+  return(data$algo$nClass)
 }
 
 extractPi = function(data){
-  out = paste0(data$variable$param$z_class$pi$stat[1,1])  # output of the first class
-  if (data$mixture$nbCluster > 1) { # output only if there are more than one class
-    for (k in 2:data$mixture$nbCluster) {
-      out = paste0(out, ', ', data$variable$param$z_class$pi$stat[k,1])
+  out = paste0(data$variable$param$z_class$stat[1,1])  # output of the first class
+  if (data$algo$nClass > 1) { # output only if there are more than one class
+    for (k in 2:data$algo$nClass) {
+      out = paste0(out, ', ', data$variable$param$z_class$stat[k,1])
     }
   }
   return(out)
@@ -186,7 +186,7 @@ extractParam = function(data){
 }
 
 paramTable = function(data){
-  nbClass = data$mixture$nbCluster
+  nbClass = data$algo$nClass
   param = data$variable$param
   typeList = data$variable$type
   nbVar = length(data$variable$type)
@@ -203,22 +203,22 @@ paramTable = function(data){
     if (typeList[[currVar]] == 'LatentClass') {
       next # the first variable corresponds to the LatentClass, which is ignored in the IDClass table
     }
-    else if (typeList[currVar] == 'Categorical_pjk') {
+    else if (typeList[currVar] == 'Multinomial') {
       out[,j] = paramCategorical(nbClass, param[[currVar]])
     }
-    else if (typeList[currVar] == 'Gaussian_sjk') {
+    else if (typeList[currVar] == 'Gaussian') {
       out[,j] = paramGaussian(nbClass, param[[currVar]])
     }
-    else if (typeList[currVar] == 'Poisson_k') {
+    else if (typeList[currVar] == 'Poisson') {
       out[,j] = paramPoisson(nbClass, param[[currVar]])
     }
     else if (typeList[currVar] == 'Ordinal') {
       out[,j] = paramOrdinal(nbClass, param[[currVar]])
     }
-    else if (typeList[currVar] == 'Rank') {
+    else if (typeList[currVar] == 'Rank_ISR') {
       out[,j] = paramRank(nbClass, param[[currVar]])
     }
-    else if (typeList[currVar] == 'Functional') {
+    else if (typeList[currVar] %in% c('Func_CS', 'Func_SharedAlpha_CS')) {
       out[,j] = paramFunctional(nbClass, param[[currVar]])
     }
     else {
@@ -231,7 +231,7 @@ paramTable = function(data){
 }
 
 paramCategorical = function(nbClass, var){
-  val = var$NumericalParam$stat[,1]
+  val = var$stat[,1]
   out = vector(mode = 'character', length = nbClass)
   nbModality = length(val) / nbClass
   for (k in 1:nbClass){
@@ -244,7 +244,7 @@ paramCategorical = function(nbClass, var){
 }
 
 paramGaussian = function(nbClass, var){
-  val = var$NumericalParam$stat[,1]
+  val = var$stat[,1]
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
     firstInd = (k - 1) * 2 + 1
@@ -254,7 +254,7 @@ paramGaussian = function(nbClass, var){
 }
 
 paramPoisson = function(nbClass, var){
-  val = var$NumericalParam$stat[,1]
+  val = var$stat[,1]
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass){
     out[k] = paste0('{"lambda" : "', val[k], '"}')
@@ -275,7 +275,7 @@ paramOrdinal = function(nbClass, var){
 
 paramRank = function(nbClass, var){
   valMu = var$mu$stat
-  valPi = var$pi$stat[,1]
+  valPi = var$stat[,1]
   
   out = vector(mode = 'character', length = nbClass)
   for (k in 1:nbClass) {
