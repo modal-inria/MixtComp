@@ -1,6 +1,6 @@
-#' @title create mcStrategy object 
+#' @title Create algo object 
 #' 
-#' @description create a mcStrategy object 
+#' @description create an algo object required by \link{mixtCompLearn} and \link{mixtCompPredict}.
 #'
 #' @param nbBurnInIter Number of iterations of the burn-in part of the SEM algorithm.
 #' @param nbIter Number of iterations of the SEM algorithm.
@@ -8,25 +8,27 @@
 #' @param nbGibbsIter Number of iterations of the Gibbs algorithm.
 #' @param nInitPerClass Number of individuals used to initialize each cluster (default = 10).
 #' @param nSemTry Number of try of the algorithm for avoiding an error.
+#' @param confidenceLevel confidence level for confidence bounds for parameter estimation
 #' 
 #' @return a list with the parameters values
 #' 
 #' @examples 
 #' # default values
-#' mcStrategy <- createMcStrategy()
+#' algo <- createAlgo()
 #'
-#' # default values
-#' mcStrategy <- createMcStrategy(nbIter = 200)
+#' # change some values
+#' algo <- createAlgo(nbIter = 200)
 #' 
 #' @export
-createMcStrategy <- function(nbBurnInIter = 100, nbIter = 100, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20)
+createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20, confidenceLevel = 0.95)
 {
   list(nbBurnInIter = nbBurnInIter,
        nbIter = nbIter,
        nbGibbsBurnInIter = nbGibbsBurnInIter,
        nbGibbsIter = nbGibbsIter,
        nInitPerClass = nInitPerClass,
-       nSemTry = nSemTry)
+       nSemTry = nSemTry,
+       confidenceLevel = confidenceLevel)
 }
 
 
@@ -53,7 +55,7 @@ createMcStrategy <- function(nbBurnInIter = 100, nbIter = 100, nbGibbsBurnInIter
 #' 
 #'
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
@@ -103,7 +105,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' Sigma(k,g)^2 = (1/n) * sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
 #'
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
@@ -154,7 +156,7 @@ computeSimilarityClass <- function(outMixtComp)
 #' 
 #'
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' # path to files
 #' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
 #' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
