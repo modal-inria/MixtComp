@@ -1,5 +1,5 @@
 
-mixtCompLearn <- function(data, desc, nClass, algo, crit = c("BIC", "ICL"))
+mixtCompLearn <- function(data, desc, algo, nClass, crit = c("BIC", "ICL"))
 {
   crit = match.arg(crit)
   indCrit <- ifelse(crit == "BIC", 1, 2)
@@ -7,6 +7,7 @@ mixtCompLearn <- function(data, desc, nClass, algo, crit = c("BIC", "ICL"))
   dataList <- formatData(data)
   desc <- formatDesc(desc)  
   
+  nClass = unique(nClass)
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
@@ -16,7 +17,7 @@ mixtCompLearn <- function(data, desc, nClass, algo, crit = c("BIC", "ICL"))
     algo$nClass = nClass[i]
     
     resLearn[[i]] <- rmc(algo, dataList, desc, list())
-    class(resLearn[[i]]) = "MixtCompCluster"
+    class(resLearn[[i]]) = "MixtComp"
   }
   
   allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
@@ -30,9 +31,30 @@ mixtCompLearn <- function(data, desc, nClass, algo, crit = c("BIC", "ICL"))
   }else{
     res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = crit, crit = allCrit, nClass = nClass, res = resLearn)
   }
-  class(res) = c("MixtCompLearn", "MixtCompCluster")
+  class(res) = c("MixtCompLearn", "MixtComp")
   
   return(res)
+}
+
+
+
+mixtCompPredict <- function(data, desc, algo, resLearn, nClass = NULL)
+{
+  dataList <- formatData(data)
+  desc <- formatDesc(desc)
+
+  algo$nInd = length(dataList[[1]])
+  algo$nClass = checkNClass(nClass, resLearn)
+  algo$mode = "predict"
+  
+  if("MixtCompLearn" %in% class(resLearn))
+    resPredict <- rmc(algo, dataList, desc, resLearn$res[[which(resLearn$nClass == algo$nClass)]])
+  else
+    resPredict <- rmc(algo, dataList, desc, resLearn)
+  
+  class(resPredict) = "MixtComp"
+  
+  return(resPredict)
 }
 
 

@@ -65,7 +65,7 @@ test_that("formatData keeps list in list format", {
 
 test_that("checkNClass works with mixtCompCluster object", {
   resLearn <- list(algo = list(nClass = 2))
-  class(resLearn) = "MixtCompCluster"
+  class(resLearn) = "MixtComp"
   
   nClass <- NULL
   expect_silent(out <- checkNClass(nClass, resLearn))
@@ -86,7 +86,7 @@ test_that("checkNClass works with mixtCompCluster object", {
 
 test_that("checkNClass works with mixtCompLearn object", {
   resLearn <- list(algo = list(nClass = 2), nClass = 2:5)
-  class(resLearn) = c("MixtCompLearn", "MixtCompCluster")
+  class(resLearn) = c("MixtCompLearn", "MixtComp")
   
   nClass <- NULL
   expect_silent(out <- checkNClass(nClass, resLearn))
@@ -106,7 +106,7 @@ test_that("checkNClass works with mixtCompLearn object", {
 })
 
 
-test_that("mixtCompCluster works", {
+test_that("mixtCompLearn works + mixtCompPredict", {
   set.seed(42)
   
   nInd <- 1000
@@ -134,10 +134,10 @@ test_that("mixtCompCluster works", {
   data <- do.call(cbind, resGen$data)
   desc <- list(z_class = "LatentClass", Gaussian1 = "Gaussian")
   
-  resLearn <- mixtCompLearn(data, desc, nClass = 4, algo, crit = "ICL") 
+  resLearn <- mixtCompLearn(data, desc, algo, nClass = 4, crit = "ICL") 
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.85)
   
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
@@ -146,6 +146,7 @@ test_that("mixtCompCluster works", {
   expect_equal(resLearn$criterion, "ICL")
   expect_equal(dim(resLearn$crit), c(2, 1))
   expect_equal(resLearn$nClass, 4)
+  expect_equal(resLearn$algo$mode, "learn")
   expect_equal(length(resLearn$res), 1)
   expect_equal(names(resLearn$res[[1]]), c("mixture", "variable", "algo"))
   expect_silent(getPartition(resLearn))
@@ -163,9 +164,15 @@ test_that("mixtCompCluster works", {
   expect_equal(dim(getTik(resLearn)), c(1000, 4))
   for(name in getVarNames(resLearn))
     expect_silent(getParam(resLearn, name))
+  
+  
+  
+  expect_silent(resPredict <- mixtCompPredict(data, desc, algo, resLearn))
+  expect_equal(names(resPredict), c("mixture", "variable", "algo"))
+  expect_equal(resPredict$algo$mode, "predict")
 })
 
-test_that("mixtCompCluster works with a vector for nClass", {
+test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   set.seed(42)
   
   nInd <- 1000
@@ -193,10 +200,10 @@ test_that("mixtCompCluster works with a vector for nClass", {
   data <- do.call(cbind, resGen$data)
   desc <- list(z_class = list(type = "LatentClass"), Gaussian1 = list(type = "Gaussian", paramStr = ""))
   
-  resLearn <- mixtCompLearn(data, desc, nClass = 2:5, algo) 
+  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5) 
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.85)
   
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
@@ -205,6 +212,7 @@ test_that("mixtCompCluster works with a vector for nClass", {
   expect_equal(resLearn$criterion, "BIC")
   expect_equal(dim(resLearn$crit), c(2, 4))
   expect_equal(resLearn$nClass, 2:5)
+  expect_equal(resLearn$algo$mode, "learn")
   expect_equal(length(resLearn$res), 4)
   expect_equal(names(resLearn$res[[1]]), c("mixture", "variable", "algo"))
   expect_silent(getPartition(resLearn))
@@ -222,6 +230,11 @@ test_that("mixtCompCluster works with a vector for nClass", {
   expect_equal(dim(getTik(resLearn)), c(1000, 4))
   for(name in getVarNames(resLearn))
     expect_silent(getParam(resLearn, name))
+  
+  
+  expect_silent(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3))
+  expect_equal(names(resPredict), c("mixture", "variable", "algo"))
+  expect_equal(resPredict$algo$mode, "predict")
 })
 
 
