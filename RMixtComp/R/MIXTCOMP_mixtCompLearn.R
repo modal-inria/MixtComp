@@ -1,4 +1,41 @@
 
+mixtCompLearn <- function(data, desc, nClass, algo, crit = c("BIC", "ICL"))
+{
+  crit = match.arg(crit)
+  indCrit <- ifelse(crit == "BIC", 1, 2)
+  
+  dataList <- formatData(data)
+  desc <- formatDesc(desc)  
+  
+  algo$nInd = length(dataList[[1]])
+  algo$mode = "learn"
+  
+  resLearn <- list()
+  for(i in seq_along(nClass))
+  {
+    algo$nClass = nClass[i]
+    
+    resLearn[[i]] <- rmc(algo, dataList, desc, list())
+    class(resLearn[[i]]) = "MixtCompCluster"
+  }
+  
+  allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
+  colnames(allCrit) = c(nClass)
+  rownames(allCrit) = c("BIC", "ICL")
+  indBestClustering <- which.max(allCrit[indCrit, ])
+  
+  if(length(indBestClustering) != 0)
+  {
+    res <- c(resLearn[[indBestClustering]], list(criterion = crit, crit = allCrit, nClass = nClass, res = resLearn))
+  }else{
+    res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = crit, crit = allCrit, nClass = nClass, res = resLearn)
+  }
+  class(res) = c("MixtCompLearn", "MixtCompCluster")
+  
+  return(res)
+}
+
+
 # format the descriptor list for rmc function:
 # - add paramStr when missing
 # - ensure the list format of each element
@@ -15,6 +52,7 @@ formatDesc <- function(desc)
   
   return(desc)
 }
+
 
 # format data.frame or matrix in list of character
 # keep list in list format

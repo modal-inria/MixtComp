@@ -1,5 +1,7 @@
 context("Wrappers of rmc function")
 
+Sys.setenv(MC_DETERMINISTIC = 42)
+
 test_that("formatDesc does not change well formated data", {
   desc <- list(var1 = list(type = "Gaussian", paramStr = ""),
                var2 = list(type = "CorReg", paramStr = "ouais"),
@@ -102,3 +104,125 @@ test_that("checkNClass works with mixtCompLearn object", {
   expect_warning(out <- checkNClass(nClass, resLearn))
   expect_equal(out, 2)
 })
+
+
+test_that("mixtCompCluster works", {
+  set.seed(42)
+  
+  nInd <- 1000
+  
+  var <- list()
+  var$z_class <- zParam()
+  var$z_class$param <- c(0.2, 0.3, 0.15, 0.35)
+  var$Gaussian1 <- gaussianParam("Gaussian1")
+  var$Gaussian1$param[[3]] <- list(mean = -2, sd = 1)
+  var$Gaussian1$param[[4]] <- list(mean = 2, sd = 1)
+  
+  resGen <- dataGeneratorNewIO(nInd, 0.9, var)
+  
+  algo <- list(
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
+    nInitPerClass = 100,
+    nSemTry = 20,
+    confidenceLevel = 0.95,
+    mode = "learn"
+  )
+  
+  data <- do.call(cbind, resGen$data)
+  desc <- list(z_class = "LatentClass", Gaussian1 = "Gaussian")
+  
+  resLearn <- mixtCompLearn(data, desc, nClass = 4, algo, crit = "ICL") 
+  
+  expect_equal(resLearn$warnLog, NULL)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
+  
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
+  print(confMatSampled)
+  
+  expect_equal(names(resLearn), c("mixture", "variable", "algo", "criterion", "crit", "nClass", "res"))
+  expect_equal(resLearn$criterion, "ICL")
+  expect_equal(dim(resLearn$crit), c(2, 1))
+  expect_equal(resLearn$nClass, 4)
+  expect_equal(length(resLearn$res), 1)
+  expect_equal(names(resLearn$res[[1]]), c("mixture", "variable", "algo"))
+  expect_silent(getPartition(resLearn))
+  expect_silent(getBIC(resLearn))
+  expect_true(!is.na(getBIC(resLearn)))
+  expect_silent(getICL(resLearn))
+  expect_true(!is.na(getICL(resLearn)))
+  expect_silent(getPartition(resLearn))
+  expect_silent(getCompletedData(resLearn))
+  expect_equivalent(getType(resLearn), "Gaussian")
+  expect_equivalent(getVarNames(resLearn), "Gaussian1")
+  expect_silent(getTik(resLearn))
+  expect_equal(dim(getEmpiricTik(resLearn)), c(1000, 4))
+  expect_silent(getEmpiricTik(resLearn))
+  expect_equal(dim(getTik(resLearn)), c(1000, 4))
+  for(name in getVarNames(resLearn))
+    expect_silent(getParam(resLearn, name))
+})
+
+test_that("mixtCompCluster works with a vector for nClass", {
+  set.seed(42)
+  
+  nInd <- 1000
+  
+  var <- list()
+  var$z_class <- zParam()
+  var$z_class$param <- c(0.2, 0.3, 0.15, 0.35)
+  var$Gaussian1 <- gaussianParam("Gaussian1")
+  var$Gaussian1$param[[3]] <- list(mean = -2, sd = 0.5)
+  var$Gaussian1$param[[4]] <- list(mean = 2, sd = 0.5)
+  
+  resGen <- dataGeneratorNewIO(nInd, 0.9, var)
+  
+  algo <- list(
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
+    nInitPerClass = 100,
+    nSemTry = 20,
+    confidenceLevel = 0.95,
+    mode = "learn"
+  )
+  
+  data <- do.call(cbind, resGen$data)
+  desc <- list(z_class = list(type = "LatentClass"), Gaussian1 = list(type = "Gaussian", paramStr = ""))
+  
+  resLearn <- mixtCompLearn(data, desc, nClass = 2:5, algo) 
+  
+  expect_equal(resLearn$warnLog, NULL)
+  expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
+  
+  confMatSampled <- table(resGen$z, getPartition(resLearn))
+  print(confMatSampled)
+  
+  expect_equal(names(resLearn), c("mixture", "variable", "algo", "criterion", "crit", "nClass", "res"))
+  expect_equal(resLearn$criterion, "BIC")
+  expect_equal(dim(resLearn$crit), c(2, 4))
+  expect_equal(resLearn$nClass, 2:5)
+  expect_equal(length(resLearn$res), 4)
+  expect_equal(names(resLearn$res[[1]]), c("mixture", "variable", "algo"))
+  expect_silent(getPartition(resLearn))
+  expect_silent(getBIC(resLearn))
+  expect_true(!is.na(getBIC(resLearn)))
+  expect_silent(getICL(resLearn))
+  expect_true(!is.na(getICL(resLearn)))
+  expect_silent(getPartition(resLearn))
+  expect_silent(getCompletedData(resLearn))
+  expect_equivalent(getType(resLearn), "Gaussian")
+  expect_equivalent(getVarNames(resLearn), "Gaussian1")
+  expect_silent(getTik(resLearn))
+  expect_equal(dim(getEmpiricTik(resLearn)), c(1000, 4))
+  expect_silent(getEmpiricTik(resLearn))
+  expect_equal(dim(getTik(resLearn)), c(1000, 4))
+  for(name in getVarNames(resLearn))
+    expect_silent(getParam(resLearn, name))
+})
+
+
+Sys.unsetenv("MC_DETERMINISTIC")
