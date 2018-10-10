@@ -36,20 +36,28 @@ test_that("formatDesc puts type in a list format", {
 })
 
 
-test_that("formatData converts data into a list format", {
+test_that("formatData converts data.frame into a list format", {
   dat <- data.frame(x1 = 1:10, x2 = 10:1)
-  dataOut <- convertData(dat)
+  dataOut <- formatData(dat)
   
   expect_equal(names(dataOut), colnames(dat))
   expect_equivalent(sapply(dataOut, length), rep(nrow(dat), ncol(dat)))
   expect_true(all(sapply(dataOut, is.character)))
-  
-  
+})
+
+test_that("formatData converts matrix into a list format", {
   dat <- matrix(c(1:10, 10:1), ncol = 2, dimnames = list(NULL, c("x1", "x2")))
-  dataOut <- convertData(dat)
+  dataOut <- formatData(dat)
   
   expect_equal(names(dataOut), colnames(dat))
   expect_equivalent(sapply(dataOut, length), rep(nrow(dat), ncol(dat)))
   expect_true(all(sapply(dataOut, is.character)))
+})
+
+test_that("formatData keeps list in list format", { 
+  dat <- list(x1 = 1:10, x2 = 10:1)
+  dataOut <- formatData(dat)
+  
+  expect_equal(dat, dataOut)
 })
 

@@ -1,4 +1,3 @@
-
 # format the descriptor list for rmc function:
 # - add paramStr when missing
 # - ensure the list format of each element
@@ -16,11 +15,17 @@ formatDesc <- function(desc)
   return(desc)
 }
 
-# convert data.frame or matrix in list os character
-convertData <- function(data)
+# format data.frame or matrix in list of character
+# keep list in list format
+formatData <- function(data)
 {
-  out <- lapply(1:ncol(data), function(i) as.character(data[,i]))
-  names(out) = colnames(data)
-  
+  if(is.data.frame(data) || is.matrix(data))
+  {
+    out <- lapply(1:ncol(data), function(i) as.character(data[,i]))
+    names(out) = colnames(data)
+  }else{
+    out <- data
+  }
+
   return(out)
 }
