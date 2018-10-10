@@ -61,3 +61,44 @@ test_that("formatData keeps list in list format", {
   expect_equal(dat, dataOut)
 })
 
+test_that("checkNClass works with mixtCompCluster object", {
+  resLearn <- list(algo = list(nClass = 2))
+  class(resLearn) = "MixtCompCluster"
+  
+  nClass <- NULL
+  expect_silent(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+  
+  nClass <- 3
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+  
+  nClass <- 2:4
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+  
+  nClass <- 3:4
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+})
+
+test_that("checkNClass works with mixtCompLearn object", {
+  resLearn <- list(algo = list(nClass = 2), nClass = 2:5)
+  class(resLearn) = c("MixtCompLearn", "MixtCompCluster")
+  
+  nClass <- NULL
+  expect_silent(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+  
+  nClass <- 3
+  expect_silent(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 3)
+  
+  nClass <- 3:4
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 3)
+  
+  nClass <- 6:8
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+})
