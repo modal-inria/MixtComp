@@ -15,3 +15,12 @@ formatDesc <- function(desc)
   
   return(desc)
 }
+
+# convert data.frame or matrix in list os character
+convertData <- function(data)
+{
+  out <- lapply(1:ncol(data), function(i) as.character(data[,i]))
+  names(out) = colnames(data)
+  
+  return(out)
+}
