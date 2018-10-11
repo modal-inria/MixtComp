@@ -19,23 +19,16 @@ The similarities between classes k and g is defined by 1 - Sigma(k,g)
 Sigma(k,g)^2 = (1/n) * sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
 }
 \examples{
-\dontrun{
-
+\donttest{
 library(RMixtComp)
 
-# path to files
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-
-resGetData <- getData(c(pathToData, pathToDescriptor))
-
-
+data(simData)
+ 
 # define the algorithm's parameters
-mcStrategy <- createMcStrategy()
+algo <- createAlgo()
 
-# run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-
+# run RMixtCompt in unsupervised clustering mode + data as matrix
+res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 # plot
 heatmapClass(res)
 

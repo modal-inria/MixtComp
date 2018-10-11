@@ -28,22 +28,16 @@ To achieve the parameter infernece, it automatically samples probabilities of cl
 See \link{plotComponentClusVis} and \link{plotObservationsClusVis} for graphics outputs.
 }
 \examples{
-\dontrun{
-
+\donttest{
 library(RMixtComp)
 
-# path to files
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-
-resGetData <- getData(c(pathToData, pathToDescriptor))
-
-
+data(simData)
+ 
 # define the algorithm's parameters
-mcStrategy <- createMcStrategy()
+algo <- createAlgo()
 
-# run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+# run RMixtCompt in unsupervised clustering mode + data as matrix
+res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 
 resvisu <- clusvisMixtComp(res)
 }

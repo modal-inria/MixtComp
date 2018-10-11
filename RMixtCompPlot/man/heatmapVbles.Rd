@@ -19,22 +19,16 @@ The similarities between variables j and h is defined by 1 - Delta(j,h)
 Delta(j,h)^2 = (1/n) * sum_{i=1}^n sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2
 }
 \examples{
-\dontrun{
-
+\donttest{
 library(RMixtComp)
 
-# path to files
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-
-resGetData <- getData(c(pathToData, pathToDescriptor))
-
-
+data(simData)
+ 
 # define the algorithm's parameters
-mcStrategy <- createMcStrategy()
+algo <- createAlgo()
 
-# run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+# run RMixtCompt in unsupervised clustering mode + data as matrix
+res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 
 # plot
 heatmapVbles(res)
