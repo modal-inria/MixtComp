@@ -308,7 +308,7 @@ formatData <- function(data)
     out <- lapply(1:ncol(data), function(i) as.character(data[,i]))
     names(out) = colnames(data)
   }else{
-    out <- data
+    out <- lapply(data, as.character)
   }
 
   return(out)

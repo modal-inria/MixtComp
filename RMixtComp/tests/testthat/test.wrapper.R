@@ -60,7 +60,10 @@ test_that("formatData keeps list in list format", {
   dat <- list(x1 = 1:10, x2 = 10:1)
   dataOut <- formatData(dat)
   
-  expect_equal(dat, dataOut)
+  expect_true(is.list(dataOut))
+  expect_equal(names(dataOut), names(dat))
+  expect_equal(class(dataOut$x1), "character")
+  expect_equal(class(dataOut$x2), "character")
 })
 
 test_that("checkNClass works with mixtCompCluster object", {
