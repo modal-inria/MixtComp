@@ -4,12 +4,8 @@
 ^./*.json$
 doc
 .Rhistory
-cleanArchive.sh
-infiniteTest.sh
-mcRunRTest.sh
-testBuildRun.sh
-multiRun.scala
-multiRun.py
+.cproject
+.project
 progress
 genDataPackage.R
 Makefile
