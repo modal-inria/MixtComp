@@ -10,43 +10,39 @@ sets. The conditional independence property enables composing all the
 data sets in a single mixture model.
 }
 \details{
-Main functions are \link{getData} for reading data, \link{mixtcompCluster} for clustering, \link{mixtcompPredict} for predict the cluster of new samples with a model learned with \link{mixtcompCluster}. \link{createMcStrategy} gives you default values for required parameters.
+Main functions are \link{mixtCompLearn} for clustering, \link{mixtCompPredict} for predict the cluster of new samples with a model learned with \link{mixtCompCluster}. \link{createAlgo} gives you default values for required parameters.
 
-Getters are available to easily access some results (see. \link{mixtcompCluster} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getTik}, \link{getZ_class}, \link{getType}, \link{getVarNames}.
+Getters are available to easily access some results (see. \link{mixtCompLearn} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getTik}, \link{getPartition}, \link{getType}, \link{getVarNames}.
+
 
 You can compute discriminative power and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}
 
 All graphics functions are in the \link{RMixtCompPlot-package}.
 }
 \examples{
-\dontrun{
-# path to files
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-
-resGetData <- getData(c(pathToData, pathToDescriptor))
-
-
+\donttest{
+data(simData)
+ 
 # define the algorithm's parameters
-mcStrategy <- list(nbBurnInIter = 100,
-                   nbIter = 100,
-                   nbGibbsBurnInIter = 50,
-                   nbGibbsIter = 50,
-                   nInitPerClass = 10,
-                   nSemTry = 20)
+algo <- list(nbBurnInIter = 100,
+             nbIter = 100,
+             nbGibbsBurnInIter = 50,
+             nbGibbsIter = 50,
+             nInitPerClass = 10,
+             nSemTry = 20,
+             confidenceLevel = 0.95)
 
 # run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 
 # run RMixtCompt for predicting
-resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-
+resPred <- mixtCompPredict(simDataPredict$matrix, desc$unsupervised, algo, resLearn)
 
 }
 
 }
 \seealso{
-\link{getData} \link{mixtCompCluster}
+\link{mixtCompLearn}
 }
 \author{
 Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ, Serge IOVLEFF

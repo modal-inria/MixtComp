@@ -2,28 +2,29 @@
 #'
 #' @description Get the completed data from MixtComp object
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
 #' @param with.z_class if TRUE, z_class is returned with the data.
 #'
 #' @return  a matrix with the data completed by MixtComp (z_class is in the first column and then variables are sorted in alphabetic order, it may differ from the original order of the data).
 #'
 #' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' \donttest{
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 #' 
 #' # get completedData
-#' getCompletedData <- completed(res)
+#' getCompletedData <- completed(resLearn)
 #' }
 #' 
 #' @export
@@ -43,27 +44,28 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #'
 #' @description Get the estimated class from MixtComp object
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
 #'
 #' @return a vector containing the estimated class for each individual.
 #'
 #' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' \donttest{
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 #' 
 #' # get class
-#' estimatedClass <- getPartition(res)
+#' estimatedClass <- getPartition(resLearn)
 #' }
 #' 
 #' @export
@@ -80,31 +82,32 @@ getPartition <- function(outMixtComp)
 #' @description Get the type of model, names for each variable
 #'
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
 #' @param with.z_class if TRUE, the type of z_class is returned.
 #'
 #' @return a vector containing the type of models, names associated with each individual.
 #'
 #' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' \donttest{
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 #' 
 #' # get type
-#' type <- getType(res)
+#' type <- getType(resLearn)
 #' 
 #' # get variable names
-#' varNames <- getVarNames(res)
+#' varNames <- getVarNames(resLearn)
 #' 
 #' }
 #' 
@@ -133,31 +136,35 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 
 #' @title Get the tik
 #'
-#' @description Get the a posteriori probability to elong to each class for each individual
+#' @description Get the a posteriori probability to belong to each class for each individual
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
 #' @param log if TRUE, log(tik) are returned
 #'
 #' @return a matrix containing the tik for each individuals (in row) and each class (in column).
 #'
+#' @details 
+#' \emph{getTik} returns a posteriori probabilities computed with the returned parameters. \emph{getEmpiricTik} returns an estimation based on the sampled z_i during the algorithm. 
+#'
 #' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' \donttest{
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 #' 
 #' # get tik
-#' tikEmp <- getEmpiricTik(res)
-#' tik <- getTik(res, log = FALSE)
+#' tikEmp <- getEmpiricTik(resLearn)
+#' tik <- getTik(resLearn, log = FALSE)
 #' }
 #' 
 #' @export
@@ -188,28 +195,29 @@ getTik <- function(outMixtComp, log = TRUE){
 #'
 #' @description Get criterion value
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
 #'
 #' @return value of the criterion
 #'
 #' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' \donttest{
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 #' 
 #' # get criterion
-#' bic <- getBIC(res)
-#' icl <- getICL(res)
+#' bic <- getBIC(resLearn)
+#' icl <- getICL(resLearn)
 #' }
 #' 
 #' @export
