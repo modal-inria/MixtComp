@@ -26,6 +26,7 @@ JsonMixtCompLearn <- function(data, descriptor, nClass, mcStrategy = list(nbBurn
   resLearn <- fromJSON(outputFile)
   
   resLearn = convertOutput(resLearn)
+  class(resLearn) = "MixtComp"
   
   return(resLearn)
 }
@@ -114,7 +115,8 @@ JsonMixtCompPredict <- function(data, descriptor, nClass, mcStrategy = list(nbBu
   resPredict <- fromJSON(outputFile)
   
   resPredict = convertOutput(resPredict)
-
+  class(resPredict) = "MixtComp"
+  
   return(resPredict)
 }
 

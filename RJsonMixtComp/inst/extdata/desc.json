@@ -8,7 +8,7 @@
         "paramStr": "dummyStrTestPoisson"
     },
     "varCategorical": {
-        "type": "Categorical",
+        "type": "Multinomial",
         "paramStr": ""
     }
 }

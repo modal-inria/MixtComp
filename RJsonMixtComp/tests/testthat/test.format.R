@@ -79,13 +79,13 @@ test_that("convertOutput converts well", {
   data <- as.data.frame(fromJSON(pathToData))
   descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
   
-  expect_error(res <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
-                                                                                        nbIter = 50,
-                                                                                        nbGibbsBurnInIter = 20,
-                                                                                        nbGibbsIter = 20,
-                                                                                        nInitPerClass = 10,
-                                                                                        nSemTry = 5),
-                                        confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json"), regexp = NA)
+  expect_silent(res <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
+                                                                                         nbIter = 50,
+                                                                                         nbGibbsBurnInIter = 20,
+                                                                                         nbGibbsIter = 20,
+                                                                                         nInitPerClass = 10,
+                                                                                         nSemTry = 5),
+                                         confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json"))
   
   res <- fromJSON("reslearn.json")
   out <- convertOutput(res)
@@ -102,8 +102,6 @@ test_that("convertOutput converts well", {
   expect_equal(colnames(out$mixture$IDClass), res$mixture$IDClass$colNames)
   expect_equal(class(out$mixture$delta), "matrix")
   expect_equal(class(out$mixture$lnProbaGivenClass), "matrix")
-  expect_equal(rownames(out$mixture$lnProbaGivenClass), res$mixture$lnProbaGivenClass$rowNames)
-  expect_equal(colnames(out$mixture$lnProbaGivenClass), res$mixture$lnProbaGivenClass$colNames)
   expect_length(out$mixture$completedProbabilityLogBurnIn, res$mixture$completedProbabilityLogBurnIn$nrow)
   expect_length(out$mixture$completedProbabilityLogRun, res$mixture$completedProbabilityLogRun$nrow)
   
@@ -111,14 +109,14 @@ test_that("convertOutput converts well", {
   expect_equal(out$variable$type, res$variable$type)
   
   # variable$param
-  expect_equal(class(out$variable$param$z_class$pi$stat), "matrix")
-  expect_equal(rownames(out$variable$param$z_class$pi$stat), res$variable$param$z_class$pi$stat$rowNames)
-  expect_equal(colnames(out$variable$param$z_class$pi$stat), res$variable$param$z_class$pi$stat$colNames)
-  expect_equal(out$variable$param$z_class$pi$paramStr, res$variable$param$z_class$pi$paramStr)
-  expect_equal(class(out$variable$param$varGaussian$NumericalParam$stat), "matrix")
-  expect_equal(rownames(out$variable$param$varGaussian$NumericalParam$stat), res$variable$param$varGaussian$NumericalParam$stat$rowNames)
-  expect_equal(colnames(out$variable$param$varGaussian$NumericalParam$stat), res$variable$param$varGaussian$NumericalParam$stat$colNames)
-  expect_equal(out$variable$param$varGaussian$NumericalParam$paramStr, res$variable$param$varGaussian$NumericalParam$paramStr)
+  expect_equal(class(out$variable$param$z_class$stat), "matrix")
+  expect_equal(rownames(out$variable$param$z_class$stat), res$variable$param$z_class$stat$rowNames)
+  expect_equal(colnames(out$variable$param$z_class$stat), res$variable$param$z_class$stat$colNames)
+  expect_equal(out$variable$param$z_class$paramStr, res$variable$param$z_class$paramStr)
+  expect_equal(class(out$variable$param$varGaussian$stat), "matrix")
+  expect_equal(rownames(out$variable$param$varGaussian$stat), res$variable$param$varGaussian$stat$rowNames)
+  expect_equal(colnames(out$variable$param$varGaussian$stat), res$variable$param$varGaussian$stat$colNames)
+  expect_equal(out$variable$param$varGaussian$paramStr, res$variable$param$varGaussian$paramStr)
   
   # variable$data
   expect_equivalent(out$variable$data$z_class$stat, res$variable$data$z_class$stat$data)
