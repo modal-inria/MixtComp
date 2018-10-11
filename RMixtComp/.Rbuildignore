@@ -9,3 +9,4 @@ doc
 progress
 genDataPackage.R
 Makefile
+mcRunTest.sh
