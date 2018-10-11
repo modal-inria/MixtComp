@@ -35,75 +35,17 @@ test_that("Creation of algo file", {
 })
 
 
-
-test_that("Conversion of descriptor file", {
-  
-  descriptor <- data.frame(varGaussian = c("Gaussian", "dummyStrTestGaussian"),
-                           varPoisson = c("Poisson", "dummyStrTestPoisson"),
-                           varCategorical = c("Categorical", ""))
-  
-  expectedDesc <- list(varGaussian = list(type = "Gaussian", paramStr = "dummyStrTestGaussian"),
-                       varPoisson = list(type = "Poisson", paramStr = "dummyStrTestPoisson"),
-                       varCategorical = list(type = "Categorical", paramStr = ""))
-  
-  descriptorList <- convertDescriptorToList(descriptor)
-
-  expect_equal(descriptorList, expectedDesc)
-})
-
-
-test_that("Conversion of descriptor file: case without paramStr", {
-  
-  descriptor <- data.frame(varGaussian = "Gaussian",
-                           varPoisson = "Poisson",
-                           varCategorical = "Categorical")
-  
-  expectedDesc <- list(varGaussian = list(type = "Gaussian", paramStr = ""),
-                       varPoisson = list(type = "Poisson", paramStr = ""),
-                       varCategorical = list(type = "Categorical", paramStr = ""))
-  
-  descriptorList <- convertDescriptorToList(descriptor)
-  
-  expect_equal(descriptorList, expectedDesc)
-})
-
-
 test_that("Creation of descriptor file", {
   
-  descriptor <- data.frame(varGaussian = c("Gaussian", "dummyStrTestGaussian"),
-                           varPoisson = c("Poisson", "dummyStrTestPoisson"),
-                           varCategorical = c("Multinomial", ""))
+  descriptor <- list(varGaussian = list(type = "Gaussian", paramStr = "dummyStrTestGaussian"),
+                           varPoisson = list(type = "Poisson"),
+                           varCategorical = "Multinomial")
   
   
   expectedJson <- '{
   "varGaussian": {
     "type": "Gaussian",
     "paramStr": "dummyStrTestGaussian"
-  },
-  "varPoisson": {
-    "type": "Poisson",
-    "paramStr": "dummyStrTestPoisson"
-  },
-  "varCategorical": {
-    "type": "Multinomial",
-    "paramStr": ""
-  }
-}'
-  
-  descriptorJson <- createDescriptorJson(descriptor)
-  expect_true(descriptorJson == expectedJson)
-})
-
-test_that("Creation of descriptor file: case without paramStr", {
-  
-  descriptor <- data.frame(varGaussian = c("Gaussian"),
-                           varPoisson = c("Poisson"),
-                           varCategorical = c("Multinomial"))
-  
-  expectedJson <- '{
-  "varGaussian": {
-    "type": "Gaussian",
-    "paramStr": ""
   },
   "varPoisson": {
     "type": "Poisson",

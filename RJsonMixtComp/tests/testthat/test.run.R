@@ -5,7 +5,7 @@ test_that("Learn + predict", {
   pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
   
   data <- as.data.frame(fromJSON(pathToData))
-  descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+  descriptor <- fromJSON(pathToDescriptor)
   algo <- list(nbBurnInIter = 50,
                nbIter = 50,
                nbGibbsBurnInIter = 20,
@@ -43,7 +43,7 @@ test_that("can predict with only one sample in the data set", {
   pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
   
   data <- as.data.frame(fromJSON(pathToData))
-  descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+  descriptor <- fromJSON(pathToDescriptor)
   algo <- list(nbBurnInIter = 50,
                nbIter = 50,
                nbGibbsBurnInIter = 20,

@@ -77,7 +77,7 @@ test_that("convertOutput converts well", {
   pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
   
   data <- as.data.frame(fromJSON(pathToData))
-  descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+  descriptor <- fromJSON(pathToDescriptor)
   algo <- list(nbBurnInIter = 50,
                nbIter = 50,
                nbGibbsBurnInIter = 20,

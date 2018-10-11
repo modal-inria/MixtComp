@@ -3,18 +3,17 @@
 #' @description Estimate the parameter of a mixture model or predict the cluster of new samples.
 #' 
 #' 
-#' @param data a data.frame containing the data
-#' @param descriptor a data.frame containing the models for each variable. The colnames of \emph{descriptor} must be in \emph{data}
+#' @param data a data.frame/matrix/list containing the data
+#' @param descriptor a list containing the model for each variable. The names of \emph{descriptor} must be in \emph{data}
 #' @param nClass the number of class of the mixture model.
 #' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
-#' @param confidenceLevel quantile for confidence interval of estimated parameters.
 #' @param inputPath path of the folder to save the input files.
 #' @param outputFile path of the output json file to save.
 #' @param paramFile (only for JsonMixtCompPredict) path of the output json file of JsonMixtCompCluster function.
 #' 
 #' @return A json file and a R list containing 3 lists :
 #' \describe{
-#'  \item{strategy}{a copy of \emph{algo} parameter.}
+#'  \item{algo}{a copy of \emph{algo} parameter.}
 #'  \item{mixture}{information about the mixture (see \emph{Details}).}
 #'  \item{variable}{information about the estimated parameters (see \emph{Details}).}
 #' }
@@ -28,7 +27,7 @@
 #' pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
 #' 
 #' data <- as.data.frame(fromJSON(pathToData))
-#' descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+#' descriptor <- fromJSON(pathToDescriptor)
 #' 
 #' strategy <- list(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 20,
 #'                  nbGibbsIter = 20, nInitPerClass = 10, nSemTry = 5,

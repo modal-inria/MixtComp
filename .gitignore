@@ -24,6 +24,7 @@ RMixtComp/src/Libvars
 RMixtComp/src/build
 RMixtComp/src/test/test
 RMixtComp/RMCtest.xml
+RJsonMixtComp/R/MIXTCOMP_*
 !RJsonMixtComp/inst/extdata/*.json
 /.metadata/
 RemoteSystemsTempFiles

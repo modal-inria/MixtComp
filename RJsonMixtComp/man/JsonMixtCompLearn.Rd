@@ -15,9 +15,9 @@ JsonMixtCompPredict(data, descriptor, algo = list(nbBurnInIter = 100,
   outputFile)
 }
 \arguments{
-\item{data}{a data.frame containing the data}
+\item{data}{a data.frame/matrix/list containing the data}
 
-\item{descriptor}{a data.frame containing the models for each variable. The colnames of \emph{descriptor} must be in \emph{data}}
+\item{descriptor}{a list containing the model for each variable. The names of \emph{descriptor} must be in \emph{data}}
 
 \item{algo}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).}
 
@@ -28,13 +28,11 @@ JsonMixtCompPredict(data, descriptor, algo = list(nbBurnInIter = 100,
 \item{outputFile}{path of the output json file to save.}
 
 \item{paramFile}{(only for JsonMixtCompPredict) path of the output json file of JsonMixtCompCluster function.}
-
-\item{confidenceLevel}{quantile for confidence interval of estimated parameters.}
 }
 \value{
 A json file and a R list containing 3 lists :
 \describe{
- \item{strategy}{a copy of \emph{algo} parameter.}
+ \item{algo}{a copy of \emph{algo} parameter.}
  \item{mixture}{information about the mixture (see \emph{Details}).}
  \item{variable}{information about the estimated parameters (see \emph{Details}).}
 }
@@ -51,7 +49,7 @@ pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
 pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
 
 data <- as.data.frame(fromJSON(pathToData))
-descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+descriptor <- fromJSON(pathToDescriptor)
 
 strategy <- list(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 20,
                  nbGibbsIter = 20, nInitPerClass = 10, nSemTry = 5,
