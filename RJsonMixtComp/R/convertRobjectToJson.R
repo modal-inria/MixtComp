@@ -1,4 +1,4 @@
-createAlgoJson <- function(nClass, nInd, mcStrategy, confidenceLevel, mode, ...)
+createAlgoJson <- function(nClass, nInd, mcStrategy, mode, ...)
 {
   unrequiredFields <- list(...)
   toDelete <- names(unrequiredFields) %in% c("nClass", "nInd", "confidenceLevel", "mode", "nbBurnInIter",
@@ -6,7 +6,7 @@ createAlgoJson <- function(nClass, nInd, mcStrategy, confidenceLevel, mode, ...)
   unrequiredFields = unrequiredFields[!toDelete]
   
   algo = c(list(nClass = nClass, nInd = nInd), mcStrategy,
-           list(confidenceLevel = confidenceLevel, mode = mode), unrequiredFields)
+           list(mode = mode), unrequiredFields)
   
   return(toJSON(algo, auto_unbox = TRUE, pretty = TRUE))
 }

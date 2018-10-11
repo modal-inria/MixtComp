@@ -6,31 +6,29 @@ test_that("Learn + predict", {
   
   data <- as.data.frame(fromJSON(pathToData))
   descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+  algo <- list(nbBurnInIter = 50,
+               nbIter = 50,
+               nbGibbsBurnInIter = 20,
+               nbGibbsIter = 20,
+               nInitPerClass = 10,
+               nSemTry = 5,
+               confidenceLevel = 0.95)
   
-  expect_error(resLearn <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
-                                                                                           nbIter = 50,
-                                                                                           nbGibbsBurnInIter = 20,
-                                                                                           nbGibbsIter = 20,
-                                                                                           nInitPerClass = 10,
-                                                                                           nSemTry = 5),
-                                             confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json"), regexp = NA)
+  expect_silent(resLearn <- JsonMixtCompLearn(data, descriptor, algo, nClass = 2,
+                                              inputPath = ".", outputFile = "reslearn.json"))
   
+  expect_true(is.null(resLearn$warnLog))
   expect_true(file.exists("./algo.json"))
   expect_true(file.exists("./descriptor.json"))
   expect_true(file.exists("./data.json"))
   expect_true(file.exists("reslearn.json"))
   
   file.remove("./algo.json", "./descriptor.json", "./data.json")
- 
-  expect_error(resPredict <- JsonMixtCompPredict(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
-                                                                                                 nbIter = 50,
-                                                                                                 nbGibbsBurnInIter = 20,
-                                                                                                 nbGibbsIter = 20,
-                                                                                                 nInitPerClass = 10,
-                                                                                                 nSemTry = 5),
-                                                 confidenceLevel = 0.95, inputPath = ".", paramFile = "reslearn.json", outputFile = "respredict.json"), regexp = NA)
   
+  expect_silent(resPredict <- JsonMixtCompPredict(data, descriptor, algo, nClass = 2,
+                                                  inputPath = ".", paramFile = "reslearn.json", outputFile = "respredict.json"))
   
+  expect_true(is.null(resPredict$warnLog))
   expect_true(file.exists("./algo.json"))
   expect_true(file.exists("./descriptor.json"))
   expect_true(file.exists("./data.json"))
@@ -46,15 +44,17 @@ test_that("can predict with only one sample in the data set", {
   
   data <- as.data.frame(fromJSON(pathToData))
   descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+  algo <- list(nbBurnInIter = 50,
+               nbIter = 50,
+               nbGibbsBurnInIter = 20,
+               nbGibbsIter = 20,
+               nInitPerClass = 10,
+               nSemTry = 5,
+               confidenceLevel = 0.95)
   
-  expect_error(resLearn <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
-                                                                                             nbIter = 50,
-                                                                                             nbGibbsBurnInIter = 20,
-                                                                                             nbGibbsIter = 20,
-                                                                                             nInitPerClass = 10,
-                                                                                             nSemTry = 5),
-                                             confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json"), regexp = NA)
-
+  expect_silent(resLearn <- JsonMixtCompLearn(data, descriptor, algo, nClass = 2, inputPath = ".", outputFile = "reslearn.json"))
+  expect_true(is.null(resLearn$warnLog))
+  
   expect_true(file.exists("./algo.json"))
   expect_true(file.exists("./descriptor.json"))
   expect_true(file.exists("./data.json"))
@@ -65,15 +65,10 @@ test_that("can predict with only one sample in the data set", {
   # keep only one sample
   data = data[1,]
   
-  expect_error(resPredict <- JsonMixtCompPredict(data, descriptor, nClass = 2, mcStrategy = list(nbBurnInIter = 50,
-                                                                                                 nbIter = 50,
-                                                                                                 nbGibbsBurnInIter = 20,
-                                                                                                 nbGibbsIter = 20,
-                                                                                                 nInitPerClass = 10,
-                                                                                                 nSemTry = 5),
-                                                 confidenceLevel = 0.95, inputPath = ".", paramFile = "reslearn.json", outputFile = "respredict.json"), regexp = NA)
+  expect_silent(resPredict <- JsonMixtCompPredict(data, descriptor, algo, nClass = 2,
+                                                  inputPath = ".", paramFile = "reslearn.json", outputFile = "respredict.json"))
   
-  
+  expect_true(is.null(resPredict$warnLog))
   expect_true(file.exists("./algo.json"))
   expect_true(file.exists("./descriptor.json"))
   expect_true(file.exists("./data.json"))

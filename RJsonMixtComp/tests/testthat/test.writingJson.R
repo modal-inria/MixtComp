@@ -9,9 +9,9 @@ test_that("Creation of algo file", {
                      nbGibbsBurnInIter = 100,
                      nbGibbsIter = 100, 
                      nInitPerClass = 2,
-                     nSemTry = 10)
+                     nSemTry = 10,
+                     confidenceLevel = 0.95)
   
-  confidenceLevel <- 0.95
   mode <- "learn"
   notes <- "You can add any note if you wish in unrequired fields like this one. They will be copied to the output also."
   
@@ -30,7 +30,7 @@ test_that("Creation of algo file", {
   "notes": "You can add any note if you wish in unrequired fields like this one. They will be copied to the output also."
 }'
   
-  algoJson <- createAlgoJson(nClass, nInd, mcStrategy, confidenceLevel, mode, notes = notes)
+  algoJson <- createAlgoJson(nClass, nInd, mcStrategy, mode, notes = notes)
   expect_true(algoJson == expectedJson)
 })
 
@@ -72,7 +72,7 @@ test_that("Creation of descriptor file", {
   
   descriptor <- data.frame(varGaussian = c("Gaussian", "dummyStrTestGaussian"),
                            varPoisson = c("Poisson", "dummyStrTestPoisson"),
-                           varCategorical = c("Categorical", ""))
+                           varCategorical = c("Multinomial", ""))
   
   
   expectedJson <- '{
@@ -85,7 +85,7 @@ test_that("Creation of descriptor file", {
     "paramStr": "dummyStrTestPoisson"
   },
   "varCategorical": {
-    "type": "Categorical",
+    "type": "Multinomial",
     "paramStr": ""
   }
 }'
@@ -98,7 +98,7 @@ test_that("Creation of descriptor file: case without paramStr", {
   
   descriptor <- data.frame(varGaussian = c("Gaussian"),
                            varPoisson = c("Poisson"),
-                           varCategorical = c("Categorical"))
+                           varCategorical = c("Multinomial"))
   
   expectedJson <- '{
   "varGaussian": {
@@ -110,7 +110,7 @@ test_that("Creation of descriptor file: case without paramStr", {
     "paramStr": ""
   },
   "varCategorical": {
-    "type": "Categorical",
+    "type": "Multinomial",
     "paramStr": ""
   }
 }'
