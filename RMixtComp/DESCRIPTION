@@ -3,10 +3,12 @@ Type: Package
 Title: Mixture Composer
 Version: 0.4
 Date: 2018-09-09
-Author: Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ, Serge IOVLEFF
-Copyright: Inria
+Authors@R: c(person("Vincent", "Kubicki", role = c("aut", "cre"), email = "vincent.kubicki@inria.fr"),
+             person("Christophe", "Biernacki", role = "aut"),
+             person("Quentin", "Grimonprez", role = "aut"),
+             person("Serge", "Iovleff", role = "ctb"))
+Copyright: Inria - Université de Lille
 License: Internal use
-Maintainer: Vincent KUBICKI <vincent.kubicki@inria.fr>
 Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets. The conditional independence property enable composing
     all the data sets in a single mixture model.

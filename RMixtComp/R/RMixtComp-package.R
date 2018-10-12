@@ -24,10 +24,6 @@
 #' All graphics functions are in the \emph{RMixtCompPlot} package. 
 #' 
 #' 
-#' @author Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ, Serge IOVLEFF
-#' 
-#' Maintainer: Vincent Kubicki  <vincent.kubicki@@inria.fr>
-#'  
 #' 
 #' @examples 
 #' \donttest{
