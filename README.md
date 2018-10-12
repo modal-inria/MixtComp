@@ -18,11 +18,10 @@ Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 
 # Documentation
 
-* [Compile MixtComp](./MixtComp/README.md)
-* [Compile JsonMixtComp](./JsonMixtcomp/README.md)
-* [Install RMixtComp](./RMixtComp/README.md)
-* [Data format](./MixtComp/docs/dataFormat.md)
-* [Output object](./MixtComp/docs/objectOutput.md)
-* [Algorithm description](./MixtComp/docs/algoDesc.md)
-* [Statistical model description](./MixtComp/docs/howToAddModel.md)
-* [Add a model in R packages](./MixtComp/docs/howToAddModelInR.md)
+* [Compile MixtComp](MixtComp/README.md)
+* [Install RMixtComp](RMixtComp/README.md)
+* [Data format](MixtComp/docs/dataFormat.md)
+* [Output object](MixtComp/docs/objectOutput.md)
+* [Algorithm description](MixtComp/docs/algoDesc.md)
+* [Statistical model description](MixtComp/docs/howToAddModel.md)
+* [Add a model in R packages](MixtComp/docs/howToAddModelInR.md)
