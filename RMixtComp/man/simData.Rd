@@ -3,6 +3,9 @@
 \docType{data}
 \name{simData}
 \alias{simData}
+\alias{simDataLearn}
+\alias{simDataPredict}
+\alias{simDesc}
 \title{Simulated Heterogeneous data}
 \format{Three object: \emph{simDataLearn}, \emph{simDataPredict} and \emph{simDesc}.
 

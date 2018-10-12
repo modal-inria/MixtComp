@@ -10,14 +10,14 @@ sets. The conditional independence property enables composing all the
 data sets in a single mixture model.
 }
 \details{
-Main functions are \link{mixtCompLearn} for clustering, \link{mixtCompPredict} for predict the cluster of new samples with a model learned with \link{mixtCompCluster}. \link{createAlgo} gives you default values for required parameters.
+Main functions are \link{mixtCompLearn} for clustering, \link{mixtCompPredict} for predict the cluster of new samples with a model learned with \link{mixtCompLearn}. \link{createAlgo} gives you default values for required parameters.
 
 Getters are available to easily access some results (see. \link{mixtCompLearn} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getTik}, \link{getPartition}, \link{getType}, \link{getVarNames}.
 
 
 You can compute discriminative power and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}
 
-All graphics functions are in the \link{RMixtCompPlot-package}.
+All graphics functions are in the \emph{RMixtCompPlot} package.
 }
 \examples{
 \donttest{

@@ -6,6 +6,7 @@
 #' @param desc a named list containing models and hyperparameters (see \emph{Details} section).
 #' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
 #' @param nClass the number of class of the mixture model. Can be a vector.
+#' @param criterion "BIC" or "ICL". Criterion used for choosing the best model.
 #' @param resLearn output of \emph{mixtCompCluster} (only for \emph{mixtCompPredict} function).
 #'
 #' @return An object of classes MixtCompLearn and MixtComp for \emph{mixtCompLearn} function. An object of class MixtComp for \emph{mixtCompPredict}.
@@ -186,7 +187,7 @@
 #'
 #' @section MixtCompLearn object:
 #' The MixtCompLearn object is the result of a run of the \emph{mixtCompLearn} function. It is a list containing \emph{nClass}: the vector of number of classes given by user, \emph{res} a list of MixtComp object (one per element of \emph{nbClass}),
-#' \emph{crit} the criterion used to choose the best model, \emph{criterion} a matrix containing BIC and ICL for each run, and finally the elements of the MixtComp object with the best criterion value (\emph{algo}, \emph{mixture}, \emph{variable} or \emph{warnLog}). 
+#' \emph{criterion} the criterion used to choose the best model, \emph{crit} a matrix containing BIC and ICL for each run, and finally the elements of the MixtComp object with the best criterion value (\emph{algo}, \emph{mixture}, \emph{variable} or \emph{warnLog}). 
 #'
 #'                   
 #' @references 
@@ -221,9 +222,9 @@
 #' 
 #' 
 #' @export
-mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, crit = c("BIC", "ICL"))
+mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"))
 {
-  crit = match.arg(crit)
+  crit = match.arg(criterion)
   indCrit <- ifelse(crit == "BIC", 1, 2)
   
   dataList <- formatData(data)
