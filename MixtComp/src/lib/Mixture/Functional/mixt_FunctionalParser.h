@@ -10,6 +10,8 @@
 #ifndef MIXT_FUNCTIONALPARSER
 #define MIXT_FUNCTIONALPARSER
 
+#include <boost/regex.hpp>
+
 #include "LinAlg/mixt_LinAlg.h"
 #include "mixt_Function.h"
 

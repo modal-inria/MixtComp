@@ -11,7 +11,8 @@
 #define MIXT_MISVALPARSER_H
 
 #include <iostream>
-#include "boost/regex.hpp"
+#include <regex>
+#include <set>
 
 #include "mixt_IO.h"
 #include "mixt_SpecialStr.h"
@@ -37,26 +38,28 @@ public:
 	}
 
 	bool parseStr(const std::string& str, Type& v, MisVal& mv) {
-		if (boost::regex_match(str, matches_, reValue_)) { // value is present
-			v = str2type<Type>(matches_[1].str()) + offset_;
+		std::smatch matches;
+
+		if (std::regex_match(str, matches, reValue_)) { // value is present
+			v = str2type<Type>(matches[1].str()) + offset_;
 			mv.first = present_;
 			return true;
 		}
 
-		if (boost::regex_match(str, matches_, reMissing_)) { // value is completely missing
+		if (std::regex_match(str, matches, reMissing_)) { // value is completely missing
 			v = Type(0);
 			mv.first = missing_; // in all other cases data is considered completely missing
 			return true;
 		}
 
-		if (boost::regex_match(str, matches_, reFiniteValues_)) { // only a finite number of values are acceptable
+		if (std::regex_match(str, matches, reFiniteValues_)) { // only a finite number of values are acceptable
 			v = Type(0);
 			std::string::const_iterator start = str.begin();
 			std::string::const_iterator end = str.end();
-			boost::smatch m;
+			std::smatch m;
 
 			std::set<Type> setVal; // using a set allows for automatic sorting and duplicates deletion
-			while (boost::regex_search(start, end, m, reNumber_)) {
+			while (std::regex_search(start, end, m, reNumber_)) {
 				setVal.insert(str2type<Type>(m[0].str()) + offset_);
 				start = m[0].second;
 			}
@@ -69,12 +72,12 @@ public:
 			return true;
 		}
 
-		if (boost::regex_match(str, matches_, reIntervals_)) { // acceptable values provided by intervals
+		if (std::regex_match(str, matches, reIntervals_)) { // acceptable values provided by intervals
 			v = Type(0);
 
 			std::set<Type> setVal;
-			setVal.insert(str2type<Type>(matches_[1].str()) + offset_);
-			setVal.insert(str2type<Type>(matches_[2].str()) + offset_);
+			setVal.insert(str2type<Type>(matches[1].str()) + offset_);
+			setVal.insert(str2type<Type>(matches[2].str()) + offset_);
 
 			if (setVal.size() == 2) {
 				mv.first = missingIntervals_;
@@ -88,17 +91,17 @@ public:
 			}
 		}
 
-		if (boost::regex_match(str, matches_, reLuIntervals_)) { // data is lower bounded
+		if (std::regex_match(str, matches, reLuIntervals_)) { // data is lower bounded
 			v = Type(0);
 			mv.first = missingLUIntervals_;
-			mv.second.push_back(str2type<Type>(matches_[1].str()) + offset_);
+			mv.second.push_back(str2type<Type>(matches[1].str()) + offset_);
 			return true;
 		}
 
-		if (boost::regex_match(str, matches_, reRuIntervals_)) { // data is upper bounded
+		if (std::regex_match(str, matches, reRuIntervals_)) { // data is upper bounded
 			v = Type(0);
 			mv.first = missingRUIntervals_;
-			mv.second.push_back(str2type<Type>(matches_[1].str()) + offset_);
+			mv.second.push_back(str2type<Type>(matches[1].str()) + offset_);
 			return true;
 		}
 
@@ -108,15 +111,13 @@ public:
 private:
 	Type offset_;
 
-	boost::regex reNumber_;
-	boost::regex reValue_;
-	boost::regex reMissing_;
-	boost::regex reFiniteValues_;
-	boost::regex reIntervals_;
-	boost::regex reLuIntervals_;
-	boost::regex reRuIntervals_;
-
-	boost::smatch matches_;
+	std::regex reNumber_;
+	std::regex reValue_;
+	std::regex reMissing_;
+	std::regex reFiniteValues_;
+	std::regex reIntervals_;
+	std::regex reLuIntervals_;
+	std::regex reRuIntervals_;
 };
 
 } // namespace mixt
