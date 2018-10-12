@@ -1,4 +1,4 @@
-#' @title Learn and predict using RJsonMixtComp
+#' @title Learn and predict using RJMixtComp
 #' 
 #' @description Estimate the parameter of a mixture model or predict the cluster of new samples.
 #' 
@@ -23,8 +23,8 @@
 #' 
 #' @examples 
 #' \donttest{
-#' pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
-#' pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
+#' pathToData <- system.file("extdata", "data.json", package = "RJMixtComp")
+#' pathToDescriptor <- system.file("extdata", "desc.json", package = "RJMixtComp")
 #' 
 #' data <- as.data.frame(fromJSON(pathToData))
 #' descriptor <- fromJSON(pathToDescriptor)
@@ -70,7 +70,7 @@ JsonMixtCompLearn <- function(data, descriptor, algo = list(nbBurnInIter = 100,
   
   
   nameExe <- ifelse(Sys.info()["sysname"] == "Windows", "jmc.exe", "jmc")
-  pathToJMixtComp <- system.file("exeMixtComp", nameExe, package = "RJsonMixtComp")
+  pathToJMixtComp <- system.file("exeMixtComp", nameExe, package = "RJMixtComp")
   
   system(paste(pathToJMixtComp, algoFile, dataFile, descriptorFile, outputFile))
   
@@ -103,7 +103,7 @@ JsonMixtCompPredict <- function(data, descriptor, algo = list(nbBurnInIter = 100
   write(createDescriptorJson(descriptor), descriptorFile)
   
   nameExe <- ifelse(Sys.info()["sysname"] == "Windows", "jmc.exe", "jmc")
-  pathToJMixtComp <- system.file("exeMixtComp", nameExe, package = "RJsonMixtComp")
+  pathToJMixtComp <- system.file("exeMixtComp", nameExe, package = "RJMixtComp")
   
   system(paste(pathToJMixtComp, algoFile, dataFile, descriptorFile, paramFile, outputFile))
   

@@ -73,8 +73,8 @@ test_that("convert a vector from json", {
 
 
 test_that("convertOutput converts well", {
-  pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
-  pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
+  pathToData <- system.file("extdata", "data.json", package = "RJMixtComp")
+  pathToDescriptor <- system.file("extdata", "desc.json", package = "RJMixtComp")
   
   data <- as.data.frame(fromJSON(pathToData))
   descriptor <- fromJSON(pathToDescriptor)
