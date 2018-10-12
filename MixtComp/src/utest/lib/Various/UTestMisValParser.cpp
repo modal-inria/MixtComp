@@ -19,15 +19,15 @@ TEST(regex, missingTest)
   std::string strQMark_("(\\?)");
   std::string strBlank_(" *");
 
-  boost::regex reMissing_(strBlank_ +
+  std::regex reMissing_(strBlank_ +
                           strQMark_ +
                           strBlank_);
 
   std::string inStr("  ? ");
   std::string outStr;
-  boost::smatch matches_;
+  std::smatch matches_;
 
-  if (boost::regex_match(inStr, matches_, reMissing_)) // missing is present
+  if (std::regex_match(inStr, matches_, reMissing_)) // missing is present
   {
     outStr = matches_[1].str();
   }

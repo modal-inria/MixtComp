@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <iterator>
 
-#include "boost/regex.hpp"
+#include <regex>
 
 #include <nlopt.h>
 

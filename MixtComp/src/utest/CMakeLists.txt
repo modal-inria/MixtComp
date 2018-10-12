@@ -38,6 +38,5 @@ target_link_libraries(runUtest
     gtest_main
     JMixtComp
     MixtComp
-    ${Boost_LIBRARIES}
     nlopt
 )

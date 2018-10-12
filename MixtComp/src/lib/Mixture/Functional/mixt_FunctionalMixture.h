@@ -142,9 +142,9 @@ public:
 
 		// get the value of nSub_ and nCoeff_ by parsing paramStr_
 		std::string paramReStr = std::string("nSub: *") + strPositiveInteger + std::string(", nCoeff: *") + strPositiveInteger;
-		boost::regex paramRe(paramReStr);
-		boost::smatch matches;
-		if (boost::regex_match(paramStr_, matches, paramRe)) { // value is present
+		std::regex paramRe(paramReStr);
+		std::smatch matches;
+		if (std::regex_match(paramStr_, matches, paramRe)) { // value is present
 			nSub_ = str2type<Index>(matches[1].str());
 			nCoeff_ = str2type<Index>(matches[2].str());
 
