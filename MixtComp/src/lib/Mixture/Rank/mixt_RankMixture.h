@@ -271,8 +271,8 @@ public:
 				++i;
 			}
 
-			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "rank", rank);
-			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "proba", proba);
+			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k + minModality) }, "rank", rank);
+			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k + minModality) }, "proba", proba);
 		}
 
 		Index nStat = piParamStat_.getStatStorage().cols();

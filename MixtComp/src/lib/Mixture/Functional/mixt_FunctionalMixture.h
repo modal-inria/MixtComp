@@ -308,11 +308,11 @@ private:
 		for (Index k = 0; k < nClass_; ++k) {
 			for (Index s = 0; s < nSub_; ++s) {
 				std::stringstream sstm0;
-				sstm0 << "k: " << k << ", s: " << s << ", alpha0";
+				sstm0 << "k: " << k + minModality << ", s: " << s << ", alpha0";
 				names[k * nSub_ * 2 + s * 2] = sstm0.str();
 
 				std::stringstream sstm;
-				sstm << "k: " << k << ", s: " << s << ", alpha1";
+				sstm << "k: " << k + minModality << ", s: " << s << ", alpha1";
 				names[k * nSub_ * 2 + s * 2 + 1] = sstm.str();
 			}
 		}
@@ -325,7 +325,7 @@ private:
 			for (Index s = 0; s < nSub_; ++s) {
 				for (Index c = 0; c < nCoeff_; ++c) {
 					std::stringstream sstm;
-					sstm << "k: " << k << ", s: " << s << ", c: " << c;
+					sstm << "k: " << k + minModality << ", s: " << s << ", c: " << c;
 					names[k * nSub_ * nCoeff_ + s * nCoeff_ + c] = sstm.str();
 				}
 			}
@@ -338,7 +338,7 @@ private:
 		for (Index k = 0; k < nClass_; ++k) {
 			for (Index s = 0; s < nSub_; ++s) {
 				std::stringstream sstm;
-				sstm << "k: " << k << ", s: " << s;
+				sstm << "k: " << k + minModality << ", s: " << s;
 				names[k * nSub_ + s] = sstm.str();
 			}
 		}
