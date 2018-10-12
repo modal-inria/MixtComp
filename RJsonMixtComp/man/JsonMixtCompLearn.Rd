@@ -5,32 +5,34 @@
 \alias{JsonMixtCompPredict}
 \title{Learn and predict using RJsonMixtComp}
 \usage{
-JsonMixtCompLearn(data, descriptor, nClass, mcStrategy, confidenceLevel, inputPath,
- outputFile)
-JsonMixtCompPredict(data, descriptor, nClass, mcStrategy, confidenceLevel, inputPath,
- paramFile, outputFile)
+JsonMixtCompLearn(data, descriptor, algo = list(nbBurnInIter = 100,
+  nbIter = 100, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass =
+  10, nSemTry = 10, confidenceLevel = 0.95), nClass, inputPath, outputFile)
+
+JsonMixtCompPredict(data, descriptor, algo = list(nbBurnInIter = 100,
+  nbIter = 100, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass =
+  10, nSemTry = 10, confidenceLevel = 0.95), nClass, inputPath, paramFile,
+  outputFile)
 }
 \arguments{
-\item{data}{a data.frame containing the data}
+\item{data}{a data.frame/matrix/list containing the data}
 
-\item{descriptor}{a data.frame containing the models for each variable. The colnames of \emph{descriptor} must be in \emph{data}}
+\item{descriptor}{a list containing the model for each variable. The names of \emph{descriptor} must be in \emph{data}}
+
+\item{algo}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).}
 
 \item{nClass}{the number of class of the mixture model.}
 
-\item{mcStrategy}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).}
-
-\item{confidenceLevel}{quantile for confidence interval of estimated parameters.}
-
 \item{inputPath}{path of the folder to save the input files.}
 
-\item{paramFile}{(only for JsonMixtCompPredict) path of the output json file of JsonMixtCompCluster function.}
-
 \item{outputFile}{path of the output json file to save.}
+
+\item{paramFile}{(only for JsonMixtCompPredict) path of the output json file of JsonMixtCompCluster function.}
 }
 \value{
 A json file and a R list containing 3 lists :
 \describe{
- \item{strategy}{a copy of \emph{mcStrategy} parameter.}
+ \item{algo}{a copy of \emph{algo} parameter.}
  \item{mixture}{information about the mixture (see \emph{Details}).}
  \item{variable}{information about the estimated parameters (see \emph{Details}).}
 }
@@ -47,19 +49,21 @@ pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
 pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
 
 data <- as.data.frame(fromJSON(pathToData))
-descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
-strategy <- list(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 20,
-                 nbGibbsIter = 20, nInitPerClass = 10, nSemTry = 5)
+descriptor <- fromJSON(pathToDescriptor)
 
-resLearn <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = strategy,
-                              confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json")
+strategy <- list(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 20,
+                 nbGibbsIter = 20, nInitPerClass = 10, nSemTry = 5,
+                 confidenceLevel = 0.95)
+
+resLearn <- JsonMixtCompLearn(data, descriptor, algo = strategy, nClass = 2,
+                              inputPath = ".", outputFile = "reslearn.json")
 
 
 file.remove("./algo.json", "./descriptor.json", "./data.json")
 
-resPredict <- JsonMixtCompPredict(data, descriptor, nClass = 2, mcStrategy = strategy,
-                                  confidenceLevel = 0.95, inputPath = ".", 
-                                  paramFile = "reslearn.json", outputFile = "respredict.json")
+resPredict <- JsonMixtCompPredict(data, descriptor, algo = strategy, nClass = 2,
+                                  inputPath = ".", paramFile = "reslearn.json",
+                                  outputFile = "respredict.json")
 
 
 file.remove("./algo.json", "./descriptor.json", "./data.json", "reslearn.json",

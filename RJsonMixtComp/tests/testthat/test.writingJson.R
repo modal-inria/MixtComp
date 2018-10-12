@@ -9,9 +9,9 @@ test_that("Creation of algo file", {
                      nbGibbsBurnInIter = 100,
                      nbGibbsIter = 100, 
                      nInitPerClass = 2,
-                     nSemTry = 10)
+                     nSemTry = 10,
+                     confidenceLevel = 0.95)
   
-  confidenceLevel <- 0.95
   mode <- "learn"
   notes <- "You can add any note if you wish in unrequired fields like this one. They will be copied to the output also."
   
@@ -30,49 +30,16 @@ test_that("Creation of algo file", {
   "notes": "You can add any note if you wish in unrequired fields like this one. They will be copied to the output also."
 }'
   
-  algoJson <- createAlgoJson(nClass, nInd, mcStrategy, confidenceLevel, mode, notes = notes)
+  algoJson <- createAlgoJson(nClass, nInd, mcStrategy, mode, notes = notes)
   expect_true(algoJson == expectedJson)
-})
-
-
-
-test_that("Conversion of descriptor file", {
-  
-  descriptor <- data.frame(varGaussian = c("Gaussian", "dummyStrTestGaussian"),
-                           varPoisson = c("Poisson", "dummyStrTestPoisson"),
-                           varCategorical = c("Categorical", ""))
-  
-  expectedDesc <- list(varGaussian = list(type = "Gaussian", paramStr = "dummyStrTestGaussian"),
-                       varPoisson = list(type = "Poisson", paramStr = "dummyStrTestPoisson"),
-                       varCategorical = list(type = "Categorical", paramStr = ""))
-  
-  descriptorList <- convertDescriptorToList(descriptor)
-
-  expect_equal(descriptorList, expectedDesc)
-})
-
-
-test_that("Conversion of descriptor file: case without paramStr", {
-  
-  descriptor <- data.frame(varGaussian = "Gaussian",
-                           varPoisson = "Poisson",
-                           varCategorical = "Categorical")
-  
-  expectedDesc <- list(varGaussian = list(type = "Gaussian", paramStr = ""),
-                       varPoisson = list(type = "Poisson", paramStr = ""),
-                       varCategorical = list(type = "Categorical", paramStr = ""))
-  
-  descriptorList <- convertDescriptorToList(descriptor)
-  
-  expect_equal(descriptorList, expectedDesc)
 })
 
 
 test_that("Creation of descriptor file", {
   
-  descriptor <- data.frame(varGaussian = c("Gaussian", "dummyStrTestGaussian"),
-                           varPoisson = c("Poisson", "dummyStrTestPoisson"),
-                           varCategorical = c("Categorical", ""))
+  descriptor <- list(varGaussian = list(type = "Gaussian", paramStr = "dummyStrTestGaussian"),
+                           varPoisson = list(type = "Poisson"),
+                           varCategorical = "Multinomial")
   
   
   expectedJson <- '{
@@ -82,35 +49,10 @@ test_that("Creation of descriptor file", {
   },
   "varPoisson": {
     "type": "Poisson",
-    "paramStr": "dummyStrTestPoisson"
-  },
-  "varCategorical": {
-    "type": "Categorical",
-    "paramStr": ""
-  }
-}'
-  
-  descriptorJson <- createDescriptorJson(descriptor)
-  expect_true(descriptorJson == expectedJson)
-})
-
-test_that("Creation of descriptor file: case without paramStr", {
-  
-  descriptor <- data.frame(varGaussian = c("Gaussian"),
-                           varPoisson = c("Poisson"),
-                           varCategorical = c("Categorical"))
-  
-  expectedJson <- '{
-  "varGaussian": {
-    "type": "Gaussian",
-    "paramStr": ""
-  },
-  "varPoisson": {
-    "type": "Poisson",
     "paramStr": ""
   },
   "varCategorical": {
-    "type": "Categorical",
+    "type": "Multinomial",
     "paramStr": ""
   }
 }'

@@ -21,22 +21,17 @@ The discriminative power of variable j is defined by 1 - Cj
 Cj=  - sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*lnK)
 }
 \examples{
-\dontrun{
+\donttest{
 
 library(RMixtComp)
 
-# path to files
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-
-resGetData <- getData(c(pathToData, pathToDescriptor))
-
-
+data(simData)
+ 
 # define the algorithm's parameters
-mcStrategy <- createMcStrategy()
+algo <- createAlgo()
 
-# run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+# run RMixtCompt in unsupervised clustering mode + data as matrix
+res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 
 # plot
 plotDiscrimVbles(res)

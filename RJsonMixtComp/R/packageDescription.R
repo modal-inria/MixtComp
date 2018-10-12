@@ -1,14 +1,5 @@
 # packages to import for the NAMESPACE file
 #' @import jsonlite
-# export functions from RMixtComp
-#' @export getBIC
-#' @export getCompletedData
-#' @export getICL
-#' @export getParam
-#' @export getTik
-#' @export getType
-#' @export getZ_class
-#' @export getVarNames
 #' 
 
 #' @title RJsonMixtComp
@@ -34,17 +25,17 @@
 #' pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
 #' 
 #' data <- as.data.frame(fromJSON(pathToData))
-#' descriptor <- as.data.frame(lapply(fromJSON(pathToDescriptor), unlist))
+#' descriptor <- fromJSON(pathToDescriptor)
 #' strategy <- list(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 20,
-#'                  nbGibbsIter = 20, nInitPerClass = 10, nSemTry = 5)
+#'                  nbGibbsIter = 20, nInitPerClass = 10, nSemTry = 5, confidenceLevel = 0.95)
 #' 
-#' resLearn <- JsonMixtCompLearn(data, descriptor, nClass = 2, mcStrategy = strategy,
+#' resLearn <- JsonMixtCompLearn(data, descriptor, algo = strategy, nClass = 2,
 #'                               confidenceLevel = 0.95, inputPath = ".", outputFile = "reslearn.json")
 #' 
 #' 
 #' file.remove("./algo.json", "./descriptor.json", "./data.json")
 #' 
-#' resPredict <- JsonMixtCompPredict(data, descriptor, nClass = 2, mcStrategy = strategy,
+#' resPredict <- JsonMixtCompPredict(data, descriptor, algo = strategy, nClass = 2,
 #'                                   confidenceLevel = 0.95, inputPath = ".", 
 #'                                   paramFile = "reslearn.json", outputFile = "respredict.json")
 #' 

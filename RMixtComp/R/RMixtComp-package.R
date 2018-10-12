@@ -1,3 +1,7 @@
+#' @useDynLib RMixtComp
+#' @import Rcpp
+#' @importFrom stats rbinom rmultinom rnorm rpois runif rweibull rnbinom
+#'
 #' @title RMixtComp
 #' @docType package
 #' @aliases RMixtComp-package
@@ -10,13 +14,14 @@
 #' 
 #' @details
 #'
-#' Main functions are \link{getData} for reading data, \link{mixtcompCluster} for clustering, \link{mixtcompPredict} for predict the cluster of new samples with a model learned with \link{mixtcompCluster}. \link{createMcStrategy} gives you default values for required parameters.
+#' Main functions are \link{mixtCompLearn} for clustering, \link{mixtCompPredict} for predict the cluster of new samples with a model learned with \link{mixtCompLearn}. \link{createAlgo} gives you default values for required parameters.
 #' 
-#' Getters are available to easily access some results (see. \link{mixtcompCluster} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getTik}, \link{getZ_class}, \link{getType}, \link{getVarNames}.
+#' Getters are available to easily access some results (see. \link{mixtCompLearn} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getTik}, \link{getPartition}, \link{getType}, \link{getVarNames}.
+#' 
 #' 
 #' You can compute discriminative power and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}
 #' 
-#' All graphics functions are in the \link{RMixtCompPlot-package}. 
+#' All graphics functions are in the \emph{RMixtCompPlot} package. 
 #' 
 #' 
 #' @author Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ, Serge IOVLEFF
@@ -25,234 +30,53 @@
 #'  
 #' 
 #' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' \donttest{
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    nInitPerClass = 10,
-#'                    nSemTry = 20)
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 #' 
 #' # run RMixtCompt for predicting
-#' resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-#' 
+#' resPred <- mixtCompPredict(simDataPredict$matrix, desc$unsupervised, algo, resLearn)
 #' 
 #' }
 #' 
-#' @seealso \link{getData} \link{mixtCompCluster}
+#' @seealso \link{mixtCompLearn}
 #' 
 #' @keywords package
 NULL
 
 
-#' @name mixtCompCluster
-#' @aliases mixtCompPredict
+#' Simulated Heterogeneous data
 #'
-#' @usage mixtCompCluster(dataList, mcStrategy, nbClass, confidenceLevel)
-#' mixtCompPredict(dataList, paramList, mcStrategy, nbClass, confidenceLevel)
-#'
-#' @title Learn and predict using RMixtComp
+#' @name simData
+#' @aliases simDataLearn simDataPredict simDesc
+#' @docType data
+#' @keywords data
 #' 
-#' @description Estimate the parameter of a mixture model or predict the cluster of new samples.
+#' @usage data(simData)
 #' 
-#' @title Learn and predict using RMixtComp
+#' @format Three object: \emph{simDataLearn}, \emph{simDataPredict} and \emph{simDesc}.
 #' 
-#' Estimate the parameter of a mixture model or predict the cluster of new samples.
+#' \emph{simDataLearn} is a list containing the data in the three accepted format (list, data.frame and matrix). Data consists of 200 individuals and 9 variables.
 #' 
-#' @param dataList \emph{lm} element of the output of \link{getData}.
-#' @param paramList parameters of the mixture model (only for \emph{mixtCompPredict} function). Output \emph{$variable$param} from \emph{mixtCompCluster} function.
-#' @param mcStrategy a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
-#' @param nbClass the number of class of the mixture model.
-#' @param confidenceLevel quantile for confidence interval of estimated parameters.
-#'
-#' @return A list containing 3 lists :
-#' \describe{
-#'  \item{strategy}{a copy of \emph{mcStrategy} parameter.}
-#'  \item{mixture}{information about the mixture (see \emph{Details}).}
-#'  \item{variable}{information about the estimated parameters and completed data (see \emph{Details}).}
-#' }
+#' \emph{simDataPredict} is a list containing the data in the three accepted format (list, data.frame and matrix). Data consists of 100 individuals and 8 variables.
 #' 
-#' @details 
-#' Details about the output object of \emph{mixtCompCluster} and \emph{mixtCompPredict} functions.
+#' \emph{simDesc} is a list containing the descriptor lists used for clustering \emph{simDesc$unsupervised} and classification \emph{simDesc$supervised}.
 #' 
-#' \emph{mcStrategy} is a list containing the different number of iterations for the algorithm. 
-#' The algorithm is decomposed in a burn-in phase and a normal phase. 
-#' Estimates from the burn-in phase are not shown in output.
-#' \describe{
-#'   \item{nbBurnInIter}{Number of iterations of the burn-in part of the SEM algorithm.}
-#'   \item{nbIter}{Number of iterations of the SEM algorithm.}
-#'   \item{nbGibbsBurnInIter}{Number of iterations of the burn-in part of the Gibbs algorithm.}
-#'   \item{nbGibbsIter}{Number of iterations of the Gibbs algorithm.}
-#'   \item{nInitPerClass}{Number of individuals used to initialize each cluster (default = 10).}
-#'   \item{nSemTry}{Number of try of the algorithm for avoiding an error.}
-#' }
-#' You can use a void list, i nthis case, default values are used.
-#'  
-#' 
-#' 
-#' @section Output object:
-#' The output list contains three elements \emph{mixture}, \emph{variable} and \emph{strategy}. \emph{mixture} is a list containing some criterion and some parameters. \emph{strategy} contains the parameter \emph{mcStrategy}. 
-#' And \emph{variable} contains parameters and completed data.
-#' 
-#' The \emph{mixture} contains
-#' \describe{
-#'   \item{BIC}{value of BIC}
-#'   \item{ICL}{value of ICL}
-#'   \item{nbSample, nbInd}{number of samples in the dataset}
-#'   \item{nbCluster}{number of class of the mixture}
-#'   \item{nbFreeParameters}{number of free parameters of the mixture}
-#'   \item{lnObservedLikelihood}{observed loglikelihood}
-#'   \item{lnCompletedLikelihood}{completed loglikelihood}
-#'   \item{mode}{"predict" for \link{mixtCompPredict} or "learn" for \link{mixtCompCluster}}
-#'   \item{IDClass}{entropy used to compute the discriminative power (see code of \emph{plotDiscrimVbles})}
-#'   \item{delta}{entropy used to compute the similarities between variables (see code of \emph{heatmapVbles})}
-#'   \item{completedProbabilityLogBurnIn}{evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
-#'   \item{completedProbabilityLogRun}{evolution of the completed log-probability  after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)} 
-#'   \item{warnLog}{contains warnings. Is NULL if there is no warning.}
-#'   \item{runTime}{execution time in seconds} 
-#'   \item{lnProbaGivenClass}{log-proportion + log-probability of x_i for each class}
-#' }
-#' 
-#' 
-#' The output list \emph{variable} contains 3 lists : \emph{data}, \emph{type} and \emph{param}. 
-#' Each of these lists contains a list for each variable (the name of each list is the name of the variable) and for the class of samples (\emph{z_class}).
-#' The \emph{type} list contains the model used for each variable. Each list of the \emph{data} list contains
-#'  the completed data in the \emph{completed} element and some statistics about them (\emph{stat}). The estimated parameter can be found in the \emph{stat} 
-#'  element in the \emph{param} list (see Section \emph{View of an output object}). For more details about the parameters of each model, you can refer to \link{rnorm}, \link{rpois}, \link{rweibull}, 
-#'  the report \emph{Model-based clustering for multivariate partial ranking data} from Julien Jacques and Christophe Biernacki for the ranking model,
-#'  \emph{Model-Based Clustering of Multivariate Ordinal Data Relying on a Stochastic Binary Search Algorithm} from Christophe Biernacki and Julien Jacques for the ordinal model and 
-#'  \emph{Piecewise Regression Mixture for Simultaneous Functional Data Clustering and Optimal Segmentation} from Faicel Chamroukhi for the functional model.
-#' 
-#' 
-#' @section View of an output object:
-#' Example of output object with variables named "categorical", "gaussian", "ordinal", "rank", "functional", "poisson", "nBinom" and "weibull" with respectively
-#'  \emph{Categorical_pjk}, \emph{Gaussian_sjk}, \emph{Ordinal}, \emph{Rank}, \emph{Functional} (or \emph{FunctionalSharedAlpha}), \emph{Poisson_k}, \emph{NegativeBinomial} and \emph{Weibull} as model. 
-#' 
-#' \tabular{lll}{
-#' output  \cr
-#' |_______ \tab strategy \tab __ nbBurnInIter\cr
-#' |        \tab          \tab |__ nbIter\cr
-#' |        \tab          \tab |__ nbGibbsBurnInIter\cr
-#' |        \tab          \tab |__ nbGibbsIter\cr
-#' |        \tab          \tab |__ nInitPerClass\cr
-#' |        \tab          \tab |__ nSemTry\cr
-#' | \cr
-#' |_______ \tab mixture \tab __ BIC \cr
-#' |        \tab         \tab |_ ICL\cr
-#' |        \tab         \tab |_ lnCompletedLikelihood\cr
-#' |        \tab         \tab |_ lnObservedLikelihood \cr
-#' |        \tab         \tab |_ IDClass  \cr
-#' |        \tab         \tab |_ delta  \cr
-#' |        \tab         \tab |_ mode \cr
-#' |        \tab         \tab |_ runTime \cr
-#' |        \tab         \tab |_ nbSample \cr
-#' |        \tab         \tab |_ nbInd  \cr
-#' |        \tab         \tab |_ nbFreeParameters \cr
-#' |        \tab         \tab |_ nbCluster \cr
-#' |        \tab         \tab |_ warnLog \cr
-#' |        \tab         \tab |_ completedProbabilityLogBurnIn \cr
-#' |        \tab         \tab |_ completedProbabilityLogRun \cr
-#' |        \tab         \tab |_ lnProbaGivenClass \cr
-#' }
-#' \tabular{llllll}{
-#' |  \cr
-#' |_______ \tab variable \tab __ type \tab __ z_class  \cr
-#'          \tab          \tab |       \tab |_ categorical \cr
-#'          \tab          \tab |       \tab |_ gaussian \cr
-#'          \tab          \tab |       \tab |_ ...   \cr
-#'          \tab          \tab |       \tab \cr
-#'          \tab          \tab |_ data \tab __ z_class \tab __ completed\cr
-#'          \tab          \tab |       \tab |          \tab |_ stat \cr
-#'          \tab          \tab |       \tab |_ categorical \tab __ completed\cr
-#'          \tab          \tab |       \tab |              \tab |_ stat \cr
-#'          \tab          \tab |       \tab |_ ...         \tab \cr
-#'          \tab          \tab |       \tab |_ functional \tab __ data\cr
-#'          \tab          \tab |       \tab               \tab |_ time \cr
-#'          \tab          \tab |       \tab \cr
-#'          \tab          \tab |_ param \tab __ z_class \tab __ pi \tab __ stat\cr
-#'          \tab          \tab          \tab |          \tab       \tab |_ log \cr
-#'          \tab          \tab          \tab |          \tab       \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |_ categorical \tab __ NumericalParam \tab __ stat\cr
-#'          \tab          \tab          \tab |              \tab                   \tab |_ log \cr
-#'          \tab          \tab          \tab |              \tab                   \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |_ gaussian \tab __ NumericalParam \tab __ stat\cr
-#'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
-#'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |_ poisson  \tab __ NumericalParam \tab __ stat\cr
-#'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
-#'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |_ nBinom  \tab __ NumericalParam \tab __ stat\cr
-#'          \tab          \tab          \tab |          \tab                   \tab |_ log \cr
-#'          \tab          \tab          \tab |          \tab                   \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |_ weibull  \tab __ NumericalParam \tab __ stat\cr
-#'          \tab          \tab          \tab |           \tab                   \tab |_ log \cr
-#'          \tab          \tab          \tab |           \tab                   \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |_ ordinal \tab __ muPi \tab __ stat\cr
-#'          \tab          \tab          \tab |          \tab         \tab |_ log \cr
-#'          \tab          \tab          \tab |          \tab         \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |_ functional \tab __ alpha \tab __ stat\cr
-#'          \tab          \tab          \tab |             \tab |        \tab |_ log \cr
-#'          \tab          \tab          \tab |             \tab |        \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |             \tab |_ beta  \tab __ stat\cr
-#'          \tab          \tab          \tab |             \tab |        \tab |_ log \cr
-#'          \tab          \tab          \tab |             \tab |        \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |             \tab |_ sd    \tab __ stat\cr
-#'          \tab          \tab          \tab |             \tab          \tab |_ log \cr
-#'          \tab          \tab          \tab |             \tab          \tab |_ paramStr \cr
-#'          \tab          \tab          \tab |_ rank \tab __ mu \tab __ stat\cr
-#'          \tab          \tab          \tab         \tab |     \tab |_ log \cr
-#'          \tab          \tab          \tab         \tab |     \tab |_ paramStr \cr
-#'          \tab          \tab          \tab         \tab |_ pi \tab __ stat\cr
-#'          \tab          \tab          \tab         \tab       \tab |_ log \cr
-#'          \tab          \tab          \tab         \tab       \tab |_ paramStr \cr
-#'          \tab          \tab          \tab         \tab       \tab \cr
-#' }                  
-#'                   
-#' @examples 
-#' \dontrun{
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' pathToDescriptor2 <- system.file("extdata", "descSupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' # define the algorithm's parameters
-#' mcStrategy <- list(nbBurnInIter = 100,
-#'                    nbIter = 100,
-#'                    nbGibbsBurnInIter = 50,
-#'                    nbGibbsIter = 50,
-#'                    nInitPerClass = 10,
-#'                    nSemTry = 20)
-#' 
-#' # run RMixtCompt for unsupervised clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-#' 
-#' # run RMixtCompt for predicting
-#' resPred <- mixtCompPredict(resGetData$lm, res$variable$param, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-#' 
-#' # run RMixtCompt for supervised clustering
-#' resGetData2 <- getData(c(pathToData, pathToDescriptor2))
-#' res <- mixtCompCluster(resGetData2$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-#' 
-#' }
-#' 
-#' 
-#'
-#' @seealso \link{getData} 
-#' 
-#' @author Vincent Kubicki
-#' 
-#' @export mixtCompCluster
-#' @export mixtCompPredict
+#' @examples
+#' data(simData)
+#' str(simDataLearn)
+#' str(simDataPredict)
+#' str(simDesc)
+#'   
 NULL

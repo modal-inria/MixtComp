@@ -1,4 +1,4 @@
-createAlgoJson <- function(nClass, nInd, mcStrategy, confidenceLevel, mode, ...)
+createAlgoJson <- function(nClass, nInd, mcStrategy, mode, ...)
 {
   unrequiredFields <- list(...)
   toDelete <- names(unrequiredFields) %in% c("nClass", "nInd", "confidenceLevel", "mode", "nbBurnInIter",
@@ -6,7 +6,7 @@ createAlgoJson <- function(nClass, nInd, mcStrategy, confidenceLevel, mode, ...)
   unrequiredFields = unrequiredFields[!toDelete]
   
   algo = c(list(nClass = nClass, nInd = nInd), mcStrategy,
-           list(confidenceLevel = confidenceLevel, mode = mode), unrequiredFields)
+           list(mode = mode), unrequiredFields)
   
   return(toJSON(algo, auto_unbox = TRUE, pretty = TRUE))
 }
@@ -14,29 +14,15 @@ createAlgoJson <- function(nClass, nInd, mcStrategy, confidenceLevel, mode, ...)
 # @param data a data.frame where each column corresponds to a variable 
 createDataJson <- function(data)
 {
-  data[,] = lapply(data[,], as.character)
-  toJSON(data, dataframe = "columns", auto_unbox = FALSE, pretty = TRUE)
+  data = formatData(data)
+  toJSON(data, auto_unbox = FALSE, pretty = TRUE)
 }
 
 
-convertDescriptorToList <- function(descriptor)
-{
-  lapply(descriptor, function(x)
-  {
-    element <- as.list(as.character(x))
-    
-    if(length(element) == 1) # if paramStr is not given
-      element = c(element, "")
-    
-    names(element) = c("type", "paramStr")
-    
-    return(element)
-  })
-}
 
 # @param descriptor a data.frame where each column corresponds to a variable. Each column contains the model and eventually supplementary parameters
 createDescriptorJson <- function(descriptor)
 {
-  descriptor <- convertDescriptorToList(descriptor)
+  descriptor <- formatDesc(descriptor)
   toJSON(descriptor, auto_unbox = TRUE, pretty = TRUE)
 }

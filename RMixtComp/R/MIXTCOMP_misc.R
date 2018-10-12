@@ -1,6 +1,6 @@
-#' @title create mcStrategy object 
+#' @title Create algo object 
 #' 
-#' @description create a mcStrategy object 
+#' @description create an algo object required by \link{mixtCompLearn} and \link{mixtCompPredict}.
 #'
 #' @param nbBurnInIter Number of iterations of the burn-in part of the SEM algorithm.
 #' @param nbIter Number of iterations of the SEM algorithm.
@@ -8,25 +8,27 @@
 #' @param nbGibbsIter Number of iterations of the Gibbs algorithm.
 #' @param nInitPerClass Number of individuals used to initialize each cluster (default = 10).
 #' @param nSemTry Number of try of the algorithm for avoiding an error.
+#' @param confidenceLevel confidence level for confidence bounds for parameter estimation
 #' 
 #' @return a list with the parameters values
 #' 
 #' @examples 
 #' # default values
-#' mcStrategy <- createMcStrategy()
+#' algo <- createAlgo()
 #'
-#' # default values
-#' mcStrategy <- createMcStrategy(nbIter = 200)
+#' # change some values
+#' algo <- createAlgo(nbIter = 200)
 #' 
 #' @export
-createMcStrategy <- function(nbBurnInIter = 100, nbIter = 100, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20)
+createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20, confidenceLevel = 0.95)
 {
   list(nbBurnInIter = nbBurnInIter,
        nbIter = nbIter,
        nbGibbsBurnInIter = nbGibbsBurnInIter,
        nbGibbsIter = nbGibbsIter,
        nInitPerClass = nInitPerClass,
-       nSemTry = nSemTry)
+       nSemTry = nSemTry,
+       confidenceLevel = confidenceLevel)
 }
 
 
@@ -37,7 +39,7 @@ createMcStrategy <- function(nbBurnInIter = 100, nbIter = 100, nbGibbsBurnInIter
 #' @description Compute the discriminative power of each variable or classe
 #'
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
 #'
 #' @return the discriminative power
 #' 
@@ -53,21 +55,23 @@ createMcStrategy <- function(nbBurnInIter = 100, nbIter = 100, nbGibbsBurnInIter
 #' 
 #'
 #' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
+#' \donttest{
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 #' 
-#' computeDiscrimPowerVar(res)
-#' computeDiscrimPowerClass(res)
+#' discVar <- computeDiscrimPowerVar(resLearn)
+#' discClass <- computeDiscrimPowerClass(resLearn)
 #' }
 #' 
 #' @export
@@ -91,7 +95,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' @description Compute the similarity between variables (or classes)
 #'
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
 #'
 #' @return a similarity matrix
 #' 
@@ -103,21 +107,23 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' Sigma(k,g)^2 = (1/n) * sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
 #'
 #' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
+#' \donttest{
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 #' 
-#' computeSimilarityVar(res)
-#' computeSimilarityClass(res)
+#' simVar <- computeSimilarityVar(resLearn)
+#' simClass <- computeSimilarityClass(resLearn)
 #' }
 #' 
 #' @export
@@ -135,7 +141,7 @@ computeSimilarityVar <- function(outMixtComp)
 #' @export
 computeSimilarityClass <- function(outMixtComp)
 {
-  simil <- 1-sqrt(sapply(1:outMixtComp$mixture$nbCluster,
+  simil <- 1-sqrt(sapply(1:outMixtComp$algo$nClass,
                          function(k) colMeans(sweep(outMixtComp$variable$data$z_class$stat, 1, outMixtComp$variable$data$z_class$stat[,k],"-")**2)))
   colnames(simil) = rownames(simil)
   
@@ -143,43 +149,6 @@ computeSimilarityClass <- function(outMixtComp)
 }
 
 
-#' @title Compute log(tik)
-#'
-#' @description Compute the log(tik)
-#'
-#'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
-#'
-#' @return matrix with tik
-#' 
-#'
-#' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
-#' 
-#' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-#' 
-#' logTik <- computeLogTik(res)
-#' }
-#' 
-#' @export
-getTik <- function(outMixtComp, log = TRUE){
-  logTik <- sweep(outMixtComp$mixture$lnProbaGivenClass, 
-                  1, apply(outMixtComp$mixture$lnProbaGivenClass, 1, function(vec) (max(vec) + log(sum(exp(vec - max(vec)))))),
-                  "-")
-  if(!log)
-    return(exp(logTik))
-  
-  return(logTik)
-}
 
 # rand index from fossil
 rand.index <- function (group1, group2) 

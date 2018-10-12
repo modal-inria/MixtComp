@@ -60,7 +60,10 @@ test_that("formatData keeps list in list format", {
   dat <- list(x1 = 1:10, x2 = 10:1)
   dataOut <- formatData(dat)
   
-  expect_equal(dat, dataOut)
+  expect_true(is.list(dataOut))
+  expect_equal(names(dataOut), names(dat))
+  expect_equal(class(dataOut$x1), "character")
+  expect_equal(class(dataOut$x2), "character")
 })
 
 test_that("checkNClass works with mixtCompCluster object", {
@@ -127,8 +130,8 @@ test_that("mixtCompLearn works + mixtCompPredict", {
     nbGibbsIter = 100,
     nInitPerClass = 100,
     nSemTry = 20,
-    confidenceLevel = 0.95,
-    mode = "learn"
+    nInitPerClass = 100,
+    confidenceLevel = 0.95
   )
   
   data <- do.call(cbind, resGen$data)
@@ -162,6 +165,14 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   expect_equal(dim(getEmpiricTik(resLearn)), c(1000, 4))
   expect_silent(getEmpiricTik(resLearn))
   expect_equal(dim(getTik(resLearn)), c(1000, 4))
+  expect_silent(disc <- computeDiscrimPowerClass(resLearn))
+  expect_equal(length(disc), 4)
+  expect_silent(disc <- computeDiscrimPowerVar(resLearn))
+  expect_equal(length(disc), 1)
+  expect_silent(disc <- computeSimilarityClass(resLearn))
+  expect_equal(dim(disc), rep(4, 2))
+  expect_silent(disc <- computeSimilarityVar(resLearn))
+  expect_equal(dim(disc), rep(1, 2))
   for(name in getVarNames(resLearn))
     expect_silent(getParam(resLearn, name))
   
@@ -191,10 +202,9 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
     nbIter = 100,
     nbGibbsBurnInIter = 100,
     nbGibbsIter = 100,
-    nInitPerClass = 100,
     nSemTry = 20,
-    confidenceLevel = 0.95,
-    mode = "learn"
+    nInitPerClass = 100,
+    confidenceLevel = 0.95
   )
   
   data <- do.call(cbind, resGen$data)
@@ -228,6 +238,14 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   expect_equal(dim(getEmpiricTik(resLearn)), c(1000, 4))
   expect_silent(getEmpiricTik(resLearn))
   expect_equal(dim(getTik(resLearn)), c(1000, 4))
+  expect_silent(disc <- computeDiscrimPowerClass(resLearn))
+  expect_equal(length(disc), 4)
+  expect_silent(disc <- computeDiscrimPowerVar(resLearn))
+  expect_equal(length(disc), 1)
+  expect_silent(disc <- computeSimilarityClass(resLearn))
+  expect_equal(dim(disc), rep(4, 2))
+  expect_silent(disc <- computeSimilarityVar(resLearn))
+  expect_equal(dim(disc), rep(1, 2))
   for(name in getVarNames(resLearn))
     expect_silent(getParam(resLearn, name))
   

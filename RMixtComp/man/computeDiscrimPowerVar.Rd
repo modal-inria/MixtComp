@@ -10,7 +10,7 @@ computeDiscrimPowerVar(outMixtComp)
 computeDiscrimPowerClass(outMixtComp)
 }
 \arguments{
-\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.}
 }
 \value{
 the discriminative power
@@ -29,21 +29,23 @@ The discriminative power of class k is defined by 1 - Dk
 Dk=  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
 }
 \examples{
-\dontrun{
-# path to files
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-
-resGetData <- getData(c(pathToData, pathToDescriptor))
-
+\donttest{
+data(simData)
+ 
 # define the algorithm's parameters
-mcStrategy <- createMcStrategy()
+algo <- list(nbBurnInIter = 100,
+             nbIter = 100,
+             nbGibbsBurnInIter = 50,
+             nbGibbsIter = 50,
+             nInitPerClass = 10,
+             nSemTry = 20,
+             confidenceLevel = 0.95)
 
 # run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 
-computeDiscrimPowerVar(res)
-computeDiscrimPowerClass(res)
+discVar <- computeDiscrimPowerVar(resLearn)
+discClass <- computeDiscrimPowerClass(resLearn)
 }
 
 }

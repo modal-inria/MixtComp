@@ -12,18 +12,13 @@
 #' 
 #' library(RMixtComp)
 #' 
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- createAlgo()
 #' 
-#' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 #' 
 #' # plot
 #' plotDiscrimVbles(res)
@@ -84,21 +79,15 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
 #' 
 #' @examples 
 #' \donttest{
-#' 
 #' library(RMixtComp)
 #' 
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- createAlgo()
 #' 
-#' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 #' 
 #' # plot
 #' plotDiscrimClass(res)
@@ -144,21 +133,15 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), ...){
 #' 
 #' @examples 
 #' \donttest{
-#' 
 #' library(RMixtComp)
 #' 
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- createAlgo()
 #' 
-#' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 #' 
 #' # plot
 #' heatmapVbles(res)
@@ -225,22 +208,15 @@ heatmapVbles <- function(output, ...){
 #' 
 #' @examples 
 #' \donttest{
-#' 
 #' library(RMixtComp)
 #' 
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- createAlgo()
 #' 
-#' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 #' # plot
 #' heatmapClass(res)
 #' 
@@ -307,21 +283,15 @@ heatmapClass <- function(output, ...){
 #' 
 #' @examples 
 #' \donttest{
-#' 
 #' library(RMixtComp)
 #' 
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- createAlgo()
 #' 
-#' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 #' 
 #' # plot
 #' heatmapTikSorted(res)
@@ -385,21 +355,15 @@ heatmapTikSorted <- function(output, ...){
 #' 
 #' @examples 
 #' \donttest{
-#' 
 #' library(RMixtComp)
 #' 
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- createAlgo()
 #' 
-#' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 #' 
 #' # plot
 #' histMisclassif(res)

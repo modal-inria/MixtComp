@@ -1,6 +1,8 @@
 cp ../RMixtComp/R/MIXTCOMP_getter.R ./R/MIXTCOMP_getter.R
+cp ../RMixtComp/R/MIXTCOMP_getParam.R ./R/MIXTCOMP_getParam.R
 cp ../RMixtComp/R/MIXTCOMP_misc.R ./R/MIXTCOMP_misc.R
+cp ../RMixtComp/R/MIXTCOMP_formatData.R ./R/MIXTCOMP_formatData.R
 cd ../MixtComp/
 ./clean.sh
-./buildDebug.sh
-cp debug/json/jmc ../RJsonMixtComp/inst/exeMixtComp/jmc
+./buildRelease.sh
+cp release/json/jmc ../RJsonMixtComp/inst/exeMixtComp/jmc

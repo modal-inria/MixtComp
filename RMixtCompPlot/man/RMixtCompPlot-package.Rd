@@ -13,7 +13,7 @@ data sets in a single mixture model.
 This package contains plot functions for MixtComp output.
 }
 \examples{
-\dontrun{
+\donttest{
 
 library(RMixtComp)
 

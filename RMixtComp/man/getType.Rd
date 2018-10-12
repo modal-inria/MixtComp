@@ -10,7 +10,7 @@ getType(outMixtComp, with.z_class = FALSE)
 getVarNames(outMixtComp, with.z_class = FALSE)
 }
 \arguments{
-\item{outMixtComp}{output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.}
+\item{outMixtComp}{object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.}
 
 \item{with.z_class}{if TRUE, the type of z_class is returned.}
 }
@@ -21,25 +21,26 @@ a vector containing the type of models, names associated with each individual.
 Get the type of model, names for each variable
 }
 \examples{
-\dontrun{
-# path to files
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-
-resGetData <- getData(c(pathToData, pathToDescriptor))
-
-
+\donttest{
+data(simData)
+ 
 # define the algorithm's parameters
-mcStrategy <- createMcStrategy()
+algo <- list(nbBurnInIter = 100,
+             nbIter = 100,
+             nbGibbsBurnInIter = 50,
+             nbGibbsIter = 50,
+             nInitPerClass = 10,
+             nSemTry = 20,
+             confidenceLevel = 0.95)
 
 # run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 
 # get type
-type <- getType(res)
+type <- getType(resLearn)
 
 # get variable names
-varNames <- getVarNames(res)
+varNames <- getVarNames(resLearn)
 
 }
 

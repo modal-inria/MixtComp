@@ -2,28 +2,29 @@
 #'
 #' @description Get the estimated parameter
 #'
-#' @param outMixtComp output object of \link{mixtCompCluster} or \link{mixtCompPredict} functions.
+#' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
 #' @param varName name of the variable to get parameter
 #'
 #' @return the parameter of the variable
 #'
 #' @examples 
-#' \dontrun{
-#' # path to files
-#' pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-#' pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-#' 
-#' resGetData <- getData(c(pathToData, pathToDescriptor))
-#' 
-#' 
+#' \donttest{
+#' data(simData)
+#'  
 #' # define the algorithm's parameters
-#' mcStrategy <- createMcStrategy()
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
 #' 
 #' # get param
-#' param <- getParam(res, "poisson1")
+#' param <- getParam(resLearn, "Gaussian1")
 #' }
 #' 
 #' @export

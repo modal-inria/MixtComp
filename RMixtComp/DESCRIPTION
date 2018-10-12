@@ -14,3 +14,4 @@ Imports: Rcpp
 Suggests: testthat, RInside, xml2
 LinkingTo: Rcpp
 RoxygenNote: 6.1.0
+Encoding: UTF-8

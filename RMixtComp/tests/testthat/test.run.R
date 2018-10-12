@@ -231,11 +231,11 @@ test_that("functional model works",{
   algo <- list(
     nClass = 2,
     nInd = nInd,
-    nbBurnInIter = 100,
-    nbIter = 100,
-    nbGibbsBurnInIter = 100,
-    nbGibbsIter = 100,
-    nInitPerClass = 100,
+    nbBurnInIter = 50,
+    nbIter = 50,
+    nbGibbsBurnInIter = 50,
+    nbGibbsIter = 50,
+    nInitPerClass = 50,
     nSemTry = 20,
     confidenceLevel = 0.95,
     mode = "learn"
@@ -270,10 +270,10 @@ test_that("functional model with shared alpha works",{
   algo <- list(
     nClass = 2,
     nInd = nInd,
-    nbBurnInIter = 100,
-    nbIter = 100,
-    nbGibbsBurnInIter = 100,
-    nbGibbsIter = 100,
+    nbBurnInIter = 50,
+    nbIter = 50,
+    nbGibbsBurnInIter = 50,
+    nbGibbsIter = 50,
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
@@ -308,11 +308,11 @@ test_that("rank model works",{
   algo <- list(
     nClass = 2,
     nInd = nInd,
-    nbBurnInIter = 100,
-    nbIter = 100,
-    nbGibbsBurnInIter = 100,
-    nbGibbsIter = 100,
-    nInitPerClass = 100,
+    nbBurnInIter = 50,
+    nbIter = 50,
+    nbGibbsBurnInIter = 50,
+    nbGibbsIter = 50,
+    nInitPerClass = 50,
     nSemTry = 20,
     confidenceLevel = 0.95,
     mode = "learn"
@@ -349,10 +349,10 @@ test_that("run cluster/predict R object",{
   algoLearn <- list(
     nClass = 2,
     nInd = 200,
-    nbBurnInIter = 100,
-    nbIter = 100,
-    nbGibbsBurnInIter = 100,
-    nbGibbsIter = 100,
+    nbBurnInIter = 50,
+    nbIter = 50,
+    nbGibbsBurnInIter = 50,
+    nbGibbsIter = 50,
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
@@ -376,12 +376,20 @@ test_that("run cluster/predict R object",{
   expect_true(!is.na(getICL(resLearn)))
   expect_silent(getPartition(resLearn))
   expect_silent(getCompletedData(resLearn))
-  expect_equivalent(getType(resLearn), c("Poisson", "Gaussian", "Multinomial", "NegativeBinomial", "Weibull", "Func_CS", "Func_SharedAlpha_CS", "Rank_ISR"))
-  expect_equivalent(getVarNames(resLearn), c("Poisson1", "Gaussian1", "Categorical1", "nBinom1", "Weibull1", "Functional1", "functionalSharedAlpha1", "Rank1"))
+  expect_equivalent(getType(resLearn), setdiff(sapply(desc, function(x){x$type}), "LatentClass"))
+  expect_equivalent(getVarNames(resLearn), setdiff(names(desc), "z_class"))
   expect_silent(getTik(resLearn))
-  expect_equal(dim(getEmpiricTik(resLearn)), c(algoLearn$nInd, 2))
+  expect_equal(dim(getEmpiricTik(resLearn)), c(algoLearn$nInd, algoLearn$nClass))
   expect_silent(getEmpiricTik(resLearn))
-  expect_equal(dim(getTik(resLearn)), c(algoLearn$nInd, 2))
+  expect_equal(dim(getTik(resLearn)), c(algoLearn$nInd, algoLearn$nClass))
+  expect_silent(disc <- computeDiscrimPowerClass(resLearn))
+  expect_equal(length(disc), algoLearn$nClass)
+  expect_silent(disc <- computeDiscrimPowerVar(resLearn))
+  expect_equal(length(disc), length(desc)-1)
+  expect_silent(disc <- computeSimilarityClass(resLearn))
+  expect_equal(dim(disc), rep(algoLearn$nClass, 2))
+  expect_silent(disc <- computeSimilarityVar(resLearn))
+  expect_equal(dim(disc), rep(length(desc)-1, 2))
   for(name in getVarNames(resLearn))
     expect_silent(getParam(resLearn, name))
   
@@ -390,10 +398,10 @@ test_that("run cluster/predict R object",{
   algoPredict <- list(
     nClass = 2,
     nInd = 100,
-    nbBurnInIter = 100,
-    nbIter = 100,
-    nbGibbsBurnInIter = 100,
-    nbGibbsIter = 100,
+    nbBurnInIter = 50,
+    nbIter = 50,
+    nbGibbsBurnInIter = 50,
+    nbGibbsIter = 50,
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,

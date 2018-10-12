@@ -18,23 +18,16 @@ Plot the evolution of the completed loglikelihood during the SEM algorithm. The 
 This function can be used to check the convergence and choose the parameters nbBurnInIter and nbIter from mcStrategy.
 }
 \examples{
-\dontrun{
-
+\donttest{
 library(RMixtComp)
 
-# path to files
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-
-resGetData <- getData(c(pathToData, pathToDescriptor))
-
-
+data(simData)
+ 
 # define the algorithm's parameters
-mcStrategy <- createMcStrategy()
+algo <- createAlgo()
 
-# run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-
+# run RMixtCompt in unsupervised clustering mode + data as matrix
+res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 # plot
 plotConvergence(res)
 

@@ -4,8 +4,7 @@
 \alias{plotDataCI}
 \title{Mean and 95\%-level confidence intervals per class}
 \usage{
-plotDataCI(output, var, class = 1:output$mixture$nbCluster, grl = FALSE,
-  ...)
+plotDataCI(output, var, class = 1:output$algo$nClass, grl = FALSE, ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}
@@ -31,23 +30,16 @@ For functional data, three other parameters are available:
 }
 }
 \examples{
-\dontrun{
-
+\donttest{
 library(RMixtComp)
 
-# path to files
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor <- system.file("extdata", "descUnsupervised.csv", package = "RMixtComp")
-
-resGetData <- getData(c(pathToData, pathToDescriptor))
-
-
+data(simData)
+ 
 # define the algorithm's parameters
-mcStrategy <- createMcStrategy()
+algo <- createAlgo()
 
-# run RMixtCompt for clustering
-res <- mixtCompCluster(resGetData$lm, mcStrategy, nbClass = 2, confidenceLevel = 0.95)
-
+# run RMixtCompt in unsupervised clustering mode + data as matrix
+res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 # plot
 plotDataCI(res, "Gaussian1")
 
