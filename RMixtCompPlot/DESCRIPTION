@@ -3,10 +3,10 @@ Type: Package
 Title: Plot functions for MixtComp
 Version: 0.4
 Date: 2018-09-09
-Author: Matthieu MARBAC, Quentin GRIMONPREZ
+Authors@R: c(person("Quentin", "Grimonprez", role = c("ctb", "cre"), email = "quentin.grimonprez@inria.fr"),
+             person("Matthieu", "Marbac-Lourdelle", role = "aut"))
 Copyright: Inria
 License: Internal use
-Maintainer: Quentin GRIMONPREZ <quentin.grimonprez@inria.fr>
 Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets. The conditional independence property enable composing
     all the data sets in a single mixture model.
