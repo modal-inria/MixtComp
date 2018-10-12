@@ -5,6 +5,8 @@ MixtComp uses cmake to generate a makefile. It also requires the following exter
 - Eigen
 - Nlopt
 
+Note that if you are installing RMixtComp from CRAN, Boost and Eigen are provided via dependencies from CRAN, so you only have to install CMake and Nlopt manually.
+
 ## Linux
 
 On Debian / Ubuntu, you can install all the dependencies using:
