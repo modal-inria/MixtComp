@@ -1,6 +1,6 @@
 # Compile MixtComp
 
-MixtComp uses cmake to generate makefile. It also recquires the following external libraries:
+MixtComp uses cmake to generate a makefile. It also requires the following external libraries:
 - Boost
 - Eigen
 - Nlopt
