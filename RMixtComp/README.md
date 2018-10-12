@@ -6,15 +6,15 @@
 
 ### R
 
-R must be installed, along with the following packages from the CRAN: *Rcpp*. Two packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report and *RInside* is used for testing procedure in C++.
+R must be installed, along with the following packages from the CRAN: *Rcpp*. Several packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report, *RInside* is used for testing procedure in C++ using R command, *roxygen2* is required for generating the documentation and *devtools* (with *roxygen2*) is required to load all functions of RMixtComp on the CI server.
 
 Those command lines can perform the installation automatically in the ~/R directory
 add the following line to .bashrc file: export R_LIBS="~/R"
 ```
 mkdir ~/R
 Rscript -e "install.packages(c(\"Rcpp\"), repos = \"https://cran.univ-paris1.fr/\")"
-# OPTIONAL
-Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\"), repos = \"https://cran.univ-paris1.fr/\")"
+# OPTIONAL: for testing purpose
+Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\"), repos = \"https://cran.univ-paris1.fr/\")"
 ```
 
 ### Windows
@@ -62,33 +62,12 @@ It requires *RIinside* package. Tests are in the *src/test* folder. You can comp
 ```
 
 ### Writing new tests
-For your own testing procedure, you can use the data and descriptor files provided in the package, their paths can be obtained using:
+For your own testing procedure, you can use the data and descriptor  provided in the package, you can load them in R:
 ```
-pathToData <- system.file("extdata", "data.csv", package = "RMixtComp")
-pathToDescriptor1 <- system.file("extdata", "descriptorSupervised.csv", package = "RMixtComp")
-pathToDescriptor2 <- system.file("extdata", "descriptorUnsupervised.csv", package = "RMixtComp")
+data(simData)
 ```
 
-Or you can generate your own data using function (from files R/GENDATA_dataGenerator.R):
+Or you can generate your own data using function (from files [R/GENDATA_dataGeneratorNewIO.R](R/GENDATA_dataGeneratorNewIO.R)): dataGeneratorNewIO.
 
-- dataGenerator
+See the functions in files R/TEST_*.R for how to have a parameter object for each type of data. Have a look at [tests/testthat/test.run.R](tests/testthat/test.run.R) for writing a test with testthat.
 
-See the following functions for how to have an example of parameter object for each type of data (from files R/TEST_*.R):
-
-- categoricalParam1
-- categoricalParam2
-- categoricalParamRandom
-- gaussianParam
-- poissonParam
-- poissonParamRandom
-- weibullParam
-- ordinalParam1
-- ordinalParam2
-- ordinalParamRandom
-- rankParam
-- functionalParam1sub
-- functionalParam2sub
-- functionalInterPolyParam
-- functionalSharedAlphaInterPolyParam
-- functionalSharedAlphaParam1sub
-- functionalSharedAlphaParam2sub
