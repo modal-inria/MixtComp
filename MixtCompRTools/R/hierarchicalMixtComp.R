@@ -1,14 +1,14 @@
 #' Hierarchical version of mixtCompLearn
 #'
 #'
-#' @param dataList \emph{lm} element of the output of \link{getData}
-#' @param mcStrategy a list containing the parameters of the SEM-Gibbs algorithm
-#' @param nbClass the number of class of the mixture model
-#' @param confidenceLevel quantile for confidence interval of estimated parameters.
+#' @param data data in matrix/data.frame/list format.
+#' @param desc list describing variables to keep and models to use
+#' @param algo list containing the parameters of the SEM-Gibbs algorithm
+#' @param nClass the number of class of the mixture model
 #' @param criterion criterion used to choose the order of clusters: "BIC", "ICL", "lnObservedLikelihood" or "lnCompletedLikelihood"
 #' @param minClassSize minimum number of elements in a cluster. If a cluster has less elements, this classes won't be splitted anymore.
 #'
-#' @return a list containing res and history. res is a list containing the mixtComp outputs for 2 clusters to nbClass clusters. History contains intermediate results.
+#' @return a list containing res and history. res is a list containing the mixtComp outputs for 2 clusters to nClass clusters. History contains intermediate results.
 #'
 #' @details
 #' 1) cluster data in 2 groups
@@ -24,46 +24,52 @@
 #' colnames(data) = c("gauss1", "gauss2")
 #' truePartition <- rep(1:4, c(50, 50, 30, 70))
 #'
-#' descriptor <- matrix("Gaussian_sjk", nrow = 1, ncol = 2, dimnames = list(NULL, colnames(data)))
+#' descriptor <- list(gauss1 = "Gaussian", gauss2 = "Gaussian")
 #'
-#' resGetData <- getData(list(data, descriptor))
-#'
-#' mcStrategy <- list(nbBurnInIter = 100,
+#' algo <- list(nbBurnInIter = 100,
 #'                    nbIter = 100,
 #'                    nbGibbsBurnInIter = 50,
 #'                    nbGibbsIter = 50,
 #'                    nInitPerClass = 10,
 #'                    nSemTry = 20)
 #'
-#' res <- hierarchicalMixtCompLearn(resGetData$lm, mcStrategy, nbClass = 4)
+#' res <- hierarchicalMixtCompLearn(data, descriptor, algo, nClass = 4)
 #' }
 #'
 #' @author Quentin Grimonprez
 #'
 #' @export
-hierarchicalMixtCompLearn <- function(dataList, mcStrategy = list(nbBurnInIter = 100,
+hierarchicalMixtCompLearn <- function(data, desc, algo = list(nbBurnInIter = 100,
                                                              nbIter = 100,
                                                              nbGibbsBurnInIter = 50,
                                                              nbGibbsIter = 50,
                                                              nInitPerClass = 10,
-                                                             nSemTry = 20), nbClass, confidenceLevel = 0.95, criterion = c("BIC", "ICL", "lnObservedLikelihood", "lnCompletedLikelihood"), minClassSize = 5)
+                                                             nSemTry = 20,
+                                                             confidenceLevel = 0.95), nClass, criterion = c("BIC", "ICL", "lnObservedLikelihood", "lnCompletedLikelihood"), minClassSize = 5)
 {
   criterion = match.arg(criterion)
 
-  newRes = leaves = res = allCrit <- list()
-  nInd <- length(dataList[[1]]$data)
 
+  data = RMixtComp:::formatData(data)
+  desc = RMixtComp:::formatDesc(desc)
+
+  nInd <- length(data[[1]])
   currentPartition <- rep("?", nInd)
-  leavesOrder <- c()
+
+  data$z_class = currentPartition
+  desc$z_class = list(type = "LatentClass", paramStr = "")
+
+
+  newRes = leaves = res = allCrit <- list()
+
+  leavesOrder = MAXCRIT <- c()
 
   leaves[[1]] = list(partition = rep(TRUE, nInd) , indPartition = 1:nInd, go = "toRun", indParent = NULL)
   nbCurrentCluster <- 1
   nbLeavesToCompute <- 1
 
-  dataList[[length(dataList)+1]] = list(data = rep("?", nInd), model = "LatentClass", id = "z_class", paramStr = "")
 
-
-  while((nbCurrentCluster != nbClass) & (nbLeavesToCompute != 0))
+  while((nbCurrentCluster != nClass) & (nbLeavesToCompute != 0))
   {
     hasRun <- c()
     for(i in seq_along(leaves))
@@ -72,17 +78,22 @@ hierarchicalMixtCompLearn <- function(dataList, mcStrategy = list(nbBurnInIter =
       if(leaves[[i]]$go == "toRun")
       {
         # reduce the data to the class to split
-        resData <- dataList
-        for(j in seq_along(resData))
-          resData[[j]]$data = dataList[[j]]$data[leaves[[i]]$indPartition]
+        resData <- data
+        for(j in names(resData))
+          resData[[j]] = data[[j]][leaves[[i]]$indPartition]
 
-        newRes[[i]] <- RMixtComp::mixtCompCluster(resData, mcStrategy, nbClass = 2, confidenceLevel = confidenceLevel)
+        algoTemp <- algo
+        algoTemp$nInd = length(resData[[1]])
+        algoTemp$nClass = 2
+        algoTemp$mode = "learn"
 
+        newRes[[i]] <- RMixtComp:::rmc(algoTemp, resData, desc, list())
+        class(newRes) = "MixtComp"
 
-        if(!is.null(newRes[[i]]$mixture$warnLog))
+        if(!is.null(newRes[[i]]$warnLog))
         {
           hasRun = c(hasRun, FALSE)
-          warning(newRes[[i]]$mixture$warnLog)
+          warning(newRes[[i]]$warnLog)
         }else{
           hasRun = c(hasRun, TRUE)
         }
@@ -107,12 +118,18 @@ hierarchicalMixtCompLearn <- function(dataList, mcStrategy = list(nbBurnInIter =
           maxCrit$crit = newRes[[1]]$mixture[[criterion]]
           bestRes <- newRes[[1]]
         }else{
-          if(is.null(newRes[[i]]$mixture$warnLog))
+          if(is.null(newRes[[i]]$warnLog))
           {
             indClass <- unique(res[[nbCurrentCluster]]$variable$data$z_class$completed[leaves[[i]]$indPartition])
 
-            tempRes <- computeNewModel(res[[nbCurrentCluster]], newRes[[i]], indClass, dataList, mcStrategy)
-            crit[[i]] <- tempRes$mixture[[criterion]]
+            tempRes <- computeNewModel(res[[nbCurrentCluster]], newRes[[i]], indClass, data, desc, algo)
+            if(!is.null(tempRes$warnLog))
+            {
+              crit[[i]] = -Inf
+            }else{
+              crit[[i]] <- tempRes$mixture[[criterion]]
+            }
+
             if(crit[[i]] > maxCrit$crit)
             {
               maxCrit$crit = crit[[i]]
@@ -123,7 +140,7 @@ hierarchicalMixtCompLearn <- function(dataList, mcStrategy = list(nbBurnInIter =
         }
       }
     }
-
+    MAXCRIT = c(MAXCRIT, maxCrit$crit)
     allCrit[[nbCurrentCluster]] = crit
     leavesOrder = c(leavesOrder, maxCrit$ind)
 
@@ -151,9 +168,13 @@ hierarchicalMixtCompLearn <- function(dataList, mcStrategy = list(nbBurnInIter =
   }# end while
 
 
-  if(nbCurrentCluster != nbClass)
-    warning(paste0("Unable to get ", nbClass," clusters. Only ", nbCurrentCluster," clusters were computed."))
+  if(nbCurrentCluster != nClass)
+    warning(paste0("Unable to get ", nClass," clusters. Only ", nbCurrentCluster," clusters were computed."))
 
+  names(MAXCRIT) = 2:nbCurrentCluster
 
-  return(list(res = res, history = list(leavesOrder = leavesOrder, leaves = leaves, resLeaves = newRes, critStep = allCrit)))
+  out <- c(res[[length(res)]], list(res = res, crit = MAXCRIT, nClass = 2:nbCurrentCluster, history = list(leavesOrder = leavesOrder, leaves = leaves, resLeaves = newRes, critStep = allCrit)))
+  class(out) = c("MixtCompLearn", "MixtComp")
+
+  return(out)
 }

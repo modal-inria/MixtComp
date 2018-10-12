@@ -4,27 +4,27 @@
 \alias{hierarchicalMixtCompLearn}
 \title{Hierarchical version of mixtCompLearn}
 \usage{
-hierarchicalMixtCompLearn(dataList, mcStrategy = list(nbBurnInIter = 100,
+hierarchicalMixtCompLearn(data, desc, algo = list(nbBurnInIter = 100,
   nbIter = 100, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass =
-  10, nSemTry = 20), nbClass, confidenceLevel = 0.95,
-  criterion = c("BIC", "ICL", "lnObservedLikelihood",
-  "lnCompletedLikelihood"), minClassSize = 5)
+  10, nSemTry = 20, confidenceLevel = 0.95), nClass, criterion = c("BIC",
+  "ICL", "lnObservedLikelihood", "lnCompletedLikelihood"),
+  minClassSize = 5)
 }
 \arguments{
-\item{dataList}{\emph{lm} element of the output of \link{getData}}
+\item{data}{data in matrix/data.frame/list format.}
 
-\item{mcStrategy}{a list containing the parameters of the SEM-Gibbs algorithm}
+\item{desc}{list describing variables to keep and models to use}
 
-\item{nbClass}{the number of class of the mixture model}
+\item{algo}{list containing the parameters of the SEM-Gibbs algorithm}
 
-\item{confidenceLevel}{quantile for confidence interval of estimated parameters.}
+\item{nClass}{the number of class of the mixture model}
 
 \item{criterion}{criterion used to choose the order of clusters: "BIC", "ICL", "lnObservedLikelihood" or "lnCompletedLikelihood"}
 
 \item{minClassSize}{minimum number of elements in a cluster. If a cluster has less elements, this classes won't be splitted anymore.}
 }
 \value{
-a list containing res and history. res is a list containing the mixtComp outputs for 2 clusters to nbClass clusters. History contains intermediate results.
+a list containing res and history. res is a list containing the mixtComp outputs for 2 clusters to nClass clusters. History contains intermediate results.
 }
 \description{
 Hierarchical version of mixtCompLearn
@@ -43,18 +43,16 @@ data[,2] = c(rnorm(100, -2, 1), rnorm(100, 3, 0.4))
 colnames(data) = c("gauss1", "gauss2")
 truePartition <- rep(1:4, c(50, 50, 30, 70))
 
-descriptor <- matrix("Gaussian_sjk", nrow = 1, ncol = 2, dimnames = list(NULL, colnames(data)))
+descriptor <- list(gauss1 = "Gaussian", gauss2 = "Gaussian")
 
-resGetData <- getData(list(data, descriptor))
-
-mcStrategy <- list(nbBurnInIter = 100,
+algo <- list(nbBurnInIter = 100,
                    nbIter = 100,
                    nbGibbsBurnInIter = 50,
                    nbGibbsIter = 50,
                    nInitPerClass = 10,
                    nSemTry = 20)
 
-res <- hierarchicalMixtCompLearn(resGetData$lm, mcStrategy, nbClass = 4)
+res <- hierarchicalMixtCompLearn(data, descriptor, algo, nClass = 4)
 }
 
 }

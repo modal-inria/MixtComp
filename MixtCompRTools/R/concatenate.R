@@ -19,17 +19,13 @@ computeNewModel <- function(resParent, resChild, classParentOfChild, data, desc,
   newZ_class[oldZ_class != classParentOfChild] <- refactorCategoricalData(oldZ_class[oldZ_class != classParentOfChild],
                                                                           unique(oldZ_class[oldZ_class != classParentOfChild]), seq_along(unique(oldZ_class[oldZ_class != classParentOfChild])))
 
-  z_classPresent <- any(sapply(dataList, function(x){x$id}) == "z_class")
-  if(z_classPresent)
-  {
-    dataList[[which(sapply(dataList, function(x){x$id}) == "z_class")]]$data = newZ_class
-  }else{
-    dataList[[length(dataList) + 1]]$data = list(data = newZ_class, id = "z_class", model = "LatentClass", paramStr = "")
-  }
+  data$z_class = as.character(newZ_class)
+
 
   algo$nClass = resParent$algo$nClass + 1
   algo$nInd = resParent$algo$nInd
   algo$mode = "learn"
+  algo$nInitPerClass = algo$nInd
 
   res <- RMixtComp:::rmc(algo, data, desc, list())
   class(res) = "MixtComp"
