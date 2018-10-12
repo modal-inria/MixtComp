@@ -44,9 +44,4 @@ resPred <- mixtCompPredict(simDataPredict$matrix, desc$unsupervised, algo, resLe
 \seealso{
 \link{mixtCompLearn}
 }
-\author{
-Vincent KUBICKI, Matthieu MARBAC, Quentin GRIMONPREZ, Serge IOVLEFF
-
-Maintainer: Vincent Kubicki  <vincent.kubicki@inria.fr>
-}
 \keyword{package}

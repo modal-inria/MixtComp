@@ -2,16 +2,16 @@
 #' @import jsonlite
 #' 
 
-#' @title RJsonMixtComp
+#' @title RMixtComp
 #' @docType package
-#' @aliases RJsonMixtComp-package
-#' @name RJsonMixtComp-package
+#' @aliases RMixtComp-package
+#' @name RJMixtComp-package
 #' @description  
 #' Statistics analysis with MixtComp
 #'
 #' 
 #' @details
-#' Use JsonMixtComp
+#' Use JMixtComp
 #' 
 #' 
 #' @author Quentin Grimonprez
@@ -21,8 +21,8 @@
 #' 
 #' @examples 
 #' \donttest{
-#' pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
-#' pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
+#' pathToData <- system.file("extdata", "data.json", package = "RJMixtComp")
+#' pathToDescriptor <- system.file("extdata", "desc.json", package = "RJMixtComp")
 #' 
 #' data <- as.data.frame(fromJSON(pathToData))
 #' descriptor <- fromJSON(pathToDescriptor)

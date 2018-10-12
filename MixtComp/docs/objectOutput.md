@@ -1,89 +1,77 @@
 # Overview of output object
-Overview of output object with variables named *categorical*, *gaussian*, *ordinal*, *rank*, *functional*, *poisson*, *nBinom* and *weibull* with model respectively *Categorical_pjk*, *Gaussian_sjk*, *Ordinal*, *Rank*, *Functional* (or *FunctionalSharedAlpha*), *Poisson_k*, *NegativeBinomial* and *Weibull*.
-The output object is a list of list, organized as follows:
+Overview of output object with variables named *categorical*, *gaussian*, *rank*, *functional*, *poisson*, *nBinom* and *weibull* with model respectively *Multinomal*, *Gaussian*, *Rank_ISR*, *Func_CS* (or *Func_SharedAlpha_CS*), *Poisson*, *NegativeBinomial* and *Weibull*.
+In case of a successfull run, the output object is a list of list (in R and Json), organized as follows:
 
 ```
 output
-|_______ strategy __ nbBurnInIter
-|                |__ nbIter
-|                |__ nbGibbsBurnInIter
-|                |__ nbGibbsIter
-|                |__ nInitPerClass
-|                |__ nSemTry
+|_______ algo __ nbBurnInIter
+|		          |_ nbIter
+|		          |_ nbGibbsBurnInIter
+|		          |_ nbGibbsIter
+|		          |_ nInitPerClass
+|		          |_ nSemTry
+|		          |_ mode
+|		          |_ nInd
+|		          |_ confidenceLevel
+|		          |_ nClass
 |
 |_______ mixture __ BIC
-|               |__ ICL
-|               |__ lnCompletedLikelihood
-|               |__ lnObservedLikelihood
-|               |__ IDClass
-|               |__ delta
-|               |__ mode
-|               |__ runTime
-|               |__ nbSample
-|               |__ nbInd
-|               |__ nbFreeParameters
-|               |__ nbCluster
-|               |__ warnLog
-|               |__ completedProbabilityLogBurnIn
-|               |__ completedProbabilityLogRun
-|               |__ lnProbaGivenClass
+|		             |_ ICL
+|		             |_ lnCompletedLikelihood
+|		             |_ lnObservedLikelihood
+|		             |_ IDClass
+|		             |_ delta
+|		             |_ runTime
+|		             |_ nbFreeParameters
+|		             |_ completedProbabilityLogBurnIn
+|		             |_ completedProbabilityLogRun
+|		             |_ lnProbaGivenClass
 |
-|_______ variable __ type __ z_class
-                 |       |__ categorical
-                 |       |__ gaussian
-                 |       |__ ...
-                 |         
-                 |__ data __ z_class __ completed
-                 |	     |	        |__ stat
-                 |	     |__ categorical __ completed
-                 |	     |	            |__ stat
-                 |	     |__ ...	
-                 |	     |                 
-                 |	     |__ functional __ data
-                 |	                   |__ time
-                 |	
-                 |__ param __ z_class __ pi	__ stat
-                          |                |__ log
-                          |                |__ paramStr
-                          |__ categorical __ NumericalParam __ stat
-                          |                                |__ log
-                          |                                |__ paramStr
-                          |__ gaussian __ NumericalParam __ stat
-                          |                             |__ log
-                          |                             |__ paramStr
-                          |__ poisson __ NumericalParam __ stat
-                          |                            |__ log
-                          |                            |__ paramStr
-                          |__ nBinom __ NumericalParam __ stat
-                          |                           |__ log
-                          |                           |__ paramStr
-                          |__ weibull __ NumericalParam __ stat
-                          |                            |__ log
-                          |                            |__ paramStr
-                          |__ ordinal __ muPi __ stat
-                          |                  |__ log
-                          |                  |__ paramStr
-                          |__ functional __ alpha __ stat
-                          |             |        |__ log
-                          |             |        |__ paramStr
-                          |             |__ beta __ stat
-                          |             |       |__ log
-                          |             |       |__paramStr
-                          |             |__ sd __ stat
-                          |                   |__ log
-                          |                   |__ paramStr
-                          |__ rank __ mu __ stat
-                                  |     |__ log
-                                  |     |__ paramStr
-                                  |__ pi __ stat
-                                        |__ log
-                                        |__ paramStr
+|_______ variable	__ type __ z_class
+                  |       |_ categorical
+                  |       |_ gaussian
+                  |       |_ ...
+                  |
+                  |_ data	__ z_class __ completed
+                  |	      |	         |_ stat
+                  |	      |_ categorical __ completed
+                  |	      |	             |_ stat
+                  |	      |_ ...	
+                  |	      |_ functional	__ data
+                  |	                    |_ time
+                  |	
+                  |_ param __ z_class	__ stat
+                          |           |_ log
+                          |           |_ paramStr
+                          |_ functional __ alpha __ stat
+                          |	            |	       |_ log
+                          |	            |_ beta	__ stat
+                          |	            |	      |_ log
+                          |	            |_ sd __ stat
+                          |	            |	    |_ log
+                          |	            |_ paramStr
+                          |_ rank __ mu	__ stat
+                          |       |     |_ log
+                          |       |_ pi __ stat
+                          |       |	    |_ log
+                          |       |_ paramStr
+                          |	
+                          |_ gaussian	__ stat
+                          |	          |_ log
+                          |	          |_ paramStr
+                          |_ poisson __ stat
+                          |	         |_ log
+                          |	         |_ paramStr
+                          |_ ...
 ```
 
 # Output
 
-## strategy
-A copy of mcStrategy parameter.
+## warnLog
+In case of an unsuccessfull run, the output object is a list containing an element **warnLog** with all the warnings returned by MixtComp. 
+
+## algo
+A copy of algo parameter.
 
 - **nbBurnInIter** Number of iterations of the burn-in part of the SEM algorithm.
 - **nbIter** Number of iterations of the SEM algorithm.
@@ -91,136 +79,109 @@ A copy of mcStrategy parameter.
 - **nbGibbsIter** Number of iterations of the Gibbs algorithm.
 - **nInitPerClass** Number of individuals used to initialize each cluster.
 - **nSemTry** Number of try of the algorithm for avoiding an error.
+- **nInd** number of samples in the dataset
+- **nClass** number of class of the mixture
+- **mode** "predict" for mixtCompPredict or "learn" for mixtCompLearn
 
 ## mixture
 - **BIC** value of BIC
 - **ICL** value of ICL
-- **nbSample** number of samples in the dataset
-- **nbInd** number of samples in the dataset
-- **nbCluster** number of class of the mixture
 - **nbFreeParameters** number of free parameters of the mixture model
 - **lnObservedLikelihood** observed loglikelihood
 - **lnCompletedLikelihood** completed loglikelihood
-- **mode** "predict" for mixtCompPredict or "learn" for mixtCompCluster
 - **IDClass** entropy used to compute the discriminative power (see code of plotDiscrimVbles)
 - **delta** entropy used to compute the similarities between variables (see code of heatmapVbles)
 - **completedProbabilityLogBurnIn** evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)
 - **completedProbabilityLogRun** evolution of the completed log-probability after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)
-- **warnLog** contains warnings. NULL if there is no warning.
 - **runTime** execution time in seconds
 - **lnProbaGivenClass** log-(probability of each sample for each class times the proportion): $`\log(\pi_k)+\log(P(X_i|z_i=k))`$
 
 ## variable
 
 ### type
-Model used for each variable.
+Model used for each variable (e.g. "Gaussian").
 
 ### data
+Except for functional models and LatentClass, data contains, for each variable, two elements: *completed* and *stat*. *completed* contains the completed data and *stat* contains statistics about completed data. 
+The format is detailled below according to the model.
 
-- **z_class**
+- **LatentClass**
 
 Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* is a matrix with the same number of columns as the number of class.
 For each sample, it contains the $`t_{ik}`$ (probability of $`x_i`$ to belong to class $`k`$) estimated with the imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
 
-- **Gaussian_sjk**
+- **Gaussian/Poisson/NegativeBinomial/Weibull**
 
-Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
-It is a list where each element corresponds to a missing data and contains a vector of 4 elements: index of the missing data, median, 2.5% quantile, 97.5% quantile (if the confidenceLevel parameter is set to 0.95) of imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
+*stat* is a list where each element corresponds to a missing data and contains a vector of 4 elements: index of the missing data, median, 2.5% quantile, 97.5% quantile (if the confidenceLevel parameter is set to 0.95) of imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
 
-- **Categorical_pjk**
+- **Multinomial**
 
-Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
-It is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
-
-- **Poisson_k**
-
-Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
-It is a list where each element corresponds to a missing data and contains a vector of 4 elements: index of the missing data, median, 2.5% quantile, 97.5% quantile (if the confidenceLevel parameter is set to 0.95) of imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
-
-- **NegativeBinomial**
-
-Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
-It is a list where each element corresponds to a missing data and contains a vector of 4 elements: index of the missing data, median, 2.5% quantile, 97.5% quantile (if the confidenceLevel parameter is set to 0.95) of imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
-
-- **Weibull**
-
-Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
-It is a list where each element corresponds to a missing data and contains a vector of 4 elements: index of the missing data, median, 2.5% quantile, 97.5% quantile (if the confidenceLevel parameter is set to 0.95) of imputed values during the Gibbs at the end of each iteration after the burn-in phase of the algorithm.
+*stat*is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
 
 
-- **Ordinal**
+- **Rank_ISR**
 
-Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
-It is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
+*stat* is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
 
-- **Rank**
+- **Func_CS** and **Func_SharedAlpha_CS** 
 
-Two elements: *completed* and *stat*. *completed* contains the completed data. *stat* contains statistics about completed data. 
-It is a list where each element corresponds to a missing data, each of them is a list with the first element corresponding to the index of the missing data, the others are the imputed values, during the Gibbs at the end of each iteration after the burn-in phase of the algorithm, and their frequency.
-
-- **Functional** and **FunctionalSharedAlpha** 
-
-Two elements: *data* and *time*. *time* (resp. *data*) is a list containing the time (resp. value) vector of the functional for each samples.
+Two elements: *data* and *time*. *time* (resp. *data*) is a list containing the time (resp. value) vector of the functional for each sample.
 
 
 ### param
+For one variable, it contains a list with estimated parameters (*param*), log recorded during the SEM (*log*) and hyperparameters if any (*paramStr*).
+The output format depends of the model but in most of the case, *stat* is a matrix with 3 columns containing the median values of estimated parameters and quantile ate the desired confidence level,
+*log* is matrix containing the estimated proportion during the M step of each iteration of the algorithm after the burn-in phase and *paramStr* is a string.
+For the meaning of the parameters, user can refer to the documentation [data format](dataFormat.md).
 
-- **z_class**
 
-A list (named *pi*) of 3 elements: *stat*, *log*, *paramStr*.
+- **LatentClass**
 
+A list of 3 elements: *stat*, *log*, *paramStr*.
 *log* is matrix containing the estimated proportion during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated proportion. The median proportions are the returned proportions. *paramStr* contains "".
 
+- **Gaussian**
 
-- **Gaussian_sjk**
+The *stat* matrix has 2*nClass rows. For a class $`k`$, parameters are mean ($`\mu_k`$) and sd ($`\sigma_k`$). The distribution function is defined by:
 
-A list (named *NumericalParam*) of 3 elements: *stat*, *log*, *paramStr*.
+- **Poisson**
 
-*log* is matrix containing the estimated mean and sd for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated parameters. The median parameters are the returned parameters. *paramStr* contains "".
-
-
-- **Categorical_pjk**
-
-A list (named *NumericalParam*) of 3 elements: *stat*, *log*, *paramStr*.
-
-*log* is matrix containing the estimated probability for each modality and class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated parameters. The median parameters are the returned parameters. *paramStr* contains "nModality: J" where J is the number of modalities.
-
-
-- **Poisson_k**
-
-A list (named *NumericalParam*) of 3 elements: *stat*, *log*, *paramStr*.
-
-*log* is matrix containing the estimated lambda parameter for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated parameters. The median parameters are the returned parameters. *paramStr* contains "".
+The *stat* matrix has nClass rows. For a class $`k`$, the parameter is lambda ($`\lambda_k`$). The probability function is defined by:
 
 - **NegativeBinomial**
 
-A list (named *NumericalParam*) of 3 elements: *stat*, *log*, *paramStr*.
-
-*log* is matrix containing the estimated n and p parameters for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated parameters. The median parameters are the returned parameters. *paramStr* contains "".
+The *stat* matrix has 2*nClass rows. For a class $`k`$, parameters are n ($`n_k`$) and p ($`p_k`$). The probability function is defined by:
 
 - **Weibull**
 
-A list (named *NumericalParam*) of 3 elements: *stat*, *log*, *paramStr*.
+The *stat* matrix has 2*nClass rows. For a class $`j`$, parameters are k/shape ($`k_j`$) and lambda/scale ($`\lambda_j`$). The distribution function is defined by:
 
-*log* is matrix containing the estimated k and lambda parameters for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated parameters. The median parameters are the returned parameters. *paramStr* contains "".
+- **Multinomial**
+
+*paramStr* contains "nModality: J" where J is the number of modalities.
+
+The *stat* matrix has J*nClass rows. For a class $`k`$, parameters are probabilities to belong to modality $J$.
+
+- **Rank_ISR**
+
+*paramStr* contains "nModality: J" where J is the length of the rank (number of sorted objects).
+
+Two lists (named *mu* and *pi*) of 2 elements: *stat*, *log*.
+
+For *pi*, *stat* is a matrix with nClass rows. For a class $`k`$, parameter is pi ($`pi_k`$).
+
+For *mu*, *stat* is a list with nClass elements. For a class $`k`$, a list is returned with the mode of the parameter ($`\mu_k`$), and the frequency of the mode during the SEM algorithm after the burnin phase.
 
 
-- **Ordinal**
+- **Func_CS** and **Func_SharedAlpha_CS** 
 
-A list (named *muPi*) of 3 elements: *stat*, *log*, *paramStr*.
+*paramStr* contains "nSub: S, nCoeff: C" where S is the number of sub-regressions and C the number of coefficients of each regression.
 
-*log* is matrix containing the estimated mu and pi parameters for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated parameters. The median parameters are the returned parameters. *paramStr* contains "nModality: J" where J is the number of modalities.
+Three lists (named *alpha*, *beta* and *sd*) of 2 elements: *stat*, *log*.
 
-- **Rank**
+For *alpha*, *stat* is a matrix with 2\*S\*nClass rows. For a class $`k`$ and a subregression $`s`$, parameters areestimated coefficients of a logistic regression controlling the transition between subregressions.
 
-Two lists (named *mu* and *pi*) of 3 elements: *stat*, *log*, *paramStr*.
+For *beta*, *stat* is a matrix with S\*C\*nClass rows. For a class $`k`$ and a subregression $`s`$, parameters are estimated coefficient of the regression.
 
-For the *pi* list (resp. *mu* list), *log* is matrix containing the estimated *pi* (resp. *mu*) parameter for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) (resp. mode) of the estimated pi (resp. mu) parameters. The median (resp. mode) parameters are the returned parameters. *paramStr* contains "nModality: J" where J is the length of the rank (number of sorted objects) dor tu *mu* list and "" for the *pi* list.
-
-- **Functional** and **FunctionalSharedAlpha** 
-
-Three lists (named *alpha*, *beta* and *sd*) of 3 elements: *stat*, *log*, *paramStr*.
-
-*log* is matrix containing the estimated k and lambda parameter for each coefficient (number at the end of the parameter name) of each subregression (s: in the parameter name) for each class during the M step of each iteration of the algorithm after the burn-in phase. *stat* is a matrix containing the median (and quantiles corresponding to the confidenceLevel parameter) of the estimated parameters. The median parameters are the returned parameters. *paramStr* contains "nSub: S, nCoeff: C" where S is the number of sub-regressions and C the number of coefficients of each regression.
-
+For *sd*, *stat* is a matrix with S*nClass rows. For a class $`k`$ and a subregression $`s`$, the parameter is the standard deviation of the residuals of the regression. 
 

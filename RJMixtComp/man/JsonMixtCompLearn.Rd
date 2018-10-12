@@ -3,7 +3,7 @@
 \name{JsonMixtCompLearn}
 \alias{JsonMixtCompLearn}
 \alias{JsonMixtCompPredict}
-\title{Learn and predict using RJsonMixtComp}
+\title{Learn and predict using RJMixtComp}
 \usage{
 JsonMixtCompLearn(data, descriptor, algo = list(nbBurnInIter = 100,
   nbIter = 100, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass =
@@ -45,8 +45,8 @@ See external documentation for details about the input/output object of \emph{mi
 }
 \examples{
 \donttest{
-pathToData <- system.file("extdata", "data.json", package = "RJsonMixtComp")
-pathToDescriptor <- system.file("extdata", "desc.json", package = "RJsonMixtComp")
+pathToData <- system.file("extdata", "data.json", package = "RJMixtComp")
+pathToDescriptor <- system.file("extdata", "desc.json", package = "RJMixtComp")
 
 data <- as.data.frame(fromJSON(pathToData))
 descriptor <- fromJSON(pathToDescriptor)
