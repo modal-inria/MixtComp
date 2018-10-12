@@ -10,7 +10,7 @@
 #ifndef MIXT_CONFINTPARAMSTAT_H
 #define MIXT_CONFINTPARAMSTAT_H
 
-#include "boost/regex.hpp"
+#include <regex>
 
 #include "LinAlg/mixt_LinAlg.h"
 #include "IO/mixt_IO.h"
@@ -95,10 +95,10 @@ public:
 		Index nModality = 0;
 
 		std::string nModStr = std::string("nModality: *") + strPositiveInteger;
-		boost::regex nModRe(nModStr);
-		boost::smatch matchesVal;
+		std::regex nModRe(nModStr);
+		std::smatch matchesVal;
 
-		if (boost::regex_match(paramStr, matchesVal, nModRe)) { // value is present
+		if (std::regex_match(paramStr, matchesVal, nModRe)) { // value is present
 			nModality = str2type<Index>(matchesVal[1].str());
 		}
 

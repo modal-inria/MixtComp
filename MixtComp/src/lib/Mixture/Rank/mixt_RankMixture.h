@@ -221,10 +221,10 @@ public:
 			int nPosStr = -1;
 
 			std::string nModStr = std::string("nModality: *") + strPositiveInteger; // parse paramStr here. If empty, deduce from data, if not empty, check that data UPPER BOUND is compatible with this information
-			boost::regex nModRe(nModStr);
-			boost::smatch matchesVal;
+			std::regex nModRe(nModStr);
+			std::smatch matchesVal;
 
-			if (boost::regex_match(paramStr_, matchesVal, nModRe)) { // value is present
+			if (std::regex_match(paramStr_, matchesVal, nModRe)) { // value is present
 				nPosStr = str2type<int>(matchesVal[1].str());
 			} else {
 				std::stringstream sstm;
@@ -271,8 +271,8 @@ public:
 				++i;
 			}
 
-			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "rank", rank);
-			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k) }, "proba", proba);
+			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k + minModality) }, "rank", rank);
+			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k + minModality) }, "proba", proba);
 		}
 
 		Index nStat = piParamStat_.getStatStorage().cols();

@@ -8,6 +8,7 @@
  **/
 
 #include <boost/algorithm/string.hpp>
+#include <regex>
 
 #include "../../IO/mixt_MisValParser.h"
 #include "mixt_FunctionalParser.h"
@@ -22,9 +23,9 @@ std::string parseFunctionalStr(Index nSub, Index nCoeff, const std::vector<std::
 
 	MisValParser<Real> mvp(0.); // no need for offset as data is continuous
 	std::string funcStr = strNumber + std::string(" *: *") + strNumber; // string will be split between a number, :, and anything that follows. This will in turn be parsed in a second pass.
-	boost::regex funcRe(funcStr);
-	boost::regex numRe(strNumber);
-	boost::smatch matchesInd;
+	std::regex funcRe(funcStr);
+	std::regex numRe(strNumber);
+	std::smatch matchesInd;
 
 	std::vector<std::string> strs;
 	for (Index ind = 0; ind < nInd; ++ind) {
@@ -37,7 +38,7 @@ std::string parseFunctionalStr(Index nSub, Index nCoeff, const std::vector<std::
 			Real t;
 			Real x;
 
-			if (boost::regex_match(strs[i], matchesInd, funcRe)) { // value is present
+			if (std::regex_match(strs[i], matchesInd, funcRe)) { // value is present
 				t = str2type<Real>(matchesInd[1].str());
 				x = str2type<Real>(matchesInd[2].str()); // at the moment, only a numerical value for x is supported
 			} else {

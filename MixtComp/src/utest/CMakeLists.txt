@@ -3,6 +3,7 @@
 
 add_executable(runUtest
     json/JSONGraph.cpp
+    lib/IO/misValParser.cpp
     lib/LinAlgStat/names.cpp
     lib/LinAlgStat/UTestMath.cpp
     lib/LinAlgStat/UTestStatistics.cpp
@@ -37,6 +38,5 @@ target_link_libraries(runUtest
     gtest_main
     JMixtComp
     MixtComp
-    ${Boost_LIBRARIES}
     nlopt
 )

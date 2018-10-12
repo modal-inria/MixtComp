@@ -9,6 +9,7 @@
  *              Serge IOVLEFF <serge.iovleff@inria.fr>
  **/
 
+#include <list>
 
 #include <Mixture/mixt_IMixture.h>
 #include <IO/mixt_IO.h>

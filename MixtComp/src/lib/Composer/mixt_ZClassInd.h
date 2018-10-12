@@ -12,7 +12,7 @@
 #define LIB_COMPOSER_MIXT_ZCLASSIND_H
 
 #include <set>
-#include "boost/regex.hpp"
+#include <regex>
 #include <Data/mixt_AugmentedData.h>
 #include <IO/IOFunctions.h>
 

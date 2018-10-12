@@ -7,7 +7,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include "boost/regex.hpp"
+#include <regex>
 
 #include "IO/mixt_IO.h"
 #include "IO/mixt_SpecialStr.h"
@@ -86,10 +86,10 @@ std::string Categorical::setData(std::string& paramStr,
 		paramStr = "nModality: " + std::to_string(nModality_); // paramStr must be generated from the data, for future use and export for prediction
 	} else { // During learning with parameter space descriptor, or in prediction
 		std::string nModStr = std::string("nModality: *") + strPositiveInteger;
-		boost::regex nModRe(nModStr);
-		boost::smatch matchesVal;
+		std::regex nModRe(nModStr);
+		std::smatch matchesVal;
 
-		if (boost::regex_match(paramStr, matchesVal, nModRe)) { // value is present
+		if (std::regex_match(paramStr, matchesVal, nModRe)) { // value is present
 			nModality_ = str2type<Index>(matchesVal[1].str());
 		} else {
 			std::stringstream sstm;
