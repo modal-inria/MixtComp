@@ -10,16 +10,15 @@ Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 # Code organization
 
 * **MixtComp** MixtComp C++ library
-* **JsonMixtComp** Use MixtComp with json files input and output (for customers)
 * **RMixtComp** R package linking MixtComp with Rcpp (internal use)
 * **RMixtCompPlot** R package with graphical functions
 * **RJsonMixtComp** R package using JsonMixtComp (for customers)
+* **MixtCompRTools** R package containing the hierarchical MixtComp
 * **libraries** external libraries and cmake scripts
 
 # Documentation
 
 * [Compile MixtComp](./MixtComp/README.md)
-* [Compile JsonMixtComp](./JsonMixtcomp/README.md)
 * [Install RMixtComp](./RMixtComp/README.md)
 * [Data format](./MixtComp/docs/dataFormat.md)
 * [Output object](./MixtComp/docs/objectOutput.md)
