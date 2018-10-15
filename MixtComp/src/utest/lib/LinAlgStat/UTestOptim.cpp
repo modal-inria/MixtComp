@@ -43,9 +43,17 @@ TEST(Optim, Basic) {
 	Rosenbrock f;
 	Vector<Real> x(2);
 	x << -1, 2;
+
+	Vector<Real> xExpected(2);
+	xExpected << 1.0, 1.0;
+
 	BfgsSolver<Rosenbrock> solver;
+
+	Criteria<Real> crit = cppoptlib::Criteria<Real>::defaults(); // Create a Criteria class to set the solver's stop conditions
+	crit.iterations = 1000;
+	solver.setStopCriteria(crit);
 
 	solver.minimize(f, x);
 
-	ASSERT_TRUE(x.isApprox(x, epsilon));
+	ASSERT_TRUE(x.isApprox(xExpected, 1e-4));
 }
