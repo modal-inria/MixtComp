@@ -30,8 +30,7 @@ void meanSD(const T& data, Real& mean, Real& sd) {
 	Real M2 = 0.;
 	int n = 0;
 
-	for (typename T::const_iterator it = data.begin(), itE = data.end();
-			it != itE; ++it) {
+	for (typename T::const_iterator it = data.begin(), itE = data.end(); it != itE; ++it) {
 		++n;
 		Real x = *it;
 		Real delta = x - mean;
@@ -51,8 +50,7 @@ void meanSD(const indType& listInd, const T& data, Real& mean, Real& sd) {
 	Real M2 = 0.;
 	int n = 0;
 
-	for (typename indType::const_iterator it = listInd.begin(), itE =
-			listInd.end(); it != itE; ++it) {
+	for (typename indType::const_iterator it = listInd.begin(), itE = listInd.end(); it != itE; ++it) {
 		++n;
 		Real x = data(*it);
 		Real delta = x - mean;
@@ -89,8 +87,7 @@ bool differentValue(const Type& data, Index n, Real epsilon) {
 
 	for (; it != itE; ++it) {
 
-		for (std::list<Real>::const_iterator itL = diffValues.begin(), itLEnd =
-				diffValues.end(); itL != itLEnd; ++itL) {
+		for (std::list<Real>::const_iterator itL = diffValues.begin(), itLEnd = diffValues.end(); itL != itLEnd; ++itL) {
 			if (std::abs(*it - *itL) < epsilon) {
 				goto endOuter;
 			}
@@ -108,20 +105,15 @@ bool differentValue(const Type& data, Index n, Real epsilon) {
 	return false;
 }
 
-template<typename T>
-Real positiveNewtonRaphson(const Vector<T>& x, Real currN, Real nIt,
-		std::function<std::pair<Real, Real>(const Vector<T>&, Real)> evalFunc) {
-	if (nIt < 0)
-		return currN;
-	else {
-		std::pair<Real, Real> eval = evalFunc(x, currN);
-		Real candidate = currN - eval.first / eval.second;
-		if (0.0 < candidate)
-			return positiveNewtonRaphson(x, candidate, nIt - 1, evalFunc);
-		else
-			return positiveNewtonRaphson(x, currN / 2.0, nIt - 1, evalFunc);
-	}
-}
+/**
+ * Newton-Raphson optimization of a R -> R univariate function.
+ *
+ * @param x a vector to parametrize the fonction evalFunc, for example the observation vector.
+ * @param currN current argument of the function to optimize
+ * @param nIt the remaining number of iterations
+ * @param evalFunc is a function (x, currN) -> (value, derivative)
+ */
+Real positiveNewtonRaphson(Index nIt, const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x);
 
 }
 
