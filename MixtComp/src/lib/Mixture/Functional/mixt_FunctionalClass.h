@@ -24,8 +24,7 @@ public:
 	void setSize(Index nSub, Index nCoeff);
 
 	template<typename MatrixType, typename VectorType>
-	void setParam(const MatrixType& alpha, const MatrixType& beta,
-			const VectorType& sd) {
+	void setParam(const MatrixType& alpha, const MatrixType& beta, const VectorType& sd) {
 		alpha_ = alpha;
 		beta_ = beta;
 		sd_ = sd;

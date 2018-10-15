@@ -21,8 +21,7 @@ public:
 	void setSize(Index nT, Index nSub);
 
 	/** Set all internal values, useful for unit testing */
-	void setVal(const Vector<Real>& t, const Vector<Real>& x,
-			const Vector<std::set<Index> >& w);
+	void setVal(const Vector<Real>& t, const Vector<Real>& x, const Vector<std::set<Index> >& w);
 
 	void setValTime(Index i, Real t, Real x);
 
@@ -32,14 +31,11 @@ public:
 	 * Similar to lnObservedProbability, except that there is no summation over all possible
 	 * values of w. Only the completed value is considered.
 	 */
-	Real lnCompletedProbability(const Matrix<Real>& alpha,
-			const Matrix<Real>& beta, const Vector<Real>& sd) const;
+	Real lnCompletedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const;
 
-	Real lnObservedProbability(const Matrix<Real>& alpha,
-			const Matrix<Real>& beta, const Vector<Real>& sd) const;
+	Real lnObservedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const;
 
-	void sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& beta,
-			const Vector<Real>& sd);
+	void sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd);
 
 	void removeMissingUniformSampling();
 
@@ -53,8 +49,7 @@ public:
 	 * */
 	void removeMissingQuantileMixing(const Vector<Real>& quantiles);
 
-	double costAndGrad(unsigned nParam, const double* alpha,
-			double* grad) const;
+	double costAndGrad(unsigned nParam, const double* alpha, double* grad) const;
 
 	const Vector<Real>& t() const {
 		return t_;
@@ -96,9 +91,7 @@ private:
 	 * Computes the joint proba, which can be used for both the completed and observed probability computation.
 	 * @return jointLogProba(i, s) where i is an individual, and s a subregression. jointLogProba(i, s) is log(p(x, w))
 	 * */
-	void computeJointLogProba(const Matrix<Real>& alpha,
-			const Matrix<Real>& beta, const Vector<Real>& sd,
-			Matrix<Real>& jointLogProba) const;
+	void computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Matrix<Real>& jointLogProba) const;
 
 	Index nTime_;
 	Index nSub_;

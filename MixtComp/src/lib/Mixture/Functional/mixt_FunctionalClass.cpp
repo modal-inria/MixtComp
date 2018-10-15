@@ -14,9 +14,7 @@
 namespace mixt {
 
 FunctionalClass::FunctionalClass(Vector<Function>& data, Real confidenceLevel) :
-		nSub_(0), nCoeff_(0), data_(data), alphaParamStat_(alpha_,
-				confidenceLevel), betaParamStat_(beta_, confidenceLevel), sdParamStat_(
-				sd_, confidenceLevel) {
+		nSub_(0), nCoeff_(0), data_(data), alphaParamStat_(alpha_, confidenceLevel), betaParamStat_(beta_, confidenceLevel), sdParamStat_(sd_, confidenceLevel) {
 }
 
 void FunctionalClass::setSize(Index nSub, Index nCoeff) {
@@ -73,8 +71,7 @@ std::string FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
 	std::string warnLog;
 	Vector<Index> nTTotal(nSub_, 0);
 
-	for (std::set<Index>::const_iterator itData = setInd.begin(), itDataE =
-			setInd.end(); itData != itDataE; ++itData) { // to create the complete design matrix and y for the class, the total number of timesteps over the class must be determined
+	for (std::set<Index>::const_iterator itData = setInd.begin(), itDataE = setInd.end(); itData != itDataE; ++itData) { // to create the complete design matrix and y for the class, the total number of timesteps over the class must be determined
 		for (Index s = 0; s < nSub_; ++s) {
 			nTTotal(s) += data_(*itData).w()(s).size();
 		}
@@ -87,11 +84,8 @@ std::string FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
 		y(s).resize(nTTotal(s));
 
 		Index i = 0; // current row in the global design matrix
-		for (std::set<Index>::const_iterator itData = setInd.begin(), itDataE =
-				setInd.end(); itData != itDataE; ++itData) {
-			for (std::set<Index>::const_iterator itTime =
-					data_(*itData).w()(s).begin(), itTimeE = data_(*itData).w()(
-					s).end(); itTime != itTimeE; ++itTime) {
+		for (std::set<Index>::const_iterator itData = setInd.begin(), itDataE = setInd.end(); itData != itDataE; ++itData) {
+			for (std::set<Index>::const_iterator itTime = data_(*itData).w()(s).begin(), itTimeE = data_(*itData).w()(s).end(); itTime != itTimeE; ++itTime) {
 				design(s).row(i) = data_(*itData).vandermonde().row(*itTime);
 				y(s)(i) = data_(*itData).x()(*itTime);
 				++i;
@@ -102,9 +96,7 @@ std::string FunctionalClass::mStepBetaSd(const std::set<Index>& setInd) {
 	subRegression(design, y, beta_, sd_);
 
 	if (sd_.minCoeff() < epsilon) { // at least one coefficient is too small
-		warnLog +=
-				"At least one sub regression has a standard deviation less than the minimal accepted value: "
-						+ epsilonStr + eol;
+		warnLog += "At least one sub regression has a standard deviation less than the minimal accepted value: " + epsilonStr + eol;
 	}
 
 	return warnLog;
@@ -132,30 +124,23 @@ void FunctionalClass::sampleParam(Index iteration, Index iterationMax) {
 	sdParamStat_.sampleParam(iteration, iterationMax);
 }
 
-std::string FunctionalClass::checkSampleCondition(
-		const std::set<Index>& setInd) const {
+std::string FunctionalClass::checkSampleCondition(const std::set<Index>& setInd) const {
 	std::string warnLog;
 	bool value = checkNbDifferentValue(setInd);
 
 	if (!value) {
-		warnLog +=
-				"Not enough different values for t. Data points should be separated by at least "
-						+ epsilonStr + eol;
+		warnLog += "Not enough different values for t. Data points should be separated by at least " + epsilonStr + eol;
 	}
 
 	return warnLog;
 }
 
-bool FunctionalClass::checkNbDifferentValue(
-		const std::set<Index>& setInd) const {
+bool FunctionalClass::checkNbDifferentValue(const std::set<Index>& setInd) const {
 	for (Index s = 0; s < nSub_; ++s) {
 		std::list<Real> listT;
 
-		for (std::set<Index>::const_iterator it = setInd.begin(), itE =
-				setInd.end(); it != itE; ++it) { // only loop on individuals in the current class
-			for (std::set<Index>::const_iterator itW =
-					data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end();
-					itW != itWE; ++itW) { // only loop on timesteps in the current subregression
+		for (std::set<Index>::const_iterator it = setInd.begin(), itE = setInd.end(); it != itE; ++it) { // only loop on individuals in the current class
+			for (std::set<Index>::const_iterator itW = data_(*it).w()(s).begin(), itWE = data_(*it).w()(s).end(); itW != itWE; ++itW) { // only loop on timesteps in the current subregression
 				listT.push_back(data_(*it).t()(*itW));
 			}
 		}
