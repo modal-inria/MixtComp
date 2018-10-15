@@ -1,0 +1,51 @@
+/* MixtComp version 2.0  - 13 march 2017
+ * Copyright (C) Inria - Lille 1 */
+
+/*
+ *  Project:    MixtComp
+ *  Created on: Feb 02, 2015
+ *  Author:     Vincent KUBICKI <vincent.kubicki@inria.fr>
+ **/
+
+#include "gtest/gtest.h"
+
+#include "cppoptlib/meta.h"
+#include "cppoptlib/problem.h"
+#include "cppoptlib/solver/bfgssolver.h"
+
+#include "mixt_MixtComp.h"
+
+using namespace mixt;
+using namespace cppoptlib;
+
+class Rosenbrock: public Problem<Real> {
+public:
+	using typename cppoptlib::Problem<Real>::Scalar;
+	using typename cppoptlib::Problem<Real>::TVector;
+
+	Real value(const TVector &x) {
+		const double t1 = (1 - x[0]);
+		const double t2 = (x[1] - x[0] * x[0]);
+		return t1 * t1 + 100 * t2 * t2;
+	}
+
+	void gradient(const TVector &x, TVector &grad) {
+		grad[0] = -2 * (1 - x[0]) + 200 * (x[1] - x[0] * x[0]) * (-2 * x[0]);
+		grad[1] = 200 * (x[1] - x[0] * x[0]);
+	}
+};
+
+/**
+ * Basic test using the Rosenbrock function as defined here: https://en.wikipedia.org/wiki/Rosenbrock_function.
+ * Numerical optimization package: https://github.com/PatWie/CppNumericalSolvers
+ *  */
+TEST(Optim, Basic) {
+	Rosenbrock f;
+	Vector<Real> x(2);
+	x << -1, 2;
+	BfgsSolver<Rosenbrock> solver;
+
+	solver.minimize(f, x);
+
+	ASSERT_TRUE(x.isApprox(x, epsilon));
+}
