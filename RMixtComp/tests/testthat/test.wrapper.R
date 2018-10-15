@@ -139,6 +139,9 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   
   resLearn <- mixtCompLearn(data, desc, algo, nClass = 4, crit = "ICL") 
   
+  if(!is.null(resLearn$warnLog))
+    print(resLearn$warnLog)
+  
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.85)
   
@@ -212,6 +215,9 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   
   resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5) 
   
+  if(!is.null(resLearn$warnLog))
+    print(resLearn$warnLog)
+  
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.85)
   
@@ -251,6 +257,11 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   
   
   expect_silent(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3))
+  
+  
+  if(!is.null(resPredict$warnLog))
+    print(resPredict$warnLog)
+  
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
 })
