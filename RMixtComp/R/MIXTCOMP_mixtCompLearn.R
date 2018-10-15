@@ -241,6 +241,8 @@ mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c
     
     resLearn[[i]] <- rmc(algo, dataList, desc, list())
     class(resLearn[[i]]) = "MixtComp"
+    if(!is.null(resLearn[[i]]$warnLog))
+      warning(paste0("For k= ", nClass[i], ", MixtComp failed with the following error:", resLearn[[i]]$warnLog))
   }
   
   allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
@@ -253,6 +255,8 @@ mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c
     res <- c(resLearn[[indBestClustering]], list(criterion = crit, crit = allCrit, nClass = nClass, res = resLearn))
   }else{
     res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = crit, crit = allCrit, nClass = nClass, res = resLearn)
+    if(!is.null(res[[i]]$warnLog))
+      warning(paste0("MixtComp failed for all the given number od classes."))
   }
   class(res) = c("MixtCompLearn", "MixtComp")
   
@@ -275,6 +279,9 @@ mixtCompPredict <- function(data, desc, algo = createAlgo(), resLearn, nClass = 
     resPredict <- rmc(algo, dataList, desc, resLearn$res[[which(resLearn$nClass == algo$nClass)]])
   else
     resPredict <- rmc(algo, dataList, desc, resLearn)
+
+  if(!is.null(resPredict$warnLog))
+    warning(paste0("MixtComp failed with the following error:", resPredict$warnLog))
   
   class(resPredict) = "MixtComp"
   
