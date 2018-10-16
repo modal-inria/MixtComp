@@ -179,13 +179,10 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   for(name in getVarNames(resLearn))
     expect_silent(getParam(resLearn, name))
   
-  expect_silent(summary(resLearn))
-  
-  
+
   expect_silent(resPredict <- mixtCompPredict(data, desc, algo, resLearn))
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
-  expect_silent(summary(resPredict))
 })
 
 test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
