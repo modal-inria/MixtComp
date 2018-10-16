@@ -7,21 +7,25 @@
  *  Authors:    Quentin GRIMONPREZ <quentin.grimonprez@inria.fr>
  **/
 
-#include "NegativeBinomial.h"
-#include "../../../IO/mixt_IO.h"
-#include "../../../Various/mixt_Constants.h"
-#include "../../../Various/mixt_Enum.h"
-#include "../../../LinAlg/mixt_Math.h"
+#include <functional>
+
 #include <boost/math/special_functions/digamma.hpp>
 #include <boost/math/special_functions/trigamma.hpp>
 #include <boost/exception/diagnostic_information.hpp>
+
+#include <IO/mixt_IO.h>
+#include <Various/mixt_Constants.h>
+#include <Various/mixt_Enum.h>
+#include <LinAlg/mixt_Math.h>
+
+#include "NegativeBinomial.h"
 
 namespace mixt {
 
 const std::string NegativeBinomial::name = "NegativeBinomial";
 
 NegativeBinomial::NegativeBinomial(const std::string& idName, int nbClass, Vector<Real>& param) :
-				idName_(idName), nClass_(nbClass), param_(param), p_data_(0) {
+		idName_(idName), nClass_(nbClass), param_(param), p_data_(0) {
 	param_.resize(2 * nbClass);
 }
 
@@ -50,8 +54,7 @@ std::string NegativeBinomial::mStep(const Vector<std::set<Index>>& classInd) {
 	for (Index k = 0; k < nClass_; ++k) {
 		Vector<int> x(classInd(k).size()); // the optimizer needs a particular format for the data
 		Index currObsInClass = 0;
-		for (std::set<Index>::const_iterator it = classInd(k).begin(), itEnd =
-				classInd(k).end(); it != itEnd; ++it) {
+		for (std::set<Index>::const_iterator it = classInd(k).begin(), itEnd = classInd(k).end(); it != itEnd; ++it) {
 			x(currObsInClass) = (*p_data_)(*it);
 			++currObsInClass;
 		}
@@ -63,16 +66,12 @@ std::string NegativeBinomial::mStep(const Vector<std::set<Index>>& classInd) {
 			param_(2 * k) = nParam;
 			param_(2 * k + 1) = pParam;
 
-			if ((1 - pParam  < epsilon) | (pParam < epsilon)) {
-				warnLog +=
-						"Negative Binomial variables must have a p value different from 0 or 1 in each class. It is not the case in class: "
-						+ std::to_string(k) + ". " + eol;
+			if ((1 - pParam < epsilon) | (pParam < epsilon)) {
+				warnLog += "Negative Binomial variables must have a p value different from 0 or 1 in each class. It is not the case in class: " + std::to_string(k) + ". " + eol;
 			}
-		}catch(boost::exception &e){
-			warnLog += "Negative Binomial model, parameter n divergence in class: "
-					+ std::to_string(k)+ ". "+boost::diagnostic_information(e) + "."+ eol;
+		} catch (boost::exception &e) {
+			warnLog += "Negative Binomial model, parameter n divergence in class: " + std::to_string(k) + ". " + boost::diagnostic_information(e) + "." + eol;
 		}
-
 
 	}
 
@@ -107,11 +106,9 @@ std::pair<Real, Real> NegativeBinomial::evalFuncDeriv(const Vector<int>& x, Real
 	return std::pair<Real, Real>(f, df);
 }
 
-
-
 Real NegativeBinomial::estimateN(const Vector<int>& x, Real n0) const {
-	std::function<std::pair<Real, Real>(const Vector<int>&, Real)>  f = std::bind(&NegativeBinomial::evalFuncDeriv, this, std::placeholders::_1, std::placeholders::_2);
-	return positiveNewtonRaphson<int>(x, n0, maxIterationOptim, f);
+	std::function<std::pair<Real, Real>(Real)> f = std::bind(&NegativeBinomial::evalFuncDeriv, this, x, std::placeholders::_1);
+	return positiveNewtonRaphson(maxIterationOptim, f, n0);
 }
 
 Real NegativeBinomial::estimateP(const Vector<int>& x, Real n) const {
@@ -119,9 +116,8 @@ Real NegativeBinomial::estimateP(const Vector<int>& x, Real n) const {
 	Real sumx = x.sum();
 	Real nNobs = n * nObs;
 
-	return(nNobs / (nNobs + sumx));
+	return (nNobs / (nNobs + sumx));
 }
-
 
 std::vector<std::string> NegativeBinomial::paramNames() const {
 	std::vector<std::string> names(2 * nClass_);
@@ -135,17 +131,14 @@ std::vector<std::string> NegativeBinomial::paramNames() const {
 	return names;
 }
 
-std::string NegativeBinomial::setData(const std::string& paramStr,
-		AugmentedData<Vector<int> >& augData, RunMode mode) {
+std::string NegativeBinomial::setData(const std::string& paramStr, AugmentedData<Vector<int> >& augData, RunMode mode) {
 	std::string warnLog;
 
 	p_data_ = &(augData.data_);
 
 	if (augData.dataRange_.min_ < 0) {
 		std::stringstream sstm;
-		sstm << "Variable: " << idName_
-				<< " requires a minimum value of 0 in either provided values or bounds. "
-				<< "The minimum value currently provided is : "
+		sstm << "Variable: " << idName_ << " requires a minimum value of 0 in either provided values or bounds. " << "The minimum value currently provided is : "
 				<< augData.dataRange_.min_ + minModality << std::endl;
 		warnLog += sstm.str();
 	}
@@ -175,6 +168,5 @@ void NegativeBinomial::initParam() {
 		param_(2 * k + 1) = 0.7;
 	}
 }
-
 
 } // namespace mixt

@@ -3,18 +3,22 @@ project (MixtComp CXX)
 cmake_minimum_required (VERSION 3.5)
 
 # C++11
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # REQUIRED LIBRARIES
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/cmakeModule")
 
 ## Boost
+
 # set(Boost_USE_STATIC_LIBS ON) # use .a instead of .so
 find_package(Boost 1.58 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 ## openMP
+
 #find_package(OpenMP REQUIRED)
 #if (OPENMP_FOUND)
 #    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -22,73 +26,102 @@ include_directories(${Boost_INCLUDE_DIRS})
 #    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 #endif()
 
-## nlopt
-IF (WIN32 OR CYGWIN)
-	set(NLOPT_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt/api")
-	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/nlopt" "nlopt")
-	include_directories(${NLOPT_INCLUDE_DIRS})
-ELSE()
-	find_package(NLOPT 2.4.2 REQUIRED)
-	add_library(nlopt SHARED IMPORTED)
-	set_target_properties(nlopt PROPERTIES IMPORTED_LOCATION ${NLOPT_LIBRARIES})
-	include_directories(${NLOPT_INCLUDE_DIRS})
-ENDIF()
+## nlopt, easy to install from package manager
 
-## eigen
+find_package(NLOPT 2.4.2 REQUIRED)
+add_library(nlopt SHARED IMPORTED)
+set_target_properties(nlopt PROPERTIES IMPORTED_LOCATION ${NLOPT_LIBRARIES})
+include_directories(${NLOPT_INCLUDE_DIRS})
+
+## eigen, easy to install from package manager
+
 find_package(Eigen3 REQUIRED) # TODO: add required version of compilation problems occur (putting 3.3 did not work on Ubuntu)
 include_directories( ${EIGEN3_INCLUDE_DIR} )
 
 ## Google Test
-# Download and unpack googletest at configure time
+
+# Download and unpack googletest at configure time.
+# This is the recommended method of getting the library, because it ensures consistency of build flags
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-  RESULT_VARIABLE result
-WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+    RESULT_VARIABLE result
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download
+)
 if(result)
-  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
+    message(FATAL_ERROR "CMake step for googletest failed: ${result}")
 endif()
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-  RESULT_VARIABLE result
-WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+execute_process(
+    COMMAND ${CMAKE_COMMAND} --build .
+    RESULT_VARIABLE result
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download
+)
 if(result)
-  message(FATAL_ERROR "Build step for googletest failed: ${result}")
+    message(FATAL_ERROR "Build step for googletest failed: ${result}")
 endif()
 
-# Prevent overriding the parent project's compiler/linker
-# settings on Windows
+# Prevent overriding the parent project's compiler/linker settings on Windows
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
-# Add googletest directly to our build. This defines
-# the gtest and gtest_main targets.
-add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
-                 ${CMAKE_BINARY_DIR}/googletest-build
-                 EXCLUDE_FROM_ALL)
+# googletest uses CMake, hence it is possible to simply add the subrirectory to the build
+add_subdirectory(
+    ${CMAKE_BINARY_DIR}/googletest-src
+    ${CMAKE_BINARY_DIR}/googletest-build
+    EXCLUDE_FROM_ALL
+)
 
 # The gtest/gtest_main targets carry header search path
 # dependencies automatically when using CMake 2.8.11 or
 # later. Otherwise we have to add them here ourselves.
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
-  include_directories("${gtest_SOURCE_DIR}/include")
+    include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
 ## json
+
 configure_file(CMakeLists.txt.in json-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-  RESULT_VARIABLE result
-WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download )
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+    RESULT_VARIABLE result
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download
+)
 if(result)
-  message(FATAL_ERROR "CMake step for json failed: ${result}")
+    message(FATAL_ERROR "CMake step for json failed: ${result}")
 endif()
-execute_process(COMMAND ${CMAKE_COMMAND} --build .
-  RESULT_VARIABLE result
-WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download )
+execute_process(
+    COMMAND ${CMAKE_COMMAND} --build .
+    RESULT_VARIABLE result
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download
+)
 if(result)
-  message(FATAL_ERROR "Build step for json failed: ${result}")
+    message(FATAL_ERROR "Build step for json failed: ${result}")
 endif()
 
-# Add googletest directly to our build. This defines
-# the gtest and gtest_main targets.
+# nlohmann is a header-only library
 include_directories(${CMAKE_BINARY_DIR}/json-src/single_include/nlohmann)
+
+## optim
+
+configure_file(CMakeLists.txt.in json-download/CMakeLists.txt)
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+    RESULT_VARIABLE result
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download
+)
+if(result)
+    message(FATAL_ERROR "CMake step for json failed: ${result}")
+endif()
+execute_process(
+    COMMAND ${CMAKE_COMMAND} --build .
+    RESULT_VARIABLE result
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download
+)
+if(result)
+    message(FATAL_ERROR "Build step for json failed: ${result}")
+endif()
+
+# CppNumericalSolvers is a header-only library
+include_directories(${CMAKE_BINARY_DIR}/optim-src/include)
 
 # COMPILATION FLAGS
 

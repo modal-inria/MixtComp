@@ -20,8 +20,7 @@ void Function::setSize(Index nT, Index nSub) {
 	w_.resize(nSub);
 }
 
-void Function::setVal(const Vector<Real>& t, const Vector<Real>& x,
-		const Vector<std::set<Index> >& w) {
+void Function::setVal(const Vector<Real>& t, const Vector<Real>& x, const Vector<std::set<Index> >& w) {
 	nTime_ = t.size();
 	nSub_ = w.size();
 	t_ = t;
@@ -38,9 +37,7 @@ void Function::computeVandermonde(Index nCoeff) {
 	vandermondeMatrix(t_, nCoeff, vandermonde_);
 }
 
-void Function::computeJointLogProba(const Matrix<Real>& alpha,
-		const Matrix<Real>& beta, const Vector<Real>& sd,
-		Matrix<Real>& jointLogProba) const {
+void Function::computeJointLogProba(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd, Matrix<Real>& jointLogProba) const {
 	jointLogProba.resize(nTime_, nSub_);
 	NormalStatistic normal;
 	Vector<Real> currLogKappa(nSub_);
@@ -58,15 +55,13 @@ void Function::computeJointLogProba(const Matrix<Real>& alpha,
 	}
 }
 
-Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
-		const Matrix<Real>& beta, const Vector<Real>& sd) const {
+Real Function::lnCompletedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
 	Real logProba = 0.;
 
 	Matrix<Real> jointLogProba;
 	computeJointLogProba(alpha, beta, sd, jointLogProba);
 	for (Index s = 0; s < nSub_; ++s) {
-		for (std::set<Index>::const_iterator it = w_(s).begin(), itE =
-				w_(s).end(); it != itE; ++it) {
+		for (std::set<Index>::const_iterator it = w_(s).begin(), itE = w_(s).end(); it != itE; ++it) {
 			logProba += jointLogProba(*it, s); // only the completed value of w is taken into account
 		}
 	}
@@ -74,8 +69,7 @@ Real Function::lnCompletedProbability(const Matrix<Real>& alpha,
 	return logProba;
 }
 
-Real Function::lnObservedProbability(const Matrix<Real>& alpha,
-		const Matrix<Real>& beta, const Vector<Real>& sd) const {
+Real Function::lnObservedProbability(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) const {
 	Real logProba = 0.;
 
 	Matrix<Real> jointLogProba;
@@ -88,8 +82,7 @@ Real Function::lnObservedProbability(const Matrix<Real>& alpha,
 	return logProba;
 }
 
-void Function::sampleWNoCheck(const Matrix<Real>& alpha,
-		const Matrix<Real>& beta, const Vector<Real>& sd) {
+void Function::sampleWNoCheck(const Matrix<Real>& alpha, const Matrix<Real>& beta, const Vector<Real>& sd) {
 	Matrix<Real> jointLogProba;
 	computeJointLogProba(alpha, beta, sd, jointLogProba);
 
@@ -167,8 +160,7 @@ void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
 	}
 }
 
-double Function::costAndGrad(unsigned nParam, const double* alpha,
-		double* grad) const {
+double Function::costAndGrad(unsigned nParam, const double* alpha, double* grad) const {
 	double cost;
 	Matrix<Real> logValue;
 	Vector<Real> logSumExpValue;
@@ -218,8 +210,7 @@ void Function::quantile(Vector<Real>& quantile) {
 void Function::printSubRegT() const {
 	for (Index w = 0; w < nSub_; ++w) {
 		std::cout << "w: " << w << ": ";
-		for (std::set<Index>::const_iterator it = w_(w).begin(), itEnd =
-				w_(w).end(); it != itEnd; ++it) {
+		for (std::set<Index>::const_iterator it = w_(w).begin(), itEnd = w_(w).end(); it != itEnd; ++it) {
 			std::cout << t_(*it) << ", ";
 		}
 		std::cout << std::endl;

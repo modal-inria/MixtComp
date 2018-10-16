@@ -27,3 +27,17 @@ ExternalProject_Add(json
   INSTALL_COMMAND   ""
   TEST_COMMAND      ""
 )
+
+project(opti-download NONE)
+
+include(ExternalProject)
+ExternalProject_Add(optim
+  GIT_REPOSITORY    https://github.com/PatWie/CppNumericalSolvers.git
+  GIT_TAG           master
+  SOURCE_DIR        "${CMAKE_BINARY_DIR}/optim-src"
+  BINARY_DIR        ""
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND     ""
+  INSTALL_COMMAND   ""
+  TEST_COMMAND      ""
+)

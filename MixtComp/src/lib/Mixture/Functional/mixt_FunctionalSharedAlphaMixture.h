@@ -24,10 +24,8 @@ namespace mixt {
 template<typename Graph>
 class FunctionalSharedAlphaMixture: public IMixture {
 public:
-	FunctionalSharedAlphaMixture(const Graph& data, const Graph& param, Graph& out, std::string const& idName, Index nClass, Index nObs, Real confidenceLevel,
-			const std::string& paramStr) :
-			IMixture(idName, "Func_SharedAlpha_CS", nClass, nObs), nSub_(0), nCoeff_(0), confidenceLevel_(confidenceLevel), dataG_(data), paramG_(param), outG_(
-					out), paramStr_(paramStr) {
+	FunctionalSharedAlphaMixture(const Graph& data, const Graph& param, Graph& out, std::string const& idName, Index nClass, Index nObs, Real confidenceLevel, const std::string& paramStr) :
+			IMixture(idName, "Func_SharedAlpha_CS", nClass, nObs), nSub_(0), nCoeff_(0), confidenceLevel_(confidenceLevel), dataG_(data), paramG_(param), outG_(out), paramStr_(paramStr) {
 		class_.reserve(nClass_);
 		for (Index k = 0; k < nClass_; ++k) {
 			class_.emplace_back(vecInd_, confidenceLevel_);
