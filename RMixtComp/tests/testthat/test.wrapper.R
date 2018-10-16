@@ -179,11 +179,13 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   for(name in getVarNames(resLearn))
     expect_silent(getParam(resLearn, name))
   
+  expect_silent(summary(resLearn))
   
   
   expect_silent(resPredict <- mixtCompPredict(data, desc, algo, resLearn))
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
+  expect_silent(summary(resPredict))
 })
 
 test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
@@ -266,5 +268,21 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   expect_equal(resPredict$algo$mode, "predict")
 })
 
+test_that("summary returns no warnings and no errors", {
+  outMC <- list(warnLog = "Crash.")
+  
+  expect_warning(summary(outMC), regexp = NA)
+  expect_warning(print(outMC), regexp = NA)
+})
+
+test_that("summary works", {
+  data("simData")
+  resLearn <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo = createAlgo(), nClass = 2) 
+  
+  expect_warning(summary(resLearn), regexp = NA)
+  expect_warning(summary(resLearn[[1]]), regexp = NA)
+  expect_warning(print(resLearn), regexp = NA)
+  expect_warning(print(resLearn[[1]]), regexp = NA)
+})
 
 Sys.unsetenv("MC_DETERMINISTIC")
