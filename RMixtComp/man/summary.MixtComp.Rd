@@ -2,7 +2,7 @@
 % Please edit documentation in R/MIXTCOMP_methods.R
 \name{summary.MixtComp}
 \alias{summary.MixtComp}
-\title{Object Summaries
+\title{MixtComp Object Summaries
 
 Summary of a \code{\link{MixtComp}} object}
 \usage{
@@ -14,7 +14,7 @@ Summary of a \code{\link{MixtComp}} object}
 \item{...}{Not used.}
 }
 \description{
-Object Summaries
+MixtComp Object Summaries
 
 Summary of a \code{\link{MixtComp}} object
 }
@@ -34,8 +34,8 @@ algo <- list(nbBurnInIter = 100,
 # run RMixtCompt in unsupervised clustering mode + data as matrix
 resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 
-summary(resLearn)
 summary(resLearn$res[[1]])
+
 }
 
 }

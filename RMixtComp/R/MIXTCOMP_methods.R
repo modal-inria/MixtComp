@@ -1,4 +1,4 @@
-#' @title Object Summaries
+#' @title MixtComp Object Summaries
 #'
 #' Summary of a \code{\link{MixtComp}} object
 #'  
@@ -25,8 +25,8 @@
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
 #' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 #' 
-#' summary(resLearn)
 #' summary(resLearn$res[[1]])
+#' 
 #' }
 #' 
 #' @seealso \link{MixtCompLearn} \link{print.MixtComp}
@@ -34,7 +34,7 @@
 #' @export
 summary.MixtComp <- function(object, ...)
 {
-  cat("############### MixtComp Run ###############\n")
+  cat("########### MixtComp Run ###########\n")
   if(!is.null(object$warnLog))
   {
     cat("Run failed:\n")
@@ -61,11 +61,53 @@ summary.MixtComp <- function(object, ...)
       print(getParam(object, name))
     }
   }
-  cat("############################################\n")
+  cat("####################################\n")
   
 }
   
-  
+#' @title MixtCompLearn Object Summaries
+#'
+#' Summary of a \code{\link{MixtCompLearn}} object
+#'  
+#'
+#' @param object \code{\link{MixtCompLearn}} object
+#' @param ... Not used.
+#' 
+#' 
+#' @method summary MixtCompLearn
+#' 
+#' @examples 
+#' \donttest{
+#' data(simData)
+#'  
+#' # define the algorithm's parameters
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
+#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+#' 
+#' summary(resLearn)
+#' }
+#' 
+#' @seealso \link{MixtCompLearn} \link{print.MixtCompLearn}
+#' 
+#' @export
+summary.MixtCompLearn <- function(object, ...)
+{
+  cat("############### MixtCompLearn Run ###############\n")
+  cat("nClass:", object$nClass,"\n")
+  cat("Criterion used:", object$criterion,"\n")
+  print(object$crit)
+  cat("Best model:", ifelse(is.null(object$warnLog), paste0(object$algo$nClass, " clusters"), "none"), "\n")
+  summary.MixtComp(object)
+}
+
 
 #' @title Print Values
 #'
@@ -91,7 +133,6 @@ summary.MixtComp <- function(object, ...)
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
 #' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
 #' 
-#' print(resLearn)
 #' print(resLearn$res[[1]])
 #' }
 #' 
@@ -158,3 +199,48 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 
 }
     
+
+
+
+#' @title Print Values
+#'
+#' Print a \code{\link{MixtCompLearn}} object
+#'
+#'  
+#' @param x \code{\link{MixtCompLearn}} object
+#' @param ... Not used.
+#' 
+#' @examples 
+#' \donttest{
+#' data(simData)
+#'  
+#' # define the algorithm's parameters
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
+#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+#' 
+#' print(resLearn)
+#' }
+#' 
+#' @method print MixtCompLearn
+#' 
+#' @seealso \link{mixtCompLearn} \link{mixtCompPredict}
+#' 
+#' @export
+print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, ...)
+{
+  cat("$nClass:", x$nClass, "\n")
+  cat("$criterion: ", x$criterion,"\n")
+  cat("$crit: \n")
+  print(x$crit)
+  cat("\n Best result\n")
+  print.MixtComp(x, nVarMaxToPrint = nVarMaxToPrint, ...)
+  cat("\n $res: results from all MixtComp Run\n")
+}
