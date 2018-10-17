@@ -38,3 +38,9 @@ getCompletedData <- completed(resLearn)
 }
 
 }
+\seealso{
+Other getter: \code{\link{getBIC}},
+  \code{\link{getEmpiricTik}}, \code{\link{getParam}},
+  \code{\link{getPartition}}, \code{\link{getType}}
+}
+\concept{getter}

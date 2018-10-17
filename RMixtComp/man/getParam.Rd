@@ -38,3 +38,10 @@ param <- getParam(resLearn, "Gaussian1")
 }
 
 }
+\seealso{
+Other getter: \code{\link{getBIC}},
+  \code{\link{getCompletedData}},
+  \code{\link{getEmpiricTik}}, \code{\link{getPartition}},
+  \code{\link{getType}}
+}
+\concept{getter}

@@ -27,6 +27,7 @@
 #' param <- getParam(resLearn, "Gaussian1")
 #' }
 #' 
+#' @family getter
 #' @export
 getParam <- function(outMixtComp, varName)
 {

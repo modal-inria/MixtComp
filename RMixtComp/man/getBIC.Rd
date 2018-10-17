@@ -40,3 +40,9 @@ icl <- getICL(resLearn)
 }
 
 }
+\seealso{
+Other getter: \code{\link{getCompletedData}},
+  \code{\link{getEmpiricTik}}, \code{\link{getParam}},
+  \code{\link{getPartition}}, \code{\link{getType}}
+}
+\concept{getter}

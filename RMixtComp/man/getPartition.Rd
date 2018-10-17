@@ -36,3 +36,10 @@ estimatedClass <- getPartition(resLearn)
 }
 
 }
+\seealso{
+Other getter: \code{\link{getBIC}},
+  \code{\link{getCompletedData}},
+  \code{\link{getEmpiricTik}}, \code{\link{getParam}},
+  \code{\link{getType}}
+}
+\concept{getter}

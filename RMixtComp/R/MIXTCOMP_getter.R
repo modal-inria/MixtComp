@@ -27,6 +27,7 @@
 #' getCompletedData <- completed(resLearn)
 #' }
 #' 
+#' @family getter
 #' @export
 getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 {
@@ -68,6 +69,7 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' estimatedClass <- getPartition(resLearn)
 #' }
 #' 
+#' @family getter
 #' @export
 getPartition <- function(outMixtComp)
 {
@@ -111,6 +113,7 @@ getPartition <- function(outMixtComp)
 #' 
 #' }
 #' 
+#' @family getter
 #' @export
 getType <- function(outMixtComp, with.z_class = FALSE)
 {
@@ -167,6 +170,7 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' tik <- getTik(resLearn, log = FALSE)
 #' }
 #' 
+#' @family getter
 #' @export
 getEmpiricTik <- function(outMixtComp)
 {
@@ -220,6 +224,7 @@ getTik <- function(outMixtComp, log = TRUE){
 #' icl <- getICL(resLearn)
 #' }
 #' 
+#' @family getter
 #' @export
 getBIC <- function(outMixtComp)
 {

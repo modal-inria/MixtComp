@@ -45,3 +45,9 @@ tik <- getTik(resLearn, log = FALSE)
 }
 
 }
+\seealso{
+Other getter: \code{\link{getBIC}},
+  \code{\link{getCompletedData}}, \code{\link{getParam}},
+  \code{\link{getPartition}}, \code{\link{getType}}
+}
+\concept{getter}
