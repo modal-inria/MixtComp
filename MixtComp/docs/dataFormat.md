@@ -107,8 +107,8 @@ f_k(x) = \frac{\lambda^k}{k!}\exp{(-\lambda)}
   ```math
 f_k(x) = \frac{\Gamma(x+n_k)}{x! \Gamma(n_k)} p_k^{n_k}(1-p_k)^x
 ```
-  - **Multinomial** for categorical data. For a class $`k`$, the model has $`M`$ parameters $`p_{k,j},\, j=1,\dots,M`$, where $`M`$ the number of modalities, corresponding to the probabilities to belong to the modality $`j`$. 
-  $`p_{k,j},\, j=1,\dots,M`$ must verify $`\sum_{j=1}^M p_{k,j} = 1`$. 
+  - **Multinomial** for categorical data. For a class $`k`$, the model has $`M`$ parameters $`p_{k,j},\, j=1,...,M`$, where $`M`$ the number of modalities, corresponding to the probabilities to belong to the modality $`j`$. 
+  $`p_{k,j},\, j=1,...,M`$ must verify $`\sum_{j=1}^M p_{k,j} = 1`$. 
   The density mass function is defined by:
 ```math
 f_k(x = j) = \prod_{j=1}^K p_{k,j}^{a_j} \quad \text{with} \quad a_j = \begin{cases}
@@ -124,7 +124,7 @@ f_k(x = j) = \prod_{j=1}^K p_{k,j}^{a_j} \quad \text{with} \quad a_j = \begin{ca
   - **Func_CS** & **Func_SharedAlpha_CS** for functional data. Between individuals, functional data can have different length and different time values. The model segments every functional and clusters them. The segmentation is performed using polynomial regressions on subpart of functionals. The model requires to indicate the desired number of subregressions $`S`$, and the number of coefficients $`C`$ used in each subregression, this number corresponds to the polynomial's degree minus 1.
   These hyperparameters must be specified by `"nSub: S, nCoeff: C"` in the appropriate field of the descriptor object. See the [article](https://arxiv.org/abs/1312.6967) for more details. 
   
-  For a class $`k`$ and a subregression $`s`$, parameters are $`\alpha_{k,s,0}`$ and $`\alpha_{k,s,1}`$ the estimated coefficients of a logistic regression controlling the transition between subregressions, $`\beta_{k,s,1},\dots,\beta_{k,s,C}`$ the estimated coefficient of the polynomial regression and $`\sigma_{k,s}`$ the standard deviation of the residuals of the regression.
+  For a class $`k`$ and a subregression $`s`$, parameters are $`\alpha_{k,s,0}`$ and $`\alpha_{k,s,1}`$ the estimated coefficients of a logistic regression controlling the transition between subregressions, $`\beta_{k,s,1},...,\beta_{k,s,C}`$ the estimated coefficient of the polynomial regression and $`\sigma_{k,s}`$ the standard deviation of the residuals of the regression.
   
    *Func_SharedAlpha_CS* is a variant of the *Func_CS* model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
    
@@ -281,7 +281,7 @@ data <- matrix(c("1,2,3,4", "2,1,3,4", "?,?,?,?", "4,{2,3},{1,3},{1,2}", "2,{1,3
 ``` 
         
 ### Functional data: Func_CS & Func_SharedAlpha_CS
-The format of a fonctional data is: $`time_1:value_1,..., time_j:value_j`$. Between individuals, functional data can have different length and different time values.
+The format of a fonctional data is: `time_1:value_1,..., time_j:value_j`. Between individuals, functional data can have different length and different time values.
 In the case of a functional model, `nSub: i, nCoeff: k` must be indicated in the third row of the descriptor file.
 $`i`$ is the number of subregressions in a functional data and k the number of coefficients of each regression (2 = linear, 3 = quadratic, ...). Missing data are not supported.
 
