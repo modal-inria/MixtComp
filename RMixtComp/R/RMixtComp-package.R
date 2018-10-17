@@ -1,5 +1,9 @@
 #' @useDynLib RMixtComp
 #' @import Rcpp
+#' @import scales plotly
+#' @importFrom grDevices n2mfrow
+#' @importFrom graphics axis lines plot abline legend matplot par title
+#' @importFrom stats optimize pnorm qnorm qpois qweibull dnorm qnbinom
 #' @importFrom stats rbinom rmultinom rnorm rpois runif rweibull rnbinom
 #'
 #' @title RMixtComp
@@ -18,12 +22,11 @@
 #' 
 #' Getters are available to easily access some results (see. \link{mixtCompLearn} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getTik}, \link{getPartition}, \link{getType}, \link{getVarNames}.
 #' 
+#' Three datasets are provided and contains examples: \link{simData}, \link{titanic}, \link{CanadaianWeather}.
 #' 
-#' You can compute discriminative power and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}
+#' You can compute discriminative power and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
 #' 
-#' All graphics functions are in the \emph{RMixtCompPlot} package. 
-#' 
-#' 
+#' Graphics functions are \link{heatmapClass}, \link{heatmapTikSorted}, \link{heatmapVbles}, \link{histMisclassif}, \link{plotConvergence}, \link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVbles}.
 #' 
 #' @examples 
 #' \donttest{
