@@ -47,7 +47,7 @@ public:
 			cost += data_(*it).cost(alphaComplete_);
 		}
 
-		return cost;
+		return -cost; // to perform maximization when minimize is called
 	}
 
 	void gradient(const TVector& x, TVector& grad) {
@@ -65,6 +65,8 @@ public:
 				grad[p] += gradInd_[p + 2];
 			}
 		}
+
+		grad *= -1.0; // to perform maximization when minimize is called
 	}
 
 private:
