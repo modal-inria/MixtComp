@@ -115,6 +115,7 @@ summary.MixtCompLearn <- function(object, ...)
 #'
 #'  
 #' @param x \code{\link{MixtComp}} object
+#' @param nVarMaxToPrint number of varaibles to display (including z_class)
 #' @param ... Not used.
 #' 
 #' @examples 
@@ -208,6 +209,7 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #'
 #'  
 #' @param x \code{\link{MixtCompLearn}} object
+#' @param nVarMaxToPrint number of varaibles to display (including z_class)
 #' @param ... Not used.
 #' 
 #' @examples 

@@ -11,6 +11,8 @@ Print a \code{\link{MixtCompLearn}} object}
 \arguments{
 \item{x}{\code{\link{MixtCompLearn}} object}
 
+\item{nVarMaxToPrint}{number of varaibles to display (including z_class)}
+
 \item{...}{Not used.}
 }
 \description{
