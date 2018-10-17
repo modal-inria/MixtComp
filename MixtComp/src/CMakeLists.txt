@@ -73,48 +73,12 @@ endif()
 ## json
 
 configure_file(CMakeLists.txt.in json-download/CMakeLists.txt)
-execute_process(
-    COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-    RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download
-)
-if(result)
-    message(FATAL_ERROR "CMake step for json failed: ${result}")
-endif()
-execute_process(
-    COMMAND ${CMAKE_COMMAND} --build .
-    RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download
-)
-if(result)
-    message(FATAL_ERROR "Build step for json failed: ${result}")
-endif()
-
-# nlohmann is a header-only library
-include_directories(${CMAKE_BINARY_DIR}/json-src/single_include/nlohmann)
+include_directories(${CMAKE_BINARY_DIR}/json-src/single_include/nlohmann) # nlohmann is a header-only library
 
 ## optim
 
-configure_file(CMakeLists.txt.in json-download/CMakeLists.txt)
-execute_process(
-    COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-    RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download
-)
-if(result)
-    message(FATAL_ERROR "CMake step for json failed: ${result}")
-endif()
-execute_process(
-    COMMAND ${CMAKE_COMMAND} --build .
-    RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/json-download
-)
-if(result)
-    message(FATAL_ERROR "Build step for json failed: ${result}")
-endif()
-
-# CppNumericalSolvers is a header-only library
-include_directories(${CMAKE_BINARY_DIR}/optim-src/include)
+configure_file(CMakeLists.txt.in optim-download/CMakeLists.txt)
+include_directories(${CMAKE_BINARY_DIR}/optim-src/include) # CppNumericalSolvers is a header-only library
 
 # COMPILATION FLAGS
 
