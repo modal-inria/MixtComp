@@ -5,63 +5,63 @@ In case of a successfull run, the output object is a list of list (in R and Json
 ```
 output
 |_______ algo __ nbBurnInIter
-|		          |_ nbIter
-|		          |_ nbGibbsBurnInIter
-|		          |_ nbGibbsIter
-|		          |_ nInitPerClass
-|		          |_ nSemTry
-|		          |_ mode
-|		          |_ nInd
-|		          |_ confidenceLevel
-|		          |_ nClass
+|             |_ nbIter
+|             |_ nbGibbsBurnInIter
+|             |_ nbGibbsIter
+|             |_ nInitPerClass
+|             |_ nSemTry
+|             |_ mode
+|             |_ nInd
+|             |_ confidenceLevel
+|             |_ nClass
 |
 |_______ mixture __ BIC
-|		             |_ ICL
-|		             |_ lnCompletedLikelihood
-|		             |_ lnObservedLikelihood
-|		             |_ IDClass
-|		             |_ delta
-|		             |_ runTime
-|		             |_ nbFreeParameters
-|		             |_ completedProbabilityLogBurnIn
-|		             |_ completedProbabilityLogRun
-|		             |_ lnProbaGivenClass
+|                |_ ICL
+|                |_ lnCompletedLikelihood
+|                |_ lnObservedLikelihood
+|                |_ IDClass
+|                |_ delta
+|                |_ runTime
+|                |_ nbFreeParameters
+|                |_ completedProbabilityLogBurnIn
+|                |_ completedProbabilityLogRun
+|                |_ lnProbaGivenClass
 |
-|_______ variable	__ type __ z_class
+|_______ variable __ type __ z_class
                   |       |_ categorical
                   |       |_ gaussian
                   |       |_ ...
                   |
-                  |_ data	__ z_class __ completed
-                  |	      |	         |_ stat
-                  |	      |_ categorical __ completed
-                  |	      |	             |_ stat
-                  |	      |_ ...	
-                  |	      |_ functional	__ data
-                  |	                    |_ time
+                  |_ data __ z_class __ completed
+                  |       |          |_ stat
+                  |       |_ categorical __ completed
+                  |       |              |_ stat
+                  |       |_ ...	
+                  |       |_ functional	__ data
+                  |                     |_ time
                   |	
-                  |_ param __ z_class	__ stat
+                  |_ param __ z_class __ stat
                           |           |_ log
                           |           |_ paramStr
                           |_ functional __ alpha __ stat
-                          |	            |	       |_ log
-                          |	            |_ beta	__ stat
-                          |	            |	      |_ log
-                          |	            |_ sd __ stat
-                          |	            |	    |_ log
-                          |	            |_ paramStr
+                          |             |        |_ log
+                          |             |_ beta	__ stat
+                          |             |       |_ log
+                          |             |_ sd __ stat
+                          |             |     |_ log
+                          |             |_ paramStr
                           |_ rank __ mu	__ stat
                           |       |     |_ log
                           |       |_ pi __ stat
-                          |       |	    |_ log
+                          |       |     |_ log
                           |       |_ paramStr
                           |	
-                          |_ gaussian	__ stat
-                          |	          |_ log
-                          |	          |_ paramStr
+                          |_ gaussian __ stat
+                          |           |_ log
+                          |           |_ paramStr
                           |_ poisson __ stat
-                          |	         |_ log
-                          |	         |_ paramStr
+                          |          |_ log
+                          |          |_ paramStr
                           |_ ...
 ```
 
