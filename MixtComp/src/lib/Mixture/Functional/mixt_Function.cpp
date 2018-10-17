@@ -191,7 +191,6 @@ Real Function::cost(const Vector<Real>& alpha) const {
 }
 
 void Function::grad(const Vector<Real>& alpha, Vector<Real>& grad) const {
-	Real cost;
 	Matrix<Real> logValue;
 	Vector<Real> logSumExpValue;
 
