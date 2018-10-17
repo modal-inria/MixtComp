@@ -26,13 +26,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 #    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 #endif()
 
-## nlopt, easy to install from package manager
-
-find_package(NLOPT 2.4.2 REQUIRED)
-add_library(nlopt SHARED IMPORTED)
-set_target_properties(nlopt PROPERTIES IMPORTED_LOCATION ${NLOPT_LIBRARIES})
-include_directories(${NLOPT_INCLUDE_DIRS})
-
 ## eigen, easy to install from package manager
 
 find_package(Eigen3 REQUIRED) # TODO: add required version of compilation problems occur (putting 3.3 did not work on Ubuntu)

@@ -24,8 +24,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 	Index nParam = nSub * 2; // regression order for
 
 	Vector<Real> alpha(nParam);
-	alpha << 0., 0., // alpha is linearized in a single vector, for easier looping
-	alpha0, alpha1;
+	alpha << 0., 0., alpha0, alpha1; // alpha is linearized in a single vector, for easier looping
 
 	Matrix<Real> beta(nSub, nCoeff + 1);
 	beta.row(0) << 0., 1., 0.; // y =  x      + N(0, 1)
@@ -44,7 +43,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 
 	Matrix<Real> logValue;
 	Vector<Real> logSumExpValue;
-	timeValue(t, nParam, alpha.data(), logValue, logSumExpValue);
+	timeValue(t, nParam, alpha, logValue, logSumExpValue);
 
 	MultinomialStatistic multi;
 	NormalStatistic normal;
@@ -77,6 +76,9 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 		alphaComputed(2 * s) = funcClass.alpha()(s, 0);
 		alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
 	}
+
+	std::cout << itString(alpha) << std::endl;
+	std::cout << itString(alphaComputed) << std::endl;
 
 	ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 }
@@ -118,7 +120,7 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
 
 		Matrix<Real> logValue;
 		Vector<Real> logSumExpValue;
-		timeValue(t, nParam, alpha.data(), logValue, logSumExpValue);
+		timeValue(t, nParam, alpha, logValue, logSumExpValue);
 
 		MultinomialStatistic multi;
 		NormalStatistic normal;
@@ -150,6 +152,9 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
 		alphaComputed(2 * s) = funcClass.alpha()(s, 0);
 		alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
 	}
+
+	std::cout << itString(alpha) << std::endl;
+	std::cout << itString(alphaComputed) << std::endl;
 
 	ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 	ASSERT_EQ(true, funcClass.beta().isApprox(beta, 0.1));
