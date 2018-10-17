@@ -354,77 +354,77 @@ TEST(FunctionalComputation, hessian) {
 	ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
 }
 
-//TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
-//	Index nTime = 5000;
-//	Index nSub = 2; // number of subregression in the generation / estimation phases
-//	Index nCoeff = 2; // order of each subregression
-//	Real xMax = 50.;
-//	Real alphaSlope = 0.5;
-//
-//	Real alpha0 = xMax / 2.;
-//	Index nParam = nSub * 2; // regression order for
-//
-//	Vector<Real> t(nTime);
-//	for (Index i = 0; i < nTime; ++i) {
-//		t(i) = i * xMax / nTime;
-//	}
-//
-//	Vector<Real> alpha(4);
-//	alpha << alpha0 * alphaSlope, -alphaSlope, -alpha0 * alphaSlope, alphaSlope; // alpha is linearized in a single vector, for easier looping
-//
-//	Vector<std::set<Index> > w(nSub);
-//	Vector<Real> y(nTime, 0.);
-//
-//	Matrix<Real> beta(nSub, nCoeff + 1);
-//	beta.row(0) << 0., 1., 0.; // y =  x      + N(0, 1)
-//	beta.row(1) << 50., -1., 0.; // y = -x + 50 + N(0, 1)
-//
-//	Matrix<Real> logValue;
-//	Vector<Real> logSumExpValue;
-//	timeValue(t, nParam, alpha, logValue, logSumExpValue);
-//
-//	MultinomialStatistic multi;
-//	NormalStatistic normal;
-//	UniformStatistic uni;
-//
-//	Matrix<Real> kappa(nTime, nSub);
-//	for (Index i = 0; i < nTime; ++i) {
-//		kappa.row(i) = logValue.row(i).expE() / std::exp(logSumExpValue(i));
-//		Index currW = multi.sample(kappa.row(i));
-//		w(currW).insert(i); // sample the subregression
-//
-//		for (Index p = 0; p < nCoeff; ++p) { // sample the y(t) value, knowing the subregression at t
-//			y(i) += beta(currW, p) * pow(t(i), p);
-//		}
-//		y(i) += normal.sample(0, beta(currW, nCoeff));
-//	}
-//
-//	double estimatedAlpha[nParam];
-//	for (Index i = 0; i < nParam; ++i) {
-//		estimatedAlpha[i] = 0.;
-//	}
-//	CostData cData;
-//	cData.t_ = &t;
-//	cData.w_ = &w;
-//	cData.nParam_ = nParam;
-//	double minf;
-//
-//	nlopt_opt opt;
-//	opt = nlopt_create(NLOPT_LD_LBFGS, nParam); /* algorithm and dimensionality */
-//	nlopt_set_max_objective(opt, optiFunc, &cData);
-//	nlopt_optimize(opt, estimatedAlpha, &minf);
-//	nlopt_destroy(opt);
-//
-//	bool isApprox = true;
-//	for (Index i = 0; i < nParam; ++i) {
-//		if (0.1 < std::abs((estimatedAlpha[i] - alpha[i]) / alpha[i])) {
-//			isApprox = false;
-//			break;
-//		}
-//	}
-//
-//	ASSERT_EQ(true, isApprox);
-//}
+TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
+	Index nTime = 5000;
+	Index nSub = 2; // number of subregression in the generation / estimation phases
+	Index nCoeff = 2; // order of each subregression
+	Real xMax = 100.;
+	Real alpha0 = -50.;
+	Real alphaSlope = - 2.0 * alpha0 / xMax; // at xMax, the value is -alpha0
+
+	Index nParam = 2 * nSub; // regression order for
+	Index nFreeParam = 2 * (nSub - 1); // regression order for
+
+	Vector<Real> t(nTime);
+	for (Index i = 0; i < nTime; ++i) {
+		t(i) = i * xMax / nTime;
+	}
+
+	Vector<Real> alpha(4);
+	alpha << 0., 0., alpha0, alphaSlope; // alpha is linearized in a single vector, for easier looping
+
+	Vector<std::set<Index> > w(nSub);
+	Vector<Real> y(nTime, 0.);
+
+	Matrix<Real> beta(nSub, nCoeff + 1);
+	beta.row(0) << 0., 1., 0.; // y =  x      + N(0, 1)
+	beta.row(1) << 50., -1., 0.; // y = -x + 50 + N(0, 1)
+
+	Matrix<Real> logValue;
+	Vector<Real> logSumExpValue;
+	timeValue(t, nParam, alpha, logValue, logSumExpValue);
+
+	MultinomialStatistic multi;
+	NormalStatistic normal;
+	UniformStatistic uni;
+
+	Matrix<Real> kappa(nTime, nSub);
+	for (Index i = 0; i < nTime; ++i) {
+		kappa.row(i) = logValue.row(i).expE() / std::exp(logSumExpValue(i));
+		Index currW = multi.sample(kappa.row(i));
+		w(currW).insert(i); // sample the subregression
+
+		for (Index p = 0; p < nCoeff; ++p) { // sample the y(t) value, knowing the subregression at t
+			y(i) += beta(currW, p) * pow(t(i), p);
+		}
+		y(i) += normal.sample(0, beta(currW, nCoeff));
+	}
+
+	Vector<Real> estimatedFreeAlpha(nFreeParam, 0.); // initialization of solution
+
+	Vector<Function> data(1);
+	data(0).setVal(t, y, w);
+	std::set<Index> setInd;
+	setInd.insert(0);
+
+	FuncProblem fp(nParam, data, setInd);
+
+	cppoptlib::BfgsSolver<FuncProblem> solver;
+	cppoptlib::Criteria<Real> crit = cppoptlib::Criteria<Real>::defaults(); // Create a Criteria class to set the solver's stop conditions
+	crit.iterations = maxIterationOptim;
+	solver.setStopCriteria(crit);
+
+	solver.minimize(fp, estimatedFreeAlpha);
+
+	Vector<Real> estimatedAlpha(nParam, 0.); // initialization of solution
+	for (Index i = 0; i < nFreeParam; ++i) {
+		estimatedAlpha(i + 2) = estimatedFreeAlpha(i);
+	}
+
+	bool isApprox = estimatedAlpha.isApprox(alpha, 0.1);
+
+	ASSERT_EQ(true, isApprox);
+}
 
 TEST(FunctionalComputation, removeMissingQuantile) {
 	Index nInd = 250;

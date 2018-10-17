@@ -77,9 +77,6 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 		alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
 	}
 
-	std::cout << itString(alpha) << std::endl;
-	std::cout << itString(alphaComputed) << std::endl;
-
 	ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 }
 
@@ -152,9 +149,6 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
 		alphaComputed(2 * s) = funcClass.alpha()(s, 0);
 		alphaComputed(2 * s + 1) = funcClass.alpha()(s, 1);
 	}
-
-	std::cout << itString(alpha) << std::endl;
-	std::cout << itString(alphaComputed) << std::endl;
 
 	ASSERT_EQ(true, alphaComputed.isApprox(alpha, 0.1));
 	ASSERT_EQ(true, funcClass.beta().isApprox(beta, 0.1));
