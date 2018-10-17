@@ -24,8 +24,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 	Index nParam = nSub * 2; // regression order for
 
 	Vector<Real> alpha(nParam);
-	alpha << 0., 0., // alpha is linearized in a single vector, for easier looping
-	alpha0, alpha1;
+	alpha << 0., 0., alpha0, alpha1; // alpha is linearized in a single vector, for easier looping
 
 	Matrix<Real> beta(nSub, nCoeff + 1);
 	beta.row(0) << 0., 1., 0.; // y =  x      + N(0, 1)
@@ -44,7 +43,7 @@ TEST(FunctionalClass, optimOneclassOneInd) {
 
 	Matrix<Real> logValue;
 	Vector<Real> logSumExpValue;
-	timeValue(t, nParam, alpha.data(), logValue, logSumExpValue);
+	timeValue(t, nParam, alpha, logValue, logSumExpValue);
 
 	MultinomialStatistic multi;
 	NormalStatistic normal;
@@ -118,7 +117,7 @@ TEST(FunctionalClass, optimOneclassMultiIndAlphaBetaSd) {
 
 		Matrix<Real> logValue;
 		Vector<Real> logSumExpValue;
-		timeValue(t, nParam, alpha.data(), logValue, logSumExpValue);
+		timeValue(t, nParam, alpha, logValue, logSumExpValue);
 
 		MultinomialStatistic multi;
 		NormalStatistic normal;

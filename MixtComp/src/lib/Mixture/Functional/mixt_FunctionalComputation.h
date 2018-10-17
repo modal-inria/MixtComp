@@ -77,7 +77,7 @@ void regression(const Matrix<Real>& design, const Vector<Real>& y, const betaTyp
 
 void subRegression(const Vector<Matrix<Real> >& design, const Vector<Vector<Real> >& y, Matrix<Real>& beta, Vector<Real>& sd);
 
-void timeValue(const Vector<Real>& t, int nParam, const double* alpha, Matrix<Real>& logValue, Vector<Real>& logSumExpValue);
+void timeValue(const Vector<Real>& t, Index nParam, const Vector<Real>& alpha, Matrix<Real>& logValue, Vector<Real>& logSumExpValue);
 
 void costFunction(const Vector<Real>& t, const Matrix<Real>& logValue, const Vector<Real>& logSumExpValue, const Vector<std::set<Index> >& w, Real& cost);
 
@@ -87,8 +87,11 @@ Real deriv1Var(Index subReg, Index subRegInd, Index j, const Vector<Real>& t, co
 
 Real deriv2Var(Index subReg0, Index subRegInd0, Index subReg1, Index subRegInd1, Index j, const Vector<Real>& t, const Matrix<Real>& value);
 
-void gradCostFunction(const Vector<Real>& t, const Matrix<Real>& value, const Vector<Real>& logSumExpValue, const Vector<std::set<Index> >& w, double* gradCost);
+void gradCostFunction(const Vector<Real>& t, const Matrix<Real>& value, const Vector<Real>& logSumExpValue, const Vector<std::set<Index> >& w, Vector<Real>& gradCost);
 
+/**
+ * This is useful if an exact Newton-Raphson algorithm is used. It is not used in BFGS-L for example.
+ */
 void hessianCostFunction(const Vector<Real>& t, const Matrix<Real>& value, const Vector<Real>& logSumExpValue, const Vector<std::set<Index> >& w, Matrix<Real>& hessianCost);
 
 void hessianCostFunctionNoSym(const Vector<Real>& t, const Matrix<Real>& value, const Vector<Real>& logSumExpValue, const Vector<std::set<Index> >& w, Matrix<Real>& hessianCost);
@@ -103,29 +106,29 @@ void initAlpha(Index nParam, const Vector<Real>& t, Vector<Real>& alpha);
 //                 Real& costCurr,
 //                 Vector<Real>& gradCurr);
 
-void computeLambda(const Vector<Real>& t, const Vector<Real>& y, int nParam, const double* alpha, const Matrix<Real>& beta, Matrix<Real>& lambda);
+void computeLambda(const Vector<Real>& t, const Vector<Real>& y, Index nParam, const Vector<Real>& alpha, const Matrix<Real>& beta, Matrix<Real>& lambda);
 
-/** CostData used in optiFunc function, which does optimization for a single function. */
-typedef struct {
-	Vector<Real>* t_;
-	Vector<std::set<Index> >* w_;
-	Index nParam_;
-} CostData;
-
-/** Function used as a parameter for nlopt.
- * Simple optimization used to learn to use nlopt. */
-double optiFunc(unsigned nParam, const double* alpha, double* grad, void* my_func_data);
-
-/** Data structure that will be unpacked by optFunctionalClass. */
-typedef struct {
-	const Vector<Function>& data_;
-	const std::set<Index>& setInd_;
-} FuncData;
-
-/** Function used as an argument to nlopt
- * Since nlopt does not work with pointers to member function, this external helper function has been created. An opaque
- * pointer to an object FunctionalClass has to be passed as the last argument. */
-double optiFunctionalClass(unsigned nFreeParam, const double* alpha, double* gradDouble, void* my_func_data);
+///** CostData used in optiFunc function, which does optimization for a single function. */
+//typedef struct {
+//	Vector<Real>* t_;
+//	Vector<std::set<Index> >* w_;
+//	Index nParam_;
+//} CostData;
+//
+///** Function used as a parameter for nlopt.
+// * Simple optimization used to learn to use nlopt. */
+//double optiFunc(unsigned nParam, const double* alpha, double* grad, void* my_func_data);
+//
+///** Data structure that will be unpacked by optFunctionalClass. */
+//typedef struct {
+//	const Vector<Function>& data_;
+//	const std::set<Index>& setInd_;
+//} FuncData;
+//
+///** Function used as an argument to nlopt
+// * Since nlopt does not work with pointers to member function, this external helper function has been created. An opaque
+// * pointer to an object FunctionalClass has to be passed as the last argument. */
+//double optiFunctionalClass(unsigned nFreeParam, const double* alpha, double* gradDouble, void* my_func_data);
 
 void globalQuantile(const Vector<Function>& vecInd, Vector<Real>& quantile);
 

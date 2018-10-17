@@ -18,4 +18,4 @@ target_link_libraries(jmc
     MixtComp
     JMixtComp
     ${Boost_LIBRARIES}
-    nlopt)
+)
