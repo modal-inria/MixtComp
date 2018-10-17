@@ -58,6 +58,7 @@ NULL
 #' @aliases simDataLearn simDataPredict simDesc
 #' @docType data
 #' @keywords data
+#' @family data
 #' 
 #' @usage data(simData)
 #' 
@@ -74,5 +75,69 @@ NULL
 #' str(simDataLearn)
 #' str(simDataPredict)
 #' str(simDesc)
+#'   
+NULL
+
+
+#' Titanic data set
+#'
+#' @name titanic
+#' @docType data
+#' @keywords data
+#' @family data
+#' 
+#' @description The data set provides information on the passengers of Titanic. 
+#' 
+#' @usage data(titanic)
+#' 
+#' @format A data.frame with 1309 individuals and 8 variables.
+#' \itemize{
+#'   \item survived: 0 = No, 1 = Yes
+#'   \item pclass:	ticket class 	1 = 1st, 2 = 2nd, 3 = 3rd
+#'   \item sex: male or female
+#'   \item age: age in years
+#'   \item sibsp: number of siblings/spouses aboard the Titanic
+#'   \item parch: number of parents/children aboard the Titanic 
+#'   \item fare: ticket price in pounds
+#'   \item embarked: port of Embarkation 	C = Cherbourg, Q = Queenstown, S = Southampton
+#' }
+#' 
+#' @source \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.xls}
+#' 
+#' @examples
+#' \donttest{
+#' data(titanic)
+#' 
+#' head(titanic)
+#' 
+#' dat <- titanic
+#' 
+#' # refactor categorical data : survived, sex, embarked
+#' dat$sex <- refactorCategorical(dat$sex, c("male", "female", NA), c(1, 2, "?"))
+#' dat$embarked <- refactorCategorical(dat$embarked, c("C", "Q", "S", NA), c(1, 2, 3, "?"))
+#' dat$survived <- refactorCategorical(dat$survived, c(0, 1, NA), c(1, 2, "?"))
+#' 
+#' # replace all NA by ?
+#' dat[is.na(dat)] = "?" 
+#' 
+#' # create descriptor
+#' desc <- list(pclass = "Poisson",
+#'              survived = "Multinomial",
+#'              sex = "Multinomial",
+#'              age = "Gaussian",
+#'              sibsp = "Poisson",
+#'              parch = "Poisson",
+#'              fare = "Gaussian",
+#'              embarked = "Multinomial")
+#' 
+#' # create algo
+#' algo <- createAlgo()
+#' 
+#' # run clustering
+#' resLearn <- mixtCompLearn(dat, desc, algo, nClass = 2:15, criterion = "ICL", nRun = 5)
+#' 
+#' summary(resLearn)
+#' 
+#' }
 #'   
 NULL

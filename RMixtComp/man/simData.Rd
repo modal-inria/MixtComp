@@ -27,4 +27,8 @@ str(simDataPredict)
 str(simDesc)
   
 }
+\seealso{
+Other data: \code{\link{titanic}}
+}
+\concept{data}
 \keyword{data}
