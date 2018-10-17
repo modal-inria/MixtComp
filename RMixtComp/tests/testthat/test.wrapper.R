@@ -200,8 +200,9 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
   
-  expect_equal(names(resLearn), c("mixture", "variable", "algo", "criterion", "crit", "nClass", "res"))
+  expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
   expect_equal(resLearn$criterion, "ICL")
+  expect_equal(resLearn$nRun, 1)
   expect_equal(dim(resLearn$crit), c(2, 1))
   expect_equal(resLearn$nClass, 4)
   expect_equal(resLearn$algo$mode, "learn")
@@ -275,7 +276,8 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
   
-  expect_equal(names(resLearn), c("mixture", "variable", "algo", "criterion", "crit", "nClass", "res"))
+  expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
+  expect_equal(resLearn$nRun, 1)
   expect_equal(resLearn$criterion, "BIC")
   expect_equal(dim(resLearn$crit), c(2, 4))
   expect_equal(resLearn$nClass, 2:5)
