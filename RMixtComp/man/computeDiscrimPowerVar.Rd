@@ -46,6 +46,14 @@ resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass 
 
 discVar <- computeDiscrimPowerVar(resLearn)
 discClass <- computeDiscrimPowerClass(resLearn)
+
+# graphic representation of discVar
+plotDiscrimVbles(resLearn)
+# graphic representation of discClass
+plotDiscrimClass(resLearn)
 }
 
+}
+\seealso{
+\link{plotDiscrimClass} \link{plotDiscrimVbles}
 }

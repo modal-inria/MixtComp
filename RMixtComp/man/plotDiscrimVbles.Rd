@@ -40,6 +40,8 @@ plotDiscrimVbles(res)
 
 }
 \seealso{
+\link{computeDiscrimPowerVar}
+
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}},
   \code{\link{heatmapVbles}}, \code{\link{histMisclassif}},

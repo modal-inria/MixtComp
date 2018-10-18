@@ -39,6 +39,8 @@ plotDiscrimClass(res)
 
 }
 \seealso{
+\link{computeDiscrimPowerClass}
+
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}},
   \code{\link{heatmapVbles}}, \code{\link{histMisclassif}},

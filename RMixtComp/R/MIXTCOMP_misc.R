@@ -72,8 +72,14 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' 
 #' discVar <- computeDiscrimPowerVar(resLearn)
 #' discClass <- computeDiscrimPowerClass(resLearn)
+#' 
+#' # graphic representation of discVar
+#' plotDiscrimVbles(resLearn)
+#' # graphic representation of discClass
+#' plotDiscrimClass(resLearn)
 #' }
 #' 
+#' @seealso \link{plotDiscrimClass} \link{plotDiscrimVbles}
 #' @export
 computeDiscrimPowerVar <- function(outMixtComp)
 {
@@ -126,6 +132,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' simClass <- computeSimilarityClass(resLearn)
 #' }
 #' 
+#' @seealso \link{heatmapVbles} \link{heatmapClass}
 #' @export
 computeSimilarityVar <- function(outMixtComp)
 {
@@ -150,15 +157,19 @@ computeSimilarityClass <- function(outMixtComp)
 
 
 
-# rand index from fossil
-rand.index <- function (group1, group2) 
+# rand index 
+rand.index <- function (partition1, partition2) 
 {
-  x <- abs(sapply(group1, function(x) x - group1))
+  x <- abs(sapply(partition1, function(x) {x - partition1}))
   x[x > 1] <- 1
-  y <- abs(sapply(group2, function(x) x - group2))
+  
+  y <- abs(sapply(group2, function(x) {x - partition2}))
   y[y > 1] <- 1
+  
   sg <- sum(abs(x - y))/2
   bc <- choose(dim(x)[1], 2)
-  ri <- 1 - sg/bc
-  return(ri)
+  
+  randIndex <- 1 - sg/bc
+  
+  return(randIndex)
 }

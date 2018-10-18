@@ -27,6 +27,8 @@
 #' param <- getParam(resLearn, "Gaussian1")
 #' }
 #' 
+#' @seealso \link{plotDataBoxplot}  \link{plotDataCI}  
+#' 
 #' @family getter
 #' @export
 getParam <- function(outMixtComp, varName)

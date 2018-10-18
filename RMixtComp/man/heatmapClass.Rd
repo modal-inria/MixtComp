@@ -36,6 +36,8 @@ heatmapClass(res)
 
 }
 \seealso{
+\link{computeSimilarityClass}
+
 Other plot: \code{\link{heatmapTikSorted}},
   \code{\link{heatmapVbles}}, \code{\link{histMisclassif}},
   \code{\link{plotConvergence}},

@@ -25,6 +25,8 @@
 #' 
 #' }
 #' 
+#' @seealso \link{computeDiscrimPowerVar}
+#' 
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
@@ -94,6 +96,8 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
 #' 
 #' }
 #' 
+#' @seealso \link{computeDiscrimPowerClass}
+#' 
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
@@ -147,6 +151,8 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), ...){
 #' heatmapVbles(res)
 #' 
 #' }
+#' 
+#' @seealso \link{computeSimilarityVar}
 #' 
 #' @author Matthieu MARBAC
 #' @family plot
@@ -222,6 +228,8 @@ heatmapVbles <- function(output, ...){
 #' 
 #' } 
 #' 
+#' @seealso \link{computeSimilarityClass}
+#'
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
@@ -297,6 +305,8 @@ heatmapClass <- function(output, ...){
 #' heatmapTikSorted(res)
 #' 
 #' }
+#' 
+#' @seealso getTik
 #' 
 #' @author Matthieu MARBAC
 #' @family plot

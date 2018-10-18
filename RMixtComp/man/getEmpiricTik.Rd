@@ -46,6 +46,8 @@ tik <- getTik(resLearn, log = FALSE)
 
 }
 \seealso{
+\link{heatmapTikSorted}
+
 Other getter: \code{\link{getBIC}},
   \code{\link{getCompletedData}}, \code{\link{getParam}},
   \code{\link{getPartition}}, \code{\link{getType}}

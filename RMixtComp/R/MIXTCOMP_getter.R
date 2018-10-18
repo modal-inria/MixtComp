@@ -170,6 +170,8 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' tik <- getTik(resLearn, log = FALSE)
 #' }
 #' 
+#' @seealso \link{heatmapTikSorted}
+#' 
 #' @family getter
 #' @export
 getEmpiricTik <- function(outMixtComp)

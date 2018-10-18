@@ -37,6 +37,8 @@ heatmapVbles(res)
 
 }
 \seealso{
+\link{computeSimilarityVar}
+
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}},
   \code{\link{histMisclassif}},
