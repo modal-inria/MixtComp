@@ -38,7 +38,7 @@ void subRegression(const Vector<Matrix<Real> >& design, const Vector<Vector<Real
 	}
 }
 
-void timeValue(const Vector<Real>& t, int nParam, const double* alpha, Matrix<Real>& logValue, Vector<Real>& logSumExpValue) {
+void timeValue(const Vector<Real>& t, Index nParam, const Vector<Real>& alpha, Matrix<Real>& logValue, Vector<Real>& logSumExpValue) {
 	Index nT = t.size();
 	Index nSub = nParam / 2;
 
@@ -90,7 +90,7 @@ Real deriv2Var(Index subReg0, Index subRegInd0, Index subReg1, Index subRegInd1,
 	return res;
 }
 
-void gradCostFunction(const Vector<Real>& t, const Matrix<Real>& value, const Vector<Real>& logSumExpValue, const Vector<std::set<Index> >& w, double* gradCost) {
+void gradCostFunction(const Vector<Real>& t, const Matrix<Real>& value, const Vector<Real>& logSumExpValue, const Vector<std::set<Index> >& w, Vector<Real>& gradCost) {
 	Index nT = t.size();
 	Index nParam = 2 * value.cols();
 
@@ -244,7 +244,7 @@ void sampleW(const Vector<Real>& t, const Vector<Real>& y, const Matrix<Real>& a
 	}
 }
 
-void computeLambda(const Vector<Real>& t, const Vector<Real>& y, int nParam, const double* alpha, const Matrix<Real>& beta, Matrix<Real>& lambda) {
+void computeLambda(const Vector<Real>& t, const Vector<Real>& y, Index nParam, const Vector<Real>& alpha, const Matrix<Real>& beta, Matrix<Real>& lambda) {
 	Index nTime = t.size();
 	Index nSub = beta.rows();
 
@@ -264,50 +264,50 @@ void computeLambda(const Vector<Real>& t, const Vector<Real>& y, int nParam, con
 	}
 }
 
-double optiFunc(unsigned nParam, const double* alpha, double* grad, void* my_func_data) {
-	double cost;
-	CostData* cData = (CostData*) my_func_data;
-	Matrix<Real> logValue;
-	Vector<Real> logSumExpValue;
-
-	timeValue(*cData->t_, nParam, alpha, logValue, logSumExpValue);
-
-	costFunction(*cData->t_, logValue, logSumExpValue, *cData->w_, cost);
-
-	if (grad != NULL) {
-		gradCostFunction(*cData->t_, logValue, logSumExpValue, *cData->w_, grad);
-	}
-
-	return cost;
-}
-
-double optiFunctionalClass(unsigned nFreeParam, const double* alpha, double* grad, void* my_func_data) {
-	FuncData* funcData = (FuncData*) my_func_data;
-
-	Real cost = 0.;
-	for (Index p = 0; p < nFreeParam; ++p) {
-		grad[p] = 0.;
-	}
-
-	Index nParam = nFreeParam + 2;
-	double gradInd[nParam];
-	double alphaComplete[nParam]; // The whole code was created using the complete set of parameters. Using alphaComplete allows for immediate reuse.
-	alphaComplete[0] = 0.;
-	alphaComplete[1] = 0.;
-	for (Index p = 0; p < nFreeParam; ++p) {
-		grad[p] = 0.;
-		alphaComplete[p + 2] = alpha[p];
-	}
-
-	for (std::set<Index>::const_iterator it = funcData->setInd_.begin(), itE = funcData->setInd_.end(); it != itE; ++it) { // each individual in current class adds a contribution to both the cost and the gradient of alpha
-		cost += funcData->data_(*it).costAndGrad(nParam, alphaComplete, gradInd);
-		for (Index p = 0; p < nFreeParam; ++p) {
-			grad[p] += gradInd[p + 2];
-		}
-	}
-
-	return cost;
-}
+//double optiFunc(Index nParam, const Vector<Real>& alpha, Vector<Real>& grad, void* my_func_data) {
+//	double cost;
+//	CostData* cData = (CostData*) my_func_data;
+//	Matrix<Real> logValue;
+//	Vector<Real> logSumExpValue;
+//
+//	timeValue(*cData->t_, nParam, alpha, logValue, logSumExpValue);
+//
+//	costFunction(*cData->t_, logValue, logSumExpValue, *cData->w_, cost);
+//
+//	if (grad != NULL) {
+//		gradCostFunction(*cData->t_, logValue, logSumExpValue, *cData->w_, grad);
+//	}
+//
+//	return cost;
+//}
+//
+//double optiFunctionalClass(unsigned nFreeParam, const double* alpha, double* grad, void* my_func_data) {
+//	FuncData* funcData = (FuncData*) my_func_data;
+//
+//	Real cost = 0.;
+//	for (Index p = 0; p < nFreeParam; ++p) {
+//		grad[p] = 0.;
+//	}
+//
+//	Index nParam = nFreeParam + 2;
+//	double gradInd[nParam];
+//	double alphaComplete[nParam]; // The whole code was created using the complete set of parameters. A Function object will not suppose that the first coefficients are 0. They must manually be set to 0. Using alphaComplete allows for immediate reuse.
+//	alphaComplete[0] = 0.;
+//	alphaComplete[1] = 0.;
+//	for (Index p = 0; p < nFreeParam; ++p) {
+//		grad[p] = 0.;
+//		alphaComplete[p + 2] = alpha[p];
+//	}
+//
+//	for (std::set<Index>::const_iterator it = funcData->setInd_.begin(), itE = funcData->setInd_.end(); it != itE; ++it) { // each individual in current class adds a contribution to both the cost and the gradient of alpha
+//		cost += funcData->data_(*it).costAndGrad(nParam, alphaComplete, gradInd);
+//		for (Index p = 0; p < nFreeParam; ++p) {
+//			grad[p] += gradInd[p + 2];
+//		}
+//	}
+//
+//	return cost;
+//}
 
 void globalQuantile(const Vector<Function>& vecInd, Vector<Real>& quantile) {
 	Index nInd = vecInd.size();

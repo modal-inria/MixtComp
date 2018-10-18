@@ -149,8 +149,7 @@ TEST(FunctionalComputation, subRegression) {
 	for (Index s = 0; s < nSub; ++s) {
 		Index i = 0;
 		y(s) = 0.;
-		for (std::list<Index>::const_iterator it = w(s).begin(), itE =
-				w(s).end(); it != itE; ++it) {
+		for (std::list<Index>::const_iterator it = w(s).begin(), itE = w(s).end(); it != itE; ++it) {
 			design(s).row(i) = vandermonde.row(*it);
 
 			for (Index p = 0; p < nCoeff; ++p) {
@@ -191,13 +190,14 @@ TEST(FunctionalComputation, costAndGrad1SubReg) {
 	w(0).insert(2);
 	w(0).insert(3);
 
-	double alpha0[] = { -1., 0.5 };
+	Vector<Real> alpha0(2);
+	alpha0 << -1., 0.5;
 
 	Matrix<Real> value;
 	Vector<Real> sumExpValue;
 	Vector<Real> fdGrad(nParam); // finite differences gradient
 	Vector<Real> computedGrad(nParam); // analytical gradient
-	double computedGradVec[nParam];
+	Vector<Real> computedGradVec(nParam);
 	Real c0; // base cost
 
 	timeValue(t, nParam, alpha0, value, sumExpValue);
@@ -208,7 +208,7 @@ TEST(FunctionalComputation, costAndGrad1SubReg) {
 
 	for (Index s = 0; s < nParam; ++s) {
 		Real c1;
-		double alpha1[nParam];
+		Vector<Real> alpha1(nParam);
 		for (Index i = 0; i < nParam; ++i) {
 			alpha1[i] = alpha0[i];
 		}
@@ -244,13 +244,14 @@ TEST(FunctionalComputation, costAndGrad) {
 	w(1).insert(2);
 	w(1).insert(3);
 
-	double alpha0[] = { -1., 0.5, 1., -0.5 };
+	Vector<Real> alpha0(4);
+	alpha0 << -1., 0.5, 1., -0.5;
 
 	Matrix<Real> value;
 	Vector<Real> sumExpValue;
 	Vector<Real> fdGrad(nParam); // finite differences gradient
 	Vector<Real> computedGrad(nParam); // analytical gradient
-	double computedGradVec[nParam];
+	Vector<Real> computedGradVec(nParam);
 	Real c0; // base cost
 
 	timeValue(t, nParam, alpha0, value, sumExpValue);
@@ -261,7 +262,7 @@ TEST(FunctionalComputation, costAndGrad) {
 
 	for (Index s = 0; s < nParam; ++s) {
 		Real c1;
-		double alpha1[nParam];
+		Vector<Real> alpha1(nParam);
 		for (Index i = 0; i < nParam; ++i) {
 			alpha1[i] = alpha0[i];
 		}
@@ -299,7 +300,8 @@ TEST(FunctionalComputation, hessian) {
 		}
 	}
 
-	double alpha0[] = { -1., 0.5, 1., -0.5 };
+	Vector<Real> alpha0(4);
+	alpha0 << -1., 0.5, 1., -0.5;
 
 	Matrix<Real> value;
 	Vector<Real> sumExpValue;
@@ -319,7 +321,7 @@ TEST(FunctionalComputation, hessian) {
 			Real c10;
 			Real c11;
 
-			double alpha1[nParam];
+			Vector<Real> alpha1(nParam);
 			for (Index i = 0; i < nParam; ++i) {
 				alpha1[i] = alpha0[i];
 			}
@@ -356,19 +358,20 @@ TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
 	Index nTime = 5000;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression
-	Real xMax = 50.;
-	Real alphaSlope = 0.5;
+	Real xMax = 100.;
+	Real alpha0 = -50.;
+	Real alphaSlope = - 2.0 * alpha0 / xMax; // at xMax, the value is -alpha0
 
-	Real alpha0 = xMax / 2.;
-	Index nParam = nSub * 2; // regression order for
+	Index nParam = 2 * nSub; // regression order for
+	Index nFreeParam = 2 * (nSub - 1); // regression order for
 
 	Vector<Real> t(nTime);
 	for (Index i = 0; i < nTime; ++i) {
 		t(i) = i * xMax / nTime;
 	}
 
-	double alpha[] = { alpha0 * alphaSlope, -alphaSlope, // alpha is linearized in a single vector, for easier looping
-			-alpha0 * alphaSlope, alphaSlope };
+	Vector<Real> alpha(4);
+	alpha << 0., 0., alpha0, alphaSlope; // alpha is linearized in a single vector, for easier looping
 
 	Vector<std::set<Index> > w(nSub);
 	Vector<Real> y(nTime, 0.);
@@ -397,29 +400,28 @@ TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
 		y(i) += normal.sample(0, beta(currW, nCoeff));
 	}
 
-	double estimatedAlpha[nParam];
-	for (Index i = 0; i < nParam; ++i) {
-		estimatedAlpha[i] = 0.;
-	}
-	CostData cData;
-	cData.t_ = &t;
-	cData.w_ = &w;
-	cData.nParam_ = nParam;
-	double minf;
+	Vector<Real> estimatedFreeAlpha(nFreeParam, 0.); // initialization of solution
 
-	nlopt_opt opt;
-	opt = nlopt_create(NLOPT_LD_LBFGS, nParam); /* algorithm and dimensionality */
-	nlopt_set_max_objective(opt, optiFunc, &cData);
-	nlopt_optimize(opt, estimatedAlpha, &minf);
-	nlopt_destroy(opt);
+	Vector<Function> data(1);
+	data(0).setVal(t, y, w);
+	std::set<Index> setInd;
+	setInd.insert(0);
 
-	bool isApprox = true;
-	for (Index i = 0; i < nParam; ++i) {
-		if (0.1 < std::abs((estimatedAlpha[i] - alpha[i]) / alpha[i])) {
-			isApprox = false;
-			break;
-		}
+	FuncProblem fp(nParam, data, setInd);
+
+	cppoptlib::BfgsSolver<FuncProblem> solver;
+	cppoptlib::Criteria<Real> crit = cppoptlib::Criteria<Real>::defaults(); // Create a Criteria class to set the solver's stop conditions
+	crit.iterations = maxIterationOptim;
+	solver.setStopCriteria(crit);
+
+	solver.minimize(fp, estimatedFreeAlpha);
+
+	Vector<Real> estimatedAlpha(nParam, 0.); // initialization of solution
+	for (Index i = 0; i < nFreeParam; ++i) {
+		estimatedAlpha(i + 2) = estimatedFreeAlpha(i);
 	}
+
+	bool isApprox = estimatedAlpha.isApprox(alpha, 0.1);
 
 	ASSERT_EQ(true, isApprox);
 }

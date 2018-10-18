@@ -26,6 +26,7 @@
 #include <Mixture/Functional/mixt_FunctionalComputation.h>
 #include <Mixture/Functional/mixt_FunctionalClass.h>
 #include <Mixture/Functional/mixt_FunctionalParser.h>
+#include <Mixture/Functional/FuncProblem.h>
 #include <Mixture/Rank/mixt_RankParser.h>
 #include <Mixture/Simple/SimpleMixture.h>
 #include <Mixture/Simple/Weibull/Weibull.h>

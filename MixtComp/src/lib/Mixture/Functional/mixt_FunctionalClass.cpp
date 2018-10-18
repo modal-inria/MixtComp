@@ -7,8 +7,7 @@
  *  Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
  **/
 
-#include <nlopt.h>
-
+#include "FuncProblem.h"
 #include "mixt_FunctionalClass.h"
 
 namespace mixt {
@@ -41,27 +40,25 @@ std::string FunctionalClass::mStep(const std::set<Index>& setInd) {
 
 void FunctionalClass::mStepAlpha(const std::set<Index>& setInd) {
 	Index nSub = alpha_.rows();
+	Index nParam = 2 * nSub;
 	Index nFreeParam = 2 * (nSub - 1);
-	double minf;
 
-	double alpha[nFreeParam]; // linear version of alpha, to conform to nlopt argument format
-	for (Index s = 0; s < nSub - 1; ++s) {
+	Vector<Real> alpha(nFreeParam); // linear version of alpha, to conform to optimization library format
+	for (Index s = 0; s < nSub - 1; ++s) { // note that the two first coefficients stay at 0, they are not free parameters
 		alpha[2 * s] = alpha_(s + 1, 0);
 		alpha[2 * s + 1] = alpha_(s + 1, 1);
 	}
 
-	FuncData data { data_, setInd };
-	FuncData* p_data = &data;
+	FuncProblem fp(nParam, data_, setInd);
 
-	nlopt_opt opt;
-	opt = nlopt_create(NLOPT_LD_LBFGS, nFreeParam); // algorithm and dimensionality
-	nlopt_set_maxeval(opt, maxIterationOptim); // without setting this, the time required for computations could be subject to extreme variations
-	nlopt_set_max_objective(opt, optiFunctionalClass, p_data); // cost and grad function, data for the function
+	cppoptlib::BfgsSolver<FuncProblem> solver;
+	cppoptlib::Criteria<Real> crit = cppoptlib::Criteria<Real>::defaults(); // Create a Criteria class to set the solver's stop conditions
+	crit.iterations = maxIterationOptim;
+	solver.setStopCriteria(crit);
 
-	nlopt_optimize(opt, alpha, &minf); // launch the effective optimization run
-	nlopt_destroy(opt);
+	solver.minimize(fp, alpha);
 
-	for (Index s = 0; s < nSub - 1; ++s) {
+	for (Index s = 0; s < nSub - 1; ++s) { // from linear to matrix format
 		alpha_(s + 1, 0) = alpha[2 * s];
 		alpha_(s + 1, 1) = alpha[2 * s + 1];
 	}

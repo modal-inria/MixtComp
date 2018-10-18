@@ -49,7 +49,11 @@ public:
 	 * */
 	void removeMissingQuantileMixing(const Vector<Real>& quantiles);
 
-	double costAndGrad(unsigned nParam, const double* alpha, double* grad) const;
+	Real costAndGrad(const Vector<Real>& alpha, Vector<Real>& grad) const;
+
+	Real cost(const Vector<Real>& alpha) const;
+
+	void grad(const Vector<Real>& alpha, Vector<Real>& grad) const;
 
 	const Vector<Real>& t() const {
 		return t_;

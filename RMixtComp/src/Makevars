@@ -28,10 +28,10 @@ LIB_MC = ../../MixtComp/release/lib/libMixtComp.a
 DIR_TEST = test
 
 # Flags for the cpp files at the root (as well as included headers, for example template classes) , i.e.
-PKG_CXXFLAGS = -std=c++11 -I$(EIGEN3_INCLUDE_DIR) -I$(NLOPT_INCLUDE_DIRS) -I$(Boost_INCLUDE_DIRS) -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -I$(DIR_MC)/src/lib/LinAlg -I$(DIR_MC)/src/lib
+PKG_CXXFLAGS = -std=c++11 -I$(EIGEN3_INCLUDE_DIR) -I$(NLOPT_INCLUDE_DIRS) -I$(Boost_INCLUDE_DIRS) -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -Ioptim/include -I$(DIR_MC)/src/lib/LinAlg -I$(DIR_MC)/src/lib
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = $(LIB_MC) $(NLOPT_LIBRARIES)
+PKG_LIBS = $(LIB_MC)
 
 export LDFLAGS CC CFLAGS CXX CXXFLAGS # flags needed for the compilation of MixtComp
 

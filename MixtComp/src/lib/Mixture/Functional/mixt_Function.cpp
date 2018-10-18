@@ -160,21 +160,45 @@ void Function::removeMissingQuantileMixing(const Vector<Real>& quantiles) {
 	}
 }
 
-double Function::costAndGrad(unsigned nParam, const double* alpha, double* grad) const {
-	double cost;
+Real Function::costAndGrad(const Vector<Real>& alpha, Vector<Real>& grad) const {
+	Real cost;
 	Matrix<Real> logValue;
 	Vector<Real> logSumExpValue;
+
+	Index nParam = alpha.size();
 
 	timeValue(t_, nParam, alpha, logValue, logSumExpValue);
 
 	costFunction(t_, logValue, logSumExpValue, w_, cost);
 
-	if (grad != NULL) {
-		gradCostFunction(t_, logValue, logSumExpValue, w_, grad);
-	}
+	gradCostFunction(t_, logValue, logSumExpValue, w_, grad);
 
-//	std::cout << "Function::costAndGrad, cost: " << cost << std::endl;
 	return cost;
+}
+
+Real Function::cost(const Vector<Real>& alpha) const {
+	Real cost;
+	Matrix<Real> logValue;
+	Vector<Real> logSumExpValue;
+
+	Index nParam = alpha.size();
+
+	timeValue(t_, nParam, alpha, logValue, logSumExpValue);
+
+	costFunction(t_, logValue, logSumExpValue, w_, cost);
+
+	return cost;
+}
+
+void Function::grad(const Vector<Real>& alpha, Vector<Real>& grad) const {
+	Matrix<Real> logValue;
+	Vector<Real> logSumExpValue;
+
+	Index nParam = alpha.size();
+
+	timeValue(t_, nParam, alpha, logValue, logSumExpValue);
+
+	gradCostFunction(t_, logValue, logSumExpValue, w_, grad);
 }
 
 void Function::printProp() const {
