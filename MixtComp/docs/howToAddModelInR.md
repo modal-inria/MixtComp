@@ -15,12 +15,10 @@ First of all, add the model in the following documentation:
 
 Update the documentation in the [mixtCompLearn function](../RMixtComp/R/MIXTCOMP_mixtCompLearn.R).
 
-Add the new model in the [getParam function](../RMixtComp/R/MIXTCOMP_getter.R). The function returns a matrix where rows corresponds to classes and columns to the estimated parameters.
+Add the new model in the [getParam function](../RMixtComp/R/MIXTCOMP_getParam.R). The function returns a matrix where rows corresponds to classes and columns to the estimated parameters.
 
-## RMixtCompPlot
+Update [plotDataCI function](../RMixtComp/R/PLOT_plotUnivariateDistributions.R) with the new model. It requires to add an [extractCI** function](../RMixtComp/R/PLOT_extractCIbounds.R) that compute the mean and the confidence interval per class.
 
-Update [plotDataCI function](../RMixtCompPlot/R/MIXTCOMP_plotUnivariateDistributions.R) with the new model. It requires to add an [extractCI** function](../RMixtCompPlot/R/MIXTCOMP_extractCIbounds.R) that compute the mean and the confidence interval per class.
+Update [plotParamConvergence function](../RMixtComp/R/PLOT_plotConvergence.R) with the new model. It plots the evolution of the estimated parameters during the algorithm's run.
 
-Update [plotParamConvergence function](../RMixtCompPlot/R/MIXTCOMP_plotConvergence.R) with the new model. It plots the evolution of the estimated parameters during the algorithm's run.
-
-Update [plotDataBoxplot function](../RMixtCompPlot/R/MIXTCOMP_plotUnivariateBoxplots.R) with the new model. It plots a boxplot of the data per class.
+Update [plotDataBoxplot function](../RMixtComp/R/PLOT_plotUnivariateBoxplots.R) with the new model. It plots a boxplot of the data per class.

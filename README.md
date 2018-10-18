@@ -11,10 +11,8 @@ Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 
 * **MixtComp** MixtComp C++ library
 * **RMixtComp** R package linking MixtComp with Rcpp (internal use)
-* **RMixtCompPlot** R package with graphical functions
 * **RJMixtComp** R package using JMixtComp (for customers)
 * **MixtCompRTools** R package containing the hierarchical MixtComp
-* **libraries** external libraries and cmake scripts
 
 # Documentation
 
