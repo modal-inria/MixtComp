@@ -3,6 +3,7 @@
 ^./*.csv$
 ^./*.json$
 doc
+out
 .Rhistory
 .cproject
 .project
