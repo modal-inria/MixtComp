@@ -6,15 +6,15 @@
 
 ### R
 
-R must be installed, along with the following packages from the CRAN: *Rcpp*. Several packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report, *RInside* is used for testing procedure in C++ using R command, *roxygen2* is required for generating the documentation and *devtools* (with *roxygen2*) is required to load all functions of RMixtComp on the CI server.
+R must be installed, along with the following packages from the CRAN: *Rcpp*, *plotly*, *scales*. Several packages are used for testing but are not required for installing RMixtComp: *testthat* is used to perform unit testing in R, *xml2* for xml report, *RInside* is used for testing procedure in C++ using R command, *roxygen2* is required for generating the documentation and *devtools* (with *roxygen2*) is required to load all functions of RMixtComp on the CI server.
 
 Those command lines can perform the installation automatically in the ~/R directory
 add the following line to .bashrc file: export R_LIBS="~/R"
 ```
 mkdir ~/R
-Rscript -e "install.packages(c(\"Rcpp\"), repos = \"https://cran.univ-paris1.fr/\")"
+Rscript -e "install.packages(c(\"Rcpp\", \"plotly\", \"scales\"), repos = \"https://cran.rstudio.com\")"
 # OPTIONAL: for testing purpose
-Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\"), repos = \"https://cran.univ-paris1.fr/\")"
+Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\"), repos = \"https://cran.rstudio.com\")"
 ```
 
 ### Windows
@@ -41,6 +41,8 @@ You can run tests via R:
 ```
 library(RMixtComp)
 library(testthat)
+library(devtools)
+load_all()
 test_dir("tests/testthat/")
 ```
 
@@ -56,13 +58,11 @@ In Rstudio, if packages *devtools* and *testthat* are installed, you can run the
 
 ### Test the C++ code from RMixtComp
 
-It requires *RIinside* package. Tests are in the *src/test* folder. You can compile and run it with:
-```
-./testBuildRun.sh
-```
+It requires *RIinside* package. Tests are in the *src/test* folder. You can compile and run it from Eclipse.
+
 
 ### Writing new tests
-For your own testing procedure, you can use the data and descriptor  provided in the package, you can load them in R:
+For your own testing procedure, you can use the data and descriptor provided in the package, you can load them in R:
 ```
 data(simData)
 ```
