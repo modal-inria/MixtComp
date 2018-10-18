@@ -308,6 +308,26 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   for(name in getVarNames(resLearn))
     expect_silent(getParam(resLearn, name))
   
+  # test plot functions
+  expect_silent(plotConvergence(resLearn))
+  expect_silent(plotDiscrimClass(resLearn))
+  expect_silent(plotDiscrimVbles(resLearn))
+  expect_silent(heatmapVbles(resLearn))
+  expect_silent(heatmapClass(resLearn))
+  expect_silent(heatmapTikSorted(resLearn))
+  expect_silent(histMisclassif(resLearn))
+  for(name in getVarNames(resLearn))
+  {
+    if(resLearn$variable$type[[name]] != "Rank_ISR")
+    {
+      expect_silent(plotDataCI(resLearn, name))
+      expect_silent(plotDataBoxplot(resLearn, name))
+    }else{
+      expect_warning(plotDataCI(resLearn, name))
+      expect_warning(plotDataBoxplot(resLearn, name))
+    }
+  }
+  
   
   expect_silent(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3))
   expect_warning(summary(resLearn), regexp = NA)
