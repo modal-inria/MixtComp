@@ -31,6 +31,12 @@ public:
 };
 
 template<>
+class names<int> {
+public:
+	static const std::string name;
+};
+
+template<>
 class names<Real> {
 public:
 	static const std::string name;

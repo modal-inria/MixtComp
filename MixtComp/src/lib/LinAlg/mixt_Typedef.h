@@ -20,9 +20,9 @@ namespace mixt {
 typedef double Real;
 // typedef std::size_t Index;
 // typedef int Index;
-typedef std::ptrdiff_t Index;
+typedef unsigned long Index;
 
-typedef int Integer;
+typedef long Integer;
 
 Real toReal(const std::string& s);
 
