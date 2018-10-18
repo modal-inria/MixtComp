@@ -17,6 +17,8 @@ const std::string names<Index>::name = "Index";
 
 const std::string names<Integer>::name = "Integer";
 
+const std::string names<int>::name = "Integer";
+
 const std::string names<Real>::name = "Real";
 
 }
