@@ -108,28 +108,6 @@ void initAlpha(Index nParam, const Vector<Real>& t, Vector<Real>& alpha);
 
 void computeLambda(const Vector<Real>& t, const Vector<Real>& y, Index nParam, const Vector<Real>& alpha, const Matrix<Real>& beta, Matrix<Real>& lambda);
 
-///** CostData used in optiFunc function, which does optimization for a single function. */
-//typedef struct {
-//	Vector<Real>* t_;
-//	Vector<std::set<Index> >* w_;
-//	Index nParam_;
-//} CostData;
-//
-///** Function used as a parameter for nlopt.
-// * Simple optimization used to learn to use nlopt. */
-//double optiFunc(unsigned nParam, const double* alpha, double* grad, void* my_func_data);
-//
-///** Data structure that will be unpacked by optFunctionalClass. */
-//typedef struct {
-//	const Vector<Function>& data_;
-//	const std::set<Index>& setInd_;
-//} FuncData;
-//
-///** Function used as an argument to nlopt
-// * Since nlopt does not work with pointers to member function, this external helper function has been created. An opaque
-// * pointer to an object FunctionalClass has to be passed as the last argument. */
-//double optiFunctionalClass(unsigned nFreeParam, const double* alpha, double* gradDouble, void* my_func_data);
-
 void globalQuantile(const Vector<Function>& vecInd, Vector<Real>& quantile);
 
 } // namespace mixt

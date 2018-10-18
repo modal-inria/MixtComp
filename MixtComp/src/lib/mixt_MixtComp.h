@@ -15,8 +15,6 @@
 
 #include <regex>
 
-#include <nlopt.h>
-
 #include "IO/mixt_IO.h"
 #include "IO/mixt_MisValParser.h"
 #include "LinAlg/mixt_Math.h"
