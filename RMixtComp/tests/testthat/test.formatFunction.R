@@ -40,7 +40,7 @@ test_that("createFunctional works", {
   data <- c(3.33, 8.99)
   expectedOut <- "1:3.33,2:8.99"
   
-  expect_silent(out <- createFunctional(time, data))
+  expect_warning(out <- createFunctional(time, data), regexp = NA)
   expect_equal(out, expectedOut)
 })
 
@@ -121,7 +121,7 @@ test_that("refactorCategorical works when there are categories not included in t
   
   expectedOut <- newCateg[1:6]
 
-  expect_silent(out <- refactorCategorical(x, oldCateg, newCateg))
+  expect_warning(out <- refactorCategorical(x, oldCateg, newCateg), regexp = NA)
   expect_equal(out, expectedOut)
 
   
@@ -144,6 +144,6 @@ test_that("refactorCategorical kept NA values in data", {
   expectedOut <- c(newCateg[1:6], NA)
   
   
-  expect_silent(out <- refactorCategorical(x, oldCateg, newCateg))
+  expect_warning(out <- refactorCategorical(x, oldCateg, newCateg), regexp = NA)
   expect_equal(out, expectedOut)
 })
