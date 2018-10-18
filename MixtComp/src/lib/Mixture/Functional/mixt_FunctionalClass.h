@@ -90,8 +90,7 @@ private:
 	/** Data, not const because sampling has to occur at some point */
 	Vector<Function>& data_;
 
-	/** Parameter alpha for current class. Not set as const since mStep will modify it. It is not stored in a matrix, because nlopt is used,
-	 * and serializing everything in a vector is the standard modus operandi. */
+	/** Parameter alpha for current class. */
 	Matrix<Real> alpha_;
 
 	/** Rows are sub-regression, columns are coefficients. */

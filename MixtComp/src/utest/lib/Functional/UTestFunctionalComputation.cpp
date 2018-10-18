@@ -354,7 +354,7 @@ TEST(FunctionalComputation, hessian) {
 	ASSERT_EQ(true, computedHessian.isApprox(fdHessian, 1e-4));
 }
 
-TEST(FunctionalComputation, optimRealSimpleCaseNLOpt) {
+TEST(FunctionalComputation, optimRealSimpleCase) {
 	Index nTime = 5000;
 	Index nSub = 2; // number of subregression in the generation / estimation phases
 	Index nCoeff = 2; // order of each subregression
