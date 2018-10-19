@@ -7,7 +7,8 @@
 #' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
 #' @param nClass the number of class of the mixture model. Can be a vector.
 #' @param criterion "BIC" or "ICL". Criterion used for choosing the best model.
-#' @param nRun Number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.
+#' @param nRun number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.
+#' @param nCore number of cores used for the parallelization of the \emph{nRun} runs.
 #' @param resLearn output of \emph{mixtCompCluster} (only for \emph{mixtCompPredict} function).
 #'
 #' @return An object of classes MixtCompLearn and MixtComp for \emph{mixtCompLearn} function. An object of class MixtComp for \emph{mixtCompPredict}.
@@ -223,7 +224,7 @@
 #' 
 #' 
 #' @export
-mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1)
+mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun))
 {
   crit = match.arg(criterion)
   indCrit <- ifelse(crit == "BIC", 1, 2)
@@ -240,7 +241,7 @@ mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c
   {
     algo$nClass = nClass[i]
     
-    resLearn[[i]] <- rmcMultiRun(algo, dataList, desc, list(), nRun)
+    resLearn[[i]] <- rmcMultiRun(algo, dataList, desc, list(), nRun, nCore)
     
     class(resLearn[[i]]) = "MixtComp"
     if(!is.null(resLearn[[i]]$warnLog))
@@ -268,7 +269,7 @@ mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c
 
 #' @rdname mixtCompLearn
 #' @export
-mixtCompPredict <- function(data, desc, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1)
+mixtCompPredict <- function(data, desc, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun))
 {
   dataList <- formatData(data)
   desc <- formatDesc(desc)
@@ -278,9 +279,9 @@ mixtCompPredict <- function(data, desc, algo = createAlgo(), resLearn, nClass = 
   algo$mode = "predict"
   
   if("MixtCompLearn" %in% class(resLearn))
-    resPredict <- rmcMultiRun(algo, dataList, desc, resLearn$res[[which(resLearn$nClass == algo$nClass)]], nRun)
+    resPredict <- rmcMultiRun(algo, dataList, desc, resLearn$res[[which(resLearn$nClass == algo$nClass)]], nRun, nCore)
   else
-    resPredict <- rmcMultiRun(algo, dataList, desc, resLearn, nRun)
+    resPredict <- rmcMultiRun(algo, dataList, desc, resLearn, nRun, nCore)
   
   if(!is.null(resPredict$warnLog))
     warning(paste0("MixtComp failed with the following error:", resPredict$warnLog))
@@ -292,27 +293,24 @@ mixtCompPredict <- function(data, desc, algo = createAlgo(), resLearn, nClass = 
 
 
 
-rmcMultiRun <- function(algo, data, desc, resLearn, nRun = 1)
+rmcMultiRun <- function(algo, data, desc, resLearn, nRun = 1, nCore = 1)
 {
-  res <- rmc(algo, data, desc, resLearn)
+  nCore <- min(max(1, nCore), nRun)
   
-  if(nRun > 1)
-  {
-    for(i in 2:nRun)
-    {
-      resTemp <- rmc(algo, data, desc, resLearn)
-      
-      if(is.null(res$warnLog) & is.null(resTemp$warnLog))
-      {
-        if(res$mixture$lnObservedLikelihood < resTemp$mixture$lnObservedLikelihood)
-          res = resTemp
-      }else{
-        if(is.null(resTemp$warnLog))
-          res = resTemp
-      }
-      
-    }
+  cl <- makeCluster(nCore)
+  registerDoParallel(cl)
+  
+  res <- foreach(i = 1:nRun)%dopar%{
+    resTemp <- rmc(algo, data, desc, resLearn)
+    
+    return(resTemp)
   }
   
-  return(res)
+  stopCluster(cl)
+  
+  logLikelihood <- sapply(res, function(x) {ifelse(is.null(x$warnLog), x$mixture$lnObservedLikelihood, -Inf)})
+  
+  indMax <- which.max(logLikelihood)
+
+  return(res[[indMax]])
 }

@@ -6,10 +6,12 @@
 \title{Learn and predict using RMixtComp}
 \usage{
 mixtCompLearn(data, desc, algo = createAlgo(), nClass,
-  criterion = c("BIC", "ICL"), nRun = 1)
+  criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1,
+  ceiling(detectCores()/2)), nRun))
 
 mixtCompPredict(data, desc, algo = createAlgo(), resLearn,
-  nClass = NULL, nRun = 1)
+  nClass = NULL, nRun = 1, nCore = min(max(1,
+  ceiling(detectCores()/2)), nRun))
 }
 \arguments{
 \item{data}{a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).}
@@ -22,7 +24,9 @@ mixtCompPredict(data, desc, algo = createAlgo(), resLearn,
 
 \item{criterion}{"BIC" or "ICL". Criterion used for choosing the best model.}
 
-\item{nRun}{Number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.}
+\item{nRun}{number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.}
+
+\item{nCore}{number of cores used for the parallelization of the \emph{nRun} runs.}
 
 \item{resLearn}{output of \emph{mixtCompCluster} (only for \emph{mixtCompPredict} function).}
 }

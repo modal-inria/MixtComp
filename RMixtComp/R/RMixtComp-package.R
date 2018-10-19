@@ -1,5 +1,5 @@
 #' @useDynLib RMixtComp
-#' @import Rcpp
+#' @import Rcpp doParallel
 #' @import scales plotly
 #' @importFrom grDevices n2mfrow
 #' @importFrom graphics axis lines plot abline legend matplot par title

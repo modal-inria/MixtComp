@@ -13,7 +13,7 @@ License: Internal use
 Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets. The conditional independence property enable composing
     all the data sets in a single mixture model.
-Imports: Rcpp, plotly, scales
+Imports: Rcpp, plotly, scales, doParallel
 Suggests: testthat, RInside, xml2
 LinkingTo: Rcpp
 RoxygenNote: 6.1.0
