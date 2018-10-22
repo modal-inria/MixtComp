@@ -1,10 +1,11 @@
 #' @useDynLib RMixtComp
-#' @import Rcpp doParallel
-#' @import scales plotly
+#' @import Rcpp doParallel scales plotly
 #' @importFrom grDevices n2mfrow
 #' @importFrom graphics axis lines plot abline legend matplot par title
 #' @importFrom stats optimize pnorm qnorm qpois qweibull dnorm qnbinom
 #' @importFrom stats rbinom rmultinom rnorm rpois runif rweibull rnbinom
+#' @importFrom parallel makeCluster detectCores stopCluster
+#' @importFrom foreach foreach %dopar%
 #'
 #' @title RMixtComp
 #' @docType package
