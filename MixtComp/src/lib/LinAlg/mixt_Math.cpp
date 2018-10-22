@@ -25,7 +25,7 @@ bool realEqual(Real a, Real b) {
 }
 
 Real positiveNewtonRaphson(Index nIt, const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x) {
-	if (nIt < 0)
+	if (nIt == 0)
 		return x;
 	else {
 		std::pair<Real, Real> eval = evalFunc(x);

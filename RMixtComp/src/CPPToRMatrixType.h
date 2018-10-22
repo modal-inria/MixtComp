@@ -19,6 +19,12 @@ template<typename T>
 class CPPToRMatrixType {};
 
 template<>
+class CPPToRMatrixType<int> {
+public:
+	typedef Rcpp::IntegerMatrix ctype;
+};
+
+template<>
 class CPPToRMatrixType<Index> {
 public:
 	typedef Rcpp::IntegerMatrix ctype;

@@ -19,6 +19,12 @@ template<typename T>
 class CPPToRVectorType {};
 
 template<>
+class CPPToRVectorType<int> {
+public:
+	typedef Rcpp::IntegerVector ctype;
+};
+
+template<>
 class CPPToRVectorType<Index> {
 public:
 	typedef Rcpp::IntegerVector ctype;

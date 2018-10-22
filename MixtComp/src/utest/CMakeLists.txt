@@ -3,7 +3,7 @@
 
 add_executable(runUtest
     json/JSONGraph.cpp
-    lib/IO/misValParser.cpp
+    lib/IO/MisValParser.cpp
     lib/LinAlgStat/names.cpp
     lib/LinAlgStat/UTestMath.cpp
     lib/LinAlgStat/UTestStatistics.cpp

@@ -7,10 +7,6 @@ cmake_minimum_required (VERSION 3.5)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# REQUIRED LIBRARIES
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../../libraries/cmakeModule")
-
 ## Boost
 
 # set(Boost_USE_STATIC_LIBS ON) # use .a instead of .so
