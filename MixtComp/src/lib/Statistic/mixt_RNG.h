@@ -11,6 +11,7 @@
 #define MIXT_RNG_H
 
 #include <iostream>
+#include <time.h>
 
 #include <Various/mixt_Constants.h>
 
