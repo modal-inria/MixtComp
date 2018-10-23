@@ -24,16 +24,16 @@ bool realEqual(Real a, Real b) {
 	return (a == b || std::abs(a - b) < std::abs(std::min(a, b)) * std::numeric_limits<Real>::epsilon()); // Test 1: Very cheap, but can result in false negatives, Test 2: More expensive, but comprehensive
 }
 
-Real positiveNewtonRaphson(Index nIt, const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x) {
+Real minimizePositiveNewtonRaphson(Index nIt, const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x) {
 	if (nIt == 0)
 		return x;
 	else {
 		std::pair<Real, Real> eval = evalFunc(x);
 		Real candidate = x - eval.first / eval.second;
 		if (0.0 < candidate)
-			return positiveNewtonRaphson(nIt - 1, evalFunc, candidate);
+			return minimizePositiveNewtonRaphson(nIt - 1, evalFunc, candidate);
 		else
-			return positiveNewtonRaphson(nIt - 1, evalFunc, x / 2.0);
+			return minimizePositiveNewtonRaphson(nIt - 1, evalFunc, x / 2.0);
 	}
 }
 

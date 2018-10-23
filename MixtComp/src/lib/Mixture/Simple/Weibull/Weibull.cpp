@@ -59,7 +59,7 @@ std::pair<Real, Real> Weibull::evalFuncDeriv(const Vector<Real>& x, Real k) cons
 
 Real Weibull::estimateK(const Vector<Real>& x, Real k0) const {
 	std::function<std::pair<Real, Real>(Real)> f = std::bind(&Weibull::evalFuncDeriv, this, x, std::placeholders::_1);
-	return positiveNewtonRaphson(maxIterationOptim, f, k0);
+	return minimizePositiveNewtonRaphson(maxIterationOptim, relTolOptim, f, k0);
 }
 
 Real Weibull::estimateLambda(const Vector<Real>& x, Real k) const {
