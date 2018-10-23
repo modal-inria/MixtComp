@@ -184,8 +184,8 @@ ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1))
 #' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
 #' 
 #' # plot
-#' heatmapVbles(res)
-#' heatmapVbles(res$res[[2]])
+#' heatmapVar(res)
+#' heatmapVar(res$res[[2]])
 #' }
 #' 
 #' @seealso \link{computeSimilarityVar}
@@ -193,7 +193,7 @@ ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1))
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
-heatmapVbles <- function(output, pkg = c("ggplot2", "plotly"), ...){
+heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
   pkg = match.arg(pkg)
   
   ## Get information

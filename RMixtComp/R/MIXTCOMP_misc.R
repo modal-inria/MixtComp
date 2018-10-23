@@ -138,7 +138,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' simClass <- computeSimilarityClass(resLearn)
 #' }
 #' 
-#' @seealso \link{heatmapVbles} \link{heatmapClass}
+#' @seealso \link{heatmapVar} \link{heatmapClass}
 #' @export
 computeSimilarityVar <- function(outMixtComp)
 {

@@ -44,7 +44,7 @@ heatmapClass(res$res[[2]])
 \link{computeSimilarityClass}
 
 Other plot: \code{\link{heatmapTikSorted}},
-  \code{\link{heatmapVbles}}, \code{\link{histMisclassif}},
+  \code{\link{heatmapVar}}, \code{\link{histMisclassif}},
   \code{\link{plotConvergence}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},

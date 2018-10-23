@@ -45,8 +45,8 @@ plotDataBoxplot(res$res[[2]], "Categorical1")
 }
 \seealso{
 Other plot: \code{\link{heatmapClass}},
-  \code{\link{heatmapTikSorted}},
-  \code{\link{heatmapVbles}}, \code{\link{histMisclassif}},
+  \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},
+  \code{\link{histMisclassif}},
   \code{\link{plotConvergence}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},
   \code{\link{plotDiscrimVar}}
