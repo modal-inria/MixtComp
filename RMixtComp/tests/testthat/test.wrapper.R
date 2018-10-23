@@ -310,6 +310,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   
   # test plot functions
   expect_warning(plotConvergence(resLearn), regexp = NA)
+  plotDiscrimClass(resLearn)# the first call generates warnings due to packages loading
   expect_warning(plotDiscrimClass(resLearn), regexp = NA)
   expect_warning(plotDiscrimVbles(resLearn), regexp = NA)
   expect_warning(heatmapVbles(resLearn), regexp = NA)
@@ -327,6 +328,8 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
       expect_warning(plotDataBoxplot(resLearn, name))
     }
   }
+  
+  file.remove("Rplots.pdf")
   
   expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3), regexp = NA)
   expect_warning(summary(resLearn), regexp = NA)

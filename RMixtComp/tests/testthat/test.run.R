@@ -419,9 +419,11 @@ test_that("run cluster/predict R object",{
   expect_equal(dim(disc), rep(length(desc)-1, 2))
   for(name in getVarNames(resLearn))
     expect_warning(getParam(resLearn, name), regexp = NA)
+  file.remove("Rplots.pdf")
   
   # test plot functions
   expect_warning(plotConvergence(resLearn), regexp = NA)
+  plotDiscrimClass(resLearn)# the first call generates warnings due to packages loading
   expect_warning(plotDiscrimClass(resLearn), regexp = NA)
   expect_warning(plotDiscrimVbles(resLearn), regexp = NA)
   expect_warning(heatmapVbles(resLearn), regexp = NA)
