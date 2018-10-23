@@ -11,3 +11,5 @@ progress
 genDataPackage.R
 Makefile
 mcRunTest.sh
+updateLib.py
+src/lib/README.md
