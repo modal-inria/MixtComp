@@ -8,7 +8,7 @@
 
 include libOFiles
 
-TEST_EXE = src/test
+# TEST_EXE = src/test
 
 PKG_CXXFLAGS = -Ilib -Ilib/LinAlg -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -Ioptim/include
 CXX_STD = CXX11
@@ -22,4 +22,4 @@ all: $(SHLIB) # $(SHLIB) is RMixtComp.so, add $(TEST_EXE) as a dependency for de
 $(SHLIB): $(LIB_OFILES)
 
 # $(TEST_EXE): src/test.o
-#    $(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ $(LDFLAGS) $(LDLIBS) -o $@
+#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ $(LDFLAGS) $(LDLIBS) -o $@
