@@ -4,7 +4,8 @@
 \alias{plotDataCI}
 \title{Mean and 95\%-level confidence intervals per class}
 \usage{
-plotDataCI(output, var, class = 1:output$algo$nClass, grl = FALSE, ...)
+plotDataCI(output, var, class = 1:output$algo$nClass, grl = FALSE,
+  pkg = c("ggplot2", "plotly"), ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}
@@ -14,6 +15,8 @@ plotDataCI(output, var, class = 1:output$algo$nClass, grl = FALSE, ...)
 \item{class}{class to plot}
 
 \item{grl}{if TRUE plot the CI for the dataset and not only classes}
+
+\item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
 \item{...}{other parameters (see \emph{Details})}
 }

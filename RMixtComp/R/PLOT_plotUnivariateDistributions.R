@@ -5,6 +5,7 @@
 #' @param var name of the variable
 #' @param class class to plot
 #' @param grl if TRUE plot the CI for the dataset and not only classes
+#' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... other parameters (see \emph{Details})
 #' 
 #' @details For functional data, three other parameters are available:
@@ -35,19 +36,21 @@
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
-plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, ...)
+plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, pkg = c("ggplot2", "plotly"), ...)
 {
+  pkg = match.arg(pkg)
+  
   if(!(var%in%names(output$variable$type)))
     stop("This variable does not exist in the mixture model.")
   
   type <- output$variable$type[[var]]
   
   switch(type,
-         "Gaussian" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, class, grl),
-         "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, class, grl),
+         "Gaussian" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, class, grl, pkg),
+         "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, class, grl, pkg),
          "Multinomial" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl),
-         "Poisson" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl),
-         "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, class, grl),
+         "Poisson" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl, pkg),
+         "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, class, grl, pkg),
          "Func_CS" = plotFunctionalData(output, var, classToPlot = class, ...),
          "Func_SharedAlpha_CS" = plotFunctionalData(output, var, classToPlot = class, ...),
          warning(paste0("Not (yet) available for model ", type)))
@@ -55,7 +58,18 @@ plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, .
 
 
 # Mean and 95% confidence level per class for a numeric variable (Gaussian or Poisson)
-plotCINumericData <- function(data, var, class, grl, ...){
+plotCINumericData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"), ...){
+  pkg = match.arg(pkg)
+  
+  p <- switch(pkg, 
+              "ggplot2" = ggplotCINumericData(data, var, class, grl),
+              "plotly" = plotlyCINumericData(data, var, class, grl, ...))
+    
+  p
+}
+
+
+plotlyCINumericData <- function(data, var, class, grl, ...){
   text1 <- paste0("Class.", class, "<br>",
                   "Mean: ", round(data$mean[1:length(class)],2), "<br>",
                   "CI-95%: [", round(data$lower[1:length(class)],2),
@@ -128,6 +142,24 @@ plotCINumericData <- function(data, var, class, grl, ...){
 }
 
 
+ggplotCINumericData <- function(data, var, class, grl)
+{
+  labelClass <- seq_along(data$mean)
+  if(grl)
+    labelClass[length(labelClass)] = "all"
+  labelClass = factor(labelClass, levels = labelClass)
+  
+  df = data.frame(class = labelClass, classlo = seq_along(data$mean) - 0.1, classup =  seq_along(data$mean) + 0.1, mean = data$mean, lower = data$lower, uppers = data$uppers)
+  p <- ggplot(df, aes(x = mean, y = class)) + 
+    geom_point() +
+    geom_rect(data = df, mapping = aes(xmin = lower, xmax = uppers, ymin = classlo, ymax = classup, fill = class), color = "black", alpha = 0.5) + 
+    labs(title = "Mean and 95%-level confidence intervals per class", x = var, y = "Class") +
+    theme(legend.position = "none")
+  
+  p
+}
+
+
 # Barplot for categorical data (only the levels included in the 95 confidence level for at least one component are plotted)
 plotCategoricalData <- function(data, var, class, grl, ...){
   formattedW <- lapply(1:length(class), 
@@ -172,6 +204,7 @@ plotCategoricalData <- function(data, var, class, grl, ...){
   )
   p
 }
+
 
 # Mean and 95% confidence level confidence  for functional data
 plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL, ...){

@@ -327,10 +327,12 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   {
     if(resLearn$variable$type[[name]] != "Rank_ISR")
     {
-      expect_warning(plotDataCI(resLearn, name), regexp = NA)
+      expect_warning(plotDataCI(resLearn, name, pkg = "plotly"), regexp = NA)
+      expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"), regexp = NA)
       expect_warning(plotDataBoxplot(resLearn, name), regexp = NA)
     }else{
-      expect_warning(plotDataCI(resLearn, name))
+      expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"))
+      expect_warning(plotDataCI(resLearn, name, pkg = "plotly"))
       expect_warning(plotDataBoxplot(resLearn, name))
     }
   }
