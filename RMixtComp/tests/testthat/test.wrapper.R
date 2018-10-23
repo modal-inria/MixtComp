@@ -310,10 +310,12 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   
   # test plot functions
   expect_warning(plotConvergence(resLearn), regexp = NA)
-  w <- capture_warnings(plotDiscrimClass(resLearn))# the first call generates warnings due to packages loading
+  w <- capture_warnings(plotDiscrimClass(resLearn, pkg = "plotly"))# the first call generates warnings due to packages loading
   if(length(w) > 0)
     expect_match(w, "replacing previous", all = TRUE)
-  expect_warning(plotDiscrimVbles(resLearn), regexp = NA)
+  expect_warning(plotDiscrimVbles(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(plotDiscrimClass(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotDiscrimVbles(resLearn, pkg = "ggplot2"), regexp = NA)
   expect_warning(heatmapVbles(resLearn), regexp = NA)
   expect_warning(heatmapClass(resLearn), regexp = NA)
   expect_warning(heatmapTikSorted(resLearn), regexp = NA)

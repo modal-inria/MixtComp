@@ -4,7 +4,8 @@
 #' Cj=  - sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*lnK)
 #' 
 #' @param output object returned by function \emph{mixtCompCluster}
-#' @param ylim vector of legnth 2 defining the range of y-axis
+#' @param ylim vector of length 2 defining the range of y-axis
+#' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
@@ -33,7 +34,9 @@
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
-plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
+plotDiscrimVbles <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"), ...){
+  pkg = match.arg(pkg)
+  
   ## Get information
   # names of variables
   namesVbles <- names(output$variable$type)[names(output$variable$type) != "z_class"]
@@ -52,34 +55,20 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
   textMous   <- factor(textMous[orderVbles], levels=textMous[orderVbles])
   
   ## Barplot
-  visuVbles <- plot_ly(x = namesShort,
-                       y = pvDiscrim,
-                       type = 'bar',
-                       text = textMous,
-                       hoverinfo='text',
-                       marker = list(color = col_numeric("Blues", domain = c(0,100))(ceiling(pvDiscrim*100)), 
-                                     line = list(color = 'black', width = 1.5), ...)
-  ) %>%
-    layout(title = "Discriminative level of the variables",
-           xaxis = list(title = ""),
-           yaxis = list(title = "", range=ylim),
-           annotations = list(x = namesShort,
-                              y = pvDiscrim,
-                              text = pvDiscrim,
-                              xanchor = 'center',
-                              yanchor = 'bottom',
-                              showarrow = FALSE)
-    )
+  visuVbles <- switch(pkg,
+                      "plotly" = barplotly(pvDiscrim, namesShort, main = "Discriminative level of the variables", ylim = ylim, text = textMous, ...),
+                      "ggplot2" = ggbarplot(pvDiscrim, namesShort, main = "Discriminative level of the variables", ylim = ylim)) 
   visuVbles
 }
 
 #' Barplot of the discriminative power of the classes
 #' 
 #' @details The discriminative power of class k is defined by 1 - Dk
-#' Dk=  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
+#' Dk =  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
 #' 
 #' @param output object returned by function \emph{mixtCompCluster}
-#' @param ylim vector of legnth 2 defining the range of y-axis
+#' @param ylim vector of length 2 defining the range of y-axis
+#' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
@@ -107,31 +96,68 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
-plotDiscrimClass <- function(output, ylim = c(0, 1), ...){
+plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"), ...){
+  pkg = match.arg(pkg)
+  
   ## Get information
   # names of classes
-  namesClass <- paste("class", 1:output$algo$nClass, sep=".")
+  namesClass <- paste("Class", 1:output$algo$nClass)
   # discriminative power (1 - Dk), saved at slot pvdiscrimvbles of JSON file
   pvDiscrim <-   round(1 - (-colMeans(log(output$variable$data$z_class$stat**output$variable$data$z_class$stat)) / exp(-1)), 2)
-  
+
   ## Classes are sorted by descreasing order of their discriminative power
   ## Character must be convert in factor (otherwise alphabetic order is considered)
   orderClass <- order(pvDiscrim, decreasing = TRUE)
   namesClass <- factor(namesClass[orderClass], levels=namesClass[orderClass])
   pvDiscrim <- pvDiscrim[orderClass]
   ## Barplot
-  visuClass <- plot_ly(x = namesClass,
-                       y = pvDiscrim,
-                       type = 'bar',
-                       marker = list(color = col_numeric("Blues", domain = c(0,100))(ceiling(pvDiscrim*100)), 
-                                     line = list(color = 'black', width = 1.5), ...)
-  ) %>%
-    layout(title = "Discriminative level of the classes",
-           xaxis = list(title = ""),
-           yaxis = list(title = "", range=ylim)
-    )
+  visuClass <- switch(pkg,
+                      "plotly" = barplotly(pvDiscrim, namesClass, main = "Discriminative level of the classes", ylim = ylim, ...),
+                      "ggplot2" = ggbarplot(pvDiscrim, namesClass, main = "Discriminative level of the classes", ylim = ylim))
+  
   visuClass
 }
+
+
+barplotly <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), text = NULL, ...)
+{
+  p <- plot_ly(x = label,
+               y = value,
+               type = "bar",
+               text = text,
+               marker = list(color = col_numeric("Blues", domain = c(0,100))(ceiling(value*100)),
+                             line = list(color = "black", width = 1.5), ...)
+  ) %>%
+    layout(title = main,
+           xaxis = list(title = xlab),
+           yaxis = list(title = ylab, range = ylim),
+           annotations = list(x = label,
+                              y = value,
+                              text = round(value, 2),
+                              xanchor = "center",
+                              yanchor = "bottom",
+                              showarrow = FALSE)
+    )
+  p
+}
+
+ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1))
+{
+  df = data.frame(var = factor(label, levels = label), discrim = value)
+  ggplot(data = df, aes(x = var, y = discrim, fill = var)) +
+    geom_bar(stat = "identity")+
+    scale_fill_manual(values=col_numeric("Blues", domain = c(0,100))(ceiling(value*100))) + 
+    geom_text(aes(label = round(discrim, 2)), vjust = 1.6, color = "white", size = 5) +
+    theme_minimal() +
+    ylim(ylim[1], ylim[2]) +
+    labs(title = main, x = xlab, y = ylab) +
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 315, hjust = 0))
+}
+
+
+
+
 
 #' Heatmap of the similarities between variables about clustering
 #' 

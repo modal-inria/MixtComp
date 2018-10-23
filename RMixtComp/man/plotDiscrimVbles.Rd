@@ -4,12 +4,15 @@
 \alias{plotDiscrimVbles}
 \title{Barplot of the discriminative power of the variables}
 \usage{
-plotDiscrimVbles(output, ylim = c(0, 1), ...)
+plotDiscrimVbles(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
+  ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}
 
-\item{ylim}{vector of legnth 2 defining the range of y-axis}
+\item{ylim}{vector of length 2 defining the range of y-axis}
+
+\item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
 \item{...}{arguments to be passed to plot_ly}
 }
