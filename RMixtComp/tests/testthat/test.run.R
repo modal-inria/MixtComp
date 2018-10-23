@@ -419,12 +419,13 @@ test_that("run cluster/predict R object",{
   expect_equal(dim(disc), rep(length(desc)-1, 2))
   for(name in getVarNames(resLearn))
     expect_warning(getParam(resLearn, name), regexp = NA)
-  file.remove("Rplots.pdf")
+  
   
   # test plot functions
   expect_warning(plotConvergence(resLearn), regexp = NA)
-  plotDiscrimClass(resLearn)# the first call generates warnings due to packages loading
-  expect_warning(plotDiscrimClass(resLearn), regexp = NA)
+  w <- capture_warnings(plotDiscrimClass(resLearn))# the first call generates warnings due to packages loading
+  if(length(w) > 0)
+    expect_match(w, "replacing previous", all = TRUE)
   expect_warning(plotDiscrimVbles(resLearn), regexp = NA)
   expect_warning(heatmapVbles(resLearn), regexp = NA)
   expect_warning(heatmapClass(resLearn), regexp = NA)
@@ -441,7 +442,8 @@ test_that("run cluster/predict R object",{
       expect_warning(plotDataBoxplot(resLearn, name))
     }
   }
-
+  file.remove("Rplots.pdf")
+  
   resGenPredict <- dataGeneratorNewIO(100, 0.9, var)
 
   algoPredict <- list(

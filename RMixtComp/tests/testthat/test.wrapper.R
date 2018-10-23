@@ -310,8 +310,9 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   
   # test plot functions
   expect_warning(plotConvergence(resLearn), regexp = NA)
-  plotDiscrimClass(resLearn)# the first call generates warnings due to packages loading
-  expect_warning(plotDiscrimClass(resLearn), regexp = NA)
+  w <- capture_warnings(plotDiscrimClass(resLearn))# the first call generates warnings due to packages loading
+  if(length(w) > 0)
+    expect_match(w, "replacing previous", all = TRUE)
   expect_warning(plotDiscrimVbles(resLearn), regexp = NA)
   expect_warning(heatmapVbles(resLearn), regexp = NA)
   expect_warning(heatmapClass(resLearn), regexp = NA)
@@ -336,10 +337,10 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   expect_warning(summary(resLearn$res[[1]]), regexp = NA)
   expect_warning(print(resLearn), regexp = NA)
   expect_warning(print(resLearn$res[[1]]), regexp = NA)
-  
+
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
-  
+
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
 })
