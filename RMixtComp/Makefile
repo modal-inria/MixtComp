@@ -4,4 +4,6 @@ all:
 
 clean:
 	git clean -dfx src
+
+updateLib:
 	python3 updateLib.py

@@ -14,14 +14,11 @@
 *.tar.gz
 *.d
 .metadata/*
-progress
 MixtComp/release
 MixtComp/debug
 MixtComp/report.xml
 RMixtComp/R/RcppExports.R
 RMixtComp/src/RcppExports.cpp
-RMixtComp/src/Libvars
-RMixtComp/src/build
 RMixtComp/src/test/test
 RMixtComp/RMCtest.xml
 RJsonMixtComp/R/MIXTCOMP_*
