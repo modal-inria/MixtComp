@@ -48,7 +48,7 @@ plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, p
   switch(type,
          "Gaussian" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, class, grl, pkg),
          "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, class, grl, pkg),
-         "Multinomial" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl),
+         "Multinomial" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl, pkg),
          "Poisson" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl, pkg),
          "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, class, grl, pkg),
          "Func_CS" = plotFunctionalData(output, var, classToPlot = class, ...),
@@ -64,7 +64,7 @@ plotCINumericData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"
   p <- switch(pkg, 
               "ggplot2" = ggplotCINumericData(data, var, class, grl),
               "plotly" = plotlyCINumericData(data, var, class, grl, ...))
-    
+  
   p
 }
 
@@ -144,9 +144,9 @@ plotlyCINumericData <- function(data, var, class, grl, ...){
 
 ggplotCINumericData <- function(data, var, class, grl)
 {
-  labelClass <- seq_along(data$mean)
+  labelClass <- class
   if(grl)
-    labelClass[length(labelClass)] = "all"
+    labelClass = c(labelClass, "all")
   labelClass = factor(labelClass, levels = labelClass)
   
   df = data.frame(class = labelClass, classlo = seq_along(data$mean) - 0.1, classup =  seq_along(data$mean) + 0.1, mean = data$mean, lower = data$lower, uppers = data$uppers)
@@ -159,9 +159,19 @@ ggplotCINumericData <- function(data, var, class, grl)
   p
 }
 
+plotCategoricalData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"), ...)
+{
+  pkg = match.arg(pkg)
+  
+  p <- switch(pkg, 
+              "ggplot2" = ggplotCategoricalData(data, var, class, grl),
+              "plotly" = plotlyCategoricalData(data, var, class, grl, ...))
+  
+  p
+}
 
 # Barplot for categorical data (only the levels included in the 95 confidence level for at least one component are plotted)
-plotCategoricalData <- function(data, var, class, grl, ...){
+plotlyCategoricalData <- function(data, var, class, grl, ...){
   formattedW <- lapply(1:length(class), 
                        function(k) list(y=data$probs[k,],
                                         type='bar',
@@ -202,6 +212,23 @@ plotCategoricalData <- function(data, var, class, grl, ...){
                                     ticks = 'outside',
                                     zeroline = FALSE))
   )
+  p
+}
+
+
+
+ggplotCategoricalData <- function(data, var, class, grl)
+{
+  labelClass <- class
+  if(grl)
+    labelClass = c(labelClass, "all")
+  labelClass = factor(labelClass, levels = labelClass)
+  
+  df = data.frame(value = as.numeric(t(data$probs)), categ = rep(data$levels, nrow(data$probs)), class = rep(labelClass, each = length(data$levels)))
+  p <- ggplot(data = df, aes(x = categ, y = value, fill = class)) +
+    geom_bar(stat = "identity", position = position_dodge()) +
+    labs(title = "Distribution per class", x = "Levels", y = var) 
+  
   p
 }
 

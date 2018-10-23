@@ -1,5 +1,4 @@
 context("Run MixtComp")
-skip("Correg")
 
 Sys.setenv(MC_DETERMINISTIC = 42)
 
