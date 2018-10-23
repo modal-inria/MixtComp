@@ -25,8 +25,8 @@
 #' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
 #' 
 #' # plot
-#' plotDiscrimVbles(res)
-#' plotDiscrimVbles(res$res[[2]])
+#' plotDiscrimVar(res)
+#' plotDiscrimVar(res$res[[2]])
 #' }
 #' 
 #' @seealso \link{computeDiscrimPowerVar}
@@ -34,7 +34,7 @@
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
-plotDiscrimVbles <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"), ...){
+plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"), ...){
   pkg = match.arg(pkg)
   
   ## Get information

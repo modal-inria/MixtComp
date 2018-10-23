@@ -46,7 +46,7 @@ Other plot: \code{\link{heatmapTikSorted}},
   \code{\link{plotConvergence}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVbles}}
+  \code{\link{plotDiscrimVar}}
 }
 \author{
 Matthieu MARBAC

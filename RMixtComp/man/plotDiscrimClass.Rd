@@ -52,7 +52,7 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapVbles}}, \code{\link{histMisclassif}},
   \code{\link{plotConvergence}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
-  \code{\link{plotDiscrimVbles}}
+  \code{\link{plotDiscrimVar}}
 }
 \author{
 Matthieu MARBAC

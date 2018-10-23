@@ -43,7 +43,7 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapVbles}}, \code{\link{histMisclassif}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVbles}}
+  \code{\link{plotDiscrimVar}}
 }
 \author{
 Quentin Grimonprez

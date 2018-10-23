@@ -28,7 +28,7 @@
 #' 
 #' You can compute discriminative power and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
 #' 
-#' Graphics functions are \link{heatmapClass}, \link{heatmapTikSorted}, \link{heatmapVbles}, \link{histMisclassif}, \link{plotConvergence}, \link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVbles}.
+#' Graphics functions are \link{heatmapClass}, \link{heatmapTikSorted}, \link{heatmapVbles}, \link{histMisclassif}, \link{plotConvergence}, \link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVar}.
 #' 
 #' @examples 
 #' \donttest{

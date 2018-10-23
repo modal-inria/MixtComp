@@ -77,12 +77,12 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' discClass <- computeDiscrimPowerClass(resLearn)
 #' 
 #' # graphic representation of discVar
-#' plotDiscrimVbles(resLearn)
+#' plotDiscrimVar(resLearn)
 #' # graphic representation of discClass
 #' plotDiscrimClass(resLearn)
 #' }
 #' 
-#' @seealso \link{plotDiscrimClass} \link{plotDiscrimVbles}
+#' @seealso \link{plotDiscrimClass} \link{plotDiscrimVar}
 #' @export
 computeDiscrimPowerVar <- function(outMixtComp)
 {

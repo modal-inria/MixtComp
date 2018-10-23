@@ -51,12 +51,12 @@ discVar <- computeDiscrimPowerVar(resLearn)
 discClass <- computeDiscrimPowerClass(resLearn)
 
 # graphic representation of discVar
-plotDiscrimVbles(resLearn)
+plotDiscrimVar(resLearn)
 # graphic representation of discClass
 plotDiscrimClass(resLearn)
 }
 
 }
 \seealso{
-\link{plotDiscrimClass} \link{plotDiscrimVbles}
+\link{plotDiscrimClass} \link{plotDiscrimVar}
 }
