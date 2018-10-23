@@ -1,49 +1,25 @@
-#------------------------------------------------------------------------
-#   Copyright (C) Inria 2014
+# MixtComp version 2.0  - 13 march 2017
+# Copyright (C) Inria - Lille 1 */
 #
-#   This program is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#------------------------------------------------------------------------
-#   Project:    MixtComp
-#   Created on: Feb 17, 2014
-#   Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>,
-#               Serge IOVLEFF <serge.iovleff@inria.fr>
-#------------------------------------------------------------------------
+# Project:    MixtComp
+# Created on: October 10, 2018
+# Authors:    Vincent KUBICKI <vincent.kubicki@inria.fr>
 
-include Libvars
+include libOFiles
 
-DIR_MC = ../../MixtComp
-LIB_MC = ../../MixtComp/release/lib/libMixtComp.a
+TEST_EXE = src/test
 
-DIR_TEST = test
+PKG_CXXFLAGS = -Ilib -Ilib/LinAlg -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -Ioptim/include
+CXX_STD = CXX11
 
-# Flags for the cpp files at the root (as well as included headers, for example template classes) , i.e.
-PKG_CXXFLAGS = -std=c++11 -I$(EIGEN3_INCLUDE_DIR) -I$(NLOPT_INCLUDE_DIRS) -I$(Boost_INCLUDE_DIRS) -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -Ioptim/include -I$(DIR_MC)/src/lib/LinAlg -I$(DIR_MC)/src/lib
+PKG_LIBS = $(LIB_OFILES)
 
-## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = $(LIB_MC)
+.PHONY: all # a phony target is a target that is always considered out of date
 
-export LDFLAGS CC CFLAGS CXX CXXFLAGS # flags needed for the compilation of MixtComp
+all: $(SHLIB) # $(SHLIB) is RMixtComp.so, add $(TEST_EXE) as a dependency for debug, RInside package needs to be installed to run $(TEST_EXE)
 
-.PHONY: all pkglib
+$(SHLIB): $(LIB_OFILES)
 
-## $(SHLIB) is the usual default target that is built automatically from all source
-## files in this directory. pkglib is an additional target for the libraries
-## that will be installed in (PKGLIB) and which users can link against.
-
-all: $(SHLIB)
-
-$(SHLIB): pkglib
-
-pkglib:
-	cd $(DIR_MC);./buildRelease.sh
+# $(TEST_EXE): src/test.o
+#    $(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ $(LDFLAGS) $(LDLIBS) -o $@
