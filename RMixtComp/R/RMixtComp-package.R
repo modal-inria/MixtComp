@@ -6,7 +6,7 @@
 #' @importFrom stats rbinom rmultinom rnorm rpois runif rweibull rnbinom
 #' @importFrom parallel makeCluster detectCores stopCluster
 #' @importFrom foreach foreach %dopar%
-#' @importFrom ggplot2 ggplot aes geom_bar scale_fill_manual geom_text theme_minimal ylim labs theme element_text
+#' @importFrom ggplot2 ggplot aes ylim labs theme theme_minimal element_text element_blank geom_tile geom_text geom_bar scale_fill_gradient scale_fill_manual 
 #'
 #' @title RMixtComp
 #' @docType package

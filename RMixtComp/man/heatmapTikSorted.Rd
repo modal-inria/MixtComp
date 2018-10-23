@@ -4,7 +4,7 @@
 \alias{heatmapTikSorted}
 \title{Heatmap of the tik = P(Z_i=k|x_i)}
 \usage{
-heatmapTikSorted(output, ...)
+heatmapTikSorted(output, pkg = c("ggplot2", "plotly"), ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}

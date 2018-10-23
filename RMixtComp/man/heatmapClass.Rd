@@ -4,12 +4,14 @@
 \alias{heatmapClass}
 \title{Heatmap of the similarities between classes about clustering}
 \usage{
-heatmapClass(output, ...)
+heatmapClass(output, pkg = c("ggplot2", "plotly"), ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}
 
-\item{...}{arguments to be passed to plot_ly}
+\item{pkg}{"ggplot2" or "plotly". Package used to plot}
+
+\item{...}{arguments to be passed to plot_ly. For pkg = "ggplot2", addValues = TRUE prints similarity values on the heatmap}
 }
 \description{
 Heatmap of the similarities between classes about clustering
