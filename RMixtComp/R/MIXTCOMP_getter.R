@@ -20,8 +20,11 @@
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
+#' #' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt for clustering
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2)
 #' 
 #' # get completedData
 #' getCompletedData <- completed(resLearn)
@@ -62,8 +65,11 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt for clustering
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2)
 #' 
 #' # get class
 #' estimatedClass <- getPartition(resLearn)
@@ -103,7 +109,7 @@ getPartition <- function(outMixtComp)
 #'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2)
 #' 
 #' # get type
 #' type <- getType(resLearn)
@@ -162,8 +168,11 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt for clustering
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2)
 #' 
 #' # get tik
 #' tikEmp <- getEmpiricTik(resLearn)
@@ -218,8 +227,11 @@ getTik <- function(outMixtComp, log = TRUE){
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")] 
+#' 
 #' # run RMixtCompt for clustering
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2)
 #' 
 #' # get criterion
 #' bic <- getBIC(resLearn)

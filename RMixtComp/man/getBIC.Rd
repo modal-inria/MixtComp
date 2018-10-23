@@ -31,8 +31,11 @@ algo <- list(nbBurnInIter = 100,
              nSemTry = 20,
              confidenceLevel = 0.95)
 
+# keep only 3 variables
+desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")] 
+
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2)
 
 # get criterion
 bic <- getBIC(resLearn)

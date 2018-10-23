@@ -31,7 +31,7 @@ algo <- list(nbBurnInIter = 100,
              confidenceLevel = 0.95)
 
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+resLearn <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2)
 
 # get param
 param <- getParam(resLearn, "Gaussian1")

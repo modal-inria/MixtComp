@@ -43,10 +43,10 @@
 #'              confidenceLevel = 0.95)
 #' 
 #' # run RMixtCompt for clustering
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2:4)
 #' 
 #' # run RMixtCompt for predicting
-#' resPred <- mixtCompPredict(simDataPredict$matrix, desc$unsupervised, algo, resLearn)
+#' resPred <- mixtCompPredict(simDataPredict$matrix, simDesc$unsupervised, algo, resLearn)
 #' 
 #' }
 #' 

@@ -39,10 +39,10 @@ data(simData)
 algo <- createAlgo()
 
 # run RMixtCompt in unsupervised clustering mode + data as matrix
-res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+res <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2:4)
 # plot
 plotDataCI(res, "Gaussian1")
-
+plotDataCI(res$res[[2]], "Poisson1")
 } 
 
 }

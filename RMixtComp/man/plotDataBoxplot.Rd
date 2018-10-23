@@ -36,10 +36,10 @@ data(simData)
 algo <- createAlgo()
 
 # run RMixtCompt in unsupervised clustering mode + data as matrix
-res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+res <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2:4)
 # plot
 plotDataBoxplot(res, "Gaussian1")
-
+plotDataBoxplot(res$res[[2]], "Categorical1")
 } 
 
 }

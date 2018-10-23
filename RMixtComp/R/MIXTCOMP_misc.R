@@ -67,8 +67,11 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt for clustering
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2)
 #' 
 #' discVar <- computeDiscrimPowerVar(resLearn)
 #' discClass <- computeDiscrimPowerClass(resLearn)
@@ -125,8 +128,11 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #'              nSemTry = 20,
 #'              confidenceLevel = 0.95)
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt for clustering
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2)
 #' 
 #' simVar <- computeSimilarityVar(resLearn)
 #' simClass <- computeSimilarityClass(resLearn)

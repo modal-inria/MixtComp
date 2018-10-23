@@ -229,13 +229,13 @@ algo <- list(nbBurnInIter = 100,
              confidenceLevel = 0.95)
 
 # run RMixtCompt in unsupervised clustering mode + data as matrix
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+resLearn1 <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2:4)
 
 # run RMixtCompt in supervised clustering mode + data as matrix
-resLearn <- mixtCompLearn(simDataLearn$data.frame, desc$supervised, algo, nbClass = 2:4)
+resLearn2 <- mixtCompLearn(simDataLearn$data.frame, simDesc$supervised, algo, nClass = 2:4)
 
 # run RMixtCompt in predict mode + data as list
-resLearn <- mixtCompPredict(simDataPredict$list, desc$unsupervised, algo, nbClass = 2)
+resPredict <- mixtCompPredict(simDataPredict$list, simDesc$unsupervised, algo, resLearn1, nClass = 2)
 
 }
 

@@ -17,12 +17,15 @@
 #' # define the algorithm's parameters
 #' algo <- createAlgo()
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
 #' 
 #' # plot
 #' plotDiscrimVbles(res)
-#' 
+#' plotDiscrimVbles(res$res[[2]])
 #' }
 #' 
 #' @seealso \link{computeDiscrimPowerVar}
@@ -88,12 +91,15 @@ plotDiscrimVbles <- function(output, ylim = c(0, 1), ...){
 #' # define the algorithm's parameters
 #' algo <- createAlgo()
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
 #' 
 #' # plot
 #' plotDiscrimClass(res)
-#' 
+#' plotDiscrimClass(res$res[[2]])
 #' }
 #' 
 #' @seealso \link{computeDiscrimPowerClass}
@@ -144,12 +150,15 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), ...){
 #' # define the algorithm's parameters
 #' algo <- createAlgo()
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
 #' 
 #' # plot
 #' heatmapVbles(res)
-#' 
+#' heatmapVbles(res$res[[2]])
 #' }
 #' 
 #' @seealso \link{computeSimilarityVar}
@@ -221,11 +230,14 @@ heatmapVbles <- function(output, ...){
 #' # define the algorithm's parameters
 #' algo <- createAlgo()
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
 #' # plot
 #' heatmapClass(res)
-#' 
+#' heatmapClass(res$res[[2]])
 #' } 
 #' 
 #' @seealso \link{computeSimilarityClass}
@@ -298,12 +310,15 @@ heatmapClass <- function(output, ...){
 #' # define the algorithm's parameters
 #' algo <- createAlgo()
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
 #' 
 #' # plot
 #' heatmapTikSorted(res)
-#' 
+#' heatmapTikSorted(res$res[[2]])
 #' }
 #' 
 #' @seealso getTik
@@ -372,12 +387,15 @@ heatmapTikSorted <- function(output, ...){
 #' # define the algorithm's parameters
 #' algo <- createAlgo()
 #' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
 #' 
 #' # plot
 #' histMisclassif(res)
-#' 
+#' histMisclassif(res$res[[2]])
 #' }
 #' 
 #' @author Matthieu MARBAC

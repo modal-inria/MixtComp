@@ -30,7 +30,7 @@
 # # algo <- createAlgo()
 # #
 # # # run RMixtCompt in unsupervised clustering mode + data as matrix
-# # res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+# # res <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2:4)
 # #
 # # resvisu <- clusvisMixtComp(res)
 # # }
@@ -74,7 +74,7 @@
 # # algo <- createAlgo()
 # #
 # # # run RMixtCompt in unsupervised clustering mode + data as matrix
-# # res <- mixtCompLearn(simDataLearn$matrix, desc$unsupervised, algo, nbClass = 2:4)
+# # res <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2:4)
 # #
 # #
 # # # Use ClusVis with RMixtComp
