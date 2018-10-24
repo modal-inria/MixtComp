@@ -8,8 +8,6 @@
 
 include libOFiles
 
-# TEST_EXE = src/test
-
 PKG_CXXFLAGS = -Ilib -Ilib/LinAlg -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -Ioptim/include
 CXX_STD = CXX11
 
@@ -17,12 +15,6 @@ PKG_LIBS = $(LIB_OFILES)
 
 .PHONY: all # a phony target is a target that is always considered out of date
 
-all: $(SHLIB) # $(SHLIB) is RMixtComp.so, add $(TEST_EXE) as a dependency for debug, RInside package needs to be installed to run $(TEST_EXE)
+all: $(SHLIB) # $(SHLIB) is RMixtComp.so or RMixtComp.dll
 
 $(SHLIB): $(LIB_OFILES)
-
-# $(TEST_EXE): src/test.o
-#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ $(LDFLAGS) $(LDLIBS) -o $@
-
-clean:
-    find . -type f -name '*.o' -delete

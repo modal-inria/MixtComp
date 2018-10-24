@@ -2,5 +2,8 @@ all:
 	Rscript -e "Rcpp::compileAttributes()"
 	R CMD INSTALL --no-multiarch --with-keep.source .
 
-updateLib:
+clean:
+	find src -type f -name '*.o' -delete
+
+updatelib:
 	python3 updateLib.py
