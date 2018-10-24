@@ -8,7 +8,8 @@
 #' @importFrom foreach foreach %dopar%
 #' @importFrom ggplot2 ggplot aes aes_string ylim labs theme theme_minimal element_text element_blank 
 #' @importFrom ggplot2 geom_tile geom_text geom_bar geom_point geom_rect geom_ribbon geom_line geom_histogram scale_fill_gradient scale_fill_manual position_dodge scale_color_discrete
-#'
+#' @importFrom utils head
+#' 
 #' @title RMixtComp
 #' @docType package
 #' @aliases RMixtComp-package
@@ -25,7 +26,7 @@
 #' 
 #' Getters are available to easily access some results (see. \link{mixtCompLearn} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getTik}, \link{getPartition}, \link{getType}, \link{getVarNames}.
 #' 
-#' Three datasets are provided and contains examples: \link{simData}, \link{titanic}, \link{CanadaianWeather}.
+#' Three datasets are provided and contains examples: \link{simData}, \link{titanic}, \link{CanadianWeather}.
 #' 
 #' You can compute discriminative power and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
 #' 

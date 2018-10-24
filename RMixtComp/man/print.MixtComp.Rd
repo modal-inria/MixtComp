@@ -4,12 +4,12 @@
 \alias{print.MixtComp}
 \title{Print Values
 
-Print a \code{\link{MixtComp}} object}
+Print a \emph{MixtComp} object}
 \usage{
 \method{print}{MixtComp}(x, nVarMaxToPrint = 5, ...)
 }
 \arguments{
-\item{x}{\code{\link{MixtComp}} object}
+\item{x}{\emph{MixtComp} object}
 
 \item{nVarMaxToPrint}{number of variables to display (including z_class)}
 
@@ -18,7 +18,7 @@ Print a \code{\link{MixtComp}} object}
 \description{
 Print Values
 
-Print a \code{\link{MixtComp}} object
+Print a \emph{MixtComp} object
 }
 \examples{
 \donttest{

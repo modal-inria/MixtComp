@@ -183,7 +183,7 @@ barplotly <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), 
 ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1))
 {
   df = data.frame(var = factor(label, levels = label), discrim = value)
-  ggplot(data = df, aes(x = var, y = discrim, fill = var)) +
+  ggplot(data = df, aes_string(x = "var", y = "discrim", fill = "var")) +
     geom_bar(stat = "identity") +
     scale_fill_manual(values = col_numeric("Blues", domain = c(0,100))(ceiling(value*100))) + 
     geom_text(aes(label = round(discrim, 2)), vjust = 1.6, color = "white", size = 5) +

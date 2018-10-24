@@ -201,7 +201,7 @@ ggheatmap <- function(dat, xname, yname = 1:nrow(dat), main, xlab = "", ylab = "
 {
   meltedX = data.frame(ind = factor(rep(yname, ncol(dat)), levels = yname), key = factor(rep(xname, each = nrow(dat)), levels = xname), value = as.numeric(dat))
   
-  p <- ggplot(data = meltedX, aes(x = key, y = ind, fill = value)) + 
+  p <- ggplot(data = meltedX, aes_string(x = "key", y = "ind", fill = "value")) + 
     geom_tile() +
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +

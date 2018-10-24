@@ -235,7 +235,8 @@ resLearn1 <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nCla
 resLearn2 <- mixtCompLearn(simDataLearn$data.frame, simDesc$supervised, algo, nClass = 2:4)
 
 # run RMixtCompt in predict mode + data as list
-resPredict <- mixtCompPredict(simDataPredict$list, simDesc$unsupervised, algo, resLearn1, nClass = 2)
+resPredict <- mixtCompPredict(simDataPredict$list, simDesc$unsupervised, algo,
+                              resLearn1, nClass = 2)
 
 }
 

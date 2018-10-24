@@ -4,12 +4,12 @@
 \alias{print.MixtCompLearn}
 \title{Print Values
 
-Print a \code{\link{MixtCompLearn}} object}
+Print a \emph{MixtCompLearn} object}
 \usage{
 \method{print}{MixtCompLearn}(x, nVarMaxToPrint = 5, ...)
 }
 \arguments{
-\item{x}{\code{\link{MixtCompLearn}} object}
+\item{x}{\emph{MixtCompLearn} object}
 
 \item{nVarMaxToPrint}{number of variables to display (including z_class)}
 
@@ -18,7 +18,7 @@ Print a \code{\link{MixtCompLearn}} object}
 \description{
 Print Values
 
-Print a \code{\link{MixtCompLearn}} object
+Print a \emph{MixtCompLearn} object
 }
 \examples{
 \donttest{

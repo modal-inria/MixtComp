@@ -2,20 +2,22 @@
 % Please edit documentation in R/MIXTCOMP_methods.R
 \name{plot.MixtCompLearn}
 \alias{plot.MixtCompLearn}
-\title{Plot of a \code{\link{MixtCompLearn}} object}
+\title{Plot of a \emph{MixtCompLearn} object}
 \usage{
 \method{plot}{MixtCompLearn}(x, nVarMaxToPlot = 5, pkg = c("ggplot2",
   "plotly"), ...)
 }
 \arguments{
-\item{x}{\code{\link{MixtCompLearn}} object}
+\item{x}{\emph{MixtCompLearn} object}
+
+\item{nVarMaxToPlot}{number of variables to display}
+
+\item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
 \item{...}{Not used.}
-
-\item{nVarMaxToPrint}{number of variables to display}
 }
 \description{
-Plot of a \code{\link{MixtCompLearn}} object
+Plot of a \emph{MixtCompLearn} object
 }
 \examples{
 \donttest{

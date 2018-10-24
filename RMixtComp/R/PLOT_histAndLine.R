@@ -168,7 +168,7 @@ ggplotCrit <- function(crit, nClass)
 {
   df = data.frame(class = nClass, value = c(crit[1,], crit[2,]), crit = rep(c("BIC", "ICL"), each = length(nClass)))
   
-  p <- ggplot(data = df, aes(x = class, y = value, col = crit)) +
+  p <- ggplot(data = df, aes_string(x = "class", y = "value", col = "crit")) +
     geom_line() + 
       labs(title = "Criterion", x = "Number of classes", y = "value") +
       scale_color_discrete(name = "Criterion") 

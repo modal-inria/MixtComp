@@ -150,9 +150,9 @@ ggplotCINumericData <- function(data, var, class, grl)
   labelClass = factor(labelClass, levels = labelClass)
   
   df = data.frame(class = labelClass, classlo = seq_along(data$mean) - 0.1, classup =  seq_along(data$mean) + 0.1, mean = data$mean, lower = data$lower, uppers = data$uppers)
-  p <- ggplot(df, aes(x = mean, y = class)) + 
+  p <- ggplot(df, aes_string(x = "mean", y = "class")) + 
     geom_point() +
-    geom_rect(data = df, mapping = aes(xmin = lower, xmax = uppers, ymin = classlo, ymax = classup, fill = class), color = "black", alpha = 0.5) + 
+    geom_rect(data = df, mapping = aes_string(xmin = "lower", xmax = "uppers", ymin = "classlo", ymax = "classup", fill = "class"), color = "black", alpha = 0.5) + 
     labs(title = "Mean and 95%-level confidence intervals per class", x = var, y = "Class") +
     theme(legend.position = "none")
   
@@ -225,7 +225,7 @@ ggplotCategoricalData <- function(data, var, class, grl)
   labelClass = factor(labelClass, levels = labelClass)
   
   df = data.frame(value = as.numeric(t(data$probs)), categ = rep(data$levels, nrow(data$probs)), class = rep(labelClass, each = length(data$levels)))
-  p <- ggplot(data = df, aes(x = categ, y = value, fill = class)) +
+  p <- ggplot(data = df, aes_string(x = "categ", y = "value", fill = "class")) +
     geom_bar(stat = "identity", position = position_dodge()) +
     labs(title = "Distribution per class", x = "Levels", y = var) 
   
@@ -360,7 +360,7 @@ ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
     for(i in seq_along(output$variable$data[[var]]$time))
     {
       df2 = data.frame(time = output$variable$data[[var]]$time[[i]], value = output$variable$data[[var]]$data[[i]])
-      p = p + geom_line(aes(y = value, x = time), data = df2, stat = "identity", size = 0.5, alpha = 0.5)
+      p = p + geom_line(aes_string(y = "value", x = "time"), data = df2, stat = "identity", size = 0.5, alpha = 0.5)
     }
   }
   
@@ -371,7 +371,7 @@ ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
     for(i in 1:nrow(data$inf))
     {
       df2 = data.frame(inf = data$inf[i,], sup = data$sup[i,], time = data$time)
-      p = p + geom_ribbon(data = df2, aes(x = time,  ymin = inf, ymax = sup), alpha = 0.3)
+      p = p + geom_ribbon(data = df2, aes_string(x = "time",  ymin = "inf", ymax = "sup"), alpha = 0.3)
     }
     
   }

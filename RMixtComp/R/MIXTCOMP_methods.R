@@ -1,9 +1,9 @@
 #' @title MixtComp Object Summaries
 #'
-#' Summary of a \code{\link{MixtComp}} object
+#' Summary of a \emph{MixtComp} object
 #'  
 #'
-#' @param object \code{\link{MixtComp}} object
+#' @param object \emph{MixtComp} object
 #' @param ... Not used.
 #' 
 #' 
@@ -70,10 +70,10 @@ summary.MixtComp <- function(object, ...)
   
 #' @title MixtCompLearn Object Summaries
 #'
-#' Summary of a \code{\link{MixtCompLearn}} object
+#' Summary of a \emph{MixtCompLearn} object
 #'  
 #'
-#' @param object \code{\link{MixtCompLearn}} object
+#' @param object \emph{MixtCompLearn} object
 #' @param ... Not used.
 #' 
 #' 
@@ -117,10 +117,10 @@ summary.MixtCompLearn <- function(object, ...)
 
 #' @title Print Values
 #'
-#' Print a \code{\link{MixtComp}} object
+#' Print a \emph{MixtComp} object
 #'
 #'  
-#' @param x \code{\link{MixtComp}} object
+#' @param x \emph{MixtComp} object
 #' @param nVarMaxToPrint number of variables to display (including z_class)
 #' @param ... Not used.
 #' 
@@ -214,10 +214,10 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 
 #' @title Print Values
 #'
-#' Print a \code{\link{MixtCompLearn}} object
+#' Print a \emph{MixtCompLearn} object
 #'
 #'  
-#' @param x \code{\link{MixtCompLearn}} object
+#' @param x \emph{MixtCompLearn} object
 #' @param nVarMaxToPrint number of variables to display (including z_class)
 #' @param ... Not used.
 #' 
@@ -261,10 +261,11 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, ...)
 
 
 #'
-#' Plot of a \code{\link{MixtComp}} object
+#' Plot of a \emph{MixtComp} object
 #'
-#' @param x \code{\link{MixtComp}} object
-#' @param nVarMaxToPrint number of variables to display
+#' @param x \emph{MixtComp} object
+#' @param nVarMaxToPlot number of variables to display
+#' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... Not used.
 #' 
 #' @examples 
@@ -322,10 +323,11 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ..
 }
 
 #'
-#' Plot of a \code{\link{MixtCompLearn}} object
+#' Plot of a \emph{MixtCompLearn} object
 #'
-#' @param x \code{\link{MixtCompLearn}} object
-#' @param nVarMaxToPrint number of variables to display
+#' @param x \emph{MixtCompLearn} object
+#' @param nVarMaxToPlot number of variables to display
+#' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... Not used.
 #' 
 #' @examples 
