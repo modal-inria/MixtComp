@@ -51,8 +51,8 @@ plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, p
          "Multinomial" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl, pkg),
          "Poisson" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl, pkg),
          "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, class, grl, pkg),
-         "Func_CS" = plotFunctionalData(output, var, classToPlot = class, ...),
-         "Func_SharedAlpha_CS" = plotFunctionalData(output, var, classToPlot = class, ...),
+         "Func_CS" = plotFunctionalData(output, var, classToPlot = class, pkg = pkg, ...),
+         "Func_SharedAlpha_CS" = plotFunctionalData(output, var, classToPlot = class, pkg = pkg, ...),
          warning(paste0("Not (yet) available for model ", type)))
 }
 
@@ -234,14 +234,27 @@ ggplotCategoricalData <- function(data, var, class, grl)
 
 
 # Mean and 95% confidence level confidence  for functional data
-plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL, ...){
+plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL, pkg = c("ggplot2", "plotly"), ...)
+{
+  pkg = match.arg(pkg)
+  
+  # Computation of the Confidence Intervals (CI)
+  data <- extractCIFunctionnalVble(var, output)
+  
+  p <- switch(pkg,
+              "ggplot2" = ggplotFunctionalData(data, output, var, add.obs, ylim, xlim, add.CI, classToPlot),
+              "plotly" = plotlyFunctionalData(data, output, var, add.obs, ylim, xlim, add.CI, classToPlot, ...))
+  
+  p
+}
+
+
+plotlyFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL, ...){
   G <- output$algo$nClass
   
   if(is.null(classToPlot))
     classToPlot = 1:G
   
-  # Computation of the Confidence Intervals (CI)
-  data <- extractCIFunctionnalVble(var, output)
   
   # Computation of the bounds for x-axis and y-axis
   if (is.null(xlim)) xlim <- range(sapply(1:length(output$variable$data[[var]]$time),
@@ -326,3 +339,57 @@ plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim =
   )
   p
 }
+
+ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL)
+{
+  if(!is.null(classToPlot))
+  {
+    data$mean = data$mean[classToPlot,, drop = FALSE] 
+    data$inf = data$inf[classToPlot,, drop = FALSE] 
+    data$sup = data$sup[classToPlot,, drop = FALSE] 
+  }
+  
+  df = as.data.frame(t(data$mean))
+  df$time = data$time
+
+  p <- ggplot() 
+  
+  # add observation
+  if(add.obs)
+  {
+    for(i in seq_along(output$variable$data[[var]]$time))
+    {
+      df2 = data.frame(time = output$variable$data[[var]]$time[[i]], value = output$variable$data[[var]]$data[[i]])
+      p = p + geom_line(aes(y = value, x = time), data = df2, stat = "identity", size = 0.5, alpha = 0.5)
+    }
+  }
+  
+
+  # confidence intervals
+  if(add.CI)
+  {
+    for(i in 1:nrow(data$inf))
+    {
+      df2 = data.frame(inf = data$inf[i,], sup = data$sup[i,], time = data$time)
+      p = p + geom_ribbon(data = df2, aes(x = time,  ymin = inf, ymax = sup), alpha = 0.3)
+    }
+    
+  }
+  
+  # mean class
+  for(i in 1:(ncol(df)-1))
+    p = p + geom_line(aes_string(y = paste0("V",i), x = "time", col = factor(paste("Class", i), levels = paste("Class", 1:(ncol(df)-1)))), data = df, stat = "identity", size = 1.5)
+  
+  
+  p = p  +
+    labs(title = "Mean curves and 95%-level confidence intervals per class", x = "Time", y = var) +
+    scale_color_discrete(name = "Class") 
+  
+  if(!is.null(xlim))
+    p = p + layout(axis = list(range = xlim))
+  if(!is.null(ylim))
+    p = p + layout(yaxis = list(range = ylim))
+  
+  p
+}
+  

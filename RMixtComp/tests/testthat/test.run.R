@@ -31,10 +31,10 @@ test_that("gaussian model works",{
   desc <- resGen$desc
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
-  
+
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
-  
+
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
@@ -75,10 +75,10 @@ test_that("poisson model works",{
   desc <- resGen$desc
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
-  
+
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
-  
+
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
@@ -119,10 +119,10 @@ test_that("NegativeBinomial model works",{
   desc <- resGen$desc
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
-  
+
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
-  
+
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
@@ -181,7 +181,7 @@ test_that("multinomial model works",{
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
-  
+
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
@@ -222,7 +222,7 @@ test_that("weibull model works",{
 
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
-  
+
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
@@ -260,10 +260,10 @@ test_that("functional model works",{
   desc <- resGen$desc
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
-  
+
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
-  
+
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
@@ -302,10 +302,10 @@ test_that("functional model with shared alpha works",{
   desc <- resGen$desc
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
-  
+
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
-  
+
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
 
@@ -343,10 +343,10 @@ test_that("rank model works",{
   desc <- resGen$desc
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
-  
+
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
-  
+
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.8)
 

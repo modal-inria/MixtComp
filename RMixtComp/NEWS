@@ -1,2 +1,4 @@
-RMixtComp 0.4 2018-10-18
-- Use MixtComp v4 
+RMixtComp 0.4 2018-10-24
+- Use MixtComp v4
+- add parallelization
+- add ggplot2 plots
