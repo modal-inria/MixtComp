@@ -108,7 +108,7 @@ std::pair<Real, Real> NegativeBinomial::evalFuncDeriv(const Vector<int>& x, Real
 
 Real NegativeBinomial::estimateN(const Vector<int>& x, Real n0) const {
 	std::function<std::pair<Real, Real>(Real)> f = std::bind(&NegativeBinomial::evalFuncDeriv, this, x, std::placeholders::_1);
-	return positiveNewtonRaphson(maxIterationOptim, f, n0);
+	return minimizePositiveNewtonRaphson(maxIterationOptim, relTolOptim, f, n0);
 }
 
 Real NegativeBinomial::estimateP(const Vector<int>& x, Real n) const {

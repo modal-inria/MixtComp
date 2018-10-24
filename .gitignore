@@ -18,6 +18,7 @@ MixtComp/release
 MixtComp/debug
 MixtComp/report.xml
 RMixtComp/R/RcppExports.R
+RMixtComp/src/lib
 RMixtComp/src/RcppExports.cpp
 RMixtComp/src/test/test
 RMixtComp/RMCtest.xml

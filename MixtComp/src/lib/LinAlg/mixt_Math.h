@@ -113,7 +113,9 @@ bool differentValue(const Type& data, Index n, Real epsilon) {
  * @param nIt the remaining number of iterations
  * @param evalFunc is a function (x, currN) -> (value, derivative)
  */
-Real positiveNewtonRaphson(Index nIt, const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x);
+Real minimizePositiveNewtonRaphson(Index nIt, Real relTol, const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x);
+
+Real minimizePositiveNewtonRaphson(const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x);
 
 }
 

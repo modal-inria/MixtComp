@@ -49,3 +49,25 @@ TEST(Math, differentValue) {
 	ASSERT_EQ(differentValue(falseVec, nDiffVal, epsilon), false);
 	ASSERT_EQ(differentValue(trueVec, nDiffVal, epsilon), true);
 }
+
+TEST(Math, NewtonRaphsonRelTolNoConstraint) {
+	Real xMin = 5.0;
+
+	std::function<std::pair<Real, Real>(Real)> evalFunc([xMin](Real x){return std::pair<Real, Real>((x - xMin) * (x - xMin), 2.0 * x - 2.0 * xMin);}); // quadratic with minimum at 5.;
+	Real x = 30.;
+
+	Real sol = minimizePositiveNewtonRaphson(evalFunc, x);
+
+	ASSERT_NEAR(sol, 5.0, 0.1);
+}
+
+TEST(Math, NewtonRaphsonRelTolConstraint) {
+	Real xMin = -10.0;
+
+	std::function<std::pair<Real, Real>(Real)> evalFunc([xMin](Real x){return std::pair<Real, Real>((x - xMin) * (x - xMin), 2.0 * x - 2.0 * xMin);}); // quadratic with minimum at 5.;
+	Real x = 30.;
+
+	Real sol = minimizePositiveNewtonRaphson(evalFunc, x);
+
+	ASSERT_NEAR(sol, 0.0, 0.1);
+}

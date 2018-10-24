@@ -3,7 +3,7 @@ all:
 	R CMD INSTALL --no-multiarch --with-keep.source .
 
 clean:
-	git clean -dfx src
+	find src -type f -name '*.o' -delete
 
-updateLib:
+updatelib:
 	python3 updateLib.py
