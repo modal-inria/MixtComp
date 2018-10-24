@@ -27,10 +27,10 @@ bool realEqual(Real a, Real b) {
 }
 
 Real minimizePositiveNewtonRaphson(Index nIt, Real relTol, const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x) {
-	Real lastVal = std::numeric_limits<Real>::max();
-	Real currVal = evalFunc(x).first;
+	Real lastX = std::numeric_limits<Real>::max();
+	Real currX = x;
 
-	while (0 < nIt && relTol < std::abs((currVal - lastVal) / lastVal)) {
+	while (0 < nIt && relTol < std::abs((currX - lastX) / lastX)) {
 		std::pair<Real, Real> eval = evalFunc(x);
 
 		Real candidate = x - eval.first / eval.second;
@@ -39,8 +39,8 @@ Real minimizePositiveNewtonRaphson(Index nIt, Real relTol, const std::function<s
 		else
 			x = x / 2.0;
 
-		lastVal = currVal;
-		currVal = x;
+		lastX = currX;
+		currX = x;
 		nIt -= 1;
 	}
 
@@ -48,10 +48,10 @@ Real minimizePositiveNewtonRaphson(Index nIt, Real relTol, const std::function<s
 }
 
 Real minimizePositiveNewtonRaphson(const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x) {
-	Real lastVal = std::numeric_limits<Real>::max();
-	Real currVal = evalFunc(x).first;
+	Real lastX = std::numeric_limits<Real>::max();
+	Real currX = x;
 
-	while (relTolOptim < std::abs((currVal - lastVal) / lastVal)) {
+	while (relTolOptim < std::abs((currX - lastX) / lastX)) {
 		std::pair<Real, Real> eval = evalFunc(x);
 
 		Real candidate = x - eval.first / eval.second;
@@ -60,8 +60,8 @@ Real minimizePositiveNewtonRaphson(const std::function<std::pair<Real, Real>(Rea
 		else
 			x = x / 2.0;
 
-		lastVal = currVal;
-		currVal = x;
+		lastX = currX;
+		currX = x;
 	}
 
 	return x;
