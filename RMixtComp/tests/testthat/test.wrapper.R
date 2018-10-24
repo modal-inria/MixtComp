@@ -322,7 +322,8 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   expect_warning(heatmapVar(resLearn, pkg = "plotly"), regexp = NA)
   expect_warning(heatmapClass(resLearn, pkg = "plotly"), regexp = NA)
   expect_warning(heatmapTikSorted(resLearn, pkg = "plotly"), regexp = NA)
-  expect_warning(histMisclassif(resLearn), regexp = NA)
+  expect_warning(histMisclassif(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(histMisclassif(resLearn, pkg = "ggplot2"), regexp = NA)
   for(name in getVarNames(resLearn))
   {
     if(resLearn$variable$type[[name]] != "Rank_ISR")

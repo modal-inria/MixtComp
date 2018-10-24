@@ -4,10 +4,12 @@
 \alias{histMisclassif}
 \title{Histogram of the misclassification probabilities}
 \usage{
-histMisclassif(output, ...)
+histMisclassif(output, pkg = c("ggplot2", "plotly"), ...)
 }
 \arguments{
 \item{output}{object returned by function \emph{mixtCompCluster}}
+
+\item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
 \item{...}{arguments to be passed to plot_ly}
 }

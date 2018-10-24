@@ -296,6 +296,7 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' they are sorted by decreasing order of their tik's
 #' 
 #' @param output object returned by function \emph{mixtCompCluster}
+#' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
@@ -409,6 +410,7 @@ heatmapplotly <- function(dat, xname, main, xlab = "", ylab = "", text = NULL, .
 #' Histgrams of err_i's can be plot for a specific class, all classes or every class
 #'
 #' @param output object returned by function \emph{mixtCompCluster}
+#' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
 #' @examples 
@@ -434,12 +436,25 @@ heatmapplotly <- function(dat, xname, main, xlab = "", ylab = "", text = NULL, .
 #' @author Matthieu MARBAC
 #' @family plot
 #' @export
-histMisclassif <- function(output, ...){
+histMisclassif <- function(output, pkg = c("ggplot2", "plotly"), ...)
+{
+  pkg = match.arg(pkg)
+  
   ## Get information
   z <- output$variable$data$z_class$completed
   misclassifrisk <- 1 - apply(output$variable$data$z_class$stat, 1, max)
   G <- output$algo$nClass
   
+  p <- switch(pkg,
+              "ggplot2" = gghistMisclassif(z, misclassifrisk, G),
+              "plotly" = plotlyhistMisclassif(z, misclassifrisk, G, ...))
+  
+  p
+}
+
+
+plotlyhistMisclassif <- function(z, misclassifrisk, G, ...){
+
   ## Create the buttons for selecting some data
   # General: all data
   # Each: all data by components
@@ -464,12 +479,42 @@ histMisclassif <- function(output, ...){
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   histerrors <- Reduce(function(acc, curr)  do.call(add_histogram, c(list(p=acc),curr)),
                        formattedW,
-                       init=plot_ly(...)%>%layout(
+                       init=plot_ly()%>%layout(
                          showlegend = T,
                          title = "Misclassification risk",
                          xaxis = list(domain = c(-0.09, 0.9), title="Probabilities of misclassification"),
                          yaxis = list(title = "Percentile of observations with <br> a misclassification risk less than x"),
                          updatemenus = list(list(y=0.6, x=-0.15,buttons = listbuttons)))
   )
+  
   histerrors
+}
+
+
+gghistMisclassif <- function(z, misclassifrisk, G)
+{
+  df = data.frame(class = factor(z, levels = 1:G), misclassifrisk = misclassifrisk)
+  
+  
+  p <- list()
+  
+  # general
+  p[[1]] = ggplot(df, aes(x = misclassifrisk, y = ..count../sum(..count..))) + 
+    geom_histogram(position = "identity", binwidth = 0.05, colour = "black", alpha = 0.8) +
+    labs(title = "Misclassification risk", x = "Probabilities of misclassification", y = "Percentile of observations with \na misclassification risk less than x")
+  
+  # each
+  p[[2]] = ggplot(df, aes(x = misclassifrisk, y = ..count../sum(..count..), fill = class)) + 
+    geom_histogram(position = "dodge", binwidth = 0.05) +
+    labs(title = "Misclassification risk", x = "Probabilities of misclassification", y = "Percentile of observations with \na misclassification risk less than x")
+  
+  # class by class
+  for(i in 1:G)
+  {
+    p[[2+i]] = ggplot(subset(df, class == i), aes(x = misclassifrisk, y = ..count../sum(..count..)), fill = class) + 
+      geom_histogram(position = "dodge", binwidth = 0.05, fill = hue_pal()(G)[i], colour = "black") + 
+      labs(title = paste0("Misclassification risk: class ", i), x = "Probabilities of misclassification", y = "Percentile of observations with \na misclassification risk less than x")
+  }
+
+  return(p)
 }
