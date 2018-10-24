@@ -47,7 +47,7 @@ const Index nbGibbsIniISR = 100;
 
 const int nbSampleObserved = 10000;
 
-const Index maxIterationOptim = 100;
+const Index maxIterationOptim = 15;
 const Real relTolOptim = 0.01;
 
 const std::string rankPosSep = ",";
