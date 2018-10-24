@@ -23,3 +23,6 @@ $(SHLIB): $(LIB_OFILES)
 
 # $(TEST_EXE): src/test.o
 #	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ $(LDFLAGS) $(LDLIBS) -o $@
+
+clean:
+    find . -type f -name '*.o' -delete
