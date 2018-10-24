@@ -18,7 +18,7 @@ oList = [filename[4:-3] + 'o' for filename in cppList]
 oListStr = ' '.join(oList)
 fileContent = "LIB_OFILES = " + oListStr
 
-makevarsStr = '''# MixtComp version 2.0  - 13 march 2017
+makevarsStr = r'''# MixtComp version 2.0  - 13 march 2017
 # Copyright (C) Inria - Lille 1 */
 #
 #
