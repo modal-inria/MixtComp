@@ -337,10 +337,14 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
       expect_warning(plotDataBoxplot(resLearn, name))
     }
   }
-  plotProportion(resLearn, pkg = "ggplot2")
-  plotProportion(resLearn, pkg = "plotly")
+  expect_warning(plotCrit(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotCrit(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(plotProportion(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotProportion(resLearn, pkg = "plotly"), regexp = NA)
   expect_warning(plot(resLearn$res[[3]], pkg = "ggplot2"), regexp = NA)
   expect_warning(plot(resLearn$res[[3]], pkg = "plotly"), regexp = NA)
+  expect_warning(plot(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
   file.remove("Rplots.pdf")
   
   expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3), regexp = NA)

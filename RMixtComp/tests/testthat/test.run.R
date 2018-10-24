@@ -450,8 +450,8 @@ test_that("run cluster/predict R object",{
       expect_warning(plotDataBoxplot(resLearn, name))
     }
   }
-  plotProportion(resLearn, pkg = "ggplot2")
-  plotProportion(resLearn, pkg = "plotly")
+  expect_warning(plotProportion(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotProportion(resLearn, pkg = "plotly"), regexp = NA)
   class(resLearn) = "MixtComp"
   expect_warning(plot(resLearn, pkg = "ggplot2"), regexp = NA)
   expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)

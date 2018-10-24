@@ -321,3 +321,55 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ..
   p
 }
 
+#'
+#' Plot of a \code{\link{MixtCompLearn}} object
+#'
+#' @param x \code{\link{MixtCompLearn}} object
+#' @param nVarMaxToPrint number of variables to display
+#' @param ... Not used.
+#' 
+#' @examples 
+#' \donttest{
+#' data(simData)
+#'  
+#' # define the algorithm's parameters
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
+#' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' 
+#' plot(resLearn)
+#' }
+#' @method plot MixtCompLearn
+#' 
+#' @seealso \link{mixtCompLearn} \link{mixtCompPredict}
+#' @family plot
+#' 
+#' @export
+plot.MixtCompLearn <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ...)
+{
+  pkg = match.arg(pkg)
+  
+  p <- list()
+  
+  if(is.null(x$warnLog))
+  {
+    p[[1]] = plotCrit(x, pkg, ...)
+    
+    p2 <- plot(x$res[[which(x$nClass == x$algo$nClass)]], nVarMaxToPlot, pkg, ...)
+    
+    p = c(p, p2)
+  }
+  
+  p
+}
+

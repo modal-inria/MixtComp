@@ -145,7 +145,6 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"
 #' plotProportion(res$res[[2]])
 #' }
 #' 
-#' @author Matthieu MARBAC
 #' @family plot
 #' @export
 plotProportion <- function(output, pkg = c("ggplot2", "plotly"), ...)

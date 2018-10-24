@@ -116,3 +116,62 @@ gghistMisclassif <- function(z, misclassifrisk, G)
 }
 
 
+#' Plot BIC and ICL 
+#'
+#' @param output \emph{MixtCompLearn} object
+#' @param pkg "ggplot2" or "plotly". Package used to plot
+#' @param ... arguments to be passed to plot_ly
+#' 
+#' @examples 
+#' \donttest{
+#' library(RMixtComp)
+#' 
+#' data(simData)
+#'  
+#' # define the algorithm's parameters
+#' algo <- createAlgo()
+#' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' 
+#' # plot
+#' plotCrit(res)
+#' }
+#' 
+#' @family plot
+#' @export
+plotCrit <- function(output, pkg = c("ggplot2", "plotly"), ...)
+{
+  pkg = match.arg(pkg)
+  
+  p <- switch(pkg, 
+              "ggplot2" = ggplotCrit(output$crit, output$nClass),
+              "plotly" = plotlyCrit(output$crit, output$nClass, ...))
+  
+  p
+}
+
+plotlyCrit <- function(crit, nClass, ...)
+{
+  p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "lines", name = "BIC", ...) %>%
+    add_trace(x = nClass, y = crit[2,], name = "ICL")%>%
+    layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
+  
+  p
+}
+
+
+ggplotCrit <- function(crit, nClass)
+{
+  df = data.frame(class = nClass, value = c(crit[1,], crit[2,]), crit = rep(c("BIC", "ICL"), each = length(nClass)))
+  
+  p <- ggplot(data = df, aes(x = class, y = value, col = crit)) +
+    geom_line() + 
+      labs(title = "Criterion", x = "Number of classes", y = "value") +
+      scale_color_discrete(name = "Criterion") 
+  
+  p
+}
