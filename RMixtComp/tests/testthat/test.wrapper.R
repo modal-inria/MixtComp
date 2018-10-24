@@ -66,7 +66,7 @@ test_that("formatData keeps list in list format", {
   expect_equal(class(dataOut$x2), "character")
 })
 
-test_that("checkNClass works with mixtCompCluster object", {
+test_that("checkNClass works with mixtComp object", {
   resLearn <- list(algo = list(nClass = 2))
   class(resLearn) = "MixtComp"
   
@@ -265,7 +265,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   data <- do.call(cbind, resGen$data)
   desc <- list(z_class = list(type = "LatentClass"), Gaussian1 = list(type = "Gaussian", paramStr = ""))
   
-  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5) 
+  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5, nRun = 2) 
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -277,7 +277,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   print(confMatSampled)
   
   expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
-  expect_equal(resLearn$nRun, 1)
+  expect_equal(resLearn$nRun, 2)
   expect_equal(resLearn$criterion, "BIC")
   expect_equal(dim(resLearn$crit), c(2, 4))
   expect_equal(resLearn$nClass, 2:5)
@@ -322,7 +322,8 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   expect_warning(heatmapVar(resLearn, pkg = "plotly"), regexp = NA)
   expect_warning(heatmapClass(resLearn, pkg = "plotly"), regexp = NA)
   expect_warning(heatmapTikSorted(resLearn, pkg = "plotly"), regexp = NA)
-  expect_warning(histMisclassif(resLearn), regexp = NA)
+  expect_warning(histMisclassif(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(histMisclassif(resLearn, pkg = "ggplot2"), regexp = NA)
   for(name in getVarNames(resLearn))
   {
     if(resLearn$variable$type[[name]] != "Rank_ISR")
@@ -336,7 +337,14 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
       expect_warning(plotDataBoxplot(resLearn, name))
     }
   }
-  
+  expect_warning(plotCrit(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotCrit(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(plotProportion(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotProportion(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(plot(resLearn$res[[3]], pkg = "ggplot2"), regexp = NA)
+  expect_warning(plot(resLearn$res[[3]], pkg = "plotly"), regexp = NA)
+  expect_warning(plot(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
   file.remove("Rplots.pdf")
   
   expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3), regexp = NA)

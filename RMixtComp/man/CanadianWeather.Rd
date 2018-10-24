@@ -26,8 +26,10 @@ Daily temperature and precipitation at 35 different locations in Canada averaged
 data(CanadianWeather)
 
 # convert functional to MixtComp format
-dat <- list(tempav = apply(CanadianWeather$tempav, 2, function(x) createFunctional(CanadianWeather$time, x)), 
-            precav = apply(CanadianWeather$precav, 2, function(x) createFunctional(CanadianWeather$time, x)))
+dat <- list(tempav = apply(CanadianWeather$tempav, 2, 
+                           function(x) createFunctional(CanadianWeather$time, x)), 
+            precav = apply(CanadianWeather$precav, 2, 
+                           function(x) createFunctional(CanadianWeather$time, x)))
 
 # create descriptor with 3 subregressions ans 2 coefficients per regression
 desc <- list(tempav = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"),

@@ -7,7 +7,7 @@
 plotConvergence(output, ...)
 }
 \arguments{
-\item{output}{object returned by function \emph{mixtCompCluster}}
+\item{output}{object returned by function \emph{mixtCompLearn}}
 
 \item{...}{graphical parameters}
 }
@@ -41,9 +41,12 @@ plotConvergence(res$res[[2]])
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},
   \code{\link{histMisclassif}},
+  \code{\link{plot.MixtCompLearn}},
+  \code{\link{plot.MixtComp}}, \code{\link{plotCrit}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVar}}
+  \code{\link{plotDiscrimVar}},
+  \code{\link{plotProportion}}
 }
 \author{
 Quentin Grimonprez

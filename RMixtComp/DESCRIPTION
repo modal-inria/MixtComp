@@ -2,7 +2,7 @@ Package: RMixtComp
 Type: Package
 Title: Mixture Composer
 Version: 0.4
-Date: 2018-10-18
+Date: 2018-10-24
 Authors@R: c(person("Vincent", "Kubicki", role = c("aut", "cre"), email = "vincent.kubicki@inria.fr"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = "aut"),
@@ -13,7 +13,7 @@ License: Internal use
 Description: Mixture Composer is a project to build mixture models with
     heterogeneous data sets. The conditional independence property enable composing
     all the data sets in a single mixture model.
-Imports: Rcpp, plotly, scales, doParallel
+Imports: Rcpp, plotly, scales, doParallel, ggplot2, foreach
 Suggests: testthat, RInside, xml2
 LinkingTo: Rcpp, RcppEigen, BH
 RoxygenNote: 6.1.0

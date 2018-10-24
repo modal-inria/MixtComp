@@ -8,7 +8,7 @@ plotDataCI(output, var, class = 1:output$algo$nClass, grl = FALSE,
   pkg = c("ggplot2", "plotly"), ...)
 }
 \arguments{
-\item{output}{object returned by function \emph{mixtCompCluster}}
+\item{output}{object returned by function \emph{mixtCompLearn}}
 
 \item{var}{name of the variable}
 
@@ -53,10 +53,13 @@ plotDataCI(res$res[[2]], "Poisson1")
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},
   \code{\link{histMisclassif}},
-  \code{\link{plotConvergence}},
+  \code{\link{plot.MixtCompLearn}},
+  \code{\link{plot.MixtComp}},
+  \code{\link{plotConvergence}}, \code{\link{plotCrit}},
   \code{\link{plotDataBoxplot}},
   \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVar}}
+  \code{\link{plotDiscrimVar}},
+  \code{\link{plotProportion}}
 }
 \author{
 Matthieu MARBAC

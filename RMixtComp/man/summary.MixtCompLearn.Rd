@@ -4,19 +4,19 @@
 \alias{summary.MixtCompLearn}
 \title{MixtCompLearn Object Summaries
 
-Summary of a \code{\link{MixtCompLearn}} object}
+Summary of a \emph{MixtCompLearn} object}
 \usage{
 \method{summary}{MixtCompLearn}(object, ...)
 }
 \arguments{
-\item{object}{\code{\link{MixtCompLearn}} object}
+\item{object}{\emph{MixtCompLearn} object}
 
 \item{...}{Not used.}
 }
 \description{
 MixtCompLearn Object Summaries
 
-Summary of a \code{\link{MixtCompLearn}} object
+Summary of a \emph{MixtCompLearn} object
 }
 \examples{
 \donttest{

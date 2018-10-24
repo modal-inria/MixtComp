@@ -9,7 +9,7 @@
 #' @param criterion "BIC" or "ICL". Criterion used for choosing the best model.
 #' @param nRun number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.
 #' @param nCore number of cores used for the parallelization of the \emph{nRun} runs.
-#' @param resLearn output of \emph{mixtCompCluster} (only for \emph{mixtCompPredict} function).
+#' @param resLearn output of \emph{mixtCompLearn} (only for \emph{mixtCompPredict} function).
 #'
 #' @return An object of classes MixtCompLearn and MixtComp for \emph{mixtCompLearn} function. An object of class MixtComp for \emph{mixtCompPredict}.
 #' 
@@ -217,7 +217,8 @@
 #' resLearn2 <- mixtCompLearn(simDataLearn$data.frame, simDesc$supervised, algo, nClass = 2:4)
 #' 
 #' # run RMixtCompt in predict mode + data as list
-#' resPredict <- mixtCompPredict(simDataPredict$list, simDesc$unsupervised, algo, resLearn1, nClass = 2)
+#' resPredict <- mixtCompPredict(simDataPredict$list, simDesc$unsupervised, algo,
+#'                               resLearn1, nClass = 2)
 #' 
 #' }
 #' 

@@ -4,19 +4,19 @@
 \alias{summary.MixtComp}
 \title{MixtComp Object Summaries
 
-Summary of a \code{\link{MixtComp}} object}
+Summary of a \emph{MixtComp} object}
 \usage{
 \method{summary}{MixtComp}(object, ...)
 }
 \arguments{
-\item{object}{\code{\link{MixtComp}} object}
+\item{object}{\emph{MixtComp} object}
 
 \item{...}{Not used.}
 }
 \description{
 MixtComp Object Summaries
 
-Summary of a \code{\link{MixtComp}} object
+Summary of a \emph{MixtComp} object
 }
 \examples{
 \donttest{

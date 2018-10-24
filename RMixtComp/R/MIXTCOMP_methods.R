@@ -1,9 +1,9 @@
 #' @title MixtComp Object Summaries
 #'
-#' Summary of a \code{\link{MixtComp}} object
+#' Summary of a \emph{MixtComp} object
 #'  
 #'
-#' @param object \code{\link{MixtComp}} object
+#' @param object \emph{MixtComp} object
 #' @param ... Not used.
 #' 
 #' 
@@ -70,10 +70,10 @@ summary.MixtComp <- function(object, ...)
   
 #' @title MixtCompLearn Object Summaries
 #'
-#' Summary of a \code{\link{MixtCompLearn}} object
+#' Summary of a \emph{MixtCompLearn} object
 #'  
 #'
-#' @param object \code{\link{MixtCompLearn}} object
+#' @param object \emph{MixtCompLearn} object
 #' @param ... Not used.
 #' 
 #' 
@@ -117,11 +117,11 @@ summary.MixtCompLearn <- function(object, ...)
 
 #' @title Print Values
 #'
-#' Print a \code{\link{MixtComp}} object
+#' Print a \emph{MixtComp} object
 #'
 #'  
-#' @param x \code{\link{MixtComp}} object
-#' @param nVarMaxToPrint number of varaibles to display (including z_class)
+#' @param x \emph{MixtComp} object
+#' @param nVarMaxToPrint number of variables to display (including z_class)
 #' @param ... Not used.
 #' 
 #' @examples 
@@ -214,11 +214,11 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 
 #' @title Print Values
 #'
-#' Print a \code{\link{MixtCompLearn}} object
+#' Print a \emph{MixtCompLearn} object
 #'
 #'  
-#' @param x \code{\link{MixtCompLearn}} object
-#' @param nVarMaxToPrint number of varaibles to display (including z_class)
+#' @param x \emph{MixtCompLearn} object
+#' @param nVarMaxToPrint number of variables to display (including z_class)
 #' @param ... Not used.
 #' 
 #' @examples 
@@ -258,3 +258,120 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, ...)
   print.MixtComp(x, nVarMaxToPrint = nVarMaxToPrint, ...)
   cat("\n $res: results from all MixtComp Run\n")
 }
+
+
+#'
+#' Plot of a \emph{MixtComp} object
+#'
+#' @param x \emph{MixtComp} object
+#' @param nVarMaxToPlot number of variables to display
+#' @param pkg "ggplot2" or "plotly". Package used to plot
+#' @param ... Not used.
+#' 
+#' @examples 
+#' \donttest{
+#' data(simData)
+#'  
+#' # define the algorithm's parameters
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
+#' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' 
+#' plot(resLearn$res[[1]])
+#' }
+#' @method plot MixtComp
+#' 
+#' @seealso \link{mixtCompLearn} \link{mixtCompPredict}
+#' @family plot
+#' 
+#' @export
+plot.MixtComp <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ...)
+{
+  pkg = match.arg(pkg)
+  
+  p <- list()
+  
+  if(is.null(x$warnLog))
+  {
+    nVar <- length(x$variable$type) - 1
+    nVarToPrint <- max(1, min(nVarMaxToPlot, nVar))
+    
+    discVar <- sort(computeDiscrimPowerVar(x), decreasing = TRUE)
+    nameDiscVar <- names(discVar)
+    
+    
+    p[[1]] = plotDiscrimVar(x, pkg = pkg)
+    
+    p[[2]] = plotProportion(x, pkg = pkg)
+    
+    for(i in 1:nVarToPrint)
+      p[[i + 2]] = plotDataCI(x, nameDiscVar[i], pkg = pkg)
+    
+  }
+  
+  p
+}
+
+#'
+#' Plot of a \emph{MixtCompLearn} object
+#'
+#' @param x \emph{MixtCompLearn} object
+#' @param nVarMaxToPlot number of variables to display
+#' @param pkg "ggplot2" or "plotly". Package used to plot
+#' @param ... Not used.
+#' 
+#' @examples 
+#' \donttest{
+#' data(simData)
+#'  
+#' # define the algorithm's parameters
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
+#' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' 
+#' plot(resLearn)
+#' }
+#' @method plot MixtCompLearn
+#' 
+#' @seealso \link{mixtCompLearn} \link{mixtCompPredict}
+#' @family plot
+#' 
+#' @export
+plot.MixtCompLearn <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ...)
+{
+  pkg = match.arg(pkg)
+  
+  p <- list()
+  
+  if(is.null(x$warnLog))
+  {
+    p[[1]] = plotCrit(x, pkg, ...)
+    
+    p2 <- plot(x$res[[which(x$nClass == x$algo$nClass)]], nVarMaxToPlot, pkg, ...)
+    
+    p = c(p, p2)
+  }
+  
+  p
+}
+
