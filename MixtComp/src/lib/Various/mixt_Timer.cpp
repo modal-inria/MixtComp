@@ -17,50 +17,49 @@
 namespace mixt {
 
 Timer::Timer(std::string timerName) :
-		timerName_(timerName), startTime_(-1) {
+		timerName_(timerName) {
 #ifdef MC_VERBOSE
-	std::cout << timerName_ << ", timer created" << std::endl;
+	std::cout << timerName_ << ", timer created." << std::endl;
 #endif
 
-	std::time(&creationTime_);
-	std::time(&topTime_);
+	creationTime_ = boost::posix_time::microsec_clock::local_time();
+	lastTopTime_ = boost::posix_time::microsec_clock::local_time();
 }
 ;
 
-void Timer::iteration(int iteration, int iterationMax) {
+void Timer::iteration(Index iteration, Index iterationMax) {
 	if (iteration == 0) {
-#ifdef MC_VERBOSE
-		std::cout << timerName_ << " timer initializing" << std::endl;
-#endif
-
-		std::time(&startTime_);
+		std::cout << timerName_ << ", timer initializing first iteration." << std::endl;
+		firstIterationTime_ = boost::posix_time::microsec_clock::local_time();
 	} else {
-		std::time_t currTime;
-		std::time(&currTime);
+		Time currTime = boost::posix_time::microsec_clock::local_time();
+		TimeDuration dt = currTime - firstIterationTime_;
+		Real timePerIt = dt.total_milliseconds() / 1000. / Real(iteration);
 
-#ifdef MC_TIMERVERBOSE
-		double timePerIt = std::difftime(currTime, startTime_) / (double)iteration;
 		std::cout << timerName_ << " timer" << std::endl;
 		std::cout << "iteration: " << iteration << "/" << iterationMax << std::endl;
 		std::cout << "Mean time per iteration: " << timePerIt << std::endl;
 		std::cout << "Estimated remaining time: " << (iterationMax - iteration + 1) * timePerIt << std::endl;
-#endif
 	}
 }
 
-double Timer::top(std::string message) {
-	std::time_t currTime;
-	std::time(&currTime);
-	double lastTopTime = std::difftime(currTime, topTime_);
+Real Timer::top(std::string message) {
+	Time currTime = boost::posix_time::microsec_clock::local_time();
+
+	TimeDuration dtLastTop = currTime - lastTopTime_;
+	Real sinceLastTop = dtLastTop.total_milliseconds() / 1000.;
+
+	TimeDuration dtCreation = currTime - creationTime_;
+	Real sinceCreation = dtCreation.total_milliseconds() / 1000.;
 
 #ifdef MC_VERBOSE
 	std::cout << timerName_ << " timer, " << message
 	<< ", time since last top: " << lastTopTime
-	<< " s, time since creation: " << std::difftime(currTime, creationTime_) << " s" << std::endl;
+	<< " s, time since creation: " << sinceCreation << " s" << std::endl;
 #endif
 
-	std::time(&topTime_);
-	return lastTopTime;
+	lastTopTime_ = boost::posix_time::microsec_clock::local_time();
+	return sinceLastTop;
 }
 
 void Timer::setName(std::string timerName) {

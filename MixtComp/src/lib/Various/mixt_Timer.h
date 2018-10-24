@@ -10,31 +10,50 @@
 #ifndef MIXT_TIMER_H_
 #define MIXT_TIMER_H_
 
-#include <ctime>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include <string>
+
+#include <LinAlg/mixt_Typedef.h>
 
 namespace mixt {
 
+/**
+ * Timer can be used both:
+ * - to provide information on iterations via the iteration method
+ * - to provide information since creation via the top method
+ *
+ * https://kuniganotas.wordpress.com/2011/01/14/measuring-time-with-boost-library/
+ */
 class Timer {
 public:
+	typedef boost::posix_time::ptime Time;
+	typedef boost::posix_time::time_duration TimeDuration;
+
 	Timer(std::string timerName = "Timer");
 
 	/** Estimated time to finish all iterations */
-	void iteration(int iteration, int iterationMax);
+	void iteration(Index iteration, Index iterationMax);
 
-	/** Time elapsed since creation of timer */
-	double top(std::string message);
+	/**
+	 * Time elapsed since creation of timer, in seconds
+	 *
+	 * @param message provides a context for the output. */
+	Real top(std::string message);
 
 	void setName(std::string timerName);
 
 private:
 	std::string timerName_;
 
-	std::time_t creationTime_;
+	/** Time at creation. */
+	Time creationTime_;
 
-	std::time_t startTime_;
+	/** Time since first iteration. */
+	Time firstIterationTime_;
 
-	std::time_t topTime_;
+	/** Time since the last top, or creation, which one is the more recent. */
+	Time lastTopTime_;
 };
 
 } // namespace mixt

@@ -73,7 +73,12 @@ public:
 		}
 
 		for (Index iterGibbs = 0; iterGibbs < nIter; ++iterGibbs) {
+			std::cout << "Iteration " << iterGibbs + 1 << std::endl;
+
+#ifdef MC_TIMERVERBOSE
 			myTimer.iteration(iterGibbs, nIter - 1);
+#endif
+
 #ifdef MC_PROGRESS
 			writeProgress(group, groupMax, iterGibbs, nIter - 1);
 #endif

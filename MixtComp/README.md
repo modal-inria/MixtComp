@@ -50,7 +50,10 @@ To clean the debug and release folders, run `./clean.sh`.
 
 Those compilation flags activate various behaviours in MixtComp.
 
-- `MC_DEBUG`: legacy macro which enables a lot of output
+- `MC_OUT`: general outputs
+- `MC_DEBUG`: legacy macro which enables a lot of output, only used to keep a record of debug outputs for later uses
 - `MC_PROGRESS`: activates real time writing of a `progress` file in the current working directory. Used mainly in MASSICCC.
 - `MC_VERBOSE`: information on timer
-- `MC_TIMERVERBOSE`: more information on timer, including estimated remaining time
+- `MC_TIMERVERBOSE`: timer information on each iteration, with estimated remaining time
+
+Note that `MC_DETERMINISTIC` is not a compilation flag but an environment variable.

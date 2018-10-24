@@ -117,7 +117,11 @@ public:
 
 		for (Index iter = 0; iter < nIter; ++iter) {
 			std::cout << "Iteration " << iter + 1 << std::endl;
+
+#ifdef MC_TIMERVERBOSE
 			myTimer.iteration(iter, nIter - 1);
+#endif
+
 #ifdef MC_PROGRESS
 			writeProgress(group, groupMax, iter, nIter - 1);
 #endif
