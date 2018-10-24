@@ -3,7 +3,7 @@
 #' @details The discriminative power of variable j is defined by 1 - Cj
 #' Cj=  - sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*lnK)
 #' 
-#' @param output object returned by function \emph{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompLearn}
 #' @param ylim vector of length 2 defining the range of y-axis
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
@@ -66,7 +66,7 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
 #' @details The discriminative power of class k is defined by 1 - Dk
 #' Dk =  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
 #' 
-#' @param output object returned by function \emph{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompLearn}
 #' @param ylim vector of length 2 defining the range of y-axis
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
@@ -164,7 +164,7 @@ ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1))
 #' @details The similarities between variables j and h is defined by 1 - Delta(j,h)
 #' Delta(j,h)^2 = (1/n) * sum_{i=1}^n sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2
 #' 
-#' @param output object returned by function \emph{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompLearn}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly. For pkg = "ggplot2", addValues = TRUE prints similarity values on the heatmap
 #' 
@@ -228,7 +228,7 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' @details The similarities between classes k and g is defined by 1 - Sigma(k,g)
 #' Sigma(k,g)^2 = (1/n) * sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
 #' 
-#' @param output object returned by function \emph{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompLearn}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly. For pkg = "ggplot2", addValues = TRUE prints similarity values on the heatmap
 #' 
@@ -295,7 +295,7 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' @details Observation are sorted according to the hard partition then for each component
 #' they are sorted by decreasing order of their tik's
 #' 
-#' @param output object returned by function \emph{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompLearn}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
@@ -409,7 +409,7 @@ heatmapplotly <- function(dat, xname, main, xlab = "", ylab = "", text = NULL, .
 #' err_i = 1 - max_{k={1,\ldots,K}} P(Z_i=k|x_i)
 #' Histgrams of err_i's can be plot for a specific class, all classes or every class
 #'
-#' @param output object returned by function \emph{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompLearn}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... arguments to be passed to plot_ly
 #' 
@@ -454,7 +454,7 @@ histMisclassif <- function(output, pkg = c("ggplot2", "plotly"), ...)
 
 
 plotlyhistMisclassif <- function(z, misclassifrisk, G, ...){
-
+  
   ## Create the buttons for selecting some data
   # General: all data
   # Each: all data by components
@@ -515,6 +515,47 @@ gghistMisclassif <- function(z, misclassifrisk, G)
       geom_histogram(position = "dodge", binwidth = 0.05, fill = hue_pal()(G)[i], colour = "black") + 
       labs(title = paste0("Misclassification risk: class ", i), x = "Probabilities of misclassification", y = "Percentile of observations with \na misclassification risk less than x")
   }
-
+  
   return(p)
+}
+
+
+#' Plot the mixture's proportions 
+#'
+#' @param output object returned by function \emph{mixtCompLearn}
+#' @param pkg "ggplot2" or "plotly". Package used to plot
+#' @param ... arguments to be passed to plot_ly
+#' 
+#' @examples 
+#' \donttest{
+#' library(RMixtComp)
+#' 
+#' data(simData)
+#'  
+#' # define the algorithm's parameters
+#' algo <- createAlgo()
+#' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' 
+#' # plot
+#' plotProportion(res)
+#' plotProportion(res$res[[2]])
+#' }
+#' 
+#' @author Matthieu MARBAC
+#' @family plot
+#' @export
+plotProportion <- function(output, pkg = c("ggplot2", "plotly"), ...)
+{
+  pkg = match.arg(pkg)
+  
+  p <- switch(pkg, 
+              "ggplot2" = ggbarplot(output$variable$param$z_class$stat[,1], paste0("Class ", 1:output$algo$nClass), main = "Proportion", xlab = "", ylab = "", ylim = c(0, 1)),
+              "plotly" = barplotly(output$variable$param$z_class$stat[,1], paste0("Class ", 1:output$algo$nClass), main = "Proportion", xlab = "", ylab = "", ylim = c(0, 1), text = NULL, ...))
+  
+  p
 }

@@ -121,7 +121,7 @@ summary.MixtCompLearn <- function(object, ...)
 #'
 #'  
 #' @param x \code{\link{MixtComp}} object
-#' @param nVarMaxToPrint number of varaibles to display (including z_class)
+#' @param nVarMaxToPrint number of variables to display (including z_class)
 #' @param ... Not used.
 #' 
 #' @examples 
@@ -218,7 +218,7 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #'
 #'  
 #' @param x \code{\link{MixtCompLearn}} object
-#' @param nVarMaxToPrint number of varaibles to display (including z_class)
+#' @param nVarMaxToPrint number of variables to display (including z_class)
 #' @param ... Not used.
 #' 
 #' @examples 
@@ -258,3 +258,66 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, ...)
   print.MixtComp(x, nVarMaxToPrint = nVarMaxToPrint, ...)
   cat("\n $res: results from all MixtComp Run\n")
 }
+
+
+#'
+#' Plot of a \code{\link{MixtComp}} object
+#'
+#' @param x \code{\link{MixtComp}} object
+#' @param nVarMaxToPrint number of variables to display
+#' @param ... Not used.
+#' 
+#' @examples 
+#' \donttest{
+#' data(simData)
+#'  
+#' # define the algorithm's parameters
+#' algo <- list(nbBurnInIter = 100,
+#'              nbIter = 100,
+#'              nbGibbsBurnInIter = 50,
+#'              nbGibbsIter = 50,
+#'              nInitPerClass = 10,
+#'              nSemTry = 20,
+#'              confidenceLevel = 0.95)
+#' 
+#' # keep only 3 variables
+#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' 
+#' plot(resLearn$res[[1]])
+#' }
+#' @method plot MixtComp
+#' 
+#' @seealso \link{mixtCompLearn} \link{mixtCompPredict}
+#' @family plot
+#' 
+#' @export
+plot.MixtComp <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ...)
+{
+  pkg = match.arg(pkg)
+  
+  p <- list()
+  
+  if(is.null(x$warnLog))
+  {
+    nVar <- length(x$variable$type) - 1
+    nVarToPrint <- max(1, min(nVarMaxToPlot, nVar))
+    
+    discVar <- sort(computeDiscrimPowerVar(x), decreasing = TRUE)
+    nameDiscVar <- names(discVar)
+    
+    
+    p[[1]] = plotDiscrimVar(x, pkg = pkg)
+    
+    p[[2]] = plotProportion(x, pkg = pkg)
+    
+    for(i in 1:nVarToPrint)
+      p[[i + 2]] = plotDataCI(x, nameDiscVar[i], pkg = pkg)
+    
+  }
+  
+  p
+}
+

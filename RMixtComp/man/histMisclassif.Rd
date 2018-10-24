@@ -7,7 +7,7 @@
 histMisclassif(output, pkg = c("ggplot2", "plotly"), ...)
 }
 \arguments{
-\item{output}{object returned by function \emph{mixtCompCluster}}
+\item{output}{object returned by function \emph{mixtCompLearn}}
 
 \item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
@@ -45,10 +45,12 @@ histMisclassif(res$res[[2]])
 \seealso{
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},
+  \code{\link{plot.MixtComp}},
   \code{\link{plotConvergence}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVar}}
+  \code{\link{plotDiscrimVar}},
+  \code{\link{plotProportion}}
 }
 \author{
 Matthieu MARBAC

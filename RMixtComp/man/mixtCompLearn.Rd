@@ -28,7 +28,7 @@ mixtCompPredict(data, desc, algo = createAlgo(), resLearn,
 
 \item{nCore}{number of cores used for the parallelization of the \emph{nRun} runs.}
 
-\item{resLearn}{output of \emph{mixtCompCluster} (only for \emph{mixtCompPredict} function).}
+\item{resLearn}{output of \emph{mixtCompLearn} (only for \emph{mixtCompPredict} function).}
 }
 \value{
 An object of classes MixtCompLearn and MixtComp for \emph{mixtCompLearn} function. An object of class MixtComp for \emph{mixtCompPredict}.

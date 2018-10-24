@@ -2,7 +2,7 @@
 #' 
 #' Plot the evolution of the completed loglikelihood during the SEM algorithm. The vertical line denotes the end of the burn-in phase.
 #' 
-#' @param output object returned by function \emph{mixtCompCluster}
+#' @param output object returned by function \emph{mixtCompLearn}
 #' @param ... graphical parameters
 #' 
 #' @details 
@@ -43,7 +43,7 @@ plotConvergence <- function(output, ...)
 #
 # Plot the evolution of estimated parameters after the burn-in phase.
 #
-# @param output object returned by function \emph{mixtCompCluster}
+# @param output object returned by function \emph{mixtCompLearn}
 # @param var name of the variable
 # @param ... graphical parameters
 #

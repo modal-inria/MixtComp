@@ -8,7 +8,7 @@ plotDiscrimClass(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
   ...)
 }
 \arguments{
-\item{output}{object returned by function \emph{mixtCompCluster}}
+\item{output}{object returned by function \emph{mixtCompLearn}}
 
 \item{ylim}{vector of length 2 defining the range of y-axis}
 
@@ -50,9 +50,11 @@ plotDiscrimClass(res$res[[2]])
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},
   \code{\link{histMisclassif}},
+  \code{\link{plot.MixtComp}},
   \code{\link{plotConvergence}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
-  \code{\link{plotDiscrimVar}}
+  \code{\link{plotDiscrimVar}},
+  \code{\link{plotProportion}}
 }
 \author{
 Matthieu MARBAC

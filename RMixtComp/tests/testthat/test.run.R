@@ -450,6 +450,11 @@ test_that("run cluster/predict R object",{
       expect_warning(plotDataBoxplot(resLearn, name))
     }
   }
+  plotProportion(resLearn, pkg = "ggplot2")
+  plotProportion(resLearn, pkg = "plotly")
+  class(resLearn) = "MixtComp"
+  expect_warning(plot(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
   file.remove("Rplots.pdf")
   
   resGenPredict <- dataGeneratorNewIO(100, 0.9, var)
