@@ -42,5 +42,5 @@ summary(resLearn)
 
 }
 \seealso{
-\link{MixtCompLearn} \link{print.MixtCompLearn}
+\link{mixtCompLearn} \link{print.MixtCompLearn}
 }
