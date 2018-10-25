@@ -117,6 +117,20 @@ Real minimizePositiveNewtonRaphson(Index nIt, Real relTol, const std::function<s
 
 Real minimizePositiveNewtonRaphson(const std::function<std::pair<Real, Real>(Real)>& evalFunc, Real x);
 
+template<typename Type>
+Real ratioIdentical(const Type& a, const Type& b) {
+	Index nObs = a.size();
+	Real nId = 0.;
+
+	for(Index i = 0; i < nObs; ++i) {
+		if (a[i] == b[i]) {
+			nId += 1.0;
+		}
+	}
+
+	return nId / nObs;
+}
+
 }
 
 #endif // MIXT_LINALG_H

@@ -114,6 +114,8 @@ public:
 		}
 #endif
 
+		composer_.stabilityReset();
+
 		for (Index iter = 0; iter < nIter; ++iter) {
 #ifdef MC_VERBOSE
 			myTimer.iteration(iter, nIter - 1);
@@ -140,7 +142,13 @@ public:
 			}
 			//		p_composer_->writeParameters();
 
-			composer_.storeSEMRun(iter, nIter - 1, runType);
+			if (composer_.isPartitionStable()) {
+				std::cout << "runSEM, partition has been stable for " << nStableCriterium << " iterations." << std::endl;
+				composer_.storeSEMRun(iter, iter, runType); // note that the last iteration is set as the current one, and not as nIter-1
+				break; // no need for further iterations
+			} else {
+				composer_.storeSEMRun(iter, nIter - 1, runType);
+			}
 		}
 
 #ifdef VERBOSE

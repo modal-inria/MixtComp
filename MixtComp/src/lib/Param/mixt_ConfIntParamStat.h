@@ -20,6 +20,8 @@ namespace mixt {
 
 /**
  * Computation of confidence interval on parameters. Templated for int or Real cases.
+ * Note that the storage uses a linearized version of the initial storage, therefore ConfIntParamStat can be templated with Vector and Matrix
+ * transparently.
  * */
 template<typename ContainerType>
 class ConfIntParamStat {
@@ -27,10 +29,9 @@ public:
 	typedef typename ContainerType::Type Type;
 
 	ConfIntParamStat(ContainerType& param, Real confidenceLevel) :
-			nbIter_(0), nRows_(0), nCols_(0), nCoeff_(0), param_(param), confidenceLevel_(
+			initialNIter_(0), nRows_(0), nCols_(0), nCoeff_(0), param_(param), confidenceLevel_(
 					confidenceLevel) {
 	}
-	;
 
 	void sampleParam(Index iteration, Index iterationMax) {
 		if (iteration == 0) {
@@ -38,14 +39,20 @@ public:
 			nCols_ = param_.cols();
 			nCoeff_ = nRows_ * nCols_;
 
-			logStorage_.resize(nCoeff_, iterationMax + 1); // resize internal storage
+			initialNIter_ = iterationMax + 1;
+
+			logStorage_.resize(nCoeff_, initialNIter_); // resize internal storage
 			statStorage_.resize(nCoeff_, 3); // resize export storage
 
 			sample(0); // first sampling, on each parameter
 		} else if (iteration == iterationMax) {
 			sample(iterationMax); // last sampling
 
-			for (Index p = 0; p < nCoeff_; ++p) {
+			if (iterationMax + 1 != initialNIter_) {
+				logStorage_ = logStorage_.block(0, 0, nCoeff_, iterationMax + 1); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
+			}
+
+			for (Index p = 0; p < nCoeff_; ++p) { // each row corresponds to a parameters, hence treatment is applied on each row
 				RowVector<Type> currRow = logStorage_.row(p);
 				currRow.sort();
 
@@ -136,7 +143,7 @@ private:
 	}
 
 	// number of iterations used to compute the statistics
-	Index nbIter_;
+	Index initialNIter_;
 
 	// number of parameters
 	Index nRows_;

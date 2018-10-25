@@ -38,7 +38,7 @@ public:
 	MixtureComposer(const Graph& algo) :
 			nClass_(algo.template get_payload<Index>( { }, "nClass")), nInd_(algo.template get_payload<Index>( { }, "nInd")), nVar_(0), confidenceLevel_(
 					algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(
-					zClassInd_), completedProbabilityCache_(nInd_) {
+					zClassInd_), completedProbabilityCache_(nInd_), lastPartition_(nInd_), initialNIter_(0), nConsecutiveStableIterations_(0) {
 		std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
 		zClassInd_.setIndClass(nInd_, nClass_);
 
@@ -410,10 +410,16 @@ public:
 	const Vector<Real>& completedProbabilityLogBurnIn() {
 		return completedProbabilityLogBurnIn_;
 	}
+
 	const Vector<Real>& completedProbabilityLogRun() {
 		return completedProbabilityLogRun_;
 	}
+
 	void printClassInd() const;
+
+	void stabilityReset();
+
+	bool isPartitionStable();
 
 private:
 	std::string paramStr_;
@@ -461,11 +467,19 @@ private:
 	/** Cached completed log probability for each individual, can be used to export the evolution of the completed likelihood of the data, iteration after iteration. */
 	Vector<Real> completedProbabilityCache_;
 
+	Index initialNIter_;
+
 	/** Cached completed log probability for each individual, can be used to export the evolution of the completed likelihood of the data, iteration after iteration. */
 	Vector<Real> completedProbabilityLogBurnIn_;
 
 	/** Cached completed log probability for each individual, can be used to export the evolution of the completed likelihood of the data, iteration after iteration. */
 	Vector<Real> completedProbabilityLogRun_;
+
+	/** Partition at last iteration, used to assess the stability */
+	Vector<Index> lastPartition_;
+
+	/** Stable iterations */
+	Index nConsecutiveStableIterations_;
 };
 
 } /* namespace mixt */

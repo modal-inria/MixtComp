@@ -16,7 +16,7 @@
 namespace mixt {
 
 RankStat::RankStat(RankVal& mu, Real confidenceLevel) :
-		mu_(mu), confidenceLevel_(confidenceLevel) {
+		mu_(mu), confidenceLevel_(confidenceLevel), initialNIter_(0) {
 }
 
 void RankStat::sample(int iteration) {
@@ -25,11 +25,16 @@ void RankStat::sample(int iteration) {
 
 void RankStat::sampleValue(int iteration, int iterationMax) {
 	if (iteration == 0) {
-		logStorageMu_.resize(iterationMax + 1);
+		initialNIter_ = iterationMax + 1;
+		logStorageMu_.resize(initialNIter_);
 
 		sample(0); // first sampling, on each parameter
 	} else if (iteration == iterationMax) {
 		sample(iterationMax); // last sampling
+
+		if (iterationMax + 1 != initialNIter_) {
+			logStorageMu_ = logStorageMu_.block(0, 0, iterationMax + 1, 1); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
+		}
 
 		std::map<RankVal, int> stat; // sparse counting of the occurrences of mu
 		for (int i = 0; i < iterationMax + 1; ++i) {

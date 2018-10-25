@@ -55,6 +55,8 @@ private:
 	 * The confidenceLevel parameter act as a cutoff both for mu and pi. */
 	std::list<std::pair<RankVal, Real> > statStorageMu_;
 
+	Index initialNIter_;
+
 	/** Storage for iterations results, 1 value per iteration */
 	Vector<RankVal> logStorageMu_;
 };

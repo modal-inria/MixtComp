@@ -9,5 +9,5 @@
   "nSemTry": 10,
   "confidenceLevel": 0.95,
   "mode": "learn",
-  "notes": "You can add any note if you wish in unrequired fields like this one. They will be copied to the output also."
+  "notes": "You can add any note you wish in non mandatory fields like this one (notes). They will be copied to the output."
 }

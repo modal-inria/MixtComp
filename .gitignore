@@ -17,6 +17,7 @@
 MixtComp/release
 MixtComp/debug
 MixtComp/report.xml
+MixtComp/data/00-SimpleCase/learn/resLearn.json
 RMixtComp/R/RcppExports.R
 RMixtComp/src/lib
 RMixtComp/src/RcppExports.cpp

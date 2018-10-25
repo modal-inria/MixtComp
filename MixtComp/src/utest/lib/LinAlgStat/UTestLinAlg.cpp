@@ -192,3 +192,28 @@ TEST(Vector, importIterable) {
 
 	ASSERT_EQ(vec, expectedVec);
 }
+
+/**
+ * Test if using resize on an already filled matrix preserved the data
+ */
+TEST(Matrix, resizePreservesData) {
+	Matrix<Real> initial(3, 3);
+	initial << 1., 2., 3., 4., 5., 6., 7., 8., 9.;
+	initial = initial.block(0, 0, 3, 2);
+
+	Matrix<Real> expected(3, 2);
+	expected << 1., 2., 4., 5., 7., 8.;
+
+	EXPECT_TRUE(initial.isApprox(expected, epsilon));
+}
+
+TEST(Vector, resizePreservesData) {
+	Vector<Real> initial(3);
+	initial << 1., 2., 3.;
+	initial = initial.block(0, 0, 2, 1);
+
+	Vector<Real> expected(2);
+	expected << 1., 2.;
+
+	EXPECT_TRUE(initial.isApprox(expected, epsilon));
+}

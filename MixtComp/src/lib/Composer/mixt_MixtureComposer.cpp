@@ -15,6 +15,7 @@
 #include <IO/mixt_IO.h>
 #include <Various/mixt_Timer.h>
 #include <LinAlg/mixt_LinAlg.h>
+#include <LinAlg/mixt_Math.h>
 #include <Various/mixt_Various.h>
 #include "mixt_MixtureComposer.h"
 
@@ -254,14 +255,23 @@ std::string MixtureComposer::checkNbIndPerClass() const {
 void MixtureComposer::storeSEMRun(int iteration, int iterationMax, RunType runType) {
 	if (runType == burnIn_) {
 		if (iteration == 0) {
-			completedProbabilityLogBurnIn_.resize(iterationMax + 1);
+			initialNIter_ = iterationMax + 1;
+			completedProbabilityLogBurnIn_.resize(initialNIter_);
 		}
+
 		completedProbabilityLogBurnIn_(iteration) = completedProbabilityCache_.sum();
+
+		if (iteration == iterationMax) {
+			if (iterationMax + 1 != initialNIter_) {
+				completedProbabilityLogBurnIn_ = completedProbabilityLogBurnIn_.block(0, 0, iterationMax + 1, 1); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
+			}
+		}
 	}
 
 	if (runType == run_) {
 		if (iteration == 0) {
-			completedProbabilityLogRun_.resize(iterationMax + 1);
+			initialNIter_ = iterationMax + 1;
+			completedProbabilityLogRun_.resize(initialNIter_);
 		}
 		completedProbabilityLogRun_(iteration) = completedProbabilityCache_.sum();
 
@@ -272,6 +282,10 @@ void MixtureComposer::storeSEMRun(int iteration, int iterationMax, RunType runTy
 		paramStat_.sampleParam(iteration, iterationMax);
 
 		if (iteration == iterationMax) {
+			if (iterationMax + 1 != initialNIter_) {
+				completedProbabilityLogRun_ = completedProbabilityLogRun_.block(0, 0, iterationMax + 1, 1); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
+			}
+
 			paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"
 			paramStat_.setExpectationParam(); // replace pi by the median values
 		}
@@ -585,6 +599,27 @@ bool MixtureComposer::eStepObservedInd(Index i) {
 	tik_.row(i).logToMulti(lnComp);
 
 	return isIndividualObservable;
+}
+
+void MixtureComposer::stabilityReset() {
+	lastPartition_ = -1; // to ensure that every class is considered unstable at the first iteration
+	nConsecutiveStableIterations_ = 0;
+}
+
+bool MixtureComposer::isPartitionStable() {
+	if (ratioStableCriterium < ratioIdentical(lastPartition_, zClassInd_.zi().data_)) { // stable case
+		nConsecutiveStableIterations_ += 1;
+	} else { // unstable case
+		nConsecutiveStableIterations_ = 0;
+	}
+
+	lastPartition_ = zClassInd_.zi().data_;
+
+	if (nStableCriterium <= nConsecutiveStableIterations_) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 } /* namespace mixt */
