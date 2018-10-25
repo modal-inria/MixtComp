@@ -65,17 +65,17 @@ public:
 	 * run the algorithm, only kept during the transition, as an archive
 	 * @return string describing the problem in case of soft degeneracy */
 	void runGibbs(RunType runType, Index nIter, Index group, Index groupMax) {
+#ifdef MC_VERBOSE
 		Timer myTimer;
 		if (runType == burnIn_) {
 			myTimer.setName("Gibbs: burn-in");
 		} else {
 			myTimer.setName("Gibbs: run");
 		}
+#endif
 
 		for (Index iterGibbs = 0; iterGibbs < nIter; ++iterGibbs) {
-			std::cout << "Iteration " << iterGibbs + 1 << std::endl;
-
-#ifdef MC_TIMERVERBOSE
+#ifdef MC_VERBOSE
 			myTimer.iteration(iterGibbs, nIter - 1);
 #endif
 
@@ -91,6 +91,10 @@ public:
 				composer_.storeGibbsRun(iterGibbs, nIter - 1);
 			}
 		}
+
+#ifdef MC_VERBOSE
+		myTimer.finish();
+#endif
 	}
 
 protected:

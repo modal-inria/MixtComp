@@ -76,15 +76,12 @@ include_directories(${CMAKE_BINARY_DIR}/json-src/single_include/nlohmann) # nloh
 configure_file(CMakeLists.txt.in optim-download/CMakeLists.txt)
 include_directories(${CMAKE_BINARY_DIR}/optim-src/include) # CppNumericalSolvers is a header-only library
 
-# COMPILATION FLAGS
+# compilation flags
 
-## -I
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/json/")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/")
-
-## others cxx flags
 set(CMAKE_POSITION_INDEPENDENT_CODE ON) # to enable PIC on platforms that need it
-add_definitions(-DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE_CURRENT_SOURCE_DIR}/lib/LinAlg/mixt_EigenMatrixBaseAddons.h\")
+add_definitions(-DMC_VERBOSE -DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE_CURRENT_SOURCE_DIR}/lib/LinAlg/mixt_EigenMatrixBaseAddons.h\")
 
 # json interface
 add_subdirectory(json)

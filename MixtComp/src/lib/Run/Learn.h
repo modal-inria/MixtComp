@@ -39,7 +39,7 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 	Timer readTimer("Read Data");
 	warnLog += createAllMixtures(algo, desc, data, param, out, composer);
 	warnLog += composer.setDataParam(learning_, data, param);
-	readTimer.top("data has been read");
+	readTimer.finish();
 
 	if (0 < warnLog.size()) {
 		out.add_payload({}, "warnLog", warnLog);
@@ -51,7 +51,7 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 	SemStrategy<Graph> semStrategy(composer, algo);
 	Timer semStratTimer("SEM Strategy Run");
 	warnLog += semStrategy.run();
-	semStratTimer.top("SEM strategy run complete");
+	semStratTimer.finish();
 
 	if (0 < warnLog.size()) {
 		out.add_payload({}, "warnLog", warnLog);
@@ -63,7 +63,7 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 	GibbsStrategy<Graph> gibbsStrategy(composer, algo, 2);
 	Timer gibbsStratTimer("Gibbs Strategy Run");
 	warnLog += gibbsStrategy.run();
-	gibbsStratTimer.top("Gibbs strategy run complete");
+	gibbsStratTimer.finish();
 
 	if (0 < warnLog.size()) {
 		out.add_payload({}, "warnLog", warnLog);
@@ -74,7 +74,7 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 
 	composer.writeParameters();
 
-	Real runTime = totalTimer.top("end of run");
+	Real runTime = totalTimer.finish();
 	std::string mode = "learn";
 	composer.exportMixture(runTime, out);
 	composer.exportDataParam(out);

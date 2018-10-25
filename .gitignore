@@ -22,6 +22,7 @@ RMixtComp/src/lib
 RMixtComp/src/RcppExports.cpp
 RMixtComp/src/test/test
 RMixtComp/RMCtest.xml
+RMixtComp/src/libOFiles
 RMixtComp/src/Makevars
 RJsonMixtComp/R/MIXTCOMP_*
 !RJsonMixtComp/inst/extdata/*.json

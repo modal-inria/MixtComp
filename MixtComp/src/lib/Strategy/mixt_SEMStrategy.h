@@ -105,20 +105,17 @@ public:
 	std::string runSEM(RunType runType, Index nIter, int group, int groupMax) {
 		std::string warnLog;
 
+#ifdef MC_VERBOSE
 		Timer myTimer;
-
 		if (runType == burnIn_) {
-			std::cout << "Burnin Iterations begin" << std::endl;
 			myTimer.setName("SEM: burn-in");
 		} else if (runType == run_) {
-			std::cout << "Iterations begins" << std::endl;
 			myTimer.setName("SEM: run");
 		}
+#endif
 
 		for (Index iter = 0; iter < nIter; ++iter) {
-			std::cout << "Iteration " << iter + 1 << std::endl;
-
-#ifdef MC_TIMERVERBOSE
+#ifdef MC_VERBOSE
 			myTimer.iteration(iter, nIter - 1);
 #endif
 
@@ -145,6 +142,10 @@ public:
 
 			composer_.storeSEMRun(iter, nIter - 1, runType);
 		}
+
+#ifdef VERBOSE
+		myTimer.finish();
+#endif
 
 		return "";
 	}

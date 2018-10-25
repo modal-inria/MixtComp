@@ -39,7 +39,7 @@ void predict(const Graph& algo, const Graph& data, const Graph& desc, const Grap
 	Timer readTimer("Read Data");
 	warnLog += createAllMixtures(algo, desc, data, param, out, composer);
 	warnLog += composer.setDataParam(prediction_, data, param);
-	readTimer.top("data has been read");
+	readTimer.finish();
 
 	if (0 < warnLog.size()) {
 		out.add_payload({}, "warnLog", warnLog);
@@ -51,7 +51,7 @@ void predict(const Graph& algo, const Graph& data, const Graph& desc, const Grap
 	GibbsStrategy<Graph> gibbsStrategy(composer, algo, 0);
 	Timer gibbsStratTimer("Gibbs Strategy Run");
 	warnLog += gibbsStrategy.run();
-	gibbsStratTimer.top("Gibbs strategy run complete");
+	gibbsStratTimer.finish();
 
 	if (0 < warnLog.size()) {
 		out.add_payload({}, "warnLog", warnLog);
@@ -62,7 +62,7 @@ void predict(const Graph& algo, const Graph& data, const Graph& desc, const Grap
 
 	composer.writeParameters();
 
-	Real runTime = totalTimer.top("end of run");
+	Real runTime = totalTimer.finish();
 	std::string mode = "learn";
 
 	composer.exportMixture(runTime, out);

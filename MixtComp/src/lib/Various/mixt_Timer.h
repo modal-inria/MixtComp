@@ -30,7 +30,9 @@ public:
 	typedef boost::posix_time::ptime Time;
 	typedef boost::posix_time::time_duration TimeDuration;
 
-	Timer(std::string timerName = "Timer");
+	Timer();
+
+	Timer(const std::string& timerName);
 
 	/** Estimated time to finish all iterations */
 	void iteration(Index iteration, Index iterationMax);
@@ -43,6 +45,10 @@ public:
 
 	void setName(std::string timerName);
 
+	/**
+	 * End of use of the timer, display message with total time spent since creation.
+	 */
+	Real finish();
 private:
 	std::string timerName_;
 
