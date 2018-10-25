@@ -32,7 +32,7 @@
 #' 
 #' }
 #' 
-#' @seealso \link{MixtCompLearn} \link{print.MixtComp}
+#' @seealso \link{mixtCompLearn} \link{print.MixtComp}
 #' 
 #' @export
 summary.MixtComp <- function(object, ...)
@@ -101,7 +101,7 @@ summary.MixtComp <- function(object, ...)
 #' summary(resLearn)
 #' }
 #' 
-#' @seealso \link{MixtCompLearn} \link{print.MixtCompLearn}
+#' @seealso \link{mixtCompLearn} \link{print.MixtCompLearn}
 #' 
 #' @export
 summary.MixtCompLearn <- function(object, ...)

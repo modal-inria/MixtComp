@@ -43,5 +43,5 @@ summary(resLearn$res[[1]])
 
 }
 \seealso{
-\link{MixtCompLearn} \link{print.MixtComp}
+\link{mixtCompLearn} \link{print.MixtComp}
 }
