@@ -3,16 +3,15 @@
 MixtComp uses cmake to generate a makefile. It also requires the following external libraries:
 - Boost
 - Eigen
-- Nlopt
 
-Note that if you are installing RMixtComp from CRAN, Boost and Eigen are provided via dependencies from CRAN, so you only have to install CMake and Nlopt manually.
+Note that if you are installing RMixtComp from CRAN, Boost and Eigen are provided via dependencies from CRAN, so you only have to install CMake manually.
 
 ## Linux
 
 On Debian / Ubuntu, you can install all the dependencies using:
 
 ```
-sudo apt install cmake libboost-all-dev libnlopt-dev libeigen3-dev libxml2-dev
+sudo apt install cmake libboost-all-dev libeigen3-dev libxml2-dev
 ```
 
 ## macOS
@@ -24,27 +23,19 @@ We recommand using Homebrew to manage dependencies. Installation is easy, follow
 The additional libraries can then be installed using:
 
 ```
-brew install cmake boost nlopt eigen
+brew install cmake boost eigen
 ```
 
 ## Windows
 
 To install the necessary tools, user needs to install [cygwin](https://www.cygwin.com/). gcc, cmake, boost and eigen must be installed through the cygwin packages installer.
 
-### Nlopt
-
-Nlopt is not available with Cygwin and need to be installed by hand. Go to [nlopt website](https://nlopt.readthedocs.io/en/latest/#download-and-installation) and download the tar.gz archive.
-
-Extract the content of the archive (e.g. with [7-zip](https://www.7-zip.org/)) and put all the contents (api, auglag, ...) in the *nlopt* folder.
-Then download the [CMakeLists file](http://ab-initio.mit.edu/nlopt/CMakeLists.txt) and the [config.cmake.h.in file](http://ab-initio.mit.edu/nlopt/config.cmake.h.in) from this [page](https://nlopt.readthedocs.io/en/latest/NLopt_on_Windows/).
-
-nlopt will then be built automatically when MixtComp or JSonMixtComp is built.
-
 ## Compilation & tests
 
 Run `./builDebug.sh` (resp. `./builRelease.sh`) to compile MixtComp in Debug (resp. Release) mode.
 Run `./utestDebug.sh` (resp. `utestRelease.sh`) to run unit tests in Debug (resp. Release) mode.
 To clean the debug and release folders, run `./clean.sh`.
+
 
 # Compilation FLAGS
 
