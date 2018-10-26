@@ -62,3 +62,12 @@ checkNClass <- function(nClass, resLearn)
   
   return(nClass)
 }
+
+completeAlgo <- function(algo)
+{
+  algoDefault <- createAlgo()
+  
+  missingNames <- setdiff(names(algoDefault), names(algo))
+  
+  return(c(algo, algoDefault[missingNames]))
+}

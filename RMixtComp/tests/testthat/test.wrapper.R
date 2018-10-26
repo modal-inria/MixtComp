@@ -108,7 +108,31 @@ test_that("checkNClass works with mixtCompLearn object", {
   expect_equal(out, 2)
 })
 
+test_that("completeAlgo adds missing elements", {
+  algo <- list()
+  outAlgo <- completeAlgo(algo)
+  expectedAlgo <- createAlgo()
+  
+  expect_setequal(names(outAlgo), names(expectedAlgo))
+  expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
+  
+  
+  algo <- list(nbIter = 100)
+  outAlgo <- completeAlgo(algo)
+  expectedAlgo <- createAlgo(nbIter = 100)
+  
+  expect_setequal(names(outAlgo), names(expectedAlgo))
+  expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
+})
 
+test_that("completeAlgo keeps unrequired fields", {
+  algo <- list(nbIter = 100 , mode = "learn")
+  outAlgo <- completeAlgo(algo)
+  expectedAlgo <- c(createAlgo(nbIter = 100), list(mode = "learn"))
+  
+  expect_setequal(names(outAlgo), names(expectedAlgo))
+  expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
+})
 
 test_that("rmcMultiRun works", {
   set.seed(42)
@@ -232,7 +256,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   for(name in getVarNames(resLearn))
     expect_warning(getParam(resLearn, name), regexp = NA)
   
-
+  
   expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn), regexp = NA)
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
@@ -352,10 +376,10 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   expect_warning(summary(resLearn$res[[1]]), regexp = NA)
   expect_warning(print(resLearn), regexp = NA)
   expect_warning(print(resLearn$res[[1]]), regexp = NA)
-
+  
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
-
+  
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
 })
