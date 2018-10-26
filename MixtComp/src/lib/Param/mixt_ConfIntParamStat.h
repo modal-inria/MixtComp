@@ -49,7 +49,7 @@ public:
 			sample(iterationMax); // last sampling
 
 			if (iterationMax + 1 != initialNIter_) {
-				logStorage_ = logStorage_.block(0, 0, nCoeff_, iterationMax + 1); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
+				logStorage_ = logStorage_.block(0, 0, nCoeff_, iterationMax + 1).eval(); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
 			}
 
 			for (Index p = 0; p < nCoeff_; ++p) { // each row corresponds to a parameters, hence treatment is applied on each row

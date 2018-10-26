@@ -177,7 +177,11 @@ void MixtureComposer::eStepCompleted() {
 		throw(warnLog);
 	}
 
-//	std::cout << "MixtureComposer::eStepCompleted, tik" << std::endl;
+//	std::cout << "MixtureComposer::eStepCompleted" << std::endl;
+//	std::cout << "lnCompProba: " << completedProbabilityCache_.sum() << std::endl;
+//	std::cout << itString(zClassInd_.zi().data_) << std::endl;
+//	writeParameters();
+
 //	std::cout << tik_ << std::endl;
 }
 
@@ -263,7 +267,7 @@ void MixtureComposer::storeSEMRun(int iteration, int iterationMax, RunType runTy
 
 		if (iteration == iterationMax) {
 			if (iterationMax + 1 != initialNIter_) {
-				completedProbabilityLogBurnIn_ = completedProbabilityLogBurnIn_.block(0, 0, iterationMax + 1, 1); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
+				completedProbabilityLogBurnIn_ = completedProbabilityLogBurnIn_.block(0, 0, iterationMax + 1, 1).eval(); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
 			}
 		}
 	}
@@ -283,7 +287,7 @@ void MixtureComposer::storeSEMRun(int iteration, int iterationMax, RunType runTy
 
 		if (iteration == iterationMax) {
 			if (iterationMax + 1 != initialNIter_) {
-				completedProbabilityLogRun_ = completedProbabilityLogRun_.block(0, 0, iterationMax + 1, 1); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
+				completedProbabilityLogRun_ = completedProbabilityLogRun_.block(0, 0, iterationMax + 1, 1).eval(); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
 			}
 
 			paramStat_.normalizeParam(paramStr_); // enforce that estimated proportions sum to 1, but only if paramStr is of the form "nModality: x"

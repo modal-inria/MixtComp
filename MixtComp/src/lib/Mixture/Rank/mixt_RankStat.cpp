@@ -33,7 +33,7 @@ void RankStat::sampleValue(int iteration, int iterationMax) {
 		sample(iterationMax); // last sampling
 
 		if (iterationMax + 1 != initialNIter_) {
-			logStorageMu_ = logStorageMu_.block(0, 0, iterationMax + 1, 1); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
+			logStorageMu_ = logStorageMu_.block(0, 0, iterationMax + 1, 1).eval(); // if partition is stable, iterationMax has been reduced in comparison to initialNIter_
 		}
 
 		std::map<RankVal, int> stat; // sparse counting of the occurrences of mu
