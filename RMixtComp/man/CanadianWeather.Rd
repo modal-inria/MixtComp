@@ -52,7 +52,8 @@ getTik(resLearn, log = FALSE)
   
 }
 \seealso{
-Other data: \code{\link{simData}}, \code{\link{titanic}}
+Other data: \code{\link{prostate}}, \code{\link{simData}},
+  \code{\link{titanic}}
 }
 \concept{data}
 \keyword{data}

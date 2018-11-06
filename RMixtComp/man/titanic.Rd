@@ -64,7 +64,7 @@ plot(resLearn)
 }
 \seealso{
 Other data: \code{\link{CanadianWeather}},
-  \code{\link{simData}}
+  \code{\link{prostate}}, \code{\link{simData}}
 }
 \concept{data}
 \keyword{data}
