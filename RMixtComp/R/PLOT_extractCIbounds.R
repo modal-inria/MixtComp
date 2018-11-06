@@ -195,7 +195,7 @@ extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$algo$nClas
                        cumsums=cumsums)
   thresholds <- matrix(thresholds, nrow=data$algo$nClass)
   thresholds <- thresholds[class, , drop=FALSE]
-  rownames(thresholds) <- paste("comp.", class)
+  rownames(thresholds) <- paste("class", class)
   colnames(thresholds) <- paste("quantil.", c(.05, .25, .5, .75, .95))
   if (grl){
     obs <- sort(data$variable$data[[var]]$completed, decreasing = FALSE)
@@ -225,7 +225,7 @@ extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$algo$nCl
                     obs=obs
   ))
   probs <- probs[class, , drop=FALSE]
-  rownames(probs) <- paste("comp.", class)
+  rownames(probs) <- paste("class", class)
   colnames(probs) <- levels
   if (grl){
     obs <- sort(table(data$variable$data[[var]]$completed), decreasing = TRUE)
