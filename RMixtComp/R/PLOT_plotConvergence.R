@@ -34,7 +34,7 @@ plotConvergence <- function(output, ...)
 {
   plot(c(output$mixture$completedProbabilityLogBurnIn, output$mixture$completedProbabilityLogRun), xlab = "Iteration",
        ylab = "Completed loglikelihood", type = "l", main = "Completed loglikelihood during and\n after the burn-in period", ...)
-  abline(v = output$algo$nbBurnInIter + 0.5, lty = "dotted", col = "red")
+  abline(v = length(output$mixture$completedProbabilityLogBurnIn) + 0.5, lty = "dotted", col = "red")
 }
 
 # DEPRECATED: MixtComp does not export param logs for the moment

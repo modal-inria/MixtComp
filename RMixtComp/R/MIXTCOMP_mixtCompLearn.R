@@ -237,6 +237,8 @@ mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
+  algo = completeAlgo(algo)
+  
   resLearn <- list()
   for(i in seq_along(nClass))
   {
@@ -278,6 +280,8 @@ mixtCompPredict <- function(data, desc, algo = createAlgo(), resLearn, nClass = 
   algo$nInd = length(dataList[[1]])
   algo$nClass = checkNClass(nClass, resLearn)
   algo$mode = "predict"
+  
+  algo = completeAlgo(algo)
   
   if("MixtCompLearn" %in% class(resLearn))
     resPredict <- rmcMultiRun(algo, dataList, desc, resLearn$res[[which(resLearn$nClass == algo$nClass)]], nRun, nCore)
