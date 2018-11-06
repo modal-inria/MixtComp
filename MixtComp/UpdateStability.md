@@ -1,5 +1,0 @@
-- each model must compute param statistics on a slice of its parameters
-    - or, use a list and a push_back to add statistics...
-- in parameter stat exports, the parameters table should be truncated
-- Functional and rank, resize logStorage
-- completedProbabilityLogRun_ must be resized in storeSEMRun

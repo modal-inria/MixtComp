@@ -165,7 +165,7 @@ public:
 	}
 
 	void initData(Index i) {
-		augData_.removeMissing(i);
+		augData_.removeMissingSample(i);
 	}
 
 	void initParam() {

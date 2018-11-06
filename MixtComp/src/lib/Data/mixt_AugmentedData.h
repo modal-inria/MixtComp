@@ -46,7 +46,7 @@ public:
 	typedef typename std::pair<MisType, std::vector<Type> > MisVal;
 
 	AugmentedData() :
-			nbSample_(0), misCount_(nb_enum_MisType_), dataRange_(), fixedInitialization_(false) {
+			nbSample_(0), misCount_(nb_enum_MisType_), dataRange_() {
 		for (int i = 0; i < nb_enum_MisType_; ++i) { // initialize counter for each type of missing value to 0
 			misCount_(i) = 0;
 		}
@@ -170,27 +170,8 @@ public:
 		}
 	}
 
-	void removeMissing(Index i) {
-		if (fixedInitialization_) { // restore initialization values
-			data_(i) = initialData_(i);
-		} else { // uniform sampling of the missing values, subject to the data bound constraints
-			removeMissingSample(i);
-		}
-	}
-
 	/** Remove the missing values by uniform samplings */
 	void removeMissingSample(Index i);
-
-	void setFixedInitialization() {
-		fixedInitialization_ = true;
-		initialData_ = data_;
-
-		MisVal misVal;
-		misVal.first = missing_; // initialization is fixed, but algorithm is used in a normal fashion, all class labels still being considered missing
-		for (int i = 0; i < nbSample_; ++i) {
-			setMissing(i, misVal);
-		}
-	}
 
 	/** Completed data, usually a Vector, for example Vector<Index> or Vector<Real> */
 	DataType data_;
@@ -209,14 +190,6 @@ public:
 	Range<Type> dataRange_;
 
 private:
-	/** Is the initialization fixed ? If yes, the initial partition will be stored in initialData_. It will be restored to data_
-	 * upon every call to removeMissing (instead of the uniform sampling). This configuration is usually used during debug to
-	 * help diagnosing errors. */
-	bool fixedInitialization_;
-
-	/** Initial partition provided by the user. Only used when fixedInitialization_ == true. */
-	DataType initialData_;
-
 	void rangeUpdate(Type& min, Type& max, const Type& val, bool& dataRangeUpdate) {
 		if (!dataRangeUpdate) {
 			min = val;
