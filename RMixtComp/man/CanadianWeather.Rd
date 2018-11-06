@@ -43,6 +43,8 @@ resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:4, criterion = "ICL", nRu
 
 summary(resLearn)
 
+plot(resLearn) 
+
 getPartition(resLearn)
 getTik(resLearn, log = FALSE)
 

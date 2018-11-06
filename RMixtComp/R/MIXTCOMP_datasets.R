@@ -83,6 +83,7 @@ NULL
 #' 
 #' summary(resLearn)
 #' 
+#' plot(resLearn) 
 #' }
 #'   
 NULL
@@ -132,6 +133,8 @@ NULL
 #' resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:4, criterion = "ICL", nRun = 3)
 #' 
 #' summary(resLearn)
+#' 
+#' plot(resLearn) 
 #' 
 #' getPartition(resLearn)
 #' getTik(resLearn, log = FALSE)

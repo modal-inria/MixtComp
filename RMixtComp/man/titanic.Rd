@@ -58,6 +58,7 @@ resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:15, criterion = "ICL", nR
 
 summary(resLearn)
 
+plot(resLearn) 
 }
   
 }
