@@ -393,7 +393,7 @@ test_that("summary returns no warnings and no errors", {
 
 test_that("summary works", {
   data("simData")
-  resLearn <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo = createAlgo(), nClass = 2) 
+  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo = createAlgo(), nClass = 2) 
   
   expect_warning(summary(resLearn), regexp = NA)
   expect_warning(summary(resLearn$res[[1]]), regexp = NA)

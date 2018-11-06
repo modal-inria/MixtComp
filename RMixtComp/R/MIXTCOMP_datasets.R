@@ -2,26 +2,24 @@
 #' Simulated Heterogeneous data
 #'
 #' @name simData
-#' @aliases simDataLearn simDataPredict simDesc
+#' @aliases simData
 #' @docType data
 #' @keywords data
 #' @family data
 #' 
 #' @usage data(simData)
 #' 
-#' @format Three object: \emph{simDataLearn}, \emph{simDataPredict} and \emph{simDesc}.
+#' @format A lsit containing three elements: \emph{dataLearn}, \emph{dataPredict} and \emph{model}.
+#' \itemize{
+#'   \item \emph{dataLearn} is a list containing the data in the three accepted format (list, data.frame and matrix). Data consists of 200 individuals and 9 variables.
+#'   \item \emph{dataPredict} is a list containing the data in the three accepted format (list, data.frame and matrix). Data consists of 100 individuals and 8 variables.
+#'   \item \emph{model} is a list containing the model lists used for clustering \emph{model$unsupervised} and classification \emph{model$supervised}.
+#' }
 #' 
-#' \emph{simDataLearn} is a list containing the data in the three accepted format (list, data.frame and matrix). Data consists of 200 individuals and 9 variables.
-#' 
-#' \emph{simDataPredict} is a list containing the data in the three accepted format (list, data.frame and matrix). Data consists of 100 individuals and 8 variables.
-#' 
-#' \emph{simDesc} is a list containing the descriptor lists used for clustering \emph{simDesc$unsupervised} and classification \emph{simDesc$supervised}.
 #' 
 #' @examples
 #' data(simData)
-#' str(simDataLearn)
-#' str(simDataPredict)
-#' str(simDesc)
+#' str(simData)
 #'   
 NULL
 

@@ -18,10 +18,10 @@
 #' algo <- createAlgo()
 #' 
 #' # keep only 3 variables
-#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
+#' res <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
 #' # plot
 #' plotConvergence(res)
 #' plotConvergence(res$res[[2]])
@@ -59,7 +59,7 @@ plotConvergence <- function(output, ...)
 # algo <- createAlgo()
 #
 # # run RMixtCompt in unsupervised clustering mode + data as matrix
-# res <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2:4)
+# res <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
 # # plot
 # plotParamConvergence(res, "Gaussian1")
 # plotParamConvergence(res, "Poisson1")

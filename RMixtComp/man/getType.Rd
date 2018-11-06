@@ -34,7 +34,7 @@ algo <- list(nbBurnInIter = 100,
              confidenceLevel = 0.95)
 
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2)
+resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2)
 
 # get type
 type <- getType(resLearn)

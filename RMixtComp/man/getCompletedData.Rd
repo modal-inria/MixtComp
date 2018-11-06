@@ -31,10 +31,10 @@ algo <- list(nbBurnInIter = 100,
              confidenceLevel = 0.95)
 
 #' # keep only 3 variables
-algo <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, algo, algo, nClass = 2)
+resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2)
 
 # get completedData
 getCompletedData <- completed(resLearn)

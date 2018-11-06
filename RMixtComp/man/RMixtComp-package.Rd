@@ -35,10 +35,10 @@ algo <- list(nbBurnInIter = 100,
              confidenceLevel = 0.95)
 
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, simDesc$unsupervised, algo, nClass = 2:4)
+resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
 
 # run RMixtCompt for predicting
-resPred <- mixtCompPredict(simDataPredict$matrix, simDesc$unsupervised, algo, resLearn)
+resPred <- mixtCompPredict(simData$dataPredict$matrix, simData$model$unsupervised, algo, resLearn)
 
 }
 
