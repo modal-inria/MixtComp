@@ -34,10 +34,10 @@ algo <- list(nbBurnInIter = 100,
              confidenceLevel = 0.95)
 
 # keep only 3 variables
-desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 
 # run RMixtCompt in unsupervised clustering mode + data as matrix
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+resLearn <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 
 print(resLearn$res[[1]])
 }

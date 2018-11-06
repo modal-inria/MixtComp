@@ -40,21 +40,21 @@ dat$survived <- refactorCategorical(dat$survived, c(0, 1, NA), c(1, 2, "?"))
 # replace all NA by ?
 dat[is.na(dat)] = "?" 
 
-# create descriptor
-desc <- list(pclass = "Poisson",
-             survived = "Multinomial",
-             sex = "Multinomial",
-             age = "Gaussian",
-             sibsp = "Poisson",
-             parch = "Poisson",
-             fare = "Gaussian",
-             embarked = "Multinomial")
+# create model
+model <- list(pclass = "Poisson",
+              survived = "Multinomial",
+              sex = "Multinomial",
+              age = "Gaussian",
+              sibsp = "Poisson",
+              parch = "Poisson",
+              fare = "Gaussian",
+              embarked = "Multinomial")
 
 # create algo
 algo <- createAlgo()
 
 # run clustering
-resLearn <- mixtCompLearn(dat, desc, algo, nClass = 2:15, criterion = "ICL", nRun = 5)
+resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:15, criterion = "ICL", nRun = 5)
 
 summary(resLearn)
 

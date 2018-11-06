@@ -1,10 +1,10 @@
 
-# format the descriptor list for rmc function:
+# format the model list for rmc function:
 # - add paramStr when missing
 # - ensure the list format of each element
-formatDesc <- function(desc)
+formatModel <- function(model)
 {
-  desc = lapply(desc, function(x){
+  model = lapply(model, function(x){
     if(!is.list(x))
       x = list(type = x)
     if(!("paramStr" %in% names(x)))
@@ -13,7 +13,7 @@ formatDesc <- function(desc)
     return(x)
   })
   
-  return(desc)
+  return(model)
 }
 
 

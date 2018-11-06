@@ -67,21 +67,21 @@ NULL
 #' # replace all NA by ?
 #' dat[is.na(dat)] = "?" 
 #' 
-#' # create descriptor
-#' desc <- list(pclass = "Poisson",
-#'              survived = "Multinomial",
-#'              sex = "Multinomial",
-#'              age = "Gaussian",
-#'              sibsp = "Poisson",
-#'              parch = "Poisson",
-#'              fare = "Gaussian",
-#'              embarked = "Multinomial")
+#' # create model
+#' model <- list(pclass = "Poisson",
+#'               survived = "Multinomial",
+#'               sex = "Multinomial",
+#'               age = "Gaussian",
+#'               sibsp = "Poisson",
+#'               parch = "Poisson",
+#'               fare = "Gaussian",
+#'               embarked = "Multinomial")
 #' 
 #' # create algo
 #' algo <- createAlgo()
 #' 
 #' # run clustering
-#' resLearn <- mixtCompLearn(dat, desc, algo, nClass = 2:15, criterion = "ICL", nRun = 5)
+#' resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:15, criterion = "ICL", nRun = 5)
 #' 
 #' summary(resLearn)
 #' 
@@ -123,15 +123,15 @@ NULL
 #'             precav = apply(CanadianWeather$precav, 2, 
 #'                            function(x) createFunctional(CanadianWeather$time, x)))
 #' 
-#' # create descriptor with 3 subregressions ans 2 coefficients per regression
-#' desc <- list(tempav = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"),
-#'              precav = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"))
+#' # create model with 3 subregressions ans 2 coefficients per regression
+#' model <- list(tempav = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"),
+#'               precav = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"))
 #' 
 #' # create algo
 #' algo <- createAlgo()
 #' 
 #' # run clustering
-#' resLearn <- mixtCompLearn(dat, desc, algo, nClass = 2:4, criterion = "ICL", nRun = 3)
+#' resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:4, criterion = "ICL", nRun = 3)
 #' 
 #' summary(resLearn)
 #' 

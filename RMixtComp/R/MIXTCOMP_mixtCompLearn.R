@@ -3,7 +3,7 @@
 #' @description Estimate the parameter of a mixture model or predict the cluster of new samples. It manages heterogeneous data as well as missing and incomplete data.
 #' 
 #' @param data a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).
-#' @param desc a named list containing models and hyperparameters (see \emph{Details} section).
+#' @param model a named list containing models and hyperparameters (see \emph{Details} section).
 #' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
 #' @param nClass the number of class of the mixture model. Can be a vector.
 #' @param criterion "BIC" or "ICL". Criterion used for choosing the best model.
@@ -18,19 +18,19 @@
 #' In the case of a matrix or data.frame, each column must be names and corresponds to a variable. In the case of a list, each element correponds to a variable, each element must be named.
 #' Missing and incomplete data are managed, see section \emph{Data format} for how to format them.
 #' 
-#' The \emph{desc} object is a named list containing the variables to use in the model. All variables listed in the \emph{desc} object must be in the \emph{data} object. \emph{desc} can contain less variables than \emph{data}.
+#' The \emph{model} object is a named list containing the variables to use in the model. All variables listed in the \emph{model} object must be in the \emph{data} object. \emph{model} can contain less variables than \emph{data}.
 #' An element of the list is the model's name to use (see below for the list of available models). 
-#' For example, \code{desc <- list(real1 = "Gaussian", counting1 = "Poisson")} indicates a mixture model with 2 variables named real1 and counting1 with Gaussian and Poisson as model. 
+#' For example, \code{model <- list(real1 = "Gaussian", counting1 = "Poisson")} indicates a mixture model with 2 variables named real1 and counting1 with Gaussian and Poisson as model. 
 #' Some models require hyperparameters in this case, the model is described by a list of 2 elements: type containing the model name and paramStr containing the hyperparameters.
-#' For example: \code{desc <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}
+#' For example: \code{model <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}
 #' 
 #' Eight models are available in RMixtComp: \emph{Gaussian}, \emph{Multinomial}, \emph{Poisson}, \emph{NegativeBinomial}, \emph{Weibull}, \emph{Func_CS}, \emph{Func_SharedAlpha_CS}, \emph{Rank_ISR}. 
 #' \emph{Func_CS} and \emph{Func_SharedAlpha_CS} models require hyperparameters: the number of subregressions of functional and the number of coefficients of each subregression. 
-#' These hyperparameters are specified by: \emph{nSub: i, nCoeff: k} in the \emph{paramStr} field of the \emph{desc} object.
+#' These hyperparameters are specified by: \emph{nSub: i, nCoeff: k} in the \emph{paramStr} field of the \emph{model} object.
 #' The \emph{Func_SharedAlpha_CS} is a variant of the \emph{Func_CS} model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
 #' 
 #' 
-#' To perform a (semi-)supervised clustering, user can add a variable named \emph{z_class} in the data and descriptor objects with \emph{LatentClass} as model in the descriptor object.
+#' To perform a (semi-)supervised clustering, user can add a variable named \emph{z_class} in the data and model objects with \emph{LatentClass} as model in the model object.
 #' 
 #' 
 #' The \emph{algo} object is a list containing the different number of iterations for the algorithm. 
@@ -225,13 +225,13 @@
 #' 
 #' 
 #' @export
-mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun))
+mixtCompLearn <- function(data, model, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun))
 {
   crit = match.arg(criterion)
   indCrit <- ifelse(crit == "BIC", 1, 2)
   
   dataList <- formatData(data)
-  desc <- formatDesc(desc)  
+  model <- formatModel(model)  
   
   nClass = unique(nClass)
   algo$nInd = length(dataList[[1]])
@@ -244,7 +244,7 @@ mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c
   {
     algo$nClass = nClass[i]
     
-    resLearn[[i]] <- rmcMultiRun(algo, dataList, desc, list(), nRun, nCore)
+    resLearn[[i]] <- rmcMultiRun(algo, dataList, model, list(), nRun, nCore)
     
     class(resLearn[[i]]) = "MixtComp"
     if(!is.null(resLearn[[i]]$warnLog))
@@ -272,10 +272,10 @@ mixtCompLearn <- function(data, desc, algo = createAlgo(), nClass, criterion = c
 
 #' @rdname mixtCompLearn
 #' @export
-mixtCompPredict <- function(data, desc, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun))
+mixtCompPredict <- function(data, model, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun))
 {
   dataList <- formatData(data)
-  desc <- formatDesc(desc)
+  model <- formatModel(model)
   
   algo$nInd = length(dataList[[1]])
   algo$nClass = checkNClass(nClass, resLearn)
@@ -284,9 +284,9 @@ mixtCompPredict <- function(data, desc, algo = createAlgo(), resLearn, nClass = 
   algo = completeAlgo(algo)
   
   if("MixtCompLearn" %in% class(resLearn))
-    resPredict <- rmcMultiRun(algo, dataList, desc, resLearn$res[[which(resLearn$nClass == algo$nClass)]], nRun, nCore)
+    resPredict <- rmcMultiRun(algo, dataList, model, resLearn$res[[which(resLearn$nClass == algo$nClass)]], nRun, nCore)
   else
-    resPredict <- rmcMultiRun(algo, dataList, desc, resLearn, nRun, nCore)
+    resPredict <- rmcMultiRun(algo, dataList, model, resLearn, nRun, nCore)
   
   if(!is.null(resPredict$warnLog))
     warning(paste0("MixtComp failed with the following error:", resPredict$warnLog))
@@ -298,7 +298,7 @@ mixtCompPredict <- function(data, desc, algo = createAlgo(), resLearn, nClass = 
 
 
 
-rmcMultiRun <- function(algo, data, desc, resLearn, nRun = 1, nCore = 1)
+rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1)
 {
   nCore <- min(max(1, nCore), nRun)
   
@@ -306,7 +306,7 @@ rmcMultiRun <- function(algo, data, desc, resLearn, nRun = 1, nCore = 1)
   registerDoParallel(cl)
   
   res <- foreach(i = 1:nRun)%dopar%{
-    resTemp <- rmc(algo, data, desc, resLearn)
+    resTemp <- rmc(algo, data, model, resLearn)
     
     return(resTemp)
   }

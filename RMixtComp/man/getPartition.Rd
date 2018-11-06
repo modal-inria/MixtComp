@@ -29,10 +29,10 @@ algo <- list(nbBurnInIter = 100,
              confidenceLevel = 0.95)
 
 # keep only 3 variables
-desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+algo <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 
 # run RMixtCompt for clustering
-resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2)
+resLearn <- mixtCompLearn(simDataLearn$matrix, algo, algo, nClass = 2)
 
 # get class
 estimatedClass <- getPartition(resLearn)

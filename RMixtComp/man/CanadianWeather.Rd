@@ -31,15 +31,15 @@ dat <- list(tempav = apply(CanadianWeather$tempav, 2,
             precav = apply(CanadianWeather$precav, 2, 
                            function(x) createFunctional(CanadianWeather$time, x)))
 
-# create descriptor with 3 subregressions ans 2 coefficients per regression
-desc <- list(tempav = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"),
-             precav = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"))
+# create model with 3 subregressions ans 2 coefficients per regression
+model <- list(tempav = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"),
+              precav = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"))
 
 # create algo
 algo <- createAlgo()
 
 # run clustering
-resLearn <- mixtCompLearn(dat, desc, algo, nClass = 2:4, criterion = "ICL", nRun = 3)
+resLearn <- mixtCompLearn(dat, model, algo, nClass = 2:4, criterion = "ICL", nRun = 3)
 
 summary(resLearn)
 

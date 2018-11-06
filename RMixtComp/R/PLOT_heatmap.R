@@ -18,10 +18,10 @@
 #' algo <- createAlgo()
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' # plot
 #' heatmapVar(res)
@@ -46,7 +46,7 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
   # discriminative power (1 - Cj), saved at slot pvdiscrimclasses of JSON file
   pvDiscrim <- round(1-colSums(output$mixture$IDClass), 2)
   
-  ## Variables are sorted by descreasing order of their discriminative power
+  ## Variables are sorted by decreasing order of their discriminative power
   ## Character must be convert in factor (otherwise alphabetic order is considered)
   orderVbles <- order(pvDiscrim, decreasing = TRUE)
   namesVbles <- factor(namesVbles[orderVbles], levels=namesVbles[orderVbles])
@@ -82,10 +82,10 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' algo <- createAlgo()
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' # plot
 #' heatmapClass(res)
 #' heatmapClass(res$res[[2]])
@@ -112,7 +112,7 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
                                                                  "-")**2)
   )), 4)
   
-  ## Classes are sorted by descreasing order of their discriminative power
+  ## Classes are sorted by decreasing order of their discriminative power
   ## Character must be convert in factor (otherwise alphabetic order is considered)
   orderClass <- order(pvDiscrim, decreasing = TRUE)
   namesClass <- factor(namesClass[orderClass], levels=namesClass[orderClass])
@@ -149,10 +149,10 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' algo <- createAlgo()
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' # plot
 #' heatmapTikSorted(res)

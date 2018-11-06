@@ -19,10 +19,10 @@
 #' algo <- createAlgo()
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' # plot
 #' plotDiscrimVar(res)
@@ -81,10 +81,10 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
 #' algo <- createAlgo()
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' # plot
 #' plotDiscrimClass(res)
@@ -135,10 +135,10 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"
 #' algo <- createAlgo()
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' res <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' # plot
 #' plotProportion(res)

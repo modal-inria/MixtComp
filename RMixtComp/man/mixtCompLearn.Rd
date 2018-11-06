@@ -5,18 +5,18 @@
 \alias{mixtCompPredict}
 \title{Learn and predict using RMixtComp}
 \usage{
-mixtCompLearn(data, desc, algo = createAlgo(), nClass,
+mixtCompLearn(data, model, algo = createAlgo(), nClass,
   criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1,
   ceiling(detectCores()/2)), nRun))
 
-mixtCompPredict(data, desc, algo = createAlgo(), resLearn,
+mixtCompPredict(data, model, algo = createAlgo(), resLearn,
   nClass = NULL, nRun = 1, nCore = min(max(1,
   ceiling(detectCores()/2)), nRun))
 }
 \arguments{
 \item{data}{a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).}
 
-\item{desc}{a named list containing models and hyperparameters (see \emph{Details} section).}
+\item{model}{a named list containing models and hyperparameters (see \emph{Details} section).}
 
 \item{algo}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).}
 
@@ -41,19 +41,19 @@ The \emph{data} object can be a matrix, a data.frame or a list.
 In the case of a matrix or data.frame, each column must be names and corresponds to a variable. In the case of a list, each element correponds to a variable, each element must be named.
 Missing and incomplete data are managed, see section \emph{Data format} for how to format them.
 
-The \emph{desc} object is a named list containing the variables to use in the model. All variables listed in the \emph{desc} object must be in the \emph{data} object. \emph{desc} can contain less variables than \emph{data}.
+The \emph{model} object is a named list containing the variables to use in the model. All variables listed in the \emph{model} object must be in the \emph{data} object. \emph{model} can contain less variables than \emph{data}.
 An element of the list is the model's name to use (see below for the list of available models). 
-For example, \code{desc <- list(real1 = "Gaussian", counting1 = "Poisson")} indicates a mixture model with 2 variables named real1 and counting1 with Gaussian and Poisson as model. 
+For example, \code{model <- list(real1 = "Gaussian", counting1 = "Poisson")} indicates a mixture model with 2 variables named real1 and counting1 with Gaussian and Poisson as model. 
 Some models require hyperparameters in this case, the model is described by a list of 2 elements: type containing the model name and paramStr containing the hyperparameters.
-For example: \code{desc <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}
+For example: \code{model <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}
 
 Eight models are available in RMixtComp: \emph{Gaussian}, \emph{Multinomial}, \emph{Poisson}, \emph{NegativeBinomial}, \emph{Weibull}, \emph{Func_CS}, \emph{Func_SharedAlpha_CS}, \emph{Rank_ISR}. 
 \emph{Func_CS} and \emph{Func_SharedAlpha_CS} models require hyperparameters: the number of subregressions of functional and the number of coefficients of each subregression. 
-These hyperparameters are specified by: \emph{nSub: i, nCoeff: k} in the \emph{paramStr} field of the \emph{desc} object.
+These hyperparameters are specified by: \emph{nSub: i, nCoeff: k} in the \emph{paramStr} field of the \emph{model} object.
 The \emph{Func_SharedAlpha_CS} is a variant of the \emph{Func_CS} model with the alpha parameter shared between clusters. It means that the start and end of each subregression will be the same across the clusters.
 
 
-To perform a (semi-)supervised clustering, user can add a variable named \emph{z_class} in the data and descriptor objects with \emph{LatentClass} as model in the descriptor object.
+To perform a (semi-)supervised clustering, user can add a variable named \emph{z_class} in the data and model objects with \emph{LatentClass} as model in the model object.
 
 
 The \emph{algo} object is a list containing the different number of iterations for the algorithm. 

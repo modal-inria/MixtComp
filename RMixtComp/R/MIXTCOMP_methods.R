@@ -23,10 +23,10 @@
 #'              confidenceLevel = 0.95)
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' summary(resLearn$res[[1]])
 #' 
@@ -95,10 +95,10 @@ summary.MixtComp <- function(object, ...)
 #'              confidenceLevel = 0.95)
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' summary(resLearn)
 #' }
@@ -140,10 +140,10 @@ summary.MixtCompLearn <- function(object, ...)
 #'              confidenceLevel = 0.95)
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' print(resLearn$res[[1]])
 #' }
@@ -237,10 +237,10 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #'              confidenceLevel = 0.95)
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' print(resLearn)
 #' }
@@ -284,10 +284,10 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, ...)
 #'              confidenceLevel = 0.95)
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' plot(resLearn$res[[1]])
 #' }
@@ -346,10 +346,10 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ..
 #'              confidenceLevel = 0.95)
 #' 
 #' # keep only 3 variables
-#' desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 #' 
 #' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+#' resLearn <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 #' 
 #' plot(resLearn)
 #' }

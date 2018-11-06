@@ -30,10 +30,10 @@ data(simData)
 algo <- createAlgo()
 
 # keep only 3 variables
-desc <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+model <- simDesc$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
 
 # run RMixtCompt in unsupervised clustering mode + data as matrix
-res <- mixtCompLearn(simDataLearn$matrix, desc, algo, nClass = 2:4)
+res <- mixtCompLearn(simDataLearn$matrix, model, algo, nClass = 2:4)
 
 # plot
 heatmapVar(res)
