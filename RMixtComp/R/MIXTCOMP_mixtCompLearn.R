@@ -71,7 +71,7 @@
 #' 
 #' 
 #' - Rank data:
-#' The format of a rank is: \emph{o_1, \dots, o_j} where o_1 is an integer corresponding to the the number of the object ranked in 1st position.
+#' The format of a rank is: \emph{o_1, \dots, o_j} where o_1 is an integer corresponding to the number of the object ranked in 1st position.
 #' For example: 4,2,1,3 means that the fourth object is ranked first then the second object is in second position and so on.
 #' Missing data can be specified by replacing and object by a \emph{?} or a list of potential object, for example: \emph{4, \{2 3\}, \{2 1\}, ?} means that 
 #' the object ranked in second position is either the object number 2 or the object number 3, then the object ranked in third position is either the object 2 or 1 and the last one can be anything.

@@ -179,3 +179,36 @@ rand.index <- function (partition1, partition2)
   
   return(randIndex)
 }
+
+
+#' Available models
+#'
+#' Get information about models implemented in MixtComp
+#'
+#' @return a data.frame containing models implemented in MixtComp
+#' \describe{
+#' \item{model}{model name}
+#' \item{data.type}{data type}
+#' \item{format}{Special format required for individuals}
+#' \item{missing.formats}{accepted formats (separated by a ;) for missing values}
+#' \item{hyperparameter}{Required hyperparameters in the paramStr elements of model object}
+#' \item{comments}{comments about the model}
+#' \item{reference}{link to article}
+#' }
+#'
+#' @seealso \link{mixtCompLearn} 
+#' 
+#' @export
+availableModels <- function()
+{
+  data.frame("model" = c("Gaussian", "Weibull", "Multinomial", "Poisson", "NegativeBinomial", "Rank_ISR", "Func_CS", "Func_SharedAlpha_CS"), 
+             "data type" = c("Real", "Positive real", "Categorical", "Positive integer", "Positive integer", "Rank", "Functional", "Functional"),
+             "format" = c("", "", "Numbers from 1 to number of modalities", "", "", "o1,o2,..,oN", "time1:value1,time2:value2,...,timeN:valueN", "time1:value1,time2:value2,...,timeN:valueN"),
+             "missing formats" = c("?; [a:b]; [-inf:b]; [a:inf]", "?; [a:b]; [a:+inf]", "?; {a,..,b}", "?", "?", "?,?,?,?; 4,3,?,?; {2 3}, 4,{2 3}, 1", "", ""),
+             "hyperparameter" = c("", "", "", "", "", "", "nSub:a, nCoeff:b", "nSub:a, nCoeff:b"),
+             "comments" = c("", "", "", "", "", "o1,o2,..,oN: o1 is an integer corresponding to the object's number ranked in 1st position", 
+                            "nSub = number of subregressions. nCoeff = number of coefficients of each polynomial regression. Between individuals, functionals can have different time values and length.", 
+                            "Func_CS with parameter alpha shared between classes: subregressions start and finish at the same time between clusters."),
+             "reference" = c("", "", "", "", "", "https://hal.inria.fr/hal-00743384", "https://arxiv.org/abs/1312.6967", "https://arxiv.org/abs/1312.6967")
+             )
+}

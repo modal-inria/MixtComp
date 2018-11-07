@@ -24,11 +24,13 @@
 #'
 #' Main functions are \link{mixtCompLearn} for clustering, \link{mixtCompPredict} for predict the cluster of new samples with a model learned with \link{mixtCompLearn}. \link{createAlgo} gives you default values for required parameters.
 #' 
+#' Read the help page of \link{mixtCompLearn} for available models and data format. A summary of these information can be accessed with the function \link{availableModels}.
+#' 
 #' Getters are available to easily access some results (see. \link{mixtCompLearn} for output format): \link{getBIC}, \link{getICL}, \link{getCompletedData}, \link{getParam}, \link{getTik}, \link{getPartition}, \link{getType}, \link{getVarNames}.
 #' 
-#' Three datasets are provided and contains examples: \link{simData}, \link{titanic}, \link{CanadianWeather}.
+#' Datasets are provided and contains examples: \link{simData}, \link{titanic}, \link{CanadianWeather}, \link{prostate}.
 #' 
-#' You can compute discriminative power and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
+#' You can compute discriminative powers and similiraties with functions: \link{computeDiscrimPowerClass}, \link{computeDiscrimPowerVar}, \link{computeSimilarityClass}, \link{computeSimilarityVar}.
 #' 
 #' Graphics functions are \link{plot.MixtComp}, \link{plot.MixtCompLearn}, \link{heatmapClass}, \link{heatmapTikSorted}, \link{heatmapVar}, \link{histMisclassif}, \link{plotConvergence}, 
 #' \link{plotDataBoxplot}, \link{plotDataCI}, \link{plotDiscrimClass}, \link{plotDiscrimVar}, \link{plotProportion}, \link{plotCrit}.
