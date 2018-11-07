@@ -305,6 +305,51 @@ test_that("rmcMultiRun works", {
   
 })
 
+
+test_that("mixtCompLearn works in basic mode", {
+  set.seed(42)
+
+  dat <- data.frame(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
+                    categ = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
+                    poiss = c(rpois(100, 2), rpois(100, 5)))
+
+  resLearn <- mixtCompLearn(dat, nClass = 2)
+
+  if(!is.null(resLearn$warnLog))
+    print(resLearn$warnLog)
+
+  expect_equal(resLearn$warnLog, NULL)
+  expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
+  
+  
+  dat <- list(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
+              categ1 = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
+              categ2 = as.factor(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
+              poiss = c(rpois(100, 2), rpois(100, 5)))
+  
+  resLearn <- mixtCompLearn(dat, nClass = 2)
+  
+  if(!is.null(resLearn$warnLog))
+    print(resLearn$warnLog)
+  
+  expect_equal(resLearn$warnLog, NULL)
+  expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
+  
+  
+  dat$z_class = rep(1:2, each = 100)
+  
+  resLearn <- mixtCompLearn(dat, nClass = 2)
+  
+  if(!is.null(resLearn$warnLog))
+    print(resLearn$warnLog)
+  
+  expect_equal(resLearn$warnLog, NULL)
+  expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
+})
+
 test_that("mixtCompLearn works + mixtCompPredict", {
   set.seed(42)
   

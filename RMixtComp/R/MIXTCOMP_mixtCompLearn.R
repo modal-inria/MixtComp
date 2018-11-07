@@ -23,7 +23,9 @@
 #' An element of the list is the model's name to use (see below for the list of available models). 
 #' For example, \code{model <- list(real1 = "Gaussian", counting1 = "Poisson")} indicates a mixture model with 2 variables named real1 and counting1 with Gaussian and Poisson as model. 
 #' Some models require hyperparameters in this case, the model is described by a list of 2 elements: type containing the model name and paramStr containing the hyperparameters.
-#' For example: \code{model <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}
+#' For example: \code{model <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}.
+#' If the model is NULL, data are supposed to be provided in data.frame or list with R format (numeric, factor, character, NA as missing value). 
+#' Models will be imputed as follows: "Gaussian" for numeric variable, "Multinomial" for character or factor variable and "Poisson" for integer variable.
 #' 
 #' Eight models are available in RMixtComp: \emph{Gaussian}, \emph{Multinomial}, \emph{Poisson}, \emph{NegativeBinomial}, \emph{Weibull}, \emph{Func_CS}, \emph{Func_SharedAlpha_CS}, \emph{Rank_ISR}. 
 #' \emph{Func_CS} and \emph{Func_SharedAlpha_CS} models require hyperparameters: the number of subregressions of functional and the number of coefficients of each subregression. 
@@ -226,14 +228,34 @@
 #' 
 #' 
 #' @export
-mixtCompLearn <- function(data, model, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
+mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
 {
   crit = match.arg(criterion)
   indCrit <- ifelse(crit == "BIC", 1, 2)
   
-  dataList <- formatData(data)
-  model <- formatModel(model)  
-  
+  # basic : data in R format (missing coded as NA). The user does not give a model, model are imputed among "Gaussian" (numeric data), "Multinomial" (character or factor) and "Poisson" (integer). 
+  # expert : data in MixtComp format. The user give a model
+  if(is.null(model))
+  {
+    mode <- "basic"
+    model <- imputModel(data)
+    dataList <- formatDataBasicMode(data, model)$data
+
+    if(verbose)
+    {
+      cat("You did not provide a model parameter.\n")
+      cat("Data are assumed to follow R standard and not MixtComp standard.\n")
+      cat("Models will be imputed as follows: \"Gaussian\" for numeric variable, \"Multinomial\" for character or factor variable and \"Poisson\" for integer variable.\n")
+      print(head(sapply(model, function(x) x$type)))
+    }
+      
+  }else{
+    mode <- "expert"
+    model <- formatModel(model)  
+    dataList <- formatData(data)
+  }
+    
+
   nClass = unique(nClass)
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
@@ -241,13 +263,13 @@ mixtCompLearn <- function(data, model, algo = createAlgo(), nClass, criterion = 
   algo = completeAlgo(algo)
   
   if(verbose)
-    cat(paste0("====== Run MixtComp in ", algo$mode, "mode with ", nRun, " runs per number of clusters and ", nCore, " cores"))
+    cat(paste0("====== Run MixtComp in ", algo$mode, " mode with ", nRun, " run(s) per number of classes and ", nCore, " core(s)\n"))
   
   resLearn <- list()
   for(i in seq_along(nClass))
   {
     if(verbose)
-      cat(paste0("\n-- K = ", nClass[i], " "))
+      cat(paste0("-- K = ", nClass[i], "\n"))
     
     algo$nClass = nClass[i]
     

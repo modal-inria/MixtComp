@@ -5,7 +5,7 @@
 \alias{mixtCompPredict}
 \title{Learn and predict using RMixtComp}
 \usage{
-mixtCompLearn(data, model, algo = createAlgo(), nClass,
+mixtCompLearn(data, model = NULL, algo = createAlgo(), nClass,
   criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1,
   ceiling(detectCores()/2)), nRun), verbose = TRUE)
 
@@ -47,7 +47,9 @@ The \emph{model} object is a named list containing the variables to use in the m
 An element of the list is the model's name to use (see below for the list of available models). 
 For example, \code{model <- list(real1 = "Gaussian", counting1 = "Poisson")} indicates a mixture model with 2 variables named real1 and counting1 with Gaussian and Poisson as model. 
 Some models require hyperparameters in this case, the model is described by a list of 2 elements: type containing the model name and paramStr containing the hyperparameters.
-For example: \code{model <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}
+For example: \code{model <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}.
+If the model is NULL, data are supposed to be provided in data.frame or list with R format (numeric, factor, character, NA as missing value). 
+Models will be imputed as follows: "Gaussian" for numeric variable, "Multinomial" for character or factor variable and "Poisson" for integer variable.
 
 Eight models are available in RMixtComp: \emph{Gaussian}, \emph{Multinomial}, \emph{Poisson}, \emph{NegativeBinomial}, \emph{Weibull}, \emph{Func_CS}, \emph{Func_SharedAlpha_CS}, \emph{Rank_ISR}. 
 \emph{Func_CS} and \emph{Func_SharedAlpha_CS} models require hyperparameters: the number of subregressions of functional and the number of coefficients of each subregression. 
