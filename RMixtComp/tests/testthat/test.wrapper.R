@@ -2,48 +2,48 @@ context("Wrappers of rmc function")
 
 Sys.setenv(MC_DETERMINISTIC = 42)
 
-test_that("inputModelIntern returns Gaussian when a numeric is given", {
+test_that("imputModelIntern returns Gaussian when a numeric is given", {
   data <- rnorm(100)
   
-  outModel <- inputModelIntern(data, name = "var")
+  outModel <- imputModelIntern(data, name = "var")
   expect_equal(outModel, "Gaussian")
 })
 
-test_that("inputModelIntern returns Poisson when an integer vector is given", {
+test_that("imputModelIntern returns Poisson when an integer vector is given", {
   data <- 1:100
   
-  outModel <- inputModelIntern(data, name = "var")
+  outModel <- imputModelIntern(data, name = "var")
   expect_equal(outModel, "Poisson")
 })
 
-test_that("inputModelIntern returns Multinomial when a character/factor is given", {
+test_that("imputModelIntern returns Multinomial when a character/factor is given", {
   data <- letters
   
-  outModel <- inputModelIntern(data, name = "var")
+  outModel <- imputModelIntern(data, name = "var")
   expect_equal(outModel, "Multinomial")
   
   data <- as.factor(letters)
   
-  outModel <- inputModelIntern(data, name = "var")
+  outModel <- imputModelIntern(data, name = "var")
   expect_equal(outModel, "Multinomial")
 })
 
-test_that("inputModelIntern returns LatentClass when the variable is named z_class", {
+test_that("imputModelIntern returns LatentClass when the variable is named z_class", {
   data <- 1:100
   
-  outModel <- inputModelIntern(data, name = "z_class")
+  outModel <- imputModelIntern(data, name = "z_class")
   expect_equal(outModel, "LatentClass")
 })
 
 
-test_that("inputModelIntern returns an error when a bad type is given", {
+test_that("imputModelIntern returns an error when a bad type is given", {
   data <- list()
   
-  expect_error(outModel <- inputModelIntern(data, name = "var"))
+  expect_error(outModel <- imputModelIntern(data, name = "var"))
 })
 
 
-test_that("inputModel works with data.frame", {
+test_that("imputModel works with data.frame", {
   data <- data.frame(a = 1:3,
                      b = rnorm(3),
                      c = letters[1:3],
@@ -51,12 +51,12 @@ test_that("inputModel works with data.frame", {
   
   expectedModel <- list(a = "Poisson", b = "Gaussian", c = "Multinomial", z_class = "LatentClass")
   
-  outModel <- inputModel(data)
+  outModel <- imputModel(data)
   expect_equal(outModel, expectedModel)
 })
 
 
-test_that("inputModel works with list", {
+test_that("imputModel works with list", {
   data <- list(a = 1:3,
                b = rnorm(3),
                c = letters[1:3],
@@ -64,14 +64,14 @@ test_that("inputModel works with list", {
   
   expectedModel <- list(a = "Poisson", b = "Gaussian", c = "Multinomial", z_class = "LatentClass")
   
-  outModel <- inputModel(data)
+  outModel <- imputModel(data)
   expect_equal(outModel, expectedModel)
 })
 
-test_that("inputModel returns an error with a matrix", {
+test_that("imputModel returns an error with a matrix", {
   data <- matrix(rnorm(50), ncol = 5, dimnames = list(NULL, letters[1:5]))
   
-  expect_error(outModel <- inputModel(data))
+  expect_error(outModel <- imputModel(data))
 })
 
 
