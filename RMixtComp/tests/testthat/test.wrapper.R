@@ -49,7 +49,7 @@ test_that("imputModel works with data.frame", {
                      c = letters[1:3],
                      z_class = 1:3)
   
-  expectedModel <- list(a = "Poisson", b = "Gaussian", c = "Multinomial", z_class = "LatentClass")
+  expectedModel <- list(a = list(type = "Poisson", paramStr = ""), b = list(type = "Gaussian", paramStr = ""), c = list(type = "Multinomial", paramStr = ""), z_class = list(type = "LatentClass", paramStr = ""))
   
   outModel <- imputModel(data)
   expect_equal(outModel, expectedModel)
@@ -62,7 +62,7 @@ test_that("imputModel works with list", {
                c = letters[1:3],
                z_class = 1:3)
   
-  expectedModel <- list(a = "Poisson", b = "Gaussian", c = "Multinomial", z_class = "LatentClass")
+  expectedModel <- list(a = list(type = "Poisson", paramStr = ""), b = list(type = "Gaussian", paramStr = ""), c = list(type = "Multinomial", paramStr = ""), z_class = list(type = "LatentClass", paramStr = ""))
   
   outModel <- imputModel(data)
   expect_equal(outModel, expectedModel)

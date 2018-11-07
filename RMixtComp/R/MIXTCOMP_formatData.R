@@ -9,12 +9,12 @@ imputModel <- function(data)
   {
     varNames <- colnames(data)
     index <- 1:ncol(data)
-    model <- lapply(index, function(i) imputModelIntern(data[,i], varNames[i]))
+    model <- lapply(index, function(i) list(type = imputModelIntern(data[,i], varNames[i]), paramStr = ""))
     names(model) = varNames
   }else{
     varNames <- names(data)
     index <- seq_along(data)
-    model <- lapply(index, function(i) imputModelIntern(data[[i]], varNames[i]))
+    model <- lapply(index, function(i) list(type = imputModelIntern(data[[i]], varNames[i]), paramStr = ""))
     names(model) = varNames
   }
   
