@@ -1,7 +1,7 @@
 #' Barplot of the discriminative power of the variables
 #' 
-#' @details The discriminative power of variable j is defined by 1 - Cj
-#' Cj=  - sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*lnK)
+#' @details The discriminative power of variable j is defined by 1 - C(j)
+#' \deqn{C(j)=  -\sum_{k=1}^K \sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*\log(K))}
 #' 
 #' @param output object returned by function \emph{mixtCompLearn}
 #' @param ylim vector of length 2 defining the range of y-axis
@@ -63,8 +63,8 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
 
 #' Barplot of the discriminative power of the classes
 #' 
-#' @details The discriminative power of class k is defined by 1 - Dk
-#' Dk =  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
+#' @details The discriminative power of class k is defined by 1 - D(k)
+#' \deqn{D(k) =  -\sum_{i=1}^n P(Z_i=k|x_i) \log(P(Z_i=k|x_i)) / (n*\exp(-1))}
 #' 
 #' @param output object returned by function \emph{mixtCompLearn}
 #' @param ylim vector of length 2 defining the range of y-axis

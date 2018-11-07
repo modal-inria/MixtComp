@@ -2,7 +2,7 @@
 #' Heatmap of the similarities between variables about clustering
 #' 
 #' @details The similarities between variables j and h is defined by 1 - Delta(j,h)
-#' Delta(j,h)^2 = (1/n) * sum_{i=1}^n sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2
+#' \deqn{Delta(j,h)^2 = (1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}
 #' 
 #' @param output object returned by function \emph{mixtCompLearn}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
@@ -66,7 +66,7 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' Heatmap of the similarities between classes about clustering
 #'
 #' @details The similarities between classes k and g is defined by 1 - Sigma(k,g)
-#' Sigma(k,g)^2 = (1/n) * sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2
+#' \deqn{Sigma(k,g)^2 = (1/n) * \sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2}
 #' 
 #' @param output object returned by function \emph{mixtCompLearn}
 #' @param pkg "ggplot2" or "plotly". Package used to plot

@@ -20,8 +20,8 @@ plotDiscrimVar(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
 Barplot of the discriminative power of the variables
 }
 \details{
-The discriminative power of variable j is defined by 1 - Cj
-Cj=  - sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*lnK)
+The discriminative power of variable j is defined by 1 - C(j)
+\deqn{C(j)=  -\sum_{k=1}^K \sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*\log(K))}
 }
 \examples{
 \donttest{

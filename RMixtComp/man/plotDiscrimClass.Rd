@@ -20,8 +20,8 @@ plotDiscrimClass(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
 Barplot of the discriminative power of the classes
 }
 \details{
-The discriminative power of class k is defined by 1 - Dk
-Dk =  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
+The discriminative power of class k is defined by 1 - D(k)
+\deqn{D(k) =  -\sum_{i=1}^n P(Z_i=k|x_i) \log(P(Z_i=k|x_i)) / (n*\exp(-1))}
 }
 \examples{
 \donttest{

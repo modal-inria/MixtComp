@@ -19,14 +19,14 @@ the discriminative power
 Compute the discriminative power of each variable or classe
 }
 \details{
-The discriminative power of variable j is defined by 1 - Cj
-Cj=  - sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) ln(P(Z_i=k|x_{ij})) / (n*lnK)
+The discriminative power of variable j is defined by 1 - C(j)
+\deqn{C(j)=  - \sum_{k=1}^K sum_{i=1}^n P(Z_i=k|x_{ij}) \log(P(Z_i=k|x_{ij})) / (n*\log(K))}
 
 A high value (close to one) means that the variable is highly discriminating. A low value (close to zero) means that the variable is poorly discriminating.
 
 
-The discriminative power of class k is defined by 1 - Dk
-Dk=  - sum_{i=1}^n P(Z_i=k|x_i) ln(P(Z_i=k|x_i)) / (n*exp(-1))
+The discriminative power of class k is defined by 1 - D(k)
+\deqn{D(k) =  -\sum_{i=1}^n P(Z_i=k|x_i) \log(P(Z_i=k|x_i)) / (n*\exp(-1))}
 }
 \examples{
 \donttest{
