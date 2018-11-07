@@ -140,6 +140,54 @@ test_that("formatData keeps list in list format", {
   expect_equal(class(dataOut$x2), "character")
 })
 
+test_that("formatDataBasicMode works with data.frame", {
+  dat <- data.frame(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = 1:20)
+  dat[1,] = NA
+  model <- list(a = "Gaussian", b = "Multinomial", c = "Multinomial", d = "Poisson", z_class = "LatentClass")
+  
+  out <- formatDataBasicMode(dat, model)
+  expect_length(out, 2)
+  expect_named(out, c("data", "categ"))
+  expect_type(out$data, "list")
+  expect_named(out$data, c("a", "b", "c", "d", "z_class"))
+  expect_equal(out$data$a, c("?", as.character(dat$a[-1])))
+  expect_equal(out$data$b, c("?", rep(1:2, 9), 1))
+  expect_equal(out$data$c, c("?", rep(1:2, 9), 1))
+  expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
+  expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
+  expect_type(out$categ, "list")
+  expect_length(out$categ, 2)
+  expect_named(out$categ,c("b", "c"))
+  expect_equal(out$categ$b, list(old = letters[2:1], new = c("1", "2")))
+  expect_equal(out$categ$c, list(old = letters[2:1], new = c("1", "2")))
+})
+
+test_that("formatDataBasicMode works with list", {
+  dat <- list(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = 1:20)
+  dat$a[1] = NA
+  dat$b[1] = NA
+  dat$c[1] = NA
+  dat$d[1] = NA
+  dat$z_class[1] = NA
+  model <- list(a = "Gaussian", b = "Multinomial", c = "Multinomial", d = "Poisson", z_class = "LatentClass")
+  
+  out <- formatDataBasicMode(dat, model)
+  expect_length(out, 2)
+  expect_named(out, c("data", "categ"))
+  expect_type(out$data, "list")
+  expect_named(out$data, c("a", "b", "c", "d", "z_class"))
+  expect_equal(out$data$a, c("?", as.character(dat$a[-1])))
+  expect_equal(out$data$b, c("?", rep(1:2, 9), 1))
+  expect_equal(out$data$c, c("?", rep(1:2, 9), 1))
+  expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
+  expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
+  expect_type(out$categ, "list")
+  expect_length(out$categ, 2)
+  expect_named(out$categ,c("b", "c"))
+  expect_equal(out$categ$b, list(old = letters[2:1], new = c("1", "2")))
+  expect_equal(out$categ$c, list(old = letters[2:1], new = c("1", "2")))
+})
+
 test_that("checkNClass works with mixtComp object", {
   resLearn <- list(algo = list(nClass = 2))
   class(resLearn) = "MixtComp"
