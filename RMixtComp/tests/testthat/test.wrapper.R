@@ -143,7 +143,7 @@ test_that("formatData keeps list in list format", {
 test_that("formatDataBasicMode works with data.frame", {
   dat <- data.frame(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = 1:20)
   dat[1,] = NA
-  model <- list(a = "Gaussian", b = "Multinomial", c = "Multinomial", d = "Poisson", z_class = "LatentClass")
+  model <- list(a = list(type = "Gaussian"), b = list(type = "Multinomial"), c = list(type = "Multinomial"), d = list(type = "Poisson"), z_class = list(type = "LatentClass"))
   
   out <- formatDataBasicMode(dat, model)
   expect_length(out, 2)
@@ -169,7 +169,7 @@ test_that("formatDataBasicMode works with list", {
   dat$c[1] = NA
   dat$d[1] = NA
   dat$z_class[1] = NA
-  model <- list(a = "Gaussian", b = "Multinomial", c = "Multinomial", d = "Poisson", z_class = "LatentClass")
+  model <- list(a = list(type = "Gaussian"), b = list(type = "Multinomial"), c = list(type = "Multinomial"), d = list(type = "Poisson"), z_class = list(type = "LatentClass"))
   
   out <- formatDataBasicMode(dat, model)
   expect_length(out, 2)
@@ -304,8 +304,6 @@ test_that("rmcMultiRun works", {
   expect_equal(names(resLearn), c("mixture", "variable", "algo"))
   
 })
-
-
 
 test_that("mixtCompLearn works + mixtCompPredict", {
   set.seed(42)

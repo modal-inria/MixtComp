@@ -75,7 +75,7 @@ formatDataBasicMode <- function(data, model)
 
   for(name in names(data))
   {
-    if(model[[name]] == "Multinomial")
+    if(model[[name]]$type == "Multinomial")
     {
       oldCateg <- unique(data[[name]])
       oldCateg = oldCateg[!is.na(oldCateg)]
