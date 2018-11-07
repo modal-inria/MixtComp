@@ -1,3 +1,37 @@
+# input the model of variables of the data (given in a list or data.frame format)
+# model are imputed among "Gaussian" (numeric data), "Multinomial" (character or factor) and "Poisson" (integer). 
+inputModel <- function(data)
+{
+  if(is.matrix(data))
+    stop("Can imput model only with data in data.frame or list format. Please provide data in these formats of provide a model parameter.")   
+  
+  if(is.data.frame(data))
+  {
+    varNames <- colnames(data)
+    index <- 1:ncol(data)
+    model <- lapply(index, function(i) inputModelIntern(data[,i], varNames[i]))
+    names(model) = varNames
+  }else{
+    varNames <- names(data)
+    index <- seq_along(data)
+    model <- lapply(index, function(i) inputModelIntern(data[[i]], varNames[i]))
+    names(model) = varNames
+  }
+  
+  return(model)
+}
+
+# imput the model of a given variable
+# model are imputed among "Gaussian" (numeric data), "Multinomial" (character or factor) and "Poisson" (integer). 
+inputModelIntern <- function(variable, name)
+{
+  switch(class(variable),
+         "numeric" = "Gaussian",
+         "integer" = ifelse(name == "z_class", "LatentClass", "Poisson"),
+         "factor" = "Multinomial",
+         "character" = "Multinomial",
+         stop(paste0("Cannot impute the model for variable ", name,". Please provide the model parameter.")))
+}
 
 # format the model list for rmc function:
 # - add paramStr when missing
