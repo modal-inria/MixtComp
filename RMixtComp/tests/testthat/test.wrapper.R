@@ -213,7 +213,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   data <- do.call(cbind, resGen$data)
   desc <- list(z_class = "LatentClass", Gaussian1 = "Gaussian")
   
-  resLearn <- mixtCompLearn(data, desc, algo, nClass = 4, crit = "ICL") 
+  resLearn <- mixtCompLearn(data, desc, algo, nClass = 4, crit = "ICL", verbose = FALSE) 
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -257,12 +257,12 @@ test_that("mixtCompLearn works + mixtCompPredict", {
     expect_warning(getParam(resLearn, name), regexp = NA)
   
   
-  expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, verbose = FALSE), regexp = NA)
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
 })
 
-test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
+test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verbose", {
   set.seed(42)
   
   nInd <- 1000
@@ -289,7 +289,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   data <- do.call(cbind, resGen$data)
   desc <- list(z_class = list(type = "LatentClass"), Gaussian1 = list(type = "Gaussian", paramStr = ""))
   
-  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5, nRun = 2) 
+  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5, nRun = 2, verbose = TRUE) 
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -371,7 +371,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict", {
   expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
   file.remove("Rplots.pdf")
   
-  expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3, verbose = TRUE), regexp = NA)
   expect_warning(summary(resLearn), regexp = NA)
   expect_warning(summary(resLearn$res[[1]]), regexp = NA)
   expect_warning(print(resLearn), regexp = NA)

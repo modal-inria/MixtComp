@@ -10,6 +10,7 @@
 #' @param nRun number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.
 #' @param nCore number of cores used for the parallelization of the \emph{nRun} runs.
 #' @param resLearn output of \emph{mixtCompLearn} (only for \emph{mixtCompPredict} function).
+#' @param verbose if TRUE, print some informations.
 #'
 #' @return An object of classes MixtCompLearn and MixtComp for \emph{mixtCompLearn} function. An object of class MixtComp for \emph{mixtCompPredict}.
 #' 
@@ -225,7 +226,7 @@
 #' 
 #' 
 #' @export
-mixtCompLearn <- function(data, model, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun))
+mixtCompLearn <- function(data, model, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
 {
   crit = match.arg(criterion)
   indCrit <- ifelse(crit == "BIC", 1, 2)
@@ -239,12 +240,18 @@ mixtCompLearn <- function(data, model, algo = createAlgo(), nClass, criterion = 
   
   algo = completeAlgo(algo)
   
+  if(verbose)
+    cat(paste0("====== Run MixtComp in ", algo$mode, "mode with ", nRun, " runs per number of clusters and ", nCore, " cores"))
+  
   resLearn <- list()
   for(i in seq_along(nClass))
   {
+    if(verbose)
+      cat(paste0("\n-- K = ", nClass[i], " "))
+    
     algo$nClass = nClass[i]
     
-    resLearn[[i]] <- rmcMultiRun(algo, dataList, model, list(), nRun, nCore)
+    resLearn[[i]] <- rmcMultiRun(algo, dataList, model, list(), nRun, nCore, verbose)
     
     class(resLearn[[i]]) = "MixtComp"
     if(!is.null(resLearn[[i]]$warnLog))
@@ -272,7 +279,7 @@ mixtCompLearn <- function(data, model, algo = createAlgo(), nClass, criterion = 
 
 #' @rdname mixtCompLearn
 #' @export
-mixtCompPredict <- function(data, model, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun))
+mixtCompPredict <- function(data, model, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = FALSE)
 {
   dataList <- formatData(data)
   model <- formatModel(model)
@@ -284,9 +291,9 @@ mixtCompPredict <- function(data, model, algo = createAlgo(), resLearn, nClass =
   algo = completeAlgo(algo)
   
   if("MixtCompLearn" %in% class(resLearn))
-    resPredict <- rmcMultiRun(algo, dataList, model, resLearn$res[[which(resLearn$nClass == algo$nClass)]], nRun, nCore)
+    resPredict <- rmcMultiRun(algo, dataList, model, resLearn$res[[which(resLearn$nClass == algo$nClass)]], nRun, nCore, verbose)
   else
-    resPredict <- rmcMultiRun(algo, dataList, model, resLearn, nRun, nCore)
+    resPredict <- rmcMultiRun(algo, dataList, model, resLearn, nRun, nCore, verbose)
   
   if(!is.null(resPredict$warnLog))
     warning(paste0("MixtComp failed with the following error:", resPredict$warnLog))
@@ -298,15 +305,25 @@ mixtCompPredict <- function(data, model, algo = createAlgo(), resLearn, nClass =
 
 
 
-rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1)
+rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1, verbose = FALSE)
 {
   nCore <- min(max(1, nCore), nRun)
   
-  cl <- makeCluster(nCore)
+  if(verbose)
+    cl <- makeCluster(nCore, outfile = "")
+  else
+    cl <- makeCluster(nCore)
+  
   registerDoParallel(cl)
   
   res <- foreach(i = 1:nRun)%dopar%{
+    if(verbose)
+      cat(paste0("Start run ", i, " on thread number ", Sys.getpid(), "\n"))
+    
     resTemp <- rmc(algo, data, model, resLearn)
+    
+    if(verbose)
+      cat(paste0("Run ", i, " DONE on thread number ", Sys.getpid(), "\n"))
     
     return(resTemp)
   }

@@ -7,11 +7,11 @@
 \usage{
 mixtCompLearn(data, model, algo = createAlgo(), nClass,
   criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1,
-  ceiling(detectCores()/2)), nRun))
+  ceiling(detectCores()/2)), nRun), verbose = TRUE)
 
 mixtCompPredict(data, model, algo = createAlgo(), resLearn,
   nClass = NULL, nRun = 1, nCore = min(max(1,
-  ceiling(detectCores()/2)), nRun))
+  ceiling(detectCores()/2)), nRun), verbose = FALSE)
 }
 \arguments{
 \item{data}{a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).}
@@ -27,6 +27,8 @@ mixtCompPredict(data, model, algo = createAlgo(), resLearn,
 \item{nRun}{number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.}
 
 \item{nCore}{number of cores used for the parallelization of the \emph{nRun} runs.}
+
+\item{verbose}{if TRUE, print some informations.}
 
 \item{resLearn}{output of \emph{mixtCompLearn} (only for \emph{mixtCompPredict} function).}
 }
