@@ -33,11 +33,13 @@ extractCIGaussianVble = function(var, data, class, grl){
   return(list(mean = means, lower = lowers, uppers=uppers))
 }
 
+
 extractCIPoissonVble = function(var, data, class, grl){
   theta <- as.array(data$variable$param[[var]]$stat[class,1])
   if (grl)  theta <- cbind(theta, mean(data$variable$data[[var]]$completed))
   return(list(mean = theta, lower = qpois(0.025, theta), uppers=qpois(0.975, theta)))
 }
+
 
 extractCINegBinomialVble = function(var, data, class, grl){
   theta <- matrix(data$variable$param[[var]]$stat[,1], ncol = 2, byrow = TRUE)
@@ -57,6 +59,7 @@ extractCINegBinomialVble = function(var, data, class, grl){
   return(list(mean = means, lower = lowers, uppers=uppers))
 }
 
+
 extractCIWeibullVble = function(var, data, class, grl){
   theta = matrix(data$variable$param[[var]]$stat[,1], ncol=2, byrow=TRUE)
   means = as.array(round(theta[,2]*gamma(1+1/theta[,1]), 3))
@@ -75,17 +78,18 @@ extractCIWeibullVble = function(var, data, class, grl){
   return(list(mean = means, lower = lowers, uppers=uppers))
 }
 
+
 ## Categorical variables
 extractCIMultiVble = function(var, data, class, grl){
   theta = matrix(data$variable$param[[var]]$stat[,1], nrow=data$algo$nClass, byrow = TRUE)
-  theta <- theta[class, ,drop=FALSE]
+  theta <- theta[class,, drop = FALSE]
   if (grl){
     tmp <- table(data$variable$data[[var]]$completed)
     theta <- rbind(theta, tmp/sum(tmp))
   }
   for (k in 1:nrow(theta)){
-    orderk <- order(theta[k,], decreasing=TRUE)
-    keep <- orderk[1:which(cumsum(theta[k, orderk])>0.95)[1]]
+    orderk <- order(theta[k,], decreasing = TRUE)
+    keep <- orderk[1:which(cumsum(theta[k, orderk]) > 0.95)[1]]
     theta[k, -keep] <- 0
   }
   
@@ -93,8 +97,13 @@ extractCIMultiVble = function(var, data, class, grl){
   out = cbind(1:ncol(theta), t(theta))
   # drop the levels that do not belong to the CI of all the classes
   if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out) == out[,1]),, drop = FALSE]
-  return(list(levels=out[,1], probs = t(out[,-1, drop = FALSE])))
+  
+  lev <- gsub("k: [0-9]*, modality: ", "", rownames(data$variable$param[[var]]$stat))[class]
+  lev = lev[out[,1]]
+  
+  return(list(levels = lev, probs = t(out[,-1, drop = FALSE])))
 }
+
 
 ## Functional variables
 # To compute the mean curve per component
@@ -213,7 +222,7 @@ extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$algo$nClas
 extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$algo$nClass, grl=FALSE) {
   obs <- data$variable$data[[var]]$completed
   tik <- data$variable$data$z_class$stat
-  levels <- sort(unique(obs))
+  levels <- unique(obs)
   probs <- t(sapply(1:data$algo$nClass, 
                     function(k, tik, obs)
                       sapply(levels,
