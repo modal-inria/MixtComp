@@ -419,8 +419,16 @@ test_that("run cluster/predict R object",{
   expect_equal(dim(disc), rep(length(desc)-1, 2))
   for(name in getVarNames(resLearn))
     expect_warning(getParam(resLearn, name), regexp = NA)
-  
-  
+  expect_warning(model <- getModel(resLearn), regexp = NA)
+  expect_equal(model, list(Poisson1 = list(type = "Poisson", paramStr = ""),
+                           Gaussian1 = list(type = "Gaussian", paramStr = ""),
+                           Categorical1 = list(type = "Multinomial", paramStr = "nModality: 4"),
+                           nBinom1 = list(type = "NegativeBinomial", paramStr = ""),
+                           Weibull1 = list(type = "Weibull", paramStr = ""),
+                           Functional1 = list(type = "Func_CS", paramStr = "nSub: 2, nCoeff: 2"),
+                           functionalSharedAlpha1 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 2, nCoeff: 2"),
+                           Rank1 = list(type = "Rank_ISR", paramStr = "nModality: 4")))
+
   # test plot functions
   expect_warning(plotConvergence(resLearn), regexp = NA)
   w <- capture_warnings(plotDiscrimClass(resLearn, pkg = "plotly"))# the first call generates warnings due to packages loading

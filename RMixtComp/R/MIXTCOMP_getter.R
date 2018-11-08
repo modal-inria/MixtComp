@@ -85,9 +85,9 @@ getPartition <- function(outMixtComp)
 
 #' @name getType
 #' 
-#' @title Getters
+#' @title Names and Types Getters
 #'
-#' @description Get the type of model, names for each variable
+#' @description getType returns the type output of a MixtComp object, getModel returns the model object, getVarNames returns the name for each variable
 #'
 #'
 #' @param outMixtComp object of class \emph{MixtCompLearn} or \emph{MixtComp} obtained using \link{mixtCompLearn} or \link{mixtCompPredict} functions.
@@ -114,6 +114,9 @@ getPartition <- function(outMixtComp)
 #' # get type
 #' type <- getType(resLearn)
 #' 
+#' # get model object
+#' model <- getModel(resLearn)
+#' 
 #' # get variable names
 #' varNames <- getVarNames(resLearn)
 #' 
@@ -130,6 +133,22 @@ getType <- function(outMixtComp, with.z_class = FALSE)
   
   return(type)
 }
+
+#' @rdname getType
+#' @export
+getModel <- function(outMixtComp, with.z_class = FALSE)
+{
+  model <- outMixtComp$variable$type
+  
+  if(!with.z_class)
+    model = model[-which(names(model)=="z_class")]
+  
+  for(varName in names(model))
+    model[[varName]] = list(type = model[[varName]], paramStr = outMixtComp$variable$param[[varName]]$paramStr)
+      
+  return(model)
+}
+
 
 #' @rdname getType
 #' @export
