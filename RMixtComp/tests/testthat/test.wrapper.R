@@ -321,7 +321,8 @@ test_that("mixtCompLearn works in basic mode", {
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
-  
+  expect_true(resLearn$algo$basicMode)
+  expect_equal(resLearn$algo$categ, list(categ = list(old = c("2", "1"), new = c("1", "2"))))
   
   dat <- list(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
               categ1 = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
@@ -336,6 +337,9 @@ test_that("mixtCompLearn works in basic mode", {
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
+  expect_true(resLearn$algo$basicMode)
+  expect_equal(resLearn$algo$categ, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
+                                         categ2 = list(old = c("1", "2"), new = c("1", "2"))))
   
   
   dat$z_class = rep(1:2, each = 100)
@@ -348,6 +352,9 @@ test_that("mixtCompLearn works in basic mode", {
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
+  expect_true(resLearn$algo$basicMode)
+  expect_equal(resLearn$algo$categ, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
+                                         categ2 = list(old = c("1", "2"), new = c("1", "2"))))
 })
 
 test_that("mixtCompLearn works + mixtCompPredict", {

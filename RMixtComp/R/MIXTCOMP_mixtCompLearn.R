@@ -233,14 +233,18 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
   crit = match.arg(criterion)
   indCrit <- ifelse(crit == "BIC", 1, 2)
   
+  ## parameters pretreatment 
+  
   # basic : data in R format (missing coded as NA). The user does not give a model, model are imputed among "Gaussian" (numeric data), "Multinomial" (character or factor) and "Poisson" (integer). 
   # expert : data in MixtComp format. The user give a model
   if(is.null(model))
   {
     mode <- "basic"
     model <- imputModel(data)
-    dataList <- formatDataBasicMode(data, model)$data
-
+    out <- formatDataBasicMode(data, model)
+    dataList <- out$data
+    categ <- out$categ
+    
     if(verbose)
     {
       cat("You did not provide a model parameter.\n")
@@ -248,20 +252,21 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
       cat("Models will be imputed as follows: \"Gaussian\" for numeric variable, \"Multinomial\" for character or factor variable and \"Poisson\" for integer variable.\n")
       print(head(sapply(model, function(x) x$type)))
     }
-      
+    
   }else{
     mode <- "expert"
     model <- formatModel(model)  
     dataList <- formatData(data)
   }
-    
-
+  
   nClass = unique(nClass)
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
   algo = completeAlgo(algo)
   
+  
+  ## algo
   if(verbose)
     cat(paste0("====== Run MixtComp in ", algo$mode, " mode with ", nRun, " run(s) per number of classes and ", nCore, " core(s)\n"))
   
@@ -278,8 +283,17 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
     class(resLearn[[i]]) = "MixtComp"
     if(!is.null(resLearn[[i]]$warnLog))
       warning(paste0("For k= ", nClass[i], ", MixtComp failed with the following error:", resLearn[[i]]$warnLog))
+    else{
+      resLearn[[i]]$algo$basicMode = (mode == "basic")
+      
+      # in basic mode add dictionnaries of categories for Multinomial model to canvert data in mixtCompPredict in basic mode and change the categories names in output
+      if(resLearn[[i]]$algo$basicMode)
+        resLearn[[i]]$algo$categ = out$categ 
+    }
   }
   
+  
+  ## Choose the best number of classes according to crit
   allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
   colnames(allCrit) = c(nClass)
   rownames(allCrit) = c("BIC", "ICL")
@@ -303,8 +317,10 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
 #' @export
 mixtCompPredict <- function(data, model, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = FALSE)
 {
+  
+  model <- formatModel(model)  
   dataList <- formatData(data)
-  model <- formatModel(model)
+  
   
   algo$nInd = length(dataList[[1]])
   algo$nClass = checkNClass(nClass, resLearn)
@@ -355,6 +371,6 @@ rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1, verbos
   logLikelihood <- sapply(res, function(x) {ifelse(is.null(x$warnLog), x$mixture$lnObservedLikelihood, -Inf)})
   
   indMax <- which.max(logLikelihood)
-
+  
   return(res[[indMax]])
 }
