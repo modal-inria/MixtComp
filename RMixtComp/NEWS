@@ -1,4 +1,8 @@
-RMixtComp 0.4 2018-10-24
-- Use MixtComp v4
+v0.4.5 2018-11-08
+- add basic mode
+- add prostate data
+
+v0.4 2018-10-24
+- use MixtComp v4
 - add parallelization
 - add ggplot2 plots

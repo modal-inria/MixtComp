@@ -9,7 +9,7 @@ mixtCompLearn(data, model = NULL, algo = createAlgo(), nClass,
   criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1,
   ceiling(detectCores()/2)), nRun), verbose = TRUE)
 
-mixtCompPredict(data, model, algo = createAlgo(), resLearn,
+mixtCompPredict(data, model = NULL, algo = createAlgo(), resLearn,
   nClass = NULL, nRun = 1, nCore = min(max(1,
   ceiling(detectCores()/2)), nRun), verbose = FALSE)
 }

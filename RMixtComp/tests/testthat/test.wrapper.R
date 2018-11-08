@@ -335,9 +335,10 @@ test_that("rmcMultiRun works", {
 })
 
 
-test_that("mixtCompLearn works in basic mode", {
+test_that("mixtCompLearn works in basic mode + predict", {
   set.seed(42)
   
+  ## data.frame object
   dat <- data.frame(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
                     categ = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
                     poiss = c(rpois(100, 2), rpois(100, 5)))
@@ -353,6 +354,17 @@ test_that("mixtCompLearn works in basic mode", {
   expect_true(resLearn$algo$basicMode)
   expect_equal(resLearn$algo$dictionary, list(categ = list(old = c("2", "1"), new = c("1", "2"))))
   
+  resPredict <- mixtCompPredict(dat, resLearn = resLearn)
+  
+  if(!is.null(resPredict$warnLog))
+    print(resPredict$warnLog)
+  
+  expect_equal(resPredict$warnLog, NULL)
+  expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  
+  
+  
+  ## list object
   dat <- list(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
               categ1 = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
               categ2 = as.factor(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
@@ -370,7 +382,17 @@ test_that("mixtCompLearn works in basic mode", {
   expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
                                               categ2 = list(old = c("1", "2"), new = c("1", "2"))))
   
+  resPredict <- mixtCompPredict(dat, resLearn = resLearn)
   
+  if(!is.null(resPredict$warnLog))
+    print(resPredict$warnLog)
+  
+  expect_equal(resPredict$warnLog, NULL)
+  expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  
+  
+  
+  ## with z_class
   dat$z_class = rep(1:2, each = 100)
   
   resLearn <- mixtCompLearn(dat, nClass = 2)
@@ -384,6 +406,16 @@ test_that("mixtCompLearn works in basic mode", {
   expect_true(resLearn$algo$basicMode)
   expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
                                               categ2 = list(old = c("1", "2"), new = c("1", "2"))))
+  
+  
+  resPredict <- mixtCompPredict(dat, resLearn = resLearn)
+  
+  if(!is.null(resPredict$warnLog))
+    print(resPredict$warnLog)
+  
+  expect_equal(resPredict$warnLog, NULL)
+  expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+
 })
 
 test_that("mixtCompLearn works + mixtCompPredict", {

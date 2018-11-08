@@ -315,11 +315,21 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
 
 #' @rdname mixtCompLearn
 #' @export
-mixtCompPredict <- function(data, model, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = FALSE)
+mixtCompPredict <- function(data, model = NULL, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = FALSE)
 {
+  ## parameters pretreatment
+  if(is.null(model))
+    model = getModel(resLearn, with.z_class = FALSE)
+
+  model = formatModel(model)
   
-  model <- formatModel(model)  
-  dataList <- formatData(data)
+
+  if(resLearn$algo$basicMode)
+  {
+    dataList <- formatDataBasicMode(data, model, resLearn$algo$dictionary)$data
+  }else{
+    dataList <- formatData(data)
+  }
   
   
   algo$nInd = length(dataList[[1]])
@@ -328,6 +338,7 @@ mixtCompPredict <- function(data, model, algo = createAlgo(), resLearn, nClass =
   
   algo = completeAlgo(algo)
   
+  ## run predict
   if("MixtCompLearn" %in% class(resLearn))
     resPredict <- rmcMultiRun(algo, dataList, model, resLearn$res[[which(resLearn$nClass == algo$nClass)]], nRun, nCore, verbose)
   else
@@ -335,6 +346,11 @@ mixtCompPredict <- function(data, model, algo = createAlgo(), resLearn, nClass =
   
   if(!is.null(resPredict$warnLog))
     warning(paste0("MixtComp failed with the following error:", resPredict$warnLog))
+  else{
+    resPredict$algo$basicMode = resLearn$algo$basicMode
+    if(resPredict$algo$basicMode)
+      resPredict$algo$dictionary = resLearn$algo$dictionary
+  }
   
   class(resPredict) = "MixtComp"
   
