@@ -9,7 +9,7 @@ mixtCompLearn(data, model = NULL, algo = createAlgo(), nClass,
   criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1,
   ceiling(detectCores()/2)), nRun), verbose = TRUE)
 
-mixtCompPredict(data, model = NULL, algo = createAlgo(), resLearn,
+mixtCompPredict(data, model = NULL, algo = resLearn$algo, resLearn,
   nClass = NULL, nRun = 1, nCore = min(max(1,
   ceiling(detectCores()/2)), nRun), verbose = FALSE)
 }
@@ -20,7 +20,7 @@ mixtCompPredict(data, model = NULL, algo = createAlgo(), resLearn,
 
 \item{algo}{a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).}
 
-\item{nClass}{the number of class of the mixture model. Can be a vector.}
+\item{nClass}{the number of class of the mixture model. Can be a vector for \emph{mixtCompLearn} only.}
 
 \item{criterion}{"BIC" or "ICL". Criterion used for choosing the best model.}
 
@@ -236,7 +236,8 @@ algo <- list(nbBurnInIter = 100,
 resLearn1 <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
 
 # run RMixtCompt in supervised clustering mode + data as matrix
-resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised, algo, nClass = 2:4)
+resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised, algo, 
+                           nClass = 2:4)
 
 # run RMixtCompt in predict mode + data as list
 resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervised, algo,

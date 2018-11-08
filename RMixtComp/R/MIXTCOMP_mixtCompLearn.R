@@ -5,7 +5,7 @@
 #' @param data a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).
 #' @param model a named list containing models and hyperparameters (see \emph{Details} section).
 #' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
-#' @param nClass the number of class of the mixture model. Can be a vector.
+#' @param nClass the number of class of the mixture model. Can be a vector for \emph{mixtCompLearn} only.
 #' @param criterion "BIC" or "ICL". Criterion used for choosing the best model.
 #' @param nRun number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.
 #' @param nCore number of cores used for the parallelization of the \emph{nRun} runs.
@@ -217,7 +217,8 @@
 #' resLearn1 <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
 #' 
 #' # run RMixtCompt in supervised clustering mode + data as matrix
-#' resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised, algo, nClass = 2:4)
+#' resLearn2 <- mixtCompLearn(simData$dataLearn$data.frame, simData$model$supervised, algo, 
+#'                            nClass = 2:4)
 #' 
 #' # run RMixtCompt in predict mode + data as list
 #' resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervised, algo,
@@ -315,7 +316,7 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
 
 #' @rdname mixtCompLearn
 #' @export
-mixtCompPredict <- function(data, model = NULL, algo = createAlgo(), resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = FALSE)
+mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, nClass = NULL, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = FALSE)
 {
   ## parameters pretreatment
   if(is.null(model))

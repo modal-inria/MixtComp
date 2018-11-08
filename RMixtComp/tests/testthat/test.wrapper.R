@@ -361,6 +361,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   
   expect_equal(resPredict$warnLog, NULL)
   expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
   
   
   
@@ -407,15 +408,6 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
                                               categ2 = list(old = c("1", "2"), new = c("1", "2"))))
   
-  
-  resPredict <- mixtCompPredict(dat, resLearn = resLearn)
-  
-  if(!is.null(resPredict$warnLog))
-    print(resPredict$warnLog)
-  
-  expect_equal(resPredict$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
-
 })
 
 test_that("mixtCompLearn works + mixtCompPredict", {
@@ -491,9 +483,11 @@ test_that("mixtCompLearn works + mixtCompPredict", {
     expect_warning(getParam(resLearn, name), regexp = NA)
   
   
-  expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, verbose = FALSE), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(data, desc, resLearn = resLearn, verbose = FALSE), regexp = NA)
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
+  expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
+  
 })
 
 test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verbose", {
