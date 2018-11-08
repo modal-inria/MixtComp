@@ -340,7 +340,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   
   ## data.frame object
   dat <- data.frame(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
-                    categ = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
+                    categ = c("a", "b")[c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))],
                     poiss = c(rpois(100, 2), rpois(100, 5)))
   
   expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2), regexp = NA)
@@ -352,9 +352,9 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
-  expect_equal(resLearn$algo$dictionary, list(categ = list(old = c("2", "1"), new = c("1", "2"))))
+  expect_equal(resLearn$algo$dictionary, list(categ = list(old = c("b", "a"), new = c("1", "2"))))
   expect_equal(resLearn$variable$data$categ$completed, as.character(dat$categ))
-  expect_equal(rownames(resLearn$variable$param$categ$stat), c("k: 1, modality: 2", "k: 1, modality: 1", "k: 2, modality: 2", "k: 2, modality: 1"))
+  expect_equal(rownames(resLearn$variable$param$categ$stat), c("k: 1, modality: b", "k: 1, modality: a", "k: 2, modality: b", "k: 2, modality: a"))
   
   expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
   
@@ -365,9 +365,9 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
   expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
   expect_true(resPredict$algo$basicMode)
-  expect_equal(resPredict$algo$dictionary, list(categ = list(old = c("2", "1"), new = c("1", "2"))))
+  expect_equal(resPredict$algo$dictionary, list(categ = list(old = c("b", "a"), new = c("1", "2"))))
   expect_equal(resPredict$variable$data$categ$completed, as.character(dat$categ))
-  expect_equal(rownames(resPredict$variable$param$categ$stat), c("k: 1, modality: 2", "k: 1, modality: 1", "k: 2, modality: 2", "k: 2, modality: 1"))
+  expect_equal(rownames(resPredict$variable$param$categ$stat), c("k: 1, modality: b", "k: 1, modality: a", "k: 2, modality: b", "k: 2, modality: a"))
   
   
   ## list object with z_class 
