@@ -243,7 +243,7 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
     model <- imputModel(data)
     out <- formatDataBasicMode(data, model)
     dataList <- out$data
-    categ <- out$categ
+    dictionary <- out$dictionary
     
     if(verbose)
     {
@@ -288,7 +288,7 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
       
       # in basic mode add dictionnaries of categories for Multinomial model to canvert data in mixtCompPredict in basic mode and change the categories names in output
       if(resLearn[[i]]$algo$basicMode)
-        resLearn[[i]]$algo$categ = out$categ 
+        resLearn[[i]]$algo$dictionary = out$dictionary
     }
   }
   

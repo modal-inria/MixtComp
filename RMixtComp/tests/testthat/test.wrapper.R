@@ -147,7 +147,7 @@ test_that("formatDataBasicMode works with data.frame", {
   
   out <- formatDataBasicMode(dat, model)
   expect_length(out, 2)
-  expect_named(out, c("data", "categ"))
+  expect_named(out, c("data", "dictionary"))
   expect_type(out$data, "list")
   expect_named(out$data, c("a", "b", "c", "d", "z_class"))
   expect_equal(out$data$a, c("?", as.character(dat$a[-1])))
@@ -155,11 +155,11 @@ test_that("formatDataBasicMode works with data.frame", {
   expect_equal(out$data$c, c("?", rep(1:2, 9), 1))
   expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
   expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
-  expect_type(out$categ, "list")
-  expect_length(out$categ, 2)
-  expect_named(out$categ,c("b", "c"))
-  expect_equal(out$categ$b, list(old = letters[2:1], new = c("1", "2")))
-  expect_equal(out$categ$c, list(old = letters[2:1], new = c("1", "2")))
+  expect_type(out$dictionary, "list")
+  expect_length(out$dictionary, 2)
+  expect_named(out$dictionary,c("b", "c"))
+  expect_equal(out$dictionary$b, list(old = letters[2:1], new = c("1", "2")))
+  expect_equal(out$dictionary$c, list(old = letters[2:1], new = c("1", "2")))
 })
 
 test_that("formatDataBasicMode works with list", {
@@ -173,7 +173,7 @@ test_that("formatDataBasicMode works with list", {
   
   out <- formatDataBasicMode(dat, model)
   expect_length(out, 2)
-  expect_named(out, c("data", "categ"))
+  expect_named(out, c("data", "dictionary"))
   expect_type(out$data, "list")
   expect_named(out$data, c("a", "b", "c", "d", "z_class"))
   expect_equal(out$data$a, c("?", as.character(dat$a[-1])))
@@ -181,12 +181,41 @@ test_that("formatDataBasicMode works with list", {
   expect_equal(out$data$c, c("?", rep(1:2, 9), 1))
   expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
   expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
-  expect_type(out$categ, "list")
-  expect_length(out$categ, 2)
-  expect_named(out$categ,c("b", "c"))
-  expect_equal(out$categ$b, list(old = letters[2:1], new = c("1", "2")))
-  expect_equal(out$categ$c, list(old = letters[2:1], new = c("1", "2")))
+  expect_type(out$dictionary, "list")
+  expect_length(out$dictionary, 2)
+  expect_named(out$dictionary,c("b", "c"))
+  expect_equal(out$dictionary$b, list(old = letters[2:1], new = c("1", "2")))
+  expect_equal(out$dictionary$c, list(old = letters[2:1], new = c("1", "2")))
 })
+
+test_that("formatDataBasicMode works with a dictionary", {
+  dat <- list(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = 1:20)
+  dat$a[1] = NA
+  dat$b[1] = NA
+  dat$c[1] = NA
+  dat$d[1] = NA
+  dat$z_class[1] = NA
+  model <- list(a = list(type = "Gaussian"), b = list(type = "Multinomial"), c = list(type = "Multinomial"), d = list(type = "Poisson"), z_class = list(type = "LatentClass"))
+  dictionary <- list(b = list(old = c("a", "b"), new = c("1", "2")),
+                     c = list(old = c("a", "b"), new = c("1", "2")))
+  
+  out <- formatDataBasicMode(dat, model, dictionary)
+  expect_length(out, 2)
+  expect_named(out, c("data", "dictionary"))
+  expect_type(out$data, "list")
+  expect_named(out$data, c("a", "b", "c", "d", "z_class"))
+  expect_equal(out$data$a, c("?", as.character(dat$a[-1])))
+  expect_equal(out$data$b, c("?", "2", rep(c("1", "2"), 9)))
+  expect_equal(out$data$c, c("?", "2", rep(c("1", "2"), 9)))
+  expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
+  expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
+  expect_equal(out$dictionary, dictionary)
+  
+  
+  dictionary$b = NULL
+  expect_error(out <- formatDataBasicMode(dat, model, dictionary))
+})
+
 
 test_that("checkNClass works with mixtComp object", {
   resLearn <- list(algo = list(nClass = 2))
@@ -308,21 +337,21 @@ test_that("rmcMultiRun works", {
 
 test_that("mixtCompLearn works in basic mode", {
   set.seed(42)
-
+  
   dat <- data.frame(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
                     categ = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
                     poiss = c(rpois(100, 2), rpois(100, 5)))
-
+  
   resLearn <- mixtCompLearn(dat, nClass = 2)
-
+  
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
-
+  
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
-  expect_equal(resLearn$algo$categ, list(categ = list(old = c("2", "1"), new = c("1", "2"))))
+  expect_equal(resLearn$algo$dictionary, list(categ = list(old = c("2", "1"), new = c("1", "2"))))
   
   dat <- list(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
               categ1 = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
@@ -338,8 +367,8 @@ test_that("mixtCompLearn works in basic mode", {
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
-  expect_equal(resLearn$algo$categ, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
-                                         categ2 = list(old = c("1", "2"), new = c("1", "2"))))
+  expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
+                                              categ2 = list(old = c("1", "2"), new = c("1", "2"))))
   
   
   dat$z_class = rep(1:2, each = 100)
@@ -353,8 +382,8 @@ test_that("mixtCompLearn works in basic mode", {
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
-  expect_equal(resLearn$algo$categ, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
-                                         categ2 = list(old = c("1", "2"), new = c("1", "2"))))
+  expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
+                                              categ2 = list(old = c("1", "2"), new = c("1", "2"))))
 })
 
 test_that("mixtCompLearn works + mixtCompPredict", {

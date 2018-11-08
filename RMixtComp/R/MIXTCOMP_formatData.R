@@ -68,28 +68,36 @@ formatData <- function(data)
 
 
 # in basic mode, data is a data.frame or a matrix
-formatDataBasicMode <- function(data, model)
+formatDataBasicMode <- function(data, model, dictionary = NULL)
 {
+  createDictionary <- is.null(dictionary)
+  if(createDictionary)
+    dictionary = list()
+  
   data = as.list(data)
-  categ <- list() 
 
   for(name in names(data))
   {
     if(model[[name]]$type == "Multinomial")
     {
-      oldCateg <- unique(data[[name]])
-      oldCateg = oldCateg[!is.na(oldCateg)]
-      
-      data[[name]] = refactorCategorical(data[[name]], oldCateg, newCateg = seq_along(oldCateg))
-      
-      categ[[name]] = list(old = as.character(oldCateg), new = as.character(seq_along(oldCateg)))
+      if(createDictionary)
+      {
+        oldCateg <- unique(data[[name]])
+        oldCateg = oldCateg[!is.na(oldCateg)]
+        dictionary[[name]] = list(old = as.character(oldCateg), new = as.character(seq_along(oldCateg)))
+      }else{
+        if(!(name %in% names(dictionary)))
+          stop(paste0("No dictionary given for variable ", name))
+      }
+
+      data[[name]] = refactorCategorical(data[[name]], dictionary[[name]]$old, newCateg = dictionary[[name]]$new)
     }
 
     data[[name]] = as.character(data[[name]])
     data[[name]][is.na(data[[name]])] = "?"
   }
     
-  return(list(data = data, categ = categ))  
+  return(list(data = data, dictionary = dictionary))  
 }
 
 # check the number of class given by the user in mixtCompPredict
