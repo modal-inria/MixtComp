@@ -289,7 +289,15 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
       
       # in basic mode add dictionnaries of categories for Multinomial model to canvert data in mixtCompPredict in basic mode and change the categories names in output
       if(resLearn[[i]]$algo$basicMode)
+      {
         resLearn[[i]]$algo$dictionary = out$dictionary
+        
+        for(varName in names(resLearn[[i]]$algo$dictionary))
+        {
+          resLearn[[i]]$variable$data[[varName]]$completed = refactorCategorical(resLearn[[i]]$variable$data[[varName]]$completed, resLearn[[i]]$algo$dictionary[[varName]]$new, resLearn[[i]]$algo$dictionary[[varName]]$old)
+          rownames(resLearn[[i]]$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(resLearn[[i]]$variable$param[[varName]]$stat)), resLearn[[i]]$algo$dictionary[[varName]]$old)
+        }
+      }
     }
   }
   
@@ -349,8 +357,18 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
     warning(paste0("MixtComp failed with the following error:", resPredict$warnLog))
   else{
     resPredict$algo$basicMode = resLearn$algo$basicMode
+
+    # in basic mode add dictionnaries of categories for Multinomial model to canvert data in mixtCompPredict in basic mode and change the categories names in output
     if(resPredict$algo$basicMode)
+    {
       resPredict$algo$dictionary = resLearn$algo$dictionary
+      
+      for(varName in names(resPredict$algo$dictionary))
+      {
+        resPredict$variable$data[[varName]]$completed = refactorCategorical(resPredict$variable$data[[varName]]$completed, resPredict$algo$dictionary[[varName]]$new, resPredict$algo$dictionary[[varName]]$old)
+        rownames(resPredict$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(resPredict$variable$param[[varName]]$stat)), resPredict$algo$dictionary[[varName]]$old)
+      }
+    }
   }
   
   class(resPredict) = "MixtComp"

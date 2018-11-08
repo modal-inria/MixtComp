@@ -343,7 +343,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
                     categ = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
                     poiss = c(rpois(100, 2), rpois(100, 5)))
   
-  resLearn <- mixtCompLearn(dat, nClass = 2)
+  expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2), regexp = NA)
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -353,8 +353,10 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
   expect_equal(resLearn$algo$dictionary, list(categ = list(old = c("2", "1"), new = c("1", "2"))))
+  expect_equal(resLearn$variable$data$categ$completed, as.character(dat$categ))
+  expect_equal(rownames(resLearn$variable$param$categ$stat), c("k: 1, modality: 2", "k: 1, modality: 1", "k: 2, modality: 2", "k: 2, modality: 1"))
   
-  resPredict <- mixtCompPredict(dat, resLearn = resLearn)
+  expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
   
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
@@ -362,16 +364,19 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_equal(resPredict$warnLog, NULL)
   expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
   expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
+  expect_true(resPredict$algo$basicMode)
+  expect_equal(resPredict$algo$dictionary, list(categ = list(old = c("2", "1"), new = c("1", "2"))))
+  expect_equal(resPredict$variable$data$categ$completed, as.character(dat$categ))
+  expect_equal(rownames(resPredict$variable$param$categ$stat), c("k: 1, modality: 2", "k: 1, modality: 1", "k: 2, modality: 2", "k: 2, modality: 1"))
   
   
-  
-  ## list object
+  ## list object with z_class 
   dat <- list(cont = c(rnorm(100, -2, 0.8), rnorm(100, 2, 0.8)),
               categ1 = as.character(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
               categ2 = as.factor(c(apply(rmultinom(100, 1, c(0.5, 0.5)), 2, which.max), apply(rmultinom(100, 1, c(0.2, 0.8)), 2, which.max))),
               poiss = c(rpois(100, 2), rpois(100, 5)))
   
-  resLearn <- mixtCompLearn(dat, nClass = 2)
+  expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2), regexp = NA)
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -382,32 +387,52 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_true(resLearn$algo$basicMode)
   expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
                                               categ2 = list(old = c("1", "2"), new = c("1", "2"))))
+  expect_equal(resLearn$variable$data$categ1$completed, as.character(dat$categ1))
+  expect_equal(resLearn$variable$data$categ2$completed, as.character(dat$categ2))
+  expect_equal(rownames(resLearn$variable$param$categ1$stat), c("k: 1, modality: 2", "k: 1, modality: 1", "k: 2, modality: 2", "k: 2, modality: 1"))
+  expect_equal(rownames(resLearn$variable$param$categ2$stat), c("k: 1, modality: 1", "k: 1, modality: 2", "k: 2, modality: 1", "k: 2, modality: 2"))
   
-  resPredict <- mixtCompPredict(dat, resLearn = resLearn)
+
+  
+  expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
   
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
   
   expect_equal(resPredict$warnLog, NULL)
   expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_true(resPredict$algo$basicMode)
+  expect_equal(resPredict$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
+                                                categ2 = list(old = c("1", "2"), new = c("1", "2"))))
+  expect_equal(resPredict$variable$data$categ1$completed, as.character(dat$categ1))
+  expect_equal(resPredict$variable$data$categ2$completed, as.character(dat$categ2))
+  expect_equal(rownames(resPredict$variable$param$categ1$stat), c("k: 1, modality: 2", "k: 1, modality: 1", "k: 2, modality: 2", "k: 2, modality: 1"))
+  expect_equal(rownames(resPredict$variable$param$categ2$stat), c("k: 1, modality: 1", "k: 1, modality: 2", "k: 2, modality: 1", "k: 2, modality: 2"))
   
   
   
-  ## with z_class
+  ## with z_class and without multinomial
   dat$z_class = rep(1:2, each = 100)
+  dat$categ1 = NULL
+  dat$categ2 = NULL
   
-  resLearn <- mixtCompLearn(dat, nClass = 2)
+  expect_warning(resLearn <- mixtCompLearn(dat, nClass = 2), regexp = NA)
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
-  expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
+  expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
-  expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
-                                              categ2 = list(old = c("1", "2"), new = c("1", "2"))))
+  expect_equal(resLearn$algo$dictionary, list())
   
+  
+  dat$z_class = NULL
+  expect_warning(resPredict <- mixtCompPredict(dat, resLearn = resLearn), regexp = NA)
+  expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_true(resPredict$algo$basicMode)
+  expect_equal(resPredict$algo$dictionary, list())
 })
 
 test_that("mixtCompLearn works + mixtCompPredict", {
