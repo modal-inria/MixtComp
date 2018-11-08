@@ -267,40 +267,9 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
   algo = completeAlgo(algo)
   
   
-  ## algo
-  if(verbose)
-    cat(paste0("====== Run MixtComp in ", algo$mode, " mode with ", nRun, " run(s) per number of classes and ", nCore, " core(s)\n"))
-  
-  resLearn <- list()
-  for(i in seq_along(nClass))
-  {
-    if(verbose)
-      cat(paste0("-- K = ", nClass[i], "\n"))
+  ## run MixtComp
+  resLearn <- classicLearn(dataList, model, algo, nClass, nRun, nCore, verbose, mode, dictionary)
     
-    algo$nClass = nClass[i]
-    
-    resLearn[[i]] <- rmcMultiRun(algo, dataList, model, list(), nRun, nCore, verbose)
-    
-    class(resLearn[[i]]) = "MixtComp"
-    if(!is.null(resLearn[[i]]$warnLog))
-      warning(paste0("For k= ", nClass[i], ", MixtComp failed with the following error:", resLearn[[i]]$warnLog))
-    else{
-      resLearn[[i]]$algo$basicMode = (mode == "basic")
-      
-      # in basic mode add dictionnaries of categories for Multinomial model to canvert data in mixtCompPredict in basic mode and change the categories names in output
-      if(resLearn[[i]]$algo$basicMode)
-      {
-        resLearn[[i]]$algo$dictionary = out$dictionary
-        
-        for(varName in names(resLearn[[i]]$algo$dictionary))
-        {
-          resLearn[[i]]$variable$data[[varName]]$completed = refactorCategorical(resLearn[[i]]$variable$data[[varName]]$completed, resLearn[[i]]$algo$dictionary[[varName]]$new, resLearn[[i]]$algo$dictionary[[varName]]$old)
-          rownames(resLearn[[i]]$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(resLearn[[i]]$variable$param[[varName]]$stat)), resLearn[[i]]$algo$dictionary[[varName]]$old)
-        }
-      }
-    }
-  }
-  
   
   ## Choose the best number of classes according to crit
   allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
@@ -358,7 +327,7 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   else{
     resPredict$algo$basicMode = resLearn$algo$basicMode
 
-    # in basic mode add dictionnaries of categories for Multinomial model to canvert data in mixtCompPredict in basic mode and change the categories names in output
+    # in basic mode add dictionnaries of categories for Multinomial model to convert data in mixtCompPredict in basic mode and change the categories names in output
     if(resPredict$algo$basicMode)
     {
       resPredict$algo$dictionary = resLearn$algo$dictionary
@@ -377,6 +346,43 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
 }
 
 
+classicLearn <- function(dataList, model, algo, nClass, nRun, nCore, verbose, mode, dictionary)
+{
+  if(verbose)
+    cat(paste0("====== Run MixtComp in ", algo$mode, " mode with ", nRun, " run(s) per number of classes and ", nCore, " core(s)\n"))
+  
+  resLearn <- list()
+  for(i in seq_along(nClass))
+  {
+    if(verbose)
+      cat(paste0("-- K = ", nClass[i], "\n"))
+    
+    algo$nClass = nClass[i]
+    
+    resLearn[[i]] <- rmcMultiRun(algo, dataList, model, list(), nRun, nCore, verbose)
+    
+    class(resLearn[[i]]) = "MixtComp"
+    if(!is.null(resLearn[[i]]$warnLog))
+      warning(paste0("For k= ", nClass[i], ", MixtComp failed with the following error:", resLearn[[i]]$warnLog))
+    else{
+      resLearn[[i]]$algo$basicMode = (mode == "basic")
+      
+      # in basic mode add dictionnaries of categories for Multinomial model to convert data in mixtCompPredict in basic mode and change the categories names in output
+      if(resLearn[[i]]$algo$basicMode)
+      {
+        resLearn[[i]]$algo$dictionary = dictionary
+        
+        for(varName in names(resLearn[[i]]$algo$dictionary))
+        {
+          resLearn[[i]]$variable$data[[varName]]$completed = refactorCategorical(resLearn[[i]]$variable$data[[varName]]$completed, resLearn[[i]]$algo$dictionary[[varName]]$new, resLearn[[i]]$algo$dictionary[[varName]]$old)
+          rownames(resLearn[[i]]$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(resLearn[[i]]$variable$param[[varName]]$stat)), resLearn[[i]]$algo$dictionary[[varName]]$old)
+        }
+      }
+    }
+  }
+  
+  return(resLearn)
+}
 
 rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1, verbose = FALSE)
 {
