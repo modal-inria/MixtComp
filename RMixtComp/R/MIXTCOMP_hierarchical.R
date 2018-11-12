@@ -95,7 +95,7 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
         algoTemp$mode = "learn"
         
         newRes[[i]] <- rmcMultiRun(algoTemp, resData, model, list(), nRun, nCore, verbose)
-        class(newRes) = "MixtComp"
+        class(newRes[[i]]) = "MixtComp"
         
         if(!is.null(newRes[[i]]$warnLog))
         {
