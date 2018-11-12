@@ -70,6 +70,9 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 		return;
 	}
 
+	composer.computeObservedProba(); // whether the Gibbs comes after a SEM or is used in prediction, parameters are known at that point
+	composer.setObservedProbaCache();
+
 	// Run has been successful, export everything
 
 	composer.writeParameters();

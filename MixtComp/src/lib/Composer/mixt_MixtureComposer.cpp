@@ -185,6 +185,24 @@ void MixtureComposer::eStepCompleted() {
 //	std::cout << tik_ << std::endl;
 }
 
+bool MixtureComposer::eStepCompleted(Index i) {
+	RowVector<Real> lnComp(nClass_);
+
+	bool correctVal = true;
+
+	for (Index k = 0; k < nClass_; k++) {
+		lnComp(k) = lnCompletedProbability(i, k);
+	}
+
+	if (minInf == lnComp.maxCoeff()) { // completed proba is non 0 in at least one class
+		correctVal = false;
+	}
+
+	completedProbabilityCache_(i) = tik_.row(i).logToMulti(lnComp);
+
+	return correctVal;
+}
+
 void MixtureComposer::mStepPi() {
 	prop_ = 0.;
 	for (Index i = 0; i < zClassInd_.zi().data_.rows(); ++i) {
@@ -301,7 +319,7 @@ void MixtureComposer::setObservedProbaCache() {
 	observedProbabilityCache_.resize(nVar_);
 
 	for (Index j = 0; j < nVar_; ++j) {
-		observedProbabilityCache_(j) = Matrix < Real > (nInd_, nClass_);
+		observedProbabilityCache_(j) = Matrix<Real>(nInd_, nClass_);
 		observedProbabilityCache_(j) = 0.;
 	}
 
@@ -521,17 +539,29 @@ void MixtureComposer::computeObservedProba() {
 std::string MixtureComposer::initializeLatent() {
 	std::string warnLog;
 
-	computeObservedProba(); // whether the Gibbs comes after a SEM or is used in prediction, parameters are known at that point
-	setObservedProbaCache();
-	warnLog = eStepObserved();
+	for (Index i = 0; i < nInd_; ++i) { // TODO: could be parallelized over individuals
+		for (Index n = 0; n < nCompletedInitTry; ++n) {
+			for (MixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+				(*it)->initData(i); // sampling performed without parameters knowledge, to be able to perform the eStepCompleted
+			}
+			if (eStepCompleted(i))
+				goto stop;
+		}
+
+		warnLog += "MixtureComposer::initializeLatent, problem with observation " + std::to_string(i)
+				+ ", impossible to initialize latent values. Individual is too different from rest of population and has too many latent variables (for example, missing values).";
+
+		stop: ;
+	}
+
 	if (0 < warnLog.size()) {
-		std::cout << "initializeLatent, eStepObserved failed." << std::endl;
+		std::cout << "initializeLatent, eStepCompleted failed." << std::endl;
 		return warnLog;
 	}
 
 	sampleZ();
 	initializeMarkovChain();
-	sampleUnobservedAndLatent();
+	sampleUnobservedAndLatent(); // sampling performed using the parameters
 //	warnLog = checkSampleCondition(); // TODO: might be useless, in this case, remove it
 	if (0 < warnLog.size()) {
 		std::cout << "initializeLatent, checkSampleCondition failed." << std::endl;

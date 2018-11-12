@@ -100,6 +100,8 @@ public:
 	/** compute Tik */
 	void eStepCompleted();
 
+	bool eStepCompleted(Index i);
+
 	/** @return the value of the probability of the i-th sample in the k-th component.
 	 *  @param i index of the sample
 	 *  @param k index of the component
