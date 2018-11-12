@@ -184,6 +184,9 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
   names(MAXCRIT) = 2:nbCurrentCluster
   
   out <- c(res[[length(res)]], list(res = res, crit = MAXCRIT, nClass = 2:nbCurrentCluster, history = list(leavesOrder = leavesOrder, leaves = leaves, resLeaves = newRes, critStep = allCrit)))
+  if(is.null(out$warnLog))
+    out$algo$hierarchicalMode = TRUE
+  
   class(out) = c("MixtCompLearn", "MixtComp")
   
   return(out)

@@ -365,6 +365,7 @@ classicLearn <- function(dataList, model, algo, nClass, nRun, nCore, verbose, mo
       warning(paste0("For k= ", nClass[i], ", MixtComp failed with the following error:", resLearn[[i]]$warnLog))
     else{
       resLearn[[i]]$algo$basicMode = (mode == "basic")
+      resLearn[[i]]$algo$hierarchicalMode = FALSE
       
       # in basic mode add dictionnaries of categories for Multinomial model to convert data in mixtCompPredict in basic mode and change the categories names in output
       if(resLearn[[i]]$algo$basicMode)

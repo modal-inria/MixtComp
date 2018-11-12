@@ -69,6 +69,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
+  expect_false(resLearn$algo$hierarchicalMode)
   expect_equal(resLearn$algo$dictionary, list(categ = list(old = c("b", "a"), new = c("1", "2"))))
   expect_equal(resLearn$variable$data$categ$completed, as.character(dat$categ))
   expect_equal(rownames(resLearn$variable$param$categ$stat), c("k: 1, modality: b", "k: 1, modality: a", "k: 2, modality: b", "k: 2, modality: a"))
@@ -102,6 +103,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
+  expect_false(resLearn$algo$hierarchicalMode)
   expect_equal(resLearn$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
                                               categ2 = list(old = c("1", "2"), new = c("1", "2"))))
   expect_equal(resLearn$variable$data$categ1$completed, as.character(dat$categ1))
@@ -142,6 +144,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
+  expect_false(resLearn$algo$hierarchicalMode)
   expect_equal(resLearn$algo$dictionary, list())
   
   
@@ -198,6 +201,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   expect_equal(resLearn$nClass, 4)
   expect_equal(resLearn$algo$mode, "learn")
   expect_false(resLearn$algo$basicMode)
+  expect_false(resLearn$algo$hierarchicalMode)
   expect_equal(length(resLearn$res), 1)
   expect_equal(names(resLearn$res[[1]]), c("mixture", "variable", "algo"))
   expect_warning(getPartition(resLearn), regexp = NA)
@@ -277,6 +281,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   expect_equal(resLearn$nClass, 2:5)
   expect_equal(resLearn$algo$mode, "learn")
   expect_false(resLearn$algo$basicMode)
+  expect_false(resLearn$algo$hierarchicalMode)
   expect_equal(length(resLearn$res), 4)
   expect_equal(names(resLearn$res[[1]]), c("mixture", "variable", "algo"))
   expect_warning(getPartition(resLearn), regexp = NA)
