@@ -199,7 +199,7 @@ TEST(Vector, importIterable) {
 TEST(Matrix, resizePreservesData) {
 	Matrix<Real> initial(3, 3);
 	initial << 1., 2., 3., 4., 5., 6., 7., 8., 9.;
-	initial = initial.block(0, 0, 3, 2);
+	initial = initial.block(0, 0, 3, 2).eval();
 
 	Matrix<Real> expected(3, 2);
 	expected << 1., 2., 4., 5., 7., 8.;
@@ -210,7 +210,7 @@ TEST(Matrix, resizePreservesData) {
 TEST(Vector, resizePreservesData) {
 	Vector<Real> initial(3);
 	initial << 1., 2., 3.;
-	initial = initial.block(0, 0, 2, 1);
+	initial = initial.block(0, 0, 2, 1).eval();
 
 	Vector<Real> expected(2);
 	expected << 1., 2.;

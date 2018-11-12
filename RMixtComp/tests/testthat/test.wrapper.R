@@ -542,7 +542,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   data <- do.call(cbind, resGen$data)
   desc <- list(z_class = list(type = "LatentClass"), Gaussian1 = list(type = "Gaussian", paramStr = ""))
   
-  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5, nRun = 2, verbose = TRUE) 
+  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5, nRun = 5, verbose = TRUE) 
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -554,7 +554,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   print(confMatSampled)
   
   expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
-  expect_equal(resLearn$nRun, 2)
+  expect_equal(resLearn$nRun, 5)
   expect_equal(resLearn$criterion, "BIC")
   expect_equal(dim(resLearn$crit), c(2, 4))
   expect_equal(resLearn$nClass, 2:5)
