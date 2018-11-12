@@ -40,8 +40,6 @@ public:
 
 		try {
 			for (Index n = 0; n < nSemTry; ++n) {
-
-				composer_.initData(); // TODO: check that this is really necessary in Gibbs
 				warnLog = composer_.initializeLatent();
 				if (0 < warnLog.size())
 					continue;
