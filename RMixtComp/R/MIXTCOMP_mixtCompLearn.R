@@ -7,6 +7,7 @@
 #' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
 #' @param nClass the number of class of the mixture model. Can be a vector for \emph{mixtCompLearn} only.
 #' @param criterion "BIC" or "ICL". Criterion used for choosing the best model.
+#' @param hierarchicalMode "auto", "yes" or "no". If "auto", it performs a hierarchical version of MixtComp (clustering in two classes then each classes is split in two ...) when a functional variable is present.
 #' @param nRun number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.
 #' @param nCore number of cores used for the parallelization of the \emph{nRun} runs.
 #' @param resLearn output of \emph{mixtCompLearn} (only for \emph{mixtCompPredict} function).
@@ -229,10 +230,10 @@
 #' @seealso Other clustering packages : \code{Rmixmod}, \code{blockcluster}
 #' 
 #' @export
-mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
+mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), hierarchicalMode = c("auto", "yes", "no"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
 {
+  hierarchicalMode = match.arg(hierarchicalMode) 
   crit = match.arg(criterion)
-  indCrit <- ifelse(crit == "BIC", 1, 2)
   
   ## parameters pretreatment 
   
@@ -266,27 +267,15 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
   
   algo = completeAlgo(algo)
   
-  
+  performHier <- performHierarchical(hierarchicalMode, mode, model)
+
   ## run MixtComp
-  resLearn <- classicLearn(dataList, model, algo, nClass, nRun, nCore, verbose, mode, dictionary)
+  if(performHier)
+    resLearn <- hierarchicalLearn(data, model, algo, nClass, criterion = crit, minClassSize = 5, nRun = nRun, nCore = nCore, verbose)
+  else
+    resLearn <- classicLearn(dataList, model, algo, nClass, criterion = crit, nRun, nCore, verbose, mode, dictionary)
     
-  
-  ## Choose the best number of classes according to crit
-  allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
-  colnames(allCrit) = c(nClass)
-  rownames(allCrit) = c("BIC", "ICL")
-  indBestClustering <- which.max(allCrit[indCrit, ])
-  
-  if(length(indBestClustering) != 0)
-  {
-    res <- c(resLearn[[indBestClustering]], list(nRun = nRun, criterion = crit, crit = allCrit, nClass = nClass, res = resLearn))
-  }else{
-    res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = crit, crit = allCrit, nClass = nClass, res = resLearn)
-    warning(paste0("MixtComp failed for all the given number of classes."))
-  }
-  class(res) = c("MixtCompLearn", "MixtComp")
-  
-  return(res)
+  return(resLearn)
 }
 
 
@@ -345,8 +334,10 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
 }
 
 
-classicLearn <- function(dataList, model, algo, nClass, nRun, nCore, verbose, mode, dictionary)
+classicLearn <- function(dataList, model, algo, nClass, criterion, nRun, nCore, verbose, mode, dictionary)
 {
+  indCrit <- ifelse(criterion == "BIC", 1, 2)
+  
   if(verbose)
     cat(paste0("====== Run MixtComp in ", algo$mode, " mode with ", nRun, " run(s) per number of classes and ", nCore, " core(s)\n"))
   
@@ -381,16 +372,49 @@ classicLearn <- function(dataList, model, algo, nClass, nRun, nCore, verbose, mo
     }
   }
   
-  return(resLearn)
+  ## Choose the best number of classes according to crit
+  allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
+  colnames(allCrit) = c(nClass)
+  rownames(allCrit) = c("BIC", "ICL")
+  indBestClustering <- which.max(allCrit[indCrit, ])
+  
+  if(length(indBestClustering) != 0)
+  {
+    res <- c(resLearn[[indBestClustering]], list(nRun = nRun, criterion = criterion, crit = allCrit, nClass = nClass, res = resLearn))
+  }else{
+    res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = crit, crit = allCrit, nClass = nClass, res = resLearn)
+    warning(paste0("MixtComp failed for all the given number of classes."))
+  }
+  class(res) = c("MixtCompLearn", "MixtComp")
+  
+  return(res)
 }
 
 hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize = 5, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
 {
-  nClass <- max(nClass)
-  criterion = match.arg(criterion)
+  indCrit <- ifelse(criterion == "BIC", 1, 2)
   
-  res <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
+  nClass <- max(nClass)
 
+  resLearn <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
+
+  ## Choose the best number of classes according to crit
+  allCrit <- sapply(resLearn$res[-1], function(x) {c(getBIC(x), getICL(x))})
+  colnames(allCrit) = c(resLearn$nClass)
+  rownames(allCrit) = c("BIC", "ICL")
+  indBestClustering <- which.max(allCrit[indCrit, ])
+  
+  if(length(indBestClustering) != 0)
+  {
+    res <- c(resLearn$res[-1][[indBestClustering]], list(nRun = nRun, criterion = criterion, crit = allCrit, nClass = resLearn$nClass, res = resLearn$res[-1]))
+    res$algo$basicMode = FALSE
+    res$algo$hierarchicalMode = TRUE
+  }else{
+    res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = criterion, crit = allCrit, nClass = resLearn$nClass, res = resLearn$res[-1])
+    warning(paste0("MixtComp failed for all the given number of classes."))
+  }
+  class(res) = c("MixtCompLearn", "MixtComp")
+  
   return(res)
 }
 

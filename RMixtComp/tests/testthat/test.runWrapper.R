@@ -360,6 +360,118 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   expect_equal(resPredict$algo$mode, "predict")
 })
 
+
+test_that("mixtCompLearn works in hierarchicalMode",{
+  set.seed(42)
+
+  data(simData)
+  model <- simData$model$unsupervised[c("Gaussian1", "Functional1")]
+  
+  algo <- list(
+    nbBurnInIter = 50,
+    nbIter = 50,
+    nbGibbsBurnInIter = 25,
+    nbGibbsIter = 25,
+    nSemTry = 10,
+    nInitPerClass = 100,
+    confidenceLevel = 0.95
+  )
+  
+
+  resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 3, nRun = 2, verbose = TRUE) 
+  
+  if(!is.null(resLearn$warnLog))
+    print(resLearn$warnLog)
+  
+  expect_equal(resLearn$warnLog, NULL)
+  
+  expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
+  expect_equal(resLearn$nRun, 2)
+  expect_equal(resLearn$criterion, "BIC")
+  expect_equal(dim(resLearn$crit), c(2, 2))
+  expect_equal(resLearn$nClass, 2:3)
+  expect_equal(resLearn$algo$mode, "learn")
+  expect_false(resLearn$algo$basicMode)
+  expect_true(resLearn$algo$hierarchicalMode)
+  expect_equal(length(resLearn$res), 2)
+  expect_equal(names(resLearn$res[[1]]), c("mixture", "variable", "algo"))
+  expect_warning(getPartition(resLearn), regexp = NA)
+  expect_warning(getBIC(resLearn), regexp = NA)
+  expect_true(!is.na(getBIC(resLearn)))
+  expect_warning(getICL(resLearn), regexp = NA)
+  expect_true(!is.na(getICL(resLearn)))
+  expect_warning(getPartition(resLearn), regexp = NA)
+  expect_warning(getCompletedData(resLearn), regexp = NA)
+  expect_equivalent(getType(resLearn), c("Gaussian", "Func_CS"))
+  expect_equivalent(getVarNames(resLearn), c("Gaussian1", "Functional1"))
+  expect_warning(getTik(resLearn), regexp = NA)
+  expect_equal(dim(getEmpiricTik(resLearn)), c(200, 3))
+  expect_warning(getEmpiricTik(resLearn), regexp = NA)
+  expect_equal(dim(getTik(resLearn)), c(200, 3))
+  expect_warning(disc <- computeDiscrimPowerClass(resLearn), regexp = NA)
+  expect_equal(length(disc), 3)
+  expect_warning(disc <- computeDiscrimPowerVar(resLearn), regexp = NA)
+  expect_equal(length(disc), 2)
+  expect_warning(disc <- computeSimilarityClass(resLearn), regexp = NA)
+  expect_equal(dim(disc), rep(3, 2))
+  expect_warning(disc <- computeSimilarityVar(resLearn), regexp = NA)
+  expect_equal(dim(disc), rep(2, 2))
+  for(name in getVarNames(resLearn))
+    expect_warning(getParam(resLearn, name), regexp = NA)
+  
+  # test plot functions
+  expect_warning(plotConvergence(resLearn), regexp = NA)
+  w <- capture_warnings(plotDiscrimClass(resLearn, pkg = "plotly"))# the first call generates warnings due to packages loading
+  if(length(w) > 0)
+    expect_match(w, "replacing previous", all = TRUE)
+  expect_warning(plotDiscrimVar(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(plotDiscrimClass(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotDiscrimVar(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(heatmapVar(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(heatmapClass(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(heatmapTikSorted(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(heatmapVar(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(heatmapClass(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(heatmapTikSorted(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(histMisclassif(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(histMisclassif(resLearn, pkg = "ggplot2"), regexp = NA)
+  for(name in getVarNames(resLearn))
+  {
+    if(resLearn$variable$type[[name]] != "Rank_ISR")
+    {
+      expect_warning(plotDataCI(resLearn, name, pkg = "plotly"), regexp = NA)
+      expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"), regexp = NA)
+      expect_warning(plotDataBoxplot(resLearn, name), regexp = NA)
+    }else{
+      expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"))
+      expect_warning(plotDataCI(resLearn, name, pkg = "plotly"))
+      expect_warning(plotDataBoxplot(resLearn, name))
+    }
+  }
+  expect_warning(plotCrit(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotCrit(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(plotProportion(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotProportion(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(plot(resLearn$res[[2]], pkg = "ggplot2"), regexp = NA)
+  expect_warning(plot(resLearn$res[[2]], pkg = "plotly"), regexp = NA)
+  expect_warning(plot(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
+  file.remove("Rplots.pdf")
+  
+  expect_warning(resPredict <- mixtCompPredict(simData$dataLearn$matrix, model, algo, resLearn, nClass = 3, verbose = TRUE), regexp = NA)
+  expect_warning(summary(resLearn), regexp = NA)
+  expect_warning(summary(resLearn$res[[1]]), regexp = NA)
+  expect_warning(print(resLearn), regexp = NA)
+  expect_warning(print(resLearn$res[[1]]), regexp = NA)
+  
+  if(!is.null(resPredict$warnLog))
+    print(resPredict$warnLog)
+  
+  expect_equal(names(resPredict), c("mixture", "variable", "algo"))
+  expect_equal(resPredict$algo$mode, "predict")
+})
+
+
 test_that("summary returns no warnings and no errors", {
   outMC <- list(warnLog = "Crash.")
   
@@ -369,7 +481,7 @@ test_that("summary returns no warnings and no errors", {
 
 test_that("summary works", {
   data("simData")
-  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo = createAlgo(), nClass = 2) 
+  resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), nClass = 2, nRun = 1, hierarchicalMode = "no") 
   
   expect_warning(summary(resLearn), regexp = NA)
   expect_warning(summary(resLearn$res[[1]]), regexp = NA)
