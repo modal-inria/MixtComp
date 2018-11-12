@@ -1,8 +1,8 @@
 Package: RMixtComp
 Type: Package
 Title: Mixture Composer
-Version: 0.4.5
-Date: 2018-11-08
+Version: 0.5
+Date: 2018-11-12
 Authors@R: c(person("Vincent", "Kubicki", role = c("aut", "cre"), email = "vincent.kubicki@inria.fr"),
              person("Christophe", "Biernacki", role = "aut"),
              person("Quentin", "Grimonprez", role = "aut"),

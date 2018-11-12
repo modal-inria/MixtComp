@@ -243,38 +243,20 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
   {
     mode <- "basic"
     model <- imputModel(data)
-    out <- formatDataBasicMode(data, model)
-    dataList <- out$data
-    dictionary <- out$dictionary
-    
-    if(verbose)
-    {
-      cat("You did not provide a model parameter.\n")
-      cat("Data are assumed to follow R standard and not MixtComp standard.\n")
-      cat("Models will be imputed as follows: \"Gaussian\" for numeric variable, \"Multinomial\" for character or factor variable and \"Poisson\" for integer variable.\n")
-      print(head(sapply(model, function(x) x$type)))
-    }
     
   }else{
     mode <- "expert"
     model <- formatModel(model)  
-    dataList <- formatData(data)
   }
   
-  nClass = unique(nClass)
-  algo$nInd = length(dataList[[1]])
-  algo$mode = "learn"
-  
-  algo = completeAlgo(algo)
-  
   performHier <- performHierarchical(hierarchicalMode, mode, model)
-
+  
   ## run MixtComp
   if(performHier)
     resLearn <- hierarchicalLearn(data, model, algo, nClass, criterion = crit, minClassSize = 5, nRun = nRun, nCore = nCore, verbose)
   else
-    resLearn <- classicLearn(dataList, model, algo, nClass, criterion = crit, nRun, nCore, verbose, mode, dictionary)
-    
+    resLearn <- classicLearn(data, model, algo, nClass, criterion = crit, nRun, nCore, verbose, mode)
+  
   return(resLearn)
 }
 
@@ -286,10 +268,10 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   ## parameters pretreatment
   if(is.null(model))
     model = getModel(resLearn, with.z_class = FALSE)
-
+  
   model = formatModel(model)
   
-
+  
   if(resLearn$algo$basicMode)
   {
     dataList <- formatDataBasicMode(data, model, resLearn$algo$dictionary)$data
@@ -314,7 +296,7 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
     warning(paste0("MixtComp failed with the following error:", resPredict$warnLog))
   else{
     resPredict$algo$basicMode = resLearn$algo$basicMode
-
+    
     # in basic mode add dictionnaries of categories for Multinomial model to convert data in mixtCompPredict in basic mode and change the categories names in output
     if(resPredict$algo$basicMode)
     {
@@ -334,8 +316,35 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
 }
 
 
-classicLearn <- function(dataList, model, algo, nClass, criterion, nRun, nCore, verbose, mode, dictionary)
+classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verbose, mode)
 {
+  
+  if(mode == "basic")
+  {
+    out <- formatDataBasicMode(data, model)
+    dataList <- out$data
+    dictionary <- out$dictionary
+    
+    if(verbose)
+    {
+      cat("You did not provide a model parameter.\n")
+      cat("Data are assumed to follow R standard and not MixtComp standard.\n")
+      cat("Models will be imputed as follows: \"Gaussian\" for numeric variable, \"Multinomial\" for character or factor variable and \"Poisson\" for integer variable.\n")
+      print(head(sapply(model, function(x) x$type)))
+    }
+    
+  }else{
+    dataList <- formatData(data)
+    
+  }
+  
+  algo$nInd = length(dataList[[1]])
+  algo$mode = "learn"
+  
+  algo = completeAlgo(algo)
+  
+  nClass = unique(nClass)
+  
   indCrit <- ifelse(criterion == "BIC", 1, 2)
   
   if(verbose)
@@ -395,9 +404,20 @@ hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize
   indCrit <- ifelse(criterion == "BIC", 1, 2)
   
   nClass <- max(nClass)
-
+  
+  
+  dataList <- formatData(data)
+  
+  
+  algo$nInd = length(dataList[[1]])
+  algo$mode = "learn"
+  
+  algo = completeAlgo(algo)
+  
+  
+  
   resLearn <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
-
+  
   ## Choose the best number of classes according to crit
   allCrit <- sapply(resLearn$res[-1], function(x) {c(getBIC(x), getICL(x))})
   colnames(allCrit) = c(resLearn$nClass)
