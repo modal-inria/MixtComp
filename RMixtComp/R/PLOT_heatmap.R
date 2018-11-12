@@ -28,7 +28,7 @@
 #' heatmapVar(res$res[[2]])
 #' }
 #' 
-#' @seealso \link{computeSimilarityVar}
+#' @seealso \code{\link{computeSimilarityVar}}
 #' 
 #' @author Matthieu MARBAC
 #' @family plot
@@ -91,7 +91,7 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' heatmapClass(res$res[[2]])
 #' } 
 #' 
-#' @seealso \link{computeSimilarityClass}
+#' @seealso \code{\link{computeSimilarityClass}}
 #'
 #' @author Matthieu MARBAC
 #' @family plot
@@ -159,7 +159,7 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
 #' heatmapTikSorted(res$res[[2]])
 #' }
 #' 
-#' @seealso getTik
+#' @seealso \code{\link{getTik}}
 #' 
 #' @author Matthieu MARBAC
 #' @family plot

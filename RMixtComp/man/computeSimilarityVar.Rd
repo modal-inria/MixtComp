@@ -50,5 +50,5 @@ simClass <- computeSimilarityClass(resLearn)
 
 }
 \seealso{
-\link{heatmapVar} \link{heatmapClass}
+\code{\link{heatmapVar}} \code{\link{heatmapClass}}
 }

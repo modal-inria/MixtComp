@@ -82,7 +82,7 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' plotDiscrimClass(resLearn)
 #' }
 #' 
-#' @seealso \link{plotDiscrimClass} \link{plotDiscrimVar}
+#' @seealso \code{\link{plotDiscrimClass}} \code{\link{plotDiscrimVar}}
 #' @export
 computeDiscrimPowerVar <- function(outMixtComp)
 {
@@ -138,7 +138,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' simClass <- computeSimilarityClass(resLearn)
 #' }
 #' 
-#' @seealso \link{heatmapVar} \link{heatmapClass}
+#' @seealso \code{\link{heatmapVar}} \code{\link{heatmapClass}}
 #' @export
 computeSimilarityVar <- function(outMixtComp)
 {
@@ -196,7 +196,7 @@ rand.index <- function (partition1, partition2)
 #' \item{reference}{link to article}
 #' }
 #'
-#' @seealso \link{mixtCompLearn} 
+#' @seealso \code{\link{mixtCompLearn}}
 #' 
 #' @export
 availableModels <- function()

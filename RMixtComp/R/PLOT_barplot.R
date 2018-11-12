@@ -29,7 +29,7 @@
 #' plotDiscrimVar(res$res[[2]])
 #' }
 #' 
-#' @seealso \link{computeDiscrimPowerVar}
+#' @seealso \code{\link{computeDiscrimPowerVar}}
 #' 
 #' @author Matthieu MARBAC
 #' @family plot
@@ -91,7 +91,7 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
 #' plotDiscrimClass(res$res[[2]])
 #' }
 #' 
-#' @seealso \link{computeDiscrimPowerClass}
+#' @seealso \code{\link{computeDiscrimPowerClass}}
 #' 
 #' @author Matthieu MARBAC
 #' @family plot

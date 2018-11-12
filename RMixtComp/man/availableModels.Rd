@@ -22,5 +22,5 @@ a data.frame containing models implemented in MixtComp
 Get information about models implemented in MixtComp
 }
 \seealso{
-\link{mixtCompLearn}
+\code{\link{mixtCompLearn}}
 }

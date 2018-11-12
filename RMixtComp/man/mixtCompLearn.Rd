@@ -245,11 +245,12 @@ resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervis
 
 }
 
-
-
 }
 \references{
 Julien Jacques, Christophe Biernacki. \emph{Model-based clustering for multivariate partial ranking data}. Journal of Statistical Planning and Inference, Elsevier, 2014, 149, pp.201-217.
 
 Allou Samé, Faicel Chamroukhi, Gérard Govaert, Patrice Aknin. \emph{Model-based clustering and segmentation of time series with change in regime}. Advances in Data Analysis and Classification, 2011, 5(4):301-321
+}
+\seealso{
+Other clustering packages : \code{Rmixmod}, \code{blockcluster}
 }

@@ -35,7 +35,7 @@
 # # resvisu <- clusvisMixtComp(res)
 # # }
 # #
-# # @seealso \link{plotComponentClusVis} \link{plotObservationsClusVis}
+# # @seealso \code{\link{plotComponentClusVis}} \code{\link{plotObservationsClusVis}}
 # #
 # # @export
 # clusvisMixtComp <- function(resmixtcomp, sample.size = 5000, maxit = 10**3, nbrandomInit = 12, nbcpu = 1, estimateLogTik = FALSE){

@@ -42,7 +42,7 @@ heatmapVar(res$res[[2]])
 
 }
 \seealso{
-\link{computeSimilarityVar}
+\code{\link{computeSimilarityVar}}
 
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}},

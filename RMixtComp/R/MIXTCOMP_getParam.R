@@ -27,7 +27,7 @@
 #' param <- getParam(resLearn, "Gaussian1")
 #' }
 #' 
-#' @seealso \link{plotDataBoxplot}  \link{plotDataCI}  
+#' @seealso \code{\link{plotDataBoxplot}}  \code{\link{plotDataCI}}
 #' 
 #' @family getter
 #' @export

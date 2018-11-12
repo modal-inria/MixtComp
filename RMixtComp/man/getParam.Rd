@@ -39,7 +39,7 @@ param <- getParam(resLearn, "Gaussian1")
 
 }
 \seealso{
-\link{plotDataBoxplot}  \link{plotDataCI}
+\code{\link{plotDataBoxplot}}  \code{\link{plotDataCI}}
 
 Other getter: \code{\link{getBIC}},
   \code{\link{getCompletedData}},

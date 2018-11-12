@@ -42,7 +42,7 @@ plot(resLearn)
 }
 }
 \seealso{
-\link{mixtCompLearn} \link{mixtCompPredict}
+\code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
 
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},

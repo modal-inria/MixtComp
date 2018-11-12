@@ -226,7 +226,7 @@
 #' 
 #' }
 #' 
-#' 
+#' @seealso Other clustering packages : \code{Rmixmod}, \code{blockcluster}
 #' 
 #' @export
 mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
@@ -282,8 +282,7 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
     res <- c(resLearn[[indBestClustering]], list(nRun = nRun, criterion = crit, crit = allCrit, nClass = nClass, res = resLearn))
   }else{
     res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = crit, crit = allCrit, nClass = nClass, res = resLearn)
-    if(!is.null(res[[i]]$warnLog))
-      warning(paste0("MixtComp failed for all the given number od classes."))
+    warning(paste0("MixtComp failed for all the given number of classes."))
   }
   class(res) = c("MixtCompLearn", "MixtComp")
   
