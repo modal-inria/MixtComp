@@ -335,7 +335,7 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
     
   }else{
     dataList <- formatData(data)
-    
+    model <- completeModel(model, dataList)
   }
   
   algo$nInd = length(dataList[[1]])
@@ -391,7 +391,7 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
   {
     res <- c(resLearn[[indBestClustering]], list(nRun = nRun, criterion = criterion, crit = allCrit, nClass = nClass, res = resLearn))
   }else{
-    res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = crit, crit = allCrit, nClass = nClass, res = resLearn)
+    res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = criterion, crit = allCrit, nClass = nClass, res = resLearn)
     warning(paste0("MixtComp failed for all the given number of classes."))
   }
   class(res) = c("MixtCompLearn", "MixtComp")
@@ -405,16 +405,13 @@ hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize
   
   nClass <- max(nClass)
   
-  
   dataList <- formatData(data)
-  
+  model <- completeModel(model, dataList)
   
   algo$nInd = length(dataList[[1]])
   algo$mode = "learn"
   
   algo = completeAlgo(algo)
-  
-  
   
   resLearn <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
   

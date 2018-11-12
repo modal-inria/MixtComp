@@ -479,9 +479,13 @@ test_that("summary returns no warnings and no errors", {
   expect_warning(print(outMC), regexp = NA)
 })
 
-test_that("summary works", {
+test_that("summary works + run without paramStr for functional", {
   data("simData")
+  simData$model$unsupervised$Functional1$paramStr = ""
+  
   resLearn <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo = createAlgo(nbBurnInIter = 25, nbIter = 25, nbGibbsBurnInIter = 25, nbGibbsIter = 25), nClass = 2, nRun = 1, hierarchicalMode = "no") 
+  
+  expect_equal(resLearn$variable$param$Functional1$paramStr, "nSub: 2, nCoeff: 2")
   
   expect_warning(summary(resLearn), regexp = NA)
   expect_warning(summary(resLearn$res[[1]]), regexp = NA)

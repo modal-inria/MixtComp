@@ -112,6 +112,33 @@ test_that("formatModel puts type in a list format", {
 })
 
 
+test_that("completeModel adds hyperparameters for functional data",{
+  
+  model <- list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
+                func2 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 3, nCoeff: 3"), func3 = list(type = "Func_CS", paramStr = ""),
+                func4 = list(type = "Func_SharedAlpha_CS", paramStr = ""))
+  
+  nInd <- 200
+  ratioPresent <- 0.95
+  
+  var <- list()
+  var$z_class <- zParam()
+  
+  var$func1 <- functionalInterPolyParam("func1")
+  var$func2 <- functionalInterPolyParam("func2")
+  var$func3 <- functionalInterPolyParam("func3")
+  var$func4 <- functionalInterPolyParam("func4")
+  
+  data <- dataGeneratorNewIO(nInd, ratioPresent, var)$data
+  
+  expect_warning(out <- completeModel(model, data))
+  expect_equal(out, list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
+                         func2 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 3, nCoeff: 3"), func3 = list(type = "Func_CS", paramStr = "nSub: 2, nCoeff: 2"),
+                         func4 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 2, nCoeff: 2")))
+  
+})
+
+
 test_that("formatData converts data.frame into a list format", {
   dat <- data.frame(x1 = 1:10, x2 = 10:1)
   dataOut <- formatData(dat)
@@ -295,7 +322,7 @@ test_that("performHierarchical works", {
     expect_false(out)
   }
   
-
+  
   
   mode = "expert"
   out <- performHierarchical(hierarchicalMode = "yes", mode, model)

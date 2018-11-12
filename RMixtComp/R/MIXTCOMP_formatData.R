@@ -50,6 +50,24 @@ formatModel <- function(model)
   return(model)
 }
 
+# add default hyperparameters
+completeModel <- function(model, data = NULL)
+{
+  
+  for(nameVar in names(model))
+  {
+    if((model[[nameVar]]$type %in% c("Func_CS", "Func_SharedAlpha_CS")) && model[[nameVar]]$paramStr == "")
+    {
+      timeVector <- convertFunctionalToVector(data[[nameVar]][sample(length(data[[nameVar]]), 1)])$time
+      nSub <- max(min(floor(length(timeVector)/50), 15), 1)
+      model[[nameVar]]$paramStr = paste0("nSub: ", nSub, ", nCoeff: 2")
+      
+      warning(paste0("No hyperparameters given for functional variable ", nameVar, ". Use the following default values: \"nSub: ", nSub, ", nCoeff: 2\" for paramStr."))
+    }
+  }
+  
+  return(model)
+}
 
 # format data.frame or matrix in list of character
 # keep list in list format
