@@ -383,6 +383,33 @@ classicLearn <- function(dataList, model, algo, nClass, nRun, nCore, verbose, mo
   return(resLearn)
 }
 
+hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize = 5, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
+{
+  nClass <- max(nClass)
+  criterion = match.arg(criterion)
+  
+  res <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
+
+  return(res)
+}
+
+# must an hierarchical run be done ?
+performHierarchical <- function(hierarchicalMode, mode, model)
+{
+  if((mode == "basic") || (hierarchicalMode == "no"))
+    return(FALSE)
+  
+  if(hierarchicalMode == "yes")
+    return(TRUE)
+  
+  # hierarchicalMode = "auto"
+  containFunctional <- any(sapply(model, function(x){x$type %in% c("Func_CS", "Func_SharedAlpha_CS")}))
+  if(containFunctional)
+    return(TRUE)
+  
+  return(FALSE)
+}
+
 rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1, verbose = FALSE)
 {
   nCore <- min(max(1, nCore), nRun)

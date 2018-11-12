@@ -285,5 +285,40 @@ test_that("completeAlgo keeps unrequired fields", {
   expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
 })
 
+test_that("performHierarchical works", {
+  model <- list("a" = list(type = "Gaussian"))
+  mode <- "basic"
+  
+  for(hierarchicalMode in c("yes", "no", "auto"))
+  {
+    out <- performHierarchical(hierarchicalMode, mode, model)
+    expect_false(out)
+  }
+  
+
+  
+  mode = "expert"
+  out <- performHierarchical(hierarchicalMode = "yes", mode, model)
+  expect_true(out)
+  
+  for(hierarchicalMode in c("no", "auto"))
+  {
+    out <- performHierarchical(hierarchicalMode, mode, model)
+    expect_false(out)
+  }
+  
+  
+  
+  model$b = list(type = "Func_CS")
+  out <- performHierarchical(hierarchicalMode = "no", mode, model)
+  expect_false(out)
+  
+  for(hierarchicalMode in c("yes", "auto"))
+  {
+    out <- performHierarchical(hierarchicalMode, mode, model)
+    expect_true(out)
+  }
+  
+})
 
 Sys.unsetenv("MC_DETERMINISTIC")
