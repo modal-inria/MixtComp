@@ -19,7 +19,7 @@ Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\"
 
 ### Windows
 
-Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rtools/). 
+Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rtools/).
 
 **WARNING:** does not work for the moment. For windows, use RJsonMixtComp.
 
@@ -75,4 +75,3 @@ data(simData)
 Or you can generate your own data using function (from files [R/GENDATA_dataGeneratorNewIO.R](R/GENDATA_dataGeneratorNewIO.R)): dataGeneratorNewIO.
 
 See the functions in files R/TEST_*.R for how to have a parameter object for each type of data. Have a look at [tests/testthat/test.run.R](tests/testthat/test.run.R) for writing a test with testthat.
-

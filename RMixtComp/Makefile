@@ -7,5 +7,5 @@ all:
 clean:
 	find src -type f -name '*.o' -delete
 
-updatelib:
+updateLib:
 	python3 updateLib.py

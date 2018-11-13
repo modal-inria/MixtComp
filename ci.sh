@@ -8,6 +8,6 @@ cd MixtComp
 ./valgrindRun.sh
 cd ../RMixtComp
 make clean
-make updatelib
+make updateLib
 make all
 Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RMCtest.xml"); test(".", reporter = JunitReporter)'
