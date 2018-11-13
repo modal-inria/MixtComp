@@ -16,5 +16,5 @@ Description: Mixture Composer is a project to build mixture models with
 Imports: Rcpp, plotly, scales, doParallel, ggplot2, foreach
 Suggests: testthat, RInside, xml2
 LinkingTo: Rcpp, RcppEigen, BH
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Encoding: UTF-8

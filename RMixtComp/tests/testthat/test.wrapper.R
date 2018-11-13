@@ -323,7 +323,7 @@ test_that("rmcMultiRun works", {
   expect_equal(names(resLearn), c("mixture", "variable", "algo"))
   
   
-  resLearn <- rmcMultiRun(algo, resGen$data, resGen$desc, list(), nRun = 5) 
+  resLearn <- rmcMultiRun(algo, resGen$data, resGen$desc, list(), nCore = 2, nRun = 5) 
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
@@ -542,7 +542,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   data <- do.call(cbind, resGen$data)
   desc <- list(z_class = list(type = "LatentClass"), Gaussian1 = list(type = "Gaussian", paramStr = ""))
   
-  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5, nRun = 5, verbose = TRUE) 
+  resLearn <- mixtCompLearn(data, desc, algo, nClass = 2:5, nRun = 5, nCore = 2, verbose = TRUE) 
   
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
