@@ -37,7 +37,8 @@ test_that("gaussian model works",{
 
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
-
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
@@ -81,7 +82,8 @@ test_that("poisson model works",{
 
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
-
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
@@ -125,7 +127,8 @@ test_that("NegativeBinomial model works",{
 
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
-
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
@@ -184,7 +187,8 @@ test_that("multinomial model works",{
 
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
-
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
@@ -225,7 +229,8 @@ test_that("weibull model works",{
 
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
-
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
@@ -266,7 +271,8 @@ test_that("functional model works",{
 
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
-
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
@@ -308,7 +314,8 @@ test_that("functional model with shared alpha works",{
 
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.9)
-
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
@@ -349,7 +356,8 @@ test_that("rank model works",{
 
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.8)
-
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
 })
@@ -393,7 +401,8 @@ test_that("run cluster/predict R object",{
   
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGenLearn$z), 0.9)
-
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   
   # test that getter functions do not return warnings
   expect_warning(getPartition(resLearn), regexp = NA)
@@ -488,6 +497,8 @@ test_that("run cluster/predict R object",{
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
   expect_gte(rand.index(getPartition(resPredict), resGenPredict$z), 0.85)
+  expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
+  
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")

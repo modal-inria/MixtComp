@@ -67,6 +67,8 @@ test_that("mixtCompLearn works in basic mode + predict", {
   
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
   expect_false(resLearn$algo$hierarchicalMode)
@@ -101,6 +103,8 @@ test_that("mixtCompLearn works in basic mode + predict", {
   
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), rep(1:2, each = 100)), 0.95)
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
   expect_equal(resLearn$variable$type, list(z_class = "LatentClass", cont = "Gaussian", categ1 = "Multinomial", categ2 = "Multinomial", poiss = "Poisson"))
   expect_true(resLearn$algo$basicMode)
   expect_false(resLearn$algo$hierarchicalMode)
@@ -120,6 +124,7 @@ test_that("mixtCompLearn works in basic mode + predict", {
   
   expect_equal(resPredict$warnLog, NULL)
   expect_gte(rand.index(getPartition(resPredict), rep(1:2, each = 100)), 0.95)
+  expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
   expect_true(resPredict$algo$basicMode)
   expect_equal(resPredict$algo$dictionary, list(categ1 = list(old = c("2", "1"), new = c("1", "2")),
                                                 categ2 = list(old = c("1", "2"), new = c("1", "2"))))
@@ -190,6 +195,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.85)
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
@@ -230,6 +236,7 @@ test_that("mixtCompLearn works + mixtCompPredict", {
   
   
   expect_warning(resPredict <- mixtCompPredict(data, desc, resLearn = resLearn, verbose = FALSE), regexp = NA)
+  expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
   expect_equal(resPredict$algo[1:7], resLearn$algo[1:7]) # check that algo param form resLearn are used
@@ -270,6 +277,7 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   
   expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), resGen$z), 0.85)
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   confMatSampled <- table(resGen$z, getPartition(resLearn))
   print(confMatSampled)
@@ -347,14 +355,17 @@ test_that("mixtCompLearn works with a vector for nClass + mixtCompPredict + verb
   expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
   file.remove("Rplots.pdf")
   
-  expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3, verbose = TRUE), regexp = NA)
   expect_warning(summary(resLearn), regexp = NA)
   expect_warning(summary(resLearn$res[[1]]), regexp = NA)
   expect_warning(print(resLearn), regexp = NA)
   expect_warning(print(resLearn$res[[1]]), regexp = NA)
   
+  expect_warning(resPredict <- mixtCompPredict(data, desc, algo, resLearn, nClass = 3, verbose = TRUE), regexp = NA)
+  
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
+  
+  expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
   
   expect_equal(names(resPredict), c("mixture", "variable", "algo"))
   expect_equal(resPredict$algo$mode, "predict")
@@ -370,8 +381,8 @@ test_that("mixtCompLearn works in hierarchicalMode",{
   algo <- list(
     nbBurnInIter = 50,
     nbIter = 50,
-    nbGibbsBurnInIter = 25,
-    nbGibbsIter = 25,
+    nbGibbsBurnInIter = 50,
+    nbGibbsIter = 50,
     nSemTry = 10,
     nInitPerClass = 100,
     confidenceLevel = 0.95
@@ -379,11 +390,13 @@ test_that("mixtCompLearn works in hierarchicalMode",{
   
 
   resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 3, nRun = 2, verbose = TRUE) 
-  
+
   if(!is.null(resLearn$warnLog))
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
+  expect_gte(rand.index(getPartition(resLearn), simData$dataLearn$data.frame$z_class), 0.9)
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
   
   expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
   expect_equal(resLearn$nRun, 2)
@@ -458,11 +471,14 @@ test_that("mixtCompLearn works in hierarchicalMode",{
   expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
   file.remove("Rplots.pdf")
   
-  expect_warning(resPredict <- mixtCompPredict(simData$dataLearn$matrix, model, algo, resLearn, nClass = 3, verbose = TRUE), regexp = NA)
   expect_warning(summary(resLearn), regexp = NA)
   expect_warning(summary(resLearn$res[[1]]), regexp = NA)
   expect_warning(print(resLearn), regexp = NA)
   expect_warning(print(resLearn$res[[1]]), regexp = NA)
+  
+  
+  expect_warning(resPredict <- mixtCompPredict(simData$dataLearn$matrix, model, algo, resLearn, nClass = 3, verbose = TRUE), regexp = NA)
+  expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
   
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
