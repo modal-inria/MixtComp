@@ -10,9 +10,12 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
 
 Those command lines can perform the installation automatically in the ~/R directory
 add the following line to .bashrc file: export R_LIBS="~/R"
+
+Packages are required from Ubuntu reporitories: `sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev`
+
 ```
 mkdir ~/R
-Rscript -e "install.packages(c(\"plotly\", \"scales\", "\BH\", \"RcppEigen\"), repos = \"https://cran.rstudio.com\")"
+Rscript -e "install.packages(c(\"plotly\", \"scales\", "\BH\", \"RcppEigen\", \"doParallel\", \"foreach\"), repos = \"https://cran.rstudio.com\")"
 # OPTIONAL: for testing purpose
 Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\", \"roxygen2\"), repos = \"https://cran.rstudio.com\")"
 ```
