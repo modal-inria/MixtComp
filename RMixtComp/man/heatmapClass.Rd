@@ -41,7 +41,7 @@ heatmapClass(res$res[[2]])
 
 }
 \seealso{
-\link{computeSimilarityClass}
+\code{\link{computeSimilarityClass}}
 
 Other plot: \code{\link{heatmapTikSorted}},
   \code{\link{heatmapVar}}, \code{\link{histMisclassif}},

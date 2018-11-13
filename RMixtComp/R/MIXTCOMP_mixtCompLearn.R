@@ -7,6 +7,7 @@
 #' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
 #' @param nClass the number of class of the mixture model. Can be a vector for \emph{mixtCompLearn} only.
 #' @param criterion "BIC" or "ICL". Criterion used for choosing the best model.
+#' @param hierarchicalMode "auto", "yes" or "no". If "auto", it performs a hierarchical version of MixtComp (clustering in two classes then each classes is split in two ...) when a functional variable is present.
 #' @param nRun number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.
 #' @param nCore number of cores used for the parallelization of the \emph{nRun} runs.
 #' @param resLearn output of \emph{mixtCompLearn} (only for \emph{mixtCompPredict} function).
@@ -226,13 +227,13 @@
 #' 
 #' }
 #' 
-#' 
+#' @seealso Other clustering packages : \code{Rmixmod}, \code{blockcluster}
 #' 
 #' @export
-mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
+mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), hierarchicalMode = c("auto", "yes", "no"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
 {
+  hierarchicalMode = match.arg(hierarchicalMode) 
   crit = match.arg(criterion)
-  indCrit <- ifelse(crit == "BIC", 1, 2)
   
   ## parameters pretreatment 
   
@@ -242,83 +243,21 @@ mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, crite
   {
     mode <- "basic"
     model <- imputModel(data)
-    out <- formatDataBasicMode(data, model)
-    dataList <- out$data
-    dictionary <- out$dictionary
-    
-    if(verbose)
-    {
-      cat("You did not provide a model parameter.\n")
-      cat("Data are assumed to follow R standard and not MixtComp standard.\n")
-      cat("Models will be imputed as follows: \"Gaussian\" for numeric variable, \"Multinomial\" for character or factor variable and \"Poisson\" for integer variable.\n")
-      print(head(sapply(model, function(x) x$type)))
-    }
     
   }else{
     mode <- "expert"
     model <- formatModel(model)  
-    dataList <- formatData(data)
   }
   
-  nClass = unique(nClass)
-  algo$nInd = length(dataList[[1]])
-  algo$mode = "learn"
+  performHier <- performHierarchical(hierarchicalMode, mode, model)
   
-  algo = completeAlgo(algo)
+  ## run MixtComp
+  if(performHier)
+    resLearn <- hierarchicalLearn(data, model, algo, nClass, criterion = crit, minClassSize = 5, nRun = nRun, nCore = nCore, verbose)
+  else
+    resLearn <- classicLearn(data, model, algo, nClass, criterion = crit, nRun, nCore, verbose, mode)
   
-  
-  ## algo
-  if(verbose)
-    cat(paste0("====== Run MixtComp in ", algo$mode, " mode with ", nRun, " run(s) per number of classes and ", nCore, " core(s)\n"))
-  
-  resLearn <- list()
-  for(i in seq_along(nClass))
-  {
-    if(verbose)
-      cat(paste0("-- K = ", nClass[i], "\n"))
-    
-    algo$nClass = nClass[i]
-    
-    resLearn[[i]] <- rmcMultiRun(algo, dataList, model, list(), nRun, nCore, verbose)
-    
-    class(resLearn[[i]]) = "MixtComp"
-    if(!is.null(resLearn[[i]]$warnLog))
-      warning(paste0("For k= ", nClass[i], ", MixtComp failed with the following error:", resLearn[[i]]$warnLog))
-    else{
-      resLearn[[i]]$algo$basicMode = (mode == "basic")
-      
-      # in basic mode add dictionnaries of categories for Multinomial model to canvert data in mixtCompPredict in basic mode and change the categories names in output
-      if(resLearn[[i]]$algo$basicMode)
-      {
-        resLearn[[i]]$algo$dictionary = out$dictionary
-        
-        for(varName in names(resLearn[[i]]$algo$dictionary))
-        {
-          resLearn[[i]]$variable$data[[varName]]$completed = refactorCategorical(resLearn[[i]]$variable$data[[varName]]$completed, resLearn[[i]]$algo$dictionary[[varName]]$new, resLearn[[i]]$algo$dictionary[[varName]]$old)
-          rownames(resLearn[[i]]$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(resLearn[[i]]$variable$param[[varName]]$stat)), resLearn[[i]]$algo$dictionary[[varName]]$old)
-        }
-      }
-    }
-  }
-  
-  
-  ## Choose the best number of classes according to crit
-  allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
-  colnames(allCrit) = c(nClass)
-  rownames(allCrit) = c("BIC", "ICL")
-  indBestClustering <- which.max(allCrit[indCrit, ])
-  
-  if(length(indBestClustering) != 0)
-  {
-    res <- c(resLearn[[indBestClustering]], list(nRun = nRun, criterion = crit, crit = allCrit, nClass = nClass, res = resLearn))
-  }else{
-    res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = crit, crit = allCrit, nClass = nClass, res = resLearn)
-    if(!is.null(res[[i]]$warnLog))
-      warning(paste0("MixtComp failed for all the given number od classes."))
-  }
-  class(res) = c("MixtCompLearn", "MixtComp")
-  
-  return(res)
+  return(resLearn)
 }
 
 
@@ -329,10 +268,10 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   ## parameters pretreatment
   if(is.null(model))
     model = getModel(resLearn, with.z_class = FALSE)
-
+  
   model = formatModel(model)
   
-
+  
   if(resLearn$algo$basicMode)
   {
     dataList <- formatDataBasicMode(data, model, resLearn$algo$dictionary)$data
@@ -357,8 +296,8 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
     warning(paste0("MixtComp failed with the following error:", resPredict$warnLog))
   else{
     resPredict$algo$basicMode = resLearn$algo$basicMode
-
-    # in basic mode add dictionnaries of categories for Multinomial model to canvert data in mixtCompPredict in basic mode and change the categories names in output
+    
+    # in basic mode add dictionnaries of categories for Multinomial model to convert data in mixtCompPredict in basic mode and change the categories names in output
     if(resPredict$algo$basicMode)
     {
       resPredict$algo$dictionary = resLearn$algo$dictionary
@@ -377,6 +316,141 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
 }
 
 
+classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verbose, mode)
+{
+  
+  if(mode == "basic")
+  {
+    out <- formatDataBasicMode(data, model)
+    dataList <- out$data
+    dictionary <- out$dictionary
+    
+    if(verbose)
+    {
+      cat("You did not provide a model parameter.\n")
+      cat("Data are assumed to follow R standard and not MixtComp standard.\n")
+      cat("Models will be imputed as follows: \"Gaussian\" for numeric variable, \"Multinomial\" for character or factor variable and \"Poisson\" for integer variable.\n")
+      print(head(sapply(model, function(x) x$type)))
+    }
+    
+  }else{
+    dataList <- formatData(data)
+    model <- completeModel(model, dataList)
+  }
+  
+  algo$nInd = length(dataList[[1]])
+  algo$mode = "learn"
+  
+  algo = completeAlgo(algo)
+  
+  nClass = unique(nClass)
+  
+  indCrit <- ifelse(criterion == "BIC", 1, 2)
+  
+  if(verbose)
+    cat(paste0("====== Run MixtComp in ", algo$mode, " mode with ", nRun, " run(s) per number of classes and ", nCore, " core(s)\n"))
+  
+  resLearn <- list()
+  for(i in seq_along(nClass))
+  {
+    if(verbose)
+      cat(paste0("-- K = ", nClass[i], "\n"))
+    
+    algo$nClass = nClass[i]
+    
+    resLearn[[i]] <- rmcMultiRun(algo, dataList, model, list(), nRun, nCore, verbose)
+    
+    class(resLearn[[i]]) = "MixtComp"
+    if(!is.null(resLearn[[i]]$warnLog))
+      warning(paste0("For k= ", nClass[i], ", MixtComp failed with the following error:", resLearn[[i]]$warnLog))
+    else{
+      resLearn[[i]]$algo$basicMode = (mode == "basic")
+      resLearn[[i]]$algo$hierarchicalMode = FALSE
+      
+      # in basic mode add dictionnaries of categories for Multinomial model to convert data in mixtCompPredict in basic mode and change the categories names in output
+      if(resLearn[[i]]$algo$basicMode)
+      {
+        resLearn[[i]]$algo$dictionary = dictionary
+        
+        for(varName in names(resLearn[[i]]$algo$dictionary))
+        {
+          resLearn[[i]]$variable$data[[varName]]$completed = refactorCategorical(resLearn[[i]]$variable$data[[varName]]$completed, resLearn[[i]]$algo$dictionary[[varName]]$new, resLearn[[i]]$algo$dictionary[[varName]]$old)
+          rownames(resLearn[[i]]$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(resLearn[[i]]$variable$param[[varName]]$stat)), resLearn[[i]]$algo$dictionary[[varName]]$old)
+        }
+      }
+    }
+  }
+  
+  ## Choose the best number of classes according to crit
+  allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
+  colnames(allCrit) = c(nClass)
+  rownames(allCrit) = c("BIC", "ICL")
+  indBestClustering <- which.max(allCrit[indCrit, ])
+  
+  if(length(indBestClustering) != 0)
+  {
+    res <- c(resLearn[[indBestClustering]], list(nRun = nRun, criterion = criterion, crit = allCrit, nClass = nClass, res = resLearn))
+  }else{
+    res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = criterion, crit = allCrit, nClass = nClass, res = resLearn)
+    warning(paste0("MixtComp failed for all the given number of classes."))
+  }
+  class(res) = c("MixtCompLearn", "MixtComp")
+  
+  return(res)
+}
+
+hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize = 5, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
+{
+  indCrit <- ifelse(criterion == "BIC", 1, 2)
+  
+  nClass <- max(nClass)
+  
+  dataList <- formatData(data)
+  model <- completeModel(model, dataList)
+  
+  algo$nInd = length(dataList[[1]])
+  algo$mode = "learn"
+  
+  algo = completeAlgo(algo)
+  
+  resLearn <- hierarchicalMixtCompLearn(data, model, algo, nClass, criterion, minClassSize, nRun, nCore, verbose)
+  
+  ## Choose the best number of classes according to crit
+  allCrit <- sapply(resLearn$res[-1], function(x) {c(getBIC(x), getICL(x))})
+  colnames(allCrit) = c(resLearn$nClass)
+  rownames(allCrit) = c("BIC", "ICL")
+  indBestClustering <- which.max(allCrit[indCrit, ])
+  
+  if(length(indBestClustering) != 0)
+  {
+    res <- c(resLearn$res[-1][[indBestClustering]], list(nRun = nRun, criterion = criterion, crit = allCrit, nClass = resLearn$nClass, res = resLearn$res[-1]))
+    res$algo$basicMode = FALSE
+    res$algo$hierarchicalMode = TRUE
+  }else{
+    res <- list(warnLog = "Unable to select a model. Check $res[[i]]$warnLog for details", criterion = criterion, crit = allCrit, nClass = resLearn$nClass, res = resLearn$res[-1])
+    warning(paste0("MixtComp failed for all the given number of classes."))
+  }
+  class(res) = c("MixtCompLearn", "MixtComp")
+  
+  return(res)
+}
+
+# must an hierarchical run be done ?
+performHierarchical <- function(hierarchicalMode, mode, model)
+{
+  if((mode == "basic") || (hierarchicalMode == "no"))
+    return(FALSE)
+  
+  if(hierarchicalMode == "yes")
+    return(TRUE)
+  
+  # hierarchicalMode = "auto"
+  containFunctional <- any(sapply(model, function(x){x$type %in% c("Func_CS", "Func_SharedAlpha_CS")}))
+  if(containFunctional)
+    return(TRUE)
+  
+  return(FALSE)
+}
 
 rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1, verbose = FALSE)
 {

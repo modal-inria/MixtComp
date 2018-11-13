@@ -44,5 +44,5 @@ print(resLearn)
 
 }
 \seealso{
-\link{mixtCompLearn} \link{mixtCompPredict}
+\code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
 }

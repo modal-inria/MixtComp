@@ -17,6 +17,10 @@ resGenLearn <- RMixtComp:::dataGeneratorNewIO(200, 0.9, var)
 resGenPredict <- RMixtComp:::dataGeneratorNewIO(100, 0.9, var)
 
 simDataLearn <- list(data.frame = as.data.frame(do.call(cbind, resGenLearn$data)), matrix = do.call(cbind, resGenLearn$data), list = resGenLearn$data)
+simDataLearn$data.frame$z_class = resGenLearn$z
+simDataLearn$list$z_class = resGenLearn$z
+simDataLearn$matrix[,1] = resGenLearn$z
+
 simDataPredict <- list(data.frame = as.data.frame(do.call(cbind, resGenPredict$data[-1])), matrix = do.call(cbind, resGenPredict$data[-1]), list = resGenPredict$data[-1])
 simModel <- list(supervised = resGenLearn$descriptor, unsupervised = resGenLearn$descriptor[-1])
 

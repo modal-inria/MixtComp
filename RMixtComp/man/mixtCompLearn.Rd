@@ -6,8 +6,9 @@
 \title{Learn and predict using RMixtComp}
 \usage{
 mixtCompLearn(data, model = NULL, algo = createAlgo(), nClass,
-  criterion = c("BIC", "ICL"), nRun = 1, nCore = min(max(1,
-  ceiling(detectCores()/2)), nRun), verbose = TRUE)
+  criterion = c("BIC", "ICL"), hierarchicalMode = c("auto", "yes",
+  "no"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun),
+  verbose = TRUE)
 
 mixtCompPredict(data, model = NULL, algo = resLearn$algo, resLearn,
   nClass = NULL, nRun = 1, nCore = min(max(1,
@@ -23,6 +24,8 @@ mixtCompPredict(data, model = NULL, algo = resLearn$algo, resLearn,
 \item{nClass}{the number of class of the mixture model. Can be a vector for \emph{mixtCompLearn} only.}
 
 \item{criterion}{"BIC" or "ICL". Criterion used for choosing the best model.}
+
+\item{hierarchicalMode}{"auto", "yes" or "no". If "auto", it performs a hierarchical version of MixtComp (clustering in two classes then each classes is split in two ...) when a functional variable is present.}
 
 \item{nRun}{number of runs for every given number of class. If >1, SEM is run \code{nRun} times for every number of class, and the best according to observed likelihood is kept.}
 
@@ -245,11 +248,12 @@ resPredict <- mixtCompPredict(simData$dataPredict$list, simData$model$unsupervis
 
 }
 
-
-
 }
 \references{
 Julien Jacques, Christophe Biernacki. \emph{Model-based clustering for multivariate partial ranking data}. Journal of Statistical Planning and Inference, Elsevier, 2014, 149, pp.201-217.
 
 Allou Samé, Faicel Chamroukhi, Gérard Govaert, Patrice Aknin. \emph{Model-based clustering and segmentation of time series with change in regime}. Advances in Data Analysis and Classification, 2011, 5(4):301-321
+}
+\seealso{
+Other clustering packages : \code{Rmixmod}, \code{blockcluster}
 }

@@ -58,5 +58,5 @@ plotDiscrimClass(resLearn)
 
 }
 \seealso{
-\link{plotDiscrimClass} \link{plotDiscrimVar}
+\code{\link{plotDiscrimClass}} \code{\link{plotDiscrimVar}}
 }

@@ -42,7 +42,7 @@ heatmapTikSorted(res$res[[2]])
 
 }
 \seealso{
-getTik
+\code{\link{getTik}}
 
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapVar}}, \code{\link{histMisclassif}},

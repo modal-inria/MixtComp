@@ -45,7 +45,7 @@ plotDiscrimClass(res$res[[2]])
 
 }
 \seealso{
-\link{computeDiscrimPowerClass}
+\code{\link{computeDiscrimPowerClass}}
 
 Other plot: \code{\link{heatmapClass}},
   \code{\link{heatmapTikSorted}}, \code{\link{heatmapVar}},

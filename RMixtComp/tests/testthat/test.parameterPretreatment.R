@@ -1,0 +1,351 @@
+context("Pretreatment functions of mixtCompLearn's parameters")
+
+Sys.setenv(MC_DETERMINISTIC = 42)
+
+test_that("imputModelIntern returns Gaussian when a numeric is given", {
+  data <- rnorm(100)
+  
+  outModel <- imputModelIntern(data, name = "var")
+  expect_equal(outModel, "Gaussian")
+})
+
+test_that("imputModelIntern returns Poisson when an integer vector is given", {
+  data <- 1:100
+  
+  outModel <- imputModelIntern(data, name = "var")
+  expect_equal(outModel, "Poisson")
+})
+
+test_that("imputModelIntern returns Multinomial when a character/factor is given", {
+  data <- letters
+  
+  outModel <- imputModelIntern(data, name = "var")
+  expect_equal(outModel, "Multinomial")
+  
+  data <- as.factor(letters)
+  
+  outModel <- imputModelIntern(data, name = "var")
+  expect_equal(outModel, "Multinomial")
+})
+
+test_that("imputModelIntern returns LatentClass when the variable is named z_class", {
+  data <- 1:100
+  
+  outModel <- imputModelIntern(data, name = "z_class")
+  expect_equal(outModel, "LatentClass")
+})
+
+
+test_that("imputModelIntern returns an error when a bad type is given", {
+  data <- list()
+  
+  expect_error(outModel <- imputModelIntern(data, name = "var"))
+})
+
+
+test_that("imputModel works with data.frame", {
+  data <- data.frame(a = 1:3,
+                     b = rnorm(3),
+                     c = letters[1:3],
+                     z_class = 1:3)
+  
+  expectedModel <- list(a = list(type = "Poisson", paramStr = ""), b = list(type = "Gaussian", paramStr = ""), c = list(type = "Multinomial", paramStr = ""), z_class = list(type = "LatentClass", paramStr = ""))
+  
+  outModel <- imputModel(data)
+  expect_equal(outModel, expectedModel)
+})
+
+
+test_that("imputModel works with list", {
+  data <- list(a = 1:3,
+               b = rnorm(3),
+               c = letters[1:3],
+               z_class = 1:3)
+  
+  expectedModel <- list(a = list(type = "Poisson", paramStr = ""), b = list(type = "Gaussian", paramStr = ""), c = list(type = "Multinomial", paramStr = ""), z_class = list(type = "LatentClass", paramStr = ""))
+  
+  outModel <- imputModel(data)
+  expect_equal(outModel, expectedModel)
+})
+
+test_that("imputModel returns an error with a matrix", {
+  data <- matrix(rnorm(50), ncol = 5, dimnames = list(NULL, letters[1:5]))
+  
+  expect_error(outModel <- imputModel(data))
+})
+
+
+
+test_that("formatModel does not change well formated data", {
+  desc <- list(var1 = list(type = "Gaussian", paramStr = ""),
+               var2 = list(type = "CorReg", paramStr = "ouais"),
+               var3 = list(type = "Multinomial", paramStr = "CorReg"))
+  
+  outDesc <- formatModel(desc)
+  expect_equal(outDesc, desc)
+})
+
+
+test_that("formatModel adds paramStr when missing", {
+  desc <- list(var1 = list(type = "Gaussian"),
+               var2 = list(type = "CorReg", paramStr = "ouais"),
+               var3 = list(type = "Multinomial"))
+  
+  outDesc <- formatModel(desc)
+  expect_equal(outDesc$var2, desc$var2)
+  expect_equal(outDesc$var1, list(type = "Gaussian", paramStr = ""))
+  expect_equal(outDesc$var3, list(type = "Multinomial", paramStr = ""))
+  
+})
+
+
+test_that("formatModel puts type in a list format", {
+  desc <- list(var1 = "Gaussian",
+               var2 = list(type = "CorReg", paramStr = "ouais"),
+               var3 = "Multinomial")
+  
+  outDesc <- formatModel(desc)
+  expect_equal(outDesc$var1, list(type = "Gaussian", paramStr = ""))
+  expect_equal(outDesc$var2, desc$var2)
+  expect_equal(outDesc$var3, list(type = "Multinomial", paramStr = ""))
+  
+})
+
+
+test_that("completeModel adds hyperparameters for functional data",{
+  
+  model <- list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
+                func2 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 3, nCoeff: 3"), func3 = list(type = "Func_CS", paramStr = ""),
+                func4 = list(type = "Func_SharedAlpha_CS", paramStr = ""))
+  
+  nInd <- 200
+  ratioPresent <- 0.95
+  
+  var <- list()
+  var$z_class <- zParam()
+  
+  var$func1 <- functionalInterPolyParam("func1")
+  var$func2 <- functionalInterPolyParam("func2")
+  var$func3 <- functionalInterPolyParam("func3")
+  var$func4 <- functionalInterPolyParam("func4")
+  
+  data <- dataGeneratorNewIO(nInd, ratioPresent, var)$data
+  
+  expect_warning(out <- completeModel(model, data))
+  expect_equal(out, list(gauss = list(type = "Gaussian", paramStr = ""), func1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 3"),
+                         func2 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 3, nCoeff: 3"), func3 = list(type = "Func_CS", paramStr = "nSub: 2, nCoeff: 2"),
+                         func4 = list(type = "Func_SharedAlpha_CS", paramStr = "nSub: 2, nCoeff: 2")))
+  
+})
+
+
+test_that("formatData converts data.frame into a list format", {
+  dat <- data.frame(x1 = 1:10, x2 = 10:1)
+  dataOut <- formatData(dat)
+  
+  expect_equal(names(dataOut), colnames(dat))
+  expect_equivalent(sapply(dataOut, length), rep(nrow(dat), ncol(dat)))
+  expect_true(all(sapply(dataOut, is.character)))
+})
+
+test_that("formatData converts matrix into a list format", {
+  dat <- matrix(c(1:10, 10:1), ncol = 2, dimnames = list(NULL, c("x1", "x2")))
+  dataOut <- formatData(dat)
+  
+  expect_equal(names(dataOut), colnames(dat))
+  expect_equivalent(sapply(dataOut, length), rep(nrow(dat), ncol(dat)))
+  expect_true(all(sapply(dataOut, is.character)))
+})
+
+test_that("formatData keeps list in list format", { 
+  dat <- list(x1 = 1:10, x2 = 10:1)
+  dataOut <- formatData(dat)
+  
+  expect_true(is.list(dataOut))
+  expect_equal(names(dataOut), names(dat))
+  expect_equal(class(dataOut$x1), "character")
+  expect_equal(class(dataOut$x2), "character")
+})
+
+test_that("formatDataBasicMode works with data.frame", {
+  dat <- data.frame(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = 1:20)
+  dat[1,] = NA
+  model <- list(a = list(type = "Gaussian"), b = list(type = "Multinomial"), c = list(type = "Multinomial"), d = list(type = "Poisson"), z_class = list(type = "LatentClass"))
+  
+  out <- formatDataBasicMode(dat, model)
+  expect_length(out, 2)
+  expect_named(out, c("data", "dictionary"))
+  expect_type(out$data, "list")
+  expect_named(out$data, c("a", "b", "c", "d", "z_class"))
+  expect_equal(out$data$a, c("?", as.character(dat$a[-1])))
+  expect_equal(out$data$b, c("?", rep(1:2, 9), 1))
+  expect_equal(out$data$c, c("?", rep(1:2, 9), 1))
+  expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
+  expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
+  expect_type(out$dictionary, "list")
+  expect_length(out$dictionary, 2)
+  expect_named(out$dictionary,c("b", "c"))
+  expect_equal(out$dictionary$b, list(old = letters[2:1], new = c("1", "2")))
+  expect_equal(out$dictionary$c, list(old = letters[2:1], new = c("1", "2")))
+})
+
+test_that("formatDataBasicMode works with list", {
+  dat <- list(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = 1:20)
+  dat$a[1] = NA
+  dat$b[1] = NA
+  dat$c[1] = NA
+  dat$d[1] = NA
+  dat$z_class[1] = NA
+  model <- list(a = list(type = "Gaussian"), b = list(type = "Multinomial"), c = list(type = "Multinomial"), d = list(type = "Poisson"), z_class = list(type = "LatentClass"))
+  
+  out <- formatDataBasicMode(dat, model)
+  expect_length(out, 2)
+  expect_named(out, c("data", "dictionary"))
+  expect_type(out$data, "list")
+  expect_named(out$data, c("a", "b", "c", "d", "z_class"))
+  expect_equal(out$data$a, c("?", as.character(dat$a[-1])))
+  expect_equal(out$data$b, c("?", rep(1:2, 9), 1))
+  expect_equal(out$data$c, c("?", rep(1:2, 9), 1))
+  expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
+  expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
+  expect_type(out$dictionary, "list")
+  expect_length(out$dictionary, 2)
+  expect_named(out$dictionary,c("b", "c"))
+  expect_equal(out$dictionary$b, list(old = letters[2:1], new = c("1", "2")))
+  expect_equal(out$dictionary$c, list(old = letters[2:1], new = c("1", "2")))
+})
+
+test_that("formatDataBasicMode works with a dictionary", {
+  dat <- list(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = 1:20)
+  dat$a[1] = NA
+  dat$b[1] = NA
+  dat$c[1] = NA
+  dat$d[1] = NA
+  dat$z_class[1] = NA
+  model <- list(a = list(type = "Gaussian"), b = list(type = "Multinomial"), c = list(type = "Multinomial"), d = list(type = "Poisson"), z_class = list(type = "LatentClass"))
+  dictionary <- list(b = list(old = c("a", "b"), new = c("1", "2")),
+                     c = list(old = c("a", "b"), new = c("1", "2")))
+  
+  out <- formatDataBasicMode(dat, model, dictionary)
+  expect_length(out, 2)
+  expect_named(out, c("data", "dictionary"))
+  expect_type(out$data, "list")
+  expect_named(out$data, c("a", "b", "c", "d", "z_class"))
+  expect_equal(out$data$a, c("?", as.character(dat$a[-1])))
+  expect_equal(out$data$b, c("?", "2", rep(c("1", "2"), 9)))
+  expect_equal(out$data$c, c("?", "2", rep(c("1", "2"), 9)))
+  expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
+  expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
+  expect_equal(out$dictionary, dictionary)
+  
+  
+  dictionary$b = NULL
+  expect_error(out <- formatDataBasicMode(dat, model, dictionary))
+})
+
+
+test_that("checkNClass works with mixtComp object", {
+  resLearn <- list(algo = list(nClass = 2))
+  class(resLearn) = "MixtComp"
+  
+  nClass <- NULL
+  expect_warning(out <- checkNClass(nClass, resLearn), regexp = NA)
+  expect_equal(out, 2)
+  
+  nClass <- 3
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+  
+  nClass <- 2:4
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+  
+  nClass <- 3:4
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+})
+
+test_that("checkNClass works with mixtCompLearn object", {
+  resLearn <- list(algo = list(nClass = 2), nClass = 2:5)
+  class(resLearn) = c("MixtCompLearn", "MixtComp")
+  
+  nClass <- NULL
+  expect_warning(out <- checkNClass(nClass, resLearn), regexp = NA)
+  expect_equal(out, 2)
+  
+  nClass <- 3
+  expect_warning(out <- checkNClass(nClass, resLearn), regexp = NA)
+  expect_equal(out, 3)
+  
+  nClass <- 3:4
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 3)
+  
+  nClass <- 6:8
+  expect_warning(out <- checkNClass(nClass, resLearn))
+  expect_equal(out, 2)
+})
+
+test_that("completeAlgo adds missing elements", {
+  algo <- list()
+  outAlgo <- completeAlgo(algo)
+  expectedAlgo <- createAlgo()
+  
+  expect_setequal(names(outAlgo), names(expectedAlgo))
+  expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
+  
+  
+  algo <- list(nbIter = 100)
+  outAlgo <- completeAlgo(algo)
+  expectedAlgo <- createAlgo(nbIter = 100)
+  
+  expect_setequal(names(outAlgo), names(expectedAlgo))
+  expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
+})
+
+test_that("completeAlgo keeps unrequired fields", {
+  algo <- list(nbIter = 100 , mode = "learn")
+  outAlgo <- completeAlgo(algo)
+  expectedAlgo <- c(createAlgo(nbIter = 100), list(mode = "learn"))
+  
+  expect_setequal(names(outAlgo), names(expectedAlgo))
+  expect_equal(outAlgo[c(order(names(outAlgo)))], expectedAlgo[c(order(names(expectedAlgo)))])
+})
+
+test_that("performHierarchical works", {
+  model <- list("a" = list(type = "Gaussian"))
+  mode <- "basic"
+  
+  for(hierarchicalMode in c("yes", "no", "auto"))
+  {
+    out <- performHierarchical(hierarchicalMode, mode, model)
+    expect_false(out)
+  }
+  
+  
+  
+  mode = "expert"
+  out <- performHierarchical(hierarchicalMode = "yes", mode, model)
+  expect_true(out)
+  
+  for(hierarchicalMode in c("no", "auto"))
+  {
+    out <- performHierarchical(hierarchicalMode, mode, model)
+    expect_false(out)
+  }
+  
+  
+  
+  model$b = list(type = "Func_CS")
+  out <- performHierarchical(hierarchicalMode = "no", mode, model)
+  expect_false(out)
+  
+  for(hierarchicalMode in c("yes", "auto"))
+  {
+    out <- performHierarchical(hierarchicalMode, mode, model)
+    expect_true(out)
+  }
+  
+})
+
+Sys.unsetenv("MC_DETERMINISTIC")

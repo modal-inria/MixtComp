@@ -46,6 +46,6 @@ resPred <- mixtCompPredict(simData$dataPredict$matrix, simData$model$unsupervise
 
 }
 \seealso{
-\link{mixtCompLearn}
+\code{\link{mixtCompLearn}} \code{\link{availableModels}}. Other clustering packages : \code{Rmixmod}, \code{blockcluster}
 }
 \keyword{package}

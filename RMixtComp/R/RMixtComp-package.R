@@ -56,7 +56,7 @@
 #' 
 #' }
 #' 
-#' @seealso \link{mixtCompLearn}
+#' @seealso \code{\link{mixtCompLearn}} \code{\link{availableModels}}. Other clustering packages : \code{Rmixmod}, \code{blockcluster}
 #' 
 #' @keywords package
 NULL
