@@ -2,7 +2,6 @@
 ^\.Rproj\.user$
 ^./*.csv$
 ^./*.json$
-doc
 out
 .Rhistory
 .cproject
@@ -10,6 +9,6 @@ out
 progress
 genDataPackage.R
 Makefile
-mcRunRTest.sh
+build.sh
 updateLib.py
 src/lib/README.md

@@ -26,6 +26,7 @@ RMixtComp/src/test/test
 RMixtComp/RMCtest.xml
 RMixtComp/src/libOFiles
 RMixtComp/src/Makevars
+RMixtComp.Rcheck
 RJsonMixtComp/R/MIXTCOMP_*
 !RJsonMixtComp/inst/extdata/*.json
 /.metadata/
