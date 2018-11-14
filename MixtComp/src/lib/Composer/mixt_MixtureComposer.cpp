@@ -448,11 +448,9 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 				lnP(k) = std::log(prop_(k)) + observedProbabilityCache_(j)(i, k);
 			}
 			t_ik_j.logToMulti(lnP); // "observed" t_ik, for the variable j
-			Vector<Real> t_ink_j = 1. - t_ik_j; // The nj means: "all classes but k".
 
 			for (Index k = 0; k < nClass_; ++k) {
 				Real p;
-//				Real nP;
 
 				if (epsilon < t_ik_j(k)) {
 					p = -t_ik_j(k) * std::log(t_ik_j(k));
@@ -460,11 +458,6 @@ void MixtureComposer::E_kj(Matrix<Real>& ekj) const {
 					p = 0.;
 				}
 
-				if (epsilon < t_ink_j(k)) {
-//					nP = -t_ink_j(k) * std::log(t_ink_j(k));
-				} else {
-//					nP = 0.;
-				}
 
 				ekj(k, j) += p;
 			}
@@ -512,12 +505,7 @@ void MixtureComposer::IDClass(Matrix<Real>& idc) const {
 		Real den = nInd_ * std::log(nClass_);
 
 		for (Index k = 0; k < nClass_; ++k) {
-			//    Real min = ekj.row(k).minCoeff();
-			//    Real max = ekj.row(k).maxCoeff();
-
 			for (Index j = 0; j < nVar_; ++j) {
-				//      idc(k, j) = (max - ekj(k, j)) / (max - min);
-				//      idc(k, j) = 1. - ekj(k, j) / ekj.row(k).sum();
 				idc(k, j) = ekj(k, j) / den;
 			}
 		}

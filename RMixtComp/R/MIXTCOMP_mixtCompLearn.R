@@ -4,7 +4,7 @@
 #' 
 #' @param data a data.frame, a matrix or a named list containing the data (see \emph{Details} \emph{Data format} sections).
 #' @param model a named list containing models and hyperparameters (see \emph{Details} section).
-#' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details}).
+#' @param algo a list containing the parameters of the SEM-Gibbs algorithm (see \emph{Details} or \link{createAlgo}).
 #' @param nClass the number of class of the mixture model. Can be a vector for \emph{mixtCompLearn} only.
 #' @param criterion "BIC" or "ICL". Criterion used for choosing the best model.
 #' @param hierarchicalMode "auto", "yes" or "no". If "auto", it performs a hierarchical version of MixtComp (clustering in two classes then each classes is split in two ...) when a functional variable is present.
@@ -27,6 +27,7 @@
 #' For example: \code{model <- list(func1 = list(type = "Gaussian", paramStr = "nSub: 4, nCoeff: 2"), counting1 = "Poisson")}.
 #' If the model is NULL, data are supposed to be provided in data.frame or list with R format (numeric, factor, character, NA as missing value). 
 #' Models will be imputed as follows: "Gaussian" for numeric variable, "Multinomial" for character or factor variable and "Poisson" for integer variable.
+#' A summary of available models (and associated hyperparameters and missing format) can be accessed by calling the \link{availableModels} function.
 #' 
 #' Eight models are available in RMixtComp: \emph{Gaussian}, \emph{Multinomial}, \emph{Poisson}, \emph{NegativeBinomial}, \emph{Weibull}, \emph{Func_CS}, \emph{Func_SharedAlpha_CS}, \emph{Rank_ISR}. 
 #' \emph{Func_CS} and \emph{Func_SharedAlpha_CS} models require hyperparameters: the number of subregressions of functional and the number of coefficients of each subregression. 
@@ -37,16 +38,19 @@
 #' To perform a (semi-)supervised clustering, user can add a variable named \emph{z_class} in the data and model objects with \emph{LatentClass} as model in the model object.
 #' 
 #' 
-#' The \emph{algo} object is a list containing the different number of iterations for the algorithm. 
+#' The \emph{algo} object is a list containing the different number of iterations for the algorithm. This list can be generated using the \link{createAlgo} function. 
 #' The algorithm is decomposed in a burn-in phase and a normal phase. 
 #' Estimates from the burn-in phase are not shown in output.
-#' \describe{
-#'   \item{nbBurnInIter}{Number of iterations of the burn-in part of the SEM algorithm.}
-#'   \item{nbIter}{Number of iterations of the SEM algorithm.}
-#'   \item{nbGibbsBurnInIter}{Number of iterations of the burn-in part of the Gibbs algorithm.}
-#'   \item{nbGibbsIter}{Number of iterations of the Gibbs algorithm.}
-#'   \item{nInitPerClass}{Number of individuals used to initialize each cluster (default = 10).}
-#'   \item{nSemTry}{Number of try of the algorithm for avoiding an error.}
+#' \itemize{
+#'   \item{nbBurnInIter: Number of iterations of the burn-in part of the SEM algorithm.}
+#'   \item{nbIter: Number of iterations of the SEM algorithm.}
+#'   \item{nbGibbsBurnInIter: Number of iterations of the burn-in part of the Gibbs algorithm.}
+#'   \item{nbGibbsIter: Number of iterations of the Gibbs algorithm.}
+#'   \item{nInitPerClass: Number of individuals used to initialize each cluster (default = 10).}
+#'   \item{nSemTry: Number of try of the algorithm for avoiding an error.}
+#'   \item{confidenceLevel: confidence level for confidence bounds for parameter estimation}
+#'   \item{ratioStableCriterium: stability partition required to stop earlier the SEM }
+#'   \item{nStableCriterium: number of iterations of partition stability to stop earlier the SEM}
 #' }
 #' 
 #' 
