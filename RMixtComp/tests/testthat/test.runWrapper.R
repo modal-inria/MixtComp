@@ -26,6 +26,8 @@ test_that("rmcMultiRun works", {
     nInitPerClass = 100,
     confidenceLevel = 0.95,
     nClass = 4,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn",
     nInd = 1000
   )
@@ -381,8 +383,8 @@ test_that("mixtCompLearn works in hierarchicalMode",{
   algo <- list(
     nbBurnInIter = 50,
     nbIter = 50,
-    nbGibbsBurnInIter = 50,
-    nbGibbsIter = 50,
+    nbGibbsBurnInIter = 25,
+    nbGibbsIter = 25,
     nSemTry = 10,
     nInitPerClass = 100,
     confidenceLevel = 0.95
@@ -395,8 +397,8 @@ test_that("mixtCompLearn works in hierarchicalMode",{
     print(resLearn$warnLog)
   
   expect_equal(resLearn$warnLog, NULL)
-  expect_gte(rand.index(getPartition(resLearn), simData$dataLearn$data.frame$z_class), 0.9)
-  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  expect_gte(rand.index(getPartition(resLearn$res[[1]]), simData$dataLearn$data.frame$z_class), 0.9)
+  expect_lte(norm(getTik(resLearn$res[[1]], log = FALSE) - getEmpiricTik(resLearn$res[[1]]))/resLearn$algo$nInd, 0.1)
   
   expect_equal(names(resLearn), c("mixture", "variable", "algo", "nRun", "criterion", "crit", "nClass", "res"))
   expect_equal(resLearn$nRun, 2)
@@ -418,15 +420,11 @@ test_that("mixtCompLearn works in hierarchicalMode",{
   expect_equivalent(getType(resLearn), c("Gaussian", "Func_CS"))
   expect_equivalent(getVarNames(resLearn), c("Gaussian1", "Functional1"))
   expect_warning(getTik(resLearn), regexp = NA)
-  expect_equal(dim(getEmpiricTik(resLearn)), c(200, 3))
   expect_warning(getEmpiricTik(resLearn), regexp = NA)
-  expect_equal(dim(getTik(resLearn)), c(200, 3))
   expect_warning(disc <- computeDiscrimPowerClass(resLearn), regexp = NA)
-  expect_equal(length(disc), 3)
   expect_warning(disc <- computeDiscrimPowerVar(resLearn), regexp = NA)
-  expect_equal(length(disc), 2)
+  expect_length(disc, 2)
   expect_warning(disc <- computeSimilarityClass(resLearn), regexp = NA)
-  expect_equal(dim(disc), rep(3, 2))
   expect_warning(disc <- computeSimilarityVar(resLearn), regexp = NA)
   expect_equal(dim(disc), rep(2, 2))
   for(name in getVarNames(resLearn))
@@ -477,9 +475,8 @@ test_that("mixtCompLearn works in hierarchicalMode",{
   expect_warning(print(resLearn$res[[1]]), regexp = NA)
   
   
-  expect_warning(resPredict <- mixtCompPredict(simData$dataLearn$matrix, model, algo, resLearn, nClass = 3, verbose = TRUE), regexp = NA)
+  expect_warning(resPredict <- mixtCompPredict(simData$dataLearn$matrix, model, algo, resLearn, nClass = 2, verbose = TRUE), regexp = NA)
   expect_lte(norm(getTik(resPredict, log = FALSE) - getEmpiricTik(resPredict))/resPredict$algo$nInd, 0.1)
-  
   if(!is.null(resPredict$warnLog))
     print(resPredict$warnLog)
   

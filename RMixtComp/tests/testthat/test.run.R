@@ -24,6 +24,8 @@ test_that("gaussian model works",{
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn"
   )
 
@@ -69,6 +71,8 @@ test_that("poisson model works",{
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn"
   )
 
@@ -114,6 +118,8 @@ test_that("NegativeBinomial model works",{
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn"
   )
 
@@ -174,6 +180,8 @@ test_that("multinomial model works",{
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn"
   )
 
@@ -216,6 +224,8 @@ test_that("weibull model works",{
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn"
   )
 
@@ -258,6 +268,8 @@ test_that("functional model works",{
     nInitPerClass = 50,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn"
   )
 
@@ -301,6 +313,8 @@ test_that("functional model with shared alpha works",{
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn"
   )
 
@@ -343,6 +357,8 @@ test_that("rank model works",{
     nInitPerClass = 50,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn"
   )
 
@@ -388,6 +404,8 @@ test_that("run cluster/predict R object",{
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "learn"
   )
 
@@ -486,6 +504,8 @@ test_that("run cluster/predict R object",{
     nInitPerClass = 100,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.95,
+    nStableCriterium = 10,
     mode = "predict"
   )
 
