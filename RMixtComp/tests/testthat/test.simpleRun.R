@@ -15,6 +15,8 @@ test_that("Hard coded simple test", {
     nInitPerClass = 3,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    ratioStableCriterium = 0.9,
+    nStableCriterium = 5,
     mode = "learn"
   )
   
