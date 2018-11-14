@@ -210,7 +210,9 @@ void Function::printProp() const {
 
 	prop = prop / prop.sum();
 
+#ifdef MC_VERBOSE
 	std::cout << "Prop of w: " << itString(prop) << std::endl;
+#endif
 }
 
 void Function::quantile(Vector<Real>& quantile) {
@@ -232,6 +234,7 @@ void Function::quantile(Vector<Real>& quantile) {
 }
 
 void Function::printSubRegT() const {
+#ifdef MC_VERBOSE
 	for (Index w = 0; w < nSub_; ++w) {
 		std::cout << "w: " << w << ": ";
 		for (std::set<Index>::const_iterator it = w_(w).begin(), itEnd = w_(w).end(); it != itEnd; ++it) {
@@ -239,6 +242,7 @@ void Function::printSubRegT() const {
 		}
 		std::cout << std::endl;
 	}
+#endif
 }
 
 } // namespace mixt

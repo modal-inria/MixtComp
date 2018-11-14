@@ -51,7 +51,7 @@ std::string UTest3() {
 	try {
 		rg.get_payload<std::string>( { "a" }, "a1", res);
 	} catch (const std::string& s) {
-		std::cout << "exception: " << s << std::endl;
+	  Rcpp::Rcout << "exception: " << s << std::endl;
 	}
 
 	return res;

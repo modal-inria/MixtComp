@@ -38,8 +38,10 @@ Real MixtureComposer::lnObservedProbability(int i, int k) const {
 }
 
 void MixtureComposer::printTik() const {
+#ifdef MC_VERBOSE
 	std::cout << "Sampled t_ik" << std::endl;
 	std::cout << tik_ << std::endl;
+#endif
 }
 
 void MixtureComposer::observedTik(Vector<Real>& oZMode) const {
@@ -212,11 +214,15 @@ void MixtureComposer::mStepPi() {
 }
 
 void MixtureComposer::writeParameters() const {
+#ifdef MC_VERBOSE
 	std::cout << "Composer nbFreeParameter = " << nbFreeParameters() << std::endl;
 	std::cout << "Composer proportions = " << itString(prop_) << std::endl;
+#endif
 
 	for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+#ifdef MC_VERBOSE
 		std::cout << "Parameters of " << (*it)->idName() << "\n";
+#endif
 		(*it)->writeParameters();
 	}
 }
@@ -315,7 +321,9 @@ void MixtureComposer::storeSEMRun(int iteration, int iterationMax, RunType runTy
 }
 
 void MixtureComposer::setObservedProbaCache() {
+#ifdef MC_VERBOSE
 	std::cout << "MixtureComposer::setObservedProbaCache, this operation could take some time..." << std::endl;
+#endif
 	observedProbabilityCache_.resize(nVar_);
 
 	for (Index j = 0; j < nVar_; ++j) {
@@ -398,7 +406,9 @@ std::string MixtureComposer::initParamSubPartition(Index nInitPerClass) {
 	Vector<std::set<Index>> partialClassInd(nClass_);
 	Index nSubset = std::min(nInitPerClass * nClass_, nInd_);
 
+#ifdef MC_VERBOSE
 	std::cout << "MixtureComposer::initParamSubPartition, " << nSubset << " observations used in parameter initialization." << std::endl;
+#endif
 
 	Vector<Index> allInd(nInd_);
 	for (Index i = 0; i < nInd_; ++i) {
@@ -555,7 +565,9 @@ std::string MixtureComposer::initializeLatent() {
 	}
 
 	if (0 < warnLog.size()) {
+#ifdef MC_VERBOSE
 		std::cout << "initializeLatent, eStepCompleted failed." << std::endl;
+#endif
 		return warnLog;
 	}
 
@@ -564,7 +576,9 @@ std::string MixtureComposer::initializeLatent() {
 	sampleUnobservedAndLatent(); // sampling performed using the parameters
 //	warnLog = checkSampleCondition(); // TODO: might be useless, in this case, remove it
 	if (0 < warnLog.size()) {
+#ifdef MC_VERBOSE
 		std::cout << "initializeLatent, checkSampleCondition failed." << std::endl;
+#endif
 		return warnLog;
 	}
 

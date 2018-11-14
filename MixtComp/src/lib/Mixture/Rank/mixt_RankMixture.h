@@ -177,7 +177,9 @@ public:
 			sstm << "pi: " << pi_(k) << std::endl;
 		}
 
+#ifdef MC_VERBOSE
 		std::cout << sstm.str() << std::endl;
+#endif
 	}
 
 	std::string setDataParam(RunMode mode) {

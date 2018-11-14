@@ -28,7 +28,9 @@ int deterministicInitialSeed() {
 		return 0;
 	} else {
 		int seed = std::atoi(str_ptr);
+#ifdef MC_VERBOSE
 		std::cout << "Initial random seed value: " << seed << std::endl;
+#endif
 		return seed;
 	}
 }

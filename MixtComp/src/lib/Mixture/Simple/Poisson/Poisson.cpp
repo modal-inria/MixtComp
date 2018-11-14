@@ -89,7 +89,9 @@ void Poisson::writeParameters() const {
 		sstm << "\tlambda: " << param_[k] << std::endl;
 	}
 
+#ifdef MC_VERBOSE
 	std::cout << sstm.str() << std::endl;
+#endif
 }
 
 std::string Poisson::checkSampleCondition(

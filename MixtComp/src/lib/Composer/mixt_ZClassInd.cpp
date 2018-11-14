@@ -55,6 +55,7 @@ void ZClassInd::setZAndClassInd(Index i, Index k) {
 }
 
 void ZClassInd::printState() const {
+#ifdef MC_VERBOSE
 	std::cout << "zi_: " << itString(zi_.data_) << std::endl;
 
 	for (Index k = 0; k < nbClass_; ++k) {
@@ -64,6 +65,7 @@ void ZClassInd::printState() const {
 		}
 		std::cout << std::endl;
 	}
+#endif
 }
 
 } /* namespace mixt */

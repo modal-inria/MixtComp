@@ -39,7 +39,9 @@ public:
 			nClass_(algo.template get_payload<Index>( { }, "nClass")), nInd_(algo.template get_payload<Index>( { }, "nInd")), nVar_(0), confidenceLevel_(
 					algo.template get_payload<Real>( { }, "confidenceLevel")), prop_(nClass_), tik_(nInd_, nClass_), sampler_(zClassInd_, tik_, nClass_), paramStat_(prop_, confidenceLevel_), dataStat_(
 					zClassInd_), completedProbabilityCache_(nInd_), lastPartition_(nInd_), initialNIter_(0), nConsecutiveStableIterations_(0) {
+#ifdef MC_VERBOSE
 		std::cout << "MixtureComposer::MixtureComposer, nInd: " << nInd_ << ", nClass: " << nClass_ << std::endl;
+#endif
 		zClassInd_.setIndClass(nInd_, nClass_);
 
 		std::stringstream sstm;
@@ -169,9 +171,13 @@ public:
 		std::string warnLog;
 
 		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
+#ifdef MC_VERBOSE
 			std::cout << "MixtureComposer::setDataParam, " << (*it)->idName() << " started..." << std::endl;
+#endif
 			warnLog += (*it)->setDataParam(mode);
+#ifdef MC_VERBOSE
 			std::cout << "... finished." << std::endl;
+#endif
 		}
 
 		warnLog += setZi(data); // dataHandler getData is called to fill zi_
@@ -225,10 +231,14 @@ public:
 		std::string warnLog;
 
 		if (!data.exist_payload( { }, "z_class")) { // z_class was not provided
+#ifdef MC_VERBOSE
 			std::cout << "MixtureComposer::setZi, no class label provided." << std::endl;
+#endif
 			zClassInd_.setAllMissing(); // set every value state to missing_
 		} else {
+#ifdef MC_VERBOSE
 			std::cout << "MixtureComposer::setZi, class label provided." << std::endl;
+#endif
 			warnLog += zClassInd_.setZi(data);
 		}
 
@@ -307,7 +317,9 @@ public:
 		g.add_payload( { "mixture" }, "BIC", lnObsLik - 0.5 * nFreeParameters * std::log(nInd_));
 		g.add_payload( { "mixture" }, "ICL", lnCompLik - 0.5 * nFreeParameters * std::log(nInd_));
 
+#ifdef MC_VERBOSE
 		std::cout << "lnObservedLikelihood: " << lnObsLik << std::endl << std::endl;
+#endif
 
 		g.add_payload( { "mixture" }, "runTime", runTime);
 

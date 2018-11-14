@@ -154,7 +154,9 @@ void NegativeBinomial::writeParameters() const {
 		sstm << "\tp: " << param_[2 * k + 1] << std::endl;
 	}
 
+#ifdef MC_VERBOSE
 	std::cout << sstm.str() << std::endl;
+#endif
 }
 
 std::string NegativeBinomial::checkSampleCondition(const Vector<std::set<Index>>& classInd) const {

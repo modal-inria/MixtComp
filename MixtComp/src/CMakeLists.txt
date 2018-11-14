@@ -82,6 +82,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/json/")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/lib/")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON) # to enable PIC on platforms that need it
 add_definitions(-DMC_VERBOSE -DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE_CURRENT_SOURCE_DIR}/lib/LinAlg/mixt_EigenMatrixBaseAddons.h\")
+# add_definitions(-DEIGEN_MATRIXBASE_PLUGIN=\"${CMAKE_CURRENT_SOURCE_DIR}/lib/LinAlg/mixt_EigenMatrixBaseAddons.h\")
 
 # json interface
 add_subdirectory(json)

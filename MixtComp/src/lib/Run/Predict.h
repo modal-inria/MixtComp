@@ -24,9 +24,12 @@ namespace mixt {
  */
 template<typename Graph>
 void predict(const Graph& algo, const Graph& data, const Graph& desc, const Graph& param, Graph& out) {
+
+#ifdef MC_VERBOSE
 	std::cout << "MixtComp, predict, version: " << version << std::endl;
 	std::cout << "Deterministic mode: " << deterministicMode() << std::endl;
 //	std::cout<< "Number of threads: " << omp_get_num_threads() << std::endl;
+#endif
 
 	Timer totalTimer("Total Run");
 
