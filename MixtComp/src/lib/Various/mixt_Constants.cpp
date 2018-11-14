@@ -52,9 +52,6 @@ const Real relTolOptim = 0.01;
 
 const std::string rankPosSep = ",";
 
-const Index nStableCriterium = 5;
-const Real ratioStableCriterium = 0.9;
-
 const Index nCompletedInitTry = 1000;
 
 // const Real poissonInitMinAlpha = 0.5;
