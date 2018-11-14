@@ -31,9 +31,8 @@ public:
 	 *  @param nbCluster number of cluster
 	 **/
 	SimpleMixture(const Graph& data, const Graph& param, Graph& out, std::string const& idName, Index nbClass, Index nInd, Real confidenceLevel, const std::string& paramStr) :
-			IMixture(idName, Model::name, nbClass, nInd), dataG_(data), paramG_(param), outG_(out), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(
-					paramStr), confidenceLevel_(confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_,
-					confidenceLevel), likelihood_(param_, augData_, nbClass) {
+			IMixture(idName, Model::name, nbClass, nInd), dataG_(data), paramG_(param), outG_(out), param_(), model_(idName, nbClass, param_), augData_(), paramStr_(paramStr), confidenceLevel_(
+					confidenceLevel), sampler_(augData_, param_, nbClass), dataStat_(augData_, confidenceLevel), paramStat_(param_, confidenceLevel), likelihood_(param_, augData_, nbClass) {
 	}
 
 	/**
@@ -155,12 +154,17 @@ public:
 
 		quantileNames(ncol, confidenceLevel_, colNames);
 
-		NamedMatrix<Real> paramOut; // all parameters are real at the moment,
-		paramOut.mat_ = paramStat_.getStatStorage();
-		paramOut.rowNames_ = model_.paramNames();
-		paramOut.colNames_ = colNames;
+		NamedMatrix<Real> paramStatOut; // all parameters are real at the moment,
+		paramStatOut.mat_ = paramStat_.getStatStorage();
+		paramStatOut.rowNames_ = model_.paramNames();
+		paramStatOut.colNames_ = colNames;
 
-		outG_.add_payload( { "variable", "param", idName_ }, "stat", paramOut);
+		NamedMatrix<Real> paramLogOut;
+		paramLogOut.mat_ = paramStat_.getLogStorage();
+		paramLogOut.rowNames_ = model_.paramNames();
+
+		outG_.add_payload( { "variable", "param", idName_ }, "stat", paramStatOut);
+		outG_.add_payload( { "variable", "param", idName_ }, "log", paramLogOut);
 		outG_.add_payload( { "variable", "param", idName_ }, "paramStr", paramStr_);
 	}
 
