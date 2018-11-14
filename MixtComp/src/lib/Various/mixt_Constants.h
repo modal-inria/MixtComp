@@ -51,9 +51,6 @@ extern const Real relTolOptim;
 
 extern const std::string rankPosSep; // separator used in Rank positions
 
-extern const Index nStableCriterium; // number of iterations to consider a partition stable
-extern const Real ratioStableCriterium;
-
 extern const Index nCompletedInitTry;
 
 // extern const Real poissonInitMinAlpha; // minimal value that can be used for alpha estimation in a Poisson distribution

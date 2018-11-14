@@ -640,7 +640,7 @@ void MixtureComposer::stabilityReset() {
 	nConsecutiveStableIterations_ = 0;
 }
 
-bool MixtureComposer::isPartitionStable() {
+bool MixtureComposer::isPartitionStable(Real ratioStableCriterium, Index nStableCriterium) {
 	if (ratioStableCriterium < ratioIdentical(lastPartition_, zClassInd_.zi().data_)) { // stable case
 		nConsecutiveStableIterations_ += 1;
 	} else { // unstable case

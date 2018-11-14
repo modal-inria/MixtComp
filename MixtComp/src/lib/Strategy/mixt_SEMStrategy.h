@@ -47,6 +47,8 @@ public:
 		Index nInitPerClass = algo_.template get_payload<Index>( { }, "nInitPerClass");
 		Index nbBurnInIter = algo_.template get_payload<Index>( { }, "nbBurnInIter");
 		Index nbIter = algo_.template get_payload<Index>( { }, "nbIter");
+		Index nStableCriterium = algo_.template get_payload<Index>( { }, "nStableCriterium");
+		Real ratioStableCriterium = algo_.template get_payload<Real>( { }, "ratioStableCriterium");
 
 		try {
 			for (Index n = 0; n < nSemTry; ++n) {
@@ -80,13 +82,11 @@ public:
 				std::cout << "SemStrategy::run initializeLatent succeeded." << std::endl;
 				std::cout << "SEM initialization complete. SEM run can start." << std::endl;
 
-				warnLog = runSEM(burnIn_, nbBurnInIter, 0, // group
-						3); // groupMax
+				warnLog = runSEM(burnIn_, nbBurnInIter, 0, 3, ratioStableCriterium, nStableCriterium); // group, groupMax
 				if (0 < warnLog.size())
 					continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
-				warnLog = runSEM(run_, nbIter, 1, // group
-						3); // groupMax
+				warnLog = runSEM(run_, nbIter, 1, 3, ratioStableCriterium, nStableCriterium); // group, groupMax
 				if (0 < warnLog.size())
 					continue;
 
@@ -102,7 +102,7 @@ public:
 	/**
 	 * run the algorithm, only kept during the transition, as an archive
 	 * @return string describing the problem in case of soft degeneracy */
-	std::string runSEM(RunType runType, Index nIter, int group, int groupMax) {
+	std::string runSEM(RunType runType, Index nIter, int group, int groupMax, Real ratioStableCriterium, Index nStableCriterium) {
 		std::string warnLog;
 
 #ifdef MC_VERBOSE
@@ -142,7 +142,7 @@ public:
 			}
 			//		p_composer_->writeParameters();
 
-			if (composer_.isPartitionStable()) {
+			if (composer_.isPartitionStable(ratioStableCriterium, nStableCriterium)) {
 				std::cout << "runSEM, partition has been stable for " << nStableCriterium << " iterations." << std::endl;
 				composer_.storeSEMRun(iter, iter, runType); // note that the last iteration is set as the current one, and not as nIter-1
 				break; // no need for further iterations

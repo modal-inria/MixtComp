@@ -421,7 +421,7 @@ public:
 
 	void stabilityReset();
 
-	bool isPartitionStable();
+	bool isPartitionStable(Real ratioStableCriterium, Index nStableCriterium);
 
 private:
 	std::string paramStr_;
