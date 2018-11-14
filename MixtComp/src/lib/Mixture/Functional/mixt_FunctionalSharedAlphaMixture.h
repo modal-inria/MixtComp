@@ -142,8 +142,9 @@ public:
 			sstm << "beta: " << std::endl << class_[k].beta() << std::endl;
 			sstm << "sigma: " << itString(class_[k].sd()) << std::endl;
 		}
-
+#ifdef MC_VERBOSE
 		std::cout << sstm.str() << std::endl;
+#endif
 	}
 	;
 
@@ -298,7 +299,9 @@ public:
 				completedProba(k) = lnCompletedProbability(i, k);
 			}
 			tik.logToMulti(completedProba);
+#ifdef MC_VERBOSE
 			std::cout << itString(tik) << std::endl;
+#endif
 		}
 	}
 

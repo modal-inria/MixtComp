@@ -25,9 +25,11 @@ template<typename Graph>
 void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) {
 	Graph param; // dummy Graph to be provided as unused argument in setDataParam in learning
 
+#ifdef MC_VERBOSE
 	std::cout << "MixtComp, learn, version: " << version << std::endl;
 	std::cout << "Deterministic mode: " << deterministicMode() << std::endl;
 //	std::cout<< "Number of threads: " << omp_get_num_threads() << std::endl;
+#endif
 
 	Timer totalTimer("Total Run");
 
@@ -75,7 +77,9 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 
 	// Run has been successful, export everything
 
+#ifdef MC_VERBOSE
 	composer.writeParameters();
+#endif
 
 	Real runTime = totalTimer.finish();
 	std::string mode = "learn";

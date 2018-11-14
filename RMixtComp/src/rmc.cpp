@@ -23,7 +23,7 @@ Rcpp::List rmc(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List 
 	RGraph resRG;
 
 	try {
-		std::cout << "RMixtComp" << std::endl;
+	  Rcpp::Rcout << "RMixtComp" << std::endl;
 
 		std::string warnLog;
 
@@ -53,7 +53,7 @@ Rcpp::List rmc(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List 
 			resRG.add_payload( { }, "warnLog", warnLog);
 		}
 	} catch (const std::string& s) {
-		std::cout << s << std::endl;
+	  Rcpp::Rcout << s << std::endl;
 	}
 
 	return resRG.getL();

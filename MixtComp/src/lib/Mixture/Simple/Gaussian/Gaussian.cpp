@@ -101,7 +101,9 @@ void Gaussian::writeParameters() const {
 		sstm << "\tsd: " << param_[2 * k + 1] << std::endl;
 	}
 
+#ifdef MC_VERBOSE
 	std::cout << sstm.str() << std::endl;
+#endif
 }
 
 std::string Gaussian::checkSampleCondition(

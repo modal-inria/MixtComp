@@ -21,7 +21,9 @@ WeibullStatistic::WeibullStatistic() :
 
 Real WeibullStatistic::quantile(Real k, Real lambda, Real p) const {
 	if (p == 1.0) {
+#ifdef MC_VERBOSE
 		std::cout << "p == 1" << std::endl;
+#endif
 	}
 	boost::math::weibull weib(k, lambda);
 	Real x = boost::math::quantile(weib, p);

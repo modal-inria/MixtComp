@@ -158,7 +158,9 @@ void Categorical::writeParameters() const {
 		}
 	}
 
+#ifdef MC_VERBOSE
 	std::cout << sstm.str() << std::endl;
+#endif
 }
 
 std::string Categorical::checkSampleCondition(

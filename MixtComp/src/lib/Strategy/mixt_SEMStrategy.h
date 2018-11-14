@@ -52,13 +52,17 @@ public:
 
 		try {
 			for (Index n = 0; n < nSemTry; ++n) {
+#ifdef MC_VERBOSE
 				std::cout << "SemStrategy::run, attempt n: " << n << std::endl;
+#endif
 				warnLog.clear(); // only the last warn log can be sent
 
 				composer_.initData(); // complete missing values without using models (uniform samplings in most cases), as no mStep has been performed yet
 				warnLog = composer_.checkNbIndPerClass(); // useless because a new check is performed in initParam TODO: remove if really useless
 				if (0 < warnLog.size()) {
+#ifdef MC_VERBOSE
 					std::cout << "Not enough individuals per class." << std::endl;
+#endif
 					continue;
 				}
 				//		p_composer_->printClassInd();
@@ -66,21 +70,26 @@ public:
 				composer_.initParam(); // initialize iterative estimators
 				warnLog = composer_.initParamSubPartition(nInitPerClass); // initialize parameters for each model, usually singling out an observation as the center of each class
 				if (0 < warnLog.size()) {
+#ifdef MC_VERBOSE
 					std::cout << "initParam failed." << std::endl;
+#endif
 					continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 				}
 
+#ifdef MC_VERBOSE
 				std::cout << "SemStrategy::run, initParam succeeded." << std::endl;
-
 				composer_.writeParameters(); // for debugging purposes
+#endif
 
 				warnLog = composer_.initializeLatent(); // use observed probability to initialize classes
 				if (0 < warnLog.size()) {
 					continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 				}
 
+#ifdef MC_VERBOSE
 				std::cout << "SemStrategy::run initializeLatent succeeded." << std::endl;
 				std::cout << "SEM initialization complete. SEM run can start." << std::endl;
+#endif
 
 				warnLog = runSEM(burnIn_, nbBurnInIter, 0, 3, ratioStableCriterium, nStableCriterium); // group, groupMax
 				if (0 < warnLog.size())
@@ -131,19 +140,25 @@ public:
 
 			std::string warnLog = composer_.checkSampleCondition(); // since we are not in initialization, no need for log
 			if (0 < warnLog.size()) {
+#ifdef MC_VERBOSE
 				std::cout << "runSEM, checkSampleCondition failed." << std::endl;
+#endif
 				return warnLog;
 			}
 
 			warnLog += composer_.mStep(); // biased or unbiased does not matter, as there has been a check on sampling conditions previously
 			if (0 < warnLog.size()) {
+#ifdef MC_VERBOSE
 				std::cout << "runSEM, mStep failed." << std::endl;
+#endif
 				return warnLog;
 			}
 			//		p_composer_->writeParameters();
 
 			if (composer_.isPartitionStable(ratioStableCriterium, nStableCriterium)) {
+#ifdef MC_VERBOSE
 				std::cout << "runSEM, partition has been stable for " << nStableCriterium << " iterations." << std::endl;
+#endif
 				composer_.storeSEMRun(iter, iter, runType); // note that the last iteration is set as the current one, and not as nIter-1
 				break; // no need for further iterations
 			} else {
