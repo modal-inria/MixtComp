@@ -6,7 +6,7 @@ simpleNormalTest <- function() {
   
   Sys.setenv(MC_DETERMINISTIC = 42)
   
-  algo <- list(
+  algoLearn <- list(
     nClass = 2,
     nInd = 20,
     nbBurnInIter = 100,
@@ -16,10 +16,12 @@ simpleNormalTest <- function() {
     nInitPerClass = 3,
     nSemTry = 20,
     confidenceLevel = 0.95,
+    nStableCriterium = 5,
+    ratioStableCriterium = 0.9,
     mode = "learn"
   )
   
-  data <- list(
+  dataLearn <- list(
     var1 = c(
       "3.432200",
       "19.14747",
@@ -44,16 +46,57 @@ simpleNormalTest <- function() {
     )
   )
   
-  desc <- list(
+  descLearn <- list(
     var1 = list(
       type = "Gaussian",
       paramStr = ""
     )
   )
   
-  res <- rmc(algo, data, desc, list())
+  zLearn <- c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2)
+  
+  resLearn <- rmc(algoLearn, dataLearn, descLearn, list())
+  
+  print("learn")
+  paste0("rand: ", rand.index(getPartition(resLearn), zLearn)) # expected 0.9 rand
+  print("contengency: ")
+  print(table(zLearn, getPartition(resLearn)))
+  
+  algoPredict <- list(
+    nClass = 2,
+    nInd = 6,
+    nbBurnInIter = 100,
+    nbIter = 100,
+    nbGibbsBurnInIter = 100,
+    nbGibbsIter = 100,
+    nInitPerClass = 3,
+    nSemTry = 20,
+    confidenceLevel = 0.95,
+    nStableCriterium = 5,
+    ratioStableCriterium = 0.9,
+    mode = "predict"
+  )
+  
+  dataPredict <- list(var1 = c(
+    "4.838457",
+    "19.90595",
+    "4.577347",
+    "21.19830",
+    "5.048325",
+    "20.46875"
+  ))
+  
+  descPredict <- list(var1 = list(type = "Gaussian",
+                                  paramStr = ""))
+  
+  zPredict <- c(1, 2, 1, 2, 1, 2)
+  
+  resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
+  
+  print("predict")
+  paste0("rand: ", rand.index(getPartition(resPredict), zPredict)) # expected 0.9 rand
+  print("contengency: ")
+  print(table(zPredict, getPartition(resPredict)))
   
   Sys.unsetenv("MC_DETERMINISTIC")
-  
-  return(res)
 }
