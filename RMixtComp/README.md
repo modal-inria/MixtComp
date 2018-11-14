@@ -11,7 +11,7 @@ R must be installed, along with the following packages from the CRAN: *RcppEigen
 Those command lines can perform the installation automatically in the ~/R directory
 add the following line to .bashrc file: export R_LIBS="~/R"
 
-Packages are required from Ubuntu reporitories: `sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev`
+Packages are required from Ubuntu repoitories: `sudo apt install libssl-dev libcurl4-openssl-dev libxml2-dev`
 
 ```
 mkdir ~/R
@@ -23,9 +23,6 @@ Rscript -e "install.packages(c(\"testthat\", \"RInside\", \"xml2\", \"devtools\"
 ### Windows
 
 Compiling R packages requires [Rtools](https://cran.r-project.org/bin/windows/Rtools/).
-
-**WARNING:** does not work for the moment. For windows, use RJsonMixtComp.
-
 
 
 ## Build and install
@@ -53,15 +50,22 @@ library(devtools)
 load_all()
 test_dir("tests/testthat/")
 ```
+or
+```
+library(methods); 
+library(devtools); 
+options(testthat.output_file = "RMCtest.xml"); 
+test(".", reporter = JunitReporter)
+```
 
 You can run tests via shell (it requires the *xml2* package):
 ```
-./mcRunRTest.sh
+Rscript -e 'library(methods); library(devtools); options(testthat.output_file = "RMCtest.xml"); test(".", reporter = JunitReporter)'
 ```
 It generates a xml report file named *RMCtest.xml*.
 
 
-In Rstudio, if packages *devtools* and *testthat* are installed, you can run the testing procedure by pressing  `CRTL + SHIFT + T`.
+In Rstudio, if packages *devtools* and *testthat* are installed, you can run the testing procedure by pressing  `CRTL + SHIFT + T` OR tests are run during a R CMD check `CRTL + SHIFT + E`.
 
 
 ### Test the C++ code from RMixtComp
@@ -70,7 +74,7 @@ It requires *RIinside* package. Tests are in the *src/test* folder. You can comp
 
 
 ### Writing new tests
-For your own testing procedure, you can use the data and descriptor provided in the package, you can load them in R:
+For your own testing procedure, you can use the data and MODEL provided in the package, you can load them in R:
 ```
 data(simData)
 ```
