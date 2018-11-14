@@ -232,7 +232,7 @@ public:
 
 		if (!data.exist_payload( { }, "z_class")) { // z_class was not provided
 #ifdef MC_VERBOSE
-			std::cout << "MixtureComposer::setZi, no class label provided." << std::endl;
+				std::cout << "MixtureComposer::setZi, no class label provided." << std::endl;
 #endif
 			zClassInd_.setAllMissing(); // set every value state to missing_
 		} else {
@@ -287,8 +287,13 @@ public:
 
 		NamedMatrix<Real> paramStat { paramName(), colNames, paramStat_.getStatStorage() };
 
+		Index nObs = paramStat_.getStatStorage().cols();
+		NamedMatrix<Real> paramLog { paramName(), std::vector<std::string>(), paramStat_.getLogStorage() };
+
 		g.add_payload( { "variable", "param", "z_class" }, "stat", paramStat);
+		g.add_payload( { "variable", "param", "z_class" }, "log", paramStat);
 		g.add_payload( { "variable", "param", "z_class" }, "paramStr", paramStr_);
+
 
 		for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it) {
 			std::string currName = (*it)->idName();
