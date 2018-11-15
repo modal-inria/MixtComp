@@ -291,7 +291,7 @@ public:
 		NamedMatrix<Real> paramLog { paramName(), std::vector<std::string>(), paramStat_.getLogStorage() };
 
 		g.add_payload( { "variable", "param", "z_class" }, "stat", paramStat);
-		g.add_payload( { "variable", "param", "z_class" }, "log", paramStat);
+		g.add_payload( { "variable", "param", "z_class" }, "log", paramLog);
 		g.add_payload( { "variable", "param", "z_class" }, "paramStr", paramStr_);
 
 

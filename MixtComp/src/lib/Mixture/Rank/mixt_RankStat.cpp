@@ -69,7 +69,7 @@ void RankStat::sampleValue(int iteration, int iterationMax) {
 				break;
 		}
 
-		logStorageMu_.resize(0); // clear memory
+//		logStorageMu_.resize(0); // clear memory
 	} else {
 		sample(iteration);
 	}

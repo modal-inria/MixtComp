@@ -230,15 +230,15 @@ public:
 				nPosStr = str2type<int>(matchesVal[1].str());
 			} else {
 				std::stringstream sstm;
-				sstm << "Variable: " << idName_ << " parameter string is not in the correct format, which should be \"nModality: x\" "
-						<< "with x the number of modalities in the variable." << std::endl;
+				sstm << "Variable: " << idName_ << " parameter string is not in the correct format, which should be \"nModality: x\" " << "with x the number of modalities in the variable."
+						<< std::endl;
 				warnLog += sstm.str();
 			}
 
 			if (nbPos_ != nPosStr) {
 				std::stringstream sstm;
-				sstm << "Variable: " << idName_ << " has " << nPosStr << " modalities per rank in its descriptor (or the descriptor from learning, in case of prediction) "
-						<< "but has " << nbPos_ << " modalities in its data. Those two numbers must be equal." << std::endl;
+				sstm << "Variable: " << idName_ << " has " << nPosStr << " modalities per rank in its descriptor (or the descriptor from learning, in case of prediction) " << "but has " << nbPos_
+						<< " modalities in its data. Those two numbers must be equal." << std::endl;
 				warnLog += sstm.str();
 			}
 		}
@@ -277,11 +277,27 @@ public:
 			outG_.add_payload( { "variable", "param", idName_, "mu", "stat", "k: " + std::to_string(k + minModality) }, "proba", proba);
 		}
 
+		for (Index k = 0; k < nClass_; ++k) { // log of mu is also exported class by class
+			const Vector<RankVal>& muLogStorage = muParamStat_[k].logStorageMu();
+			Index nIt = muLogStorage.size();
+
+			NamedMatrix<int> rank(nIt, nbPos_, false);
+
+			for (Index i = 0; i < nIt; ++i) {
+				rank.mat_.row(i) = muLogStorage(i).o() + minModality;
+			}
+
+			outG_.add_payload( { "variable", "param", idName_, "mu", "log" }, "k: " + std::to_string(k + minModality), rank);
+		}
+
 		Index nStat = piParamStat_.getStatStorage().cols();
 		std::vector<std::string> colNames;
 		quantileNames(nStat, confidenceLevel_, colNames);
+		NamedMatrix<Real> piStatStorage = NamedMatrix<Real>( { piParamNames(), colNames, piParamStat_.getStatStorage() });
+		outG_.add_payload( { "variable", "param", idName_, "pi" }, "stat", piStatStorage);
 
-		outG_.add_payload( { "variable", "param", idName_, "pi" }, "stat", NamedMatrix<Real>( { piParamNames(), colNames, piParamStat_.getStatStorage() }));
+		NamedMatrix<Real> piLogStorage = {piParamNames(), std::vector<std::string>(), piParamStat_.getLogStorage() };
+		outG_.add_payload( { "variable", "param", idName_, "pi" }, "log", piLogStorage);
 	}
 
 	void computeObservedProba() {
@@ -306,8 +322,8 @@ private:
 
 		if (listInd.size() > 0) {
 			std::stringstream sstm;
-			sstm << "Rank variable " << idName_ << " contains individual described by missing data type not implemented yet. " << "The list of problematic individuals is: "
-					<< itString(listInd) << std::endl;
+			sstm << "Rank variable " << idName_ << " contains individual described by missing data type not implemented yet. " << "The list of problematic individuals is: " << itString(listInd)
+					<< std::endl;
 			warnLog += sstm.str();
 		}
 

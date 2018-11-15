@@ -362,7 +362,7 @@ test_that("rank model works",{
     mode = "learn"
   )
 
-  data <- resGen$data
+  data <- resGen$da
   desc <- resGen$desc
 
   resLearn <- rmc(algo, data, desc, list()) # run RMixtCompt for clustering
