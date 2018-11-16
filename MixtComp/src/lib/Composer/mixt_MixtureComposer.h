@@ -183,13 +183,6 @@ public:
 		warnLog += setZi(data); // dataHandler getData is called to fill zi_
 
 		if (mode == prediction_) { // in prediction, paramStatStorage_ will not be modified later during the run
-			Index nClass = param.template get_payload<Index>( { }, "nClass");
-
-			if (nClass != nClass_) {
-				warnLog += "nClass in learning: " + std::to_string(nClass) + ", nClass in prediction: " + std::to_string(nClass_) + ". They should be the same." + eol;
-				return warnLog;
-			}
-
 			warnLog += setProportion(param); // note: paramStr_ is manually set at the end of setDataParam, it is never parsed at the moment
 			paramStat_.setParamStorage(); // paramStatStorage_ is set now, and will not be modified further during predict run
 		}
