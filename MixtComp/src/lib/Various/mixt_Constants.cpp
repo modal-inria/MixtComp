@@ -36,11 +36,11 @@ const Real l2pi = 0.9189385332046727417;
 const std::string progressFile = "progress";
 const Real minInf = std::log(0.);
 
-const int sizeTupleBOS = 2;
-const int nbGibbsIniBOS = 100;
-const Real piInitBOS = 0.9;
-const Real piInitISR = 0.75;
-const Real piThreshold = 0.05;
+//const int sizeTupleBOS = 2;
+//const int nbGibbsIniBOS = 100;
+//const Real piInitBOS = 0.9;
+//const Real piInitISR = 0.75;
+//const Real piThreshold = 0.05;
 
 const int nbGibbsIterRankMStep = 50;
 const Index nbGibbsIniISR = 100;

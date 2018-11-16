@@ -342,7 +342,7 @@ public:
 		NamedVector<Real> completedProbabilityLogRun = { dummyNames, completedProbabilityLogRun_ };
 		g.add_payload( { "mixture" }, "completedProbabilityLogRun", completedProbabilityLogRun);
 
-		NamedMatrix<Real> matDelta = { dummyNames, dummyNames, Matrix<Real>() };
+		NamedMatrix<Real> matDelta = { mixtureName(), mixtureName(), Matrix<Real>() };
 		Delta(matDelta.mat_);
 		g.add_payload( { "mixture" }, "delta", matDelta);
 	}
