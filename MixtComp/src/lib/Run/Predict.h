@@ -51,9 +51,11 @@ void predict(const Graph& algo, const Graph& data, const Graph& desc, const Grap
 
 	// Run the Gibbs strategy
 
+	std::pair<Real, Real> timeGibbs;
+
 	GibbsStrategy<Graph> gibbsStrategy(composer, algo, 0);
 	Timer gibbsStratTimer("Gibbs Strategy Run");
-	warnLog += gibbsStrategy.run();
+	warnLog += gibbsStrategy.run(timeGibbs);
 	gibbsStratTimer.finish();
 
 	if (0 < warnLog.size()) {
@@ -69,9 +71,12 @@ void predict(const Graph& algo, const Graph& data, const Graph& desc, const Grap
 	composer.writeParameters();
 
 	Real runTime = totalTimer.finish();
-	std::string mode = "learn";
 
-	composer.exportMixture(runTime, out);
+	out.add_payload( { "mixture", "runTime" }, "total", runTime);
+	out.add_payload( { "mixture", "runTime" }, "GibbsBurnIn", timeGibbs.first);
+	out.add_payload( { "mixture", "runTime" }, "GibbsRun", timeGibbs.second);
+
+	composer.exportMixture(out);
 	composer.exportDataParam(out);
 	out.addSubGraph({}, "algo", algo);
 }

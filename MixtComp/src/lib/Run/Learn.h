@@ -33,7 +33,7 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 
 	Timer totalTimer("Total Run");
 
-	std::string warnLog;// string to log warnings
+	std::string warnLog; // string to log warnings
 
 	// Create the composer and read the data
 	MixtureComposer composer(algo);
@@ -44,31 +44,35 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 	readTimer.finish();
 
 	if (0 < warnLog.size()) {
-		out.add_payload({}, "warnLog", warnLog);
+		out.add_payload( { }, "warnLog", warnLog);
 		return;
 	}
 
 	// Run the SEM strategy
 
+	std::pair<Real, Real> timeSEM;
+
 	SemStrategy<Graph> semStrategy(composer, algo);
 	Timer semStratTimer("SEM Strategy Run");
-	warnLog += semStrategy.run();
+	warnLog += semStrategy.run(timeSEM);
 	semStratTimer.finish();
 
 	if (0 < warnLog.size()) {
-		out.add_payload({}, "warnLog", warnLog);
+		out.add_payload( { }, "warnLog", warnLog);
 		return;
 	}
 
 	// Run the Gibbs strategy
 
+	std::pair<Real, Real> timeGibbs;
+
 	GibbsStrategy<Graph> gibbsStrategy(composer, algo, 2);
 	Timer gibbsStratTimer("Gibbs Strategy Run");
-	warnLog += gibbsStrategy.run();
+	warnLog += gibbsStrategy.run(timeGibbs);
 	gibbsStratTimer.finish();
 
 	if (0 < warnLog.size()) {
-		out.add_payload({}, "warnLog", warnLog);
+		out.add_payload( { }, "warnLog", warnLog);
 		return;
 	}
 
@@ -81,11 +85,19 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 	composer.writeParameters();
 #endif
 
+	out.add_payload( { "mixture" }, "warnLog", warnLog);
+
 	Real runTime = totalTimer.finish();
-	std::string mode = "learn";
-	composer.exportMixture(runTime, out);
+
+	out.add_payload( { "mixture", "runTime" }, "total", runTime);
+	out.add_payload( { "mixture", "runTime" }, "SEMBurnIn", timeSEM.first);
+	out.add_payload( { "mixture", "runTime" }, "SEMRun", timeSEM.second);
+	out.add_payload( { "mixture", "runTime" }, "GibbsBurnIn", timeGibbs.first);
+	out.add_payload( { "mixture", "runTime" }, "GibbsRun", timeGibbs.second);
+
+	composer.exportMixture(out);
 	composer.exportDataParam(out);
-	out.addSubGraph({}, "algo", algo);
+	out.addSubGraph( { }, "algo", algo);
 }
 
 }

@@ -40,7 +40,7 @@ public:
 	}
 
 	/** run the strategy */
-	std::string run() {
+	std::string run(std::pair<Real, Real>& time) {
 		std::string warnLog;
 
 		Index nSemTry = algo_.template get_payload<Index>( { }, "nSemTry");
@@ -91,11 +91,11 @@ public:
 				std::cout << "SEM initialization complete. SEM run can start." << std::endl;
 #endif
 
-				warnLog = runSEM(burnIn_, nbBurnInIter, 0, 3, ratioStableCriterium, nStableCriterium); // group, groupMax
+				warnLog = runSEM(burnIn_, nbBurnInIter, 0, 3, ratioStableCriterium, nStableCriterium, time.first); // group, groupMax
 				if (0 < warnLog.size())
 					continue; // a non empty warnLog signals a problem in the SEM run, hence there is no need to push the execution further
 
-				warnLog = runSEM(run_, nbIter, 1, 3, ratioStableCriterium, nStableCriterium); // group, groupMax
+				warnLog = runSEM(run_, nbIter, 1, 3, ratioStableCriterium, nStableCriterium, time.second); // group, groupMax
 				if (0 < warnLog.size())
 					continue;
 
@@ -111,24 +111,20 @@ public:
 	/**
 	 * run the algorithm, only kept during the transition, as an archive
 	 * @return string describing the problem in case of soft degeneracy */
-	std::string runSEM(RunType runType, Index nIter, int group, int groupMax, Real ratioStableCriterium, Index nStableCriterium) {
+	std::string runSEM(RunType runType, Index nIter, int group, int groupMax, Real ratioStableCriterium, Index nStableCriterium, Real& time) {
 		std::string warnLog;
 
-#ifdef MC_VERBOSE
 		Timer myTimer;
 		if (runType == burnIn_) {
 			myTimer.setName("SEM: burn-in");
 		} else if (runType == run_) {
 			myTimer.setName("SEM: run");
 		}
-#endif
 
 		composer_.stabilityReset();
 
 		for (Index iter = 0; iter < nIter; ++iter) {
-#ifdef MC_VERBOSE
 			myTimer.iteration(iter, nIter - 1);
-#endif
 
 #ifdef MC_PROGRESS
 			writeProgress(group, groupMax, iter, nIter - 1);
@@ -166,9 +162,7 @@ public:
 			}
 		}
 
-#ifdef VERBOSE
-		myTimer.finish();
-#endif
+		time = myTimer.finish();
 
 		return "";
 	}

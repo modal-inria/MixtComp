@@ -32,11 +32,11 @@ public:
 	}
 
 	/** run the strategy */
-	std::string run() {
+	std::string run(std::pair<Real, Real>& time) {
 		std::string warnLog;
-		Index nSemTry = algo_.template get_payload<Index>({}, "nSemTry");
-		Index nbGibbsBurnInIter = algo_.template get_payload<Index>({}, "nbGibbsBurnInIter");
-		Index nbGibbsIter = algo_.template get_payload<Index>({}, "nbGibbsIter");
+		Index nSemTry = algo_.template get_payload<Index>( { }, "nSemTry");
+		Index nbGibbsBurnInIter = algo_.template get_payload<Index>( { }, "nbGibbsBurnInIter");
+		Index nbGibbsIter = algo_.template get_payload<Index>( { }, "nbGibbsIter");
 
 		try {
 			for (Index n = 0; n < nSemTry; ++n) {
@@ -44,11 +44,9 @@ public:
 				if (0 < warnLog.size())
 					continue;
 
-				runGibbs(burnIn_, nbGibbsBurnInIter, 0 + startGroup_, // group
-				1 + startGroup_); // groupMax
+				runGibbs(burnIn_, nbGibbsBurnInIter, 0 + startGroup_, 1 + startGroup_, time.first);
 
-				runGibbs(run_, nbGibbsIter, 1 + startGroup_, // group
-				1 + startGroup_); // groupMax
+				runGibbs(run_, nbGibbsIter, 1 + startGroup_, 1 + startGroup_, time.second);
 
 				return "";
 			}
@@ -62,20 +60,16 @@ public:
 	/**
 	 * run the algorithm, only kept during the transition, as an archive
 	 * @return string describing the problem in case of soft degeneracy */
-	void runGibbs(RunType runType, Index nIter, Index group, Index groupMax) {
-#ifdef MC_VERBOSE
+	void runGibbs(RunType runType, Index nIter, Index group, Index groupMax, Real& time) {
 		Timer myTimer;
 		if (runType == burnIn_) {
 			myTimer.setName("Gibbs: burn-in");
 		} else {
 			myTimer.setName("Gibbs: run");
 		}
-#endif
 
 		for (Index iterGibbs = 0; iterGibbs < nIter; ++iterGibbs) {
-#ifdef MC_VERBOSE
 			myTimer.iteration(iterGibbs, nIter - 1);
-#endif
 
 #ifdef MC_PROGRESS
 			writeProgress(group, groupMax, iterGibbs, nIter - 1);
@@ -90,9 +84,7 @@ public:
 			}
 		}
 
-#ifdef MC_VERBOSE
-		myTimer.finish();
-#endif
+		time = myTimer.finish();
 	}
 
 protected:

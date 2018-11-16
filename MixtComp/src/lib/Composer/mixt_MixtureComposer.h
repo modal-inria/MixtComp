@@ -309,7 +309,7 @@ public:
 	 * part of the code in mixtCompCluster.cpp
 	 */
 	template<typename Graph>
-	void exportMixture(Real runTime, Graph& g) const {
+	void exportMixture(Graph& g) const {
 		std::vector<std::string> dummyNames;
 
 		Index nFreeParameters = nbFreeParameters();
@@ -325,8 +325,6 @@ public:
 #ifdef MC_VERBOSE
 		std::cout << "lnObservedLikelihood: " << lnObsLik << std::endl << std::endl;
 #endif
-
-		g.add_payload( { "mixture" }, "runTime", runTime);
 
 		NamedMatrix<Real> idclass = { paramName(), mixtureName(), Matrix<Real>() };
 		IDClass(idclass.mat_);
