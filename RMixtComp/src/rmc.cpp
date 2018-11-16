@@ -23,8 +23,6 @@ Rcpp::List rmc(Rcpp::List algoR, Rcpp::List dataR, Rcpp::List descR, Rcpp::List 
 	RGraph resRG;
 
 	try {
-	  Rcpp::Rcout << "RMixtComp" << std::endl;
-
 		std::string warnLog;
 
 		RGraph algoRG(algoR);
