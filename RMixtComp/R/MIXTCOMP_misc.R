@@ -113,8 +113,8 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' @return a similarity matrix
 #' 
 #' @details 
-#' The similarities between variables j and h is defined by 1 - Delta(j,h)
-#' \deqn{Delta(j,h)^2 = (1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}
+#' The similarities between variables j and h is defined by Delta(j,h)
+#' \deqn{Delta(j,h)^2 = 1 - \sqrt{(1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}}
 #' 
 #' The similarities between classes k and g is defined by 1 - Sigma(k,g)
 #' \deqn{Sigma(k,g)^2 = (1/n) * \sum_{i=1}^n (P(Z_i=k|x_i) - P(Z_i=g|x_i))^2}
@@ -146,11 +146,8 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' @export
 computeSimilarityVar <- function(outMixtComp)
 {
-  varNames <- names(outMixtComp$variable$type)[names(outMixtComp$variable$type)!="z_class"]
-  
-  simil <- 1-outMixtComp$mixture$delta
-  rownames(simil) = colnames(simil) = varNames
-  
+  simil <- outMixtComp$mixture$delta
+
   return(simil)
 }
 

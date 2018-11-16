@@ -494,6 +494,8 @@ void MixtureComposer::Delta(Matrix<Real>& delta) const {
 			delta(h, j) = delta(j, h); // symetric matrix
 		}
 	}
+
+	delta = 1. - delta; // follow the formula from the pdf
 }
 
 void MixtureComposer::IDClass(Matrix<Real>& idc) const {

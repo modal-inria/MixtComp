@@ -1,8 +1,8 @@
 
 #' Heatmap of the similarities between variables about clustering
 #' 
-#' @details The similarities between variables j and h is defined by 1 - Delta(j,h)
-#' \deqn{Delta(j,h)^2 = (1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}
+#' @details The similarities between variables j and h is defined by Delta(j,h)
+#' \deqn{Delta(j,h) = 1 - \sqrt{(1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}}
 #' 
 #' @param output object returned by function \emph{mixtCompLearn}
 #' @param pkg "ggplot2" or "plotly". Package used to plot
@@ -40,8 +40,8 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
   # names of variables
   namesVbles <- names(output$variable$type)[names(output$variable$type) != "z_class"]
   namesShort <- abbreviate(namesVbles, 6, use.classes = FALSE)
-  # similarities  (1 - delta), delta is saved at slot delta of JSON file
-  similarities <- round(1 - output$mixture$delta, 2)
+  # similarities delta is saved at slot delta of JSON file
+  similarities <- round(output$mixture$delta, 2)
   
   # discriminative power (1 - Cj), saved at slot pvdiscrimclasses of JSON file
   pvDiscrim <- round(1-colSums(output$mixture$IDClass), 2)

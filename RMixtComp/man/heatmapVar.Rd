@@ -17,8 +17,8 @@ heatmapVar(output, pkg = c("ggplot2", "plotly"), ...)
 Heatmap of the similarities between variables about clustering
 }
 \details{
-The similarities between variables j and h is defined by 1 - Delta(j,h)
-\deqn{Delta(j,h)^2 = (1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}
+The similarities between variables j and h is defined by Delta(j,h)
+\deqn{Delta(j,h) = 1 - \sqrt{(1/n) * \sum_{i=1}^n \sum_{k=1}^K (P(Z_i=k|x_{ij}) - P(Z_i=k|x_{ih}))^2}}
 }
 \examples{
 \donttest{
