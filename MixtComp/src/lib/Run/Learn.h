@@ -85,7 +85,10 @@ void learn(const Graph& algo, const Graph& data, const Graph& desc, Graph& out) 
 	composer.writeParameters();
 #endif
 
-	out.add_payload( { "mixture" }, "warnLog", warnLog);
+	if (0 < warnLog.size()) {
+		out.add_payload({}, "warnLog", warnLog);
+		return;
+	}
 
 	Real runTime = totalTimer.finish();
 
