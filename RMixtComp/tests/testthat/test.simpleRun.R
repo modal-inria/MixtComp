@@ -52,7 +52,7 @@ test_that("Hard coded simple test", {
   
   resLearn <- rmc(algoLearn, dataLearn, descLearn, list())
   
-  expect_equal(resLearn$mixture$warnLog, NULL)
+  expect_equal(resLearn$warnLog, NULL)
   expect_gte(rand.index(getPartition(resLearn), zLearn), 0.9)
   
   confMatSampledLearn <- table(zLearn, getPartition(resLearn))
