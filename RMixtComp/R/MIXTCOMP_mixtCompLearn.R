@@ -94,18 +94,18 @@
 #' If MixtComp fails to run, the list contains a single element: warnLog containing error messages.
 #' 
 #' The \emph{mixture} contains
-#' \describe{
-#'   \item{BIC}{value of BIC}
-#'   \item{ICL}{value of ICL}
-#'   \item{nbFreeParameters}{number of free parameters of the mixture}
-#'   \item{lnObservedLikelihood}{observed loglikelihood}
-#'   \item{lnCompletedLikelihood}{completed loglikelihood}
-#'   \item{IDClass}{entropy used to compute the discriminative power (see code of \emph{plotDiscrimVar})}
-#'   \item{delta}{entropy used to compute the similarities between variables (see code of \emph{heatmapVar})}
-#'   \item{completedProbabilityLogBurnIn}{evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
-#'   \item{completedProbabilityLogRun}{evolution of the completed log-probability  after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)} 
-#'   \item{runTime}{execution time in seconds} 
-#'   \item{lnProbaGivenClass}{log-proportion + log-probability of x_i for each class}
+#' \itemize{
+#'   \item{BIC: value of BIC}
+#'   \item{ICL: value of ICL}
+#'   \item{nbFreeParameters: number of free parameters of the mixture}
+#'   \item{lnObservedLikelihood: observed loglikelihood}
+#'   \item{lnCompletedLikelihood: completed loglikelihood}
+#'   \item{IDClass: entropy used to compute the discriminative power (see code of \emph{plotDiscrimVar})}
+#'   \item{delta: entropy used to compute the similarities between variables (see code of \emph{heatmapVar})}
+#'   \item{completedProbabilityLogBurnIn: evolution of the completed log-probability during the burn-in period (can be used to check the convergence and determine the ideal number of iteration)}
+#'   \item{completedProbabilityLogRun: evolution of the completed log-probability  after the burn-in period (can be used to check the convergence and determine the ideal number of iteration)} 
+#'   \item{runTime: list containing the total execution time in seconds and the execution time of some subpart.} 
+#'   \item{lnProbaGivenClass: log-proportion + log-probability of x_i for each class}
 #' }
 #' 
 #' 
