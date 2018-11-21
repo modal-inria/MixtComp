@@ -210,9 +210,12 @@ public:
 		NamedMatrix<Real> stat;
 		param.get_payload( { "z_class" }, "stat", stat); // only called in predict mode, therefore the payload exists
 
-		Index nrow = stat.mat_.rows();
+		Index nClass = stat.mat_.rows();
 
-		for (Index i = 0; i < nrow; ++i) {
+		if(nClass != nClass_)
+			warnLog += "The nClass parameter provides in algo is different from the one in resLearn.";
+
+		for (Index i = 0; i < nClass; ++i) {
 			prop_(i) = stat.mat_(i, 0); // only the mode / expectation is used, quantile information is discarded
 		}
 

@@ -89,11 +89,18 @@ test_that("Hard coded simple test", {
   
   resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
   
-  expect_equal(resPredict$mixture$warnLog, NULL)
+  expect_equal(resPredict$warnLog, NULL)
   expect_gte(rand.index(getPartition(resPredict), zPredict), 0.8)
   
   confMatSampledPredict <- table(zPredict, getPartition(resPredict))
   print(confMatSampledPredict)
+  
+  # test with a bad nClass in desc
+  algoPredict$nClass = 3
+  resPredict <- rmc(algoPredict, dataPredict, descPredict, resLearn)
+  expect_named(resPredict, "warnLog")
+  expect_equal(resPredict$warnLog, "The nClass parameter provides in algo is different from the one in resLearn.")
+  
 })
 
 Sys.unsetenv("MC_DETERMINISTIC")
