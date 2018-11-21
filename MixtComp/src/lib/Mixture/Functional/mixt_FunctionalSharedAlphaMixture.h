@@ -250,19 +250,21 @@ public:
 		NamedMatrix<Real> betaStat = { betaParamNames(), colNames, Matrix<Real>(nClass_ * sizeClassBeta, nStat) };
 		NamedMatrix<Real> sdStat = { sdParamNames(), colNames, Matrix<Real>(nClass_ * sizeClassSd, nStat) };
 
-//		Matrix<Real> alphaLog(nClass_ * sizeClassAlpha, nObs); // linearized and concatenated version of alpha
-//		Matrix<Real> betaLog(nClass_ * sizeClassBeta, nObs);
-//		Matrix<Real> sdLog(nClass_ * sizeClassSd, nObs);
+		Index nObs = class_[0].alphaParamStat().getLogStorage().cols();
+
+		NamedMatrix<Real> alphaLog = { alphaParamNames(), std::vector<std::string>(), Matrix<Real>(nClass_ * sizeClassAlpha, nObs)}; // linearized and concatenated version of alpha
+		NamedMatrix<Real> betaLog = { betaParamNames(), std::vector<std::string>(), Matrix<Real>(nClass_ * sizeClassBeta, nObs)};
+		NamedMatrix<Real> sdLog = { sdParamNames(), std::vector<std::string>(), Matrix<Real>(nClass_ * sizeClassSd, nObs)};
 
 		for (Index k = 0; k < nClass_; ++k) {
 			alphaStat.mat_.block(k * sizeClassAlpha, 0, sizeClassAlpha, nStat) = class_[k].alphaParamStat().getStatStorage();
-//			alphaLog.block(k * sizeClassAlpha, 0, sizeClassAlpha, nObs) = class_[k].alphaParamStat().getLogStorage();
+			alphaLog.mat_.block(k * sizeClassAlpha, 0, sizeClassAlpha, nObs) = class_[k].alphaParamStat().getLogStorage();
 
 			betaStat.mat_.block(k * sizeClassBeta, 0, sizeClassBeta, nStat) = class_[k].betaParamStat().getStatStorage();
-//			betaLog.block(k * sizeClassBeta, 0, sizeClassBeta, nObs) = class_[k].betaParamStat().getLogStorage();
+			betaLog.mat_.block(k * sizeClassBeta, 0, sizeClassBeta, nObs) = class_[k].betaParamStat().getLogStorage();
 
 			sdStat.mat_.block(k * sizeClassSd, 0, sizeClassSd, nStat) = class_[k].sdParamStat().getStatStorage();
-//			sdLog.block(k * sizeClassSd, 0, sizeClassSd, nObs) = class_[k].sdParamStat().getLogStorage();
+			sdLog.mat_.block(k * sizeClassSd, 0, sizeClassSd, nObs) = class_[k].sdParamStat().getLogStorage();
 		}
 
 		outG_.add_payload( { "variable", "param", idName_ }, "paramStr", paramStr_);
@@ -270,6 +272,10 @@ public:
 		outG_.add_payload( { "variable", "param", idName_, "alpha" }, "stat", alphaStat);
 		outG_.add_payload( { "variable", "param", idName_, "beta" }, "stat", betaStat);
 		outG_.add_payload( { "variable", "param", idName_, "sd" }, "stat", sdStat);
+
+		outG_.add_payload( { "variable", "param", idName_, "alpha" }, "log", alphaLog);
+		outG_.add_payload( { "variable", "param", idName_, "beta" }, "log", betaLog);
+		outG_.add_payload( { "variable", "param", idName_, "sd" }, "log", sdLog);
 	}
 	;
 
