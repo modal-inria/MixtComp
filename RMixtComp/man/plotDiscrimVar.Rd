@@ -56,6 +56,7 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{plotConvergence}}, \code{\link{plotCrit}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},
+  \code{\link{plotParamConvergence}},
   \code{\link{plotProportion}}
 }
 \author{

@@ -472,8 +472,11 @@ test_that("run cluster/predict R object",{
   expect_warning(heatmapTikSorted(resLearn, pkg = "plotly"), regexp = NA)
   expect_warning(histMisclassif(resLearn, pkg = "ggplot2"), regexp = NA)
   expect_warning(histMisclassif(resLearn, pkg = "plotly"), regexp = NA)
+
   for(name in getVarNames(resLearn))
   {
+    expect_warning(plotParamConvergence(resLearn, name), regexp = NA)
+    
     if(resLearn$variable$type[[name]] != "Rank_ISR")
     {
       expect_warning(plotDataCI(resLearn, name, pkg = "plotly"), regexp = NA)

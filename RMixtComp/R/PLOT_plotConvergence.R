@@ -37,38 +37,37 @@ plotConvergence <- function(output, ...)
   abline(v = length(output$mixture$completedProbabilityLogBurnIn) + 0.5, lty = "dotted", col = "red")
 }
 
-# DEPRECATED: MixtComp does not export param logs for the moment
-#
-# Evolution of parameters
-#
-# Plot the evolution of estimated parameters after the burn-in phase.
-#
-# @param output object returned by function \emph{mixtCompLearn}
-# @param var name of the variable
-# @param ... graphical parameters
-#
-#
-#
-# @examples
-# \donttest{
-# library(RMixtComp)
-#
-# data(simData)
-#
-# # define the algorithm's parameters
-# algo <- createAlgo()
-#
-# # run RMixtCompt in unsupervised clustering mode + data as matrix
-# res <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
-# # plot
-# plotParamConvergence(res, "Gaussian1")
-# plotParamConvergence(res, "Poisson1")
-#
-# }
-#
-# @author Quentin Grimonprez
-# @family plot
-# @export
+#' Evolution of parameters
+#' 
+#' Plot the evolution of estimated parameters after the burn-in phase.
+#' 
+#' @param output object returned by function \emph{mixtCompLearn}
+#' @param var name of the variable
+#' @param ... graphical parameters
+#' 
+#' 
+#' 
+#' @examples
+#' \donttest{
+#' library(RMixtComp)
+#' 
+#' data(simData)
+#' 
+#' # define the algorithm's parameters
+#' algo <- createAlgo()
+#' 
+#' # run RMixtCompt in unsupervised clustering mode + data as matrix
+#' res <- mixtCompLearn(simData$dataLearn$matrix, simData$model$unsupervised, algo, nClass = 2:4)
+#' 
+#' # plot
+#' plotParamConvergence(res, "Gaussian1")
+#' plotParamConvergence(res, "Poisson1")
+#' 
+#' }
+#' 
+#' @author Quentin Grimonprez
+#' @family plot
+#' @export
 plotParamConvergence <- function(output, var, ...)
 {
   if(!(var%in%names(output$variable$type)))
@@ -77,18 +76,13 @@ plotParamConvergence <- function(output, var, ...)
   type <- output$variable$type[[var]]
   nbCluster <- output$algo$nClass
   
-  type <- ifelse(type %in% c("Gaussian", "Weibull", "Multinomial", "Poisson", "NegativeBinomial"), "Simple", type)
+  type <- ifelse(type %in% c("Gaussian", "Weibull", "Multinomial", "Poisson", "NegativeBinomial", "LatentClass"), "Simple", type)
+  type = ifelse(type %in% c("Func_SharedAlpha_CS"), "Func_CS", type)
   
   switch(type,
          "Simple" = plotLog(output$variable$param[[var]]$log, nbCluster, var, ...),
          "Rank_ISR" = plotLog(output$variable$param[[var]]$pi$log, nbCluster, var, ...),
          "Func_CS" = {plotLog(output$variable$param[[var]]$alpha$log, nbCluster, var, ...)
-           title("alpha", line = -1, outer = TRUE)
-           plotLog(output$variable$param[[var]]$beta$log, nbCluster, var, ...)
-           title("beta", line = -1, outer = TRUE)
-           plotLog(output$variable$param[[var]]$sd$log, nbCluster, var, ...)
-           title("sd", line = -1, outer = TRUE)},
-         "Func_SharedAlpha_CS" = {plotLog(output$variable$param[[var]]$alpha$log, nbCluster, var, ...)
            title("alpha", line = -1, outer = TRUE)
            plotLog(output$variable$param[[var]]$beta$log, nbCluster, var, ...)
            title("beta", line = -1, outer = TRUE)

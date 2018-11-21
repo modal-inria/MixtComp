@@ -52,6 +52,7 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},
   \code{\link{plotDiscrimVar}},
+  \code{\link{plotParamConvergence}},
   \code{\link{plotProportion}}
 }
 \concept{plot}

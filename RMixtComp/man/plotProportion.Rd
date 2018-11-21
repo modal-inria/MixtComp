@@ -46,6 +46,7 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{plotConvergence}}, \code{\link{plotCrit}},
   \code{\link{plotDataBoxplot}}, \code{\link{plotDataCI}},
   \code{\link{plotDiscrimClass}},
-  \code{\link{plotDiscrimVar}}
+  \code{\link{plotDiscrimVar}},
+  \code{\link{plotParamConvergence}}
 }
 \concept{plot}
