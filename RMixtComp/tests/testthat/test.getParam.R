@@ -59,11 +59,11 @@ test_that("getParamRank_ISR works well", {
 
 test_that("getnSub and getnCoeff works", {
   
-  paramStr = "nSub: 2, nCoeff: 3"
+  paramStr = "nSub  : 2, nCoeff   : 3 "
   expect_equal(getnSub(paramStr), 2)
   expect_equal(getnCoeff(paramStr), 3)
   
-  paramStr = "nSub: 12, nCoeff: 23"
+  paramStr = "nSub    :   12, nCoeff:23"
   expect_equal(getnSub(paramStr), 12)
   expect_equal(getnCoeff(paramStr), 23)
 })

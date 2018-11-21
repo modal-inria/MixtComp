@@ -76,12 +76,12 @@ getParamFunc_CS <- function(param, nbClass)
 
 getnCoeff <- function(paramStr)
 {
-  as.numeric(gsub("nCoeff: ", "", strsplit(paramStr, ",")[[1]][2]))
+  as.numeric(gsub("nCoeff:", "", strsplit(gsub(" ", "", paramStr), ",")[[1]][2]))
 }
 
 getnSub <- function(paramStr)
 {
-  as.numeric(gsub("nSub: ", "", strsplit(paramStr, ",")[[1]][1]))
+  as.numeric(gsub("nSub:", "", strsplit(gsub(" ", "", paramStr), ",")[[1]][1]))
 }
 
 getParamRank_ISR <- function(param, nbClass)
