@@ -1,39 +1,3 @@
-# Compute the new model with the given parent and child
-#
-# Compute the parameter of the model (in supervised) with the clusters of child replacing one cluster of the parent
-#
-# @param resParent result object of a MixtComp run.
-# @param resChild result object of a MixtComp run. This run is performed on the individuals of one cluster of resParent
-# @param classParentOfChild cluster of the parent used for the child
-# @param data
-# @param desc
-# @param algo
-#
-# @return mixtComp res
-computeNewModel <- function(resParent, resChild, classParentOfChild, data, desc, algo)
-{
-  oldZ_class = resParent$variable$data$z_class$completed
-  newZ_class = rep(NA, length(oldZ_class))
-
-  newZ_class[oldZ_class == classParentOfChild] = resChild$variable$data$z_class$completed + (resParent$algo$nClass - 1)
-  newZ_class[oldZ_class != classParentOfChild] <- refactorCategoricalData(oldZ_class[oldZ_class != classParentOfChild],
-                                                                          unique(oldZ_class[oldZ_class != classParentOfChild]), seq_along(unique(oldZ_class[oldZ_class != classParentOfChild])))
-
-  data$z_class = as.character(newZ_class)
-
-
-  algo$nClass = resParent$algo$nClass + 1
-  algo$nInd = resParent$algo$nInd
-  algo$mode = "learn"
-  algo$nInitPerClass = algo$nInd
-
-  res <- RMixtComp:::rmc(algo, data, desc, list())
-  class(res) = "MixtComp"
-
-  return(res)
-}
-
-
 
 # Concatenation of param element of 2 MixtComp output
 #
