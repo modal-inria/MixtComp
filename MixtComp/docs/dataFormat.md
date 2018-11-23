@@ -71,6 +71,64 @@ desc <- list(varName1 = list(type = "Model1", paramStr = "param1"),
 ```
 
 
+## Algo
+
+Algo is a list containing the required parameters of the SEM algorithm.
+
+- **nbBurnInIter** Number of iterations of the burn-in part of the SEM algorithm.
+- **nbIter** Number of iterations of the SEM algorithm.
+- **nbGibbsBurnInIter** Number of iterations of the burn-in part of the Gibbs algorithm.
+- **nbGibbsIter** Number of iterations of the Gibbs algorithm.
+- **nInitPerClass** Number of individuals used to initialize each cluster.
+- **nSemTry** Number of try of the algorithm for avoiding an error.
+- **confidenceLevel** Confidence level for confidence bounds for parameter estimation.
+- **ratioStableCriterium** Stability partition required to stop earlier the SEM .
+- **nStableCriterium** Number of iterations of partition stability to stop earlier the SEM.
+- **nInd** Number of individuals per variables.
+- **nClass** Number of classes.
+
+User can add extra elements, they will be copied in the output object. 
+
+    
+JSON:
+```
+{
+  "nClass": 2,
+  "nInd": 15,
+  "nbBurnInIter": 100,
+  "nbIter": 100,
+  "nbGibbsBurnInIter": 100,
+  "nbGibbsIter": 100,
+  "nInitPerClass": 2,
+  "nSemTry": 10,
+  "confidenceLevel": 0.95,
+  "ratioStableCriterium": 0.9,
+  "nStableCriterium": 7,
+  "notes": "You can add any note you wish in non mandatory fields like this one (notes). They will be copied to the output."
+}
+```
+
+R:
+```
+algo <- list(nClass = 2, 
+             nInd = 15,
+             nbBurnInIter = 100,
+             nbIter = 100,
+             nbGibbsBurnInIter = 100,
+             nbGibbsIter = 100,
+             nInitPerClass = 2,
+             nSemTry = 10,
+             confidenceLevel = 0.95,
+             ratioStableCriterium = 0.9,
+             nStableCriterium = 7,
+             notes = "You can add any note you wish in non mandatory fields like this one (notes). They will be copied to the output.")
+```
+
+In the RMixtComp, *nInd* can be omitted and nClass is copied from from mixtCompLearn function's argument.
+
+
+
+
 ## Models
 
 ### Overview
