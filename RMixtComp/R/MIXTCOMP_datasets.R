@@ -37,14 +37,14 @@ NULL
 #' 
 #' @format A data.frame with 1309 individuals and 8 variables.
 #' \itemize{
-#'   \item survived: 0 = No, 1 = Yes
+#'   \item survived: 0 = No, 1 = Yes (factor)
 #'   \item pclass:	ticket class 	1 = 1st, 2 = 2nd, 3 = 3rd
-#'   \item sex: male or female
+#'   \item sex: male or female (factor)
 #'   \item age: age in years
 #'   \item sibsp: number of siblings/spouses aboard the Titanic
 #'   \item parch: number of parents/children aboard the Titanic 
 #'   \item fare: ticket price in pounds
-#'   \item embarked: port of Embarkation 	C = Cherbourg, Q = Queenstown, S = Southampton
+#'   \item embarked: port of Embarkation 	C = Cherbourg, Q = Queenstown, S = Southampton (factor)
 #' }
 #' 
 #' @source \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.xls}
@@ -55,9 +55,10 @@ NULL
 #' 
 #' head(titanic)
 #' 
+#' ## Use the MixtComp format
 #' dat <- titanic
 #' 
-#' # refactor categorical data : survived, sex, embarked
+#' # refactor categorical data: survived, sex, embarked
 #' dat$sex <- refactorCategorical(dat$sex, c("male", "female", NA), c(1, 2, "?"))
 #' dat$embarked <- refactorCategorical(dat$embarked, c("C", "Q", "S", NA), c(1, 2, 3, "?"))
 #' dat$survived <- refactorCategorical(dat$survived, c(0, 1, NA), c(1, 2, "?"))
@@ -84,6 +85,16 @@ NULL
 #' summary(resLearn)
 #' 
 #' plot(resLearn) 
+#' 
+#' 
+#' ## Use standard data.frame and R format because titanic contains only standard variables.
+#' # mixtCompLearn in "basic" mode without model parameters and data as a data.frame.
+#' # A Multinomial model is used for factor variables, a Poisson for integer and a Gaussian for numeric.
+#' resLearn <- mixtCompLearn(titanic, nClass = 2:15, nRun = 3)
+#' 
+#' # imputed model
+#' getType(resLearn)
+#' 
 #' }
 #'   
 NULL
