@@ -380,6 +380,7 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
         {
           resLearn[[i]]$variable$data[[varName]]$completed = refactorCategorical(resLearn[[i]]$variable$data[[varName]]$completed, resLearn[[i]]$algo$dictionary[[varName]]$new, resLearn[[i]]$algo$dictionary[[varName]]$old)
           rownames(resLearn[[i]]$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(resLearn[[i]]$variable$param[[varName]]$stat)), resLearn[[i]]$algo$dictionary[[varName]]$old)
+          rownames(resLearn[[i]]$variable$param[[varName]]$log) = rownames(resLearn[[i]]$variable$param[[varName]]$stat)
         }
       }
     }
