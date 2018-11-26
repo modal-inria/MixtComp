@@ -7,7 +7,7 @@
 \format{A data.frame with 1309 individuals and 8 variables.
 \itemize{
   \item survived: 0 = No, 1 = Yes (factor)
-  \item pclass:	ticket class 	1 = 1st, 2 = 2nd, 3 = 3rd
+  \item pclass:	ticket class 	1st, 2nd, 3rd (factor)
   \item sex: male or female (factor)
   \item age: age in years
   \item sibsp: number of siblings/spouses aboard the Titanic
