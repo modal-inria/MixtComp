@@ -16,6 +16,8 @@
   \item embarked: port of Embarkation 	C = Cherbourg, Q = Queenstown, S = Southampton (factor)
 }}
 \source{
+Titanic People Database, Encyclopedia Titanica, \url{https://www.encyclopedia-titanica.org/titanic-survivors/}
+
 \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/titanic3.xls}
 }
 \usage{
