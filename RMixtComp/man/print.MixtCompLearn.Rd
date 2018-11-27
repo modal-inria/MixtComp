@@ -2,9 +2,7 @@
 % Please edit documentation in R/MIXTCOMP_methods.R
 \name{print.MixtCompLearn}
 \alias{print.MixtCompLearn}
-\title{Print Values
-
-Print a \emph{MixtCompLearn} object}
+\title{Print Values}
 \usage{
 \method{print}{MixtCompLearn}(x, nVarMaxToPrint = 5, ...)
 }
@@ -16,8 +14,6 @@ Print a \emph{MixtCompLearn} object}
 \item{...}{Not used.}
 }
 \description{
-Print Values
-
 Print a \emph{MixtCompLearn} object
 }
 \examples{

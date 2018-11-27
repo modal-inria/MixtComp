@@ -1,7 +1,6 @@
 #' @title MixtComp Object Summaries
 #'
-#' Summary of a \emph{MixtComp} object
-#'  
+#' @description Summary of a \emph{MixtComp} object
 #'
 #' @param object \emph{MixtComp} object
 #' @param ... Not used.
@@ -50,20 +49,24 @@ summary.MixtComp <- function(object, ...)
     cat("Number of clusters:", object$algo$nClass,"\n")
     cat("Mode:", object$algo$mode,"\n")
     cat("Time:", object$mixture$runTime$total,"s\n")
-    cat("SEM burn-in iterations done:", length(object$mixture$completedProbabilityLogBurnIn),"/", object$algo$nbBurnInIter,"\n")
-    cat("SEM run iterations done:", length(object$mixture$completedProbabilityLogRun),"/", object$algo$nbIter,"\n")
+    cat("SEM burn-in iterations done:", paste0(length(object$mixture$completedProbabilityLogBurnIn),"/", object$algo$nbBurnInIter),"\n")
+    cat("SEM run iterations done:", paste0(length(object$mixture$completedProbabilityLogRun),"/", object$algo$nbIter),"\n")
     cat("Observed log-likelihood:", object$mixture$lnObservedLikelihood,"\n")
-    cat("BIC:",object$mixture$BIC,"\n")
-    cat("ICL:",object$mixture$ICL,"\n")
+    cat("BIC:", object$mixture$BIC,"\n")
+    cat("ICL:", object$mixture$ICL,"\n")
     cat("Discriminative power:\n")
-    print(discVar)
-    cat("Proportion of the mixture: ")
+    print(round(discVar, 3))
+    cat("Proportions of the mixture:\n")
     cat(round(getParam(object, "z_class"), 3), "\n")
     cat("Parameters of the most discriminant variables:\n")
     for(name in nameDiscVar[1:min(3, length(nameDiscVar))])
     {
-      cat(name, ":", object$variable$type[[name]], "\n")
-      print(getParam(object, name))
+      cat(paste0("- ", name, ":"), object$variable$type[[name]], "\n")
+      param <- getParam(object, name)
+      if(is.list(param))
+        print(lapply(param, round, 3))
+      else
+        print(round(param, 3))
     }
   }
   cat("####################################\n")
@@ -72,8 +75,7 @@ summary.MixtComp <- function(object, ...)
   
 #' @title MixtCompLearn Object Summaries
 #'
-#' Summary of a \emph{MixtCompLearn} object
-#'  
+#' @description Summary of a \emph{MixtCompLearn} object  
 #'
 #' @param object \emph{MixtCompLearn} object
 #' @param ... Not used.
@@ -119,8 +121,7 @@ summary.MixtCompLearn <- function(object, ...)
 
 #' @title Print Values
 #'
-#' Print a \emph{MixtComp} object
-#'
+#' @description Print a \emph{MixtComp} object
 #'  
 #' @param x \emph{MixtComp} object
 #' @param nVarMaxToPrint number of variables to display (including z_class)
@@ -216,9 +217,8 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 
 #' @title Print Values
 #'
-#' Print a \emph{MixtCompLearn} object
+#' @description Print a \emph{MixtCompLearn} object
 #'
-#'  
 #' @param x \emph{MixtCompLearn} object
 #' @param nVarMaxToPrint number of variables to display (including z_class)
 #' @param ... Not used.

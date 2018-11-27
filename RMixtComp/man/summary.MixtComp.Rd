@@ -2,9 +2,7 @@
 % Please edit documentation in R/MIXTCOMP_methods.R
 \name{summary.MixtComp}
 \alias{summary.MixtComp}
-\title{MixtComp Object Summaries
-
-Summary of a \emph{MixtComp} object}
+\title{MixtComp Object Summaries}
 \usage{
 \method{summary}{MixtComp}(object, ...)
 }
@@ -14,8 +12,6 @@ Summary of a \emph{MixtComp} object}
 \item{...}{Not used.}
 }
 \description{
-MixtComp Object Summaries
-
 Summary of a \emph{MixtComp} object
 }
 \examples{

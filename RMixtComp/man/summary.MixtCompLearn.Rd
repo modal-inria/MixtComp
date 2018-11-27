@@ -2,9 +2,7 @@
 % Please edit documentation in R/MIXTCOMP_methods.R
 \name{summary.MixtCompLearn}
 \alias{summary.MixtCompLearn}
-\title{MixtCompLearn Object Summaries
-
-Summary of a \emph{MixtCompLearn} object}
+\title{MixtCompLearn Object Summaries}
 \usage{
 \method{summary}{MixtCompLearn}(object, ...)
 }
@@ -14,8 +12,6 @@ Summary of a \emph{MixtCompLearn} object}
 \item{...}{Not used.}
 }
 \description{
-MixtCompLearn Object Summaries
-
 Summary of a \emph{MixtCompLearn} object
 }
 \examples{

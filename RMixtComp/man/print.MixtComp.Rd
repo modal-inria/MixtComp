@@ -2,9 +2,7 @@
 % Please edit documentation in R/MIXTCOMP_methods.R
 \name{print.MixtComp}
 \alias{print.MixtComp}
-\title{Print Values
-
-Print a \emph{MixtComp} object}
+\title{Print Values}
 \usage{
 \method{print}{MixtComp}(x, nVarMaxToPrint = 5, ...)
 }
@@ -16,8 +14,6 @@ Print a \emph{MixtComp} object}
 \item{...}{Not used.}
 }
 \description{
-Print Values
-
 Print a \emph{MixtComp} object
 }
 \examples{
