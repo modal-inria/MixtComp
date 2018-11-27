@@ -26,8 +26,8 @@ test_that("rmcMultiRun works", {
     nInitPerClass = 100,
     confidenceLevel = 0.95,
     nClass = 4,
-    ratioStableCriterium = 0.95,
-    nStableCriterium = 10,
+    ratioStableCriterion = 0.95,
+    nStableCriterion = 10,
     mode = "learn",
     nInd = 1000
   )

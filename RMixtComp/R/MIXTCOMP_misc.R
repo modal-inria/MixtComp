@@ -9,8 +9,8 @@
 #' @param nInitPerClass Number of individuals used to initialize each cluster (default = 10).
 #' @param nSemTry Number of try of the algorithm for avoiding an error.
 #' @param confidenceLevel confidence level for confidence bounds for parameter estimation
-#' @param ratioStableCriterium stability partition required to stop earlier the SEM 
-#' @param nStableCriterium number of iterations of partition stability to stop earlier the SEM
+#' @param ratioStableCriterion stability partition required to stop earlier the SEM 
+#' @param nStableCriterion number of iterations of partition stability to stop earlier the SEM
 #' 
 #' @return a list with the parameters values
 #' 
@@ -22,7 +22,7 @@
 #' algo <- createAlgo(nbIter = 200)
 #' 
 #' @export
-createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20, confidenceLevel = 0.95, ratioStableCriterium = 0.95, nStableCriterium = 10)
+createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20, confidenceLevel = 0.95, ratioStableCriterion = 0.95, nStableCriterion = 10)
 {
   list(nbBurnInIter = nbBurnInIter,
        nbIter = nbIter,
@@ -31,8 +31,8 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
        nInitPerClass = nInitPerClass,
        nSemTry = nSemTry,
        confidenceLevel = confidenceLevel,
-       ratioStableCriterium = ratioStableCriterium,
-       nStableCriterium = nStableCriterium)
+       ratioStableCriterion = ratioStableCriterion,
+       nStableCriterion = nStableCriterion)
 }
 
 

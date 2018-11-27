@@ -8,8 +8,8 @@
   "nInitPerClass": 2,
   "nSemTry": 10,
   "confidenceLevel": 0.95,
-  "ratioStableCriterium": 0.9,
-  "nStableCriterium": 7,
+  "ratioStableCriterion": 0.9,
+  "nStableCriterion": 7,
   "mode": "learn",
   "notes": "You can add any note you wish in non mandatory fields like this one (notes). They will be copied to the output."
 }

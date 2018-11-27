@@ -82,8 +82,8 @@ Algo is a list containing the required parameters of the SEM algorithm.
 - **nInitPerClass** Number of individuals used to initialize each cluster.
 - **nSemTry** Number of try of the algorithm for avoiding an error.
 - **confidenceLevel** Confidence level for confidence bounds for parameter estimation.
-- **ratioStableCriterium** Stability partition required to stop earlier the SEM .
-- **nStableCriterium** Number of iterations of partition stability to stop earlier the SEM.
+- **ratioStableCriterion** Stability partition required to stop earlier the SEM .
+- **nStableCriterion** Number of iterations of partition stability to stop earlier the SEM.
 - **nInd** Number of individuals per variables.
 - **nClass** Number of classes.
 
@@ -102,8 +102,8 @@ JSON:
   "nInitPerClass": 2,
   "nSemTry": 10,
   "confidenceLevel": 0.95,
-  "ratioStableCriterium": 0.9,
-  "nStableCriterium": 7,
+  "ratioStableCriterion": 0.9,
+  "nStableCriterion": 7,
   "notes": "You can add any note you wish in non mandatory fields like this one (notes). They will be copied to the output."
 }
 ```
@@ -119,12 +119,12 @@ algo <- list(nClass = 2,
              nInitPerClass = 2,
              nSemTry = 10,
              confidenceLevel = 0.95,
-             ratioStableCriterium = 0.9,
-             nStableCriterium = 7,
+             ratioStableCriterion = 0.9,
+             nStableCriterion = 7,
              notes = "You can add any note you wish in non mandatory fields like this one (notes). They will be copied to the output.")
 ```
 
-In the RMixtComp, *nInd* can be omitted and nClass is copied from from mixtCompLearn function's argument.
+In the RMixtComp, *nInd* can be omitted and *nClass* is copied from from mixtCompLearn function's argument.
 
 
 

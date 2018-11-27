@@ -16,8 +16,8 @@ simpleNormalTest <- function() {
     nInitPerClass = 3,
     nSemTry = 20,
     confidenceLevel = 0.95,
-    nStableCriterium = 5,
-    ratioStableCriterium = 0.9,
+    nStableCriterion = 5,
+    ratioStableCriterion = 0.9,
     mode = "learn"
   )
   
@@ -72,8 +72,8 @@ simpleNormalTest <- function() {
     nInitPerClass = 3,
     nSemTry = 20,
     confidenceLevel = 0.95,
-    nStableCriterium = 5,
-    ratioStableCriterium = 0.9,
+    nStableCriterion = 5,
+    ratioStableCriterion = 0.9,
     mode = "predict"
   )
   

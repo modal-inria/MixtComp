@@ -67,7 +67,8 @@ plot(resLearn)
 
 ## Use standard data.frame and R format because titanic contains only standard variables.
 # mixtCompLearn in "basic" mode without model parameters and data as a data.frame.
-# A Multinomial model is used for factor variables, a Poisson for integer and a Gaussian for numeric.
+# A Multinomial model is used for factor variables, a Poisson for integer
+# and a Gaussian for numeric.
 resLearn <- mixtCompLearn(titanic, nClass = 2:15, nRun = 3)
 
 # imputed model

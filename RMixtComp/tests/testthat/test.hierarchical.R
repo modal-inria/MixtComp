@@ -20,8 +20,8 @@ test_that("simple case", {
                nbGibbsIter = 50,
                nInitPerClass = 10,
                nSemTry = 20,
-               ratioStableCriterium = 0.95,
-               nStableCriterium = 10,
+               ratioStableCriterion = 0.95,
+               nStableCriterion = 10,
                confidenceLevel = 0.95)
   
   expect_warning(res <- hierarchicalMixtCompLearn(data, model, algo, nClass = 4, criterion = "BIC", minClassSize = 5), regexp = NA)

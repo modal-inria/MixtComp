@@ -49,8 +49,8 @@
 #'   \item{nInitPerClass: Number of individuals used to initialize each cluster (default = 10).}
 #'   \item{nSemTry: Number of try of the algorithm for avoiding an error.}
 #'   \item{confidenceLevel: confidence level for confidence bounds for parameter estimation}
-#'   \item{ratioStableCriterium: stability partition required to stop earlier the SEM }
-#'   \item{nStableCriterium: number of iterations of partition stability to stop earlier the SEM}
+#'   \item{ratioStableCriterion: stability partition required to stop earlier the SEM }
+#'   \item{nStableCriterion: number of iterations of partition stability to stop earlier the SEM}
 #' }
 #' 
 #' 
