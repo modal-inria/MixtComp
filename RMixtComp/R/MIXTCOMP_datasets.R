@@ -60,16 +60,17 @@ NULL
 #' ## Use the MixtComp format
 #' dat <- titanic
 #' 
-#' # refactor categorical data: survived, sex, embarked
+#' # refactor categorical data: survived, sex, embarked and pclass
 #' dat$sex <- refactorCategorical(dat$sex, c("male", "female", NA), c(1, 2, "?"))
 #' dat$embarked <- refactorCategorical(dat$embarked, c("C", "Q", "S", NA), c(1, 2, 3, "?"))
 #' dat$survived <- refactorCategorical(dat$survived, c(0, 1, NA), c(1, 2, "?"))
+#' dat$pclass <- refactorCategorical(dat$pclass, c("1st", "2nd", "3rd"), c(1, 2, 3))
 #' 
 #' # replace all NA by ?
 #' dat[is.na(dat)] = "?" 
 #' 
 #' # create model
-#' model <- list(pclass = "Poisson",
+#' model <- list(pclass = "Multinomial",
 #'               survived = "Multinomial",
 #'               sex = "Multinomial",
 #'               age = "Gaussian",
