@@ -98,7 +98,7 @@ extractCIMultiVble = function(var, data, class, grl){
   # drop the levels that do not belong to the CI of all the classes
   if (any(rowSums(out) == out[,1])) out <- out[-which(rowSums(out) == out[,1]),, drop = FALSE]
   
-  lev <- gsub("k: [0-9]*, modality: ", "", rownames(data$variable$param[[var]]$stat))[class]
+  lev <- gsub("k: [0-9]*, modality: ", "", rownames(data$variable$param[[var]]$stat))
   lev = lev[out[,1]]
   
   return(list(levels = lev, probs = t(out[,-1, drop = FALSE])))
