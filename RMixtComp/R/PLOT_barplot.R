@@ -57,7 +57,7 @@ plotDiscrimVar <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"),
   ## Barplot
   visuVbles <- switch(pkg,
                       "plotly" = barplotly(pvDiscrim, namesShort, main = "Discriminative level of the variables", ylim = ylim, text = textMous, ...),
-                      "ggplot2" = ggbarplot(pvDiscrim, namesShort, main = "Discriminative level of the variables", ylim = ylim)) 
+                      "ggplot2" = ggbarplot(pvDiscrim, namesShort, main = "Discriminative level of the variables", ylim = ylim, col.text = "black")) 
   visuVbles
 }
 
@@ -113,7 +113,7 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"
   ## Barplot
   visuClass <- switch(pkg,
                       "plotly" = barplotly(pvDiscrim, namesClass, main = "Discriminative level of the classes", ylim = ylim, ...),
-                      "ggplot2" = ggbarplot(pvDiscrim, namesClass, main = "Discriminative level of the classes", ylim = ylim))
+                      "ggplot2" = ggbarplot(pvDiscrim, namesClass, main = "Discriminative level of the classes", ylim = ylim, col.text = "black"))
   
   visuClass
 }
@@ -151,9 +151,10 @@ plotProportion <- function(output, pkg = c("ggplot2", "plotly"), ...)
 {
   pkg = match.arg(pkg)
   
+  ylimProportion <- min(max(output$variable$param$z_class$stat[,1]) + 0.1, 1)
   p <- switch(pkg, 
-              "ggplot2" = ggbarplot(output$variable$param$z_class$stat[,1], paste0("Class ", 1:output$algo$nClass), main = "Proportion", xlab = "", ylab = "", ylim = c(0, 1)),
-              "plotly" = barplotly(output$variable$param$z_class$stat[,1], paste0("Class ", 1:output$algo$nClass), main = "Proportion", xlab = "", ylab = "", ylim = c(0, 1), text = NULL, ...))
+              "ggplot2" = ggbarplot(output$variable$param$z_class$stat[,1], paste0("Class ", 1:output$algo$nClass), main = "Proportion", xlab = "", ylab = "", ylim = c(0, ylimProportion), col.text = "black"),
+              "plotly" = barplotly(output$variable$param$z_class$stat[,1], paste0("Class ", 1:output$algo$nClass), main = "Proportion", xlab = "", ylab = "", ylim = c(0, ylimProportion), text = NULL, ...))
   
   p
 }
@@ -180,13 +181,13 @@ barplotly <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), 
   p
 }
 
-ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1))
+ggbarplot <- function(value, label, main, xlab = "", ylab = "", ylim = c(0, 1), col.text = "white")
 {
   df = data.frame(var = factor(label, levels = label), discrim = value)
   ggplot(data = df, aes_string(x = "var", y = "discrim", fill = "var")) +
     geom_bar(stat = "identity") +
     scale_fill_manual(values = col_numeric("Blues", domain = c(0,100))(ceiling(value*100))) + 
-    geom_text(aes(label = round(discrim, 2)), vjust = 1.6, color = "white", size = 5) +
+    geom_text(aes(label = round(discrim, 2)), vjust = 1.6, color = col.text, size = 5) +
     theme_minimal() +
     ylim(ylim[1], ylim[2]) +
     labs(title = main, x = xlab, y = ylab) +

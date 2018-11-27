@@ -297,7 +297,7 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, ...)
 #' @family plot
 #' 
 #' @export
-plot.MixtComp <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ...)
+plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ...)
 {
   pkg = match.arg(pkg)
   
@@ -359,7 +359,7 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ..
 #' @family plot
 #' 
 #' @export
-plot.MixtCompLearn <- function(x, nVarMaxToPlot = 5, pkg = c("ggplot2", "plotly"), ...)
+plot.MixtCompLearn <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ...)
 {
   pkg = match.arg(pkg)
   

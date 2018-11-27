@@ -4,7 +4,7 @@
 \alias{plot.MixtCompLearn}
 \title{Plot of a \emph{MixtCompLearn} object}
 \usage{
-\method{plot}{MixtCompLearn}(x, nVarMaxToPlot = 5, pkg = c("ggplot2",
+\method{plot}{MixtCompLearn}(x, nVarMaxToPlot = 3, pkg = c("ggplot2",
   "plotly"), ...)
 }
 \arguments{

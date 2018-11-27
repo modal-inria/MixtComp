@@ -4,7 +4,7 @@
 \alias{plot.MixtComp}
 \title{Plot of a \emph{MixtComp} object}
 \usage{
-\method{plot}{MixtComp}(x, nVarMaxToPlot = 5, pkg = c("ggplot2",
+\method{plot}{MixtComp}(x, nVarMaxToPlot = 3, pkg = c("ggplot2",
   "plotly"), ...)
 }
 \arguments{

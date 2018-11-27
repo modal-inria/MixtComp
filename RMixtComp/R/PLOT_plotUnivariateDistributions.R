@@ -78,48 +78,47 @@ plotlyCINumericData <- function(data, var, class, grl, ...){
                                     "Mean: ", round(data$mean[length(data$mean)],2), "<br>",
                                     "CI-95%: [", round(data$lower[length(data$mean)],2),
                                     ",", round(data$uppers[length(data$mean)],2),"]"))
-  p <- plot_ly(x=data$mean, 
-               y=c(1:length(data$mean)),
-               type="scatter",
-               mode = 'markers',
+  p <- plot_ly(x = data$mean, 
+               y = c(1:length(data$mean)),
+               type = "scatter",
+               mode = "markers",
                showlegend = FALSE,
                hoverinfo = "text",
                text = text1, ...
   )%>%layout(title = "Mean and 95%-level confidence intervals per class",
-             paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
+             paper_bgcolor = "rgb(255,255,255)", plot_bgcolor = "rgb(229,229,229)",
              xaxis = list(title = var,
                           titlefont = list(
                             family = "Arial, sans-serif",
-                            size = 18,
-                            color = "lightgrey"
+                            size = 18
                           ),
-                          gridcolor = 'rgb(255,255,255)',
+                          gridcolor = "rgb(255,255,255)",
                           showgrid = TRUE,
                           showline = FALSE,
                           showticklabels = TRUE,
-                          tickcolor = 'rgb(127,127,127)',
-                          ticks = 'outside',
+                          tickcolor = "rgb(127,127,127)",
+                          ticks = "outside",
                           zeroline = FALSE,
                           range=c(min(data$lower), max(data$uppers)) + c(-1,1) * abs(max(data$uppers)-min(data$lower))/10),
-             yaxis = list(title = var,
-                          gridcolor = 'rgb(255,255,255)',
-                          showgrid = F,
+             yaxis = list(title = "Class",
+                          gridcolor = "rgb(255,255,255)",
+                          showgrid = FALSE,
                           showline = FALSE,
-                          showticklabels = F,
-                          tickcolor = 'rgb(127,127,127)',ticks="",
+                          showticklabels = FALSE,
+                          tickcolor = "rgb(127,127,127)", ticks = "",
                           zeroline = FALSE))
   for(i in 1:length(class)){
     p <- add_trace(p,
                    x = c(data$lower[i], data$uppers[i]),  # x0, x1
                    y = c(i, i),  # y0, y1
                    mode = "lines",
-                   line = list(color='rgba(0,100,80,0.4)',width = 20),
+                   line = list(color = "rgba(0,100,80,0.4)", width = 20),
                    showlegend = FALSE,
                    hoverinfo = "text",
                    text = paste("Class.", i, "<br>",
                                 "Mean: ", round(data$mean[i],2), "<br>",
                                 "CI-95%: [", round(data$lower[i],2),
-                                ",", round(data$uppers[i],2),"]",sep="")
+                                ",", round(data$uppers[i],2),"]", sep = "")
     )
   }
   if (grl){
@@ -128,7 +127,7 @@ plotlyCINumericData <- function(data, var, class, grl, ...){
                    x = c(data$lower[i], data$uppers[i]),  # x0, x1
                    y = c(i, i),  # y0, y1
                    mode = "lines",
-                   line = list(color='rgba(100, 10,80,0.4)',width = 20),
+                   line = list(color = "rgba(100, 10,80,0.4)",width = 20),
                    showlegend = FALSE,
                    hoverinfo = "text",
                    text = paste("Class.", i, "<br>",
@@ -173,43 +172,43 @@ plotCategoricalData <- function(data, var, class, grl, pkg = c("ggplot2", "plotl
 # Barplot for categorical data (only the levels included in the 95 confidence level for at least one component are plotted)
 plotlyCategoricalData <- function(data, var, class, grl, ...){
   formattedW <- lapply(1:length(class), 
-                       function(k) list(y=data$probs[k,],
-                                        type='bar',
+                       function(k) list(y = data$probs[k,],
+                                        type = "bar",
                                         hoverinfo = "text",
-                                        text=paste("class", class[k], sep="."),
-                                        showlegend=FALSE,
-                                        marker = list(line = list(color = 'black', width = 1.5)))
+                                        text = paste0("class ", class[k] ,"\n", paste(data$levels, data$probs[k, ], sep = ": ", collapse = "\n")),
+                                        showlegend = FALSE,
+                                        marker = list(line = list(color = "black", width = 1.5)))
   )
   if (grl)
     formattedW <- c(formattedW,
-                    list(list(y=data$probs[nrow(data$probs),],
-                              type='bar',
+                    list(list(y = data$probs[nrow(data$probs),],
+                              type = "bar",
                               hoverinfo = "text",
-                              text="grl",
-                              showlegend=FALSE,
-                              marker = list(line = list(color = 'red', width = 1.5)))))
+                              text = "grl",
+                              showlegend = FALSE,
+                              marker = list(line = list(color = "red", width = 1.5)))))
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
-  p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p=acc),curr)),
+  p <- Reduce(function(acc, curr)  do.call(add_trace, c(list(p = acc), curr)),
               formattedW,
-              init=plot_ly(x = data$levels, ...)%>%
+              init = plot_ly(x = data$levels, ...)%>%
                 layout(title = "Distribution per class",
-                       paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
-                       xaxis = list(title = "Levels",
-                                    gridcolor = 'rgb(255,255,255)',
+                       paper_bgcolor = "rgb(255,255,255)", plot_bgcolor = "rgb(229,229,229)",
+                       xaxis = list(title = var,
+                                    gridcolor = "rgb(255,255,255)",
                                     showgrid = TRUE,
                                     showline = FALSE,
                                     showticklabels = TRUE,
-                                    tickcolor = 'rgb(127,127,127)',
-                                    ticks = 'outside',
-                                    tickvals=data$levels,
+                                    tickcolor = "rgb(127,127,127)",
+                                    ticks = "outside",
+                                    tickvals = data$levels,
                                     zeroline = FALSE),
-                       yaxis = list(title = var,
-                                    gridcolor = 'rgb(255,255,255)',
+                       yaxis = list(title = "Probability",
+                                    gridcolor = "rgb(255,255,255)",
                                     showgrid = TRUE,
                                     showline = FALSE,
                                     showticklabels = TRUE,
-                                    tickcolor = 'rgb(127,127,127)',
-                                    ticks = 'outside',
+                                    tickcolor = "rgb(127,127,127)",
+                                    ticks = "outside",
                                     zeroline = FALSE))
   )
   p
@@ -227,7 +226,7 @@ ggplotCategoricalData <- function(data, var, class, grl)
   df = data.frame(value = as.numeric(t(data$probs)), categ = rep(data$levels, nrow(data$probs)), class = rep(labelClass, each = length(data$levels)))
   p <- ggplot(data = df, aes_string(x = "categ", y = "value", fill = "class")) +
     geom_bar(stat = "identity", position = position_dodge()) +
-    labs(title = "Distribution per class", x = "Levels", y = var) 
+    labs(title = "Distribution per class", x = var, y = "Probability") 
   
   p
 }
