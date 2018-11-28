@@ -312,12 +312,12 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ..
     nameDiscVar <- names(discVar)
     
     
-    p[[1]] = plotDiscrimVar(x, pkg = pkg)
+    p$discrimPowerVar = plotDiscrimVar(x, pkg = pkg)
     
-    p[[2]] = plotProportion(x, pkg = pkg)
+    p$proportion = plotProportion(x, pkg = pkg)
     
     for(i in 1:nVarToPrint)
-      p[[i + 2]] = plotDataCI(x, nameDiscVar[i], pkg = pkg)
+      p[[nameDiscVar[i]]] = plotDataCI(x, nameDiscVar[i], pkg = pkg)
     
   }
   
@@ -367,7 +367,7 @@ plot.MixtCompLearn <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"
   
   if(is.null(x$warnLog))
   {
-    p[[1]] = plotCrit(x, pkg, ...)
+    p$criteria = plotCrit(x, pkg, ...)
     
     p2 <- plot(x$res[[which(x$nClass == x$algo$nClass)]], nVarMaxToPlot, pkg, ...)
     

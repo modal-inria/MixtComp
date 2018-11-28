@@ -95,19 +95,19 @@ gghistMisclassif <- function(z, misclassifrisk, G)
   p <- list()
   
   # general
-  p[[1]] = ggplot(df, aes(x = misclassifrisk, y = ..count../sum(..count..))) + 
+  p$general = ggplot(df, aes(x = misclassifrisk, y = ..count../sum(..count..))) + 
     geom_histogram(position = "identity", binwidth = 0.05, colour = "black", alpha = 0.8) +
     labs(title = "Misclassification risk", x = "Probabilities of misclassification", y = "Percentile of observations with \na misclassification risk less than x")
   
   # each
-  p[[2]] = ggplot(df, aes(x = misclassifrisk, y = ..count../sum(..count..), fill = class)) + 
+  p$each = ggplot(df, aes(x = misclassifrisk, y = ..count../sum(..count..), fill = class)) + 
     geom_histogram(position = "dodge", binwidth = 0.05) +
     labs(title = "Misclassification risk", x = "Probabilities of misclassification", y = "Percentile of observations with \na misclassification risk less than x")
   
   # class by class
   for(i in 1:G)
   {
-    p[[2+i]] = ggplot(subset(df, class == i), aes(x = misclassifrisk, y = ..count../sum(..count..)), fill = class) + 
+    p[[paste0("class.", i)]] = ggplot(subset(df, class == i), aes(x = misclassifrisk, y = ..count../sum(..count..)), fill = class) + 
       geom_histogram(position = "dodge", binwidth = 0.05, fill = hue_pal()(G)[i], colour = "black") + 
       labs(title = paste0("Misclassification risk: class ", i), x = "Probabilities of misclassification", y = "Percentile of observations with \na misclassification risk less than x")
   }
