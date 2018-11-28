@@ -115,7 +115,7 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
     if(verbose)
       cat(" Compute criterion\n")
     maxCrit <- list(crit = -Inf, ind = NA)
-    bestRes = NULL
+    bestRes = list(warnLog = "error")
     crit = list()
     for(i in seq_along(leaves))
     {
@@ -154,27 +154,36 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
     allCrit[[nbCurrentCluster]] = crit
     leavesOrder = c(leavesOrder, maxCrit$ind)
     
-    # update leaves for the next step
-    leaves[[maxCrit$ind]]$go = "parent"
-    part <- newRes[[maxCrit$ind]]$variable$data$z_class$completed
-    leaves[[length(leaves) + 1]] = list(partition = (part == 1), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 1], go = "toRun", indParent = maxCrit$ind)
-    leaves[[length(leaves) + 1]] = list(partition = (part == 2), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 2], go = "toRun", indParent = maxCrit$ind)
     
-    # stop some classes due to size
-    for(i in seq_along(leaves))
+    if(!is.na(maxCrit$ind))
     {
-      if(leaves[[i]]$go %in% c("toRun", "wait"))
+      # update leaves for the next step
+      leaves[[maxCrit$ind]]$go = "parent"
+      part <- newRes[[maxCrit$ind]]$variable$data$z_class$completed
+      leaves[[length(leaves) + 1]] = list(partition = (part == 1), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 1], go = "toRun", indParent = maxCrit$ind)
+      leaves[[length(leaves) + 1]] = list(partition = (part == 2), indPartition = leaves[[maxCrit$ind]]$indPartition[part == 2], go = "toRun", indParent = maxCrit$ind)
+      
+      # stop some classes due to size
+      for(i in seq_along(leaves))
       {
-        if(sum(leaves[[i]]$partition) <= minClassSize)
-          leaves[[i]]$go = "stop"
+        if(leaves[[i]]$go %in% c("toRun", "wait"))
+        {
+          if(sum(leaves[[i]]$partition) <= minClassSize)
+            leaves[[i]]$go = "stop"
+        }
       }
+      
+      nbLeavesToCompute = sum(sapply(leaves, FUN = function(x){x$go %in% c("toRun")}))
+      nbCurrentCluster = nbCurrentCluster + 1
+      
+      res[[nbCurrentCluster]] = bestRes
+    }else{
+      # if maxCrit$ind == NA, no leaves has produced a model, we force the stop of hierarchical
+      warning(paste0("The hierarchy was stop earlier because all clustering on leaves produced error. Try to increase the nRun parameter."))
+      nbLeavesToCompute = 0
     }
-    
-    nbLeavesToCompute = sum(sapply(leaves, FUN = function(x){x$go %in% c("toRun")}))
-    nbCurrentCluster = nbCurrentCluster + 1
-    
-    res[[nbCurrentCluster]] = bestRes
-    
+
+
   }# end while
   
   
