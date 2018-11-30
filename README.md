@@ -24,3 +24,9 @@ Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 * [Add a model](MixtComp/docs/howToAddModel.md)
 * [Add a model in R packages](MixtComp/docs/howToAddModelInR.md)
 * [Styleguide](MixtComp/docs/styleguide.md)
+
+# External tools
+
+* [Trello](https://trello.com/b/vTK9pUM4/mixtcomp)
+* [Mailing-list](https://sympa.inria.fr/sympa/info/mixtcomp-dev)
+* [Continuous integration server](https://ci.inria.fr/mixtcomp/)
