@@ -96,7 +96,7 @@ formatDataBasicMode <- function(data, model, dictionary = NULL)
 
   for(name in names(data))
   {
-    if(model[[name]]$type == "Multinomial")
+    if(model[[name]]$type %in% c("Multinomial", "LatentClass"))
     {
       if(createDictionary)
       {
