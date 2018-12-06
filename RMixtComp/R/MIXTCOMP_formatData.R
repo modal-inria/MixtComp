@@ -28,8 +28,8 @@ imputModelIntern <- function(variable, name)
   switch(class(variable),
          "numeric" = "Gaussian",
          "integer" = ifelse(name == "z_class", "LatentClass", "Poisson"),
-         "factor" = "Multinomial",
-         "character" = "Multinomial",
+         "factor" = ifelse(name == "z_class", "LatentClass", "Multinomial"),
+         "character" = ifelse(name == "z_class", "LatentClass", "Multinomial"),
          stop(paste0("Cannot impute the model for variable ", name,". Please provide the model parameter.")))
 }
 
