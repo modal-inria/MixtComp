@@ -162,6 +162,70 @@ test_that("mixtCompLearn works in basic mode + predict", {
   expect_equal(resPredict$algo$dictionary, list())
 })
 
+
+
+test_that("plot in basic mode + predict works with z_class as character", {
+  data(iris)
+  
+  names(iris)[5] = "z_class"
+  
+  expect_warning(resLearn <- mixtCompLearn(iris, nClass = 3), regexp = NA)
+  
+  if(!is.null(resLearn$warnLog))
+    print(resLearn$warnLog)
+  
+  expect_equal(resLearn$warnLog, NULL)
+  expect_lte(norm(getTik(resLearn, log = FALSE) - getEmpiricTik(resLearn))/resLearn$algo$nInd, 0.1)
+  
+  expect_equal(resLearn$variable$type, list(z_class = "LatentClass", Sepal.Length = "Gaussian", Sepal.Width = "Gaussian", Petal.Length = "Gaussian", Petal.Width = "Gaussian"))
+  expect_true(resLearn$algo$basicMode)
+  expect_false(resLearn$algo$hierarchicalMode)
+  expect_equal(resLearn$algo$dictionary, list(z_class = list(old = c("setosa", "versicolor", "virginica"), new = c("1", "2", "3"))))
+  expect_equal(resLearn$variable$data$z_class$completed, as.character(iris$z_class))
+  expect_equal(rownames(resLearn$variable$param$z_class$stat), c("k: setosa", "k: versicolor", "k: virginica"))
+  
+  expect_warning(resPredict <- mixtCompPredict(iris[, 1:4], resLearn = resLearn), regexp = NA)
+  
+  if(!is.null(resPredict$warnLog))
+    print(resPredict$warnLog)
+  
+  expect_equal(resPredict$warnLog, NULL)
+  expect_equal(resPredict$algo$dictionary, list(z_class = list(old = c("setosa", "versicolor", "virginica"), new = c("1", "2", "3"))))
+  expect_equal(rownames(resPredict$variable$param$z_class$stat), c("k: setosa", "k: versicolor", "k: virginica"))
+  
+  
+  w <- capture_warnings(plotDiscrimClass(resLearn, pkg = "plotly"))# the first call generates warnings due to packages loading
+  if(length(w) > 0)
+    expect_match(w, "replacing previous", all = TRUE)
+  expect_warning(plotDiscrimClass(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(heatmapClass(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(heatmapTikSorted(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(heatmapClass(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(heatmapTikSorted(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(histMisclassif(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(histMisclassif(resLearn, pkg = "plotly"), regexp = NA)
+  
+  for(name in getVarNames(resLearn))
+  {
+    expect_warning(plotParamConvergence(resLearn, name), regexp = NA)
+    expect_warning(plotDataCI(resLearn, name, pkg = "plotly"), regexp = NA)
+    expect_warning(plotDataCI(resLearn, name, pkg = "ggplot2"), regexp = NA)
+    expect_warning(plotDataBoxplot(resLearn, name), regexp = NA)
+  }
+  
+  expect_warning(plotProportion(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plotProportion(resLearn, pkg = "plotly"), regexp = NA)
+  expect_warning(plot(resLearn, pkg = "ggplot2"), regexp = NA)
+  expect_warning(plot(resLearn, pkg = "plotly"), regexp = NA)
+  file.remove("Rplots.pdf")
+  
+  
+})
+
+
+
+
+
 test_that("mixtCompLearn works + mixtCompPredict", {
   set.seed(42)
   
