@@ -193,18 +193,23 @@ extractBoxplotInfoOneVble <- function(var, data, class=1:data$algo$nClass, grl=F
 }
 
 ## Numerical variables 
-extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$algo$nClass, grl=FALSE) {
+extractBoundsBoxplotNumericalVble <- function(var, data, class = 1:data$algo$nClass, grl = FALSE) {
   obs <- data$variable$data[[var]]$completed
   tik <- data$variable$data$z_class$stat
   orderedIndices <- order(obs)
-  cumsums <- apply(tik[orderedIndices,, drop=F], 2, cumsum)
+  cumsums <- apply(tik[orderedIndices,, drop = FALSE], 2, cumsum)
   cumsums <- t(t(cumsums) / cumsums[nrow(cumsums), ])
   thresholds <- sapply(c(.05, .25, .5, .75, .95), 
                        function(threshold, cumsums) obs[orderedIndices[apply(abs(cumsums - threshold), 2, which.min)]], 
                        cumsums=cumsums)
   thresholds <- matrix(thresholds, nrow=data$algo$nClass)
-  thresholds <- thresholds[class, , drop=FALSE]
-  rownames(thresholds) <- paste("class", class)
+  thresholds <- thresholds[class, , drop = FALSE]
+  
+  if(is.null(data$algo$dictionary$z_class))
+    rownames(thresholds) <- paste("Class", class)
+  else
+    rownames(thresholds) <- data$algo$dictionary$z_class$old[class]
+  
   colnames(thresholds) <- paste("quantil.", c(.05, .25, .5, .75, .95))
   if (grl){
     obs <- sort(data$variable$data[[var]]$completed, decreasing = FALSE)
@@ -219,7 +224,7 @@ extractBoundsBoxplotNumericalVble <- function(var, data, class=1:data$algo$nClas
 }
 
 ## Categorical variables 
-extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$algo$nClass, grl=FALSE) {
+extractBoundsBoxplotCategoricalVble <- function(var, data, class = 1:data$algo$nClass, grl = FALSE) {
   obs <- data$variable$data[[var]]$completed
   tik <- data$variable$data$z_class$stat
   levels <- unique(obs)
@@ -233,8 +238,12 @@ extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$algo$nCl
                     tik=tik ,
                     obs=obs
   ))
-  probs <- probs[class, , drop=FALSE]
-  rownames(probs) <- paste("class", class)
+  probs <- probs[class, , drop = FALSE]
+  
+  if(is.null(data$algo$dictionary$z_class))
+    rownames(probs) <- paste("Class", class)
+  else
+    rownames(probs) <- data$algo$dictionary$z_class$old[class]
   colnames(probs) <- levels
   if (grl){
     obs <- sort(table(data$variable$data[[var]]$completed), decreasing = TRUE)
@@ -242,6 +251,6 @@ extractBoundsBoxplotCategoricalVble <- function(var, data, class=1:data$algo$nCl
     probs <- rbind(probs, obs)
     rownames(probs)[nrow(probs)] <- "general"
   }
-  return(list(levels=levels, probs=probs))
+  return(list(levels = levels, probs = probs))
 }
 

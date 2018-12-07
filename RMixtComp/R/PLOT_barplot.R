@@ -101,7 +101,10 @@ plotDiscrimClass <- function(output, ylim = c(0, 1), pkg = c("ggplot2", "plotly"
   
   ## Get information
   # names of classes
-  namesClass <- paste("Class", 1:output$algo$nClass)
+  if(is.null(output$algo$dictionary$z_class))
+    namesClass <- paste0("Class ", 1:output$algo$nClass)
+  else
+    namesClass <- output$algo$dictionary$z_class$old
   # discriminative power (1 - Dk), saved at slot pvdiscrimvbles of JSON file
   pvDiscrim <-   round(1 - (-colMeans(log(output$variable$data$z_class$stat**output$variable$data$z_class$stat)) / exp(-1)), 2)
   
@@ -152,9 +155,15 @@ plotProportion <- function(output, pkg = c("ggplot2", "plotly"), ...)
   pkg = match.arg(pkg)
   
   ylimProportion <- min(max(output$variable$param$z_class$stat[,1]) + 0.1, 1)
+  if(is.null(output$algo$dictionary$z_class))
+    label <- paste0("Class ", 1:output$algo$nClass)
+  else
+    label <- output$algo$dictionary$z_class$old
+    
+  
   p <- switch(pkg, 
-              "ggplot2" = ggbarplot(output$variable$param$z_class$stat[,1], paste0("Class ", 1:output$algo$nClass), main = "Proportion", xlab = "", ylab = "", ylim = c(0, ylimProportion), col.text = "black"),
-              "plotly" = barplotly(output$variable$param$z_class$stat[,1], paste0("Class ", 1:output$algo$nClass), main = "Proportion", xlab = "", ylab = "", ylim = c(0, ylimProportion), text = NULL, ...))
+              "ggplot2" = ggbarplot(output$variable$param$z_class$stat[,1], label, main = "Proportion", xlab = "", ylab = "", ylim = c(0, ylimProportion), col.text = "black"),
+              "plotly" = barplotly(output$variable$param$z_class$stat[,1], label, main = "Proportion", xlab = "", ylab = "", ylim = c(0, ylimProportion), text = NULL, ...))
   
   p
 }

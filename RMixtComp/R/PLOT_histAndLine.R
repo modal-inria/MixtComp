@@ -40,16 +40,22 @@ histMisclassif <- function(output, pkg = c("ggplot2", "plotly"), ...)
   z <- output$variable$data$z_class$completed
   misclassifrisk <- 1 - apply(output$variable$data$z_class$stat, 1, max)
   G <- output$algo$nClass
+  if(is.null(output$algo$dictionary$z_class))
+    classNames <- 1:output$algo$nClass
+  else
+    classNames <- output$algo$dictionary$z_class$old
   
   p <- switch(pkg,
-              "ggplot2" = gghistMisclassif(z, misclassifrisk, G),
-              "plotly" = plotlyhistMisclassif(z, misclassifrisk, G, ...))
+              "ggplot2" = gghistMisclassif(z, misclassifrisk, classNames),
+              "plotly" = plotlyhistMisclassif(z, misclassifrisk, classNames, ...))
   
   p
 }
 
 
-plotlyhistMisclassif <- function(z, misclassifrisk, G, ...){
+plotlyhistMisclassif <- function(z, misclassifrisk, classNames, ...){
+  
+  G <- length(classNames)
   
   ## Create the buttons for selecting some data
   # General: all data
@@ -63,20 +69,20 @@ plotlyhistMisclassif <- function(z, misclassifrisk, G, ...){
                              label = "Each")),
                    lapply(1:G, function(k) list(method = "restyle",
                                                 args = list("visible", as.list(c(0:G)==k)),
-                                                label = paste("class", k, sep="."))))
+                                                label = paste("class", classNames[k], sep="."))))
   
   # a list with plotly compliant formatted objects
   formattedW <- c(list(
     list(x = misclassifrisk,  name= "General", visible=TRUE, nbinsx=20)), 
     lapply(1:G, function(k) 
-      list(x = misclassifrisk[which(z==k)], name= paste("class", k, sep="."), visible=FALSE)
+      list(x = misclassifrisk[which(z == classNames[k])], name= paste("class", classNames[k], sep = "."), visible = FALSE)
     ))
   
   # Reduce the list of plotly compliant objs, starting with the plot_ly() value and adding the `add_trace` at the following iterations
   histerrors <- Reduce(function(acc, curr)  do.call(add_histogram, c(list(p=acc),curr)),
                        formattedW,
                        init=plot_ly()%>%layout(
-                         showlegend = T,
+                         showlegend = TRUE,
                          title = "Misclassification risk",
                          xaxis = list(domain = c(-0.09, 0.9), title="Probabilities of misclassification"),
                          yaxis = list(title = "Percentile of observations with <br> a misclassification risk less than x"),
@@ -87,10 +93,10 @@ plotlyhistMisclassif <- function(z, misclassifrisk, G, ...){
 }
 
 
-gghistMisclassif <- function(z, misclassifrisk, G)
+gghistMisclassif <- function(z, misclassifrisk, classNames)
 {
-  df = data.frame(class = factor(z, levels = 1:G), misclassifrisk = misclassifrisk)
-  
+  df = data.frame(class = factor(z, levels = classNames), misclassifrisk = misclassifrisk)
+  G <- length(classNames)
   
   p <- list()
   
@@ -107,9 +113,9 @@ gghistMisclassif <- function(z, misclassifrisk, G)
   # class by class
   for(i in 1:G)
   {
-    p[[paste0("class.", i)]] = ggplot(subset(df, class == i), aes(x = misclassifrisk, y = ..count../sum(..count..)), fill = class) + 
+    p[[paste0("class.", classNames[i])]] = ggplot(subset(df, class == classNames[i]), aes(x = misclassifrisk, y = ..count../sum(..count..)), fill = class) + 
       geom_histogram(position = "dodge", binwidth = 0.05, fill = hue_pal()(G)[i], colour = "black") + 
-      labs(title = paste0("Misclassification risk: class ", i), x = "Probabilities of misclassification", y = "Percentile of observations with \na misclassification risk less than x")
+      labs(title = paste0("Misclassification risk: class ", classNames[i]), x = "Probabilities of misclassification", y = "Percentile of observations with \na misclassification risk less than x")
   }
   
   return(p)

@@ -45,12 +45,17 @@ plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, p
   
   type <- output$variable$type[[var]]
   
+  if(is.null(output$algo$dictionary$z_class))
+    labelClass <- paste0("Class ", 1:output$algo$nClass)
+  else
+    labelClass <- output$algo$dictionary$z_class$old
+  
   switch(type,
-         "Gaussian" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, class, grl, pkg),
-         "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, class, grl, pkg),
-         "Multinomial" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, class, grl, pkg),
-         "Poisson" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, class, grl, pkg),
-         "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, class, grl, pkg),
+         "Gaussian" = plotCINumericData(extractCIGaussianVble(var, output, class, grl), var, labelClass, grl, pkg),
+         "Weibull" = plotCINumericData(extractCIWeibullVble(var, output, class, grl), var, labelClass, grl, pkg),
+         "Multinomial" = plotCategoricalData(extractCIMultiVble(var, output, class, grl), var, labelClass, grl, pkg),
+         "Poisson" = plotCINumericData(extractCIPoissonVble(var, output, class, grl), var, labelClass, grl, pkg),
+         "NegativeBinomial" = plotCINumericData(extractCINegBinomialVble(var, output, class, grl), var, labelClass, grl, pkg),
          "Func_CS" = plotFunctionalData(output, var, classToPlot = class, pkg = pkg, ...),
          "Func_SharedAlpha_CS" = plotFunctionalData(output, var, classToPlot = class, pkg = pkg, ...),
          warning(paste0("Not (yet) available for model ", type)))

@@ -101,7 +101,11 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
   
   ## Get information
   # names of variables  
-  namesClass <- paste("class", 1:output$algo$nClass, sep=".")
+  if(is.null(output$algo$dictionary$z_class))
+    namesClass <- paste0("Class ", 1:output$algo$nClass)
+  else
+    namesClass <- output$algo$dictionary$z_class$old
+  
   # discriminative power (1 - Dk), saved at slot pvdiscrimvbles of JSON file
   pvDiscrim <-   round(1 - (-colMeans(log(output$variable$data$z_class$stat**output$variable$data$z_class$stat)) / exp(-1)), 2)
   # similarities  (1 - sigma), sigma is saved at slot sigma of JSON file
@@ -125,8 +129,8 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
   
   
   heatmap <- switch(pkg,
-                    "plotly" = heatmapplotly(similarities, xname = paste("Class", 1:output$algo$nClass), main = "Similarities between classes", ...),
-                    "ggplot2" = ggheatmap(similarities, xname = paste("Class", 1:output$algo$nClass), yname = paste("Class", 1:output$algo$nClass), main = "Similarities between classes", legendName = "Similarities", ...))
+                    "plotly" = heatmapplotly(similarities, xname = namesClass, main = "Similarities between classes", ...),
+                    "ggplot2" = ggheatmap(similarities, xname = namesClass, yname = namesClass, main = "Similarities between classes", legendName = "Similarities", ...))
   heatmap
 }
 
@@ -168,14 +172,19 @@ heatmapTikSorted <- function(output, pkg = c("ggplot2", "plotly"), ...){
   pkg = match.arg(pkg)
   
   # orderTik, they are saved at slot ordertik of JSON file
+  if(is.null(output$algo$dictionary$z_class))
+    classNames <- 1:output$algo$nClass
+  else
+    classNames <- output$algo$dictionary$z_class$old
+  
   orderTik <- unlist(sapply(1:output$algo$nClass, 
-                            function(k) order(output$variable$data$z_class$stat[,k] * (output$variable$data$z_class$completed == k ),
-                                              decreasing = T)[1:(table(output$variable$data$z_class$completed)[k])]
-  ))
+                            function(k) order(output$variable$data$z_class$stat[,k] * (output$variable$data$z_class$completed == classNames[k]),
+                                              decreasing = TRUE)[1:sum(output$variable$data$z_class$completed == classNames[k])]))
+
   
   tiksorted <- output$variable$data$z_class$stat[orderTik,]
-  if(output$algo$nClass ==1 ) 
-    tiksorted <- matrix(tiksorted, ncol=1)
+  if(output$algo$nClass == 1) 
+    tiksorted <- matrix(tiksorted, ncol = 1)
   
   # Text to display
   textMous <- sapply(1:output$algo$nClass, 
@@ -189,9 +198,14 @@ heatmapTikSorted <- function(output, pkg = c("ggplot2", "plotly"), ...){
   
   orderTik <- factor(as.character(orderTik), levels=as.character(orderTik))
   
+  if(is.null(output$algo$dictionary$z_class))
+    namesClass <- paste0("Class ", 1:output$algo$nClass)
+  else
+    namesClass <- output$algo$dictionary$z_class$old
+  
   heatmap <- switch(pkg,
-                    "plotly" = heatmapplotly(tiksorted, xname = paste("Class", 1:output$algo$nClass), main = "Probabilities of classification", text = textMous, ...),
-                    "ggplot2" = ggheatmap(tiksorted, xname = paste("Class", 1:output$algo$nClass), main = "Probabilities of classification", legendName = "Probabilities"))
+                    "plotly" = heatmapplotly(tiksorted, xname = namesClass, main = "Probabilities of classification", text = textMous, ...),
+                    "ggplot2" = ggheatmap(tiksorted, xname = namesClass, main = "Probabilities of classification", legendName = "Probabilities"))
   
   heatmap
 }  
