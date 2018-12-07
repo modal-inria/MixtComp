@@ -3,7 +3,7 @@
 imputModel <- function(data)
 {
   if(is.matrix(data))
-    stop("Can imput model only with data in data.frame or list format. Please provide data in these formats of provide a model parameter.")   
+    stop("Can imput model only with data in data.frame or list format. Please provide data in these formats or provide a model parameter.")   
   
   if(is.data.frame(data))
   {
@@ -98,17 +98,21 @@ formatDataBasicMode <- function(data, model, dictionary = NULL)
   {
     if(model[[name]]$type %in% c("Multinomial", "LatentClass"))
     {
-      if(createDictionary)
+      if(!is.integer(data[[name]])) # z_class is given in integer : no need to use the dictionary
       {
-        oldCateg <- unique(data[[name]])
-        oldCateg = oldCateg[!is.na(oldCateg)]
-        dictionary[[name]] = list(old = as.character(oldCateg), new = as.character(seq_along(oldCateg)))
-      }else{
-        if(!(name %in% names(dictionary)))
-          stop(paste0("No dictionary given for variable ", name))
+        if(createDictionary)
+        {
+          oldCateg <- unique(data[[name]])
+          oldCateg = oldCateg[!is.na(oldCateg)]
+          dictionary[[name]] = list(old = as.character(oldCateg), new = as.character(seq_along(oldCateg)))
+        }else{
+          if(!(name %in% names(dictionary)))
+            stop(paste0("No dictionary given for variable ", name))
+        }
+        
+        data[[name]] = refactorCategorical(data[[name]], dictionary[[name]]$old, newCateg = dictionary[[name]]$new)
       }
 
-      data[[name]] = refactorCategorical(data[[name]], dictionary[[name]]$old, newCateg = dictionary[[name]]$new)
     }
 
     data[[name]] = as.character(data[[name]])
