@@ -168,7 +168,7 @@ test_that("formatData keeps list in list format", {
 })
 
 test_that("formatDataBasicMode works with data.frame", {
-  dat <- data.frame(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = 1:20)
+  dat <- data.frame(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = letters[1:20])
   dat[1,] = NA
   model <- list(a = list(type = "Gaussian"), b = list(type = "Multinomial"), c = list(type = "Multinomial"), d = list(type = "Poisson"), z_class = list(type = "LatentClass"))
   
@@ -181,16 +181,18 @@ test_that("formatDataBasicMode works with data.frame", {
   expect_equal(out$data$b, c("?", rep(1:2, 9), 1))
   expect_equal(out$data$c, c("?", rep(1:2, 9), 1))
   expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
-  expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
+  expect_equal(out$data$z_class, c("?", 1:19))
   expect_type(out$dictionary, "list")
-  expect_length(out$dictionary, 2)
-  expect_named(out$dictionary,c("b", "c"))
+  expect_length(out$dictionary, 3)
+  expect_named(out$dictionary, c("b", "c", "z_class"))
   expect_equal(out$dictionary$b, list(old = letters[2:1], new = c("1", "2")))
   expect_equal(out$dictionary$c, list(old = letters[2:1], new = c("1", "2")))
+  expect_equal(out$dictionary$z_class, list(old = letters[2:20], new = as.character(1:19)))
+  
 })
 
 test_that("formatDataBasicMode works with list", {
-  dat <- list(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = 1:20)
+  dat <- list(a = rnorm(20), b = as.character(rep(letters[1:2], 10)), c = as.factor(rep(letters[1:2], 10)), d = 1:20, z_class = letters[1:20])
   dat$a[1] = NA
   dat$b[1] = NA
   dat$c[1] = NA
@@ -207,12 +209,13 @@ test_that("formatDataBasicMode works with list", {
   expect_equal(out$data$b, c("?", rep(1:2, 9), 1))
   expect_equal(out$data$c, c("?", rep(1:2, 9), 1))
   expect_equal(out$data$d, c("?", as.character(dat$d[-1])))
-  expect_equal(out$data$z_class, c("?", as.character(dat$z_class[-1])))
+  expect_equal(out$data$z_class, c("?", as.character(1:19)))
   expect_type(out$dictionary, "list")
-  expect_length(out$dictionary, 2)
-  expect_named(out$dictionary,c("b", "c"))
+  expect_length(out$dictionary, 3)
+  expect_named(out$dictionary, c("b", "c", "z_class"))
   expect_equal(out$dictionary$b, list(old = letters[2:1], new = c("1", "2")))
   expect_equal(out$dictionary$c, list(old = letters[2:1], new = c("1", "2")))
+  expect_equal(out$dictionary$z_class, list(old = letters[2:20], new = as.character(1:19)))
 })
 
 test_that("formatDataBasicMode works with a dictionary", {
