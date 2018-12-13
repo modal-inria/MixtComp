@@ -162,9 +162,17 @@ plotCrit <- function(output, pkg = c("ggplot2", "plotly"), ...)
 
 plotlyCrit <- function(crit, nClass, ...)
 {
-  p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "lines", name = "BIC", ...) %>%
-    add_trace(x = nClass, y = crit[2,], name = "ICL")%>%
-    layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
+  if(length(nClass) == 1)
+  {
+    p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "markers", symbol = 1, name = "BIC", ...) %>%
+      add_trace(x = nClass, y = crit[2,], name = "ICL", symbol = 2)%>%
+      layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
+  }else{
+    p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "lines", name = "BIC", ...) %>%
+      add_trace(x = nClass, y = crit[2,], name = "ICL")%>%
+      layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
+  }
+
   
   p
 }
@@ -172,12 +180,14 @@ plotlyCrit <- function(crit, nClass, ...)
 
 ggplotCrit <- function(crit, nClass)
 {
-  df = data.frame(class = nClass, value = c(crit[1,], crit[2,]), crit = rep(c("BIC", "ICL"), each = length(nClass)))
+  df = data.frame(class = nClass, value = c(crit[1,], crit[2,]), Criterion = rep(c("BIC", "ICL"), each = length(nClass)))
   
-  p <- ggplot(data = df, aes_string(x = "class", y = "value", col = "crit")) +
-    geom_line() + 
-      labs(title = "Criterion", x = "Number of classes", y = "value") +
-      scale_color_discrete(name = "Criterion") 
+  p <- ggplot(data = df, aes_string(x = "class", y = "value", col = "Criterion")) +
+      labs(title = "Criterion", x = "Number of classes", y = "value")
   
+  if(length(nClass) == 1)
+    p = p + geom_point(aes_string(shape = "Criterion"))
+  else
+    p = p + geom_line()
   p
 }
