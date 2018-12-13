@@ -60,7 +60,8 @@ getParam <- function(outMixtComp, varName)
 
 getParamNumerical <- function(param, nbClass, colNames)
 {
-  matrix(param$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k:",1:nbClass), colNames))
+  className <- unique(sapply(strsplit(rownames(param$stat), split = ","), function(x){ gsub("k: ", "", x[1])}))
+  matrix(param$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k: ", className), colNames))
 }
 
 
@@ -87,7 +88,7 @@ getnSub <- function(paramStr)
 getParamRank_ISR <- function(param, nbClass)
 {
   mu <- t(sapply(param$mu$stat, function(x){x$rank}))
-  rownames(mu) = paste0("k:",1:nbClass)
+  rownames(mu) = paste0("k: ", 1:nbClass)
   
   list(pi = getParamNumerical(param$pi, nbClass, "pi"),
        mu = mu)  
@@ -97,7 +98,9 @@ getParamRank_ISR <- function(param, nbClass)
 getParamMultinomial <- function(param, nbClass)
 {
   nbModalities <- length(param$stat[,1])/nbClass
-  getParamNumerical(param, nbClass, paste0("modality ",1:nbModalities))
+  
+  modalities <- gsub("k: .*, modality: ", "", rownames(param$stat)[1:nbModalities])
+  getParamNumerical(param, nbClass, paste0("modality ", modalities))
 }
 
 
