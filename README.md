@@ -30,3 +30,10 @@ Online version: [MASSICCC](https://massiccc.lille.inria.fr/)
 * [Trello](https://trello.com/b/vTK9pUM4/mixtcomp)
 * [Mailing-list](https://sympa.inria.fr/sympa/info/mixtcomp-dev)
 * [Continuous integration server](https://ci.inria.fr/mixtcomp/)
+
+# Branches
+
+There are two branches tested on the ci server (using the [ci.sh](ci.sh) file):
+* **master** this branch is protected, MixtComp must *always* work on it 
+* **staging** this branch is used for short development, testing new features, bug fixes... and its content is regularly pushed to master when tests are OK.
+Big features should be developed on a specific branch.
