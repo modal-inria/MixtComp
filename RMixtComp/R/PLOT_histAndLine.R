@@ -164,8 +164,8 @@ plotlyCrit <- function(crit, nClass, ...)
 {
   if(length(nClass) == 1)
   {
-    p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "markers", symbol = 1, name = "BIC", ...) %>%
-      add_trace(x = nClass, y = crit[2,], name = "ICL", symbol = 2)%>%
+    p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "markers", symbol = 1, name = "BIC", size = 2, ...) %>%
+      add_trace(x = nClass, y = crit[2,], name = "ICL", symbol = 2, size = 2)%>%
       layout(title = "Criterion", showlegend = TRUE, xaxis = list(title = "Number of classes"), yaxis = list(title = "Value"))
   }else{
     p <- plot_ly(x = nClass, y = crit[1,], type = "scatter", mode = "lines", name = "BIC", ...) %>%
@@ -186,7 +186,7 @@ ggplotCrit <- function(crit, nClass)
       labs(title = "Criterion", x = "Number of classes", y = "value")
   
   if(length(nClass) == 1)
-    p = p + geom_point(aes_string(shape = "Criterion"))
+    p = p + geom_point(aes_string(shape = "Criterion"), size = 3)
   else
     p = p + geom_line()
   p
