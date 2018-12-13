@@ -382,6 +382,19 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
           rownames(resLearn[[i]]$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(resLearn[[i]]$variable$param[[varName]]$stat)), resLearn[[i]]$algo$dictionary[[varName]]$old)
           rownames(resLearn[[i]]$variable$param[[varName]]$log) = rownames(resLearn[[i]]$variable$param[[varName]]$stat)
         }
+        
+        # this will not work for non simple model. It is not a problem because in basic mode only simple mdoels are considered
+        if("z_class" %in% names(resLearn[[i]]$algo$dictionary))
+        {
+          varNames <- getVarNames(resLearn[[i]])
+          
+          for(varName in varNames)
+          {
+            rowNames <- rownames(resLearn[[i]]$variable$param[[varName]]$stat)
+            rowNames = changeClassName(rowNames, resLearn[[i]]$algo$dictionary)
+            rownames(resLearn[[i]]$variable$param[[varName]]$stat) = rownames(resLearn[[i]]$variable$param[[varName]]$log) = rowNames
+          }
+        }
       }
     }
   }
@@ -441,6 +454,9 @@ hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize
 }
 
 # must an hierarchical run be done ?
+# hierarchicalMode mixtCompLearn's argument
+# mode "basic" or "expert"
+# model mixtCompLearn's argument
 performHierarchical <- function(hierarchicalMode, mode, model)
 {
   if((mode == "basic") || (hierarchicalMode == "no"))
