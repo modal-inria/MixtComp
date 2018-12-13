@@ -169,7 +169,7 @@ changeClassName <- function(rowNames, dictionary)
     nameSplit = strsplit(rowNames[i], split = ",")[[1]]
     
     nameSplit2 <- strsplit(nameSplit[1], ": ")[[1]]
-    nameSplit2[2] = dictionary$z_class$new[dictionary$z_class$old == nameSplit2[2]]
+    nameSplit2[2] = dictionary$z_class$old[dictionary$z_class$new == nameSplit2[2]]
     nameSplit[1] = paste(nameSplit2[1], nameSplit2[2], sep = ": ")
 
     rowNames[i] = paste(nameSplit, collapse = ",")
