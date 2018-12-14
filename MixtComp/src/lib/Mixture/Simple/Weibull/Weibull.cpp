@@ -79,8 +79,8 @@ Vector<bool> Weibull::acceptedType() const {
 	at(present_) = true;
 	at(missing_) = true;
 	at(missingFiniteValues_) = false;
-	at(missingIntervals_) = false;
-	at(missingLUIntervals_) = false;
+	at(missingIntervals_) = true;
+	at(missingLUIntervals_) = true;
 	at(missingRUIntervals_) = true;
 	return at;
 }

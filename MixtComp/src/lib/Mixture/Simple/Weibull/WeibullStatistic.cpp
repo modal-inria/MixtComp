@@ -30,8 +30,18 @@ Real WeibullStatistic::quantile(Real k, Real lambda, Real p) const {
 	return x;
 }
 
-Real WeibullStatistic::quantileIB(Real k, Real lambda, Real a, Real p) const {
-	Real u = (1.0 - p) * cdf(k, lambda, a) + p;
+Real WeibullStatistic::quantileIB(Real k, Real lambda, Real infBound, Real p) const {
+	Real u = (1.0 - p) * cdf(k, lambda, infBound) + p;
+	return quantile(k, lambda, u);
+}
+
+Real WeibullStatistic::quantileSB(Real k, Real lambda, Real supBound, Real p) const {
+	Real u = p * cdf(k, lambda, supBound);
+	return quantile(k, lambda, u);
+}
+
+Real WeibullStatistic::quantileI(Real k, Real lambda, Real infBound, Real supBound, Real p) const {
+	Real u = p * cdf(k, lambda, supBound) + (1.0 - p) * cdf(k, lambda, infBound);
 	return quantile(k, lambda, u);
 }
 
@@ -42,9 +52,19 @@ Real WeibullStatistic::sample(Real k, Real lambda) {
 	return generator();
 }
 
-Real WeibullStatistic::sampleIB(Real k, Real lambda, Real a) {
+Real WeibullStatistic::sampleIB(Real k, Real lambda, Real infBound) {
 	Real u = uniform_.sample(0., 1.);
-	return quantileIB(k, lambda, a, u);
+	return quantileIB(k, lambda, infBound, u);
+}
+
+Real WeibullStatistic::sampleSB(Real k, Real lambda, Real supBound) {
+	Real u = uniform_.sample(0., 1.);
+	return quantileSB(k, lambda, supBound, u);
+}
+
+Real WeibullStatistic::sampleI(Real k, Real lambda, Real infBound, Real supBound) {
+	Real u = uniform_.sample(0., 1.);
+	return quantileI(k, lambda, infBound, supBound, u);
 }
 
 Real WeibullStatistic::pdf(Real k, Real lambda, Real x) const {

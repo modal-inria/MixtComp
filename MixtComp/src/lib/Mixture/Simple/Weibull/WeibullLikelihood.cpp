@@ -49,6 +49,22 @@ Real WeibullLikelihood::lnObservedProbability(Index i, Index k) const {
     }
     break;
 
+    case missingLUIntervals_: {
+        Real supBound  = augData_.misData_(i).second[0];
+        Real supCdf = weibull_.cdf(kParam, lambda, supBound);
+        logProba = std::log(supCdf);
+     }
+     break;
+
+    case missingIntervals_: {
+        Real infBound  = augData_.misData_(i).second[0];
+        Real supBound  = augData_.misData_(i).second[1];
+        Real infCdf = weibull_.cdf(kParam, lambda, infBound);
+        Real supCdf = weibull_.cdf(kParam, lambda, supBound);
+        logProba = std::log(supCdf - infCdf);
+     }
+     break;
+
     default: {
     	throw("WeibullLikelihood::lnObservedProbability, error in missing data handling, please report to the maintainer.");
     }

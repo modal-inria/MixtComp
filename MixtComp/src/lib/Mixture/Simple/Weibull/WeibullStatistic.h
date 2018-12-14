@@ -28,16 +28,30 @@ class WeibullStatistic {
 
     /** quantile corresponding pour proba p */
     Real quantile(Real k, Real lambda, Real p) const;
-    Real quantileIB(Real k, Real lambda, Real a, Real p) const;
+    Real quantileIB(Real k, Real lambda, Real infBound, Real p) const;
+    Real quantileSB(Real k, Real lambda, Real supBound, Real p) const;
+    Real quantileI(Real k, Real lambda, Real infBound, Real supBound, Real p) const;
 
     /** Sample a value from a Weibull Law with parameters lambda and k. */
     Real sample(Real k, Real lambda);
 
     /**
-     * Sample a value from a Weibull Law with parameters mean and sd,
+     * Sample a value from a Weibull Law with parameters lambda and k
      * conditioned on being in the interval [infBound; +inf]
      * */
-    Real sampleIB(Real k, Real lambda, Real a);
+    Real sampleIB(Real k, Real lambda, Real infBound);
+
+    /**
+     * Sample a value from a Weibull Law with parameters lambda and k
+     * conditioned on being in the interval [infBound; +inf]
+    * */
+    Real sampleI(Real k, Real lambda, Real leftBound, Real rightBound);
+
+
+    /** Sample a value from a Weibull Law with parameters lambda and k
+     * conditionned on being in the interval [-inf; supBound]
+     * */
+    Real sampleSB(Real k, Real lambda, Real supBound);
 
     Real pdf(Real k, Real lambda, Real x) const;
 
