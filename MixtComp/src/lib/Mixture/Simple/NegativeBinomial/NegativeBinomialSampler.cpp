@@ -30,7 +30,17 @@ void NegativeBinomialSampler::samplingStepNoCheck(int i, int z_i) {
       }
       break;
 
-      default: {
+	  case missingRUIntervals_: {
+	    x = negativeBinomial_.sampleIB(n, p, augData_.misData_(i).second[0]);
+	  }
+	  break;
+
+	  case missingIntervals_: {
+	    x = negativeBinomial_.sampleI(n, p, augData_.misData_(i).second[0], augData_.misData_(i).second[1]);
+	  }
+	  break;
+
+	  default: {
     	  throw("NegativeBinomialSampler::samplingStepNoCheck, error in missing data handling, please report to the maintainer.");
       }
       break;

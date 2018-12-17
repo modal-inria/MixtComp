@@ -11,6 +11,8 @@
 #define NEGATIVEBINOMIALSTATISTIC_H
 
 #include "../../../LinAlg/mixt_LinAlg.h"
+#include "../../../Statistic/mixt_UniformStatistic.h"
+
 #include <boost/random/mersenne_twister.hpp>
 
 namespace mixt {
@@ -30,14 +32,37 @@ public:
 
 	Real lpdf(int x, Real n, Real p) const;
 
+	/** cdf evaluated at individual x */
+	Real cdf(int x, Real n, Real p) const;
+
 	/** Sample a value from a Negative Binomial Law with parameter n and p */
 	int sample(Real n, Real p);
+
+    /**
+     * Sample a value from a Negative Binomial Law with parameter n and p
+     * conditioned on being in the interval [infBound; +inf]
+     * */
+    int sampleIB(Real n, Real p, int infBound);
+
+    /**
+     * Sample a value from a Negative Binomial Law with parameter n and p
+     * conditioned on being in the interval [infBound; supBound]
+    * */
+    int sampleI(Real n, Real p, int infBound, int supBound);
+
+
+    /** quantile corresponding to proba alpha */
+    int quantile(Real n, Real p, Real alpha) const;
+    int quantileIB(Real n, Real p, int infBound, Real alpha) const;
+    int quantileI(Real n, Real p, int infBound, int supBound, Real alpha) const;
 
 
 private:
 	/** Random number generator */
 	boost::mt19937 rng_;
 
+	/** Uniform sampler used for nonZeroSample */
+	UniformStatistic uniform_;
 };
 
 } // namespace mixt
