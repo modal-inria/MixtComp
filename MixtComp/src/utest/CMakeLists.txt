@@ -21,6 +21,7 @@ add_executable(runUtest
     lib/Statistic/UTestNegativeBinomialStatistic.cpp
     lib/Statistic/UTestWeibullStatistic.cpp
     lib/Statistic/UTestNormalStatistic.cpp
+    lib/Statistic/UTestUniformIntStatistic.cpp
     lib/Statistic/UTestRNG.cpp
     lib/Rank/UTestRankIndividual.cpp
     lib/Rank/UTestRankParamStat.cpp

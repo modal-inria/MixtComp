@@ -111,6 +111,8 @@ add_library(MixtComp
     Statistic/mixt_UniformStatistic.h
     Statistic/Functions.h
     Statistic/mixt_Statistic.h
+    Statistic/UniformIntStatistic.cpp
+    Statistic/UniformIntStatistic.h
     Run/Predict.h
     Run/Learn.h
     Data/mixt_AugmentedData.h
