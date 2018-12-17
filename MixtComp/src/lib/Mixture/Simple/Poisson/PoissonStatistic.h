@@ -25,8 +25,38 @@ public:
 
 	Real lpdf(int x, Real lambda) const;
 
+    /** cdf evaluated at individual x */
+	Real cdf(int x, Real lambda) const;
+
 	/** Sample a value from a Poisson Law with parameter lambda */
 	int sample(Real lambda);
+
+    /**
+     * Sample a value from a Poisson Law with parameters lambda
+     * conditioned on being in the interval [infBound; +inf]
+     * */
+    Real sampleIB(Real lambda, Real infBound);
+
+    /**
+     * Sample a value from a Poisson Law with parameters lambda
+     * conditioned on being in the interval [infBound; supBound]
+    * */
+    Real sampleI(Real lambda, Real infBound, Real supBound);
+
+    /** Sample a value from a Poisson Law with parameters lambda
+     * conditioned on being in the interval [-inf; supBound]
+     * */
+    Real sampleSB(Real lambda, Real supBound);
+
+    /** quantile corresponding pour proba p */
+    Real quantile(Real lambda, Real p) const;
+    Real quantileIB(Real lambda, Real infBound, Real p) const;
+    Real quantileSB(Real lambda, Real supBound, Real p) const;
+    Real quantileI(Real lambda, Real infBound, Real supBound, Real p) const;
+
+    /** Sample a value from a Weibull Law with parameters lambda and k. */
+    Real sample(Real k, Real lambda);
+
 
 	/**
 	 * Sample a non-zero value

@@ -41,6 +41,29 @@ Real PoissonLikelihood::lnObservedProbability(int i, int k) const {
     }
     break;
 
+    case missingRUIntervals_: {
+      Real infBound = augData_.misData_(i).second[0];
+      Real infCdf = poisson_.cdf(param_(k), infBound);
+      logProba = std::log(1.0 - infCdf);
+    }
+    break;
+
+    case missingLUIntervals_: {
+        Real supBound  = augData_.misData_(i).second[0];
+        Real supCdf = poisson_.cdf(param_(k), supBound);
+        logProba = std::log(supCdf);
+     }
+     break;
+
+    case missingIntervals_: {
+        Real infBound  = augData_.misData_(i).second[0];
+        Real supBound  = augData_.misData_(i).second[1];
+        Real infCdf = poisson_.cdf(param_(k), infBound);
+        Real supCdf = poisson_.cdf(param_(k), supBound);
+        logProba = std::log(supCdf - infCdf);
+     }
+     break;
+
     default: {
     	throw("PoissonLikelihood::PoissonLikelihood, error in missing data handling, please report to the maintainer.");
     }

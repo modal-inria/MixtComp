@@ -29,6 +29,21 @@ void PoissonSampler::samplingStepNoCheck(int i, int z_i) {
       }
       break;
 
+	  case missingRUIntervals_: {
+	    x = poisson_.sampleIB(lambda, augData_.misData_(i).second[0]);
+	  }
+	  break;
+
+	  case missingLUIntervals_: {
+	    x = poisson_.sampleSB(lambda, augData_.misData_(i).second[0]);
+	  }
+	  break;
+
+	  case missingIntervals_: {
+	    x = poisson_.sampleI(lambda, augData_.misData_(i).second[0], augData_.misData_(i).second[1]);
+	  }
+	  break;
+
       default: {
     	  throw("PoissonSampler::samplingStepNoCheck, error in missing data handling, please report to the maintainer.");
       }
