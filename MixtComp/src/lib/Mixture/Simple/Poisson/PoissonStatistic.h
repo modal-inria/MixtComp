@@ -35,19 +35,19 @@ public:
      * Sample a value from a Poisson Law with parameters lambda
      * conditioned on being in the interval [infBound; +inf]
      * */
-    Real sampleIB(Real lambda, Real infBound);
+	int sampleIB(Real lambda, int infBound);
 
     /**
      * Sample a value from a Poisson Law with parameters lambda
      * conditioned on being in the interval [infBound; supBound]
     * */
-    Real sampleI(Real lambda, Real infBound, Real supBound);
+    int sampleI(Real lambda, int infBound, int supBound);
 
 
-    /** quantile corresponding pour proba p */
-    Real quantile(Real lambda, Real p) const;
-    Real quantileIB(Real lambda, Real infBound, Real p) const;
-    Real quantileI(Real lambda, Real infBound, Real supBound, Real p) const;
+    /** quantile corresponding to proba p */
+    int quantile(Real lambda, Real p) const;
+    int quantileIB(Real lambda, int infBound, Real p) const;
+    int quantileI(Real lambda, int infBound, int supBound, Real p) const;
 
 
 	/**

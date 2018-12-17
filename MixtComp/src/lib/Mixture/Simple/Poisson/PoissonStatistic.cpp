@@ -71,18 +71,18 @@ int PoissonStatistic::nonZeroSample(Real lambda) {
 }
 
 
-Real PoissonStatistic::sampleIB(Real lambda, Real infBound) {
+int PoissonStatistic::sampleIB(Real lambda, int infBound) {
 	Real u = uniform_.sample(0., 1.);
 	return quantileIB(lambda, infBound, u);
 }
 
 
-Real PoissonStatistic::sampleI(Real lambda, Real infBound, Real supBound) {
+int PoissonStatistic::sampleI(Real lambda, int infBound, int supBound) {
 	Real u = uniform_.sample(0., 1.);
 	return quantileI(lambda, infBound, supBound, u);
 }
 
-Real PoissonStatistic::quantile(Real lambda, Real p) const {
+int PoissonStatistic::quantile(Real lambda, Real p) const {
 	/*
 	 * use of round up quantile poisson in order to use the inverse transform sample methods for discrete random variable
 	 * http://www3.eng.cam.ac.uk/~ss248/G12-M01/Week1/ITM.pdf
@@ -92,16 +92,16 @@ Real PoissonStatistic::quantile(Real lambda, Real p) const {
 	boost::math::poisson_distribution<
 	            double,
 				boost::math::policies::policy<boost::math::policies::discrete_quantile<boost::math::policies::integer_round_up> > > pois(lambda);
-	Real proba = boost::math::quantile(pois, p);
-	return proba;
+	int q = boost::math::quantile(pois, p);
+	return q;
 }
 
-Real PoissonStatistic::quantileIB(Real lambda, Real infBound, Real p) const {
+int PoissonStatistic::quantileIB(Real lambda, int infBound, Real p) const {
 	Real u = (1.0 - p) * cdf(infBound, lambda) + p;
 	return quantile(lambda, u);
 }
 
-Real PoissonStatistic::quantileI(Real lambda, Real infBound, Real supBound, Real p) const {
+int PoissonStatistic::quantileI(Real lambda, int infBound, int supBound, Real p) const {
 	Real u = p * cdf(supBound, lambda) + (1.0 - p) * cdf(infBound, lambda);
 	return quantile(lambda, u);
 }
