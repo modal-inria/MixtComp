@@ -76,10 +76,6 @@ Real PoissonStatistic::sampleIB(Real lambda, Real infBound) {
 	return quantileIB(lambda, infBound, u);
 }
 
-Real PoissonStatistic::sampleSB(Real lambda, Real supBound) {
-	Real u = uniform_.sample(0., 1.);
-	return quantileSB(lambda, supBound, u);
-}
 
 Real PoissonStatistic::sampleI(Real lambda, Real infBound, Real supBound) {
 	Real u = uniform_.sample(0., 1.);
@@ -102,11 +98,6 @@ Real PoissonStatistic::quantile(Real lambda, Real p) const {
 
 Real PoissonStatistic::quantileIB(Real lambda, Real infBound, Real p) const {
 	Real u = (1.0 - p) * cdf(infBound, lambda) + p;
-	return quantile(lambda, u);
-}
-
-Real PoissonStatistic::quantileSB(Real lambda, Real supBound, Real p) const {
-	Real u = p * cdf(supBound, lambda);
 	return quantile(lambda, u);
 }
 

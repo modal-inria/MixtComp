@@ -34,11 +34,6 @@ void PoissonSampler::samplingStepNoCheck(int i, int z_i) {
 	  }
 	  break;
 
-	  case missingLUIntervals_: {
-	    x = poisson_.sampleSB(lambda, augData_.misData_(i).second[0]);
-	  }
-	  break;
-
 	  case missingIntervals_: {
 	    x = poisson_.sampleI(lambda, augData_.misData_(i).second[0], augData_.misData_(i).second[1]);
 	  }

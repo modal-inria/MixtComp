@@ -58,7 +58,7 @@ poissonHideData <- function(present, x, param)
 {
   if(!present)
   {
-    missType <- sample(4, size = 1)
+    missType <- sample(3, size = 1)
     
     bounds <- round(sort(rpois(2, param)), 5)
     if(bounds[1] == bounds[2])
@@ -68,8 +68,7 @@ poissonHideData <- function(present, x, param)
     x <- switch(missType,
                 "1" = "?",
                 "2" = paste0("[",bounds[1],":",bounds[2],"]"),
-                "3" = paste0("[","-inf",":",bounds[2],"]"),
-                "4" = paste0("[",bounds[1],":","+inf","]"))
+                "3" = paste0("[",bounds[1],":","+inf","]"))
     
   }
   

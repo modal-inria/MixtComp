@@ -27,7 +27,7 @@ Vector<bool> Poisson::acceptedType() const {
 	at(1) = true; // missing_,
 	at(2) = false; // missingFiniteValues_,
 	at(3) = true; // missingIntervals_,
-	at(4) = true; // missingLUIntervals_,
+	at(4) = false; // missingLUIntervals_,
 	at(5) = true; // missingRUIntervals_,
 	return at;
 }
