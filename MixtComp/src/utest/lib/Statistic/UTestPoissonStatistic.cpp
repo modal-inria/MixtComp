@@ -23,12 +23,10 @@ TEST(PoissonStatistic, sample) {
 	{
 		int xI = pois.sampleI(lambda, infBound, supBound);
 		int xIB = pois.sampleIB(lambda, infBound);
-		int xSB = pois.sampleSB(lambda, supBound);
 
 		EXPECT_GE(xI, infBound);
 		EXPECT_LE(xI, supBound);
 		EXPECT_GE(xIB, infBound);
-		EXPECT_LE(xSB, supBound);
 	}
 
 }
