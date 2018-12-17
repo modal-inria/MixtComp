@@ -26,12 +26,6 @@ class WeibullStatistic {
     /** cdf evaluated at individual x, when the distribution is truncated below a. */
     Real cdfIB(Real k, Real lambda, Real a, Real x) const;
 
-    /** quantile corresponding pour proba p */
-    Real quantile(Real k, Real lambda, Real p) const;
-    Real quantileIB(Real k, Real lambda, Real infBound, Real p) const;
-    Real quantileSB(Real k, Real lambda, Real supBound, Real p) const;
-    Real quantileI(Real k, Real lambda, Real infBound, Real supBound, Real p) const;
-
     /** Sample a value from a Weibull Law with parameters lambda and k. */
     Real sample(Real k, Real lambda);
 
@@ -43,15 +37,20 @@ class WeibullStatistic {
 
     /**
      * Sample a value from a Weibull Law with parameters lambda and k
-     * conditioned on being in the interval [infBound; +inf]
+     * conditioned on being in the interval [infBound; supBound]
     * */
-    Real sampleI(Real k, Real lambda, Real leftBound, Real rightBound);
-
+    Real sampleI(Real k, Real lambda, Real infBound, Real supBound);
 
     /** Sample a value from a Weibull Law with parameters lambda and k
-     * conditionned on being in the interval [-inf; supBound]
+     * conditioned on being in the interval [-inf; supBound]
      * */
     Real sampleSB(Real k, Real lambda, Real supBound);
+
+    /** quantile corresponding pour proba p */
+    Real quantile(Real k, Real lambda, Real p) const;
+    Real quantileIB(Real k, Real lambda, Real infBound, Real p) const;
+    Real quantileSB(Real k, Real lambda, Real supBound, Real p) const;
+    Real quantileI(Real k, Real lambda, Real infBound, Real supBound, Real p) const;
 
     Real pdf(Real k, Real lambda, Real x) const;
 
