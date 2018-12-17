@@ -16,6 +16,7 @@
 #include "../LinAlg/mixt_LinAlg.h"
 #include "../Various/mixt_Constants.h"
 #include "../Statistic/mixt_UniformStatistic.h"
+#include "../Statistic/UniformIntStatistic.h"
 #include "../Statistic/MultinomialStatistic.h"
 #include "../Various/mixt_Enum.h"
 
@@ -205,6 +206,9 @@ private:
 
 	/** Uniform law*/
 	UniformStatistic uniform_;
+
+	/** Uniform integer law*/
+	UniformIntStatistic uniformInt_;
 
 	/** multinomial law */
 	MultinomialStatistic multi_;
