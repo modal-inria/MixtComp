@@ -101,17 +101,17 @@ Real PoissonStatistic::quantile(Real lambda, Real p) const {
 }
 
 Real PoissonStatistic::quantileIB(Real lambda, Real infBound, Real p) const {
-	Real u = (1.0 - p) * cdf(lambda, infBound) + p;
+	Real u = (1.0 - p) * cdf(infBound, lambda) + p;
 	return quantile(lambda, u);
 }
 
 Real PoissonStatistic::quantileSB(Real lambda, Real supBound, Real p) const {
-	Real u = p * cdf(lambda, supBound);
+	Real u = p * cdf(supBound, lambda);
 	return quantile(lambda, u);
 }
 
 Real PoissonStatistic::quantileI(Real lambda, Real infBound, Real supBound, Real p) const {
-	Real u = p * cdf(lambda, supBound) + (1.0 - p) * cdf(lambda, infBound);
+	Real u = p * cdf(supBound, lambda) + (1.0 - p) * cdf(infBound, lambda);
 	return quantile(lambda, u);
 }
 
