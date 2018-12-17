@@ -48,13 +48,6 @@ Real PoissonLikelihood::lnObservedProbability(int i, int k) const {
     }
     break;
 
-    case missingLUIntervals_: {
-        Real supBound  = augData_.misData_(i).second[0];
-        Real supCdf = poisson_.cdf(supBound, param_(k));
-        logProba = std::log(supCdf);
-     }
-     break;
-
     case missingIntervals_: {
         Real infBound  = augData_.misData_(i).second[0];
         Real supBound  = augData_.misData_(i).second[1];
