@@ -49,9 +49,6 @@ public:
     Real quantileIB(Real lambda, Real infBound, Real p) const;
     Real quantileI(Real lambda, Real infBound, Real supBound, Real p) const;
 
-    /** Sample a value from a Weibull Law with parameters lambda and k. */
-    Real sample(Real k, Real lambda);
-
 
 	/**
 	 * Sample a non-zero value
