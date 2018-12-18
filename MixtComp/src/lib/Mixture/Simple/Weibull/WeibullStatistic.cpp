@@ -20,11 +20,6 @@ WeibullStatistic::WeibullStatistic() :
 }
 
 Real WeibullStatistic::quantile(Real k, Real lambda, Real p) const {
-	if (p == 1.0) {
-#ifdef MC_VERBOSE
-		std::cout << "p == 1" << std::endl;
-#endif
-	}
 	boost::math::weibull weib(k, lambda);
 	Real x = boost::math::quantile(weib, p);
 	return x;
@@ -35,10 +30,6 @@ Real WeibullStatistic::quantileIB(Real k, Real lambda, Real infBound, Real p) co
 	return quantile(k, lambda, u);
 }
 
-Real WeibullStatistic::quantileSB(Real k, Real lambda, Real supBound, Real p) const {
-	Real u = p * cdf(k, lambda, supBound);
-	return quantile(k, lambda, u);
-}
 
 Real WeibullStatistic::quantileI(Real k, Real lambda, Real infBound, Real supBound, Real p) const {
 	Real u = p * cdf(k, lambda, supBound) + (1.0 - p) * cdf(k, lambda, infBound);
@@ -55,11 +46,6 @@ Real WeibullStatistic::sample(Real k, Real lambda) {
 Real WeibullStatistic::sampleIB(Real k, Real lambda, Real infBound) {
 	Real u = uniform_.sample(0., 1.);
 	return quantileIB(k, lambda, infBound, u);
-}
-
-Real WeibullStatistic::sampleSB(Real k, Real lambda, Real supBound) {
-	Real u = uniform_.sample(0., 1.);
-	return quantileSB(k, lambda, supBound, u);
 }
 
 Real WeibullStatistic::sampleI(Real k, Real lambda, Real infBound, Real supBound) {
