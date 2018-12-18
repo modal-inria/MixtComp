@@ -82,7 +82,7 @@ poissonHideData <- function(present, x, param)
 negativeBinomialGenerator <- function(present, param) {
   x <- negativeBinomialFullGenerator(param)
   
-  xStr <- negativeBinomialHideData(present, x)
+  xStr <- negativeBinomialHideData(present, x, param)
   
   return(xStr)
 }
@@ -94,10 +94,21 @@ negativeBinomialFullGenerator <- function(param)
 }
 
 
-negativeBinomialHideData <- function(present, x)
+negativeBinomialHideData <- function(present, x, param)
 {
-  if(!present)
-    x <- "?"
+  if(!present) {
+    missType <- sample(3, size = 1)
+    
+    bounds <- round(sort(rnbinom(2, size = param$n, prob = param$p)), 5)
+    if(bounds[1] == bounds[2])
+      bounds[2] = bounds[2] + 1
+    
+    x <- switch(
+      missType,
+      "1" = "?",
+      "2" = paste0("[",bounds[1],":","+inf","]"),
+      "3" = paste0("[",bounds[1],":",bounds[2],"]"))
+  }
   
   return(as.character(x))
 }
