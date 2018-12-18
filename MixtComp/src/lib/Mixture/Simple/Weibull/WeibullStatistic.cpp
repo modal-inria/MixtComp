@@ -20,28 +20,19 @@ WeibullStatistic::WeibullStatistic() :
 }
 
 Real WeibullStatistic::quantile(Real k, Real lambda, Real p) const {
-	if (p == 1.0) {
-#ifdef MC_VERBOSE
-		std::cout << "p == 1" << std::endl;
-#endif
-	}
 	boost::math::weibull weib(k, lambda);
 	Real x = boost::math::quantile(weib, p);
 	return x;
 }
 
 Real WeibullStatistic::quantileIB(Real k, Real lambda, Real infBound, Real p) const {
-	Real u = (1.0 - p) * cdf(k, lambda, infBound) + p;
+	Real u = (1.0 - p) * cdf(infBound, k, lambda) + p;
 	return quantile(k, lambda, u);
 }
 
-Real WeibullStatistic::quantileSB(Real k, Real lambda, Real supBound, Real p) const {
-	Real u = p * cdf(k, lambda, supBound);
-	return quantile(k, lambda, u);
-}
 
 Real WeibullStatistic::quantileI(Real k, Real lambda, Real infBound, Real supBound, Real p) const {
-	Real u = p * cdf(k, lambda, supBound) + (1.0 - p) * cdf(k, lambda, infBound);
+	Real u = p * cdf(supBound, k, lambda) + (1.0 - p) * cdf(infBound, k, lambda);
 	return quantile(k, lambda, u);
 }
 
@@ -57,39 +48,34 @@ Real WeibullStatistic::sampleIB(Real k, Real lambda, Real infBound) {
 	return quantileIB(k, lambda, infBound, u);
 }
 
-Real WeibullStatistic::sampleSB(Real k, Real lambda, Real supBound) {
-	Real u = uniform_.sample(0., 1.);
-	return quantileSB(k, lambda, supBound, u);
-}
-
 Real WeibullStatistic::sampleI(Real k, Real lambda, Real infBound, Real supBound) {
 	Real u = uniform_.sample(0., 1.);
 	return quantileI(k, lambda, infBound, supBound, u);
 }
 
-Real WeibullStatistic::pdf(Real k, Real lambda, Real x) const {
+Real WeibullStatistic::pdf(Real x, Real k, Real lambda) const {
 	boost::math::weibull weib(k, lambda);
 	Real proba = boost::math::pdf(weib, x);
 	return proba;
 }
 
-Real WeibullStatistic::lpdf(Real k, Real lambda, Real x) const {
+Real WeibullStatistic::lpdf(Real x, Real k, Real lambda) const {
 	Real logLambda = std::log(lambda);
 	return std::log(k) - logLambda + (k - 1.0) * (std::log(x) - logLambda)
 			- std::pow(x / lambda, k);
 }
 
-Real WeibullStatistic::cdf(Real k, Real lambda, Real x) const {
+Real WeibullStatistic::cdf(Real x, Real k, Real lambda) const {
 	return 1.0 - std::exp(-std::pow(x / lambda, k));
 }
 
-Real WeibullStatistic::cdfIB(Real k, Real lambda, Real a, Real x) const {
-	Real cdfa = cdf(k, lambda, a);
-	return (cdf(k, lambda, x) - cdfa) / (1.0 - cdfa);
+Real WeibullStatistic::cdfIB(Real x, Real k, Real lambda, Real infBound) const {
+	Real cdfIB = cdf(infBound, k, lambda);
+	return (cdf(x, k, lambda) - cdfIB) / (1.0 - cdfIB);
 }
 
-Real WeibullStatistic::lcdf(Real k, Real lambda, Real x) const {
-	return std::log(cdf(k, lambda, x));
+Real WeibullStatistic::lcdf(Real x, Real k, Real lambda) const {
+	return std::log(cdf(x, k, lambda));
 }
 
 }

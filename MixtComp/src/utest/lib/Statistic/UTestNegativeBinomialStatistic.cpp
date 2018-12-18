@@ -55,3 +55,24 @@ TEST(NegativeBinomialStatistic, DistributionFunctions) {
 	EXPECT_EQ(lpdf1, minInf);
 
 }
+
+TEST(NegativeBinomialStatistic, sample) {
+	Real n = 10.5;
+	Real p = 0.6;
+	int infBound = 3;
+	int supBound = 6;
+
+	NegativeBinomialStatistic nBinom;
+
+	for(int i = 0; i < 10; ++i)
+	{
+		int xI = nBinom.sampleI(n, p, infBound, supBound);
+		int xIB = nBinom.sampleIB(n, p, infBound);
+
+		EXPECT_GE(xI, infBound);
+		EXPECT_LE(xI, supBound);
+		EXPECT_GE(xIB, infBound);
+	}
+
+
+}

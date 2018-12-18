@@ -3,7 +3,7 @@
 
 gaussianGenerator <- function(present, param) {
   x <- gaussianFullGenerator(param)
-  
+
   xStr <- gaussianHideData(present, x, param)
   
   return(xStr)
@@ -42,7 +42,7 @@ gaussianHideData <- function(present, x, param)
 poissonGenerator <- function(present, param) {
   x <- poissonFullGenerator(param)
   
-  xStr <- poissonHideData(present, x)
+  xStr <- poissonHideData(present, x, param)
   
   return(xStr)
 }
@@ -54,10 +54,23 @@ poissonFullGenerator <- function(param)
 }
 
 
-poissonHideData <- function(present, x)
+poissonHideData <- function(present, x, param)
 {
   if(!present)
-    x <- "?"
+  {
+    missType <- sample(3, size = 1)
+    
+    bounds <- round(sort(rpois(2, param)), 5)
+    if(bounds[1] == bounds[2])
+      bounds[2] = bounds[2] + 1
+    
+    
+    x <- switch(missType,
+                "1" = "?",
+                "2" = paste0("[",bounds[1],":",bounds[2],"]"),
+                "3" = paste0("[",bounds[1],":","+inf","]"))
+    
+  }
   
   return(as.character(x))
 }
@@ -69,7 +82,7 @@ poissonHideData <- function(present, x)
 negativeBinomialGenerator <- function(present, param) {
   x <- negativeBinomialFullGenerator(param)
   
-  xStr <- negativeBinomialHideData(present, x)
+  xStr <- negativeBinomialHideData(present, x, param)
   
   return(xStr)
 }
@@ -81,10 +94,21 @@ negativeBinomialFullGenerator <- function(param)
 }
 
 
-negativeBinomialHideData <- function(present, x)
+negativeBinomialHideData <- function(present, x, param)
 {
-  if(!present)
-    x <- "?"
+  if(!present) {
+    missType <- sample(3, size = 1)
+    
+    bounds <- round(sort(rnbinom(2, size = param$n, prob = param$p)), 5)
+    if(bounds[1] == bounds[2])
+      bounds[2] = bounds[2] + 1
+    
+    x <- switch(
+      missType,
+      "1" = "?",
+      "2" = paste0("[",bounds[1],":","+inf","]"),
+      "3" = paste0("[",bounds[1],":",bounds[2],"]"))
+  }
   
   return(as.character(x))
 }
@@ -104,7 +128,7 @@ weibullFullGenerator <- function(param) {
 
 weibullHideData <- function(present, x, param) {
   if(!present) {
-    missType <- sample(4, size = 1)
+    missType <- sample(3, size = 1)
     
     bounds <- round(sort(rweibull(2, param$shape, param$scale)), 5)
     
@@ -112,8 +136,7 @@ weibullHideData <- function(present, x, param) {
       missType,
       "1" = "?",
       "2" = paste0("[",bounds[1],":","+inf","]"),
-      "3" = paste0("[","-inf",":",bounds[2],"]"),
-      "4" = paste0("[",bounds[1],":",bounds[2],"]"))
+      "3" = paste0("[",bounds[1],":",bounds[2],"]"))
   }
   
   return(as.character(x))

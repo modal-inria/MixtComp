@@ -33,7 +33,7 @@ Real WeibullLikelihood::lnObservedProbability(Index i, Index k) const {
 
   switch(augData_.misData_(i).first) { // likelihood for present value
     case present_: {
-      logProba = weibull_.lpdf(kParam, lambda, augData_.data_(i));
+      logProba = weibull_.lpdf(augData_.data_(i), kParam, lambda);
     }
     break;
 
@@ -44,23 +44,16 @@ Real WeibullLikelihood::lnObservedProbability(Index i, Index k) const {
 
     case missingRUIntervals_: {
       Real infBound = augData_.misData_(i).second[0];
-      Real infCdf = weibull_.cdf(kParam, lambda, infBound);
+      Real infCdf = weibull_.cdf(infBound, kParam, lambda);
       logProba = std::log(1.0 - infCdf);
     }
     break;
 
-    case missingLUIntervals_: {
-        Real supBound  = augData_.misData_(i).second[0];
-        Real supCdf = weibull_.cdf(kParam, lambda, supBound);
-        logProba = std::log(supCdf);
-     }
-     break;
-
     case missingIntervals_: {
         Real infBound  = augData_.misData_(i).second[0];
         Real supBound  = augData_.misData_(i).second[1];
-        Real infCdf = weibull_.cdf(kParam, lambda, infBound);
-        Real supCdf = weibull_.cdf(kParam, lambda, supBound);
+        Real infCdf = weibull_.cdf(infBound, kParam, lambda);
+        Real supCdf = weibull_.cdf(supBound, kParam, lambda);
         logProba = std::log(supCdf - infCdf);
      }
      break;

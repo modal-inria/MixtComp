@@ -67,12 +67,13 @@
 #' where \emph{a_i} denotes a categorical value.
 #' 
 #' - Poisson and NegativeBinomial Data:
-#' Poisson and NegativeBinomial data must be positive integer. Missing data are indicated by a \emph{?}.
+#' Poisson and NegativeBinomial data must be positive integer. Missing data are indicated by a \emph{?}. Partial data can be provided through intervals denoted by 
+#' \emph{[a:b]} where \emph{a} and \emph{b} are  positive integers. \emph{b} can be \emph{+inf}.
 #' 
 #' - Weibull Data:
 #' Weibull data are real positive values with the dot as decimal separator.
 #' Missing data are indicated by a \emph{?}. Partial data can be provided through intervals denoted by 
-#' \emph{[a:b]} where \emph{a} and \emph{b} are  positive reals.  \emph{b} can be \emph{+inf}.
+#' \emph{[a:b]} where \emph{a} and \emph{b} are  positive reals. \emph{b} can be \emph{+inf}.
 #' 
 #' 
 #' - Rank data:
@@ -87,7 +88,9 @@
 #' \emph{i} is the number of subregressions in a functional data and \emph{k} the number of coefficients
 #'  of each regression (2 = linear, 3 = quadratic, ...). Missing data are not supported.
 #'
-#' 
+#' - z_class:
+#' To perform a (semi-)supervised clustering, user can add a variable named `z_class` (with eventually some missing values) with "LatentClass" as model.
+#' Missing data are indicated by a \emph{?}. For partial data, a list of possible values can be provided by \emph{{a_1,\dots,a_j}}, where \emph{a_i} denotes a class number.
 #' 
 #' @section MixtComp object:
 #' A MixtComp object is a result of a single run of MixtComp algorithm. It is a list containing three elements \emph{mixture}, \emph{variable} and \emph{algo}. 

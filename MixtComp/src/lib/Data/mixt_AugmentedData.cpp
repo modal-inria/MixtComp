@@ -125,7 +125,36 @@ void AugmentedData<Vector<int> >::removeMissingSample(Index i) {
 		}
 			break;
 
-		default: {// other types of intervals not present in integer data
+		case missingIntervals_: {
+			Real infBound = misData_(i).second[0]; // (iterator on map)->(mapped element).(vector of parameters)[element]
+			Real supBound = misData_(i).second[1];
+			sampleVal = uniformInt_.sample(infBound, supBound);
+		}
+			break;
+
+		case missingLUIntervals_: {
+			Real min = dataRange_.min_;
+			Real supBound = misData_(i).second[0];
+			if (min < supBound) {
+				sampleVal = uniformInt_.sample(min, supBound);
+			} else {
+				sampleVal = supBound;
+			}
+		}
+			break;
+
+		case missingRUIntervals_: {
+			Real infBound = misData_(i).second[0];
+			Real max = dataRange_.max_;
+			if (infBound < max) {
+				sampleVal = uniformInt_.sample(infBound, max);
+			} else {
+				sampleVal = infBound;
+			}
+		}
+			break;
+
+		default: {
 			throw("AugmentedData<Vector<int> >::removeMissingSample, error in missing data handling, please report to the maintainer.");
 		}
 			break;

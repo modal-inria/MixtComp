@@ -192,7 +192,7 @@ f_k(x = j) = \prod_{j=1}^K p_{k,j}^{a_j} \quad \text{with} \quad a_j = \begin{ca
 
 ## Data Format
 
-### Real data: Gaussian & Weibull
+### Real data: Gaussian
 Real values are saved with the dot as decimal separator.
 Missing data are indicated by a $`?`$. Partial data can be provided through intervals denoted by $`[a:b]`$ where $`a`$ (resp. $`b`$) is a real or $`-inf`$ (resp. $`+inf`$).
 
@@ -244,26 +244,27 @@ data <- matrix(c("2.1", "0.26", "?", "[0.56:1.28]", "1.21", "[0:5.11]", "[1.65:+
 
 
 ### Counting data: Poisson & NegativeBinomial
-Counting data are positive integer. Missing data are indicated by a $`?`$.
+Counting data are positive integer. Missing data are indicated by a $`?`$. Partial data can be provided through intervals denoted by
+$`[a:b]`$ where $`a`$ and $`b`$ are positive integers ($`b`$ can be +inf).
 
 JSON:
 ```
 {
-    "varCount1": ["2", "3", "?", "4", "4", "2", "1"]
+    "varCount1": ["2", "3", "?", "4", "[2:4]", "[4:+inf]", "1"]
 }
 ```
 
 R:
 ```
 data <- list(
-  varCount1 = c("2", "3", "?", "4", "4", "2", "1")
+  varCount1 = c("2", "3", "?", "4", "[2:4]", "[4:+inf]", "1")
 )
 
 data <- data.frame(
-  varCount1 = c("2", "3", "?", "4", "4", "2", "1")
+  varCount1 = c("2", "3", "?", "4", "[2:4]", "[4:+inf]", "1")
 )
 
-data <- matrix(c("2", "3", "?", "4", "4", "2", "1"), ncol = 1, dimnames = list(NULL, c("varCount1")))
+data <- matrix(c("2", "3", "?", "4", "[2:4]", "[4:+inf]", "1"), ncol = 1, dimnames = list(NULL, c("varCount1")))
 ```
 
 
@@ -385,17 +386,18 @@ desc <- list(varName1 = list(type = "Func_CS", paramStr = "nSub: 3, nCoeff: 2"))
 
 ### Missing data summary
 
-|                         | Multinomial     | Gaussian     | Poisson    | NegativeBinomial | Weibull      |     Rank_ISR             | Func_CS |  LatentClass  |
-| ----------------------- | :-------------: | :----------: | :--------: | :--------------: | :----------: | :----------------------: | :-----: | :-----------: |
-| Completely missing      |  $`?`$          |  $`?`$       |  $`?`$     | $`?`$            | $`?`$        |  $`?,?,?,?`$             |         | $`?`$         | 
-| Finite number of values |  $`\{a,b,c\}`$  |              |            |                  |              |  $`4,\{1~2\},3,\{1~2\}`$ |         | $`\{a,b,c\}`$ |
-| Bounded interval        |                 |  $`[a:b]`$   |            |                  | $`[a:b]`$    |                          |         |               |
-| Right bounded interval  |                 | $`[-inf:b]`$ |            |                  | $`[0:b]`$    |                          |         |               | 
-| Left bounded interval   |                 | $`[a:+inf]`$ |            |                  | $`[a:+inf]`$ |                          |         |               |
+|                         | Multinomial     | Gaussian     | Poisson      | NegativeBinomial | Weibull      |     Rank_ISR             | Func_CS |  LatentClass  |
+| ----------------------- | :-------------: | :----------: | :----------: | :--------------: | :----------: | :----------------------: | :-----: | :-----------: |
+| Completely missing      |  $`?`$          |  $`?`$       |  $`?`$       | $`?`$            | $`?`$        |  $`?,?,?,?`$             |         | $`?`$         | 
+| Finite number of values |  $`\{a,b,c\}`$  |              |              |                  |              |  $`4,\{1~2\},3,\{1~2\}`$ |         | $`\{a,b,c\}`$ |
+| Bounded interval        |                 |  $`[a:b]`$   | $`[a:b]`$    | $`[a:b]`$        | $`[a:b]`$    |                          |         |               |
+| Right bounded interval  |                 | $`[-inf:b]`$ |              |                  |              |                          |         |               | 
+| Left bounded interval   |                 | $`[a:+inf]`$ | $`[a:+inf]`$ | $`[a:+inf]`$     | $`[a:+inf]`$ |                          |         |               |
 
 
 ### (Semi-)Supervised clustering
 To perform a (semi-)supervised clustering, user can add a variable named `z_class` (with eventually some missing values) with "LatentClass" as model.
+Missing data are indicated by a $`?`$. For partial data, a list of possible values can be provided by $`\{a_1,...,a_j\}`$, where $`a_i`$ denotes a class number.
 
 JSON:
 ```

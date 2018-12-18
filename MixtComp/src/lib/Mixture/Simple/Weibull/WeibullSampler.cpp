@@ -34,11 +34,6 @@ void WeibullSampler::samplingStepNoCheck(Index i, Index z_i) {
 		  }
 		  break;
 
-		  case missingLUIntervals_: {
-		    x = weibull_.sampleSB(k, lambda, augData_.misData_(i).second[0]);
-		  }
-		  break;
-
 		  case missingIntervals_: {
 		    x = weibull_.sampleI(k, lambda, augData_.misData_(i).second[0], augData_.misData_(i).second[1]);
 		  }

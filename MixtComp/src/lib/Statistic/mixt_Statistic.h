@@ -17,5 +17,6 @@
 #include "mixt_ExponentialStatistic.h"
 #include "mixt_RNG.h"
 #include "mixt_UniformStatistic.h"
+#include "UniformIntStatistic.h"
 
 #endif // MIXT_STATISTIC_H
