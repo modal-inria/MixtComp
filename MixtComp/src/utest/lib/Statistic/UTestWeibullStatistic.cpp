@@ -22,12 +22,12 @@ TEST(WeibullStatistic, DistributionFunctions) {
 
 	WeibullStatistic weibull;
 
-	Real cdf1 = weibull.cdf(k, lambda, obs + epsilon);
-	Real cdf0 = weibull.cdf(k, lambda, obs);
+	Real cdf1 = weibull.cdf(obs + epsilon, k, lambda);
+	Real cdf0 = weibull.cdf(obs, k, lambda);
 
 	Real derivPDF = (cdf1 - cdf0) / epsilon;
-	Real directPDF = weibull.pdf(k, lambda, obs);
-	Real directLPDF = weibull.lpdf(k, lambda, obs);
+	Real directPDF = weibull.pdf(obs, k, lambda);
+	Real directLPDF = weibull.lpdf(obs, k, lambda);
 
 	ASSERT_NEAR(derivPDF, directPDF, epsilon);
 	ASSERT_NEAR(std::log(directPDF), directLPDF, epsilon);

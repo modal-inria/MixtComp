@@ -121,12 +121,9 @@ TEST(Weibull, truncated) {
 	}
 
 	WeibullStatistic wstatistic;
-
-	Real expectedPdf = wstatistic.cdfIB(kExpected, lambdaExpected, a, 1.25);
+	Real expectedPdf = wstatistic.cdfIB(1.25, kExpected, lambdaExpected, a);
 	Real computedPdf = cdf(augData.data_, 1.25);
-
-	Real expectedQuantile = wstatistic.quantileIB(kExpected, lambdaExpected, a,
-			0.5);
+	Real expectedQuantile = wstatistic.quantileIB(kExpected, lambdaExpected, a, 0.5);
 	Real computedQuantile = quantile(augData.data_, 0.5);
 
 	ASSERT_NEAR(expectedPdf, computedPdf, 0.01);
