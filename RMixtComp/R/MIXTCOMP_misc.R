@@ -157,7 +157,11 @@ computeSimilarityClass <- function(outMixtComp)
 {
   simil <- 1-sqrt(sapply(1:outMixtComp$algo$nClass,
                          function(k) colMeans(sweep(outMixtComp$variable$data$z_class$stat, 1, outMixtComp$variable$data$z_class$stat[,k],"-")**2)))
-  colnames(simil) = rownames(simil)
+  
+  if(is.null(outMixtComp$algo$dictionary$z_class))
+    colnames(simil) = rownames(simil) = paste("Class", 1:outMixtComp$algo$nClass)
+  else
+    colnames(simil) = rownames(simil) = outMixtComp$algo$dictionary$z_class$old
   
   return(simil)
 }
