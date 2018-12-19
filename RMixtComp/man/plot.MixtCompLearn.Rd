@@ -4,13 +4,15 @@
 \alias{plot.MixtCompLearn}
 \title{Plot of a \emph{MixtCompLearn} object}
 \usage{
-\method{plot}{MixtCompLearn}(x, nVarMaxToPlot = 3, pkg = c("ggplot2",
-  "plotly"), ...)
+\method{plot}{MixtCompLearn}(x, nVarMaxToPlot = 3, nClass = NULL,
+  pkg = c("ggplot2", "plotly"), ...)
 }
 \arguments{
 \item{x}{\emph{MixtCompLearn} object}
 
 \item{nVarMaxToPlot}{number of variables to display}
+
+\item{nClass}{number of classes of the model to plot}
 
 \item{pkg}{"ggplot2" or "plotly". Package used to plot}
 
@@ -20,26 +22,14 @@
 Plot of a \emph{MixtCompLearn} object
 }
 \examples{
-\donttest{
-data(simData)
- 
-# define the algorithm's parameters
-algo <- list(nbBurnInIter = 100,
-             nbIter = 100,
-             nbGibbsBurnInIter = 50,
-             nbGibbsIter = 50,
-             nInitPerClass = 10,
-             nSemTry = 20,
-             confidenceLevel = 0.95)
+data(iris)
 
-# keep only 3 variables
-model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
-
-# run RMixtCompt in unsupervised clustering mode + data as matrix
-resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
+# run RMixtCompt in unsupervised clustering mode and in basic mode
+resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 
 plot(resLearn)
-}
+plot(resLearn, nClass = 3)
+
 }
 \seealso{
 \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}

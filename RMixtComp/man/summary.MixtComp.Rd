@@ -15,27 +15,12 @@
 Summary of a \emph{MixtComp} object
 }
 \examples{
-\donttest{
-data(simData)
- 
-# define the algorithm's parameters
-algo <- list(nbBurnInIter = 100,
-             nbIter = 100,
-             nbGibbsBurnInIter = 50,
-             nbGibbsIter = 50,
-             nInitPerClass = 10,
-             nSemTry = 20,
-             confidenceLevel = 0.95)
+data(iris)
 
-# keep only 3 variables
-model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+# run RMixtCompt in unsupervised clustering mode and in basic mode
+resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 
-# run RMixtCompt in unsupervised clustering mode + data as matrix
-resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
-
-summary(resLearn$res[[1]])
-
-}
+summary(resLearn$res[[2]])
 
 }
 \seealso{

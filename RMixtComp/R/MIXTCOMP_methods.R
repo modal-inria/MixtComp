@@ -9,27 +9,12 @@
 #' @method summary MixtComp
 #' 
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
+#' data(iris)
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
-#' 
-#' summary(resLearn$res[[1]])
-#' 
-#' }
+#' summary(resLearn$res[[2]])
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{print.MixtComp}}
 #' 
@@ -78,44 +63,38 @@ summary.MixtComp <- function(object, ...)
 #' @description Summary of a \emph{MixtCompLearn} object  
 #'
 #' @param object \emph{MixtCompLearn} object
+#' @param nClass number of classes of the model to print
 #' @param ... Not used.
 #' 
 #' 
 #' @method summary MixtCompLearn
 #' 
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
+#' data(iris)
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
-#' 
-#' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
+#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' summary(resLearn)
-#' }
+#' summary(resLearn, nClass = 3)
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{print.MixtCompLearn}}
 #' 
 #' @export
-summary.MixtCompLearn <- function(object, ...)
+summary.MixtCompLearn <- function(object, nClass = NULL, ...)
 {
   cat("############### MixtCompLearn Run ###############\n")
   cat("nClass:", object$nClass,"\n")
   cat("Criterion used:", object$criterion,"\n")
   print(object$crit)
   cat("Best model:", ifelse(is.null(object$warnLog), paste0(object$algo$nClass, " clusters"), "none"), "\n")
-  summary.MixtComp(object)
+  
+  if(!is.null(nClass) && (nClass[1] %in% object$nClass))
+  {
+    summary.MixtComp(object$res[[which(object$nClass == nClass[1])]])
+  }else{
+    summary.MixtComp(object)
+  }
 }
 
 
@@ -128,26 +107,12 @@ summary.MixtCompLearn <- function(object, ...)
 #' @param ... Not used.
 #' 
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
+#' data(iris)
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
-#' 
-#' print(resLearn$res[[1]])
-#' }
+#' print(resLearn$res[[2]])
 #' 
 #' @method print MixtComp
 #' 
@@ -221,43 +186,39 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #'
 #' @param x \emph{MixtCompLearn} object
 #' @param nVarMaxToPrint number of variables to display (including z_class)
+#' @param nClass number of classes of the model to print
 #' @param ... Not used.
 #' 
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
+#' data(iris)
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
-#' 
-#' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
+#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' print(resLearn)
-#' }
+#' print(resLearn, nClass = 3)
+#' 
 #' 
 #' @method print MixtCompLearn
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
 #' 
 #' @export
-print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, ...)
+print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...)
 {
   cat("$nClass:", x$nClass, "\n")
   cat("$criterion: ", x$criterion,"\n")
   cat("$crit: \n")
   print(x$crit)
-  cat("\n Best result\n")
-  print.MixtComp(x, nVarMaxToPrint = nVarMaxToPrint, ...)
+  
+  if(!is.null(nClass) && (nClass[1] %in% x$nClass))
+  {
+    cat("\n Result for nClass[1] classes\n")
+    print.MixtComp(x$res[[which(x$nClass == nClass[1])]], nVarMaxToPrint = nVarMaxToPrint)
+  }else{
+    cat("\n Best result\n")
+    print.MixtComp(x, nVarMaxToPrint = nVarMaxToPrint)
+  }
   cat("\n $res: results from all MixtComp Run\n")
 }
 
@@ -271,26 +232,13 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, ...)
 #' @param ... Not used.
 #' 
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
+#' data(iris)
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
+#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
-#' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
+#' plot(resLearn$res[[2]])
 #' 
-#' plot(resLearn$res[[1]])
-#' }
 #' @method plot MixtComp
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
@@ -329,37 +277,26 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ..
 #'
 #' @param x \emph{MixtCompLearn} object
 #' @param nVarMaxToPlot number of variables to display
+#' @param nClass number of classes of the model to plot
 #' @param pkg "ggplot2" or "plotly". Package used to plot
 #' @param ... Not used.
 #' 
 #' @examples 
-#' \donttest{
-#' data(simData)
-#'  
-#' # define the algorithm's parameters
-#' algo <- list(nbBurnInIter = 100,
-#'              nbIter = 100,
-#'              nbGibbsBurnInIter = 50,
-#'              nbGibbsIter = 50,
-#'              nInitPerClass = 10,
-#'              nSemTry = 20,
-#'              confidenceLevel = 0.95)
+#' data(iris)
 #' 
-#' # keep only 3 variables
-#' model <- simData$model$unsupervised[c("Gaussian1", "Poisson1", "Categorical1")]
-#' 
-#' # run RMixtCompt in unsupervised clustering mode + data as matrix
-#' resLearn <- mixtCompLearn(simData$dataLearn$matrix, model, algo, nClass = 2:4)
+#' # run RMixtCompt in unsupervised clustering mode and in basic mode
+#' resLearn <- mixtCompLearn(iris[, -5], nClass = 2:4)
 #' 
 #' plot(resLearn)
-#' }
+#' plot(resLearn, nClass = 3)
+#' 
 #' @method plot MixtCompLearn
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
 #' @family plot
 #' 
 #' @export
-plot.MixtCompLearn <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ...)
+plot.MixtCompLearn <- function(x, nVarMaxToPlot = 3, nClass = NULL, pkg = c("ggplot2", "plotly"), ...)
 {
   pkg = match.arg(pkg)
   
@@ -369,7 +306,13 @@ plot.MixtCompLearn <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"
   {
     p$criteria = plotCrit(x, pkg, ...)
     
-    p2 <- plot(x$res[[which(x$nClass == x$algo$nClass)]], nVarMaxToPlot, pkg, ...)
+
+    if(!is.null(nClass) && (nClass[1] %in% x$nClass))
+    {
+      p2 <- plot(x$res[[which(x$nClass == nClass[1])]], nVarMaxToPlot = nVarMaxToPlot, nClass = nClass, pkg = pkg, ...)
+    }else{
+      p2 <- plot(x$res[[which(x$nClass == x$algo$nClass)]], nVarMaxToPlot = nVarMaxToPlot, nClass = nClass, pkg = pkg, ...)
+    }
     
     p = c(p, p2)
   }
