@@ -20,7 +20,7 @@ Real WeibullLikelihood::lnCompletedProbability(Index i, Index k) const {
   Real kParam = param_(2 * k    );
   Real lambda = param_(2 * k + 1);
 
-  Real logProba = weibull_.lpdf(kParam, lambda, augData_.data_(i));
+  Real logProba = weibull_.lpdf(augData_.data_(i), kParam, lambda);
 
   return logProba;
 }
