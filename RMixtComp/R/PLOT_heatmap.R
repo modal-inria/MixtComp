@@ -57,8 +57,17 @@ heatmapVar <- function(output, pkg = c("ggplot2", "plotly"), ...){
     similarities <- matrix(1, 1, 1)
   }
   
+  text <- round(similarities, 2)
+  for(i in 1:nrow(text))
+  {
+    for(j in 1:ncol(text))
+    {
+      text[i, j] = paste0("similarity between ", namesVbles[i], "\nand ", namesVbles[j], ": ", text[i,j])
+    }
+  }
+  
   heatmap <- switch(pkg,
-                    "plotly" = heatmapplotly(similarities, xname = namesShort, main = "Similarities between variables", ...),
+                    "plotly" = heatmapplotly(similarities, xname = namesShort, yname = namesShort, main = "Similarities between variables", text = text, ...),
                     "ggplot2" = ggheatmap(similarities, xname = namesShort, yname = namesShort, main = "Similarities between variables", legendName = "Similarities", ...))
   heatmap
 }
@@ -119,7 +128,7 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
   ## Classes are sorted by decreasing order of their discriminative power
   ## Character must be convert in factor (otherwise alphabetic order is considered)
   orderClass <- order(pvDiscrim, decreasing = TRUE)
-  namesClass <- factor(namesClass[orderClass], levels=namesClass[orderClass])
+  namesClass <- factor(namesClass[orderClass], levels = namesClass[orderClass])
   if (output$algo$nClass>1){
     similarities <- similarities[,orderClass]
     similarities <- similarities[orderClass, ]
@@ -127,9 +136,17 @@ heatmapClass <- function(output, pkg = c("ggplot2", "plotly"), ...){
     similarities <- matrix(1, 1, 1)
   }
   
-  
+  text <- round(similarities, 2)
+  for(i in 1:nrow(text))
+  {
+    for(j in 1:ncol(text))
+    {
+      text[i, j] = paste0("similarity between ", namesClass[i], "\nand ", namesClass[j], ": ", text[i,j])
+    }
+  }
+
   heatmap <- switch(pkg,
-                    "plotly" = heatmapplotly(similarities, xname = namesClass, main = "Similarities between classes", ...),
+                    "plotly" = heatmapplotly(similarities, xname = namesClass, yname = namesClass, main = "Similarities between classes", text = text, ...),
                     "ggplot2" = ggheatmap(similarities, xname = namesClass, yname = namesClass, main = "Similarities between classes", legendName = "Similarities", ...))
   heatmap
 }
@@ -220,7 +237,7 @@ ggheatmap <- function(dat, xname, yname = 1:nrow(dat), main, xlab = "", ylab = "
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     labs(title = main, x = xlab, y = ylab) + 
-    scale_fill_gradient(low = "#88BDDC", high = "#08306B", limit = c(0, 1), name = legendName)
+    scale_fill_gradient(low = "#F7FBFF", high = "#08306B", limit = c(0, 1), name = legendName)
   
   if(all(yname == 1:nrow(dat)))
     p = p + theme(axis.text.y = element_blank(),
@@ -235,21 +252,24 @@ ggheatmap <- function(dat, xname, yname = 1:nrow(dat), main, xlab = "", ylab = "
 }
 
 
-heatmapplotly <- function(dat, xname, main, xlab = "", ylab = "", text = NULL, ...)
+heatmapplotly <- function(dat, xname, yname = NULL, main, xlab = "", ylab = "", text = NULL, ...)
 {
   heatmap <- plot_ly(text = text,
                      hoverinfo = "text",
                      z = as.table(dat),
                      x = xname,
-                     colorscale = cbind(0:1, (col_numeric("Blues", domain = c(0, 100))(range(dat*100)))),
+                     y = yname,
+                     colorscale = cbind(0:1, c("#F7FBFF", "#08306B")),
+                     zmin = 0, zmax = 1, zauto = FALSE,
                      type = "heatmap",
-                     showscale = FALSE, ...) %>%
-    layout(title = main, showlegend = FALSE, xaxis = list(ticks = "", title = ylab),
+                     showscale = TRUE, ...) %>%
+    layout(title = main, showlegend = FALSE, 
+           xaxis = list(ticks = "", title = ylab),
            yaxis = list(
              title = ylab,
              zeroline = FALSE,
              showline = FALSE,
-             showticklabels = FALSE,
+             showticklabels = !is.null(yname),
              showgrid = FALSE, 
              ticks = ""
            ))
