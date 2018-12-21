@@ -26,8 +26,8 @@ test_that("createFunctional works with vectors of different size", {
 })
 
 test_that("createFunctional remove NA", {
-  time <- c(1, 2, NA, 4 ,5)
-  data <- c(NA, 3.33, 8.99, 7.87, 14.58, 16,45)
+  time <- c(1, 2, NA, 4 , 5)
+  data <- c(NA, 3.33, 8.99, 7.87, 14.58, 16, 45)
   expectedOut <- "2:3.33,4:7.87,5:14.58"
   
   expect_warning(out <- createFunctional(time, data))
