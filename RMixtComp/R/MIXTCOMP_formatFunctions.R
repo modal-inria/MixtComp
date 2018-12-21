@@ -37,8 +37,8 @@ createFunctional <- function(time, value)
   l <- min(length(time), length(value))
   if((l != length(time)) | (l != length(value)))
     warning("time and value do not have the same length.")
-  
-  return(paste(paste(time[1:l], value[1:l], sep = ":"), collapse = ","))
+  toKeep <- !is.na(value[1:l]) & !is.na(time[1:l])
+  return(paste(paste(time[toKeep], value[toKeep], sep = ":"), collapse = ","))
 }
 
 
