@@ -374,39 +374,14 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
       resLearn[[i]]$algo$basicMode = (mode == "basic")
       resLearn[[i]]$algo$hierarchicalMode = FALSE
       
-      # in basic mode add dictionnaries of categories for Multinomial model to convert data in mixtCompPredict in basic mode and change the categories names in output
       if(resLearn[[i]]$algo$basicMode)
-      {
-        resLearn[[i]]$algo$dictionary = dictionary
-        
-        for(varName in setdiff(names(resLearn[[i]]$algo$dictionary), "z_class"))
-        {
-          resLearn[[i]]$variable$data[[varName]]$completed = refactorCategorical(resLearn[[i]]$variable$data[[varName]]$completed, resLearn[[i]]$algo$dictionary[[varName]]$new, resLearn[[i]]$algo$dictionary[[varName]]$old)
-          rownames(resLearn[[i]]$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(resLearn[[i]]$variable$param[[varName]]$stat)), resLearn[[i]]$algo$dictionary[[varName]]$old)
-          rownames(resLearn[[i]]$variable$param[[varName]]$log) = rownames(resLearn[[i]]$variable$param[[varName]]$stat)
-        }
-        
-        # this will not work for non simple model. It is not a problem because in basic mode only simple mdoels are considered
-        if("z_class" %in% names(resLearn[[i]]$algo$dictionary))
-        {
-          varNames <- getVarNames(resLearn[[i]], with.z_class = TRUE)
-          
-          resLearn[[i]]$variable$data$z_class$completed = refactorCategorical(resLearn[[i]]$variable$data$z_class$completed, resLearn[[i]]$algo$dictionary$z_class$new, resLearn[[i]]$algo$dictionary$z_class$old)
-          
-          for(varName in varNames)
-          {
-            rowNames <- rownames(resLearn[[i]]$variable$param[[varName]]$stat)
-            rowNames = changeClassName(rowNames, resLearn[[i]]$algo$dictionary)
-            rownames(resLearn[[i]]$variable$param[[varName]]$stat) = rownames(resLearn[[i]]$variable$param[[varName]]$log) = rowNames
-          }
-        }
-      }
+        resLearn[[i]] = formatOutputBasicMode(resLearn[[i]], dictionary)
     }
   }
   
   ## Choose the best number of classes according to crit
   allCrit <- sapply(resLearn, function(x) {c(getBIC(x), getICL(x))})
-  colnames(allCrit) = c(nClass)
+  colnames(allCrit) = nClass
   rownames(allCrit) = c("BIC", "ICL")
   indBestClustering <- which.max(allCrit[indCrit, ])
   

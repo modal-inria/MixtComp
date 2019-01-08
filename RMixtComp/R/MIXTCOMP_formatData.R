@@ -177,3 +177,35 @@ changeClassName <- function(rowNames, dictionary)
 
   return(rowNames)
 }
+
+
+# in basic mode add dictionnaries of categories for Multinomial ans LatenClass models
+# change names in param, log...
+formatOutputBasicMode <- function(res, dictionary)
+{
+  res$algo$dictionary = dictionary
+  
+  for(varName in setdiff(names(res$algo$dictionary), "z_class"))
+  {
+    res$variable$data[[varName]]$completed = refactorCategorical(res$variable$data[[varName]]$completed, res$algo$dictionary[[varName]]$new, res$algo$dictionary[[varName]]$old)
+    rownames(res$variable$param[[varName]]$stat) = paste0(gsub("[0-9]*$", "", rownames(res$variable$param[[varName]]$stat)), res$algo$dictionary[[varName]]$old)
+    rownames(res$variable$param[[varName]]$log) = rownames(res$variable$param[[varName]]$stat)
+  }
+  
+  # this will not work for non simple model. It is not a problem because in basic mode only simple mdoels are considered
+  if("z_class" %in% names(res$algo$dictionary))
+  {
+    varNames <- getVarNames(res, with.z_class = TRUE)
+    
+    res$variable$data$z_class$completed = refactorCategorical(res$variable$data$z_class$completed, res$algo$dictionary$z_class$new, res$algo$dictionary$z_class$old)
+    
+    for(varName in varNames)
+    {
+      rowNames <- rownames(res$variable$param[[varName]]$stat)
+      rowNames = changeClassName(rowNames, res$algo$dictionary)
+      rownames(res$variable$param[[varName]]$stat) = rownames(res$variable$param[[varName]]$log) = rowNames
+    }
+  }
+  
+  return(res)
+}
