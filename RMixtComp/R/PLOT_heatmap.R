@@ -228,6 +228,7 @@ heatmapTikSorted <- function(output, pkg = c("ggplot2", "plotly"), ...){
 }  
 
 
+# @author Quentin Grimonprez
 ggheatmap <- function(dat, xname, yname = 1:nrow(dat), main, xlab = "", ylab = "", legendName = "Value", addValues = FALSE)
 {
   meltedX = data.frame(ind = factor(rep(yname, ncol(dat)), levels = yname), key = factor(rep(xname, each = nrow(dat)), levels = xname), value = as.numeric(dat))
@@ -251,7 +252,7 @@ ggheatmap <- function(dat, xname, yname = 1:nrow(dat), main, xlab = "", ylab = "
   return(p)
 }
 
-
+# @author Matthieu Marbac
 heatmapplotly <- function(dat, xname, yname = NULL, main, xlab = "", ylab = "", text = NULL, ...)
 {
   heatmap <- plot_ly(text = text,

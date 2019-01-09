@@ -29,6 +29,7 @@
 #' 
 #' @seealso \code{\link{plotDataBoxplot}}  \code{\link{plotDataCI}}
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
 getParam <- function(outMixtComp, varName)
@@ -58,13 +59,14 @@ getParam <- function(outMixtComp, varName)
   return(param)
 }
 
+# @author Quentin Grimonprez
 getParamNumerical <- function(param, nbClass, colNames)
 {
   className <- unique(sapply(strsplit(rownames(param$stat), split = ","), function(x){ gsub("k: ", "", x[1])}))
   matrix(param$stat[,1], nrow = nbClass, byrow = TRUE, dimnames = list(paste0("k: ", className), colNames))
 }
 
-
+# @author Quentin Grimonprez
 getParamFunc_CS <- function(param, nbClass)
 {
   nSub <- getnSub(param$paramStr)
@@ -75,16 +77,19 @@ getParamFunc_CS <- function(param, nbClass)
        sd = getParamNumerical(param$sd, nbClass, paste0("s:", 1:nSub)))
 }
 
+# @author Quentin Grimonprez
 getnCoeff <- function(paramStr)
 {
   as.numeric(gsub("nCoeff:", "", strsplit(gsub(" ", "", paramStr), ",")[[1]][2]))
 }
 
+# @author Quentin Grimonprez
 getnSub <- function(paramStr)
 {
   as.numeric(gsub("nSub:", "", strsplit(gsub(" ", "", paramStr), ",")[[1]][1]))
 }
 
+# @author Quentin Grimonprez
 getParamRank_ISR <- function(param, nbClass)
 {
   mu <- t(sapply(param$mu$stat, function(x){x$rank}))
@@ -94,7 +99,7 @@ getParamRank_ISR <- function(param, nbClass)
        mu = mu)  
 }
 
-
+# @author Quentin Grimonprez
 getParamMultinomial <- function(param, nbClass)
 {
   nbModalities <- length(param$stat[,1])/nbClass
@@ -102,6 +107,3 @@ getParamMultinomial <- function(param, nbClass)
   modalities <- gsub("k: .*, modality: ", "", rownames(param$stat)[1:nbModalities])
   getParamNumerical(param, nbClass, paste0("modality ", modalities))
 }
-
-
-

@@ -1,3 +1,4 @@
+# @author Vincent Kubicki
 context("Simple run")
 
 Sys.setenv(MC_DETERMINISTIC = 42)

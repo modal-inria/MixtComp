@@ -13,6 +13,7 @@
 #   tMax = 20.,
 #   nTime = 100)
 # functionalInterPolyGenerator(param)
+# @author Vincent Kubicki
 functionalInterPolyGenerator <- function(present, param) {
   timeObs <- vector("character", param$nTime)
   
@@ -36,6 +37,7 @@ functionalInterPolyGenerator <- function(present, param) {
   return(xStr)
 }
 
+# @author Vincent Kubicki
 vandermonde <- function(vec, nCoeff) {
   v <- matrix(nrow = nCoeff, ncol = nCoeff)
   for (i in 1:nCoeff) {
@@ -47,6 +49,7 @@ vandermonde <- function(vec, nCoeff) {
   return(v)
 }
 
+# @author Vincent Kubicki
 evalFunc <- function(a, x) {
   nObs <- length(x)
   nCoeff <- length(a)

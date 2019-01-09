@@ -52,7 +52,7 @@ histMisclassif <- function(output, pkg = c("ggplot2", "plotly"), ...)
   p
 }
 
-
+# @author Matthieu Marbac
 plotlyhistMisclassif <- function(z, misclassifrisk, classNames, ...){
   
   G <- length(classNames)
@@ -92,7 +92,7 @@ plotlyhistMisclassif <- function(z, misclassifrisk, classNames, ...){
   histerrors
 }
 
-
+# @author Quentin Grimonprez
 gghistMisclassif <- function(z, misclassifrisk, classNames)
 {
   df = data.frame(class = factor(z, levels = classNames), misclassifrisk = misclassifrisk)
@@ -148,6 +148,7 @@ gghistMisclassif <- function(z, misclassifrisk, classNames)
 #' }
 #' 
 #' @family plot
+#' @author Quentin Grimonprez
 #' @export
 plotCrit <- function(output, pkg = c("ggplot2", "plotly"), ...)
 {
@@ -160,6 +161,7 @@ plotCrit <- function(output, pkg = c("ggplot2", "plotly"), ...)
   p
 }
 
+# @author Quentin Grimonprez
 plotlyCrit <- function(crit, nClass, ...)
 {
   if(length(nClass) == 1)
@@ -177,7 +179,7 @@ plotlyCrit <- function(crit, nClass, ...)
   p
 }
 
-
+# @author Quentin Grimonprez
 ggplotCrit <- function(crit, nClass)
 {
   df = data.frame(class = nClass, value = c(crit[1,], crit[2,]), Criterion = rep(c("BIC", "ICL"), each = length(nClass)))

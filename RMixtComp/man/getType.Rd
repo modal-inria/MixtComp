@@ -57,4 +57,7 @@ Other getter: \code{\link{getBIC}},
   \code{\link{getEmpiricTik}}, \code{\link{getParam}},
   \code{\link{getPartition}}
 }
+\author{
+Quentin Grimonprez
+}
 \concept{getter}

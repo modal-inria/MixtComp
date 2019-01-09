@@ -1,3 +1,4 @@
+# @author Vincent Kubicki
 functionalSharedAlphaInterPolyParam <- function(name) {
   functionalSharedAlpha <- list(
     name = name,
@@ -25,6 +26,7 @@ functionalSharedAlphaInterPolyParam <- function(name) {
   return(functionalSharedAlpha)
 }
 
+# @author Vincent Kubicki
 functionalSharedAlphaParam1sub <- function(name) {
   functionalSharedAlpha <- list()
   functionalSharedAlpha$param <- list()
@@ -52,14 +54,7 @@ functionalSharedAlphaParam1sub <- function(name) {
                   1, 2, byrow = TRUE)
   
   sigma <- 0.01
-  
-  # print("alpha")
-  # print(alpha)
-  # print("beta1")
-  # print(beta1)
-  # print("beta2")
-  # print(beta2)
-  
+
   functionalSharedAlpha$param[[1]]$alpha <- alpha
   functionalSharedAlpha$param[[1]]$beta <- beta1
   functionalSharedAlpha$param[[1]]$sigma <- c(sigma, sigma)
@@ -77,6 +72,7 @@ functionalSharedAlphaParam1sub <- function(name) {
   return(functionalSharedAlpha)
 }
 
+# @author Vincent Kubicki
 functionalSharedAlphaParam2sub <- function(name) {
   functionalSharedAlpha <- list()
   functionalSharedAlpha$param <- list()
@@ -110,14 +106,7 @@ functionalSharedAlphaParam2sub <- function(name) {
                   2, 2, byrow = TRUE)
   
   sigma <- 0.01
-  
-  # print("alpha")
-  # print(alpha)
-  # print("beta1")
-  # print(beta1)
-  # print("beta2")
-  # print(beta2)
-  
+
   functionalSharedAlpha$param[[1]]$alpha <- alpha
   functionalSharedAlpha$param[[1]]$beta <- beta1
   functionalSharedAlpha$param[[1]]$sigma <- c(sigma, sigma)
@@ -133,14 +122,4 @@ functionalSharedAlphaParam2sub <- function(name) {
   functionalSharedAlpha$param[[2]]$tMax <- 50.
   
   return(functionalSharedAlpha)
-}
-
-getLinEq <- function(pointA, pointB) {
-  a <- matrix(c(1., pointA[1],
-                1., pointB[1]),
-              2, 2, byrow = TRUE)
-  b <- c(pointA[2], pointB[2])
-  x <- solve(a, b)
-  
-  return(x)
 }

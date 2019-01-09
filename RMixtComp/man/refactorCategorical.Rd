@@ -24,5 +24,7 @@ Rename a categorical value
 dat <- c("single", "married", "married", "divorced", "single")
 refactorCategorical(dat, c("single", "married", "divorced"), 1:3)
 
-
+}
+\author{
+Quentin Grimonprez
 }

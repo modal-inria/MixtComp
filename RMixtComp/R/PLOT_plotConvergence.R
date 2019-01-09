@@ -92,7 +92,7 @@ plotParamConvergence <- function(output, var, ...)
 }
 
 
-
+# @author Quentin Grimonprez
 plotLog <- function(paramLog, nbCluster, var, ...)
 {
   nrowParam <- nrow(paramLog)

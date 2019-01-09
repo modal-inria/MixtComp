@@ -266,3 +266,6 @@ Allou Samé, Faicel Chamroukhi, Gérard Govaert, Patrice Aknin. \emph{Model-base
 \seealso{
 Other clustering packages : \code{Rmixmod}, \code{blockcluster}
 }
+\author{
+Quentin Grimonprez
+}

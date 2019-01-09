@@ -1,3 +1,4 @@
+# @author Quentin Grimonprez
 context("Pretreatment functions of mixtCompLearn's parameters")
 
 Sys.setenv(MC_DETERMINISTIC = 42)

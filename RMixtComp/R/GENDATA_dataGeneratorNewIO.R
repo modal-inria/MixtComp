@@ -12,6 +12,7 @@
 # @param nbInd number of individuals
 # @param proportionPresent proportion of present data, the rest will be sampled using the various types
 # @param var list one element per variable
+# @author Vincent Kubicki
 dataGeneratorNewIO <- function(
   nbInd,
   proportionPresent,

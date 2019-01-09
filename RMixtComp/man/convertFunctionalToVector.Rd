@@ -18,5 +18,7 @@ Convert a mixtcomp string into 2-columns matrix
 \examples{
 convertFunctionalToVector("1:5,1.5:12,1.999:2.9")
 
-
+}
+\author{
+Quentin Grimonprez
 }

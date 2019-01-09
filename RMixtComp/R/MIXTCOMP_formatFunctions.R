@@ -7,7 +7,7 @@
 #' @examples
 #' convertFunctionalToVector("1:5,1.5:12,1.999:2.9")
 #'
-#'
+#' @author Quentin Grimonprez
 #' @export
 convertFunctionalToVector <- function(x){
   if((x == "") || is.na(x) || is.null(x))
@@ -30,7 +30,7 @@ convertFunctionalToVector <- function(x){
 #' mat <- matrix(c(1, 2, 3, 9, 1, 1.5, 15, 1000), ncol = 2)
 #' createFunctional(mat[,1], mat[,2])
 #'
-#'
+#' @author Quentin Grimonprez
 #' @export
 createFunctional <- function(time, value)
 {
@@ -55,7 +55,7 @@ createFunctional <- function(time, value)
 #' dat <- c("single", "married", "married", "divorced", "single")
 #' refactorCategorical(dat, c("single", "married", "divorced"), 1:3)
 #'
-#'
+#' @author Quentin Grimonprez
 #' @export
 refactorCategorical <- function(data, oldCateg = unique(data), newCateg = 1:length(oldCateg))
 {

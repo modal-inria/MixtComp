@@ -45,4 +45,7 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{plotParamConvergence}},
   \code{\link{plotProportion}}
 }
+\author{
+Quentin Grimonprez
+}
 \concept{plot}

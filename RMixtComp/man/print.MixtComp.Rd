@@ -28,3 +28,6 @@ print(resLearn$res[[2]])
 \seealso{
 \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
 }
+\author{
+Quentin Grimonprez
+}

@@ -52,3 +52,6 @@ simClass <- computeSimilarityClass(resLearn)
 \seealso{
 \code{\link{heatmapVar}} \code{\link{heatmapClass}}
 }
+\author{
+Quentin Grimonprez
+}

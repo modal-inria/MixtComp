@@ -1,3 +1,4 @@
+# @author Quentin Grimonprez
 context("Format functions")
 
 test_that("createFunctional works with void element", {

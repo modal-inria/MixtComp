@@ -1,3 +1,4 @@
+# @author Vincent Kubicki
 context("IO")
 
 test_that("add_payload", {

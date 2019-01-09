@@ -1,3 +1,4 @@
+# @author Quentin Grimonprez, Vincent Kubicki
 context("Run MixtComp")
 
 Sys.setenv(MC_DETERMINISTIC = 42)

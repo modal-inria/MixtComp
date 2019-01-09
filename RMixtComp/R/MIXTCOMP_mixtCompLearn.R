@@ -235,7 +235,7 @@
 #' }
 #' 
 #' @seealso Other clustering packages : \code{Rmixmod}, \code{blockcluster}
-#' 
+#' @author Quentin Grimonprez
 #' @export
 mixtCompLearn <- function(data, model = NULL, algo = createAlgo(), nClass, criterion = c("BIC", "ICL"), hierarchicalMode = c("auto", "yes", "no"), nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
 {
@@ -313,7 +313,7 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
   return(resPredict)
 }
 
-
+# @author Quentin Grimonprez
 classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verbose, mode)
 {
   
@@ -388,6 +388,7 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
   return(res)
 }
 
+# @author Quentin Grimonprez
 hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize = 5, nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
 {
   indCrit <- ifelse(criterion == "BIC", 1, 2)
@@ -428,6 +429,7 @@ hierarchicalLearn <- function(data, model, algo, nClass, criterion, minClassSize
 # hierarchicalMode mixtCompLearn's argument
 # mode "basic" or "expert"
 # model mixtCompLearn's argument
+# @author Quentin Grimonprez
 performHierarchical <- function(hierarchicalMode, mode, model)
 {
   if((mode == "basic") || (hierarchicalMode == "no"))
@@ -444,6 +446,7 @@ performHierarchical <- function(hierarchicalMode, mode, model)
   return(FALSE)
 }
 
+# @author Quentin Grimonprez
 rmcMultiRun <- function(algo, data, model, resLearn, nRun = 1, nCore = 1, verbose = FALSE)
 {
   nCore <- min(max(1, nCore), nRun)

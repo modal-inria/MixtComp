@@ -30,6 +30,7 @@
 #' getCompletedData <- completed(resLearn)
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
 getCompletedData <- function(outMixtComp, with.z_class = FALSE)
@@ -75,6 +76,7 @@ getCompletedData <- function(outMixtComp, with.z_class = FALSE)
 #' estimatedClass <- getPartition(resLearn)
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
 getPartition <- function(outMixtComp)
@@ -122,6 +124,7 @@ getPartition <- function(outMixtComp)
 #' 
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
 getType <- function(outMixtComp, with.z_class = FALSE)
@@ -200,6 +203,7 @@ getVarNames <- function(outMixtComp, with.z_class = FALSE)
 #' 
 #' @seealso \code{\link{heatmapTikSorted}}
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
 getEmpiricTik <- function(outMixtComp)
@@ -257,6 +261,7 @@ getTik <- function(outMixtComp, log = TRUE){
 #' icl <- getICL(resLearn)
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' @family getter
 #' @export
 getBIC <- function(outMixtComp)

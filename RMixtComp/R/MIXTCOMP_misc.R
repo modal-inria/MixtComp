@@ -21,6 +21,7 @@
 #' # change some values
 #' algo <- createAlgo(nbIter = 200)
 #' 
+#' @author Quentin Grimonprez
 #' @export
 createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, nbGibbsIter = 50, nInitPerClass = 10, nSemTry = 20, confidenceLevel = 0.95, ratioStableCriterion = 0.95, nStableCriterion = 10)
 {
@@ -86,6 +87,7 @@ createAlgo <- function(nbBurnInIter = 50, nbIter = 50, nbGibbsBurnInIter = 50, n
 #' plotDiscrimClass(resLearn)
 #' }
 #' 
+#' @author Matthieu Marbac
 #' @seealso \code{\link{plotDiscrimClass}} \code{\link{plotDiscrimVar}}
 #' @export
 computeDiscrimPowerVar <- function(outMixtComp)
@@ -142,6 +144,7 @@ computeDiscrimPowerClass <- function(outMixtComp)
 #' simClass <- computeSimilarityClass(resLearn)
 #' }
 #' 
+#' @author Quentin Grimonprez
 #' @seealso \code{\link{heatmapVar}} \code{\link{heatmapClass}}
 #' @export
 computeSimilarityVar <- function(outMixtComp)
@@ -172,10 +175,10 @@ computeSimilarityClass <- function(outMixtComp)
 rand.index <- function (partition1, partition2) 
 {
   x <- abs(sapply(partition1, function(x) {x - partition1}))
-  x[x > 1] <- 1
+  x[x > 1] = 1
   
   y <- abs(sapply(partition2, function(x) {x - partition2}))
-  y[y > 1] <- 1
+  y[y > 1] = 1
   
   sg <- sum(abs(x - y))/2
   bc <- choose(dim(x)[1], 2)
@@ -202,7 +205,7 @@ rand.index <- function (partition1, partition2)
 #' }
 #'
 #' @seealso \code{\link{mixtCompLearn}}
-#' 
+#' @author Quentin Grimonprez
 #' @export
 availableModels <- function()
 {

@@ -33,3 +33,6 @@ print(resLearn, nClass = 3)
 \seealso{
 \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
 }
+\author{
+Quentin Grimonprez
+}

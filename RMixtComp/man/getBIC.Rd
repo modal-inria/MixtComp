@@ -48,4 +48,7 @@ Other getter: \code{\link{getCompletedData}},
   \code{\link{getEmpiricTik}}, \code{\link{getParam}},
   \code{\link{getPartition}}, \code{\link{getType}}
 }
+\author{
+Quentin Grimonprez
+}
 \concept{getter}

@@ -1,3 +1,4 @@
+# @author Vincent Kubicki
 functionalInterPolyParam <- function(name) {
   Functional <- list(
     name = name,
@@ -25,6 +26,7 @@ functionalInterPolyParam <- function(name) {
   return(Functional)
 }
 
+# @author Vincent Kubicki
 functionalParam1sub <- function(name) {
   Functional <- list()
   Functional$param <- list()
@@ -52,14 +54,7 @@ functionalParam1sub <- function(name) {
                   1, 2, byrow = TRUE)
   
   sigma <- 0.01
-  
-  # print("alpha")
-  # print(alpha)
-  # print("beta1")
-  # print(beta1)
-  # print("beta2")
-  # print(beta2)
-  
+
   Functional$param[[1]]$alpha <- alpha
   Functional$param[[1]]$beta <- beta1
   Functional$param[[1]]$sigma <- c(sigma, sigma)
@@ -77,6 +72,7 @@ functionalParam1sub <- function(name) {
   return(Functional)
 }
 
+# @author Vincent Kubicki
 functionalParam2sub <- function(name) {
   Functional <- list()
   Functional$param <- list()
@@ -111,12 +107,6 @@ functionalParam2sub <- function(name) {
   
   sigma <- 0.01
   
-  # print("alpha")
-  # print(alpha)
-  # print("beta1")
-  # print(beta1)
-  # print("beta2")
-  # print(beta2)
   
   Functional$param[[1]]$alpha <- alpha
   Functional$param[[1]]$beta <- beta1
@@ -135,6 +125,7 @@ functionalParam2sub <- function(name) {
   return(Functional)
 }
 
+# @author Vincent Kubicki
 getLinEq <- function(pointA, pointB) {
   a <- matrix(c(1., pointA[1],
                 1., pointB[1]),

@@ -24,3 +24,6 @@ Get information about models implemented in MixtComp
 \seealso{
 \code{\link{mixtCompLearn}}
 }
+\author{
+Quentin Grimonprez
+}

@@ -17,7 +17,7 @@
 #' summary(resLearn$res[[2]])
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{print.MixtComp}}
-#' 
+#' @author Quentin Grimonprez
 #' @export
 summary.MixtComp <- function(object, ...)
 {
@@ -79,7 +79,7 @@ summary.MixtComp <- function(object, ...)
 #' summary(resLearn, nClass = 3)
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{print.MixtCompLearn}}
-#' 
+#' @author Quentin Grimonprez
 #' @export
 summary.MixtCompLearn <- function(object, nClass = NULL, ...)
 {
@@ -117,7 +117,7 @@ summary.MixtCompLearn <- function(object, nClass = NULL, ...)
 #' @method print MixtComp
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
-#' 
+#' @author Quentin Grimonprez
 #' @export
 print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 {
@@ -202,7 +202,7 @@ print.MixtComp <- function(x, nVarMaxToPrint = 5, ...)
 #' @method print MixtCompLearn
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
-#' 
+#' @author Quentin Grimonprez
 #' @export
 print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...)
 {
@@ -243,7 +243,7 @@ print.MixtCompLearn <- function(x, nVarMaxToPrint = 5, nClass = NULL, ...)
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
 #' @family plot
-#' 
+#' @author Quentin Grimonprez
 #' @export
 plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ...)
 {
@@ -294,7 +294,7 @@ plot.MixtComp <- function(x, nVarMaxToPlot = 3, pkg = c("ggplot2", "plotly"), ..
 #' 
 #' @seealso \code{\link{mixtCompLearn}} \code{\link{mixtCompPredict}}
 #' @family plot
-#' 
+#' @author Quentin Grimonprez
 #' @export
 plot.MixtCompLearn <- function(x, nVarMaxToPlot = 3, nClass = NULL, pkg = c("ggplot2", "plotly"), ...)
 {

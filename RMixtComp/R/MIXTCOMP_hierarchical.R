@@ -36,6 +36,7 @@
 # res <- hierarchicalMixtCompLearn(data, descriptor, algo, nClass = 4)
 # }
 # 
+# @author Quentin Grimonprez
 # @export
 hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, criterion = c("BIC", "ICL", "lnObservedLikelihood", "lnCompletedLikelihood"), minClassSize = 5,
                                       nRun = 1, nCore = min(max(1, ceiling(detectCores()/2)), nRun), verbose = TRUE)
@@ -214,6 +215,7 @@ hierarchicalMixtCompLearn <- function(data, model, algo = createAlgo(), nClass, 
 # @param algo
 #
 # @return mixtComp res
+# @author Quentin Grimonprez
 computeNewModel <- function(resParent, resChild, classParentOfChild, data, model, algo, nRun, nCore, verbose)
 {
   oldZ_class = resParent$variable$data$z_class$completed
@@ -236,5 +238,3 @@ computeNewModel <- function(resParent, resChild, classParentOfChild, data, model
   
   return(res)
 }
-
-

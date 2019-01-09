@@ -29,3 +29,6 @@ summary(resLearn, nClass = 3)
 \seealso{
 \code{\link{mixtCompLearn}} \code{\link{print.MixtCompLearn}}
 }
+\author{
+Quentin Grimonprez
+}

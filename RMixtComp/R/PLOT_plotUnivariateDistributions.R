@@ -63,6 +63,7 @@ plotDataCI <- function(output, var, class = 1:output$algo$nClass, grl = FALSE, p
 
 
 # Mean and 95% confidence level per class for a numeric variable (Gaussian or Poisson)
+# @author Matthieu Marbac
 plotCINumericData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"), ...){
   pkg = match.arg(pkg)
   
@@ -73,7 +74,7 @@ plotCINumericData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"
   p
 }
 
-
+# @author Matthieu Marbac
 plotlyCINumericData <- function(data, var, class, grl, ...){
   text1 <- paste0("Class.", class, "<br>",
                   "Mean: ", round(data$mean[1:length(class)],2), "<br>",
@@ -145,7 +146,7 @@ plotlyCINumericData <- function(data, var, class, grl, ...){
   p
 }
 
-
+# @author Quentin Grimonprez
 ggplotCINumericData <- function(data, var, class, grl)
 {
   labelClass <- class
@@ -163,6 +164,7 @@ ggplotCINumericData <- function(data, var, class, grl)
   p
 }
 
+# @author Matthieu Marbac
 plotCategoricalData <- function(data, var, class, grl, pkg = c("ggplot2", "plotly"), ...)
 {
   pkg = match.arg(pkg)
@@ -175,6 +177,7 @@ plotCategoricalData <- function(data, var, class, grl, pkg = c("ggplot2", "plotl
 }
 
 # Barplot for categorical data (only the levels included in the 95 confidence level for at least one component are plotted)
+# @author Matthieu Marbac
 plotlyCategoricalData <- function(data, var, class, grl, ...){
   formattedW <- lapply(1:length(class), 
                        function(k) list(y = data$probs[k,],
@@ -220,7 +223,7 @@ plotlyCategoricalData <- function(data, var, class, grl, ...){
 }
 
 
-
+# @author Quentin Grimonprez
 ggplotCategoricalData <- function(data, var, class, grl)
 {
   labelClass <- class
@@ -238,6 +241,7 @@ ggplotCategoricalData <- function(data, var, class, grl)
 
 
 # Mean and 95% confidence level confidence  for functional data
+# @author Matthieu Marbac
 plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL, pkg = c("ggplot2", "plotly"), ...)
 {
   pkg = match.arg(pkg)
@@ -252,7 +256,7 @@ plotFunctionalData <- function(output, var, add.obs = FALSE, ylim = NULL, xlim =
   p
 }
 
-
+# @author Matthieu Marbac
 plotlyFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL, ...){
   G <- output$algo$nClass
   
@@ -343,7 +347,7 @@ plotlyFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL
   )
   p
 }
-
+# @author Quentin Grimonprez
 ggplotFunctionalData <- function(data, output, var, add.obs = FALSE, ylim = NULL, xlim = NULL, add.CI = TRUE, classToPlot = NULL)
 {
   if(!is.null(classToPlot))

@@ -1,6 +1,7 @@
 
 # gaussian ----------------------------------------------------------------
 
+# @author Vincent Kubicki
 gaussianParam <- function(name) {
   gaussian <- list()
   gaussian$name <- name
@@ -17,6 +18,7 @@ gaussianParam <- function(name) {
 
 # poisson -----------------------------------------------------------------
 
+# @author Vincent Kubicki
 poissonParam <- function(name) {
   poisson <- list()
   poisson$name <- name
@@ -30,6 +32,7 @@ poissonParam <- function(name) {
   return(poisson)
 }
 
+# @author Vincent Kubicki
 poissonParamRandom <- function(name) {
   valMin <- 0.1
   valMax <- 15.0
@@ -49,7 +52,7 @@ poissonParamRandom <- function(name) {
 
 # categorical -------------------------------------------------------------
 
-
+# @author Vincent Kubicki
 categoricalParam1 <- function(name) {
   categorical <- list()
   categorical$name <- name
@@ -63,6 +66,7 @@ categoricalParam1 <- function(name) {
   return(categorical)
 }
 
+# @author Vincent Kubicki
 categoricalParam2 <- function(name) {
   categorical <- list()
   categorical$name <- name
@@ -76,6 +80,7 @@ categoricalParam2 <- function(name) {
   return(categorical)
 }
 
+# @author Vincent Kubicki
 categoricalParamRandom <- function(name) {
   nbModalities <- 4
   param1 <- runif(4)
@@ -98,6 +103,7 @@ categoricalParamRandom <- function(name) {
 
 # Weibull -----------------------------------------------------------------
 
+# @author Vincent Kubicki
 weibullParam <- function(name) {
   weibull <- list()
   weibull$name <- name
@@ -113,6 +119,7 @@ weibullParam <- function(name) {
 
 # Negative Binomial -------------------------------------------------------
 
+# @author Quentin Grimonprez
 nBinomParam <- function(name) {
   nBinom <- list()
   nBinom$name <- name
@@ -126,6 +133,7 @@ nBinomParam <- function(name) {
   return(nBinom)
 }
 
+# @author Quentin Grimonprez
 nBinomParamRandom <- function(name) {
   nBinom <- list()
   nBinom$name <- name
@@ -142,6 +150,7 @@ nBinomParamRandom <- function(name) {
 
 # rank --------------------------------------------------------------------
 
+# @author Vincent Kubicki
 rankParam <- function(name) {
   Rank <- list()
   Rank$param <- list()

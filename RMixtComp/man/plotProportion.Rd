@@ -49,4 +49,7 @@ Other plot: \code{\link{heatmapClass}},
   \code{\link{plotDiscrimVar}},
   \code{\link{plotParamConvergence}}
 }
+\author{
+Quentin Grimonprez
+}
 \concept{plot}

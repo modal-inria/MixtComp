@@ -1,3 +1,4 @@
+# @author Quentin Grimonprez
 context("run functions")
 
 Sys.setenv(MC_DETERMINISTIC = 42)

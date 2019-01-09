@@ -50,6 +50,7 @@ plotDataBoxplot <- function(output, var, grl = TRUE, ...)
 }
 
 # here bounds is a matrix
+# @author Matthieu Marbac
 plotBoxplotperClass <- function(bounds){
   # Définition des paramètres du graphiques
   plot(NA,

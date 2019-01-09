@@ -21,5 +21,7 @@ Create a functional in MixtComp format
 mat <- matrix(c(1, 2, 3, 9, 1, 1.5, 15, 1000), ncol = 2)
 createFunctional(mat[,1], mat[,2])
 
-
+}
+\author{
+Quentin Grimonprez
 }
