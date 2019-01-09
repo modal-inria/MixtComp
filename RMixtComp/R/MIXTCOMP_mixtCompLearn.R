@@ -300,7 +300,7 @@ mixtCompPredict <- function(data, model = NULL, algo = resLearn$algo, resLearn, 
     resPredict <- rmcMultiRun(algo, dataList, model, resLearn, nRun, nCore, verbose)
   
   if(!is.null(resPredict$warnLog))
-    warning(paste0("MixtComp failed with the following error:", resPredict$warnLog))
+    warning(paste0("MixtComp failed with the following error: ", resPredict$warnLog))
   else{
     resPredict$algo$basicMode = resLearn$algo$basicMode
     
@@ -360,7 +360,7 @@ classicLearn <- function(data, model, algo, nClass, criterion, nRun, nCore, verb
     
     class(resLearn[[i]]) = "MixtComp"
     if(!is.null(resLearn[[i]]$warnLog))
-      warning(paste0("For k= ", nClass[i], ", MixtComp failed with the following error:", resLearn[[i]]$warnLog))
+      warning(paste0("For k=", nClass[i], ", MixtComp failed with the following error: ", resLearn[[i]]$warnLog))
     else{
       resLearn[[i]]$algo$basicMode = (mode == "basic")
       resLearn[[i]]$algo$hierarchicalMode = FALSE
