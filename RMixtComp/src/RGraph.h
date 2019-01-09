@@ -16,7 +16,7 @@
 #include "Rcpp.h"
 #include <IO/NamedAlgebra.h>
 #include <IO/IOFunctions.h>
-#include <LinAlg/mixt_LinAlg.h>
+#include <LinAlg/LinAlg.h>
 
 #include "translateCPPToR.h"
 #include "translateRToCPP.h"

@@ -28,7 +28,7 @@ makevarsStr = r'''# MixtComp version 2.0  - 13 march 2017
 
 %s
 
-PKG_CXXFLAGS = -Ilib -Ilib/LinAlg -DEIGEN_MATRIXBASE_PLUGIN=\"mixt_EigenMatrixBaseAddons.h\" -Ioptim/include
+PKG_CXXFLAGS = -Ilib -Ilib/LinAlg -DEIGEN_MATRIXBASE_PLUGIN=\"EigenMatrixBaseAddons.h\" -Ioptim/include
 CXX_STD = CXX11
 
 PKG_LIBS = $(LIB_OFILES)
